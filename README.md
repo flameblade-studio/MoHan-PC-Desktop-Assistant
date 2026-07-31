@@ -1,6 +1,13 @@
 # MoHan Desktop Assistant / 墨寒桌面語音互動虛擬助理
 
 <p align="center">
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release"></a>
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+</p>
+
+<p align="center">
   <img src="docs/media/mohan-hero.png" alt="MoHan Desktop Assistant main visual / 墨寒桌面語音互動虛擬助理主視覺" width="100%">
 </p>
 
@@ -21,6 +28,15 @@
 
 - [繁體中文](#繁體中文)
 - [English](#english)
+
+<p align="center">
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Download / 下載</a> ·
+  <a href="QUICKSTART.md">Quick start / 快速開始</a> ·
+  <a href="ROADMAP.md">Roadmap / 路線圖</a> ·
+  <a href="CONTRIBUTING.md">Contribute / 參與協作</a> ·
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/discussions">Discussions / 討論區</a> ·
+  <a href="SECURITY.md">Security / 安全</a>
+</p>
 
 ## Demo / 實際展示
 

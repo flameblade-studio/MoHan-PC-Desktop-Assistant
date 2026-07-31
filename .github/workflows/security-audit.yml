@@ -1,0 +1,42 @@
+name: Python Security Audit
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "requirements.txt"
+      - ".github/workflows/security-audit.yml"
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "41 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: python-security-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pip-audit:
+    name: pip-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install audit tool
+        run: python -m pip install pip-audit==2.10.1
+
+      - name: Audit runtime requirements
+        run: python -m pip_audit -r requirements.txt --strict
