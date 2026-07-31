@@ -61,6 +61,15 @@ def main() -> int:
     for requirement in support_requirements:
         assert requirement in readme, f"missing project support content: {requirement}"
 
+    github_requirements = (
+        "actions/workflows/windows-ci.yml/badge.svg",
+        "actions/workflows/codeql.yml/badge.svg",
+        "ROADMAP.md",
+        "/discussions",
+    )
+    for requirement in github_requirements:
+        assert requirement in readme, f"missing GitHub project link: {requirement}"
+
     security = (ROOT / "SECURITY.md").read_text(encoding="utf-8").lower()
     assert "private vulnerability reporting" in security
     assert "api key" in security and "oauth" in security

@@ -78,4 +78,30 @@ Before committing regenerated media:
 All repository changes must use a pull request. Do not push implementation
 commits directly to `main`, bypass checks, force-push `main`, or merge while a
 required check or review conversation is unresolved. The required Windows CI
-check is `Windows CI / test`.
+check is `Windows CI / test`. Security workflows must also complete without an
+unresolved high-confidence finding.
+
+## Automated future releases
+
+Future `v`-prefixed semantic-version tags trigger `.github/workflows/release.yml`.
+The workflow checks out the exact tag and then:
+
+1. installs pinned runtime and release dependencies;
+2. compiles and audits the public source tree;
+3. runs the full regression suite;
+4. builds the Windows x64 application with PyInstaller;
+5. runs packaged self-test and event-loop smoke tests;
+6. produces a ZIP, SHA-256 checksum, and CycloneDX SBOM;
+7. creates GitHub artifact provenance attestations; and
+8. publishes the assets to a GitHub Release.
+
+Tags containing a prerelease suffix such as `-rc.1` are published as
+pre-releases. Stable semantic tags are published as normal releases. Never
+reuse or move a published tag; create a new version instead.
+
+Release artifacts can be verified with:
+
+```powershell
+Get-FileHash .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip -Algorithm SHA256
+gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo hitoshic1982/MoHan-PC-Desktop-Assistant
+```
