@@ -48,6 +48,31 @@ tokens, or private user data.
   </tr>
 </table>
 
+## 支持墨寒 / Support MoHan
+
+如果你喜歡墨寒，或認同我們持續投入角色互動、自然語音、安全工具與開源
+開發，歡迎自願贊助這個專案。每一份支持都會成為持續維護、測試與改進
+墨寒的動力。請先照顧好自己的生活，量力而為即可。
+
+If you enjoy MoHan and would like to support continued work on character
+interaction, natural voice, safety-first tools, and open-source development,
+voluntary contributions are warmly welcome. Please take care of yourself first
+and contribute only if it is comfortable for you.
+
+<table>
+  <tr>
+    <td width="33%" align="center"><img src="assets/expressions/proud_front.png" width="220" alt="墨寒傲嬌"><br><strong>「妾才不是在等贊助……只是替主上巡視軍糧。」</strong><br><sub>“I am not waiting for support… merely inspecting our provisions.”</sub></td>
+    <td width="33%" align="center"><img src="assets/expressions/shy_cute_front.png" width="220" alt="墨寒嬌羞"><br><strong>「若真願意相助，妾……會記得的。」</strong><br><sub>“If you truly wish to help… I shall remember it.”</sub></td>
+    <td width="33%" align="center"><img src="assets/expressions/mock_hit_front.png" width="220" alt="墨寒佯怒"><br><strong>「不許勉強！先顧好自己的荷包，聽見沒有？」</strong><br><sub>“No overdoing it! Take care of yourself first—understood?”</sub></td>
+  </tr>
+</table>
+
+<p align="center">
+  <strong><a href="https://buymeacoffee.com/flameblade_studio">☕ Buy Me a Coffee</a></strong>
+  &nbsp;｜&nbsp;
+  <strong><a href="https://www.paypal.com/paypalme/flamebladestudio">PayPal.Me</a></strong>
+</p>
+
 ---
 
 # 繁體中文
