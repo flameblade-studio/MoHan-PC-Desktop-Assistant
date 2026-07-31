@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
-import mimetypes
 import os
 import secrets
 import sqlite3
@@ -14,12 +13,40 @@ from dataclasses import dataclass
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Iterator
 
 
 StatusProvider = Callable[[], dict[str, Any]]
 CommandHandler = Callable[[str, str], dict[str, Any]]
 ScreenProvider = Callable[[], bytes]
+
+SAFE_DOWNLOAD_TYPES = {
+    ".csv": "text/csv; charset=utf-8",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".gif": "image/gif",
+    ".jpeg": "image/jpeg",
+    ".jpg": "image/jpeg",
+    ".json": "application/json",
+    ".md": "text/markdown; charset=utf-8",
+    ".mp3": "audio/mpeg",
+    ".mp4": "video/mp4",
+    ".pdf": "application/pdf",
+    ".png": "image/png",
+    ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ".txt": "text/plain; charset=utf-8",
+    ".wav": "audio/wav",
+    ".webp": "image/webp",
+    ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".zip": "application/zip",
+}
+PROTECTED_REMOTE_PARTS = {
+    ".gnupg",
+    ".ssh",
+    "appdata",
+    "credentials",
+    "passwords",
+}
+PROTECTED_REMOTE_SUFFIXES = {".kdbx", ".key", ".pem", ".pfx"}
 
 MOBILE_PAGE = """<!doctype html>
 <html lang="zh-Hant-TW"><meta charset="utf-8">
@@ -251,17 +278,12 @@ class RemoteControlServer:
                         self._json(HTTPStatus.FORBIDDEN, {"error": str(exc)})
                         return
                     content = target.read_bytes()
+                    content_type, disposition = owner._download_metadata(target)
                     self.send_response(HTTPStatus.OK)
-                    self.send_header(
-                        "Content-Type",
-                        mimetypes.guess_type(target.name)[0]
-                        or "application/octet-stream",
-                    )
+                    self.send_header("Content-Type", content_type)
                     self.send_header("Content-Length", str(len(content)))
-                    self.send_header(
-                        "Content-Disposition",
-                        f'attachment; filename="{target.name}"',
-                    )
+                    self.send_header("Content-Disposition", disposition)
+                    self.send_header("X-Content-Type-Options", "nosniff")
                     self.send_header("Cache-Control", "no-store")
                     self.end_headers()
                     self.wfile.write(content)
@@ -338,42 +360,60 @@ class RemoteControlServer:
         return True
 
     def _allowed_file(self, raw: str) -> Path:
-        candidate_text = os.path.normpath(
+        requested_key = os.path.normcase(
             os.path.abspath(os.path.expanduser(raw))
         )
-        candidate_key = os.path.normcase(candidate_text)
-        allowed_prefixes = tuple(
-            os.path.normcase(os.path.join(str(root), ""))
-            for root in self.allowed_folders
-        )
-        if not any(candidate_key.startswith(prefix) for prefix in allowed_prefixes):
-            raise PermissionError("檔案不在遠端白名單")
-        try:
-            resolved_text = os.path.realpath(candidate_text)
-        except (OSError, RuntimeError) as exc:
-            raise PermissionError("無法安全解析遠端檔案") from exc
-        resolved_key = os.path.normcase(resolved_text)
-        if not any(resolved_key.startswith(prefix) for prefix in allowed_prefixes):
-            raise PermissionError("檔案不在遠端白名單")
-        target = Path(resolved_text)
-        if not target.is_file():
-            raise FileNotFoundError("找不到檔案")
+        for target in self._allowed_file_catalog():
+            if os.path.normcase(str(target)) == requested_key:
+                return target
+        raise PermissionError("檔案不在遠端白名單或已受保護")
+
+    def _allowed_file_catalog(self) -> Iterator[Path]:
+        seen: set[str] = set()
+        for root in self.allowed_folders:
+            root_prefix = os.path.normcase(os.path.join(str(root), ""))
+            for directory, folder_names, file_names in os.walk(
+                root,
+                followlinks=False,
+            ):
+                folder_names[:] = [
+                    name
+                    for name in folder_names
+                    if name.casefold() not in PROTECTED_REMOTE_PARTS
+                ]
+                for file_name in file_names:
+                    candidate = Path(directory, file_name)
+                    try:
+                        target = candidate.resolve(strict=True)
+                    except (OSError, RuntimeError):
+                        continue
+                    target_key = os.path.normcase(str(target))
+                    if not target_key.startswith(root_prefix) or target_key in seen:
+                        continue
+                    if not target.is_file() or self._is_sensitive_file(target):
+                        continue
+                    seen.add(target_key)
+                    yield target
+
+    @staticmethod
+    def _is_sensitive_file(target: Path) -> bool:
         lowered = {part.casefold() for part in target.parts}
-        protected = {
-            ".ssh",
-            ".gnupg",
-            "credentials",
-            "passwords",
-            "appdata",
-        }
-        if lowered & protected or target.suffix.casefold() in {
-            ".key",
-            ".pem",
-            ".pfx",
-            ".kdbx",
-        }:
-            raise PermissionError("敏感檔案禁止遠端存取")
-        return target
+        return bool(
+            lowered & PROTECTED_REMOTE_PARTS
+            or target.suffix.casefold() in PROTECTED_REMOTE_SUFFIXES
+        )
+
+    @staticmethod
+    def _download_metadata(target: Path) -> tuple[str, str]:
+        suffix = target.suffix.casefold()
+        content_type = SAFE_DOWNLOAD_TYPES.get(
+            suffix,
+            "application/octet-stream",
+        )
+        safe_suffix = suffix if suffix in SAFE_DOWNLOAD_TYPES else ".bin"
+        digest = hashlib.sha256(target.name.encode("utf-8")).hexdigest()[:16]
+        disposition = f'attachment; filename="mohan-{digest}{safe_suffix}"'
+        return content_type, disposition
 
 
 def constant_time_token_equal(left: str, right: str) -> bool:

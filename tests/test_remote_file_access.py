@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import os
 import sys
+import urllib.parse
+import urllib.request
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -38,6 +40,31 @@ def main() -> None:
         try:
             server = _server(db, allowed)
             assert server._allowed_file(str(inside)) == inside.resolve()
+            content_type, disposition = server._download_metadata(inside)
+            assert content_type == "text/plain; charset=utf-8"
+            assert disposition.startswith('attachment; filename="mohan-')
+            assert "\r" not in disposition and "\n" not in disposition
+
+            token = server.tokens.pair("測試裝置", ["files"])
+            server.config.enabled = True
+            server.config.allow_files = True
+            server.config.host = "127.0.0.1"
+            server.config.port = 0
+            server.start()
+            try:
+                port = server._server.server_port
+                query = urllib.parse.urlencode({"path": str(inside)})
+                request = urllib.request.Request(
+                    f"http://127.0.0.1:{port}/api/v1/file?{query}",
+                    headers={"Authorization": f"Bearer {token}"},
+                )
+                with urllib.request.urlopen(request, timeout=3) as response:
+                    assert response.read() == b"safe"
+                    assert response.headers["Content-Type"].startswith("text/plain")
+                    assert response.headers["Content-Disposition"] == disposition
+                    assert response.headers["X-Content-Type-Options"] == "nosniff"
+            finally:
+                server.stop()
 
             for blocked in (
                 outside,
