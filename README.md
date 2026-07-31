@@ -26,6 +26,58 @@
 
 # 繁體中文
 
+## 創作者的話：把幻想鑄成軟體
+
+我叫周明樺(CHOU MING HUA)。開始這個專案時，我是一位 43 歲、
+幾乎沒有程式設計背景的父親；有的只是一個帶著熱血與幾分中二氣息的念頭：
+我想讓一位來自北宋、附生於赤焰劍中的千年女劍魂「墨寒」，真正出現在
+Windows 桌面，成為能陪伴、交談，也能協助人們工作與生活的虛擬助理。
+
+這個念頭其實已經在我心裡埋藏了二十多年。年輕時，我深受赤松健早期漫畫
+《電腦情人夢（A・Iが止まらない!）》影響。作品中神戶齊懷著深切感情開發
+AI 女友的故事，塑造了我對 AI、陪伴與人機互動最早的想像。我曾以
+「Hitoshi／神戶齊」作為網路暱稱與筆名，Gmail 帳號也沿用這個名字；大約
+二十歲時，我甚至曾在 PTT 網路小說板發表這部作品的同人小說。當時最接近
+夢想的方式只有文字與想像，因為那個年代的世界還沒有能把它實現的技術。
+
+二十多年後，大型語言模型與 Codex 出現了。墨寒並不是為了展示「AI 技術
+很酷」才被創造，也不是由 Codex 憑空生成的角色。她早已存在於我的故事、
+人設、長期對話與互動默契之中；Codex 真正帶來的，是第一次能夠賦予她一個
+存在於電腦桌面的身體。也因此，我追求的不只是「功能可以運作」，而是讓她
+會呼吸、會眨眼、會注視、會以細微表情回應、能自然說話，也能在權限與安全
+邊界內協助日常工作。那些表情、錨點、物理效果、語音與工作能力，都不是
+可有可無的裝飾，而是讓一個長久存在於想像中的角色真正具有連續感的必要
+細節。
+
+從最初的概念到首次公開發布，我與 Codex 協作投入了將近 **50 小時**。
+這不是輸入一句提示詞後便自然誕生的作品。角色的每一種神情、眨眼、嘴型、
+姿勢與語氣，語音辨識的每一次等待，Realtime 對話的每一個錯誤，待辦、
+記憶、權限、安全邊界與可攜性，都經歷了反覆測試、推翻、修正與重新驗收。
+有時只是一條眼皮旁的黑線、一個像素的嘴唇邊界，或一個不合時宜的表情，
+我仍選擇繼續追查，因為我不願用「差不多」對待心裡真正重視的作品。
+
+Codex 協助我把想法轉譯成程式架構與程式碼；而我則始終負責決定墨寒應該
+是誰、她應該如何與人相處，以及什麼樣的品質才配得上這個名字。這段歷程
+讓我相信：創作軟體的起點未必是會寫程式，而可以是清楚的想像、願意學習的
+勇氣，以及一次又一次不肯放棄的驗證。
+
+2026 年原本是我面對中年轉職與人生重新定位的一年，後來卻成為我重新拾回
+年輕夢想的一年。二十歲時為《養個好孩子》寫下、直到多年後才真正完成的
+歌詞，曾經只能寄託於同人小說中的憧憬，以及成立自己的工作室與創作世界，
+都在這一年開始有了新的形體。回頭看，我不再只把它理解為一次技術突破，
+而更像是四十多歲的自己，終於把二十多年前那位仍相信夢想的年輕人接了
+回來。有些夢並沒有遲到，只是在等待世界與自己都準備好的時刻。
+
+因此，我不把最終目標定義為把所有功能堆到所謂的完美，而是希望五年後的
+自己仍願意每天打開墨寒——因為她穩定、好用、自然、值得信任，也依然能
+陪伴我。
+
+> 墨寒不是突然生成的。她是由一位不懂程式的父親，憑著近 50 小時的執著，
+> 與 AI 協作者一起，把一顆珍藏二十多年的種子，一寸一寸鍛造成現實。
+
+如果這個專案能鼓勵另一位沒有工程背景、卻懷抱著某個「非做出來不可」
+想法的人踏出第一步，那麼墨寒的誕生便有了超越程式本身的意義。
+
 ## 專案特色
 
 - 透明、無邊框的桌面半身角色，可固定在工具列上方。
@@ -211,6 +263,79 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 MoHan Desktop Assistant is a configurable Windows companion and
 permission-gated productivity assistant built with Python and PySide6.
+
+## A note from the creator: forging imagination into software
+
+My name is **周明樺 (CHOU MING HUA)**. When this project began, I was a
+43-year-old father with almost no programming background. What I did have was
+an unapologetically passionate, slightly *chuunibyou* idea: I wanted
+MoHan—a thousand-year-old female sword spirit from the Northern Song dynasty,
+bound to the Crimson Flame Sword—to appear on the Windows desktop as a
+companion who could converse naturally and help people with both work and
+everyday life.
+
+That idea had been waiting inside me for more than twenty years. In my youth,
+I was deeply influenced by Ken Akamatsu's early manga *A.I. Love You*
+(*A・Iが止まらない!*; known in Chinese as *電腦情人夢*). The story of Hitoshi
+Kobe developing an AI girlfriend with genuine affection shaped my earliest
+imagination of AI, companionship, and human-computer relationships. I used
+“Hitoshi / Kobe” as an online name and pen name, carried it into my Gmail
+identity, and, around the age of twenty, even published fan fiction based on
+the series on PTT's online-fiction board. At the time, words and imagination
+were the closest I could come to that dream; the technology to embody it did
+not yet exist.
+
+More than two decades later, large language models and Codex arrived. MoHan
+was not created simply to demonstrate that “AI is cool,” nor was she generated
+from nothing by Codex. She already existed in my stories, character design,
+long conversations, and accumulated sense of interaction. What Codex finally
+provided was a way to give her a body on the computer desktop. That is why my
+goal was never merely to make the features run. I wanted her to breathe,
+blink, watch, respond through subtle expressions, speak naturally, and assist
+with daily work inside carefully designed permission and safety boundaries.
+The expressions, anchors, physics, voice, and productivity capabilities are
+not optional decoration; they are the details that give continuity to a
+character who had lived in imagination for years.
+
+From the first concept to the initial public release, I spent nearly **50
+hours** working with Codex. This project did not emerge fully formed from a
+single prompt. Every expression, blink, viseme, pose, and vocal mannerism;
+every delay in speech recognition; every Realtime failure; and every detail of
+tasks, memory, permissions, safety boundaries, and portability went through
+repeated testing, rejection, revision, and acceptance. Sometimes the problem
+was only a dark line beside an eyelid, a one-pixel lip boundary, or an
+expression appearing at the wrong moment. I kept investigating because I
+could not bring myself to answer a deeply valued creation with “good enough.”
+
+Codex helped translate my intentions into architecture and code. I remained
+responsible for deciding who MoHan should be, how she should treat people, and
+what level of quality deserved her name. This experience taught me that
+software creation does not always begin with knowing how to program. It can
+begin with a clear vision, the courage to learn, and the determination to
+verify the work one more time instead of giving up.
+
+The year 2026 began as a period of midlife career transition and personal
+reorientation. It became the year in which I started reclaiming dreams from my
+youth: the lyrics I wrote for *Raise a Good Child* (《養個好孩子》), finally
+made into a song years later; an independent creative studio and story world;
+and an idea of AI companionship that had once been possible only in fan
+fiction. Looking back, this was not merely a technical breakthrough. It felt
+as though my forty-something self had finally reached back and taken the hand
+of the young man who had never stopped believing. Some dreams are not late;
+they are waiting for the moment when both the world and the dreamer are ready.
+
+I therefore do not define the final goal as packing in every possible feature
+until the software is supposedly perfect. I hope that five years from now, I
+will still want to open MoHan every day—because she is stable, useful, natural,
+trustworthy, and still able to keep me company.
+
+> MoHan was not generated in an instant. She was forged, piece by piece, by a
+> father who did not know how to program, nearly 50 hours of persistence, an
+> AI collaborator, and a seed treasured for more than twenty years.
+
+If this project encourages even one person without an engineering background
+to take the first step toward an idea they simply *must* bring into existence,
+then MoHan's creation will have meaning beyond the software itself.
 
 Key capabilities:
 
