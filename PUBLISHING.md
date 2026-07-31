@@ -52,3 +52,30 @@ git diff --check
 Never publish `.env`, API keys, OAuth credentials/tokens, Home Assistant tokens,
 SQLite databases, `.mohan-profile` files, recordings, local logs, or personal
 settings.
+
+## Rebuild the README media
+
+The media generator launches the real Qt interface with an isolated temporary
+profile, seeds sample-only content, captures the documented pages, and produces
+a 36-second H.264/AAC demonstration. It never reads the maintainer's normal
+MoHan profile.
+
+```powershell
+$env:QT_QPA_PLATFORM = "windows"
+python tools\capture_readme_media.py --ffmpeg "C:\path\to\ffmpeg.exe"
+```
+
+Before committing regenerated media:
+
+1. Inspect every PNG at full size for clipped text, malformed character art,
+   and accidental personal information.
+2. Confirm `docs/media/mohan-demo.mp4` is 30–60 seconds, 1280×720, contains an
+   H.264 video stream and a non-silent AAC audio stream.
+3. Run the public-release audit and complete test suite again.
+
+## Protected-main release workflow
+
+All repository changes must use a pull request. Do not push implementation
+commits directly to `main`, bypass checks, force-push `main`, or merge while a
+required check or review conversation is unresolved. The required Windows CI
+check is `Windows CI / test`.
