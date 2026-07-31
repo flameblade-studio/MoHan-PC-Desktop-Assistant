@@ -1,7 +1,7 @@
 # MoHan Desktop Assistant / 墨寒桌面語音互動虛擬助理
 
 <p align="center">
-  <img src="assets/mohan.png" alt="MoHan character" width="320">
+  <img src="docs/media/mohan-hero.png" alt="MoHan Desktop Assistant main visual / 墨寒桌面語音互動虛擬助理主視覺" width="100%">
 </p>
 
 <p align="center">
@@ -21,6 +21,32 @@
 
 - [繁體中文](#繁體中文)
 - [English](#english)
+
+## Demo / 實際展示
+
+**[▶ Watch the 36-second voice, blink and productivity demo / 觀看 36 秒語音、眨眼與工作展示影片](docs/media/mohan-demo.mp4)**
+
+The demo and screenshots below were captured from the real Windows application
+with an isolated sample profile. They contain no API keys, OAuth credentials,
+tokens, or private user data.
+
+以下影片與截圖均由實際 Windows 程式及隔離的示範設定檔擷取，不含 API
+金鑰、OAuth 憑證、權杖或使用者私人資料。
+
+<table>
+  <tr>
+    <td width="50%" align="center"><a href="docs/media/first-run-wizard.png"><img src="docs/media/first-run-wizard.png" alt="First-run setup wizard / 首次設定精靈"></a><br><strong>First-run wizard / 首次設定精靈</strong></td>
+    <td width="50%" align="center"><a href="docs/media/voice-modes.png"><img src="docs/media/voice-modes.png" alt="Realtime and standard voice modes / Realtime 與一般語音模式"></a><br><strong>Realtime & standard voice / Realtime 與一般語音</strong></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><a href="docs/media/expressions.png"><img src="docs/media/expressions.png" alt="Expression system / 表情系統"></a><br><strong>Expression system / 表情系統</strong></td>
+    <td width="50%" align="center"><a href="docs/media/tasks-and-ideas.png"><img src="docs/media/tasks-and-ideas.png" alt="Tasks and ideas / 待辦與創作靈感"></a><br><strong>Tasks & ideas / 待辦與創作靈感</strong></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><a href="docs/media/long-term-memory.png"><img src="docs/media/long-term-memory.png" alt="Long-term memory / 長期記憶"></a><br><strong>Editable memory / 可編輯長期記憶</strong></td>
+    <td width="50%" align="center"><a href="docs/media/security-permissions.png"><img src="docs/media/security-permissions.png" alt="Safety permissions / 安全權限"></a><br><strong>Permission-gated tools / 權限控管工具</strong></td>
+  </tr>
+</table>
 
 ---
 
