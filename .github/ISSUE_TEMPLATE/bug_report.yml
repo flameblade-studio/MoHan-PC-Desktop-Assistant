@@ -1,0 +1,57 @@
+name: Bug report
+description: Report a reproducible problem without including private data.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not attach API keys, OAuth files, databases, private conversations,
+        email, addresses, recordings, or unredacted screenshots.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: v2.0.10-RC
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Desktop character / animation
+        - Text conversation
+        - Microphone / transcription
+        - Realtime voice
+        - Tasks / memories / progress
+        - Tools / permissions
+        - Home Assistant / remote
+        - Packaging / startup
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: State the smallest exact sequence that triggers the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Windows and audio environment
+      placeholder: Windows version, microphone, voice engine, relevant model

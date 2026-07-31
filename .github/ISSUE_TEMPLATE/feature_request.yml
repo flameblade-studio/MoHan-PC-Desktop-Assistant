@@ -1,0 +1,25 @@
+name: Feature request
+description: Propose an improvement while preserving safety and compatibility.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or need
+      description: What workflow should become easier?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Permission, privacy, and compatibility considerations
+      description: Mention external effects, personal data, or existing features that must remain unchanged.
+    validations:
+      required: true

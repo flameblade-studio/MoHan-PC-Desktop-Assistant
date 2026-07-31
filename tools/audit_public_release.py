@@ -1,0 +1,106 @@
+from __future__ import annotations
+
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+TEXT_SUFFIXES = {
+    "",
+    ".cff",
+    ".cfg",
+    ".ini",
+    ".json",
+    ".md",
+    ".ps1",
+    ".py",
+    ".toml",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
+FORBIDDEN_FILENAMES = (
+    re.compile(r"^\.env$", re.IGNORECASE),
+    re.compile(r".*\.(?:db|sqlite|sqlite3|dpapi|mohan-profile)$", re.IGNORECASE),
+    re.compile(
+        r"(?:client[_-]?secret|credentials|oauth|token|secret).*\.(?:json|txt)$",
+        re.IGNORECASE,
+    ),
+)
+SECRET_PATTERNS = {
+    "OpenAI API key": re.compile(
+        r"\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b"
+    ),
+    "GitHub token": re.compile(
+        r"\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b"
+    ),
+    "Google OAuth secret": re.compile(r"\bGOCSPX-[A-Za-z0-9_-]{10,}\b"),
+    "Google OAuth client ID": re.compile(
+        r"\b\d+-[A-Za-z0-9_-]{20,}\.apps\.googleusercontent\.com\b"
+    ),
+    "private key": re.compile(
+        r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"
+    ),
+    "hard-coded Windows user path": re.compile(
+        r"(?i)\bC:\\Users\\(?!USERNAME(?:\\|$)|<[^>]+>)[^\\\s]+\\"
+    ),
+}
+
+
+def tracked_files() -> list[Path]:
+    result = subprocess.run(
+        ["git", "ls-files", "-z"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    )
+    return [
+        ROOT / item.decode("utf-8")
+        for item in result.stdout.split(b"\0")
+        if item
+    ]
+
+
+def main() -> int:
+    findings: list[str] = []
+    files = tracked_files()
+    total_bytes = 0
+    for path in files:
+        relative = path.relative_to(ROOT).as_posix()
+        if not path.is_file():
+            findings.append(f"tracked path is missing: {relative}")
+            continue
+        size = path.stat().st_size
+        total_bytes += size
+        if size > 50 * 1024 * 1024:
+            findings.append(f"file exceeds 50 MiB: {relative}")
+        if any(pattern.fullmatch(path.name) for pattern in FORBIDDEN_FILENAMES):
+            findings.append(f"private filename is tracked: {relative}")
+        if path.suffix.lower() not in TEXT_SUFFIXES:
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            findings.append(f"text file is not UTF-8: {relative}")
+            continue
+        for label, pattern in SECRET_PATTERNS.items():
+            for match in pattern.finditer(text):
+                line = text.count("\n", 0, match.start()) + 1
+                findings.append(f"{label}: {relative}:{line}")
+
+    if findings:
+        print("PUBLIC_RELEASE_AUDIT_FAILED", file=sys.stderr)
+        for finding in findings:
+            print(f"- {finding}", file=sys.stderr)
+        return 1
+    print(
+        "PUBLIC_RELEASE_AUDIT_OK "
+        f"files={len(files)} total_mib={total_bytes / 1024 / 1024:.2f}"
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

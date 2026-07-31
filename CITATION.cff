@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using this metadata."
+title: "MoHan Desktop Assistant"
+type: software
+authors:
+  - family-names: "CHOU"
+    given-names: "MING HUA"
+version: "2.0.10-RC"
+date-released: "2026-07-31"
+license: MIT
+abstract: >-
+  A configurable Windows AI desktop companion and permission-gated
+  productivity assistant with voice interaction, local data controls,
+  portable profiles, and optional smart-home integration.
