@@ -1,6 +1,7 @@
 import io
 import json
 import math
+import os
 import queue
 import sys
 import time
@@ -333,8 +334,17 @@ def run() -> None:
         == "OneCore::Microsoft Yating"
     )
     installed = windows_voices()
-    assert ("OneCore::Microsoft Yating", "zh-TW") in installed
+    # GitHub's clean Windows runners do not guarantee that optional language
+    # packs are installed.  The deterministic list above verifies that Yating
+    # is preferred when available; this live registry probe only verifies the
+    # shape and companion-voice filtering of the current host.
+    assert all(
+        isinstance(name, str) and isinstance(culture, str)
+        for name, culture in installed
+    )
     assert all("zhiwei" not in name.lower() for name, _culture in installed)
+    if os.environ.get("MOHAN_TEST_REQUIRE_YATING") == "1":
+        assert ("OneCore::Microsoft Yating", "zh-TW") in installed
     assert VOICE_GENERATION_PROMPT == (
         "請使用台灣繁體中文，以自然的台灣中文口音說話。"
         "聲線如二十多歲的女性動漫配音，清澈、沉靜、帶有古典氣質；"
