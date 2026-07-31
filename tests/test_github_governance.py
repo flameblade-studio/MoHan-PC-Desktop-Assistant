@@ -24,7 +24,7 @@ def main() -> None:
     assert "pull_request_target" not in codeql
 
     dependency_review = read(".github/workflows/dependency-review.yml")
-    assert "actions/dependency-review-action@v4" in dependency_review
+    assert "actions/dependency-review-action@v5" in dependency_review
     assert "fail-on-severity: moderate" in dependency_review
     assert "pull_request_target" not in dependency_review
 
@@ -33,6 +33,7 @@ def main() -> None:
     assert "python -m pip_audit -r requirements.txt --strict" in audit
 
     release = read(".github/workflows/release.yml")
+    assert "actions/upload-artifact@v6" in release
     assert "actions/attest@v4" in release
     assert "cyclonedx-bom==7.3.0" in release
     assert "SHA256" in release

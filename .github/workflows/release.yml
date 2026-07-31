@@ -113,7 +113,7 @@ jobs:
           "sbom=$sbom" >> $env:GITHUB_OUTPUT
 
       - name: Upload workflow artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: MoHan-${{ steps.release.outputs.tag }}-Windows-x64
           path: release-artifacts/*
