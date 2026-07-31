@@ -50,6 +50,17 @@ def main() -> int:
     assert b"ftyp" in header, "demonstration video is not an MP4 container"
     assert "docs/media/mohan-demo.mp4" in readme
 
+    support_requirements = (
+        "## 支持墨寒 / Support MoHan",
+        "assets/expressions/proud_front.png",
+        "assets/expressions/shy_cute_front.png",
+        "assets/expressions/mock_hit_front.png",
+        "https://buymeacoffee.com/flameblade_studio",
+        "https://www.paypal.com/paypalme/flamebladestudio",
+    )
+    for requirement in support_requirements:
+        assert requirement in readme, f"missing project support content: {requirement}"
+
     security = (ROOT / "SECURITY.md").read_text(encoding="utf-8").lower()
     assert "private vulnerability reporting" in security
     assert "api key" in security and "oauth" in security
