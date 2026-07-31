@@ -64,7 +64,16 @@ def run() -> None:
         assert wizard_db.setting("wake_word") == "Hey Ava"
         assert wizard_db.setting("onboarding_complete") is True
         wizard_db.close()
-        window = CompanionWindow(startup_speech=False)
+        # Keep voice-selection UI coverage deterministic.  Clean CI runners do
+        # not necessarily include Taiwan's optional Windows speech packs,
+        # while a developer workstation may have Yating and Hanhan installed.
+        test_voices = [
+            ("OneCore::Microsoft Yating", "zh-TW"),
+            ("OneCore::Microsoft Hanhan", "zh-TW"),
+            ("OneCore::Microsoft Zhiwei", "zh-TW"),
+        ]
+        with patch("app.windows_voices", return_value=test_voices):
+            window = CompanionWindow(startup_speech=False)
         window.show()
         app.processEvents()
         assert window.dashboard.portable_profile_panel is not None
