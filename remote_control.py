@@ -4,6 +4,7 @@ import hashlib
 import hmac
 import json
 import mimetypes
+import os
 import secrets
 import sqlite3
 import threading
@@ -337,11 +338,26 @@ class RemoteControlServer:
         return True
 
     def _allowed_file(self, raw: str) -> Path:
-        target = Path(raw).expanduser().resolve()
+        candidate_text = os.path.normpath(
+            os.path.abspath(os.path.expanduser(raw))
+        )
+        candidate_key = os.path.normcase(candidate_text)
+        allowed_prefixes = tuple(
+            os.path.normcase(os.path.join(str(root), ""))
+            for root in self.allowed_folders
+        )
+        if not any(candidate_key.startswith(prefix) for prefix in allowed_prefixes):
+            raise PermissionError("檔案不在遠端白名單")
+        try:
+            resolved_text = os.path.realpath(candidate_text)
+        except (OSError, RuntimeError) as exc:
+            raise PermissionError("無法安全解析遠端檔案") from exc
+        resolved_key = os.path.normcase(resolved_text)
+        if not any(resolved_key.startswith(prefix) for prefix in allowed_prefixes):
+            raise PermissionError("檔案不在遠端白名單")
+        target = Path(resolved_text)
         if not target.is_file():
             raise FileNotFoundError("找不到檔案")
-        if not any(root == target.parent or root in target.parents for root in self.allowed_folders):
-            raise PermissionError("檔案不在遠端白名單")
         lowered = {part.casefold() for part in target.parts}
         protected = {
             ".ssh",

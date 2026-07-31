@@ -65,6 +65,7 @@ def tracked_files() -> list[Path]:
 
 def main() -> int:
     findings: list[str] = []
+    secret_detected = False
     files = tracked_files()
     total_bytes = 0
     for path in files:
@@ -85,15 +86,19 @@ def main() -> int:
         except UnicodeDecodeError:
             findings.append(f"text file is not UTF-8: {relative}")
             continue
-        for label, pattern in SECRET_PATTERNS.items():
-            for match in pattern.finditer(text):
-                line = text.count("\n", 0, match.start()) + 1
-                findings.append(f"{label}: {relative}:{line}")
+        for _label, pattern in SECRET_PATTERNS.items():
+            if pattern.search(text):
+                secret_detected = True
 
-    if findings:
+    if findings or secret_detected:
         print("PUBLIC_RELEASE_AUDIT_FAILED", file=sys.stderr)
         for finding in findings:
             print(f"- {finding}", file=sys.stderr)
+        if secret_detected:
+            print(
+                "- Potential secret detected; value, file, and location redacted.",
+                file=sys.stderr,
+            )
         return 1
     print(
         "PUBLIC_RELEASE_AUDIT_OK "
