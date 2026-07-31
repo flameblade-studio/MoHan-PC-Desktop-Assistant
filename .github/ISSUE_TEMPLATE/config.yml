@@ -1,1 +1,8 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Security report / 安全漏洞通報
+    url: https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/security/advisories/new
+    about: Report unpatched vulnerabilities privately. 請勿公開尚未修補的漏洞。
+  - name: Security policy / 安全政策
+    url: https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/security/policy
+    about: Read the security boundaries and reporting guidance. 查看安全邊界與通報方式。

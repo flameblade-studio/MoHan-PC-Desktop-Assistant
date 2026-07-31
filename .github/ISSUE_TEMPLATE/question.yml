@@ -1,0 +1,41 @@
+name: Question or support / 使用問題
+description: Ask about setup or expected behavior without exposing private data. 詢問安裝或操作方式。
+title: "[Question] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Never post API keys, OAuth credentials, private conversations, email,
+        recordings, databases, or unredacted screenshots.
+        請勿公開 API 金鑰、OAuth 憑證、私人對話、郵件、錄音、資料庫或未遮蔽截圖。
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy confirmation / 隱私確認
+      options:
+        - label: I removed all secrets and personal data. 我已移除所有機密與個人資料。
+          required: true
+  - type: input
+    id: version
+    attributes:
+      label: MoHan version / 墨寒版本
+      placeholder: v2.0.14-rc.1
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question / 問題
+      description: Describe what you want to do and where you became stuck. 請說明目標及卡住的步驟。
+    validations:
+      required: true
+  - type: textarea
+    id: attempts
+    attributes:
+      label: What have you tried? / 已嘗試方式
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment / 使用環境
+      placeholder: Windows version, installation type, voice mode, relevant integration

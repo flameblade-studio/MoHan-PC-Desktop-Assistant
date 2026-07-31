@@ -10,7 +10,7 @@ License changes those terms.
 | --- | ---: | --- |
 | [PySide6 / Qt for Python](https://doc.qt.io/qtforpython-6/) | 6.11.1 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
 | [PyInstaller](https://pyinstaller.org/) | 6.21.0 | GPL-2.0-or-later with the PyInstaller bootloader exception |
-| [python-sounddevice](https://python-sounddevice.readthedocs.io/) | 0.5.3 | MIT |
+| [python-sounddevice](https://python-sounddevice.readthedocs.io/) | 0.5.5 | MIT |
 | [websocket-client](https://github.com/websocket-client/websocket-client) | 1.9.0 | Apache-2.0 |
 | [OpenCC Python reimplementation](https://github.com/yichen0831/opencc-python) | 0.1.7 | Apache-2.0 |
 

@@ -1,25 +1,37 @@
-name: Feature request
-description: Propose an improvement while preserving safety and compatibility.
+name: Feature request / 功能建議
+description: Propose an improvement while preserving safety and compatibility. 提出兼顧安全與相容性的建議。
 title: "[Feature] "
 labels: ["enhancement"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe the user need before the implementation idea.
+        請先說明實際需求，再提出您想像的實作方式。
   - type: textarea
     id: problem
     attributes:
-      label: Problem or need
-      description: What workflow should become easier?
+      label: Problem or need / 問題或需求
+      description: What workflow should become easier? 您希望改善哪一段使用流程？
     validations:
       required: true
   - type: textarea
     id: proposal
     attributes:
-      label: Proposed behavior
+      label: Proposed behavior / 建議行為
     validations:
       required: true
   - type: textarea
     id: safety
     attributes:
-      label: Permission, privacy, and compatibility considerations
-      description: Mention external effects, personal data, or existing features that must remain unchanged.
+      label: Permission, privacy, and compatibility / 權限、隱私與相容性
+      description: Mention external effects, personal data, costs, or existing features that must remain unchanged.
     validations:
       required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope confirmation / 範圍確認
+      options:
+        - label: This request is not asking MoHan to bypass confirmations or safety controls. 此建議不要求墨寒繞過確認或安全控制。
+          required: true

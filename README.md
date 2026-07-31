@@ -251,6 +251,7 @@ v2.0.14 RC 在封裝前通過 38 項自動測試，以及 25,000 次表情、姿
 - 問題回報請使用 GitHub Issues；安全問題請依 [SECURITY.md](SECURITY.md)。
 - 開發變更見 [CHANGELOG.md](CHANGELOG.md)，貢獻方式見
   [CONTRIBUTING.md](CONTRIBUTING.md)。
+- 參與社群前請閱讀 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
 - 維護者發布設定、Topics 與首發檢查見 [PUBLISHING.md](PUBLISHING.md)。
 
 Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
@@ -516,6 +517,7 @@ published.
 - Security policy: [SECURITY.md](SECURITY.md)
 - Changes: [CHANGELOG.md](CHANGELOG.md)
 - Contributions: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Community conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - Maintainer publication settings and Topics: [PUBLISHING.md](PUBLISHING.md)
 
 Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
