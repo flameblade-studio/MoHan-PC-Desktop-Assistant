@@ -338,15 +338,24 @@ class RemoteControlServer:
         return True
 
     def _allowed_file(self, raw: str) -> Path:
-        candidate = Path(os.path.abspath(os.path.expanduser(raw)))
-        if not self._path_is_within_allowed_folder(candidate):
+        candidate_text = os.path.normpath(
+            os.path.abspath(os.path.expanduser(raw))
+        )
+        candidate_key = os.path.normcase(candidate_text)
+        allowed_prefixes = tuple(
+            os.path.normcase(os.path.join(str(root), ""))
+            for root in self.allowed_folders
+        )
+        if not any(candidate_key.startswith(prefix) for prefix in allowed_prefixes):
             raise PermissionError("檔案不在遠端白名單")
         try:
-            target = candidate.resolve(strict=True)
+            resolved_text = os.path.realpath(candidate_text)
         except (OSError, RuntimeError) as exc:
             raise PermissionError("無法安全解析遠端檔案") from exc
-        if not self._path_is_within_allowed_folder(target):
+        resolved_key = os.path.normcase(resolved_text)
+        if not any(resolved_key.startswith(prefix) for prefix in allowed_prefixes):
             raise PermissionError("檔案不在遠端白名單")
+        target = Path(resolved_text)
         if not target.is_file():
             raise FileNotFoundError("找不到檔案")
         lowered = {part.casefold() for part in target.parts}
@@ -365,20 +374,6 @@ class RemoteControlServer:
         }:
             raise PermissionError("敏感檔案禁止遠端存取")
         return target
-
-    def _path_is_within_allowed_folder(self, target: Path) -> bool:
-        target_text = os.path.normcase(str(target))
-        for root in self.allowed_folders:
-            root_text = os.path.normcase(str(root))
-            try:
-                common = os.path.normcase(
-                    os.path.commonpath((root_text, target_text))
-                )
-            except ValueError:
-                continue
-            if common == root_text:
-                return True
-        return False
 
 
 def constant_time_token_equal(left: str, right: str) -> bool:

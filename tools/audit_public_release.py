@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 import subprocess
 import sys
-from collections import Counter
 from pathlib import Path
 
 
@@ -66,7 +65,7 @@ def tracked_files() -> list[Path]:
 
 def main() -> int:
     findings: list[str] = []
-    secret_findings: Counter[tuple[str, str]] = Counter()
+    secret_detected = False
     files = tracked_files()
     total_bytes = 0
     for path in files:
@@ -87,21 +86,19 @@ def main() -> int:
         except UnicodeDecodeError:
             findings.append(f"text file is not UTF-8: {relative}")
             continue
-        for label, pattern in SECRET_PATTERNS.items():
-            match_count = sum(1 for _match in pattern.finditer(text))
-            if match_count:
-                secret_findings[(label, relative)] += match_count
+        for _label, pattern in SECRET_PATTERNS.items():
+            if pattern.search(text):
+                secret_detected = True
 
-    for (label, relative), count in sorted(secret_findings.items()):
-        findings.append(
-            f"{label}: {relative} "
-            f"({count} potential match(es); value and line redacted)"
-        )
-
-    if findings:
+    if findings or secret_detected:
         print("PUBLIC_RELEASE_AUDIT_FAILED", file=sys.stderr)
         for finding in findings:
             print(f"- {finding}", file=sys.stderr)
+        if secret_detected:
+            print(
+                "- Potential secret detected; value, file, and location redacted.",
+                file=sys.stderr,
+            )
         return 1
     print(
         "PUBLIC_RELEASE_AUDIT_OK "
