@@ -30,6 +30,16 @@ Complete license texts and source links are available in each upstream project
 and installed package metadata. Distributors should review the exact dependency
 versions they ship and preserve all upstream copyright and license notices.
 
+## Windows installer language
+
+The bundled `installer/languages/ChineseTraditional.isl` file is the official
+Traditional Chinese message translation from the
+[Inno Setup source repository](https://github.com/jrsoftware/issrc), pinned to
+source commit `0c0b463621963243e430420b6c633039e562e1e3` (blob
+`8eb13d2c45e9d434aa5435a2877234418186ad87`). It is distributed under the
+[Inno Setup license](https://jrsoftware.org/files/is/license.txt) and retains
+its upstream translator credits in the file header.
+
 ## Services and trademarks
 
 OpenAI, Microsoft, Google, GitHub, Home Assistant, LINE, and other service names

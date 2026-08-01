@@ -19,6 +19,13 @@ from tools.sync_wordpress_download_page import (
 
 
 def main() -> None:
+    inno_script = (ROOT / "installer" / "mohan.iss").read_text(encoding="utf-8")
+    traditional_messages = ROOT / "installer" / "languages" / "ChineseTraditional.isl"
+    assert traditional_messages.is_file()
+    assert traditional_messages.stat().st_size > 20_000
+    assert "compiler:Languages\\ChineseTraditional.isl" not in inno_script
+    assert "{#TraditionalChineseMessages}" in inno_script
+
     with tempfile.TemporaryDirectory() as temp:
         artifacts = Path(temp)
         (artifacts / "MoHan-v9-Windows-x64-Setup.exe").write_bytes(b"exe")

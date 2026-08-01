@@ -16,6 +16,10 @@
 #endif
 
 [Setup]
+#ifndef TraditionalChineseMessages
+  #define TraditionalChineseMessages SourcePath + "\languages\ChineseTraditional.isl"
+#endif
+
 AppId={{E1F22A47-1B50-4B6C-AF43-543FE68370C7}
 AppName={#MyAppName}
 AppVersion={#MyVersion}
@@ -43,7 +47,7 @@ ChangesAssociations=no
 ChangesEnvironment=no
 
 [Languages]
-Name: "chinesetraditional"; MessagesFile: "compiler:Languages\ChineseTraditional.isl"
+Name: "chinesetraditional"; MessagesFile: "{#TraditionalChineseMessages}"
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
