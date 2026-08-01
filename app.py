@@ -76,7 +76,13 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ai_client import AIWorker, DEFAULT_TEXT_MODEL, PERSONA, TEXT_MODELS
+from ai_client import (
+    AIWorker,
+    DEFAULT_TEXT_MODEL,
+    ENGLISH_PERSONA,
+    PERSONA,
+    TEXT_MODELS,
+)
 from command_parser import is_start_work_command, is_stop_work_command
 from contracts import SecretStorePort, SpeechListenerPort
 from db import StudioDB, format_duration
@@ -99,12 +105,27 @@ from lip_sync import (
 )
 from realtime_voice import RealtimeVoiceClient
 from profile_transfer_ui import PortableProfilePanel
+from language_support import (
+    english_voice_instructions,
+    is_english,
+    localized_reminder_line,
+    migrate_builtin_reminder_line,
+    response_language_instruction,
+    transcription_language_for_ui,
+)
 from service_container import CompanionServices, create_default_services
 from text_normalizer import to_taiwan_traditional
+from ui_localization import (
+    MODE_LABELS,
+    WORK_TYPE_LABELS,
+    display_label,
+    ui_text,
+)
 from updater_ui import UpdatePanel
 from version_info import APP_VERSION
 from speech import (
     SpeechListener,
+    is_known_male_windows_voice,
     preferred_windows_voice,
     windows_voices,
 )
@@ -380,6 +401,23 @@ REMINDER_LINES = {
     "overwork": "主上已連續工作太久。離席、飲水、伸展，十分鐘後再戰。",
 }
 
+
+def reminder_line(language: str, kind: str) -> str:
+    return localized_reminder_line(
+        language,
+        kind,
+        REMINDER_LINES[kind],
+    )
+
+
+def combo_data_or_custom_text(combo: QComboBox, fallback: str = "") -> str:
+    """Persist stable item data while preserving editable custom values."""
+    text = combo.currentText().strip()
+    index = combo.currentIndex()
+    if index >= 0 and text == combo.itemText(index).strip():
+        return str(combo.itemData(index) or text or fallback)
+    return text or fallback
+
 VOICE_GENERATION_PROMPT = (
     "請使用台灣繁體中文，以自然的台灣中文口音說話。"
     "聲線如二十多歲的女性動漫配音，清澈、沉靜、帶有古典氣質；"
@@ -387,6 +425,10 @@ VOICE_GENERATION_PROMPT = (
     "語氣專業、機敏、略帶傲嬌，對主上含有不明說的溫柔與愛慕。"
     "避免中國普通話腔、兒童聲、過度甜膩、誇張撒嬌或舞台式朗誦。"
 )
+
+VOICE_ENGINE_WINDOWS = "Windows 本機語音"
+VOICE_ENGINE_OPENAI = "OpenAI 自然語音"
+VOICE_ENGINE_REALTIME = "Realtime 即時語音"
 
 REALTIME_VOICES = (
     "coral",
@@ -421,7 +463,13 @@ TTS_VOICES = (
 def migrate_voice_defaults(db: StudioDB) -> None:
     if bool(db.setting("voice_prompt_v1204_migrated", False)):
         return
-    db.set_setting("voice_instructions", VOICE_GENERATION_PROMPT)
+    language = str(db.setting("ui_language", "zh-TW"))
+    db.set_setting(
+        "voice_instructions",
+        english_voice_instructions()
+        if is_english(language)
+        else VOICE_GENERATION_PROMPT,
+    )
     db.set_setting("tts_voice", "coral")
     db.set_setting("cloud_voice", "coral")
     db.set_setting("realtime_voice", "coral")
@@ -575,17 +623,32 @@ def profile_window_title(db: StudioDB) -> str:
 
 def persona_for_profile(db: StudioDB) -> str:
     """Apply editable identity fields without changing stored user prompts."""
-    persona = str(db.setting("persona_prompt", PERSONA)).strip() or PERSONA
+    language = profile_setting(db, "ui_language")
+    default_persona = ENGLISH_PERSONA if is_english(language) else PERSONA
+    persona = (
+        str(db.setting("persona_prompt", default_persona)).strip()
+        or default_persona
+    )
     assistant = profile_setting(db, "assistant_name")
     user_title = profile_setting(db, "user_title")
     organization = profile_setting(db, "organization_name")
-    persona = persona.replace("墨寒", assistant).replace("主上", user_title)
+    persona = (
+        persona.replace("墨寒", assistant)
+        .replace("MoHan", assistant)
+        .replace("主上", user_title)
+    )
     if organization:
         persona = persona.replace("炎劍文化工作室", organization)
-        persona += (
-            f"\n使用者目前設定的組織／團隊名稱是「{organization}」。"
-            "處理工作事務時，請依此組織背景提供協助。"
-        )
+        if is_english(language):
+            persona += (
+                f"\nThe user's configured organization or team is "
+                f'"{organization}". Use that context for work assistance.'
+            )
+        else:
+            persona += (
+                f"\n使用者目前設定的組織／團隊名稱是「{organization}」。"
+                "處理工作事務時，請依此組織背景提供協助。"
+            )
     else:
         # Older personal profiles may contain the former studio-specific
         # default. A fresh public installation must remain organization-neutral.
@@ -958,20 +1021,17 @@ class FirstRunWizard(QDialog):
     def __init__(self, db: StudioDB, parent=None):
         super().__init__(parent)
         self.db = db
-        self.setWindowTitle("首次啟動設定")
+        self.language = profile_setting(db, "ui_language")
         self.setWindowIcon(QIcon(str(resource_path(APP_ICON_PATH))))
         self.setMinimumSize(620, 520)
         self.setStyleSheet(STYLE)
         layout = QVBoxLayout(self)
-        title = QLabel("<b>歡迎使用桌面陪伴工作助理</b>")
-        title.setStyleSheet("font-size:20px;color:#f1f8fb;")
-        intro = QLabel(
-            "先建立你的使用者設定。以下內容日後都能在「設定」頁修改，"
-            "不會綁定特定公司、職業或工作平台。"
-        )
-        intro.setWordWrap(True)
-        layout.addWidget(title)
-        layout.addWidget(intro)
+        self.title_label = QLabel()
+        self.title_label.setStyleSheet("font-size:20px;color:#f1f8fb;")
+        self.intro_label = QLabel()
+        self.intro_label.setWordWrap(True)
+        layout.addWidget(self.title_label)
+        layout.addWidget(self.intro_label)
 
         form = QFormLayout()
         self.assistant_name = QLineEdit(
@@ -994,8 +1054,17 @@ class FirstRunWizard(QDialog):
         )
         self.work_type = QComboBox()
         self.work_type.setEditable(True)
-        self.work_type.addItems(self.WORK_TYPES)
-        self.work_type.setCurrentText(profile_setting(db, "work_type"))
+        for value in self.WORK_TYPES:
+            self.work_type.addItem(
+                display_label(self.language, value, WORK_TYPE_LABELS),
+                value,
+            )
+        saved_work_type = profile_setting(db, "work_type")
+        work_index = self.work_type.findData(saved_work_type)
+        if work_index >= 0:
+            self.work_type.setCurrentIndex(work_index)
+        else:
+            self.work_type.setCurrentText(saved_work_type)
         self.ui_language = QComboBox()
         self.ui_language.addItem("繁體中文（台灣）", "zh-TW")
         self.ui_language.addItem("English", "en")
@@ -1004,29 +1073,117 @@ class FirstRunWizard(QDialog):
         self.ui_language.setCurrentIndex(max(0, language_index))
         self.wake_word = QLineEdit(profile_setting(db, "wake_word"))
         self.wake_word.setPlaceholderText("語音喚醒詞，例如：墨寒")
-        form.addRow("助理名稱", self.assistant_name)
-        form.addRow("助理對你的稱呼", self.user_title)
-        form.addRow("公司／團隊名稱", self.organization_name)
-        form.addRow("完整視窗標題", self.window_title)
-        form.addRow("工作類型", self.work_type)
-        form.addRow("介面語言", self.ui_language)
-        form.addRow("語音喚醒詞", self.wake_word)
+        self.form_labels: dict[str, QLabel] = {}
+        for key, chinese, editor in (
+            ("assistant_name", "助理名稱", self.assistant_name),
+            ("user_title", "助理對你的稱呼", self.user_title),
+            ("organization_name", "公司／團隊名稱", self.organization_name),
+            ("window_title", "完整視窗標題", self.window_title),
+            ("work_type", "工作類型", self.work_type),
+            ("ui_language", "介面語言", self.ui_language),
+            ("wake_word", "語音喚醒詞", self.wake_word),
+        ):
+            label = QLabel()
+            self.form_labels[key] = label
+            form.addRow(label, editor)
         layout.addLayout(form)
 
-        note = QLabel(
-            "工作平台頁一開始保持空白，由你自行新增公司系統、"
-            "協作工具、客戶後台或網站。程式不會替你建立特定商業平台。"
-        )
-        note.setWordWrap(True)
-        note.setStyleSheet("color:#9bc8da;")
-        layout.addWidget(note)
+        self.note_label = QLabel()
+        self.note_label.setWordWrap(True)
+        self.note_label.setStyleSheet("color:#9bc8da;")
+        layout.addWidget(self.note_label)
         layout.addStretch()
         buttons = QHBoxLayout()
-        save = QPushButton("完成設定並開始使用")
+        self.save_button = QPushButton()
         buttons.addStretch()
-        buttons.addWidget(save)
+        buttons.addWidget(self.save_button)
         layout.addLayout(buttons)
-        save.clicked.connect(self._save)
+        self.save_button.clicked.connect(self._save)
+        self.ui_language.currentIndexChanged.connect(self._apply_language)
+        self._apply_language()
+
+    def _t(self, key: str, chinese: str) -> str:
+        return ui_text(self.language, key, chinese)
+
+    def _apply_language(self, _index: int | None = None) -> None:
+        previous = self.language
+        self.language = str(self.ui_language.currentData() or "zh-TW")
+        if previous != self.language:
+            if is_english(self.language):
+                if self.assistant_name.text().strip() == "墨寒":
+                    self.assistant_name.setText("MoHan")
+                if self.user_title.text().strip() == "主上":
+                    self.user_title.setText("Commander")
+                if self.wake_word.text().strip() == "墨寒":
+                    self.wake_word.setText("MoHan")
+            else:
+                if self.assistant_name.text().strip() == "MoHan":
+                    self.assistant_name.setText("墨寒")
+                if self.user_title.text().strip() == "Commander":
+                    self.user_title.setText("主上")
+                if self.wake_word.text().strip() == "MoHan":
+                    self.wake_word.setText("墨寒")
+        self.setWindowTitle(self._t("first_run_title", "首次啟動設定"))
+        self.title_label.setText(
+            self._t("first_run_heading", "<b>歡迎使用桌面陪伴工作助理</b>")
+        )
+        self.intro_label.setText(
+            self._t(
+                "first_run_intro",
+                "先建立你的使用者設定。以下內容日後都能在「設定」頁修改，"
+                "不會綁定特定公司、職業或工作平台。",
+            )
+        )
+        labels = {
+            "assistant_name": "助理名稱",
+            "user_title": "助理對你的稱呼",
+            "organization_name": "公司／團隊名稱",
+            "window_title": "完整視窗標題",
+            "work_type": "工作類型",
+            "ui_language": "介面語言",
+            "wake_word": "語音喚醒詞",
+        }
+        for key, chinese in labels.items():
+            self.form_labels[key].setText(self._t(key, chinese))
+        self.assistant_name.setPlaceholderText(
+            self._t("assistant_name_placeholder", "例如：墨寒、Ava、Office Mate")
+        )
+        self.user_title.setPlaceholderText(
+            self._t(
+                "user_title_placeholder",
+                "助理如何稱呼你，例如：主上、Alex、主管",
+            )
+        )
+        self.organization_name.setPlaceholderText(
+            self._t(
+                "organization_placeholder",
+                "公司、工作室或團隊名稱；個人使用可留空",
+            )
+        )
+        self.window_title.setPlaceholderText(
+            self._t(
+                "window_title_placeholder",
+                "留空時自動顯示「助理名稱．組織名稱」",
+            )
+        )
+        self.wake_word.setPlaceholderText(
+            self._t("wake_word_placeholder", "語音喚醒詞，例如：墨寒")
+        )
+        for index, value in enumerate(self.WORK_TYPES):
+            self.work_type.setItemText(
+                index,
+                display_label(self.language, value, WORK_TYPE_LABELS),
+            )
+        self.note_label.setText(
+            self._t(
+                "first_run_note",
+                "工作平台頁一開始保持空白，由你自行新增公司系統、"
+                "協作工具、客戶後台或網站。程式不會替你建立特定商業平台。",
+            )
+        )
+        self.save_button.setText(
+            self._t("finish_setup", "完成設定並開始使用")
+        )
 
     def _save(self) -> None:
         assistant = self.assistant_name.text().strip()
@@ -1034,8 +1191,11 @@ class FirstRunWizard(QDialog):
         if not assistant or not user_title:
             QMessageBox.information(
                 self,
-                "尚缺必要資料",
-                "請填寫助理名稱，以及助理對你的稱呼。",
+                self._t("required_title", "尚缺必要資料"),
+                self._t(
+                    "required_identity",
+                    "請填寫助理名稱，以及助理對你的稱呼。",
+                ),
             )
             return
         values = {
@@ -1043,13 +1203,24 @@ class FirstRunWizard(QDialog):
             "user_title": user_title,
             "organization_name": self.organization_name.text().strip(),
             "window_title": self.window_title.text().strip(),
-            "work_type": self.work_type.currentText().strip() or "其他",
+            "work_type": combo_data_or_custom_text(self.work_type, "其他"),
             "ui_language": str(self.ui_language.currentData() or "zh-TW"),
             "wake_word": self.wake_word.text().strip() or assistant,
+            "voice_engine": VOICE_ENGINE_WINDOWS,
             "onboarding_complete": True,
         }
         for key, value in values.items():
             self.db.set_setting(key, value)
+        self.db.set_setting(
+            "transcription_language",
+            transcription_language_for_ui(values["ui_language"]),
+        )
+        if is_english(values["ui_language"]):
+            self.db.set_setting(
+                "voice_instructions",
+                english_voice_instructions(),
+            )
+            self.db.set_setting("persona_prompt", ENGLISH_PERSONA)
         self.accept()
 
 
@@ -1089,6 +1260,7 @@ class Dashboard(QDialog):
             self.db.setting("chat_zoom_percent", 100)
         )
         self.mode = str(db.setting("mode", "工作"))
+        self.ui_language = profile_setting(db, "ui_language")
         self.assistant_name = profile_setting(db, "assistant_name")
         self.user_title = profile_setting(db, "user_title")
         self.organization_name = profile_setting(
@@ -1120,20 +1292,23 @@ class Dashboard(QDialog):
         root.setSizeConstraint(QLayout.SetNoConstraint)
         header = QHBoxLayout()
         self.mode_combo = QComboBox()
-        self.mode_combo.addItems(
-            ["工作", "陪伴", "勿擾", "會議", "離席", "休眠"]
-        )
-        self.mode_combo.setCurrentText(self.mode)
+        for value in ("工作", "陪伴", "勿擾", "會議", "離席", "休眠"):
+            self.mode_combo.addItem(
+                display_label(self.ui_language, value, MODE_LABELS),
+                value,
+            )
+        mode_index = self.mode_combo.findData(self.mode)
+        self.mode_combo.setCurrentIndex(max(0, mode_index))
         self.work_label = QLabel()
         self.work_label.setStyleSheet("font-size: 16px; color: #9ed9ef;")
-        start_btn = QPushButton("開始工作")
-        stop_btn = QPushButton("結束工作")
+        start_btn = QPushButton(self._t("start_work", "開始工作"))
+        stop_btn = QPushButton(self._t("stop_work", "結束工作"))
         self.header_title = QLabel(
             f"<b>{html.escape(profile_window_title(db))}</b>"
         )
         header.addWidget(self.header_title)
         header.addStretch()
-        header.addWidget(QLabel("模式"))
+        header.addWidget(QLabel(self._t("mode", "模式")))
         header.addWidget(self.mode_combo)
         header.addWidget(self.work_label)
         header.addWidget(start_btn)
@@ -1142,37 +1317,43 @@ class Dashboard(QDialog):
 
         self.tabs = QTabWidget()
         self.feature_registry = DashboardFeatureRegistry()
-        self.feature_registry.register("chat", "對話", self._chat_tab)
+        self.feature_registry.register(
+            "chat", self._t("tab_chat", "對話"), self._chat_tab
+        )
         self.feature_registry.register(
             "today",
-            "今日待辦",
+            self._t("tab_today", "今日待辦"),
             self._today_tab,
         )
         self.feature_registry.register(
             "platforms",
-            "工作平台",
+            self._t("tab_platforms", "工作平台"),
             self._platform_tab,
         )
         self.feature_registry.register(
             "memory",
-            "長期記憶",
+            self._t("tab_memory", "長期記憶"),
             self._memory_tab,
         )
-        self.feature_registry.register("voice", "聲音", self._voice_tab)
+        self.feature_registry.register(
+            "voice", self._t("tab_voice", "聲音"), self._voice_tab
+        )
         self.feature_registry.register(
             "permissions",
-            "電腦權限",
+            self._t("tab_permissions", "電腦權限"),
             self._permissions_tab,
         )
         self.feature_registry.register(
             "settings",
-            "設定",
+            self._t("tab_settings", "設定"),
             self._settings_tab,
         )
         self.feature_registry.mount(self.tabs)
         root.addWidget(self.tabs, 1)
 
-        self.mode_combo.currentTextChanged.connect(self._mode_changed)
+        self.mode_combo.currentIndexChanged.connect(
+            self._mode_index_changed
+        )
         self.tabs.currentChanged.connect(self._tab_changed)
         start_btn.clicked.connect(self.start_work)
         stop_btn.clicked.connect(self.stop_work)
@@ -1195,6 +1376,9 @@ class Dashboard(QDialog):
             button.setAutoDefault(False)
             button.setDefault(False)
         self._apply_profile_texts()
+
+    def _t(self, key: str, chinese: str, **values: object) -> str:
+        return ui_text(self.ui_language, key, chinese, **values)
 
     def _tab_changed(self, index: int) -> None:
         if getattr(self, "_today_split_initialized", False):
@@ -1287,11 +1471,20 @@ class Dashboard(QDialog):
         tab = QWidget()
         layout = QVBoxLayout(tab)
         history_row = QHBoxLayout()
-        self.chat_retention = QLabel("對話保存在本機，不會自動刪除")
+        self.chat_retention = QLabel(
+            self._t(
+                "chat_retention",
+                "對話保存在本機，不會自動刪除",
+            )
+        )
         self.chat_retention.setStyleSheet("color: #8fcbe3;")
-        self.load_older_chat_btn = QPushButton("載入較早對話")
+        self.load_older_chat_btn = QPushButton(
+            self._t("load_older_chat", "載入較早對話")
+        )
         self.load_older_chat_btn.setToolTip("每次向前載入 50 則本機對話")
-        self.manage_chat_btn = QPushButton("管理／清除對話")
+        self.manage_chat_btn = QPushButton(
+            self._t("manage_chat", "管理／清除對話")
+        )
         self.manage_chat_btn.setToolTip("勾選並刪除指定對話，其他內容不受影響")
         self.chat_zoom_down = QPushButton("A－")
         self.chat_zoom_down.setToolTip("縮小對話文字（Ctrl＋滑鼠滾輪向下）")
@@ -1316,16 +1509,23 @@ class Dashboard(QDialog):
             self.chat_base_point_size = 10.0
         row = QHBoxLayout()
         self.chat_input = QLineEdit()
-        self.chat_input.setPlaceholderText("對寒說話，例如：我開始工作了／幫我記一下……")
-        self.mic_btn = QPushButton("🎙 麥克風")
-        send = QPushButton("送出文字")
+        self.chat_input.setPlaceholderText(
+            self._t(
+                "chat_placeholder",
+                "對寒說話，例如：我開始工作了／幫我記一下……",
+            )
+        )
+        self.mic_btn = QPushButton(self._t("microphone", "🎙 麥克風"))
+        send = QPushButton(self._t("send_text", "送出文字"))
         row.addWidget(self.chat_input, 1)
         row.addWidget(self.mic_btn)
         row.addWidget(send)
         layout.addLayout(history_row)
         layout.addWidget(self.chat, 1)
         layout.addLayout(row)
-        self.voice_phase = QLabel("語音狀態：準備就緒")
+        self.voice_phase = QLabel(
+            self._t("voice_ready", "語音狀態：準備就緒")
+        )
         self.voice_phase.setStyleSheet("color: #8fcbe3; padding-left: 4px;")
         layout.addWidget(self.voice_phase)
         send.clicked.connect(self.send_chat)
@@ -1780,16 +1980,25 @@ class Dashboard(QDialog):
         form = QFormLayout(content)
         tab.setWidget(content)
         self.speech_recognition = QComboBox()
-        self.speech_recognition.addItems(
-            ["OpenAI 高準確辨識（推薦）", "Windows 離線辨識"]
+        self.speech_recognition.addItem(
+            self._t(
+                "openai_recognition",
+                "OpenAI 高準確辨識（推薦）",
+            ),
+            "OpenAI 高準確辨識（推薦）",
         )
-        self.speech_recognition.setCurrentText(
+        self.speech_recognition.addItem(
+            self._t("windows_recognition", "Windows 離線辨識"),
+            "Windows 離線辨識",
+        )
+        recognition_index = self.speech_recognition.findData(
             str(
                 self.db.setting(
                     "speech_recognition", "OpenAI 高準確辨識（推薦）"
                 )
             )
         )
+        self.speech_recognition.setCurrentIndex(max(0, recognition_index))
         self.transcription_model = QComboBox()
         self.transcription_model.setEditable(True)
         self.transcription_model.addItems(
@@ -1807,7 +2016,10 @@ class Dashboard(QDialog):
             str(self.db.setting("transcription_language", "zh"))
         )
         self.transcription_language.setPlaceholderText(
-            "ISO 語言代碼；留空可讓模型自動判斷"
+            self._t(
+                "transcription_language_placeholder",
+                "ISO 語言代碼；留空可讓模型自動判斷",
+            )
         )
         self.transcription_prompt = QTextEdit()
         self.transcription_prompt.setPlainText(
@@ -1820,7 +2032,10 @@ class Dashboard(QDialog):
         )
         self.transcription_prompt.setMaximumHeight(100)
         self.windows_transcription_fallback = QCheckBox(
-            "OpenAI 失敗時使用 Windows 離線辨識"
+            self._t(
+                "openai_fallback",
+                "OpenAI 失敗時使用 Windows 離線辨識",
+            )
         )
         self.windows_transcription_fallback.setChecked(
             bool(
@@ -1834,7 +2049,10 @@ class Dashboard(QDialog):
             str(
                 self.db.setting(
                     "last_transcription_diagnostic",
-                    "尚無轉錄錯誤紀錄",
+                    self._t(
+                        "no_transcription_error",
+                        "尚無轉錄錯誤紀錄",
+                    ),
                 )
             )
         )
@@ -1843,23 +2061,58 @@ class Dashboard(QDialog):
             "color:#9ed9ef; padding:6px;"
         )
         self.voice_engine = QComboBox()
-        self.voice_engine.addItems(
-            ["Windows 本機語音", "OpenAI 自然語音", "Realtime 即時語音"]
+        for key, label in (
+            (VOICE_ENGINE_WINDOWS, self._t("windows_engine", VOICE_ENGINE_WINDOWS)),
+            (VOICE_ENGINE_OPENAI, self._t("openai_engine", VOICE_ENGINE_OPENAI)),
+            (VOICE_ENGINE_REALTIME, self._t("realtime_engine", VOICE_ENGINE_REALTIME)),
+        ):
+            self.voice_engine.addItem(label, key)
+        engine_index = self.voice_engine.findData(
+            str(self.db.setting("voice_engine", VOICE_ENGINE_WINDOWS))
         )
-        self.voice_engine.setCurrentText(
-            str(self.db.setting("voice_engine", "Windows 本機語音"))
-        )
+        self.voice_engine.setCurrentIndex(max(0, engine_index))
         self.windows_voice = QComboBox()
-        available_voices = windows_voices()
-        taiwan_voices = [
-            (name, culture)
-            for name, culture in available_voices
-            if culture.lower() == "zh-tw"
-            and "zhiwei" not in name.lower()
+        available_voices = [
+            voice
+            for voice in windows_voices()
+            if not is_known_male_windows_voice(voice[0])
         ]
-        if not taiwan_voices:
-            self.windows_voice.addItem("Windows 預設中文聲音", "")
-        for name, culture in taiwan_voices:
+        if not available_voices:
+            self.windows_voice.addItem(
+                self._t(
+                    "no_female_voice",
+                    "未偵測到已確認的女性 Windows 聲音",
+                ),
+                "",
+            )
+            self.windows_voice.model().item(0).setEnabled(False)
+        saved_windows_voice = str(self.db.setting("windows_voice", ""))
+        yating_available = any(
+            "yating" in name.lower() and culture.lower() == "zh-tw"
+            for name, culture in available_voices
+        )
+        yating_migrated = bool(
+            self.db.setting("onecore_yating_v181_migrated", False)
+        )
+        force_yating_default = (
+            self.ui_language.lower() in {"zh", "zh-tw"}
+            and yating_available
+            and not yating_migrated
+        )
+        preferred_voice = preferred_windows_voice(
+            available_voices,
+            "" if force_yating_default else saved_windows_voice,
+            self.ui_language,
+        )
+        ordered_voices = sorted(
+            available_voices,
+            key=lambda voice: (
+                voice[0] != preferred_voice,
+                voice[1].lower(),
+                voice[0].lower(),
+            ),
+        )
+        for name, culture in ordered_voices:
             source = (
                 "OneCore"
                 if name.startswith("OneCore::")
@@ -1876,21 +2129,11 @@ class Dashboard(QDialog):
             self.windows_voice.addItem(
                 f"{short_name}（{culture}，{source}）", name
             )
-        saved_windows_voice = str(self.db.setting("windows_voice", ""))
-        yating_available = any(
-            "yating" in name.lower() and culture.lower() == "zh-tw"
-            for name, culture in available_voices
-        )
-        yating_migrated = bool(
-            self.db.setting("onecore_yating_v181_migrated", False)
-        )
-        preferred_voice = preferred_windows_voice(
-            available_voices,
-            "" if yating_available and not yating_migrated else saved_windows_voice,
-        )
-        if yating_available and not yating_migrated:
+        if force_yating_default:
             self.db.set_setting("onecore_yating_v181_migrated", True)
-        if preferred_voice and preferred_voice != saved_windows_voice:
+        if preferred_voice and (
+            force_yating_default or not saved_windows_voice
+        ):
             self.db.set_setting("windows_voice", preferred_voice)
         for index in range(self.windows_voice.count()):
             if self.windows_voice.itemData(index) == preferred_voice:
@@ -1942,14 +2185,17 @@ class Dashboard(QDialog):
         )
         self.realtime_noise_reduction = QComboBox()
         self.realtime_noise_reduction.addItem(
-            "近距離麥克風（推薦）",
+            self._t("near_field", "近距離麥克風（推薦）"),
             "near_field",
         )
         self.realtime_noise_reduction.addItem(
-            "遠距離／筆電麥克風",
+            self._t("far_field", "遠距離／筆電麥克風"),
             "far_field",
         )
-        self.realtime_noise_reduction.addItem("關閉降噪", "off")
+        self.realtime_noise_reduction.addItem(
+            self._t("noise_off", "關閉降噪"),
+            "off",
+        )
         noise_index = self.realtime_noise_reduction.findData(
             str(
                 self.db.setting(
@@ -1961,11 +2207,17 @@ class Dashboard(QDialog):
         self.realtime_noise_reduction.setCurrentIndex(max(0, noise_index))
         self.realtime_turn_detection = QComboBox()
         self.realtime_turn_detection.addItem(
-            "穩定完整（推薦，停頓約 0.85 秒）",
+            self._t(
+                "stable_vad",
+                "穩定完整（推薦，停頓約 0.85 秒）",
+            ),
             "server_vad",
         )
         self.realtime_turn_detection.addItem(
-            "自然語意（可能提早切段）",
+            self._t(
+                "semantic_vad",
+                "自然語意（可能提早切段）",
+            ),
             "semantic_vad",
         )
         vad_index = self.realtime_turn_detection.findData(
@@ -1978,7 +2230,10 @@ class Dashboard(QDialog):
         )
         self.realtime_turn_detection.setCurrentIndex(max(0, vad_index))
         self.realtime_echo_guard = QCheckBox(
-            "防止墨寒把自己的聲音誤認成主上（推薦）"
+            self._t(
+                "echo_guard_option",
+                "防止墨寒把自己的聲音誤認成主上（推薦）",
+            )
         )
         self.realtime_echo_guard.setChecked(
             bool(self.db.setting("realtime_echo_guard", True))
@@ -1988,7 +2243,10 @@ class Dashboard(QDialog):
             "啟用時無法在她說話途中插話。"
         )
         self.realtime_hybrid_transcription = QCheckBox(
-            "畫面採用高精度整句轉錄（推薦）"
+            self._t(
+                "hybrid_transcript",
+                "畫面採用高精度整句轉錄（推薦）",
+            )
         )
         self.realtime_hybrid_transcription.setChecked(
             bool(
@@ -2005,7 +2263,9 @@ class Dashboard(QDialog):
         self.voice_rate = QSpinBox()
         self.voice_rate.setRange(-5, 5)
         self.voice_rate.setValue(int(self.db.setting("voice_rate", -1)))
-        self.voice_rate.setSuffix(" 級")
+        self.voice_rate.setSuffix(
+            self._t("level_suffix", " 級")
+        )
         self.voice_rate.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.voice_rate.lineEdit().setReadOnly(True)
         self.voice_rate.setAlignment(Qt.AlignCenter)
@@ -2014,10 +2274,14 @@ class Dashboard(QDialog):
         rate_layout.setContentsMargins(0, 0, 0, 0)
         rate_layout.setSpacing(8)
         self.voice_rate_down = QPushButton("－")
-        self.voice_rate_down.setToolTip("降低本機朗讀速度")
+        self.voice_rate_down.setToolTip(
+            self._t("rate_down", "降低本機朗讀速度")
+        )
         self.voice_rate_down.setFixedWidth(48)
         self.voice_rate_up = QPushButton("＋")
-        self.voice_rate_up.setToolTip("提高本機朗讀速度")
+        self.voice_rate_up.setToolTip(
+            self._t("rate_up", "提高本機朗讀速度")
+        )
         self.voice_rate_up.setFixedWidth(48)
         self.voice_rate_down.clicked.connect(self.voice_rate.stepDown)
         self.voice_rate_up.clicked.connect(self.voice_rate.stepUp)
@@ -2034,7 +2298,7 @@ class Dashboard(QDialog):
         self.voice_volume_label = QLabel()
         self.voice_volume_label.setMinimumWidth(52)
         self.voice_volume_label.setAlignment(Qt.AlignCenter)
-        self.voice_muted = QCheckBox("靜音")
+        self.voice_muted = QCheckBox(self._t("mute", "靜音"))
         volume_control = QWidget()
         volume_layout = QHBoxLayout(volume_control)
         volume_layout.setContentsMargins(0, 0, 0, 0)
@@ -2058,76 +2322,109 @@ class Dashboard(QDialog):
                 )
             )
         )
-        preview = QPushButton("試聽：主上，妾在。")
+        preview = QPushButton(
+            self._t("preview_voice", "試聽：主上，妾在。")
+        )
         preview.clicked.connect(self._preview_voice)
-        self.realtime_status = QLabel("Realtime：未連線")
-        self.realtime_btn = QPushButton("啟動 Realtime 自然對話")
+        self.realtime_status = QLabel(
+            self._t("realtime_disconnected", "Realtime：未連線")
+        )
+        self.realtime_btn = QPushButton(
+            self._t("start_realtime", "啟動 Realtime 自然對話")
+        )
         self.realtime_btn.setCheckable(True)
         self.realtime_btn.toggled.connect(self.realtime_toggle_requested.emit)
         note = QLabel(
-            "Realtime 會持續使用麥克風。預設以穩定切段保留句首 500 毫秒，"
-            "停止約 0.85 秒後才判定說完。高精度整句轉錄開啟時，"
-            "Realtime 原生模型負責理解聲音，螢幕文字則使用與單次"
-            "麥克風相同的 gpt-4o-mini-transcribe 與繁中詞庫；"
-            "不會同時收取 Realtime 內建字幕的第二筆轉錄費。"
-            "啟動時才會傳送聲音；關閉後立即停止。"
-            "mini 較省費用並已設為預設；完整版適合品質優先時使用。"
+            self._t(
+                "realtime_note",
+                "Realtime 會持續使用麥克風。預設以穩定切段保留句首 500 毫秒，"
+                "停止約 0.85 秒後才判定說完。高精度整句轉錄開啟時，"
+                "Realtime 原生模型負責理解聲音，螢幕文字則使用與單次"
+                "麥克風相同的 gpt-4o-mini-transcribe 與繁中詞庫；"
+                "不會同時收取 Realtime 內建字幕的第二筆轉錄費。"
+                "啟動時才會傳送聲音；關閉後立即停止。"
+                "mini 較省費用並已設為預設；完整版適合品質優先時使用。",
+            )
         )
         note.setWordWrap(True)
         model_access_note = QLabel(
-            "若後台已勾選模型但仍顯示無權限，請確認勾選模型與建立 API Key "
-            "的是同一個 Project；在該 Project 重新建立金鑰後，到「設定」"
-            "頁重新儲存。"
+            self._t(
+                "model_access_note",
+                "若後台已勾選模型但仍顯示無權限，請確認勾選模型與建立 API Key "
+                "的是同一個 Project；在該 Project 重新建立金鑰後，到「設定」"
+                "頁重新儲存。",
+            )
         )
         model_access_note.setWordWrap(True)
         echo_guard_note = QLabel(
-            "防回音開啟時，墨寒說話期間會停止上傳麥克風，並清除本機"
-            "與伺服器端殘留音訊；結束約一秒後才恢復。對話頁只顯示"
-            "高精度整句轉錄的最終結果，不顯示辨識中的暫定文字。"
+            self._t(
+                "echo_guard_note",
+                "防回音開啟時，墨寒說話期間會停止上傳麥克風，並清除本機"
+                "與伺服器端殘留音訊；結束約一秒後才恢復。對話頁只顯示"
+                "高精度整句轉錄的最終結果，不顯示辨識中的暫定文字。",
+            )
         )
         echo_guard_note.setWordWrap(True)
         recognition_note = QLabel(
-            "單次麥克風預設使用 gpt-4o-mini-transcribe 與墨寒專用繁中詞庫；"
-            "停止說話約 0.85 秒即送出，最長 10 秒；收音時再次點擊"
-            "麥克風可立即送出。Windows 備援可自行關閉。"
+            self._t(
+                "recognition_note",
+                "單次麥克風預設使用 gpt-4o-mini-transcribe 與墨寒專用繁中詞庫；"
+                "停止說話約 0.85 秒即送出，最長 10 秒；收音時再次點擊"
+                "麥克風可立即送出。Windows 備援可自行關閉。",
+            )
         )
         recognition_note.setWordWrap(True)
         windows_note = QLabel(
-            "離線聲音優先使用 Yating（zh-TW）；若未安裝則依序使用 "
-            "Hanhan 或其他台灣繁中聲音。"
+            self._t(
+                "female_voice_note",
+                "離線聲音僅列出 Windows 已明確標示為女性的聲音；"
+                "台灣繁中仍優先使用 Yating（zh-TW）。",
+            )
         )
         windows_note.setWordWrap(True)
-        form.addRow("單次麥克風辨識", self.speech_recognition)
-        form.addRow("轉錄模型", self.transcription_model)
-        form.addRow("轉錄語言", self.transcription_language)
-        form.addRow("轉錄提示／常用詞", self.transcription_prompt)
-        form.addRow("Windows 備援", self.windows_transcription_fallback)
-        form.addRow("最近一次轉錄", self.transcription_diagnostic)
+        form.addRow(self._t("speech_recognition", "單次麥克風辨識"), self.speech_recognition)
+        form.addRow(self._t("transcription_model", "轉錄模型"), self.transcription_model)
+        form.addRow(self._t("transcription_language", "轉錄語言"), self.transcription_language)
+        form.addRow(self._t("transcription_prompt", "轉錄提示／常用詞"), self.transcription_prompt)
+        form.addRow(self._t("windows_transcription_fallback", "Windows 備援"), self.windows_transcription_fallback)
+        form.addRow(self._t("last_transcription", "最近一次轉錄"), self.transcription_diagnostic)
         form.addRow("", recognition_note)
-        form.addRow("朗讀方式", self.voice_engine)
-        form.addRow("Windows 聲音", self.windows_voice)
+        form.addRow(self._t("voice_engine", "朗讀方式"), self.voice_engine)
+        form.addRow(self._t("windows_voice", "Windows 聲音"), self.windows_voice)
         form.addRow("", windows_note)
-        form.addRow("OpenAI 文字朗讀聲音", self.tts_voice)
-        form.addRow("Realtime 對話聲音", self.realtime_voice)
-        form.addRow("Realtime 模型", self.realtime_model)
+        form.addRow(self._t("tts_voice", "OpenAI 文字朗讀聲音"), self.tts_voice)
+        form.addRow(self._t("realtime_voice", "Realtime 對話聲音"), self.realtime_voice)
+        form.addRow(self._t("realtime_model", "Realtime 模型"), self.realtime_model)
         form.addRow(
-            "Realtime 轉錄模型",
+            self._t(
+                "realtime_transcription_model",
+                "Realtime 轉錄模型",
+            ),
             self.realtime_transcription_model,
         )
-        form.addRow("Realtime 麥克風降噪", self.realtime_noise_reduction)
-        form.addRow("Realtime 發言切段", self.realtime_turn_detection)
         form.addRow(
-            "Realtime 畫面轉錄",
+            self._t("realtime_noise", "Realtime 麥克風降噪"),
+            self.realtime_noise_reduction,
+        )
+        form.addRow(
+            self._t("realtime_turn", "Realtime 發言切段"),
+            self.realtime_turn_detection,
+        )
+        form.addRow(
+            self._t(
+                "realtime_screen_transcript",
+                "Realtime 畫面轉錄",
+            ),
             self.realtime_hybrid_transcription,
         )
         form.addRow("", model_access_note)
-        form.addRow("防回音", self.realtime_echo_guard)
+        form.addRow(self._t("echo_guard", "防回音"), self.realtime_echo_guard)
         form.addRow("", echo_guard_note)
-        form.addRow("本機語速", rate_control)
-        form.addRow("墨寒專屬音量", volume_control)
-        form.addRow("聲音風格", self.voice_instructions)
+        form.addRow(self._t("local_rate", "本機語速"), rate_control)
+        form.addRow(self._t("mohan_volume", "墨寒專屬音量"), volume_control)
+        form.addRow(self._t("voice_style", "聲音風格"), self.voice_instructions)
         form.addRow("", preview)
-        form.addRow("即時語音", self.realtime_status)
+        form.addRow(self._t("realtime", "即時語音"), self.realtime_status)
         form.addRow("", self.realtime_btn)
         form.addRow("", note)
         self.windows_voice.currentIndexChanged.connect(
@@ -2150,8 +2447,11 @@ class Dashboard(QDialog):
         form = QFormLayout(content)
         tab.setWidget(content)
         intro = QLabel(
-            "每項能力分開授權。選擇「每次詢問」時，墨寒執行前會顯示確認視窗；"
-            "刪除檔案預設禁止。"
+            self._t(
+                "permissions_intro",
+                "每項能力分開授權。選擇「每次詢問」時，墨寒執行前會顯示確認視窗；"
+                "刪除檔案預設禁止。",
+            )
         )
         intro.setWordWrap(True)
         form.addRow(intro)
@@ -2164,26 +2464,45 @@ class Dashboard(QDialog):
             "delete_files": "禁止",
         }
         labels = {
-            "open_web": "開啟指定網站",
-            "open_folder": "開啟工作室資料夾",
-            "launch_app": "啟動其他程式",
-            "write_files": "建立或修改檔案",
-            "delete_files": "刪除檔案",
+            "open_web": self._t("permission_open_web", "開啟指定網站"),
+            "open_folder": self._t(
+                "permission_open_folder", "開啟工作室資料夾"
+            ),
+            "launch_app": self._t(
+                "permission_launch_app", "啟動其他程式"
+            ),
+            "write_files": self._t(
+                "permission_write_files", "建立或修改檔案"
+            ),
+            "delete_files": self._t(
+                "permission_delete_files", "刪除檔案"
+            ),
         }
         self.permission_controls = {}
         for key, default in defaults.items():
             combo = QComboBox()
-            combo.addItems(["禁止", "每次詢問", "允許"])
-            combo.setCurrentText(str(stored.get(key, default)))
+            combo.addItem(self._t("permission_deny", "禁止"), "禁止")
+            combo.addItem(
+                self._t("permission_ask", "每次詢問"),
+                "每次詢問",
+            )
+            combo.addItem(self._t("permission_allow", "允許"), "允許")
+            permission_index = combo.findData(str(stored.get(key, default)))
+            combo.setCurrentIndex(max(0, permission_index))
             self.permission_controls[key] = combo
             form.addRow(labels[key], combo)
         warning = QLabel(
-            "安全原則：墨寒不會因聊天內容自動取得更高權限；"
-            "API 模型只能提出工具請求，真正執行仍由本機權限層決定。"
+            self._t(
+                "permissions_warning",
+                "安全原則：墨寒不會因聊天內容自動取得更高權限；"
+                "API 模型只能提出工具請求，真正執行仍由本機權限層決定。",
+            )
         )
         warning.setWordWrap(True)
         warning.setStyleSheet("color:#f0c889;")
-        save = QPushButton("保存工具權限")
+        save = QPushButton(
+            self._t("save_permissions", "保存工具權限")
+        )
         save.clicked.connect(self.save_permissions)
         form.addRow(warning)
         form.addRow("", save)
@@ -2250,7 +2569,9 @@ class Dashboard(QDialog):
         )
         form = QFormLayout(content)
         tab.setWidget(content)
-        profile_heading = QLabel("<b>顯示名稱與使用者資料</b>")
+        profile_heading = QLabel(
+            self._t("profile_heading", "<b>顯示名稱與使用者資料</b>")
+        )
         profile_heading.setStyleSheet("color:#9ed9ef;font-size:15px;")
         self.profile_assistant_name = QLineEdit(
             profile_setting(self.db, "assistant_name")
@@ -2269,10 +2590,19 @@ class Dashboard(QDialog):
         )
         self.profile_work_type = QComboBox()
         self.profile_work_type.setEditable(True)
-        self.profile_work_type.addItems(FirstRunWizard.WORK_TYPES)
-        self.profile_work_type.setCurrentText(
-            profile_setting(self.db, "work_type")
+        for value in FirstRunWizard.WORK_TYPES:
+            self.profile_work_type.addItem(
+                display_label(self.ui_language, value, WORK_TYPE_LABELS),
+                value,
+            )
+        profile_work_type = profile_setting(self.db, "work_type")
+        profile_work_index = self.profile_work_type.findData(
+            profile_work_type
         )
+        if profile_work_index >= 0:
+            self.profile_work_type.setCurrentIndex(profile_work_index)
+        else:
+            self.profile_work_type.setCurrentText(profile_work_type)
         self.profile_ui_language = QComboBox()
         self.profile_ui_language.addItem("繁體中文（台灣）", "zh-TW")
         self.profile_ui_language.addItem("English", "en")
@@ -2284,29 +2614,36 @@ class Dashboard(QDialog):
             profile_setting(self.db, "wake_word")
         )
         form.addRow(profile_heading)
-        form.addRow("助理名稱", self.profile_assistant_name)
-        form.addRow("助理對你的稱呼", self.profile_user_title)
-        form.addRow("公司／團隊名稱", self.profile_organization_name)
-        form.addRow("完整視窗標題", self.profile_window_title)
-        form.addRow("工作類型", self.profile_work_type)
-        form.addRow("介面語言", self.profile_ui_language)
-        form.addRow("語音喚醒詞", self.profile_wake_word)
+        form.addRow(self._t("assistant_name", "助理名稱"), self.profile_assistant_name)
+        form.addRow(self._t("user_title", "助理對你的稱呼"), self.profile_user_title)
+        form.addRow(self._t("organization_name", "公司／團隊名稱"), self.profile_organization_name)
+        form.addRow(self._t("window_title", "完整視窗標題"), self.profile_window_title)
+        form.addRow(self._t("work_type", "工作類型"), self.profile_work_type)
+        form.addRow(self._t("ui_language", "介面語言"), self.profile_ui_language)
+        form.addRow(self._t("wake_word", "語音喚醒詞"), self.profile_wake_word)
         self.portable_profile_panel = PortableProfilePanel(
             self.db,
             tab,
             before_export=lambda: self.save_settings(silent=True),
         )
         form.addRow(self.portable_profile_panel)
-        form.addRow(QLabel("<b>工作與系統設定</b>"))
+        form.addRow(
+            QLabel(self._t("system_heading", "<b>工作與系統設定</b>"))
+        )
         self.reminder_controls = {}
         self.reminder_step_buttons = {}
         self.reminder_message_controls = {}
-        labels = {"work": "工作開始", "lunch": "午餐", "dinner": "晚餐", "offwork": "下班"}
+        labels = {
+            "work": self._t("reminder_work", "工作開始"),
+            "lunch": self._t("reminder_lunch", "午餐"),
+            "dinner": self._t("reminder_dinner", "晚餐"),
+            "offwork": self._t("reminder_offwork", "下班"),
+        }
         for row in self.db.reminders():
             box = QWidget()
             line = QHBoxLayout(box)
             line.setContentsMargins(0, 0, 0, 0)
-            enabled = QCheckBox("啟用")
+            enabled = QCheckBox(self._t("enabled", "啟用"))
             enabled.setChecked(bool(row["enabled"]))
             at = QTimeEdit()
             at.setDisplayFormat("HH:mm")
@@ -2324,24 +2661,38 @@ class Dashboard(QDialog):
                 str(
                     self.db.setting(
                         f"reminder_message_{row['kind']}",
-                        REMINDER_LINES[row["kind"]],
+                        reminder_line(self.ui_language, row["kind"]),
                     )
                 )
             )
-            message.setPlaceholderText("此提醒觸發時要說的內容")
-            form.addRow(f"{labels[row['kind']]}訊息", message)
+            message.setPlaceholderText(
+                self._t(
+                    "reminder_message_placeholder",
+                    "此提醒觸發時要說的內容",
+                )
+            )
+            form.addRow(
+                self._t(
+                    "reminder_message_label",
+                    "{label}訊息",
+                    label=labels[row["kind"]],
+                ),
+                message,
+            )
             self.reminder_controls[row["kind"]] = (enabled, at)
             self.reminder_step_buttons[row["kind"]] = (up, down)
             self.reminder_message_controls[row["kind"]] = message
         self.break_minutes = QSpinBox()
         self.break_minutes.setRange(30, 240)
-        self.break_minutes.setSuffix(" 分鐘")
+        self.break_minutes.setSuffix(
+            self._t("minutes_suffix", " 分鐘")
+        )
         self.break_minutes.setValue(int(self.db.setting("break_minutes", 90)))
         self.overwork_message = QLineEdit(
             str(
                 self.db.setting(
                     "reminder_message_overwork",
-                    REMINDER_LINES["overwork"],
+                    reminder_line(self.ui_language, "overwork"),
                 )
             )
         )
@@ -2350,7 +2701,9 @@ class Dashboard(QDialog):
             self.break_minutes_up,
             self.break_minutes_down,
         ) = self._step_control(self.break_minutes, "breakMinutes")
-        self.tts_enabled = QCheckBox("讓寒讀出回覆")
+        self.tts_enabled = QCheckBox(
+            self._t("read_replies", "讓寒讀出回覆")
+        )
         self.tts_enabled.setChecked(bool(self.db.setting("tts_enabled", True)))
         self.autostart = QCheckBox("Windows 登入後自動啟動")
         self.autostart.setChecked(bool(self.db.setting("autostart", False)))
@@ -2450,9 +2803,15 @@ class Dashboard(QDialog):
         self.api_key_input = QLineEdit()
         self.api_key_input.setEchoMode(QLineEdit.Password)
         self.api_key_input.setPlaceholderText(
-            "已安全保存（留空不變）"
+            self._t(
+                "api_key_saved",
+                "已安全保存（留空不變）",
+            )
             if self.secret_store.load()
-            else "貼上 sk- 開頭的 OpenAI Project API Key"
+            else self._t(
+                "api_key_missing",
+                "貼上 sk- 開頭的 OpenAI Project API Key",
+            )
         )
         self.ai_model = QComboBox()
         self.ai_model.setEditable(True)
@@ -2460,17 +2819,31 @@ class Dashboard(QDialog):
         self.ai_model.setCurrentText(
             str(self.db.setting("ai_model", DEFAULT_TEXT_MODEL))
         )
-        clear_key = QPushButton("移除已保存的 API 金鑰")
+        clear_key = QPushButton(
+            self._t("remove_api_key", "移除已保存的 API 金鑰")
+        )
         clear_key.clicked.connect(self.clear_api_key)
         self.api_status = QLabel(
-            "OpenAI API：金鑰已由 Windows 加密保存"
+            self._t(
+                "api_status_saved",
+                "OpenAI API：金鑰已由 Windows 加密保存",
+            )
             if self.secret_store.load() or os.getenv("OPENAI_API_KEY")
-            else "OpenAI API：未設定，使用離線人設"
+            else self._t(
+                "api_status_offline",
+                "OpenAI API：未設定，使用離線人設",
+            )
         )
-        save = QPushButton("保存設定")
+        save = QPushButton(self._t("save_settings", "保存設定"))
         save.clicked.connect(self.save_settings)
-        form.addRow("連續工作提醒", self.break_minutes_control)
-        form.addRow("久坐／過勞提醒訊息", self.overwork_message)
+        form.addRow(
+            self._t("continuous_work_reminder", "連續工作提醒"),
+            self.break_minutes_control,
+        )
+        form.addRow(
+            self._t("overwork_message", "久坐／過勞提醒訊息"),
+            self.overwork_message,
+        )
         form.addRow("語音", self.tts_enabled)
         form.addRow("自動啟動", self.autostart)
         form.addRow("桌面置頂方式", self.topmost_mode)
@@ -2479,17 +2852,33 @@ class Dashboard(QDialog):
         form.addRow("電影級物理", physics_box)
         form.addRow("工作資料夾", self.work_folder)
         form.addRow("", open_folder)
-        form.addRow("OpenAI API 金鑰", self.api_key_input)
-        form.addRow("文字模型", self.ai_model)
+        form.addRow(self._t("api_key", "OpenAI API 金鑰"), self.api_key_input)
+        form.addRow(self._t("text_model", "文字模型"), self.ai_model)
         self.persona_prompt = QTextEdit()
         self.persona_prompt.setPlainText(
-            str(self.db.setting("persona_prompt", PERSONA))
+            str(
+                self.db.setting(
+                    "persona_prompt",
+                    ENGLISH_PERSONA
+                    if is_english(self.ui_language)
+                    else PERSONA,
+                )
+            )
         )
         self.persona_prompt.setMinimumHeight(160)
         self.persona_prompt.setPlaceholderText(
             "設定助理的角色背景、語氣、工作方式與界線。"
         )
-        form.addRow("AI 人格提示詞", self.persona_prompt)
+        form.addRow(self._t("persona_prompt", "AI 人格提示詞"), self.persona_prompt)
+        language_note = QLabel(
+            self._t(
+                "restart_language_note",
+                "變更介面語言後，重新啟動墨寒即可完整套用。",
+            )
+        )
+        language_note.setWordWrap(True)
+        language_note.setStyleSheet("color:#8fc9e0;")
+        form.addRow(language_note)
         form.addRow("", clear_key)
         form.addRow("智能核心", self.api_status)
         self.update_panel = UpdatePanel(self.db, data_dir(), tab)
@@ -2807,25 +3196,61 @@ class Dashboard(QDialog):
 
     def start_work(self) -> None:
         if self.db.start_work():
-            self.speak_requested.emit("計時已啟。主上只管專注，妾替你守住時辰。", "speaking")
+            self.speak_requested.emit(
+                reminder_line(self.ui_language, "work"),
+                "speaking",
+            )
             self.work_changed.emit()
             if hasattr(self, "flagship_center"):
                 self.flagship_center.work_started()
         else:
-            self.speak_requested.emit("計時仍在進行，主上不必重複開局。", "idle")
+            self.speak_requested.emit(
+                self._t(
+                    "work_timer_already_running",
+                    "計時仍在進行，主上不必重複開局。",
+                ),
+                "idle",
+            )
         self.refresh_work_time()
 
     def stop_work(self) -> None:
         if self.db.stop_work():
-            self.speak_requested.emit(REMINDER_LINES["offwork"], "happy")
+            self.speak_requested.emit(
+                reminder_line(self.ui_language, "offwork"),
+                "happy",
+            )
             self.work_changed.emit()
         else:
-            self.speak_requested.emit("今日尚未開始計時。", "worried")
+            self.speak_requested.emit(
+                self._t(
+                    "work_timer_not_started",
+                    "今日尚未開始計時。",
+                ),
+                "worried",
+            )
         self.refresh_work_time()
+
+    def _mode_index_changed(self, index: int) -> None:
+        mode = str(self.mode_combo.itemData(index) or "工作")
+        self._mode_changed(mode)
 
     def _mode_changed(self, mode: str) -> None:
         self.mode = mode
         self.db.set_setting("mode", mode)
+        if is_english(self.ui_language):
+            lines = {
+                "工作": "Work mode enabled. I will interrupt only when necessary.",
+                "陪伴": "Companion mode enabled. We need not speak of victory tonight.",
+                "勿擾": "Do not disturb enabled. I will stay quiet unless it is urgent.",
+                "會議": "Meeting mode enabled. I will record only what is necessary.",
+                "離席": "Away mode enabled. I will brief you when you return.",
+                "休眠": "Sleep mode enabled. Reminders and urgent alerts remain active.",
+            }
+            self.speak_requested.emit(
+                lines.get(mode, f"{display_label(self.ui_language, mode, MODE_LABELS)} mode enabled."),
+                "speaking",
+            )
+            return
         lines = {
             "工作": "工作模式已啟。妾只在必要時打斷主上。",
             "陪伴": "陪伴模式已啟。今夜不談勝負，也無妨。",
@@ -3553,7 +3978,11 @@ class Dashboard(QDialog):
 
     def save_voice_settings(self, silent: bool = False) -> None:
         self.db.set_setting(
-            "speech_recognition", self.speech_recognition.currentText()
+            "speech_recognition",
+            str(
+                self.speech_recognition.currentData()
+                or "OpenAI 高準確辨識（推薦）"
+            ),
         )
         self.db.set_setting(
             "transcription_model",
@@ -3571,10 +4000,15 @@ class Dashboard(QDialog):
             "windows_transcription_fallback",
             self.windows_transcription_fallback.isChecked(),
         )
-        self.db.set_setting("voice_engine", self.voice_engine.currentText())
         self.db.set_setting(
-            "windows_voice", str(self.windows_voice.currentData() or "")
+            "voice_engine",
+            str(self.voice_engine.currentData() or VOICE_ENGINE_WINDOWS),
         )
+        selected_windows_voice = str(
+            self.windows_voice.currentData() or ""
+        )
+        if selected_windows_voice:
+            self.db.set_setting("windows_voice", selected_windows_voice)
         self.db.set_setting("tts_voice", self.tts_voice.currentText())
         self.db.set_setting("cloud_voice", self.tts_voice.currentText())
         self.db.set_setting("realtime_voice", self.realtime_voice.currentText())
@@ -3608,7 +4042,10 @@ class Dashboard(QDialog):
             "voice_instructions", self.voice_instructions.text().strip()
         )
         if not silent:
-            self.speak_requested.emit("聲音設定已保存。", "happy")
+            self.speak_requested.emit(
+                self._t("voice_settings_saved", "聲音設定已保存。"),
+                "happy",
+            )
 
     def set_realtime_status(self, status: str, active: bool | None = None) -> None:
         self.realtime_status.setText(f"Realtime：{status}")
@@ -3616,35 +4053,61 @@ class Dashboard(QDialog):
             self.realtime_btn.blockSignals(True)
             self.realtime_btn.setChecked(active)
             self.realtime_btn.setText(
-                "停止 Realtime 自然對話"
+                self._t("stop_realtime", "停止 Realtime 自然對話")
                 if active
-                else "啟動 Realtime 自然對話"
+                else self._t(
+                    "start_realtime",
+                    "啟動 Realtime 自然對話",
+                )
             )
             self.realtime_btn.blockSignals(False)
 
     def save_permissions(self) -> None:
         permissions = {
-            key: combo.currentText()
+            key: str(combo.currentData() or "禁止")
             for key, combo in self.permission_controls.items()
         }
         self.db.set_setting("tool_permissions", permissions)
-        self.speak_requested.emit("電腦工具權限已保存。妾會照此邊界行事。", "happy")
+        self.speak_requested.emit(
+            self._t(
+                "permission_saved_speech",
+                "電腦工具權限已保存。妾會照此邊界行事。",
+            ),
+            "happy",
+        )
 
     def _permission_allowed(self, key: str, action: str) -> bool:
         stored = self.db.setting("tool_permissions", {})
         default = "禁止" if key == "delete_files" else "每次詢問"
         mode = str(stored.get(key, default))
         if hasattr(self, "permission_controls") and key in self.permission_controls:
-            mode = self.permission_controls[key].currentText()
+            mode = str(
+                self.permission_controls[key].currentData() or default
+            )
         if mode == "允許":
             return True
         if mode == "禁止":
-            QMessageBox.information(self, "權限已阻擋", f"墨寒目前無權{action}。")
+            QMessageBox.information(
+                self,
+                self._t("permission_blocked", "權限已阻擋"),
+                self._t(
+                    "permission_blocked_message",
+                    "墨寒目前無權{action}。",
+                    action=action,
+                ),
+            )
             return False
         answer = QMessageBox.question(
             self,
-            "墨寒請求電腦權限",
-            f"是否允許墨寒這一次{action}？",
+            self._t(
+                "permission_request",
+                "墨寒請求電腦權限",
+            ),
+            self._t(
+                "permission_request_message",
+                "是否允許墨寒這一次{action}？",
+                action=action,
+            ),
         )
         return answer == QMessageBox.Yes
 
@@ -3683,6 +4146,7 @@ class Dashboard(QDialog):
             webbrowser.open(url)
 
     def save_settings(self, silent: bool = False) -> bool:
+        previous_ui_language = self.ui_language
         assistant_name = self.profile_assistant_name.text().strip()
         user_title = self.profile_user_title.text().strip()
         if not assistant_name or not user_title:
@@ -3699,8 +4163,9 @@ class Dashboard(QDialog):
                 self.profile_organization_name.text().strip()
             ),
             "window_title": self.profile_window_title.text().strip(),
-            "work_type": (
-                self.profile_work_type.currentText().strip() or "其他"
+            "work_type": combo_data_or_custom_text(
+                self.profile_work_type,
+                "其他",
             ),
             "ui_language": str(
                 self.profile_ui_language.currentData() or "zh-TW"
@@ -3712,6 +4177,51 @@ class Dashboard(QDialog):
         }
         for key, value in profile_values.items():
             self.db.set_setting(key, value)
+        new_ui_language = str(profile_values["ui_language"])
+        if new_ui_language != previous_ui_language:
+            current_transcription_language = (
+                self.transcription_language.text().strip()
+            )
+            if current_transcription_language in {"zh", "en"}:
+                self.transcription_language.setText(
+                    transcription_language_for_ui(new_ui_language)
+                )
+            current_voice_instructions = (
+                self.voice_instructions.text().strip()
+            )
+            if current_voice_instructions in {
+                VOICE_GENERATION_PROMPT,
+                english_voice_instructions(),
+            }:
+                self.voice_instructions.setText(
+                    english_voice_instructions()
+                    if is_english(new_ui_language)
+                    else VOICE_GENERATION_PROMPT
+                )
+            current_persona = self.persona_prompt.toPlainText().strip()
+            if current_persona in {PERSONA.strip(), ENGLISH_PERSONA.strip()}:
+                self.persona_prompt.setPlainText(
+                    ENGLISH_PERSONA
+                    if is_english(new_ui_language)
+                    else PERSONA
+                )
+            for kind, message in self.reminder_message_controls.items():
+                message.setText(
+                    migrate_builtin_reminder_line(
+                        message.text(),
+                        new_ui_language,
+                        kind,
+                        REMINDER_LINES[kind],
+                    )
+                )
+            self.overwork_message.setText(
+                migrate_builtin_reminder_line(
+                    self.overwork_message.text(),
+                    new_ui_language,
+                    "overwork",
+                    REMINDER_LINES["overwork"],
+                )
+            )
         self.assistant_name = assistant_name
         self.user_title = user_title
         self.organization_name = profile_values["organization_name"]
@@ -3723,13 +4233,13 @@ class Dashboard(QDialog):
             self.db.set_setting(
                 f"reminder_message_{kind}",
                 self.reminder_message_controls[kind].text().strip()
-                or REMINDER_LINES[kind],
+                or reminder_line(new_ui_language, kind),
             )
         self.db.set_setting("break_minutes", self.break_minutes.value())
         self.db.set_setting(
             "reminder_message_overwork",
             self.overwork_message.text().strip()
-            or REMINDER_LINES["overwork"],
+            or reminder_line(new_ui_language, "overwork"),
         )
         self.db.set_setting("tts_enabled", self.tts_enabled.isChecked())
         self.db.set_setting("work_folder", self.work_folder.text().strip())
@@ -3737,7 +4247,12 @@ class Dashboard(QDialog):
         self.db.set_setting("ai_model", self.ai_model.currentText())
         self.db.set_setting(
             "persona_prompt",
-            self.persona_prompt.toPlainText().strip() or PERSONA,
+            self.persona_prompt.toPlainText().strip()
+            or (
+                ENGLISH_PERSONA
+                if is_english(new_ui_language)
+                else PERSONA
+            ),
         )
         self.db.set_setting(
             "topmost_mode",
@@ -3769,8 +4284,12 @@ class Dashboard(QDialog):
         except OSError as exc:
             QMessageBox.warning(self, "自動啟動", f"無法更新自動啟動：{exc}")
         self.settings_saved.emit()
+        self.ui_language = new_ui_language
         if not silent:
-            self.speak_requested.emit("設定已保存。", "happy")
+            self.speak_requested.emit(
+                self._t("settings_saved", "設定已保存。"),
+                "happy",
+            )
         return True
 
     def clear_api_key(self) -> None:
@@ -6810,8 +7329,10 @@ class CompanionWindow(QMainWindow):
         self.show()
         self.raise_()
         if tts_enabled:
-            engine = str(self.db.setting("voice_engine", "Windows 本機語音"))
-            if engine == "Windows 本機語音":
+            engine = str(
+                self.db.setting("voice_engine", VOICE_ENGINE_WINDOWS)
+            )
+            if engine == VOICE_ENGINE_WINDOWS:
                 self.active_speech_engine = "windows"
                 self.tts.speak(
                     text,
@@ -6843,6 +7364,13 @@ class CompanionWindow(QMainWindow):
             )
 
     def preview_voice(self) -> None:
+        if is_english(profile_setting(self.db, "ui_language")):
+            self.speak(
+                f"{profile_setting(self.db, 'user_title')}, I am here. "
+                "There is no need to look so surprised.",
+                "happy",
+            )
+            return
         self.speak(
             f"{profile_setting(self.db, 'user_title')}，妾在。"
             "今日的安排，交給妾與你一同理清。",
@@ -6927,6 +7455,9 @@ class CompanionWindow(QMainWindow):
                 + "。回覆語言／地區："
                 + profile_setting(self.db, "ui_language")
                 + "。"
+                + response_language_instruction(
+                    profile_setting(self.db, "ui_language")
+                )
             ),
             self.db.memory_context(),
             model=str(
@@ -7485,7 +8016,10 @@ class CompanionWindow(QMainWindow):
                 str(
                     self.db.setting(
                         f"reminder_message_{row['kind']}",
-                        REMINDER_LINES[row["kind"]],
+                        reminder_line(
+                            profile_setting(self.db, "ui_language"),
+                            row["kind"],
+                        ),
                     )
                 ),
                 "reminder",
@@ -7503,7 +8037,10 @@ class CompanionWindow(QMainWindow):
                 str(
                     self.db.setting(
                         "reminder_message_overwork",
-                        REMINDER_LINES["overwork"],
+                        reminder_line(
+                            profile_setting(self.db, "ui_language"),
+                            "overwork",
+                        ),
                     )
                 ),
                 "worried",

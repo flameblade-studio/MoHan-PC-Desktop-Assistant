@@ -3,7 +3,7 @@
 ## 繁體中文
 
 1. 將下載的 `Windows-x64.zip` 完整解壓縮。
-2. 執行 `MoHan-Desktop-Assistant-2.0.14-RC.exe`。
+2. 執行 `MoHan-Desktop-Assistant-2.0.14-rc.3.exe`。
 3. 在首次設定精靈確認助理名稱、稱呼、組織、工作類型與喚醒詞。
 4. 若要使用雲端 AI，前往設定頁輸入自己的 OpenAI API 金鑰。
 5. 預設模型：
@@ -19,7 +19,7 @@ Microsoft、GitHub 與 Home Assistant 屬於尚未完成真實環境端到端驗
 ## English
 
 1. Extract the complete `Windows-x64.zip`.
-2. Run `MoHan-Desktop-Assistant-2.0.14-RC.exe`.
+2. Run `MoHan-Desktop-Assistant-2.0.14-rc.3.exe`.
 3. Review the assistant name, user title, organization, work type, and wake word
    in the first-run wizard.
 4. Enter a user-owned OpenAI API key in Settings for cloud AI.

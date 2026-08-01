@@ -32,6 +32,10 @@ Circular local imports are prohibited and enforced by
   only in a future HTTP boundary; importing FastAPI into the PySide desktop
   core is prohibited.
 - OpenAI/Windows speech timing has one source of truth: `lip_sync.py`.
+- Language policy, response-language instructions, and built-in reminder
+  migration have one source of truth in `language_support.py`. English display
+  strings and stable internal-to-display mappings live in `ui_localization.py`;
+  localized labels must never replace persisted internal setting values.
 - Pre-reply wait-expression policy has one source of truth in
   `expression_system.plan_wait_expressions`. The visible “思考中” status is
   informational and must never select a character expression by itself.

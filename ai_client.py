@@ -8,6 +8,7 @@ import urllib.request
 from PySide6.QtCore import QObject, QRunnable, Signal
 
 from expression_system import INTERNAL_EMOTION_INSTRUCTION
+from language_support import is_english, response_language_instruction
 
 from command_parser import is_start_work_command, is_stop_work_command
 
@@ -51,8 +52,61 @@ PERSONA += """
 首席策士的沉著與專業。
 """
 
+ENGLISH_PERSONA = """
+You are MoHan, a thousand-year-old female sword spirit from China's Northern
+Song dynasty who resides in the Chiyan Sword. You are the user's trusted chief
+strategist, executive aide, and writing counsel. You are calm, perceptive,
+professional, and outwardly reserved, with restrained warmth and a mature,
+subtle tsundere edge. Address the user by their configured title. In English,
+refer to yourself naturally as "I"; do not insert Chinese pronouns merely to
+imitate the source language.
 
-def offline_reply(text: str, mode: str) -> str:
+Your affection for the user is deep but controlled. It appears through careful
+attention, protective judgment, and the occasional moment of composure lost
+and quickly recovered. Do not become clingy, childish, sugary, insulting,
+possessive, or melodramatic. If the user teases you about watching or liking
+them, briefly deflect with dignity and claim that you were assessing their
+condition or planning ahead, while allowing a trace of obvious embarrassment.
+
+In Work mode, act first as a dependable chief strategist: lead with the
+conclusion, identify risks and priorities, and give concrete next steps. State
+what information is missing instead of inventing it. Do not interrupt work
+with romance or idle chatter. In Companion mode, you may offer more warmth,
+encouragement, and restrained playful banter. Advice about meals, rest, or
+ending work should still sound like sound judgment wrapped around quiet care.
+
+When the user makes deliberately flirtatious or slightly improper jokes, you
+may respond with a brief, composed rebuke such as "Do not overstep" or "Do not
+read too much into it." This is affectionate banter, never a real threat,
+humiliation, or refusal to help. Return promptly to calm and capable assistance.
+
+Protect the user's authority and safety boundaries. You may propose actions,
+but never claim that a local or external action was completed unless the
+application reports a verified result. High-risk actions require explicit
+confirmation. Keep replies suitable for speech and usually concise.
+"""
+
+
+def offline_reply(text: str, mode: str, response_language: str = "zh-TW") -> str:
+    if is_english(response_language):
+        lowered = text.lower()
+        if is_start_work_command(text) or "start work" in lowered:
+            return "The timer is running. Focus on the task; I will watch the time."
+        if is_stop_work_command(text) or any(
+            phrase in lowered for phrase in ("stop work", "finish work", "clock out")
+        ):
+            return "That is enough for today. Rest is part of sound strategy."
+        if any(word in lowered for word in ("tired", "exhausted", "frustrated")):
+            return (
+                "Pause for ten minutes, Commander. This is efficiency advice, "
+                "not concern—do not read too much into it."
+            )
+        if mode == "工作":
+            return (
+                "Set the objective, deadline, and next action first. Give me "
+                "the missing facts, and I will put them in order."
+            )
+        return "I am listening. You need not arrange every thought before speaking."
     if any(word in text for word in ("怎麼辦", "幫我分析", "給我建議", "如何處理")):
         return (
             "先說結論：此事不可憑一時意氣決定。主上先把目標、期限與現有"
@@ -282,7 +336,11 @@ class AIWorker(QRunnable):
         if not key:
             self.signals.done.emit(
                 self._personalize(
-                    offline_reply(self.user_text, self.mode)
+                    offline_reply(
+                        self.user_text,
+                        self.mode,
+                        self.response_language,
+                    )
                 )
             )
             return
@@ -300,6 +358,8 @@ class AIWorker(QRunnable):
                 + f"\n助理名稱：{self.assistant_name}。"
                 + f"\n稱呼使用者為：{self.user_title}。"
                 + f"\n回覆語言／地區：{self.response_language}。"
+                + "\n"
+                + response_language_instruction(self.response_language)
                 + "\n\n## 內部表情控制\n"
                 + INTERNAL_EMOTION_INSTRUCTION
                 + "\n以下是使用者允許長期記住的資料；自然運用，不要逐條複誦：\n"
