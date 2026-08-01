@@ -77,29 +77,33 @@ def run() -> None:
         window.show()
         app.processEvents()
         wait_states: list[str] = []
-        window.dashboard.state_requested.connect(wait_states.append)
+        window.dashboard.ai_wait_expression_requested.connect(
+            lambda _generation, expression, _intensity: wait_states.append(
+                expression
+            )
+        )
         window.dashboard.ai_busy = True
-        window.dashboard._schedule_ai_wait_expression("早安，墨寒")
+        window.dashboard._schedule_ai_wait_expressions("早安，墨寒")
         QTest.qWait(900)
         assert "thinking_front" not in wait_states
 
         # A completed request must invalidate its delayed reaction.  Otherwise
         # the old timer can make MoHan turn and think after she has replied.
-        window.dashboard._schedule_ai_wait_expression(
+        window.dashboard._schedule_ai_wait_expressions(
             "請分析兩個方案的利弊、風險與優先順序。"
         )
         window.dashboard.ai_busy = False
-        QTest.qWait(900)
+        QTest.qWait(1300)
         assert "thinking_front" not in wait_states
 
         window.dashboard.ai_busy = True
-        window.dashboard._schedule_ai_wait_expression(
+        window.dashboard._schedule_ai_wait_expressions(
             "請分析兩個方案的利弊、風險與優先順序。"
         )
-        QTest.qWait(900)
+        QTest.qWait(1300)
         assert wait_states[-1] == "thinking_front"
         window.dashboard.ai_busy = False
-        window.set_state("idle", force=True)
+        window.dashboard._finish_ai_wait_expression()
         QTest.qWait(700)
         app.processEvents()
         window._set_expression(window._idle_expression(), fade=False)

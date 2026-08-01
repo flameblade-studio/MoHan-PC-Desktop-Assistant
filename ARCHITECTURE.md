@@ -32,6 +32,9 @@ Circular local imports are prohibited and enforced by
   only in a future HTTP boundary; importing FastAPI into the PySide desktop
   core is prohibited.
 - OpenAI/Windows speech timing has one source of truth: `lip_sync.py`.
+- Pre-reply wait-expression policy has one source of truth in
+  `expression_system.plan_wait_expressions`. The visible “思考中” status is
+  informational and must never select a character expression by itself.
 - Portable profile rules have one source of truth: `profile_transfer.py`.
 - Secrets are never stored in SQLite and never enter portable profile files.
 

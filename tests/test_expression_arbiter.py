@@ -7,9 +7,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from expression_system import (
+    AI_WAIT_TIMEOUT_MS,
     EMOTION_TO_EXPRESSION,
     ExpressionArbiter,
-    classify_wait_expression,
+    plan_wait_expressions,
     parse_internal_emotion,
 )
 
@@ -26,24 +27,31 @@ class VirtualClock:
 
 
 def run() -> None:
-    # Waiting for the network is not itself a thinking emotion.  Casual and
-    # ordinary factual questions must keep the current natural pose.
-    assert classify_wait_expression("早安，墨寒") is None
-    assert classify_wait_expression("妳今天心情好嗎？") is None
-    assert classify_wait_expression("天空為什麼是藍色？") is None
+    greeting = plan_wait_expressions("早安，墨寒")
+    assert len(greeting) == 1
+    assert greeting[0].expression == "thinking_front"
+    assert greeting[0].delay_ms == AI_WAIT_TIMEOUT_MS
 
-    analytical = classify_wait_expression(
-        "請分析這兩個方案的利弊、風險與優先順序。"
-    )
-    assert analytical is not None
-    assert analytical.expression == "thinking_front"
-    assert analytical.delay_ms >= 800
+    ordinary = plan_wait_expressions("天空為什麼是藍色？")
+    assert len(ordinary) == 1
+    assert ordinary[0].reason == "response_timeout"
 
-    attentive = classify_wait_expression(
-        "我今天把企劃重新整理了一遍，還補上角色設定，接下來想和妳說說目前的進度。"
+    complex_prompt = plan_wait_expressions(
+        "請分析兩個方案的利弊、風險與優先順序。"
     )
-    assert attentive is not None
-    assert attentive.expression == "attentive_front"
+    assert [cue.expression for cue in complex_prompt] == [
+        "thinking_front",
+        "thinking_front",
+    ]
+    assert complex_prompt[0].delay_ms >= 1_000
+    assert complex_prompt[0].delay_ms < AI_WAIT_TIMEOUT_MS
+
+    narrative = plan_wait_expressions(
+        "我今天把企劃重新整理了一遍，也補上角色設定，"
+        "接下來想和妳慢慢說說目前的進度。"
+    )
+    assert narrative[0].expression == "attentive_front"
+    assert narrative[-1].reason == "response_timeout"
 
     allowed = set(EMOTION_TO_EXPRESSION.values())
     clock = VirtualClock()
@@ -112,6 +120,7 @@ def run() -> None:
     expressions = tuple(allowed)
     sources = (
         "ambient",
+        "ai_wait",
         "fallback",
         "ai_tag",
         "conversation",

@@ -15,6 +15,13 @@ All notable public changes to MoHan Desktop Assistant are documented here.
   GitHub Secrets and a dedicated WordPress Application Password.
 - Added full-history Gitleaks checks as a compensating control for GitHub
   Secret Protection features unavailable to personal public repositories.
+- Decoupled the visible “墨寒思考中” status from character expressions.
+  Routine text and voice questions now keep a natural pose, complex prompts
+  react only after a noticeable delay, and unusually slow responses use the
+  existing expression arbiter with cancellation, cooldown, and deduplication.
+- Unified AI wait cleanup across successful replies, API failures, standard
+  voice, and Realtime transitions so thinking cannot linger into speech or
+  remain after playback.
 
 ## v2.0.14 RC — 2026-07-31
 

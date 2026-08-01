@@ -83,7 +83,7 @@ from db import StudioDB, format_duration
 from expression_system import (
     ExpressionArbiter,
     FaceAnchorProfile,
-    classify_wait_expression,
+    plan_wait_expressions,
     parse_internal_emotion,
 )
 from feature_registry import DashboardFeatureRegistry
@@ -1058,6 +1058,8 @@ class Dashboard(QDialog):
     voice_preview_requested = Signal()
     realtime_toggle_requested = Signal(bool)
     state_requested = Signal(str)
+    ai_wait_expression_requested = Signal(int, str, float)
+    ai_wait_expression_finished = Signal(int)
     work_changed = Signal()
     settings_saved = Signal()
     volume_changed = Signal(int, bool)
@@ -1079,7 +1081,8 @@ class Dashboard(QDialog):
         self.thread_pool = QThreadPool.globalInstance()
         self.ai_queue: deque[tuple[str, str]] = deque()
         self.ai_busy = False
-        self.ai_request_generation = 0
+        self.ai_wait_generation = 0
+        self.active_ai_wait_generation = 0
         self.next_expression_metadata: tuple[str, float, str] | None = None
         self.chat_loaded_limit = 50
         self.chat_zoom_percent = int(
@@ -2894,21 +2897,50 @@ class Dashboard(QDialog):
         worker.signals.done.connect(self._ai_done)
         worker.signals.failed.connect(self._ai_failed)
         self.thread_pool.start(worker)
-        self._schedule_ai_wait_expression(text)
+        self._schedule_ai_wait_expressions(text)
 
-    def _schedule_ai_wait_expression(self, text: str) -> None:
-        """React to conversational difficulty, never to network latency alone."""
-        self.ai_request_generation += 1
-        generation = self.ai_request_generation
-        cue = classify_wait_expression(text)
-        if cue is None:
+    def _schedule_ai_wait_expressions(self, text: str) -> None:
+        """Schedule optional reactions; the status label is display-only."""
+        self._finish_ai_wait_expression()
+        self.ai_wait_generation += 1
+        generation = self.ai_wait_generation
+        self.active_ai_wait_generation = generation
+        for cue in plan_wait_expressions(text):
+            QTimer.singleShot(
+                cue.delay_ms,
+                lambda cue=cue: self._emit_ai_wait_expression(
+                    generation,
+                    cue.expression,
+                    cue.intensity,
+                ),
+            )
+
+    def _emit_ai_wait_expression(
+        self,
+        generation: int,
+        expression: str,
+        intensity: float,
+    ) -> None:
+        if (
+            self.ai_busy
+            and generation == self.active_ai_wait_generation
+        ):
+            self.ai_wait_expression_requested.emit(
+                generation,
+                expression,
+                intensity,
+            )
+
+    def _finish_ai_wait_expression(self) -> None:
+        generation = self.active_ai_wait_generation
+        if not generation:
             return
+        self.active_ai_wait_generation = 0
+        self.ai_wait_expression_finished.emit(generation)
 
-        def apply_if_still_waiting() -> None:
-            if self.ai_busy and generation == self.ai_request_generation:
-                self.state_requested.emit(cue.expression)
-
-        QTimer.singleShot(cue.delay_ms, apply_if_still_waiting)
+    def cancel_ai_wait_expression(self) -> None:
+        """Invalidate pending visual reactions without cancelling the API."""
+        self._finish_ai_wait_expression()
 
     def _capture_explicit_memory(self, text: str) -> None:
         if not bool(self.db.setting("auto_memory", True)):
@@ -3040,6 +3072,7 @@ class Dashboard(QDialog):
         self.speak_requested.emit(text, state)
 
     def _ai_done(self, text: str) -> None:
+        self._finish_ai_wait_expression()
         tagged = parse_internal_emotion(text)
         clean = tagged.text or "妾在。主上方才所言，容妾再細想一遍。"
         expression = (
@@ -3180,6 +3213,7 @@ class Dashboard(QDialog):
         return "speaking"
 
     def _ai_failed(self, error: str) -> None:
+        self._finish_ai_wait_expression()
         self._reply(f"雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。", "worried")
         self.api_status.setText(f"OpenAI API：連線失敗（{error[:70]}）")
         self.ai_busy = False
@@ -3806,6 +3840,12 @@ class CompanionWindow(QMainWindow):
             self._apply_character_scale
         )
         self.dashboard.state_requested.connect(self.set_state)
+        self.dashboard.ai_wait_expression_requested.connect(
+            self._start_ai_wait_expression
+        )
+        self.dashboard.ai_wait_expression_finished.connect(
+            self._finish_ai_wait_expression
+        )
         self._apply_voice_volume(
             int(self.db.setting("voice_volume_percent", 125)),
             bool(self.db.setting("voice_muted", False)),
@@ -3829,6 +3869,8 @@ class CompanionWindow(QMainWindow):
         self.expression_arbiter = ExpressionArbiter(
             set(EXPRESSION_POSES) | {"idle", "speaking"}
         )
+        self.active_ai_wait_generation = 0
+        self.active_ai_wait_expression = ""
         self.speech_queue: deque[tuple[str, str]] = deque()
         self.speech_metadata_queue: deque[tuple[float, str]] = deque()
         self.speech_playing = False
@@ -6630,6 +6672,51 @@ class CompanionWindow(QMainWindow):
             self.state_animation = animation
         return True
 
+    def _start_ai_wait_expression(
+        self,
+        generation: int,
+        expression: str,
+        intensity: float,
+    ) -> None:
+        """Apply a low-priority wait pose only over a neutral visual state."""
+        if expression not in {"attentive_front", "thinking_front"}:
+            return
+        if (
+            self.speech_playing
+            or self.realtime_mouth_active
+            or self.realtime.running
+            or self.state == "speaking"
+        ):
+            return
+        if self.state not in {
+            "idle",
+            "glance",
+            "attentive_front",
+            "thinking_front",
+        }:
+            return
+        if self.set_state(
+            expression,
+            source="ai_wait",
+            intensity=intensity,
+        ):
+            self.active_ai_wait_generation = generation
+            self.active_ai_wait_expression = expression
+
+    def _finish_ai_wait_expression(self, generation: int) -> None:
+        """Clear only the wait pose owned by this exact request."""
+        if generation != self.active_ai_wait_generation:
+            return
+        expression = self.active_ai_wait_expression
+        self.active_ai_wait_generation = 0
+        self.active_ai_wait_expression = ""
+        if (
+            self.state == expression
+            and not self.speech_playing
+            and not self.realtime_mouth_active
+        ):
+            self.set_state("idle", source="ai_wait", force=True)
+
     def _apply_gesture_motion(self, value: QPoint) -> None:
         self.gesture_motion_x = float(value.x())
         self.gesture_motion_y = float(value.y())
@@ -6811,6 +6898,7 @@ class CompanionWindow(QMainWindow):
             self.realtime.stop()
             self.dashboard.set_realtime_status("未連線", False)
             return
+        self.dashboard.cancel_ai_wait_expression()
         self.dashboard.save_voice_settings(silent=True)
         voice_prompt = str(
             self.db.setting(
@@ -6948,6 +7036,7 @@ class CompanionWindow(QMainWindow):
 
     def _realtime_speaking(self, speaking: bool) -> None:
         if speaking:
+            self.dashboard.cancel_ai_wait_expression()
             self.speech_gesture_expression = None
             self.realtime_mouth_active = True
             # Never carry an emotion selected for the preceding answer into a
