@@ -120,11 +120,18 @@ Store the values only as GitHub Actions repository secrets:
 - `WORDPRESS_USERNAME`: the dedicated release-sync username
 - `WORDPRESS_APP_PASSWORD`: the WordPress Application Password
 - `WORDPRESS_DOWNLOAD_PAGE_ID`: optional existing page ID; when omitted, the
-  workflow finds or creates the `mohan-desktop-assistant-download` page
+  workflow finds or creates the `mohan-desktop-assistant` page
 
 The workflow never stores these values in source, logs, release files, the
 update manifest, or the application. It replaces only content enclosed by
 `MOHAN_RELEASE_START` and `MOHAN_RELEASE_END` markers.
+
+The WordPress page is a bilingual product and contributor landing page. Its
+images and every installer link point to the public GitHub repository or GitHub
+Releases; the workflow never uploads EXE, MSI, ZIP, video, or release artifacts
+to WordPress, so release growth does not consume Bluehost media storage. Add the
+published page to the site's primary navigation once; later releases update the
+managed page content automatically without changing the menu entry.
 
 ## Extended secret scanning
 

@@ -169,7 +169,7 @@ jobs:
           if ($tag -match '-') { $args += "--prerelease" }
           & gh @args
 
-      - name: Synchronize official WordPress download page
+      - name: Synchronize official WordPress MoHan page
         if: ${{ env.WORDPRESS_BASE_URL != '' && env.WORDPRESS_USERNAME != '' && env.WORDPRESS_APP_PASSWORD != '' }}
         shell: pwsh
         run: |

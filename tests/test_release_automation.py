@@ -25,6 +25,26 @@ def main() -> None:
     assert traditional_messages.stat().st_size > 20_000
     assert "compiler:Languages\\ChineseTraditional.isl" not in inno_script
     assert "{#TraditionalChineseMessages}" in inno_script
+    for expression in (
+        "proud_front.png",
+        "thinking_front.png",
+        "shy_cute_front.png",
+        "mock_hit_front.png",
+        "gentle_smile_front.png",
+        "worried_front.png",
+    ):
+        assert (ROOT / "assets" / "expressions" / expression).is_file(), expression
+    for media in (
+        "mohan-hero.png",
+        "first-run-wizard.png",
+        "voice-modes.png",
+        "expressions.png",
+        "tasks-and-ideas.png",
+        "long-term-memory.png",
+        "security-permissions.png",
+        "mohan-demo.mp4",
+    ):
+        assert (ROOT / "docs" / "media" / media).is_file(), media
 
     with tempfile.TemporaryDirectory() as temp:
         artifacts = Path(temp)
@@ -59,6 +79,14 @@ def main() -> None:
         block = release_block(manifest, manifest["release_url"])
         assert START_MARKER in block and END_MARKER in block
         assert "SHA256" in block and "Download EXE" in block
+        assert "MoHan Desktop Assistant" in block
+        assert "墨寒的傲嬌工程小劇場" in block
+        assert "Contribute a pull request" in block
+        assert "buymeacoffee.com/flameblade_studio" in block
+        assert "paypal.com/paypalme/flamebladestudio" in block
+        assert "raw.githubusercontent.com" in block
+        assert "wp-content/uploads" not in block
+        assert block.count('class="mohan-scene"') >= 6
         initial = "<p>保留的網站內容</p>"
         first = replace_managed_block(initial, block)
         second = replace_managed_block(first, block.replace("2.0.15", "2.0.16"))
