@@ -35,6 +35,21 @@ class _FakeDB:
         ]
 
 
+class _FakeSimplifiedDB:
+    def setting(self, key: str, default=""):
+        return {
+            "user_title": "主上",
+            "assistant_name": "墨寒",
+            "ui_language": "zh-CN",
+        }.get(key, default)
+
+    def recent_chat(self, _limit: int):
+        return [
+            {"role": "assistant", "content": "妾会替主上打开软件。"},
+            {"role": "user", "content": "好，继续。"},
+        ]
+
+
 def run() -> None:
     safe = RealtimeVoiceClient._sanitize_realtime_transcription_prompt(
         OLD_PROMPT
@@ -84,6 +99,18 @@ def run() -> None:
     assert "妾方才想說一件有趣的事" in recent
     assert "好呀你說" in recent
     assert "請使用台灣繁體中文轉錄" not in recent
+
+    simplified_window = type(
+        "_SimplifiedWindow",
+        (),
+        {"db": _FakeSimplifiedDB()},
+    )()
+    simplified_recent = CompanionWindow._recent_realtime_context(
+        simplified_window,
+        "",
+    )
+    assert "打开软件" in simplified_recent
+    assert "開啟軟體" not in simplified_recent
 
     print("REALTIME_PROMPT_CONTEXT_GUARD_OK")
 

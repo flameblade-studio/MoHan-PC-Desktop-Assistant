@@ -15,6 +15,7 @@ import urllib.request
 import winsound
 import wave
 from array import array
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
@@ -168,17 +169,63 @@ def apply_wav_volume(
         return audio
 
 
-def _is_allowed_companion_voice(name: str) -> bool:
-    # 墨寒的本機備援聲音只列女聲；Zhiwei 是男性聲線。
-    return "zhiwei" not in name.lower()
+@dataclass(frozen=True)
+class WindowsVoiceInfo:
+    """One installed Windows speech voice with trustworthy metadata."""
+
+    name: str
+    culture: str
+    gender: str
 
 
-def windows_voices() -> list[tuple[str, str]]:
+_KNOWN_FEMALE_VOICE_MARKERS = ("yating", "hanhan")
+_KNOWN_MALE_VOICE_MARKERS = ("zhiwei",)
+
+
+def is_known_male_windows_voice(name: str) -> bool:
+    lowered_name = str(name or "").lower()
+    return any(
+        marker in lowered_name for marker in _KNOWN_MALE_VOICE_MARKERS
+    )
+
+
+def _normalized_voice_gender(value: str, name: str) -> str:
+    normalized = str(value or "").strip().lower()
+    if normalized in {"female", "feminine", "woman"}:
+        return "female"
+    if normalized in {"male", "masculine", "man"}:
+        return "male"
+    lowered_name = name.lower()
+    if any(marker in lowered_name for marker in _KNOWN_FEMALE_VOICE_MARKERS):
+        return "female"
+    if is_known_male_windows_voice(lowered_name):
+        return "male"
+    return "unknown"
+
+
+def _is_allowed_companion_voice(name: str, gender: str = "") -> bool:
+    """Allow only voices Windows identifies as female.
+
+    Yating and Hanhan remain compatibility fallbacks for older Windows voice
+    registrations that omit Gender. Unknown voices are deliberately excluded:
+    silently falling back to a possibly male system voice would violate the
+    character contract.
+    """
+
+    lowered_name = name.lower()
+    if is_known_male_windows_voice(lowered_name):
+        return False
+    return _normalized_voice_gender(gender, name) == "female"
+
+
+def windows_voice_catalog() -> list[WindowsVoiceInfo]:
+    """Return installed female OneCore and Desktop SAPI voices."""
+
     if os.name != "nt":
         return []
     import winreg
 
-    voices: list[tuple[str, str]] = []
+    voices: list[WindowsVoiceInfo] = []
     locations = (
         (
             r"SOFTWARE\Microsoft\Speech_OneCore\Voices\Tokens",
@@ -206,40 +253,67 @@ def windows_voices() -> list[tuple[str, str]]:
                             ).replace("_", "-")
                         except (OSError, ValueError):
                             culture = ""
+                        try:
+                            gender = str(
+                                winreg.QueryValueEx(attrs, "Gender")[0]
+                            )
+                        except OSError:
+                            gender = ""
                     full_name = prefix + name
-                    if _is_allowed_companion_voice(full_name):
-                        voices.append((full_name, culture))
+                    normalized_gender = _normalized_voice_gender(
+                        gender,
+                        full_name,
+                    )
+                    if _is_allowed_companion_voice(
+                        full_name,
+                        normalized_gender,
+                    ):
+                        voices.append(
+                            WindowsVoiceInfo(
+                                full_name,
+                                culture,
+                                normalized_gender,
+                            )
+                        )
         except OSError:
             continue
     return voices
 
 
+def windows_voices() -> list[tuple[str, str]]:
+    return [(voice.name, voice.culture) for voice in windows_voice_catalog()]
+
+
 def preferred_windows_voice(
-    voices: list[tuple[str, str]], saved: str = ""
+    voices: list[tuple[str, str]],
+    saved: str = "",
+    target_language: str = "zh-TW",
 ) -> str:
     voices = [
         (name, culture)
         for name, culture in voices
-        if _is_allowed_companion_voice(name)
+        if not is_known_male_windows_voice(name)
     ]
     installed = {name: culture for name, culture in voices}
-    if (
-        saved in installed
-        and "Zira" not in saved
-        and _is_allowed_companion_voice(saved)
-    ):
+    if saved in installed:
         return saved
-    for keyword in ("Yating", "Hanhan"):
-        for name, culture in voices:
-            if keyword.lower() in name.lower() and culture.lower() == "zh-tw":
-                return name
+    target = str(target_language or "").strip().lower()
+    family = target.split("-", 1)[0]
+    if target in {"zh", "zh-tw"}:
+        for keyword in ("Yating", "Hanhan"):
+            for name, culture in voices:
+                if (
+                    keyword.lower() in name.lower()
+                    and culture.lower() == "zh-tw"
+                ):
+                    return name
     for name, culture in voices:
-        if culture.lower() == "zh-tw":
+        if target and culture.lower() == target:
             return name
     for name, culture in voices:
-        if culture.lower().startswith("zh-"):
+        if family and culture.lower().split("-", 1)[0] == family:
             return name
-    return ""
+    return voices[0][0] if voices else ""
 
 
 class WindowsTTS(QObject):
@@ -268,6 +342,17 @@ class WindowsTTS(QObject):
 
     def _run(self, text: str, voice_name: str, rate: int) -> None:
         try:
+            installed = windows_voices()
+            selected_voice = preferred_windows_voice(
+                installed,
+                voice_name,
+                "",
+            )
+            if not selected_voice:
+                raise RuntimeError(
+                    "Windows 沒有偵測到已明確標示為女性的本機語音。"
+                )
+            voice_name = selected_voice
             if voice_name.startswith("OneCore::"):
                 self._run_onecore(
                     text,

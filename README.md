@@ -20,7 +20,7 @@
 
 <p align="center">
   <strong>Author / 軟體作者：CHOU MING HUA</strong><br>
-  Current public preview / 目前公開預覽版：v2.0.14 RC<br>
+  Current public preview / 目前公開預覽版：v2.0.14 RC3<br>
   Windows 10/11 · Python 3.12 · PySide6 · MIT License
 </p>
 
@@ -34,6 +34,7 @@
 > smart-home connectors.
 
 - [繁體中文](#繁體中文)
+- [简体中文](README.zh-CN.md)
 - [English](#english)
 
 <p align="center">
@@ -236,14 +237,20 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我則始終負�
 - Google、Microsoft、GitHub、Home Assistant 與私人網路遠端功能的擴充架構。
 - 單一 `.mohan-profile` 可攜檔，可在不同 Windows 電腦間轉移工作進度。
 - 首次啟動精靈可自訂助理名稱、使用者稱呼、組織名稱、視窗標題、工作類型與
-  喚醒詞；現有個人安裝的設定不會被公開版預設覆蓋。
+  喚醒詞，並可選擇臺灣繁中、簡體中文或英文；現有個人安裝的設定不會被
+  公開版預設覆蓋。
 
-目前程式操作介面以臺灣繁體中文為主，英文介面尚未完成。
+目前已提供首次啟動、聊天、語音、權限、基本設定、工作模式與提醒功能的
+英文及簡中可用範圍；較進階的管理頁面仍以臺灣繁體中文為主，完整在地化仍
+在進行。簡中使用說明請見 [README.zh-CN.md](README.zh-CN.md)。
+新使用者預設使用 Windows 本機語音，不需要 OpenAI API 金鑰即可先體驗基本
+功能。語音清單只顯示 Windows 明確標示為女性的聲音，zh-TW 預設仍優先使用
+Microsoft Yating；其他語言則優先使用相符語系的已安裝女性聲音。
 
 ## 整合驗證狀態
 
 > **公開預覽版注意事項：** Microsoft 套件、GitHub 與 Home Assistant 的
-> 程式架構、權限邊界及內部測試已建置，但截至 v2.0.14 RC，尚未使用真實
+> 程式架構、權限邊界及內部測試已建置，但截至 v2.0.14 RC3，尚未使用真實
 > Microsoft 帳號／租用戶、GitHub 帳號／儲存庫及 Home Assistant
 > 主機／實體設備完成端到端驗證。這三項目前屬於**實驗性預覽功能**，
 > 不應視為已保證可在所有真實環境完整運作。
@@ -372,10 +379,10 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.0.14-RC"
+.\build.ps1 -Version "2.0.14-rc.3"
 ```
 
-v2.0.14 RC 在封裝前通過完整自動測試，以及 25,000 次表情、姿勢、語音、
+v2.0.14 RC3 在封裝前通過完整自動測試，以及 25,000 次表情、姿勢、語音、
 注視與物理混合壓力測試。測試不能取代尚未完成的第三方真實環境驗證。
 
 GitHub 的 `v*` 標籤會自動建立 Windows x64 可攜 ZIP、EXE 安裝程式與 MSI
@@ -507,16 +514,24 @@ Key capabilities:
   confirmation, result verification, audit logs, and emergency stop.
 - Portable one-file profile handoff between Windows computers.
 - A first-run wizard for assistant name, user title, organization, window title,
-  work type, UI language, and wake word.
+  work type, UI language, and wake word, with Taiwan Traditional Chinese,
+  Simplified Chinese, and English setup paths.
 
-The current application interface is primarily Taiwan Traditional Chinese.
-Complete English UI localization is not yet available.
+Minimum usable English and Simplified Chinese paths now cover first run, chat,
+voice, permissions, basic settings, work modes, and reminders. Some advanced
+management screens remain primarily Taiwan Traditional Chinese, so full
+localization is still in progress. See the dedicated
+[Simplified Chinese README](README.zh-CN.md). New users default to Windows local
+speech and can try the basic experience without an OpenAI API key. Only
+installed Windows voices explicitly identified as female are listed; zh-TW
+continues to prefer Microsoft Yating, while other languages prefer a matching
+installed female voice.
 
 ## Integration verification status
 
 > **Public preview notice:** Microsoft, GitHub, and Home Assistant connector
 > architecture, permission boundaries, and internal tests are implemented.
-> As of v2.0.14 RC, they have **not** completed end-to-end validation with a
+> As of v2.0.14 RC3, they have **not** completed end-to-end validation with a
 > real Microsoft tenant, GitHub account/repository, or Home Assistant
 > server/physical devices. Treat these as **experimental preview features**,
 > not guaranteed production-ready integrations.
@@ -643,10 +658,10 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.0.14-RC"
+.\build.ps1 -Version "2.0.14-rc.3"
 ```
 
-Before packaging, v2.0.14 RC passed the complete automated suite and a
+Before packaging, v2.0.14 RC3 passed the complete automated suite and a
 25,000-step mixed expression, pose, speech, gaze, and physics stress test.
 Automated tests do not replace uncompleted third-party live verification.
 
