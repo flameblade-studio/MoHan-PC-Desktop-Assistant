@@ -76,6 +76,34 @@ def run() -> None:
             window = CompanionWindow(startup_speech=False)
         window.show()
         app.processEvents()
+        wait_states: list[str] = []
+        window.dashboard.state_requested.connect(wait_states.append)
+        window.dashboard.ai_busy = True
+        window.dashboard._schedule_ai_wait_expression("早安，墨寒")
+        QTest.qWait(900)
+        assert "thinking_front" not in wait_states
+
+        # A completed request must invalidate its delayed reaction.  Otherwise
+        # the old timer can make MoHan turn and think after she has replied.
+        window.dashboard._schedule_ai_wait_expression(
+            "請分析兩個方案的利弊、風險與優先順序。"
+        )
+        window.dashboard.ai_busy = False
+        QTest.qWait(900)
+        assert "thinking_front" not in wait_states
+
+        window.dashboard.ai_busy = True
+        window.dashboard._schedule_ai_wait_expression(
+            "請分析兩個方案的利弊、風險與優先順序。"
+        )
+        QTest.qWait(900)
+        assert wait_states[-1] == "thinking_front"
+        window.dashboard.ai_busy = False
+        window.set_state("idle", force=True)
+        QTest.qWait(700)
+        app.processEvents()
+        window._set_expression(window._idle_expression(), fade=False)
+        window.overlay_opacity.setOpacity(0.0)
         assert window.dashboard.portable_profile_panel is not None
         assert (
             window.dashboard.portable_profile_panel.export_button.text()

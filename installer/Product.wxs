@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*"
+           Name="MoHan Desktop Assistant"
+           Language="1028"
+           Version="$(var.ProductVersion)"
+           Manufacturer="CHOU MING HUA"
+           UpgradeCode="E1F22A47-1B50-4B6C-AF43-543FE68370C7">
+    <Package InstallerVersion="500" Compressed="yes" InstallScope="perUser" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of MoHan Desktop Assistant is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+    <Property Id="ARPPRODUCTICON" Value="MohanIcon" />
+    <Property Id="ARPURLINFOABOUT" Value="https://www.flamebladestudio.com.tw" />
+    <Property Id="ARPURLUPDATEINFO" Value="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases" />
+    <Icon Id="MohanIcon" SourceFile="$(var.IconPath)" />
+    <Feature Id="Complete" Title="MoHan Desktop Assistant" Level="1">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="StartMenuShortcut" />
+    </Feature>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="LocalAppDataFolder">
+        <Directory Id="ProgramsFolder" Name="Programs">
+          <Directory Id="INSTALLFOLDER" Name="MoHan Desktop Assistant" />
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="MoHan Desktop Assistant" />
+      </Directory>
+    </Directory>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="StartMenuShortcut" Guid="9B3D236E-A2E2-4CD0-9935-C7DA7AC56147">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="MoHan Desktop Assistant"
+                  Target="[INSTALLFOLDER]$(var.ExecutableName)"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\MoHan Desktop Assistant"
+                       Name="installed"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Product>
+</Wix>

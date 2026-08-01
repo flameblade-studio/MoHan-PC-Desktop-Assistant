@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from expression_system import (
     EMOTION_TO_EXPRESSION,
     ExpressionArbiter,
+    classify_wait_expression,
     parse_internal_emotion,
 )
 
@@ -25,6 +26,25 @@ class VirtualClock:
 
 
 def run() -> None:
+    # Waiting for the network is not itself a thinking emotion.  Casual and
+    # ordinary factual questions must keep the current natural pose.
+    assert classify_wait_expression("早安，墨寒") is None
+    assert classify_wait_expression("妳今天心情好嗎？") is None
+    assert classify_wait_expression("天空為什麼是藍色？") is None
+
+    analytical = classify_wait_expression(
+        "請分析這兩個方案的利弊、風險與優先順序。"
+    )
+    assert analytical is not None
+    assert analytical.expression == "thinking_front"
+    assert analytical.delay_ms >= 800
+
+    attentive = classify_wait_expression(
+        "我今天把企劃重新整理了一遍，還補上角色設定，接下來想和妳說說目前的進度。"
+    )
+    assert attentive is not None
+    assert attentive.expression == "attentive_front"
+
     allowed = set(EMOTION_TO_EXPRESSION.values())
     clock = VirtualClock()
     arbiter = ExpressionArbiter(allowed, clock=clock)

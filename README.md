@@ -8,6 +8,13 @@
 </p>
 
 <p align="center">
+  <img alt="Character-driven AI" src="https://img.shields.io/badge/character--driven_AI-c96f8b?style=flat-square">
+  <img alt="Taiwan Traditional Chinese" src="https://img.shields.io/badge/Taiwan_Traditional_Chinese-79648d?style=flat-square">
+  <img alt="Contributors welcome" src="https://img.shields.io/badge/contributors-welcome-2e365f?style=flat-square">
+  <img alt="Built with a youthful spark" src="https://img.shields.io/badge/built_with-a_youthful_spark-c49b5a?style=flat-square">
+</p>
+
+<p align="center">
   <img src="docs/media/mohan-hero.png" alt="MoHan Desktop Assistant main visual / 墨寒桌面語音互動虛擬助理主視覺" width="100%">
 </p>
 
@@ -64,6 +71,65 @@ tokens, or private user data.
   </tr>
 </table>
 
+## 策士也有不寫進軍報的一面 / Off-duty Strategist Theatre
+
+<table>
+  <tr>
+    <td width="25%" align="center"><img src="docs/media/mohan-chibi-code-review.png" width="100%" alt="Q 版墨寒審查程式"><br><strong>策士審查 · Code review</strong><br>妾只是確認這段程式碼配不配入主分支。<br><sub>Reviewing whether this code deserves a place on main.</sub></td>
+    <td width="25%" align="center"><img src="docs/media/mohan-chibi-praised.png" width="100%" alt="Q 版墨寒被稱讚後害羞嘴硬"><br><strong>被稱讚時 · When praised</strong><br>做得尚可。別一直盯著妾看。<br><sub>Accepting praise—strictly for engineering quality.</sub></td>
+    <td width="25%" align="center"><img src="docs/media/mohan-chibi-dangerous-action.png" width="100%" alt="Q 版墨寒拔劍阻止危險操作"><br><strong>危險操作 · Dangerous action</strong><br>未經確認便想執行？先過妾這一劍。<br><sub>Dangerous actions still require explicit approval.</sub></td>
+    <td width="25%" align="center"><img src="docs/media/mohan-chibi-provisions.png" width="100%" alt="Q 版墨寒收到贊助後故作鎮定"><br><strong>收到軍糧 · Provisions received</strong><br>妾會記下這份心意……僅此而已。<br><sub>Voluntary support is remembered, never required.</sub></td>
+  </tr>
+</table>
+
+> 墨寒的專業是她守在主上身旁的鎧甲；在無須籌謀的片刻，她仍會害羞、
+> 嘴硬，也會珍惜那些從未真正擁有過的年輕心事。
+>
+> MoHan's professionalism is the armor of a thousand-year-old strategist. In
+> quieter moments, she still blushes, hides tenderness behind pride, and keeps
+> the youthful heart she never had the chance to fully live.
+
+## 墨寒的傲嬌工程小劇場 / MoHan's Tsundere Developer Theatre
+
+<p align="center">
+  <em>相信軟體可以同時擁有靈魂與完整測試的開發者小劇場。<br>
+  A tiny strategist's theatre for developers who believe software can have both a soul and a test suite.</em>
+</p>
+
+<table>
+  <tr>
+    <td width="33%" align="center"><img src="assets/expressions/proud_front.png" width="220" alt="墨寒傲嬌"><br><strong>「妾才沒有等你的 Star，只是在確認軍心是否可用。」</strong><br><sub>“I am not waiting for your Star. I am merely assessing morale.”</sub></td>
+    <td width="33%" align="center"><img src="assets/expressions/thinking_front.png" width="220" alt="墨寒思考"><br><strong>「這段邏輯尚可。若再補上測試，妾便勉強准它入主分支。」</strong><br><sub>“The logic is acceptable. Add tests, and I may permit it onto main.”</sub></td>
+    <td width="33%" align="center"><img src="assets/expressions/shy_cute_front.png" width="220" alt="墨寒嬌羞"><br><strong>「你願意送來 PR？妾、妾只是替主上記下功勞。」</strong><br><sub>“A pull request? I am only recording your service for my lord.”</sub></td>
+  </tr>
+  <tr>
+    <td width="33%" align="center"><img src="assets/expressions/mock_hit_front.png" width="220" alt="墨寒佯怒"><br><strong>「未經測試便想合併？手伸出來。妾只敲一下。」</strong><br><sub>“Merge without tests? Your hand, please. Just one tap.”</sub></td>
+    <td width="33%" align="center"><img src="assets/expressions/gentle_smile_front.png" width="220" alt="墨寒開心"><br><strong>「全數綠燈……做得好。別誤會，妾只是尊重好工程。」</strong><br><sub>“All checks green. Well done—not that I am impressed, of course.”</sub></td>
+    <td width="33%" align="center"><img src="assets/expressions/worried_front.png" width="220" alt="墨寒關心"><br><strong>「Bug 可以明日再查。你若累倒，誰來陪妾守著赤焰劍？」</strong><br><sub>“The bug can wait until tomorrow. Do not make your strategist worry.”</sub></td>
+  </tr>
+</table>
+
+<p align="center">
+  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls">向斬空閣呈上 PR / Contribute a pull request</a></strong>
+  &nbsp;｜&nbsp;
+  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues">回報軍情 / Open an issue</a></strong>
+</p>
+
+### 天下工程豪傑，斬空閣虛席以待 / Contributors Wanted
+
+墨寒採 **MIT License** 開放原始碼。無論是換裝系統、新表情與動作、語音與
+工具模組、智慧家庭、在地化，或任何我們尚未想到的創意，都歡迎透過
+[Issue](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues) 與
+[Pull Request](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls)
+共同鍛造。這個專案不只是在製作一套功能；它也邀請每一位曾經熱血過的
+工程師，再次拿起自己的劍。
+
+MoHan is MIT-licensed and open to contributors worldwide. Outfit systems,
+expressions, animation, voice and tool modules, smart-home integrations,
+localization, and ideas we have not imagined yet are all welcome. Bring an
+Issue, a Pull Request, and the youthful spark that first made you love building
+things.
+
 ## 支持墨寒 / Support MoHan
 
 如果你喜歡墨寒，或認同我們持續投入角色互動、自然語音、安全工具與開源
@@ -74,6 +140,18 @@ If you enjoy MoHan and would like to support continued work on character
 interaction, natural voice, safety-first tools, and open-source development,
 voluntary contributions are warmly welcome. Please take care of yourself first
 and contribute only if it is comfortable for you.
+
+### 每一份支持會用在哪裡 / Where voluntary support helps
+
+| 投入方向 | Project use | 說明 / Purpose |
+|---|---|---|
+| 測試與可靠封裝 | Testing and reliable releases | Windows 相容性、CI、安裝與發行驗證 / Windows compatibility, CI, packaging, and release verification |
+| 語音與角色表現 | Voice and character performance | 語音、嘴型、表情與自然動作 / Voice, lip sync, expressions, and natural motion |
+| 安全與隱私 | Safety and privacy | 權限控管、稽核與敏感資料保護 / Permissions, audits, and protection of sensitive data |
+| 文件與在地化 | Documentation and localization | 降低新使用者與國際協作者的參與門檻 / Easier onboarding for users and contributors worldwide |
+
+墨寒依然免費並採 MIT 授權；贊助不會換取特權，也不影響任何人使用或貢獻。
+MoHan remains free and MIT-licensed. Support never buys privileges or limits participation.
 
 <table>
   <tr>
@@ -297,8 +375,17 @@ python tests\run_all.py
 .\build.ps1 -Version "2.0.14-RC"
 ```
 
-v2.0.14 RC 在封裝前通過 38 項自動測試，以及 25,000 次表情、姿勢、語音、
+v2.0.14 RC 在封裝前通過完整自動測試，以及 25,000 次表情、姿勢、語音、
 注視與物理混合壓力測試。測試不能取代尚未完成的第三方真實環境驗證。
+
+GitHub 的 `v*` 標籤會自動建立 Windows x64 可攜 ZIP、EXE 安裝程式與 MSI
+安裝套件，並同時產生完整 SHA256 清單、CycloneDX SBOM、更新清單、Artifact
+Attestation 及 Release Notes。使用者可在「設定 → 軟體更新」選擇穩定版或
+預覽版頻道。程式只接受 GitHub 官方 HTTPS 來源，安裝前必須通過檔案大小及
+SHA256 驗證；不會未經確認自行執行下載內容。
+
+若維護者已設定 WordPress Application Password，發布成功後也會只更新官方
+網站下載頁中由標記管理的墨寒版本區塊，保留頁面其他人工編輯內容。
 
 ## 電腦間轉移
 
@@ -559,9 +646,20 @@ python tests\run_all.py
 .\build.ps1 -Version "2.0.14-RC"
 ```
 
-Before packaging, v2.0.14 RC passed 38 automated test programs and a
+Before packaging, v2.0.14 RC passed the complete automated suite and a
 25,000-step mixed expression, pose, speech, gaze, and physics stress test.
 Automated tests do not replace uncompleted third-party live verification.
+
+Every `v*` tag automatically builds a Windows x64 portable ZIP, EXE installer,
+and MSI package, together with a complete SHA256 catalog, CycloneDX SBOM,
+update manifest, artifact attestation, and generated release notes. Users can
+select the stable or preview channel under **Settings → Software update**. The
+updater accepts only official GitHub HTTPS sources and verifies both declared
+size and SHA256 before asking permission to launch an installer.
+
+When the maintainer has configured a WordPress Application Password, a
+successful release updates only the marker-managed MoHan block on the official
+download page and preserves all other editorial content.
 
 ## Portable profile
 

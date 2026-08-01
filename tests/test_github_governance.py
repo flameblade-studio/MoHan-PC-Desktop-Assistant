@@ -41,7 +41,19 @@ def main() -> None:
     assert "tests/run_all.py" in release
     assert "PACKAGED_SELFTEST_OK" in release
     assert "PACKAGED_EVENT_LOOP_OK" in release
+    assert "Build EXE and MSI installers" in release
+    assert "installer\\build_installers.ps1" in release
+    assert "installer\\test_installers.ps1" in release
+    assert "create_release_metadata.py" in release
+    assert "sync_wordpress_download_page.py" in release
     assert "client_secret" not in release
+
+    secret_defense = read(".github/workflows/secret-defense.yml")
+    assert "gitleaks/gitleaks-action@ff98106e" in secret_defense
+    assert "fetch-depth: 0" in secret_defense
+    release_notes = read(".github/release.yml")
+    assert "New features / 新功能" in release_notes
+    assert "Security / 安全性" in release_notes
 
     read("ROADMAP.md")
     read("GOVERNANCE.md")

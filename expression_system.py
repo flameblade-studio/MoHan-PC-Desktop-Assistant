@@ -70,6 +70,92 @@ class FaceAnchorProfile:
     score: float
 
 
+@dataclass(frozen=True)
+class WaitExpressionCue:
+    """A delayed, optional character reaction while an AI reply is pending."""
+
+    expression: str
+    delay_ms: int
+    reason: str
+
+
+_DEEP_THINKING_MARKERS = (
+    "分析",
+    "比較",
+    "評估",
+    "規劃",
+    "策略",
+    "權衡",
+    "利弊",
+    "風險",
+    "優先順序",
+    "推理",
+    "深入",
+    "詳細說明",
+    "從長計議",
+    "該不該",
+    "是否應該",
+    "如何取捨",
+    "不好回答",
+    "難以回答",
+    "認真想",
+)
+_CASUAL_MARKERS = (
+    "早安",
+    "午安",
+    "晚安",
+    "你好",
+    "妳好",
+    "在嗎",
+    "謝謝",
+    "辛苦了",
+    "好呀",
+    "好的",
+)
+
+
+def classify_wait_expression(prompt: str) -> WaitExpressionCue | None:
+    """Choose a restrained pre-reply reaction from the user's actual prompt.
+
+    Network latency is not an emotion.  Routine conversation therefore keeps
+    the current natural pose.  Only prompts carrying real analytical weight
+    earn a delayed thinking pose; longer narratives may receive an attentive
+    listening pose instead.
+    """
+
+    compact = "".join(str(prompt or "").split())
+    if not compact:
+        return None
+    if len(compact) <= 18 and any(word in compact for word in _CASUAL_MARKERS):
+        return None
+
+    score = 0
+    marker_hits = sum(word in compact for word in _DEEP_THINKING_MARKERS)
+    score += min(3, marker_hits * 2)
+    if len(compact) >= 48:
+        score += 1
+    if len(compact) >= 96:
+        score += 1
+    if compact.count("？") + compact.count("?") >= 2:
+        score += 1
+    if sum(compact.count(mark) for mark in ("。", "；", ";", "\n")) >= 2:
+        score += 1
+
+    if score >= 2:
+        return WaitExpressionCue(
+            "thinking_front",
+            850,
+            "analytical_or_difficult_prompt",
+        )
+    if len(compact) >= 30:
+        return WaitExpressionCue(
+            "attentive_front",
+            650,
+            "long_user_narrative",
+        )
+    return None
+
+
 def parse_internal_emotion(value: str) -> TaggedReply:
     """Remove every internal marker and return only a validated final tag."""
     raw = str(value or "")

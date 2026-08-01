@@ -27,14 +27,26 @@ if (-not $Python) {
     throw "Python was not found. Activate a virtual environment or pass -Python."
 }
 
-& $Python -m PyInstaller `
-    --noconfirm `
-    --clean `
-    --windowed `
-    --name "$AppName-$Version" `
-    --icon "assets\mohan-halfbody.ico" `
-    --add-data "assets;assets" `
-    --add-data "voice_listener.ps1;." `
-    app.py
+$BuildInfo = Join-Path $ProjectRoot "build-info.json"
+@{
+    version = $Version
+    repository = "hitoshic1982/MoHan-PC-Desktop-Assistant"
+} | ConvertTo-Json | Set-Content -Encoding utf8 $BuildInfo
+
+try {
+    & $Python -m PyInstaller `
+        --noconfirm `
+        --clean `
+        --windowed `
+        --name "$AppName-$Version" `
+        --icon "assets\mohan-halfbody.ico" `
+        --add-data "assets;assets" `
+        --add-data "voice_listener.ps1;." `
+        --add-data "build-info.json;." `
+        app.py
+}
+finally {
+    Remove-Item -LiteralPath $BuildInfo -Force -ErrorAction SilentlyContinue
+}
 
 Write-Host "Build complete: dist\$AppName-$Version\"

@@ -83,6 +83,7 @@ from db import StudioDB, format_duration
 from expression_system import (
     ExpressionArbiter,
     FaceAnchorProfile,
+    classify_wait_expression,
     parse_internal_emotion,
 )
 from feature_registry import DashboardFeatureRegistry
@@ -100,6 +101,8 @@ from realtime_voice import RealtimeVoiceClient
 from profile_transfer_ui import PortableProfilePanel
 from service_container import CompanionServices, create_default_services
 from text_normalizer import to_taiwan_traditional
+from updater_ui import UpdatePanel
+from version_info import APP_VERSION
 from speech import (
     SpeechListener,
     preferred_windows_voice,
@@ -1076,6 +1079,7 @@ class Dashboard(QDialog):
         self.thread_pool = QThreadPool.globalInstance()
         self.ai_queue: deque[tuple[str, str]] = deque()
         self.ai_busy = False
+        self.ai_request_generation = 0
         self.next_expression_metadata: tuple[str, float, str] | None = None
         self.chat_loaded_limit = 50
         self.chat_zoom_percent = int(
@@ -2485,6 +2489,8 @@ class Dashboard(QDialog):
         form.addRow("AI 人格提示詞", self.persona_prompt)
         form.addRow("", clear_key)
         form.addRow("智能核心", self.api_status)
+        self.update_panel = UpdatePanel(self.db, data_dir(), tab)
+        form.addRow(self.update_panel)
         form.addRow("", save)
         return tab
 
@@ -2888,7 +2894,21 @@ class Dashboard(QDialog):
         worker.signals.done.connect(self._ai_done)
         worker.signals.failed.connect(self._ai_failed)
         self.thread_pool.start(worker)
-        self.state_requested.emit("thinking_front")
+        self._schedule_ai_wait_expression(text)
+
+    def _schedule_ai_wait_expression(self, text: str) -> None:
+        """React to conversational difficulty, never to network latency alone."""
+        self.ai_request_generation += 1
+        generation = self.ai_request_generation
+        cue = classify_wait_expression(text)
+        if cue is None:
+            return
+
+        def apply_if_still_waiting() -> None:
+            if self.ai_busy and generation == self.ai_request_generation:
+                self.state_requested.emit(cue.expression)
+
+        QTimer.singleShot(cue.delay_ms, apply_if_still_waiting)
 
     def _capture_explicit_memory(self, text: str) -> None:
         if not bool(self.db.setting("auto_memory", True)):
@@ -7465,6 +7485,7 @@ def main() -> int:
         os.environ["QT_QPA_PLATFORM"] = "offscreen"
     app = QApplication(sys.argv)
     app.setApplicationName(APP_NAME)
+    app.setApplicationVersion(APP_VERSION)
     app.setWindowIcon(QIcon(str(resource_path(APP_ICON_PATH))))
     app.setQuitOnLastWindowClosed(False)
     app.setStyleSheet(STYLE)
@@ -7596,6 +7617,7 @@ def main() -> int:
         app.processEvents()
         return 0 if ok else 2
     window.show()
+    window.dashboard.update_panel.start_automatic_check()
     if smoke_auto_exit:
         output_arg = next(
             (
