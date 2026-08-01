@@ -2,6 +2,20 @@
 
 All notable public changes to MoHan Desktop Assistant are documented here.
 
+## Unreleased
+
+- Added secure in-app stable/preview update checks with official-host
+  allowlisting, semantic-version validation, size limits, SHA256 verification,
+  explicit install confirmation, and preserved local profiles.
+- Added automated Windows x64 EXE and MSI installers with silent
+  install/self-test/uninstall verification in GitHub Actions.
+- Expanded releases with a complete checksum catalog, CycloneDX SBOM, update
+  manifest, artifact attestations, and categorized generated release notes.
+- Added optional marker-scoped WordPress download-page synchronization using
+  GitHub Secrets and a dedicated WordPress Application Password.
+- Added full-history Gitleaks checks as a compensating control for GitHub
+  Secret Protection features unavailable to personal public repositories.
+
 ## v2.0.14 RC — 2026-07-31
 
 - Fixed OpenAI streaming WAV headers overflowing during application-local

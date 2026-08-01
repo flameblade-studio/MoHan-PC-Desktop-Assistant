@@ -91,9 +91,14 @@ The workflow checks out the exact tag and then:
 3. runs the full regression suite;
 4. builds the Windows x64 application with PyInstaller;
 5. runs packaged self-test and event-loop smoke tests;
-6. produces a ZIP, SHA-256 checksum, and CycloneDX SBOM;
-7. creates GitHub artifact provenance attestations; and
-8. publishes the assets to a GitHub Release.
+6. produces a portable ZIP plus per-user EXE and MSI installers;
+7. silently installs, self-tests, and removes both installer formats;
+8. produces a complete SHA-256 catalog, CycloneDX SBOM, and signed update
+   manifest;
+9. creates GitHub artifact provenance attestations;
+10. generates categorized Release Notes and publishes every asset; and
+11. synchronizes the marker-managed official WordPress download block when
+    the required repository secrets are configured.
 
 Tags containing a prerelease suffix such as `-rc.1` are published as
 pre-releases. Stable semantic tags are published as normal releases. Never
@@ -105,3 +110,27 @@ Release artifacts can be verified with:
 Get-FileHash .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip -Algorithm SHA256
 gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo hitoshic1982/MoHan-PC-Desktop-Assistant
 ```
+
+## Official website synchronization
+
+Create a dedicated, least-privilege WordPress user and an Application Password.
+Store the values only as GitHub Actions repository secrets:
+
+- `WORDPRESS_BASE_URL`: `https://www.flamebladestudio.com.tw`
+- `WORDPRESS_USERNAME`: the dedicated release-sync username
+- `WORDPRESS_APP_PASSWORD`: the WordPress Application Password
+- `WORDPRESS_DOWNLOAD_PAGE_ID`: optional existing page ID; when omitted, the
+  workflow finds or creates the `mohan-desktop-assistant-download` page
+
+The workflow never stores these values in source, logs, release files, the
+update manifest, or the application. It replaces only content enclosed by
+`MOHAN_RELEASE_START` and `MOHAN_RELEASE_END` markers.
+
+## Extended secret scanning
+
+The repository keeps GitHub secret scanning and push protection enabled and
+also runs a full-history Gitleaks check on pull requests, `main`, and a weekly
+schedule. GitHub's account-level non-provider pattern and partner validity
+toggles require an organization-owned GitHub Team/Enterprise repository with
+GitHub Secret Protection; a personal public repository cannot enable those two
+paid organization controls. GitHub's free provider scanning remains active.

@@ -1,0 +1,25 @@
+changelog:
+  exclude:
+    labels:
+      - skip-changelog
+  categories:
+    - title: "✨ New features / 新功能"
+      labels:
+        - enhancement
+        - feature
+    - title: "🐛 Fixes / 修正"
+      labels:
+        - bug
+        - fix
+    - title: "🔐 Security / 安全性"
+      labels:
+        - security
+    - title: "📚 Documentation / 文件"
+      labels:
+        - documentation
+    - title: "📦 Dependencies / 相依套件"
+      labels:
+        - dependencies
+    - title: "🛠 Other changes / 其他變更"
+      labels:
+        - "*"

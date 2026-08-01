@@ -40,3 +40,36 @@ jobs:
 
       - name: Run full regression suite
         run: python tests/run_all.py
+
+  installer:
+    name: installer
+    needs: test
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install runtime dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Install Windows installer toolchains
+        shell: pwsh
+        run: choco install innosetup wixtoolset --no-progress -y
+      - name: Build packaged application
+        shell: pwsh
+        run: .\build.ps1 -Version "2.0.15-ci" -Python (Get-Command python).Source
+      - name: Build EXE and MSI installers
+        shell: pwsh
+        run: |
+          .\installer\build_installers.ps1 `
+            -AppDir "dist\MoHan-Desktop-Assistant-2.0.15-ci" `
+            -Version "2.0.15-ci" `
+            -Tag "v2.0.15-ci" `
+            -OutputDir "ci-installers"
+      - name: Install, self-test, and uninstall both formats
+        shell: pwsh
+        run: .\installer\test_installers.ps1 -ArtifactsDir "ci-installers" -Version "2.0.15-ci"

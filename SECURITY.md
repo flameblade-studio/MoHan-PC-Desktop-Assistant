@@ -33,6 +33,19 @@ OpenAI, Home Assistant, and OAuth secrets use Windows DPAPI and separate files.
 They must not be committed to Git, SQLite, logs, screenshots, exported memory, or
 support bundles.
 
+GitHub secret scanning and push protection remain enabled. Because GitHub does
+not expose account-level non-provider pattern scanning or partner-token
+validity checks to personal public repositories, every pull request and `main`
+push additionally receives a full-history Gitleaks scan. This compensating
+control detects provider tokens, private keys, connection strings, and other
+generic credential patterns without placing any real credential in a test.
+
+The in-app updater accepts manifests and installers only from the official
+GitHub repository over HTTPS. Installer filename, declared size, repository,
+release tag, semantic version, and SHA256 must all validate before the user is
+offered the option to launch it. Updates are never installed without explicit
+confirmation.
+
 ## Remote access
 
 Remote service is disabled by default. Non-loopback binding requires an explicit

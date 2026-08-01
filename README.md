@@ -297,8 +297,17 @@ python tests\run_all.py
 .\build.ps1 -Version "2.0.14-RC"
 ```
 
-v2.0.14 RC 在封裝前通過 38 項自動測試，以及 25,000 次表情、姿勢、語音、
+v2.0.14 RC 在封裝前通過完整自動測試，以及 25,000 次表情、姿勢、語音、
 注視與物理混合壓力測試。測試不能取代尚未完成的第三方真實環境驗證。
+
+GitHub 的 `v*` 標籤會自動建立 Windows x64 可攜 ZIP、EXE 安裝程式與 MSI
+安裝套件，並同時產生完整 SHA256 清單、CycloneDX SBOM、更新清單、Artifact
+Attestation 及 Release Notes。使用者可在「設定 → 軟體更新」選擇穩定版或
+預覽版頻道。程式只接受 GitHub 官方 HTTPS 來源，安裝前必須通過檔案大小及
+SHA256 驗證；不會未經確認自行執行下載內容。
+
+若維護者已設定 WordPress Application Password，發布成功後也會只更新官方
+網站下載頁中由標記管理的墨寒版本區塊，保留頁面其他人工編輯內容。
 
 ## 電腦間轉移
 
@@ -559,9 +568,20 @@ python tests\run_all.py
 .\build.ps1 -Version "2.0.14-RC"
 ```
 
-Before packaging, v2.0.14 RC passed 38 automated test programs and a
+Before packaging, v2.0.14 RC passed the complete automated suite and a
 25,000-step mixed expression, pose, speech, gaze, and physics stress test.
 Automated tests do not replace uncompleted third-party live verification.
+
+Every `v*` tag automatically builds a Windows x64 portable ZIP, EXE installer,
+and MSI package, together with a complete SHA256 catalog, CycloneDX SBOM,
+update manifest, artifact attestation, and generated release notes. Users can
+select the stable or preview channel under **Settings → Software update**. The
+updater accepts only official GitHub HTTPS sources and verifies both declared
+size and SHA256 before asking permission to launch an installer.
+
+When the maintainer has configured a WordPress Application Password, a
+successful release updates only the marker-managed MoHan block on the official
+download page and preserves all other editorial content.
 
 ## Portable profile
 
