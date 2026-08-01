@@ -8,6 +8,13 @@
 </p>
 
 <p align="center">
+  <img alt="Character-driven AI" src="https://img.shields.io/badge/character--driven_AI-c96f8b?style=flat-square">
+  <img alt="Taiwan Traditional Chinese" src="https://img.shields.io/badge/Taiwan_Traditional_Chinese-79648d?style=flat-square">
+  <img alt="Contributors welcome" src="https://img.shields.io/badge/contributors-welcome-2e365f?style=flat-square">
+  <img alt="Built with a youthful spark" src="https://img.shields.io/badge/built_with-a_youthful_spark-c49b5a?style=flat-square">
+</p>
+
+<p align="center">
   <img src="docs/media/mohan-hero.png" alt="MoHan Desktop Assistant main visual / 墨寒桌面語音互動虛擬助理主視覺" width="100%">
 </p>
 
@@ -64,6 +71,28 @@ tokens, or private user data.
   </tr>
 </table>
 
+## 策士也有不寫進軍報的一面 / Off-duty Strategist Theatre
+
+<p align="center">
+  <img src="docs/media/mohan-chibi-theatre.png" width="100%" alt="墨寒 Q 版工程小劇場：審查程式、害羞、阻止危險操作與收到贊助">
+</p>
+
+<table>
+  <tr>
+    <td width="25%" align="center"><strong>策士審查</strong><br>妾只是確認這段程式碼配不配入主分支。<br><sub>Reviewing whether the code deserves main.</sub></td>
+    <td width="25%" align="center"><strong>被稱讚時</strong><br>做得尚可。別一直盯著妾看。<br><sub>Accepting praise—strictly for engineering quality.</sub></td>
+    <td width="25%" align="center"><strong>危險操作</strong><br>未經確認便想執行？先過妾這一劍。<br><sub>Dangerous actions still require explicit approval.</sub></td>
+    <td width="25%" align="center"><strong>收到軍糧</strong><br>妾會記下這份心意……僅此而已。<br><sub>Voluntary support is remembered, never required.</sub></td>
+  </tr>
+</table>
+
+> 墨寒的專業是她守在主上身旁的鎧甲；在無須籌謀的片刻，她仍會害羞、
+> 嘴硬，也會珍惜那些從未真正擁有過的年輕心事。
+>
+> MoHan's professionalism is the armor of a thousand-year-old strategist. In
+> quieter moments, she still blushes, hides tenderness behind pride, and keeps
+> the youthful heart she never had the chance to fully live.
+
 ## 墨寒的傲嬌工程小劇場 / MoHan's Tsundere Developer Theatre
 
 <p align="center">
@@ -89,6 +118,21 @@ tokens, or private user data.
   &nbsp;｜&nbsp;
   <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues">回報軍情 / Open an issue</a></strong>
 </p>
+
+### 天下工程豪傑，斬空閣虛席以待 / Contributors Wanted
+
+墨寒採 **MIT License** 開放原始碼。無論是換裝系統、新表情與動作、語音與
+工具模組、智慧家庭、在地化，或任何我們尚未想到的創意，都歡迎透過
+[Issue](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues) 與
+[Pull Request](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls)
+共同鍛造。這個專案不只是在製作一套功能；它也邀請每一位曾經熱血過的
+工程師，再次拿起自己的劍。
+
+MoHan is MIT-licensed and open to contributors worldwide. Outfit systems,
+expressions, animation, voice and tool modules, smart-home integrations,
+localization, and ideas we have not imagined yet are all welcome. Bring an
+Issue, a Pull Request, and the youthful spark that first made you love building
+things.
 
 ## 支持墨寒 / Support MoHan
 
