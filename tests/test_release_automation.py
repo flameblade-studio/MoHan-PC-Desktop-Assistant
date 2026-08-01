@@ -87,6 +87,23 @@ def main() -> None:
         assert 'src="https://raw.githubusercontent.com/' in block
         assert "wp-content/uploads" not in block
         assert block.count('class="mohan-scene"') >= 6
+        assert block.count('loading="eager"') == 6
+        portable = release_block(
+            {
+                "version": "2.0.14-rc.2",
+                "tag": "v2.0.14-rc.2",
+                "installers": [
+                    {
+                        "kind": "zip",
+                        "url": "https://example.invalid/mohan.zip",
+                        "sha256": "0" * 64,
+                    }
+                ],
+            },
+            "https://example.invalid/release",
+        )
+        assert "ZIP 可攜版（候選版）" in portable
+        assert "Download ZIP" in portable
         initial = "<p>保留的網站內容</p>"
         first = replace_managed_block(initial, block)
         second = replace_managed_block(first, block.replace("2.0.15", "2.0.16"))

@@ -25,6 +25,11 @@ EXPRESSION_ROOT = (
 )
 BUY_ME_A_COFFEE_URL = "https://buymeacoffee.com/flameblade_studio"
 PAYPAL_ME_URL = "https://www.paypal.com/paypalme/flamebladestudio"
+DOWNLOAD_LABELS = {
+    "exe": "EXE 安裝程式（建議）",
+    "msi": "MSI 安裝套件",
+    "zip": "ZIP 可攜版（候選版）",
+}
 
 
 def request_json(
@@ -74,12 +79,13 @@ def release_block(manifest: dict, release_url: str) -> str:
     tag = html.escape(str(manifest["tag"]))
     cards = []
     for installer in manifest["installers"]:
-        label = "EXE 安裝程式（建議）" if installer["kind"] == "exe" else "MSI 安裝套件"
+        kind = str(installer["kind"]).lower()
+        label = DOWNLOAD_LABELS.get(kind, "GitHub 發行檔")
         cards.append(
             '<article class="mohan-download-card"><a class="mohan-button mohan-button-primary" '
             'target="_blank" rel="noopener noreferrer" '
             f'href="{html.escape(installer["url"], quote=True)}">'
-            f'下載 {label}<span>Download {installer["kind"].upper()}</span></a>'
+            f'下載 {label}<span>Download {html.escape(kind.upper())}</span></a>'
             f'<small>SHA256<br><code>{html.escape(installer["sha256"])}</code></small></article>'
         )
     download_cards = "".join(cards)
@@ -87,6 +93,7 @@ def release_block(manifest: dict, release_url: str) -> str:
     return f"""{START_MARKER}
 <style>
 .mohan-landing{{--ink:#24324a;--muted:#65718a;color:var(--ink);font-family:"Noto Sans TC","Segoe UI",sans-serif;line-height:1.75}}
+body.page-id-11163 .wp-block-post-title{{display:none}}
 .mohan-landing *{{box-sizing:border-box}}.mohan-landing a{{text-decoration:none}}.mohan-shell{{max-width:1180px;margin:auto;padding:24px}}
 .mohan-hero{{display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:34px;padding:48px;border-radius:32px;background:linear-gradient(135deg,#eef7ff,#f5edff 52%,#fff0f5);box-shadow:0 20px 60px rgba(45,67,106,.14);overflow:hidden}}
 .mohan-kicker{{font-weight:800;letter-spacing:.14em;color:#6f5aa8;text-transform:uppercase}}.mohan-hero h1{{font-family:"Noto Serif TC",serif;font-size:clamp(2.3rem,5vw,4.6rem);line-height:1.12;margin:.15em 0;color:#233b63}}
@@ -144,12 +151,12 @@ def release_block(manifest: dict, release_url: str) -> str:
 
 <section class="mohan-section"><h2>從初次相遇到每日並肩</h2><p class="mohan-sub">A guided first run, expressive interaction, organized work, editable memory, and transparent permission controls.</p>
 <div class="mohan-gallery">
-<figure><img loading="lazy" src="{MEDIA_ROOT}/first-run-wizard.png" alt="墨寒首次設定精靈"><figcaption>首次設定精靈 / First-run wizard</figcaption></figure>
-<figure><img loading="lazy" src="{MEDIA_ROOT}/voice-modes.png" alt="Realtime 與一般語音模式"><figcaption>雙語音模式 / Realtime &amp; standard voice</figcaption></figure>
-<figure><img loading="lazy" src="{MEDIA_ROOT}/expressions.png" alt="墨寒表情系統"><figcaption>表情與動作 / Expressions &amp; motion</figcaption></figure>
-<figure><img loading="lazy" src="{MEDIA_ROOT}/tasks-and-ideas.png" alt="墨寒待辦與創作靈感"><figcaption>待辦與靈感 / Tasks &amp; ideas</figcaption></figure>
-<figure><img loading="lazy" src="{MEDIA_ROOT}/long-term-memory.png" alt="墨寒長期記憶"><figcaption>可編輯記憶 / Editable memory</figcaption></figure>
-<figure><img loading="lazy" src="{MEDIA_ROOT}/security-permissions.png" alt="墨寒安全權限頁"><figcaption>權限與安全 / Permissions &amp; safety</figcaption></figure>
+<figure><img loading="eager" decoding="async" src="{MEDIA_ROOT}/first-run-wizard.png" alt="墨寒首次設定精靈"><figcaption>首次設定精靈 / First-run wizard</figcaption></figure>
+<figure><img loading="eager" decoding="async" src="{MEDIA_ROOT}/voice-modes.png" alt="Realtime 與一般語音模式"><figcaption>雙語音模式 / Realtime &amp; standard voice</figcaption></figure>
+<figure><img loading="eager" decoding="async" src="{MEDIA_ROOT}/expressions.png" alt="墨寒表情系統"><figcaption>表情與動作 / Expressions &amp; motion</figcaption></figure>
+<figure><img loading="eager" decoding="async" src="{MEDIA_ROOT}/tasks-and-ideas.png" alt="墨寒待辦與創作靈感"><figcaption>待辦與靈感 / Tasks &amp; ideas</figcaption></figure>
+<figure><img loading="eager" decoding="async" src="{MEDIA_ROOT}/long-term-memory.png" alt="墨寒長期記憶"><figcaption>可編輯記憶 / Editable memory</figcaption></figure>
+<figure><img loading="eager" decoding="async" src="{MEDIA_ROOT}/security-permissions.png" alt="墨寒安全權限頁"><figcaption>權限與安全 / Permissions &amp; safety</figcaption></figure>
 </div><div class="mohan-actions" style="justify-content:center"><a class="mohan-button mohan-button-soft" target="_blank" rel="noopener noreferrer" href="{REPOSITORY_URL}/blob/main/docs/media/mohan-demo.mp4">觀看 36 秒展示影片<span>Watch the 36-second demo</span></a></div></section>
 
 <section class="mohan-section mohan-download"><h2>安全地從 GitHub 取得墨寒</h2>
