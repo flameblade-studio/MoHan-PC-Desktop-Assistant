@@ -12,25 +12,33 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QApplication
 
-from ai_client import ENGLISH_PERSONA, offline_reply
+from ai_client import (
+    ENGLISH_PERSONA,
+    SIMPLIFIED_CHINESE_PERSONA,
+    offline_reply,
+)
 from app import (
     Dashboard,
     FirstRunWizard,
     REMINDER_LINES,
     VOICE_ENGINE_WINDOWS,
+    normalize_for_language,
 )
 from db import StudioDB
 from language_support import (
     ENGLISH_REMINDER_LINES,
+    SIMPLIFIED_CHINESE_REMINDER_LINES,
     english_voice_instructions,
     migrate_builtin_reminder_line,
     response_language_instruction,
+    simplified_chinese_voice_instructions,
 )
 from speech import (
     WindowsTTS,
     _is_allowed_companion_voice,
     preferred_windows_voice,
 )
+from ui_localization import _ENGLISH, _SIMPLIFIED_CHINESE
 
 
 class FakeSecretStore:
@@ -59,6 +67,8 @@ class FakeListener(QObject):
 def run() -> None:
     app = QApplication.instance() or QApplication([])
 
+    assert set(_SIMPLIFIED_CHINESE) == set(_ENGLISH)
+
     chinese_lunch = "午膳時辰到了。工作可以等，身體不可以。"
     assert migrate_builtin_reminder_line(
         chinese_lunch,
@@ -68,6 +78,12 @@ def run() -> None:
     ) == ENGLISH_REMINDER_LINES["lunch"]
     assert migrate_builtin_reminder_line(
         ENGLISH_REMINDER_LINES["lunch"],
+        "zh-CN",
+        "lunch",
+        chinese_lunch,
+    ) == SIMPLIFIED_CHINESE_REMINDER_LINES["lunch"]
+    assert migrate_builtin_reminder_line(
+        SIMPLIFIED_CHINESE_REMINDER_LINES["lunch"],
         "zh-TW",
         "lunch",
         chinese_lunch,
@@ -79,12 +95,15 @@ def run() -> None:
         "lunch",
         chinese_lunch,
     ) == custom_lunch
+    assert normalize_for_language("打开软件", "zh-CN") == "打开软件"
+    assert normalize_for_language("打开软件", "zh-TW") == "開啟軟體"
 
     # Gender is strict. Known legacy Taiwan voices remain compatible when an
     # older registry omits Gender, but an arbitrary unknown voice is hidden.
     assert _is_allowed_companion_voice("Microsoft Yating", "")
     assert _is_allowed_companion_voice("Microsoft Hanhan", "")
     assert _is_allowed_companion_voice("Microsoft Zira", "Female")
+    assert _is_allowed_companion_voice("Microsoft Xiaoxiao", "Female")
     assert not _is_allowed_companion_voice("Microsoft David", "Male")
     assert not _is_allowed_companion_voice("Third-party Voice", "")
     assert not _is_allowed_companion_voice("Microsoft Zhiwei", "Female")
@@ -93,6 +112,7 @@ def run() -> None:
         ("OneCore::Microsoft Zira", "en-US"),
         ("OneCore::Microsoft Hanhan", "zh-TW"),
         ("OneCore::Microsoft Yating", "zh-TW"),
+        ("OneCore::Microsoft Xiaoxiao", "zh-CN"),
     ]
     assert preferred_windows_voice(
         female_voices,
@@ -102,6 +122,10 @@ def run() -> None:
         female_voices,
         target_language="en",
     ) == "OneCore::Microsoft Zira"
+    assert preferred_windows_voice(
+        female_voices,
+        target_language="zh-CN",
+    ) == "OneCore::Microsoft Xiaoxiao"
     assert preferred_windows_voice(
         female_voices,
         saved="OneCore::Microsoft Hanhan",
@@ -194,6 +218,49 @@ def run() -> None:
         db.close()
 
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
+        db = StudioDB(Path(temp) / "mohan-zh-cn.db")
+        wizard = FirstRunWizard(db)
+        simplified_index = wizard.ui_language.findData("zh-CN")
+        wizard.ui_language.setCurrentIndex(simplified_index)
+        app.processEvents()
+        assert wizard.windowTitle() == "首次启动设置"
+        assert wizard.form_labels["assistant_name"].text() == "助手名称"
+        assert wizard.work_type.itemText(0) == "一般办公／行政"
+        wizard._save()
+        assert db.setting("ui_language") == "zh-CN"
+        assert db.setting("transcription_language") == "zh"
+        assert db.setting("voice_engine") == VOICE_ENGINE_WINDOWS
+        assert db.setting("persona_prompt") == SIMPLIFIED_CHINESE_PERSONA
+        assert (
+            db.setting("voice_instructions")
+            == simplified_chinese_voice_instructions()
+        )
+        assert "简体中文" in response_language_instruction("zh-CN")
+        assert "妾在听" in offline_reply("你好", "陪伴", "zh-CN")
+        wizard.close()
+
+        db.set_setting("onboarding_complete", True)
+        listener = FakeListener()
+        with patch("app.windows_voices", return_value=female_voices):
+            dashboard = Dashboard(db, listener, FakeSecretStore())
+        assert dashboard.tabs.tabText(0) == "对话"
+        assert dashboard.windows_voice.currentData() == (
+            "OneCore::Microsoft Xiaoxiao"
+        )
+        assert dashboard.permission_controls["delete_files"].currentText() == "禁止"
+        assert dashboard.persona_prompt.toPlainText().strip() == (
+            SIMPLIFIED_CHINESE_PERSONA.strip()
+        )
+        simplified_spoken: list[str] = []
+        dashboard.speak_requested.connect(
+            lambda text, _expression: simplified_spoken.append(text)
+        )
+        dashboard._mode_changed("會議")
+        assert simplified_spoken[-1].startswith("会议模式已启动")
+        dashboard.close()
+        db.close()
+
+    with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
         db = StudioDB(Path(temp) / "mohan-zh.db")
         db.set_setting("onboarding_complete", True)
         db.set_setting("ui_language", "zh-TW")
@@ -208,7 +275,7 @@ def run() -> None:
         dashboard.close()
         db.close()
     app.processEvents()
-    print("ENGLISH_LOCALIZATION_OK")
+    print("LANGUAGE_LOCALIZATION_OK")
 
 
 if __name__ == "__main__":

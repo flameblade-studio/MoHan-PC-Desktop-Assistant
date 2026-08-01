@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from language_support import is_english
+from language_support import is_english, is_simplified_chinese
 
 
 
@@ -181,6 +181,164 @@ _ENGLISH: Mapping[str, str] = {
     "work_timer_not_started": "Today's work timer has not started yet.",
 }
 
+_SIMPLIFIED_CHINESE: Mapping[str, str] = {
+    "first_run_title": "首次启动设置",
+    "first_run_heading": "<b>欢迎使用墨寒桌面助手</b>",
+    "first_run_intro": (
+        "请先建立用户设置。以下内容以后都能在“设置”页修改，不会绑定"
+        "特定公司、职业或工作平台。"
+    ),
+    "assistant_name": "助手名称",
+    "user_title": "助手对您的称呼",
+    "organization_name": "公司／团队名称",
+    "window_title": "完整窗口标题",
+    "work_type": "工作类型",
+    "ui_language": "界面与回复语言",
+    "wake_word": "语音唤醒词",
+    "assistant_name_placeholder": "例如：墨寒、Ava、Office Mate",
+    "user_title_placeholder": "例如：主上、Alex、主管",
+    "organization_placeholder": "公司、工作室或团队名称；个人使用可留空",
+    "window_title_placeholder": "留空时自动使用“助手名称 · 组织名称”",
+    "wake_word_placeholder": "例如：墨寒",
+    "first_run_note": (
+        "工作平台页初始为空。请只添加您实际使用的公司系统、协作工具、"
+        "管理后台或网站。"
+    ),
+    "finish_setup": "完成设置并开始使用",
+    "required_title": "缺少必要信息",
+    "required_identity": "请填写助手名称，以及助手对您的称呼。",
+    "mode": "模式",
+    "start_work": "开始工作",
+    "stop_work": "结束工作",
+    "tab_chat": "对话",
+    "tab_today": "今日待办",
+    "tab_platforms": "工作平台",
+    "tab_memory": "长期记忆",
+    "tab_voice": "语音",
+    "tab_permissions": "电脑权限",
+    "tab_settings": "设置",
+    "chat_retention": "对话保存在本机，不会自动删除",
+    "load_older_chat": "加载更早对话",
+    "manage_chat": "管理／清除对话",
+    "chat_placeholder": "对墨寒说话……",
+    "microphone": "🎙 麦克风",
+    "send_text": "发送",
+    "voice_ready": "语音状态：就绪",
+    "speech_recognition": "单次麦克风识别",
+    "transcription_model": "转录模型",
+    "transcription_language": "转录语言",
+    "transcription_prompt": "转录提示词／常用词",
+    "windows_transcription_fallback": "Windows 备用识别",
+    "last_transcription": "最近转录诊断",
+    "voice_engine": "朗读方式",
+    "windows_voice": "Windows 本机声音",
+    "tts_voice": "OpenAI 文字转语音声音",
+    "realtime_voice": "Realtime 对话声音",
+    "realtime_model": "Realtime 模型",
+    "realtime_transcription_model": "Realtime 转录模型",
+    "realtime_noise": "Realtime 麦克风降噪",
+    "realtime_turn": "Realtime 轮次检测",
+    "realtime_screen_transcript": "Realtime 屏幕转录",
+    "echo_guard": "回声防护",
+    "local_rate": "本机语速",
+    "mohan_volume": "墨寒音量",
+    "voice_style": "语音风格",
+    "realtime": "Realtime 语音",
+    "windows_engine": "Windows 本机语音",
+    "openai_engine": "OpenAI 自然语音",
+    "realtime_engine": "Realtime 即时语音",
+    "no_female_voice": "未检测到已确认的女性 Windows 声音",
+    "female_voice_note": (
+        "只显示 Windows 明确标示为女性的已安装声音，并优先选择与界面"
+        "语言相符的声音。"
+    ),
+    "transcription_language_placeholder": "ISO 语言代码；留空则自动检测",
+    "openai_fallback": "OpenAI 失败时使用 Windows 离线识别",
+    "openai_recognition": "OpenAI 高准确度识别（推荐）",
+    "windows_recognition": "Windows 离线识别",
+    "no_transcription_error": "没有转录错误记录",
+    "preview_voice": "试听：主上，妾在。",
+    "realtime_disconnected": "Realtime：未连接",
+    "start_realtime": "启动 Realtime 自然对话",
+    "stop_realtime": "停止 Realtime 自然对话",
+    "near_field": "近距离麦克风（推荐）",
+    "far_field": "远距离／笔记本麦克风",
+    "noise_off": "关闭降噪",
+    "stable_vad": "稳定完整句（停顿约 0.85 秒）",
+    "semantic_vad": "语义轮次（可能提前截断）",
+    "echo_guard_option": "防止墨寒听见自己的声音",
+    "hybrid_transcript": "屏幕使用高准确度最终转录",
+    "mute": "静音",
+    "rate_down": "降低本机语速",
+    "rate_up": "提高本机语速",
+    "level_suffix": " 级",
+    "realtime_note": (
+        "Realtime 只在启用期间保持麦克风开启。稳定轮次会在您停止说话约 "
+        "0.85 秒后送出；关闭 Realtime 会立即停止传送音频。"
+    ),
+    "model_access_note": (
+        "若 OpenAI 控制台已经启用模型却仍无法访问，请确认模型与 API Key "
+        "属于同一个 Project，再到设置页保存新密钥。"
+    ),
+    "echo_guard_note": (
+        "启用回声防护后，墨寒说话时会暂停上传麦克风音频，播放结束后再"
+        "恢复。对话页只显示最终准确转录。"
+    ),
+    "recognition_note": (
+        "单次麦克风会在约 0.85 秒静音后送出音频，最长录制 10 秒；再次"
+        "点击麦克风可提前送出。"
+    ),
+    "permissions_intro": (
+        "请分别授权每项能力。选择“每次询问”时，墨寒会在执行前请求确认；"
+        "删除文件默认禁止。"
+    ),
+    "permission_open_web": "打开指定网站",
+    "permission_open_folder": "打开工作文件夹",
+    "permission_launch_app": "启动其他应用程序",
+    "permission_write_files": "建立或修改文件",
+    "permission_delete_files": "删除文件",
+    "permission_deny": "禁止",
+    "permission_ask": "每次询问",
+    "permission_allow": "允许",
+    "permissions_warning": (
+        "安全规则：对话内容不能扩大墨寒的权限。AI 可以提出工具请求，"
+        "但实际能否执行只由本机权限设置决定。"
+    ),
+    "save_permissions": "保存工具权限",
+    "permission_blocked": "权限已阻止",
+    "permission_blocked_message": "墨寒目前无权{action}。",
+    "permission_request": "墨寒请求电脑权限",
+    "permission_request_message": "是否允许墨寒本次{action}？",
+    "permission_saved_speech": "电脑权限已保存。妾会守住这些边界。",
+    "profile_heading": "<b>身份与用户设置</b>",
+    "system_heading": "<b>工作与系统设置</b>",
+    "api_key": "OpenAI API 密钥",
+    "text_model": "文字模型",
+    "persona_prompt": "AI 人格提示词",
+    "remove_api_key": "删除已保存的 API 密钥",
+    "save_settings": "保存设置",
+    "api_key_saved": "已安全保存；留空则保持不变",
+    "api_key_missing": "粘贴以 sk- 开头的 OpenAI Project API Key",
+    "api_status_saved": "OpenAI API：密钥已由 Windows 加密保存",
+    "api_status_offline": "OpenAI API：未设置，使用离线人格",
+    "restart_language_note": "保存界面语言后，重新启动墨寒即可完整应用。",
+    "reminder_work": "开始工作",
+    "reminder_lunch": "午餐",
+    "reminder_dinner": "晚餐",
+    "reminder_offwork": "下班",
+    "enabled": "启用",
+    "reminder_message_label": "{label}消息",
+    "reminder_message_placeholder": "此提醒触发时墨寒要说的内容",
+    "continuous_work_reminder": "连续工作提醒",
+    "overwork_message": "久坐／过劳提醒消息",
+    "minutes_suffix": " 分钟",
+    "read_replies": "让墨寒读出回复",
+    "voice_settings_saved": "语音设置已保存。",
+    "settings_saved": "设置已保存。",
+    "work_timer_already_running": "计时仍在进行，不必重复开始。",
+    "work_timer_not_started": "今日尚未开始计时。",
+}
+
 
 MODE_LABELS: Mapping[str, str] = {
     "工作": "Work",
@@ -202,11 +360,45 @@ WORK_TYPE_LABELS: Mapping[str, str] = {
     "其他（可自行輸入）": "Other (enter your own)",
 }
 
+SIMPLIFIED_MODE_LABELS: Mapping[str, str] = {
+    "工作": "工作",
+    "陪伴": "陪伴",
+    "勿擾": "勿扰",
+    "會議": "会议",
+    "離席": "离席",
+    "休眠": "休眠",
+}
+
+SIMPLIFIED_WORK_TYPE_LABELS: Mapping[str, str] = {
+    "一般辦公／行政": "一般办公／行政",
+    "專案管理": "项目管理",
+    "自由工作者／接案": "自由职业／承接项目",
+    "創作／內容工作": "创作／内容工作",
+    "軟體開發／技術": "软件开发／技术",
+    "教育／研究": "教育／研究",
+    "銷售／客戶服務": "销售／客户服务",
+    "其他（可自行輸入）": "其他（可自行输入）",
+}
+
 
 def ui_text(language: str, key: str, chinese: str, **values: object) -> str:
-    text = _ENGLISH.get(key, chinese) if is_english(language) else chinese
+    if is_english(language):
+        text = _ENGLISH.get(key, chinese)
+    elif is_simplified_chinese(language):
+        text = _SIMPLIFIED_CHINESE.get(key, chinese)
+    else:
+        text = chinese
     return text.format(**values) if values else text
 
 
-def display_label(language: str, value: str, english: Mapping[str, str]) -> str:
-    return english.get(value, value) if is_english(language) else value
+def display_label(
+    language: str,
+    value: str,
+    english: Mapping[str, str],
+    simplified: Mapping[str, str] | None = None,
+) -> str:
+    if is_english(language):
+        return english.get(value, value)
+    if is_simplified_chinese(language) and simplified is not None:
+        return simplified.get(value, value)
+    return value

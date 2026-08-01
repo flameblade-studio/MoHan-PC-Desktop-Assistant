@@ -6,16 +6,18 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 
 ## v2.0.14 RC3 — 2026-08-02
 
-- Added a bilingual Traditional Chinese / English first-run wizard and a
-  minimum usable English UI path for chat, voice, permissions, profile, work
-  modes, and reminders.
-- Added a complete English MoHan persona prompt plus language-matched offline
-  replies, mode announcements, and built-in reminder speech. Switching the UI
-  language translates untouched defaults in either direction without
-  overwriting custom reminder text.
+- Added a Traditional Chinese / Simplified Chinese / English first-run wizard
+  and minimum usable English and zh-CN UI paths for chat, voice, permissions,
+  profile, work modes, and reminders.
+- Added complete English and Simplified Chinese MoHan persona prompts plus
+  language-matched offline replies, mode announcements, and built-in reminder
+  speech. Switching the UI language translates untouched defaults between all
+  three languages without overwriting custom reminder text.
 - Changed new-user speech output to Windows local voice so the basic experience
   works without an OpenAI API key. Windows voice selection now lists only
-  voices verified as female; zh-TW continues to prefer Microsoft Yating.
+  voices verified as female; zh-TW continues to prefer Microsoft Yating while
+  zh-CN prefers a matching installed female voice.
+- Added a dedicated Simplified Chinese README and quick-start instructions.
 - Added secure in-app stable/preview update checks with official-host
   allowlisting, semantic-version validation, size limits, SHA256 verification,
   explicit install confirmation, and preserved local profiles.

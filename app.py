@@ -81,6 +81,7 @@ from ai_client import (
     DEFAULT_TEXT_MODEL,
     ENGLISH_PERSONA,
     PERSONA,
+    SIMPLIFIED_CHINESE_PERSONA,
     TEXT_MODELS,
 )
 from command_parser import is_start_work_command, is_stop_work_command
@@ -108,15 +109,20 @@ from profile_transfer_ui import PortableProfilePanel
 from language_support import (
     english_voice_instructions,
     is_english,
+    is_simplified_chinese,
     localized_reminder_line,
+    localized_voice_instructions,
     migrate_builtin_reminder_line,
     response_language_instruction,
+    simplified_chinese_voice_instructions,
     transcription_language_for_ui,
 )
 from service_container import CompanionServices, create_default_services
 from text_normalizer import to_taiwan_traditional
 from ui_localization import (
     MODE_LABELS,
+    SIMPLIFIED_MODE_LABELS,
+    SIMPLIFIED_WORK_TYPE_LABELS,
     WORK_TYPE_LABELS,
     display_label,
     ui_text,
@@ -410,6 +416,20 @@ def reminder_line(language: str, kind: str) -> str:
     )
 
 
+def default_persona_for_language(language: str) -> str:
+    if is_english(language):
+        return ENGLISH_PERSONA
+    if is_simplified_chinese(language):
+        return SIMPLIFIED_CHINESE_PERSONA
+    return PERSONA
+
+
+def normalize_for_language(text: str, language: str) -> str:
+    if is_simplified_chinese(language):
+        return str(text)
+    return to_taiwan_traditional(str(text))
+
+
 def combo_data_or_custom_text(combo: QComboBox, fallback: str = "") -> str:
     """Persist stable item data while preserving editable custom values."""
     text = combo.currentText().strip()
@@ -466,9 +486,7 @@ def migrate_voice_defaults(db: StudioDB) -> None:
     language = str(db.setting("ui_language", "zh-TW"))
     db.set_setting(
         "voice_instructions",
-        english_voice_instructions()
-        if is_english(language)
-        else VOICE_GENERATION_PROMPT,
+        localized_voice_instructions(language, VOICE_GENERATION_PROMPT),
     )
     db.set_setting("tts_voice", "coral")
     db.set_setting("cloud_voice", "coral")
@@ -624,7 +642,7 @@ def profile_window_title(db: StudioDB) -> str:
 def persona_for_profile(db: StudioDB) -> str:
     """Apply editable identity fields without changing stored user prompts."""
     language = profile_setting(db, "ui_language")
-    default_persona = ENGLISH_PERSONA if is_english(language) else PERSONA
+    default_persona = default_persona_for_language(language)
     persona = (
         str(db.setting("persona_prompt", default_persona)).strip()
         or default_persona
@@ -643,6 +661,11 @@ def persona_for_profile(db: StudioDB) -> str:
             persona += (
                 f"\nThe user's configured organization or team is "
                 f'"{organization}". Use that context for work assistance.'
+            )
+        elif is_simplified_chinese(language):
+            persona += (
+                f"\n用户当前设置的组织／团队名称是“{organization}”。"
+                "处理工作事务时，请结合此组织背景提供协助。"
             )
         else:
             persona += (
@@ -1056,7 +1079,12 @@ class FirstRunWizard(QDialog):
         self.work_type.setEditable(True)
         for value in self.WORK_TYPES:
             self.work_type.addItem(
-                display_label(self.language, value, WORK_TYPE_LABELS),
+                display_label(
+                    self.language,
+                    value,
+                    WORK_TYPE_LABELS,
+                    SIMPLIFIED_WORK_TYPE_LABELS,
+                ),
                 value,
             )
         saved_work_type = profile_setting(db, "work_type")
@@ -1067,6 +1095,7 @@ class FirstRunWizard(QDialog):
             self.work_type.setCurrentText(saved_work_type)
         self.ui_language = QComboBox()
         self.ui_language.addItem("繁體中文（台灣）", "zh-TW")
+        self.ui_language.addItem("简体中文（中国大陆）", "zh-CN")
         self.ui_language.addItem("English", "en")
         current_language = profile_setting(db, "ui_language")
         language_index = self.ui_language.findData(current_language)
@@ -1172,7 +1201,14 @@ class FirstRunWizard(QDialog):
         for index, value in enumerate(self.WORK_TYPES):
             self.work_type.setItemText(
                 index,
-                display_label(self.language, value, WORK_TYPE_LABELS),
+                display_label(
+                    self.language,
+                    value,
+                    WORK_TYPE_LABELS,
+                    SIMPLIFIED_WORK_TYPE_LABELS,
+                ),
+                # Internal data remains Taiwan Traditional Chinese so saved
+                # profiles and command rules are language-independent.
             )
         self.note_label.setText(
             self._t(
@@ -1215,12 +1251,17 @@ class FirstRunWizard(QDialog):
             "transcription_language",
             transcription_language_for_ui(values["ui_language"]),
         )
-        if is_english(values["ui_language"]):
-            self.db.set_setting(
-                "voice_instructions",
-                english_voice_instructions(),
-            )
-            self.db.set_setting("persona_prompt", ENGLISH_PERSONA)
+        self.db.set_setting(
+            "voice_instructions",
+            localized_voice_instructions(
+                values["ui_language"],
+                VOICE_GENERATION_PROMPT,
+            ),
+        )
+        self.db.set_setting(
+            "persona_prompt",
+            default_persona_for_language(values["ui_language"]),
+        )
         self.accept()
 
 
@@ -1294,7 +1335,12 @@ class Dashboard(QDialog):
         self.mode_combo = QComboBox()
         for value in ("工作", "陪伴", "勿擾", "會議", "離席", "休眠"):
             self.mode_combo.addItem(
-                display_label(self.ui_language, value, MODE_LABELS),
+                display_label(
+                    self.ui_language,
+                    value,
+                    MODE_LABELS,
+                    SIMPLIFIED_MODE_LABELS,
+                ),
                 value,
             )
         mode_index = self.mode_combo.findData(self.mode)
@@ -2592,7 +2638,12 @@ class Dashboard(QDialog):
         self.profile_work_type.setEditable(True)
         for value in FirstRunWizard.WORK_TYPES:
             self.profile_work_type.addItem(
-                display_label(self.ui_language, value, WORK_TYPE_LABELS),
+                display_label(
+                    self.ui_language,
+                    value,
+                    WORK_TYPE_LABELS,
+                    SIMPLIFIED_WORK_TYPE_LABELS,
+                ),
                 value,
             )
         profile_work_type = profile_setting(self.db, "work_type")
@@ -2605,6 +2656,7 @@ class Dashboard(QDialog):
             self.profile_work_type.setCurrentText(profile_work_type)
         self.profile_ui_language = QComboBox()
         self.profile_ui_language.addItem("繁體中文（台灣）", "zh-TW")
+        self.profile_ui_language.addItem("简体中文（中国大陆）", "zh-CN")
         self.profile_ui_language.addItem("English", "en")
         language_index = self.profile_ui_language.findData(
             profile_setting(self.db, "ui_language")
@@ -2859,9 +2911,7 @@ class Dashboard(QDialog):
             str(
                 self.db.setting(
                     "persona_prompt",
-                    ENGLISH_PERSONA
-                    if is_english(self.ui_language)
-                    else PERSONA,
+                    default_persona_for_language(self.ui_language),
                 )
             )
         )
@@ -2892,8 +2942,9 @@ class Dashboard(QDialog):
             if speaker == self.assistant_name
             else "#e8b7ec"
         )
-        normalized = to_taiwan_traditional(
-            personalize_text(self.db, text)
+        normalized = normalize_for_language(
+            personalize_text(self.db, text),
+            self.ui_language,
         )
         safe_text = html.escape(normalized).replace("\n", "<br>")
         self.chat.append(
@@ -3247,7 +3298,29 @@ class Dashboard(QDialog):
                 "休眠": "Sleep mode enabled. Reminders and urgent alerts remain active.",
             }
             self.speak_requested.emit(
-                lines.get(mode, f"{display_label(self.ui_language, mode, MODE_LABELS)} mode enabled."),
+                lines.get(
+                    mode,
+                    f"{display_label(self.ui_language, mode, MODE_LABELS)} "
+                    "mode enabled.",
+                ),
+                "speaking",
+            )
+            return
+        if is_simplified_chinese(self.ui_language):
+            lines = {
+                "工作": "工作模式已启动。妾只在必要时打断主上。",
+                "陪伴": "陪伴模式已启动。今夜不谈胜负，也无妨。",
+                "勿擾": "勿扰模式已启动。除紧急事项外，妾不会打断主上。",
+                "會議": "会议模式已启动。妾会保持安静，只记录必要事项。",
+                "離席": "离席模式已启动。主上回来时，妾再呈上期间摘要。",
+                "休眠": "休眠模式已启动。提醒与紧急警报仍会按规则处理。",
+            }
+            self.speak_requested.emit(
+                lines.get(
+                    mode,
+                    f"{display_label(self.ui_language, mode, MODE_LABELS, SIMPLIFIED_MODE_LABELS)}"
+                    "模式已启动。",
+                ),
                 "speaking",
             )
             return
@@ -3263,7 +3336,10 @@ class Dashboard(QDialog):
         self.speak_requested.emit(line, "speaking")
 
     def send_chat(self) -> None:
-        text = to_taiwan_traditional(self.chat_input.text().strip())
+        text = normalize_for_language(
+            self.chat_input.text().strip(),
+            self.ui_language,
+        )
         if not text:
             QMessageBox.information(
                 self,
@@ -3286,7 +3362,10 @@ class Dashboard(QDialog):
         self._start_next_ai_request()
 
     def _receive_remote_command(self, text: str) -> None:
-        normalized = to_taiwan_traditional(text.strip())
+        normalized = normalize_for_language(
+            text.strip(),
+            self.ui_language,
+        )
         if not normalized:
             return
         # The remote server has already authenticated and audited the device.
@@ -3485,7 +3564,10 @@ class Dashboard(QDialog):
         intensity: float = 0.5,
         source: str = "conversation",
     ) -> None:
-        text = to_taiwan_traditional(personalize_text(self.db, text))
+        text = normalize_for_language(
+            personalize_text(self.db, text),
+            self.ui_language,
+        )
         self.db.log_chat("assistant", text)
         self.append_chat(self.assistant_name, text)
         self.set_voice_phase("回答中…")
@@ -3639,13 +3721,22 @@ class Dashboard(QDialog):
 
     def _ai_failed(self, error: str) -> None:
         self._finish_ai_wait_expression()
-        self._reply(f"雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。", "worried")
+        if is_english(self.ui_language):
+            message = (
+                "The cloud connection is temporarily unavailable. I remain "
+                "here, but cannot draw on external knowledge just now."
+            )
+        elif is_simplified_chinese(self.ui_language):
+            message = "云端连接暂时中断。妾仍在，只是此刻无法借用外部知识。"
+        else:
+            message = "雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。"
+        self._reply(message, "worried")
         self.api_status.setText(f"OpenAI API：連線失敗（{error[:70]}）")
         self.ai_busy = False
         self._start_next_ai_request()
 
     def _voice_text(self, text: str) -> None:
-        text = to_taiwan_traditional(text)
+        text = normalize_for_language(text, self.ui_language)
         self.set_voice_phase("墨寒思考中…")
         wake_word = profile_setting(self.db, "wake_word")
         self.chat_input.setText(
@@ -4192,18 +4283,22 @@ class Dashboard(QDialog):
             if current_voice_instructions in {
                 VOICE_GENERATION_PROMPT,
                 english_voice_instructions(),
+                simplified_chinese_voice_instructions(),
             }:
                 self.voice_instructions.setText(
-                    english_voice_instructions()
-                    if is_english(new_ui_language)
-                    else VOICE_GENERATION_PROMPT
+                    localized_voice_instructions(
+                        new_ui_language,
+                        VOICE_GENERATION_PROMPT,
+                    )
                 )
             current_persona = self.persona_prompt.toPlainText().strip()
-            if current_persona in {PERSONA.strip(), ENGLISH_PERSONA.strip()}:
+            if current_persona in {
+                PERSONA.strip(),
+                ENGLISH_PERSONA.strip(),
+                SIMPLIFIED_CHINESE_PERSONA.strip(),
+            }:
                 self.persona_prompt.setPlainText(
-                    ENGLISH_PERSONA
-                    if is_english(new_ui_language)
-                    else PERSONA
+                    default_persona_for_language(new_ui_language)
                 )
             for kind, message in self.reminder_message_controls.items():
                 message.setText(
@@ -4248,11 +4343,7 @@ class Dashboard(QDialog):
         self.db.set_setting(
             "persona_prompt",
             self.persona_prompt.toPlainText().strip()
-            or (
-                ENGLISH_PERSONA
-                if is_english(new_ui_language)
-                else PERSONA
-            ),
+            or default_persona_for_language(new_ui_language),
         )
         self.db.set_setting(
             "topmost_mode",
@@ -4700,7 +4791,10 @@ class CompanionWindow(QMainWindow):
             self.move(proposed)
 
     def _show_bubble(self, text: str) -> None:
-        normalized = to_taiwan_traditional(text.strip())
+        normalized = normalize_for_language(
+            text.strip(),
+            profile_setting(self.db, "ui_language"),
+        )
         if len(normalized) > 230:
             display = (
                 normalized[:227].rstrip()
@@ -7364,10 +7458,18 @@ class CompanionWindow(QMainWindow):
             )
 
     def preview_voice(self) -> None:
-        if is_english(profile_setting(self.db, "ui_language")):
+        language = profile_setting(self.db, "ui_language")
+        if is_english(language):
             self.speak(
                 f"{profile_setting(self.db, 'user_title')}, I am here. "
                 "There is no need to look so surprised.",
+                "happy",
+            )
+            return
+        if is_simplified_chinese(language):
+            self.speak(
+                f"{profile_setting(self.db, 'user_title')}，妾在。"
+                "今日的安排，交给妾与你一同理清。",
                 "happy",
             )
             return
@@ -7415,10 +7517,11 @@ class CompanionWindow(QMainWindow):
                 )
             ):
                 continue
-            lines.append(
-                f"{labels[role]}："
-                f"{to_taiwan_traditional(content)}"
+            normalized = normalize_for_language(
+                content,
+                profile_setting(self.db, "ui_language"),
             )
+            lines.append(f"{labels[role]}：{normalized}")
         return "\n".join(lines)[-5000:]
 
     def toggle_realtime(self, enabled: bool) -> None:
@@ -7506,7 +7609,10 @@ class CompanionWindow(QMainWindow):
         self.dashboard.set_realtime_status(status, active)
 
     def _realtime_user_text(self, text: str) -> None:
-        text = to_taiwan_traditional(text)
+        text = normalize_for_language(
+            text,
+            profile_setting(self.db, "ui_language"),
+        )
         wake_word = profile_setting(self.db, "wake_word")
         clean = text.replace(wake_word, "", 1).strip() or text
         self.db.log_chat("user", clean)
@@ -7544,7 +7650,10 @@ class CompanionWindow(QMainWindow):
 
     def _realtime_assistant_text(self, text: str) -> None:
         tagged = parse_internal_emotion(text)
-        text = to_taiwan_traditional(tagged.text)
+        text = normalize_for_language(
+            tagged.text,
+            profile_setting(self.db, "ui_language"),
+        )
         if not text:
             return
         self.db.log_chat("assistant", text)
