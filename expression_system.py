@@ -72,13 +72,17 @@ class FaceAnchorProfile:
 
 @dataclass(frozen=True)
 class WaitExpressionCue:
-    """A delayed, optional character reaction while an AI reply is pending."""
+    """One optional, delayed reaction while an AI answer is pending."""
 
     expression: str
     delay_ms: int
+    intensity: float
     reason: str
 
 
+AI_WAIT_TIMEOUT_MS = 4_200
+_COMPLEX_WAIT_DELAY_MS = 1_200
+_ATTENTIVE_WAIT_DELAY_MS = 700
 _DEEP_THINKING_MARKERS = (
     "分析",
     "比較",
@@ -100,60 +104,63 @@ _DEEP_THINKING_MARKERS = (
     "難以回答",
     "認真想",
 )
-_CASUAL_MARKERS = (
-    "早安",
-    "午安",
-    "晚安",
-    "你好",
-    "妳好",
-    "在嗎",
-    "謝謝",
-    "辛苦了",
-    "好呀",
-    "好的",
-)
 
 
-def classify_wait_expression(prompt: str) -> WaitExpressionCue | None:
-    """Choose a restrained pre-reply reaction from the user's actual prompt.
+def plan_wait_expressions(prompt: str) -> tuple[WaitExpressionCue, ...]:
+    """Plan restrained reactions without treating network wait as emotion.
 
-    Network latency is not an emotion.  Routine conversation therefore keeps
-    the current natural pose.  Only prompts carrying real analytical weight
-    earn a delayed thinking pose; longer narratives may receive an attentive
-    listening pose instead.
+    Routine prompts keep the current pose during a normal response window.
+    Analytical prompts may show thinking only after a noticeable delay, while
+    a long narrative may receive a neutral attentive pose. Every prompt has
+    the same final timeout cue because an unusually long real wait can itself
+    justify a thinking reaction.
     """
 
     compact = "".join(str(prompt or "").split())
     if not compact:
-        return None
-    if len(compact) <= 18 and any(word in compact for word in _CASUAL_MARKERS):
-        return None
+        return ()
 
     score = 0
     marker_hits = sum(word in compact for word in _DEEP_THINKING_MARKERS)
-    score += min(3, marker_hits * 2)
-    if len(compact) >= 48:
+    score += min(4, marker_hits * 2)
+    if len(compact) >= 56:
         score += 1
-    if len(compact) >= 96:
+    if len(compact) >= 110:
         score += 1
     if compact.count("？") + compact.count("?") >= 2:
         score += 1
     if sum(compact.count(mark) for mark in ("。", "；", ";", "\n")) >= 2:
         score += 1
 
+    cues: list[WaitExpressionCue] = []
     if score >= 2:
-        return WaitExpressionCue(
+        cues.append(
+            WaitExpressionCue(
+                "thinking_front",
+                _COMPLEX_WAIT_DELAY_MS,
+                0.58,
+                "complex_prompt_still_pending",
+            )
+        )
+    elif len(compact) >= 34:
+        cues.append(
+            WaitExpressionCue(
+                "attentive_front",
+                _ATTENTIVE_WAIT_DELAY_MS,
+                0.38,
+                "long_narrative_still_pending",
+            )
+        )
+
+    cues.append(
+        WaitExpressionCue(
             "thinking_front",
-            850,
-            "analytical_or_difficult_prompt",
+            AI_WAIT_TIMEOUT_MS,
+            0.5,
+            "response_timeout",
         )
-    if len(compact) >= 30:
-        return WaitExpressionCue(
-            "attentive_front",
-            650,
-            "long_user_narrative",
-        )
-    return None
+    )
+    return tuple(cues)
 
 
 def parse_internal_emotion(value: str) -> TaggedReply:
@@ -183,7 +190,7 @@ class ExpressionRule:
 
 DEFAULT_EXPRESSION_RULE = ExpressionRule(40, 1_600, 3_200, 4_500)
 EXPRESSION_RULES = {
-    "thinking_front": ExpressionRule(42, 1_500, 3_600, 3_500),
+    "thinking_front": ExpressionRule(42, 1_500, 3_600, 9_000),
     "attentive_front": ExpressionRule(38, 1_500, 3_400, 3_000),
     "determined_front": ExpressionRule(66, 1_700, 3_800, 5_000),
     "gentle_smile_front": ExpressionRule(40, 1_700, 3_800, 4_000),
@@ -206,6 +213,7 @@ EXPRESSION_RULES = {
 }
 SOURCE_PRIORITY_BONUS = {
     "ambient": -20,
+    "ai_wait": -12,
     "fallback": 0,
     "ai_tag": 4,
     "conversation": 4,
