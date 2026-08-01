@@ -84,7 +84,7 @@ def main() -> None:
         assert "Contribute a pull request" in block
         assert "buymeacoffee.com/flameblade_studio" in block
         assert "paypal.com/paypalme/flamebladestudio" in block
-        assert "raw.githubusercontent.com" in block
+        assert 'src="https://raw.githubusercontent.com/' in block
         assert "wp-content/uploads" not in block
         assert block.count('class="mohan-scene"') >= 6
         initial = "<p>保留的網站內容</p>"
