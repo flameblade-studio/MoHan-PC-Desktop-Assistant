@@ -73,16 +73,12 @@ tokens, or private user data.
 
 ## 策士也有不寫進軍報的一面 / Off-duty Strategist Theatre
 
-<p align="center">
-  <img src="docs/media/mohan-chibi-theatre.png" width="100%" alt="墨寒 Q 版工程小劇場：審查程式、害羞、阻止危險操作與收到贊助">
-</p>
-
 <table>
   <tr>
-    <td width="25%" align="center"><strong>策士審查</strong><br>妾只是確認這段程式碼配不配入主分支。<br><sub>Reviewing whether the code deserves main.</sub></td>
-    <td width="25%" align="center"><strong>被稱讚時</strong><br>做得尚可。別一直盯著妾看。<br><sub>Accepting praise—strictly for engineering quality.</sub></td>
-    <td width="25%" align="center"><strong>危險操作</strong><br>未經確認便想執行？先過妾這一劍。<br><sub>Dangerous actions still require explicit approval.</sub></td>
-    <td width="25%" align="center"><strong>收到軍糧</strong><br>妾會記下這份心意……僅此而已。<br><sub>Voluntary support is remembered, never required.</sub></td>
+    <td width="25%" align="center"><img src="docs/media/mohan-chibi-code-review.png" width="100%" alt="Q 版墨寒審查程式"><br><strong>策士審查 · Code review</strong><br>妾只是確認這段程式碼配不配入主分支。<br><sub>Reviewing whether this code deserves a place on main.</sub></td>
+    <td width="25%" align="center"><img src="docs/media/mohan-chibi-praised.png" width="100%" alt="Q 版墨寒被稱讚後害羞嘴硬"><br><strong>被稱讚時 · When praised</strong><br>做得尚可。別一直盯著妾看。<br><sub>Accepting praise—strictly for engineering quality.</sub></td>
+    <td width="25%" align="center"><img src="docs/media/mohan-chibi-dangerous-action.png" width="100%" alt="Q 版墨寒拔劍阻止危險操作"><br><strong>危險操作 · Dangerous action</strong><br>未經確認便想執行？先過妾這一劍。<br><sub>Dangerous actions still require explicit approval.</sub></td>
+    <td width="25%" align="center"><img src="docs/media/mohan-chibi-provisions.png" width="100%" alt="Q 版墨寒收到贊助後故作鎮定"><br><strong>收到軍糧 · Provisions received</strong><br>妾會記下這份心意……僅此而已。<br><sub>Voluntary support is remembered, never required.</sub></td>
   </tr>
 </table>
 
@@ -144,6 +140,18 @@ If you enjoy MoHan and would like to support continued work on character
 interaction, natural voice, safety-first tools, and open-source development,
 voluntary contributions are warmly welcome. Please take care of yourself first
 and contribute only if it is comfortable for you.
+
+### 每一份支持會用在哪裡 / Where voluntary support helps
+
+| 投入方向 | Project use | 說明 / Purpose |
+|---|---|---|
+| 測試與可靠封裝 | Testing and reliable releases | Windows 相容性、CI、安裝與發行驗證 / Windows compatibility, CI, packaging, and release verification |
+| 語音與角色表現 | Voice and character performance | 語音、嘴型、表情與自然動作 / Voice, lip sync, expressions, and natural motion |
+| 安全與隱私 | Safety and privacy | 權限控管、稽核與敏感資料保護 / Permissions, audits, and protection of sensitive data |
+| 文件與在地化 | Documentation and localization | 降低新使用者與國際協作者的參與門檻 / Easier onboarding for users and contributors worldwide |
+
+墨寒依然免費並採 MIT 授權；贊助不會換取特權，也不影響任何人使用或貢獻。
+MoHan remains free and MIT-licensed. Support never buys privileges or limits participation.
 
 <table>
   <tr>
