@@ -64,6 +64,32 @@ tokens, or private user data.
   </tr>
 </table>
 
+## 墨寒的傲嬌工程小劇場 / MoHan's Tsundere Developer Theatre
+
+<p align="center">
+  <em>相信軟體可以同時擁有靈魂與完整測試的開發者小劇場。<br>
+  A tiny strategist's theatre for developers who believe software can have both a soul and a test suite.</em>
+</p>
+
+<table>
+  <tr>
+    <td width="33%" align="center"><img src="assets/expressions/proud_front.png" width="220" alt="墨寒傲嬌"><br><strong>「妾才沒有等你的 Star，只是在確認軍心是否可用。」</strong><br><sub>“I am not waiting for your Star. I am merely assessing morale.”</sub></td>
+    <td width="33%" align="center"><img src="assets/expressions/thinking_front.png" width="220" alt="墨寒思考"><br><strong>「這段邏輯尚可。若再補上測試，妾便勉強准它入主分支。」</strong><br><sub>“The logic is acceptable. Add tests, and I may permit it onto main.”</sub></td>
+    <td width="33%" align="center"><img src="assets/expressions/shy_cute_front.png" width="220" alt="墨寒嬌羞"><br><strong>「你願意送來 PR？妾、妾只是替主上記下功勞。」</strong><br><sub>“A pull request? I am only recording your service for my lord.”</sub></td>
+  </tr>
+  <tr>
+    <td width="33%" align="center"><img src="assets/expressions/mock_hit_front.png" width="220" alt="墨寒佯怒"><br><strong>「未經測試便想合併？手伸出來。妾只敲一下。」</strong><br><sub>“Merge without tests? Your hand, please. Just one tap.”</sub></td>
+    <td width="33%" align="center"><img src="assets/expressions/gentle_smile_front.png" width="220" alt="墨寒開心"><br><strong>「全數綠燈……做得好。別誤會，妾只是尊重好工程。」</strong><br><sub>“All checks green. Well done—not that I am impressed, of course.”</sub></td>
+    <td width="33%" align="center"><img src="assets/expressions/worried_front.png" width="220" alt="墨寒關心"><br><strong>「Bug 可以明日再查。你若累倒，誰來陪妾守著赤焰劍？」</strong><br><sub>“The bug can wait until tomorrow. Do not make your strategist worry.”</sub></td>
+  </tr>
+</table>
+
+<p align="center">
+  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls">向斬空閣呈上 PR / Contribute a pull request</a></strong>
+  &nbsp;｜&nbsp;
+  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues">回報軍情 / Open an issue</a></strong>
+</p>
+
 ## 支持墨寒 / Support MoHan
 
 如果你喜歡墨寒，或認同我們持續投入角色互動、自然語音、安全工具與開源

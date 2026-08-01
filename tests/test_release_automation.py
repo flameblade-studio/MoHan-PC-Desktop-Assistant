@@ -46,6 +46,19 @@ def main() -> None:
     ):
         assert (ROOT / "docs" / "media" / media).is_file(), media
 
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert "墨寒的傲嬌工程小劇場 / MoHan's Tsundere Developer Theatre" in readme
+    assert readme.count('width="33%" align="center"><img src="assets/expressions/') >= 9
+    for line in (
+        "妾才沒有等你的 Star",
+        "若再補上測試",
+        "你願意送來 PR",
+        "未經測試便想合併",
+        "全數綠燈",
+        "Bug 可以明日再查",
+    ):
+        assert line in readme
+
     with tempfile.TemporaryDirectory() as temp:
         artifacts = Path(temp)
         (artifacts / "MoHan-v9-Windows-x64-Setup.exe").write_bytes(b"exe")
