@@ -9,7 +9,7 @@ from unittest.mock import patch
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtCore import QObject, Signal
+from PySide6.QtCore import QEvent, QObject, QTimer, Signal
 from PySide6.QtWidgets import QApplication
 
 from ai_client import (
@@ -62,6 +62,16 @@ class FakeListener(QObject):
 
     def toggle_listening(self) -> None:
         return None
+
+
+def close_dashboard(app: QApplication, dashboard: Dashboard) -> None:
+    """Destroy dashboard timers before its temporary database is closed."""
+    for timer in dashboard.findChildren(QTimer):
+        timer.stop()
+    dashboard.close()
+    dashboard.deleteLater()
+    app.sendPostedEvents(None, QEvent.DeferredDelete)
+    app.processEvents()
 
 
 def run() -> None:
@@ -214,7 +224,7 @@ def run() -> None:
             == ENGLISH_REMINDER_LINES["work"]
         )
         assert db.setting("reminder_message_lunch") == custom_lunch
-        dashboard.close()
+        close_dashboard(app, dashboard)
         db.close()
 
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
@@ -257,7 +267,7 @@ def run() -> None:
         )
         dashboard._mode_changed("會議")
         assert simplified_spoken[-1].startswith("会议模式已启动")
-        dashboard.close()
+        close_dashboard(app, dashboard)
         db.close()
 
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
@@ -272,7 +282,7 @@ def run() -> None:
             dashboard.windows_voice.currentData()
             == "OneCore::Microsoft Yating"
         )
-        dashboard.close()
+        close_dashboard(app, dashboard)
         db.close()
     app.processEvents()
     print("LANGUAGE_LOCALIZATION_OK")

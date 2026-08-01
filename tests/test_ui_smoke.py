@@ -444,6 +444,10 @@ def run() -> None:
         assert window.eye_overlay.x() == window.character.x()
         gaze_face_key = window.face_overlay.pixmap().cacheKey()
         gaze_eye_key = window.eye_overlay.pixmap().cacheKey()
+        # The live blink timer may have entered a blink during earlier QTest
+        # waits. This assertion tests gaze-layer visibility, so establish the
+        # non-blinking precondition explicitly before invoking the renderer.
+        window.idle_blinking = False
         window._attention_tick()
         assert window.face_overlay.isVisible()
         assert window.eye_overlay.isVisible()
