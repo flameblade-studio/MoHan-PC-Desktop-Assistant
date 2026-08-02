@@ -302,6 +302,45 @@ EXPRESSION_BLINK_FRAMES = {
     "reminder": "reminder_speech_blink",
 }
 EXPRESSION_BLINK_ASSETS = tuple(EXPRESSION_BLINK_FRAMES.values())
+EXPRESSION_IMAGE_ASSETS = (
+    "idle",
+    "idle_lean",
+    "idle_front",
+    "blink",
+    "blink_lean",
+    "blink_front",
+    "glance",
+    "caught",
+    "speaking",
+    "speaking_lean",
+    "speaking_front",
+    "happy",
+    "worried",
+    "reminder",
+    "thinking_front",
+    "gentle_smile_front",
+    "worried_front",
+    "shy_front",
+    "mock_scold",
+    "surprised_front",
+    "relieved_front",
+    "tired_front",
+    "proud_front",
+    *NEW_EXPRESSION_ASSETS,
+    *EXPRESSION_SPEECH_ASSETS,
+    *EXPRESSION_BLINK_ASSETS,
+    "viseme_mid_front",
+    "viseme_wide_front",
+    "viseme_round",
+    "viseme_round_lean",
+    "viseme_round_front",
+    "viseme_i",
+    "viseme_i_lean",
+    "viseme_i_front",
+    "viseme_o",
+    "viseme_o_lean",
+    "viseme_o_front",
+)
 GESTURE_SPEECH_ASSETS = tuple(
     asset
     for frames in GESTURE_SPEECH_FRAMES.values()
@@ -608,9 +647,13 @@ QMenu::separator {
 """
 
 
+RESOURCE_BASE = Path(
+    getattr(sys, "_MEIPASS", Path(__file__).resolve().parent)
+)
+
+
 def resource_path(relative: str) -> Path:
-    base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
-    return base / relative
+    return RESOURCE_BASE / relative
 
 
 def data_dir() -> Path:
@@ -4411,6 +4454,7 @@ class CompanionWindow(QMainWindow):
         self,
         startup_speech: bool = True,
         services: CompanionServices | None = None,
+        defer_visual_startup: bool = False,
     ):
         super().__init__()
         runtime_services = services or create_default_services(
@@ -4489,6 +4533,9 @@ class CompanionWindow(QMainWindow):
         self.cloud_fallback_active = False
         self.drag_offset: QPoint | None = None
         self.last_overwork_notice = ""
+        self._startup_speech_requested = startup_speech
+        self._visual_startup_complete = False
+        self._closing = False
 
         self.setWindowTitle(profile_window_title(self.db))
         self.setWindowFlags(
@@ -4532,22 +4579,55 @@ class CompanionWindow(QMainWindow):
             CHARACTER_CANVAS_WIDTH,
             CHARACTER_BASE_Y + CHARACTER_IMAGE_SIZE,
         )
-        self._build_ui()
+        self._build_ui(defer_visual_assets=defer_visual_startup)
         self._apply_character_scale(
             self.character_scale_percent,
             preserve_anchor=False,
         )
         self._position_corner()
+        if defer_visual_startup:
+            return
+        self._finish_visual_startup()
+
+    def _finish_visual_startup(self) -> None:
+        if self._visual_startup_complete:
+            return
+        self._load_expression_assets()
+        self._build_physics_layers()
+        self._build_attention_layers()
+        self._build_mouth_frames()
+        self._update_physics_pose("idle")
+        self._apply_physics_visibility()
+        self._render_attention_layers(force=True)
         self._setup_timers()
         self._setup_tray()
-        if startup_speech:
+        self._visual_startup_complete = True
+        if self._startup_speech_requested:
             self.speak(
                 f"妾已就位。{profile_setting(self.db, 'user_title')}點妾，"
                 "便可展開今日卷冊。",
                 "idle",
             )
 
-    def _build_ui(self) -> None:
+    def complete_deferred_startup(self) -> None:
+        """Finish heavy visual preparation after the first window paint."""
+        if self._closing or self._visual_startup_complete:
+            return
+        self._finish_visual_startup()
+        self.dashboard.update_panel.start_automatic_check()
+
+    def _load_expression_assets(self) -> None:
+        for expression in EXPRESSION_IMAGE_ASSETS:
+            if expression in self.expression_pixmaps:
+                continue
+            pix = QPixmap(
+                str(resource_path(f"assets/expressions/{expression}.png"))
+            )
+            self.expression_pixmaps[expression] = pix.scaled(
+                465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+
+    def _build_ui(self, defer_visual_assets: bool = False) -> None:
         root = QWidget()
         root.setAttribute(Qt.WA_TranslucentBackground)
         self.setCentralWidget(root)
@@ -4573,45 +4653,10 @@ class CompanionWindow(QMainWindow):
 
         self.character = ClickableLabel(root)
         self.expression_pixmaps = {}
-        for expression in (
-            "idle",
-            "idle_lean",
-            "idle_front",
-            "blink",
-            "blink_lean",
-            "blink_front",
-            "glance",
-            "caught",
-            "speaking",
-            "speaking_lean",
-            "speaking_front",
-            "happy",
-            "worried",
-            "reminder",
-            "thinking_front",
-            "gentle_smile_front",
-            "worried_front",
-            "shy_front",
-            "mock_scold",
-            "surprised_front",
-            "relieved_front",
-            "tired_front",
-            "proud_front",
-            *NEW_EXPRESSION_ASSETS,
-            *EXPRESSION_SPEECH_ASSETS,
-            *EXPRESSION_BLINK_ASSETS,
-            "viseme_mid_front",
-            "viseme_wide_front",
-            "viseme_round",
-            "viseme_round_lean",
-            "viseme_round_front",
-            "viseme_i",
-            "viseme_i_lean",
-            "viseme_i_front",
-            "viseme_o",
-            "viseme_o_lean",
-            "viseme_o_front",
-        ):
+        initial_assets = (
+            ("idle",) if defer_visual_assets else EXPRESSION_IMAGE_ASSETS
+        )
+        for expression in initial_assets:
             pix = QPixmap(
                 str(resource_path(f"assets/expressions/{expression}.png"))
             )
@@ -4632,9 +4677,6 @@ class CompanionWindow(QMainWindow):
                 "physics_face_parallax",
             )
         }
-        self._build_physics_layers()
-        self._build_attention_layers()
-        self._build_mouth_frames()
         self.current_expression = "idle"
         self.character.setPixmap(self.expression_pixmaps["idle"])
         self.character.setScaledContents(True)
@@ -4680,8 +4722,6 @@ class CompanionWindow(QMainWindow):
         self.physics_overlay.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
         self.physics_overlay.setGeometry(self.character.geometry())
         self.physics_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
-        self._update_physics_pose("idle")
-        self._apply_physics_visibility()
 
         self.face_overlay = QLabel(root)
         self.eye_overlay = QLabel(root)
@@ -4690,7 +4730,6 @@ class CompanionWindow(QMainWindow):
             attention_overlay.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
             attention_overlay.setGeometry(self.character.geometry())
             attention_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
-        self._render_attention_layers(force=True)
         self.face_overlay.hide()
         self.eye_overlay.hide()
 
@@ -7675,6 +7714,8 @@ class CompanionWindow(QMainWindow):
         QTimer.singleShot(3200, self.bubble.hide)
 
     def _realtime_speaking(self, speaking: bool) -> None:
+        if self._closing:
+            return
         if speaking:
             self.dashboard.cancel_ai_wait_expression()
             self.speech_gesture_expression = None
@@ -8170,7 +8211,8 @@ class CompanionWindow(QMainWindow):
         super().mouseReleaseEvent(event)
 
     def closeEvent(self, event) -> None:
-        self.blink_generation += 1
+        self._closing = True
+        self.blink_generation = getattr(self, "blink_generation", 0) + 1
         self._cancel_expression_transition()
         self._cancel_pose_transition()
         for animation_name in ("state_animation",):
@@ -8209,7 +8251,9 @@ class CompanionWindow(QMainWindow):
             flagship_center.close_services()
         self.dashboard.close()
         self.db.close()
-        self.tray.hide()
+        tray = getattr(self, "tray", None)
+        if tray is not None:
+            tray.hide()
         event.accept()
 
 
@@ -8224,7 +8268,10 @@ def main() -> int:
     app.setWindowIcon(QIcon(str(resource_path(APP_ICON_PATH))))
     app.setQuitOnLastWindowClosed(False)
     app.setStyleSheet(STYLE)
-    window = CompanionWindow(startup_speech=not self_test)
+    window = CompanionWindow(
+        startup_speech=not self_test,
+        defer_visual_startup=not self_test,
+    )
     app.setApplicationName(profile_window_title(window.db))
     if self_test:
         physics_sources_ok = all(
@@ -8352,7 +8399,7 @@ def main() -> int:
         app.processEvents()
         return 0 if ok else 2
     window.show()
-    window.dashboard.update_panel.start_automatic_check()
+    QTimer.singleShot(75, window.complete_deferred_startup)
     if smoke_auto_exit:
         output_arg = next(
             (
