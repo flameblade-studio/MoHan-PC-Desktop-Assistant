@@ -21,10 +21,27 @@ from tools.sync_wordpress_download_page import (
 def main() -> None:
     inno_script = (ROOT / "installer" / "mohan.iss").read_text(encoding="utf-8")
     traditional_messages = ROOT / "installer" / "languages" / "ChineseTraditional.isl"
+    simplified_messages = ROOT / "installer" / "languages" / "ChineseSimplified.isl"
     assert traditional_messages.is_file()
     assert traditional_messages.stat().st_size > 20_000
+    assert simplified_messages.is_file()
+    assert simplified_messages.stat().st_size > 20_000
     assert "compiler:Languages\\ChineseTraditional.isl" not in inno_script
     assert "{#TraditionalChineseMessages}" in inno_script
+    assert "{#SimplifiedChineseMessages}" in inno_script
+    assert 'Name: "chinesetraditional"' in inno_script
+    assert 'Name: "chinesesimplified"' in inno_script
+    assert 'Name: "english"' in inno_script
+
+    wix_source = (ROOT / "installer" / "Product.wxs").read_text(encoding="utf-8")
+    localization_policy = (ROOT / "installer" / "LOCALIZATION.md").read_text(
+        encoding="utf-8"
+    )
+    assert 'Language="1028"' in wix_source
+    assert "Taiwan Traditional Chinese base package" in localization_policy
+    assert "MoHan-Desktop-Assistant-en-US.mst" in localization_policy
+    assert "MoHan-Desktop-Assistant-zh-CN.mst" in localization_policy
+    assert "TRANSFORMS=" in localization_policy
     for expression in (
         "proud_front.png",
         "thinking_front.png",

@@ -672,6 +672,12 @@ select the stable or preview channel under **Settings → Software update**. The
 updater accepts only official GitHub HTTPS sources and verifies both declared
 size and SHA256 before asking permission to launch an installer.
 
+The interactive EXE installer offers Taiwan Traditional Chinese, Simplified
+Chinese, and English. The MSI intentionally remains a Taiwan Traditional
+Chinese base package for silent and managed deployment; planned en-US and
+zh-CN language transforms are specified in
+[installer/LOCALIZATION.md](installer/LOCALIZATION.md).
+
 When the maintainer has configured a WordPress Application Password, a
 successful release updates only the marker-managed MoHan block on the official
 download page and preserves all other editorial content.

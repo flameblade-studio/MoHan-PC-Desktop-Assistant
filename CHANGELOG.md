@@ -4,6 +4,15 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 
 ## Unreleased
 
+- Added Simplified Chinese to the interactive EXE installer alongside Taiwan
+  Traditional Chinese and English. The MSI remains a Taiwan Traditional
+  Chinese base package, with a documented en-US and zh-CN transform strategy
+  for future managed deployments.
+- Improved perceived startup time by showing the neutral character window
+  before loading the full expression, physics, attention, and lip-sync visual
+  set. Deferred initialization is idempotent and covered by UI regression
+  tests.
+
 ## v2.0.14 RC3 — 2026-08-02
 
 - Added a Traditional Chinese / Simplified Chinese / English first-run wizard

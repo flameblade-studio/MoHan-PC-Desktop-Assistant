@@ -4,13 +4,13 @@ import os
 import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from PySide6.QtCore import QRect, QTimer
 from PySide6.QtGui import QImage
-from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication
 
 from app import CompanionWindow
@@ -50,89 +50,95 @@ def outside_mouth_signature(image: QImage, mouth: QRect) -> tuple[int, ...]:
 
 
 def run() -> None:
-    with TemporaryDirectory() as temp_dir:
+    with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
         os.environ["LOCALAPPDATA"] = temp_dir
         app = QApplication([])
         window = CompanionWindow(startup_speech=False)
-        window.show()
-        app.processEvents()
-        for timer in window.findChildren(QTimer):
-            timer.stop()
-        window.idle_pose = "cheek"
-        window.state = "speaking"
-        window.speech_pose_suffix = ""
-        window.speech_closed_expression = "idle"
-        window.speech_mid_expression = "mouth_mid"
-        window.speech_open_expression = "speaking"
-        window.audio_driven_mouth = True
-        window.speech_blinking = False
-        window._set_expression("idle", fade=False)
+        try:
+            window.show()
+            app.processEvents()
+            for timer in window.findChildren(QTimer):
+                timer.stop()
+            window.idle_pose = "cheek"
+            window.state = "speaking"
+            window.speech_pose_suffix = ""
+            window.speech_closed_expression = "idle"
+            window.speech_mid_expression = "mouth_mid"
+            window.speech_open_expression = "speaking"
+            window.audio_driven_mouth = True
+            window.speech_blinking = False
+            window._set_expression("idle", fade=False)
 
-        frames: list[QImage] = []
-        eye_rect = QRect(160, 135, 95, 48)
-        mouth_rect = window.mouth_clips[""]
-        vowels = (
-            "A",
-            "A",
-            "A",
-            "O",
-            "O",
-            "O",
-            "I",
-            "I",
-            "I",
-            "CLOSED",
-        )
-        for index, vowel in enumerate(vowels):
-            if index == 3:
-                # A delayed idle-pose callback must not redirect a live mouth
-                # onto another face while speech is still playing.
-                window.idle_pose = "front"
-            window._audio_viseme_cue(
-                0.62 if vowel != "CLOSED" else 0.0,
-                vowel,
+            frames: list[QImage] = []
+            eye_rect = QRect(160, 135, 95, 48)
+            mouth_rect = window.mouth_clips[""]
+            vowels = (
+                "A",
+                "A",
+                "A",
+                "O",
+                "O",
+                "O",
+                "I",
+                "I",
+                "I",
+                "CLOSED",
             )
-            for _ in range(3):
-                QTest.qWait(16)
-                app.processEvents()
-                frames.append(
-                    window.character.pixmap().toImage().convertToFormat(
-                        QImage.Format_ARGB32
+            # Drive the transition clock at a stable 60 Hz. Sleeping for 16 ms
+            # lets a busy Windows runner skip intermediate frames and turns a
+            # visual-continuity assertion into a scheduler lottery.
+            clock = [100.0]
+            with patch("app.time.perf_counter", side_effect=lambda: clock[0]):
+                for index, vowel in enumerate(vowels):
+                    if index == 3:
+                        # A delayed idle-pose callback must not redirect a live
+                        # mouth onto another face while speech is still playing.
+                        window.idle_pose = "front"
+                    window._audio_viseme_cue(
+                        0.62 if vowel != "CLOSED" else 0.0,
+                        vowel,
                     )
-                )
+                    for _ in range(3):
+                        clock[0] += 0.016
+                        window._render_audio_mouth_transition()
+                        frames.append(
+                            window.character.pixmap().toImage().convertToFormat(
+                                QImage.Format_ARGB32
+                            )
+                        )
 
-        assert len({region_signature(frame, mouth_rect) for frame in frames}) >= 10
-        eye_signatures = {
-            region_signature(frame, eye_rect)
-            for frame in frames
-        }
-        assert len(eye_signatures) == 1, "eyes changed during mouth animation"
-        clean_base = window.expression_pixmaps["idle"].toImage().convertToFormat(
-            QImage.Format_ARGB32
-        )
-        clean_outside = outside_mouth_signature(clean_base, mouth_rect)
-        assert all(
-            outside_mouth_signature(frame, mouth_rect) == clean_outside
-            for frame in frames
-        ), "pixels outside the frozen mouth region changed"
-        assert window._active_speech_pose_suffix() == ""
+            assert len({region_signature(frame, mouth_rect) for frame in frames}) >= 10
+            eye_signatures = {
+                region_signature(frame, eye_rect)
+                for frame in frames
+            }
+            assert len(eye_signatures) == 1, "eyes changed during mouth animation"
+            clean_base = window.expression_pixmaps["idle"].toImage().convertToFormat(
+                QImage.Format_ARGB32
+            )
+            clean_outside = outside_mouth_signature(clean_base, mouth_rect)
+            assert all(
+                outside_mouth_signature(frame, mouth_rect) == clean_outside
+                for frame in frames
+            ), "pixels outside the frozen mouth region changed"
+            assert window._active_speech_pose_suffix() == ""
 
-        direct_difference = mean_region_difference(
-            window.expression_pixmaps["mouth_wide"].toImage(),
-            window.expression_pixmaps["mouth_o"].toImage(),
-            mouth_rect,
-        )
-        adjacent = [
-            mean_region_difference(first, second, mouth_rect)
-            for first, second in zip(frames, frames[1:])
-        ]
-        assert direct_difference > 0.5
-        assert max(adjacent) < direct_difference * 0.82
-        assert sum(value > 0.05 for value in adjacent) >= 8
-        assert window.eye_overlay.isHidden()
-
-        window.close()
-        app.processEvents()
+            direct_difference = mean_region_difference(
+                window.expression_pixmaps["mouth_wide"].toImage(),
+                window.expression_pixmaps["mouth_o"].toImage(),
+                mouth_rect,
+            )
+            adjacent = [
+                mean_region_difference(first, second, mouth_rect)
+                for first, second in zip(frames, frames[1:])
+            ]
+            assert direct_difference > 0.5
+            assert max(adjacent) < direct_difference * 0.82
+            assert sum(value > 0.05 for value in adjacent) >= 8
+            assert window.eye_overlay.isHidden()
+        finally:
+            window.close()
+            app.processEvents()
     print("MOUTH_VISUAL_CONTINUITY_OK")
 
 
