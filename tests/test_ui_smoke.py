@@ -345,6 +345,12 @@ def run() -> None:
         window.dashboard.topmost_mode.setCurrentText("永遠置頂")
         assert window.character_topmost_active
         window.dashboard.topmost_mode.setCurrentText("智慧置頂（推薦）")
+        # Keep the direct physics-layer assertions isolated from the live idle
+        # pose scheduler.  On slower CI runners its transition can begin while
+        # processEvents() runs below and intentionally hide every local layer
+        # for one animation frame.
+        window.pose_timer.stop()
+        window._cancel_pose_transition()
         window.idle_pose = "lean"
         window._set_expression(window._idle_expression(), fade=False)
         app.processEvents()
