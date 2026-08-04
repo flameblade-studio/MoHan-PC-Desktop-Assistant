@@ -12,12 +12,14 @@ from contracts import (
     LocalSpeechEnginePort,
     RealtimeVoicePort,
     SecretStorePort,
+    SpeechProviderRegistryPort,
     SpeechListenerPort,
 )
 from db import StudioDB
 from realtime_voice import RealtimeVoiceClient
 from secret_store import SecretStore
 from speech import OpenAITTS, SpeechListener, WindowsTTS
+from speech_providers import create_builtin_speech_registry
 
 
 @dataclass
@@ -31,6 +33,7 @@ class CompanionServices:
     realtime: RealtimeVoicePort
     listener: SpeechListenerPort
     backup_manager: BackupManager | None = None
+    speech_providers: SpeechProviderRegistryPort | None = None
 
 
 def create_default_services(
@@ -75,12 +78,18 @@ def create_default_services(
         ),
         parent=parent,
     )
+    local_tts = WindowsTTS(parent)
+    cloud_tts = OpenAITTS(parent)
     return CompanionServices(
         db=db,
         secret_store=secret_store,
-        local_tts=WindowsTTS(parent),
-        cloud_tts=OpenAITTS(parent),
+        local_tts=local_tts,
+        cloud_tts=cloud_tts,
         realtime=RealtimeVoiceClient(parent),
         listener=listener,
         backup_manager=backup_manager,
+        speech_providers=create_builtin_speech_registry(
+            local_tts,
+            cloud_tts,
+        ),
     )
