@@ -21,7 +21,7 @@
 <p align="center">
   <strong>Author / 軟體作者：CHOU MING HUA</strong><br>
   Current public preview / 目前公開預覽版：v2.0.14 RC3<br>
-  Windows 10/11 · Python 3.12 · PySide6 · MIT License
+  Windows 10/11 · Python 3.14 · PySide6 · MIT License
 </p>
 
 > 墨寒是一套重視安全、隱私與角色連續感的 Windows 語音互動桌面助理，
@@ -365,10 +365,12 @@ Assistant Cloud、Tailscale 或其他具身分驗證的加密私人網路。
 
 ## 從原始碼執行
 
-需求：Windows 10/11、Python 3.12+。
+需求：Windows 10/11、Python 3.14.x。
+升級、資料保留與回復方式請見
+[Python 3.14 遷移說明](docs/PYTHON-3.14-MIGRATION.md)。
 
 ```powershell
-py -3.12 -m venv .venv
+py -3.14 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python app.py
@@ -644,10 +646,12 @@ Read [PRIVACY.md](PRIVACY.md), [SECURITY.md](SECURITY.md), and
 
 ## Run from source
 
-Requirements: Windows 10/11 and Python 3.12+.
+Requirements: Windows 10/11 and Python 3.14.x.
+See the [Python 3.14 migration guide](docs/PYTHON-3.14-MIGRATION.md) for data
+preservation and rollback details.
 
 ```powershell
-py -3.12 -m venv .venv
+py -3.14 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python app.py

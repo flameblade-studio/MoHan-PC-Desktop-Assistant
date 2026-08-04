@@ -25,6 +25,7 @@ from lip_sync import (
     VISEME_CUES_PER_SECOND,
     infer_vowel_pcm16,
 )
+from pcm_audio import PcmAudioError, scale_pcm16, stereo_to_mono_pcm16
 
 
 CREATE_NO_WINDOW = 0x08000000
@@ -140,18 +141,14 @@ def apply_wav_volume(
     if gain == 1.0:
         return audio
     try:
-        import audioop
-
         with wave.open(io.BytesIO(audio), "rb") as source:
             params = source.getparams()
+            if params.sampwidth != 2:
+                return audio
             frame_chunks = []
             while chunk := source.readframes(4096):
                 frame_chunks.append(chunk)
-        adjusted = audioop.mul(
-            b"".join(frame_chunks),
-            params.sampwidth,
-            gain,
-        )
+        adjusted = scale_pcm16(b"".join(frame_chunks), gain)
         output = io.BytesIO()
         with wave.open(output, "wb") as target:
             # Streaming WAV responses may use 0xFFFFFFFF as a temporary data
@@ -165,7 +162,7 @@ def apply_wav_volume(
             target.setcomptype(params.comptype, params.compname)
             target.writeframes(adjusted)
         return output.getvalue()
-    except (OSError, EOFError, wave.Error, audioop.error):
+    except (OSError, EOFError, wave.Error, PcmAudioError):
         return audio
 
 
@@ -528,9 +525,7 @@ class WindowsTTS(QObject):
                     if width != 2:
                         continue
                     if channels == 2:
-                        import audioop
-
-                        chunk = audioop.tomono(chunk, 2, 0.5, 0.5)
+                        chunk = stereo_to_mono_pcm16(chunk)
                     vowel_level, vowel = infer_vowel_pcm16(chunk, rate)
                     deadline = (
                         started_at
@@ -647,9 +642,7 @@ class OpenAITTS(QObject):
                     if width != 2:
                         continue
                     if channels == 2:
-                        import audioop
-
-                        chunk = audioop.tomono(chunk, 2, 0.5, 0.5)
+                        chunk = stereo_to_mono_pcm16(chunk)
                     vowel_level, vowel = infer_vowel_pcm16(chunk, rate)
                     deadline = (
                         started_at

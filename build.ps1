@@ -27,10 +27,16 @@ if (-not $Python) {
     throw "Python was not found. Activate a virtual environment or pass -Python."
 }
 
+$PythonVersion = (& $Python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')").Trim()
+if ($LASTEXITCODE -ne 0 -or $PythonVersion -notmatch '^3\.14(?:\.|$)') {
+    throw "MoHan RC4 packages must be built with Python 3.14.x; found $PythonVersion."
+}
+
 $BuildInfo = Join-Path $ProjectRoot "build-info.json"
 @{
     version = $Version
     repository = "hitoshic1982/MoHan-PC-Desktop-Assistant"
+    python = $PythonVersion
 } | ConvertTo-Json | Set-Content -Encoding utf8 $BuildInfo
 
 try {

@@ -5,7 +5,7 @@
 [安全说明](SECURITY.md)
 
 > 当前公开预览版本：v2.0.14 RC3<br>
-> Windows 10/11 · Python 3.12 · PySide6 · MIT License
+> Windows 10/11 · Python 3.14 · PySide6 · MIT License
 
 墨寒是一款重视安全、隐私与角色连续感的 Windows 桌面虚拟助手。她以来自
 北宋、寄宿于赤焰剑中的千年女剑魂为角色背景，结合透明桌面角色、文字与
@@ -108,10 +108,12 @@ Google Gmail、Calendar 与 Drive 已完成当前项目的真实连接测试，�
 
 ## 从源代码运行
 
-需求：Windows 10/11、Python 3.12+。
+需求：Windows 10/11、Python 3.14.x。
+升级、数据保留与回退方式请见
+[Python 3.14 迁移说明](docs/PYTHON-3.14-MIGRATION.md)。
 
 ```powershell
-py -3.12 -m venv .venv
+py -3.14 -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python app.py

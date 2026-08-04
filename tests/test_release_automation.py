@@ -19,6 +19,20 @@ from tools.sync_wordpress_download_page import (
 
 
 def main() -> None:
+    build_script = (ROOT / "build.ps1").read_text(encoding="utf-8")
+    assert "Python 3.14.x" in build_script
+    assert "python = $PythonVersion" in build_script
+    for workflow_name in (
+        "windows-ci.yml",
+        "security-audit.yml",
+        "release.yml",
+    ):
+        workflow = (
+            ROOT / ".github" / "workflows" / workflow_name
+        ).read_text(encoding="utf-8")
+        assert 'python-version: "3.14"' in workflow
+        assert 'python-version: "3.12"' not in workflow
+
     inno_script = (ROOT / "installer" / "mohan.iss").read_text(encoding="utf-8")
     traditional_messages = ROOT / "installer" / "languages" / "ChineseTraditional.isl"
     simplified_messages = ROOT / "installer" / "languages" / "ChineseSimplified.isl"
