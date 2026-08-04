@@ -120,6 +120,14 @@ Tags containing a prerelease suffix such as `-rc.1` are published as
 pre-releases. Stable semantic tags are published as normal releases. Never
 reuse or move a published tag; create a new version instead.
 
+Every pull-request body and every curated Release description must contain
+four complete sections in this order: Taiwan Traditional Chinese, Simplified
+Chinese, English, and Japanese. Translate the facts that were true for that
+specific change or tag; never backfill a historical PR or Release with features
+introduced later. The generated category headings follow the same four-language
+order. A symbolic one-line translation is not a substitute for the change,
+reason, user impact, and verification information.
+
 Release artifacts can be verified with:
 
 ```powershell

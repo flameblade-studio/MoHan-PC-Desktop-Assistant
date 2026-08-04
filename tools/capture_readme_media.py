@@ -230,6 +230,114 @@ def compose_hero(
         raise RuntimeError(f"Could not save {output}")
 
 
+def compose_github_social_preview(
+    dashboard: QImage,
+    character: QImage,
+    output: Path,
+) -> None:
+    """Build the release/supply-chain visual from the current real UI capture."""
+    canvas = QImage(1280, 640, QImage.Format_ARGB32)
+    canvas.fill(QColor("#eef3f8"))
+    painter = QPainter(canvas)
+    painter.setRenderHint(QPainter.Antialiasing)
+    background = QLinearGradient(0, 0, 1280, 640)
+    background.setColorAt(0.0, QColor("#edf4f8"))
+    background.setColorAt(0.62, QColor("#f9fafb"))
+    background.setColorAt(1.0, QColor("#f8eeee"))
+    painter.fillRect(canvas.rect(), background)
+
+    painter.setPen(QColor("#17344f"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 27, QFont.Bold))
+    painter.drawText(QRect(48, 34, 820, 50), "墨寒 MoHan Desktop Assistant")
+    painter.setPen(QColor("#6f4667"))
+    painter.setFont(QFont("Segoe UI", 15, QFont.Bold))
+    painter.drawText(
+        QRect(50, 87, 820, 30),
+        "OPEN-SOURCE WINDOWS DESKTOP COMPANION",
+    )
+
+    panel = QRect(48, 142, 805, 356)
+    draw_rounded_panel(
+        painter,
+        panel,
+        QColor("#ffffff"),
+        QColor("#b6c8d6"),
+        22,
+    )
+    dash = scaled_inside(dashboard, QSize(765, 316))
+    painter.drawImage(
+        QPoint(
+            panel.x() + (panel.width() - dash.width()) // 2,
+            panel.y() + (panel.height() - dash.height()) // 2,
+        ),
+        dash,
+    )
+
+    character_panel = QRect(880, 40, 352, 458)
+    character_gradient = QLinearGradient(
+        character_panel.topLeft(), character_panel.bottomRight()
+    )
+    character_gradient.setColorAt(0.0, QColor("#fafdff"))
+    character_gradient.setColorAt(0.62, QColor("#edf4f8"))
+    character_gradient.setColorAt(1.0, QColor("#f8ecef"))
+    painter.setPen(QPen(QColor("#b6c8d6"), 2))
+    painter.setBrush(character_gradient)
+    painter.drawRoundedRect(character_panel, 24, 24)
+    char = scaled_inside(character, QSize(340, 395))
+    painter.drawImage(
+        QPoint(
+            character_panel.x()
+            + (character_panel.width() - char.width()) // 2,
+            character_panel.y() + 18,
+        ),
+        char,
+    )
+    painter.setPen(QColor("#6f4667"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 16, QFont.Bold))
+    painter.drawText(
+        QRect(895, 430, 322, 38),
+        Qt.AlignCenter,
+        "北宋千年女劍魂・首席策士",
+    )
+
+    badges = (
+        ("WINDOWS CI", "VERIFIED"),
+        ("SHA256", "CHECKSUM"),
+        ("SBOM", "ATTESTED"),
+    )
+    for index, (title, subtitle) in enumerate(badges):
+        badge = QRect(48 + (index * 266), 522, 245, 76)
+        painter.setPen(QPen(QColor("#9fb7c9"), 1))
+        painter.setBrush(QColor("#ffffff"))
+        painter.drawRoundedRect(badge, 16, 16)
+        painter.setPen(QColor("#17344f"))
+        painter.setFont(QFont("Segoe UI", 13, QFont.Bold))
+        painter.drawText(
+            QRect(badge.x(), badge.y() + 10, badge.width(), 26),
+            Qt.AlignCenter,
+            title,
+        )
+        painter.setPen(QColor("#527188"))
+        painter.setFont(QFont("Segoe UI", 10))
+        painter.drawText(
+            QRect(badge.x(), badge.y() + 38, badge.width(), 22),
+            Qt.AlignCenter,
+            subtitle,
+        )
+
+    painter.setPen(QColor("#48647a"))
+    painter.setFont(QFont("Segoe UI", 13))
+    painter.drawText(
+        QRect(880, 527, 352, 62),
+        Qt.AlignCenter | Qt.TextWordWrap,
+        "Python 3.14 · Windows x64\nMIT License · Safety First",
+    )
+    painter.end()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    if not canvas.save(str(output)):
+        raise RuntimeError(f"Could not save {output}")
+
+
 def compose_expression_showcase(output: Path) -> None:
     cards = (
         ("attentive_front.png", "專注"),
@@ -308,7 +416,7 @@ def compose_support_portraits(output_dir: Path) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     portraits = {
         "support-proud.png": "proud_front.png",
-        "support-shy.png": "shy_cute_front.png",
+        "support-shy-aligned.png": "shy_cute_front.png",
         "support-mock-hit.png": "mock_hit_front.png",
     }
     for output_name, source_name in portraits.items():
@@ -584,6 +692,11 @@ def capture_media(output_dir: Path, ffmpeg: str | None) -> float | None:
         if character.isNull():
             raise RuntimeError("Could not load representative character artwork")
         compose_hero(tasks, character, output_dir / "mohan-hero.png")
+        compose_github_social_preview(
+            tasks,
+            character,
+            output_dir / "github-social-preview.png",
+        )
 
         window.dashboard.tabs.setCurrentIndex(3)
         app.processEvents()
