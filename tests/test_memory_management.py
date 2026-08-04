@@ -7,9 +7,15 @@ from tempfile import TemporaryDirectory
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication
 
-from app import MEMORY_CATEGORIES, MemoryEditorDialog, classify_memory_text
+from app import (
+    MEMORY_CATEGORIES,
+    ArchivedMemoryDialog,
+    MemoryEditorDialog,
+    classify_memory_text,
+)
 from db import StudioDB
 
 
@@ -92,6 +98,16 @@ def run() -> None:
                 5,
             )
             editor.close()
+            app.processEvents()
+            assert db._archive_memory_ids([person_id], "test-archive") == 1
+            archive_dialog = ArchivedMemoryDialog(db)
+            assert archive_dialog.archive_list.count() == 1
+            archive_dialog.archive_list.item(0).setCheckState(Qt.Checked)
+            archive_dialog.restore_checked()
+            assert archive_dialog.changed
+            assert archive_dialog.archive_list.count() == 0
+            assert db.memory_context(query="出版窗口")
+            archive_dialog.close()
             app.processEvents()
         finally:
             db.close()

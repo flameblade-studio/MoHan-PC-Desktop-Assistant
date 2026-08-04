@@ -985,6 +985,70 @@ class MemoryEditorDialog(QDialog):
         )
 
 
+class ArchivedMemoryDialog(QDialog):
+    def __init__(self, db: StudioDB, parent=None):
+        super().__init__(parent)
+        self.db = db
+        self.changed = False
+        self.setWindowTitle("已封存的長期記憶")
+        self.setMinimumSize(720, 520)
+        self.setStyleSheet(STYLE)
+        layout = QVBoxLayout(self)
+        intro = QLabel(
+            "自動整理只會封存較舊、低重要度的對話記憶，不會直接銷毀。"
+            "您可以在這裡隨時勾選還原。"
+        )
+        intro.setWordWrap(True)
+        layout.addWidget(intro)
+        self.archive_list = QListWidget()
+        layout.addWidget(self.archive_list, 1)
+        self.archive_status = QLabel()
+        layout.addWidget(self.archive_status)
+        buttons = QHBoxLayout()
+        restore = QPushButton("還原勾選記憶")
+        close = QPushButton("關閉")
+        buttons.addWidget(restore)
+        buttons.addStretch()
+        buttons.addWidget(close)
+        layout.addLayout(buttons)
+        restore.clicked.connect(self.restore_checked)
+        close.clicked.connect(self.accept)
+        self.refresh_archives()
+
+    def refresh_archives(self) -> None:
+        self.archive_list.clear()
+        rows = self.db.list_archived_memories(1000)
+        for row in rows:
+            item = QListWidgetItem(
+                f"【{to_taiwan_traditional(str(row['category']))}】"
+                f"{to_taiwan_traditional(str(row['title']))}\n"
+                f"{to_taiwan_traditional(str(row['content']))}\n"
+                f"封存原因：{row['reason']}　時間：{str(row['archived_at'])[:16]}"
+            )
+            item.setData(Qt.UserRole, int(row["id"]))
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+            item.setCheckState(Qt.Unchecked)
+            self.archive_list.addItem(item)
+        self.archive_status.setText(f"目前共有 {len(rows)} 則可還原記憶")
+
+    def restore_checked(self) -> None:
+        selected = [
+            int(self.archive_list.item(index).data(Qt.UserRole))
+            for index in range(self.archive_list.count())
+            if self.archive_list.item(index).checkState() == Qt.Checked
+        ]
+        if not selected:
+            QMessageBox.information(self, "尚未選取", "請先勾選要還原的記憶。")
+            return
+        restored = sum(
+            1 for archive_id in selected
+            if self.db.restore_archived_memory(archive_id) > 0
+        )
+        self.changed = self.changed or restored > 0
+        self.refresh_archives()
+        self.archive_status.setText(f"已還原 {restored} 則記憶。")
+
+
 class ChatHistoryDialog(QDialog):
     def __init__(self, db: StudioDB, parent=None):
         super().__init__(parent)
@@ -2035,9 +2099,14 @@ class Dashboard(QDialog):
         self.memory_list.setSpacing(3)
         actions = QHBoxLayout()
         clear = QPushButton("清除全部記憶")
+        optimize = QPushButton("安全整理記憶")
+        optimize.setToolTip("合併低重要度重複內容，超量舊記憶只會先封存")
+        archives = QPushButton("查看已封存記憶")
         self.auto_memory = QCheckBox("從「請記住／我喜歡／我習慣」等明確說法自動建立記憶")
         self.auto_memory.setChecked(bool(self.db.setting("auto_memory", True)))
         actions.addWidget(clear)
+        actions.addWidget(optimize)
+        actions.addWidget(archives)
         actions.addStretch()
         layout.addWidget(intro)
         layout.addLayout(entry)
@@ -2052,6 +2121,8 @@ class Dashboard(QDialog):
         self.memory_list.itemDoubleClicked.connect(self.edit_memory_item)
         self.memory_filter.currentIndexChanged.connect(self.refresh_memories)
         clear.clicked.connect(self.clear_memories)
+        optimize.clicked.connect(self.optimize_memories)
+        archives.clicked.connect(self.show_archived_memories)
         return tab
 
     def _voice_tab(self) -> QWidget:
@@ -3432,7 +3503,7 @@ class Dashboard(QDialog):
             mode,
             history,
             api_key=self.secret_store.load(),
-            memories=self.db.memory_context(),
+            memories=self.db.memory_context(query=text),
             model=str(self.db.setting("ai_model", DEFAULT_TEXT_MODEL)),
             persona=persona_for_profile(self.db),
             assistant_name=self.assistant_name,
@@ -4075,6 +4146,24 @@ class Dashboard(QDialog):
         )
         if answer == QMessageBox.Yes:
             self.db.clear_memories()
+            self.refresh_memories()
+
+    def optimize_memories(self) -> None:
+        result = self.db.optimize_memories()
+        self.refresh_memories()
+        QMessageBox.information(
+            self,
+            "記憶整理完成",
+            f"合併 {result['deduplicated']} 則近似記憶，"
+            f"封存 {result['pruned']} 則較舊低重要度記憶。\n"
+            f"目前使用中 {result['active']} 則；"
+            f"可還原封存 {result['archived']} 則。",
+        )
+
+    def show_archived_memories(self) -> None:
+        dialog = ArchivedMemoryDialog(self.db, self)
+        dialog.exec()
+        if dialog.changed:
             self.refresh_memories()
 
     def _preview_voice(self) -> None:
