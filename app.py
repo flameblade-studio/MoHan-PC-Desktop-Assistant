@@ -64,6 +64,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QScrollArea,
+    QSizePolicy,
     QSlider,
     QSpinBox,
     QSplitter,
@@ -117,10 +118,12 @@ from language_support import (
     is_english,
     is_japanese,
     is_simplified_chinese,
+    is_builtin_transcription_prompt,
     japanese_voice_instructions,
     localized_reminder_line,
     localized_voice_instructions,
     migrate_builtin_reminder_line,
+    localized_transcription_prompt,
     response_language_instruction,
     simplified_chinese_voice_instructions,
     transcription_language_for_ui,
@@ -923,6 +926,10 @@ class TodoRow(QFrame):
     def __init__(self, db: StudioDB, todo):
         super().__init__()
         self.setObjectName("todoCard")
+        # A task card should keep its content height.  Letting QVBoxLayout
+        # stretch every QFrame vertically makes cards overlap visually in a
+        # tall or wide dashboard capture.
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.db = db
         self.todo_id = int(todo["id"])
         layout = QHBoxLayout(self)
@@ -1377,6 +1384,11 @@ class FirstRunWizard(QDialog):
         ):
             label = QLabel()
             label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            # Keep every onboarding row at one deliberate commercial-dialog
+            # height.  Matching label and editor geometry removes the optical
+            # baseline drift seen with mixed Windows font metrics.
+            editor.setFixedHeight(50)
+            label.setFixedHeight(50)
             self.form_labels[key] = label
             form.addRow(label, editor)
         layout.addLayout(form)
@@ -1531,6 +1543,16 @@ class FirstRunWizard(QDialog):
         self.db.set_setting(
             "transcription_language",
             transcription_language_for_ui(values["ui_language"]),
+        )
+        self.db.set_setting(
+            "transcription_prompt",
+            localized_transcription_prompt(
+                values["ui_language"],
+                assistant_name=values["assistant_name"],
+                user_title=values["user_title"],
+                organization_name=values["organization_name"],
+                wake_word=values["wake_word"],
+            ),
         )
         self.db.set_setting(
             "voice_instructions",
@@ -2364,7 +2386,13 @@ class Dashboard(QDialog):
             str(
                 self.db.setting(
                     "transcription_prompt",
-                    SpeechListener.TRANSCRIPTION_PROMPT,
+                    localized_transcription_prompt(
+                        self.ui_language,
+                        assistant_name=self.assistant_name,
+                        user_title=self.user_title,
+                        organization_name=self.organization_name,
+                        wake_word=profile_setting(self.db, "wake_word"),
+                    ),
                 )
             )
         )
@@ -4734,6 +4762,12 @@ class Dashboard(QDialog):
 
     def save_settings(self, silent: bool = False) -> bool:
         previous_ui_language = self.ui_language
+        previous_transcription_profile = {
+            "assistant_name": self.assistant_name,
+            "user_title": self.user_title,
+            "organization_name": self.organization_name,
+            "wake_word": profile_setting(self.db, "wake_word"),
+        }
         assistant_name = self.profile_assistant_name.text().strip()
         user_title = self.profile_user_title.text().strip()
         if not assistant_name or not user_title:
@@ -4765,6 +4799,25 @@ class Dashboard(QDialog):
         for key, value in profile_values.items():
             self.db.set_setting(key, value)
         new_ui_language = str(profile_values["ui_language"])
+        current_transcription_prompt = (
+            self.transcription_prompt.toPlainText().strip()
+        )
+        if is_builtin_transcription_prompt(
+            current_transcription_prompt,
+            previous_ui_language,
+            **previous_transcription_profile,
+        ):
+            self.transcription_prompt.setPlainText(
+                localized_transcription_prompt(
+                    new_ui_language,
+                    assistant_name=profile_values["assistant_name"],
+                    user_title=profile_values["user_title"],
+                    organization_name=profile_values[
+                        "organization_name"
+                    ],
+                    wake_word=profile_values["wake_word"],
+                )
+            )
         if new_ui_language != previous_ui_language:
             current_transcription_language = (
                 self.transcription_language.text().strip()
@@ -6315,7 +6368,12 @@ class CompanionWindow(QMainWindow):
 
     def _build_mouth_frames(self) -> None:
         mouth_clips = {
-            "": QRect(174, 198, 52, 34),
+            # The cheek-rest portrait has a wider closed smile than its
+            # speech sources.  Cover both original mouth corners as well as
+            # the lips; otherwise the upturned idle corners survive beneath
+            # A/I visemes and visually turn one mouth into an exaggerated
+            # grin.
+            "": QRect(168, 195, 64, 40),
             "_lean": QRect(162, 198, 54, 34),
             "_front": QRect(206, 199, 54, 35),
         }

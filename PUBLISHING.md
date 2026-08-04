@@ -74,6 +74,13 @@ $env:QT_QPA_PLATFORM = "windows"
 python tools\capture_readme_media.py --ffmpeg "C:\path\to\ffmpeg.exe"
 ```
 
+To refresh only the current UI screenshots without rebuilding the demonstration
+video, use:
+
+```powershell
+python tools\capture_readme_media.py --screenshots-only
+```
+
 Before committing regenerated media:
 
 1. Inspect every PNG at full size for clipped text, malformed character art,

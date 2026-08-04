@@ -15,6 +15,8 @@
 - 重構 Realtime／非 Realtime 音訊緩衝，降低輸入與播放延遲，禁止靜默遺失中間語音。
 - 修正姿勢切換偶發抖動、殘影與舊動畫回呼競速，同時保留眨眼、嘴型、表情仲裁、逐圖錨點、視線、視差與物理動態。
 - 首次設定與主視窗改為明亮、高對比、大字級介面；加入古風科技主視覺、墨寒安裝圖與一致的墨寒半身程式圖示。
+- 語音轉錄提示詞改為依四種介面語言與個人設定產生的中性預設，不再向所有使用者預填炎劍工作室專有詞；既有自訂提示詞完整保留。
+- 修正首次設定欄位標題的垂直對齊及托腮待機姿勢說話時嘴角過度上揚，並更新 README 與官網的最新版實機圖。
 - 延後非必要啟動工作並改善啟動流程，在不犧牲資料、安全檢查與原有功能的前提下降低等待時間。
 
 ### 下載與相容性
@@ -26,7 +28,7 @@
 
 ### 驗證
 
-- Python 3.14.6：`ALL_55_TESTS_OK`
+- Python 3.14.6：`ALL_56_TESTS_OK`
 - Windows CI、公開內容稽核、封裝自我測試、事件迴圈測試：通過
 - EXE／MSI 靜默安裝、自我測試與移除：通過
 - SHA-256、CycloneDX SBOM、更新清單與 Artifact Attestation：已產生
@@ -45,6 +47,8 @@
 - 重构 Realtime／非 Realtime 音频缓冲，降低输入与播放延迟，并禁止静默丢失中间语音。
 - 修复姿势切换偶发抖动、残影与旧动画回调竞速，同时保留眨眼、嘴型、表情仲裁、逐图锚点、视线、视差及物理动态。
 - 首次设置和主窗口改为明亮、高对比、大字号界面，并加入古风科技主视觉、墨寒安装图片与统一的墨寒半身程序图标。
+- 语音转录提示词改为按四种界面语言与个人设置生成的中性默认值，不再为所有用户预填炎剑工作室专用词；现有自定义提示词完整保留。
+- 修复首次设置字段标题的垂直对齐及托腮待机姿势说话时嘴角过度上扬，并更新 README 与官网的最新版实机图。
 - 延后非必要启动工作并优化启动流程，在不牺牲数据、安全检查及现有功能的前提下降低等待时间。
 
 ### 下载与兼容性
@@ -56,7 +60,7 @@
 
 ### 验证
 
-- Python 3.14.6：`ALL_55_TESTS_OK`
+- Python 3.14.6：`ALL_56_TESTS_OK`
 - Windows CI、公开内容审计、打包自测、事件循环测试：通过
 - EXE／MSI 静默安装、自测与卸载：通过
 - SHA-256、CycloneDX SBOM、更新清单与 Artifact Attestation：已生成
@@ -75,6 +79,8 @@
 - Reworked Realtime and non-Realtime audio buffering to reduce capture/playback delay without silently dropping words.
 - Fixed intermittent pose-transition jitter, ghosting, and stale animation callbacks while preserving blinking, visemes, expression arbitration, per-image anchors, gaze, parallax, and physics.
 - Redesigned first run and the main window with a bright, high-contrast, larger-type theme, an ink-and-technology hero, MoHan installer art, and consistent MoHan half-body application icons.
+- Replaced the author-specific transcription default with neutral prompts generated from the selected UI language and user profile while preserving all existing custom prompts.
+- Corrected first-run label alignment and the over-wide smile while the chin-rest pose speaks, then refreshed the latest README and website screenshots.
 - Deferred non-essential startup work and streamlined initialization without skipping data integrity, safety checks, or existing behavior.
 
 ### Downloads and compatibility
@@ -86,7 +92,7 @@
 
 ### Verification
 
-- Python 3.14.6: `ALL_55_TESTS_OK`
+- Python 3.14.6: `ALL_56_TESTS_OK`
 - Windows CI, public-content audit, packaged self-test, and event-loop smoke test: passed
 - Silent EXE/MSI install, self-test, and uninstall: passed
 - SHA-256 catalog, CycloneDX SBOM, update manifest, and artifact attestations: generated
@@ -105,6 +111,8 @@
 - Realtime／非 Realtime の音声バッファーを再構成し、言葉を無断で欠落させずに入力・再生遅延を減らしました。
 - 姿勢切り替え時の断続的な揺れ、残像、古いアニメーション処理の競合を修正し、まばたき、口形、表情調停、画像ごとの基準点、視線、視差、物理動作を維持しました。
 - 初回設定と本体画面を明るく高コントラストな大きめ文字へ刷新し、古風と技術を融合した主画像、墨寒のインストール画像、統一した墨寒半身アイコンを追加しました。
+- 音声文字起こしの既定文を、選択した画面言語と利用者設定から作る中立的な内容へ変更しました。既存の独自文は上書きしません。
+- 初回設定の項目名の縦位置と、頬杖姿勢で話す際の過度に広い笑顔を修正し、README と公式サイトの実機画像を最新版へ更新しました。
 - データ整合性、安全確認、既存動作を省略せず、不要な初期処理を遅延させて起動待ちを短縮しました。
 
 ### ダウンロードと互換性
@@ -116,7 +124,7 @@
 
 ### 検証
 
-- Python 3.14.6：`ALL_55_TESTS_OK`
+- Python 3.14.6：`ALL_56_TESTS_OK`
 - Windows CI、公開内容監査、配布物自己検査、イベントループ検査：成功
 - EXE／MSI の無人インストール、自己検査、アンインストール：成功
 - SHA-256 一覧、CycloneDX SBOM、更新情報、Artifact Attestation：生成済み

@@ -14,6 +14,26 @@
 
 ![墨寒桌面助手主视觉](docs/media/mohan-hero.png)
 
+## 最新实机界面
+
+以下图片与繁中、英文、日文 README 共用同一组最新版媒体文件，确保界面改版
+后不会出现不同语言各自停留在旧截图的问题。
+
+<table>
+  <tr>
+    <td width="50%" align="center"><a href="docs/media/first-run-wizard.png"><img src="docs/media/first-run-wizard.png" alt="墨寒首次启动设置向导"></a><br><strong>首次启动设置向导</strong></td>
+    <td width="50%" align="center"><a href="docs/media/voice-modes.png"><img src="docs/media/voice-modes.png" alt="Realtime 与标准语音模式"></a><br><strong>Realtime 与标准语音</strong></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><a href="docs/media/expressions.png"><img src="docs/media/expressions.png" alt="墨寒表情与动作系统"></a><br><strong>表情与动作系统</strong></td>
+    <td width="50%" align="center"><a href="docs/media/tasks-and-ideas.png"><img src="docs/media/tasks-and-ideas.png" alt="墨寒待办事项与创作灵感"></a><br><strong>待办事项与创作灵感</strong></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><a href="docs/media/long-term-memory.png"><img src="docs/media/long-term-memory.png" alt="墨寒可编辑长期记忆"></a><br><strong>可编辑长期记忆</strong></td>
+    <td width="50%" align="center"><a href="docs/media/security-permissions.png"><img src="docs/media/security-permissions.png" alt="墨寒权限与安全设置"></a><br><strong>权限与安全设置</strong></td>
+  </tr>
+</table>
+
 ## 创作者的话
 
 作者 CHOU MING HUA 是一位来自台湾、43 岁且原本没有程序设计背景的父亲。

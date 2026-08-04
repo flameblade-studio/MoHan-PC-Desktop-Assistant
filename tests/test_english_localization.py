@@ -182,6 +182,9 @@ def run() -> None:
         wizard._save()
         assert db.setting("ui_language") == "en"
         assert db.setting("transcription_language") == "en"
+        assert "Please transcribe accurately in English" in str(
+            db.setting("transcription_prompt")
+        )
         assert db.setting("voice_engine") == VOICE_ENGINE_WINDOWS
         assert db.setting("persona_prompt") == ENGLISH_PERSONA
         assert db.setting("voice_instructions") == english_voice_instructions()
@@ -245,6 +248,9 @@ def run() -> None:
         wizard._save()
         assert db.setting("ui_language") == "zh-CN"
         assert db.setting("transcription_language") == "zh"
+        assert "请使用中国简体中文准确转录" in str(
+            db.setting("transcription_prompt")
+        )
         assert db.setting("voice_engine") == VOICE_ENGINE_WINDOWS
         assert db.setting("persona_prompt") == SIMPLIFIED_CHINESE_PERSONA
         assert (

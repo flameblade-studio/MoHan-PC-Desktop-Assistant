@@ -157,9 +157,9 @@ MoHan remains free and MIT-licensed. Support never buys privileges or limits par
 
 <table>
   <tr>
-    <td width="33%" align="center"><img src="assets/expressions/proud_front.png" width="220" alt="墨寒傲嬌"><br><strong>「妾才不是在等贊助……只是替主上巡視軍糧。」</strong><br><sub>“I am not waiting for support… merely inspecting our provisions.”</sub></td>
-    <td width="33%" align="center"><img src="assets/expressions/shy_cute_front.png" width="220" alt="墨寒嬌羞"><br><strong>「若真願意相助，妾……會記得的。」</strong><br><sub>“If you truly wish to help… I shall remember it.”</sub></td>
-    <td width="33%" align="center"><img src="assets/expressions/mock_hit_front.png" width="220" alt="墨寒佯怒"><br><strong>「不許勉強！先顧好自己的荷包，聽見沒有？」</strong><br><sub>“No overdoing it! Take care of yourself first—understood?”</sub></td>
+    <td width="33%" align="center"><img src="docs/media/support-proud.png" width="220" alt="墨寒傲嬌"><br><strong>「妾才不是在等贊助……只是替主上巡視軍糧。」</strong><br><sub>“I am not waiting for support… merely inspecting our provisions.”</sub></td>
+    <td width="33%" align="center"><img src="docs/media/support-shy.png" width="220" alt="墨寒嬌羞"><br><strong>「若真願意相助，妾……會記得的。」</strong><br><sub>“If you truly wish to help… I shall remember it.”</sub></td>
+    <td width="33%" align="center"><img src="docs/media/support-mock-hit.png" width="220" alt="墨寒佯怒"><br><strong>「不許勉強！先顧好自己的荷包，聽見沒有？」</strong><br><sub>“No overdoing it! Take care of yourself first—understood?”</sub></td>
   </tr>
 </table>
 

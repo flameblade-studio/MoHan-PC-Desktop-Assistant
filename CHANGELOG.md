@@ -18,6 +18,10 @@ All notable public changes to MoHan Desktop Assistant are documented here.
   降低即時與非即時語音緩衝延遲。
 - 首次啟動精靈與主視窗改為明亮、高對比、較大字級；加入古風科技主視覺、
   墨寒安裝圖、清楚核取方塊及一致的墨寒半身應用程式圖示。
+- 語音轉錄提示詞改為依繁中、簡中、英文、日文及使用者設定產生的中性預設，
+  不再把炎劍工作室專有詞彙帶給所有使用者；既有自訂提示詞不會被覆蓋。
+- 修正首次設定欄位標題的垂直對齊，以及托腮待機姿勢說話時嘴角過度上揚；
+  同步更新 README 與官網使用的最新版實機圖。
 - 延續姿勢切換、物理圖層與說話銜接的競速修正；RC3 觀察到的抖動需以本版
   候選程式重新實測，不能視為本版回歸。
 
@@ -35,6 +39,10 @@ All notable public changes to MoHan Desktop Assistant are documented here.
   并降低实时与非实时语音缓冲延迟。
 - 首次启动向导与主窗口改为明亮、高对比和较大字号，并加入古风科技主视觉、
   墨寒安装图片、清晰复选框及统一的墨寒半身应用图标。
+- 语音转录提示词改为根据繁中、简中、英文、日文及用户设置生成的中性默认值，
+  不再把炎剑工作室专用词汇带给所有用户；现有自定义提示词不会被覆盖。
+- 修复首次设置字段标题的垂直对齐，以及托腮待机姿势说话时嘴角过度上扬；
+  同步更新 README 与官网采用的最新版实机图。
 
 ### English
 
@@ -53,6 +61,11 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 - Redesigned first run and the main UI with a bright, high-contrast, larger-
   type theme, an ink-and-technology hero, MoHan installer artwork, visible
   checkboxes, and one consistent MoHan half-body application icon.
+- Replaced the author-specific transcription default with neutral localized
+  prompts generated from each user's language and profile while preserving
+  every existing custom prompt.
+- Corrected first-run label alignment and the over-wide smile while the
+  chin-rest pose speaks, then refreshed the README and website screenshots.
 
 ### 日本語
 
@@ -70,8 +83,12 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 - 初回設定と本体画面を明るく高コントラストな大きめ文字へ刷新し、古風と
   技術を融合した背景、墨寒のインストール画像、見やすいチェック欄、統一した
   墨寒半身アイコンを追加しました。
+- 音声文字起こしの既定文を、繁体字中国語、簡体字中国語、英語、日本語と
+  利用者設定から作る中立的な内容へ変更しました。既存の独自文は上書きしません。
+- 初回設定の項目名の縦位置と、頬杖姿勢で話す際の過度に広い笑顔を修正し、
+  README と公式サイトの実機画像を最新版へ更新しました。
 
-Verification: 55/55 automated test programs passed before publication. The
+Verification: 56/56 automated test programs passed for the current RC1 source. The
 tagged Windows release workflow also passed source auditing, packaged self-test,
 silent EXE/MSI install and uninstall verification, checksum and SBOM generation,
 artifact attestation, and security checks.

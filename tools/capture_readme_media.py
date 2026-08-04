@@ -158,23 +158,32 @@ def compose_hero(
     output: Path,
 ) -> None:
     canvas = QImage(1600, 900, QImage.Format_ARGB32)
-    canvas.fill(QColor("#08141f"))
+    canvas.fill(QColor("#eef3f8"))
     painter = QPainter(canvas)
     painter.setRenderHint(QPainter.Antialiasing)
     gradient = QLinearGradient(0, 0, 1600, 900)
-    gradient.setColorAt(0.0, QColor("#08131e"))
-    gradient.setColorAt(0.55, QColor("#102a3b"))
-    gradient.setColorAt(1.0, QColor("#17334a"))
+    gradient.setColorAt(0.0, QColor("#edf4f8"))
+    gradient.setColorAt(0.58, QColor("#f8f9fa"))
+    gradient.setColorAt(1.0, QColor("#f8efed"))
     painter.fillRect(canvas.rect(), gradient)
-    draw_cover_text(
-        painter,
-        "墨寒桌面語音互動虛擬助理",
+    painter.setPen(QColor("#17344f"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 28, QFont.Bold))
+    painter.drawText(QRect(55, 40, 1000, 54), "墨寒桌面語音互動虛擬助理")
+    painter.setPen(QColor("#48647a"))
+    painter.setFont(QFont("Segoe UI", 15))
+    painter.drawText(
+        QRect(57, 98, 1040, 34),
         "Animated Windows companion · Voice · Memory · Productivity · Safety",
-        1600,
     )
 
     panel = QRect(55, 175, 1050, 660)
-    draw_rounded_panel(painter, panel, QColor(11, 29, 43, 236))
+    draw_rounded_panel(
+        painter,
+        panel,
+        QColor("#ffffff"),
+        QColor("#b6c8d6"),
+        24,
+    )
     dash = scaled_inside(dashboard, QSize(1006, 614))
     painter.drawImage(
         QPoint(panel.x() + (panel.width() - dash.width()) // 2,
@@ -182,11 +191,39 @@ def compose_hero(
         dash,
     )
 
-    char = scaled_inside(character, QSize(560, 720))
-    painter.drawImage(QPoint(1030, 175), char)
-    painter.setPen(QColor("#efb4dc"))
-    painter.setFont(QFont("Microsoft JhengHei UI", 21, QFont.Bold))
-    painter.drawText(QRect(1120, 785, 410, 44), Qt.AlignCenter, "北宋千年女劍魂・首席策士")
+    character_panel = QRect(1130, 175, 415, 660)
+    character_gradient = QLinearGradient(
+        character_panel.topLeft(), character_panel.bottomRight()
+    )
+    character_gradient.setColorAt(0.0, QColor("#fafdff"))
+    character_gradient.setColorAt(0.58, QColor("#edf4f8"))
+    character_gradient.setColorAt(1.0, QColor("#f8ecef"))
+    painter.setPen(QPen(QColor("#b6c8d6"), 2))
+    painter.setBrush(character_gradient)
+    painter.drawRoundedRect(character_panel, 28, 28)
+    char = scaled_inside(character, QSize(405, 575))
+    painter.drawImage(
+        QPoint(
+            character_panel.x()
+            + (character_panel.width() - char.width()) // 2,
+            character_panel.y() + 28,
+        ),
+        char,
+    )
+    painter.setPen(QColor("#6f4667"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 20, QFont.Bold))
+    painter.drawText(
+        QRect(1145, 678, 385, 44),
+        Qt.AlignCenter,
+        "北宋千年女劍魂・首席策士",
+    )
+    painter.setPen(QColor("#62788a"))
+    painter.setFont(QFont("Segoe UI", 14))
+    painter.drawText(
+        QRect(1145, 728, 385, 32),
+        Qt.AlignCenter,
+        "Voice · Memory · Workflow · Safety",
+    )
     painter.end()
     output.parent.mkdir(parents=True, exist_ok=True)
     if not canvas.save(str(output)):
@@ -203,14 +240,22 @@ def compose_expression_showcase(output: Path) -> None:
         ("mock_hit_front.png", "佯怒"),
     )
     canvas = QImage(1500, 940, QImage.Format_ARGB32)
-    canvas.fill(QColor("#0a1824"))
+    canvas.fill(QColor("#eef3f8"))
     painter = QPainter(canvas)
     painter.setRenderHint(QPainter.Antialiasing)
-    draw_cover_text(
-        painter,
-        "墨寒表情系統",
+    background = QLinearGradient(0, 0, 1500, 940)
+    background.setColorAt(0.0, QColor("#edf3f8"))
+    background.setColorAt(0.58, QColor("#f7f8fa"))
+    background.setColorAt(1.0, QColor("#f7f1ed"))
+    painter.fillRect(canvas.rect(), background)
+    painter.setPen(QColor("#17344f"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 26, QFont.Bold))
+    painter.drawText(QRect(55, 36, 1390, 48), "墨寒表情系統")
+    painter.setPen(QColor("#48647a"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 15))
+    painter.drawText(
+        QRect(56, 88, 1388, 34),
         "情緒仲裁器依語意、狀態與冷卻時間選擇表情；不以隨機誇張表情打擾使用者。",
-        1500,
     )
     card_width, card_height = 440, 330
     for index, (filename, label) in enumerate(cards):
@@ -218,19 +263,72 @@ def compose_expression_showcase(output: Path) -> None:
         x = 55 + column * 480
         y = 160 + row * 370
         rect = QRect(x, y, card_width, card_height)
-        draw_rounded_panel(painter, rect, QColor("#122838"))
+        draw_rounded_panel(
+            painter,
+            rect,
+            QColor("#ffffff"),
+            QColor("#b6c8d6"),
+            18,
+        )
         source = QImage(str(ROOT / "assets" / "expressions" / filename))
         picture = scaled_inside(source, QSize(300, 268))
         painter.drawImage(
             QPoint(x + (card_width - picture.width()) // 2, y + 8),
             picture,
         )
-        painter.setPen(QColor("#eaf6fb"))
+        painter.setPen(QColor("#20364a"))
         painter.setFont(QFont("Microsoft JhengHei UI", 17, QFont.Bold))
         painter.drawText(QRect(x, y + 285, card_width, 32), Qt.AlignCenter, label)
     painter.end()
     if not canvas.save(str(output)):
         raise RuntimeError(f"Could not save {output}")
+
+
+def _alpha_bounds(image: QImage) -> QRect:
+    rgba = image.convertToFormat(QImage.Format.Format_RGBA8888)
+    data = bytes(rgba.constBits())
+    stride = rgba.bytesPerLine()
+    left, top = rgba.width(), rgba.height()
+    right = bottom = -1
+    for y in range(rgba.height()):
+        row = y * stride
+        for x in range(rgba.width()):
+            if data[row + x * 4 + 3]:
+                left = min(left, x)
+                top = min(top, y)
+                right = max(right, x)
+                bottom = max(bottom, y)
+    if right < left or bottom < top:
+        raise RuntimeError("Expression artwork has no visible pixels")
+    return QRect(left, top, right - left + 1, bottom - top + 1)
+
+
+def compose_support_portraits(output_dir: Path) -> None:
+    """Build aligned README portraits without changing in-app expression assets."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    portraits = {
+        "support-proud.png": "proud_front.png",
+        "support-shy.png": "shy_cute_front.png",
+        "support-mock-hit.png": "mock_hit_front.png",
+    }
+    for output_name, source_name in portraits.items():
+        source = QImage(str(ASSET_DIR / "expressions" / source_name))
+        if source.isNull():
+            raise RuntimeError(f"Could not load expression artwork: {source_name}")
+        content = source.copy(_alpha_bounds(source))
+        scaled = content.scaled(
+            QSize(600, 590),
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
+        )
+        canvas = QImage(640, 640, QImage.Format.Format_ARGB32)
+        canvas.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(canvas)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.drawImage((640 - scaled.width()) // 2, 20, scaled)
+        painter.end()
+        if not canvas.save(str(output_dir / output_name)):
+            raise RuntimeError(f"Could not save {output_dir / output_name}")
 
 
 def synthesize_demo_audio(output: Path) -> float:
@@ -441,7 +539,7 @@ def write_demo_video(
         return duration
 
 
-def capture_media(output_dir: Path, ffmpeg: str) -> float:
+def capture_media(output_dir: Path, ffmpeg: str | None) -> float | None:
     output_dir.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="mohan-readme-profile-") as temp_dir:
         os.environ["MOHAN_DATA_DIR"] = temp_dir
@@ -468,11 +566,9 @@ def capture_media(output_dir: Path, ffmpeg: str) -> float:
         window.idle_pose = "front"
         window._set_expression("attentive_front", fade=False)
         window.dashboard.mode_combo.setCurrentText("工作")
-        window.dashboard.refresh_chat()
-        window.dashboard.refresh_todos()
-        window.dashboard.refresh_ideas()
-        window.dashboard.refresh_memories()
-        window.dashboard.refresh_work_time()
+        # Dashboard construction already loads the seeded profile. Rebuilding
+        # the card lists again in the same event turn leaves deleteLater()
+        # widgets visible behind their replacements in screenshots.
         app.processEvents()
         stop_timers(window)
 
@@ -504,6 +600,7 @@ def capture_media(output_dir: Path, ffmpeg: str) -> float:
         security = save_widget(window.dashboard, output_dir / "security-permissions.png")
 
         compose_expression_showcase(output_dir / "expressions.png")
+        compose_support_portraits(output_dir)
         media = {
             "hero": dashboard,
             "voice": voice,
@@ -511,11 +608,13 @@ def capture_media(output_dir: Path, ffmpeg: str) -> float:
             "memory": memory,
             "security": security,
         }
-        duration = write_demo_video(
-            media,
-            output_dir / "mohan-demo.mp4",
-            ffmpeg,
-        )
+        duration = None
+        if ffmpeg:
+            duration = write_demo_video(
+                media,
+                output_dir / "mohan-demo.mp4",
+                ffmpeg,
+            )
         flagship.close_services()
         window.close()
         app.processEvents()
@@ -530,9 +629,18 @@ def main() -> int:
         default=ROOT / "docs" / "media",
     )
     parser.add_argument("--ffmpeg", default="")
+    parser.add_argument(
+        "--screenshots-only",
+        action="store_true",
+        help="Capture current UI images without rebuilding the demo video.",
+    )
     args = parser.parse_args()
-    duration = capture_media(args.output, ffmpeg_binary(args.ffmpeg))
-    print(f"README_MEDIA_OK duration={duration:.2f}s output={args.output}")
+    ffmpeg = None if args.screenshots_only else ffmpeg_binary(args.ffmpeg)
+    duration = capture_media(args.output, ffmpeg)
+    if duration is None:
+        print(f"README_SCREENSHOTS_OK output={args.output}")
+    else:
+        print(f"README_MEDIA_OK duration={duration:.2f}s output={args.output}")
     return 0
 
 

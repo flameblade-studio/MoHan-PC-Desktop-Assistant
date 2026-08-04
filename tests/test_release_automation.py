@@ -165,7 +165,15 @@ def main() -> None:
     assert "日本語の対応範囲" in japanese_readme
     assert "Azure Speech（プレビュー）" in japanese_readme
     assert "墨寒的傲嬌工程小劇場 / MoHan's Tsundere Developer Theatre" in readme
-    assert readme.count('width="33%" align="center"><img src="assets/expressions/') >= 9
+    expression_cards = readme.count(
+        'width="33%" align="center"><img src="assets/expressions/'
+    )
+    support_cards = readme.count(
+        'width="33%" align="center"><img src="docs/media/support-'
+    )
+    assert expression_cards >= 6
+    assert support_cards == 3
+    assert expression_cards + support_cards >= 9
     for line in (
         "妾才沒有等你的 Star",
         "若再補上測試",

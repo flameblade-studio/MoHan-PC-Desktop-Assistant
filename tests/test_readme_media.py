@@ -14,6 +14,9 @@ PNG_FILES = {
     "tasks-and-ideas.png": None,
     "long-term-memory.png": None,
     "security-permissions.png": None,
+    "support-proud.png": (640, 640),
+    "support-shy.png": (640, 640),
+    "support-mock-hit.png": (640, 640),
 }
 
 
@@ -40,6 +43,18 @@ def main() -> int:
             f"README does not reference {filename}"
         )
 
+    localized_readmes = {
+        name: (ROOT / name).read_text(encoding="utf-8")
+        for name in ("README.md", "README.zh-CN.md", "README.ja.md")
+    }
+    for name, content in localized_readmes.items():
+        for filename in PNG_FILES:
+            if filename.startswith("support-"):
+                continue
+            assert f"docs/media/{filename}" in content, (
+                f"{name} does not reference shared current media: {filename}"
+            )
+
     video = MEDIA / "mohan-demo.mp4"
     assert video.is_file(), "missing 30–60 second demonstration video"
     size = video.stat().st_size
@@ -52,9 +67,9 @@ def main() -> int:
 
     support_requirements = (
         "## 支持墨寒 / Support MoHan",
-        "assets/expressions/proud_front.png",
-        "assets/expressions/shy_cute_front.png",
-        "assets/expressions/mock_hit_front.png",
+        "docs/media/support-proud.png",
+        "docs/media/support-shy.png",
+        "docs/media/support-mock-hit.png",
         "https://buymeacoffee.com/flameblade_studio",
         "https://www.paypal.com/paypalme/flamebladestudio",
     )

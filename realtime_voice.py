@@ -290,11 +290,18 @@ class RealtimeVoiceClient(QObject):
         if not raw:
             return ""
         term_source = raw
-        marker = re.search(r"(?:常用詞|專有名詞)\s*[：:]", raw)
+        marker = re.search(
+            r"(?:常用詞|常用词|專有名詞|专有名词|Common terms|"
+            r"よく使う語句)\s*[：:]",
+            raw,
+            flags=re.IGNORECASE,
+        )
         if marker:
             term_source = raw[marker.end():]
         term_source = re.split(
-            r"(?:請保留|請使用|不要改寫|轉錄規則)",
+            r"(?:請保留|請使用|不要改寫|不要翻譯|请保留|请使用|"
+            r"不要改写|不要翻译|Please|Preserve|Keep the speaker|"
+            r"do not|日本語で|固有名詞|話者の意図|書き換え)",
             term_source,
             maxsplit=1,
         )[0]
@@ -305,8 +312,10 @@ class RealtimeVoiceClient(QObject):
                 value
                 and len(value) <= 40
                 and not re.match(
-                    r"^(?:請|使用|保留|不要|轉錄|語言)",
+                    r"^(?:請|使用|保留|不要|轉錄|語言|请|准确|"
+                    r"Please|Preserve|Keep|do not|日本語|固有名詞)",
                     value,
+                    flags=re.IGNORECASE,
                 )
                 and value not in terms
             ):
