@@ -12,7 +12,6 @@ import sys
 import threading
 import time
 import uuid
-import audioop
 import wave
 
 from PySide6.QtCore import QObject, Signal
@@ -21,6 +20,7 @@ from lip_sync import (
     VISEME_CUES_PER_SECOND,
     infer_vowel_pcm16,
 )
+from pcm_audio import rate_convert_pcm16, scale_pcm16
 from speech import transcribe_wav_bytes
 
 
@@ -631,8 +631,8 @@ class RealtimeVoiceClient(QObject):
             if self._microphone_blocked():
                 continue
             if input_rate != 24000:
-                audio, rate_state = audioop.ratecv(
-                    audio, 2, 1, input_rate, 24000, rate_state
+                audio, rate_state = rate_convert_pcm16(
+                    audio, 1, input_rate, 24000, rate_state
                 )
             ws = self.ws
             if not ws or not ws.sock or not ws.sock.connected:
@@ -680,9 +680,8 @@ class RealtimeVoiceClient(QObject):
                     self.viseme_cue.emit(vowel_level, vowel)
                     playback_chunk = source_chunk
                     if output_rate != 24000:
-                        playback_chunk, rate_state = audioop.ratecv(
+                        playback_chunk, rate_state = rate_convert_pcm16(
                             source_chunk,
-                            2,
                             1,
                             24000,
                             output_rate,
@@ -694,11 +693,7 @@ class RealtimeVoiceClient(QObject):
                         else self.volume_percent / 100.0
                     )
                     if gain != 1.0:
-                        playback_chunk = audioop.mul(
-                            playback_chunk,
-                            2,
-                            gain,
-                        )
+                        playback_chunk = scale_pcm16(playback_chunk, gain)
                     output_stream.write(playback_chunk)
             except Exception as exc:
                 self._finish_assistant_audio(force=True)
