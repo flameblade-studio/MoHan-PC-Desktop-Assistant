@@ -284,6 +284,53 @@ def compose_expression_showcase(output: Path) -> None:
         raise RuntimeError(f"Could not save {output}")
 
 
+def _alpha_bounds(image: QImage) -> QRect:
+    rgba = image.convertToFormat(QImage.Format.Format_RGBA8888)
+    data = bytes(rgba.constBits())
+    stride = rgba.bytesPerLine()
+    left, top = rgba.width(), rgba.height()
+    right = bottom = -1
+    for y in range(rgba.height()):
+        row = y * stride
+        for x in range(rgba.width()):
+            if data[row + x * 4 + 3]:
+                left = min(left, x)
+                top = min(top, y)
+                right = max(right, x)
+                bottom = max(bottom, y)
+    if right < left or bottom < top:
+        raise RuntimeError("Expression artwork has no visible pixels")
+    return QRect(left, top, right - left + 1, bottom - top + 1)
+
+
+def compose_support_portraits(output_dir: Path) -> None:
+    """Build aligned README portraits without changing in-app expression assets."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    portraits = {
+        "support-proud.png": "proud_front.png",
+        "support-shy.png": "shy_cute_front.png",
+        "support-mock-hit.png": "mock_hit_front.png",
+    }
+    for output_name, source_name in portraits.items():
+        source = QImage(str(ASSET_DIR / "expressions" / source_name))
+        if source.isNull():
+            raise RuntimeError(f"Could not load expression artwork: {source_name}")
+        content = source.copy(_alpha_bounds(source))
+        scaled = content.scaled(
+            QSize(600, 590),
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
+        )
+        canvas = QImage(640, 640, QImage.Format.Format_ARGB32)
+        canvas.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(canvas)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+        painter.drawImage((640 - scaled.width()) // 2, 20, scaled)
+        painter.end()
+        if not canvas.save(str(output_dir / output_name)):
+            raise RuntimeError(f"Could not save {output_dir / output_name}")
+
+
 def synthesize_demo_audio(output: Path) -> float:
     text_encoded = base64.b64encode(DEMO_TEXT.encode("utf-8")).decode("ascii")
     path_encoded = base64.b64encode(str(output).encode("utf-8")).decode("ascii")
@@ -553,6 +600,7 @@ def capture_media(output_dir: Path, ffmpeg: str | None) -> float | None:
         security = save_widget(window.dashboard, output_dir / "security-permissions.png")
 
         compose_expression_showcase(output_dir / "expressions.png")
+        compose_support_portraits(output_dir)
         media = {
             "hero": dashboard,
             "voice": voice,
