@@ -6612,6 +6612,16 @@ class CompanionWindow(QMainWindow):
             expression = "idle"
         self._cancel_expression_transition()
         if getattr(self, "pose_transition_active", False):
+            # Timers for idle motion, blinking, and speech can all request the
+            # same frame while a large-pose fade is already in flight.  Do not
+            # restart that fade: restoring opacity and fading again creates a
+            # visible flash even though the requested result has not changed.
+            if expression == getattr(
+                self,
+                "pose_transition_expression",
+                None,
+            ):
+                return
             self._cancel_pose_transition()
         current_pose = self.physics_expression_poses.get(
             self.current_expression
@@ -6684,6 +6694,12 @@ class CompanionWindow(QMainWindow):
             self.character_opacity.setOpacity(1.0)
 
     def _cancel_pose_transition(self) -> None:
+        # Invalidate callbacks that may already be queued by Qt.  A boolean is
+        # insufficient because an old animation can finish after a new
+        # transition has set the boolean back to True.
+        self.pose_transition_generation = (
+            getattr(self, "pose_transition_generation", 0) + 1
+        )
         for animation_name in (
             "pose_transition_out",
             "pose_transition_in",
@@ -6691,7 +6707,10 @@ class CompanionWindow(QMainWindow):
             animation = getattr(self, animation_name, None)
             if animation is not None:
                 animation.stop()
+            setattr(self, animation_name, None)
         self.pose_transition_active = False
+        self.pose_transition_expression = None
+        self.pose_transition_target_pose = None
         self.character_opacity.setOpacity(1.0)
 
     def _start_pose_transition(
@@ -6700,7 +6719,13 @@ class CompanionWindow(QMainWindow):
         target_pose: str,
     ) -> None:
         """Switch large pose sprites without ever drawing both simultaneously."""
+        self.pose_transition_generation = (
+            getattr(self, "pose_transition_generation", 0) + 1
+        )
+        generation = self.pose_transition_generation
         self.pose_transition_active = True
+        self.pose_transition_expression = expression
+        self.pose_transition_target_pose = target_pose
         self.expression_overlay.hide()
         self.face_overlay.hide()
         self.eye_overlay.hide()
@@ -6717,14 +6742,18 @@ class CompanionWindow(QMainWindow):
             b"opacity",
             self,
         )
-        fade_out.setDuration(85)
+        fade_out.setDuration(75)
         fade_out.setStartValue(self.character_opacity.opacity())
-        fade_out.setEndValue(0.28)
+        # The sprite must be fully transparent before its pixmap is replaced.
+        # Swapping at partial opacity leaves both poses in visual persistence
+        # and can also expose a stale QGraphicsOpacityEffect cache for a frame.
+        fade_out.setEndValue(0.0)
         fade_out.setEasingCurve(QEasingCurve.InOutSine)
         fade_out.finished.connect(
             lambda: self._pose_transition_midpoint(
                 expression,
                 target_pose,
+                generation,
             )
         )
         self.pose_transition_out = fade_out
@@ -6734,34 +6763,59 @@ class CompanionWindow(QMainWindow):
         self,
         expression: str,
         target_pose: str,
+        generation: int,
     ) -> None:
-        if not getattr(self, "pose_transition_active", False):
+        if (
+            not getattr(self, "pose_transition_active", False)
+            or generation
+            != getattr(self, "pose_transition_generation", -1)
+            or expression
+            != getattr(self, "pose_transition_expression", None)
+            or target_pose
+            != getattr(self, "pose_transition_target_pose", None)
+        ):
             return
+        self.character_opacity.setOpacity(0.0)
         self.character.setPixmap(self.expression_pixmaps[expression])
         self.current_expression = expression
         self.active_physics_pose = target_pose
         self._render_sleeve_layers(force=True)
         self._render_hair_layers(force=True)
         self._render_physics_layer(force=True)
+        self.character.update()
         fade_in = QPropertyAnimation(
             self.character_opacity,
             b"opacity",
             self,
         )
         fade_in.setDuration(105)
-        fade_in.setStartValue(0.28)
+        fade_in.setStartValue(0.0)
         fade_in.setEndValue(1.0)
         fade_in.setEasingCurve(QEasingCurve.InOutSine)
         fade_in.finished.connect(
-            lambda: self._finish_pose_transition(expression)
+            lambda: self._finish_pose_transition(expression, generation)
         )
         self.pose_transition_in = fade_in
         fade_in.start()
 
-    def _finish_pose_transition(self, expression: str) -> None:
-        if not getattr(self, "pose_transition_active", False):
+    def _finish_pose_transition(
+        self,
+        expression: str,
+        generation: int,
+    ) -> None:
+        if (
+            not getattr(self, "pose_transition_active", False)
+            or generation
+            != getattr(self, "pose_transition_generation", -1)
+            or expression
+            != getattr(self, "pose_transition_expression", None)
+        ):
             return
         self.pose_transition_active = False
+        self.pose_transition_expression = None
+        self.pose_transition_target_pose = None
+        self.pose_transition_out = None
+        self.pose_transition_in = None
         self.character_opacity.setOpacity(1.0)
         self._update_physics_pose(expression)
         self._render_attention_layers(force=True)

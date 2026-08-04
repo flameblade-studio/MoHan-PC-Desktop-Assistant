@@ -46,6 +46,52 @@ def run() -> None:
         assert window.expression_overlay.isHidden()
         assert window.character_opacity.opacity() == 1.0
 
+        # Large-pose transitions must become fully transparent before their
+        # backing pixmap changes.  Repeated requests for the same target are
+        # coalesced instead of flashing back to full opacity and restarting.
+        window.idle_pose = "cheek"
+        window._set_expression("idle", fade=False)
+        window.idle_pose = "front"
+        window._set_expression("idle_front", fade=True)
+        first_generation = window.pose_transition_generation
+        first_animation = window.pose_transition_out
+        assert first_animation.endValue() == 0.0
+        window._set_expression("idle_front", fade=True)
+        assert window.pose_transition_generation == first_generation
+        assert window.pose_transition_out is first_animation
+
+        # A queued midpoint/finish callback from that transition may not
+        # overwrite a newer requested pose merely because another transition
+        # is currently active.
+        window.idle_pose = "lean"
+        window._set_expression("idle_lean", fade=True)
+        latest_generation = window.pose_transition_generation
+        assert latest_generation > first_generation
+        assert window.pose_transition_expression == "idle_lean"
+        window._pose_transition_midpoint(
+            "idle_front",
+            "front",
+            first_generation,
+        )
+        assert window.current_expression == "idle"
+        assert window.pose_transition_expression == "idle_lean"
+        window.pose_transition_out.stop()
+        window._pose_transition_midpoint(
+            "idle_lean",
+            "lean",
+            latest_generation,
+        )
+        assert window.current_expression == "idle_lean"
+        assert window.character_opacity.opacity() == 0.0
+        window._finish_pose_transition("idle_front", first_generation)
+        assert window.pose_transition_active
+        assert window.pose_transition_expression == "idle_lean"
+        QTest.qWait(140)
+        app.processEvents()
+        assert not window.pose_transition_active
+        assert window.current_expression == "idle_lean"
+        assert window.character_opacity.opacity() == 1.0
+
         # Speech may interrupt a large-pose transition without a late swap.
         window.idle_pose = "cheek"
         window._set_expression("idle", fade=False)
