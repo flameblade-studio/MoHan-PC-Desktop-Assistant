@@ -84,6 +84,11 @@ from ai_client import (
     SIMPLIFIED_CHINESE_PERSONA,
     TEXT_MODELS,
 )
+from background_agents import (
+    DiagnosticReportWorker,
+    ManagerWorkerScheduler,
+    VisibleAppWorker,
+)
 from command_parser import is_start_work_command, is_stop_work_command
 from contracts import SecretStorePort, SpeechListenerPort
 from db import StudioDB, format_duration
@@ -129,6 +134,7 @@ from ui_localization import (
 )
 from updater_ui import UpdatePanel
 from version_info import APP_VERSION
+from windows_tools import visible_windows
 from speech import (
     SpeechListener,
     is_known_male_windows_voice,
@@ -2939,6 +2945,35 @@ class Dashboard(QDialog):
         self.proactive_mode.setCurrentText(
             str(self.db.setting("proactive_mode", "平衡（推薦）"))
         )
+        self.background_assistant_enabled = QCheckBox(
+            "啟用背景多工助理（預設關閉）"
+        )
+        self.background_assistant_enabled.setChecked(
+            bool(self.db.setting("background_assistant_enabled", False))
+        )
+        self.background_watch_apps = QLineEdit(
+            str(
+                self.db.setting(
+                    "background_watch_apps",
+                    "Visual Studio Code,GitHub Desktop",
+                )
+            )
+        )
+        self.background_watch_apps.setPlaceholderText(
+            "以逗號分隔，例如：Visual Studio Code,GitHub Desktop"
+        )
+        self.background_diagnostic_report = QLineEdit(
+            str(self.db.setting("background_diagnostic_report", ""))
+        )
+        self.background_diagnostic_report.setPlaceholderText(
+            "選填：IDE 匯出的 .txt 或 .log 診斷報告完整路徑"
+        )
+        background_note = QLabel(
+            "背景助理只讀取可見程式名稱與您明確指定的診斷報告；"
+            "不會截取編輯器內容、不會自動修改檔案，也會遵守勿擾模式與冷卻時間。"
+        )
+        background_note.setWordWrap(True)
+        background_note.setStyleSheet("color:#8fc9e0;")
         self.physics_controls = {}
         physics_labels = {
             "physics_sleeves": "袖擺呼吸與慣性",
@@ -3015,6 +3050,10 @@ class Dashboard(QDialog):
         form.addRow("桌面置頂方式", self.topmost_mode)
         form.addRow("桌面墨寒顯示大小", character_scale_box)
         form.addRow("主動協助程度", self.proactive_mode)
+        form.addRow("背景多工助理", self.background_assistant_enabled)
+        form.addRow("監測程式名稱", self.background_watch_apps)
+        form.addRow("IDE 診斷報告", self.background_diagnostic_report)
+        form.addRow("", background_note)
         form.addRow("電影級物理", physics_box)
         form.addRow("工作資料夾", self.work_folder)
         form.addRow("", open_folder)
@@ -4489,6 +4528,18 @@ class Dashboard(QDialog):
             "proactive_mode",
             self.proactive_mode.currentText(),
         )
+        self.db.set_setting(
+            "background_assistant_enabled",
+            self.background_assistant_enabled.isChecked(),
+        )
+        self.db.set_setting(
+            "background_watch_apps",
+            self.background_watch_apps.text().strip(),
+        )
+        self.db.set_setting(
+            "background_diagnostic_report",
+            self.background_diagnostic_report.text().strip(),
+        )
         for setting_key, control in self.physics_controls.items():
             self.db.set_setting(setting_key, control.isChecked())
         self.save_voice_settings(silent=True)
@@ -4595,6 +4646,8 @@ class CompanionWindow(QMainWindow):
         )
         self.dashboard.settings_saved.connect(self._reload_physics_settings)
         self.dashboard.settings_saved.connect(self._reload_profile)
+        self.background_scheduler: ManagerWorkerScheduler | None = None
+        self.dashboard.settings_saved.connect(self._reload_background_agents)
         self.tts.finished.connect(self._speech_audio_finished)
         self.tts.failed.connect(self._windows_voice_failed)
         self.tts.viseme_cue.connect(self._audio_viseme_cue)
@@ -4669,6 +4722,7 @@ class CompanionWindow(QMainWindow):
             CHARACTER_BASE_Y + CHARACTER_IMAGE_SIZE,
         )
         self._build_ui(defer_visual_assets=defer_visual_startup)
+        self._reload_background_agents()
         self._apply_character_scale(
             self.character_scale_percent,
             preserve_anchor=False,
@@ -5061,6 +5115,12 @@ class CompanionWindow(QMainWindow):
         self.topmost_timer.setInterval(100)
         self.topmost_timer.timeout.connect(self._topmost_policy_tick)
         self.topmost_timer.start()
+        self.background_agent_timer = QTimer(self)
+        self.background_agent_timer.setInterval(1_000)
+        self.background_agent_timer.timeout.connect(
+            self._background_agent_tick
+        )
+        self.background_agent_timer.start()
 
     def _setup_tray(self) -> None:
         self.tray = QSystemTrayIcon(
@@ -5111,6 +5171,83 @@ class CompanionWindow(QMainWindow):
         self.bubble_name.setText(self.dashboard.assistant_name)
         if hasattr(self, "tray"):
             self.tray.setToolTip(title)
+
+    def _reload_background_agents(self) -> None:
+        scheduler = getattr(self, "background_scheduler", None)
+        if scheduler is not None:
+            scheduler.close()
+        self.background_scheduler = None
+        if not bool(self.db.setting("background_assistant_enabled", False)):
+            return
+        proactive_mode = str(
+            self.db.setting("proactive_mode", "平衡（推薦）")
+        )
+        watched_names = [
+            name.strip()[:80]
+            for name in str(
+                self.db.setting(
+                    "background_watch_apps",
+                    "Visual Studio Code,GitHub Desktop",
+                )
+            ).split(",")
+            if name.strip()
+        ][:12]
+        workers = []
+        if watched_names and not proactive_mode.startswith("安靜"):
+            workers.append(
+                VisibleAppWorker(
+                    visible_windows,
+                    {name: (name,) for name in watched_names},
+                )
+            )
+        report_text = str(
+            self.db.setting("background_diagnostic_report", "")
+        ).strip()
+        if report_text:
+            report_path = Path(report_text)
+            workers.append(
+                DiagnosticReportWorker(lambda path=report_path: path)
+            )
+        if not workers:
+            return
+        event_cooldown = (
+            1_800.0
+            if proactive_mode.startswith("安靜")
+            else 300.0
+            if proactive_mode.startswith("積極")
+            else 900.0
+        )
+        self.background_scheduler = ManagerWorkerScheduler(
+            workers,
+            max_workers=2,
+            event_cooldown_seconds=event_cooldown,
+            global_cooldown_seconds=max(180.0, event_cooldown / 3),
+        )
+
+    def _background_agent_tick(self) -> None:
+        scheduler = getattr(self, "background_scheduler", None)
+        if scheduler is None or self._closing:
+            return
+        scheduler.tick()
+        quiet = (
+            self.dashboard.mode in {"勿擾", "會議", "離席", "休眠"}
+            or self.state != "idle"
+            or self.speech_playing
+            or self.realtime_mouth_active
+        )
+        for observation in scheduler.drain(now=datetime.now(), quiet=quiet):
+            if not self.set_state(
+                observation.expression,
+                source="ambient",
+                intensity=0.28,
+            ):
+                continue
+            self._show_bubble(observation.message)
+            self._schedule_return_to_idle(2_800, observation.expression)
+            QTimer.singleShot(
+                3_400,
+                lambda: None if self.speech_playing else self.bubble.hide(),
+            )
 
     def _apply_physics_visibility(self, expression: str | None = None) -> None:
         if not hasattr(self, "physics_overlay"):
@@ -8361,6 +8498,10 @@ class CompanionWindow(QMainWindow):
 
     def closeEvent(self, event) -> None:
         self._closing = True
+        scheduler = getattr(self, "background_scheduler", None)
+        if scheduler is not None:
+            scheduler.close()
+            self.background_scheduler = None
         self.blink_generation = getattr(self, "blink_generation", 0) + 1
         self._cancel_expression_transition()
         self._cancel_pose_transition()
@@ -8385,6 +8526,7 @@ class CompanionWindow(QMainWindow):
             "reminder_timer",
             "clock_timer",
             "topmost_timer",
+            "background_agent_timer",
         ):
             timer = getattr(self, timer_name, None)
             if timer is not None:
