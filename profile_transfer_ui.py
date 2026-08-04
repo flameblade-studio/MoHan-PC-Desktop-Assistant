@@ -44,7 +44,7 @@ class PortableProfilePanel(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         heading = QLabel("<b>攜帶、換機與進度接續</b>")
-        heading.setStyleSheet("color:#9ed9ef;font-size:15px;")
+        heading.setStyleSheet("color:#2f6987;font-size:15px;")
         note = QLabel(
             "匯出後只需攜帶一個檔案，即可在另一台電腦接續對話、"
             "記憶、待辦、靈感與工作進度。API 金鑰、OAuth、"

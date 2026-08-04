@@ -7,6 +7,8 @@ import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from PySide6.QtGui import QImage
+
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -49,8 +51,27 @@ def main() -> None:
     assert 'Name: "english"' in inno_script
     assert 'Name: "japanese"' in inno_script
     assert "japanese.CreateDesktopIcon" in inno_script
+    assert "WizardImageFile={#WizardImagePath}" in inno_script
+    assert "WizardSmallImageFile={#WizardSmallImagePath}" in inno_script
+    assert "DisableWelcomePage=no" in inno_script
+    assert inno_script.count(
+        'AppUserModelID: "FlamebladeStudio.MoHanDesktopAssistant"'
+    ) == 2
+    assert inno_script.count('IconFilename: "{#IconPath}"') == 2
+    installer_artwork = ROOT / "installer" / "artwork"
+    wizard_hero = QImage(str(installer_artwork / "wizard-hero.png"))
+    wizard_small = QImage(str(installer_artwork / "wizard-small.png"))
+    assert not wizard_hero.isNull()
+    assert (wizard_hero.width(), wizard_hero.height()) == (656, 1256)
+    assert not wizard_small.isNull()
+    assert (wizard_small.width(), wizard_small.height()) == (512, 512)
+    checkmark = ROOT / "assets" / "ui" / "checkmark.svg"
+    assert checkmark.is_file()
+    assert 'stroke="#ffffff"' in checkmark.read_text(encoding="utf-8")
 
     wix_source = (ROOT / "installer" / "Product.wxs").read_text(encoding="utf-8")
+    assert 'Icon="MohanIcon"' in wix_source
+    assert 'IconIndex="0"' in wix_source
     localization_policy = (ROOT / "installer" / "LOCALIZATION.md").read_text(
         encoding="utf-8"
     )

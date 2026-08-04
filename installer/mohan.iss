@@ -14,6 +14,12 @@
 #ifndef IconPath
   #define IconPath "..\assets\mohan-halfbody.ico"
 #endif
+#ifndef WizardImagePath
+  #define WizardImagePath SourcePath + "\artwork\wizard-hero.png"
+#endif
+#ifndef WizardSmallImagePath
+  #define WizardSmallImagePath SourcePath + "\artwork\wizard-small.png"
+#endif
 
 [Setup]
 #ifndef TraditionalChineseMessages
@@ -44,6 +50,11 @@ UninstallDisplayIcon={app}\{#ExecutableName}
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
+DisableWelcomePage=no
+WizardImageFile={#WizardImagePath}
+WizardSmallImageFile={#WizardSmallImagePath}
+WizardImageBackColor=$EDF3F7
+WizardSmallImageBackColor=$EDF3F7
 CloseApplications=yes
 RestartApplications=no
 ChangesAssociations=no
@@ -76,8 +87,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{autoprograms}\MoHan Desktop Assistant"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"
-Name: "{autodesktop}\MoHan Desktop Assistant"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{autoprograms}\MoHan Desktop Assistant"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"; IconFilename: "{#IconPath}"; AppUserModelID: "FlamebladeStudio.MoHanDesktopAssistant"
+Name: "{autodesktop}\MoHan Desktop Assistant"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"; IconFilename: "{#IconPath}"; AppUserModelID: "FlamebladeStudio.MoHanDesktopAssistant"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#ExecutableName}"; Description: "{cm:LaunchMoHan}"; Flags: nowait postinstall skipifsilent

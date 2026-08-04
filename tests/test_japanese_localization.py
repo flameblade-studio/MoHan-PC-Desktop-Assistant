@@ -110,6 +110,7 @@ def run() -> None:
         wizard.ui_language.setCurrentIndex(japanese_index)
         app.processEvents()
         assert wizard.windowTitle() == "初回セットアップ"
+        assert "千年の女剣魂" in wizard.hero_tagline.text()
         assert wizard.form_labels["assistant_name"].text() == "アシスタント名"
         assert wizard.work_type.itemText(0) == "一般事務／管理"
         assert wizard.assistant_name.text() == "墨寒"

@@ -10,6 +10,10 @@ from ui_localization_ja import JAPANESE_UI
 _ENGLISH: Mapping[str, str] = {
     "first_run_title": "First-run setup",
     "first_run_heading": "<b>Welcome to MoHan Desktop Assistant</b>",
+    "first_run_hero_tagline": (
+        "A thousand-year-old Northern Song sword spirit who listens, "
+        "remembers, and helps you get things done."
+    ),
     "first_run_intro": (
         "Create your profile first. You can change these choices later in "
         "Settings; they are not tied to a specific company or profession."
@@ -209,6 +213,9 @@ _ENGLISH: Mapping[str, str] = {
 _SIMPLIFIED_CHINESE: Mapping[str, str] = {
     "first_run_title": "首次启动设置",
     "first_run_heading": "<b>欢迎使用墨寒桌面助手</b>",
+    "first_run_hero_tagline": (
+        "来自北宋的千年女剑魂，陪您说话、记忆，也陪您把工作做好。"
+    ),
     "first_run_intro": (
         "请先建立用户设置。以下内容以后都能在“设置”页修改，不会绑定"
         "特定公司、职业或工作平台。"

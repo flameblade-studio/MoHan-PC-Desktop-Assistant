@@ -6,6 +6,9 @@ from collections.abc import Mapping
 JAPANESE_UI: Mapping[str, str] = {
     "first_run_title": "初回セットアップ",
     "first_run_heading": "<b>墨寒デスクトップアシスタントへようこそ</b>",
+    "first_run_hero_tagline": (
+        "北宋から来た千年の女剣魂。話を聴き、記憶し、仕事を整えるあなたの伴侶です。"
+    ),
     "first_run_intro": (
         "最初にプロフィールを設定してください。ここで選んだ内容は後から"
         "「設定」で変更でき、特定の会社や職業には固定されません。"

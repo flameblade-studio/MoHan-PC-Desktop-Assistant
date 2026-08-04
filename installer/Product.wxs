@@ -38,7 +38,9 @@
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="MoHan Desktop Assistant"
                   Target="[INSTALLFOLDER]$(var.ExecutableName)"
-                  WorkingDirectory="INSTALLFOLDER" />
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="MohanIcon"
+                  IconIndex="0" />
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
         <RegistryValue Root="HKCU"
                        Key="Software\MoHan Desktop Assistant"

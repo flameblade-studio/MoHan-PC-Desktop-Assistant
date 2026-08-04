@@ -13,6 +13,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import (
     QApplication,
+    QCheckBox,
     QLabel,
     QLayout,
     QMessageBox,
@@ -25,6 +26,7 @@ from app import (
     FirstRunWizard,
     IdeaEditorDialog,
     MemoryEditorDialog,
+    STYLE,
 )
 from db import StudioDB
 
@@ -45,8 +47,42 @@ def run() -> None:
         preflight.set_setting("realtime_voice", "shimmer")
         preflight.close()
         app = QApplication([])
+        checkbox = QCheckBox("Dynamic physics")
+        checkbox.setStyleSheet(STYLE)
+        checkbox.resize(220, 44)
+        checkbox.show()
+        app.processEvents()
+        unchecked = checkbox.grab().toImage()
+        unchecked_colors = {
+            unchecked.pixelColor(x, y).name().lower()
+            for x in range(min(26, unchecked.width()))
+            for y in range(unchecked.height())
+        }
+        # The offscreen cursor can place the control in its hover state; both
+        # states intentionally use the same strong blue family.
+        assert "#245f80" in unchecked_colors
+        checkbox.setChecked(True)
+        app.processEvents()
+        checked = checkbox.grab().toImage()
+        checked_colors = {
+            checked.pixelColor(x, y).name().lower()
+            for x in range(min(26, checked.width()))
+            for y in range(checked.height())
+        }
+        assert "#245f80" in checked_colors
+        assert "#ffffff" in checked_colors
+        checkbox.close()
         wizard_db = StudioDB(Path(tmp) / "wizard-new-user.db")
         wizard = FirstRunWizard(wizard_db)
+        assert wizard.minimumWidth() >= 1100
+        assert wizard.minimumHeight() >= 720
+        assert not wizard.hero_image.pixmap().isNull()
+        assert all(
+            label.alignment() & Qt.AlignVCenter
+            for label in wizard.form_labels.values()
+        )
+        assert wizard.hero_brand.text() == "墨寒  MoHan"
+        assert "千年女劍魂" in wizard.hero_tagline.text()
         assert wizard.organization_name.text() == ""
         assert wizard.work_type.currentText() == "一般辦公／行政"
         wizard.assistant_name.setText("Ava")
@@ -532,7 +568,7 @@ def run() -> None:
             app.processEvents()
             rendered = form_scroll.viewport().grab().toImage()
             assert not rendered.isNull()
-            assert rendered.pixelColor(3, 3).name().lower() == "#122231"
+            assert rendered.pixelColor(3, 3).name().lower() == "#ffffff"
         window.dashboard.tabs.setCurrentIndex(1)
         app.processEvents()
         split_sizes = window.dashboard.today_splitter.sizes()

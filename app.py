@@ -438,6 +438,9 @@ EXPRESSION_MOUTH_OFFSETS = {
 }
 APP_NAME = "墨寒桌面助理"
 APP_ICON_PATH = "assets/mohan-halfbody.ico"
+WINDOWS_APP_USER_MODEL_ID = (
+    "FlamebladeStudio.MoHanDesktopAssistant"
+)
 CHARACTER_CANVAS_WIDTH = 470
 CHARACTER_IMAGE_SIZE = 465
 CHARACTER_BASE_Y = 215
@@ -564,42 +567,44 @@ def migrate_voice_defaults(db: StudioDB) -> None:
 
 
 STYLE = """
-QWidget { font-family: "Microsoft JhengHei UI"; color: #eaf5fb; font-size: 13px; }
-QDialog, QMainWindow { background: #101a25; }
-QTabWidget::pane { border: 1px solid #35566a; border-radius: 12px; background: #122231; }
-QTabBar::tab { background: #172b3c; color: #9fc8db; padding: 10px 18px; margin: 2px; border-radius: 9px; }
-QTabBar::tab:selected { background: #2b5369; color: white; }
+QWidget { color: #24364a; font-size: 13px; }
+QDialog, QMainWindow { background: #eef3f8; }
+QTabWidget::pane { border: 1px solid #b9c9d8; border-radius: 12px; background: #ffffff; }
+QTabBar::tab { background: #e4ebf3; color: #48647a; padding: 10px 18px; margin: 2px; border-radius: 9px; }
+QTabBar::tab:selected { background: #cfe0ee; color: #17344f; font-weight: 600; }
+QTabBar::tab:hover { background: #d9e6f0; color: #17344f; }
 QLineEdit, QTextBrowser, QTextEdit, QListWidget, QComboBox, QTimeEdit, QSpinBox {
-    background: #182c3b; border: 1px solid #355c70; border-radius: 9px; padding: 7px;
+    background: #ffffff; color: #20364a; border: 1px solid #b8c8d6; border-radius: 9px; padding: 7px;
+    selection-background-color: #9fc4dc; selection-color: #102a3d;
 }
 QScrollArea#todoScroll {
-    background: #122231;
-    border: 1px solid #355c70;
+    background: #ffffff;
+    border: 1px solid #c3d0dc;
     border-radius: 10px;
 }
 QScrollArea#formScrollPage {
-    background: #122231;
+    background: #ffffff;
     border: none;
 }
 QScrollArea#formScrollPage QWidget#qt_scrollarea_viewport {
-    background: #122231;
+    background: #ffffff;
 }
 QWidget#formScrollContent {
-    background: #122231;
+    background: #ffffff;
 }
 QScrollArea#formScrollPage QScrollBar:vertical {
-    background: #101a25;
+    background: #edf2f6;
     width: 14px;
     margin: 0;
 }
 QScrollArea#formScrollPage QScrollBar::handle:vertical {
-    background: #426d82;
+    background: #9eb5c7;
     min-height: 28px;
     border-radius: 6px;
     margin: 2px;
 }
 QScrollArea#formScrollPage QScrollBar::handle:vertical:hover {
-    background: #5a8ba1;
+    background: #789bb2;
 }
 QScrollArea#formScrollPage QScrollBar::add-line:vertical,
 QScrollArea#formScrollPage QScrollBar::sub-line:vertical {
@@ -610,48 +615,95 @@ QScrollArea#formScrollPage QScrollBar::add-page:vertical,
 QScrollArea#formScrollPage QScrollBar::sub-page:vertical {
     background: transparent;
 }
-QWidget#todoViewport, QWidget#todoContainer { background: #122231; }
+QWidget#todoViewport, QWidget#todoContainer { background: #ffffff; }
 QFrame#todoCard {
-    background: #182c3b;
-    border: 1px solid #355c70;
+    background: #f5f8fb;
+    border: 1px solid #c3d0dc;
     border-radius: 10px;
 }
-QLabel#todoTitle { color: #f4f9fc; font-size: 14px; font-weight: 600; }
-QLabel#todoCategory { color: #8fcbe3; font-size: 11px; }
-QLabel#sectionCount { color: #8fcbe3; }
+QLabel#todoTitle { color: #1e3549; font-size: 14px; font-weight: 600; }
+QLabel#todoCategory { color: #356d88; font-size: 11px; }
+QLabel#sectionCount { color: #356d88; }
 QLabel#emptyState {
-    color: #8fa8b5;
+    color: #64788a;
     padding: 24px;
 }
-QLabel#entryFeedback { color: #9ed9b1; padding-left: 4px; }
+QLabel#entryFeedback { color: #3f7752; padding-left: 4px; }
 QListWidget#ideaList {
-    background: #182c3b;
-    color: #f4f9fc;
-    border: 1px solid #355c70;
+    background: #ffffff;
+    color: #24364a;
+    border: 1px solid #c3d0dc;
     border-radius: 10px;
     padding: 6px;
 }
 QListWidget#ideaList::item {
-    background: #20394a;
-    border: 1px solid #355c70;
+    background: #f3f7fa;
+    border: 1px solid #c8d4df;
     border-radius: 7px;
     margin: 3px;
     padding: 9px;
 }
-QListWidget#ideaList::item:selected { background: #2b5369; color: #ffffff; }
+QListWidget#ideaList::item:selected { background: #cfe0ee; color: #17344f; }
 QSplitter#todaySplitter::handle {
-    background: #355c70;
+    background: #b3c4d1;
     height: 6px;
     margin: 2px 0;
     border-radius: 3px;
 }
-QSplitter#todaySplitter::handle:hover { background: #5a8ba1; }
+QSplitter#todaySplitter::handle:hover { background: #789bb2; }
 QPushButton {
-    background: #24495e; border: 1px solid #4d8096; border-radius: 10px; padding: 8px 13px;
+    background: #dce9f3; color: #17344f; border: 1px solid #8eabc0; border-radius: 10px; padding: 8px 13px;
+    font-weight: 600;
 }
-QPushButton:hover { background: #32657f; }
-QPushButton:pressed { background: #17384a; }
-QCheckBox { spacing: 8px; }
+QPushButton:hover { background: #c9dfed; border-color: #6f96ae; }
+QPushButton:pressed { background: #aecbdc; }
+QPushButton:disabled { background: #e8edf1; color: #8997a3; border-color: #ccd5dc; }
+QCheckBox { spacing: 10px; }
+QCheckBox::indicator {
+    width: 20px;
+    height: 20px;
+    background: #ffffff;
+    border: 2px solid #58758a;
+    border-radius: 5px;
+}
+QCheckBox::indicator:hover { border-color: #245f80; background: #f1f7fb; }
+QCheckBox::indicator:checked {
+    background: #245f80;
+    border-color: #245f80;
+    image: url(assets/ui/checkmark.svg);
+}
+QCheckBox::indicator:disabled {
+    background: #e7edf2;
+    border-color: #aab7c1;
+}
+QToolTip { background: #ffffff; color: #24364a; border: 1px solid #9eb5c7; padding: 5px; }
+QFrame#onboardingHero {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:1, stop:0 #dce9f4, stop:0.55 #edf2f7, stop:1 #f6eee7);
+    border: 1px solid #b6c8d6;
+    border-radius: 20px;
+}
+QFrame#onboardingContent {
+    background: #ffffff;
+    border: 1px solid #c4d1dc;
+    border-radius: 20px;
+}
+QLabel#onboardingBrand { color: #17344f; font-size: 30px; font-weight: 700; }
+QLabel#onboardingTagline { color: #435f73; font-size: 15px; line-height: 1.35; }
+QLabel#onboardingTitle { color: #17344f; font-size: 28px; font-weight: 700; }
+QFrame#onboardingContent QLabel { color: #263d50; font-size: 15px; }
+QFrame#onboardingContent QLabel#onboardingTitle { color: #17344f; font-size: 28px; font-weight: 700; }
+QFrame#onboardingContent QLabel#onboardingNote { color: #355d74; font-size: 14px; }
+QFrame#onboardingContent QLineEdit,
+QFrame#onboardingContent QComboBox {
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: 15px;
+}
+QFrame#onboardingContent QPushButton {
+    min-height: 38px;
+    padding: 8px 20px;
+    font-size: 16px;
+}
 QMenu {
     background: #ffffff;
     color: #000000;
@@ -675,6 +727,20 @@ QMenu::separator {
     margin: 4px 8px;
 }
 """
+
+
+def application_ui_font() -> QFont:
+    font = QFont()
+    font.setFamilies(
+        [
+            "Microsoft JhengHei UI",
+            "Microsoft YaHei UI",
+            "Yu Gothic UI",
+            "Segoe UI",
+        ]
+    )
+    font.setPointSize(10)
+    return font
 
 
 RESOURCE_BASE = Path(
@@ -988,7 +1054,7 @@ class MemoryEditorDialog(QDialog):
             f"來源：{source}　建立：{str(memory['created_at'])[:16]}　"
             f"更新：{str(memory['updated_at'])[:16]}"
         )
-        meta.setStyleSheet("color:#8fb4c7;")
+        meta.setStyleSheet("color:#4c6b82;")
         layout.addWidget(meta)
         buttons = QHBoxLayout()
         cancel = QPushButton("取消")
@@ -1101,7 +1167,7 @@ class ChatHistoryDialog(QDialog):
         self.history_list = QListWidget()
         layout.addWidget(self.history_list, 1)
         self.history_status = QLabel()
-        self.history_status.setStyleSheet("color: #8fcbe3;")
+        self.history_status.setStyleSheet("color: #356d88;")
         layout.addWidget(self.history_status)
         buttons = QHBoxLayout()
         delete = QPushButton("刪除勾選對話")
@@ -1188,17 +1254,70 @@ class FirstRunWizard(QDialog):
         self.db = db
         self.language = profile_setting(db, "ui_language")
         self.setWindowIcon(QIcon(str(resource_path(APP_ICON_PATH))))
-        self.setMinimumSize(620, 520)
+        self.setMinimumSize(1100, 720)
+        self.setFont(application_ui_font())
         self.setStyleSheet(STYLE)
-        layout = QVBoxLayout(self)
+        root = QHBoxLayout(self)
+        root.setContentsMargins(20, 20, 20, 20)
+        root.setSpacing(18)
+
+        hero_panel = QFrame()
+        hero_panel.setObjectName("onboardingHero")
+        hero_panel.setFixedWidth(360)
+        hero_background = resource_path(
+            "assets/onboarding/first-run-ink-tech.png"
+        ).as_posix()
+        hero_panel.setStyleSheet(
+            f"""
+            QFrame#onboardingHero {{
+                border-image: url(\"{hero_background}\") 0 0 0 0 stretch stretch;
+                border: 1px solid #aebfcd;
+                border-radius: 20px;
+            }}
+            """
+        )
+        hero_layout = QVBoxLayout(hero_panel)
+        hero_layout.setContentsMargins(16, 24, 16, 14)
+        hero_layout.setSpacing(10)
+        self.hero_brand = QLabel("墨寒  MoHan")
+        self.hero_brand.setObjectName("onboardingBrand")
+        self.hero_tagline = QLabel()
+        self.hero_tagline.setObjectName("onboardingTagline")
+        self.hero_tagline.setWordWrap(True)
+        self.hero_image = QLabel()
+        self.hero_image.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
+        hero_pixmap = QPixmap(str(resource_path("assets/mohan.png")))
+        self.hero_image.setPixmap(
+            hero_pixmap.scaled(
+                330,
+                590,
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation,
+            )
+        )
+        hero_layout.addWidget(self.hero_brand)
+        hero_layout.addWidget(self.hero_tagline)
+        hero_layout.addStretch()
+        hero_layout.addWidget(self.hero_image)
+        root.addWidget(hero_panel)
+
+        content_panel = QFrame()
+        content_panel.setObjectName("onboardingContent")
+        layout = QVBoxLayout(content_panel)
+        layout.setContentsMargins(32, 30, 32, 26)
+        layout.setSpacing(16)
+        root.addWidget(content_panel, 1)
         self.title_label = QLabel()
-        self.title_label.setStyleSheet("font-size:20px;color:#f1f8fb;")
+        self.title_label.setObjectName("onboardingTitle")
         self.intro_label = QLabel()
         self.intro_label.setWordWrap(True)
         layout.addWidget(self.title_label)
         layout.addWidget(self.intro_label)
 
         form = QFormLayout()
+        form.setHorizontalSpacing(18)
+        form.setVerticalSpacing(12)
+        form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.assistant_name = QLineEdit(
             profile_setting(db, "assistant_name")
         )
@@ -1257,13 +1376,14 @@ class FirstRunWizard(QDialog):
             ("wake_word", "語音喚醒詞", self.wake_word),
         ):
             label = QLabel()
+            label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.form_labels[key] = label
             form.addRow(label, editor)
         layout.addLayout(form)
 
         self.note_label = QLabel()
         self.note_label.setWordWrap(True)
-        self.note_label.setStyleSheet("color:#9bc8da;")
+        self.note_label.setObjectName("onboardingNote")
         layout.addWidget(self.note_label)
         layout.addStretch()
         buttons = QHBoxLayout()
@@ -1304,8 +1424,17 @@ class FirstRunWizard(QDialog):
                 if self.wake_word.text().strip() == "MoHan":
                     self.wake_word.setText("墨寒")
         self.setWindowTitle(self._t("first_run_title", "首次啟動設定"))
+        self.hero_tagline.setText(
+            self._t(
+                "first_run_hero_tagline",
+                "北宋千年女劍魂，陪你說話、記憶，也陪你把工作做好。",
+            )
+        )
         self.title_label.setText(
-            self._t("first_run_heading", "<b>歡迎使用桌面陪伴工作助理</b>")
+            self._t(
+                "first_run_heading",
+                "<b>歡迎使用墨寒桌面陪伴工作助理</b>",
+            )
         )
         self.intro_label.setText(
             self._t(
@@ -1502,7 +1631,7 @@ class Dashboard(QDialog):
         mode_index = self.mode_combo.findData(self.mode)
         self.mode_combo.setCurrentIndex(max(0, mode_index))
         self.work_label = QLabel()
-        self.work_label.setStyleSheet("font-size: 16px; color: #9ed9ef;")
+        self.work_label.setStyleSheet("font-size: 16px; color: #2f6987;")
         start_btn = QPushButton(self._t("start_work", "開始工作"))
         stop_btn = QPushButton(self._t("stop_work", "結束工作"))
         self.header_title = QLabel(
@@ -1679,7 +1808,7 @@ class Dashboard(QDialog):
                 "對話保存在本機，不會自動刪除",
             )
         )
-        self.chat_retention.setStyleSheet("color: #8fcbe3;")
+        self.chat_retention.setStyleSheet("color: #356d88;")
         self.load_older_chat_btn = QPushButton(
             self._t("load_older_chat", "載入較早對話")
         )
@@ -1728,7 +1857,7 @@ class Dashboard(QDialog):
         self.voice_phase = QLabel(
             self._t("voice_ready", "語音狀態：準備就緒")
         )
-        self.voice_phase.setStyleSheet("color: #8fcbe3; padding-left: 4px;")
+        self.voice_phase.setStyleSheet("color: #356d88; padding-left: 4px;")
         layout.addWidget(self.voice_phase)
         send.clicked.connect(self.send_chat)
         self.chat_input.returnPressed.connect(self.send_chat)
@@ -1843,7 +1972,7 @@ class Dashboard(QDialog):
             "每位使用者都可以建立自己的工作平台，不預設綁定任何產業。"
         )
         intro.setWordWrap(True)
-        intro.setStyleSheet("color:#9bc8da;")
+        intro.setStyleSheet("color:#486d83;")
         layout.addWidget(intro)
 
         add_row = QHBoxLayout()
@@ -1882,7 +2011,7 @@ class Dashboard(QDialog):
         self.platform_feedback = QLabel(
             "修改後會自動保存；也可以使用每張卡片的保存按鈕。"
         )
-        self.platform_feedback.setStyleSheet("color:#8fb4c7;")
+        self.platform_feedback.setStyleSheet("color:#4c6b82;")
         self.platform_feedback.setWordWrap(True)
         layout.addLayout(header)
         layout.addWidget(self.platform_feedback)
@@ -1921,15 +2050,15 @@ class Dashboard(QDialog):
         card = QFrame()
         card.setObjectName("platformCard")
         card.setStyleSheet(
-            "QFrame#platformCard{background:#152a3a;"
-            "border:1px solid #355f74;border-radius:12px;}"
+            "QFrame#platformCard{background:#f5f8fb;"
+            "border:1px solid #c3d0dc;border-radius:12px;}"
         )
         grid = QGridLayout(card)
         grid.setContentsMargins(14, 12, 14, 12)
         grid.setHorizontalSpacing(10)
         grid.setVerticalSpacing(8)
         name = QLabel(f"<b>{html.escape(platform)}</b>")
-        name.setStyleSheet("font-size:15px;color:#f1f8fb;")
+        name.setStyleSheet("font-size:15px;color:#17344f;")
         status = QComboBox()
         status.addItems(PLATFORM_STATUSES)
         item_name = QLineEdit()
@@ -1945,7 +2074,7 @@ class Dashboard(QDialog):
         validation = QLabel()
         validation.setWordWrap(True)
         updated = QLabel("尚未保存")
-        updated.setStyleSheet("color:#88a9ba;font-size:11px;")
+        updated.setStyleSheet("color:#64788a;font-size:11px;")
         open_btn = QPushButton("開啟網站／工具")
         open_btn.clicked.connect(
             lambda _checked=False, p=platform: self.open_platform(p)
@@ -2180,11 +2309,11 @@ class Dashboard(QDialog):
         tab.setWidgetResizable(True)
         tab.setFrameShape(QFrame.NoFrame)
         tab.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        tab.viewport().setStyleSheet("background:#122231;")
+        tab.viewport().setStyleSheet("background:#ffffff;")
         content = QWidget()
         content.setObjectName("formScrollContent")
         content.setStyleSheet(
-            "QWidget#formScrollContent{background:#122231;}"
+            "QWidget#formScrollContent{background:#ffffff;}"
         )
         form = QFormLayout(content)
         tab.setWidget(content)
@@ -2267,7 +2396,7 @@ class Dashboard(QDialog):
         )
         self.transcription_diagnostic.setWordWrap(True)
         self.transcription_diagnostic.setStyleSheet(
-            "color:#9ed9ef; padding:6px;"
+            "color:#2f6987; padding:6px;"
         )
         self.voice_engine = QComboBox()
         for key, label in (
@@ -2725,11 +2854,11 @@ class Dashboard(QDialog):
         tab.setWidgetResizable(True)
         tab.setFrameShape(QFrame.NoFrame)
         tab.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        tab.viewport().setStyleSheet("background:#122231;")
+        tab.viewport().setStyleSheet("background:#ffffff;")
         content = QWidget()
         content.setObjectName("formScrollContent")
         content.setStyleSheet(
-            "QWidget#formScrollContent{background:#122231;}"
+            "QWidget#formScrollContent{background:#ffffff;}"
         )
         form = QFormLayout(content)
         tab.setWidget(content)
@@ -2786,7 +2915,7 @@ class Dashboard(QDialog):
             )
         )
         warning.setWordWrap(True)
-        warning.setStyleSheet("color:#f0c889;")
+        warning.setStyleSheet("color:#8a5a13;")
         save = QPushButton(
             self._t("save_permissions", "保存工具權限")
         )
@@ -2807,7 +2936,7 @@ class Dashboard(QDialog):
         )
         flagship_heading = QLabel("<b>旗艦控制中心</b>")
         flagship_heading.setStyleSheet(
-            "color:#9ed9ef;font-size:16px;margin-top:12px;"
+            "color:#2f6987;font-size:16px;margin-top:12px;"
         )
         form.addRow(flagship_heading)
         form.addRow(self.flagship_center)
@@ -2848,18 +2977,18 @@ class Dashboard(QDialog):
         tab.setWidgetResizable(True)
         tab.setFrameShape(QFrame.NoFrame)
         tab.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        tab.viewport().setStyleSheet("background:#122231;")
+        tab.viewport().setStyleSheet("background:#ffffff;")
         content = QWidget()
         content.setObjectName("formScrollContent")
         content.setStyleSheet(
-            "QWidget#formScrollContent{background:#122231;}"
+            "QWidget#formScrollContent{background:#ffffff;}"
         )
         form = QFormLayout(content)
         tab.setWidget(content)
         profile_heading = QLabel(
             self._t("profile_heading", "<b>顯示名稱與使用者資料</b>")
         )
-        profile_heading.setStyleSheet("color:#9ed9ef;font-size:15px;")
+        profile_heading.setStyleSheet("color:#2f6987;font-size:15px;")
         self.profile_assistant_name = QLineEdit(
             profile_setting(self.db, "assistant_name")
         )
@@ -3096,7 +3225,7 @@ class Dashboard(QDialog):
             "不會截取編輯器內容、不會自動修改檔案，也會遵守勿擾模式與冷卻時間。"
         )
         background_note.setWordWrap(True)
-        background_note.setStyleSheet("color:#8fc9e0;")
+        background_note.setStyleSheet("color:#356f8d;")
         self.physics_controls = {}
         physics_labels = {
             "physics_sleeves": "袖擺呼吸與慣性",
@@ -3118,7 +3247,7 @@ class Dashboard(QDialog):
             "旗艦物理預設全部開啟；可依效能需要個別關閉。"
         )
         physics_note.setWordWrap(True)
-        physics_note.setStyleSheet("color:#8fc9e0;")
+        physics_note.setStyleSheet("color:#356f8d;")
         physics_layout.addWidget(physics_note)
         self.work_folder = QLineEdit(str(self.db.setting("work_folder", "")))
         self.work_folder.setPlaceholderText("常用工作資料夾路徑")
@@ -3203,7 +3332,7 @@ class Dashboard(QDialog):
             )
         )
         language_note.setWordWrap(True)
-        language_note.setStyleSheet("color:#8fc9e0;")
+        language_note.setStyleSheet("color:#356f8d;")
         form.addRow(language_note)
         form.addRow("", clear_key)
         form.addRow("智能核心", self.api_status)
@@ -3214,9 +3343,9 @@ class Dashboard(QDialog):
 
     def append_chat(self, speaker: str, text: str) -> None:
         color = (
-            "#9ed9ef"
+            "#2f6987"
             if speaker == self.assistant_name
-            else "#e8b7ec"
+            else "#8a4f82"
         )
         normalized = normalize_for_language(
             personalize_text(self.db, text),
@@ -4138,7 +4267,7 @@ class Dashboard(QDialog):
             "已上架",
         } and not item_name:
             message = "建議填寫工作項目、專案或案件名稱，日後較容易辨認。"
-            color = "#8fc9e0"
+            color = "#356f8d"
         controls["validation"].setText(message)
         controls["validation"].setStyleSheet(f"color:{color};")
 
@@ -8841,7 +8970,17 @@ def main() -> int:
     smoke_auto_exit = "--smoke-auto-exit" in sys.argv
     if self_test or smoke_auto_exit:
         os.environ["QT_QPA_PLATFORM"] = "offscreen"
+    if sys.platform == "win32":
+        try:
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
+                WINDOWS_APP_USER_MODEL_ID
+            )
+        except (AttributeError, OSError):
+            # A restricted Windows session can still use the explicit Qt
+            # icon below without preventing MoHan from starting.
+            pass
     app = QApplication(sys.argv)
+    app.setFont(application_ui_font())
     app.setApplicationName(APP_NAME)
     app.setApplicationVersion(APP_VERSION)
     app.setWindowIcon(QIcon(str(resource_path(APP_ICON_PATH))))

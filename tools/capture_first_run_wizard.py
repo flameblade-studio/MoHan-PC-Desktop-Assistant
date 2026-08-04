@@ -11,13 +11,14 @@ sys.path.insert(0, str(ROOT))
 
 from PySide6.QtWidgets import QApplication
 
-from app import FirstRunWizard
+from app import FirstRunWizard, application_ui_font
 from db import StudioDB
 
 
 def render(output: Path) -> None:
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
         app = QApplication([])
+        app.setFont(application_ui_font())
         database = StudioDB(Path(temp_dir) / "first-run-preview.db")
         wizard = FirstRunWizard(database)
         wizard.show()
