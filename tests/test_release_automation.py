@@ -88,6 +88,8 @@ def main() -> None:
         assert text.text == message
     assert "torch.exe" in installer_build
     assert "-t language" in installer_build
+    assert "foreach ($Transform in $Transforms)" in installer_build
+    assert 'Get-Item (Join-Path $ResolvedOutput "*Setup.exe"), $Msi, $Transforms' not in installer_build
     assert "TRANSFORMS=" in installer_test
     assert "Taiwan Traditional Chinese base package" in localization_policy
     assert "MoHan-Desktop-Assistant-<tag>-en-US.mst" in localization_policy

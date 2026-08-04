@@ -120,4 +120,11 @@ foreach ($Locale in $Locales | Where-Object { -not $_.Base }) {
     $Transforms += $Transform
 }
 
-Get-Item (Join-Path $ResolvedOutput "*Setup.exe"), $Msi, $Transforms
+$BuiltArtifacts = @(
+    Get-Item (Join-Path $ResolvedOutput "*Setup.exe")
+    Get-Item $Msi
+    foreach ($Transform in $Transforms) {
+        Get-Item $Transform
+    }
+)
+$BuiltArtifacts
