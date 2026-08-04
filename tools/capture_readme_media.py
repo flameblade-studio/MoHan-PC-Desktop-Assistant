@@ -203,14 +203,22 @@ def compose_expression_showcase(output: Path) -> None:
         ("mock_hit_front.png", "佯怒"),
     )
     canvas = QImage(1500, 940, QImage.Format_ARGB32)
-    canvas.fill(QColor("#0a1824"))
+    canvas.fill(QColor("#eef3f8"))
     painter = QPainter(canvas)
     painter.setRenderHint(QPainter.Antialiasing)
-    draw_cover_text(
-        painter,
-        "墨寒表情系統",
+    background = QLinearGradient(0, 0, 1500, 940)
+    background.setColorAt(0.0, QColor("#edf3f8"))
+    background.setColorAt(0.58, QColor("#f7f8fa"))
+    background.setColorAt(1.0, QColor("#f7f1ed"))
+    painter.fillRect(canvas.rect(), background)
+    painter.setPen(QColor("#17344f"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 26, QFont.Bold))
+    painter.drawText(QRect(55, 36, 1390, 48), "墨寒表情系統")
+    painter.setPen(QColor("#48647a"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 15))
+    painter.drawText(
+        QRect(56, 88, 1388, 34),
         "情緒仲裁器依語意、狀態與冷卻時間選擇表情；不以隨機誇張表情打擾使用者。",
-        1500,
     )
     card_width, card_height = 440, 330
     for index, (filename, label) in enumerate(cards):
@@ -218,14 +226,20 @@ def compose_expression_showcase(output: Path) -> None:
         x = 55 + column * 480
         y = 160 + row * 370
         rect = QRect(x, y, card_width, card_height)
-        draw_rounded_panel(painter, rect, QColor("#122838"))
+        draw_rounded_panel(
+            painter,
+            rect,
+            QColor("#ffffff"),
+            QColor("#b6c8d6"),
+            18,
+        )
         source = QImage(str(ROOT / "assets" / "expressions" / filename))
         picture = scaled_inside(source, QSize(300, 268))
         painter.drawImage(
             QPoint(x + (card_width - picture.width()) // 2, y + 8),
             picture,
         )
-        painter.setPen(QColor("#eaf6fb"))
+        painter.setPen(QColor("#20364a"))
         painter.setFont(QFont("Microsoft JhengHei UI", 17, QFont.Bold))
         painter.drawText(QRect(x, y + 285, card_width, 32), Qt.AlignCenter, label)
     painter.end()
