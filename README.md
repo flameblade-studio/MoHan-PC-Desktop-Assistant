@@ -36,6 +36,7 @@
 - [繁體中文](#繁體中文)
 - [简体中文](README.zh-CN.md)
 - [English](#english)
+- [日本語](README.ja.md)
 
 <p align="center">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Download / 下載</a> ·
@@ -239,12 +240,12 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我則始終負�
 - Google、Microsoft、GitHub、Home Assistant 與私人網路遠端功能的擴充架構。
 - 單一 `.mohan-profile` 可攜檔，可在不同 Windows 電腦間轉移工作進度。
 - 首次啟動精靈可自訂助理名稱、使用者稱呼、組織名稱、視窗標題、工作類型與
-  喚醒詞，並可選擇臺灣繁中、簡體中文或英文；現有個人安裝的設定不會被
+  喚醒詞，並可選擇臺灣繁中、簡體中文、英文或日語；現有個人安裝的設定不會被
   公開版預設覆蓋。
 
 目前已提供首次啟動、聊天、語音、權限、基本設定、工作模式與提醒功能的
-英文及簡中可用範圍；較進階的管理頁面仍以臺灣繁體中文為主，完整在地化仍
-在進行。簡中使用說明請見 [README.zh-CN.md](README.zh-CN.md)。
+英文、簡中及日語可用範圍；較進階的管理頁面仍以臺灣繁體中文為主，完整在地化仍
+在進行。請見 [簡中說明](README.zh-CN.md) 與 [日語說明](README.ja.md)。
 新使用者預設使用 Windows 本機語音，不需要 OpenAI API 金鑰即可先體驗基本
 功能。語音清單只顯示 Windows 明確標示為女性的聲音，zh-TW 預設仍優先使用
 Microsoft Yating；其他語言則優先使用相符語系的已安裝女性聲音。
@@ -529,13 +530,14 @@ Key capabilities:
 - Portable one-file profile handoff between Windows computers.
 - A first-run wizard for assistant name, user title, organization, window title,
   work type, UI language, and wake word, with Taiwan Traditional Chinese,
-  Simplified Chinese, and English setup paths.
+  Simplified Chinese, English, and Japanese setup paths.
 
-Minimum usable English and Simplified Chinese paths now cover first run, chat,
+Minimum usable English, Simplified Chinese, and Japanese paths now cover first run, chat,
 voice, permissions, basic settings, work modes, and reminders. Some advanced
 management screens remain primarily Taiwan Traditional Chinese, so full
 localization is still in progress. See the dedicated
-[Simplified Chinese README](README.zh-CN.md). New users default to Windows local
+[Simplified Chinese README](README.zh-CN.md) and
+[Japanese README](README.ja.md). New users default to Windows local
 speech and can try the basic experience without an OpenAI API key. Only
 installed Windows voices explicitly identified as female are listed; zh-TW
 continues to prefer Microsoft Yating, while other languages prefer a matching
@@ -543,7 +545,7 @@ installed female voice.
 
 Azure Speech is an optional Preview provider and is disabled by default. It
 requires the user's own Speech resource key and matching region, lists only
-Microsoft-identified female voices for the three supported UI languages, and
+Microsoft-identified female voices for the four supported UI languages, and
 makes no request when configuration is incomplete. It remains a preview until
 real-account end-to-end playback verification is complete.
 
@@ -695,9 +697,9 @@ updater accepts only official GitHub HTTPS sources and verifies both declared
 size and SHA256 before asking permission to launch an installer.
 
 The interactive EXE installer offers Taiwan Traditional Chinese, Simplified
-Chinese, and English. The MSI intentionally remains a Taiwan Traditional
-Chinese base package for silent and managed deployment; planned en-US and
-zh-CN language transforms are specified in
+Chinese, English, and Japanese. The MSI remains a Taiwan Traditional Chinese
+base package for silent and managed deployment, with tested en-US, zh-CN, and
+ja-JP language transforms described in
 [installer/LOCALIZATION.md](installer/LOCALIZATION.md).
 
 When the maintainer has configured a WordPress Application Password, a

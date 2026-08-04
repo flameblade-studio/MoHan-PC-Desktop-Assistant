@@ -115,7 +115,7 @@ class AzureSpeechProvider:
         requires_api_key=True,
         verified_female_catalog=True,
         supports_streaming=False,
-        supported_languages=("zh-TW", "zh-CN", "en-US"),
+        supported_languages=("zh-TW", "zh-CN", "en-US", "ja-JP"),
     )
 
     def __init__(self, engine: AzureSpeechEnginePort):

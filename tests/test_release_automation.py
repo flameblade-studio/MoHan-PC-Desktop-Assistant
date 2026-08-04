@@ -4,6 +4,7 @@ import json
 import subprocess
 import sys
 import tempfile
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,15 +47,51 @@ def main() -> None:
     assert 'Name: "chinesetraditional"' in inno_script
     assert 'Name: "chinesesimplified"' in inno_script
     assert 'Name: "english"' in inno_script
+    assert 'Name: "japanese"' in inno_script
+    assert "japanese.CreateDesktopIcon" in inno_script
 
     wix_source = (ROOT / "installer" / "Product.wxs").read_text(encoding="utf-8")
     localization_policy = (ROOT / "installer" / "LOCALIZATION.md").read_text(
         encoding="utf-8"
     )
-    assert 'Language="1028"' in wix_source
+    assert 'Language="$(var.ProductLanguage)"' in wix_source
+    installer_build = (
+        ROOT / "installer" / "build_installers.ps1"
+    ).read_text(encoding="utf-8")
+    installer_test = (
+        ROOT / "installer" / "test_installers.ps1"
+    ).read_text(encoding="utf-8")
+    for locale, lcid in (
+        ("en-US", "1033"),
+        ("zh-CN", "2052"),
+        ("ja-JP", "1041"),
+    ):
+        assert locale in installer_build
+        assert lcid in installer_build
+        assert locale in localization_policy
+        assert locale in installer_test
+    expected_messages = {
+        "zh-TW": "已安裝較新版本的 MoHan Desktop Assistant。",
+        "zh-CN": "已安装较新版本的 MoHan Desktop Assistant。",
+        "en-US": "A newer version of MoHan Desktop Assistant is already installed.",
+        "ja-JP": "新しいバージョンの MoHan Desktop Assistant が既にインストールされています。",
+    }
+    namespace = {"wix": "http://schemas.microsoft.com/wix/2006/localization"}
+    for locale, message in expected_messages.items():
+        source = ROOT / "installer" / "localization" / f"{locale}.wxl"
+        root = ET.parse(source).getroot()
+        assert root.attrib["Culture"] == locale
+        text = root.find("wix:String", namespace)
+        assert text is not None
+        assert text.attrib["Id"] == "DowngradeErrorMessage"
+        assert text.text == message
+    assert "torch.exe" in installer_build
+    assert "-t language" in installer_build
+    assert "TRANSFORMS=" in installer_test
     assert "Taiwan Traditional Chinese base package" in localization_policy
-    assert "MoHan-Desktop-Assistant-en-US.mst" in localization_policy
-    assert "MoHan-Desktop-Assistant-zh-CN.mst" in localization_policy
+    assert "MoHan-Desktop-Assistant-<tag>-en-US.mst" in localization_policy
+    assert "MoHan-Desktop-Assistant-<tag>-zh-CN.mst" in localization_policy
+    assert "MoHan-Desktop-Assistant-<tag>-ja-JP.mst" in localization_policy
     assert "TRANSFORMS=" in localization_policy
     for expression in (
         "proud_front.png",
@@ -78,6 +115,10 @@ def main() -> None:
         assert (ROOT / "docs" / "media" / media).is_file(), media
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    japanese_readme = (ROOT / "README.ja.md").read_text(encoding="utf-8")
+    assert "日本語" in readme and "README.ja.md" in readme
+    assert "日本語の対応範囲" in japanese_readme
+    assert "Azure Speech（プレビュー）" in japanese_readme
     assert "墨寒的傲嬌工程小劇場 / MoHan's Tsundere Developer Theatre" in readme
     assert readme.count('width="33%" align="center"><img src="assets/expressions/') >= 9
     for line in (

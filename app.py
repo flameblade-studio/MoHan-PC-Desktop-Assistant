@@ -80,6 +80,7 @@ from ai_client import (
     AIWorker,
     DEFAULT_TEXT_MODEL,
     ENGLISH_PERSONA,
+    JAPANESE_PERSONA,
     PERSONA,
     SIMPLIFIED_CHINESE_PERSONA,
     TEXT_MODELS,
@@ -114,7 +115,9 @@ from profile_transfer_ui import PortableProfilePanel
 from language_support import (
     english_voice_instructions,
     is_english,
+    is_japanese,
     is_simplified_chinese,
+    japanese_voice_instructions,
     localized_reminder_line,
     localized_voice_instructions,
     migrate_builtin_reminder_line,
@@ -131,6 +134,10 @@ from ui_localization import (
     WORK_TYPE_LABELS,
     display_label,
     ui_text,
+)
+from ui_localization_ja import (
+    JAPANESE_MODE_LABELS,
+    JAPANESE_WORK_TYPE_LABELS,
 )
 from updater_ui import UpdatePanel
 from version_info import APP_VERSION
@@ -476,11 +483,17 @@ def default_persona_for_language(language: str) -> str:
         return ENGLISH_PERSONA
     if is_simplified_chinese(language):
         return SIMPLIFIED_CHINESE_PERSONA
+    if is_japanese(language):
+        return JAPANESE_PERSONA
     return PERSONA
 
 
 def normalize_for_language(text: str, language: str) -> str:
-    if is_simplified_chinese(language):
+    if (
+        is_english(language)
+        or is_simplified_chinese(language)
+        or is_japanese(language)
+    ):
         return str(text)
     return to_taiwan_traditional(str(text))
 
@@ -726,6 +739,11 @@ def persona_for_profile(db: StudioDB) -> str:
             persona += (
                 f"\n用户当前设置的组织／团队名称是“{organization}”。"
                 "处理工作事务时，请结合此组织背景提供协助。"
+            )
+        elif is_japanese(language):
+            persona += (
+                f"\nユーザーが設定した組織／チーム名は「{organization}」です。"
+                "仕事を支援する際は、この組織の文脈を踏まえてください。"
             )
         else:
             persona += (
@@ -1208,6 +1226,7 @@ class FirstRunWizard(QDialog):
                     value,
                     WORK_TYPE_LABELS,
                     SIMPLIFIED_WORK_TYPE_LABELS,
+                    JAPANESE_WORK_TYPE_LABELS,
                 ),
                 value,
             )
@@ -1221,6 +1240,7 @@ class FirstRunWizard(QDialog):
         self.ui_language.addItem("繁體中文（台灣）", "zh-TW")
         self.ui_language.addItem("简体中文（中国大陆）", "zh-CN")
         self.ui_language.addItem("English", "en")
+        self.ui_language.addItem("日本語", "ja-JP")
         current_language = profile_setting(db, "ui_language")
         language_index = self.ui_language.findData(current_language)
         self.ui_language.setCurrentIndex(max(0, language_index))
@@ -1265,14 +1285,21 @@ class FirstRunWizard(QDialog):
             if is_english(self.language):
                 if self.assistant_name.text().strip() == "墨寒":
                     self.assistant_name.setText("MoHan")
-                if self.user_title.text().strip() == "主上":
+                if self.user_title.text().strip() in {"主上", "主様"}:
                     self.user_title.setText("Commander")
                 if self.wake_word.text().strip() == "墨寒":
                     self.wake_word.setText("MoHan")
+            elif is_japanese(self.language):
+                if self.assistant_name.text().strip() == "MoHan":
+                    self.assistant_name.setText("墨寒")
+                if self.user_title.text().strip() in {"主上", "Commander"}:
+                    self.user_title.setText("主様")
+                if self.wake_word.text().strip() == "MoHan":
+                    self.wake_word.setText("墨寒")
             else:
                 if self.assistant_name.text().strip() == "MoHan":
                     self.assistant_name.setText("墨寒")
-                if self.user_title.text().strip() == "Commander":
+                if self.user_title.text().strip() in {"Commander", "主様"}:
                     self.user_title.setText("主上")
                 if self.wake_word.text().strip() == "MoHan":
                     self.wake_word.setText("墨寒")
@@ -1330,6 +1357,7 @@ class FirstRunWizard(QDialog):
                     value,
                     WORK_TYPE_LABELS,
                     SIMPLIFIED_WORK_TYPE_LABELS,
+                    JAPANESE_WORK_TYPE_LABELS,
                 ),
                 # Internal data remains Taiwan Traditional Chinese so saved
                 # profiles and command rules are language-independent.
@@ -1467,6 +1495,7 @@ class Dashboard(QDialog):
                     value,
                     MODE_LABELS,
                     SIMPLIFIED_MODE_LABELS,
+                    JAPANESE_MODE_LABELS,
                 ),
                 value,
             )
@@ -2855,6 +2884,7 @@ class Dashboard(QDialog):
                     value,
                     WORK_TYPE_LABELS,
                     SIMPLIFIED_WORK_TYPE_LABELS,
+                    JAPANESE_WORK_TYPE_LABELS,
                 ),
                 value,
             )
@@ -2870,6 +2900,7 @@ class Dashboard(QDialog):
         self.profile_ui_language.addItem("繁體中文（台灣）", "zh-TW")
         self.profile_ui_language.addItem("简体中文（中国大陆）", "zh-CN")
         self.profile_ui_language.addItem("English", "en")
+        self.profile_ui_language.addItem("日本語", "ja-JP")
         language_index = self.profile_ui_language.findData(
             profile_setting(self.db, "ui_language")
         )
@@ -3569,6 +3600,23 @@ class Dashboard(QDialog):
                 "speaking",
             )
             return
+        if is_japanese(self.ui_language):
+            lines = {
+                "工作": "仕事モードを開始しました。必要な時だけ主様にお声がけします。",
+                "陪伴": "お供モードを開始しました。今宵は勝ち負けを語らずともよいでしょう。",
+                "勿擾": "集中モードを開始しました。緊急時以外、妾は静かにしております。",
+                "會議": "会議モードを開始しました。静かに、必要なことだけを記録します。",
+                "離席": "離席モードを開始しました。お戻りの際に要点をお伝えします。",
+                "休眠": "休眠モードを開始しました。リマインダーと緊急通知は規則どおり動きます。",
+            }
+            self.speak_requested.emit(
+                lines.get(
+                    mode,
+                    f"{display_label(self.ui_language, mode, MODE_LABELS, SIMPLIFIED_MODE_LABELS, JAPANESE_MODE_LABELS)}モードを開始しました。",
+                ),
+                "speaking",
+            )
+            return
         lines = {
             "工作": "工作模式已啟。妾只在必要時打斷主上。",
             "陪伴": "陪伴模式已啟。今夜不談勝負，也無妨。",
@@ -3973,6 +4021,11 @@ class Dashboard(QDialog):
             )
         elif is_simplified_chinese(self.ui_language):
             message = "云端连接暂时中断。妾仍在，只是此刻无法借用外部知识。"
+        elif is_japanese(self.ui_language):
+            message = (
+                "クラウドとの接続が一時的に途切れました。妾はここにおりますが、"
+                "今は外部の知識を借りられません。"
+            )
         else:
             message = "雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。"
         self._reply(message, "worried")
@@ -4587,7 +4640,7 @@ class Dashboard(QDialog):
             current_transcription_language = (
                 self.transcription_language.text().strip()
             )
-            if current_transcription_language in {"zh", "en"}:
+            if current_transcription_language in {"zh", "en", "ja"}:
                 self.transcription_language.setText(
                     transcription_language_for_ui(new_ui_language)
                 )
@@ -4598,6 +4651,7 @@ class Dashboard(QDialog):
                 VOICE_GENERATION_PROMPT,
                 english_voice_instructions(),
                 simplified_chinese_voice_instructions(),
+                japanese_voice_instructions(),
             }:
                 self.voice_instructions.setText(
                     localized_voice_instructions(
@@ -4610,6 +4664,7 @@ class Dashboard(QDialog):
                 PERSONA.strip(),
                 ENGLISH_PERSONA.strip(),
                 SIMPLIFIED_CHINESE_PERSONA.strip(),
+                JAPANESE_PERSONA.strip(),
             }:
                 self.persona_prompt.setPlainText(
                     default_persona_for_language(new_ui_language)
@@ -7989,6 +8044,13 @@ class CompanionWindow(QMainWindow):
             self.speak(
                 f"{profile_setting(self.db, 'user_title')}，妾在。"
                 "今日的安排，交给妾与你一同理清。",
+                "happy",
+            )
+            return
+        if is_japanese(language):
+            self.speak(
+                f"{profile_setting(self.db, 'user_title')}、妾はここにおります。"
+                "今日の予定も、ともに整えてまいりましょう。",
                 "happy",
             )
             return

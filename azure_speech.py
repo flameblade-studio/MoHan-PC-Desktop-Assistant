@@ -33,6 +33,12 @@ AZURE_FEMALE_VOICES: dict[str, tuple[str, ...]] = {
         "en-US-CoraMultilingualNeural",
         "en-US-JennyMultilingualNeural",
     ),
+    "ja-JP": (
+        "ja-JP-NanamiNeural",
+        "ja-JP-AoiNeural",
+        "ja-JP-MayuNeural",
+        "ja-JP-ShioriNeural",
+    ),
 }
 _VOICE_LOCALE = {
     voice: locale
@@ -79,6 +85,16 @@ _MESSAGES = {
         "request": "Azure Speech failed (HTTP {status}).",
         "network": "Could not connect to Azure Speech: {error}",
     },
+    "ja-JP": {
+        "invalid_region": "Azure Speech のリージョン形式が正しくありません。",
+        "unsupported_voice": "確認済みの女性音声だけを使用できます。",
+        "missing_settings": "Azure Speech のキーとリージョンが未設定です。",
+        "credentials": "Azure Speech のキー、リージョン、またはリソース権限が正しくありません。",
+        "quota": "Azure Speech の無料枠またはレート上限に達しました。",
+        "service": "Azure Speech は一時的に利用できません（HTTP {status}）。",
+        "request": "Azure Speech に失敗しました（HTTP {status}）。",
+        "network": "Azure Speech に接続できません：{error}",
+    },
 }
 
 
@@ -100,6 +116,8 @@ def azure_female_voices(language: str) -> tuple[str, ...]:
         return AZURE_FEMALE_VOICES["zh-CN"]
     if normalized in {"en", "en-us"}:
         return AZURE_FEMALE_VOICES["en-US"]
+    if normalized in {"ja", "ja-jp"}:
+        return AZURE_FEMALE_VOICES["ja-JP"]
     return AZURE_FEMALE_VOICES["zh-TW"]
 
 

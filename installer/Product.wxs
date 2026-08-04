@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <!-- The MSI is intentionally authored in Taiwan Traditional Chinese.
-       See installer/LOCALIZATION.md for the en-US and zh-CN transform
-       strategy. -->
-  <Product Id="*"
+  <!-- One Taiwan Traditional Chinese base MSI plus tested language transforms.
+       See installer/LOCALIZATION.md for deployment commands. -->
+  <Product Id="$(var.ProductCode)"
            Name="MoHan Desktop Assistant"
-           Language="1028"
+           Language="$(var.ProductLanguage)"
            Version="$(var.ProductVersion)"
            Manufacturer="CHOU MING HUA"
            UpgradeCode="E1F22A47-1B50-4B6C-AF43-543FE68370C7">
     <Package InstallerVersion="500" Compressed="yes" InstallScope="perUser" />
-    <MajorUpgrade DowngradeErrorMessage="A newer version of MoHan Desktop Assistant is already installed." />
+    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeErrorMessage)" />
     <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
     <Property Id="ARPPRODUCTICON" Value="MohanIcon" />
     <Property Id="ARPURLINFOABOUT" Value="https://www.flamebladestudio.com.tw" />

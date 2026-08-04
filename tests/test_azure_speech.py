@@ -45,6 +45,7 @@ def run() -> None:
     assert azure_female_voices("zh-TW")[0] == "zh-TW-HsiaoChenNeural"
     assert azure_female_voices("zh-CN")[0] == "zh-CN-XiaoxiaoNeural"
     assert azure_female_voices("en")[0] == "en-US-AvaMultilingualNeural"
+    assert azure_female_voices("ja-JP")[0] == "ja-JP-NanamiNeural"
 
     ssml = build_azure_ssml(
         "主上 <妾在> & ready",
@@ -72,6 +73,7 @@ def run() -> None:
         "secret",
         "zh-CN",
     )
+    assert "キー" in azure_speech_error_message(401, "secret", "ja-JP")
     assert ui_text("en", "azure_engine", "fallback") == (
         "Azure Speech (Preview)"
     )

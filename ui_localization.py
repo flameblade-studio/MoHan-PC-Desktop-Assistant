@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from language_support import is_english, is_simplified_chinese
+from language_support import is_english, is_japanese, is_simplified_chinese
+from ui_localization_ja import JAPANESE_UI
 
 
 
@@ -430,6 +431,8 @@ def ui_text(language: str, key: str, chinese: str, **values: object) -> str:
         text = _ENGLISH.get(key, chinese)
     elif is_simplified_chinese(language):
         text = _SIMPLIFIED_CHINESE.get(key, chinese)
+    elif is_japanese(language):
+        text = JAPANESE_UI.get(key, chinese)
     else:
         text = chinese
     return text.format(**values) if values else text
@@ -440,9 +443,12 @@ def display_label(
     value: str,
     english: Mapping[str, str],
     simplified: Mapping[str, str] | None = None,
+    japanese: Mapping[str, str] | None = None,
 ) -> str:
     if is_english(language):
         return english.get(value, value)
     if is_simplified_chinese(language) and simplified is not None:
         return simplified.get(value, value)
+    if is_japanese(language) and japanese is not None:
+        return japanese.get(value, value)
     return value
