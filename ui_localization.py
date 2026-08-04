@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from language_support import is_english, is_simplified_chinese
+from language_support import is_english, is_japanese, is_simplified_chinese
+from ui_localization_ja import JAPANESE_UI
 
 
 
@@ -76,6 +77,30 @@ _ENGLISH: Mapping[str, str] = {
     "windows_engine": "Windows local voice",
     "openai_engine": "OpenAI natural voice",
     "realtime_engine": "Realtime voice",
+    "azure_engine": "Azure Speech (Preview)",
+    "azure_voice": "Azure Speech female voice",
+    "azure_region": "Azure Speech region",
+    "azure_key": "Azure Speech key",
+    "azure_region_placeholder": "For example: eastasia",
+    "azure_key_saved": "Encrypted by Windows; leave blank to keep it",
+    "azure_key_missing": "Paste the Azure Speech resource key",
+    "azure_remove_key": "Remove Azure Speech key",
+    "azure_remove_key_confirm": (
+        "Remove the Azure Speech key encrypted by Windows?"
+    ),
+    "azure_key_save_failed": (
+        "Could not securely save the Azure Speech key: {error}"
+    ),
+    "azure_speech_note": (
+        "Preview feature. Bring your own Azure Speech resource key and its "
+        "matching region. Only verified female voices are listed. Missing "
+        "settings or a service failure falls back to a Windows female voice. "
+        "Azure usage and charges are governed by Microsoft."
+    ),
+    "azure_fallback_missing_settings": (
+        "Azure Speech is not fully configured; using the Windows female "
+        "voice without sending a cloud request."
+    ),
     "no_female_voice": "No verified female Windows voice detected",
     "female_voice_note": (
         "Only installed voices explicitly marked as female are listed. "
@@ -247,6 +272,26 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = {
     "windows_engine": "Windows 本机语音",
     "openai_engine": "OpenAI 自然语音",
     "realtime_engine": "Realtime 即时语音",
+    "azure_engine": "Azure Speech（预览）",
+    "azure_voice": "Azure Speech 女性声线",
+    "azure_region": "Azure Speech 区域",
+    "azure_key": "Azure Speech 密钥",
+    "azure_region_placeholder": "例如：eastasia",
+    "azure_key_saved": "已由 Windows 加密保存；留空即可保留",
+    "azure_key_missing": "贴上 Azure Speech 资源密钥",
+    "azure_remove_key": "移除 Azure Speech 密钥",
+    "azure_remove_key_confirm": (
+        "确定移除由 Windows 加密保存的 Azure Speech 密钥吗？"
+    ),
+    "azure_key_save_failed": "无法安全保存 Azure Speech 密钥：{error}",
+    "azure_speech_note": (
+        "预览功能；需自备 Azure Speech 资源密钥与相符区域。仅列出已确认的"
+        "女性声线；设定不完整或服务失败时会立即切换到 Windows 女性语音。"
+        "Azure 用量与费用以 Microsoft 官方规则为准。"
+    ),
+    "azure_fallback_missing_settings": (
+        "Azure Speech 尚未完成设定；已直接使用 Windows 女性语音，未发送云端请求。"
+    ),
     "no_female_voice": "未检测到已确认的女性 Windows 声音",
     "female_voice_note": (
         "只显示 Windows 明确标示为女性的已安装声音，并优先选择与界面"
@@ -386,6 +431,8 @@ def ui_text(language: str, key: str, chinese: str, **values: object) -> str:
         text = _ENGLISH.get(key, chinese)
     elif is_simplified_chinese(language):
         text = _SIMPLIFIED_CHINESE.get(key, chinese)
+    elif is_japanese(language):
+        text = JAPANESE_UI.get(key, chinese)
     else:
         text = chinese
     return text.format(**values) if values else text
@@ -396,9 +443,12 @@ def display_label(
     value: str,
     english: Mapping[str, str],
     simplified: Mapping[str, str] | None = None,
+    japanese: Mapping[str, str] | None = None,
 ) -> str:
     if is_english(language):
         return english.get(value, value)
     if is_simplified_chinese(language) and simplified is not None:
         return simplified.get(value, value)
+    if is_japanese(language) and japanese is not None:
+        return japanese.get(value, value)
     return value

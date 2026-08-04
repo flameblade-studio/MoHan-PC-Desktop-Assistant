@@ -57,6 +57,22 @@ class CloudSpeechEnginePort(Protocol):
     ) -> None: ...
 
 
+class AzureSpeechEnginePort(Protocol):
+    finished: SignalPort
+    failed: SignalPort
+    viseme_cue: SignalPort
+
+    def set_volume(self, volume_percent: int, muted: bool = False) -> None: ...
+
+    def speak(
+        self,
+        text: str,
+        api_key: str,
+        region: str,
+        voice: str,
+    ) -> None: ...
+
+
 class SpeechProviderRegistryPort(Protocol):
     def provider(self, provider_id: object) -> Any: ...
 
@@ -68,6 +84,7 @@ class SpeechProviderRegistryPort(Protocol):
         *,
         realtime_running: bool,
         cloud_available: bool = True,
+        configured_provider_ids: tuple[str, ...] | None = None,
     ) -> str: ...
 
     def fallback_provider_id(

@@ -80,6 +80,7 @@ from ai_client import (
     AIWorker,
     DEFAULT_TEXT_MODEL,
     ENGLISH_PERSONA,
+    JAPANESE_PERSONA,
     PERSONA,
     SIMPLIFIED_CHINESE_PERSONA,
     TEXT_MODELS,
@@ -114,7 +115,9 @@ from profile_transfer_ui import PortableProfilePanel
 from language_support import (
     english_voice_instructions,
     is_english,
+    is_japanese,
     is_simplified_chinese,
+    japanese_voice_instructions,
     localized_reminder_line,
     localized_voice_instructions,
     migrate_builtin_reminder_line,
@@ -132,6 +135,10 @@ from ui_localization import (
     display_label,
     ui_text,
 )
+from ui_localization_ja import (
+    JAPANESE_MODE_LABELS,
+    JAPANESE_WORK_TYPE_LABELS,
+)
 from updater_ui import UpdatePanel
 from version_info import APP_VERSION
 from windows_tools import visible_windows
@@ -141,7 +148,9 @@ from speech import (
     preferred_windows_voice,
     windows_voices,
 )
+from azure_speech import azure_female_voices
 from speech_providers import (
+    AZURE_SPEECH_PROVIDER,
     OPENAI_REALTIME_PROVIDER,
     OPENAI_SPEECH_PROVIDER,
     WINDOWS_LOCAL_PROVIDER,
@@ -474,11 +483,17 @@ def default_persona_for_language(language: str) -> str:
         return ENGLISH_PERSONA
     if is_simplified_chinese(language):
         return SIMPLIFIED_CHINESE_PERSONA
+    if is_japanese(language):
+        return JAPANESE_PERSONA
     return PERSONA
 
 
 def normalize_for_language(text: str, language: str) -> str:
-    if is_simplified_chinese(language):
+    if (
+        is_english(language)
+        or is_simplified_chinese(language)
+        or is_japanese(language)
+    ):
         return str(text)
     return to_taiwan_traditional(str(text))
 
@@ -502,6 +517,7 @@ VOICE_GENERATION_PROMPT = (
 VOICE_ENGINE_WINDOWS = WINDOWS_LOCAL_PROVIDER
 VOICE_ENGINE_OPENAI = OPENAI_SPEECH_PROVIDER
 VOICE_ENGINE_REALTIME = OPENAI_REALTIME_PROVIDER
+VOICE_ENGINE_AZURE = AZURE_SPEECH_PROVIDER
 
 REALTIME_VOICES = (
     "coral",
@@ -723,6 +739,11 @@ def persona_for_profile(db: StudioDB) -> str:
             persona += (
                 f"\n用户当前设置的组织／团队名称是“{organization}”。"
                 "处理工作事务时，请结合此组织背景提供协助。"
+            )
+        elif is_japanese(language):
+            persona += (
+                f"\nユーザーが設定した組織／チーム名は「{organization}」です。"
+                "仕事を支援する際は、この組織の文脈を踏まえてください。"
             )
         else:
             persona += (
@@ -1205,6 +1226,7 @@ class FirstRunWizard(QDialog):
                     value,
                     WORK_TYPE_LABELS,
                     SIMPLIFIED_WORK_TYPE_LABELS,
+                    JAPANESE_WORK_TYPE_LABELS,
                 ),
                 value,
             )
@@ -1218,6 +1240,7 @@ class FirstRunWizard(QDialog):
         self.ui_language.addItem("繁體中文（台灣）", "zh-TW")
         self.ui_language.addItem("简体中文（中国大陆）", "zh-CN")
         self.ui_language.addItem("English", "en")
+        self.ui_language.addItem("日本語", "ja-JP")
         current_language = profile_setting(db, "ui_language")
         language_index = self.ui_language.findData(current_language)
         self.ui_language.setCurrentIndex(max(0, language_index))
@@ -1262,14 +1285,21 @@ class FirstRunWizard(QDialog):
             if is_english(self.language):
                 if self.assistant_name.text().strip() == "墨寒":
                     self.assistant_name.setText("MoHan")
-                if self.user_title.text().strip() == "主上":
+                if self.user_title.text().strip() in {"主上", "主様"}:
                     self.user_title.setText("Commander")
                 if self.wake_word.text().strip() == "墨寒":
                     self.wake_word.setText("MoHan")
+            elif is_japanese(self.language):
+                if self.assistant_name.text().strip() == "MoHan":
+                    self.assistant_name.setText("墨寒")
+                if self.user_title.text().strip() in {"主上", "Commander"}:
+                    self.user_title.setText("主様")
+                if self.wake_word.text().strip() == "MoHan":
+                    self.wake_word.setText("墨寒")
             else:
                 if self.assistant_name.text().strip() == "MoHan":
                     self.assistant_name.setText("墨寒")
-                if self.user_title.text().strip() == "Commander":
+                if self.user_title.text().strip() in {"Commander", "主様"}:
                     self.user_title.setText("主上")
                 if self.wake_word.text().strip() == "MoHan":
                     self.wake_word.setText("墨寒")
@@ -1327,6 +1357,7 @@ class FirstRunWizard(QDialog):
                     value,
                     WORK_TYPE_LABELS,
                     SIMPLIFIED_WORK_TYPE_LABELS,
+                    JAPANESE_WORK_TYPE_LABELS,
                 ),
                 # Internal data remains Taiwan Traditional Chinese so saved
                 # profiles and command rules are language-independent.
@@ -1406,11 +1437,14 @@ class Dashboard(QDialog):
         listener: SpeechListenerPort,
         secret_store: SecretStorePort,
         parent=None,
+        *,
+        azure_secret_store: SecretStorePort | None = None,
     ):
         super().__init__(parent)
         self.db = db
         self.listener = listener
         self.secret_store = secret_store
+        self.azure_secret_store = azure_secret_store
         self.thread_pool = QThreadPool.globalInstance()
         self.ai_queue: deque[tuple[str, str]] = deque()
         self.ai_busy = False
@@ -1461,6 +1495,7 @@ class Dashboard(QDialog):
                     value,
                     MODE_LABELS,
                     SIMPLIFIED_MODE_LABELS,
+                    JAPANESE_MODE_LABELS,
                 ),
                 value,
             )
@@ -2248,6 +2283,10 @@ class Dashboard(QDialog):
                 VOICE_ENGINE_REALTIME,
                 self._t("realtime_engine", "Realtime 即時語音"),
             ),
+            (
+                VOICE_ENGINE_AZURE,
+                self._t("azure_engine", "Azure Speech（預覽）"),
+            ),
         ):
             self.voice_engine.addItem(label, key)
         saved_voice_engine = normalize_speech_provider_id(
@@ -2343,6 +2382,43 @@ class Dashboard(QDialog):
         self.realtime_voice.setCurrentText(
             str(self.db.setting("realtime_voice", "coral"))
         )
+        self.azure_voice = QComboBox()
+        azure_voices = azure_female_voices(self.ui_language)
+        self.azure_voice.addItems(azure_voices)
+        saved_azure_voice = str(
+            self.db.setting("azure_speech_voice", azure_voices[0])
+        )
+        self.azure_voice.setCurrentText(
+            saved_azure_voice
+            if saved_azure_voice in azure_voices
+            else azure_voices[0]
+        )
+        self.azure_region = QLineEdit(
+            str(self.db.setting("azure_speech_region", ""))
+        )
+        self.azure_region.setPlaceholderText(
+            self._t("azure_region_placeholder", "例如：eastasia")
+        )
+        self.azure_key_input = QLineEdit()
+        self.azure_key_input.setEchoMode(QLineEdit.Password)
+        azure_key_saved = bool(
+            self.azure_secret_store and self.azure_secret_store.load()
+        )
+        self.azure_key_input.setPlaceholderText(
+            self._t(
+                "azure_key_saved",
+                "已由 Windows 加密保存（留空不變）",
+            )
+            if azure_key_saved
+            else self._t(
+                "azure_key_missing",
+                "貼上 Azure Speech 資源金鑰",
+            )
+        )
+        self.azure_clear_key = QPushButton(
+            self._t("azure_remove_key", "移除 Azure Speech 金鑰")
+        )
+        self.azure_clear_key.clicked.connect(self.clear_azure_speech_key)
         # 舊版測試與設定相容別名；新介面已將一般朗讀和 Realtime 分開。
         self.cloud_voice = self.tts_voice
         self.realtime_model = QComboBox()
@@ -2569,6 +2645,16 @@ class Dashboard(QDialog):
             )
         )
         windows_note.setWordWrap(True)
+        azure_note = QLabel(
+            self._t(
+                "azure_speech_note",
+                "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
+                "只列官方標示為女性的繁中、簡中或英文聲線；失敗時"
+                "立即回到 Windows 本機女聲。F0 免費額度及計費以"
+                " Microsoft 當期規則為準。",
+            )
+        )
+        azure_note.setWordWrap(True)
         form.addRow(self._t("speech_recognition", "單次麥克風辨識"), self.speech_recognition)
         form.addRow(self._t("transcription_model", "轉錄模型"), self.transcription_model)
         form.addRow(self._t("transcription_language", "轉錄語言"), self.transcription_language)
@@ -2580,6 +2666,20 @@ class Dashboard(QDialog):
         form.addRow(self._t("windows_voice", "Windows 聲音"), self.windows_voice)
         form.addRow("", windows_note)
         form.addRow(self._t("tts_voice", "OpenAI 文字朗讀聲音"), self.tts_voice)
+        form.addRow(
+            self._t("azure_voice", "Azure Speech 女性聲線"),
+            self.azure_voice,
+        )
+        form.addRow(
+            self._t("azure_region", "Azure Speech 區域"),
+            self.azure_region,
+        )
+        form.addRow(
+            self._t("azure_key", "Azure Speech 金鑰"),
+            self.azure_key_input,
+        )
+        form.addRow("", self.azure_clear_key)
+        form.addRow("", azure_note)
         form.addRow(self._t("realtime_voice", "Realtime 對話聲音"), self.realtime_voice)
         form.addRow(self._t("realtime_model", "Realtime 模型"), self.realtime_model)
         form.addRow(
@@ -2784,6 +2884,7 @@ class Dashboard(QDialog):
                     value,
                     WORK_TYPE_LABELS,
                     SIMPLIFIED_WORK_TYPE_LABELS,
+                    JAPANESE_WORK_TYPE_LABELS,
                 ),
                 value,
             )
@@ -2799,6 +2900,7 @@ class Dashboard(QDialog):
         self.profile_ui_language.addItem("繁體中文（台灣）", "zh-TW")
         self.profile_ui_language.addItem("简体中文（中国大陆）", "zh-CN")
         self.profile_ui_language.addItem("English", "en")
+        self.profile_ui_language.addItem("日本語", "ja-JP")
         language_index = self.profile_ui_language.findData(
             profile_setting(self.db, "ui_language")
         )
@@ -3498,6 +3600,23 @@ class Dashboard(QDialog):
                 "speaking",
             )
             return
+        if is_japanese(self.ui_language):
+            lines = {
+                "工作": "仕事モードを開始しました。必要な時だけ主様にお声がけします。",
+                "陪伴": "お供モードを開始しました。今宵は勝ち負けを語らずともよいでしょう。",
+                "勿擾": "集中モードを開始しました。緊急時以外、妾は静かにしております。",
+                "會議": "会議モードを開始しました。静かに、必要なことだけを記録します。",
+                "離席": "離席モードを開始しました。お戻りの際に要点をお伝えします。",
+                "休眠": "休眠モードを開始しました。リマインダーと緊急通知は規則どおり動きます。",
+            }
+            self.speak_requested.emit(
+                lines.get(
+                    mode,
+                    f"{display_label(self.ui_language, mode, MODE_LABELS, SIMPLIFIED_MODE_LABELS, JAPANESE_MODE_LABELS)}モードを開始しました。",
+                ),
+                "speaking",
+            )
+            return
         lines = {
             "工作": "工作模式已啟。妾只在必要時打斷主上。",
             "陪伴": "陪伴模式已啟。今夜不談勝負，也無妨。",
@@ -3902,6 +4021,11 @@ class Dashboard(QDialog):
             )
         elif is_simplified_chinese(self.ui_language):
             message = "云端连接暂时中断。妾仍在，只是此刻无法借用外部知识。"
+        elif is_japanese(self.ui_language):
+            message = (
+                "クラウドとの接続が一時的に途切れました。妾はここにおりますが、"
+                "今は外部の知識を借りられません。"
+            )
         else:
             message = "雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。"
         self._reply(message, "worried")
@@ -4235,6 +4359,27 @@ class Dashboard(QDialog):
             "windows_voice", str(self.windows_voice.currentData() or "")
         )
 
+    def clear_azure_speech_key(self) -> None:
+        if self.azure_secret_store is None:
+            return
+        answer = QMessageBox.question(
+            self,
+            self._t("azure_remove_key", "移除 Azure Speech 金鑰"),
+            self._t(
+                "azure_remove_key_confirm",
+                "確定移除 Windows 加密保存的 Azure Speech 金鑰嗎？",
+            ),
+        )
+        if answer == QMessageBox.Yes:
+            self.azure_secret_store.clear()
+            self.azure_key_input.clear()
+            self.azure_key_input.setPlaceholderText(
+                self._t(
+                    "azure_key_missing",
+                    "貼上 Azure Speech 資源金鑰",
+                )
+            )
+
     def _update_voice_volume_label(self) -> None:
         self.voice_volume_label.setText(f"{self.voice_volume.value()}%")
 
@@ -4295,6 +4440,36 @@ class Dashboard(QDialog):
         self.db.set_setting("tts_voice", self.tts_voice.currentText())
         self.db.set_setting("cloud_voice", self.tts_voice.currentText())
         self.db.set_setting("realtime_voice", self.realtime_voice.currentText())
+        self.db.set_setting(
+            "azure_speech_voice",
+            self.azure_voice.currentText(),
+        )
+        self.db.set_setting(
+            "azure_speech_region",
+            self.azure_region.text().strip().lower(),
+        )
+        azure_key = self.azure_key_input.text().strip()
+        if azure_key and self.azure_secret_store is not None:
+            try:
+                self.azure_secret_store.save(azure_key)
+                self.azure_key_input.clear()
+                self.azure_key_input.setPlaceholderText(
+                    self._t(
+                        "azure_key_saved",
+                        "已由 Windows 加密保存（留空不變）",
+                    )
+                )
+            except OSError as exc:
+                if not silent:
+                    QMessageBox.warning(
+                        self,
+                        "Azure Speech",
+                        self._t(
+                            "azure_key_save_failed",
+                            "無法安全保存 Azure Speech 金鑰：{error}",
+                            error=exc,
+                        ),
+                    )
         self.db.set_setting("realtime_model", self.realtime_model.currentText())
         self.db.set_setting(
             "realtime_transcription_model",
@@ -4465,7 +4640,7 @@ class Dashboard(QDialog):
             current_transcription_language = (
                 self.transcription_language.text().strip()
             )
-            if current_transcription_language in {"zh", "en"}:
+            if current_transcription_language in {"zh", "en", "ja"}:
                 self.transcription_language.setText(
                     transcription_language_for_ui(new_ui_language)
                 )
@@ -4476,6 +4651,7 @@ class Dashboard(QDialog):
                 VOICE_GENERATION_PROMPT,
                 english_voice_instructions(),
                 simplified_chinese_voice_instructions(),
+                japanese_voice_instructions(),
             }:
                 self.voice_instructions.setText(
                     localized_voice_instructions(
@@ -4488,6 +4664,7 @@ class Dashboard(QDialog):
                 PERSONA.strip(),
                 ENGLISH_PERSONA.strip(),
                 SIMPLIFIED_CHINESE_PERSONA.strip(),
+                JAPANESE_PERSONA.strip(),
             }:
                 self.persona_prompt.setPlainText(
                     default_persona_for_language(new_ui_language)
@@ -4632,11 +4809,17 @@ class CompanionWindow(QMainWindow):
         ):
             FirstRunWizard(self.db).exec()
         self.secret_store = runtime_services.secret_store
+        self.azure_secret_store = runtime_services.azure_secret_store
         self.tts = runtime_services.local_tts
         self.cloud_tts = runtime_services.cloud_tts
+        self.azure_tts = runtime_services.azure_speech
         self.speech_providers = (
             runtime_services.speech_providers
-            or create_builtin_speech_registry(self.tts, self.cloud_tts)
+            or create_builtin_speech_registry(
+                self.tts,
+                self.cloud_tts,
+                self.azure_tts,
+            )
         )
         self.realtime = runtime_services.realtime
         self.listener = runtime_services.listener
@@ -4644,6 +4827,7 @@ class CompanionWindow(QMainWindow):
             self.db,
             self.listener,
             self.secret_store,
+            azure_secret_store=self.azure_secret_store,
         )
         self.dashboard.speak_requested.connect(self.speak)
         self.dashboard.voice_preview_requested.connect(self.preview_voice)
@@ -4679,6 +4863,10 @@ class CompanionWindow(QMainWindow):
         self.cloud_tts.finished.connect(self._speech_audio_finished)
         self.cloud_tts.failed.connect(self._cloud_voice_failed)
         self.cloud_tts.viseme_cue.connect(self._audio_viseme_cue)
+        if self.azure_tts is not None:
+            self.azure_tts.finished.connect(self._speech_audio_finished)
+            self.azure_tts.failed.connect(self._azure_voice_failed)
+            self.azure_tts.viseme_cue.connect(self._audio_viseme_cue)
         self.realtime.status_changed.connect(self._realtime_status)
         self.realtime.user_transcript.connect(self._realtime_user_text)
         self.realtime.assistant_transcript.connect(self._realtime_assistant_text)
@@ -7773,28 +7961,59 @@ class CompanionWindow(QMainWindow):
         self.show()
         self.raise_()
         if tts_enabled:
-            api_key = self.secret_store.load()
+            openai_api_key = self.secret_store.load()
+            azure_api_key = (
+                self.azure_secret_store.load()
+                if self.azure_secret_store is not None
+                else ""
+            )
+            azure_region = str(
+                self.db.setting("azure_speech_region", "")
+            ).strip()
+            configured_provider_ids = [VOICE_ENGINE_WINDOWS]
+            if openai_api_key:
+                configured_provider_ids.append(VOICE_ENGINE_OPENAI)
+            if azure_api_key and azure_region:
+                configured_provider_ids.append(VOICE_ENGINE_AZURE)
             selected_provider_id = normalize_speech_provider_id(
                 self.db.setting("voice_engine", VOICE_ENGINE_WINDOWS)
             )
             provider_id = self.speech_providers.output_provider_id(
                 selected_provider_id,
                 realtime_running=bool(self.realtime.running),
-                cloud_available=bool(api_key),
+                cloud_available=bool(openai_api_key),
+                configured_provider_ids=tuple(configured_provider_ids),
             )
+            if (
+                selected_provider_id == VOICE_ENGINE_AZURE
+                and provider_id != VOICE_ENGINE_AZURE
+            ):
+                self.dashboard.set_api_status(
+                    ui_text(
+                        str(self.db.setting("ui_language", "zh-TW")),
+                        "azure_fallback_missing_settings",
+                        "Azure Speech 尚未完成設定；已直接使用 Windows "
+                        "女性語音，未送出雲端請求。",
+                    )
+                )
             self.active_speech_engine = provider_id
+            if provider_id == VOICE_ENGINE_WINDOWS:
+                voice = str(self.db.setting("windows_voice", ""))
+                api_key = ""
+            elif provider_id == VOICE_ENGINE_AZURE:
+                voice = str(self.db.setting("azure_speech_voice", ""))
+                api_key = azure_api_key
+            else:
+                voice = str(
+                    self.db.setting(
+                        "tts_voice",
+                        self.db.setting("cloud_voice", "coral"),
+                    )
+                )
+                api_key = openai_api_key
             request = SpeechRequest(
                 text=text,
-                voice=(
-                    str(self.db.setting("windows_voice", ""))
-                    if provider_id == VOICE_ENGINE_WINDOWS
-                    else str(
-                        self.db.setting(
-                            "tts_voice",
-                            self.db.setting("cloud_voice", "coral"),
-                        )
-                    )
-                ),
+                voice=voice,
                 rate=int(self.db.setting("voice_rate", -1)),
                 api_key=api_key,
                 instructions=str(
@@ -7803,6 +8022,7 @@ class CompanionWindow(QMainWindow):
                         VOICE_GENERATION_PROMPT,
                     )
                 ),
+                options={"region": azure_region},
             )
             self.speech_providers.provider(provider_id).speak(request)
         else:
@@ -7827,6 +8047,13 @@ class CompanionWindow(QMainWindow):
                 "happy",
             )
             return
+        if is_japanese(language):
+            self.speak(
+                f"{profile_setting(self.db, 'user_title')}、妾はここにおります。"
+                "今日の予定も、ともに整えてまいりましょう。",
+                "happy",
+            )
+            return
         self.speak(
             f"{profile_setting(self.db, 'user_title')}，妾在。"
             "今日的安排，交給妾與你一同理清。",
@@ -7838,7 +8065,10 @@ class CompanionWindow(QMainWindow):
         volume_percent: int,
         muted: bool,
     ) -> None:
-        for engine in (self.tts, self.cloud_tts, self.realtime):
+        engines = [self.tts, self.cloud_tts, self.realtime]
+        if self.azure_tts is not None:
+            engines.append(self.azure_tts)
+        for engine in engines:
             engine.set_volume(volume_percent, muted)
 
     def _recent_realtime_context(
@@ -8149,12 +8379,31 @@ class CompanionWindow(QMainWindow):
         QMessageBox.warning(self.dashboard, "Realtime 語音", message)
 
     def _cloud_voice_failed(self, message: str) -> None:
+        self._online_voice_failed(
+            VOICE_ENGINE_OPENAI,
+            "OpenAI 語音",
+            message,
+        )
+
+    def _azure_voice_failed(self, message: str) -> None:
+        self._online_voice_failed(
+            VOICE_ENGINE_AZURE,
+            "Azure Speech",
+            message,
+        )
+
+    def _online_voice_failed(
+        self,
+        failed_provider_id: str,
+        provider_label: str,
+        message: str,
+    ) -> None:
         self.dashboard.set_api_status(
-            f"OpenAI 語音失敗，已切換 Windows 女聲：{message[:50]}"
+            f"{provider_label}失敗，已切換 Windows 女聲：{message[:50]}"
         )
         if (
             self.speech_playing
-            and self.active_speech_engine == VOICE_ENGINE_OPENAI
+            and self.active_speech_engine == failed_provider_id
             and not self.cloud_fallback_active
             and self.active_speech_text.strip()
         ):

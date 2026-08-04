@@ -53,9 +53,24 @@ ChangesEnvironment=no
 Name: "chinesetraditional"; MessagesFile: "{#TraditionalChineseMessages}"
 Name: "chinesesimplified"; MessagesFile: "{#SimplifiedChineseMessages}"
 Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
+
+[CustomMessages]
+chinesetraditional.CreateDesktopIcon=建立桌面捷徑
+chinesetraditional.Shortcuts=捷徑：
+chinesetraditional.LaunchMoHan=啟動墨寒
+chinesesimplified.CreateDesktopIcon=创建桌面快捷方式
+chinesesimplified.Shortcuts=快捷方式：
+chinesesimplified.LaunchMoHan=启动墨寒
+english.CreateDesktopIcon=Create a desktop shortcut
+english.Shortcuts=Shortcuts:
+english.LaunchMoHan=Launch MoHan
+japanese.CreateDesktopIcon=デスクトップにショートカットを作成
+japanese.Shortcuts=ショートカット：
+japanese.LaunchMoHan=墨寒を起動
 
 [Tasks]
-Name: "desktopicon"; Description: "建立桌面捷徑 / Create a desktop shortcut"; GroupDescription: "捷徑 / Shortcuts:"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:Shortcuts}"; Flags: unchecked
 
 [Files]
 Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -65,4 +80,4 @@ Name: "{autoprograms}\MoHan Desktop Assistant"; Filename: "{app}\{#ExecutableNam
 Name: "{autodesktop}\MoHan Desktop Assistant"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#ExecutableName}"; Description: "啟動墨寒 / Launch MoHan"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#ExecutableName}"; Description: "{cm:LaunchMoHan}"; Flags: nowait postinstall skipifsilent

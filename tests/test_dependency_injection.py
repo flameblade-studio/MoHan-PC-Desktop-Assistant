@@ -98,8 +98,10 @@ def run() -> None:
         db.set_setting("voice_volume_percent", 137)
         db.set_setting("voice_muted", False)
         secret_store = FakeSecretStore()
+        azure_secret_store = FakeSecretStore()
         local_tts = FakeSpeechEngine()
         cloud_tts = FakeSpeechEngine()
+        azure_tts = FakeSpeechEngine()
         realtime = FakeRealtime()
         listener = FakeListener()
         services = CompanionServices(
@@ -109,6 +111,8 @@ def run() -> None:
             cloud_tts=cloud_tts,
             realtime=realtime,
             listener=listener,
+            azure_speech=azure_tts,
+            azure_secret_store=azure_secret_store,
         )
         window = CompanionWindow(
             startup_speech=False,
@@ -118,10 +122,12 @@ def run() -> None:
         assert window.secret_store is secret_store
         assert window.tts is local_tts
         assert window.cloud_tts is cloud_tts
+        assert window.azure_tts is azure_tts
         assert window.realtime is realtime
         assert window.listener is listener
         assert local_tts.volume_calls[-1] == (137, False)
         assert cloud_tts.volume_calls[-1] == (137, False)
+        assert azure_tts.volume_calls[-1] == (137, False)
         assert realtime.volume_calls[-1] == (137, False)
         db.set_setting("tts_enabled", True)
         db.set_setting("voice_engine", "OpenAI 自然語音")
@@ -137,6 +143,38 @@ def run() -> None:
             -1,
         )
         assert window.cloud_fallback_active
+        window.speech_playing = False
+        window.cloud_fallback_active = False
+        db.set_setting("voice_engine", "Azure Speech（預覽）")
+        db.set_setting("azure_speech_region", "eastasia")
+        db.set_setting("azure_speech_voice", "zh-TW-HsiaoChenNeural")
+        window.speak("Azure 測試。", "speaking")
+        assert azure_tts.speak_calls[-1][0] == (
+            "Azure 測試。",
+            "test-key",
+            "eastasia",
+            "zh-TW-HsiaoChenNeural",
+        )
+        azure_tts.failed.emit("模擬 Azure 播放失敗")
+        app.processEvents()
+        assert local_tts.speak_calls[-1][0] == (
+            "Azure 測試。",
+            "OneCore::Microsoft Yating",
+            -1,
+        )
+        azure_call_count = len(azure_tts.speak_calls)
+        azure_secret_store.clear()
+        db.set_setting("azure_speech_region", "")
+        window.speech_playing = False
+        window.cloud_fallback_active = False
+        window.speak("缺少 Azure 設定。", "speaking")
+        assert len(azure_tts.speak_calls) == azure_call_count
+        assert local_tts.speak_calls[-1][0] == (
+            "缺少 Azure 設定。",
+            "OneCore::Microsoft Yating",
+            -1,
+        )
+        assert "未送出雲端請求" in window.dashboard.api_status.text()
         window.dashboard.mic_btn.click()
         assert listener.toggle_calls == 1
         window.close()
