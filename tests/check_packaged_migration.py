@@ -28,9 +28,13 @@ def prepare() -> None:
     db.set_setting("tts_voice", "marin")
     db.set_setting("cloud_voice", "marin")
     db.set_setting("realtime_voice", "shimmer")
-    db.set_setting("ai_model", "gpt-5.6-luna")
+    db.set_setting("ai_model", "gpt-5.4-mini")
     db.conn.execute(
         "DELETE FROM settings WHERE key='mini_default_v1213_restored'"
+    )
+    db.conn.execute(
+        "DELETE FROM settings WHERE key=?",
+        ("luna_default_v210rc1_migrated",),
     )
     db.conn.execute(
         "DELETE FROM settings "
@@ -82,7 +86,7 @@ def verify() -> None:
     assert voice_prompt is not None and VOICE_GENERATION_PROMPT in voice_prompt[0]
     assert tts_voice is not None and "coral" in tts_voice[0]
     assert realtime_voice is not None and "coral" in realtime_voice[0]
-    assert text_model is not None and "gpt-5.4-mini" in text_model[0]
+    assert text_model is not None and "gpt-5.6-luna" in text_model[0]
     assert traditional_chat is not None and traditional_chat[0] == (
         "會保持專注，開啟軟體和滑鼠。"
     )

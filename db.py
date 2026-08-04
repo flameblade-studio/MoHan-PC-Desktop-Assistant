@@ -378,6 +378,30 @@ class StudioDB:
                 "INSERT INTO settings(key,value) "
                 "VALUES('mini_default_v1213_restored','true')"
             )
+        luna_rc1_marker_name = "luna_default_v210rc1_migrated"
+        luna_rc1_marker = self.conn.execute(
+            "SELECT value FROM settings WHERE key=?", (luna_rc1_marker_name,)
+        ).fetchone()
+        if luna_rc1_marker is None:
+            current_model = self.conn.execute(
+                "SELECT value FROM settings WHERE key='ai_model'"
+            ).fetchone()
+            current_value = None
+            if current_model is not None:
+                try:
+                    current_value = json.loads(current_model["value"])
+                except json.JSONDecodeError:
+                    current_value = None
+            if current_value in (None, "gpt-5.4-mini"):
+                self.conn.execute(
+                    "INSERT INTO settings(key,value) VALUES('ai_model',?) "
+                    "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+                    (json.dumps("gpt-5.6-luna"),),
+                )
+            self.conn.execute(
+                "INSERT INTO settings(key,value) VALUES(?,?)",
+                (luna_rc1_marker_name, "true"),
+            )
         if self.existing_install:
             # Public-release profile migration is deliberately non-destructive.
             # Existing users keep the identity and workflow they already had;

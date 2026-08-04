@@ -18,9 +18,8 @@ from language_support import (
 from command_parser import is_start_work_command, is_stop_work_command
 
 
-DEFAULT_TEXT_MODEL = "gpt-5.4-mini"
+DEFAULT_TEXT_MODEL = "gpt-5.6-luna"
 TEXT_MODELS = (
-    "gpt-5.4-mini",
     "gpt-5.6-luna",
     "gpt-5.6-terra",
     "gpt-5.6-sol",

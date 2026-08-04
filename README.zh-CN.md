@@ -88,6 +88,10 @@ Azure Speech 为默认关闭的预览供应器，只列出 Microsoft 官方标�
 云端 AI、OpenAI 语音与 Realtime 功能需要用户自己的 OpenAI API 密钥、
 Project 权限与 API 额度。ChatGPT Plus 订阅不包含 API 额度。
 
+从 `v2.1.0-rc.1` 起，文字聊天默认使用较新的 `gpt-5.6-luna`，设置清单不再
+提供 `gpt-5.4-mini`。现有 mini 设置会自动迁移到 Luna，用户主动选择的其他
+模型不会被覆盖。
+
 没有 API 密钥时，本机数据管理、离线人格回复、工作提醒与 Windows 本机语音
 仍然可用，但不会具有完整云端 AI 能力。请勿将 API 密钥写入源代码、Issue、
 截图或 Git。

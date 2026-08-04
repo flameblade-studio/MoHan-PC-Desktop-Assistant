@@ -30,7 +30,7 @@ def main(data_path_text: str) -> int:
         row = connection.execute(
             "SELECT value FROM settings WHERE key='ai_model'"
         ).fetchone()
-        model = json.loads(row[0]) if row else "gpt-5.4-mini"
+        model = json.loads(row[0]) if row else "gpt-5.6-luna"
     finally:
         connection.close()
     print(f"MODEL={model}")

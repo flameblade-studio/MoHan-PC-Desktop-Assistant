@@ -7,7 +7,7 @@
 3. 在首次設定精靈確認助理名稱、稱呼、組織、工作類型與喚醒詞。
 4. 若要使用雲端 AI，前往設定頁輸入自己的 OpenAI API 金鑰。
 5. 預設模型：
-   - 文字：`gpt-5.4-mini`
+   - 文字：`gpt-5.6-luna`
    - Realtime：`gpt-realtime-2.1-mini`
    - 轉錄：`gpt-4o-mini-transcribe`
    - TTS：`gpt-4o-mini-tts`
@@ -25,7 +25,7 @@ Microsoft、GitHub 與 Home Assistant 屬於尚未完成真實環境端到端驗
 4. 新用户默认使用 Windows 本机语音；若要使用云端 AI，请在设置页输入
    自己的 OpenAI API 密钥。
 5. 默认模型：
-   - 文字：`gpt-5.4-mini`
+   - 文字：`gpt-5.6-luna`
    - Realtime：`gpt-realtime-2.1-mini`
    - 转录：`gpt-4o-mini-transcribe`
    - TTS：`gpt-4o-mini-tts`
@@ -43,7 +43,7 @@ Microsoft、GitHub 与 Home Assistant 仍属于尚未完成真实环境端到端
    in the first-run wizard.
 4. Enter a user-owned OpenAI API key in Settings for cloud AI.
 5. Default models:
-   - Text: `gpt-5.4-mini`
+   - Text: `gpt-5.6-luna`
    - Realtime: `gpt-realtime-2.1-mini`
    - Transcription: `gpt-4o-mini-transcribe`
    - TTS: `gpt-4o-mini-tts`
