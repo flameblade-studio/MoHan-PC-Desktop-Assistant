@@ -5387,21 +5387,24 @@ class CompanionWindow(QMainWindow):
             self._render_base_expression() in self.physics_expression_poses
             and self.expression_overlay.isHidden()
         )
-        eyes_open = (
-            expression_dynamic
-            and not getattr(self, "idle_blinking", False)
-            and not self.speech_blinking
-        )
         self.face_overlay.setVisible(
             expression_dynamic
             and self._physics_enabled("physics_face_parallax")
         )
-        self.eye_overlay.setVisible(
-            eyes_open and self._physics_enabled("physics_eye_tracking")
+        # Speech and blink frames already contain the photographed eyes.
+        # Keeping the gaze patch out of that path prevents duplicate eyelid
+        # seams and white specks while preserving idle eye tracking.
+        show_eye_layer = (
+            expression_dynamic
+            and self.state != "speaking"
+            and not getattr(self, "idle_blinking", False)
+            and not self.speech_blinking
+            and self._physics_enabled("physics_eye_tracking")
         )
+        self.eye_overlay.setVisible(show_eye_layer)
         if expression_dynamic:
             self.face_overlay.raise_()
-        if eyes_open:
+        if show_eye_layer:
             self.eye_overlay.raise_()
         self.bubble.raise_()
 
@@ -6945,6 +6948,9 @@ class CompanionWindow(QMainWindow):
             or self.mouth_closing
         ):
             return
+        # A live viseme owns the full photographed face. Remove any gaze
+        # overlay left by the preceding idle frame before drawing the mouth.
+        self.eye_overlay.hide()
         self.smoothed_audio_level = (
             self.smoothed_audio_level * 0.38 + float(level) * 0.62
         )

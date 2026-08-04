@@ -4,6 +4,10 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 
 ## Unreleased
 
+Release direction: these changes will accumulate into the next stable
+v2.0.14 release. The published RC3 artifacts remain unchanged; no RC3 rebuild
+or replacement release is planned.
+
 - Added Simplified Chinese to the interactive EXE installer alongside Taiwan
   Traditional Chinese and English. The MSI remains a Taiwan Traditional
   Chinese base package, with a documented en-US and zh-CN transform strategy
@@ -12,6 +16,10 @@ All notable public changes to MoHan Desktop Assistant are documented here.
   before loading the full expression, physics, attention, and lip-sync visual
   set. Deferred initialization is idempotent and covered by UI regression
   tests.
+- Prevented the idle eye-tracking overlay from remaining above photographed
+  speech frames. Speaking now hands the complete face to the AIUEO viseme
+  renderer, avoiding duplicate eyelid seams and small white eye artifacts,
+  while idle gaze tracking and blinking remain unchanged.
 
 ## v2.0.14 RC3 — 2026-08-02
 

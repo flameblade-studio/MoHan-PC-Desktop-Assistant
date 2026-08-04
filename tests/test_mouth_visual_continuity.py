@@ -68,6 +68,8 @@ def run() -> None:
             window.audio_driven_mouth = True
             window.speech_blinking = False
             window._set_expression("idle", fade=False)
+            window.eye_overlay.show()
+            assert not window.eye_overlay.isHidden()
 
             frames: list[QImage] = []
             eye_rect = QRect(160, 135, 95, 48)
@@ -98,6 +100,8 @@ def run() -> None:
                         0.62 if vowel != "CLOSED" else 0.0,
                         vowel,
                     )
+                    if index == 0:
+                        assert window.eye_overlay.isHidden()
                     for _ in range(3):
                         clock[0] += 0.016
                         window._render_audio_mouth_transition()
