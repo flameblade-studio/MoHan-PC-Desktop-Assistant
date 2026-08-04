@@ -6,6 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from speech_providers import (
+    AZURE_SPEECH_PROVIDER,
     OPENAI_REALTIME_PROVIDER,
     OPENAI_SPEECH_PROVIDER,
     WINDOWS_LOCAL_PROVIDER,
@@ -46,10 +47,12 @@ def run() -> None:
 
     local = FakeLocalEngine()
     cloud = FakeCloudEngine()
-    registry = create_builtin_speech_registry(local, cloud)
+    azure = FakeCloudEngine()
+    registry = create_builtin_speech_registry(local, cloud, azure)
     assert registry.provider_ids() == (
         WINDOWS_LOCAL_PROVIDER,
         OPENAI_SPEECH_PROVIDER,
+        AZURE_SPEECH_PROVIDER,
     )
     assert registry.output_provider_id(
         OPENAI_REALTIME_PROVIDER,
@@ -69,6 +72,19 @@ def run() -> None:
         realtime_running=False,
         cloud_available=False,
     ) == WINDOWS_LOCAL_PROVIDER
+    assert registry.output_provider_id(
+        AZURE_SPEECH_PROVIDER,
+        realtime_running=False,
+        configured_provider_ids=(WINDOWS_LOCAL_PROVIDER,),
+    ) == WINDOWS_LOCAL_PROVIDER
+    assert registry.output_provider_id(
+        AZURE_SPEECH_PROVIDER,
+        realtime_running=False,
+        configured_provider_ids=(
+            WINDOWS_LOCAL_PROVIDER,
+            AZURE_SPEECH_PROVIDER,
+        ),
+    ) == AZURE_SPEECH_PROVIDER
     assert registry.fallback_provider_id(OPENAI_SPEECH_PROVIDER) == (
         WINDOWS_LOCAL_PROVIDER
     )
@@ -83,9 +99,25 @@ def run() -> None:
     )
     registry.provider(WINDOWS_LOCAL_PROVIDER).speak(request)
     registry.provider(OPENAI_SPEECH_PROVIDER).speak(request)
+    registry.provider(AZURE_SPEECH_PROVIDER).speak(
+        SpeechRequest(
+            text=request.text,
+            voice="zh-TW-HsiaoChenNeural",
+            api_key=request.api_key,
+            options={"region": "eastasia"},
+        )
+    )
     assert local.calls == [("主上，妾在。", "female-test", -2)]
     assert cloud.calls == [
         ("主上，妾在。", "not-a-real-key", "female-test", "calm")
+    ]
+    assert azure.calls == [
+        (
+            "主上，妾在。",
+            "not-a-real-key",
+            "eastasia",
+            "zh-TW-HsiaoChenNeural",
+        )
     ]
 
     assert WindowsSpeechProvider(local).capabilities.offline

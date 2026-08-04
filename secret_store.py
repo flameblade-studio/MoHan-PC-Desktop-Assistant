@@ -18,8 +18,13 @@ def _blob(data: bytes) -> tuple[DATA_BLOB, object]:
 class SecretStore:
     """Store secrets encrypted for the current Windows user with DPAPI."""
 
-    def __init__(self, path: Path):
+    def __init__(
+        self,
+        path: Path,
+        description: str = "MoHan OpenAI API key",
+    ):
         self.path = path
+        self.description = description
 
     def save(self, value: str) -> None:
         if not value:
@@ -29,10 +34,9 @@ class SecretStore:
             raise OSError("安全金鑰保存僅支援 Windows")
         source, source_buffer = _blob(value.encode("utf-8"))
         output = DATA_BLOB()
-        description = "MoHan OpenAI API key"
         ok = ctypes.windll.crypt32.CryptProtectData(
             ctypes.byref(source),
-            description,
+            self.description,
             None,
             None,
             None,

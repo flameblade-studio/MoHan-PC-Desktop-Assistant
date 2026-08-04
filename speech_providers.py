@@ -1,14 +1,19 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Protocol
+from dataclasses import dataclass, field
+from typing import Mapping, Protocol
 
-from contracts import CloudSpeechEnginePort, LocalSpeechEnginePort
+from contracts import (
+    AzureSpeechEnginePort,
+    CloudSpeechEnginePort,
+    LocalSpeechEnginePort,
+)
 
 
 WINDOWS_LOCAL_PROVIDER = "windows-local"
 OPENAI_SPEECH_PROVIDER = "openai-speech"
 OPENAI_REALTIME_PROVIDER = "openai-realtime"
+AZURE_SPEECH_PROVIDER = "azure-speech"
 
 
 _LEGACY_PROVIDER_IDS = {
@@ -24,6 +29,10 @@ _LEGACY_PROVIDER_IDS = {
     "Realtime 即時語音": OPENAI_REALTIME_PROVIDER,
     "Realtime 即时语音": OPENAI_REALTIME_PROVIDER,
     "Realtime voice": OPENAI_REALTIME_PROVIDER,
+    AZURE_SPEECH_PROVIDER: AZURE_SPEECH_PROVIDER,
+    "Azure Speech（預覽）": AZURE_SPEECH_PROVIDER,
+    "Azure Speech（预览）": AZURE_SPEECH_PROVIDER,
+    "Azure Speech (Preview)": AZURE_SPEECH_PROVIDER,
 }
 
 
@@ -51,6 +60,7 @@ class SpeechRequest:
     rate: int = -1
     api_key: str = ""
     instructions: str = ""
+    options: Mapping[str, str] = field(default_factory=dict)
 
 
 class SpeechProviderPort(Protocol):
@@ -98,6 +108,28 @@ class OpenAISpeechProvider:
         )
 
 
+class AzureSpeechProvider:
+    capabilities = SpeechProviderCapabilities(
+        provider_id=AZURE_SPEECH_PROVIDER,
+        offline=False,
+        requires_api_key=True,
+        verified_female_catalog=True,
+        supports_streaming=False,
+        supported_languages=("zh-TW", "zh-CN", "en-US"),
+    )
+
+    def __init__(self, engine: AzureSpeechEnginePort):
+        self.engine = engine
+
+    def speak(self, request: SpeechRequest) -> None:
+        self.engine.speak(
+            request.text,
+            request.api_key,
+            str(request.options.get("region", "")),
+            request.voice,
+        )
+
+
 class SpeechProviderRegistry:
     """Explicit registry for replaceable speech engines.
 
@@ -135,6 +167,7 @@ class SpeechProviderRegistry:
         *,
         realtime_running: bool,
         cloud_available: bool = True,
+        configured_provider_ids: tuple[str, ...] | None = None,
     ) -> str:
         """Choose a provider for queued text without changing user settings.
 
@@ -152,7 +185,13 @@ class SpeechProviderRegistry:
             )
         if selected == OPENAI_SPEECH_PROVIDER and not cloud_available:
             return WINDOWS_LOCAL_PROVIDER
-        if selected in self._providers:
+        configured = set(
+            configured_provider_ids
+            if configured_provider_ids is not None
+            else self._providers
+        )
+        configured.add(WINDOWS_LOCAL_PROVIDER)
+        if selected in self._providers and selected in configured:
             return selected
         return WINDOWS_LOCAL_PROVIDER
 
@@ -169,10 +208,12 @@ class SpeechProviderRegistry:
 def create_builtin_speech_registry(
     local_engine: LocalSpeechEnginePort,
     cloud_engine: CloudSpeechEnginePort,
+    azure_engine: AzureSpeechEnginePort | None = None,
 ) -> SpeechProviderRegistry:
-    return SpeechProviderRegistry(
-        (
-            WindowsSpeechProvider(local_engine),
-            OpenAISpeechProvider(cloud_engine),
-        )
-    )
+    providers: list[SpeechProviderPort] = [
+        WindowsSpeechProvider(local_engine),
+        OpenAISpeechProvider(cloud_engine),
+    ]
+    if azure_engine is not None:
+        providers.append(AzureSpeechProvider(azure_engine))
+    return SpeechProviderRegistry(tuple(providers))

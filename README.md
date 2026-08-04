@@ -232,6 +232,7 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我則始終負�
 - AIUEO 母音嘴型、子音嘴型、音訊驅動開合與語音結束強制閉嘴。
 - 文字聊天、一般麥克風輸入、OpenAI Realtime 自然語音與 Windows 語音備援。
 - 可插拔語音供應器地基；Realtime 或雲端不可用時優先回到 Windows 本機女聲。
+- Azure Speech 女性聲線預覽；使用者自備金鑰與區域，金鑰由 Windows 分開加密，失敗時立即回到 Windows 本機女聲。
 - 對話保存、可編輯長期記憶、待辦、創作靈感、工作計時、提醒與上架進度。
 - 工作、陪伴、勿擾、會議、離開及睡眠模式。
 - 具風險分級、確認、雙重確認、允許清單、稽核與緊急停止的電腦工具中心。
@@ -247,6 +248,12 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我則始終負�
 新使用者預設使用 Windows 本機語音，不需要 OpenAI API 金鑰即可先體驗基本
 功能。語音清單只顯示 Windows 明確標示為女性的聲音，zh-TW 預設仍優先使用
 Microsoft Yating；其他語言則優先使用相符語系的已安裝女性聲音。
+
+Azure Speech 為可選的預覽供應器，預設不啟用。它只列出 Microsoft 官方標示為
+女性的繁中、簡中與英文聲線，且需要使用者自己的 Azure Speech 資源金鑰與
+相符區域。設定不足時不會連線；服務失敗時會立即回到 Windows 女性本機語音。
+真實 Azure 帳號完成端到端驗證前，不把此功能宣稱為穩定整合。詳見
+[可插拔語音供應器說明](docs/PLUGGABLE-SPEECH-PROVIDERS.md)。
 
 ## 整合驗證狀態
 
@@ -512,6 +519,8 @@ Key capabilities:
   fallback.
 - A pluggable speech-provider foundation with verified-female Windows local
   speech as the first fallback when Realtime or cloud speech is unavailable.
+- An opt-in Azure Speech female-voice preview with a user-supplied key and
+  region, Windows-encrypted secret storage, and immediate Windows fallback.
 - Persistent conversations, editable long-term memory, tasks, ideas, work
   sessions, reminders, and customizable progress trackers.
 - Work, companion, do-not-disturb, meeting, away, and sleep modes.
@@ -531,6 +540,12 @@ speech and can try the basic experience without an OpenAI API key. Only
 installed Windows voices explicitly identified as female are listed; zh-TW
 continues to prefer Microsoft Yating, while other languages prefer a matching
 installed female voice.
+
+Azure Speech is an optional Preview provider and is disabled by default. It
+requires the user's own Speech resource key and matching region, lists only
+Microsoft-identified female voices for the three supported UI languages, and
+makes no request when configuration is incomplete. It remains a preview until
+real-account end-to-end playback verification is complete.
 
 ## Integration verification status
 

@@ -7,7 +7,9 @@ from pathlib import Path
 from PySide6.QtCore import QObject
 
 from backup_manager import BackupManager
+from azure_speech import AzureSpeechTTS
 from contracts import (
+    AzureSpeechEnginePort,
     CloudSpeechEnginePort,
     LocalSpeechEnginePort,
     RealtimeVoicePort,
@@ -34,6 +36,8 @@ class CompanionServices:
     listener: SpeechListenerPort
     backup_manager: BackupManager | None = None
     speech_providers: SpeechProviderRegistryPort | None = None
+    azure_speech: AzureSpeechEnginePort | None = None
+    azure_secret_store: SecretStorePort | None = None
 
 
 def create_default_services(
@@ -52,6 +56,10 @@ def create_default_services(
     except (OSError, RuntimeError, sqlite3.Error):
         backup_manager = None
     secret_store = SecretStore(data_path / "openai-key.dpapi")
+    azure_secret_store = SecretStore(
+        data_path / "azure-speech-key.dpapi",
+        "MoHan Azure Speech key",
+    )
     listener = SpeechListener(
         listener_script,
         api_key_provider=secret_store.load,
@@ -80,6 +88,7 @@ def create_default_services(
     )
     local_tts = WindowsTTS(parent)
     cloud_tts = OpenAITTS(parent)
+    azure_tts = AzureSpeechTTS(parent)
     return CompanionServices(
         db=db,
         secret_store=secret_store,
@@ -91,5 +100,8 @@ def create_default_services(
         speech_providers=create_builtin_speech_registry(
             local_tts,
             cloud_tts,
+            azure_tts,
         ),
+        azure_speech=azure_tts,
+        azure_secret_store=azure_secret_store,
     )

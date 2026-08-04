@@ -166,6 +166,65 @@ def apply_wav_volume(
         return audio
 
 
+def emit_wave_viseme_cues(
+    audio: bytes,
+    emit_cue: Callable[[float, str], None],
+    playback_start: threading.Event | None = None,
+) -> None:
+    """Emit the shared audio-driven mouth timeline for any WAV provider."""
+
+    try:
+        with wave.open(io.BytesIO(audio), "rb") as source:
+            rate = source.getframerate()
+            channels = source.getnchannels()
+            width = source.getsampwidth()
+            frames_per_chunk = max(1, rate // VISEME_CUES_PER_SECOND)
+            if playback_start is not None:
+                playback_start.wait(timeout=2.0)
+            started_at = time.perf_counter()
+            chunk_index = 0
+            while chunk := source.readframes(frames_per_chunk):
+                if width != 2:
+                    continue
+                if channels == 2:
+                    chunk = stereo_to_mono_pcm16(chunk)
+                vowel_level, vowel = infer_vowel_pcm16(chunk, rate)
+                deadline = started_at + chunk_index * frames_per_chunk / rate
+                remaining = deadline - time.perf_counter()
+                if remaining > 0:
+                    time.sleep(remaining)
+                emit_cue(vowel_level, vowel)
+                chunk_index += 1
+    except (OSError, EOFError, wave.Error):
+        return
+
+
+def play_wave_with_visemes(
+    audio: bytes,
+    volume_percent: int,
+    muted: bool,
+    emit_cue: Callable[[float, str], None],
+    audio_path: Path | None = None,
+) -> None:
+    """Play provider WAV audio through the single lip-sync implementation."""
+
+    playback_start = threading.Event()
+    cue_thread = threading.Thread(
+        target=emit_wave_viseme_cues,
+        args=(audio, emit_cue, playback_start),
+        daemon=True,
+    )
+    cue_thread.start()
+    playback_start.set()
+    playback_audio = apply_wav_volume(audio, volume_percent, muted)
+    if audio_path is not None and volume_percent == 100 and not muted:
+        winsound.PlaySound(str(audio_path), winsound.SND_FILENAME)
+    else:
+        winsound.PlaySound(playback_audio, winsound.SND_MEMORY)
+    cue_thread.join(timeout=0.35)
+    emit_cue(0.0, "CLOSED")
+
+
 @dataclass(frozen=True)
 class WindowsVoiceInfo:
     """One installed Windows speech voice with trustworthy metadata."""
@@ -473,71 +532,24 @@ class WindowsTTS(QObject):
         audio: bytes,
         audio_path: Path | None = None,
     ) -> None:
-        playback_start = threading.Event()
-        cue_thread = threading.Thread(
-            target=self._emit_wave_cues,
-            args=(audio, playback_start),
-            daemon=True,
-        )
-        cue_thread.start()
-        # Release animation immediately before the blocking audio call. This
-        # gives Qt enough time to paint the first mouth frame without allowing
-        # the cue stream to drift ahead during speech synthesis.
-        playback_start.set()
-        playback_audio = apply_wav_volume(
+        play_wave_with_visemes(
             audio,
             self.volume_percent,
             self.muted,
+            self.viseme_cue.emit,
+            audio_path,
         )
-        if (
-            audio_path is not None
-            and self.volume_percent == 100
-            and not self.muted
-        ):
-            winsound.PlaySound(str(audio_path), winsound.SND_FILENAME)
-        else:
-            winsound.PlaySound(playback_audio, winsound.SND_MEMORY)
-        cue_thread.join(timeout=0.35)
-        self.viseme_cue.emit(0.0, "CLOSED")
 
     def _emit_wave_cues(
         self,
         audio: bytes,
         playback_start: threading.Event | None = None,
     ) -> None:
-        try:
-            with wave.open(io.BytesIO(audio), "rb") as source:
-                rate = source.getframerate()
-                channels = source.getnchannels()
-                width = source.getsampwidth()
-                frames_per_chunk = max(
-                    1,
-                    rate // VISEME_CUES_PER_SECOND,
-                )
-                if playback_start is not None:
-                    playback_start.wait(timeout=2.0)
-                started_at = time.perf_counter()
-                chunk_index = 0
-                while True:
-                    chunk = source.readframes(frames_per_chunk)
-                    if not chunk:
-                        break
-                    if width != 2:
-                        continue
-                    if channels == 2:
-                        chunk = stereo_to_mono_pcm16(chunk)
-                    vowel_level, vowel = infer_vowel_pcm16(chunk, rate)
-                    deadline = (
-                        started_at
-                        + chunk_index * frames_per_chunk / rate
-                    )
-                    remaining = deadline - time.perf_counter()
-                    if remaining > 0:
-                        time.sleep(remaining)
-                    self.viseme_cue.emit(vowel_level, vowel)
-                    chunk_index += 1
-        except (OSError, EOFError, wave.Error):
-            return
+        emit_wave_viseme_cues(
+            audio,
+            self.viseme_cue.emit,
+            playback_start,
+        )
 
 
 class OpenAITTS(QObject):
@@ -591,21 +603,12 @@ class OpenAITTS(QObject):
         try:
             with urllib.request.urlopen(request, timeout=60) as response:
                 audio = response.read()
-            cue_thread = threading.Thread(
-                target=self._emit_wave_cues,
-                args=(audio, playback_start := threading.Event()),
-                daemon=True,
-            )
-            cue_thread.start()
-            playback_start.set()
-            playback_audio = apply_wav_volume(
+            play_wave_with_visemes(
                 audio,
                 self.volume_percent,
                 self.muted,
+                self.viseme_cue.emit,
             )
-            winsound.PlaySound(playback_audio, winsound.SND_MEMORY)
-            cue_thread.join(timeout=0.35)
-            self.viseme_cue.emit(0.0, "CLOSED")
             self.finished.emit()
         except (
             urllib.error.URLError,
@@ -622,39 +625,11 @@ class OpenAITTS(QObject):
         audio: bytes,
         playback_start: threading.Event | None = None,
     ) -> None:
-        try:
-            with wave.open(io.BytesIO(audio), "rb") as source:
-                rate = source.getframerate()
-                channels = source.getnchannels()
-                width = source.getsampwidth()
-                frames_per_chunk = max(
-                    1,
-                    rate // VISEME_CUES_PER_SECOND,
-                )
-                if playback_start is not None:
-                    playback_start.wait(timeout=2.0)
-                started_at = time.perf_counter()
-                chunk_index = 0
-                while True:
-                    chunk = source.readframes(frames_per_chunk)
-                    if not chunk:
-                        break
-                    if width != 2:
-                        continue
-                    if channels == 2:
-                        chunk = stereo_to_mono_pcm16(chunk)
-                    vowel_level, vowel = infer_vowel_pcm16(chunk, rate)
-                    deadline = (
-                        started_at
-                        + chunk_index * frames_per_chunk / rate
-                    )
-                    remaining = deadline - time.perf_counter()
-                    if remaining > 0:
-                        time.sleep(remaining)
-                    self.viseme_cue.emit(vowel_level, vowel)
-                    chunk_index += 1
-        except (OSError, EOFError, wave.Error):
-            return
+        emit_wave_viseme_cues(
+            audio,
+            self.viseme_cue.emit,
+            playback_start,
+        )
 
 
 class SpeechListener(QObject):
