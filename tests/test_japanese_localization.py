@@ -118,6 +118,9 @@ def run() -> None:
         wizard._save()
         assert db.setting("ui_language") == "ja-JP"
         assert db.setting("transcription_language") == "ja"
+        assert "日本語で正確に文字起こししてください" in str(
+            db.setting("transcription_prompt")
+        )
         assert db.setting("voice_engine") == VOICE_ENGINE_WINDOWS
         assert db.setting("persona_prompt") == JAPANESE_PERSONA
         assert db.setting("voice_instructions") == japanese_voice_instructions()

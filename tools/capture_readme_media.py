@@ -441,7 +441,7 @@ def write_demo_video(
         return duration
 
 
-def capture_media(output_dir: Path, ffmpeg: str) -> float:
+def capture_media(output_dir: Path, ffmpeg: str | None) -> float | None:
     output_dir.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="mohan-readme-profile-") as temp_dir:
         os.environ["MOHAN_DATA_DIR"] = temp_dir
@@ -468,11 +468,9 @@ def capture_media(output_dir: Path, ffmpeg: str) -> float:
         window.idle_pose = "front"
         window._set_expression("attentive_front", fade=False)
         window.dashboard.mode_combo.setCurrentText("工作")
-        window.dashboard.refresh_chat()
-        window.dashboard.refresh_todos()
-        window.dashboard.refresh_ideas()
-        window.dashboard.refresh_memories()
-        window.dashboard.refresh_work_time()
+        # Dashboard construction already loads the seeded profile. Rebuilding
+        # the card lists again in the same event turn leaves deleteLater()
+        # widgets visible behind their replacements in screenshots.
         app.processEvents()
         stop_timers(window)
 
@@ -511,11 +509,13 @@ def capture_media(output_dir: Path, ffmpeg: str) -> float:
             "memory": memory,
             "security": security,
         }
-        duration = write_demo_video(
-            media,
-            output_dir / "mohan-demo.mp4",
-            ffmpeg,
-        )
+        duration = None
+        if ffmpeg:
+            duration = write_demo_video(
+                media,
+                output_dir / "mohan-demo.mp4",
+                ffmpeg,
+            )
         flagship.close_services()
         window.close()
         app.processEvents()
@@ -530,9 +530,18 @@ def main() -> int:
         default=ROOT / "docs" / "media",
     )
     parser.add_argument("--ffmpeg", default="")
+    parser.add_argument(
+        "--screenshots-only",
+        action="store_true",
+        help="Capture current UI images without rebuilding the demo video.",
+    )
     args = parser.parse_args()
-    duration = capture_media(args.output, ffmpeg_binary(args.ffmpeg))
-    print(f"README_MEDIA_OK duration={duration:.2f}s output={args.output}")
+    ffmpeg = None if args.screenshots_only else ffmpeg_binary(args.ffmpeg)
+    duration = capture_media(args.output, ffmpeg)
+    if duration is None:
+        print(f"README_SCREENSHOTS_OK output={args.output}")
+    else:
+        print(f"README_MEDIA_OK duration={duration:.2f}s output={args.output}")
     return 0
 
 

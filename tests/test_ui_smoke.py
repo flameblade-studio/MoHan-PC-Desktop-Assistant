@@ -81,6 +81,28 @@ def run() -> None:
             label.alignment() & Qt.AlignVCenter
             for label in wizard.form_labels.values()
         )
+        wizard.show()
+        app.processEvents()
+        onboarding_editors = {
+            "assistant_name": wizard.assistant_name,
+            "user_title": wizard.user_title,
+            "organization_name": wizard.organization_name,
+            "window_title": wizard.window_title,
+            "work_type": wizard.work_type,
+            "ui_language": wizard.ui_language,
+            "wake_word": wizard.wake_word,
+        }
+        onboarding_center_deltas = {
+            key: (
+                wizard.form_labels[key].geometry().center().y()
+                - editor.geometry().center().y()
+            )
+            for key, editor in onboarding_editors.items()
+        }
+        assert all(
+            abs(delta) <= 1
+            for delta in onboarding_center_deltas.values()
+        ), onboarding_center_deltas
         assert wizard.hero_brand.text() == "墨寒  MoHan"
         assert "千年女劍魂" in wizard.hero_tagline.text()
         assert wizard.organization_name.text() == ""

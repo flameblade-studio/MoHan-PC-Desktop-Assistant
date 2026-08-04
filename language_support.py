@@ -6,6 +6,33 @@ ENGLISH_UI_LANGUAGES = {"en", "en-US", "en-GB"}
 SIMPLIFIED_CHINESE_UI_LANGUAGES = {"zh-CN", "zh-SG", "zh-Hans"}
 JAPANESE_UI_LANGUAGES = {"ja", "ja-JP"}
 
+LEGACY_TRANSCRIPTION_PROMPT = (
+    "請使用台灣繁體中文轉錄。常用詞：墨寒、寒、主上、妾、"
+    "炎劍文化工作室、赤焰劍、斬空劍主、Pubu、"
+    "Google Play Books、DistroKid、LINE 貼圖。"
+    "請保留原意，不要改寫。"
+)
+
+TRANSCRIPTION_PROMPT_BASES = {
+    "zh-TW": (
+        "請使用台灣繁體中文準確轉錄。請保留專有名詞、數字與其他語言的原文，"
+        "忠實保留說話者原意，不要改寫或翻譯。"
+    ),
+    "zh-CN": (
+        "请使用中国简体中文准确转录。请保留专有名词、数字与其他语言的原文，"
+        "忠实保留说话者原意，不要改写或翻译。"
+    ),
+    "en": (
+        "Please transcribe accurately in English. Preserve proper nouns, "
+        "numbers, and words spoken in other languages. Keep the speaker's "
+        "original meaning; do not rewrite or translate."
+    ),
+    "ja-JP": (
+        "日本語で正確に文字起こししてください。固有名詞、数字、他言語の語句を"
+        "原文のまま保持し、話者の意図を変えず、書き換えたり翻訳したりしないでください。"
+    ),
+}
+
 ENGLISH_REMINDER_LINES = {
     "work": (
         "Commander, today's campaign begins. Start when ready; I will keep "
@@ -66,6 +93,76 @@ def transcription_language_for_ui(language: str) -> str:
     if is_japanese(language):
         return "ja"
     return "zh"
+
+
+def canonical_ui_language(language: str) -> str:
+    if is_english(language):
+        return "en"
+    if is_simplified_chinese(language):
+        return "zh-CN"
+    if is_japanese(language):
+        return "ja-JP"
+    return "zh-TW"
+
+
+def transcription_terms(
+    assistant_name: str = "",
+    user_title: str = "",
+    organization_name: str = "",
+    wake_word: str = "",
+) -> tuple[str, ...]:
+    """Return short, user-owned ASR hints without product-author vocabulary."""
+    terms: list[str] = []
+    for value in (
+        assistant_name,
+        wake_word,
+        user_title,
+        organization_name,
+    ):
+        normalized = str(value or "").strip()
+        if normalized and normalized not in terms:
+            terms.append(normalized)
+    return tuple(terms)
+
+
+def localized_transcription_prompt(
+    language: str,
+    *,
+    assistant_name: str = "",
+    user_title: str = "",
+    organization_name: str = "",
+    wake_word: str = "",
+) -> str:
+    locale = canonical_ui_language(language)
+    prompt = TRANSCRIPTION_PROMPT_BASES[locale]
+    terms = transcription_terms(
+        assistant_name,
+        user_title,
+        organization_name,
+        wake_word,
+    )
+    if not terms:
+        return prompt
+    joined = "、".join(terms)
+    if locale == "zh-CN":
+        return f"{prompt} 常用词：{joined}。"
+    if locale == "en":
+        return f"{prompt} Common terms: {', '.join(terms)}."
+    if locale == "ja-JP":
+        return f"{prompt} よく使う語句：{joined}。"
+    return f"{prompt} 常用詞：{joined}。"
+
+
+def is_builtin_transcription_prompt(
+    current: str,
+    language: str,
+    **profile: str,
+) -> bool:
+    normalized = str(current or "").strip()
+    return normalized in {
+        LEGACY_TRANSCRIPTION_PROMPT,
+        localized_transcription_prompt(language, **profile),
+    }
 
 
 def localized_reminder_line(language: str, kind: str, chinese: str) -> str:

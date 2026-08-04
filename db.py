@@ -11,6 +11,10 @@ from memory_index import (
     cosine_similarity,
     hashed_text_vector,
 )
+from language_support import (
+    LEGACY_TRANSCRIPTION_PROMPT,
+    localized_transcription_prompt,
+)
 from text_normalizer import to_taiwan_traditional
 
 
@@ -309,7 +313,8 @@ class StudioDB:
                 "VALUES('traditional_chat_v1215_migrated','true')"
             )
         migration_marker = self.conn.execute(
-            "SELECT value FROM settings WHERE key='luna_default_v12_migrated'"
+            "SELECT value FROM settings WHERE key=?",
+            ("luna_default_v12_migrated",),
         ).fetchone()
         if migration_marker is None:
             current_model = self.conn.execute(
@@ -416,17 +421,51 @@ class StudioDB:
                 "wake_word": "墨寒",
                 "onboarding_complete": True,
                 "transcription_language": "zh",
-                "transcription_prompt": (
-                    "請使用台灣繁體中文轉錄。常用詞：墨寒、寒、"
-                    "主上、妾、炎劍文化工作室、赤焰劍、"
-                    "斬空劍主、Pubu、Google Play Books、DistroKid、"
-                    "LINE 貼圖。請保留原意，不要改寫。"
-                ),
+                "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT,
             }
             for key, value in legacy_profile.items():
                 self.conn.execute(
                     "INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)",
                     (key, json.dumps(value, ensure_ascii=False)),
+                )
+            prompt_row = self.conn.execute(
+                "SELECT value FROM settings WHERE key='transcription_prompt'"
+            ).fetchone()
+            current_prompt = None
+            if prompt_row is not None:
+                try:
+                    current_prompt = json.loads(prompt_row["value"])
+                except json.JSONDecodeError:
+                    current_prompt = None
+            if current_prompt == LEGACY_TRANSCRIPTION_PROMPT:
+                profile = {}
+                for key in (
+                    "ui_language",
+                    "assistant_name",
+                    "user_title",
+                    "organization_name",
+                    "wake_word",
+                ):
+                    row = self.conn.execute(
+                        "SELECT value FROM settings WHERE key=?", (key,)
+                    ).fetchone()
+                    try:
+                        profile[key] = json.loads(row["value"]) if row else ""
+                    except json.JSONDecodeError:
+                        profile[key] = ""
+                migrated_prompt = localized_transcription_prompt(
+                    str(profile["ui_language"] or "zh-TW"),
+                    assistant_name=str(profile["assistant_name"] or ""),
+                    user_title=str(profile["user_title"] or ""),
+                    organization_name=str(
+                        profile["organization_name"] or ""
+                    ),
+                    wake_word=str(profile["wake_word"] or ""),
+                )
+                self.conn.execute(
+                    "UPDATE settings SET value=? "
+                    "WHERE key='transcription_prompt'",
+                    (json.dumps(migrated_prompt, ensure_ascii=False),),
                 )
         self.conn.commit()
 

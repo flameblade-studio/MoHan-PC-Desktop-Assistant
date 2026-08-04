@@ -18,6 +18,7 @@ from contracts import (
     SpeechListenerPort,
 )
 from db import StudioDB
+from language_support import localized_transcription_prompt
 from realtime_voice import RealtimeVoiceClient
 from secret_store import SecretStore
 from speech import OpenAITTS, SpeechListener, WindowsTTS
@@ -78,7 +79,15 @@ def create_default_services(
         transcription_prompt_provider=lambda: str(
             db.setting(
                 "transcription_prompt",
-                SpeechListener.TRANSCRIPTION_PROMPT,
+                localized_transcription_prompt(
+                    str(db.setting("ui_language", "zh-TW")),
+                    assistant_name=str(db.setting("assistant_name", "")),
+                    user_title=str(db.setting("user_title", "")),
+                    organization_name=str(
+                        db.setting("organization_name", "")
+                    ),
+                    wake_word=str(db.setting("wake_word", "")),
+                ),
             )
         ),
         windows_fallback_provider=lambda: bool(
