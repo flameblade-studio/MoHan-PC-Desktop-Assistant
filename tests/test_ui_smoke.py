@@ -649,7 +649,8 @@ def run() -> None:
         window.dashboard.windows_transcription_fallback.setChecked(True)
         window.dashboard.save_voice_settings(silent=True)
         assert "尚無" in window.dashboard.transcription_diagnostic.text()
-        assert window.dashboard.ai_model.currentText() == "gpt-5.4-mini"
+        assert window.dashboard.ai_model.currentText() == "gpt-5.6-luna"
+        assert window.dashboard.ai_model.findText("gpt-5.4-mini") == -1
         assert window.dashboard.ai_model.findText("gpt-5.6-luna") >= 0
         assert window.dashboard.ai_model.findText("gpt-5.6-terra") >= 0
         assert window.dashboard.ai_model.findText("gpt-5.6-sol") >= 0

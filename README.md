@@ -300,10 +300,14 @@ SHA-256 後再執行。
 
 | 用途 | 預設模型 |
 |---|---|
-| 文字對話 | `gpt-5.4-mini` |
+| 文字對話 | `gpt-5.6-luna` |
 | Realtime 即時語音 | `gpt-realtime-2.1-mini` |
 | 語音轉文字 | `gpt-4o-mini-transcribe` |
 | OpenAI 文字轉語音 | `gpt-4o-mini-tts` |
+
+`v2.1.0-rc.1` 起，文字對話預設改為較新的 `gpt-5.6-luna`，設定清單不再
+提供 `gpt-5.4-mini`；既有 mini 設定會自動遷移到 Luna，使用者主動選擇的
+其他模型不會被覆蓋。
 
 模型名稱可在設定中調整；實際可用性取決於 OpenAI 帳號、專案、地區及當時
 API 供應狀態。若沒有 API 金鑰，墨寒仍可使用本機資料管理、離線回覆與
@@ -591,10 +595,14 @@ Current defaults:
 
 | Purpose | Default model |
 |---|---|
-| Text conversation | `gpt-5.4-mini` |
+| Text conversation | `gpt-5.6-luna` |
 | Realtime voice | `gpt-realtime-2.1-mini` |
 | Speech-to-text | `gpt-4o-mini-transcribe` |
 | OpenAI text-to-speech | `gpt-4o-mini-tts` |
+
+Starting with `v2.1.0-rc.1`, text chat defaults to the newer
+`gpt-5.6-luna`, and `gpt-5.4-mini` is removed from the Settings list. Existing
+mini selections migrate to Luna without replacing other user-selected models.
 
 Model availability depends on the user's OpenAI account, project, region, and
 current API availability. Models are editable in Settings. Without an API key,

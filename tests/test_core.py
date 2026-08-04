@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from ai_client import AIWorker, DEFAULT_TEXT_MODEL, offline_reply
+from ai_client import AIWorker, DEFAULT_TEXT_MODEL, TEXT_MODELS, offline_reply
 from db import StudioDB, format_duration
 from app import (
     VOICE_GENERATION_PROMPT,
@@ -37,18 +37,16 @@ from text_normalizer import to_taiwan_traditional
 def run() -> None:
     with TemporaryDirectory() as tmp:
         db = StudioDB(Path(tmp) / "test.db")
-        assert db.setting("ai_model") == "gpt-5.4-mini"
-        db.set_setting("ai_model", "gpt-5.6-luna")
+        assert db.setting("ai_model") == "gpt-5.6-luna"
+        db.set_setting("ai_model", "gpt-5.4-mini")
         db.conn.execute(
-            "DELETE FROM settings WHERE key='mini_default_v118_migrated'"
-        )
-        db.conn.execute(
-            "DELETE FROM settings WHERE key='mini_default_v1213_restored'"
+            "DELETE FROM settings WHERE key=?",
+            ("luna_default_v210rc1_migrated",),
         )
         db.conn.commit()
         db.close()
         db = StudioDB(Path(tmp) / "test.db")
-        assert db.setting("ai_model") == "gpt-5.4-mini"
+        assert db.setting("ai_model") == "gpt-5.6-luna"
         custom_db = StudioDB(Path(tmp) / "custom-model.db")
         custom_db.set_setting("ai_model", "gpt-5.6-terra")
         custom_db.conn.execute(
@@ -56,6 +54,10 @@ def run() -> None:
         )
         custom_db.conn.execute(
             "DELETE FROM settings WHERE key='mini_default_v1213_restored'"
+        )
+        custom_db.conn.execute(
+            "DELETE FROM settings WHERE key=?",
+            ("luna_default_v210rc1_migrated",),
         )
         custom_db.conn.commit()
         custom_db.close()
@@ -95,8 +97,10 @@ def run() -> None:
             worker.run()
         sent_request = mocked_urlopen.call_args.args[0]
         sent_payload = json.loads(sent_request.data.decode("utf-8"))
-        assert DEFAULT_TEXT_MODEL == "gpt-5.4-mini"
-        assert sent_payload["model"] == "gpt-5.4-mini"
+        assert DEFAULT_TEXT_MODEL == "gpt-5.6-luna"
+        assert TEXT_MODELS[0] == "gpt-5.6-luna"
+        assert "gpt-5.4-mini" not in TEXT_MODELS
+        assert sent_payload["model"] == "gpt-5.6-luna"
         assert "[[MOHAN_EMOTION:情緒:強度]]" in (
             sent_payload["instructions"]
         )
