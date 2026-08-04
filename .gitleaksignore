@@ -1,0 +1,3 @@
+# Historical false positive: an eight-character local database setting value
+# from the initial public commit. It matches no supported credential format.
+27ba4b69ae137ceff08fc6c5f455161c5e2c5a05:db.py:generic-api-key:297
