@@ -83,6 +83,10 @@ def main() -> int:
         assert (
             f'src="docs/media/{filename}" width="220" height="220"' in readme
         ), f"support portrait lacks fixed aligned dimensions: {filename}"
+    assert readme.count('width="33%" align="center" valign="top"') == 3, (
+        "support columns must be top-aligned so shorter captions cannot push "
+        "the complete image-and-text column downward on GitHub"
+    )
 
     github_requirements = (
         "actions/workflows/windows-ci.yml/badge.svg",

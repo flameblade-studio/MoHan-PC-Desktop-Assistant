@@ -169,7 +169,7 @@ def main() -> None:
         'width="33%" align="center"><img src="assets/expressions/'
     )
     support_cards = readme.count(
-        'width="33%" align="center"><img src="docs/media/support-'
+        'width="33%" align="center" valign="top"><img src="docs/media/support-'
     )
     assert expression_cards >= 6
     assert support_cards == 3
