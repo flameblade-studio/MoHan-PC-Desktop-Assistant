@@ -52,21 +52,25 @@ $Locales = @(
     @{
         Name = "zh-TW"
         Language = "1028"
+        Codepage = "950"
         Base = $true
     },
     @{
         Name = "en-US"
         Language = "1033"
+        Codepage = "1252"
         Base = $false
     },
     @{
         Name = "zh-CN"
         Language = "2052"
+        Codepage = "936"
         Base = $false
     },
     @{
         Name = "ja-JP"
         Language = "1041"
+        Codepage = "932"
         Base = $false
     }
 )
@@ -81,6 +85,7 @@ foreach ($Locale in $Locales) {
         "-dIconPath=$IconPath" `
         "-dProductCode=$ProductCode" `
         "-dProductLanguage=$($Locale.Language)" `
+        "-dProductCodepage=$($Locale.Codepage)" `
         -out "$LocaleWork\" `
         (Join-Path $ProjectRoot "installer\Product.wxs")
     if ($LASTEXITCODE -ne 0) {

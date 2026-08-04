@@ -70,17 +70,18 @@ def main() -> None:
         assert lcid in installer_build
         assert locale in localization_policy
         assert locale in installer_test
-    expected_messages = {
-        "zh-TW": "已安裝較新版本的 MoHan Desktop Assistant。",
-        "zh-CN": "已安装较新版本的 MoHan Desktop Assistant。",
-        "en-US": "A newer version of MoHan Desktop Assistant is already installed.",
-        "ja-JP": "新しいバージョンの MoHan Desktop Assistant が既にインストールされています。",
+    expected_localization = {
+        "zh-TW": ("950", "已安裝較新版本的 MoHan Desktop Assistant。"),
+        "zh-CN": ("936", "已安装较新版本的 MoHan Desktop Assistant。"),
+        "en-US": ("1252", "A newer version of MoHan Desktop Assistant is already installed."),
+        "ja-JP": ("932", "新しいバージョンの MoHan Desktop Assistant が既にインストールされています。"),
     }
     namespace = {"wix": "http://schemas.microsoft.com/wix/2006/localization"}
-    for locale, message in expected_messages.items():
+    for locale, (codepage, message) in expected_localization.items():
         source = ROOT / "installer" / "localization" / f"{locale}.wxl"
         root = ET.parse(source).getroot()
         assert root.attrib["Culture"] == locale
+        assert root.attrib["Codepage"] == codepage
         text = root.find("wix:String", namespace)
         assert text is not None
         assert text.attrib["Id"] == "DowngradeErrorMessage"

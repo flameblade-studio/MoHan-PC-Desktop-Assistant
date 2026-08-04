@@ -5,10 +5,14 @@
   <Product Id="$(var.ProductCode)"
            Name="MoHan Desktop Assistant"
            Language="$(var.ProductLanguage)"
+           Codepage="$(var.ProductCodepage)"
            Version="$(var.ProductVersion)"
            Manufacturer="CHOU MING HUA"
            UpgradeCode="E1F22A47-1B50-4B6C-AF43-543FE68370C7">
-    <Package InstallerVersion="500" Compressed="yes" InstallScope="perUser" />
+    <Package InstallerVersion="500"
+             Compressed="yes"
+             InstallScope="perUser"
+             SummaryCodepage="$(var.ProductCodepage)" />
     <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeErrorMessage)" />
     <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
     <Property Id="ARPPRODUCTICON" Value="MohanIcon" />
