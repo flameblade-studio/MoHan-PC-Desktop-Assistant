@@ -158,23 +158,32 @@ def compose_hero(
     output: Path,
 ) -> None:
     canvas = QImage(1600, 900, QImage.Format_ARGB32)
-    canvas.fill(QColor("#08141f"))
+    canvas.fill(QColor("#eef3f8"))
     painter = QPainter(canvas)
     painter.setRenderHint(QPainter.Antialiasing)
     gradient = QLinearGradient(0, 0, 1600, 900)
-    gradient.setColorAt(0.0, QColor("#08131e"))
-    gradient.setColorAt(0.55, QColor("#102a3b"))
-    gradient.setColorAt(1.0, QColor("#17334a"))
+    gradient.setColorAt(0.0, QColor("#edf4f8"))
+    gradient.setColorAt(0.58, QColor("#f8f9fa"))
+    gradient.setColorAt(1.0, QColor("#f8efed"))
     painter.fillRect(canvas.rect(), gradient)
-    draw_cover_text(
-        painter,
-        "墨寒桌面語音互動虛擬助理",
+    painter.setPen(QColor("#17344f"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 28, QFont.Bold))
+    painter.drawText(QRect(55, 40, 1000, 54), "墨寒桌面語音互動虛擬助理")
+    painter.setPen(QColor("#48647a"))
+    painter.setFont(QFont("Segoe UI", 15))
+    painter.drawText(
+        QRect(57, 98, 1040, 34),
         "Animated Windows companion · Voice · Memory · Productivity · Safety",
-        1600,
     )
 
     panel = QRect(55, 175, 1050, 660)
-    draw_rounded_panel(painter, panel, QColor(11, 29, 43, 236))
+    draw_rounded_panel(
+        painter,
+        panel,
+        QColor("#ffffff"),
+        QColor("#b6c8d6"),
+        24,
+    )
     dash = scaled_inside(dashboard, QSize(1006, 614))
     painter.drawImage(
         QPoint(panel.x() + (panel.width() - dash.width()) // 2,
@@ -182,11 +191,39 @@ def compose_hero(
         dash,
     )
 
-    char = scaled_inside(character, QSize(560, 720))
-    painter.drawImage(QPoint(1030, 175), char)
-    painter.setPen(QColor("#efb4dc"))
-    painter.setFont(QFont("Microsoft JhengHei UI", 21, QFont.Bold))
-    painter.drawText(QRect(1120, 785, 410, 44), Qt.AlignCenter, "北宋千年女劍魂・首席策士")
+    character_panel = QRect(1130, 175, 415, 660)
+    character_gradient = QLinearGradient(
+        character_panel.topLeft(), character_panel.bottomRight()
+    )
+    character_gradient.setColorAt(0.0, QColor("#fafdff"))
+    character_gradient.setColorAt(0.58, QColor("#edf4f8"))
+    character_gradient.setColorAt(1.0, QColor("#f8ecef"))
+    painter.setPen(QPen(QColor("#b6c8d6"), 2))
+    painter.setBrush(character_gradient)
+    painter.drawRoundedRect(character_panel, 28, 28)
+    char = scaled_inside(character, QSize(405, 575))
+    painter.drawImage(
+        QPoint(
+            character_panel.x()
+            + (character_panel.width() - char.width()) // 2,
+            character_panel.y() + 28,
+        ),
+        char,
+    )
+    painter.setPen(QColor("#6f4667"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 20, QFont.Bold))
+    painter.drawText(
+        QRect(1145, 678, 385, 44),
+        Qt.AlignCenter,
+        "北宋千年女劍魂・首席策士",
+    )
+    painter.setPen(QColor("#62788a"))
+    painter.setFont(QFont("Segoe UI", 14))
+    painter.drawText(
+        QRect(1145, 728, 385, 32),
+        Qt.AlignCenter,
+        "Voice · Memory · Workflow · Safety",
+    )
     painter.end()
     output.parent.mkdir(parents=True, exist_ok=True)
     if not canvas.save(str(output)):
