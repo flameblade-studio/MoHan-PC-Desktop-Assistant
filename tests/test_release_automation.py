@@ -22,6 +22,27 @@ from tools.sync_wordpress_download_page import (
 
 
 def main() -> None:
+    current_version = "2.1.0-rc.1"
+    version_info = (ROOT / "version_info.py").read_text(encoding="utf-8")
+    assert f'FALLBACK_VERSION = "{current_version}"' in version_info
+
+    current_docs = {
+        name: (ROOT / name).read_text(encoding="utf-8")
+        for name in (
+            "README.md",
+            "README.zh-CN.md",
+            "README.ja.md",
+            "QUICKSTART.md",
+            "PUBLISHING.md",
+            "docs/PYTHON-3.14-MIGRATION.md",
+        )
+    }
+    for name, content in current_docs.items():
+        assert current_version in content, f"current release missing from {name}"
+    for name in ("README.md", "README.zh-CN.md", "QUICKSTART.md"):
+        assert "2.0.14-rc.3.exe" not in current_docs[name]
+    assert "RC4" not in current_docs["docs/PYTHON-3.14-MIGRATION.md"]
+
     build_script = (ROOT / "build.ps1").read_text(encoding="utf-8")
     assert "Python 3.14.x" in build_script
     assert "python = $PythonVersion" in build_script

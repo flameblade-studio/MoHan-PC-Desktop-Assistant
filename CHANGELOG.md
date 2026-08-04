@@ -2,7 +2,7 @@
 
 All notable public changes to MoHan Desktop Assistant are documented here.
 
-## Unreleased — v2.1.0-rc.1 candidate
+## v2.1.0 RC1 — 2026-08-04
 
 ### 繁體中文
 
@@ -70,6 +70,11 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 - 初回設定と本体画面を明るく高コントラストな大きめ文字へ刷新し、古風と
   技術を融合した背景、墨寒のインストール画像、見やすいチェック欄、統一した
   墨寒半身アイコンを追加しました。
+
+Verification: 55/55 automated test programs passed before publication. The
+tagged Windows release workflow also passed source auditing, packaged self-test,
+silent EXE/MSI install and uninstall verification, checksum and SBOM generation,
+artifact attestation, and security checks.
 
 ## v2.0.14 RC3 — 2026-08-02
 

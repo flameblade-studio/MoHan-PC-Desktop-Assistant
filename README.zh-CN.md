@@ -4,7 +4,7 @@
 [路线图](ROADMAP.md) · [参与贡献](CONTRIBUTING.md) ·
 [安全说明](SECURITY.md)
 
-> 当前公开预览版本：v2.0.14 RC3<br>
+> 当前公开预览版本：v2.1.0 RC1（`v2.1.0-rc.1`）<br>
 > Windows 10/11 · Python 3.14 · PySide6 · MIT License
 
 墨寒是一款重视安全、隐私与角色连续感的 Windows 桌面虚拟助手。她以来自
@@ -42,7 +42,7 @@
 
 ## 简体中文支持范围
 
-RC3 提供简体中文最小可用范围，包括：
+`v2.1.0-rc.1` 提供简体中文最小可用范围，包括：
 
 - 首次启动设置向导。
 - 对话、语音、电脑权限、基本设置页签与主要按钮。
@@ -76,7 +76,7 @@ Azure Speech 为默认关闭的预览供应器，只列出 Microsoft 官方标�
 1. 前往 [GitHub Releases](../../releases)。
 2. 下载最新的 `Windows-x64.zip` 与对应的 `SHA256.txt`。
 3. 核对 SHA-256，并完整解压 ZIP。
-4. 运行 `MoHan-Desktop-Assistant-2.0.14-rc.3.exe`。
+4. 运行 `MoHan-Desktop-Assistant-2.1.0-rc.1.exe`。
 5. 在首次设置向导选择“简体中文（中国大陆）”。
 6. 请保持 EXE、`_internal` 与 `assets` 在同一程序文件夹内。
 

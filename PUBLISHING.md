@@ -33,7 +33,16 @@ taiwan
 open-source
 ```
 
-## Initial release
+## Current public pre-release
+
+- Tag: `v2.1.0-rc.1`
+- Title: `MoHan Desktop Assistant v2.1.0 RC1`
+- Published: 2026-08-04
+- Includes the Windows x64 portable ZIP, per-user EXE and MSI installers,
+  English/Simplified Chinese/Japanese MSI transforms, SHA-256 catalog,
+  CycloneDX SBOM, update manifest, and artifact attestations.
+
+## Historical initial release
 
 - Tag: `v2.0.14-rc.1`
 - Title: `MoHan Desktop Assistant v2.0.14 RC — First Public Preview`
