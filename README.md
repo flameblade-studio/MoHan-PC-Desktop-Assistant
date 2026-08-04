@@ -20,7 +20,7 @@
 
 <p align="center">
   <strong>Author / 軟體作者：CHOU MING HUA</strong><br>
-  Current public preview / 目前公開預覽版：v2.0.14 RC3<br>
+  Current public preview / 目前公開預覽版：v2.1.0 RC1 (v2.1.0-rc.1)<br>
   Windows 10/11 · Python 3.14 · PySide6 · MIT License
 </p>
 
@@ -259,7 +259,7 @@ Azure Speech 為可選的預覽供應器，預設不啟用。它只列出 Micros
 ## 整合驗證狀態
 
 > **公開預覽版注意事項：** Microsoft 套件、GitHub 與 Home Assistant 的
-> 程式架構、權限邊界及內部測試已建置，但截至 v2.0.14 RC3，尚未使用真實
+> 程式架構、權限邊界及內部測試已建置，但截至 v2.1.0 RC1，尚未使用真實
 > Microsoft 帳號／租用戶、GitHub 帳號／儲存庫及 Home Assistant
 > 主機／實體設備完成端到端驗證。這三項目前屬於**實驗性預覽功能**，
 > 不應視為已保證可在所有真實環境完整運作。
@@ -394,11 +394,12 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.0.14-rc.3"
+.\build.ps1 -Version "2.1.0-rc.1"
 ```
 
-v2.0.14 RC3 在封裝前通過完整自動測試，以及 25,000 次表情、姿勢、語音、
-注視與物理混合壓力測試。測試不能取代尚未完成的第三方真實環境驗證。
+v2.1.0 RC1 在發布前通過 55 項自動測試程式，以及 Windows 發布工作流程的
+原始碼稽核、封裝自我測試、安裝／移除驗證與安全檢查。測試不能取代尚未完成
+的第三方真實環境驗證。
 
 GitHub 的 `v*` 標籤會自動建立 Windows x64 可攜 ZIP、EXE 安裝程式與 MSI
 安裝套件，並同時產生完整 SHA256 清單、CycloneDX SBOM、更新清單、Artifact
@@ -557,7 +558,7 @@ real-account end-to-end playback verification is complete.
 
 > **Public preview notice:** Microsoft, GitHub, and Home Assistant connector
 > architecture, permission boundaries, and internal tests are implemented.
-> As of v2.0.14 RC3, they have **not** completed end-to-end validation with a
+> As of v2.1.0 RC1, they have **not** completed end-to-end validation with a
 > real Microsoft tenant, GitHub account/repository, or Home Assistant
 > server/physical devices. Treat these as **experimental preview features**,
 > not guaranteed production-ready integrations.
@@ -690,12 +691,13 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.0.14-rc.3"
+.\build.ps1 -Version "2.1.0-rc.1"
 ```
 
-Before packaging, v2.0.14 RC3 passed the complete automated suite and a
-25,000-step mixed expression, pose, speech, gaze, and physics stress test.
-Automated tests do not replace uncompleted third-party live verification.
+Before publication, v2.1.0 RC1 passed all 55 automated test programs plus the
+Windows release workflow's source audit, packaged self-test, install/uninstall
+verification, and security checks. Automated tests do not replace uncompleted
+third-party live verification.
 
 Every `v*` tag automatically builds a Windows x64 portable ZIP, EXE installer,
 and MSI package, together with a complete SHA256 catalog, CycloneDX SBOM,
