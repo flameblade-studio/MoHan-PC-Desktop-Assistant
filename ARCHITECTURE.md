@@ -32,6 +32,10 @@ Circular local imports are prohibited and enforced by
   only in a future HTTP boundary; importing FastAPI into the PySide desktop
   core is prohibited.
 - OpenAI/Windows speech timing has one source of truth: `lip_sync.py`.
+- Replaceable text-to-speech engines register through `speech_providers.py`.
+  Providers may synthesize audio but must not own lip sync, expression state,
+  UI, permissions, or fallback policy. Windows verified-female local speech is
+  the authoritative offline fallback.
 - Language policy, response-language instructions, and built-in reminder
   migration have one source of truth in `language_support.py`. English and
   Simplified Chinese display strings and stable internal-to-display mappings

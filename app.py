@@ -141,6 +141,14 @@ from speech import (
     preferred_windows_voice,
     windows_voices,
 )
+from speech_providers import (
+    OPENAI_REALTIME_PROVIDER,
+    OPENAI_SPEECH_PROVIDER,
+    WINDOWS_LOCAL_PROVIDER,
+    SpeechRequest,
+    create_builtin_speech_registry,
+    normalize_speech_provider_id,
+)
 
 
 DEFAULT_PROFILE = {
@@ -491,9 +499,9 @@ VOICE_GENERATION_PROMPT = (
     "避免中國普通話腔、兒童聲、過度甜膩、誇張撒嬌或舞台式朗誦。"
 )
 
-VOICE_ENGINE_WINDOWS = "Windows 本機語音"
-VOICE_ENGINE_OPENAI = "OpenAI 自然語音"
-VOICE_ENGINE_REALTIME = "Realtime 即時語音"
+VOICE_ENGINE_WINDOWS = WINDOWS_LOCAL_PROVIDER
+VOICE_ENGINE_OPENAI = OPENAI_SPEECH_PROVIDER
+VOICE_ENGINE_REALTIME = OPENAI_REALTIME_PROVIDER
 
 REALTIME_VOICES = (
     "coral",
@@ -2228,13 +2236,26 @@ class Dashboard(QDialog):
         )
         self.voice_engine = QComboBox()
         for key, label in (
-            (VOICE_ENGINE_WINDOWS, self._t("windows_engine", VOICE_ENGINE_WINDOWS)),
-            (VOICE_ENGINE_OPENAI, self._t("openai_engine", VOICE_ENGINE_OPENAI)),
-            (VOICE_ENGINE_REALTIME, self._t("realtime_engine", VOICE_ENGINE_REALTIME)),
+            (
+                VOICE_ENGINE_WINDOWS,
+                self._t("windows_engine", "Windows 本機語音"),
+            ),
+            (
+                VOICE_ENGINE_OPENAI,
+                self._t("openai_engine", "OpenAI 自然語音"),
+            ),
+            (
+                VOICE_ENGINE_REALTIME,
+                self._t("realtime_engine", "Realtime 即時語音"),
+            ),
         ):
             self.voice_engine.addItem(label, key)
+        saved_voice_engine = normalize_speech_provider_id(
+            self.db.setting("voice_engine", VOICE_ENGINE_WINDOWS)
+        )
+        self.db.set_setting("voice_engine", saved_voice_engine)
         engine_index = self.voice_engine.findData(
-            str(self.db.setting("voice_engine", VOICE_ENGINE_WINDOWS))
+            saved_voice_engine
         )
         self.voice_engine.setCurrentIndex(max(0, engine_index))
         self.windows_voice = QComboBox()
@@ -4613,6 +4634,10 @@ class CompanionWindow(QMainWindow):
         self.secret_store = runtime_services.secret_store
         self.tts = runtime_services.local_tts
         self.cloud_tts = runtime_services.cloud_tts
+        self.speech_providers = (
+            runtime_services.speech_providers
+            or create_builtin_speech_registry(self.tts, self.cloud_tts)
+        )
         self.realtime = runtime_services.realtime
         self.listener = runtime_services.listener
         self.dashboard = Dashboard(
@@ -7748,34 +7773,38 @@ class CompanionWindow(QMainWindow):
         self.show()
         self.raise_()
         if tts_enabled:
-            engine = str(
+            api_key = self.secret_store.load()
+            selected_provider_id = normalize_speech_provider_id(
                 self.db.setting("voice_engine", VOICE_ENGINE_WINDOWS)
             )
-            if engine == VOICE_ENGINE_WINDOWS:
-                self.active_speech_engine = "windows"
-                self.tts.speak(
-                    text,
-                    str(self.db.setting("windows_voice", "")),
-                    int(self.db.setting("voice_rate", -1)),
-                )
-            else:
-                self.active_speech_engine = "openai"
-                self.cloud_tts.speak(
-                    text,
-                    self.secret_store.load(),
-                    str(
+            provider_id = self.speech_providers.output_provider_id(
+                selected_provider_id,
+                realtime_running=bool(self.realtime.running),
+                cloud_available=bool(api_key),
+            )
+            self.active_speech_engine = provider_id
+            request = SpeechRequest(
+                text=text,
+                voice=(
+                    str(self.db.setting("windows_voice", ""))
+                    if provider_id == VOICE_ENGINE_WINDOWS
+                    else str(
                         self.db.setting(
                             "tts_voice",
                             self.db.setting("cloud_voice", "coral"),
                         )
-                    ),
-                    str(
-                        self.db.setting(
-                            "voice_instructions",
-                            VOICE_GENERATION_PROMPT,
-                        )
-                    ),
-                )
+                    )
+                ),
+                rate=int(self.db.setting("voice_rate", -1)),
+                api_key=api_key,
+                instructions=str(
+                    self.db.setting(
+                        "voice_instructions",
+                        VOICE_GENERATION_PROMPT,
+                    )
+                ),
+            )
+            self.speech_providers.provider(provider_id).speak(request)
         else:
             QTimer.singleShot(
                 max(1200, min(5000, len(text) * 80)),
@@ -8125,16 +8154,26 @@ class CompanionWindow(QMainWindow):
         )
         if (
             self.speech_playing
-            and self.active_speech_engine == "openai"
+            and self.active_speech_engine == VOICE_ENGINE_OPENAI
             and not self.cloud_fallback_active
             and self.active_speech_text.strip()
         ):
+            fallback_provider_id = (
+                self.speech_providers.fallback_provider_id(
+                    self.active_speech_engine
+                )
+            )
+            if fallback_provider_id is None:
+                self._speech_audio_finished()
+                return
             self.cloud_fallback_active = True
-            self.active_speech_engine = "windows-fallback"
-            self.tts.speak(
-                self.active_speech_text,
-                str(self.db.setting("windows_voice", "")),
-                int(self.db.setting("voice_rate", -1)),
+            self.active_speech_engine = fallback_provider_id
+            self.speech_providers.provider(fallback_provider_id).speak(
+                SpeechRequest(
+                    text=self.active_speech_text,
+                    voice=str(self.db.setting("windows_voice", "")),
+                    rate=int(self.db.setting("voice_rate", -1)),
+                )
             )
             return
         self._speech_audio_finished()

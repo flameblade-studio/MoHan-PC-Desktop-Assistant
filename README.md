@@ -231,6 +231,7 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我則始終負�
 - 具表情仲裁器的情緒系統，避免待機時出現不合情境的表情。
 - AIUEO 母音嘴型、子音嘴型、音訊驅動開合與語音結束強制閉嘴。
 - 文字聊天、一般麥克風輸入、OpenAI Realtime 自然語音與 Windows 語音備援。
+- 可插拔語音供應器地基；Realtime 或雲端不可用時優先回到 Windows 本機女聲。
 - 對話保存、可編輯長期記憶、待辦、創作靈感、工作計時、提醒與上架進度。
 - 工作、陪伴、勿擾、會議、離開及睡眠模式。
 - 具風險分級、確認、雙重確認、允許清單、稽核與緊急停止的電腦工具中心。
@@ -509,6 +510,8 @@ Key capabilities:
 - Context-controlled expression arbitration and AIUEO viseme lip synchronization.
 - Text chat, microphone input, OpenAI Realtime voice, cloud TTS, and Windows TTS
   fallback.
+- A pluggable speech-provider foundation with verified-female Windows local
+  speech as the first fallback when Realtime or cloud speech is unavailable.
 - Persistent conversations, editable long-term memory, tasks, ideas, work
   sessions, reminders, and customizable progress trackers.
 - Work, companion, do-not-disturb, meeting, away, and sleep modes.

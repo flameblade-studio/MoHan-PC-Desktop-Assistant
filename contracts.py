@@ -57,6 +57,25 @@ class CloudSpeechEnginePort(Protocol):
     ) -> None: ...
 
 
+class SpeechProviderRegistryPort(Protocol):
+    def provider(self, provider_id: object) -> Any: ...
+
+    def provider_ids(self) -> tuple[str, ...]: ...
+
+    def output_provider_id(
+        self,
+        selected_provider_id: object,
+        *,
+        realtime_running: bool,
+        cloud_available: bool = True,
+    ) -> str: ...
+
+    def fallback_provider_id(
+        self,
+        failed_provider_id: object,
+    ) -> str | None: ...
+
+
 class RealtimeVoicePort(Protocol):
     status_changed: SignalPort
     user_transcript: SignalPort
