@@ -12,6 +12,28 @@ Windows デスクトップアシスタントです。中国・北宋を生きた
 
 現在の公開プレビュー：v2.1.0 RC1（`v2.1.0-rc.1`）
 
+![墨寒デスクトップアシスタントのメインビジュアル](docs/media/mohan-hero.png)
+
+## 最新の実機画面
+
+繁体字中国語、簡体字中国語、英語、日本語の README は、同じ最新版画像を
+参照します。画面を更新した際に、特定の言語だけ古い画像が残ることを防ぎます。
+
+<table>
+  <tr>
+    <td width="50%" align="center"><a href="docs/media/first-run-wizard.png"><img src="docs/media/first-run-wizard.png" alt="墨寒の初回セットアップ"></a><br><strong>初回セットアップ</strong></td>
+    <td width="50%" align="center"><a href="docs/media/voice-modes.png"><img src="docs/media/voice-modes.png" alt="Realtime と標準音声モード"></a><br><strong>Realtime と標準音声</strong></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><a href="docs/media/expressions.png"><img src="docs/media/expressions.png" alt="墨寒の表情と動作"></a><br><strong>表情と動作</strong></td>
+    <td width="50%" align="center"><a href="docs/media/tasks-and-ideas.png"><img src="docs/media/tasks-and-ideas.png" alt="墨寒のタスクとアイデア"></a><br><strong>タスクとアイデア</strong></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><a href="docs/media/long-term-memory.png"><img src="docs/media/long-term-memory.png" alt="墨寒の編集可能な長期記憶"></a><br><strong>編集可能な長期記憶</strong></td>
+    <td width="50%" align="center"><a href="docs/media/security-permissions.png"><img src="docs/media/security-permissions.png" alt="墨寒の権限と安全設定"></a><br><strong>権限と安全設定</strong></td>
+  </tr>
+</table>
+
 ## このプロジェクトについて
 
 作者の CHOU MING HUA は台湾在住の43歳の父親で、もともとプログラミングの

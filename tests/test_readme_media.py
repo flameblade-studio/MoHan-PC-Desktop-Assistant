@@ -40,6 +40,16 @@ def main() -> int:
             f"README does not reference {filename}"
         )
 
+    localized_readmes = {
+        name: (ROOT / name).read_text(encoding="utf-8")
+        for name in ("README.md", "README.zh-CN.md", "README.ja.md")
+    }
+    for name, content in localized_readmes.items():
+        for filename in PNG_FILES:
+            assert f"docs/media/{filename}" in content, (
+                f"{name} does not reference shared current media: {filename}"
+            )
+
     video = MEDIA / "mohan-demo.mp4"
     assert video.is_file(), "missing 30–60 second demonstration video"
     size = video.stat().st_size
