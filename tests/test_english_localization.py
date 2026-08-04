@@ -163,12 +163,17 @@ def run() -> None:
         wizard.ui_language.setCurrentIndex(english_index)
         app.processEvents()
         assert wizard.windowTitle() == "First-run setup"
+        assert "thousand-year-old" in wizard.hero_tagline.text()
         assert wizard.form_labels["assistant_name"].text() == "Assistant name"
         assert wizard.assistant_name.text() == "MoHan"
         assert wizard.user_title.text() == "Commander"
         chinese_index = wizard.ui_language.findData("zh-TW")
         wizard.ui_language.setCurrentIndex(chinese_index)
         app.processEvents()
+        assert (
+            wizard.title_label.text()
+            == "<b>歡迎使用墨寒桌面陪伴工作助理</b>"
+        )
         assert wizard.windowTitle() == "首次啟動設定"
         assert wizard.assistant_name.text() == "墨寒"
         assert wizard.user_title.text() == "主上"
@@ -234,6 +239,7 @@ def run() -> None:
         wizard.ui_language.setCurrentIndex(simplified_index)
         app.processEvents()
         assert wizard.windowTitle() == "首次启动设置"
+        assert "千年女剑魂" in wizard.hero_tagline.text()
         assert wizard.form_labels["assistant_name"].text() == "助手名称"
         assert wizard.work_type.itemText(0) == "一般办公／行政"
         wizard._save()

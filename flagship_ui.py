@@ -267,7 +267,7 @@ class WorkflowEditor(QDialog):
             "範例：home_control｜開啟書房燈｜light.study,turn_on"
         )
         note.setWordWrap(True)
-        note.setStyleSheet("color:#8fc9e0;")
+        note.setStyleSheet("color:#356f8d;")
         self.steps = QTextEdit()
         self.steps.setPlaceholderText(
             "open_web｜開啟工作網站｜https://example.com"
@@ -497,7 +497,7 @@ class FlagshipControlCenter(QWidget):
         page = QWidget()
         layout = QVBoxLayout(page)
         title = QLabel("<b>墨寒旗艦任務中心</b>")
-        title.setStyleSheet("font-size:18px;color:#9ed9ef;")
+        title.setStyleSheet("font-size:18px;color:#2f6987;")
         note = QLabel(
             "所有電腦、雲端、遠端與智慧家庭操作都必須經過："
             "計畫 → 權限判斷 → 確認 → 執行 → 結果驗證 → 稽核。"
@@ -1633,7 +1633,7 @@ class FlagshipControlCenter(QWidget):
             "墨寒不能因對話內容自行降低安全等級。"
         )
         warning.setWordWrap(True)
-        warning.setStyleSheet("color:#f0c889;")
+        warning.setStyleSheet("color:#8a5a13;")
         form.addRow(warning)
         save.clicked.connect(self.save_home_settings)
         test.clicked.connect(self.test_home_connection)
@@ -2060,7 +2060,7 @@ class FlagshipControlCenter(QWidget):
         scroll.setWidget(content)
         stored = self.db.setting("flagship_permissions", {})
         target_heading = QLabel("<b>允許操作的資料夾與程式</b>")
-        target_heading.setStyleSheet("color:#9ed9ef;font-size:15px;")
+        target_heading.setStyleSheet("color:#2f6987;font-size:15px;")
         self.target_list = QListWidget()
         self.target_list.setMinimumHeight(130)
         target_buttons = QWidget()
@@ -2083,7 +2083,7 @@ class FlagshipControlCenter(QWidget):
         remove_target.clicked.connect(self.remove_allowed_target)
         self.refresh_allowed_targets()
         permission_heading = QLabel("<b>能力權限</b>")
-        permission_heading.setStyleSheet("color:#9ed9ef;font-size:15px;")
+        permission_heading.setStyleSheet("color:#2f6987;font-size:15px;")
         form.addRow(permission_heading)
         for capability, label in CORE_PERMISSION_LABELS.items():
             combo = QComboBox()
@@ -2110,7 +2110,7 @@ class FlagshipControlCenter(QWidget):
             "永遠禁止自動執行，無法由此頁解除。"
         )
         note.setWordWrap(True)
-        note.setStyleSheet("color:#f0c889;")
+        note.setStyleSheet("color:#8a5a13;")
         form.addRow(note)
         form.addRow("", save)
         return scroll
