@@ -15,7 +15,7 @@ PNG_FILES = {
     "long-term-memory.png": None,
     "security-permissions.png": None,
     "support-proud.png": (640, 640),
-    "support-shy.png": (640, 640),
+    "support-shy-aligned.png": (640, 640),
     "support-mock-hit.png": (640, 640),
 }
 
@@ -68,13 +68,21 @@ def main() -> int:
     support_requirements = (
         "## 支持墨寒 / Support MoHan",
         "docs/media/support-proud.png",
-        "docs/media/support-shy.png",
+        "docs/media/support-shy-aligned.png",
         "docs/media/support-mock-hit.png",
         "https://buymeacoffee.com/flameblade_studio",
         "https://www.paypal.com/paypalme/flamebladestudio",
     )
     for requirement in support_requirements:
         assert requirement in readme, f"missing project support content: {requirement}"
+    for filename in (
+        "support-proud.png",
+        "support-shy-aligned.png",
+        "support-mock-hit.png",
+    ):
+        assert (
+            f'src="docs/media/{filename}" width="220" height="220"' in readme
+        ), f"support portrait lacks fixed aligned dimensions: {filename}"
 
     github_requirements = (
         "actions/workflows/windows-ci.yml/badge.svg",

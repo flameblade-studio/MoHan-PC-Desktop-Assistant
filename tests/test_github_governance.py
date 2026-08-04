@@ -52,8 +52,11 @@ def main() -> None:
     assert "gitleaks/gitleaks-action@ff98106e" in secret_defense
     assert "fetch-depth: 0" in secret_defense
     release_notes = read(".github/release.yml")
-    assert "New features / 新功能" in release_notes
-    assert "Security / 安全性" in release_notes
+    assert "新功能 / 新功能 / New features / 新機能" in release_notes
+    assert "安全性 / 安全性 / Security / セキュリティ" in release_notes
+    pr_template = read(".github/pull_request_template.md")
+    for heading in ("## 繁體中文", "## 简体中文", "## English", "## 日本語"):
+        assert heading in pr_template
 
     read("ROADMAP.md")
     read("GOVERNANCE.md")
