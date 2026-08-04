@@ -16,6 +16,7 @@ import wave
 
 from PySide6.QtCore import QObject, Signal
 
+from audio_buffer import BoundedAudioQueue, PcmPacketizer
 from lip_sync import (
     VISEME_CUES_PER_SECOND,
     infer_vowel_pcm16,
@@ -25,6 +26,11 @@ from speech import transcribe_wav_bytes
 
 
 class RealtimeVoiceClient(QObject):
+    DEVICE_BLOCK_MILLISECONDS = 20
+    INPUT_QUEUE_CHUNKS = 32
+    PLAYBACK_QUEUE_CHUNKS = 75
+    PLAYBACK_CHUNK_BYTES = 24000 * 2 * DEVICE_BLOCK_MILLISECONDS // 1000
+
     status_changed = Signal(str)
     user_transcript = Signal(str)
     assistant_transcript = Signal(str)
@@ -39,8 +45,16 @@ class RealtimeVoiceClient(QObject):
         self.running = False
         self._input_stream = None
         self._output_stream = None
-        self._audio_queue: queue.Queue[bytes | None] = queue.Queue()
-        self._input_queue: queue.Queue[bytes | None] = queue.Queue(maxsize=64)
+        self._audio_queue: BoundedAudioQueue[bytes | None] = (
+            BoundedAudioQueue(self.PLAYBACK_QUEUE_CHUNKS)
+        )
+        self._input_queue: BoundedAudioQueue[bytes | None] = (
+            BoundedAudioQueue(self.INPUT_QUEUE_CHUNKS)
+        )
+        self._playback_packetizer = PcmPacketizer(
+            self.PLAYBACK_CHUNK_BYTES
+        )
+        self._playback_overflowed = False
         self._audio_lock = threading.Lock()
         self._failure_lock = threading.Lock()
         self._failure_emitted = False
@@ -117,6 +131,8 @@ class RealtimeVoiceClient(QObject):
             return
         with self._failure_lock:
             self._failure_emitted = False
+        self._playback_overflowed = False
+        self._playback_packetizer.reset()
         self._active_model = model
         self.echo_guard = echo_guard
         self.hybrid_transcription = bool(hybrid_transcription)
@@ -441,9 +457,13 @@ class RealtimeVoiceClient(QObject):
             "response.audio.delta",
         }:
             delta = event.get("delta", "")
-            if delta:
+            if delta and not self._playback_overflowed:
                 self._begin_assistant_audio()
-                self._audio_queue.put(base64.b64decode(delta))
+                for chunk in self._playback_packetizer.feed(
+                    base64.b64decode(delta)
+                ):
+                    if not self._queue_playback_chunk(chunk):
+                        break
         elif kind in {
             "response.output_audio.done",
             "response.audio.done",
@@ -451,6 +471,13 @@ class RealtimeVoiceClient(QObject):
             "response.cancelled",
             "response.failed",
         }:
+            if kind in {"response.cancelled", "response.failed"}:
+                self._playback_packetizer.reset()
+            else:
+                remainder = self._playback_packetizer.flush()
+                if remainder and not self._playback_overflowed:
+                    self._queue_playback_chunk(remainder)
+            self._playback_overflowed = False
             self._response_pending.clear()
             self._mark_assistant_audio_done()
         elif kind in {
@@ -546,8 +573,12 @@ class RealtimeVoiceClient(QObject):
     def _open_audio(self) -> None:
         import sounddevice as sd
 
-        audio_queue: queue.Queue[bytes | None] = queue.Queue()
-        input_queue: queue.Queue[bytes | None] = queue.Queue(maxsize=64)
+        audio_queue: BoundedAudioQueue[bytes | None] = BoundedAudioQueue(
+            self.PLAYBACK_QUEUE_CHUNKS
+        )
+        input_queue: BoundedAudioQueue[bytes | None] = BoundedAudioQueue(
+            self.INPUT_QUEUE_CHUNKS
+        )
         input_device = self._preferred_device(sd, "input")
         output_device = self._preferred_device(sd, "output")
         input_rate = int(
@@ -563,10 +594,7 @@ class RealtimeVoiceClient(QObject):
             if status:
                 self.status_changed.emit(f"麥克風狀態：{status}")
             if self.running and not self._microphone_blocked():
-                try:
-                    input_queue.put_nowait(bytes(indata))
-                except queue.Full:
-                    pass
+                input_queue.offer(bytes(indata), keep_latest=True)
 
         try:
             output_stream = sd.RawOutputStream(
@@ -574,14 +602,22 @@ class RealtimeVoiceClient(QObject):
                 samplerate=output_rate,
                 channels=1,
                 dtype="int16",
-                blocksize=max(1, output_rate // 10),
+                blocksize=max(
+                    1,
+                    output_rate * self.DEVICE_BLOCK_MILLISECONDS // 1000,
+                ),
+                latency="low",
             )
             input_stream = sd.RawInputStream(
                 device=input_device,
                 samplerate=input_rate,
                 channels=1,
                 dtype="int16",
-                blocksize=max(1, input_rate // 10),
+                blocksize=max(
+                    1,
+                    input_rate * self.DEVICE_BLOCK_MILLISECONDS // 1000,
+                ),
+                latency="low",
                 callback=input_callback,
             )
             with self._audio_lock:
@@ -624,6 +660,7 @@ class RealtimeVoiceClient(QObject):
         input_rate: int,
     ) -> None:
         rate_state = None
+        reported_drops = 0
         while self.running:
             audio = input_queue.get()
             if audio is None:
@@ -649,8 +686,38 @@ class RealtimeVoiceClient(QObject):
                     )
                 )
                 self._remember_sent_audio(audio)
+                if isinstance(input_queue, BoundedAudioQueue):
+                    dropped = input_queue.snapshot().dropped_oldest
+                    if dropped > reported_drops:
+                        reported_drops = dropped
+                        self.status_changed.emit(
+                            "麥克風處理一度落後，已捨棄最舊音訊以恢復即時性"
+                        )
             except Exception:
                 break
+
+    def _queue_playback_chunk(self, chunk: bytes) -> bool:
+        if self._audio_queue.offer(chunk, keep_latest=False):
+            return True
+        self._playback_overflowed = True
+        self._playback_packetizer.reset()
+        while True:
+            try:
+                self._audio_queue.get_nowait()
+            except queue.Empty:
+                break
+        ws = self.ws
+        if ws and ws.sock and ws.sock.connected:
+            try:
+                ws.send(json.dumps({"type": "response.cancel"}))
+            except Exception:
+                pass
+        self._finish_assistant_audio(force=True)
+        self._emit_failure(
+            "Realtime 播放緩衝已達 1.5 秒安全上限，已停止本輪語音，"
+            "避免延遲持續累積或跳字。"
+        )
+        return False
 
     def _playback_loop(
         self,
@@ -712,17 +779,25 @@ class RealtimeVoiceClient(QObject):
             input_queue = self._input_queue
             self._input_stream = None
             self._output_stream = None
-            self._audio_queue = queue.Queue()
-            self._input_queue = queue.Queue(maxsize=64)
+            self._audio_queue = BoundedAudioQueue(
+                self.PLAYBACK_QUEUE_CHUNKS
+            )
+            self._input_queue = BoundedAudioQueue(
+                self.INPUT_QUEUE_CHUNKS
+            )
+            self._playback_packetizer.reset()
         for pending_queue in (audio_queue, input_queue):
-            try:
-                pending_queue.put_nowait(None)
-            except queue.Full:
+            if isinstance(pending_queue, BoundedAudioQueue):
+                pending_queue.force_stop(None)
+            else:
                 try:
-                    pending_queue.get_nowait()
                     pending_queue.put_nowait(None)
-                except queue.Empty:
-                    pass
+                except queue.Full:
+                    try:
+                        pending_queue.get_nowait()
+                        pending_queue.put_nowait(None)
+                    except queue.Empty:
+                        pass
         for stream in (input_stream, output_stream):
             if stream:
                 try:
