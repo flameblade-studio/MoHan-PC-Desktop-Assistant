@@ -444,7 +444,8 @@ jobs:
         run: |
           set -euo pipefail
           tag="${{ needs.resolve-release.outputs.tag }}"
-          if gh release view "$tag" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+          existing_id="$(gh api --paginate "repos/${{ github.repository }}/releases?per_page=100" --jq ".[] | select(.tag_name == \"$tag\") | .id" | head -n 1)"
+          if [[ -n "$existing_id" ]]; then
             echo "Release $tag already exists; refusing to overwrite it." >&2
             exit 7
           fi
@@ -460,16 +461,15 @@ jobs:
             exit "$status"
           }
           trap cleanup_failed_draft EXIT
-          gh release create "$tag" \
+          gh release create "$tag" "${assets[@]}" \
             --repo "${{ github.repository }}" \
             --verify-tag \
             --draft \
             --prerelease \
             --title "MoHan Desktop Assistant $tag" \
             --notes-file "docs/releases/$tag.md"
-          release_id="$(gh api "repos/${{ github.repository }}/releases/tags/$tag" --jq '.id')"
+          release_id="$(gh api --paginate "repos/${{ github.repository }}/releases?per_page=100" --jq ".[] | select(.tag_name == \"$tag\" and .draft == true) | .id" | head -n 1)"
           [[ "$release_id" =~ ^[0-9]+$ ]]
-          gh release upload "$tag" "${assets[@]}" --repo "${{ github.repository }}"
           mapfile -t actual_assets < <(gh api --paginate "repos/${{ github.repository }}/releases/$release_id/assets" --jq '.[].name' | sort)
           mapfile -t expected_assets < <(printf '%s\n' "${assets[@]##*/}" | sort)
           [[ "$(printf '%s\n' "${actual_assets[@]}")" == "$(printf '%s\n' "${expected_assets[@]}")" ]] || {
