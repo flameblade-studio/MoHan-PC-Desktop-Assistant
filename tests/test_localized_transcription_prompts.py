@@ -17,16 +17,22 @@ from language_support import (
 from realtime_voice import RealtimeVoiceClient
 
 
-def _create_existing_profile(path: Path, prompt: str) -> None:
+def _create_existing_profile(
+    path: Path,
+    prompt: str,
+    *,
+    organization_name: str = "測試工作室",
+    ui_language: str = "zh-CN",
+) -> None:
     conn = sqlite3.connect(path)
     conn.execute(
         "CREATE TABLE settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)"
     )
     values = {
-        "ui_language": "zh-CN",
+        "ui_language": ui_language,
         "assistant_name": "墨寒",
         "user_title": "主上",
-        "organization_name": "測試工作室",
+        "organization_name": organization_name,
         "wake_word": "小寒",
         "transcription_prompt": prompt,
     }
@@ -97,6 +103,26 @@ def run() -> None:
         assert "測試工作室" in migrated
         assert "Pubu" not in migrated
         legacy.close()
+
+        for language, expected in profiles.items():
+            legacy_brand_path = Path(temp) / (
+                f"legacy-author-brand-{language}.db"
+            )
+            _create_existing_profile(
+                legacy_brand_path,
+                LEGACY_TRANSCRIPTION_PROMPT,
+                organization_name="炎劍文化工作室",
+                ui_language=language,
+            )
+            legacy_brand = StudioDB(legacy_brand_path)
+            neutral = str(legacy_brand.setting("transcription_prompt"))
+            assert expected in neutral
+            assert "炎劍文化工作室" not in neutral
+            assert "赤焰劍" not in neutral
+            assert "斬空劍主" not in neutral
+            assert "Pubu" not in neutral
+            assert "DistroKid" not in neutral
+            legacy_brand.close()
 
         custom_path = Path(temp) / "custom.db"
         custom_prompt = "请准确转录。我的专有词：海风计划。"

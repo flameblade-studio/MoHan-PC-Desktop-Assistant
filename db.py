@@ -12,6 +12,7 @@ from memory_index import (
     hashed_text_vector,
 )
 from language_support import (
+    LEGACY_AUTHOR_ORGANIZATION,
     LEGACY_TRANSCRIPTION_PROMPT,
     localized_transcription_prompt,
 )
@@ -457,8 +458,11 @@ class StudioDB:
                     str(profile["ui_language"] or "zh-TW"),
                     assistant_name=str(profile["assistant_name"] or ""),
                     user_title=str(profile["user_title"] or ""),
-                    organization_name=str(
-                        profile["organization_name"] or ""
+                    organization_name=(
+                        ""
+                        if str(profile["organization_name"] or "").strip()
+                        == LEGACY_AUTHOR_ORGANIZATION
+                        else str(profile["organization_name"] or "")
                     ),
                     wake_word=str(profile["wake_word"] or ""),
                 )

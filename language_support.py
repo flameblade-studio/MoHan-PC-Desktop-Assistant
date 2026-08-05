@@ -13,6 +13,11 @@ LEGACY_TRANSCRIPTION_PROMPT = (
     "請保留原意，不要改寫。"
 )
 
+# This value belonged to the original author's private profile.  It may be
+# present in databases created before the public onboarding flow existed, but
+# it must never become part of another user's built-in transcription hints.
+LEGACY_AUTHOR_ORGANIZATION = "炎劍文化工作室"
+
 TRANSCRIPTION_PROMPT_BASES = {
     "zh-TW": (
         "請使用台灣繁體中文準確轉錄。請保留專有名詞、數字與其他語言的原文，"
