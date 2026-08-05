@@ -1,5 +1,17 @@
 # MoHan Desktop Assistant / 墨寒桌面语音互动虚拟助手
 
+<p align="center">
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml"><img alt="Cross-platform core CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release"></a>
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <img alt="Python 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB.svg?logo=python&logoColor=white">
+  <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
+</p>
+
 [繁體中文與 English](README.md) · [日本語](README.ja.md) · [快速开始](QUICKSTART.md) ·
 [路线图](ROADMAP.md) · [参与贡献](CONTRIBUTING.md) ·
 [安全说明](SECURITY.md)
@@ -11,6 +23,13 @@
 北宋、寄宿于赤焰剑中的千年女剑魂为角色背景，结合透明桌面角色、文字与
 语音互动、长期记忆、工作管理、权限控制工具，以及可扩展的云端与智能家居
 连接架构。
+
+> **跨平台进度：** Windows 仍是唯一完成真机、完整回归、安装与发布验证的
+> 平台。macOS／Linux 目前只建立安全的平台边界，并通过三系统 CI 检查核心
+> 导入、纯核心逻辑与 Qt offscreen；CI 不能代替真机兼容性验证。详情请见
+> [跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
+
+> 本项目遵循[炎剑开源软件家族质量标准](PUBLISHING.md)。
 
 ![墨寒桌面助手主视觉](docs/media/mohan-hero.png)
 

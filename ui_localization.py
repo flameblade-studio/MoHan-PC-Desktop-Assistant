@@ -63,9 +63,17 @@ _ENGLISH: Mapping[str, str] = {
     "transcription_language": "Transcription language",
     "transcription_prompt": "Transcription prompt / common terms",
     "windows_transcription_fallback": "Windows fallback",
+    "offline_fallback": "Offline fallback",
+    "platform_offline_fallback_unavailable": (
+        "{platform} offline recognition has not completed device verification"
+    ),
     "last_transcription": "Latest transcription diagnostic",
     "voice_engine": "Speech method",
     "windows_voice": "Windows voice",
+    "platform_local_voice": "{platform} local voice",
+    "platform_local_voice_unavailable": (
+        "{platform} local voice has not completed device verification"
+    ),
     "tts_voice": "OpenAI text-to-speech voice",
     "realtime_voice": "Realtime conversation voice",
     "realtime_model": "Realtime model",
@@ -101,14 +109,28 @@ _ENGLISH: Mapping[str, str] = {
         "settings or a service failure falls back to a Windows female voice. "
         "Azure usage and charges are governed by Microsoft."
     ),
+    "azure_speech_note_no_local_fallback": (
+        "Preview feature. Bring your own Azure Speech resource key and "
+        "matching region. This platform has no verified local voice yet; "
+        "playback stops safely if the service fails."
+    ),
     "azure_fallback_missing_settings": (
         "Azure Speech is not fully configured; using the Windows female "
         "voice without sending a cloud request."
+    ),
+    "azure_missing_no_local_fallback": (
+        "Azure Speech is not fully configured, and this platform has no "
+        "verified local voice. Nothing will be played or sent to the cloud."
     ),
     "no_female_voice": "No verified female Windows voice detected",
     "female_voice_note": (
         "Only installed voices explicitly marked as female are listed. "
         "Voices matching the selected interface language are preferred."
+    ),
+    "platform_local_voice_note": (
+        "{platform} local voice has not completed device verification. "
+        "MoHan will not show another platform's voices or claim offline "
+        "speech support."
     ),
     "transcription_language_placeholder": (
         "ISO language code; leave blank for automatic detection"
@@ -152,6 +174,18 @@ _ENGLISH: Mapping[str, str] = {
         "The single-use microphone sends audio after about 0.85 seconds of "
         "silence, up to 10 seconds. Click the microphone again to send early."
     ),
+    "recognition_note_no_offline": (
+        "Single-use microphone input uses OpenAI accurate recognition. "
+        "Offline recognition is hidden until it completes device verification "
+        "on this platform."
+    ),
+    "platform_secret_storage_unavailable": (
+        "{platform} secure secret storage has not completed device verification"
+    ),
+    "platform_autostart_unavailable": (
+        "{platform} automatic startup has not completed device verification"
+    ),
+    "autostart": "Automatic startup",
     "permissions_intro": (
         "Grant each capability separately. With Ask every time, MoHan shows a "
         "confirmation before acting. File deletion is denied by default."
@@ -187,6 +221,11 @@ _ENGLISH: Mapping[str, str] = {
     "api_key_saved": "Safely stored; leave blank to keep it unchanged",
     "api_key_missing": "Paste an OpenAI Project API key beginning with sk-",
     "api_status_saved": "OpenAI API: Key encrypted by Windows",
+    "api_status_environment": "OpenAI API: Key supplied by an environment variable",
+    "api_status_secret_unavailable": (
+        "OpenAI API: {platform} secure secret storage has not completed "
+        "device verification"
+    ),
     "api_status_offline": "OpenAI API: Not configured; using offline persona",
     "restart_language_note": (
         "The interface language will be fully applied after restarting MoHan."
@@ -261,9 +300,17 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = {
     "transcription_language": "转录语言",
     "transcription_prompt": "转录提示词／常用词",
     "windows_transcription_fallback": "Windows 备用识别",
+    "offline_fallback": "离线备用识别",
+    "platform_offline_fallback_unavailable": (
+        "{platform} 离线识别尚未完成设备实测"
+    ),
     "last_transcription": "最近转录诊断",
     "voice_engine": "朗读方式",
     "windows_voice": "Windows 本机声音",
+    "platform_local_voice": "{platform} 本机声音",
+    "platform_local_voice_unavailable": (
+        "{platform} 本机语音尚未完成设备实测"
+    ),
     "tts_voice": "OpenAI 文字转语音声音",
     "realtime_voice": "Realtime 对话声音",
     "realtime_model": "Realtime 模型",
@@ -296,13 +343,25 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = {
         "女性声线；设定不完整或服务失败时会立即切换到 Windows 女性语音。"
         "Azure 用量与费用以 Microsoft 官方规则为准。"
     ),
+    "azure_speech_note_no_local_fallback": (
+        "预览功能；需自备 Azure Speech 资源密钥与相符区域。此平台尚无已验证的"
+        "本机语音，服务失败时会安全停止播放。"
+    ),
     "azure_fallback_missing_settings": (
         "Azure Speech 尚未完成设定；已直接使用 Windows 女性语音，未发送云端请求。"
+    ),
+    "azure_missing_no_local_fallback": (
+        "Azure Speech 尚未完成设置，且此平台没有已验证的本机语音；"
+        "本次不会播放，也不会发送云端请求。"
     ),
     "no_female_voice": "未检测到已确认的女性 Windows 声音",
     "female_voice_note": (
         "只显示 Windows 明确标示为女性的已安装声音，并优先选择与界面"
         "语言相符的声音。"
+    ),
+    "platform_local_voice_note": (
+        "{platform} 本机语音尚未完成设备实测；在完成前不会显示其他平台的"
+        "声音，也不会宣称支持离线朗读。"
     ),
     "transcription_language_placeholder": "ISO 语言代码；留空则自动检测",
     "openai_fallback": "OpenAI 失败时使用 Windows 离线识别",
@@ -340,6 +399,17 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = {
         "单次麦克风会在约 0.85 秒静音后送出音频，最长录制 10 秒；再次"
         "点击麦克风可提前送出。"
     ),
+    "recognition_note_no_offline": (
+        "单次麦克风使用 OpenAI 高准确度识别；此平台的离线识别尚未完成"
+        "设备实测，因此暂不显示离线备用识别。"
+    ),
+    "platform_secret_storage_unavailable": (
+        "{platform} 安全密钥保存尚未完成设备实测"
+    ),
+    "platform_autostart_unavailable": (
+        "{platform} 自动启动尚未完成设备实测"
+    ),
+    "autostart": "自动启动",
     "permissions_intro": (
         "请分别授权每项能力。选择“每次询问”时，墨寒会在执行前请求确认；"
         "删除文件默认禁止。"
@@ -372,6 +442,10 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = {
     "api_key_saved": "已安全保存；留空则保持不变",
     "api_key_missing": "粘贴以 sk- 开头的 OpenAI Project API Key",
     "api_status_saved": "OpenAI API：密钥已由 Windows 加密保存",
+    "api_status_environment": "OpenAI API：使用环境变量提供的密钥",
+    "api_status_secret_unavailable": (
+        "OpenAI API：{platform} 安全密钥保存尚未完成设备实测"
+    ),
     "api_status_offline": "OpenAI API：未设置，使用离线人格",
     "restart_language_note": "保存界面语言后，重新启动墨寒即可完整应用。",
     "reminder_work": "开始工作",

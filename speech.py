@@ -12,7 +12,6 @@ import threading
 import time
 import urllib.error
 import urllib.request
-import winsound
 import wave
 from array import array
 from dataclasses import dataclass
@@ -26,6 +25,16 @@ from lip_sync import (
     infer_vowel_pcm16,
 )
 from pcm_audio import PcmAudioError, scale_pcm16, stereo_to_mono_pcm16
+
+
+if os.name == "nt":
+    import winsound
+else:
+    # Keep the module importable on macOS/Linux. A later platform audio
+    # adapter will provide verified playback there; silently pretending that
+    # Windows playback exists would turn a compatibility gate into a false
+    # claim.
+    winsound = None
 
 
 CREATE_NO_WINDOW = 0x08000000
@@ -207,6 +216,11 @@ def play_wave_with_visemes(
     audio_path: Path | None = None,
 ) -> None:
     """Play provider WAV audio through the single lip-sync implementation."""
+
+    if winsound is None:
+        raise OSError(
+            "此平台的音訊播放介面尚未完成實機驗證；未播放這段語音。"
+        )
 
     playback_start = threading.Event()
     cue_thread = threading.Thread(
@@ -550,6 +564,34 @@ class WindowsTTS(QObject):
             self.viseme_cue.emit,
             playback_start,
         )
+
+
+class UnavailableSystemTTS(QObject):
+    """Fail closed when a platform has no verified local speech adapter."""
+
+    failed = Signal(str)
+    finished = Signal()
+    viseme_cue = Signal(float, str)
+
+    def __init__(
+        self,
+        reason: str,
+        parent: QObject | None = None,
+    ):
+        super().__init__(parent)
+        self.reason = reason
+        self.volume_percent = 125
+        self.muted = False
+
+    def set_volume(self, volume_percent: int, muted: bool = False) -> None:
+        self.volume_percent = max(0, min(160, int(volume_percent)))
+        self.muted = bool(muted)
+
+    def speak(self, text: str, voice_name: str = "", rate: int = -1) -> None:
+        del voice_name, rate
+        if text.strip():
+            self.failed.emit(self.reason)
+        self.finished.emit()
 
 
 class OpenAITTS(QObject):

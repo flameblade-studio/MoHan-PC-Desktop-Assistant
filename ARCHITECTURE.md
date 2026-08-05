@@ -28,6 +28,10 @@ Circular local imports are prohibited and enforced by
 - Replaceable speech, Realtime, secret-store and listener dependencies are
   described by small `typing.Protocol` ports in `contracts.py` and enter
   `CompanionWindow` through `CompanionServices`.
+- Desktop operating-system behavior enters through `PlatformServicePort` and
+  the explicit `platform_windows.py`, `platform_macos.py`, and
+  `platform_linux.py` adapters. Core modules must not import `winreg`,
+  `winsound`, `ctypes.windll`, or `os.startfile` unconditionally.
 - Desktop dependency injection is constructor-based. FastAPI `Depends` belongs
   only in a future HTTP boundary; importing FastAPI into the PySide desktop
   core is prohibited.
@@ -36,6 +40,9 @@ Circular local imports are prohibited and enforced by
   Providers may synthesize audio but must not own lip sync, expression state,
   UI, permissions, or fallback policy. Windows verified-female local speech is
   the authoritative offline fallback.
+- Persisted local-speech selection uses the platform-neutral `system-local`
+  provider ID. The literal legacy ID `windows-local` and localized labels are
+  migration inputs only; they must never become a second provider.
 - Language policy, response-language instructions, and built-in reminder
   migration have one source of truth in `language_support.py`. English and
   Simplified Chinese display strings and stable internal-to-display mappings
@@ -51,7 +58,12 @@ Circular local imports are prohibited and enforced by
 ## Data ownership
 
 - `db.py`: conversations, memories, tasks, ideas, work history and settings.
-- `secret_store.py`: Windows-user-bound DPAPI secrets.
+- `secret_store.py`: the injectable `PlatformSecretStoreFactory` boundary.
+  Windows receives user-bound DPAPI stores; an unverified platform receives a
+  fail-closed store, never a feature-local plaintext fallback.
+- `platform_contracts.py`: platform capabilities, per-user paths, and the
+  desktop service protocol. On a platform without verified native secure
+  storage, secret persistence fails closed instead of writing plaintext.
 - `profile_transfer.py`: portable shared progress; machine permissions and
   secrets are excluded. Every bundle has a snapshot ID; importing the same
   snapshot twice is blocked, and older snapshots receive an overwrite warning.

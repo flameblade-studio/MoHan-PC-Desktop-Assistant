@@ -128,6 +128,63 @@ introduced later. The generated category headings follow the same four-language
 order. A symbolic one-line translation is not a substitute for the change,
 reason, user impact, and verification information.
 
+## 炎劍開源軟體家族品質標準 / 炎剑开源软件家族质量标准 / Flameblade Open Source Software Family Quality Standard / 炎剣オープンソース・ソフトウェア・ファミリー品質基準
+
+這是墨寒、FB2Blogger 與 FB2WordPress 共用的長期維護契約；新增炎劍開源
+軟體時，也應直接沿用，不另建降低標準的例外流程。
+
+> **繁體中文：**「劍，我已鍛成；餘下的路，就交給你們了。」
+>
+> **简体中文：**“剑，我已锻成；余下的路，就交给你们了。”
+>
+> **English:** “I have forged this sword. What comes next is up to you.”
+>
+> **日本語：**「この剣は、私が鍛え上げました。あとは皆さんに託します。」
+
+### 繁體中文
+
+1. 四語一致：重要 README、PR、Release 與使用引導皆維持繁中、簡中、英文、日文事實一致。
+2. 真實驗證：只展示實際執行的 CI 與安全掃描，不以標籤代替測試結果。
+3. 絕無機密：金鑰、權杖、個資、資料庫與私人內容不得進入版本庫或發布產物。
+4. 產物可追溯：發布檔對應明確的標籤與提交，並提供雜湊或同等驗證資料。
+5. 不退步：不得為新功能破壞既有正常功能、資料相容性、安全閘門或確認流程。
+6. 不誇大平台：CI 通過不等於真機驗證；未實測的平台與功能必須清楚標示限制。
+7. 同步對外資訊：程式、文件、Release 與官網的版本、連結及可見行為須保持一致。
+8. 拒絕單次手工例外：優先建立可重複、自動化、可測試的流程，不靠臨時人工補救維護。
+
+### 简体中文
+
+1. 四语一致：重要 README、PR、Release 与使用指引均维持繁中、简中、英文、日文事实一致。
+2. 真实验证：只展示实际运行的 CI 与安全扫描，不以徽章代替测试结果。
+3. 绝无机密：密钥、令牌、个人资料、数据库与私人内容不得进入版本库或发布产物。
+4. 产物可追溯：发布文件对应明确的标签与提交，并提供哈希值或同等验证资料。
+5. 不退步：不得为新功能破坏已有正常功能、数据兼容性、安全关卡或确认流程。
+6. 不夸大平台：CI 通过不等于真机验证；未实测的平台与功能必须清楚标示限制。
+7. 同步对外信息：程序、文档、Release 与官网的版本、链接及可见行为须保持一致。
+8. 拒绝一次性手工例外：优先建立可重复、自动化、可测试的流程，不靠临时人工补救维护。
+
+### English
+
+1. Four-language consistency: material README, PR, Release, and user guidance facts stay aligned in Traditional Chinese, Simplified Chinese, English, and Japanese.
+2. Honest verification: show only CI and security scans that actually run; badges never substitute for test results.
+3. No secrets: keys, tokens, personal data, databases, and private content never enter source control or release artifacts.
+4. Traceable artifacts: every published file maps to a specific tag and commit and includes a checksum or equivalent verification.
+5. No regressions: new work must not break working behavior, data compatibility, safety gates, or confirmations.
+6. No platform overclaiming: passing CI is not real-device validation; untested platforms and features state their limits clearly.
+7. Synchronized public information: source, documentation, Releases, and website versions, links, and visible behavior stay aligned.
+8. No one-off manual exceptions: prefer repeatable, automated, testable maintenance over temporary manual repairs.
+
+### 日本語
+
+1. 四言語の整合：重要な README、PR、Release、利用案内の事実を繁体字中国語・簡体字中国語・英語・日本語で一致させます。
+2. 正直な検証：実際に動く CI とセキュリティ検査だけを示し、バッジをテスト結果の代用にしません。
+3. 機密情報を含めない：鍵、トークン、個人情報、データベース、私的内容をリポジトリや配布物へ入れません。
+4. 追跡可能な成果物：配布ファイルを特定のタグとコミットへ結び付け、ハッシュ値などの検証情報を提供します。
+5. 後退させない：新機能のために既存動作、データ互換性、安全ゲート、確認手順を壊しません。
+6. 対応 OS を誇張しない：CI 成功を実機検証とは見なさず、未検証の OS と機能の制限を明記します。
+7. 公開情報を同期：ソース、文書、Release、公式サイトの版、リンク、見える動作を一致させます。
+8. 一度限りの手作業を例外化しない：一時的な手直しより、再利用可能で自動化・テスト可能な保守手順を優先します。
+
 Release artifacts can be verified with:
 
 ```powershell

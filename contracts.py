@@ -17,6 +17,16 @@ class SecretStorePort(Protocol):
     def clear(self) -> None: ...
 
 
+class SecretStoreFactoryPort(Protocol):
+    """Create one platform-approved secret boundary for a named purpose."""
+
+    def __call__(
+        self,
+        path: Path,
+        description: str = "MoHan protected secret",
+    ) -> SecretStorePort: ...
+
+
 class ProfileDatabasePort(Protocol):
     path: Path
     conn: sqlite3.Connection

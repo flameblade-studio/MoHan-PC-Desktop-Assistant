@@ -10,17 +10,27 @@ from contracts import (
 )
 
 
-WINDOWS_LOCAL_PROVIDER = "windows-local"
+SYSTEM_LOCAL_PROVIDER = "system-local"
+# Compatibility name retained for third-party imports. Its value is the new
+# platform-neutral persisted ID; the literal old value is migrated below.
+WINDOWS_LOCAL_PROVIDER = SYSTEM_LOCAL_PROVIDER
+LEGACY_WINDOWS_LOCAL_PROVIDER = "windows-local"
 OPENAI_SPEECH_PROVIDER = "openai-speech"
 OPENAI_REALTIME_PROVIDER = "openai-realtime"
 AZURE_SPEECH_PROVIDER = "azure-speech"
 
 
 _LEGACY_PROVIDER_IDS = {
-    WINDOWS_LOCAL_PROVIDER: WINDOWS_LOCAL_PROVIDER,
-    "Windows 本機語音": WINDOWS_LOCAL_PROVIDER,
-    "Windows 本机语音": WINDOWS_LOCAL_PROVIDER,
-    "Windows local voice": WINDOWS_LOCAL_PROVIDER,
+    SYSTEM_LOCAL_PROVIDER: SYSTEM_LOCAL_PROVIDER,
+    LEGACY_WINDOWS_LOCAL_PROVIDER: SYSTEM_LOCAL_PROVIDER,
+    "Windows 本機語音": SYSTEM_LOCAL_PROVIDER,
+    "Windows 本机语音": SYSTEM_LOCAL_PROVIDER,
+    "Windows local voice": SYSTEM_LOCAL_PROVIDER,
+    "Windows 本機音声": SYSTEM_LOCAL_PROVIDER,
+    "系統本機語音": SYSTEM_LOCAL_PROVIDER,
+    "系统本地语音": SYSTEM_LOCAL_PROVIDER,
+    "System local voice": SYSTEM_LOCAL_PROVIDER,
+    "システム本機音声": SYSTEM_LOCAL_PROVIDER,
     OPENAI_SPEECH_PROVIDER: OPENAI_SPEECH_PROVIDER,
     "OpenAI 自然語音": OPENAI_SPEECH_PROVIDER,
     "OpenAI 自然语音": OPENAI_SPEECH_PROVIDER,
@@ -40,7 +50,7 @@ def normalize_speech_provider_id(value: object) -> str:
     """Return a stable provider ID for old and localized saved values."""
 
     text = str(value or "").strip()
-    return _LEGACY_PROVIDER_IDS.get(text, WINDOWS_LOCAL_PROVIDER)
+    return _LEGACY_PROVIDER_IDS.get(text, SYSTEM_LOCAL_PROVIDER)
 
 
 @dataclass(frozen=True)
@@ -69,9 +79,28 @@ class SpeechProviderPort(Protocol):
     def speak(self, request: SpeechRequest) -> None: ...
 
 
-class WindowsSpeechProvider:
-    capabilities = SpeechProviderCapabilities(
-        provider_id=WINDOWS_LOCAL_PROVIDER,
+class SpeechProviderSettingsPort(Protocol):
+    def setting(self, key: str, default: object = None) -> object: ...
+
+    def set_setting(self, key: str, value: object) -> None: ...
+
+
+def migrate_speech_provider_setting(
+    settings: SpeechProviderSettingsPort,
+    key: str = "voice_engine",
+) -> str:
+    """Persist one canonical provider ID while preserving the old choice."""
+
+    current = settings.setting(key, SYSTEM_LOCAL_PROVIDER)
+    migrated = normalize_speech_provider_id(current)
+    if current != migrated:
+        settings.set_setting(key, migrated)
+    return migrated
+
+
+class SystemSpeechProvider:
+    default_capabilities = SpeechProviderCapabilities(
+        provider_id=SYSTEM_LOCAL_PROVIDER,
         offline=True,
         requires_api_key=False,
         verified_female_catalog=True,
@@ -79,11 +108,22 @@ class WindowsSpeechProvider:
         supported_languages=("installed",),
     )
 
-    def __init__(self, engine: LocalSpeechEnginePort):
+    def __init__(
+        self,
+        engine: LocalSpeechEnginePort,
+        capabilities: SpeechProviderCapabilities | None = None,
+    ):
         self.engine = engine
+        self.capabilities = capabilities or self.default_capabilities
 
     def speak(self, request: SpeechRequest) -> None:
         self.engine.speak(request.text, request.voice, request.rate)
+
+
+class WindowsSpeechProvider(SystemSpeechProvider):
+    """Backward-compatible class name for integrations written before RC2."""
+
+    capabilities = SystemSpeechProvider.default_capabilities
 
 
 class OpenAISpeechProvider:
@@ -172,8 +212,8 @@ class SpeechProviderRegistry:
         """Choose a provider for queued text without changing user settings.
 
         Realtime owns its live audio while connected. If it is selected but
-        unavailable, queued text falls back directly to Windows local speech.
-        Unknown or unavailable providers also fall back to Windows.
+        unavailable, queued text falls back to the registered system-local
+        adapter. Unknown or unavailable providers use the same single fallback.
         """
 
         selected = normalize_speech_provider_id(selected_provider_id)
@@ -181,27 +221,29 @@ class SpeechProviderRegistry:
             return (
                 OPENAI_SPEECH_PROVIDER
                 if realtime_running and cloud_available
-                else WINDOWS_LOCAL_PROVIDER
+                else SYSTEM_LOCAL_PROVIDER
             )
         if selected == OPENAI_SPEECH_PROVIDER and not cloud_available:
-            return WINDOWS_LOCAL_PROVIDER
+            return SYSTEM_LOCAL_PROVIDER
         configured = set(
             configured_provider_ids
             if configured_provider_ids is not None
             else self._providers
         )
-        configured.add(WINDOWS_LOCAL_PROVIDER)
+        configured.add(SYSTEM_LOCAL_PROVIDER)
         if selected in self._providers and selected in configured:
             return selected
-        return WINDOWS_LOCAL_PROVIDER
+        return SYSTEM_LOCAL_PROVIDER
 
     def fallback_provider_id(self, failed_provider_id: object) -> str | None:
         failed = normalize_speech_provider_id(failed_provider_id)
+        local = self._providers.get(SYSTEM_LOCAL_PROVIDER)
         if (
-            failed != WINDOWS_LOCAL_PROVIDER
-            and WINDOWS_LOCAL_PROVIDER in self._providers
+            failed != SYSTEM_LOCAL_PROVIDER
+            and local is not None
+            and local.capabilities.offline
         ):
-            return WINDOWS_LOCAL_PROVIDER
+            return SYSTEM_LOCAL_PROVIDER
         return None
 
 
@@ -209,9 +251,11 @@ def create_builtin_speech_registry(
     local_engine: LocalSpeechEnginePort,
     cloud_engine: CloudSpeechEnginePort,
     azure_engine: AzureSpeechEnginePort | None = None,
+    *,
+    system_capabilities: SpeechProviderCapabilities | None = None,
 ) -> SpeechProviderRegistry:
     providers: list[SpeechProviderPort] = [
-        WindowsSpeechProvider(local_engine),
+        SystemSpeechProvider(local_engine, system_capabilities),
         OpenAISpeechProvider(cloud_engine),
     ]
     if azure_engine is not None:

@@ -7,14 +7,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from speech_providers import (
     AZURE_SPEECH_PROVIDER,
+    LEGACY_WINDOWS_LOCAL_PROVIDER,
     OPENAI_REALTIME_PROVIDER,
     OPENAI_SPEECH_PROVIDER,
+    SYSTEM_LOCAL_PROVIDER,
     WINDOWS_LOCAL_PROVIDER,
     OpenAISpeechProvider,
     SpeechProviderRegistry,
     SpeechRequest,
     WindowsSpeechProvider,
     create_builtin_speech_registry,
+    migrate_speech_provider_setting,
     normalize_speech_provider_id,
 )
 
@@ -31,7 +34,33 @@ class FakeCloudEngine(FakeLocalEngine):
     pass
 
 
+class FakeSettings:
+    def __init__(self, value: str):
+        self.value = value
+        self.writes: list[tuple[str, object]] = []
+
+    def setting(self, key: str, default: object = None) -> object:
+        del key, default
+        return self.value
+
+    def set_setting(self, key: str, value: object) -> None:
+        self.writes.append((key, value))
+        self.value = str(value)
+
+
 def run() -> None:
+    assert SYSTEM_LOCAL_PROVIDER == "system-local"
+    assert LEGACY_WINDOWS_LOCAL_PROVIDER == "windows-local"
+    assert normalize_speech_provider_id("windows-local") == (
+        SYSTEM_LOCAL_PROVIDER
+    )
+    old_settings = FakeSettings("windows-local")
+    assert migrate_speech_provider_setting(old_settings) == (
+        SYSTEM_LOCAL_PROVIDER
+    )
+    assert old_settings.writes == [
+        ("voice_engine", SYSTEM_LOCAL_PROVIDER)
+    ]
     assert normalize_speech_provider_id("Windows 本機語音") == (
         WINDOWS_LOCAL_PROVIDER
     )
@@ -42,7 +71,7 @@ def run() -> None:
         OPENAI_SPEECH_PROVIDER
     )
     assert normalize_speech_provider_id("unknown-provider") == (
-        WINDOWS_LOCAL_PROVIDER
+        SYSTEM_LOCAL_PROVIDER
     )
 
     local = FakeLocalEngine()

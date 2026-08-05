@@ -62,6 +62,7 @@ from flagship_core import (
 )
 from ai_client import ActionPlannerWorker, DEFAULT_TEXT_MODEL
 from backup_manager import BackupManager
+from contracts import SecretStoreFactoryPort, SecretStorePort
 from cloud_connectors import (
     GitHubConnector,
     GmailConnector,
@@ -81,7 +82,9 @@ from home_assistant import (
     home_health_issues,
 )
 from remote_control import RemoteControlServer, RemoteServerConfig, TokenRegistry
-from secret_store import SecretStore
+from platform_contracts import PlatformServicePort
+from platform_services import current_platform_services
+from secret_store import platform_secret_store_factory
 from workflow_engine import Workflow
 from windows_tools import WindowTools
 
@@ -355,12 +358,33 @@ class FlagshipControlCenter(QWidget):
     remote_command_received = Signal(str)
     emergency_stop_requested = Signal()
 
-    def __init__(self, db, data_path: Path, parent=None):
+    def __init__(
+        self,
+        db,
+        data_path: Path,
+        parent=None,
+        *,
+        platform_services: PlatformServicePort | None = None,
+        secret_store_factory: SecretStoreFactoryPort | None = None,
+    ):
         super().__init__(parent)
         self.db = db
         self.data_path = data_path
-        self.ha_secret = SecretStore(data_path / "home-assistant-token.dpapi")
-        self.openai_secret = SecretStore(data_path / "openai-key.dpapi")
+        self.platform_services = (
+            platform_services or current_platform_services()
+        )
+        self.secret_store_factory = (
+            secret_store_factory
+            or platform_secret_store_factory(self.platform_services)
+        )
+        self.ha_secret = self.secret_store_factory(
+            data_path / "home-assistant-token.dpapi",
+            "MoHan Home Assistant token",
+        )
+        self.openai_secret = self.secret_store_factory(
+            data_path / "openai-key.dpapi",
+            "MoHan OpenAI API key",
+        )
         # 工具工作使用獨立執行緒池，避免一般 AI 對話佔滿全域池後，
         # Gmail 等工具一直停留在「規劃中」。
         self.thread_pool = QThreadPool(self)
@@ -431,6 +455,18 @@ class FlagshipControlCenter(QWidget):
             str(Path.home() / ".gnupg"),
             str(Path.home() / "AppData"),
         ]
+        if self.platform_services.capabilities.platform_id in {
+            "macos",
+            "linux",
+        }:
+            protected.extend(
+                str(path)
+                for path in (
+                    self.platform_services.paths.data,
+                    self.platform_services.paths.config,
+                    self.platform_services.paths.cache,
+                )
+            )
         self.policy = PolicyEngine(permissions, protected_paths=protected)
         self.executor = ActionExecutor(
             self.policy,
@@ -453,6 +489,7 @@ class FlagshipControlCenter(QWidget):
             allowed_folders=allowed_folders,
             allowed_apps=allowed_apps,
             allowed_websites=allowed_websites,
+            platform_services=self.platform_services,
         )
         self.toolbox.register_with(self.executor)
         self.window_tools = WindowTools()
@@ -1045,9 +1082,16 @@ class FlagshipControlCenter(QWidget):
         content = QWidget()
         form = QFormLayout(content)
         scroll.setWidget(content)
+        if self.platform_services.capabilities.secure_secret_storage:
+            secret_note = "權杖由作業系統安全加密保存，不寫入資料庫或設定檔。"
+        else:
+            secret_note = (
+                f"{self.platform_services.capabilities.display_name} 的原生安全金鑰保存"
+                "尚未完成實機驗證，因此 OAuth 連線暫停；墨寒不會改用明文保存。"
+            )
         intro = QLabel(
             "Google、Microsoft 與 GitHub 預設停用。連線時使用瀏覽器 OAuth；"
-            "權杖由 Windows 加密保存，不寫入資料庫或設定檔。"
+            + secret_note
         )
         intro.setWordWrap(True)
         self.cloud_provider = QComboBox()
@@ -1073,10 +1117,10 @@ class FlagshipControlCenter(QWidget):
         buttons = QWidget()
         line = QHBoxLayout(buttons)
         line.setContentsMargins(0, 0, 0, 0)
-        connect = QPushButton("開啟瀏覽器安全連線")
+        self.cloud_connect_button = QPushButton("開啟瀏覽器安全連線")
         self.cloud_test_button = QPushButton("測試選取服務")
         revoke = QPushButton("撤銷選取服務")
-        line.addWidget(connect)
+        line.addWidget(self.cloud_connect_button)
         line.addWidget(self.cloud_test_button)
         line.addWidget(revoke)
         form.addRow(intro)
@@ -1090,9 +1134,14 @@ class FlagshipControlCenter(QWidget):
         self.cloud_provider.currentIndexChanged.connect(
             self._cloud_provider_changed
         )
-        connect.clicked.connect(self.connect_cloud)
+        self.cloud_connect_button.clicked.connect(self.connect_cloud)
         self.cloud_test_button.clicked.connect(self.test_cloud)
         revoke.clicked.connect(self.revoke_cloud)
+        if not self.platform_services.capabilities.secure_secret_storage:
+            self.cloud_connect_button.setEnabled(False)
+            self.cloud_client_secret.setEnabled(False)
+            self.cloud_connect_button.setToolTip(secret_note)
+            self.cloud_status.setText(secret_note)
         self._cloud_provider_changed()
         self.refresh_cloud_connections()
         return scroll
@@ -1108,10 +1157,19 @@ class FlagshipControlCenter(QWidget):
         )
         self.cloud_client_secret.clear()
 
-    def _oauth_store(self, provider_id: str) -> SecretStore:
-        return SecretStore(self.data_path / f"oauth-{provider_id}.dpapi")
+    def _oauth_store(self, provider_id: str) -> SecretStorePort:
+        return self.secret_store_factory(
+            self.data_path / f"oauth-{provider_id}.dpapi",
+            f"MoHan {provider_id} OAuth token",
+        )
 
     def connect_cloud(self) -> None:
+        if not self.platform_services.capabilities.secure_secret_storage:
+            self.cloud_status.setText(
+                f"{self.platform_services.capabilities.display_name} 尚無經過實機驗證的"
+                "安全金鑰保存；OAuth 連線已安全停用。"
+            )
+            return
         provider_id = str(self.cloud_provider.currentData())
         client_id = self.cloud_client_id.text().strip()
         if not client_id:
@@ -1142,9 +1200,17 @@ class FlagshipControlCenter(QWidget):
         provider_id: str,
         token: dict[str, Any],
     ) -> None:
-        self._oauth_store(provider_id).save(
-            json.dumps(token, ensure_ascii=False)
-        )
+        try:
+            self._oauth_store(provider_id).save(
+                json.dumps(token, ensure_ascii=False)
+            )
+        except OSError as exc:
+            self.cloud_status.setText(f"無法安全保存 OAuth 權杖：{exc}")
+            self.db.audit_event(
+                "oauth_secret_store_unavailable",
+                {"provider": provider_id, "error_type": type(exc).__name__},
+            )
+            return
         provider = PROVIDERS[provider_id]
         self.db.save_connector(
             provider_id,
@@ -1179,9 +1245,14 @@ class FlagshipControlCenter(QWidget):
             and time.time() >= obtained_at + expires_in - 90
         ):
             payload = refresh_oauth_token(PROVIDERS[provider_id], payload)
-            self._oauth_store(provider_id).save(
-                json.dumps(payload, ensure_ascii=False)
-            )
+            try:
+                self._oauth_store(provider_id).save(
+                    json.dumps(payload, ensure_ascii=False)
+                )
+            except OSError as exc:
+                raise PermissionError(
+                    f"無法安全更新 OAuth 權杖：{exc}"
+                ) from exc
         token = str(payload.get("access_token", ""))
         if not token:
             raise PermissionError("OAuth 權杖資料不完整")
@@ -1597,7 +1668,7 @@ class FlagshipControlCenter(QWidget):
         self.ha_token = QLineEdit()
         self.ha_token.setEchoMode(QLineEdit.Password)
         self.ha_token.setPlaceholderText(
-            "已加密保存（留空不變）"
+            "已由作業系統安全保存（留空不變）"
             if self.ha_secret.load()
             else "貼上 Home Assistant 長期存取權杖"
         )
@@ -1638,6 +1709,16 @@ class FlagshipControlCenter(QWidget):
         save.clicked.connect(self.save_home_settings)
         test.clicked.connect(self.test_home_connection)
         load.clicked.connect(self.load_home_entities)
+        if not self.platform_services.capabilities.secure_secret_storage:
+            unavailable = (
+                f"{self.platform_services.capabilities.display_name} 的安全金鑰保存尚未"
+                "完成實機驗證；Home Assistant 連線暫停，且不會儲存明文權杖。"
+            )
+            self.ha_enabled.setChecked(False)
+            self.ha_enabled.setEnabled(False)
+            self.ha_token.setEnabled(False)
+            self.ha_token.setPlaceholderText(unavailable)
+            self.ha_status.setText(unavailable)
         return scroll
 
     def save_home_settings(self) -> None:
@@ -1647,9 +1728,20 @@ class FlagshipControlCenter(QWidget):
             QMessageBox.information(self, "Home Assistant", "請先填入連線位址。")
             return
         if token:
-            self.ha_secret.save(token)
+            try:
+                self.ha_secret.save(token)
+            except OSError as exc:
+                self.ha_status.setText(f"無法安全保存權杖：{exc}")
+                QMessageBox.warning(
+                    self,
+                    "Home Assistant",
+                    f"無法安全保存權杖：{exc}",
+                )
+                return
             self.ha_token.clear()
-            self.ha_token.setPlaceholderText("已加密保存（留空不變）")
+            self.ha_token.setPlaceholderText(
+                "已由作業系統安全保存（留空不變）"
+            )
         self.db.save_connector(
             "home_assistant",
             "Home Assistant",
@@ -2158,7 +2250,11 @@ class FlagshipControlCenter(QWidget):
             self,
             "選擇允許墨寒啟動的程式",
             "",
-            "Windows 程式 (*.exe);;所有檔案 (*)",
+            (
+                "Windows 程式 (*.exe);;所有檔案 (*)"
+                if self.platform_services.capabilities.platform_id == "windows"
+                else "應用程式／可執行檔 (*);;所有檔案 (*)"
+            ),
         )
         if not path:
             return
