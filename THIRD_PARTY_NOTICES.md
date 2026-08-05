@@ -1,12 +1,12 @@
 # Third-party notices
 
-MoHan Desktop Assistant is MIT licensed, but its source and Windows package use
-third-party components under their own licenses. Nothing in the MoHan MIT
+MoHan Desktop Assistant is MIT licensed, but its source and release packages
+use third-party components under their own licenses. Nothing in the MoHan MIT
 License changes those terms.
 
 ## Direct Python dependencies
 
-| Component | Version used for v2.0.10 RC | License |
+| Component | Current pinned version | License |
 | --- | ---: | --- |
 | [PySide6 / Qt for Python](https://doc.qt.io/qtforpython-6/) | 6.11.1 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
 | [PyInstaller](https://pyinstaller.org/) | 6.21.0 | GPL-2.0-or-later with the PyInstaller bootloader exception |
@@ -14,12 +14,24 @@ License changes those terms.
 | [websocket-client](https://github.com/websocket-client/websocket-client) | 1.9.0 | Apache-2.0 |
 | [OpenCC Python reimplementation](https://github.com/yichen0831/opencc-python) | 0.1.7 | Apache-2.0 |
 
+## Preview packaging tool
+
+The Linux x86_64 limited Preview is assembled with the official
+[AppImage `appimagetool`](https://github.com/AppImage/appimagetool). The build
+downloads the upstream `continuous` x86_64 asset but accepts it only when its
+SHA-256 is
+`a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`.
+The recorded upstream source commit is
+`8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81` and the GitHub asset ID is
+`324406882`. `appimagetool` remains governed by its own upstream license.
+
 ## Runtime components included by packaging
 
 The Windows one-directory package may also contain Python (PSF License), Qt and
 Shiboken (LGPL/GPL/commercial terms), NumPy (BSD-3-Clause), CFFI (MIT),
 PortAudio (MIT), OpenSSL (Apache-2.0), SQLite (public domain), and their required
-runtime libraries.
+runtime libraries. The macOS and Linux limited Preview packages contain only
+the smaller Preview dependency set declared in `requirements-preview.txt`.
 
 The packaged layout keeps dynamically linked Qt/PySide libraries as separate
 files under `_internal`, so recipients can inspect or replace those libraries.

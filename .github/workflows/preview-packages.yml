@@ -1,0 +1,127 @@
+name: Preview Package CI
+
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: preview-packages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos-preview:
+    name: macOS ${{ matrix.architecture }} Preview package smoke
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            architecture: arm64
+          - runner: macos-15-intel
+            architecture: x86_64
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements-preview.txt
+      - name: Install pinned Preview dependencies
+        run: python -m pip install -r requirements-preview.txt
+      - name: Verify source Preview contract
+        run: python tests/test_preview_packaging.py
+      - name: Build and smoke-test DMG
+        shell: bash
+        run: |
+          python tools/build_preview_package.py --platform macos --version 2.2.0-rc.0 --output-dir preview-artifacts
+          package=(preview-artifacts/*-macOS-${{ matrix.architecture }}-Preview.dmg)
+          [[ ${#package[@]} -eq 1 ]]
+          python tools/smoke_preview_package.py --platform macos --package "${package[0]}" --expected-version 2.2.0-rc.0
+      - name: Upload PR test artifact only
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: macOS-${{ matrix.architecture }}-limited-preview-ci
+          path: preview-artifacts/*
+          if-no-files-found: error
+          retention-days: 14
+
+  linux-preview:
+    name: Linux Preview package smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      QT_QPA_PLATFORM: offscreen
+      APPIMAGETOOL_SHA256: a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements-preview.txt
+      - name: Install Ubuntu Qt runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libegl1
+      - name: Install pinned Preview dependencies
+        run: python -m pip install -r requirements-preview.txt
+      - name: Verify source Preview contract
+        run: python tests/test_preview_packaging.py
+      - name: Fetch checksum-locked official appimagetool
+        shell: bash
+        run: |
+          # Official AppImage/appimagetool source commit
+          # 8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81, asset ID 324406882.
+          curl --fail --location --retry 3 \
+            --output "$RUNNER_TEMP/appimagetool-x86_64.AppImage" \
+            "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
+          echo "$APPIMAGETOOL_SHA256  $RUNNER_TEMP/appimagetool-x86_64.AppImage" | sha256sum --check --strict
+          chmod +x "$RUNNER_TEMP/appimagetool-x86_64.AppImage"
+      - name: Build and smoke-test AppImage
+        shell: bash
+        run: |
+          python tools/build_preview_package.py \
+            --platform linux \
+            --version 2.2.0-rc.0 \
+            --output-dir preview-artifacts \
+            --appimagetool "$RUNNER_TEMP/appimagetool-x86_64.AppImage"
+          package=(preview-artifacts/*-Linux-x86_64-Preview.AppImage)
+          [[ ${#package[@]} -eq 1 ]]
+          python tools/smoke_preview_package.py --platform linux --package "${package[0]}" --expected-version 2.2.0-rc.0
+      - name: Upload PR test artifact only
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: Linux-limited-preview-ci
+          path: preview-artifacts/*
+          if-no-files-found: error
+          retention-days: 14
+
+  preview-package-gate:
+    name: Cross-platform Preview package gate
+    if: ${{ always() }}
+    needs: [macos-preview, linux-preview]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every native Preview package job to pass
+        shell: bash
+        env:
+          MACOS_RESULT: ${{ needs.macos-preview.result }}
+          LINUX_RESULT: ${{ needs.linux-preview.result }}
+        run: |
+          if [[ "$MACOS_RESULT" != "success" || "$LINUX_RESULT" != "success" ]]; then
+            echo "Native Preview packaging failed: macOS=$MACOS_RESULT Linux=$LINUX_RESULT" >&2
+            exit 1
+          fi

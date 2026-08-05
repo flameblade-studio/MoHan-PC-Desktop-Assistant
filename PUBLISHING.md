@@ -2,9 +2,9 @@
 
 ## Repository description
 
-Safety-first Windows voice-interactive desktop companion with animated
-expressions, long-term memory, productivity workflows, permission-gated tools,
-OpenAI Realtime, cloud connectors, and Home Assistant integration.
+Safety-first Windows-first voice-interactive desktop companion with animated
+expressions, memory, permission-gated tools, and clearly limited macOS/Linux
+Preview packages for community validation.
 
 ## Topics
 
@@ -17,6 +17,9 @@ voice-assistant
 ai-companion
 desktop-companion
 windows
+macos
+linux
+appimage
 python
 pyside6
 openai-api
@@ -33,14 +36,34 @@ taiwan
 open-source
 ```
 
-## Current public pre-release
+## Prepared public pre-release
 
-- Tag: `v2.1.0-rc.1`
-- Title: `MoHan Desktop Assistant v2.1.0 RC1`
-- Published: 2026-08-04
+- Tag: `v2.2.0-rc.1`
+- Title: `MoHan Desktop Assistant v2.2.0 RC1`
+- Publication: only after every required CI, package smoke, security, and
+  release-policy check succeeds
 - Includes the Windows x64 portable ZIP, per-user EXE and MSI installers,
-  English/Simplified Chinese/Japanese MSI transforms, SHA-256 catalog,
-  CycloneDX SBOM, update manifest, and artifact attestations.
+  English/Simplified Chinese/Japanese MSI transforms, macOS Apple Silicon
+  (arm64) and Intel (x86_64) limited Preview DMGs, Linux x86_64 limited Preview
+  AppImage, SHA-256 catalog, CycloneDX SBOMs, update manifest, and artifact
+  attestations.
+
+## Next release line
+
+- Accepted release tags: immutable `v2.2.0-rc.N` tags where `N` is a positive
+  integer. Other tags fail before packaging or publication.
+- Windows remains the formal, complete product surface and keeps its verified
+  x64 ZIP, EXE, MSI, and MSI language transforms.
+- macOS receives separate native Apple Silicon (arm64) and Intel (x86_64)
+  `.dmg` files, each containing a matching `.app`; Linux x86_64 receives an
+  `.AppImage`. All are explicitly **limited Preview** packages: they validate
+  launch, four-language rendering, per-user paths, and fail-closed platform
+  boundaries, not feature parity with Windows.
+- Pull requests may build short-lived CI artifacts for package testing only.
+  They cannot create a GitHub Release. Only an existing `v2.2.0-rc.N` tag can
+  enter the publication workflow.
+- The Release description must come from the curated four-language file
+  `docs/releases/<tag>.md`; generated notes alone are not accepted.
 
 ## Historical initial release
 
@@ -99,8 +122,9 @@ unresolved high-confidence finding.
 
 ## Automated future releases
 
-Future `v`-prefixed semantic-version tags trigger `.github/workflows/release.yml`.
-The workflow checks out the exact tag and then:
+During this migration, only `v2.2.0-rc.N` tags trigger
+`.github/workflows/release.yml`. The workflow validates the exact tag, checks
+out that immutable source revision, and then:
 
 1. installs pinned runtime and release dependencies;
 2. compiles and audits the public source tree;
@@ -109,16 +133,34 @@ The workflow checks out the exact tag and then:
 5. runs packaged self-test and event-loop smoke tests;
 6. produces a portable ZIP plus per-user EXE and MSI installers;
 7. silently installs, self-tests, and removes both installer formats;
-8. produces a complete SHA-256 catalog, CycloneDX SBOM, and signed update
-   manifest;
-9. creates GitHub artifact provenance attestations;
-10. generates categorized Release Notes and publishes every asset; and
-11. synchronizes the marker-managed official WordPress download block when
-    the required repository secrets are configured.
+8. builds separate limited macOS Apple Silicon (arm64) and Intel (x86_64)
+   Previews on matching native runners, mounts both DMGs, and executes each
+   packaged `.app` contract smoke test;
+9. builds the limited Linux x86_64 Preview on a native Linux runner and
+   executes the packaged AppImage contract smoke test;
+10. uses a separate read-only metadata job to produce canonical `SHA256SUMS`,
+    a compatibility SHA-256 catalog, separate CycloneDX SBOMs for the complete
+    Windows and Preview dependency sets, and the Windows-compatible update
+    manifest;
+11. rechecks the exact artifact set and every cataloged SHA-256 value inside a
+    minimal publication job;
+12. re-resolves the tag immediately before publication and refuses a moved or
+    replaced tag;
+13. creates GitHub artifact provenance attestations for every published file;
+14. requires and publishes the curated four-language Release description.
 
-Tags containing a prerelease suffix such as `-rc.1` are published as
-pre-releases. Stable semantic tags are published as normal releases. Never
-reuse or move a published tag; create a new version instead.
+Every tag in this release line is published as a pre-release. Never reuse or
+move a published tag; create a new `v2.2.0-rc.N` tag instead. A future stable
+release requires a separate, reviewed policy change rather than silently
+broadening this gate.
+
+The release and PR package workflows pin every GitHub Action to a full commit.
+Linux packaging additionally pins the official AppImage `appimagetool` asset
+to source commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`, asset ID
+`324406882`, and SHA-256
+`a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`.
+Windows installer builds pin Inno Setup `6.7.1` and WiX
+`3.14.1.20250415`.
 
 Every pull-request body and every curated Release description must contain
 four complete sections in this order: Taiwan Traditional Chinese, Simplified
@@ -194,25 +236,20 @@ gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo hi
 
 ## Official website synchronization
 
-Create a dedicated, least-privilege WordPress user and an Application Password.
-Store the values only as GitHub Actions repository secrets:
+The GitHub release job is deliberately not allowed to write to WordPress and
+stores no WordPress Application Password. The shared Flameblade Product Release
+Hub is the single authority for all three software products: its
+`flameblade-series-gateway/products.json` configuration identifies the public
+GitHub repository and website destination for each product. The WordPress-side
+gateway reads public GitHub Releases on its hourly schedule and refreshes the
+version, links, and verification information without copying installers into
+Bluehost storage.
 
-- `WORDPRESS_BASE_URL`: `https://www.flamebladestudio.com.tw`
-- `WORDPRESS_USERNAME`: the dedicated release-sync username
-- `WORDPRESS_APP_PASSWORD`: the WordPress Application Password
-- `WORDPRESS_DOWNLOAD_PAGE_ID`: optional existing page ID; when omitted, the
-  workflow finds or creates the `mohan-desktop-assistant` page
-
-The workflow never stores these values in source, logs, release files, the
-update manifest, or the application. It replaces only content enclosed by
-`MOHAN_RELEASE_START` and `MOHAN_RELEASE_END` markers.
-
-The WordPress page is a bilingual product and contributor landing page. Its
-images and every installer link point to the public GitHub repository or GitHub
-Releases; the workflow never uploads EXE, MSI, ZIP, video, or release artifacts
-to WordPress, so release growth does not consume Bluehost media storage. Add the
-published page to the site's primary navigation once; later releases update the
-managed page content automatically without changing the menu entry.
+This design keeps website credentials outside every product repository and
+avoids three competing release-to-site implementations. A newly published
+release may take until the next hourly refresh to appear on the website. If the
+website does not update after that interval, diagnose the shared gateway rather
+than adding a one-off direct WordPress write step to this repository.
 
 ## Extended secret scanning
 

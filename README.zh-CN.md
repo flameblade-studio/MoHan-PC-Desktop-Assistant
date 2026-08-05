@@ -16,7 +16,7 @@
 [路线图](ROADMAP.md) · [参与贡献](CONTRIBUTING.md) ·
 [安全说明](SECURITY.md)
 
-> 当前公开预览版本：v2.1.0 RC1（`v2.1.0-rc.1`）<br>
+> 准备发布的预览版本：v2.2.0 RC1（`v2.2.0-rc.1`）<br>
 > Windows 10/11 · Python 3.14 · PySide6 · MIT License
 
 墨寒是一款重视安全、隐私与角色连续感的 Windows 桌面虚拟助手。她以来自
@@ -26,7 +26,9 @@
 
 > **跨平台进度：** Windows 仍是唯一完成真机、完整回归、安装与发布验证的
 > 平台。macOS／Linux 目前只建立安全的平台边界，并通过三系统 CI 检查核心
-> 导入、纯核心逻辑与 Qt offscreen；CI 不能代替真机兼容性验证。详情请见
+> 导入、纯核心逻辑与 Qt offscreen。`v2.2.0-rc.N` 发布线还会提供可启动、
+> 可切换四语但功能受限的 DMG／AppImage Preview；CI 不能代替真机兼容性或
+> 完整功能验证。详情请见
 > [跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
 > 本项目遵循[炎剑开源软件家族质量标准](PUBLISHING.md)。
@@ -115,12 +117,28 @@ Azure Speech 为默认关闭的预览供应器，只列出 Microsoft 官方标�
 1. 前往 [GitHub Releases](../../releases)。
 2. 下载最新的 `Windows-x64.zip` 与对应的 `SHA256.txt`。
 3. 核对 SHA-256，并完整解压 ZIP。
-4. 运行 `MoHan-Desktop-Assistant-2.1.0-rc.1.exe`。
+4. 运行 `MoHan-Desktop-Assistant-2.2.0-rc.1.exe`。
 5. 在首次设置向导选择“简体中文（中国大陆）”。
 6. 请保持 EXE、`_internal` 与 `assets` 在同一程序文件夹内。
 
 未经数字签名的开源预览版本可能触发 Windows SmartScreen。请确认下载来源并
 核对 SHA-256 后再运行。
+
+`v2.2.0-rc.N` 发布线另提供 macOS Apple Silicon（arm64）与 Intel（x86_64）
+`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`。它们是
+**功能受限 Preview**，只开放启动画面、四语说明、平台
+数据路径与安全停用边界，并不等同 Windows 完整版。语音、透明桌面角色、完整
+聊天与工作界面、云端连接器、系统工具、自动启动和秘密输入仍保持停用，等待
+真机验证。请先阅读 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md)。
+
+### 自动化发布边界
+
+只有不可变的 `v2.2.0-rc.N` 标签可以发布此系列。Windows ZIP／EXE／MSI、
+macOS Apple Silicon／Intel 双架构 DMG 与 Linux AppImage 必须先在各自原生
+CI 完成成品启动验证，才会进入
+同一个 GitHub 预发布版。Pull Request 只保留短期测试产物，不会建立 Release。
+正式发布文件同时包含 SHA256SUMS、分别生成的 Windows／Preview CycloneDX
+SBOM、Windows 更新清单、Artifact Attestation 与完整四语 Release 说明。
 
 ## OpenAI API
 
