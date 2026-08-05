@@ -49,9 +49,9 @@ SECRET_PATTERNS = {
 }
 
 
-def tracked_files() -> list[Path]:
+def public_source_files() -> list[Path]:
     result = subprocess.run(
-        ["git", "ls-files", "-z"],
+        ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
         cwd=ROOT,
         check=True,
         capture_output=True,
@@ -66,7 +66,9 @@ def tracked_files() -> list[Path]:
 def main() -> int:
     findings: list[str] = []
     secret_detected = False
-    files = tracked_files()
+    # Include new, untracked source files during local pre-commit review. In
+    # CI the same command naturally resolves to the checked-in public tree.
+    files = public_source_files()
     total_bytes = 0
     for path in files:
         relative = path.relative_to(ROOT).as_posix()

@@ -27,6 +27,11 @@ $Process = Start-Process $ExeInstaller.FullName -ArgumentList @(
 ) -Wait -PassThru
 if ($Process.ExitCode -ne 0) { throw "EXE installer failed" }
 $InstalledExe = Join-Path $ExeInstallDir "MoHan-Desktop-Assistant-$Version.exe"
+foreach ($Notice in @("LICENSE", "THIRD_PARTY_NOTICES.md")) {
+    if (-not (Test-Path (Join-Path $ExeInstallDir "_internal\$Notice"))) {
+        throw "EXE installer omitted required distribution notice: $Notice"
+    }
+}
 $SelfTest = Join-Path $env:RUNNER_TEMP "mohan-exe-installer-selftest.txt"
 $Process = Start-Process $InstalledExe -ArgumentList @(
     "--self-test", "--self-test-output=$SelfTest"
@@ -64,6 +69,11 @@ foreach ($Transform in $MsiVariants) {
     )
     if (-not (Test-Path $InstalledMsiExe)) {
         throw "MSI $Variant did not install the application"
+    }
+    foreach ($Notice in @("LICENSE", "THIRD_PARTY_NOTICES.md")) {
+        if (-not (Test-Path (Join-Path $MsiInstallDir "_internal\$Notice"))) {
+            throw "MSI $Variant omitted required distribution notice: $Notice"
+        }
     }
     $SelfTest = Join-Path $env:RUNNER_TEMP "mohan-msi-$Variant-selftest.txt"
     $Process = Start-Process $InstalledMsiExe -ArgumentList @(

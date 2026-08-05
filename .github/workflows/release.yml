@@ -1,86 +1,117 @@
-name: Windows Release
+name: Multi-platform Release
 
 on:
   push:
     tags:
-      - "v*"
+      - "v2.2.0-rc.*"
   workflow_dispatch:
     inputs:
       tag:
-        description: "Existing v-prefixed tag to package and publish"
+        description: "Existing v2.2.0-rc.N tag to package and publish"
         required: true
         type: string
 
 permissions:
-  contents: write
-  id-token: write
-  attestations: write
-
-env:
-  WORDPRESS_BASE_URL: ${{ secrets.WORDPRESS_BASE_URL }}
-  WORDPRESS_USERNAME: ${{ secrets.WORDPRESS_USERNAME }}
-  WORDPRESS_APP_PASSWORD: ${{ secrets.WORDPRESS_APP_PASSWORD }}
-  WORDPRESS_DOWNLOAD_PAGE_ID: ${{ secrets.WORDPRESS_DOWNLOAD_PAGE_ID }}
+  contents: read
 
 jobs:
-  build-release:
-    name: build-test-attest-release
-    runs-on: windows-latest
-    timeout-minutes: 60
-
+  resolve-release:
+    name: validate-preview-tag
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      version: ${{ steps.release.outputs.version }}
+      commit: ${{ steps.source.outputs.commit }}
     steps:
-      - name: Resolve release tag
+      - name: Resolve and restrict release tag
         id: release
-        shell: pwsh
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
-          $tag = if ("${{ github.event_name }}" -eq "workflow_dispatch") {
-            "${{ inputs.tag }}"
-          } else {
-            "${{ github.ref_name }}"
-          }
-          if ($tag -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+(?:[-.][0-9A-Za-z.-]+)?$') {
-            throw "Release tag must be a semantic, v-prefixed version: $tag"
-          }
-          "tag=$tag" >> $env:GITHUB_OUTPUT
-          "version=$($tag.Substring(1))" >> $env:GITHUB_OUTPUT
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            tag="$INPUT_TAG"
+          else
+            tag="$REF_NAME"
+          fi
+          if [[ ! "$tag" =~ ^v2\.2\.0-rc\.[1-9][0-9]*$ ]]; then
+            echo "Only immutable v2.2.0-rc.N preview tags are accepted: $tag" >&2
+            exit 2
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
 
-      - name: Check out tagged source
-        uses: actions/checkout@v7
+      - name: Check out complete tagged history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: ${{ steps.release.outputs.tag }}
+          ref: refs/tags/${{ steps.release.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Require the tagged commit to belong to main history
+        id: source
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          commit=$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")
+          git merge-base --is-ancestor "$commit" origin/main
+          source_version=$(python3 -c 'from version_info import FALLBACK_VERSION; print(FALLBACK_VERSION)')
+          if [[ "$source_version" != "$RELEASE_VERSION" ]]; then
+            echo "Tag version $RELEASE_VERSION does not match source version $source_version" >&2
+            exit 3
+          fi
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+
+  windows:
+    name: Windows formal packages
+    needs: resolve-release
+    runs-on: windows-latest
+    timeout-minutes: 70
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.resolve-release.outputs.commit }}
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.14"
           cache: pip
 
-      - name: Install runtime and release dependencies
-        run: |
-          python -m pip install -r requirements.txt
-          python -m pip install cyclonedx-bom==7.3.0
+      - name: Install pinned runtime dependencies
+        run: python -m pip install -r requirements.txt
 
-      - name: Install Windows installer toolchains
+      - name: Install pinned Windows installer toolchains
         shell: pwsh
-        run: choco install innosetup wixtoolset --no-progress -y
+        run: |
+          choco install innosetup --version=6.7.1 --allow-downgrade --no-progress -y
+          choco install wixtoolset --version=3.14.1.20250415 --allow-downgrade --no-progress -y
 
-      - name: Compile source
-        run: python -m compileall -q .
+      - name: Compile and audit source
+        run: |
+          python -m compileall -q .
+          python tools/audit_public_release.py
 
-      - name: Audit public release contents
-        run: python tools/audit_public_release.py
-
-      - name: Run full regression suite
+      - name: Run full Windows regression suite
         run: python tests/run_all.py
 
       - name: Build Windows application
         shell: pwsh
-        run: .\build.ps1 -Version "${{ steps.release.outputs.version }}" -Python (Get-Command python).Source
+        run: >-
+          .\build.ps1
+          -Version "${{ needs.resolve-release.outputs.version }}"
+          -Python (Get-Command python).Source
 
       - name: Run packaged self-test and event-loop smoke test
         shell: pwsh
         run: |
-          $version = "${{ steps.release.outputs.version }}"
+          $version = "${{ needs.resolve-release.outputs.version }}"
           $appDir = Join-Path $PWD "dist\MoHan-Desktop-Assistant-$version"
           $exe = Join-Path $appDir "MoHan-Desktop-Assistant-$version.exe"
           $env:MOHAN_DATA_DIR = Join-Path $env:RUNNER_TEMP "mohan-packaged-profile"
@@ -102,85 +133,351 @@ jobs:
             throw "Packaged event-loop smoke test failed with exit code $($process.ExitCode)"
           }
 
-      - name: Create portable ZIP and CycloneDX SBOM
+      - name: Create Windows portable ZIP
         shell: pwsh
         run: |
-          $tag = "${{ steps.release.outputs.tag }}"
-          $version = "${{ steps.release.outputs.version }}"
+          $tag = "${{ needs.resolve-release.outputs.tag }}"
+          $version = "${{ needs.resolve-release.outputs.version }}"
           $appDir = Join-Path $PWD "dist\MoHan-Desktop-Assistant-$version"
           if (-not (Test-Path $appDir)) { throw "Expected build folder not found: $appDir" }
           New-Item -ItemType Directory -Force release-artifacts | Out-Null
           $zip = Join-Path $PWD "release-artifacts\MoHan-Desktop-Assistant-$tag-Windows-x64.zip"
-          $sbom = Join-Path $PWD "release-artifacts\MoHan-Desktop-Assistant-$tag-SBOM.cdx.json"
           Compress-Archive -Path $appDir -DestinationPath $zip -CompressionLevel Optimal
-          cyclonedx-py requirements requirements.txt --output-format JSON --output-file $sbom
 
-      - name: Build EXE and MSI installers
+      - name: Build and verify EXE and MSI installers
         shell: pwsh
         run: |
-          $version = "${{ steps.release.outputs.version }}"
+          $version = "${{ needs.resolve-release.outputs.version }}"
           .\installer\build_installers.ps1 `
             -AppDir "dist\MoHan-Desktop-Assistant-$version" `
             -Version $version `
-            -Tag "${{ steps.release.outputs.tag }}" `
+            -Tag "${{ needs.resolve-release.outputs.tag }}" `
             -OutputDir "release-artifacts"
-
-      - name: Verify EXE and MSI installers
-        shell: pwsh
-        run: |
           .\installer\test_installers.ps1 `
             -ArtifactsDir "release-artifacts" `
-            -Version "${{ steps.release.outputs.version }}"
+            -Version $version
 
-      - name: Create update manifest and SHA256 catalog
-        shell: pwsh
-        run: |
-          python tools/create_release_metadata.py `
-            --artifacts release-artifacts `
-            --tag "${{ steps.release.outputs.tag }}" `
-            --repository "${{ github.repository }}"
-
-      - name: Upload workflow artifacts
-        uses: actions/upload-artifact@v6
+      - name: Upload verified Windows packages
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: MoHan-${{ steps.release.outputs.tag }}-Windows-x64
+          name: release-windows
           path: release-artifacts/*
           if-no-files-found: error
           retention-days: 30
 
-      - name: Attest release provenance
-        uses: actions/attest@v4
+  macos-preview:
+    name: macOS ${{ matrix.architecture }} limited Preview DMG
+    needs: resolve-release
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            architecture: arm64
+          - runner: macos-15-intel
+            architecture: x86_64
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.resolve-release.outputs.commit }}
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements-preview.txt
+
+      - name: Install pinned Preview dependencies
+        run: python -m pip install -r requirements-preview.txt
+
+      - name: Verify source Preview contract
+        run: python tests/test_preview_packaging.py
+
+      - name: Build native macOS Preview DMG
+        run: >-
+          python tools/build_preview_package.py
+          --platform macos
+          --version "${{ needs.resolve-release.outputs.version }}"
+          --output-dir release-artifacts
+
+      - name: Mount DMG and smoke-test packaged app
+        shell: bash
+        run: |
+          package=(release-artifacts/*-macOS-${{ matrix.architecture }}-Preview.dmg)
+          [[ ${#package[@]} -eq 1 ]]
+          python tools/smoke_preview_package.py \
+            --platform macos \
+            --package "${package[0]}" \
+            --expected-version "${{ needs.resolve-release.outputs.version }}"
+
+      - name: Upload verified macOS Preview
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: release-macos-preview-${{ matrix.architecture }}
+          path: release-artifacts/*
+          if-no-files-found: error
+          retention-days: 30
+
+  linux-preview:
+    name: Linux limited Preview AppImage
+    needs: resolve-release
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      QT_QPA_PLATFORM: offscreen
+      APPIMAGETOOL_SHA256: a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.resolve-release.outputs.commit }}
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements-preview.txt
+
+      - name: Install Ubuntu Qt runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libegl1
+
+      - name: Install pinned Preview dependencies
+        run: python -m pip install -r requirements-preview.txt
+
+      - name: Verify source Preview contract
+        run: python tests/test_preview_packaging.py
+
+      - name: Download and verify pinned official appimagetool
+        shell: bash
+        run: |
+          # Official AppImage/appimagetool asset, source commit
+          # 8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81, asset ID 324406882.
+          curl --fail --location --retry 3 \
+            --output "$RUNNER_TEMP/appimagetool-x86_64.AppImage" \
+            "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
+          echo "$APPIMAGETOOL_SHA256  $RUNNER_TEMP/appimagetool-x86_64.AppImage" | sha256sum --check --strict
+          chmod +x "$RUNNER_TEMP/appimagetool-x86_64.AppImage"
+
+      - name: Build verified Linux Preview AppImage
+        shell: bash
+        run: |
+          python tools/build_preview_package.py \
+            --platform linux \
+            --version "${{ needs.resolve-release.outputs.version }}" \
+            --output-dir release-artifacts \
+            --appimagetool "$RUNNER_TEMP/appimagetool-x86_64.AppImage"
+
+      - name: Execute packaged AppImage smoke test
+        shell: bash
+        run: |
+          package=(release-artifacts/*-Linux-x86_64-Preview.AppImage)
+          [[ ${#package[@]} -eq 1 ]]
+          python tools/smoke_preview_package.py \
+            --platform linux \
+            --package "${package[0]}" \
+            --expected-version "${{ needs.resolve-release.outputs.version }}"
+
+      - name: Upload verified Linux Preview
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: release-linux-preview
+          path: release-artifacts/*
+          if-no-files-found: error
+          retention-days: 30
+
+  metadata:
+    name: generate-release-metadata
+    needs: [resolve-release, windows, macos-preview, linux-preview]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.resolve-release.outputs.commit }}
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Download all verified platform artifacts
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: release-*
+          path: release-artifacts
+          merge-multiple: true
+
+      - name: Create CycloneDX SBOM, update manifest, and SHA256SUMS
+        run: |
+          python -m pip install cyclonedx-bom==7.3.0
+          cyclonedx-py requirements requirements.txt --output-format JSON --output-file "release-artifacts/MoHan-Desktop-Assistant-${{ needs.resolve-release.outputs.tag }}-Windows-SBOM.cdx.json"
+          cyclonedx-py requirements requirements-preview.txt --output-format JSON --output-file "release-artifacts/MoHan-Desktop-Assistant-${{ needs.resolve-release.outputs.tag }}-Preview-SBOM.cdx.json"
+          python tools/create_release_metadata.py \
+            --artifacts release-artifacts \
+            --tag "${{ needs.resolve-release.outputs.tag }}" \
+            --repository "${{ github.repository }}"
+
+      - name: Require curated four-language Release notes
+        shell: bash
+        run: |
+          notes="docs/releases/${{ needs.resolve-release.outputs.tag }}.md"
+          [[ -s "$notes" ]]
+          grep -q '^## 繁體中文' "$notes"
+          grep -q '^## 简体中文' "$notes"
+          grep -q '^## English' "$notes"
+          grep -q '^## 日本語' "$notes"
+
+      - name: Upload read-only generated metadata
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: release-metadata
+          path: |
+            release-artifacts/*-SBOM.cdx.json
+            release-artifacts/*-update.json
+            release-artifacts/*-SHA256SUMS.txt
+            release-artifacts/*-SHA256.txt
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    name: attest-and-publish-one-release
+    needs: [resolve-release, metadata]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - name: Check out immutable curated notes
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.resolve-release.outputs.commit }}
+          persist-credentials: false
+
+      - name: Download verified packages and read-only metadata
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: release-*
+          path: release-artifacts
+          merge-multiple: true
+
+      - name: Re-verify exact artifact set and SHA256 catalog
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ needs.resolve-release.outputs.tag }}
+        run: |
+          base="MoHan-Desktop-Assistant-$RELEASE_TAG"
+          expected=(
+            "$base-Windows-x64-Setup.exe"
+            "$base-Windows-x64.msi"
+            "$base-en-US.mst"
+            "$base-zh-CN.mst"
+            "$base-ja-JP.mst"
+            "$base-Windows-x64.zip"
+            "$base-macOS-arm64-Preview.dmg"
+            "$base-macOS-x86_64-Preview.dmg"
+            "$base-Linux-x86_64-Preview.AppImage"
+            "$base-Windows-SBOM.cdx.json"
+            "$base-Preview-SBOM.cdx.json"
+            "$base-update.json"
+            "$base-SHA256SUMS.txt"
+            "$base-SHA256.txt"
+          )
+          for name in "${expected[@]}"; do
+            [[ -f "release-artifacts/$name" ]] || {
+              echo "Missing required release artifact: $name" >&2
+              exit 5
+            }
+          done
+          actual_count=$(find release-artifacts -maxdepth 1 -type f | wc -l)
+          [[ "$actual_count" -eq "${#expected[@]}" ]] || {
+            echo "Unexpected release artifact count: $actual_count" >&2
+            exit 6
+          }
+          cmp --silent \
+            "release-artifacts/$base-SHA256SUMS.txt" \
+            "release-artifacts/$base-SHA256.txt"
+          (
+            cd release-artifacts
+            sha256sum --check --strict "$base-SHA256SUMS.txt"
+          )
+
+      - name: Attest every published artifact
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
         with:
           subject-path: release-artifacts/*
 
-      - name: Publish GitHub Release
-        shell: pwsh
+      - name: Require the release tag to still identify the validated commit
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ needs.resolve-release.outputs.tag }}
+          EXPECTED_COMMIT: ${{ needs.resolve-release.outputs.commit }}
+        run: |
+          git fetch --force --no-tags origin \
+            "refs/tags/$RELEASE_TAG:refs/tags/release-recheck-${GITHUB_RUN_ID}"
+          actual=$(git rev-parse "refs/tags/release-recheck-${GITHUB_RUN_ID}^{commit}")
+          if [[ "$actual" != "$EXPECTED_COMMIT" || "$(git rev-parse HEAD)" != "$EXPECTED_COMMIT" ]]; then
+            echo "Release tag changed after validation; refusing publication." >&2
+            exit 4
+          fi
+
+      - name: Publish one GitHub pre-release
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $tag = "${{ steps.release.outputs.tag }}"
-          $assets = Get-ChildItem release-artifacts -File | ForEach-Object { $_.FullName }
-          $args = @("release", "create", $tag) + $assets + @(
-            "--repo", "${{ github.repository }}",
-            "--verify-tag",
-            "--title", "MoHan Desktop Assistant $tag",
-            "--generate-notes"
-          )
-          if ($tag -match '-') { $args += "--prerelease" }
-          & gh @args
-
-      - name: Synchronize official WordPress MoHan page
-        if: ${{ env.WORDPRESS_BASE_URL != '' && env.WORDPRESS_USERNAME != '' && env.WORDPRESS_APP_PASSWORD != '' }}
-        shell: pwsh
-        run: |
-          $tag = "${{ steps.release.outputs.tag }}"
-          $manifest = "release-artifacts\MoHan-Desktop-Assistant-$tag-update.json"
-          python tools/sync_wordpress_download_page.py `
-            --manifest $manifest `
-            --release-url "https://github.com/${{ github.repository }}/releases/tag/$tag"
-
-      - name: Explain skipped website synchronization
-        if: ${{ env.WORDPRESS_BASE_URL == '' || env.WORDPRESS_USERNAME == '' || env.WORDPRESS_APP_PASSWORD == '' }}
-        shell: pwsh
-        run: |
-          "::notice::Official website synchronization was skipped because the WordPress GitHub Secrets are not configured."
+          set -euo pipefail
+          tag="${{ needs.resolve-release.outputs.tag }}"
+          if gh release view "$tag" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "Release $tag already exists; refusing to overwrite it." >&2
+            exit 7
+          fi
+          mapfile -d '' assets < <(find release-artifacts -maxdepth 1 -type f -print0 | sort -z)
+          release_id=''
+          published=false
+          cleanup_failed_draft() {
+            status=$?
+            if [[ $status -ne 0 && "$published" != true && -n "$release_id" ]]; then
+              gh api --method DELETE "repos/${{ github.repository }}/releases/$release_id" >/dev/null 2>&1 || true
+            fi
+            trap - EXIT
+            exit "$status"
+          }
+          trap cleanup_failed_draft EXIT
+          gh release create "$tag" \
+            --repo "${{ github.repository }}" \
+            --verify-tag \
+            --draft \
+            --prerelease \
+            --title "MoHan Desktop Assistant $tag" \
+            --notes-file "docs/releases/$tag.md"
+          release_id="$(gh api "repos/${{ github.repository }}/releases/tags/$tag" --jq '.id')"
+          [[ "$release_id" =~ ^[0-9]+$ ]]
+          gh release upload "$tag" "${assets[@]}" --repo "${{ github.repository }}"
+          mapfile -t actual_assets < <(gh api --paginate "repos/${{ github.repository }}/releases/$release_id/assets" --jq '.[].name' | sort)
+          mapfile -t expected_assets < <(printf '%s\n' "${assets[@]##*/}" | sort)
+          [[ "$(printf '%s\n' "${actual_assets[@]}")" == "$(printf '%s\n' "${expected_assets[@]}")" ]] || {
+            echo "Draft Release assets differ from the exact verified set." >&2
+            exit 8
+          }
+          gh api --method PATCH "repos/${{ github.repository }}/releases/$release_id" \
+            -F draft=false -F prerelease=true >/dev/null
+          [[ "$(gh api "repos/${{ github.repository }}/releases/$release_id" --jq '.draft == false and .prerelease == true')" == true ]]
+          published=true
+          trap - EXIT

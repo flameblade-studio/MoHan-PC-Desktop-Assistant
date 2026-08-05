@@ -8,6 +8,9 @@ Dependencies point downward only:
 
 1. `app.py` is the Windows character shell. `service_container.py` is the
    explicit runtime composition root.
+   `preview_app.py` is a separate, deliberately limited macOS/Linux package
+   shell. It may display platform status and localization, but it must not
+   import `app.py`, create cloud/voice/tool services, or expose secret inputs.
 2. UI modules (`flagship_ui.py`, `profile_transfer_ui.py`) may call public
    service APIs.
 3. Services (`profile_transfer.py`, `speech.py`, `realtime_voice.py`,
@@ -54,6 +57,29 @@ Circular local imports are prohibited and enforced by
   informational and must never select a character expression by itself.
 - Portable profile rules have one source of truth: `profile_transfer.py`.
 - Secrets are never stored in SQLite and never enter portable profile files.
+- A limited Preview package does not weaken this rule. Until a native secure
+  store is implemented and device-validated, the Preview UI exposes no key,
+  OAuth, or token fields and does not construct a feature service that could
+  persist them.
+
+## Package boundaries
+
+- Windows ZIP, EXE, and MSI remain the only complete product packages.
+- Separate macOS Apple Silicon (arm64) and Intel (x86_64) DMGs plus the Linux
+  x86_64 AppImage contain `preview_app.py`, not the Windows `app.py` shell.
+  Their purpose is native packaging, startup, localization, path, and
+  safety-boundary validation.
+- Pull requests may upload short-lived package artifacts after a package-level
+  smoke test. They never create a GitHub Release.
+- Only an existing `v2.2.0-rc.N` tag may publish the multi-platform candidate.
+  A read-only metadata job gathers all platform outputs and creates SBOMs,
+  metadata, and checksums. A separate minimal privileged job rechecks the
+  exact artifacts and tag commit, attests them, and publishes one Release.
+- Every Windows and Preview binary distribution carries the MIT license and
+  third-party notices in an end-user-readable location.
+- The AppImage build tool is accepted only when its official source commit,
+  asset identity, and SHA-256 match the reviewed constants. GitHub Actions are
+  pinned to complete commit SHAs.
 
 ## Data ownership
 

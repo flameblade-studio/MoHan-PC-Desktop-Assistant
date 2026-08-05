@@ -21,10 +21,10 @@ jobs:
 
     steps:
       - name: Check out source
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.14"
           cache: pip
@@ -48,9 +48,9 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Check out source
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.14"
           cache: pip
@@ -58,7 +58,9 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Install Windows installer toolchains
         shell: pwsh
-        run: choco install innosetup wixtoolset --no-progress -y
+        run: |
+          choco install innosetup --version=6.7.1 --allow-downgrade --no-progress -y
+          choco install wixtoolset --version=3.14.1.20250415 --allow-downgrade --no-progress -y
       - name: Build packaged application
         shell: pwsh
         run: .\build.ps1 -Version "2.0.15-ci" -Python (Get-Command python).Source

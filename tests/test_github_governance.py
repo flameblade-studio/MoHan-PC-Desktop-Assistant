@@ -18,13 +18,13 @@ def main() -> None:
     assert "* @hitoshic1982" in codeowners
 
     codeql = read(".github/workflows/codeql.yml")
-    assert "github/codeql-action/init@v4" in codeql
-    assert "github/codeql-action/analyze@v4" in codeql
+    assert "github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3" in codeql
+    assert "github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3" in codeql
     assert "security-events: write" in codeql
     assert "pull_request_target" not in codeql
 
     dependency_review = read(".github/workflows/dependency-review.yml")
-    assert "actions/dependency-review-action@v5" in dependency_review
+    assert "actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294" in dependency_review
     assert "fail-on-severity: moderate" in dependency_review
     assert "pull_request_target" not in dependency_review
 
@@ -33,20 +33,44 @@ def main() -> None:
     assert "python -m pip_audit -r requirements.txt --strict" in audit
 
     release = read(".github/workflows/release.yml")
-    assert "actions/upload-artifact@v6" in release
-    assert "actions/attest@v4" in release
+    assert "actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f" in release
+    assert "actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6" in release
     assert "cyclonedx-bom==7.3.0" in release
     assert "SHA256" in release
     assert "tools/audit_public_release.py" in release
     assert "tests/run_all.py" in release
     assert "PACKAGED_SELFTEST_OK" in release
     assert "PACKAGED_EVENT_LOOP_OK" in release
-    assert "Build EXE and MSI installers" in release
+    assert "Build and verify EXE and MSI installers" in release
     assert "installer\\build_installers.ps1" in release
     assert "installer\\test_installers.ps1" in release
     assert "create_release_metadata.py" in release
-    assert "sync_wordpress_download_page.py" in release
+    assert "sync_wordpress_download_page.py" not in release
+    assert "WORDPRESS_APP_PASSWORD" not in release
+    assert "macOS ${{ matrix.architecture }} limited Preview DMG" in release
+    assert "macos-15-intel" in release
+    assert "macos-15" in release
+    assert "Linux limited Preview AppImage" in release
+    assert "docs/releases/${{ needs.resolve-release.outputs.tag }}.md" in release
+    assert "git merge-base --is-ancestor" in release
+    assert "commit: ${{ steps.source.outputs.commit }}" in release
+    assert "ref: ${{ needs.resolve-release.outputs.commit }}" in release
+    assert "Release tag changed after validation" in release
+    assert "metadata:" in release
+    assert "name: generate-release-metadata" in release
+    assert "name: Re-verify exact artifact set and SHA256 catalog" in release
+    publish_job = release.split("\n  publish:\n", maxsplit=1)[1]
+    assert "pip install" not in publish_job
+    assert "cyclonedx-py" not in publish_job
+    assert "sha256sum --check --strict" in publish_job
     assert "client_secret" not in release
+
+    preview_packages = read(".github/workflows/preview-packages.yml")
+    assert "name: Cross-platform Preview package gate" in preview_packages
+    assert "needs: [macos-preview, linux-preview]" in preview_packages
+    assert "if: ${{ always() }}" in preview_packages
+    assert "macos-15-intel" in preview_packages
+    assert "macos-15" in preview_packages
 
     secret_defense = read(".github/workflows/secret-defense.yml")
     assert "gitleaks/gitleaks-action@ff98106e" in secret_defense

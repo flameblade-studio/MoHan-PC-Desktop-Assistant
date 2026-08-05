@@ -22,12 +22,14 @@ Windows デスクトップアシスタントです。中国・北宋を生きた
 モチーフに、会話、音声、表情、長期記憶、仕事管理、権限付きツールを一つの
 デスクトップキャラクターとしてまとめています。
 
-現在の公開プレビュー：v2.1.0 RC1（`v2.1.0-rc.1`）
+公開準備中のプレビュー：v2.2.0 RC1（`v2.2.0-rc.1`）
 
 > **クロスプラットフォーム状況：** 実機、全回帰テスト、インストーラー、
 > 公開パッケージまで検証済みなのは現在も Windows のみです。macOS／Linux は
 > 安全なプラットフォーム境界と、中核インポート・純粋な中核ロジック・Qt
-> offscreen の三 OS CI を整備した段階です。CI を実機互換性の証明とは扱いません。
+> offscreen の三 OS CI を整備した段階です。`v2.2.0-rc.N` 系列では、起動と
+> 四言語表示を確認できる機能限定 DMG／AppImage Preview も提供します。CI を
+> 実機互換性や完全機能の証明とは扱いません。
 > 詳細は[対応状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
 > 本プロジェクトは[炎剣オープンソース・ソフトウェア・ファミリー品質基準](PUBLISHING.md)に従います。
@@ -136,6 +138,24 @@ Windows 本機音声は利用できます。
 
 署名のないオープンソース候補版は Windows SmartScreen の警告が出る場合が
 あります。必ず公式 GitHub Releases と SHA-256 を確認してください。
+
+`v2.2.0-rc.N` 系列は macOS Apple Silicon（arm64）版と Intel（x86_64）版
+`.dmg`（各 `.app` 同梱）、および Linux x86_64 `.AppImage` も提供します。
+これらは**機能限定 Preview**であり、Windows
+完全版と同等ではありません。起動画面、四言語説明、OS ごとの保存先、安全な
+無効化境界だけを開放し、音声、透明キャラクター、完全な会話・作業画面、
+クラウド連携、システム操作、自動起動、秘密情報入力は実機確認まで無効です。
+[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)を先にお読みください。
+
+### 自動リリースの境界
+
+この系列を公開できるのは、変更しない `v2.2.0-rc.N` タグだけです。Windows
+ZIP／EXE／MSI、macOS Apple Silicon／Intel 両アーキテクチャの DMG、Linux
+AppImage は各 OS のネイティブ CI で完成品
+からの起動検査に合格してから、同じ GitHub プレリリースへ入ります。Pull
+Request は短期テスト用成果物だけを保存し、Release を作成しません。公開物には
+SHA256SUMS、Windows／Preview 別の CycloneDX SBOM、Windows 更新マニフェスト、
+Artifact Attestation、四言語の Release 説明を含めます。
 
 ## 安全性とプライバシー
 

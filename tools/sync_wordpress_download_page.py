@@ -28,7 +28,10 @@ PAYPAL_ME_URL = "https://www.paypal.com/paypalme/flamebladestudio"
 DOWNLOAD_LABELS = {
     "exe": "EXE 安裝程式（建議）",
     "msi": "MSI 安裝套件",
-    "zip": "ZIP 可攜版（候選版）",
+    "mst": "MSI 語言轉換套件",
+    "zip": "Windows ZIP 免安裝版",
+    "dmg": "macOS DMG（功能受限 Preview）",
+    "appimage": "Linux AppImage（功能受限 Preview）",
 }
 
 
@@ -81,6 +84,12 @@ def release_block(manifest: dict, release_url: str) -> str:
     for installer in manifest["installers"]:
         kind = str(installer["kind"]).lower()
         label = DOWNLOAD_LABELS.get(kind, "GitHub 發行檔")
+        architecture = str(installer.get("architecture", "")).strip()
+        locale = str(installer.get("locale", "")).strip()
+        if kind == "dmg" and architecture:
+            label = f"{label} · {architecture}"
+        elif kind == "mst" and locale:
+            label = f"{label} · {locale}"
         cards.append(
             '<article class="mohan-download-card"><a class="mohan-button mohan-button-primary" '
             'target="_blank" rel="noopener noreferrer" '
@@ -161,7 +170,8 @@ body.page-id-11163 .wp-block-post-title{{display:none}}
 
 <section class="mohan-section mohan-download"><h2>安全地從 GitHub 取得墨寒</h2>
 <p class="mohan-sub"><strong>最新版本 / Latest version: {version}</strong> ({tag})<br>本站不儲存安裝檔；所有下載、更新與驗證資料皆由 GitHub Releases 提供。<br>Installers are never hosted on this WordPress site; downloads, updates, and verification data come from GitHub Releases.</p>
-<div class="mohan-download-grid">{download_cards}</div><p class="mohan-trust">Windows 10/11 x64 · Automated CI build · SHA256 · SBOM · Artifact Attestation</p>
+    <div class="mohan-download-grid">{download_cards}</div><p class="mohan-trust">Windows 10/11 x64 正式功能包 · macOS / Linux 功能受限 Preview · Automated CI build · SHA256 · SBOM · Artifact Attestation</p>
+    <p class="mohan-note" style="text-align:center">macOS 與 Linux 預覽包只驗證啟動、四語介面與安全停用邊界，尚未完成作者實機驗證，也不等同 Windows 完整功能。<br>macOS and Linux packages are limited previews, not feature parity with the fully validated Windows build.</p>
 <div class="mohan-actions" style="justify-content:center"><a class="mohan-button mohan-button-soft" target="_blank" rel="noopener noreferrer" href="{safe_release_url}">版本說明與驗證資料<span>Release notes &amp; verification</span></a></div></section>
 
 <section class="mohan-section mohan-support"><img loading="lazy" src="{EXPRESSION_ROOT}/shy_cute_front.png" alt="墨寒嬌羞表情"><div><h2>傲嬌策士的軍糧補給處</h2>

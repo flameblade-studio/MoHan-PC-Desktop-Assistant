@@ -14,7 +14,9 @@
 
 > **跨平台進度：** Windows 仍是唯一完成實機、完整回歸、安裝與發布驗證的
 > 平台。macOS／Linux 目前只建立安全的平台邊界，並以三系統 CI 驗證核心匯入、
-> 純核心邏輯及 Qt offscreen；不能把 CI 當成真機相容證明。能力矩陣與後續步驟
+> 純核心邏輯及 Qt offscreen。`v2.2.0-rc.N` 發行線另提供可啟動、可切換四語，
+> 但功能受限的 DMG／AppImage Preview；不能把 CI 當成真機相容或完整功能證明。
+> 能力矩陣、安裝包邊界與後續步驟
 > 請見 [跨平台狀態文件](docs/CROSS-PLATFORM.md)。
 
 > 本專案遵循[炎劍開源軟體家族品質標準](PUBLISHING.md)。
@@ -32,8 +34,8 @@
 
 <p align="center">
   <strong>Author / 軟體作者：CHOU MING HUA</strong><br>
-  Current public preview / 目前公開預覽版：v2.1.0 RC1 (v2.1.0-rc.1)<br>
-  Windows 10/11 · Python 3.14 · PySide6 · MIT License
+  Prepared public preview / 準備發布預覽版：v2.2.0 RC1 (v2.2.0-rc.1)<br>
+  Windows 10/11 full build · macOS/Linux limited Preview path · Python 3.14 · PySide6 · MIT License
 </p>
 
 > 墨寒是一套重視安全、隱私與角色連續感的 Windows 語音互動桌面助理，
@@ -300,6 +302,13 @@ Azure Speech 為可選的預覽供應器，預設不啟用。它只列出 Micros
 尚未數位簽署的開源預覽版可能觸發 Windows SmartScreen。請確認下載來源與
 SHA-256 後再執行。
 
+`v2.2.0-rc.N` 發行線會額外提供 macOS Apple Silicon（arm64）與 Intel
+（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`。
+它們是**功能受限 Preview**：只開放啟動畫面、四語說明、平台
+資料路徑及安全停用邊界；並非 Windows 完整版。語音、透明桌面角色、完整聊天
+與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用，等待實機
+驗證。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md)。
+
 精簡步驟另見 [QUICKSTART.md](QUICKSTART.md)。
 
 ## OpenAI API 設定
@@ -406,21 +415,26 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.1.0-rc.1"
+.\build.ps1 -Version "2.2.0-rc.1"
 ```
 
 v2.1.0 RC1 在發布前通過 55 項自動測試程式，以及 Windows 發布工作流程的
 原始碼稽核、封裝自我測試、安裝／移除驗證與安全檢查。測試不能取代尚未完成
 的第三方真實環境驗證。
 
-GitHub 的 `v*` 標籤會自動建立 Windows x64 可攜 ZIP、EXE 安裝程式與 MSI
-安裝套件，並同時產生完整 SHA256 清單、CycloneDX SBOM、更新清單、Artifact
-Attestation 及 Release Notes。使用者可在「設定 → 軟體更新」選擇穩定版或
-預覽版頻道。程式只接受 GitHub 官方 HTTPS 來源，安裝前必須通過檔案大小及
-SHA256 驗證；不會未經確認自行執行下載內容。
+每個符合 `v2.2.0-rc.N` 的標籤會建立已驗證的 Windows x64 ZIP、EXE、MSI，
+以及功能受限的 macOS Apple Silicon／Intel 雙架構 DMG 與 Linux x86_64
+AppImage Preview。三平台安裝包
+必須通過成品層級 smoke test，才會建立同一個 GitHub 預發行版，並附上
+SHA256SUMS、分開的 Windows／Preview CycloneDX SBOM、更新清單、Artifact
+Attestation 與完整四語 Release 說明。Pull Request 只保存短期 CI 測試產物，
+不會發布 Release。使用者可在「設定 → 軟體更新」選擇穩定版或預覽版頻道；
+Windows 更新器仍只接受官方 GitHub HTTPS 的 EXE／MSI，並在詢問執行前驗證
+宣告大小與 SHA256。
 
-若維護者已設定 WordPress Application Password，發布成功後也會只更新官方
-網站下載頁中由標記管理的墨寒版本區塊，保留頁面其他人工編輯內容。
+官網更新統一交由炎劍 Product Release Hub 每小時讀取公開 GitHub Releases；
+本專案的發行工作不保存 WordPress 密碼，也不直接寫入官網。新版本最遲會在
+下一次排程刷新後出現在官網，避免三套軟體各自維護重複同步流程。
 
 ## 電腦間轉移
 
@@ -452,8 +466,10 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 > **Cross-platform status:** Windows remains the only platform validated with
 > real-device use, the full regression suite, installers, and published
 > packages. macOS/Linux currently have a safe platform boundary plus CI gates
-> for imports, pure-core behavior, and Qt offscreen; CI is not real-device
-> evidence. See [the capability matrix](docs/CROSS-PLATFORM.md).
+> for imports, pure-core behavior, and Qt offscreen. The `v2.2.0-rc.N` line
+> also produces launchable, four-language, but deliberately limited DMG and
+> AppImage previews. CI is neither real-device evidence nor proof of feature
+> parity. See [the capability matrix](docs/CROSS-PLATFORM.md).
 
 ## Overview
 
@@ -603,6 +619,15 @@ real-account end-to-end playback verification is complete.
 Unsigned preview builds may trigger Windows SmartScreen. Verify the source and
 SHA-256 before running them.
 
+The `v2.2.0-rc.N` line also provides separate macOS Apple Silicon (arm64) and
+Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux
+x86_64 `.AppImage`. These are **limited previews**, not the complete
+Windows assistant. They expose only the launch surface, four-language status,
+platform paths, and fail-closed safety boundaries. Voice, the transparent
+character, the full chat/productivity UI, cloud connectors, system tools,
+autostart, and secret entry remain disabled pending real-device validation.
+Read [the Preview package guide](docs/PREVIEW-PACKAGES.md) before downloading.
+
 See [QUICKSTART.md](QUICKSTART.md) for the condensed setup checklist.
 
 ## OpenAI API requirements
@@ -709,7 +734,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.1.0-rc.1"
+.\build.ps1 -Version "2.2.0-rc.1"
 ```
 
 Before publication, v2.1.0 RC1 passed all 55 automated test programs plus the
@@ -717,9 +742,13 @@ Windows release workflow's source audit, packaged self-test, install/uninstall
 verification, and security checks. Automated tests do not replace uncompleted
 third-party live verification.
 
-Every `v*` tag automatically builds a Windows x64 portable ZIP, EXE installer,
-and MSI package, together with a complete SHA256 catalog, CycloneDX SBOM,
-update manifest, artifact attestation, and generated release notes. Users can
+Every accepted `v2.2.0-rc.N` tag builds the validated Windows x64 portable ZIP,
+EXE installer, and MSI package plus limited macOS Apple Silicon/Intel DMGs and
+Linux x86_64 AppImage previews. The workflow runs package-level smoke tests
+before creating one
+pre-release with SHA256SUMS, separate Windows/Preview CycloneDX SBOMs, an update manifest, curated
+four-language notes, and artifact attestations. Pull requests upload only
+short-lived CI test artifacts and never publish a Release. Users can
 select the stable or preview channel under **Settings → Software update**. The
 updater accepts only official GitHub HTTPS sources and verifies both declared
 size and SHA256 before asking permission to launch an installer.
@@ -730,9 +759,10 @@ base package for silent and managed deployment, with tested en-US, zh-CN, and
 ja-JP language transforms described in
 [installer/LOCALIZATION.md](installer/LOCALIZATION.md).
 
-When the maintainer has configured a WordPress Application Password, a
-successful release updates only the marker-managed MoHan block on the official
-download page and preserves all other editorial content.
+The Flameblade Product Release Hub refreshes the official website from public
+GitHub Releases on an hourly schedule. This repository stores no WordPress
+password and its release workflow never writes directly to the website, which
+keeps all three software projects on one maintainable synchronization path.
 
 ## Portable profile
 

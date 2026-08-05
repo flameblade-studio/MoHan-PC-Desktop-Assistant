@@ -2,6 +2,65 @@
 
 All notable public changes to MoHan Desktop Assistant are documented here.
 
+## v2.2.0 RC1 — planned, not yet published
+
+### 繁體中文
+
+- 保留 Windows x64 為完整正式功能版本，沿用已驗證的 ZIP、EXE、MSI 與
+  MSI 語言轉換封裝及安裝／移除測試。
+- 新增原生 macOS Apple Silicon（arm64）／Intel（x86_64）雙架構
+  `.app`／`.dmg` 與 Linux x86_64 `.AppImage` 的功能受限
+  Preview。兩者只開放啟動、四語介面、平台資料路徑及安全停用邊界，不宣稱
+  與 Windows 功能相同，也不接受金鑰、OAuth 或 Home Assistant 權杖。
+- Pull Request 只產生短期測試產物；只有不可變的 `v2.2.0-rc.N` 標籤能建立
+  GitHub 預發行版。三平台封裝必須在各自原生 CI 執行打包後啟動測試。
+- 發行檔統一提供 SHA256SUMS、CycloneDX SBOM、更新清單與 GitHub 產物
+  證明；Release 說明必須由繁中、簡中、英文、日文完整策展文件提供。
+
+### 简体中文
+
+- Windows x64 继续作为完整正式功能版本，并保留已验证的 ZIP、EXE、MSI、
+  MSI 语言转换包以及安装／卸载测试。
+- 新增原生 macOS Apple Silicon（arm64）／Intel（x86_64）双架构
+  `.app`／`.dmg` 与 Linux x86_64 `.AppImage` 功能受限
+  Preview。两者只开放启动、四语界面、平台数据路径与安全停用边界，不宣称
+  与 Windows 功能相同，也不接收密钥、OAuth 或 Home Assistant 令牌。
+- Pull Request 只生成短期测试产物；只有不可变的 `v2.2.0-rc.N` 标签能够
+  建立 GitHub 预发布版。三个平台都必须在各自原生 CI 完成打包后启动测试。
+- 发布文件统一提供 SHA256SUMS、CycloneDX SBOM、更新清单及 GitHub 产物
+  证明；Release 说明必须采用繁中、简中、英文、日文完整编写的文件。
+
+### English
+
+- Windows x64 remains the complete product surface with the verified ZIP,
+  EXE, MSI, MSI language transforms, and installer lifecycle tests.
+- Added native macOS Apple Silicon (arm64) and Intel (x86_64) `.app`/`.dmg`
+  packages plus a Linux x86_64 `.AppImage` limited
+  Previews. They expose only launch, four-language UI, platform paths, and
+  fail-closed boundaries; they claim no Windows feature parity and accept no
+  API keys, OAuth credentials, or Home Assistant tokens.
+- Pull requests produce short-lived test artifacts only. Only immutable
+  `v2.2.0-rc.N` tags can create a GitHub pre-release, after every platform has
+  built and executed its package on a native CI runner.
+- Releases provide SHA256SUMS, CycloneDX SBOMs, an update manifest, and GitHub
+  artifact attestations, with curated Traditional Chinese, Simplified Chinese,
+  English, and Japanese release notes.
+
+### 日本語
+
+- Windows x64 を完全機能版として維持し、検証済みの ZIP、EXE、MSI、MSI
+  言語変換、およびインストール／削除テストを継続します。
+- macOS Apple Silicon（arm64）／Intel（x86_64）両方のネイティブ
+  `.app`／`.dmg` と Linux x86_64 `.AppImage` の機能限定
+  Preview を追加します。起動、四言語画面、保存先、安全な無効化だけを提供し、
+  Windows 版との同等性を主張せず、API キー、OAuth、Home Assistant Token
+  の入力も受け付けません。
+- Pull Request は短期テスト用成果物だけを作成します。GitHub のプレリリースを
+  作成できるのは変更しない `v2.2.0-rc.N` タグだけで、各 OS のネイティブ CI
+  上で配布物を作成し、起動確認に合格する必要があります。
+- SHA256SUMS、CycloneDX SBOM、更新マニフェスト、GitHub 成果物証明を提供し、
+  Release 説明は繁体字中国語・簡体字中国語・英語・日本語で作成します。
+
 ## v2.1.0 RC1 — 2026-08-04
 
 ### 繁體中文

@@ -46,6 +46,17 @@ release tag, semantic version, and SHA256 must all validate before the user is
 offered the option to launch it. Updates are never installed without explicit
 confirmation.
 
+The limited macOS/Linux Preview packages intentionally expose no API-key,
+OAuth, or Home Assistant token input. Native Keychain/Secret Service adapters
+must be separately implemented, reviewed, and validated before protected
+features can be enabled. Packaging success never permits a plaintext fallback.
+
+Release workflows pin every GitHub Action to a full commit SHA. The Linux
+AppImage builder is downloaded only from the official AppImage repository and
+must match its reviewed SHA-256 before execution. macOS packaging uses only
+runner-native Apple tools. Published assets receive SHA256SUMS, a CycloneDX
+SBOM, and GitHub Artifact Attestations.
+
 ## Remote access
 
 Remote service is disabled by default. Non-loopback binding requires an explicit
