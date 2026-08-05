@@ -146,7 +146,9 @@ def test_build_tool_and_release_gate_are_pinned() -> None:
     assert "gh release create" in release
     assert "artifact-metadata: write" in release
     assert "--draft" in release
-    assert "gh release upload" in release
+    assert 'gh release create "$tag" "${assets[@]}"' in release
+    assert "/releases/tags/$tag" not in release
+    assert "and .draft == true" in release
     assert "draft=false" in release
     assert "cleanup_failed_draft" in release
     assert "Draft Release assets differ from the exact verified set" in release
