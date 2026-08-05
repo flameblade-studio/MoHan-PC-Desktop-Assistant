@@ -77,10 +77,10 @@ tokens, or private user data.
 
 <table>
   <tr>
-    <td width="25%" align="center"><img src="docs/media/mohan-chibi-code-review.png" width="100%" alt="Q 版墨寒審查程式"><br><strong>策士審查 · Code review</strong><br>妾只是確認這段程式碼配不配入主分支。<br><sub>Reviewing whether this code deserves a place on main.</sub></td>
-    <td width="25%" align="center"><img src="docs/media/mohan-chibi-praised.png" width="100%" alt="Q 版墨寒被稱讚後害羞嘴硬"><br><strong>被稱讚時 · When praised</strong><br>做得尚可。別一直盯著妾看。<br><sub>Accepting praise—strictly for engineering quality.</sub></td>
-    <td width="25%" align="center"><img src="docs/media/mohan-chibi-dangerous-action.png" width="100%" alt="Q 版墨寒拔劍阻止危險操作"><br><strong>危險操作 · Dangerous action</strong><br>未經確認便想執行？先過妾這一劍。<br><sub>Dangerous actions still require explicit approval.</sub></td>
-    <td width="25%" align="center"><img src="docs/media/mohan-chibi-provisions.png" width="100%" alt="Q 版墨寒收到贊助後故作鎮定"><br><strong>收到軍糧 · Provisions received</strong><br>妾會記下這份心意……僅此而已。<br><sub>Voluntary support is remembered, never required.</sub></td>
+    <td width="25%" align="center" valign="top"><img src="docs/media/mohan-chibi-code-review.png" width="100%" alt="Q 版墨寒審查程式"><br><strong>策士審查 · Code review</strong><br>妾只是確認這段程式碼配不配入主分支。<br><sub>Reviewing whether this code deserves a place on main.</sub></td>
+    <td width="25%" align="center" valign="top"><img src="docs/media/mohan-chibi-praised.png" width="100%" alt="Q 版墨寒被稱讚後害羞嘴硬"><br><strong>被稱讚時 · When praised</strong><br>做得尚可。別一直盯著妾看。<br><sub>Accepting praise—strictly for engineering quality.</sub></td>
+    <td width="25%" align="center" valign="top"><img src="docs/media/mohan-chibi-dangerous-action.png" width="100%" alt="Q 版墨寒拔劍阻止危險操作"><br><strong>危險操作 · Dangerous action</strong><br>未經確認便想執行？先過妾這一劍。<br><sub>Dangerous actions still require explicit approval.</sub></td>
+    <td width="25%" align="center" valign="top"><img src="docs/media/mohan-chibi-provisions.png" width="100%" alt="Q 版墨寒收到贊助後故作鎮定"><br><strong>收到軍糧 · Provisions received</strong><br>妾會記下這份心意……僅此而已。<br><sub>Voluntary support is remembered, never required.</sub></td>
   </tr>
 </table>
 
