@@ -87,6 +87,10 @@ def main() -> int:
         "support columns must be top-aligned so shorter captions cannot push "
         "the complete image-and-text column downward on GitHub"
     )
+    assert readme.count('width="25%" align="center" valign="top"') == 4, (
+        "all four strategist-theatre cards must be top-aligned so shorter "
+        "captions cannot push the first images and text downward on GitHub"
+    )
 
     github_requirements = (
         "actions/workflows/windows-ci.yml/badge.svg",
