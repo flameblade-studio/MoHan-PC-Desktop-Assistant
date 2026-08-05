@@ -5,6 +5,9 @@ import os
 from ctypes import wintypes
 from pathlib import Path
 
+from contracts import SecretStoreFactoryPort, SecretStorePort
+from platform_contracts import PlatformServicePort
+
 
 class DATA_BLOB(ctypes.Structure):
     _fields_ = [("cbData", wintypes.DWORD), ("pbData", ctypes.POINTER(ctypes.c_byte))]
@@ -79,3 +82,56 @@ class SecretStore:
 
     def clear(self) -> None:
         self.path.unlink(missing_ok=True)
+
+
+class UnavailableSecretStore:
+    """Non-persistent store used until a native secure adapter is verified."""
+
+    def __init__(self, path: Path, reason: str):
+        self.path = path
+        self.reason = reason
+
+    def save(self, value: str) -> None:
+        if value:
+            raise OSError(self.reason)
+        self.clear()
+
+    def load(self) -> str:
+        return ""
+
+    def clear(self) -> None:
+        self.path.unlink(missing_ok=True)
+
+
+class PlatformSecretStoreFactory:
+    """Create only the secure store verified for the active platform.
+
+    Unsupported platforms receive a fail-closed store.  Keeping this choice in
+    one injectable factory prevents individual features from silently falling
+    back to plaintext or constructing a Windows-only DPAPI store themselves.
+    """
+
+    def __init__(self, platform_services: PlatformServicePort):
+        self.platform_services = platform_services
+
+    def __call__(
+        self,
+        path: Path,
+        description: str = "MoHan protected secret",
+    ) -> SecretStorePort:
+        capabilities = self.platform_services.capabilities
+        if capabilities.secure_secret_storage:
+            return SecretStore(path, description)
+        reason = (
+            f"{capabilities.display_name} 的原生安全金鑰保存"
+            "尚未完成實機驗證；墨寒不會退回明文保存。"
+        )
+        return UnavailableSecretStore(path.with_suffix(".unavailable"), reason)
+
+
+def platform_secret_store_factory(
+    platform_services: PlatformServicePort,
+) -> SecretStoreFactoryPort:
+    """Return the platform's single injectable secret-store boundary."""
+
+    return PlatformSecretStoreFactory(platform_services)

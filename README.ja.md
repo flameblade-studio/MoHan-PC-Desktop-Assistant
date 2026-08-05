@@ -1,5 +1,17 @@
 # MoHan Desktop Assistant / 墨寒デスクトップアシスタント
 
+<p align="center">
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml"><img alt="Cross-platform core CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release"></a>
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <img alt="Python 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB.svg?logo=python&logoColor=white">
+  <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
+</p>
+
 [繁體中文・English](README.md) · [简体中文](README.zh-CN.md) ·
 [クイックスタート](QUICKSTART.md) · [セキュリティ](SECURITY.md)
 
@@ -11,6 +23,14 @@ Windows デスクトップアシスタントです。中国・北宋を生きた
 デスクトップキャラクターとしてまとめています。
 
 現在の公開プレビュー：v2.1.0 RC1（`v2.1.0-rc.1`）
+
+> **クロスプラットフォーム状況：** 実機、全回帰テスト、インストーラー、
+> 公開パッケージまで検証済みなのは現在も Windows のみです。macOS／Linux は
+> 安全なプラットフォーム境界と、中核インポート・純粋な中核ロジック・Qt
+> offscreen の三 OS CI を整備した段階です。CI を実機互換性の証明とは扱いません。
+> 詳細は[対応状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
+
+> 本プロジェクトは[炎剣オープンソース・ソフトウェア・ファミリー品質基準](PUBLISHING.md)に従います。
 
 ![墨寒デスクトップアシスタントのメインビジュアル](docs/media/mohan-hero.png)
 

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import re
 import threading
 import time
@@ -13,6 +12,9 @@ from datetime import datetime
 from enum import IntEnum
 from pathlib import Path
 from typing import Any, Callable
+
+from platform_contracts import PlatformServicePort
+from platform_services import current_platform_services
 
 
 class RiskLevel(IntEnum):
@@ -414,7 +416,11 @@ class WindowsToolbox:
         allowed_folders: list[str] | None = None,
         allowed_apps: dict[str, str] | None = None,
         allowed_websites: list[str] | None = None,
+        platform_services: PlatformServicePort | None = None,
     ):
+        self.platform_services = (
+            platform_services or current_platform_services()
+        )
         self.allowed_folders = [
             Path(value).expanduser().resolve()
             for value in (allowed_folders or [])
@@ -481,7 +487,7 @@ class WindowsToolbox:
         )
         if not target.is_dir():
             raise NotADirectoryError(target)
-        os.startfile(str(target))
+        self.platform_services.open_path(target)
         return ActionResult(request.request_id, True, f"已開啟資料夾：{target}")
 
     def launch_app(self, request: ActionRequest) -> ActionResult:
@@ -491,7 +497,7 @@ class WindowsToolbox:
             raise PermissionError("程式不在允許清單內")
         if not Path(target).is_file():
             raise FileNotFoundError(target)
-        os.startfile(target)
+        self.platform_services.open_path(Path(target))
         return ActionResult(request.request_id, True, f"已啟動：{name}")
 
     def create_file(self, request: ActionRequest) -> ActionResult:

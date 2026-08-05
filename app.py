@@ -9,7 +9,6 @@ import sqlite3
 import sys
 import time
 import webbrowser
-import winreg
 from collections import deque
 from datetime import datetime
 from ctypes import wintypes
@@ -92,7 +91,11 @@ from background_agents import (
     VisibleAppWorker,
 )
 from command_parser import is_start_work_command, is_stop_work_command
-from contracts import SecretStorePort, SpeechListenerPort
+from contracts import (
+    SecretStoreFactoryPort,
+    SecretStorePort,
+    SpeechListenerPort,
+)
 from db import StudioDB, format_duration
 from expression_system import (
     ExpressionArbiter,
@@ -113,6 +116,8 @@ from lip_sync import (
 )
 from realtime_voice import RealtimeVoiceClient
 from profile_transfer_ui import PortableProfilePanel
+from platform_contracts import PlatformServicePort
+from platform_services import current_platform_services, resolved_data_dir
 from language_support import (
     english_voice_instructions,
     is_english,
@@ -156,9 +161,10 @@ from speech_providers import (
     AZURE_SPEECH_PROVIDER,
     OPENAI_REALTIME_PROVIDER,
     OPENAI_SPEECH_PROVIDER,
-    WINDOWS_LOCAL_PROVIDER,
+    SYSTEM_LOCAL_PROVIDER,
     SpeechRequest,
     create_builtin_speech_registry,
+    migrate_speech_provider_setting,
     normalize_speech_provider_id,
 )
 
@@ -520,7 +526,10 @@ VOICE_GENERATION_PROMPT = (
     "避免中國普通話腔、兒童聲、過度甜膩、誇張撒嬌或舞台式朗誦。"
 )
 
-VOICE_ENGINE_WINDOWS = WINDOWS_LOCAL_PROVIDER
+VOICE_ENGINE_SYSTEM = SYSTEM_LOCAL_PROVIDER
+# Compatibility export for extensions and tests written before the provider
+# ID became platform-neutral.
+VOICE_ENGINE_WINDOWS = VOICE_ENGINE_SYSTEM
 VOICE_ENGINE_OPENAI = OPENAI_SPEECH_PROVIDER
 VOICE_ENGINE_REALTIME = OPENAI_REALTIME_PROVIDER
 VOICE_ENGINE_AZURE = AZURE_SPEECH_PROVIDER
@@ -755,15 +764,8 @@ def resource_path(relative: str) -> Path:
     return RESOURCE_BASE / relative
 
 
-def data_dir() -> Path:
-    override = os.getenv("MOHAN_DATA_DIR", "").strip()
-    root = (
-        Path(override).expanduser()
-        if override
-        else Path(os.getenv("LOCALAPPDATA", Path.home()))
-        / "YanJianStudio"
-        / "MoHan"
-    )
+def data_dir(platform_services: PlatformServicePort | None = None) -> Path:
+    root = resolved_data_dir(platform_services)
     root.mkdir(parents=True, exist_ok=True)
     return root
 
@@ -848,19 +850,18 @@ def personalize_text(db: StudioDB, text: str) -> str:
     return result
 
 
-def set_autostart(enabled: bool) -> None:
-    key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
-    with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_SET_VALUE) as key:
-        if enabled:
-            command = f'"{sys.executable}"'
-            if not getattr(sys, "frozen", False):
-                command += f' "{Path(__file__).resolve()}"'
-            winreg.SetValueEx(key, "MoHanStudio", 0, winreg.REG_SZ, command)
-        else:
-            try:
-                winreg.DeleteValue(key, "MoHanStudio")
-            except FileNotFoundError:
-                pass
+def set_autostart(
+    enabled: bool,
+    platform_services: PlatformServicePort | None = None,
+) -> None:
+    command = f'"{sys.executable}"'
+    if not getattr(sys, "frozen", False):
+        command += f' "{Path(__file__).resolve()}"'
+    (platform_services or current_platform_services()).set_autostart(
+        enabled,
+        application_id="MoHanStudio",
+        command=command,
+    )
 
 
 class ClickableLabel(QLabel):
@@ -1256,9 +1257,18 @@ class FirstRunWizard(QDialog):
         "其他（可自行輸入）",
     )
 
-    def __init__(self, db: StudioDB, parent=None):
+    def __init__(
+        self,
+        db: StudioDB,
+        parent=None,
+        *,
+        platform_services: PlatformServicePort | None = None,
+    ):
         super().__init__(parent)
         self.db = db
+        self.platform_services = (
+            platform_services or current_platform_services()
+        )
         self.language = profile_setting(db, "ui_language")
         self.setWindowIcon(QIcon(str(resource_path(APP_ICON_PATH))))
         self.setMinimumSize(1100, 720)
@@ -1535,7 +1545,11 @@ class FirstRunWizard(QDialog):
             "work_type": combo_data_or_custom_text(self.work_type, "其他"),
             "ui_language": str(self.ui_language.currentData() or "zh-TW"),
             "wake_word": self.wake_word.text().strip() or assistant,
-            "voice_engine": VOICE_ENGINE_WINDOWS,
+            "voice_engine": (
+                VOICE_ENGINE_SYSTEM
+                if self.platform_services.capabilities.system_local_speech
+                else VOICE_ENGINE_OPENAI
+            ),
             "onboarding_complete": True,
         }
         for key, value in values.items():
@@ -1590,12 +1604,18 @@ class Dashboard(QDialog):
         parent=None,
         *,
         azure_secret_store: SecretStorePort | None = None,
+        secret_store_factory: SecretStoreFactoryPort | None = None,
+        platform_services: PlatformServicePort | None = None,
     ):
         super().__init__(parent)
         self.db = db
         self.listener = listener
         self.secret_store = secret_store
         self.azure_secret_store = azure_secret_store
+        self.secret_store_factory = secret_store_factory
+        self.platform_services = (
+            platform_services or current_platform_services()
+        )
         self.thread_pool = QThreadPool.globalInstance()
         self.ai_queue: deque[tuple[str, str]] = deque()
         self.ai_busy = False
@@ -2339,6 +2359,10 @@ class Dashboard(QDialog):
         )
         form = QFormLayout(content)
         tab.setWidget(content)
+        platform = self.platform_services.capabilities
+        local_speech_available = platform.system_local_speech
+        offline_recognition_available = platform.offline_speech_recognition
+        secure_storage_available = platform.secure_secret_storage
         self.speech_recognition = QComboBox()
         self.speech_recognition.addItem(
             self._t(
@@ -2347,10 +2371,11 @@ class Dashboard(QDialog):
             ),
             "OpenAI 高準確辨識（推薦）",
         )
-        self.speech_recognition.addItem(
-            self._t("windows_recognition", "Windows 離線辨識"),
-            "Windows 離線辨識",
-        )
+        if offline_recognition_available:
+            self.speech_recognition.addItem(
+                self._t("windows_recognition", "Windows 離線辨識"),
+                "Windows 離線辨識",
+            )
         recognition_index = self.speech_recognition.findData(
             str(
                 self.db.setting(
@@ -2405,12 +2430,23 @@ class Dashboard(QDialog):
         )
         self.windows_transcription_fallback.setChecked(
             bool(
+                offline_recognition_available
+                and
                 self.db.setting(
                     "windows_transcription_fallback",
                     True,
                 )
             )
         )
+        if not offline_recognition_available:
+            self.windows_transcription_fallback.setText(
+                self._t(
+                    "platform_offline_fallback_unavailable",
+                    f"{platform.display_name} 離線辨識尚未完成實機驗證",
+                    platform=platform.display_name,
+                )
+            )
+            self.windows_transcription_fallback.setEnabled(False)
         self.transcription_diagnostic = QLabel(
             str(
                 self.db.setting(
@@ -2427,11 +2463,16 @@ class Dashboard(QDialog):
             "color:#2f6987; padding:6px;"
         )
         self.voice_engine = QComboBox()
-        for key, label in (
+        voice_engine_options = []
+        if local_speech_available:
+            voice_engine_options.append(
+                (
+                    VOICE_ENGINE_SYSTEM,
+                    self._t("windows_engine", "Windows 本機語音"),
+                )
+            )
+        voice_engine_options.extend(
             (
-                VOICE_ENGINE_WINDOWS,
-                self._t("windows_engine", "Windows 本機語音"),
-            ),
             (
                 VOICE_ENGINE_OPENAI,
                 self._t("openai_engine", "OpenAI 自然語音"),
@@ -2444,12 +2485,11 @@ class Dashboard(QDialog):
                 VOICE_ENGINE_AZURE,
                 self._t("azure_engine", "Azure Speech（預覽）"),
             ),
-        ):
-            self.voice_engine.addItem(label, key)
-        saved_voice_engine = normalize_speech_provider_id(
-            self.db.setting("voice_engine", VOICE_ENGINE_WINDOWS)
+            )
         )
-        self.db.set_setting("voice_engine", saved_voice_engine)
+        for key, label in voice_engine_options:
+            self.voice_engine.addItem(label, key)
+        saved_voice_engine = migrate_speech_provider_setting(self.db)
         engine_index = self.voice_engine.findData(
             saved_voice_engine
         )
@@ -2457,18 +2497,28 @@ class Dashboard(QDialog):
         self.windows_voice = QComboBox()
         available_voices = [
             voice
-            for voice in windows_voices()
+            for voice in (windows_voices() if local_speech_available else [])
             if not is_known_male_windows_voice(voice[0])
         ]
         if not available_voices:
             self.windows_voice.addItem(
-                self._t(
-                    "no_female_voice",
-                    "未偵測到已確認的女性 Windows 聲音",
+                (
+                    self._t(
+                        "no_female_voice",
+                        "未偵測到已確認的女性 Windows 聲音",
+                    )
+                    if local_speech_available
+                    else self._t(
+                        "platform_local_voice_unavailable",
+                        f"{platform.display_name} 本機語音尚未完成實機驗證",
+                        platform=platform.display_name,
+                    )
                 ),
                 "",
             )
             self.windows_voice.model().item(0).setEnabled(False)
+        if not local_speech_available:
+            self.windows_voice.setEnabled(False)
         saved_windows_voice = str(self.db.setting("windows_voice", ""))
         yating_available = any(
             "yating" in name.lower() and culture.lower() == "zh-tw"
@@ -2559,23 +2609,36 @@ class Dashboard(QDialog):
         self.azure_key_input = QLineEdit()
         self.azure_key_input.setEchoMode(QLineEdit.Password)
         azure_key_saved = bool(
-            self.azure_secret_store and self.azure_secret_store.load()
+            secure_storage_available
+            and self.azure_secret_store
+            and self.azure_secret_store.load()
         )
-        self.azure_key_input.setPlaceholderText(
-            self._t(
-                "azure_key_saved",
-                "已由 Windows 加密保存（留空不變）",
+        if secure_storage_available:
+            self.azure_key_input.setPlaceholderText(
+                self._t(
+                    "azure_key_saved",
+                    "已由 Windows 加密保存（留空不變）",
+                )
+                if azure_key_saved
+                else self._t(
+                    "azure_key_missing",
+                    "貼上 Azure Speech 資源金鑰",
+                )
             )
-            if azure_key_saved
-            else self._t(
-                "azure_key_missing",
-                "貼上 Azure Speech 資源金鑰",
+        else:
+            self.azure_key_input.setPlaceholderText(
+                self._t(
+                    "platform_secret_storage_unavailable",
+                    f"{platform.display_name} 安全金鑰保存尚未完成實機驗證",
+                    platform=platform.display_name,
+                )
             )
-        )
+            self.azure_key_input.setEnabled(False)
         self.azure_clear_key = QPushButton(
             self._t("azure_remove_key", "移除 Azure Speech 金鑰")
         )
         self.azure_clear_key.clicked.connect(self.clear_azure_speech_key)
+        self.azure_clear_key.setEnabled(secure_storage_available)
         # 舊版測試與設定相容別名；新介面已將一般朗讀和 Realtime 分開。
         self.cloud_voice = self.tts_voice
         self.realtime_model = QComboBox()
@@ -2786,29 +2849,55 @@ class Dashboard(QDialog):
         )
         echo_guard_note.setWordWrap(True)
         recognition_note = QLabel(
-            self._t(
-                "recognition_note",
-                "單次麥克風預設使用 gpt-4o-mini-transcribe 與墨寒專用繁中詞庫；"
-                "停止說話約 0.85 秒即送出，最長 10 秒；收音時再次點擊"
-                "麥克風可立即送出。Windows 備援可自行關閉。",
+            (
+                self._t(
+                    "recognition_note",
+                    "單次麥克風預設使用 gpt-4o-mini-transcribe 與墨寒專用繁中詞庫；"
+                    "停止說話約 0.85 秒即送出，最長 10 秒；收音時再次點擊"
+                    "麥克風可立即送出。Windows 備援可自行關閉。",
+                )
+                if offline_recognition_available
+                else self._t(
+                    "recognition_note_no_offline",
+                    "單次麥克風使用 OpenAI 高準確辨識；此平台的離線辨識尚未"
+                    "完成實機驗證，因此不會顯示或假裝提供離線備援。",
+                )
             )
         )
         recognition_note.setWordWrap(True)
         windows_note = QLabel(
-            self._t(
-                "female_voice_note",
-                "離線聲音僅列出 Windows 已明確標示為女性的聲音；"
-                "台灣繁中仍優先使用 Yating（zh-TW）。",
+            (
+                self._t(
+                    "female_voice_note",
+                    "離線聲音僅列出 Windows 已明確標示為女性的聲音；"
+                    "台灣繁中仍優先使用 Yating（zh-TW）。",
+                )
+                if local_speech_available
+                else self._t(
+                    "platform_local_voice_note",
+                    f"{platform.display_name} 本機語音尚未完成實機驗證；"
+                    "未支援前不會顯示其他平台的聲音或宣稱有離線朗讀。",
+                    platform=platform.display_name,
+                )
             )
         )
         windows_note.setWordWrap(True)
         azure_note = QLabel(
-            self._t(
-                "azure_speech_note",
-                "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
-                "只列官方標示為女性的繁中、簡中或英文聲線；失敗時"
-                "立即回到 Windows 本機女聲。F0 免費額度及計費以"
-                " Microsoft 當期規則為準。",
+            (
+                self._t(
+                    "azure_speech_note",
+                    "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
+                    "只列官方標示為女性的繁中、簡中或英文聲線；失敗時"
+                    "立即回到 Windows 本機女聲。F0 免費額度及計費以"
+                    " Microsoft 當期規則為準。",
+                )
+                if local_speech_available
+                else self._t(
+                    "azure_speech_note_no_local_fallback",
+                    "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
+                    "此平台尚無已驗證的本機語音，服務失敗時會安全停止播放，"
+                    "不會假裝已切換到離線聲音。",
+                )
             )
         )
         azure_note.setWordWrap(True)
@@ -2816,11 +2905,29 @@ class Dashboard(QDialog):
         form.addRow(self._t("transcription_model", "轉錄模型"), self.transcription_model)
         form.addRow(self._t("transcription_language", "轉錄語言"), self.transcription_language)
         form.addRow(self._t("transcription_prompt", "轉錄提示／常用詞"), self.transcription_prompt)
-        form.addRow(self._t("windows_transcription_fallback", "Windows 備援"), self.windows_transcription_fallback)
+        form.addRow(
+            (
+                self._t("windows_transcription_fallback", "Windows 備援")
+                if offline_recognition_available
+                else self._t("offline_fallback", "離線備援")
+            ),
+            self.windows_transcription_fallback,
+        )
         form.addRow(self._t("last_transcription", "最近一次轉錄"), self.transcription_diagnostic)
         form.addRow("", recognition_note)
         form.addRow(self._t("voice_engine", "朗讀方式"), self.voice_engine)
-        form.addRow(self._t("windows_voice", "Windows 聲音"), self.windows_voice)
+        form.addRow(
+            (
+                self._t("windows_voice", "Windows 聲音")
+                if local_speech_available
+                else self._t(
+                    "platform_local_voice",
+                    f"{platform.display_name} 本機聲音",
+                    platform=platform.display_name,
+                )
+            ),
+            self.windows_voice,
+        )
         form.addRow("", windows_note)
         form.addRow(self._t("tts_voice", "OpenAI 文字朗讀聲音"), self.tts_voice)
         form.addRow(
@@ -2954,6 +3061,8 @@ class Dashboard(QDialog):
             self.db,
             self.db.path.parent,
             self,
+            platform_services=self.platform_services,
+            secret_store_factory=self.secret_store_factory,
         )
         self.flagship_center.setMinimumHeight(720)
         self.flagship_center.speak_requested.connect(
@@ -3013,6 +3122,7 @@ class Dashboard(QDialog):
         )
         form = QFormLayout(content)
         tab.setWidget(content)
+        platform = self.platform_services.capabilities
         profile_heading = QLabel(
             self._t("profile_heading", "<b>顯示名稱與使用者資料</b>")
         )
@@ -3157,8 +3267,23 @@ class Dashboard(QDialog):
             self._t("read_replies", "讓寒讀出回覆")
         )
         self.tts_enabled.setChecked(bool(self.db.setting("tts_enabled", True)))
-        self.autostart = QCheckBox("Windows 登入後自動啟動")
-        self.autostart.setChecked(bool(self.db.setting("autostart", False)))
+        self.autostart = QCheckBox(
+            "Windows 登入後自動啟動"
+            if platform.desktop_autostart
+            else self._t(
+                "platform_autostart_unavailable",
+                f"{platform.display_name} 自動啟動尚未完成實機驗證",
+                platform=platform.display_name,
+            )
+        )
+        self.autostart.setChecked(
+            bool(
+                platform.desktop_autostart
+                and self.db.setting("autostart", False)
+            )
+        )
+        if not platform.desktop_autostart:
+            self.autostart.setEnabled(False)
         self.topmost_mode = QComboBox()
         self.topmost_mode.addItems(
             ["智慧置頂（推薦）", "永遠置頂", "不置頂"]
@@ -3283,17 +3408,27 @@ class Dashboard(QDialog):
         open_folder.clicked.connect(self.open_work_folder)
         self.api_key_input = QLineEdit()
         self.api_key_input.setEchoMode(QLineEdit.Password)
-        self.api_key_input.setPlaceholderText(
-            self._t(
-                "api_key_saved",
-                "已安全保存（留空不變）",
+        if platform.secure_secret_storage:
+            self.api_key_input.setPlaceholderText(
+                self._t(
+                    "api_key_saved",
+                    "已安全保存（留空不變）",
+                )
+                if self.secret_store.load()
+                else self._t(
+                    "api_key_missing",
+                    "貼上 sk- 開頭的 OpenAI Project API Key",
+                )
             )
-            if self.secret_store.load()
-            else self._t(
-                "api_key_missing",
-                "貼上 sk- 開頭的 OpenAI Project API Key",
+        else:
+            self.api_key_input.setPlaceholderText(
+                self._t(
+                    "platform_secret_storage_unavailable",
+                    f"{platform.display_name} 安全金鑰保存尚未完成實機驗證",
+                    platform=platform.display_name,
+                )
             )
-        )
+            self.api_key_input.setEnabled(False)
         self.ai_model = QComboBox()
         self.ai_model.setEditable(True)
         self.ai_model.addItems(TEXT_MODELS)
@@ -3304,17 +3439,29 @@ class Dashboard(QDialog):
             self._t("remove_api_key", "移除已保存的 API 金鑰")
         )
         clear_key.clicked.connect(self.clear_api_key)
-        self.api_status = QLabel(
-            self._t(
+        clear_key.setEnabled(platform.secure_secret_storage)
+        if os.getenv("OPENAI_API_KEY"):
+            api_status = self._t(
+                "api_status_environment",
+                "OpenAI API：使用環境變數提供的金鑰",
+            )
+        elif self.secret_store.load():
+            api_status = self._t(
                 "api_status_saved",
                 "OpenAI API：金鑰已由 Windows 加密保存",
             )
-            if self.secret_store.load() or os.getenv("OPENAI_API_KEY")
-            else self._t(
+        elif not platform.secure_secret_storage:
+            api_status = self._t(
+                "api_status_secret_unavailable",
+                f"OpenAI API：{platform.display_name} 安全金鑰保存尚未完成實機驗證",
+                platform=platform.display_name,
+            )
+        else:
+            api_status = self._t(
                 "api_status_offline",
                 "OpenAI API：未設定，使用離線人設",
             )
-        )
+        self.api_status = QLabel(api_status)
         save = QPushButton(self._t("save_settings", "保存設定"))
         save.clicked.connect(self.save_settings)
         form.addRow(
@@ -3326,7 +3473,14 @@ class Dashboard(QDialog):
             self.overwork_message,
         )
         form.addRow("語音", self.tts_enabled)
-        form.addRow("自動啟動", self.autostart)
+        form.addRow(
+            (
+                "自動啟動"
+                if platform.desktop_autostart
+                else self._t("autostart", "自動啟動")
+            ),
+            self.autostart,
+        )
         form.addRow("桌面置頂方式", self.topmost_mode)
         form.addRow("桌面墨寒顯示大小", character_scale_box)
         form.addRow("主動協助程度", self.proactive_mode)
@@ -3364,7 +3518,11 @@ class Dashboard(QDialog):
         form.addRow(language_note)
         form.addRow("", clear_key)
         form.addRow("智能核心", self.api_status)
-        self.update_panel = UpdatePanel(self.db, data_dir(), tab)
+        self.update_panel = UpdatePanel(
+            self.db,
+            data_dir(self.platform_services),
+            tab,
+        )
         form.addRow(self.update_panel)
         form.addRow("", save)
         return tab
@@ -4519,12 +4677,13 @@ class Dashboard(QDialog):
     def clear_azure_speech_key(self) -> None:
         if self.azure_secret_store is None:
             return
+        platform = self.platform_services.capabilities
         answer = QMessageBox.question(
             self,
             self._t("azure_remove_key", "移除 Azure Speech 金鑰"),
             self._t(
                 "azure_remove_key_confirm",
-                "確定移除 Windows 加密保存的 Azure Speech 金鑰嗎？",
+                f"確定移除由 {platform.display_name} 安全保存的 Azure Speech 金鑰嗎？",
             ),
         )
         if answer == QMessageBox.Yes:
@@ -4587,7 +4746,7 @@ class Dashboard(QDialog):
         )
         self.db.set_setting(
             "voice_engine",
-            str(self.voice_engine.currentData() or VOICE_ENGINE_WINDOWS),
+            str(self.voice_engine.currentData() or VOICE_ENGINE_SYSTEM),
         )
         selected_windows_voice = str(
             self.windows_voice.currentData() or ""
@@ -4613,7 +4772,7 @@ class Dashboard(QDialog):
                 self.azure_key_input.setPlaceholderText(
                     self._t(
                         "azure_key_saved",
-                        "已由 Windows 加密保存（留空不變）",
+                        "已由作業系統安全保存（留空不變）",
                     )
                 )
             except OSError as exc:
@@ -4929,14 +5088,22 @@ class Dashboard(QDialog):
                 self.secret_store.save(key)
                 self.api_key_input.clear()
                 self.api_key_input.setPlaceholderText("已安全保存（留空不變）")
-                self.api_status.setText("OpenAI API：金鑰已由 Windows 加密保存")
+                self.api_status.setText(
+                    "OpenAI API：金鑰已由作業系統安全保存"
+                )
             except OSError as exc:
                 QMessageBox.warning(self, "API 金鑰", f"無法安全保存金鑰：{exc}")
-        try:
-            set_autostart(self.autostart.isChecked())
-            self.db.set_setting("autostart", self.autostart.isChecked())
-        except OSError as exc:
-            QMessageBox.warning(self, "自動啟動", f"無法更新自動啟動：{exc}")
+        if self.platform_services.capabilities.desktop_autostart:
+            try:
+                set_autostart(
+                    self.autostart.isChecked(),
+                    self.platform_services,
+                )
+                self.db.set_setting("autostart", self.autostart.isChecked())
+            except OSError as exc:
+                QMessageBox.warning(self, "自動啟動", f"無法更新自動啟動：{exc}")
+        else:
+            self.db.set_setting("autostart", False)
         self.settings_saved.emit()
         self.ui_language = new_ui_language
         if not silent:
@@ -4947,10 +5114,11 @@ class Dashboard(QDialog):
         return True
 
     def clear_api_key(self) -> None:
+        platform = self.platform_services.capabilities
         answer = QMessageBox.question(
             self,
             "移除 API 金鑰",
-            "確定要移除 Windows 加密保存的 OpenAI API 金鑰嗎？",
+            f"確定要移除由 {platform.display_name} 安全保存的 OpenAI API 金鑰嗎？",
         )
         if answer == QMessageBox.Yes:
             self.secret_store.clear()
@@ -4962,7 +5130,7 @@ class Dashboard(QDialog):
         value = self.work_folder.text().strip()
         if value and Path(value).is_dir():
             if self._permission_allowed("open_folder", "開啟工作室資料夾"):
-                os.startfile(value)
+                self.platform_services.open_path(Path(value))
         else:
             QMessageBox.information(
                 self, "工作資料夾", "請先填入有效的資料夾路徑。"
@@ -4983,15 +5151,23 @@ class CompanionWindow(QMainWindow):
             self,
         )
         self.db = runtime_services.db
+        self.platform_services = (
+            runtime_services.platform_services
+            or current_platform_services()
+        )
         self.backup_manager = runtime_services.backup_manager
         if (
             startup_speech
             and "--smoke-auto-exit" not in sys.argv
             and not bool(self.db.setting("onboarding_complete", False))
         ):
-            FirstRunWizard(self.db).exec()
+            FirstRunWizard(
+                self.db,
+                platform_services=self.platform_services,
+            ).exec()
         self.secret_store = runtime_services.secret_store
         self.azure_secret_store = runtime_services.azure_secret_store
+        self.secret_store_factory = runtime_services.secret_store_factory
         self.tts = runtime_services.local_tts
         self.cloud_tts = runtime_services.cloud_tts
         self.azure_tts = runtime_services.azure_speech
@@ -5010,6 +5186,8 @@ class CompanionWindow(QMainWindow):
             self.listener,
             self.secret_store,
             azure_secret_store=self.azure_secret_store,
+            secret_store_factory=self.secret_store_factory,
+            platform_services=self.platform_services,
         )
         self.dashboard.speak_requested.connect(self.speak)
         self.dashboard.voice_preview_requested.connect(self.preview_voice)
@@ -8157,13 +8335,15 @@ class CompanionWindow(QMainWindow):
             azure_region = str(
                 self.db.setting("azure_speech_region", "")
             ).strip()
-            configured_provider_ids = [VOICE_ENGINE_WINDOWS]
+            configured_provider_ids = []
+            if self.platform_services.capabilities.system_local_speech:
+                configured_provider_ids.append(VOICE_ENGINE_SYSTEM)
             if openai_api_key:
                 configured_provider_ids.append(VOICE_ENGINE_OPENAI)
             if azure_api_key and azure_region:
                 configured_provider_ids.append(VOICE_ENGINE_AZURE)
             selected_provider_id = normalize_speech_provider_id(
-                self.db.setting("voice_engine", VOICE_ENGINE_WINDOWS)
+                self.db.setting("voice_engine", VOICE_ENGINE_SYSTEM)
             )
             provider_id = self.speech_providers.output_provider_id(
                 selected_provider_id,
@@ -8175,16 +8355,31 @@ class CompanionWindow(QMainWindow):
                 selected_provider_id == VOICE_ENGINE_AZURE
                 and provider_id != VOICE_ENGINE_AZURE
             ):
+                fallback_available = (
+                    self.speech_providers.fallback_provider_id(
+                        VOICE_ENGINE_AZURE
+                    )
+                    is not None
+                )
                 self.dashboard.set_api_status(
                     ui_text(
                         str(self.db.setting("ui_language", "zh-TW")),
-                        "azure_fallback_missing_settings",
-                        "Azure Speech 尚未完成設定；已直接使用 Windows "
-                        "女性語音，未送出雲端請求。",
+                        (
+                            "azure_fallback_missing_settings"
+                            if fallback_available
+                            else "azure_missing_no_local_fallback"
+                        ),
+                        (
+                            "Azure Speech 尚未完成設定；已直接使用 Windows "
+                            "女性語音，未送出雲端請求。"
+                            if fallback_available
+                            else "Azure Speech 尚未完成設定，且此平台沒有已驗證的"
+                            "本機語音；本次不會播放，也不會送出雲端請求。"
+                        ),
                     )
                 )
             self.active_speech_engine = provider_id
-            if provider_id == VOICE_ENGINE_WINDOWS:
+            if provider_id == VOICE_ENGINE_SYSTEM:
                 voice = str(self.db.setting("windows_voice", ""))
                 api_key = ""
             elif provider_id == VOICE_ENGINE_AZURE:
@@ -8585,20 +8780,26 @@ class CompanionWindow(QMainWindow):
         provider_label: str,
         message: str,
     ) -> None:
-        self.dashboard.set_api_status(
-            f"{provider_label}失敗，已切換 Windows 女聲：{message[:50]}"
+        fallback_provider_id = self.speech_providers.fallback_provider_id(
+            failed_provider_id
         )
+        if fallback_provider_id is not None:
+            local_name = self.platform_services.capabilities.display_name
+            self.dashboard.set_api_status(
+                f"{provider_label}失敗，已切換 {local_name} 本機女聲："
+                f"{message[:50]}"
+            )
+        else:
+            self.dashboard.set_api_status(
+                f"{provider_label}失敗；此平台沒有已驗證的本機語音備援："
+                f"{message[:50]}"
+            )
         if (
             self.speech_playing
             and self.active_speech_engine == failed_provider_id
             and not self.cloud_fallback_active
             and self.active_speech_text.strip()
         ):
-            fallback_provider_id = (
-                self.speech_providers.fallback_provider_id(
-                    self.active_speech_engine
-                )
-            )
             if fallback_provider_id is None:
                 self._speech_audio_finished()
                 return
@@ -8615,8 +8816,9 @@ class CompanionWindow(QMainWindow):
         self._speech_audio_finished()
 
     def _windows_voice_failed(self, message: str) -> None:
+        platform_name = self.platform_services.capabilities.display_name
         self.dashboard.set_api_status(
-            f"Windows 語音失敗：{message[:70]}"
+            f"{platform_name} 本機語音失敗：{message[:70]}"
         )
 
     def _speech_audio_finished(self) -> None:

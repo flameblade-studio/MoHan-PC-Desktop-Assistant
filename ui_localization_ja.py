@@ -54,9 +54,17 @@ JAPANESE_UI: Mapping[str, str] = {
     "transcription_language": "文字起こし言語",
     "transcription_prompt": "文字起こしのヒント／よく使う語句",
     "windows_transcription_fallback": "Windows 代替認識",
+    "offline_fallback": "オフライン代替認識",
+    "platform_offline_fallback_unavailable": (
+        "{platform} のオフライン認識は実機検証が完了していません"
+    ),
     "last_transcription": "直近の文字起こし診断",
     "voice_engine": "読み上げ方法",
     "windows_voice": "Windows 音声",
+    "platform_local_voice": "{platform} 本機音声",
+    "platform_local_voice_unavailable": (
+        "{platform} 本機音声は実機検証が完了していません"
+    ),
     "tts_voice": "OpenAI 読み上げ音声",
     "realtime_voice": "Realtime 会話音声",
     "realtime_model": "Realtime モデル",
@@ -90,13 +98,26 @@ JAPANESE_UI: Mapping[str, str] = {
         "サービス障害時は Windows 女性音声へ戻ります。料金と利用条件は"
         " Microsoft の最新規定に従います。"
     ),
+    "azure_speech_note_no_local_fallback": (
+        "プレビュー機能です。ご自身の Azure Speech リソースキーと対応する"
+        "リージョンが必要です。この環境には検証済みの本機音声がないため、"
+        "サービス障害時は安全に再生を停止します。"
+    ),
     "azure_fallback_missing_settings": (
         "Azure Speech の設定が未完了です。クラウドへ送信せず、Windows 女性音声を使用します。"
+    ),
+    "azure_missing_no_local_fallback": (
+        "Azure Speech の設定が未完了で、この環境には検証済みの本機音声も"
+        "ありません。再生せず、クラウドにも送信しません。"
     ),
     "no_female_voice": "確認済みの Windows 女性音声が見つかりません",
     "female_voice_note": (
         "Windows が女性と明示しているインストール済み音声だけを表示します。"
         "画面言語と一致する音声を優先します。"
+    ),
+    "platform_local_voice_note": (
+        "{platform} 本機音声は実機検証が完了していません。完了するまでは"
+        "他の環境の音声を表示せず、オフライン読み上げ対応とも表示しません。"
     ),
     "transcription_language_placeholder": "ISO 言語コード（空欄なら自動判定）",
     "openai_fallback": "OpenAI 失敗時に Windows オフライン認識を使用",
@@ -134,6 +155,17 @@ JAPANESE_UI: Mapping[str, str] = {
         "一回ごとのマイク認識は約 0.85 秒の無音後に送信し、最大 10 秒録音します。"
         "もう一度マイクを押すと早めに送信できます。"
     ),
+    "recognition_note_no_offline": (
+        "一回ごとのマイク入力には OpenAI 高精度認識を使用します。"
+        "この環境のオフライン認識は実機検証完了まで表示しません。"
+    ),
+    "platform_secret_storage_unavailable": (
+        "{platform} の安全なキー保存は実機検証が完了していません"
+    ),
+    "platform_autostart_unavailable": (
+        "{platform} の自動起動は実機検証が完了していません"
+    ),
+    "autostart": "自動起動",
     "permissions_intro": (
         "機能ごとに権限を設定してください。「毎回確認」では実行前に確認します。"
         "ファイル削除は初期状態で禁止されています。"
@@ -166,6 +198,10 @@ JAPANESE_UI: Mapping[str, str] = {
     "api_key_saved": "安全に保存済み（空欄なら変更しません）",
     "api_key_missing": "sk- で始まる OpenAI Project API キーを貼り付け",
     "api_status_saved": "OpenAI API：キーは Windows で暗号化済み",
+    "api_status_environment": "OpenAI API：環境変数からキーを使用中",
+    "api_status_secret_unavailable": (
+        "OpenAI API：{platform} の安全なキー保存は実機検証が完了していません"
+    ),
     "api_status_offline": "OpenAI API：未設定、オフライン人格を使用",
     "restart_language_note": "画面言語は墨寒の再起動後に完全適用されます。",
     "reminder_work": "仕事開始",

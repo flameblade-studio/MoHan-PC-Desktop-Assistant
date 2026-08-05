@@ -1,0 +1,64 @@
+name: Cross-platform core
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cross-platform-core-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core:
+    name: core (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      QT_QPA_PLATFORM: offscreen
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install Ubuntu Qt runtime
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libegl1
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Compile source
+        run: python -m compileall -q .
+
+      - name: Verify platform imports, paths, migration, and Qt offscreen
+        run: python tests/test_cross_platform_core.py
+
+      - name: Verify provider registry migration
+        run: python tests/test_speech_provider_registry.py
+
+      - name: Verify architecture boundaries
+        run: python tests/test_architecture_contracts.py
+
+      - name: Verify platform-neutral audio and memory core
+        run: |
+          python tests/test_pcm_audio.py
+          python tests/test_audio_buffer.py
+          python tests/test_memory_vector_index.py

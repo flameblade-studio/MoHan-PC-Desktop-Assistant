@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import struct
 from pathlib import Path
 
@@ -18,6 +19,55 @@ PNG_FILES = {
     "support-shy-aligned.png": (640, 640),
     "support-mock-hit.png": (640, 640),
 }
+README_BADGES = (
+    (
+        "Windows CI",
+        "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        "actions/workflows/windows-ci.yml/badge.svg",
+    ),
+    (
+        "Cross-platform core CI",
+        "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        "actions/workflows/cross-platform-core.yml/badge.svg",
+    ),
+    (
+        "CodeQL",
+        "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        "actions/workflows/codeql.yml/badge.svg",
+    ),
+    (
+        "Python Security Audit",
+        "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        "actions/workflows/security-audit.yml/badge.svg",
+    ),
+    (
+        "Extended Secret Defense / Gitleaks",
+        "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        "actions/workflows/secret-defense.yml/badge.svg",
+    ),
+    (
+        "Latest Release",
+        "https://img.shields.io/github/v/release/"
+        "hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release",
+    ),
+    ("MIT License", "https://img.shields.io/badge/license-MIT-blue.svg"),
+    (
+        "Python 3.14",
+        "https://img.shields.io/badge/Python-3.14-3776AB.svg?"
+        "logo=python&logoColor=white",
+    ),
+    (
+        "4 interface languages",
+        "https://img.shields.io/badge/interface_languages-4-79648d.svg",
+    ),
+)
+BADGE_WORKFLOWS = (
+    "windows-ci.yml",
+    "cross-platform-core.yml",
+    "codeql.yml",
+    "security-audit.yml",
+    "secret-defense.yml",
+)
 
 
 def png_size(path: Path) -> tuple[int, int]:
@@ -47,13 +97,57 @@ def main() -> int:
         name: (ROOT / name).read_text(encoding="utf-8")
         for name in ("README.md", "README.zh-CN.md", "README.ja.md")
     }
+    badge_blocks: dict[str, str] = {}
     for name, content in localized_readmes.items():
+        badge_match = re.search(
+            r'<p align="center">\s*(.*?)\s*</p>', content, re.DOTALL
+        )
+        assert badge_match, f"{name} is missing its certification badge block"
+        badge_blocks[name] = badge_match.group(1)
+        actual_badges = tuple(
+            re.findall(r'<img alt="([^"]+)" src="([^"]+)">', badge_match.group(1))
+        )
+        assert actual_badges == README_BADGES, (
+            f"{name} certification badges are incomplete, out of order, or stale"
+        )
         for filename in PNG_FILES:
             if filename.startswith("support-"):
                 continue
             assert f"docs/media/{filename}" in content, (
                 f"{name} does not reference shared current media: {filename}"
             )
+    assert len(set(badge_blocks.values())) == 1, (
+        "all three localized README files must share the exact same badge block"
+    )
+    quality_standard = (
+        ROOT / "PUBLISHING.md"
+    ).read_text(encoding="utf-8")
+    for heading in (
+        "炎劍開源軟體家族品質標準",
+        "炎剑开源软件家族质量标准",
+        "Flameblade Open Source Software Family Quality Standard",
+        "炎剣オープンソース・ソフトウェア・ファミリー品質基準",
+    ):
+        assert heading in quality_standard, (
+            f"missing shared quality-standard heading: {heading}"
+        )
+    for declaration in (
+        "劍，我已鍛成；餘下的路，就交給你們了。",
+        "剑，我已锻成；余下的路，就交给你们了。",
+        "I have forged this sword. What comes next is up to you.",
+        "この剣は、私が鍛え上げました。あとは皆さんに託します。",
+    ):
+        assert declaration in quality_standard, (
+            f"missing open-source declaration: {declaration}"
+        )
+    for name, content in localized_readmes.items():
+        assert "(PUBLISHING.md)" in content, (
+            f"{name} does not link to the shared Flameblade quality standard"
+        )
+    for workflow in BADGE_WORKFLOWS:
+        assert (ROOT / ".github" / "workflows" / workflow).is_file(), (
+            f"README badge points to missing workflow: {workflow}"
+        )
 
     video = MEDIA / "mohan-demo.mp4"
     assert video.is_file(), "missing 30–60 second demonstration video"

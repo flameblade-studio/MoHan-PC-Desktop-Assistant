@@ -2,10 +2,22 @@
 
 <p align="center">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml"><img alt="Cross-platform core CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
+  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <img alt="Python 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB.svg?logo=python&logoColor=white">
+  <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
+
+> **跨平台進度：** Windows 仍是唯一完成實機、完整回歸、安裝與發布驗證的
+> 平台。macOS／Linux 目前只建立安全的平台邊界，並以三系統 CI 驗證核心匯入、
+> 純核心邏輯及 Qt offscreen；不能把 CI 當成真機相容證明。能力矩陣與後續步驟
+> 請見 [跨平台狀態文件](docs/CROSS-PLATFORM.md)。
+
+> 本專案遵循[炎劍開源軟體家族品質標準](PUBLISHING.md)。
 
 <p align="center">
   <img alt="Character-driven AI" src="https://img.shields.io/badge/character--driven_AI-c96f8b?style=flat-square">
@@ -436,6 +448,12 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 ---
 
 # English
+
+> **Cross-platform status:** Windows remains the only platform validated with
+> real-device use, the full regression suite, installers, and published
+> packages. macOS/Linux currently have a safe platform boundary plus CI gates
+> for imports, pure-core behavior, and Qt offscreen; CI is not real-device
+> evidence. See [the capability matrix](docs/CROSS-PLATFORM.md).
 
 ## Overview
 

@@ -1,16 +1,25 @@
 from __future__ import annotations
 
 import ctypes
+import os
 from ctypes import wintypes
+from functools import lru_cache
 from typing import Any
 
 from flagship_core import ActionRequest, ActionResult
 
 
-user32 = ctypes.windll.user32
+@lru_cache(maxsize=1)
+def _user32():
+    if os.name != "nt" or not hasattr(ctypes, "windll"):
+        return None
+    return ctypes.windll.user32
 
 
 def visible_windows() -> list[dict[str, Any]]:
+    user32 = _user32()
+    if user32 is None:
+        return []
     rows: list[dict[str, Any]] = []
     callback_type = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
 
@@ -47,6 +56,8 @@ def visible_windows() -> list[dict[str, Any]]:
 
 class WindowTools:
     def register_with(self, executor) -> None:
+        if _user32() is None:
+            return
         executor.register("window_list", self.action_list)
         executor.register(
             "window_activate",
@@ -66,6 +77,9 @@ class WindowTools:
 
     @staticmethod
     def action_activate(request: ActionRequest) -> ActionResult:
+        user32 = _user32()
+        if user32 is None:
+            raise OSError("此平台不提供 Windows 視窗切換功能。")
         target = str(request.arguments.get("title", "")).strip()
         if not target:
             raise ValueError("請提供完整視窗標題")
@@ -90,4 +104,7 @@ class WindowTools:
         _request: ActionRequest,
         result: ActionResult,
     ) -> bool:
+        user32 = _user32()
+        if user32 is None:
+            return False
         return int(user32.GetForegroundWindow()) == int(result.data.get("hwnd", 0))
