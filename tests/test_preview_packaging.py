@@ -144,6 +144,12 @@ def test_build_tool_and_release_gate_are_pinned() -> None:
     assert "^v2\\.2\\.0-rc\\.[1-9][0-9]*$" in release
     assert "pull_request:" not in release
     assert "gh release create" in release
+    assert "artifact-metadata: write" in release
+    assert "--draft" in release
+    assert "gh release upload" in release
+    assert "draft=false" in release
+    assert "cleanup_failed_draft" in release
+    assert "Draft Release assets differ from the exact verified set" in release
     assert "needs: [resolve-release, windows, macos-preview, linux-preview]" in release
     assert "commit: ${{ steps.source.outputs.commit }}" in release
     assert release.count("ref: ${{ needs.resolve-release.outputs.commit }}") == 5

@@ -362,6 +362,7 @@ jobs:
       contents: write
       id-token: write
       attestations: write
+      artifact-metadata: write
     steps:
       - name: Check out immutable curated notes
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -441,10 +442,42 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
+          tag="${{ needs.resolve-release.outputs.tag }}"
+          if gh release view "$tag" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "Release $tag already exists; refusing to overwrite it." >&2
+            exit 7
+          fi
           mapfile -d '' assets < <(find release-artifacts -maxdepth 1 -type f -print0 | sort -z)
-          gh release create "${{ needs.resolve-release.outputs.tag }}" "${assets[@]}" \
+          release_id=''
+          published=false
+          cleanup_failed_draft() {
+            status=$?
+            if [[ $status -ne 0 && "$published" != true && -n "$release_id" ]]; then
+              gh api --method DELETE "repos/${{ github.repository }}/releases/$release_id" >/dev/null 2>&1 || true
+            fi
+            trap - EXIT
+            exit "$status"
+          }
+          trap cleanup_failed_draft EXIT
+          gh release create "$tag" \
             --repo "${{ github.repository }}" \
             --verify-tag \
+            --draft \
             --prerelease \
-            --title "MoHan Desktop Assistant ${{ needs.resolve-release.outputs.tag }}" \
-            --notes-file "docs/releases/${{ needs.resolve-release.outputs.tag }}.md"
+            --title "MoHan Desktop Assistant $tag" \
+            --notes-file "docs/releases/$tag.md"
+          release_id="$(gh api "repos/${{ github.repository }}/releases/tags/$tag" --jq '.id')"
+          [[ "$release_id" =~ ^[0-9]+$ ]]
+          gh release upload "$tag" "${assets[@]}" --repo "${{ github.repository }}"
+          mapfile -t actual_assets < <(gh api --paginate "repos/${{ github.repository }}/releases/$release_id/assets" --jq '.[].name' | sort)
+          mapfile -t expected_assets < <(printf '%s\n' "${assets[@]##*/}" | sort)
+          [[ "$(printf '%s\n' "${actual_assets[@]}")" == "$(printf '%s\n' "${expected_assets[@]}")" ]] || {
+            echo "Draft Release assets differ from the exact verified set." >&2
+            exit 8
+          }
+          gh api --method PATCH "repos/${{ github.repository }}/releases/$release_id" \
+            -F draft=false -F prerelease=true >/dev/null
+          [[ "$(gh api "repos/${{ github.repository }}/releases/$release_id" --jq '.draft == false and .prerelease == true')" == true ]]
+          published=true
+          trap - EXIT
