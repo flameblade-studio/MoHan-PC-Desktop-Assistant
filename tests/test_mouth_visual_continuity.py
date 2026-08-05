@@ -49,6 +49,27 @@ def outside_mouth_signature(image: QImage, mouth: QRect) -> tuple[int, ...]:
     return tuple(values)
 
 
+def changed_pixel_count(first: QImage, second: QImage, rect: QRect) -> int:
+    return sum(
+        first.pixel(x, y) != second.pixel(x, y)
+        for y in range(rect.top(), rect.bottom() + 1)
+        for x in range(rect.left(), rect.right() + 1)
+    )
+
+
+def outside_region_changed_pixel_count(
+    first: QImage,
+    second: QImage,
+    rect: QRect,
+) -> int:
+    return sum(
+        first.pixel(x, y) != second.pixel(x, y)
+        for y in range(first.height())
+        for x in range(first.width())
+        if not rect.contains(x, y)
+    )
+
+
 def run() -> None:
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
         os.environ["LOCALAPPDATA"] = temp_dir
@@ -74,6 +95,54 @@ def run() -> None:
             frames: list[QImage] = []
             eye_rect = QRect(160, 135, 95, 48)
             mouth_rect = window.mouth_clips[""]
+            expected_cheek_mouth_rect = QRect(168, 195, 64, 40)
+            legacy_cheek_mouth_rect = QRect(174, 198, 52, 34)
+            assert mouth_rect == expected_cheek_mouth_rect, (
+                "the chin-rest portrait must replace both upturned idle mouth "
+                "corners, not only the narrower legacy lip rectangle"
+            )
+            legacy_residual_corner_strips = {
+                "left": QRect(
+                    mouth_rect.left(),
+                    mouth_rect.top(),
+                    legacy_cheek_mouth_rect.left() - mouth_rect.left(),
+                    mouth_rect.height(),
+                ),
+                "right": QRect(
+                    legacy_cheek_mouth_rect.right() + 1,
+                    mouth_rect.top(),
+                    mouth_rect.right() - legacy_cheek_mouth_rect.right(),
+                    mouth_rect.height(),
+                ),
+            }
+            clean_base = (
+                window.expression_pixmaps["idle"]
+                .toImage()
+                .convertToFormat(QImage.Format_ARGB32)
+            )
+            for expression in ("speaking", "mouth_i"):
+                speech_frame = (
+                    window.expression_pixmaps[expression]
+                    .toImage()
+                    .convertToFormat(QImage.Format_ARGB32)
+                )
+                for side, strip in legacy_residual_corner_strips.items():
+                    changed = changed_pixel_count(
+                        clean_base,
+                        speech_frame,
+                        strip,
+                    )
+                    assert changed >= strip.width() * strip.height() // 10, (
+                        f"{expression} left the {side} upturned idle mouth "
+                        f"corner visible ({changed} changed pixels)"
+                    )
+                assert outside_region_changed_pixel_count(
+                    clean_base,
+                    speech_frame,
+                    mouth_rect,
+                ) == 0, (
+                    f"{expression} changed pixels outside the cheek mouth clip"
+                )
             vowels = (
                 "A",
                 "A",
@@ -117,9 +186,6 @@ def run() -> None:
                 for frame in frames
             }
             assert len(eye_signatures) == 1, "eyes changed during mouth animation"
-            clean_base = window.expression_pixmaps["idle"].toImage().convertToFormat(
-                QImage.Format_ARGB32
-            )
             clean_outside = outside_mouth_signature(clean_base, mouth_rect)
             assert all(
                 outside_mouth_signature(frame, mouth_rect) == clean_outside
