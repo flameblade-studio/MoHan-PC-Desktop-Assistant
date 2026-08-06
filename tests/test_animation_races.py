@@ -104,9 +104,8 @@ def run() -> None:
         window.speech_mid_expression = "mouth_mid_front"
         window.speech_open_expression = "speaking_front"
         window._start_mouth_animation(audio_driven=True)
-        window._audio_viseme_cue(0.65, "O")
-        window._audio_viseme_cue(0.65, "O")
-        window._audio_viseme_cue(0.65, "O")
+        for _ in range(5):
+            window._audio_viseme_cue(0.65, "O")
         QTest.qWait(250)
         app.processEvents()
         assert not window.pose_transition_active
@@ -188,9 +187,8 @@ def run() -> None:
         assert window.speech_blinking
         window._start_mouth_animation(audio_driven=True)
         assert window.blink_generation > old_generation
-        window._audio_viseme_cue(0.70, "I")
-        window._audio_viseme_cue(0.70, "I")
-        window._audio_viseme_cue(0.70, "I")
+        for _ in range(5):
+            window._audio_viseme_cue(0.70, "I")
         QTest.qWait(180)
         app.processEvents()
         assert window.current_expression == "mouth_i_front"

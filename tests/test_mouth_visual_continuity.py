@@ -179,25 +179,16 @@ def run() -> None:
             assert len(central_signatures) >= 4, (
                 "fixed corners must not flatten the central A/I/U/E/O shapes"
             )
-            vowels = (
-                "A",
-                "A",
-                "A",
-                "O",
-                "O",
-                "O",
-                "I",
-                "I",
-                "I",
-                "CLOSED",
-            )
+            # Keep each target long enough to satisfy the production 50 Hz
+            # anti-flicker holds while still sampling every visual transition.
+            vowels = ("A",) * 5 + ("O",) * 5 + ("I",) * 5 + ("CLOSED",) * 4
             # Drive the transition clock at a stable 60 Hz. Sleeping for 16 ms
             # lets a busy Windows runner skip intermediate frames and turns a
             # visual-continuity assertion into a scheduler lottery.
             clock = [100.0]
             with patch("app.time.perf_counter", side_effect=lambda: clock[0]):
                 for index, vowel in enumerate(vowels):
-                    if index == 3:
+                    if index == 5:
                         # A delayed idle-pose callback must not redirect a live
                         # mouth onto another face while speech is still playing.
                         window.idle_pose = "front"

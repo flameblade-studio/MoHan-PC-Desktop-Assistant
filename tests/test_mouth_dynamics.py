@@ -42,11 +42,13 @@ def run() -> None:
             window._audio_viseme_cue(level, vowel)
 
         apertures = []
-        for _ in range(3):
+        for _ in range(5):
             cue(0.55, "A")
             apertures.append(window.mouth_aperture_target)
         assert window.current_viseme == "A"
-        assert 0.08 <= apertures[0] == apertures[1] < apertures[2] < 1.0
+        assert 0.08 <= apertures[0]
+        assert apertures == sorted(apertures)
+        assert apertures[-1] < 1.0
 
         # Rapidly alternating vowel guesses must not make the mouth flicker.
         for vowel in ("O", "I") * 6:
@@ -58,8 +60,9 @@ def run() -> None:
         assert window.current_viseme == "O"
 
         before_release = window.jaw_aperture
-        cue(0.0, "CLOSED")
-        assert window.current_viseme == "O"
+        for _ in range(3):
+            cue(0.0, "CLOSED")
+            assert window.current_viseme == "O"
         assert window.jaw_aperture < before_release
         cue(0.0, "CLOSED")
         assert window.current_viseme == "CLOSED"

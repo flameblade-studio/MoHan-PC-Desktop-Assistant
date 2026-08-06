@@ -13,10 +13,11 @@ VOWEL_FORMANTS = {
     "O": (500.0, 950.0),
 }
 
-# One timing contract is shared by Windows TTS, OpenAI TTS and Realtime.
-# Audio is sampled every 40 ms; two matching samples confirm a vowel in
-# roughly 80 ms without the 120 ms lag of the former three-sample rule.
-VISEME_CUES_PER_SECOND = 25
+# One timing contract is shared by Windows TTS, OpenAI TTS, Azure Speech and
+# Realtime. A 20 ms cue matches the Realtime device block and keeps buffered
+# WAV providers on the same clock instead of making their lips react at half
+# the live-audio rate.
+VISEME_CUES_PER_SECOND = 50
 VISEME_CONFIRM_FRAMES = {
     "A": 2,
     "I": 2,
@@ -35,9 +36,9 @@ VISEME_MIN_HOLD_SECONDS = {
     "O": 0.075,
     "CONSONANT": 0.040,
 }
-VISEME_OPEN_TRANSITION_SECONDS = 0.085
-VISEME_CLOSE_TRANSITION_SECONDS = 0.075
-VISEME_CHANGE_TRANSITION_SECONDS = 0.055
+VISEME_OPEN_TRANSITION_SECONDS = 0.055
+VISEME_CLOSE_TRANSITION_SECONDS = 0.050
+VISEME_CHANGE_TRANSITION_SECONDS = 0.040
 
 
 def _pcm16_samples(pcm: bytes) -> array:

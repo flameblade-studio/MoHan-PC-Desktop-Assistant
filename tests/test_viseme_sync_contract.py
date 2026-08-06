@@ -16,6 +16,7 @@ from PySide6.QtWidgets import QApplication
 
 from app import CompanionWindow, EXPRESSION_SPEECH_FRAMES
 from lip_sync import (
+    VISEME_CUES_PER_SECOND,
     VISEME_CHANGE_TRANSITION_SECONDS,
     VISEME_CLOSE_TRANSITION_SECONDS,
     VISEME_OPEN_TRANSITION_SECONDS,
@@ -70,7 +71,7 @@ def run() -> None:
 
             def cue(vowel: str, level: float = 0.60) -> None:
                 window._audio_viseme_cue(level, vowel)
-                clock[0] += 0.04
+                clock[0] += 1.0 / VISEME_CUES_PER_SECOND
 
             cue("A")
             assert window.current_viseme == "E"
@@ -81,14 +82,18 @@ def run() -> None:
             cue("A")
             assert window.current_viseme == "E"
             cue("A")
+            assert window.current_viseme == "E"
+            cue("A")
+            assert window.current_viseme == "E"
+            cue("A")
             assert window.current_viseme == "A"
-            assert clock[0] <= 0.12
+            assert clock[0] <= 0.101
             assert (
                 window.mouth_transition_duration
                 == VISEME_CHANGE_TRANSITION_SECONDS
             )
 
-            # Sustaining A must not restart the interpolation every 40 ms.
+            # Sustaining A must not restart the interpolation every 20 ms.
             started_at = window.mouth_transition_started
             for _ in range(4):
                 cue("A")
@@ -99,16 +104,18 @@ def run() -> None:
             cue("O")
             cue("O")
             assert window.current_viseme == "O"
-            assert clock[0] - vowel_change_started <= 0.081
+            assert clock[0] - vowel_change_started <= 0.041
 
-            # A consonant can react within one 40 ms cue after the current
-            # vowel's minimum hold, then two silent cues close the mouth.
+            # A consonant can react within one 20 ms cue after the current
+            # vowel's minimum hold, then sustained silence closes the mouth.
+            cue("O")
+            cue("O")
             cue("O")
             cue("O")
             consonant_started = clock[0]
             cue("CONSONANT", 0.35)
             assert window.current_viseme == "CONSONANT"
-            assert clock[0] - consonant_started <= 0.041
+            assert clock[0] - consonant_started <= 0.021
             cue("CLOSED", 0.0)
             assert window.current_viseme == "CONSONANT"
             cue("CLOSED", 0.0)

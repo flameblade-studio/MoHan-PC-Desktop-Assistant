@@ -8,13 +8,14 @@ import threading
 import time
 import wave
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from PySide6.QtCore import QCoreApplication
 
 from lip_sync import VISEME_CUES_PER_SECOND
-from speech import WindowsTTS
+from speech import WindowsTTS, emit_wave_viseme_cues, play_wave_with_visemes
 
 
 def make_test_wave(duration: float = 1.2, rate: int = 24000) -> bytes:
@@ -33,28 +34,39 @@ def make_test_wave(duration: float = 1.2, rate: int = 24000) -> bytes:
     return output.getvalue()
 
 
-def measure(tts: WindowsTTS, duration: float) -> list[float]:
-    tts = WindowsTTS()
+def measure(_tts: WindowsTTS, duration: float) -> list[float]:
     emitted_at: list[float] = []
-    started_at = time.perf_counter()
-    tts.viseme_cue.connect(
-        lambda _level, _vowel: emitted_at.append(
-            time.perf_counter() - started_at
-        )
+    playback_start = threading.Event()
+    timeline_ready = threading.Event()
+    started_at = [0.0]
+    worker = threading.Thread(
+        target=emit_wave_viseme_cues,
+        args=(
+            make_test_wave(duration),
+            lambda _level, _vowel: emitted_at.append(
+                time.perf_counter() - started_at[0]
+            ),
+            playback_start,
+            timeline_ready,
+        ),
     )
-    start_event = threading.Event()
-    start_event.set()
-    tts._emit_wave_cues(make_test_wave(duration), start_event)
+    worker.start()
+    assert timeline_ready.wait(timeout=2.0)
+    started_at[0] = time.perf_counter()
+    playback_start.set()
+    worker.join(timeout=duration + 1.0)
+    assert not worker.is_alive()
     return emitted_at
 
 
 def run() -> None:
     app = QCoreApplication.instance() or QCoreApplication([])
+    assert VISEME_CUES_PER_SECOND == 50
     tts = WindowsTTS()
     emitted_at = measure(tts, 1.2)
     app.processEvents()
-    assert len(emitted_at) >= 28
-    assert emitted_at[0] < 0.06
+    assert len(emitted_at) >= 56
+    assert emitted_at[0] < 0.04
     assert 1.05 <= emitted_at[-1] <= 1.24
     long_emitted_at = measure(tts, 4.0)
     app.processEvents()
@@ -73,6 +85,95 @@ def run() -> None:
         sum(intervals) / len(intervals)
         - 1.0 / VISEME_CUES_PER_SECOND
     ) < 0.003
+
+    # Only the first 20 ms WAV cue is prepared before playback, and no visual
+    # cue may escape until the real playback-start gate releases it.
+    playback_start = threading.Event()
+    timeline_ready = threading.Event()
+    gated_cues: list[tuple[float, str]] = []
+    with patch(
+        "speech.infer_vowel_pcm16",
+        return_value=(0.5, "A"),
+    ) as analyzer:
+        worker = threading.Thread(
+            target=emit_wave_viseme_cues,
+            args=(
+                make_test_wave(0.12),
+                lambda level, vowel: gated_cues.append((level, vowel)),
+                playback_start,
+                timeline_ready,
+            ),
+        )
+        worker.start()
+        assert timeline_ready.wait(timeout=1.0)
+        assert gated_cues == []
+        assert analyzer.call_count == 1
+        playback_start.set()
+        worker.join(timeout=1.0)
+    assert len(gated_cues) >= 5
+
+    # Volume preparation must finish before the playback gate can emit a cue.
+    order: list[str] = []
+
+    class FakeWinSound:
+        SND_FILENAME = 1
+        SND_MEMORY = 2
+
+        @staticmethod
+        def PlaySound(_audio, _flags) -> None:
+            order.append("playback-start")
+            time.sleep(0.03)
+            order.append("playback-end")
+
+    def prepared_audio(audio: bytes, _volume: int, _muted: bool) -> bytes:
+        order.append("volume-ready")
+        return audio
+
+    with (
+        patch("speech.winsound", FakeWinSound),
+        patch("speech.apply_wav_volume", side_effect=prepared_audio),
+    ):
+        play_wave_with_visemes(
+            make_test_wave(0.08),
+            80,
+            False,
+            lambda _level, vowel: order.append(
+                "closed" if vowel == "CLOSED" else "cue"
+            ),
+        )
+    assert order[0] == "volume-ready"
+    assert "cue" in order
+    assert order.index("volume-ready") < order.index("cue")
+    assert order.index("playback-end") < order.index("closed")
+    assert order[-1] == "closed"
+
+    # If analysis falls behind the blocking audio player, no late vowel is
+    # allowed to reopen the mouth after the final closed cue.
+    delayed_cues: list[str] = []
+
+    class ShortPlayback(FakeWinSound):
+        @staticmethod
+        def PlaySound(_audio, _flags) -> None:
+            time.sleep(0.01)
+
+    def slow_analyzer(_pcm: bytes, _rate: int) -> tuple[float, str]:
+        time.sleep(0.03)
+        return 0.7, "A"
+
+    with (
+        patch("speech.winsound", ShortPlayback),
+        patch("speech.infer_vowel_pcm16", side_effect=slow_analyzer),
+    ):
+        play_wave_with_visemes(
+            make_test_wave(0.12),
+            100,
+            False,
+            lambda _level, vowel: delayed_cues.append(vowel),
+        )
+    assert delayed_cues[-1] == "CLOSED"
+    completed_cues = tuple(delayed_cues)
+    time.sleep(0.08)
+    assert tuple(delayed_cues) == completed_cues
     print("LIPSYNC_TIMING_OK")
 
 
