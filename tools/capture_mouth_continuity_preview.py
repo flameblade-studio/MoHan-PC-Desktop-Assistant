@@ -27,9 +27,12 @@ def main() -> int:
         window.bubble.hide()
         window.idle_pose = "cheek"
         window.state = "speaking"
-        window.audio_driven_mouth = True
+        window.speech_pose_suffix = ""
+        window.speech_closed_expression = window._closed_speech_expression()
+        window.speech_mid_expression = window._mouth_mid_expression()
+        window.speech_open_expression = window._speaking_expression()
         window.speech_blinking = False
-        window._set_expression("idle", fade=False)
+        window._start_mouth_animation(audio_driven=True)
 
         frames: list[QImage] = []
         crop = QRect(155, 165, 120, 100)

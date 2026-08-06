@@ -394,6 +394,12 @@ EXPRESSION_SPEECH_MOUTH_RECTS.update({
     "exasperated_front": QRect(199, 201, 58, 47),
     "eureka_front": QRect(197, 190, 58, 48),
 })
+CHEEK_SPEECH_CLOSED_EXPRESSION = "idle_speech_neutral"
+# Keep the photographed cheek-rest mouth corners outside the animated region.
+# At the runtime 465 px canvas, the visible central lips occupy roughly
+# x=184..207; widening this mask reaches both smile corners and recreates the
+# Joker-like corner flutter reported in rapid A/I/U/E/O transitions.
+CHEEK_SPEECH_CENTRAL_MOUTH_RECT = QRect(184, 198, 24, 34)
 GESTURE_SPEECH_MOUTH_RECTS = {
     expression: EXPRESSION_SPEECH_MOUTH_RECTS[expression]
     for expression in GESTURE_SPEECH_EXPRESSIONS
@@ -6544,6 +6550,11 @@ class CompanionWindow(QMainWindow):
             return "mouth_mid_front"
         return "mouth_mid"
 
+    def _closed_speech_expression(self) -> str:
+        if self.idle_pose == "cheek":
+            return CHEEK_SPEECH_CLOSED_EXPRESSION
+        return self._idle_expression()
+
     def _build_mouth_frames(self) -> None:
         mouth_clips = {
             # The cheek-rest portrait has a wider closed smile than its
@@ -6577,6 +6588,63 @@ class CompanionWindow(QMainWindow):
                 )
             painter.end()
             self.mouth_masks[suffix] = mask
+        self.viseme_mouth_masks = dict(self.mouth_masks)
+        central_mask = QPixmap(465, 465)
+        central_mask.fill(Qt.transparent)
+        painter = QPainter(central_mask)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setPen(Qt.NoPen)
+        for inset, alpha in (
+            (0, 52),
+            (1, 82),
+            (2, 128),
+            (3, 255),
+        ):
+            painter.setBrush(QColor(255, 255, 255, alpha))
+            painter.drawRoundedRect(
+                CHEEK_SPEECH_CENTRAL_MOUTH_RECT.adjusted(
+                    inset,
+                    inset,
+                    -inset,
+                    -inset,
+                ),
+                9,
+                9,
+            )
+        painter.end()
+        self.viseme_mouth_masks[""] = central_mask
+
+        # The cheek-rest idle portrait has a deliberately upturned smile.
+        # During speech, freeze neutral corners from its identity-matched open
+        # frame once, then let A/I/U/E/O replace only the central lips. This
+        # keeps the smiling eyes while preventing both corners from fluttering
+        # on every viseme transition.
+        cheek_idle = self.expression_pixmaps["idle"]
+        cheek_neutral = QPixmap(cheek_idle)
+        painter = QPainter(cheek_neutral)
+        painter.drawPixmap(
+            0,
+            0,
+            self._masked_mouth_patch(
+                self.expression_pixmaps["speaking"],
+                "",
+            ),
+        )
+        painter.drawPixmap(
+            0,
+            0,
+            self._masked_region(
+                cheek_idle,
+                self.viseme_mouth_masks[""],
+            ),
+        )
+        painter.end()
+        self.expression_pixmaps[
+            CHEEK_SPEECH_CLOSED_EXPRESSION
+        ] = cheek_neutral
+        self.physics_expression_poses[
+            CHEEK_SPEECH_CLOSED_EXPRESSION
+        ] = "cheek"
         self.gesture_mouth_masks = {}
         for expression, mouth_rect in (
             EXPRESSION_SPEECH_MOUTH_RECTS.items()
@@ -6755,7 +6823,11 @@ class CompanionWindow(QMainWindow):
             ("idle_lean", "speaking_lean", "mouth_mid_lean"),
             ("idle_front", "speaking_front", "mouth_mid_front"),
         ):
-            closed = self.expression_pixmaps[closed_name]
+            closed = self.expression_pixmaps[
+                CHEEK_SPEECH_CLOSED_EXPRESSION
+                if closed_name == "idle"
+                else closed_name
+            ]
             raw_opened = self.expression_pixmaps[open_name]
             suffix = closed_name.removeprefix("idle")
             mouth_clip = mouth_clips[suffix]
@@ -6764,7 +6836,10 @@ class CompanionWindow(QMainWindow):
             painter.drawPixmap(
                 0,
                 0,
-                self._masked_mouth_patch(raw_opened, suffix),
+                self._masked_region(
+                    raw_opened,
+                    self.viseme_mouth_masks[suffix],
+                ),
             )
             painter.end()
             self.expression_pixmaps[open_name] = opened
@@ -6778,7 +6853,10 @@ class CompanionWindow(QMainWindow):
             painter.drawPixmap(
                 0,
                 0,
-                self._masked_mouth_patch(mid_source, suffix),
+                self._masked_region(
+                    mid_source,
+                    self.viseme_mouth_masks[suffix],
+                ),
             )
             painter.end()
             self.expression_pixmaps[mid_name] = mid_frame
@@ -6798,7 +6876,10 @@ class CompanionWindow(QMainWindow):
             painter.drawPixmap(
                 0,
                 0,
-                self._masked_mouth_patch(source, suffix),
+                self._masked_region(
+                    source,
+                    self.viseme_mouth_masks[suffix],
+                ),
             )
             painter.end()
             return normalized
@@ -6806,7 +6887,11 @@ class CompanionWindow(QMainWindow):
         for suffix, mouth_clip in mouth_clips.items():
             closed_name = f"idle{suffix}"
             opened_name = f"speaking{suffix}"
-            closed = self.expression_pixmaps[closed_name]
+            closed = self.expression_pixmaps[
+                CHEEK_SPEECH_CLOSED_EXPRESSION
+                if suffix == ""
+                else closed_name
+            ]
             opened = self.expression_pixmaps[opened_name]
             wide_source = self.expression_pixmaps.get(
                 f"viseme_wide{suffix}",
@@ -7981,6 +8066,15 @@ class CompanionWindow(QMainWindow):
                     self.speech_gesture_expression
                 ],
             )
+        if (
+            suffix == ""
+            and self.speech_closed_expression
+            == CHEEK_SPEECH_CLOSED_EXPRESSION
+        ):
+            return self._masked_region(
+                source,
+                self.viseme_mouth_masks[""],
+            )
         return self._masked_mouth_patch(
             source,
             suffix,
@@ -8306,7 +8400,9 @@ class CompanionWindow(QMainWindow):
             self.speech_open_expression = frames["open"]
         else:
             self.speech_closed_expression = (
-                f"idle{self.speech_pose_suffix}"
+                CHEEK_SPEECH_CLOSED_EXPRESSION
+                if self.speech_pose_suffix == ""
+                else f"idle{self.speech_pose_suffix}"
             )
             self.speech_mid_expression = (
                 f"mouth_mid{self.speech_pose_suffix}"
@@ -8666,7 +8762,9 @@ class CompanionWindow(QMainWindow):
                 if self.idle_pose == "front"
                 else ""
             )
-            self.speech_closed_expression = self._idle_expression()
+            self.speech_closed_expression = (
+                self._closed_speech_expression()
+            )
             self.speech_mid_expression = self._mouth_mid_expression()
             self.speech_open_expression = self._speaking_expression()
             self._start_mouth_animation(audio_driven=True)
