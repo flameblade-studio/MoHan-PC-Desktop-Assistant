@@ -62,6 +62,32 @@
 协作投入近 50 小时，将墨寒从想象一步步做成真正能在 Windows 上运行的
 开源软件。
 
+炎剑文化工作室对开源的理解，不是把第一个“能运行”的版本交给世界，再把
+细节留给别人收拾。为了让墨寒说话时仍像同一个人，我们为托腮、倚靠与正面
+姿势分别制作闭嘴、展唇、窄唇与圆唇画面，再把声音切成细小时间片，反复校准
+元音、过渡速度与结束时机。陪伴感往往不是由某一项庞大功能产生，而是来自
+她开口、眨眼与停顿时，那些没有破坏真实感的细节。
+
+<p align="center">
+  <a href="docs/media/creation-viseme-development.webp"><img src="docs/media/creation-viseme-development.webp" width="100%" alt="墨寒三种姿势与四种语音口型的整齐开发图版"></a>
+</p>
+<p align="center"><sub>三种姿势、同一套口型规格：让每一次开口都维持角色连续性。</sub></p>
+
+开发过程中不够自然的画面也会被留下来检查。眼白中的一个亮点、闭眼时残留
+的线条、被拉扯的嘴角，或只有几个像素的边界，都可能让使用者在一瞬间觉得
+“她不像刚才的墨寒”。因此，问题会被标出、局部对比、修复，再通过回归测试
+确认眼睛、嘴角与脸部其他区域没有被连带破坏。
+
+<p align="center">
+  <a href="docs/media/creation-frame-by-frame-qa.webp"><img src="docs/media/creation-frame-by-frame-qa.webp" width="100%" alt="墨寒眼睛与口型逐帧检查及干净验证画面"></a>
+</p>
+<p align="center"><sub>把瑕疵标出来，再用干净画面与自动测试共同验收；几个像素也值得认真。</sub></p>
+
+这份认真不是为了把作品包装成从未犯错，而是因为我们真的想完成一个梦想。
+开源对炎剑而言，是先尽力修好自己能看见的问题，再公开方法、代码与失败后
+的经验，邀请世界一起把它锻造得更好。**剑，我已铸成；余下的路，就交给
+你们了。**
+
 墨寒采用 MIT License。欢迎工程师通过
 [Issue](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues)
 与 [Pull Request](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls)
