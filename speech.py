@@ -179,6 +179,7 @@ def emit_wave_viseme_cues(
     audio: bytes,
     emit_cue: Callable[[float, str], None],
     playback_start: threading.Event | None = None,
+    timeline_ready: threading.Event | None = None,
 ) -> None:
     """Emit the shared audio-driven mouth timeline for any WAV provider."""
 
@@ -188,24 +189,37 @@ def emit_wave_viseme_cues(
             channels = source.getnchannels()
             width = source.getsampwidth()
             frames_per_chunk = max(1, rate // VISEME_CUES_PER_SECOND)
+            chunk = source.readframes(frames_per_chunk)
+            if width != 2 or not chunk:
+                return
+            if channels == 2:
+                chunk = stereo_to_mono_pcm16(chunk)
+            prepared_cue = infer_vowel_pcm16(chunk, rate)
+            if timeline_ready is not None:
+                timeline_ready.set()
             if playback_start is not None:
                 playback_start.wait(timeout=2.0)
             started_at = time.perf_counter()
             chunk_index = 0
-            while chunk := source.readframes(frames_per_chunk):
-                if width != 2:
-                    continue
-                if channels == 2:
-                    chunk = stereo_to_mono_pcm16(chunk)
-                vowel_level, vowel = infer_vowel_pcm16(chunk, rate)
+            while chunk:
+                vowel_level, vowel = prepared_cue
                 deadline = started_at + chunk_index * frames_per_chunk / rate
                 remaining = deadline - time.perf_counter()
                 if remaining > 0:
                     time.sleep(remaining)
                 emit_cue(vowel_level, vowel)
+                chunk = source.readframes(frames_per_chunk)
+                if not chunk:
+                    break
+                if channels == 2:
+                    chunk = stereo_to_mono_pcm16(chunk)
+                prepared_cue = infer_vowel_pcm16(chunk, rate)
                 chunk_index += 1
     except (OSError, EOFError, wave.Error):
         return
+    finally:
+        if timeline_ready is not None:
+            timeline_ready.set()
 
 
 def play_wave_with_visemes(
@@ -222,21 +236,38 @@ def play_wave_with_visemes(
             "此平台的音訊播放介面尚未完成實機驗證；未播放這段語音。"
         )
 
+    playback_audio = apply_wav_volume(audio, volume_percent, muted)
     playback_start = threading.Event()
+    playback_finished = threading.Event()
+    timeline_ready = threading.Event()
+
+    def emit_active_cue(level: float, vowel: str) -> None:
+        if not playback_finished.is_set():
+            emit_cue(level, vowel)
+
     cue_thread = threading.Thread(
         target=emit_wave_viseme_cues,
-        args=(audio, emit_cue, playback_start),
+        args=(audio, emit_active_cue, playback_start, timeline_ready),
         daemon=True,
     )
     cue_thread.start()
+    timeline_ready.wait(timeout=2.0)
+    # Release the first pre-analyzed 20 ms cue immediately before the blocking
+    # playback call. The worker stays one cue ahead after playback begins, so
+    # long replies do not pay an up-front full-file analysis delay.
     playback_start.set()
-    playback_audio = apply_wav_volume(audio, volume_percent, muted)
-    if audio_path is not None and volume_percent == 100 and not muted:
-        winsound.PlaySound(str(audio_path), winsound.SND_FILENAME)
-    else:
-        winsound.PlaySound(playback_audio, winsound.SND_MEMORY)
-    cue_thread.join(timeout=0.35)
-    emit_cue(0.0, "CLOSED")
+    try:
+        if audio_path is not None and volume_percent == 100 and not muted:
+            winsound.PlaySound(str(audio_path), winsound.SND_FILENAME)
+        else:
+            winsound.PlaySound(playback_audio, winsound.SND_MEMORY)
+    finally:
+        # A delayed analyzer must never reopen the mouth after the blocking
+        # playback call has returned. Only the final closed cue may cross the
+        # end-of-audio boundary.
+        playback_finished.set()
+        cue_thread.join(timeout=0.35)
+        emit_cue(0.0, "CLOSED")
 
 
 @dataclass(frozen=True)

@@ -426,10 +426,10 @@ def run() -> None:
     realtime.running = True
     realtime._playback_loop(playback_queue, playback_probe, 24000)
     realtime.running = False
-    assert len(playback_probe.chunks) == 3
+    assert len(playback_probe.chunks) == 5
     realtime_samples = array("h", b"".join(playback_probe.chunks))
     assert max(realtime_samples) == 8750
-    assert len(playback_visemes) >= 3
+    assert len(playback_visemes) >= 5
     muted_queue = queue.Queue()
     muted_queue.put(array("h", [7000, -7000] * 1200).tobytes())
     muted_queue.put(None)

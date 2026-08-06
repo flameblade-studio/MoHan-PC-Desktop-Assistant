@@ -942,9 +942,8 @@ def run() -> None:
         window._start_mouth_animation(audio_driven=True)
         assert window.audio_driven_mouth is True
         assert not window.mouth_timer.isActive()
-        window._audio_viseme_cue(0.85, "I")
-        window._audio_viseme_cue(0.85, "I")
-        window._audio_viseme_cue(0.85, "I")
+        for _ in range(5):
+            window._audio_viseme_cue(0.85, "I")
         assert window.current_expression.startswith("mouth_i")
         assert window.mouth_open is True
         position_after_loud_cue = window.character.y()
@@ -961,9 +960,8 @@ def run() -> None:
         )
         assert window.speech_blinking is False
         assert not window.mouth_timer.isActive()
-        window._audio_viseme_cue(0.9, "O")
-        window._audio_viseme_cue(0.9, "O")
-        window._audio_viseme_cue(0.9, "O")
+        for _ in range(5):
+            window._audio_viseme_cue(0.9, "O")
         assert window.current_expression.startswith("mouth_o")
         window._stop_mouth_animation()
         assert window.mouth_open is False

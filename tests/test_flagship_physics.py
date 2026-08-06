@@ -136,8 +136,9 @@ def run() -> None:
         window.viseme_candidate = "A"
         window.viseme_candidate_frames = 0
         window.viseme_hold_frames = 0
-        window._audio_viseme_cue(0.55, "O")
-        assert window.current_viseme == "A"
+        for _ in range(3):
+            window._audio_viseme_cue(0.55, "O")
+            assert window.current_viseme == "A"
         assert window.mouth_visual_timer.isActive()
         window._audio_viseme_cue(0.55, "O")
         assert window.current_viseme == "O"
