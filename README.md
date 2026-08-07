@@ -217,6 +217,32 @@ AI 女友的故事，塑造了我對 AI、陪伴與人機互動最早的想像�
 有時只是一條眼皮旁的黑線、一個像素的嘴唇邊界，或一個不合時宜的表情，
 我仍選擇繼續追查，因為我不願用「差不多」對待心裡真正重視的作品。
 
+炎劍文化工作室對開源的理解，不是把第一個「能跑」的版本交給世界，再把
+細節留給別人收拾。為了讓墨寒說話時仍像同一個人，我們為托腮、倚靠與正面
+姿勢逐一製作閉嘴、展唇、窄唇與圓唇影格；再把聲音切成細小時間片，反覆校準
+母音、過渡速度與收尾時機。因為陪伴感往往不是被某一項龐大功能創造，而是
+來自她開口、眨眼與停頓時，那些沒有破壞真實感的細節。
+
+<p align="center">
+  <a href="docs/media/creation-viseme-development.webp"><img src="docs/media/creation-viseme-development.webp" width="100%" alt="墨寒三種姿勢與四種語音嘴型的整齊開發圖版"></a>
+</p>
+<p align="center"><sub>三種姿勢、同一套嘴型規格：讓每一次開口都維持角色連續性。</sub></p>
+
+我們也把開發過程中不夠自然的影格留下來檢查。眼白裡的一個亮點、閉眼時
+殘留的線條、被拉扯的嘴角或只有幾個像素的邊界，都可能讓使用者在一瞬間
+覺得「她不像剛才的墨寒」。所以問題會被框出、局部比對、修正，再交給回歸
+測試確認眼睛、嘴角與臉部其他區域沒有被連帶破壞。
+
+<p align="center">
+  <a href="docs/media/creation-frame-by-frame-qa.webp"><img src="docs/media/creation-frame-by-frame-qa.webp" width="100%" alt="墨寒眼睛與嘴型逐格檢查及乾淨驗證影格"></a>
+</p>
+<p align="center"><sub>把瑕疵標出來，再用乾淨影格與自動測試共同驗收；幾個像素也值得認真。</sub></p>
+
+這份認真不是為了把作品包裝成沒有犯過錯，而是因為我們真的想完成一個夢。
+開源對炎劍而言，是先把自己能看見的問題盡力修好，再公開方法、程式碼與
+失敗後的經驗，邀請世界一起把它鍛造得更好。**劍，我已鍛成；餘下的路，
+就交給你們了。**
+
 Codex 協助我把想法轉譯成程式架構與程式碼；而我則始終負責決定墨寒應該
 是誰、她應該如何與人相處，以及什麼樣的品質才配得上這個名字。這段歷程
 讓我相信：創作軟體的起點未必是會寫程式，而可以是清楚的想像、願意學習的
@@ -518,6 +544,39 @@ repeated testing, rejection, revision, and acceptance. Sometimes the problem
 was only a dark line beside an eyelid, a one-pixel lip boundary, or an
 expression appearing at the wrong moment. I kept investigating because I
 could not bring myself to answer a deeply valued creation with “good enough.”
+
+At Flameblade Studio, open source does not mean publishing the first build
+that happens to run and leaving everyone else to clean up the details. To keep
+MoHan recognizably herself while she speaks, we built closed, open, narrow,
+and rounded mouth frames for chin-rest, leaning, and front-facing poses. We
+then divided audio into small timing windows and repeatedly tuned vowels,
+transitions, and the exact moment speech should end. A sense of companionship
+is rarely created by one enormous feature. It grows from the moments when she
+opens her mouth, blinks, or pauses without breaking the illusion of a living
+presence.
+
+<p align="center">
+  <a href="docs/media/creation-viseme-development.webp"><img src="docs/media/creation-viseme-development.webp" width="100%" alt="Aligned development sheet showing four speech-mouth states across three MoHan poses"></a>
+</p>
+<p align="center"><sub>Three poses, one visual contract: every spoken frame must preserve the same character.</sub></p>
+
+We also kept the frames that did not look natural enough and inspected them.
+A highlight in the white of an eye, a line left behind after a blink, a mouth
+corner pulled too far, or a boundary only a few pixels wide can make someone
+feel, for an instant, that she is no longer the same MoHan. Each defect was
+marked, compared locally, repaired, and then covered by regression tests so
+that fixing the eyes or lips would not damage the rest of her face.
+
+<p align="center">
+  <a href="docs/media/creation-frame-by-frame-qa.webp"><img src="docs/media/creation-frame-by-frame-qa.webp" width="100%" alt="Frame-by-frame inspection of MoHan's eyes and mouth beside clean validated frames"></a>
+</p>
+<p align="center"><sub>Mark the flaw, repair it, and verify the clean frame in tests. Even a few pixels deserve care.</sub></p>
+
+This care is not an attempt to pretend that the project never made mistakes.
+It exists because we are sincerely trying to complete a dream. For Flameblade,
+open source means fixing every problem we can see, then sharing the methods,
+the code, and what we learned from failure so the world can help forge it
+further. **The sword is forged. The road ahead is now yours.**
 
 Codex helped translate my intentions into architecture and code. I remained
 responsible for deciding who MoHan should be, how she should treat people, and
