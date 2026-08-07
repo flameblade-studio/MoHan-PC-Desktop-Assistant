@@ -34,7 +34,7 @@
 
 <p align="center">
   <strong>Author / 軟體作者：CHOU MING HUA</strong><br>
-  Prepared public preview / 準備發布預覽版：v2.2.0 RC1 (v2.2.0-rc.1)<br>
+  Prepared public preview / 準備發布預覽版：v2.2.0 RC2 (v2.2.0-rc.2)<br>
   Windows 10/11 full build · macOS/Linux limited Preview path · Python 3.14 · PySide6 · MIT License
 </p>
 
@@ -441,7 +441,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.2.0-rc.1"
+.\build.ps1 -Version "2.2.0-rc.2"
 ```
 
 v2.1.0 RC1 在發布前通過 55 項自動測試程式，以及 Windows 發布工作流程的
@@ -793,7 +793,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.2.0-rc.1"
+.\build.ps1 -Version "2.2.0-rc.2"
 ```
 
 Before publication, v2.1.0 RC1 passed all 55 automated test programs plus the

@@ -129,7 +129,7 @@ def test_build_tool_and_release_gate_are_pinned() -> None:
     assert 'stage / "LICENSE.txt"' in build_source
     assert '"mohan-desktop-assistant"' in build_source
     _validate_version("2.2.0-rc.0")
-    _validate_version("2.2.0-rc.1")
+    _validate_version("2.2.0-rc.2")
     for invalid in ("2.2.0", "2.2.0-rc", "2.2.0-rc.01", "2.1.0-rc.2"):
         try:
             _validate_version(invalid)
@@ -185,7 +185,7 @@ def test_build_tool_and_release_gate_are_pinned() -> None:
 
 
 def test_release_version_has_one_source_of_truth() -> None:
-    assert FALLBACK_VERSION == "2.2.0-rc.1"
+    assert FALLBACK_VERSION == "2.2.0-rc.2"
     tag = f"v{FALLBACK_VERSION}"
     assert (ROOT / "docs" / "releases" / f"{tag}.md").is_file()
     release = read(".github/workflows/release.yml")
@@ -197,7 +197,7 @@ def test_release_version_has_one_source_of_truth() -> None:
 
 
 def test_four_language_release_notes_and_boundaries() -> None:
-    notes = read("docs/releases/v2.2.0-rc.1.md")
+    notes = read("docs/releases/v2.2.0-rc.2.md")
     expected_headings = (
         "## 繁體中文",
         "## 简体中文",

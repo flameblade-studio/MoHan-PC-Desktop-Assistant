@@ -38,8 +38,8 @@ open-source
 
 ## Prepared public pre-release
 
-- Tag: `v2.2.0-rc.1`
-- Title: `MoHan Desktop Assistant v2.2.0 RC1`
+- Tag: `v2.2.0-rc.2`
+- Title: `MoHan Desktop Assistant v2.2.0 RC2`
 - Publication: only after every required CI, package smoke, security, and
   release-policy check succeeds
 - Includes the Windows x64 portable ZIP, per-user EXE and MSI installers,
