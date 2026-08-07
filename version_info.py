@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 PROJECT_REPOSITORY = "hitoshic1982/MoHan-PC-Desktop-Assistant"
-FALLBACK_VERSION = "2.2.0-rc.1"
+FALLBACK_VERSION = "2.2.0-rc.2"
 
 
 def _build_info_path() -> Path:

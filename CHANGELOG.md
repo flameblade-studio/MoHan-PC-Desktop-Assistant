@@ -2,7 +2,76 @@
 
 All notable public changes to MoHan Desktop Assistant are documented here.
 
-## v2.2.0 RC1 — planned, not yet published
+## v2.2.0 RC2 — planned, not yet published
+
+### 繁體中文
+
+- 托腮待機姿勢在說話期間改用中性嘴角基底：保留眼角笑意，但固定左右嘴角，
+  只讓中央嘴唇依 A／I／U／E／O 與開合程度變化，避免誇張咧嘴與殘影。
+- Realtime、Windows 本機語音、OpenAI 自然語音與 Azure Speech 統一使用
+  20 毫秒／50 Hz 嘴型節拍，縮短張嘴、閉嘴與母音切換延遲。
+- 聲音與第一個嘴型從同一播放閘門起跑；聲音結束後拒收遲到母音，只允許
+  最終閉嘴訊號通過，避免嘴型先停或聲音結束後再次張嘴。
+- 托腮待機眨眼改用完整雙眼遮罩；眼皮閉合時不再殘留睜眼狀態的上眼線，
+  一般待機與情境表情共用同一套座標與合成來源。
+- 強化標籤發行流程的 Draft Release 復原與清理機制，失敗的發布不會留下
+  可被誤認為正式版本的殘缺發行項目。
+- 四語 README 新增兩張統一規格的創作歷程圖版，說明炎劍如何逐格檢查
+  眼睛、嘴角與語音嘴型，並以測試把二十多年的夢想鍛造成開源作品。
+
+### 简体中文
+
+- 托腮待机姿势在说话期间改用中性嘴角基础：保留眼角笑意，但固定左右嘴角，
+  只让中央嘴唇按照 A／I／U／E／O 与开合程度变化，避免夸张咧嘴和残影。
+- Realtime、Windows 本地语音、OpenAI 自然语音及 Azure Speech 统一使用
+  20 毫秒／50 Hz 口型节拍，缩短张嘴、闭嘴与元音切换延迟。
+- 声音与第一个口型从同一播放闸门起跑；声音结束后拒收迟到元音，只允许
+  最终闭嘴信号通过，避免口型先停或声音结束后再次张嘴。
+- 托腮待机眨眼改用完整双眼遮罩；眼皮闭合时不再残留睁眼状态的上眼线，
+  普通待机与情境表情共用同一套坐标及合成来源。
+- 强化标签发布流程的 Draft Release 恢复与清理机制，失败的发布不会留下
+  容易被误认为正式版本的不完整发布项目。
+- 四语 README 新增两张统一规格的创作历程图版，说明炎剑如何逐帧检查
+  眼睛、嘴角与语音口型，并以测试将二十多年的梦想锻造成开源作品。
+
+### English
+
+- Gives the chin-rest pose a neutral speech-mouth base: the smiling eyes remain,
+  both corners stay fixed, and only the central lips follow A/I/U/E/O and jaw
+  aperture, eliminating the exaggerated grin and corner ghosting.
+- Moves Realtime, Windows local speech, OpenAI natural speech, and Azure Speech
+  onto one 20 ms / 50 Hz viseme clock with shorter open, close, and vowel-change
+  transitions.
+- Releases audio and the first viseme through the same playback gate, rejects
+  late vowels after playback ends, and permits only the final closed-mouth cue.
+- Replaces the complete bilateral eye area during chin-rest idle blinks, so
+  open-eye eyeliner cannot remain above closed eyelids; idle and contextual
+  expressions now share one authoritative mask definition.
+- Makes tagged Draft Release publication recoverable and cleans up failed
+  attempts so incomplete assets cannot resemble a finished public release.
+- Adds two aligned creation-history panels to all four README languages,
+  documenting the frame-by-frame care behind MoHan's eyes, mouth corners, and
+  lip sync—and the dream Flameblade is turning into open-source software.
+
+### 日本語
+
+- 頬杖姿勢の発話中は中立な口角ベースを使用します。目元の笑みを残しながら
+  左右の口角を固定し、中央の唇だけを A／I／U／E／O と開口量に合わせて
+  動かすことで、誇張された笑顔と残像を防ぎます。
+- Realtime、Windows ローカル音声、OpenAI 自然音声、Azure Speech を
+  共通の 20 ミリ秒／50 Hz 口形周期へ統一し、開口、閉口、母音切り替えの
+  遅延を短縮します。
+- 音声と最初の口形を同じ再生ゲートから開始し、再生終了後の遅延母音を拒否、
+  最後の閉口信号だけを通すことで、口だけが先に止まる現象を防ぎます。
+- 頬杖の待機中のまばたきでは両目全体を覆う共通マスクを使用し、閉じた
+  まぶたの上に開眼時のアイラインが残らないようにしました。待機表情と
+  状況表情は同じ座標・合成定義を共有します。
+- タグ発行時の Draft Release を安全に復旧・清理できるようにし、失敗した
+  発行が不完全な公開版として残らないようにしました。
+- 四言語 README に統一規格の制作過程図を2枚追加し、目、口角、口形を
+  フレーム単位で確認しながら夢をオープンソース作品へ鍛える姿勢を伝えます。
+
+## v2.2.0 RC1 — 2026-08-06
 
 ### 繁體中文
 

@@ -41,6 +41,25 @@ def run() -> None:
         for timer in window.findChildren(QTimer):
             timer.stop()
 
+        # Idle, speech and expression blinks must share the same wide eye
+        # replacement mask.  A second, narrower idle mask once left the
+        # cheek-rest portrait's upper eyeliner visible over a closed eyelid.
+        assert window.dedicated_blink_masks is window.blink_masks
+        assert window.dedicated_blink_regions == {
+            "cheek": (
+                QRect(160, 153, 55, 34),
+                QRect(198, 153, 61, 34),
+            ),
+            "lean": (
+                QRect(153, 153, 55, 34),
+                QRect(191, 153, 61, 34),
+            ),
+            "front": (
+                QRect(180, 153, 53, 34),
+                QRect(220, 153, 56, 34),
+            ),
+        }
+
         # Face parallax must never redraw neutral open eyes or a closed mouth
         # over the canonical blink/viseme layers.
         for pose, regions in window.face_parallax_cutouts.items():

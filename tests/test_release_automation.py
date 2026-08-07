@@ -22,7 +22,7 @@ from tools.sync_wordpress_download_page import (
 
 
 def main() -> None:
-    current_version = "2.2.0-rc.1"
+    current_version = "2.2.0-rc.2"
     version_info = (ROOT / "version_info.py").read_text(encoding="utf-8")
     assert f'FALLBACK_VERSION = "{current_version}"' in version_info
 
@@ -192,7 +192,7 @@ def main() -> None:
 
     with tempfile.TemporaryDirectory() as temp:
         artifacts = Path(temp)
-        prefix = "MoHan-Desktop-Assistant-v2.2.0-rc.1"
+        prefix = "MoHan-Desktop-Assistant-v2.2.0-rc.2"
         (artifacts / f"{prefix}-Windows-x64-Setup.exe").write_bytes(b"exe")
         (artifacts / f"{prefix}-Windows-x64.msi").write_bytes(b"msi")
         for locale in ("en-US", "zh-CN", "ja-JP"):
@@ -214,7 +214,7 @@ def main() -> None:
                 "--artifacts",
                 str(artifacts),
                 "--tag",
-                "v2.2.0-rc.1",
+                "v2.2.0-rc.2",
                 "--repository",
                 "hitoshic1982/MoHan-PC-Desktop-Assistant",
             ],
@@ -231,7 +231,7 @@ def main() -> None:
                 "--artifacts",
                 str(artifacts),
                 "--tag",
-                "v2.2.0-rc.1",
+                "v2.2.0-rc.2",
                 "--repository",
                 "hitoshic1982/MoHan-PC-Desktop-Assistant",
             ],
@@ -269,7 +269,7 @@ def main() -> None:
                 "--artifacts",
                 str(artifacts),
                 "--tag",
-                "v2.2.0-rc.1",
+                "v2.2.0-rc.2",
                 "--repository",
                 "hitoshic1982/MoHan-PC-Desktop-Assistant",
             ],
@@ -279,7 +279,7 @@ def main() -> None:
         )
         assert mismatched.returncode != 0
         mismatched_appimage.rename(appimage)
-        manifest_path = artifacts / "MoHan-Desktop-Assistant-v2.2.0-rc.1-update.json"
+        manifest_path = artifacts / "MoHan-Desktop-Assistant-v2.2.0-rc.2-update.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         assert manifest["schema"] == 1
         assert {
@@ -312,8 +312,8 @@ def main() -> None:
             for item in manifest["installers"]
             if item["kind"] == "mst"
         } == {"en-US", "zh-CN", "ja-JP"}
-        canonical = artifacts / "MoHan-Desktop-Assistant-v2.2.0-rc.1-SHA256SUMS.txt"
-        compatibility = artifacts / "MoHan-Desktop-Assistant-v2.2.0-rc.1-SHA256.txt"
+        canonical = artifacts / "MoHan-Desktop-Assistant-v2.2.0-rc.2-SHA256SUMS.txt"
+        compatibility = artifacts / "MoHan-Desktop-Assistant-v2.2.0-rc.2-SHA256.txt"
         checksums = canonical.read_text(encoding="ascii")
         assert compatibility.read_text(encoding="ascii") == checksums
         assert manifest_path.name in checksums
@@ -355,11 +355,11 @@ def main() -> None:
         assert "Download ZIP" in portable
         initial = "<p>保留的網站內容</p>"
         first = replace_managed_block(initial, block)
-        second = replace_managed_block(first, block.replace("2.2.0-rc.1", "2.2.0-rc.2"))
+        second = replace_managed_block(first, block.replace("2.2.0-rc.2", "2.2.0-rc.3"))
         assert second.count(START_MARKER) == 1
         assert second.count(END_MARKER) == 1
         assert "保留的網站內容" in second
-        assert "2.2.0-rc.2" in second
+        assert "2.2.0-rc.3" in second
 
     print("RELEASE_INSTALLER_WEBSITE_AUTOMATION_OK")
 

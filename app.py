@@ -6705,18 +6705,25 @@ class CompanionWindow(QMainWindow):
                         expression
                     ][vowel]
                 ] = derived
+        # One authoritative eye-replacement area is shared by idle blinks,
+        # speaking blinks, expression-local blinks and face parallax.  The
+        # earlier idle mask was narrower than the photographed upper
+        # eyeliner, so a few open-eye pixels could remain visible after the
+        # eyelid had closed—most noticeably in the cheek-rest portrait.
+        # These bounds cover both eye corners while remaining below the
+        # original eyebrows.
         blink_regions = {
             "cheek": (
-                QRect(169, 158, 36, 24),
-                QRect(203, 158, 37, 24),
+                QRect(160, 153, 55, 34),
+                QRect(198, 153, 61, 34),
             ),
             "lean": (
-                QRect(162, 158, 36, 24),
-                QRect(196, 158, 37, 24),
+                QRect(153, 153, 55, 34),
+                QRect(191, 153, 61, 34),
             ),
             "front": (
-                QRect(188, 158, 39, 24),
-                QRect(226, 158, 40, 24),
+                QRect(180, 153, 53, 34),
+                QRect(220, 153, 56, 34),
             ),
         }
         self.blink_masks = {}
@@ -6741,48 +6748,10 @@ class CompanionWindow(QMainWindow):
                     )
             painter.end()
             self.blink_masks[pose] = mask
-        # Dedicated identity-locked blink portraits replace a wider eye area
-        # than the legacy neutral blink patch. The extra horizontal coverage
-        # prevents a few pixels of the open-eye eyeliner from surviving at an
-        # inner or outer corner, while the vertical bounds remain below the
-        # expression's original eyebrows.
-        dedicated_blink_regions = {
-            "cheek": (
-                QRect(160, 153, 55, 34),
-                QRect(198, 153, 61, 34),
-            ),
-            "lean": (
-                QRect(153, 153, 55, 34),
-                QRect(191, 153, 61, 34),
-            ),
-            "front": (
-                QRect(180, 153, 53, 34),
-                QRect(220, 153, 56, 34),
-            ),
-        }
-        self.dedicated_blink_regions = dedicated_blink_regions
-        self.dedicated_blink_masks = {}
-        for pose, regions in dedicated_blink_regions.items():
-            mask = QPixmap(465, 465)
-            mask.fill(Qt.transparent)
-            painter = QPainter(mask)
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setPen(Qt.NoPen)
-            for region in regions:
-                for inset, alpha in (
-                    (0, 42),
-                    (1, 76),
-                    (2, 132),
-                    (3, 255),
-                ):
-                    painter.setBrush(QColor(255, 255, 255, alpha))
-                    painter.drawRoundedRect(
-                        region.adjusted(inset, inset, -inset, -inset),
-                        10,
-                        10,
-                    )
-            painter.end()
-            self.dedicated_blink_masks[pose] = mask
+        # Compatibility aliases keep existing callers readable without
+        # maintaining a second set of coordinates or masks.
+        self.dedicated_blink_regions = blink_regions
+        self.dedicated_blink_masks = self.blink_masks
 
         # The face-parallax source contains a complete neutral face. Drawing
         # that full layer over a blink or viseme reintroduces open eyes and a
@@ -6795,7 +6764,7 @@ class CompanionWindow(QMainWindow):
             ("lean", "_lean"),
             ("front", "_front"),
         ):
-            left_eye, right_eye = dedicated_blink_regions[pose]
+            left_eye, right_eye = blink_regions[pose]
             mouth = mouth_clips[suffix]
             cutout = QPixmap(465, 465)
             cutout.fill(Qt.transparent)
@@ -7295,7 +7264,7 @@ class CompanionWindow(QMainWindow):
         dedicated_blink = EXPRESSION_BLINK_FRAMES.get(base_expression)
         if dedicated_blink is not None:
             blink_source = self.expression_pixmaps[dedicated_blink]
-            eye_mask = self.dedicated_blink_masks[pose]
+            eye_mask = self.blink_masks[pose]
             if offset_x or offset_y:
                 eye_mask = self._translated_pixmap(
                     eye_mask,
