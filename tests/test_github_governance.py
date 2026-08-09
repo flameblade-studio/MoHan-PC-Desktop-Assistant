@@ -70,6 +70,10 @@ def main() -> None:
     assert "commit: ${{ steps.source.outputs.commit }}" in release
     assert "ref: ${{ needs.resolve-release.outputs.commit }}" in release
     assert "Release tag changed after validation" in release
+    assert 'default: false\n        type: boolean' in release
+    assert "Verify existing pre-release without modifying it" in release
+    assert "Existing Release assets differ from the exact verified set." in release
+    assert "github.event_name == 'push' || inputs.publish" in release
     assert "metadata:" in release
     assert "name: generate-release-metadata" in release
     assert "name: Re-verify exact artifact set and SHA256 catalog" in release

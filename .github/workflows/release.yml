@@ -7,9 +7,14 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Existing v2.2.0-rc.N tag to package and publish"
+        description: "Existing v2.2.0-rc.N tag to package"
         required: true
         type: string
+      publish:
+        description: "Publish a new pre-release after verification"
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -354,7 +359,7 @@ jobs:
           retention-days: 30
 
   publish:
-    name: attest-and-publish-one-release
+    name: verify-or-publish-one-release
     needs: [resolve-release, metadata]
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -419,6 +424,7 @@ jobs:
           )
 
       - name: Attest every published artifact
+        if: ${{ github.event_name == 'push' || inputs.publish }}
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
         with:
           subject-path: release-artifacts/*
@@ -437,7 +443,30 @@ jobs:
             exit 4
           fi
 
+      - name: Verify existing pre-release without modifying it
+        if: ${{ github.event_name == 'workflow_dispatch' && !inputs.publish }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="${{ needs.resolve-release.outputs.tag }}"
+          release_id="$(gh api --paginate "repos/${{ github.repository }}/releases?per_page=100" --jq ".[] | select(.tag_name == \"$tag\") | .id" | head -n 1)"
+          [[ "$release_id" =~ ^[0-9]+$ ]] || {
+            echo "Expected an existing Release for verification: $tag" >&2
+            exit 7
+          }
+          [[ "$(gh api "repos/${{ github.repository }}/releases/$release_id" --jq '.draft == false and .prerelease == true')" == true ]]
+          mapfile -t actual_assets < <(gh api --paginate "repos/${{ github.repository }}/releases/$release_id/assets" --jq '.[].name' | sort)
+          mapfile -t expected_assets < <(find release-artifacts -maxdepth 1 -type f -printf '%f\n' | sort)
+          [[ "$(printf '%s\n' "${actual_assets[@]}")" == "$(printf '%s\n' "${expected_assets[@]}")" ]] || {
+            echo "Existing Release assets differ from the exact verified set." >&2
+            exit 8
+          }
+          echo "Release $tag is unchanged and matches the verified artifact set."
+
       - name: Publish one GitHub pre-release
+        if: ${{ github.event_name == 'push' || inputs.publish }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
