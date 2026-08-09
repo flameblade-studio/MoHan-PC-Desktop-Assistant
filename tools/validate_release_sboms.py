@@ -546,16 +546,19 @@ def _finalize_dependency_graph(
             raise ValueError(f"Dangling dependency edge from {reference}.")
 
 
-def _privacy_gate(path: Path) -> None:
-    content = path.read_text(encoding="utf-8")
+def _privacy_content_gate(content: str, label: str) -> None:
     if WINDOWS_ABSOLUTE_PATH.search(content):
-        raise ValueError(f"{path.name} contains a Windows absolute path.")
+        raise ValueError(f"{label} contains a Windows absolute path.")
     if HOME_ABSOLUTE_PATH.search(content):
-        raise ValueError(f"{path.name} contains a home-directory path.")
+        raise ValueError(f"{label} contains a home-directory path.")
     if "file://" in content.casefold():
-        raise ValueError(f"{path.name} contains a local file URI.")
+        raise ValueError(f"{label} contains a local file URI.")
     if SECRET_VALUE.search(content):
-        raise ValueError(f"{path.name} contains a secret-like value.")
+        raise ValueError(f"{label} contains a secret-like value.")
+
+
+def _privacy_gate(path: Path) -> None:
+    _privacy_content_gate(path.read_text(encoding="utf-8"), path.name)
 
 
 def _schema_gate(schema_python: Path, path: Path) -> None:

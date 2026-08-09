@@ -271,15 +271,17 @@ jobs:
           path: _python315
           persist-credentials: false
 
+      - name: Install supported LLVM 21 JIT toolchain
+        uses: ./.github/actions/setup-llvm21
+
       - name: Build and verify JIT-default Python 3.15 runtime
         shell: bash
         run: |
-          brew install llvm@21
-          export LLVM_TOOLS_INSTALL_DIR="$(brew --prefix llvm@21)"
           python tools/build_python315_jit_runtime.py \
             --source "$PWD/_python315" \
             --prefix "$RUNNER_TEMP/mohan-python315-jit"
           echo "MOHAN_JIT_PYTHON=$RUNNER_TEMP/mohan-python315-jit/bin/python3.15" >> "$GITHUB_ENV"
+          echo "DYLD_LIBRARY_PATH=$RUNNER_TEMP/mohan-python315-jit/lib" >> "$GITHUB_ENV"
 
       - name: Install dependencies into JIT-default Python
         run: >-
@@ -352,16 +354,17 @@ jobs:
           path: _python315
           persist-credentials: false
 
+      - name: Install supported LLVM 21 JIT toolchain
+        uses: ./.github/actions/setup-llvm21
+
       - name: Build and verify JIT-default Python 3.15 runtime
         shell: bash
         run: |
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          brew install llvm@21
-          export LLVM_TOOLS_INSTALL_DIR="$(brew --prefix llvm@21)"
           python tools/build_python315_jit_runtime.py \
             --source "$PWD/_python315" \
             --prefix "$RUNNER_TEMP/mohan-python315-jit"
           echo "MOHAN_JIT_PYTHON=$RUNNER_TEMP/mohan-python315-jit/bin/python3.15" >> "$GITHUB_ENV"
+          echo "LD_LIBRARY_PATH=$RUNNER_TEMP/mohan-python315-jit/lib" >> "$GITHUB_ENV"
 
       - name: Install dependencies into JIT-default Python
         run: >-

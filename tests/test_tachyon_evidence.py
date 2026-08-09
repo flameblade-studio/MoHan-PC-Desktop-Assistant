@@ -129,9 +129,12 @@ def test_profile_paths_are_private_and_binary_is_temporary() -> None:
         output = temporary / "published"
         artifacts = _artifact_paths("lipsync", output, None)
         artifacts.flamegraph.parent.mkdir(parents=True, exist_ok=True)
+        project_path = str(ROOT)
+        if os.name == "nt":
+            project_path = project_path.swapcase()
         private_values = "\n".join(
             (
-                str(ROOT / "speech.py"),
+                str(Path(project_path) / "speech.py"),
                 str(temporary / "tachyon_target.py"),
                 str(Path.home() / "private-profile.json"),
             )
@@ -155,7 +158,7 @@ def test_profile_paths_are_private_and_binary_is_temporary() -> None:
         assert not artifacts.binary.exists()
         for path in published[:3]:
             content = path.read_text(encoding="utf-8")
-            assert str(ROOT) not in content
+            assert project_path not in content
             assert str(Path.home()) not in content
             assert "<project>" in content or "<temporary>" in content
 

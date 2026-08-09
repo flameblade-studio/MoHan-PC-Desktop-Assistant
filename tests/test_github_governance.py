@@ -155,6 +155,7 @@ def test_release_workflow() -> None:
 
 def test_preview_and_windows_workflows() -> None:
     preview_packages = read(".github/workflows/preview-packages.yml")
+    llvm_setup = read(".github/actions/setup-llvm21/action.yml")
     assert_action_pinned(preview_packages, "actions/upload-artifact")
     for required in (
         "name: Cross-platform Preview package gate",
@@ -164,8 +165,20 @@ def test_preview_and_windows_workflows() -> None:
         "macos-15",
         "tools/build_python315_jit_runtime.py",
         "repository: python/cpython",
+        "uses: ./.github/actions/setup-llvm21",
     ):
         assert required in preview_packages
+    for required in (
+        "https://apt.llvm.org/llvm-snapshot.gpg.key",
+        "6084F3CF814B57C1CF12EFD515CF4D18AF4F7421",
+        "llvm-toolchain-noble-21",
+        "clang-21 llvm-21",
+        "LLVM_TOOLS_INSTALL_DIR",
+    ):
+        assert required in llvm_setup
+    assert "llvm.sh" not in llvm_setup
+    assert "curl |" not in llvm_setup
+    assert "--enable-shared" in read("tools/build_python315_jit_runtime.py")
 
     windows_ci = read(".github/workflows/windows-ci.yml")
     for required in (

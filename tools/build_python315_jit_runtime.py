@@ -5,6 +5,7 @@ lazy import json
 lazy import os
 lazy import platform
 lazy import subprocess
+lazy import sys
 lazy from pathlib import Path
 
 CPYTHON_VERSION = "3.15.0rc1"
@@ -33,6 +34,18 @@ def runtime_path(source: Path, prefix: Path) -> Path:
     return prefix / "bin" / "python3.15"
 
 
+def _runtime_environment(prefix: Path) -> dict[str, str]:
+    environment = os.environ.copy()
+    if os.name == "nt":
+        return environment
+    variable = "DYLD_LIBRARY_PATH" if sys.platform == "darwin" else "LD_LIBRARY_PATH"
+    values = [str(prefix / "lib")]
+    if existing := environment.get(variable):
+        values.append(existing)
+    environment[variable] = os.pathsep.join(values)
+    return environment
+
+
 def build(source: Path, prefix: Path) -> Path:
     verify_source(source)
     if os.name == "nt":
@@ -52,12 +65,17 @@ def build(source: Path, prefix: Path) -> Path:
         )
     else:
         prefix.mkdir(parents=True, exist_ok=True)
-        environment = os.environ.copy()
+        environment = _runtime_environment(prefix)
+        rpath = f"-Wl,-rpath,{prefix / 'lib'}"
+        environment["LDFLAGS"] = " ".join(
+            value for value in (environment.get("LDFLAGS", ""), rpath) if value
+        )
         _run(
             [
                 str(source / "configure"),
                 f"--prefix={prefix}",
                 "--enable-experimental-jit=yes",
+                "--enable-shared",
                 "--with-ensurepip=install",
             ],
             cwd=source,
@@ -70,13 +88,17 @@ def build(source: Path, prefix: Path) -> Path:
     python = runtime_path(source, prefix)
     if not python.is_file():
         raise RuntimeError(f"JIT-default Python runtime was not created: {python}")
-    _run([str(python), "-m", "ensurepip", "--upgrade"], cwd=source)
+    _run(
+        [str(python), "-m", "ensurepip", "--upgrade"],
+        cwd=source,
+        env=_runtime_environment(prefix),
+    )
     verify_runtime(python)
     return python
 
 
 def _probe(python: Path, value: str | None) -> dict[str, object]:
-    environment = os.environ.copy()
+    environment = _runtime_environment(python.parents[1])
     environment.pop("MOHAN_DISABLE_JIT", None)
     if value is None:
         environment.pop("PYTHON_JIT", None)

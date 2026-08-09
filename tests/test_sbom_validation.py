@@ -16,6 +16,7 @@ lazy from tools.validate_release_sboms import (
     _finalize_dependency_graph,
     _license_values,
     _pinned_requirements,
+    _privacy_content_gate,
     _privacy_gate,
     _profile_policies,
     _project_metadata,
@@ -145,12 +146,12 @@ def test_privacy_gate_rejects_paths_and_secret_like_values() -> None:
         )
 
         secret_field = "api" + "_key"
-        path.write_text(
-            f'{{"{secret_field}":"abcdefgh123456"}}',
-            encoding="utf-8",
-        )
+        privacy_payload = json.dumps({secret_field: "a" * 8 + "1" * 6})
         assert "secret-like value" in expect_value_error(
-            lambda: _privacy_gate(path)
+            lambda: _privacy_content_gate(
+                privacy_payload,
+                "in-memory test fixture",
+            )
         )
 
 
