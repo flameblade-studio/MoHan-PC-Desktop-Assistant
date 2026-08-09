@@ -178,6 +178,7 @@ def test_preview_and_windows_workflows() -> None:
         assert required in llvm_setup
     assert "llvm.sh" not in llvm_setup
     assert "curl |" not in llvm_setup
+    assert " + " not in llvm_setup
     assert "--enable-shared" in read("tools/build_python315_jit_runtime.py")
 
     windows_ci = read(".github/workflows/windows-ci.yml")

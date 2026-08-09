@@ -22,15 +22,15 @@ runs:
         key_file="$RUNNER_TEMP/llvm-snapshot.gpg.key"
         keyring_file="$RUNNER_TEMP/llvm-snapshot.gpg"
         expected_fingerprint="6084F3CF814B57C1CF12EFD515CF4D18AF4F7421"
-        curl --fail --location --retry 3 +          --output "$key_file" +          "https://apt.llvm.org/llvm-snapshot.gpg.key"
+        curl --fail --location --retry 3 --output "$key_file" "https://apt.llvm.org/llvm-snapshot.gpg.key"
         actual_fingerprint="$(
           gpg --batch --show-keys --with-colons "$key_file" |
             awk -F: '$1 == "fpr" { print $10; exit }'
         )"
         [[ "$actual_fingerprint" == "$expected_fingerprint" ]]
         gpg --batch --dearmor --output "$keyring_file" "$key_file"
-        sudo install -m 0644 +          "$keyring_file" +          /usr/share/keyrings/apt.llvm.org.gpg
-        echo +          "deb [signed-by=/usr/share/keyrings/apt.llvm.org.gpg] https://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" |
+        sudo install -m 0644 "$keyring_file" /usr/share/keyrings/apt.llvm.org.gpg
+        echo "deb [signed-by=/usr/share/keyrings/apt.llvm.org.gpg] https://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" |
           sudo tee /etc/apt/sources.list.d/llvm-21.list >/dev/null
         sudo apt-get update
         sudo apt-get install --yes clang-21 llvm-21
