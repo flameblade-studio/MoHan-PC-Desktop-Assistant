@@ -8,6 +8,9 @@ $ErrorActionPreference = "Stop"
 if (-not $env:RUNNER_TEMP) {
     throw "RUNNER_TEMP is required so packaging tools stay isolated."
 }
+if ($env:GITHUB_ACTIONS -eq "true" -and -not $env:GH_TOKEN) {
+    throw "GH_TOKEN is required for release attestation verification in Actions."
+}
 
 $InnoTag = "is-" + ($InnoVersion -replace '\.', '_')
 $InnoAsset = "innosetup-$InnoVersion-x64.exe"

@@ -105,6 +105,8 @@ jobs:
         shell: pwsh
         run: '& $env:MOHAN_JIT_PYTHON tools/install_python315_dependencies.py'
       - name: Install Windows installer toolchains
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: pwsh
         run: >-
           .\tools\install_windows_packaging_tools.ps1

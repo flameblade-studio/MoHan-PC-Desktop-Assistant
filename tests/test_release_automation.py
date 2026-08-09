@@ -239,7 +239,13 @@ def test_packaging_tools_and_public_media() -> None:
                 '-WixVersion "7.0.0"',
             ),
         )
+        toolchain_step = workflow.split(
+            "install_windows_packaging_tools.ps1",
+            maxsplit=1,
+        )[0].rsplit("- name:", maxsplit=1)[-1]
+        assert "GH_TOKEN: ${{ github.token }}" in toolchain_step
         assert "choco install wixtoolset" not in workflow
+    assert 'GITHUB_ACTIONS -eq "true" -and -not $env:GH_TOKEN' in packaging_tools
     for expression in (
         "proud_front.png",
         "thinking_front.png",
