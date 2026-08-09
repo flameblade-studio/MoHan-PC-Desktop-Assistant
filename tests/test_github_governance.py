@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import struct
 from pathlib import Path
 
@@ -11,6 +12,18 @@ def read(relative: str) -> str:
     path = ROOT / relative
     assert path.is_file(), f"missing required GitHub file: {relative}"
     return path.read_text(encoding="utf-8")
+
+
+def assert_action_pinned(workflow: str, action: str) -> None:
+    references = re.findall(
+        rf"uses:\s*{re.escape(action)}@([^\s#]+)",
+        workflow,
+    )
+    assert references, f"missing required GitHub Action: {action}"
+    assert all(re.fullmatch(r"[0-9a-f]{40}", ref) for ref in references), (
+        f"{action} must be pinned to a complete 40-character commit SHA: "
+        f"{references}"
+    )
 
 
 def main() -> None:
@@ -33,7 +46,8 @@ def main() -> None:
     assert "python -m pip_audit -r requirements.txt --strict" in audit
 
     release = read(".github/workflows/release.yml")
-    assert "actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f" in release
+    assert_action_pinned(release, "actions/upload-artifact")
+    assert_action_pinned(release, "actions/download-artifact")
     assert "actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6" in release
     assert "cyclonedx-bom==7.3.0" in release
     assert "SHA256" in release
@@ -66,6 +80,7 @@ def main() -> None:
     assert "client_secret" not in release
 
     preview_packages = read(".github/workflows/preview-packages.yml")
+    assert_action_pinned(preview_packages, "actions/upload-artifact")
     assert "name: Cross-platform Preview package gate" in preview_packages
     assert "needs: [macos-preview, linux-preview]" in preview_packages
     assert "if: ${{ always() }}" in preview_packages
@@ -73,7 +88,7 @@ def main() -> None:
     assert "macos-15" in preview_packages
 
     secret_defense = read(".github/workflows/secret-defense.yml")
-    assert "gitleaks/gitleaks-action@ff98106e" in secret_defense
+    assert_action_pinned(secret_defense, "gitleaks/gitleaks-action")
     assert "fetch-depth: 0" in secret_defense
     release_notes = read(".github/release.yml")
     assert "新功能 / 新功能 / New features / 新機能" in release_notes
