@@ -1,21 +1,20 @@
 from __future__ import annotations
 
-import argparse
-import hashlib
-import json
-import os
-import platform
-import re
-import shutil
-import stat
-import subprocess
-import sys
-import tempfile
-from pathlib import Path
-
+lazy import argparse
+lazy import hashlib
+lazy import json
+lazy import os
+lazy import platform
+lazy import re
+lazy import shutil
+lazy import stat
+lazy import subprocess
+lazy import sys
+lazy import tempfile
+lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION_PATTERN = re.compile(r"^2\.2\.0-rc\.(?:0|[1-9][0-9]*)$")
+VERSION_PATTERN = re.compile(r"^2\.3\.0-rc\.(?:0|[1-9][0-9]*)$")
 APPIMAGETOOL_SOURCE_COMMIT = "8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81"
 APPIMAGETOOL_ASSET_ID = "324406882"
 APPIMAGETOOL_SHA256 = (
@@ -42,17 +41,23 @@ def _sha256(path: Path) -> str:
 def _validate_version(version: str) -> None:
     if not VERSION_PATTERN.fullmatch(version):
         raise ValueError(
-            "Preview packages are restricted to the 2.2.0-rc.N line"
+            "Preview packages are restricted to the 2.3.0-rc.N line"
         )
 
 
 def _write_build_info(path: Path, version: str, target: str) -> None:
+    jit = getattr(sys, "_jit", None)
+    if not jit or not jit.is_available() or not jit.is_enabled():
+        raise RuntimeError(
+            "Preview packages require Python 3.15 with JIT enabled by default"
+        )
     path.write_text(
         json.dumps(
             {
                 "version": version,
                 "repository": "hitoshic1982/MoHan-PC-Desktop-Assistant",
                 "python": platform.python_version(),
+                "jit_default": True,
                 "target": target,
                 "maturity": "preview",
             },

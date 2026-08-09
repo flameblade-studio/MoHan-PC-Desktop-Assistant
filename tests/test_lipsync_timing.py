@@ -1,21 +1,22 @@
 from __future__ import annotations
 
-import io
-import math
-import struct
-import sys
-import threading
-import time
-import wave
-from pathlib import Path
-from unittest.mock import patch
+lazy import io
+lazy import math
+lazy import struct
+lazy import sys
+lazy import threading
+lazy import time
+lazy import wave
+lazy from itertools import pairwise
+lazy from pathlib import Path
+lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtCore import QCoreApplication
+lazy from PySide6.QtCore import QCoreApplication
 
-from lip_sync import VISEME_CUES_PER_SECOND
-from speech import WindowsTTS, emit_wave_viseme_cues, play_wave_with_visemes
+lazy from lip_sync import VISEME_CUES_PER_SECOND
+lazy from speech import WindowsTTS, emit_wave_viseme_cues, play_wave_with_visemes
 
 
 def make_test_wave(duration: float = 1.2, rate: int = 24000) -> bytes:
@@ -76,10 +77,7 @@ def run() -> None:
     assert abs(long_emitted_at[-1] - expected_last) < 0.07
     intervals = [
         current - previous
-        for previous, current in zip(
-            long_emitted_at,
-            long_emitted_at[1:],
-        )
+        for previous, current in pairwise(long_emitted_at)
     ]
     assert abs(
         sum(intervals) / len(intervals)

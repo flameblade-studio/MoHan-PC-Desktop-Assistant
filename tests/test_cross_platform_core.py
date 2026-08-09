@@ -1,36 +1,37 @@
 from __future__ import annotations
 
-import ast
-import importlib
-import os
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
-from unittest.mock import patch
+lazy import ast
+lazy import importlib
+lazy import os
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
+lazy from unittest.mock import patch
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
 
-from PySide6.QtWidgets import QApplication, QMessageBox, QWidget
+lazy from PySide6.QtWidgets import QApplication, QMessageBox, QWidget
 
-from app import Dashboard, set_autostart
-from db import StudioDB
-from flagship_ui import FlagshipControlCenter
-from platform_contracts import (
+lazy from app import Dashboard, DashboardDependencies, set_autostart
+lazy from db import StudioDB
+lazy from flagship_ui import FlagshipControlCenter
+lazy from platform_contracts import (
     PlatformCapabilities,
     PlatformPaths,
+    PlatformServicePort,
     UnsupportedPlatformFeature,
 )
-from platform_services import (
+lazy from platform_services import (
     create_platform_services,
     normalized_platform_id,
     resolved_data_dir,
 )
-from service_container import create_default_services
-from secret_store import platform_secret_store_factory
-from speech import preferred_windows_voice
-from speech_providers import (
+lazy from secret_store import platform_secret_store_factory
+lazy from service_container import create_default_services
+lazy from speech import preferred_windows_voice
+lazy from speech_providers import (
     LEGACY_WINDOWS_LOCAL_PROVIDER,
     SYSTEM_LOCAL_PROVIDER,
     WindowsSpeechProvider,
@@ -38,13 +39,18 @@ from speech_providers import (
 )
 
 
-def direct_imports(path: Path) -> set[str]:
+def eager_direct_imports(path: Path) -> set[str]:
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     names: set[str] = set()
     for node in tree.body:
         if isinstance(node, ast.Import):
-            names.update(alias.name.split(".", 1)[0] for alias in node.names)
-        elif isinstance(node, ast.ImportFrom) and node.module:
+            if not getattr(node, "is_lazy", 0):
+                names.update(alias.name.split(".", 1)[0] for alias in node.names)
+        elif (
+            isinstance(node, ast.ImportFrom)
+            and node.module
+            and not getattr(node, "is_lazy", 0)
+        ):
             names.add(node.module.split(".", 1)[0])
     return names
 
@@ -79,8 +85,7 @@ class AutostartProbe:
         del path
 
 
-def run() -> None:
-    # Windows must continue using the exact public-build profile location.
+def _assert_windows_platform_contract() -> None:
     windows = create_platform_services(
         "windows",
         environ={"LOCALAPPDATA": r"C:\Users\USERNAME\AppData\Local"},
@@ -101,6 +106,8 @@ def run() -> None:
         "msi",
     )
 
+
+def _create_linux_platform() -> PlatformServicePort:
     linux = create_platform_services(
         "linux",
         environ={
@@ -120,7 +127,10 @@ def run() -> None:
     assert not linux.capabilities.system_local_speech
     assert not linux.capabilities.secure_secret_storage
     assert linux.capabilities.published_installers == ()
+    return linux
 
+
+def _assert_relative_xdg_fallbacks() -> None:
     relative_xdg = create_platform_services(
         "linux",
         environ={
@@ -140,6 +150,8 @@ def run() -> None:
         "/home/tester/.cache/YanJianStudio/MoHan"
     )
 
+
+def _create_macos_platform() -> PlatformServicePort:
     macos = create_platform_services(
         "darwin",
         environ={},
@@ -152,7 +164,11 @@ def run() -> None:
         "/Users/tester/Library/Caches/YanJianStudio/MoHan"
     )
     assert not macos.capabilities.desktop_autostart
-    with patch("platform_services.sys.platform", "darwin"), patch(
+    return macos
+
+
+def _assert_platform_detection() -> None:
+    with patch("sys.platform", "darwin"), patch(
         "platform_services.os.name",
         "posix",
     ):
@@ -164,6 +180,11 @@ def run() -> None:
     else:
         raise AssertionError("generic posix must not be misidentified as Linux")
 
+
+def _assert_autostart_fails_closed(
+    linux: PlatformServicePort,
+    macos: PlatformServicePort,
+) -> None:
     linux.set_autostart(False, application_id="MoHan", command="mohan")
     macos.set_autostart(False, application_id="MoHan", command="mohan")
     for platform in (linux, macos):
@@ -178,12 +199,15 @@ def run() -> None:
         else:
             raise AssertionError("unsupported autostart enable must fail closed")
 
+
+def _assert_data_directory_override(linux: PlatformServicePort) -> None:
     assert resolved_data_dir(
         linux,
         environ={"MOHAN_DATA_DIR": "/var/tmp/custom-mohan"},
     ) == Path("/var/tmp/custom-mohan")
 
-    # Existing values migrate in place to one platform-neutral provider ID.
+
+def _assert_speech_provider_migration() -> None:
     assert SYSTEM_LOCAL_PROVIDER == "system-local"
     assert LEGACY_WINDOWS_LOCAL_PROVIDER == "windows-local"
     for old_value in (
@@ -195,7 +219,8 @@ def run() -> None:
     ):
         assert normalize_speech_provider_id(old_value) == SYSTEM_LOCAL_PROVIDER
 
-    # The Taiwan Windows default contract remains Yating first, then Hanhan.
+
+def _assert_windows_voice_contract() -> None:
     voices = [
         ("Microsoft Hanhan Desktop", "zh-TW"),
         ("OneCore::Microsoft Yating", "zh-TW"),
@@ -209,17 +234,22 @@ def run() -> None:
     )
     assert WindowsSpeechProvider.capabilities.offline
 
+
+def _assert_autostart_delegation() -> None:
     probe = AutostartProbe()
     set_autostart(True, probe)
     assert probe.calls and probe.calls[0][0:2] == (True, "MoHanStudio")
     assert probe.calls[0][2].startswith(f'"{sys.executable}"')
     assert str(PROJECT / "app.py") in probe.calls[0][2]
 
-    # Platform-only modules must not be imported unconditionally by core files.
-    assert "winreg" not in direct_imports(PROJECT / "app.py")
-    assert "winreg" not in direct_imports(PROJECT / "platform_windows.py")
-    assert "winsound" not in direct_imports(PROJECT / "speech.py")
 
+def _assert_platform_modules_are_lazy() -> None:
+    assert "winreg" not in eager_direct_imports(PROJECT / "app.py")
+    assert "winreg" not in eager_direct_imports(PROJECT / "platform_windows.py")
+    assert "winsound" not in eager_direct_imports(PROJECT / "speech.py")
+
+
+def _assert_core_modules_import() -> None:
     for module_name in (
         "ai_client",
         "db",
@@ -239,8 +269,10 @@ def run() -> None:
     ):
         importlib.import_module(module_name)
 
-    # A non-Windows composition remains fail-closed: no plaintext key file and
-    # no falsely advertised offline system voice.
+
+def _assert_non_windows_composition_fails_closed(
+    linux: PlatformServicePort,
+) -> None:
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
         seeded_db = StudioDB(Path(temp) / "mohan.db")
         seeded_db.set_setting("voice_engine", "windows-local")
@@ -265,90 +297,131 @@ def run() -> None:
         ).capabilities.offline
         services.db.close()
 
-    qt = QApplication.instance() or QApplication([])
-    with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
-        root = Path(temp)
-        services = create_default_services(
-            root,
-            PROJECT / "voice_listener.ps1",
-            platform_services=linux,
-        )
-        dashboard = Dashboard(
-            services.db,
-            services.listener,
-            services.secret_store,
+
+def _create_dashboard(root: Path, linux: PlatformServicePort):
+    services = create_default_services(
+        root,
+        PROJECT / "voice_listener.ps1",
+        platform_services=linux,
+    )
+    dashboard = Dashboard(
+        services.db,
+        DashboardDependencies(
+            listener=services.listener,
+            secret_store=services.secret_store,
             azure_secret_store=services.azure_secret_store,
             secret_store_factory=services.secret_store_factory,
             platform_services=linux,
-        )
-        assert dashboard.voice_engine.findData(SYSTEM_LOCAL_PROVIDER) == -1
-        assert all(
-            "Windows" not in dashboard.speech_recognition.itemText(index)
-            for index in range(dashboard.speech_recognition.count())
-        )
-        assert not dashboard.windows_transcription_fallback.isEnabled()
-        assert "Windows" not in dashboard.windows_transcription_fallback.text()
-        assert not dashboard.windows_voice.isEnabled()
-        assert "Windows" not in dashboard.windows_voice.currentText()
-        assert not dashboard.azure_key_input.isEnabled()
-        assert not dashboard.api_key_input.isEnabled()
-        assert not dashboard.autostart.isEnabled()
-        assert dashboard.save_settings(silent=True)
-        assert services.db.setting("autostart") is False
+        ),
+    )
+    return services, dashboard
 
-        center = dashboard.flagship_center
-        assert center.secret_store_factory is services.secret_store_factory
-        assert not center.cloud_connect_button.isEnabled()
-        assert not center.ha_token.isEnabled()
-        protected = set(center.policy.protected_paths)
-        for path in (
-            linux.paths.data,
-            linux.paths.config,
-            linux.paths.cache,
-        ):
-            assert path.resolve() in protected
 
-        center._cloud_connected(
-            "google",
-            {"access_token": "test-value"},
-        )
-        assert "無法安全保存" in center.cloud_status.text()
-        assert services.db.connector("google") is None
-        center.ha_url.setText("http://homeassistant.local:8123")
-        center.ha_token.setText("test-value")
-        with patch.object(QMessageBox, "warning") as warning:
-            center.save_home_settings()
-        assert warning.call_count == 1
-        assert services.db.connector("home_assistant") is None
-        assert not list(root.glob("*.unavailable"))
-        center.close_services()
-        dashboard.close()
-        services.db.close()
+def _assert_linux_dashboard_fails_closed(
+    root: Path,
+    linux: PlatformServicePort,
+) -> None:
+    services, dashboard = _create_dashboard(root, linux)
+    assert dashboard.voice_engine.findData(SYSTEM_LOCAL_PROVIDER) == -1
+    assert all(
+        "Windows" not in dashboard.speech_recognition.itemText(index)
+        for index in range(dashboard.speech_recognition.count())
+    )
+    assert not dashboard.windows_transcription_fallback.isEnabled()
+    assert "Windows" not in dashboard.windows_transcription_fallback.text()
+    assert not dashboard.windows_voice.isEnabled()
+    assert "Windows" not in dashboard.windows_voice.currentText()
+    assert not dashboard.azure_key_input.isEnabled()
+    assert not dashboard.api_key_input.isEnabled()
+    assert not dashboard.autostart.isEnabled()
+    assert dashboard.save_settings(silent=True)
+    assert services.db.setting("autostart") is False
 
-        mac_db = StudioDB(root / "macos.db")
-        mac_factory = platform_secret_store_factory(macos)
-        mac_center = FlagshipControlCenter(
-            mac_db,
-            root,
-            platform_services=macos,
-            secret_store_factory=mac_factory,
-        )
-        mac_protected = set(mac_center.policy.protected_paths)
-        for path in (
-            macos.paths.data,
-            macos.paths.config,
-            macos.paths.cache,
-        ):
-            assert path.resolve() in mac_protected
-        mac_center.close_services()
-        mac_center.close()
-        mac_db.close()
-        qt.processEvents()
+    center = dashboard.flagship_center
+    assert center.secret_store_factory is services.secret_store_factory
+    assert not center.cloud_connect_button.isEnabled()
+    assert not center.ha_token.isEnabled()
+    protected = set(center.policy.protected_paths)
+    for path in (linux.paths.data, linux.paths.config, linux.paths.cache):
+        assert path.resolve() in protected
 
+    center._cloud_connected("google", {"access_token": "test-value"})
+    assert "無法安全保存" in center.cloud_status.text()
+    assert services.db.connector("google") is None
+    center.ha_url.setText("http://homeassistant.local:8123")
+    center.ha_token.setText("test-value")
+    with patch.object(QMessageBox, "warning") as warning:
+        center.save_home_settings()
+    assert warning.call_count == 1
+    assert services.db.connector("home_assistant") is None
+    assert not list(root.glob("*.unavailable"))
+    center.close_services()
+    dashboard.close()
+    services.db.close()
+
+
+def _assert_macos_control_center_paths(
+    qt: QApplication,
+    root: Path,
+    macos: PlatformServicePort,
+) -> None:
+    mac_db = StudioDB(root / "macos.db")
+    mac_factory = platform_secret_store_factory(macos)
+    mac_center = FlagshipControlCenter(
+        mac_db,
+        root,
+        platform_services=macos,
+        secret_store_factory=mac_factory,
+    )
+    mac_protected = set(mac_center.policy.protected_paths)
+    for path in (macos.paths.data, macos.paths.config, macos.paths.cache):
+        assert path.resolve() in mac_protected
+    mac_center.close_services()
+    mac_center.close()
+    mac_db.close()
+    qt.processEvents()
+
+
+def _assert_platform_ui_boundaries(
+    qt: QApplication,
+    linux: PlatformServicePort,
+    macos: PlatformServicePort,
+) -> None:
+    with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
+        root = Path(temp)
+        _assert_linux_dashboard_fails_closed(root, linux)
+        _assert_macos_control_center_paths(qt, root, macos)
+
+
+def _assert_qt_widget_smoke(qt: QApplication) -> None:
     widget = QWidget()
     assert widget.metaObject().className() == "QWidget"
     widget.close()
     qt.processEvents()
+
+
+def run() -> None:
+    # Windows keeps the exact public-build profile location.
+    _assert_windows_platform_contract()
+    linux = _create_linux_platform()
+    _assert_relative_xdg_fallbacks()
+    macos = _create_macos_platform()
+    _assert_platform_detection()
+    _assert_autostart_fails_closed(linux, macos)
+    _assert_data_directory_override(linux)
+    # Existing values migrate to one platform-neutral speech provider ID.
+    _assert_speech_provider_migration()
+    # Taiwan Windows defaults remain Yating first, then Hanhan.
+    _assert_windows_voice_contract()
+    _assert_autostart_delegation()
+    # Platform-only modules must never load eagerly from core modules.
+    _assert_platform_modules_are_lazy()
+    _assert_core_modules_import()
+    # Non-Windows composition must fail closed for secrets and system speech.
+    _assert_non_windows_composition_fails_closed(linux)
+    qt = QApplication.instance() or QApplication([])
+    _assert_platform_ui_boundaries(qt, linux, macos)
+    _assert_qt_widget_smoke(qt)
     print("CROSS_PLATFORM_CORE_OK")
 
 

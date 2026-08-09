@@ -1,43 +1,56 @@
 from __future__ import annotations
 
-import math
-import sys
-from pathlib import Path
+lazy import math
+lazy import sys
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
 
-from PySide6.QtGui import QImage
+lazy from PySide6.QtGui import QImage
+
+
+@dataclass(frozen=True, slots=True)
+class EllipseSpec:
+    center_x: int
+    center_y: int
+    radius_x: int
+    radius_y: int
+
+
+@dataclass(frozen=True, slots=True)
+class AttentionLayerSpec:
+    source: str
+    face: EllipseSpec
+    eyes: tuple[EllipseSpec, EllipseSpec]
 
 
 SPECS = {
-    "": {
-        "source": "idle.png",
-        "face": (575, 500, 116, 158),
-        "eyes": ((496, 438, 24, 15), (601, 458, 24, 15)),
-    },
-    "_lean": {
-        "source": "idle_lean.png",
-        "face": (571, 500, 116, 158),
-        "eyes": ((477, 439, 24, 15), (578, 459, 24, 15)),
-    },
-    "_front": {
-        "source": "idle_front.png",
-        "face": (625, 482, 120, 154),
-        "eyes": ((551, 447, 24, 15), (661, 447, 24, 15)),
-    },
+    "": AttentionLayerSpec(
+        source="idle.png",
+        face=EllipseSpec(575, 500, 116, 158),
+        eyes=(EllipseSpec(496, 438, 24, 15), EllipseSpec(601, 458, 24, 15)),
+    ),
+    "_lean": AttentionLayerSpec(
+        source="idle_lean.png",
+        face=EllipseSpec(571, 500, 116, 158),
+        eyes=(EllipseSpec(477, 439, 24, 15), EllipseSpec(578, 459, 24, 15)),
+    ),
+    "_front": AttentionLayerSpec(
+        source="idle_front.png",
+        face=EllipseSpec(625, 482, 120, 154),
+        eyes=(EllipseSpec(551, 447, 24, 15), EllipseSpec(661, 447, 24, 15)),
+    ),
 }
 
 
 def ellipse_weight(
     x: int,
     y: int,
-    center_x: int,
-    center_y: int,
-    radius_x: int,
-    radius_y: int,
+    spec: EllipseSpec,
     feather: float,
 ) -> float:
     distance = math.sqrt(
-        ((x - center_x) / radius_x) ** 2
-        + ((y - center_y) / radius_y) ** 2
+        ((x - spec.center_x) / spec.radius_x) ** 2
+        + ((y - spec.center_y) / spec.radius_y) ** 2
     )
     if distance >= 1.0:
         return 0.0
@@ -46,78 +59,70 @@ def ellipse_weight(
     return (1.0 - distance) / feather
 
 
-def extract_face(
+def _apply_ellipse(
     original: QImage,
-    output: Path,
-    spec: tuple[int, int, int, int],
+    layer: QImage,
+    spec: EllipseSpec,
+    feather: float,
 ) -> None:
-    center_x, center_y, radius_x, radius_y = spec
-    layer = QImage(original.size(), QImage.Format_ARGB32)
-    layer.fill(0)
-    for y in range(center_y - radius_y, center_y + radius_y + 1):
-        for x in range(center_x - radius_x, center_x + radius_x + 1):
-            weight = ellipse_weight(
-                x,
-                y,
-                center_x,
-                center_y,
-                radius_x,
-                radius_y,
-                0.18,
-            )
+    x_range = range(
+        spec.center_x - spec.radius_x,
+        spec.center_x + spec.radius_x + 1,
+    )
+    y_range = range(
+        spec.center_y - spec.radius_y,
+        spec.center_y + spec.radius_y + 1,
+    )
+    for y in y_range:
+        for x in x_range:
+            weight = ellipse_weight(x, y, spec, feather)
             if weight <= 0.0:
                 continue
             color = original.pixelColor(x, y)
             color.setAlpha(round(color.alpha() * weight))
             layer.setPixelColor(x, y, color)
+
+
+def _empty_layer(original: QImage) -> QImage:
+    layer = QImage(original.size(), QImage.Format_ARGB32)
+    layer.fill(0)
+    return layer
+
+
+def _save_layer(layer: QImage, output: Path, label: str) -> None:
     if not layer.save(str(output), "PNG"):
-        raise RuntimeError(f"Failed to save face layer: {output}")
+        raise RuntimeError(f"Failed to save {label} layer: {output}")
+
+
+def extract_face(
+    original: QImage,
+    output: Path,
+    spec: EllipseSpec,
+) -> None:
+    layer = _empty_layer(original)
+    _apply_ellipse(original, layer, spec, 0.18)
+    _save_layer(layer, output, "face")
 
 
 def extract_eyes(
     original: QImage,
     output: Path,
-    specs: tuple[tuple[int, int, int, int], ...],
+    specs: tuple[EllipseSpec, EllipseSpec],
 ) -> None:
-    layer = QImage(original.size(), QImage.Format_ARGB32)
-    layer.fill(0)
-    for center_x, center_y, radius_x, radius_y in specs:
-        for y in range(center_y - radius_y, center_y + radius_y + 1):
-            for x in range(center_x - radius_x, center_x + radius_x + 1):
-                weight = ellipse_weight(
-                    x,
-                    y,
-                    center_x,
-                    center_y,
-                    radius_x,
-                    radius_y,
-                    0.32,
-                )
-                if weight <= 0.0:
-                    continue
-                color = original.pixelColor(x, y)
-                color.setAlpha(round(color.alpha() * weight))
-                layer.setPixelColor(x, y, color)
-    if not layer.save(str(output), "PNG"):
-        raise RuntimeError(f"Failed to save eye layer: {output}")
+    layer = _empty_layer(original)
+    for spec in specs:
+        _apply_ellipse(original, layer, spec, 0.32)
+    _save_layer(layer, output, "eye")
 
 
 def main() -> int:
     assets = Path(sys.argv[1])
     for suffix, spec in SPECS.items():
-        original = QImage(str(assets / spec["source"])).convertToFormat(
+        original = QImage(str(assets / spec.source)).convertToFormat(
             QImage.Format_ARGB32
         )
-        extract_face(
-            original,
-            assets / f"physics_face{suffix}.png",
-            spec["face"],
-        )
-        extract_eyes(
-            original,
-            assets / f"physics_eyes{suffix}.png",
-            spec["eyes"],
-        )
+        extract_face(original, assets / f"physics_face{suffix}.png", spec.face)
+        extract_eyes(original, assets / f"physics_eyes{suffix}.png", spec.eyes)
     return 0
 
 

@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import sys
-from pathlib import Path
+lazy import sys
+lazy from pathlib import Path
 
-from PySide6.QtCore import QRect, Qt
-from PySide6.QtGui import (
+lazy from PySide6.QtCore import QRect, Qt
+lazy from PySide6.QtGui import (
     QColor,
     QFont,
     QFontDatabase,
@@ -44,7 +44,7 @@ def attention_frame(
 
 
 def main() -> int:
-    app = QGuiApplication.instance() or QGuiApplication([])
+    _app = QGuiApplication.instance() or QGuiApplication([])
     font_id = QFontDatabase.addApplicationFont(
         r"C:\Windows\Fonts\NotoSansTC-VF.ttf"
     )

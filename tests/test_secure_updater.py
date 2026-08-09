@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-import hashlib
-import json
-import sys
-import tempfile
-from email.message import Message
-from pathlib import Path
-from urllib.error import URLError
+lazy import hashlib
+lazy import json
+lazy import sys
+lazy import tempfile
+lazy from email.message import Message
+lazy from pathlib import Path
+lazy from urllib.error import URLError
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from updater import (
+lazy from updater import (
     InstallerAsset,
     UpdateError,
     UpdateManager,
@@ -45,11 +45,13 @@ class FakeResponse:
         return chunk
 
 
-def main() -> None:
+def _assert_version_ordering() -> None:
     assert is_newer_version("2.0.14", "2.0.14-rc.9")
     assert is_newer_version("2.0.14-rc.10", "2.0.14-rc.2")
     assert not is_newer_version("2.0.13", "2.0.14-rc.2")
 
+
+def _release_responses() -> tuple[str, bytes, dict[str, bytes]]:
     installer_bytes = b"verified installer payload"
     digest = hashlib.sha256(installer_bytes).hexdigest()
     repo = "hitoshic1982/MoHan-PC-Desktop-Assistant"
@@ -89,35 +91,60 @@ def main() -> None:
         manifest_url: json.dumps(manifest).encode(),
         installer_url: installer_bytes,
     }
+    return repo, installer_bytes, responses
 
+
+def _response_opener(responses: dict[str, bytes]):
     def opener(request, **_kwargs):
         url = request.full_url
         if url not in responses:
             raise URLError("unexpected URL")
         return FakeResponse(url, responses[url])
 
+
+    return opener
+
+
+def _assert_invalid_hash_rejected(
+    manager: UpdateManager,
+    asset: InstallerAsset,
+) -> None:
+    bad = InstallerAsset(
+        asset.kind,
+        "bad.exe",
+        asset.url,
+        "0" * 64,
+        asset.size,
+    )
+    try:
+        manager.download(bad)
+    except UpdateError as exc:
+        assert "SHA256" in str(exc)
+        return
+    raise AssertionError("invalid SHA256 was accepted")
+
+
+def _assert_verified_download(
+    repo: str,
+    installer_bytes: bytes,
+    responses: dict[str, bytes],
+) -> None:
     with tempfile.TemporaryDirectory() as temp:
-        manager = UpdateManager(repo, "2.0.14-rc.2", Path(temp), opener)
+        manager = UpdateManager(
+            repo,
+            "2.0.14-rc.2",
+            Path(temp),
+            _response_opener(responses),
+        )
         update = manager.check("stable")
         assert update is not None and update.version == "2.0.15"
         asset = update.preferred_installer()
         downloaded = manager.download(asset)
         assert downloaded.read_bytes() == installer_bytes
+        _assert_invalid_hash_rejected(manager, asset)
 
-        bad = InstallerAsset(
-            asset.kind,
-            "bad.exe",
-            asset.url,
-            "0" * 64,
-            asset.size,
-        )
-        try:
-            manager.download(bad)
-        except UpdateError as exc:
-            assert "SHA256" in str(exc)
-        else:
-            raise AssertionError("invalid SHA256 was accepted")
 
+def _assert_unsafe_urls_rejected() -> None:
     for unsafe in (
         "http://github.com/update.exe",
         "https://evil.example/update.exe",
@@ -130,6 +157,12 @@ def main() -> None:
         else:
             raise AssertionError(f"unsafe URL accepted: {unsafe}")
 
+
+def main() -> None:
+    _assert_version_ordering()
+    repo, installer_bytes, responses = _release_responses()
+    _assert_verified_download(repo, installer_bytes, responses)
+    _assert_unsafe_urls_rejected()
     print("SECURE_AUTO_UPDATE_OK")
 
 

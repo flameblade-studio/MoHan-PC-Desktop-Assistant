@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import re
-import struct
-from pathlib import Path
-
+lazy import re
+lazy import struct
+lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MEDIA = ROOT / "docs" / "media"
@@ -22,39 +21,39 @@ PNG_FILES = {
 README_BADGES = (
     (
         "Windows CI",
-        "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
-        "actions/workflows/windows-ci.yml/badge.svg",
+        ("https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        "actions/workflows/windows-ci.yml/badge.svg"),
     ),
     (
         "Cross-platform core CI",
-        "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
-        "actions/workflows/cross-platform-core.yml/badge.svg",
+        ("https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        "actions/workflows/cross-platform-core.yml/badge.svg"),
     ),
     (
         "CodeQL",
-        "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
-        "actions/workflows/codeql.yml/badge.svg",
+        ("https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        "actions/workflows/codeql.yml/badge.svg"),
     ),
     (
         "Python Security Audit",
-        "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
-        "actions/workflows/security-audit.yml/badge.svg",
+        ("https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        "actions/workflows/security-audit.yml/badge.svg"),
     ),
     (
         "Extended Secret Defense / Gitleaks",
-        "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
-        "actions/workflows/secret-defense.yml/badge.svg",
+        ("https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        "actions/workflows/secret-defense.yml/badge.svg"),
     ),
     (
         "Latest Release",
-        "https://img.shields.io/github/v/release/"
-        "hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release",
+        ("https://img.shields.io/github/v/release/"
+        "hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release"),
     ),
     ("MIT License", "https://img.shields.io/badge/license-MIT-blue.svg"),
     (
-        "Python 3.14",
-        "https://img.shields.io/badge/Python-3.14-3776AB.svg?"
-        "logo=python&logoColor=white",
+        "Python 3.15",
+        ("https://img.shields.io/badge/Python-3.15-3776AB.svg?"
+        "logo=python&logoColor=white"),
     ),
     (
         "4 interface languages",
@@ -76,8 +75,7 @@ def png_size(path: Path) -> tuple[int, int]:
     return struct.unpack(">II", data[16:24])
 
 
-def main() -> int:
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+def _assert_readme_images(readme: str) -> None:
     for filename, expected_size in PNG_FILES.items():
         path = MEDIA / filename
         assert path.is_file(), f"missing README image: {filename}"
@@ -93,10 +91,15 @@ def main() -> int:
             f"README does not reference {filename}"
         )
 
-    localized_readmes = {
+
+def _localized_readmes() -> dict[str, str]:
+    return {
         name: (ROOT / name).read_text(encoding="utf-8")
         for name in ("README.md", "README.zh-CN.md", "README.ja.md")
     }
+
+
+def _assert_certification_badges(localized_readmes: dict[str, str]) -> None:
     badge_blocks: dict[str, str] = {}
     for name, content in localized_readmes.items():
         badge_match = re.search(
@@ -119,9 +122,10 @@ def main() -> int:
     assert len(set(badge_blocks.values())) == 1, (
         "all three localized README files must share the exact same badge block"
     )
-    quality_standard = (
-        ROOT / "PUBLISHING.md"
-    ).read_text(encoding="utf-8")
+
+
+def _assert_quality_standard(localized_readmes: dict[str, str]) -> None:
+    quality_standard = (ROOT / "PUBLISHING.md").read_text(encoding="utf-8")
     for heading in (
         "炎劍開源軟體家族品質標準",
         "炎剑开源软件家族质量标准",
@@ -149,6 +153,8 @@ def main() -> int:
             f"README badge points to missing workflow: {workflow}"
         )
 
+
+def _assert_demo_video(readme: str) -> None:
     video = MEDIA / "mohan-demo.mp4"
     assert video.is_file(), "missing 30–60 second demonstration video"
     size = video.stat().st_size
@@ -159,6 +165,8 @@ def main() -> int:
     assert b"ftyp" in header, "demonstration video is not an MP4 container"
     assert "docs/media/mohan-demo.mp4" in readme
 
+
+def _assert_support_section(readme: str) -> None:
     support_requirements = (
         "## 支持墨寒 / Support MoHan",
         "docs/media/support-proud.png",
@@ -174,9 +182,9 @@ def main() -> int:
         "support-shy-aligned.png",
         "support-mock-hit.png",
     ):
-        assert (
-            f'src="docs/media/{filename}" width="220" height="220"' in readme
-        ), f"support portrait lacks fixed aligned dimensions: {filename}"
+        assert f'src="docs/media/{filename}" width="220" height="220"' in readme, (
+            f"support portrait lacks fixed aligned dimensions: {filename}"
+        )
     assert readme.count('width="33%" align="center" valign="top"') == 3, (
         "support columns must be top-aligned so shorter captions cannot push "
         "the complete image-and-text column downward on GitHub"
@@ -186,6 +194,8 @@ def main() -> int:
         "captions cannot push the first images and text downward on GitHub"
     )
 
+
+def _assert_github_links(readme: str) -> None:
     github_requirements = (
         "actions/workflows/windows-ci.yml/badge.svg",
         "actions/workflows/codeql.yml/badge.svg",
@@ -195,6 +205,8 @@ def main() -> int:
     for requirement in github_requirements:
         assert requirement in readme, f"missing GitHub project link: {requirement}"
 
+
+def _assert_security_and_community_files() -> None:
     security = (ROOT / "SECURITY.md").read_text(encoding="utf-8").lower()
     assert "private vulnerability reporting" in security
     assert "api key" in security and "oauth" in security
@@ -209,6 +221,17 @@ def main() -> int:
     for path in required_community_files:
         assert path.is_file(), f"missing community file: {path.relative_to(ROOT)}"
 
+
+def main() -> int:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    localized_readmes = _localized_readmes()
+    _assert_readme_images(readme)
+    _assert_certification_badges(localized_readmes)
+    _assert_quality_standard(localized_readmes)
+    _assert_demo_video(readme)
+    _assert_support_section(readme)
+    _assert_github_links(readme)
+    _assert_security_and_community_files()
     print("README_MEDIA_AND_COMMUNITY_OK")
     return 0
 

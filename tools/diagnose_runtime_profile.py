@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import json
-import sqlite3
-import sys
-from pathlib import Path
+lazy import json
+lazy import sqlite3
+lazy import sys
+lazy from pathlib import Path
 
 
 def main(path_text: str) -> None:

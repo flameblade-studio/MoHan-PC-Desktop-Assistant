@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import sqlite3
-from datetime import datetime
-from pathlib import Path
-from typing import Callable
+lazy import sqlite3
+lazy from collections.abc import Callable
+lazy from pathlib import Path
 
-from PySide6.QtCore import QTimer
-from PySide6.QtWidgets import (
+lazy from PySide6.QtCore import QTimer
+lazy from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
     QHBoxLayout,
@@ -17,12 +16,13 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from contracts import ProfileDatabasePort
-from profile_transfer import (
+lazy from contracts import ProfileDatabasePort
+lazy from profile_transfer import (
     PROFILE_EXTENSION,
     PortableProfileManager,
     ProfileTransferError,
 )
+lazy from time_utils import local_wall_time
 
 
 class PortableProfilePanel(QWidget):
@@ -71,7 +71,7 @@ class PortableProfilePanel(QWidget):
         ).strip() or "墨寒"
         default_name = (
             f"{assistant_name}-攜帶進度-"
-            f"{datetime.now():%Y%m%d-%H%M%S}{PROFILE_EXTENSION}"
+            f"{local_wall_time():%Y%m%d-%H%M%S}{PROFILE_EXTENSION}"
         )
         target, _selected_filter = QFileDialog.getSaveFileName(
             self,

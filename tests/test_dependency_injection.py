@@ -1,19 +1,20 @@
 from __future__ import annotations
 
-import os
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import os
+lazy import sys
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtCore import QObject, Signal
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import QObject, Signal
+lazy from PySide6.QtWidgets import QApplication
 
-from app import CompanionWindow
-from db import StudioDB
-from service_container import CompanionServices
+lazy from app import CompanionWindow
+lazy from db import StudioDB
+lazy from service_container import CompanionServices
 
 
 class FakeSecretStore:
@@ -65,6 +66,7 @@ class FakeRealtime(QObject):
         self.volume_calls.append((volume_percent, muted))
 
     def start(self, *args, **kwargs) -> None:
+        del args, kwargs
         self.running = True
 
     def stop(self) -> None:
@@ -89,97 +91,153 @@ class FakeListener(QObject):
         self.toggle_calls += 1
 
 
+@dataclass(slots=True)
+class InjectedTestContext:
+    app: QApplication
+    db: StudioDB
+    secret_store: FakeSecretStore
+    azure_secret_store: FakeSecretStore
+    local_tts: FakeSpeechEngine
+    cloud_tts: FakeSpeechEngine
+    azure_tts: FakeSpeechEngine
+    realtime: FakeRealtime
+    listener: FakeListener
+    window: CompanionWindow
+
+
+def _create_injected_context(temp_dir: str) -> InjectedTestContext:
+    app = QApplication.instance() or QApplication([])
+    db = StudioDB(Path(temp_dir) / "mohan.db")
+    db.set_setting("onboarding_complete", True)
+    db.set_setting("tts_enabled", False)
+    db.set_setting("voice_volume_percent", 137)
+    db.set_setting("voice_muted", False)
+    secret_store = FakeSecretStore()
+    azure_secret_store = FakeSecretStore()
+    local_tts = FakeSpeechEngine()
+    cloud_tts = FakeSpeechEngine()
+    azure_tts = FakeSpeechEngine()
+    realtime = FakeRealtime()
+    listener = FakeListener()
+    services = CompanionServices(
+        db=db,
+        secret_store=secret_store,
+        local_tts=local_tts,
+        cloud_tts=cloud_tts,
+        realtime=realtime,
+        listener=listener,
+        azure_speech=azure_tts,
+        azure_secret_store=azure_secret_store,
+    )
+    window = CompanionWindow(startup_speech=False, services=services)
+    return InjectedTestContext(
+        app=app,
+        db=db,
+        secret_store=secret_store,
+        azure_secret_store=azure_secret_store,
+        local_tts=local_tts,
+        cloud_tts=cloud_tts,
+        azure_tts=azure_tts,
+        realtime=realtime,
+        listener=listener,
+        window=window,
+    )
+
+
+def _assert_dependencies_are_injected(context: InjectedTestContext) -> None:
+    assert context.window.db is context.db
+    assert context.window.secret_store is context.secret_store
+    assert context.window.tts is context.local_tts
+    assert context.window.cloud_tts is context.cloud_tts
+    assert context.window.azure_tts is context.azure_tts
+    assert context.window.realtime is context.realtime
+    assert context.window.listener is context.listener
+    assert context.local_tts.volume_calls[-1] == (137, False)
+    assert context.cloud_tts.volume_calls[-1] == (137, False)
+    assert context.azure_tts.volume_calls[-1] == (137, False)
+    assert context.realtime.volume_calls[-1] == (137, False)
+
+
+def _assert_cloud_failure_uses_local_tts(
+    context: InjectedTestContext,
+) -> None:
+    context.db.set_setting("tts_enabled", True)
+    context.db.set_setting("voice_engine", "OpenAI 自然語音")
+    context.db.set_setting("windows_voice", "OneCore::Microsoft Yating")
+    context.window.speak("主上，妾在。", "speaking")
+    assert context.cloud_tts.speak_calls
+    assert not context.local_tts.speak_calls
+    context.cloud_tts.failed.emit("模擬雲端播放失敗")
+    context.app.processEvents()
+    assert context.local_tts.speak_calls[-1][0] == (
+        "主上，妾在。",
+        "OneCore::Microsoft Yating",
+        -1,
+    )
+    assert context.window.cloud_fallback_active
+
+
+def _assert_azure_failure_uses_local_tts(
+    context: InjectedTestContext,
+) -> None:
+    context.window.speech_playing = False
+    context.window.cloud_fallback_active = False
+    context.db.set_setting("voice_engine", "Azure Speech（預覽）")
+    context.db.set_setting("azure_speech_region", "eastasia")
+    context.db.set_setting(
+        "azure_speech_voice",
+        "zh-TW-HsiaoChenNeural",
+    )
+    context.window.speak("Azure 測試。", "speaking")
+    assert context.azure_tts.speak_calls[-1][0] == (
+        "Azure 測試。",
+        "test-key",
+        "eastasia",
+        "zh-TW-HsiaoChenNeural",
+    )
+    context.azure_tts.failed.emit("模擬 Azure 播放失敗")
+    context.app.processEvents()
+    assert context.local_tts.speak_calls[-1][0] == (
+        "Azure 測試。",
+        "OneCore::Microsoft Yating",
+        -1,
+    )
+
+
+def _assert_missing_azure_settings_fail_locally(
+    context: InjectedTestContext,
+) -> None:
+    azure_call_count = len(context.azure_tts.speak_calls)
+    context.azure_secret_store.clear()
+    context.db.set_setting("azure_speech_region", "")
+    context.window.speech_playing = False
+    context.window.cloud_fallback_active = False
+    context.window.speak("缺少 Azure 設定。", "speaking")
+    assert len(context.azure_tts.speak_calls) == azure_call_count
+    assert context.local_tts.speak_calls[-1][0] == (
+        "缺少 Azure 設定。",
+        "OneCore::Microsoft Yating",
+        -1,
+    )
+    assert "未送出雲端請求" in context.window.dashboard.api_status.text()
+
+
+def _assert_controls_and_shutdown(context: InjectedTestContext) -> None:
+    context.window.dashboard.mic_btn.click()
+    assert context.listener.toggle_calls == 1
+    context.window.close()
+    context.app.processEvents()
+    assert context.realtime.stop_calls == 1
+
+
 def run() -> None:
-    with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
-        app = QApplication.instance() or QApplication([])
-        db = StudioDB(Path(temp) / "mohan.db")
-        db.set_setting("onboarding_complete", True)
-        db.set_setting("tts_enabled", False)
-        db.set_setting("voice_volume_percent", 137)
-        db.set_setting("voice_muted", False)
-        secret_store = FakeSecretStore()
-        azure_secret_store = FakeSecretStore()
-        local_tts = FakeSpeechEngine()
-        cloud_tts = FakeSpeechEngine()
-        azure_tts = FakeSpeechEngine()
-        realtime = FakeRealtime()
-        listener = FakeListener()
-        services = CompanionServices(
-            db=db,
-            secret_store=secret_store,
-            local_tts=local_tts,
-            cloud_tts=cloud_tts,
-            realtime=realtime,
-            listener=listener,
-            azure_speech=azure_tts,
-            azure_secret_store=azure_secret_store,
-        )
-        window = CompanionWindow(
-            startup_speech=False,
-            services=services,
-        )
-        assert window.db is db
-        assert window.secret_store is secret_store
-        assert window.tts is local_tts
-        assert window.cloud_tts is cloud_tts
-        assert window.azure_tts is azure_tts
-        assert window.realtime is realtime
-        assert window.listener is listener
-        assert local_tts.volume_calls[-1] == (137, False)
-        assert cloud_tts.volume_calls[-1] == (137, False)
-        assert azure_tts.volume_calls[-1] == (137, False)
-        assert realtime.volume_calls[-1] == (137, False)
-        db.set_setting("tts_enabled", True)
-        db.set_setting("voice_engine", "OpenAI 自然語音")
-        db.set_setting("windows_voice", "OneCore::Microsoft Yating")
-        window.speak("主上，妾在。", "speaking")
-        assert cloud_tts.speak_calls
-        assert not local_tts.speak_calls
-        cloud_tts.failed.emit("模擬雲端播放失敗")
-        app.processEvents()
-        assert local_tts.speak_calls[-1][0] == (
-            "主上，妾在。",
-            "OneCore::Microsoft Yating",
-            -1,
-        )
-        assert window.cloud_fallback_active
-        window.speech_playing = False
-        window.cloud_fallback_active = False
-        db.set_setting("voice_engine", "Azure Speech（預覽）")
-        db.set_setting("azure_speech_region", "eastasia")
-        db.set_setting("azure_speech_voice", "zh-TW-HsiaoChenNeural")
-        window.speak("Azure 測試。", "speaking")
-        assert azure_tts.speak_calls[-1][0] == (
-            "Azure 測試。",
-            "test-key",
-            "eastasia",
-            "zh-TW-HsiaoChenNeural",
-        )
-        azure_tts.failed.emit("模擬 Azure 播放失敗")
-        app.processEvents()
-        assert local_tts.speak_calls[-1][0] == (
-            "Azure 測試。",
-            "OneCore::Microsoft Yating",
-            -1,
-        )
-        azure_call_count = len(azure_tts.speak_calls)
-        azure_secret_store.clear()
-        db.set_setting("azure_speech_region", "")
-        window.speech_playing = False
-        window.cloud_fallback_active = False
-        window.speak("缺少 Azure 設定。", "speaking")
-        assert len(azure_tts.speak_calls) == azure_call_count
-        assert local_tts.speak_calls[-1][0] == (
-            "缺少 Azure 設定。",
-            "OneCore::Microsoft Yating",
-            -1,
-        )
-        assert "未送出雲端請求" in window.dashboard.api_status.text()
-        window.dashboard.mic_btn.click()
-        assert listener.toggle_calls == 1
-        window.close()
-        app.processEvents()
-        assert realtime.stop_calls == 1
+    with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
+        context = _create_injected_context(temp_dir)
+        _assert_dependencies_are_injected(context)
+        _assert_cloud_failure_uses_local_tts(context)
+        _assert_azure_failure_uses_local_tts(context)
+        _assert_missing_azure_settings_fail_locally(context)
+        _assert_controls_and_shutdown(context)
     print("DEPENDENCY_INJECTION_OK")
 
 

@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-from array import array
-from pathlib import Path
-import sys
-
+lazy import sys
+lazy from array import array
+lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from pcm_audio import (  # noqa: E402
+lazy from pcm_audio import (
     PcmAudioError,
     rate_convert_pcm16,
     scale_pcm16,

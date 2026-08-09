@@ -1,14 +1,16 @@
 from __future__ import annotations
 
-import sys
-import time
-from datetime import datetime
-from pathlib import Path
-from tempfile import TemporaryDirectory
+# These fixtures intentionally model MoHan's offset-free local wall clock.
+# ruff: noqa: DTZ001
+lazy import sys
+lazy import time
+lazy from datetime import datetime
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from background_agents import (
+lazy from background_agents import (
     AgentObservation,
     DiagnosticReportWorker,
     ManagerWorkerScheduler,

@@ -1,15 +1,19 @@
 from __future__ import annotations
 
-import argparse
-import os
-import platform
-import sys
-from dataclasses import dataclass
-from pathlib import Path
+lazy import argparse
+lazy import os
+lazy import platform
+lazy import sys
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
 
-from PySide6.QtCore import QLocale, Qt
-from PySide6.QtGui import QFont, QIcon, QPixmap
-from PySide6.QtWidgets import (
+lazy from runtime_bootstrap import ensure_default_jit, jit_is_enabled
+
+ensure_default_jit(__name__, __file__)
+
+lazy from PySide6.QtCore import QLocale, Qt
+lazy from PySide6.QtGui import QFont, QIcon, QPixmap
+lazy from PySide6.QtWidgets import (
     QApplication,
     QComboBox,
     QFrame,
@@ -21,19 +25,19 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from platform_services import create_platform_services, normalized_platform_id
-from version_info import APP_VERSION
-
+lazy from immutable_config import deep_freeze
+lazy from platform_services import create_platform_services, normalized_platform_id
+lazy from version_info import APP_VERSION
 
 SUPPORTED_LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
-LANGUAGE_NAMES = {
+LANGUAGE_NAMES = frozendict({
     "zh-TW": "繁體中文（台灣）",
     "zh-CN": "简体中文（中国大陆）",
     "en": "English",
     "ja-JP": "日本語",
-}
+})
 
-_TEXT = {
+_TEXT = deep_freeze({
     "zh-TW": {
         "window_title": "墨寒桌面陪伴工作助理 — macOS／Linux Preview",
         "badge": "功能受限預覽版",
@@ -160,7 +164,7 @@ _TEXT = {
         ),
         "close": "Preview を閉じる",
     },
-}
+})
 
 _STYLE = """
 QMainWindow, QWidget#root {
@@ -220,7 +224,7 @@ def resource_path(relative: str) -> Path:
 
 def default_language() -> str:
     name = (os.environ.get("LANG") or QLocale.system().name()).lower()
-    if name.startswith("zh_cn") or name.startswith("zh_sg"):
+    if name.startswith(("zh_cn", "zh_sg")):
         return "zh-CN"
     if name.startswith("ja"):
         return "ja-JP"
@@ -229,7 +233,7 @@ def default_language() -> str:
     return "zh-TW"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class PreviewRuntime:
     platform_id: str
     platform_name: str
@@ -237,7 +241,7 @@ class PreviewRuntime:
     architecture: str
 
     @classmethod
-    def current(cls, platform_id: str | None = None) -> "PreviewRuntime":
+    def current(cls, platform_id: str | None = None) -> PreviewRuntime:
         normalized = normalized_platform_id(platform_id)
         services = create_platform_services(normalized)
         return cls(
@@ -264,7 +268,18 @@ class PreviewWindow(QMainWindow):
         layout = QHBoxLayout(root)
         layout.setContentsMargins(24, 24, 24, 24)
         layout.setSpacing(22)
+        layout.addWidget(self._build_hero_panel(), 4)
+        layout.addWidget(self._build_content_panel(), 6)
 
+        self.setCentralWidget(root)
+        self.setStyleSheet(_STYLE)
+        self.setWindowIcon(
+            QIcon(str(resource_path("installer/artwork/wizard-small.png")))
+        )
+        self.apply_language(self.language)
+
+    @staticmethod
+    def _build_hero_panel() -> QFrame:
         hero_panel = QFrame(objectName="heroPanel")
         hero_layout = QVBoxLayout(hero_panel)
         hero_layout.setContentsMargins(20, 20, 20, 20)
@@ -280,8 +295,9 @@ class PreviewWindow(QMainWindow):
                 )
             )
         hero_layout.addWidget(hero, 1)
-        layout.addWidget(hero_panel, 4)
+        return hero_panel
 
+    def _build_content_panel(self) -> QFrame:
         content_panel = QFrame(objectName="contentPanel")
         content = QVBoxLayout(content_panel)
         content.setContentsMargins(34, 30, 34, 28)
@@ -328,14 +344,7 @@ class PreviewWindow(QMainWindow):
         self.close_button = QPushButton()
         self.close_button.clicked.connect(self.close)
         content.addWidget(self.close_button, 0, Qt.AlignmentFlag.AlignRight)
-        layout.addWidget(content_panel, 6)
-
-        self.setCentralWidget(root)
-        self.setStyleSheet(_STYLE)
-        self.setWindowIcon(
-            QIcon(str(resource_path("installer/artwork/wizard-small.png")))
-        )
-        self.apply_language(self.language)
+        return content_panel
 
     def _language_changed(self) -> None:
         language = str(self.language_selector.currentData())
@@ -395,6 +404,7 @@ def validate_preview_contract(window: PreviewWindow) -> None:
 def _arguments(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(add_help=True)
     parser.add_argument("--preview-smoke-output", type=Path)
+    parser.add_argument("--jit-status-output", type=Path)
     parser.add_argument("--preview-platform", choices=("macos", "linux"))
     parser.add_argument("--preview-expected-version")
     return parser.parse_known_args(argv)[0]
@@ -403,6 +413,13 @@ def _arguments(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     values = sys.argv[1:] if argv is None else argv
     args = _arguments(values)
+    if args.jit_status_output:
+        args.jit_status_output.write_text(
+            "PACKAGED_JIT_DEFAULT_OK"
+            if jit_is_enabled()
+            else "PACKAGED_JIT_DEFAULT_FAILED",
+            encoding="utf-8",
+        )
     if args.preview_smoke_output:
         os.environ["QT_QPA_PLATFORM"] = "offscreen"
     runtime = PreviewRuntime.current(args.preview_platform)
@@ -421,7 +438,7 @@ def main(argv: list[str] | None = None) -> int:
                     "Preview package version mismatch: "
                     f"expected {args.preview_expected_version}, got {runtime.version}"
                 )
-        except Exception:
+        except Exception:  # noqa: BLE001 -- smoke contract records every failure
             args.preview_smoke_output.write_text(
                 "PREVIEW_PACKAGE_SMOKE_FAILED", encoding="utf-8"
             )

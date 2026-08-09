@@ -1,5 +1,8 @@
 name: Preview Package CI
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 on:
   pull_request:
     branches: ["main"]
@@ -16,7 +19,7 @@ jobs:
   macos-preview:
     name: macOS ${{ matrix.architecture }} Preview package smoke
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 45
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
@@ -33,20 +36,41 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.14"
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
           cache: pip
           cache-dependency-path: requirements-preview.txt
       - name: Install pinned Preview dependencies
-        run: python -m pip install -r requirements-preview.txt
+        run: python tools/install_python315_dependencies.py --requirements requirements-preview.txt
       - name: Verify source Preview contract
         run: python tests/test_preview_packaging.py
+      - name: Check out pinned CPython 3.15.0rc1 source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: python/cpython
+          ref: 37e98da7c19a9e5892ee756d6dee08225422cd49
+          path: _python315
+          persist-credentials: false
+      - name: Build and verify JIT-default Python 3.15 runtime
+        shell: bash
+        run: |
+          brew install llvm@21
+          export LLVM_TOOLS_INSTALL_DIR="$(brew --prefix llvm@21)"
+          python tools/build_python315_jit_runtime.py \
+            --source "$PWD/_python315" \
+            --prefix "$RUNNER_TEMP/mohan-python315-jit"
+          echo "MOHAN_JIT_PYTHON=$RUNNER_TEMP/mohan-python315-jit/bin/python3.15" >> "$GITHUB_ENV"
+      - name: Install dependencies into JIT-default Python
+        run: >-
+          "$MOHAN_JIT_PYTHON" tools/install_python315_dependencies.py
+          --requirements requirements-preview.txt
       - name: Build and smoke-test DMG
         shell: bash
         run: |
-          python tools/build_preview_package.py --platform macos --version 2.2.0-rc.0 --output-dir preview-artifacts
+          "$MOHAN_JIT_PYTHON" tools/build_preview_package.py --platform macos --version 2.3.0-rc.0 --output-dir preview-artifacts
           package=(preview-artifacts/*-macOS-${{ matrix.architecture }}-Preview.dmg)
           [[ ${#package[@]} -eq 1 ]]
-          python tools/smoke_preview_package.py --platform macos --package "${package[0]}" --expected-version 2.2.0-rc.0
+          python tools/smoke_preview_package.py --platform macos --package "${package[0]}" --expected-version 2.3.0-rc.0
       - name: Upload PR test artifact only
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -58,7 +82,7 @@ jobs:
   linux-preview:
     name: Linux Preview package smoke
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 120
     env:
       QT_QPA_PLATFORM: offscreen
       APPIMAGETOOL_SHA256: a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0
@@ -68,7 +92,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.14"
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
           cache: pip
           cache-dependency-path: requirements-preview.txt
       - name: Install Ubuntu Qt runtime
@@ -76,9 +101,30 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes libegl1
       - name: Install pinned Preview dependencies
-        run: python -m pip install -r requirements-preview.txt
+        run: python tools/install_python315_dependencies.py --requirements requirements-preview.txt
       - name: Verify source Preview contract
         run: python tests/test_preview_packaging.py
+      - name: Check out pinned CPython 3.15.0rc1 source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: python/cpython
+          ref: 37e98da7c19a9e5892ee756d6dee08225422cd49
+          path: _python315
+          persist-credentials: false
+      - name: Build and verify JIT-default Python 3.15 runtime
+        shell: bash
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew install llvm@21
+          export LLVM_TOOLS_INSTALL_DIR="$(brew --prefix llvm@21)"
+          python tools/build_python315_jit_runtime.py \
+            --source "$PWD/_python315" \
+            --prefix "$RUNNER_TEMP/mohan-python315-jit"
+          echo "MOHAN_JIT_PYTHON=$RUNNER_TEMP/mohan-python315-jit/bin/python3.15" >> "$GITHUB_ENV"
+      - name: Install dependencies into JIT-default Python
+        run: >-
+          "$MOHAN_JIT_PYTHON" tools/install_python315_dependencies.py
+          --requirements requirements-preview.txt
       - name: Fetch checksum-locked official appimagetool
         shell: bash
         run: |
@@ -92,14 +138,14 @@ jobs:
       - name: Build and smoke-test AppImage
         shell: bash
         run: |
-          python tools/build_preview_package.py \
+          "$MOHAN_JIT_PYTHON" tools/build_preview_package.py \
             --platform linux \
-            --version 2.2.0-rc.0 \
+            --version 2.3.0-rc.0 \
             --output-dir preview-artifacts \
             --appimagetool "$RUNNER_TEMP/appimagetool-x86_64.AppImage"
           package=(preview-artifacts/*-Linux-x86_64-Preview.AppImage)
           [[ ${#package[@]} -eq 1 ]]
-          python tools/smoke_preview_package.py --platform linux --package "${package[0]}" --expected-version 2.2.0-rc.0
+          python tools/smoke_preview_package.py --platform linux --package "${package[0]}" --expected-version 2.3.0-rc.0
       - name: Upload PR test artifact only
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:

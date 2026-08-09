@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import re
-import time
-from collections import deque
-from dataclasses import dataclass
+lazy import re
+lazy import time
+lazy from collections import deque
+lazy from collections.abc import Callable, Collection
+lazy from dataclasses import dataclass
 
-
-EMOTION_TO_EXPRESSION = {
+EMOTION_TO_EXPRESSION = frozendict({
     "neutral": "speaking",
     "thinking": "thinking_front",
     "attentive": "attentive_front",
@@ -25,11 +25,11 @@ EMOTION_TO_EXPRESSION = {
     "mock_hit": "mock_hit_front",
     "eureka": "eureka_front",
     "protective": "protective_front",
-}
-EXPRESSION_TO_EMOTION = {
+})
+EXPRESSION_TO_EMOTION = frozendict({
     expression: emotion
     for emotion, expression in EMOTION_TO_EXPRESSION.items()
-}
+})
 INTERNAL_EMOTION_INSTRUCTION = (
     "在回覆正文的最後附加一個不可見控制標籤，格式必須是 "
     "[[MOHAN_EMOTION:情緒:強度]]。情緒只能使用："
@@ -48,7 +48,7 @@ _ANY_EMOTION_TAG = re.compile(
 )
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class TaggedReply:
     text: str
     expression: str | None
@@ -57,7 +57,7 @@ class TaggedReply:
     valid_tag: bool
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class FaceAnchorProfile:
     pose: str
     offset_x: int
@@ -70,7 +70,7 @@ class FaceAnchorProfile:
     score: float
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class WaitExpressionCue:
     """One optional, delayed reaction while an AI answer is pending."""
 
@@ -180,7 +180,7 @@ def parse_internal_emotion(value: str) -> TaggedReply:
     return TaggedReply(cleaned, expression, emotion, intensity, True)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ExpressionRule:
     priority: int
     minimum_ms: int
@@ -189,7 +189,7 @@ class ExpressionRule:
 
 
 DEFAULT_EXPRESSION_RULE = ExpressionRule(40, 1_600, 3_200, 4_500)
-EXPRESSION_RULES = {
+EXPRESSION_RULES = frozendict({
     "thinking_front": ExpressionRule(42, 1_500, 3_600, 9_000),
     "attentive_front": ExpressionRule(38, 1_500, 3_400, 3_000),
     "determined_front": ExpressionRule(66, 1_700, 3_800, 5_000),
@@ -210,8 +210,8 @@ EXPRESSION_RULES = {
     "mock_hit_front": ExpressionRule(86, 2_200, 4_600, 12_000),
     "eureka_front": ExpressionRule(64, 1_700, 3_800, 5_000),
     "protective_front": ExpressionRule(94, 2_300, 5_200, 8_000),
-}
-SOURCE_PRIORITY_BONUS = {
+})
+SOURCE_PRIORITY_BONUS = frozendict({
     "ambient": -20,
     "ai_wait": -12,
     "fallback": 0,
@@ -220,10 +220,11 @@ SOURCE_PRIORITY_BONUS = {
     "user_direct": 10,
     "reminder": 18,
     "safety": 25,
-}
+})
+BASE_EXPRESSIONS = frozenset({"idle", "speaking"})
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class ExpressionDecision:
     accepted: bool
     expression: str
@@ -236,8 +237,12 @@ class ExpressionDecision:
 class ExpressionArbiter:
     """Deterministic expression arbitration independent of the Qt event loop."""
 
-    def __init__(self, allowed: set[str], clock=None):
-        self.allowed = set(allowed) | {"idle", "speaking"}
+    def __init__(
+        self,
+        allowed: Collection[str],
+        clock: Callable[[], float] | None = None,
+    ) -> None:
+        self.allowed = frozenset(allowed) | BASE_EXPRESSIONS
         self.clock = clock or time.monotonic
         self.active = "idle"
         self.active_since_ms = self._now_ms()
@@ -276,60 +281,86 @@ class ExpressionArbiter:
         rule = self.rule(expression)
         priority = rule.priority + SOURCE_PRIORITY_BONUS.get(source, 0)
         hold_ms = self.hold_duration(expression, intensity)
-        accepted = True
-        reason = "accepted"
-
-        if expression not in self.allowed:
-            accepted = False
-            reason = "unknown_expression"
-        elif not force and expression == self.active:
-            accepted = False
-            reason = "duplicate_active"
-        elif not force and expression not in {"idle", "speaking"}:
-            last_started = self.last_started_ms.get(expression)
-            if (
-                last_started is not None
-                and now - last_started < rule.cooldown_ms
-            ):
-                accepted = False
-                reason = "cooldown"
-            else:
-                current_rule = self.rule(self.active)
-                active_age = now - self.active_since_ms
-                current_minimum = current_rule.minimum_ms
-                if (
-                    self.active not in {"idle", "speaking"}
-                    and active_age < current_minimum
-                    and priority <= self.active_priority
-                ):
-                    accepted = False
-                    reason = "minimum_hold"
-
+        rejection = self._rejection_reason(
+            expression,
+            rule,
+            priority,
+            now,
+            force,
+        )
+        accepted = rejection is None
         if accepted:
-            self.generation += 1
-            self.active = expression
-            self.active_since_ms = now
-            self.active_priority = priority
-            if expression not in {"idle", "speaking"}:
-                self.last_started_ms[expression] = now
+            self._activate(expression, priority, now)
 
         decision = ExpressionDecision(
             accepted,
             expression,
-            reason,
+            rejection or "accepted",
             hold_ms,
             priority,
             self.generation,
         )
+        self._record(decision, source, intensity, now)
+        return decision
+
+    def _rejection_reason(
+        self,
+        expression: str,
+        rule: ExpressionRule,
+        priority: int,
+        now: int,
+        force: bool,
+    ) -> str | None:
+        reason = None
+        if expression not in self.allowed:
+            reason = "unknown_expression"
+        elif not force and expression == self.active:
+            reason = "duplicate_active"
+        elif not force and expression not in BASE_EXPRESSIONS:
+            reason = self._timing_rejection(expression, rule, priority, now)
+        return reason
+
+    def _timing_rejection(
+        self,
+        expression: str,
+        rule: ExpressionRule,
+        priority: int,
+        now: int,
+    ) -> str | None:
+        last_started = self.last_started_ms.get(expression)
+        if last_started is not None and now - last_started < rule.cooldown_ms:
+            return "cooldown"
+        active_age = now - self.active_since_ms
+        minimum_hold_active = (
+            self.active not in BASE_EXPRESSIONS
+            and active_age < self.rule(self.active).minimum_ms
+            and priority <= self.active_priority
+        )
+        return "minimum_hold" if minimum_hold_active else None
+
+    def _activate(self, expression: str, priority: int, now: int) -> None:
+        self.generation += 1
+        self.active = expression
+        self.active_since_ms = now
+        self.active_priority = priority
+        if expression not in BASE_EXPRESSIONS:
+            self.last_started_ms[expression] = now
+
+    def _record(
+        self,
+        decision: ExpressionDecision,
+        source: str,
+        intensity: float,
+        now: int,
+    ) -> None:
         self.audit.append(
             {
                 "time_ms": now,
-                "expression": expression,
+                "expression": decision.expression,
                 "source": source,
                 "intensity": round(float(intensity), 3),
-                "accepted": accepted,
-                "reason": reason,
+                "accepted": decision.accepted,
+                "reason": decision.reason,
                 "generation": self.generation,
             }
         )
-        return decision

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pathlib import Path
+lazy from pathlib import Path
 
-from PySide6.QtCore import QPointF, QRectF, Qt
-from PySide6.QtGui import (
+lazy from PySide6.QtCore import QPointF, QRectF, Qt
+lazy from PySide6.QtGui import (
     QColor,
     QImage,
     QLinearGradient,
@@ -11,10 +11,13 @@ from PySide6.QtGui import (
     QPen,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "assets" / "mohan.png"
-SMALL_SOURCE = ROOT / "assets" / "expressions" / "idle_front.png"
+SOURCE = (
+    ROOT
+    / "assets"
+    / "onboarding"
+    / "mohan-hero-rain-canonical.webp"
+)
 OUTPUT = ROOT / "installer" / "artwork"
 
 
@@ -55,26 +58,36 @@ def build() -> tuple[Path, Path]:
     large = _background(656, 1256)
     painter = QPainter(large)
     painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
-    hero = source.scaled(610, 1200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-    painter.drawImage((656 - hero.width()) // 2 + 8, 48, hero)
+    hero = source.scaled(
+        656,
+        1256,
+        Qt.KeepAspectRatioByExpanding,
+        Qt.SmoothTransformation,
+    )
+    hero = hero.copy(max(0, hero.width() - 656), 0, 656, 1256)
+    painter.drawImage(0, 0, hero)
     painter.end()
     if not large.save(str(large_path), "PNG"):
         raise RuntimeError(f"Could not save installer artwork: {large_path}")
 
     small_path = OUTPUT / "wizard-small.png"
     small = _background(512, 512)
-    small_source = QImage(str(SMALL_SOURCE))
-    if small_source.isNull():
-        raise RuntimeError(f"MoHan portrait could not be loaded: {SMALL_SOURCE}")
+    small_source = source
     painter = QPainter(small)
     painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
     portrait = small_source.scaled(
         448,
         448,
-        Qt.KeepAspectRatio,
+        Qt.KeepAspectRatioByExpanding,
         Qt.SmoothTransformation,
     )
-    painter.drawImage((512 - portrait.width()) // 2, 38, portrait)
+    portrait = portrait.copy(
+        max(0, portrait.width() - 448),
+        max(0, min(portrait.height() - 448, 58)),
+        448,
+        448,
+    )
+    painter.drawImage(32, 32, portrait)
     painter.end()
     if not small.save(str(small_path), "PNG"):
         raise RuntimeError(f"Could not save installer artwork: {small_path}")

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from functools import lru_cache
+lazy from functools import lru_cache
 
-from opencc import OpenCC
-
+lazy from opencc import OpenCC
 
 _S2TW = OpenCC("s2twp")
 

@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-import statistics
-import sys
-import time
-from datetime import datetime
-from pathlib import Path
+lazy import statistics
+lazy import sys
+lazy import time
+lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from memory_index import MemoryVectorIndex
+lazy from memory_index import MemoryVectorIndex
+lazy from time_utils import local_wall_time
 
 
 def main() -> None:
-    now = datetime.now().isoformat(timespec="seconds")
+    now = local_wall_time().isoformat(timespec="seconds")
     rows = [
         {
             "id": index,

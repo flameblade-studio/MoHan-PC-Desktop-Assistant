@@ -1,36 +1,37 @@
 from __future__ import annotations
 
-import sqlite3
-from dataclasses import dataclass
-from pathlib import Path
+lazy import sqlite3
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
 
-from PySide6.QtCore import QObject
+lazy from PySide6.QtCore import QObject
 
-from backup_manager import BackupManager
-from azure_speech import AzureSpeechTTS
-from contracts import (
+lazy from azure_speech import AzureSpeechTTS
+lazy from backup_manager import BackupManager
+lazy from contracts import (
     AzureSpeechEnginePort,
     CloudSpeechEnginePort,
     LocalSpeechEnginePort,
     RealtimeVoicePort,
     SecretStoreFactoryPort,
     SecretStorePort,
-    SpeechProviderRegistryPort,
     SpeechListenerPort,
+    SpeechProviderRegistryPort,
 )
-from db import StudioDB
-from language_support import localized_transcription_prompt
-from platform_contracts import PlatformServicePort
-from platform_services import current_platform_services
-from realtime_voice import RealtimeVoiceClient
-from secret_store import platform_secret_store_factory
-from speech import (
+lazy from db import StudioDB
+lazy from language_support import localized_transcription_prompt
+lazy from platform_contracts import PlatformServicePort
+lazy from platform_services import current_platform_services
+lazy from realtime_voice import RealtimeVoiceClient
+lazy from secret_store import platform_secret_store_factory
+lazy from speech import (
     OpenAITTS,
     SpeechListener,
+    SpeechListenerProviders,
     UnavailableSystemTTS,
     WindowsTTS,
 )
-from speech_providers import (
+lazy from speech_providers import (
     SYSTEM_LOCAL_PROVIDER,
     SpeechProviderCapabilities,
     create_builtin_speech_registry,
@@ -87,36 +88,51 @@ def create_default_services(
     )
     listener = SpeechListener(
         listener_script,
-        api_key_provider=secret_store.load,
-        recognition_mode_provider=lambda: str(
-            db.setting("speech_recognition", "OpenAI 雲端（較準確）")
-        ),
-        transcription_model_provider=lambda: str(
-            db.setting(
-                "transcription_model",
-                SpeechListener.TRANSCRIPTION_MODEL,
-            )
-        ),
-        transcription_language_provider=lambda: str(
-            db.setting("transcription_language", "zh")
-        ),
-        transcription_prompt_provider=lambda: str(
-            db.setting(
-                "transcription_prompt",
-                localized_transcription_prompt(
-                    str(db.setting("ui_language", "zh-TW")),
-                    assistant_name=str(db.setting("assistant_name", "")),
-                    user_title=str(db.setting("user_title", "")),
-                    organization_name=str(
-                        db.setting("organization_name", "")
+        SpeechListenerProviders(
+            api_key=secret_store.load,
+            recognition_mode=lambda: str(
+                db.setting(
+                    "speech_recognition",
+                    "OpenAI 雲端（較準確）",
+                )
+            ),
+            transcription_model=lambda: str(
+                db.setting(
+                    "transcription_model",
+                    SpeechListener.TRANSCRIPTION_MODEL,
+                )
+            ),
+            transcription_language=lambda: str(
+                db.setting("transcription_language", "zh")
+            ),
+            transcription_prompt=lambda: str(
+                db.setting(
+                    "transcription_prompt",
+                    localized_transcription_prompt(
+                        str(db.setting("ui_language", "zh-TW")),
+                        assistant_name=str(
+                            db.setting("assistant_name", "")
+                        ),
+                        user_title=str(
+                            db.setting("user_title", "")
+                        ),
+                        organization_name=str(
+                            db.setting("organization_name", "")
+                        ),
+                        wake_word=str(
+                            db.setting("wake_word", "")
+                        ),
                     ),
-                    wake_word=str(db.setting("wake_word", "")),
-                ),
-            )
-        ),
-        windows_fallback_provider=lambda: bool(
-            runtime_platform.capabilities.offline_speech_recognition
-            and db.setting("windows_transcription_fallback", True)
+                )
+            ),
+            windows_fallback=lambda: bool(
+                runtime_platform.capabilities
+                .offline_speech_recognition
+                and db.setting(
+                    "windows_transcription_fallback",
+                    True,
+                )
+            ),
         ),
         parent=parent,
     )

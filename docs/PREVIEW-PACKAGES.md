@@ -4,11 +4,11 @@
 
 ### 這些安裝檔是什麼
 
-`v2.2.0-rc.N` 發行線會分別在 GitHub 原生 Apple Silicon（arm64）與 Intel
+`v2.3.0-rc.N` 發行線會分別在 GitHub 原生 Apple Silicon（arm64）與 Intel
 （x86_64）macOS runner 製作 `.dmg`，其中包含相符架構的 `.app`；Linux
 x86_64 runner 則製作 `.AppImage`。三個流程都會先建立封裝，
 再從成品執行無畫面啟動測試，確認四語畫面與安全邊界能載入。Pull Request
-只保存短期測試產物；只有已存在且符合 `v2.2.0-rc.N` 的標籤才會發布到
+只保存短期測試產物；只有已存在且符合 `v2.3.0-rc.N` 的標籤才會發布到
 GitHub Releases。
 
 ### 目前可以驗證的範圍
@@ -46,11 +46,11 @@ CI 不是作者持有真實 Mac 或 Linux 桌面電腦的證明。此 Preview �
 
 ### 这些安装文件是什么
 
-`v2.2.0-rc.N` 发布线会分别在 GitHub 原生 Apple Silicon（arm64）与 Intel
+`v2.3.0-rc.N` 发布线会分别在 GitHub 原生 Apple Silicon（arm64）与 Intel
 （x86_64）macOS runner 生成 `.dmg`（内含对应架构的 `.app`），并在 Linux
 x86_64 runner 生成 `.AppImage`。三个流程都会从完成的
 安装包执行无画面启动测试，检查四语界面与安全边界。Pull Request 仅保存短期
-测试产物；只有已经存在并符合 `v2.2.0-rc.N` 的标签才能发布到 Releases。
+测试产物；只有已经存在并符合 `v2.3.0-rc.N` 的标签才能发布到 Releases。
 
 ### 当前验证范围
 
@@ -85,12 +85,12 @@ CI 并不表示作者已经拥有并实测真实 Mac 或 Linux 桌面电脑。�
 
 ### What these packages are
 
-The `v2.2.0-rc.N` line builds separate `.dmg` files on native GitHub Apple
+The `v2.3.0-rc.N` line builds separate `.dmg` files on native GitHub Apple
 Silicon (arm64) and Intel (x86_64) macOS runners, each containing a matching
 `.app`, plus an `.AppImage` on a Linux x86_64 runner. Each job executes a
 headless smoke test from the finished package and checks all four UI languages
 and fail-closed boundaries. Pull requests retain short-lived test artifacts;
-only an existing tag matching `v2.2.0-rc.N` may publish a GitHub Release.
+only an existing tag matching `v2.3.0-rc.N` may publish a GitHub Release.
 
 ### What is verified now
 
@@ -132,12 +132,12 @@ Gatekeeper globally.
 
 ### この配布物について
 
-`v2.2.0-rc.N` 系列では、GitHub の Apple Silicon（arm64）版と Intel
+`v2.3.0-rc.N` 系列では、GitHub の Apple Silicon（arm64）版と Intel
 （x86_64）版 macOS ネイティブ runner で、対応する `.app` を含む個別の
 `.dmg` を作成し、Linux x86_64 runner で `.AppImage` を作成します。完成した
 配布物から headless 起動検査を実行し、四言語画面と安全な停止境界を確認します。
 Pull Request の成果物は短期間の検査用です。Releases へ公開できるのは、既に
-存在し `v2.2.0-rc.N` に一致するタグだけです。
+存在し `v2.3.0-rc.N` に一致するタグだけです。
 
 ### 現在確認する範囲
 

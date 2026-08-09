@@ -1,12 +1,12 @@
-import threading
-import sys
-from pathlib import Path
-from tempfile import NamedTemporaryFile
-from unittest.mock import patch
+lazy import sys
+lazy import threading
+lazy from pathlib import Path
+lazy from tempfile import NamedTemporaryFile
+lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from speech import SpeechListener
+lazy from speech import SpeechListener, SpeechListenerProviders
 
 
 class CapturedThread:
@@ -34,14 +34,18 @@ def run() -> None:
 
     listener = SpeechListener(
         Path("voice_listener.ps1"),
-        api_key_provider=provider("sk-test"),
-        recognition_mode_provider=provider("OpenAI 高準確辨識（推薦）"),
-        transcription_model_provider=provider("gpt-4o-mini-transcribe"),
-        transcription_language_provider=provider("zh"),
-        transcription_prompt_provider=provider("繁中詞庫"),
-        windows_fallback_provider=provider(False),
+        SpeechListenerProviders(
+            api_key=provider("sk-test"),
+            recognition_mode=provider("OpenAI 高準確辨識（推薦）"),
+            transcription_model=provider(
+                "gpt-4o-mini-transcribe"
+            ),
+            transcription_language=provider("zh"),
+            transcription_prompt=provider("繁中詞庫"),
+            windows_fallback=provider(False),
+        ),
     )
-    with patch("speech.threading.Thread", CapturedThread):
+    with patch("threading.Thread", CapturedThread):
         listener.listen_once()
     assert provider_calls
     assert set(provider_calls) == {owner_thread}
@@ -61,9 +65,11 @@ def run() -> None:
     errors: list[str] = []
     no_key = SpeechListener(
         Path("voice_listener.ps1"),
-        api_key_provider=lambda: "",
-        recognition_mode_provider=lambda: "OpenAI 高準確辨識（推薦）",
-        windows_fallback_provider=lambda: False,
+        SpeechListenerProviders(
+            api_key=lambda: "",
+            recognition_mode=lambda: "OpenAI 高準確辨識（推薦）",
+            windows_fallback=lambda: False,
+        ),
     )
     no_key.failed.connect(errors.append)
     no_key.listen_once()

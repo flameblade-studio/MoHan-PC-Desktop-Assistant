@@ -1,13 +1,17 @@
 name: Multi-platform Release
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  PYTHONUTF8: "1"
+
 on:
   push:
     tags:
-      - "v2.2.0-rc.*"
+      - "v2.3.0-rc.*"
   workflow_dispatch:
     inputs:
       tag:
-        description: "Existing v2.2.0-rc.N tag to package"
+        description: "Existing v2.3.0-rc.N tag to package"
         required: true
         type: string
       publish:
@@ -42,8 +46,8 @@ jobs:
           else
             tag="$REF_NAME"
           fi
-          if [[ ! "$tag" =~ ^v2\.2\.0-rc\.[1-9][0-9]*$ ]]; then
-            echo "Only immutable v2.2.0-rc.N preview tags are accepted: $tag" >&2
+          if [[ ! "$tag" =~ ^v2\.3\.0-rc\.[1-9][0-9]*$ ]]; then
+            echo "Only immutable v2.3.0-rc.N preview tags are accepted: $tag" >&2
             exit 2
           fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
@@ -76,7 +80,7 @@ jobs:
     name: Windows formal packages
     needs: resolve-release
     runs-on: windows-latest
-    timeout-minutes: 70
+    timeout-minutes: 120
     steps:
       - name: Check out tagged source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -86,17 +90,19 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.14"
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
           cache: pip
 
       - name: Install pinned runtime dependencies
-        run: python -m pip install -r requirements.txt
+        run: python tools/install_python315_dependencies.py
 
       - name: Install pinned Windows installer toolchains
         shell: pwsh
-        run: |
-          choco install innosetup --version=6.7.1 --allow-downgrade --no-progress -y
-          choco install wixtoolset --version=3.14.1.20250415 --allow-downgrade --no-progress -y
+        run: >-
+          .\tools\install_windows_packaging_tools.ps1
+          -InnoVersion "7.0.2"
+          -WixVersion "7.0.0"
 
       - name: Compile and audit source
         run: |
@@ -106,12 +112,57 @@ jobs:
       - name: Run full Windows regression suite
         run: python tests/run_all.py
 
+      - name: Check out pinned CPython 3.15.0rc1 source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: python/cpython
+          ref: 37e98da7c19a9e5892ee756d6dee08225422cd49
+          path: _python315
+          persist-credentials: false
+
+      - name: Build and verify JIT-default Python 3.15 runtime
+        shell: pwsh
+        run: |
+          python tools/build_python315_jit_runtime.py `
+            --source "$PWD\_python315" `
+            --prefix "$env:RUNNER_TEMP\mohan-python315-jit"
+          "MOHAN_JIT_PYTHON=$PWD\_python315\PCbuild\amd64\python.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Install dependencies into JIT-default Python
+        shell: pwsh
+        run: '& $env:MOHAN_JIT_PYTHON tools/install_python315_dependencies.py'
+
+      - name: Capture and package sanitized Tachyon evidence
+        shell: pwsh
+        run: |
+          $tag = "${{ needs.resolve-release.outputs.tag }}"
+          $base = "MoHan-Desktop-Assistant-$tag"
+          $evidenceDir = Join-Path $env:RUNNER_TEMP "mohan-tachyon-release"
+          $artifactsDir = Join-Path $PWD "release-artifacts"
+          New-Item -ItemType Directory -Force $artifactsDir | Out-Null
+          & $env:MOHAN_JIT_PYTHON tools/profile_mohan_tachyon.py `
+            --target all `
+            --output-dir $evidenceDir `
+            --min-samples 100 `
+            --max-sample-read-error-percent 15 `
+            --max-missed-samples-percent 10
+          if ($LASTEXITCODE -ne 0) {
+            throw "Tachyon release evidence failed with exit code $LASTEXITCODE"
+          }
+          Copy-Item `
+            -LiteralPath (Join-Path $evidenceDir "mohan-tachyon-suite-summary.json") `
+            -Destination (Join-Path $artifactsDir "$base-Performance-Summary.json")
+          Compress-Archive `
+            -Path (Join-Path $evidenceDir "*") `
+            -DestinationPath (Join-Path $artifactsDir "$base-Performance-Evidence.zip") `
+            -CompressionLevel Optimal
+
       - name: Build Windows application
         shell: pwsh
         run: >-
           .\build.ps1
           -Version "${{ needs.resolve-release.outputs.version }}"
-          -Python (Get-Command python).Source
+          -Python $env:MOHAN_JIT_PYTHON
 
       - name: Run packaged self-test and event-loop smoke test
         shell: pwsh
@@ -123,12 +174,19 @@ jobs:
           New-Item -ItemType Directory -Force $env:MOHAN_DATA_DIR | Out-Null
           $selfTest = Join-Path $env:RUNNER_TEMP "mohan-packaged-selftest.txt"
           $smokeTest = Join-Path $env:RUNNER_TEMP "mohan-packaged-smoke.txt"
+          $jitTest = Join-Path $env:RUNNER_TEMP "mohan-packaged-jit.txt"
+          $env:PYTHON_JIT = $null
+          $env:MOHAN_DISABLE_JIT = $null
           $process = Start-Process -FilePath $exe -ArgumentList @(
             "--self-test",
-            "--self-test-output=$selfTest"
+            "--self-test-output=$selfTest",
+            "--jit-status-output=$jitTest"
           ) -Wait -PassThru
           if ($process.ExitCode -ne 0 -or (Get-Content -Raw $selfTest) -ne "PACKAGED_SELFTEST_OK") {
             throw "Packaged self-test failed with exit code $($process.ExitCode)"
+          }
+          if ((Get-Content -Raw $jitTest) -ne "PACKAGED_JIT_DEFAULT_OK") {
+            throw "Packaged application did not enable Python 3.15 JIT by default"
           }
           $process = Start-Process -FilePath $exe -ArgumentList @(
             "--smoke-auto-exit",
@@ -174,7 +232,7 @@ jobs:
     name: macOS ${{ matrix.architecture }} limited Preview DMG
     needs: resolve-release
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 50
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
@@ -194,19 +252,43 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.14"
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
           cache: pip
           cache-dependency-path: requirements-preview.txt
 
       - name: Install pinned Preview dependencies
-        run: python -m pip install -r requirements-preview.txt
+        run: python tools/install_python315_dependencies.py --requirements requirements-preview.txt
 
       - name: Verify source Preview contract
         run: python tests/test_preview_packaging.py
 
+      - name: Check out pinned CPython 3.15.0rc1 source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: python/cpython
+          ref: 37e98da7c19a9e5892ee756d6dee08225422cd49
+          path: _python315
+          persist-credentials: false
+
+      - name: Build and verify JIT-default Python 3.15 runtime
+        shell: bash
+        run: |
+          brew install llvm@21
+          export LLVM_TOOLS_INSTALL_DIR="$(brew --prefix llvm@21)"
+          python tools/build_python315_jit_runtime.py \
+            --source "$PWD/_python315" \
+            --prefix "$RUNNER_TEMP/mohan-python315-jit"
+          echo "MOHAN_JIT_PYTHON=$RUNNER_TEMP/mohan-python315-jit/bin/python3.15" >> "$GITHUB_ENV"
+
+      - name: Install dependencies into JIT-default Python
+        run: >-
+          "$MOHAN_JIT_PYTHON" tools/install_python315_dependencies.py
+          --requirements requirements-preview.txt
+
       - name: Build native macOS Preview DMG
         run: >-
-          python tools/build_preview_package.py
+          "$MOHAN_JIT_PYTHON" tools/build_preview_package.py
           --platform macos
           --version "${{ needs.resolve-release.outputs.version }}"
           --output-dir release-artifacts
@@ -233,7 +315,7 @@ jobs:
     name: Linux limited Preview AppImage
     needs: resolve-release
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 120
     env:
       QT_QPA_PLATFORM: offscreen
       APPIMAGETOOL_SHA256: a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0
@@ -246,7 +328,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.14"
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
           cache: pip
           cache-dependency-path: requirements-preview.txt
 
@@ -256,10 +339,34 @@ jobs:
           sudo apt-get install --yes libegl1
 
       - name: Install pinned Preview dependencies
-        run: python -m pip install -r requirements-preview.txt
+        run: python tools/install_python315_dependencies.py --requirements requirements-preview.txt
 
       - name: Verify source Preview contract
         run: python tests/test_preview_packaging.py
+
+      - name: Check out pinned CPython 3.15.0rc1 source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: python/cpython
+          ref: 37e98da7c19a9e5892ee756d6dee08225422cd49
+          path: _python315
+          persist-credentials: false
+
+      - name: Build and verify JIT-default Python 3.15 runtime
+        shell: bash
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew install llvm@21
+          export LLVM_TOOLS_INSTALL_DIR="$(brew --prefix llvm@21)"
+          python tools/build_python315_jit_runtime.py \
+            --source "$PWD/_python315" \
+            --prefix "$RUNNER_TEMP/mohan-python315-jit"
+          echo "MOHAN_JIT_PYTHON=$RUNNER_TEMP/mohan-python315-jit/bin/python3.15" >> "$GITHUB_ENV"
+
+      - name: Install dependencies into JIT-default Python
+        run: >-
+          "$MOHAN_JIT_PYTHON" tools/install_python315_dependencies.py
+          --requirements requirements-preview.txt
 
       - name: Download and verify pinned official appimagetool
         shell: bash
@@ -275,7 +382,7 @@ jobs:
       - name: Build verified Linux Preview AppImage
         shell: bash
         run: |
-          python tools/build_preview_package.py \
+          "$MOHAN_JIT_PYTHON" tools/build_preview_package.py \
             --platform linux \
             --version "${{ needs.resolve-release.outputs.version }}" \
             --output-dir release-artifacts \
@@ -313,11 +420,19 @@ jobs:
           ref: ${{ needs.resolve-release.outputs.commit }}
           persist-credentials: false
 
-      - name: Set up Python
+      - name: Set up Python 3.15 release metadata runtime
+        id: runtime-python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.14"
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
           cache: pip
+
+      - name: Set up isolated Python 3.14 SBOM tooling runtime
+        id: sbom-python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.14.7"
 
       - name: Download all verified platform artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -326,12 +441,35 @@ jobs:
           path: release-artifacts
           merge-multiple: true
 
-      - name: Create CycloneDX SBOM, update manifest, and SHA256SUMS
+      - name: Create, finalize, and validate CycloneDX 1.7 SBOMs
         run: |
-          python -m pip install cyclonedx-bom==7.3.0
-          cyclonedx-py requirements requirements.txt --output-format JSON --output-file "release-artifacts/MoHan-Desktop-Assistant-${{ needs.resolve-release.outputs.tag }}-Windows-SBOM.cdx.json"
-          cyclonedx-py requirements requirements-preview.txt --output-format JSON --output-file "release-artifacts/MoHan-Desktop-Assistant-${{ needs.resolve-release.outputs.tag }}-Preview-SBOM.cdx.json"
-          python tools/create_release_metadata.py \
+          sbom_python="${{ steps.sbom-python.outputs.python-path }}"
+          runtime_python="${{ steps.runtime-python.outputs.python-path }}"
+          base="MoHan-Desktop-Assistant-${{ needs.resolve-release.outputs.tag }}"
+          "$sbom_python" -m pip install cyclonedx-bom==7.3.0
+          "$sbom_python" -m cyclonedx_py requirements requirements-runtime.txt \
+            --pyproject pyproject.toml \
+            --mc-type application \
+            --spec-version 1.7 \
+            --output-reproducible \
+            --validate \
+            --output-format JSON \
+            --output-file "release-artifacts/$base-Windows-SBOM.cdx.json"
+          "$sbom_python" -m cyclonedx_py requirements requirements-preview-runtime.txt \
+            --pyproject sbom/preview.pyproject.toml \
+            --mc-type application \
+            --spec-version 1.7 \
+            --output-reproducible \
+            --validate \
+            --output-format JSON \
+            --output-file "release-artifacts/$base-Preview-SBOM.cdx.json"
+          "$runtime_python" tools/validate_release_sboms.py \
+            --tag "${{ needs.resolve-release.outputs.tag }}" \
+            --entry windows "release-artifacts/$base-Windows-SBOM.cdx.json" requirements-runtime.txt pyproject.toml mohan-desktop-assistant \
+            --entry preview "release-artifacts/$base-Preview-SBOM.cdx.json" requirements-preview-runtime.txt sbom/preview.pyproject.toml mohan-desktop-assistant-preview \
+            --schema-python "$sbom_python" \
+            --output "release-artifacts/$base-SBOM-Validation.json"
+          "$runtime_python" tools/create_release_metadata.py \
             --artifacts release-artifacts \
             --tag "${{ needs.resolve-release.outputs.tag }}" \
             --repository "${{ github.repository }}"
@@ -352,6 +490,7 @@ jobs:
           name: release-metadata
           path: |
             release-artifacts/*-SBOM.cdx.json
+            release-artifacts/*-SBOM-Validation.json
             release-artifacts/*-update.json
             release-artifacts/*-SHA256SUMS.txt
             release-artifacts/*-SHA256.txt
@@ -400,6 +539,9 @@ jobs:
             "$base-Linux-x86_64-Preview.AppImage"
             "$base-Windows-SBOM.cdx.json"
             "$base-Preview-SBOM.cdx.json"
+            "$base-SBOM-Validation.json"
+            "$base-Performance-Evidence.zip"
+            "$base-Performance-Summary.json"
             "$base-update.json"
             "$base-SHA256SUMS.txt"
             "$base-SHA256.txt"

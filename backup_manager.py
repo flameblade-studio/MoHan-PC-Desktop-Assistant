@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-import hashlib
-import json
-import sqlite3
-from datetime import datetime, timedelta
-from pathlib import Path
+lazy import hashlib
+lazy import json
+lazy import sqlite3
+lazy from datetime import timedelta
+lazy from pathlib import Path
+
+lazy from time_utils import local_wall_time, local_wall_time_from_timestamp
 
 
 class BackupManager:
@@ -14,7 +16,7 @@ class BackupManager:
 
     def create(self, reason: str = "manual") -> Path:
         self.backup_dir.mkdir(parents=True, exist_ok=True)
-        stamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+        stamp = local_wall_time().strftime("%Y%m%d-%H%M%S-%f")
         target = self.backup_dir / f"mohan-{stamp}.db"
         destination = sqlite3.connect(target)
         try:
@@ -29,7 +31,7 @@ class BackupManager:
             "file": target.name,
             "sha256": digest,
             "reason": reason,
-            "created_at": datetime.now().isoformat(timespec="seconds"),
+            "created_at": local_wall_time().isoformat(timespec="seconds"),
             "source": str(self.db.path),
         }
         target.with_suffix(".json").write_text(
@@ -63,7 +65,9 @@ class BackupManager:
             default=None,
         )
         if newest is not None:
-            age = datetime.now() - datetime.fromtimestamp(newest.stat().st_mtime)
+            age = local_wall_time() - local_wall_time_from_timestamp(
+                newest.stat().st_mtime
+            )
             if age < timedelta(hours=max(1, hours)):
                 return None
         created = self.create("automatic")
@@ -79,7 +83,9 @@ class BackupManager:
         keep: set[Path] = set(backups[: max(1, keep_daily)])
         months: set[str] = set()
         for backup in backups:
-            month = datetime.fromtimestamp(backup.stat().st_mtime).strftime("%Y-%m")
+            month = local_wall_time_from_timestamp(
+                backup.stat().st_mtime
+            ).strftime("%Y-%m")
             if month not in months and len(months) < max(0, keep_monthly):
                 months.add(month)
                 keep.add(backup)

@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-import os
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import os
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtWidgets import QApplication
 
-from app import CompanionWindow
-from db import StudioDB
+lazy from app import CompanionWindow
+lazy from db import StudioDB
 
 
 def run() -> None:
@@ -45,27 +45,27 @@ def run() -> None:
         for _ in range(5):
             cue(0.55, "A")
             apertures.append(window.mouth_aperture_target)
-        assert window.current_viseme == "A"
-        assert 0.08 <= apertures[0]
+        assert window.viseme_dynamics.current == "A"
+        assert apertures[0] >= 0.08
         assert apertures == sorted(apertures)
         assert apertures[-1] < 1.0
 
         # Rapidly alternating vowel guesses must not make the mouth flicker.
         for vowel in ("O", "I") * 6:
             cue(0.55, vowel)
-        assert window.current_viseme == "A"
+        assert window.viseme_dynamics.current == "A"
 
         for _ in range(2):
             cue(0.55, "O")
-        assert window.current_viseme == "O"
+        assert window.viseme_dynamics.current == "O"
 
-        before_release = window.jaw_aperture
+        before_release = window.viseme_dynamics.jaw_aperture
         for _ in range(3):
             cue(0.0, "CLOSED")
-            assert window.current_viseme == "O"
-        assert window.jaw_aperture < before_release
+            assert window.viseme_dynamics.current == "O"
+        assert window.viseme_dynamics.jaw_aperture < before_release
         cue(0.0, "CLOSED")
-        assert window.current_viseme == "CLOSED"
+        assert window.viseme_dynamics.current == "CLOSED"
         assert window.mouth_aperture_target == 0.0
 
         window.close()

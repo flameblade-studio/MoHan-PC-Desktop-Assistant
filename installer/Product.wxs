@@ -1,40 +1,47 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <!-- One Taiwan Traditional Chinese base MSI plus tested language transforms.
        See installer/LOCALIZATION.md for deployment commands. -->
-  <Product Id="$(var.ProductCode)"
-           Name="MoHan Desktop Assistant"
+  <Package Name="MoHan Desktop Assistant"
            Language="$(var.ProductLanguage)"
            Codepage="$(var.ProductCodepage)"
            Version="$(var.ProductVersion)"
            Manufacturer="CHOU MING HUA"
-           UpgradeCode="E1F22A47-1B50-4B6C-AF43-543FE68370C7">
-    <Package InstallerVersion="500"
-             Compressed="yes"
-             InstallScope="perUser"
-             SummaryCodepage="$(var.ProductCodepage)" />
+           UpgradeCode="E1F22A47-1B50-4B6C-AF43-543FE68370C7"
+           Scope="perUser"
+           ProductCode="$(var.ProductCode)">
+    <SummaryInformation Codepage="$(var.ProductCodepage)" />
     <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeErrorMessage)" />
     <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
     <Property Id="ARPPRODUCTICON" Value="MohanIcon" />
-    <Property Id="ARPURLINFOABOUT" Value="https://www.flamebladestudio.com.tw" />
-    <Property Id="ARPURLUPDATEINFO" Value="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases" />
+    <Property Id="ARPURLINFOABOUT"
+              Value="https://www.flamebladestudio.com.tw" />
+    <Property Id="ARPURLUPDATEINFO"
+              Value="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases" />
     <Icon Id="MohanIcon" SourceFile="$(var.IconPath)" />
+
     <Feature Id="Complete" Title="MoHan Desktop Assistant" Level="1">
       <ComponentGroupRef Id="AppFiles" />
       <ComponentRef Id="StartMenuShortcut" />
     </Feature>
-    <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="LocalAppDataFolder">
-        <Directory Id="ProgramsFolder" Name="Programs">
-          <Directory Id="INSTALLFOLDER" Name="MoHan Desktop Assistant" />
-        </Directory>
+
+    <!-- WiX v7 removed Heat. Files is its maintained recursive harvester. -->
+    <ComponentGroup Id="AppFiles">
+      <Files Directory="INSTALLFOLDER" Include="$(var.SourceDir)\**" />
+    </ComponentGroup>
+
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="ProgramsFolder" Name="Programs">
+        <Directory Id="INSTALLFOLDER" Name="MoHan Desktop Assistant" />
       </Directory>
-      <Directory Id="ProgramMenuFolder">
-        <Directory Id="ApplicationProgramsFolder" Name="MoHan Desktop Assistant" />
-      </Directory>
-    </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder"
+                 Name="MoHan Desktop Assistant" />
+    </StandardDirectory>
+
     <DirectoryRef Id="ApplicationProgramsFolder">
-      <Component Id="StartMenuShortcut" Guid="9B3D236E-A2E2-4CD0-9935-C7DA7AC56147">
+      <Component Id="StartMenuShortcut"
+                 Guid="9B3D236E-A2E2-4CD0-9935-C7DA7AC56147">
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="MoHan Desktop Assistant"
                   Target="[INSTALLFOLDER]$(var.ExecutableName)"
@@ -50,5 +57,5 @@
                        KeyPath="yes" />
       </Component>
     </DirectoryRef>
-  </Product>
+  </Package>
 </Wix>

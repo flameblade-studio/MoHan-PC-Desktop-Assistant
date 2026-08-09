@@ -1,14 +1,31 @@
 from __future__ import annotations
 
-import argparse
-import hashlib
-import json
-import re
-from pathlib import Path
-from urllib.parse import quote
+lazy import argparse
+lazy import hashlib
+lazy import json
+lazy import re
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
+lazy from urllib.parse import quote
+
+TAG_PATTERN = re.compile(r"^v2\.3\.0-rc\.[1-9][0-9]*$")
 
 
-TAG_PATTERN = re.compile(r"^v2\.2\.0-rc\.[1-9][0-9]*$")
+@dataclass(frozen=True, slots=True)
+class ReleaseArguments:
+    artifacts: Path
+    tag: str
+    repository: str
+
+
+@dataclass(frozen=True, slots=True)
+class PackageSpec:
+    kind: str
+    platform: str
+    architecture: str
+    maturity: str
+    name: str
+    locale: str | None = None
 
 
 def sha256(path: Path) -> str:
@@ -19,30 +36,31 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def main() -> int:
+def _parse_arguments() -> ReleaseArguments:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifacts", type=Path, required=True)
     parser.add_argument("--tag", required=True)
     parser.add_argument("--repository", required=True)
     args = parser.parse_args()
-    if not TAG_PATTERN.fullmatch(args.tag):
-        raise ValueError("Release metadata is restricted to v2.2.0-rc.N tags")
-    version = args.tag.removeprefix("v")
-    artifacts = args.artifacts.resolve()
-    prefix = f"https://github.com/{args.repository}/releases/download/{args.tag}"
+    return ReleaseArguments(args.artifacts, args.tag, args.repository)
 
-    installers = []
-    base = f"MoHan-Desktop-Assistant-{args.tag}"
-    package_specs = (
-        (
+
+def _validate_tag(tag: str) -> None:
+    if not TAG_PATTERN.fullmatch(tag):
+        raise ValueError("Release metadata is restricted to v2.3.0-rc.N tags")
+
+
+def _package_specs(tag: str) -> tuple[PackageSpec, ...]:
+    base = f"MoHan-Desktop-Assistant-{tag}"
+    return (
+        PackageSpec(
             "exe",
             "windows",
             "x86_64",
             "complete",
             f"{base}-Windows-x64-Setup.exe",
-            None,
         ),
-        (
+        PackageSpec(
             "msi",
             "windows",
             "x86_64",
@@ -50,7 +68,7 @@ def main() -> int:
             f"{base}-Windows-x64.msi",
             "zh-TW",
         ),
-        (
+        PackageSpec(
             "mst",
             "windows",
             "x86_64",
@@ -58,7 +76,7 @@ def main() -> int:
             f"{base}-en-US.mst",
             "en-US",
         ),
-        (
+        PackageSpec(
             "mst",
             "windows",
             "x86_64",
@@ -66,7 +84,7 @@ def main() -> int:
             f"{base}-zh-CN.mst",
             "zh-CN",
         ),
-        (
+        PackageSpec(
             "mst",
             "windows",
             "x86_64",
@@ -74,94 +92,139 @@ def main() -> int:
             f"{base}-ja-JP.mst",
             "ja-JP",
         ),
-        (
+        PackageSpec(
             "zip",
             "windows",
             "x86_64",
             "complete",
             f"{base}-Windows-x64.zip",
-            None,
         ),
-        (
+        PackageSpec(
             "dmg",
             "macos",
             "arm64",
             "preview",
             f"{base}-macOS-arm64-Preview.dmg",
-            None,
         ),
-        (
+        PackageSpec(
             "dmg",
             "macos",
             "x86_64",
             "preview",
             f"{base}-macOS-x86_64-Preview.dmg",
-            None,
         ),
-        (
+        PackageSpec(
             "appimage",
             "linux",
             "x86_64",
             "preview",
             f"{base}-Linux-x86_64-Preview.AppImage",
-            None,
         ),
     )
-    for kind, platform, architecture, maturity, pattern, locale in package_specs:
-        matches = sorted(artifacts.glob(pattern))
-        if len(matches) != 1:
-            raise RuntimeError(f"Expected one {kind} package, found {len(matches)}")
-        path = matches[0]
-        item = {
-            "kind": kind,
-            "platform": platform,
-            "architecture": architecture,
-            "maturity": maturity,
-            "name": path.name,
-            "url": f"{prefix}/{quote(path.name)}",
-            "sha256": sha256(path),
-            "size": path.stat().st_size,
-        }
-        if locale is not None:
-            item["locale"] = locale
-        installers.append(item)
 
-    manifest_name = f"MoHan-Desktop-Assistant-{args.tag}-update.json"
+
+def _installer_item(
+    artifacts: Path,
+    prefix: str,
+    spec: PackageSpec,
+) -> dict[str, object]:
+    matches = sorted(artifacts.glob(spec.name))
+    if len(matches) != 1:
+        raise RuntimeError(
+            f"Expected one {spec.kind} package, found {len(matches)}"
+        )
+    path = matches[0]
+    item: dict[str, object] = {
+        "kind": spec.kind,
+        "platform": spec.platform,
+        "architecture": spec.architecture,
+        "maturity": spec.maturity,
+        "name": path.name,
+        "url": f"{prefix}/{quote(path.name)}",
+        "sha256": sha256(path),
+        "size": path.stat().st_size,
+    }
+    if spec.locale is not None:
+        item["locale"] = spec.locale
+    return item
+
+
+def _collect_installers(
+    artifacts: Path,
+    tag: str,
+    repository: str,
+) -> list[dict[str, object]]:
+    prefix = f"https://github.com/{repository}/releases/download/{tag}"
+    return [
+        _installer_item(artifacts, prefix, spec)
+        for spec in _package_specs(tag)
+    ]
+
+
+def _write_manifest(
+    artifacts: Path,
+    args: ReleaseArguments,
+    installers: list[dict[str, object]],
+) -> Path:
+    version = args.tag.removeprefix("v")
     manifest = {
         "schema": 1,
         "repository": args.repository,
         "version": version,
         "tag": args.tag,
         "channel": "preview" if "-" in version else "stable",
-        "release_url": f"https://github.com/{args.repository}/releases/tag/{args.tag}",
+        "release_url": (
+            f"https://github.com/{args.repository}/releases/tag/{args.tag}"
+        ),
         "installers": installers,
     }
-    manifest_path = artifacts / manifest_name
+    manifest_path = (
+        artifacts / f"MoHan-Desktop-Assistant-{args.tag}-update.json"
+    )
     manifest_path.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    return manifest_path
 
+
+def _write_checksum_catalogs(
+    artifacts: Path,
+    tag: str,
+) -> tuple[Path, Path]:
     checksum_path = (
-        artifacts / f"MoHan-Desktop-Assistant-{args.tag}-SHA256SUMS.txt"
+        artifacts / f"MoHan-Desktop-Assistant-{tag}-SHA256SUMS.txt"
     )
-    compatibility_checksum_path = (
-        artifacts / f"MoHan-Desktop-Assistant-{args.tag}-SHA256.txt"
+    compatibility_path = (
+        artifacts / f"MoHan-Desktop-Assistant-{tag}-SHA256.txt"
     )
+    excluded = {checksum_path, compatibility_path}
     checksum_targets = sorted(
         path
         for path in artifacts.iterdir()
-        if path.is_file()
-        and path not in {checksum_path, compatibility_checksum_path}
+        if path.is_file() and path not in excluded
     )
-    checksum_catalog = "".join(
+    catalog = "".join(
         f"{sha256(path)}  {path.name}\n" for path in checksum_targets
     )
-    checksum_path.write_text(checksum_catalog, encoding="ascii")
-    compatibility_checksum_path.write_text(checksum_catalog, encoding="ascii")
+    checksum_path.write_text(catalog, encoding="ascii")
+    compatibility_path.write_text(catalog, encoding="ascii")
+    return checksum_path, compatibility_path
+
+
+def main() -> int:
+    args = _parse_arguments()
+    _validate_tag(args.tag)
+    artifacts = args.artifacts.resolve()
+    installers = _collect_installers(artifacts, args.tag, args.repository)
+    manifest_path = _write_manifest(artifacts, args, installers)
+    checksum_path, compatibility_path = _write_checksum_catalogs(
+        artifacts,
+        args.tag,
+    )
     print(manifest_path)
     print(checksum_path)
-    print(compatibility_checksum_path)
+    print(compatibility_path)
     return 0
 
 

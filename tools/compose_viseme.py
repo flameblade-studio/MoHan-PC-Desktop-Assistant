@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import math
-import sys
-from pathlib import Path
+lazy import math
+lazy import sys
+lazy from pathlib import Path
 
-from PySide6.QtGui import QColor, QImage
+lazy from PySide6.QtGui import QColor, QImage
 
 
 def smoothstep(value: float) -> float:

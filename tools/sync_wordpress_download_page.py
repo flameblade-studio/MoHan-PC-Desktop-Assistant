@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-import argparse
-import base64
-import html
-import json
-import os
-import urllib.error
-import urllib.parse
-import urllib.request
-from pathlib import Path
-
+lazy import argparse
+lazy import base64
+lazy import html
+lazy import json
+lazy import os
+lazy from pathlib import Path
+lazy from urllib.error import HTTPError
+lazy from urllib.parse import urlencode, urlparse
+lazy from urllib.request import Request, urlopen
 
 START_MARKER = "<!-- MOHAN_RELEASE_START -->"
 END_MARKER = "<!-- MOHAN_RELEASE_END -->"
@@ -41,8 +40,8 @@ def request_json(
     payload: dict | None = None,
 ) -> object:
     base_url = os.environ["WORDPRESS_BASE_URL"].rstrip("/")
-    parsed_base = urllib.parse.urlparse(base_url)
-    parsed_url = urllib.parse.urlparse(url)
+    parsed_base = urlparse(base_url)
+    parsed_url = urlparse(url)
     if (
         parsed_base.scheme != "https"
         or parsed_url.scheme != "https"
@@ -61,16 +60,16 @@ def request_json(
     if payload is not None:
         data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         headers["Content-Type"] = "application/json; charset=utf-8"
-    request = urllib.request.Request(
+    request = Request(
         url,
         data=data,
         headers=headers,
         method=method,
     )
     try:
-        with urllib.request.urlopen(request, timeout=30) as response:
+        with urlopen(request, timeout=30) as response:
             return json.load(response)
-    except urllib.error.HTTPError as exc:
+    except HTTPError as exc:
         detail = exc.read(2048).decode("utf-8", "replace")
         raise RuntimeError(
             f"WordPress API returned {exc.code}: {detail}"
@@ -205,7 +204,7 @@ def main() -> int:
     if page_id:
         page = request_json(f"{api}/{int(page_id)}?context=edit")
     else:
-        query = urllib.parse.urlencode(
+        query = urlencode(
             {"slug": DEFAULT_SLUG, "context": "edit", "per_page": 1}
         )
         pages = request_json(f"{api}?{query}")

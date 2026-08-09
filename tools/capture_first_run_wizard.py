@@ -1,18 +1,21 @@
 from __future__ import annotations
 
-import os
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import os
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
-os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+os.environ.setdefault(
+    "QT_QPA_PLATFORM",
+    "windows" if sys.platform == "win32" else "offscreen",
+)
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtWidgets import QApplication
 
-from app import FirstRunWizard, application_ui_font
-from db import StudioDB
+lazy from app import FirstRunWizard, application_ui_font
+lazy from db import StudioDB
 
 
 def render(output: Path) -> None:

@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-import random
-import sys
-from pathlib import Path
+lazy import random
+lazy import sys
+lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from expression_system import (
+lazy from expression_system import (
     AI_WAIT_TIMEOUT_MS,
     EMOTION_TO_EXPRESSION,
     ExpressionArbiter,
-    plan_wait_expressions,
     parse_internal_emotion,
+    plan_wait_expressions,
 )
 
 
@@ -26,7 +26,7 @@ class VirtualClock:
         self.seconds += milliseconds / 1000.0
 
 
-def run() -> None:
+def assert_wait_expression_plans() -> None:
     greeting = plan_wait_expressions("早安，墨寒")
     assert len(greeting) == 1
     assert greeting[0].expression == "thinking_front"
@@ -53,10 +53,18 @@ def run() -> None:
     assert narrative[0].expression == "attentive_front"
     assert narrative[-1].reason == "response_timeout"
 
+
+def create_arbiter() -> tuple[set[str], VirtualClock, ExpressionArbiter]:
     allowed = set(EMOTION_TO_EXPRESSION.values())
     clock = VirtualClock()
     arbiter = ExpressionArbiter(allowed, clock=clock)
+    return allowed, clock, arbiter
 
+
+def assert_priority_and_cooldown(
+    clock: VirtualClock,
+    arbiter: ExpressionArbiter,
+) -> None:
     first = arbiter.request(
         "shy_cute_front",
         source="ai_tag",
@@ -94,6 +102,8 @@ def run() -> None:
     assert not cooldown.accepted
     assert cooldown.reason == "cooldown"
 
+
+def assert_internal_emotion_parsing() -> None:
     tagged = parse_internal_emotion(
         "主上，妾已想明白。[[MOHAN_EMOTION:thinking:0.72]]"
     )
@@ -114,6 +124,12 @@ def run() -> None:
     assert invalid.text == "保留正文"
     assert not invalid.valid_tag
 
+
+def assert_eight_hour_arbitration_soak(
+    allowed: set[str],
+    clock: VirtualClock,
+    arbiter: ExpressionArbiter,
+) -> None:
     # Accelerated eight-hour arbitration soak: random ordering, duplicate
     # requests, priority pre-emption and clock jumps must remain deterministic.
     random.seed(20260730)
@@ -153,6 +169,14 @@ def run() -> None:
     assert accepted > 500
     assert rejected > 500
     assert len(arbiter.audit) == 256
+
+
+def run() -> None:
+    assert_wait_expression_plans()
+    allowed, clock, arbiter = create_arbiter()
+    assert_priority_and_cooldown(clock, arbiter)
+    assert_internal_emotion_parsing()
+    assert_eight_hour_arbitration_soak(allowed, clock, arbiter)
     print("EXPRESSION_ARBITER_AND_8H_SOAK_OK")
 
 

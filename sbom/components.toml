@@ -1,0 +1,36 @@
+schema = 1
+
+[[component]]
+name = "PySide6"
+version = "6.11.1"
+license = "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only"
+scope = "runtime"
+profiles = ["windows", "preview"]
+
+[[component]]
+name = "sounddevice"
+version = "0.5.5"
+license = "MIT"
+scope = "runtime"
+profiles = ["windows"]
+
+[[component]]
+name = "websocket-client"
+version = "1.9.0"
+license = "Apache-2.0"
+scope = "runtime"
+profiles = ["windows"]
+
+[[component]]
+name = "opencc-python-reimplemented"
+version = "0.1.7"
+license = "Apache-2.0"
+scope = "runtime"
+profiles = ["windows"]
+
+[[component]]
+name = "PyInstaller"
+version = "6.21.0"
+license = "GPL-2.0-or-later WITH Bootloader-exception"
+scope = "build"
+profiles = ["windows", "preview"]

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import ctypes
-import os
-from ctypes import wintypes
-from pathlib import Path
+lazy import ctypes
+lazy import os
+lazy from ctypes import wintypes
+lazy from pathlib import Path
 
-from contracts import SecretStoreFactoryPort, SecretStorePort
-from platform_contracts import PlatformServicePort
+lazy from contracts import SecretStoreFactoryPort, SecretStorePort
+lazy from platform_contracts import PlatformServicePort
 
 
 class DATA_BLOB(ctypes.Structure):

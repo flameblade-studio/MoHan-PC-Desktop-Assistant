@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
+lazy from collections.abc import Mapping
 
-from language_support import is_english, is_japanese, is_simplified_chinese
-from ui_localization_ja import JAPANESE_UI
+lazy from immutable_config import deep_freeze
+lazy from language_support import is_english, is_japanese, is_simplified_chinese
+lazy from ui_localization_ja import JAPANESE_UI
 
-
-
-_ENGLISH: Mapping[str, str] = {
+_ENGLISH: Mapping[str, str] = deep_freeze({
     "first_run_title": "First-run setup",
     "first_run_heading": "<b>Welcome to MoHan Desktop Assistant</b>",
     "first_run_hero_tagline": (
@@ -247,9 +246,9 @@ _ENGLISH: Mapping[str, str] = {
         "The work timer is already running. There is no need to start it twice."
     ),
     "work_timer_not_started": "Today's work timer has not started yet.",
-}
+})
 
-_SIMPLIFIED_CHINESE: Mapping[str, str] = {
+_SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze({
     "first_run_title": "首次启动设置",
     "first_run_heading": "<b>欢迎使用墨寒桌面助手</b>",
     "first_run_hero_tagline": (
@@ -463,19 +462,19 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = {
     "settings_saved": "设置已保存。",
     "work_timer_already_running": "计时仍在进行，不必重复开始。",
     "work_timer_not_started": "今日尚未开始计时。",
-}
+})
 
 
-MODE_LABELS: Mapping[str, str] = {
+MODE_LABELS: Mapping[str, str] = frozendict({
     "工作": "Work",
     "陪伴": "Companion",
     "勿擾": "Do not disturb",
     "會議": "Meeting",
     "離席": "Away",
     "休眠": "Sleep",
-}
+})
 
-WORK_TYPE_LABELS: Mapping[str, str] = {
+WORK_TYPE_LABELS: Mapping[str, str] = frozendict({
     "一般辦公／行政": "General office / administration",
     "專案管理": "Project management",
     "自由工作者／接案": "Freelance / contract work",
@@ -484,18 +483,18 @@ WORK_TYPE_LABELS: Mapping[str, str] = {
     "教育／研究": "Education / research",
     "銷售／客戶服務": "Sales / customer service",
     "其他（可自行輸入）": "Other (enter your own)",
-}
+})
 
-SIMPLIFIED_MODE_LABELS: Mapping[str, str] = {
+SIMPLIFIED_MODE_LABELS: Mapping[str, str] = frozendict({
     "工作": "工作",
     "陪伴": "陪伴",
     "勿擾": "勿扰",
     "會議": "会议",
     "離席": "离席",
     "休眠": "休眠",
-}
+})
 
-SIMPLIFIED_WORK_TYPE_LABELS: Mapping[str, str] = {
+SIMPLIFIED_WORK_TYPE_LABELS: Mapping[str, str] = frozendict({
     "一般辦公／行政": "一般办公／行政",
     "專案管理": "项目管理",
     "自由工作者／接案": "自由职业／承接项目",
@@ -504,7 +503,7 @@ SIMPLIFIED_WORK_TYPE_LABELS: Mapping[str, str] = {
     "教育／研究": "教育／研究",
     "銷售／客戶服務": "销售／客户服务",
     "其他（可自行輸入）": "其他（可自行输入）",
-}
+})
 
 
 def ui_text(language: str, key: str, chinese: str, **values: object) -> str:

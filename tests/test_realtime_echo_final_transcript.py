@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-import json
-import queue
-import sys
-from pathlib import Path
+lazy import json
+lazy import queue
+lazy import sys
+lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from realtime_voice import RealtimeVoiceClient
+lazy from realtime_voice import RealtimeVoiceClient
 
 
 class _Socket:

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import sqlite3
-from pathlib import Path
-from typing import Any, Callable, Protocol
+lazy import sqlite3
+lazy from collections.abc import Callable
+lazy from pathlib import Path
+lazy from typing import Any, Protocol
 
 
 class SignalPort(Protocol):

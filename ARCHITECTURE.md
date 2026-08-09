@@ -71,10 +71,16 @@ Circular local imports are prohibited and enforced by
   safety-boundary validation.
 - Pull requests may upload short-lived package artifacts after a package-level
   smoke test. They never create a GitHub Release.
-- Only an existing `v2.2.0-rc.N` tag may publish the multi-platform candidate.
+- Only an existing `v2.3.0-rc.N` tag may publish the multi-platform candidate.
   A read-only metadata job gathers all platform outputs and creates SBOMs,
   metadata, and checksums. A separate minimal privileged job rechecks the
   exact artifacts and tag commit, attests them, and publishes one Release.
+- Release evidence treats observability and supply-chain data as gates, not
+  decoration. Tachyon evidence must be sanitized, JIT-verified, sample-quality
+  checked, and reproducible from one binary stream; raw streams are temporary.
+  CycloneDX 1.7 inventories must match pinned runtime requirements, include
+  complete root dependency edges, PURLs and declared SPDX licenses, pass the
+  official schema and privacy gates, and track build-only tools separately.
 - Every Windows and Preview binary distribution carries the MIT license and
   third-party notices in an end-user-readable location.
 - The AppImage build tool is accepted only when its official source commit,

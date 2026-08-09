@@ -1,19 +1,19 @@
 from __future__ import annotations
 
-import os
-import statistics
-import sys
-import time
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import os
+lazy import statistics
+lazy import sys
+lazy import time
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtCore import QTimer
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import QTimer
+lazy from PySide6.QtWidgets import QApplication
 
-from app import CompanionWindow, EXPRESSION_SPEECH_FRAMES
+lazy from app import EXPRESSION_SPEECH_FRAMES, CompanionWindow
 
 
 def percentile(values: list[float], ratio: float) -> float:

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Callable
+lazy from collections.abc import Callable
+lazy from dataclasses import dataclass
 
-from PySide6.QtWidgets import QTabWidget, QWidget
-
+lazy from PySide6.QtWidgets import QTabWidget, QWidget
 
 FeatureFactory = Callable[[], QWidget]
 

@@ -1,38 +1,36 @@
 from __future__ import annotations
 
-import ast
-import os
-import re
-import subprocess
-import sys
-import tempfile
-from pathlib import Path
-
+lazy import ast
+lazy import os
+lazy import re
+lazy import subprocess
+lazy import sys
+lazy import tempfile
+lazy from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PySide6.QtWidgets import QApplication, QLineEdit
-
+lazy from PySide6.QtWidgets import QApplication, QLineEdit
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from preview_app import (
+lazy from preview_app import (
+    _TEXT,
     SUPPORTED_LANGUAGES,
     PreviewRuntime,
     PreviewWindow,
-    _TEXT,
     validate_preview_contract,
 )
-from tools.build_preview_package import (
+lazy from tools.build_preview_package import (
     APPIMAGETOOL_ASSET_ID,
     APPIMAGETOOL_SHA256,
     APPIMAGETOOL_SOURCE_COMMIT,
     APPIMAGETOOL_URL,
     _validate_version,
 )
-from version_info import APP_VERSION, FALLBACK_VERSION
+lazy from version_info import APP_VERSION, FALLBACK_VERSION
 
 
 def read(relative: str) -> str:
@@ -52,7 +50,7 @@ def test_preview_ui_contract() -> None:
         runtime = PreviewRuntime(
             platform_id=platform_id,
             platform_name=display_name,
-            version="2.2.0-rc.0",
+            version="2.3.0-rc.0",
             architecture="test-architecture",
         )
         window = PreviewWindow(runtime, language="zh-TW")
@@ -112,7 +110,7 @@ def test_source_smoke_rejects_wrong_embedded_version() -> None:
         assert marker.read_text(encoding="utf-8") == "PREVIEW_PACKAGE_SMOKE_FAILED"
 
 
-def test_build_tool_and_release_gate_are_pinned() -> None:
+def test_build_tool_is_pinned() -> None:
     assert re.fullmatch(r"[0-9a-f]{40}", APPIMAGETOOL_SOURCE_COMMIT)
     assert APPIMAGETOOL_ASSET_ID == "324406882"
     assert re.fullmatch(r"[0-9a-f]{64}", APPIMAGETOOL_SHA256)
@@ -128,9 +126,10 @@ def test_build_tool_and_release_gate_are_pinned() -> None:
     assert "ROOT / 'LICENSE'" in build_source
     assert 'stage / "LICENSE.txt"' in build_source
     assert '"mohan-desktop-assistant"' in build_source
-    _validate_version("2.2.0-rc.0")
-    _validate_version("2.2.0-rc.2")
-    for invalid in ("2.2.0", "2.2.0-rc", "2.2.0-rc.01", "2.1.0-rc.2"):
+    _validate_version("2.3.0-rc.0")
+    _validate_version("2.3.0-rc.1")
+    _validate_version("2.3.0-rc.2")
+    for invalid in ("2.3.0", "2.3.0-rc", "2.3.0-rc.01", "2.2.0-rc.2"):
         try:
             _validate_version(invalid)
         except ValueError:
@@ -138,10 +137,12 @@ def test_build_tool_and_release_gate_are_pinned() -> None:
         else:
             raise AssertionError(f"invalid Preview version was accepted: {invalid}")
 
+
+def test_release_gate_is_pinned() -> None:
     release = read(".github/workflows/release.yml")
     preview = read(".github/workflows/preview-packages.yml")
-    assert '"v2.2.0-rc.*"' in release
-    assert "^v2\\.2\\.0-rc\\.[1-9][0-9]*$" in release
+    assert '"v2.3.0-rc.*"' in release
+    assert "^v2\\.3\\.0-rc\\.[1-9][0-9]*$" in release
     assert "pull_request:" not in release
     assert "gh release create" in release
     assert "artifact-metadata: write" in release
@@ -158,6 +159,14 @@ def test_build_tool_and_release_gate_are_pinned() -> None:
     assert "Release tag changed after validation" in release
     assert "SHA256SUMS" in release
     assert "cyclonedx-bom==7.3.0" in release
+    assert 'python-version: "3.14.7"' in release
+    assert release.count('python-version: "3.14.7"') == 1
+    assert "--spec-version 1.7" in release
+    assert "--output-reproducible" in release
+    assert "tools/validate_release_sboms.py" in release
+    assert "SBOM-Validation.json" in release
+    assert "Performance-Evidence.zip" in release
+    assert "Performance-Summary.json" in release
     assert "actions/attest@" in release
     assert "pull_request:" in preview
     assert "gh release create" not in preview
@@ -171,7 +180,7 @@ def test_build_tool_and_release_gate_are_pinned() -> None:
     assert "Contents\" / \"Resources\" / \"LICENSE" in read(
         "tools/smoke_preview_package.py"
     )
-    assert "--expected-version 2.2.0-rc.0" in preview
+    assert "--expected-version 2.3.0-rc.0" in preview
     assert "--preview-expected-version" in read("preview_app.py")
 
     action_pattern = re.compile(r"^[ \t-]*uses:\s*([^\s#]+)", re.MULTILINE)
@@ -185,7 +194,7 @@ def test_build_tool_and_release_gate_are_pinned() -> None:
 
 
 def test_release_version_has_one_source_of_truth() -> None:
-    assert FALLBACK_VERSION == "2.2.0-rc.2"
+    assert FALLBACK_VERSION == "2.3.0-rc.1"
     tag = f"v{FALLBACK_VERSION}"
     assert (ROOT / "docs" / "releases" / f"{tag}.md").is_file()
     release = read(".github/workflows/release.yml")
@@ -197,7 +206,7 @@ def test_release_version_has_one_source_of_truth() -> None:
 
 
 def test_four_language_release_notes_and_boundaries() -> None:
-    notes = read("docs/releases/v2.2.0-rc.2.md")
+    notes = read("docs/releases/v2.3.0-rc.1.md")
     expected_headings = (
         "## 繁體中文",
         "## 简体中文",
@@ -219,7 +228,8 @@ def main() -> None:
     test_preview_ui_contract()
     test_preview_shell_is_isolated_from_full_application()
     test_source_smoke_rejects_wrong_embedded_version()
-    test_build_tool_and_release_gate_are_pinned()
+    test_build_tool_is_pinned()
+    test_release_gate_is_pinned()
     test_release_version_has_one_source_of_truth()
     test_four_language_release_notes_and_boundaries()
     print("PREVIEW_PACKAGING_OK")

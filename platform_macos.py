@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import subprocess
-from pathlib import Path
-from typing import Mapping
+lazy import subprocess
+lazy from collections.abc import Mapping
+lazy from pathlib import Path
 
-from platform_contracts import (
+lazy from platform_contracts import (
     PlatformCapabilities,
     PlatformPaths,
     UnsupportedPlatformFeature,

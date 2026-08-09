@@ -1,12 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-import queue
-import threading
-from typing import Generic, TypeVar
-
-
-T = TypeVar("T")
+lazy import queue
+lazy import threading
+lazy from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
@@ -18,7 +14,7 @@ class AudioQueueSnapshot:
     current_depth: int
 
 
-class BoundedAudioQueue(queue.Queue[T], Generic[T]):
+class BoundedAudioQueue[T](queue.Queue[T]):
     """A measured queue with explicit live-audio overflow behavior."""
 
     def __init__(self, maxsize: int) -> None:
@@ -96,15 +92,12 @@ class PcmPacketizer:
             self._pending.extend(data)
             chunks: list[bytes] = []
             while len(self._pending) >= self.chunk_bytes:
-                chunks.append(bytes(self._pending[: self.chunk_bytes]))
-                del self._pending[: self.chunk_bytes]
+                chunks.append(self._pending.take_bytes(self.chunk_bytes))
             return chunks
 
     def flush(self) -> bytes:
         with self._lock:
-            remainder = bytes(self._pending)
-            self._pending.clear()
-            return remainder
+            return self._pending.take_bytes()
 
     def reset(self) -> None:
         with self._lock:

@@ -1,22 +1,28 @@
 from __future__ import annotations
 
-import os
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
-from unittest.mock import patch
+lazy import os
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
+lazy from unittest.mock import patch
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtCore import QEvent, QObject, QTimer, Signal
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import QEvent, QObject, QTimer, Signal
+lazy from PySide6.QtWidgets import QApplication
 
-from ai_client import JAPANESE_PERSONA, offline_reply
-from app import Dashboard, FirstRunWizard, VOICE_ENGINE_WINDOWS, normalize_for_language
-from azure_speech import azure_female_voices
-from db import StudioDB
-from language_support import (
+lazy from ai_client import JAPANESE_PERSONA, offline_reply
+lazy from app import (
+    VOICE_ENGINE_WINDOWS,
+    Dashboard,
+    DashboardDependencies,
+    FirstRunWizard,
+    normalize_for_language,
+)
+lazy from azure_speech import azure_female_voices
+lazy from db import StudioDB
+lazy from language_support import (
     JAPANESE_REMINDER_LINES,
     is_japanese,
     japanese_voice_instructions,
@@ -24,9 +30,9 @@ from language_support import (
     response_language_instruction,
     transcription_language_for_ui,
 )
-from speech import preferred_windows_voice
-from ui_localization import _ENGLISH
-from ui_localization_ja import JAPANESE_UI
+lazy from speech import preferred_windows_voice
+lazy from ui_localization import _ENGLISH
+lazy from ui_localization_ja import JAPANESE_UI
 
 
 class FakeSecretStore:
@@ -61,8 +67,7 @@ def close_dashboard(app: QApplication, dashboard: Dashboard) -> None:
     app.processEvents()
 
 
-def run() -> None:
-    app = QApplication.instance() or QApplication([])
+def assert_japanese_language_contracts() -> list[tuple[str, str]]:
     assert set(JAPANESE_UI) == set(_ENGLISH)
     assert is_japanese("ja-JP")
     assert transcription_language_for_ui("ja-JP") == "ja"
@@ -101,52 +106,73 @@ def run() -> None:
         windows_voices,
         target_language="ja-JP",
     ) == "OneCore::Microsoft Ayumi"
+    return windows_voices
 
+
+def assert_japanese_wizard(app: QApplication, db: StudioDB) -> None:
+    wizard = FirstRunWizard(db)
+    japanese_index = wizard.ui_language.findData("ja-JP")
+    assert japanese_index >= 0
+    wizard.ui_language.setCurrentIndex(japanese_index)
+    app.processEvents()
+    assert wizard.windowTitle() == "初回セットアップ"
+    assert "千年の女剣魂" in wizard.hero_tagline.text()
+    assert wizard.form_labels["assistant_name"].text() == "アシスタント名"
+    assert wizard.work_type.itemText(0) == "一般事務／管理"
+    assert wizard.assistant_name.text() == "墨寒"
+    assert wizard.user_title.text() == "主様"
+    wizard._save()
+    assert db.setting("ui_language") == "ja-JP"
+    assert db.setting("transcription_language") == "ja"
+    assert "日本語で正確に文字起こししてください" in str(
+        db.setting("transcription_prompt")
+    )
+    assert db.setting("voice_engine") == VOICE_ENGINE_WINDOWS
+    assert db.setting("persona_prompt") == JAPANESE_PERSONA
+    assert db.setting("voice_instructions") == japanese_voice_instructions()
+    wizard.close()
+
+
+def assert_japanese_dashboard(
+    app: QApplication,
+    db: StudioDB,
+    windows_voices: list[tuple[str, str]],
+) -> None:
+    listener = FakeListener()
+    with patch("app.windows_voices", return_value=windows_voices):
+        dashboard = Dashboard(
+            db,
+            DashboardDependencies(listener, FakeSecretStore()),
+        )
+    assert dashboard.tabs.tabText(0) == "会話"
+    assert dashboard.windows_voice.currentData() == "OneCore::Microsoft Ayumi"
+    assert dashboard.permission_controls["delete_files"].currentText() == "禁止"
+    assert dashboard.persona_prompt.toPlainText().strip() == JAPANESE_PERSONA.strip()
+    spoken: list[str] = []
+    dashboard.speak_requested.connect(
+        lambda text, _expression: spoken.append(text)
+    )
+    dashboard._mode_changed("會議")
+    assert spoken[-1].startswith("会議モードを開始")
+    close_dashboard(app, dashboard)
+
+
+def assert_japanese_profile(
+    app: QApplication,
+    windows_voices: list[tuple[str, str]],
+) -> None:
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
         db = StudioDB(Path(temp) / "mohan-ja.db")
-        wizard = FirstRunWizard(db)
-        japanese_index = wizard.ui_language.findData("ja-JP")
-        assert japanese_index >= 0
-        wizard.ui_language.setCurrentIndex(japanese_index)
-        app.processEvents()
-        assert wizard.windowTitle() == "初回セットアップ"
-        assert "千年の女剣魂" in wizard.hero_tagline.text()
-        assert wizard.form_labels["assistant_name"].text() == "アシスタント名"
-        assert wizard.work_type.itemText(0) == "一般事務／管理"
-        assert wizard.assistant_name.text() == "墨寒"
-        assert wizard.user_title.text() == "主様"
-        wizard._save()
-        assert db.setting("ui_language") == "ja-JP"
-        assert db.setting("transcription_language") == "ja"
-        assert "日本語で正確に文字起こししてください" in str(
-            db.setting("transcription_prompt")
-        )
-        assert db.setting("voice_engine") == VOICE_ENGINE_WINDOWS
-        assert db.setting("persona_prompt") == JAPANESE_PERSONA
-        assert db.setting("voice_instructions") == japanese_voice_instructions()
-        wizard.close()
-
+        assert_japanese_wizard(app, db)
         db.set_setting("onboarding_complete", True)
-        listener = FakeListener()
-        with patch("app.windows_voices", return_value=windows_voices):
-            dashboard = Dashboard(db, listener, FakeSecretStore())
-        assert dashboard.tabs.tabText(0) == "会話"
-        assert dashboard.windows_voice.currentData() == (
-            "OneCore::Microsoft Ayumi"
-        )
-        assert dashboard.permission_controls["delete_files"].currentText() == "禁止"
-        assert dashboard.persona_prompt.toPlainText().strip() == (
-            JAPANESE_PERSONA.strip()
-        )
-        spoken: list[str] = []
-        dashboard.speak_requested.connect(
-            lambda text, _expression: spoken.append(text)
-        )
-        dashboard._mode_changed("會議")
-        assert spoken[-1].startswith("会議モードを開始")
-        close_dashboard(app, dashboard)
+        assert_japanese_dashboard(app, db, windows_voices)
         db.close()
 
+
+def run() -> None:
+    app = QApplication.instance() or QApplication([])
+    windows_voices = assert_japanese_language_contracts()
+    assert_japanese_profile(app, windows_voices)
     app.processEvents()
     print("JAPANESE_LOCALIZATION_OK")
 

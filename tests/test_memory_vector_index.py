@@ -1,23 +1,24 @@
 from __future__ import annotations
 
-import hashlib
-import sys
-import time
-from datetime import datetime, timedelta
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import hashlib
+lazy import sys
+lazy import time
+lazy from datetime import timedelta
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from db import StudioDB
-from memory_index import MemoryVectorIndex
+lazy from db import StudioDB
+lazy from memory_index import MemoryVectorIndex
+lazy from time_utils import local_wall_time
 
 
 def _insert_old_low_importance_memories(
     db: StudioDB,
     count: int,
 ) -> None:
-    old = (datetime.now() - timedelta(days=180)).isoformat(timespec="seconds")
+    old = (local_wall_time() - timedelta(days=180)).isoformat(timespec="seconds")
     rows = []
     for index in range(count):
         unique = hashlib.sha256(f"memory-{index}".encode()).hexdigest()
@@ -103,7 +104,7 @@ def run() -> None:
             "title": f"專案項目 {index}",
             "content": f"墨寒記憶檢索測試資料 {index} token-{index * 7919}",
             "importance": (index % 5) + 1,
-            "updated_at": datetime.now().isoformat(timespec="seconds"),
+            "updated_at": local_wall_time().isoformat(timespec="seconds"),
         }
         for index in range(1, 1001)
     ]

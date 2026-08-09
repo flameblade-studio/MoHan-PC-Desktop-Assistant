@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import re
+lazy import re
 
 
 def _normalize_command(text: str) -> str:

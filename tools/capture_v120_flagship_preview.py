@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-import os
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import os
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtCore import QRect, Qt
-from PySide6.QtGui import QColor, QFont, QImage, QLinearGradient, QPainter
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import QRect, Qt
+lazy from PySide6.QtGui import QColor, QFont, QImage, QLinearGradient, QPainter
+lazy from PySide6.QtWidgets import QApplication
 
-from app import CompanionWindow, STYLE
+lazy from app import STYLE, CompanionWindow
 
 
 def background(width: int, height: int, kind: str) -> QImage:
@@ -89,13 +89,7 @@ def main() -> int:
         )
         poses = ("托腮姿勢", "倚靠姿勢", "正面姿勢")
         for row, (pose_label, captured) in enumerate(zip(poses, captures)):
-            for index, (kind, label) in enumerate(
-            (
-                ("light", "淺色桌布"),
-                ("dark", "深色桌布"),
-                ("color", "彩色桌布"),
-            )
-            ):
+            for index, (kind, label) in enumerate(backgrounds):
                 x = margin + index * (cell_width + margin)
                 y = (
                     margin

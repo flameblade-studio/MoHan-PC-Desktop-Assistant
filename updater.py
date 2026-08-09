@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-import hashlib
-import json
-import os
-import re
-import ssl
-import urllib.error
-import urllib.parse
-import urllib.request
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Callable
-
+lazy import hashlib
+lazy import json
+lazy import os
+lazy import re
+lazy import ssl
+lazy from collections.abc import Callable
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
+lazy from typing import Any
+lazy from urllib.error import HTTPError, URLError
+lazy from urllib.parse import urlparse
+lazy from urllib.request import Request, urlopen
 
 MAX_MANIFEST_BYTES = 256 * 1024
 MAX_INSTALLER_BYTES = 750 * 1024 * 1024
@@ -64,10 +64,10 @@ class ReleaseInfo:
 
 
 def _prerelease_key(value: str) -> tuple[tuple[int, object], ...]:
-    result: list[tuple[int, object]] = []
-    for part in value.lower().split("."):
-        result.append((0, int(part)) if part.isdigit() else (1, part))
-    return tuple(result)
+    return tuple(
+        (0, int(part)) if part.isdigit() else (1, part)
+        for part in value.lower().split(".")
+    )
 
 
 def semantic_version_key(value: str) -> tuple[Any, ...]:
@@ -102,12 +102,12 @@ class UpdateManager:
         self.repository = repository
         self.current_version = current_version
         self.download_dir = Path(download_dir)
-        self._opener = opener or urllib.request.urlopen
+        self._opener = opener or urlopen
         self._ssl_context = ssl.create_default_context()
 
     @staticmethod
     def _validate_url(url: str) -> None:
-        parsed = urllib.parse.urlparse(url)
+        parsed = urlparse(url)
         if parsed.scheme != "https" or parsed.hostname not in ALLOWED_DOWNLOAD_HOSTS:
             raise UpdateError("更新網址不是受信任的 GitHub HTTPS 來源。")
         if parsed.username or parsed.password:
@@ -115,7 +115,7 @@ class UpdateManager:
 
     def _request_bytes(self, url: str, limit: int) -> bytes:
         self._validate_url(url)
-        request = urllib.request.Request(
+        request = Request(
             url,
             headers={
                 "Accept": "application/vnd.github+json",
@@ -135,11 +135,11 @@ class UpdateManager:
                 if announced and int(announced) > limit:
                     raise UpdateError("更新資料超過安全大小限制。")
                 data = response.read(limit + 1)
-        except urllib.error.HTTPError as exc:
+        except HTTPError as exc:
             if exc.code == 404:
                 raise UpdateError("目前沒有符合更新頻道的已發布版本。") from exc
             raise UpdateError(f"GitHub 更新服務回應錯誤（{exc.code}）。") from exc
-        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        except (URLError, TimeoutError, OSError) as exc:
             raise UpdateError("無法連線至 GitHub 更新服務。") from exc
         if len(data) > limit:
             raise UpdateError("更新資料超過安全大小限制。")
@@ -210,33 +210,12 @@ class UpdateManager:
         manifest: Any,
         release: dict[str, Any],
     ) -> ReleaseInfo:
-        if not isinstance(manifest, dict) or manifest.get("schema") != 1:
-            raise UpdateError("更新清單版本不受支援。")
-        version = str(manifest.get("version", ""))
-        tag = str(manifest.get("tag", ""))
-        if tag != release.get("tag_name") or version != tag.lstrip("v"):
-            raise UpdateError("更新清單與 GitHub Release 版本不一致。")
-        if manifest.get("repository") != self.repository:
-            raise UpdateError("更新清單不屬於官方儲存庫。")
-        installers: list[InstallerAsset] = []
-        for item in manifest.get("installers", []):
-            if not isinstance(item, dict):
-                continue
-            kind = str(item.get("kind", "")).lower()
-            name = str(item.get("name", ""))
-            url = str(item.get("url", ""))
-            digest = str(item.get("sha256", "")).lower()
-            size = int(item.get("size", 0))
-            if kind not in {"exe", "msi"}:
-                continue
-            if Path(name).name != name or not re.fullmatch(r"[A-Za-z0-9_.-]+", name):
-                raise UpdateError("安裝程式檔名不安全。")
-            if not re.fullmatch(r"[0-9a-f]{64}", digest):
-                raise UpdateError("安裝程式 SHA256 格式錯誤。")
-            if size <= 0 or size > MAX_INSTALLER_BYTES:
-                raise UpdateError("安裝程式大小超過安全限制。")
-            self._validate_url(url)
-            installers.append(InstallerAsset(kind, name, url, digest, size))
+        version, tag = self._validate_manifest_identity(manifest, release)
+        installers = tuple(
+            asset
+            for item in manifest.get("installers", [])
+            if (asset := self._parse_installer(item)) is not None
+        )
         if not installers:
             raise UpdateError("更新清單沒有可驗證的 Windows 安裝程式。")
         return ReleaseInfo(
@@ -246,8 +225,45 @@ class UpdateManager:
             notes=str(release.get("body", "")),
             published_at=str(release.get("published_at", "")),
             prerelease=bool(release.get("prerelease")),
-            installers=tuple(installers),
+            installers=installers,
         )
+
+    def _validate_manifest_identity(
+        self,
+        manifest: Any,
+        release: dict[str, Any],
+    ) -> tuple[str, str]:
+        if not isinstance(manifest, dict) or manifest.get("schema") != 1:
+            raise UpdateError("更新清單版本不受支援。")
+        version = str(manifest.get("version", ""))
+        tag = str(manifest.get("tag", ""))
+        if tag != release.get("tag_name") or version != tag.lstrip("v"):
+            raise UpdateError("更新清單與 GitHub Release 版本不一致。")
+        if manifest.get("repository") != self.repository:
+            raise UpdateError("更新清單不屬於官方儲存庫。")
+        return version, tag
+
+    def _parse_installer(self, item: object) -> InstallerAsset | None:
+        if not isinstance(item, dict):
+            return None
+        kind = str(item.get("kind", "")).lower()
+        if kind not in {"exe", "msi"}:
+            return None
+        name = str(item.get("name", ""))
+        url = str(item.get("url", ""))
+        digest = str(item.get("sha256", "")).lower()
+        size = int(item.get("size", 0))
+        if Path(name).name != name or not re.fullmatch(
+            r"[A-Za-z0-9_.-]+",
+            name,
+        ):
+            raise UpdateError("安裝程式檔名不安全。")
+        if not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise UpdateError("安裝程式 SHA256 格式錯誤。")
+        if size <= 0 or size > MAX_INSTALLER_BYTES:
+            raise UpdateError("安裝程式大小超過安全限制。")
+        self._validate_url(url)
+        return InstallerAsset(kind, name, url, digest, size)
 
     def download(
         self,
@@ -258,7 +274,7 @@ class UpdateManager:
         self.download_dir.mkdir(parents=True, exist_ok=True)
         target = self.download_dir / asset.name
         partial = target.with_suffix(target.suffix + ".part")
-        request = urllib.request.Request(
+        request = Request(
             asset.url,
             headers={"User-Agent": "MoHan-Desktop-Assistant-Updater"},
         )
@@ -291,6 +307,6 @@ class UpdateManager:
         except UpdateError:
             partial.unlink(missing_ok=True)
             raise
-        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        except (URLError, TimeoutError, OSError) as exc:
             partial.unlink(missing_ok=True)
             raise UpdateError("安裝程式下載失敗。") from exc

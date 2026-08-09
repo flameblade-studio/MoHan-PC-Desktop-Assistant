@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-import os
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import os
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtWidgets import QApplication
 
-from app import CompanionWindow
-from background_agents import AgentObservation
-from db import StudioDB
+lazy from app import CompanionWindow
+lazy from background_agents import AgentObservation
+lazy from db import StudioDB
 
 
 class FakeScheduler:
@@ -25,6 +25,7 @@ class FakeScheduler:
         return
 
     def drain(self, *, now=None, quiet=False):
+        del now
         self.quiet_values.append(bool(quiet))
         if quiet or not self.pending:
             return []

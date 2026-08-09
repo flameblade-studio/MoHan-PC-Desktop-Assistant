@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-import json
-import sqlite3
-import sys
-import time
-import urllib.error
-import urllib.request
-from pathlib import Path
+lazy import json
+lazy import sqlite3
+lazy import sys
+lazy import time
+lazy from pathlib import Path
+lazy from urllib.error import HTTPError
+lazy from urllib.request import Request, urlopen
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from ai_client import ActionPlannerWorker
-from secret_store import SecretStore
+lazy from ai_client import ActionPlannerWorker
+lazy from secret_store import SecretStore
 
 
 def main(data_path_text: str) -> int:
@@ -35,26 +35,26 @@ def main(data_path_text: str) -> int:
         connection.close()
     print(f"MODEL={model}")
 
-    model_request = urllib.request.Request(
+    model_request = Request(
         f"https://api.openai.com/v1/models/{model}",
         headers={"Authorization": f"Bearer {key}"},
     )
     started = time.monotonic()
     try:
-        with urllib.request.urlopen(model_request, timeout=15) as response:
+        with urlopen(model_request, timeout=15) as response:
             payload = json.load(response)
         print(
             f"MODEL_CHECK=ok,id={payload.get('id')},"
             f"elapsed={time.monotonic() - started:.2f}s"
         )
-    except urllib.error.HTTPError as exc:
+    except HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")[:800]
         print(
             f"MODEL_CHECK=http_{exc.code},"
             f"elapsed={time.monotonic() - started:.2f}s,detail={detail}"
         )
         return 3
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 -- diagnostic prints the terminal cause
         print(
             f"MODEL_CHECK={type(exc).__name__}:{exc},"
             f"elapsed={time.monotonic() - started:.2f}s"

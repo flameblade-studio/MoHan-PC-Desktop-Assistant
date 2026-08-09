@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-import re
-import threading
-import time
-from concurrent.futures import Future, ThreadPoolExecutor
-from dataclasses import dataclass, field
-from datetime import datetime, time as clock_time
-from pathlib import Path
-from typing import Callable, Iterable, Protocol
+lazy import re
+lazy import threading
+lazy import time
+lazy from collections.abc import Callable, Iterable
+lazy from concurrent.futures import Future, ThreadPoolExecutor
+lazy from dataclasses import dataclass, field
+lazy from datetime import datetime
+lazy from datetime import time as clock_time
+lazy from pathlib import Path
+lazy from typing import Protocol
 
 
 @dataclass(frozen=True)

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
+lazy from collections.abc import Mapping
 
+lazy from immutable_config import deep_freeze
 
-JAPANESE_UI: Mapping[str, str] = {
+JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "first_run_title": "初回セットアップ",
     "first_run_heading": "<b>墨寒デスクトップアシスタントへようこそ</b>",
     "first_run_hero_tagline": (
@@ -219,20 +220,20 @@ JAPANESE_UI: Mapping[str, str] = {
     "settings_saved": "設定を保存しました。",
     "work_timer_already_running": "作業時間はすでに計測中です。重ねて開始する必要はありません。",
     "work_timer_not_started": "本日の作業時間はまだ計測されていません。",
-}
+})
 
 
-JAPANESE_MODE_LABELS: Mapping[str, str] = {
+JAPANESE_MODE_LABELS: Mapping[str, str] = frozendict({
     "工作": "仕事",
     "陪伴": "お供",
     "勿擾": "集中",
     "會議": "会議",
     "離席": "離席",
     "休眠": "休眠",
-}
+})
 
 
-JAPANESE_WORK_TYPE_LABELS: Mapping[str, str] = {
+JAPANESE_WORK_TYPE_LABELS: Mapping[str, str] = frozendict({
     "一般辦公／行政": "一般事務／管理",
     "專案管理": "プロジェクト管理",
     "自由工作者／接案": "フリーランス／受託",
@@ -241,4 +242,4 @@ JAPANESE_WORK_TYPE_LABELS: Mapping[str, str] = {
     "教育／研究": "教育／研究",
     "銷售／客戶服務": "営業／カスタマーサービス",
     "其他（可自行輸入）": "その他（自由入力）",
-}
+})

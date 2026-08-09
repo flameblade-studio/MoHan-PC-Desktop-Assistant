@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-
 DEFAULT_UI_LANGUAGE = "zh-TW"
-ENGLISH_UI_LANGUAGES = {"en", "en-US", "en-GB"}
-SIMPLIFIED_CHINESE_UI_LANGUAGES = {"zh-CN", "zh-SG", "zh-Hans"}
-JAPANESE_UI_LANGUAGES = {"ja", "ja-JP"}
+ENGLISH_UI_LANGUAGES = frozenset({"en", "en-US", "en-GB"})
+SIMPLIFIED_CHINESE_UI_LANGUAGES = frozenset({"zh-CN", "zh-SG", "zh-Hans"})
+JAPANESE_UI_LANGUAGES = frozenset({"ja", "ja-JP"})
 
 LEGACY_TRANSCRIPTION_PROMPT = (
     "請使用台灣繁體中文轉錄。常用詞：墨寒、寒、主上、妾、"
@@ -18,7 +17,7 @@ LEGACY_TRANSCRIPTION_PROMPT = (
 # it must never become part of another user's built-in transcription hints.
 LEGACY_AUTHOR_ORGANIZATION = "炎劍文化工作室"
 
-TRANSCRIPTION_PROMPT_BASES = {
+TRANSCRIPTION_PROMPT_BASES = frozendict({
     "zh-TW": (
         "請使用台灣繁體中文準確轉錄。請保留專有名詞、數字與其他語言的原文，"
         "忠實保留說話者原意，不要改寫或翻譯。"
@@ -36,9 +35,9 @@ TRANSCRIPTION_PROMPT_BASES = {
         "日本語で正確に文字起こししてください。固有名詞、数字、他言語の語句を"
         "原文のまま保持し、話者の意図を変えず、書き換えたり翻訳したりしないでください。"
     ),
-}
+})
 
-ENGLISH_REMINDER_LINES = {
+ENGLISH_REMINDER_LINES = frozendict({
     "work": (
         "Commander, today's campaign begins. Start when ready; I will keep "
         "the time."
@@ -58,23 +57,23 @@ ENGLISH_REMINDER_LINES = {
         "You have worked too long. Step away, drink some water, and stretch. "
         "We resume in ten minutes."
     ),
-}
+})
 
-SIMPLIFIED_CHINESE_REMINDER_LINES = {
+SIMPLIFIED_CHINESE_REMINDER_LINES = frozendict({
     "work": "主上，今日之局已开。准备好了便开始，妾替你守住时辰。",
     "lunch": "该用午膳了。工作可以等，身体不可以。",
     "dinner": "主上先用晚膳。空腹之时，难有稳妥的判断。",
     "offwork": "今日到此为止。你不必再以加班证明自己的价值。",
     "overwork": "主上已经连续工作太久。离席、饮水、伸展，十分钟后再战。",
-}
+})
 
-JAPANESE_REMINDER_LINES = {
+JAPANESE_REMINDER_LINES = frozendict({
     "work": "主様、本日の務めを始めましょう。時は妾が見守ります。",
     "lunch": "お食事の時間です。仕事は待てますが、お身体は待ってくれません。",
     "dinner": "主様、先に夕餉を。空腹のままでは、よい策は生まれません。",
     "offwork": "本日はここまでにしましょう。働き続けて価値を証明する必要はありません。",
     "overwork": "働き続けて久しくなりました。席を離れ、水を飲み、身体を伸ばして、十分後に戻りましょう。",
-}
+})
 
 
 def is_english(language: str) -> bool:

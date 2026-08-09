@@ -10,8 +10,7 @@ Set-Location $ProjectRoot
 
 if (-not $Python) {
     $localCandidates = @(
-        (Join-Path $ProjectRoot ".venv\Scripts\python.exe"),
-        (Join-Path $ProjectRoot "venv\Scripts\python.exe")
+        (Join-Path $ProjectRoot ".venv315\Scripts\python.exe")
     )
     $Python = $localCandidates |
         Where-Object { Test-Path $_ } |
@@ -27,9 +26,13 @@ if (-not $Python) {
     throw "Python was not found. Activate a virtual environment or pass -Python."
 }
 
-$PythonVersion = (& $Python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')").Trim()
-if ($LASTEXITCODE -ne 0 -or $PythonVersion -notmatch '^3\.14(?:\.|$)') {
-    throw "MoHan release packages must be built with Python 3.14.x; found $PythonVersion."
+$PythonVersion = (& $Python -c "import platform; print(platform.python_version())").Trim()
+if ($LASTEXITCODE -ne 0 -or $PythonVersion -ne "3.15.0rc1") {
+    throw "MoHan 2.3.0 RC1 packages must be built with Python 3.15.0rc1; found $PythonVersion."
+}
+$JitContract = (& $Python -c "import sys; print(f'{sys._jit.is_available()}:{sys._jit.is_enabled()}')").Trim()
+if ($LASTEXITCODE -ne 0 -or $JitContract -ne "True:True") {
+    throw "MoHan 2.3.0 RC1 packages require a Python 3.15.0rc1 runtime built with JIT enabled by default; found $JitContract."
 }
 
 $BuildInfo = Join-Path $ProjectRoot "build-info.json"
@@ -37,6 +40,7 @@ $BuildInfo = Join-Path $ProjectRoot "build-info.json"
     version = $Version
     repository = "hitoshic1982/MoHan-PC-Desktop-Assistant"
     python = $PythonVersion
+    jit_default = $true
 } | ConvertTo-Json | Set-Content -Encoding utf8 $BuildInfo
 
 try {

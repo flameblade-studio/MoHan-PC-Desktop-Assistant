@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-import os
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
-from unittest.mock import patch
+lazy import os
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
+lazy from unittest.mock import patch
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtWidgets import QApplication
 
-from app import CompanionWindow, EXPRESSION_IMAGE_ASSETS
+lazy from app import EXPRESSION_IMAGE_ASSETS, CompanionWindow
 
 
 def run() -> None:

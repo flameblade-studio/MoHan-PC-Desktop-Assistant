@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-import argparse
-import base64
-import os
-import shutil
-import subprocess
-import sys
-import tempfile
-import wave
-from pathlib import Path
+lazy import argparse
+lazy import base64
+lazy import os
+lazy import shutil
+lazy import subprocess
+lazy import sys
+lazy import tempfile
+lazy import wave
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "windows")
 
@@ -16,21 +17,19 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIR = ROOT / "assets"
 sys.path.insert(0, str(ROOT))
 
-from PySide6.QtCore import QPoint, QRect, QSize, Qt, QTimer
-from PySide6.QtGui import (
+lazy from PySide6.QtCore import QPoint, QRect, QSize, Qt, QTimer
+lazy from PySide6.QtGui import (
     QColor,
     QFont,
     QImage,
     QLinearGradient,
     QPainter,
     QPen,
-    QPixmap,
 )
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtWidgets import QApplication
 
-from app import CompanionWindow, FirstRunWizard
-from db import StudioDB
-
+lazy from app import CompanionWindow, FirstRunWizard
+lazy from db import StudioDB
 
 WIDTH = 1280
 HEIGHT = 720
@@ -41,6 +40,12 @@ DEMO_TEXT = (
     "工作模式能整理待辦與靈感；長期記憶可逐項檢視、修改或刪除。"
     "所有電腦工具都必須通過本機權限、確認與稽核，模型不能自行取得權限。"
 )
+
+
+@dataclass(frozen=True, slots=True)
+class VideoTiming:
+    duration: float
+    audio_duration: float
 
 
 def stop_timers(window: CompanionWindow) -> None:
@@ -120,9 +125,10 @@ def draw_rounded_panel(
     painter: QPainter,
     rect: QRect,
     fill: QColor,
-    border: QColor = QColor("#3b7088"),
+    border: QColor | None = None,
     radius: int = 22,
 ) -> None:
+    border = border or QColor("#3b7088")
     painter.setPen(QPen(border, 2))
     painter.setBrush(fill)
     painter.drawRoundedRect(rect, radius, radius)
@@ -186,8 +192,10 @@ def compose_hero(
     )
     dash = scaled_inside(dashboard, QSize(1006, 614))
     painter.drawImage(
-        QPoint(panel.x() + (panel.width() - dash.width()) // 2,
-               panel.y() + (panel.height() - dash.height()) // 2),
+        QPoint(
+            panel.x() + (panel.width() - dash.width()) // 2,
+            panel.y() + (panel.height() - dash.height()) // 2,
+        ),
         dash,
     )
 
@@ -204,8 +212,7 @@ def compose_hero(
     char = scaled_inside(character, QSize(405, 575))
     painter.drawImage(
         QPoint(
-            character_panel.x()
-            + (character_panel.width() - char.width()) // 2,
+            character_panel.x() + (character_panel.width() - char.width()) // 2,
             character_panel.y() + 28,
         ),
         char,
@@ -230,22 +237,7 @@ def compose_hero(
         raise RuntimeError(f"Could not save {output}")
 
 
-def compose_github_social_preview(
-    dashboard: QImage,
-    character: QImage,
-    output: Path,
-) -> None:
-    """Build the release/supply-chain visual from the current real UI capture."""
-    canvas = QImage(1280, 640, QImage.Format_ARGB32)
-    canvas.fill(QColor("#eef3f8"))
-    painter = QPainter(canvas)
-    painter.setRenderHint(QPainter.Antialiasing)
-    background = QLinearGradient(0, 0, 1280, 640)
-    background.setColorAt(0.0, QColor("#edf4f8"))
-    background.setColorAt(0.62, QColor("#f9fafb"))
-    background.setColorAt(1.0, QColor("#f8eeee"))
-    painter.fillRect(canvas.rect(), background)
-
+def paint_social_header(painter: QPainter) -> None:
     painter.setPen(QColor("#17344f"))
     painter.setFont(QFont("Microsoft JhengHei UI", 27, QFont.Bold))
     painter.drawText(QRect(48, 34, 820, 50), "墨寒 MoHan Desktop Assistant")
@@ -256,6 +248,8 @@ def compose_github_social_preview(
         "OPEN-SOURCE WINDOWS DESKTOP COMPANION",
     )
 
+
+def paint_social_dashboard(painter: QPainter, dashboard: QImage) -> None:
     panel = QRect(48, 142, 805, 356)
     draw_rounded_panel(
         painter,
@@ -273,6 +267,8 @@ def compose_github_social_preview(
         dash,
     )
 
+
+def paint_social_character(painter: QPainter, character: QImage) -> None:
     character_panel = QRect(880, 40, 352, 458)
     character_gradient = QLinearGradient(
         character_panel.topLeft(), character_panel.bottomRight()
@@ -286,8 +282,7 @@ def compose_github_social_preview(
     char = scaled_inside(character, QSize(340, 395))
     painter.drawImage(
         QPoint(
-            character_panel.x()
-            + (character_panel.width() - char.width()) // 2,
+            character_panel.x() + (character_panel.width() - char.width()) // 2,
             character_panel.y() + 18,
         ),
         char,
@@ -300,6 +295,8 @@ def compose_github_social_preview(
         "北宋千年女劍魂・首席策士",
     )
 
+
+def paint_social_badges(painter: QPainter) -> None:
     badges = (
         ("WINDOWS CI", "VERIFIED"),
         ("SHA256", "CHECKSUM"),
@@ -325,6 +322,8 @@ def compose_github_social_preview(
             subtitle,
         )
 
+
+def paint_social_footer(painter: QPainter) -> None:
     painter.setPen(QColor("#48647a"))
     painter.setFont(QFont("Segoe UI", 13))
     painter.drawText(
@@ -332,6 +331,28 @@ def compose_github_social_preview(
         Qt.AlignCenter | Qt.TextWordWrap,
         "Python 3.14 · Windows x64\nMIT License · Safety First",
     )
+
+
+def compose_github_social_preview(
+    dashboard: QImage,
+    character: QImage,
+    output: Path,
+) -> None:
+    """Build the release/supply-chain visual from the current real UI capture."""
+    canvas = QImage(1280, 640, QImage.Format_ARGB32)
+    canvas.fill(QColor("#eef3f8"))
+    painter = QPainter(canvas)
+    painter.setRenderHint(QPainter.Antialiasing)
+    background = QLinearGradient(0, 0, 1280, 640)
+    background.setColorAt(0.0, QColor("#edf4f8"))
+    background.setColorAt(0.62, QColor("#f9fafb"))
+    background.setColorAt(1.0, QColor("#f8eeee"))
+    painter.fillRect(canvas.rect(), background)
+    paint_social_header(painter)
+    paint_social_dashboard(painter, dashboard)
+    paint_social_character(painter, character)
+    paint_social_badges(painter)
+    paint_social_footer(painter)
     painter.end()
     output.parent.mkdir(parents=True, exist_ok=True)
     if not canvas.save(str(output)):
@@ -458,6 +479,7 @@ def synthesize_demo_audio(output: Path) -> float:
         ["powershell.exe", "-NoProfile", "-EncodedCommand", encoded],
         capture_output=True,
         timeout=120,
+        check=False,
     )
     if result.returncode or not output.exists():
         detail = result.stderr.decode("utf-8", errors="replace")[:400]
@@ -467,7 +489,11 @@ def synthesize_demo_audio(output: Path) -> float:
 
 
 def ffmpeg_binary(explicit: str = "") -> str:
-    candidates = [explicit, os.getenv("FFMPEG_BINARY", ""), shutil.which("ffmpeg") or ""]
+    candidates = [
+        explicit,
+        os.getenv("FFMPEG_BINARY", ""),
+        shutil.which("ffmpeg") or "",
+    ]
     for candidate in candidates:
         if candidate and Path(candidate).exists():
             return str(Path(candidate))
@@ -504,6 +530,177 @@ def speech_character_filename(second: float) -> str:
     return filename
 
 
+def demo_video_command(
+    ffmpeg: str,
+    narration: Path,
+    output: Path,
+) -> list[str]:
+    return [
+        ffmpeg,
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-y",
+        "-f",
+        "rawvideo",
+        "-pixel_format",
+        "bgra",
+        "-video_size",
+        f"{WIDTH}x{HEIGHT}",
+        "-framerate",
+        str(FPS),
+        "-i",
+        "pipe:0",
+        "-i",
+        str(narration),
+        "-c:v",
+        "libx264",
+        "-preset",
+        "veryfast",
+        "-crf",
+        "25",
+        "-pix_fmt",
+        "yuv420p",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "128k",
+        "-movflags",
+        "+faststart",
+        str(output),
+    ]
+
+
+def video_character_cache() -> dict[str, QImage]:
+    character_names = {
+        "attentive_front.png",
+        "blink_front.png",
+        "attentive_front_speech_mid.png",
+        "attentive_front_speech_open.png",
+        "attentive_front_speech_round.png",
+    }
+    return {
+        name: scaled_inside(
+            QImage(str(ROOT / "assets" / "expressions" / name)),
+            QSize(390, 510),
+        )
+        for name in character_names
+    }
+
+
+def render_video_scene_base(
+    media: dict[str, QImage],
+    scene: str,
+    heading: str,
+    caption: str,
+) -> QImage:
+    base = QImage(WIDTH, HEIGHT, QImage.Format_ARGB32)
+    painter = QPainter(base)
+    painter.setRenderHint(QPainter.Antialiasing)
+    gradient = QLinearGradient(0, 0, WIDTH, HEIGHT)
+    gradient.setColorAt(0.0, QColor("#07131e"))
+    gradient.setColorAt(1.0, QColor("#16354b"))
+    painter.fillRect(base.rect(), gradient)
+    painter.setPen(QColor("#f2fbff"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 27, QFont.Bold))
+    painter.drawText(QRect(46, 26, 1180, 50), "墨寒桌面語音互動虛擬助理")
+    painter.setPen(QColor("#f0afd8"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 21, QFont.Bold))
+    painter.drawText(QRect(48, 83, 740, 42), heading)
+    painter.setPen(QColor("#a9dff2"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 14))
+    painter.drawText(QRect(49, 126, 760, 32), caption)
+    panel = QRect(40, 172, 830, 492)
+    draw_rounded_panel(painter, panel, QColor(9, 25, 38, 235))
+    page = scaled_inside(media[scene], QSize(794, 456))
+    painter.drawImage(
+        QPoint(
+            panel.x() + (panel.width() - page.width()) // 2,
+            panel.y() + (panel.height() - page.height()) // 2,
+        ),
+        page,
+    )
+    painter.setPen(QColor("#d7edf6"))
+    painter.setFont(QFont("Microsoft JhengHei UI", 12))
+    painter.drawText(
+        QRect(883, 642, 350, 30),
+        Qt.AlignCenter,
+        "安全展示資料・不含 API 金鑰與私人內容",
+    )
+    painter.end()
+    return base
+
+
+def render_video_frame(
+    media: dict[str, QImage],
+    base_cache: dict[tuple[str, str, str], QImage],
+    character_cache: dict[str, QImage],
+    second: float,
+    timing: VideoTiming,
+) -> QImage:
+    scene, heading, caption = video_scene(second, timing.duration)
+    base_key = (scene, heading, caption)
+    if base_key not in base_cache:
+        base_cache[base_key] = render_video_scene_base(
+            media,
+            scene,
+            heading,
+            caption,
+        )
+    frame = base_cache[base_key].copy()
+    painter = QPainter(frame)
+    painter.setRenderHint(QPainter.Antialiasing)
+    speaking = (
+        5.0
+        < second
+        < min(
+            timing.audio_duration + 0.4,
+            timing.duration - 0.8,
+        )
+    )
+    character_name = (
+        speech_character_filename(second) if speaking else "attentive_front.png"
+    )
+    painter.drawImage(QPoint(870, 165), character_cache[character_name])
+    painter.end()
+    return frame
+
+
+def write_video_frames(
+    process: subprocess.Popen[bytes],
+    media: dict[str, QImage],
+    audio_duration: float,
+    duration: float,
+) -> None:
+    assert process.stdin is not None
+    base_cache: dict[tuple[str, str, str], QImage] = {}
+    character_cache = video_character_cache()
+    timing = VideoTiming(duration=duration, audio_duration=audio_duration)
+    frame_count = round(duration * FPS)
+    for frame_index in range(frame_count):
+        frame = render_video_frame(
+            media,
+            base_cache,
+            character_cache,
+            frame_index / FPS,
+            timing,
+        )
+        # Keep the converted QImage alive while copying its backing store.
+        # Calling bits() on a temporary QImage can release the native image
+        # before PySide finishes copying and crash with an access violation.
+        converted = frame.convertToFormat(QImage.Format_ARGB32)
+        process.stdin.write(converted.bits().tobytes())
+
+
+def finish_video_process(process: subprocess.Popen[bytes]) -> None:
+    assert process.stdin is not None
+    process.stdin.close()
+    stderr = process.stderr.read() if process.stderr else b""
+    return_code = process.wait(timeout=120)
+    if return_code:
+        raise RuntimeError(stderr.decode("utf-8", errors="replace")[-1200:])
+
+
 def write_demo_video(
     media: dict[str, QImage],
     output: Path,
@@ -513,222 +710,171 @@ def write_demo_video(
         narration = Path(temp_dir) / "narration.wav"
         audio_duration = synthesize_demo_audio(narration)
         duration = 36.0
-        frame_count = round(duration * FPS)
-        command = [
-            ffmpeg,
-            "-hide_banner",
-            "-loglevel",
-            "error",
-            "-y",
-            "-f",
-            "rawvideo",
-            "-pixel_format",
-            "bgra",
-            "-video_size",
-            f"{WIDTH}x{HEIGHT}",
-            "-framerate",
-            str(FPS),
-            "-i",
-            "pipe:0",
-            "-i",
-            str(narration),
-            "-c:v",
-            "libx264",
-            "-preset",
-            "veryfast",
-            "-crf",
-            "25",
-            "-pix_fmt",
-            "yuv420p",
-            "-c:a",
-            "aac",
-            "-b:a",
-            "128k",
-            "-movflags",
-            "+faststart",
-            str(output),
-        ]
         process = subprocess.Popen(
-            command,
+            demo_video_command(ffmpeg, narration, output),
             stdin=subprocess.PIPE,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.PIPE,
         )
-        assert process.stdin is not None
-        base_cache: dict[tuple[str, str, str], QImage] = {}
-        character_names = {
-            "attentive_front.png",
-            "blink_front.png",
-            "attentive_front_speech_mid.png",
-            "attentive_front_speech_open.png",
-            "attentive_front_speech_round.png",
-        }
-        character_cache = {
-            name: scaled_inside(
-                QImage(str(ROOT / "assets" / "expressions" / name)),
-                QSize(390, 510),
-            )
-            for name in character_names
-        }
-        for frame_index in range(frame_count):
-            second = frame_index / FPS
-            scene, heading, caption = video_scene(second, duration)
-            base_key = (scene, heading, caption)
-            if base_key not in base_cache:
-                base = QImage(WIDTH, HEIGHT, QImage.Format_ARGB32)
-                base_painter = QPainter(base)
-                base_painter.setRenderHint(QPainter.Antialiasing)
-                gradient = QLinearGradient(0, 0, WIDTH, HEIGHT)
-                gradient.setColorAt(0.0, QColor("#07131e"))
-                gradient.setColorAt(1.0, QColor("#16354b"))
-                base_painter.fillRect(base.rect(), gradient)
-                base_painter.setPen(QColor("#f2fbff"))
-                base_painter.setFont(
-                    QFont("Microsoft JhengHei UI", 27, QFont.Bold)
-                )
-                base_painter.drawText(
-                    QRect(46, 26, 1180, 50),
-                    "墨寒桌面語音互動虛擬助理",
-                )
-                base_painter.setPen(QColor("#f0afd8"))
-                base_painter.setFont(
-                    QFont("Microsoft JhengHei UI", 21, QFont.Bold)
-                )
-                base_painter.drawText(QRect(48, 83, 740, 42), heading)
-                base_painter.setPen(QColor("#a9dff2"))
-                base_painter.setFont(QFont("Microsoft JhengHei UI", 14))
-                base_painter.drawText(QRect(49, 126, 760, 32), caption)
-                panel = QRect(40, 172, 830, 492)
-                draw_rounded_panel(
-                    base_painter,
-                    panel,
-                    QColor(9, 25, 38, 235),
-                )
-                page = scaled_inside(media[scene], QSize(794, 456))
-                base_painter.drawImage(
-                    QPoint(
-                        panel.x() + (panel.width() - page.width()) // 2,
-                        panel.y() + (panel.height() - page.height()) // 2,
-                    ),
-                    page,
-                )
-                base_painter.setPen(QColor("#d7edf6"))
-                base_painter.setFont(QFont("Microsoft JhengHei UI", 12))
-                base_painter.drawText(
-                    QRect(883, 642, 350, 30),
-                    Qt.AlignCenter,
-                    "安全展示資料・不含 API 金鑰與私人內容",
-                )
-                base_painter.end()
-                base_cache[base_key] = base
-            frame = base_cache[base_key].copy()
-            painter = QPainter(frame)
-            painter.setRenderHint(QPainter.Antialiasing)
-
-            speaking = 5.0 < second < min(audio_duration + 0.4, duration - 0.8)
-            character_name = (
-                speech_character_filename(second)
-                if speaking
-                else "attentive_front.png"
-            )
-            painter.drawImage(QPoint(870, 165), character_cache[character_name])
-            painter.end()
-            # Keep the converted QImage alive while copying its backing store.
-            # Calling bits() on a temporary QImage can release the native image
-            # before PySide finishes copying and crash with an access violation.
-            converted = frame.convertToFormat(QImage.Format_ARGB32)
-            raw = converted.bits().tobytes()
-            process.stdin.write(raw)
-        process.stdin.close()
-        stderr = process.stderr.read() if process.stderr else b""
-        return_code = process.wait(timeout=120)
-        if return_code:
-            raise RuntimeError(stderr.decode("utf-8", errors="replace")[-1200:])
+        write_video_frames(process, media, audio_duration, duration)
+        finish_video_process(process)
         return duration
+
+
+def prepare_demo_profile(temp_dir: str) -> None:
+    database = StudioDB(Path(temp_dir) / "mohan.db")
+    seed_demo_database(database)
+    database.close()
+
+
+def create_capture_app() -> QApplication:
+    app = QApplication.instance() or QApplication([])
+    app.setStyleSheet(__import__("app").STYLE)
+    return app
+
+
+def capture_first_run_wizard(
+    app: QApplication,
+    temp_dir: str,
+    output_dir: Path,
+) -> None:
+    wizard_db = StudioDB(Path(temp_dir) / "first-run.db")
+    wizard = FirstRunWizard(wizard_db)
+    wizard.show()
+    app.processEvents()
+    save_widget(wizard, output_dir / "first-run-wizard.png")
+    wizard.close()
+    wizard_db.close()
+
+
+def create_capture_window(app: QApplication) -> CompanionWindow:
+    window = CompanionWindow(startup_speech=False)
+    window.show()
+    window.dashboard.show()
+    window.dashboard.resize(1400, 900)
+    window.dashboard.move(40, 40)
+    window.idle_pose = "front"
+    window._set_expression("attentive_front", fade=False)
+    window.dashboard.mode_combo.setCurrentText("工作")
+    # Dashboard construction already loads the seeded profile. Rebuilding
+    # the card lists again in the same event turn leaves deleteLater()
+    # widgets visible behind their replacements in screenshots.
+    app.processEvents()
+    stop_timers(window)
+    return window
+
+
+def capture_conversation_assets(
+    app: QApplication,
+    window: CompanionWindow,
+    output_dir: Path,
+) -> QImage:
+    window.dashboard.tabs.setCurrentIndex(0)
+    app.processEvents()
+    dashboard = save_widget(window.dashboard, output_dir / "conversation.png")
+    save_widget(window, output_dir / "desktop-character.png")
+    return dashboard
+
+
+def representative_character() -> QImage:
+    character = QImage(str(ASSET_DIR / "expressions" / "attentive_front.png"))
+    if character.isNull():
+        raise RuntimeError("Could not load representative character artwork")
+    return character
+
+
+def capture_task_assets(
+    app: QApplication,
+    window: CompanionWindow,
+    output_dir: Path,
+) -> QImage:
+    window.dashboard.tabs.setCurrentIndex(1)
+    app.processEvents()
+    tasks = save_widget(window.dashboard, output_dir / "tasks-and-ideas.png")
+    character = representative_character()
+    compose_hero(tasks, character, output_dir / "mohan-hero.png")
+    compose_github_social_preview(
+        tasks,
+        character,
+        output_dir / "github-social-preview.png",
+    )
+    return tasks
+
+
+def capture_dashboard_tab(
+    app: QApplication,
+    window: CompanionWindow,
+    index: int,
+    output: Path,
+) -> QImage:
+    window.dashboard.tabs.setCurrentIndex(index)
+    app.processEvents()
+    return save_widget(window.dashboard, output)
+
+
+def capture_security_assets(
+    app: QApplication,
+    window: CompanionWindow,
+    output_dir: Path,
+) -> QImage:
+    window.dashboard.tabs.setCurrentIndex(5)
+    window.dashboard.flagship_center.tabs.setCurrentIndex(5)
+    app.processEvents()
+    return save_widget(window.dashboard, output_dir / "security-permissions.png")
+
+
+def capture_static_media(
+    app: QApplication,
+    window: CompanionWindow,
+    output_dir: Path,
+) -> dict[str, QImage]:
+    dashboard = capture_conversation_assets(app, window, output_dir)
+    tasks = capture_task_assets(app, window, output_dir)
+    memory = capture_dashboard_tab(
+        app,
+        window,
+        3,
+        output_dir / "long-term-memory.png",
+    )
+    voice = capture_dashboard_tab(
+        app,
+        window,
+        4,
+        output_dir / "voice-modes.png",
+    )
+    security = capture_security_assets(app, window, output_dir)
+    compose_expression_showcase(output_dir / "expressions.png")
+    compose_support_portraits(output_dir)
+    return {
+        "hero": dashboard,
+        "voice": voice,
+        "tasks": tasks,
+        "memory": memory,
+        "security": security,
+    }
+
+
+def maybe_write_demo_video(
+    media: dict[str, QImage],
+    output_dir: Path,
+    ffmpeg: str | None,
+) -> float | None:
+    if not ffmpeg:
+        return None
+    return write_demo_video(media, output_dir / "mohan-demo.mp4", ffmpeg)
 
 
 def capture_media(output_dir: Path, ffmpeg: str | None) -> float | None:
     output_dir.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="mohan-readme-profile-") as temp_dir:
         os.environ["MOHAN_DATA_DIR"] = temp_dir
-        database = StudioDB(Path(temp_dir) / "mohan.db")
-        seed_demo_database(database)
-        database.close()
-
-        app = QApplication.instance() or QApplication([])
-        app.setStyleSheet(__import__("app").STYLE)
-
-        wizard_db = StudioDB(Path(temp_dir) / "first-run.db")
-        wizard = FirstRunWizard(wizard_db)
-        wizard.show()
-        app.processEvents()
-        save_widget(wizard, output_dir / "first-run-wizard.png")
-        wizard.close()
-        wizard_db.close()
-
-        window = CompanionWindow(startup_speech=False)
-        window.show()
-        window.dashboard.show()
-        window.dashboard.resize(1400, 900)
-        window.dashboard.move(40, 40)
-        window.idle_pose = "front"
-        window._set_expression("attentive_front", fade=False)
-        window.dashboard.mode_combo.setCurrentText("工作")
-        # Dashboard construction already loads the seeded profile. Rebuilding
-        # the card lists again in the same event turn leaves deleteLater()
-        # widgets visible behind their replacements in screenshots.
-        app.processEvents()
-        stop_timers(window)
-
-        window.dashboard.tabs.setCurrentIndex(0)
-        app.processEvents()
-        dashboard = save_widget(window.dashboard, output_dir / "conversation.png")
-        save_widget(window, output_dir / "desktop-character.png")
-
-        window.dashboard.tabs.setCurrentIndex(1)
-        app.processEvents()
-        tasks = save_widget(window.dashboard, output_dir / "tasks-and-ideas.png")
-        character = QImage(str(ASSET_DIR / "expressions" / "attentive_front.png"))
-        if character.isNull():
-            raise RuntimeError("Could not load representative character artwork")
-        compose_hero(tasks, character, output_dir / "mohan-hero.png")
-        compose_github_social_preview(
-            tasks,
-            character,
-            output_dir / "github-social-preview.png",
-        )
-
-        window.dashboard.tabs.setCurrentIndex(3)
-        app.processEvents()
-        memory = save_widget(window.dashboard, output_dir / "long-term-memory.png")
-
-        window.dashboard.tabs.setCurrentIndex(4)
-        app.processEvents()
-        voice = save_widget(window.dashboard, output_dir / "voice-modes.png")
-
-        window.dashboard.tabs.setCurrentIndex(5)
-        flagship = window.dashboard.flagship_center
-        flagship.tabs.setCurrentIndex(5)
-        app.processEvents()
-        security = save_widget(window.dashboard, output_dir / "security-permissions.png")
-
-        compose_expression_showcase(output_dir / "expressions.png")
-        compose_support_portraits(output_dir)
-        media = {
-            "hero": dashboard,
-            "voice": voice,
-            "tasks": tasks,
-            "memory": memory,
-            "security": security,
-        }
-        duration = None
-        if ffmpeg:
-            duration = write_demo_video(
-                media,
-                output_dir / "mohan-demo.mp4",
-                ffmpeg,
-            )
-        flagship.close_services()
+        prepare_demo_profile(temp_dir)
+        app = create_capture_app()
+        capture_first_run_wizard(app, temp_dir, output_dir)
+        window = create_capture_window(app)
+        media = capture_static_media(app, window, output_dir)
+        duration = maybe_write_demo_video(media, output_dir, ffmpeg)
+        window.dashboard.flagship_center.close_services()
         window.close()
         app.processEvents()
         return duration

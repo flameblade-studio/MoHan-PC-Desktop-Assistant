@@ -1,30 +1,132 @@
 from __future__ import annotations
 
-import json
-import re
-import sqlite3
-from datetime import date, datetime, timedelta
-from pathlib import Path
+lazy import json
+lazy import re
+lazy import sqlite3
+lazy from collections.abc import Mapping
+lazy from dataclasses import dataclass
+lazy from datetime import datetime, timedelta
+lazy from pathlib import Path
 
-from memory_index import (
-    MemoryVectorIndex,
-    cosine_similarity,
-    hashed_text_vector,
-)
-from language_support import (
+lazy from language_support import (
     LEGACY_AUTHOR_ORGANIZATION,
     LEGACY_TRANSCRIPTION_PROMPT,
     localized_transcription_prompt,
 )
-from text_normalizer import to_taiwan_traditional
+lazy from memory_index import (
+    MemoryVectorIndex,
+    cosine_similarity,
+    hashed_text_vector,
+)
+lazy from text_normalizer import to_taiwan_traditional
+lazy from time_utils import local_wall_time
 
-
-DEFAULT_REMINDERS = {
+DEFAULT_REMINDERS = frozendict({
     "work": ("開始工作", "09:30", 1),
     "lunch": ("吃飯", "12:30", 1),
     "dinner": ("晚餐", "18:30", 1),
     "offwork": ("下班", "21:00", 1),
-}
+})
+
+IDEA_COLUMN_DEFINITIONS = frozendict({
+    "text": "TEXT NOT NULL DEFAULT ''",
+    "title": "TEXT NOT NULL DEFAULT ''",
+    "content": "TEXT NOT NULL DEFAULT ''",
+    "updated_at": "TEXT",
+})
+MEMORY_COLUMN_DEFINITIONS = frozendict({
+    "category": "TEXT NOT NULL DEFAULT '其他'",
+    "title": "TEXT NOT NULL DEFAULT ''",
+    "source": "TEXT NOT NULL DEFAULT 'manual'",
+    "importance": "INTEGER NOT NULL DEFAULT 3",
+    "updated_at": "TEXT",
+    "scope": "TEXT NOT NULL DEFAULT 'personal'",
+    "expires_at": "TEXT",
+    "last_used_at": "TEXT",
+})
+PLATFORM_COLUMN_DEFINITIONS = frozendict({
+    "item_name": "TEXT NOT NULL DEFAULT ''",
+    "next_action": "TEXT NOT NULL DEFAULT ''",
+    "notes": "TEXT NOT NULL DEFAULT ''",
+    "url": "TEXT NOT NULL DEFAULT ''",
+    "sort_order": "INTEGER NOT NULL DEFAULT 0",
+})
+LEGACY_MEMORY_CATEGORIES = frozendict({
+    "person": "人物",
+    "people": "人物",
+    "preference": "偏好",
+    "preferences": "偏好",
+    "goal": "目標",
+    "goals": "目標",
+    "workflow": "工作流程",
+    "date": "重要日期",
+    "important_date": "重要日期",
+    "other": "其他",
+})
+MODEL_DEFAULT_MIGRATIONS = (
+    (
+        "luna_default_v12_migrated",
+        frozenset({None, "gpt-5.6-terra"}),
+        "gpt-5.6-luna",
+    ),
+    (
+        "mini_default_v118_migrated",
+        frozenset({None, "gpt-5.6-luna"}),
+        "gpt-5.4-mini",
+    ),
+    (
+        "mini_default_v1213_restored",
+        frozenset({None, "gpt-5.6-luna"}),
+        "gpt-5.4-mini",
+    ),
+    (
+        "luna_default_v210rc1_migrated",
+        frozenset({None, "gpt-5.4-mini"}),
+        "gpt-5.6-luna",
+    ),
+)
+LEGACY_PROFILE_DEFAULTS = frozendict({
+    "assistant_name": "墨寒",
+    "user_title": "主上",
+    "organization_name": "炎劍文化工作室",
+    "window_title": "",
+    "work_type": "創作／內容工作",
+    "ui_language": "zh-TW",
+    "wake_word": "墨寒",
+    "onboarding_complete": True,
+    "transcription_language": "zh",
+    "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT,
+})
+TRANSCRIPTION_PROFILE_KEYS = (
+    "ui_language",
+    "assistant_name",
+    "user_title",
+    "organization_name",
+    "wake_word",
+)
+
+
+@dataclass(frozen=True, slots=True)
+class PlatformProgressUpdate:
+    platform: str
+    status: str
+    missing: str
+    item_name: str = ""
+    next_action: str = ""
+    notes: str = ""
+    url: str = ""
+
+    def database_row(self, updated_at: str) -> tuple[str, ...]:
+        return (
+            self.platform,
+            to_taiwan_traditional(self.status.strip()) or "尚未開始",
+            to_taiwan_traditional(self.missing.strip()),
+            to_taiwan_traditional(self.item_name.strip()),
+            to_taiwan_traditional(self.next_action.strip()),
+            to_taiwan_traditional(self.notes.strip()),
+            self.url.strip(),
+            updated_at,
+        )
 
 class StudioDB:
     def __init__(self, path: Path):
@@ -147,33 +249,45 @@ class StudioDB:
             );
             """
         )
-        idea_columns = {
-            row["name"] for row in self.conn.execute("PRAGMA table_info(ideas)")
+        self._migrate_ideas()
+        self._migrate_memories()
+        self._migrate_platform_progress()
+        self._migrate_chat_history()
+        self._migrate_model_defaults()
+        self._migrate_existing_profile()
+        self.conn.commit()
+
+    def _table_columns(self, table: str) -> set[str]:
+        return {
+            str(row["name"])
+            for row in self.conn.execute(f"PRAGMA table_info({table})")
         }
-        legacy_idea_source = (
+
+    def _ensure_columns(
+        self,
+        table: str,
+        definitions: Mapping[str, str],
+        existing: set[str],
+    ) -> None:
+        for column, definition in definitions.items():
+            if column not in existing:
+                self.conn.execute(
+                    f"ALTER TABLE {table} ADD COLUMN {column} {definition}"
+                )
+
+    def _migrate_ideas(self) -> None:
+        columns = self._table_columns("ideas")
+        legacy_source = (
             "text"
-            if "text" in idea_columns
+            if "text" in columns
             else "body"
-            if "body" in idea_columns
+            if "body" in columns
             else None
         )
-        if "text" not in idea_columns:
+        self._ensure_columns("ideas", IDEA_COLUMN_DEFINITIONS, columns)
+        if legacy_source is not None:
             self.conn.execute(
-                "ALTER TABLE ideas ADD COLUMN text TEXT NOT NULL DEFAULT ''"
-            )
-        if "title" not in idea_columns:
-            self.conn.execute(
-                "ALTER TABLE ideas ADD COLUMN title TEXT NOT NULL DEFAULT ''"
-            )
-        if "content" not in idea_columns:
-            self.conn.execute(
-                "ALTER TABLE ideas ADD COLUMN content TEXT NOT NULL DEFAULT ''"
-            )
-        if "updated_at" not in idea_columns:
-            self.conn.execute("ALTER TABLE ideas ADD COLUMN updated_at TEXT")
-        if legacy_idea_source:
-            self.conn.execute(
-                f"UPDATE ideas SET text={legacy_idea_source} "
+                f"UPDATE ideas SET text={legacy_source} "
                 "WHERE COALESCE(text,'')=''"
             )
         self.conn.execute(
@@ -183,51 +297,18 @@ class StudioDB:
             "UPDATE ideas SET updated_at=created_at "
             "WHERE COALESCE(updated_at,'')=''"
         )
-        memory_columns = {
-            row["name"]
-            for row in self.conn.execute("PRAGMA table_info(memories)")
-        }
-        if "category" not in memory_columns:
-            self.conn.execute(
-                "ALTER TABLE memories ADD COLUMN "
-                "category TEXT NOT NULL DEFAULT '其他'"
-            )
-        if "title" not in memory_columns:
-            self.conn.execute(
-                "ALTER TABLE memories ADD COLUMN title TEXT NOT NULL DEFAULT ''"
-            )
-        if "source" not in memory_columns:
-            self.conn.execute(
-                "ALTER TABLE memories ADD COLUMN "
-                "source TEXT NOT NULL DEFAULT 'manual'"
-            )
-        if "importance" not in memory_columns:
-            self.conn.execute(
-                "ALTER TABLE memories ADD COLUMN "
-                "importance INTEGER NOT NULL DEFAULT 3"
-            )
-        if "updated_at" not in memory_columns:
-            self.conn.execute("ALTER TABLE memories ADD COLUMN updated_at TEXT")
-        if "scope" not in memory_columns:
-            self.conn.execute(
-                "ALTER TABLE memories ADD COLUMN "
-                "scope TEXT NOT NULL DEFAULT 'personal'"
-            )
-        if "expires_at" not in memory_columns:
-            self.conn.execute(
-                "ALTER TABLE memories ADD COLUMN expires_at TEXT"
-            )
-        if "last_used_at" not in memory_columns:
-            self.conn.execute(
-                "ALTER TABLE memories ADD COLUMN last_used_at TEXT"
-            )
+
+    def _migrate_memories(self) -> None:
+        columns = self._table_columns("memories")
+        self._ensure_columns("memories", MEMORY_COLUMN_DEFINITIONS, columns)
         self.conn.execute(
             "UPDATE memories SET updated_at=created_at "
             "WHERE COALESCE(updated_at,'')=''"
         )
-        for row in self.conn.execute(
+        rows = self.conn.execute(
             "SELECT id,content FROM memories WHERE COALESCE(title,'')=''"
-        ).fetchall():
+        ).fetchall()
+        for row in rows:
             title = " ".join(str(row["content"]).split())
             if len(title) > 36:
                 title = title[:36].rstrip() + "…"
@@ -235,243 +316,135 @@ class StudioDB:
                 "UPDATE memories SET title=? WHERE id=?",
                 (title or "未命名記憶", int(row["id"])),
             )
-        legacy_memory_categories = {
-            "person": "人物",
-            "people": "人物",
-            "preference": "偏好",
-            "preferences": "偏好",
-            "goal": "目標",
-            "goals": "目標",
-            "workflow": "工作流程",
-            "date": "重要日期",
-            "important_date": "重要日期",
-            "other": "其他",
-        }
-        for old_category, new_category in legacy_memory_categories.items():
+        for old_category, new_category in LEGACY_MEMORY_CATEGORIES.items():
             self.conn.execute(
                 "UPDATE memories SET category=? "
                 "WHERE LOWER(TRIM(category))=?",
                 (new_category, old_category),
             )
-        platform_columns = {
-            row["name"]
-            for row in self.conn.execute(
-                "PRAGMA table_info(platform_progress)"
-            )
-        }
-        for column in ("item_name", "next_action", "notes", "url"):
-            if column not in platform_columns:
-                self.conn.execute(
-                    f"ALTER TABLE platform_progress ADD COLUMN "
-                    f"{column} TEXT NOT NULL DEFAULT ''"
-                )
-        if "sort_order" not in platform_columns:
-            self.conn.execute(
-                "ALTER TABLE platform_progress "
-                "ADD COLUMN sort_order INTEGER NOT NULL DEFAULT 0"
-            )
+
+    def _migrate_platform_progress(self) -> None:
+        columns = self._table_columns("platform_progress")
+        self._ensure_columns(
+            "platform_progress",
+            PLATFORM_COLUMN_DEFINITIONS,
+            columns,
+        )
         for kind, (label, at, enabled) in DEFAULT_REMINDERS.items():
             self.conn.execute(
-                "INSERT OR IGNORE INTO reminders(kind,label,time_of_day,enabled) VALUES(?,?,?,?)",
+                "INSERT OR IGNORE INTO reminders("
+                "kind,label,time_of_day,enabled"
+                ") VALUES(?,?,?,?)",
                 (kind, label, at, enabled),
             )
-        now = datetime.now().isoformat(timespec="seconds")
-        platform_seed_marker = self.conn.execute(
+        marker = self.conn.execute(
             "SELECT value FROM settings "
             "WHERE key='custom_platforms_v1207_seeded'"
         ).fetchone()
-        if platform_seed_marker is None:
-            # Existing installations already contain their original platform
-            # rows. New installations intentionally start empty so the tracker
-            # suits any profession instead of assuming a publishing workflow.
+        if marker is None:
+            # Existing profiles retain their rows; new profiles intentionally
+            # start empty instead of assuming a publishing workflow.
             self.conn.execute(
                 "INSERT INTO settings(key,value) "
                 "VALUES('custom_platforms_v1207_seeded','true')"
             )
+
+    def _migrate_chat_history(self) -> None:
         self.conn.execute(
             "UPDATE chat_log SET content=REPLACE(content,'劍主','主上') "
             "WHERE content LIKE '%劍主%'"
         )
-        traditional_chat_marker = self.conn.execute(
+        marker = self.conn.execute(
             "SELECT value FROM settings "
             "WHERE key='traditional_chat_v1215_migrated'"
         ).fetchone()
-        if traditional_chat_marker is None:
-            # Upgrade history created by older versions as well as newly
-            # displayed text, so future AI context cannot reintroduce
-            # Simplified Chinese from a stored conversation.
-            for row in self.conn.execute(
-                "SELECT id,content FROM chat_log"
-            ).fetchall():
-                normalized = to_taiwan_traditional(row["content"])
-                if normalized != row["content"]:
-                    self.conn.execute(
-                        "UPDATE chat_log SET content=? WHERE id=?",
-                        (normalized, row["id"]),
-                    )
-            self.conn.execute(
-                "INSERT INTO settings(key,value) "
-                "VALUES('traditional_chat_v1215_migrated','true')"
-            )
-        migration_marker = self.conn.execute(
+        if marker is not None:
+            return
+        rows = self.conn.execute("SELECT id,content FROM chat_log").fetchall()
+        for row in rows:
+            normalized = to_taiwan_traditional(row["content"])
+            if normalized != row["content"]:
+                self.conn.execute(
+                    "UPDATE chat_log SET content=? WHERE id=?",
+                    (normalized, row["id"]),
+                )
+        self.conn.execute(
+            "INSERT INTO settings(key,value) "
+            "VALUES('traditional_chat_v1215_migrated','true')"
+        )
+
+    def _decoded_setting(self, key: str) -> object | None:
+        row = self.conn.execute(
             "SELECT value FROM settings WHERE key=?",
-            ("luna_default_v12_migrated",),
+            (key,),
         ).fetchone()
-        if migration_marker is None:
-            current_model = self.conn.execute(
-                "SELECT value FROM settings WHERE key='ai_model'"
-            ).fetchone()
-            current_value = None
-            if current_model is not None:
-                try:
-                    current_value = json.loads(current_model["value"])
-                except json.JSONDecodeError:
-                    current_value = None
-            if current_value in (None, "gpt-5.6-terra"):
-                self.conn.execute(
-                    "INSERT INTO settings(key,value) VALUES('ai_model',?) "
-                    "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
-                    (json.dumps("gpt-5.6-luna"),),
-                )
-            self.conn.execute(
-                "INSERT INTO settings(key,value) "
-                "VALUES('luna_default_v12_migrated','true')"
-            )
-        mini_marker = self.conn.execute(
-            "SELECT value FROM settings WHERE key='mini_default_v118_migrated'"
+        if row is None:
+            return None
+        try:
+            return json.loads(row["value"])
+        except json.JSONDecodeError:
+            return None
+
+    def _migrate_model_default(
+        self,
+        marker: str,
+        prior_values: frozenset[str | None],
+        target: str,
+    ) -> None:
+        marker_row = self.conn.execute(
+            "SELECT value FROM settings WHERE key=?",
+            (marker,),
         ).fetchone()
-        if mini_marker is None:
-            current_model = self.conn.execute(
-                "SELECT value FROM settings WHERE key='ai_model'"
-            ).fetchone()
-            current_value = None
-            if current_model is not None:
-                try:
-                    current_value = json.loads(current_model["value"])
-                except json.JSONDecodeError:
-                    current_value = None
-            if current_value in (None, "gpt-5.6-luna"):
-                self.conn.execute(
-                    "INSERT INTO settings(key,value) VALUES('ai_model',?) "
-                    "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
-                    (json.dumps("gpt-5.4-mini"),),
-                )
+        if marker_row is not None:
+            return
+        if self._decoded_setting("ai_model") in prior_values:
             self.conn.execute(
-                "INSERT INTO settings(key,value) "
-                "VALUES('mini_default_v118_migrated','true')"
+                "INSERT INTO settings(key,value) VALUES('ai_model',?) "
+                "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+                (json.dumps(target),),
             )
-        mini_restore_marker = self.conn.execute(
-            "SELECT value FROM settings "
-            "WHERE key='mini_default_v1213_restored'"
-        ).fetchone()
-        if mini_restore_marker is None:
-            current_model = self.conn.execute(
-                "SELECT value FROM settings WHERE key='ai_model'"
-            ).fetchone()
-            current_value = None
-            if current_model is not None:
-                try:
-                    current_value = json.loads(current_model["value"])
-                except json.JSONDecodeError:
-                    current_value = None
-            if current_value in (None, "gpt-5.6-luna"):
-                self.conn.execute(
-                    "INSERT INTO settings(key,value) VALUES('ai_model',?) "
-                    "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
-                    (json.dumps("gpt-5.4-mini"),),
-                )
+        self.conn.execute(
+            "INSERT INTO settings(key,value) VALUES(?,?)",
+            (marker, "true"),
+        )
+
+    def _migrate_model_defaults(self) -> None:
+        for marker, prior_values, target in MODEL_DEFAULT_MIGRATIONS:
+            self._migrate_model_default(marker, prior_values, target)
+
+    def _migrate_existing_profile(self) -> None:
+        if not self.existing_install:
+            return
+        # Existing users retain identity and workflow choices; only fields
+        # unavailable in older releases are supplied.
+        for key, value in LEGACY_PROFILE_DEFAULTS.items():
             self.conn.execute(
-                "INSERT INTO settings(key,value) "
-                "VALUES('mini_default_v1213_restored','true')"
+                "INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)",
+                (key, json.dumps(value, ensure_ascii=False)),
             )
-        luna_rc1_marker_name = "luna_default_v210rc1_migrated"
-        luna_rc1_marker = self.conn.execute(
-            "SELECT value FROM settings WHERE key=?", (luna_rc1_marker_name,)
-        ).fetchone()
-        if luna_rc1_marker is None:
-            current_model = self.conn.execute(
-                "SELECT value FROM settings WHERE key='ai_model'"
-            ).fetchone()
-            current_value = None
-            if current_model is not None:
-                try:
-                    current_value = json.loads(current_model["value"])
-                except json.JSONDecodeError:
-                    current_value = None
-            if current_value in (None, "gpt-5.4-mini"):
-                self.conn.execute(
-                    "INSERT INTO settings(key,value) VALUES('ai_model',?) "
-                    "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
-                    (json.dumps("gpt-5.6-luna"),),
-                )
-            self.conn.execute(
-                "INSERT INTO settings(key,value) VALUES(?,?)",
-                (luna_rc1_marker_name, "true"),
-            )
-        if self.existing_install:
-            # Public-release profile migration is deliberately non-destructive.
-            # Existing users keep the identity and workflow they already had;
-            # only previously unavailable fields are supplied.
-            legacy_profile = {
-                "assistant_name": "墨寒",
-                "user_title": "主上",
-                "organization_name": "炎劍文化工作室",
-                "window_title": "",
-                "work_type": "創作／內容工作",
-                "ui_language": "zh-TW",
-                "wake_word": "墨寒",
-                "onboarding_complete": True,
-                "transcription_language": "zh",
-                "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT,
-            }
-            for key, value in legacy_profile.items():
-                self.conn.execute(
-                    "INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)",
-                    (key, json.dumps(value, ensure_ascii=False)),
-                )
-            prompt_row = self.conn.execute(
-                "SELECT value FROM settings WHERE key='transcription_prompt'"
-            ).fetchone()
-            current_prompt = None
-            if prompt_row is not None:
-                try:
-                    current_prompt = json.loads(prompt_row["value"])
-                except json.JSONDecodeError:
-                    current_prompt = None
-            if current_prompt == LEGACY_TRANSCRIPTION_PROMPT:
-                profile = {}
-                for key in (
-                    "ui_language",
-                    "assistant_name",
-                    "user_title",
-                    "organization_name",
-                    "wake_word",
-                ):
-                    row = self.conn.execute(
-                        "SELECT value FROM settings WHERE key=?", (key,)
-                    ).fetchone()
-                    try:
-                        profile[key] = json.loads(row["value"]) if row else ""
-                    except json.JSONDecodeError:
-                        profile[key] = ""
-                migrated_prompt = localized_transcription_prompt(
-                    str(profile["ui_language"] or "zh-TW"),
-                    assistant_name=str(profile["assistant_name"] or ""),
-                    user_title=str(profile["user_title"] or ""),
-                    organization_name=(
-                        ""
-                        if str(profile["organization_name"] or "").strip()
-                        == LEGACY_AUTHOR_ORGANIZATION
-                        else str(profile["organization_name"] or "")
-                    ),
-                    wake_word=str(profile["wake_word"] or ""),
-                )
-                self.conn.execute(
-                    "UPDATE settings SET value=? "
-                    "WHERE key='transcription_prompt'",
-                    (json.dumps(migrated_prompt, ensure_ascii=False),),
-                )
-        self.conn.commit()
+        current_prompt = self._decoded_setting("transcription_prompt")
+        if current_prompt != LEGACY_TRANSCRIPTION_PROMPT:
+            return
+        profile = {
+            key: self._decoded_setting(key) or ""
+            for key in TRANSCRIPTION_PROFILE_KEYS
+        }
+        organization_name = str(profile["organization_name"])
+        migrated_prompt = localized_transcription_prompt(
+            str(profile["ui_language"] or "zh-TW"),
+            assistant_name=str(profile["assistant_name"]),
+            user_title=str(profile["user_title"]),
+            organization_name=(
+                ""
+                if organization_name.strip() == LEGACY_AUTHOR_ORGANIZATION
+                else organization_name
+            ),
+            wake_word=str(profile["wake_word"]),
+        )
+        self.conn.execute(
+            "UPDATE settings SET value=? WHERE key='transcription_prompt'",
+            (json.dumps(migrated_prompt, ensure_ascii=False),),
+        )
 
     def close(self) -> None:
         self.conn.close()
@@ -505,7 +478,7 @@ class StudioDB:
             (
                 normalized_title,
                 category,
-                datetime.now().isoformat(timespec="seconds"),
+                local_wall_time().isoformat(timespec="seconds"),
             ),
         )
         self.conn.commit()
@@ -524,7 +497,7 @@ class StudioDB:
             "UPDATE todos SET status=?,completed_at=? WHERE id=?",
             (
                 "完成" if done else "待辦",
-                datetime.now().isoformat(timespec="seconds") if done else None,
+                local_wall_time().isoformat(timespec="seconds") if done else None,
                 todo_id,
             ),
         )
@@ -537,7 +510,7 @@ class StudioDB:
     def add_idea(self, text: str, content: str = "") -> int:
         normalized_text = to_taiwan_traditional(text.strip())
         normalized_content = to_taiwan_traditional(content.strip())
-        now = datetime.now().isoformat(timespec="seconds")
+        now = local_wall_time().isoformat(timespec="seconds")
         cur = self.conn.execute(
             "INSERT INTO ideas(text,title,content,created_at,updated_at) "
             "VALUES(?,?,?,?,?)",
@@ -571,7 +544,7 @@ class StudioDB:
                 normalized_title,
                 normalized_title,
                 normalized_content,
-                datetime.now().isoformat(timespec="seconds"),
+                local_wall_time().isoformat(timespec="seconds"),
                 idea_id,
             ),
         )
@@ -599,7 +572,7 @@ class StudioDB:
             return False
         self.conn.execute(
             "INSERT INTO work_sessions(started_at) VALUES(?)",
-            (datetime.now().isoformat(timespec="seconds"),),
+            (local_wall_time().isoformat(timespec="seconds"),),
         )
         self.conn.commit()
         return True
@@ -610,13 +583,13 @@ class StudioDB:
             return False
         self.conn.execute(
             "UPDATE work_sessions SET ended_at=? WHERE id=?",
-            (datetime.now().isoformat(timespec="seconds"), row["id"]),
+            (local_wall_time().isoformat(timespec="seconds"), row["id"]),
         )
         self.conn.commit()
         return True
 
     def today_work_seconds(self) -> int:
-        day_start = datetime.combine(date.today(), datetime.min.time())
+        day_start = datetime.combine(local_wall_time().date(), datetime.min.time())
         day_end = day_start + timedelta(days=1)
         rows = self.conn.execute(
             "SELECT * FROM work_sessions "
@@ -627,7 +600,7 @@ class StudioDB:
             ),
         )
         total = 0
-        now = datetime.now()
+        now = local_wall_time()
         for row in rows:
             start = max(
                 datetime.fromisoformat(row["started_at"]),
@@ -648,7 +621,7 @@ class StudioDB:
             return 0
         return max(
             0,
-            int((datetime.now() - datetime.fromisoformat(row["started_at"])).total_seconds()),
+            int((local_wall_time() - datetime.fromisoformat(row["started_at"])).total_seconds()),
         )
 
     def reminders(self) -> list[sqlite3.Row]:
@@ -708,7 +681,7 @@ class StudioDB:
                 (
                     name,
                     url.strip(),
-                    datetime.now().isoformat(timespec="seconds"),
+                    local_wall_time().isoformat(timespec="seconds"),
                     int(next_order),
                 ),
             )
@@ -724,55 +697,16 @@ class StudioDB:
 
     def update_platform(
         self,
-        platform: str,
-        status: str,
-        missing: str,
-        item_name: str = "",
-        next_action: str = "",
-        notes: str = "",
-        url: str = "",
+        entry: PlatformProgressUpdate,
     ) -> None:
-        self.update_platforms(
-            [
-                {
-                    "platform": platform,
-                    "status": status,
-                    "missing": missing,
-                    "item_name": item_name,
-                    "next_action": next_action,
-                    "notes": notes,
-                    "url": url,
-                }
-            ]
-        )
+        self.update_platforms([entry])
 
-    def update_platforms(self, entries: list[dict[str, str]]) -> None:
-        now = datetime.now().isoformat(timespec="seconds")
-        normalized = []
-        for entry in entries:
-            normalized.append(
-                (
-                    entry["platform"],
-                    to_taiwan_traditional(
-                        entry.get("status", "尚未開始").strip()
-                    )
-                    or "尚未開始",
-                    to_taiwan_traditional(
-                        entry.get("missing", "").strip()
-                    ),
-                    to_taiwan_traditional(
-                        entry.get("item_name", "").strip()
-                    ),
-                    to_taiwan_traditional(
-                        entry.get("next_action", "").strip()
-                    ),
-                    to_taiwan_traditional(
-                        entry.get("notes", "").strip()
-                    ),
-                    entry.get("url", "").strip(),
-                    now,
-                )
-            )
+    def update_platforms(
+        self,
+        entries: list[PlatformProgressUpdate],
+    ) -> None:
+        now = local_wall_time().isoformat(timespec="seconds")
+        normalized = [entry.database_row(now) for entry in entries]
         with self.conn:
             self.conn.executemany(
                 """
@@ -797,7 +731,7 @@ class StudioDB:
             (
                 role,
                 to_taiwan_traditional(content),
-                datetime.now().isoformat(timespec="seconds"),
+                local_wall_time().isoformat(timespec="seconds"),
             ),
         )
         self.conn.commit()
@@ -850,7 +784,7 @@ class StudioDB:
             normalized_title = " ".join(text.split())
             if len(normalized_title) > 36:
                 normalized_title = normalized_title[:36].rstrip() + "…"
-        now = datetime.now().isoformat(timespec="seconds")
+        now = local_wall_time().isoformat(timespec="seconds")
         conflict_title = (
             "title=excluded.title,"
             if title_was_supplied
@@ -895,7 +829,7 @@ class StudioDB:
         limit: int = 100,
         category: str | None = None,
     ) -> list[sqlite3.Row]:
-        now = datetime.now().isoformat(timespec="seconds")
+        now = local_wall_time().isoformat(timespec="seconds")
         where = "WHERE (expires_at IS NULL OR expires_at > ?)"
         parameters: list[object] = [now]
         if category:
@@ -939,7 +873,7 @@ class StudioDB:
                     normalized_content,
                     normalized_category,
                     max(1, min(5, int(importance))),
-                    datetime.now().isoformat(timespec="seconds"),
+                    local_wall_time().isoformat(timespec="seconds"),
                     memory_id,
                 ),
             )
@@ -988,7 +922,7 @@ class StudioDB:
         else:
             rows = pool[:limit]
         if rows:
-            now = datetime.now().isoformat(timespec="seconds")
+            now = local_wall_time().isoformat(timespec="seconds")
             with self.conn:
                 self.conn.executemany(
                     "UPDATE memories SET last_used_at=? WHERE id=?",
@@ -1005,7 +939,7 @@ class StudioDB:
             f"SELECT * FROM memories WHERE id IN ({placeholders})",
             ids,
         ).fetchall()
-        archived_at = datetime.now().isoformat(timespec="seconds")
+        archived_at = local_wall_time().isoformat(timespec="seconds")
         with self.conn:
             self.conn.executemany(
                 "INSERT INTO memory_archive(original_id,snapshot,reason,archived_at) "
@@ -1064,7 +998,7 @@ class StudioDB:
         if row is None:
             return 0
         snapshot = json.loads(str(row["snapshot"]))
-        restored_at = datetime.now().isoformat(timespec="seconds")
+        restored_at = local_wall_time().isoformat(timespec="seconds")
         with self.conn:
             self.conn.execute(
                 "INSERT INTO memories(category,title,content,source,importance,"
@@ -1146,7 +1080,7 @@ class StudioDB:
             with self.conn:
                 self.conn.execute(
                     "UPDATE memories SET content=?,updated_at=? WHERE id=?",
-                    (summary, datetime.now().isoformat(timespec="seconds"), keeper_id),
+                    (summary, local_wall_time().isoformat(timespec="seconds"), keeper_id),
                 )
         return archived
 
@@ -1176,7 +1110,7 @@ class StudioDB:
     ) -> dict[str, int]:
         if target_active <= 0 or max_active < target_active:
             raise ValueError("memory limits are invalid")
-        reference = now or datetime.now()
+        reference = now or local_wall_time()
         rows = self.list_memories(10000)
         deduplicated = self._consolidate_auto_duplicates(rows)
         rows = self.list_memories(10000)
@@ -1223,13 +1157,13 @@ class StudioDB:
                 (
                     scope,
                     expires_at,
-                    datetime.now().isoformat(timespec="seconds"),
+                    local_wall_time().isoformat(timespec="seconds"),
                     int(memory_id),
                 ),
             )
 
     def purge_expired_memories(self) -> int:
-        now = datetime.now().isoformat(timespec="seconds")
+        now = local_wall_time().isoformat(timespec="seconds")
         with self.conn:
             cursor = self.conn.execute(
                 "DELETE FROM memories "
@@ -1264,7 +1198,7 @@ class StudioDB:
             (
                 event_type,
                 json.dumps(payload, ensure_ascii=False, default=str),
-                datetime.now().isoformat(timespec="seconds"),
+                local_wall_time().isoformat(timespec="seconds"),
             ),
         )
         self.conn.commit()
@@ -1297,7 +1231,7 @@ class StudioDB:
         if not normalized:
             raise ValueError("工作流程名稱不可留空")
         json.loads(definition)
-        now = datetime.now().isoformat(timespec="seconds")
+        now = local_wall_time().isoformat(timespec="seconds")
         with self.conn:
             if workflow_id is None:
                 cursor = self.conn.execute(
@@ -1342,7 +1276,7 @@ class StudioDB:
             self.conn.execute(
                 "UPDATE workflows SET last_run_at=? WHERE id=?",
                 (
-                    datetime.now().isoformat(timespec="seconds"),
+                    local_wall_time().isoformat(timespec="seconds"),
                     int(workflow_id),
                 ),
             )
@@ -1355,7 +1289,7 @@ class StudioDB:
         configuration: dict,
         last_health: str | None = None,
     ) -> None:
-        now = datetime.now().isoformat(timespec="seconds")
+        now = local_wall_time().isoformat(timespec="seconds")
         with self.conn:
             self.conn.execute(
                 """
@@ -1461,7 +1395,7 @@ class StudioDB:
         token_hash: str,
         permissions: list[str],
     ) -> int:
-        now = datetime.now().isoformat(timespec="seconds")
+        now = local_wall_time().isoformat(timespec="seconds")
         cursor = self.conn.execute(
             "INSERT INTO paired_devices("
             "device_name,token_hash,permissions,created_at"
@@ -1498,7 +1432,7 @@ class StudioDB:
             self.conn.execute(
                 "UPDATE paired_devices SET last_seen_at=? WHERE id=?",
                 (
-                    datetime.now().isoformat(timespec="seconds"),
+                    local_wall_time().isoformat(timespec="seconds"),
                     int(device_id),
                 ),
             )

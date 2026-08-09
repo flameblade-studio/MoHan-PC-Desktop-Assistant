@@ -1,12 +1,13 @@
-import sys
-import wave
-from array import array
-from pathlib import Path
-from types import SimpleNamespace
+lazy import sys
+lazy import wave
+lazy from array import array
+lazy from pathlib import Path
+lazy from types import SimpleNamespace
+lazy from typing import ClassVar
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from speech import SpeechListener
+lazy from speech import SpeechListener
 
 
 def pcm_block(level: int) -> bytes:
@@ -15,7 +16,7 @@ def pcm_block(level: int) -> bytes:
 
 
 class FakeInputStream:
-    levels: list[int] = []
+    levels: ClassVar[list[int]] = []
     stop_after_reads: int | None = None
     listener: SpeechListener | None = None
 

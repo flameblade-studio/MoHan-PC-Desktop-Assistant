@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-import os
-import sys
-from functools import lru_cache
-from pathlib import Path
-from typing import Mapping
+lazy import os
+lazy import sys
+lazy from collections.abc import Mapping
+lazy from functools import lru_cache
+lazy from pathlib import Path
 
-from platform_contracts import PlatformServicePort
-from platform_linux import LinuxPlatformServices
-from platform_macos import MacOSPlatformServices
-from platform_windows import WindowsPlatformServices
+lazy from platform_contracts import PlatformServicePort
+lazy from platform_linux import LinuxPlatformServices
+lazy from platform_macos import MacOSPlatformServices
+lazy from platform_windows import WindowsPlatformServices
 
 
 def normalized_platform_id(value: str | None = None) -> str:

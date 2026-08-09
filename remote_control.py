@@ -1,26 +1,26 @@
 from __future__ import annotations
 
-import hashlib
-import hmac
-import json
-import os
-import secrets
-import sqlite3
-import threading
-import time
-import urllib.parse
-from dataclasses import dataclass
-from http import HTTPStatus
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
-from typing import Any, Callable, Iterator
-
+lazy import hashlib
+lazy import hmac
+lazy import json
+lazy import os
+lazy import secrets
+lazy import sqlite3
+lazy import threading
+lazy import time
+lazy from collections.abc import Callable, Iterator, Mapping
+lazy from dataclasses import dataclass
+lazy from http import HTTPStatus
+lazy from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+lazy from pathlib import Path
+lazy from typing import Any
+lazy from urllib.parse import parse_qs, urlparse
 
 StatusProvider = Callable[[], dict[str, Any]]
 CommandHandler = Callable[[str, str], dict[str, Any]]
 ScreenProvider = Callable[[], bytes]
 
-SAFE_DOWNLOAD_TYPES = {
+SAFE_DOWNLOAD_TYPES = frozendict({
     ".csv": "text/csv; charset=utf-8",
     ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ".gif": "image/gif",
@@ -38,15 +38,15 @@ SAFE_DOWNLOAD_TYPES = {
     ".webp": "image/webp",
     ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ".zip": "application/zip",
-}
-PROTECTED_REMOTE_PARTS = {
+})
+PROTECTED_REMOTE_PARTS = frozenset({
     ".gnupg",
     ".ssh",
     "appdata",
     "credentials",
     "passwords",
-}
-PROTECTED_REMOTE_SUFFIXES = {".kdbx", ".key", ".pem", ".pfx"}
+})
+PROTECTED_REMOTE_SUFFIXES = frozenset({".kdbx", ".key", ".pem", ".pfx"})
 
 MOBILE_PAGE = """<!doctype html>
 <html lang="zh-Hant-TW"><meta charset="utf-8">
@@ -83,7 +83,7 @@ document.querySelector('#result').textContent='送出失敗：'+e.message}}
 </script></main></html>"""
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, slots=True)
 class RemoteServerConfig:
     host: str = "127.0.0.1"
     port: int = 8765
@@ -93,6 +93,21 @@ class RemoteServerConfig:
     allow_screen: bool = False
     allow_files: bool = False
     max_requests_per_minute: int = 60
+
+
+@dataclass(frozen=True, slots=True)
+class RemoteServerServices:
+    status_provider: StatusProvider
+    command_handler: CommandHandler
+    screen_provider: ScreenProvider | None = None
+    allowed_folders: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class RemoteDevice:
+    id: int
+    name: str
+    permissions: frozenset[str]
 
 
 class TokenRegistry:
@@ -116,7 +131,7 @@ class TokenRegistry:
         )
         return token
 
-    def authenticate(self, token: str) -> dict[str, Any] | None:
+    def authenticate(self, token: str) -> RemoteDevice | None:
         if not token:
             return None
         digest = self.hash_token(token)
@@ -143,11 +158,11 @@ class TokenRegistry:
             permissions = json.loads(row["permissions"])
         except json.JSONDecodeError:
             permissions = []
-        return {
-            "id": int(row["id"]),
-            "name": str(row["device_name"]),
-            "permissions": set(str(value) for value in permissions),
-        }
+        return RemoteDevice(
+            id=int(row["id"]),
+            name=str(row["device_name"]),
+            permissions=frozenset(str(value) for value in permissions),
+        )
 
 
 class RemoteControlServer:
@@ -157,198 +172,81 @@ class RemoteControlServer:
         self,
         config: RemoteServerConfig,
         tokens: TokenRegistry,
-        *,
-        status_provider: StatusProvider,
-        command_handler: CommandHandler,
-        screen_provider: ScreenProvider | None = None,
-        allowed_folders: list[str] | None = None,
+        services: RemoteServerServices,
     ):
         self.config = config
         self.tokens = tokens
-        self.status_provider = status_provider
-        self.command_handler = command_handler
-        self.screen_provider = screen_provider
+        self.status_provider = services.status_provider
+        self.command_handler = services.command_handler
+        self.screen_provider = services.screen_provider
         self.allowed_folders = [
             Path(value).expanduser().resolve()
-            for value in (allowed_folders or [])
+            for value in services.allowed_folders
             if str(value).strip()
         ]
-        self._server: ThreadingHTTPServer | None = None
+        self._server: RemoteThreadingHTTPServer | None = None
         self._thread: threading.Thread | None = None
         self._rate: dict[str, list[float]] = {}
         self._lock = threading.Lock()
+        self._lifecycle_lock = threading.Lock()
 
     @property
     def running(self) -> bool:
         return self._server is not None
 
-    def start(self) -> None:
+    def _validate_start_config(self) -> None:
         if not self.config.enabled:
             raise PermissionError("遠端服務尚未由使用者啟用")
-        if self.config.host not in {"127.0.0.1", "::1", "localhost"}:
-            if not self.config.trusted_private_transport:
-                raise PermissionError(
-                    "非本機綁定必須先確認使用 Home Assistant Cloud、"
-                    "Tailscale 或其他可信任的加密私人網路"
-                )
-        if self.running:
-            return
-        owner = self
+        if (
+            self.config.host not in {"127.0.0.1", "::1", "localhost"}
+            and not self.config.trusted_private_transport
+        ):
+            raise PermissionError(
+                "非本機綁定必須先確認使用 Home Assistant Cloud、"
+                "Tailscale 或其他可信任的加密私人網路"
+            )
+        if not 0 <= int(self.config.port) <= 65_535:
+            raise ValueError("遠端服務連接埠必須介於 0 與 65535")
 
-        class Handler(BaseHTTPRequestHandler):
-            server_version = "MoHanRemote/2.0"
-
-            def log_message(self, _format: str, *_args) -> None:
+    def start(self) -> None:
+        self._validate_start_config()
+        with self._lifecycle_lock:
+            if self.running:
                 return
-
-            def _json(self, status: int, payload: dict[str, Any]) -> None:
-                body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-                self.send_response(status)
-                self.send_header("Content-Type", "application/json; charset=utf-8")
-                self.send_header("Content-Length", str(len(body)))
-                self.send_header("Cache-Control", "no-store")
-                self.send_header("X-Content-Type-Options", "nosniff")
-                self.send_header("X-Frame-Options", "DENY")
-                self.end_headers()
-                self.wfile.write(body)
-
-            def _device(self) -> dict[str, Any] | None:
-                auth = self.headers.get("Authorization", "")
-                if not auth.startswith("Bearer "):
-                    return None
-                token = auth[7:].strip()
-                if not owner._within_rate_limit(token):
-                    self._json(HTTPStatus.TOO_MANY_REQUESTS, {"error": "請求過於頻繁"})
-                    return None
-                return owner.tokens.authenticate(token)
-
-            def do_GET(self) -> None:  # noqa: N802
-                parsed = urllib.parse.urlparse(self.path)
-                if parsed.path in {"/", "/index.html"}:
-                    body = MOBILE_PAGE.encode("utf-8")
-                    self.send_response(HTTPStatus.OK)
-                    self.send_header("Content-Type", "text/html; charset=utf-8")
-                    self.send_header("Content-Length", str(len(body)))
-                    self.send_header("Cache-Control", "no-store")
-                    self.send_header("Content-Security-Policy", "default-src 'self'; "
-                                     "style-src 'unsafe-inline'; script-src 'unsafe-inline'")
-                    self.send_header("X-Frame-Options", "DENY")
-                    self.end_headers()
-                    self.wfile.write(body)
-                    return
-                device = self._device()
-                if device is None:
-                    if not self.wfile.closed:
-                        self._json(HTTPStatus.UNAUTHORIZED, {"error": "未授權裝置"})
-                    return
-                if parsed.path == "/api/v1/status":
-                    if "status" not in device["permissions"]:
-                        self._json(HTTPStatus.FORBIDDEN, {"error": "缺少狀態權限"})
-                        return
-                    self._json(HTTPStatus.OK, owner.status_provider())
-                    return
-                if parsed.path == "/api/v1/screen":
-                    if (
-                        not owner.config.allow_screen
-                        or "screen" not in device["permissions"]
-                        or owner.screen_provider is None
-                    ):
-                        self._json(HTTPStatus.FORBIDDEN, {"error": "畫面權限未啟用"})
-                        return
-                    content = owner.screen_provider()
-                    self.send_response(HTTPStatus.OK)
-                    self.send_header("Content-Type", "image/png")
-                    self.send_header("Content-Length", str(len(content)))
-                    self.send_header("Cache-Control", "no-store")
-                    self.end_headers()
-                    self.wfile.write(content)
-                    return
-                if parsed.path == "/api/v1/file":
-                    if (
-                        not owner.config.allow_files
-                        or "files" not in device["permissions"]
-                    ):
-                        self._json(HTTPStatus.FORBIDDEN, {"error": "檔案權限未啟用"})
-                        return
-                    query = urllib.parse.parse_qs(parsed.query)
-                    raw = query.get("path", [""])[0]
-                    try:
-                        target = owner._allowed_file(raw)
-                    except (PermissionError, FileNotFoundError) as exc:
-                        self._json(HTTPStatus.FORBIDDEN, {"error": str(exc)})
-                        return
-                    content = target.read_bytes()
-                    content_type, disposition = owner._download_metadata(target)
-                    self.send_response(HTTPStatus.OK)
-                    self.send_header("Content-Type", content_type)
-                    self.send_header("Content-Length", str(len(content)))
-                    self.send_header("Content-Disposition", disposition)
-                    self.send_header("X-Content-Type-Options", "nosniff")
-                    self.send_header("Cache-Control", "no-store")
-                    self.end_headers()
-                    self.wfile.write(content)
-                    return
-                self._json(HTTPStatus.NOT_FOUND, {"error": "找不到端點"})
-
-            def do_POST(self) -> None:  # noqa: N802
-                device = self._device()
-                if device is None:
-                    if not self.wfile.closed:
-                        self._json(HTTPStatus.UNAUTHORIZED, {"error": "未授權裝置"})
-                    return
-                if self.path != "/api/v1/command":
-                    self._json(HTTPStatus.NOT_FOUND, {"error": "找不到端點"})
-                    return
-                if (
-                    not owner.config.allow_commands
-                    or "commands" not in device["permissions"]
-                ):
-                    self._json(HTTPStatus.FORBIDDEN, {"error": "指令權限未啟用"})
-                    return
-                try:
-                    length = int(self.headers.get("Content-Length", "0"))
-                except ValueError:
-                    length = 0
-                if length <= 0 or length > 16_384:
-                    self._json(HTTPStatus.BAD_REQUEST, {"error": "請求大小不正確"})
-                    return
-                try:
-                    payload = json.loads(self.rfile.read(length).decode("utf-8"))
-                except (UnicodeDecodeError, json.JSONDecodeError):
-                    self._json(HTTPStatus.BAD_REQUEST, {"error": "JSON 格式錯誤"})
-                    return
-                text = str(payload.get("text", "")).strip()
-                if not text or len(text) > 2000:
-                    self._json(HTTPStatus.BAD_REQUEST, {"error": "指令文字不正確"})
-                    return
-                result = owner.command_handler(text, device["name"])
-                self._json(HTTPStatus.ACCEPTED, result)
-
-        self._server = ThreadingHTTPServer(
-            (self.config.host, int(self.config.port)),
-            Handler,
-        )
-        self._server.daemon_threads = True
-        self._thread = threading.Thread(
-            target=self._server.serve_forever,
-            name="MoHanRemoteServer",
-            daemon=True,
-        )
-        self._thread.start()
+            server = RemoteThreadingHTTPServer(
+                (self.config.host, int(self.config.port)),
+                self,
+            )
+            server.daemon_threads = True
+            thread = threading.Thread(
+                target=server.serve_forever,
+                name="MoHanRemoteServer",
+                daemon=True,
+            )
+            self._server = server
+            self._thread = thread
+            try:
+                thread.start()
+            except Exception:
+                self._server = None
+                self._thread = None
+                server.server_close()
+                raise
 
     def stop(self) -> None:
-        server = self._server
-        self._server = None
+        with self._lifecycle_lock:
+            server = self._server
+            thread = self._thread
+            self._server = None
+            self._thread = None
         if server is not None:
             server.shutdown()
             server.server_close()
-        thread = self._thread
-        self._thread = None
         if thread is not None and thread.is_alive():
             thread.join(timeout=2.0)
 
-    def _within_rate_limit(self, token: str) -> bool:
-        digest = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    def _within_rate_limit(self, client_key: str) -> bool:
+        digest = hashlib.sha256(client_key.encode("utf-8")).hexdigest()
         now = time.monotonic()
         with self._lock:
             recent = [stamp for stamp in self._rate.get(digest, []) if now - stamp < 60]
@@ -414,6 +312,263 @@ class RemoteControlServer:
         digest = hashlib.sha256(target.name.encode("utf-8")).hexdigest()[:16]
         disposition = f'attachment; filename="mohan-{digest}{safe_suffix}"'
         return content_type, disposition
+
+
+class RemoteThreadingHTTPServer(ThreadingHTTPServer):
+    def __init__(
+        self,
+        server_address: tuple[str, int],
+        control: RemoteControlServer,
+    ) -> None:
+        self.control = control
+        super().__init__(server_address, RemoteRequestHandler)
+
+
+class RemoteRequestHandler(BaseHTTPRequestHandler):
+    server: RemoteThreadingHTTPServer
+    server_version = "MoHanRemote/2.0"
+
+    @property
+    def _owner(self) -> RemoteControlServer:
+        return self.server.control
+
+    def log_message(self, _format: str, *_args) -> None:
+        return
+
+    def _send_headers(
+        self,
+        status: int,
+        content_length: int,
+        content_type: str,
+        extra_headers: Mapping[str, str] | None = None,
+    ) -> None:
+        self.send_response(status)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(content_length))
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        for key, value in (extra_headers or {}).items():
+            self.send_header(key, value)
+        self.end_headers()
+
+    def _write_response(
+        self,
+        status: int,
+        content: bytes,
+        content_type: str,
+        extra_headers: Mapping[str, str] | None = None,
+    ) -> None:
+        self._send_headers(
+            status,
+            len(content),
+            content_type,
+            extra_headers,
+        )
+        self.wfile.write(content)
+
+    def _json(self, status: int, payload: dict[str, Any]) -> None:
+        body = json.dumps(
+            payload,
+            ensure_ascii=False,
+        ).encode("utf-8")
+        self._write_response(
+            status,
+            body,
+            "application/json; charset=utf-8",
+        )
+
+    def _serve_mobile_page(self) -> None:
+        self._write_response(
+            HTTPStatus.OK,
+            MOBILE_PAGE.encode("utf-8"),
+            "text/html; charset=utf-8",
+            {
+                "Content-Security-Policy": (
+                    "default-src 'self'; style-src 'unsafe-inline'; "
+                    "script-src 'unsafe-inline'"
+                ),
+                "Referrer-Policy": "no-referrer",
+            },
+        )
+
+    def _authorized_device(self) -> RemoteDevice | None:
+        auth = self.headers.get("Authorization", "")
+        if not auth.startswith("Bearer "):
+            self._json(
+                HTTPStatus.UNAUTHORIZED,
+                {"error": "未授權裝置"},
+            )
+            return None
+        token = auth[7:].strip()
+        client_ip = str(self.client_address[0])
+        if not token:
+            self._json(
+                HTTPStatus.UNAUTHORIZED,
+                {"error": "未授權裝置"},
+            )
+            return None
+        if not self._owner._within_rate_limit(client_ip):
+            self._json(
+                HTTPStatus.TOO_MANY_REQUESTS,
+                {"error": "請求過於頻繁"},
+            )
+            return None
+        device = self._owner.tokens.authenticate(token)
+        if device is None:
+            self._json(
+                HTTPStatus.UNAUTHORIZED,
+                {"error": "未授權裝置"},
+            )
+        return device
+
+    def _serve_status(self, device: RemoteDevice) -> None:
+        if "status" not in device.permissions:
+            self._json(
+                HTTPStatus.FORBIDDEN,
+                {"error": "缺少狀態權限"},
+            )
+        else:
+            self._json(
+                HTTPStatus.OK,
+                self._owner.status_provider(),
+            )
+
+    def _serve_screen(self, device: RemoteDevice) -> None:
+        owner = self._owner
+        provider = owner.screen_provider
+        if (
+            not owner.config.allow_screen
+            or "screen" not in device.permissions
+            or provider is None
+        ):
+            self._json(
+                HTTPStatus.FORBIDDEN,
+                {"error": "畫面權限未啟用"},
+            )
+        else:
+            self._write_response(
+                HTTPStatus.OK,
+                provider(),
+                "image/png",
+            )
+
+    def _serve_file(
+        self,
+        device: RemoteDevice,
+        query_string: str,
+    ) -> None:
+        owner = self._owner
+        if (
+            not owner.config.allow_files
+            or "files" not in device.permissions
+        ):
+            self._json(
+                HTTPStatus.FORBIDDEN,
+                {"error": "檔案權限未啟用"},
+            )
+            return
+        raw_path = parse_qs(query_string).get("path", [""])[0]
+        try:
+            target = owner._allowed_file(raw_path)
+            content_length = target.stat().st_size
+        except (OSError, PermissionError) as exc:
+            self._json(
+                HTTPStatus.FORBIDDEN,
+                {"error": str(exc)},
+            )
+            return
+        content_type, disposition = owner._download_metadata(target)
+        self._send_headers(
+            HTTPStatus.OK,
+            content_length,
+            content_type,
+            {"Content-Disposition": disposition},
+        )
+        with target.open("rb") as stream:
+            while chunk := stream.read(64 * 1024):
+                self.wfile.write(chunk)
+
+    def do_GET(self) -> None:
+        parsed = urlparse(self.path)
+        if parsed.path in {"/", "/index.html"}:
+            self._serve_mobile_page()
+            return
+        device = self._authorized_device()
+        if device is None:
+            return
+        if parsed.path == "/api/v1/status":
+            self._serve_status(device)
+        elif parsed.path == "/api/v1/screen":
+            self._serve_screen(device)
+        elif parsed.path == "/api/v1/file":
+            self._serve_file(device, parsed.query)
+        else:
+            self._json(
+                HTTPStatus.NOT_FOUND,
+                {"error": "找不到端點"},
+            )
+
+    def _read_command_text(self) -> str | None:
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            length = 0
+        if not 0 < length <= 16_384:
+            self._json(
+                HTTPStatus.BAD_REQUEST,
+                {"error": "請求大小不正確"},
+            )
+            return None
+        try:
+            payload = json.loads(
+                self.rfile.read(length).decode("utf-8")
+            )
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            self._json(
+                HTTPStatus.BAD_REQUEST,
+                {"error": "JSON 格式錯誤"},
+            )
+            return None
+        if not isinstance(payload, dict):
+            self._json(
+                HTTPStatus.BAD_REQUEST,
+                {"error": "JSON 格式錯誤"},
+            )
+            return None
+        text = str(payload.get("text", "")).strip()
+        if not text or len(text) > 2000:
+            self._json(
+                HTTPStatus.BAD_REQUEST,
+                {"error": "指令文字不正確"},
+            )
+            return None
+        return text
+
+    def do_POST(self) -> None:
+        device = self._authorized_device()
+        if device is None:
+            return
+        if self.path != "/api/v1/command":
+            self._json(
+                HTTPStatus.NOT_FOUND,
+                {"error": "找不到端點"},
+            )
+            return
+        if (
+            not self._owner.config.allow_commands
+            or "commands" not in device.permissions
+        ):
+            self._json(
+                HTTPStatus.FORBIDDEN,
+                {"error": "指令權限未啟用"},
+            )
+            return
+        text = self._read_command_text()
+        if text is None:
+            return
+        result = self._owner.command_handler(text, device.name)
+        self._json(HTTPStatus.ACCEPTED, result)
 
 
 def constant_time_token_equal(left: str, right: str) -> bool:

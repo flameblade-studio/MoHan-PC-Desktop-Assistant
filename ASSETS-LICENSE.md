@@ -4,6 +4,11 @@ Unless a file contains a separate notice, the character illustrations,
 expression frames, animation layers, and icons committed to this repository are
 distributed under the same MIT License found in `LICENSE`.
 
+`assets/onboarding/mohan-hero-rain-canonical.webp` is the repository-owned
+canonical onboarding crop source shared with the official Flameblade Studio
+MoHan page. Keeping the exact file in this repository prevents the setup
+wizard and installer from drifting to a different face or character identity.
+
 The repository does not distribute a proprietary voice model or a cloned human
 voice. Windows voices and cloud-generated voices remain subject to the terms of
 Microsoft, OpenAI, or the service selected by the user. Third-party service

@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-import re
-import threading
-import urllib.error
-import urllib.request
-from xml.sax.saxutils import escape, quoteattr
+lazy import re
+lazy import threading
+lazy from urllib.error import HTTPError, URLError
+lazy from urllib.request import Request, urlopen
+lazy from xml.sax.saxutils import escape, quoteattr
 
-from PySide6.QtCore import QObject, Signal
+lazy from PySide6.QtCore import QObject, Signal
 
-from speech import play_wave_with_visemes
+lazy from immutable_config import deep_freeze
+lazy from speech import play_wave_with_visemes
 
-
-AZURE_FEMALE_VOICES: dict[str, tuple[str, ...]] = {
+AZURE_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict({
     "zh-TW": (
         "zh-TW-HsiaoChenNeural",
         "zh-TW-HsiaoYuNeural",
@@ -39,14 +39,13 @@ AZURE_FEMALE_VOICES: dict[str, tuple[str, ...]] = {
         "ja-JP-MayuNeural",
         "ja-JP-ShioriNeural",
     ),
-}
-_VOICE_LOCALE = {
-    voice: locale
+})
+_VOICE_LOCALE = frozendict({
+    **{voice: locale for voice in voices}
     for locale, voices in AZURE_FEMALE_VOICES.items()
-    for voice in voices
-}
+})
 _REGION_PATTERN = re.compile(r"^[a-z0-9-]{2,32}$")
-_MESSAGES = {
+_MESSAGES = deep_freeze({
     "zh-TW": {
         "invalid_region": "Azure Speech 區域格式不正確。",
         "unsupported_voice": "Azure Speech 只允許已確認的女性聲線。",
@@ -95,7 +94,7 @@ _MESSAGES = {
         "request": "Azure Speech に失敗しました（HTTP {status}）。",
         "network": "Azure Speech に接続できません：{error}",
     },
-}
+})
 
 
 def _message(locale: str, key: str, **values: object) -> str:
@@ -196,7 +195,7 @@ class AzureSpeechTTS(QObject):
         voice: str,
     ) -> None:
         locale = _VOICE_LOCALE.get(voice, "zh-TW")
-        request = urllib.request.Request(
+        request = Request(
             (
                 f"https://{region}.tts.speech.microsoft.com/"
                 "cognitiveservices/v1"
@@ -211,7 +210,7 @@ class AzureSpeechTTS(QObject):
             method="POST",
         )
         try:
-            with urllib.request.urlopen(request, timeout=60) as response:
+            with urlopen(request, timeout=60) as response:
                 audio = response.read()
             play_wave_with_visemes(
                 audio,
@@ -220,10 +219,10 @@ class AzureSpeechTTS(QObject):
                 self.viseme_cue.emit,
             )
             self.finished.emit()
-        except urllib.error.HTTPError as exc:
+        except HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")
             self.failed.emit(
                 azure_speech_error_message(exc.code, detail, locale)
             )
-        except (urllib.error.URLError, OSError, RuntimeError, TimeoutError) as exc:
+        except (URLError, OSError, RuntimeError, TimeoutError) as exc:
             self.failed.emit(_message(locale, "network", error=exc))

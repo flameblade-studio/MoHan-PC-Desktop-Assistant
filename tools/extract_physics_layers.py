@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import sys
-from pathlib import Path
+lazy import sys
+lazy from pathlib import Path
 
-from PySide6.QtGui import QImage
-
+lazy from PySide6.QtGui import QImage
 
 SPECS = {
     "": ("idle.png", (780, 175, 885, 525), 835),
