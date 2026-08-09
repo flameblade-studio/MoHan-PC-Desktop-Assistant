@@ -94,9 +94,12 @@ def test_version_runtime_and_evidence_policy() -> None:
     )
     release = read(".github/workflows/release.yml")
     assert release.count('python-version: "3.14.7"') == 1
+    assert "from version_info import FALLBACK_VERSION" not in release
     assert_contains(
         release,
         (
+            "Expected exactly one literal FALLBACK_VERSION",
+            'source_version="${source_versions[0]}"',
             "PACKAGED_JIT_DEFAULT_OK",
             "tools/profile_mohan_tachyon.py",
             "tools/validate_release_sboms.py",

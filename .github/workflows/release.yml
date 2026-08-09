@@ -69,7 +69,14 @@ jobs:
           git fetch --no-tags origin main:refs/remotes/origin/main
           commit=$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")
           git merge-base --is-ancestor "$commit" origin/main
-          source_version=$(python3 -c 'from version_info import FALLBACK_VERSION; print(FALLBACK_VERSION)')
+          mapfile -t source_versions < <(
+            sed -n 's/^FALLBACK_VERSION = "\([^"]*\)"$/\1/p' version_info.py
+          )
+          if [[ "${#source_versions[@]}" -ne 1 ]]; then
+            echo "Expected exactly one literal FALLBACK_VERSION in version_info.py" >&2
+            exit 3
+          fi
+          source_version="${source_versions[0]}"
           if [[ "$source_version" != "$RELEASE_VERSION" ]]; then
             echo "Tag version $RELEASE_VERSION does not match source version $source_version" >&2
             exit 3
