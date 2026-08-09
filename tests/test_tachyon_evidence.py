@@ -137,6 +137,7 @@ def test_profile_paths_are_private_and_binary_is_temporary() -> None:
                 str(Path(project_path) / "speech.py"),
                 str(temporary / "tachyon_target.py"),
                 str(Path.home() / "private-profile.json"),
+                r"Z:\unregistered-runner\private\trace.py",
             )
         )
         for path in (
@@ -160,6 +161,7 @@ def test_profile_paths_are_private_and_binary_is_temporary() -> None:
             content = path.read_text(encoding="utf-8")
             assert project_path not in content
             assert str(Path.home()) not in content
+            assert "unregistered-runner" not in content
             assert "<project>" in content or "<temporary>" in content
 
     assert _sanitize_profile_path(str(ROOT / "lip_sync.py")) == (

@@ -71,6 +71,12 @@ WINDOWS_ABSOLUTE_PATH = re.compile(
 HOME_ABSOLUTE_PATH = re.compile(
     r"(?i)(?:/home/[^/\s\"']+|/Users/[^/\s\"']+)"
 )
+WINDOWS_PRIVATE_PATH = re.compile(
+    r"(?i)(?:^|(?<=[\s\"'(]))[a-z]:[\\/]+[^\r\n\"'<>]*"
+)
+HOME_PRIVATE_PATH = re.compile(
+    r"(?i)(?:/home/|/Users/)[^\r\n\"'<>]*"
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -584,6 +590,8 @@ def _sanitize_text_artifact(
             content,
             flags=flags,
         )
+    content = WINDOWS_PRIVATE_PATH.sub("<private-path>", content)
+    content = HOME_PRIVATE_PATH.sub("<private-path>", content)
     path.write_text(content, encoding="utf-8")
 
 
