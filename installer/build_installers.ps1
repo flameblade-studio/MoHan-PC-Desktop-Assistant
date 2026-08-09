@@ -16,10 +16,26 @@ if (-not (Test-Path (Join-Path $ResolvedAppDir $ExecutableName))) {
 }
 New-Item -ItemType Directory -Force $ResolvedOutput | Out-Null
 
-$Iscc = Get-ChildItem "C:\Program Files*\Inno Setup *\ISCC.exe" |
-    Sort-Object FullName -Descending |
-    Select-Object -First 1
-if (-not $Iscc) { throw "Inno Setup compiler was not found" }
+$Iscc = $null
+if ($env:MOHAN_ISCC_PATH -and (Test-Path -LiteralPath $env:MOHAN_ISCC_PATH)) {
+    $Iscc = Get-Item -LiteralPath $env:MOHAN_ISCC_PATH
+}
+if (-not $Iscc) {
+    $Iscc = Get-ChildItem "C:\Program Files*\Inno Setup *\ISCC.exe" |
+        Sort-Object FullName -Descending |
+        Select-Object -First 1
+}
+if (-not $Iscc) { throw "Inno Setup 7.0.2 compiler was not found" }
+$InnoVersionProbe = Join-Path $Iscc.DirectoryName "unins000.exe"
+if (-not (Test-Path -LiteralPath $InnoVersionProbe)) {
+    throw "Inno Setup version probe was not found at $InnoVersionProbe"
+}
+$IsccVersion = (
+    Get-Item -LiteralPath $InnoVersionProbe
+).VersionInfo.ProductVersion.Trim()
+if ($IsccVersion -notmatch '^7\.0\.2(?:\.|$)') {
+    throw "MoHan installers require Inno Setup 7.0.2; found $IsccVersion"
+}
 & $Iscc.FullName (Join-Path $ProjectRoot "installer\mohan.iss") `
     "/DMyVersion=$Version" `
     "/DSourceDir=$ResolvedAppDir" `
@@ -29,23 +45,30 @@ if (-not $Iscc) { throw "Inno Setup compiler was not found" }
 if ($LASTEXITCODE -ne 0) { throw "Inno Setup build failed" }
 
 $NumericVersion = (($Version -split '-', 2)[0] -split '\.')[0..2] -join '.'
-$WixBin = Get-ChildItem "C:\Program Files (x86)\WiX Toolset v3*\bin" -Directory |
-    Sort-Object FullName -Descending |
-    Select-Object -First 1
-if (-not $WixBin) { throw "WiX Toolset v3 was not found" }
+$WixCommand = $null
+if ($env:MOHAN_WIX_PATH -and (Test-Path -LiteralPath $env:MOHAN_WIX_PATH)) {
+    $WixCommand = Get-Item -LiteralPath $env:MOHAN_WIX_PATH
+}
+if (-not $WixCommand) {
+    $WixCommand = Get-Command wix.exe -ErrorAction SilentlyContinue
+}
+if (-not $WixCommand) {
+    $DotnetWix = Join-Path $env:USERPROFILE ".dotnet\tools\wix.exe"
+    if (Test-Path -LiteralPath $DotnetWix) {
+        $WixCommand = Get-Item -LiteralPath $DotnetWix
+    }
+}
+if (-not $WixCommand) {
+    throw "WiX Toolset v7.0.0 was not found. Install it with: dotnet tool install --global wix --version 7.0.0"
+}
+$Wix = $WixCommand.Source
+if (-not $Wix) { $Wix = $WixCommand.FullName }
+$WixVersion = (& $Wix --version).Trim()
+if ($LASTEXITCODE -ne 0 -or $WixVersion -notmatch '^7\.0\.0(?:\+|$)') {
+    throw "MoHan installers require WiX Toolset v7.0.0; found $WixVersion"
+}
 $WixWork = Join-Path $env:RUNNER_TEMP "mohan-wix-$Version"
 New-Item -ItemType Directory -Force $WixWork | Out-Null
-$Heat = Join-Path $WixBin.FullName "heat.exe"
-$Candle = Join-Path $WixBin.FullName "candle.exe"
-$Light = Join-Path $WixBin.FullName "light.exe"
-$Torch = Join-Path $WixBin.FullName "torch.exe"
-$Harvest = Join-Path $WixWork "harvest.wxs"
-& $Heat dir $ResolvedAppDir -cg AppFiles -dr INSTALLFOLDER -gg -sfrag -sreg -srd `
-    -var var.SourceDir -out $Harvest
-if ($LASTEXITCODE -ne 0) { throw "WiX harvesting failed" }
-& $Candle -nologo "-dSourceDir=$ResolvedAppDir" `
-    -out (Join-Path $WixWork "harvest.wixobj") $Harvest
-if ($LASTEXITCODE -ne 0) { throw "WiX harvesting compilation failed" }
 
 $ProductCode = "{" + ([guid]::NewGuid()).ToString().ToUpperInvariant() + "}"
 $Locales = @(
@@ -78,27 +101,33 @@ $LocalizedMsi = @{}
 foreach ($Locale in $Locales) {
     $LocaleWork = Join-Path $WixWork $Locale.Name
     New-Item -ItemType Directory -Force $LocaleWork | Out-Null
-    & $Candle -nologo `
-        "-dSourceDir=$ResolvedAppDir" `
-        "-dProductVersion=$NumericVersion" `
-        "-dExecutableName=$ExecutableName" `
-        "-dIconPath=$IconPath" `
-        "-dProductCode=$ProductCode" `
-        "-dProductLanguage=$($Locale.Language)" `
-        "-dProductCodepage=$($Locale.Codepage)" `
-        -out "$LocaleWork\" `
+    $LocaleMsi = Join-Path $LocaleWork "MoHan-$($Locale.Name).msi"
+    & $Wix build `
+        -acceptEula wix7 `
+        -nologo `
+        -arch x64 `
+        -d "SourceDir=$ResolvedAppDir" `
+        -d "ProductVersion=$NumericVersion" `
+        -d "ExecutableName=$ExecutableName" `
+        -d "IconPath=$IconPath" `
+        -d "ProductCode=$ProductCode" `
+        -d "ProductLanguage=$($Locale.Language)" `
+        -d "ProductCodepage=$($Locale.Codepage)" `
+        -loc (Join-Path $ProjectRoot "installer\localization\$($Locale.Name).wxl") `
+        -intermediateFolder $LocaleWork `
+        -out $LocaleMsi `
         (Join-Path $ProjectRoot "installer\Product.wxs")
     if ($LASTEXITCODE -ne 0) {
-        throw "WiX $($Locale.Name) product compilation failed"
+        throw "WiX v7 $($Locale.Name) build failed"
     }
-    $LocaleMsi = Join-Path $LocaleWork "MoHan-$($Locale.Name).msi"
-    & $Light -nologo -sice:ICE38 -sice:ICE64 `
-        -loc (Join-Path $ProjectRoot "installer\localization\$($Locale.Name).wxl") `
-        -out $LocaleMsi `
-        (Join-Path $LocaleWork "Product.wixobj") `
-        (Join-Path $WixWork "harvest.wixobj")
+    & $Wix msi validate `
+        -acceptEula wix7 `
+        -sice ICE38 `
+        -sice ICE64 `
+        -sice ICE91 `
+        $LocaleMsi
     if ($LASTEXITCODE -ne 0) {
-        throw "WiX $($Locale.Name) linking failed"
+        throw "WiX v7 $($Locale.Name) validation failed"
     }
     $LocalizedMsi[$Locale.Name] = $LocaleMsi
 }
@@ -110,12 +139,15 @@ foreach ($Locale in $Locales | Where-Object { -not $_.Base }) {
     $Transform = Join-Path $ResolvedOutput (
         "MoHan-Desktop-Assistant-$Tag-$($Locale.Name).mst"
     )
-    & $Torch -nologo -p -t language `
+    & $Wix msi transform `
+        -acceptEula wix7 `
+        -p `
+        -t language `
         $LocalizedMsi["zh-TW"] `
         $LocalizedMsi[$Locale.Name] `
         -out $Transform
     if ($LASTEXITCODE -ne 0) {
-        throw "WiX $($Locale.Name) transform generation failed"
+        throw "WiX v7 $($Locale.Name) transform generation failed"
     }
     $Transforms += $Transform
 }

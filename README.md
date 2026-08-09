@@ -8,13 +8,13 @@
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <img alt="Python 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB.svg?logo=python&logoColor=white">
+  <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
 > **跨平台進度：** Windows 仍是唯一完成實機、完整回歸、安裝與發布驗證的
 > 平台。macOS／Linux 目前只建立安全的平台邊界，並以三系統 CI 驗證核心匯入、
-> 純核心邏輯及 Qt offscreen。`v2.2.0-rc.N` 發行線另提供可啟動、可切換四語，
+> 純核心邏輯及 Qt offscreen。`v2.3.0-rc.N` 發行線另提供可啟動、可切換四語，
 > 但功能受限的 DMG／AppImage Preview；不能把 CI 當成真機相容或完整功能證明。
 > 能力矩陣、安裝包邊界與後續步驟
 > 請見 [跨平台狀態文件](docs/CROSS-PLATFORM.md)。
@@ -34,8 +34,8 @@
 
 <p align="center">
   <strong>Author / 軟體作者：CHOU MING HUA</strong><br>
-  Prepared public preview / 準備發布預覽版：v2.2.0 RC2 (v2.2.0-rc.2)<br>
-  Windows 10/11 full build · macOS/Linux limited Preview path · Python 3.14 · PySide6 · MIT License
+  Prepared public preview / 準備發布預覽版：v2.3.0 RC1 (v2.3.0-rc.1)<br>
+  Windows 10/11 full build · macOS/Linux limited Preview path · Python 3.15 · PySide6 · MIT License
 </p>
 
 > 墨寒是一套重視安全、隱私與角色連續感的 Windows 語音互動桌面助理，
@@ -328,7 +328,7 @@ Azure Speech 為可選的預覽供應器，預設不啟用。它只列出 Micros
 尚未數位簽署的開源預覽版可能觸發 Windows SmartScreen。請確認下載來源與
 SHA-256 後再執行。
 
-`v2.2.0-rc.N` 發行線會額外提供 macOS Apple Silicon（arm64）與 Intel
+`v2.3.0-rc.N` 發行線會額外提供 macOS Apple Silicon（arm64）與 Intel
 （x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`。
 它們是**功能受限 Preview**：只開放啟動畫面、四語說明、平台
 資料路徑及安全停用邊界；並非 Windows 完整版。語音、透明桌面角色、完整聊天
@@ -425,12 +425,12 @@ Assistant Cloud、Tailscale 或其他具身分驗證的加密私人網路。
 
 ## 從原始碼執行
 
-需求：Windows 10/11、Python 3.14.x。
+需求：Windows 10/11、Python 3.15.0rc1。
 升級、資料保留與回復方式請見
-[Python 3.14 遷移說明](docs/PYTHON-3.14-MIGRATION.md)。
+[Python 3.15 遷移說明](docs/PYTHON-3.15-MIGRATION.md)。
 
 ```powershell
-py -3.14 -m venv .venv
+py -3.15 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python app.py
@@ -441,19 +441,20 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.2.0-rc.2"
+.\build.ps1 -Version "2.3.0-rc.1"
 ```
 
 v2.1.0 RC1 在發布前通過 55 項自動測試程式，以及 Windows 發布工作流程的
 原始碼稽核、封裝自我測試、安裝／移除驗證與安全檢查。測試不能取代尚未完成
 的第三方真實環境驗證。
 
-每個符合 `v2.2.0-rc.N` 的標籤會建立已驗證的 Windows x64 ZIP、EXE、MSI，
+每個符合 `v2.3.0-rc.N` 的標籤會建立已驗證的 Windows x64 ZIP、EXE、MSI，
 以及功能受限的 macOS Apple Silicon／Intel 雙架構 DMG 與 Linux x86_64
 AppImage Preview。三平台安裝包
 必須通過成品層級 smoke test，才會建立同一個 GitHub 預發行版，並附上
-SHA256SUMS、分開的 Windows／Preview CycloneDX SBOM、更新清單、Artifact
-Attestation 與完整四語 Release 說明。Pull Request 只保存短期 CI 測試產物，
+SHA256SUMS、分開且通過 CycloneDX 1.7 官方結構／授權／依賴圖驗證的
+Windows／Preview SBOM、去識別化 Tachyon 效能證據與摘要、更新清單、
+Artifact Attestation 與完整四語 Release 說明。Pull Request 只保存短期 CI 測試產物，
 不會發布 Release。使用者可在「設定 → 軟體更新」選擇穩定版或預覽版頻道；
 Windows 更新器仍只接受官方 GitHub HTTPS 的 EXE／MSI，並在詢問執行前驗證
 宣告大小與 SHA256。
@@ -492,7 +493,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 > **Cross-platform status:** Windows remains the only platform validated with
 > real-device use, the full regression suite, installers, and published
 > packages. macOS/Linux currently have a safe platform boundary plus CI gates
-> for imports, pure-core behavior, and Qt offscreen. The `v2.2.0-rc.N` line
+> for imports, pure-core behavior, and Qt offscreen. The `v2.3.0-rc.N` line
 > also produces launchable, four-language, but deliberately limited DMG and
 > AppImage previews. CI is neither real-device evidence nor proof of feature
 > parity. See [the capability matrix](docs/CROSS-PLATFORM.md).
@@ -678,7 +679,7 @@ real-account end-to-end playback verification is complete.
 Unsigned preview builds may trigger Windows SmartScreen. Verify the source and
 SHA-256 before running them.
 
-The `v2.2.0-rc.N` line also provides separate macOS Apple Silicon (arm64) and
+The `v2.3.0-rc.N` line also provides separate macOS Apple Silicon (arm64) and
 Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux
 x86_64 `.AppImage`. These are **limited previews**, not the complete
 Windows assistant. They expose only the launch surface, four-language status,
@@ -777,12 +778,12 @@ Read [PRIVACY.md](PRIVACY.md), [SECURITY.md](SECURITY.md), and
 
 ## Run from source
 
-Requirements: Windows 10/11 and Python 3.14.x.
-See the [Python 3.14 migration guide](docs/PYTHON-3.14-MIGRATION.md) for data
+Requirements: Windows 10/11 and Python 3.15.0rc1.
+See the [Python 3.15 migration guide](docs/PYTHON-3.15-MIGRATION.md) for data
 preservation and rollback details.
 
 ```powershell
-py -3.14 -m venv .venv
+py -3.15 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python app.py
@@ -793,7 +794,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.2.0-rc.2"
+.\build.ps1 -Version "2.3.0-rc.1"
 ```
 
 Before publication, v2.1.0 RC1 passed all 55 automated test programs plus the
@@ -801,12 +802,13 @@ Windows release workflow's source audit, packaged self-test, install/uninstall
 verification, and security checks. Automated tests do not replace uncompleted
 third-party live verification.
 
-Every accepted `v2.2.0-rc.N` tag builds the validated Windows x64 portable ZIP,
+Every accepted `v2.3.0-rc.N` tag builds the validated Windows x64 portable ZIP,
 EXE installer, and MSI package plus limited macOS Apple Silicon/Intel DMGs and
 Linux x86_64 AppImage previews. The workflow runs package-level smoke tests
 before creating one
-pre-release with SHA256SUMS, separate Windows/Preview CycloneDX SBOMs, an update manifest, curated
-four-language notes, and artifact attestations. Pull requests upload only
+pre-release with SHA256SUMS, separately validated CycloneDX 1.7 Windows/Preview
+SBOMs, sanitized Tachyon evidence and a performance summary, an update manifest,
+curated four-language notes, and artifact attestations. Pull requests upload only
 short-lived CI test artifacts and never publish a Release. Users can
 select the stable or preview channel under **Settings → Software update**. The
 updater accepts only official GitHub HTTPS sources and verifies both declared

@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from ai_client import PERSONA
-from app import persona_for_profile
-from db import StudioDB
-
+lazy from ai_client import PERSONA
+lazy from app import persona_for_profile
+lazy from db import StudioDB
 
 LEGACY_PERSONA = (
     "你是墨寒。你稱使用者為主上。"

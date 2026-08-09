@@ -1,21 +1,20 @@
 from __future__ import annotations
 
-import math
-import os
-import random
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import math
+lazy import os
+lazy import random
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtCore import QTimer
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import QTimer
+lazy from PySide6.QtWidgets import QApplication
 
-from app import CompanionWindow
-from db import StudioDB
-
+lazy from app import CompanionWindow
+lazy from db import StudioDB
 
 FEATURES = (
     "physics_sleeves",
@@ -86,88 +85,101 @@ def assert_motion_bounds(window: CompanionWindow) -> None:
     assert abs(window.sleeve_right_angle) <= 0.15
 
 
+def _create_window(temp_dir: str) -> tuple[QApplication, CompanionWindow]:
+    os.environ["LOCALAPPDATA"] = temp_dir
+    db_path = Path(temp_dir) / "YanJianStudio" / "MoHan" / "mohan.db"
+    preflight = StudioDB(db_path)
+    preflight.set_setting("tts_enabled", False)
+    preflight.close()
+    app = QApplication([])
+    window = CompanionWindow(startup_speech=False)
+    window.show()
+    app.processEvents()
+    stop_timers(window)
+    return app, window
+
+
+def _apply_random_operation(window: CompanionWindow) -> None:
+    operation = random.randrange(7)
+    if operation <= 2:
+        pose = random.choice(tuple(POSES))
+        window.idle_pose = pose
+        expression = random.choice(POSES[pose])
+        window.state = (
+            "speaking"
+            if "speaking" in expression or "mouth_" in expression
+            else "idle"
+        )
+        window._set_expression(expression, fade=False)
+    elif operation == 3:
+        window.state = "idle"
+        window._set_expression(random.choice(SPECIAL), fade=False)
+    elif operation == 4:
+        window.state = "speaking"
+        window.audio_driven_mouth = True
+        window.speech_blinking = False
+        window._audio_viseme_cue(
+            random.random(),
+            random.choice(("A", "I", "U", "E", "O", "CLOSED")),
+        )
+    elif operation == 5:
+        feature = random.choice(FEATURES)
+        window.physics_features[feature] = not window.physics_features[feature]
+        window._apply_physics_visibility()
+    else:
+        window.gaze_target_x = random.uniform(-1.0, 1.0)
+        window.gaze_target_y = random.uniform(-1.0, 1.0)
+        window._attention_tick()
+
+
+def _assert_render_state(window: CompanionWindow) -> None:
+    window._physics_tick()
+    assert_motion_bounds(window)
+    assert 0.0 <= window.character_opacity.opacity() <= 1.0
+    if window.current_expression not in window.physics_expression_poses:
+        assert window.physics_overlay.isHidden()
+        assert window.hair_left_overlay.isHidden()
+        assert window.sleeve_left_overlay.isHidden()
+
+
+def _run_fuzz_sequence(app: QApplication, window: CompanionWindow) -> None:
+    for index in range(2400):
+        _apply_random_operation(window)
+        _assert_render_state(window)
+        if index % 200 == 0:
+            app.processEvents()
+
+
+def _assert_idle_reset(window: CompanionWindow) -> None:
+    window.physics_features.update({key: True for key in FEATURES})
+    window.state = "idle"
+    window.idle_pose = "front"
+    window._set_expression("idle_front", fade=False)
+    window._ensure_idle_mouth_closed()
+    assert window.current_expression == "idle_front"
+    assert not window.mouth_open
+
+
+def _assert_reopen_lifecycle(app: QApplication) -> None:
+    for _ in range(8):
+        reopened = CompanionWindow(startup_speech=False)
+        reopened.show()
+        app.processEvents()
+        stop_timers(reopened)
+        assert reopened.character.pixmap() is not None
+        reopened.close()
+        app.processEvents()
+
+
 def run() -> None:
     random.seed(20260729)
     with TemporaryDirectory() as temp_dir:
-        os.environ["LOCALAPPDATA"] = temp_dir
-        db_path = (
-            Path(temp_dir)
-            / "YanJianStudio"
-            / "MoHan"
-            / "mohan.db"
-        )
-        preflight = StudioDB(db_path)
-        preflight.set_setting("tts_enabled", False)
-        preflight.close()
-        app = QApplication([])
-        window = CompanionWindow(startup_speech=False)
-        window.show()
-        app.processEvents()
-        stop_timers(window)
-
-        for index in range(2400):
-            operation = random.randrange(7)
-            if operation <= 2:
-                pose = random.choice(tuple(POSES))
-                window.idle_pose = pose
-                expression = random.choice(POSES[pose])
-                window.state = (
-                    "speaking"
-                    if "speaking" in expression
-                    or "mouth_" in expression
-                    else "idle"
-                )
-                window._set_expression(expression, fade=False)
-            elif operation == 3:
-                window.state = "idle"
-                window._set_expression(random.choice(SPECIAL), fade=False)
-            elif operation == 4:
-                window.state = "speaking"
-                window.audio_driven_mouth = True
-                window.speech_blinking = False
-                window._audio_viseme_cue(
-                    random.random(),
-                    random.choice(("A", "I", "U", "E", "O", "CLOSED")),
-                )
-            elif operation == 5:
-                feature = random.choice(FEATURES)
-                window.physics_features[feature] = not window.physics_features[
-                    feature
-                ]
-                window._apply_physics_visibility()
-            else:
-                window.gaze_target_x = random.uniform(-1.0, 1.0)
-                window.gaze_target_y = random.uniform(-1.0, 1.0)
-                window._attention_tick()
-            window._physics_tick()
-            assert_motion_bounds(window)
-            assert window.character_opacity.opacity() >= 0.0
-            assert window.character_opacity.opacity() <= 1.0
-            if window.current_expression not in window.physics_expression_poses:
-                assert window.physics_overlay.isHidden()
-                assert window.hair_left_overlay.isHidden()
-                assert window.sleeve_left_overlay.isHidden()
-            if index % 200 == 0:
-                app.processEvents()
-
-        window.physics_features.update({key: True for key in FEATURES})
-        window.state = "idle"
-        window.idle_pose = "front"
-        window._set_expression("idle_front", fade=False)
-        window._ensure_idle_mouth_closed()
-        assert window.current_expression == "idle_front"
-        assert not window.mouth_open
+        app, window = _create_window(temp_dir)
+        _run_fuzz_sequence(app, window)
+        _assert_idle_reset(window)
         window.close()
         app.processEvents()
-
-        for _ in range(8):
-            reopened = CompanionWindow(startup_speech=False)
-            reopened.show()
-            app.processEvents()
-            stop_timers(reopened)
-            assert reopened.character.pixmap() is not None
-            reopened.close()
-            app.processEvents()
+        _assert_reopen_lifecycle(app)
     print("STATE_FUZZ_AND_LIFECYCLE_OK")
 
 

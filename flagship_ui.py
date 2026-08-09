@@ -1,28 +1,29 @@
 from __future__ import annotations
 
-import json
-import mimetypes
-import queue
-import re
-import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timedelta
-from email.message import EmailMessage
-from pathlib import Path
-from typing import Any
+lazy import json
+lazy import mimetypes
+lazy import queue
+lazy import re
+lazy import time
+lazy from concurrent.futures import ThreadPoolExecutor, as_completed
+lazy from datetime import datetime, timedelta
+lazy from email.message import EmailMessage
+lazy from pathlib import Path
+lazy from typing import Any
+lazy from urllib.parse import urlparse
 
-from PySide6.QtCore import (
+lazy from PySide6.QtCore import (
     QBuffer,
     QByteArray,
     QIODevice,
     QObject,
     QRunnable,
+    Qt,
     QThreadPool,
     QTimer,
-    Qt,
     Signal,
 )
-from PySide6.QtWidgets import (
+lazy from PySide6.QtWidgets import (
     QAbstractSpinBox,
     QApplication,
     QCheckBox,
@@ -49,47 +50,52 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from flagship_core import (
-    ActionExecutor,
-    ActionPlan,
-    ActionRequest,
-    ActionResult,
-    PolicyDecision,
-    PolicyEngine,
-    RISK_NAMES,
-    WindowsToolbox,
-    parse_plan_json,
-)
-from ai_client import ActionPlannerWorker, DEFAULT_TEXT_MODEL
-from backup_manager import BackupManager
-from contracts import SecretStoreFactoryPort, SecretStorePort
-from cloud_connectors import (
+lazy from ai_client import DEFAULT_TEXT_MODEL, ActionPlannerWorker
+lazy from backup_manager import BackupManager
+lazy from camera_presence import CameraPresenceController
+lazy from cloud_connectors import (
+    PROVIDERS,
     GitHubConnector,
     GmailConnector,
     GoogleCalendarConnector,
     GoogleDriveConnector,
     MicrosoftGraphConnector,
     OAuthPKCEFlow,
-    PROVIDERS,
     normalize_cloud_provider,
     refresh_oauth_token,
 )
-from camera_presence import CameraPresenceController
-from home_assistant import (
+lazy from contracts import SecretStoreFactoryPort, SecretStorePort
+lazy from flagship_core import (
+    RISK_NAMES,
+    ActionExecutor,
+    ActionPlan,
+    ActionRequest,
+    ActionResult,
+    PolicyDecision,
+    PolicyEngine,
+    WindowsToolbox,
+    parse_plan_json,
+)
+lazy from home_assistant import (
     HomeAssistantClient,
     HomeAssistantConfig,
     classify_home_capability,
     home_health_issues,
 )
-from remote_control import RemoteControlServer, RemoteServerConfig, TokenRegistry
-from platform_contracts import PlatformServicePort
-from platform_services import current_platform_services
-from secret_store import platform_secret_store_factory
-from workflow_engine import Workflow
-from windows_tools import WindowTools
+lazy from platform_contracts import PlatformServicePort
+lazy from platform_services import current_platform_services
+lazy from remote_control import (
+    RemoteControlServer,
+    RemoteServerConfig,
+    RemoteServerServices,
+    TokenRegistry,
+)
+lazy from secret_store import platform_secret_store_factory
+lazy from time_utils import local_aware_time, local_wall_time
+lazy from windows_tools import WindowTools
+lazy from workflow_engine import Workflow, schedule_due
 
-
-CORE_PERMISSION_LABELS = {
+CORE_PERMISSION_LABELS = frozendict({
     "read_status": "讀取狀態與摘要",
     "search_local": "搜尋白名單資料夾",
     "open_web": "開啟網站",
@@ -119,7 +125,63 @@ CORE_PERMISSION_LABELS = {
     "remote_file_write": "遠端寫入檔案",
     "delete_file": "刪除檔案",
     "shutdown_pc": "關機或重新啟動",
-}
+})
+READ_INTENT_MARKERS = (
+    "讀取",
+    "查看",
+    "搜尋",
+    "查詢",
+    "查找",
+    "尋找",
+    "找出",
+    "列出",
+    "整理",
+    "顯示",
+    "檢查",
+    "測試",
+    "瀏覽",
+    "取得",
+)
+ASSIST_INTENT_MARKERS = ("幫我", "請", "替我", "執行")
+GMAIL_MARKERS = ("gmail", "郵件", "電子郵件", "信件", "信箱")
+GMAIL_SEND_MARKERS = ("寄信", "寄出", "發信", "傳送郵件")
+GMAIL_SEND_NEGATIONS = ("不要寄", "不用寄", "不寄出", "不要傳送")
+CALENDAR_MARKERS = (
+    "google calendar",
+    "googlecalendar",
+    "calendar",
+    "日曆",
+    "行事曆",
+    "行程",
+)
+CALENDAR_WRITE_MARKERS = ("建立", "新增", "加入", "取消", "刪除")
+DRIVE_MARKERS = (
+    "google drive",
+    "googledrive",
+    "雲端硬碟",
+    "雲端檔案",
+)
+DRIVE_WRITE_MARKERS = ("上傳", "寫入", "修改", "刪除", "移動")
+CHINESE_DAY_COUNTS = frozendict({
+    "一天": 1,
+    "一日": 1,
+    "三天": 3,
+    "三日": 3,
+    "七天": 7,
+    "七日": 7,
+    "一週": 7,
+    "一周": 7,
+    "兩週": 14,
+    "兩周": 14,
+    "一個月": 30,
+})
+CHINESE_MAIL_COUNTS = frozendict({
+    "一封": 1,
+    "兩封": 2,
+    "三封": 3,
+    "五封": 5,
+    "十封": 10,
+})
 
 
 class OAuthSignals(QObject):
@@ -153,7 +215,7 @@ class OAuthWorker(QRunnable):
             if self.client_secret:
                 token["client_secret"] = self.client_secret
             self.signals.done.emit(self.provider_id, token)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- OAuth worker reports all failures
             self.signals.failed.emit(self.provider_id, str(exc))
 
 
@@ -182,7 +244,7 @@ class CloudHealthWorker(QRunnable):
                 query={
                     "maxResults": 1,
                     "singleEvents": "true",
-                    "timeMin": datetime.now().astimezone().isoformat(),
+                    "timeMin": local_aware_time().isoformat(),
                 },
             )
             return "主要日曆可讀取"
@@ -207,7 +269,7 @@ class CloudHealthWorker(QRunnable):
                 name = futures[future]
                 try:
                     results[name] = {"ok": True, "detail": future.result()}
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001 -- isolate each health probe
                     results[name] = {
                         "ok": False,
                         "detail": f"{type(exc).__name__}: {exc}",
@@ -234,7 +296,7 @@ class CloudHealthWorker(QRunnable):
                         "detail": str(identity),
                     }
                 }
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 -- cloud probe returns diagnostics
                 results = {
                     PROVIDERS[self.provider_id].display_name: {
                         "ok": False,
@@ -282,18 +344,72 @@ class WorkflowEditor(QDialog):
         buttons.rejected.connect(self.reject)
         root.addWidget(buttons)
 
-    def workflow(self) -> Workflow:
+    def _trigger_definition(self) -> dict[str, Any]:
         trigger_text = self.trigger.currentText()
         if trigger_text == "每天固定時間":
-            trigger = {
+            return {
                 "type": "schedule",
                 "time": self.at.time().toString("HH:mm"),
                 "weekdays": list(range(7)),
             }
-        elif trigger_text == "開始工作時":
-            trigger = {"type": "work_start"}
-        else:
-            trigger = {"type": "manual"}
+        if trigger_text == "開始工作時":
+            return {"type": "work_start"}
+        return {"type": "manual"}
+
+    @staticmethod
+    def _home_arguments(
+        capability: str,
+        raw_argument: str,
+    ) -> dict[str, Any]:
+        try:
+            entity, service = (
+                value.strip()
+                for value in raw_argument.split(",", 1)
+            )
+        except ValueError as exc:
+            raise ValueError(
+                f"{capability} 參數格式必須是 entity_id,service"
+            ) from exc
+        return {
+            "domain": entity.split(".", 1)[0],
+            "service": service,
+            "data": {"entity_id": entity},
+        }
+
+    @classmethod
+    def _step_arguments(
+        cls,
+        capability: str,
+        raw_argument: str,
+    ) -> dict[str, Any]:
+        simple_keys = {
+            "open_web": "url",
+            "open_folder": "path",
+            "launch_app": "name",
+            "home_read": "entity_id",
+        }
+        if capability in simple_keys:
+            return {simple_keys[capability]: raw_argument}
+        if capability in {
+            "home_control",
+            "home_lock",
+            "home_alarm",
+            "home_heat",
+        }:
+            return cls._home_arguments(capability, raw_argument)
+        try:
+            arguments = json.loads(raw_argument)
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                f"{capability} 的參數必須是 JSON 物件"
+            ) from exc
+        if not isinstance(arguments, dict):
+            raise TypeError(
+                f"{capability} 的參數必須是 JSON 物件"
+            )
+        return arguments
+
+    def _workflow_steps(self) -> list[dict[str, Any]]:
         steps: list[dict[str, Any]] = []
         for raw_line in self.steps.toPlainText().splitlines():
             line = raw_line.strip()
@@ -303,50 +419,25 @@ class WorkflowEditor(QDialog):
             if len(parts) != 3:
                 raise ValueError(f"步驟格式不正確：{line}")
             capability, description, raw_argument = parts
-            arguments: dict[str, Any]
-            if capability == "open_web":
-                arguments = {"url": raw_argument}
-            elif capability == "open_folder":
-                arguments = {"path": raw_argument}
-            elif capability == "launch_app":
-                arguments = {"name": raw_argument}
-            elif capability in {
-                "home_control",
-                "home_lock",
-                "home_alarm",
-                "home_heat",
-            }:
-                entity, service = [
-                    value.strip() for value in raw_argument.split(",", 1)
-                ]
-                domain = entity.split(".", 1)[0]
-                arguments = {
-                    "domain": domain,
-                    "service": service,
-                    "data": {"entity_id": entity},
-                }
-            elif capability == "home_read":
-                arguments = {"entity_id": raw_argument}
-            else:
-                try:
-                    arguments = json.loads(raw_argument)
-                except json.JSONDecodeError as exc:
-                    raise ValueError(
-                        f"{capability} 的參數必須是 JSON 物件"
-                    ) from exc
             steps.append(
                 {
                     "capability": capability,
                     "description": description,
-                    "arguments": arguments,
+                    "arguments": self._step_arguments(
+                        capability,
+                        raw_argument,
+                    ),
                 }
             )
+        return steps
+
+    def workflow(self) -> Workflow:
         workflow = Workflow(
             None,
             self.name.text().strip(),
             True,
-            trigger,
-            steps,
+            self._trigger_definition(),
+            self._workflow_steps(),
             self.preview.isChecked(),
         )
         workflow.validate()
@@ -368,6 +459,23 @@ class FlagshipControlCenter(QWidget):
         secret_store_factory: SecretStoreFactoryPort | None = None,
     ):
         super().__init__(parent)
+        self._initialize_services(
+            db,
+            data_path,
+            platform_services,
+            secret_store_factory,
+        )
+        self._initialize_runtime_state()
+        self._build_control_center_ui()
+        self._start_control_center_timers()
+
+    def _initialize_services(
+        self,
+        db,
+        data_path: Path,
+        platform_services: PlatformServicePort | None,
+        secret_store_factory: SecretStoreFactoryPort | None,
+    ) -> None:
         self.db = db
         self.data_path = data_path
         self.platform_services = (
@@ -385,6 +493,8 @@ class FlagshipControlCenter(QWidget):
             data_path / "openai-key.dpapi",
             "MoHan OpenAI API key",
         )
+
+    def _initialize_runtime_state(self) -> None:
         # 工具工作使用獨立執行緒池，避免一般 AI 對話佔滿全域池後，
         # Gmail 等工具一直停留在「規劃中」。
         self.thread_pool = QThreadPool(self)
@@ -420,6 +530,7 @@ class FlagshipControlCenter(QWidget):
         self._permission_controls: dict[str, QComboBox] = {}
         self._configure_executor()
 
+    def _build_control_center_ui(self) -> None:
         root = QVBoxLayout(self)
         emergency = QPushButton("緊急停止所有工具與遠端操作（Esc）")
         emergency.setStyleSheet(
@@ -438,6 +549,7 @@ class FlagshipControlCenter(QWidget):
         self.tabs.addTab(self._audit_tab(), "稽核紀錄")
         root.addWidget(self.tabs, 1)
 
+    def _start_control_center_timers(self) -> None:
         self.remote_poll = QTimer(self)
         self.remote_poll.timeout.connect(self._drain_remote_commands)
         self.remote_poll.start(250)
@@ -530,6 +642,16 @@ class FlagshipControlCenter(QWidget):
             "已寫入剪貼簿",
         )
 
+    @staticmethod
+    def _scroll_form() -> tuple[QScrollArea, QFormLayout]:
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        content = QWidget()
+        form = QFormLayout(content)
+        scroll.setWidget(content)
+        return scroll, form
+
     def _overview_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
@@ -577,7 +699,7 @@ class FlagshipControlCenter(QWidget):
                 self.db,
                 self.data_path / "backups",
             ).create("manual")
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- user-visible backup boundary
             QMessageBox.warning(self, "資料備份", f"備份失敗：{exc}")
             return
         QMessageBox.information(
@@ -672,179 +794,217 @@ class FlagshipControlCenter(QWidget):
         return self._known_safe_plan(instruction) is not None
 
     @staticmethod
-    def _known_safe_plan(instruction: str) -> dict[str, Any] | None:
+    def _contains_any(text: str, markers: tuple[str, ...]) -> bool:
+        return any(marker in text for marker in markers)
+
+    @classmethod
+    def _gmail_days(cls, instruction: str) -> int:
+        days = next(
+            (
+                value
+                for marker, value in CHINESE_DAY_COUNTS.items()
+                if marker in instruction
+            ),
+            7,
+        )
+        numeric = re.search(
+            r"最近\s*(\d{1,3})\s*(?:天|日)",
+            instruction,
+        )
+        if numeric:
+            return max(1, min(365, int(numeric.group(1))))
+        return days
+
+    @classmethod
+    def _gmail_limit(cls, instruction: str) -> int:
+        limit = next(
+            (
+                value
+                for marker, value in CHINESE_MAIL_COUNTS.items()
+                if marker in instruction
+            ),
+            3,
+        )
+        numeric = re.search(
+            r"(?:最多|前|最近)?\s*(\d{1,3})\s*封",
+            instruction,
+        )
+        if numeric:
+            return max(1, min(100, int(numeric.group(1))))
+        return limit
+
+    @classmethod
+    def _gmail_plan(
+        cls,
+        normalized: str,
+        folded: str,
+        read_requested: bool,
+    ) -> dict[str, Any] | None:
+        mentions_mail = cls._contains_any(folded, GMAIL_MARKERS)
+        send_requested = (
+            cls._contains_any(normalized, GMAIL_SEND_MARKERS)
+            and not cls._contains_any(
+                normalized,
+                GMAIL_SEND_NEGATIONS,
+            )
+        )
+        assisted = cls._contains_any(
+            normalized,
+            ASSIST_INTENT_MARKERS,
+        )
+        if not mentions_mail or send_requested or not (
+            read_requested or assisted
+        ):
+            return None
+        days = cls._gmail_days(normalized)
+        limit = cls._gmail_limit(normalized)
+        return {
+            "title": "讀取 Gmail 郵件",
+            "steps": [
+                {
+                    "capability": "email_read",
+                    "description": (
+                        f"讀取最近 {days} 天內最多 {limit} 封 Gmail 郵件"
+                    ),
+                    "arguments": {
+                        "provider": "google",
+                        "query": f"newer_than:{days}d",
+                        "limit": limit,
+                    },
+                }
+            ],
+        }
+
+    @classmethod
+    def _calendar_plan(
+        cls,
+        normalized: str,
+        folded: str,
+        read_requested: bool,
+    ) -> dict[str, Any] | None:
+        assisted = cls._contains_any(
+            normalized,
+            ASSIST_INTENT_MARKERS,
+        )
+        if (
+            not cls._contains_any(folded, CALENDAR_MARKERS)
+            or not (read_requested or assisted)
+            or cls._contains_any(
+                normalized,
+                CALENDAR_WRITE_MARKERS,
+            )
+        ):
+            return None
+        start = local_aware_time().replace(
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+        )
+        days = 7
+        if "明天" in normalized:
+            start += timedelta(days=1)
+            days = 1
+        elif "今天" in normalized or "今日" in normalized:
+            days = 1
+        end = start + timedelta(days=days)
+        return {
+            "title": "讀取 Google Calendar",
+            "steps": [
+                {
+                    "capability": "calendar_read",
+                    "description": (
+                        f"讀取 Google Calendar 未來 {days} 天行程"
+                    ),
+                    "arguments": {
+                        "provider": "google",
+                        "start": start.isoformat(),
+                        "end": end.isoformat(),
+                    },
+                }
+            ],
+        }
+
+    @classmethod
+    def _drive_plan(
+        cls,
+        normalized: str,
+        folded: str,
+        read_requested: bool,
+    ) -> dict[str, Any] | None:
+        assisted = cls._contains_any(
+            normalized,
+            ASSIST_INTENT_MARKERS,
+        )
+        if (
+            not cls._contains_any(folded, DRIVE_MARKERS)
+            or not (read_requested or assisted)
+            or cls._contains_any(normalized, DRIVE_WRITE_MARKERS)
+        ):
+            return None
+        quoted = re.search(
+            r"[「『\"]([^」』\"]+)[」』\"]",
+            normalized,
+        )
+        name = quoted.group(1).strip() if quoted else ""
+        return {
+            "title": "讀取 Google Drive",
+            "steps": [
+                {
+                    "capability": "cloud_file_read",
+                    "description": (
+                        f"搜尋 Google Drive 檔案：{name}"
+                        if name
+                        else "列出 Google Drive 最近修改的檔案"
+                    ),
+                    "arguments": {
+                        "provider": "google",
+                        "name": name,
+                        "limit": 20,
+                    },
+                }
+            ],
+        }
+
+    @classmethod
+    def _known_safe_plan(
+        cls,
+        instruction: str,
+    ) -> dict[str, Any] | None:
         """Return deterministic plans for simple read-only Google requests."""
         normalized = str(instruction).strip()
         folded = normalized.casefold()
-        wants_read = any(
-            marker in normalized
-            for marker in (
-                "讀取",
-                "查看",
-                "搜尋",
-                "查詢",
-                "查找",
-                "尋找",
-                "找出",
-                "列出",
-                "整理",
-                "顯示",
-                "檢查",
-                "測試",
-                "瀏覽",
-                "取得",
-            )
+        read_requested = cls._contains_any(
+            normalized,
+            READ_INTENT_MARKERS,
         )
-
-        mentions_mail = any(
-            marker in folded
-            for marker in ("gmail", "郵件", "電子郵件", "信件", "信箱")
-        )
-        send_requested = (
-            any(marker in normalized for marker in ("寄信", "寄出", "發信", "傳送郵件"))
-            and not any(
-                marker in normalized
-                for marker in ("不要寄", "不用寄", "不寄出", "不要傳送")
-            )
-        )
-        if mentions_mail and not send_requested and (
-            wants_read or any(marker in normalized for marker in ("幫我", "請", "替我", "執行"))
-        ):
-            days = 7
-            chinese_days = {
-                "一天": 1,
-                "一日": 1,
-                "三天": 3,
-                "三日": 3,
-                "七天": 7,
-                "七日": 7,
-                "一週": 7,
-                "一周": 7,
-                "兩週": 14,
-                "兩周": 14,
-                "一個月": 30,
-            }
-            for marker, value in chinese_days.items():
-                if marker in normalized:
-                    days = value
-                    break
-            numeric_days = re.search(r"最近\s*(\d{1,3})\s*(?:天|日)", normalized)
-            if numeric_days:
-                days = max(1, min(365, int(numeric_days.group(1))))
-
-            limit = 3
-            chinese_limits = {
-                "一封": 1,
-                "兩封": 2,
-                "三封": 3,
-                "五封": 5,
-                "十封": 10,
-            }
-            for marker, value in chinese_limits.items():
-                if marker in normalized:
-                    limit = value
-                    break
-            numeric_limit = re.search(
-                r"(?:最多|前|最近)?\s*(\d{1,3})\s*封",
+        return (
+            cls._gmail_plan(normalized, folded, read_requested)
+            or cls._calendar_plan(
                 normalized,
+                folded,
+                read_requested,
             )
-            if numeric_limit:
-                limit = max(1, min(100, int(numeric_limit.group(1))))
-
-            return {
-                "title": "讀取 Gmail 郵件",
-                "steps": [
-                    {
-                        "capability": "email_read",
-                        "description": f"讀取最近 {days} 天內最多 {limit} 封 Gmail 郵件",
-                        "arguments": {
-                            "provider": "google",
-                            "query": f"newer_than:{days}d",
-                            "limit": limit,
-                        },
-                    }
-                ],
-            }
-
-        mentions_calendar = any(
-            marker in folded
-            for marker in (
-                "google calendar",
-                "googlecalendar",
-                "calendar",
-                "日曆",
-                "行事曆",
-                "行程",
+            or cls._drive_plan(
+                normalized,
+                folded,
+                read_requested,
             )
         )
-        if mentions_calendar and (wants_read or "幫我" in normalized or "請" in normalized) and not any(
-            marker in normalized for marker in ("建立", "新增", "加入", "取消", "刪除")
-        ):
-            now = datetime.now().astimezone()
-            start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-            days = 7
-            if "明天" in normalized:
-                start += timedelta(days=1)
-                days = 1
-            elif "今天" in normalized or "今日" in normalized:
-                days = 1
-            end = start + timedelta(days=days)
-            return {
-                "title": "讀取 Google Calendar",
-                "steps": [
-                    {
-                        "capability": "calendar_read",
-                        "description": f"讀取 Google Calendar 未來 {days} 天行程",
-                        "arguments": {
-                            "provider": "google",
-                            "start": start.isoformat(),
-                            "end": end.isoformat(),
-                        },
-                    }
-                ],
-            }
-
-        mentions_drive = any(
-            marker in folded
-            for marker in ("google drive", "googledrive", "雲端硬碟", "雲端檔案")
-        )
-        if mentions_drive and (wants_read or "幫我" in normalized or "請" in normalized) and not any(
-            marker in normalized for marker in ("上傳", "寫入", "修改", "刪除", "移動")
-        ):
-            name = ""
-            quoted = re.search(r"[「『\"]([^」』\"]+)[」』\"]", normalized)
-            if quoted:
-                name = quoted.group(1).strip()
-            return {
-                "title": "讀取 Google Drive",
-                "steps": [
-                    {
-                        "capability": "cloud_file_read",
-                        "description": (
-                            f"搜尋 Google Drive 檔案：{name}"
-                            if name
-                            else "列出 Google Drive 最近修改的檔案"
-                        ),
-                        "arguments": {
-                            "provider": "google",
-                            "name": name,
-                            "limit": 20,
-                        },
-                    }
-                ],
-            }
-        return None
 
     def _planner_targets(self) -> str:
-        lines = []
-        for row in self.db.allowed_targets():
-            lines.append(
+        lines = [
+            (
                 f"- {row['target_type']}：{row['display_name']}＝"
                 f"{row['target_value']}（{row['access_mode']}）"
             )
+            for row in self.db.allowed_targets()
+        ]
         if hasattr(self, "ha_entities"):
-            for index in range(min(200, self.ha_entities.count())):
-                lines.append(f"- home：{self.ha_entities.item(index).text()}")
+            lines.extend(
+                f"- home：{self.ha_entities.item(index).text()}"
+                for index in range(min(200, self.ha_entities.count()))
+            )
         return "\n".join(lines) or "（目前沒有白名單目標）"
 
     def _planner_done_if_current(
@@ -864,7 +1024,7 @@ class FlagshipControlCenter(QWidget):
                 json.dumps(payload, ensure_ascii=False),
                 source=source,
             )
-        except (ValueError, json.JSONDecodeError) as exc:
+        except (TypeError, ValueError, json.JSONDecodeError) as exc:
             QMessageBox.warning(self, "工具計畫", f"計畫驗證失敗：{exc}")
             return
         if not plan.steps:
@@ -1060,9 +1220,7 @@ class FlagshipControlCenter(QWidget):
     def run_due_workflows(self) -> None:
         if self._closed:
             return
-        from workflow_engine import schedule_due
-
-        now = datetime.now()
+        now = local_wall_time()
         for row in self.db.workflows(enabled_only=True):
             workflow = Workflow.from_row(row)
             if schedule_due(workflow, now, row["last_run_at"]):
@@ -1076,12 +1234,7 @@ class FlagshipControlCenter(QWidget):
                 self.run_workflow(workflow)
 
     def _cloud_tab(self) -> QWidget:
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QFrame.NoFrame)
-        content = QWidget()
-        form = QFormLayout(content)
-        scroll.setWidget(content)
+        scroll, form = self._scroll_form()
         if self.platform_services.capabilities.secure_secret_storage:
             secret_note = "權杖由作業系統安全加密保存，不寫入資料庫或設定檔。"
         else:
@@ -1325,8 +1478,8 @@ class FlagshipControlCenter(QWidget):
             or ""
         ).strip()
         if start and end:
-            datetime.fromisoformat(start.replace("Z", "+00:00"))
-            datetime.fromisoformat(end.replace("Z", "+00:00"))
+            datetime.fromisoformat(start)
+            datetime.fromisoformat(end)
             return start, end
 
         range_name = str(
@@ -1335,7 +1488,7 @@ class FlagshipControlCenter(QWidget):
             or arguments.get("date_range")
             or ""
         ).casefold().strip()
-        now = datetime.now().astimezone()
+        now = local_aware_time()
         day_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
         aliases = {
             "today": 1,
@@ -1439,8 +1592,8 @@ class FlagshipControlCenter(QWidget):
         timezone = str(request.arguments.get("timezone", "Asia/Taipei"))
         if not title or not start or not end:
             raise ValueError("行程標題、開始與結束時間不可留空")
-        start_dt = datetime.fromisoformat(start.replace("Z", "+00:00"))
-        end_dt = datetime.fromisoformat(end.replace("Z", "+00:00"))
+        start_dt = datetime.fromisoformat(start)
+        end_dt = datetime.fromisoformat(end)
         if end_dt <= start_dt:
             raise ValueError("結束時間必須晚於開始時間")
         token = self._cloud_token(provider)
@@ -1537,7 +1690,7 @@ class FlagshipControlCenter(QWidget):
         provider_id = str(self.cloud_provider.currentData())
         try:
             token = self._cloud_token(provider_id)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- user-visible credential boundary
             self.cloud_status.setText(f"測試失敗：{exc}")
             return
         self._cloud_test_generation += 1
@@ -1656,12 +1809,7 @@ class FlagshipControlCenter(QWidget):
             )
 
     def _home_tab(self) -> QWidget:
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QFrame.NoFrame)
-        content = QWidget()
-        form = QFormLayout(content)
-        scroll.setWidget(content)
+        scroll, form = self._scroll_form()
         self.ha_enabled = QCheckBox("啟用 Home Assistant 整合")
         self.ha_url = QLineEdit()
         self.ha_url.setPlaceholderText("例如：http://homeassistant.local:8123")
@@ -1793,7 +1941,7 @@ class FlagshipControlCenter(QWidget):
         self.save_home_settings()
         try:
             healthy = self._home_client().health()
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- user-visible integration boundary
             self.ha_status.setText(f"連線失敗：{exc}")
             return
         self.ha_status.setText("連線正常" if healthy else "API 回應不正確")
@@ -1802,7 +1950,7 @@ class FlagshipControlCenter(QWidget):
         self.ha_entities.clear()
         try:
             states = self._home_client().states()
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- user-visible integration boundary
             self.ha_status.setText(f"讀取失敗：{exc}")
             return
         for state in states:
@@ -1834,17 +1982,7 @@ class FlagshipControlCenter(QWidget):
             f"已讀取 {self.ha_entities.count()} 個可用項目。{issue_text}"
         )
 
-    def _remote_tab(self) -> QWidget:
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QFrame.NoFrame)
-        content = QWidget()
-        form = QFormLayout(content)
-        scroll.setWidget(content)
-        self.remote_enabled = QCheckBox("啟用手機／私人網路遠端服務")
-        self.remote_host = QComboBox()
-        self.remote_host.addItem("僅本機測試（127.0.0.1）", "127.0.0.1")
-        self.remote_host.addItem("私人網路／Tailscale（0.0.0.0）", "0.0.0.0")
+    def _remote_port_control(self) -> QWidget:
         self.remote_port = QSpinBox()
         self.remote_port.setRange(1024, 65535)
         self.remote_port.setValue(int(self.db.setting("remote_port", 8765)))
@@ -1869,6 +2007,19 @@ class FlagshipControlCenter(QWidget):
         port_line.addWidget(self.remote_port, 1)
         port_line.addWidget(self.remote_port_up)
         port_line.addWidget(self.remote_port_down)
+        return port_control
+
+    def _initialize_remote_fields(self) -> None:
+        self.remote_enabled = QCheckBox("啟用手機／私人網路遠端服務")
+        self.remote_host = QComboBox()
+        self.remote_host.addItem(
+            "僅本機測試（127.0.0.1）",
+            "127.0.0.1",
+        )
+        self.remote_host.addItem(
+            "私人網路／Tailscale（0.0.0.0）",
+            "0.0.0.0",
+        )
         self.remote_trusted = QCheckBox(
             "我確認已使用 Tailscale、Home Assistant Cloud 或其他加密私人網路"
         )
@@ -1887,7 +2038,11 @@ class FlagshipControlCenter(QWidget):
         self.face_identity.setEnabled(False)
         self.camera_status = QLabel("攝影機已關閉")
         self.camera_status.setWordWrap(True)
-        apply_camera = QPushButton("套用攝影機隱私設定")
+        self.remote_status = QLabel("遠端功能預設關閉")
+        self.remote_status.setWordWrap(True)
+        self.device_list = QListWidget()
+
+    def _remote_action_controls(self) -> QWidget:
         controls = QWidget()
         line = QHBoxLayout(controls)
         line.setContentsMargins(0, 0, 0, 0)
@@ -1897,9 +2052,18 @@ class FlagshipControlCenter(QWidget):
         line.addWidget(start)
         line.addWidget(stop)
         line.addWidget(pair)
-        self.remote_status = QLabel("遠端功能預設關閉")
-        self.remote_status.setWordWrap(True)
-        self.device_list = QListWidget()
+        start.clicked.connect(self.start_remote)
+        stop.clicked.connect(self.stop_remote)
+        pair.clicked.connect(self.pair_device)
+        return controls
+
+    def _populate_remote_form(
+        self,
+        form: QFormLayout,
+        port_control: QWidget,
+        controls: QWidget,
+    ) -> None:
+        apply_camera = QPushButton("套用攝影機隱私設定")
         revoke = QPushButton("撤銷選取裝置")
         form.addRow(self.remote_enabled)
         form.addRow("監聽範圍", self.remote_host)
@@ -1923,11 +2087,15 @@ class FlagshipControlCenter(QWidget):
         form.addRow("服務狀態", self.remote_status)
         form.addRow("已配對裝置", self.device_list)
         form.addRow("", revoke)
-        start.clicked.connect(self.start_remote)
-        stop.clicked.connect(self.stop_remote)
-        pair.clicked.connect(self.pair_device)
         revoke.clicked.connect(self.revoke_device)
         apply_camera.clicked.connect(self.apply_camera_settings)
+
+    def _remote_tab(self) -> QWidget:
+        scroll, form = self._scroll_form()
+        self._initialize_remote_fields()
+        port_control = self._remote_port_control()
+        controls = self._remote_action_controls()
+        self._populate_remote_form(form, port_control, controls)
         self.refresh_devices()
         return scroll
 
@@ -2005,10 +2173,12 @@ class FlagshipControlCenter(QWidget):
         self.remote_server = RemoteControlServer(
             config,
             TokenRegistry(self.db),
-            status_provider=self._remote_status_payload,
-            command_handler=self._queue_remote_command,
-            screen_provider=self._screen_bytes,
-            allowed_folders=folders,
+            RemoteServerServices(
+                status_provider=self._remote_status_payload,
+                command_handler=self._queue_remote_command,
+                screen_provider=self._screen_bytes,
+                allowed_folders=tuple(folders),
+            ),
         )
         try:
             self.remote_server.start()
@@ -2097,7 +2267,7 @@ class FlagshipControlCenter(QWidget):
                 {"id": int(row["id"]), "title": str(row["title"])}
                 for row in self.db.list_todos()[:20]
             ],
-            "timestamp": datetime.now().isoformat(timespec="seconds"),
+            "timestamp": local_wall_time().isoformat(timespec="seconds"),
         }
 
     def _queue_remote_command(self, text: str, device_name: str) -> dict[str, Any]:
@@ -2143,14 +2313,7 @@ class FlagshipControlCenter(QWidget):
             raise PermissionError("尚無可用的程式視窗畫面")
         return self._screen_cache
 
-    def _security_tab(self) -> QWidget:
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QFrame.NoFrame)
-        content = QWidget()
-        form = QFormLayout(content)
-        scroll.setWidget(content)
-        stored = self.db.setting("flagship_permissions", {})
+    def _security_target_section(self, form: QFormLayout) -> None:
         target_heading = QLabel("<b>允許操作的資料夾與程式</b>")
         target_heading.setStyleSheet("color:#2f6987;font-size:15px;")
         self.target_list = QListWidget()
@@ -2174,6 +2337,12 @@ class FlagshipControlCenter(QWidget):
         add_web.clicked.connect(self.add_allowed_web)
         remove_target.clicked.connect(self.remove_allowed_target)
         self.refresh_allowed_targets()
+
+    def _security_permission_section(
+        self,
+        form: QFormLayout,
+        stored: dict[str, Any],
+    ) -> None:
         permission_heading = QLabel("<b>能力權限</b>")
         permission_heading.setStyleSheet("color:#2f6987;font-size:15px;")
         form.addRow(permission_heading)
@@ -2195,6 +2364,8 @@ class FlagshipControlCenter(QWidget):
                 combo.setToolTip("即使選擇允許，高風險政策仍會要求確認。")
             self._permission_controls[capability] = combo
             form.addRow(f"{label}（{RISK_NAMES[risk]}）", combo)
+
+    def _security_footer(self, form: QFormLayout) -> None:
         save = QPushButton("保存安全權限")
         save.clicked.connect(self.save_security)
         note = QLabel(
@@ -2205,6 +2376,13 @@ class FlagshipControlCenter(QWidget):
         note.setStyleSheet("color:#8a5a13;")
         form.addRow(note)
         form.addRow("", save)
+
+    def _security_tab(self) -> QWidget:
+        scroll, form = self._scroll_form()
+        stored = self.db.setting("flagship_permissions", {})
+        self._security_target_section(form)
+        self._security_permission_section(form, stored)
+        self._security_footer(form)
         return scroll
 
     def refresh_allowed_targets(self) -> None:
@@ -2280,8 +2458,6 @@ class FlagshipControlCenter(QWidget):
         )
         if not ok or not url:
             return
-        from urllib.parse import urlparse
-
         parsed = urlparse(url)
         if parsed.scheme != "https" or not parsed.netloc:
             QMessageBox.information(
@@ -2391,7 +2567,7 @@ class FlagshipControlCenter(QWidget):
         self.stop_remote(silent=True)
         self.db.audit_event(
             "emergency_stop",
-            {"at": datetime.now().isoformat(timespec="seconds")},
+            {"at": local_wall_time().isoformat(timespec="seconds")},
         )
         self.emergency_stop_requested.emit()
         self.speak_requested.emit("已停手。所有工具與遠端連線均已中止。", "worried")

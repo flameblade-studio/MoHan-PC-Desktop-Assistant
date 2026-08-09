@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime
-import hashlib
-import math
-import re
-import threading
-from typing import Iterable, Mapping
+lazy import hashlib
+lazy import math
+lazy import re
+lazy import threading
+lazy from collections.abc import Iterable, Mapping
+lazy from dataclasses import dataclass
+lazy from datetime import datetime
 
+lazy from time_utils import local_wall_time
 
 _WORD_PATTERN = re.compile(r"[\w]+", re.UNICODE)
 
@@ -109,7 +110,7 @@ class MemoryVectorIndex:
             return []
         self.refresh(rows)
         query_vector = hashed_text_vector(query, self.dimensions)
-        reference = now or datetime.now()
+        reference = now or local_wall_time()
         ranked: list[RankedMemory] = []
         with self._lock:
             for row in rows:

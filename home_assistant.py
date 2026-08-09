@@ -1,34 +1,33 @@
 from __future__ import annotations
 
-import json
-import ssl
-import urllib.error
-import urllib.parse
-import urllib.request
-from dataclasses import dataclass
-from typing import Any
+lazy import json
+lazy import ssl
+lazy from dataclasses import dataclass
+lazy from typing import Any
+lazy from urllib.error import HTTPError, URLError
+lazy from urllib.parse import urlparse
+lazy from urllib.request import Request, urlopen
 
-from flagship_core import ActionRequest, ActionResult
+lazy from flagship_core import ActionRequest, ActionResult
 
-
-HIGH_RISK_DOMAINS = {"lock", "alarm_control_panel"}
-HEAT_DOMAINS = {"climate", "water_heater"}
-ALLOWED_SERVICES = {
-    "light": {"turn_on", "turn_off", "toggle"},
-    "switch": {"turn_on", "turn_off", "toggle"},
-    "fan": {"turn_on", "turn_off", "toggle", "set_percentage"},
-    "cover": {"open_cover", "close_cover", "stop_cover"},
-    "scene": {"turn_on"},
-    "script": {"turn_on"},
-    "climate": {"turn_on", "turn_off", "set_temperature", "set_hvac_mode"},
-    "media_player": {
+HIGH_RISK_DOMAINS = frozenset({"lock", "alarm_control_panel"})
+HEAT_DOMAINS = frozenset({"climate", "water_heater"})
+ALLOWED_SERVICES = frozendict({
+    "light": frozenset({"turn_on", "turn_off", "toggle"}),
+    "switch": frozenset({"turn_on", "turn_off", "toggle"}),
+    "fan": frozenset({"turn_on", "turn_off", "toggle", "set_percentage"}),
+    "cover": frozenset({"open_cover", "close_cover", "stop_cover"}),
+    "scene": frozenset({"turn_on"}),
+    "script": frozenset({"turn_on"}),
+    "climate": frozenset({"turn_on", "turn_off", "set_temperature", "set_hvac_mode"}),
+    "media_player": frozenset({
         "turn_on",
         "turn_off",
         "media_play",
         "media_pause",
         "volume_set",
-    },
-}
+    }),
+})
 
 
 @dataclass(slots=True)
@@ -45,7 +44,7 @@ class HomeAssistantError(RuntimeError):
 
 class HomeAssistantClient:
     def __init__(self, config: HomeAssistantConfig):
-        parsed = urllib.parse.urlparse(config.base_url.rstrip("/"))
+        parsed = urlparse(config.base_url.rstrip("/"))
         if parsed.scheme not in {"http", "https"} or not parsed.netloc:
             raise ValueError("Home Assistant 位址必須是完整 HTTP(S) 網址")
         if parsed.scheme == "http" and parsed.hostname not in {
@@ -82,7 +81,7 @@ class HomeAssistantClient:
             if payload is not None
             else None
         )
-        request = urllib.request.Request(
+        request = Request(
             f"{self.base_url}{path}",
             data=data,
             method=method,
@@ -95,19 +94,19 @@ class HomeAssistantClient:
         if not self.config.verify_tls:
             context = ssl._create_unverified_context()
         try:
-            with urllib.request.urlopen(
+            with urlopen(
                 request,
                 timeout=self.config.timeout_seconds,
                 context=context,
             ) as response:
                 raw = response.read()
                 return json.loads(raw.decode("utf-8")) if raw else None
-        except urllib.error.HTTPError as exc:
+        except HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")[:500]
             raise HomeAssistantError(
                 f"Home Assistant HTTP {exc.code}: {detail}"
             ) from exc
-        except urllib.error.URLError as exc:
+        except URLError as exc:
             raise HomeAssistantError(f"無法連線 Home Assistant：{exc.reason}") from exc
 
     def health(self) -> bool:
@@ -167,7 +166,7 @@ class HomeAssistantClient:
         service = str(request.arguments.get("service", ""))
         data = request.arguments.get("data", {})
         if not isinstance(data, dict):
-            raise ValueError("Home Assistant 參數必須是物件")
+            raise TypeError("Home Assistant 參數必須是物件")
         response = self.call_service(domain, service, data)
         return ActionResult(
             request.request_id,
@@ -193,7 +192,7 @@ class HomeAssistantClient:
 def classify_home_capability(domain: str, service: str) -> str:
     if domain in HIGH_RISK_DOMAINS:
         return "home_lock" if domain == "lock" else "home_alarm"
-    if domain in HEAT_DOMAINS and service not in {"turn_off"}:
+    if domain in HEAT_DOMAINS and service != "turn_off":
         return "home_heat"
     return "home_control"
 

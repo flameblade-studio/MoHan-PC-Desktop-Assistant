@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Mapping, Protocol
+lazy from collections.abc import Mapping
+lazy from dataclasses import dataclass, field
+lazy from typing import Protocol
 
-from contracts import (
+lazy from contracts import (
     AzureSpeechEnginePort,
     CloudSpeechEnginePort,
     LocalSpeechEnginePort,
 )
-
 
 SYSTEM_LOCAL_PROVIDER = "system-local"
 # Compatibility name retained for third-party imports. Its value is the new

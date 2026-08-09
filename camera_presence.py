@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import time
+lazy import time
 
-from PySide6.QtCore import QObject, Signal
+lazy from PySide6.QtCore import QObject, Signal
 
 try:
     from PySide6.QtMultimedia import (
@@ -74,7 +74,7 @@ class CameraPresenceController(QObject):
             self.presence_changed.emit(False)
         self.status_changed.emit("攝影機已關閉")
 
-    def _frame(self, frame: "QVideoFrame") -> None:
+    def _frame(self, frame: QVideoFrame) -> None:
         now = time.monotonic()
         if now - self._last_sample < 0.45:
             return

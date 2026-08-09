@@ -1,21 +1,20 @@
-import sys
-from pathlib import Path
+lazy import sys
+lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from realtime_voice import RealtimeVoiceClient
+lazy from realtime_voice import (
+    RealtimeSessionConfig,
+    RealtimeVoiceClient,
+)
 
 
 def run() -> None:
     event = RealtimeVoiceClient._session_update_event(
-        model="gpt-realtime-2.1-mini",
-        voice="coral",
-        instructions="請使用台灣繁體中文",
-        transcription_model="gpt-4o-mini-transcribe",
-        transcription_language="zh",
-        transcription_prompt="常用詞：墨寒、主上、炎劍文化工作室。",
-        noise_reduction="near_field",
-        turn_detection="server_vad",
+        RealtimeSessionConfig(
+            transcription_prompt="常用詞：墨寒、主上、炎劍文化工作室。",
+        ),
+        "請使用台灣繁體中文",
     )
     session = event["session"]
     audio_input = session["audio"]["input"]
@@ -36,14 +35,14 @@ def run() -> None:
     }
 
     semantic = RealtimeVoiceClient._session_update_event(
-        model="gpt-realtime-2.1",
-        voice="coral",
-        instructions="test",
-        transcription_model="gpt-4o-transcribe",
-        transcription_language="",
-        transcription_prompt="",
-        noise_reduction="off",
-        turn_detection="semantic_vad",
+        RealtimeSessionConfig(
+            model="gpt-realtime-2.1",
+            transcription_model="gpt-4o-transcribe",
+            transcription_language="",
+            noise_reduction="off",
+            turn_detection="semantic_vad",
+        ),
+        "test",
     )
     semantic_input = semantic["session"]["audio"]["input"]
     assert "noise_reduction" not in semantic_input
@@ -56,15 +55,11 @@ def run() -> None:
     }
 
     legacy = RealtimeVoiceClient._session_update_event(
-        model="gpt-realtime-2.1-mini",
-        voice="coral",
-        instructions="test",
-        transcription_model="gpt-4o-mini-transcribe",
-        transcription_language="zh",
-        transcription_prompt="常用詞：墨寒、主上。",
-        noise_reduction="near_field",
-        turn_detection="server_vad",
-        external_transcription=False,
+        RealtimeSessionConfig(
+            transcription_prompt="常用詞：墨寒、主上。",
+            external_transcription=False,
+        ),
+        "test",
     )
     assert legacy["session"]["include"] == [
         "item.input_audio_transcription.logprobs"

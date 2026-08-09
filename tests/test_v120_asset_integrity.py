@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import sys
-from pathlib import Path
+lazy from pathlib import Path
 
-from PySide6.QtGui import QImage
-
+lazy from PySide6.QtGui import QImage
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets" / "expressions"

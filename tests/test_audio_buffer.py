@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-from pathlib import Path
-import queue
-import sys
-
+lazy import queue
+lazy import sys
+lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from audio_buffer import BoundedAudioQueue, PcmPacketizer  # noqa: E402
-from realtime_voice import RealtimeVoiceClient  # noqa: E402
+lazy from audio_buffer import BoundedAudioQueue, PcmPacketizer
+lazy from realtime_voice import RealtimeVoiceClient
 
 
 class _Socket:

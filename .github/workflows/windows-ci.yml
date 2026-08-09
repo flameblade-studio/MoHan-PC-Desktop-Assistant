@@ -1,5 +1,9 @@
 name: Windows CI
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  PYTHONUTF8: "1"
+
 on:
   push:
     branches: ["main"]
@@ -26,11 +30,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.14"
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
           cache: pip
 
       - name: Install dependencies
-        run: python -m pip install -r requirements.txt
+        run: python tools/install_python315_dependencies.py
+
+      - name: Verify PYTHON_JIT forwarding and compare MoHan hot paths
+        shell: pwsh
+        run: |
+          $env:PYTHON_JIT = "0"
+          python -c "import sys; assert sys._jit.is_available() and not sys._jit.is_enabled()"
+          $env:PYTHON_JIT = "1"
+          python -c "import sys; assert sys._jit.is_available() and sys._jit.is_enabled()"
+          Remove-Item Env:PYTHON_JIT -ErrorAction SilentlyContinue
+          python tools/benchmark_python315_hotpaths.py
 
       - name: Compile source
         run: python -m compileall -q .
@@ -41,29 +56,65 @@ jobs:
       - name: Run full regression suite
         run: python tests/run_all.py
 
+      - name: Capture and gate Python 3.15 Tachyon evidence
+        run: >-
+          python tools/profile_mohan_tachyon.py
+          --target all
+          --output-dir tachyon-evidence
+          --min-samples 100
+          --max-sample-read-error-percent 15
+          --max-missed-samples-percent 10
+
+      - name: Upload sanitized Tachyon evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: windows-tachyon-evidence
+          path: tachyon-evidence/**
+          if-no-files-found: error
+          retention-days: 14
+
   installer:
     name: installer
     needs: test
     runs-on: windows-latest
-    timeout-minutes: 45
+    timeout-minutes: 120
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.14"
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
           cache: pip
-      - name: Install runtime dependencies
-        run: python -m pip install -r requirements.txt
-      - name: Install Windows installer toolchains
+      - name: Check out pinned CPython 3.15.0rc1 source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: python/cpython
+          ref: 37e98da7c19a9e5892ee756d6dee08225422cd49
+          path: _python315
+          persist-credentials: false
+      - name: Build and verify JIT-default Python 3.15 runtime
         shell: pwsh
         run: |
-          choco install innosetup --version=6.7.1 --allow-downgrade --no-progress -y
-          choco install wixtoolset --version=3.14.1.20250415 --allow-downgrade --no-progress -y
+          python tools/build_python315_jit_runtime.py `
+            --source "$PWD\_python315" `
+            --prefix "$env:RUNNER_TEMP\mohan-python315-jit"
+          "MOHAN_JIT_PYTHON=$PWD\_python315\PCbuild\amd64\python.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Install runtime dependencies into JIT-default Python
+        shell: pwsh
+        run: '& $env:MOHAN_JIT_PYTHON tools/install_python315_dependencies.py'
+      - name: Install Windows installer toolchains
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: >-
+          .\tools\install_windows_packaging_tools.ps1
+          -InnoVersion "7.0.2"
+          -WixVersion "7.0.0"
       - name: Build packaged application
         shell: pwsh
-        run: .\build.ps1 -Version "2.0.15-ci" -Python (Get-Command python).Source
+        run: .\build.ps1 -Version "2.0.15-ci" -Python $env:MOHAN_JIT_PYTHON
       - name: Build EXE and MSI installers
         shell: pwsh
         run: |

@@ -1,28 +1,93 @@
 from __future__ import annotations
 
-import base64
-from collections import deque
-from difflib import SequenceMatcher
-import hashlib
-import io
-import json
-import queue
-import re
-import sys
-import threading
-import time
-import uuid
-import wave
+lazy import base64
+lazy import hashlib
+lazy import io
+lazy import json
+lazy import queue
+lazy import re
+lazy import sys
+lazy import threading
+lazy import time
+lazy import uuid
+lazy import wave
+lazy from collections import deque
+lazy from contextlib import suppress
+lazy from dataclasses import dataclass, replace
+lazy from difflib import SequenceMatcher
+lazy from typing import Any
 
-from PySide6.QtCore import QObject, Signal
+lazy import sounddevice as sd
+lazy import websocket
+lazy from PySide6.QtCore import QObject, Signal
 
-from audio_buffer import BoundedAudioQueue, PcmPacketizer
-from lip_sync import (
+lazy from audio_buffer import BoundedAudioQueue, PcmPacketizer
+lazy from lip_sync import (
     VISEME_CUES_PER_SECOND,
     infer_vowel_pcm16,
 )
-from pcm_audio import rate_convert_pcm16, scale_pcm16
-from speech import transcribe_wav_bytes
+lazy from pcm_audio import rate_convert_pcm16, scale_pcm16
+lazy from speech import transcribe_wav_bytes
+
+
+@dataclass(frozen=True, slots=True)
+class RealtimeSessionConfig:
+    model: str = "gpt-realtime-2.1-mini"
+    voice: str = "coral"
+    transcription_model: str = "gpt-4o-mini-transcribe"
+    transcription_language: str = "zh"
+    transcription_prompt: str = ""
+    noise_reduction: str = "near_field"
+    turn_detection: str = "server_vad"
+    external_transcription: bool = True
+
+
+@dataclass(frozen=True, slots=True)
+class RealtimeVoiceRequest:
+    api_key: str
+    instructions: str
+    memory_context: str
+    session: RealtimeSessionConfig
+    recent_context: str = ""
+    echo_guard: bool = True
+
+
+AUDIO_DELTA_EVENTS = frozenset(
+    {
+        "response.output_audio.delta",
+        "response.audio.delta",
+    }
+)
+AUDIO_DONE_EVENTS = frozenset(
+    {
+        "response.output_audio.done",
+        "response.audio.done",
+        "response.done",
+        "response.cancelled",
+        "response.failed",
+    }
+)
+AUDIO_CANCELLED_EVENTS = frozenset(
+    {"response.cancelled", "response.failed"}
+)
+ASSISTANT_TRANSCRIPT_DELTA_EVENTS = frozenset(
+    {
+        "response.output_audio_transcript.delta",
+        "response.audio_transcript.delta",
+    }
+)
+ASSISTANT_TRANSCRIPT_DONE_EVENTS = frozenset(
+    {
+        "response.output_audio_transcript.done",
+        "response.audio_transcript.done",
+    }
+)
+USER_TRANSCRIPT_COMPLETED_EVENT = (
+    "conversation.item.input_audio_transcription.completed"
+)
+USER_TRANSCRIPT_FAILED_EVENT = (
+    "conversation.item.input_audio_transcription.failed"
+)
 
 
 class RealtimeVoiceClient(QObject):
@@ -99,50 +164,58 @@ class RealtimeVoiceClient(QObject):
     @staticmethod
     def dependencies_available() -> bool:
         try:
-            import sounddevice  # noqa: F401
-            import websocket  # noqa: F401
-        except ImportError:
+            _ = sd.RawInputStream
+            _ = sd.RawOutputStream
+            _ = websocket.WebSocketApp
+        except (AttributeError, ImportError):
             return False
         return True
 
-    def start(
+    @staticmethod
+    def _normalized_request(
+        request: RealtimeVoiceRequest,
+    ) -> RealtimeVoiceRequest:
+        session = request.session
+        normalized_session = replace(
+            session,
+            transcription_model=(
+                session.transcription_model.strip()
+                or "gpt-4o-mini-transcribe"
+            ),
+            transcription_language=session.transcription_language.strip(),
+            transcription_prompt=(
+                RealtimeVoiceClient
+                ._sanitize_realtime_transcription_prompt(
+                    session.transcription_prompt
+                )
+            ),
+            external_transcription=bool(
+                session.external_transcription
+            ),
+        )
+        return replace(
+            request,
+            api_key=request.api_key.strip(),
+            session=normalized_session,
+            echo_guard=bool(request.echo_guard),
+        )
+
+    def _reset_session_state(
         self,
-        api_key: str,
-        voice: str,
-        instructions: str,
-        memory_context: str,
-        model: str = "gpt-realtime-2.1-mini",
-        echo_guard: bool = True,
-        transcription_model: str = "gpt-4o-mini-transcribe",
-        transcription_language: str = "zh",
-        transcription_prompt: str = "",
-        noise_reduction: str = "near_field",
-        turn_detection: str = "server_vad",
-        recent_context: str = "",
-        hybrid_transcription: bool = True,
+        request: RealtimeVoiceRequest,
     ) -> None:
-        if self.running:
-            return
-        if not api_key.strip():
-            self.failed.emit("請先儲存 OpenAI API 金鑰")
-            return
-        if not self.dependencies_available():
-            self.failed.emit("Realtime 語音元件尚未安裝")
-            return
+        session = request.session
         with self._failure_lock:
             self._failure_emitted = False
         self._playback_overflowed = False
         self._playback_packetizer.reset()
-        self._active_model = model
-        self.echo_guard = echo_guard
-        self.hybrid_transcription = bool(hybrid_transcription)
-        self._hybrid_api_key = api_key.strip()
-        self._hybrid_model = (
-            transcription_model.strip()
-            or "gpt-4o-mini-transcribe"
-        )
-        self._hybrid_language = transcription_language.strip()
-        self._hybrid_prompt = transcription_prompt.strip()
+        self._active_model = session.model
+        self.echo_guard = request.echo_guard
+        self.hybrid_transcription = session.external_transcription
+        self._hybrid_api_key = request.api_key
+        self._hybrid_model = session.transcription_model
+        self._hybrid_language = session.transcription_language
+        self._hybrid_prompt = session.transcription_prompt
         self._session_generation += 1
         self._assistant_audio_active.clear()
         self._hybrid_transcription_active.clear()
@@ -154,34 +227,33 @@ class RealtimeVoiceClient(QObject):
         self._input_resume_at = 0.0
         self._final_transcript_item_ids.clear()
         self._final_transcript_item_order.clear()
-        self._transcription_prompt_source = transcription_prompt.strip()
-        self._transcription_prompt_sent = (
-            self._sanitize_realtime_transcription_prompt(
-                transcription_prompt
-            )
-        )
         with self._input_timeline_lock:
             self._input_audio_offset_ms = 0.0
             self._input_audio_timeline.clear()
             self._speech_start_ms.clear()
+
+    def start(self, request: RealtimeVoiceRequest) -> None:
+        if self.running:
+            return
+        if not request.api_key.strip():
+            self.failed.emit("請先儲存 OpenAI API 金鑰")
+            return
+        if not self.dependencies_available():
+            self.failed.emit("Realtime 語音元件尚未安裝")
+            return
+        self._transcription_prompt_source = (
+            request.session.transcription_prompt.strip()
+        )
+        normalized_request = self._normalized_request(request)
+        self._transcription_prompt_sent = (
+            normalized_request.session.transcription_prompt
+        )
+        self._reset_session_state(normalized_request)
         self.running = True
         self.status_changed.emit("正在連線…")
         threading.Thread(
             target=self._connect,
-            args=(
-                api_key,
-                voice,
-                instructions,
-                memory_context,
-                recent_context,
-                model,
-                transcription_model,
-                transcription_language,
-                self._transcription_prompt_sent,
-                noise_reduction,
-                turn_detection,
-                self.hybrid_transcription,
-            ),
+            args=(normalized_request,),
             daemon=True,
         ).start()
 
@@ -194,54 +266,33 @@ class RealtimeVoiceClient(QObject):
         ws = self.ws
         self.ws = None
         if ws:
-            try:
+            # A closing WebSocket may reject a second close during shutdown.
+            with suppress(Exception):
                 ws.close()
-            except Exception:
-                pass
         self._close_audio()
         self.status_changed.emit("未連線")
 
-    def _connect(
-        self,
-        api_key: str,
-        voice: str,
-        instructions: str,
-        memory_context: str,
-        recent_context: str,
-        model: str,
-        transcription_model: str,
-        transcription_language: str,
-        transcription_prompt: str,
-        noise_reduction: str,
-        turn_detection: str,
-        hybrid_transcription: bool,
-    ) -> None:
-        import websocket
-
+    def _connect(self, request: RealtimeVoiceRequest) -> None:
         safety_id = hashlib.sha256(
-            f"mohan-{uuid.getnode()}".encode("utf-8")
+            f"mohan-{uuid.getnode()}".encode()
         ).hexdigest()
-        url = f"wss://api.openai.com/v1/realtime?model={model}"
+        url = (
+            "wss://api.openai.com/v1/realtime?model="
+            + request.session.model
+        )
 
         def on_open(ws):
             self.ws = ws
             full_instructions = self._compose_instructions(
-                instructions,
-                memory_context,
-                recent_context,
+                request.instructions,
+                request.memory_context,
+                request.recent_context,
             )
             ws.send(
                 json.dumps(
                     self._session_update_event(
-                        model=model,
-                        voice=voice,
-                        instructions=full_instructions,
-                        transcription_model=transcription_model,
-                        transcription_language=transcription_language,
-                        transcription_prompt=transcription_prompt,
-                        noise_reduction=noise_reduction,
-                        turn_detection=turn_detection,
-                        external_transcription=hybrid_transcription,
+                        request.session,
+                        full_instructions,
                     ),
                     ensure_ascii=False,
                 )
@@ -249,7 +300,7 @@ class RealtimeVoiceClient(QObject):
             try:
                 self._open_audio()
                 self.status_changed.emit("已連線，妾在聽")
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 -- audio startup reports all failures
                 self._emit_failure(self._audio_error_message(exc))
                 self.stop()
 
@@ -273,7 +324,7 @@ class RealtimeVoiceClient(QObject):
         self.ws = websocket.WebSocketApp(
             url,
             header=[
-                f"Authorization: Bearer {api_key}",
+                f"Authorization: Bearer {request.api_key}",
                 f"OpenAI-Safety-Identifier: {safety_id}",
             ],
             on_open=on_open,
@@ -382,26 +433,21 @@ class RealtimeVoiceClient(QObject):
 
     @staticmethod
     def _session_update_event(
-        *,
-        model: str,
-        voice: str,
+        config: RealtimeSessionConfig,
         instructions: str,
-        transcription_model: str,
-        transcription_language: str,
-        transcription_prompt: str,
-        noise_reduction: str,
-        turn_detection: str,
-        external_transcription: bool = True,
-    ) -> dict:
+    ) -> dict[str, Any]:
         transcription = {
-            "model": transcription_model or "gpt-4o-mini-transcribe",
+            "model": (
+                config.transcription_model
+                or "gpt-4o-mini-transcribe"
+            ),
         }
-        if transcription_language:
-            transcription["language"] = transcription_language
-        if transcription_prompt:
-            transcription["prompt"] = transcription_prompt
+        if config.transcription_language:
+            transcription["language"] = config.transcription_language
+        if config.transcription_prompt:
+            transcription["prompt"] = config.transcription_prompt
 
-        if turn_detection == "semantic_vad":
+        if config.turn_detection == "semantic_vad":
             turn_config = {
                 "type": "semantic_vad",
                 "eagerness": "medium",
@@ -425,19 +471,21 @@ class RealtimeVoiceClient(QObject):
             "format": {"type": "audio/pcm", "rate": 24000},
             "turn_detection": turn_config,
             "transcription": (
-                None if external_transcription else transcription
+                None
+                if config.external_transcription
+                else transcription
             ),
         }
-        if noise_reduction in {"near_field", "far_field"}:
+        if config.noise_reduction in {"near_field", "far_field"}:
             input_audio["noise_reduction"] = {
-                "type": noise_reduction,
+                "type": config.noise_reduction,
             }
 
         event = {
             "type": "session.update",
             "session": {
                 "type": "realtime",
-                "model": model,
+                "model": config.model,
                 "output_modalities": ["audio"],
                 "instructions": instructions,
                 "reasoning": {"effort": "low"},
@@ -448,140 +496,164 @@ class RealtimeVoiceClient(QObject):
                             "type": "audio/pcm",
                             "rate": 24000,
                         },
-                        "voice": voice,
+                        "voice": config.voice,
                     },
                 },
             },
         }
-        if not external_transcription:
+        if not config.external_transcription:
             event["session"]["include"] = [
                 "item.input_audio_transcription.logprobs"
             ]
         return event
 
-    def _handle_server_event(self, event: dict) -> None:
-        kind = event.get("type", "")
-        if kind in {
-            "response.output_audio.delta",
-            "response.audio.delta",
-        }:
-            delta = event.get("delta", "")
-            if delta and not self._playback_overflowed:
-                self._begin_assistant_audio()
-                for chunk in self._playback_packetizer.feed(
-                    base64.b64decode(delta)
-                ):
-                    if not self._queue_playback_chunk(chunk):
-                        break
-        elif kind in {
-            "response.output_audio.done",
-            "response.audio.done",
-            "response.done",
-            "response.cancelled",
-            "response.failed",
-        }:
-            if kind in {"response.cancelled", "response.failed"}:
-                self._playback_packetizer.reset()
-            else:
-                remainder = self._playback_packetizer.flush()
-                if remainder and not self._playback_overflowed:
-                    self._queue_playback_chunk(remainder)
-            self._playback_overflowed = False
-            self._response_pending.clear()
-            self._mark_assistant_audio_done()
-        elif kind in {
-            "response.output_audio_transcript.delta",
-            "response.audio_transcript.delta",
-        }:
-            self._assistant_text += event.get("delta", "")
-        elif kind in {
-            "response.output_audio_transcript.done",
-            "response.audio_transcript.done",
-        }:
-            text = (event.get("transcript") or self._assistant_text).strip()
-            self._assistant_text = ""
-            if text:
-                self.assistant_transcript.emit(text)
-        elif kind == (
-            "conversation.item.input_audio_transcription.completed"
-        ):
-            if self.hybrid_transcription:
-                return
-            text = event.get("transcript", "").strip()
-            item_id = str(event.get("item_id") or "")
-            already_seen = bool(
-                item_id
-                and item_id in self._final_transcript_item_ids
-            )
-            # Only the documented completed event is committed to the chat.
-            # Delta and legacy done events are deliberately ignored so a
-            # provisional recognition can never appear as a user message.
-            accepted = self._emit_completed_user_transcript(
-                text,
-                item_id,
-            )
-            if accepted:
-                self._request_response()
-            elif not already_seen:
-                self._discard_conversation_item(item_id)
-                if not text:
-                    self.status_changed.emit(
-                        "未取得有效轉錄，本輪不會自動回覆"
-                    )
-        elif kind == (
-            "conversation.item.input_audio_transcription.failed"
-        ):
-            if self.hybrid_transcription:
-                return
-            error = event.get("error") or {}
-            detail = str(
-                error.get("message")
-                or error.get("code")
-                or "無法辨識這段語音"
-            )
-            self.status_changed.emit(
-                f"轉錄失敗，本輪不會自動回覆：{detail}"
-            )
-            self._discard_conversation_item(
-                str(event.get("item_id") or "")
-            )
-        elif kind == "input_audio_buffer.speech_started":
-            # Only apply the playback tail when this is a real interruption.
-            # Applying it to ordinary user speech would erase the server
-            # buffer and drop the next 0.9 seconds of the user's sentence.
-            if (
-                self._assistant_audio_active.is_set()
-                or self._playback_busy.is_set()
-                or self._response_pending.is_set()
-            ):
-                self._finish_assistant_audio(force=True)
-            if self.hybrid_transcription:
-                item_id = str(event.get("item_id") or "")
-                start_ms = float(
-                    event.get(
-                        "audio_start_ms",
-                        self._current_input_offset_ms() - 500.0,
-                    )
+    def _handle_audio_delta(self, event: dict[str, Any]) -> None:
+        delta = event.get("delta", "")
+        if not delta or self._playback_overflowed:
+            return
+        self._begin_assistant_audio()
+        chunks = self._playback_packetizer.feed(
+            base64.b64decode(delta)
+        )
+        for chunk in chunks:
+            if not self._queue_playback_chunk(chunk):
+                break
+
+    def _handle_audio_done(self, kind: str) -> None:
+        if kind in AUDIO_CANCELLED_EVENTS:
+            self._playback_packetizer.reset()
+        else:
+            remainder = self._playback_packetizer.flush()
+            if remainder and not self._playback_overflowed:
+                self._queue_playback_chunk(remainder)
+        self._playback_overflowed = False
+        self._response_pending.clear()
+        self._mark_assistant_audio_done()
+
+    def _handle_assistant_transcript_delta(
+        self,
+        event: dict[str, Any],
+    ) -> None:
+        self._assistant_text += str(event.get("delta", ""))
+
+    def _handle_assistant_transcript_done(
+        self,
+        event: dict[str, Any],
+    ) -> None:
+        text = str(
+            event.get("transcript") or self._assistant_text
+        ).strip()
+        self._assistant_text = ""
+        if text:
+            self.assistant_transcript.emit(text)
+
+    def _handle_user_transcript_completed(
+        self,
+        event: dict[str, Any],
+    ) -> None:
+        if self.hybrid_transcription:
+            return
+        text = str(event.get("transcript", "")).strip()
+        item_id = str(event.get("item_id") or "")
+        already_seen = (
+            bool(item_id)
+            and item_id in self._final_transcript_item_ids
+        )
+        # Only the documented completed event is committed to the chat.
+        # Delta and legacy done events stay provisional and never reach chat.
+        if self._emit_completed_user_transcript(text, item_id):
+            self._request_response()
+            return
+        if not already_seen:
+            self._discard_conversation_item(item_id)
+            if not text:
+                self.status_changed.emit(
+                    "未取得有效轉錄，本輪不會自動回覆"
                 )
-                if item_id:
-                    with self._input_timeline_lock:
-                        self._speech_start_ms[item_id] = max(
-                            0.0,
-                            start_ms,
-                        )
-        elif kind == "input_audio_buffer.speech_stopped":
-            if self.hybrid_transcription:
-                self._start_hybrid_transcription(event)
-        elif kind == "error":
+
+    def _handle_user_transcript_failed(
+        self,
+        event: dict[str, Any],
+    ) -> None:
+        if self.hybrid_transcription:
+            return
+        error = event.get("error") or {}
+        detail = str(
+            error.get("message")
+            or error.get("code")
+            or "無法辨識這段語音"
+        )
+        self.status_changed.emit(
+            f"轉錄失敗，本輪不會自動回覆：{detail}"
+        )
+        self._discard_conversation_item(
+            str(event.get("item_id") or "")
+        )
+
+    def _handle_speech_started(
+        self,
+        event: dict[str, Any],
+    ) -> None:
+        # Only apply the playback tail to a real interruption. Doing so for
+        # normal speech would erase the first 0.9 seconds of the next turn.
+        if (
+            self._assistant_audio_active.is_set()
+            or self._playback_busy.is_set()
+            or self._response_pending.is_set()
+        ):
             self._finish_assistant_audio(force=True)
-            error = event.get("error", {})
-            self._emit_failure(
-                error.get("message", "Realtime API 發生錯誤")
+        if not self.hybrid_transcription:
+            return
+        item_id = str(event.get("item_id") or "")
+        start_ms = float(
+            event.get(
+                "audio_start_ms",
+                self._current_input_offset_ms() - 500.0,
             )
+        )
+        if item_id:
+            with self._input_timeline_lock:
+                self._speech_start_ms[item_id] = max(0.0, start_ms)
+
+    def _handle_speech_stopped(
+        self,
+        event: dict[str, Any],
+    ) -> None:
+        if self.hybrid_transcription:
+            self._start_hybrid_transcription(event)
+
+    def _handle_realtime_error(
+        self,
+        event: dict[str, Any],
+    ) -> None:
+        self._finish_assistant_audio(force=True)
+        error = event.get("error") or {}
+        self._emit_failure(
+            str(error.get("message", "Realtime API 發生錯誤"))
+        )
+
+    def _handle_server_event(self, event: dict[str, Any]) -> None:
+        kind = str(event.get("type", ""))
+        if kind in AUDIO_DELTA_EVENTS:
+            self._handle_audio_delta(event)
+        elif kind in AUDIO_DONE_EVENTS:
+            self._handle_audio_done(kind)
+        elif kind in ASSISTANT_TRANSCRIPT_DELTA_EVENTS:
+            self._handle_assistant_transcript_delta(event)
+        elif kind in ASSISTANT_TRANSCRIPT_DONE_EVENTS:
+            self._handle_assistant_transcript_done(event)
+        elif kind == USER_TRANSCRIPT_COMPLETED_EVENT:
+            self._handle_user_transcript_completed(event)
+        elif kind == USER_TRANSCRIPT_FAILED_EVENT:
+            self._handle_user_transcript_failed(event)
+        elif kind == "input_audio_buffer.speech_started":
+            self._handle_speech_started(event)
+        elif kind == "input_audio_buffer.speech_stopped":
+            self._handle_speech_stopped(event)
+        elif kind == "error":
+            self._handle_realtime_error(event)
 
     def _open_audio(self) -> None:
-        import sounddevice as sd
-
         audio_queue: BoundedAudioQueue[bytes | None] = BoundedAudioQueue(
             self.PLAYBACK_QUEUE_CHUNKS
         )
@@ -656,11 +728,10 @@ class RealtimeVoiceClient(QObject):
                     self._output_stream = None
             for stream in (input_stream, output_stream):
                 if stream:
-                    try:
+                    # Preserve the original audio error; cleanup is best effort.
+                    with suppress(Exception):
                         stream.abort()
                         stream.close()
-                    except Exception:
-                        pass
             raise
 
     def _input_sender_loop(
@@ -702,7 +773,7 @@ class RealtimeVoiceClient(QObject):
                         self.status_changed.emit(
                             "麥克風處理一度落後，已捨棄最舊音訊以恢復即時性"
                         )
-            except Exception:
+            except Exception:  # noqa: BLE001 -- connection loss ends sender loop
                 break
 
     def _queue_playback_chunk(self, chunk: bytes) -> bool:
@@ -717,10 +788,9 @@ class RealtimeVoiceClient(QObject):
                 break
         ws = self.ws
         if ws and ws.sock and ws.sock.connected:
-            try:
+            # The peer may close between the connected check and this send.
+            with suppress(Exception):
                 ws.send(json.dumps({"type": "response.cancel"}))
-            except Exception:
-                pass
         self._finish_assistant_audio(force=True)
         self._emit_failure(
             "Realtime 播放緩衝已達 1.5 秒安全上限，已停止本輪語音，"
@@ -771,7 +841,7 @@ class RealtimeVoiceClient(QObject):
                     if gain != 1.0:
                         playback_chunk = scale_pcm16(playback_chunk, gain)
                     output_stream.write(playback_chunk)
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 -- playback reports all failures
                 self._finish_assistant_audio(force=True)
                 self._emit_failure(f"播放語音失敗：{exc}")
                 break
@@ -809,11 +879,10 @@ class RealtimeVoiceClient(QObject):
                         pass
         for stream in (input_stream, output_stream):
             if stream:
-                try:
+                # Streams can already be invalidated by their device callback.
+                with suppress(Exception):
                     stream.abort()
                     stream.close()
-                except Exception:
-                    pass
 
     @staticmethod
     def _preferred_device(sd, kind: str):
@@ -822,14 +891,13 @@ class RealtimeVoiceClient(QObject):
         if not sys.platform.startswith("win"):
             return fallback
         key = f"default_{kind}_device"
-        try:
+        # Device enumeration is advisory; the platform default is a valid fallback.
+        with suppress(Exception):
             for hostapi in sd.query_hostapis():
                 if "WASAPI" in hostapi["name"]:
                     candidate = int(hostapi[key])
                     if candidate >= 0:
                         return candidate
-        except Exception:
-            pass
         return fallback
 
     def _remember_sent_audio(self, audio: bytes) -> None:
@@ -941,7 +1009,7 @@ class RealtimeVoiceClient(QObject):
                 self._hybrid_prompt,
             )
             error = ""
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- transcription returns diagnostics
             text = ""
             error = str(exc)
         self._hybrid_result.emit(
@@ -1032,7 +1100,7 @@ class RealtimeVoiceClient(QObject):
         self._response_pending.set()
         try:
             ws.send(json.dumps({"type": "response.create"}))
-        except Exception:
+        except Exception:  # noqa: BLE001 -- failed request clears pending state
             self._response_pending.clear()
             return False
         self.status_changed.emit("已辨識，墨寒正在回覆")
@@ -1054,7 +1122,7 @@ class RealtimeVoiceClient(QObject):
                     }
                 )
             )
-        except Exception:
+        except Exception:  # noqa: BLE001 -- deletion is best-effort and observable
             return False
         return True
 
@@ -1065,14 +1133,11 @@ class RealtimeVoiceClient(QObject):
         ws = self.ws
         if not ws or not ws.sock or not ws.sock.connected:
             return
-        try:
+        # A normal connection-close race will be reported by the lifecycle handler.
+        with suppress(Exception):
             ws.send(
                 json.dumps({"type": "input_audio_buffer.clear"})
             )
-        except Exception:
-            # A closing connection can race the guard cleanup.  The normal
-            # WebSocket lifecycle will report a material connection failure.
-            pass
 
     def _begin_assistant_audio(self) -> None:
         started = False

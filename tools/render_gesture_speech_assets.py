@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from pathlib import Path
+lazy from pathlib import Path
 
-from PIL import Image, ImageDraw
-
+lazy from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMP = ROOT / "tmp" / "expression-repair"

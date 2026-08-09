@@ -1,23 +1,22 @@
 from __future__ import annotations
 
-import sys
-from collections import deque
-from pathlib import Path
+lazy import sys
+lazy from collections import deque
+lazy from operator import itemgetter
+lazy from pathlib import Path
 
-from PIL import Image
+lazy from PIL import Image
 
 
 def boxes(path: Path) -> list[tuple[int, int, int, int]]:
     image = Image.open(path).convert("RGB")
     red = {
-        (x, y)
-        for y in range(image.height)
-        for x in range(image.width)
-        if (
+        *((x, y) for x in range(image.width) if (
             image.getpixel((x, y))[0] > 220
             and image.getpixel((x, y))[1] < 90
             and image.getpixel((x, y))[2] < 90
-        )
+        ))
+        for y in range(image.height)
     }
     result = []
     while red:
@@ -41,7 +40,7 @@ def boxes(path: Path) -> list[tuple[int, int, int, int]]:
         xs = [point[0] for point in component]
         ys = [point[1] for point in component]
         result.append((min(xs), min(ys), max(xs) + 1, max(ys) + 1))
-    return sorted(result, key=lambda box: (box[1], box[0]))
+    return sorted(result, key=itemgetter(1, 0))
 
 
 if __name__ == "__main__":

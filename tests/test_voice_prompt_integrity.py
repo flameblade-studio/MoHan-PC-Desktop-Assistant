@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-import inspect
-import io
-import json
-import sys
-import wave
-from pathlib import Path
-from unittest.mock import patch
+lazy import inspect
+lazy import io
+lazy import json
+lazy import sys
+lazy import wave
+lazy from pathlib import Path
+lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app import VOICE_GENERATION_PROMPT
-from speech import OpenAITTS
+lazy from app import VOICE_GENERATION_PROMPT
+lazy from speech import OpenAITTS
 
 
 def silent_wav() -> bytes:
@@ -29,11 +29,11 @@ def captured_tts_payload(instructions: str) -> dict:
     tts = OpenAITTS()
     with (
         patch(
-            "speech.urllib.request.urlopen",
+            "speech.urlopen",
             return_value=response,
         ) as mocked_urlopen,
         patch.object(tts, "_emit_wave_cues"),
-        patch("speech.winsound.PlaySound"),
+        patch("winsound.PlaySound"),
     ):
         tts._run("主上，妾在。", "sk-test", "coral", instructions)
     request = mocked_urlopen.call_args.args[0]

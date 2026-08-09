@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-import os
-from pathlib import Path
-from typing import Mapping
+lazy import os
+lazy import winreg
+lazy from collections.abc import Mapping
+lazy from contextlib import suppress
+lazy from pathlib import Path
 
-from platform_contracts import (
+lazy from platform_contracts import (
     PlatformCapabilities,
     PlatformPaths,
     UnsupportedPlatformFeature,
@@ -55,8 +57,6 @@ class WindowsPlatformServices:
             raise UnsupportedPlatformFeature(
                 "Windows 登入自動啟動只能在 Windows 上設定。"
             )
-        import winreg
-
         key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
         with winreg.OpenKey(
             winreg.HKEY_CURRENT_USER,
@@ -73,10 +73,8 @@ class WindowsPlatformServices:
                     command,
                 )
                 return
-            try:
+            with suppress(FileNotFoundError):
                 winreg.DeleteValue(key, application_id)
-            except FileNotFoundError:
-                pass
 
     def open_path(self, path: Path) -> None:
         if os.name != "nt":

@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<WixLocalization xmlns="http://schemas.microsoft.com/wix/2006/localization" Culture="zh-TW" Codepage="950">
-  <String Id="DowngradeErrorMessage">已安裝較新版本的 MoHan Desktop Assistant。</String>
+<WixLocalization xmlns="http://wixtoolset.org/schemas/v4/wxl"
+                 Culture="zh-TW"
+                 Codepage="950">
+  <String Id="DowngradeErrorMessage"
+          Value="已安裝較新版本的 MoHan Desktop Assistant。" />
 </WixLocalization>

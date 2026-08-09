@@ -1,34 +1,35 @@
 from __future__ import annotations
 
-import base64
-import io
-import json
-import locale
-import math
-import os
-import subprocess
-import tempfile
-import threading
-import time
-import urllib.error
-import urllib.request
-import wave
-from array import array
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Callable
+lazy import base64
+lazy import io
+lazy import json
+lazy import locale
+lazy import math
+lazy import os
+lazy import subprocess
+lazy import tempfile
+lazy import threading
+lazy import time
+lazy import wave
+lazy import winreg
+lazy from array import array
+lazy from collections.abc import Callable
+lazy from dataclasses import dataclass, field
+lazy from pathlib import Path
+lazy from urllib.error import HTTPError, URLError
+lazy from urllib.request import Request, urlopen
 
-from PySide6.QtCore import QObject, QProcess, Signal
+lazy import sounddevice as sd
+lazy from PySide6.QtCore import QObject, QProcess, Signal
 
-from lip_sync import (
+lazy from lip_sync import (
     VISEME_CUES_PER_SECOND,
     infer_vowel_pcm16,
 )
-from pcm_audio import PcmAudioError, scale_pcm16, stereo_to_mono_pcm16
-
+lazy from pcm_audio import PcmAudioError, scale_pcm16, stereo_to_mono_pcm16
 
 if os.name == "nt":
-    import winsound
+    lazy import winsound
 else:
     # Keep the module importable on macOS/Linux. A later platform audio
     # adapter will provide verified playback there; silently pretending that
@@ -38,6 +39,133 @@ else:
 
 
 CREATE_NO_WINDOW = 0x08000000
+DEFAULT_TRANSCRIPTION_MODEL = "gpt-4o-mini-transcribe"
+DEFAULT_TRANSCRIPTION_PROMPT = (
+    "請依使用者選擇的語言精確轉錄，保留原意，不要改寫。"
+    "人名、公司名、產品名與工作術語請優先依提示中的常用詞判斷。"
+)
+
+
+def _empty_api_key() -> str:
+    return ""
+
+
+def _default_recognition_mode() -> str:
+    return "OpenAI 高準確辨識（推薦）"
+
+
+def _default_transcription_model() -> str:
+    return DEFAULT_TRANSCRIPTION_MODEL
+
+
+def _default_transcription_language() -> str:
+    return "zh"
+
+
+def _default_transcription_prompt() -> str:
+    return DEFAULT_TRANSCRIPTION_PROMPT
+
+
+def _windows_fallback_enabled() -> bool:
+    return True
+
+
+@dataclass(frozen=True, slots=True)
+class SpeechListenerProviders:
+    api_key: Callable[[], str] = _empty_api_key
+    recognition_mode: Callable[[], str] = _default_recognition_mode
+    transcription_model: Callable[[], str] = (
+        _default_transcription_model
+    )
+    transcription_language: Callable[[], str] = (
+        _default_transcription_language
+    )
+    transcription_prompt: Callable[[], str] = (
+        _default_transcription_prompt
+    )
+    windows_fallback: Callable[[], bool] = (
+        _windows_fallback_enabled
+    )
+
+
+@dataclass(frozen=True, slots=True)
+class RecordingLimits:
+    max_blocks: int
+    initial_silence_blocks: int
+    end_silence_blocks: int
+    minimum_speech_blocks: int
+    active_threshold_ratio: float
+
+
+@dataclass(slots=True)
+class SpeechEndpointDetector:
+    limits: RecordingLimits
+    speech_started: bool = False
+    speech_blocks: int = 0
+    quiet_blocks: int = 0
+    threshold: float = 120.0
+    baseline: list[float] = field(default_factory=list)
+
+    def _handle_manual_stop(self, stop_requested: bool) -> bool:
+        if not stop_requested:
+            return False
+        if self.speech_started:
+            return True
+        raise RuntimeError(
+            "尚未偵測到說話聲，沒有送出空白錄音。"
+        )
+
+    def _calibrate(self, level: float) -> bool:
+        baseline = self.baseline
+        if self.speech_started or len(baseline) >= 3:
+            return False
+        baseline.append(level)
+        if level > 500:
+            self.speech_started = True
+        elif len(baseline) == 3:
+            self.threshold = max(
+                120.0,
+                (sum(baseline) / 3) * 2.2,
+            )
+        return True
+
+    def _active_threshold(self) -> float:
+        if not self.speech_started:
+            return self.threshold
+        return max(
+            90.0,
+            self.threshold * self.limits.active_threshold_ratio,
+        )
+
+    def advance(
+        self,
+        level: float,
+        captured_blocks: int,
+        stop_requested: bool,
+    ) -> bool:
+        if self._handle_manual_stop(stop_requested):
+            return True
+        if self._calibrate(level):
+            return False
+        if level >= self._active_threshold():
+            self.speech_started = True
+            self.quiet_blocks = 0
+        elif self.speech_started:
+            self.quiet_blocks += 1
+            if (
+                self.speech_blocks
+                >= self.limits.minimum_speech_blocks
+                and self.quiet_blocks
+                >= self.limits.end_silence_blocks
+            ):
+                return True
+        elif captured_blocks >= self.limits.initial_silence_blocks:
+            raise RuntimeError(
+                "沒有偵測到說話聲，請靠近麥克風後再試一次。"
+            )
+        if self.speech_started:
+            self.speech_blocks += 1
+        return False
 
 
 def transcription_http_error_message(
@@ -45,24 +173,26 @@ def transcription_http_error_message(
     detail: str,
 ) -> str:
     lowered = detail.lower()
-    if status == 401:
-        return "OpenAI API 金鑰無效或已被撤銷（HTTP 401）。"
-    if status == 403:
-        return "OpenAI Project 未授權使用語音轉錄（HTTP 403）。"
-    if status == 404:
-        return "OpenAI 找不到轉錄模型，或此 Project 無權使用（HTTP 404）。"
-    if status == 429 and (
-        "insufficient_quota" in lowered
-        or "quota" in lowered
-        or "billing" in lowered
-    ):
-        return "OpenAI API 額度不足或尚未啟用計費（HTTP 429）。"
-    if status == 429:
-        return "OpenAI 語音轉錄請求過於頻繁，已達速率限制（HTTP 429）。"
-    if status >= 500:
-        return f"OpenAI 語音轉錄服務暫時異常（HTTP {status}）。"
-    compact = " ".join(detail.split())[:180]
-    return f"OpenAI 轉錄失敗（HTTP {status}）：{compact}"
+    match status:
+        case 401:
+            message = "OpenAI API 金鑰無效或已被撤銷（HTTP 401）。"
+        case 403:
+            message = "OpenAI Project 未授權使用語音轉錄（HTTP 403）。"
+        case 404:
+            message = "OpenAI 找不到轉錄模型，或此 Project 無權使用（HTTP 404）。"
+        case 429 if any(
+            marker in lowered
+            for marker in ("insufficient_quota", "quota", "billing")
+        ):
+            message = "OpenAI API 額度不足或尚未啟用計費（HTTP 429）。"
+        case 429:
+            message = "OpenAI 語音轉錄請求過於頻繁，已達速率限制（HTTP 429）。"
+        case _ if status >= 500:
+            message = f"OpenAI 語音轉錄服務暫時異常（HTTP {status}）。"
+        case _:
+            compact = " ".join(detail.split())[:180]
+            message = f"OpenAI 轉錄失敗（HTTP {status}）：{compact}"
+    return message
 
 
 def transcribe_wav_bytes(
@@ -98,16 +228,16 @@ def transcribe_wav_bytes(
         [
             f"--{boundary}\r\n".encode(),
             (
-                'Content-Disposition: form-data; name="file"; '
-                'filename="mohan.wav"\r\n'
-            ).encode(),
+                b'Content-Disposition: form-data; name="file"; '
+                b'filename="mohan.wav"\r\n'
+            ),
             b"Content-Type: audio/wav\r\n\r\n",
             audio,
             b"\r\n",
             f"--{boundary}--\r\n".encode(),
         ]
     )
-    request = urllib.request.Request(
+    request = Request(
         "https://api.openai.com/v1/audio/transcriptions",
         data=b"".join(parts),
         headers={
@@ -119,14 +249,14 @@ def transcribe_wav_bytes(
         method="POST",
     )
     try:
-        with urllib.request.urlopen(request, timeout=60) as response:
+        with urlopen(request, timeout=60) as response:
             result = json.load(response)
-    except urllib.error.HTTPError as exc:
+    except HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")
         raise RuntimeError(
             transcription_http_error_message(exc.code, detail)
         ) from exc
-    except urllib.error.URLError as exc:
+    except URLError as exc:
         raise RuntimeError(
             f"無法連線到 OpenAI：{exc.reason}"
         ) from exc
@@ -175,6 +305,52 @@ def apply_wav_volume(
         return audio
 
 
+def _mono_wave_chunk(chunk: bytes, channels: int) -> bytes:
+    if channels == 2:
+        return stereo_to_mono_pcm16(chunk)
+    return chunk
+
+
+def _emit_wave_timeline(
+    source: wave.Wave_read,
+    emit_cue: Callable[[float, str], None],
+    playback_start: threading.Event | None = None,
+    timeline_ready: threading.Event | None = None,
+) -> None:
+    rate = source.getframerate()
+    channels = source.getnchannels()
+    if source.getsampwidth() != 2:
+        return
+    frames_per_chunk = max(1, rate // VISEME_CUES_PER_SECOND)
+    chunk = source.readframes(frames_per_chunk)
+    if not chunk:
+        return
+    chunk = _mono_wave_chunk(chunk, channels)
+    prepared_cue = infer_vowel_pcm16(chunk, rate)
+    if timeline_ready is not None:
+        timeline_ready.set()
+    if playback_start is not None:
+        playback_start.wait(timeout=2.0)
+    started_at = time.perf_counter()
+    chunk_index = 0
+    while chunk:
+        deadline = (
+            started_at
+            + chunk_index * frames_per_chunk / rate
+        )
+        remaining = deadline - time.perf_counter()
+        if remaining > 0:
+            time.sleep(remaining)
+        emit_cue(*prepared_cue)
+        chunk = source.readframes(frames_per_chunk)
+        if chunk:
+            prepared_cue = infer_vowel_pcm16(
+                _mono_wave_chunk(chunk, channels),
+                rate,
+            )
+        chunk_index += 1
+
+
 def emit_wave_viseme_cues(
     audio: bytes,
     emit_cue: Callable[[float, str], None],
@@ -185,36 +361,12 @@ def emit_wave_viseme_cues(
 
     try:
         with wave.open(io.BytesIO(audio), "rb") as source:
-            rate = source.getframerate()
-            channels = source.getnchannels()
-            width = source.getsampwidth()
-            frames_per_chunk = max(1, rate // VISEME_CUES_PER_SECOND)
-            chunk = source.readframes(frames_per_chunk)
-            if width != 2 or not chunk:
-                return
-            if channels == 2:
-                chunk = stereo_to_mono_pcm16(chunk)
-            prepared_cue = infer_vowel_pcm16(chunk, rate)
-            if timeline_ready is not None:
-                timeline_ready.set()
-            if playback_start is not None:
-                playback_start.wait(timeout=2.0)
-            started_at = time.perf_counter()
-            chunk_index = 0
-            while chunk:
-                vowel_level, vowel = prepared_cue
-                deadline = started_at + chunk_index * frames_per_chunk / rate
-                remaining = deadline - time.perf_counter()
-                if remaining > 0:
-                    time.sleep(remaining)
-                emit_cue(vowel_level, vowel)
-                chunk = source.readframes(frames_per_chunk)
-                if not chunk:
-                    break
-                if channels == 2:
-                    chunk = stereo_to_mono_pcm16(chunk)
-                prepared_cue = infer_vowel_pcm16(chunk, rate)
-                chunk_index += 1
+            _emit_wave_timeline(
+                source,
+                emit_cue,
+                playback_start,
+                timeline_ready,
+            )
     except (OSError, EOFError, wave.Error):
         return
     finally:
@@ -319,14 +471,72 @@ def _is_allowed_companion_voice(name: str, gender: str = "") -> bool:
     return _normalized_voice_gender(gender, name) == "female"
 
 
+def _registry_string(
+    attributes,
+    value_name: str,
+    fallback: str = "",
+) -> str:
+    try:
+        return str(winreg.QueryValueEx(attributes, value_name)[0])
+    except OSError:
+        return fallback
+
+
+def _registry_culture(attributes) -> str:
+    language = _registry_string(attributes, "Language")
+    try:
+        locale_id = int(language.split(";", 1)[0], 16)
+    except ValueError:
+        return ""
+    return locale.windows_locale.get(locale_id, "").replace("_", "-")
+
+
+def _registry_voice(
+    root,
+    token: str,
+    prefix: str,
+) -> WindowsVoiceInfo | None:
+    with winreg.OpenKey(root, token + r"\Attributes") as attributes:
+        name = _registry_string(attributes, "Name", token)
+        culture = _registry_culture(attributes)
+        full_name = prefix + name
+        gender = _normalized_voice_gender(
+            _registry_string(attributes, "Gender"),
+            full_name,
+        )
+    if not _is_allowed_companion_voice(full_name, gender):
+        return None
+    return WindowsVoiceInfo(full_name, culture, gender)
+
+
+def _registry_voices(
+    registry_path: str,
+    prefix: str,
+) -> list[WindowsVoiceInfo]:
+    voices: list[WindowsVoiceInfo] = []
+    try:
+        with winreg.OpenKey(
+            winreg.HKEY_LOCAL_MACHINE,
+            registry_path,
+        ) as root:
+            for index in range(winreg.QueryInfoKey(root)[0]):
+                token = winreg.EnumKey(root, index)
+                try:
+                    voice = _registry_voice(root, token, prefix)
+                except OSError:
+                    continue
+                if voice is not None:
+                    voices.append(voice)
+    except OSError:
+        return []
+    return voices
+
+
 def windows_voice_catalog() -> list[WindowsVoiceInfo]:
     """Return installed female OneCore and Desktop SAPI voices."""
 
     if os.name != "nt":
         return []
-    import winreg
-
-    voices: list[WindowsVoiceInfo] = []
     locations = (
         (
             r"SOFTWARE\Microsoft\Speech_OneCore\Voices\Tokens",
@@ -334,51 +544,10 @@ def windows_voice_catalog() -> list[WindowsVoiceInfo]:
         ),
         (r"SOFTWARE\Microsoft\Speech\Voices\Tokens", ""),
     )
-    for registry_path, prefix in locations:
-        try:
-            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, registry_path) as root:
-                token_count = winreg.QueryInfoKey(root)[0]
-                for index in range(token_count):
-                    token = winreg.EnumKey(root, index)
-                    with winreg.OpenKey(root, token + r"\Attributes") as attrs:
-                        try:
-                            name = str(winreg.QueryValueEx(attrs, "Name")[0])
-                        except OSError:
-                            name = token
-                        try:
-                            language = str(
-                                winreg.QueryValueEx(attrs, "Language")[0]
-                            ).split(";", 1)[0]
-                            culture = locale.windows_locale.get(
-                                int(language, 16), ""
-                            ).replace("_", "-")
-                        except (OSError, ValueError):
-                            culture = ""
-                        try:
-                            gender = str(
-                                winreg.QueryValueEx(attrs, "Gender")[0]
-                            )
-                        except OSError:
-                            gender = ""
-                    full_name = prefix + name
-                    normalized_gender = _normalized_voice_gender(
-                        gender,
-                        full_name,
-                    )
-                    if _is_allowed_companion_voice(
-                        full_name,
-                        normalized_gender,
-                    ):
-                        voices.append(
-                            WindowsVoiceInfo(
-                                full_name,
-                                culture,
-                                normalized_gender,
-                            )
-                        )
-        except OSError:
-            continue
-    return voices
+    return [
+        *_registry_voices(registry_path, prefix)
+        for registry_path, prefix in locations
+    ]
 
 
 def windows_voices() -> list[tuple[str, str]]:
@@ -508,6 +677,7 @@ class WindowsTTS(QObject):
                 capture_output=True,
                 creationflags=CREATE_NO_WINDOW,
                 timeout=120,
+                check=False,
             )
             if result.returncode or not audio_path.exists():
                 detail = result.stderr.decode("utf-8", errors="replace")[:240]
@@ -564,6 +734,7 @@ class WindowsTTS(QObject):
                 capture_output=True,
                 creationflags=CREATE_NO_WINDOW,
                 timeout=120,
+                check=False,
             )
             if result.returncode or not audio_path.exists():
                 detail = result.stderr.decode("utf-8", errors="replace")[:3000]
@@ -664,7 +835,7 @@ class OpenAITTS(QObject):
         }
         if instructions.strip():
             payload["instructions"] = instructions.strip()
-        request = urllib.request.Request(
+        request = Request(
             "https://api.openai.com/v1/audio/speech",
             data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
             headers={
@@ -674,7 +845,7 @@ class OpenAITTS(QObject):
             method="POST",
         )
         try:
-            with urllib.request.urlopen(request, timeout=60) as response:
+            with urlopen(request, timeout=60) as response:
                 audio = response.read()
             play_wave_with_visemes(
                 audio,
@@ -684,8 +855,8 @@ class OpenAITTS(QObject):
             )
             self.finished.emit()
         except (
-            urllib.error.URLError,
-            urllib.error.HTTPError,
+            URLError,
+            HTTPError,
             OSError,
             RuntimeError,
             TimeoutError,
@@ -714,49 +885,36 @@ class SpeechListener(QObject):
     diagnostic_changed = Signal(str)
     _fallback_requested = Signal(str, str)
 
-    TRANSCRIPTION_MODEL = "gpt-4o-mini-transcribe"
+    TRANSCRIPTION_MODEL = DEFAULT_TRANSCRIPTION_MODEL
     RECORD_BLOCK_SECONDS = 0.1
     END_SILENCE_SECONDS = 0.85
     MIN_SPEECH_SECONDS = 0.8
     INITIAL_SILENCE_SECONDS = 2.0
     MAX_RECORD_SECONDS = 10.0
     ACTIVE_SPEECH_THRESHOLD_RATIO = 0.68
-    TRANSCRIPTION_PROMPT = (
-        "請依使用者選擇的語言精確轉錄，保留原意，不要改寫。"
-        "人名、公司名、產品名與工作術語請優先依提示中的常用詞判斷。"
-    )
+    TRANSCRIPTION_PROMPT = DEFAULT_TRANSCRIPTION_PROMPT
 
     def __init__(
         self,
         script_path: Path,
-        api_key_provider: Callable[[], str] | None = None,
-        recognition_mode_provider: Callable[[], str] | None = None,
-        transcription_model_provider: Callable[[], str] | None = None,
-        transcription_language_provider: Callable[[], str] | None = None,
-        transcription_prompt_provider: Callable[[], str] | None = None,
-        windows_fallback_provider: Callable[[], bool] | None = None,
+        providers: SpeechListenerProviders | None = None,
         parent: QObject | None = None,
     ):
         super().__init__(parent)
+        resolved = providers or SpeechListenerProviders()
         self.script_path = script_path
-        self.api_key_provider = api_key_provider or (lambda: "")
-        self.recognition_mode_provider = recognition_mode_provider or (
-            lambda: "OpenAI 高準確辨識（推薦）"
-        )
+        self.api_key_provider = resolved.api_key
+        self.recognition_mode_provider = resolved.recognition_mode
         self.transcription_model_provider = (
-            transcription_model_provider
-            or (lambda: self.TRANSCRIPTION_MODEL)
+            resolved.transcription_model
         )
         self.transcription_language_provider = (
-            transcription_language_provider or (lambda: "zh")
+            resolved.transcription_language
         )
         self.transcription_prompt_provider = (
-            transcription_prompt_provider
-            or (lambda: self.TRANSCRIPTION_PROMPT)
+            resolved.transcription_prompt
         )
-        self.windows_fallback_provider = (
-            windows_fallback_provider or (lambda: True)
-        )
+        self.windows_fallback_provider = resolved.windows_fallback
         self.process: QProcess | None = None
         self.output_path: Path | None = None
         self.audio_path: Path | None = None
@@ -882,92 +1040,70 @@ class SpeechListener(QObject):
             return 0.0
         return (sum(sample * sample for sample in samples) / len(samples)) ** 0.5
 
-    def _record_wav(self) -> Path:
+    @staticmethod
+    def _require_recording_dependency() -> None:
         try:
-            import sounddevice as sd
-        except ImportError as exc:
+            _ = sd.RawInputStream
+        except (AttributeError, ImportError) as exc:
             raise RuntimeError("缺少麥克風錄音元件 sounddevice。") from exc
 
-        sample_rate = 16000
-        block_size = int(sample_rate * self.RECORD_BLOCK_SECONDS)
+    def _recording_limits(self) -> RecordingLimits:
+        block_seconds = self.RECORD_BLOCK_SECONDS
+        return RecordingLimits(
+            max_blocks=int(self.MAX_RECORD_SECONDS / block_seconds),
+            initial_silence_blocks=int(
+                self.INITIAL_SILENCE_SECONDS / block_seconds
+            ),
+            end_silence_blocks=math.ceil(
+                self.END_SILENCE_SECONDS / block_seconds
+            ),
+            minimum_speech_blocks=math.ceil(
+                self.MIN_SPEECH_SECONDS / block_seconds
+            ),
+            active_threshold_ratio=(
+                self.ACTIVE_SPEECH_THRESHOLD_RATIO
+            ),
+        )
+
+    def _capture_recording_frames(
+        self,
+        sample_rate: int,
+        block_size: int,
+    ) -> tuple[bytes, ...]:
+        limits = self._recording_limits()
+        detector = SpeechEndpointDetector(limits)
         frames: list[bytes] = []
-        speech_started = False
-        speech_blocks = 0
-        quiet_blocks = 0
-        baseline: list[float] = []
-        threshold = 120.0
+        with sd.RawInputStream(
+            samplerate=sample_rate,
+            blocksize=block_size,
+            channels=1,
+            dtype="int16",
+        ) as stream:
+            for _ in range(limits.max_blocks):
+                data, _overflowed = stream.read(block_size)
+                chunk = bytes(data)
+                frames.append(chunk)
+                if detector.advance(
+                    self._rms(chunk),
+                    len(frames),
+                    self._stop_recording.is_set(),
+                ):
+                    break
+        if not detector.speech_started:
+            raise RuntimeError(
+                "沒有偵測到說話聲，請靠近麥克風後再試一次。"
+            )
+        return tuple(frames)
 
-        try:
-            with sd.RawInputStream(
-                samplerate=sample_rate,
-                blocksize=block_size,
-                channels=1,
-                dtype="int16",
-            ) as stream:
-                max_blocks = int(
-                    self.MAX_RECORD_SECONDS / self.RECORD_BLOCK_SECONDS
-                )
-                initial_silence_blocks = int(
-                    self.INITIAL_SILENCE_SECONDS / self.RECORD_BLOCK_SECONDS
-                )
-                end_silence_blocks = math.ceil(
-                    self.END_SILENCE_SECONDS / self.RECORD_BLOCK_SECONDS
-                )
-                minimum_speech_blocks = math.ceil(
-                    self.MIN_SPEECH_SECONDS / self.RECORD_BLOCK_SECONDS
-                )
-                for _ in range(max_blocks):
-                    data, _overflowed = stream.read(block_size)
-                    chunk = bytes(data)
-                    frames.append(chunk)
-                    level = self._rms(chunk)
-
-                    if self._stop_recording.is_set():
-                        if speech_started:
-                            break
-                        raise RuntimeError(
-                            "尚未偵測到說話聲，沒有送出空白錄音。"
-                        )
-
-                    if not speech_started and len(baseline) < 3:
-                        baseline.append(level)
-                        if level > 500:
-                            speech_started = True
-                        elif len(baseline) == 3:
-                            threshold = max(120.0, (sum(baseline) / 3) * 2.2)
-                        continue
-
-                    active_threshold = (
-                        max(
-                            90.0,
-                            threshold * self.ACTIVE_SPEECH_THRESHOLD_RATIO,
-                        )
-                        if speech_started
-                        else threshold
-                    )
-                    if level >= active_threshold:
-                        speech_started = True
-                        quiet_blocks = 0
-                    elif speech_started:
-                        quiet_blocks += 1
-                        if (
-                            speech_blocks >= minimum_speech_blocks
-                            and quiet_blocks >= end_silence_blocks
-                        ):
-                            break
-                    elif len(frames) >= initial_silence_blocks:
-                        raise RuntimeError("沒有偵測到說話聲，請靠近麥克風後再試一次。")
-                    if speech_started:
-                        speech_blocks += 1
-        except RuntimeError:
-            raise
-        except Exception as exc:
-            raise RuntimeError(f"無法使用 Windows 預設麥克風：{exc}") from exc
-
-        if not speech_started:
-            raise RuntimeError("沒有偵測到說話聲，請靠近麥克風後再試一次。")
-
-        fd, name = tempfile.mkstemp(prefix="mohan-recording-", suffix=".wav")
+    @staticmethod
+    def _write_recording(
+        frames: tuple[bytes, ...],
+        sample_rate: int,
+    ) -> Path:
+        fd, name = tempfile.mkstemp(
+            prefix="mohan-recording-",
+            suffix=".wav",
+        )
         os.close(fd)
         path = Path(name)
         with wave.open(str(path), "wb") as output:
@@ -976,6 +1112,21 @@ class SpeechListener(QObject):
             output.setframerate(sample_rate)
             output.writeframes(b"".join(frames))
         return path
+
+    def _record_wav(self) -> Path:
+        self._require_recording_dependency()
+        sample_rate = 16000
+        block_size = int(sample_rate * self.RECORD_BLOCK_SECONDS)
+        try:
+            frames = self._capture_recording_frames(
+                sample_rate,
+                block_size,
+            )
+        except RuntimeError:
+            raise
+        except Exception as exc:
+            raise RuntimeError(f"無法使用 Windows 預設麥克風：{exc}") from exc
+        return self._write_recording(frames, sample_rate)
 
     def _transcribe(
         self,
@@ -1034,7 +1185,7 @@ class SpeechListener(QObject):
             audio_path.unlink(missing_ok=True)
             self._busy.clear()
             self.listening_changed.emit(False)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- worker restores UI state on failure
             self._recording_active.clear()
             self.recording_changed.emit(False)
             reason = str(exc)

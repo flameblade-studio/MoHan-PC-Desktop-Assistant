@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import ctypes
-import os
-from ctypes import wintypes
-from functools import lru_cache
-from typing import Any
+lazy import ctypes
+lazy import os
+lazy from ctypes import wintypes
+lazy from functools import lru_cache
+lazy from typing import Any
 
-from flagship_core import ActionRequest, ActionResult
+lazy from flagship_core import ActionRequest, ActionResult
 
 
 @lru_cache(maxsize=1)

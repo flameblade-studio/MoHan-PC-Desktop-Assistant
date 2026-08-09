@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from array import array
-from dataclasses import dataclass
-import math
-import sys
+lazy import math
+lazy import sys
+lazy from array import array
+lazy from dataclasses import dataclass
 
 
 class PcmAudioError(ValueError):

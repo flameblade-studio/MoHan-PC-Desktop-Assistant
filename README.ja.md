@@ -8,26 +8,26 @@
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <img alt="Python 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB.svg?logo=python&logoColor=white">
+  <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
 [繁體中文・English](README.md) · [简体中文](README.zh-CN.md) ·
 [クイックスタート](QUICKSTART.md) · [セキュリティ](SECURITY.md)
 
-> Windows 10/11 · Python 3.14 · PySide6 · MIT License
+> Windows 10/11 · Python 3.15 · PySide6 · MIT License
 
 墨寒（MoHan）は、安全性、プライバシー、人格の一貫性を大切にする
 Windows デスクトップアシスタントです。中国・北宋を生きた千年の女性剣魂を
 モチーフに、会話、音声、表情、長期記憶、仕事管理、権限付きツールを一つの
 デスクトップキャラクターとしてまとめています。
 
-公開準備中のプレビュー：v2.2.0 RC2（`v2.2.0-rc.2`）
+公開準備中のプレビュー：v2.3.0 RC1（`v2.3.0-rc.1`）
 
 > **クロスプラットフォーム状況：** 実機、全回帰テスト、インストーラー、
 > 公開パッケージまで検証済みなのは現在も Windows のみです。macOS／Linux は
 > 安全なプラットフォーム境界と、中核インポート・純粋な中核ロジック・Qt
-> offscreen の三 OS CI を整備した段階です。`v2.2.0-rc.N` 系列では、起動と
+> offscreen の三 OS CI を整備した段階です。`v2.3.0-rc.N` 系列では、起動と
 > 四言語表示を確認できる機能限定 DMG／AppImage Preview も提供します。CI を
 > 実機互換性や完全機能の証明とは扱いません。
 > 詳細は[対応状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
@@ -169,7 +169,7 @@ Windows 本機音声は利用できます。
 署名のないオープンソース候補版は Windows SmartScreen の警告が出る場合が
 あります。必ず公式 GitHub Releases と SHA-256 を確認してください。
 
-`v2.2.0-rc.N` 系列は macOS Apple Silicon（arm64）版と Intel（x86_64）版
+`v2.3.0-rc.N` 系列は macOS Apple Silicon（arm64）版と Intel（x86_64）版
 `.dmg`（各 `.app` 同梱）、および Linux x86_64 `.AppImage` も提供します。
 これらは**機能限定 Preview**であり、Windows
 完全版と同等ではありません。起動画面、四言語説明、OS ごとの保存先、安全な
@@ -179,13 +179,14 @@ Windows 本機音声は利用できます。
 
 ### 自動リリースの境界
 
-この系列を公開できるのは、変更しない `v2.2.0-rc.N` タグだけです。Windows
+この系列を公開できるのは、変更しない `v2.3.0-rc.N` タグだけです。Windows
 ZIP／EXE／MSI、macOS Apple Silicon／Intel 両アーキテクチャの DMG、Linux
 AppImage は各 OS のネイティブ CI で完成品
 からの起動検査に合格してから、同じ GitHub プレリリースへ入ります。Pull
 Request は短期テスト用成果物だけを保存し、Release を作成しません。公開物には
-SHA256SUMS、Windows／Preview 別の CycloneDX SBOM、Windows 更新マニフェスト、
-Artifact Attestation、四言語の Release 説明を含めます。
+SHA256SUMS、CycloneDX 1.7 の公式スキーマ／ライセンス／依存関係検証に合格した
+Windows／Preview 別 SBOM、匿名化済み Tachyon 性能証拠と概要、Windows 更新
+マニフェスト、Artifact Attestation、四言語の Release 説明を含めます。
 
 ## 安全性とプライバシー
 
@@ -202,7 +203,7 @@ Microsoft、GitHub、Home Assistant の一部統合は、権限境界と自動�
 
 ## 開発への参加
 
-必要環境は Windows 10/11 と Python 3.14.x です。まず Issue で相談し、小さく
+必要環境は Windows 10/11 と Python 3.15.0rc1 です。まず Issue で相談し、小さく
 目的の明確な Pull Request を送ってください。既存機能、安全確認、女性音声の
 方針、四言語の最小利用経路を壊す変更は受け入れません。テストがすべて通るまで、
 パッケージ化、公開、main への直接反映は行いません。

@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import os
-import sqlite3
-import sys
-from pathlib import Path
+lazy import os
+lazy import sqlite3
+lazy import sys
+lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from db import StudioDB
-from app import VOICE_GENERATION_PROMPT
+lazy from app import VOICE_GENERATION_PROMPT
+lazy from db import StudioDB
 
 
 def database_path() -> Path:

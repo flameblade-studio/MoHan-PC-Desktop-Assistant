@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import argparse
-import os
-import stat
-import subprocess
-import tempfile
-from pathlib import Path
-
+lazy import argparse
+lazy import os
+lazy import stat
+lazy import subprocess
+lazy import tempfile
+lazy from pathlib import Path
 
 EXPECTED = "PREVIEW_PACKAGE_SMOKE_OK"
 
@@ -25,11 +24,13 @@ def _run(
     expected_version: str,
     environment: dict[str, str],
 ) -> None:
+    jit_output = output.with_name("jit-default.txt")
     result = subprocess.run(
         [
             str(executable),
             f"--preview-smoke-output={output}",
             f"--preview-expected-version={expected_version}",
+            f"--jit-status-output={jit_output}",
         ],
         env=environment,
         check=False,
@@ -39,6 +40,11 @@ def _run(
         raise RuntimeError(f"Preview smoke process exited with {result.returncode}")
     if not output.is_file() or output.read_text(encoding="utf-8") != EXPECTED:
         raise RuntimeError("Preview smoke marker was not created correctly")
+    if (
+        not jit_output.is_file()
+        or jit_output.read_text(encoding="utf-8") != "PACKAGED_JIT_DEFAULT_OK"
+    ):
+        raise RuntimeError("Preview package did not enable Python 3.15 JIT by default")
 
 
 def smoke_macos(package: Path, expected_version: str) -> None:

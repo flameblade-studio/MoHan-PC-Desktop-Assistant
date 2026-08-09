@@ -1,19 +1,19 @@
 from __future__ import annotations
 
-import os
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import os
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtCore import QPoint, Qt
-from PySide6.QtTest import QSignalSpy, QTest
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import QPoint, Qt
+lazy from PySide6.QtTest import QSignalSpy, QTest
+lazy from PySide6.QtWidgets import QApplication
 
-from app import ClickableLabel, CompanionWindow
-from db import StudioDB
+lazy from app import ClickableLabel, CompanionWindow
+lazy from db import StudioDB
 
 
 def run() -> None:

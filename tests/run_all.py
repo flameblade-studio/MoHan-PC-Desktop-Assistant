@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import subprocess
-import sys
-from pathlib import Path
-
+lazy import subprocess
+lazy import sys
+lazy from pathlib import Path
 
 TESTS_DIR = Path(__file__).resolve().parent
 

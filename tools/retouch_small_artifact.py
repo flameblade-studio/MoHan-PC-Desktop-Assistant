@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import argparse
-from pathlib import Path
+lazy import argparse
+lazy from pathlib import Path
 
-import numpy as np
-from PIL import Image, ImageFilter
+lazy import numpy as np
+lazy from PIL import Image, ImageFilter
 
 
 def ellipse_mask(

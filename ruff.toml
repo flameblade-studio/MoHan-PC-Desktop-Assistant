@@ -1,0 +1,29 @@
+required-version = "==0.16.0"
+target-version = "py315"
+preview = true
+exclude = [
+    ".venv",
+    ".venv315",
+    "build",
+    "build-temp",
+    "dist",
+    "release-artifacts",
+]
+
+[lint]
+extend-select = [
+    "ARG",
+    "C901",
+    "FURB",
+    "PERF",
+    "PIE",
+    "PLR0911",
+    "PLR0912",
+    "PLR0913",
+    "PLR0914",
+    "PLR0915",
+    "PLR0917",
+    "PLR1702",
+    "RET",
+    "SIM",
+]

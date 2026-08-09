@@ -1,20 +1,20 @@
 from __future__ import annotations
 
-import json
-import sqlite3
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import json
+lazy import sqlite3
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from db import StudioDB
-from language_support import (
+lazy from db import StudioDB
+lazy from language_support import (
     LEGACY_TRANSCRIPTION_PROMPT,
     is_builtin_transcription_prompt,
     localized_transcription_prompt,
 )
-from realtime_voice import RealtimeVoiceClient
+lazy from realtime_voice import RealtimeVoiceClient
 
 
 def _create_existing_profile(

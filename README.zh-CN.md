@@ -8,7 +8,7 @@
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <img alt="Python 3.14" src="https://img.shields.io/badge/Python-3.14-3776AB.svg?logo=python&logoColor=white">
+  <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
@@ -16,8 +16,8 @@
 [路线图](ROADMAP.md) · [参与贡献](CONTRIBUTING.md) ·
 [安全说明](SECURITY.md)
 
-> 准备发布的预览版本：v2.2.0 RC2（`v2.2.0-rc.2`）<br>
-> Windows 10/11 · Python 3.14 · PySide6 · MIT License
+> 准备发布的预览版本：v2.3.0 RC1（`v2.3.0-rc.1`）<br>
+> Windows 10/11 · Python 3.15 · PySide6 · MIT License
 
 墨寒是一款重视安全、隐私与角色连续感的 Windows 桌面虚拟助手。她以来自
 北宋、寄宿于赤焰剑中的千年女剑魂为角色背景，结合透明桌面角色、文字与
@@ -26,7 +26,7 @@
 
 > **跨平台进度：** Windows 仍是唯一完成真机、完整回归、安装与发布验证的
 > 平台。macOS／Linux 目前只建立安全的平台边界，并通过三系统 CI 检查核心
-> 导入、纯核心逻辑与 Qt offscreen。`v2.2.0-rc.N` 发布线还会提供可启动、
+> 导入、纯核心逻辑与 Qt offscreen。`v2.3.0-rc.N` 发布线还会提供可启动、
 > 可切换四语但功能受限的 DMG／AppImage Preview；CI 不能代替真机兼容性或
 > 完整功能验证。详情请见
 > [跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
@@ -143,14 +143,14 @@ Azure Speech 为默认关闭的预览供应器，只列出 Microsoft 官方标�
 1. 前往 [GitHub Releases](../../releases)。
 2. 下载最新的 `Windows-x64.zip` 与对应的 `SHA256.txt`。
 3. 核对 SHA-256，并完整解压 ZIP。
-4. 运行 `MoHan-Desktop-Assistant-2.2.0-rc.2.exe`。
+4. 运行 `MoHan-Desktop-Assistant-2.3.0-rc.1.exe`。
 5. 在首次设置向导选择“简体中文（中国大陆）”。
 6. 请保持 EXE、`_internal` 与 `assets` 在同一程序文件夹内。
 
 未经数字签名的开源预览版本可能触发 Windows SmartScreen。请确认下载来源并
 核对 SHA-256 后再运行。
 
-`v2.2.0-rc.N` 发布线另提供 macOS Apple Silicon（arm64）与 Intel（x86_64）
+`v2.3.0-rc.N` 发布线另提供 macOS Apple Silicon（arm64）与 Intel（x86_64）
 `.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`。它们是
 **功能受限 Preview**，只开放启动画面、四语说明、平台
 数据路径与安全停用边界，并不等同 Windows 完整版。语音、透明桌面角色、完整
@@ -159,12 +159,13 @@ Azure Speech 为默认关闭的预览供应器，只列出 Microsoft 官方标�
 
 ### 自动化发布边界
 
-只有不可变的 `v2.2.0-rc.N` 标签可以发布此系列。Windows ZIP／EXE／MSI、
+只有不可变的 `v2.3.0-rc.N` 标签可以发布此系列。Windows ZIP／EXE／MSI、
 macOS Apple Silicon／Intel 双架构 DMG 与 Linux AppImage 必须先在各自原生
 CI 完成成品启动验证，才会进入
 同一个 GitHub 预发布版。Pull Request 只保留短期测试产物，不会建立 Release。
-正式发布文件同时包含 SHA256SUMS、分别生成的 Windows／Preview CycloneDX
-SBOM、Windows 更新清单、Artifact Attestation 与完整四语 Release 说明。
+正式发布文件同时包含 SHA256SUMS、分别通过 CycloneDX 1.7 官方结构／授权／
+依赖图验证的 Windows／Preview SBOM、去识别化 Tachyon 性能证据与摘要、
+Windows 更新清单、Artifact Attestation 与完整四语 Release 说明。
 
 ## OpenAI API
 
@@ -202,12 +203,12 @@ Google Gmail、Calendar 与 Drive 已完成当前项目的真实连接测试，�
 
 ## 从源代码运行
 
-需求：Windows 10/11、Python 3.14.x。
+需求：Windows 10/11、Python 3.15.0rc1。
 升级、数据保留与回退方式请见
-[Python 3.14 迁移说明](docs/PYTHON-3.14-MIGRATION.md)。
+[Python 3.15 迁移说明](docs/PYTHON-3.15-MIGRATION.md)。
 
 ```powershell
-py -3.14 -m venv .venv
+py -3.15 -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python app.py

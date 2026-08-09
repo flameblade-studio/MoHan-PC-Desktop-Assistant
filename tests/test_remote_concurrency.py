@@ -1,14 +1,19 @@
-import json
-import sys
-import urllib.request
-from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import json
+lazy import sys
+lazy from concurrent.futures import ThreadPoolExecutor
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
+lazy from urllib.request import Request, urlopen
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from db import StudioDB
-from remote_control import RemoteControlServer, RemoteServerConfig, TokenRegistry
+lazy from db import StudioDB
+lazy from remote_control import (
+    RemoteControlServer,
+    RemoteServerConfig,
+    RemoteServerServices,
+    TokenRegistry,
+)
 
 
 def run() -> None:
@@ -24,18 +29,22 @@ def run() -> None:
                 max_requests_per_minute=200,
             ),
             registry,
-            status_provider=lambda: {"healthy": True},
-            command_handler=lambda _text, _device: {"accepted": True},
+            RemoteServerServices(
+                status_provider=lambda: {"healthy": True},
+                command_handler=lambda _text, _device: {
+                    "accepted": True
+                },
+            ),
         )
         server.start()
         port = server._server.server_port
 
         def request_status(_index: int) -> bool:
-            request = urllib.request.Request(
+            request = Request(
                 f"http://127.0.0.1:{port}/api/v1/status",
                 headers={"Authorization": f"Bearer {token}"},
             )
-            with urllib.request.urlopen(request, timeout=5) as response:
+            with urlopen(request, timeout=5) as response:
                 return json.load(response) == {"healthy": True}
 
         try:

@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-import io
-import json
-import sys
-import wave
-from pathlib import Path
-from unittest.mock import patch
+lazy import io
+lazy import json
+lazy import sys
+lazy import wave
+lazy from pathlib import Path
+lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from realtime_voice import RealtimeVoiceClient
-from speech import transcribe_wav_bytes
+lazy from realtime_voice import RealtimeVoiceClient
+lazy from speech import transcribe_wav_bytes
 
 
 class _Socket:
@@ -42,7 +42,7 @@ class _CapturedThread:
 class _Response:
     def __enter__(self):
         return io.BytesIO(
-            '{"text":"主上，這是高精度文字。"}'.encode("utf-8")
+            '{"text":"主上，這是高精度文字。"}'.encode()
         )
 
     def __exit__(self, *_args):
@@ -145,7 +145,7 @@ def run() -> None:
     } in client.ws.sent
 
     with patch(
-        "speech.urllib.request.urlopen",
+        "speech.urlopen",
         return_value=_Response(),
     ) as mocked:
         text = transcribe_wav_bytes(
@@ -159,7 +159,7 @@ def run() -> None:
     request = mocked.call_args.args[0]
     body = request.data
     assert b"gpt-4o-mini-transcribe" in body
-    assert "墨寒、主上".encode("utf-8") in body
+    assert "墨寒、主上".encode() in body
     assert wav_audio in body
 
     print("REALTIME_HYBRID_TRANSCRIPTION_OK")

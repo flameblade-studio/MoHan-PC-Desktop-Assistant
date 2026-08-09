@@ -1,21 +1,20 @@
 from __future__ import annotations
 
-import os
-import random
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
-from unittest.mock import patch
+lazy import os
+lazy import random
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
+lazy from unittest.mock import patch
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtTest import QTest
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtTest import QTest
+lazy from PySide6.QtWidgets import QApplication
 
-from app import CompanionWindow
-from db import StudioDB
-
+lazy from app import CompanionWindow
+lazy from db import StudioDB
 
 COMPLETION_EVENTS = (
     "response.output_audio.done",
@@ -77,7 +76,7 @@ def run() -> None:
                 assert not window.mouth_visual_timer.isActive()
                 assert not window.audio_driven_mouth
                 assert not window.mouth_open
-                assert window.current_viseme == "CLOSED"
+                assert window.viseme_dynamics.current == "CLOSED"
                 assert window.state != "speaking"
 
         window.close()

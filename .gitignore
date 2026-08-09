@@ -12,8 +12,10 @@ env/
 
 build/
 dist/
+build-temp/
 build-info.json
 release/
+release-artifacts/
 deliverables/
 tmp/
 work/

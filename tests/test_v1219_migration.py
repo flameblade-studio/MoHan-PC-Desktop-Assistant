@@ -1,11 +1,11 @@
-import sqlite3
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import sqlite3
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from db import StudioDB
+lazy from db import StudioDB
 
 
 def run() -> None:

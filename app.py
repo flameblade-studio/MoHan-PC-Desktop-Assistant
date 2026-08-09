@@ -1,20 +1,28 @@
 from __future__ import annotations
 
-import ctypes
-import html
-import math
-import os
-import random
-import sqlite3
-import sys
-import time
-import webbrowser
-from collections import deque
-from datetime import datetime
-from ctypes import wintypes
-from pathlib import Path
+lazy import ctypes
+lazy import html
+lazy import math
+lazy import os
+lazy import random
+lazy import sqlite3
+lazy import sys
+lazy import time
+lazy import webbrowser
+lazy from collections import deque
+lazy from collections.abc import Iterable
+lazy from contextlib import suppress
+lazy from ctypes import wintypes
+lazy from dataclasses import dataclass
+lazy from datetime import datetime
+lazy from datetime import time as clock_time
+lazy from pathlib import Path
 
-from PySide6.QtCore import (
+lazy from runtime_bootstrap import ensure_default_jit, jit_is_enabled
+
+ensure_default_jit(__name__, __file__)
+
+lazy from PySide6.QtCore import (
     QEasingCurve,
     QEvent,
     QParallelAnimationGroup,
@@ -23,17 +31,18 @@ from PySide6.QtCore import (
     QRect,
     Qt,
     QThreadPool,
-    QTimer,
     QTime,
+    QTimer,
     QVariantAnimation,
     Signal,
 )
-from PySide6.QtGui import (
+lazy from PySide6.QtGui import (
     QAction,
     QColor,
     QCursor,
     QFont,
     QIcon,
+    QImage,
     QKeySequence,
     QLinearGradient,
     QMouseEvent,
@@ -42,7 +51,7 @@ from PySide6.QtGui import (
     QShortcut,
     QWheelEvent,
 )
-from PySide6.QtWidgets import (
+lazy from PySide6.QtWidgets import (
     QAbstractSpinBox,
     QApplication,
     QCheckBox,
@@ -76,88 +85,75 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ai_client import (
-    AIWorker,
+lazy from ai_client import (
     DEFAULT_TEXT_MODEL,
     ENGLISH_PERSONA,
     JAPANESE_PERSONA,
     PERSONA,
     SIMPLIFIED_CHINESE_PERSONA,
     TEXT_MODELS,
+    AIWorker,
+    AIWorkerRequest,
 )
-from background_agents import (
+lazy from azure_speech import azure_female_voices
+lazy from background_agents import (
     DiagnosticReportWorker,
     ManagerWorkerScheduler,
     VisibleAppWorker,
 )
-from command_parser import is_start_work_command, is_stop_work_command
-from contracts import (
+lazy from command_parser import is_start_work_command, is_stop_work_command
+lazy from contracts import (
     SecretStoreFactoryPort,
     SecretStorePort,
     SpeechListenerPort,
 )
-from db import StudioDB, format_duration
-from expression_system import (
+lazy from db import PlatformProgressUpdate, StudioDB, format_duration
+lazy from expression_system import (
     ExpressionArbiter,
     FaceAnchorProfile,
-    plan_wait_expressions,
     parse_internal_emotion,
+    plan_wait_expressions,
 )
-from feature_registry import DashboardFeatureRegistry
-from flagship_ui import FlagshipControlCenter
-from lip_sync import (
-    VISEME_CHANGE_TRANSITION_SECONDS,
-    VISEME_CLOSE_TRANSITION_SECONDS,
-    VISEME_CONFIRM_FRAMES,
-    VISEME_CUES_PER_SECOND,
-    VISEME_MIN_HOLD_SECONDS,
-    VISEME_OPEN_TRANSITION_SECONDS,
-    VISEME_SILENCE_CONFIRM_FRAMES,
-)
-from realtime_voice import RealtimeVoiceClient
-from profile_transfer_ui import PortableProfilePanel
-from platform_contracts import PlatformServicePort
-from platform_services import current_platform_services, resolved_data_dir
-from language_support import (
+lazy from feature_registry import DashboardFeatureRegistry
+lazy from flagship_ui import FlagshipControlCenter
+lazy from language_support import (
     english_voice_instructions,
+    is_builtin_transcription_prompt,
     is_english,
     is_japanese,
     is_simplified_chinese,
-    is_builtin_transcription_prompt,
     japanese_voice_instructions,
     localized_reminder_line,
+    localized_transcription_prompt,
     localized_voice_instructions,
     migrate_builtin_reminder_line,
-    localized_transcription_prompt,
     response_language_instruction,
     simplified_chinese_voice_instructions,
     transcription_language_for_ui,
 )
-from service_container import CompanionServices, create_default_services
-from text_normalizer import to_taiwan_traditional
-from ui_localization import (
-    MODE_LABELS,
-    SIMPLIFIED_MODE_LABELS,
-    SIMPLIFIED_WORK_TYPE_LABELS,
-    WORK_TYPE_LABELS,
-    display_label,
-    ui_text,
+lazy from lip_sync import (
+    VISEME_CHANGE_TRANSITION_SECONDS,
+    VISEME_CLOSE_TRANSITION_SECONDS,
+    VISEME_OPEN_TRANSITION_SECONDS,
+    VisemeDynamics,
+    VisemeFrame,
 )
-from ui_localization_ja import (
-    JAPANESE_MODE_LABELS,
-    JAPANESE_WORK_TYPE_LABELS,
+lazy from platform_contracts import PlatformCapabilities, PlatformServicePort
+lazy from platform_services import current_platform_services, resolved_data_dir
+lazy from profile_transfer_ui import PortableProfilePanel
+lazy from realtime_voice import (
+    RealtimeSessionConfig,
+    RealtimeVoiceClient,
+    RealtimeVoiceRequest,
 )
-from updater_ui import UpdatePanel
-from version_info import APP_VERSION
-from windows_tools import visible_windows
-from speech import (
+lazy from service_container import CompanionServices, create_default_services
+lazy from speech import (
     SpeechListener,
     is_known_male_windows_voice,
     preferred_windows_voice,
     windows_voices,
 )
-from azure_speech import azure_female_voices
-from speech_providers import (
+lazy from speech_providers import (
     AZURE_SPEECH_PROVIDER,
     OPENAI_REALTIME_PROVIDER,
     OPENAI_SPEECH_PROVIDER,
@@ -167,9 +163,25 @@ from speech_providers import (
     migrate_speech_provider_setting,
     normalize_speech_provider_id,
 )
+lazy from text_normalizer import to_taiwan_traditional
+lazy from time_utils import local_wall_time
+lazy from ui_localization import (
+    MODE_LABELS,
+    SIMPLIFIED_MODE_LABELS,
+    SIMPLIFIED_WORK_TYPE_LABELS,
+    WORK_TYPE_LABELS,
+    display_label,
+    ui_text,
+)
+lazy from ui_localization_ja import (
+    JAPANESE_MODE_LABELS,
+    JAPANESE_WORK_TYPE_LABELS,
+)
+lazy from updater_ui import UpdatePanel
+lazy from version_info import APP_VERSION
+lazy from windows_tools import visible_windows
 
-
-DEFAULT_PROFILE = {
+DEFAULT_PROFILE = frozendict({
     "assistant_name": "墨寒",
     "user_title": "主上",
     "organization_name": "",
@@ -177,7 +189,118 @@ DEFAULT_PROFILE = {
     "work_type": "一般辦公／行政",
     "ui_language": "zh-TW",
     "wake_word": "墨寒",
-}
+})
+
+NEUTRAL_VISEME_ASSET_STEMS = frozendict({
+    "A": "mouth_wide",
+    "I": "mouth_i",
+    "U": "mouth_round",
+    "E": "mouth_mid",
+    "O": "mouth_o",
+})
+
+
+@dataclass(frozen=True, slots=True)
+class QueuedSpeech:
+    text: str
+    requested_state: str
+    intensity: float = 0.5
+    source: str = "conversation"
+
+
+@dataclass(frozen=True, slots=True)
+class SpeechCredentials:
+    openai_api_key: str
+    azure_api_key: str
+    azure_region: str
+
+
+@dataclass(frozen=True, slots=True)
+class DashboardDependencies:
+    listener: SpeechListenerPort
+    secret_store: SecretStorePort
+    azure_secret_store: SecretStorePort | None = None
+    secret_store_factory: SecretStoreFactoryPort | None = None
+    platform_services: PlatformServicePort | None = None
+
+
+@dataclass(slots=True)
+class PlatformCardControls:
+    card: QFrame
+    status: QComboBox
+    item_name: QLineEdit
+    missing: QLineEdit
+    next_action: QLineEdit
+    notes: QLineEdit
+    url: QLineEdit
+    validation: QLabel
+    updated: QLabel
+    save_button: QPushButton
+    timer: QTimer
+    dirty: bool = False
+
+    @property
+    def editors(self) -> tuple[QLineEdit, ...]:
+        return (
+            self.item_name,
+            self.missing,
+            self.next_action,
+            self.notes,
+            self.url,
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class MemoryTabActions:
+    add: QPushButton
+    edit: QPushButton
+    delete: QPushButton
+    clear: QPushButton
+    optimize: QPushButton
+    archives: QPushButton
+
+
+@dataclass(frozen=True, slots=True)
+class ProfileLocalizationContext:
+    assistant_name: str
+    user_title: str
+    organization_name: str
+    wake_word: str
+    ui_language: str
+
+
+@dataclass(frozen=True, slots=True)
+class ProfileSettingsValues:
+    assistant_name: str
+    user_title: str
+    organization_name: str
+    window_title: str
+    work_type: str
+    ui_language: str
+    wake_word: str
+
+    @property
+    def localization(self) -> ProfileLocalizationContext:
+        return ProfileLocalizationContext(
+            assistant_name=self.assistant_name,
+            user_title=self.user_title,
+            organization_name=self.organization_name,
+            wake_word=self.wake_word,
+            ui_language=self.ui_language,
+        )
+
+    def setting_items(self) -> tuple[tuple[str, object], ...]:
+        return (
+            ("assistant_name", self.assistant_name),
+            ("user_title", self.user_title),
+            ("organization_name", self.organization_name),
+            ("window_title", self.window_title),
+            ("work_type", self.work_type),
+            ("ui_language", self.ui_language),
+            ("wake_word", self.wake_word),
+            ("onboarding_complete", True),
+        )
+
 
 MEMORY_CATEGORIES = (
     "人物",
@@ -186,6 +309,67 @@ MEMORY_CATEGORIES = (
     "工作流程",
     "重要日期",
     "其他",
+)
+
+EMERGENCY_COMMANDS = frozenset(
+    {
+        "墨寒停手",
+        "寒停手",
+        "停手",
+        "停止所有操作",
+        "取消所有任務",
+    }
+)
+TEASING_COMMAND_MARKERS = (
+    "妳在看我",
+    "你在看我",
+    "偷看我",
+    "一直看我",
+    "喜歡我嗎",
+    "喜歡我吧",
+    "是不是喜歡",
+    "愛慕我",
+    "在意我吧",
+)
+TODAY_WORK_DURATION_MARKERS = ("多久", "幾小時", "工作時間")
+IDEA_CAPTURE_MARKERS = ("靈感", "點子", "構想")
+EXPLICIT_TOOL_COMMAND_MARKERS = (
+    "請執行",
+    "幫我開啟",
+    "替我開啟",
+    "幫我控制",
+    "幫我建立檔案",
+    "幫我移動",
+    "幫我啟動",
+)
+SPEAKING_BLINK_PREFIXES = (
+    ("mouth_mid", "blink_mid"),
+    ("mouth_wide", "blink_wide"),
+    ("mouth_round", "blink_round"),
+    ("mouth_i", "blink_i"),
+    ("mouth_o", "blink_o"),
+    ("speaking", "blink_open"),
+)
+PHYSICS_POSE_SUFFIXES = (
+    ("", "cheek"),
+    ("_lean", "lean"),
+    ("_front", "front"),
+)
+PHYSICS_SPEECH_FRAME_PREFIXES = (
+    "idle",
+    "speaking",
+    "blink",
+    "mouth_mid",
+    "mouth_wide",
+    "mouth_round",
+    "mouth_i",
+    "mouth_o",
+    "blink_mid",
+    "blink_open",
+    "blink_wide",
+    "blink_round",
+    "blink_i",
+    "blink_o",
 )
 
 
@@ -248,7 +432,7 @@ def classify_memory_text(text: str) -> str:
 # explicit because filename suffixes alone are not reliable for legacy assets.
 # It is also the single source of truth used by blinking, lip sync, gaze and
 # the five flagship physics effects.
-EXPRESSION_POSES = {
+EXPRESSION_POSES = frozendict({
     "glance": "cheek",
     "caught": "cheek",
     "happy": "cheek",
@@ -271,7 +455,7 @@ EXPRESSION_POSES = {
     "exasperated_front": "front",
     "eureka_front": "front",
     "protective_front": "front",
-}
+})
 
 NEW_EXPRESSION_ASSETS = (
     "shy_cute_front",
@@ -293,46 +477,46 @@ GESTURE_SPEECH_EXPRESSIONS = frozenset(
     }
 )
 EXPRESSION_SPEECH_EXPRESSIONS = frozenset(EXPRESSION_POSES)
-EXPRESSION_SPEECH_FRAMES = {
-    expression: {
+EXPRESSION_SPEECH_FRAMES = frozendict({
+    expression: frozendict({
         frame: f"{expression}_speech_{frame}"
         for frame in ("mid", "open", "round")
-    }
+    })
     for expression in EXPRESSION_SPEECH_EXPRESSIONS
-}
-EXPRESSION_DERIVED_VISEME_FRAMES = {
-    expression: {
+})
+EXPRESSION_DERIVED_VISEME_FRAMES = frozendict({
+    expression: frozendict({
         "I": f"{expression}_speech_i",
         "U": f"{expression}_speech_u",
-    }
+    })
     for expression in EXPRESSION_SPEECH_EXPRESSIONS
-}
-EXPRESSION_VISEME_FRAMES = {
-    expression: {
+})
+EXPRESSION_VISEME_FRAMES = frozendict({
+    expression: frozendict({
         "A": EXPRESSION_SPEECH_FRAMES[expression]["open"],
         "I": EXPRESSION_DERIVED_VISEME_FRAMES[expression]["I"],
         "U": EXPRESSION_DERIVED_VISEME_FRAMES[expression]["U"],
         "E": EXPRESSION_SPEECH_FRAMES[expression]["mid"],
         "O": EXPRESSION_SPEECH_FRAMES[expression]["round"],
-    }
+    })
     for expression in EXPRESSION_SPEECH_EXPRESSIONS
-}
-GESTURE_SPEECH_FRAMES = {
+})
+GESTURE_SPEECH_FRAMES = frozendict({
     expression: EXPRESSION_SPEECH_FRAMES[expression]
     for expression in GESTURE_SPEECH_EXPRESSIONS
-}
+})
 EXPRESSION_SPEECH_ASSETS = tuple(
     asset
     for frames in EXPRESSION_SPEECH_FRAMES.values()
     for asset in frames.values()
 )
-EXPRESSION_BLINK_FRAMES = {
+EXPRESSION_BLINK_FRAMES = frozendict({
     "thinking_front": "thinking_front_speech_blink",
     "glance": "glance_speech_blink",
     "happy": "happy_speech_blink",
     "worried": "worried_speech_blink",
     "reminder": "reminder_speech_blink",
-}
+})
 EXPRESSION_BLINK_ASSETS = tuple(EXPRESSION_BLINK_FRAMES.values())
 EXPRESSION_IMAGE_ASSETS = (
     "idle",
@@ -378,7 +562,7 @@ GESTURE_SPEECH_ASSETS = tuple(
     for frames in GESTURE_SPEECH_FRAMES.values()
     for asset in frames.values()
 )
-EXPRESSION_SPEECH_MOUTH_RECTS = {
+EXPRESSION_SPEECH_MOUTH_RECTS = frozendict({
     expression: (
         QRect(170, 194, 60, 42)
         if pose == "cheek"
@@ -387,8 +571,7 @@ EXPRESSION_SPEECH_MOUTH_RECTS = {
         else QRect(202, 195, 62, 43)
     )
     for expression, pose in EXPRESSION_POSES.items()
-}
-EXPRESSION_SPEECH_MOUTH_RECTS.update({
+} | {
     "mock_scold": QRect(202, 196, 53, 44),
     "mock_hit_front": QRect(201, 190, 56, 50),
     "exasperated_front": QRect(199, 201, 58, 47),
@@ -400,14 +583,14 @@ CHEEK_SPEECH_CLOSED_EXPRESSION = "idle_speech_neutral"
 # x=184..207; widening this mask reaches both smile corners and recreates the
 # Joker-like corner flutter reported in rapid A/I/U/E/O transitions.
 CHEEK_SPEECH_CENTRAL_MOUTH_RECT = QRect(184, 198, 24, 34)
-GESTURE_SPEECH_MOUTH_RECTS = {
+GESTURE_SPEECH_MOUTH_RECTS = frozendict({
     expression: EXPRESSION_SPEECH_MOUTH_RECTS[expression]
     for expression in GESTURE_SPEECH_EXPRESSIONS
-}
+})
 # Verified per-asset facial registration. Runtime rendering uses these fixed
 # values so startup stays fast; the pixel matcher remains available to QA tests
 # for detecting a replaced or accidentally shifted asset.
-EXPRESSION_FACE_OFFSETS = {
+EXPRESSION_FACE_OFFSETS = frozendict({
     "glance": (0, 0),
     "caught": (0, 1),
     "happy": (0, 0),
@@ -430,8 +613,8 @@ EXPRESSION_FACE_OFFSETS = {
     "exasperated_front": (-1, 6),
     "eureka_front": (-1, -1),
     "protective_front": (0, -4),
-}
-EXPRESSION_EYE_OFFSETS = {
+})
+EXPRESSION_EYE_OFFSETS = frozendict({
     **EXPRESSION_FACE_OFFSETS,
     "caught": (0, 3),
     "reminder": (0, 1),
@@ -441,8 +624,8 @@ EXPRESSION_EYE_OFFSETS = {
     "determined_front": (0, 1),
     "restrained_amused_front": (0, 1),
     "protective_front": (0, -3),
-}
-EXPRESSION_MOUTH_OFFSETS = {
+})
+EXPRESSION_MOUTH_OFFSETS = frozendict({
     **EXPRESSION_FACE_OFFSETS,
     "caught": (0, 0),
     "mock_scold": (4, 4),
@@ -450,7 +633,7 @@ EXPRESSION_MOUTH_OFFSETS = {
     "mock_hit_front": (1, -2),
     "eureka_front": (0, 0),
     "protective_front": (0, -3),
-}
+})
 APP_NAME = "墨寒桌面助理"
 APP_ICON_PATH = "assets/mohan-halfbody.ico"
 WINDOWS_APP_USER_MODEL_ID = (
@@ -479,13 +662,13 @@ PLATFORM_STATUSES = (
     "已上架",
     "暫停",
 )
-REMINDER_LINES = {
+REMINDER_LINES = frozendict({
     "work": "主上，今日之局已開。若要開始，妾替你計時。",
     "lunch": "到吃飯時間了。工作可以稍候，主上的身體不能。",
     "dinner": "主上，先去用晚膳。空著腹談什麼長策。",
     "offwork": "你已經不需要向任何老闆證明自己肯加班了。",
     "overwork": "主上已連續工作太久。離席、飲水、伸展，十分鐘後再戰。",
-}
+})
 
 
 def reminder_line(language: str, kind: str) -> str:
@@ -1276,14 +1459,25 @@ class FirstRunWizard(QDialog):
             platform_services or current_platform_services()
         )
         self.language = profile_setting(db, "ui_language")
+        self._configure_window()
+        root = QHBoxLayout(self)
+        root.setContentsMargins(20, 20, 20, 20)
+        root.setSpacing(18)
+        root.addWidget(self._build_hero_panel())
+        root.addWidget(self._build_content_panel(), 1)
+        self.save_button.clicked.connect(self._save)
+        self.ui_language.currentIndexChanged.connect(
+            self._apply_language
+        )
+        self._apply_language()
+
+    def _configure_window(self) -> None:
         self.setWindowIcon(QIcon(str(resource_path(APP_ICON_PATH))))
         self.setMinimumSize(1100, 720)
         self.setFont(application_ui_font())
         self.setStyleSheet(STYLE)
-        root = QHBoxLayout(self)
-        root.setContentsMargins(20, 20, 20, 20)
-        root.setSpacing(18)
 
+    def _build_hero_panel(self) -> QFrame:
         hero_panel = QFrame()
         hero_panel.setObjectName("onboardingHero")
         hero_panel.setFixedWidth(360)
@@ -1309,44 +1503,45 @@ class FirstRunWizard(QDialog):
         self.hero_tagline.setWordWrap(True)
         self.hero_image = QLabel()
         self.hero_image.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
-        hero_pixmap = QPixmap(str(resource_path("assets/mohan.png")))
+        hero_pixmap = QPixmap(
+            str(
+                resource_path(
+                    "assets/onboarding/mohan-hero-rain-canonical.webp"
+                )
+            )
+        )
+        hero_scaled = hero_pixmap.scaled(
+            330,
+            590,
+            Qt.KeepAspectRatioByExpanding,
+            Qt.SmoothTransformation,
+        )
         self.hero_image.setPixmap(
-            hero_pixmap.scaled(
+            hero_scaled.copy(
+                max(0, hero_scaled.width() - 330),
+                max(0, (hero_scaled.height() - 590) // 2),
                 330,
                 590,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation,
             )
         )
         hero_layout.addWidget(self.hero_brand)
         hero_layout.addWidget(self.hero_tagline)
         hero_layout.addStretch()
         hero_layout.addWidget(self.hero_image)
-        root.addWidget(hero_panel)
+        return hero_panel
 
-        content_panel = QFrame()
-        content_panel.setObjectName("onboardingContent")
-        layout = QVBoxLayout(content_panel)
-        layout.setContentsMargins(32, 30, 32, 26)
-        layout.setSpacing(16)
-        root.addWidget(content_panel, 1)
-        self.title_label = QLabel()
-        self.title_label.setObjectName("onboardingTitle")
-        self.intro_label = QLabel()
-        self.intro_label.setWordWrap(True)
-        layout.addWidget(self.title_label)
-        layout.addWidget(self.intro_label)
-
-        form = QFormLayout()
-        form.setHorizontalSpacing(18)
-        form.setVerticalSpacing(12)
-        form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
+    def _initialize_profile_editors(self) -> None:
+        db = self.db
         self.assistant_name = QLineEdit(
             profile_setting(db, "assistant_name")
         )
-        self.assistant_name.setPlaceholderText("例如：墨寒、Ava、Office Mate")
+        self.assistant_name.setPlaceholderText(
+            "例如：墨寒、Ava、Office Mate"
+        )
         self.user_title = QLineEdit(profile_setting(db, "user_title"))
-        self.user_title.setPlaceholderText("助理如何稱呼你，例如：主上、Alex、主管")
+        self.user_title.setPlaceholderText(
+            "助理如何稱呼你，例如：主上、Alex、主管"
+        )
         self.organization_name = QLineEdit(
             profile_setting(db, "organization_name")
         )
@@ -1359,6 +1554,14 @@ class FirstRunWizard(QDialog):
         self.window_title.setPlaceholderText(
             "留空時自動顯示「助理名稱．組織名稱」"
         )
+        self._initialize_work_type()
+        self._initialize_language()
+        self.wake_word = QLineEdit(profile_setting(db, "wake_word"))
+        self.wake_word.setPlaceholderText(
+            "語音喚醒詞，例如：墨寒"
+        )
+
+    def _initialize_work_type(self) -> None:
         self.work_type = QComboBox()
         self.work_type.setEditable(True)
         for value in self.WORK_TYPES:
@@ -1372,43 +1575,64 @@ class FirstRunWizard(QDialog):
                 ),
                 value,
             )
-        saved_work_type = profile_setting(db, "work_type")
-        work_index = self.work_type.findData(saved_work_type)
-        if work_index >= 0:
-            self.work_type.setCurrentIndex(work_index)
+        saved = profile_setting(self.db, "work_type")
+        index = self.work_type.findData(saved)
+        if index >= 0:
+            self.work_type.setCurrentIndex(index)
         else:
-            self.work_type.setCurrentText(saved_work_type)
+            self.work_type.setCurrentText(saved)
+
+    def _initialize_language(self) -> None:
         self.ui_language = QComboBox()
         self.ui_language.addItem("繁體中文（台灣）", "zh-TW")
         self.ui_language.addItem("简体中文（中国大陆）", "zh-CN")
         self.ui_language.addItem("English", "en")
         self.ui_language.addItem("日本語", "ja-JP")
-        current_language = profile_setting(db, "ui_language")
-        language_index = self.ui_language.findData(current_language)
-        self.ui_language.setCurrentIndex(max(0, language_index))
-        self.wake_word = QLineEdit(profile_setting(db, "wake_word"))
-        self.wake_word.setPlaceholderText("語音喚醒詞，例如：墨寒")
+        current = profile_setting(self.db, "ui_language")
+        self.ui_language.setCurrentIndex(
+            max(0, self.ui_language.findData(current))
+        )
+
+    def _build_profile_form(self) -> QFormLayout:
+        self._initialize_profile_editors()
+        form = QFormLayout()
+        form.setHorizontalSpacing(18)
+        form.setVerticalSpacing(12)
+        form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.form_labels: dict[str, QLabel] = {}
-        for key, chinese, editor in (
-            ("assistant_name", "助理名稱", self.assistant_name),
-            ("user_title", "助理對你的稱呼", self.user_title),
-            ("organization_name", "公司／團隊名稱", self.organization_name),
-            ("window_title", "完整視窗標題", self.window_title),
-            ("work_type", "工作類型", self.work_type),
-            ("ui_language", "介面語言", self.ui_language),
-            ("wake_word", "語音喚醒詞", self.wake_word),
-        ):
+        fields = (
+            ("assistant_name", self.assistant_name),
+            ("user_title", self.user_title),
+            ("organization_name", self.organization_name),
+            ("window_title", self.window_title),
+            ("work_type", self.work_type),
+            ("ui_language", self.ui_language),
+            ("wake_word", self.wake_word),
+        )
+        for key, editor in fields:
             label = QLabel()
             label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-            # Keep every onboarding row at one deliberate commercial-dialog
-            # height.  Matching label and editor geometry removes the optical
-            # baseline drift seen with mixed Windows font metrics.
+            # Matching label and editor heights prevents mixed-font baseline
+            # drift in the commercial onboarding dialog.
             editor.setFixedHeight(50)
             label.setFixedHeight(50)
             self.form_labels[key] = label
             form.addRow(label, editor)
-        layout.addLayout(form)
+        return form
 
+    def _build_content_panel(self) -> QFrame:
+        content_panel = QFrame()
+        content_panel.setObjectName("onboardingContent")
+        layout = QVBoxLayout(content_panel)
+        layout.setContentsMargins(32, 30, 32, 26)
+        layout.setSpacing(16)
+        self.title_label = QLabel()
+        self.title_label.setObjectName("onboardingTitle")
+        self.intro_label = QLabel()
+        self.intro_label.setWordWrap(True)
+        layout.addWidget(self.title_label)
+        layout.addWidget(self.intro_label)
+        layout.addLayout(self._build_profile_form())
         self.note_label = QLabel()
         self.note_label.setWordWrap(True)
         self.note_label.setObjectName("onboardingNote")
@@ -1419,38 +1643,54 @@ class FirstRunWizard(QDialog):
         buttons.addStretch()
         buttons.addWidget(self.save_button)
         layout.addLayout(buttons)
-        self.save_button.clicked.connect(self._save)
-        self.ui_language.currentIndexChanged.connect(self._apply_language)
-        self._apply_language()
+        return content_panel
 
     def _t(self, key: str, chinese: str) -> str:
         return ui_text(self.language, key, chinese)
+
+    def _apply_localized_identity_defaults(self) -> None:
+        if is_english(self.language):
+            replacements = (
+                (self.assistant_name, {"墨寒"}, "MoHan"),
+                (self.user_title, {"主上", "主様"}, "Commander"),
+                (self.wake_word, {"墨寒"}, "MoHan"),
+            )
+        elif is_japanese(self.language):
+            replacements = (
+                (self.assistant_name, {"MoHan"}, "墨寒"),
+                (self.user_title, {"主上", "Commander"}, "主様"),
+                (self.wake_word, {"MoHan"}, "墨寒"),
+            )
+        else:
+            replacements = (
+                (self.assistant_name, {"MoHan"}, "墨寒"),
+                (self.user_title, {"Commander", "主様"}, "主上"),
+                (self.wake_word, {"MoHan"}, "墨寒"),
+            )
+        for editor, defaults, replacement in replacements:
+            if editor.text().strip() in defaults:
+                editor.setText(replacement)
 
     def _apply_language(self, _index: int | None = None) -> None:
         previous = self.language
         self.language = str(self.ui_language.currentData() or "zh-TW")
         if previous != self.language:
-            if is_english(self.language):
-                if self.assistant_name.text().strip() == "墨寒":
-                    self.assistant_name.setText("MoHan")
-                if self.user_title.text().strip() in {"主上", "主様"}:
-                    self.user_title.setText("Commander")
-                if self.wake_word.text().strip() == "墨寒":
-                    self.wake_word.setText("MoHan")
-            elif is_japanese(self.language):
-                if self.assistant_name.text().strip() == "MoHan":
-                    self.assistant_name.setText("墨寒")
-                if self.user_title.text().strip() in {"主上", "Commander"}:
-                    self.user_title.setText("主様")
-                if self.wake_word.text().strip() == "MoHan":
-                    self.wake_word.setText("墨寒")
-            else:
-                if self.assistant_name.text().strip() == "MoHan":
-                    self.assistant_name.setText("墨寒")
-                if self.user_title.text().strip() in {"Commander", "主様"}:
-                    self.user_title.setText("主上")
-                if self.wake_word.text().strip() == "MoHan":
-                    self.wake_word.setText("墨寒")
+            self._apply_localized_identity_defaults()
+        self._update_wizard_headings()
+        self._update_wizard_form()
+        self._update_work_type_labels()
+        self.note_label.setText(
+            self._t(
+                "first_run_note",
+                "工作平台頁一開始保持空白，由你自行新增公司系統、"
+                "協作工具、客戶後台或網站。程式不會替你建立特定商業平台。",
+            )
+        )
+        self.save_button.setText(
+            self._t("finish_setup", "完成設定並開始使用")
+        )
+
+    def _update_wizard_headings(self) -> None:
         self.setWindowTitle(self._t("first_run_title", "首次啟動設定"))
         self.hero_tagline.setText(
             self._t(
@@ -1471,6 +1711,8 @@ class FirstRunWizard(QDialog):
                 "不會綁定特定公司、職業或工作平台。",
             )
         )
+
+    def _update_wizard_form(self) -> None:
         labels = {
             "assistant_name": "助理名稱",
             "user_title": "助理對你的稱呼",
@@ -1506,6 +1748,8 @@ class FirstRunWizard(QDialog):
         self.wake_word.setPlaceholderText(
             self._t("wake_word_placeholder", "語音喚醒詞，例如：墨寒")
         )
+
+    def _update_work_type_labels(self) -> None:
         for index, value in enumerate(self.WORK_TYPES):
             self.work_type.setItemText(
                 index,
@@ -1519,16 +1763,6 @@ class FirstRunWizard(QDialog):
                 # Internal data remains Taiwan Traditional Chinese so saved
                 # profiles and command rules are language-independent.
             )
-        self.note_label.setText(
-            self._t(
-                "first_run_note",
-                "工作平台頁一開始保持空白，由你自行新增公司系統、"
-                "協作工具、客戶後台或網站。程式不會替你建立特定商業平台。",
-            )
-        )
-        self.save_button.setText(
-            self._t("finish_setup", "完成設定並開始使用")
-        )
 
     def _save(self) -> None:
         assistant = self.assistant_name.text().strip()
@@ -1605,22 +1839,40 @@ class Dashboard(QDialog):
     def __init__(
         self,
         db: StudioDB,
-        listener: SpeechListenerPort,
-        secret_store: SecretStorePort,
+        dependencies: DashboardDependencies,
         parent=None,
-        *,
-        azure_secret_store: SecretStorePort | None = None,
-        secret_store_factory: SecretStoreFactoryPort | None = None,
-        platform_services: PlatformServicePort | None = None,
     ):
         super().__init__(parent)
+        self._initialize_dashboard_state(db, dependencies)
+        self._configure_dashboard_window()
+        root = QVBoxLayout(self)
+        root.setSizeConstraint(QLayout.SetNoConstraint)
+        start_button, stop_button = self._build_dashboard_header(root)
+        self._mount_dashboard_tabs(root)
+        self._connect_dashboard_signals(
+            start_button,
+            stop_button,
+        )
+        self._start_dashboard_timer()
+        self.refresh_all()
+        self._disable_implicit_default_buttons()
+        self._apply_profile_texts()
+
+    def _initialize_dashboard_state(
+        self,
+        db: StudioDB,
+        dependencies: DashboardDependencies,
+    ) -> None:
         self.db = db
-        self.listener = listener
-        self.secret_store = secret_store
-        self.azure_secret_store = azure_secret_store
-        self.secret_store_factory = secret_store_factory
+        self.listener = dependencies.listener
+        self.secret_store = dependencies.secret_store
+        self.azure_secret_store = dependencies.azure_secret_store
+        self.secret_store_factory = (
+            dependencies.secret_store_factory
+        )
         self.platform_services = (
-            platform_services or current_platform_services()
+            dependencies.platform_services
+            or current_platform_services()
         )
         self.thread_pool = QThreadPool.globalInstance()
         self.ai_queue: deque[tuple[str, str]] = deque()
@@ -1639,6 +1891,9 @@ class Dashboard(QDialog):
         self.organization_name = profile_setting(
             db, "organization_name"
         )
+
+    def _configure_dashboard_window(self) -> None:
+        db = self.db
         self.setWindowTitle(profile_window_title(db))
         self.setWindowIcon(QIcon(str(resource_path(APP_ICON_PATH))))
         self.resize(900, 660)
@@ -1659,14 +1914,10 @@ class Dashboard(QDialog):
         self.emergency_shortcut.setContext(Qt.ApplicationShortcut)
         self.emergency_shortcut.activated.connect(self._emergency_stop)
 
-        root = QVBoxLayout(self)
-        # Large settings/voice forms must not turn their size hint into a
-        # top-level minimum height. The forms scroll inside their tabs instead.
-        root.setSizeConstraint(QLayout.SetNoConstraint)
-        header = QHBoxLayout()
-        self.mode_combo = QComboBox()
+    def _build_mode_combo(self) -> QComboBox:
+        combo = QComboBox()
         for value in ("工作", "陪伴", "勿擾", "會議", "離席", "休眠"):
-            self.mode_combo.addItem(
+            combo.addItem(
                 display_label(
                     self.ui_language,
                     value,
@@ -1676,14 +1927,21 @@ class Dashboard(QDialog):
                 ),
                 value,
             )
-        mode_index = self.mode_combo.findData(self.mode)
-        self.mode_combo.setCurrentIndex(max(0, mode_index))
+        combo.setCurrentIndex(max(0, combo.findData(self.mode)))
+        return combo
+
+    def _build_dashboard_header(
+        self,
+        root: QVBoxLayout,
+    ) -> tuple[QPushButton, QPushButton]:
+        header = QHBoxLayout()
+        self.mode_combo = self._build_mode_combo()
         self.work_label = QLabel()
         self.work_label.setStyleSheet("font-size: 16px; color: #2f6987;")
         start_btn = QPushButton(self._t("start_work", "開始工作"))
         stop_btn = QPushButton(self._t("stop_work", "結束工作"))
         self.header_title = QLabel(
-            f"<b>{html.escape(profile_window_title(db))}</b>"
+            f"<b>{html.escape(profile_window_title(self.db))}</b>"
         )
         header.addWidget(self.header_title)
         header.addStretch()
@@ -1693,7 +1951,9 @@ class Dashboard(QDialog):
         header.addWidget(start_btn)
         header.addWidget(stop_btn)
         root.addLayout(header)
+        return start_btn, stop_btn
 
+    def _mount_dashboard_tabs(self, root: QVBoxLayout) -> None:
         self.tabs = QTabWidget()
         self.feature_registry = DashboardFeatureRegistry()
         self.feature_registry.register(
@@ -1730,31 +1990,42 @@ class Dashboard(QDialog):
         self.feature_registry.mount(self.tabs)
         root.addWidget(self.tabs, 1)
 
+    def _connect_dashboard_signals(
+        self,
+        start_button: QPushButton,
+        stop_button: QPushButton,
+    ) -> None:
         self.mode_combo.currentIndexChanged.connect(
             self._mode_index_changed
         )
         self.tabs.currentChanged.connect(self._tab_changed)
-        start_btn.clicked.connect(self.start_work)
-        stop_btn.clicked.connect(self.stop_work)
-        listener.recognized.connect(self._voice_text)
-        listener.failed.connect(self._voice_error)
-        listener.listening_changed.connect(self._listening_changed)
-        listener.recording_changed.connect(self._recording_changed)
-        listener.status_changed.connect(self.set_voice_phase)
-        listener.diagnostic_changed.connect(
+        start_button.clicked.connect(self.start_work)
+        stop_button.clicked.connect(self.stop_work)
+        self.listener.recognized.connect(self._voice_text)
+        self.listener.failed.connect(self._voice_error)
+        self.listener.listening_changed.connect(
+            self._listening_changed
+        )
+        self.listener.recording_changed.connect(
+            self._recording_changed
+        )
+        self.listener.status_changed.connect(self.set_voice_phase)
+        self.listener.diagnostic_changed.connect(
             self._transcription_diagnostic
         )
+
+    def _start_dashboard_timer(self) -> None:
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.refresh_work_time)
         self.timer.start(1000)
-        self.refresh_all()
+
+    def _disable_implicit_default_buttons(self) -> None:
         # QDialog otherwise makes the first push button ("開始工作") the
         # implicit Enter key target. Chat submission must never click an
         # unrelated action button.
         for button in self.findChildren(QPushButton):
             button.setAutoDefault(False)
             button.setDefault(False)
-        self._apply_profile_texts()
 
     def _t(self, key: str, chinese: str, **values: object) -> str:
         return ui_text(self.ui_language, key, chinese, **values)
@@ -1846,9 +2117,7 @@ class Dashboard(QDialog):
         # Windows 原生標題列拖曳不一定送出 Qt 的 mousePressEvent。
         self.front_raise_timer.start(0)
 
-    def _chat_tab(self) -> QWidget:
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
+    def _chat_history_controls(self) -> QHBoxLayout:
         history_row = QHBoxLayout()
         self.chat_retention = QLabel(
             self._t(
@@ -1881,6 +2150,30 @@ class Dashboard(QDialog):
         history_row.addWidget(self.chat_zoom_down)
         history_row.addWidget(self.chat_zoom_label)
         history_row.addWidget(self.chat_zoom_up)
+        return history_row
+
+    def _connect_chat_controls(self, send_button: QPushButton) -> None:
+        send_button.clicked.connect(self.send_chat)
+        self.chat_input.returnPressed.connect(self.send_chat)
+        self.mic_btn.clicked.connect(self.listener.toggle_listening)
+        self.load_older_chat_btn.clicked.connect(
+            self.load_older_chat
+        )
+        self.manage_chat_btn.clicked.connect(
+            self.manage_chat_history
+        )
+        self.chat_zoom_down.clicked.connect(
+            lambda: self.adjust_chat_zoom(-1)
+        )
+        self.chat_zoom_up.clicked.connect(
+            lambda: self.adjust_chat_zoom(1)
+        )
+        self.chat.zoom_step_requested.connect(self.adjust_chat_zoom)
+
+    def _chat_tab(self) -> QWidget:
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        history_row = self._chat_history_controls()
         self.chat = ZoomTextBrowser()
         self.chat.setOpenExternalLinks(True)
         self.chat_base_point_size = self.chat.font().pointSizeF()
@@ -1907,25 +2200,13 @@ class Dashboard(QDialog):
         )
         self.voice_phase.setStyleSheet("color: #356d88; padding-left: 4px;")
         layout.addWidget(self.voice_phase)
-        send.clicked.connect(self.send_chat)
-        self.chat_input.returnPressed.connect(self.send_chat)
-        self.mic_btn.clicked.connect(self.listener.toggle_listening)
-        self.load_older_chat_btn.clicked.connect(self.load_older_chat)
-        self.manage_chat_btn.clicked.connect(self.manage_chat_history)
-        self.chat_zoom_down.clicked.connect(
-            lambda: self.adjust_chat_zoom(-1)
-        )
-        self.chat_zoom_up.clicked.connect(
-            lambda: self.adjust_chat_zoom(1)
-        )
-        self.chat.zoom_step_requested.connect(self.adjust_chat_zoom)
+        self._connect_chat_controls(send)
         self.apply_chat_zoom(self.chat_zoom_percent)
         return tab
 
-    def _today_tab(self) -> QWidget:
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
-        layout.setSpacing(10)
+    def _today_entry_row(
+        self,
+    ) -> tuple[QHBoxLayout, QPushButton, QPushButton]:
         entry = QHBoxLayout()
         self.todo_input = QLineEdit()
         self.todo_input.setPlaceholderText("輸入待辦標題，例如：完成漫畫第 3 話分鏡")
@@ -1937,9 +2218,11 @@ class Dashboard(QDialog):
         entry.addWidget(self.todo_category)
         entry.addWidget(add)
         entry.addWidget(idea)
+        return entry, add, idea
+
+    def _today_todo_pane(self) -> QWidget:
         self.todo_feedback = QLabel("")
         self.todo_feedback.setObjectName("entryFeedback")
-
         todo_header = QHBoxLayout()
         todo_header.addWidget(QLabel("<b>今天要做</b>"))
         self.todo_count = QLabel()
@@ -1959,7 +2242,18 @@ class Dashboard(QDialog):
         self.todo_scroll.viewport().setObjectName("todoViewport")
         self.todo_scroll.setWidgetResizable(True)
         self.todo_scroll.setWidget(container)
+        todo_pane = QWidget()
+        todo_pane.setObjectName("todayPane")
+        pane_layout = QVBoxLayout(todo_pane)
+        pane_layout.setContentsMargins(0, 0, 0, 0)
+        pane_layout.setSpacing(6)
+        pane_layout.addLayout(todo_header)
+        pane_layout.addWidget(self.todo_scroll, 1)
+        return todo_pane
 
+    def _today_idea_pane(
+        self,
+    ) -> tuple[QWidget, QPushButton, QPushButton]:
         idea_header = QHBoxLayout()
         idea_header.addWidget(QLabel("<b>創作靈感</b>"))
         self.idea_count = QLabel()
@@ -1976,15 +2270,6 @@ class Dashboard(QDialog):
         self.idea_list.setObjectName("ideaList")
         self.idea_list.setMinimumHeight(0)
         self.idea_list.setSpacing(2)
-
-        todo_pane = QWidget()
-        todo_pane.setObjectName("todayPane")
-        todo_pane_layout = QVBoxLayout(todo_pane)
-        todo_pane_layout.setContentsMargins(0, 0, 0, 0)
-        todo_pane_layout.setSpacing(6)
-        todo_pane_layout.addLayout(todo_header)
-        todo_pane_layout.addWidget(self.todo_scroll, 1)
-
         idea_pane = QWidget()
         idea_pane.setObjectName("todayPane")
         idea_pane_layout = QVBoxLayout(idea_pane)
@@ -1992,7 +2277,17 @@ class Dashboard(QDialog):
         idea_pane_layout.setSpacing(6)
         idea_pane_layout.addLayout(idea_header)
         idea_pane_layout.addWidget(self.idea_list, 1)
+        return idea_pane, edit_idea, delete_ideas
 
+    def _today_tab(self) -> QWidget:
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        layout.setSpacing(10)
+        entry, add, idea = self._today_entry_row()
+        todo_pane = self._today_todo_pane()
+        idea_pane, edit_idea, delete_ideas = (
+            self._today_idea_pane()
+        )
         self.today_splitter = QSplitter(Qt.Vertical)
         self.today_splitter.setObjectName("todaySplitter")
         self.today_splitter.setChildrenCollapsible(False)
@@ -2012,17 +2307,9 @@ class Dashboard(QDialog):
         self.todo_input.returnPressed.connect(self.add_todo)
         return tab
 
-    def _platform_tab(self) -> QWidget:
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
-        intro = QLabel(
-            "集中管理工作中使用的平台、系統、客戶入口或協作工具。"
-            "每位使用者都可以建立自己的工作平台，不預設綁定任何產業。"
-        )
-        intro.setWordWrap(True)
-        intro.setStyleSheet("color:#486d83;")
-        layout.addWidget(intro)
-
+    def _platform_add_controls(
+        self,
+    ) -> tuple[QHBoxLayout, QPushButton]:
         add_row = QHBoxLayout()
         self.new_platform_name = QLineEdit()
         self.new_platform_name.setPlaceholderText(
@@ -2036,8 +2323,11 @@ class Dashboard(QDialog):
         add_row.addWidget(self.new_platform_name, 2)
         add_row.addWidget(self.new_platform_url, 2)
         add_row.addWidget(add_platform)
-        layout.addLayout(add_row)
+        return add_row, add_platform
 
+    def _platform_filter_controls(
+        self,
+    ) -> tuple[QHBoxLayout, QPushButton]:
         header = QHBoxLayout()
         self.platform_summary = QLabel()
         self.platform_summary.setObjectName("sectionCount")
@@ -2056,22 +2346,19 @@ class Dashboard(QDialog):
         header.addWidget(QLabel("顯示"))
         header.addWidget(self.platform_filter)
         header.addWidget(save_all)
-        self.platform_feedback = QLabel(
-            "修改後會自動保存；也可以使用每張卡片的保存按鈕。"
-        )
-        self.platform_feedback.setStyleSheet("color:#4c6b82;")
-        self.platform_feedback.setWordWrap(True)
-        layout.addLayout(header)
-        layout.addWidget(self.platform_feedback)
+        return header, save_all
 
+    def _platform_card_scroll(self) -> QScrollArea:
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setFrameShape(QFrame.NoFrame)
         self.platform_card_host = QWidget()
-        self.platform_card_layout = QVBoxLayout(self.platform_card_host)
+        self.platform_card_layout = QVBoxLayout(
+            self.platform_card_host
+        )
         self.platform_card_layout.setContentsMargins(0, 4, 6, 4)
         self.platform_card_layout.setSpacing(10)
-        self.platform_controls = {}
+        self.platform_controls: dict[str, PlatformCardControls] = {}
         self._platform_loading = False
         self.platform_empty = QLabel(
             "尚未建立工作平台。\n"
@@ -2083,7 +2370,29 @@ class Dashboard(QDialog):
         self.platform_card_layout.addWidget(self.platform_empty)
         self.platform_card_layout.addStretch()
         scroll.setWidget(self.platform_card_host)
-        layout.addWidget(scroll, 1)
+        return scroll
+
+    def _platform_tab(self) -> QWidget:
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        intro = QLabel(
+            "集中管理工作中使用的平台、系統、客戶入口或協作工具。"
+            "每位使用者都可以建立自己的工作平台，不預設綁定任何產業。"
+        )
+        intro.setWordWrap(True)
+        intro.setStyleSheet("color:#486d83;")
+        layout.addWidget(intro)
+        add_row, add_platform = self._platform_add_controls()
+        layout.addLayout(add_row)
+        header, save_all = self._platform_filter_controls()
+        self.platform_feedback = QLabel(
+            "修改後會自動保存；也可以使用每張卡片的保存按鈕。"
+        )
+        self.platform_feedback.setStyleSheet("color:#4c6b82;")
+        self.platform_feedback.setWordWrap(True)
+        layout.addLayout(header)
+        layout.addWidget(self.platform_feedback)
+        layout.addWidget(self._platform_card_scroll(), 1)
         add_platform.clicked.connect(self.add_custom_platform)
         self.new_platform_name.returnPressed.connect(self.add_custom_platform)
         self.platform_filter.currentTextChanged.connect(
@@ -2095,6 +2404,20 @@ class Dashboard(QDialog):
         return tab
 
     def _create_platform_card(self, platform: str, row=None) -> None:
+        controls, grid = self._build_platform_card_controls()
+        self._populate_platform_card_grid(grid, platform, controls)
+        self._connect_platform_card(platform, controls)
+        self.platform_controls[platform] = controls
+        self.platform_card_layout.insertWidget(
+            max(0, self.platform_card_layout.count() - 1),
+            controls.card,
+        )
+        if row is not None:
+            self._load_platform_row(row)
+
+    def _build_platform_card_controls(
+        self,
+    ) -> tuple[PlatformCardControls, QGridLayout]:
         card = QFrame()
         card.setObjectName("platformCard")
         card.setStyleSheet(
@@ -2105,89 +2428,104 @@ class Dashboard(QDialog):
         grid.setContentsMargins(14, 12, 14, 12)
         grid.setHorizontalSpacing(10)
         grid.setVerticalSpacing(8)
-        name = QLabel(f"<b>{html.escape(platform)}</b>")
-        name.setStyleSheet("font-size:15px;color:#17344f;")
         status = QComboBox()
         status.addItems(PLATFORM_STATUSES)
-        item_name = QLineEdit()
-        item_name.setPlaceholderText("目前負責的工作項目、專案或案件")
-        missing = QLineEdit()
-        missing.setPlaceholderText("待補資料、等待他人回覆或其他阻礙；沒有可留空")
-        next_action = QLineEdit()
-        next_action.setPlaceholderText("下一個具體動作與期限")
-        notes = QLineEdit()
-        notes.setPlaceholderText("備註、規則、聯絡窗口或其他補充")
-        url = QLineEdit()
-        url.setPlaceholderText("https://…（可留空）")
-        validation = QLabel()
-        validation.setWordWrap(True)
-        updated = QLabel("尚未保存")
-        updated.setStyleSheet("color:#64788a;font-size:11px;")
-        open_btn = QPushButton("開啟網站／工具")
-        open_btn.clicked.connect(
-            lambda _checked=False, p=platform: self.open_platform(p)
+        controls = PlatformCardControls(
+            card=card,
+            status=status,
+            item_name=self._platform_editor(
+                "目前負責的工作項目、專案或案件"
+            ),
+            missing=self._platform_editor(
+                "待補資料、等待他人回覆或其他阻礙；沒有可留空"
+            ),
+            next_action=self._platform_editor("下一個具體動作與期限"),
+            notes=self._platform_editor("備註、規則、聯絡窗口或其他補充"),
+            url=self._platform_editor("https://…（可留空）"),
+            validation=QLabel(),
+            updated=QLabel("尚未保存"),
+            save_button=QPushButton("保存此平台"),
+            timer=QTimer(self),
         )
-        save_btn = QPushButton("保存此平台")
-        delete_btn = QPushButton("刪除平台")
-        delete_btn.setObjectName("dangerButton")
-        delete_btn.clicked.connect(
-            lambda _checked=False, p=platform: self.delete_custom_platform(p)
-        )
-        timer = QTimer(self)
-        timer.setSingleShot(True)
-        timer.setInterval(750)
+        controls.validation.setWordWrap(True)
+        controls.updated.setStyleSheet("color:#64788a;font-size:11px;")
+        controls.timer.setSingleShot(True)
+        controls.timer.setInterval(750)
+        return controls, grid
+
+    @staticmethod
+    def _platform_editor(placeholder: str) -> QLineEdit:
+        editor = QLineEdit()
+        editor.setPlaceholderText(placeholder)
+        return editor
+
+    def _populate_platform_card_grid(
+        self,
+        grid: QGridLayout,
+        platform: str,
+        controls: PlatformCardControls,
+    ) -> None:
+        name = QLabel(f"<b>{html.escape(platform)}</b>")
+        name.setStyleSheet("font-size:15px;color:#17344f;")
         grid.addWidget(name, 0, 0)
-        grid.addWidget(status, 0, 1)
-        grid.addWidget(updated, 0, 2)
-        actions = QHBoxLayout()
-        actions.addWidget(open_btn)
-        actions.addWidget(save_btn)
-        actions.addWidget(delete_btn)
-        grid.addLayout(actions, 0, 3)
-        grid.addWidget(QLabel("工作項目／專案"), 1, 0)
-        grid.addWidget(item_name, 1, 1, 1, 3)
-        grid.addWidget(QLabel("待補資料／阻礙"), 2, 0)
-        grid.addWidget(missing, 2, 1, 1, 3)
-        grid.addWidget(QLabel("下一步"), 3, 0)
-        grid.addWidget(next_action, 3, 1, 1, 3)
-        grid.addWidget(QLabel("備註"), 4, 0)
-        grid.addWidget(notes, 4, 1, 1, 3)
-        grid.addWidget(QLabel("網址"), 5, 0)
-        grid.addWidget(url, 5, 1, 1, 3)
-        grid.addWidget(validation, 6, 0, 1, 4)
-        controls = {
-            "card": card,
-            "status": status,
-            "item_name": item_name,
-            "missing": missing,
-            "next_action": next_action,
-            "notes": notes,
-            "url": url,
-            "validation": validation,
-            "updated": updated,
-            "save": save_btn,
-            "timer": timer,
-            "dirty": False,
-        }
-        self.platform_controls[platform] = controls
-        status.currentTextChanged.connect(
-            lambda _value, p=platform: self._platform_changed(p)
+        grid.addWidget(controls.status, 0, 1)
+        grid.addWidget(controls.updated, 0, 2)
+        grid.addLayout(
+            self._platform_card_actions(platform, controls.save_button),
+            0,
+            3,
         )
-        for editor in (item_name, missing, next_action, notes, url):
-            editor.textChanged.connect(
-                lambda _value, p=platform: self._platform_changed(p)
+        fields = (
+            ("工作項目／專案", controls.item_name),
+            ("待補資料／阻礙", controls.missing),
+            ("下一步", controls.next_action),
+            ("備註", controls.notes),
+            ("網址", controls.url),
+        )
+        for row, (label, editor) in enumerate(fields, start=1):
+            grid.addWidget(QLabel(label), row, 0)
+            grid.addWidget(editor, row, 1, 1, 3)
+        grid.addWidget(controls.validation, 6, 0, 1, 4)
+
+    def _platform_card_actions(
+        self,
+        platform: str,
+        save_button: QPushButton,
+    ) -> QHBoxLayout:
+        open_button = QPushButton("開啟網站／工具")
+        delete_button = QPushButton("刪除平台")
+        delete_button.setObjectName("dangerButton")
+        open_button.clicked.connect(
+            lambda _checked=False, name=platform: self.open_platform(name)
+        )
+        delete_button.clicked.connect(
+            lambda _checked=False, name=platform: (
+                self.delete_custom_platform(name)
             )
-        save_btn.clicked.connect(
-            lambda _checked=False, p=platform: self.save_platform(p)
         )
-        timer.timeout.connect(
-            lambda p=platform: self.save_platform(p, silent=True)
+        actions = QHBoxLayout()
+        for button in (open_button, save_button, delete_button):
+            actions.addWidget(button)
+        return actions
+
+    def _connect_platform_card(
+        self,
+        platform: str,
+        controls: PlatformCardControls,
+    ) -> None:
+        controls.status.currentTextChanged.connect(
+            lambda _value, name=platform: self._platform_changed(name)
         )
-        self.platform_card_layout.insertWidget(
-            max(0, self.platform_card_layout.count() - 1), card
+        for editor in controls.editors:
+            editor.textChanged.connect(
+                lambda _value, name=platform: self._platform_changed(name)
+            )
+        controls.save_button.clicked.connect(
+            lambda _checked=False, name=platform: self.save_platform(name)
         )
-        if row is not None:
-            self._load_platform_row(row)
+        controls.timer.timeout.connect(
+            lambda name=platform: self.save_platform(name, silent=True)
+        )
 
     def _load_platform_row(self, row) -> None:
         platform = row["platform"]
@@ -2195,22 +2533,23 @@ class Dashboard(QDialog):
         if controls is None:
             return
         status = to_taiwan_traditional(row["status"])
-        if controls["status"].findText(status) < 0:
-            controls["status"].addItem(status)
-        controls["status"].setCurrentText(status)
+        if controls.status.findText(status) < 0:
+            controls.status.addItem(status)
+        controls.status.setCurrentText(status)
         for field in ("item_name", "missing", "next_action", "notes", "url"):
-            controls[field].setText(to_taiwan_traditional(row[field] or ""))
-        controls["dirty"] = False
-        controls["save"].setText("保存此平台")
-        controls["updated"].setText(
+            editor = getattr(controls, field)
+            editor.setText(to_taiwan_traditional(row[field] or ""))
+        controls.dirty = False
+        controls.save_button.setText("保存此平台")
+        controls.updated.setText(
             self._format_platform_updated(row["updated_at"])
         )
         self._validate_platform(platform)
 
     def _clear_platform_cards(self) -> None:
         for controls in self.platform_controls.values():
-            controls["timer"].stop()
-            controls["card"].deleteLater()
+            controls.timer.stop()
+            controls.card.deleteLater()
         self.platform_controls.clear()
 
     def _reload_platform_cards(self) -> None:
@@ -2271,12 +2610,12 @@ class Dashboard(QDialog):
             return
         controls = self.platform_controls.get(platform)
         if controls is not None:
-            controls["timer"].stop()
+            controls.timer.stop()
         if not self.db.delete_platform(platform):
             self.platform_feedback.setText(f"找不到工作平台：{platform}")
             return
         if controls is not None:
-            controls["card"].deleteLater()
+            controls.card.deleteLater()
             del self.platform_controls[platform]
         self.platform_empty.setVisible(not self.platform_controls)
         self.platform_feedback.setText(f"已刪除工作平台：{platform}")
@@ -2286,22 +2625,58 @@ class Dashboard(QDialog):
     def _memory_tab(self) -> QWidget:
         tab = QWidget()
         layout = QVBoxLayout(tab)
+        entry_row, add_button = self._memory_entry_row()
+        filter_row, edit_button, delete_button = (
+            self._memory_filter_row()
+        )
+        action_row, clear_button, optimize_button, archives_button = (
+            self._memory_action_row()
+        )
+        self.memory_list = self._memory_list_widget()
+        self.auto_memory = self._memory_auto_checkbox()
+        layout.addWidget(self._memory_intro())
+        layout.addLayout(entry_row)
+        layout.addLayout(filter_row)
+        layout.addWidget(self.memory_list, 1)
+        layout.addWidget(self.auto_memory)
+        layout.addLayout(action_row)
+        self._connect_memory_actions(
+            MemoryTabActions(
+                add=add_button,
+                edit=edit_button,
+                delete=delete_button,
+                clear=clear_button,
+                optimize=optimize_button,
+                archives=archives_button,
+            )
+        )
+        return tab
+
+    @staticmethod
+    def _memory_intro() -> QLabel:
         intro = QLabel(
             "墨寒只保存主上允許留下的人物、偏好、目標、工作流程與"
             "重要日期。記憶存於本機，可分類瀏覽、逐項編輯或刪除。"
         )
         intro.setWordWrap(True)
+        return intro
+
+    def _memory_entry_row(self) -> tuple[QHBoxLayout, QPushButton]:
         entry = QHBoxLayout()
         self.memory_input = QLineEdit()
         self.memory_input.setPlaceholderText("例如：主上偏好先完成漫畫，再處理行政工作")
         self.memory_category = QComboBox()
         self.memory_category.addItems(MEMORY_CATEGORIES)
         self.memory_category.setCurrentText("偏好")
-        add = QPushButton("讓寒記住")
+        add_button = QPushButton("讓寒記住")
         entry.addWidget(self.memory_input, 1)
         entry.addWidget(self.memory_category)
-        entry.addWidget(add)
+        entry.addWidget(add_button)
+        return entry, add_button
 
+    def _memory_filter_row(
+        self,
+    ) -> tuple[QHBoxLayout, QPushButton, QPushButton]:
         filter_row = QHBoxLayout()
         filter_row.addWidget(QLabel("分類瀏覽"))
         self.memory_filter = QComboBox()
@@ -2313,147 +2688,206 @@ class Dashboard(QDialog):
         filter_row.addWidget(self.memory_filter)
         filter_row.addWidget(self.memory_count)
         filter_row.addStretch()
-        edit = QPushButton("編輯選取記憶")
-        edit.setToolTip("也可以直接雙擊下方任一記憶")
-        delete = QPushButton("刪除勾選記憶")
-        delete.setToolTip("只刪除已勾選的記憶，執行前會再次確認")
-        filter_row.addWidget(edit)
-        filter_row.addWidget(delete)
+        edit_button = QPushButton("編輯選取記憶")
+        edit_button.setToolTip("也可以直接雙擊下方任一記憶")
+        delete_button = QPushButton("刪除勾選記憶")
+        delete_button.setToolTip("只刪除已勾選的記憶，執行前會再次確認")
+        filter_row.addWidget(edit_button)
+        filter_row.addWidget(delete_button)
+        return filter_row, edit_button, delete_button
 
-        self.memory_list = QListWidget()
-        self.memory_list.setObjectName("memoryList")
-        self.memory_list.setSpacing(3)
+    @staticmethod
+    def _memory_list_widget() -> QListWidget:
+        memory_list = QListWidget()
+        memory_list.setObjectName("memoryList")
+        memory_list.setSpacing(3)
+        return memory_list
+
+    @staticmethod
+    def _memory_action_row(
+    ) -> tuple[QHBoxLayout, QPushButton, QPushButton, QPushButton]:
         actions = QHBoxLayout()
-        clear = QPushButton("清除全部記憶")
-        optimize = QPushButton("安全整理記憶")
-        optimize.setToolTip("合併低重要度重複內容，超量舊記憶只會先封存")
-        archives = QPushButton("查看已封存記憶")
-        self.auto_memory = QCheckBox("從「請記住／我喜歡／我習慣」等明確說法自動建立記憶")
-        self.auto_memory.setChecked(bool(self.db.setting("auto_memory", True)))
-        actions.addWidget(clear)
-        actions.addWidget(optimize)
-        actions.addWidget(archives)
+        clear_button = QPushButton("清除全部記憶")
+        optimize_button = QPushButton("安全整理記憶")
+        optimize_button.setToolTip(
+            "合併低重要度重複內容，超量舊記憶只會先封存"
+        )
+        archives_button = QPushButton("查看已封存記憶")
+        actions.addWidget(clear_button)
+        actions.addWidget(optimize_button)
+        actions.addWidget(archives_button)
         actions.addStretch()
-        layout.addWidget(intro)
-        layout.addLayout(entry)
-        layout.addLayout(filter_row)
-        layout.addWidget(self.memory_list, 1)
-        layout.addWidget(self.auto_memory)
-        layout.addLayout(actions)
-        add.clicked.connect(self.add_memory)
+        return (
+            actions,
+            clear_button,
+            optimize_button,
+            archives_button,
+        )
+
+    def _memory_auto_checkbox(self) -> QCheckBox:
+        checkbox = QCheckBox(
+            "從「請記住／我喜歡／我習慣」等明確說法自動建立記憶"
+        )
+        checkbox.setChecked(bool(self.db.setting("auto_memory", True)))
+        return checkbox
+
+    def _connect_memory_actions(self, actions: MemoryTabActions) -> None:
+        actions.add.clicked.connect(self.add_memory)
         self.memory_input.returnPressed.connect(self.add_memory)
-        edit.clicked.connect(self.edit_selected_memory)
-        delete.clicked.connect(self.delete_checked_memories)
+        actions.edit.clicked.connect(self.edit_selected_memory)
+        actions.delete.clicked.connect(self.delete_checked_memories)
         self.memory_list.itemDoubleClicked.connect(self.edit_memory_item)
         self.memory_filter.currentIndexChanged.connect(self.refresh_memories)
-        clear.clicked.connect(self.clear_memories)
-        optimize.clicked.connect(self.optimize_memories)
-        archives.clicked.connect(self.show_archived_memories)
-        return tab
+        actions.clear.clicked.connect(self.clear_memories)
+        actions.optimize.clicked.connect(self.optimize_memories)
+        actions.archives.clicked.connect(self.show_archived_memories)
 
-    def _voice_tab(self) -> QWidget:
-        tab = QScrollArea()
-        tab.setObjectName("formScrollPage")
-        tab.setWidgetResizable(True)
-        tab.setFrameShape(QFrame.NoFrame)
-        tab.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        tab.viewport().setStyleSheet("background:#ffffff;")
+    @staticmethod
+    def _form_scroll_page() -> tuple[QScrollArea, QFormLayout]:
+        page = QScrollArea()
+        page.setObjectName("formScrollPage")
+        page.setWidgetResizable(True)
+        page.setFrameShape(QFrame.NoFrame)
+        page.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        page.viewport().setStyleSheet("background:#ffffff;")
         content = QWidget()
         content.setObjectName("formScrollContent")
         content.setStyleSheet(
             "QWidget#formScrollContent{background:#ffffff;}"
         )
         form = QFormLayout(content)
-        tab.setWidget(content)
-        platform = self.platform_services.capabilities
-        local_speech_available = platform.system_local_speech
-        offline_recognition_available = platform.offline_speech_recognition
-        secure_storage_available = platform.secure_secret_storage
-        self.speech_recognition = QComboBox()
-        self.speech_recognition.addItem(
+        page.setWidget(content)
+        return page, form
+
+    @staticmethod
+    def _editable_combo(
+        items: Iterable[str],
+        current_text: str,
+    ) -> QComboBox:
+        combo = QComboBox()
+        combo.setEditable(True)
+        combo.addItems(list(items))
+        combo.setCurrentText(current_text)
+        return combo
+
+    @staticmethod
+    def _select_combo_data(combo: QComboBox, value: str) -> None:
+        combo.setCurrentIndex(max(0, combo.findData(value)))
+
+    def _initialize_transcription_controls(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> None:
+        self.speech_recognition = self._speech_recognition_combo(
+            capabilities
+        )
+        self.transcription_model = self._editable_combo(
+            ("gpt-4o-mini-transcribe", "gpt-4o-transcribe"),
+            str(
+                self.db.setting(
+                    "transcription_model",
+                    SpeechListener.TRANSCRIPTION_MODEL,
+                )
+            ),
+        )
+        self.transcription_language = self._transcription_language_input()
+        self.transcription_prompt = self._transcription_prompt_input()
+        self.windows_transcription_fallback = (
+            self._transcription_fallback_checkbox(capabilities)
+        )
+        self.transcription_diagnostic = (
+            self._transcription_diagnostic_label()
+        )
+
+    def _speech_recognition_combo(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> QComboBox:
+        combo = QComboBox()
+        combo.addItem(
             self._t(
                 "openai_recognition",
                 "OpenAI 高準確辨識（推薦）",
             ),
             "OpenAI 高準確辨識（推薦）",
         )
-        if offline_recognition_available:
-            self.speech_recognition.addItem(
+        if capabilities.offline_speech_recognition:
+            combo.addItem(
                 self._t("windows_recognition", "Windows 離線辨識"),
                 "Windows 離線辨識",
             )
-        recognition_index = self.speech_recognition.findData(
+        self._select_combo_data(
+            combo,
             str(
                 self.db.setting(
-                    "speech_recognition", "OpenAI 高準確辨識（推薦）"
+                    "speech_recognition",
+                    "OpenAI 高準確辨識（推薦）",
                 )
-            )
+            ),
         )
-        self.speech_recognition.setCurrentIndex(max(0, recognition_index))
-        self.transcription_model = QComboBox()
-        self.transcription_model.setEditable(True)
-        self.transcription_model.addItems(
-            ["gpt-4o-mini-transcribe", "gpt-4o-transcribe"]
-        )
-        self.transcription_model.setCurrentText(
-            str(
-                self.db.setting(
-                    "transcription_model",
-                    SpeechListener.TRANSCRIPTION_MODEL,
-                )
-            )
-        )
-        self.transcription_language = QLineEdit(
+        return combo
+
+    def _transcription_language_input(self) -> QLineEdit:
+        language = QLineEdit(
             str(self.db.setting("transcription_language", "zh"))
         )
-        self.transcription_language.setPlaceholderText(
+        language.setPlaceholderText(
             self._t(
                 "transcription_language_placeholder",
                 "ISO 語言代碼；留空可讓模型自動判斷",
             )
         )
-        self.transcription_prompt = QTextEdit()
-        self.transcription_prompt.setPlainText(
-            str(
-                self.db.setting(
-                    "transcription_prompt",
-                    localized_transcription_prompt(
-                        self.ui_language,
-                        assistant_name=self.assistant_name,
-                        user_title=self.user_title,
-                        organization_name=self.organization_name,
-                        wake_word=profile_setting(self.db, "wake_word"),
-                    ),
-                )
-            )
+        return language
+
+    def _transcription_prompt_input(self) -> QTextEdit:
+        prompt = QTextEdit()
+        default_prompt = localized_transcription_prompt(
+            self.ui_language,
+            assistant_name=self.assistant_name,
+            user_title=self.user_title,
+            organization_name=self.organization_name,
+            wake_word=profile_setting(self.db, "wake_word"),
         )
-        self.transcription_prompt.setMaximumHeight(100)
-        self.windows_transcription_fallback = QCheckBox(
+        prompt.setPlainText(
+            str(self.db.setting("transcription_prompt", default_prompt))
+        )
+        prompt.setMaximumHeight(100)
+        return prompt
+
+    def _transcription_fallback_checkbox(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> QCheckBox:
+        fallback = QCheckBox(
             self._t(
                 "openai_fallback",
                 "OpenAI 失敗時使用 Windows 離線辨識",
             )
         )
-        self.windows_transcription_fallback.setChecked(
+        available = capabilities.offline_speech_recognition
+        fallback.setChecked(
             bool(
-                offline_recognition_available
-                and
-                self.db.setting(
+                available
+                and self.db.setting(
                     "windows_transcription_fallback",
                     True,
                 )
             )
         )
-        if not offline_recognition_available:
-            self.windows_transcription_fallback.setText(
-                self._t(
-                    "platform_offline_fallback_unavailable",
-                    f"{platform.display_name} 離線辨識尚未完成實機驗證",
-                    platform=platform.display_name,
-                )
+        if available:
+            return fallback
+        fallback.setText(
+            self._t(
+                "platform_offline_fallback_unavailable",
+                f"{capabilities.display_name} 離線辨識尚未完成實機驗證",
+                platform=capabilities.display_name,
             )
-            self.windows_transcription_fallback.setEnabled(False)
-        self.transcription_diagnostic = QLabel(
+        )
+        fallback.setEnabled(False)
+        return fallback
+
+    def _transcription_diagnostic_label(self) -> QLabel:
+        diagnostic = QLabel(
             str(
                 self.db.setting(
                     "last_transcription_diagnostic",
@@ -2464,21 +2898,44 @@ class Dashboard(QDialog):
                 )
             )
         )
-        self.transcription_diagnostic.setWordWrap(True)
-        self.transcription_diagnostic.setStyleSheet(
-            "color:#2f6987; padding:6px;"
-        )
-        self.voice_engine = QComboBox()
-        voice_engine_options = []
-        if local_speech_available:
-            voice_engine_options.append(
-                (
-                    VOICE_ENGINE_SYSTEM,
-                    self._t("windows_engine", "Windows 本機語音"),
+        diagnostic.setWordWrap(True)
+        diagnostic.setStyleSheet("color:#2f6987; padding:6px;")
+        return diagnostic
+
+    def _initialize_voice_provider_controls(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> None:
+        self.voice_engine = self._voice_engine_combo(capabilities)
+        self.windows_voice = self._windows_voice_combo(capabilities)
+        migrate_voice_defaults(self.db)
+        self.tts_voice = self._editable_combo(
+            TTS_VOICES,
+            str(
+                self.db.setting(
+                    "tts_voice",
+                    self.db.setting("cloud_voice", "coral"),
                 )
+            ),
+        )
+        self.realtime_voice = self._editable_combo(
+            REALTIME_VOICES,
+            str(self.db.setting("realtime_voice", "coral")),
+        )
+        self._initialize_azure_voice_controls(capabilities)
+        self.cloud_voice = self.tts_voice
+
+    def _voice_engine_combo(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> QComboBox:
+        combo = QComboBox()
+        if capabilities.system_local_speech:
+            combo.addItem(
+                self._t("windows_engine", "Windows 本機語音"),
+                VOICE_ENGINE_SYSTEM,
             )
-        voice_engine_options.extend(
-            (
+        cloud_engines = (
             (
                 VOICE_ENGINE_OPENAI,
                 self._t("openai_engine", "OpenAI 自然語音"),
@@ -2491,253 +2948,305 @@ class Dashboard(QDialog):
                 VOICE_ENGINE_AZURE,
                 self._t("azure_engine", "Azure Speech（預覽）"),
             ),
-            )
         )
-        for key, label in voice_engine_options:
-            self.voice_engine.addItem(label, key)
-        saved_voice_engine = migrate_speech_provider_setting(self.db)
-        engine_index = self.voice_engine.findData(
-            saved_voice_engine
+        for key, label in cloud_engines:
+            combo.addItem(label, key)
+        self._select_combo_data(
+            combo,
+            migrate_speech_provider_setting(self.db),
         )
-        self.voice_engine.setCurrentIndex(max(0, engine_index))
-        self.windows_voice = QComboBox()
-        available_voices = [
-            voice
-            for voice in (windows_voices() if local_speech_available else [])
-            if not is_known_male_windows_voice(voice[0])
-        ]
-        if not available_voices:
-            self.windows_voice.addItem(
-                (
-                    self._t(
-                        "no_female_voice",
-                        "未偵測到已確認的女性 Windows 聲音",
-                    )
-                    if local_speech_available
-                    else self._t(
-                        "platform_local_voice_unavailable",
-                        f"{platform.display_name} 本機語音尚未完成實機驗證",
-                        platform=platform.display_name,
-                    )
-                ),
+        return combo
+
+    def _windows_voice_combo(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> QComboBox:
+        combo = QComboBox()
+        available = self._available_windows_voices(capabilities)
+        if not available:
+            combo.addItem(
+                self._unavailable_windows_voice_label(capabilities),
                 "",
             )
-            self.windows_voice.model().item(0).setEnabled(False)
-        if not local_speech_available:
-            self.windows_voice.setEnabled(False)
-        saved_windows_voice = str(self.db.setting("windows_voice", ""))
-        yating_available = any(
-            "yating" in name.lower() and culture.lower() == "zh-tw"
-            for name, culture in available_voices
+            combo.model().item(0).setEnabled(False)
+        if not capabilities.system_local_speech:
+            combo.setEnabled(False)
+        saved_voice = str(self.db.setting("windows_voice", ""))
+        preferred, force_default = self._preferred_windows_voice(
+            available,
+            saved_voice,
         )
-        yating_migrated = bool(
-            self.db.setting("onecore_yating_v181_migrated", False)
-        )
-        force_yating_default = (
-            self.ui_language.lower() in {"zh", "zh-tw"}
-            and yating_available
-            and not yating_migrated
-        )
-        preferred_voice = preferred_windows_voice(
-            available_voices,
-            "" if force_yating_default else saved_windows_voice,
-            self.ui_language,
-        )
-        ordered_voices = sorted(
-            available_voices,
+        for name, culture in sorted(
+            available,
             key=lambda voice: (
-                voice[0] != preferred_voice,
+                voice[0] != preferred,
                 voice[1].lower(),
                 voice[0].lower(),
             ),
-        )
-        for name, culture in ordered_voices:
-            source = (
-                "OneCore"
-                if name.startswith("OneCore::")
-                else "Desktop SAPI"
-            )
-            short_name = next(
-                (
-                    keyword
-                    for keyword in ("Yating", "Hanhan")
-                    if keyword.lower() in name.lower()
-                ),
+        ):
+            combo.addItem(
+                self._windows_voice_label(name, culture),
                 name,
             )
-            self.windows_voice.addItem(
-                f"{short_name}（{culture}，{source}）", name
+        self._persist_windows_voice_migration(
+            preferred,
+            saved_voice,
+            force_default,
+        )
+        preferred_index = combo.findData(preferred)
+        if preferred_index >= 0:
+            combo.setCurrentIndex(preferred_index)
+        return combo
+
+    @staticmethod
+    def _available_windows_voices(
+        capabilities: PlatformCapabilities,
+    ) -> tuple[tuple[str, str], ...]:
+        if not capabilities.system_local_speech:
+            return ()
+        return tuple(
+            (name, culture)
+            for name, culture in windows_voices()
+            if not is_known_male_windows_voice(name)
+        )
+
+    def _unavailable_windows_voice_label(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> str:
+        if capabilities.system_local_speech:
+            return self._t(
+                "no_female_voice",
+                "未偵測到已確認的女性 Windows 聲音",
             )
-        if force_yating_default:
-            self.db.set_setting("onecore_yating_v181_migrated", True)
-        if preferred_voice and (
-            force_yating_default or not saved_windows_voice
-        ):
-            self.db.set_setting("windows_voice", preferred_voice)
-        for index in range(self.windows_voice.count()):
-            if self.windows_voice.itemData(index) == preferred_voice:
-                self.windows_voice.setCurrentIndex(index)
-                break
-        migrate_voice_defaults(self.db)
-        self.tts_voice = QComboBox()
-        self.tts_voice.setEditable(True)
-        self.tts_voice.addItems(TTS_VOICES)
-        self.tts_voice.setCurrentText(
-            str(
+        return self._t(
+            "platform_local_voice_unavailable",
+            f"{capabilities.display_name} 本機語音尚未完成實機驗證",
+            platform=capabilities.display_name,
+        )
+
+    def _preferred_windows_voice(
+        self,
+        available: tuple[tuple[str, str], ...],
+        saved_voice: str,
+    ) -> tuple[str, bool]:
+        yating_available = any(
+            "yating" in name.lower() and culture.lower() == "zh-tw"
+            for name, culture in available
+        )
+        force_default = (
+            self.ui_language.lower() in {"zh", "zh-tw"}
+            and yating_available
+            and not bool(
                 self.db.setting(
-                    "tts_voice", self.db.setting("cloud_voice", "coral")
+                    "onecore_yating_v181_migrated",
+                    False,
                 )
             )
         )
-        self.realtime_voice = QComboBox()
-        self.realtime_voice.setEditable(True)
-        self.realtime_voice.addItems(REALTIME_VOICES)
-        self.realtime_voice.setCurrentText(
-            str(self.db.setting("realtime_voice", "coral"))
+        preferred = preferred_windows_voice(
+            available,
+            "" if force_default else saved_voice,
+            self.ui_language,
         )
-        self.azure_voice = QComboBox()
+        return preferred, force_default
+
+    @staticmethod
+    def _windows_voice_label(name: str, culture: str) -> str:
+        source = (
+            "OneCore" if name.startswith("OneCore::") else "Desktop SAPI"
+        )
+        short_name = next(
+            (
+                keyword
+                for keyword in ("Yating", "Hanhan")
+                if keyword.lower() in name.lower()
+            ),
+            name,
+        )
+        return f"{short_name}（{culture}，{source}）"
+
+    def _persist_windows_voice_migration(
+        self,
+        preferred: str,
+        saved_voice: str,
+        force_default: bool,
+    ) -> None:
+        if force_default:
+            self.db.set_setting("onecore_yating_v181_migrated", True)
+        if preferred and (force_default or not saved_voice):
+            self.db.set_setting("windows_voice", preferred)
+
+    def _initialize_azure_voice_controls(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> None:
         azure_voices = azure_female_voices(self.ui_language)
-        self.azure_voice.addItems(azure_voices)
-        saved_azure_voice = str(
+        saved_voice = str(
             self.db.setting("azure_speech_voice", azure_voices[0])
         )
-        self.azure_voice.setCurrentText(
-            saved_azure_voice
-            if saved_azure_voice in azure_voices
-            else azure_voices[0]
+        selected_voice = (
+            saved_voice if saved_voice in azure_voices else azure_voices[0]
         )
+        self.azure_voice = self._editable_combo(
+            azure_voices,
+            selected_voice,
+        )
+        self.azure_voice.setEditable(False)
         self.azure_region = QLineEdit(
             str(self.db.setting("azure_speech_region", ""))
         )
         self.azure_region.setPlaceholderText(
             self._t("azure_region_placeholder", "例如：eastasia")
         )
+        self._initialize_azure_key_controls(capabilities)
+
+    def _initialize_azure_key_controls(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> None:
         self.azure_key_input = QLineEdit()
         self.azure_key_input.setEchoMode(QLineEdit.Password)
-        azure_key_saved = bool(
-            secure_storage_available
+        secure_storage = capabilities.secure_secret_storage
+        key_saved = bool(
+            secure_storage
             and self.azure_secret_store
             and self.azure_secret_store.load()
         )
-        if secure_storage_available:
-            self.azure_key_input.setPlaceholderText(
+        if secure_storage:
+            placeholder = (
                 self._t(
                     "azure_key_saved",
                     "已由 Windows 加密保存（留空不變）",
                 )
-                if azure_key_saved
+                if key_saved
                 else self._t(
                     "azure_key_missing",
                     "貼上 Azure Speech 資源金鑰",
                 )
             )
         else:
-            self.azure_key_input.setPlaceholderText(
-                self._t(
-                    "platform_secret_storage_unavailable",
-                    f"{platform.display_name} 安全金鑰保存尚未完成實機驗證",
-                    platform=platform.display_name,
-                )
+            placeholder = self._t(
+                "platform_secret_storage_unavailable",
+                f"{capabilities.display_name} 安全金鑰保存尚未完成實機驗證",
+                platform=capabilities.display_name,
             )
             self.azure_key_input.setEnabled(False)
+        self.azure_key_input.setPlaceholderText(placeholder)
         self.azure_clear_key = QPushButton(
             self._t("azure_remove_key", "移除 Azure Speech 金鑰")
         )
-        self.azure_clear_key.clicked.connect(self.clear_azure_speech_key)
-        self.azure_clear_key.setEnabled(secure_storage_available)
-        # 舊版測試與設定相容別名；新介面已將一般朗讀和 Realtime 分開。
-        self.cloud_voice = self.tts_voice
-        self.realtime_model = QComboBox()
-        self.realtime_model.setEditable(True)
-        self.realtime_model.addItems(
-            ["gpt-realtime-2.1-mini", "gpt-realtime-2.1"]
+        self.azure_clear_key.clicked.connect(
+            self.clear_azure_speech_key
         )
-        self.realtime_model.setCurrentText(
+        self.azure_clear_key.setEnabled(secure_storage)
+
+    def _initialize_realtime_controls(self) -> None:
+        self.realtime_model = self._editable_combo(
+            ("gpt-realtime-2.1-mini", "gpt-realtime-2.1"),
             str(
                 self.db.setting(
-                    "realtime_model", "gpt-realtime-2.1-mini"
+                    "realtime_model",
+                    "gpt-realtime-2.1-mini",
                 )
-            )
+            ),
         )
-        self.realtime_transcription_model = QComboBox()
-        self.realtime_transcription_model.setEditable(True)
-        self.realtime_transcription_model.addItems(
-            ["gpt-4o-mini-transcribe", "gpt-4o-transcribe"]
-        )
-        self.realtime_transcription_model.setCurrentText(
+        self.realtime_transcription_model = self._editable_combo(
+            ("gpt-4o-mini-transcribe", "gpt-4o-transcribe"),
             str(
                 self.db.setting(
                     "realtime_transcription_model",
                     "gpt-4o-mini-transcribe",
                 )
-            )
+            ),
         )
-        self.realtime_noise_reduction = QComboBox()
-        self.realtime_noise_reduction.addItem(
+        self.realtime_noise_reduction = (
+            self._realtime_noise_reduction_combo()
+        )
+        self.realtime_turn_detection = (
+            self._realtime_turn_detection_combo()
+        )
+        self.realtime_echo_guard = self._realtime_echo_guard_checkbox()
+        self.realtime_hybrid_transcription = (
+            self._realtime_hybrid_transcription_checkbox()
+        )
+
+    def _realtime_noise_reduction_combo(self) -> QComboBox:
+        combo = QComboBox()
+        combo.addItem(
             self._t("near_field", "近距離麥克風（推薦）"),
             "near_field",
         )
-        self.realtime_noise_reduction.addItem(
+        combo.addItem(
             self._t("far_field", "遠距離／筆電麥克風"),
             "far_field",
         )
-        self.realtime_noise_reduction.addItem(
+        combo.addItem(
             self._t("noise_off", "關閉降噪"),
             "off",
         )
-        noise_index = self.realtime_noise_reduction.findData(
+        self._select_combo_data(
+            combo,
             str(
                 self.db.setting(
                     "realtime_noise_reduction",
                     "near_field",
                 )
-            )
+            ),
         )
-        self.realtime_noise_reduction.setCurrentIndex(max(0, noise_index))
-        self.realtime_turn_detection = QComboBox()
-        self.realtime_turn_detection.addItem(
+        return combo
+
+    def _realtime_turn_detection_combo(self) -> QComboBox:
+        combo = QComboBox()
+        combo.addItem(
             self._t(
                 "stable_vad",
                 "穩定完整（推薦，停頓約 0.85 秒）",
             ),
             "server_vad",
         )
-        self.realtime_turn_detection.addItem(
+        combo.addItem(
             self._t(
                 "semantic_vad",
                 "自然語意（可能提早切段）",
             ),
             "semantic_vad",
         )
-        vad_index = self.realtime_turn_detection.findData(
+        self._select_combo_data(
+            combo,
             str(
                 self.db.setting(
                     "realtime_turn_detection",
                     "server_vad",
                 )
-            )
+            ),
         )
-        self.realtime_turn_detection.setCurrentIndex(max(0, vad_index))
-        self.realtime_echo_guard = QCheckBox(
+        return combo
+
+    def _realtime_echo_guard_checkbox(self) -> QCheckBox:
+        checkbox = QCheckBox(
             self._t(
                 "echo_guard_option",
                 "防止墨寒把自己的聲音誤認成主上（推薦）",
             )
         )
-        self.realtime_echo_guard.setChecked(
+        checkbox.setChecked(
             bool(self.db.setting("realtime_echo_guard", True))
         )
-        self.realtime_echo_guard.setToolTip(
+        checkbox.setToolTip(
             "墨寒說話時暫停上傳麥克風，播放結束後再恢復；"
             "啟用時無法在她說話途中插話。"
         )
-        self.realtime_hybrid_transcription = QCheckBox(
+        return checkbox
+
+    def _realtime_hybrid_transcription_checkbox(self) -> QCheckBox:
+        checkbox = QCheckBox(
             self._t(
                 "hybrid_transcript",
                 "畫面採用高精度整句轉錄（推薦）",
             )
         )
-        self.realtime_hybrid_transcription.setChecked(
+        checkbox.setChecked(
             bool(
                 self.db.setting(
                     "realtime_hybrid_transcription",
@@ -2745,23 +3254,24 @@ class Dashboard(QDialog):
                 )
             )
         )
-        self.realtime_hybrid_transcription.setToolTip(
+        checkbox.setToolTip(
             "Realtime 保留原生音訊理解；每句說完後，畫面文字改用"
             "完整錄音的 OpenAI 高精度轉錄。成功後才允許墨寒回答。"
         )
+        return checkbox
+
+    def _initialize_voice_rate_control(self) -> QWidget:
         self.voice_rate = QSpinBox()
         self.voice_rate.setRange(-5, 5)
         self.voice_rate.setValue(int(self.db.setting("voice_rate", -1)))
-        self.voice_rate.setSuffix(
-            self._t("level_suffix", " 級")
-        )
+        self.voice_rate.setSuffix(self._t("level_suffix", " 級"))
         self.voice_rate.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.voice_rate.lineEdit().setReadOnly(True)
         self.voice_rate.setAlignment(Qt.AlignCenter)
-        rate_control = QWidget()
-        rate_layout = QHBoxLayout(rate_control)
-        rate_layout.setContentsMargins(0, 0, 0, 0)
-        rate_layout.setSpacing(8)
+        control = QWidget()
+        layout = QHBoxLayout(control)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(8)
         self.voice_rate_down = QPushButton("－")
         self.voice_rate_down.setToolTip(
             self._t("rate_down", "降低本機朗讀速度")
@@ -2774,9 +3284,12 @@ class Dashboard(QDialog):
         self.voice_rate_up.setFixedWidth(48)
         self.voice_rate_down.clicked.connect(self.voice_rate.stepDown)
         self.voice_rate_up.clicked.connect(self.voice_rate.stepUp)
-        rate_layout.addWidget(self.voice_rate_down)
-        rate_layout.addWidget(self.voice_rate, 1)
-        rate_layout.addWidget(self.voice_rate_up)
+        layout.addWidget(self.voice_rate_down)
+        layout.addWidget(self.voice_rate, 1)
+        layout.addWidget(self.voice_rate_up)
+        return control
+
+    def _initialize_voice_volume_control(self) -> QWidget:
         self.voice_volume = QSlider(Qt.Horizontal)
         self.voice_volume.setRange(0, 160)
         self.voice_volume.setSingleStep(5)
@@ -2788,21 +3301,24 @@ class Dashboard(QDialog):
         self.voice_volume_label.setMinimumWidth(52)
         self.voice_volume_label.setAlignment(Qt.AlignCenter)
         self.voice_muted = QCheckBox(self._t("mute", "靜音"))
-        volume_control = QWidget()
-        volume_layout = QHBoxLayout(volume_control)
-        volume_layout.setContentsMargins(0, 0, 0, 0)
-        volume_layout.setSpacing(8)
-        volume_layout.addWidget(self.voice_volume, 1)
-        volume_layout.addWidget(self.voice_volume_label)
-        volume_layout.addWidget(self.voice_muted)
         self.voice_muted.setChecked(
             bool(self.db.setting("voice_muted", False))
         )
+        control = QWidget()
+        layout = QHBoxLayout(control)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(8)
+        layout.addWidget(self.voice_volume, 1)
+        layout.addWidget(self.voice_volume_label)
+        layout.addWidget(self.voice_muted)
         self.voice_volume.valueChanged.connect(
             self._voice_volume_changed
         )
         self.voice_muted.toggled.connect(self._voice_volume_changed)
         self._update_voice_volume_label()
+        return control
+
+    def _initialize_voice_action_controls(self) -> None:
         self.voice_instructions = QLineEdit(
             str(
                 self.db.setting(
@@ -2811,10 +3327,10 @@ class Dashboard(QDialog):
                 )
             )
         )
-        preview = QPushButton(
+        self.voice_preview_button = QPushButton(
             self._t("preview_voice", "試聽：主上，妾在。")
         )
-        preview.clicked.connect(self._preview_voice)
+        self.voice_preview_button.clicked.connect(self._preview_voice)
         self.realtime_status = QLabel(
             self._t("realtime_disconnected", "Realtime：未連線")
         )
@@ -2822,8 +3338,97 @@ class Dashboard(QDialog):
             self._t("start_realtime", "啟動 Realtime 自然對話")
         )
         self.realtime_btn.setCheckable(True)
-        self.realtime_btn.toggled.connect(self.realtime_toggle_requested.emit)
-        note = QLabel(
+        self.realtime_btn.toggled.connect(
+            self.realtime_toggle_requested.emit
+        )
+
+    @staticmethod
+    def _voice_note(text: str) -> QLabel:
+        note = QLabel(text)
+        note.setWordWrap(True)
+        return note
+
+    def _recognition_note(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> QLabel:
+        if capabilities.offline_speech_recognition:
+            text = self._t(
+                "recognition_note",
+                "單次麥克風預設使用 gpt-4o-mini-transcribe 與墨寒專用繁中詞庫；"
+                "停止說話約 0.85 秒即送出，最長 10 秒；收音時再次點擊"
+                "麥克風可立即送出。Windows 備援可自行關閉。",
+            )
+        else:
+            text = self._t(
+                "recognition_note_no_offline",
+                "單次麥克風使用 OpenAI 高準確辨識；此平台的離線辨識尚未"
+                "完成實機驗證，因此不會顯示或假裝提供離線備援。",
+            )
+        return self._voice_note(text)
+
+    def _windows_voice_note(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> QLabel:
+        if capabilities.system_local_speech:
+            text = self._t(
+                "female_voice_note",
+                "離線聲音僅列出 Windows 已明確標示為女性的聲音；"
+                "台灣繁中仍優先使用 Yating（zh-TW）。",
+            )
+        else:
+            text = self._t(
+                "platform_local_voice_note",
+                f"{capabilities.display_name} 本機語音尚未完成實機驗證；"
+                "未支援前不會顯示其他平台的聲音或宣稱有離線朗讀。",
+                platform=capabilities.display_name,
+            )
+        return self._voice_note(text)
+
+    def _azure_voice_note(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> QLabel:
+        if capabilities.system_local_speech:
+            text = self._t(
+                "azure_speech_note",
+                "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
+                "只列官方標示為女性的繁中、簡中或英文聲線；失敗時"
+                "立即回到 Windows 本機女聲。F0 免費額度及計費以"
+                " Microsoft 當期規則為準。",
+            )
+        else:
+            text = self._t(
+                "azure_speech_note_no_local_fallback",
+                "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
+                "此平台尚無已驗證的本機語音，服務失敗時會安全停止播放，"
+                "不會假裝已切換到離線聲音。",
+            )
+        return self._voice_note(text)
+
+    def _model_access_note(self) -> QLabel:
+        return self._voice_note(
+            self._t(
+                "model_access_note",
+                "若後台已勾選模型但仍顯示無權限，請確認勾選模型與建立 API Key "
+                "的是同一個 Project；在該 Project 重新建立金鑰後，到「設定」"
+                "頁重新儲存。",
+            )
+        )
+
+    def _echo_guard_note(self) -> QLabel:
+        return self._voice_note(
+            self._t(
+                "echo_guard_note",
+                "防回音開啟時，墨寒說話期間會停止上傳麥克風，並清除本機"
+                "與伺服器端殘留音訊；結束約一秒後才恢復。對話頁只顯示"
+                "高精度整句轉錄的最終結果，不顯示辨識中的暫定文字。",
+            )
+        )
+
+    def _realtime_note(self) -> QLabel:
+        return self._voice_note(
             self._t(
                 "realtime_note",
                 "Realtime 會持續使用麥克風。預設以穩定切段保留句首 500 毫秒，"
@@ -2835,107 +3440,67 @@ class Dashboard(QDialog):
                 "mini 較省費用並已設為預設；完整版適合品質優先時使用。",
             )
         )
-        note.setWordWrap(True)
-        model_access_note = QLabel(
-            self._t(
-                "model_access_note",
-                "若後台已勾選模型但仍顯示無權限，請確認勾選模型與建立 API Key "
-                "的是同一個 Project；在該 Project 重新建立金鑰後，到「設定」"
-                "頁重新儲存。",
-            )
-        )
-        model_access_note.setWordWrap(True)
-        echo_guard_note = QLabel(
-            self._t(
-                "echo_guard_note",
-                "防回音開啟時，墨寒說話期間會停止上傳麥克風，並清除本機"
-                "與伺服器端殘留音訊；結束約一秒後才恢復。對話頁只顯示"
-                "高精度整句轉錄的最終結果，不顯示辨識中的暫定文字。",
-            )
-        )
-        echo_guard_note.setWordWrap(True)
-        recognition_note = QLabel(
-            (
-                self._t(
-                    "recognition_note",
-                    "單次麥克風預設使用 gpt-4o-mini-transcribe 與墨寒專用繁中詞庫；"
-                    "停止說話約 0.85 秒即送出，最長 10 秒；收音時再次點擊"
-                    "麥克風可立即送出。Windows 備援可自行關閉。",
-                )
-                if offline_recognition_available
-                else self._t(
-                    "recognition_note_no_offline",
-                    "單次麥克風使用 OpenAI 高準確辨識；此平台的離線辨識尚未"
-                    "完成實機驗證，因此不會顯示或假裝提供離線備援。",
-                )
-            )
-        )
-        recognition_note.setWordWrap(True)
-        windows_note = QLabel(
-            (
-                self._t(
-                    "female_voice_note",
-                    "離線聲音僅列出 Windows 已明確標示為女性的聲音；"
-                    "台灣繁中仍優先使用 Yating（zh-TW）。",
-                )
-                if local_speech_available
-                else self._t(
-                    "platform_local_voice_note",
-                    f"{platform.display_name} 本機語音尚未完成實機驗證；"
-                    "未支援前不會顯示其他平台的聲音或宣稱有離線朗讀。",
-                    platform=platform.display_name,
-                )
-            )
-        )
-        windows_note.setWordWrap(True)
-        azure_note = QLabel(
-            (
-                self._t(
-                    "azure_speech_note",
-                    "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
-                    "只列官方標示為女性的繁中、簡中或英文聲線；失敗時"
-                    "立即回到 Windows 本機女聲。F0 免費額度及計費以"
-                    " Microsoft 當期規則為準。",
-                )
-                if local_speech_available
-                else self._t(
-                    "azure_speech_note_no_local_fallback",
-                    "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
-                    "此平台尚無已驗證的本機語音，服務失敗時會安全停止播放，"
-                    "不會假裝已切換到離線聲音。",
-                )
-            )
-        )
-        azure_note.setWordWrap(True)
-        form.addRow(self._t("speech_recognition", "單次麥克風辨識"), self.speech_recognition)
-        form.addRow(self._t("transcription_model", "轉錄模型"), self.transcription_model)
-        form.addRow(self._t("transcription_language", "轉錄語言"), self.transcription_language)
-        form.addRow(self._t("transcription_prompt", "轉錄提示／常用詞"), self.transcription_prompt)
+
+    def _add_transcription_rows(
+        self,
+        form: QFormLayout,
+        capabilities: PlatformCapabilities,
+    ) -> None:
         form.addRow(
-            (
-                self._t("windows_transcription_fallback", "Windows 備援")
-                if offline_recognition_available
-                else self._t("offline_fallback", "離線備援")
-            ),
-            self.windows_transcription_fallback,
+            self._t("speech_recognition", "單次麥克風辨識"),
+            self.speech_recognition,
         )
-        form.addRow(self._t("last_transcription", "最近一次轉錄"), self.transcription_diagnostic)
-        form.addRow("", recognition_note)
-        form.addRow(self._t("voice_engine", "朗讀方式"), self.voice_engine)
         form.addRow(
-            (
-                self._t("windows_voice", "Windows 聲音")
-                if local_speech_available
-                else self._t(
-                    "platform_local_voice",
-                    f"{platform.display_name} 本機聲音",
-                    platform=platform.display_name,
-                )
-            ),
-            self.windows_voice,
+            self._t("transcription_model", "轉錄模型"),
+            self.transcription_model,
         )
-        form.addRow("", windows_note)
-        form.addRow(self._t("tts_voice", "OpenAI 文字朗讀聲音"), self.tts_voice)
+        form.addRow(
+            self._t("transcription_language", "轉錄語言"),
+            self.transcription_language,
+        )
+        form.addRow(
+            self._t("transcription_prompt", "轉錄提示／常用詞"),
+            self.transcription_prompt,
+        )
+        fallback_label = (
+            self._t(
+                "windows_transcription_fallback",
+                "Windows 備援",
+            )
+            if capabilities.offline_speech_recognition
+            else self._t("offline_fallback", "離線備援")
+        )
+        form.addRow(fallback_label, self.windows_transcription_fallback)
+        form.addRow(
+            self._t("last_transcription", "最近一次轉錄"),
+            self.transcription_diagnostic,
+        )
+        form.addRow("", self._recognition_note(capabilities))
+
+    def _add_voice_provider_rows(
+        self,
+        form: QFormLayout,
+        capabilities: PlatformCapabilities,
+    ) -> None:
+        form.addRow(
+            self._t("voice_engine", "朗讀方式"),
+            self.voice_engine,
+        )
+        voice_label = (
+            self._t("windows_voice", "Windows 聲音")
+            if capabilities.system_local_speech
+            else self._t(
+                "platform_local_voice",
+                f"{capabilities.display_name} 本機聲音",
+                platform=capabilities.display_name,
+            )
+        )
+        form.addRow(voice_label, self.windows_voice)
+        form.addRow("", self._windows_voice_note(capabilities))
+        form.addRow(
+            self._t("tts_voice", "OpenAI 文字朗讀聲音"),
+            self.tts_voice,
+        )
         form.addRow(
             self._t("azure_voice", "Azure Speech 女性聲線"),
             self.azure_voice,
@@ -2949,9 +3514,17 @@ class Dashboard(QDialog):
             self.azure_key_input,
         )
         form.addRow("", self.azure_clear_key)
-        form.addRow("", azure_note)
-        form.addRow(self._t("realtime_voice", "Realtime 對話聲音"), self.realtime_voice)
-        form.addRow(self._t("realtime_model", "Realtime 模型"), self.realtime_model)
+        form.addRow("", self._azure_voice_note(capabilities))
+
+    def _add_realtime_rows(self, form: QFormLayout) -> None:
+        form.addRow(
+            self._t("realtime_voice", "Realtime 對話聲音"),
+            self.realtime_voice,
+        )
+        form.addRow(
+            self._t("realtime_model", "Realtime 模型"),
+            self.realtime_model,
+        )
         form.addRow(
             self._t(
                 "realtime_transcription_model",
@@ -2974,16 +3547,56 @@ class Dashboard(QDialog):
             ),
             self.realtime_hybrid_transcription,
         )
-        form.addRow("", model_access_note)
-        form.addRow(self._t("echo_guard", "防回音"), self.realtime_echo_guard)
-        form.addRow("", echo_guard_note)
-        form.addRow(self._t("local_rate", "本機語速"), rate_control)
-        form.addRow(self._t("mohan_volume", "墨寒專屬音量"), volume_control)
-        form.addRow(self._t("voice_style", "聲音風格"), self.voice_instructions)
-        form.addRow("", preview)
-        form.addRow(self._t("realtime", "即時語音"), self.realtime_status)
+        form.addRow("", self._model_access_note())
+        form.addRow(
+            self._t("echo_guard", "防回音"),
+            self.realtime_echo_guard,
+        )
+        form.addRow("", self._echo_guard_note())
+
+    def _add_voice_output_rows(
+        self,
+        form: QFormLayout,
+        rate_control: QWidget,
+        volume_control: QWidget,
+    ) -> None:
+        form.addRow(
+            self._t("local_rate", "本機語速"),
+            rate_control,
+        )
+        form.addRow(
+            self._t("mohan_volume", "墨寒專屬音量"),
+            volume_control,
+        )
+        form.addRow(
+            self._t("voice_style", "聲音風格"),
+            self.voice_instructions,
+        )
+        form.addRow("", self.voice_preview_button)
+        form.addRow(
+            self._t("realtime", "即時語音"),
+            self.realtime_status,
+        )
         form.addRow("", self.realtime_btn)
-        form.addRow("", note)
+        form.addRow("", self._realtime_note())
+
+    def _voice_tab(self) -> QWidget:
+        tab, form = self._form_scroll_page()
+        capabilities = self.platform_services.capabilities
+        self._initialize_transcription_controls(capabilities)
+        self._initialize_voice_provider_controls(capabilities)
+        self._initialize_realtime_controls()
+        rate_control = self._initialize_voice_rate_control()
+        volume_control = self._initialize_voice_volume_control()
+        self._initialize_voice_action_controls()
+        self._add_transcription_rows(form, capabilities)
+        self._add_voice_provider_rows(form, capabilities)
+        self._add_realtime_rows(form)
+        self._add_voice_output_rows(
+            form,
+            rate_control,
+            volume_control,
+        )
         self.windows_voice.currentIndexChanged.connect(
             self._windows_voice_changed
         )
@@ -3114,25 +3727,15 @@ class Dashboard(QDialog):
         layout.addWidget(down)
         return container, up, down
 
-    def _settings_tab(self) -> QWidget:
-        tab = QScrollArea()
-        tab.setObjectName("formScrollPage")
-        tab.setWidgetResizable(True)
-        tab.setFrameShape(QFrame.NoFrame)
-        tab.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        tab.viewport().setStyleSheet("background:#ffffff;")
-        content = QWidget()
-        content.setObjectName("formScrollContent")
-        content.setStyleSheet(
-            "QWidget#formScrollContent{background:#ffffff;}"
-        )
-        form = QFormLayout(content)
-        tab.setWidget(content)
-        platform = self.platform_services.capabilities
-        profile_heading = QLabel(
+    def _add_profile_settings(
+        self,
+        form: QFormLayout,
+        parent: QWidget,
+    ) -> None:
+        heading = QLabel(
             self._t("profile_heading", "<b>顯示名稱與使用者資料</b>")
         )
-        profile_heading.setStyleSheet("color:#2f6987;font-size:15px;")
+        heading.setStyleSheet("color:#2f6987;font-size:15px;")
         self.profile_assistant_name = QLineEdit(
             profile_setting(self.db, "assistant_name")
         )
@@ -3148,10 +3751,39 @@ class Dashboard(QDialog):
         self.profile_window_title.setPlaceholderText(
             "留空時自動顯示「助理名稱．組織名稱」"
         )
-        self.profile_work_type = QComboBox()
-        self.profile_work_type.setEditable(True)
+        self.profile_work_type = self._profile_work_type_combo()
+        self.profile_ui_language = self._profile_language_combo()
+        self.profile_wake_word = QLineEdit(
+            profile_setting(self.db, "wake_word")
+        )
+        form.addRow(heading)
+        profile_rows = (
+            ("assistant_name", "助理名稱", self.profile_assistant_name),
+            ("user_title", "助理對你的稱呼", self.profile_user_title),
+            (
+                "organization_name",
+                "公司／團隊名稱",
+                self.profile_organization_name,
+            ),
+            ("window_title", "完整視窗標題", self.profile_window_title),
+            ("work_type", "工作類型", self.profile_work_type),
+            ("ui_language", "介面語言", self.profile_ui_language),
+            ("wake_word", "語音喚醒詞", self.profile_wake_word),
+        )
+        for key, fallback, editor in profile_rows:
+            form.addRow(self._t(key, fallback), editor)
+        self.portable_profile_panel = PortableProfilePanel(
+            self.db,
+            parent,
+            before_export=lambda: self.save_settings(silent=True),
+        )
+        form.addRow(self.portable_profile_panel)
+
+    def _profile_work_type_combo(self) -> QComboBox:
+        combo = QComboBox()
+        combo.setEditable(True)
         for value in FirstRunWizard.WORK_TYPES:
-            self.profile_work_type.addItem(
+            combo.addItem(
                 display_label(
                     self.ui_language,
                     value,
@@ -3161,101 +3793,108 @@ class Dashboard(QDialog):
                 ),
                 value,
             )
-        profile_work_type = profile_setting(self.db, "work_type")
-        profile_work_index = self.profile_work_type.findData(
-            profile_work_type
-        )
-        if profile_work_index >= 0:
-            self.profile_work_type.setCurrentIndex(profile_work_index)
+        saved_work_type = profile_setting(self.db, "work_type")
+        saved_index = combo.findData(saved_work_type)
+        if saved_index >= 0:
+            combo.setCurrentIndex(saved_index)
         else:
-            self.profile_work_type.setCurrentText(profile_work_type)
-        self.profile_ui_language = QComboBox()
-        self.profile_ui_language.addItem("繁體中文（台灣）", "zh-TW")
-        self.profile_ui_language.addItem("简体中文（中国大陆）", "zh-CN")
-        self.profile_ui_language.addItem("English", "en")
-        self.profile_ui_language.addItem("日本語", "ja-JP")
-        language_index = self.profile_ui_language.findData(
-            profile_setting(self.db, "ui_language")
+            combo.setCurrentText(saved_work_type)
+        return combo
+
+    def _profile_language_combo(self) -> QComboBox:
+        combo = QComboBox()
+        for label, language in (
+            ("繁體中文（台灣）", "zh-TW"),
+            ("简体中文（中国大陆）", "zh-CN"),
+            ("English", "en"),
+            ("日本語", "ja-JP"),
+        ):
+            combo.addItem(label, language)
+        self._select_combo_data(
+            combo,
+            profile_setting(self.db, "ui_language"),
         )
-        self.profile_ui_language.setCurrentIndex(max(0, language_index))
-        self.profile_wake_word = QLineEdit(
-            profile_setting(self.db, "wake_word")
+        return combo
+
+    def _add_reminder_settings(self, form: QFormLayout) -> None:
+        self.reminder_controls: dict[
+            str,
+            tuple[QCheckBox, QTimeEdit],
+        ] = {}
+        self.reminder_step_buttons: dict[
+            str,
+            tuple[QPushButton, QPushButton],
+        ] = {}
+        self.reminder_message_controls: dict[str, QLineEdit] = {}
+        labels = frozendict(
+            {
+                "work": self._t("reminder_work", "工作開始"),
+                "lunch": self._t("reminder_lunch", "午餐"),
+                "dinner": self._t("reminder_dinner", "晚餐"),
+                "offwork": self._t("reminder_offwork", "下班"),
+            }
         )
-        form.addRow(profile_heading)
-        form.addRow(self._t("assistant_name", "助理名稱"), self.profile_assistant_name)
-        form.addRow(self._t("user_title", "助理對你的稱呼"), self.profile_user_title)
-        form.addRow(self._t("organization_name", "公司／團隊名稱"), self.profile_organization_name)
-        form.addRow(self._t("window_title", "完整視窗標題"), self.profile_window_title)
-        form.addRow(self._t("work_type", "工作類型"), self.profile_work_type)
-        form.addRow(self._t("ui_language", "介面語言"), self.profile_ui_language)
-        form.addRow(self._t("wake_word", "語音喚醒詞"), self.profile_wake_word)
-        self.portable_profile_panel = PortableProfilePanel(
-            self.db,
-            tab,
-            before_export=lambda: self.save_settings(silent=True),
-        )
-        form.addRow(self.portable_profile_panel)
-        form.addRow(
-            QLabel(self._t("system_heading", "<b>工作與系統設定</b>"))
-        )
-        self.reminder_controls = {}
-        self.reminder_step_buttons = {}
-        self.reminder_message_controls = {}
-        labels = {
-            "work": self._t("reminder_work", "工作開始"),
-            "lunch": self._t("reminder_lunch", "午餐"),
-            "dinner": self._t("reminder_dinner", "晚餐"),
-            "offwork": self._t("reminder_offwork", "下班"),
-        }
         for row in self.db.reminders():
-            box = QWidget()
-            line = QHBoxLayout(box)
-            line.setContentsMargins(0, 0, 0, 0)
-            enabled = QCheckBox(self._t("enabled", "啟用"))
-            enabled.setChecked(bool(row["enabled"]))
-            at = QTimeEdit()
-            at.setDisplayFormat("HH:mm")
-            parsed = datetime.strptime(row["time_of_day"], "%H:%M")
-            at.setTime(QTime(parsed.hour, parsed.minute))
-            at_control, up, down = self._step_control(
-                at,
-                f"{row['kind']}Time",
-            )
-            line.addWidget(enabled)
-            line.addWidget(at_control)
-            line.addStretch()
-            form.addRow(labels[row["kind"]], box)
-            message = QLineEdit(
-                str(
-                    self.db.setting(
-                        f"reminder_message_{row['kind']}",
-                        reminder_line(self.ui_language, row["kind"]),
-                    )
+            kind = str(row["kind"])
+            self._add_reminder_row(form, row, labels[kind])
+
+    def _add_reminder_row(
+        self,
+        form: QFormLayout,
+        row: sqlite3.Row,
+        label: str,
+    ) -> None:
+        kind = str(row["kind"])
+        enabled = QCheckBox(self._t("enabled", "啟用"))
+        enabled.setChecked(bool(row["enabled"]))
+        reminder_time = QTimeEdit()
+        reminder_time.setDisplayFormat("HH:mm")
+        parsed_time = clock_time.fromisoformat(str(row["time_of_day"]))
+        reminder_time.setTime(QTime(parsed_time.hour, parsed_time.minute))
+        time_control, up_button, down_button = self._step_control(
+            reminder_time,
+            f"{kind}Time",
+        )
+        row_widget = QWidget()
+        row_layout = QHBoxLayout(row_widget)
+        row_layout.setContentsMargins(0, 0, 0, 0)
+        row_layout.addWidget(enabled)
+        row_layout.addWidget(time_control)
+        row_layout.addStretch()
+        form.addRow(label, row_widget)
+        message = QLineEdit(
+            str(
+                self.db.setting(
+                    f"reminder_message_{kind}",
+                    reminder_line(self.ui_language, kind),
                 )
             )
-            message.setPlaceholderText(
-                self._t(
-                    "reminder_message_placeholder",
-                    "此提醒觸發時要說的內容",
-                )
+        )
+        message.setPlaceholderText(
+            self._t(
+                "reminder_message_placeholder",
+                "此提醒觸發時要說的內容",
             )
-            form.addRow(
-                self._t(
-                    "reminder_message_label",
-                    "{label}訊息",
-                    label=labels[row["kind"]],
-                ),
-                message,
-            )
-            self.reminder_controls[row["kind"]] = (enabled, at)
-            self.reminder_step_buttons[row["kind"]] = (up, down)
-            self.reminder_message_controls[row["kind"]] = message
+        )
+        form.addRow(
+            self._t(
+                "reminder_message_label",
+                "{label}訊息",
+                label=label,
+            ),
+            message,
+        )
+        self.reminder_controls[kind] = (enabled, reminder_time)
+        self.reminder_step_buttons[kind] = (up_button, down_button)
+        self.reminder_message_controls[kind] = message
+
+    def _add_work_rhythm_settings(self, form: QFormLayout) -> None:
         self.break_minutes = QSpinBox()
         self.break_minutes.setRange(30, 240)
-        self.break_minutes.setSuffix(
-            self._t("minutes_suffix", " 分鐘")
+        self.break_minutes.setSuffix(self._t("minutes_suffix", " 分鐘"))
+        self.break_minutes.setValue(
+            int(self.db.setting("break_minutes", 90))
         )
-        self.break_minutes.setValue(int(self.db.setting("break_minutes", 90)))
         self.overwork_message = QLineEdit(
             str(
                 self.db.setting(
@@ -3272,24 +3911,25 @@ class Dashboard(QDialog):
         self.tts_enabled = QCheckBox(
             self._t("read_replies", "讓寒讀出回覆")
         )
-        self.tts_enabled.setChecked(bool(self.db.setting("tts_enabled", True)))
-        self.autostart = QCheckBox(
-            "Windows 登入後自動啟動"
-            if platform.desktop_autostart
-            else self._t(
-                "platform_autostart_unavailable",
-                f"{platform.display_name} 自動啟動尚未完成實機驗證",
-                platform=platform.display_name,
-            )
+        self.tts_enabled.setChecked(
+            bool(self.db.setting("tts_enabled", True))
         )
-        self.autostart.setChecked(
-            bool(
-                platform.desktop_autostart
-                and self.db.setting("autostart", False)
-            )
+        form.addRow(
+            self._t("continuous_work_reminder", "連續工作提醒"),
+            self.break_minutes_control,
         )
-        if not platform.desktop_autostart:
-            self.autostart.setEnabled(False)
+        form.addRow(
+            self._t("overwork_message", "久坐／過勞提醒訊息"),
+            self.overwork_message,
+        )
+        form.addRow("語音", self.tts_enabled)
+
+    def _add_desktop_settings(
+        self,
+        form: QFormLayout,
+        capabilities: PlatformCapabilities,
+    ) -> None:
+        self.autostart = self._autostart_checkbox(capabilities)
         self.topmost_mode = QComboBox()
         self.topmost_mode.addItems(
             ["智慧置頂（推薦）", "永遠置頂", "不置頂"]
@@ -3305,6 +3945,55 @@ class Dashboard(QDialog):
         self.topmost_mode.currentTextChanged.connect(
             self._topmost_mode_changed
         )
+        character_scale = self._character_scale_control()
+        self.proactive_mode = self._editable_combo(
+            ("安靜（只提醒必要事項）", "平衡（推薦）", "積極（主動建議）"),
+            str(self.db.setting("proactive_mode", "平衡（推薦）")),
+        )
+        self.proactive_mode.setEditable(False)
+        autostart_label = (
+            "自動啟動"
+            if capabilities.desktop_autostart
+            else self._t("autostart", "自動啟動")
+        )
+        form.addRow(autostart_label, self.autostart)
+        form.addRow("桌面置頂方式", self.topmost_mode)
+        form.addRow("桌面墨寒顯示大小", character_scale)
+        form.addRow("主動協助程度", self.proactive_mode)
+
+    def _autostart_checkbox(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> QCheckBox:
+        checkbox = QCheckBox(
+            "Windows 登入後自動啟動"
+            if capabilities.desktop_autostart
+            else self._t(
+                "platform_autostart_unavailable",
+                f"{capabilities.display_name} 自動啟動尚未完成實機驗證",
+                platform=capabilities.display_name,
+            )
+        )
+        checkbox.setChecked(
+            bool(
+                capabilities.desktop_autostart
+                and self.db.setting("autostart", False)
+            )
+        )
+        checkbox.setEnabled(capabilities.desktop_autostart)
+        return checkbox
+
+    def _character_scale_control(self) -> QWidget:
+        saved_scale = int(
+            self.db.setting(
+                "character_scale_percent",
+                CHARACTER_SCALE_DEFAULT,
+            )
+        )
+        scale = max(
+            CHARACTER_SCALE_MIN,
+            min(CHARACTER_SCALE_MAX, saved_scale),
+        )
         self.character_scale_slider = QSlider(Qt.Horizontal)
         self.character_scale_slider.setRange(
             CHARACTER_SCALE_MIN,
@@ -3314,48 +4003,29 @@ class Dashboard(QDialog):
         self.character_scale_slider.setPageStep(10)
         self.character_scale_slider.setTickInterval(5)
         self.character_scale_slider.setTickPosition(QSlider.TicksBelow)
-        self.character_scale_slider.setValue(
-            max(
-                CHARACTER_SCALE_MIN,
-                min(
-                    CHARACTER_SCALE_MAX,
-                    int(
-                        self.db.setting(
-                            "character_scale_percent",
-                            CHARACTER_SCALE_DEFAULT,
-                        )
-                    ),
-                ),
-            )
-        )
-        self.character_scale_label = QLabel(
-            f"{self.character_scale_slider.value()}%"
-        )
+        self.character_scale_slider.setValue(scale)
+        self.character_scale_label = QLabel(f"{scale}%")
         self.character_scale_label.setMinimumWidth(48)
         self.character_scale_label.setAlignment(Qt.AlignCenter)
-        character_scale_reset = QPushButton("恢復 100%")
-        character_scale_reset.setToolTip("將桌面墨寒恢復為原始顯示大小")
-        character_scale_reset.clicked.connect(
+        reset_button = QPushButton("恢復 100%")
+        reset_button.setToolTip("將桌面墨寒恢復為原始顯示大小")
+        reset_button.clicked.connect(
             lambda: self.character_scale_slider.setValue(
                 CHARACTER_SCALE_DEFAULT
             )
         )
-        character_scale_box = QWidget()
-        character_scale_layout = QHBoxLayout(character_scale_box)
-        character_scale_layout.setContentsMargins(0, 0, 0, 0)
-        character_scale_layout.addWidget(self.character_scale_slider, 1)
-        character_scale_layout.addWidget(self.character_scale_label)
-        character_scale_layout.addWidget(character_scale_reset)
+        control = QWidget()
+        layout = QHBoxLayout(control)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.character_scale_slider, 1)
+        layout.addWidget(self.character_scale_label)
+        layout.addWidget(reset_button)
         self.character_scale_slider.valueChanged.connect(
             self._character_scale_changed
         )
-        self.proactive_mode = QComboBox()
-        self.proactive_mode.addItems(
-            ["安靜（只提醒必要事項）", "平衡（推薦）", "積極（主動建議）"]
-        )
-        self.proactive_mode.setCurrentText(
-            str(self.db.setting("proactive_mode", "平衡（推薦）"))
-        )
+        return control
+
+    def _add_background_settings(self, form: QFormLayout) -> None:
         self.background_assistant_enabled = QCheckBox(
             "啟用背景多工助理（預設關閉）"
         )
@@ -3379,128 +4049,153 @@ class Dashboard(QDialog):
         self.background_diagnostic_report.setPlaceholderText(
             "選填：IDE 匯出的 .txt 或 .log 診斷報告完整路徑"
         )
-        background_note = QLabel(
+        note = QLabel(
             "背景助理只讀取可見程式名稱與您明確指定的診斷報告；"
             "不會截取編輯器內容、不會自動修改檔案，也會遵守勿擾模式與冷卻時間。"
         )
-        background_note.setWordWrap(True)
-        background_note.setStyleSheet("color:#356f8d;")
-        self.physics_controls = {}
-        physics_labels = {
-            "physics_sleeves": "袖擺呼吸與慣性",
-            "physics_hair": "長髮柔性擺動",
-            "physics_ornament": "髮飾與流蘇慣性",
-            "physics_eye_tracking": "眼球追蹤滑鼠",
-            "physics_face_parallax": "臉部柔和視差",
-        }
-        physics_box = QWidget()
-        physics_layout = QVBoxLayout(physics_box)
-        physics_layout.setContentsMargins(0, 0, 0, 0)
-        physics_layout.setSpacing(4)
-        for key, label in physics_labels.items():
+        note.setWordWrap(True)
+        note.setStyleSheet("color:#356f8d;")
+        form.addRow("背景多工助理", self.background_assistant_enabled)
+        form.addRow("監測程式名稱", self.background_watch_apps)
+        form.addRow("IDE 診斷報告", self.background_diagnostic_report)
+        form.addRow("", note)
+
+    def _add_physics_settings(self, form: QFormLayout) -> None:
+        labels = frozendict(
+            {
+                "physics_sleeves": "袖擺呼吸與慣性",
+                "physics_hair": "長髮柔性擺動",
+                "physics_ornament": "髮飾與流蘇慣性",
+                "physics_eye_tracking": "眼球追蹤滑鼠",
+                "physics_face_parallax": "臉部柔和視差",
+            }
+        )
+        box = QWidget()
+        layout = QVBoxLayout(box)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(4)
+        self.physics_controls: dict[str, QCheckBox] = {}
+        for key, label in labels.items():
             control = QCheckBox(label)
             control.setChecked(bool(self.db.setting(key, True)))
-            physics_layout.addWidget(control)
+            layout.addWidget(control)
             self.physics_controls[key] = control
-        physics_note = QLabel(
-            "旗艦物理預設全部開啟；可依效能需要個別關閉。"
+        note = QLabel("旗艦物理預設全部開啟；可依效能需要個別關閉。")
+        note.setWordWrap(True)
+        note.setStyleSheet("color:#356f8d;")
+        layout.addWidget(note)
+        form.addRow("電影級物理", box)
+
+    def _add_work_folder_settings(self, form: QFormLayout) -> None:
+        self.work_folder = QLineEdit(
+            str(self.db.setting("work_folder", ""))
         )
-        physics_note.setWordWrap(True)
-        physics_note.setStyleSheet("color:#356f8d;")
-        physics_layout.addWidget(physics_note)
-        self.work_folder = QLineEdit(str(self.db.setting("work_folder", "")))
         self.work_folder.setPlaceholderText("常用工作資料夾路徑")
-        open_folder = QPushButton("開啟工作資料夾")
-        open_folder.clicked.connect(self.open_work_folder)
-        self.api_key_input = QLineEdit()
-        self.api_key_input.setEchoMode(QLineEdit.Password)
-        if platform.secure_secret_storage:
-            self.api_key_input.setPlaceholderText(
+        open_button = QPushButton("開啟工作資料夾")
+        open_button.clicked.connect(self.open_work_folder)
+        form.addRow("工作資料夾", self.work_folder)
+        form.addRow("", open_button)
+
+    def _add_ai_settings(
+        self,
+        form: QFormLayout,
+        capabilities: PlatformCapabilities,
+    ) -> None:
+        key_saved = bool(
+            capabilities.secure_secret_storage
+            and self.secret_store.load()
+        )
+        self.api_key_input = self._api_key_input(
+            capabilities,
+            key_saved,
+        )
+        self.ai_model = self._editable_combo(
+            TEXT_MODELS,
+            str(self.db.setting("ai_model", DEFAULT_TEXT_MODEL)),
+        )
+        self.persona_prompt = self._persona_prompt_input()
+        clear_button = QPushButton(
+            self._t("remove_api_key", "移除已保存的 API 金鑰")
+        )
+        clear_button.clicked.connect(self.clear_api_key)
+        clear_button.setEnabled(capabilities.secure_secret_storage)
+        self.api_status = QLabel(
+            self._api_status_text(capabilities, key_saved)
+        )
+        form.addRow(
+            self._t("api_key", "OpenAI API 金鑰"),
+            self.api_key_input,
+        )
+        form.addRow(
+            self._t("text_model", "文字模型"),
+            self.ai_model,
+        )
+        form.addRow(
+            self._t("persona_prompt", "AI 人格提示詞"),
+            self.persona_prompt,
+        )
+        form.addRow(self._settings_language_note())
+        form.addRow("", clear_button)
+        form.addRow("智能核心", self.api_status)
+
+    def _api_key_input(
+        self,
+        capabilities: PlatformCapabilities,
+        key_saved: bool,
+    ) -> QLineEdit:
+        key_input = QLineEdit()
+        key_input.setEchoMode(QLineEdit.Password)
+        if capabilities.secure_secret_storage:
+            placeholder = (
                 self._t(
                     "api_key_saved",
                     "已安全保存（留空不變）",
                 )
-                if self.secret_store.load()
+                if key_saved
                 else self._t(
                     "api_key_missing",
                     "貼上 sk- 開頭的 OpenAI Project API Key",
                 )
             )
         else:
-            self.api_key_input.setPlaceholderText(
-                self._t(
-                    "platform_secret_storage_unavailable",
-                    f"{platform.display_name} 安全金鑰保存尚未完成實機驗證",
-                    platform=platform.display_name,
-                )
+            placeholder = self._t(
+                "platform_secret_storage_unavailable",
+                f"{capabilities.display_name} 安全金鑰保存尚未完成實機驗證",
+                platform=capabilities.display_name,
             )
-            self.api_key_input.setEnabled(False)
-        self.ai_model = QComboBox()
-        self.ai_model.setEditable(True)
-        self.ai_model.addItems(TEXT_MODELS)
-        self.ai_model.setCurrentText(
-            str(self.db.setting("ai_model", DEFAULT_TEXT_MODEL))
-        )
-        clear_key = QPushButton(
-            self._t("remove_api_key", "移除已保存的 API 金鑰")
-        )
-        clear_key.clicked.connect(self.clear_api_key)
-        clear_key.setEnabled(platform.secure_secret_storage)
+            key_input.setEnabled(False)
+        key_input.setPlaceholderText(placeholder)
+        return key_input
+
+    def _api_status_text(
+        self,
+        capabilities: PlatformCapabilities,
+        key_saved: bool,
+    ) -> str:
         if os.getenv("OPENAI_API_KEY"):
-            api_status = self._t(
+            return self._t(
                 "api_status_environment",
                 "OpenAI API：使用環境變數提供的金鑰",
             )
-        elif self.secret_store.load():
-            api_status = self._t(
+        if key_saved:
+            return self._t(
                 "api_status_saved",
                 "OpenAI API：金鑰已由 Windows 加密保存",
             )
-        elif not platform.secure_secret_storage:
-            api_status = self._t(
+        if not capabilities.secure_secret_storage:
+            return self._t(
                 "api_status_secret_unavailable",
-                f"OpenAI API：{platform.display_name} 安全金鑰保存尚未完成實機驗證",
-                platform=platform.display_name,
+                f"OpenAI API：{capabilities.display_name} 安全金鑰保存尚未完成實機驗證",
+                platform=capabilities.display_name,
             )
-        else:
-            api_status = self._t(
-                "api_status_offline",
-                "OpenAI API：未設定，使用離線人設",
-            )
-        self.api_status = QLabel(api_status)
-        save = QPushButton(self._t("save_settings", "保存設定"))
-        save.clicked.connect(self.save_settings)
-        form.addRow(
-            self._t("continuous_work_reminder", "連續工作提醒"),
-            self.break_minutes_control,
+        return self._t(
+            "api_status_offline",
+            "OpenAI API：未設定，使用離線人設",
         )
-        form.addRow(
-            self._t("overwork_message", "久坐／過勞提醒訊息"),
-            self.overwork_message,
-        )
-        form.addRow("語音", self.tts_enabled)
-        form.addRow(
-            (
-                "自動啟動"
-                if platform.desktop_autostart
-                else self._t("autostart", "自動啟動")
-            ),
-            self.autostart,
-        )
-        form.addRow("桌面置頂方式", self.topmost_mode)
-        form.addRow("桌面墨寒顯示大小", character_scale_box)
-        form.addRow("主動協助程度", self.proactive_mode)
-        form.addRow("背景多工助理", self.background_assistant_enabled)
-        form.addRow("監測程式名稱", self.background_watch_apps)
-        form.addRow("IDE 診斷報告", self.background_diagnostic_report)
-        form.addRow("", background_note)
-        form.addRow("電影級物理", physics_box)
-        form.addRow("工作資料夾", self.work_folder)
-        form.addRow("", open_folder)
-        form.addRow(self._t("api_key", "OpenAI API 金鑰"), self.api_key_input)
-        form.addRow(self._t("text_model", "文字模型"), self.ai_model)
-        self.persona_prompt = QTextEdit()
-        self.persona_prompt.setPlainText(
+
+    def _persona_prompt_input(self) -> QTextEdit:
+        prompt = QTextEdit()
+        prompt.setPlainText(
             str(
                 self.db.setting(
                     "persona_prompt",
@@ -3508,31 +4203,56 @@ class Dashboard(QDialog):
                 )
             )
         )
-        self.persona_prompt.setMinimumHeight(160)
-        self.persona_prompt.setPlaceholderText(
+        prompt.setMinimumHeight(160)
+        prompt.setPlaceholderText(
             "設定助理的角色背景、語氣、工作方式與界線。"
         )
-        form.addRow(self._t("persona_prompt", "AI 人格提示詞"), self.persona_prompt)
-        language_note = QLabel(
+        return prompt
+
+    def _settings_language_note(self) -> QLabel:
+        note = QLabel(
             self._t(
                 "restart_language_note",
                 "變更介面語言後，重新啟動墨寒即可完整套用。",
             )
         )
-        language_note.setWordWrap(True)
-        language_note.setStyleSheet("color:#356f8d;")
-        form.addRow(language_note)
-        form.addRow("", clear_key)
-        form.addRow("智能核心", self.api_status)
+        note.setWordWrap(True)
+        note.setStyleSheet("color:#356f8d;")
+        return note
+
+    def _add_update_settings(
+        self,
+        form: QFormLayout,
+        parent: QWidget,
+    ) -> None:
         self.update_panel = UpdatePanel(
             self.db,
             data_dir(self.platform_services),
-            tab,
+            parent,
         )
+        save_button = QPushButton(
+            self._t("save_settings", "保存設定")
+        )
+        save_button.clicked.connect(self.save_settings)
         form.addRow(self.update_panel)
-        form.addRow("", save)
-        return tab
+        form.addRow("", save_button)
 
+    def _settings_tab(self) -> QWidget:
+        tab, form = self._form_scroll_page()
+        capabilities = self.platform_services.capabilities
+        self._add_profile_settings(form, tab)
+        form.addRow(
+            QLabel(self._t("system_heading", "<b>工作與系統設定</b>"))
+        )
+        self._add_reminder_settings(form)
+        self._add_work_rhythm_settings(form)
+        self._add_desktop_settings(form, capabilities)
+        self._add_background_settings(form)
+        self._add_physics_settings(form)
+        self._add_work_folder_settings(form)
+        self._add_ai_settings(form, capabilities)
+        self._add_update_settings(form, tab)
+        return tab
     def append_chat(self, speaker: str, text: str) -> None:
         color = (
             "#2f6987"
@@ -3999,18 +4719,20 @@ class Dashboard(QDialog):
         self.set_voice_phase(f"{self.assistant_name}思考中…")
         history = [{"role": row["role"], "content": row["content"]} for row in self.db.recent_chat()]
         worker = AIWorker(
-            text,
-            mode,
-            history,
-            api_key=self.secret_store.load(),
-            memories=self.db.memory_context(query=text),
-            model=str(self.db.setting("ai_model", DEFAULT_TEXT_MODEL)),
-            persona=persona_for_profile(self.db),
-            assistant_name=self.assistant_name,
-            user_title=self.user_title,
-            response_language=profile_setting(
-                self.db, "ui_language"
-            ),
+            AIWorkerRequest(
+                user_text=text,
+                mode=mode,
+                history=tuple(history),
+                api_key=self.secret_store.load(),
+                memories=self.db.memory_context(query=text),
+                model=str(self.db.setting("ai_model", DEFAULT_TEXT_MODEL)),
+                persona=persona_for_profile(self.db),
+                assistant_name=self.assistant_name,
+                user_title=self.user_title,
+                response_language=profile_setting(
+                    self.db, "ui_language"
+                ),
+            )
         )
         worker.signals.done.connect(self._ai_done)
         worker.signals.failed.connect(self._ai_failed)
@@ -4084,88 +4806,78 @@ class Dashboard(QDialog):
             self.refresh_memories()
 
     def _handle_command(self, text: str, source: str = "local") -> bool:
-        normalized_stop = text.replace("，", "").replace(",", "").strip()
-        if normalized_stop in {
-            "墨寒停手",
-            "寒停手",
-            "停手",
-            "停止所有操作",
-            "取消所有任務",
-        }:
-            self._emergency_stop()
-            return True
-        if any(
-            phrase in text
-            for phrase in (
-                "妳在看我",
-                "你在看我",
-                "偷看我",
-                "一直看我",
-                "喜歡我嗎",
-                "喜歡我吧",
-                "是不是喜歡",
-                "愛慕我",
-                "在意我吧",
-            )
-        ):
-            self._reply(
-                "主上莫要自作多情。妾不過是在觀察你的神色，"
-                "好替你籌謀下一步。至於旁的……並無此事。",
-                "caught",
-            )
-            return True
+        return (
+            self._handle_emergency_command(text)
+            or self._handle_teasing_command(text)
+            or self._handle_work_status_command(text)
+            or self._handle_quick_capture_command(text)
+            or self._handle_tool_instruction(text, source)
+        )
+
+    def _handle_emergency_command(self, text: str) -> bool:
+        normalized = text.replace("，", "").replace(",", "").strip()
+        if normalized not in EMERGENCY_COMMANDS:
+            return False
+        self._emergency_stop()
+        return True
+
+    def _handle_teasing_command(self, text: str) -> bool:
+        if not any(marker in text for marker in TEASING_COMMAND_MARKERS):
+            return False
+        self._reply(
+            "主上莫要自作多情。妾不過是在觀察你的神色，"
+            "好替你籌謀下一步。至於旁的……並無此事。",
+            "caught",
+        )
+        return True
+
+    def _handle_work_status_command(self, text: str) -> bool:
         if is_start_work_command(text):
             self.start_work()
-            return True
-        if is_stop_work_command(text):
+        elif is_stop_work_command(text):
             self.stop_work()
-            return True
-        if "今天" in text and any(x in text for x in ("多久", "幾小時", "工作時間")):
-            reply = f"主上今日已工作 {format_duration(self.db.today_work_seconds())}。"
-            self._reply(reply, "speaking")
-            return True
-        marker = "幫我記一下"
-        if marker in text:
-            content = text.split(marker, 1)[1].lstrip("：:，, ").strip()
-            if not content:
-                self._reply("主上想讓妾記下什麼？", "worried")
-            elif any(x in content for x in ("靈感", "點子", "構想")):
-                self.db.add_idea(content)
-                self.refresh_ideas()
-                self._reply("靈感已收入卷冊。", "happy")
-            else:
-                self.db.add_todo(content, "其他")
-                self.refresh_todos()
-                self._reply("已加入今日待辦。", "happy")
-            return True
-        flagship_center = getattr(self, "flagship_center", None)
-        safe_tool_instruction = (
-            flagship_center is not None
-            and flagship_center.recognizes_safe_instruction(text)
-        )
-        explicit_tool_instruction = any(
-            marker in text
-            for marker in (
-                "請執行",
-                "幫我開啟",
-                "替我開啟",
-                "幫我控制",
-                "幫我建立檔案",
-                "幫我移動",
-                "幫我啟動",
-            )
-        )
-        if flagship_center is not None and (
-            safe_tool_instruction or explicit_tool_instruction
+        elif "今天" in text and any(
+            marker in text for marker in TODAY_WORK_DURATION_MARKERS
         ):
-            flagship_center.plan_instruction(text, source=source)
-            self._reply(
-                "妾先整理成安全計畫，確認權限與目標後再請主上過目。",
-                "thinking_front",
-            )
-            return True
-        return False
+            duration = format_duration(self.db.today_work_seconds())
+            self._reply(f"主上今日已工作 {duration}。", "speaking")
+        else:
+            return False
+        return True
 
+    def _handle_quick_capture_command(self, text: str) -> bool:
+        marker = "幫我記一下"
+        if marker not in text:
+            return False
+        content = text.split(marker, 1)[1].lstrip("：:，, ").strip()
+        if not content:
+            self._reply("主上想讓妾記下什麼？", "worried")
+        elif any(marker in content for marker in IDEA_CAPTURE_MARKERS):
+            self.db.add_idea(content)
+            self.refresh_ideas()
+            self._reply("靈感已收入卷冊。", "happy")
+        else:
+            self.db.add_todo(content, "其他")
+            self.refresh_todos()
+            self._reply("已加入今日待辦。", "happy")
+        return True
+
+    def _handle_tool_instruction(self, text: str, source: str) -> bool:
+        flagship_center = getattr(self, "flagship_center", None)
+        if flagship_center is None:
+            return False
+        recognized = flagship_center.recognizes_safe_instruction(text)
+        explicitly_requested = any(
+            marker in text for marker in EXPLICIT_TOOL_COMMAND_MARKERS
+        )
+        if not (recognized or explicitly_requested):
+            return False
+        flagship_center.plan_instruction(text, source=source)
+        self._reply(
+            "妾先整理成安全計畫，確認權限與目標後再請主上過目。",
+            "thinking_front",
+        )
+        return True
     def _emergency_stop(self) -> None:
         if hasattr(self, "flagship_center"):
             self.flagship_center.emergency_stop()
@@ -4404,28 +5116,26 @@ class Dashboard(QDialog):
         except (TypeError, ValueError):
             return "更新時間不明"
 
-    def _platform_payload(self, platform: str) -> dict[str, str]:
+    def _platform_update(self, platform: str) -> PlatformProgressUpdate:
         controls = self.platform_controls[platform]
-        return {
-            "platform": platform,
-            "status": controls["status"].currentText(),
-            "item_name": controls["item_name"].text(),
-            "missing": controls["missing"].text(),
-            "next_action": controls["next_action"].text(),
-            "notes": controls["notes"].text(),
-            "url": self._normalize_platform_url(
-                controls["url"].text()
-            ),
-        }
+        return PlatformProgressUpdate(
+            platform=platform,
+            status=controls.status.currentText(),
+            item_name=controls.item_name.text(),
+            missing=controls.missing.text(),
+            next_action=controls.next_action.text(),
+            notes=controls.notes.text(),
+            url=self._normalize_platform_url(controls.url.text()),
+        )
 
     def _platform_changed(self, platform: str) -> None:
         if self._platform_loading:
             return
         controls = self.platform_controls[platform]
-        controls["dirty"] = True
-        controls["save"].setText("保存變更")
-        controls["updated"].setText("尚未保存")
-        controls["timer"].start()
+        controls.dirty = True
+        controls.save_button.setText("保存變更")
+        controls.updated.setText("尚未保存")
+        controls.timer.start()
         self.platform_feedback.setText(
             f"{platform} 有變更，正在等待自動保存……"
         )
@@ -4435,11 +5145,11 @@ class Dashboard(QDialog):
 
     def _validate_platform(self, platform: str) -> None:
         controls = self.platform_controls[platform]
-        status = controls["status"].currentText()
-        missing = controls["missing"].text().strip()
-        next_action = controls["next_action"].text().strip()
-        item_name = controls["item_name"].text().strip()
-        notes = controls["notes"].text().strip()
+        status = controls.status.currentText()
+        missing = controls.missing.text().strip()
+        next_action = controls.next_action.text().strip()
+        item_name = controls.item_name.text().strip()
+        notes = controls.notes.text().strip()
         message = ""
         color = "#efc27f"
         if status in {"已完成", "已上架"} and missing:
@@ -4460,22 +5170,22 @@ class Dashboard(QDialog):
         } and not item_name:
             message = "建議填寫工作項目、專案或案件名稱，日後較容易辨認。"
             color = "#356f8d"
-        controls["validation"].setText(message)
-        controls["validation"].setStyleSheet(f"color:{color};")
+        controls.validation.setText(message)
+        controls.validation.setStyleSheet(f"color:{color};")
 
     def _refresh_platform_summary(self) -> None:
         if not hasattr(self, "platform_controls"):
             return
         statuses = [
-            controls["status"].currentText()
+            controls.status.currentText()
             for controls in self.platform_controls.values()
         ]
         missing_count = sum(
-            bool(controls["missing"].text().strip())
+            bool(controls.missing.text().strip())
             for controls in self.platform_controls.values()
         )
         dirty_count = sum(
-            bool(controls["dirty"])
+            controls.dirty
             for controls in self.platform_controls.values()
         )
         finished = sum(
@@ -4495,8 +5205,8 @@ class Dashboard(QDialog):
             return
         selected = self.platform_filter.currentText()
         for controls in self.platform_controls.values():
-            status = controls["status"].currentText()
-            has_missing = bool(controls["missing"].text().strip())
+            status = controls.status.currentText()
+            has_missing = bool(controls.missing.text().strip())
             visible = (
                 selected == "全部平台"
                 or selected == "進行中"
@@ -4508,17 +5218,17 @@ class Dashboard(QDialog):
                 or selected == "尚未開始"
                 and status == "尚未開始"
             )
-            controls["card"].setVisible(visible)
+            controls.card.setVisible(visible)
 
     def save_platform(self, platform: str, silent: bool = False) -> None:
         controls = self.platform_controls[platform]
-        controls["timer"].stop()
-        self.db.update_platforms([self._platform_payload(platform)])
-        controls["dirty"] = False
-        controls["save"].setText("保存此平台")
-        controls["updated"].setText(
+        controls.timer.stop()
+        self.db.update_platforms([self._platform_update(platform)])
+        controls.dirty = False
+        controls.save_button.setText("保存此平台")
+        controls.updated.setText(
             self._format_platform_updated(
-                datetime.now().isoformat(timespec="seconds")
+                local_wall_time().isoformat(timespec="seconds")
             )
         )
         self._validate_platform(platform)
@@ -4530,20 +5240,20 @@ class Dashboard(QDialog):
     def save_platforms(self, silent: bool = False) -> None:
         entries = []
         for platform, controls in self.platform_controls.items():
-            controls["timer"].stop()
-            entries.append(self._platform_payload(platform))
+            controls.timer.stop()
+            entries.append(self._platform_update(platform))
         self.db.update_platforms(entries)
-        now = datetime.now().isoformat(timespec="seconds")
+        now = local_wall_time().isoformat(timespec="seconds")
         for platform, controls in self.platform_controls.items():
-            controls["dirty"] = False
-            controls["save"].setText("保存此平台")
-            controls["updated"].setText(
+            controls.dirty = False
+            controls.save_button.setText("保存此平台")
+            controls.updated.setText(
                 self._format_platform_updated(now)
             )
             self._validate_platform(platform)
         self._refresh_platform_summary()
         missing_count = sum(
-            bool(controls["missing"].text().strip())
+            bool(controls.missing.text().strip())
             for controls in self.platform_controls.values()
         )
         self.platform_feedback.setText(
@@ -4894,7 +5604,7 @@ class Dashboard(QDialog):
     def open_platform(self, platform: str) -> None:
         controls = self.platform_controls.get(platform)
         url = (
-            self._normalize_platform_url(controls["url"].text())
+            self._normalize_platform_url(controls.url.text())
             if controls is not None
             else ""
         )
@@ -4925,14 +5635,18 @@ class Dashboard(QDialog):
         if self._permission_allowed("open_web", f"開啟 {platform} 網站"):
             webbrowser.open(url)
 
-    def save_settings(self, silent: bool = False) -> bool:
-        previous_ui_language = self.ui_language
-        previous_transcription_profile = {
-            "assistant_name": self.assistant_name,
-            "user_title": self.user_title,
-            "organization_name": self.organization_name,
-            "wake_word": profile_setting(self.db, "wake_word"),
-        }
+    def _current_profile_localization(self) -> ProfileLocalizationContext:
+        return ProfileLocalizationContext(
+            assistant_name=self.assistant_name,
+            user_title=self.user_title,
+            organization_name=self.organization_name,
+            wake_word=profile_setting(self.db, "wake_word"),
+            ui_language=self.ui_language,
+        )
+
+    def _validated_profile_settings(
+        self,
+    ) -> ProfileSettingsValues | None:
         assistant_name = self.profile_assistant_name.text().strip()
         user_title = self.profile_user_title.text().strip()
         if not assistant_name or not user_title:
@@ -4941,184 +5655,254 @@ class Dashboard(QDialog):
                 "尚缺必要資料",
                 "助理名稱與助理對你的稱呼不可留空。",
             )
-            return False
-        profile_values = {
-            "assistant_name": assistant_name,
-            "user_title": user_title,
-            "organization_name": (
+            return None
+        return ProfileSettingsValues(
+            assistant_name=assistant_name,
+            user_title=user_title,
+            organization_name=(
                 self.profile_organization_name.text().strip()
             ),
-            "window_title": self.profile_window_title.text().strip(),
-            "work_type": combo_data_or_custom_text(
+            window_title=self.profile_window_title.text().strip(),
+            work_type=combo_data_or_custom_text(
                 self.profile_work_type,
                 "其他",
             ),
-            "ui_language": str(
+            ui_language=str(
                 self.profile_ui_language.currentData() or "zh-TW"
             ),
-            "wake_word": (
+            wake_word=(
                 self.profile_wake_word.text().strip() or assistant_name
             ),
-            "onboarding_complete": True,
-        }
-        for key, value in profile_values.items():
-            self.db.set_setting(key, value)
-        new_ui_language = str(profile_values["ui_language"])
-        current_transcription_prompt = (
-            self.transcription_prompt.toPlainText().strip()
         )
-        if is_builtin_transcription_prompt(
-            current_transcription_prompt,
-            previous_ui_language,
-            **previous_transcription_profile,
+
+    def _persist_profile_settings(
+        self,
+        values: ProfileSettingsValues,
+    ) -> None:
+        for key, value in values.setting_items():
+            self.db.set_setting(key, value)
+
+    def _migrate_localized_profile_defaults(
+        self,
+        previous: ProfileLocalizationContext,
+        current: ProfileSettingsValues,
+    ) -> None:
+        self._migrate_transcription_prompt(previous, current.localization)
+        if current.ui_language == previous.ui_language:
+            return
+        self._migrate_transcription_language(current.ui_language)
+        self._migrate_voice_instructions(current.ui_language)
+        self._migrate_persona_prompt(current.ui_language)
+        self._migrate_reminder_messages(current.ui_language)
+
+    def _migrate_transcription_prompt(
+        self,
+        previous: ProfileLocalizationContext,
+        current: ProfileLocalizationContext,
+    ) -> None:
+        prompt = self.transcription_prompt.toPlainText().strip()
+        if not is_builtin_transcription_prompt(
+            prompt,
+            previous.ui_language,
+            assistant_name=previous.assistant_name,
+            user_title=previous.user_title,
+            organization_name=previous.organization_name,
+            wake_word=previous.wake_word,
         ):
-            self.transcription_prompt.setPlainText(
-                localized_transcription_prompt(
-                    new_ui_language,
-                    assistant_name=profile_values["assistant_name"],
-                    user_title=profile_values["user_title"],
-                    organization_name=profile_values[
-                        "organization_name"
-                    ],
-                    wake_word=profile_values["wake_word"],
-                )
+            return
+        self.transcription_prompt.setPlainText(
+            localized_transcription_prompt(
+                current.ui_language,
+                assistant_name=current.assistant_name,
+                user_title=current.user_title,
+                organization_name=current.organization_name,
+                wake_word=current.wake_word,
             )
-        if new_ui_language != previous_ui_language:
-            current_transcription_language = (
-                self.transcription_language.text().strip()
+        )
+
+    def _migrate_transcription_language(self, ui_language: str) -> None:
+        language = self.transcription_language.text().strip()
+        if language in {"zh", "en", "ja"}:
+            self.transcription_language.setText(
+                transcription_language_for_ui(ui_language)
             )
-            if current_transcription_language in {"zh", "en", "ja"}:
-                self.transcription_language.setText(
-                    transcription_language_for_ui(new_ui_language)
-                )
-            current_voice_instructions = (
-                self.voice_instructions.text().strip()
-            )
-            if current_voice_instructions in {
+
+    def _migrate_voice_instructions(self, ui_language: str) -> None:
+        instructions = self.voice_instructions.text().strip()
+        built_in_instructions = frozenset(
+            {
                 VOICE_GENERATION_PROMPT,
                 english_voice_instructions(),
                 simplified_chinese_voice_instructions(),
                 japanese_voice_instructions(),
-            }:
-                self.voice_instructions.setText(
-                    localized_voice_instructions(
-                        new_ui_language,
-                        VOICE_GENERATION_PROMPT,
-                    )
+            }
+        )
+        if instructions in built_in_instructions:
+            self.voice_instructions.setText(
+                localized_voice_instructions(
+                    ui_language,
+                    VOICE_GENERATION_PROMPT,
                 )
-            current_persona = self.persona_prompt.toPlainText().strip()
-            if current_persona in {
+            )
+
+    def _migrate_persona_prompt(self, ui_language: str) -> None:
+        persona = self.persona_prompt.toPlainText().strip()
+        built_in_personas = frozenset(
+            {
                 PERSONA.strip(),
                 ENGLISH_PERSONA.strip(),
                 SIMPLIFIED_CHINESE_PERSONA.strip(),
                 JAPANESE_PERSONA.strip(),
-            }:
-                self.persona_prompt.setPlainText(
-                    default_persona_for_language(new_ui_language)
-                )
-            for kind, message in self.reminder_message_controls.items():
-                message.setText(
-                    migrate_builtin_reminder_line(
-                        message.text(),
-                        new_ui_language,
-                        kind,
-                        REMINDER_LINES[kind],
-                    )
-                )
-            self.overwork_message.setText(
+            }
+        )
+        if persona in built_in_personas:
+            self.persona_prompt.setPlainText(
+                default_persona_for_language(ui_language)
+            )
+
+    def _migrate_reminder_messages(self, ui_language: str) -> None:
+        for kind, message in self.reminder_message_controls.items():
+            message.setText(
                 migrate_builtin_reminder_line(
-                    self.overwork_message.text(),
-                    new_ui_language,
-                    "overwork",
-                    REMINDER_LINES["overwork"],
+                    message.text(),
+                    ui_language,
+                    kind,
+                    REMINDER_LINES[kind],
                 )
             )
-        self.assistant_name = assistant_name
-        self.user_title = user_title
-        self.organization_name = profile_values["organization_name"]
+        self.overwork_message.setText(
+            migrate_builtin_reminder_line(
+                self.overwork_message.text(),
+                ui_language,
+                "overwork",
+                REMINDER_LINES["overwork"],
+            )
+        )
+
+    def _apply_saved_profile(self, values: ProfileSettingsValues) -> None:
+        self.assistant_name = values.assistant_name
+        self.user_title = values.user_title
+        self.organization_name = values.organization_name
         title = profile_window_title(self.db)
         self.setWindowTitle(title)
         self.header_title.setText(f"<b>{html.escape(title)}</b>")
-        for kind, (enabled, at) in self.reminder_controls.items():
-            self.db.update_reminder(kind, at.time().toString("HH:mm"), enabled.isChecked())
+
+    def _save_reminder_settings(self, ui_language: str) -> None:
+        for kind, (enabled, reminder_time) in self.reminder_controls.items():
+            self.db.update_reminder(
+                kind,
+                reminder_time.time().toString("HH:mm"),
+                enabled.isChecked(),
+            )
+            message = self.reminder_message_controls[kind].text().strip()
             self.db.set_setting(
                 f"reminder_message_{kind}",
-                self.reminder_message_controls[kind].text().strip()
-                or reminder_line(new_ui_language, kind),
+                message or reminder_line(ui_language, kind),
             )
-        self.db.set_setting("break_minutes", self.break_minutes.value())
-        self.db.set_setting(
-            "reminder_message_overwork",
-            self.overwork_message.text().strip()
-            or reminder_line(new_ui_language, "overwork"),
+
+    def _save_general_settings(self, ui_language: str) -> None:
+        persona = self.persona_prompt.toPlainText().strip()
+        overwork_message = self.overwork_message.text().strip()
+        settings = (
+            ("break_minutes", self.break_minutes.value()),
+            (
+                "reminder_message_overwork",
+                overwork_message
+                or reminder_line(ui_language, "overwork"),
+            ),
+            ("tts_enabled", self.tts_enabled.isChecked()),
+            ("work_folder", self.work_folder.text().strip()),
+            ("auto_memory", self.auto_memory.isChecked()),
+            ("ai_model", self.ai_model.currentText()),
+            (
+                "persona_prompt",
+                persona or default_persona_for_language(ui_language),
+            ),
+            ("topmost_mode", self.topmost_mode.currentText()),
+            (
+                "character_scale_percent",
+                self.character_scale_slider.value(),
+            ),
+            ("proactive_mode", self.proactive_mode.currentText()),
+            (
+                "background_assistant_enabled",
+                self.background_assistant_enabled.isChecked(),
+            ),
+            (
+                "background_watch_apps",
+                self.background_watch_apps.text().strip(),
+            ),
+            (
+                "background_diagnostic_report",
+                self.background_diagnostic_report.text().strip(),
+            ),
         )
-        self.db.set_setting("tts_enabled", self.tts_enabled.isChecked())
-        self.db.set_setting("work_folder", self.work_folder.text().strip())
-        self.db.set_setting("auto_memory", self.auto_memory.isChecked())
-        self.db.set_setting("ai_model", self.ai_model.currentText())
-        self.db.set_setting(
-            "persona_prompt",
-            self.persona_prompt.toPlainText().strip()
-            or default_persona_for_language(new_ui_language),
-        )
-        self.db.set_setting(
-            "topmost_mode",
-            self.topmost_mode.currentText(),
-        )
-        self.db.set_setting(
-            "character_scale_percent",
-            self.character_scale_slider.value(),
-        )
-        self.db.set_setting(
-            "proactive_mode",
-            self.proactive_mode.currentText(),
-        )
-        self.db.set_setting(
-            "background_assistant_enabled",
-            self.background_assistant_enabled.isChecked(),
-        )
-        self.db.set_setting(
-            "background_watch_apps",
-            self.background_watch_apps.text().strip(),
-        )
-        self.db.set_setting(
-            "background_diagnostic_report",
-            self.background_diagnostic_report.text().strip(),
-        )
-        for setting_key, control in self.physics_controls.items():
-            self.db.set_setting(setting_key, control.isChecked())
-        self.save_voice_settings(silent=True)
+        for key, value in settings:
+            self.db.set_setting(key, value)
+        for key, control in self.physics_controls.items():
+            self.db.set_setting(key, control.isChecked())
+
+    def _save_api_key_if_provided(self) -> None:
         key = self.api_key_input.text().strip()
-        if key:
-            try:
-                self.secret_store.save(key)
-                self.api_key_input.clear()
-                self.api_key_input.setPlaceholderText("已安全保存（留空不變）")
-                self.api_status.setText(
-                    "OpenAI API：金鑰已由作業系統安全保存"
-                )
-            except OSError as exc:
-                QMessageBox.warning(self, "API 金鑰", f"無法安全保存金鑰：{exc}")
-        if self.platform_services.capabilities.desktop_autostart:
-            try:
-                set_autostart(
-                    self.autostart.isChecked(),
-                    self.platform_services,
-                )
-                self.db.set_setting("autostart", self.autostart.isChecked())
-            except OSError as exc:
-                QMessageBox.warning(self, "自動啟動", f"無法更新自動啟動：{exc}")
-        else:
+        if not key:
+            return
+        try:
+            self.secret_store.save(key)
+        except OSError as exc:
+            QMessageBox.warning(
+                self,
+                "API 金鑰",
+                f"無法安全保存金鑰：{exc}",
+            )
+            return
+        self.api_key_input.clear()
+        self.api_key_input.setPlaceholderText("已安全保存（留空不變）")
+        self.api_status.setText("OpenAI API：金鑰已由作業系統安全保存")
+
+    def _save_autostart_setting(self) -> None:
+        if not self.platform_services.capabilities.desktop_autostart:
             self.db.set_setting("autostart", False)
+            return
+        enabled = self.autostart.isChecked()
+        try:
+            set_autostart(enabled, self.platform_services)
+        except OSError as exc:
+            QMessageBox.warning(
+                self,
+                "自動啟動",
+                f"無法更新自動啟動：{exc}",
+            )
+            return
+        self.db.set_setting("autostart", enabled)
+
+    def _finish_settings_save(
+        self,
+        ui_language: str,
+        silent: bool,
+    ) -> None:
         self.settings_saved.emit()
-        self.ui_language = new_ui_language
+        self.ui_language = ui_language
         if not silent:
             self.speak_requested.emit(
                 self._t("settings_saved", "設定已保存。"),
                 "happy",
             )
-        return True
 
+    def save_settings(self, silent: bool = False) -> bool:
+        previous = self._current_profile_localization()
+        values = self._validated_profile_settings()
+        if values is None:
+            return False
+        self._persist_profile_settings(values)
+        self._migrate_localized_profile_defaults(previous, values)
+        self._apply_saved_profile(values)
+        self._save_reminder_settings(values.ui_language)
+        self._save_general_settings(values.ui_language)
+        self.save_voice_settings(silent=True)
+        self._save_api_key_if_provided()
+        self._save_autostart_setting()
+        self._finish_settings_save(values.ui_language, silent)
+        return True
     def clear_api_key(self) -> None:
         platform = self.platform_services.capabilities
         answer = QMessageBox.question(
@@ -5156,48 +5940,85 @@ class CompanionWindow(QMainWindow):
             resource_path("voice_listener.ps1"),
             self,
         )
-        self.db = runtime_services.db
-        self.platform_services = (
-            runtime_services.platform_services
-            or current_platform_services()
+        self._initialize_runtime_services(runtime_services)
+        self._run_first_run_wizard_if_needed(startup_speech)
+        self.dashboard = self._create_dashboard()
+        self._connect_dashboard_signals()
+        self._connect_speech_service_signals()
+        self._initialize_companion_state(startup_speech)
+        self._configure_character_window()
+        self._initialize_motion_state()
+        self._build_ui(defer_visual_assets=defer_visual_startup)
+        self._reload_background_agents()
+        self._apply_character_scale(
+            self.character_scale_percent,
+            preserve_anchor=False,
         )
-        self.backup_manager = runtime_services.backup_manager
-        if (
-            startup_speech
-            and "--smoke-auto-exit" not in sys.argv
-            and not bool(self.db.setting("onboarding_complete", False))
-        ):
-            FirstRunWizard(
-                self.db,
-                platform_services=self.platform_services,
-            ).exec()
-        self.secret_store = runtime_services.secret_store
-        self.azure_secret_store = runtime_services.azure_secret_store
-        self.secret_store_factory = runtime_services.secret_store_factory
-        self.tts = runtime_services.local_tts
-        self.cloud_tts = runtime_services.cloud_tts
-        self.azure_tts = runtime_services.azure_speech
+        self._position_corner()
+        if not defer_visual_startup:
+            self._finish_visual_startup()
+
+    def _initialize_runtime_services(
+        self,
+        services: CompanionServices,
+    ) -> None:
+        self.db = services.db
+        self.platform_services = (
+            services.platform_services or current_platform_services()
+        )
+        self.backup_manager = services.backup_manager
+        self.secret_store = services.secret_store
+        self.azure_secret_store = services.azure_secret_store
+        self.secret_store_factory = services.secret_store_factory
+        self.tts = services.local_tts
+        self.cloud_tts = services.cloud_tts
+        self.azure_tts = services.azure_speech
         self.speech_providers = (
-            runtime_services.speech_providers
+            services.speech_providers
             or create_builtin_speech_registry(
                 self.tts,
                 self.cloud_tts,
                 self.azure_tts,
             )
         )
-        self.realtime = runtime_services.realtime
-        self.listener = runtime_services.listener
-        self.dashboard = Dashboard(
-            self.db,
-            self.listener,
-            self.secret_store,
-            azure_secret_store=self.azure_secret_store,
-            secret_store_factory=self.secret_store_factory,
-            platform_services=self.platform_services,
+        self.realtime = services.realtime
+        self.listener = services.listener
+
+    def _run_first_run_wizard_if_needed(
+        self,
+        startup_speech: bool,
+    ) -> None:
+        should_run = (
+            startup_speech
+            and "--smoke-auto-exit" not in sys.argv
+            and not bool(
+                self.db.setting("onboarding_complete", False)
+            )
         )
+        if should_run:
+            FirstRunWizard(
+                self.db,
+                platform_services=self.platform_services,
+            ).exec()
+
+    def _create_dashboard(self) -> Dashboard:
+        return Dashboard(
+            self.db,
+            DashboardDependencies(
+                listener=self.listener,
+                secret_store=self.secret_store,
+                azure_secret_store=self.azure_secret_store,
+                secret_store_factory=self.secret_store_factory,
+                platform_services=self.platform_services,
+            ),
+        )
+
+    def _connect_dashboard_signals(self) -> None:
         self.dashboard.speak_requested.connect(self.speak)
         self.dashboard.voice_preview_requested.connect(self.preview_voice)
-        self.dashboard.realtime_toggle_requested.connect(self.toggle_realtime)
+        self.dashboard.realtime_toggle_requested.connect(
+            self.toggle_realtime
+        )
         self.dashboard.volume_changed.connect(self._apply_voice_volume)
         self.dashboard.visibility_changed.connect(
             self._dashboard_visibility_changed
@@ -5219,10 +6040,16 @@ class CompanionWindow(QMainWindow):
             int(self.db.setting("voice_volume_percent", 125)),
             bool(self.db.setting("voice_muted", False)),
         )
-        self.dashboard.settings_saved.connect(self._reload_physics_settings)
-        self.dashboard.settings_saved.connect(self._reload_profile)
         self.background_scheduler: ManagerWorkerScheduler | None = None
-        self.dashboard.settings_saved.connect(self._reload_background_agents)
+        self.dashboard.settings_saved.connect(
+            self._reload_physics_settings
+        )
+        self.dashboard.settings_saved.connect(self._reload_profile)
+        self.dashboard.settings_saved.connect(
+            self._reload_background_agents
+        )
+
+    def _connect_speech_service_signals(self) -> None:
         self.tts.finished.connect(self._speech_audio_finished)
         self.tts.failed.connect(self._windows_voice_failed)
         self.tts.viseme_cue.connect(self._audio_viseme_cue)
@@ -5234,11 +6061,19 @@ class CompanionWindow(QMainWindow):
             self.azure_tts.failed.connect(self._azure_voice_failed)
             self.azure_tts.viseme_cue.connect(self._audio_viseme_cue)
         self.realtime.status_changed.connect(self._realtime_status)
-        self.realtime.user_transcript.connect(self._realtime_user_text)
-        self.realtime.assistant_transcript.connect(self._realtime_assistant_text)
-        self.realtime.speaking_changed.connect(self._realtime_speaking)
+        self.realtime.user_transcript.connect(
+            self._realtime_user_text
+        )
+        self.realtime.assistant_transcript.connect(
+            self._realtime_assistant_text
+        )
+        self.realtime.speaking_changed.connect(
+            self._realtime_speaking
+        )
         self.realtime.viseme_cue.connect(self._audio_viseme_cue)
         self.realtime.failed.connect(self._realtime_failed)
+
+    def _initialize_companion_state(self, startup_speech: bool) -> None:
         self.state = "idle"
         self.expression_generation = 0
         self.expression_arbiter = ExpressionArbiter(
@@ -5246,8 +6081,7 @@ class CompanionWindow(QMainWindow):
         )
         self.active_ai_wait_generation = 0
         self.active_ai_wait_expression = ""
-        self.speech_queue: deque[tuple[str, str]] = deque()
-        self.speech_metadata_queue: deque[tuple[float, str]] = deque()
+        self.speech_queue: deque[QueuedSpeech] = deque()
         self.speech_playing = False
         self.active_speech_text = ""
         self.active_speech_engine = ""
@@ -5258,6 +6092,7 @@ class CompanionWindow(QMainWindow):
         self._visual_startup_complete = False
         self._closing = False
 
+    def _configure_character_window(self) -> None:
         self.setWindowTitle(profile_window_title(self.db))
         self.setWindowFlags(
             Qt.FramelessWindowHint
@@ -5269,9 +6104,10 @@ class CompanionWindow(QMainWindow):
         self.character_topmost_active = True
         self.character_behind_hwnd = 0
         self._smart_overlap_hwnd = 0
+
+    def _initialize_motion_state(self) -> None:
         self.character_base_x = 2
         self.character_base_y = CHARACTER_BASE_Y
-        # Motion state must exist before the first scale/layout pass.
         self.motion_base_x = 0
         self.motion_base_y = self.character_base_y
         self.ambient_motion_x = 0.0
@@ -5283,34 +6119,21 @@ class CompanionWindow(QMainWindow):
         self.gesture_motion_x = 0.0
         self.gesture_motion_y = 0.0
         self.last_composed_body_position: tuple[int, int] | None = None
+        saved_scale = int(
+            self.db.setting(
+                "character_scale_percent",
+                CHARACTER_SCALE_DEFAULT,
+            )
+        )
         self.character_scale_percent = max(
             CHARACTER_SCALE_MIN,
-            min(
-                CHARACTER_SCALE_MAX,
-                int(
-                    self.db.setting(
-                        "character_scale_percent",
-                        CHARACTER_SCALE_DEFAULT,
-                    )
-                ),
-            ),
+            min(CHARACTER_SCALE_MAX, saved_scale),
         )
         self.character_scale = self.character_scale_percent / 100.0
         self.setFixedSize(
             CHARACTER_CANVAS_WIDTH,
             CHARACTER_BASE_Y + CHARACTER_IMAGE_SIZE,
         )
-        self._build_ui(defer_visual_assets=defer_visual_startup)
-        self._reload_background_agents()
-        self._apply_character_scale(
-            self.character_scale_percent,
-            preserve_anchor=False,
-        )
-        self._position_corner()
-        if defer_visual_startup:
-            return
-        self._finish_visual_startup()
-
     def _finish_visual_startup(self) -> None:
         if self._visual_startup_complete:
             return
@@ -5353,7 +6176,15 @@ class CompanionWindow(QMainWindow):
         root = QWidget()
         root.setAttribute(Qt.WA_TranslucentBackground)
         self.setCentralWidget(root)
+        self._build_speech_bubble(root)
+        self._build_character_widget(root, defer_visual_assets)
+        self._build_expression_overlay(root)
+        self._build_physics_overlay_widgets(root)
+        self._build_attention_overlay_widgets(root)
+        self.bubble.raise_()
+        self.bubble.hide()
 
+    def _build_speech_bubble(self, root: QWidget) -> None:
         self.bubble = QFrame(root)
         self.bubble.setObjectName("speechBubble")
         self.bubble.setGeometry(18, 8, 430, 96)
@@ -5361,32 +6192,46 @@ class CompanionWindow(QMainWindow):
             "QFrame#speechBubble{background:rgba(15,29,40,225);"
             "border:1px solid #5b9bb8;border-radius:18px;}"
         )
-        bubble_layout = QVBoxLayout(self.bubble)
+        layout = QVBoxLayout(self.bubble)
         self.bubble_name = QLabel(
             profile_setting(self.db, "assistant_name")
         )
-        self.bubble_name.setStyleSheet("color:#8fc9e0;font-size:11px;")
+        self.bubble_name.setStyleSheet(
+            "color:#8fc9e0;font-size:11px;"
+        )
         self.bubble_text = QLabel()
         self.bubble_text.setWordWrap(True)
         self.bubble_text.setMaximumWidth(390)
-        self.bubble_text.setStyleSheet("color:#f3f8fa;font-size:14px;")
-        bubble_layout.addWidget(self.bubble_name)
-        bubble_layout.addWidget(self.bubble_text, 1)
+        self.bubble_text.setStyleSheet(
+            "color:#f3f8fa;font-size:14px;"
+        )
+        layout.addWidget(self.bubble_name)
+        layout.addWidget(self.bubble_text, 1)
 
+    def _build_character_widget(
+        self,
+        root: QWidget,
+        defer_visual_assets: bool,
+    ) -> None:
         self.character = ClickableLabel(root)
-        self.expression_pixmaps = {}
+        self.expression_pixmaps: dict[str, QPixmap] = {}
         initial_assets = (
             ("idle",) if defer_visual_assets else EXPRESSION_IMAGE_ASSETS
         )
         for expression in initial_assets:
-            pix = QPixmap(
-                str(resource_path(f"assets/expressions/{expression}.png"))
+            source = QPixmap(
+                str(
+                    resource_path(
+                        f"assets/expressions/{expression}.png"
+                    )
+                )
             )
-            self.expression_pixmaps[expression] = pix.scaled(
-                465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            self.expression_pixmaps[expression] = source.scaled(
+                465,
+                465,
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation,
             )
-        # v1.20 keeps complete base frames and only overlays feathered copies of
-        # original pixels. No holes are cut from the identity-preserving frames.
         self.safe_layer_rendering = True
         self.conservative_idle = True
         self.physics_features = {
@@ -5411,53 +6256,46 @@ class CompanionWindow(QMainWindow):
         )
         self.character.clicked.connect(self._character_clicked)
 
+    def _build_expression_overlay(self, root: QWidget) -> None:
         self.expression_overlay = QLabel(root)
-        self.expression_overlay.setScaledContents(True)
-        self.expression_overlay.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
-        self.expression_overlay.setGeometry(self.character.geometry())
-        self.expression_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self._configure_character_overlay(self.expression_overlay)
         self.expression_overlay.hide()
         self.character_opacity = QGraphicsOpacityEffect(self.character)
         self.character.setGraphicsEffect(self.character_opacity)
         self.character_opacity.setOpacity(1.0)
-        self.overlay_opacity = QGraphicsOpacityEffect(self.expression_overlay)
+        self.overlay_opacity = QGraphicsOpacityEffect(
+            self.expression_overlay
+        )
         self.expression_overlay.setGraphicsEffect(self.overlay_opacity)
         self.overlay_opacity.setOpacity(0.0)
 
+    def _build_physics_overlay_widgets(self, root: QWidget) -> None:
         self.sleeve_left_overlay = QLabel(root)
         self.sleeve_right_overlay = QLabel(root)
         self.hair_left_overlay = QLabel(root)
         self.hair_right_overlay = QLabel(root)
-        for hair_overlay in (
+        for overlay in (
             self.sleeve_left_overlay,
             self.sleeve_right_overlay,
             self.hair_left_overlay,
             self.hair_right_overlay,
         ):
-            hair_overlay.setScaledContents(True)
-            hair_overlay.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
-            hair_overlay.setGeometry(self.character.geometry())
-            hair_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
-
+            self._configure_character_overlay(overlay)
         self.physics_overlay = QLabel(root)
-        self.physics_overlay.setScaledContents(True)
-        self.physics_overlay.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
-        self.physics_overlay.setGeometry(self.character.geometry())
-        self.physics_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self._configure_character_overlay(self.physics_overlay)
 
+    def _build_attention_overlay_widgets(self, root: QWidget) -> None:
         self.face_overlay = QLabel(root)
         self.eye_overlay = QLabel(root)
-        for attention_overlay in (self.face_overlay, self.eye_overlay):
-            attention_overlay.setScaledContents(True)
-            attention_overlay.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
-            attention_overlay.setGeometry(self.character.geometry())
-            attention_overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
-        self.face_overlay.hide()
-        self.eye_overlay.hide()
+        for overlay in (self.face_overlay, self.eye_overlay):
+            self._configure_character_overlay(overlay)
+            overlay.hide()
 
-        self.bubble.raise_()
-        self.bubble.hide()
-
+    def _configure_character_overlay(self, overlay: QLabel) -> None:
+        overlay.setScaledContents(True)
+        overlay.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
+        overlay.setGeometry(self.character.geometry())
+        overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
     def _position_corner(self) -> None:
         screen = QApplication.primaryScreen().availableGeometry()
         self.move(
@@ -5580,6 +6418,14 @@ class CompanionWindow(QMainWindow):
         self.bubble.raise_()
 
     def _setup_timers(self) -> None:
+        self._initialize_idle_animation()
+        self._initialize_mouth_animation_state()
+        self._initialize_mouth_timers()
+        self._initialize_physics_animation()
+        self._initialize_motion_attention()
+        self._initialize_service_timers()
+
+    def _initialize_idle_animation(self) -> None:
         self.idle_phase = 0
         self.idle_pose = "front"
         self._set_expression(self._idle_expression(), fade=False)
@@ -5600,8 +6446,12 @@ class CompanionWindow(QMainWindow):
         self._schedule_attention_glance()
         self.ambient_timer = QTimer(self)
         self.ambient_timer.setSingleShot(True)
-        self.ambient_timer.timeout.connect(self._show_ambient_expression)
+        self.ambient_timer.timeout.connect(
+            self._show_ambient_expression
+        )
         self._schedule_ambient_expression()
+
+    def _initialize_mouth_animation_state(self) -> None:
         self.mouth_open = False
         self.mouth_frame_index = 0
         self.idle_blinking = False
@@ -5612,14 +6462,8 @@ class CompanionWindow(QMainWindow):
         self.blink_generation = 0
         self.audio_driven_mouth = False
         self.mouth_closing = False
-        self.smoothed_audio_level = 0.0
-        self.viseme_candidate = "CLOSED"
-        self.viseme_candidate_frames = 0
-        self.silence_candidate_frames = 0
-        self.viseme_hold_frames = 0
-        self.jaw_aperture = 0.0
+        self.viseme_dynamics = VisemeDynamics()
         self.mouth_aperture_target = 0.0
-        self.current_viseme = "CLOSED"
         self.head_motion_y = 0.0
         self.after_speech_state = "idle"
         self.speech_closed_expression = "idle"
@@ -5628,6 +6472,16 @@ class CompanionWindow(QMainWindow):
         self.speech_current_expression = "idle"
         self.speech_pose_suffix = "_front"
         self.speech_gesture_expression: str | None = None
+        self.realtime_mouth_active = False
+        self.mouth_transition_from = QPixmap()
+        self.mouth_transition_to = QPixmap()
+        self.mouth_transition_started = 0.0
+        self.mouth_transition_duration = (
+            VISEME_CHANGE_TRANSITION_SECONDS
+        )
+        self.realtime_after_speech_state = "idle"
+
+    def _initialize_mouth_timers(self) -> None:
         self.mouth_timer = QTimer(self)
         self.mouth_timer.setSingleShot(True)
         self.mouth_timer.timeout.connect(self._mouth_tick)
@@ -5646,31 +6500,14 @@ class CompanionWindow(QMainWindow):
         self.realtime_finish_timer.timeout.connect(
             self._complete_realtime_speaking_stop
         )
-        self.realtime_mouth_active = False
-        self.mouth_transition_from = QPixmap()
-        self.mouth_transition_to = QPixmap()
-        self.mouth_transition_started = 0.0
-        self.mouth_transition_duration = (
-            VISEME_CHANGE_TRANSITION_SECONDS
-        )
-        self.physics_phase = 0
-        self.ornament_angle = 0.0
-        self.ornament_velocity = 0.0
-        self.hair_left_angle = 0.0
-        self.hair_right_angle = 0.0
-        self.hair_left_velocity = 0.0
-        self.hair_right_velocity = 0.0
-        self.sleeve_left_angle = 0.0
-        self.sleeve_right_angle = 0.0
-        self.sleeve_left_velocity = 0.0
-        self.sleeve_right_velocity = 0.0
-        self.current_breath = 0.0
-        self.last_rendered_ornament_angle = 99.0
-        self.last_rendered_hair_angles = (99.0, 99.0)
-        self.last_rendered_sleeves = (99.0, 99.0, 99.0)
+
+    def _initialize_physics_animation(self) -> None:
+        self._reset_physics_dynamics()
         self.physics_timer = QTimer(self)
         self.physics_timer.timeout.connect(self._physics_tick)
         self.physics_timer.start(33)
+
+    def _initialize_motion_attention(self) -> None:
         self.gaze_x = 0.0
         self.gaze_y = 0.0
         self.gaze_target_x = 0.0
@@ -5683,12 +6520,15 @@ class CompanionWindow(QMainWindow):
         self.attention_timer = QTimer(self)
         self.attention_timer.timeout.connect(self._attention_tick)
         self.attention_timer.start(40)
-        self.realtime_after_speech_state = "idle"
+
+    def _initialize_service_timers(self) -> None:
         self.reminder_timer = QTimer(self)
         self.reminder_timer.timeout.connect(self.check_reminders)
         self.reminder_timer.start(20_000)
         self.clock_timer = QTimer(self)
-        self.clock_timer.timeout.connect(self.dashboard.refresh_work_time)
+        self.clock_timer.timeout.connect(
+            self.dashboard.refresh_work_time
+        )
         self.clock_timer.start(1_000)
         self.topmost_timer = QTimer(self)
         self.topmost_timer.setInterval(100)
@@ -5700,7 +6540,6 @@ class CompanionWindow(QMainWindow):
             self._background_agent_tick
         )
         self.background_agent_timer.start()
-
     def _setup_tray(self) -> None:
         self.tray = QSystemTrayIcon(
             QIcon(str(resource_path(APP_ICON_PATH))), self
@@ -5814,7 +6653,7 @@ class CompanionWindow(QMainWindow):
             or self.speech_playing
             or self.realtime_mouth_active
         )
-        for observation in scheduler.drain(now=datetime.now(), quiet=quiet):
+        for observation in scheduler.drain(now=local_wall_time(), quiet=quiet):
             if not self.set_state(
                 observation.expression,
                 source="ambient",
@@ -5856,6 +6695,20 @@ class CompanionWindow(QMainWindow):
         )
 
     def _build_physics_layers(self) -> None:
+        self._reset_physics_dynamics()
+        self.active_physics_pose = "front"
+        self.physics_anchors = self._ornament_anchors()
+        self.hair_anchors = self._hair_anchors()
+        self.sleeve_anchors = self._sleeve_anchors()
+        self.physics_sources: dict[str, QPixmap] = {}
+        self.hair_sources: dict[str, dict[str, QPixmap]] = {}
+        self.sleeve_sources: dict[str, dict[str, QPixmap]] = {}
+        self._load_physics_sources()
+        self.physics_expression_poses = (
+            self._physics_expression_pose_map()
+        )
+
+    def _reset_physics_dynamics(self) -> None:
         self.physics_phase = 0
         self.ornament_angle = 0.0
         self.ornament_velocity = 0.0
@@ -5871,133 +6724,138 @@ class CompanionWindow(QMainWindow):
         self.last_rendered_ornament_angle = 99.0
         self.last_rendered_hair_angles = (99.0, 99.0)
         self.last_rendered_sleeves = (99.0, 99.0, 99.0)
-        self.active_physics_pose = "front"
-        self.physics_sources = {}
-        self.hair_sources = {}
-        self.sleeve_sources = {}
-        self.physics_anchors = {
-            "cheek": QPoint(315, 96),
-            "lean": QPoint(306, 96),
-            "front": QPoint(293, 72),
-        }
-        self.hair_anchors = {
-            "cheek": {
-                "left": QPoint(187, 178),
-                "right": QPoint(268, 168),
-            },
-            "lean": {
-                "left": QPoint(177, 174),
-                "right": QPoint(254, 162),
-            },
-            "front": {
-                "left": QPoint(183, 171),
-                "right": QPoint(278, 168),
-            },
-        }
-        self.sleeve_anchors = {
-            "cheek": {
-                "left": QPoint(132, 253),
-                "right": QPoint(330, 239),
-            },
-            "lean": {
-                "left": QPoint(130, 252),
-                "right": QPoint(326, 239),
-            },
-            "front": {
-                "left": QPoint(131, 253),
-                "right": QPoint(333, 253),
-            },
-        }
+
+    @staticmethod
+    def _ornament_anchors() -> frozendict:
+        return frozendict(
+            {
+                "cheek": QPoint(315, 96),
+                "lean": QPoint(306, 96),
+                "front": QPoint(293, 72),
+            }
+        )
+
+    @staticmethod
+    def _hair_anchors() -> frozendict:
+        return frozendict(
+            {
+                "cheek": frozendict(
+                    {
+                        "left": QPoint(187, 178),
+                        "right": QPoint(268, 168),
+                    }
+                ),
+                "lean": frozendict(
+                    {
+                        "left": QPoint(177, 174),
+                        "right": QPoint(254, 162),
+                    }
+                ),
+                "front": frozendict(
+                    {
+                        "left": QPoint(183, 171),
+                        "right": QPoint(278, 168),
+                    }
+                ),
+            }
+        )
+
+    @staticmethod
+    def _sleeve_anchors() -> frozendict:
+        return frozendict(
+            {
+                "cheek": frozendict(
+                    {
+                        "left": QPoint(132, 253),
+                        "right": QPoint(330, 239),
+                    }
+                ),
+                "lean": frozendict(
+                    {
+                        "left": QPoint(130, 252),
+                        "right": QPoint(326, 239),
+                    }
+                ),
+                "front": frozendict(
+                    {
+                        "left": QPoint(131, 253),
+                        "right": QPoint(333, 253),
+                    }
+                ),
+            }
+        )
+
+    def _load_physics_sources(self) -> None:
         for pose, suffix in (
             ("cheek", ""),
             ("lean", "_lean"),
             ("front", "_front"),
         ):
-            source = QPixmap(
-                str(
-                    resource_path(
-                        f"assets/expressions/v120_ornament{suffix}.png"
-                    )
-                )
-            ).scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            self.physics_sources[pose] = source
+            self.physics_sources[pose] = self._scaled_expression_asset(
+                f"v120_ornament{suffix}.png"
+            )
             self.hair_sources[pose] = {}
             self.sleeve_sources[pose] = {}
             for side in ("left", "right"):
-                raw_hair = QPixmap(
-                    str(
-                        resource_path(
-                            "assets/expressions/"
-                            f"v120_hair_{side}{suffix}.png"
-                        )
-                    )
-                ).scaled(
-                    465,
-                    465,
-                    Qt.KeepAspectRatio,
-                    Qt.SmoothTransformation,
+                hair = self._scaled_expression_asset(
+                    f"v120_hair_{side}{suffix}.png"
                 )
-                self.hair_sources[pose][side] = self._hair_texture_only(
-                    raw_hair
+                self.hair_sources[pose][side] = (
+                    self._hair_texture_only(hair)
                 )
-                raw_sleeve = QPixmap(
-                    str(
-                        resource_path(
-                            "assets/expressions/"
-                            f"v120_sleeve_{side}{suffix}.png"
-                        )
-                    )
-                ).scaled(
-                    465,
-                    465,
-                    Qt.KeepAspectRatio,
-                    Qt.SmoothTransformation,
+                sleeve = self._scaled_expression_asset(
+                    f"v120_sleeve_{side}{suffix}.png"
                 )
-                self.sleeve_sources[pose][side] = self._sleeve_texture_only(
-                    raw_sleeve,
-                    side,
+                self.sleeve_sources[pose][side] = (
+                    self._sleeve_texture_only(sleeve, side)
                 )
 
-        self.physics_expression_poses = {}
-        for suffix, pose in (
-            ("", "cheek"),
-            ("_lean", "lean"),
-            ("_front", "front"),
-        ):
-            for prefix in (
-                "idle",
-                "speaking",
-                "blink",
-                "mouth_mid",
-                "mouth_wide",
-                "mouth_round",
-                "mouth_i",
-                "mouth_o",
-                "blink_mid",
-                "blink_open",
-                "blink_wide",
-                "blink_round",
-                "blink_i",
-                "blink_o",
-            ):
-                self.physics_expression_poses[f"{prefix}{suffix}"] = pose
+    @staticmethod
+    def _scaled_expression_asset(filename: str) -> QPixmap:
+        source = QPixmap(
+            str(resource_path(f"assets/expressions/{filename}"))
+        )
+        return source.scaled(
+            465,
+            465,
+            Qt.KeepAspectRatio,
+            Qt.SmoothTransformation,
+        )
+
+    def _physics_expression_pose_map(self) -> dict[str, str]:
+        pose_map = {
+            **{
+                f"{prefix}{suffix}": pose
+                for prefix in PHYSICS_SPEECH_FRAME_PREFIXES
+            }
+            for suffix, pose in PHYSICS_POSE_SUFFIXES
+        }
         for expression, pose in EXPRESSION_POSES.items():
-            if expression in self.expression_pixmaps:
-                self.physics_expression_poses[expression] = pose
-            for speech_frame in EXPRESSION_SPEECH_FRAMES[expression].values():
-                if speech_frame in self.expression_pixmaps:
-                    self.physics_expression_poses[speech_frame] = pose
-            for derived_frame in (
-                EXPRESSION_DERIVED_VISEME_FRAMES[expression].values()
-            ):
-                self.physics_expression_poses[derived_frame] = pose
-            blink_frame = EXPRESSION_BLINK_FRAMES.get(expression)
-            if (
-                blink_frame is not None
-                and blink_frame in self.expression_pixmaps
-            ):
-                self.physics_expression_poses[blink_frame] = pose
+            self._register_expression_pose_frames(
+                pose_map,
+                expression,
+                pose,
+            )
+        return pose_map
 
+    def _register_expression_pose_frames(
+        self,
+        pose_map: dict[str, str],
+        expression: str,
+        pose: str,
+    ) -> None:
+        if expression in self.expression_pixmaps:
+            pose_map[expression] = pose
+        for frame in EXPRESSION_SPEECH_FRAMES[expression].values():
+            if frame in self.expression_pixmaps:
+                pose_map[frame] = pose
+        for frame in EXPRESSION_DERIVED_VISEME_FRAMES[
+            expression
+        ].values():
+            pose_map[frame] = pose
+        blink_frame = EXPRESSION_BLINK_FRAMES.get(expression)
+        if blink_frame is not None and blink_frame in self.expression_pixmaps:
+            pose_map[blink_frame] = pose
     @staticmethod
     def _hair_texture_only(source: QPixmap) -> QPixmap:
         """Remove skin and clothing accidentally carried by a hair cutout.
@@ -6346,7 +7204,7 @@ class CompanionWindow(QMainWindow):
         self.physics_phase = (self.physics_phase + 1) % 3600
         ambient = math.sin(self.physics_phase * math.tau / 190.0) * 0.38
         voice_motion = (
-            (self.smoothed_audio_level - 0.18) * 0.75
+            (self.viseme_dynamics.smoothed_level - 0.18) * 0.75
             if self.state == "speaking"
             else 0.0
         )
@@ -6384,7 +7242,10 @@ class CompanionWindow(QMainWindow):
         if self.state == "speaking":
             self.current_breath = max(
                 0.0,
-                min(1.0, self.smoothed_audio_level * 0.72 + 0.18),
+                min(
+                    1.0,
+                    self.viseme_dynamics.smoothed_level * 0.72 + 0.18,
+                ),
             )
         sleeve_voice = voice_motion * 0.055
         sleeve_left_target = breath_wave * 0.075 + sleeve_voice
@@ -6416,7 +7277,11 @@ class CompanionWindow(QMainWindow):
             return
         breath_lift = (
             max(0.0, min(1.0, self.current_breath)) * 0.65
-            + (self.smoothed_audio_level * 0.35 if self.state == "speaking" else 0.0)
+            + (
+                self.viseme_dynamics.smoothed_level * 0.35
+                if self.state == "speaking"
+                else 0.0
+            )
         )
         current = (
             self.sleeve_left_angle,
@@ -6556,69 +7421,81 @@ class CompanionWindow(QMainWindow):
         return self._idle_expression()
 
     def _build_mouth_frames(self) -> None:
-        mouth_clips = {
-            # The cheek-rest portrait has a wider closed smile than its
-            # speech sources.  Cover both original mouth corners as well as
-            # the lips; otherwise the upturned idle corners survive beneath
-            # A/I visemes and visually turn one mouth into an exaggerated
-            # grin.
-            "": QRect(168, 195, 64, 40),
-            "_lean": QRect(162, 198, 54, 34),
-            "_front": QRect(206, 199, 54, 35),
-        }
+        mouth_clips = self._mouth_clip_regions()
         self.mouth_clips = mouth_clips
-        self.mouth_masks = {}
-        for suffix, mouth_clip in mouth_clips.items():
-            mask = QPixmap(465, 465)
-            mask.fill(Qt.transparent)
-            painter = QPainter(mask)
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setPen(Qt.NoPen)
-            for inset, alpha in (
-                (0, 52),
-                (1, 82),
-                (2, 128),
-                (3, 255),
-            ):
-                painter.setBrush(QColor(255, 255, 255, alpha))
-                painter.drawRoundedRect(
-                    mouth_clip.adjusted(inset, inset, -inset, -inset),
-                    9,
-                    9,
-                )
-            painter.end()
-            self.mouth_masks[suffix] = mask
-        self.viseme_mouth_masks = dict(self.mouth_masks)
-        central_mask = QPixmap(465, 465)
-        central_mask.fill(Qt.transparent)
-        painter = QPainter(central_mask)
+        self._build_speech_mouth_masks(mouth_clips)
+        self._build_cheek_neutral_speech_frame()
+        self._build_gesture_mouth_masks()
+        self._build_derived_expression_visemes()
+        blink_regions = self._blink_regions()
+        self._build_blink_masks(blink_regions)
+        self._build_face_parallax_cutouts(
+            blink_regions,
+            mouth_clips,
+        )
+        self._normalize_base_speech_frames()
+        self._build_pose_viseme_frames(mouth_clips)
+        self._build_expression_anchor_profiles()
+        self._build_expression_eye_layers()
+
+    @staticmethod
+    def _mouth_clip_regions() -> frozendict[str, QRect]:
+        return frozendict(
+            {
+                "": QRect(168, 195, 64, 40),
+                "_lean": QRect(162, 198, 54, 34),
+                "_front": QRect(206, 199, 54, 35),
+            }
+        )
+
+    @staticmethod
+    def _soft_rounded_mask(
+        regions: Iterable[QRect],
+        alpha_steps: tuple[tuple[int, int], ...],
+        radius: int,
+    ) -> QPixmap:
+        mask = QPixmap(465, 465)
+        mask.fill(Qt.transparent)
+        painter = QPainter(mask)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setPen(Qt.NoPen)
-        for inset, alpha in (
+        for region in regions:
+            for inset, alpha in alpha_steps:
+                painter.setBrush(QColor(255, 255, 255, alpha))
+                painter.drawRoundedRect(
+                    region.adjusted(inset, inset, -inset, -inset),
+                    radius,
+                    radius,
+                )
+        painter.end()
+        return mask
+
+    def _build_speech_mouth_masks(
+        self,
+        mouth_clips: frozendict[str, QRect],
+    ) -> None:
+        alpha_steps = (
             (0, 52),
             (1, 82),
             (2, 128),
             (3, 255),
-        ):
-            painter.setBrush(QColor(255, 255, 255, alpha))
-            painter.drawRoundedRect(
-                CHEEK_SPEECH_CENTRAL_MOUTH_RECT.adjusted(
-                    inset,
-                    inset,
-                    -inset,
-                    -inset,
-                ),
-                9,
+        )
+        self.mouth_masks = {
+            suffix: self._soft_rounded_mask(
+                (mouth_clip,),
+                alpha_steps,
                 9,
             )
-        painter.end()
-        self.viseme_mouth_masks[""] = central_mask
+            for suffix, mouth_clip in mouth_clips.items()
+        }
+        self.viseme_mouth_masks = dict(self.mouth_masks)
+        self.viseme_mouth_masks[""] = self._soft_rounded_mask(
+            (CHEEK_SPEECH_CENTRAL_MOUTH_RECT,),
+            alpha_steps,
+            9,
+        )
 
-        # The cheek-rest idle portrait has a deliberately upturned smile.
-        # During speech, freeze neutral corners from its identity-matched open
-        # frame once, then let A/I/U/E/O replace only the central lips. This
-        # keeps the smiling eyes while preventing both corners from fluttering
-        # on every viseme transition.
+    def _build_cheek_neutral_speech_frame(self) -> None:
         cheek_idle = self.expression_pixmaps["idle"]
         cheek_neutral = QPixmap(cheek_idle)
         painter = QPainter(cheek_neutral)
@@ -6645,40 +7522,27 @@ class CompanionWindow(QMainWindow):
         self.physics_expression_poses[
             CHEEK_SPEECH_CLOSED_EXPRESSION
         ] = "cheek"
-        self.gesture_mouth_masks = {}
-        for expression, mouth_rect in (
-            EXPRESSION_SPEECH_MOUTH_RECTS.items()
-        ):
-            mask = QPixmap(465, 465)
-            mask.fill(Qt.transparent)
-            painter = QPainter(mask)
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setPen(Qt.NoPen)
-            for inset, alpha in (
-                (0, 48),
-                (1, 80),
-                (2, 132),
-                (3, 210),
-                (4, 255),
-            ):
-                painter.setBrush(QColor(255, 255, 255, alpha))
-                painter.drawRoundedRect(
-                    mouth_rect.adjusted(
-                        inset,
-                        inset,
-                        -inset,
-                        -inset,
-                    ),
-                    9,
-                    9,
-                )
-            painter.end()
-            self.gesture_mouth_masks[expression] = mask
 
-        # Emotional portraits ship with three identity-locked source shapes.
-        # Derive the narrower I and pursed U locally from the same portrait so
-        # the runtime still exposes five visually distinct A/I/U/E/O states
-        # without importing a neutral mouth from another face.
+    def _build_gesture_mouth_masks(self) -> None:
+        alpha_steps = (
+            (0, 48),
+            (1, 80),
+            (2, 132),
+            (3, 210),
+            (4, 255),
+        )
+        self.gesture_mouth_masks = {
+            expression: self._soft_rounded_mask(
+                (mouth_rect,),
+                alpha_steps,
+                9,
+            )
+            for expression, mouth_rect in (
+                EXPRESSION_SPEECH_MOUTH_RECTS.items()
+            )
+        }
+
+    def _build_derived_expression_visemes(self) -> None:
         for expression in EXPRESSION_SPEECH_EXPRESSIONS:
             closed = self.expression_pixmaps[expression]
             source_frames = EXPRESSION_SPEECH_FRAMES[expression]
@@ -6700,64 +7564,57 @@ class CompanionWindow(QMainWindow):
                     ),
                 )
                 painter.end()
-                self.expression_pixmaps[
-                    EXPRESSION_DERIVED_VISEME_FRAMES[
-                        expression
-                    ][vowel]
-                ] = derived
-        # One authoritative eye-replacement area is shared by idle blinks,
-        # speaking blinks, expression-local blinks and face parallax.  The
-        # earlier idle mask was narrower than the photographed upper
-        # eyeliner, so a few open-eye pixels could remain visible after the
-        # eyelid had closed—most noticeably in the cheek-rest portrait.
-        # These bounds cover both eye corners while remaining below the
-        # original eyebrows.
-        blink_regions = {
-            "cheek": (
-                QRect(160, 153, 55, 34),
-                QRect(198, 153, 61, 34),
-            ),
-            "lean": (
-                QRect(153, 153, 55, 34),
-                QRect(191, 153, 61, 34),
-            ),
-            "front": (
-                QRect(180, 153, 53, 34),
-                QRect(220, 153, 56, 34),
-            ),
+                derived_name = EXPRESSION_DERIVED_VISEME_FRAMES[
+                    expression
+                ][vowel]
+                self.expression_pixmaps[derived_name] = derived
+
+    @staticmethod
+    def _blink_regions(
+    ) -> frozendict[str, tuple[QRect, QRect]]:
+        return frozendict(
+            {
+                "cheek": (
+                    QRect(160, 153, 55, 34),
+                    QRect(198, 153, 61, 34),
+                ),
+                "lean": (
+                    QRect(153, 153, 55, 34),
+                    QRect(191, 153, 61, 34),
+                ),
+                "front": (
+                    QRect(180, 153, 53, 34),
+                    QRect(220, 153, 56, 34),
+                ),
+            }
+        )
+
+    def _build_blink_masks(
+        self,
+        blink_regions: frozendict[str, tuple[QRect, QRect]],
+    ) -> None:
+        alpha_steps = (
+            (0, 42),
+            (1, 76),
+            (2, 132),
+            (3, 255),
+        )
+        self.blink_masks = {
+            pose: self._soft_rounded_mask(
+                regions,
+                alpha_steps,
+                10,
+            )
+            for pose, regions in blink_regions.items()
         }
-        self.blink_masks = {}
-        for pose, regions in blink_regions.items():
-            mask = QPixmap(465, 465)
-            mask.fill(Qt.transparent)
-            painter = QPainter(mask)
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.setPen(Qt.NoPen)
-            for region in regions:
-                for inset, alpha in (
-                    (0, 42),
-                    (1, 76),
-                    (2, 132),
-                    (3, 255),
-                ):
-                    painter.setBrush(QColor(255, 255, 255, alpha))
-                    painter.drawRoundedRect(
-                        region.adjusted(inset, inset, -inset, -inset),
-                        10,
-                        10,
-                    )
-            painter.end()
-            self.blink_masks[pose] = mask
-        # Compatibility aliases keep existing callers readable without
-        # maintaining a second set of coordinates or masks.
         self.dedicated_blink_regions = blink_regions
         self.dedicated_blink_masks = self.blink_masks
 
-        # The face-parallax source contains a complete neutral face. Drawing
-        # that full layer over a blink or viseme reintroduces open eyes and a
-        # closed mouth above the current frame. Keep the parallax skin/nose
-        # detail, but give eyelids and lips to their single canonical owners:
-        # eye_overlay and the active speech pixmap.
+    def _build_face_parallax_cutouts(
+        self,
+        blink_regions: frozendict[str, tuple[QRect, QRect]],
+        mouth_clips: frozendict[str, QRect],
+    ) -> None:
         self.face_parallax_cutouts = {}
         for pose, suffix in (
             ("cheek", ""),
@@ -6765,28 +7622,30 @@ class CompanionWindow(QMainWindow):
             ("front", "_front"),
         ):
             left_eye, right_eye = blink_regions[pose]
-            mouth = mouth_clips[suffix]
-            cutout = QPixmap(465, 465)
-            cutout.fill(Qt.transparent)
-            painter = QPainter(cutout)
-            painter.setCompositionMode(QPainter.CompositionMode_Source)
+            cutouts = (
+                left_eye.adjusted(-5, -4, 5, 4),
+                right_eye.adjusted(-5, -4, 5, 4),
+                mouth_clips[suffix].adjusted(-7, -6, 7, 6),
+            )
+            source = QPixmap(465, 465)
+            source.fill(Qt.transparent)
+            painter = QPainter(source)
+            painter.setCompositionMode(
+                QPainter.CompositionMode_Source
+            )
             painter.drawPixmap(0, 0, self.face_sources[pose])
-            painter.setCompositionMode(QPainter.CompositionMode_Clear)
+            painter.setCompositionMode(
+                QPainter.CompositionMode_Clear
+            )
             painter.setPen(Qt.NoPen)
             painter.setBrush(Qt.transparent)
-            for region in (
-                left_eye.adjusted(-5, -4, 5, 4),
-                right_eye.adjusted(-5, -4, 5, 4),
-                mouth.adjusted(-7, -6, 7, 6),
-            ):
+            for region in cutouts:
                 painter.drawRoundedRect(region, 11, 11)
             painter.end()
-            self.face_sources[pose] = cutout
-            self.face_parallax_cutouts[pose] = (
-                left_eye.adjusted(-5, -4, 5, 4),
-                right_eye.adjusted(-5, -4, 5, 4),
-                mouth.adjusted(-7, -6, 7, 6),
-            )
+            self.face_sources[pose] = source
+            self.face_parallax_cutouts[pose] = cutouts
+
+    def _normalize_base_speech_frames(self) -> None:
         for closed_name, open_name, mid_name in (
             ("idle", "speaking", "mouth_mid"),
             ("idle_lean", "speaking_lean", "mouth_mid_lean"),
@@ -6797,127 +7656,115 @@ class CompanionWindow(QMainWindow):
                 if closed_name == "idle"
                 else closed_name
             ]
-            raw_opened = self.expression_pixmaps[open_name]
             suffix = closed_name.removeprefix("idle")
-            mouth_clip = mouth_clips[suffix]
-            opened = QPixmap(closed)
-            painter = QPainter(opened)
-            painter.drawPixmap(
-                0,
-                0,
-                self._masked_region(
-                    raw_opened,
-                    self.viseme_mouth_masks[suffix],
-                ),
+            self.expression_pixmaps[open_name] = (
+                self._compose_mouth_only(
+                    closed,
+                    self.expression_pixmaps[open_name],
+                    suffix,
+                )
             )
-            painter.end()
-            self.expression_pixmaps[open_name] = opened
             mid_source = self.expression_pixmaps[
                 "viseme_mid_front"
                 if suffix == "_front"
                 else f"viseme_i{suffix}"
             ]
-            mid_frame = QPixmap(closed)
-            painter = QPainter(mid_frame)
-            painter.drawPixmap(
-                0,
-                0,
-                self._masked_region(
+            self.expression_pixmaps[mid_name] = (
+                self._compose_mouth_only(
+                    closed,
                     mid_source,
-                    self.viseme_mouth_masks[suffix],
-                ),
+                    suffix,
+                )
             )
-            painter.end()
-            self.expression_pixmaps[mid_name] = mid_frame
 
-        def mouth_only(
-            closed: QPixmap,
-            source: QPixmap,
-            mouth_clip: QRect,
-        ) -> QPixmap:
-            normalized = QPixmap(closed)
-            painter = QPainter(normalized)
-            suffix = next(
-                key
-                for key, clip in self.mouth_clips.items()
-                if clip == mouth_clip
-            )
-            painter.drawPixmap(
-                0,
-                0,
-                self._masked_region(
-                    source,
-                    self.viseme_mouth_masks[suffix],
-                ),
-            )
-            painter.end()
-            return normalized
+    def _compose_mouth_only(
+        self,
+        closed: QPixmap,
+        source: QPixmap,
+        suffix: str,
+    ) -> QPixmap:
+        normalized = QPixmap(closed)
+        painter = QPainter(normalized)
+        painter.drawPixmap(
+            0,
+            0,
+            self._masked_region(
+                source,
+                self.viseme_mouth_masks[suffix],
+            ),
+        )
+        painter.end()
+        return normalized
 
-        for suffix, mouth_clip in mouth_clips.items():
-            closed_name = f"idle{suffix}"
-            opened_name = f"speaking{suffix}"
+    def _build_pose_viseme_frames(
+        self,
+        mouth_clips: frozendict[str, QRect],
+    ) -> None:
+        for suffix in mouth_clips:
             closed = self.expression_pixmaps[
                 CHEEK_SPEECH_CLOSED_EXPRESSION
                 if suffix == ""
-                else closed_name
+                else f"idle{suffix}"
             ]
-            opened = self.expression_pixmaps[opened_name]
-            wide_source = self.expression_pixmaps.get(
-                f"viseme_wide{suffix}",
-                opened,
+            opened = self.expression_pixmaps[f"speaking{suffix}"]
+            source_frames = (
+                (
+                    "mouth_wide",
+                    self.expression_pixmaps.get(
+                        f"viseme_wide{suffix}",
+                        opened,
+                    ),
+                ),
+                (
+                    "mouth_round",
+                    self.expression_pixmaps[f"viseme_round{suffix}"],
+                ),
+                ("mouth_i", self.expression_pixmaps[f"viseme_i{suffix}"]),
+                ("mouth_o", self.expression_pixmaps[f"viseme_o{suffix}"]),
             )
-            round_source = self.expression_pixmaps[f"viseme_round{suffix}"]
             if suffix == "_front":
-                self.expression_pixmaps[f"mouth_mid{suffix}"] = mouth_only(
+                self.expression_pixmaps["mouth_mid_front"] = (
+                    self._compose_mouth_only(
+                        closed,
+                        self.expression_pixmaps["viseme_mid_front"],
+                        suffix,
+                    )
+                )
+            for frame_prefix, source in source_frames:
+                self.expression_pixmaps[
+                    f"{frame_prefix}{suffix}"
+                ] = self._compose_mouth_only(
                     closed,
-                    self.expression_pixmaps["viseme_mid_front"],
-                    mouth_clip,
+                    source,
+                    suffix,
                 )
-            self.expression_pixmaps[f"mouth_wide{suffix}"] = mouth_only(
-                closed,
-                wide_source,
-                mouth_clip,
-            )
-            self.expression_pixmaps[f"mouth_round{suffix}"] = mouth_only(
-                closed,
-                round_source,
-                mouth_clip,
-            )
-            self.expression_pixmaps[f"mouth_i{suffix}"] = mouth_only(
-                closed,
-                self.expression_pixmaps[f"viseme_i{suffix}"],
-                mouth_clip,
-            )
-            self.expression_pixmaps[f"mouth_o{suffix}"] = mouth_only(
-                closed,
-                self.expression_pixmaps[f"viseme_o{suffix}"],
-                mouth_clip,
-            )
-            blink_name = f"blink{suffix}"
-            for mouth_name, result_name in (
-                (f"mouth_mid{suffix}", f"blink_mid{suffix}"),
-                (f"speaking{suffix}", f"blink_open{suffix}"),
-                (f"mouth_wide{suffix}", f"blink_wide{suffix}"),
-                (f"mouth_round{suffix}", f"blink_round{suffix}"),
-                (f"mouth_i{suffix}", f"blink_i{suffix}"),
-                (f"mouth_o{suffix}", f"blink_o{suffix}"),
-            ):
-                blink = self.expression_pixmaps[blink_name]
-                mouth = self.expression_pixmaps[mouth_name]
-                combined = QPixmap(blink.size())
-                combined.fill(Qt.transparent)
-                painter = QPainter(combined)
-                painter.drawPixmap(0, 0, blink)
-                painter.drawPixmap(
-                    0,
-                    0,
-                    self._masked_mouth_patch(mouth, suffix),
-                )
-                painter.end()
-                self.expression_pixmaps[result_name] = combined
-        self._build_expression_anchor_profiles()
-        self._build_expression_eye_layers()
+            self._build_blink_viseme_frames(suffix)
 
+    def _build_blink_viseme_frames(self, suffix: str) -> None:
+        blink = self.expression_pixmaps[f"blink{suffix}"]
+        frame_names = (
+            (f"mouth_mid{suffix}", f"blink_mid{suffix}"),
+            (f"speaking{suffix}", f"blink_open{suffix}"),
+            (f"mouth_wide{suffix}", f"blink_wide{suffix}"),
+            (f"mouth_round{suffix}", f"blink_round{suffix}"),
+            (f"mouth_i{suffix}", f"blink_i{suffix}"),
+            (f"mouth_o{suffix}", f"blink_o{suffix}"),
+        )
+        for mouth_name, result_name in frame_names:
+            combined = QPixmap(blink.size())
+            combined.fill(Qt.transparent)
+            painter = QPainter(combined)
+            painter.drawPixmap(0, 0, blink)
+            painter.drawPixmap(
+                0,
+                0,
+                self._masked_mouth_patch(
+                    self.expression_pixmaps[mouth_name],
+                    suffix,
+                ),
+            )
+            painter.end()
+            self.expression_pixmaps[result_name] = combined
     def _masked_mouth_patch(
         self,
         source: QPixmap,
@@ -7014,45 +7861,25 @@ class CompanionWindow(QMainWindow):
     ) -> tuple[int, int, float, float]:
         base_image = base.toImage()
         target_image = target.toImage()
-
-        def candidate_score(offset_x: int, offset_y: int) -> float:
-            difference = 0
-            samples = 0
-            for y in range(region.top(), region.bottom() + 1, 5):
-                target_y = y + offset_y
-                if target_y < 0 or target_y >= target_image.height():
-                    continue
-                for x in range(region.left(), region.right() + 1, 5):
-                    target_x = x + offset_x
-                    if target_x < 0 or target_x >= target_image.width():
-                        continue
-                    first = base_image.pixel(x, y)
-                    second = target_image.pixel(target_x, target_y)
-                    alpha_first = (first >> 24) & 0xFF
-                    alpha_second = (second >> 24) & 0xFF
-                    if alpha_first < 180 or alpha_second < 180:
-                        continue
-                    red_first = (first >> 16) & 0xFF
-                    green_first = (first >> 8) & 0xFF
-                    blue_first = first & 0xFF
-                    red_second = (second >> 16) & 0xFF
-                    green_second = (second >> 8) & 0xFF
-                    blue_second = second & 0xFF
-                    difference += (
-                        abs(red_first - red_second)
-                        + abs(green_first - green_second)
-                        + abs(blue_first - blue_second)
-                    )
-                    samples += 1
-            return difference / max(1, samples)
-
-        zero_score = candidate_score(0, 0)
+        zero_score = CompanionWindow._face_offset_candidate_score(
+            base_image,
+            target_image,
+            region,
+            0,
+            0,
+        )
         best_x = 0
         best_y = 0
         best_score = zero_score
         for offset_y in range(-6, 7):
             for offset_x in range(-6, 7):
-                score = candidate_score(offset_x, offset_y)
+                score = CompanionWindow._face_offset_candidate_score(
+                    base_image,
+                    target_image,
+                    region,
+                    offset_x,
+                    offset_y,
+                )
                 if score < best_score:
                     best_x = offset_x
                     best_y = offset_y
@@ -7062,14 +7889,56 @@ class CompanionWindow(QMainWindow):
             if zero_score <= 0.0
             else max(0.0, (zero_score - best_score) / zero_score)
         )
-        # An uncertain match is deliberately left untouched. This is safer
-        # than shifting a generated expression on weak visual evidence.
         if improvement < 0.018:
             best_x = 0
             best_y = 0
         confidence = min(1.0, improvement / 0.16)
         return best_x, best_y, confidence, best_score
 
+    @staticmethod
+    def _face_offset_candidate_score(
+        base: QImage,
+        target: QImage,
+        region: QRect,
+        offset_x: int,
+        offset_y: int,
+    ) -> float:
+        difference = 0
+        samples = 0
+        for y in range(region.top(), region.bottom() + 1, 5):
+            target_y = y + offset_y
+            if target_y < 0 or target_y >= target.height():
+                continue
+            for x in range(region.left(), region.right() + 1, 5):
+                target_x = x + offset_x
+                if target_x < 0 or target_x >= target.width():
+                    continue
+                pixel_difference = (
+                    CompanionWindow._opaque_pixel_difference(
+                        base.pixel(x, y),
+                        target.pixel(target_x, target_y),
+                    )
+                )
+                if pixel_difference is None:
+                    continue
+                difference += pixel_difference
+                samples += 1
+        return difference / max(1, samples)
+
+    @staticmethod
+    def _opaque_pixel_difference(
+        first: int,
+        second: int,
+    ) -> int | None:
+        alpha_first = (first >> 24) & 0xFF
+        alpha_second = (second >> 24) & 0xFF
+        if alpha_first < 180 or alpha_second < 180:
+            return None
+        return (
+            abs(((first >> 16) & 0xFF) - ((second >> 16) & 0xFF))
+            + abs(((first >> 8) & 0xFF) - ((second >> 8) & 0xFF))
+            + abs((first & 0xFF) - (second & 0xFF))
+        )
     def _expression_face_offset(
         self,
         expression: str | None,
@@ -7221,19 +8090,15 @@ class CompanionWindow(QMainWindow):
     def _speaking_blink_expression(self) -> str:
         suffix = self._active_speech_pose_suffix()
         current = self.speech_current_expression
-        if current.startswith("mouth_mid"):
-            return f"blink_mid{suffix}"
-        if current.startswith("mouth_wide"):
-            return f"blink_wide{suffix}"
-        if current.startswith("mouth_round"):
-            return f"blink_round{suffix}"
-        if current.startswith("mouth_i"):
-            return f"blink_i{suffix}"
-        if current.startswith("mouth_o"):
-            return f"blink_o{suffix}"
-        if current.startswith("speaking"):
-            return f"blink_open{suffix}"
-        return f"blink{suffix}"
+        blink_prefix = next(
+            (
+                blink
+                for mouth, blink in SPEAKING_BLINK_PREFIXES
+                if current.startswith(mouth)
+            ),
+            "blink",
+        )
+        return f"{blink_prefix}{suffix}"
 
     @staticmethod
     def _pose_suffix(pose: str) -> str:
@@ -7361,7 +8226,6 @@ class CompanionWindow(QMainWindow):
                 lambda: self._finish_blink(base_expression, generation),
             )
         elif self.state == "speaking" and not self.speech_blinking:
-            base_expression = self.speech_current_expression
             current = self.speech_visual_pixmap
             if current.isNull():
                 visible = self.character.pixmap()
@@ -7380,10 +8244,7 @@ class CompanionWindow(QMainWindow):
             self._render_speech_pixmap(current)
             QTimer.singleShot(
                 random.randint(95, 145),
-                lambda: self._finish_speaking_blink(
-                    base_expression,
-                    generation,
-                ),
+                lambda: self._finish_speaking_blink(generation),
             )
         self._schedule_blink()
 
@@ -7409,7 +8270,6 @@ class CompanionWindow(QMainWindow):
 
     def _finish_speaking_blink(
         self,
-        base_expression: str,
         generation: int,
     ) -> None:
         if (
@@ -7469,31 +8329,50 @@ class CompanionWindow(QMainWindow):
         if expression not in self.expression_pixmaps:
             expression = "idle"
         self._cancel_expression_transition()
-        if getattr(self, "pose_transition_active", False):
-            # Timers for idle motion, blinking, and speech can all request the
-            # same frame while a large-pose fade is already in flight.  Do not
-            # restart that fade: restoring opacity and fading again creates a
-            # visible flash even though the requested result has not changed.
-            if expression == getattr(
-                self,
-                "pose_transition_expression",
-                None,
-            ):
-                return
-            self._cancel_pose_transition()
+        if self._active_pose_transition_owns(expression):
+            return
+        if self._needs_pose_transition(expression, fade):
+            target_pose = self.physics_expression_poses[expression]
+            self._start_pose_transition(expression, target_pose)
+            return
+        self._prepare_expression_layers(expression, fade)
+        if expression == self.current_expression:
+            return
+        if not fade:
+            self.character.setPixmap(self.expression_pixmaps[expression])
+            self.current_expression = expression
+            return
+        self._start_expression_crossfade(expression)
+
+    def _active_pose_transition_owns(self, expression: str) -> bool:
+        """Keep one in-flight pose transition or cancel it before replacement."""
+        if not getattr(self, "pose_transition_active", False):
+            return False
+        # Timers for idle motion, blinking, and speech can all request the
+        # same frame while a large-pose fade is already in flight. Restarting
+        # that fade creates a visible flash although the target is unchanged.
+        if expression == getattr(self, "pose_transition_expression", None):
+            return True
+        self._cancel_pose_transition()
+        return False
+
+    def _needs_pose_transition(self, expression: str, fade: bool) -> bool:
         current_pose = self.physics_expression_poses.get(
             self.current_expression
         )
         target_pose = self.physics_expression_poses.get(expression)
-        if (
+        return (
             fade
             and current_pose is not None
             and target_pose is not None
             and current_pose != target_pose
+        )
+
+    def _prepare_expression_layers(self, expression: str, fade: bool) -> None:
+        if (
+            hasattr(self, "face_overlay")
+            and expression != self._idle_expression()
         ):
-            self._start_pose_transition(expression, target_pose)
-            return
-        if hasattr(self, "face_overlay") and expression != self._idle_expression():
             self.face_overlay.hide()
             self.eye_overlay.hide()
         current_has_physics = (
@@ -7506,13 +8385,9 @@ class CompanionWindow(QMainWindow):
             self._update_physics_pose(expression)
         elif not fade or current_has_physics:
             self._update_physics_pose(expression)
-        if expression == self.current_expression:
-            return
+
+    def _start_expression_crossfade(self, expression: str) -> None:
         pixmap = self.expression_pixmaps[expression]
-        if not fade:
-            self.character.setPixmap(pixmap)
-            self.current_expression = expression
-            return
         self.expression_overlay.setPixmap(pixmap)
         self.expression_overlay.show()
         self.expression_overlay.raise_()
@@ -7707,8 +8582,7 @@ class CompanionWindow(QMainWindow):
         self.mouth_timer.stop()
         self.speech_blinking = False
         self.audio_driven_mouth = False
-        self.smoothed_audio_level = 0.0
-        self.current_viseme = "CLOSED"
+        self.viseme_dynamics.reset()
         self.mouth_frame_index = 0
         self.mouth_open = False
         self.speech_current_expression = self._idle_expression()
@@ -7762,13 +8636,7 @@ class CompanionWindow(QMainWindow):
         self.speech_blinking = False
         self.audio_driven_mouth = audio_driven
         self.mouth_closing = False
-        self.smoothed_audio_level = 0.0
-        self.viseme_candidate = "CLOSED"
-        self.viseme_candidate_frames = 0
-        self.silence_candidate_frames = 0
-        self.viseme_hold_frames = 0
-        self.current_viseme = "CLOSED"
-        self.jaw_aperture = 0.0
+        self.viseme_dynamics.reset()
         self.mouth_aperture_target = 0.0
         self.head_motion_y = 0.0
         self.speech_motion_target_y = 0.0
@@ -7831,13 +8699,7 @@ class CompanionWindow(QMainWindow):
         self.speech_blinking = False
         self.audio_driven_mouth = False
         self.mouth_closing = False
-        self.smoothed_audio_level = 0.0
-        self.viseme_candidate = "CLOSED"
-        self.viseme_candidate_frames = 0
-        self.silence_candidate_frames = 0
-        self.viseme_hold_frames = 0
-        self.current_viseme = "CLOSED"
-        self.jaw_aperture = 0.0
+        self.viseme_dynamics.reset()
         self.mouth_aperture_target = 0.0
         self.head_motion_y = 0.0
         self.speech_motion_target_y = 0.0
@@ -7863,140 +8725,44 @@ class CompanionWindow(QMainWindow):
         # A live viseme owns the full photographed face. Remove any gaze
         # overlay left by the preceding idle frame before drawing the mouth.
         self.eye_overlay.hide()
-        self.smoothed_audio_level = (
-            self.smoothed_audio_level * 0.38 + float(level) * 0.62
-        )
-        normalized_vowel = str(vowel).upper()
-        if normalized_vowel not in {
-            "A",
-            "I",
-            "U",
-            "E",
-            "O",
-            "CONSONANT",
-            "CLOSED",
-        }:
-            normalized_vowel = "E"
-        previous_viseme = self.current_viseme
-        self.viseme_hold_frames += 1
-        held_for = (
-            self.viseme_hold_frames / VISEME_CUES_PER_SECOND
-        )
-        minimum_hold = VISEME_MIN_HOLD_SECONDS.get(
-            self.current_viseme,
-            0.065,
-        )
-        if self.smoothed_audio_level < 0.035 or normalized_vowel == "CLOSED":
-            self.silence_candidate_frames += 1
-            self.viseme_candidate = "CLOSED"
-            self.viseme_candidate_frames = 0
-            selected = (
-                "CLOSED"
-                if (
-                    self.silence_candidate_frames
-                    >= VISEME_SILENCE_CONFIRM_FRAMES
-                    and held_for >= minimum_hold
-                )
-                or self.smoothed_audio_level < 0.012
-                else self.current_viseme
-            )
-        else:
-            self.silence_candidate_frames = 0
-            if normalized_vowel == self.viseme_candidate:
-                self.viseme_candidate_frames += 1
-            else:
-                self.viseme_candidate = normalized_vowel
-                self.viseme_candidate_frames = 1
-            required_frames = VISEME_CONFIRM_FRAMES.get(
-                normalized_vowel,
-                2,
-            )
-            if (
-                self.viseme_candidate_frames >= required_frames
-                and held_for >= minimum_hold
-            ):
-                selected = normalized_vowel
-            elif self.current_viseme == "CLOSED":
-                # Open immediately on the first voiced frame, but use a
-                # neutral mouth until the vowel identity is stable.
-                selected = (
-                    "CONSONANT"
-                    if normalized_vowel == "CONSONANT"
-                    else "E"
-                )
-            else:
-                selected = self.current_viseme
-        suffix = self._active_speech_pose_suffix()
-        if self.speech_gesture_expression is not None:
-            expression_visemes = EXPRESSION_VISEME_FRAMES[
-                self.speech_gesture_expression
-            ]
-            expressions = {
-                "CLOSED": self.speech_closed_expression,
-                "CONSONANT": self.speech_mid_expression,
-                **expression_visemes,
-            }
-        else:
-            expressions = {
-                "CLOSED": self.speech_closed_expression,
-                "CONSONANT": self.speech_mid_expression,
-                "A": f"mouth_wide{suffix}",
-                "I": f"mouth_i{suffix}",
-                "U": f"mouth_round{suffix}",
-                "E": self.speech_mid_expression,
-                "O": f"mouth_o{suffix}",
-            }
-        expression = expressions.get(selected, self.speech_mid_expression)
-        raw_aperture = max(
-            0.0,
-            min(1.0, (self.smoothed_audio_level - 0.02) / 0.35),
-        )
-        if selected == "CLOSED":
-            target_aperture = 0.0
-        elif selected == "CONSONANT":
-            target_aperture = min(
-                0.14,
-                0.05 + raw_aperture * 0.12,
-            )
-        else:
-            target_aperture = min(
-                0.92,
-                0.08 + raw_aperture * 0.84,
-            )
-        response = (
-            0.48
-            if target_aperture > self.jaw_aperture
-            else 0.24
-        )
-        self.jaw_aperture += (
-            target_aperture - self.jaw_aperture
-        ) * response
-        if selected != "CLOSED":
-            self.jaw_aperture = max(0.08, self.jaw_aperture)
-        if selected != previous_viseme:
-            self.viseme_hold_frames = 0
-        self.current_viseme = selected
-        self.mouth_frame_index = 0 if selected == "CLOSED" else 1
-        if selected in {"A", "I", "O"}:
-            self.mouth_frame_index = 2
-        self.mouth_open = selected != "CLOSED"
+        frame: VisemeFrame = self.viseme_dynamics.advance(level, vowel)
+        expression = self._viseme_expression(frame.selected)
+        self.mouth_frame_index = frame.frame_index
+        self.mouth_open = frame.mouth_open
         self.speech_current_expression = expression
         if (
-            selected != previous_viseme
+            frame.selected != frame.previous
             or self.mouth_transition_to.isNull()
         ):
             self._queue_audio_mouth_transition(
                 expression,
-                self.jaw_aperture,
+                frame.jaw_aperture,
             )
-        jaw_weight = 1.0 if selected in {"A", "O"} else 0.55
         target_motion = min(
             4.0,
-            self.smoothed_audio_level * 3.0 + jaw_weight,
+            self.viseme_dynamics.smoothed_level * 3.0 + frame.jaw_weight,
         )
         self.head_motion_y = self.head_motion_y * 0.62 + target_motion * 0.38
         self.speech_motion_target_y = -self.head_motion_y
         self._motion_tick()
+
+    def _viseme_expression(self, viseme: str) -> str:
+        if viseme == "CLOSED":
+            expression = self.speech_closed_expression
+        elif viseme == "CONSONANT":
+            expression = self.speech_mid_expression
+        elif self.speech_gesture_expression is not None:
+            expression = EXPRESSION_VISEME_FRAMES[
+                self.speech_gesture_expression
+            ].get(viseme, self.speech_mid_expression)
+        else:
+            stem = NEUTRAL_VISEME_ASSET_STEMS.get(viseme)
+            expression = (
+                self.speech_mid_expression
+                if stem is None
+                else f"{stem}{self._active_speech_pose_suffix()}"
+            )
+        return expression
 
     def _mouth_aperture_pixmap(
         self,
@@ -8315,41 +9081,64 @@ class CompanionWindow(QMainWindow):
         pending = self.dashboard.consume_expression_metadata(state)
         if pending is not None:
             _, intensity, source = pending
-        self.speech_queue.append((text, state))
-        self.speech_metadata_queue.append((intensity, source))
+        self.speech_queue.append(
+            QueuedSpeech(text, state, intensity, source)
+        )
         self._start_next_speech()
 
     def _start_next_speech(self) -> None:
         if self.speech_playing or not self.speech_queue:
             return
         self.speech_finish_timer.stop()
-        text, requested_state = self.speech_queue.popleft()
-        if self.speech_metadata_queue:
-            intensity, source = self.speech_metadata_queue.popleft()
-        else:
-            intensity, source = 0.5, "conversation"
+        queued = self.speech_queue.popleft()
+        self._begin_speech_presentation(queued)
+        tts_enabled = bool(self.db.setting("tts_enabled", True))
+        self._start_mouth_animation(audio_driven=tts_enabled)
+        self.show()
+        self.raise_()
+        if tts_enabled:
+            self._start_speech_provider(queued.text)
+            return
+        QTimer.singleShot(
+            max(1200, min(5000, len(queued.text) * 80)),
+            self._speech_audio_finished,
+        )
+
+    def _begin_speech_presentation(self, queued: QueuedSpeech) -> None:
         self.speech_playing = True
-        self.active_speech_text = text
+        self.active_speech_text = queued.text
         self.active_speech_engine = ""
         self.cloud_fallback_active = False
-        self._show_bubble(text)
-        state = requested_state
-        if state in EXPRESSION_POSES:
-            decision = self.expression_arbiter.request(
-                state,
-                source=source,
-                intensity=intensity,
-            )
-            if not decision.accepted:
-                state = "speaking"
+        self._show_bubble(queued.text)
+        state = self._accepted_speech_state(queued)
         self.after_speech_state = state if state != "speaking" else "idle"
-        self.after_speech_intensity = intensity
+        self.after_speech_intensity = queued.intensity
         emotional_base = (
             state
             if state in EXPRESSION_POSES
             and state in self.expression_pixmaps
             else self._idle_expression()
         )
+        self._configure_speech_frames(emotional_base)
+        self.expression_generation += 1
+        self.state = "speaking"
+        self.expression_arbiter.request(
+            "speaking",
+            source="conversation",
+            force=True,
+        )
+
+    def _accepted_speech_state(self, queued: QueuedSpeech) -> str:
+        if queued.requested_state not in EXPRESSION_POSES:
+            return queued.requested_state
+        decision = self.expression_arbiter.request(
+            queued.requested_state,
+            source=queued.source,
+            intensity=queued.intensity,
+        )
+        return queued.requested_state if decision.accepted else "speaking"
+
+    def _configure_speech_frames(self, emotional_base: str) -> None:
         speech_pose = self.physics_expression_poses.get(
             emotional_base,
             self.idle_pose,
@@ -8379,104 +9168,127 @@ class CompanionWindow(QMainWindow):
             self.speech_open_expression = (
                 f"speaking{self.speech_pose_suffix}"
             )
-        self.expression_generation += 1
-        self.state = "speaking"
-        self.expression_arbiter.request(
-            "speaking",
-            source="conversation",
-            force=True,
+
+    def _speech_credentials(self) -> SpeechCredentials:
+        azure_api_key = (
+            self.azure_secret_store.load()
+            if self.azure_secret_store is not None
+            else ""
         )
-        tts_enabled = bool(self.db.setting("tts_enabled", True))
-        self._start_mouth_animation(audio_driven=tts_enabled)
-        self.show()
-        self.raise_()
-        if tts_enabled:
-            openai_api_key = self.secret_store.load()
-            azure_api_key = (
-                self.azure_secret_store.load()
-                if self.azure_secret_store is not None
-                else ""
-            )
-            azure_region = str(
+        return SpeechCredentials(
+            openai_api_key=self.secret_store.load(),
+            azure_api_key=azure_api_key,
+            azure_region=str(
                 self.db.setting("azure_speech_region", "")
-            ).strip()
-            configured_provider_ids = []
-            if self.platform_services.capabilities.system_local_speech:
-                configured_provider_ids.append(VOICE_ENGINE_SYSTEM)
-            if openai_api_key:
-                configured_provider_ids.append(VOICE_ENGINE_OPENAI)
-            if azure_api_key and azure_region:
-                configured_provider_ids.append(VOICE_ENGINE_AZURE)
-            selected_provider_id = normalize_speech_provider_id(
-                self.db.setting("voice_engine", VOICE_ENGINE_SYSTEM)
-            )
-            provider_id = self.speech_providers.output_provider_id(
-                selected_provider_id,
-                realtime_running=bool(self.realtime.running),
-                cloud_available=bool(openai_api_key),
-                configured_provider_ids=tuple(configured_provider_ids),
-            )
-            if (
-                selected_provider_id == VOICE_ENGINE_AZURE
-                and provider_id != VOICE_ENGINE_AZURE
-            ):
-                fallback_available = (
-                    self.speech_providers.fallback_provider_id(
-                        VOICE_ENGINE_AZURE
-                    )
-                    is not None
+            ).strip(),
+        )
+
+    def _configured_speech_providers(
+        self,
+        credentials: SpeechCredentials,
+    ) -> tuple[str, ...]:
+        availability = (
+            (
+                VOICE_ENGINE_SYSTEM,
+                self.platform_services.capabilities.system_local_speech,
+            ),
+            (VOICE_ENGINE_OPENAI, bool(credentials.openai_api_key)),
+            (
+                VOICE_ENGINE_AZURE,
+                bool(credentials.azure_api_key and credentials.azure_region),
+            ),
+        )
+        return tuple(
+            provider_id
+            for provider_id, configured in availability
+            if configured
+        )
+
+    def _start_speech_provider(self, text: str) -> None:
+        credentials = self._speech_credentials()
+        selected_provider_id = normalize_speech_provider_id(
+            self.db.setting("voice_engine", VOICE_ENGINE_SYSTEM)
+        )
+        provider_id = self.speech_providers.output_provider_id(
+            selected_provider_id,
+            realtime_running=bool(self.realtime.running),
+            cloud_available=bool(credentials.openai_api_key),
+            configured_provider_ids=self._configured_speech_providers(
+                credentials
+            ),
+        )
+        self._report_azure_fallback(selected_provider_id, provider_id)
+        self.active_speech_engine = provider_id
+        voice, api_key = self._speech_voice_and_key(provider_id, credentials)
+        request = SpeechRequest(
+            text=text,
+            voice=voice,
+            rate=int(self.db.setting("voice_rate", -1)),
+            api_key=api_key,
+            instructions=str(
+                self.db.setting(
+                    "voice_instructions",
+                    VOICE_GENERATION_PROMPT,
                 )
-                self.dashboard.set_api_status(
-                    ui_text(
-                        str(self.db.setting("ui_language", "zh-TW")),
-                        (
-                            "azure_fallback_missing_settings"
-                            if fallback_available
-                            else "azure_missing_no_local_fallback"
-                        ),
-                        (
-                            "Azure Speech 尚未完成設定；已直接使用 Windows "
-                            "女性語音，未送出雲端請求。"
-                            if fallback_available
-                            else "Azure Speech 尚未完成設定，且此平台沒有已驗證的"
-                            "本機語音；本次不會播放，也不會送出雲端請求。"
-                        ),
-                    )
-                )
-            self.active_speech_engine = provider_id
-            if provider_id == VOICE_ENGINE_SYSTEM:
-                voice = str(self.db.setting("windows_voice", ""))
-                api_key = ""
-            elif provider_id == VOICE_ENGINE_AZURE:
-                voice = str(self.db.setting("azure_speech_voice", ""))
-                api_key = azure_api_key
-            else:
-                voice = str(
-                    self.db.setting(
-                        "tts_voice",
-                        self.db.setting("cloud_voice", "coral"),
-                    )
-                )
-                api_key = openai_api_key
-            request = SpeechRequest(
-                text=text,
-                voice=voice,
-                rate=int(self.db.setting("voice_rate", -1)),
-                api_key=api_key,
-                instructions=str(
-                    self.db.setting(
-                        "voice_instructions",
-                        VOICE_GENERATION_PROMPT,
-                    )
-                ),
-                options={"region": azure_region},
+            ),
+            options={"region": credentials.azure_region},
+        )
+        self.speech_providers.provider(provider_id).speak(request)
+
+    def _report_azure_fallback(
+        self,
+        selected_provider_id: str,
+        provider_id: str,
+    ) -> None:
+        if (
+            selected_provider_id != VOICE_ENGINE_AZURE
+            or provider_id == VOICE_ENGINE_AZURE
+        ):
+            return
+        fallback_available = (
+            self.speech_providers.fallback_provider_id(VOICE_ENGINE_AZURE)
+            is not None
+        )
+        message_key = (
+            "azure_fallback_missing_settings"
+            if fallback_available
+            else "azure_missing_no_local_fallback"
+        )
+        default_message = (
+            "Azure Speech 尚未完成設定；已直接使用 Windows "
+            "女性語音，未送出雲端請求。"
+            if fallback_available
+            else "Azure Speech 尚未完成設定，且此平台沒有已驗證的"
+            "本機語音；本次不會播放，也不會送出雲端請求。"
+        )
+        self.dashboard.set_api_status(
+            ui_text(
+                str(self.db.setting("ui_language", "zh-TW")),
+                message_key,
+                default_message,
             )
-            self.speech_providers.provider(provider_id).speak(request)
+        )
+
+    def _speech_voice_and_key(
+        self,
+        provider_id: str,
+        credentials: SpeechCredentials,
+    ) -> tuple[str, str]:
+        if provider_id == VOICE_ENGINE_SYSTEM:
+            voice = str(self.db.setting("windows_voice", ""))
+            api_key = ""
+        elif provider_id == VOICE_ENGINE_AZURE:
+            voice = str(self.db.setting("azure_speech_voice", ""))
+            api_key = credentials.azure_api_key
         else:
-            QTimer.singleShot(
-                max(1200, min(5000, len(text) * 80)),
-                self._speech_audio_finished,
+            voice = str(
+                self.db.setting(
+                    "tts_voice",
+                    self.db.setting("cloud_voice", "coral"),
+                )
             )
+            api_key = credentials.openai_api_key
+        return voice, api_key
 
     def preview_voice(self) -> None:
         language = profile_setting(self.db, "ui_language")
@@ -8575,63 +9387,73 @@ class CompanionWindow(QMainWindow):
             )
         )
         self.realtime.start(
-            self.secret_store.load(),
-            str(self.db.setting("realtime_voice", "coral")),
-            (
-                persona_for_profile(self.db)
-                + "\n\n## 語音生成指示\n"
-                + voice_prompt
-                + f"\n目前模式：{self.dashboard.mode}模式。"
-                + "\n助理名稱："
-                + profile_setting(self.db, "assistant_name")
-                + "。稱呼使用者為："
-                + profile_setting(self.db, "user_title")
-                + "。回覆語言／地區："
-                + profile_setting(self.db, "ui_language")
-                + "。"
-                + response_language_instruction(
-                    profile_setting(self.db, "ui_language")
-                )
-            ),
-            self.db.memory_context(),
-            model=str(
-                self.db.setting(
-                    "realtime_model", "gpt-realtime-2.1-mini"
-                )
-            ),
-            echo_guard=bool(
-                self.db.setting("realtime_echo_guard", True)
-            ),
-            transcription_model=str(
-                self.db.setting(
-                    "realtime_transcription_model",
-                    "gpt-4o-mini-transcribe",
-                )
-            ),
-            transcription_language=str(
-                self.db.setting("transcription_language", "zh")
-            ),
-            transcription_prompt=transcription_prompt,
-            noise_reduction=str(
-                self.db.setting(
-                    "realtime_noise_reduction",
-                    "near_field",
-                )
-            ),
-            turn_detection=str(
-                self.db.setting(
-                    "realtime_turn_detection",
-                    "server_vad",
-                )
-            ),
-            recent_context=self._recent_realtime_context(
-                transcription_prompt
-            ),
-            hybrid_transcription=bool(
-                self.db.setting(
-                    "realtime_hybrid_transcription",
-                    True,
-                )
+            RealtimeVoiceRequest(
+                api_key=self.secret_store.load(),
+                instructions=(
+                    persona_for_profile(self.db)
+                    + "\n\n## 語音生成指示\n"
+                    + voice_prompt
+                    + f"\n目前模式：{self.dashboard.mode}模式。"
+                    + "\n助理名稱："
+                    + profile_setting(self.db, "assistant_name")
+                    + "。稱呼使用者為："
+                    + profile_setting(self.db, "user_title")
+                    + "。回覆語言／地區："
+                    + profile_setting(self.db, "ui_language")
+                    + "。"
+                    + response_language_instruction(
+                        profile_setting(self.db, "ui_language")
+                    )
+                ),
+                memory_context=self.db.memory_context(),
+                recent_context=self._recent_realtime_context(
+                    transcription_prompt
+                ),
+                echo_guard=bool(
+                    self.db.setting("realtime_echo_guard", True)
+                ),
+                session=RealtimeSessionConfig(
+                    model=str(
+                        self.db.setting(
+                            "realtime_model",
+                            "gpt-realtime-2.1-mini",
+                        )
+                    ),
+                    voice=str(
+                        self.db.setting("realtime_voice", "coral")
+                    ),
+                    transcription_model=str(
+                        self.db.setting(
+                            "realtime_transcription_model",
+                            "gpt-4o-mini-transcribe",
+                        )
+                    ),
+                    transcription_language=str(
+                        self.db.setting(
+                            "transcription_language",
+                            "zh",
+                        )
+                    ),
+                    transcription_prompt=transcription_prompt,
+                    noise_reduction=str(
+                        self.db.setting(
+                            "realtime_noise_reduction",
+                            "near_field",
+                        )
+                    ),
+                    turn_detection=str(
+                        self.db.setting(
+                            "realtime_turn_detection",
+                            "server_vad",
+                        )
+                    ),
+                    external_transcription=bool(
+                        self.db.setting(
+                            "realtime_hybrid_transcription",
+                            True,
+                        )
+                    ),
+                ),
             ),
         )
 
@@ -8757,7 +9579,7 @@ class CompanionWindow(QMainWindow):
                 != self.speech_closed_expression
             ):
                 self.mouth_closing = True
-                self.current_viseme = "CLOSED"
+                self.viseme_dynamics.current = "CLOSED"
                 self.mouth_open = False
                 self.speech_current_expression = (
                     self.speech_closed_expression
@@ -8899,7 +9721,7 @@ class CompanionWindow(QMainWindow):
             != self.speech_closed_expression
         ):
             self.mouth_closing = True
-            self.current_viseme = "CLOSED"
+            self.viseme_dynamics.current = "CLOSED"
             self.mouth_open = False
             self.speech_current_expression = (
                 self.speech_closed_expression
@@ -9187,7 +10009,7 @@ class CompanionWindow(QMainWindow):
         )
 
     def check_reminders(self) -> None:
-        now = datetime.now()
+        now = local_wall_time()
         for row in self.db.due_reminders(now):
             self.db.mark_reminder_fired(row["kind"], now.date().isoformat())
             self.dashboard.show()
@@ -9295,17 +10117,26 @@ class CompanionWindow(QMainWindow):
 def main() -> int:
     self_test = "--self-test" in sys.argv
     smoke_auto_exit = "--smoke-auto-exit" in sys.argv
+    jit_status_arg = next(
+        (arg for arg in sys.argv if arg.startswith("--jit-status-output=")),
+        "",
+    )
+    if jit_status_arg:
+        Path(jit_status_arg.split("=", 1)[1]).write_text(
+            "PACKAGED_JIT_DEFAULT_OK"
+            if jit_is_enabled()
+            else "PACKAGED_JIT_DEFAULT_FAILED",
+            encoding="utf-8",
+        )
     if self_test or smoke_auto_exit:
         os.environ["QT_QPA_PLATFORM"] = "offscreen"
     if sys.platform == "win32":
-        try:
+        # A restricted Windows session can still use the explicit Qt icon
+        # below without preventing MoHan from starting.
+        with suppress(AttributeError, OSError):
             ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
                 WINDOWS_APP_USER_MODEL_ID
             )
-        except (AttributeError, OSError):
-            # A restricted Windows session can still use the explicit Qt
-            # icon below without preventing MoHan from starting.
-            pass
     app = QApplication(sys.argv)
     app.setFont(application_ui_font())
     app.setApplicationName(APP_NAME)
@@ -9402,32 +10233,24 @@ def main() -> int:
             )
             and not (
                 RealtimeVoiceClient._session_update_event(
-                    model="gpt-realtime-2.1-mini",
-                    voice="coral",
-                    instructions="test",
-                    transcription_model=(
-                        SpeechListener.TRANSCRIPTION_MODEL
+                    RealtimeSessionConfig(
+                        transcription_model=(
+                            SpeechListener.TRANSCRIPTION_MODEL
+                        ),
                     ),
-                    transcription_language="zh",
-                    transcription_prompt="",
-                    noise_reduction="near_field",
-                    turn_detection="server_vad",
+                    "test",
                 )["session"]["audio"]["input"]["turn_detection"][
                     "create_response"
                 ]
             )
             and (
                 RealtimeVoiceClient._session_update_event(
-                    model="gpt-realtime-2.1-mini",
-                    voice="coral",
-                    instructions="test",
-                    transcription_model=(
-                        SpeechListener.TRANSCRIPTION_MODEL
+                    RealtimeSessionConfig(
+                        transcription_model=(
+                            SpeechListener.TRANSCRIPTION_MODEL
+                        ),
                     ),
-                    transcription_language="zh",
-                    transcription_prompt="",
-                    noise_reduction="near_field",
-                    turn_detection="server_vad",
+                    "test",
                 )["session"]["audio"]["input"]["transcription"]
                 is None
             )

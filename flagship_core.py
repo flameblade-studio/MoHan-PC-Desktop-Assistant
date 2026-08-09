@@ -1,20 +1,21 @@
 from __future__ import annotations
 
-import hashlib
-import json
-import re
-import threading
-import time
-import urllib.parse
-import webbrowser
-from dataclasses import asdict, dataclass, field
-from datetime import datetime
-from enum import IntEnum
-from pathlib import Path
-from typing import Any, Callable
+lazy import hashlib
+lazy import json
+lazy import re
+lazy import threading
+lazy import time
+lazy import webbrowser
+lazy from collections.abc import Callable
+lazy from dataclasses import asdict, dataclass, field
+lazy from enum import IntEnum
+lazy from pathlib import Path
+lazy from typing import Any
+lazy from urllib.parse import urlparse
 
-from platform_contracts import PlatformServicePort
-from platform_services import current_platform_services
+lazy from platform_contracts import PlatformServicePort
+lazy from platform_services import current_platform_services
+lazy from time_utils import local_wall_time
 
 
 class RiskLevel(IntEnum):
@@ -24,15 +25,15 @@ class RiskLevel(IntEnum):
     RED = 4
 
 
-RISK_NAMES = {
+RISK_NAMES = frozendict({
     RiskLevel.GREEN: "低風險",
     RiskLevel.BLUE: "一般變更",
     RiskLevel.YELLOW: "外部影響",
     RiskLevel.RED: "高風險",
-}
+})
 
 
-CAPABILITY_RISK: dict[str, RiskLevel] = {
+CAPABILITY_RISK: frozendict[str, RiskLevel] = frozendict({
     "read_status": RiskLevel.GREEN,
     "search_local": RiskLevel.GREEN,
     "open_web": RiskLevel.GREEN,
@@ -64,10 +65,10 @@ CAPABILITY_RISK: dict[str, RiskLevel] = {
     "remote_file_write": RiskLevel.RED,
     "delete_file": RiskLevel.RED,
     "shutdown_pc": RiskLevel.RED,
-}
+})
 
 
-NEVER_AUTOMATE = {
+NEVER_AUTOMATE = frozenset({
     "purchase",
     "payment",
     "password_export",
@@ -76,7 +77,7 @@ NEVER_AUTOMATE = {
     "administrator_shell",
     "home_alarm_disable",
     "home_unlock_unattended",
-}
+})
 
 
 UNTRUSTED_INSTRUCTION_PATTERNS = (
@@ -113,7 +114,7 @@ class ActionRequest:
                 sort_keys=True,
                 default=str,
             )
-            stamp = f"{time.time_ns()}:{payload}".encode("utf-8")
+            stamp = f"{time.time_ns()}:{payload}".encode()
             self.request_id = hashlib.sha256(stamp).hexdigest()[:24]
 
 
@@ -123,7 +124,7 @@ class ActionPlan:
     steps: list[ActionRequest]
     plan_id: str = ""
     created_at: str = field(
-        default_factory=lambda: datetime.now().isoformat(timespec="seconds")
+        default_factory=lambda: local_wall_time().isoformat(timespec="seconds")
     )
 
     def __post_init__(self) -> None:
@@ -303,77 +304,9 @@ class ActionExecutor:
         results: list[ActionResult] = []
         try:
             for request in plan.steps:
-                if cancel_event.is_set():
-                    result = ActionResult(
-                        request.request_id,
-                        False,
-                        "任務已由使用者取消",
-                        cancelled=True,
-                    )
-                    results.append(result)
-                    self._record_result(plan, request, result)
-                    break
-                if request.request_id in self._completed_ids:
-                    result = ActionResult(
-                        request.request_id,
-                        True,
-                        "重複請求已安全略過",
-                        verified=True,
-                    )
-                    results.append(result)
-                    self._record_result(plan, request, result)
-                    continue
-                decision = self.policy.evaluate(request)
-                if not decision.allowed:
-                    result = ActionResult(
-                        request.request_id,
-                        False,
-                        f"安全政策已阻擋：{decision.reason}",
-                    )
-                    results.append(result)
-                    self._record_result(plan, request, result)
-                    break
-                approved = True
-                for index in range(decision.confirmation_count):
-                    if not self.confirm(request, decision, index + 1):
-                        approved = False
-                        break
-                if not approved:
-                    result = ActionResult(
-                        request.request_id,
-                        False,
-                        "使用者未授權執行",
-                        cancelled=True,
-                    )
-                    results.append(result)
-                    self._record_result(plan, request, result)
-                    break
-                registered = self.handlers.get(request.capability)
-                if registered is None:
-                    result = ActionResult(
-                        request.request_id,
-                        False,
-                        "尚未安裝此工具的執行器",
-                    )
-                else:
-                    handler, verifier = registered
-                    try:
-                        result = handler(request)
-                        if result.success:
-                            result.verified = (
-                                bool(verifier(request, result))
-                                if verifier
-                                else True
-                            )
-                            if not result.verified:
-                                result.success = False
-                                result.message = "工具回報完成，但結果驗證未通過"
-                    except Exception as exc:  # tool boundary must not crash UI
-                        result = ActionResult(
-                            request.request_id,
-                            False,
-                            f"工具執行失敗：{type(exc).__name__}: {exc}",
-                        )
+                result = self._preflight_result(request, cancel_event)
+                if result is None:
+                    result = self._execute_handler(request)
                 results.append(result)
                 self._record_result(plan, request, result)
                 if not result.success:
@@ -390,6 +323,84 @@ class ActionExecutor:
                 },
             )
         return results
+
+    def _preflight_result(
+        self,
+        request: ActionRequest,
+        cancel_event: threading.Event,
+    ) -> ActionResult | None:
+        if cancel_event.is_set():
+            return ActionResult(
+                request.request_id,
+                False,
+                "任務已由使用者取消",
+                cancelled=True,
+            )
+        if request.request_id in self._completed_ids:
+            return ActionResult(
+                request.request_id,
+                True,
+                "重複請求已安全略過",
+                verified=True,
+            )
+        decision = self.policy.evaluate(request)
+        if not decision.allowed:
+            return ActionResult(
+                request.request_id,
+                False,
+                f"安全政策已阻擋：{decision.reason}",
+            )
+        if not self._confirm_request(request, decision):
+            return ActionResult(
+                request.request_id,
+                False,
+                "使用者未授權執行",
+                cancelled=True,
+            )
+        return None
+
+    def _confirm_request(
+        self,
+        request: ActionRequest,
+        decision: PolicyDecision,
+    ) -> bool:
+        return all(
+            self.confirm(request, decision, index)
+            for index in range(1, decision.confirmation_count + 1)
+        )
+
+    def _execute_handler(self, request: ActionRequest) -> ActionResult:
+        registered = self.handlers.get(request.capability)
+        if registered is None:
+            return ActionResult(
+                request.request_id,
+                False,
+                "尚未安裝此工具的執行器",
+            )
+        handler, verifier = registered
+        try:
+            result = handler(request)
+            self._verify_result(request, result, verifier)
+            return result
+        except Exception as exc:  # noqa: BLE001 -- tool boundary
+            return ActionResult(
+                request.request_id,
+                False,
+                f"工具執行失敗：{type(exc).__name__}: {exc}",
+            )
+
+    @staticmethod
+    def _verify_result(
+        request: ActionRequest,
+        result: ActionResult,
+        verifier: Verifier | None,
+    ) -> None:
+        if not result.success:
+            return
+        result.verified = bool(verifier(request, result)) if verifier else True
+        if not result.verified:
+            result.success = False
+            result.message = "工具回報完成，但結果驗證未通過"
 
     def _record_result(
         self,
@@ -458,14 +469,14 @@ class WindowsToolbox:
 
     def open_web(self, request: ActionRequest) -> ActionResult:
         value = str(request.arguments.get("url", "")).strip()
-        parsed = urllib.parse.urlparse(value)
+        parsed = urlparse(value)
         if parsed.scheme not in {"https", "http"} or not parsed.netloc:
             raise ValueError("只允許完整的 HTTP 或 HTTPS 網址")
         if not self.allowed_websites:
             raise PermissionError("尚未設定允許開啟的網站")
         allowed = False
         for entry in self.allowed_websites:
-            allowed_parsed = urllib.parse.urlparse(entry)
+            allowed_parsed = urlparse(entry)
             if (
                 allowed_parsed.scheme in {"http", "https"}
                 and parsed.hostname == allowed_parsed.hostname
@@ -595,24 +606,28 @@ def parse_plan_json(value: str, *, source: str = "local") -> ActionPlan:
     """Parse model output without granting capabilities or trusting prose."""
     payload = json.loads(value)
     if not isinstance(payload, dict):
-        raise ValueError("任務計畫必須是 JSON 物件")
+        raise TypeError("任務計畫必須是 JSON 物件")
     title = str(payload.get("title", "")).strip()[:120]
     raw_steps = payload.get("steps")
-    if not title or not isinstance(raw_steps, list):
-        raise ValueError("任務計畫缺少標題或步驟")
+    if not title:
+        raise ValueError("任務計畫缺少標題")
+    if not isinstance(raw_steps, list):
+        raise TypeError("任務計畫步驟必須是陣列")
     if len(raw_steps) > 25:
         raise ValueError("單一任務最多 25 個步驟")
     steps: list[ActionRequest] = []
     for raw in raw_steps:
         if not isinstance(raw, dict):
-            raise ValueError("任務步驟格式錯誤")
+            raise TypeError("任務步驟格式錯誤")
         capability = str(raw.get("capability", "")).strip()
         description = str(raw.get("description", "")).strip()[:300]
         arguments = raw.get("arguments", {})
         if capability not in CAPABILITY_RISK:
             raise ValueError(f"不支援的能力：{capability}")
-        if not description or not isinstance(arguments, dict):
-            raise ValueError("任務步驟缺少說明或參數")
+        if not description:
+            raise ValueError("任務步驟缺少說明")
+        if not isinstance(arguments, dict):
+            raise TypeError("任務步驟參數必須是物件")
         steps.append(
             ActionRequest(
                 capability,

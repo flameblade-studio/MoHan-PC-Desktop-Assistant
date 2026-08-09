@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import json
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Any
+lazy import json
+lazy from dataclasses import dataclass
+lazy from datetime import datetime
+lazy from typing import Any
 
-from flagship_core import ActionPlan, ActionRequest, CAPABILITY_RISK
+lazy from flagship_core import CAPABILITY_RISK, ActionPlan, ActionRequest
 
 
 @dataclass(slots=True)
@@ -27,12 +27,12 @@ class Workflow:
             raise ValueError("不支援的觸發方式")
         for step in self.steps:
             if not isinstance(step, dict):
-                raise ValueError("工作流程步驟格式錯誤")
+                raise TypeError("工作流程步驟格式錯誤")
             capability = str(step.get("capability", ""))
             if capability not in CAPABILITY_RISK:
                 raise ValueError(f"不支援的能力：{capability}")
             if not isinstance(step.get("arguments", {}), dict):
-                raise ValueError("工具參數必須是物件")
+                raise TypeError("工具參數必須是物件")
 
     def to_plan(self, source: str = "workflow") -> ActionPlan:
         self.validate()
@@ -61,7 +61,7 @@ class Workflow:
         )
 
     @classmethod
-    def from_row(cls, row) -> "Workflow":
+    def from_row(cls, row) -> Workflow:
         payload = json.loads(row["definition"])
         return cls(
             int(row["id"]),
@@ -73,32 +73,47 @@ class Workflow:
         )
 
 
+def _parse_schedule_time(value: object) -> tuple[int, int] | None:
+    at = str(value)
+    if len(at) != 5 or at[2] != ":":
+        return None
+    try:
+        hour, minute = (int(part) for part in at.split(":"))
+    except ValueError:
+        return None
+    return hour, minute
+
+
+def _ran_at_current_minute(last_run_at: str | None, now: datetime) -> bool:
+    if last_run_at is None:
+        return False
+    try:
+        last = datetime.fromisoformat(last_run_at)
+    except ValueError:
+        return False
+    return (
+        last.date(),
+        last.hour,
+        last.minute,
+    ) == (now.date(), now.hour, now.minute)
+
+
 def schedule_due(
     workflow: Workflow,
     now: datetime,
     last_run_at: str | None,
 ) -> bool:
-    if not workflow.enabled or workflow.trigger.get("type") != "schedule":
+    scheduled_time = _parse_schedule_time(workflow.trigger.get("time", ""))
+    is_scheduled = (
+        workflow.enabled
+        and workflow.trigger.get("type") == "schedule"
+        and scheduled_time is not None
+    )
+    if not is_scheduled:
         return False
-    at = str(workflow.trigger.get("time", ""))
-    if len(at) != 5 or at[2] != ":":
-        return False
-    try:
-        hour, minute = (int(part) for part in at.split(":"))
-    except ValueError:
-        return False
-    if now.hour != hour or now.minute != minute:
-        return False
-    weekdays = workflow.trigger.get("weekdays", list(range(7)))
-    if now.weekday() not in weekdays:
-        return False
-    if not last_run_at:
-        return True
-    try:
-        last = datetime.fromisoformat(last_run_at)
-    except ValueError:
-        return True
-    return last.date() != now.date() or (
-        last.hour,
-        last.minute,
-    ) != (now.hour, now.minute)
+    weekdays = workflow.trigger.get("weekdays", tuple(range(7)))
+    due_now = (
+        (now.hour, now.minute) == scheduled_time
+        and now.weekday() in weekdays
+    )
+    return due_now and not _ran_at_current_minute(last_run_at, now)

@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-import re
-import sys
-from pathlib import Path
+lazy import re
+lazy import sys
+lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from ui_localization import _ENGLISH, _SIMPLIFIED_CHINESE
-from ui_localization_ja import JAPANESE_UI
+lazy from ui_localization import _ENGLISH, _SIMPLIFIED_CHINESE
+lazy from ui_localization_ja import JAPANESE_UI
 
 
 def main() -> None:

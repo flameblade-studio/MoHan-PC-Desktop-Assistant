@@ -1,22 +1,22 @@
-import os
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
-from unittest.mock import patch
+lazy import os
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
+lazy from unittest.mock import patch
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtWidgets import QApplication
 
-from db import StudioDB
-from cloud_connectors import (
-    GoogleDriveConnector,
+lazy from cloud_connectors import (
     PROVIDERS,
+    GoogleDriveConnector,
     normalize_cloud_provider,
     register_cloud_provider_alias,
 )
-from flagship_ui import CloudHealthWorker, FlagshipControlCenter
+lazy from db import StudioDB
+lazy from flagship_ui import CloudHealthWorker, FlagshipControlCenter
 
 
 def run() -> None:

@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-import ast
-import os
-import sys
-from pathlib import Path
-from tempfile import TemporaryDirectory
+lazy import ast
+lazy import os
+lazy import sys
+lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
 
-from PySide6.QtWidgets import QApplication, QLabel, QTabWidget
+lazy from PySide6.QtWidgets import QApplication, QLabel, QTabWidget
 
-from feature_registry import DashboardFeatureRegistry
+lazy from feature_registry import DashboardFeatureRegistry
 
 
 def local_import_graph() -> dict[str, set[str]]:

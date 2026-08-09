@@ -1,17 +1,16 @@
 from __future__ import annotations
 
-from pathlib import Path
-import statistics
-import sys
-import time
-
+lazy import statistics
+lazy import sys
+lazy import time
+lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from audio_buffer import BoundedAudioQueue
-from realtime_voice import RealtimeVoiceClient
+lazy from audio_buffer import BoundedAudioQueue
+lazy from realtime_voice import RealtimeVoiceClient
 
 
 def main() -> None:

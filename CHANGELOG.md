@@ -2,7 +2,62 @@
 
 All notable public changes to MoHan Desktop Assistant are documented here.
 
-## v2.2.0 RC2 — planned, not yet published
+## v2.3.0 RC1 — planned, not yet published
+
+### 繁體中文
+
+- 全面遷移至 CPython 3.15.0rc1，產品執行、測試與所有封裝不再保留舊版
+  Python 路徑；全專案採用 PEP 810 明示延遲導入並加入靜態治理稽核。
+- 導入 PEP 814 `frozendict` 深層不可變設定、PEP 798 推導式解包、PEP 686
+  UTF-8 檔案稽核、PEP 661 哨兵治理及 `bytearray.take_bytes()` 音訊緩衝。
+- 加入 PEP 799 Tachyon 取樣分析，可直接檢查啟動、50 Hz 嘴型同步與表情
+  仲裁器；JIT 開關均通過完整測試，2.3.0 RC1 預設啟用並保留相容性停用開關。
+- CI 與 Release 以有效樣本、讀取錯誤、漏採樣及 JIT 狀態阻擋不合格的
+  Tachyon 證據，並發布去識別化結果；CycloneDX 1.7 SBOM 強制完整依賴圖、
+  PURL、SPDX 授權、官方結構驗證及 100% 覆蓋率。
+- 所有 GitHub Actions JavaScript 動作強制使用 Node 24；PySide6 以受控 ABI3
+  輪子驗證跨越 3.15 中繼資料限制，安全掃描與完整發布閘門維持不變。
+
+### 简体中文
+
+- 全面迁移至 CPython 3.15.0rc1，产品、测试和所有发布包不再保留旧版
+  Python 路径；全项目采用 PEP 810 显式延迟导入并加入治理审计。
+- 导入不可变配置、推导式解包、UTF-8 文件审计、内建哨兵治理及新的音频
+  缓冲 API；Tachyon 可分析启动、50 Hz 口型同步和表情仲裁器。
+- JIT 开关均通过完整测试；2.3.0 RC1 默认启用，并保留兼容性停用开关。GitHub
+  Actions 全部强制 Node 24，并维持 ABI、依赖安全和发布验证闸门。
+- CI 与 Release 以有效样本、读取错误、漏采样及 JIT 状态阻止不合格的
+  Tachyon 证据，并发布去识别化结果；CycloneDX 1.7 SBOM 强制完整依赖图、
+  PURL、SPDX 授权、官方结构验证及 100% 覆盖率。
+
+### English
+
+- Moves the product, tests, and every package exclusively to CPython
+  3.15.0rc1, with project-wide explicit PEP 810 lazy imports and governance.
+- Adds immutable configuration, unpacking comprehensions, UTF-8 auditing,
+  sentinel governance, and the new bytearray audio-buffer API.
+- Adds Tachyon profiling for startup, 50 Hz lip sync, and expression
+  arbitration. Both JIT modes pass the complete suite; 2.3.0 RC1 defaults JIT on
+  while retaining a compatibility disable switch.
+- Forces Node 24 for every GitHub JavaScript action and preserves Stable ABI,
+  dependency-audit, packaging, and release safety gates.
+- Gates sanitized Tachyon evidence on valid samples, stack-read error, missed
+  samples, and JIT state. CycloneDX 1.7 SBOMs require complete dependency
+  graphs, PURLs, SPDX licenses, official schema validation, and 100% coverage.
+
+### 日本語
+
+- 製品、テスト、全パッケージを CPython 3.15.0rc1 のみに移行し、PEP 810
+  の明示的遅延インポートと継続監査を全プロジェクトへ導入しました。
+- 不変設定、推論式アンパック、UTF-8 監査、センチネル管理、新しい音声
+  バッファー API、Tachyon による 50 Hz 口形・表情解析を導入しました。
+- JIT の有無は全テストに合格し、2.3.0 RC1 では既定で有効にしながら互換性用の
+  無効化設定を残します。GitHub Actions はすべて Node 24 を強制します。
+- Tachyon 証拠は有効サンプル、読取エラー、漏れ、JIT 状態で判定し、匿名化して
+  公開します。CycloneDX 1.7 SBOM は完全な依存関係、PURL、SPDX ライセンス、
+  公式スキーマ検証、100% 網羅を必須とします。
+
+## v2.2.0 RC2 — 2026-08-07
 
 ### 繁體中文
 

@@ -38,19 +38,20 @@ open-source
 
 ## Prepared public pre-release
 
-- Tag: `v2.2.0-rc.2`
-- Title: `MoHan Desktop Assistant v2.2.0 RC2`
+- Tag: `v2.3.0-rc.1`
+- Title: `MoHan Desktop Assistant v2.3.0 RC1`
 - Publication: only after every required CI, package smoke, security, and
   release-policy check succeeds
 - Includes the Windows x64 portable ZIP, per-user EXE and MSI installers,
   English/Simplified Chinese/Japanese MSI transforms, macOS Apple Silicon
   (arm64) and Intel (x86_64) limited Preview DMGs, Linux x86_64 limited Preview
-  AppImage, SHA-256 catalog, CycloneDX SBOMs, update manifest, and artifact
-  attestations.
+  AppImage, SHA-256 catalog, reproducible CycloneDX 1.7 SBOMs and validation
+  report, sanitized Tachyon evidence and performance summary, update manifest,
+  and artifact attestations.
 
 ## Next release line
 
-- Accepted release tags: immutable `v2.2.0-rc.N` tags where `N` is a positive
+- Accepted release tags: immutable `v2.3.0-rc.N` tags where `N` is a positive
   integer. Other tags fail before packaging or publication.
 - Windows remains the formal, complete product surface and keeps its verified
   x64 ZIP, EXE, MSI, and MSI language transforms.
@@ -60,7 +61,7 @@ open-source
   launch, four-language rendering, per-user paths, and fail-closed platform
   boundaries, not feature parity with Windows.
 - Pull requests may build short-lived CI artifacts for package testing only.
-  They cannot create a GitHub Release. Only an existing `v2.2.0-rc.N` tag can
+  They cannot create a GitHub Release. Only an existing `v2.3.0-rc.N` tag can
   enter the publication workflow.
 - The Release description must come from the curated four-language file
   `docs/releases/<tag>.md`; generated notes alone are not accepted.
@@ -122,35 +123,39 @@ unresolved high-confidence finding.
 
 ## Automated future releases
 
-During this migration, only `v2.2.0-rc.N` tags trigger
+During this migration, only `v2.3.0-rc.N` tags trigger
 `.github/workflows/release.yml`. The workflow validates the exact tag, checks
 out that immutable source revision, and then:
 
 1. installs pinned runtime and release dependencies;
 2. compiles and audits the public source tree;
 3. runs the full regression suite;
-4. builds the Windows x64 application with PyInstaller;
-5. runs packaged self-test and event-loop smoke tests;
-6. produces a portable ZIP plus per-user EXE and MSI installers;
-7. silently installs, self-tests, and removes both installer formats;
-8. builds separate limited macOS Apple Silicon (arm64) and Intel (x86_64)
+4. captures sanitized Python 3.15 Tachyon evidence for startup, 50 Hz lip sync,
+   and expression arbitration, then gates sample count, stack-read error,
+   missed samples, target exit status, and JIT state;
+5. builds the Windows x64 application with PyInstaller;
+6. runs packaged self-test and event-loop smoke tests;
+7. produces a portable ZIP plus per-user EXE and MSI installers;
+8. silently installs, self-tests, and removes both installer formats;
+9. builds separate limited macOS Apple Silicon (arm64) and Intel (x86_64)
    Previews on matching native runners, mounts both DMGs, and executes each
    packaged `.app` contract smoke test;
-9. builds the limited Linux x86_64 Preview on a native Linux runner and
+10. builds the limited Linux x86_64 Preview on a native Linux runner and
    executes the packaged AppImage contract smoke test;
-10. uses a separate read-only metadata job to produce canonical `SHA256SUMS`,
-    a compatibility SHA-256 catalog, separate CycloneDX SBOMs for the complete
-    Windows and Preview dependency sets, and the Windows-compatible update
-    manifest;
-11. rechecks the exact artifact set and every cataloged SHA-256 value inside a
+11. uses a separate read-only metadata job to produce canonical `SHA256SUMS`,
+    a compatibility SHA-256 catalog, separate reproducible CycloneDX 1.7 SBOMs
+    for the exact Windows and Preview runtime dependency sets, a machine-readable
+    schema/license/PURL/dependency/privacy validation report, and the
+    Windows-compatible update manifest;
+12. rechecks the exact artifact set and every cataloged SHA-256 value inside a
     minimal publication job;
-12. re-resolves the tag immediately before publication and refuses a moved or
+13. re-resolves the tag immediately before publication and refuses a moved or
     replaced tag;
-13. creates GitHub artifact provenance attestations for every published file;
-14. requires and publishes the curated four-language Release description.
+14. creates GitHub artifact provenance attestations for every published file;
+15. requires and publishes the curated four-language Release description.
 
 Every tag in this release line is published as a pre-release. Never reuse or
-move a published tag; create a new `v2.2.0-rc.N` tag instead. A future stable
+move a published tag; create a new `v2.3.0-rc.N` tag instead. A future stable
 release requires a separate, reviewed policy change rather than silently
 broadening this gate.
 
@@ -159,8 +164,12 @@ Linux packaging additionally pins the official AppImage `appimagetool` asset
 to source commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`, asset ID
 `324406882`, and SHA-256
 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`.
-Windows installer builds pin Inno Setup `6.7.1` and WiX
-`3.14.1.20250415`.
+Windows installer builds pin Inno Setup `7.0.2` and WiX `7.0.0`. The Inno
+Setup compiler is downloaded only from the immutable official
+`jrsoftware/issrc` release, then checked with GitHub release attestation and
+its Pyrsys B.V. Authenticode signature before use. WiX runs with the explicitly
+authorized `-acceptEula wix7` CI argument and uses its maintained `Files`
+harvester instead of the removed Heat tool.
 
 Every pull-request body and every curated Release description must contain
 four complete sections in this order: Taiwan Traditional Chinese, Simplified

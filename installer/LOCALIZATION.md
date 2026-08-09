@@ -41,6 +41,15 @@ msiexec /i MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.msi `
   TRANSFORMS=MoHan-Desktop-Assistant-vX.Y.Z-ja-JP.mst /qn
 ```
 
+The MSI and transforms are built with WiX Toolset 7.0.0. WiX v7's maintained
+`Files` element recursively harvests the packaged application; the removed
+Heat/Candle/Light/Torch v3 toolchain is not used. Every WiX build, validation,
+and transform command supplies the owner-authorized `-acceptEula wix7`
+argument. ICE validation remains enabled. ICE38 and ICE64 retain the historic
+per-user package exemptions, while ICE91 is excluded because its warning is
+specifically about a hypothetical per-machine use that this `Scope="perUser"`
+package does not support.
+
 Windows CI installs, runs the packaged self-test, and uninstalls the base MSI
 and every transform. A transform must never be published if any variant fails.
 The transforms affect Windows Installer messages only. MoHan's first-run wizard

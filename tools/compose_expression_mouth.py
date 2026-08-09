@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import argparse
-from pathlib import Path
+lazy import argparse
+lazy from pathlib import Path
 
-from PIL import Image, ImageChops, ImageFilter
+lazy from PIL import Image, ImageChops, ImageFilter
 
 
 def mouth_mask(size: tuple[int, int], box: tuple[int, int, int, int]) -> Image.Image:

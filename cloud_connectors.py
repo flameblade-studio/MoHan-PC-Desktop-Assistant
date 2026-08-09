@@ -1,21 +1,21 @@
 from __future__ import annotations
 
-import base64
-import hashlib
-import json
-import re
-import secrets
-import threading
-import time
-import urllib.error
-import urllib.parse
-import urllib.request
-import webbrowser
-from dataclasses import dataclass
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from typing import Any
+lazy import base64
+lazy import hashlib
+lazy import json
+lazy import re
+lazy import secrets
+lazy import threading
+lazy import time
+lazy import webbrowser
+lazy from dataclasses import dataclass
+lazy from http.server import BaseHTTPRequestHandler, HTTPServer
+lazy from typing import Any
+lazy from urllib.error import HTTPError
+lazy from urllib.parse import parse_qs, quote, urlencode, urlparse
+lazy from urllib.request import Request, urlopen
 
-from flagship_core import sanitize_external_content
+lazy from flagship_core import sanitize_external_content
 
 
 @dataclass(frozen=True, slots=True)
@@ -27,7 +27,7 @@ class OAuthProvider:
     default_scopes: tuple[str, ...]
 
 
-PROVIDERS = {
+PROVIDERS = frozendict({
     "google": OAuthProvider(
         "google",
         "Google（Gmail／Calendar／Drive）",
@@ -64,7 +64,7 @@ PROVIDERS = {
         "https://github.com/login/oauth/access_token",
         ("read:user", "repo"),
     ),
-}
+})
 
 _CLOUD_PROVIDER_ALIASES: dict[str, str] = {}
 
@@ -137,6 +137,60 @@ class OAuthError(RuntimeError):
     pass
 
 
+def _callback_handler(
+    received: dict[str, str],
+    ready: threading.Event,
+) -> type[BaseHTTPRequestHandler]:
+    class Callback(BaseHTTPRequestHandler):
+        def log_message(self, _format: str, *_args) -> None:
+            return
+
+        def do_GET(self) -> None:
+            query = parse_qs(urlparse(self.path).query)
+            for key in ("code", "state", "error", "error_description"):
+                if query.get(key):
+                    received[key] = query[key][0]
+            body = (
+                "墨寒已收到授權結果，可以關閉此頁。"
+                if "code" in received
+                else "授權未完成，可以關閉此頁。"
+            ).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            ready.set()
+
+    return Callback
+
+
+def _wait_for_callback(
+    server: HTTPServer,
+    ready: threading.Event,
+    timeout_seconds: float,
+) -> None:
+    deadline = time.monotonic() + timeout_seconds
+    try:
+        while not ready.is_set() and time.monotonic() < deadline:
+            server.handle_request()
+    finally:
+        server.server_close()
+
+
+def _authorization_code(received: dict[str, str], expected_state: str) -> str:
+    if received.get("state") != expected_state:
+        raise OAuthError("OAuth state 驗證失敗")
+    if received.get("error"):
+        raise OAuthError(
+            received.get("error_description") or received["error"]
+        )
+    code = received.get("code")
+    if not code:
+        raise OAuthError("授權服務未傳回授權碼")
+    return code
+
+
 class OAuthPKCEFlow:
     def __init__(
         self,
@@ -163,33 +217,35 @@ class OAuthPKCEFlow:
         state = secrets.token_urlsafe(24)
         received: dict[str, str] = {}
         ready = threading.Event()
-
-        class Callback(BaseHTTPRequestHandler):
-            def log_message(self, _format: str, *_args) -> None:
-                return
-
-            def do_GET(self) -> None:  # noqa: N802
-                query = urllib.parse.parse_qs(
-                    urllib.parse.urlparse(self.path).query
-                )
-                for key in ("code", "state", "error", "error_description"):
-                    if query.get(key):
-                        received[key] = query[key][0]
-                body = (
-                    "墨寒已收到授權結果，可以關閉此頁。"
-                    if "code" in received
-                    else "授權未完成，可以關閉此頁。"
-                ).encode("utf-8")
-                self.send_response(200)
-                self.send_header("Content-Type", "text/plain; charset=utf-8")
-                self.send_header("Content-Length", str(len(body)))
-                self.end_headers()
-                self.wfile.write(body)
-                ready.set()
-
-        server = HTTPServer(("127.0.0.1", 0), Callback)
+        server = HTTPServer(
+            ("127.0.0.1", 0),
+            _callback_handler(received, ready),
+        )
         server.timeout = 0.5
         redirect_uri = f"http://127.0.0.1:{server.server_port}/oauth/callback"
+        parameters = self._authorization_parameters(
+            redirect_uri,
+            state,
+            challenge,
+        )
+        webbrowser.open(
+            self.provider.authorization_endpoint
+            + "?"
+            + urlencode(parameters),
+            new=2,
+        )
+        _wait_for_callback(server, ready, self.timeout_seconds)
+        if not ready.is_set():
+            raise OAuthError("等待瀏覽器授權逾時")
+        code = _authorization_code(received, state)
+        return self._exchange(code, verifier, redirect_uri)
+
+    def _authorization_parameters(
+        self,
+        redirect_uri: str,
+        state: str,
+        challenge: str,
+    ) -> dict[str, str]:
         parameters = {
             "client_id": self.client_id,
             "redirect_uri": redirect_uri,
@@ -206,30 +262,7 @@ class OAuthPKCEFlow:
                     "prompt": "consent",
                 }
             )
-        webbrowser.open(
-            self.provider.authorization_endpoint
-            + "?"
-            + urllib.parse.urlencode(parameters),
-            new=2,
-        )
-        deadline = time.monotonic() + self.timeout_seconds
-        try:
-            while not ready.is_set() and time.monotonic() < deadline:
-                server.handle_request()
-        finally:
-            server.server_close()
-        if not ready.is_set():
-            raise OAuthError("等待瀏覽器授權逾時")
-        if received.get("state") != state:
-            raise OAuthError("OAuth state 驗證失敗")
-        if received.get("error"):
-            raise OAuthError(
-                received.get("error_description") or received["error"]
-            )
-        code = received.get("code")
-        if not code:
-            raise OAuthError("授權服務未傳回授權碼")
-        return self._exchange(code, verifier, redirect_uri)
+        return parameters
 
     def _exchange(
         self,
@@ -246,9 +279,9 @@ class OAuthPKCEFlow:
         }
         if self.client_secret:
             payload["client_secret"] = self.client_secret
-        request = urllib.request.Request(
+        request = Request(
             self.provider.token_endpoint,
-            data=urllib.parse.urlencode(payload).encode("ascii"),
+            data=urlencode(payload).encode("ascii"),
             headers={
                 "Accept": "application/json",
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -256,9 +289,9 @@ class OAuthPKCEFlow:
             method="POST",
         )
         try:
-            with urllib.request.urlopen(request, timeout=30) as response:
+            with urlopen(request, timeout=30) as response:
                 token = json.load(response)
-        except urllib.error.HTTPError as exc:
+        except HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")[:500]
             raise OAuthError(f"權杖交換失敗：HTTP {exc.code} {detail}") from exc
         if not isinstance(token, dict) or not token.get("access_token"):
@@ -285,9 +318,9 @@ def refresh_oauth_token(
     client_secret = str(token.get("client_secret", ""))
     if client_secret:
         payload["client_secret"] = client_secret
-    request = urllib.request.Request(
+    request = Request(
         provider.token_endpoint,
-        data=urllib.parse.urlencode(payload).encode("ascii"),
+        data=urlencode(payload).encode("ascii"),
         headers={
             "Accept": "application/json",
             "Content-Type": "application/x-www-form-urlencoded",
@@ -295,9 +328,9 @@ def refresh_oauth_token(
         method="POST",
     )
     try:
-        with urllib.request.urlopen(request, timeout=30) as response:
+        with urlopen(request, timeout=30) as response:
             updated = json.load(response)
-    except urllib.error.HTTPError as exc:
+    except HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")[:500]
         raise OAuthError(f"更新權杖失敗：HTTP {exc.code} {detail}") from exc
     if not isinstance(updated, dict) or not updated.get("access_token"):
@@ -323,13 +356,13 @@ class JsonApiClient:
     ) -> Any:
         url = self.base_url + path
         if query:
-            url += "?" + urllib.parse.urlencode(query)
+            url += "?" + urlencode(query)
         data = (
             json.dumps(payload).encode("utf-8")
             if payload is not None
             else None
         )
-        request = urllib.request.Request(
+        request = Request(
             url,
             data=data,
             method=method,
@@ -341,10 +374,10 @@ class JsonApiClient:
             },
         )
         try:
-            with urllib.request.urlopen(request, timeout=30) as response:
+            with urlopen(request, timeout=30) as response:
                 raw = response.read()
                 return json.loads(raw.decode("utf-8")) if raw else None
-        except urllib.error.HTTPError as exc:
+        except HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")[:1000]
             raise OAuthError(f"雲端服務 HTTP {exc.code}: {detail}") from exc
 
@@ -355,7 +388,7 @@ class JsonApiClient:
         content: bytes,
         content_type: str,
     ) -> Any:
-        request = urllib.request.Request(
+        request = Request(
             self.base_url + path,
             data=content,
             method=method,
@@ -367,10 +400,10 @@ class JsonApiClient:
             },
         )
         try:
-            with urllib.request.urlopen(request, timeout=45) as response:
+            with urlopen(request, timeout=45) as response:
                 raw = response.read()
                 return json.loads(raw.decode("utf-8")) if raw else None
-        except urllib.error.HTTPError as exc:
+        except HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")[:1000]
             raise OAuthError(f"雲端服務 HTTP {exc.code}: {detail}") from exc
 
@@ -390,7 +423,7 @@ class GmailConnector(JsonApiClient):
     def message(self, message_id: str) -> dict[str, Any]:
         result = self.request(
             "GET",
-            f"/messages/{urllib.parse.quote(message_id)}",
+            f"/messages/{quote(message_id)}",
             query={"format": "full"},
         )
         if not isinstance(result, dict):
@@ -431,7 +464,7 @@ class GoogleCalendarConnector(JsonApiClient):
     ) -> list[dict[str, Any]]:
         result = self.request(
             "GET",
-            f"/calendars/{urllib.parse.quote(calendar_id, safe='')}/events",
+            f"/calendars/{quote(calendar_id, safe='')}/events",
             query={
                 "timeMin": time_min,
                 "timeMax": time_max,
@@ -448,7 +481,7 @@ class GoogleCalendarConnector(JsonApiClient):
     ) -> dict[str, Any]:
         result = self.request(
             "POST",
-            f"/calendars/{urllib.parse.quote(calendar_id, safe='')}/events",
+            f"/calendars/{quote(calendar_id, safe='')}/events",
             event,
         )
         if not isinstance(result, dict):
@@ -503,7 +536,7 @@ class GoogleDriveConnector(JsonApiClient):
             + content
             + f"\r\n--{boundary}--\r\n".encode()
         )
-        request = urllib.request.Request(
+        request = Request(
             "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
             data=body,
             method="POST",
@@ -514,9 +547,9 @@ class GoogleDriveConnector(JsonApiClient):
             },
         )
         try:
-            with urllib.request.urlopen(request, timeout=45) as response:
+            with urlopen(request, timeout=45) as response:
                 result = json.load(response)
-        except urllib.error.HTTPError as exc:
+        except HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")[:1000]
             raise OAuthError(f"Google Drive HTTP {exc.code}: {detail}") from exc
         if not isinstance(result, dict):
@@ -564,7 +597,7 @@ class MicrosoftGraphConnector(JsonApiClient):
         return result
 
     def search_drive(self, name: str) -> list[dict[str, Any]]:
-        encoded = urllib.parse.quote(name.replace("'", "''"), safe="")
+        encoded = quote(name.replace("'", "''"), safe="")
         result = self.request(
             "GET",
             f"/me/drive/root/search(q='{encoded}')",
@@ -579,7 +612,7 @@ class MicrosoftGraphConnector(JsonApiClient):
     ) -> dict[str, Any]:
         if len(content) > 4 * 1024 * 1024:
             raise ValueError("OneDrive 簡易上傳上限為 4 MB")
-        safe_name = urllib.parse.quote(filename, safe="")
+        safe_name = quote(filename, safe="")
         result = self.request_bytes(
             "PUT",
             f"/me/drive/root:/{safe_name}:/content",

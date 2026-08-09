@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import os
-import subprocess
-from pathlib import Path, PurePosixPath
-from typing import Mapping
+lazy import os
+lazy import subprocess
+lazy from collections.abc import Mapping
+lazy from pathlib import Path, PurePosixPath
 
-from platform_contracts import (
+lazy from platform_contracts import (
     PlatformCapabilities,
     PlatformPaths,
     UnsupportedPlatformFeature,

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import argparse
-from pathlib import Path
+lazy import argparse
+lazy from pathlib import Path
 
-from PIL import Image, ImageChops, ImageFilter
+lazy from PIL import Image, ImageChops, ImageFilter
 
 
 def ellipse_mask(

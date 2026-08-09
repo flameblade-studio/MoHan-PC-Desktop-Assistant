@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Protocol
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
+lazy from typing import Protocol
 
 
 class UnsupportedPlatformFeature(OSError):

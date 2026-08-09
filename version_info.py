@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import json
-import sys
-from pathlib import Path
-
+lazy import json
+lazy import sys
+lazy from pathlib import Path
 
 PROJECT_REPOSITORY = "hitoshic1982/MoHan-PC-Desktop-Assistant"
-FALLBACK_VERSION = "2.2.0-rc.2"
+FALLBACK_VERSION = "2.3.0-rc.1"
 
 
 def _build_info_path() -> Path:

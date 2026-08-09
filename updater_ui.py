@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import subprocess
-from pathlib import Path
+lazy import subprocess
+lazy from pathlib import Path
 
-from PySide6.QtCore import QObject, QRunnable, QThreadPool, QTimer, Signal
-from PySide6.QtWidgets import (
+lazy from PySide6.QtCore import QObject, QRunnable, QThreadPool, QTimer, Signal
+lazy from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
     QComboBox,
@@ -18,8 +18,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from updater import ReleaseInfo, UpdateError, UpdateManager
-from version_info import APP_VERSION, PROJECT_REPOSITORY
+lazy from updater import ReleaseInfo, UpdateError, UpdateManager
+lazy from version_info import APP_VERSION, PROJECT_REPOSITORY
 
 
 class _WorkerSignals(QObject):
