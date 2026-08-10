@@ -208,6 +208,18 @@ def test_secret_defense_and_community_files() -> None:
     pr_template = read(".github/pull_request_template.md")
     for heading in ("## 繁體中文", "## 简体中文", "## English", "## 日本語"):
         assert heading in pr_template
+    language_guard = read(".github/workflows/pr-language-governance.yml")
+    for heading in ("## 繁體中文", "## 简体中文", "## English", "## 日本語"):
+        assert heading in language_guard
+    for required in (
+        "opened, edited, reopened, synchronize, ready_for_review",
+        "GITHUB_EVENT_PATH",
+        "Missing non-empty language section",
+        "FOUR_LANGUAGE_PR_BODY_OK",
+    ):
+        assert required in language_guard
+    assert "pull_request_target" not in language_guard
+    assert "github.event.pull_request.body" not in language_guard
     read("ROADMAP.md")
     read("GOVERNANCE.md")
 
