@@ -1515,24 +1515,21 @@ class FirstRunWizard(QDialog):
         self.hero_image = QLabel()
         self.hero_image.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
         hero_pixmap = QPixmap(
-            str(
-                resource_path(
-                    "assets/onboarding/mohan-hero-rain-canonical.webp"
-                )
-            )
+            str(resource_path("assets/expressions/idle_front.png"))
         )
-        hero_scaled = hero_pixmap.scaled(
-            330,
-            590,
-            Qt.KeepAspectRatioByExpanding,
-            Qt.SmoothTransformation,
+        portrait_width = round(hero_pixmap.width() * 0.62)
+        hero_portrait = hero_pixmap.copy(
+            (hero_pixmap.width() - portrait_width) // 2,
+            0,
+            portrait_width,
+            hero_pixmap.height(),
         )
         self.hero_image.setPixmap(
-            hero_scaled.copy(
-                max(0, hero_scaled.width() - 330),
-                max(0, (hero_scaled.height() - 590) // 2),
+            hero_portrait.scaled(
                 330,
-                590,
+                520,
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation,
             )
         )
         hero_layout.addWidget(self.hero_brand)

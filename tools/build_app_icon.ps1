@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
-$Source = Join-Path $ProjectRoot "docs\media\desktop-character.png"
+$Source = Join-Path $ProjectRoot "assets\expressions\idle_front.png"
 $PngOutput = Join-Path $ProjectRoot "assets\mohan-taskbar-icon.png"
 $IcoOutput = Join-Path $ProjectRoot "assets\mohan-halfbody.ico"
 

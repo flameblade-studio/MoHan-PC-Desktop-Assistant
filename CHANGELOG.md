@@ -4,6 +4,17 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### v2.3.0 RC3 — 2026-08-10
+
+- 修正 Windows 縮小後顯示空白文件圖示：EXE、MSI、捷徑與執行中視窗改用
+  十種尺寸的原生墨寒圖示、安裝後路徑及固定工作列身分，並在原生視窗旗標
+  確定後重新套用圖示。
+- 首次設定精靈、安裝程式美術與工作列圖示統一由新版的權威正面半身來源
+  `assets/expressions/idle_front.png` 裁切；舊版五官輪廓的全身像、雨景全身像
+  與未使用的舊圖示均已移除，避免角色身分再次漂移。
+- 發版前置檢查會先驗證標籤、版本、`main` 歷史、Release 模式與四語說明；
+  已知可行的 squash 及 GitHub 憑證路徑直接沿用，不再重複已知失敗流程。
+
 ### v2.3.0 RC2 — 2026-08-10
 
 - 全面遷移至 CPython 3.15.0rc1，產品執行、測試與所有封裝不再保留舊版
@@ -21,10 +32,6 @@
   發布安全閘門維持不變。
 - README 統一為繁中、簡中、英文、日文單一四語文件，移除重複相容文件與
   直接收款連結；贊助入口只引導至儲存庫上方的官方 Sponsor 按鈕。
-- 修正 Windows 縮小後的空白文件圖示：工作列改用與鐵人賽形象一致的新版正面
-  墨寒半身像，EXE／MSI 捷徑只引用安裝後路徑並共用固定工作列身分；舊版五官
-  輪廓的全身資產已移除。發版模式與四語說明也前移至長時間封裝前驗證。
-
 ### v2.2.0 RC2 — 2026-08-07
 
 - 托腮待機姿勢在說話期間改用中性嘴角基底：保留眼角笑意，但固定左右嘴角，
@@ -143,6 +150,17 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
+### v2.3.0 RC3 — 2026-08-10
+
+- 修复 Windows 最小化后显示空白文档图标的问题：EXE、MSI、快捷方式与运行中
+  窗口改用十种尺寸的原生墨寒图标、安装后路径及固定任务栏身份，并在原生窗口
+  标志确定后重新应用图标。
+- 首次设置向导、安装程序美术与任务栏图标统一由新版的权威正面半身来源
+  `assets/expressions/idle_front.png` 裁切；旧版五官轮廓的全身像、雨景全身像
+  与未使用的旧图标均已删除，避免角色身份再次漂移。
+- 发布前置检查会先验证标签、版本、`main` 历史、Release 模式与四语说明；
+  已知可行的 squash 及 GitHub 凭证路径直接沿用，不再重复已知失败流程。
+
 ### v2.3.0 RC2 — 2026-08-10
 
 - 全面迁移至 CPython 3.15.0rc1，产品运行、测试及所有发布包不再保留旧版
@@ -160,10 +178,6 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
   发布安全闸门保持不变。
 - README 统一为繁中、简中、英文、日文单一四语文件，删除重复兼容文件及
   直接收款链接；赞助入口只引导至仓库上方的官方 Sponsor 按钮。
-- 修复 Windows 最小化后的空白文档图标：任务栏改用与铁人赛形象一致的新版正面
-  墨寒半身像，EXE／MSI 快捷方式仅引用安装后的路径并共用固定任务栏身份；旧版
-  五官轮廓的全身资源已删除。发布模式与四语说明也提前到长时间打包前验证。
-
 ### v2.2.0 RC2 — 2026-08-07
 
 - 托腮待机姿势在说话期间改用中性嘴角基础：保留眼角笑意，但固定左右嘴角，
@@ -281,6 +295,20 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 
 All notable public changes to MoHan Desktop Assistant are documented here.
 
+### v2.3.0 RC3 — 2026-08-10
+
+- Fixes the blank-document icon shown after minimizing on Windows. EXE, MSI,
+  shortcuts, and running windows now use ten native MoHan icon sizes, installed
+  paths, and one stable taskbar identity, with the icon reapplied after native
+  window flags are final.
+- Makes `assets/expressions/idle_front.png` the sole canonical front-facing
+  half-body source for the first-run wizard, installer artwork, and taskbar
+  icons. The obsolete full-body identity, rain-scene full-body image, and
+  unused old icon are removed to prevent future character-identity drift.
+- Moves tag, version, `main` ancestry, Release-mode, and four-language-note
+  validation into preflight. Known-working squash and GitHub credential paths
+  are reused directly instead of repeating known-failing flows.
+
 ### v2.3.0 RC2 — 2026-08-10
 
 - Moves the product, tests, and every package exclusively to CPython
@@ -303,12 +331,6 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 - Consolidates the README into one Traditional Chinese, Simplified Chinese,
   English, and Japanese document, removes duplicate compatibility files and
   direct payment links, and points support only to GitHub's official Sponsor button.
-- Fixes the blank-document icon shown after minimizing on Windows. The taskbar
-  now uses the canonical front-facing MoHan half-body identity; EXE and MSI
-  shortcuts reference only installed paths and share one taskbar identity. The
-  obsolete full-body asset is removed, and Release-mode and four-language-note
-  validation now runs before long package builds.
-
 ### v2.2.0 RC2 — 2026-08-07
 
 - Gives the chin-rest pose a neutral speech-mouth base: the smiling eyes remain,
@@ -455,6 +477,20 @@ speech, gaze, and physics stress test passed before this release candidate.
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
 
+### v2.3.0 RC3 — 2026-08-10
+
+- Windows で最小化した後に空白文書アイコンが表示される問題を修正しました。
+  EXE、MSI、ショートカット、実行中ウィンドウは、十段階のネイティブ墨寒
+  アイコン、インストール済みパス、固定タスクバー ID を使い、ネイティブ
+  ウィンドウフラグ確定後にアイコンを再適用します。
+- 初回設定ウィザード、インストーラー画像、タスクバーアイコンの正式な正面向き
+  半身素材を `assets/expressions/idle_front.png` に統一しました。旧版の顔立ちを
+  持つ全身像、雨景の全身像、未使用の旧アイコンを削除し、今後の人物同一性の
+  ずれを防ぎます。
+- タグ、バージョン、`main` 履歴、Release モード、四言語説明を事前検証へ移し、
+  成功が既知の squash と GitHub 認証経路を直接再利用して、失敗が既知の処理を
+  繰り返さないようにしました。
+
 ### v2.3.0 RC2 — 2026-08-10
 
 - 製品、テスト、全パッケージを CPython 3.15.0rc1 のみに移行し、旧 Python
@@ -476,12 +512,6 @@ speech, gaze, and physics stress test passed before this release candidate.
 - README を繁体字中国語、簡体字中国語、英語、日本語の一つの四言語文書へ統合し、
   重複する互換文書と直接決済リンクを削除しました。支援案内はリポジトリ上部の
   公式 Sponsor ボタンだけに統一します。
-- Windows で最小化した後に空白文書アイコンが表示される問題を修正しました。
-  タスクバーには鉄人賽のビジュアルと同じ正面向きの墨寒半身像を使用し、EXE と
-  MSI のショートカットはインストール済みパスだけを参照して同じタスクバー ID を
-  共有します。旧版の全身素材を削除し、Release モードと四言語説明の検証を長時間
-  パッケージ化の前へ移動しました。
-
 ### v2.2.0 RC2 — 2026-08-07
 
 - 頬杖姿勢の発話中は中立な口角ベースを使用します。目元の笑みを残しながら

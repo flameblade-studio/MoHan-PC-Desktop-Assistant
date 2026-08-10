@@ -146,15 +146,15 @@ def test_inno_setup_and_artwork_contract() -> None:
     assert inno_script.count(installed_icon) == 2
     assert 'IconFilename: "{#IconPath}"' not in inno_script
 
-    canonical = ROOT / "assets/onboarding/mohan-hero-rain-canonical.webp"
-    assert_image(canonical, (1111, 1416))
+    canonical = ROOT / "assets/expressions/idle_front.png"
+    assert_image(canonical, (1254, 1254))
     assert hashlib.sha256(canonical.read_bytes()).hexdigest() == (
-        "c5dd52425706ee9e2824a8ce99a483947e0a2f55c0658bd6939cb91cc0a509ed"
+        "5a5970c1e91b3a89a8cc4efd8e3bb72b417f4b644c73a6074cd073d577eab373"
     )
-    assert "mohan-hero-rain-canonical.webp" in read("app.py")
-    assert "mohan-hero-rain-canonical.webp" in read(
-        "tools/build_installer_artwork.py"
-    )
+    for consumer in ("app.py", "tools/build_installer_artwork.py"):
+        content = read(consumer)
+        assert "idle_front.png" in content
+        assert "mohan-hero-rain-canonical.webp" not in content
     artwork = ROOT / "installer/artwork"
     assert_image(artwork / "wizard-hero.png", (656, 1256))
     assert_image(artwork / "wizard-small.png", (512, 512))
@@ -164,18 +164,18 @@ def test_inno_setup_and_artwork_contract() -> None:
 
 
 def test_windows_taskbar_icon_contract() -> None:
-    canonical = ROOT / "docs/media/desktop-character.png"
+    canonical = ROOT / "assets/expressions/idle_front.png"
     png_icon = ROOT / "assets/mohan-taskbar-icon.png"
     windows_icon = ROOT / "assets/mohan-halfbody.ico"
     assert hashlib.sha256(canonical.read_bytes()).hexdigest() == (
-        "e58d1bd7fca01baf3d834f167bf301650bc1711d7ddba9851ff35798dd8f5098"
+        "5a5970c1e91b3a89a8cc4efd8e3bb72b417f4b644c73a6074cd073d577eab373"
     )
     assert_image(png_icon, (1024, 1024))
     assert hashlib.sha256(png_icon.read_bytes()).hexdigest() == (
-        "f9c1cf5fdc8250bddc2aad68076faf38de9121ae60ca20dd3bfbbd30cb2545d2"
+        "496462ac4a1bbca5661505ba42ee33667bef8fa0d95292255b0697b9ef24ad37"
     )
     assert hashlib.sha256(windows_icon.read_bytes()).hexdigest() == (
-        "8db0306f18f838def968636d6675c31c234f588f9b4c4837ef4de3e5239d43f8"
+        "ec8c2cd78786f50c9dbb627c54f846aee4298cab33fe436b82ab54178e986495"
     )
 
     content = windows_icon.read_bytes()
@@ -209,10 +209,14 @@ def test_windows_taskbar_icon_contract() -> None:
     ]
 
     icon_builder = read("tools/build_app_icon.ps1")
-    assert "docs\\media\\desktop-character.png" in icon_builder
+    assert "assets\\expressions\\idle_front.png" in icon_builder
     assert "assets\\mohan.png" not in icon_builder
     assert "icon:auto-resize=256,128,96,64,48,40,32,24,20,16" in icon_builder
     assert not (ROOT / "assets/mohan.png").exists()
+    assert not (ROOT / "assets/mohan.ico").exists()
+    assert not (
+        ROOT / "assets/onboarding/mohan-hero-rain-canonical.webp"
+    ).exists()
 
     app = read("app.py")
     dashboard_setup = app.split(
