@@ -293,6 +293,8 @@ def test_secret_defense_and_community_files() -> None:
         "opened, edited, reopened, synchronize, ready_for_review",
         "GITHUB_EVENT_PATH",
         "pull_request.title",
+        r"title=${title//$'\r'/}",
+        r"body=${body//$'\r'/}",
         "IFS='／'",
         "Missing non-empty language section",
         "FOUR_LANGUAGE_PR_METADATA_MINIMUM_OK",
