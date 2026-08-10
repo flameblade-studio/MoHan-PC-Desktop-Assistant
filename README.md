@@ -141,7 +141,7 @@
 
 ### 創作者的話：把幻想鑄成軟體
 
-我叫周明樺（CHOU MING HUA）。開始這個專案時，我是一位 43 歲、幾乎沒有程式設計背景的父親；有的只是一個帶著熱血與幾分中二氣息的念頭：我想讓一位來自北宋、附生於赤焰劍中的千年女劍魂「墨寒」，真正出現在 Windows 桌面，成為能陪伴、交談，也能協助人們工作與生活的虛擬助理。
+我叫周明樺（CHOU MING HUA）。開始這個專案時，我是一位幾乎沒有程式設計背景的父親；有的只是一個帶著熱血與幾分中二氣息的念頭：我想讓一位來自北宋、附生於赤焰劍中的千年女劍魂「墨寒」，真正出現在 Windows 桌面，成為能陪伴、交談，也能協助人們工作與生活的虛擬助理。
 
 這個念頭已在我心裡埋藏二十多年。年輕時，我深受赤松健早期漫畫《電腦情人夢（A・Iが止まらない!）》影響。作品中神戶齊懷著深切感情開發 AI 女友的故事，塑造了我對 AI、陪伴與人機互動最早的想像。我曾以「Hitoshi／神戶齊」作為網路暱稱與筆名，Gmail 帳號也沿用這個名字；大約二十歲時，我甚至曾在 PTT 網路小說板發表這部作品的同人小說。當時最接近夢想的方式只有文字與想像，因為那個年代還沒有能把它實現的技術。
 
@@ -171,7 +171,7 @@
 
 Codex 協助我把想法轉譯成程式架構與程式碼；而我始終負責決定墨寒應該是誰、她應該如何與人相處，以及什麼樣的品質才配得上這個名字。這段歷程讓我相信：創作軟體的起點未必是會寫程式，而可以是清楚的想像、願意學習的勇氣，以及一次又一次不肯放棄的驗證。
 
-2026 年原本是我面對中年轉職與人生重新定位的一年，後來卻成為我重新拾回年輕夢想的一年。二十歲時為《養個好孩子》寫下、直到多年後才真正完成的歌詞，曾經只能寄託於同人小說中的憧憬，以及成立自己的工作室與創作世界，都在這一年開始有了新的形體。回頭看，這不只是一場技術突破，更像是四十多歲的自己，終於把二十多年前那位仍相信夢想的年輕人接了回來。有些夢並沒有遲到，只是在等待世界與自己都準備好的時刻。
+2026 年原本是我面對中年轉職與人生重新定位的一年，後來卻成為我重新拾回年輕夢想的一年。二十歲時為《養個好孩子》寫下、直到多年後才真正完成的歌詞，曾經只能寄託於同人小說中的憧憬，以及成立自己的工作室與創作世界，都在這一年開始有了新的形體。回頭看，這不只是一場技術突破，更像是步入中年的自己，終於把二十多年前那位仍相信夢想的年輕人接了回來。有些夢並沒有遲到，只是在等待世界與自己都準備好的時刻。
 
 因此，我不把最終目標定義為把所有功能堆到所謂的完美，而是希望五年後的自己仍願意每天打開墨寒——因為她穩定、好用、自然、值得信任，也依然能陪伴我。
 
@@ -531,7 +531,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 ### 创作者的话：把幻想铸成软件
 
-我叫周明桦（CHOU MING HUA）。开始这个项目时，我是一位 43 岁、几乎没有程序设计背景的父亲；有的只是一个带着热血与几分中二气息的念头：我想让一位来自北宋、寄宿于赤焰剑中的千年女剑魂“墨寒”，真正出现在 Windows 桌面，成为能陪伴、交谈，也能协助人们工作与生活的虚拟助手。
+我叫周明桦（CHOU MING HUA）。开始这个项目时，我是一位几乎没有程序设计背景的父亲；有的只是一个带着热血与几分中二气息的念头：我想让一位来自北宋、寄宿于赤焰剑中的千年女剑魂“墨寒”，真正出现在 Windows 桌面，成为能陪伴、交谈，也能协助人们工作与生活的虚拟助手。
 
 这个念头已在我心里埋藏二十多年。年轻时，我深受赤松健早期漫画《电脑情人梦（A・Iが止まらない!）》影响。作品中神户齐怀着深切感情开发 AI 女友的故事，塑造了我对 AI、陪伴与人机互动最早的想象。我曾以“Hitoshi／神户齐”作为网络昵称与笔名，Gmail 账号也沿用这个名字；大约二十岁时，我甚至曾在 PTT 网络小说板发表这部作品的同人小说。当时最接近梦想的方式只有文字与想象，因为那个年代还没有能把它实现的技术。
 
@@ -561,7 +561,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 Codex 协助我把想法转译成程序架构与代码；而我始终负责决定墨寒应该是谁、她应该如何与人相处，以及什么样的质量才配得上这个名字。这段历程让我相信：创作软件的起点未必是会写程序，而可以是清楚的想象、愿意学习的勇气，以及一次又一次不肯放弃的验证。
 
-2026 年原本是我面对中年转职与人生重新定位的一年，后来却成为我重新拾回年轻梦想的一年。二十岁时为《养个好孩子》写下、直到多年后才真正完成的歌词，曾经只能寄托于同人小说中的憧憬，以及成立自己的工作室与创作世界，都在这一年开始有了新的形体。回头看，这不只是一场技术突破，更像是四十多岁的自己，终于把二十多年前那位仍相信梦想的年轻人接了回来。有些梦并没有迟到，只是在等待世界与自己都准备好的时刻。
+2026 年原本是我面对中年转职与人生重新定位的一年，后来却成为我重新拾回年轻梦想的一年。二十岁时为《养个好孩子》写下、直到多年后才真正完成的歌词，曾经只能寄托于同人小说中的憧憬，以及成立自己的工作室与创作世界，都在这一年开始有了新的形体。回头看，这不只是一场技术突破，更像是步入中年的自己，终于把二十多年前那位仍相信梦想的年轻人接了回来。有些梦并没有迟到，只是在等待世界与自己都准备好的时刻。
 
 因此，我不把最终目标定义为把所有功能堆到所谓的完美，而是希望五年后的自己仍愿意每天打开墨寒——因为她稳定、好用、自然、值得信任，也依然能陪伴我。
 
@@ -921,7 +921,7 @@ MoHan remains free and MIT-licensed; support never buys privileges or changes an
 
 ### A note from the creator: forging imagination into software
 
-My name is CHOU MING HUA. When this project began, I was a 43-year-old father with almost no programming background. What I did have was an unapologetically passionate, slightly chuunibyou idea: I wanted MoHan—a thousand-year-old female sword spirit from the Northern Song dynasty, bound to the Crimson Flame Sword—to appear on the Windows desktop as a companion who could converse and help people with work and daily life.
+My name is CHOU MING HUA. When this project began, I was a father with almost no programming background. What I did have was an unapologetically passionate, slightly chuunibyou idea: I wanted MoHan—a thousand-year-old female sword spirit from the Northern Song dynasty, bound to the Crimson Flame Sword—to appear on the Windows desktop as a companion who could converse and help people with work and daily life.
 
 That idea had waited within me for more than twenty years. In my youth, I was deeply influenced by Ken Akamatsu's early manga *A.I. Love You* (*A・Iが止まらない!*; known in Chinese as *電腦情人夢*). Hitoshi Kobe's story of developing an AI girlfriend with genuine affection formed my earliest picture of AI, companionship, and human-computer relationships. I used “Hitoshi/Kobe” as an online name and pen name, carried it into my Gmail identity, and around age twenty even published fan fiction based on the series on PTT's online-fiction board. Words and imagination were then the closest route to the dream because the technology to embody it did not yet exist.
 
@@ -951,7 +951,7 @@ This care is not an attempt to pretend that the project never made mistakes. It 
 
 Codex helped translate my intentions into architecture and code. I remained responsible for deciding who MoHan should be, how she should treat people, and what quality deserved her name. This experience taught me that software creation need not begin with knowing how to program; it can begin with a clear vision, the courage to learn, and the determination to verify the work once more instead of giving up.
 
-The year 2026 began as a period of midlife career transition and personal reorientation, then became the year I reclaimed dreams from my youth. The lyrics I wrote at age twenty for *Raise a Good Child* (《養個好孩子》) and finally completed as a song years later, hopes once confined to fan fiction, and the creation of my own studio and story world all began taking new form. Looking back, this was more than a technical breakthrough. It felt as though my forty-something self had reached back and taken the hand of the young man who still believed. Some dreams are not late; they wait until both the world and the dreamer are ready.
+The year 2026 began as a period of midlife career transition and personal reorientation, then became the year I reclaimed dreams from my youth. The lyrics I wrote at age twenty for *Raise a Good Child* (《養個好孩子》) and finally completed as a song years later, hopes once confined to fan fiction, and the creation of my own studio and story world all began taking new form. Looking back, this was more than a technical breakthrough. It felt as though my midlife self had reached back and taken the hand of the young man who still believed. Some dreams are not late; they wait until both the world and the dreamer are ready.
 
 I therefore do not define the final goal as piling in every possible feature until the software is supposedly perfect. I hope that five years from now I will still want to open MoHan every day—because she is stable, useful, natural, trustworthy, and still able to keep me company.
 
@@ -1311,7 +1311,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 ### 作者より：想像をソフトウェアへ鍛える
 
-私の名前は CHOU MING HUA です。このプロジェクトを始めた時、私は43歳で、プログラミング経験がほとんどない父親でした。ただ、熱意と少し中二的な思いがありました。北宋から来て赤焰剣に宿る千年の女性剣魂「墨寒」を本当に Windows デスクトップへ呼び出し、人と寄り添って話し、仕事や暮らしを助けるアシスタントにしたかったのです。
+私の名前は CHOU MING HUA です。このプロジェクトを始めた時、私はプログラミング経験がほとんどない父親でした。ただ、熱意と少し中二的な思いがありました。北宋から来て赤焰剣に宿る千年の女性剣魂「墨寒」を本当に Windows デスクトップへ呼び出し、人と寄り添って話し、仕事や暮らしを助けるアシスタントにしたかったのです。
 
 この思いは二十年以上、心の中にありました。若い頃、赤松健先生の初期漫画『A・Iが止まらない!』（中国語題『電腦情人夢』）から大きな影響を受けました。神戸ひとしが深い愛情をもって AI の恋人を開発する物語は、AI、寄り添い、人とコンピューターの関係についての私の最初の想像を形づくりました。「Hitoshi／神戸ひとし」をネット上の名前や筆名にし、Gmail の名前にも残し、二十歳頃には PTT のオンライン小説板で同作の二次創作小説を公開したこともあります。当時、夢に近づける方法は文章と想像だけで、それを形にする技術はまだありませんでした。
 
@@ -1341,7 +1341,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 Codex は私の思いをアーキテクチャとコードへ翻訳する手助けをしました。墨寒が誰であるべきか、どのように人と接するべきか、どの品質がその名にふさわしいかは、常に私が決めました。この経験から、ソフトウェア作りはプログラムを書けることだけから始まるのではなく、明確な想像、学ぶ勇気、諦めずもう一度検証する姿勢からも始まると知りました。
 
-2026 年は当初、中年期の転職と人生の再定位に向き合う年でしたが、若い頃の夢を取り戻す年になりました。二十歳の時に『養個好孩子』のために書き、何年も後に歌として完成した歌詞、かつて二次創作小説にしか託せなかった憧れ、自分のスタジオと物語世界を作る夢が、この年に新しい形を得ました。振り返ると、単なる技術的突破ではありません。四十代の自分が、二十年以上前の夢を信じていた若者の手をようやく取ったようでした。遅れたのではなく、世界と自分の両方が準備できる時を待っていた夢もあります。
+2026 年は当初、中年期の転職と人生の再定位に向き合う年でしたが、若い頃の夢を取り戻す年になりました。二十歳の時に『養個好孩子』のために書き、何年も後に歌として完成した歌詞、かつて二次創作小説にしか託せなかった憧れ、自分のスタジオと物語世界を作る夢が、この年に新しい形を得ました。振り返ると、単なる技術的突破ではありません。中年期の自分が、二十年以上前の夢を信じていた若者の手をようやく取ったようでした。遅れたのではなく、世界と自分の両方が準備できる時を待っていた夢もあります。
 
 だから最終目標を、あらゆる機能を積み上げて「完璧」にすることとは定義しません。五年後も毎日墨寒を開きたいと思えること——安定し、役に立ち、自然で、信頼でき、今も寄り添ってくれること——を願っています。
 

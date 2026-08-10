@@ -83,6 +83,18 @@ BADGE_WORKFLOWS = (
     "security-audit.yml",
     "secret-defense.yml",
 )
+TIME_SENSITIVE_CREATOR_AGE_PATTERNS = (
+    re.compile(r"我是一位\s*(?:\d{1,3}|[零〇一二三四五六七八九十百兩两]+)\s*[歲岁]"),
+    re.compile(
+        r"\bI was an?\s+(?:\d{1,3}|[a-z]+(?:-[a-z]+)*)"
+        r"(?:-year-old|\s+years?\s+old)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(r"私は\s*(?:\d{1,3}|[零〇一二三四五六七八九十百]+)\s*歳"),
+    re.compile(r"[三四五六七八九]十(?:多)?[歲岁]的自己"),
+    re.compile(r"\bmy\s+(?:\d+|[a-z]+)-something\s+self\b", re.IGNORECASE),
+    re.compile(r"[三四五六七八九]十代の自分"),
+)
 
 
 def png_size(path: Path) -> tuple[int, int]:
@@ -173,6 +185,16 @@ def _assert_quality_standard(localized_readmes: dict[str, str]) -> None:
         )
 
 
+def _assert_timeless_creator_narrative(
+    localized_readmes: dict[str, str],
+) -> None:
+    for name, content in localized_readmes.items():
+        for pattern in TIME_SENSITIVE_CREATOR_AGE_PATTERNS:
+            assert not pattern.search(content), (
+                f"{name} hard-codes the creator's changing age: {pattern.pattern}"
+            )
+
+
 def _assert_demo_video(readme: str) -> None:
     video = MEDIA / "mohan-demo.mp4"
     assert video.is_file(), "missing 30–60 second demonstration video"
@@ -247,6 +269,7 @@ def main() -> int:
     _assert_readme_images(readme)
     _assert_certification_badges(localized_readmes)
     _assert_quality_standard(localized_readmes)
+    _assert_timeless_creator_narrative(localized_readmes)
     _assert_demo_video(readme)
     _assert_support_section(readme)
     _assert_github_links(readme)
