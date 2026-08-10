@@ -44,23 +44,41 @@ SECRET_PATTERNS = {
 }
 
 
-def public_source_files() -> list[Path]:
+def _git_paths(root: Path, *selectors: str) -> set[str]:
+    safe_directory = (
+        f"safe.directory={ROOT.as_posix()}"
+        if root == ROOT
+        else f"safe.directory={root.as_posix()}"
+    )
     result = subprocess.run(
         [
             "git",
             "-c",
-            f"safe.directory={ROOT.as_posix()}",
+            safe_directory,
             "ls-files",
             "-z",
-            "--cached",
-            "--others",
-            "--exclude-standard",
+            *selectors,
         ],
-        cwd=ROOT,
+        cwd=root,
         check=True,
         capture_output=True,
     )
-    return [ROOT / item.decode("utf-8") for item in result.stdout.split(b"\0") if item]
+    return {
+        item.decode("utf-8")
+        for item in result.stdout.split(b"\0")
+        if item
+    }
+
+
+def public_source_files(root: Path = ROOT) -> list[Path]:
+    candidates = _git_paths(
+        root,
+        "--cached",
+        "--others",
+        "--exclude-standard",
+    )
+    deleted = _git_paths(root, "--deleted")
+    return [root / relative for relative in sorted(candidates - deleted)]
 
 
 def audit_source_file(path: Path, findings: list[str]) -> tuple[int, bool]:

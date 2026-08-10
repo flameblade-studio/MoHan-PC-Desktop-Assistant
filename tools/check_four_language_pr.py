@@ -16,9 +16,11 @@ def _title_errors(title: object) -> list[str]:
     parts = tuple(part.strip() for part in title.split(TITLE_SEPARATOR))
     if len(parts) != 4 or any(not part for part in parts):
         return [
-            "pull-request title must contain four non-empty translations "
-            "separated by ／ in this order: Traditional Chinese, Simplified "
-            "Chinese, English, Japanese"
+            (
+                "pull-request title must contain four non-empty translations "
+                "separated by ／ in this order: Traditional Chinese, Simplified "
+                "Chinese, English, Japanese"
+            )
         ]
     return []
 

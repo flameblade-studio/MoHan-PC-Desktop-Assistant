@@ -201,7 +201,7 @@ def test_release_version_has_one_source_of_truth() -> None:
     assert "from version_info import FALLBACK_VERSION" not in release
     assert 'source_version="${source_versions[0]}"' in release
     assert "Expected exactly one literal FALLBACK_VERSION" in release
-    for guide in ("QUICKSTART.md", "README.md", "README.zh-CN.md", "README.ja.md"):
+    for guide in ("QUICKSTART.md", "README.md"):
         text = read(guide)
         assert "MoHan-Desktop-Assistant-2.1.0-rc.1.exe" not in text
     assert 'FALLBACK_VERSION = "2.1.0-rc.1"' not in read("version_info.py")

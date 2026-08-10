@@ -120,42 +120,41 @@ def _assert_readme_images(readme: str) -> None:
         )
 
 
-def _localized_readmes() -> dict[str, str]:
-    return {
-        name: (ROOT / name).read_text(encoding="utf-8")
-        for name in ("README.md", "README.zh-CN.md", "README.ja.md")
-    }
-
-
-def _assert_certification_badges(localized_readmes: dict[str, str]) -> None:
-    assert len(set(localized_readmes.values())) == 1, (
-        "all three README entry points must remain byte-for-byte identical"
+def _assert_single_readme_entry_point(readme: str) -> None:
+    language_navigation = (
+        "[繁體中文](#繁體中文) · [簡體中文](#简体中文) · "
+        "[English](#english) · [日本語](#日本語)"
     )
-    badge_blocks: dict[str, str] = {}
-    for name, content in localized_readmes.items():
-        badge_match = re.search(
-            r'<p align="center">\s*(.*?)\s*</p>', content, re.DOTALL
+    assert readme.count(language_navigation) == 4
+    for obsolete_readme in ("README.zh-CN.md", "README.ja.md"):
+        assert not (ROOT / obsolete_readme).exists(), (
+            f"duplicate README entry point returned: {obsolete_readme}"
         )
-        assert badge_match, f"{name} is missing its certification badge block"
-        badge_blocks[name] = badge_match.group(1)
-        actual_badges = tuple(
-            re.findall(r'<img alt="([^"]+)" src="([^"]+)">', badge_match.group(1))
+        assert obsolete_readme not in readme, (
+            f"README links obsolete compatibility entry point: {obsolete_readme}"
         )
-        assert actual_badges == README_BADGES, (
-            f"{name} certification badges are incomplete, out of order, or stale"
-        )
-        for filename in PNG_FILES:
-            if filename.startswith("support-"):
-                continue
-            assert f"docs/media/{filename}" in content, (
-                f"{name} does not reference shared current media: {filename}"
-            )
-    assert len(set(badge_blocks.values())) == 1, (
-        "all three localized README files must share the exact same badge block"
+
+
+def _assert_certification_badges(readme: str) -> None:
+    badge_match = re.search(
+        r'<p align="center">\s*(.*?)\s*</p>', readme, re.DOTALL
     )
+    assert badge_match, "README.md is missing its certification badge block"
+    actual_badges = tuple(
+        re.findall(r'<img alt="([^"]+)" src="([^"]+)">', badge_match.group(1))
+    )
+    assert actual_badges == README_BADGES, (
+        "README.md certification badges are incomplete, out of order, or stale"
+    )
+    for filename in PNG_FILES:
+        if filename.startswith("support-"):
+            continue
+        assert f"docs/media/{filename}" in readme, (
+            f"README.md does not reference shared current media: {filename}"
+        )
 
 
-def _assert_quality_standard(localized_readmes: dict[str, str]) -> None:
+def _assert_quality_standard(readme: str) -> None:
     quality_standard = (ROOT / "PUBLISHING.md").read_text(encoding="utf-8")
     for heading in (
         "炎劍開源軟體家族品質標準",
@@ -175,24 +174,21 @@ def _assert_quality_standard(localized_readmes: dict[str, str]) -> None:
         assert declaration in quality_standard, (
             f"missing open-source declaration: {declaration}"
         )
-    for name, content in localized_readmes.items():
-        assert "(PUBLISHING.md)" in content, (
-            f"{name} does not link to the shared Flameblade quality standard"
-        )
+    assert "(PUBLISHING.md)" in readme, (
+        "README.md does not link to the shared Flameblade quality standard"
+    )
     for workflow in BADGE_WORKFLOWS:
         assert (ROOT / ".github" / "workflows" / workflow).is_file(), (
             f"README badge points to missing workflow: {workflow}"
         )
 
 
-def _assert_timeless_creator_narrative(
-    localized_readmes: dict[str, str],
-) -> None:
-    for name, content in localized_readmes.items():
-        for pattern in TIME_SENSITIVE_CREATOR_AGE_PATTERNS:
-            assert not pattern.search(content), (
-                f"{name} hard-codes the creator's changing age: {pattern.pattern}"
-            )
+def _assert_timeless_creator_narrative(readme: str) -> None:
+    for pattern in TIME_SENSITIVE_CREATOR_AGE_PATTERNS:
+        assert not pattern.search(readme), (
+            "README.md hard-codes the creator's changing age: "
+            f"{pattern.pattern}"
+        )
 
 
 def _assert_demo_video(readme: str) -> None:
@@ -213,11 +209,21 @@ def _assert_support_section(readme: str) -> None:
         "docs/media/support-proud.png",
         "docs/media/support-shy-aligned.png",
         "docs/media/support-mock-hit.png",
-        "https://buymeacoffee.com/flameblade_studio",
-        "https://www.paypal.com/paypalme/flamebladestudio",
+        "請使用儲存庫上方由 GitHub 顯示的 Sponsor 按鈕；目前正式收款選項為 Ko-fi，可選擇單次或每月贊助。",
+        "请使用仓库上方由 GitHub 显示的 Sponsor 按钮；目前正式收款选项为 Ko-fi，可选择单次或每月赞助。",
+        "Use the Sponsor button displayed by GitHub above this repository; Ko-fi is the current official funding option and supports one-time or monthly contributions.",
+        "このリポジトリ上部に GitHub が表示する Sponsor ボタンをご利用ください。現在の正式な支援先は Ko-fi で、単発または毎月の支援を選べます。",
     )
     for requirement in support_requirements:
         assert requirement in readme, f"missing project support content: {requirement}"
+    for retired_support in (
+        "ko-fi.com/",
+        "buymeacoffee.com",
+        "paypal.com/paypalme",
+    ):
+        assert retired_support not in readme.lower(), (
+            f"retired support link remains in README: {retired_support}"
+        )
     for filename in (
         "support-proud.png",
         "support-shy-aligned.png",
@@ -265,11 +271,11 @@ def _assert_security_and_community_files() -> None:
 
 def main() -> int:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    localized_readmes = _localized_readmes()
+    _assert_single_readme_entry_point(readme)
     _assert_readme_images(readme)
-    _assert_certification_badges(localized_readmes)
-    _assert_quality_standard(localized_readmes)
-    _assert_timeless_creator_narrative(localized_readmes)
+    _assert_certification_badges(readme)
+    _assert_quality_standard(readme)
+    _assert_timeless_creator_narrative(readme)
     _assert_demo_video(readme)
     _assert_support_section(readme)
     _assert_github_links(readme)
