@@ -416,11 +416,12 @@ def assert_release_website_block(manifest: dict[str, object]) -> None:
             "MoHan Desktop Assistant",
             "墨寒的傲嬌工程小劇場",
             "Contribute a pull request",
-            "buymeacoffee.com/flameblade_studio",
-            "paypal.com/paypalme/flamebladestudio",
+            "ko-fi.com/flamebladestudio",
             'src="https://raw.githubusercontent.com/',
         ),
     )
+    assert "buymeacoffee.com" not in block.lower()
+    assert "paypal.com/paypalme" not in block.lower()
     assert "wp-content/uploads" not in block
     assert block.count('class="mohan-scene"') >= 6
     assert block.count('loading="eager"') == 6

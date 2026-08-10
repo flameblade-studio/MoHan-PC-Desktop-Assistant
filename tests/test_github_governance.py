@@ -40,6 +40,16 @@ def test_workspace_workflow_policy() -> None:
         )
 
 
+def test_funding_configuration() -> None:
+    funding = read(".github/FUNDING.yml")
+    assert funding == "ko_fi: flamebladestudio\n"
+    for retired_support in (
+        "buy_me_a_coffee",
+        "paypal",
+    ):
+        assert retired_support not in funding.lower()
+
+
 def test_security_workflows() -> None:
     codeql = read(".github/workflows/codeql.yml")
     assert "github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3" in codeql
@@ -253,6 +263,7 @@ def test_secret_defense_and_community_files() -> None:
 
 def main() -> None:
     test_workspace_workflow_policy()
+    test_funding_configuration()
     test_security_workflows()
     test_release_workflow()
     test_preview_and_windows_workflows()

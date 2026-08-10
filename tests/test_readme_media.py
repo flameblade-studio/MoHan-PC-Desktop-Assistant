@@ -213,11 +213,22 @@ def _assert_support_section(readme: str) -> None:
         "docs/media/support-proud.png",
         "docs/media/support-shy-aligned.png",
         "docs/media/support-mock-hit.png",
-        "https://buymeacoffee.com/flameblade_studio",
-        "https://www.paypal.com/paypalme/flamebladestudio",
+        "Ko-fi 一次性贊助",
+        "Ko-fi 一次性赞助",
+        "One-time support on Ko-fi",
+        "Ko-fi で一回限りの支援",
+        "https://ko-fi.com/flamebladestudio",
     )
     for requirement in support_requirements:
         assert requirement in readme, f"missing project support content: {requirement}"
+    assert readme.count("https://ko-fi.com/flamebladestudio") == 4
+    for retired_support in (
+        "buymeacoffee.com",
+        "paypal.com/paypalme",
+    ):
+        assert retired_support not in readme.lower(), (
+            f"retired support link remains in README: {retired_support}"
+        )
     for filename in (
         "support-proud.png",
         "support-shy-aligned.png",

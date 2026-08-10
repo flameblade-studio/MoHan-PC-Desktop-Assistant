@@ -22,8 +22,7 @@ EXPRESSION_ROOT = (
     "https://raw.githubusercontent.com/"
     "hitoshic1982/MoHan-PC-Desktop-Assistant/main/assets/expressions"
 )
-BUY_ME_A_COFFEE_URL = "https://buymeacoffee.com/flameblade_studio"
-PAYPAL_ME_URL = "https://www.paypal.com/paypalme/flamebladestudio"
+KOFI_URL = "https://ko-fi.com/flamebladestudio"
 DOWNLOAD_LABELS = {
     "exe": "EXE 安裝程式（建議）",
     "msi": "MSI 安裝套件",
@@ -175,8 +174,7 @@ body.page-id-11163 .wp-block-post-title{{display:none}}
 
 <section class="mohan-section mohan-support"><img loading="lazy" src="{EXPRESSION_ROOT}/shy_cute_front.png" alt="墨寒嬌羞表情"><div><h2>傲嬌策士的軍糧補給處</h2>
 <p>「妾才不是在等贊助……只是替主上巡視軍糧。若真願意相助，妾……會記得的。」</p><p><em>“I am not waiting for support… merely inspecting our provisions. If you truly wish to help, I shall remember it.”</em></p>
-<div class="mohan-actions"><a class="mohan-button mohan-button-primary" target="_blank" rel="noopener noreferrer" href="{BUY_ME_A_COFFEE_URL}">Buy Me a Coffee</a>
-<a class="mohan-button mohan-button-soft" target="_blank" rel="noopener noreferrer" href="{PAYPAL_ME_URL}">PayPalMe</a></div>
+<div class="mohan-actions"><a class="mohan-button mohan-button-primary" target="_blank" rel="noopener noreferrer" href="{KOFI_URL}">Ko-fi</a></div>
 <p class="mohan-note">贊助完全自願，請先照顧好自己的生活。Support is entirely optional—please take care of yourself first.</p></div></section>
 <footer class="mohan-footer">Created with passion by CHOU MING HUA · MIT License · 墨寒附生於赤焰劍，而她的程式碼屬於每一位願意讓夢想走進現實的人。</footer>
 </div></main>
