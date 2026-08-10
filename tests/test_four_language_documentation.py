@@ -49,10 +49,20 @@ def test_document_rejects_untranslated_duplicate_section() -> None:
     assert any("duplicates 繁體中文" in error for error in errors)
 
 
+def test_document_rejects_wrapped_english_word_repetition() -> None:
+    duplicate = DOCUMENT.replace(
+        "English description.",
+        "English remains limited\nlimited Preview.",
+    )
+    errors = audit_text(duplicate, require_h1=True)
+    assert "English section repeats adjacent word 'limited'" in errors
+
+
 def main() -> None:
     test_document_contract()
     test_document_requires_h1_and_only_language_h2_headings()
     test_document_rejects_untranslated_duplicate_section()
+    test_document_rejects_wrapped_english_word_repetition()
     result = subprocess.run(
         [sys.executable, "tools/check_four_language_docs.py"],
         cwd=ROOT,
