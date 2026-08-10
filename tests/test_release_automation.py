@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import hashlib
 lazy import json
+lazy import struct
 lazy import subprocess
 lazy import sys
 lazy import tempfile
@@ -141,7 +142,9 @@ def test_inno_setup_and_artwork_contract() -> None:
     assert inno_script.count(
         'AppUserModelID: "FlamebladeStudio.MoHanDesktopAssistant"'
     ) == 2
-    assert inno_script.count('IconFilename: "{#IconPath}"') == 2
+    installed_icon = 'IconFilename: "{app}\\assets\\mohan-halfbody.ico"'
+    assert inno_script.count(installed_icon) == 2
+    assert 'IconFilename: "{#IconPath}"' not in inno_script
 
     canonical = ROOT / "assets/onboarding/mohan-hero-rain-canonical.webp"
     assert_image(canonical, (1111, 1416))
@@ -160,6 +163,68 @@ def test_inno_setup_and_artwork_contract() -> None:
     assert 'stroke="#ffffff"' in checkmark.read_text(encoding="utf-8")
 
 
+def test_windows_taskbar_icon_contract() -> None:
+    canonical = ROOT / "docs/media/desktop-character.png"
+    png_icon = ROOT / "assets/mohan-taskbar-icon.png"
+    windows_icon = ROOT / "assets/mohan-halfbody.ico"
+    assert hashlib.sha256(canonical.read_bytes()).hexdigest() == (
+        "e58d1bd7fca01baf3d834f167bf301650bc1711d7ddba9851ff35798dd8f5098"
+    )
+    assert_image(png_icon, (1024, 1024))
+    assert hashlib.sha256(png_icon.read_bytes()).hexdigest() == (
+        "f9c1cf5fdc8250bddc2aad68076faf38de9121ae60ca20dd3bfbbd30cb2545d2"
+    )
+    assert hashlib.sha256(windows_icon.read_bytes()).hexdigest() == (
+        "8db0306f18f838def968636d6675c31c234f588f9b4c4837ef4de3e5239d43f8"
+    )
+
+    content = windows_icon.read_bytes()
+    reserved, image_type, count = struct.unpack_from("<HHH", content)
+    assert (reserved, image_type, count) == (0, 1, 10)
+    entries: list[tuple[int, int, int, bool]] = []
+    for index in range(count):
+        entry_offset = 6 + (16 * index)
+        width_byte, height_byte, _colors, _reserved = struct.unpack_from(
+            "<BBBB",
+            content,
+            entry_offset,
+        )
+        width = width_byte or 256
+        height = height_byte or 256
+        planes, bits, payload_size, payload_offset = struct.unpack_from(
+            "<HHII",
+            content,
+            entry_offset + 4,
+        )
+        payload_end = payload_offset + payload_size
+        assert payload_end <= len(content)
+        is_png = content[payload_offset : payload_offset + 8] == (
+            b"\x89PNG\r\n\x1a\n"
+        )
+        assert width == height
+        entries.append((width, planes, bits, is_png))
+    assert entries == [
+        (size, 1, 32, False)
+        for size in (256, 128, 96, 64, 48, 40, 32, 24, 20, 16)
+    ]
+
+    icon_builder = read("tools/build_app_icon.ps1")
+    assert "docs\\media\\desktop-character.png" in icon_builder
+    assert "assets\\mohan.png" not in icon_builder
+    assert "icon:auto-resize=256,128,96,64,48,40,32,24,20,16" in icon_builder
+    assert not (ROOT / "assets/mohan.png").exists()
+
+    app = read("app.py")
+    dashboard_setup = app.split(
+        "def _configure_dashboard_window(self) -> None:",
+        maxsplit=1,
+    )[1].split("\n    def ", maxsplit=1)[0]
+    assert "QIcon(str(resource_path(APP_ICON_PATH)))" not in app
+    assert dashboard_setup.index("self.setWindowFlags(") < dashboard_setup.index(
+        "self.setWindowIcon(application_icon())"
+    )
+
+
 def test_wix_source_and_localization_contract() -> None:
     wix_source = read("installer/Product.wxs")
     assert_contains(
@@ -167,6 +232,8 @@ def test_wix_source_and_localization_contract() -> None:
         (
             'Icon="MohanIcon"',
             'IconIndex="0"',
+            'Key="System.AppUserModel.ID"',
+            'Value="FlamebladeStudio.MoHanDesktopAssistant"',
             'Language="$(var.ProductLanguage)"',
             'xmlns="http://wixtoolset.org/schemas/v4/wxs"',
             '<Files Directory="INSTALLFOLDER"',
@@ -176,6 +243,12 @@ def test_wix_source_and_localization_contract() -> None:
     installer_test = read("installer/test_installers.ps1")
     policy = read("installer/LOCALIZATION.md")
     assert '"LICENSE", "THIRD_PARTY_NOTICES.md"' in installer_test
+    assert "EXE shortcut target escaped the installed application directory" in (
+        installer_test
+    )
+    assert "EXE shortcut icon does not use the installed MoHan half-body icon" in (
+        installer_test
+    )
     for locale, lcid in (("en-US", "1033"), ("zh-CN", "2052"), ("ja-JP", "1041")):
         assert_contains(installer_build, (locale, lcid))
         assert locale in policy
@@ -473,6 +546,7 @@ def test_release_metadata_and_website_automation() -> None:
 def main() -> None:
     test_version_runtime_and_evidence_policy()
     test_inno_setup_and_artwork_contract()
+    test_windows_taskbar_icon_contract()
     test_wix_source_and_localization_contract()
     test_packaging_tools_and_public_media()
     test_readme_language_and_contribution_contract()

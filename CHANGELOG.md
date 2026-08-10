@@ -21,6 +21,9 @@
   發布安全閘門維持不變。
 - README 統一為繁中、簡中、英文、日文單一四語文件，移除重複相容文件與
   直接收款連結；贊助入口只引導至儲存庫上方的官方 Sponsor 按鈕。
+- 修正 Windows 縮小後的空白文件圖示：工作列改用與鐵人賽形象一致的新版正面
+  墨寒半身像，EXE／MSI 捷徑只引用安裝後路徑並共用固定工作列身分；舊版五官
+  輪廓的全身資產已移除。發版模式與四語說明也前移至長時間封裝前驗證。
 
 ### v2.2.0 RC2 — 2026-08-07
 
@@ -157,6 +160,9 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
   发布安全闸门保持不变。
 - README 统一为繁中、简中、英文、日文单一四语文件，删除重复兼容文件及
   直接收款链接；赞助入口只引导至仓库上方的官方 Sponsor 按钮。
+- 修复 Windows 最小化后的空白文档图标：任务栏改用与铁人赛形象一致的新版正面
+  墨寒半身像，EXE／MSI 快捷方式仅引用安装后的路径并共用固定任务栏身份；旧版
+  五官轮廓的全身资源已删除。发布模式与四语说明也提前到长时间打包前验证。
 
 ### v2.2.0 RC2 — 2026-08-07
 
@@ -297,6 +303,11 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 - Consolidates the README into one Traditional Chinese, Simplified Chinese,
   English, and Japanese document, removes duplicate compatibility files and
   direct payment links, and points support only to GitHub's official Sponsor button.
+- Fixes the blank-document icon shown after minimizing on Windows. The taskbar
+  now uses the canonical front-facing MoHan half-body identity; EXE and MSI
+  shortcuts reference only installed paths and share one taskbar identity. The
+  obsolete full-body asset is removed, and Release-mode and four-language-note
+  validation now runs before long package builds.
 
 ### v2.2.0 RC2 — 2026-08-07
 
@@ -465,6 +476,11 @@ speech, gaze, and physics stress test passed before this release candidate.
 - README を繁体字中国語、簡体字中国語、英語、日本語の一つの四言語文書へ統合し、
   重複する互換文書と直接決済リンクを削除しました。支援案内はリポジトリ上部の
   公式 Sponsor ボタンだけに統一します。
+- Windows で最小化した後に空白文書アイコンが表示される問題を修正しました。
+  タスクバーには鉄人賽のビジュアルと同じ正面向きの墨寒半身像を使用し、EXE と
+  MSI のショートカットはインストール済みパスだけを参照して同じタスクバー ID を
+  共有します。旧版の全身素材を削除し、Release モードと四言語説明の検証を長時間
+  パッケージ化の前へ移動しました。
 
 ### v2.2.0 RC2 — 2026-08-07
 

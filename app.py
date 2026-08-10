@@ -953,6 +953,17 @@ def resource_path(relative: str) -> Path:
     return RESOURCE_BASE / relative
 
 
+def application_icon() -> QIcon:
+    application = QApplication.instance()
+    if application is not None and not application.windowIcon().isNull():
+        return application.windowIcon()
+    icon_path = resource_path(APP_ICON_PATH)
+    icon = QIcon(str(icon_path))
+    if icon.isNull():
+        raise RuntimeError(f"MoHan application icon could not be loaded: {icon_path}")
+    return icon
+
+
 def data_dir(platform_services: PlatformServicePort | None = None) -> Path:
     root = resolved_data_dir(platform_services)
     root.mkdir(parents=True, exist_ok=True)
@@ -1472,7 +1483,7 @@ class FirstRunWizard(QDialog):
         self._apply_language()
 
     def _configure_window(self) -> None:
-        self.setWindowIcon(QIcon(str(resource_path(APP_ICON_PATH))))
+        self.setWindowIcon(application_icon())
         self.setMinimumSize(1100, 720)
         self.setFont(application_ui_font())
         self.setStyleSheet(STYLE)
@@ -1895,7 +1906,6 @@ class Dashboard(QDialog):
     def _configure_dashboard_window(self) -> None:
         db = self.db
         self.setWindowTitle(profile_window_title(db))
-        self.setWindowIcon(QIcon(str(resource_path(APP_ICON_PATH))))
         self.resize(900, 660)
         self.setMinimumSize(720, 480)
         self.setStyleSheet(STYLE)
@@ -1907,6 +1917,9 @@ class Dashboard(QDialog):
             | Qt.WindowMaximizeButtonHint
             | Qt.WindowCloseButtonHint
         )
+        # Apply the icon after the native window flags are final. On Windows,
+        # changing flags can recreate the native handle used by the taskbar.
+        self.setWindowIcon(application_icon())
         self.front_raise_timer = QTimer(self)
         self.front_raise_timer.setSingleShot(True)
         self.front_raise_timer.timeout.connect(self._bring_to_front)
@@ -6542,7 +6555,7 @@ class CompanionWindow(QMainWindow):
         self.background_agent_timer.start()
     def _setup_tray(self) -> None:
         self.tray = QSystemTrayIcon(
-            QIcon(str(resource_path(APP_ICON_PATH))), self
+            application_icon(), self
         )
         self.tray.setToolTip(profile_window_title(self.db))
         menu = QMenu()
@@ -10141,7 +10154,7 @@ def main() -> int:
     app.setFont(application_ui_font())
     app.setApplicationName(APP_NAME)
     app.setApplicationVersion(APP_VERSION)
-    app.setWindowIcon(QIcon(str(resource_path(APP_ICON_PATH))))
+    app.setWindowIcon(application_icon())
     app.setQuitOnLastWindowClosed(False)
     app.setStyleSheet(STYLE)
     window = CompanionWindow(

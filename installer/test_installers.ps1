@@ -10,6 +10,7 @@ $MsiInstaller = Get-Item (Join-Path $ResolvedArtifacts "*.msi")
 $MsiTransforms = Get-ChildItem (Join-Path $ResolvedArtifacts "*.mst") |
     Sort-Object Name
 $ExpectedTransformLocales = @("en-US", "ja-JP", "zh-CN")
+$ProgramsFolder = [Environment]::GetFolderPath("Programs")
 foreach ($Locale in $ExpectedTransformLocales) {
     if (-not ($MsiTransforms.Name -match "-$Locale\.mst$")) {
         throw "Missing MSI language transform: $Locale"
@@ -42,11 +43,38 @@ if (
 ) {
     throw "EXE-installed application self-test failed"
 }
+$ExeShortcutPath = Join-Path $ProgramsFolder "MoHan Desktop Assistant.lnk"
+if (-not (Test-Path -LiteralPath $ExeShortcutPath)) {
+    throw "EXE installer did not create the Start menu shortcut"
+}
+$ExeShortcut = (New-Object -ComObject WScript.Shell).CreateShortcut(
+    $ExeShortcutPath
+)
+$ExpectedIconLocation = (
+    Join-Path $ExeInstallDir "assets\mohan-halfbody.ico"
+) + ",0"
+if (-not [string]::Equals(
+    $ExeShortcut.TargetPath,
+    $InstalledExe,
+    [StringComparison]::OrdinalIgnoreCase
+)) {
+    throw "EXE shortcut target escaped the installed application directory"
+}
+if (-not [string]::Equals(
+    $ExeShortcut.IconLocation,
+    $ExpectedIconLocation,
+    [StringComparison]::OrdinalIgnoreCase
+)) {
+    throw "EXE shortcut icon does not use the installed MoHan half-body icon"
+}
 $Uninstaller = Join-Path $ExeInstallDir "unins000.exe"
 $Process = Start-Process $Uninstaller -ArgumentList @(
     "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART"
 ) -Wait -PassThru
 if ($Process.ExitCode -ne 0) { throw "EXE uninstall verification failed" }
+if (Test-Path -LiteralPath $ExeShortcutPath) {
+    throw "EXE uninstaller left the Start menu shortcut behind"
+}
 
 $MsiVariants = @($null) + @($MsiTransforms)
 foreach ($Transform in $MsiVariants) {

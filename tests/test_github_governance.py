@@ -85,8 +85,6 @@ def test_release_supply_chain(release: str) -> None:
         "id: runtime-python",
         "id: sbom-python",
         "isolated Python 3.14 SBOM tooling runtime",
-        "RUNTIME_PYTHON: ${{ steps.runtime-python.outputs.python-path }}",
-        '"$RUNTIME_PYTHON" tools/check_four_language_docs.py',
         "--pyproject pyproject.toml",
         "--pyproject sbom/preview.pyproject.toml",
         "--spec-version 1.7",
@@ -99,6 +97,7 @@ def test_release_supply_chain(release: str) -> None:
         "release metadata must run project-owned tools with the saved "
         "Python 3.15 runtime instead of the mutable PATH"
     )
+    assert "tools/check_four_language_docs.py" not in metadata_job
     for artifact in (
         "*-SBOM-Validation.json",
         "Performance-Evidence.zip",
@@ -149,7 +148,7 @@ def test_release_runtime_and_packages(release: str) -> None:
 
 def test_release_publication_boundary(release: str) -> None:
     for required in (
-        "docs/releases/${{ needs.resolve-release.outputs.tag }}.md",
+        "docs/releases/$RELEASE_TAG.md",
         "git merge-base --is-ancestor",
         "commit: ${{ steps.source.outputs.commit }}",
         "ref: ${{ needs.resolve-release.outputs.commit }}",
@@ -170,11 +169,36 @@ def test_release_publication_boundary(release: str) -> None:
     assert "client_secret" not in release
 
 
+def test_release_preflight_precedes_packaging(release: str) -> None:
+    resolve_job = release.split("\n  resolve-release:\n", maxsplit=1)[1].split(
+        "\n  windows:\n",
+        maxsplit=1,
+    )[0]
+    for required in (
+        "Validate Release publication mode before packaging",
+        "Expected an existing Release for verification before packaging",
+        "Release already exists; refusing to rebuild it",
+        "Set up Python 3.15 release preflight runtime",
+        "id: preflight-python",
+        'python-version: "3.15.0-rc.1"',
+        "Require curated four-language Release notes before packaging",
+        "PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}",
+        '"$PREFLIGHT_PYTHON" tools/check_four_language_docs.py',
+    ):
+        assert required in resolve_job
+    assert 'python-version: "3.14' not in resolve_job
+    assert not re.search(r"(?m)^\s+python tools/", resolve_job)
+    assert resolve_job.index("Validate Release publication mode") < (
+        resolve_job.index("Set up Python 3.15 release preflight runtime")
+    )
+
+
 def test_release_workflow() -> None:
     release = read(".github/workflows/release.yml")
     test_release_supply_chain(release)
     test_release_runtime_and_packages(release)
     test_release_publication_boundary(release)
+    test_release_preflight_precedes_packaging(release)
 
 
 def test_publishing_merge_policy() -> None:
@@ -188,6 +212,21 @@ def test_publishing_merge_policy() -> None:
         "不得在每次发布时重新查询",
         "Do not re-query this known policy for every release",
         "リリースごとにこの既知のポリシーを再照会",
+    ):
+        assert required in publishing
+
+
+def test_publishing_github_credential_policy() -> None:
+    publishing = read("PUBLISHING.md")
+    for required in (
+        "一條可預測的憑證路徑",
+        "一条可预测的凭证路径",
+        "one predictable credential path",
+        "予測可能な認証経路を一つだけ使用",
+        "在外部狀態未改變前不得反覆重試",
+        "在外部状态未变化前不得反复重试",
+        "while the external state is unchanged",
+        "外部状態が変わらない限り",
     ):
         assert required in publishing
 
@@ -288,6 +327,7 @@ def main() -> None:
     test_security_workflows()
     test_release_workflow()
     test_publishing_merge_policy()
+    test_publishing_github_credential_policy()
     test_preview_and_windows_workflows()
     test_secret_defense_and_community_files()
     print("GITHUB_GOVERNANCE_AND_SUPPLY_CHAIN_OK")
