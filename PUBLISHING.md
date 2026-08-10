@@ -93,6 +93,8 @@ python tools\capture_readme_media.py --screenshots-only
 
 儲存庫的所有變更都必須使用 Pull Request。不得將實作提交直接推送至 `main`、不得略過檢查、不得強制推送 `main`，也不得在必要檢查失敗或審查對話尚未解決時合併。必要的 Windows CI 檢查是 `Windows CI / test`；安全工作流程也必須完成，且不得留有尚未處理的高信心發現。
 
+本儲存庫的既定合併政策只允許 squash。所有必要檢查成功、Pull Request 的 head SHA 未變且審查對話全部解決後，Codex 應直接使用 squash 合併；不得在每次發布時重新查詢這項已知政策，也不得先嘗試已知不允許的 merge commit 或 rebase。合併後必須讀回實際 merge commit，發布標籤只能建立在該 commit。只有擁有者明確變更設定，或 GitHub 實際拒絕 squash 而顯示政策可能漂移時，才重新查詢。
+
 ### 自動化後續發行
 
 在本次遷移期間，只有 `v2.3.0-rc.N` 標籤能觸發 `.github/workflows/release.yml`。工作流程會驗證精確標籤、簽出該不可變的來源修訂，然後依序：
@@ -114,6 +116,8 @@ python tools\capture_readme_media.py --screenshots-only
 15. 要求並發布人工整理的四語 Release 說明。
 
 此發行系列的每個標籤都必須發布為預發行版。不得重複使用或移動已發布的標籤；必須建立新的 `v2.3.0-rc.N` 標籤。未來穩定版需要另外經過審查的政策變更，不能默默放寬此閘門。
+
+發布中繼資料工作必須以已保存的 Python 3.15 執行路徑執行所有墨寒專案工具。隔離的 Python 3.14 只能用於尚未支援 3.15 的第三方 SBOM 工具鏈，不得透過 `PATH` 改變後續專案工具的執行環境。
 
 發行與 PR 套件工作流程會將每個 GitHub Action 鎖定至完整 commit。Linux 封裝還會把官方 `appimagetool` 產物鎖定至來源 commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、產物 ID `324406882` 及 SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`。
 
@@ -250,6 +254,8 @@ python tools\capture_readme_media.py --screenshots-only
 
 仓库的所有变更都必须使用 Pull Request。不得将实现提交直接推送至 `main`、不得跳过检查、不得强制推送 `main`，也不得在必要检查失败或评审对话尚未解决时合并。必要的 Windows CI 检查是 `Windows CI / test`；安全工作流也必须完成，且不得留有尚未处理的高可信度发现。
 
+本仓库的既定合并策略仅允许 squash。所有必要检查成功、Pull Request 的 head SHA 未变化且评审对话全部解决后，Codex 应直接使用 squash 合并；不得在每次发布时重新查询这项已知策略，也不得先尝试已知不允许的 merge commit 或 rebase。合并后必须读回实际 merge commit，发布标签只能建立在该 commit。只有所有者明确更改设置，或 GitHub 实际拒绝 squash 而显示策略可能漂移时，才重新查询。
+
 ### 自动化后续发布
 
 在本次迁移期间，只有 `v2.3.0-rc.N` 标签能触发 `.github/workflows/release.yml`。工作流会验证精确标签、检出该不可变的源修订，然后依次：
@@ -271,6 +277,8 @@ python tools\capture_readme_media.py --screenshots-only
 15. 要求并发布人工整理的四语 Release 说明。
 
 此发布系列的每个标签都必须发布为预发布版。不得重复使用或移动已发布的标签；必须建立新的 `v2.3.0-rc.N` 标签。未来稳定版需要另行通过评审的政策变更，不能默默放宽此关卡。
+
+发布元数据工作必须使用已保存的 Python 3.15 执行路径运行所有墨寒项目工具。隔离的 Python 3.14 只能用于尚未支持 3.15 的第三方 SBOM 工具链，不得通过 `PATH` 改变后续项目工具的运行环境。
 
 发布与 PR 软件包工作流会将每个 GitHub Action 锁定至完整 commit。Linux 打包还会把官方 `appimagetool` 产物锁定至源 commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、产物 ID `324406882` 及 SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`。
 
@@ -407,6 +415,8 @@ Before committing regenerated media:
 
 All repository changes must use a Pull Request. Do not push implementation commits directly to `main`, bypass checks, force-push `main`, or merge while a required check is failing or a review conversation is unresolved. The required Windows CI check is `Windows CI / test`; security workflows must also complete without an unresolved high-confidence finding.
 
+The repository's established merge policy only permits squash merging. Once every required check passes, the Pull Request head SHA is unchanged, and all review conversations are resolved, Codex must merge directly with squash. Do not re-query this known policy for every release, and do not first attempt a known-disallowed merge commit or rebase. After merging, read back the actual merge commit and create the release tag only on that commit. Re-query the policy only when the owner explicitly changes the setting or GitHub actually rejects squash, indicating possible policy drift.
+
 ### Automated future releases
 
 During this migration, only `v2.3.0-rc.N` tags trigger `.github/workflows/release.yml`. The workflow validates the exact tag, checks out that immutable source revision, and then:
@@ -428,6 +438,8 @@ During this migration, only `v2.3.0-rc.N` tags trigger `.github/workflows/releas
 15. requires and publishes the curated four-language Release description.
 
 Every tag in this release line is published as a pre-release. Never reuse or move a published tag; create a new `v2.3.0-rc.N` tag instead. A future stable release requires a separate, reviewed policy change rather than silently broadening this gate.
+
+The release metadata job must run every MoHan-owned tool with the saved Python 3.15 executable. The isolated Python 3.14 runtime is restricted to third-party SBOM tooling that does not yet support 3.15 and must never change later project-tool execution through `PATH`.
 
 The release and PR package workflows pin every GitHub Action to a full commit. Linux packaging additionally pins the official `appimagetool` asset to source commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`, asset ID `324406882`, and SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`.
 
@@ -564,6 +576,8 @@ python tools\capture_readme_media.py --screenshots-only
 
 リポジトリのすべての変更には Pull Request を使用します。実装コミットを `main` へ直接 push すること、検査を迂回すること、`main` を force-push すること、必須検査の失敗中またはレビュー会話の未解決中にマージすることは禁止します。必須の Windows CI 検査は `Windows CI / test` です。セキュリティワークフローも、未解決の高信頼度検出を残さず完了しなければなりません。
 
+このリポジトリの既定のマージポリシーでは squash マージだけを許可します。全必須検査が成功し、Pull Request の head SHA が変わらず、すべてのレビュー会話が解決した後、Codex は squash で直接マージしなければなりません。リリースごとにこの既知のポリシーを再照会したり、許可されないことが既知の merge commit や rebase を先に試したりしてはなりません。マージ後は実際の merge commit を読み戻し、その commit にだけリリースタグを作成します。所有者が設定を明示的に変更した場合、または GitHub が実際に squash を拒否してポリシーの変化が疑われる場合に限り、再照会します。
+
 ### 今後の自動リリース
 
 この移行期間中、`.github/workflows/release.yml` を起動できるのは `v2.3.0-rc.N` タグだけです。ワークフローは正確なタグを検証し、その不変のソースリビジョンを checkout してから、次を順に実行します。
@@ -585,6 +599,8 @@ python tools\capture_readme_media.py --screenshots-only
 15. 人手で整備した四言語 Release 説明を必須とし、その説明を公開します。
 
 このリリース系列の全タグはプレリリースとして公開します。公開済みタグを再利用または移動せず、新しい `v2.3.0-rc.N` タグを作成します。将来の安定版には、別途レビュー済みのポリシー変更が必要であり、このゲートを暗黙に緩和してはなりません。
+
+リリースメタデータジョブでは、保存済みの Python 3.15 実行パスを使って墨寒所有の全ツールを実行しなければなりません。隔離した Python 3.14 は、まだ 3.15 をサポートしていない第三者 SBOM ツールチェーンだけに限定し、`PATH` を通じて後続のプロジェクトツール実行環境を変更してはなりません。
 
 リリースおよび PR パッケージワークフローは、すべての GitHub Action を完全な commit に固定します。Linux パッケージ化ではさらに、公式 `appimagetool` 成果物をソース commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、成果物 ID `324406882`、SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0` に固定します。
 

@@ -488,10 +488,12 @@ jobs:
 
       - name: Require curated four-language Release notes
         shell: bash
+        env:
+          RUNTIME_PYTHON: ${{ steps.runtime-python.outputs.python-path }}
         run: |
           notes="docs/releases/${{ needs.resolve-release.outputs.tag }}.md"
           [[ -s "$notes" ]]
-          python tools/check_four_language_docs.py
+          "$RUNTIME_PYTHON" tools/check_four_language_docs.py
 
       - name: Upload read-only generated metadata
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

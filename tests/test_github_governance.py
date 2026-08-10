@@ -85,6 +85,8 @@ def test_release_supply_chain(release: str) -> None:
         "id: runtime-python",
         "id: sbom-python",
         "isolated Python 3.14 SBOM tooling runtime",
+        "RUNTIME_PYTHON: ${{ steps.runtime-python.outputs.python-path }}",
+        '"$RUNTIME_PYTHON" tools/check_four_language_docs.py',
         "--pyproject pyproject.toml",
         "--pyproject sbom/preview.pyproject.toml",
         "--spec-version 1.7",
@@ -93,6 +95,10 @@ def test_release_supply_chain(release: str) -> None:
         "tools/validate_release_sboms.py",
     ):
         assert required in metadata_job
+    assert not re.search(r"(?m)^\s+python tools/", metadata_job), (
+        "release metadata must run project-owned tools with the saved "
+        "Python 3.15 runtime instead of the mutable PATH"
+    )
     for artifact in (
         "*-SBOM-Validation.json",
         "Performance-Evidence.zip",
@@ -169,6 +175,21 @@ def test_release_workflow() -> None:
     test_release_supply_chain(release)
     test_release_runtime_and_packages(release)
     test_release_publication_boundary(release)
+
+
+def test_publishing_merge_policy() -> None:
+    publishing = read("PUBLISHING.md")
+    for required in (
+        "既定合併政策只允許 squash",
+        "既定合并策略仅允许 squash",
+        "established merge policy only permits squash merging",
+        "既定のマージポリシーでは squash マージだけを許可",
+        "不得在每次發布時重新查詢",
+        "不得在每次发布时重新查询",
+        "Do not re-query this known policy for every release",
+        "リリースごとにこの既知のポリシーを再照会",
+    ):
+        assert required in publishing
 
 
 def test_preview_and_windows_workflows() -> None:
@@ -266,6 +287,7 @@ def main() -> None:
     test_funding_configuration()
     test_security_workflows()
     test_release_workflow()
+    test_publishing_merge_policy()
     test_preview_and_windows_workflows()
     test_secret_defense_and_community_files()
     print("GITHUB_GOVERNANCE_AND_SUPPLY_CHAIN_OK")
