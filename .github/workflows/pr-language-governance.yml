@@ -1,0 +1,39 @@
+name: Four-language PR governance
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+
+permissions: {}
+
+jobs:
+  validate-pr-body:
+    name: 四語 PR 說明 / 四语 PR 说明 / Four-language PR body / 四言語 PR 本文
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require four non-empty language sections
+        shell: bash
+        run: |
+          body=$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")
+          headings=(
+            "## 繁體中文"
+            "## 简体中文"
+            "## English"
+            "## 日本語"
+          )
+          for heading in "${headings[@]}"; do
+            if ! printf '%s\n' "$body" | awk -v heading="$heading" '
+              $0 == heading && !started { started = 1; inside = 1; next }
+              inside && /^## / { inside = 0 }
+              inside && /[^[:space:]]/ { found = 1 }
+              END { exit (started && found) ? 0 : 1 }
+            '; then
+              echo "缺少非空白四語章節 / 缺少非空白四语章节 / Missing non-empty language section / 空でない四言語セクションが必要です: $heading" >&2
+              exit 1
+            fi
+          done
+          echo "FOUR_LANGUAGE_PR_BODY_OK"
