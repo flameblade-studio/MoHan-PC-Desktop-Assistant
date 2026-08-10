@@ -1,4 +1,4 @@
-# Python 3.14 migration / Python 3.14 遷移 / Python 3.14 迁移 / Python 3.14 移行
+# Python 3.14 遷移／Python 3.14 迁移／Python 3.14 migration／Python 3.14 移行
 
 ## 繁體中文
 

@@ -1,8 +1,8 @@
-# MoHan Desktop Assistant v2.1.0 RC1
-
-> Pre-release / 預覽候選版 / 预览候选版 / プレリリース
+# 墨寒桌面助理 v2.1.0 RC1／墨寒桌面助手 v2.1.0 RC1／MoHan Desktop Assistant v2.1.0 RC1／墨寒デスクトップアシスタント v2.1.0 RC1
 
 ## 繁體中文
+
+> 預發行候選版
 
 ### 本版重點
 
@@ -34,7 +34,26 @@
 - SHA-256、CycloneDX SBOM、更新清單與 Artifact Attestation：已產生
 - Gitleaks 完整 Git 歷史掃描：未發現金鑰洩漏
 
+### 相關 Pull Request
+
+- [#14 穩定 Windows CI 介面測試](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/14)
+- [#15 本地化安裝程式並加速啟動](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/15)
+- [#17 修正語音時的眼部疊影](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/17)
+- [#18 墨寒遷移至 Python 3.14](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/18)
+- [#19 降低 Realtime 音訊延遲](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/19)
+- [#20 消除姿勢切換抖動與殘影](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/20)
+- [#21 本機語意記憶檢索與安全剪枝](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/21)
+- [#22 安全背景管理器與工作執行緒](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/22)
+- [#23 可插拔語音供應器](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/23)
+- [#24 Azure Speech 預覽與日文基本可用性](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/24)
+- [#25 文字聊天預設使用 GPT-5.6 Luna](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/25)
+- [#26 四語安裝程式與明亮易讀介面](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/26)
+
+**完整變更：** [v2.0.14-rc.3...v2.1.0-rc.1](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/compare/v2.0.14-rc.3...v2.1.0-rc.1)
+
 ## 简体中文
+
+> 预发布候选版
 
 ### 本版重点
 
@@ -66,7 +85,26 @@
 - SHA-256、CycloneDX SBOM、更新清单与 Artifact Attestation：已生成
 - Gitleaks 完整 Git 历史扫描：未发现密钥泄漏
 
+### 相关 Pull Request
+
+- [#14 稳定 Windows CI 界面测试](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/14)
+- [#15 本地化安装程序并加速启动](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/15)
+- [#17 修复语音时的眼部叠影](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/17)
+- [#18 墨寒迁移至 Python 3.14](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/18)
+- [#19 降低 Realtime 音频延迟](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/19)
+- [#20 消除姿势切换抖动与残影](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/20)
+- [#21 本机语义记忆检索与安全剪枝](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/21)
+- [#22 安全后台管理器与工作线程](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/22)
+- [#23 可插拔语音供应器](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/23)
+- [#24 Azure Speech 预览与日文基本可用性](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/24)
+- [#25 文字聊天默认使用 GPT-5.6 Luna](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/25)
+- [#26 四语安装程序与明亮易读界面](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/26)
+
+**完整变更：** [v2.0.14-rc.3...v2.1.0-rc.1](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/compare/v2.0.14-rc.3...v2.1.0-rc.1)
+
 ## English
+
+> Pre-release candidate
 
 ### Highlights
 
@@ -98,7 +136,26 @@
 - SHA-256 catalog, CycloneDX SBOM, update manifest, and artifact attestations: generated
 - Full-history Gitleaks scan: no leaked secrets found
 
+### Related pull requests
+
+- [#14 Stabilize Windows CI UI tests](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/14)
+- [#15 Localize installer and accelerate startup](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/15)
+- [#17 Fix speech eye-overlay artifacts](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/17)
+- [#18 Migrate MoHan to Python 3.14](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/18)
+- [#19 Reduce Realtime audio latency](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/19)
+- [#20 Eliminate pose-transition jitter and ghosting](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/20)
+- [#21 Local semantic-memory retrieval and safe pruning](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/21)
+- [#22 Safe background manager and workers](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/22)
+- [#23 Pluggable speech providers](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/23)
+- [#24 Azure Speech preview and baseline Japanese usability](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/24)
+- [#25 Default text chat to GPT-5.6 Luna](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/25)
+- [#26 Four-language installer and bright readable UI](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/26)
+
+**Full changelog:** [v2.0.14-rc.3...v2.1.0-rc.1](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/compare/v2.0.14-rc.3...v2.1.0-rc.1)
+
 ## 日本語
+
+> プレリリース候補版
 
 ### 主な変更
 
@@ -130,19 +187,19 @@
 - SHA-256 一覧、CycloneDX SBOM、更新情報、Artifact Attestation：生成済み
 - Gitleaks による Git 全履歴検査：機密情報の漏えいなし
 
-## Related pull requests / 相關 Pull Request / 相关 Pull Request / 関連 Pull Request
+### 関連 Pull Request
 
-- [#14 Stabilize Windows CI UI tests](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/14)
-- [#15 Localize installer and accelerate startup](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/15)
-- [#17 Fix speech eye-overlay artifacts](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/17)
-- [#18 Migrate MoHan to Python 3.14](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/18)
-- [#19 Reduce Realtime audio latency](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/19)
-- [#20 Eliminate pose-transition jitter and ghosting](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/20)
-- [#21 Local semantic memory retrieval and safe pruning](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/21)
-- [#22 Safe background manager-workers](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/22)
-- [#23 Pluggable speech providers](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/23)
-- [#24 Azure Speech preview and Japanese minimum usability](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/24)
-- [#25 Default text chat to GPT-5.6 Luna](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/25)
-- [#26 Four-language installer and bright readable UI](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/26)
+- [#14 Windows CI の UI テストを安定化](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/14)
+- [#15 インストーラーを多言語化し起動を高速化](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/15)
+- [#17 音声再生時の目の重なりを修正](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/17)
+- [#18 墨寒を Python 3.14 へ移行](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/18)
+- [#19 Realtime 音声遅延を削減](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/19)
+- [#20 姿勢切替時の揺れと残像を解消](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/20)
+- [#21 ローカル意味記憶検索と安全な剪定](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/21)
+- [#22 安全なバックグラウンド管理とワーカー](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/22)
+- [#23 交換可能な音声プロバイダー](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/23)
+- [#24 Azure Speech プレビューと日本語の基本機能](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/24)
+- [#25 テキストチャットの既定を GPT-5.6 Luna に変更](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/25)
+- [#26 四言語インストーラーと明るく読みやすい UI](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/26)
 
-**Full changelog:** [v2.0.14-rc.3...v2.1.0-rc.1](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/compare/v2.0.14-rc.3...v2.1.0-rc.1)
+**完全な変更履歴：** [v2.0.14-rc.3...v2.1.0-rc.1](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/compare/v2.0.14-rc.3...v2.1.0-rc.1)

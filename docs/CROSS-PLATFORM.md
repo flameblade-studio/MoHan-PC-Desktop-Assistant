@@ -1,4 +1,4 @@
-# MoHan cross-platform status / 墨寒跨平台狀態
+# 墨寒跨平台狀態／墨寒跨平台状态／MoHan cross-platform status／墨寒クロスプラットフォーム状況
 
 ## 繁體中文
 
@@ -52,7 +52,7 @@ Windows 正式版本的完整功能。Windows 仍是目前唯一经过真机使�
   `windows-local` 与四语旧标签会自动迁移，不会删除用户选择。
 - Windows 数据目录继续使用 `%LOCALAPPDATA%\YanJianStudio\MoHan`。
 - macOS 使用 `~/Library/Application Support/YanJianStudio/MoHan`；Linux
-  遵循 XDG 数据、设置与缓存目录。
+  遵循 `XDG_DATA_HOME`、`XDG_CONFIG_HOME`、`XDG_CACHE_HOME`。
 - 在 macOS／Linux 原生安全密钥保存完成前，程序会拒绝以明文保存密钥。
 - 设置页与旗舰控制中心共用同一个可注入密钥边界；未验证平台会停用密钥、
   OAuth 与 Home Assistant 权杖输入，也不会显示 Windows 专用语音选项。
@@ -123,7 +123,7 @@ macOS／Linux が Windows 版と同等に完成したという意味ではあり
   `windows-local` と旧四言語ラベルは、利用者の選択を失わず移行します。
 - Windows の保存先 `%LOCALAPPDATA%\YanJianStudio\MoHan` は変更しません。
 - macOS は `~/Library/Application Support/YanJianStudio/MoHan`、Linux は
-  XDG のデータ・設定・キャッシュ各ディレクトリに従います。
+  `XDG_DATA_HOME`、`XDG_CONFIG_HOME`、`XDG_CACHE_HOME` に従います。
 - macOS／Linux の安全なネイティブ保存が完成するまで、キーを平文で保存せず
   安全側で停止します。
 - 設定画面とフラッグシップ制御画面は、同じ注入可能なキー保存境界を使用します。

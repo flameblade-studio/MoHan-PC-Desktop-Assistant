@@ -90,10 +90,18 @@ def test_release_supply_chain(release: str) -> None:
     ):
         assert artifact in release
     assert "tools/profile_mohan_tachyon.py" in release
+    assert "tools/check_four_language_docs.py" in release
+    assert (
+        "墨寒桌面助理 $tag／墨寒桌面助手 $tag／"
+        "MoHan Desktop Assistant $tag／"
+        "墨寒デスクトップアシスタント $tag"
+    ) in release
     assert "SHA256" in release
 
 
 def test_release_runtime_and_packages(release: str) -> None:
+    public_audit = read("tools/audit_public_release.py")
+    assert "safe.directory={ROOT.as_posix()}" in public_audit
     for required in (
         "tools/audit_public_release.py",
         "tests/run_all.py",
@@ -214,10 +222,23 @@ def test_secret_defense_and_community_files() -> None:
     for required in (
         "opened, edited, reopened, synchronize, ready_for_review",
         "GITHUB_EVENT_PATH",
+        "pull_request.title",
+        "IFS='／'",
         "Missing non-empty language section",
-        "FOUR_LANGUAGE_PR_BODY_OK",
+        "FOUR_LANGUAGE_PR_METADATA_MINIMUM_OK",
+        "tools/check_four_language_pr.py",
+        "tools/check_four_language_docs.py",
+        'python-version: "3.15.0-rc.1"',
     ):
         assert required in language_guard
+    assert "FOUR_LANGUAGE_PR_METADATA_OK" in read(
+        "tools/check_four_language_pr.py"
+    )
+    assert "FOUR_LANGUAGE_DOCUMENTATION_OK" in read(
+        "tools/check_four_language_docs.py"
+    )
+    assert_action_pinned(language_guard, "actions/checkout")
+    assert_action_pinned(language_guard, "actions/setup-python")
     assert "pull_request_target" not in language_guard
     assert "github.event.pull_request.body" not in language_guard
     read("ROADMAP.md")

@@ -1,4 +1,4 @@
-# macOS and Linux limited Preview packages / macOS 與 Linux 功能受限預覽包
+# macOS 與 Linux 功能受限預覽包／macOS 与 Linux 功能受限预览包／Limited macOS and Linux Preview packages／macOS・Linux 機能限定 Preview パッケージ
 
 ## 繁體中文
 
@@ -75,7 +75,7 @@ CI 并不表示作者已经拥有并实测真实 Mac 或 Linux 桌面电脑。�
 
 - 固定 Python、PySide6 与 PyInstaller 版本。
 - GitHub Actions 固定到完整提交 SHA。
-- macOS 只使用 runner 内置工具。
+- macOS 只使用 runner 内置的 `sips`、`iconutil`、`hdiutil`。
 - Linux 的官方 `appimagetool` 同时固定来源提交、资产 ID 与 SHA-256。
 - Release 生成 SHA256SUMS、Windows／Preview CycloneDX SBOM 与 Artifact Attestation。
 - DMG 根目录、app 资源与 AppImage 文档目录均包含 MIT `LICENSE` 和第三方
@@ -121,7 +121,7 @@ Gatekeeper globally.
 - Python, PySide6, and PyInstaller are version-pinned.
 - Every GitHub Action is pinned to a complete commit SHA.
 - macOS uses only runner-native `sips`, `iconutil`, and `hdiutil` tools.
-- Linux appimagetool is tied to an official source commit, immutable asset ID,
+- Linux `appimagetool` is tied to an official source commit, immutable asset ID,
   and expected SHA-256; a mismatch stops the build.
 - Releases include SHA256SUMS, separate Windows/Preview CycloneDX SBOMs, and GitHub Artifact
   Attestations.
@@ -133,8 +133,8 @@ Gatekeeper globally.
 ### この配布物について
 
 `v2.3.0-rc.N` 系列では、GitHub の Apple Silicon（arm64）版と Intel
-（x86_64）版 macOS ネイティブ runner で、対応する `.app` を含む個別の
-`.dmg` を作成し、Linux x86_64 runner で `.AppImage` を作成します。完成した
+（x86_64）版 macOS ネイティブ runner で、個別の `.dmg`（対応する `.app`
+を同梱）を作成し、Linux x86_64 runner で `.AppImage` を作成します。完成した
 配布物から headless 起動検査を実行し、四言語画面と安全な停止境界を確認します。
 Pull Request の成果物は短期間の検査用です。Releases へ公開できるのは、既に
 存在し `v2.3.0-rc.N` に一致するタグだけです。
@@ -164,8 +164,8 @@ CI 合格は、作者が実機の Mac や Linux デスクトップを所有し�
 
 - Python、PySide6、PyInstaller の版を固定します。
 - GitHub Actions は完全なコミット SHA へ固定します。
-- macOS は runner 標準のツールだけを使用します。
-- Linux の公式 appimagetool は、ソースコミット、資産 ID、SHA-256 を同時に
+- macOS は runner 標準の `sips`、`iconutil`、`hdiutil` だけを使用します。
+- Linux の公式 `appimagetool` は、ソースコミット、資産 ID、SHA-256 を同時に
   固定し、不一致なら処理を停止します。
 - Release には SHA256SUMS、Windows／Preview 別の CycloneDX SBOM、Artifact Attestation を含めます。
 - DMG 直下、app のリソース、AppImage の文書ディレクトリに MIT `LICENSE` と
