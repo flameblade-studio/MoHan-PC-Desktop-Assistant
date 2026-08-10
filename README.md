@@ -134,7 +134,7 @@
 </table>
 
 <p align="center">
-  <strong><a href="https://ko-fi.com/flamebladestudio">Ko-fi 一次性贊助</a></strong>
+  <strong><a href="https://ko-fi.com/flamebladestudio">Ko-fi 贊助（單次或每月）</a></strong>
 </p>
 
 ### 創作者的話：把幻想鑄成軟體
@@ -522,7 +522,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </table>
 
 <p align="center">
-  <strong><a href="https://ko-fi.com/flamebladestudio">Ko-fi 一次性赞助</a></strong>
+  <strong><a href="https://ko-fi.com/flamebladestudio">Ko-fi 赞助（单次或每月）</a></strong>
 </p>
 
 ### 创作者的话：把幻想铸成软件
@@ -910,7 +910,7 @@ MoHan remains free and MIT-licensed; support never buys privileges or changes an
 </table>
 
 <p align="center">
-  <strong><a href="https://ko-fi.com/flamebladestudio">One-time support on Ko-fi</a></strong>
+  <strong><a href="https://ko-fi.com/flamebladestudio">Support on Ko-fi (one-time or monthly)</a></strong>
 </p>
 
 ### A note from the creator: forging imagination into software
@@ -1298,7 +1298,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </table>
 
 <p align="center">
-  <strong><a href="https://ko-fi.com/flamebladestudio">Ko-fi で一回限りの支援</a></strong>
+  <strong><a href="https://ko-fi.com/flamebladestudio">Ko-fi で支援（1 回または毎月）</a></strong>
 </p>
 
 ### 作者より：想像をソフトウェアへ鍛える

@@ -213,10 +213,10 @@ def _assert_support_section(readme: str) -> None:
         "docs/media/support-proud.png",
         "docs/media/support-shy-aligned.png",
         "docs/media/support-mock-hit.png",
-        "Ko-fi 一次性贊助",
-        "Ko-fi 一次性赞助",
-        "One-time support on Ko-fi",
-        "Ko-fi で一回限りの支援",
+        "Ko-fi 贊助（單次或每月）",
+        "Ko-fi 赞助（单次或每月）",
+        "Support on Ko-fi (one-time or monthly)",
+        "Ko-fi で支援（1 回または毎月）",
         "https://ko-fi.com/flamebladestudio",
     )
     for requirement in support_requirements:

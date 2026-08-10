@@ -9,7 +9,6 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 lazy from check_four_language_docs import audit_text
 
-
 DOCUMENT = """# 文件／文档／Document／文書
 
 ## 繁體中文

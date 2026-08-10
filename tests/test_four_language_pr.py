@@ -8,7 +8,6 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 lazy from check_four_language_pr import audit_pull_request
 
-
 BODY = """## 繁體中文
 
 說明。

@@ -77,8 +77,10 @@ def _extract_sections(
     names = tuple(match.group(1) for match in matches)
     if names != LANGUAGE_HEADINGS:
         return "", (), [
-            "language sections must appear exactly once in this order: "
-            "繁體中文, 简体中文, English, 日本語"
+            (
+                "language sections must appear exactly once in this order: "
+                "繁體中文, 简体中文, English, 日本語"
+            )
         ]
 
     prefix = text[: matches[0].start()]
