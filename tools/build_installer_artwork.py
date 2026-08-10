@@ -15,8 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = (
     ROOT
     / "assets"
-    / "onboarding"
-    / "mohan-hero-rain-canonical.webp"
+    / "expressions"
+    / "idle_front.png"
 )
 OUTPUT = ROOT / "installer" / "artwork"
 
@@ -58,14 +58,24 @@ def build() -> tuple[Path, Path]:
     large = _background(656, 1256)
     painter = QPainter(large)
     painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
-    hero = source.scaled(
-        656,
-        1256,
-        Qt.KeepAspectRatioByExpanding,
+    portrait_width = round(source.width() * 0.62)
+    portrait = source.copy(
+        (source.width() - portrait_width) // 2,
+        0,
+        portrait_width,
+        source.height(),
+    )
+    hero = portrait.scaled(
+        600,
+        1000,
+        Qt.KeepAspectRatio,
         Qt.SmoothTransformation,
     )
-    hero = hero.copy(max(0, hero.width() - 656), 0, 656, 1256)
-    painter.drawImage(0, 0, hero)
+    painter.drawImage(
+        (large.width() - hero.width()) // 2,
+        large.height() - hero.height() - 80,
+        hero,
+    )
     painter.end()
     if not large.save(str(large_path), "PNG"):
         raise RuntimeError(f"Could not save installer artwork: {large_path}")
@@ -78,16 +88,14 @@ def build() -> tuple[Path, Path]:
     portrait = small_source.scaled(
         448,
         448,
-        Qt.KeepAspectRatioByExpanding,
+        Qt.KeepAspectRatio,
         Qt.SmoothTransformation,
     )
-    portrait = portrait.copy(
-        max(0, portrait.width() - 448),
-        max(0, min(portrait.height() - 448, 58)),
-        448,
-        448,
+    painter.drawImage(
+        (small.width() - portrait.width()) // 2,
+        (small.height() - portrait.height()) // 2,
+        portrait,
     )
-    painter.drawImage(32, 32, portrait)
     painter.end()
     if not small.save(str(small_path), "PNG"):
         raise RuntimeError(f"Could not save installer artwork: {small_path}")

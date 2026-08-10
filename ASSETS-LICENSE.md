@@ -8,9 +8,9 @@
 
 ### 權威角色素材
 
-`assets/onboarding/mohan-hero-rain-canonical.webp` 是本儲存庫擁有的權威啟動精靈裁切來源，並與炎劍文化工作室墨寒官方專頁共用。將完全相同的檔案保存在本儲存庫，可避免設定精靈與安裝程式逐漸偏離既定五官或角色身分。
+`assets/expressions/idle_front.png` 是本儲存庫唯一的權威正面半身來源，其新版五官、臉型、輪廓、髮型、髮飾與服裝須持續對齊鐵人賽情境圖及炎劍文化工作室墨寒官方專頁。
 
-`docs/media/desktop-character.png` 是與鐵人賽情境圖一致的權威正面半身來源；`assets/mohan-taskbar-icon.png` 與 `assets/mohan-halfbody.ico` 只由此檔裁切縮放，不重新生成五官。舊版五官輪廓的全身像不得再作為產品、圖示或文件素材。
+首次設定精靈、安裝程式美術、`assets/mohan-taskbar-icon.png` 與 `assets/mohan-halfbody.ico` 都只能由這份權威來源裁切或縮放，不得重新生成五官。舊版五官輪廓的全身像、雨景全身像與舊圖示已棄用，不得再作為產品、圖示或文件素材。
 
 ### 語音、服務與商標
 
@@ -28,9 +28,9 @@
 
 ### 权威角色素材
 
-`assets/onboarding/mohan-hero-rain-canonical.webp` 是本仓库拥有的权威启动向导裁切来源，并与炎剑文化工作室墨寒官方专页共用。将完全相同的文件保存在本仓库，可避免设置向导与安装程序逐渐偏离既定五官或角色身份。
+`assets/expressions/idle_front.png` 是本仓库唯一的权威正面半身来源，其新版五官、脸型、轮廓、发型、发饰与服装必须持续对齐铁人赛情境图及炎剑文化工作室墨寒官方专页。
 
-`docs/media/desktop-character.png` 是与铁人赛情境图一致的权威正面半身来源；`assets/mohan-taskbar-icon.png` 与 `assets/mohan-halfbody.ico` 仅由此文件裁切缩放，不重新生成五官。旧版五官轮廓的全身像不得再作为产品、图标或文档素材。
+首次设置向导、安装程序美术、`assets/mohan-taskbar-icon.png` 与 `assets/mohan-halfbody.ico` 都只能由这份权威来源裁切或缩放，不得重新生成五官。旧版五官轮廓的全身像、雨景全身像与旧图标已弃用，不得再作为产品、图标或文档素材。
 
 ### 语音、服务与商标
 
@@ -48,9 +48,9 @@ Unless an individual file carries a separate notice, the character illustrations
 
 ### Canonical character asset
 
-`assets/onboarding/mohan-hero-rain-canonical.webp` is the repository-owned canonical onboarding crop source shared with the official Flameblade Studio MoHan page. Keeping the identical file in this repository prevents the setup wizard and installer from drifting away from the established facial features or character identity.
+`assets/expressions/idle_front.png` is this repository's sole canonical front-facing half-body source. Its current facial features, face shape, silhouette, hairstyle, ornaments, and clothing must remain aligned with the Ironman scenario visuals and the official Flameblade Studio MoHan page.
 
-`docs/media/desktop-character.png` is the canonical front-facing half-body source aligned with the Ironman scenario visuals. `assets/mohan-taskbar-icon.png` and `assets/mohan-halfbody.ico` are cropped and scaled only from that file without regenerating facial features. The obsolete full-body identity must not be reused in the product, icons, or documentation.
+The first-run wizard, installer artwork, `assets/mohan-taskbar-icon.png`, and `assets/mohan-halfbody.ico` may only crop or scale this canonical source and must not regenerate facial features. The obsolete full-body identity, rain-scene full-body image, and old icon are retired and must not be reused in the product, icons, or documentation.
 
 ### Voices, services, and trademarks
 
@@ -68,9 +68,9 @@ Contributors must not submit third-party images, voices, logos, or branded mater
 
 ### 正式なキャラクター素材
 
-`assets/onboarding/mohan-hero-rain-canonical.webp` は、このリポジトリが所有し、Flameblade Studio の墨寒公式ページと共有する、初回設定用の正式な切り抜き元画像です。同一ファイルをこのリポジトリに保持することで、設定ウィザードやインストーラーが既定の顔立ちやキャラクター同一性から次第にずれることを防ぎます。
+`assets/expressions/idle_front.png` は、このリポジトリで唯一の正式な正面向き半身素材です。現在の顔立ち、顔型、輪郭、髪型、髪飾り、衣装は、鉄人賽の場面画像および Flameblade Studio の墨寒公式ページと常に一致させなければなりません。
 
-`docs/media/desktop-character.png` は、鉄人賽の場面画像と一致する正式な正面向き半身素材です。`assets/mohan-taskbar-icon.png` と `assets/mohan-halfbody.ico` は、顔立ちを再生成せず、このファイルだけを切り抜いて縮小します。旧版の顔立ちを持つ全身像を製品、アイコン、文書へ再利用してはなりません。
+初回設定ウィザード、インストーラー画像、`assets/mohan-taskbar-icon.png`、`assets/mohan-halfbody.ico` は、この正式素材を切り抜くか縮小する場合に限って使用でき、顔立ちを再生成してはなりません。旧版の顔立ちを持つ全身像、雨景の全身像、旧アイコンは廃止され、製品、アイコン、文書へ再利用してはなりません。
 
 ### 音声、サービス、商標
 
