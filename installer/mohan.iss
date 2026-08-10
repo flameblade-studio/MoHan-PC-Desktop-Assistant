@@ -87,8 +87,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{autoprograms}\MoHan Desktop Assistant"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"; IconFilename: "{#IconPath}"; AppUserModelID: "FlamebladeStudio.MoHanDesktopAssistant"
-Name: "{autodesktop}\MoHan Desktop Assistant"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"; IconFilename: "{#IconPath}"; AppUserModelID: "FlamebladeStudio.MoHanDesktopAssistant"; Tasks: desktopicon
+Name: "{autoprograms}\MoHan Desktop Assistant"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"; IconFilename: "{app}\assets\mohan-halfbody.ico"; AppUserModelID: "FlamebladeStudio.MoHanDesktopAssistant"
+Name: "{autodesktop}\MoHan Desktop Assistant"; Filename: "{app}\{#ExecutableName}"; WorkingDir: "{app}"; IconFilename: "{app}\assets\mohan-halfbody.ico"; AppUserModelID: "FlamebladeStudio.MoHanDesktopAssistant"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#ExecutableName}"; Description: "{cm:LaunchMoHan}"; Flags: nowait postinstall skipifsilent

@@ -47,7 +47,10 @@
                   Target="[INSTALLFOLDER]$(var.ExecutableName)"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="MohanIcon"
-                  IconIndex="0" />
+                  IconIndex="0">
+          <ShortcutProperty Key="System.AppUserModel.ID"
+                            Value="FlamebladeStudio.MoHanDesktopAssistant" />
+        </Shortcut>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
         <RegistryValue Root="HKCU"
                        Key="Software\MoHan Desktop Assistant"

@@ -15,6 +15,8 @@ Inno Setup EXE 是一般互動式安裝器。它會偵測 Windows 使用者語�
 
 選定語言只影響安裝器與解除安裝器介面。墨寒本身的首次啟動精靈仍是應用程式 UI 語言的權威來源。
 
+EXE 與 MSI 捷徑必須指向安裝完成後的執行檔，並使用安裝目錄內的 `assets/mohan-halfbody.ico`，不得保留建置機器或 GitHub runner 的絕對路徑。兩種捷徑與執行中視窗都使用 `FlamebladeStudio.MoHanDesktopAssistant` 工作列身分。Windows CI 必須讀回 EXE 捷徑的目標與圖示位置，並在解除安裝後確認捷徑已移除。
+
 ### MSI 封裝
 
 MSI 維持為台灣繁體中文基礎封裝（`Language=1028`）。它主要供靜默安裝與受管理部署使用，因此不顯示自訂語言選擇器。維持單一穩定基礎 MSI，也能避免發布多個可能被 Windows Installer 視為不同產品的封裝。
@@ -50,6 +52,8 @@ Inno Setup EXE 是常规交互式安装程序。它会检测 Windows 用户语�
 - 日文（`ja-JP`，LCID 1041）
 
 所选语言只影响安装程序与卸载程序界面。墨寒本身的首次运行向导仍是应用程序 UI 语言的权威来源。
+
+EXE 与 MSI 快捷方式必须指向安装完成后的可执行文件，并使用安装目录内的 `assets/mohan-halfbody.ico`，不得保留构建计算机或 GitHub runner 的绝对路径。两种快捷方式与运行中的窗口都使用 `FlamebladeStudio.MoHanDesktopAssistant` 任务栏身份。Windows CI 必须读回 EXE 快捷方式的目标与图标位置，并在卸载后确认快捷方式已删除。
 
 ### MSI 封装
 
@@ -87,6 +91,8 @@ The Inno Setup EXE is the normal interactive installer. It detects the Windows u
 
 The selected language affects only the installer and uninstaller interface. MoHan's own first-run wizard remains the authority for the application UI language.
 
+EXE and MSI shortcuts must target the installed executable and use `assets/mohan-halfbody.ico` from the installation directory; they must never retain an absolute build-machine or GitHub runner path. Both shortcut formats and the running window use the `FlamebladeStudio.MoHanDesktopAssistant` taskbar identity. Windows CI must read back the EXE shortcut target and icon location and confirm that uninstall removes the shortcut.
+
 ### MSI package
 
 The MSI remains a Taiwan Traditional Chinese base package (`Language=1028`). It is intended primarily for silent installation and managed deployment, so it does not display a custom language picker. Keeping one stable base MSI also avoids publishing several packages that Windows Installer could treat as different products.
@@ -122,6 +128,8 @@ Inno Setup EXE は通常の対話式インストーラーです。Windows のユ
 - 日本語（`ja-JP`、LCID 1041）
 
 選択した言語が影響するのは、インストーラーとアンインストーラーの画面だけです。アプリケーション UI 言語の正式な決定元は、引き続き墨寒本体の初回起動ウィザードです。
+
+EXE と MSI のショートカットは、インストール済み実行ファイルを参照し、インストール先の `assets/mohan-halfbody.ico` を使用しなければなりません。ビルドマシンや GitHub runner の絶対パスを残してはなりません。両形式のショートカットと実行中ウィンドウは、`FlamebladeStudio.MoHanDesktopAssistant` のタスクバー ID を共有します。Windows CI は EXE ショートカットのリンク先とアイコン位置を読み戻し、アンインストール後にショートカットが削除されたことを確認します。
 
 ### MSI パッケージ
 

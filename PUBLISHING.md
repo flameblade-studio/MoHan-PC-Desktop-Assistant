@@ -93,9 +93,15 @@ python tools\capture_readme_media.py --screenshots-only
 
 儲存庫的所有變更都必須使用 Pull Request。不得將實作提交直接推送至 `main`、不得略過檢查、不得強制推送 `main`，也不得在必要檢查失敗或審查對話尚未解決時合併。必要的 Windows CI 檢查是 `Windows CI / test`；安全工作流程也必須完成，且不得留有尚未處理的高信心發現。
 
+本儲存庫的既定合併政策只允許 squash。所有必要檢查成功、Pull Request 的 head SHA 未變且審查對話全部解決後，Codex 應直接使用 squash 合併；不得在每次發布時重新查詢這項已知政策，也不得先嘗試已知不允許的 merge commit 或 rebase。合併後必須讀回實際 merge commit，發布標籤只能建立在該 commit。只有擁有者明確變更設定，或 GitHub 實際拒絕 squash 而顯示政策可能漂移時，才重新查詢。
+
+GitHub 自動化必須使用一條可預測的憑證路徑。Pull Request 的讀取與更新優先使用已連線的 GitHub 介面；本機 push 使用 Git 自身的憑證管理；`gh` 只保留給已連線介面尚未提供的 GitHub Actions 檢查與記錄。若 `gh auth status` 一次確認憑證失效，在外部狀態未改變前不得反覆重試、登出或重新登入；應直接改用已連線介面或已登入瀏覽器。只有必要操作沒有等價途徑且確實被阻擋時，才請擁有者重新驗證一次。任何流程都不得顯示、複製、寫檔或提交 Token。
+
 ### 自動化後續發行
 
 在本次遷移期間，只有 `v2.3.0-rc.N` 標籤能觸發 `.github/workflows/release.yml`。工作流程會驗證精確標籤、簽出該不可變的來源修訂，然後依序：
+
+任何平台封裝開始前，快速閘門必須先確認標籤、版本與 `main` 歷史一致，檢查本次模式所要求的 Release 存在或不存在，並以 Python 3.15 驗證人工整理的四語 Release 說明。這些便宜且具決定性的檢查不得延後到長時間建置之後；發布前仍須再次驗證標籤、產物與 Release 狀態，以防執行期間發生漂移。
 
 1. 安裝已鎖定版本的執行期與發行相依套件；
 2. 編譯並稽核公開原始碼樹；
@@ -114,6 +120,8 @@ python tools\capture_readme_media.py --screenshots-only
 15. 要求並發布人工整理的四語 Release 說明。
 
 此發行系列的每個標籤都必須發布為預發行版。不得重複使用或移動已發布的標籤；必須建立新的 `v2.3.0-rc.N` 標籤。未來穩定版需要另外經過審查的政策變更，不能默默放寬此閘門。
+
+發布中繼資料工作必須以已保存的 Python 3.15 執行路徑執行所有墨寒專案工具。隔離的 Python 3.14 只能用於尚未支援 3.15 的第三方 SBOM 工具鏈，不得透過 `PATH` 改變後續專案工具的執行環境。
 
 發行與 PR 套件工作流程會將每個 GitHub Action 鎖定至完整 commit。Linux 封裝還會把官方 `appimagetool` 產物鎖定至來源 commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、產物 ID `324406882` 及 SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`。
 
@@ -250,9 +258,15 @@ python tools\capture_readme_media.py --screenshots-only
 
 仓库的所有变更都必须使用 Pull Request。不得将实现提交直接推送至 `main`、不得跳过检查、不得强制推送 `main`，也不得在必要检查失败或评审对话尚未解决时合并。必要的 Windows CI 检查是 `Windows CI / test`；安全工作流也必须完成，且不得留有尚未处理的高可信度发现。
 
+本仓库的既定合并策略仅允许 squash。所有必要检查成功、Pull Request 的 head SHA 未变化且评审对话全部解决后，Codex 应直接使用 squash 合并；不得在每次发布时重新查询这项已知策略，也不得先尝试已知不允许的 merge commit 或 rebase。合并后必须读回实际 merge commit，发布标签只能建立在该 commit。只有所有者明确更改设置，或 GitHub 实际拒绝 squash 而显示策略可能漂移时，才重新查询。
+
+GitHub 自动化必须使用一条可预测的凭证路径。Pull Request 的读取与更新优先使用已连接的 GitHub 接口；本地 push 使用 Git 自身的凭证管理；`gh` 仅保留用于已连接接口尚未提供的 GitHub Actions 检查与日志。若 `gh auth status` 一次确认凭证失效，在外部状态未变化前不得反复重试、登出或重新登录；应直接改用已连接接口或已登录浏览器。只有必要操作没有等效途径且确实受阻时，才请所有者重新验证一次。任何流程都不得显示、复制、写入文件或提交 Token。
+
 ### 自动化后续发布
 
 在本次迁移期间，只有 `v2.3.0-rc.N` 标签能触发 `.github/workflows/release.yml`。工作流会验证精确标签、检出该不可变的源修订，然后依次：
+
+任何平台打包开始前，快速关卡必须先确认标签、版本与 `main` 历史一致，检查本次模式所要求的 Release 存在或不存在，并使用 Python 3.15 验证人工整理的四语 Release 说明。这些低成本且具有决定性的检查不得延后到长时间构建之后；发布前仍须再次验证标签、产物与 Release 状态，以防运行期间发生漂移。
 
 1. 安装已锁定版本的运行时与发布依赖软件包；
 2. 编译并审计公开源代码树；
@@ -271,6 +285,8 @@ python tools\capture_readme_media.py --screenshots-only
 15. 要求并发布人工整理的四语 Release 说明。
 
 此发布系列的每个标签都必须发布为预发布版。不得重复使用或移动已发布的标签；必须建立新的 `v2.3.0-rc.N` 标签。未来稳定版需要另行通过评审的政策变更，不能默默放宽此关卡。
+
+发布元数据工作必须使用已保存的 Python 3.15 执行路径运行所有墨寒项目工具。隔离的 Python 3.14 只能用于尚未支持 3.15 的第三方 SBOM 工具链，不得通过 `PATH` 改变后续项目工具的运行环境。
 
 发布与 PR 软件包工作流会将每个 GitHub Action 锁定至完整 commit。Linux 打包还会把官方 `appimagetool` 产物锁定至源 commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、产物 ID `324406882` 及 SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`。
 
@@ -407,9 +423,15 @@ Before committing regenerated media:
 
 All repository changes must use a Pull Request. Do not push implementation commits directly to `main`, bypass checks, force-push `main`, or merge while a required check is failing or a review conversation is unresolved. The required Windows CI check is `Windows CI / test`; security workflows must also complete without an unresolved high-confidence finding.
 
+The repository's established merge policy only permits squash merging. Once every required check passes, the Pull Request head SHA is unchanged, and all review conversations are resolved, Codex must merge directly with squash. Do not re-query this known policy for every release, and do not first attempt a known-disallowed merge commit or rebase. After merging, read back the actual merge commit and create the release tag only on that commit. Re-query the policy only when the owner explicitly changes the setting or GitHub actually rejects squash, indicating possible policy drift.
+
+GitHub automation must use one predictable credential path. Prefer the connected GitHub integration for reading and updating Pull Requests; use Git's own credential manager for local pushes; reserve `gh` for GitHub Actions checks and logs that the connected integration does not expose. If `gh auth status` confirms an invalid credential once, do not retry, log out, or log in again while the external state is unchanged; switch directly to the connected integration or a signed-in browser. Ask the owner to reauthenticate once only when an indispensable operation has no equivalent path and is genuinely blocked. Never display, copy, write to disk, or commit a Token.
+
 ### Automated future releases
 
 During this migration, only `v2.3.0-rc.N` tags trigger `.github/workflows/release.yml`. The workflow validates the exact tag, checks out that immutable source revision, and then:
+
+Before any platform package starts, the fast gate must confirm that the tag, version, and `main` history agree, require the Release to exist or not exist as dictated by the selected mode, and validate the curated four-language Release notes with Python 3.15. These cheap, decisive checks must not be deferred until after long builds. The tag, artifacts, and Release state are still revalidated immediately before publication to detect in-flight drift.
 
 1. installs pinned runtime and release dependencies;
 2. compiles and audits the public source tree;
@@ -428,6 +450,8 @@ During this migration, only `v2.3.0-rc.N` tags trigger `.github/workflows/releas
 15. requires and publishes the curated four-language Release description.
 
 Every tag in this release line is published as a pre-release. Never reuse or move a published tag; create a new `v2.3.0-rc.N` tag instead. A future stable release requires a separate, reviewed policy change rather than silently broadening this gate.
+
+The release metadata job must run every MoHan-owned tool with the saved Python 3.15 executable. The isolated Python 3.14 runtime is restricted to third-party SBOM tooling that does not yet support 3.15 and must never change later project-tool execution through `PATH`.
 
 The release and PR package workflows pin every GitHub Action to a full commit. Linux packaging additionally pins the official `appimagetool` asset to source commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`, asset ID `324406882`, and SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`.
 
@@ -564,9 +588,15 @@ python tools\capture_readme_media.py --screenshots-only
 
 リポジトリのすべての変更には Pull Request を使用します。実装コミットを `main` へ直接 push すること、検査を迂回すること、`main` を force-push すること、必須検査の失敗中またはレビュー会話の未解決中にマージすることは禁止します。必須の Windows CI 検査は `Windows CI / test` です。セキュリティワークフローも、未解決の高信頼度検出を残さず完了しなければなりません。
 
+このリポジトリの既定のマージポリシーでは squash マージだけを許可します。全必須検査が成功し、Pull Request の head SHA が変わらず、すべてのレビュー会話が解決した後、Codex は squash で直接マージしなければなりません。リリースごとにこの既知のポリシーを再照会したり、許可されないことが既知の merge commit や rebase を先に試したりしてはなりません。マージ後は実際の merge commit を読み戻し、その commit にだけリリースタグを作成します。所有者が設定を明示的に変更した場合、または GitHub が実際に squash を拒否してポリシーの変化が疑われる場合に限り、再照会します。
+
+GitHub 自動化では、予測可能な認証経路を一つだけ使用します。Pull Request の読み取りと更新には接続済み GitHub 連携を優先し、ローカルからの push には Git 自身の認証情報管理を使用し、`gh` は接続済み連携が提供しない GitHub Actions の検査とログにだけ使用します。`gh auth status` で認証情報の無効を一度確認した後は、外部状態が変わらない限り、再試行、ログアウト、再ログインを繰り返してはなりません。接続済み連携またはログイン済みブラウザーへ直ちに切り替えます。不可欠な操作に同等の経路がなく、実際に処理が停止した場合に限り、所有者へ一度だけ再認証を依頼します。どの処理でも Token を表示、複製、ファイル保存、commit してはなりません。
+
 ### 今後の自動リリース
 
 この移行期間中、`.github/workflows/release.yml` を起動できるのは `v2.3.0-rc.N` タグだけです。ワークフローは正確なタグを検証し、その不変のソースリビジョンを checkout してから、次を順に実行します。
+
+どのプラットフォームのパッケージ化も始める前に、高速ゲートでタグ、バージョン、`main` 履歴の一致を確認し、選択したモードに応じて Release が存在すること、または存在しないことを要求し、Python 3.15 で人手整備の四言語 Release 説明を検証します。低コストで決定的な検査を長時間ビルドの後まで遅らせてはなりません。実行中の変化を検出するため、公開直前にもタグ、成果物、Release 状態を再検証します。
 
 1. バージョン固定済みのランタイム依存関係とリリース依存関係をインストールします。
 2. 公開ソースツリーをコンパイルして監査します。
@@ -585,6 +615,8 @@ python tools\capture_readme_media.py --screenshots-only
 15. 人手で整備した四言語 Release 説明を必須とし、その説明を公開します。
 
 このリリース系列の全タグはプレリリースとして公開します。公開済みタグを再利用または移動せず、新しい `v2.3.0-rc.N` タグを作成します。将来の安定版には、別途レビュー済みのポリシー変更が必要であり、このゲートを暗黙に緩和してはなりません。
+
+リリースメタデータジョブでは、保存済みの Python 3.15 実行パスを使って墨寒所有の全ツールを実行しなければなりません。隔離した Python 3.14 は、まだ 3.15 をサポートしていない第三者 SBOM ツールチェーンだけに限定し、`PATH` を通じて後続のプロジェクトツール実行環境を変更してはなりません。
 
 リリースおよび PR パッケージワークフローは、すべての GitHub Action を完全な commit に固定します。Linux パッケージ化ではさらに、公式 `appimagetool` 成果物をソース commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、成果物 ID `324406882`、SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0` に固定します。
 

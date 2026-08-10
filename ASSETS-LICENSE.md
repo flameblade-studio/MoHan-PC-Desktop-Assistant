@@ -10,6 +10,8 @@
 
 `assets/onboarding/mohan-hero-rain-canonical.webp` 是本儲存庫擁有的權威啟動精靈裁切來源，並與炎劍文化工作室墨寒官方專頁共用。將完全相同的檔案保存在本儲存庫，可避免設定精靈與安裝程式逐漸偏離既定五官或角色身分。
 
+`docs/media/desktop-character.png` 是與鐵人賽情境圖一致的權威正面半身來源；`assets/mohan-taskbar-icon.png` 與 `assets/mohan-halfbody.ico` 只由此檔裁切縮放，不重新生成五官。舊版五官輪廓的全身像不得再作為產品、圖示或文件素材。
+
 ### 語音、服務與商標
 
 本儲存庫不散布專有語音模型或複製真人的聲音。Windows 語音及雲端生成語音仍分別受 Microsoft、OpenAI 或使用者所選服務的條款約束。第三方服務名稱與商標均屬其各自權利人所有。
@@ -27,6 +29,8 @@
 ### 权威角色素材
 
 `assets/onboarding/mohan-hero-rain-canonical.webp` 是本仓库拥有的权威启动向导裁切来源，并与炎剑文化工作室墨寒官方专页共用。将完全相同的文件保存在本仓库，可避免设置向导与安装程序逐渐偏离既定五官或角色身份。
+
+`docs/media/desktop-character.png` 是与铁人赛情境图一致的权威正面半身来源；`assets/mohan-taskbar-icon.png` 与 `assets/mohan-halfbody.ico` 仅由此文件裁切缩放，不重新生成五官。旧版五官轮廓的全身像不得再作为产品、图标或文档素材。
 
 ### 语音、服务与商标
 
@@ -46,6 +50,8 @@ Unless an individual file carries a separate notice, the character illustrations
 
 `assets/onboarding/mohan-hero-rain-canonical.webp` is the repository-owned canonical onboarding crop source shared with the official Flameblade Studio MoHan page. Keeping the identical file in this repository prevents the setup wizard and installer from drifting away from the established facial features or character identity.
 
+`docs/media/desktop-character.png` is the canonical front-facing half-body source aligned with the Ironman scenario visuals. `assets/mohan-taskbar-icon.png` and `assets/mohan-halfbody.ico` are cropped and scaled only from that file without regenerating facial features. The obsolete full-body identity must not be reused in the product, icons, or documentation.
+
 ### Voices, services, and trademarks
 
 This repository does not distribute a proprietary voice model or a cloned human voice. Windows voices and cloud-generated voices remain subject to the terms of Microsoft, OpenAI, or the service selected by the user. Third-party service names and trademarks remain the property of their respective owners.
@@ -63,6 +69,8 @@ Contributors must not submit third-party images, voices, logos, or branded mater
 ### 正式なキャラクター素材
 
 `assets/onboarding/mohan-hero-rain-canonical.webp` は、このリポジトリが所有し、Flameblade Studio の墨寒公式ページと共有する、初回設定用の正式な切り抜き元画像です。同一ファイルをこのリポジトリに保持することで、設定ウィザードやインストーラーが既定の顔立ちやキャラクター同一性から次第にずれることを防ぎます。
+
+`docs/media/desktop-character.png` は、鉄人賽の場面画像と一致する正式な正面向き半身素材です。`assets/mohan-taskbar-icon.png` と `assets/mohan-halfbody.ico` は、顔立ちを再生成せず、このファイルだけを切り抜いて縮小します。旧版の顔立ちを持つ全身像を製品、アイコン、文書へ再利用してはなりません。
 
 ### 音声、サービス、商標
 

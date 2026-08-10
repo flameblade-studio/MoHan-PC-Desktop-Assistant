@@ -21,6 +21,10 @@ jobs:
         run: |
           title=$(jq -r '.pull_request.title // ""' "$GITHUB_EVENT_PATH")
           body=$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")
+          # GitHub's web editor stores CRLF. Normalize line endings before
+          # applying exact, platform-independent heading checks.
+          title=${title//$'\r'/}
+          body=${body//$'\r'/}
           IFS='／' read -r -a title_parts <<< "$title"
           if [[ ${#title_parts[@]} -ne 4 ]]; then
             echo "標題必須有四段翻譯 / 标题必须有四段翻译 / Title requires four translations / タイトルには四つの翻訳が必要です" >&2
