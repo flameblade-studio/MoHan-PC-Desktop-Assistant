@@ -491,10 +491,7 @@ jobs:
         run: |
           notes="docs/releases/${{ needs.resolve-release.outputs.tag }}.md"
           [[ -s "$notes" ]]
-          grep -q '^## 繁體中文' "$notes"
-          grep -q '^## 简体中文' "$notes"
-          grep -q '^## English' "$notes"
-          grep -q '^## 日本語' "$notes"
+          python tools/check_four_language_docs.py
 
       - name: Upload read-only generated metadata
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -649,7 +646,7 @@ jobs:
             --verify-tag \
             --draft \
             --prerelease \
-            --title "MoHan Desktop Assistant $tag" \
+            --title "墨寒桌面助理 $tag／墨寒桌面助手 $tag／MoHan Desktop Assistant $tag／墨寒デスクトップアシスタント $tag" \
             --notes-file "docs/releases/$tag.md"
           release_id="$(gh api --paginate "repos/${{ github.repository }}/releases?per_page=100" --jq ".[] | select(.tag_name == \"$tag\" and .draft == true) | .id" | head -n 1)"
           [[ "$release_id" =~ ^[0-9]+$ ]]

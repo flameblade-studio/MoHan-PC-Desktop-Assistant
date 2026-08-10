@@ -46,7 +46,16 @@ SECRET_PATTERNS = {
 
 def public_source_files() -> list[Path]:
     result = subprocess.run(
-        ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+        [
+            "git",
+            "-c",
+            f"safe.directory={ROOT.as_posix()}",
+            "ls-files",
+            "-z",
+            "--cached",
+            "--others",
+            "--exclude-standard",
+        ],
         cwd=ROOT,
         check=True,
         capture_output=True,

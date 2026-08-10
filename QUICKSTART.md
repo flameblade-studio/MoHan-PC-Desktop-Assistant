@@ -1,11 +1,13 @@
-# Quick Start / 快速開始
+# 快速開始／快速开始／Quick Start／クイックスタート
 
 ## 繁體中文
 
 1. 將下載的 `Windows-x64.zip` 完整解壓縮。
 2. 執行 `MoHan-Desktop-Assistant-2.3.0-rc.1.exe`。
-3. 在首次設定精靈確認助理名稱、稱呼、組織、工作類型與喚醒詞。
-4. 若要使用雲端 AI，前往設定頁輸入自己的 OpenAI API 金鑰。
+3. 在首次設定精靈選擇「繁體中文（臺灣）」，並確認助理名稱、稱呼、組織、
+   工作類型與喚醒詞。
+4. 新使用者預設使用 Windows 本機語音；若要使用雲端 AI，請在設定頁輸入
+   自己的 OpenAI API 金鑰。
 5. 預設模型：
    - 文字：`gpt-5.6-luna`
    - Realtime：`gpt-realtime-2.1-mini`
@@ -14,12 +16,15 @@
 6. 不要把 EXE 單獨移出程式資料夾。
 
 Microsoft、GitHub 與 Home Assistant 屬於尚未完成真實環境端到端驗證的
-實驗性預覽整合，請勿直接用於重要帳號、正式儲存庫或高風險設備。
+實驗性預覽整合，請勿直接用於重要帳號、正式儲存庫或高風險設備。線上服務的
+實際可用性取決於使用者所在地、網路環境與服務帳號。
+
+完整設定、OAuth、安全與隱私說明請參閱 [README.md](README.md)。
 
 ### macOS／Linux 功能受限 Preview
 
 `v2.3.0-rc.N` 的 macOS Apple Silicon（arm64）與 Intel（x86_64）DMG
-（內含 app），以及 Linux x86_64 AppImage，只用於
+（內含 `.app`），以及 Linux x86_64 AppImage，只用於
 啟動、四語介面、平台路徑及安全停用驗證。請先核對 SHA256SUMS 與 Artifact
 Attestation。這些預覽包沒有 API 金鑰輸入、語音、完整桌面角色、完整聊天／
 工作介面、雲端連接器、系統工具或自動啟動，也尚未由作者以實機驗收。
@@ -43,10 +48,12 @@ Microsoft、GitHub 与 Home Assistant 仍属于尚未完成真实环境端到端
 实验性预览集成，请勿直接用于重要账号、正式仓库或高风险设备。在线服务的
 实际可用性取决于用户所在地、网络环境与服务账号。
 
+完整设置、OAuth、安全与隐私说明请参阅 [README.md](README.md)。
+
 ### macOS／Linux 功能受限 Preview
 
 `v2.3.0-rc.N` 的 macOS Apple Silicon（arm64）与 Intel（x86_64）DMG
-（内含 app），以及 Linux x86_64 AppImage，只用于
+（内含 `.app`），以及 Linux x86_64 AppImage，只用于
 验证启动、四语界面、平台路径与安全停用。请核对 SHA256SUMS 与 Artifact
 Attestation。预览包不提供 API 密钥输入、语音、完整桌面角色、完整聊天／工作
 界面、云端连接器、系统工具或自动启动，也尚未经过作者真机验收。
@@ -67,7 +74,8 @@ Attestation。预览包不提供 API 密钥输入、语音、完整桌面角色�
 
 Microsoft, GitHub, and Home Assistant are experimental preview integrations
 without completed real-environment end-to-end validation. Do not begin with
-critical accounts, production repositories, or high-risk devices.
+critical accounts, production repositories, or high-risk devices. Actual
+availability depends on the user's region, network, and service accounts.
 
 See [README.md](README.md) for complete setup, OAuth, safety, and privacy notes.
 
@@ -98,9 +106,10 @@ maintainer's physical-device signoff.
 
 Microsoft、GitHub、Home Assistant は、実環境でのエンドツーエンド検証が
 完了していない実験的プレビュー連携です。重要なアカウント、本番リポジトリ、
-高リスク機器で最初から使用しないでください。
+高リスク機器で最初から使用しないでください。実際の利用可否は、利用者の地域、
+ネットワーク環境、サービスアカウントに依存します。
 
-設定、OAuth、安全性、プライバシーの詳細は [README.ja.md](README.ja.md) を
+設定、OAuth、安全性、プライバシーの詳細は [README.md](README.md) を
 参照してください。
 
 ### macOS／Linux 機能限定 Preview

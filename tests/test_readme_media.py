@@ -6,6 +6,14 @@ lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MEDIA = ROOT / "docs" / "media"
+VERSION_MATCH = re.search(
+    r'^FALLBACK_VERSION = "([^"]+)"$',
+    (ROOT / "version_info.py").read_text(encoding="utf-8"),
+    re.MULTILINE,
+)
+assert VERSION_MATCH, "version_info.py must define one literal FALLBACK_VERSION"
+SOURCE_VERSION = VERSION_MATCH.group(1)
+SHIELD_VERSION = SOURCE_VERSION.replace("-", "--")
 PNG_FILES = {
     "mohan-hero.png": (1600, 900),
     "first-run-wizard.png": None,
@@ -45,9 +53,17 @@ README_BADGES = (
         "actions/workflows/secret-defense.yml/badge.svg"),
     ),
     (
-        "Latest Release",
+        f"Development Version v{SOURCE_VERSION}",
+        (
+            "https://img.shields.io/badge/development_version-"
+            f"v{SHIELD_VERSION}-5c6ac4.svg"
+        ),
+    ),
+    (
+        "Latest Published Release",
         ("https://img.shields.io/github/v/release/"
-        "hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release"),
+        "hitoshic1982/MoHan-PC-Desktop-Assistant?"
+        "include_prereleases&label=published"),
     ),
     ("MIT License", "https://img.shields.io/badge/license-MIT-blue.svg"),
     (
@@ -66,6 +82,18 @@ BADGE_WORKFLOWS = (
     "codeql.yml",
     "security-audit.yml",
     "secret-defense.yml",
+)
+TIME_SENSITIVE_CREATOR_AGE_PATTERNS = (
+    re.compile(r"我是一位\s*(?:\d{1,3}|[零〇一二三四五六七八九十百兩两]+)\s*[歲岁]"),
+    re.compile(
+        r"\bI was an?\s+(?:\d{1,3}|[a-z]+(?:-[a-z]+)*)"
+        r"(?:-year-old|\s+years?\s+old)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(r"私は\s*(?:\d{1,3}|[零〇一二三四五六七八九十百]+)\s*歳"),
+    re.compile(r"[三四五六七八九]十(?:多)?[歲岁]的自己"),
+    re.compile(r"\bmy\s+(?:\d+|[a-z]+)-something\s+self\b", re.IGNORECASE),
+    re.compile(r"[三四五六七八九]十代の自分"),
 )
 
 
@@ -100,6 +128,9 @@ def _localized_readmes() -> dict[str, str]:
 
 
 def _assert_certification_badges(localized_readmes: dict[str, str]) -> None:
+    assert len(set(localized_readmes.values())) == 1, (
+        "all three README entry points must remain byte-for-byte identical"
+    )
     badge_blocks: dict[str, str] = {}
     for name, content in localized_readmes.items():
         badge_match = re.search(
@@ -152,6 +183,16 @@ def _assert_quality_standard(localized_readmes: dict[str, str]) -> None:
         assert (ROOT / ".github" / "workflows" / workflow).is_file(), (
             f"README badge points to missing workflow: {workflow}"
         )
+
+
+def _assert_timeless_creator_narrative(
+    localized_readmes: dict[str, str],
+) -> None:
+    for name, content in localized_readmes.items():
+        for pattern in TIME_SENSITIVE_CREATOR_AGE_PATTERNS:
+            assert not pattern.search(content), (
+                f"{name} hard-codes the creator's changing age: {pattern.pattern}"
+            )
 
 
 def _assert_demo_video(readme: str) -> None:
@@ -228,6 +269,7 @@ def main() -> int:
     _assert_readme_images(readme)
     _assert_certification_badges(localized_readmes)
     _assert_quality_standard(localized_readmes)
+    _assert_timeless_creator_narrative(localized_readmes)
     _assert_demo_video(readme)
     _assert_support_section(readme)
     _assert_github_links(readme)

@@ -7,7 +7,8 @@ on:
   pull_request:
     types: [opened, edited, reopened, synchronize, ready_for_review]
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   validate-pr-body:
@@ -15,10 +16,22 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Require four non-empty language sections
+      - name: Require minimum four-language PR metadata
         shell: bash
         run: |
+          title=$(jq -r '.pull_request.title // ""' "$GITHUB_EVENT_PATH")
           body=$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")
+          IFS='／' read -r -a title_parts <<< "$title"
+          if [[ ${#title_parts[@]} -ne 4 ]]; then
+            echo "標題必須有四段翻譯 / 标题必须有四段翻译 / Title requires four translations / タイトルには四つの翻訳が必要です" >&2
+            exit 1
+          fi
+          for part in "${title_parts[@]}"; do
+            if [[ -z "${part//[[:space:]]/}" ]]; then
+              echo "四語標題不得留白 / 四语标题不得留白 / Title translations cannot be empty / タイトルの翻訳を空欄にできません" >&2
+              exit 1
+            fi
+          done
           headings=(
             "## 繁體中文"
             "## 简体中文"
@@ -36,4 +49,33 @@ jobs:
               exit 1
             fi
           done
-          echo "FOUR_LANGUAGE_PR_BODY_OK"
+          mapfile -t actual_headings < <(
+            printf '%s\n' "$body" |
+              grep -E '^## (繁體中文|简体中文|English|日本語)$' || true
+          )
+          if [[ ${#actual_headings[@]} -ne 4 ]]; then
+            echo "四語章節必須各出現一次 / 四语章节必须各出现一次 / Each language section must appear once / 各言語セクションは一度だけ必要です" >&2
+            exit 1
+          fi
+          for index in "${!headings[@]}"; do
+            if [[ "${actual_headings[$index]}" != "${headings[$index]}" ]]; then
+              echo "四語順序錯誤 / 四语顺序错误 / Incorrect language order / 四言語の順序が正しくありません" >&2
+              exit 1
+            fi
+          done
+          echo "FOUR_LANGUAGE_PR_METADATA_MINIMUM_OK"
+
+      - name: Check out the proposed documentation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up Python 3.15
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
+
+      - name: Require structurally equivalent PR metadata
+        run: python tools/check_four_language_pr.py
+
+      - name: Require structurally equivalent four-language documentation
+        run: python tools/check_four_language_docs.py

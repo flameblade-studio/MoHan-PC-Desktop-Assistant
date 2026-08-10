@@ -1,10 +1,10 @@
-# Changelog
+# 墨寒桌面助理變更紀錄／墨寒桌面助手变更日志／MoHan Desktop Assistant Changelog／墨寒デスクトップアシスタント変更履歴
 
-All notable public changes to MoHan Desktop Assistant are documented here.
+## 繁體中文
 
-## v2.3.0 RC1 — planned, not yet published
+本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
-### 繁體中文
+### v2.3.0 RC1 — 規劃中，尚未發布
 
 - 全面遷移至 CPython 3.15.0rc1，產品執行、測試與所有封裝不再保留舊版
   Python 路徑；全專案採用 PEP 810 明示延遲導入並加入靜態治理稽核。
@@ -16,50 +16,10 @@ All notable public changes to MoHan Desktop Assistant are documented here.
   Tachyon 證據，並發布去識別化結果；CycloneDX 1.7 SBOM 強制完整依賴圖、
   PURL、SPDX 授權、官方結構驗證及 100% 覆蓋率。
 - 所有 GitHub Actions JavaScript 動作強制使用 Node 24；PySide6 以受控 ABI3
-  輪子驗證跨越 3.15 中繼資料限制，安全掃描與完整發布閘門維持不變。
+  輪子驗證跨越 3.15 中繼資料限制，Stable ABI、依賴安全稽核、封裝與完整
+  發布安全閘門維持不變。
 
-### 简体中文
-
-- 全面迁移至 CPython 3.15.0rc1，产品、测试和所有发布包不再保留旧版
-  Python 路径；全项目采用 PEP 810 显式延迟导入并加入治理审计。
-- 导入不可变配置、推导式解包、UTF-8 文件审计、内建哨兵治理及新的音频
-  缓冲 API；Tachyon 可分析启动、50 Hz 口型同步和表情仲裁器。
-- JIT 开关均通过完整测试；2.3.0 RC1 默认启用，并保留兼容性停用开关。GitHub
-  Actions 全部强制 Node 24，并维持 ABI、依赖安全和发布验证闸门。
-- CI 与 Release 以有效样本、读取错误、漏采样及 JIT 状态阻止不合格的
-  Tachyon 证据，并发布去识别化结果；CycloneDX 1.7 SBOM 强制完整依赖图、
-  PURL、SPDX 授权、官方结构验证及 100% 覆盖率。
-
-### English
-
-- Moves the product, tests, and every package exclusively to CPython
-  3.15.0rc1, with project-wide explicit PEP 810 lazy imports and governance.
-- Adds immutable configuration, unpacking comprehensions, UTF-8 auditing,
-  sentinel governance, and the new bytearray audio-buffer API.
-- Adds Tachyon profiling for startup, 50 Hz lip sync, and expression
-  arbitration. Both JIT modes pass the complete suite; 2.3.0 RC1 defaults JIT on
-  while retaining a compatibility disable switch.
-- Forces Node 24 for every GitHub JavaScript action and preserves Stable ABI,
-  dependency-audit, packaging, and release safety gates.
-- Gates sanitized Tachyon evidence on valid samples, stack-read error, missed
-  samples, and JIT state. CycloneDX 1.7 SBOMs require complete dependency
-  graphs, PURLs, SPDX licenses, official schema validation, and 100% coverage.
-
-### 日本語
-
-- 製品、テスト、全パッケージを CPython 3.15.0rc1 のみに移行し、PEP 810
-  の明示的遅延インポートと継続監査を全プロジェクトへ導入しました。
-- 不変設定、推論式アンパック、UTF-8 監査、センチネル管理、新しい音声
-  バッファー API、Tachyon による 50 Hz 口形・表情解析を導入しました。
-- JIT の有無は全テストに合格し、2.3.0 RC1 では既定で有効にしながら互換性用の
-  無効化設定を残します。GitHub Actions はすべて Node 24 を強制します。
-- Tachyon 証拠は有効サンプル、読取エラー、漏れ、JIT 状態で判定し、匿名化して
-  公開します。CycloneDX 1.7 SBOM は完全な依存関係、PURL、SPDX ライセンス、
-  公式スキーマ検証、100% 網羅を必須とします。
-
-## v2.2.0 RC2 — 2026-08-07
-
-### 繁體中文
+### v2.2.0 RC2 — 2026-08-07
 
 - 托腮待機姿勢在說話期間改用中性嘴角基底：保留眼角笑意，但固定左右嘴角，
   只讓中央嘴唇依 A／I／U／E／O 與開合程度變化，避免誇張咧嘴與殘影。
@@ -71,123 +31,23 @@ All notable public changes to MoHan Desktop Assistant are documented here.
   一般待機與情境表情共用同一套座標與合成來源。
 - 強化標籤發行流程的 Draft Release 復原與清理機制，失敗的發布不會留下
   可被誤認為正式版本的殘缺發行項目。
-- 四語 README 新增兩張統一規格的創作歷程圖版，說明炎劍如何逐格檢查
+- 四語 README 新增 2 張統一規格的創作歷程圖版，說明炎劍如何逐格檢查
   眼睛、嘴角與語音嘴型，並以測試把二十多年的夢想鍛造成開源作品。
 
-### 简体中文
-
-- 托腮待机姿势在说话期间改用中性嘴角基础：保留眼角笑意，但固定左右嘴角，
-  只让中央嘴唇按照 A／I／U／E／O 与开合程度变化，避免夸张咧嘴和残影。
-- Realtime、Windows 本地语音、OpenAI 自然语音及 Azure Speech 统一使用
-  20 毫秒／50 Hz 口型节拍，缩短张嘴、闭嘴与元音切换延迟。
-- 声音与第一个口型从同一播放闸门起跑；声音结束后拒收迟到元音，只允许
-  最终闭嘴信号通过，避免口型先停或声音结束后再次张嘴。
-- 托腮待机眨眼改用完整双眼遮罩；眼皮闭合时不再残留睁眼状态的上眼线，
-  普通待机与情境表情共用同一套坐标及合成来源。
-- 强化标签发布流程的 Draft Release 恢复与清理机制，失败的发布不会留下
-  容易被误认为正式版本的不完整发布项目。
-- 四语 README 新增两张统一规格的创作历程图版，说明炎剑如何逐帧检查
-  眼睛、嘴角与语音口型，并以测试将二十多年的梦想锻造成开源作品。
-
-### English
-
-- Gives the chin-rest pose a neutral speech-mouth base: the smiling eyes remain,
-  both corners stay fixed, and only the central lips follow A/I/U/E/O and jaw
-  aperture, eliminating the exaggerated grin and corner ghosting.
-- Moves Realtime, Windows local speech, OpenAI natural speech, and Azure Speech
-  onto one 20 ms / 50 Hz viseme clock with shorter open, close, and vowel-change
-  transitions.
-- Releases audio and the first viseme through the same playback gate, rejects
-  late vowels after playback ends, and permits only the final closed-mouth cue.
-- Replaces the complete bilateral eye area during chin-rest idle blinks, so
-  open-eye eyeliner cannot remain above closed eyelids; idle and contextual
-  expressions now share one authoritative mask definition.
-- Makes tagged Draft Release publication recoverable and cleans up failed
-  attempts so incomplete assets cannot resemble a finished public release.
-- Adds two aligned creation-history panels to all four README languages,
-  documenting the frame-by-frame care behind MoHan's eyes, mouth corners, and
-  lip sync—and the dream Flameblade is turning into open-source software.
-
-### 日本語
-
-- 頬杖姿勢の発話中は中立な口角ベースを使用します。目元の笑みを残しながら
-  左右の口角を固定し、中央の唇だけを A／I／U／E／O と開口量に合わせて
-  動かすことで、誇張された笑顔と残像を防ぎます。
-- Realtime、Windows ローカル音声、OpenAI 自然音声、Azure Speech を
-  共通の 20 ミリ秒／50 Hz 口形周期へ統一し、開口、閉口、母音切り替えの
-  遅延を短縮します。
-- 音声と最初の口形を同じ再生ゲートから開始し、再生終了後の遅延母音を拒否、
-  最後の閉口信号だけを通すことで、口だけが先に止まる現象を防ぎます。
-- 頬杖の待機中のまばたきでは両目全体を覆う共通マスクを使用し、閉じた
-  まぶたの上に開眼時のアイラインが残らないようにしました。待機表情と
-  状況表情は同じ座標・合成定義を共有します。
-- タグ発行時の Draft Release を安全に復旧・清理できるようにし、失敗した
-  発行が不完全な公開版として残らないようにしました。
-- 四言語 README に統一規格の制作過程図を2枚追加し、目、口角、口形を
-  フレーム単位で確認しながら夢をオープンソース作品へ鍛える姿勢を伝えます。
-
-## v2.2.0 RC1 — 2026-08-06
-
-### 繁體中文
+### v2.2.0 RC1 — 2026-08-06
 
 - 保留 Windows x64 為完整正式功能版本，沿用已驗證的 ZIP、EXE、MSI 與
   MSI 語言轉換封裝及安裝／移除測試。
 - 新增原生 macOS Apple Silicon（arm64）／Intel（x86_64）雙架構
-  `.app`／`.dmg` 與 Linux x86_64 `.AppImage` 的功能受限
-  Preview。兩者只開放啟動、四語介面、平台資料路徑及安全停用邊界，不宣稱
-  與 Windows 功能相同，也不接受金鑰、OAuth 或 Home Assistant 權杖。
+  `.app`／`.dmg` 與 Linux x86_64 `.AppImage` 的功能受限 Preview。兩者只
+  開放啟動、四語介面、平台資料路徑及安全停用邊界，不宣稱與 Windows 功能
+  相同，也不接受 API 金鑰、OAuth 憑證或 Home Assistant 權杖。
 - Pull Request 只產生短期測試產物；只有不可變的 `v2.2.0-rc.N` 標籤能建立
   GitHub 預發行版。三平台封裝必須在各自原生 CI 執行打包後啟動測試。
 - 發行檔統一提供 SHA256SUMS、CycloneDX SBOM、更新清單與 GitHub 產物
   證明；Release 說明必須由繁中、簡中、英文、日文完整策展文件提供。
 
-### 简体中文
-
-- Windows x64 继续作为完整正式功能版本，并保留已验证的 ZIP、EXE、MSI、
-  MSI 语言转换包以及安装／卸载测试。
-- 新增原生 macOS Apple Silicon（arm64）／Intel（x86_64）双架构
-  `.app`／`.dmg` 与 Linux x86_64 `.AppImage` 功能受限
-  Preview。两者只开放启动、四语界面、平台数据路径与安全停用边界，不宣称
-  与 Windows 功能相同，也不接收密钥、OAuth 或 Home Assistant 令牌。
-- Pull Request 只生成短期测试产物；只有不可变的 `v2.2.0-rc.N` 标签能够
-  建立 GitHub 预发布版。三个平台都必须在各自原生 CI 完成打包后启动测试。
-- 发布文件统一提供 SHA256SUMS、CycloneDX SBOM、更新清单及 GitHub 产物
-  证明；Release 说明必须采用繁中、简中、英文、日文完整编写的文件。
-
-### English
-
-- Windows x64 remains the complete product surface with the verified ZIP,
-  EXE, MSI, MSI language transforms, and installer lifecycle tests.
-- Added native macOS Apple Silicon (arm64) and Intel (x86_64) `.app`/`.dmg`
-  packages plus a Linux x86_64 `.AppImage` limited
-  Previews. They expose only launch, four-language UI, platform paths, and
-  fail-closed boundaries; they claim no Windows feature parity and accept no
-  API keys, OAuth credentials, or Home Assistant tokens.
-- Pull requests produce short-lived test artifacts only. Only immutable
-  `v2.2.0-rc.N` tags can create a GitHub pre-release, after every platform has
-  built and executed its package on a native CI runner.
-- Releases provide SHA256SUMS, CycloneDX SBOMs, an update manifest, and GitHub
-  artifact attestations, with curated Traditional Chinese, Simplified Chinese,
-  English, and Japanese release notes.
-
-### 日本語
-
-- Windows x64 を完全機能版として維持し、検証済みの ZIP、EXE、MSI、MSI
-  言語変換、およびインストール／削除テストを継続します。
-- macOS Apple Silicon（arm64）／Intel（x86_64）両方のネイティブ
-  `.app`／`.dmg` と Linux x86_64 `.AppImage` の機能限定
-  Preview を追加します。起動、四言語画面、保存先、安全な無効化だけを提供し、
-  Windows 版との同等性を主張せず、API キー、OAuth、Home Assistant Token
-  の入力も受け付けません。
-- Pull Request は短期テスト用成果物だけを作成します。GitHub のプレリリースを
-  作成できるのは変更しない `v2.2.0-rc.N` タグだけで、各 OS のネイティブ CI
-  上で配布物を作成し、起動確認に合格する必要があります。
-- SHA256SUMS、CycloneDX SBOM、更新マニフェスト、GitHub 成果物証明を提供し、
-  Release 説明は繁体字中国語・簡体字中国語・英語・日本語で作成します。
-
-## v2.1.0 RC1 — 2026-08-04
-
-### 繁體中文
+### v2.1.0 RC1 — 2026-08-04
 
 - 原始碼、Windows CI 與封裝流程完整遷移至 Python 3.14，並保留未來評估
   Python 3.15 lazy imports 的清楚升級邊界。
@@ -208,7 +68,119 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 - 延續姿勢切換、物理圖層與說話銜接的競速修正；RC3 觀察到的抖動需以本版
   候選程式重新實測，不能視為本版回歸。
 
-### 简体中文
+驗證：目前 RC1 原始碼的 56/56 個自動化測試程式均已通過。加上標籤的 Windows
+發行工作流程亦已通過原始碼稽核、封裝後自我測試、EXE／MSI 靜默安裝與解除安裝
+驗證、checksum 與 SBOM 產生、產物證明及安全檢查。
+
+### v2.0.14 RC3 — 2026-08-02
+
+- 新增繁體中文／簡體中文／英文首次啟動精靈，以及聊天、語音、權限、個人設定、
+  工作模式與提醒的最低可用英文和 zh-CN 介面路徑。
+- 新增完整的英文與簡體中文墨寒人格提示詞，以及語言相符的離線回覆、模式播報
+  與內建提醒語音。切換介面語言時，會在三種語言間翻譯未修改的預設值，而不會
+  覆蓋自訂提醒文字。
+- 新使用者的語音輸出改用 Windows 本機語音，基本體驗無須 OpenAI API 金鑰。
+  Windows 語音選擇現在只列出已驗證的女性聲音；zh-TW 繼續優先使用 Microsoft
+  Yating，zh-CN 則優先使用相符且已安裝的女性聲音。
+- 新增專用的簡體中文 README 與快速入門說明。
+- 新增安全的應用程式內穩定版／預覽版更新檢查，包含官方主機允許清單、語意版本
+  驗證、大小限制、SHA256 驗證、明確安裝確認及本機個人設定保留。
+- 新增自動化 Windows x64 EXE 與 MSI 安裝程式，並在 GitHub Actions 中執行
+  靜默安裝、自我測試與解除安裝驗證。
+- 發行內容擴充為完整 checksum 目錄、CycloneDX SBOM、更新清單、產物證明與
+  分類產生的 Release notes。
+- 新增可選、限定標記區段的 WordPress 下載頁同步，使用 GitHub Secrets 與
+  專用 WordPress Application Password。
+- 新增完整 Git 歷史 Gitleaks 檢查，作為個人公開儲存庫無法使用 GitHub Secret
+  Protection 功能時的補償控制。
+- 將畫面上的「墨寒思考中」狀態與角色表情解耦。一般文字與語音問題現在維持
+  自然姿勢，複雜提示只在明顯延遲後反應，異常緩慢的回覆則使用既有表情仲裁器，
+  並具備取消、冷卻與去重機制。
+- 統一成功回覆、API 失敗、一般語音與 Realtime 轉換時的 AI 等待清理，避免
+  思考狀態延續到說話期間或播放後仍未消失。
+
+驗證：RC3 Pull Request 前已有 45/45 個自動化測試程式通過。加上標籤的發行
+工作流程在發布完成前，還必須通過公開內容稽核、封裝後自我測試、事件迴圈
+smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBOM 產生及
+產物證明。
+
+### v2.0.14 RC — 2026-07-31
+
+- 修正應用程式本機音量處理期間 OpenAI 串流 WAV 標頭溢位，該問題可能使所有
+  雲端語音靜音。
+- 改以實際收到的音訊位元組重建調整後的 WAV 標頭，不再複製串流預留長度。
+- OpenAI 語音產生或播放失敗時，自動回退至 Windows Yating。
+- 將一般文字對話框中的安全唯讀 Gmail、Google Calendar 與 Google Drive 命令，
+  導向受權限閘門保護的工具規劃器。
+- 新增雲端語音回退、串流 WAV 音量處理、Gmail 對話路由與工作計時器隔離的
+  回歸測試。
+
+驗證：此候選版發布前，38/38 個自動化測試程式、真實 OpenAI TTS 播放、封裝後
+自我測試、封裝後事件迴圈 smoke test，以及封存後自我測試均已通過。
+
+### v2.0.13 RC — 2026-07-31
+
+- 新增單一動作合成器，統一處理呼吸、說話強調、視線與情緒手勢。
+- 修正動作切換期間偶發的角色抖動與圖層分離。
+- 保持身體、臉部、眼睛、頭髮、衣袖與飾品圖層同步。
+- 讓說話後返回待機的動作更平順。
+- 移除可能顯示為白色瑕疵的人造眼睛高光。
+- 改善眨眼、表情與 AIUEO 嘴型的連續性。
+- 新增可設定的角色顯示縮放。
+- 新增可攜式個人設定轉移與模組化服務邊界。
+- 對尚未驗證的 Microsoft、GitHub 與 Home Assistant 整合新增明確的公開預覽警告。
+
+驗證：此候選版發布前，37 個自動化測試程式，以及 25,000 步混合動畫、語音、
+視線與物理壓力測試均已通過。
+
+## 简体中文
+
+本文档记录墨寒桌面助手所有值得注意的公开变更。
+
+### v2.3.0 RC1 — 计划中，尚未发布
+
+- 全面迁移至 CPython 3.15.0rc1，产品运行、测试及所有发布包不再保留旧版
+  Python 路径；全项目采用 PEP 810 显式延迟导入并加入静态治理审计。
+- 导入 PEP 814 `frozendict` 深层不可变配置、PEP 798 推导式解包、PEP 686
+  UTF-8 文件审计、PEP 661 哨兵治理及 `bytearray.take_bytes()` 音频缓冲。
+- 加入 PEP 799 Tachyon 采样分析，可直接检查启动、50 Hz 口型同步与表情
+  仲裁器；JIT 开关均通过完整测试，2.3.0 RC1 默认启用并保留兼容性停用开关。
+- CI 与 Release 以有效样本、读取错误、漏采样及 JIT 状态阻止不合格的
+  Tachyon 证据，并发布去标识化结果；CycloneDX 1.7 SBOM 强制完整依赖图、
+  PURL、SPDX 许可证、官方结构验证及 100% 覆盖率。
+- 所有 GitHub Actions JavaScript 动作强制使用 Node 24；PySide6 以受控 ABI3
+  轮子验证跨越 3.15 元数据限制，Stable ABI、依赖安全审计、打包及完整
+  发布安全闸门保持不变。
+
+### v2.2.0 RC2 — 2026-08-07
+
+- 托腮待机姿势在说话期间改用中性嘴角基础：保留眼角笑意，但固定左右嘴角，
+  只让中央嘴唇按照 A／I／U／E／O 与开合程度变化，避免夸张咧嘴和残影。
+- Realtime、Windows 本地语音、OpenAI 自然语音及 Azure Speech 统一使用
+  20 毫秒／50 Hz 口型节拍，缩短张嘴、闭嘴与元音切换延迟。
+- 声音与第一个口型从同一播放闸门起跑；声音结束后拒收迟到元音，只允许
+  最终闭嘴信号通过，避免口型先停或声音结束后再次张嘴。
+- 托腮待机眨眼改用完整双眼遮罩；眼皮闭合时不再残留睁眼状态的上眼线，
+  普通待机与情境表情共用同一套坐标及合成来源。
+- 强化标签发布流程的 Draft Release 恢复与清理机制，失败的发布不会留下
+  容易被误认为正式版本的不完整发布项目。
+- 四语 README 新增 2 张统一规格的创作历程图版，说明炎剑如何逐帧检查
+  眼睛、嘴角与语音口型，并以测试将二十多年的梦想锻造成开源作品。
+
+### v2.2.0 RC1 — 2026-08-06
+
+- Windows x64 继续作为完整正式功能版本，并保留已验证的 ZIP、EXE、MSI、
+  MSI 语言转换包及安装／卸载测试。
+- 新增原生 macOS Apple Silicon（arm64）／Intel（x86_64）双架构
+  `.app`／`.dmg` 与 Linux x86_64 `.AppImage` 的功能受限 Preview。两者只
+  开放启动、四语界面、平台数据路径与安全停用边界，不宣称与 Windows 功能
+  相同，也不接收 API 密钥、OAuth 凭证或 Home Assistant 令牌。
+- Pull Request 只生成短期测试产物；只有不可变的 `v2.2.0-rc.N` 标签能够
+  建立 GitHub 预发布版。三个平台都必须在各自原生 CI 完成打包后启动测试。
+- 发布文件统一提供 SHA256SUMS、CycloneDX SBOM、更新清单及 GitHub 产物
+  证明；Release 说明必须采用繁中、简中、英文、日文完整编写的文件。
+
+### v2.1.0 RC1 — 2026-08-04
 
 - 源代码、Windows CI 与打包流程完整迁移到 Python 3.14，并为未来评估
   Python 3.15 lazy imports 保留清晰的升级边界。
@@ -226,8 +198,134 @@ All notable public changes to MoHan Desktop Assistant are documented here.
   不再把炎剑工作室专用词汇带给所有用户；现有自定义提示词不会被覆盖。
 - 修复首次设置字段标题的垂直对齐，以及托腮待机姿势说话时嘴角过度上扬；
   同步更新 README 与官网采用的最新版实机图。
+- 延续姿势切换、物理图层及说话衔接的竞态修复；RC3 观察到的抖动必须使用
+  本版候选程序重新测试，不能视为本版回归。
 
-### English
+验证：当前 RC1 源代码的 56/56 个自动化测试程序均已通过。带标签的 Windows
+发布工作流也已通过源代码审计、打包后自测、EXE／MSI 静默安装与卸载验证、
+checksum 与 SBOM 生成、产物证明及安全检查。
+
+### v2.0.14 RC3 — 2026-08-02
+
+- 新增繁体中文／简体中文／英文首次启动向导，以及聊天、语音、权限、配置文件、
+  工作模式与提醒的最低可用英文和 zh-CN 界面路径。
+- 新增完整的英文与简体中文墨寒人格提示词，以及语言匹配的离线回复、模式播报
+  与内置提醒语音。切换界面语言时，会在三种语言之间翻译未修改的默认值，而不会
+  覆盖自定义提醒文本。
+- 新用户的语音输出改用 Windows 本地语音，基本体验无需 OpenAI API 密钥。
+  Windows 语音选择现在只列出已验证的女性声音；zh-TW 继续优先使用 Microsoft
+  Yating，zh-CN 则优先使用匹配且已安装的女性声音。
+- 新增专用的简体中文 README 与快速入门说明。
+- 新增安全的应用内稳定版／预览版更新检查，包含官方主机允许列表、语义版本验证、
+  大小限制、SHA256 验证、明确安装确认及本地配置文件保留。
+- 新增自动化 Windows x64 EXE 与 MSI 安装程序，并在 GitHub Actions 中执行
+  静默安装、自测与卸载验证。
+- 发布内容扩充为完整 checksum 目录、CycloneDX SBOM、更新清单、产物证明与
+  分类生成的 Release notes。
+- 新增可选、限定标记区段的 WordPress 下载页同步，使用 GitHub Secrets 与
+  专用 WordPress Application Password。
+- 新增完整 Git 历史 Gitleaks 检查，作为个人公开仓库无法使用 GitHub Secret
+  Protection 功能时的补偿控制。
+- 将界面上的“墨寒思考中”状态与角色表情解耦。常规文字与语音问题现在保持
+  自然姿势，复杂提示只在明显延迟后反应，异常缓慢的回复则使用现有表情仲裁器，
+  并具备取消、冷却与去重机制。
+- 统一成功回复、API 失败、普通语音与 Realtime 转换时的 AI 等待清理，避免
+  思考状态延续到说话期间或播放后仍未消失。
+
+验证：RC3 Pull Request 前已有 45/45 个自动化测试程序通过。带标签的发布
+工作流在发布完成前，还必须通过公开内容审计、打包后自测、事件循环 smoke test、
+EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物证明。
+
+### v2.0.14 RC — 2026-07-31
+
+- 修复应用程序本地音量处理期间 OpenAI 流式 WAV 标头溢出，该问题可能使所有
+  云端语音静音。
+- 改用实际收到的音频字节重建调整后的 WAV 标头，不再复制流式预留长度。
+- OpenAI 语音生成或播放失败时，自动回退至 Windows Yating。
+- 将普通文字对话框中的安全只读 Gmail、Google Calendar 与 Google Drive 命令，
+  导向受权限闸门保护的工具规划器。
+- 新增云端语音回退、流式 WAV 音量处理、Gmail 对话路由与工作计时器隔离的
+  回归测试。
+
+验证：此候选版发布前，38/38 个自动化测试程序、真实 OpenAI TTS 播放、打包后
+自测、打包后事件循环 smoke test，以及归档后自测均已通过。
+
+### v2.0.13 RC — 2026-07-31
+
+- 新增单一动作合成器，统一处理呼吸、说话强调、视线与情绪手势。
+- 修复动作切换期间偶发的角色抖动与图层分离。
+- 保持身体、脸部、眼睛、头发、衣袖及饰品图层同步。
+- 让说话后返回待机的动作更平顺。
+- 移除可能显示为白色瑕疵的人造眼睛高光。
+- 改进眨眼、表情与 AIUEO 口型的连续性。
+- 新增可配置的角色显示缩放。
+- 新增可移植配置文件转移与模块化服务边界。
+- 对尚未验证的 Microsoft、GitHub 与 Home Assistant 集成新增明确的公开预览警告。
+
+验证：此候选版发布前，37 个自动化测试程序，以及 25,000 步混合动画、语音、
+视线与物理压力测试均已通过。
+
+## English
+
+All notable public changes to MoHan Desktop Assistant are documented here.
+
+### v2.3.0 RC1 — planned, not yet published
+
+- Moves the product, tests, and every package exclusively to CPython
+  3.15.0rc1, with project-wide explicit PEP 810 lazy imports and static
+  governance auditing; no legacy Python path remains.
+- Adds deeply immutable PEP 814 `frozendict` configuration, PEP 798 unpacking
+  comprehensions, PEP 686 UTF-8 file auditing, PEP 661 sentinel governance,
+  and the new `bytearray.take_bytes()` audio-buffer API.
+- Adds PEP 799 Tachyon profiling for startup, 50 Hz lip sync, and expression
+  arbitration. Both JIT modes pass the complete suite; 2.3.0 RC1 defaults JIT
+  on while retaining a compatibility disable switch.
+- Gates sanitized Tachyon evidence on valid samples, stack-read errors, missed
+  samples, and JIT state. CycloneDX 1.7 SBOMs require complete dependency
+  graphs, PURLs, SPDX licenses, official schema validation, and 100% coverage.
+- Forces Node 24 for every GitHub Actions JavaScript action. PySide6 crosses
+  the 3.15 metadata limit through a controlled ABI3 wheel validation, while
+  Stable ABI, dependency-audit, packaging, and complete release safety gates
+  remain unchanged.
+
+### v2.2.0 RC2 — 2026-08-07
+
+- Gives the chin-rest pose a neutral speech-mouth base: the smiling eyes remain,
+  both corners stay fixed, and only the central lips follow A/I/U/E/O and jaw
+  aperture, eliminating the exaggerated grin and corner ghosting.
+- Moves Realtime, Windows local speech, OpenAI natural speech, and Azure Speech
+  onto one 20 ms / 50 Hz viseme clock with shorter open, close, and vowel-change
+  transitions.
+- Releases audio and the first viseme through the same playback gate, rejects
+  late vowels after playback ends, and permits only the final closed-mouth cue,
+  preventing visemes from stopping early or the mouth from reopening afterward.
+- Replaces the complete bilateral eye area during chin-rest idle blinks, so
+  open-eye eyeliner cannot remain above closed eyelids; idle and contextual
+  expressions now share one authoritative mask definition.
+- Makes tagged Draft Release publication recoverable and cleans up failed
+  attempts so incomplete assets cannot resemble a finished public release.
+- Adds 2 aligned creation-history panels to all four README languages,
+  documenting the frame-by-frame care behind MoHan's eyes, mouth corners, and
+  lip sync—and the more-than-twenty-year dream Flameblade is turning into
+  open-source software through testing.
+
+### v2.2.0 RC1 — 2026-08-06
+
+- Windows x64 remains the complete product surface with the verified ZIP,
+  EXE, MSI, MSI language transforms, and installer lifecycle tests.
+- Adds native macOS Apple Silicon (arm64) and Intel (x86_64) `.app`/`.dmg`
+  packages plus a Linux x86_64 `.AppImage` limited Preview. They expose only
+  launch, four-language UI, platform paths, and fail-closed boundaries; they
+  claim no Windows feature parity and accept no API keys, OAuth credentials,
+  or Home Assistant tokens.
+- Pull requests produce short-lived test artifacts only. Only immutable
+  `v2.2.0-rc.N` tags can create a GitHub pre-release, after every platform has
+  built and executed its package on a native CI runner.
+- Releases provide SHA256SUMS, CycloneDX SBOMs, an update manifest, and GitHub
+  artifact attestations, with curated Traditional Chinese, Simplified Chinese,
+  English, and Japanese release notes.
+
+### v2.1.0 RC1 — 2026-08-04
 
 - Migrated source, Windows CI, and packaging to Python 3.14 while preserving
   an explicit boundary for a future Python 3.15 lazy-import evaluation.
@@ -249,34 +347,16 @@ All notable public changes to MoHan Desktop Assistant are documented here.
   every existing custom prompt.
 - Corrected first-run label alignment and the over-wide smile while the
   chin-rest pose speaks, then refreshed the README and website screenshots.
-
-### 日本語
-
-- ソースコード、Windows CI、配布物を Python 3.14 へ移行し、将来の
-  Python 3.15 lazy imports 評価に備えた境界を残しました。
-- 日本語の最小利用経路と人格を追加しました。初回設定と対話型 EXE
-  インストーラーは、繁体字中国語、簡体字中国語、英語、日本語に対応します。
-  MSI は繁体字中国語を基準とし、三つの言語変換を提供します。
-- 文字会話の既定を `gpt-5.6-luna` に変更し、新規利用者向け一覧から旧 mini
-  を削除しました。独自モデル設定は上書きしません。
-- 交換可能な音声供給元と Azure Speech 女性音声プレビューを追加しました。
-  キー不足、オフライン、障害時は Windows 本機女性音声へ最初に戻ります。
-- 長期記憶のベクトル検索、意味要約、安全な整理、任意の背景ワーカー、音声
-  バッファーを改善しました。
-- 初回設定と本体画面を明るく高コントラストな大きめ文字へ刷新し、古風と
-  技術を融合した背景、墨寒のインストール画像、見やすいチェック欄、統一した
-  墨寒半身アイコンを追加しました。
-- 音声文字起こしの既定文を、繁体字中国語、簡体字中国語、英語、日本語と
-  利用者設定から作る中立的な内容へ変更しました。既存の独自文は上書きしません。
-- 初回設定の項目名の縦位置と、頬杖姿勢で話す際の過度に広い笑顔を修正し、
-  README と公式サイトの実機画像を最新版へ更新しました。
+- Continues the race-condition fixes for pose transitions, physical layers,
+  and speech handoffs. Jitter observed in RC3 must be retested with this
+  candidate and cannot be treated as a regression in this version.
 
 Verification: 56/56 automated test programs passed for the current RC1 source. The
 tagged Windows release workflow also passed source auditing, packaged self-test,
 silent EXE/MSI install and uninstall verification, checksum and SBOM generation,
 artifact attestation, and security checks.
 
-## v2.0.14 RC3 — 2026-08-02
+### v2.0.14 RC3 — 2026-08-02
 
 - Added a Traditional Chinese / Simplified Chinese / English first-run wizard
   and minimum usable English and zh-CN UI paths for chat, voice, permissions,
@@ -315,7 +395,7 @@ audit, packaged self-test, event-loop smoke test, silent EXE/MSI install and
 uninstall verification, checksum generation, SBOM generation, and artifact
 attestation before publication completes.
 
-## v2.0.14 RC — 2026-07-31
+### v2.0.14 RC — 2026-07-31
 
 - Fixed OpenAI streaming WAV headers overflowing during application-local
   volume processing, which could make all cloud speech silent.
@@ -332,7 +412,7 @@ Verification: 38/38 automated test programs, real OpenAI TTS playback,
 packaged self-test, packaged event-loop smoke test, and post-archive self-test
 passed before this release candidate.
 
-## v2.0.13 RC — 2026-07-31
+### v2.0.13 RC — 2026-07-31
 
 - Added a single motion compositor for breathing, speech emphasis, gaze, and
   emotional gestures.
@@ -349,3 +429,157 @@ passed before this release candidate.
 
 Verification: 37 automated test programs and a 25,000-step mixed animation,
 speech, gaze, and physics stress test passed before this release candidate.
+
+## 日本語
+
+本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### v2.3.0 RC1 — 予定、未公開
+
+- 製品、テスト、全パッケージを CPython 3.15.0rc1 のみに移行し、旧 Python
+  経路を廃止しました。PEP 810 の明示的遅延インポートと静的ガバナンス監査を
+  全プロジェクトへ導入しました。
+- PEP 814 `frozendict` の深い不変設定、PEP 798 の内包表記アンパック、
+  PEP 686 UTF-8 ファイル監査、PEP 661 センチネル管理、新しい
+  `bytearray.take_bytes()` 音声バッファー API を導入しました。
+- PEP 799 Tachyon による起動、50 Hz 口形同期、表情調停のサンプリング解析を
+  導入しました。JIT の有無は全テストに合格し、2.3.0 RC1 では既定で有効に
+  しながら互換性用の無効化設定を残します。
+- Tachyon 証拠は有効サンプル、読取エラー、漏れ、JIT 状態で判定し、匿名化して
+  公開します。CycloneDX 1.7 SBOM は完全な依存関係、PURL、SPDX ライセンス、
+  公式スキーマ検証、100% 網羅を必須とします。
+- GitHub Actions の JavaScript 動作はすべて Node 24 を強制します。PySide6 は
+  管理された ABI3 wheel 検証によって 3.15 のメタデータ制限に対応し、Stable
+  ABI、依存関係の安全監査、パッケージング、完全なリリース安全ゲートを維持します。
+
+### v2.2.0 RC2 — 2026-08-07
+
+- 頬杖姿勢の発話中は中立な口角ベースを使用します。目元の笑みを残しながら
+  左右の口角を固定し、中央の唇だけを A／I／U／E／O と開口量に合わせて
+  動かすことで、誇張された笑顔と残像を防ぎます。
+- Realtime、Windows ローカル音声、OpenAI 自然音声、Azure Speech を
+  共通の 20 ミリ秒／50 Hz 口形周期へ統一し、開口、閉口、母音切り替えの
+  遅延を短縮します。
+- 音声と最初の口形を同じ再生ゲートから開始し、再生終了後の遅延母音を拒否、
+  最後の閉口信号だけを通すことで、口だけが先に止まる現象や音声終了後に
+  再び口が開く現象を防ぎます。
+- 頬杖の待機中のまばたきでは両目全体を覆う共通マスクを使用し、閉じた
+  まぶたの上に開眼時のアイラインが残らないようにしました。待機表情と
+  状況表情は同じ座標・合成定義を共有します。
+- タグ発行時の Draft Release を安全に復旧・整理できるようにし、失敗した
+  発行が不完全な公開版として残らないようにしました。
+- 四言語 README に統一規格の制作過程図を2枚追加し、目、口角、口形を
+  フレーム単位で確認しながら、二十年以上の夢をテストによってオープンソース
+  作品へ鍛える姿勢を伝えます。
+
+### v2.2.0 RC1 — 2026-08-06
+
+- Windows x64 を完全機能版として維持し、検証済みの ZIP、EXE、MSI、MSI
+  言語変換、およびインストール／削除テストを継続します。
+- macOS Apple Silicon（arm64）／Intel（x86_64）両方のネイティブ
+  `.app`／`.dmg` と Linux x86_64 `.AppImage` の機能限定 Preview を追加します。
+  起動、四言語画面、保存先、安全な無効化だけを提供し、Windows 版との同等性を
+  主張せず、API キー、OAuth 認証情報、Home Assistant Token の入力も受け付けません。
+- Pull Request は短期テスト用成果物だけを作成します。GitHub のプレリリースを
+  作成できるのは変更しない `v2.2.0-rc.N` タグだけで、各 OS のネイティブ CI
+  上で配布物を作成し、起動確認に合格する必要があります。
+- SHA256SUMS、CycloneDX SBOM、更新マニフェスト、GitHub 成果物証明を提供し、
+  Release 説明は繁体字中国語・簡体字中国語・英語・日本語で作成します。
+
+### v2.1.0 RC1 — 2026-08-04
+
+- ソースコード、Windows CI、配布物を Python 3.14 へ移行し、将来の
+  Python 3.15 lazy imports 評価に備えた境界を残しました。
+- 日本語の最小利用経路と人格を追加しました。初回設定と対話型 EXE
+  インストーラーは、繁体字中国語、簡体字中国語、英語、日本語に対応します。
+  MSI は繁体字中国語を基準とし、三つの言語変換を提供します。
+- 文字会話の既定を `gpt-5.6-luna` に変更し、新規利用者向け一覧から旧 mini
+  を削除しました。独自モデル設定は上書きしません。
+- 交換可能な音声供給元と Azure Speech 女性音声プレビューを追加しました。
+  キー不足、オフライン、障害時は Windows 本機女性音声へ最初に戻ります。
+- 長期記憶のベクトル検索、意味要約、安全な整理、任意の背景ワーカー、音声
+  バッファーを改善しました。
+- 初回設定と本体画面を明るく高コントラストな大きめ文字へ刷新し、古風と
+  技術を融合した背景、墨寒のインストール画像、見やすいチェック欄、統一した
+  墨寒半身アイコンを追加しました。
+- 音声文字起こしの既定文を、繁体字中国語、簡体字中国語、英語、日本語と
+  利用者設定から作る中立的な内容へ変更しました。既存の独自文は上書きしません。
+- 初回設定の項目名の縦位置と、頬杖姿勢で話す際の過度に広い笑顔を修正し、
+  README と公式サイトの実機画像を最新版へ更新しました。
+- 姿勢切り替え、物理レイヤー、発話の受け渡しに関する競合修正を継続します。
+  RC3 で観察された揺れは本候補版で再検証する必要があり、本版の回帰とは
+  見なせません。
+
+検証：現在の RC1 ソースでは 56/56 個の自動テストプログラムが合格しました。
+タグ付き Windows リリースワークフローも、ソース監査、パッケージ自己テスト、
+EXE／MSI の無人インストールとアンインストール検証、checksum と SBOM の生成、
+成果物証明、セキュリティ検査に合格しました。
+
+### v2.0.14 RC3 — 2026-08-02
+
+- 繁体字中国語／簡体字中国語／英語の初回設定ウィザードと、チャット、音声、
+  権限、プロファイル、作業モード、リマインダー向けの最低限利用可能な英語および
+  zh-CN UI 経路を追加しました。
+- 完全な英語・簡体字中国語の墨寒人格プロンプトと、言語に合うオフライン応答、
+  モード通知、組み込みリマインダー音声を追加しました。UI 言語を切り替えると、
+  未変更の既定値を三言語間で翻訳し、独自のリマインダー文は上書きしません。
+- 新規利用者の音声出力を Windows ローカル音声へ変更し、基本体験では OpenAI
+  API キーを不要にしました。Windows の音声一覧には検証済みの女性音声だけを
+  表示します。zh-TW は引き続き Microsoft Yating を優先し、zh-CN は一致する
+  インストール済み女性音声を優先します。
+- 簡体字中国語専用の README とクイックスタート手順を追加しました。
+- 公式ホスト許可リスト、セマンティックバージョン検証、サイズ制限、SHA256 検証、
+  明示的なインストール確認、ローカルプロファイル保持を備えた、安全なアプリ内
+  安定版／プレビュー版更新確認を追加しました。
+- Windows x64 EXE／MSI インストーラーを自動化し、GitHub Actions で無人
+  インストール、自己テスト、アンインストールを検証します。
+- 完全な checksum 一覧、CycloneDX SBOM、更新マニフェスト、成果物証明、分類済み
+  自動生成 Release notes をリリースへ追加しました。
+- GitHub Secrets と専用 WordPress Application Password を使う、任意の
+  マーカー範囲限定 WordPress ダウンロードページ同期を追加しました。
+- 個人公開リポジトリで利用できない GitHub Secret Protection 機能の補償統制として、
+  Git 全履歴の Gitleaks 検査を追加しました。
+- 表示される「墨寒思考中」状態をキャラクター表情から分離しました。通常の文字・
+  音声質問では自然な姿勢を保ち、複雑なプロンプトには明確な遅延後だけ反応し、
+  異常に遅い応答では取消、クールダウン、重複排除を備えた既存の表情調停器を使います。
+- 成功応答、API 障害、通常音声、Realtime 遷移における AI 待機終了処理を統一し、
+  思考状態が発話へ残ったり、再生後に消えなかったりすることを防ぎます。
+
+検証：RC3 Pull Request 前に 45/45 個の自動テストプログラムが合格しました。
+タグ付きリリースワークフローは公開完了前に、公開内容監査、パッケージ自己テスト、
+イベントループ smoke test、EXE／MSI の無人インストールとアンインストール検証、
+checksum 生成、SBOM 生成、成果物証明にも合格しなければなりません。
+
+### v2.0.14 RC — 2026-07-31
+
+- アプリ内音量処理中に OpenAI ストリーミング WAV ヘッダーがオーバーフローし、
+  すべてのクラウド音声が無音になる可能性がある問題を修正しました。
+- ストリーミング用プレースホルダー長をコピーせず、実際に受信した音声バイトから
+  調整後の WAV ヘッダーを再構築しました。
+- OpenAI 音声の生成または再生に失敗した場合、Windows Yating へ自動的に
+  フォールバックするようにしました。
+- 通常のテキスト会話欄に入力された安全な読み取り専用 Gmail、Google Calendar、
+  Google Drive コマンドを、権限ゲート付きツールプランナーへ送るようにしました。
+- クラウド音声フォールバック、ストリーミング WAV 音量処理、Gmail 会話ルーティング、
+  作業タイマー分離の回帰テストを追加しました。
+
+検証：このリリース候補の公開前に、38/38 個の自動テストプログラム、実際の OpenAI
+TTS 再生、パッケージ自己テスト、パッケージイベントループ smoke test、アーカイブ後
+自己テストが合格しました。
+
+### v2.0.13 RC — 2026-07-31
+
+- 呼吸、発話強調、視線、感情ジェスチャーを扱う単一モーションコンポジターを
+  追加しました。
+- 動作変更時にまれに発生するキャラクターの揺れとレイヤー分離を修正しました。
+- 身体、顔、目、髪、袖、装飾レイヤーの同期を維持しました。
+- 発話後に待機状態へ戻る動きを滑らかにしました。
+- 白いアーティファクトとして現れる可能性がある人工的な目のハイライトを削除しました。
+- まばたき、表情、AIUEO 口形の連続性を改善しました。
+- 設定可能なキャラクター表示倍率を追加しました。
+- ポータブルプロファイル移行とモジュール化されたサービス境界を追加しました。
+- 未検証の Microsoft、GitHub、Home Assistant 連携に、明示的な公開プレビュー
+  警告を追加しました。
+
+検証：このリリース候補の公開前に、37 個の自動テストプログラムと、25,000 ステップの
+アニメーション、音声、視線、物理を混合したストレステストが合格しました。
