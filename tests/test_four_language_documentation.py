@@ -2,12 +2,13 @@ from __future__ import annotations
 
 lazy import subprocess
 lazy import sys
+lazy import tempfile
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-lazy from check_four_language_docs import audit_text
+lazy from check_four_language_docs import audit_repository, audit_text
 
 DOCUMENT = """# 文件／文档／Document／文書
 
@@ -57,11 +58,34 @@ def test_document_rejects_wrapped_english_word_repetition() -> None:
     assert "English section repeats adjacent word 'limited'" in errors
 
 
+def test_repository_audit_ignores_deleted_tracked_documents() -> None:
+    with tempfile.TemporaryDirectory(prefix="mohan-four-language-docs-") as raw:
+        root = Path(raw)
+        canonical = root / "README.md"
+        obsolete = root / "README.ja.md"
+        canonical.write_text(DOCUMENT, encoding="utf-8")
+        obsolete.write_text(DOCUMENT, encoding="utf-8")
+        subprocess.run(
+            ["git", "init", "--quiet"],
+            cwd=root,
+            check=True,
+        )
+        subprocess.run(
+            ["git", "add", "--", canonical.name, obsolete.name],
+            cwd=root,
+            check=True,
+        )
+        obsolete.unlink()
+
+        assert audit_repository(root) == {}
+
+
 def main() -> None:
     test_document_contract()
     test_document_requires_h1_and_only_language_h2_headings()
     test_document_rejects_untranslated_duplicate_section()
     test_document_rejects_wrapped_english_word_repetition()
+    test_repository_audit_ignores_deleted_tracked_documents()
     result = subprocess.run(
         [sys.executable, "tools/check_four_language_docs.py"],
         cwd=ROOT,

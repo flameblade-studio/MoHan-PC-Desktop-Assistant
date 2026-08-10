@@ -38,7 +38,7 @@
 
 墨寒是一套重視安全、隱私與角色連續感的 Windows 語音互動桌面助理，結合透明桌面角色、自然語音、由使用者控制的長期記憶、工作管理、權限控管工具，以及可擴充的雲端與智慧家庭連接器。她的角色背景是來自北宋、附生於赤焰劍中的千年女劍魂。
 
-[完整四語 README](README.md) · [簡中相容連結](README.zh-CN.md) · [日文相容連結](README.ja.md)
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">下載</a> ·
@@ -134,7 +134,7 @@
 </table>
 
 <p align="center">
-  <strong><a href="https://ko-fi.com/flamebladestudio">Ko-fi 贊助（單次或每月）</a></strong>
+  <strong>請使用儲存庫上方由 GitHub 顯示的 Sponsor 按鈕；目前正式收款選項為 Ko-fi，可選擇單次或每月贊助。</strong>
 </p>
 
 ### 創作者的話：把幻想鑄成軟體
@@ -426,7 +426,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 墨寒是一款重视安全、隐私与角色连续感的 Windows 语音互动桌面助手，结合透明桌面角色、自然语音、由用户控制的长期记忆、工作管理、权限控制工具，以及可扩展的云端与智能家居连接器。她的角色背景是来自北宋、寄宿于赤焰剑中的千年女剑魂。
 
-[完整四语 README](README.md) · [简中兼容链接](README.zh-CN.md) · [日文兼容链接](README.ja.md)
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">下载</a> ·
@@ -522,7 +522,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </table>
 
 <p align="center">
-  <strong><a href="https://ko-fi.com/flamebladestudio">Ko-fi 赞助（单次或每月）</a></strong>
+  <strong>请使用仓库上方由 GitHub 显示的 Sponsor 按钮；目前正式收款选项为 Ko-fi，可选择单次或每月赞助。</strong>
 </p>
 
 ### 创作者的话：把幻想铸成软件
@@ -814,7 +814,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 MoHan is a safety- and privacy-first, voice-interactive Windows desktop companion that combines a transparent character, natural speech, user-controlled long-term memory, productivity management, permission-gated tools, and extensible cloud and smart-home connectors. Her character is a thousand-year-old female sword spirit from the Northern Song dynasty who resides within the Crimson Flame Sword.
 
-[Complete four-language README](README.md) · [Simplified Chinese compatibility link](README.zh-CN.md) · [Japanese compatibility link](README.ja.md)
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Download</a> ·
@@ -910,7 +910,7 @@ MoHan remains free and MIT-licensed; support never buys privileges or changes an
 </table>
 
 <p align="center">
-  <strong><a href="https://ko-fi.com/flamebladestudio">Support on Ko-fi (one-time or monthly)</a></strong>
+  <strong>Use the Sponsor button displayed by GitHub above this repository; Ko-fi is the current official funding option and supports one-time or monthly contributions.</strong>
 </p>
 
 ### A note from the creator: forging imagination into software
@@ -1202,7 +1202,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 墨寒（MoHan）は、安全性、プライバシー、人格の連続性を大切にする音声対話型 Windows デスクトップアシスタントです。透明なデスクトップキャラクター、自然な音声、利用者が管理する長期記憶、仕事管理、権限付きツール、拡張可能なクラウドおよびスマートホーム接続を統合します。人物設定は、中国・北宋から来て赤焰剣に宿る千年の女性剣魂です。
 
-[完全な四言語 README](README.md) · [簡体字中国語の互換リンク](README.zh-CN.md) · [日本語の互換リンク](README.ja.md)
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">ダウンロード</a> ·
@@ -1298,7 +1298,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </table>
 
 <p align="center">
-  <strong><a href="https://ko-fi.com/flamebladestudio">Ko-fi で支援（1 回または毎月）</a></strong>
+  <strong>このリポジトリ上部に GitHub が表示する Sponsor ボタンをご利用ください。現在の正式な支援先は Ko-fi で、単発または毎月の支援を選べます。</strong>
 </p>
 
 ### 作者より：想像をソフトウェアへ鍛える

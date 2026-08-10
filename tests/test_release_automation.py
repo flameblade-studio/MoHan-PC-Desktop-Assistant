@@ -48,15 +48,13 @@ def test_version_runtime_and_evidence_policy() -> None:
         name: read(name)
         for name in (
             "README.md",
-            "README.zh-CN.md",
-            "README.ja.md",
             "QUICKSTART.md",
             "PUBLISHING.md",
         )
     }
     for name, content in current_docs.items():
         assert VERSION in content, f"current release missing from {name}"
-    for name in ("README.md", "README.zh-CN.md", "QUICKSTART.md"):
+    for name in ("README.md", "QUICKSTART.md"):
         assert "2.0.14-rc.3.exe" not in current_docs[name]
     assert_contains(
         read("docs/PYTHON-3.15-MIGRATION.md"),
@@ -273,10 +271,9 @@ def test_packaging_tools_and_public_media() -> None:
 
 def test_readme_language_and_contribution_contract() -> None:
     readme = read("README.md")
-    japanese = read("README.ja.md")
-    assert "日本語" in readme and "README.ja.md" in readme
-    assert "日本語の対応範囲" in japanese
-    assert "Azure Speech（プレビュー）" in japanese
+    assert "日本語" in readme
+    assert "日本語の対応範囲" in readme
+    assert "Azure Speech（プレビュー）" in readme
     assert "墨寒的傲嬌工程小劇場 / MoHan's Tsundere Developer Theatre" in readme
     expression_cards = readme.count(
         'width="33%" align="center"><img src="assets/expressions/'

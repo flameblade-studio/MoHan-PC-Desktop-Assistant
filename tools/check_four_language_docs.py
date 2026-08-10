@@ -53,7 +53,12 @@ def _tracked_documents(root: Path) -> tuple[Path, ...]:
         detail = result.stderr.strip() or "git ls-files failed"
         raise RuntimeError(detail)
     relative_paths = sorted(set(result.stdout.splitlines()))
-    return tuple(root / line for line in relative_paths if line)
+    documents: list[Path] = []
+    for relative_path in relative_paths:
+        path = root / relative_path
+        if path.is_file():
+            documents.append(path)
+    return tuple(documents)
 
 
 def _prefix_errors(prefix: str, *, require_h1: bool) -> list[str]:
