@@ -24,6 +24,10 @@ lazy from tools.validate_release_sboms import (
     _validate_components,
     load_policies,
 )
+lazy from version_info import FALLBACK_VERSION
+
+CURRENT_TAG = f"v{FALLBACK_VERSION}"
+CURRENT_PACKAGE_VERSION = _release_version(CURRENT_TAG)
 
 
 def expect_value_error(operation: Callable[[], object]) -> str:
@@ -48,8 +52,8 @@ def runtime_policy(
 
 
 def test_release_version_and_repository_policy_are_synchronized() -> None:
-    assert _release_version("v2.3.0-rc.1") == "2.3.0rc1"
-    for invalid in ("2.3.0-rc.1", "v2.3.0", "v2.3.0-rc.0"):
+    assert _release_version("v9.8.7-rc.6") == "9.8.7rc6"
+    for invalid in ("9.8.7-rc.6", "v9.8.7", "v9.8.7-rc.0"):
         message = expect_value_error(lambda value=invalid: _release_version(value))
         assert "vN.N.N-rc.N" in message
 
@@ -74,7 +78,7 @@ def test_release_version_and_repository_policy_are_synchronized() -> None:
             pyproject=ROOT / "pyproject.toml",
             root_name="mohan-desktop-assistant",
         ),
-        "2.3.0rc1",
+        CURRENT_PACKAGE_VERSION,
         windows,
     )
     _project_metadata(
@@ -85,7 +89,7 @@ def test_release_version_and_repository_policy_are_synchronized() -> None:
             pyproject=ROOT / "sbom" / "preview.pyproject.toml",
             root_name="mohan-desktop-assistant-preview",
         ),
-        "2.3.0rc1",
+        CURRENT_PACKAGE_VERSION,
         preview,
     )
 

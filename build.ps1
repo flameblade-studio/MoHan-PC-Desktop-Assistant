@@ -28,11 +28,11 @@ if (-not $Python) {
 
 $PythonVersion = (& $Python -c "import platform; print(platform.python_version())").Trim()
 if ($LASTEXITCODE -ne 0 -or $PythonVersion -ne "3.15.0rc1") {
-    throw "MoHan 2.3.0 RC1 packages must be built with Python 3.15.0rc1; found $PythonVersion."
+    throw "MoHan $Version packages must be built with Python 3.15.0rc1; found $PythonVersion."
 }
 $JitContract = (& $Python -c "import sys; print(f'{sys._jit.is_available()}:{sys._jit.is_enabled()}')").Trim()
 if ($LASTEXITCODE -ne 0 -or $JitContract -ne "True:True") {
-    throw "MoHan 2.3.0 RC1 packages require a Python 3.15.0rc1 runtime built with JIT enabled by default; found $JitContract."
+    throw "MoHan $Version packages require a Python 3.15.0rc1 runtime built with JIT enabled by default; found $JitContract."
 }
 
 $BuildInfo = Join-Path $ProjectRoot "build-info.json"

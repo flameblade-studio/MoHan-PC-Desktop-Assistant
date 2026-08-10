@@ -4,20 +4,23 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
-### v2.3.0 RC1 — 規劃中，尚未發布
+### v2.3.0 RC2 — 2026-08-10
 
 - 全面遷移至 CPython 3.15.0rc1，產品執行、測試與所有封裝不再保留舊版
   Python 路徑；全專案採用 PEP 810 明示延遲導入並加入靜態治理稽核。
 - 導入 PEP 814 `frozendict` 深層不可變設定、PEP 798 推導式解包、PEP 686
-  UTF-8 檔案稽核、PEP 661 哨兵治理及 `bytearray.take_bytes()` 音訊緩衝。
+  UTF-8 檔案稽核、PEP 661 哨兵治理及 `bytearray.take_bytes()` 音訊緩衝；
+  開頭比對改用 Python 3.15 語意更明確的 `re.prefixmatch()`。
 - 加入 PEP 799 Tachyon 取樣分析，可直接檢查啟動、50 Hz 嘴型同步與表情
-  仲裁器；JIT 開關均通過完整測試，2.3.0 RC1 預設啟用並保留相容性停用開關。
+  仲裁器；JIT 開關均通過完整測試，2.3.0 RC2 預設啟用並保留相容性停用開關。
 - CI 與 Release 以有效樣本、讀取錯誤、漏採樣及 JIT 狀態阻擋不合格的
   Tachyon 證據，並發布去識別化結果；CycloneDX 1.7 SBOM 強制完整依賴圖、
   PURL、SPDX 授權、官方結構驗證及 100% 覆蓋率。
 - 所有 GitHub Actions JavaScript 動作強制使用 Node 24；PySide6 以受控 ABI3
   輪子驗證跨越 3.15 中繼資料限制，Stable ABI、依賴安全稽核、封裝與完整
   發布安全閘門維持不變。
+- README 統一為繁中、簡中、英文、日文單一四語文件，移除重複相容文件與
+  直接收款連結；贊助入口只引導至儲存庫上方的官方 Sponsor 按鈕。
 
 ### v2.2.0 RC2 — 2026-08-07
 
@@ -137,20 +140,23 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
-### v2.3.0 RC1 — 计划中，尚未发布
+### v2.3.0 RC2 — 2026-08-10
 
 - 全面迁移至 CPython 3.15.0rc1，产品运行、测试及所有发布包不再保留旧版
   Python 路径；全项目采用 PEP 810 显式延迟导入并加入静态治理审计。
 - 导入 PEP 814 `frozendict` 深层不可变配置、PEP 798 推导式解包、PEP 686
-  UTF-8 文件审计、PEP 661 哨兵治理及 `bytearray.take_bytes()` 音频缓冲。
+  UTF-8 文件审计、PEP 661 哨兵治理及 `bytearray.take_bytes()` 音频缓冲；
+  开头匹配改用 Python 3.15 语义更明确的 `re.prefixmatch()`。
 - 加入 PEP 799 Tachyon 采样分析，可直接检查启动、50 Hz 口型同步与表情
-  仲裁器；JIT 开关均通过完整测试，2.3.0 RC1 默认启用并保留兼容性停用开关。
+  仲裁器；JIT 开关均通过完整测试，2.3.0 RC2 默认启用并保留兼容性停用开关。
 - CI 与 Release 以有效样本、读取错误、漏采样及 JIT 状态阻止不合格的
   Tachyon 证据，并发布去标识化结果；CycloneDX 1.7 SBOM 强制完整依赖图、
   PURL、SPDX 许可证、官方结构验证及 100% 覆盖率。
 - 所有 GitHub Actions JavaScript 动作强制使用 Node 24；PySide6 以受控 ABI3
   轮子验证跨越 3.15 元数据限制，Stable ABI、依赖安全审计、打包及完整
   发布安全闸门保持不变。
+- README 统一为繁中、简中、英文、日文单一四语文件，删除重复兼容文件及
+  直接收款链接；赞助入口只引导至仓库上方的官方 Sponsor 按钮。
 
 ### v2.2.0 RC2 — 2026-08-07
 
@@ -269,16 +275,17 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 
 All notable public changes to MoHan Desktop Assistant are documented here.
 
-### v2.3.0 RC1 — planned, not yet published
+### v2.3.0 RC2 — 2026-08-10
 
 - Moves the product, tests, and every package exclusively to CPython
   3.15.0rc1, with project-wide explicit PEP 810 lazy imports and static
   governance auditing; no legacy Python path remains.
 - Adds deeply immutable PEP 814 `frozendict` configuration, PEP 798 unpacking
   comprehensions, PEP 686 UTF-8 file auditing, PEP 661 sentinel governance,
-  and the new `bytearray.take_bytes()` audio-buffer API.
+  the new `bytearray.take_bytes()` audio-buffer API, and Python 3.15's more
+  explicit `re.prefixmatch()` for prefix matching.
 - Adds PEP 799 Tachyon profiling for startup, 50 Hz lip sync, and expression
-  arbitration. Both JIT modes pass the complete suite; 2.3.0 RC1 defaults JIT
+  arbitration. Both JIT modes pass the complete suite; 2.3.0 RC2 defaults JIT
   on while retaining a compatibility disable switch.
 - Gates sanitized Tachyon evidence on valid samples, stack-read errors, missed
   samples, and JIT state. CycloneDX 1.7 SBOMs require complete dependency
@@ -287,6 +294,9 @@ All notable public changes to MoHan Desktop Assistant are documented here.
   the 3.15 metadata limit through a controlled ABI3 wheel validation, while
   Stable ABI, dependency-audit, packaging, and complete release safety gates
   remain unchanged.
+- Consolidates the README into one Traditional Chinese, Simplified Chinese,
+  English, and Japanese document, removes duplicate compatibility files and
+  direct payment links, and points support only to GitHub's official Sponsor button.
 
 ### v2.2.0 RC2 — 2026-08-07
 
@@ -434,16 +444,17 @@ speech, gaze, and physics stress test passed before this release candidate.
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
 
-### v2.3.0 RC1 — 予定、未公開
+### v2.3.0 RC2 — 2026-08-10
 
 - 製品、テスト、全パッケージを CPython 3.15.0rc1 のみに移行し、旧 Python
   経路を廃止しました。PEP 810 の明示的遅延インポートと静的ガバナンス監査を
   全プロジェクトへ導入しました。
 - PEP 814 `frozendict` の深い不変設定、PEP 798 の内包表記アンパック、
   PEP 686 UTF-8 ファイル監査、PEP 661 センチネル管理、新しい
-  `bytearray.take_bytes()` 音声バッファー API を導入しました。
+  `bytearray.take_bytes()` 音声バッファー API、先頭一致を明示する Python 3.15 の
+  `re.prefixmatch()` を導入しました。
 - PEP 799 Tachyon による起動、50 Hz 口形同期、表情調停のサンプリング解析を
-  導入しました。JIT の有無は全テストに合格し、2.3.0 RC1 では既定で有効に
+  導入しました。JIT の有無は全テストに合格し、2.3.0 RC2 では既定で有効に
   しながら互換性用の無効化設定を残します。
 - Tachyon 証拠は有効サンプル、読取エラー、漏れ、JIT 状態で判定し、匿名化して
   公開します。CycloneDX 1.7 SBOM は完全な依存関係、PURL、SPDX ライセンス、
@@ -451,6 +462,9 @@ speech, gaze, and physics stress test passed before this release candidate.
 - GitHub Actions の JavaScript 動作はすべて Node 24 を強制します。PySide6 は
   管理された ABI3 wheel 検証によって 3.15 のメタデータ制限に対応し、Stable
   ABI、依存関係の安全監査、パッケージング、完全なリリース安全ゲートを維持します。
+- README を繁体字中国語、簡体字中国語、英語、日本語の一つの四言語文書へ統合し、
+  重複する互換文書と直接決済リンクを削除しました。支援案内はリポジトリ上部の
+  公式 Sponsor ボタンだけに統一します。
 
 ### v2.2.0 RC2 — 2026-08-07
 

@@ -47,7 +47,10 @@ class IdiomAudit(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Call(self, node: ast.Call) -> None:
-        if call_name(node.func) in {
+        name = call_name(node.func)
+        if name == "re.match":
+            self.finding(node, "LEGACY_RE_MATCH")
+        if name in {
             "chain.from_iterable",
             "itertools.chain.from_iterable",
         }:

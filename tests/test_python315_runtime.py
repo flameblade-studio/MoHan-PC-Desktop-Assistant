@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import io
+lazy import re
 lazy import subprocess
 lazy import sys
 lazy from pathlib import Path
@@ -42,6 +43,7 @@ def main() -> None:
     assert callable(sys.get_lazy_imports_filter)
     assert callable(sys.set_lazy_imports_filter)
     assert io.text_encoding(None) == "utf-8"
+    assert re.prefixmatch(r"^MoHan", "MoHan Desktop Assistant") is not None
     assert JIT_DISABLE_ENV == "MOHAN_DISABLE_JIT"
     assert JIT_REEXEC_ENV == "MOHAN_JIT_REEXEC"
     aware_now = local_aware_time()
