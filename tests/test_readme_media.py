@@ -6,6 +6,14 @@ lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MEDIA = ROOT / "docs" / "media"
+VERSION_MATCH = re.search(
+    r'^FALLBACK_VERSION = "([^"]+)"$',
+    (ROOT / "version_info.py").read_text(encoding="utf-8"),
+    re.MULTILINE,
+)
+assert VERSION_MATCH, "version_info.py must define one literal FALLBACK_VERSION"
+SOURCE_VERSION = VERSION_MATCH.group(1)
+SHIELD_VERSION = SOURCE_VERSION.replace("-", "--")
 PNG_FILES = {
     "mohan-hero.png": (1600, 900),
     "first-run-wizard.png": None,
@@ -45,9 +53,17 @@ README_BADGES = (
         "actions/workflows/secret-defense.yml/badge.svg"),
     ),
     (
-        "Latest Release",
+        f"Development Version v{SOURCE_VERSION}",
+        (
+            "https://img.shields.io/badge/development_version-"
+            f"v{SHIELD_VERSION}-5c6ac4.svg"
+        ),
+    ),
+    (
+        "Latest Published Release",
         ("https://img.shields.io/github/v/release/"
-        "hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=release"),
+        "hitoshic1982/MoHan-PC-Desktop-Assistant?"
+        "include_prereleases&label=published"),
     ),
     ("MIT License", "https://img.shields.io/badge/license-MIT-blue.svg"),
     (
@@ -100,6 +116,9 @@ def _localized_readmes() -> dict[str, str]:
 
 
 def _assert_certification_badges(localized_readmes: dict[str, str]) -> None:
+    assert len(set(localized_readmes.values())) == 1, (
+        "all three README entry points must remain byte-for-byte identical"
+    )
     badge_blocks: dict[str, str] = {}
     for name, content in localized_readmes.items():
         badge_match = re.search(
