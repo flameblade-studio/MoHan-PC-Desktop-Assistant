@@ -8,7 +8,7 @@
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.1" src="https://img.shields.io/badge/development_version-v2.3.0--rc.1-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.2" src="https://img.shields.io/badge/development_version-v2.3.0--rc.2-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -32,7 +32,7 @@
 
 <p align="center">
   <strong>軟體作者：CHOU MING HUA</strong><br>
-  準備發布的公開預覽版：v2.3.0 RC1（`v2.3.0-rc.1`）<br>
+  準備發布的公開預覽版：v2.3.0 RC2（`v2.3.0-rc.2`）<br>
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -332,11 +332,11 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - PEP 803／820／793 Stable ABI 與 C API 邊界會驗證官方 ABI3 輪子；墨寒沒有第一方 C 擴充。
 - CycloneDX 1.7 Windows／Preview SBOM 必須符合鎖定依賴、授權、PURL、完整根依賴邊、官方結構與隱私驗證。
 
-兩輪各 20,000 次表情、物理與嘴型整合壓測均通過；JIT 關閉／開啟分別耗時 24.639／25.068 秒，工作集成長 10.62／12.94 MB。Ryzen 5 5600X Windows 三輪熱路徑中位數顯示，120,000 次表情仲裁由 0.462 秒降為 0.293 秒，2,000 個 50 Hz 嘴型節拍由 1.873 秒降為 0.571 秒，兩種模式的決策與校驗結果完全相同。
+兩輪各 20,000 次表情、物理與嘴型整合壓測均通過；JIT 關閉／開啟分別耗時 24.639／25.068 秒，工作集成長 10.62／12.94 MB。同一部 Ryzen 5 5600X Windows 實機另執行三輪熱路徑比較；JIT 開啟相對關閉時，120,000 次表情仲裁為 0.86–0.98 倍（中位數 0.97 倍，未證實加速），2,000 個 50 Hz 嘴型節拍為 1.45–1.65 倍（中位數 1.48 倍），每輪的決策與校驗結果完全相同。
 
-Tachyon 在 JIT 開啟環境對啟動、50 Hz 嘴型同步與表情仲裁分別保留 3,908／11,107／3,604 個有效樣本；堆疊讀取錯誤率為 5.08%／2.71%／0.74%，漏採樣率皆為 0%。CI 保存去識別化 flamegraph、JSONL、pstats、GC／配置／執行緒資料與 SHA-256。
+Tachyon 在 JIT 開啟環境對啟動、50 Hz 嘴型同步與表情仲裁分別保留 4,553／11,482／3,475 個有效樣本；堆疊讀取錯誤率為 6.20%／2.23%／0.57%，漏採樣率為 0.02%／0%／0%。CI 保存去識別化 flamegraph、JSONL、pstats、GC／配置／執行緒資料與 SHA-256。
 
-這些數據是指定熱路徑與取樣工作的證據，不表示整套應用程式必然快三倍。完整採用矩陣、回復方式與未來觸發條件見 [Python 3.15 遷移說明](docs/PYTHON-3.15-MIGRATION.md)。
+這些數據是指定熱路徑與取樣工作的證據，不表示整套應用程式會得到一致加速。完整採用矩陣、回復方式與未來觸發條件見 [Python 3.15 遷移說明](docs/PYTHON-3.15-MIGRATION.md)。
 
 ### 從原始碼執行
 
@@ -356,7 +356,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.1"
+.\build.ps1 -Version "2.3.0-rc.2"
 ```
 
 歷史上的 v2.1.0 RC1 在發布前通過 55 項自動測試程式，以及 Windows 發布工作流程的原始碼稽核、封裝自我測試、安裝／移除驗證與安全檢查；自動測試不能取代尚未完成的第三方真實環境驗證。
@@ -396,7 +396,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.1" src="https://img.shields.io/badge/development_version-v2.3.0--rc.1-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.2" src="https://img.shields.io/badge/development_version-v2.3.0--rc.2-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -420,7 +420,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>软件作者：CHOU MING HUA</strong><br>
-  准备发布的公开预览版：v2.3.0 RC1（`v2.3.0-rc.1`）<br>
+  准备发布的公开预览版：v2.3.0 RC2（`v2.3.0-rc.2`）<br>
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -720,11 +720,11 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - PEP 803／820／793 Stable ABI 与 C API 边界会验证官方 ABI3 轮子；墨寒没有第一方 C 扩展。
 - CycloneDX 1.7 Windows／Preview SBOM 必须符合锁定依赖、许可证、PURL、完整根依赖边、官方结构与隐私验证。
 
-两轮各 20,000 次表情、物理与口型集成压力测试均通过；JIT 关闭／开启分别耗时 24.639／25.068 秒，工作集增长 10.62／12.94 MB。Ryzen 5 5600X Windows 三轮热路径中位数显示，120,000 次表情仲裁由 0.462 秒降至 0.293 秒，2,000 个 50 Hz 口型节拍由 1.873 秒降至 0.571 秒，两种模式的决策与校验结果完全相同。
+两轮各 20,000 次表情、物理与口型集成压力测试均通过；JIT 关闭／开启分别耗时 24.639／25.068 秒，工作集增长 10.62／12.94 MB。同一台 Ryzen 5 5600X Windows 真机另执行三轮热路径比较；JIT 开启相对关闭时，120,000 次表情仲裁为 0.86–0.98 倍（中位数 0.97 倍，未证实加速），2,000 个 50 Hz 口型节拍为 1.45–1.65 倍（中位数 1.48 倍），每轮的决策与校验结果完全相同。
 
-Tachyon 在 JIT 开启环境对启动、50 Hz 口型同步与表情仲裁分别保留 3,908／11,107／3,604 个有效样本；堆栈读取错误率为 5.08%／2.71%／0.74%，漏采样率均为 0%。CI 保存去标识化 flamegraph、JSONL、pstats、GC／配置／线程数据与 SHA-256。
+Tachyon 在 JIT 开启环境对启动、50 Hz 口型同步与表情仲裁分别保留 4,553／11,482／3,475 个有效样本；堆栈读取错误率为 6.20%／2.23%／0.57%，漏采样率为 0.02%／0%／0%。CI 保存去标识化 flamegraph、JSONL、pstats、GC／配置／线程数据与 SHA-256。
 
-这些数据是指定热路径与采样工作的证据，不表示整套应用程序必然快三倍。完整采用矩阵、回退方式与未来触发条件见 [Python 3.15 迁移说明](docs/PYTHON-3.15-MIGRATION.md)。
+这些数据是指定热路径与采样工作的证据，不表示整套应用程序会获得一致加速。完整采用矩阵、回退方式与未来触发条件见 [Python 3.15 迁移说明](docs/PYTHON-3.15-MIGRATION.md)。
 
 ### 从源代码运行
 
@@ -744,7 +744,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.1"
+.\build.ps1 -Version "2.3.0-rc.2"
 ```
 
 历史上的 v2.1.0 RC1 在发布前通过 55 项自动测试程序，以及 Windows 发布工作流的源代码审计、打包自测、安装／卸载验证与安全检查；自动测试不能代替尚未完成的第三方真实环境验证。
@@ -784,7 +784,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.1" src="https://img.shields.io/badge/development_version-v2.3.0--rc.1-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.2" src="https://img.shields.io/badge/development_version-v2.3.0--rc.2-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -808,7 +808,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>Author: CHOU MING HUA</strong><br>
-  Prepared public preview: v2.3.0 RC1 (`v2.3.0-rc.1`)<br>
+  Prepared public preview: v2.3.0 RC2 (`v2.3.0-rc.2`)<br>
   Windows 10/11 complete build · macOS/Linux limited Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -1108,11 +1108,11 @@ MoHan supports only the CPython `3.15.0rc1` runtime and does not retain a second
 - PEP 803/820/793 Stable ABI and C API boundaries validate official ABI3 wheels; MoHan has no first-party C extension.
 - CycloneDX 1.7 Windows/Preview SBOMs must pass pinned-dependency, license, PURL, complete root-edge, official-structure, and privacy validation.
 
-Two 20,000-cycle integrated expression, physics, and lip-sync stress runs passed. JIT-off/on times were 24.639/25.068 seconds with working-set growth of 10.62/12.94 MB. Three-run Windows hot-path medians on a Ryzen 5 5600X reduced 120,000 expression-arbitration operations from 0.462 to 0.293 seconds and 2,000 50 Hz lip-sync ticks from 1.873 to 0.571 seconds, with identical decisions and validation results in both modes.
+Two 20,000-cycle integrated expression, physics, and lip-sync stress runs passed. JIT-off/on times were 24.639/25.068 seconds with working-set growth of 10.62/12.94 MB. Three additional hot-path comparisons ran on the same Ryzen 5 5600X Windows host. With JIT on relative to off, 120,000 expression-arbitration operations measured 0.86–0.98x speed (0.97x median, with no demonstrated speedup), while 2,000 50 Hz lip-sync ticks measured 1.45–1.65x (1.48x median); decisions and validation results matched in every run.
 
-With JIT enabled, Tachyon retained 3,908/11,107/3,604 valid samples for startup, 50 Hz lip sync, and expression arbitration. Stack-read error rates were 5.08%/2.71%/0.74%, and missed-sample rates were 0%. CI retains sanitized flamegraph, JSONL, pstats, GC, configuration, thread, and SHA-256 evidence.
+With JIT enabled, Tachyon retained 4,553/11,482/3,475 valid samples for startup, 50 Hz lip sync, and expression arbitration. Stack-read error rates were 6.20%/2.23%/0.57%, and missed-sample rates were 0.02%/0%/0%. CI retains sanitized flamegraph, JSONL, pstats, GC, configuration, thread, and SHA-256 evidence.
 
-These measurements are evidence for specific hot paths and sampling tasks; they do not claim that the whole application is necessarily three times faster. See the [Python 3.15 migration guide](docs/PYTHON-3.15-MIGRATION.md) for the complete adoption matrix, rollback, and future triggers.
+These measurements are evidence for specific hot paths and sampling tasks; they do not claim uniform acceleration of the complete application. See the [Python 3.15 migration guide](docs/PYTHON-3.15-MIGRATION.md) for the complete adoption matrix, rollback, and future triggers.
 
 ### Run from source
 
@@ -1132,7 +1132,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.1"
+.\build.ps1 -Version "2.3.0-rc.2"
 ```
 
 Historically, v2.1.0 RC1 passed 55 automated test programs plus the Windows release workflow's source audit, packaged self-test, install/uninstall verification, and security checks before publication. Automated tests do not replace incomplete third-party live validation.
@@ -1172,7 +1172,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.1" src="https://img.shields.io/badge/development_version-v2.3.0--rc.1-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.2" src="https://img.shields.io/badge/development_version-v2.3.0--rc.2-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -1196,7 +1196,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>ソフトウェア作者：CHOU MING HUA</strong><br>
-  公開準備中のプレビュー：v2.3.0 RC1（`v2.3.0-rc.1`）<br>
+  公開準備中のプレビュー：v2.3.0 RC2（`v2.3.0-rc.2`）<br>
   Windows 10/11 完全版 · macOS／Linux 機能限定 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -1496,11 +1496,11 @@ Home Assistant や墨寒の遠隔ポートを公衆インターネットへ直�
 - PEP 803／820／793 Stable ABI と C API 境界は公式 ABI3 wheel を検証します。墨寒に第一者 C 拡張はありません。
 - CycloneDX 1.7 Windows／Preview SBOM は固定依存関係、ライセンス、PURL、完全なルート依存エッジ、公式構造、プライバシー検証に合格しなければなりません。
 
-表情、物理、リップシンクを統合した各 20,000 回のストレス試験を二回実行し合格しました。JIT 無効／有効時は 24.639／25.068 秒、ワーキングセット増加は 10.62／12.94 MB でした。Ryzen 5 5600X Windows 実機の三回中央値では、120,000 回の表情調停が 0.462 秒から 0.293 秒へ、2,000 回の 50 Hz リップシンク tick が 1.873 秒から 0.571 秒へ短縮し、両モードの判断と検証結果は一致しました。
+表情、物理、リップシンクを統合した各 20,000 回のストレス試験を二回実行し合格しました。JIT 無効／有効時は 24.639／25.068 秒、ワーキングセット増加は 10.62／12.94 MB でした。同じ Ryzen 5 5600X Windows 実機でホットパス比較をさらに三回実行しました。JIT 無効時に対する有効時の速度比は、120,000 回の表情調停で 0.86～0.98 倍（中央値 0.97 倍、加速は確認できず）、2,000 回の 50 Hz リップシンク tick で 1.45～1.65 倍（中央値 1.48 倍）となり、各回の判断と検証結果は一致しました。
 
-JIT 有効時、Tachyon は起動、50 Hz リップシンク、表情調停でそれぞれ 3,908／11,107／3,604 件の有効サンプルを保持しました。スタック読取エラー率は 5.08%／2.71%／0.74%、欠落サンプル率はすべて 0% です。CI は匿名化済み flamegraph、JSONL、pstats、GC、設定、thread、SHA-256 証拠を保存します。
+JIT 有効時、Tachyon は起動、50 Hz リップシンク、表情調停でそれぞれ 4,553／11,482／3,475 件の有効サンプルを保持しました。スタック読取エラー率は 6.20%／2.23%／0.57%、欠落サンプル率は 0.02%／0%／0% です。CI は匿名化済み flamegraph、JSONL、pstats、GC、設定、thread、SHA-256 証拠を保存します。
 
-これらは特定ホットパスとサンプリング処理の証拠であり、アプリケーション全体が必ず三倍高速になるという主張ではありません。完全な採用表、ロールバック、将来の導入条件は [Python 3.15 移行説明](docs/PYTHON-3.15-MIGRATION.md)をご覧ください。
+これらは特定ホットパスとサンプリング処理の証拠であり、アプリケーション全体が一様に高速化するという主張ではありません。完全な採用表、ロールバック、将来の導入条件は [Python 3.15 移行説明](docs/PYTHON-3.15-MIGRATION.md)をご覧ください。
 
 ### ソースコードから実行
 
@@ -1520,7 +1520,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.1"
+.\build.ps1 -Version "2.3.0-rc.2"
 ```
 
 過去の v2.1.0 RC1 は公開前に 55 個の自動テストプログラムと、Windows リリースワークフローのソース監査、パッケージ自己試験、インストール／削除検証、安全検査に合格しました。自動テストは、未完了の第三者実環境検証に代わりません。

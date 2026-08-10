@@ -6,15 +6,25 @@ lazy from pathlib import Path
 lazy from migrate_python315_imports import ROOT, python_files
 
 REMOVED_CALLS = frozenset({
+    "ctypes.SetPointerType",
+    "glob.glob0",
+    "glob.glob1",
+    "platform.java_ver",
     "threading.activeCount",
     "threading.currentThread",
     "threading.enumerateThreads",
+    "typing.no_type_check_decorator",
 })
 REMOVED_METHODS = frozenset({
+    "getmark",
+    "getmarkers",
     "getName",
     "isAlive",
     "isSet",
+    "is_reserved",
+    "load_module",
     "notifyAll",
+    "setmark",
     "setDaemon",
     "setName",
 })
@@ -34,11 +44,29 @@ REMOVED_MODULES = frozenset({
     "pipes",
     "sndhdr",
     "spwd",
+    "sre_compile",
+    "sre_constants",
+    "sre_parse",
     "sunau",
     "telnetlib",
     "uu",
     "xdrlib",
 })
+REMOVED_IMPORTS = frozendict({
+    "ctypes": frozenset({"SetPointerType"}),
+    "glob": frozenset({"glob0", "glob1"}),
+    "http.server": frozenset({"CGIHTTPRequestHandler"}),
+    "platform": frozenset({"java_ver"}),
+    "typing": frozenset({"no_type_check_decorator"}),
+})
+DEPRECATED_CALLS = frozenset({
+    "asyncio.get_event_loop_policy",
+    "asyncio.iscoroutinefunction",
+    "asyncio.set_event_loop_policy",
+    "os.path.commonprefix",
+    "sys._clear_type_cache",
+})
+DEPRECATED_MODULES = frozenset({"profile"})
 
 
 def call_name(node: ast.AST) -> str | None:
@@ -63,7 +91,9 @@ def literal_mode(node: ast.Call) -> str | None:
         value = node.args[1]
     else:
         return "r"
-    return value.value if isinstance(value, ast.Constant) and isinstance(value.value, str) else None
+    if isinstance(value, ast.Constant) and isinstance(value.value, str):
+        return value.value
+    return None
 
 
 class CompatibilityAudit(ast.NodeVisitor):
@@ -97,12 +127,24 @@ class CompatibilityAudit(ast.NodeVisitor):
 
     def visit_Import(self, node: ast.Import) -> None:
         for alias in node.names:
-            if alias.name.partition(".")[0] in REMOVED_MODULES:
+            root_name = alias.name.partition(".")[0]
+            if root_name in REMOVED_MODULES:
                 self.issue(node, f"REMOVED_MODULE {alias.name}")
+            if root_name in DEPRECATED_MODULES:
+                self.issue(node, f"DEPRECATED_MODULE {alias.name}")
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
-        if node.module and node.module.partition(".")[0] in REMOVED_MODULES:
+        if not node.module:
+            return
+        root_name = node.module.partition(".")[0]
+        if root_name in REMOVED_MODULES:
             self.issue(node, f"REMOVED_MODULE {node.module}")
+        if root_name in DEPRECATED_MODULES:
+            self.issue(node, f"DEPRECATED_MODULE {node.module}")
+        removed_names = REMOVED_IMPORTS.get(node.module, frozenset())
+        for alias in node.names:
+            if alias.name in removed_names:
+                self.issue(node, f"REMOVED_API {node.module}.{alias.name}")
 
     def visit_Call(self, node: ast.Call) -> None:
         name = call_name(node.func)
@@ -111,6 +153,24 @@ class CompatibilityAudit(ast.NodeVisitor):
             and node.func.attr in REMOVED_METHODS
         ):
             self.issue(node, f"REMOVED_API {name}")
+        if name in DEPRECATED_CALLS:
+            self.issue(node, f"DEPRECATED_API {name}")
+        if name in {"RLock", "threading.RLock"} and (node.args or node.keywords):
+            self.issue(node, f"REMOVED_ARGUMENTS {name}")
+        if name == "importlib.resources.files" and keyword_present(node, "package"):
+            self.issue(node, "REMOVED_ARGUMENT importlib.resources.files.package")
+        if name == "sysconfig.is_python_build" and keyword_present(node, "check_home"):
+            self.issue(node, "REMOVED_ARGUMENT sysconfig.is_python_build.check_home")
+        if name in {"NamedTuple", "typing.NamedTuple"} and node.keywords:
+            self.issue(node, f"REMOVED_KEYWORD_FORM {name}")
+        if name in {"TypedDict", "typing.TypedDict"} and (
+            len(node.args) < 2
+            or (
+                isinstance(node.args[1], ast.Constant)
+                and node.args[1].value is None
+            )
+        ):
+            self.issue(node, f"REMOVED_EMPTY_FORM {name}")
 
         if name in {"open", "builtins.open", "io.open"}:
             mode = literal_mode(node)

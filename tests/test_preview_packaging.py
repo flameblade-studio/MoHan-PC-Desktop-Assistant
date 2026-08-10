@@ -194,7 +194,7 @@ def test_release_gate_is_pinned() -> None:
 
 
 def test_release_version_has_one_source_of_truth() -> None:
-    assert FALLBACK_VERSION == "2.3.0-rc.1"
+    assert re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*", FALLBACK_VERSION)
     tag = f"v{FALLBACK_VERSION}"
     assert (ROOT / "docs" / "releases" / f"{tag}.md").is_file()
     release = read(".github/workflows/release.yml")
@@ -208,7 +208,7 @@ def test_release_version_has_one_source_of_truth() -> None:
 
 
 def test_four_language_release_notes_and_boundaries() -> None:
-    notes = read("docs/releases/v2.3.0-rc.1.md")
+    notes = read(f"docs/releases/v{FALLBACK_VERSION}.md")
     expected_headings = (
         "## 繁體中文",
         "## 简体中文",

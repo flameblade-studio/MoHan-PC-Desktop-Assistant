@@ -20,8 +20,11 @@ lazy from tools.sync_wordpress_download_page import (
     release_block,
     replace_managed_block,
 )
+lazy from version_info import FALLBACK_VERSION
 
-VERSION = "2.3.0-rc.1"
+VERSION = FALLBACK_VERSION
+VERSION_PREFIX, CANDIDATE_NUMBER = VERSION.rsplit(".", maxsplit=1)
+NEXT_VERSION = f"{VERSION_PREFIX}.{int(CANDIDATE_NUMBER) + 1}"
 TAG = f"v{VERSION}"
 PREFIX = f"MoHan-Desktop-Assistant-{TAG}"
 REPOSITORY = "hitoshic1982/MoHan-PC-Desktop-Assistant"
@@ -44,12 +47,16 @@ def assert_image(path: Path, size: tuple[int, int]) -> None:
 
 def test_version_runtime_and_evidence_policy() -> None:
     assert f'FALLBACK_VERSION = "{VERSION}"' in read("version_info.py")
+    package_version = VERSION.replace("-rc.", "rc")
+    for metadata in ("pyproject.toml", "sbom/preview.pyproject.toml"):
+        assert f'version = "{package_version}"' in read(metadata)
     current_docs = {
         name: read(name)
         for name in (
             "README.md",
             "QUICKSTART.md",
             "PUBLISHING.md",
+            "CITATION.cff",
         )
     }
     for name, content in current_docs.items():
@@ -425,11 +432,11 @@ def assert_release_website_block(manifest: dict[str, object]) -> None:
 
     initial = "<p>保留的網站內容</p>"
     first = replace_managed_block(initial, block)
-    second = replace_managed_block(first, block.replace(VERSION, "2.3.0-rc.2"))
+    second = replace_managed_block(first, block.replace(VERSION, NEXT_VERSION))
     assert second.count(START_MARKER) == 1
     assert second.count(END_MARKER) == 1
     assert "保留的網站內容" in second
-    assert "2.3.0-rc.2" in second
+    assert NEXT_VERSION in second
 
 
 def test_portable_website_block() -> None:

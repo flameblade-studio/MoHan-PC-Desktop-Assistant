@@ -583,7 +583,11 @@ def _sanitize_text_artifact(
 ) -> None:
     content = path.read_text(encoding="utf-8")
     for source, replacement in replacements:
-        flags = re.IGNORECASE if re.match(r"^[a-z]:", source, re.IGNORECASE) else 0
+        flags = (
+            re.IGNORECASE
+            if re.prefixmatch(r"^[a-z]:", source, re.IGNORECASE)
+            else 0
+        )
         content = re.sub(
             re.escape(source),
             lambda _match, value=replacement: value,

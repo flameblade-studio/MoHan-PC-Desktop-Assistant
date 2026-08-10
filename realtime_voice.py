@@ -362,7 +362,7 @@ class RealtimeVoiceClient(QObject):
             if (
                 value
                 and len(value) <= 40
-                and not re.match(
+                and not re.prefixmatch(
                     r"^(?:請|使用|保留|不要|轉錄|語言|请|准确|"
                     r"Please|Preserve|Keep|do not|日本語|固有名詞)",
                     value,
