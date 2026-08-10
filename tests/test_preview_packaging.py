@@ -217,7 +217,8 @@ def test_four_language_release_notes_and_boundaries() -> None:
     )
     positions = [notes.index(heading) for heading in expected_headings]
     assert positions == sorted(positions)
-    for phrase in ("limited Preview", "功能受限", "機能限定"):
+    assert re.search(r"limited\s+Preview", notes)
+    for phrase in ("功能受限", "機能限定"):
         assert phrase in notes
     guide = read("docs/PREVIEW-PACKAGES.md")
     for heading in expected_headings:

@@ -22,6 +22,12 @@ FENCED_CODE_PATTERN = re.compile(
 INLINE_CODE_PATTERN = re.compile(r"(?<!`)`([^`\n]+)`(?!`)")
 MARKDOWN_TARGET_PATTERN = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)(?:\s+[^)]*)?\)")
 HTML_TARGET_PATTERN = re.compile(r"\b(?:href|src)=['\"]([^'\"]+)['\"]")
+ADJACENT_ENGLISH_WORD_PATTERN = re.compile(
+    r"\b(?P<word>[A-Za-z][A-Za-z0-9-]{2,})"
+    r"(?:[ \t]+|\r?\n[ \t]*)"
+    r"(?P=word)\b",
+    re.IGNORECASE,
+)
 
 
 def _tracked_documents(root: Path) -> tuple[Path, ...]:
@@ -139,10 +145,21 @@ def _structure(section: str) -> dict[str, object]:
     }
 
 
+def _english_repetition_errors(section: str) -> list[str]:
+    prose = FENCED_CODE_PATTERN.sub("", section)
+    prose = INLINE_CODE_PATTERN.sub("<INLINE-CODE>", prose)
+    return [
+        f"English section repeats adjacent word {match.group('word')!r}"
+        for match in ADJACENT_ENGLISH_WORD_PATTERN.finditer(prose)
+    ]
+
+
 def audit_text(text: str, *, require_h1: bool = False) -> list[str]:
     _, sections, errors = _extract_sections(text, require_h1=require_h1)
     if errors or not sections:
         return errors
+
+    errors.extend(_english_repetition_errors(sections[2]))
 
     structures = tuple(_structure(section) for section in sections)
     keys = tuple(structures[0])
