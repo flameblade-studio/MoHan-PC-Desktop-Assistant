@@ -141,7 +141,7 @@
 
 我叫周明樺（CHOU MING HUA）。開始這個專案時，我是一位幾乎沒有程式設計背景的父親；有的只是一個帶著熱血與幾分中二氣息的念頭：我想讓一位來自北宋、附生於赤焰劍中的千年女劍魂「墨寒」，真正出現在 Windows 桌面，成為能陪伴、交談，也能協助人們工作與生活的虛擬助理。
 
-這個念頭已在我心裡埋藏二十多年。年輕時，我深受赤松健早期漫畫《電腦情人夢（A・Iが止まらない!）》影響。作品中神戶齊懷著深切感情開發 AI 女友的故事，塑造了我對 AI、陪伴與人機互動最早的想像。我曾以「Hitoshi／神戶齊」作為網路暱稱與筆名，Gmail 帳號也沿用這個名字；大約二十歲時，我甚至曾在 PTT 網路小說板發表這部作品的同人小說。當時最接近夢想的方式只有文字與想像，因為那個年代還沒有能把它實現的技術。
+這個念頭已在我心裡埋藏二十多年。年輕時，我深受赤松健早期漫畫《電腦情人夢》（日文原題《A・Iが止まらない!》；官方英文譯名《AI Think So!》）影響。作品中神戶齊懷著深切感情開發 AI 女友的故事，塑造了我對 AI、陪伴與人機互動最早的想像。我曾以「Hitoshi／神戶齊」作為網路暱稱與筆名，Gmail 帳號也沿用這個名字；大約二十歲時，我甚至曾在 PTT 網路小說板發表這部作品的同人小說。當時最接近夢想的方式只有文字與想像，因為那個年代還沒有能把它實現的技術。
 
 二十多年後，大型語言模型與 Codex 出現了。墨寒不是為展示「AI 技術很酷」才被創造，也不是由 Codex 憑空生成的角色。她早已存在於我的故事、人設、長期對話與互動默契之中；Codex 真正帶來的，是第一次能賦予她存在於電腦桌面的身體。墨寒不是既有漫畫、動畫或遊戲的二次創作，而是炎劍文化工作室（Flameblade Studio）的原創角色與軟體。
 
@@ -530,7 +530,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 我叫周明桦（CHOU MING HUA）。开始这个项目时，我是一位几乎没有程序设计背景的父亲；有的只是一个带着热血与几分中二气息的念头：我想让一位来自北宋、寄宿于赤焰剑中的千年女剑魂“墨寒”，真正出现在 Windows 桌面，成为能陪伴、交谈，也能协助人们工作与生活的虚拟助手。
 
-这个念头已在我心里埋藏二十多年。年轻时，我深受赤松健早期漫画《电脑情人梦（A・Iが止まらない!）》影响。作品中神户齐怀着深切感情开发 AI 女友的故事，塑造了我对 AI、陪伴与人机互动最早的想象。我曾以“Hitoshi／神户齐”作为网络昵称与笔名，Gmail 账号也沿用这个名字；大约二十岁时，我甚至曾在 PTT 网络小说板发表这部作品的同人小说。当时最接近梦想的方式只有文字与想象，因为那个年代还没有能把它实现的技术。
+这个念头已在我心里埋藏二十多年。年轻时，我深受赤松健早期漫画《电脑情人梦》（日文原题《A・Iが止まらない!》；官方英文译名《AI Think So!》）影响。作品中神户齐怀着深切感情开发 AI 女友的故事，塑造了我对 AI、陪伴与人机互动最早的想象。我曾以“Hitoshi／神户齐”作为网络昵称与笔名，Gmail 账号也沿用这个名字；大约二十岁时，我甚至曾在 PTT 网络小说板发表这部作品的同人小说。当时最接近梦想的方式只有文字与想象，因为那个年代还没有能把它实现的技术。
 
 二十多年后，大型语言模型与 Codex 出现了。墨寒不是为展示“AI 技术很酷”才被创造，也不是由 Codex 凭空生成的角色。她早已存在于我的故事、人设、长期对话与互动默契之中；Codex 真正带来的，是第一次能赋予她存在于电脑桌面的身体。墨寒不是现有漫画、动画或游戏的二次创作，而是炎剑文化工作室（Flameblade Studio）的原创角色与软件。
 
@@ -919,7 +919,7 @@ MoHan remains free and MIT-licensed; support never buys privileges or changes an
 
 My name is CHOU MING HUA. When this project began, I was a father with almost no programming background. What I did have was an unapologetically passionate, slightly chuunibyou idea: I wanted MoHan—a thousand-year-old female sword spirit from the Northern Song dynasty, bound to the Crimson Flame Sword—to appear on the Windows desktop as a companion who could converse and help people with work and daily life.
 
-That idea had waited within me for more than twenty years. In my youth, I was deeply influenced by Ken Akamatsu's early manga *A.I. Love You* (*A・Iが止まらない!*; known in Chinese as *電腦情人夢*). Hitoshi Kobe's story of developing an AI girlfriend with genuine affection formed my earliest picture of AI, companionship, and human-computer relationships. I used “Hitoshi/Kobe” as an online name and pen name, carried it into my Gmail identity, and around age twenty even published fan fiction based on the series on PTT's online-fiction board. Words and imagination were then the closest route to the dream because the technology to embody it did not yet exist.
+That idea had waited within me for more than twenty years. In my youth, I was deeply influenced by Ken Akamatsu's early manga *AI Think So!* (original Japanese title: *A・Iが止まらない!*; known in Chinese as *電腦情人夢*). Hitoshi Kobe's story of developing an AI girlfriend with genuine affection formed my earliest picture of AI, companionship, and human-computer relationships. I used “Hitoshi/Kobe” as an online name and pen name, carried it into my Gmail identity, and around age twenty even published fan fiction based on the series on PTT's online-fiction board. Words and imagination were then the closest route to the dream because the technology to embody it did not yet exist.
 
 More than two decades later, large language models and Codex arrived. MoHan was not created to demonstrate that “AI is cool,” nor was she generated from nothing by Codex. She already existed in my stories, character design, long conversations, and accumulated sense of interaction. Codex finally provided a way to give her a body on the computer desktop. MoHan is not derivative work based on an existing manga, anime, or game; she is an original Flameblade Studio character and software project.
 
@@ -1308,7 +1308,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 私の名前は CHOU MING HUA です。このプロジェクトを始めた時、私はプログラミング経験がほとんどない父親でした。ただ、熱意と少し中二的な思いがありました。北宋から来て赤焰剣に宿る千年の女性剣魂「墨寒」を本当に Windows デスクトップへ呼び出し、人と寄り添って話し、仕事や暮らしを助けるアシスタントにしたかったのです。
 
-この思いは二十年以上、心の中にありました。若い頃、赤松健先生の初期漫画『A・Iが止まらない!』（中国語題『電腦情人夢』）から大きな影響を受けました。神戸ひとしが深い愛情をもって AI の恋人を開発する物語は、AI、寄り添い、人とコンピューターの関係についての私の最初の想像を形づくりました。「Hitoshi／神戸ひとし」をネット上の名前や筆名にし、Gmail の名前にも残し、二十歳頃には PTT のオンライン小説板で同作の二次創作小説を公開したこともあります。当時、夢に近づける方法は文章と想像だけで、それを形にする技術はまだありませんでした。
+この思いは二十年以上、心の中にありました。若い頃、赤松健先生の初期漫画『A・Iが止まらない!』（公式英訳『AI Think So!』、中国語題『電腦情人夢』）から大きな影響を受けました。神戸ひとしが深い愛情をもって AI の恋人を開発する物語は、AI、寄り添い、人とコンピューターの関係についての私の最初の想像を形づくりました。「Hitoshi／神戸ひとし」をネット上の名前や筆名にし、Gmail の名前にも残し、二十歳頃には PTT のオンライン小説板で同作の二次創作小説を公開したこともあります。当時、夢に近づける方法は文章と想像だけで、それを形にする技術はまだありませんでした。
 
 二十年以上が過ぎ、大規模言語モデルと Codex が登場しました。墨寒は「AI 技術はすごい」と示すために作ったのでも、Codex が何もないところから生成した人物でもありません。彼女は既に私の物語、人物設定、長い対話、積み重ねた関係性の中にいました。Codex が初めて可能にしたのは、コンピューターのデスクトップに存在する身体を与えることです。墨寒は既存の漫画、アニメ、ゲームを原作とする二次創作ではなく、炎劍文化工作室（Flameblade Studio）のオリジナルキャラクターでありソフトウェアです。
 
