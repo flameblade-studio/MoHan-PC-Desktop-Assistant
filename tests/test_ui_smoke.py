@@ -725,7 +725,6 @@ def _assert_voice_selection_contract(window: CompanionWindow) -> None:
     assert window.dashboard.cloud_voice.currentText() == "coral"
     assert window.dashboard.tts_voice.currentText() == "coral"
     assert window.dashboard.realtime_voice.currentText() == "coral"
-    assert window.dashboard.voice_save_button.text() == "儲存聲音設定"
     local_index = window.dashboard.voice_engine.findData("system-local")
     openai_index = window.dashboard.voice_engine.findData("openai-speech")
     assert local_index >= 0 and openai_index >= 0
@@ -733,6 +732,11 @@ def _assert_voice_selection_contract(window: CompanionWindow) -> None:
     assert window.db.setting("voice_engine") == "openai-speech"
     window.dashboard.voice_engine.setCurrentIndex(local_index)
     assert window.db.setting("voice_engine") == "system-local"
+    window.dashboard.tts_voice.setCurrentText("marin")
+    assert window.db.setting("tts_voice") == "marin"
+    assert window.db.setting("cloud_voice") == "marin"
+    window.dashboard.realtime_voice.setCurrentText("shimmer")
+    assert window.db.setting("realtime_voice") == "shimmer"
     assert (
         window.dashboard.voice_instructions.text()
         == window.db.setting("voice_instructions")

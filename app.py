@@ -1842,6 +1842,7 @@ class Dashboard(QDialog):
     speak_requested = Signal(str, str)
     voice_preview_requested = Signal()
     realtime_toggle_requested = Signal(bool)
+    realtime_voice_changed = Signal(str)
     state_requested = Signal(str)
     ai_wait_expression_requested = Signal(int, str, float)
     ai_wait_expression_finished = Signal(int)
@@ -3345,10 +3346,6 @@ class Dashboard(QDialog):
                 )
             )
         )
-        self.voice_save_button = QPushButton(
-            self._t("save_voice_settings", "儲存聲音設定")
-        )
-        self.voice_save_button.clicked.connect(self.save_voice_settings)
         self.voice_preview_button = QPushButton(
             self._t("preview_voice", "試聽：主上，妾在。")
         )
@@ -3594,7 +3591,6 @@ class Dashboard(QDialog):
             self._t("voice_style", "聲音風格"),
             self.voice_instructions,
         )
-        form.addRow("", self.voice_save_button)
         form.addRow("", self.voice_preview_button)
         form.addRow(
             self._t("realtime", "即時語音"),
@@ -3625,6 +3621,12 @@ class Dashboard(QDialog):
         )
         self.windows_voice.currentIndexChanged.connect(
             self._windows_voice_changed
+        )
+        self.tts_voice.currentTextChanged.connect(
+            self._openai_voice_changed
+        )
+        self.realtime_voice.currentTextChanged.connect(
+            self._realtime_voice_changed
         )
         return tab
 
@@ -5422,6 +5424,20 @@ class Dashboard(QDialog):
             "windows_voice", str(self.windows_voice.currentData() or "")
         )
 
+    def _openai_voice_changed(self, voice: str) -> None:
+        selected_voice = voice.strip()
+        if not selected_voice:
+            return
+        self.db.set_setting("tts_voice", selected_voice)
+        self.db.set_setting("cloud_voice", selected_voice)
+
+    def _realtime_voice_changed(self, voice: str) -> None:
+        selected_voice = voice.strip()
+        if not selected_voice:
+            return
+        self.db.set_setting("realtime_voice", selected_voice)
+        self.realtime_voice_changed.emit(selected_voice)
+
     def clear_azure_speech_key(self) -> None:
         if self.azure_secret_store is None:
             return
@@ -6050,6 +6066,9 @@ class CompanionWindow(QMainWindow):
         self.dashboard.voice_preview_requested.connect(self.preview_voice)
         self.dashboard.realtime_toggle_requested.connect(
             self.toggle_realtime
+        )
+        self.dashboard.realtime_voice_changed.connect(
+            self._apply_realtime_voice_change
         )
         self.dashboard.volume_changed.connect(self._apply_voice_volume)
         self.dashboard.visibility_changed.connect(
@@ -9678,6 +9697,12 @@ class CompanionWindow(QMainWindow):
                 ),
             ),
         )
+
+    def _apply_realtime_voice_change(self, _voice: str) -> None:
+        if not self.realtime.running:
+            return
+        self.toggle_realtime(False)
+        self.toggle_realtime(True)
 
     def _realtime_status(self, status: str) -> None:
         active = self.realtime.running and status != "未連線"

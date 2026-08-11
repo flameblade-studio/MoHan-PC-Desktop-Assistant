@@ -13,7 +13,8 @@
 - 托腮微笑說話時保留眼角笑意，嘴部暫時回到中性基底，只套用語音嘴型；
   發話結束後才恢復雙側上揚嘴角。
 - 修正朝左、未托腮的中性說話嘴型，右側嘴角小黑線不再殘留於舊位置。
-- Windows 本機語音與 OpenAI 自然語音在切換時立即儲存，下一句直接套用新引擎；
+- 聲音分頁中的朗讀引擎、Windows 聲線、OpenAI TTS 聲線與 Realtime 聲線現在皆於選取後立即儲存。OpenAI TTS 會在下一次朗讀使用新聲線；若 Realtime 對話正在連線，系統會安全重連並立即套用新聲線，不新增多餘的儲存按鈕。
+- 新增資產、控制器、渲染器、執行期接線與三項視覺回歸測試；實際產品與
   視覺稽核工具共用同一套嘴型設定。
 
 ### v2.3.0 RC3 — 2026-08-10
@@ -171,7 +172,8 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 - 托腮微笑说话时保留眼角笑意，嘴部暂时回到中性基底，只应用语音口型；
   说话结束后才恢复双侧上扬嘴角。
 - 修复朝左、未托腮的中性说话口型，右侧嘴角小黑线不再残留在旧位置。
-- Windows 本地语音与 OpenAI 自然语音在切换时立即保存，下一句直接应用新引擎；
+- “声音”分页中的朗读引擎、Windows 声线、OpenAI TTS 声线与 Realtime 声线现在都会在选择后立即保存。OpenAI TTS 会在下一次朗读使用新声线；若 Realtime 对话正在连接，系统会安全重连并立即应用新声线，不新增多余的保存按钮。
+- 新增资源、控制器、渲染器、运行时接线及三项视觉回归测试；实际产品与
   视觉审计工具共用同一套口型设置。
 
 ### v2.3.0 RC3 — 2026-08-10
@@ -331,8 +333,9 @@ All notable public changes to MoHan Desktop Assistant are documented here.
   base with only the active viseme; both raised corners return after speech.
 - Fixes left-facing neutral speech so the small dark line at the right mouth
   corner no longer remains at its previous position.
-- Switching between Windows local voice and OpenAI natural voice now saves
-  test groups. Production and visual auditing now share one viseme setup path.
+- The speech provider, Windows voice, OpenAI TTS voice, and Realtime voice now save immediately when selected. OpenAI TTS uses the new voice on the next utterance; an active Realtime conversation reconnects safely to apply its new voice immediately, without adding a redundant save button.
+- Adds asset, controller, renderer, runtime-wiring, and three visual regression
+  test groups. Production and visual auditing share one viseme setup path.
 
 ### v2.3.0 RC3 — 2026-08-10
 
@@ -527,7 +530,8 @@ speech, gaze, and physics stress test passed before this release candidate.
   発話口形だけを適用し、発話終了後に両側の上がった口角を復元します。
 - 頬杖ではない左向きの中立発話で、右口角の小さな黒線が以前の位置に残る
   問題を修正しました。
-- Windows 本機音声と OpenAI 自然音声の切り替えを直ちに保存し、次の発話から
+- 「音声」タブの読み上げ方式、Windows 音声、OpenAI TTS 音声、Realtime 音声は、選択時に即座に保存されます。OpenAI TTS は次の読み上げから新しい音声を使用し、Realtime 会話が接続中の場合は安全に再接続して新しい音声を即時適用します。重複する保存ボタンは追加しません。
+- 素材、制御器、レンダラー、実行時接続、三つの視覚回帰テストを追加し、
   製品と視覚監査ツールが同一の口形設定を共有するようにしました。
 
 ### v2.3.0 RC3 — 2026-08-10

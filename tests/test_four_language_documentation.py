@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+lazy import re
 lazy import subprocess
 lazy import sys
 lazy import tempfile
@@ -80,12 +81,71 @@ def test_repository_audit_ignores_deleted_tracked_documents() -> None:
         assert audit_repository(root) == {}
 
 
+LANGUAGE_HEADINGS = (
+    "繁體中文",
+    "简体中文",
+    "English",
+    "日本語",
+)
+
+
+def _language_sections(text: str) -> dict[str, str]:
+    headings = list(
+        re.finditer(
+            r"(?m)^## (繁體中文|简体中文|English|日本語)\s*$",
+            text,
+        )
+    )
+    assert [match.group(1) for match in headings] == list(LANGUAGE_HEADINGS)
+    return {
+        match.group(1): text[
+            match.end() : (
+                headings[index + 1].start()
+                if index + 1 < len(headings)
+                else len(text)
+            )
+        ]
+        for index, match in enumerate(headings)
+    }
+
+
+def test_rc4_four_language_bullet_parity() -> None:
+    release_text = (ROOT / "docs/releases/v2.3.0-rc.4.md").read_text(
+        encoding="utf-8"
+    )
+    release_sections = _language_sections(release_text)
+    assert {
+        language: len(re.findall(r"(?m)^- ", section))
+        for language, section in release_sections.items()
+    } == {language: 7 for language in LANGUAGE_HEADINGS}
+
+    changelog_text = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    changelog_sections = _language_sections(changelog_text)
+    rc4_bullet_counts: dict[str, int] = {}
+    for language, section in changelog_sections.items():
+        match = re.search(
+            r"(?ms)^### v2\.3\.0 RC4.*?\n(.*?)(?=^### |\Z)",
+            section,
+        )
+        assert match is not None, language
+        rc4_bullet_counts[language] = len(
+            re.findall(r"(?m)^- ", match.group(1))
+        )
+    assert rc4_bullet_counts == {
+        language: 6 for language in LANGUAGE_HEADINGS
+    }
+
+    for text in (release_text, changelog_text):
+        assert "。、" not in text
+        assert "。," not in text
+        assert ".," not in text
 def main() -> None:
     test_document_contract()
     test_document_requires_h1_and_only_language_h2_headings()
     test_document_rejects_untranslated_duplicate_section()
     test_document_rejects_wrapped_english_word_repetition()
     test_repository_audit_ignores_deleted_tracked_documents()
+    test_rc4_four_language_bullet_parity()
     result = subprocess.run(
         [sys.executable, "tools/check_four_language_docs.py"],
         cwd=ROOT,
