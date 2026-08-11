@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import re
 lazy import threading
+lazy import time
 lazy from urllib.error import HTTPError, URLError
 lazy from urllib.request import Request, urlopen
 lazy from xml.sax.saxutils import escape, quoteattr
@@ -40,10 +41,43 @@ AZURE_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict({
         "ja-JP-ShioriNeural",
     ),
 })
-_VOICE_LOCALE = frozendict({
-    **{voice: locale for voice in voices}
-    for locale, voices in AZURE_FEMALE_VOICES.items()
+AZURE_HD_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict({
+    "zh-CN": (
+        "zh-CN-Xiaochen:DragonHDLatestNeural",
+        "zh-CN-Xiaoyue:DragonHDOmniLatestNeural",
+        "zh-CN-Maroonallegro:DragonHDOmniLatestNeural",
+        "zh-CN-Xiaoxiao:DragonHDFlashLatestNeural",
+        "zh-CN-Xiaoxiao2:DragonHDFlashLatestNeural",
+        "zh-CN-Xiaochen:DragonHDFlashLatestNeural",
+        "zh-CN-Xiaoyi:DragonHDFlashLatestNeural",
+        "zh-CN-Xiaoyu:DragonHDFlashLatestNeural",
+        "zh-CN-Xiaohan:DragonHDFlashLatestNeural",
+        "zh-CN-Xiaoshuang:DragonHDFlashLatestNeural",
+        "zh-CN-Xiaoyou:DragonHDFlashLatestNeural",
+    ),
+    "en-US": (
+        "en-US-Ava:DragonHDLatestNeural",
+        "en-US-Aria:DragonHDLatestNeural",
+        "en-US-Emma:DragonHDLatestNeural",
+        "en-US-Emma2:DragonHDLatestNeural",
+        "en-US-Jenny:DragonHDLatestNeural",
+        "en-US-Nova:DragonHDLatestNeural",
+        "en-US-Phoebe:DragonHDLatestNeural",
+        "en-US-Serena:DragonHDLatestNeural",
+    ),
+    "ja-JP": ("ja-JP-Nanami:DragonHDLatestNeural",),
 })
+
+
+def _build_voice_locale_index() -> frozendict[str, str]:
+    index: dict[str, str] = {}
+    for catalog in (AZURE_FEMALE_VOICES, AZURE_HD_FEMALE_VOICES):
+        for locale, voices in catalog.items():
+            index.update(dict.fromkeys(voices, locale))
+    return frozendict(index)
+
+
+_VOICE_LOCALE = _build_voice_locale_index()
 _REGION_PATTERN = re.compile(r"^[a-z0-9-]{2,32}$")
 _MESSAGES = deep_freeze({
     "zh-TW": {
@@ -126,14 +160,48 @@ def azure_female_voices(language: str) -> tuple[str, ...]:
     )
 
 
+def azure_hd_female_voices(
+    language: str,
+    *,
+    include_flash: bool = True,
+) -> tuple[str, ...]:
+    normalized = str(language or "").strip().lower()
+    if normalized in {"en", "en-us"}:
+        voices = AZURE_HD_FEMALE_VOICES["en-US"]
+    elif normalized in {"ja", "ja-jp"}:
+        voices = AZURE_HD_FEMALE_VOICES["ja-JP"]
+    else:
+        voices = AZURE_HD_FEMALE_VOICES["zh-CN"]
+    if include_flash:
+        return voices
+    return tuple(voice for voice in voices if not azure_hd_voice_uses_flash(voice))
+
+
+def azure_hd_voice_uses_flash(voice: str) -> bool:
+    return ":DragonHDFlash" in str(voice)
+
+
+def is_azure_hd_voice(voice: str) -> bool:
+    return voice in {
+        *AZURE_HD_FEMALE_VOICES["zh-CN"],
+        *AZURE_HD_FEMALE_VOICES["en-US"],
+        *AZURE_HD_FEMALE_VOICES["ja-JP"],
+    }
+
+
 def build_azure_ssml(text: str, voice: str) -> bytes:
     locale = _VOICE_LOCALE.get(voice)
     if locale is None:
         raise ValueError("unsupported_voice")
+    parameters = (
+        " parameters='temperature=0.8'"
+        if is_azure_hd_voice(voice)
+        else ""
+    )
     body = (
         f"<speak version='1.0' xml:lang={quoteattr(locale)}>"
         f"<voice xml:lang={quoteattr(locale)} xml:gender='Female' "
-        f"name={quoteattr(voice)}>{escape(text)}</voice></speak>"
+        f"name={quoteattr(voice)}{parameters}>{escape(text)}</voice></speak>"
     )
     return body.encode("utf-8")
 
@@ -156,12 +224,14 @@ def azure_speech_error_message(
 class AzureSpeechTTS(QObject):
     failed = Signal(str)
     finished = Signal()
+    synthesis_latency_measured = Signal(float)
     viseme_cue = Signal(float, str)
 
     def __init__(self, parent: QObject | None = None):
         super().__init__(parent)
         self.volume_percent = 125
         self.muted = False
+        self.last_synthesis_latency_ms: float | None = None
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None:
         self.volume_percent = max(0, min(160, int(volume_percent)))
@@ -216,8 +286,19 @@ class AzureSpeechTTS(QObject):
             method="POST",
         )
         try:
+            request_started = time.perf_counter()
             with urlopen(request, timeout=60) as response:
                 audio = response.read()
+            self.last_synthesis_latency_ms = max(
+                0.0,
+                (time.perf_counter() - request_started) * 1_000.0,
+            )
+            self.synthesis_latency_measured.emit(
+                self.last_synthesis_latency_ms
+            )
+            # Azure audio is fully buffered before playback. Regional network
+            # latency delays speech onset but must never offset the local
+            # 50 Hz viseme clock from the audio that it analyzes.
             play_wave_with_visemes(
                 audio,
                 self.volume_percent,

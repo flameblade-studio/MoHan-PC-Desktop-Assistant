@@ -82,10 +82,12 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "openai_engine": "OpenAI 自然音声",
     "realtime_engine": "Realtime 音声",
     "azure_engine": "Azure Speech（プレビュー）",
+    "azure_hd_engine": "Azure Dragon HD（プレビュー、S0 必須）",
     "azure_voice": "Azure Speech 女性音声",
     "azure_region": "Azure Speech リージョン",
     "azure_key": "Azure Speech キー",
-    "azure_region_placeholder": "例：japaneast",
+    "azure_region_choose": "Azure リソースを作成したリージョンを選択",
+    "azure_region_saved": "既存の設定 · {region}",
     "azure_key_saved": "Windows で暗号化済み（空欄なら保持）",
     "azure_key_missing": "Azure Speech リソースキーを貼り付け",
     "azure_remove_key": "Azure Speech キーを削除",
@@ -93,6 +95,23 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
         "Windows で暗号化保存した Azure Speech キーを削除しますか？"
     ),
     "azure_key_save_failed": "Azure Speech キーを安全に保存できません：{error}",
+    "azure_hd_voice": "Dragon HD 女性音声",
+    "azure_hd_region": "Dragon HD リソースのリージョン",
+    "azure_hd_key": "Dragon HD S0 リソースキー",
+    "azure_hd_key_saved": "Dragon HD S0 キーは Windows で暗号化済み（空欄なら保持）",
+    "azure_hd_key_missing": "独立した Dragon HD S0 リソースキーを貼り付け",
+    "azure_hd_remove_key": "Dragon HD S0 キーを削除",
+    "azure_hd_remove_key_confirm": (
+        "{platform} で安全に保存した Dragon HD S0 キーを削除しますか？"
+    ),
+    "azure_hd_key_save_failed": "Dragon HD S0 キーを安全に保存できません：{error}",
+    "azure_hd_speech_note": (
+        "任意のプレビュー機能です。独立した S0 音声リソース、キー、対応リージョンを"
+        "使用してください。Dragon HD は viseme イベント非対応のため、墨寒は"
+        "既存の音声解析で口形同期を保ちます。発話開始前の待ち時間はネットワークと"
+        "リージョン間距離に依存します。失敗時は通常の Azure、Windows "
+        "本機音声の順に各一回だけ切り替え、重複課金を防ぎます。"
+    ),
     "azure_speech_note": (
         "プレビュー機能です。ご自身の Azure Speech リソースキーと対応する"
         "リージョンが必要です。確認済みの女性音声だけを表示し、設定不足または"
@@ -195,9 +214,16 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "text_model": "テキストモデル",
     "persona_prompt": "AI 人格プロンプト",
     "remove_api_key": "保存済み API キーを削除",
+    "remove_api_key_confirm": (
+        "{platform} で安全に保存された OpenAI API キーを削除しますか？"
+    ),
     "save_settings": "設定を保存",
     "api_key_saved": "安全に保存済み（空欄なら変更しません）",
     "api_key_missing": "sk- で始まる OpenAI Project API キーを貼り付け",
+    "api_key_save_failed": "OpenAI API キーを安全に保存できません：{error}",
+    "secret_auto_save_hint": (
+        "Enter キーを押すかフォーカスを移すと、自動的に安全に保存されます。"
+    ),
     "api_status_saved": "OpenAI API：キーは Windows で暗号化済み",
     "api_status_environment": "OpenAI API：環境変数からキーを使用中",
     "api_status_secret_unavailable": (

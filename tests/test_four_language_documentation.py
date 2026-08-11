@@ -110,7 +110,7 @@ def _language_sections(text: str) -> dict[str, str]:
 
 
 def test_current_release_four_language_bullet_parity() -> None:
-    release_text = (ROOT / "docs/releases/v3.0.0.md").read_text(
+    release_text = (ROOT / "docs/releases/v3.1.0.md").read_text(
         encoding="utf-8"
     )
     release_sections = _language_sections(release_text)
@@ -126,7 +126,7 @@ def test_current_release_four_language_bullet_parity() -> None:
     changelog_bullet_counts: dict[str, int] = {}
     for language, section in changelog_sections.items():
         match = re.search(
-            r"(?ms)^### v3\.0\.0.*?\n(.*?)(?=^### |\Z)",
+            r"(?ms)^### v3\.1\.0.*?\n(.*?)(?=^### |\Z)",
             section,
         )
         assert match is not None, language

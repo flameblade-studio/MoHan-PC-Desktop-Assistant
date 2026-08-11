@@ -33,6 +33,7 @@ lazy from speech import (
     SpeechListener,
     WindowsTTS,
     apply_wav_volume,
+    female_windows_voices_for_language,
     preferred_windows_voice,
     windows_voices,
 )
@@ -424,6 +425,7 @@ def _assert_windows_voice_selection() -> None:
         ("OneCore::Microsoft Zhiwei", "zh-TW"),
         ("Microsoft Hanhan Desktop", "zh-TW"),
         ("OneCore::Microsoft Yating", "zh-TW"),
+        ("OneCore::Microsoft Ayumi", "ja-JP"),
     ]
     assert preferred_windows_voice(voices) == "OneCore::Microsoft Yating"
     assert (
@@ -434,6 +436,20 @@ def _assert_windows_voice_selection() -> None:
         preferred_windows_voice(voices, "OneCore::Microsoft Zhiwei")
         == "OneCore::Microsoft Yating"
     )
+    assert female_windows_voices_for_language(voices, "zh-TW") == [
+        ("Microsoft Hanhan Desktop", "zh-TW"),
+        ("OneCore::Microsoft Yating", "zh-TW"),
+    ]
+    assert female_windows_voices_for_language(voices, "zh-CN") == [
+        ("Microsoft Hanhan Desktop", "zh-TW"),
+        ("OneCore::Microsoft Yating", "zh-TW"),
+    ]
+    assert female_windows_voices_for_language(voices, "en") == [
+        ("Microsoft Zira Desktop", "en-US"),
+    ]
+    assert female_windows_voices_for_language(voices, "ja-JP") == [
+        ("OneCore::Microsoft Ayumi", "ja-JP"),
+    ]
     installed = windows_voices()
     # GitHub's clean Windows runners do not guarantee that optional language
     # packs are installed.  The deterministic list above verifies that Yating

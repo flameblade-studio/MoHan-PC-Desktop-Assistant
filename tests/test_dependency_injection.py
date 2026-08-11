@@ -10,7 +10,7 @@ os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtCore import QObject, Signal
-lazy from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtWidgets import QApplication, QLineEdit
 
 lazy from app import CompanionWindow
 lazy from db import StudioDB
@@ -19,8 +19,8 @@ lazy from service_container import CompanionServices
 
 
 class FakeSecretStore:
-    def __init__(self) -> None:
-        self.value = "test-key"
+    def __init__(self, value: str = "test-key") -> None:
+        self.value = value
 
     def load(self) -> str:
         return self.value
@@ -99,9 +99,11 @@ class InjectedTestContext:
     db: StudioDB
     secret_store: FakeSecretStore
     azure_secret_store: FakeSecretStore
+    azure_hd_secret_store: FakeSecretStore
     local_tts: FakeSpeechEngine
     cloud_tts: FakeSpeechEngine
     azure_tts: FakeSpeechEngine
+    azure_hd_tts: FakeSpeechEngine
     realtime: FakeRealtime
     listener: FakeListener
     window: CompanionWindow
@@ -116,9 +118,11 @@ def _create_injected_context(temp_dir: str) -> InjectedTestContext:
     db.set_setting("voice_muted", False)
     secret_store = FakeSecretStore()
     azure_secret_store = FakeSecretStore()
+    azure_hd_secret_store = FakeSecretStore("test-hd-key")
     local_tts = FakeSpeechEngine()
     cloud_tts = FakeSpeechEngine()
     azure_tts = FakeSpeechEngine()
+    azure_hd_tts = FakeSpeechEngine()
     realtime = FakeRealtime()
     listener = FakeListener()
     services = CompanionServices(
@@ -129,7 +133,9 @@ def _create_injected_context(temp_dir: str) -> InjectedTestContext:
         realtime=realtime,
         listener=listener,
         azure_speech=azure_tts,
+        azure_hd_speech=azure_hd_tts,
         azure_secret_store=azure_secret_store,
+        azure_hd_secret_store=azure_hd_secret_store,
     )
     window = CompanionWindow(startup_speech=False, services=services)
     return InjectedTestContext(
@@ -137,9 +143,11 @@ def _create_injected_context(temp_dir: str) -> InjectedTestContext:
         db=db,
         secret_store=secret_store,
         azure_secret_store=azure_secret_store,
+        azure_hd_secret_store=azure_hd_secret_store,
         local_tts=local_tts,
         cloud_tts=cloud_tts,
         azure_tts=azure_tts,
+        azure_hd_tts=azure_hd_tts,
         realtime=realtime,
         listener=listener,
         window=window,
@@ -152,11 +160,16 @@ def _assert_dependencies_are_injected(context: InjectedTestContext) -> None:
     assert context.window.tts is context.local_tts
     assert context.window.cloud_tts is context.cloud_tts
     assert context.window.azure_tts is context.azure_tts
+    assert context.window.azure_hd_tts is context.azure_hd_tts
+    assert context.window.azure_hd_secret_store is (
+        context.azure_hd_secret_store
+    )
     assert context.window.realtime is context.realtime
     assert context.window.listener is context.listener
     assert context.local_tts.volume_calls[-1] == (137, False)
     assert context.cloud_tts.volume_calls[-1] == (137, False)
     assert context.azure_tts.volume_calls[-1] == (137, False)
+    assert context.azure_hd_tts.volume_calls[-1] == (137, False)
     assert context.realtime.volume_calls[-1] == (137, False)
 
 
@@ -196,6 +209,28 @@ def _assert_voice_choices_save_and_apply_immediately(
         == "zh-CN-XiaoxiaoNeural"
     )
 
+    southeast_asia = dashboard.azure_region.findData("southeastasia")
+    assert southeast_asia >= 0
+    dashboard.azure_region.setCurrentIndex(southeast_asia)
+    assert context.db.setting("azure_speech_region") == "southeastasia"
+
+    hd_southeast_asia = dashboard.azure_hd_region.findData("southeastasia")
+    hd_central_india = dashboard.azure_hd_region.findData("centralindia")
+    assert hd_southeast_asia >= 0 and hd_central_india >= 0
+    dashboard.azure_hd_region.setCurrentIndex(hd_southeast_asia)
+    flash_voice = "zh-CN-Xiaoxiao:DragonHDFlashLatestNeural"
+    assert dashboard.azure_hd_voice.findText(flash_voice) >= 0
+    dashboard.azure_hd_voice.setCurrentText(flash_voice)
+    assert context.db.setting("azure_hd_speech_voice") == flash_voice
+
+    dashboard.azure_hd_region.setCurrentIndex(hd_central_india)
+    assert context.db.setting("azure_hd_speech_region") == "centralindia"
+    assert dashboard.azure_hd_voice.findText(flash_voice) == -1
+    assert "Flash" not in dashboard.azure_hd_voice.currentText()
+    assert context.db.setting("azure_hd_speech_voice") == (
+        dashboard.azure_hd_voice.currentText()
+    )
+
     dashboard.realtime_voice.setCurrentText("shimmer")
     assert context.db.setting("realtime_voice") == "shimmer"
     assert context.realtime.start_requests == []
@@ -206,6 +241,42 @@ def _assert_voice_choices_save_and_apply_immediately(
     assert context.db.setting("realtime_voice") == "coral"
     assert context.realtime.stop_calls == 1
     assert context.realtime.start_requests[-1].session.voice == "coral"
+
+
+def _assert_secret_fields_save_consistently_and_securely(
+    context: InjectedTestContext,
+) -> None:
+    dashboard = context.window.dashboard
+    fields = (
+        (dashboard.api_key_input, context.secret_store, "sk-openai-test"),
+        (
+            dashboard.azure_key_input,
+            context.azure_secret_store,
+            "azure-standard-test",
+        ),
+        (
+            dashboard.azure_hd_key_input,
+            context.azure_hd_secret_store,
+            "azure-dragon-hd-test",
+        ),
+    )
+    for key_input, secret_store, secret in fields:
+        assert key_input.echoMode() == QLineEdit.Password
+        assert key_input.isEnabled()
+        assert key_input.accessibleName()
+        assert "自動安全保存" in key_input.toolTip()
+        secret_store.clear()
+        key_input.setText(secret)
+        key_input.editingFinished.emit()
+        assert secret_store.load() == secret
+        assert key_input.text() == ""
+        assert "保存" in key_input.placeholderText()
+
+    database_text = "\n".join(
+        str(row["value"])
+        for row in context.db.conn.execute("SELECT value FROM settings")
+    )
+    assert all(secret not in database_text for *_prefix, secret in fields)
 
 def _assert_cloud_failure_uses_local_tts(
     context: InjectedTestContext,
@@ -270,7 +341,8 @@ def _assert_missing_azure_settings_fail_locally(
         "OneCore::Microsoft Yating",
         -1,
     )
-    assert "未送出雲端請求" in context.window.dashboard.api_status.text()
+    status = context.window.dashboard.api_status.text()
+    assert "未送出" in status and "雲端請求" in status, status
 
 
 def _assert_controls_and_shutdown(context: InjectedTestContext) -> None:
@@ -291,6 +363,7 @@ def run() -> None:
         _assert_cloud_failure_uses_local_tts(context)
         _assert_azure_failure_uses_local_tts(context)
         _assert_missing_azure_settings_fail_locally(context)
+        _assert_secret_fields_save_consistently_and_securely(context)
         _assert_controls_and_shutdown(context)
     print("DEPENDENCY_INJECTION_OK")
 

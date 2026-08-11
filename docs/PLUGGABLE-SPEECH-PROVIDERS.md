@@ -20,6 +20,15 @@ Azure Speech 預覽必須由使用者自行申請 Azure Speech 資源，輸入�
 同一句話只回退一次到 Windows 女性本機語音。Azure 免費額度、費率、資料處理與
 可用區域以 Microsoft 當期規則為準。
 
+`v3.1.0` 將 Dragon HD／HD Omni 公開為另一個預設關閉的可選 Preview 供應器，
+不與一般 Azure Speech 共用金鑰、區域或聲線設定。它要求使用者自行建立 S0 資源，
+只顯示官方標示的女性聲線，並依所選區域隱藏不支援的 HD Flash。HD 失敗時，
+同一句話依序只嘗試一次一般 Azure Speech 與 Windows 本機女聲，避免循環與重複計費。
+Dragon HD 不提供 viseme 事件；Azure WAV 完整緩衝後，播放與既有 50 Hz 本機音訊
+分析同步開始，因此區域網路延遲只增加發話前等待，不得硬編碼為嘴型偏移。
+Central India S0 已完成真實 Windows 合成與播放驗證，但臺灣連線等待明顯；
+使用者應優先選擇實際延遲可接受且支援所需聲線的區域。
+
 自動測試已涵蓋區域限制、SSML 跳脫、女性聲線白名單、固定 HTTPS 端點、錯誤訊息
 不洩漏金鑰、播放完成與 Windows 回退。2026 年 8 月 11 日已使用真實 Azure Speech Free F0、East Asia 資源完成 HTTPS 合成、有效 RIFF 音訊與 Windows 實際播放驗證；預覽標示仍保留，以反映各帳號、區域、配額及當期服務差異。
 
@@ -39,6 +48,7 @@ Sherpa-ONNX、Piper、Kokoro 等本地方案。加入任何候選前都必須逐
 - [Speech 服務區域](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/regions)
 - [文字轉語音 REST API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech)
 - [語言與聲線支援](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support)
+- [Dragon HD／HD Omni 官方說明](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/high-definition-voices)
 
 ## 简体中文
 
@@ -60,6 +70,15 @@ Azure Speech 预览要求用户自行申请 Azure Speech 资源，并输入资�
 同一句话只回退一次到 Windows 女性本地语音。Azure 免费额度、费率、数据处理与
 可用区域以 Microsoft 当期规则为准。
 
+`v3.1.0` 将 Dragon HD／HD Omni 公开为另一个默认关闭的可选 Preview 供应器，
+不与一般 Azure Speech 共用密钥、区域或声线设置。它要求用户自行建立 S0 资源，
+只显示官方标示的女性声线，并按所选区域隐藏不支持的 HD Flash。HD 失败时，
+同一句话依次只尝试一次一般 Azure Speech 与 Windows 本地女声，避免循环与重复计费。
+Dragon HD 不提供 viseme 事件；Azure WAV 完整缓冲后，播放与现有 50 Hz 本地音频
+分析同步开始，因此区域网络延迟只增加发话前等待，不得硬编码为嘴型偏移。
+Central India S0 已完成真实 Windows 合成与播放验证，但台湾连接等待明显；
+用户应优先选择实际延迟可接受且支持所需声线的区域。
+
 自动测试已经覆盖区域限制、SSML 转义、女性声线白名单、固定 HTTPS 端点、错误信息
 不泄漏密钥、播放完成与 Windows 回退。2026 年 8 月 11 日已使用真实 Azure Speech Free F0、East Asia 资源完成 HTTPS 合成、有效 RIFF 音频与 Windows 实际播放验证；仍保留“预览”标示，以反映不同账号、区域、配额及当前服务的差异。
 
@@ -79,6 +98,7 @@ Sherpa-ONNX、Piper、Kokoro 等本地方案。加入任何候选前都必须逐
 - [Speech 服务区域](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/regions)
 - [文字转语音 REST API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech)
 - [语言与声线支持](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support)
+- [Dragon HD／HD Omni 官方说明](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/high-definition-voices)
 
 ## English
 
@@ -105,6 +125,18 @@ cause no network request; a service failure falls back once for the same utteran
 local female speech. Current Microsoft rules govern Azure free quotas, pricing, data handling,
 and regional availability.
 
+`v3.1.0` publishes Dragon HD/HD Omni as another optional Preview provider that is
+disabled by default and does not share its key, region, or voice setting with standard
+Azure Speech. Users create their own S0 resource; the UI lists only officially identified
+female voices and hides HD Flash where the selected region does not support it. For one
+utterance, HD failure falls back once to standard Azure Speech and then once to Windows
+local female speech, preventing loops and duplicate charges. Dragon HD provides no viseme
+events. After the Azure WAV is fully buffered, playback and the existing local 50 Hz audio
+analysis start together, so regional latency delays speech onset and must not become a
+hardcoded mouth offset. A real Central India S0 resource passed Windows synthesis and
+playback validation, but Taiwan experienced a noticeable wait; users should prefer a
+supported region with acceptable measured latency.
+
 Automated tests cover region restrictions, SSML escaping, the female-voice allowlist, the fixed
 HTTPS endpoint, secret-safe error messages, playback completion, and Windows fallback. On August 11, 2026, a real Azure Speech Free F0 resource in East Asia completed HTTPS synthesis, valid RIFF audio validation, and actual Windows playback. The Preview label remains to reflect account, region, quota, and current-service differences.
 
@@ -126,6 +158,7 @@ software license and voice-model license separately.
 - [Speech service regions](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/regions)
 - [Text-to-speech REST API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech)
 - [Language and voice support](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support)
+- [Official Dragon HD/HD Omni guide](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/high-definition-voices)
 
 ## 日本語
 
@@ -150,6 +183,17 @@ Azure Speech プレビューを使うには、利用者自身が Azure Speech �
 Windows 本機女性音声へフォールバックします。Azure の無料枠、料金、データ処理、
 利用可能リージョンには Microsoft のその時点の規則が適用されます。
 
+`v3.1.0` は Dragon HD／HD Omni を、初期状態で無効かつ任意の別 Preview
+プロバイダーとして公開します。通常の Azure Speech とはキー、リージョン、音声設定を
+共有しません。利用者自身の S0 リソースを必要とし、公式に女性と示された音声だけを
+表示し、選択リージョンが非対応の HD Flash は隠します。HD 失敗時、同じ発話は通常の
+Azure Speech、Windows 本機女性音声の順に各一回だけ切り替え、循環と重複課金を防ぎます。
+Dragon HD は viseme イベント非対応です。Azure WAV を完全にバッファした後、再生と
+既存の 50 Hz 本機音声解析を同時開始するため、リージョン遅延は発話開始前の待ち時間だけを
+増やし、固定の口形オフセットにしてはなりません。Central India S0 の実リソースで
+Windows の合成と再生を検証しましたが、台湾からは明確な待ち時間がありました。利用者は
+必要な音声に対応し、実測遅延を許容できるリージョンを優先してください。
+
 自動テストは、リージョン制限、SSML エスケープ、女性音声の許可リスト、固定 HTTPS
 エンドポイント、キーを漏らさないエラーメッセージ、再生完了、Windows フォールバックを
 網羅しています。2026 年 8 月 11 日、East Asia の実 Azure Speech Free F0 リソースで HTTPS 合成、有効な RIFF 音声、Windows での実再生を検証しました。アカウント、リージョン、割り当て、当期サービスの差異を示すため「プレビュー」表示は維持します。
@@ -172,3 +216,4 @@ Sherpa-ONNX、Piper、Kokoro などがあります。候補を追加する前に
 - [Speech サービスのリージョン](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/regions)
 - [テキスト読み上げ REST API](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech)
 - [対応言語と音声](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support)
+- [Dragon HD／HD Omni 公式ガイド](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/high-definition-voices)

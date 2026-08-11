@@ -18,6 +18,7 @@ LEGACY_WINDOWS_LOCAL_PROVIDER = "windows-local"
 OPENAI_SPEECH_PROVIDER = "openai-speech"
 OPENAI_REALTIME_PROVIDER = "openai-realtime"
 AZURE_SPEECH_PROVIDER = "azure-speech"
+AZURE_HD_SPEECH_PROVIDER = "azure-speech-hd"
 
 
 _LEGACY_PROVIDER_IDS = {
@@ -43,6 +44,15 @@ _LEGACY_PROVIDER_IDS = {
     "Azure Speech（預覽）": AZURE_SPEECH_PROVIDER,
     "Azure Speech（预览）": AZURE_SPEECH_PROVIDER,
     "Azure Speech (Preview)": AZURE_SPEECH_PROVIDER,
+    AZURE_HD_SPEECH_PROVIDER: AZURE_HD_SPEECH_PROVIDER,
+    "Azure Dragon HD（私下測試）": AZURE_HD_SPEECH_PROVIDER,
+    "Azure Dragon HD（私下测试）": AZURE_HD_SPEECH_PROVIDER,
+    "Azure Dragon HD (Private Preview)": AZURE_HD_SPEECH_PROVIDER,
+    "Azure Dragon HD（非公開テスト）": AZURE_HD_SPEECH_PROVIDER,
+    "Azure Dragon HD（預覽，需 S0）": AZURE_HD_SPEECH_PROVIDER,
+    "Azure Dragon HD（预览，需 S0）": AZURE_HD_SPEECH_PROVIDER,
+    "Azure Dragon HD (Preview, requires S0)": AZURE_HD_SPEECH_PROVIDER,
+    "Azure Dragon HD（プレビュー、S0 必須）": AZURE_HD_SPEECH_PROVIDER,
 }
 
 
@@ -170,6 +180,17 @@ class AzureSpeechProvider:
         )
 
 
+class AzureHDSpeechProvider(AzureSpeechProvider):
+    capabilities = SpeechProviderCapabilities(
+        provider_id=AZURE_HD_SPEECH_PROVIDER,
+        offline=False,
+        requires_api_key=True,
+        verified_female_catalog=True,
+        supports_streaming=False,
+        supported_languages=("multilingual",),
+    )
+
+
 class SpeechProviderRegistry:
     """Explicit registry for replaceable speech engines.
 
@@ -233,10 +254,21 @@ class SpeechProviderRegistry:
         configured.add(SYSTEM_LOCAL_PROVIDER)
         if selected in self._providers and selected in configured:
             return selected
+        if (
+            selected == AZURE_HD_SPEECH_PROVIDER
+            and AZURE_SPEECH_PROVIDER in self._providers
+            and AZURE_SPEECH_PROVIDER in configured
+        ):
+            return AZURE_SPEECH_PROVIDER
         return SYSTEM_LOCAL_PROVIDER
 
     def fallback_provider_id(self, failed_provider_id: object) -> str | None:
         failed = normalize_speech_provider_id(failed_provider_id)
+        if (
+            failed == AZURE_HD_SPEECH_PROVIDER
+            and AZURE_SPEECH_PROVIDER in self._providers
+        ):
+            return AZURE_SPEECH_PROVIDER
         local = self._providers.get(SYSTEM_LOCAL_PROVIDER)
         if (
             failed != SYSTEM_LOCAL_PROVIDER
@@ -251,6 +283,7 @@ def create_builtin_speech_registry(
     local_engine: LocalSpeechEnginePort,
     cloud_engine: CloudSpeechEnginePort,
     azure_engine: AzureSpeechEnginePort | None = None,
+    azure_hd_engine: AzureSpeechEnginePort | None = None,
     *,
     system_capabilities: SpeechProviderCapabilities | None = None,
 ) -> SpeechProviderRegistry:
@@ -260,4 +293,6 @@ def create_builtin_speech_registry(
     ]
     if azure_engine is not None:
         providers.append(AzureSpeechProvider(azure_engine))
+    if azure_hd_engine is not None:
+        providers.append(AzureHDSpeechProvider(azure_hd_engine))
     return SpeechProviderRegistry(tuple(providers))
