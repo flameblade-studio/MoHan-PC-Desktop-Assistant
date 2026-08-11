@@ -109,31 +109,32 @@ def _language_sections(text: str) -> dict[str, str]:
     }
 
 
-def test_rc5_four_language_bullet_parity() -> None:
-    release_text = (ROOT / "docs/releases/v2.3.0-rc.5.md").read_text(
+def test_current_release_four_language_bullet_parity() -> None:
+    release_text = (ROOT / "docs/releases/v3.0.0.md").read_text(
         encoding="utf-8"
     )
     release_sections = _language_sections(release_text)
-    assert {
+    release_bullet_counts = {
         language: len(re.findall(r"(?m)^- ", section))
         for language, section in release_sections.items()
-    } == {language: 4 for language in LANGUAGE_HEADINGS}
+    }
+    assert len(set(release_bullet_counts.values())) == 1
+    assert next(iter(release_bullet_counts.values())) > 0
 
     changelog_text = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     changelog_sections = _language_sections(changelog_text)
-    rc5_bullet_counts: dict[str, int] = {}
+    changelog_bullet_counts: dict[str, int] = {}
     for language, section in changelog_sections.items():
         match = re.search(
-            r"(?ms)^### v2\.3\.0 RC5.*?\n(.*?)(?=^### |\Z)",
+            r"(?ms)^### v3\.0\.0.*?\n(.*?)(?=^### |\Z)",
             section,
         )
         assert match is not None, language
-        rc5_bullet_counts[language] = len(
+        changelog_bullet_counts[language] = len(
             re.findall(r"(?m)^- ", match.group(1))
         )
-    assert rc5_bullet_counts == {
-        language: 4 for language in LANGUAGE_HEADINGS
-    }
+    assert len(set(changelog_bullet_counts.values())) == 1
+    assert next(iter(changelog_bullet_counts.values())) > 0
 
     for text in (release_text, changelog_text):
         assert "。、" not in text
@@ -145,7 +146,7 @@ def main() -> None:
     test_document_rejects_untranslated_duplicate_section()
     test_document_rejects_wrapped_english_word_repetition()
     test_repository_audit_ignores_deleted_tracked_documents()
-    test_rc5_four_language_bullet_parity()
+    test_current_release_four_language_bullet_parity()
     result = subprocess.run(
         [sys.executable, "tools/check_four_language_docs.py"],
         cwd=ROOT,

@@ -153,7 +153,7 @@ def test_release_publication_boundary(release: str) -> None:
         "commit: ${{ steps.source.outputs.commit }}",
         "ref: ${{ needs.resolve-release.outputs.commit }}",
         "Release tag changed after validation",
-        "Verify existing pre-release without modifying it",
+        "Verify existing release without modifying it",
         "Existing Release assets differ from the exact verified set.",
         "github.event_name == 'push' || inputs.publish",
         "metadata:",

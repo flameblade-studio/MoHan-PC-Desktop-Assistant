@@ -7,15 +7,15 @@ env:
 on:
   push:
     tags:
-      - "v2.3.0-rc.*"
+      - "v*.*.*"
   workflow_dispatch:
     inputs:
       tag:
-        description: "Existing v2.3.0-rc.N tag to package"
+        description: "Existing immutable vN.N.N or vN.N.N-rc.N tag to package"
         required: true
         type: string
       publish:
-        description: "Publish a new pre-release after verification"
+        description: "Publish a new stable release or pre-release after verification"
         required: true
         default: false
         type: boolean
@@ -25,12 +25,13 @@ permissions:
 
 jobs:
   resolve-release:
-    name: validate-preview-tag
+    name: validate-release-tag
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
       tag: ${{ steps.release.outputs.tag }}
       version: ${{ steps.release.outputs.version }}
+      prerelease: ${{ steps.release.outputs.prerelease }}
       commit: ${{ steps.source.outputs.commit }}
     steps:
       - name: Resolve and restrict release tag
@@ -46,12 +47,17 @@ jobs:
           else
             tag="$REF_NAME"
           fi
-          if [[ ! "$tag" =~ ^v2\.3\.0-rc\.[1-9][0-9]*$ ]]; then
-            echo "Only immutable v2.3.0-rc.N preview tags are accepted: $tag" >&2
+          if [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*$ ]]; then
+            prerelease=true
+          elif [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            prerelease=false
+          else
+            echo "Only immutable vN.N.N or vN.N.N-rc.N tags are accepted: $tag" >&2
             exit 2
           fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
 
       - name: Check out complete tagged history
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -90,6 +96,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PUBLISH_INPUT: ${{ inputs.publish }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          EXPECTED_PRERELEASE: ${{ steps.release.outputs.prerelease }}
         run: |
           set -euo pipefail
           releases_api="repos/${{ github.repository }}/releases"
@@ -102,12 +109,12 @@ jobs:
               echo "Expected an existing Release for verification before packaging: $RELEASE_TAG" >&2
               exit 7
             }
-            release_is_pre_release="$(
+            release_mode_matches="$(
               gh api "$releases_api/$release_id" \
-                --jq '.draft == false and .prerelease == true'
+                --jq ".draft == false and .prerelease == $EXPECTED_PRERELEASE"
             )"
-            [[ "$release_is_pre_release" == true ]] || {
-              echo "Existing Release must be a published pre-release: $RELEASE_TAG" >&2
+            [[ "$release_mode_matches" == true ]] || {
+              echo "Existing Release maturity does not match its tag: $RELEASE_TAG" >&2
               exit 7
             }
           elif [[ -n "$release_id" ]]; then
@@ -636,11 +643,12 @@ jobs:
             exit 4
           fi
 
-      - name: Verify existing pre-release without modifying it
+      - name: Verify existing release without modifying it
         if: ${{ github.event_name == 'workflow_dispatch' && !inputs.publish }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          EXPECTED_PRERELEASE: ${{ needs.resolve-release.outputs.prerelease }}
         run: |
           set -euo pipefail
           tag="${{ needs.resolve-release.outputs.tag }}"
@@ -649,7 +657,7 @@ jobs:
             echo "Expected an existing Release for verification: $tag" >&2
             exit 7
           }
-          [[ "$(gh api "repos/${{ github.repository }}/releases/$release_id" --jq '.draft == false and .prerelease == true')" == true ]]
+          [[ "$(gh api "repos/${{ github.repository }}/releases/$release_id" --jq ".draft == false and .prerelease == $EXPECTED_PRERELEASE")" == true ]]
           mapfile -t actual_assets < <(gh api --paginate "repos/${{ github.repository }}/releases/$release_id/assets" --jq '.[].name' | sort)
           mapfile -t expected_assets < <(find release-artifacts -maxdepth 1 -type f -printf '%f\n' | sort)
           [[ "$(printf '%s\n' "${actual_assets[@]}")" == "$(printf '%s\n' "${expected_assets[@]}")" ]] || {
@@ -658,11 +666,12 @@ jobs:
           }
           echo "Release $tag is unchanged and matches the verified artifact set."
 
-      - name: Publish one GitHub pre-release
+      - name: Publish one GitHub release
         if: ${{ github.event_name == 'push' || inputs.publish }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          EXPECTED_PRERELEASE: ${{ needs.resolve-release.outputs.prerelease }}
         run: |
           set -euo pipefail
           tag="${{ needs.resolve-release.outputs.tag }}"
@@ -683,13 +692,18 @@ jobs:
             exit "$status"
           }
           trap cleanup_failed_draft EXIT
-          gh release create "$tag" "${assets[@]}" \
-            --repo "${{ github.repository }}" \
-            --verify-tag \
-            --draft \
-            --prerelease \
-            --title "墨寒桌面助理 $tag／墨寒桌面助手 $tag／MoHan Desktop Assistant $tag／墨寒デスクトップアシスタント $tag" \
+          release_args=(
+            "$tag" "${assets[@]}"
+            --repo "${{ github.repository }}"
+            --verify-tag
+            --draft
+            --title "墨寒桌面助理 $tag／墨寒桌面助手 $tag／MoHan Desktop Assistant $tag／墨寒デスクトップアシスタント $tag"
             --notes-file "docs/releases/$tag.md"
+          )
+          if [[ "$EXPECTED_PRERELEASE" == true ]]; then
+            release_args+=(--prerelease)
+          fi
+          gh release create "${release_args[@]}"
           release_id="$(gh api --paginate "repos/${{ github.repository }}/releases?per_page=100" --jq ".[] | select(.tag_name == \"$tag\" and .draft == true) | .id" | head -n 1)"
           [[ "$release_id" =~ ^[0-9]+$ ]]
           mapfile -t actual_assets < <(gh api --paginate "repos/${{ github.repository }}/releases/$release_id/assets" --jq '.[].name' | sort)
@@ -699,7 +713,7 @@ jobs:
             exit 8
           }
           gh api --method PATCH "repos/${{ github.repository }}/releases/$release_id" \
-            -F draft=false -F prerelease=true >/dev/null
-          [[ "$(gh api "repos/${{ github.repository }}/releases/$release_id" --jq '.draft == false and .prerelease == true')" == true ]]
+            -F draft=false -F prerelease="$EXPECTED_PRERELEASE" >/dev/null
+          [[ "$(gh api "repos/${{ github.repository }}/releases/$release_id" --jq ".draft == false and .prerelease == $EXPECTED_PRERELEASE")" == true ]]
           published=true
           trap - EXIT

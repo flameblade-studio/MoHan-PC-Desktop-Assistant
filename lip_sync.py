@@ -20,11 +20,11 @@ VOWEL_FORMANTS = frozendict({
 # the live-audio rate.
 VISEME_CUES_PER_SECOND = 50
 VISEME_CONFIRM_FRAMES = frozendict({
-    "A": 2,
-    "I": 2,
-    "U": 2,
-    "E": 2,
-    "O": 2,
+    "A": 3,
+    "I": 3,
+    "U": 3,
+    "E": 3,
+    "O": 3,
     "CONSONANT": 1,
 })
 VISEME_SILENCE_CONFIRM_FRAMES = 2
@@ -39,7 +39,7 @@ VISEME_MIN_HOLD_SECONDS = frozendict({
 })
 VISEME_OPEN_TRANSITION_SECONDS = 0.055
 VISEME_CLOSE_TRANSITION_SECONDS = 0.050
-VISEME_CHANGE_TRANSITION_SECONDS = 0.040
+VISEME_CHANGE_TRANSITION_SECONDS = 0.050
 VALID_VISEMES = frozenset({
     "A",
     "I",

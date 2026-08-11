@@ -586,11 +586,6 @@ EXPRESSION_SPEECH_MOUTH_RECTS = frozendict({
 })
 CHEEK_SPEECH_CLOSED_EXPRESSION = "idle_speech_neutral"
 HAPPY_SPEECH_CLOSED_EXPRESSION = "happy_speech_neutral"
-# Keep the photographed cheek-rest mouth corners outside the animated region.
-# At the runtime 465 px canvas, the visible central lips occupy roughly
-# x=184..207; widening this mask reaches both smile corners and recreates the
-# Joker-like corner flutter reported in rapid A/I/U/E/O transitions.
-CHEEK_SPEECH_CENTRAL_MOUTH_RECT = QRect(184, 198, 24, 34)
 GESTURE_SPEECH_MOUTH_RECTS = frozendict({
     expression: EXPRESSION_SPEECH_MOUTH_RECTS[expression]
     for expression in GESTURE_SPEECH_EXPRESSIONS
@@ -731,34 +726,29 @@ VOICE_ENGINE_OPENAI = OPENAI_SPEECH_PROVIDER
 VOICE_ENGINE_REALTIME = OPENAI_REALTIME_PROVIDER
 VOICE_ENGINE_AZURE = AZURE_SPEECH_PROVIDER
 
-REALTIME_VOICES = (
+OPENAI_VOICE_ORDER = (
     "coral",
     "marin",
-    "shimmer",
     "cedar",
+    "shimmer",
     "sage",
     "verse",
     "alloy",
     "ash",
     "ballad",
     "echo",
-)
-
-TTS_VOICES = (
-    "coral",
-    "marin",
-    "cedar",
-    "shimmer",
     "nova",
-    "sage",
-    "alloy",
-    "ash",
-    "ballad",
-    "echo",
     "fable",
     "onyx",
-    "verse",
 )
+
+REALTIME_UNSUPPORTED_TTS_VOICES = frozenset({"nova", "fable", "onyx"})
+REALTIME_VOICES = tuple(
+    voice
+    for voice in OPENAI_VOICE_ORDER
+    if voice not in REALTIME_UNSUPPORTED_TTS_VOICES
+)
+TTS_VOICES = OPENAI_VOICE_ORDER
 
 
 def migrate_voice_defaults(db: StudioDB) -> None:
@@ -6168,6 +6158,9 @@ class CompanionWindow(QMainWindow):
             | Qt.WindowStaysOnTopHint
             | Qt.Tool
         )
+        # Keep every native MoHan window on the same icon contract. Windows
+        # can use this hidden tool window while resolving the taskbar group.
+        self.setWindowIcon(application_icon())
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setAttribute(Qt.WA_ShowWithoutActivating)
         self.character_topmost_active = True
@@ -6644,7 +6637,10 @@ class CompanionWindow(QMainWindow):
         self._ensure_idle_mouth_closed()
         self.idle_phase = (self.idle_phase + 1) % 720
         breath = (math.sin(self.idle_phase * math.tau / 72.0) + 1.0) / 2.0
-        self.current_breath = breath
+        # Speech volume and idle breathing share one continuous body layer.
+        # Ease between them so the first idle frame cannot snap the sleeves
+        # and hair after the final spoken viseme.
+        self.current_breath += (breath - self.current_breath) * 0.22
         sway = math.sin(self.idle_phase * math.tau / 210.0)
         self.ambient_motion_target_y = breath * 2.0
         self.ambient_motion_target_x = sway * 0.7
@@ -7567,33 +7563,10 @@ class CompanionWindow(QMainWindow):
             for suffix, mouth_clip in mouth_clips.items()
         }
         self.viseme_mouth_masks = dict(self.mouth_masks)
-        self.viseme_mouth_masks[""] = self._soft_rounded_mask(
-            (CHEEK_SPEECH_CENTRAL_MOUTH_RECT,),
-            alpha_steps,
-            9,
-        )
 
     def _build_cheek_neutral_speech_frame(self) -> None:
         cheek_idle = self.expression_pixmaps["idle"]
         cheek_neutral = QPixmap(cheek_idle)
-        painter = QPainter(cheek_neutral)
-        painter.drawPixmap(
-            0,
-            0,
-            self._masked_mouth_patch(
-                self.expression_pixmaps["speaking"],
-                "",
-            ),
-        )
-        painter.drawPixmap(
-            0,
-            0,
-            self._masked_region(
-                cheek_idle,
-                self.viseme_mouth_masks[""],
-            ),
-        )
-        painter.end()
         self.expression_pixmaps[
             CHEEK_SPEECH_CLOSED_EXPRESSION
         ] = cheek_neutral
@@ -9025,16 +8998,6 @@ class CompanionWindow(QMainWindow):
                 mouth_source=mouth_source,
                 mouth_mask=self.gesture_mouth_masks[expression],
                 mouth_rect=EXPRESSION_SPEECH_MOUTH_RECTS[expression],
-            )
-        if (
-            suffix == ""
-            and self.speech_closed_expression
-            == CHEEK_SPEECH_CLOSED_EXPRESSION
-        ):
-            return FaceRenderLayers(
-                mouth_source=mouth_source,
-                mouth_mask=self.viseme_mouth_masks[""],
-                mouth_rect=CHEEK_SPEECH_CENTRAL_MOUTH_RECT,
             )
         return FaceRenderLayers(
             mouth_source=mouth_source,

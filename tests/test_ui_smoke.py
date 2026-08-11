@@ -725,6 +725,17 @@ def _assert_voice_selection_contract(window: CompanionWindow) -> None:
     assert window.dashboard.cloud_voice.currentText() == "coral"
     assert window.dashboard.tts_voice.currentText() == "coral"
     assert window.dashboard.realtime_voice.currentText() == "coral"
+    tts_voices = [
+        window.dashboard.tts_voice.itemText(index)
+        for index in range(window.dashboard.tts_voice.count())
+    ]
+    realtime_voices = [
+        window.dashboard.realtime_voice.itemText(index)
+        for index in range(window.dashboard.realtime_voice.count())
+    ]
+    assert [voice for voice in tts_voices if voice in realtime_voices] == (
+        realtime_voices
+    )
     local_index = window.dashboard.voice_engine.findData("system-local")
     openai_index = window.dashboard.voice_engine.findData("openai-speech")
     assert local_index >= 0 and openai_index >= 0

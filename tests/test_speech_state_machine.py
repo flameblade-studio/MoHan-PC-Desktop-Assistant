@@ -76,6 +76,18 @@ def _assert_local_speech_completion(
     )
 
 
+def _assert_completion_breath_is_continuous(window: CompanionWindow) -> None:
+    window.state = "speaking"
+    window.current_breath = 0.92
+    window.idle_phase = 53
+    window.set_state("idle", force=True)
+    before_idle_tick = window.current_breath
+    window._idle_tick()
+    assert abs(window.current_breath - before_idle_tick) <= 0.22, (
+        "the first idle breath frame snapped after speech completion"
+    )
+
+
 def _assert_realtime_natural_close(
     app: QApplication,
     window: CompanionWindow,
@@ -193,6 +205,7 @@ def run() -> None:
         app, window = _create_window(temp_dir)
         try:
             _assert_local_speech_completion(app, window)
+            _assert_completion_breath_is_continuous(window)
             _assert_realtime_natural_close(app, window)
             _assert_normal_realtime_answer(app, window)
             _assert_emotion_metadata_hidden(window)

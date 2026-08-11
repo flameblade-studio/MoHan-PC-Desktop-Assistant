@@ -4,6 +4,13 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### v3.0.0 — 2026-08-11
+
+- 專案擁有者親自認可的第一個正式穩定版本，也是由 v2.3.0 候選系列完整驗證後升格的第三代里程碑。
+- 托腮嘴型改為完整更新左右嘴角；50 Hz 音訊取樣搭配三影格母音確認與 50 毫秒插值，降低嘴型搶拍、跳動及殘留嘴角。
+- 語音呼吸、衣袖與頭髮平順銜接待機呼吸，消除講話結束瞬間的單次身體抖動。
+- Windows 捷徑與原生視窗統一使用 EXE 內嵌半身像，並阻止本機安裝測試污染真實桌面及工作列圖示來源；OpenAI TTS 與 Realtime 也改由單一權威順序產生共同聲線清單。
+
 ### v2.3.0 RC5 — 2026-08-11
 
 - Azure Speech 中文女性聲音選單支援繁中與簡中跨語系選擇，並依目前介面語言優先排列；Windows 本機語音的兩種中文介面也共用 `zh-TW`／`zh-CN` 女聲池並排除 `en-US` Zira，既有預設及有效設定不變。四語 README 同步將《電腦情人夢》的英文譯名更正為《AI Think So!》。
@@ -170,6 +177,13 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
+### v3.0.0 — 2026-08-11
+
+- 项目所有者亲自认可的第一个正式稳定版本，也是由 v2.3.0 候选系列完整验证后升级的第三代里程碑。
+- 托腮嘴形改为完整更新左右嘴角；50 Hz 音频采样配合三帧元音确认及 50 毫秒插值，降低嘴形抢拍、跳动和残留嘴角。
+- 语音呼吸、衣袖与头发平滑衔接待机呼吸，消除说话结束瞬间的一次身体抖动。
+- Windows 快捷方式与原生窗口统一使用 EXE 内嵌半身像，并阻止本地安装测试污染真实桌面及任务栏图标来源；OpenAI TTS 与 Realtime 也改由唯一权威顺序生成共同声线列表。
+
 ### v2.3.0 RC5 — 2026-08-11
 
 - Azure Speech 中文女性声音列表支持繁中与简中跨语言选择，并按当前界面语言优先排列；Windows 本地语音的两种中文界面也共用 `zh-TW`／`zh-CN` 女声池并排除 `en-US` Zira，现有默认值及有效设置不变。四语 README 同步将《电脑情人梦》的英文译名更正为《AI Think So!》。
@@ -334,6 +348,13 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 ## English
 
 All notable public changes to MoHan Desktop Assistant are documented here.
+
+### v3.0.0 — 2026-08-11
+
+- The first stable release personally approved by the project owner and the third-generation milestone promoted after the complete v2.3.0 release-candidate series.
+- Chin-rest visemes now update both mouth corners. Three-frame vowel confirmation and 50 ms interpolation retain 50 Hz analysis while preventing rushed motion, jumps, and stranded corners.
+- Speech-driven breathing, sleeves, and hair ease into idle breathing, removing the one-frame body twitch when an utterance ends.
+- Windows shortcuts and native windows share the executable's embedded half-body icon, local installer tests cannot pollute real desktop or taskbar icon sources, and OpenAI TTS and Realtime derive shared voices from one canonical order.
 
 ### v2.3.0 RC5 — 2026-08-11
 
@@ -539,6 +560,13 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### v3.0.0 — 2026-08-11
+
+- プロジェクト所有者が自ら認定した初の正式安定版であり、v2.3.0 候補系列の完全検証後に昇格した第三世代の節目です。
+- 頬杖姿勢の口形は左右の口角まで更新します。50 Hz 解析を保ちながら、母音の三フレーム確認と 50 ミリ秒補間で先走り、跳ね、残留口角を防ぎます。
+- 発話連動の呼吸、袖、髪を待機呼吸へ滑らかにつなぎ、発話終了時の一フレームだけの身体揺れを解消しました。
+- Windows ショートカットとネイティブウィンドウは EXE 内蔵の半身アイコンを共用し、本機インストーラーテストによる実デスクトップやタスクバーのアイコン参照元の汚染を禁止しました。OpenAI TTS と Realtime の共通音声も一つの正規順序から生成します。
 
 ### v2.3.0 RC5 — 2026-08-11
 
