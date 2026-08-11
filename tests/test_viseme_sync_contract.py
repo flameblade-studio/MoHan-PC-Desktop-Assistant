@@ -97,8 +97,10 @@ def _assert_sustain_and_vowel_change(
     vowel_change_started = cue.clock[0]
     cue("O")
     cue("O")
+    assert window.viseme_dynamics.current == "A"
+    cue("O")
     assert window.viseme_dynamics.current == "O"
-    assert cue.clock[0] - vowel_change_started <= 0.041
+    assert cue.clock[0] - vowel_change_started <= 0.061
 
 
 def _assert_consonant_and_close(

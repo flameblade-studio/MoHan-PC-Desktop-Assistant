@@ -16,7 +16,6 @@ lazy from PySide6.QtGui import QImage
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from app import (
-    CHEEK_SPEECH_CENTRAL_MOUTH_RECT,
     CHEEK_SPEECH_CLOSED_EXPRESSION,
     CompanionWindow,
 )
@@ -80,7 +79,7 @@ def outside_region_changed_pixel_count(
 class MouthReference:
     eye_rect: QRect
     mouth_rect: QRect
-    fixed_corner_strips: dict[str, QRect]
+    corner_regions: dict[str, QRect]
     idle_base: QImage
     neutral_base: QImage
 
@@ -103,18 +102,18 @@ def _configure_window(window: CompanionWindow, app: QApplication) -> None:
     assert not window.eye_overlay.isHidden()
 
 
-def _fixed_corner_strips(mouth_rect: QRect) -> dict[str, QRect]:
+def _corner_regions(mouth_rect: QRect) -> dict[str, QRect]:
     return {
         "left": QRect(
             mouth_rect.left(),
             mouth_rect.top(),
-            CHEEK_SPEECH_CENTRAL_MOUTH_RECT.left() - mouth_rect.left(),
+            24,
             mouth_rect.height(),
         ),
         "right": QRect(
-            CHEEK_SPEECH_CENTRAL_MOUTH_RECT.right() + 1,
+            mouth_rect.right() - 23,
             mouth_rect.top(),
-            mouth_rect.right() - CHEEK_SPEECH_CENTRAL_MOUTH_RECT.right(),
+            24,
             mouth_rect.height(),
         ),
     }
@@ -123,8 +122,8 @@ def _fixed_corner_strips(mouth_rect: QRect) -> dict[str, QRect]:
 def _build_mouth_reference(window: CompanionWindow) -> MouthReference:
     mouth_rect = window.mouth_clips[""]
     assert mouth_rect == QRect(168, 195, 64, 40), (
-        "the chin-rest portrait must provide a stable neutral frame "
-        "for both speech corners"
+        "the chin-rest portrait must animate the complete mouth, including "
+        "both corners"
     )
     assert window.speech_closed_expression == CHEEK_SPEECH_CLOSED_EXPRESSION
     idle_base = (
@@ -137,11 +136,10 @@ def _build_mouth_reference(window: CompanionWindow) -> MouthReference:
         .toImage()
         .convertToFormat(QImage.Format_ARGB32)
     )
-    assert changed_pixel_count(
-        idle_base,
+    assert region_signature(idle_base, mouth_rect) == region_signature(
         neutral_base,
         mouth_rect,
-    ) > mouth_rect.width() * mouth_rect.height() // 12
+    )
     assert outside_region_changed_pixel_count(
         idle_base,
         neutral_base,
@@ -150,7 +148,7 @@ def _build_mouth_reference(window: CompanionWindow) -> MouthReference:
     return MouthReference(
         eye_rect=QRect(160, 135, 95, 48),
         mouth_rect=mouth_rect,
-        fixed_corner_strips=_fixed_corner_strips(mouth_rect),
+        corner_regions=_corner_regions(mouth_rect),
         idle_base=idle_base,
         neutral_base=neutral_base,
     )
@@ -160,7 +158,7 @@ def _assert_speech_expression_layers(
     window: CompanionWindow,
     reference: MouthReference,
 ) -> None:
-    central_signatures: set[tuple[int, ...]] = set()
+    mouth_signatures: set[tuple[int, ...]] = set()
     for expression in (
         "speaking",
         "mouth_mid",
@@ -174,21 +172,20 @@ def _assert_speech_expression_layers(
             .toImage()
             .convertToFormat(QImage.Format_ARGB32)
         )
-        central_signatures.add(
-            region_signature(speech_frame, CHEEK_SPEECH_CENTRAL_MOUTH_RECT)
-        )
-        for side, strip in reference.fixed_corner_strips.items():
-            assert region_signature(speech_frame, strip) == region_signature(
+        mouth_signatures.add(region_signature(speech_frame, reference.mouth_rect))
+        for side, region in reference.corner_regions.items():
+            assert changed_pixel_count(
                 reference.neutral_base,
-                strip,
-            ), f"{expression} changed the fixed {side} speech corner"
+                speech_frame,
+                region,
+            ) >= 12, f"{expression} left the neutral {side} corner behind"
         assert outside_region_changed_pixel_count(
             reference.idle_base,
             speech_frame,
             reference.mouth_rect,
         ) == 0, f"{expression} changed pixels outside the cheek mouth clip"
-    assert len(central_signatures) >= 4, (
-        "fixed corners must not flatten the central A/I/U/E/O shapes"
+    assert len(mouth_signatures) >= 4, (
+        "complete moving corners must not flatten the A/I/U/E/O shapes"
     )
 
 
@@ -236,12 +233,10 @@ def _assert_transition_integrity(
         outside_mouth_signature(frame, reference.mouth_rect) == clean_outside
         for frame in frames
     ), "pixels outside the frozen mouth region changed"
-    for frame in frames:
-        for side, strip in reference.fixed_corner_strips.items():
-            assert region_signature(frame, strip) == region_signature(
-                reference.neutral_base,
-                strip,
-            ), f"transition changed the fixed {side} speech corner"
+    for side, region in reference.corner_regions.items():
+        assert len({region_signature(frame, region) for frame in frames}) >= 4, (
+            f"the {side} speech corner remained fixed during transitions"
+        )
     assert window._active_speech_pose_suffix() == ""
 
 
@@ -260,7 +255,11 @@ def _assert_transition_smoothness(
         for first, second in pairwise(frames)
     ]
     assert direct_difference > 0.5
-    assert max(adjacent) < direct_difference * 0.82
+    assert max(adjacent) < direct_difference * 0.82, (
+        f"largest adjacent transition {max(adjacent):.3f} at frame "
+        f"{adjacent.index(max(adjacent)) + 1} exceeded "
+        f"82% of the direct viseme difference {direct_difference:.3f}"
+    )
     assert sum(value > 0.05 for value in adjacent) >= 8
     assert window.eye_overlay.isHidden()
 

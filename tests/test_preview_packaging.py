@@ -131,7 +131,9 @@ def test_build_tool_is_pinned() -> None:
     _validate_version("2.3.0-rc.2")
     _validate_version("2.3.0-rc.3")
     _validate_version("2.3.0-rc.5")
-    for invalid in ("2.3.0", "2.3.0-rc", "2.3.0-rc.01", "2.2.0-rc.2"):
+    _validate_version("2.3.0")
+    _validate_version("3.0.0")
+    for invalid in ("2.3", "2.3.0-rc", "2.3.0-rc.01", "v3.0.0"):
         try:
             _validate_version(invalid)
         except ValueError:
@@ -143,13 +145,16 @@ def test_build_tool_is_pinned() -> None:
 def test_release_gate_is_pinned() -> None:
     release = read(".github/workflows/release.yml")
     preview = read(".github/workflows/preview-packages.yml")
-    assert '"v2.3.0-rc.*"' in release
-    assert "^v2\\.3\\.0-rc\\.[1-9][0-9]*$" in release
+    assert '"v*.*.*"' in release
+    assert "^v[0-9]+\\.[0-9]+\\.[0-9]+$" in release
+    assert "^v[0-9]+\\.[0-9]+\\.[0-9]+-rc\\.[1-9][0-9]*$" in release
     assert "pull_request:" not in release
     assert "gh release create" in release
     assert "artifact-metadata: write" in release
     assert "--draft" in release
-    assert 'gh release create "$tag" "${assets[@]}"' in release
+    assert 'gh release create "${release_args[@]}"' in release
+    assert 'release_args+=(--prerelease)' in release
+    assert 'prerelease="$EXPECTED_PRERELEASE"' in release
     assert "/releases/tags/$tag" not in release
     assert "and .draft == true" in release
     assert "draft=false" in release
@@ -196,7 +201,10 @@ def test_release_gate_is_pinned() -> None:
 
 
 def test_release_version_has_one_source_of_truth() -> None:
-    assert re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+-rc\.[1-9][0-9]*", FALLBACK_VERSION)
+    assert re.fullmatch(
+        r"[0-9]+\.[0-9]+\.[0-9]+(?:-rc\.[1-9][0-9]*)?",
+        FALLBACK_VERSION,
+    )
     tag = f"v{FALLBACK_VERSION}"
     assert (ROOT / "docs" / "releases" / f"{tag}.md").is_file()
     release = read(".github/workflows/release.yml")
@@ -219,7 +227,7 @@ def test_four_language_release_notes_and_boundaries() -> None:
     )
     positions = [notes.index(heading) for heading in expected_headings]
     assert positions == sorted(positions)
-    assert re.search(r"limited\s+Preview", notes)
+    assert re.search(r"limited(?:\s+cross-platform)?\s+Preview", notes)
     for phrase in ("功能受限", "機能限定"):
         assert phrase in notes
     guide = read("docs/PREVIEW-PACKAGES.md")

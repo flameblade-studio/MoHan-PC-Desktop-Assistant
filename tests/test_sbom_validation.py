@@ -53,9 +53,10 @@ def runtime_policy(
 
 def test_release_version_and_repository_policy_are_synchronized() -> None:
     assert _release_version("v9.8.7-rc.6") == "9.8.7rc6"
-    for invalid in ("9.8.7-rc.6", "v9.8.7", "v9.8.7-rc.0"):
+    assert _release_version("v9.8.7") == "9.8.7"
+    for invalid in ("9.8.7-rc.6", "v9.8", "v9.8.7-rc.0"):
         message = expect_value_error(lambda value=invalid: _release_version(value))
-        assert "vN.N.N-rc.N" in message
+        assert "vN.N.N or vN.N.N-rc.N" in message
 
     policies = load_policies(ROOT / "sbom" / "components.toml")
     windows = _profile_policies(policies, "windows")

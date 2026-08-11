@@ -13,7 +13,8 @@ lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RELEASE_TAG = re.compile(
-    r"^v(?P<base>[0-9]+\.[0-9]+\.[0-9]+)-rc\.(?P<rc>[1-9][0-9]*)$"
+    r"^v(?P<base>[0-9]+\.[0-9]+\.[0-9]+)"
+    r"(?:-rc\.(?P<rc>[1-9][0-9]*))?$"
 )
 PINNED_REQUIREMENT = re.compile(
     r"^(?P<name>[A-Za-z0-9][A-Za-z0-9._-]*)==(?P<version>[^\s;]+)$"
@@ -183,8 +184,13 @@ def _sha256(path: Path) -> str:
 def _release_version(tag: str) -> str:
     match = RELEASE_TAG.fullmatch(tag)
     if match is None:
-        raise ValueError("SBOM validation is restricted to vN.N.N-rc.N tags.")
-    return f"{match.group('base')}rc{match.group('rc')}"
+        raise ValueError("SBOM validation requires a vN.N.N or vN.N.N-rc.N tag.")
+    rc_number = match.group("rc")
+    return (
+        match.group("base")
+        if rc_number is None
+        else f"{match.group('base')}rc{rc_number}"
+    )
 
 
 def _policy_from_row(row: JsonObject, index: int) -> ComponentPolicy:

@@ -38,17 +38,17 @@ open-source
 
 ### 已準備的公開預發行版
 
-- 標籤：`v2.3.0-rc.5`
-- 標題：`MoHan Desktop Assistant v2.3.0 RC5`
+- 標籤：`v3.0.0`
+- 標題：`MoHan Desktop Assistant v3.0.0`
 - 發布條件：只有在所有必要 CI、套件 smoke、安全及發布政策檢查成功後才可發布。
 - 內容包含 Windows x64 可攜式 ZIP、每位使用者安裝的 EXE 與 MSI、英文／簡體中文／日文 MSI 轉換檔、macOS Apple Silicon（arm64）與 Intel（x86_64）功能受限 Preview DMG、Linux x86_64 功能受限 Preview AppImage、SHA-256 清單、可重現的 CycloneDX 1.7 SBOM 與驗證報告、已去識別化的 Tachyon 證據與效能摘要、更新資訊清單及產物證明。
 
 ### 後續發行系列
 
-- 可接受的發行標籤只能是不可變的 `v2.3.0-rc.N`，其中 `N` 必須是正整數；其他標籤必須在封裝或發布前失敗。
+- 可接受的發行標籤只能是不可變的 `vN.N.N` 正式版或 `vN.N.N-rc.N` 候選版，其中 RC 編號必須是正整數；其他標籤必須在封裝或發布前失敗。
 - Windows 維持正式且完整的產品範圍，並保留已驗證的 x64 ZIP、EXE、MSI 及 MSI 語言轉換檔。
 - macOS 分別提供原生 Apple Silicon（arm64）與 Intel（x86_64）`.dmg`，各自包含架構相符的 `.app`；Linux x86_64 提供 `.AppImage`。這些套件都必須明確標示為功能受限的 Preview：只驗證啟動、四語顯示、每位使用者路徑與安全失效關閉的平台邊界，不代表與 Windows 功能相同。
-- Pull Request 只能為套件測試建立短期 CI 產物，不得建立 GitHub Release；只有既存的 `v2.3.0-rc.N` 標籤能進入發布工作流程。
+- Pull Request 只能為套件測試建立短期 CI 產物，不得建立 GitHub Release；只有既存且符合規則的正式版或候選版標籤能進入發布工作流程。
 - Release 說明必須來自人工整理的四語檔案 `docs/releases/<tag>.md`，不能只使用自動產生的說明。
 
 ### 歷史首發版本
@@ -99,7 +99,7 @@ GitHub 自動化必須使用一條可預測的憑證路徑。Pull Request 的讀
 
 ### 自動化後續發行
 
-在本次遷移期間，只有 `v2.3.0-rc.N` 標籤能觸發 `.github/workflows/release.yml`。工作流程會驗證精確標籤、簽出該不可變的來源修訂，然後依序：
+只有符合 `vN.N.N` 或 `vN.N.N-rc.N` 的標籤能觸發 `.github/workflows/release.yml`。工作流程會驗證精確標籤、簽出該不可變的來源修訂，然後依序：
 
 任何平台封裝開始前，快速閘門必須先確認標籤、版本與 `main` 歷史一致，檢查本次模式所要求的 Release 存在或不存在，並以 Python 3.15 驗證人工整理的四語 Release 說明。這些便宜且具決定性的檢查不得延後到長時間建置之後；發布前仍須再次驗證標籤、產物與 Release 狀態，以防執行期間發生漂移。
 
@@ -119,7 +119,7 @@ GitHub 自動化必須使用一條可預測的憑證路徑。Pull Request 的讀
 14. 為每個發布檔案建立 GitHub 產物來源證明；
 15. 要求並發布人工整理的四語 Release 說明。
 
-此發行系列的每個標籤都必須發布為預發行版。不得重複使用或移動已發布的標籤；必須建立新的 `v2.3.0-rc.N` 標籤。未來穩定版需要另外經過審查的政策變更，不能默默放寬此閘門。
+`vN.N.N-rc.N` 必須發布為 Pre-release，純 `vN.N.N` 必須發布為 Stable Release；工作流程會阻擋標籤與成熟度不一致。不得重複使用或移動任何已發布標籤。
 
 發布中繼資料工作必須以已保存的 Python 3.15 執行路徑執行所有墨寒專案工具。隔離的 Python 3.14 只能用於尚未支援 3.15 的第三方 SBOM 工具鏈，不得透過 `PATH` 改變後續專案工具的執行環境。
 
@@ -203,17 +203,17 @@ open-source
 
 ### 已准备的公开预发布版
 
-- 标签：`v2.3.0-rc.5`
-- 标题：`MoHan Desktop Assistant v2.3.0 RC5`
+- 标签：`v3.0.0`
+- 标题：`MoHan Desktop Assistant v3.0.0`
 - 发布条件：只有在所有必要 CI、软件包 smoke、安全及发布政策检查成功后才可发布。
 - 内容包括 Windows x64 便携式 ZIP、按用户安装的 EXE 与 MSI、英文／简体中文／日文 MSI 转换文件、macOS Apple Silicon（arm64）与 Intel（x86_64）功能受限 Preview DMG、Linux x86_64 功能受限 Preview AppImage、SHA-256 清单、可重现的 CycloneDX 1.7 SBOM 与验证报告、已去除身份信息的 Tachyon 证据与性能摘要、更新清单及产物证明。
 
 ### 后续发布系列
 
-- 可接受的发布标签只能是不可变的 `v2.3.0-rc.N`，其中 `N` 必须是正整数；其他标签必须在打包或发布前失败。
+- 可接受的发布标签只能是不可变的 `vN.N.N` 正式版或 `vN.N.N-rc.N` 候选版，其中 RC 编号必须是正整数；其他标签必须在打包或发布前失败。
 - Windows 维持正式且完整的产品范围，并保留已验证的 x64 ZIP、EXE、MSI 及 MSI 语言转换文件。
 - macOS 分别提供原生 Apple Silicon（arm64）与 Intel（x86_64）`.dmg`，各自包含架构相符的 `.app`；Linux x86_64 提供 `.AppImage`。这些软件包都必须明确标示为功能受限的 Preview：只验证启动、四语显示、按用户路径与安全失效关闭的平台边界，不代表与 Windows 功能相同。
-- Pull Request 只能为软件包测试建立短期 CI 产物，不得建立 GitHub Release；只有现有的 `v2.3.0-rc.N` 标签能进入发布工作流。
+- Pull Request 只能为软件包测试建立短期 CI 产物，不得建立 GitHub Release；只有现有且符合规则的正式版或候选版标签能进入发布工作流。
 - Release 说明必须来自人工整理的四语文件 `docs/releases/<tag>.md`，不能只使用自动生成的说明。
 
 ### 历史首发版本
@@ -264,7 +264,7 @@ GitHub 自动化必须使用一条可预测的凭证路径。Pull Request 的读
 
 ### 自动化后续发布
 
-在本次迁移期间，只有 `v2.3.0-rc.N` 标签能触发 `.github/workflows/release.yml`。工作流会验证精确标签、检出该不可变的源修订，然后依次：
+只有符合 `vN.N.N` 或 `vN.N.N-rc.N` 的标签能触发 `.github/workflows/release.yml`。工作流会验证精确标签、检出该不可变的源修订，然后依次：
 
 任何平台打包开始前，快速关卡必须先确认标签、版本与 `main` 历史一致，检查本次模式所要求的 Release 存在或不存在，并使用 Python 3.15 验证人工整理的四语 Release 说明。这些低成本且具有决定性的检查不得延后到长时间构建之后；发布前仍须再次验证标签、产物与 Release 状态，以防运行期间发生漂移。
 
@@ -284,7 +284,7 @@ GitHub 自动化必须使用一条可预测的凭证路径。Pull Request 的读
 14. 为每个发布文件建立 GitHub 产物来源证明；
 15. 要求并发布人工整理的四语 Release 说明。
 
-此发布系列的每个标签都必须发布为预发布版。不得重复使用或移动已发布的标签；必须建立新的 `v2.3.0-rc.N` 标签。未来稳定版需要另行通过评审的政策变更，不能默默放宽此关卡。
+`vN.N.N-rc.N` 必须发布为预发布版，纯 `vN.N.N` 必须发布为正式稳定版；工作流会阻止标签与成熟度不一致。不得重复使用或移动任何已发布标签。
 
 发布元数据工作必须使用已保存的 Python 3.15 执行路径运行所有墨寒项目工具。隔离的 Python 3.14 只能用于尚未支持 3.15 的第三方 SBOM 工具链，不得通过 `PATH` 改变后续项目工具的运行环境。
 
@@ -368,17 +368,17 @@ open-source
 
 ### Prepared public pre-release
 
-- Tag: `v2.3.0-rc.5`
-- Title: `MoHan Desktop Assistant v2.3.0 RC5`
+- Tag: `v3.0.0`
+- Title: `MoHan Desktop Assistant v3.0.0`
 - Publication condition: publish only after every required CI, package smoke, security, and release-policy check succeeds.
 - Includes the Windows x64 portable ZIP, per-user EXE and MSI installers, English/Simplified Chinese/Japanese MSI transforms, macOS Apple Silicon (arm64) and Intel (x86_64) limited Preview DMGs, Linux x86_64 limited Preview AppImage, SHA-256 catalog, reproducible CycloneDX 1.7 SBOMs and validation report, sanitized Tachyon evidence and performance summary, update manifest, and artifact attestations.
 
 ### Next release line
 
-- Accepted release tags are immutable `v2.3.0-rc.N` tags where `N` is a positive integer; every other tag must fail before packaging or publication.
+- Accepted release tags are immutable stable `vN.N.N` or candidate `vN.N.N-rc.N` tags, with a positive RC number; every other tag must fail before packaging or publication.
 - Windows remains the formal, complete product surface and retains its verified x64 ZIP, EXE, MSI, and MSI language transforms.
 - macOS receives separate native Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`; Linux x86_64 receives an `.AppImage`. All must be explicitly labeled as limited Preview packages: they validate launch, four-language rendering, per-user paths, and fail-closed platform boundaries, not feature parity with Windows.
-- Pull Requests may build short-lived CI artifacts for package testing only and cannot create a GitHub Release; only an existing `v2.3.0-rc.N` tag can enter the publication workflow.
+- Pull Requests may build short-lived CI artifacts for package testing only and cannot create a GitHub Release; only an existing valid stable or candidate tag can enter the publication workflow.
 - The Release description must come from the curated four-language file `docs/releases/<tag>.md`; generated notes alone are not accepted.
 
 ### Historical initial release
@@ -429,7 +429,7 @@ GitHub automation must use one predictable credential path. Prefer the connected
 
 ### Automated future releases
 
-During this migration, only `v2.3.0-rc.N` tags trigger `.github/workflows/release.yml`. The workflow validates the exact tag, checks out that immutable source revision, and then:
+Only `vN.N.N` or `vN.N.N-rc.N` tags trigger `.github/workflows/release.yml`. The workflow validates the exact tag, checks out that immutable source revision, and then:
 
 Before any platform package starts, the fast gate must confirm that the tag, version, and `main` history agree, require the Release to exist or not exist as dictated by the selected mode, and validate the curated four-language Release notes with Python 3.15. These cheap, decisive checks must not be deferred until after long builds. The tag, artifacts, and Release state are still revalidated immediately before publication to detect in-flight drift.
 
@@ -449,7 +449,7 @@ Before any platform package starts, the fast gate must confirm that the tag, ver
 14. creates GitHub artifact provenance attestations for every published file;
 15. requires and publishes the curated four-language Release description.
 
-Every tag in this release line is published as a pre-release. Never reuse or move a published tag; create a new `v2.3.0-rc.N` tag instead. A future stable release requires a separate, reviewed policy change rather than silently broadening this gate.
+Every `vN.N.N-rc.N` tag must publish as a pre-release, while a plain `vN.N.N` tag must publish as a stable release. The workflow rejects a tag/maturity mismatch. Never reuse or move any published tag.
 
 The release metadata job must run every MoHan-owned tool with the saved Python 3.15 executable. The isolated Python 3.14 runtime is restricted to third-party SBOM tooling that does not yet support 3.15 and must never change later project-tool execution through `PATH`.
 
@@ -533,17 +533,17 @@ open-source
 
 ### 準備済みの公開プレリリース
 
-- タグ：`v2.3.0-rc.5`
-- タイトル：`MoHan Desktop Assistant v2.3.0 RC5`
+- タグ：`v3.0.0`
+- タイトル：`MoHan Desktop Assistant v3.0.0`
 - 公開条件：必須の CI、パッケージ smoke、セキュリティ、リリースポリシーの全検査が成功した場合に限り公開します。
 - Windows x64 ポータブル ZIP、ユーザー単位の EXE および MSI インストーラー、英語／簡体字中国語／日本語の MSI 変換ファイル、macOS Apple Silicon（arm64）および Intel（x86_64）の機能限定 Preview DMG、Linux x86_64 の機能限定 Preview AppImage、SHA-256 カタログ、再現可能な CycloneDX 1.7 SBOM と検証レポート、匿名化済み Tachyon 証拠と性能要約、更新マニフェスト、成果物証明を含みます。
 
 ### 次のリリース系列
 
-- 受け付けるリリースタグは、`N` が正の整数である不変の `v2.3.0-rc.N` だけです。それ以外のタグはパッケージ化または公開前に失敗しなければなりません。
+- 受け付けるリリースタグは、不変の正式版 `vN.N.N` または候補版 `vN.N.N-rc.N` だけで、RC 番号は正の整数でなければなりません。それ以外のタグはパッケージ化または公開前に失敗します。
 - Windows は正式かつ完全な製品範囲を維持し、検証済みの x64 ZIP、EXE、MSI、MSI 言語変換ファイルを保持します。
 - macOS には Apple Silicon（arm64）用と Intel（x86_64）用のネイティブ `.dmg` を個別に提供し、それぞれ対応する `.app` を収録します。Linux x86_64 には `.AppImage` を提供します。いずれも機能限定 Preview と明記し、起動、四言語表示、ユーザー単位パス、安全に失敗停止するプラットフォーム境界だけを検証するもので、Windows との機能同等性を示すものではありません。
-- Pull Request はパッケージ検査用の短期 CI 成果物だけを作成でき、GitHub Release は作成できません。既存の `v2.3.0-rc.N` タグだけが公開ワークフローへ進めます。
+- Pull Request はパッケージ検査用の短期 CI 成果物だけを作成でき、GitHub Release は作成できません。既存かつ有効な正式版または候補版タグだけが公開ワークフローへ進めます。
 - Release 説明は、人手で整備した四言語ファイル `docs/releases/<tag>.md` を使用しなければならず、自動生成ノートだけでは認められません。
 
 ### 過去の初回リリース
@@ -594,7 +594,7 @@ GitHub 自動化では、予測可能な認証経路を一つだけ使用しま�
 
 ### 今後の自動リリース
 
-この移行期間中、`.github/workflows/release.yml` を起動できるのは `v2.3.0-rc.N` タグだけです。ワークフローは正確なタグを検証し、その不変のソースリビジョンを checkout してから、次を順に実行します。
+`.github/workflows/release.yml` を起動できるのは `vN.N.N` または `vN.N.N-rc.N` タグだけです。ワークフローは正確なタグを検証し、その不変のソースリビジョンを checkout してから、次を順に実行します。
 
 どのプラットフォームのパッケージ化も始める前に、高速ゲートでタグ、バージョン、`main` 履歴の一致を確認し、選択したモードに応じて Release が存在すること、または存在しないことを要求し、Python 3.15 で人手整備の四言語 Release 説明を検証します。低コストで決定的な検査を長時間ビルドの後まで遅らせてはなりません。実行中の変化を検出するため、公開直前にもタグ、成果物、Release 状態を再検証します。
 
@@ -614,7 +614,7 @@ GitHub 自動化では、予測可能な認証経路を一つだけ使用しま�
 14. 公開する全ファイルに GitHub 成果物由来証明を作成します。
 15. 人手で整備した四言語 Release 説明を必須とし、その説明を公開します。
 
-このリリース系列の全タグはプレリリースとして公開します。公開済みタグを再利用または移動せず、新しい `v2.3.0-rc.N` タグを作成します。将来の安定版には、別途レビュー済みのポリシー変更が必要であり、このゲートを暗黙に緩和してはなりません。
+`vN.N.N-rc.N` は Pre-release、純粋な `vN.N.N` は Stable Release として公開し、タグと成熟度が一致しなければワークフローが拒否します。公開済みタグは再利用も移動もしません。
 
 リリースメタデータジョブでは、保存済みの Python 3.15 実行パスを使って墨寒所有の全ツールを実行しなければなりません。隔離した Python 3.14 は、まだ 3.15 をサポートしていない第三者 SBOM ツールチェーンだけに限定し、`PATH` を通じて後続のプロジェクトツール実行環境を変更してはなりません。
 

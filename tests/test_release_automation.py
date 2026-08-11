@@ -142,9 +142,12 @@ def test_inno_setup_and_artwork_contract() -> None:
     assert inno_script.count(
         'AppUserModelID: "FlamebladeStudio.MoHanDesktopAssistant"'
     ) == 2
-    installed_icon = 'IconFilename: "{app}\\assets\\mohan-halfbody.ico"'
+    installed_icon = 'IconFilename: "{app}\\{#ExecutableName}"'
     assert inno_script.count(installed_icon) == 2
     assert 'IconFilename: "{#IconPath}"' not in inno_script
+    installer_test = read("installer/test_installers.ps1")
+    assert 'MOHAN_ALLOW_INSTALLER_MUTATION -ne "1"' in installer_test
+    assert '"/MERGETASKS=!desktopicon"' in installer_test
 
     canonical = ROOT / "assets/expressions/idle_front.png"
     assert_image(canonical, (1254, 1254))
@@ -225,6 +228,13 @@ def test_windows_taskbar_icon_contract() -> None:
     )[1].split("\n    def ", maxsplit=1)[0]
     assert "QIcon(str(resource_path(APP_ICON_PATH)))" not in app
     assert dashboard_setup.index("self.setWindowFlags(") < dashboard_setup.index(
+        "self.setWindowIcon(application_icon())"
+    )
+    character_setup = app.split(
+        "def _configure_character_window(self) -> None:",
+        maxsplit=1,
+    )[1].split("\n    def ", maxsplit=1)[0]
+    assert character_setup.index("self.setWindowFlags(") < character_setup.index(
         "self.setWindowIcon(application_icon())"
     )
 

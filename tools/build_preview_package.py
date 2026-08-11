@@ -14,7 +14,9 @@ lazy import tempfile
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION_PATTERN = re.compile(r"^2\.3\.0-rc\.(?:0|[1-9][0-9]*)$")
+VERSION_PATTERN = re.compile(
+    r"^[0-9]+\.[0-9]+\.[0-9]+(?:-rc\.(?:0|[1-9][0-9]*))?$"
+)
 APPIMAGETOOL_SOURCE_COMMIT = "8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81"
 APPIMAGETOOL_ASSET_ID = "324406882"
 APPIMAGETOOL_SHA256 = (
@@ -41,7 +43,7 @@ def _sha256(path: Path) -> str:
 def _validate_version(version: str) -> None:
     if not VERSION_PATTERN.fullmatch(version):
         raise ValueError(
-            "Preview packages are restricted to the 2.3.0-rc.N line"
+            "Preview packages require an N.N.N or N.N.N-rc.N version"
         )
 
 

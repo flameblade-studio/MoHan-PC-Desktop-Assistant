@@ -8,14 +8,13 @@
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.5" src="https://img.shields.io/badge/development_version-v2.3.0--rc.5-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台進度：** Windows 仍是唯一完成實機、完整回歸、安裝與發布驗證的平台。macOS／Linux 目前具備安全的平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI。`v2.3.0-rc.N` 發行線另提供可啟動、可切換四語但功能受限的 DMG／AppImage Preview；CI 不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
+> **跨平台進度：** Windows 仍是唯一完成實機、完整回歸、安裝與發布驗證的平台。v3.0.0 的 macOS／Linux 版本具備安全的平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI，並提供可啟動、可切換四語但功能受限的 DMG／AppImage Preview；CI 不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
 > 本專案遵循[炎劍開源軟體家族品質標準](PUBLISHING.md)。
 
@@ -32,7 +31,7 @@
 
 <p align="center">
   <strong>軟體作者：CHOU MING HUA</strong><br>
-  準備發布的公開預覽版：v2.3.0 RC5（`v2.3.0-rc.5`）<br>
+  正式版與發行候選版資訊：請見 <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Releases</a><br>
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -246,11 +245,11 @@ Azure Speech 是預設關閉、由使用者自行啟用的預覽供應器，需�
 
 尚未數位簽署的開源預覽版可能觸發 Windows SmartScreen；請確認官方下載來源與 SHA-256 後再執行。
 
-`v2.3.0-rc.N` 發行線另提供 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`。它們是功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
+v3.0.0 另提供 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`。它們是功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
 
 #### 自動化發布邊界
 
-只有不可變的 `v2.3.0-rc.N` 標籤可發布此系列。Windows ZIP／EXE／MSI、macOS Apple Silicon／Intel DMG 與 Linux AppImage 必須先在各自原生 CI 完成成品啟動驗證，才會進入同一個 GitHub 預發行版。Pull Request 只保存短期測試產物，不會建立 Release。
+只有不可變且符合 `vN.N.N` 或 `vN.N.N-rc.N` 的標籤可發布；正式標籤建立 Stable Release，RC 標籤建立 Pre-release。Windows ZIP／EXE／MSI、macOS Apple Silicon／Intel DMG 與 Linux AppImage 必須先在各自原生 CI 完成成品啟動驗證。Pull Request 只保存短期測試產物，不會建立 Release。
 
 正式發布檔案同時包含 SHA256SUMS、分別通過 CycloneDX 1.7 結構／授權／依賴圖驗證的 Windows／Preview SBOM、去識別化 Tachyon 效能證據與摘要、Windows 更新清單、Artifact Attestation，以及依序為繁中、簡中、英文、日文的完整 Release 說明。
 
@@ -357,7 +356,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.5"
+.\build.ps1 -Version "3.0.0"
 ```
 
 歷史上的 v2.1.0 RC1 在發布前通過 55 項自動測試程式，以及 Windows 發布工作流程的原始碼稽核、封裝自我測試、安裝／移除驗證與安全檢查；自動測試不能取代尚未完成的第三方真實環境驗證。
@@ -397,14 +396,13 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.5" src="https://img.shields.io/badge/development_version-v2.3.0--rc.5-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台进度：** Windows 仍是唯一完成真机、完整回归、安装与发布验证的平台。macOS／Linux 目前具备安全的平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI。`v2.3.0-rc.N` 发布线另提供可启动、可切换四语但功能受限的 DMG／AppImage Preview；CI 不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
+> **跨平台进度：** Windows 仍是唯一完成真机、完整回归、安装与发布验证的平台。v3.0.0 的 macOS／Linux 版本具备安全的平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI，并提供可启动、可切换四语但功能受限的 DMG／AppImage Preview；CI 不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
 > 本项目遵循[炎剑开源软件家族质量标准](PUBLISHING.md)。
 
@@ -421,7 +419,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>软件作者：CHOU MING HUA</strong><br>
-  准备发布的公开预览版：v2.3.0 RC5（`v2.3.0-rc.5`）<br>
+  正式版与候选发布版信息：请参阅 <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Releases</a><br>
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -635,11 +633,11 @@ Azure Speech 是默认关闭、由用户自行启用的预览供应器，需要�
 
 尚未数字签名的开源预览版可能触发 Windows SmartScreen；请确认官方下载来源与 SHA-256 后再运行。
 
-`v2.3.0-rc.N` 发布线另提供 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`。它们是功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
+v3.0.0 另提供 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`。它们是功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
 
 #### 自动化发布边界
 
-只有不可变的 `v2.3.0-rc.N` 标签可发布此系列。Windows ZIP／EXE／MSI、macOS Apple Silicon／Intel DMG 与 Linux AppImage 必须先在各自原生 CI 完成成品启动验证，才会进入同一个 GitHub 预发布版。Pull Request 只保存短期测试产物，不会创建 Release。
+只有不可变且符合 `vN.N.N` 或 `vN.N.N-rc.N` 的标签可以发布；正式标签创建 Stable Release，RC 标签创建 Pre-release。Windows ZIP／EXE／MSI、macOS Apple Silicon／Intel DMG 与 Linux AppImage 必须先在各自原生 CI 完成成品启动验证。Pull Request 只保存短期测试产物，不会创建 Release。
 
 正式发布文件同时包含 SHA256SUMS、分别通过 CycloneDX 1.7 结构／许可证／依赖图验证的 Windows／Preview SBOM、去标识化 Tachyon 性能证据与摘要、Windows 更新清单、Artifact Attestation，以及依次为繁中、简中、英文、日文的完整 Release 说明。
 
@@ -746,7 +744,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.5"
+.\build.ps1 -Version "3.0.0"
 ```
 
 历史上的 v2.1.0 RC1 在发布前通过 55 项自动测试程序，以及 Windows 发布工作流的源代码审计、打包自测、安装／卸载验证与安全检查；自动测试不能代替尚未完成的第三方真实环境验证。
@@ -786,14 +784,13 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.5" src="https://img.shields.io/badge/development_version-v2.3.0--rc.5-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **Cross-platform status:** Windows remains the only platform validated through real-device use, the full regression suite, installation, and publication. macOS/Linux currently have safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen. The `v2.3.0-rc.N` line also provides launchable, four-language, deliberately limited DMG/AppImage Previews; CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
+> **Cross-platform status:** Windows remains the only platform validated through real-device use, the full regression suite, installation, and publication. The v3.0.0 macOS/Linux builds have safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen, and provide launchable, four-language, deliberately limited DMG/AppImage Previews. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
 
 > This project follows the [Flameblade Open Source Software Family Quality Standard](PUBLISHING.md).
 
@@ -810,7 +807,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>Author: CHOU MING HUA</strong><br>
-  Prepared public preview: v2.3.0 RC5 (`v2.3.0-rc.5`)<br>
+  Stable and release-candidate information: see <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Releases</a><br>
   Windows 10/11 complete build · macOS/Linux limited Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -1024,11 +1021,11 @@ General users do not need to install Python:
 
 Unsigned open-source previews may trigger Windows SmartScreen. Verify the official download source and SHA-256 before running them.
 
-The `v2.3.0-rc.N` line also provides separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`. These are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
+v3.0.0 also provides separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`. These are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
 
 #### Automated release boundary
 
-Only immutable `v2.3.0-rc.N` tags may publish this line. Windows ZIP/EXE/MSI, macOS Apple Silicon/Intel DMGs, and the Linux AppImage must pass package-launch validation in their native CI before entering one GitHub pre-release. Pull Requests retain only short-lived test artifacts and never create a Release.
+Only immutable tags matching `vN.N.N` or `vN.N.N-rc.N` may publish. Stable tags create Stable Releases, while RC tags create Pre-releases. Windows ZIP/EXE/MSI, macOS Apple Silicon/Intel DMGs, and the Linux AppImage must pass package-launch validation in their native CI. Pull Requests retain only short-lived test artifacts and never create a Release.
 
 Published files also include SHA256SUMS; separately validated Windows/Preview SBOMs that pass CycloneDX 1.7 structure, license, and dependency-graph checks; sanitized Tachyon performance evidence and summaries; a Windows update manifest; Artifact Attestations; and complete Release notes ordered as Traditional Chinese, Simplified Chinese, English, and Japanese.
 
@@ -1135,7 +1132,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.5"
+.\build.ps1 -Version "3.0.0"
 ```
 
 Historically, v2.1.0 RC1 passed 55 automated test programs plus the Windows release workflow's source audit, packaged self-test, install/uninstall verification, and security checks before publication. Automated tests do not replace incomplete third-party live validation.
@@ -1175,14 +1172,13 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.5" src="https://img.shields.io/badge/development_version-v2.3.0--rc.5-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **クロスプラットフォーム状況：** 実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。macOS／Linux には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI があります。`v2.3.0-rc.N` 系列では、起動と四言語切替が可能な機能限定 DMG／AppImage Preview も提供します。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
+> **クロスプラットフォーム状況：** 実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。v3.0.0 の macOS／Linux 版には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI があり、起動と四言語切替が可能な機能限定 DMG／AppImage Preview も提供します。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
 > 本プロジェクトは[炎剣オープンソース・ソフトウェア・ファミリー品質基準](PUBLISHING.md)に従います。
 
@@ -1199,7 +1195,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>ソフトウェア作者：CHOU MING HUA</strong><br>
-  公開準備中のプレビュー：v2.3.0 RC5（`v2.3.0-rc.5`）<br>
+  正式版とリリース候補版の情報：<a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Releases</a> をご覧ください<br>
   Windows 10/11 完全版 · macOS／Linux 機能限定 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -1413,11 +1409,11 @@ Azure Speech は初期状態で無効な Preview 供給元で、利用者が明�
 
 署名のないオープンソース Preview は Windows SmartScreen の警告を出す場合があります。公式配布元と SHA-256 を確認してから実行してください。
 
-`v2.3.0-rc.N` 系列は、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` も提供します。これらは機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
+v3.0.0 は、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` も提供します。これらは機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
 
 #### 自動リリースの境界
 
-この系列を公開できるのは不変の `v2.3.0-rc.N` タグだけです。Windows ZIP／EXE／MSI、macOS Apple Silicon／Intel DMG、Linux AppImage は各 OS のネイティブ CI で完成品の起動検査に合格してから、同じ GitHub プレリリースへ入ります。Pull Request は短期テスト成果物だけを保存し、Release を作成しません。
+公開できるのは `vN.N.N` または `vN.N.N-rc.N` に一致する不変タグだけです。正式タグは Stable Release、RC タグは Pre-release を作成します。Windows ZIP／EXE／MSI、macOS Apple Silicon／Intel DMG、Linux AppImage は各 OS のネイティブ CI で完成品の起動検査に合格しなければなりません。Pull Request は短期テスト成果物だけを保存し、Release を作成しません。
 
 公開ファイルには SHA256SUMS、CycloneDX 1.7 の構造／ライセンス／依存関係グラフ検証に合格した Windows／Preview 別 SBOM、匿名化済み Tachyon 性能証拠と要約、Windows 更新マニフェスト、Artifact Attestation、繁体字中国語、簡体字中国語、英語、日本語の順で整備した完全な Release 説明も含みます。
 
@@ -1524,7 +1520,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.5"
+.\build.ps1 -Version "3.0.0"
 ```
 
 過去の v2.1.0 RC1 は公開前に 55 個の自動テストプログラムと、Windows リリースワークフローのソース監査、パッケージ自己試験、インストール／削除検証、安全検査に合格しました。自動テストは、未完了の第三者実環境検証に代わりません。

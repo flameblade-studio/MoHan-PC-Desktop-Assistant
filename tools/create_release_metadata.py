@@ -8,7 +8,9 @@ lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from urllib.parse import quote
 
-TAG_PATTERN = re.compile(r"^v2\.3\.0-rc\.[1-9][0-9]*$")
+TAG_PATTERN = re.compile(
+    r"^v[0-9]+\.[0-9]+\.[0-9]+(?:-rc\.[1-9][0-9]*)?$"
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -47,7 +49,7 @@ def _parse_arguments() -> ReleaseArguments:
 
 def _validate_tag(tag: str) -> None:
     if not TAG_PATTERN.fullmatch(tag):
-        raise ValueError("Release metadata is restricted to v2.3.0-rc.N tags")
+        raise ValueError("Release metadata requires a vN.N.N or vN.N.N-rc.N tag")
 
 
 def _package_specs(tag: str) -> tuple[PackageSpec, ...]:

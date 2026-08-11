@@ -6,14 +6,6 @@ lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MEDIA = ROOT / "docs" / "media"
-VERSION_MATCH = re.search(
-    r'^FALLBACK_VERSION = "([^"]+)"$',
-    (ROOT / "version_info.py").read_text(encoding="utf-8"),
-    re.MULTILINE,
-)
-assert VERSION_MATCH, "version_info.py must define one literal FALLBACK_VERSION"
-SOURCE_VERSION = VERSION_MATCH.group(1)
-SHIELD_VERSION = SOURCE_VERSION.replace("-", "--")
 PNG_FILES = {
     "mohan-hero.png": (1600, 900),
     "first-run-wizard.png": None,
@@ -51,13 +43,6 @@ README_BADGES = (
         "Extended Secret Defense / Gitleaks",
         ("https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
         "actions/workflows/secret-defense.yml/badge.svg"),
-    ),
-    (
-        f"Development Version v{SOURCE_VERSION}",
-        (
-            "https://img.shields.io/badge/development_version-"
-            f"v{SHIELD_VERSION}-5c6ac4.svg"
-        ),
     ),
     (
         "Latest Published Release",

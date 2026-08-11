@@ -57,6 +57,8 @@ def run() -> None:
 
         for _ in range(2):
             cue(0.55, "O")
+        assert window.viseme_dynamics.current == "A"
+        cue(0.55, "O")
         assert window.viseme_dynamics.current == "O"
 
         before_release = window.viseme_dynamics.jaw_aperture

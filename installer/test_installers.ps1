@@ -4,6 +4,16 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+if (
+    $env:GITHUB_ACTIONS -ne "true" -and
+    $env:MOHAN_ALLOW_INSTALLER_MUTATION -ne "1"
+) {
+    throw (
+        "Installer integration tests modify per-user installation state. " +
+        "Run them on GitHub Actions or set MOHAN_ALLOW_INSTALLER_MUTATION=1 " +
+        "only inside a disposable Windows account or virtual machine."
+    )
+}
 $ResolvedArtifacts = (Resolve-Path $ArtifactsDir).Path
 $ExeInstaller = Get-Item (Join-Path $ResolvedArtifacts "*Setup.exe")
 $MsiInstaller = Get-Item (Join-Path $ResolvedArtifacts "*.msi")
@@ -24,7 +34,8 @@ $env:MOHAN_DATA_DIR = Join-Path $env:RUNNER_TEMP "mohan-installer-profile"
 New-Item -ItemType Directory -Force $env:MOHAN_DATA_DIR | Out-Null
 
 $Process = Start-Process $ExeInstaller.FullName -ArgumentList @(
-    "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/DIR=$ExeInstallDir"
+    "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART",
+    "/MERGETASKS=!desktopicon", "/DIR=$ExeInstallDir"
 ) -Wait -PassThru
 if ($Process.ExitCode -ne 0) { throw "EXE installer failed" }
 $InstalledExe = Join-Path $ExeInstallDir "MoHan-Desktop-Assistant-$Version.exe"
@@ -50,9 +61,7 @@ if (-not (Test-Path -LiteralPath $ExeShortcutPath)) {
 $ExeShortcut = (New-Object -ComObject WScript.Shell).CreateShortcut(
     $ExeShortcutPath
 )
-$ExpectedIconLocation = (
-    Join-Path $ExeInstallDir "assets\mohan-halfbody.ico"
-) + ",0"
+$ExpectedIconLocation = $InstalledExe + ",0"
 if (-not [string]::Equals(
     $ExeShortcut.TargetPath,
     $InstalledExe,
