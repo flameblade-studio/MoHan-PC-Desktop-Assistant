@@ -3017,16 +3017,25 @@ class Dashboard(QDialog):
             combo.setCurrentIndex(preferred_index)
         return combo
 
-    @staticmethod
     def _available_windows_voices(
+        self,
         capabilities: PlatformCapabilities,
     ) -> tuple[tuple[str, str], ...]:
         if not capabilities.system_local_speech:
             return ()
+        chinese_interface = self.ui_language.lower() in {
+            "zh",
+            "zh-tw",
+            "zh-cn",
+        }
         return tuple(
             (name, culture)
             for name, culture in windows_voices()
             if not is_known_male_windows_voice(name)
+            and (
+                not chinese_interface
+                or culture.lower().split("-", 1)[0] == "zh"
+            )
         )
 
     def _unavailable_windows_voice_label(

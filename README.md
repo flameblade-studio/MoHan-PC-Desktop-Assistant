@@ -208,7 +208,7 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我始終負責�
 
 ### Windows 本機女聲與離線備援
 
-新使用者預設使用 Windows 本機語音，因此沒有 OpenAI API 金鑰也能體驗基本朗讀與離線功能。聲音清單只顯示 Windows 明確標示為女性的已安裝聲音。
+新使用者預設使用 Windows 本機語音，因此沒有 OpenAI API 金鑰也能體驗基本朗讀與離線功能。聲音清單只顯示 Windows 明確標示為女性的已安裝聲音；繁中與簡中介面共用 `zh-TW`／`zh-CN` 中文女聲池，不顯示 `en-US` Zira。
 
 臺灣繁中優先使用 `zh-TW` 的 Microsoft Yating；簡中、英文與日語分別優先使用 `zh-CN`、`en-US`、`ja-JP` 的已安裝女性聲音。若沒有合格聲音，墨寒會明確提示，不會悄悄改用可能為男性的系統預設聲音。
 
@@ -597,7 +597,7 @@ Codex 协助我把想法转译成程序架构与代码；而我始终负责决�
 
 ### Windows 本地女声与离线备用
 
-新用户默认使用 Windows 本地语音，因此没有 OpenAI API 密钥也能体验基本朗读与离线功能。声音列表只显示 Windows 明确标记为女性的已安装声音。
+新用户默认使用 Windows 本地语音，因此没有 OpenAI API 密钥也能体验基本朗读与离线功能。声音列表只显示 Windows 明确标记为女性的已安装声音；繁中与简中界面共用 `zh-TW`／`zh-CN` 中文女声池，不显示 `en-US` Zira。
 
 台湾繁中优先使用 `zh-TW` 的 Microsoft Yating；简中、英文与日语分别优先使用 `zh-CN`、`en-US`、`ja-JP` 的已安装女性声音。若没有合格声音，墨寒会明确提示，不会悄悄改用可能为男性的系统默认声音。
 
@@ -986,7 +986,7 @@ Restart MoHan after saving the interface language to apply it completely; live i
 
 ### Windows local female voices and offline fallback
 
-New users start with Windows local speech, so basic reading and offline behavior remain available without an OpenAI API key. The voice list includes only installed voices Windows explicitly identifies as female.
+New users start with Windows local speech, so basic reading and offline behavior remain available without an OpenAI API key. The voice list includes only installed voices Windows explicitly identifies as female. Traditional and Simplified Chinese UI share the `zh-TW`/`zh-CN` Chinese female-voice pool and do not show `en-US` Zira.
 
 Taiwan Traditional Chinese prefers Microsoft Yating for `zh-TW`; Simplified Chinese, English, and Japanese respectively prefer installed female voices matching `zh-CN`, `en-US`, and `ja-JP`. If no qualifying voice exists, MoHan explains the problem instead of silently selecting a possibly male system default.
 
@@ -1375,7 +1375,7 @@ Codex は私の思いをアーキテクチャとコードへ翻訳する手助�
 
 ### Windows 本機女性音声とオフライン代替
 
-新規利用者は Windows 本機音声から始めるため、OpenAI API キーがなくても基本的な読み上げとオフライン機能を試せます。音声一覧には Windows が女性と明示するインストール済み音声だけを表示します。
+新規利用者は Windows 本機音声から始めるため、OpenAI API キーがなくても基本的な読み上げとオフライン機能を試せます。音声一覧には Windows が女性と明示するインストール済み音声だけを表示します。繁体字・簡体字中国語画面は `zh-TW`／`zh-CN` の中国語女性音声プールを共有し、`en-US` Zira は表示しません。
 
 台湾繁体字中国語は `zh-TW` の Microsoft Yating を優先し、簡体字中国語、英語、日本語ではそれぞれ `zh-CN`、`en-US`、`ja-JP` に合う女性音声を優先します。条件を満たす音声がない場合、男性かもしれない既定音声へ黙って切り替えず、理由を明示します。
 

@@ -288,6 +288,8 @@ def assert_simplified_dashboard(
         )
     assert dashboard.tabs.tabText(0) == "对话"
     assert dashboard.windows_voice.currentData() == "OneCore::Microsoft Xiaoxiao"
+    assert dashboard.windows_voice.findData("OneCore::Microsoft Zira") == -1
+    assert dashboard.windows_voice.findData("OneCore::Microsoft Yating") >= 0
     assert dashboard.permission_controls["delete_files"].currentText() == "禁止"
     assert dashboard.persona_prompt.toPlainText().strip() == (
         SIMPLIFIED_CHINESE_PERSONA.strip()
@@ -329,6 +331,8 @@ def assert_traditional_profile(
             )
         assert dashboard.voice_engine.currentData() == VOICE_ENGINE_WINDOWS
         assert dashboard.windows_voice.currentData() == "OneCore::Microsoft Yating"
+        assert dashboard.windows_voice.findData("OneCore::Microsoft Zira") == -1
+        assert dashboard.windows_voice.findData("OneCore::Microsoft Xiaoxiao") >= 0
         close_dashboard(app, dashboard)
         db.close()
 

@@ -11,6 +11,9 @@ Realtime 離線、雲端失敗、金鑰缺漏或未知供應器都優先回到�
 女性本機語音。若 Windows 沒有任何明確標示為女性的聲音，程式會說明原因，
 不會暗中改用男性聲音。
 
+繁中與簡中介面的 Windows 本機語音共用 `zh-TW`／`zh-CN` 中文女性聲線池，
+不顯示 `en-US` Zira；英文與日文介面仍保留各自相符的女性聲線。
+
 Azure Speech 預覽必須由使用者自行申請 Azure Speech 資源，輸入資源金鑰與相符區域；
 金鑰以 Windows DPAPI 分開加密，不寫入資料庫、日誌或 GitHub。介面只列出官方標示為
 女性且已列入墨寒允許清單的繁中、簡中、英文與日語 Neural 聲線。本次新增的跨語系普通話選項只使用 Standard Neural，排除 Dragon HD／HD Omni。中文介面可跨語系選擇臺灣華語與簡體普通話，依目前介面語言優先排序並保留原有預設。Dragon HD／HD Omni 因方案、計費與區域支援不同，不混入免費預設清單。設定不完整時不會送出網路請求；服務失敗時，
@@ -47,6 +50,9 @@ Azure Speech 预览通过同一个注册层接入，嘴型、音量、播放完�
 Realtime 离线、云端失败、密钥缺失或未知供应器时，都优先回到用户选择的 Windows
 女性本地语音。如果 Windows 没有任何明确标示为女性的声音，程序会说明原因，
 不会暗中改用男性声音。
+
+繁中与简中界面的 Windows 本地语音共用 `zh-TW`／`zh-CN` 中文女性声线池，
+不显示 `en-US` Zira；英文与日文界面仍保留各自匹配的女性声线。
 
 Azure Speech 预览要求用户自行申请 Azure Speech 资源，并输入资源密钥与相符区域；
 密钥由 Windows DPAPI 单独加密，不会写入数据库、日志或 GitHub。界面只列出官方标示为
@@ -86,6 +92,10 @@ Simplified Chinese, and English names migrate automatically. When Realtime is of
 cloud service fails, a key is missing, or a provider is unknown, MoHan first returns to the
 user-selected Windows local female voice. If Windows has no voice explicitly identified as
 female, the application explains why instead of silently selecting a male voice.
+
+Traditional and Simplified Chinese UI share the Windows local `zh-TW`/`zh-CN`
+Chinese female-voice pool and do not show `en-US` Zira. English and Japanese UI
+retain their matching female voices.
 
 The Azure Speech preview requires users to create their own Azure Speech resource and enter
 its key and matching region. Windows DPAPI encrypts the key separately; the key is never
@@ -128,6 +138,10 @@ OpenAI テキスト読み上げ、Azure Speech プレビューは同じ登録層
 失敗、キーが不足、またはプロバイダーが不明な場合は、利用者が選択した Windows 本機の
 女性音声へ最初に戻ります。Windows に女性と明示された音声が一つもない場合、
 男性音声へ密かに切り替えず、アプリケーションが理由を説明します。
+
+繁体字・簡体字中国語画面の Windows 本機音声は `zh-TW`／`zh-CN` の中国語女性音声
+プールを共有し、`en-US` Zira は表示しません。英語・日本語画面には、それぞれに
+適合する女性音声を引き続き表示します。
 
 Azure Speech プレビューを使うには、利用者自身が Azure Speech リソースを作成し、
 そのキーと対応するリージョンを入力する必要があります。キーは Windows DPAPI で個別に

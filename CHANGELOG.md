@@ -6,7 +6,7 @@
 
 ### v2.3.0 RC5 — 2026-08-11
 
-- Azure Speech 中文女性聲音選單支援繁中與簡中跨語系選擇，並依目前介面語言優先排列；既有預設及有效設定不變。
+- Azure Speech 中文女性聲音選單支援繁中與簡中跨語系選擇，並依目前介面語言優先排列；Windows 本機語音的兩種中文介面也共用 `zh-TW`／`zh-CN` 女聲池並排除 `en-US` Zira，既有預設及有效設定不變。
 - Azure 聲線選取後立即保存，下一次試聽或朗讀直接套用；新增的普通話選項只納入 Standard Neural 女性聲線。
 - 已以真實 Azure Speech Free F0、East Asia 資源完成 HTTPS、RIFF 音訊及 Windows 播放驗證，金鑰仍僅由 Windows DPAPI 加密。
 - Dragon HD／HD Omni 因方案、計費與區域支援不同而不混入免費預設清單，雲端失敗時維持單次 Windows 女性本機語音回退。
@@ -172,7 +172,7 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 ### v2.3.0 RC5 — 2026-08-11
 
-- Azure Speech 中文女性声音列表支持繁中与简中跨语言选择，并按当前界面语言优先排列；现有默认值及有效设置不变。
+- Azure Speech 中文女性声音列表支持繁中与简中跨语言选择，并按当前界面语言优先排列；Windows 本地语音的两种中文界面也共用 `zh-TW`／`zh-CN` 女声池并排除 `en-US` Zira，现有默认值及有效设置不变。
 - Azure 声线选择后立即保存，下一次试听或朗读直接应用；新增的普通话选项只纳入 Standard Neural 女性声线。
 - 已使用真实 Azure Speech Free F0、East Asia 资源完成 HTTPS、RIFF 音频及 Windows 播放验证，密钥仍只由 Windows DPAPI 加密。
 - Dragon HD／HD Omni 因方案、计费与区域支持不同而不混入免费默认列表，云端失败时保持单次 Windows 女性本地语音回退。
@@ -337,7 +337,7 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 
 ### v2.3.0 RC5 — 2026-08-11
 
-- Azure Speech Chinese female voices are selectable across Traditional and Simplified Chinese UI, ordered with the current interface locale first; existing defaults and valid settings remain unchanged.
+- Azure Speech Chinese female voices are selectable across Traditional and Simplified Chinese UI, ordered with the current interface locale first. Windows local speech also gives both Chinese interfaces a shared `zh-TW`/`zh-CN` female-voice pool and excludes `en-US` Zira; existing defaults and valid settings remain unchanged.
 - Azure voice selections now save immediately and apply to the next preview or utterance; the added Mandarin options include only Standard Neural female voices.
 - A real Azure Speech Free F0 resource in East Asia completed HTTPS, RIFF audio, and Windows playback validation, while its key remains encrypted only through Windows DPAPI.
 - Dragon HD and HD Omni stay out of the free default list because tier, billing, and regional support differ; cloud failure retains the one-time Windows local female fallback.
@@ -542,7 +542,7 @@ speech, gaze, and physics stress test passed before this release candidate.
 
 ### v2.3.0 RC5 — 2026-08-11
 
-- Azure Speech の中国語女性音声を繁体字・簡体字画面から言語横断で選択でき、現在の画面言語を優先して並べます。既定値と有効な保存済み設定は変更しません。
+- Azure Speech の中国語女性音声を繁体字・簡体字画面から言語横断で選択でき、現在の画面言語を優先して並べます。Windows 本機音声でも両中国語画面が `zh-TW`／`zh-CN` 女性音声プールを共有し、`en-US` Zira を除外します。既定値と有効な保存済み設定は変更しません。
 - Azure 音声は選択時に直ちに保存し、次の試聴または読み上げから適用します。追加する普通話選択肢には Standard Neural 女性音声だけを含めます。
 - East Asia の実 Azure Speech Free F0 リソースで HTTPS、RIFF 音声、Windows 再生を検証し、キーは引き続き Windows DPAPI だけで暗号化します。
 - Dragon HD／HD Omni はプラン、課金、対応リージョンが異なるため無料の既定一覧へ混在させず、クラウド障害時の Windows 本機女性音声への一度だけの代替を維持します。
