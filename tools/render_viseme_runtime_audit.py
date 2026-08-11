@@ -56,15 +56,8 @@ def _draw_headers(painter: QPainter) -> None:
 
 
 def _configure_speech(window: CompanionWindow, expression: str) -> None:
-    frames = EXPRESSION_SPEECH_FRAMES[expression]
     window.state = "speaking"
-    window.speech_pose_suffix = window._pose_suffix(
-        EXPRESSION_POSES[expression]
-    )
-    window.speech_closed_expression = expression
-    window.speech_mid_expression = frames["mid"]
-    window.speech_open_expression = frames["open"]
-    window.speech_gesture_expression = expression
+    window._configure_speech_frames(expression)
 
 
 def _rendered_visemes(
@@ -74,7 +67,9 @@ def _rendered_visemes(
     frames = EXPRESSION_SPEECH_FRAMES[expression]
     visemes = EXPRESSION_VISEME_FRAMES[expression]
     rendered = [
-        QPixmap(window.expression_pixmaps[expression]),
+        QPixmap(
+            window.expression_pixmaps[window.speech_closed_expression]
+        ),
         window._mouth_aperture_pixmap(frames["mid"], 0.12),
         *(
             window._mouth_aperture_pixmap(visemes[vowel], 0.90)

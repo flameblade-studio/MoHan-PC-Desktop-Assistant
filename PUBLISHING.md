@@ -38,8 +38,8 @@ open-source
 
 ### 已準備的公開預發行版
 
-- 標籤：`v2.3.0-rc.3`
-- 標題：`MoHan Desktop Assistant v2.3.0 RC3`
+- 標籤：`v2.3.0-rc.4`
+- 標題：`MoHan Desktop Assistant v2.3.0 RC4`
 - 發布條件：只有在所有必要 CI、套件 smoke、安全及發布政策檢查成功後才可發布。
 - 內容包含 Windows x64 可攜式 ZIP、每位使用者安裝的 EXE 與 MSI、英文／簡體中文／日文 MSI 轉換檔、macOS Apple Silicon（arm64）與 Intel（x86_64）功能受限 Preview DMG、Linux x86_64 功能受限 Preview AppImage、SHA-256 清單、可重現的 CycloneDX 1.7 SBOM 與驗證報告、已去識別化的 Tachyon 證據與效能摘要、更新資訊清單及產物證明。
 
@@ -203,8 +203,8 @@ open-source
 
 ### 已准备的公开预发布版
 
-- 标签：`v2.3.0-rc.3`
-- 标题：`MoHan Desktop Assistant v2.3.0 RC3`
+- 标签：`v2.3.0-rc.4`
+- 标题：`MoHan Desktop Assistant v2.3.0 RC4`
 - 发布条件：只有在所有必要 CI、软件包 smoke、安全及发布政策检查成功后才可发布。
 - 内容包括 Windows x64 便携式 ZIP、按用户安装的 EXE 与 MSI、英文／简体中文／日文 MSI 转换文件、macOS Apple Silicon（arm64）与 Intel（x86_64）功能受限 Preview DMG、Linux x86_64 功能受限 Preview AppImage、SHA-256 清单、可重现的 CycloneDX 1.7 SBOM 与验证报告、已去除身份信息的 Tachyon 证据与性能摘要、更新清单及产物证明。
 
@@ -368,8 +368,8 @@ open-source
 
 ### Prepared public pre-release
 
-- Tag: `v2.3.0-rc.3`
-- Title: `MoHan Desktop Assistant v2.3.0 RC3`
+- Tag: `v2.3.0-rc.4`
+- Title: `MoHan Desktop Assistant v2.3.0 RC4`
 - Publication condition: publish only after every required CI, package smoke, security, and release-policy check succeeds.
 - Includes the Windows x64 portable ZIP, per-user EXE and MSI installers, English/Simplified Chinese/Japanese MSI transforms, macOS Apple Silicon (arm64) and Intel (x86_64) limited Preview DMGs, Linux x86_64 limited Preview AppImage, SHA-256 catalog, reproducible CycloneDX 1.7 SBOMs and validation report, sanitized Tachyon evidence and performance summary, update manifest, and artifact attestations.
 
@@ -533,8 +533,8 @@ open-source
 
 ### 準備済みの公開プレリリース
 
-- タグ：`v2.3.0-rc.3`
-- タイトル：`MoHan Desktop Assistant v2.3.0 RC3`
+- タグ：`v2.3.0-rc.4`
+- タイトル：`MoHan Desktop Assistant v2.3.0 RC4`
 - 公開条件：必須の CI、パッケージ smoke、セキュリティ、リリースポリシーの全検査が成功した場合に限り公開します。
 - Windows x64 ポータブル ZIP、ユーザー単位の EXE および MSI インストーラー、英語／簡体字中国語／日本語の MSI 変換ファイル、macOS Apple Silicon（arm64）および Intel（x86_64）の機能限定 Preview DMG、Linux x86_64 の機能限定 Preview AppImage、SHA-256 カタログ、再現可能な CycloneDX 1.7 SBOM と検証レポート、匿名化済み Tachyon 証拠と性能要約、更新マニフェスト、成果物証明を含みます。
 

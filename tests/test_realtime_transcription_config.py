@@ -1,15 +1,64 @@
 lazy import sys
+lazy from types import SimpleNamespace
 lazy from pathlib import Path
+lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+lazy import realtime_voice
 
 lazy from realtime_voice import (
     RealtimeSessionConfig,
     RealtimeVoiceClient,
+    RealtimeVoiceRequest,
 )
 
 
+class FakeWebSocketApp:
+    def __init__(self, _url: str, **callbacks) -> None:
+        self.callbacks = callbacks
+        self.close_calls = 0
+        self.run_calls = 0
+
+    def close(self) -> None:
+        self.close_calls += 1
+
+    def run_forever(self, **_options) -> None:
+        self.run_calls += 1
+
+
+def assert_stale_connection_callbacks_are_ignored() -> None:
+    client = RealtimeVoiceClient()
+    client.running = True
+    client._session_generation = 7
+    request = RealtimeVoiceRequest(
+        api_key="test-key",
+        instructions="test",
+        memory_context="",
+        session=RealtimeSessionConfig(),
+    )
+    sockets: list[FakeWebSocketApp] = []
+
+    def create_websocket(url: str, **callbacks) -> FakeWebSocketApp:
+        websocket_app = FakeWebSocketApp(url, **callbacks)
+        sockets.append(websocket_app)
+        return websocket_app
+
+    statuses: list[str] = []
+    client.status_changed.connect(statuses.append)
+    websocket_module = SimpleNamespace(WebSocketApp=create_websocket)
+    with patch.object(realtime_voice, "websocket", websocket_module):
+        client._connect(request, generation=7)
+
+    assert sockets[0].run_calls == 1
+    client._session_generation = 8
+    client.running = True
+    sockets[0].callbacks["on_close"](sockets[0], 1000, "stale")
+    assert client.running
+    assert statuses == []
+
 def run() -> None:
+    assert_stale_connection_callbacks_are_ignored()
     event = RealtimeVoiceClient._session_update_event(
         RealtimeSessionConfig(
             transcription_prompt="常用詞：墨寒、主上、炎劍文化工作室。",

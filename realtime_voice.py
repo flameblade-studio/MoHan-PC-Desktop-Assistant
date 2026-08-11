@@ -251,9 +251,10 @@ class RealtimeVoiceClient(QObject):
         self._reset_session_state(normalized_request)
         self.running = True
         self.status_changed.emit("正在連線…")
+        generation = self._session_generation
         threading.Thread(
             target=self._connect,
-            args=(normalized_request,),
+            args=(normalized_request, generation),
             daemon=True,
         ).start()
 
@@ -272,7 +273,16 @@ class RealtimeVoiceClient(QObject):
         self._close_audio()
         self.status_changed.emit("未連線")
 
-    def _connect(self, request: RealtimeVoiceRequest) -> None:
+    def _connect(
+        self,
+        request: RealtimeVoiceRequest,
+        generation: int,
+    ) -> None:
+        def is_current_session() -> bool:
+            return generation == self._session_generation
+
+        if not is_current_session():
+            return
         safety_id = hashlib.sha256(
             f"mohan-{uuid.getnode()}".encode()
         ).hexdigest()
@@ -282,6 +292,10 @@ class RealtimeVoiceClient(QObject):
         )
 
         def on_open(ws):
+            if not is_current_session():
+                with suppress(Exception):
+                    ws.close()
+                return
             self.ws = ws
             full_instructions = self._compose_instructions(
                 request.instructions,
@@ -305,6 +319,8 @@ class RealtimeVoiceClient(QObject):
                 self.stop()
 
         def on_message(_ws, message):
+            if not is_current_session():
+                return
             try:
                 event = json.loads(message)
             except (TypeError, json.JSONDecodeError):
@@ -312,16 +328,19 @@ class RealtimeVoiceClient(QObject):
             self._handle_server_event(event)
 
         def on_error(_ws, error):
-            if self.running:
+            if is_current_session() and self.running:
                 self._emit_failure(str(error))
 
         def on_close(_ws, _code, _message):
+            if not is_current_session():
+                return
             self.running = False
+            self.ws = None
             self._close_audio()
             self._finish_assistant_audio(force=True)
             self.status_changed.emit("未連線")
 
-        self.ws = websocket.WebSocketApp(
+        websocket_app = websocket.WebSocketApp(
             url,
             header=[
                 f"Authorization: Bearer {request.api_key}",
@@ -332,7 +351,10 @@ class RealtimeVoiceClient(QObject):
             on_error=on_error,
             on_close=on_close,
         )
-        self.ws.run_forever(ping_interval=20, ping_timeout=10)
+        if not is_current_session():
+            return
+        self.ws = websocket_app
+        websocket_app.run_forever(ping_interval=20, ping_timeout=10)
 
     @staticmethod
     def _sanitize_realtime_transcription_prompt(prompt: str) -> str:

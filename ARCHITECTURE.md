@@ -11,7 +11,7 @@
 1. `app.py` 是 Windows 角色外殼；`service_container.py` 是明確的執行期組裝根。`preview_app.py` 則是獨立且刻意受限的 macOS／Linux 預覽封裝外殼；它可以顯示平台狀態與在地化內容，但不得匯入 `app.py`、建立雲端／語音／工具服務，或顯示機密輸入欄位。
 2. UI 模組（`flagship_ui.py`、`profile_transfer_ui.py`）可以呼叫服務的公開 API。
 3. 服務（`profile_transfer.py`、`speech.py`、`realtime_voice.py`、`ai_client.py`、`cloud_connectors.py`、`home_assistant.py`、`remote_control.py`）可以使用領域與儲存模組。
-4. 領域與儲存模組（`db.py`、`flagship_core.py`、`expression_system.py`、`lip_sync.py`、`workflow_engine.py`）絕不匯入 UI 或 `app.py`。
+4. 領域與儲存模組（`db.py`、`flagship_core.py`、`expression_system.py`、`lip_sync.py`、`face_rig.py`、`face_motion.py`、`face_assets.py`、`face_renderer.py`、`workflow_engine.py`）絕不匯入 UI 或 `app.py`。
 
 禁止本機模組循環匯入，並由 `tests/test_architecture_contracts.py` 強制檢查。
 
@@ -23,6 +23,7 @@
 - 桌面作業系統行為必須透過 `PlatformServicePort`，以及明確的 `platform_windows.py`、`platform_macos.py`、`platform_linux.py` 介接器進入。核心模組不得無條件匯入 `winreg`、`winsound`、`ctypes.windll` 或 `os.startfile`。
 - 桌面依賴注入以建構式為基礎。FastAPI 的 `Depends` 只屬於未來的 HTTP 邊界；禁止將 FastAPI 匯入 PySide 桌面核心。
 - OpenAI／Windows 語音時序只有一個真實來源：`lip_sync.py`。
+- 參數化分層 2.5D 臉部只有一條資料流：`lip_sync.py` 產生嘴型狀態，`face_motion.py` 合成不可變的臉部參數，`face_renderer.py` 繪製三種姿態；`app.py` 只組裝與顯示。`face_assets.py` 是三姿態素材、尺寸與錨點的權威清冊，現有相容渲染路徑只作為明確回退。
 - 可替換的文字轉語音引擎透過 `speech_providers.py` 註冊。供應器可以合成音訊，但不得擁有嘴型同步、表情狀態、UI、權限或備援政策；經 Windows 驗證的女性本機語音是權威離線備援。
 - 持久化的本機語音選擇使用平台中立的 `system-local` 供應器 ID。舊字面 ID `windows-local` 與在地化標籤只可作為遷移輸入，絕不得成為第二個供應器。
 - 語言政策、回覆語言指示及內建提醒遷移只有一個真實來源：`language_support.py`。英文、簡體中文顯示字串及穩定的內部值至顯示值對應存放於 `ui_localization.py`；在地化標籤絕不得取代持久化的內部設定值。簡體中文對話路徑不得通過台灣繁體中文輸出正規化器。
@@ -81,7 +82,7 @@
 1. `app.py` 是 Windows 角色外壳；`service_container.py` 是明确的运行时装配根。`preview_app.py` 则是独立且刻意受限的 macOS／Linux 预览封装外壳；它可以显示平台状态与本地化内容，但不得导入 `app.py`、创建云端／语音／工具服务，或显示机密输入字段。
 2. UI 模块（`flagship_ui.py`、`profile_transfer_ui.py`）可以调用服务的公开 API。
 3. 服务（`profile_transfer.py`、`speech.py`、`realtime_voice.py`、`ai_client.py`、`cloud_connectors.py`、`home_assistant.py`、`remote_control.py`）可以使用领域与存储模块。
-4. 领域与存储模块（`db.py`、`flagship_core.py`、`expression_system.py`、`lip_sync.py`、`workflow_engine.py`）绝不导入 UI 或 `app.py`。
+4. 领域与存储模块（`db.py`、`flagship_core.py`、`expression_system.py`、`lip_sync.py`、`face_rig.py`、`face_motion.py`、`face_assets.py`、`face_renderer.py`、`workflow_engine.py`）绝不导入 UI 或 `app.py`。
 
 禁止本地模块循环导入，并由 `tests/test_architecture_contracts.py` 强制检查。
 
@@ -93,6 +94,7 @@
 - 桌面操作系统行为必须通过 `PlatformServicePort`，以及明确的 `platform_windows.py`、`platform_macos.py`、`platform_linux.py` 适配器进入。核心模块不得无条件导入 `winreg`、`winsound`、`ctypes.windll` 或 `os.startfile`。
 - 桌面依赖注入以构造函数为基础。FastAPI 的 `Depends` 只属于未来的 HTTP 边界；禁止将 FastAPI 导入 PySide 桌面核心。
 - OpenAI／Windows 语音时序只有一个真实来源：`lip_sync.py`。
+- 参数化分层 2.5D 脸部只有一条数据流：`lip_sync.py` 生成嘴型状态，`face_motion.py` 合成不可变的脸部参数，`face_renderer.py` 绘制三种姿态；`app.py` 只负责装配与显示。`face_assets.py` 是三姿态素材、尺寸与锚点的权威清单，现有兼容渲染路径只作为明确回退。
 - 可替换的文字转语音引擎通过 `speech_providers.py` 注册。提供程序可以合成音频，但不得拥有嘴型同步、表情状态、UI、权限或回退策略；经 Windows 验证的女性本地语音是权威离线回退。
 - 持久化的本地语音选择使用平台中立的 `system-local` 提供程序 ID。旧字面 ID `windows-local` 与本地化标签只可作为迁移输入，绝不得成为第二个提供程序。
 - 语言策略、回复语言指示及内置提醒迁移只有一个真实来源：`language_support.py`。英文、简体中文显示字符串及稳定的内部值至显示值映射存放于 `ui_localization.py`；本地化标签绝不得取代持久化的内部设置值。简体中文对话路径不得通过台湾繁体中文输出规范化器。
@@ -151,7 +153,7 @@ Dependencies point downward only:
 1. `app.py` is the Windows character shell; `service_container.py` is the explicit runtime composition root. `preview_app.py` is a separate, deliberately limited macOS/Linux Preview package shell; it may display platform status and localization, but it must not import `app.py`, create cloud/voice/tool services, or expose secret inputs.
 2. UI modules (`flagship_ui.py`, `profile_transfer_ui.py`) may call public service APIs.
 3. Services (`profile_transfer.py`, `speech.py`, `realtime_voice.py`, `ai_client.py`, `cloud_connectors.py`, `home_assistant.py`, `remote_control.py`) may use domain and storage modules.
-4. Domain and storage modules (`db.py`, `flagship_core.py`, `expression_system.py`, `lip_sync.py`, `workflow_engine.py`) never import UI or `app.py`.
+4. Domain and storage modules (`db.py`, `flagship_core.py`, `expression_system.py`, `lip_sync.py`, `face_rig.py`, `face_motion.py`, `face_assets.py`, `face_renderer.py`, `workflow_engine.py`) never import UI or `app.py`.
 
 Circular local imports are prohibited and enforced by `tests/test_architecture_contracts.py`.
 
@@ -163,6 +165,7 @@ Circular local imports are prohibited and enforced by `tests/test_architecture_c
 - Desktop operating-system behavior enters through `PlatformServicePort` and the explicit `platform_windows.py`, `platform_macos.py`, and `platform_linux.py` adapters. Core modules must not import `winreg`, `winsound`, `ctypes.windll`, or `os.startfile` unconditionally.
 - Desktop dependency injection is constructor-based. FastAPI `Depends` belongs only in a future HTTP boundary; importing FastAPI into the PySide desktop core is prohibited.
 - OpenAI/Windows speech timing has one source of truth: `lip_sync.py`.
+- The parametric layered 2.5D face has one data flow: `lip_sync.py` produces articulation state, `face_motion.py` combines immutable face parameters, and `face_renderer.py` draws all three poses; `app.py` only composes and displays them. `face_assets.py` is the authoritative manifest for three-pose assets, dimensions, and anchors, while the compatible renderer is an explicit rollback path only.
 - Replaceable text-to-speech engines register through `speech_providers.py`. Providers may synthesize audio but must not own lip sync, expression state, UI, permissions, or fallback policy; Windows verified-female local speech is the authoritative offline fallback.
 - Persisted local-speech selection uses the platform-neutral `system-local` provider ID. The literal legacy ID `windows-local` and localized labels are migration inputs only; they must never become a second provider.
 - Language policy, response-language instructions, and built-in reminder migration have one source of truth in `language_support.py`. English and Simplified Chinese display strings and stable internal-to-display mappings live in `ui_localization.py`; localized labels must never replace persisted internal setting values. Simplified Chinese conversation paths must not pass through the Taiwan Traditional Chinese output normalizer.
@@ -221,7 +224,7 @@ Do not add a second setting, timer, or signal for behavior that already has a ca
 1. `app.py` は Windows のキャラクターシェルであり、`service_container.py` は明示的な実行時コンポジションルートです。`preview_app.py` は独立した、意図的に制限された macOS／Linux Preview パッケージシェルです。プラットフォーム状態とローカライズ内容は表示できますが、`app.py` のインポート、クラウド／音声／ツールサービスの生成、機密入力欄の公開は禁止します。
 2. UI モジュール（`flagship_ui.py`、`profile_transfer_ui.py`）は、サービスの公開 API を呼び出せます。
 3. サービス（`profile_transfer.py`、`speech.py`、`realtime_voice.py`、`ai_client.py`、`cloud_connectors.py`、`home_assistant.py`、`remote_control.py`）は、ドメインおよびストレージモジュールを利用できます。
-4. ドメインおよびストレージモジュール（`db.py`、`flagship_core.py`、`expression_system.py`、`lip_sync.py`、`workflow_engine.py`）は、UI または `app.py` を決してインポートしません。
+4. ドメインおよびストレージモジュール（`db.py`、`flagship_core.py`、`expression_system.py`、`lip_sync.py`、`face_rig.py`、`face_motion.py`、`face_assets.py`、`face_renderer.py`、`workflow_engine.py`）は、UI または `app.py` を決してインポートしません。
 
 ローカルモジュール間の循環インポートは禁止し、`tests/test_architecture_contracts.py` で強制検査します。
 
@@ -233,6 +236,7 @@ Do not add a second setting, timer, or signal for behavior that already has a ca
 - デスクトップ OS の動作は、`PlatformServicePort` と明示的な `platform_windows.py`、`platform_macos.py`、`platform_linux.py` アダプターを通じて導入します。コアモジュールは `winreg`、`winsound`、`ctypes.windll`、`os.startfile` を無条件にインポートしてはいけません。
 - デスクトップの依存性注入はコンストラクター方式とします。FastAPI の `Depends` は将来の HTTP 境界だけに属し、PySide デスクトップコアへの FastAPI のインポートは禁止します。
 - OpenAI／Windows の音声タイミングには、`lip_sync.py` という唯一の信頼できる情報源があります。
+- パラメトリック多層 2.5D フェイスのデータフローは一つだけです。`lip_sync.py` が口形状態を生成し、`face_motion.py` が不変の顔パラメーターを統合し、`face_renderer.py` が三姿勢を描画します。`app.py` は構成と表示だけを担当します。`face_assets.py` は三姿勢の素材、寸法、アンカーの権威あるマニフェストであり、現行互換レンダラーは明示的なロールバック経路としてのみ残します。
 - 交換可能なテキスト読み上げエンジンは `speech_providers.py` を通じて登録します。プロバイダーは音声を合成できますが、リップシンク、表情状態、UI、権限、フォールバック方針を所有してはいけません。Windows で検証済みの女性ローカル音声を正式なオフラインフォールバックとします。
 - 永続化するローカル音声の選択には、プラットフォーム中立の `system-local` プロバイダー ID を使用します。旧リテラル ID `windows-local` とローカライズ済みラベルは移行入力に限り、第二のプロバイダーにしてはいけません。
 - 言語方針、応答言語の指示、組み込みリマインダーの移行には、`language_support.py` という唯一の信頼できる情報源があります。英語および簡体字中国語の表示文字列と、安定した内部値から表示値への対応は `ui_localization.py` に置きます。ローカライズ済みラベルで永続化された内部設定値を置き換えてはいけません。簡体字中国語の会話経路を台湾繁体字中国語の出力正規化処理に通してはいけません。

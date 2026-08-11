@@ -8,7 +8,7 @@
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.3" src="https://img.shields.io/badge/development_version-v2.3.0--rc.3-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.4" src="https://img.shields.io/badge/development_version-v2.3.0--rc.4-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -32,7 +32,7 @@
 
 <p align="center">
   <strong>軟體作者：CHOU MING HUA</strong><br>
-  準備發布的公開預覽版：v2.3.0 RC3（`v2.3.0-rc.3`）<br>
+  準備發布的公開預覽版：v2.3.0 RC4（`v2.3.0-rc.4`）<br>
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -356,7 +356,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.3"
+.\build.ps1 -Version "2.3.0-rc.4"
 ```
 
 歷史上的 v2.1.0 RC1 在發布前通過 55 項自動測試程式，以及 Windows 發布工作流程的原始碼稽核、封裝自我測試、安裝／移除驗證與安全檢查；自動測試不能取代尚未完成的第三方真實環境驗證。
@@ -396,7 +396,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.3" src="https://img.shields.io/badge/development_version-v2.3.0--rc.3-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.4" src="https://img.shields.io/badge/development_version-v2.3.0--rc.4-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -420,7 +420,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>软件作者：CHOU MING HUA</strong><br>
-  准备发布的公开预览版：v2.3.0 RC3（`v2.3.0-rc.3`）<br>
+  准备发布的公开预览版：v2.3.0 RC4（`v2.3.0-rc.4`）<br>
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -744,7 +744,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.3"
+.\build.ps1 -Version "2.3.0-rc.4"
 ```
 
 历史上的 v2.1.0 RC1 在发布前通过 55 项自动测试程序，以及 Windows 发布工作流的源代码审计、打包自测、安装／卸载验证与安全检查；自动测试不能代替尚未完成的第三方真实环境验证。
@@ -784,7 +784,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.3" src="https://img.shields.io/badge/development_version-v2.3.0--rc.3-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.4" src="https://img.shields.io/badge/development_version-v2.3.0--rc.4-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -808,7 +808,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>Author: CHOU MING HUA</strong><br>
-  Prepared public preview: v2.3.0 RC3 (`v2.3.0-rc.3`)<br>
+  Prepared public preview: v2.3.0 RC4 (`v2.3.0-rc.4`)<br>
   Windows 10/11 complete build · macOS/Linux limited Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -1132,7 +1132,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.3"
+.\build.ps1 -Version "2.3.0-rc.4"
 ```
 
 Historically, v2.1.0 RC1 passed 55 automated test programs plus the Windows release workflow's source audit, packaged self-test, install/uninstall verification, and security checks before publication. Automated tests do not replace incomplete third-party live validation.
@@ -1172,7 +1172,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.3" src="https://img.shields.io/badge/development_version-v2.3.0--rc.3-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.4" src="https://img.shields.io/badge/development_version-v2.3.0--rc.4-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -1196,7 +1196,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>ソフトウェア作者：CHOU MING HUA</strong><br>
-  公開準備中のプレビュー：v2.3.0 RC3（`v2.3.0-rc.3`）<br>
+  公開準備中のプレビュー：v2.3.0 RC4（`v2.3.0-rc.4`）<br>
   Windows 10/11 完全版 · macOS／Linux 機能限定 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -1520,7 +1520,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.3"
+.\build.ps1 -Version "2.3.0-rc.4"
 ```
 
 過去の v2.1.0 RC1 は公開前に 55 個の自動テストプログラムと、Windows リリースワークフローのソース監査、パッケージ自己試験、インストール／削除検証、安全検査に合格しました。自動テストは、未完了の第三者実環境検証に代わりません。
