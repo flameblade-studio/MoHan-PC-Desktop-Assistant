@@ -95,7 +95,15 @@ lazy from ai_client import (
     AIWorker,
     AIWorkerRequest,
 )
-lazy from azure_speech import azure_female_voices
+lazy from azure_regions import (
+    azure_region_identifiers,
+    azure_region_options,
+    azure_region_supports_hd_flash,
+)
+lazy from azure_speech import (
+    azure_female_voices,
+    azure_hd_female_voices,
+)
 lazy from background_agents import (
     DiagnosticReportWorker,
     ManagerWorkerScheduler,
@@ -114,11 +122,10 @@ lazy from expression_system import (
     parse_internal_emotion,
     plan_wait_expressions,
 )
-lazy from feature_registry import DashboardFeatureRegistry
 lazy from face_assets import validate_face_assets
 lazy from face_motion import FaceMotionController
 lazy from face_renderer import FaceRenderLayers, ParametricFaceRenderer
-lazy from face_rig import FaceMotionFrame
+lazy from feature_registry import DashboardFeatureRegistry
 lazy from flagship_ui import FlagshipControlCenter
 lazy from language_support import (
     english_voice_instructions,
@@ -153,11 +160,12 @@ lazy from realtime_voice import (
 lazy from service_container import CompanionServices, create_default_services
 lazy from speech import (
     SpeechListener,
-    is_known_male_windows_voice,
+    female_windows_voices_for_language,
     preferred_windows_voice,
     windows_voices,
 )
 lazy from speech_providers import (
+    AZURE_HD_SPEECH_PROVIDER,
     AZURE_SPEECH_PROVIDER,
     OPENAI_REALTIME_PROVIDER,
     OPENAI_SPEECH_PROVIDER,
@@ -217,6 +225,44 @@ class SpeechCredentials:
     openai_api_key: str
     azure_api_key: str
     azure_region: str
+    azure_hd_api_key: str
+    azure_hd_region: str
+
+
+@dataclass(frozen=True, slots=True)
+class SecretInputPolicy:
+    saved_key: str
+    saved_fallback: str
+    title_key: str
+    title_fallback: str
+    error_key: str
+    error_fallback: str
+
+
+OPENAI_SECRET_POLICY = SecretInputPolicy(
+    saved_key="api_key_saved",
+    saved_fallback="已安全保存（留空不變）",
+    title_key="api_key",
+    title_fallback="OpenAI API 金鑰",
+    error_key="api_key_save_failed",
+    error_fallback="無法安全保存 OpenAI API 金鑰：{error}",
+)
+AZURE_SECRET_POLICY = SecretInputPolicy(
+    saved_key="azure_key_saved",
+    saved_fallback="已由作業系統安全保存（留空不變）",
+    title_key="azure_key",
+    title_fallback="Azure Speech 金鑰",
+    error_key="azure_key_save_failed",
+    error_fallback="無法安全保存 Azure Speech 金鑰：{error}",
+)
+AZURE_HD_SECRET_POLICY = SecretInputPolicy(
+    saved_key="azure_hd_key_saved",
+    saved_fallback="Dragon HD S0 金鑰已由 Windows 加密保存（留空不變）",
+    title_key="azure_hd_key",
+    title_fallback="Dragon HD S0 金鑰",
+    error_key="azure_hd_key_save_failed",
+    error_fallback="無法安全保存 Dragon HD S0 金鑰：{error}",
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -224,6 +270,7 @@ class DashboardDependencies:
     listener: SpeechListenerPort
     secret_store: SecretStorePort
     azure_secret_store: SecretStorePort | None = None
+    azure_hd_secret_store: SecretStorePort | None = None
     secret_store_factory: SecretStoreFactoryPort | None = None
     platform_services: PlatformServicePort | None = None
 
@@ -725,6 +772,7 @@ VOICE_ENGINE_WINDOWS = VOICE_ENGINE_SYSTEM
 VOICE_ENGINE_OPENAI = OPENAI_SPEECH_PROVIDER
 VOICE_ENGINE_REALTIME = OPENAI_REALTIME_PROVIDER
 VOICE_ENGINE_AZURE = AZURE_SPEECH_PROVIDER
+VOICE_ENGINE_AZURE_HD = AZURE_HD_SPEECH_PROVIDER
 
 OPENAI_VOICE_ORDER = (
     "coral",
@@ -1874,6 +1922,7 @@ class Dashboard(QDialog):
         self.listener = dependencies.listener
         self.secret_store = dependencies.secret_store
         self.azure_secret_store = dependencies.azure_secret_store
+        self.azure_hd_secret_store = dependencies.azure_hd_secret_store
         self.secret_store_factory = (
             dependencies.secret_store_factory
         )
@@ -2957,6 +3006,13 @@ class Dashboard(QDialog):
                 VOICE_ENGINE_AZURE,
                 self._t("azure_engine", "Azure Speech（預覽）"),
             ),
+            (
+                VOICE_ENGINE_AZURE_HD,
+                self._t(
+                    "azure_hd_engine",
+                    "Azure Dragon HD（預覽，需 S0）",
+                ),
+            ),
         )
         for key, label in cloud_engines:
             combo.addItem(label, key)
@@ -3013,18 +3069,10 @@ class Dashboard(QDialog):
     ) -> tuple[tuple[str, str], ...]:
         if not capabilities.system_local_speech:
             return ()
-        chinese_interface = self.ui_language.lower() in {
-            "zh",
-            "zh-tw",
-            "zh-cn",
-        }
         return tuple(
-            (name, culture)
-            for name, culture in windows_voices()
-            if not is_known_male_windows_voice(name)
-            and (
-                not chinese_interface
-                or culture.lower().split("-", 1)[0] == "zh"
+            female_windows_voices_for_language(
+                windows_voices(),
+                self.ui_language,
             )
         )
 
@@ -3111,13 +3159,132 @@ class Dashboard(QDialog):
             selected_voice,
         )
         self.azure_voice.setEditable(False)
-        self.azure_region = QLineEdit(
-            str(self.db.setting("azure_speech_region", ""))
-        )
-        self.azure_region.setPlaceholderText(
-            self._t("azure_region_placeholder", "例如：eastasia")
+        self.azure_region = self._azure_region_combo(
+            setting_key="azure_speech_region",
         )
         self._initialize_azure_key_controls(capabilities)
+
+        saved_hd_region = str(
+            self.db.setting("azure_hd_speech_region", "")
+        ).strip().lower()
+        azure_hd_voices = azure_hd_female_voices(
+            self.ui_language,
+            include_flash=azure_region_supports_hd_flash(saved_hd_region),
+        )
+        saved_hd_voice = str(
+            self.db.setting("azure_hd_speech_voice", azure_hd_voices[0])
+        )
+        selected_hd_voice = (
+            saved_hd_voice
+            if saved_hd_voice in azure_hd_voices
+            else azure_hd_voices[0]
+        )
+        if selected_hd_voice != saved_hd_voice:
+            self.db.set_setting(
+                "azure_hd_speech_voice",
+                selected_hd_voice,
+            )
+        self.azure_hd_voice = self._editable_combo(
+            azure_hd_voices,
+            selected_hd_voice,
+        )
+        self.azure_hd_voice.setEditable(False)
+        self.azure_hd_region = self._azure_region_combo(
+            setting_key="azure_hd_speech_region",
+            hd_only=True,
+        )
+        self._initialize_azure_hd_key_controls(capabilities)
+
+    def _azure_region_combo(
+        self,
+        *,
+        setting_key: str,
+        hd_only: bool = False,
+        hd_flash_only: bool = False,
+    ) -> QComboBox:
+        combo = QComboBox()
+        combo.addItem(
+            self._t(
+                "azure_region_choose",
+                "請選擇 Azure 資源建立時所在的區域",
+            ),
+            "",
+        )
+        for label, identifier in azure_region_options(
+            self.ui_language,
+            hd_only=hd_only,
+            hd_flash_only=hd_flash_only,
+        ):
+            combo.addItem(label, identifier)
+
+        saved_region = str(
+            self.db.setting(setting_key, "")
+        ).strip().lower()
+        known_regions = azure_region_identifiers()
+        if (
+            saved_region
+            and saved_region not in known_regions
+            and combo.findData(saved_region) < 0
+        ):
+            combo.addItem(
+                self._t(
+                    "azure_region_saved",
+                    "既有設定 · {region}",
+                    region=saved_region,
+                ),
+                saved_region,
+            )
+        self._select_combo_data(combo, saved_region)
+        return combo
+
+    def _initialize_azure_hd_key_controls(
+        self,
+        capabilities: PlatformCapabilities,
+    ) -> None:
+        self.azure_hd_key_input = QLineEdit()
+        self.azure_hd_key_input.setEchoMode(QLineEdit.Password)
+        self.azure_hd_key_input.setAccessibleName(
+            self._t("azure_hd_key", "Dragon HD S0 金鑰")
+        )
+        self.azure_hd_key_input.setToolTip(
+            self._t(
+                "secret_auto_save_hint",
+                "輸入後按 Enter 或移開游標，即會自動安全保存。",
+            )
+        )
+        secure_storage = capabilities.secure_secret_storage
+        key_saved = bool(
+            secure_storage
+            and self.azure_hd_secret_store
+            and self.azure_hd_secret_store.load()
+        )
+        if secure_storage:
+            placeholder = self._t(
+                "azure_hd_key_saved" if key_saved else "azure_hd_key_missing",
+                (
+                    "Dragon HD S0 金鑰已由 Windows 加密保存（留空不變）"
+                    if key_saved
+                    else "貼上獨立的 Dragon HD S0 資源金鑰"
+                ),
+            )
+        else:
+            placeholder = self._t(
+                "platform_secret_storage_unavailable",
+                f"{capabilities.display_name} 安全金鑰保存尚未完成實機驗證",
+                platform=capabilities.display_name,
+            )
+            self.azure_hd_key_input.setEnabled(False)
+        self.azure_hd_key_input.setPlaceholderText(placeholder)
+        self.azure_hd_key_input.editingFinished.connect(
+            self._save_azure_hd_key_immediately
+        )
+        self.azure_hd_clear_key = QPushButton(
+            self._t("azure_hd_remove_key", "移除 Dragon HD S0 金鑰")
+        )
+        self.azure_hd_clear_key.clicked.connect(
+            self.clear_azure_hd_speech_key
+        )
+        self.azure_hd_clear_key.setEnabled(secure_storage)
 
     def _initialize_azure_key_controls(
         self,
@@ -3125,6 +3292,15 @@ class Dashboard(QDialog):
     ) -> None:
         self.azure_key_input = QLineEdit()
         self.azure_key_input.setEchoMode(QLineEdit.Password)
+        self.azure_key_input.setAccessibleName(
+            self._t("azure_key", "Azure Speech 金鑰")
+        )
+        self.azure_key_input.setToolTip(
+            self._t(
+                "secret_auto_save_hint",
+                "輸入後按 Enter 或移開游標，即會自動安全保存。",
+            )
+        )
         secure_storage = capabilities.secure_secret_storage
         key_saved = bool(
             secure_storage
@@ -3151,6 +3327,9 @@ class Dashboard(QDialog):
             )
             self.azure_key_input.setEnabled(False)
         self.azure_key_input.setPlaceholderText(placeholder)
+        self.azure_key_input.editingFinished.connect(
+            self._save_azure_key_immediately
+        )
         self.azure_clear_key = QPushButton(
             self._t("azure_remove_key", "移除 Azure Speech 金鑰")
         )
@@ -3425,6 +3604,18 @@ class Dashboard(QDialog):
             )
         return self._voice_note(text)
 
+    def _azure_hd_voice_note(self) -> QLabel:
+        return self._voice_note(
+            self._t(
+                "azure_hd_speech_note",
+                "可選預覽功能；請使用獨立的 S0 語音資源、金鑰與相符區域。"
+                "Dragon HD 不提供 viseme，因此墨寒會使用既有音訊分析維持"
+                "嘴型同步。發話前等待時間取決於網路與區域距離。若 HD 失敗，"
+                "依序退回一般 Azure，再退回 Windows "
+                "本機語音；每一層只嘗試一次，避免重複計費。",
+            )
+        )
+
     def _model_access_note(self) -> QLabel:
         return self._voice_note(
             self._t(
@@ -3533,6 +3724,20 @@ class Dashboard(QDialog):
         )
         form.addRow("", self.azure_clear_key)
         form.addRow("", self._azure_voice_note(capabilities))
+        form.addRow(
+            self._t("azure_hd_voice", "Dragon HD 女性聲線"),
+            self.azure_hd_voice,
+        )
+        form.addRow(
+            self._t("azure_hd_region", "Dragon HD S0 區域"),
+            self.azure_hd_region,
+        )
+        form.addRow(
+            self._t("azure_hd_key", "Dragon HD S0 金鑰"),
+            self.azure_hd_key_input,
+        )
+        form.addRow("", self.azure_hd_clear_key)
+        form.addRow("", self._azure_hd_voice_note())
 
     def _add_realtime_rows(self, form: QFormLayout) -> None:
         form.addRow(
@@ -3626,6 +3831,15 @@ class Dashboard(QDialog):
         )
         self.azure_voice.currentTextChanged.connect(
             self._azure_voice_changed
+        )
+        self.azure_region.currentIndexChanged.connect(
+            self._azure_region_changed
+        )
+        self.azure_hd_voice.currentTextChanged.connect(
+            self._azure_hd_voice_changed
+        )
+        self.azure_hd_region.currentIndexChanged.connect(
+            self._azure_hd_region_changed
         )
         self.realtime_voice.currentTextChanged.connect(
             self._realtime_voice_changed
@@ -4139,6 +4353,9 @@ class Dashboard(QDialog):
             capabilities,
             key_saved,
         )
+        self.api_key_input.editingFinished.connect(
+            self._save_api_key_if_provided
+        )
         self.ai_model = self._editable_combo(
             TEXT_MODELS,
             str(self.db.setting("ai_model", DEFAULT_TEXT_MODEL)),
@@ -4175,6 +4392,15 @@ class Dashboard(QDialog):
     ) -> QLineEdit:
         key_input = QLineEdit()
         key_input.setEchoMode(QLineEdit.Password)
+        key_input.setAccessibleName(
+            self._t("api_key", "OpenAI API 金鑰")
+        )
+        key_input.setToolTip(
+            self._t(
+                "secret_auto_save_hint",
+                "輸入後按 Enter 或移開游標，即會自動安全保存。",
+            )
+        )
         if capabilities.secure_secret_storage:
             placeholder = (
                 self._t(
@@ -5439,6 +5665,40 @@ class Dashboard(QDialog):
             return
         self.db.set_setting("azure_speech_voice", selected_voice)
 
+    def _azure_region_changed(self, _index: int) -> None:
+        self.db.set_setting(
+            "azure_speech_region",
+            str(self.azure_region.currentData() or ""),
+        )
+
+    def _azure_hd_voice_changed(self, voice: str) -> None:
+        selected_voice = voice.strip()
+        if not selected_voice:
+            return
+        self.db.set_setting("azure_hd_speech_voice", selected_voice)
+
+    def _azure_hd_region_changed(self, _index: int) -> None:
+        region = str(self.azure_hd_region.currentData() or "")
+        self.db.set_setting(
+            "azure_hd_speech_region",
+            region,
+        )
+        self._refresh_azure_hd_voice_options(region)
+
+    def _refresh_azure_hd_voice_options(self, region: str) -> None:
+        voices = azure_hd_female_voices(
+            self.ui_language,
+            include_flash=azure_region_supports_hd_flash(region),
+        )
+        current_voice = self.azure_hd_voice.currentText().strip()
+        selected_voice = current_voice if current_voice in voices else voices[0]
+        self.azure_hd_voice.blockSignals(True)
+        self.azure_hd_voice.clear()
+        self.azure_hd_voice.addItems(voices)
+        self.azure_hd_voice.setCurrentText(selected_voice)
+        self.azure_hd_voice.blockSignals(False)
+        self.db.set_setting("azure_hd_speech_voice", selected_voice)
+
     def _realtime_voice_changed(self, voice: str) -> None:
         selected_voice = voice.strip()
         if not selected_voice:
@@ -5465,6 +5725,29 @@ class Dashboard(QDialog):
                 self._t(
                     "azure_key_missing",
                     "貼上 Azure Speech 資源金鑰",
+                )
+            )
+
+    def clear_azure_hd_speech_key(self) -> None:
+        if self.azure_hd_secret_store is None:
+            return
+        platform = self.platform_services.capabilities
+        answer = QMessageBox.question(
+            self,
+            self._t("azure_hd_remove_key", "移除 Dragon HD S0 金鑰"),
+            self._t(
+                "azure_hd_remove_key_confirm",
+                "確定移除由 {platform} 安全保存的 Dragon HD S0 金鑰嗎？",
+                platform=platform.display_name,
+            ),
+        )
+        if answer == QMessageBox.Yes:
+            self.azure_hd_secret_store.clear()
+            self.azure_hd_key_input.clear()
+            self.azure_hd_key_input.setPlaceholderText(
+                self._t(
+                    "azure_hd_key_missing",
+                    "貼上獨立的 Dragon HD S0 資源金鑰",
                 )
             )
 
@@ -5534,30 +5817,18 @@ class Dashboard(QDialog):
         )
         self.db.set_setting(
             "azure_speech_region",
-            self.azure_region.text().strip().lower(),
+            str(self.azure_region.currentData() or ""),
         )
-        azure_key = self.azure_key_input.text().strip()
-        if azure_key and self.azure_secret_store is not None:
-            try:
-                self.azure_secret_store.save(azure_key)
-                self.azure_key_input.clear()
-                self.azure_key_input.setPlaceholderText(
-                    self._t(
-                        "azure_key_saved",
-                        "已由作業系統安全保存（留空不變）",
-                    )
-                )
-            except OSError as exc:
-                if not silent:
-                    QMessageBox.warning(
-                        self,
-                        "Azure Speech",
-                        self._t(
-                            "azure_key_save_failed",
-                            "無法安全保存 Azure Speech 金鑰：{error}",
-                            error=exc,
-                        ),
-                    )
+        self.db.set_setting(
+            "azure_hd_speech_voice",
+            self.azure_hd_voice.currentText(),
+        )
+        self.db.set_setting(
+            "azure_hd_speech_region",
+            str(self.azure_hd_region.currentData() or ""),
+        )
+        self._persist_azure_key(silent=silent)
+        self._persist_azure_hd_key(silent=silent)
         self.db.set_setting("realtime_model", self.realtime_model.currentText())
         self.db.set_setting(
             "realtime_transcription_model",
@@ -5592,6 +5863,59 @@ class Dashboard(QDialog):
                 self._t("voice_settings_saved", "聲音設定已保存。"),
                 "happy",
             )
+
+    def _save_azure_key_immediately(self) -> None:
+        self._persist_azure_key(silent=False)
+
+    def _save_azure_hd_key_immediately(self) -> None:
+        self._persist_azure_hd_key(silent=False)
+
+    def _persist_azure_key(self, *, silent: bool) -> None:
+        self._persist_secret_input(
+            self.azure_key_input,
+            self.azure_secret_store,
+            AZURE_SECRET_POLICY,
+            silent=silent,
+        )
+
+    def _persist_azure_hd_key(self, *, silent: bool) -> None:
+        self._persist_secret_input(
+            self.azure_hd_key_input,
+            self.azure_hd_secret_store,
+            AZURE_HD_SECRET_POLICY,
+            silent=silent,
+        )
+
+    def _persist_secret_input(
+        self,
+        key_input: QLineEdit,
+        secret_store: SecretStorePort | None,
+        policy: SecretInputPolicy,
+        *,
+        silent: bool,
+    ) -> bool:
+        secret = key_input.text().strip()
+        if not secret or secret_store is None:
+            return False
+        try:
+            secret_store.save(secret)
+        except OSError as exc:
+            if not silent:
+                QMessageBox.warning(
+                    self,
+                    self._t(policy.title_key, policy.title_fallback),
+                    self._t(
+                        policy.error_key,
+                        policy.error_fallback,
+                        error=exc,
+                    ),
+                )
+            return False
+        key_input.clear()
+        key_input.setPlaceholderText(
+            self._t(policy.saved_key, policy.saved_fallback)
+        )
+        return True
 
     def set_realtime_status(self, status: str, active: bool | None = None) -> None:
         self.realtime_status.setText(f"Realtime：{status}")
@@ -5899,21 +6223,19 @@ class Dashboard(QDialog):
             self.db.set_setting(key, control.isChecked())
 
     def _save_api_key_if_provided(self) -> None:
-        key = self.api_key_input.text().strip()
-        if not key:
-            return
-        try:
-            self.secret_store.save(key)
-        except OSError as exc:
-            QMessageBox.warning(
-                self,
-                "API 金鑰",
-                f"無法安全保存金鑰：{exc}",
+        saved = self._persist_secret_input(
+            self.api_key_input,
+            self.secret_store,
+            OPENAI_SECRET_POLICY,
+            silent=False,
+        )
+        if saved:
+            self.api_status.setText(
+                self._t(
+                    "api_status_saved",
+                    "OpenAI API：金鑰已由作業系統安全保存",
+                )
             )
-            return
-        self.api_key_input.clear()
-        self.api_key_input.setPlaceholderText("已安全保存（留空不變）")
-        self.api_status.setText("OpenAI API：金鑰已由作業系統安全保存")
 
     def _save_autostart_setting(self) -> None:
         if not self.platform_services.capabilities.desktop_autostart:
@@ -5963,14 +6285,28 @@ class Dashboard(QDialog):
         platform = self.platform_services.capabilities
         answer = QMessageBox.question(
             self,
-            "移除 API 金鑰",
-            f"確定要移除由 {platform.display_name} 安全保存的 OpenAI API 金鑰嗎？",
+            self._t("remove_api_key", "移除已保存的 API 金鑰"),
+            self._t(
+                "remove_api_key_confirm",
+                "確定要移除由 {platform} 安全保存的 OpenAI API 金鑰嗎？",
+                platform=platform.display_name,
+            ),
         )
         if answer == QMessageBox.Yes:
             self.secret_store.clear()
             self.api_key_input.clear()
-            self.api_key_input.setPlaceholderText("貼上新的 OpenAI Project API Key")
-            self.api_status.setText("OpenAI API：未設定，使用離線人設")
+            self.api_key_input.setPlaceholderText(
+                self._t(
+                    "api_key_missing",
+                    "貼上 sk- 開頭的 OpenAI Project API Key",
+                )
+            )
+            self.api_status.setText(
+                self._t(
+                    "api_status_offline",
+                    "OpenAI API：未設定，使用離線人設",
+                )
+            )
 
     def open_work_folder(self) -> None:
         value = self.work_folder.text().strip()
@@ -6025,16 +6361,19 @@ class CompanionWindow(QMainWindow):
         self.backup_manager = services.backup_manager
         self.secret_store = services.secret_store
         self.azure_secret_store = services.azure_secret_store
+        self.azure_hd_secret_store = services.azure_hd_secret_store
         self.secret_store_factory = services.secret_store_factory
         self.tts = services.local_tts
         self.cloud_tts = services.cloud_tts
         self.azure_tts = services.azure_speech
+        self.azure_hd_tts = services.azure_hd_speech
         self.speech_providers = (
             services.speech_providers
             or create_builtin_speech_registry(
                 self.tts,
                 self.cloud_tts,
                 self.azure_tts,
+                self.azure_hd_tts,
             )
         )
         self.realtime = services.realtime
@@ -6064,6 +6403,7 @@ class CompanionWindow(QMainWindow):
                 listener=self.listener,
                 secret_store=self.secret_store,
                 azure_secret_store=self.azure_secret_store,
+                azure_hd_secret_store=self.azure_hd_secret_store,
                 secret_store_factory=self.secret_store_factory,
                 platform_services=self.platform_services,
             ),
@@ -6119,6 +6459,10 @@ class CompanionWindow(QMainWindow):
             self.azure_tts.finished.connect(self._speech_audio_finished)
             self.azure_tts.failed.connect(self._azure_voice_failed)
             self.azure_tts.viseme_cue.connect(self._audio_viseme_cue)
+        if self.azure_hd_tts is not None:
+            self.azure_hd_tts.finished.connect(self._speech_audio_finished)
+            self.azure_hd_tts.failed.connect(self._azure_hd_voice_failed)
+            self.azure_hd_tts.viseme_cue.connect(self._audio_viseme_cue)
         self.realtime.status_changed.connect(self._realtime_status)
         self.realtime.user_transcript.connect(
             self._realtime_user_text
@@ -6145,6 +6489,7 @@ class CompanionWindow(QMainWindow):
         self.active_speech_text = ""
         self.active_speech_engine = ""
         self.cloud_fallback_active = False
+        self.speech_fallback_attempts: set[str] = set()
         self.drag_offset: QPoint | None = None
         self.last_overwork_notice = ""
         self._startup_speech_requested = startup_speech
@@ -9327,6 +9672,7 @@ class CompanionWindow(QMainWindow):
         self.active_speech_text = queued.text
         self.active_speech_engine = ""
         self.cloud_fallback_active = False
+        self.speech_fallback_attempts.clear()
         self._show_bubble(queued.text)
         state = self._accepted_speech_state(queued)
         self.after_speech_state = state if state != "speaking" else "idle"
@@ -9397,11 +9743,20 @@ class CompanionWindow(QMainWindow):
             if self.azure_secret_store is not None
             else ""
         )
+        azure_hd_api_key = (
+            self.azure_hd_secret_store.load()
+            if self.azure_hd_secret_store is not None
+            else ""
+        )
         return SpeechCredentials(
             openai_api_key=self.secret_store.load(),
             azure_api_key=azure_api_key,
             azure_region=str(
                 self.db.setting("azure_speech_region", "")
+            ).strip(),
+            azure_hd_api_key=azure_hd_api_key,
+            azure_hd_region=str(
+                self.db.setting("azure_hd_speech_region", "")
             ).strip(),
         )
 
@@ -9418,6 +9773,13 @@ class CompanionWindow(QMainWindow):
             (
                 VOICE_ENGINE_AZURE,
                 bool(credentials.azure_api_key and credentials.azure_region),
+            ),
+            (
+                VOICE_ENGINE_AZURE_HD,
+                bool(
+                    credentials.azure_hd_api_key
+                    and credentials.azure_hd_region
+                ),
             ),
         )
         return tuple(
@@ -9441,6 +9803,7 @@ class CompanionWindow(QMainWindow):
         )
         self._report_azure_fallback(selected_provider_id, provider_id)
         self.active_speech_engine = provider_id
+        self.speech_fallback_attempts.add(provider_id)
         voice, api_key = self._speech_voice_and_key(provider_id, credentials)
         request = SpeechRequest(
             text=text,
@@ -9453,7 +9816,13 @@ class CompanionWindow(QMainWindow):
                     VOICE_GENERATION_PROMPT,
                 )
             ),
-            options={"region": credentials.azure_region},
+            options={
+                "region": (
+                    credentials.azure_hd_region
+                    if provider_id == VOICE_ENGINE_AZURE_HD
+                    else credentials.azure_region
+                )
+            },
         )
         self.speech_providers.provider(provider_id).speak(request)
 
@@ -9463,12 +9832,13 @@ class CompanionWindow(QMainWindow):
         provider_id: str,
     ) -> None:
         if (
-            selected_provider_id != VOICE_ENGINE_AZURE
-            or provider_id == VOICE_ENGINE_AZURE
+            selected_provider_id
+            not in {VOICE_ENGINE_AZURE, VOICE_ENGINE_AZURE_HD}
+            or provider_id == selected_provider_id
         ):
             return
         fallback_available = (
-            self.speech_providers.fallback_provider_id(VOICE_ENGINE_AZURE)
+            self.speech_providers.fallback_provider_id(selected_provider_id)
             is not None
         )
         message_key = (
@@ -9477,8 +9847,8 @@ class CompanionWindow(QMainWindow):
             else "azure_missing_no_local_fallback"
         )
         default_message = (
-            "Azure Speech 尚未完成設定；已直接使用 Windows "
-            "女性語音，未送出雲端請求。"
+            "所選 Azure 語音尚未完成設定；已直接使用可用的備援"
+            "語音，未送出該項雲端請求。"
             if fallback_available
             else "Azure Speech 尚未完成設定，且此平台沒有已驗證的"
             "本機語音；本次不會播放，也不會送出雲端請求。"
@@ -9502,6 +9872,9 @@ class CompanionWindow(QMainWindow):
         elif provider_id == VOICE_ENGINE_AZURE:
             voice = str(self.db.setting("azure_speech_voice", ""))
             api_key = credentials.azure_api_key
+        elif provider_id == VOICE_ENGINE_AZURE_HD:
+            voice = str(self.db.setting("azure_hd_speech_voice", ""))
+            api_key = credentials.azure_hd_api_key
         else:
             voice = str(
                 self.db.setting(
@@ -9549,6 +9922,8 @@ class CompanionWindow(QMainWindow):
         engines = [self.tts, self.cloud_tts, self.realtime]
         if self.azure_tts is not None:
             engines.append(self.azure_tts)
+        if self.azure_hd_tts is not None:
+            engines.append(self.azure_hd_tts)
         for engine in engines:
             engine.set_volume(volume_percent, muted)
 
@@ -9891,19 +10266,43 @@ class CompanionWindow(QMainWindow):
             message,
         )
 
+    def _azure_hd_voice_failed(self, message: str) -> None:
+        self._online_voice_failed(
+            VOICE_ENGINE_AZURE_HD,
+            "Azure Dragon HD",
+            message,
+        )
+
     def _online_voice_failed(
         self,
         failed_provider_id: str,
         provider_label: str,
         message: str,
     ) -> None:
-        fallback_provider_id = self.speech_providers.fallback_provider_id(
-            failed_provider_id
+        credentials = self._speech_credentials()
+        configured = set(self._configured_speech_providers(credentials))
+        candidates = (
+            (VOICE_ENGINE_AZURE, VOICE_ENGINE_SYSTEM)
+            if failed_provider_id == VOICE_ENGINE_AZURE_HD
+            else (VOICE_ENGINE_SYSTEM,)
+        )
+        fallback_provider_id = next(
+            (
+                provider_id
+                for provider_id in candidates
+                if provider_id in configured
+                and provider_id not in self.speech_fallback_attempts
+            ),
+            None,
         )
         if fallback_provider_id is not None:
-            local_name = self.platform_services.capabilities.display_name
+            fallback_label = (
+                "Azure Speech"
+                if fallback_provider_id == VOICE_ENGINE_AZURE
+                else f"{self.platform_services.capabilities.display_name} 本機女聲"
+            )
             self.dashboard.set_api_status(
-                f"{provider_label}失敗，已切換 {local_name} 本機女聲："
+                f"{provider_label}失敗，已切換 {fallback_label}："
                 f"{message[:50]}"
             )
         else:
@@ -9914,7 +10313,6 @@ class CompanionWindow(QMainWindow):
         if (
             self.speech_playing
             and self.active_speech_engine == failed_provider_id
-            and not self.cloud_fallback_active
             and self.active_speech_text.strip()
         ):
             if fallback_provider_id is None:
@@ -9922,11 +10320,30 @@ class CompanionWindow(QMainWindow):
                 return
             self.cloud_fallback_active = True
             self.active_speech_engine = fallback_provider_id
+            self.speech_fallback_attempts.add(fallback_provider_id)
+            voice, api_key = self._speech_voice_and_key(
+                fallback_provider_id,
+                credentials,
+            )
             self.speech_providers.provider(fallback_provider_id).speak(
                 SpeechRequest(
                     text=self.active_speech_text,
-                    voice=str(self.db.setting("windows_voice", "")),
+                    voice=voice,
                     rate=int(self.db.setting("voice_rate", -1)),
+                    api_key=api_key,
+                    instructions=str(
+                        self.db.setting(
+                            "voice_instructions",
+                            VOICE_GENERATION_PROMPT,
+                        )
+                    ),
+                    options={
+                        "region": (
+                            credentials.azure_region
+                            if fallback_provider_id == VOICE_ENGINE_AZURE
+                            else ""
+                        )
+                    },
                 )
             )
             return
@@ -9979,6 +10396,7 @@ class CompanionWindow(QMainWindow):
         self.active_speech_text = ""
         self.active_speech_engine = ""
         self.cloud_fallback_active = False
+        self.speech_fallback_attempts.clear()
         if self.speech_queue:
             QTimer.singleShot(120, self._start_next_speech)
         else:

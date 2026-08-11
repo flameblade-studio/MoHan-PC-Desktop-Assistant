@@ -52,7 +52,9 @@ class CompanionServices:
     backup_manager: BackupManager | None = None
     speech_providers: SpeechProviderRegistryPort | None = None
     azure_speech: AzureSpeechEnginePort | None = None
+    azure_hd_speech: AzureSpeechEnginePort | None = None
     azure_secret_store: SecretStorePort | None = None
+    azure_hd_secret_store: SecretStorePort | None = None
     secret_store_factory: SecretStoreFactoryPort | None = None
     platform_services: PlatformServicePort | None = None
 
@@ -85,6 +87,10 @@ def create_default_services(
     azure_secret_store = secret_factory(
         data_path / "azure-speech-key.dpapi",
         "MoHan Azure Speech key",
+    )
+    azure_hd_secret_store = secret_factory(
+        data_path / "azure-dragon-hd-key.dpapi",
+        "MoHan Azure Dragon HD Speech key",
     )
     listener = SpeechListener(
         listener_script,
@@ -146,6 +152,7 @@ def create_default_services(
         )
     cloud_tts = OpenAITTS(parent)
     azure_tts = AzureSpeechTTS(parent)
+    azure_hd_tts = AzureSpeechTTS(parent)
     system_capabilities = SpeechProviderCapabilities(
         provider_id=SYSTEM_LOCAL_PROVIDER,
         offline=runtime_platform.capabilities.system_local_speech,
@@ -172,10 +179,13 @@ def create_default_services(
             local_tts,
             cloud_tts,
             azure_tts,
+            azure_hd_tts,
             system_capabilities=system_capabilities,
         ),
         azure_speech=azure_tts,
+        azure_hd_speech=azure_hd_tts,
         azure_secret_store=azure_secret_store,
+        azure_hd_secret_store=azure_hd_secret_store,
         secret_store_factory=secret_factory,
         platform_services=runtime_platform,
     )

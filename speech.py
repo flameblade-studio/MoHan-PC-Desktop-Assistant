@@ -554,6 +554,20 @@ def windows_voices() -> list[tuple[str, str]]:
     return [(voice.name, voice.culture) for voice in windows_voice_catalog()]
 
 
+def female_windows_voices_for_language(
+    voices: list[tuple[str, str]],
+    target_language: str,
+) -> list[tuple[str, str]]:
+    target = str(target_language or "").strip().lower()
+    family = target.split("-", 1)[0]
+    return [
+        (name, culture)
+        for name, culture in voices
+        if not is_known_male_windows_voice(name)
+        and culture.lower().split("-", 1)[0] == family
+    ]
+
+
 def preferred_windows_voice(
     voices: list[tuple[str, str]],
     saved: str = "",

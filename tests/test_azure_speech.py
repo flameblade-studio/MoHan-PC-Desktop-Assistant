@@ -9,10 +9,16 @@ lazy from urllib.request import Request
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+lazy from azure_regions import (
+    azure_region_identifiers,
+    azure_region_options,
+    azure_region_supports_hd_flash,
+)
 lazy from azure_speech import (
     AZURE_FEMALE_VOICES,
     AzureSpeechTTS,
     azure_female_voices,
+    azure_hd_female_voices,
     azure_speech_error_message,
     build_azure_ssml,
     normalize_azure_region,
@@ -45,6 +51,31 @@ def _assert_region_normalization() -> None:
             raise AssertionError(f"Invalid region accepted: {invalid!r}")
 
 
+def _assert_region_catalog() -> None:
+    all_regions = azure_region_identifiers()
+    hd_regions = azure_region_identifiers(hd_only=True)
+    assert len(all_regions) == len(set(all_regions)) == 33
+    assert "eastasia" in all_regions
+    assert "eastasia" not in hd_regions
+    assert "southeastasia" in hd_regions
+    assert (
+        "東南亞 · southeastasia",
+        "southeastasia",
+    ) in azure_region_options("zh-TW", hd_only=True)
+    assert (
+        "东南亚 · southeastasia",
+        "southeastasia",
+    ) in azure_region_options("zh-CN", hd_only=True)
+    assert (
+        "Southeast Asia · southeastasia",
+        "southeastasia",
+    ) in azure_region_options("en", hd_only=True)
+    assert (
+        "東南アジア · southeastasia",
+        "southeastasia",
+    ) in azure_region_options("ja-JP", hd_only=True)
+
+
 def _assert_female_voice_catalog() -> None:
     traditional = azure_female_voices("zh-TW")
     simplified = azure_female_voices("zh-CN")
@@ -62,6 +93,37 @@ def _assert_female_voice_catalog() -> None:
     )
     assert azure_female_voices("en")[0] == "en-US-AvaMultilingualNeural"
     assert azure_female_voices("ja-JP")[0] == "ja-JP-NanamiNeural"
+    all_hd_voices = azure_hd_female_voices("zh-TW")
+    non_flash_hd_voices = azure_hd_female_voices(
+        "zh-TW",
+        include_flash=False,
+    )
+    assert non_flash_hd_voices == (
+        "zh-CN-Xiaochen:DragonHDLatestNeural",
+        "zh-CN-Xiaoyue:DragonHDOmniLatestNeural",
+        "zh-CN-Maroonallegro:DragonHDOmniLatestNeural",
+    )
+    assert all(":DragonHD" in voice for voice in all_hd_voices)
+    assert all("Flash" not in voice for voice in non_flash_hd_voices)
+    assert len(non_flash_hd_voices) < len(all_hd_voices)
+    assert all(
+        voice.startswith("zh-CN-")
+        for voice in azure_hd_female_voices("zh-TW")
+    )
+    assert all(
+        voice.startswith("zh-CN-")
+        for voice in azure_hd_female_voices("zh-CN")
+    )
+    assert all(
+        voice.startswith("en-US-")
+        for voice in azure_hd_female_voices("en")
+    )
+    assert all(
+        voice.startswith("ja-JP-")
+        for voice in azure_hd_female_voices("ja-JP")
+    )
+    assert azure_region_supports_hd_flash("southeastasia")
+    assert not azure_region_supports_hd_flash("centralindia")
 
 
 def _assert_ssml_safety() -> None:
@@ -99,6 +161,21 @@ def _assert_localized_errors_and_ui() -> None:
     )
     assert ui_text("zh-CN", "azure_remove_key", "fallback") == (
         "移除 Azure Speech 密钥"
+    )
+    assert "automatically" in ui_text(
+        "en",
+        "secret_auto_save_hint",
+        "fallback",
+    )
+    assert "自动安全保存" in ui_text(
+        "zh-CN",
+        "secret_auto_save_hint",
+        "fallback",
+    )
+    assert "自動的に安全に保存" in ui_text(
+        "ja-JP",
+        "secret_auto_save_hint",
+        "fallback",
     )
 
 
@@ -147,6 +224,8 @@ def _assert_successful_synthesis(
 ) -> Request:
     captured_requests: list[Request] = []
     captured_timeouts: list[float] = []
+    measured_latencies: list[float] = []
+    engine.synthesis_latency_measured.connect(measured_latencies.append)
 
     def fake_urlopen(request: Request, timeout: float) -> FakeResponse:
         captured_requests.append(request)
@@ -177,6 +256,8 @@ def _assert_successful_synthesis(
     playback.assert_called_once()
     assert finished == [True]
     assert not failures
+    assert engine.last_synthesis_latency_ms is not None
+    assert measured_latencies == [engine.last_synthesis_latency_ms]
     return request
 
 
@@ -208,6 +289,7 @@ def _assert_http_error_redacts_key(
 
 def run() -> None:
     _assert_region_normalization()
+    _assert_region_catalog()
     _assert_female_voice_catalog()
     _assert_ssml_safety()
     _assert_localized_errors_and_ui()

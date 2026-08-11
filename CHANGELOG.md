@@ -4,6 +4,13 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### v3.1.0 — 2026-08-11
+
+- 新增預設關閉的 Azure Dragon HD／HD Omni 女性聲線 Preview，以獨立 S0 金鑰、區域與聲線設定運作，不改變既有語音供應器。
+- Azure 區域改為切換後自動儲存的選單；只顯示官方支援的女性 HD 聲線，HD Flash 依區域能力自動隱藏。
+- 三種雲端金鑰統一採密碼遮罩、Windows DPAPI 自動加密與成功後清空輸入框；Dragon HD 失敗時只依序嘗試一般 Azure 與 Windows 本機女聲各一次。
+- Central India S0 已完成真實 Windows 合成與播放驗證；臺灣連線的發話前等待明顯，因此介面與文件保留 Preview、區域延遲及費用警告，嘴型仍由既有 50 Hz 本機音訊分析同步驅動。
+
 ### v3.0.0 — 2026-08-11
 
 - 專案擁有者親自認可的第一個正式穩定版本，也是由 v2.3.0 候選系列完整驗證後升格的第三代里程碑。
@@ -177,6 +184,13 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
+### v3.1.0 — 2026-08-11
+
+- 新增默认关闭的 Azure Dragon HD／HD Omni 女性声线 Preview，以独立 S0 密钥、区域与声线设置运行，不改变现有语音供应器。
+- Azure 区域改为切换后自动保存的选单；只显示官方支持的女性 HD 声线，HD Flash 按区域能力自动隐藏。
+- 三种云端密钥统一采用密码遮罩、Windows DPAPI 自动加密与成功后清空输入框；Dragon HD 失败时只依次尝试一般 Azure 与 Windows 本地女声各一次。
+- Central India S0 已完成真实 Windows 合成与播放验证；台湾连接的发话前等待明显，因此界面与文档保留 Preview、区域延迟及费用警告，嘴型仍由现有 50 Hz 本地音频分析同步驱动。
+
 ### v3.0.0 — 2026-08-11
 
 - 项目所有者亲自认可的第一个正式稳定版本，也是由 v2.3.0 候选系列完整验证后升级的第三代里程碑。
@@ -348,6 +362,13 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 ## English
 
 All notable public changes to MoHan Desktop Assistant are documented here.
+
+### v3.1.0 — 2026-08-11
+
+- Adds a disabled-by-default Azure Dragon HD/HD Omni female-voice Preview with separate S0 key, region, and voice settings, leaving existing speech providers unchanged.
+- Azure regions now use an immediately saved selector; only officially supported female HD voices appear, and HD Flash is hidden according to regional capability.
+- All three cloud-key inputs share password masking, automatic Windows DPAPI encryption, and post-save clearing. Dragon HD failure tries standard Azure and Windows local female speech once each in order.
+- A real Central India S0 resource passed Windows synthesis and playback validation. Taiwan experienced a noticeable wait before speech, so the UI and documentation retain Preview, regional-latency, and cost warnings while existing local 50 Hz audio analysis remains the lip-sync authority.
 
 ### v3.0.0 — 2026-08-11
 
@@ -560,6 +581,13 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### v3.1.0 — 2026-08-11
+
+- 初期状態で無効な Azure Dragon HD／HD Omni 女性音声 Preview を追加し、独立した S0 キー、リージョン、音声設定で動作させ、既存の音声プロバイダーを変更しません。
+- Azure リージョンは切替後すぐ保存する選択欄となり、公式対応の女性 HD 音声だけを表示し、HD Flash はリージョン機能に応じて自動的に隠します。
+- 三種のクラウドキー入力は、パスワード表示、Windows DPAPI 自動暗号化、保存成功後の入力欄消去を共用します。Dragon HD 失敗時は通常の Azure と Windows 本機女性音声を順に各一回だけ試します。
+- Central India S0 の実リソースで Windows の合成と再生を検証しました。台湾からは発話開始前の待ち時間が明確なため、画面と文書に Preview、リージョン遅延、料金の注意を残し、口形同期は従来の 50 Hz 本機音声解析を正規情報源として維持します。
 
 ### v3.0.0 — 2026-08-11
 

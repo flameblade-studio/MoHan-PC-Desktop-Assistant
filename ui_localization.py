@@ -89,10 +89,12 @@ _ENGLISH: Mapping[str, str] = deep_freeze({
     "openai_engine": "OpenAI natural voice",
     "realtime_engine": "Realtime voice",
     "azure_engine": "Azure Speech (Preview)",
+    "azure_hd_engine": "Azure Dragon HD (Preview, requires S0)",
     "azure_voice": "Azure Speech female voice",
     "azure_region": "Azure Speech region",
     "azure_key": "Azure Speech key",
-    "azure_region_placeholder": "For example: eastasia",
+    "azure_region_choose": "Choose the region where the Azure resource was created",
+    "azure_region_saved": "Existing setting · {region}",
     "azure_key_saved": "Encrypted by Windows; leave blank to keep it",
     "azure_key_missing": "Paste the Azure Speech resource key",
     "azure_remove_key": "Remove Azure Speech key",
@@ -101,6 +103,25 @@ _ENGLISH: Mapping[str, str] = deep_freeze({
     ),
     "azure_key_save_failed": (
         "Could not securely save the Azure Speech key: {error}"
+    ),
+    "azure_hd_voice": "Dragon HD female voice",
+    "azure_hd_region": "Dragon HD resource region",
+    "azure_hd_key": "Dragon HD S0 resource key",
+    "azure_hd_key_saved": "Dragon HD S0 key encrypted by Windows; leave blank to keep it",
+    "azure_hd_key_missing": "Paste the separate Dragon HD S0 resource key",
+    "azure_hd_remove_key": "Remove Dragon HD S0 key",
+    "azure_hd_remove_key_confirm": (
+        "Remove the Dragon HD S0 key securely stored by {platform}?"
+    ),
+    "azure_hd_key_save_failed": (
+        "Could not securely save the Dragon HD S0 key: {error}"
+    ),
+    "azure_hd_speech_note": (
+        "Optional Preview. Use a separate S0 Speech resource, key, and "
+        "matching supported region. Dragon HD has no viseme events, so "
+        "MoHan retains audio-driven lip sync. Speech-start delay depends on "
+        "network and region distance. Failures fall back once each to "
+        "standard Azure Speech and then Windows local speech."
     ),
     "azure_speech_note": (
         "Preview feature. Bring your own Azure Speech resource key and its "
@@ -216,9 +237,16 @@ _ENGLISH: Mapping[str, str] = deep_freeze({
     "text_model": "Text model",
     "persona_prompt": "AI persona prompt",
     "remove_api_key": "Remove saved API key",
+    "remove_api_key_confirm": (
+        "Remove the OpenAI API key stored securely by {platform}?"
+    ),
     "save_settings": "Save settings",
     "api_key_saved": "Safely stored; leave blank to keep it unchanged",
     "api_key_missing": "Paste an OpenAI Project API key beginning with sk-",
+    "api_key_save_failed": "Could not store the OpenAI API key securely: {error}",
+    "secret_auto_save_hint": (
+        "Press Enter or leave the field to store the key securely and automatically."
+    ),
     "api_status_saved": "OpenAI API: Key encrypted by Windows",
     "api_status_environment": "OpenAI API: Key supplied by an environment variable",
     "api_status_secret_unavailable": (
@@ -326,10 +354,12 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze({
     "openai_engine": "OpenAI 自然语音",
     "realtime_engine": "Realtime 即时语音",
     "azure_engine": "Azure Speech（预览）",
+    "azure_hd_engine": "Azure Dragon HD（预览，需 S0）",
     "azure_voice": "Azure Speech 女性声线",
     "azure_region": "Azure Speech 区域",
     "azure_key": "Azure Speech 密钥",
-    "azure_region_placeholder": "例如：eastasia",
+    "azure_region_choose": "请选择创建 Azure 资源时所在的区域",
+    "azure_region_saved": "现有设置 · {region}",
     "azure_key_saved": "已由 Windows 加密保存；留空即可保留",
     "azure_key_missing": "贴上 Azure Speech 资源密钥",
     "azure_remove_key": "移除 Azure Speech 密钥",
@@ -337,6 +367,23 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze({
         "确定移除由 Windows 加密保存的 Azure Speech 密钥吗？"
     ),
     "azure_key_save_failed": "无法安全保存 Azure Speech 密钥：{error}",
+    "azure_hd_voice": "Dragon HD 女性声线",
+    "azure_hd_region": "Dragon HD 资源区域",
+    "azure_hd_key": "Dragon HD S0 资源密钥",
+    "azure_hd_key_saved": "Dragon HD S0 密钥已由 Windows 加密保存；留空即可保留",
+    "azure_hd_key_missing": "贴上独立的 Dragon HD S0 资源密钥",
+    "azure_hd_remove_key": "移除 Dragon HD S0 密钥",
+    "azure_hd_remove_key_confirm": (
+        "确定移除由 {platform} 安全保存的 Dragon HD S0 密钥吗？"
+    ),
+    "azure_hd_key_save_failed": "无法安全保存 Dragon HD S0 密钥：{error}",
+    "azure_hd_speech_note": (
+        "可选预览功能；请使用独立的 S0 语音资源、密钥与相符区域。"
+        "Dragon HD 不提供 viseme，因此墨寒会沿用音频分析维持嘴型同步。"
+        "发话前等待时间取决于网络与区域距离。若 HD 失败，会依序退回一般 "
+        "Azure 与 Windows 本机语音，"
+        "每一层只尝试一次，避免重复计费。"
+    ),
     "azure_speech_note": (
         "预览功能；需自备 Azure Speech 资源密钥与相符区域。仅列出已确认的"
         "女性声线；设定不完整或服务失败时会立即切换到 Windows 女性语音。"
@@ -437,9 +484,12 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze({
     "text_model": "文字模型",
     "persona_prompt": "AI 人格提示词",
     "remove_api_key": "删除已保存的 API 密钥",
+    "remove_api_key_confirm": "确定移除由 {platform} 安全保存的 OpenAI API 密钥吗？",
     "save_settings": "保存设置",
     "api_key_saved": "已安全保存；留空则保持不变",
     "api_key_missing": "粘贴以 sk- 开头的 OpenAI Project API Key",
+    "api_key_save_failed": "无法安全保存 OpenAI API 密钥：{error}",
+    "secret_auto_save_hint": "输入后按 Enter 或移开焦点，即会自动安全保存。",
     "api_status_saved": "OpenAI API：密钥已由 Windows 加密保存",
     "api_status_environment": "OpenAI API：使用环境变量提供的密钥",
     "api_status_secret_unavailable": (
