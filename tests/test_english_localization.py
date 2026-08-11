@@ -334,6 +334,18 @@ def assert_traditional_profile(
         assert dashboard.windows_voice.findData("OneCore::Microsoft Zira") == -1
         assert dashboard.windows_voice.findData("OneCore::Microsoft Xiaoxiao") >= 0
         close_dashboard(app, dashboard)
+
+        with patch(
+            "app.windows_voices",
+            return_value=[("OneCore::Microsoft Zira", "en-US")],
+        ):
+            dashboard = Dashboard(
+                db,
+                DashboardDependencies(listener, FakeSecretStore()),
+            )
+        assert dashboard.windows_voice.findData("OneCore::Microsoft Zira") == -1
+        assert str(dashboard.windows_voice.currentData() or "") == ""
+        close_dashboard(app, dashboard)
         db.close()
 
 

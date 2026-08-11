@@ -10415,6 +10415,10 @@ def main() -> int:
     )
     app.setApplicationName(profile_window_title(window.db))
     if self_test:
+        visible_windows_voices = tuple(
+            str(window.dashboard.windows_voice.itemData(index) or "")
+            for index in range(window.dashboard.windows_voice.count())
+        )
         physics_sources_ok = all(
             not window.physics_sources[pose].isNull()
             and not window.face_sources[pose].isNull()
@@ -10468,8 +10472,12 @@ def main() -> int:
             and not window.dashboard.windowIcon().isNull()
             and not window.tray.icon().isNull()
             and RealtimeVoiceClient.dependencies_available()
-            and window.dashboard.windows_voice.currentData()
-            == preferred_windows_voice(windows_voices())
+            and str(window.dashboard.windows_voice.currentData() or "")
+            == visible_windows_voices[0]
+            and all(
+                "zira" not in voice.casefold()
+                for voice in visible_windows_voices
+            )
             and window.dashboard.transcription_model.currentText()
             == SpeechListener.TRANSCRIPTION_MODEL
             and window.dashboard.realtime_transcription_model.currentText()
