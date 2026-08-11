@@ -111,6 +111,7 @@ lazy from background_agents import (
 )
 lazy from command_parser import is_start_work_command, is_stop_work_command
 lazy from contracts import (
+    AzureSpeechEnginePort,
     SecretStoreFactoryPort,
     SecretStorePort,
     SpeechListenerPort,
@@ -271,6 +272,8 @@ class DashboardDependencies:
     secret_store: SecretStorePort
     azure_secret_store: SecretStorePort | None = None
     azure_hd_secret_store: SecretStorePort | None = None
+    azure_speech: AzureSpeechEnginePort | None = None
+    azure_hd_speech: AzureSpeechEnginePort | None = None
     secret_store_factory: SecretStoreFactoryPort | None = None
     platform_services: PlatformServicePort | None = None
 
@@ -1923,6 +1926,8 @@ class Dashboard(QDialog):
         self.secret_store = dependencies.secret_store
         self.azure_secret_store = dependencies.azure_secret_store
         self.azure_hd_secret_store = dependencies.azure_hd_secret_store
+        self.azure_tts = dependencies.azure_speech
+        self.azure_hd_tts = dependencies.azure_hd_speech
         self.secret_store_factory = (
             dependencies.secret_store_factory
         )
@@ -2071,6 +2076,12 @@ class Dashboard(QDialog):
         self.listener.diagnostic_changed.connect(
             self._transcription_diagnostic
         )
+        for engine in (self.azure_tts, self.azure_hd_tts):
+            catalog_signal = getattr(engine, "voice_catalog_ready", None)
+            if catalog_signal is not None:
+                catalog_signal.connect(self._apply_azure_voice_catalog)
+        self._request_azure_voice_catalog(hd_only=False)
+        self._request_azure_voice_catalog(hd_only=True)
 
     def _start_dashboard_timer(self) -> None:
         self.timer = QTimer(self)
@@ -5666,10 +5677,9 @@ class Dashboard(QDialog):
         self.db.set_setting("azure_speech_voice", selected_voice)
 
     def _azure_region_changed(self, _index: int) -> None:
-        self.db.set_setting(
-            "azure_speech_region",
-            str(self.azure_region.currentData() or ""),
-        )
+        region = str(self.azure_region.currentData() or "")
+        self.db.set_setting("azure_speech_region", region)
+        self._request_azure_voice_catalog(hd_only=False)
 
     def _azure_hd_voice_changed(self, voice: str) -> None:
         selected_voice = voice.strip()
@@ -5684,6 +5694,52 @@ class Dashboard(QDialog):
             region,
         )
         self._refresh_azure_hd_voice_options(region)
+        self._request_azure_voice_catalog(hd_only=True)
+
+    def _request_azure_voice_catalog(self, *, hd_only: bool) -> None:
+        engine = self.azure_hd_tts if hd_only else self.azure_tts
+        secret_store = (
+            self.azure_hd_secret_store
+            if hd_only
+            else self.azure_secret_store
+        )
+        region_combo = self.azure_hd_region if hd_only else self.azure_region
+        if engine is None or secret_store is None:
+            return
+        refresh_catalog = getattr(engine, "refresh_voice_catalog", None)
+        if refresh_catalog is None:
+            return
+        region = str(region_combo.currentData() or "").strip().lower()
+        if not region:
+            return
+        refresh_catalog(
+            secret_store.load(),
+            region,
+            self.ui_language,
+            hd_only=hd_only,
+        )
+
+    def _apply_azure_voice_catalog(self, catalog: object) -> None:
+        hd_only = bool(getattr(catalog, "hd_only", False))
+        region_combo = self.azure_hd_region if hd_only else self.azure_region
+        expected_region = str(region_combo.currentData() or "").strip().lower()
+        if getattr(catalog, "region", "") != expected_region:
+            return
+        voices = tuple(getattr(catalog, "voices", ()))
+        if not voices:
+            return
+        combo = self.azure_hd_voice if hd_only else self.azure_voice
+        setting_key = (
+            "azure_hd_speech_voice" if hd_only else "azure_speech_voice"
+        )
+        current_voice = combo.currentText().strip()
+        selected_voice = current_voice if current_voice in voices else voices[0]
+        combo.blockSignals(True)
+        combo.clear()
+        combo.addItems(voices)
+        combo.setCurrentText(selected_voice)
+        combo.blockSignals(False)
+        self.db.set_setting(setting_key, selected_voice)
 
     def _refresh_azure_hd_voice_options(self, region: str) -> None:
         voices = azure_hd_female_voices(
@@ -5865,10 +5921,30 @@ class Dashboard(QDialog):
             )
 
     def _save_azure_key_immediately(self) -> None:
-        self._persist_azure_key(silent=False)
+        if self._persist_azure_key(silent=False):
+            invalidate = getattr(
+                self.azure_tts,
+                "invalidate_voice_catalog",
+                None,
+            )
+            if invalidate is not None:
+                invalidate(
+                    str(self.azure_region.currentData() or "")
+                )
+            self._request_azure_voice_catalog(hd_only=False)
 
     def _save_azure_hd_key_immediately(self) -> None:
-        self._persist_azure_hd_key(silent=False)
+        if self._persist_azure_hd_key(silent=False):
+            invalidate = getattr(
+                self.azure_hd_tts,
+                "invalidate_voice_catalog",
+                None,
+            )
+            if invalidate is not None:
+                invalidate(
+                    str(self.azure_hd_region.currentData() or "")
+                )
+            self._request_azure_voice_catalog(hd_only=True)
 
     def _persist_azure_key(self, *, silent: bool) -> None:
         self._persist_secret_input(
@@ -6404,6 +6480,8 @@ class CompanionWindow(QMainWindow):
                 secret_store=self.secret_store,
                 azure_secret_store=self.azure_secret_store,
                 azure_hd_secret_store=self.azure_hd_secret_store,
+                azure_speech=self.azure_tts,
+                azure_hd_speech=self.azure_hd_tts,
                 secret_store_factory=self.secret_store_factory,
                 platform_services=self.platform_services,
             ),

@@ -4,6 +4,12 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### v3.1.1 — 2026-08-12
+
+- 一般 Azure 與 Dragon HD 依選定區域及各自的加密金鑰動態查詢實際女性聲線，排除男性、不相容模型及區域不支援的 HD Flash；固定清單只作查詢失敗時的安全備援。
+- Azure 合成改用 Speech SDK `PushAudioOutputStream`，第一段 24 kHz PCM16 抵達便開始播放並送入既有 50 Hz 嘴型分析，不再等待完整 WAV。
+- 真實 East Asia F0 與 West US 2 S0 目錄查詢已通過；當時分別取得 21 筆可相容華語女性 Neural 與三筆簡體中文 Dragon HD 女性聲線。
+
 ### v3.1.0 — 2026-08-11
 
 - 新增預設關閉的 Azure Dragon HD／HD Omni 女性聲線 Preview，以獨立 S0 金鑰、區域與聲線設定運作，不改變既有語音供應器。
@@ -184,6 +190,12 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
+### v3.1.1 — 2026-08-12
+
+- 一般 Azure 与 Dragon HD 根据所选区域及各自的加密密钥动态查询实际女性声线，排除男性、不兼容模型及区域不支持的 HD Flash；固定列表仅作为查询失败时的安全备用。
+- Azure 合成改用 Speech SDK `PushAudioOutputStream`，第一段 24 kHz PCM16 抵达后即开始播放并送入现有 50 Hz 嘴形分析，不再等待完整 WAV。
+- 真实 East Asia F0 与 West US 2 S0 目录查询已通过；当时分别取得 21 项可兼容华语女性 Neural 与三项简体中文 Dragon HD 女性声线。
+
 ### v3.1.0 — 2026-08-11
 
 - 新增默认关闭的 Azure Dragon HD／HD Omni 女性声线 Preview，以独立 S0 密钥、区域与声线设置运行，不改变现有语音供应器。
@@ -362,6 +374,12 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 ## English
 
 All notable public changes to MoHan Desktop Assistant are documented here.
+
+### v3.1.1 — 2026-08-12
+
+- Standard Azure and Dragon HD dynamically query actual female voices using the selected region and their independent encrypted keys. Male voices, incompatible models, and region-ineligible HD Flash are excluded; the fixed catalog is now only a safe discovery fallback.
+- Azure synthesis now uses the Speech SDK `PushAudioOutputStream`, starting playback and the existing 50 Hz lip analysis with the first 24 kHz PCM16 chunk instead of waiting for a complete WAV.
+- Real East Asia F0 and West US 2 S0 discovery passed, returning 21 compatible Chinese female Neural voices and three Simplified Chinese Dragon HD female voices respectively at that time.
 
 ### v3.1.0 — 2026-08-11
 
@@ -581,6 +599,12 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### v3.1.1 — 2026-08-12
+
+- 通常 Azure と Dragon HD は、選択したリージョンと各自の暗号化キーで実際の女性音声を動的に照会します。男性、非互換モデル、リージョン非対応の HD Flash を除外し、固定一覧は照会失敗時の安全な代替だけに使用します。
+- Azure 合成は Speech SDK `PushAudioOutputStream` を使用し、完全 WAV を待たず、最初の 24 kHz PCM16 断片から再生と既存の 50 Hz 口形解析を開始します。
+- 実際の East Asia F0 と West US 2 S0 の一覧照会に合格し、当時それぞれ互換性のある中国語女性 Neural 音声 21 件と簡体字中国語 Dragon HD 女性音声三件を取得しました。
 
 ### v3.1.0 — 2026-08-11
 

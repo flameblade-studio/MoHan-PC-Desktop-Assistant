@@ -1,16 +1,19 @@
 from __future__ import annotations
 
+lazy import queue
 lazy import re
 lazy import threading
 lazy import time
-lazy from urllib.error import HTTPError, URLError
-lazy from urllib.request import Request, urlopen
+lazy from dataclasses import dataclass, field
 lazy from xml.sax.saxutils import escape, quoteattr
 
+lazy from azure.cognitiveservices import speech as speechsdk
 lazy from PySide6.QtCore import QObject, Signal
 
+lazy from azure_regions import azure_region_supports_hd_flash
+lazy from azure_voice_catalog import AzureVoiceCatalog, AzureVoiceCatalogService
 lazy from immutable_config import deep_freeze
-lazy from speech import play_wave_with_visemes
+lazy from speech import play_pcm16_stream_with_visemes
 
 AZURE_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict({
     "zh-TW": (
@@ -79,6 +82,10 @@ def _build_voice_locale_index() -> frozendict[str, str]:
 
 _VOICE_LOCALE = _build_voice_locale_index()
 _REGION_PATTERN = re.compile(r"^[a-z0-9-]{2,32}$")
+_VOICE_PATTERN = re.compile(
+    r"^(zh-(?:TW|CN)|en-US|ja-JP)-[A-Za-z0-9]+"
+    r"(?::DragonHD(?:Omni|Flash)?LatestNeural|Neural)$"
+)
 _MESSAGES = deep_freeze({
     "zh-TW": {
         "invalid_region": "Azure Speech 區域格式不正確。",
@@ -129,6 +136,58 @@ _MESSAGES = deep_freeze({
         "network": "Azure Speech に接続できません：{error}",
     },
 })
+
+
+class _PushAudioReader:
+    """Adapt Azure's push callback to the playback loop's bounded reads."""
+
+    def __init__(self) -> None:
+        self._chunks: queue.Queue[bytes | None] = queue.Queue()
+        self._pending = bytearray()
+
+    def write(self, audio_buffer: memoryview) -> int:
+        chunk = bytes(audio_buffer)
+        if chunk:
+            self._chunks.put(chunk)
+        return len(chunk)
+
+    def close(self) -> None:
+        self._chunks.put(None)
+
+    def read(self, audio_buffer: bytearray) -> int:
+        while not self._pending:
+            try:
+                chunk = self._chunks.get(timeout=60.0)
+            except queue.Empty as exc:
+                raise TimeoutError("Azure audio stream timed out") from exc
+            if chunk is None:
+                return 0
+            self._pending.extend(chunk)
+        bytes_read = min(len(audio_buffer), len(self._pending))
+        audio_buffer[:bytes_read] = self._pending[:bytes_read]
+        del self._pending[:bytes_read]
+        return bytes_read
+
+
+@dataclass(slots=True)
+class _SynthesisOutcome:
+    result: object | None = None
+    failure: Exception | None = None
+    done: threading.Event = field(default_factory=threading.Event)
+
+
+def _await_synthesis(
+    synthesis: object,
+    audio_reader: _PushAudioReader,
+    outcome: _SynthesisOutcome,
+) -> None:
+    try:
+        outcome.result = synthesis.get()
+    except (OSError, RuntimeError, TimeoutError) as exc:
+        outcome.failure = exc
+    finally:
+        audio_reader.close()
+        outcome.done.set()
 
 
 def _message(locale: str, key: str, **values: object) -> str:
@@ -182,17 +241,18 @@ def azure_hd_voice_uses_flash(voice: str) -> bool:
 
 
 def is_azure_hd_voice(voice: str) -> bool:
-    return voice in {
-        *AZURE_HD_FEMALE_VOICES["zh-CN"],
-        *AZURE_HD_FEMALE_VOICES["en-US"],
-        *AZURE_HD_FEMALE_VOICES["ja-JP"],
-    }
+    return ":DragonHD" in str(voice)
 
 
-def build_azure_ssml(text: str, voice: str) -> bytes:
-    locale = _VOICE_LOCALE.get(voice)
-    if locale is None:
+def build_azure_ssml(
+    text: str,
+    voice: str,
+    verified_voices: tuple[str, ...] = (),
+) -> bytes:
+    is_verified = voice in _VOICE_LOCALE or voice in verified_voices
+    if not is_verified or not _VOICE_PATTERN.fullmatch(voice):
         raise ValueError("unsupported_voice")
+    locale = _VOICE_LOCALE.get(voice, voice[:5])
     parameters = (
         " parameters='temperature=0.8'"
         if is_azure_hd_voice(voice)
@@ -204,6 +264,10 @@ def build_azure_ssml(text: str, voice: str) -> bytes:
         f"name={quoteattr(voice)}{parameters}>{escape(text)}</voice></speak>"
     )
     return body.encode("utf-8")
+
+
+def _voice_locale(voice: str) -> str:
+    return _VOICE_LOCALE.get(voice, voice[:5] if len(voice) >= 5 else "zh-TW")
 
 
 def azure_speech_error_message(
@@ -226,12 +290,20 @@ class AzureSpeechTTS(QObject):
     finished = Signal()
     synthesis_latency_measured = Signal(float)
     viseme_cue = Signal(float, str)
+    voice_catalog_ready = Signal(object)
+    voice_catalog_failed = Signal(str, str, bool)
 
-    def __init__(self, parent: QObject | None = None):
+    def __init__(
+        self,
+        parent: QObject | None = None,
+        catalog_service: AzureVoiceCatalogService | None = None,
+    ):
         super().__init__(parent)
         self.volume_percent = 125
         self.muted = False
         self.last_synthesis_latency_ms: float | None = None
+        self._catalog_service = catalog_service or AzureVoiceCatalogService()
+        self._verified_dynamic_voices: set[str] = set()
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None:
         self.volume_percent = max(0, min(160, int(volume_percent)))
@@ -247,13 +319,17 @@ class AzureSpeechTTS(QObject):
         if not text.strip():
             self.finished.emit()
             return
-        locale = _VOICE_LOCALE.get(voice, "zh-TW")
+        locale = _voice_locale(voice)
         if not api_key.strip() or not region.strip():
             self.failed.emit(_message(locale, "missing_settings"))
             return
         try:
             normalized_region = normalize_azure_region(region)
-            build_azure_ssml(text, voice)
+            build_azure_ssml(
+                text,
+                voice,
+                tuple(self._verified_dynamic_voices),
+            )
         except ValueError as exc:
             self.failed.emit(_message(locale, str(exc)))
             return
@@ -263,6 +339,78 @@ class AzureSpeechTTS(QObject):
             daemon=True,
         ).start()
 
+    def invalidate_voice_catalog(self, region: str | None = None) -> None:
+        self._catalog_service.invalidate(region)
+
+    def refresh_voice_catalog(
+        self,
+        api_key: str,
+        region: str,
+        language: str,
+        *,
+        hd_only: bool,
+    ) -> None:
+        try:
+            normalized_region = normalize_azure_region(region)
+        except ValueError:
+            self.voice_catalog_failed.emit(region, language, hd_only)
+            return
+        if not api_key.strip():
+            self._emit_fallback_catalog(
+                normalized_region,
+                language,
+                hd_only,
+            )
+            return
+        threading.Thread(
+            target=self._query_voice_catalog,
+            args=(api_key, normalized_region, language, hd_only),
+            daemon=True,
+        ).start()
+
+    def _query_voice_catalog(
+        self,
+        api_key: str,
+        region: str,
+        language: str,
+        hd_only: bool,
+    ) -> None:
+        try:
+            catalog = self._catalog_service.query(
+                api_key,
+                region,
+                language,
+                hd_only=hd_only,
+            )
+        except (OSError, RuntimeError, TimeoutError, ValueError):
+            self._emit_fallback_catalog(region, language, hd_only)
+            return
+        self._verified_dynamic_voices.update(catalog.voices)
+        self.voice_catalog_ready.emit(catalog)
+
+    def _emit_fallback_catalog(
+        self,
+        region: str,
+        language: str,
+        hd_only: bool,
+    ) -> None:
+        if hd_only:
+            voices = azure_hd_female_voices(
+                language,
+                include_flash=azure_region_supports_hd_flash(region),
+            )
+        else:
+            voices = azure_female_voices(language)
+        self.voice_catalog_ready.emit(
+            AzureVoiceCatalog(
+                region=region,
+                language=language,
+                hd_only=hd_only,
+                voices=voices,
+                source="fallback",
+            )
+        )
+
     def _run(
         self,
         text: str,
@@ -270,46 +418,84 @@ class AzureSpeechTTS(QObject):
         region: str,
         voice: str,
     ) -> None:
-        locale = _VOICE_LOCALE.get(voice, "zh-TW")
-        request = Request(
-            (
-                f"https://{region}.tts.speech.microsoft.com/"
-                "cognitiveservices/v1"
-            ),
-            data=build_azure_ssml(text, voice),
-            headers={
-                "Ocp-Apim-Subscription-Key": api_key,
-                "Content-Type": "application/ssml+xml",
-                "X-Microsoft-OutputFormat": "riff-24khz-16bit-mono-pcm",
-                "User-Agent": "MoHan-Desktop-Assistant",
-            },
-            method="POST",
-        )
+        locale = _voice_locale(voice)
         try:
             request_started = time.perf_counter()
-            with urlopen(request, timeout=60) as response:
-                audio = response.read()
-            self.last_synthesis_latency_ms = max(
-                0.0,
-                (time.perf_counter() - request_started) * 1_000.0,
+            speech_config = speechsdk.SpeechConfig(
+                subscription=api_key,
+                region=region,
             )
-            self.synthesis_latency_measured.emit(
-                self.last_synthesis_latency_ms
+            speech_config.set_speech_synthesis_output_format(
+                speechsdk.SpeechSynthesisOutputFormat.Raw24Khz16BitMonoPcm
             )
-            # Azure audio is fully buffered before playback. Regional network
-            # latency delays speech onset but must never offset the local
-            # 50 Hz viseme clock from the audio that it analyzes.
-            play_wave_with_visemes(
-                audio,
-                self.volume_percent,
-                self.muted,
-                self.viseme_cue.emit,
+            audio_reader = _PushAudioReader()
+
+            class StreamCallback(
+                speechsdk.audio.PushAudioOutputStreamCallback
+            ):
+                def __init__(self) -> None:
+                    super().__init__()
+
+                def write(self, audio_buffer: memoryview) -> int:
+                    return audio_reader.write(audio_buffer)
+
+                def close(self) -> None:
+                    audio_reader.close()
+
+            stream_callback = StreamCallback()
+            push_stream = speechsdk.audio.PushAudioOutputStream(
+                stream_callback
             )
+            audio_config = speechsdk.audio.AudioOutputConfig(
+                stream=push_stream,
+            )
+            synthesizer = speechsdk.SpeechSynthesizer(
+                speech_config=speech_config,
+                audio_config=audio_config,
+            )
+            synthesis = synthesizer.speak_ssml_async(
+                build_azure_ssml(
+                    text,
+                    voice,
+                    tuple(self._verified_dynamic_voices),
+                ).decode("utf-8")
+            )
+            outcome = _SynthesisOutcome()
+            result_thread = threading.Thread(
+                target=_await_synthesis,
+                args=(synthesis, audio_reader, outcome),
+                daemon=True,
+            )
+            result_thread.start()
+
+            def record_first_audio() -> None:
+                self.last_synthesis_latency_ms = max(
+                    0.0,
+                    (time.perf_counter() - request_started) * 1_000.0,
+                )
+                self.synthesis_latency_measured.emit(
+                    self.last_synthesis_latency_ms
+                )
+
+            play_pcm16_stream_with_visemes(
+                audio_reader.read,
+                volume_percent=self.volume_percent,
+                muted=self.muted,
+                emit_cue=self.viseme_cue.emit,
+                on_first_audio=record_first_audio,
+            )
+            if not outcome.done.wait(timeout=60.0):
+                raise TimeoutError("Azure synthesis did not finish")
+            if outcome.failure is not None:
+                raise outcome.failure
+            if outcome.result is None:
+                raise RuntimeError("Azure synthesis returned no result")
+            result = outcome.result
+            if result.reason == speechsdk.ResultReason.Canceled:
+                self.failed.emit(_message(locale, "service", status=503))
+                return
             self.finished.emit()
-        except HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")
+        except (OSError, RuntimeError, TimeoutError, ValueError) as exc:
             self.failed.emit(
-                azure_speech_error_message(exc.code, detail, locale)
+                _message(locale, "network", error=type(exc).__name__)
             )
-        except (URLError, OSError, RuntimeError, TimeoutError) as exc:
-            self.failed.emit(_message(locale, "network", error=exc))

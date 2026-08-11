@@ -11,6 +11,7 @@ MoHan Desktop Assistant 採用 MIT License，但其原始碼及 Release 安裝�
 | 元件 | 目前固定版本 | 授權 |
 | --- | ---: | --- |
 | [PySide6 / Qt for Python](https://doc.qt.io/qtforpython-6/) | 6.11.1 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
+| [Microsoft Azure Cognitive Services Speech SDK](https://pypi.org/project/azure-cognitiveservices-speech/) | 1.50.0 | Other/Proprietary License（Microsoft Speech SDK 條款） |
 | [PyInstaller](https://pyinstaller.org/) | 6.21.0 | GPL-2.0-or-later with the PyInstaller bootloader exception |
 | [python-sounddevice](https://python-sounddevice.readthedocs.io/) | 0.5.5 | MIT |
 | [websocket-client](https://github.com/websocket-client/websocket-client) | 1.9.0 | Apache-2.0 |
@@ -49,6 +50,7 @@ MoHan Desktop Assistant 采用 MIT License，但其源代码及 Release 安装�
 | 组件 | 当前固定版本 | 许可 |
 | --- | ---: | --- |
 | [PySide6 / Qt for Python](https://doc.qt.io/qtforpython-6/) | 6.11.1 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
+| [Microsoft Azure Cognitive Services Speech SDK](https://pypi.org/project/azure-cognitiveservices-speech/) | 1.50.0 | Other/Proprietary License（Microsoft Speech SDK 条款） |
 | [PyInstaller](https://pyinstaller.org/) | 6.21.0 | GPL-2.0-or-later with the PyInstaller bootloader exception |
 | [python-sounddevice](https://python-sounddevice.readthedocs.io/) | 0.5.5 | MIT |
 | [websocket-client](https://github.com/websocket-client/websocket-client) | 1.9.0 | Apache-2.0 |
@@ -87,6 +89,7 @@ MoHan Desktop Assistant is MIT licensed, but its source and Release packages use
 | Component | Current pinned version | License |
 | --- | ---: | --- |
 | [PySide6 / Qt for Python](https://doc.qt.io/qtforpython-6/) | 6.11.1 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
+| [Microsoft Azure Cognitive Services Speech SDK](https://pypi.org/project/azure-cognitiveservices-speech/) | 1.50.0 | Other/Proprietary License (Microsoft Speech SDK terms) |
 | [PyInstaller](https://pyinstaller.org/) | 6.21.0 | GPL-2.0-or-later with the PyInstaller bootloader exception |
 | [python-sounddevice](https://python-sounddevice.readthedocs.io/) | 0.5.5 | MIT |
 | [websocket-client](https://github.com/websocket-client/websocket-client) | 1.9.0 | Apache-2.0 |
@@ -125,6 +128,7 @@ MoHan Desktop Assistant は MIT License で提供されますが、そのソー�
 | コンポーネント | 現在の固定バージョン | ライセンス |
 | --- | ---: | --- |
 | [PySide6 / Qt for Python](https://doc.qt.io/qtforpython-6/) | 6.11.1 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
+| [Microsoft Azure Cognitive Services Speech SDK](https://pypi.org/project/azure-cognitiveservices-speech/) | 1.50.0 | Other/Proprietary License（Microsoft Speech SDK 条件） |
 | [PyInstaller](https://pyinstaller.org/) | 6.21.0 | GPL-2.0-or-later with the PyInstaller bootloader exception |
 | [python-sounddevice](https://python-sounddevice.readthedocs.io/) | 0.5.5 | MIT |
 | [websocket-client](https://github.com/websocket-client/websocket-client) | 1.9.0 | Apache-2.0 |
