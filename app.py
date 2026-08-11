@@ -3017,16 +3017,25 @@ class Dashboard(QDialog):
             combo.setCurrentIndex(preferred_index)
         return combo
 
-    @staticmethod
     def _available_windows_voices(
+        self,
         capabilities: PlatformCapabilities,
     ) -> tuple[tuple[str, str], ...]:
         if not capabilities.system_local_speech:
             return ()
+        chinese_interface = self.ui_language.lower() in {
+            "zh",
+            "zh-tw",
+            "zh-cn",
+        }
         return tuple(
             (name, culture)
             for name, culture in windows_voices()
             if not is_known_male_windows_voice(name)
+            and (
+                not chinese_interface
+                or culture.lower().split("-", 1)[0] == "zh"
+            )
         )
 
     def _unavailable_windows_voice_label(
@@ -3624,6 +3633,9 @@ class Dashboard(QDialog):
         )
         self.tts_voice.currentTextChanged.connect(
             self._openai_voice_changed
+        )
+        self.azure_voice.currentTextChanged.connect(
+            self._azure_voice_changed
         )
         self.realtime_voice.currentTextChanged.connect(
             self._realtime_voice_changed
@@ -5430,6 +5442,12 @@ class Dashboard(QDialog):
             return
         self.db.set_setting("tts_voice", selected_voice)
         self.db.set_setting("cloud_voice", selected_voice)
+
+    def _azure_voice_changed(self, voice: str) -> None:
+        selected_voice = voice.strip()
+        if not selected_voice:
+            return
+        self.db.set_setting("azure_speech_voice", selected_voice)
 
     def _realtime_voice_changed(self, voice: str) -> None:
         selected_voice = voice.strip()
@@ -10397,6 +10415,10 @@ def main() -> int:
     )
     app.setApplicationName(profile_window_title(window.db))
     if self_test:
+        visible_windows_voices = tuple(
+            str(window.dashboard.windows_voice.itemData(index) or "")
+            for index in range(window.dashboard.windows_voice.count())
+        )
         physics_sources_ok = all(
             not window.physics_sources[pose].isNull()
             and not window.face_sources[pose].isNull()
@@ -10450,8 +10472,12 @@ def main() -> int:
             and not window.dashboard.windowIcon().isNull()
             and not window.tray.icon().isNull()
             and RealtimeVoiceClient.dependencies_available()
-            and window.dashboard.windows_voice.currentData()
-            == preferred_windows_voice(windows_voices())
+            and str(window.dashboard.windows_voice.currentData() or "")
+            == visible_windows_voices[0]
+            and all(
+                "zira" not in voice.casefold()
+                for voice in visible_windows_voices
+            )
             and window.dashboard.transcription_model.currentText()
             == SpeechListener.TRANSCRIPTION_MODEL
             and window.dashboard.realtime_transcription_model.currentText()

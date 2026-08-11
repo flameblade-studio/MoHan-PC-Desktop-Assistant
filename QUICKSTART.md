@@ -3,7 +3,7 @@
 ## 繁體中文
 
 1. 將下載的 `Windows-x64.zip` 完整解壓縮。
-2. 執行 `MoHan-Desktop-Assistant-2.3.0-rc.4.exe`。
+2. 執行 `MoHan-Desktop-Assistant-2.3.0-rc.5.exe`。
 3. 在首次設定精靈選擇「繁體中文（臺灣）」，並確認助理名稱、稱呼、組織、
    工作類型與喚醒詞。
 4. 新使用者預設使用 Windows 本機語音；若要使用雲端 AI，請在設定頁輸入
@@ -32,7 +32,7 @@ Attestation。這些預覽包沒有 API 金鑰輸入、語音、完整桌面角�
 ## 简体中文
 
 1. 完整解压下载的 `Windows-x64.zip`。
-2. 运行 `MoHan-Desktop-Assistant-2.3.0-rc.4.exe`。
+2. 运行 `MoHan-Desktop-Assistant-2.3.0-rc.5.exe`。
 3. 在首次设置向导选择“简体中文（中国大陆）”，并确认助手名称、称呼、
    组织、工作类型与唤醒词。
 4. 新用户默认使用 Windows 本机语音；若要使用云端 AI，请在设置页输入
@@ -61,7 +61,7 @@ Attestation。预览包不提供 API 密钥输入、语音、完整桌面角色�
 ## English
 
 1. Extract the complete `Windows-x64.zip`.
-2. Run `MoHan-Desktop-Assistant-2.3.0-rc.4.exe`.
+2. Run `MoHan-Desktop-Assistant-2.3.0-rc.5.exe`.
 3. Review the assistant name, user title, organization, work type, and wake word
    in the first-run wizard.
 4. Enter a user-owned OpenAI API key in Settings for cloud AI.
@@ -92,7 +92,7 @@ maintainer's physical-device signoff.
 ## 日本語
 
 1. ダウンロードした `Windows-x64.zip` を完全に展開します。
-2. `MoHan-Desktop-Assistant-2.3.0-rc.4.exe` を実行します。
+2. `MoHan-Desktop-Assistant-2.3.0-rc.5.exe` を実行します。
 3. 初回設定で「日本語」を選び、アシスタント名、呼び名、組織、作業内容、
    ウェイクワードを確認します。
 4. 新規利用者は Windows 本機音声を既定で利用できます。クラウド AI を使う

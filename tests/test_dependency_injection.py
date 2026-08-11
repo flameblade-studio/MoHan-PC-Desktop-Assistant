@@ -189,6 +189,13 @@ def _assert_voice_choices_save_and_apply_immediately(
     assert context.db.setting("tts_voice") == "marin"
     assert context.db.setting("cloud_voice") == "marin"
 
+    assert dashboard.azure_voice.findText("zh-CN-XiaoxiaoNeural") >= 0
+    dashboard.azure_voice.setCurrentText("zh-CN-XiaoxiaoNeural")
+    assert (
+        context.db.setting("azure_speech_voice")
+        == "zh-CN-XiaoxiaoNeural"
+    )
+
     dashboard.realtime_voice.setCurrentText("shimmer")
     assert context.db.setting("realtime_voice") == "shimmer"
     assert context.realtime.start_requests == []

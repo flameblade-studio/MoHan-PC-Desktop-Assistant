@@ -112,12 +112,18 @@ def normalize_azure_region(region: str) -> str:
 def azure_female_voices(language: str) -> tuple[str, ...]:
     normalized = str(language or "").strip().lower()
     if normalized == "zh-cn":
-        return AZURE_FEMALE_VOICES["zh-CN"]
+        return (
+            *AZURE_FEMALE_VOICES["zh-CN"],
+            *AZURE_FEMALE_VOICES["zh-TW"],
+        )
     if normalized in {"en", "en-us"}:
         return AZURE_FEMALE_VOICES["en-US"]
     if normalized in {"ja", "ja-jp"}:
         return AZURE_FEMALE_VOICES["ja-JP"]
-    return AZURE_FEMALE_VOICES["zh-TW"]
+    return (
+        *AZURE_FEMALE_VOICES["zh-TW"],
+        *AZURE_FEMALE_VOICES["zh-CN"],
+    )
 
 
 def build_azure_ssml(text: str, voice: str) -> bytes:

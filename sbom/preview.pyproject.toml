@@ -1,6 +1,6 @@
 [project]
 name = "mohan-desktop-assistant-preview"
-version = "2.3.0rc4"
+version = "2.3.0rc5"
 description = "The limited cross-platform Preview of MoHan Desktop Assistant."
 requires-python = ">=3.15,<3.16"
 license = "MIT"
