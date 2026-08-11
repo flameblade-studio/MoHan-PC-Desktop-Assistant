@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-lazy import io
 lazy import sys
 lazy from pathlib import Path
+lazy from types import SimpleNamespace
 lazy from unittest.mock import patch
-lazy from urllib.error import HTTPError
-lazy from urllib.request import Request
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -24,20 +22,6 @@ lazy from azure_speech import (
     normalize_azure_region,
 )
 lazy from ui_localization import ui_text
-
-
-class FakeResponse:
-    def __init__(self, payload: bytes):
-        self.payload = payload
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *_args) -> None:
-        return None
-
-    def read(self) -> bytes:
-        return self.payload
 
 
 def _assert_region_normalization() -> None:
@@ -192,14 +176,12 @@ def _assert_missing_credentials_do_not_request(
     engine: AzureSpeechTTS,
     failures: list[str],
 ) -> None:
-    with patch("azure_speech.urlopen") as no_request:
-        engine.speak(
-            "主上，妾在。",
-            "",
-            "",
-            "zh-TW-HsiaoChenNeural",
-        )
-    no_request.assert_not_called()
+    engine.speak(
+        "主上，妾在。",
+        "",
+        "",
+        "zh-TW-HsiaoChenNeural",
+    )
     assert "尚未設定" in failures[-1]
 
 
@@ -217,24 +199,71 @@ def _assert_invalid_region_fails_locally(
     failures.clear()
 
 
-def _assert_successful_synthesis(
+def _assert_successful_streaming_synthesis(
     engine: AzureSpeechTTS,
     finished: list[bool],
     failures: list[str],
-) -> Request:
-    captured_requests: list[Request] = []
-    captured_timeouts: list[float] = []
+) -> None:
     measured_latencies: list[float] = []
     engine.synthesis_latency_measured.connect(measured_latencies.append)
+    callbacks: list[object] = []
+    push_stream = SimpleNamespace()
+    configured_formats: list[object] = []
+    spoken_ssml: list[str] = []
 
-    def fake_urlopen(request: Request, timeout: float) -> FakeResponse:
-        captured_requests.append(request)
-        captured_timeouts.append(timeout)
-        return FakeResponse(b"RIFF-test-wave")
+    class FakeSpeechConfig:
+        def __init__(self, subscription: str, region: str) -> None:
+            assert subscription == "not-a-real-key"
+            assert region == "eastasia"
+
+        def set_speech_synthesis_output_format(self, value: object) -> None:
+            configured_formats.append(value)
+
+    class FakeFuture:
+        def get(self) -> object:
+            return SimpleNamespace(reason="completed")
+
+    class FakeSynthesizer:
+        def __init__(self, **kwargs: object) -> None:
+            assert kwargs["audio_config"].stream is push_stream
+
+        def speak_ssml_async(self, ssml: str) -> FakeFuture:
+            spoken_ssml.append(ssml)
+            callbacks[0].write(memoryview(b"\x01\x00" * 480))
+            callbacks[0].close()
+            return FakeFuture()
+
+    def push_audio_output_stream(callback: object) -> object:
+        callbacks.append(callback)
+        return push_stream
+
+    fake_sdk = SimpleNamespace(
+        SpeechConfig=FakeSpeechConfig,
+        SpeechSynthesisOutputFormat=SimpleNamespace(
+            Raw24Khz16BitMonoPcm="raw-24khz-pcm16"
+        ),
+        SpeechSynthesizer=FakeSynthesizer,
+        ResultReason=SimpleNamespace(Canceled="canceled"),
+        audio=SimpleNamespace(
+            PushAudioOutputStream=push_audio_output_stream,
+            PushAudioOutputStreamCallback=object,
+            AudioOutputConfig=lambda stream: SimpleNamespace(stream=stream),
+        ),
+    )
+
+    def fake_playback(read_chunk, *_args, on_first_audio=None, **_kwargs):
+        assert on_first_audio is not None
+        buffer = bytearray(1_024)
+        assert read_chunk(buffer) == 960
+        assert read_chunk(buffer) == 0
+        on_first_audio()
 
     with (
-        patch("azure_speech.urlopen", fake_urlopen),
-        patch("azure_speech.play_wave_with_visemes") as playback,
+        patch("azure_speech.speechsdk", fake_sdk),
+        patch(
+            "azure_speech.play_pcm16_stream_with_visemes",
+            side_effect=fake_playback,
+        ) as playback,
     ):
         engine._run(
             "主上，妾在。",
@@ -243,48 +272,13 @@ def _assert_successful_synthesis(
             "zh-TW-HsiaoChenNeural",
         )
 
-    request = captured_requests[0]
-    assert request.full_url == (
-        "https://eastasia.tts.speech.microsoft.com/cognitiveservices/v1"
-    )
-    headers = dict(request.header_items())
-    assert headers["Ocp-apim-subscription-key"] == "not-a-real-key"
-    assert headers["X-microsoft-outputformat"] == (
-        "riff-24khz-16bit-mono-pcm"
-    )
-    assert captured_timeouts[0] == 60
     playback.assert_called_once()
+    assert configured_formats == ["raw-24khz-pcm16"]
+    assert "主上，妾在。" in spoken_ssml[0]
     assert finished == [True]
     assert not failures
     assert engine.last_synthesis_latency_ms is not None
     assert measured_latencies == [engine.last_synthesis_latency_ms]
-    return request
-
-
-def _assert_http_error_redacts_key(
-    engine: AzureSpeechTTS,
-    request: Request,
-    failures: list[str],
-) -> None:
-    http_error = HTTPError(
-        request.full_url,
-        401,
-        "Unauthorized",
-        {},
-        io.BytesIO(b"not-a-real-key"),
-    )
-    with patch(
-        "azure_speech.urlopen",
-        side_effect=http_error,
-    ):
-        engine._run(
-            "主上，妾在。",
-            "not-a-real-key",
-            "eastasia",
-            "zh-TW-HsiaoChenNeural",
-        )
-    assert "not-a-real-key" not in failures[-1]
-    assert "金鑰" in failures[-1]
 
 
 def run() -> None:
@@ -296,8 +290,7 @@ def run() -> None:
     engine, finished, failures = _create_engine()
     _assert_missing_credentials_do_not_request(engine, failures)
     _assert_invalid_region_fails_locally(engine, failures)
-    request = _assert_successful_synthesis(engine, finished, failures)
-    _assert_http_error_redacts_key(engine, request, failures)
+    _assert_successful_streaming_synthesis(engine, finished, failures)
     print("AZURE_SPEECH_OK")
 
 

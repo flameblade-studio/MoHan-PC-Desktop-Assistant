@@ -5,7 +5,7 @@ lazy import sys
 lazy from pathlib import Path
 
 PROJECT_REPOSITORY = "hitoshic1982/MoHan-PC-Desktop-Assistant"
-FALLBACK_VERSION = "3.1.0"
+FALLBACK_VERSION = "3.1.1"
 
 
 def _build_info_path() -> Path:

@@ -422,6 +422,56 @@ def play_wave_with_visemes(
         emit_cue(0.0, "CLOSED")
 
 
+def play_pcm16_stream_with_visemes(
+    read_chunk: Callable[[bytearray], int],
+    *,
+    volume_percent: int,
+    muted: bool,
+    emit_cue: Callable[[float, str], None],
+    on_first_audio: Callable[[], None] | None = None,
+) -> None:
+    """Play a pull-based PCM16 stream through the shared 50 Hz mouth clock."""
+
+    sample_rate = 24_000
+    frames_per_cue = max(1, sample_rate // VISEME_CUES_PER_SECOND)
+    bytes_per_cue = frames_per_cue * 2
+    read_buffer = bytearray(max(bytes_per_cue * 4, 4_096))
+    pending = bytearray()
+    gain = 0.0 if muted else max(0, min(160, volume_percent)) / 100.0
+    first_audio_pending = True
+
+    try:
+        with sd.RawOutputStream(
+            samplerate=sample_rate,
+            channels=1,
+            dtype="int16",
+            blocksize=frames_per_cue,
+        ) as output:
+            while True:
+                bytes_read = int(read_chunk(read_buffer))
+                if bytes_read <= 0:
+                    break
+                if first_audio_pending:
+                    first_audio_pending = False
+                    if on_first_audio is not None:
+                        on_first_audio()
+                pending.extend(read_buffer[:bytes_read])
+                while len(pending) >= bytes_per_cue:
+                    chunk = bytes(pending[:bytes_per_cue])
+                    del pending[:bytes_per_cue]
+                    emit_cue(*infer_vowel_pcm16(chunk, sample_rate))
+                    output.write(scale_pcm16(chunk, gain))
+            if pending:
+                if len(pending) % 2:
+                    pending.pop()
+                if pending:
+                    chunk = bytes(pending)
+                    emit_cue(*infer_vowel_pcm16(chunk, sample_rate))
+                    output.write(scale_pcm16(chunk, gain))
+    finally:
+        emit_cue(0.0, "CLOSED")
+
+
 @dataclass(frozen=True)
 class WindowsVoiceInfo:
     """One installed Windows speech voice with trustworthy metadata."""

@@ -14,7 +14,7 @@
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台進度：** Windows 仍是唯一完成實機、完整回歸、安裝與發布驗證的平台。v3.1.0 的 macOS／Linux 版本具備安全的平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI，並提供可啟動、可切換四語但功能受限的 DMG／AppImage Preview；CI 不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
+> **跨平台進度：** Windows 仍是唯一完成實機、完整回歸、安裝與發布驗證的平台。v3.1.1 的 macOS／Linux 版本具備安全的平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI，並提供可啟動、可切換四語但功能受限的 DMG／AppImage Preview；CI 不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
 > 本專案遵循[炎劍開源軟體家族品質標準](PUBLISHING.md)。
 
@@ -222,7 +222,7 @@ Azure Speech 是預設關閉、由使用者自行啟用的預覽供應器，需�
 
 2026 年 8 月 11 日已使用真實 Azure Speech Free F0、East Asia 資源完成 HTTPS 合成、有效 RIFF 音訊與 Windows 實際播放驗證。此結果確認墨寒的整合路徑可用，但不保證每個帳號、區域或當期配額皆相同。Dragon HD／HD Omni 因方案、計費與區域支援不同，不混入免費預設清單。詳見[可插拔語音供應器說明](docs/PLUGGABLE-SPEECH-PROVIDERS.md)。
 
-`v3.1.0` 新增獨立且預設關閉的 Azure Dragon HD／HD Omni 預覽供應器。它使用自己的 S0 金鑰、區域與女性聲線清單；HD Flash 只會在 Microsoft 官方支援的區域顯示。2026 年 8 月 11 日已使用 Central India S0 完成真實 Windows 合成與播放驗證，但臺灣連線的發話前等待明顯，實際延遲取決於網路路由與區域距離。Dragon HD 不提供 viseme 事件，因此墨寒仍以同一套 50 Hz 本機音訊分析驅動嘴型，網路等待不會被硬編碼成嘴型偏移。
+`v3.1.1` 會依目前選定的 Azure 區域與對應加密金鑰，動態查詢該資源中心實際回報的女性 Neural／Dragon HD 聲線；固定名單只在查詢失敗時作為安全備援，HD Flash 仍只會在 Microsoft 官方支援區域顯示。Azure 合成改用 Speech SDK `PushAudioOutputStream`，第一段 24 kHz PCM16 音訊抵達後便開始播放，並以同一套 50 Hz 本機音訊分析同步驅動嘴型，不再等待完整 WAV。2026 年 8 月 12 日已真實查詢 East Asia F0 與 West US 2 S0；West US 2 當時回報三筆簡體中文 Dragon HD 女性聲線，實際清單、延遲、費率與區域能力仍以 Microsoft 當期服務為準。
 
 ### 整合驗證狀態
 
@@ -248,7 +248,7 @@ Azure Speech 是預設關閉、由使用者自行啟用的預覽供應器，需�
 
 尚未數位簽署的開源預覽版可能觸發 Windows SmartScreen；請確認官方下載來源與 SHA-256 後再執行。
 
-v3.1.0 另提供 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`。它們是功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
+v3.1.1 另提供 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`。它們是功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
 
 #### 自動化發布邊界
 
@@ -359,7 +359,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.0"
+.\build.ps1 -Version "3.1.1"
 ```
 
 歷史上的 v2.1.0 RC1 在發布前通過 55 項自動測試程式，以及 Windows 發布工作流程的原始碼稽核、封裝自我測試、安裝／移除驗證與安全檢查；自動測試不能取代尚未完成的第三方真實環境驗證。
@@ -405,7 +405,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台进度：** Windows 仍是唯一完成真机、完整回归、安装与发布验证的平台。v3.1.0 的 macOS／Linux 版本具备安全的平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI，并提供可启动、可切换四语但功能受限的 DMG／AppImage Preview；CI 不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
+> **跨平台进度：** Windows 仍是唯一完成真机、完整回归、安装与发布验证的平台。v3.1.1 的 macOS／Linux 版本具备安全的平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI，并提供可启动、可切换四语但功能受限的 DMG／AppImage Preview；CI 不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
 > 本项目遵循[炎剑开源软件家族质量标准](PUBLISHING.md)。
 
@@ -613,7 +613,7 @@ Azure Speech 是默认关闭、由用户自行启用的预览供应器，需要�
 
 2026 年 8 月 11 日已使用真实 Azure Speech Free F0、East Asia 资源完成 HTTPS 合成、有效 RIFF 音频与 Windows 实际播放验证。此结果确认墨寒的集成路径可用，但不保证每个账号、区域或当前配额都相同。Dragon HD／HD Omni 因方案、计费与区域支持不同，不混入免费默认列表。详情请见[可插拔语音供应器说明](docs/PLUGGABLE-SPEECH-PROVIDERS.md)。
 
-`v3.1.0` 新增独立且默认关闭的 Azure Dragon HD／HD Omni 预览供应器。它使用自己的 S0 密钥、区域与女性声线列表；HD Flash 只会在 Microsoft 官方支持的区域显示。2026 年 8 月 11 日已使用 Central India S0 完成真实 Windows 合成与播放验证，但台湾连接的发话前等待明显，实际延迟取决于网络路由与区域距离。Dragon HD 不提供 viseme 事件，因此墨寒仍以同一套 50 Hz 本地音频分析驱动嘴型，网络等待不会被硬编码为嘴型偏移。
+`v3.1.1` 会根据当前选择的 Azure 区域与对应加密密钥，动态查询该资源中心实际返回的女性 Neural／Dragon HD 声线；固定列表仅在查询失败时作为安全备用，HD Flash 仍只会在 Microsoft 官方支持区域显示。Azure 合成改用 Speech SDK `PushAudioOutputStream`，第一段 24 kHz PCM16 音频抵达后即开始播放，并以同一套 50 Hz 本地音频分析同步驱动嘴型，不再等待完整 WAV。2026 年 8 月 12 日已真实查询 East Asia F0 与 West US 2 S0；West US 2 当时返回三项简体中文 Dragon HD 女性声线，实际列表、延迟、费率与区域能力仍以 Microsoft 当前服务为准。
 
 ### 集成验证状态
 
@@ -639,7 +639,7 @@ Azure Speech 是默认关闭、由用户自行启用的预览供应器，需要�
 
 尚未数字签名的开源预览版可能触发 Windows SmartScreen；请确认官方下载来源与 SHA-256 后再运行。
 
-v3.1.0 另提供 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`。它们是功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
+v3.1.1 另提供 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`。它们是功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
 
 #### 自动化发布边界
 
@@ -750,7 +750,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.0"
+.\build.ps1 -Version "3.1.1"
 ```
 
 历史上的 v2.1.0 RC1 在发布前通过 55 项自动测试程序，以及 Windows 发布工作流的源代码审计、打包自测、安装／卸载验证与安全检查；自动测试不能代替尚未完成的第三方真实环境验证。
@@ -796,7 +796,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **Cross-platform status:** Windows remains the only platform validated through real-device use, the full regression suite, installation, and publication. The v3.1.0 macOS/Linux builds have safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen, and provide launchable, four-language, deliberately limited DMG/AppImage Previews. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
+> **Cross-platform status:** Windows remains the only platform validated through real-device use, the full regression suite, installation, and publication. The v3.1.1 macOS/Linux builds have safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen, and provide launchable, four-language, deliberately limited DMG/AppImage Previews. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
 
 > This project follows the [Flameblade Open Source Software Family Quality Standard](PUBLISHING.md).
 
@@ -1004,7 +1004,7 @@ The interface lists only Traditional Chinese, Simplified Chinese, English, and J
 
 On August 11, 2026, a real Azure Speech Free F0 resource in East Asia completed HTTPS synthesis, valid RIFF audio validation, and actual Windows playback. This confirms MoHan's integration path, but does not guarantee identical account, region, or quota behavior. Dragon HD and HD Omni stay out of the free default list because their tier, billing, and regional support differ. See the [pluggable speech-provider guide](docs/PLUGGABLE-SPEECH-PROVIDERS.md).
 
-`v3.1.0` adds a separate, disabled-by-default Azure Dragon HD/HD Omni Preview provider with its own S0 key, region, and female-voice catalog. HD Flash voices appear only in regions officially supported by Microsoft. A real Central India S0 resource completed Windows synthesis and playback validation on August 11, 2026, but Taiwan experienced a noticeable wait before speech; actual latency depends on network routing and region distance. Dragon HD provides no viseme events, so MoHan keeps the same local 50 Hz audio analysis as the lip-sync authority instead of hardcoding network delay as a mouth offset.
+`v3.1.1` dynamically queries the female Neural/Dragon HD voices actually returned by the currently selected Azure region and its encrypted key. A fixed catalog remains only as a safe fallback when discovery fails, and HD Flash still appears only in Microsoft-supported regions. Azure synthesis now uses the Speech SDK `PushAudioOutputStream`; playback begins with the first 24 kHz PCM16 chunk and drives the same local 50 Hz lip-analysis clock without waiting for a complete WAV. Real discovery against East Asia F0 and West US 2 S0 was completed on August 12, 2026; West US 2 returned three Simplified Chinese Dragon HD female voices at that time. The actual catalog, latency, pricing, and regional capabilities remain subject to Microsoft's current service.
 
 ### Integration verification status
 
@@ -1030,7 +1030,7 @@ General users do not need to install Python:
 
 Unsigned open-source previews may trigger Windows SmartScreen. Verify the official download source and SHA-256 before running them.
 
-v3.1.0 also provides separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`. These are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
+v3.1.1 also provides separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`. These are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
 
 #### Automated release boundary
 
@@ -1141,7 +1141,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.0"
+.\build.ps1 -Version "3.1.1"
 ```
 
 Historically, v2.1.0 RC1 passed 55 automated test programs plus the Windows release workflow's source audit, packaged self-test, install/uninstall verification, and security checks before publication. Automated tests do not replace incomplete third-party live validation.
@@ -1187,7 +1187,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **クロスプラットフォーム状況：** 実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。v3.1.0 の macOS／Linux 版には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI があり、起動と四言語切替が可能な機能限定 DMG／AppImage Preview も提供します。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
+> **クロスプラットフォーム状況：** 実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。v3.1.1 の macOS／Linux 版には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI があり、起動と四言語切替が可能な機能限定 DMG／AppImage Preview も提供します。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
 > 本プロジェクトは[炎剣オープンソース・ソフトウェア・ファミリー品質基準](PUBLISHING.md)に従います。
 
@@ -1395,7 +1395,7 @@ Azure Speech は初期状態で無効な Preview 供給元で、利用者が明�
 
 2026 年 8 月 11 日、East Asia の実 Azure Speech Free F0 リソースで HTTPS 合成、有効な RIFF 音声、Windows での実再生を検証しました。これは墨寒の統合経路を確認する結果であり、すべてのアカウント、リージョン、割り当てで同じ動作を保証するものではありません。Dragon HD／HD Omni はプラン、課金、対応リージョンが異なるため無料の既定一覧へ混在させません。[交換可能な音声供給元の説明](docs/PLUGGABLE-SPEECH-PROVIDERS.md)をご覧ください。
 
-`v3.1.0` は、独立して初期状態では無効な Azure Dragon HD／HD Omni Preview 供給元を追加します。専用の S0 キー、リージョン、女性音声一覧を使用し、HD Flash は Microsoft が公式対応するリージョンだけに表示します。2026 年 8 月 11 日、Central India S0 の実リソースで Windows の合成と再生を検証しましたが、台湾からは発話開始前の待ち時間が明確にありました。実際の遅延はネットワーク経路とリージョン間距離に依存します。Dragon HD は viseme イベント非対応のため、墨寒はネットワーク待ち時間を口形オフセットへ固定せず、従来と同じ 50 Hz 本機音声解析を口形同期の正規情報源として維持します。
+`v3.1.1` は、現在選択中の Azure リージョンと対応する暗号化キーを使い、そのリソースセンターが実際に返す女性 Neural／Dragon HD 音声を動的に照会します。固定一覧は照会失敗時の安全な代替に限定し、HD Flash は引き続き Microsoft 公式対応リージョンだけに表示します。Azure 合成は Speech SDK の `PushAudioOutputStream` を使用し、最初の 24 kHz PCM16 断片が届いた時点で再生を開始して、完全な WAV を待たずに同じ本機 50 Hz 口形解析時計を駆動します。2026 年 8 月 12 日に East Asia F0 と West US 2 S0 で実照会を完了し、当時 West US 2 は簡体字中国語 Dragon HD 女性音声を三件返しました。実際の一覧、遅延、料金、リージョン機能は Microsoft の当期サービスに従います。
 
 ### 統合の検証状況
 
@@ -1421,7 +1421,7 @@ Azure Speech は初期状態で無効な Preview 供給元で、利用者が明�
 
 署名のないオープンソース Preview は Windows SmartScreen の警告を出す場合があります。公式配布元と SHA-256 を確認してから実行してください。
 
-v3.1.0 は、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` も提供します。これらは機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
+v3.1.1 は、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` も提供します。これらは機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
 
 #### 自動リリースの境界
 
@@ -1532,7 +1532,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.0"
+.\build.ps1 -Version "3.1.1"
 ```
 
 過去の v2.1.0 RC1 は公開前に 55 個の自動テストプログラムと、Windows リリースワークフローのソース監査、パッケージ自己試験、インストール／削除検証、安全検査に合格しました。自動テストは、未完了の第三者実環境検証に代わりません。

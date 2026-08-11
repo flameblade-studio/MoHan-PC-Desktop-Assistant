@@ -72,6 +72,7 @@ class AzureSpeechEnginePort(Protocol):
     finished: SignalPort
     failed: SignalPort
     viseme_cue: SignalPort
+    voice_catalog_ready: SignalPort
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None: ...
 
@@ -82,6 +83,17 @@ class AzureSpeechEnginePort(Protocol):
         region: str,
         voice: str,
     ) -> None: ...
+
+    def refresh_voice_catalog(
+        self,
+        api_key: str,
+        region: str,
+        language: str,
+        *,
+        hd_only: bool,
+    ) -> None: ...
+
+    def invalidate_voice_catalog(self, region: str | None = None) -> None: ...
 
 
 class SpeechProviderRegistryPort(Protocol):

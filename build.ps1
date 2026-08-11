@@ -55,6 +55,7 @@ try {
         --add-data "LICENSE;." `
         --add-data "THIRD_PARTY_NOTICES.md;." `
         --add-data "build-info.json;." `
+        --collect-all "azure.cognitiveservices.speech" `
         app.py
 }
 finally {
