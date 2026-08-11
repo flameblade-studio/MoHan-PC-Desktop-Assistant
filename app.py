@@ -3625,6 +3625,9 @@ class Dashboard(QDialog):
         self.tts_voice.currentTextChanged.connect(
             self._openai_voice_changed
         )
+        self.azure_voice.currentTextChanged.connect(
+            self._azure_voice_changed
+        )
         self.realtime_voice.currentTextChanged.connect(
             self._realtime_voice_changed
         )
@@ -5430,6 +5433,12 @@ class Dashboard(QDialog):
             return
         self.db.set_setting("tts_voice", selected_voice)
         self.db.set_setting("cloud_voice", selected_voice)
+
+    def _azure_voice_changed(self, voice: str) -> None:
+        selected_voice = voice.strip()
+        if not selected_voice:
+            return
+        self.db.set_setting("azure_speech_voice", selected_voice)
 
     def _realtime_voice_changed(self, voice: str) -> None:
         selected_voice = voice.strip()

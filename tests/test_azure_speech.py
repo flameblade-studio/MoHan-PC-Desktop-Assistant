@@ -10,6 +10,7 @@ lazy from urllib.request import Request
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from azure_speech import (
+    AZURE_FEMALE_VOICES,
     AzureSpeechTTS,
     azure_female_voices,
     azure_speech_error_message,
@@ -45,8 +46,20 @@ def _assert_region_normalization() -> None:
 
 
 def _assert_female_voice_catalog() -> None:
-    assert azure_female_voices("zh-TW")[0] == "zh-TW-HsiaoChenNeural"
-    assert azure_female_voices("zh-CN")[0] == "zh-CN-XiaoxiaoNeural"
+    traditional = azure_female_voices("zh-TW")
+    simplified = azure_female_voices("zh-CN")
+    assert traditional[0] == "zh-TW-HsiaoChenNeural"
+    assert simplified[0] == "zh-CN-XiaoxiaoNeural"
+    assert "zh-CN-XiaoxiaoNeural" in traditional
+    assert "zh-TW-HsiaoChenNeural" in simplified
+    assert traditional == (
+        *AZURE_FEMALE_VOICES["zh-TW"],
+        *AZURE_FEMALE_VOICES["zh-CN"],
+    )
+    assert simplified == (
+        *AZURE_FEMALE_VOICES["zh-CN"],
+        *AZURE_FEMALE_VOICES["zh-TW"],
+    )
     assert azure_female_voices("en")[0] == "en-US-AvaMultilingualNeural"
     assert azure_female_voices("ja-JP")[0] == "ja-JP-NanamiNeural"
 

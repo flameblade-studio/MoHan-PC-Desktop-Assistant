@@ -8,7 +8,7 @@
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.4" src="https://img.shields.io/badge/development_version-v2.3.0--rc.4-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.5" src="https://img.shields.io/badge/development_version-v2.3.0--rc.5-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -32,7 +32,7 @@
 
 <p align="center">
   <strong>軟體作者：CHOU MING HUA</strong><br>
-  準備發布的公開預覽版：v2.3.0 RC4（`v2.3.0-rc.4`）<br>
+  準備發布的公開預覽版：v2.3.0 RC5（`v2.3.0-rc.5`）<br>
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -185,7 +185,7 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我始終負責�
 - AIUEO 母音與子音嘴型、音訊驅動開合，以及語音結束強制閉嘴。
 - 文字聊天、一般麥克風輸入、OpenAI Realtime 自然語音、雲端語音與 Windows 語音備援。
 - 可插拔語音供應器；Realtime 或雲端不可用時優先回到 Windows 本機女聲。
-- 可選的 Azure Speech 女性聲線預覽；使用者自備金鑰與區域，失敗時立即回到 Windows 本機女聲。
+- 已完成真實連線驗證的 Azure Speech 女性聲線預覽；中文介面可跨語系選擇臺灣華語與簡體普通話，使用者自備金鑰與區域，失敗時立即回到 Windows 本機女聲。
 - 對話保存、可編輯長期記憶、待辦、創作靈感、工作計時、提醒與上架進度。
 - 工作、陪伴、勿擾、會議、離開及睡眠模式。
 - 具風險分級、確認、雙重確認、允許清單、稽核與緊急停止的電腦工具中心。
@@ -218,15 +218,16 @@ Realtime 離線、雲端語音失敗、設定不足或供應器不明時，Windo
 
 Azure Speech 是預設關閉、由使用者自行啟用的預覽供應器，需要使用者自己的 Azure Speech 資源金鑰與相符區域。金鑰由 `Windows DPAPI` 分開加密，不存入資料庫、紀錄或 GitHub。
 
-介面只列出 Microsoft 官方標示為女性的繁中、簡中、英文與日語聲線。設定不足時不發出網路請求；服務失敗時，同一段文字只會回退一次至 Windows 女性本機語音。
+介面只列出 Microsoft 官方標示為女性且已列入墨寒允許清單的繁中、簡中、英文與日語 Neural 聲線。本次新增的跨語系普通話選項只使用 Standard Neural，排除 Dragon HD／HD Omni。繁中介面先列臺灣華語再列簡體普通話；簡中介面反向排序，且兩者均保留原有預設聲線。選取 Azure 聲線後立即保存並從下一次試聽或朗讀套用。設定不足時不發出網路請求；服務失敗時，同一段文字只會回退一次至 Windows 女性本機語音。
 
-真實 Azure 帳號完成端到端試播前，不會把此功能宣稱為穩定整合。詳見[可插拔語音供應器說明](docs/PLUGGABLE-SPEECH-PROVIDERS.md)。
+2026 年 8 月 11 日已使用真實 Azure Speech Free F0、East Asia 資源完成 HTTPS 合成、有效 RIFF 音訊與 Windows 實際播放驗證。此結果確認墨寒的整合路徑可用，但不保證每個帳號、區域或當期配額皆相同。Dragon HD／HD Omni 因方案、計費與區域支援不同，不混入免費預設清單。詳見[可插拔語音供應器說明](docs/PLUGGABLE-SPEECH-PROVIDERS.md)。
 
 ### 整合驗證狀態
 
 > **公開預覽版注意事項：** Microsoft、GitHub 與 Home Assistant 的架構、權限邊界及內部測試已建立；截至 `v2.1.0-rc.1`，尚未以全部真實帳號、儲存庫、主機與實體設備完成端到端驗證。它們是實驗性預覽功能，不是所有環境都可完整運作的保證。
 
-- Microsoft 的真實登入、權杖更新，以及 Outlook、OneDrive、Calendar 完整讀寫流程尚未驗證。
+- Azure Speech 已完成本專案的真實 Free F0 資源、HTTPS 合成、RIFF 音訊與 Windows 播放驗證；每位使用者仍須自行建立 Speech 資源並承擔其帳號、配額與費用。
+- Microsoft 帳號的真實登入、權杖更新，以及 Outlook、OneDrive、Calendar 完整讀寫流程尚未驗證。
 - GitHub 的真實帳號、儲存庫、Issue、Pull Request 與權限層級流程尚未驗證。
 - Home Assistant 的真實主機與實體設備行為尚未驗證。
 - 這三項整合預設關閉；請先使用非關鍵帳號、測試儲存庫與低風險設備。
@@ -356,7 +357,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.4"
+.\build.ps1 -Version "2.3.0-rc.5"
 ```
 
 歷史上的 v2.1.0 RC1 在發布前通過 55 項自動測試程式，以及 Windows 發布工作流程的原始碼稽核、封裝自我測試、安裝／移除驗證與安全檢查；自動測試不能取代尚未完成的第三方真實環境驗證。
@@ -396,7 +397,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.4" src="https://img.shields.io/badge/development_version-v2.3.0--rc.4-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.5" src="https://img.shields.io/badge/development_version-v2.3.0--rc.5-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -420,7 +421,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>软件作者：CHOU MING HUA</strong><br>
-  准备发布的公开预览版：v2.3.0 RC4（`v2.3.0-rc.4`）<br>
+  准备发布的公开预览版：v2.3.0 RC5（`v2.3.0-rc.5`）<br>
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -573,7 +574,7 @@ Codex 协助我把想法转译成程序架构与代码；而我始终负责决�
 - AIUEO 元音与辅音口型、音频驱动开合，以及语音结束强制闭嘴。
 - 文字聊天、标准麦克风输入、OpenAI Realtime 自然语音、云端语音与 Windows 语音备用。
 - 可插拔语音供应器；Realtime 或云端不可用时优先回退到 Windows 本地女声。
-- 可选的 Azure Speech 女性声线预览；用户自备密钥与区域，失败时立即回退到 Windows 本地女声。
+- 已完成真实连接验证的 Azure Speech 女性声线预览；中文界面可跨语言选择台湾华语与简体普通话，用户自备密钥与区域，失败时立即回退到 Windows 本地女声。
 - 对话保存、可编辑长期记忆、待办事项、创作灵感、工作计时、提醒与上架进度。
 - 工作、陪伴、勿扰、会议、离开及睡眠模式。
 - 具有风险分级、确认、双重确认、允许列表、审计与紧急停止的电脑工具中心。
@@ -606,15 +607,16 @@ Realtime 离线、云端语音失败、设置不足或供应器不明时，Windo
 
 Azure Speech 是默认关闭、由用户自行启用的预览供应器，需要用户自己的 Azure Speech 资源密钥与匹配区域。密钥由 `Windows DPAPI` 分开加密，不存入数据库、日志或 GitHub。
 
-界面只列出 Microsoft 官方标记为女性的繁中、简中、英文与日语声线。设置不足时不发出网络请求；服务失败时，同一段文字只会回退一次至 Windows 女性本地语音。
+界面只列出 Microsoft 官方标记为女性且已列入墨寒允许列表的繁中、简中、英文与日语 Neural 声线。本次新增的跨语言普通话选项只使用 Standard Neural，排除 Dragon HD／HD Omni。繁中界面先列台湾华语再列简体普通话；简中界面反向排序，且两者均保留原有默认声线。选择 Azure 声线后立即保存，并从下一次试听或朗读开始应用。设置不足时不发出网络请求；服务失败时，同一段文字只会回退一次至 Windows 女性本地语音。
 
-真实 Azure 账号完成端到端试听前，不会把此功能宣称为稳定集成。详情请见[可插拔语音供应器说明](docs/PLUGGABLE-SPEECH-PROVIDERS.md)。
+2026 年 8 月 11 日已使用真实 Azure Speech Free F0、East Asia 资源完成 HTTPS 合成、有效 RIFF 音频与 Windows 实际播放验证。此结果确认墨寒的集成路径可用，但不保证每个账号、区域或当前配额都相同。Dragon HD／HD Omni 因方案、计费与区域支持不同，不混入免费默认列表。详情请见[可插拔语音供应器说明](docs/PLUGGABLE-SPEECH-PROVIDERS.md)。
 
 ### 集成验证状态
 
 > **公开预览版注意事项：** Microsoft、GitHub 与 Home Assistant 的架构、权限边界及内部测试已建立；截至 `v2.1.0-rc.1`，尚未以全部真实账号、仓库、主机与实体设备完成端到端验证。它们是实验性预览功能，不是所有环境都可完整运行的保证。
 
-- Microsoft 的真实登录、令牌更新，以及 Outlook、OneDrive、Calendar 完整读写流程尚未验证。
+- Azure Speech 已完成本项目的真实 Free F0 资源、HTTPS 合成、RIFF 音频与 Windows 播放验证；每位用户仍须自行建立 Speech 资源并承担其账号、配额与费用。
+- Microsoft 账号的真实登录、令牌更新，以及 Outlook、OneDrive、Calendar 完整读写流程尚未验证。
 - GitHub 的真实账号、仓库、Issue、Pull Request 与权限层级流程尚未验证。
 - Home Assistant 的真实主机与实体设备行为尚未验证。
 - 这三项集成默认关闭；请先使用非关键账号、测试仓库与低风险设备。
@@ -744,7 +746,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.4"
+.\build.ps1 -Version "2.3.0-rc.5"
 ```
 
 历史上的 v2.1.0 RC1 在发布前通过 55 项自动测试程序，以及 Windows 发布工作流的源代码审计、打包自测、安装／卸载验证与安全检查；自动测试不能代替尚未完成的第三方真实环境验证。
@@ -784,7 +786,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.4" src="https://img.shields.io/badge/development_version-v2.3.0--rc.4-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.5" src="https://img.shields.io/badge/development_version-v2.3.0--rc.5-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -808,7 +810,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>Author: CHOU MING HUA</strong><br>
-  Prepared public preview: v2.3.0 RC4 (`v2.3.0-rc.4`)<br>
+  Prepared public preview: v2.3.0 RC5 (`v2.3.0-rc.5`)<br>
   Windows 10/11 complete build · macOS/Linux limited Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -961,7 +963,7 @@ If this project encourages even one person without an engineering background to 
 - AIUEO vowel and consonant visemes, audio-driven opening, and forced closure when speech ends.
 - Text chat, standard microphone input, OpenAI Realtime natural voice, cloud speech, and Windows speech fallback.
 - Pluggable speech providers with verified-female Windows local speech as the first fallback when Realtime or cloud speech is unavailable.
-- An optional Azure Speech female-voice Preview with a user-supplied key and region, plus immediate Windows fallback on failure.
+- A live-validated Azure Speech female-voice Preview. Chinese UI can select both Taiwan Mandarin and Simplified Chinese Mandarin; users supply their own key and region, with immediate Windows fallback on failure.
 - Persistent conversations, editable long-term memory, tasks, creative ideas, work timers, reminders, and release progress.
 - Work, companion, do-not-disturb, meeting, away, and sleep modes.
 - A computer-tool center with risk levels, confirmation, double confirmation, allowlists, auditing, and emergency stop.
@@ -994,15 +996,16 @@ When Realtime is offline, cloud speech fails, settings are incomplete, or a prov
 
 Azure Speech is a disabled-by-default Preview provider enabled only by the user. It requires the user's own Azure Speech resource key and matching region. The key is encrypted separately through `Windows DPAPI` and is never stored in the database, logs, or GitHub.
 
-The interface lists only Traditional Chinese, Simplified Chinese, English, and Japanese voices Microsoft officially identifies as female. Incomplete settings trigger no network request; on service failure, the same text falls back to Windows female local speech only once.
+The interface lists only Traditional Chinese, Simplified Chinese, English, and Japanese Neural voices that Microsoft identifies as female and MoHan explicitly allows. The newly exposed cross-locale Mandarin options use Standard Neural only and exclude Dragon HD and HD Omni. Traditional Chinese UI lists Taiwan Mandarin before Simplified Chinese Mandarin; Simplified Chinese UI reverses that order, and both retain their existing defaults. Selecting an Azure voice saves immediately and applies to the next preview or utterance. Incomplete settings trigger no network request; on service failure, the same text falls back to Windows female local speech only once.
 
-The feature is not described as stable until end-to-end playback succeeds with a real Azure account. See the [pluggable speech-provider guide](docs/PLUGGABLE-SPEECH-PROVIDERS.md).
+On August 11, 2026, a real Azure Speech Free F0 resource in East Asia completed HTTPS synthesis, valid RIFF audio validation, and actual Windows playback. This confirms MoHan's integration path, but does not guarantee identical account, region, or quota behavior. Dragon HD and HD Omni stay out of the free default list because their tier, billing, and regional support differ. See the [pluggable speech-provider guide](docs/PLUGGABLE-SPEECH-PROVIDERS.md).
 
 ### Integration verification status
 
 > **Public preview notice:** Microsoft, GitHub, and Home Assistant architecture, permission boundaries, and internal tests are implemented. As of `v2.1.0-rc.1`, end-to-end validation across all real accounts, repositories, servers, and physical devices is incomplete. These are experimental Preview features, not a guarantee of complete operation in every environment.
 
-- Microsoft real sign-in, token renewal, and complete Outlook, OneDrive, and Calendar read/write flows remain unverified.
+- Azure Speech completed this project's live Free F0 resource, HTTPS synthesis, RIFF audio, and Windows playback validation; every user must still create a Speech resource and remains responsible for account, quota, and cost.
+- Microsoft account real sign-in, token renewal, and complete Outlook, OneDrive, and Calendar read/write flows remain unverified.
 - GitHub real account, repository, Issue, Pull Request, and permission-tier flows remain unverified.
 - Home Assistant real server and physical-device behavior remain unverified.
 - These three integrations are off by default; begin with non-critical accounts, test repositories, and low-risk devices.
@@ -1132,7 +1135,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.4"
+.\build.ps1 -Version "2.3.0-rc.5"
 ```
 
 Historically, v2.1.0 RC1 passed 55 automated test programs plus the Windows release workflow's source audit, packaged self-test, install/uninstall verification, and security checks before publication. Automated tests do not replace incomplete third-party live validation.
@@ -1172,7 +1175,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <img alt="Development Version v2.3.0-rc.4" src="https://img.shields.io/badge/development_version-v2.3.0--rc.4-5c6ac4.svg">
+  <img alt="Development Version v2.3.0-rc.5" src="https://img.shields.io/badge/development_version-v2.3.0--rc.5-5c6ac4.svg">
   <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
@@ -1196,7 +1199,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>ソフトウェア作者：CHOU MING HUA</strong><br>
-  公開準備中のプレビュー：v2.3.0 RC4（`v2.3.0-rc.4`）<br>
+  公開準備中のプレビュー：v2.3.0 RC5（`v2.3.0-rc.5`）<br>
   Windows 10/11 完全版 · macOS／Linux 機能限定 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -1349,7 +1352,7 @@ Codex は私の思いをアーキテクチャとコードへ翻訳する手助�
 - AIUEO 母音と子音の口形、音声駆動の開閉、発話終了時の強制閉口。
 - テキスト会話、標準マイク入力、OpenAI Realtime の自然音声、クラウド音声、Windows 音声代替。
 - Realtime またはクラウドが利用できない時、Windows 本機女性音声を第一代替にする交換可能な音声供給元。
-- 利用者がキーとリージョンを用意し、失敗時は直ちに Windows へ戻る任意の Azure Speech 女性音声 Preview。
+- 実接続検証済みの任意 Azure Speech 女性音声 Preview。中国語画面では台湾華語と簡体字普通話を言語横断で選択でき、利用者がキーとリージョンを用意し、失敗時は直ちに Windows へ戻ります。
 - 会話保存、編集可能な長期記憶、タスク、創作アイデア、作業時間、リマインダー、公開進捗。
 - 仕事、同伴、集中、会議、離席、休眠モード。
 - 危険度、確認、二重確認、許可リスト、監査、緊急停止を備えたパソコンツールセンター。
@@ -1382,15 +1385,16 @@ Realtime がオフライン、クラウド音声が失敗、設定が不足、�
 
 Azure Speech は初期状態で無効な Preview 供給元で、利用者が明示的に有効化します。利用者自身の Azure Speech リソースキーと対応リージョンが必要です。キーは `Windows DPAPI` で分離して暗号化し、データベース、ログ、GitHub には保存しません。
 
-画面には Microsoft が公式に女性と示す繁体字中国語、簡体字中国語、英語、日本語の音声だけを掲載します。設定不足なら通信せず、サービス障害時は同じ文章を一度だけ Windows 女性本機音声へ戻します。
+画面には Microsoft が公式に女性と示し、墨寒の許可リストへ明示した繁体字中国語、簡体字中国語、英語、日本語の Neural 音声だけを掲載します。今回追加する言語横断の普通話選択肢は Standard Neural だけを使用し、Dragon HD／HD Omni を除外します。繁体字中国語画面では台湾華語の後に簡体字普通話を、簡体字中国語画面では逆順に表示し、どちらも従来の既定音声を維持します。Azure 音声は選択時に直ちに保存し、次の試聴または読み上げから適用します。設定不足なら通信せず、サービス障害時は同じ文章を一度だけ Windows 女性本機音声へ戻します。
 
-実 Azure アカウントでエンドツーエンド試聴が成功するまでは安定機能と表記しません。[交換可能な音声供給元の説明](docs/PLUGGABLE-SPEECH-PROVIDERS.md)をご覧ください。
+2026 年 8 月 11 日、East Asia の実 Azure Speech Free F0 リソースで HTTPS 合成、有効な RIFF 音声、Windows での実再生を検証しました。これは墨寒の統合経路を確認する結果であり、すべてのアカウント、リージョン、割り当てで同じ動作を保証するものではありません。Dragon HD／HD Omni はプラン、課金、対応リージョンが異なるため無料の既定一覧へ混在させません。[交換可能な音声供給元の説明](docs/PLUGGABLE-SPEECH-PROVIDERS.md)をご覧ください。
 
 ### 統合の検証状況
 
 > **公開 Preview の注意：** Microsoft、GitHub、Home Assistant の構造、権限境界、内部テストは実装済みです。`v2.1.0-rc.1` 時点で、すべての実アカウント、リポジトリ、サーバー、実機器を使うエンドツーエンド検証は未完了です。これらは実験的 Preview であり、あらゆる環境で完全動作する保証ではありません。
 
-- Microsoft の実ログイン、token 更新、Outlook、OneDrive、Calendar の完全な読み書きは未検証です。
+- Azure Speech は本プロジェクトの実 Free F0 リソース、HTTPS 合成、RIFF 音声、Windows 再生検証を完了しました。各利用者は自身の Speech リソースを作成し、アカウント、割り当て、費用に責任を負う必要があります。
+- Microsoft アカウントの実ログイン、token 更新、Outlook、OneDrive、Calendar の完全な読み書きは未検証です。
 - GitHub の実アカウント、リポジトリ、Issue、Pull Request、権限階層の流れは未検証です。
 - Home Assistant の実サーバーと物理機器の動作は未検証です。
 - 三つの統合は初期状態で無効です。重要でないアカウント、テストリポジトリ、低リスク機器から始めてください。
@@ -1520,7 +1524,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "2.3.0-rc.4"
+.\build.ps1 -Version "2.3.0-rc.5"
 ```
 
 過去の v2.1.0 RC1 は公開前に 55 個の自動テストプログラムと、Windows リリースワークフローのソース監査、パッケージ自己試験、インストール／削除検証、安全検査に合格しました。自動テストは、未完了の第三者実環境検証に代わりません。

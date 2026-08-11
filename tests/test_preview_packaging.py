@@ -130,7 +130,7 @@ def test_build_tool_is_pinned() -> None:
     _validate_version("2.3.0-rc.1")
     _validate_version("2.3.0-rc.2")
     _validate_version("2.3.0-rc.3")
-    _validate_version("2.3.0-rc.4")
+    _validate_version("2.3.0-rc.5")
     for invalid in ("2.3.0", "2.3.0-rc", "2.3.0-rc.01", "2.2.0-rc.2"):
         try:
             _validate_version(invalid)
