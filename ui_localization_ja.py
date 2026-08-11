@@ -216,6 +216,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "overwork_message": "長時間作業／働き過ぎの警告メッセージ",
     "minutes_suffix": " 分",
     "read_replies": "墨寒の返答を読み上げる",
+    "save_voice_settings": "音声設定を保存",
     "voice_settings_saved": "音声設定を保存しました。",
     "settings_saved": "設定を保存しました。",
     "work_timer_already_running": "作業時間はすでに計測中です。重ねて開始する必要はありません。",

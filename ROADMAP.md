@@ -27,6 +27,7 @@
 - 擴充真實裝置與真實帳號的整合測試涵蓋率。
 - 改善無障礙、首次使用說明的清晰度、診斷及復原路徑。
 - 持續改善動畫與語音同步品質，同時不得破壞可決定重現的待機、語音結束及表情規則。
+- 依照 [參數化分層 2.5D 臉部計畫](PARAMETRIC_2_5D_FACE_PLAN.md)，一次完整導入三種姿態的可回退連續嘴型與表情圖層。
 - 改善貢獻者文件，並在證據顯示維護阻力時隔離更多功能邊界。
 - 待永續資金足以負擔可信任的 Windows 憑證時加入程式碼簽章。
 
@@ -67,6 +68,7 @@
 - 扩充真实设备与真实账号的集成测试覆盖率。
 - 改善无障碍、首次使用说明的清晰度、诊断及恢复路径。
 - 持续改善动画与语音同步质量，同时不得破坏可确定重现的待机、语音结束及表情规则。
+- 依照[参数化分层 2.5D 脸部计划](PARAMETRIC_2_5D_FACE_PLAN.md)，一次完整导入三种姿态的可回退连续嘴型与表情图层。
 - 改善贡献者文档，并在证据显示维护阻力时隔离更多功能边界。
 - 待可持续资金足以负担可信任的 Windows 证书时加入代码签名。
 
@@ -107,6 +109,7 @@ These integrations must remain opt-in and must not be presented as fully validat
 - Expand real-device and real-account integration test coverage.
 - Improve accessibility, onboarding clarity, diagnostics, and recovery paths.
 - Continue animation and voice-sync quality work without breaking deterministic idle, speech-completion, and expression rules.
+- Deliver reversible continuous articulation and expression layers for all three poses together under the [Parametric Layered 2.5D Face Plan](PARAMETRIC_2_5D_FACE_PLAN.md).
 - Improve contributor documentation and isolate more feature boundaries where evidence shows maintenance friction.
 - Add code signing when sustainable funding makes a trusted Windows certificate practical.
 
@@ -147,6 +150,7 @@ Please open a Feature Request before implementing a large change. Security findi
 - 実デバイスおよび実アカウントの統合テスト範囲を拡大します。
 - アクセシビリティ、オンボーディングの明確さ、診断、復旧経路を改善します。
 - 決定論的な待機、音声終了、表情規則を壊さずに、アニメーションと音声同期の品質改善を継続します。
+- [パラメトリック多層 2.5D フェイス計画](PARAMETRIC_2_5D_FACE_PLAN.md)に従い、三姿勢のロールバック可能な連続口形と表情レイヤーを一括導入します。
 - コントリビューター向け文書を改善し、保守上の摩擦を証拠が示す箇所では、機能境界をさらに分離します。
 - 信頼できる Windows 証明書を持続可能な資金で取得できる段階で、コード署名を追加します。
 

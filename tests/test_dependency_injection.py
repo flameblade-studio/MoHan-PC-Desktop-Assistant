@@ -158,15 +158,37 @@ def _assert_dependencies_are_injected(context: InjectedTestContext) -> None:
     assert context.realtime.volume_calls[-1] == (137, False)
 
 
+def _assert_provider_switch_persists_and_routes(
+    context: InjectedTestContext,
+) -> None:
+    dashboard = context.window.dashboard
+    local_index = dashboard.voice_engine.findData("system-local")
+    openai_index = dashboard.voice_engine.findData("openai-speech")
+    assert local_index >= 0 and openai_index >= 0
+
+    dashboard.voice_engine.setCurrentIndex(openai_index)
+    assert context.db.setting("voice_engine") == "openai-speech"
+    context.window._start_speech_provider("OpenAI 語音測試。")
+    assert context.cloud_tts.speak_calls[-1][0][0] == "OpenAI 語音測試。"
+
+    dashboard.voice_engine.setCurrentIndex(local_index)
+    assert context.db.setting("voice_engine") == "system-local"
+    context.window._start_speech_provider("本機語音測試。")
+    assert context.local_tts.speak_calls[-1][0][0] == "本機語音測試。"
+
+
+
 def _assert_cloud_failure_uses_local_tts(
     context: InjectedTestContext,
 ) -> None:
     context.db.set_setting("tts_enabled", True)
     context.db.set_setting("voice_engine", "OpenAI 自然語音")
     context.db.set_setting("windows_voice", "OneCore::Microsoft Yating")
+    cloud_calls = len(context.cloud_tts.speak_calls)
+    local_calls = len(context.local_tts.speak_calls)
     context.window.speak("主上，妾在。", "speaking")
-    assert context.cloud_tts.speak_calls
-    assert not context.local_tts.speak_calls
+    assert len(context.cloud_tts.speak_calls) == cloud_calls + 1
+    assert len(context.local_tts.speak_calls) == local_calls
     context.cloud_tts.failed.emit("模擬雲端播放失敗")
     context.app.processEvents()
     assert context.local_tts.speak_calls[-1][0] == (
@@ -222,6 +244,13 @@ def _assert_missing_azure_settings_fail_locally(
     assert "未送出雲端請求" in context.window.dashboard.api_status.text()
 
 
+def _assert_voice_save_button(context: InjectedTestContext) -> None:
+    dashboard = context.window.dashboard
+    dashboard.tts_voice.setCurrentText("sage")
+    dashboard.voice_save_button.click()
+    assert context.db.setting("tts_voice") == "sage"
+
+
 def _assert_controls_and_shutdown(context: InjectedTestContext) -> None:
     context.window.dashboard.mic_btn.click()
     assert context.listener.toggle_calls == 1
@@ -234,9 +263,11 @@ def run() -> None:
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
         context = _create_injected_context(temp_dir)
         _assert_dependencies_are_injected(context)
+        _assert_provider_switch_persists_and_routes(context)
         _assert_cloud_failure_uses_local_tts(context)
         _assert_azure_failure_uses_local_tts(context)
         _assert_missing_azure_settings_fail_locally(context)
+        _assert_voice_save_button(context)
         _assert_controls_and_shutdown(context)
     print("DEPENDENCY_INJECTION_OK")
 

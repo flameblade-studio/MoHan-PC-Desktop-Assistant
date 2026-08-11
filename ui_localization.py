@@ -240,6 +240,7 @@ _ENGLISH: Mapping[str, str] = deep_freeze({
     "overwork_message": "Sitting / overwork reminder message",
     "minutes_suffix": " minutes",
     "read_replies": "Read MoHan's replies aloud",
+    "save_voice_settings": "Save voice settings",
     "voice_settings_saved": "Voice settings saved.",
     "settings_saved": "Settings saved.",
     "work_timer_already_running": (
@@ -458,6 +459,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze({
     "overwork_message": "久坐／过劳提醒消息",
     "minutes_suffix": " 分钟",
     "read_replies": "让墨寒读出回复",
+    "save_voice_settings": "保存语音设置",
     "voice_settings_saved": "语音设置已保存。",
     "settings_saved": "设置已保存。",
     "work_timer_already_running": "计时仍在进行，不必重复开始。",

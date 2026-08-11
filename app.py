@@ -115,6 +115,10 @@ lazy from expression_system import (
     plan_wait_expressions,
 )
 lazy from feature_registry import DashboardFeatureRegistry
+lazy from face_assets import validate_face_assets
+lazy from face_motion import FaceMotionController
+lazy from face_renderer import FaceRenderLayers, ParametricFaceRenderer
+lazy from face_rig import FaceMotionFrame
 lazy from flagship_ui import FlagshipControlCenter
 lazy from language_support import (
     english_voice_instructions,
@@ -518,6 +522,9 @@ EXPRESSION_BLINK_FRAMES = frozendict({
     "reminder": "reminder_speech_blink",
 })
 EXPRESSION_BLINK_ASSETS = tuple(EXPRESSION_BLINK_FRAMES.values())
+BLUSH_PRESERVING_BLINK_EXPRESSIONS = frozenset(
+    {"shy_front", "shy_cute_front"}
+)
 EXPRESSION_IMAGE_ASSETS = (
     "idle",
     "idle_lean",
@@ -578,6 +585,7 @@ EXPRESSION_SPEECH_MOUTH_RECTS = frozendict({
     "eureka_front": QRect(197, 190, 58, 48),
 })
 CHEEK_SPEECH_CLOSED_EXPRESSION = "idle_speech_neutral"
+HAPPY_SPEECH_CLOSED_EXPRESSION = "happy_speech_neutral"
 # Keep the photographed cheek-rest mouth corners outside the animated region.
 # At the runtime 465 px canvas, the visible central lips occupy roughly
 # x=184..207; widening this mask reaches both smile corners and recreates the
@@ -3337,6 +3345,10 @@ class Dashboard(QDialog):
                 )
             )
         )
+        self.voice_save_button = QPushButton(
+            self._t("save_voice_settings", "儲存聲音設定")
+        )
+        self.voice_save_button.clicked.connect(self.save_voice_settings)
         self.voice_preview_button = QPushButton(
             self._t("preview_voice", "試聽：主上，妾在。")
         )
@@ -3582,6 +3594,7 @@ class Dashboard(QDialog):
             self._t("voice_style", "聲音風格"),
             self.voice_instructions,
         )
+        form.addRow("", self.voice_save_button)
         form.addRow("", self.voice_preview_button)
         form.addRow(
             self._t("realtime", "即時語音"),
@@ -3606,6 +3619,9 @@ class Dashboard(QDialog):
             form,
             rate_control,
             volume_control,
+        )
+        self.voice_engine.currentIndexChanged.connect(
+            self._voice_engine_changed
         )
         self.windows_voice.currentIndexChanged.connect(
             self._windows_voice_changed
@@ -5395,6 +5411,12 @@ class Dashboard(QDialog):
         self.save_voice_settings(silent=True)
         self.voice_preview_requested.emit()
 
+    def _voice_engine_changed(self, _index: int) -> None:
+        provider_id = normalize_speech_provider_id(
+            self.voice_engine.currentData()
+        )
+        self.db.set_setting("voice_engine", provider_id)
+
     def _windows_voice_changed(self, _index: int) -> None:
         self.db.set_setting(
             "windows_voice", str(self.windows_voice.currentData() or "")
@@ -6462,10 +6484,17 @@ class CompanionWindow(QMainWindow):
         self._schedule_ambient_expression()
 
     def _initialize_mouth_animation_state(self) -> None:
+        self.face_motion_controller = FaceMotionController()
+        self.face_motion_frame = self.face_motion_controller.neutral(
+            getattr(self, "idle_pose", "front"),
+            "idle_front",
+        )
+        self.face_renderer = ParametricFaceRenderer()
         self.mouth_open = False
         self.mouth_frame_index = 0
         self.idle_blinking = False
         self.speech_blinking = False
+        self.blink_opacity = 0.0
         self.blink_restore_pixmap = QPixmap()
         self.speech_blink_restore_pixmap = QPixmap()
         self.speech_visual_pixmap = QPixmap()
@@ -7431,12 +7460,12 @@ class CompanionWindow(QMainWindow):
         return self._idle_expression()
 
     def _build_mouth_frames(self) -> None:
+        validate_face_assets(resource_path("assets/expressions"))
         mouth_clips = self._mouth_clip_regions()
         self.mouth_clips = mouth_clips
         self._build_speech_mouth_masks(mouth_clips)
         self._build_cheek_neutral_speech_frame()
         self._build_gesture_mouth_masks()
-        self._build_derived_expression_visemes()
         blink_regions = self._blink_regions()
         self._build_blink_masks(blink_regions)
         self._build_face_parallax_cutouts(
@@ -7445,6 +7474,8 @@ class CompanionWindow(QMainWindow):
         )
         self._normalize_base_speech_frames()
         self._build_pose_viseme_frames(mouth_clips)
+        self._build_happy_neutral_speech_frames()
+        self._build_derived_expression_visemes()
         self._build_expression_anchor_profiles()
         self._build_expression_eye_layers()
 
@@ -7453,7 +7484,7 @@ class CompanionWindow(QMainWindow):
         return frozendict(
             {
                 "": QRect(168, 195, 64, 40),
-                "_lean": QRect(162, 198, 54, 34),
+                "_lean": QRect(158, 194, 62, 42),
                 "_front": QRect(206, 199, 54, 35),
             }
         )
@@ -7554,7 +7585,11 @@ class CompanionWindow(QMainWindow):
 
     def _build_derived_expression_visemes(self) -> None:
         for expression in EXPRESSION_SPEECH_EXPRESSIONS:
-            closed = self.expression_pixmaps[expression]
+            closed = self.expression_pixmaps[
+                HAPPY_SPEECH_CLOSED_EXPRESSION
+                if expression == "happy"
+                else expression
+            ]
             source_frames = EXPRESSION_SPEECH_FRAMES[expression]
             for vowel, source_key, opacity in (
                 ("I", "mid", 0.68),
@@ -7614,6 +7649,14 @@ class CompanionWindow(QMainWindow):
                 regions,
                 alpha_steps,
                 10,
+            )
+            for pose, regions in blink_regions.items()
+        }
+        self.blush_blink_masks = {
+            pose: self._soft_rounded_mask(
+                tuple(region.adjusted(0, 0, 0, -12) for region in regions),
+                alpha_steps,
+                8,
             )
             for pose, regions in blink_regions.items()
         }
@@ -7749,6 +7792,42 @@ class CompanionWindow(QMainWindow):
                     suffix,
                 )
             self._build_blink_viseme_frames(suffix)
+
+    def _build_happy_neutral_speech_frames(self) -> None:
+        """Keep smiling eyes while every speaking mouth returns to neutral."""
+        expression = "happy"
+        mouth_mask = self.gesture_mouth_masks[expression]
+        neutral_closed = self.expression_pixmaps[
+            CHEEK_SPEECH_CLOSED_EXPRESSION
+        ]
+        happy_closed = QPixmap(self.expression_pixmaps[expression])
+        painter = QPainter(happy_closed)
+        painter.drawPixmap(
+            0,
+            0,
+            self._masked_region(neutral_closed, mouth_mask),
+        )
+        painter.end()
+        self.expression_pixmaps[HAPPY_SPEECH_CLOSED_EXPRESSION] = happy_closed
+        self.physics_expression_poses[HAPPY_SPEECH_CLOSED_EXPRESSION] = "cheek"
+
+        neutral_sources = {
+            "mid": self.expression_pixmaps["mouth_mid"],
+            "open": self.expression_pixmaps["speaking"],
+            "round": self.expression_pixmaps["mouth_round"],
+        }
+        for frame, source in neutral_sources.items():
+            speech_frame = QPixmap(happy_closed)
+            painter = QPainter(speech_frame)
+            painter.drawPixmap(
+                0,
+                0,
+                self._masked_region(source, mouth_mask),
+            )
+            painter.end()
+            self.expression_pixmaps[
+                EXPRESSION_SPEECH_FRAMES[expression][frame]
+            ] = speech_frame
 
     def _build_blink_viseme_frames(self, suffix: str) -> None:
         blink = self.expression_pixmaps[f"blink{suffix}"]
@@ -8118,6 +8197,7 @@ class CompanionWindow(QMainWindow):
         self,
         base_pixmap: QPixmap,
         base_expression: str,
+        opacity: float = 1.0,
     ) -> QPixmap:
         # Emotional portraits are complete, identity-locked illustrations.
         # A neutral eye patch changes their eyelids, brows and face contour,
@@ -8149,22 +8229,23 @@ class CompanionWindow(QMainWindow):
             blink_patch = self._masked_region(blink_source, eye_mask)
         else:
             blink_source = self.expression_pixmaps[f"blink{suffix}"]
-            blink_patch = self._masked_eye_patch(blink_source, pose)
+            blink_patch = self._masked_region(
+                blink_source,
+                self.blush_blink_masks[pose]
+                if base_expression in BLUSH_PRESERVING_BLINK_EXPRESSIONS
+                else self.blink_masks[pose],
+            )
         if dedicated_blink is None and (offset_x or offset_y):
             blink_patch = self._translated_pixmap(
                 blink_patch,
                 offset_x,
                 offset_y,
             )
-        result = QPixmap(base_pixmap)
-        painter = QPainter(result)
-        painter.drawPixmap(
-            0,
-            0,
+        return self.face_renderer.render_overlay(
+            base_pixmap,
             blink_patch,
+            opacity=opacity,
         )
-        painter.end()
-        return result
 
     def _masked_eye_patch(self, source: QPixmap, pose: str) -> QPixmap:
         return self._masked_region(source, self.blink_masks[pose])
@@ -8227,12 +8308,33 @@ class CompanionWindow(QMainWindow):
                 current = self.expression_pixmaps[base_expression]
             self.blink_restore_pixmap = QPixmap(current)
             self.idle_blinking = True
+            self.blink_opacity = 0.45
             self.eye_overlay.hide()
             self.character.setPixmap(
-                self._blink_composite(current, render_base)
+                self._blink_composite(
+                    current,
+                    render_base,
+                    self.blink_opacity,
+                )
             )
             QTimer.singleShot(
-                random.randint(95, 145),
+                32,
+                lambda: self._advance_idle_blink(
+                    base_expression,
+                    generation,
+                    1.0,
+                ),
+            )
+            QTimer.singleShot(
+                92,
+                lambda: self._advance_idle_blink(
+                    base_expression,
+                    generation,
+                    0.42,
+                ),
+            )
+            QTimer.singleShot(
+                random.randint(118, 145),
                 lambda: self._finish_blink(base_expression, generation),
             )
         elif self.state == "speaking" and not self.speech_blinking:
@@ -8250,13 +8352,63 @@ class CompanionWindow(QMainWindow):
                 )
             self.speech_blink_restore_pixmap = QPixmap(current)
             self.speech_blinking = True
+            self.blink_opacity = 0.45
             self.eye_overlay.hide()
             self._render_speech_pixmap(current)
             QTimer.singleShot(
-                random.randint(95, 145),
+                32,
+                lambda: self._advance_speaking_blink(generation, 1.0),
+            )
+            QTimer.singleShot(
+                92,
+                lambda: self._advance_speaking_blink(generation, 0.42),
+            )
+            QTimer.singleShot(
+                random.randint(118, 145),
                 lambda: self._finish_speaking_blink(generation),
             )
         self._schedule_blink()
+
+    def _advance_idle_blink(
+        self,
+        base_expression: str,
+        generation: int,
+        opacity: float,
+    ) -> None:
+        if (
+            not self.idle_blinking
+            or generation != self.blink_generation
+            or self.state == "speaking"
+            or self.current_expression != base_expression
+            or self.blink_restore_pixmap.isNull()
+        ):
+            return
+        self.blink_opacity = opacity
+        self.character.setPixmap(
+            self._blink_composite(
+                self.blink_restore_pixmap,
+                base_expression,
+                opacity,
+            )
+        )
+
+    def _advance_speaking_blink(
+        self,
+        generation: int,
+        opacity: float,
+    ) -> None:
+        if (
+            not self.speech_blinking
+            or generation != self.blink_generation
+            or self.state != "speaking"
+        ):
+            return
+        self.blink_opacity = opacity
+        current = self.speech_visual_pixmap
+        if current.isNull():
+            current = self.speech_blink_restore_pixmap
+        if not current.isNull():
+            self._render_speech_pixmap(current)
 
     def _finish_blink(
         self,
@@ -8269,10 +8421,12 @@ class CompanionWindow(QMainWindow):
             or self.current_expression != base_expression
         ):
             self.idle_blinking = False
+            self.blink_opacity = 0.0
             return
         if not self.blink_restore_pixmap.isNull():
             self.character.setPixmap(self.blink_restore_pixmap)
         self.idle_blinking = False
+        self.blink_opacity = 0.0
         self._render_attention_layers(force=True)
         self._attention_tick()
         if random.random() < 0.16:
@@ -8287,8 +8441,10 @@ class CompanionWindow(QMainWindow):
             or generation != self.blink_generation
         ):
             self.speech_blinking = False
+            self.blink_opacity = 0.0
             return
         self.speech_blinking = False
+        self.blink_opacity = 0.0
         if not self.speech_visual_pixmap.isNull():
             self.character.setPixmap(self.speech_visual_pixmap)
         self._render_attention_layers(force=True)
@@ -8644,6 +8800,7 @@ class CompanionWindow(QMainWindow):
         self.mouth_transition_to = QPixmap()
         self.mouth_transition_started = 0.0
         self.speech_blinking = False
+        self.blink_opacity = 0.0
         self.audio_driven_mouth = audio_driven
         self.mouth_closing = False
         self.viseme_dynamics.reset()
@@ -8695,7 +8852,9 @@ class CompanionWindow(QMainWindow):
         visible = (
             self._blink_composite(
                 clean_pixmap,
-                self.speech_closed_expression,
+                self.speech_gesture_expression
+                or self.speech_closed_expression,
+                self.blink_opacity,
             )
             if self.speech_blinking
             else clean_pixmap
@@ -8707,6 +8866,7 @@ class CompanionWindow(QMainWindow):
         self.mouth_timer.stop()
         self.mouth_visual_timer.stop()
         self.speech_blinking = False
+        self.blink_opacity = 0.0
         self.audio_driven_mouth = False
         self.mouth_closing = False
         self.viseme_dynamics.reset()
@@ -8716,6 +8876,18 @@ class CompanionWindow(QMainWindow):
         self.mouth_frame_index = 0
         self.mouth_open = False
         self.speech_current_expression = self.speech_closed_expression
+        motion_expression = (
+            self.speech_gesture_expression
+            or self.speech_closed_expression
+        )
+        motion_pose = self.physics_expression_poses.get(
+            motion_expression,
+            getattr(self, "idle_pose", "front"),
+        )
+        self.face_motion_frame = self.face_motion_controller.close(
+            pose=motion_pose,
+            expression=motion_expression,
+        )
         closed_frame = self._mouth_aperture_pixmap(
             self.speech_closed_expression,
             0.0,
@@ -8737,6 +8909,20 @@ class CompanionWindow(QMainWindow):
         self.eye_overlay.hide()
         frame: VisemeFrame = self.viseme_dynamics.advance(level, vowel)
         expression = self._viseme_expression(frame.selected)
+        motion_expression = (
+            self.speech_gesture_expression
+            or self.speech_closed_expression
+        )
+        motion_pose = self.physics_expression_poses.get(
+            motion_expression,
+            getattr(self, "idle_pose", "front"),
+        )
+        self.face_motion_frame = self.face_motion_controller.advance(
+            frame,
+            pose=motion_pose,
+            expression=motion_expression,
+            blink=1.0 if self.speech_blinking else 0.0,
+        )
         self.mouth_frame_index = frame.frame_index
         self.mouth_open = frame.mouth_open
         self.speech_current_expression = expression
@@ -8781,21 +8967,43 @@ class CompanionWindow(QMainWindow):
     ) -> QPixmap:
         closed = self.expression_pixmaps[self.speech_closed_expression]
         if expression == self.speech_closed_expression or aperture <= 0.01:
-            result = QPixmap(closed)
-        else:
-            suffix = self._active_speech_pose_suffix()
-            result = QPixmap(closed)
-            painter = QPainter(result)
-            # Every viseme is already a purpose-built mouth shape. Applying
-            # acoustic aperture a second time would create a double mouth.
-            painter.setOpacity(max(0.0, min(1.0, aperture / 0.18)))
-            patch = self._speech_mouth_patch(
-                self.expression_pixmaps[expression],
-                suffix,
+            return QPixmap(closed)
+        source = self.expression_pixmaps[expression]
+        suffix = self._active_speech_pose_suffix()
+        return self.face_renderer.render(
+            closed,
+            self.face_motion_frame,
+            self._face_render_layers(source, suffix),
+            aperture=aperture,
+        )
+
+    def _face_render_layers(
+        self,
+        mouth_source: QPixmap,
+        suffix: str,
+    ) -> FaceRenderLayers:
+        if self.speech_gesture_expression is not None:
+            expression = self.speech_gesture_expression
+            return FaceRenderLayers(
+                mouth_source=mouth_source,
+                mouth_mask=self.gesture_mouth_masks[expression],
+                mouth_rect=EXPRESSION_SPEECH_MOUTH_RECTS[expression],
             )
-            painter.drawPixmap(0, 0, patch)
-            painter.end()
-        return result
+        if (
+            suffix == ""
+            and self.speech_closed_expression
+            == CHEEK_SPEECH_CLOSED_EXPRESSION
+        ):
+            return FaceRenderLayers(
+                mouth_source=mouth_source,
+                mouth_mask=self.viseme_mouth_masks[""],
+                mouth_rect=CHEEK_SPEECH_CENTRAL_MOUTH_RECT,
+            )
+        return FaceRenderLayers(
+            mouth_source=mouth_source,
+            mouth_mask=self.mouth_masks[suffix],
+            mouth_rect=self.mouth_clips[suffix],
+        )
 
     def _speech_mouth_patch(
         self,
@@ -9163,7 +9371,11 @@ class CompanionWindow(QMainWindow):
             frames = EXPRESSION_SPEECH_FRAMES[
                 self.speech_gesture_expression
             ]
-            self.speech_closed_expression = self.speech_gesture_expression
+            self.speech_closed_expression = (
+                HAPPY_SPEECH_CLOSED_EXPRESSION
+                if self.speech_gesture_expression == "happy"
+                else self.speech_gesture_expression
+            )
             self.speech_mid_expression = frames["mid"]
             self.speech_open_expression = frames["open"]
         else:
