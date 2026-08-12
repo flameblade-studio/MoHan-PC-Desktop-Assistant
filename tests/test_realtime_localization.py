@@ -230,9 +230,10 @@ def assert_audio_errors_are_localized() -> None:
             RuntimeError("RawInputStream invalid device"),
             locale,
         )
-        assert generic == expected["audio_failed"]
+        assert generic.startswith(expected["audio_failed"].split("backend offline")[0])
+        assert "backend offline" not in generic
         assert microphone.startswith(expected["microphone_prefix"])
-        assert "RawInputStream invalid device" in microphone
+        assert "RawInputStream invalid device" not in microphone
         if locale != "zh-TW":
             assert generic != traditional_audio
 
@@ -245,10 +246,14 @@ def assert_unknown_locale_falls_back_safely() -> None:
         "gpt-realtime-2.1-mini",
         "fr-FR",
     ) == traditional["invalid_key"]
-    assert RealtimeVoiceClient._audio_error_message(
+    unknown_audio = RealtimeVoiceClient._audio_error_message(
         RuntimeError("backend offline"),
         "fr-FR",
-    ) == traditional["audio_failed"]
+    )
+    assert unknown_audio.startswith(
+        traditional["audio_failed"].split("backend offline")[0]
+    )
+    assert "backend offline" not in unknown_audio
 
 
 def run() -> None:

@@ -25,6 +25,21 @@ def assert_action_pinned(workflow: str, action: str) -> None:
     )
 
 
+def assert_external_actions_pinned(workflow: str) -> None:
+    references = re.findall(r"(?m)^\s*uses:\s*([^\s#]+)", workflow)
+    assert references, "workflow must use at least one GitHub Action"
+    unpinned = [
+        reference
+        for reference in references
+        if not reference.startswith("./")
+        and not re.fullmatch(r"[^@\s]+@[0-9a-f]{40}", reference)
+    ]
+    assert not unpinned, (
+        "external GitHub Actions must be pinned to complete 40-character "
+        f"commit SHAs: {unpinned}"
+    )
+
+
 def test_workspace_workflow_policy() -> None:
     assert "* @hitoshic1982" in read(".github/CODEOWNERS")
     workflow_dir = ROOT / ".github" / "workflows"
@@ -260,6 +275,10 @@ def test_preview_and_windows_workflows() -> None:
     assert "--enable-shared" in read("tools/build_python315_jit_runtime.py")
 
     windows_ci = read(".github/workflows/windows-ci.yml")
+    assert_external_actions_pinned(windows_ci)
+    pinned_quality_install = (
+        "python -m pip install --only-binary=:all: -r requirements-dev.txt"
+    )
     for required in (
         'PYTHONUTF8: "1"',
         'PYTHON_JIT = "0"',
@@ -267,6 +286,7 @@ def test_preview_and_windows_workflows() -> None:
         "tools/benchmark_python315_hotpaths.py",
         "tools/build_python315_jit_runtime.py",
         "tools/profile_mohan_tachyon.py",
+        pinned_quality_install,
         "python -m ruff check .",
         "--target all",
         "--min-samples 100",
@@ -275,8 +295,32 @@ def test_preview_and_windows_workflows() -> None:
         "windows-tachyon-evidence",
     ):
         assert required in windows_ci
-    assert "python -m ruff check ." in read(".github/workflows/release.yml")
+    assert windows_ci.index(pinned_quality_install) < windows_ci.index(
+        "python -m ruff check ."
+    )
     release_workflow = read(".github/workflows/release.yml")
+    assert_external_actions_pinned(release_workflow)
+    assert pinned_quality_install in release_workflow
+    assert release_workflow.index(pinned_quality_install) < release_workflow.index(
+        "python -m ruff check ."
+    )
+    quality_requirements = [
+        line.strip()
+        for line in read("requirements-dev.txt").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    ruff_requirements = [
+        requirement
+        for requirement in quality_requirements
+        if requirement.partition("==")[0].casefold() == "ruff"
+    ]
+    assert len(ruff_requirements) == 1, (
+        "requirements-dev.txt must contain exactly one Ruff requirement"
+    )
+    assert re.fullmatch(
+        r"ruff==[0-9]+(?:\.[0-9]+){2}",
+        ruff_requirements[0],
+    ), "requirements-dev.txt must pin Ruff to one stable version"
     assert release_workflow.index(
         "Require the release tag to still identify the validated commit"
     ) < release_workflow.index("Attest every published artifact")

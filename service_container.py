@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 lazy import sqlite3
-lazy from dataclasses import dataclass
+lazy from dataclasses import dataclass, field
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QObject
@@ -19,7 +19,11 @@ lazy from contracts import (
     SpeechProviderRegistryPort,
 )
 lazy from db import StudioDB
-lazy from language_support import localized_transcription_prompt
+lazy from language_support import (
+    DEFAULT_UI_LANGUAGE,
+    canonical_ui_language,
+    localized_transcription_prompt,
+)
 lazy from platform_contracts import PlatformServicePort
 lazy from platform_services import current_platform_services
 lazy from realtime_speech_output import RealtimeSpeechOutput
@@ -45,7 +49,7 @@ class CompanionServices:
     """Explicit dependencies owned by one companion-window runtime."""
 
     db: StudioDB
-    secret_store: SecretStorePort
+    secret_store: SecretStorePort = field(repr=False)
     local_tts: LocalSpeechEnginePort
     cloud_tts: CloudSpeechEnginePort
     realtime: RealtimeVoicePort
@@ -55,18 +59,29 @@ class CompanionServices:
     speech_providers: SpeechProviderRegistryPort | None = None
     azure_speech: AzureSpeechEnginePort | None = None
     azure_hd_speech: AzureSpeechEnginePort | None = None
-    azure_secret_store: SecretStorePort | None = None
-    azure_hd_secret_store: SecretStorePort | None = None
-    secret_store_factory: SecretStoreFactoryPort | None = None
+    azure_secret_store: SecretStorePort | None = field(
+        default=None,
+        repr=False,
+    )
+    azure_hd_secret_store: SecretStorePort | None = field(
+        default=None,
+        repr=False,
+    )
+    secret_store_factory: SecretStoreFactoryPort | None = field(
+        default=None,
+        repr=False,
+    )
     platform_services: PlatformServicePort | None = None
 
 
 def _local_speech_engine(
     platform_services: PlatformServicePort,
     parent: QObject | None,
+    *,
+    language: str,
 ) -> LocalSpeechEnginePort:
     if platform_services.capabilities.system_local_speech:
-        return WindowsTTS(parent)
+        return WindowsTTS(parent, language=language)
     return UnavailableSystemTTS(
         f"{platform_services.capabilities.display_name} 本機語音"
         "尚未完成實機驗證。",
@@ -77,11 +92,17 @@ def _local_speech_engine(
 def _realtime_speech_output(
     platform_services: PlatformServicePort,
     parent: QObject | None,
+    *,
+    language: str,
 ) -> RealtimeSpeechOutput:
     return RealtimeSpeechOutput(
         AzureSpeechTTS(parent),
         AzureSpeechTTS(parent),
-        _local_speech_engine(platform_services, parent),
+        _local_speech_engine(
+            platform_services,
+            parent,
+            language=language,
+        ),
         parent,
     )
 
@@ -91,10 +112,18 @@ def create_default_services(
     listener_script: Path,
     parent: QObject | None = None,
     platform_services: PlatformServicePort | None = None,
+    *,
+    ui_language: str | None = None,
 ) -> CompanionServices:
     runtime_platform = platform_services or current_platform_services()
     data_path.mkdir(parents=True, exist_ok=True)
     db = StudioDB(data_path / "mohan.db")
+    language_value = (
+        ui_language
+        if ui_language is not None
+        else db.setting("ui_language", DEFAULT_UI_LANGUAGE)
+    )
+    service_language = canonical_ui_language(str(language_value))
     # Migrate at the composition boundary so headless and UI startup paths
     # share the same canonical provider setting.
     migrate_speech_provider_setting(db)
@@ -168,9 +197,14 @@ def create_default_services(
             ),
         ),
         parent=parent,
+        language=service_language,
     )
-    local_tts = _local_speech_engine(runtime_platform, parent)
-    cloud_tts = OpenAITTS(parent)
+    local_tts = _local_speech_engine(
+        runtime_platform,
+        parent,
+        language=service_language,
+    )
+    cloud_tts = OpenAITTS(parent, language=service_language)
     azure_tts = AzureSpeechTTS(parent)
     azure_hd_tts = AzureSpeechTTS(parent)
     system_capabilities = SpeechProviderCapabilities(
@@ -197,6 +231,7 @@ def create_default_services(
         realtime_speech_output=_realtime_speech_output(
             runtime_platform,
             parent,
+            language=service_language,
         ),
         backup_manager=backup_manager,
         speech_providers=create_builtin_speech_registry(

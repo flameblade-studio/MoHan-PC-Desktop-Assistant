@@ -96,6 +96,7 @@ lazy from ai_client import (
     AIWorker,
     AIWorkerRequest,
 )
+lazy from safe_error_localization import safe_error_message
 lazy from azure_regions import (
     azure_region_identifiers,
     azure_region_options,
@@ -168,6 +169,13 @@ lazy from realtime_voice import (
     RealtimeVoiceRequest,
 )
 lazy from service_container import CompanionServices, create_default_services
+lazy from settings_ui_localization import (
+    PHYSICS_TEXT_KEYS,
+    PROACTIVE_MODE_KEYS,
+    TOPMOST_MODE_KEYS,
+    SettingsText,
+    settings_text,
+)
 lazy from speech import (
     SpeechListener,
     female_windows_voices_for_language,
@@ -188,15 +196,21 @@ lazy from speech_providers import (
 lazy from text_normalizer import to_taiwan_traditional
 lazy from time_utils import local_wall_time
 lazy from ui_localization import (
+    MEMORY_CATEGORY_LABELS,
     MODE_LABELS,
+    PLATFORM_STATUS_LABELS,
+    SIMPLIFIED_MEMORY_CATEGORY_LABELS,
     SIMPLIFIED_MODE_LABELS,
+    SIMPLIFIED_PLATFORM_STATUS_LABELS,
     SIMPLIFIED_WORK_TYPE_LABELS,
     WORK_TYPE_LABELS,
     display_label,
     ui_text,
 )
 lazy from ui_localization_ja import (
+    JAPANESE_MEMORY_CATEGORY_LABELS,
     JAPANESE_MODE_LABELS,
+    JAPANESE_PLATFORM_STATUS_LABELS,
     JAPANESE_WORK_TYPE_LABELS,
 )
 lazy from updater_ui import UpdatePanel
@@ -372,6 +386,16 @@ MEMORY_CATEGORIES = (
     "工作流程",
     "重要日期",
     "其他",
+)
+
+TODO_CATEGORIES = (
+    ("漫畫", "todo_category_comic"),
+    ("文章", "todo_category_article"),
+    ("音樂", "todo_category_music"),
+    ("貼圖", "todo_category_stickers"),
+    ("出版", "todo_category_publishing"),
+    ("行政", "todo_category_administration"),
+    ("其他", "todo_category_other"),
 )
 
 EMERGENCY_COMMANDS = frozenset(
@@ -711,6 +735,8 @@ MOUTH_CLOSE_DEADLINE_MS = max(
     110,
     math.ceil(VISEME_CLOSE_TRANSITION_SECONDS * 1000) + 32,
 )
+MOTION_FRAME_INTERVAL_MS = 16
+SPEECH_MOTION_RELEASE_LIMIT = 12
 PLATFORM_STATUSES = (
     "尚未開始",
     "準備資料",
@@ -768,6 +794,26 @@ def combo_data_or_custom_text(combo: QComboBox, fallback: str = "") -> str:
     if index >= 0 and text == combo.itemText(index).strip():
         return str(combo.itemData(index) or text or fallback)
     return text or fallback
+
+
+def platform_status_label(language: str, value: str) -> str:
+    return display_label(
+        language,
+        value,
+        PLATFORM_STATUS_LABELS,
+        SIMPLIFIED_PLATFORM_STATUS_LABELS,
+        JAPANESE_PLATFORM_STATUS_LABELS,
+    )
+
+
+def memory_category_label(language: str, value: str) -> str:
+    return display_label(
+        language,
+        value,
+        MEMORY_CATEGORY_LABELS,
+        SIMPLIFIED_MEMORY_CATEGORY_LABELS,
+        JAPANESE_MEMORY_CATEGORY_LABELS,
+    )
 
 VOICE_GENERATION_PROMPT = (
     "請使用台灣繁體中文，以自然的台灣中文口音說話。"
@@ -1182,7 +1228,7 @@ class ZoomTextBrowser(QTextBrowser):
 class TodoRow(QFrame):
     changed = Signal()
 
-    def __init__(self, db: StudioDB, todo):
+    def __init__(self, db: StudioDB, todo, language: str = "zh-TW"):
         super().__init__()
         self.setObjectName("todoCard")
         # A task card should keep its content height.  Letting QVBoxLayout
@@ -1191,21 +1237,36 @@ class TodoRow(QFrame):
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.db = db
         self.todo_id = int(todo["id"])
+        self.language = language
         layout = QHBoxLayout(self)
         layout.setContentsMargins(12, 9, 10, 9)
         layout.setSpacing(10)
         done = QCheckBox()
-        done.setToolTip("標記為已完成")
+        done.setToolTip(
+            ui_text(language, "todo_complete_tooltip", "標記為已完成")
+        )
         done.setChecked(todo["status"] == "完成")
         text_column = QVBoxLayout()
         text_column.setSpacing(2)
-        title = QLabel(to_taiwan_traditional(str(todo["title"])))
+        title = QLabel(str(todo["title"]))
         title.setObjectName("todoTitle")
         title.setWordWrap(True)
-        category = QLabel(f"{todo['category']} · 今日待辦")
+        category_value = str(todo["category"])
+        category_key = dict(TODO_CATEGORIES).get(category_value)
+        category_label = (
+            ui_text(language, category_key, category_value)
+            if category_key is not None
+            else category_value
+        )
+        category = QLabel(
+            f"{category_label} · "
+            f"{ui_text(language, 'todo_category_suffix', '今日待辦')}"
+        )
         category.setObjectName("todoCategory")
-        delete = QPushButton("刪除")
-        delete.setToolTip("刪除這筆待辦")
+        delete = QPushButton(ui_text(language, "delete", "刪除"))
+        delete.setToolTip(
+            ui_text(language, "delete_todo_tooltip", "刪除這筆待辦")
+        )
         delete.setFixedWidth(64)
         done.toggled.connect(self._toggle)
         delete.clicked.connect(self._delete)
@@ -1225,25 +1286,51 @@ class TodoRow(QFrame):
 
 
 class IdeaEditorDialog(QDialog):
-    def __init__(self, title: str, content: str, parent=None):
+    def __init__(
+        self,
+        title: str,
+        content: str,
+        parent=None,
+        *,
+        language: str = "zh-TW",
+    ):
         super().__init__(parent)
-        self.setWindowTitle("編輯創作靈感")
+        self.language = language
+        self.setWindowTitle(
+            ui_text(language, "idea_editor_title", "編輯創作靈感")
+        )
         self.setMinimumSize(560, 420)
         layout = QVBoxLayout(self)
-        layout.addWidget(QLabel("<b>靈感標題</b>"))
-        self.title_input = QLineEdit(to_taiwan_traditional(title))
-        self.title_input.setPlaceholderText("替這則靈感取一個清楚的標題")
+        layout.addWidget(
+            QLabel(ui_text(language, "idea_title", "<b>靈感標題</b>"))
+        )
+        self.title_input = QLineEdit(str(title))
+        self.title_input.setPlaceholderText(
+            ui_text(
+                language,
+                "idea_title_placeholder",
+                "替這則靈感取一個清楚的標題",
+            )
+        )
         layout.addWidget(self.title_input)
-        layout.addWidget(QLabel("<b>靈感內文</b>"))
+        layout.addWidget(
+            QLabel(ui_text(language, "idea_content", "<b>靈感內文</b>"))
+        )
         self.content_input = QTextEdit()
-        self.content_input.setPlainText(to_taiwan_traditional(content))
+        self.content_input.setPlainText(
+            str(content)
+        )
         self.content_input.setPlaceholderText(
-            "記下情節、畫面、台詞、音樂方向或後續可執行的想法……"
+            ui_text(
+                language,
+                "idea_content_placeholder",
+                "記下情節、畫面、台詞、音樂方向或後續可執行的想法……",
+            )
         )
         layout.addWidget(self.content_input, 1)
         buttons = QHBoxLayout()
-        cancel = QPushButton("取消")
-        save = QPushButton("保存靈感")
+        cancel = QPushButton(ui_text(language, "cancel", "取消"))
+        save = QPushButton(ui_text(language, "save_idea", "保存靈感"))
         buttons.addStretch()
         buttons.addWidget(cancel)
         buttons.addWidget(save)
@@ -1253,44 +1340,154 @@ class IdeaEditorDialog(QDialog):
 
     def _save(self) -> None:
         if not self.title_input.text().strip():
-            QMessageBox.information(self, "尚無標題", "請先填寫靈感標題。")
+            QMessageBox.information(
+                self,
+                ui_text(
+                    self.language,
+                    "idea_title_required_title",
+                    "尚無標題",
+                ),
+                ui_text(
+                    self.language,
+                    "idea_title_required",
+                    "請先填寫靈感標題。",
+                ),
+            )
             self.title_input.setFocus()
             return
         self.accept()
 
     def values(self) -> tuple[str, str]:
         return (
-            to_taiwan_traditional(self.title_input.text().strip()),
-            to_taiwan_traditional(self.content_input.toPlainText().strip()),
+            self.title_input.text().strip(),
+            self.content_input.toPlainText().strip(),
         )
 
 
 class MemoryEditorDialog(QDialog):
-    def __init__(self, memory, parent=None):
+    def __init__(
+        self,
+        memory,
+        parent=None,
+        *,
+        language: str = "zh-TW",
+    ):
         super().__init__(parent)
-        self.setWindowTitle("編輯長期記憶")
+        self.language = language
+        self.setWindowTitle(
+            ui_text(language, "memory_editor_title", "編輯長期記憶")
+        )
         self.setMinimumSize(620, 500)
         self.setStyleSheet(STYLE)
         layout = QVBoxLayout(self)
-        layout.addWidget(QLabel("<b>記憶標題</b>"))
-        self.title_input = QLineEdit(
-            to_taiwan_traditional(str(memory["title"] or ""))
+        layout.addWidget(
+            QLabel(
+                ui_text(language, "memory_title_label", "<b>記憶標題</b>")
+            )
         )
-        self.title_input.setPlaceholderText("用一句短標題辨識這則記憶")
+        self.title_input = QLineEdit(
+            str(memory["title"] or "")
+        )
+        self.title_input.setPlaceholderText(
+            ui_text(
+                language,
+                "memory_title_placeholder",
+                "用一句短標題辨識這則記憶",
+            )
+        )
         layout.addWidget(self.title_input)
+        layout.addLayout(self._details_row(memory))
 
+        layout.addWidget(
+            QLabel(
+                ui_text(language, "memory_content_label", "<b>記憶內容</b>")
+            )
+        )
+        self.content_input = QTextEdit()
+        self.content_input.setPlainText(
+            str(memory["content"] or "")
+        )
+        self.content_input.setPlaceholderText(
+            ui_text(
+                language,
+                "memory_content_placeholder",
+                "完整記錄人物背景、偏好、目標、工作流程或重要日期……",
+            )
+        )
+        layout.addWidget(self.content_input, 1)
+        source_labels = {
+            "manual": ui_text(
+                language, "memory_source_manual", "手動建立"
+            ),
+            "conversation": ui_text(
+                language,
+                "memory_source_conversation",
+                "由對話明確記住",
+            ),
+        }
+        source = source_labels.get(
+            str(memory["source"]), str(memory["source"])
+        )
+        meta = QLabel(
+            ui_text(
+                language,
+                "memory_metadata",
+                "來源：{source}　建立：{created}　更新：{updated}",
+                source=source,
+                created=str(memory["created_at"])[:16],
+                updated=str(memory["updated_at"])[:16],
+            )
+        )
+        meta.setStyleSheet("color:#4c6b82;")
+        layout.addWidget(meta)
+        buttons = QHBoxLayout()
+        cancel = QPushButton(ui_text(language, "cancel", "取消"))
+        save = QPushButton(ui_text(language, "save_memory", "保存記憶"))
+        buttons.addStretch()
+        buttons.addWidget(cancel)
+        buttons.addWidget(save)
+        layout.addLayout(buttons)
+        cancel.clicked.connect(self.reject)
+        save.clicked.connect(self._save)
+
+    def _details_row(self, memory) -> QHBoxLayout:
         details = QHBoxLayout()
         category_box = QVBoxLayout()
-        category_box.addWidget(QLabel("<b>類別</b>"))
+        category_box.addWidget(
+            QLabel(
+                ui_text(
+                    self.language,
+                    "memory_category_label",
+                    "<b>類別</b>",
+                )
+            )
+        )
         self.category_input = QComboBox()
-        self.category_input.addItems(MEMORY_CATEGORIES)
+        for category in MEMORY_CATEGORIES:
+            self.category_input.addItem(
+                memory_category_label(self.language, category), category
+            )
         current_category = to_taiwan_traditional(str(memory["category"]))
-        if self.category_input.findText(current_category) < 0:
-            self.category_input.addItem(current_category)
-        self.category_input.setCurrentText(current_category)
+        current_index = self.category_input.findData(current_category)
+        if current_index < 0:
+            self.category_input.addItem(
+                current_category,
+                current_category,
+            )
+            current_index = self.category_input.count() - 1
+        self.category_input.setCurrentIndex(current_index)
         category_box.addWidget(self.category_input)
+
         importance_box = QVBoxLayout()
-        importance_box.addWidget(QLabel("<b>重要度</b>"))
+        importance_box.addWidget(
+            QLabel(
+                ui_text(
+                    self.language,
+                    "memory_importance_label",
+                    "<b>重要度</b>",
+                )
+            )
+        )
         self.importance_input = QSpinBox()
         self.importance_input.setRange(1, 5)
         self.importance_input.setValue(int(memory["importance"]))
@@ -1298,72 +1495,81 @@ class MemoryEditorDialog(QDialog):
         importance_box.addWidget(self.importance_input)
         details.addLayout(category_box, 1)
         details.addLayout(importance_box, 1)
-        layout.addLayout(details)
-
-        layout.addWidget(QLabel("<b>記憶內容</b>"))
-        self.content_input = QTextEdit()
-        self.content_input.setPlainText(
-            to_taiwan_traditional(str(memory["content"] or ""))
-        )
-        self.content_input.setPlaceholderText(
-            "完整記錄人物背景、偏好、目標、工作流程或重要日期……"
-        )
-        layout.addWidget(self.content_input, 1)
-        source_labels = {
-            "manual": "手動建立",
-            "conversation": "由對話明確記住",
-        }
-        source = source_labels.get(
-            str(memory["source"]), str(memory["source"])
-        )
-        meta = QLabel(
-            f"來源：{source}　建立：{str(memory['created_at'])[:16]}　"
-            f"更新：{str(memory['updated_at'])[:16]}"
-        )
-        meta.setStyleSheet("color:#4c6b82;")
-        layout.addWidget(meta)
-        buttons = QHBoxLayout()
-        cancel = QPushButton("取消")
-        save = QPushButton("保存記憶")
-        buttons.addStretch()
-        buttons.addWidget(cancel)
-        buttons.addWidget(save)
-        layout.addLayout(buttons)
-        cancel.clicked.connect(self.reject)
-        save.clicked.connect(self._save)
+        return details
 
     def _save(self) -> None:
         if not self.title_input.text().strip():
-            QMessageBox.information(self, "尚無標題", "請先填寫記憶標題。")
+            QMessageBox.information(
+                self,
+                ui_text(
+                    self.language,
+                    "memory_title_required_title",
+                    "尚無標題",
+                ),
+                ui_text(
+                    self.language,
+                    "memory_title_required",
+                    "請先填寫記憶標題。",
+                ),
+            )
             self.title_input.setFocus()
             return
         if not self.content_input.toPlainText().strip():
-            QMessageBox.information(self, "尚無內容", "請先填寫記憶內容。")
+            QMessageBox.information(
+                self,
+                ui_text(
+                    self.language,
+                    "memory_content_required_title",
+                    "尚無內容",
+                ),
+                ui_text(
+                    self.language,
+                    "memory_content_required",
+                    "請先填寫記憶內容。",
+                ),
+            )
             self.content_input.setFocus()
             return
         self.accept()
 
     def values(self) -> tuple[str, str, str, int]:
         return (
-            to_taiwan_traditional(self.title_input.text().strip()),
-            to_taiwan_traditional(self.content_input.toPlainText().strip()),
-            self.category_input.currentText(),
+            self.title_input.text().strip(),
+            self.content_input.toPlainText().strip(),
+            str(self.category_input.currentData() or "其他"),
             self.importance_input.value(),
         )
 
 
 class ArchivedMemoryDialog(QDialog):
-    def __init__(self, db: StudioDB, parent=None):
+    def __init__(
+        self,
+        db: StudioDB,
+        parent=None,
+        *,
+        language: str = "zh-TW",
+    ):
         super().__init__(parent)
         self.db = db
+        self.language = language
         self.changed = False
-        self.setWindowTitle("已封存的長期記憶")
+        self.setWindowTitle(
+            ui_text(
+                language,
+                "archived_memory_title",
+                "已封存的長期記憶",
+            )
+        )
         self.setMinimumSize(720, 520)
         self.setStyleSheet(STYLE)
         layout = QVBoxLayout(self)
         intro = QLabel(
-            "自動整理只會封存較舊、低重要度的對話記憶，不會直接銷毀。"
-            "您可以在這裡隨時勾選還原。"
+            ui_text(
+                language,
+                "archived_memory_intro",
+                "自動整理只會封存較舊、低重要度的對話記憶，不會直接銷毀。"
+                "您可以在這裡隨時勾選還原。",
+            )
         )
         intro.setWordWrap(True)
         layout.addWidget(intro)
@@ -1372,8 +1578,14 @@ class ArchivedMemoryDialog(QDialog):
         self.archive_status = QLabel()
         layout.addWidget(self.archive_status)
         buttons = QHBoxLayout()
-        restore = QPushButton("還原勾選記憶")
-        close = QPushButton("關閉")
+        restore = QPushButton(
+            ui_text(
+                language,
+                "restore_checked_memories",
+                "還原勾選記憶",
+            )
+        )
+        close = QPushButton(ui_text(language, "close", "關閉"))
         buttons.addWidget(restore)
         buttons.addStretch()
         buttons.addWidget(close)
@@ -1387,16 +1599,33 @@ class ArchivedMemoryDialog(QDialog):
         rows = self.db.list_archived_memories(1000)
         for row in rows:
             item = QListWidgetItem(
-                f"【{to_taiwan_traditional(str(row['category']))}】"
-                f"{to_taiwan_traditional(str(row['title']))}\n"
-                f"{to_taiwan_traditional(str(row['content']))}\n"
-                f"封存原因：{row['reason']}　時間：{str(row['archived_at'])[:16]}"
+                ui_text(
+                    self.language,
+                    "archived_memory_item",
+                    "【{category}】{title}\n{content}\n"
+                    "封存原因：{reason}　時間：{archived}",
+                    category=memory_category_label(
+                        self.language,
+                        to_taiwan_traditional(str(row["category"])),
+                    ),
+                    title=str(row["title"]),
+                    content=str(row["content"]),
+                    reason=str(row["reason"]),
+                    archived=str(row["archived_at"])[:16],
+                )
             )
             item.setData(Qt.UserRole, int(row["id"]))
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(Qt.Unchecked)
             self.archive_list.addItem(item)
-        self.archive_status.setText(f"目前共有 {len(rows)} 則可還原記憶")
+        self.archive_status.setText(
+            ui_text(
+                self.language,
+                "archived_memory_count",
+                "目前共有 {count} 則可還原記憶",
+                count=len(rows),
+            )
+        )
 
     def restore_checked(self) -> None:
         selected = [
@@ -1405,7 +1634,19 @@ class ArchivedMemoryDialog(QDialog):
             if self.archive_list.item(index).checkState() == Qt.Checked
         ]
         if not selected:
-            QMessageBox.information(self, "尚未選取", "請先勾選要還原的記憶。")
+            QMessageBox.information(
+                self,
+                ui_text(
+                    self.language,
+                    "archived_memory_select_title",
+                    "尚未選取",
+                ),
+                ui_text(
+                    self.language,
+                    "archived_memory_select",
+                    "請先勾選要還原的記憶。",
+                ),
+            )
             return
         restored = sum(
             1 for archive_id in selected
@@ -1413,20 +1654,40 @@ class ArchivedMemoryDialog(QDialog):
         )
         self.changed = self.changed or restored > 0
         self.refresh_archives()
-        self.archive_status.setText(f"已還原 {restored} 則記憶。")
+        self.archive_status.setText(
+            ui_text(
+                self.language,
+                "archived_memory_restored",
+                "已還原 {count} 則記憶。",
+                count=restored,
+            )
+        )
 
 
 class ChatHistoryDialog(QDialog):
-    def __init__(self, db: StudioDB, parent=None):
+    def __init__(
+        self,
+        db: StudioDB,
+        parent=None,
+        *,
+        language: str = "zh-TW",
+    ):
         super().__init__(parent)
         self.db = db
+        self.language = language
         self.changed = False
-        self.setWindowTitle("管理／清除對話")
+        self.setWindowTitle(
+            ui_text(language, "chat_history_title", "管理／清除對話")
+        )
         self.setMinimumSize(720, 520)
         layout = QVBoxLayout(self)
         intro = QLabel(
-            "對話平時保存在本機，不會自動刪除。"
-            "請只勾選確定要永久刪除的紀錄。"
+            ui_text(
+                language,
+                "chat_history_intro",
+                "對話平時保存在本機，不會自動刪除。"
+                "請只勾選確定要永久刪除的紀錄。",
+            )
         )
         intro.setWordWrap(True)
         layout.addWidget(intro)
@@ -1436,8 +1697,10 @@ class ChatHistoryDialog(QDialog):
         self.history_status.setStyleSheet("color: #356d88;")
         layout.addWidget(self.history_status)
         buttons = QHBoxLayout()
-        delete = QPushButton("刪除勾選對話")
-        close = QPushButton("關閉")
+        delete = QPushButton(
+            ui_text(language, "delete_checked_chats", "刪除勾選對話")
+        )
+        close = QPushButton(ui_text(language, "close", "關閉"))
         buttons.addWidget(delete)
         buttons.addStretch()
         buttons.addWidget(close)
@@ -1456,21 +1719,44 @@ class ChatHistoryDialog(QDialog):
                 else profile_setting(self.db, "assistant_name")
             )
             content = " ".join(
-                to_taiwan_traditional(row["content"]).split()
+                str(row["content"]).split()
             )
             if len(content) > 110:
                 content = content[:110] + "…"
             item = QListWidgetItem(
-                f"{row['created_at'][5:16]}｜{speaker}\n{content}"
+                ui_text(
+                    self.language,
+                    "chat_history_item",
+                    "{created}｜{speaker}\n{content}",
+                    created=row["created_at"][5:16],
+                    speaker=speaker,
+                    content=content,
+                )
             )
             item.setData(Qt.UserRole, int(row["id"]))
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(Qt.Unchecked)
-            item.setToolTip(to_taiwan_traditional(row["content"]))
+            item.setToolTip(str(row["content"]))
             self.history_list.addItem(item)
         total = self.db.chat_count()
-        suffix = "（管理視窗最多顯示最近 500 則）" if total > 500 else ""
-        self.history_status.setText(f"本機共保存 {total} 則對話。{suffix}")
+        suffix = (
+            ui_text(
+                self.language,
+                "chat_history_truncated_suffix",
+                "（管理視窗最多顯示最近 500 則）",
+            )
+            if total > 500
+            else ""
+        )
+        self.history_status.setText(
+            ui_text(
+                self.language,
+                "chat_history_status",
+                "本機共保存 {count} 則對話。{suffix}",
+                count=total,
+                suffix=suffix,
+            )
+        )
 
     def checked_chat_ids(self) -> list[int]:
         checked: list[int] = []
@@ -1484,13 +1770,32 @@ class ChatHistoryDialog(QDialog):
         chat_ids = self.checked_chat_ids()
         if not chat_ids:
             QMessageBox.information(
-                self, "尚未勾選", "請先勾選要刪除的對話。"
+                self,
+                ui_text(
+                    self.language,
+                    "chat_select_delete_title",
+                    "尚未勾選",
+                ),
+                ui_text(
+                    self.language,
+                    "chat_select_delete",
+                    "請先勾選要刪除的對話。",
+                ),
             )
             return
         answer = QMessageBox.question(
             self,
-            "永久刪除對話",
-            f"確定永久刪除勾選的 {len(chat_ids)} 則對話嗎？",
+            ui_text(
+                self.language,
+                "chat_delete_title",
+                "永久刪除對話",
+            ),
+            ui_text(
+                self.language,
+                "chat_delete_confirm",
+                "確定永久刪除勾選的 {count} 則對話嗎？",
+                count=len(chat_ids),
+            ),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No,
         )
@@ -1758,6 +2063,7 @@ class FirstRunWizard(QDialog):
 
     def _update_wizard_headings(self) -> None:
         self.setWindowTitle(self._t("first_run_title", "首次啟動設定"))
+        self.hero_brand.setText(self._t("first_run_brand", "墨寒  MoHan"))
         self.hero_tagline.setText(
             self._t(
                 "first_run_hero_tagline",
@@ -2110,6 +2416,13 @@ class Dashboard(QDialog):
     def _t(self, key: str, chinese: str, **values: object) -> str:
         return ui_text(self.ui_language, key, chinese, **values)
 
+    def _settings_text(
+        self,
+        key: SettingsText,
+        **values: object,
+    ) -> str:
+        return settings_text(self.ui_language, key, **values)
+
     def _tab_changed(self, index: int) -> None:
         if getattr(self, "_today_split_initialized", False):
             return
@@ -2209,19 +2522,39 @@ class Dashboard(QDialog):
         self.load_older_chat_btn = QPushButton(
             self._t("load_older_chat", "載入較早對話")
         )
-        self.load_older_chat_btn.setToolTip("每次向前載入 50 則本機對話")
+        self.load_older_chat_btn.setToolTip(
+            self._t(
+                "load_older_chat_tooltip",
+                "每次向前載入 50 則本機對話",
+            )
+        )
         self.manage_chat_btn = QPushButton(
             self._t("manage_chat", "管理／清除對話")
         )
-        self.manage_chat_btn.setToolTip("勾選並刪除指定對話，其他內容不受影響")
+        self.manage_chat_btn.setToolTip(
+            self._t(
+                "manage_chat_tooltip",
+                "勾選並刪除指定對話，其他內容不受影響",
+            )
+        )
         self.chat_zoom_down = QPushButton("A－")
-        self.chat_zoom_down.setToolTip("縮小對話文字（Ctrl＋滑鼠滾輪向下）")
+        self.chat_zoom_down.setToolTip(
+            self._t(
+                "chat_zoom_out_tooltip",
+                "縮小對話文字（Ctrl＋滑鼠滾輪向下）",
+            )
+        )
         self.chat_zoom_down.setFixedWidth(48)
         self.chat_zoom_label = QLabel()
         self.chat_zoom_label.setMinimumWidth(48)
         self.chat_zoom_label.setAlignment(Qt.AlignCenter)
         self.chat_zoom_up = QPushButton("A＋")
-        self.chat_zoom_up.setToolTip("放大對話文字（Ctrl＋滑鼠滾輪向上）")
+        self.chat_zoom_up.setToolTip(
+            self._t(
+                "chat_zoom_in_tooltip",
+                "放大對話文字（Ctrl＋滑鼠滾輪向上）",
+            )
+        )
         self.chat_zoom_up.setFixedWidth(48)
         history_row.addWidget(self.chat_retention)
         history_row.addStretch()
@@ -2289,11 +2622,19 @@ class Dashboard(QDialog):
     ) -> tuple[QHBoxLayout, QPushButton, QPushButton]:
         entry = QHBoxLayout()
         self.todo_input = QLineEdit()
-        self.todo_input.setPlaceholderText("輸入待辦標題，例如：完成漫畫第 3 話分鏡")
+        self.todo_input.setPlaceholderText(
+            self._t(
+                "today_input_placeholder",
+                "輸入待辦標題，例如：完成漫畫第 3 話分鏡",
+            )
+        )
         self.todo_category = QComboBox()
-        self.todo_category.addItems(["漫畫", "文章", "音樂", "貼圖", "出版", "行政", "其他"])
-        add = QPushButton("＋ 加入待辦")
-        idea = QPushButton("✦ 收入靈感")
+        for category, key in TODO_CATEGORIES:
+            self.todo_category.addItem(self._t(key, category), category)
+        add = QPushButton(self._t("add_todo", "＋ 加入待辦"))
+        idea = QPushButton(self._t("save_as_idea", "✦ 收入靈感"))
+        self.today_add_button = add
+        self.today_save_idea_button = idea
         entry.addWidget(self.todo_input, 1)
         entry.addWidget(self.todo_category)
         entry.addWidget(add)
@@ -2304,7 +2645,10 @@ class Dashboard(QDialog):
         self.todo_feedback = QLabel("")
         self.todo_feedback.setObjectName("entryFeedback")
         todo_header = QHBoxLayout()
-        todo_header.addWidget(QLabel("<b>今天要做</b>"))
+        self.today_tasks_heading = QLabel(
+            self._t("today_tasks_heading", "<b>今天要做</b>")
+        )
+        todo_header.addWidget(self.today_tasks_heading)
         self.todo_count = QLabel()
         self.todo_count.setObjectName("sectionCount")
         todo_header.addWidget(self.todo_count)
@@ -2335,16 +2679,35 @@ class Dashboard(QDialog):
         self,
     ) -> tuple[QWidget, QPushButton, QPushButton]:
         idea_header = QHBoxLayout()
-        idea_header.addWidget(QLabel("<b>創作靈感</b>"))
+        self.creative_ideas_heading = QLabel(
+            self._t("creative_ideas_heading", "<b>創作靈感</b>")
+        )
+        idea_header.addWidget(self.creative_ideas_heading)
         self.idea_count = QLabel()
         self.idea_count.setObjectName("sectionCount")
         idea_header.addWidget(self.idea_count)
         idea_header.addStretch()
-        edit_idea = QPushButton("編輯選取靈感")
-        edit_idea.setToolTip("也可以直接雙擊下方任一靈感")
+        edit_idea = QPushButton(
+            self._t("edit_selected_idea", "編輯選取靈感")
+        )
+        edit_idea.setToolTip(
+            self._t(
+                "edit_selected_idea_tooltip",
+                "也可以直接雙擊下方任一靈感",
+            )
+        )
         idea_header.addWidget(edit_idea)
-        delete_ideas = QPushButton("刪除勾選靈感")
-        delete_ideas.setToolTip("只刪除已勾選的靈感，執行前會再次確認")
+        delete_ideas = QPushButton(
+            self._t("delete_checked_ideas", "刪除勾選靈感")
+        )
+        delete_ideas.setToolTip(
+            self._t(
+                "delete_checked_ideas_tooltip",
+                "只刪除已勾選的靈感，執行前會再次確認",
+            )
+        )
+        self.today_edit_idea_button = edit_idea
+        self.today_delete_ideas_button = delete_ideas
         idea_header.addWidget(delete_ideas)
         self.idea_list = QListWidget()
         self.idea_list.setObjectName("ideaList")
@@ -2393,13 +2756,21 @@ class Dashboard(QDialog):
         add_row = QHBoxLayout()
         self.new_platform_name = QLineEdit()
         self.new_platform_name.setPlaceholderText(
-            "平台、系統或工具名稱，例如：公司 ERP、Notion、客戶後台"
+            self._t(
+                "platform_name_placeholder",
+                "平台、系統或工具名稱，例如：公司 ERP、Notion、客戶後台",
+            )
         )
         self.new_platform_url = QLineEdit()
         self.new_platform_url.setPlaceholderText(
-            "網址（可留空，例如：https://example.com）"
+            self._t(
+                "platform_url_placeholder",
+                "網址（可留空，例如：https://example.com）",
+            )
         )
-        add_platform = QPushButton("新增工作平台")
+        add_platform = QPushButton(
+            self._t("add_platform", "新增工作平台")
+        )
         add_row.addWidget(self.new_platform_name, 2)
         add_row.addWidget(self.new_platform_url, 2)
         add_row.addWidget(add_platform)
@@ -2412,18 +2783,19 @@ class Dashboard(QDialog):
         self.platform_summary = QLabel()
         self.platform_summary.setObjectName("sectionCount")
         self.platform_filter = QComboBox()
-        self.platform_filter.addItems(
-            [
-                "全部平台",
-                "進行中",
-                "待補資料／阻礙",
-                "已完成／已上架",
-                "尚未開始",
-            ]
+        for key, chinese, value in (
+            ("platform_filter_all", "全部平台", "all"),
+            ("platform_filter_active", "進行中", "active"),
+            ("platform_filter_blocked", "待補資料／阻礙", "blocked"),
+            ("platform_filter_finished", "已完成／已上架", "finished"),
+            ("platform_filter_not_started", "尚未開始", "not_started"),
+        ):
+            self.platform_filter.addItem(self._t(key, chinese), value)
+        save_all = QPushButton(
+            self._t("save_all_platforms", "立即保存全部")
         )
-        save_all = QPushButton("立即保存全部")
         header.addWidget(self.platform_summary, 1)
-        header.addWidget(QLabel("顯示"))
+        header.addWidget(QLabel(self._t("show", "顯示")))
         header.addWidget(self.platform_filter)
         header.addWidget(save_all)
         return header, save_all
@@ -2441,8 +2813,11 @@ class Dashboard(QDialog):
         self.platform_controls: dict[str, PlatformCardControls] = {}
         self._platform_loading = False
         self.platform_empty = QLabel(
-            "尚未建立工作平台。\n"
-            "請在上方輸入公司系統、協作工具、客戶後台或任何工作平台。"
+            self._t(
+                "platform_empty",
+                "尚未建立工作平台。\n"
+                "請在上方輸入公司系統、協作工具、客戶後台或任何工作平台。",
+            )
         )
         self.platform_empty.setObjectName("emptyState")
         self.platform_empty.setAlignment(Qt.AlignCenter)
@@ -2456,8 +2831,11 @@ class Dashboard(QDialog):
         tab = QWidget()
         layout = QVBoxLayout(tab)
         intro = QLabel(
-            "集中管理工作中使用的平台、系統、客戶入口或協作工具。"
-            "每位使用者都可以建立自己的工作平台，不預設綁定任何產業。"
+            self._t(
+                "platform_intro",
+                "集中管理工作中使用的平台、系統、客戶入口或協作工具。"
+                "每位使用者都可以建立自己的工作平台，不預設綁定任何產業。",
+            )
         )
         intro.setWordWrap(True)
         intro.setStyleSheet("color:#486d83;")
@@ -2466,7 +2844,10 @@ class Dashboard(QDialog):
         layout.addLayout(add_row)
         header, save_all = self._platform_filter_controls()
         self.platform_feedback = QLabel(
-            "修改後會自動保存；也可以使用每張卡片的保存按鈕。"
+            self._t(
+                "platform_auto_save_note",
+                "修改後會自動保存；也可以使用每張卡片的保存按鈕。",
+            )
         )
         self.platform_feedback.setStyleSheet("color:#4c6b82;")
         self.platform_feedback.setWordWrap(True)
@@ -2509,22 +2890,38 @@ class Dashboard(QDialog):
         grid.setHorizontalSpacing(10)
         grid.setVerticalSpacing(8)
         status = QComboBox()
-        status.addItems(PLATFORM_STATUSES)
+        for value in PLATFORM_STATUSES:
+            status.addItem(platform_status_label(self.ui_language, value), value)
         controls = PlatformCardControls(
             card=card,
             status=status,
             item_name=self._platform_editor(
-                "目前負責的工作項目、專案或案件"
+                self._t(
+                    "platform_item_placeholder",
+                    "目前負責的工作項目、專案或案件",
+                )
             ),
             missing=self._platform_editor(
-                "待補資料、等待他人回覆或其他阻礙；沒有可留空"
+                self._t(
+                    "platform_missing_placeholder",
+                    "待補資料、等待他人回覆或其他阻礙；沒有可留空",
+                )
             ),
-            next_action=self._platform_editor("下一個具體動作與期限"),
-            notes=self._platform_editor("備註、規則、聯絡窗口或其他補充"),
-            url=self._platform_editor("https://…（可留空）"),
+            next_action=self._platform_editor(
+                self._t("platform_next_placeholder", "下一個具體動作與期限")
+            ),
+            notes=self._platform_editor(
+                self._t(
+                    "platform_notes_placeholder",
+                    "備註、規則、聯絡窗口或其他補充",
+                )
+            ),
+            url=self._platform_editor(
+                self._t("platform_url_card_placeholder", "https://…（可留空）")
+            ),
             validation=QLabel(),
-            updated=QLabel("尚未保存"),
-            save_button=QPushButton("保存此平台"),
+            updated=QLabel(self._t("platform_not_saved", "尚未保存")),
+            save_button=QPushButton(self._t("save_platform", "保存此平台")),
             timer=QTimer(self),
         )
         controls.validation.setWordWrap(True)
@@ -2556,11 +2953,11 @@ class Dashboard(QDialog):
             3,
         )
         fields = (
-            ("工作項目／專案", controls.item_name),
-            ("待補資料／阻礙", controls.missing),
-            ("下一步", controls.next_action),
-            ("備註", controls.notes),
-            ("網址", controls.url),
+            (self._t("platform_field_item", "工作項目／專案"), controls.item_name),
+            (self._t("platform_field_missing", "待補資料／阻礙"), controls.missing),
+            (self._t("platform_field_next", "下一步"), controls.next_action),
+            (self._t("platform_field_notes", "備註"), controls.notes),
+            (self._t("platform_field_url", "網址"), controls.url),
         )
         for row, (label, editor) in enumerate(fields, start=1):
             grid.addWidget(QLabel(label), row, 0)
@@ -2572,8 +2969,12 @@ class Dashboard(QDialog):
         platform: str,
         save_button: QPushButton,
     ) -> QHBoxLayout:
-        open_button = QPushButton("開啟網站／工具")
-        delete_button = QPushButton("刪除平台")
+        open_button = QPushButton(
+            self._t("open_platform", "開啟網站／工具")
+        )
+        delete_button = QPushButton(
+            self._t("delete_platform", "刪除平台")
+        )
         delete_button.setObjectName("dangerButton")
         open_button.clicked.connect(
             lambda _checked=False, name=platform: self.open_platform(name)
@@ -2612,15 +3013,21 @@ class Dashboard(QDialog):
         controls = self.platform_controls.get(platform)
         if controls is None:
             return
-        status = to_taiwan_traditional(row["status"])
-        if controls.status.findText(status) < 0:
-            controls.status.addItem(status)
-        controls.status.setCurrentText(status)
+        status = str(row["status"])
+        if controls.status.findData(status) < 0:
+            controls.status.addItem(
+                platform_status_label(self.ui_language, status), status
+            )
+        controls.status.setCurrentIndex(
+            max(0, controls.status.findData(status))
+        )
         for field in ("item_name", "missing", "next_action", "notes", "url"):
             editor = getattr(controls, field)
-            editor.setText(to_taiwan_traditional(row[field] or ""))
+            editor.setText(str(row[field] or ""))
         controls.dirty = False
-        controls.save_button.setText("保存此平台")
+        controls.save_button.setText(
+            self._t("save_platform", "保存此平台")
+        )
         controls.updated.setText(
             self._format_platform_updated(row["updated_at"])
         )
@@ -2652,15 +3059,24 @@ class Dashboard(QDialog):
         return value
 
     def add_custom_platform(self) -> None:
-        platform = to_taiwan_traditional(self.new_platform_name.text().strip())
+        platform = self.new_platform_name.text().strip()
         url = self._normalize_platform_url(self.new_platform_url.text())
         if not platform:
-            self.platform_feedback.setText("請先輸入平台、系統或工具名稱。")
+            self.platform_feedback.setText(
+                self._t(
+                    "platform_name_required",
+                    "請先輸入平台、系統或工具名稱。",
+                )
+            )
             self.new_platform_name.setFocus()
             return
         if not self.db.add_platform(platform, url):
             self.platform_feedback.setText(
-                f"「{platform}」已存在，請使用不同名稱。"
+                self._t(
+                    "platform_duplicate",
+                    "「{platform}」已存在，請使用不同名稱。",
+                    platform=platform,
+                )
             )
             return
         row = next(
@@ -2676,15 +3092,25 @@ class Dashboard(QDialog):
         self.new_platform_name.clear()
         self.new_platform_url.clear()
         self.platform_empty.hide()
-        self.platform_feedback.setText(f"已新增工作平台：{platform}")
+        self.platform_feedback.setText(
+            self._t(
+                "platform_added",
+                "已新增工作平台：{platform}",
+                platform=platform,
+            )
+        )
         self._refresh_platform_summary()
         self._filter_platform_cards()
 
     def delete_custom_platform(self, platform: str) -> None:
         answer = QMessageBox.question(
             self,
-            "刪除工作平台",
-            f"確定刪除「{platform}」及其工作進度嗎？此動作無法復原。",
+            self._t("platform_delete_title", "刪除工作平台"),
+            self._t(
+                "platform_delete_confirm",
+                "確定刪除「{platform}」及其工作進度嗎？此動作無法復原。",
+                platform=platform,
+            ),
         )
         if answer != QMessageBox.Yes:
             return
@@ -2692,13 +3118,25 @@ class Dashboard(QDialog):
         if controls is not None:
             controls.timer.stop()
         if not self.db.delete_platform(platform):
-            self.platform_feedback.setText(f"找不到工作平台：{platform}")
+            self.platform_feedback.setText(
+                self._t(
+                    "platform_not_found",
+                    "找不到工作平台：{platform}",
+                    platform=platform,
+                )
+            )
             return
         if controls is not None:
             controls.card.deleteLater()
             del self.platform_controls[platform]
         self.platform_empty.setVisible(not self.platform_controls)
-        self.platform_feedback.setText(f"已刪除工作平台：{platform}")
+        self.platform_feedback.setText(
+            self._t(
+                "platform_deleted",
+                "已刪除工作平台：{platform}",
+                platform=platform,
+            )
+        )
         self._refresh_platform_summary()
         self._filter_platform_cards()
 
@@ -2732,11 +3170,13 @@ class Dashboard(QDialog):
         )
         return tab
 
-    @staticmethod
-    def _memory_intro() -> QLabel:
+    def _memory_intro(self) -> QLabel:
         intro = QLabel(
-            "墨寒只保存主上允許留下的人物、偏好、目標、工作流程與"
-            "重要日期。記憶存於本機，可分類瀏覽、逐項編輯或刪除。"
+            self._t(
+                "memory_intro",
+                "墨寒只保存主上允許留下的人物、偏好、目標、工作流程與"
+                "重要日期。記憶存於本機，可分類瀏覽、逐項編輯或刪除。",
+            )
         )
         intro.setWordWrap(True)
         return intro
@@ -2744,11 +3184,21 @@ class Dashboard(QDialog):
     def _memory_entry_row(self) -> tuple[QHBoxLayout, QPushButton]:
         entry = QHBoxLayout()
         self.memory_input = QLineEdit()
-        self.memory_input.setPlaceholderText("例如：主上偏好先完成漫畫，再處理行政工作")
+        self.memory_input.setPlaceholderText(
+            self._t(
+                "memory_input_placeholder",
+                "例如：主上偏好先完成漫畫，再處理行政工作",
+            )
+        )
         self.memory_category = QComboBox()
-        self.memory_category.addItems(MEMORY_CATEGORIES)
-        self.memory_category.setCurrentText("偏好")
-        add_button = QPushButton("讓寒記住")
+        for category in MEMORY_CATEGORIES:
+            self.memory_category.addItem(
+                memory_category_label(self.ui_language, category), category
+            )
+        self.memory_category.setCurrentIndex(
+            self.memory_category.findData("偏好")
+        )
+        add_button = QPushButton(self._t("remember", "讓寒記住"))
         entry.addWidget(self.memory_input, 1)
         entry.addWidget(self.memory_category)
         entry.addWidget(add_button)
@@ -2758,20 +3208,35 @@ class Dashboard(QDialog):
         self,
     ) -> tuple[QHBoxLayout, QPushButton, QPushButton]:
         filter_row = QHBoxLayout()
-        filter_row.addWidget(QLabel("分類瀏覽"))
+        filter_row.addWidget(
+            QLabel(self._t("memory_filter_label", "分類瀏覽"))
+        )
         self.memory_filter = QComboBox()
-        self.memory_filter.addItem("全部記憶", "")
+        self.memory_filter.addItem(self._t("all_memories", "全部記憶"), "")
         for category in MEMORY_CATEGORIES:
-            self.memory_filter.addItem(category, category)
+            self.memory_filter.addItem(
+                memory_category_label(self.ui_language, category), category
+            )
         self.memory_count = QLabel()
         self.memory_count.setObjectName("sectionCount")
         filter_row.addWidget(self.memory_filter)
         filter_row.addWidget(self.memory_count)
         filter_row.addStretch()
-        edit_button = QPushButton("編輯選取記憶")
-        edit_button.setToolTip("也可以直接雙擊下方任一記憶")
-        delete_button = QPushButton("刪除勾選記憶")
-        delete_button.setToolTip("只刪除已勾選的記憶，執行前會再次確認")
+        edit_button = QPushButton(
+            self._t("edit_selected_memory", "編輯選取記憶")
+        )
+        edit_button.setToolTip(
+            self._t("edit_memory_tooltip", "也可以直接雙擊下方任一記憶")
+        )
+        delete_button = QPushButton(
+            self._t("delete_checked_memories", "刪除勾選記憶")
+        )
+        delete_button.setToolTip(
+            self._t(
+                "delete_checked_memories_tooltip",
+                "只刪除已勾選的記憶，執行前會再次確認",
+            )
+        )
         filter_row.addWidget(edit_button)
         filter_row.addWidget(delete_button)
         return filter_row, edit_button, delete_button
@@ -2783,16 +3248,25 @@ class Dashboard(QDialog):
         memory_list.setSpacing(3)
         return memory_list
 
-    @staticmethod
     def _memory_action_row(
+        self,
     ) -> tuple[QHBoxLayout, QPushButton, QPushButton, QPushButton]:
         actions = QHBoxLayout()
-        clear_button = QPushButton("清除全部記憶")
-        optimize_button = QPushButton("安全整理記憶")
-        optimize_button.setToolTip(
-            "合併低重要度重複內容，超量舊記憶只會先封存"
+        clear_button = QPushButton(
+            self._t("clear_all_memories", "清除全部記憶")
         )
-        archives_button = QPushButton("查看已封存記憶")
+        optimize_button = QPushButton(
+            self._t("optimize_memories", "安全整理記憶")
+        )
+        optimize_button.setToolTip(
+            self._t(
+                "optimize_memories_tooltip",
+                "合併低重要度重複內容，超量舊記憶只會先封存",
+            )
+        )
+        archives_button = QPushButton(
+            self._t("view_archived_memories", "查看已封存記憶")
+        )
         actions.addWidget(clear_button)
         actions.addWidget(optimize_button)
         actions.addWidget(archives_button)
@@ -2806,7 +3280,10 @@ class Dashboard(QDialog):
 
     def _memory_auto_checkbox(self) -> QCheckBox:
         checkbox = QCheckBox(
-            "從「請記住／我喜歡／我習慣」等明確說法自動建立記憶"
+            self._t(
+                "auto_memory",
+                "從「請記住／我喜歡／我習慣」等明確說法自動建立記憶",
+            )
         )
         checkbox.setChecked(bool(self.db.setting("auto_memory", True)))
         return checkbox
@@ -3520,8 +3997,11 @@ class Dashboard(QDialog):
             bool(self.db.setting("realtime_echo_guard", True))
         )
         checkbox.setToolTip(
-            "墨寒說話時暫停上傳麥克風，播放結束後再恢復；"
-            "啟用時無法在她說話途中插話。"
+            self._t(
+                "echo_guard_tooltip",
+                "墨寒說話時暫停上傳麥克風，播放結束後再恢復；"
+                "啟用時無法在她說話途中插話。",
+            )
         )
         return checkbox
 
@@ -3541,8 +4021,11 @@ class Dashboard(QDialog):
             )
         )
         checkbox.setToolTip(
-            "Realtime 保留原生音訊理解；每句說完後，畫面文字改用"
-            "完整錄音的 OpenAI 高精度轉錄。成功後才允許墨寒回答。"
+            self._t(
+                "hybrid_transcript_tooltip",
+                "Realtime 保留原生音訊理解；每句說完後，畫面文字改用"
+                "完整錄音的 OpenAI 高精度轉錄。成功後才允許墨寒回答。",
+            )
         )
         return checkbox
 
@@ -4027,6 +4510,7 @@ class Dashboard(QDialog):
             self,
             platform_services=self.platform_services,
             secret_store_factory=self.secret_store_factory,
+            language=self.ui_language,
         )
         self.flagship_center.setMinimumHeight(720)
         self.flagship_center.speak_requested.connect(
@@ -4035,7 +4519,9 @@ class Dashboard(QDialog):
         self.flagship_center.remote_command_received.connect(
             self._receive_remote_command
         )
-        flagship_heading = QLabel("<b>旗艦控制中心</b>")
+        flagship_heading = QLabel(
+            self._t("flagship_heading", "<b>旗艦控制中心</b>")
+        )
         flagship_heading.setStyleSheet(
             "color:#2f6987;font-size:16px;margin-top:12px;"
         )
@@ -4058,8 +4544,8 @@ class Dashboard(QDialog):
         down = QPushButton("▼")
         up.setObjectName(f"{object_prefix}Up")
         down.setObjectName(f"{object_prefix}Down")
-        up.setToolTip("增加")
-        down.setToolTip("減少")
+        up.setToolTip(self._t("increase", "增加"))
+        down.setToolTip(self._t("decrease", "減少"))
         for button in (up, down):
             button.setFixedWidth(46)
             button.setAutoRepeat(True)
@@ -4094,7 +4580,10 @@ class Dashboard(QDialog):
             profile_setting(self.db, "window_title")
         )
         self.profile_window_title.setPlaceholderText(
-            "留空時自動顯示「助理名稱．組織名稱」"
+            self._t(
+                "window_title_placeholder",
+                "留空時自動顯示「助理名稱．組織名稱」",
+            )
         )
         self.profile_work_type = self._profile_work_type_combo()
         self.profile_ui_language = self._profile_language_combo()
@@ -4121,6 +4610,7 @@ class Dashboard(QDialog):
             self.db,
             parent,
             before_export=lambda: self.save_settings(silent=True),
+            language=self.ui_language,
         )
         form.addRow(self.portable_profile_panel)
 
@@ -4267,7 +4757,7 @@ class Dashboard(QDialog):
             self._t("overwork_message", "久坐／過勞提醒訊息"),
             self.overwork_message,
         )
-        form.addRow("語音", self.tts_enabled)
+        form.addRow(self._t("voice_section", "語音"), self.tts_enabled)
 
     def _add_desktop_settings(
         self,
@@ -4276,46 +4766,70 @@ class Dashboard(QDialog):
     ) -> None:
         self.autostart = self._autostart_checkbox(capabilities)
         self.topmost_mode = QComboBox()
-        self.topmost_mode.addItems(
-            ["智慧置頂（推薦）", "永遠置頂", "不置頂"]
+        topmost_values = (
+            "智慧置頂（推薦）",
+            "永遠置頂",
+            "不置頂",
         )
-        self.topmost_mode.setCurrentText(
-            str(
-                self.db.setting(
-                    "topmost_mode",
-                    "智慧置頂（推薦）",
-                )
-            )
+        for key, value in zip(
+            TOPMOST_MODE_KEYS,
+            topmost_values,
+            strict=True,
+        ):
+            self.topmost_mode.addItem(self._settings_text(key), value)
+        self._select_combo_data(
+            self.topmost_mode,
+            str(self.db.setting("topmost_mode", topmost_values[0])),
         )
-        self.topmost_mode.currentTextChanged.connect(
+        self.topmost_mode.currentIndexChanged.connect(
             self._topmost_mode_changed
         )
         character_scale = self._character_scale_control()
-        self.proactive_mode = self._editable_combo(
-            ("安靜（只提醒必要事項）", "平衡（推薦）", "積極（主動建議）"),
-            str(self.db.setting("proactive_mode", "平衡（推薦）")),
+        self.proactive_mode = QComboBox()
+        proactive_values = (
+            "安靜（只提醒必要事項）",
+            "平衡（推薦）",
+            "積極（主動建議）",
         )
-        self.proactive_mode.setEditable(False)
-        autostart_label = (
-            "自動啟動"
-            if capabilities.desktop_autostart
-            else self._t("autostart", "自動啟動")
+        for key, value in zip(
+            PROACTIVE_MODE_KEYS,
+            proactive_values,
+            strict=True,
+        ):
+            self.proactive_mode.addItem(self._settings_text(key), value)
+        self._select_combo_data(
+            self.proactive_mode,
+            str(self.db.setting("proactive_mode", proactive_values[1])),
         )
-        form.addRow(autostart_label, self.autostart)
-        form.addRow("桌面置頂方式", self.topmost_mode)
-        form.addRow("桌面墨寒顯示大小", character_scale)
-        form.addRow("主動協助程度", self.proactive_mode)
+        form.addRow(
+            self._settings_text(SettingsText.AUTOSTART_LABEL),
+            self.autostart,
+        )
+        form.addRow(
+            self._settings_text(SettingsText.TOPMOST_LABEL),
+            self.topmost_mode,
+        )
+        form.addRow(
+            self._settings_text(
+                SettingsText.CHARACTER_SCALE_LABEL,
+                assistant=self.assistant_name,
+            ),
+            character_scale,
+        )
+        form.addRow(
+            self._settings_text(SettingsText.PROACTIVE_LABEL),
+            self.proactive_mode,
+        )
 
     def _autostart_checkbox(
         self,
         capabilities: PlatformCapabilities,
     ) -> QCheckBox:
         checkbox = QCheckBox(
-            "Windows 登入後自動啟動"
+            self._settings_text(SettingsText.AUTOSTART_WINDOWS)
             if capabilities.desktop_autostart
-            else self._t(
-                "platform_autostart_unavailable",
-                f"{capabilities.display_name} 自動啟動尚未完成實機驗證",
+            else self._settings_text(
+                SettingsText.AUTOSTART_UNAVAILABLE,
                 platform=capabilities.display_name,
             )
         )
@@ -4352,8 +4866,15 @@ class Dashboard(QDialog):
         self.character_scale_label = QLabel(f"{scale}%")
         self.character_scale_label.setMinimumWidth(48)
         self.character_scale_label.setAlignment(Qt.AlignCenter)
-        reset_button = QPushButton("恢復 100%")
-        reset_button.setToolTip("將桌面墨寒恢復為原始顯示大小")
+        reset_button = QPushButton(
+            self._settings_text(SettingsText.CHARACTER_SCALE_RESET)
+        )
+        reset_button.setToolTip(
+            self._settings_text(
+                SettingsText.CHARACTER_SCALE_RESET_TOOLTIP,
+                assistant=self.assistant_name,
+            )
+        )
         reset_button.clicked.connect(
             lambda: self.character_scale_slider.setValue(
                 CHARACTER_SCALE_DEFAULT
@@ -4372,7 +4893,7 @@ class Dashboard(QDialog):
 
     def _add_background_settings(self, form: QFormLayout) -> None:
         self.background_assistant_enabled = QCheckBox(
-            "啟用背景多工助理（預設關閉）"
+            self._settings_text(SettingsText.BACKGROUND_ASSISTANT_ENABLED)
         )
         self.background_assistant_enabled.setChecked(
             bool(self.db.setting("background_assistant_enabled", False))
@@ -4386,59 +4907,68 @@ class Dashboard(QDialog):
             )
         )
         self.background_watch_apps.setPlaceholderText(
-            "以逗號分隔，例如：Visual Studio Code,GitHub Desktop"
+            self._settings_text(
+                SettingsText.BACKGROUND_WATCH_APPS_PLACEHOLDER
+            )
         )
         self.background_diagnostic_report = QLineEdit(
             str(self.db.setting("background_diagnostic_report", ""))
         )
         self.background_diagnostic_report.setPlaceholderText(
-            "選填：IDE 匯出的 .txt 或 .log 診斷報告完整路徑"
+            self._settings_text(
+                SettingsText.BACKGROUND_DIAGNOSTIC_PLACEHOLDER
+            )
         )
-        note = QLabel(
-            "背景助理只讀取可見程式名稱與您明確指定的診斷報告；"
-            "不會截取編輯器內容、不會自動修改檔案，也會遵守勿擾模式與冷卻時間。"
-        )
+        note = QLabel(self._settings_text(SettingsText.BACKGROUND_SAFETY_NOTE))
         note.setWordWrap(True)
         note.setStyleSheet("color:#356f8d;")
-        form.addRow("背景多工助理", self.background_assistant_enabled)
-        form.addRow("監測程式名稱", self.background_watch_apps)
-        form.addRow("IDE 診斷報告", self.background_diagnostic_report)
+        form.addRow(
+            self._settings_text(SettingsText.BACKGROUND_ASSISTANT_LABEL),
+            self.background_assistant_enabled,
+        )
+        form.addRow(
+            self._settings_text(SettingsText.BACKGROUND_WATCH_APPS_LABEL),
+            self.background_watch_apps,
+        )
+        form.addRow(
+            self._settings_text(SettingsText.BACKGROUND_DIAGNOSTIC_LABEL),
+            self.background_diagnostic_report,
+        )
         form.addRow("", note)
 
     def _add_physics_settings(self, form: QFormLayout) -> None:
-        labels = frozendict(
-            {
-                "physics_sleeves": "袖擺呼吸與慣性",
-                "physics_hair": "長髮柔性擺動",
-                "physics_ornament": "髮飾與流蘇慣性",
-                "physics_eye_tracking": "眼球追蹤滑鼠",
-                "physics_face_parallax": "臉部柔和視差",
-            }
-        )
         box = QWidget()
         layout = QVBoxLayout(box)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(4)
         self.physics_controls: dict[str, QCheckBox] = {}
-        for key, label in labels.items():
-            control = QCheckBox(label)
+        for key, (name_key, description_key) in PHYSICS_TEXT_KEYS.items():
+            control = QCheckBox(self._settings_text(name_key))
+            control.setToolTip(self._settings_text(description_key))
             control.setChecked(bool(self.db.setting(key, True)))
             layout.addWidget(control)
             self.physics_controls[key] = control
-        note = QLabel("旗艦物理預設全部開啟；可依效能需要個別關閉。")
+        note = QLabel(self._settings_text(SettingsText.PHYSICS_NOTE))
         note.setWordWrap(True)
         note.setStyleSheet("color:#356f8d;")
         layout.addWidget(note)
-        form.addRow("電影級物理", box)
+        form.addRow(self._settings_text(SettingsText.PHYSICS_LABEL), box)
 
     def _add_work_folder_settings(self, form: QFormLayout) -> None:
         self.work_folder = QLineEdit(
             str(self.db.setting("work_folder", ""))
         )
-        self.work_folder.setPlaceholderText("常用工作資料夾路徑")
-        open_button = QPushButton("開啟工作資料夾")
+        self.work_folder.setPlaceholderText(
+            self._settings_text(SettingsText.WORK_FOLDER_PLACEHOLDER)
+        )
+        open_button = QPushButton(
+            self._settings_text(SettingsText.WORK_FOLDER_OPEN)
+        )
         open_button.clicked.connect(self.open_work_folder)
-        form.addRow("工作資料夾", self.work_folder)
+        form.addRow(
+            self._settings_text(SettingsText.WORK_FOLDER_LABEL),
+            self.work_folder,
+        )
         form.addRow("", open_button)
 
     def _add_ai_settings(
@@ -4479,12 +5009,15 @@ class Dashboard(QDialog):
             self.ai_model,
         )
         form.addRow(
-            self._t("persona_prompt", "AI 人格提示詞"),
+            self._settings_text(SettingsText.PERSONA_LABEL),
             self.persona_prompt,
         )
         form.addRow(self._settings_language_note())
         form.addRow("", clear_button)
-        form.addRow("智能核心", self.api_status)
+        form.addRow(
+            self._settings_text(SettingsText.AI_CORE_LABEL),
+            self.api_status,
+        )
 
     def _api_key_input(
         self,
@@ -4562,7 +5095,7 @@ class Dashboard(QDialog):
         )
         prompt.setMinimumHeight(160)
         prompt.setPlaceholderText(
-            "設定助理的角色背景、語氣、工作方式與界線。"
+            self._settings_text(SettingsText.PERSONA_PLACEHOLDER)
         )
         return prompt
 
@@ -4586,6 +5119,7 @@ class Dashboard(QDialog):
             self.db,
             data_dir(self.platform_services),
             parent,
+            language=self.ui_language,
         )
         save_button = QPushButton(
             self._t("save_settings", "保存設定")
@@ -4616,11 +5150,8 @@ class Dashboard(QDialog):
             if speaker == self.assistant_name
             else "#8a4f82"
         )
-        normalized = normalize_for_language(
-            personalize_text(self.db, text),
-            self.ui_language,
-        )
-        safe_text = html.escape(normalized).replace("\n", "<br>")
+        display_text = personalize_text(self.db, text)
+        safe_text = html.escape(display_text).replace("\n", "<br>")
         self.chat.append(
             f'<p><b style="color:{color}">{speaker}</b><br>{safe_text}</p>'
         )
@@ -4697,7 +5228,12 @@ class Dashboard(QDialog):
             )
         shown = min(total, self.chat_loaded_limit)
         self.chat_retention.setText(
-            f"本機保存 {total} 則對話，目前顯示最近 {shown} 則"
+            self._t(
+                "chat_retention_status",
+                "本機保存 {total} 則對話，目前顯示最近 {shown} 則",
+                total=total,
+                shown=shown,
+            )
         )
         self.load_older_chat_btn.setEnabled(shown < total)
 
@@ -4706,7 +5242,11 @@ class Dashboard(QDialog):
         self.refresh_chat()
 
     def manage_chat_history(self) -> None:
-        manager = ChatHistoryDialog(self.db, self)
+        manager = ChatHistoryDialog(
+            self.db,
+            self,
+            language=self.ui_language,
+        )
         manager.exec()
         if manager.changed:
             self.refresh_chat()
@@ -4746,43 +5286,74 @@ class Dashboard(QDialog):
             category = to_taiwan_traditional(str(row["category"]))
             counts[category] = counts.get(category, 0) + 1
         if hasattr(self, "memory_filter"):
-            self.memory_filter.setItemText(0, f"全部記憶（{len(all_rows)}）")
+            self.memory_filter.setItemText(
+                0,
+                f"{self._t('all_memories', '全部記憶')}（{len(all_rows)}）",
+            )
             for index in range(1, self.memory_filter.count()):
                 category = str(self.memory_filter.itemData(index))
                 self.memory_filter.setItemText(
-                    index, f"{category}（{counts.get(category, 0)}）"
+                    index,
+                    f"{memory_category_label(self.ui_language, category)}"
+                    f"（{counts.get(category, 0)}）",
                 )
-        self.memory_count.setText(f"{len(rows)} 則")
+        self.memory_count.setText(
+            self._t("memory_count", "{count} 則", count=len(rows))
+        )
         if not rows:
-            empty = QListWidgetItem("這個分類目前沒有記憶。")
+            empty = QListWidgetItem(
+                self._t(
+                    "memory_empty",
+                    "這個分類目前沒有記憶。",
+                )
+            )
             empty.setFlags(Qt.NoItemFlags)
             self.memory_list.addItem(empty)
             return
         source_labels = {
-            "manual": "手動",
-            "conversation": "對話",
+            "manual": self._t(
+                "memory_source_manual_short",
+                "手動",
+            ),
+            "conversation": self._t(
+                "memory_source_conversation_short",
+                "對話",
+            ),
         }
         for row in rows:
             content = " ".join(
-                to_taiwan_traditional(str(row["content"])).split()
+                str(row["content"]).split()
             )
             if len(content) > 90:
                 content = content[:90].rstrip() + "…"
-            title = to_taiwan_traditional(
-                str(row["title"] or content or "未命名記憶")
+            title = str(
+                row["title"]
+                or content
+                or self._t("memory_untitled", "未命名記憶")
             )
             source = source_labels.get(
                 str(row["source"]), str(row["source"])
             )
             item = QListWidgetItem(
-                f"【{to_taiwan_traditional(str(row['category']))}】"
-                f"{title}　重要度 {int(row['importance'])}／5\n"
-                f"{content}\n來源：{source}　更新：{str(row['updated_at'])[5:16]}"
+                self._t(
+                    "memory_item",
+                    "【{category}】{title}　重要度 {importance}／5\n"
+                    "{content}\n來源：{source}　更新：{updated}",
+                    category=memory_category_label(
+                        self.ui_language,
+                        to_taiwan_traditional(str(row["category"])),
+                    ),
+                    title=title,
+                    importance=int(row["importance"]),
+                    content=content,
+                    source=source,
+                    updated=str(row["updated_at"])[5:16],
+                )
             )
             item.setData(Qt.UserRole, int(row["id"]))
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(Qt.Unchecked)
-            item.setToolTip(to_taiwan_traditional(str(row["content"])))
+            item.setToolTip(str(row["content"]))
             self.memory_list.addItem(item)
 
     def refresh_todos(self) -> None:
@@ -4791,28 +5362,42 @@ class Dashboard(QDialog):
             if item.widget():
                 item.widget().deleteLater()
         rows = self.db.list_todos()
-        self.todo_count.setText(f"{len(rows)} 件未完成")
+        self.todo_count.setText(
+            self._t("todo_count", "{count} 件未完成", count=len(rows))
+        )
         if not rows:
-            empty = QLabel("今日卷冊尚空。\n主上先寫下一件真正重要的事。")
+            empty = QLabel(
+                self._t(
+                    "todo_empty",
+                    "今日卷冊尚空。\n主上先寫下一件真正重要的事。",
+                )
+            )
             empty.setObjectName("emptyState")
             empty.setAlignment(Qt.AlignCenter)
             self.todo_list.addWidget(empty)
         for row in rows:
-            widget = TodoRow(self.db, row)
+            widget = TodoRow(self.db, row, self.ui_language)
             widget.changed.connect(self.refresh_todos)
             self.todo_list.addWidget(widget)
 
     def refresh_ideas(self) -> None:
         self.idea_list.clear()
         rows = self.db.list_ideas()
-        self.idea_count.setText(f"{len(rows)} 則")
+        self.idea_count.setText(
+            self._t("idea_count", "{count} 則", count=len(rows))
+        )
         if not rows:
-            empty = QListWidgetItem("尚無靈感紀錄；輸入上方文字後按「收入靈感」。")
+            empty = QListWidgetItem(
+                self._t(
+                    "idea_empty",
+                    "尚無靈感紀錄；輸入上方文字後按「收入靈感」。",
+                )
+            )
             empty.setFlags(Qt.NoItemFlags)
             self.idea_list.addItem(empty)
         for row in rows:
-            title = to_taiwan_traditional(row["title"] or row["text"])
-            content = to_taiwan_traditional(row["content"] or "")
+            title = str(row["title"] or row["text"])
+            content = str(row["content"] or "")
             preview = " ".join(content.split())
             if len(preview) > 58:
                 preview = preview[:58] + "…"
@@ -4824,7 +5409,12 @@ class Dashboard(QDialog):
             item.setData(Qt.UserRole, int(row["id"]))
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(Qt.Unchecked)
-            item.setToolTip("雙擊開啟並編輯標題與內文")
+            item.setToolTip(
+                self._t(
+                    "idea_edit_tooltip",
+                    "雙擊開啟並編輯標題與內文",
+                )
+            )
             self.idea_list.addItem(item)
 
     def refresh_work_time(self) -> None:
@@ -4835,40 +5425,78 @@ class Dashboard(QDialog):
             minutes, seconds_part = divmod(remainder, 60)
             total = f"{hours:02d}:{minutes:02d}:{seconds_part:02d}"
         else:
-            total = format_duration(seconds)
-        state = "計時中" if active else "未計時"
-        self.work_label.setText(f"今日 {total}｜{state}")
+            total = format_duration(seconds, self.ui_language)
+        state = self._t(
+            "timing_active" if active else "timing_inactive",
+            "計時中" if active else "未計時",
+        )
+        self.work_label.setText(
+            self._t(
+                "today_time",
+                "今日 {total}｜{state}",
+                total=total,
+                state=state,
+            )
+        )
 
     def add_todo(self) -> None:
-        text = to_taiwan_traditional(self.todo_input.text().strip())
+        text = self.todo_input.text().strip()
         if not text:
-            self.todo_feedback.setText("請先輸入待辦標題。")
+            self.todo_feedback.setText(
+                self._t("todo_title_required", "請先輸入待辦標題。")
+            )
             self.todo_input.setFocus()
             return
-        self.db.add_todo(text, self.todo_category.currentText())
+        category = str(
+            self.todo_category.currentData()
+            or self.todo_category.currentText()
+        )
+        self.db.add_todo(text, category)
         self.todo_input.clear()
         self.refresh_todos()
-        self.todo_feedback.setText(f"✓ 已加入待辦：{text}")
+        self.todo_feedback.setText(
+            self._t("todo_added", "✓ 已加入待辦：{text}", text=text)
+        )
         self.todo_input.setFocus()
-        self.speak_requested.emit("已收入今日卷冊。", "happy")
+        self.speak_requested.emit(
+            self._t("todo_added_speech", "已收入今日卷冊。"), "happy"
+        )
 
     def add_idea(self) -> None:
-        text = to_taiwan_traditional(self.todo_input.text().strip())
+        text = self.todo_input.text().strip()
         if not text:
-            self.todo_feedback.setText("請先輸入要收藏的靈感。")
+            self.todo_feedback.setText(
+                self._t(
+                    "idea_capture_required",
+                    "請先輸入要收藏的靈感。",
+                )
+            )
             self.todo_input.setFocus()
             return
         self.db.add_idea(text)
         self.todo_input.clear()
         self.refresh_ideas()
-        self.todo_feedback.setText(f"✓ 已收入靈感：{text}")
+        self.todo_feedback.setText(
+            self._t("idea_added", "✓ 已收入靈感：{text}", text=text)
+        )
         self.todo_input.setFocus()
-        self.speak_requested.emit("靈光稍縱即逝，妾已替主上收好。", "happy")
+        self.speak_requested.emit(
+            self._t(
+                "idea_added_speech",
+                "靈光稍縱即逝，妾已替主上收好。",
+            ),
+            "happy",
+        )
 
     def edit_selected_idea(self) -> None:
         item = self.idea_list.currentItem()
         if item is None or item.data(Qt.UserRole) is None:
-            self.todo_feedback.setText("請先選取一則要編輯的靈感。")
+            self.todo_feedback.setText(
+                self._t(
+                    "idea_select_edit",
+                    "請先選取一則要編輯的靈感。",
+                )
+            )
             return
         self.edit_idea_item(item)
 
@@ -4878,19 +5506,31 @@ class Dashboard(QDialog):
             return
         row = self.db.idea(int(idea_id))
         if row is None:
-            self.todo_feedback.setText("找不到這則靈感，請重新整理後再試。")
+            self.todo_feedback.setText(
+                self._t(
+                    "idea_not_found",
+                    "找不到這則靈感，請重新整理後再試。",
+                )
+            )
             return
         editor = IdeaEditorDialog(
             str(row["title"] or row["text"]),
             str(row["content"] or ""),
             self,
+            language=self.ui_language,
         )
         if editor.exec() != QDialog.Accepted:
             return
         title, content = editor.values()
         self.db.update_idea(int(idea_id), title, content)
         self.refresh_ideas()
-        self.todo_feedback.setText(f"✓ 已更新靈感：{title}")
+        self.todo_feedback.setText(
+            self._t(
+                "idea_updated",
+                "✓ 已更新靈感：{title}",
+                title=title,
+            )
+        )
 
     def checked_idea_ids(self) -> list[int]:
         checked: list[int] = []
@@ -4904,12 +5544,21 @@ class Dashboard(QDialog):
     def delete_checked_ideas(self) -> None:
         idea_ids = self.checked_idea_ids()
         if not idea_ids:
-            self.todo_feedback.setText("請先勾選要刪除的靈感。")
+            self.todo_feedback.setText(
+                self._t(
+                    "idea_select_delete",
+                    "請先勾選要刪除的靈感。",
+                )
+            )
             return
         answer = QMessageBox.question(
             self,
-            "刪除創作靈感",
-            f"確定永久刪除勾選的 {len(idea_ids)} 則靈感嗎？",
+            self._t("idea_delete_title", "刪除創作靈感"),
+            self._t(
+                "idea_delete_confirm",
+                "確定永久刪除勾選的 {count} 則靈感嗎？",
+                count=len(idea_ids),
+            ),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No,
         )
@@ -4917,7 +5566,13 @@ class Dashboard(QDialog):
             return
         deleted = self.db.delete_ideas(idea_ids)
         self.refresh_ideas()
-        self.todo_feedback.setText(f"✓ 已刪除 {deleted} 則靈感。")
+        self.todo_feedback.setText(
+            self._t(
+                "idea_deleted",
+                "✓ 已刪除 {count} 則靈感。",
+                count=deleted,
+            )
+        )
 
     def start_work(self) -> None:
         if self.db.start_work():
@@ -5027,16 +5682,19 @@ class Dashboard(QDialog):
         self.speak_requested.emit(line, "speaking")
 
     def send_chat(self) -> None:
-        text = normalize_for_language(
-            self.chat_input.text().strip(),
-            self.ui_language,
-        )
+        text = self.chat_input.text().strip()
         if not text:
             QMessageBox.information(
                 self,
-                "尚未輸入內容",
-                "請先在左側輸入文字，再按「送出文字」；"
-                "也可以按麥克風直接說話。",
+                self._t(
+                    "send_chat_required_title",
+                    "尚未輸入內容",
+                ),
+                self._t(
+                    "send_chat_required",
+                    "請先在左側輸入文字，再按「送出文字」；"
+                    "也可以按麥克風直接說話。",
+                ),
             )
             self.chat_input.setFocus()
             return
@@ -5049,14 +5707,17 @@ class Dashboard(QDialog):
         if self._handle_command(text, source=source):
             return
         self.ai_queue.append((text, self.mode))
-        self.set_voice_phase(f"{self.assistant_name}思考中…")
+        self.set_voice_phase(
+            self._t(
+                "thinking_status",
+                "{assistant}思考中…",
+                assistant=self.assistant_name,
+            )
+        )
         self._start_next_ai_request()
 
     def _receive_remote_command(self, text: str) -> None:
-        normalized = normalize_for_language(
-            text.strip(),
-            self.ui_language,
-        )
+        normalized = text.strip()
         if not normalized:
             return
         # The remote server has already authenticated and audited the device.
@@ -5073,7 +5734,13 @@ class Dashboard(QDialog):
             return
         text, mode = self.ai_queue.popleft()
         self.ai_busy = True
-        self.set_voice_phase(f"{self.assistant_name}思考中…")
+        self.set_voice_phase(
+            self._t(
+                "thinking_status",
+                "{assistant}思考中…",
+                assistant=self.assistant_name,
+            )
+        )
         history = [{"role": row["role"], "content": row["content"]} for row in self.db.recent_chat()]
         worker = AIWorker(
             AIWorkerRequest(
@@ -5196,7 +5863,10 @@ class Dashboard(QDialog):
         elif "今天" in text and any(
             marker in text for marker in TODAY_WORK_DURATION_MARKERS
         ):
-            duration = format_duration(self.db.today_work_seconds())
+            duration = format_duration(
+                self.db.today_work_seconds(),
+                self.ui_language,
+            )
             self._reply(f"主上今日已工作 {duration}。", "speaking")
         else:
             return False
@@ -5247,13 +5917,10 @@ class Dashboard(QDialog):
         intensity: float = 0.5,
         source: str = "conversation",
     ) -> None:
-        text = normalize_for_language(
-            personalize_text(self.db, text),
-            self.ui_language,
-        )
+        text = personalize_text(self.db, text)
         self.db.log_chat("assistant", text)
         self.append_chat(self.assistant_name, text)
-        self.set_voice_phase("回答中…")
+        self.set_voice_phase(self._t("answering_status", "回答中…"))
         self.next_expression_metadata = (
             state,
             max(0.0, min(1.0, float(intensity))),
@@ -5419,13 +6086,25 @@ class Dashboard(QDialog):
         else:
             message = "雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。"
         self._reply(message, "worried")
-        self.api_status.setText(f"OpenAI API：連線失敗（{error[:70]}）")
+        self.api_status.setText(
+            self._t(
+                "api_connection_failed",
+                "OpenAI API：連線失敗（{error}）",
+                error=error[:70],
+            )
+        )
         self.ai_busy = False
         self._start_next_ai_request()
 
     def _voice_text(self, text: str) -> None:
-        text = normalize_for_language(text, self.ui_language)
-        self.set_voice_phase("墨寒思考中…")
+        text = text.strip()
+        self.set_voice_phase(
+            self._t(
+                "thinking_status",
+                "{assistant}思考中…",
+                assistant=self.assistant_name,
+            )
+        )
         wake_word = profile_setting(self.db, "wake_word")
         self.chat_input.setText(
             text.replace(wake_word, "", 1).strip() or text
@@ -5434,27 +6113,39 @@ class Dashboard(QDialog):
         self.send_chat()
 
     def _voice_error(self, message: str) -> None:
-        self.set_voice_phase("準備就緒")
+        self.set_voice_phase(
+            self._t("voice_ready_short", "準備就緒")
+        )
         self.append_chat("寒", message)
         self.speak_requested.emit(message, "worried")
 
     def _listening_changed(self, listening: bool) -> None:
         if not listening:
-            self.mic_btn.setText("🎙 麥克風")
+            self.mic_btn.setText(
+                self._t("microphone_idle", "🎙 麥克風")
+            )
             self.mic_btn.setEnabled(True)
         elif self.listener.is_recording:
-            self.mic_btn.setText("⏹ 立即送出")
+            self.mic_btn.setText(
+                self._t("microphone_send_now", "⏹ 立即送出")
+            )
             self.mic_btn.setEnabled(True)
         else:
-            self.mic_btn.setText("辨識中…")
+            self.mic_btn.setText(
+                self._t("microphone_recognizing", "辨識中…")
+            )
             self.mic_btn.setEnabled(False)
 
     def _recording_changed(self, recording: bool) -> None:
         if recording:
-            self.mic_btn.setText("⏹ 立即送出")
+            self.mic_btn.setText(
+                self._t("microphone_send_now", "⏹ 立即送出")
+            )
             self.mic_btn.setEnabled(True)
         else:
-            self.mic_btn.setText("辨識中…")
+            self.mic_btn.setText(
+                self._t("microphone_recognizing", "辨識中…")
+            )
             self.mic_btn.setEnabled(False)
 
     def _transcription_diagnostic(self, message: str) -> None:
@@ -5463,21 +6154,36 @@ class Dashboard(QDialog):
             self.transcription_diagnostic.setText(message)
 
     def set_voice_phase(self, phase: str) -> None:
-        self.voice_phase.setText(f"語音狀態：{phase}")
+        self.voice_phase.setText(
+            self._t(
+                "voice_status_format",
+                "語音狀態：{phase}",
+                phase=phase,
+            )
+        )
 
-    @staticmethod
-    def _format_platform_updated(value: str) -> str:
+    def _format_platform_updated(self, value: str) -> str:
         try:
             updated = datetime.fromisoformat(value)
-            return f"更新：{updated:%m/%d %H:%M}"
+            return self._t(
+                "platform_updated",
+                "更新：{updated}",
+                updated=f"{updated:%m/%d %H:%M}",
+            )
         except (TypeError, ValueError):
-            return "更新時間不明"
+            return self._t(
+                "platform_updated_unknown",
+                "更新時間不明",
+            )
 
     def _platform_update(self, platform: str) -> PlatformProgressUpdate:
         controls = self.platform_controls[platform]
         return PlatformProgressUpdate(
             platform=platform,
-            status=controls.status.currentText(),
+            status=str(
+                controls.status.currentData()
+                or controls.status.currentText()
+            ),
             item_name=controls.item_name.text(),
             missing=controls.missing.text(),
             next_action=controls.next_action.text(),
@@ -5490,11 +6196,19 @@ class Dashboard(QDialog):
             return
         controls = self.platform_controls[platform]
         controls.dirty = True
-        controls.save_button.setText("保存變更")
-        controls.updated.setText("尚未保存")
+        controls.save_button.setText(
+            self._t("save_changes", "保存變更")
+        )
+        controls.updated.setText(
+            self._t("platform_not_saved", "尚未保存")
+        )
         controls.timer.start()
         self.platform_feedback.setText(
-            f"{platform} 有變更，正在等待自動保存……"
+            self._t(
+                "platform_waiting_auto_save",
+                "{platform} 有變更，正在等待自動保存……",
+                platform=platform,
+            )
         )
         self._validate_platform(platform)
         self._refresh_platform_summary()
@@ -5502,7 +6216,10 @@ class Dashboard(QDialog):
 
     def _validate_platform(self, platform: str) -> None:
         controls = self.platform_controls[platform]
-        status = controls.status.currentText()
+        status = str(
+            controls.status.currentData()
+            or controls.status.currentText()
+        )
         missing = controls.missing.text().strip()
         next_action = controls.next_action.text().strip()
         item_name = controls.item_name.text().strip()
@@ -5510,13 +6227,22 @@ class Dashboard(QDialog):
         message = ""
         color = "#efc27f"
         if status in {"已完成", "已上架"} and missing:
-            message = "注意：工作已完成，但仍列有待補資料或阻礙。"
+            message = self._t(
+                "platform_validation_finished_blocked",
+                "注意：工作已完成，但仍列有待補資料或阻礙。",
+            )
         elif status == "需修正" and not (missing or next_action or notes):
-            message = "請在待補資料／阻礙、下一步或備註中寫明需修正的內容。"
+            message = self._t(
+                "platform_validation_revision_details",
+                "請在待補資料／阻礙、下一步或備註中寫明需修正的內容。",
+            )
         elif status == "尚未開始" and any(
             (item_name, missing, next_action, notes)
         ):
-            message = "已有工作資料，請確認狀態是否應改為「準備資料」。"
+            message = self._t(
+                "platform_validation_not_started_data",
+                "已有工作資料，請確認狀態是否應改為「準備資料」。",
+            )
         elif status in {
             "待送出",
             "等待回覆",
@@ -5525,7 +6251,10 @@ class Dashboard(QDialog):
             "已完成",
             "已上架",
         } and not item_name:
-            message = "建議填寫工作項目、專案或案件名稱，日後較容易辨認。"
+            message = self._t(
+                "platform_validation_item_name",
+                "建議填寫工作項目、專案或案件名稱，日後較容易辨認。",
+            )
             color = "#356f8d"
         controls.validation.setText(message)
         controls.validation.setStyleSheet(f"color:{color};")
@@ -5534,7 +6263,7 @@ class Dashboard(QDialog):
         if not hasattr(self, "platform_controls"):
             return
         statuses = [
-            controls.status.currentText()
+            str(controls.status.currentData() or controls.status.currentText())
             for controls in self.platform_controls.values()
         ]
         missing_count = sum(
@@ -5550,29 +6279,51 @@ class Dashboard(QDialog):
         )
         not_started = statuses.count("尚未開始")
         in_progress = len(statuses) - finished - not_started
-        dirty_text = f"｜未保存 {dirty_count}" if dirty_count else ""
+        dirty_text = (
+            self._t(
+                "platform_summary_unsaved",
+                "｜未保存 {count}",
+                count=dirty_count,
+            )
+            if dirty_count
+            else ""
+        )
         self.platform_summary.setText(
-            f"{len(statuses)} 個平台｜已完成 {finished}｜"
-            f"進行中 {in_progress}｜尚未開始 {not_started}｜"
-            f"待補／阻礙 {missing_count}{dirty_text}"
+            self._t(
+                "platform_summary",
+                "{total} 個平台｜已完成 {finished}｜進行中 {active}｜"
+                "尚未開始 {not_started}｜待補／阻礙 {blocked}{unsaved}",
+                total=len(statuses),
+                finished=finished,
+                active=in_progress,
+                not_started=not_started,
+                blocked=missing_count,
+                unsaved=dirty_text,
+            )
         )
 
     def _filter_platform_cards(self, _value: str = "") -> None:
         if not hasattr(self, "platform_filter"):
             return
-        selected = self.platform_filter.currentText()
+        selected = str(
+            self.platform_filter.currentData()
+            or self.platform_filter.currentText()
+        )
         for controls in self.platform_controls.values():
-            status = controls.status.currentText()
+            status = str(
+                controls.status.currentData()
+                or controls.status.currentText()
+            )
             has_missing = bool(controls.missing.text().strip())
             visible = (
-                selected == "全部平台"
-                or selected == "進行中"
+                selected == "all"
+                or selected == "active"
                 and status not in {"尚未開始", "已完成", "已上架"}
-                or selected == "待補資料／阻礙"
+                or selected == "blocked"
                 and has_missing
-                or selected == "已完成／已上架"
+                or selected == "finished"
                 and status in {"已完成", "已上架"}
-                or selected == "尚未開始"
+                or selected == "not_started"
                 and status == "尚未開始"
             )
             controls.card.setVisible(visible)
@@ -5582,7 +6333,9 @@ class Dashboard(QDialog):
         controls.timer.stop()
         self.db.update_platforms([self._platform_update(platform)])
         controls.dirty = False
-        controls.save_button.setText("保存此平台")
+        controls.save_button.setText(
+            self._t("save_platform", "保存此平台")
+        )
         controls.updated.setText(
             self._format_platform_updated(
                 local_wall_time().isoformat(timespec="seconds")
@@ -5591,7 +6344,11 @@ class Dashboard(QDialog):
         self._validate_platform(platform)
         self._refresh_platform_summary()
         self.platform_feedback.setText(
-            f"{platform} 已{'自動' if silent else ''}保存。"
+            self._t(
+                "platform_saved_automatic" if silent else "platform_saved",
+                "{platform} 已自動保存。" if silent else "{platform} 已保存。",
+                platform=platform,
+            )
         )
 
     def save_platforms(self, silent: bool = False) -> None:
@@ -5603,7 +6360,9 @@ class Dashboard(QDialog):
         now = local_wall_time().isoformat(timespec="seconds")
         for platform, controls in self.platform_controls.items():
             controls.dirty = False
-            controls.save_button.setText("保存此平台")
+            controls.save_button.setText(
+                self._t("save_platform", "保存此平台")
+            )
             controls.updated.setText(
                 self._format_platform_updated(now)
             )
@@ -5614,11 +6373,19 @@ class Dashboard(QDialog):
             for controls in self.platform_controls.values()
         )
         self.platform_feedback.setText(
-            f"全部工作平台已保存；{missing_count} 個平台仍列有待補資料或阻礙。"
+            self._t(
+                "all_platforms_saved",
+                "全部工作平台已保存；{count} 個平台仍列有待補資料或阻礙。",
+                count=missing_count,
+            )
         )
         if not silent:
             self.speak_requested.emit(
-                f"工作平台已保存。仍有 {missing_count} 個平台標有待補資料或阻礙。",
+                self._t(
+                    "all_platforms_saved_speech",
+                    "工作平台已保存。仍有 {count} 個平台標有待補資料或阻礙。",
+                    count=missing_count,
+                ),
                 "happy",
             )
 
@@ -5629,14 +6396,17 @@ class Dashboard(QDialog):
             return
         self.db.add_memory(
             text,
-            self.memory_category.currentText(),
+            str(self.memory_category.currentData() or "其他"),
             "manual",
             4,
         )
         self.memory_input.clear()
         self.refresh_memories()
         self.speak_requested.emit(
-            "妾已記下。主上日後若要更改，也可逐項整理。",
+            self._t(
+                "memory_added_speech",
+                "妾已記下。主上日後若要更改，也可逐項整理。",
+            ),
             "happy",
         )
 
@@ -5644,7 +6414,12 @@ class Dashboard(QDialog):
         item = self.memory_list.currentItem()
         if item is None or item.data(Qt.UserRole) is None:
             QMessageBox.information(
-                self, "尚未選取", "請先選取一則要編輯的記憶。"
+                self,
+                self._t("memory_select_edit_title", "尚未選取"),
+                self._t(
+                    "memory_select_edit",
+                    "請先選取一則要編輯的記憶。",
+                ),
             )
             return
         self.edit_memory_item(item)
@@ -5656,11 +6431,20 @@ class Dashboard(QDialog):
         row = self.db.memory(int(memory_id))
         if row is None:
             QMessageBox.information(
-                self, "找不到記憶", "這則記憶已不存在，清單將重新整理。"
+                self,
+                self._t("memory_not_found_title", "找不到記憶"),
+                self._t(
+                    "memory_not_found",
+                    "這則記憶已不存在，清單將重新整理。",
+                ),
             )
             self.refresh_memories()
             return
-        editor = MemoryEditorDialog(row, self)
+        editor = MemoryEditorDialog(
+            row,
+            self,
+            language=self.ui_language,
+        )
         if editor.exec() != QDialog.Accepted:
             return
         title, content, category, importance = editor.values()
@@ -5669,8 +6453,14 @@ class Dashboard(QDialog):
         ):
             QMessageBox.warning(
                 self,
-                "無法保存記憶",
-                "可能已有內容完全相同的記憶。原有資料未被變更。",
+                self._t(
+                    "memory_save_failed_title",
+                    "無法保存記憶",
+                ),
+                self._t(
+                    "memory_save_failed",
+                    "可能已有內容完全相同的記憶。原有資料未被變更。",
+                ),
             )
             return
         self.refresh_memories()
@@ -5688,13 +6478,25 @@ class Dashboard(QDialog):
         memory_ids = self.checked_memory_ids()
         if not memory_ids:
             QMessageBox.information(
-                self, "尚未勾選", "請先勾選要刪除的記憶。"
+                self,
+                self._t(
+                    "memory_select_delete_title",
+                    "尚未勾選",
+                ),
+                self._t(
+                    "memory_select_delete",
+                    "請先勾選要刪除的記憶。",
+                ),
             )
             return
         answer = QMessageBox.question(
             self,
-            "刪除長期記憶",
-            f"確定永久刪除勾選的 {len(memory_ids)} 則記憶嗎？",
+            self._t("memory_delete_title", "刪除長期記憶"),
+            self._t(
+                "memory_delete_confirm",
+                "確定永久刪除勾選的 {count} 則記憶嗎？",
+                count=len(memory_ids),
+            ),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No,
         )
@@ -5713,8 +6515,11 @@ class Dashboard(QDialog):
     def clear_memories(self) -> None:
         answer = QMessageBox.question(
             self,
-            "清除長期記憶",
-            "確定要刪除墨寒保存的全部長期記憶嗎？此動作無法復原。",
+            self._t("memory_clear_title", "清除長期記憶"),
+            self._t(
+                "memory_clear_confirm",
+                "確定要刪除墨寒保存的全部長期記憶嗎？此動作無法復原。",
+            ),
         )
         if answer == QMessageBox.Yes:
             self.db.clear_memories()
@@ -5725,15 +6530,23 @@ class Dashboard(QDialog):
         self.refresh_memories()
         QMessageBox.information(
             self,
-            "記憶整理完成",
-            f"合併 {result['deduplicated']} 則近似記憶，"
-            f"封存 {result['pruned']} 則較舊低重要度記憶。\n"
-            f"目前使用中 {result['active']} 則；"
-            f"可還原封存 {result['archived']} 則。",
+            self._t("memory_optimize_title", "記憶整理完成"),
+            self._t(
+                "memory_optimize_result",
+                "合併 {deduplicated} 則近似記憶，"
+                "封存 {pruned} 則較舊低重要度記憶。\n"
+                "目前使用中 {active} 則；"
+                "可還原封存 {archived} 則。",
+                **result,
+            ),
         )
 
     def show_archived_memories(self) -> None:
-        dialog = ArchivedMemoryDialog(self.db, self)
+        dialog = ArchivedMemoryDialog(
+            self.db,
+            self,
+            language=self.ui_language,
+        )
         dialog.exec()
         if dialog.changed:
             self.refresh_memories()
@@ -5930,7 +6743,10 @@ class Dashboard(QDialog):
         self.db.set_setting("voice_muted", muted)
         self.volume_changed.emit(volume, muted)
 
-    def _topmost_mode_changed(self, mode: str) -> None:
+    def _topmost_mode_changed(self, _index: int) -> None:
+        mode = str(
+            self.topmost_mode.currentData() or "智慧置頂（推薦）"
+        )
         self.db.set_setting("topmost_mode", mode)
         self.topmost_mode_changed.emit(mode)
 
@@ -6204,18 +7020,36 @@ class Dashboard(QDialog):
         if not url:
             QMessageBox.information(
                 self,
-                "尚未設定網址",
-                f"請先在「{platform}」卡片填入網站或工具網址。",
+                self._t(
+                    "platform_url_missing_title",
+                    "尚未設定網址",
+                ),
+                self._t(
+                    "platform_url_missing",
+                    "請先在「{platform}」卡片填入網站或工具網址。",
+                    platform=platform,
+                ),
             )
             return
         if not url.lower().startswith(("https://", "http://")):
             QMessageBox.warning(
                 self,
-                "網址格式不支援",
-                "只允許開啟 http:// 或 https:// 網址。",
+                self._t(
+                    "platform_url_unsupported_title",
+                    "網址格式不支援",
+                ),
+                self._t(
+                    "platform_url_unsupported",
+                    "只允許開啟 http:// 或 https:// 網址。",
+                ),
             )
             return
-        if self._permission_allowed("open_web", f"開啟 {platform} 網站"):
+        action = self._t(
+            "permission_open_platform",
+            "開啟 {platform} 網站",
+            platform=platform,
+        )
+        if self._permission_allowed("open_web", action):
             webbrowser.open(url)
 
     def _current_profile_localization(self) -> ProfileLocalizationContext:
@@ -6235,8 +7069,8 @@ class Dashboard(QDialog):
         if not assistant_name or not user_title:
             QMessageBox.information(
                 self,
-                "尚缺必要資料",
-                "助理名稱與助理對你的稱呼不可留空。",
+                self._settings_text(SettingsText.PROFILE_REQUIRED_TITLE),
+                self._settings_text(SettingsText.PROFILE_REQUIRED_MESSAGE),
             )
             return None
         return ProfileSettingsValues(
@@ -6401,12 +7235,18 @@ class Dashboard(QDialog):
                 "persona_prompt",
                 persona or default_persona_for_language(ui_language),
             ),
-            ("topmost_mode", self.topmost_mode.currentText()),
+            (
+                "topmost_mode",
+                str(self.topmost_mode.currentData() or "智慧置頂（推薦）"),
+            ),
             (
                 "character_scale_percent",
                 self.character_scale_slider.value(),
             ),
-            ("proactive_mode", self.proactive_mode.currentText()),
+            (
+                "proactive_mode",
+                str(self.proactive_mode.currentData() or "平衡（推薦）"),
+            ),
             (
                 "background_assistant_enabled",
                 self.background_assistant_enabled.isChecked(),
@@ -6450,8 +7290,11 @@ class Dashboard(QDialog):
         except OSError as exc:
             QMessageBox.warning(
                 self,
-                "自動啟動",
-                f"無法更新自動啟動：{exc}",
+                self._settings_text(SettingsText.AUTOSTART_ERROR_TITLE),
+                self._settings_text(
+                    SettingsText.AUTOSTART_ERROR,
+                    reason=exc,
+                ),
             )
             return
         self.db.set_setting("autostart", enabled)
@@ -6514,11 +7357,16 @@ class Dashboard(QDialog):
     def open_work_folder(self) -> None:
         value = self.work_folder.text().strip()
         if value and Path(value).is_dir():
-            if self._permission_allowed("open_folder", "開啟工作室資料夾"):
+            if self._permission_allowed(
+                "open_folder",
+                self._settings_text(SettingsText.WORK_FOLDER_OPEN),
+            ):
                 self.platform_services.open_path(Path(value))
         else:
             QMessageBox.information(
-                self, "工作資料夾", "請先填入有效的資料夾路徑。"
+                self,
+                self._settings_text(SettingsText.WORK_FOLDER_INVALID_TITLE),
+                self._settings_text(SettingsText.WORK_FOLDER_INVALID_MESSAGE),
             )
 
 
@@ -7037,14 +7885,15 @@ class CompanionWindow(QMainWindow):
             self.move(proposed)
 
     def _show_bubble(self, text: str) -> None:
-        normalized = normalize_for_language(
-            text.strip(),
-            profile_setting(self.db, "ui_language"),
-        )
+        normalized = text.strip()
         if len(normalized) > 230:
             display = (
                 normalized[:227].rstrip()
-                + "…\n（完整內容請見對話頁）"
+                + ui_text(
+                    profile_setting(self.db, "ui_language"),
+                    "bubble_full_content",
+                    "…\n（完整內容請見對話頁）",
+                )
             )
         else:
             display = normalized
@@ -7119,6 +7968,8 @@ class CompanionWindow(QMainWindow):
         self.viseme_dynamics = VisemeDynamics()
         self.mouth_aperture_target = 0.0
         self.head_motion_y = 0.0
+        self.speech_motion_release_attempts = 0
+        self.realtime_motion_release_attempts = 0
         self.after_speech_state = "idle"
         self.speech_closed_expression = "idle"
         self.speech_mid_expression = "mouth_mid"
@@ -7167,7 +8018,7 @@ class CompanionWindow(QMainWindow):
         self.gaze_target_x = 0.0
         self.gaze_target_y = 0.0
         self.motion_timer = QTimer(self)
-        self.motion_timer.setInterval(16)
+        self.motion_timer.setInterval(MOTION_FRAME_INTERVAL_MS)
         self.motion_timer.timeout.connect(self._motion_tick)
         self.motion_timer.start()
         self.attention_pose = ""
@@ -7201,8 +8052,19 @@ class CompanionWindow(QMainWindow):
         self.tray.setToolTip(profile_window_title(self.db))
         menu = QMenu()
         self.tray_menu = menu
-        open_action = QAction("開啟今日卷冊", self)
-        quit_action = QAction("讓寒歸劍", self)
+        language = profile_setting(self.db, "ui_language")
+        open_action = QAction(
+            ui_text(
+                language,
+                "tray_open_today",
+                "開啟今日卷冊",
+            ),
+            self,
+        )
+        quit_action = QAction(
+            ui_text(language, "tray_quit", "讓寒歸劍"),
+            self,
+        )
         open_action.triggered.connect(self.open_dashboard)
         quit_action.triggered.connect(QApplication.instance().quit)
         menu.addAction(open_action)
@@ -7759,6 +8621,41 @@ class CompanionWindow(QMainWindow):
             value = getattr(self, attribute)
             if abs(value) < 0.015:
                 setattr(self, attribute, 0.0)
+        self._compose_character_position()
+
+    def _begin_speech_motion_release(self) -> None:
+        """Release the final spoken head lift while the mouth closes."""
+        if self.audio_driven_mouth:
+            self.mouth_closing = True
+        self.head_motion_y = 0.0
+        self.speech_motion_target_y = 0.0
+
+    def _wait_for_speech_motion_release(
+        self,
+        timer: QTimer,
+        attempts_attribute: str,
+    ) -> bool:
+        """Delay state hand-off until speech motion is visually centred."""
+        scale = getattr(self, "character_scale", 1.0)
+        if round(self.speech_motion_y * scale) == 0:
+            setattr(self, attempts_attribute, 0)
+            self._finish_speech_motion_release()
+            return False
+        attempts = int(getattr(self, attempts_attribute, 0)) + 1
+        if attempts >= SPEECH_MOTION_RELEASE_LIMIT:
+            setattr(self, attempts_attribute, 0)
+            self._finish_speech_motion_release()
+            return False
+        setattr(self, attempts_attribute, attempts)
+        timer.start(MOTION_FRAME_INTERVAL_MS)
+        return True
+
+    def _finish_speech_motion_release(self) -> None:
+        """Transfer visual ownership without changing the composed pixel."""
+        if not self.speech_motion_y:
+            return
+        self.ambient_motion_y += self.speech_motion_y
+        self.speech_motion_y = 0.0
         self._compose_character_position()
 
     def _compose_character_position(self) -> None:
@@ -9388,6 +10285,7 @@ class CompanionWindow(QMainWindow):
         # pose above the new closed-mouth frame for one or two audio cues.
         self._cancel_expression_transition()
         self._cancel_pose_transition()
+        self._stop_gesture_animation()
         self.expression_overlay.hide()
         self.mouth_timer.stop()
         self.mouth_visual_timer.stop()
@@ -9402,6 +10300,8 @@ class CompanionWindow(QMainWindow):
         self.mouth_aperture_target = 0.0
         self.head_motion_y = 0.0
         self.speech_motion_target_y = 0.0
+        self.speech_motion_release_attempts = 0
+        self.realtime_motion_release_attempts = 0
         self.mouth_frame_index = 0
         self.mouth_open = False
         self.speech_current_expression = self.speech_closed_expression
@@ -9716,6 +10616,7 @@ class CompanionWindow(QMainWindow):
         source: str = "conversation",
         intensity: float = 0.5,
         force: bool = False,
+        animate_gesture: bool = True,
     ) -> bool:
         decision = self.expression_arbiter.request(
             state,
@@ -9725,12 +10626,7 @@ class CompanionWindow(QMainWindow):
         )
         if not decision.accepted:
             return False
-        previous_animation = getattr(self, "state_animation", None)
-        if previous_animation is not None and previous_animation.state():
-            previous_animation.stop()
-        self.gesture_motion_x = 0.0
-        self.gesture_motion_y = 0.0
-        self._compose_character_position()
+        self._stop_gesture_animation()
         self.expression_generation += 1
         self.state = state
         if state == "idle":
@@ -9756,7 +10652,7 @@ class CompanionWindow(QMainWindow):
             "proud_front",
             *NEW_EXPRESSION_ASSETS,
         }
-        if state in expressive_states:
+        if state in expressive_states and animate_gesture:
             animation = QVariantAnimation(self)
             animation.setDuration(
                 720
@@ -9819,6 +10715,14 @@ class CompanionWindow(QMainWindow):
             animation.start()
             self.state_animation = animation
         return True
+
+    def _stop_gesture_animation(self) -> None:
+        animation = getattr(self, "state_animation", None)
+        if animation is not None and animation.state():
+            animation.stop()
+        self.gesture_motion_x = 0.0
+        self.gesture_motion_y = 0.0
+        self._compose_character_position()
 
     def _start_ai_wait_expression(
         self,
@@ -10200,11 +11104,7 @@ class CompanionWindow(QMainWindow):
                 )
             ):
                 continue
-            normalized = normalize_for_language(
-                content,
-                profile_setting(self.db, "ui_language"),
-            )
-            lines.append(f"{labels[role]}：{normalized}")
+            lines.append(f"{labels[role]}：{content}")
         return "\n".join(lines)[-5000:]
 
     def _configure_realtime_speech_output(self, mode: str) -> None:
@@ -10281,12 +11181,13 @@ class CompanionWindow(QMainWindow):
             self._configure_realtime_speech_output(output_mode)
         except (RuntimeError, ValueError) as exc:
             language = profile_setting(self.db, "ui_language")
+            safe_message = safe_error_message(language, exc)
             self.dashboard.set_realtime_status(
                 ui_text(
                     language,
                     "realtime_error_status",
                     "錯誤：{error}",
-                    error=exc,
+                    error=safe_message,
                 ),
                 False,
             )
@@ -10297,7 +11198,7 @@ class CompanionWindow(QMainWindow):
                     "realtime_voice_title",
                     "Realtime 語音",
                 ),
-                str(exc),
+                safe_message,
             )
             return
         self.realtime.start(
@@ -10394,10 +11295,7 @@ class CompanionWindow(QMainWindow):
         self.dashboard.set_realtime_status(status, self.realtime.running)
 
     def _realtime_user_text(self, text: str) -> None:
-        text = normalize_for_language(
-            text,
-            profile_setting(self.db, "ui_language"),
-        )
+        text = text.strip()
         wake_word = profile_setting(self.db, "wake_word")
         clean = text.replace(wake_word, "", 1).strip() or text
         self.db.log_chat("user", clean)
@@ -10435,10 +11333,7 @@ class CompanionWindow(QMainWindow):
 
     def _realtime_assistant_text(self, text: str) -> None:
         tagged = parse_internal_emotion(text)
-        text = normalize_for_language(
-            tagged.text,
-            profile_setting(self.db, "ui_language"),
-        )
+        text = tagged.text.strip()
         if not text:
             return
         self.db.log_chat("assistant", text)
@@ -10503,6 +11398,7 @@ class CompanionWindow(QMainWindow):
             self.realtime_mouth_active = False
             if not is_realtime_mouth:
                 return
+            self._begin_speech_motion_release()
             if self.realtime_finish_timer.isActive():
                 return
             if (
@@ -10527,16 +11423,24 @@ class CompanionWindow(QMainWindow):
 
     def _complete_realtime_speaking_stop(self) -> None:
         self.realtime_finish_timer.stop()
-        self.realtime_mouth_active = False
         was_realtime_speaking = (
             self.state == "speaking"
             and self.audio_driven_mouth
             and not self.speech_playing
         )
+        if not was_realtime_speaking:
+            self.realtime_mouth_active = False
+            if self.audio_driven_mouth or self.mouth_visual_timer.isActive():
+                self._stop_mouth_animation()
+            return
+        if self._wait_for_speech_motion_release(
+            self.realtime_finish_timer,
+            "realtime_motion_release_attempts",
+        ):
+            return
+        self.realtime_mouth_active = False
         if self.audio_driven_mouth or self.mouth_visual_timer.isActive():
             self._stop_mouth_animation()
-        if not was_realtime_speaking:
-            return
         final_state = self.realtime_after_speech_state
         self.realtime_after_speech_state = "idle"
         if (
@@ -10566,6 +11470,7 @@ class CompanionWindow(QMainWindow):
             source="ai_tag",
             intensity=final_intensity,
             force=True,
+            animate_gesture=False,
         )
         if final_state != "idle":
             self._schedule_return_to_idle(
@@ -10578,13 +11483,14 @@ class CompanionWindow(QMainWindow):
 
     def _realtime_failed(self, message: str) -> None:
         language = profile_setting(self.db, "ui_language")
+        safe_message = safe_error_message(language, message)
         self._stop_realtime_output()
         self.dashboard.set_realtime_status(
             ui_text(
                 language,
                 "realtime_error_status",
                 "錯誤：{error}",
-                error=message[:90],
+                error=safe_message,
             ),
             False,
         )
@@ -10595,7 +11501,7 @@ class CompanionWindow(QMainWindow):
                 "realtime_voice_title",
                 "Realtime 語音",
             ),
-            message,
+            safe_message,
         )
 
     def _stop_realtime_output(self) -> None:
@@ -10630,6 +11536,8 @@ class CompanionWindow(QMainWindow):
         provider_label: str,
         message: str,
     ) -> None:
+        language = profile_setting(self.db, "ui_language")
+        safe_message = safe_error_message(language, message)
         credentials = self._speech_credentials()
         configured = set(self._configured_speech_providers(credentials))
         candidates = (
@@ -10654,12 +11562,12 @@ class CompanionWindow(QMainWindow):
             )
             self.dashboard.set_api_status(
                 f"{provider_label}失敗，已切換 {fallback_label}："
-                f"{message[:50]}"
+                f"{safe_message}"
             )
         else:
             self.dashboard.set_api_status(
                 f"{provider_label}失敗；此平台沒有已驗證的本機語音備援："
-                f"{message[:50]}"
+                f"{safe_message}"
             )
         if (
             self.speech_playing
@@ -10705,13 +11613,16 @@ class CompanionWindow(QMainWindow):
 
     def _windows_voice_failed(self, message: str) -> None:
         platform_name = self.platform_services.capabilities.display_name
+        language = profile_setting(self.db, "ui_language")
         self.dashboard.set_api_status(
-            f"{platform_name} 本機語音失敗：{message[:70]}"
+            f"{platform_name} 本機語音失敗："
+            f"{safe_error_message(language, message)}"
         )
 
     def _speech_audio_finished(self) -> None:
         if not self.speech_playing:
             return
+        self._begin_speech_motion_release()
         if self.speech_finish_timer.isActive():
             return
         if (
@@ -10737,6 +11648,12 @@ class CompanionWindow(QMainWindow):
     def _complete_speech_audio_finished(self) -> None:
         if not self.speech_playing:
             return
+        self.speech_finish_timer.stop()
+        if self._wait_for_speech_motion_release(
+            self.speech_finish_timer,
+            "speech_motion_release_attempts",
+        ):
+            return
         self._stop_mouth_animation()
         final_state = self.after_speech_state
         final_intensity = getattr(self, "after_speech_intensity", 0.5)
@@ -10745,6 +11662,7 @@ class CompanionWindow(QMainWindow):
             source="conversation",
             intensity=final_intensity,
             force=True,
+            animate_gesture=False,
         )
         self.speech_playing = False
         self.active_speech_text = ""
@@ -10754,7 +11672,14 @@ class CompanionWindow(QMainWindow):
         if self.speech_queue:
             QTimer.singleShot(120, self._start_next_speech)
         else:
-            self.dashboard.set_voice_phase("準備就緒")
+            language = profile_setting(self.db, "ui_language")
+            self.dashboard.set_voice_phase(
+                ui_text(
+                    language,
+                    "voice_ready_short",
+                    "準備就緒",
+                )
+            )
             if final_state != "idle":
                 self._schedule_return_to_idle(
                     self.expression_arbiter.hold_duration(

@@ -34,6 +34,7 @@ lazy from realtime_speech_output import (
     REALTIME_OUTPUT_MODES,
     REALTIME_OUTPUT_OPENAI,
 )
+lazy from safe_error import sanitize_error
 lazy from speech import transcribe_wav_bytes
 
 
@@ -628,13 +629,7 @@ class RealtimeVoiceClient(QObject):
 
         def on_error(_ws, error: object) -> None:
             if is_current_session() and self.running:
-                self._emit_failure(
-                    _realtime_message(
-                        self._locale,
-                        "generic_error",
-                        error=error,
-                    )
-                )
+                self._emit_failure(str(error))
 
         def on_close(_ws, _code, _message) -> None:
             if is_current_session():
@@ -674,7 +669,8 @@ class RealtimeVoiceClient(QObject):
             )
         except Exception as exc:  # noqa: BLE001 -- audio startup reports all failures
             self._emit_failure(
-                self._audio_error_message(exc, self._locale)
+                self._audio_error_message(exc, self._locale),
+                trusted=True,
             )
             self.stop()
 
@@ -932,7 +928,8 @@ class RealtimeVoiceClient(QObject):
             self._cancel_server_response()
             self._assistant_text = ""
             self._emit_failure(
-                _realtime_message(self._locale, "response_too_long")
+                _realtime_message(self._locale, "response_too_long"),
+                trusted=True,
             )
             return
         self._assistant_text += delta
@@ -948,7 +945,8 @@ class RealtimeVoiceClient(QObject):
         if len(text) > MAX_ASSISTANT_RESPONSE_CHARACTERS:
             self._cancel_server_response()
             self._emit_failure(
-                _realtime_message(self._locale, "response_too_long")
+                _realtime_message(self._locale, "response_too_long"),
+                trusted=True,
             )
             return
         if text:
@@ -1125,7 +1123,8 @@ class RealtimeVoiceClient(QObject):
         self._cancel_server_response()
         self._cancel_external_output(response_id, force_signal=True)
         self._emit_failure(
-            _realtime_message(self._locale, "response_too_long")
+            _realtime_message(self._locale, "response_too_long"),
+            trusted=True,
         )
 
     def _cancel_server_response(self) -> None:
@@ -1278,13 +1277,7 @@ class RealtimeVoiceClient(QObject):
             error.get("message")
             or _realtime_message(self._locale, "realtime_api_error")
         )
-        self._emit_failure(
-            _realtime_message(
-                self._locale,
-                "generic_error",
-                error=detail,
-            )
-        )
+        self._emit_failure(detail)
 
     def _handle_server_event(self, event: dict[str, Any]) -> None:
         kind = str(event.get("type", ""))
@@ -1513,7 +1506,8 @@ class RealtimeVoiceClient(QObject):
                 ws.send(json.dumps({"type": "response.cancel"}))
         self._finish_assistant_audio(force=True)
         self._emit_failure(
-            _realtime_message(self._locale, "playback_buffer_full")
+            _realtime_message(self._locale, "playback_buffer_full"),
+            trusted=True,
         )
         return False
 
@@ -1604,11 +1598,8 @@ class RealtimeVoiceClient(QObject):
             return
         self._finish_assistant_audio(force=True)
         self._emit_failure(
-            _realtime_message(
-                self._locale,
-                "playback_failed",
-                error=error,
-            )
+            self._audio_error_message(error, self._locale),
+            trusted=True,
         )
 
     def _close_audio(self) -> None:
@@ -1774,7 +1765,7 @@ class RealtimeVoiceClient(QObject):
             error = ""
         except Exception as exc:  # noqa: BLE001 -- transcription returns diagnostics
             text = ""
-            error = str(exc)
+            error = str(sanitize_error(exc))
         self._hybrid_result.emit(
             item_id,
             text,
@@ -1997,18 +1988,21 @@ class RealtimeVoiceClient(QObject):
             self.viseme_cue.emit(0.0, "CLOSED")
             self.speaking_changed.emit(False)
 
-    def _emit_failure(self, detail: str) -> None:
+    def _emit_failure(self, detail: str, *, trusted: bool = False) -> None:
         with self._failure_lock:
             if self._failure_emitted:
                 return
             self._failure_emitted = True
-        self.failed.emit(
-            self._friendly_error(
+        message = (
+            detail
+            if trusted
+            else self._friendly_error(
                 detail,
                 self._active_model,
                 self._locale,
             )
         )
+        self.failed.emit(message)
 
     @staticmethod
     def _friendly_error(
@@ -2035,9 +2029,9 @@ class RealtimeVoiceClient(QObject):
             return _realtime_message(
                 locale,
                 "server_rejected",
-                error=raw,
+                error=sanitize_error(raw),
             )
-        return raw
+        return str(sanitize_error(raw))
 
     @staticmethod
     def _audio_error_message(
@@ -2046,6 +2040,7 @@ class RealtimeVoiceClient(QObject):
     ) -> str:
         detail = str(error)
         lowered = detail.lower()
+        safe_detail = sanitize_error(error)
         if (
             "rawinputstream" in lowered
             or "directsound error" in lowered
@@ -2055,10 +2050,10 @@ class RealtimeVoiceClient(QObject):
             return _realtime_message(
                 locale,
                 "microphone_failed",
-                error=detail,
+                error=safe_detail,
             )
         return _realtime_message(
             locale,
             "audio_failed",
-            error=detail,
+            error=safe_detail,
         )

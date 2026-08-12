@@ -150,8 +150,8 @@ def _assert_todos_and_ideas(db: StudioDB) -> None:
     assert db.list_ideas()[0]["title"] == "雨夜劍魂場景"
     db.update_idea(idea_id, "剑魂苏醒", "她在雨夜听见主上的声音。")
     edited_idea = db.idea(idea_id)
-    assert edited_idea["title"] == "劍魂甦醒"
-    assert edited_idea["content"] == "她在雨夜聽見主上的聲音。"
+    assert edited_idea["title"] == "剑魂苏醒"
+    assert edited_idea["content"] == "她在雨夜听见主上的声音。"
     disposable_idea = db.add_idea("待刪除靈感")
     assert db.delete_ideas([disposable_idea]) == 1
     assert db.idea(disposable_idea) is None
@@ -198,7 +198,7 @@ def _assert_settings_memory_and_chat(db: StudioDB) -> None:
     assert db.list_memories() == []
     db.log_chat("assistant", "劍主請先休息")
     db.log_chat("user", "你还记得自己的故事吗？")
-    assert db.recent_chat()[-1]["content"] == "你還記得自己的故事嗎？"
+    assert db.recent_chat()[-1]["content"] == "你还记得自己的故事吗？"
     retained_count = db.chat_count()
     db.log_chat("assistant", "這則稍後刪除")
     disposable_chat = int(db.recent_chat()[-1]["id"])
@@ -208,7 +208,7 @@ def _assert_settings_memory_and_chat(db: StudioDB) -> None:
 
 def _assert_reopened_chat_migration(temp_dir: str) -> None:
     migrated = StudioDB(Path(temp_dir) / "test.db")
-    assert migrated.recent_chat()[-2]["content"] == "主上請先休息"
+    assert migrated.recent_chat()[-2]["content"] == "劍主請先休息"
     migrated.close()
 
 
@@ -259,7 +259,9 @@ def _assert_database_contracts() -> None:
 
 
 def _assert_offline_reply_contract() -> None:
+    # The default argument is a compatibility contract for existing callers.
     assert format_duration(3720) == "1 小時 2 分"
+    assert format_duration(3720, "zh-TW") == "1 小時 2 分"
     assert "計時" in offline_reply("我開始工作了", "工作")
     assert "計時已啟" not in offline_reply(
         "我只是單純在文字框提到開始工作，沒有要啟動計時。",
@@ -583,7 +585,7 @@ def _assert_traditional_text_normalization() -> None:
     )
 
 
-def _assert_traditional_chat_migration() -> None:
+def _assert_legacy_chat_migration_preserves_content() -> None:
     with TemporaryDirectory() as temp_dir:
         traditional_path = Path(temp_dir) / "traditional-chat.db"
         traditional_db = StudioDB(traditional_path)
@@ -603,7 +605,7 @@ def _assert_traditional_chat_migration() -> None:
         traditional_db.close()
         traditional_db = StudioDB(traditional_path)
         assert traditional_db.recent_chat(1)[0]["content"] == (
-            "會保持專注，開啟軟體和滑鼠。"
+            "会保持专注，打开软件和鼠标。"
         )
         assert traditional_db.setting(
             "traditional_chat_v1215_migrated", False
@@ -639,7 +641,7 @@ def run() -> None:
     realtime = _assert_realtime_audio_lifecycle()
     _assert_realtime_playback(realtime)
     _assert_traditional_text_normalization()
-    _assert_traditional_chat_migration()
+    _assert_legacy_chat_migration_preserves_content()
     _assert_listener_script_contract()
     print("CORE_TESTS_OK")
 

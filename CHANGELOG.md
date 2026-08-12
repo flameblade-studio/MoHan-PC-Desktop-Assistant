@@ -11,6 +11,9 @@
 - 三種輸出模式完全隔離且不混音，不改動其他語音供應器；Dragon HD 單句失敗時依序只退回一般 Azure 一次及 Windows 本機女性聲線一次，一般 Azure 單句失敗時只退回 Windows 本機女性聲線一次。回退僅發生於該句尚未播放音訊時；串流已開始後若失敗則立即停止，不整句重播，以免重複發聲與計費。
 - 只有狀態為 `completed` 的 Realtime 回覆才提交最終文字；取消、失敗、不完整、斷線及舊回覆的遲到事件不會發聲或污染後續回覆。
 - Azure 與 Windows 本機語音都支援真正停止目前播放；操作識別碼、受限佇列與過長回覆保護會隔離遲到回呼並限制記憶體壓力，敏感金鑰也不會出現在物件表示內容中。
+- 修正語音結束後身體短暫回彈的程式根因：音訊結束時立即將發話動作目標釋放至中央，待實際位移收束後才切換狀態；Realtime、Windows 本機、OpenAI 與 Azure 共用同一結束流程，並取消狀態交接時重複的表情進場動作，避免同一影格出現兩個動作來源。
+- 新增 75%、100%、180% 縮放的逐影格座標回歸，驗證動作只會平滑、單調地返回中央，且所有角色圖層保持同步。本修正已納入自動化驗證，但仍待使用者以候選安裝包進行實機確認，不能宣稱實機已通過。
+- 四語介面修正仍在進行最後驗證；v3.1.2 尚未發布，須待完整在地化、回歸、封裝、安全及發行檢查全部通過後才能建立正式版或候選版。
 
 ### v3.1.1 — 2026-08-12
 
@@ -205,6 +208,9 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 - 三种输出模式完全隔离且不混音，不改动其他语音供应器；Dragon HD 单句失败时依次只回退到一般 Azure 一次及 Windows 本地女性声线一次，一般 Azure 单句失败时只回退到 Windows 本地女性声线一次。回退仅发生于该句尚未播放音频时；流式播放开始后若失败则立即停止，不整句重播，以免重复发声及计费。
 - 只有状态为 `completed` 的 Realtime 回复才提交最终文字；取消、失败、不完整、断线及旧回复的迟到事件不会发声或污染后续回复。
 - Azure 与 Windows 本地语音都支持真正停止当前播放；操作标识、受限队列与过长回复保护会隔离迟到回调并限制内存压力，敏感密钥也不会出现在对象表示内容中。
+- 修复语音结束后身体短暂回弹的程序根因：音频结束时立即将发话动作目标释放至中央，待实际位移收束后才切换状态；Realtime、Windows 本地、OpenAI 与 Azure 共用同一结束流程，并取消状态交接时重复的表情进场动作，避免同一帧出现两个动作来源。
+- 新增 75%、100%、180% 缩放的逐帧坐标回归，验证动作只会平滑、单调地返回中央，且所有角色图层保持同步。本修正已纳入自动化验证，但仍待用户使用候选安装包进行真机确认，不能宣称真机已通过。
+- 四语界面修复仍在进行最终验证；v3.1.2 尚未发布，必须在完整本地化、回归、打包、安全及发布检查全部通过后，才能创建正式版或候选版。
 
 ### v3.1.1 — 2026-08-12
 
@@ -398,6 +404,9 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 - Keeps all three output modes isolated and unmixed, without changing other speech providers. A failed Dragon HD clause falls back once to standard Azure and then once to a local Windows female voice; standard Azure falls back once to the local Windows female voice. Fallback occurs only before that clause has played any audio. A stream failure after playback begins stops the clause without replaying it in full, preventing duplicate speech and charges.
 - Commits final text only when a Realtime response has status `completed`; cancelled, failed, incomplete, disconnected, and late events from older responses cannot speak or contaminate the next response.
 - Azure and Windows local speech can both stop current playback. Operation IDs, bounded queues, and oversized-response guards isolate late callbacks and cap memory pressure, while secret keys stay out of object representations.
+- Fixes the underlying motion-handoff cause of the brief body rebound after speech: speech motion begins releasing toward the centre as soon as audio ends, and state hand-off waits until the actual offset settles. Realtime, Windows local, OpenAI, and Azure share this completion path, while duplicate expression entrance motion is suppressed during hand-off so only one motion owner controls each frame.
+- Adds frame-by-frame coordinate regressions at 75%, 100%, and 180% scale, verifying that motion returns to centre smoothly and monotonically while all character layers remain aligned. Automated coverage includes this fix, but owner validation with a candidate installer remains pending; this does not claim that real-device validation has passed.
+- Four-language interface fixes remain under final validation. v3.1.2 is not published and cannot become a Stable Release or release candidate until complete localization, regression, packaging, security, and publication checks all pass.
 
 ### v3.1.1 — 2026-08-12
 
@@ -631,6 +640,9 @@ speech, gaze, and physics stress test passed before this release candidate.
 - 三つの出力モードを完全に分離して混音せず、他の音声供給元も変更しません。Dragon HD が一つの句で失敗した場合は通常 Azure へ一度、続いて Windows 本機女性音声へ一度だけ代替し、通常 Azure が失敗した場合は Windows 本機女性音声へ一度だけ代替します。代替するのは、その句の音声がまだ再生されていない場合だけです。再生開始後のストリーム障害では句を直ちに停止し、全体を再生し直さないことで重複発話と重複課金を防ぎます。
 - Realtime 応答の状態が `completed` の場合だけ最終テキストを確定します。取消、失敗、未完了、切断、過去の応答から遅れて届いたイベントは発話せず、次の応答も汚染しません。
 - Azure と Windows 本機音声は、どちらも現在の再生を実際に停止できます。操作 ID、上限付きキュー、長すぎる応答の保護により遅延コールバックを隔離してメモリ負荷を制限し、秘密キーをオブジェクト表現へ出しません。
+- 発話終了後に身体が短時間跳ね戻る動作引き継ぎ上の根本原因を修正します。音声の終了時点で発話動作の目標を直ちに中央へ解放し、実際の変位が収束してから状態を切り替えます。Realtime、Windows 本機、OpenAI、Azure は同じ終了処理を共有し、状態引き継ぎ時の重複した表情開始動作を抑えて、同一フレームを一つの動作所有者だけが制御するようにします。
+- 75%、100%、180% の各表示倍率でフレームごとの座標回帰を追加し、全キャラクターレイヤーの同期を保ちながら動作が中央へ滑らかかつ単調に戻ることを検証します。修正は自動テスト対象ですが、候補インストーラーによる所有者の実機確認は未完了であり、実機検証済みとは表明しません。
+- 四言語画面の修正は最終検証中です。v3.1.2 は未公開で、完全なローカライズ、回帰、パッケージ、セキュリティ、公開検査がすべて成功するまで、正式版にもリリース候補版にもできません。
 
 ### v3.1.1 — 2026-08-12
 

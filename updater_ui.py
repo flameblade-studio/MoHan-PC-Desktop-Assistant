@@ -18,6 +18,12 @@ lazy from PySide6.QtWidgets import (
     QWidget,
 )
 
+lazy from auxiliary_ui_localization import (
+    AuxiliaryOperation,
+    AuxiliaryText,
+    auxiliary_text,
+    localized_operation_error,
+)
 lazy from updater import ReleaseInfo, UpdateError, UpdateManager
 lazy from version_info import APP_VERSION, PROJECT_REPOSITORY
 
@@ -44,9 +50,16 @@ class _Worker(QRunnable):
 
 
 class UpdatePanel(QWidget):
-    def __init__(self, db, data_dir: Path, parent=None):
+    def __init__(
+        self,
+        db,
+        data_dir: Path,
+        parent=None,
+        language: str = "zh-TW",
+    ):
         super().__init__(parent)
         self.db = db
+        self.language = language
         self.manager = UpdateManager(
             PROJECT_REPOSITORY,
             APP_VERSION,
@@ -57,37 +70,44 @@ class UpdatePanel(QWidget):
         self.silent_check = False
 
         layout = QVBoxLayout(self)
-        title = QLabel("<b>軟體更新</b>")
-        self.current = QLabel(f"目前版本：{APP_VERSION}")
+        self.title = QLabel(self._t(AuxiliaryText.UPDATE_TITLE))
+        self.current = QLabel(
+            self._t(AuxiliaryText.CURRENT_VERSION, version=APP_VERSION)
+        )
         row = QHBoxLayout()
         self.channel = QComboBox()
-        self.channel.addItem("穩定版（建議）", "stable")
-        self.channel.addItem("預覽版／RC", "preview")
+        self.channel.addItem(self._t(AuxiliaryText.CHANNEL_STABLE), "stable")
+        self.channel.addItem(self._t(AuxiliaryText.CHANNEL_PREVIEW), "preview")
         saved_channel = str(db.setting("update_channel", "stable"))
         self.channel.setCurrentIndex(
             max(0, self.channel.findData(saved_channel))
         )
-        self.automatic = QCheckBox("啟動後自動檢查更新")
+        self.automatic = QCheckBox(self._t(AuxiliaryText.AUTO_CHECK))
         self.automatic.setChecked(
             bool(db.setting("automatic_update_check", True))
         )
-        self.check_button = QPushButton("立即檢查更新")
-        self.download_button = QPushButton("下載並安裝")
+        self.check_button = QPushButton(self._t(AuxiliaryText.CHECK_NOW))
+        self.download_button = QPushButton(
+            self._t(AuxiliaryText.DOWNLOAD_INSTALL)
+        )
         self.download_button.setEnabled(False)
-        row.addWidget(QLabel("更新頻道"))
+        self.channel_label = QLabel(self._t(AuxiliaryText.CHANNEL_LABEL))
+        row.addWidget(self.channel_label)
         row.addWidget(self.channel)
         row.addWidget(self.automatic)
         row.addStretch()
         row.addWidget(self.check_button)
         row.addWidget(self.download_button)
-        self.status = QLabel("尚未檢查")
+        self.status = QLabel(self._t(AuxiliaryText.NOT_CHECKED))
         self.status.setWordWrap(True)
         self.progress = QProgressBar()
         self.progress.setVisible(False)
         self.notes = QTextBrowser()
-        self.notes.setPlaceholderText("有新版本時會在此顯示 Release Notes。")
+        self.notes.setPlaceholderText(
+            self._t(AuxiliaryText.NOTES_PLACEHOLDER)
+        )
         self.notes.setMaximumHeight(150)
-        layout.addWidget(title)
+        layout.addWidget(self.title)
         layout.addWidget(self.current)
         layout.addLayout(row)
         layout.addWidget(self.status)
@@ -99,6 +119,9 @@ class UpdatePanel(QWidget):
         self.check_button.clicked.connect(self.check_updates)
         self.download_button.clicked.connect(self.download_update)
         self._automatic_check_started = False
+
+    def _t(self, key: AuxiliaryText, **values: object) -> str:
+        return auxiliary_text(self.language, key, **values)
 
     def start_automatic_check(self) -> None:
         if self._automatic_check_started or not self.automatic.isChecked():
@@ -121,7 +144,7 @@ class UpdatePanel(QWidget):
         self.silent_check = silent
         self.release = None
         self._set_busy(True)
-        self.status.setText("正在安全地檢查 GitHub Release……")
+        self.status.setText(self._t(AuxiliaryText.CHECKING))
         worker = _Worker(
             lambda _progress: self.manager.check(
                 str(self.channel.currentData())
@@ -135,19 +158,27 @@ class UpdatePanel(QWidget):
         self.release = result if isinstance(result, ReleaseInfo) else None
         self._set_busy(False)
         if self.release is None:
-            self.status.setText("目前已是此更新頻道的最新版本。")
+            self.status.setText(self._t(AuxiliaryText.UP_TO_DATE))
             self.notes.clear()
             return
         self.status.setText(
-            f"發現新版本 {self.release.version}；安裝前會驗證 SHA256。"
+            self._t(
+                AuxiliaryText.NEW_VERSION,
+                version=self.release.version,
+            )
         )
-        self.notes.setMarkdown(self.release.notes or "此版本未提供說明。")
+        self.notes.setMarkdown(
+            self.release.notes or self._t(AuxiliaryText.NO_RELEASE_NOTES)
+        )
         self.download_button.setEnabled(True)
         if not self.silent_check:
             QMessageBox.information(
                 self,
-                "發現墨寒新版本",
-                f"新版本 {self.release.version} 已可下載。",
+                self._t(AuxiliaryText.NEW_VERSION_TITLE),
+                self._t(
+                    AuxiliaryText.NEW_VERSION_AVAILABLE,
+                    version=self.release.version,
+                ),
             )
 
     def download_update(self) -> None:
@@ -156,9 +187,12 @@ class UpdatePanel(QWidget):
         asset = self.release.preferred_installer()
         answer = QMessageBox.question(
             self,
-            "下載官方更新",
-            "將從官方 GitHub Release 下載安裝程式，完成 SHA256 驗證後再啟動。\n\n"
-            f"版本：{self.release.version}\n檔案：{asset.name}\n\n是否繼續？",
+            self._t(AuxiliaryText.DOWNLOAD_TITLE),
+            self._t(
+                AuxiliaryText.DOWNLOAD_PROMPT,
+                version=self.release.version,
+                filename=asset.name,
+            ),
         )
         if answer != QMessageBox.Yes:
             return
@@ -166,7 +200,7 @@ class UpdatePanel(QWidget):
         self.progress.setVisible(True)
         self.progress.setRange(0, 100)
         self.progress.setValue(0)
-        self.status.setText("正在下載並核對安裝程式……")
+        self.status.setText(self._t(AuxiliaryText.DOWNLOADING))
 
         def download(progress):
             return self.manager.download(
@@ -188,27 +222,48 @@ class UpdatePanel(QWidget):
         path = Path(result)
         answer = QMessageBox.question(
             self,
-            "驗證完成",
-            "SHA256 驗證通過。現在將關閉墨寒並開啟安裝程式。\n"
-            "您的對話、記憶、待辦與設定仍保留在本機資料目錄。\n\n"
-            "是否立即升級？",
+            self._t(AuxiliaryText.VERIFIED_TITLE),
+            self._t(AuxiliaryText.VERIFIED_PROMPT),
         )
         if answer != QMessageBox.Yes:
-            self.status.setText(f"已安全下載：{path}")
+            self.status.setText(
+                self._t(AuxiliaryText.SAFE_DOWNLOADED, path=path)
+            )
             return
         try:
             if path.suffix.lower() == ".msi":
                 subprocess.Popen(["msiexec.exe", "/i", str(path)])
             else:
                 subprocess.Popen([str(path)])
-        except OSError as exc:
-            self._operation_failed(f"無法啟動安裝程式：{exc}")
+        except OSError:
+            self._operation_failed(
+                "",
+                key=AuxiliaryText.INSTALLER_LAUNCH_FAILED,
+            )
             return
         QTimer.singleShot(250, QApplication.quit)
 
-    def _operation_failed(self, message: str) -> None:
+    def _operation_failed(
+        self,
+        message: str,
+        *,
+        key: AuxiliaryText | None = None,
+    ) -> None:
         self._set_busy(False)
         self.progress.setVisible(False)
-        self.status.setText(message)
+        localized_message = (
+            self._t(key)
+            if key is not None
+            else localized_operation_error(
+                self.language,
+                message,
+                operation=AuxiliaryOperation.UPDATE,
+            )
+        )
+        self.status.setText(localized_message)
         if not self.silent_check:
-            QMessageBox.warning(self, "墨寒更新", message)
+            QMessageBox.warning(
+                self,
+                self._t(AuxiliaryText.UPDATE_DIALOG_TITLE),
+                localized_message,
+            )

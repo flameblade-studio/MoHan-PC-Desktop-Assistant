@@ -11,11 +11,12 @@ lazy import webbrowser
 lazy from dataclasses import dataclass
 lazy from http.server import BaseHTTPRequestHandler, HTTPServer
 lazy from typing import Any
-lazy from urllib.error import HTTPError
+lazy from urllib.error import HTTPError, URLError
 lazy from urllib.parse import parse_qs, quote, urlencode, urlparse
 lazy from urllib.request import Request, urlopen
 
 lazy from flagship_core import sanitize_external_content
+lazy from safe_error import sanitize_error
 
 
 @dataclass(frozen=True, slots=True)
@@ -137,6 +138,16 @@ class OAuthError(RuntimeError):
     pass
 
 
+def _sanitized_external_error(
+    error: BaseException | str,
+    *,
+    http_status: int | None = None,
+) -> str:
+    """Discard provider detail before an error crosses the cloud boundary."""
+    safe_input = UnicodeError() if isinstance(error, json.JSONDecodeError) else error
+    return str(sanitize_error(safe_input, http_status=http_status))
+
+
 def _callback_handler(
     received: dict[str, str],
     ready: threading.Event,
@@ -182,9 +193,8 @@ def _authorization_code(received: dict[str, str], expected_state: str) -> str:
     if received.get("state") != expected_state:
         raise OAuthError("OAuth state 驗證失敗")
     if received.get("error"):
-        raise OAuthError(
-            received.get("error_description") or received["error"]
-        )
+        detail = received.get("error_description") or received["error"]
+        raise OAuthError(_sanitized_external_error(detail))
     code = received.get("code")
     if not code:
         raise OAuthError("授權服務未傳回授權碼")
@@ -279,21 +289,30 @@ class OAuthPKCEFlow:
         }
         if self.client_secret:
             payload["client_secret"] = self.client_secret
-        request = Request(
-            self.provider.token_endpoint,
-            data=urlencode(payload).encode("ascii"),
-            headers={
-                "Accept": "application/json",
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            method="POST",
-        )
+        exchange_failure: str | None = None
         try:
+            request = Request(
+                self.provider.token_endpoint,
+                data=urlencode(payload).encode("ascii"),
+                headers={
+                    "Accept": "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                method="POST",
+            )
             with urlopen(request, timeout=30) as response:
                 token = json.load(response)
-        except HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")[:500]
-            raise OAuthError(f"權杖交換失敗：HTTP {exc.code} {detail}") from exc
+        except (
+            HTTPError,
+            URLError,
+            OSError,
+            UnicodeError,
+            json.JSONDecodeError,
+        ) as exc:
+            exchange_failure = _sanitized_external_error(exc)
+        if exchange_failure is not None:
+            raise OAuthError(exchange_failure)
+
         if not isinstance(token, dict) or not token.get("access_token"):
             raise OAuthError("授權服務未傳回存取權杖")
         token["obtained_at"] = int(time.time())
@@ -318,21 +337,24 @@ def refresh_oauth_token(
     client_secret = str(token.get("client_secret", ""))
     if client_secret:
         payload["client_secret"] = client_secret
-    request = Request(
-        provider.token_endpoint,
-        data=urlencode(payload).encode("ascii"),
-        headers={
-            "Accept": "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        method="POST",
-    )
+    refresh_failure: str | None = None
     try:
+        request = Request(
+            provider.token_endpoint,
+            data=urlencode(payload).encode("ascii"),
+            headers={
+                "Accept": "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            method="POST",
+        )
         with urlopen(request, timeout=30) as response:
             updated = json.load(response)
-    except HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")[:500]
-        raise OAuthError(f"更新權杖失敗：HTTP {exc.code} {detail}") from exc
+    except (HTTPError, URLError, OSError, UnicodeError, json.JSONDecodeError) as exc:
+        refresh_failure = _sanitized_external_error(exc)
+    if refresh_failure is not None:
+        raise OAuthError(refresh_failure)
+
     if not isinstance(updated, dict) or not updated.get("access_token"):
         raise OAuthError("服務商未傳回新的存取權杖")
     merged = dict(token)
@@ -362,24 +384,31 @@ class JsonApiClient:
             if payload is not None
             else None
         )
-        request = Request(
-            url,
-            data=data,
-            method=method,
-            headers={
-                "Authorization": f"Bearer {self.token}",
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-                "User-Agent": "MoHan-Desktop-Assistant/2.0",
-            },
-        )
+        request_failure: str | None = None
         try:
+            request = Request(
+                url,
+                data=data,
+                method=method,
+                headers={
+                    "Authorization": f"Bearer {self.token}",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "User-Agent": "MoHan-Desktop-Assistant/2.0",
+                },
+            )
             with urlopen(request, timeout=30) as response:
                 raw = response.read()
                 return json.loads(raw.decode("utf-8")) if raw else None
-        except HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")[:1000]
-            raise OAuthError(f"雲端服務 HTTP {exc.code}: {detail}") from exc
+        except (
+            HTTPError,
+            URLError,
+            OSError,
+            UnicodeError,
+            json.JSONDecodeError,
+        ) as exc:
+            request_failure = _sanitized_external_error(exc)
+        raise OAuthError(request_failure)
 
     def request_bytes(
         self,
@@ -388,24 +417,31 @@ class JsonApiClient:
         content: bytes,
         content_type: str,
     ) -> Any:
-        request = Request(
-            self.base_url + path,
-            data=content,
-            method=method,
-            headers={
-                "Authorization": f"Bearer {self.token}",
-                "Accept": "application/json",
-                "Content-Type": content_type,
-                "User-Agent": "MoHan-Desktop-Assistant/2.0",
-            },
-        )
+        request_failure: str | None = None
         try:
+            request = Request(
+                self.base_url + path,
+                data=content,
+                method=method,
+                headers={
+                    "Authorization": f"Bearer {self.token}",
+                    "Accept": "application/json",
+                    "Content-Type": content_type,
+                    "User-Agent": "MoHan-Desktop-Assistant/2.0",
+                },
+            )
             with urlopen(request, timeout=45) as response:
                 raw = response.read()
                 return json.loads(raw.decode("utf-8")) if raw else None
-        except HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")[:1000]
-            raise OAuthError(f"雲端服務 HTTP {exc.code}: {detail}") from exc
+        except (
+            HTTPError,
+            URLError,
+            OSError,
+            UnicodeError,
+            json.JSONDecodeError,
+        ) as exc:
+            request_failure = _sanitized_external_error(exc)
+        raise OAuthError(request_failure)
 
 
 class GmailConnector(JsonApiClient):
@@ -536,22 +572,31 @@ class GoogleDriveConnector(JsonApiClient):
             + content
             + f"\r\n--{boundary}--\r\n".encode()
         )
-        request = Request(
-            "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
-            data=body,
-            method="POST",
-            headers={
-                "Authorization": f"Bearer {self.token}",
-                "Accept": "application/json",
-                "Content-Type": f"multipart/related; boundary={boundary}",
-            },
-        )
+        upload_failure: str | None = None
         try:
+            request = Request(
+                "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+                data=body,
+                method="POST",
+                headers={
+                    "Authorization": f"Bearer {self.token}",
+                    "Accept": "application/json",
+                    "Content-Type": f"multipart/related; boundary={boundary}",
+                },
+            )
             with urlopen(request, timeout=45) as response:
                 result = json.load(response)
-        except HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")[:1000]
-            raise OAuthError(f"Google Drive HTTP {exc.code}: {detail}") from exc
+        except (
+            HTTPError,
+            URLError,
+            OSError,
+            UnicodeError,
+            json.JSONDecodeError,
+        ) as exc:
+            upload_failure = _sanitized_external_error(exc)
+        if upload_failure is not None:
+            raise OAuthError(upload_failure)
+
         if not isinstance(result, dict):
             raise OAuthError("Google Drive 上傳回應格式錯誤")
         return result

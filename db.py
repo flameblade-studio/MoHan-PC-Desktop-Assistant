@@ -11,6 +11,7 @@ lazy from pathlib import Path
 lazy from language_support import (
     LEGACY_AUTHOR_ORGANIZATION,
     LEGACY_TRANSCRIPTION_PROMPT,
+    canonical_ui_language,
     localized_transcription_prompt,
 )
 lazy from memory_index import (
@@ -107,6 +108,32 @@ TRANSCRIPTION_PROFILE_KEYS = (
 
 
 @dataclass(frozen=True, slots=True)
+class DurationFormat:
+    with_hours: str
+    minutes_only: str
+
+
+DURATION_FORMATS: Mapping[str, DurationFormat] = frozendict({
+    "zh-TW": DurationFormat(
+        with_hours="{hours} 小時 {minutes} 分",
+        minutes_only="{minutes} 分鐘",
+    ),
+    "zh-CN": DurationFormat(
+        with_hours="{hours} 小时 {minutes} 分",
+        minutes_only="{minutes} 分钟",
+    ),
+    "en": DurationFormat(
+        with_hours="{hours} h {minutes} min",
+        minutes_only="{minutes} min",
+    ),
+    "ja-JP": DurationFormat(
+        with_hours="{hours}時間{minutes}分",
+        minutes_only="{minutes}分",
+    ),
+})
+
+
+@dataclass(frozen=True, slots=True)
 class PlatformProgressUpdate:
     platform: str
     status: str
@@ -118,12 +145,12 @@ class PlatformProgressUpdate:
 
     def database_row(self, updated_at: str) -> tuple[str, ...]:
         return (
-            self.platform,
-            to_taiwan_traditional(self.status.strip()) or "尚未開始",
-            to_taiwan_traditional(self.missing.strip()),
-            to_taiwan_traditional(self.item_name.strip()),
-            to_taiwan_traditional(self.next_action.strip()),
-            to_taiwan_traditional(self.notes.strip()),
+            self.platform.strip(),
+            self.status.strip() or "尚未開始",
+            self.missing.strip(),
+            self.item_name.strip(),
+            self.next_action.strip(),
+            self.notes.strip(),
             self.url.strip(),
             updated_at,
         )
@@ -350,26 +377,11 @@ class StudioDB:
             )
 
     def _migrate_chat_history(self) -> None:
+        # Older single-language releases rewrote every chat row to Traditional
+        # Chinese. A four-language profile must preserve user and model text
+        # verbatim, so the legacy marker remains only for upgrade compatibility.
         self.conn.execute(
-            "UPDATE chat_log SET content=REPLACE(content,'劍主','主上') "
-            "WHERE content LIKE '%劍主%'"
-        )
-        marker = self.conn.execute(
-            "SELECT value FROM settings "
-            "WHERE key='traditional_chat_v1215_migrated'"
-        ).fetchone()
-        if marker is not None:
-            return
-        rows = self.conn.execute("SELECT id,content FROM chat_log").fetchall()
-        for row in rows:
-            normalized = to_taiwan_traditional(row["content"])
-            if normalized != row["content"]:
-                self.conn.execute(
-                    "UPDATE chat_log SET content=? WHERE id=?",
-                    (normalized, row["id"]),
-                )
-        self.conn.execute(
-            "INSERT INTO settings(key,value) "
+            "INSERT OR IGNORE INTO settings(key,value) "
             "VALUES('traditional_chat_v1215_migrated','true')"
         )
 
@@ -472,11 +484,11 @@ class StudioDB:
             return default
 
     def add_todo(self, title: str, category: str = "其他") -> int:
-        normalized_title = to_taiwan_traditional(title.strip())
+        title = title.strip()
         cur = self.conn.execute(
             "INSERT INTO todos(title,category,created_at) VALUES(?,?,?)",
             (
-                normalized_title,
+                title,
                 category,
                 local_wall_time().isoformat(timespec="seconds"),
             ),
@@ -508,16 +520,16 @@ class StudioDB:
         self.conn.commit()
 
     def add_idea(self, text: str, content: str = "") -> int:
-        normalized_text = to_taiwan_traditional(text.strip())
-        normalized_content = to_taiwan_traditional(content.strip())
+        text = text.strip()
+        content = content.strip()
         now = local_wall_time().isoformat(timespec="seconds")
         cur = self.conn.execute(
             "INSERT INTO ideas(text,title,content,created_at,updated_at) "
             "VALUES(?,?,?,?,?)",
             (
-                normalized_text,
-                normalized_text,
-                normalized_content,
+                text,
+                text,
+                content,
                 now,
                 now,
             ),
@@ -536,14 +548,14 @@ class StudioDB:
         ).fetchone()
 
     def update_idea(self, idea_id: int, title: str, content: str) -> None:
-        normalized_title = to_taiwan_traditional(title.strip())
-        normalized_content = to_taiwan_traditional(content.strip())
+        title = title.strip()
+        content = content.strip()
         self.conn.execute(
             "UPDATE ideas SET text=?,title=?,content=?,updated_at=? WHERE id=?",
             (
-                normalized_title,
-                normalized_title,
-                normalized_content,
+                title,
+                title,
+                content,
                 local_wall_time().isoformat(timespec="seconds"),
                 idea_id,
             ),
@@ -660,7 +672,7 @@ class StudioDB:
         )
 
     def add_platform(self, platform: str, url: str = "") -> bool:
-        name = to_taiwan_traditional(platform.strip())
+        name = platform.strip()
         if not name:
             return False
         row = self.conn.execute(
@@ -730,7 +742,7 @@ class StudioDB:
             "INSERT INTO chat_log(role,content,created_at) VALUES(?,?,?)",
             (
                 role,
-                to_taiwan_traditional(content),
+                content,
                 local_wall_time().isoformat(timespec="seconds"),
             ),
         )
@@ -775,15 +787,15 @@ class StudioDB:
         importance: int = 3,
         title: str = "",
     ) -> int:
-        text = to_taiwan_traditional(content.strip())
+        text = content.strip()
         if not text:
             return 0
         title_was_supplied = bool(title.strip())
-        normalized_title = to_taiwan_traditional(title.strip())
-        if not normalized_title:
-            normalized_title = " ".join(text.split())
-            if len(normalized_title) > 36:
-                normalized_title = normalized_title[:36].rstrip() + "…"
+        memory_title = title.strip()
+        if not memory_title:
+            memory_title = " ".join(text.split())
+            if len(memory_title) > 36:
+                memory_title = memory_title[:36].rstrip() + "…"
         now = local_wall_time().isoformat(timespec="seconds")
         conflict_title = (
             "title=excluded.title,"
@@ -803,7 +815,7 @@ class StudioDB:
             statement,
             (
                 to_taiwan_traditional(category.strip()) or "其他",
-                normalized_title or "未命名記憶",
+                memory_title or "未命名記憶",
                 text,
                 source,
                 max(1, min(5, importance)),
@@ -857,20 +869,20 @@ class StudioDB:
         category: str,
         importance: int,
     ) -> bool:
-        normalized_title = to_taiwan_traditional(title.strip())
-        normalized_content = to_taiwan_traditional(content.strip())
+        title = title.strip()
+        content = content.strip()
         normalized_category = (
             to_taiwan_traditional(category.strip()) or "其他"
         )
-        if not normalized_title or not normalized_content:
+        if not title or not content:
             return False
         try:
             cursor = self.conn.execute(
                 "UPDATE memories SET title=?,content=?,category=?,"
                 "importance=?,updated_at=? WHERE id=?",
                 (
-                    normalized_title,
-                    normalized_content,
+                    title,
+                    content,
                     normalized_category,
                     max(1, min(5, int(importance))),
                     local_wall_time().isoformat(timespec="seconds"),
@@ -1227,8 +1239,8 @@ class StudioDB:
         enabled: bool = True,
         workflow_id: int | None = None,
     ) -> int:
-        normalized = to_taiwan_traditional(name.strip())
-        if not normalized:
+        name = name.strip()
+        if not name:
             raise ValueError("工作流程名稱不可留空")
         json.loads(definition)
         now = local_wall_time().isoformat(timespec="seconds")
@@ -1238,13 +1250,13 @@ class StudioDB:
                     "INSERT INTO workflows("
                     "name,definition,enabled,created_at,updated_at"
                     ") VALUES(?,?,?,?,?)",
-                    (normalized, definition, int(enabled), now, now),
+                    (name, definition, int(enabled), now, now),
                 )
                 return int(cursor.lastrowid)
             self.conn.execute(
                 "UPDATE workflows SET name=?,definition=?,enabled=?,"
                 "updated_at=? WHERE id=?",
-                (normalized, definition, int(enabled), now, int(workflow_id)),
+                (name, definition, int(enabled), now, int(workflow_id)),
             )
         return int(workflow_id)
 
@@ -1306,7 +1318,7 @@ class StudioDB:
                 """,
                 (
                     connector_id,
-                    to_taiwan_traditional(display_name.strip()),
+                    display_name.strip(),
                     int(enabled),
                     json.dumps(configuration, ensure_ascii=False),
                     last_health,
@@ -1350,7 +1362,7 @@ class StudioDB:
                 """,
                 (
                     target_type.strip(),
-                    to_taiwan_traditional(display_name.strip()),
+                    display_name.strip(),
                     target_value.strip(),
                     access_mode,
                 ),
@@ -1401,7 +1413,7 @@ class StudioDB:
             "device_name,token_hash,permissions,created_at"
             ") VALUES(?,?,?,?)",
             (
-                to_taiwan_traditional(device_name.strip()),
+                device_name.strip(),
                 token_hash,
                 json.dumps(sorted(set(permissions)), ensure_ascii=False),
                 now,
@@ -1446,9 +1458,13 @@ class StudioDB:
         return cursor.rowcount > 0
 
 
-def format_duration(seconds: int) -> str:
+def format_duration(seconds: int, language: str = "zh-TW") -> str:
     hours, rest = divmod(max(0, seconds), 3600)
     minutes = rest // 60
-    if hours:
-        return f"{hours} 小時 {minutes} 分"
-    return f"{minutes} 分鐘"
+    duration_format = DURATION_FORMATS[canonical_ui_language(language)]
+    template = (
+        duration_format.with_hours
+        if hours
+        else duration_format.minutes_only
+    )
+    return template.format(hours=hours, minutes=minutes)

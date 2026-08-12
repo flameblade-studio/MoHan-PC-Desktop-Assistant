@@ -6,6 +6,7 @@ lazy from immutable_config import deep_freeze
 
 JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "first_run_title": "初回セットアップ",
+    "first_run_brand": "墨寒  MoHan",
     "first_run_heading": "<b>墨寒デスクトップアシスタントへようこそ</b>",
     "first_run_hero_tagline": (
         "北宋から来た千年の女剣魂。話を聴き、記憶し、仕事を整えるあなたの伴侶です。"
@@ -43,6 +44,252 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "tab_voice": "音声",
     "tab_permissions": "パソコンの権限",
     "tab_settings": "設定",
+    "today_input_placeholder": "予定を入力（例：漫画第3話の絵コンテを完成）",
+    "todo_category_comic": "漫画",
+    "todo_category_article": "文章",
+    "todo_category_music": "音楽",
+    "todo_category_stickers": "スタンプ",
+    "todo_category_publishing": "出版",
+    "todo_category_administration": "管理",
+    "todo_category_other": "その他",
+    "add_todo": "＋ 予定を追加",
+    "save_as_idea": "✦ アイデアに保存",
+    "today_tasks_heading": "<b>今日の予定</b>",
+    "creative_ideas_heading": "<b>創作アイデア</b>",
+    "edit_selected_idea": "選択したアイデアを編集",
+    "edit_selected_idea_tooltip": (
+        "下のアイデアをダブルクリックしても編集できます"
+    ),
+    "delete_checked_ideas": "チェックしたアイデアを削除",
+    "delete_checked_ideas_tooltip": (
+        "チェックしたアイデアだけを確認後に削除します"
+    ),
+    "todo_complete_tooltip": "完了としてマーク",
+    "todo_category_suffix": "今日の予定",
+    "delete": "削除",
+    "delete_todo_tooltip": "この予定を削除",
+    "idea_editor_title": "創作アイデアを編集",
+    "idea_title": "<b>アイデアのタイトル</b>",
+    "idea_title_placeholder": "分かりやすいタイトルを付けてください",
+    "idea_content": "<b>アイデアの内容</b>",
+    "idea_content_placeholder": (
+        "場面、台詞、音楽の方向性、次の行動などを記録…"
+    ),
+    "cancel": "キャンセル",
+    "save_idea": "アイデアを保存",
+    "idea_title_required_title": "タイトルが必要です",
+    "idea_title_required": "先にアイデアのタイトルを入力してください。",
+    "todo_count": "未完了 {count} 件",
+    "todo_empty": (
+        "今日の予定はまだありません。\n最も大切なことを一つ書きましょう。"
+    ),
+    "idea_count": "{count} 件",
+    "idea_empty": (
+        "アイデアはまだありません。上に入力して"
+        "「アイデアに保存」を選んでください。"
+    ),
+    "idea_edit_tooltip": "ダブルクリックしてタイトルと内容を編集",
+    "today_time": "今日 {total}｜{state}",
+    "timing_active": "計測中",
+    "timing_inactive": "未計測",
+    "todo_title_required": "先に予定のタイトルを入力してください。",
+    "todo_added": "✓ 予定を追加：{text}",
+    "todo_added_speech": "今日の予定に追加しました。",
+    "idea_capture_required": "先に保存するアイデアを入力してください。",
+    "idea_added": "✓ アイデアを保存：{text}",
+    "idea_added_speech": "消えてしまう前に、そのアイデアを保存しました。",
+    "idea_select_edit": "先に編集するアイデアを選択してください。",
+    "idea_not_found": (
+        "そのアイデアが見つかりません。更新してもう一度お試しください。"
+    ),
+    "idea_updated": "✓ アイデアを更新：{title}",
+    "idea_select_delete": "先に削除するアイデアをチェックしてください。",
+    "idea_delete_title": "創作アイデアを削除",
+    "idea_delete_confirm": (
+        "チェックした {count} 件のアイデアを完全に削除しますか？"
+    ),
+    "idea_deleted": "✓ {count} 件のアイデアを削除しました。",
+    "platform_name_placeholder": "プラットフォーム／システム名（例：ERP、Notion）",
+    "platform_url_placeholder": "URL（任意、例：https://example.com）",
+    "add_platform": "仕事プラットフォームを追加",
+    "platform_filter_all": "すべて",
+    "platform_filter_active": "進行中",
+    "platform_filter_blocked": "情報不足／停止中",
+    "platform_filter_finished": "完了／公開済み",
+    "platform_filter_not_started": "未着手",
+    "save_all_platforms": "すべて今すぐ保存",
+    "show": "表示",
+    "platform_empty": (
+        "仕事プラットフォームはまだありません。\n会社のシステム、共同作業ツール、"
+        "顧客ポータルなどを上に追加してください。"
+    ),
+    "platform_intro": (
+        "仕事で使うプラットフォーム、システム、顧客ポータル、共同作業ツールを"
+        "管理します。業種を決めつけず、利用者ごとに作成できます。"
+    ),
+    "platform_auto_save_note": "変更は自動保存され、各カードの保存ボタンも使えます。",
+    "platform_item_placeholder": "現在の仕事、プロジェクト、案件",
+    "platform_missing_placeholder": "不足資料、返信待ち、障害（なければ空欄）",
+    "platform_next_placeholder": "次の具体的な行動と期限",
+    "platform_notes_placeholder": "メモ、規則、連絡先など",
+    "platform_url_card_placeholder": "https://…（任意）",
+    "platform_not_saved": "未保存",
+    "save_platform": "このプラットフォームを保存",
+    "platform_field_item": "仕事／プロジェクト",
+    "platform_field_missing": "不足／障害",
+    "platform_field_next": "次の行動",
+    "platform_field_notes": "メモ",
+    "platform_field_url": "URL",
+    "open_platform": "ウェブサイト／ツールを開く",
+    "delete_platform": "プラットフォームを削除",
+    "platform_updated": "更新：{updated}",
+    "platform_updated_unknown": "更新時刻は不明です",
+    "save_changes": "変更を保存",
+    "platform_waiting_auto_save": "{platform} の変更を自動保存します…",
+    "platform_validation_finished_blocked": "完了済みですが、不足情報または障害が残っています。",
+    "platform_validation_revision_details": "不足／障害、次の行動、またはメモに修正内容を書いてください。",
+    "platform_validation_not_started_data": "仕事の情報があります。状態を「資料準備」に変更するか確認してください。",
+    "platform_validation_item_name": "後で識別しやすいよう、仕事やプロジェクト名を入力してください。",
+    "platform_summary_unsaved": "｜未保存 {count}",
+    "platform_summary": (
+        "{total} 件｜完了 {finished}｜進行中 {active}｜未着手 {not_started}｜"
+        "不足／障害 {blocked}{unsaved}"
+    ),
+    "platform_saved": "{platform} を保存しました。",
+    "platform_saved_automatic": "{platform} を自動保存しました。",
+    "all_platforms_saved": "すべて保存しました。{count} 件に不足情報または障害があります。",
+    "all_platforms_saved_speech": "仕事プラットフォームを保存しました。{count} 件に不足情報または障害があります。",
+    "memory_intro": (
+        "墨寒は許可された人物、好み、目標、ワークフロー、重要な日付だけを"
+        "保存します。記憶はこのパソコンに保存され、分類別の閲覧、個別編集、"
+        "削除ができます。"
+    ),
+    "memory_input_placeholder": "例：漫画を終えてから管理作業を行う",
+    "remember": "記憶する",
+    "memory_filter_label": "分類別に表示",
+    "all_memories": "すべての記憶",
+    "edit_selected_memory": "選択した記憶を編集",
+    "edit_memory_tooltip": "下の記憶をダブルクリックしても編集できます",
+    "delete_checked_memories": "チェックした記憶を削除",
+    "delete_checked_memories_tooltip": "チェックした記憶だけを確認後に削除します",
+    "clear_all_memories": "すべての記憶を消去",
+    "optimize_memories": "安全に記憶を整理",
+    "optimize_memories_tooltip": "重要度の低い重複を統合し、古い超過分は先に保管します",
+    "view_archived_memories": "保管済み記憶を表示",
+    "auto_memory": "「覚えて」「好き」「いつも」など明確な表現から記憶を作成",
+    "memory_count": "{count} 件",
+    "memory_empty": "この分類には記憶がありません。",
+    "memory_source_manual_short": "手動",
+    "memory_source_conversation_short": "会話",
+    "memory_untitled": "無題の記憶",
+    "memory_item": (
+        "【{category}】{title}　重要度 {importance}／5\n{content}\n"
+        "出典：{source}　更新：{updated}"
+    ),
+    "memory_added_speech": "記憶しました。後から一件ずつ確認や変更ができます。",
+    "memory_select_edit_title": "記憶が選択されていません",
+    "memory_select_edit": "先に編集する記憶を選択してください。",
+    "memory_not_found_title": "記憶が見つかりません",
+    "memory_not_found": "この記憶は存在しません。一覧を更新します。",
+    "memory_save_failed_title": "記憶を保存できません",
+    "memory_save_failed": "同じ内容の記憶が既にある可能性があります。既存データは変更されません。",
+    "memory_select_delete_title": "記憶がチェックされていません",
+    "memory_select_delete": "先に削除する記憶をチェックしてください。",
+    "memory_delete_title": "長期記憶を削除",
+    "memory_delete_confirm": "チェックした {count} 件の記憶を完全に削除しますか？",
+    "memory_clear_title": "長期記憶を消去",
+    "memory_clear_confirm": "墨寒が保存した長期記憶をすべて削除しますか？元に戻せません。",
+    "memory_optimize_title": "記憶の整理が完了しました",
+    "memory_optimize_result": (
+        "類似した記憶を {deduplicated} 件統合し、古く重要度の低い記憶を "
+        "{pruned} 件保管しました。\n使用中：{active} 件、復元可能：{archived} 件。"
+    ),
+    "memory_editor_title": "長期記憶を編集",
+    "memory_title_label": "<b>記憶のタイトル</b>",
+    "memory_title_placeholder": "短いタイトルでこの記憶を識別",
+    "memory_category_label": "<b>分類</b>",
+    "memory_importance_label": "<b>重要度</b>",
+    "memory_content_label": "<b>記憶の内容</b>",
+    "memory_content_placeholder": "人物、好み、目標、ワークフロー、重要な日付を記録…",
+    "memory_source_manual": "手動で作成",
+    "memory_source_conversation": "会話で明示的に記憶",
+    "memory_metadata": "出典：{source}　作成：{created}　更新：{updated}",
+    "save_memory": "記憶を保存",
+    "memory_title_required_title": "タイトルが必要です",
+    "memory_title_required": "先に記憶のタイトルを入力してください。",
+    "memory_content_required_title": "内容が必要です",
+    "memory_content_required": "先に記憶の内容を入力してください。",
+    "archived_memory_title": "保管済みの長期記憶",
+    "archived_memory_intro": (
+        "自動整理は古く重要度の低い会話記憶を保管するだけで、削除はしません。"
+        "ここでチェックすればいつでも復元できます。"
+    ),
+    "restore_checked_memories": "チェックした記憶を復元",
+    "close": "閉じる",
+    "archived_memory_item": (
+        "【{category}】{title}\n{content}\n保管理由：{reason}　保管日時：{archived}"
+    ),
+    "archived_memory_count": "復元可能な記憶：{count} 件",
+    "archived_memory_select_title": "記憶がチェックされていません",
+    "archived_memory_select": "先に復元する記憶をチェックしてください。",
+    "archived_memory_restored": "{count} 件の記憶を復元しました。",
+    "chat_history_title": "会話の管理／消去",
+    "chat_history_intro": (
+        "会話はこのパソコンに保存され、自動削除されません。完全に削除して"
+        "よい記録だけをチェックしてください。"
+    ),
+    "delete_checked_chats": "チェックした会話を削除",
+    "chat_history_item": "{created}｜{speaker}\n{content}",
+    "chat_history_truncated_suffix": "（この画面には最近の 500 件だけを表示）",
+    "chat_history_status": "このパソコンに {count} 件の会話を保存中。{suffix}",
+    "chat_select_delete_title": "会話がチェックされていません",
+    "chat_select_delete": "先に削除する会話をチェックしてください。",
+    "chat_delete_title": "会話を完全に削除",
+    "chat_delete_confirm": "チェックした {count} 件の会話を完全に削除しますか？",
+    "load_older_chat_tooltip": "このパソコンから過去の会話を 50 件ずつ読み込み",
+    "manage_chat_tooltip": "選択した会話だけを削除し、他の内容には影響しません",
+    "chat_zoom_out_tooltip": "会話の文字を縮小（Ctrl＋ホイール下）",
+    "chat_zoom_in_tooltip": "会話の文字を拡大（Ctrl＋ホイール上）",
+    "chat_retention_status": "このパソコンに {total} 件を保存中。最近の {shown} 件を表示",
+    "platform_name_required": "先にプラットフォーム、システム、またはツール名を入力してください。",
+    "platform_duplicate": "「{platform}」は既にあります。別の名前を使用してください。",
+    "platform_added": "仕事プラットフォームを追加：{platform}",
+    "platform_delete_title": "仕事プラットフォームを削除",
+    "platform_delete_confirm": "「{platform}」と作業状況を削除しますか？元に戻せません。",
+    "platform_not_found": "仕事プラットフォームが見つかりません：{platform}",
+    "platform_deleted": "仕事プラットフォームを削除：{platform}",
+    "platform_url_missing_title": "URL が未設定です",
+    "platform_url_missing": "先に「{platform}」カードへウェブサイトまたはツールの URL を入力してください。",
+    "platform_url_unsupported_title": "対応していない URL 形式です",
+    "platform_url_unsupported": "http:// または https:// の URL だけを開けます。",
+    "permission_open_platform": "{platform} のウェブサイトを開く",
+    "echo_guard_tooltip": (
+        "墨寒の発話中はマイクの送信を停止し、再生後に再開します。"
+        "有効時は発話の途中で割り込めません。"
+    ),
+    "hybrid_transcript_tooltip": (
+        "Realtime 本来の音声理解を保ち、発話後の画面文字には録音全体の "
+        "OpenAI 高精度文字起こしを使用します。成功後に墨寒が返答します。"
+    ),
+    "flagship_heading": "<b>フラッグシップ操作センター</b>",
+    "increase": "増やす",
+    "decrease": "減らす",
+    "voice_section": "音声",
+    "profile_required_title": "必須情報がありません",
+    "profile_required": "アシスタント名と、あなたへの呼び方は空欄にできません。",
+    "send_chat_required_title": "メッセージが入力されていません",
+    "send_chat_required": "左側に文字を入力して送信してください。マイクから話すこともできます。",
+    "thinking_status": "{assistant}が考えています…",
+    "answering_status": "回答中…",
+    "api_connection_failed": "OpenAI API：接続失敗（{error}）",
+    "voice_ready_short": "準備完了",
+    "microphone_idle": "🎙 マイク",
+    "microphone_send_now": "⏹ 今すぐ送信",
+    "microphone_recognizing": "認識中…",
+    "voice_status_format": "音声状態：{phase}",
+    "bubble_full_content": "…\n（全文は会話ページで確認できます）",
+    "tray_open_today": "今日を開く",
+    "tray_quit": "墨寒を終了",
     "chat_retention": "会話はこのパソコンに保存され、自動削除されません",
     "load_older_chat": "過去の会話を読み込む",
     "manage_chat": "会話の管理／消去",
@@ -298,4 +545,29 @@ JAPANESE_WORK_TYPE_LABELS: Mapping[str, str] = frozendict({
     "教育／研究": "教育／研究",
     "銷售／客戶服務": "営業／カスタマーサービス",
     "其他（可自行輸入）": "その他（自由入力）",
+})
+
+
+JAPANESE_PLATFORM_STATUS_LABELS: Mapping[str, str] = frozendict({
+    "尚未開始": "未着手",
+    "準備資料": "資料準備",
+    "進行中": "進行中",
+    "待送出": "提出待ち",
+    "等待回覆": "返信待ち",
+    "審核中": "審査中",
+    "需修正": "修正が必要",
+    "已排程": "予定済み",
+    "已完成": "完了",
+    "已上架": "公開済み",
+    "暫停": "一時停止",
+})
+
+
+JAPANESE_MEMORY_CATEGORY_LABELS: Mapping[str, str] = frozendict({
+    "人物": "人物",
+    "偏好": "好み",
+    "目標": "目標",
+    "工作流程": "ワークフロー",
+    "重要日期": "重要な日付",
+    "其他": "その他",
 })

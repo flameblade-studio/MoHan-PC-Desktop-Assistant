@@ -931,9 +931,8 @@ def _assert_realtime_text_contract(app: QApplication, window: CompanionWindow) -
     window._realtime_assistant_text("妾会保持专注，好好陪着你。")
     app.processEvents()
     chat_text = window.dashboard.chat.toPlainText()
-    assert "你還記得自己的故事嗎？" in chat_text
-    assert "妾會保持專注，好好陪著你。" in chat_text
-    assert "你还记得" not in chat_text
+    assert "你还记得自己的故事吗？" in chat_text
+    assert "妾会保持专注，好好陪着你。" in chat_text
 
 
 def _assert_chat_history_contract(window: CompanionWindow) -> None:
@@ -981,8 +980,8 @@ def _assert_idea_contract(app: QApplication, window: CompanionWindow) -> None:
     window.dashboard.idea_list.item(0).setCheckState(Qt.Unchecked)
     editor = IdeaEditorDialog("剑魂故事", "她听见主上的声音。")
     assert editor.values() == (
-        "劍魂故事",
-        "她聽見主上的聲音。",
+        "剑魂故事",
+        "她听见主上的声音。",
     )
     editor.close()
 
@@ -994,7 +993,7 @@ def _assert_memory_contract(app: QApplication, window: CompanionWindow) -> None:
     app.processEvents()
     memories = window.db.list_memories(category="人物")
     assert len(memories) == 1
-    assert memories[0]["title"] == "林小姐是我的出版視窗"
+    assert memories[0]["title"] == "林小姐是我的出版窗口"
     assert window.dashboard.memory_count.text() == "1 則"
     assert "【人物】" in window.dashboard.memory_list.item(0).text()
     assert window.dashboard.memory_filter.itemText(0) == "全部記憶（1）"
@@ -1012,7 +1011,7 @@ def _assert_memory_contract(app: QApplication, window: CompanionWindow) -> None:
     memory_editor.content_input.setPlainText("林小姐每週一聯絡")
     memory_editor.category_input.setCurrentText("工作流程")
     assert memory_editor.values() == (
-        "主要出版視窗",
+        "主要出版窗口",
         "林小姐每週一聯絡",
         "工作流程",
         4,

@@ -76,6 +76,9 @@ lazy from flagship_core import (
     WindowsToolbox,
     parse_plan_json,
 )
+lazy from flagship_ui_localization import FlagshipTranslator
+lazy from safe_error import sanitize_error
+lazy from safe_error_localization import safe_error_message
 lazy from home_assistant import (
     HomeAssistantClient,
     HomeAssistantConfig,
@@ -216,7 +219,7 @@ class OAuthWorker(QRunnable):
                 token["client_secret"] = self.client_secret
             self.signals.done.emit(self.provider_id, token)
         except Exception as exc:  # noqa: BLE001 -- OAuth worker reports all failures
-            self.signals.failed.emit(self.provider_id, str(exc))
+            self.signals.failed.emit(self.provider_id, str(sanitize_error(exc)))
 
 
 class CloudHealthSignals(QObject):
@@ -226,16 +229,27 @@ class CloudHealthSignals(QObject):
 class CloudHealthWorker(QRunnable):
     """Probe cloud services concurrently so a slow API cannot freeze the UI."""
 
-    def __init__(self, provider_id: str, token: str):
+    def __init__(
+        self,
+        provider_id: str,
+        token: str,
+        language: str = "zh-TW",
+    ):
         super().__init__()
         self.provider_id = provider_id
         self.token = token
+        self._translator = FlagshipTranslator(language)
         self.signals = CloudHealthSignals()
 
     def _google_probes(self) -> dict[str, Any]:
         def gmail() -> str:
             payload = GmailConnector(self.token).request("GET", "/profile")
-            return str(payload.get("emailAddress", "Google 帳戶"))
+            return str(
+                payload.get(
+                    "emailAddress",
+                    self._translator.text("Google 帳戶"),
+                )
+            )
 
         def calendar() -> str:
             GoogleCalendarConnector(self.token).request(
@@ -247,7 +261,7 @@ class CloudHealthWorker(QRunnable):
                     "timeMin": local_aware_time().isoformat(),
                 },
             )
-            return "主要日曆可讀取"
+            return self._translator.text("主要日曆可讀取")
 
         def drive() -> str:
             GoogleDriveConnector(self.token).request(
@@ -259,7 +273,7 @@ class CloudHealthWorker(QRunnable):
                     "q": "trashed=false",
                 },
             )
-            return "雲端硬碟中繼資料可讀取"
+            return self._translator.text("雲端硬碟中繼資料可讀取")
 
         probes = {"Gmail": gmail, "Calendar": calendar, "Drive": drive}
         results: dict[str, Any] = {}
@@ -272,7 +286,10 @@ class CloudHealthWorker(QRunnable):
                 except Exception as exc:  # noqa: BLE001 -- isolate each health probe
                     results[name] = {
                         "ok": False,
-                        "detail": f"{type(exc).__name__}: {exc}",
+                        "detail": safe_error_message(
+                            self._translator.language,
+                            exc,
+                        ),
                     }
         return results
 
@@ -286,10 +303,16 @@ class CloudHealthWorker(QRunnable):
                         "GET",
                         "/me",
                     )
-                    identity = payload.get("displayName", "Microsoft 帳戶")
+                    identity = payload.get(
+                        "displayName",
+                        self._translator.text("Microsoft 帳戶"),
+                    )
                 else:
                     payload = GitHubConnector(self.token).viewer()
-                    identity = payload.get("login", "GitHub 帳戶")
+                    identity = payload.get(
+                        "login",
+                        self._translator.text("GitHub 帳戶"),
+                    )
                 results = {
                     PROVIDERS[self.provider_id].display_name: {
                         "ok": True,
@@ -300,75 +323,92 @@ class CloudHealthWorker(QRunnable):
                 results = {
                     PROVIDERS[self.provider_id].display_name: {
                         "ok": False,
-                        "detail": f"{type(exc).__name__}: {exc}",
+                        "detail": safe_error_message(
+                            self._translator.language,
+                            exc,
+                        ),
                     }
                 }
         self.signals.done.emit(self.provider_id, results)
 
 
 class WorkflowEditor(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, *, language: str = "zh-TW"):
         super().__init__(parent)
-        self.setWindowTitle("新增安全工作流程")
+        self._translator = FlagshipTranslator(language)
+        self.language = self._translator.language
+        self.setWindowTitle(self._t("新增安全工作流程"))
         self.resize(620, 560)
         root = QVBoxLayout(self)
         form = QFormLayout()
         self.name = QLineEdit()
         self.trigger = QComboBox()
-        self.trigger.addItems(["手動執行", "每天固定時間", "開始工作時"])
+        for canonical, label in (
+            ("manual", "手動執行"),
+            ("schedule", "每天固定時間"),
+            ("work_start", "開始工作時"),
+        ):
+            self.trigger.addItem(self._t(label), canonical)
         self.at = QTimeEdit()
         self.at.setDisplayFormat("HH:mm")
-        self.preview = QCheckBox("第一次與高風險操作先預覽")
+        self.preview = QCheckBox(self._t("第一次與高風險操作先預覽"))
         self.preview.setChecked(True)
-        form.addRow("流程名稱", self.name)
-        form.addRow("啟動方式", self.trigger)
-        form.addRow("執行時間", self.at)
+        form.addRow(self._t("流程名稱"), self.name)
+        form.addRow(self._t("啟動方式"), self.trigger)
+        form.addRow(self._t("執行時間"), self.at)
         form.addRow("", self.preview)
         root.addLayout(form)
 
         note = QLabel(
-            "每行一個步驟，格式：能力｜說明｜參數。\n"
-            "範例：open_web｜開啟工作網站｜https://example.com\n"
-            "範例：home_control｜開啟書房燈｜light.study,turn_on"
+            self._t(
+                "每行一個步驟，格式：能力｜說明｜參數。\n"
+                "範例：open_web｜開啟工作網站｜https://example.com\n"
+                "範例：home_control｜開啟書房燈｜light.study,turn_on"
+            )
         )
         note.setWordWrap(True)
         note.setStyleSheet("color:#356f8d;")
         self.steps = QTextEdit()
         self.steps.setPlaceholderText(
-            "open_web｜開啟工作網站｜https://example.com"
+            self._t("open_web｜開啟工作網站｜https://example.com")
         )
         root.addWidget(note)
         root.addWidget(self.steps, 1)
         buttons = QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
+        buttons.button(QDialogButtonBox.Save).setText(self._t("儲存"))
+        buttons.button(QDialogButtonBox.Cancel).setText(self._t("取消"))
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         root.addWidget(buttons)
 
+    def _t(self, source: str, /, **values: Any) -> str:
+        return self._translator.text(source, **values)
+
     def _trigger_definition(self) -> dict[str, Any]:
-        trigger_text = self.trigger.currentText()
-        if trigger_text == "每天固定時間":
+        trigger_type = str(self.trigger.currentData())
+        if trigger_type == "schedule":
             return {
                 "type": "schedule",
                 "time": self.at.time().toString("HH:mm"),
                 "weekdays": list(range(7)),
             }
-        if trigger_text == "開始工作時":
+        if trigger_type == "work_start":
             return {"type": "work_start"}
         return {"type": "manual"}
 
-    @staticmethod
     def _home_arguments(
+        self,
         capability: str,
         raw_argument: str,
     ) -> dict[str, Any]:
         try:
-            entity, service = (
-                value.strip()
-                for value in raw_argument.split(",", 1)
-            )
+            entity, service = (value.strip() for value in raw_argument.split(",", 1))
         except ValueError as exc:
             raise ValueError(
-                f"{capability} 參數格式必須是 entity_id,service"
+                self._t(
+                    "{capability} 參數格式必須是 entity_id,service",
+                    capability=capability,
+                )
             ) from exc
         return {
             "domain": entity.split(".", 1)[0],
@@ -376,9 +416,8 @@ class WorkflowEditor(QDialog):
             "data": {"entity_id": entity},
         }
 
-    @classmethod
     def _step_arguments(
-        cls,
+        self,
         capability: str,
         raw_argument: str,
     ) -> dict[str, Any]:
@@ -396,16 +435,22 @@ class WorkflowEditor(QDialog):
             "home_alarm",
             "home_heat",
         }:
-            return cls._home_arguments(capability, raw_argument)
+            return self._home_arguments(capability, raw_argument)
         try:
             arguments = json.loads(raw_argument)
         except json.JSONDecodeError as exc:
             raise ValueError(
-                f"{capability} 的參數必須是 JSON 物件"
+                self._t(
+                    "{capability} 的參數必須是 JSON 物件",
+                    capability=capability,
+                )
             ) from exc
         if not isinstance(arguments, dict):
             raise TypeError(
-                f"{capability} 的參數必須是 JSON 物件"
+                self._t(
+                    "{capability} 的參數必須是 JSON 物件",
+                    capability=capability,
+                )
             )
         return arguments
 
@@ -417,18 +462,16 @@ class WorkflowEditor(QDialog):
                 continue
             parts = [part.strip() for part in line.split("｜", 2)]
             if len(parts) != 3:
-                raise ValueError(f"步驟格式不正確：{line}")
+                raise ValueError(self._t("步驟格式不正確：{line}", line=line))
             capability, description, raw_argument = parts
-            steps.append(
-                {
-                    "capability": capability,
-                    "description": description,
-                    "arguments": self._step_arguments(
-                        capability,
-                        raw_argument,
-                    ),
-                }
-            )
+            steps.append({
+                "capability": capability,
+                "description": description,
+                "arguments": self._step_arguments(
+                    capability,
+                    raw_argument,
+                ),
+            })
         return steps
 
     def workflow(self) -> Workflow:
@@ -449,7 +492,7 @@ class FlagshipControlCenter(QWidget):
     remote_command_received = Signal(str)
     emergency_stop_requested = Signal()
 
-    def __init__(
+    def __init__(  # noqa: PLR0913 -- stable API keeps dependencies explicit
         self,
         db,
         data_path: Path,
@@ -457,8 +500,12 @@ class FlagshipControlCenter(QWidget):
         *,
         platform_services: PlatformServicePort | None = None,
         secret_store_factory: SecretStoreFactoryPort | None = None,
+        language: str = "zh-TW",
     ):
+        """Build the center with an explicit, backward-compatible language."""
         super().__init__(parent)
+        self._translator = FlagshipTranslator(language)
+        self.language = self._translator.language
         self._initialize_services(
             db,
             data_path,
@@ -469,6 +516,12 @@ class FlagshipControlCenter(QWidget):
         self._build_control_center_ui()
         self._start_control_center_timers()
 
+    def _t(self, source: str, /, **values: Any) -> str:
+        return self._translator.text(source, **values)
+
+    def _system_text(self, message: str) -> str:
+        return self._translator.system_message(message)
+
     def _initialize_services(
         self,
         db,
@@ -478,9 +531,7 @@ class FlagshipControlCenter(QWidget):
     ) -> None:
         self.db = db
         self.data_path = data_path
-        self.platform_services = (
-            platform_services or current_platform_services()
-        )
+        self.platform_services = platform_services or current_platform_services()
         self.secret_store_factory = (
             secret_store_factory
             or platform_secret_store_factory(self.platform_services)
@@ -513,13 +564,12 @@ class FlagshipControlCenter(QWidget):
         self.cloud_test_timeout.setInterval(35_000)
         self.cloud_test_timeout.timeout.connect(self._cloud_test_timed_out)
         self.remote_server: RemoteControlServer | None = None
-        self.camera_presence = CameraPresenceController(self)
-        self.camera_presence.status_changed.connect(
-            self._camera_status_changed
+        self.camera_presence = CameraPresenceController(
+            self,
+            language=self.language,
         )
-        self.camera_presence.presence_changed.connect(
-            self._presence_changed
-        )
+        self.camera_presence.status_changed.connect(self._camera_status_changed)
+        self.camera_presence.presence_changed.connect(self._presence_changed)
         self._screen_cache = b""
         self._closed = False
         self._remote_status_cache: dict[str, Any] = {
@@ -532,7 +582,7 @@ class FlagshipControlCenter(QWidget):
 
     def _build_control_center_ui(self) -> None:
         root = QVBoxLayout(self)
-        emergency = QPushButton("緊急停止所有工具與遠端操作（Esc）")
+        emergency = QPushButton(self._t("緊急停止所有工具與遠端操作（Esc）"))
         emergency.setStyleSheet(
             "QPushButton{background:#772f3a;color:white;font-weight:bold;"
             "padding:10px;border-radius:8px;}"
@@ -540,13 +590,13 @@ class FlagshipControlCenter(QWidget):
         emergency.clicked.connect(self.emergency_stop)
         root.addWidget(emergency)
         self.tabs = QTabWidget()
-        self.tabs.addTab(self._overview_tab(), "任務中心")
-        self.tabs.addTab(self._workflow_tab(), "工作流程")
-        self.tabs.addTab(self._cloud_tab(), "雲端連接器")
-        self.tabs.addTab(self._home_tab(), "智慧家庭")
-        self.tabs.addTab(self._remote_tab(), "遠端與隱私")
-        self.tabs.addTab(self._security_tab(), "安全權限")
-        self.tabs.addTab(self._audit_tab(), "稽核紀錄")
+        self.tabs.addTab(self._overview_tab(), self._t("任務中心"))
+        self.tabs.addTab(self._workflow_tab(), self._t("工作流程"))
+        self.tabs.addTab(self._cloud_tab(), self._t("雲端連接器"))
+        self.tabs.addTab(self._home_tab(), self._t("智慧家庭"))
+        self.tabs.addTab(self._remote_tab(), self._t("遠端與隱私"))
+        self.tabs.addTab(self._security_tab(), self._t("安全權限"))
+        self.tabs.addTab(self._audit_tab(), self._t("稽核紀錄"))
         root.addWidget(self.tabs, 1)
 
     def _start_control_center_timers(self) -> None:
@@ -586,16 +636,14 @@ class FlagshipControlCenter(QWidget):
             audit=self.db.audit_event,
         )
         allowed_folders = [
-            str(row["target_value"])
-            for row in self.db.allowed_targets("folder")
+            str(row["target_value"]) for row in self.db.allowed_targets("folder")
         ]
         allowed_apps = {
             str(row["display_name"]): str(row["target_value"])
             for row in self.db.allowed_targets("app")
         }
         allowed_websites = [
-            str(row["target_value"])
-            for row in self.db.allowed_targets("web")
+            str(row["target_value"]) for row in self.db.allowed_targets("web")
         ]
         self.toolbox = WindowsToolbox(
             allowed_folders=allowed_folders,
@@ -616,30 +664,28 @@ class FlagshipControlCenter(QWidget):
         return ActionResult(
             request.request_id,
             True,
-            "已整理目前工作狀態",
+            self._t("已整理目前工作狀態"),
             self._remote_status_payload(),
         )
 
-    @staticmethod
-    def _clipboard_read(request: ActionRequest) -> ActionResult:
+    def _clipboard_read(self, request: ActionRequest) -> ActionResult:
         text = QApplication.clipboard().text()
         return ActionResult(
             request.request_id,
             True,
-            "已讀取剪貼簿文字",
+            self._t("已讀取剪貼簿文字"),
             {"text": text[:100000]},
         )
 
-    @staticmethod
-    def _clipboard_write(request: ActionRequest) -> ActionResult:
+    def _clipboard_write(self, request: ActionRequest) -> ActionResult:
         text = str(request.arguments.get("text", ""))
         if len(text) > 100000:
-            raise ValueError("剪貼簿文字不可超過 100,000 字")
+            raise ValueError(self._t("剪貼簿文字不可超過 100,000 字"))
         QApplication.clipboard().setText(text)
         return ActionResult(
             request.request_id,
             True,
-            "已寫入剪貼簿",
+            self._t("已寫入剪貼簿"),
         )
 
     @staticmethod
@@ -655,25 +701,27 @@ class FlagshipControlCenter(QWidget):
     def _overview_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        title = QLabel("<b>墨寒旗艦任務中心</b>")
+        title = QLabel(self._t("<b>墨寒旗艦任務中心</b>"))
         title.setStyleSheet("font-size:18px;color:#2f6987;")
         note = QLabel(
-            "所有電腦、雲端、遠端與智慧家庭操作都必須經過："
-            "計畫 → 權限判斷 → 確認 → 執行 → 結果驗證 → 稽核。"
+            self._t(
+                "所有電腦、雲端、遠端與智慧家庭操作都必須經過："
+                "計畫 → 權限判斷 → 確認 → 執行 → 結果驗證 → 稽核。"
+            )
         )
         note.setWordWrap(True)
         self.health_summary = QLabel()
         self.health_summary.setWordWrap(True)
-        refresh = QPushButton("重新檢查系統狀態")
+        refresh = QPushButton(self._t("重新檢查系統狀態"))
         refresh.clicked.connect(self.refresh_health)
-        backup = QPushButton("立即建立可驗證備份")
+        backup = QPushButton(self._t("立即建立可驗證備份"))
         backup.clicked.connect(self.create_backup)
-        task_label = QLabel("<b>自然語言工具任務</b>")
+        task_label = QLabel(self._t("<b>自然語言工具任務</b>"))
         self.task_instruction = QLineEdit()
         self.task_instruction.setPlaceholderText(
-            "例如：幫我開啟工作資料夾，然後開啟指定工作網站"
+            self._t("例如：幫我開啟工作資料夾，然後開啟指定工作網站")
         )
-        self.plan_button = QPushButton("先產生安全計畫")
+        self.plan_button = QPushButton(self._t("先產生安全計畫"))
         self.plan_button.clicked.connect(
             lambda: self.plan_instruction(
                 self.task_instruction.text(),
@@ -700,12 +748,22 @@ class FlagshipControlCenter(QWidget):
                 self.data_path / "backups",
             ).create("manual")
         except Exception as exc:  # noqa: BLE001 -- user-visible backup boundary
-            QMessageBox.warning(self, "資料備份", f"備份失敗：{exc}")
+            QMessageBox.warning(
+                self,
+                self._t("資料備份"),
+                self._t(
+                    "備份失敗：{error}",
+                    error=safe_error_message(self.language, exc),
+                ),
+            )
             return
         QMessageBox.information(
             self,
-            "資料備份",
-            f"備份與完整性雜湊已建立：\n{target}",
+            self._t("資料備份"),
+            self._t(
+                "備份與完整性雜湊已建立：\n{target}",
+                target=target,
+            ),
         )
 
     def plan_instruction(self, text: str, *, source: str = "local") -> None:
@@ -728,8 +786,8 @@ class FlagshipControlCenter(QWidget):
         ):
             QMessageBox.information(
                 self,
-                "工具任務",
-                "這句話沒有明確要求執行操作，因此不會產生工具計畫。",
+                self._t("工具任務"),
+                self._t("這句話沒有明確要求執行操作，因此不會產生工具計畫。"),
             )
             return
         self.planner_busy = True
@@ -737,7 +795,7 @@ class FlagshipControlCenter(QWidget):
         generation = self._planner_generation
         if hasattr(self, "plan_button"):
             self.plan_button.setEnabled(False)
-            self.plan_button.setText("規劃中…")
+            self.plan_button.setText(self._t("規劃中…"))
 
         # 明確、唯讀且低風險的 Google 指令不需要再繞到 OpenAI 規劃。
         # 這也避免網路或模型暫時不穩時，基本郵件讀取被卡住。
@@ -753,11 +811,12 @@ class FlagshipControlCenter(QWidget):
             )
             QTimer.singleShot(
                 0,
-                lambda payload=local_plan, origin=source,
-                request_generation=generation: self._planner_done_if_current(
-                    payload,
-                    origin,
-                    request_generation,
+                lambda payload=local_plan, origin=source, request_generation=generation: (
+                    self._planner_done_if_current(
+                        payload,
+                        origin,
+                        request_generation,
+                    )
                 ),
             )
             return
@@ -769,6 +828,7 @@ class FlagshipControlCenter(QWidget):
             model=str(self.db.setting("ai_model", DEFAULT_TEXT_MODEL)),
             available_targets=self._planner_targets(),
             source=source,
+            language=self.language,
         )
         worker.signals.done.connect(
             lambda payload, origin=source, request_generation=generation: (
@@ -833,38 +893,36 @@ class FlagshipControlCenter(QWidget):
             return max(1, min(100, int(numeric.group(1))))
         return limit
 
-    @classmethod
     def _gmail_plan(
-        cls,
+        self,
         normalized: str,
         folded: str,
         read_requested: bool,
     ) -> dict[str, Any] | None:
-        mentions_mail = cls._contains_any(folded, GMAIL_MARKERS)
-        send_requested = (
-            cls._contains_any(normalized, GMAIL_SEND_MARKERS)
-            and not cls._contains_any(
-                normalized,
-                GMAIL_SEND_NEGATIONS,
-            )
+        mentions_mail = self._contains_any(folded, GMAIL_MARKERS)
+        send_requested = self._contains_any(
+            normalized, GMAIL_SEND_MARKERS
+        ) and not self._contains_any(
+            normalized,
+            GMAIL_SEND_NEGATIONS,
         )
-        assisted = cls._contains_any(
+        assisted = self._contains_any(
             normalized,
             ASSIST_INTENT_MARKERS,
         )
-        if not mentions_mail or send_requested or not (
-            read_requested or assisted
-        ):
+        if not mentions_mail or send_requested or not (read_requested or assisted):
             return None
-        days = cls._gmail_days(normalized)
-        limit = cls._gmail_limit(normalized)
+        days = self._gmail_days(normalized)
+        limit = self._gmail_limit(normalized)
         return {
-            "title": "讀取 Gmail 郵件",
+            "title": self._t("讀取 Gmail 郵件"),
             "steps": [
                 {
                     "capability": "email_read",
-                    "description": (
-                        f"讀取最近 {days} 天內最多 {limit} 封 Gmail 郵件"
+                    "description": self._t(
+                        "讀取最近 {days} 天內最多 {limit} 封 Gmail 郵件",
+                        days=days,
+                        limit=limit,
                     ),
                     "arguments": {
                         "provider": "google",
@@ -875,21 +933,20 @@ class FlagshipControlCenter(QWidget):
             ],
         }
 
-    @classmethod
     def _calendar_plan(
-        cls,
+        self,
         normalized: str,
         folded: str,
         read_requested: bool,
     ) -> dict[str, Any] | None:
-        assisted = cls._contains_any(
+        assisted = self._contains_any(
             normalized,
             ASSIST_INTENT_MARKERS,
         )
         if (
-            not cls._contains_any(folded, CALENDAR_MARKERS)
+            not self._contains_any(folded, CALENDAR_MARKERS)
             or not (read_requested or assisted)
-            or cls._contains_any(
+            or self._contains_any(
                 normalized,
                 CALENDAR_WRITE_MARKERS,
             )
@@ -909,12 +966,13 @@ class FlagshipControlCenter(QWidget):
             days = 1
         end = start + timedelta(days=days)
         return {
-            "title": "讀取 Google Calendar",
+            "title": self._t("讀取 Google Calendar"),
             "steps": [
                 {
                     "capability": "calendar_read",
-                    "description": (
-                        f"讀取 Google Calendar 未來 {days} 天行程"
+                    "description": self._t(
+                        "讀取 Google Calendar 未來 {days} 天行程",
+                        days=days,
                     ),
                     "arguments": {
                         "provider": "google",
@@ -925,21 +983,20 @@ class FlagshipControlCenter(QWidget):
             ],
         }
 
-    @classmethod
     def _drive_plan(
-        cls,
+        self,
         normalized: str,
         folded: str,
         read_requested: bool,
     ) -> dict[str, Any] | None:
-        assisted = cls._contains_any(
+        assisted = self._contains_any(
             normalized,
             ASSIST_INTENT_MARKERS,
         )
         if (
-            not cls._contains_any(folded, DRIVE_MARKERS)
+            not self._contains_any(folded, DRIVE_MARKERS)
             or not (read_requested or assisted)
-            or cls._contains_any(normalized, DRIVE_WRITE_MARKERS)
+            or self._contains_any(normalized, DRIVE_WRITE_MARKERS)
         ):
             return None
         quoted = re.search(
@@ -948,14 +1005,17 @@ class FlagshipControlCenter(QWidget):
         )
         name = quoted.group(1).strip() if quoted else ""
         return {
-            "title": "讀取 Google Drive",
+            "title": self._t("讀取 Google Drive"),
             "steps": [
                 {
                     "capability": "cloud_file_read",
                     "description": (
-                        f"搜尋 Google Drive 檔案：{name}"
+                        self._t(
+                            "搜尋 Google Drive 檔案：{name}",
+                            name=name,
+                        )
                         if name
-                        else "列出 Google Drive 最近修改的檔案"
+                        else self._t("列出 Google Drive 最近修改的檔案")
                     ),
                     "arguments": {
                         "provider": "google",
@@ -966,26 +1026,25 @@ class FlagshipControlCenter(QWidget):
             ],
         }
 
-    @classmethod
     def _known_safe_plan(
-        cls,
+        self,
         instruction: str,
     ) -> dict[str, Any] | None:
         """Return deterministic plans for simple read-only Google requests."""
         normalized = str(instruction).strip()
         folded = normalized.casefold()
-        read_requested = cls._contains_any(
+        read_requested = self._contains_any(
             normalized,
             READ_INTENT_MARKERS,
         )
         return (
-            cls._gmail_plan(normalized, folded, read_requested)
-            or cls._calendar_plan(
+            self._gmail_plan(normalized, folded, read_requested)
+            or self._calendar_plan(
                 normalized,
                 folded,
                 read_requested,
             )
-            or cls._drive_plan(
+            or self._drive_plan(
                 normalized,
                 folded,
                 read_requested,
@@ -1005,7 +1064,7 @@ class FlagshipControlCenter(QWidget):
                 f"- home：{self.ha_entities.item(index).text()}"
                 for index in range(min(200, self.ha_entities.count()))
             )
-        return "\n".join(lines) or "（目前沒有白名單目標）"
+        return "\n".join(lines) or self._t("（目前沒有白名單目標）")
 
     def _planner_done_if_current(
         self,
@@ -1025,7 +1084,14 @@ class FlagshipControlCenter(QWidget):
                 source=source,
             )
         except (TypeError, ValueError, json.JSONDecodeError) as exc:
-            QMessageBox.warning(self, "工具計畫", f"計畫驗證失敗：{exc}")
+            QMessageBox.warning(
+                self,
+                self._t("工具計畫"),
+                self._t(
+                    "計畫驗證失敗：{error}",
+                    error=safe_error_message(self.language, exc),
+                ),
+            )
             return
         if not plan.steps:
             self.db.audit_event(
@@ -1037,26 +1103,31 @@ class FlagshipControlCenter(QWidget):
             )
             QMessageBox.information(
                 self,
-                "工具計畫",
-                "資料不足或並非明確操作要求，因此沒有產生任何步驟。",
+                self._t("工具計畫"),
+                self._t("資料不足或並非明確操作要求，因此沒有產生任何步驟。"),
             )
             return
         preview = "\n".join(
-            f"{index}. {step.description}"
-            for index, step in enumerate(plan.steps, 1)
+            f"{index}. {step.description}" for index, step in enumerate(plan.steps, 1)
         )
-        if QMessageBox.question(
-            self,
-            "執行前計畫預覽",
-            f"{plan.title}\n\n{preview}\n\n"
-            "每一步仍會依個別權限與風險再次判斷。是否繼續？",
-        ) != QMessageBox.Yes:
+        if (
+            QMessageBox.question(
+                self,
+                self._t("執行前計畫預覽"),
+                self._t(
+                    "{title}\n\n{preview}\n\n每一步仍會依個別權限與風險再次判斷。是否繼續？",
+                    title=plan.title,
+                    preview=preview,
+                ),
+            )
+            != QMessageBox.Yes
+        ):
             return
         results = self.executor.execute(plan)
         QMessageBox.information(
             self,
-            "任務結果",
-            "\n".join(result.message for result in results),
+            self._t("任務結果"),
+            "\n".join(self._system_text(result.message) for result in results),
         )
         self.refresh_audit()
 
@@ -1071,7 +1142,14 @@ class FlagshipControlCenter(QWidget):
 
     def _planner_failed(self, error: str) -> None:
         self._planner_reset()
-        QMessageBox.warning(self, "工具計畫", f"無法產生計畫：{error}")
+        QMessageBox.warning(
+            self,
+            self._t("工具計畫"),
+            self._t(
+                "無法產生計畫：{error}",
+                error=safe_error_message(self.language, error),
+            ),
+        )
 
     def _planner_timed_out(self) -> None:
         if not self.planner_busy:
@@ -1087,9 +1165,11 @@ class FlagshipControlCenter(QWidget):
         self._planner_reset()
         QMessageBox.warning(
             self,
-            "工具計畫逾時",
-            "等待 OpenAI 安全計畫超過 50 秒，已自動停止等待。"
-            "請確認網路、API 金鑰與文字模型後再試一次。",
+            self._t("工具計畫逾時"),
+            self._t(
+                "等待 OpenAI 安全計畫超過 50 秒，已自動停止等待。"
+                "請確認網路、API 金鑰與文字模型後再試一次。"
+            ),
         )
 
     def _planner_reset(self) -> None:
@@ -1098,29 +1178,35 @@ class FlagshipControlCenter(QWidget):
         self._planner_worker = None
         if hasattr(self, "plan_button"):
             self.plan_button.setEnabled(True)
-            self.plan_button.setText("先產生安全計畫")
+            self.plan_button.setText(self._t("先產生安全計畫"))
 
     def refresh_health(self) -> None:
         workflow_count = len(self.db.workflows(enabled_only=True))
         paired_count = sum(bool(row["enabled"]) for row in self.db.paired_devices())
         ha = self.db.connector("home_assistant")
-        ha_text = "已啟用" if ha and bool(ha["enabled"]) else "未啟用"
-        remote_text = "運作中" if self.remote_server and self.remote_server.running else "未啟用"
+        ha_text = self._t("已啟用" if ha and bool(ha["enabled"]) else "未啟用")
+        remote_text = self._t(
+            "運作中" if self.remote_server and self.remote_server.running else "未啟用"
+        )
         self.health_summary.setText(
-            f"Home Assistant：{ha_text}\n"
-            f"遠端服務：{remote_text}\n"
-            f"已啟用工作流程：{workflow_count}\n"
-            f"有效配對裝置：{paired_count}\n"
-            "安全狀態：高風險操作不允許免確認；任意命令列與付款永久禁止。"
+            self._t(
+                "Home Assistant：{home}\n遠端服務：{remote}\n"
+                "已啟用工作流程：{workflows}\n有效配對裝置：{devices}\n"
+                "安全狀態：高風險操作不允許免確認；任意命令列與付款永久禁止。",
+                home=ha_text,
+                remote=remote_text,
+                workflows=workflow_count,
+                devices=paired_count,
+            )
         )
 
     def _workflow_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
         top = QHBoxLayout()
-        add = QPushButton("新增工作流程")
-        run = QPushButton("執行選取流程")
-        delete = QPushButton("刪除選取流程")
+        add = QPushButton(self._t("新增工作流程"))
+        run = QPushButton(self._t("執行選取流程"))
+        delete = QPushButton(self._t("刪除選取流程"))
         top.addWidget(add)
         top.addWidget(run)
         top.addWidget(delete)
@@ -1138,21 +1224,26 @@ class FlagshipControlCenter(QWidget):
         self.workflow_list.clear()
         for row in self.db.workflows():
             workflow = Workflow.from_row(row)
+            trigger_type = str(workflow.trigger.get("type"))
             trigger = {
-                "manual": "手動",
-                "schedule": f"每天 {workflow.trigger.get('time', '')}",
-                "work_start": "開始工作時",
-                "app_start": "程式啟動時",
-            }.get(str(workflow.trigger.get("type")), "未知")
+                "manual": self._t("手動"),
+                "schedule": self._t(
+                    "每天 {time}",
+                    time=workflow.trigger.get("time", ""),
+                ),
+                "work_start": self._t("開始工作時"),
+                "app_start": self._t("程式啟動時"),
+            }.get(trigger_type, self._t("未知"))
             item = QListWidgetItem(
                 f"{'●' if workflow.enabled else '○'} "
-                f"{workflow.name}　｜　{trigger}　｜　{len(workflow.steps)} 步"
+                f"{workflow.name}　｜　{trigger}　｜　"
+                + self._t("{count} 步", count=len(workflow.steps))
             )
             item.setData(Qt.UserRole, int(row["id"]))
             self.workflow_list.addItem(item)
 
     def add_workflow(self) -> None:
-        dialog = WorkflowEditor(self)
+        dialog = WorkflowEditor(self, language=self.language)
         if dialog.exec() != QDialog.Accepted:
             return
         try:
@@ -1163,7 +1254,7 @@ class FlagshipControlCenter(QWidget):
                 enabled=workflow.enabled,
             )
         except (ValueError, json.JSONDecodeError) as exc:
-            QMessageBox.warning(self, "工作流程", str(exc))
+            QMessageBox.warning(self, self._t("工作流程"), str(exc))
             return
         self.refresh_workflows()
 
@@ -1177,7 +1268,11 @@ class FlagshipControlCenter(QWidget):
     def run_selected_workflow(self) -> None:
         workflow = self._selected_workflow()
         if workflow is None:
-            QMessageBox.information(self, "工作流程", "請先選取一個流程。")
+            QMessageBox.information(
+                self,
+                self._t("工作流程"),
+                self._t("請先選取一個流程。"),
+            )
             return
         self.run_workflow(workflow)
 
@@ -1185,35 +1280,49 @@ class FlagshipControlCenter(QWidget):
         try:
             plan = workflow.to_plan()
         except ValueError as exc:
-            QMessageBox.warning(self, "工作流程", str(exc))
+            QMessageBox.warning(self, self._t("工作流程"), str(exc))
             return
         if workflow.require_preview:
             preview = "\n".join(
                 f"{index}. {step.description}"
                 for index, step in enumerate(plan.steps, 1)
             )
-            if QMessageBox.question(
-                self,
-                "預覽工作流程",
-                f"{plan.title}\n\n{preview}\n\n是否執行？",
-            ) != QMessageBox.Yes:
+            if (
+                QMessageBox.question(
+                    self,
+                    self._t("預覽工作流程"),
+                    self._t(
+                        "{title}\n\n{preview}\n\n是否執行？",
+                        title=plan.title,
+                        preview=preview,
+                    ),
+                )
+                != QMessageBox.Yes
+            ):
                 return
         results = self.executor.execute(plan)
         if workflow.workflow_id:
             self.db.mark_workflow_run(workflow.workflow_id)
-        message = "\n".join(result.message for result in results)
-        QMessageBox.information(self, "任務結果", message or "沒有可執行步驟")
+        message = "\n".join(self._system_text(result.message) for result in results)
+        QMessageBox.information(
+            self,
+            self._t("任務結果"),
+            message or self._t("沒有可執行步驟"),
+        )
         self.refresh_audit()
 
     def delete_selected_workflow(self) -> None:
         workflow = self._selected_workflow()
         if workflow is None or workflow.workflow_id is None:
             return
-        if QMessageBox.question(
-            self,
-            "刪除工作流程",
-            f"確定刪除「{workflow.name}」？",
-        ) == QMessageBox.Yes:
+        if (
+            QMessageBox.question(
+                self,
+                self._t("刪除工作流程"),
+                self._t("確定刪除「{name}」？", name=workflow.name),
+            )
+            == QMessageBox.Yes
+        ):
             self.db.delete_workflow(workflow.workflow_id)
             self.refresh_workflows()
 
@@ -1236,15 +1345,18 @@ class FlagshipControlCenter(QWidget):
     def _cloud_tab(self) -> QWidget:
         scroll, form = self._scroll_form()
         if self.platform_services.capabilities.secure_secret_storage:
-            secret_note = "權杖由作業系統安全加密保存，不寫入資料庫或設定檔。"
+            secret_note = self._t("權杖由作業系統安全加密保存，不寫入資料庫或設定檔。")
         else:
-            secret_note = (
-                f"{self.platform_services.capabilities.display_name} 的原生安全金鑰保存"
-                "尚未完成實機驗證，因此 OAuth 連線暫停；墨寒不會改用明文保存。"
+            secret_note = self._t(
+                "{platform} 的原生安全金鑰保存尚未完成實機驗證，因此 OAuth 連線暫停；"
+                "墨寒不會改用明文保存。",
+                platform=self.platform_services.capabilities.display_name,
             )
         intro = QLabel(
-            "Google、Microsoft 與 GitHub 預設停用。連線時使用瀏覽器 OAuth；"
-            + secret_note
+            self._t(
+                "Google、Microsoft 與 GitHub 預設停用。連線時使用瀏覽器 OAuth；{note}",
+                note=secret_note,
+            )
         )
         intro.setWordWrap(True)
         self.cloud_provider = QComboBox()
@@ -1255,12 +1367,12 @@ class FlagshipControlCenter(QWidget):
             )
         self.cloud_client_id = QLineEdit()
         self.cloud_client_id.setPlaceholderText(
-            "貼上你在服務商後台建立的 Desktop App Client ID"
+            self._t("貼上你在服務商後台建立的 Desktop App Client ID")
         )
         self.cloud_client_secret = QLineEdit()
         self.cloud_client_secret.setEchoMode(QLineEdit.Password)
         self.cloud_client_secret.setPlaceholderText(
-            "若服務商提供 Client Secret 才需填寫"
+            self._t("若服務商提供 Client Secret 才需填寫")
         )
         self.cloud_scopes = QTextEdit()
         self.cloud_scopes.setMaximumHeight(110)
@@ -1270,23 +1382,21 @@ class FlagshipControlCenter(QWidget):
         buttons = QWidget()
         line = QHBoxLayout(buttons)
         line.setContentsMargins(0, 0, 0, 0)
-        self.cloud_connect_button = QPushButton("開啟瀏覽器安全連線")
-        self.cloud_test_button = QPushButton("測試選取服務")
-        revoke = QPushButton("撤銷選取服務")
+        self.cloud_connect_button = QPushButton(self._t("開啟瀏覽器安全連線"))
+        self.cloud_test_button = QPushButton(self._t("測試選取服務"))
+        revoke = QPushButton(self._t("撤銷選取服務"))
         line.addWidget(self.cloud_connect_button)
         line.addWidget(self.cloud_test_button)
         line.addWidget(revoke)
         form.addRow(intro)
-        form.addRow("服務", self.cloud_provider)
+        form.addRow(self._t("服務"), self.cloud_provider)
         form.addRow("OAuth Client ID", self.cloud_client_id)
         form.addRow("OAuth Client Secret", self.cloud_client_secret)
-        form.addRow("授權範圍", self.cloud_scopes)
+        form.addRow(self._t("授權範圍"), self.cloud_scopes)
         form.addRow("", buttons)
-        form.addRow("狀態", self.cloud_status)
-        form.addRow("已設定服務", self.cloud_connections)
-        self.cloud_provider.currentIndexChanged.connect(
-            self._cloud_provider_changed
-        )
+        form.addRow(self._t("狀態"), self.cloud_status)
+        form.addRow(self._t("已設定服務"), self.cloud_connections)
+        self.cloud_provider.currentIndexChanged.connect(self._cloud_provider_changed)
         self.cloud_connect_button.clicked.connect(self.connect_cloud)
         self.cloud_test_button.clicked.connect(self.test_cloud)
         revoke.clicked.connect(self.revoke_cloud)
@@ -1319,8 +1429,10 @@ class FlagshipControlCenter(QWidget):
     def connect_cloud(self) -> None:
         if not self.platform_services.capabilities.secure_secret_storage:
             self.cloud_status.setText(
-                f"{self.platform_services.capabilities.display_name} 尚無經過實機驗證的"
-                "安全金鑰保存；OAuth 連線已安全停用。"
+                self._t(
+                    "{platform} 尚無經過實機驗證的安全金鑰保存；OAuth 連線已安全停用。",
+                    platform=self.platform_services.capabilities.display_name,
+                )
             )
             return
         provider_id = str(self.cloud_provider.currentData())
@@ -1328,8 +1440,8 @@ class FlagshipControlCenter(QWidget):
         if not client_id:
             QMessageBox.information(
                 self,
-                "雲端連接器",
-                "請先填入服務商後台建立的 OAuth Client ID。",
+                self._t("雲端連接器"),
+                self._t("請先填入服務商後台建立的 OAuth Client ID。"),
             )
             return
         scopes = [
@@ -1337,7 +1449,7 @@ class FlagshipControlCenter(QWidget):
             for line in self.cloud_scopes.toPlainText().splitlines()
             if line.strip()
         ]
-        self.cloud_status.setText("等待瀏覽器授權，請勿關閉墨寒……")
+        self.cloud_status.setText(self._t("等待瀏覽器授權，請勿關閉墨寒……"))
         worker = OAuthWorker(
             provider_id,
             client_id,
@@ -1354,11 +1466,14 @@ class FlagshipControlCenter(QWidget):
         token: dict[str, Any],
     ) -> None:
         try:
-            self._oauth_store(provider_id).save(
-                json.dumps(token, ensure_ascii=False)
-            )
+            self._oauth_store(provider_id).save(json.dumps(token, ensure_ascii=False))
         except OSError as exc:
-            self.cloud_status.setText(f"無法安全保存 OAuth 權杖：{exc}")
+            self.cloud_status.setText(
+                self._t(
+                    "無法安全保存 OAuth 權杖：{error}",
+                    error=safe_error_message(self.language, exc),
+                )
+            )
             self.db.audit_event(
                 "oauth_secret_store_unavailable",
                 {"provider": provider_id, "error_type": type(exc).__name__},
@@ -1373,30 +1488,35 @@ class FlagshipControlCenter(QWidget):
                 "client_id": token.get("client_id", ""),
                 "scopes": self.cloud_scopes.toPlainText().splitlines(),
             },
-            last_health="OAuth 已連線",
+            last_health=self._t("OAuth 已連線"),
         )
         self.cloud_client_secret.clear()
-        self.cloud_status.setText(f"{provider.display_name} 已安全連線")
+        self.cloud_status.setText(
+            self._t(
+                "{provider} 已安全連線",
+                provider=provider.display_name,
+            )
+        )
         self._register_cloud_tools()
         self.refresh_cloud_connections()
 
     def _cloud_failed(self, provider_id: str, error: str) -> None:
         self.cloud_status.setText(
-            f"{PROVIDERS[provider_id].display_name} 連線失敗：{error}"
+            self._t(
+                "{provider} 連線失敗：{error}",
+                provider=PROVIDERS[provider_id].display_name,
+                error=safe_error_message(self.language, error),
+            )
         )
 
     def _cloud_token(self, provider_id: str) -> str:
         raw = self._oauth_store(provider_id).load()
         if not raw:
-            raise PermissionError("尚未完成 OAuth 連線")
+            raise PermissionError(self._t("尚未完成 OAuth 連線"))
         payload = json.loads(raw)
         expires_in = int(payload.get("expires_in", 0) or 0)
         obtained_at = int(payload.get("obtained_at", 0) or 0)
-        if (
-            expires_in
-            and obtained_at
-            and time.time() >= obtained_at + expires_in - 90
-        ):
+        if expires_in and obtained_at and time.time() >= obtained_at + expires_in - 90:
             payload = refresh_oauth_token(PROVIDERS[provider_id], payload)
             try:
                 self._oauth_store(provider_id).save(
@@ -1404,15 +1524,21 @@ class FlagshipControlCenter(QWidget):
                 )
             except OSError as exc:
                 raise PermissionError(
-                    f"無法安全更新 OAuth 權杖：{exc}"
+                    self._t(
+                        "無法安全更新 OAuth 權杖：{error}",
+                        error=safe_error_message(self.language, exc),
+                    )
                 ) from exc
         token = str(payload.get("access_token", ""))
         if not token:
-            raise PermissionError("OAuth 權杖資料不完整")
+            raise PermissionError(self._t("OAuth 權杖資料不完整"))
         return token
 
     def _register_cloud_tools(self) -> None:
-        if any(self._oauth_store(provider_id).load() for provider_id in ("google", "microsoft")):
+        if any(
+            self._oauth_store(provider_id).load()
+            for provider_id in ("google", "microsoft")
+        ):
             self.executor.register("email_read", self._action_email_read)
             self.executor.register("email_send", self._action_email_send)
             self.executor.register("calendar_read", self._action_calendar_read)
@@ -1451,14 +1577,14 @@ class FlagshipControlCenter(QWidget):
                 provider = connected[0]
             elif len(connected) > 1:
                 raise ValueError(
-                    "Google 與 Microsoft 均已連線，請明確指定要使用哪個帳戶"
+                    self._t("Google 與 Microsoft 均已連線，請明確指定要使用哪個帳戶")
                 )
             else:
                 raise ValueError(
-                    "尚未連線 Google 或 Microsoft，或工具計畫未指定供應商"
+                    self._t("尚未連線 Google 或 Microsoft，或工具計畫未指定供應商")
                 )
         if provider not in {"google", "microsoft"}:
-            raise ValueError("此工具目前只支援 google 或 microsoft")
+            raise ValueError(self._t("此工具目前只支援 google 或 microsoft"))
         return provider
 
     @staticmethod
@@ -1482,12 +1608,16 @@ class FlagshipControlCenter(QWidget):
             datetime.fromisoformat(end)
             return start, end
 
-        range_name = str(
-            arguments.get("range")
-            or arguments.get("time_range")
-            or arguments.get("date_range")
-            or ""
-        ).casefold().strip()
+        range_name = (
+            str(
+                arguments.get("range")
+                or arguments.get("time_range")
+                or arguments.get("date_range")
+                or ""
+            )
+            .casefold()
+            .strip()
+        )
         now = local_aware_time()
         day_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
         aliases = {
@@ -1521,7 +1651,7 @@ class FlagshipControlCenter(QWidget):
         return ActionResult(
             request.request_id,
             True,
-            f"已讀取 {len(rows)} 封郵件摘要",
+            self._t("已讀取 {count} 封郵件摘要", count=len(rows)),
             {"messages": rows},
         )
 
@@ -1530,13 +1660,8 @@ class FlagshipControlCenter(QWidget):
         recipient = str(request.arguments.get("to", "")).strip()
         subject = str(request.arguments.get("subject", "")).strip()
         body = str(request.arguments.get("body", "")).strip()
-        if (
-            not recipient
-            or "@" not in recipient
-            or not subject
-            or not body
-        ):
-            raise ValueError("收件者、主旨與內容不可留空")
+        if not recipient or "@" not in recipient or not subject or not body:
+            raise ValueError(self._t("收件者、主旨與內容不可留空"))
         token = self._cloud_token(provider)
         if provider == "google":
             message = EmailMessage()
@@ -1546,23 +1671,21 @@ class FlagshipControlCenter(QWidget):
             draft = GmailConnector(token).create_draft(message.as_bytes())
             draft_id = str(draft.get("id", ""))
             if not draft_id:
-                raise RuntimeError("Gmail 未傳回草稿 ID")
+                raise RuntimeError(self._t("Gmail 未傳回草稿 ID"))
             result = GmailConnector(token).send_draft(draft_id)
             message_id = str(result.get("id", ""))
         else:
             payload = {
                 "subject": subject,
                 "body": {"contentType": "Text", "content": body},
-                "toRecipients": [
-                    {"emailAddress": {"address": recipient}}
-                ],
+                "toRecipients": [{"emailAddress": {"address": recipient}}],
             }
             MicrosoftGraphConnector(token).send_message(payload)
             message_id = "microsoft-sent"
         return ActionResult(
             request.request_id,
             True,
-            f"郵件已寄給 {recipient}",
+            self._t("郵件已寄給 {recipient}", recipient=recipient),
             {"message_id": message_id, "recipient": recipient},
         )
 
@@ -1580,7 +1703,7 @@ class FlagshipControlCenter(QWidget):
         return ActionResult(
             request.request_id,
             True,
-            f"已讀取 {len(rows)} 個行程",
+            self._t("已讀取 {count} 個行程", count=len(rows)),
             {"events": rows},
         )
 
@@ -1591,41 +1714,33 @@ class FlagshipControlCenter(QWidget):
         end = str(request.arguments.get("end", "")).strip()
         timezone = str(request.arguments.get("timezone", "Asia/Taipei"))
         if not title or not start or not end:
-            raise ValueError("行程標題、開始與結束時間不可留空")
+            raise ValueError(self._t("行程標題、開始與結束時間不可留空"))
         start_dt = datetime.fromisoformat(start)
         end_dt = datetime.fromisoformat(end)
         if end_dt <= start_dt:
-            raise ValueError("結束時間必須晚於開始時間")
+            raise ValueError(self._t("結束時間必須晚於開始時間"))
         token = self._cloud_token(provider)
         if provider == "google":
-            result = GoogleCalendarConnector(token).create_event(
-                {
-                    "summary": title,
-                    "description": str(
-                        request.arguments.get("description", "")
-                    ),
-                    "start": {"dateTime": start, "timeZone": timezone},
-                    "end": {"dateTime": end, "timeZone": timezone},
-                }
-            )
+            result = GoogleCalendarConnector(token).create_event({
+                "summary": title,
+                "description": str(request.arguments.get("description", "")),
+                "start": {"dateTime": start, "timeZone": timezone},
+                "end": {"dateTime": end, "timeZone": timezone},
+            })
         else:
-            result = MicrosoftGraphConnector(token).create_event(
-                {
-                    "subject": title,
-                    "body": {
-                        "contentType": "Text",
-                        "content": str(
-                            request.arguments.get("description", "")
-                        ),
-                    },
-                    "start": {"dateTime": start, "timeZone": timezone},
-                    "end": {"dateTime": end, "timeZone": timezone},
-                }
-            )
+            result = MicrosoftGraphConnector(token).create_event({
+                "subject": title,
+                "body": {
+                    "contentType": "Text",
+                    "content": str(request.arguments.get("description", "")),
+                },
+                "start": {"dateTime": start, "timeZone": timezone},
+                "end": {"dateTime": end, "timeZone": timezone},
+            })
         return ActionResult(
             request.request_id,
             True,
-            f"已建立行程：{title}",
+            self._t("已建立行程：{title}", title=title),
             {"event": result},
         )
 
@@ -1642,19 +1757,15 @@ class FlagshipControlCenter(QWidget):
         token = self._cloud_token(provider)
         if provider == "google":
             connector = GoogleDriveConnector(token)
-            rows = (
-                connector.search(name, limit)
-                if name
-                else connector.recent(limit)
-            )
+            rows = connector.search(name, limit) if name else connector.recent(limit)
         else:
             if not name:
-                raise ValueError("搜尋 OneDrive 時請提供檔案名稱")
+                raise ValueError(self._t("搜尋 OneDrive 時請提供檔案名稱"))
             rows = MicrosoftGraphConnector(token).search_drive(name)
         return ActionResult(
             request.request_id,
             True,
-            f"找到 {len(rows)} 個符合的雲端檔案",
+            self._t("找到 {count} 個符合的雲端檔案", count=len(rows)),
             {"files": rows},
         )
 
@@ -1663,7 +1774,7 @@ class FlagshipControlCenter(QWidget):
         raw_path = str(request.arguments.get("path", ""))
         path = self.toolbox._allowed_path(raw_path, must_exist=True)
         if not path.is_file():
-            raise ValueError("只能上傳白名單內的單一檔案")
+            raise ValueError(self._t("只能上傳白名單內的單一檔案"))
         content = path.read_bytes()
         mime_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
         token = self._cloud_token(provider)
@@ -1682,7 +1793,7 @@ class FlagshipControlCenter(QWidget):
         return ActionResult(
             request.request_id,
             True,
-            f"已上傳：{path.name}",
+            self._t("已上傳：{name}", name=path.name),
             {"file": result, "source": str(path)},
         )
 
@@ -1691,26 +1802,32 @@ class FlagshipControlCenter(QWidget):
         try:
             token = self._cloud_token(provider_id)
         except Exception as exc:  # noqa: BLE001 -- user-visible credential boundary
-            self.cloud_status.setText(f"測試失敗：{exc}")
+            self.cloud_status.setText(
+                self._t(
+                    "測試失敗：{error}",
+                    error=safe_error_message(self.language, exc),
+                )
+            )
             return
         self._cloud_test_generation += 1
         generation = self._cloud_test_generation
         self.cloud_test_button.setEnabled(False)
-        self.cloud_test_button.setText("測試中…")
+        self.cloud_test_button.setText(self._t("測試中…"))
         self.cloud_status.setText(
-            "正在分別檢查 Gmail、Google Calendar 與 Google Drive……"
+            self._t("正在分別檢查 Gmail、Google Calendar 與 Google Drive……")
             if provider_id == "google"
-            else "正在檢查選取的服務……"
+            else self._t("正在檢查選取的服務……")
         )
-        worker = CloudHealthWorker(provider_id, token)
+        worker = CloudHealthWorker(provider_id, token, self.language)
         worker.setAutoDelete(False)
         self._cloud_test_worker = worker
         worker.signals.done.connect(
-            lambda result_provider, results,
-            request_generation=generation: self._cloud_test_done(
-                result_provider,
-                results,
-                request_generation,
+            lambda result_provider, results, request_generation=generation: (
+                self._cloud_test_done(
+                    result_provider,
+                    results,
+                    request_generation,
+                )
             )
         )
         self.cloud_test_timeout.start()
@@ -1727,10 +1844,14 @@ class FlagshipControlCenter(QWidget):
         self.cloud_test_timeout.stop()
         self._cloud_test_worker = None
         self.cloud_test_button.setEnabled(True)
-        self.cloud_test_button.setText("測試選取服務")
+        self.cloud_test_button.setText(self._t("測試選取服務"))
         lines = [
-            f"{name}：{'正常' if value.get('ok') else '失敗'}"
-            f"（{value.get('detail', '')}）"
+            self._t(
+                "{name}：{status}（{detail}）",
+                name=name,
+                status=self._t("正常" if value.get("ok") else "失敗"),
+                detail=value.get("detail", ""),
+            )
             for name, value in results.items()
         ]
         all_ok = bool(results) and all(
@@ -1748,7 +1869,9 @@ class FlagshipControlCenter(QWidget):
         )
         self.cloud_status.setText("\n".join(lines))
         self.refresh_cloud_connections()
-        title = "Google 三項服務測試" if provider_id == "google" else "雲端服務測試"
+        title = self._t(
+            "Google 三項服務測試" if provider_id == "google" else "雲端服務測試"
+        )
         if all_ok:
             QMessageBox.information(self, title, "\n".join(lines))
         else:
@@ -1756,8 +1879,11 @@ class FlagshipControlCenter(QWidget):
                 self,
                 title,
                 "\n".join(lines)
-                + "\n\n失敗項目通常代表該 API 尚未啟用、OAuth 範圍不足，"
-                "或網路暫時無法連線。",
+                + "\n\n"
+                + self._t(
+                    "失敗項目通常代表該 API 尚未啟用、OAuth 範圍不足，"
+                    "或網路暫時無法連線。"
+                ),
             )
 
     def _cloud_test_timed_out(self) -> None:
@@ -1766,9 +1892,9 @@ class FlagshipControlCenter(QWidget):
         self._cloud_test_worker = None
         if hasattr(self, "cloud_test_button"):
             self.cloud_test_button.setEnabled(True)
-            self.cloud_test_button.setText("測試選取服務")
+            self.cloud_test_button.setText(self._t("測試選取服務"))
         self.cloud_status.setText(
-            "雲端測試超過 35 秒，已停止等待；請查看個別服務的 API 與網路狀態。"
+            self._t("雲端測試超過 35 秒，已停止等待；請查看個別服務的 API 與網路狀態。")
         )
         self.db.audit_event(
             "cloud_health_timeout",
@@ -1777,11 +1903,17 @@ class FlagshipControlCenter(QWidget):
 
     def revoke_cloud(self) -> None:
         provider_id = str(self.cloud_provider.currentData())
-        if QMessageBox.question(
-            self,
-            "撤銷雲端服務",
-            f"確定移除 {PROVIDERS[provider_id].display_name} 的本機權杖？",
-        ) != QMessageBox.Yes:
+        if (
+            QMessageBox.question(
+                self,
+                self._t("撤銷雲端服務"),
+                self._t(
+                    "確定移除 {provider} 的本機權杖？",
+                    provider=PROVIDERS[provider_id].display_name,
+                ),
+            )
+            != QMessageBox.Yes
+        ):
             return
         self._oauth_store(provider_id).clear()
         row = self.db.connector(provider_id)
@@ -1795,32 +1927,36 @@ class FlagshipControlCenter(QWidget):
         )
         self._configure_executor()
         self.refresh_cloud_connections()
-        self.cloud_status.setText("本機權杖已移除")
+        self.cloud_status.setText(self._t("本機權杖已移除"))
 
     def refresh_cloud_connections(self) -> None:
         self.cloud_connections.clear()
         for provider_id, provider in PROVIDERS.items():
             row = self.db.connector(provider_id)
             enabled = bool(row["enabled"]) if row else False
-            health = str(row["last_health"] or "尚未測試") if row else "未設定"
+            health = (
+                self._system_text(str(row["last_health"] or "尚未測試"))
+                if row
+                else self._t("未設定")
+            )
             self.cloud_connections.addItem(
-                f"{'已啟用' if enabled else '未啟用'}｜"
+                f"{self._t('已啟用' if enabled else '未啟用')}｜"
                 f"{provider.display_name}｜{health}"
             )
 
     def _home_tab(self) -> QWidget:
         scroll, form = self._scroll_form()
-        self.ha_enabled = QCheckBox("啟用 Home Assistant 整合")
+        self.ha_enabled = QCheckBox(self._t("啟用 Home Assistant 整合"))
         self.ha_url = QLineEdit()
-        self.ha_url.setPlaceholderText("例如：http://homeassistant.local:8123")
+        self.ha_url.setPlaceholderText(self._t("例如：http://homeassistant.local:8123"))
         self.ha_token = QLineEdit()
         self.ha_token.setEchoMode(QLineEdit.Password)
         self.ha_token.setPlaceholderText(
-            "已由作業系統安全保存（留空不變）"
+            self._t("已由作業系統安全保存（留空不變）")
             if self.ha_secret.load()
-            else "貼上 Home Assistant 長期存取權杖"
+            else self._t("貼上 Home Assistant 長期存取權杖")
         )
-        self.ha_tls = QCheckBox("驗證 HTTPS 憑證")
+        self.ha_tls = QCheckBox(self._t("驗證 HTTPS 憑證"))
         self.ha_tls.setChecked(True)
         row = self.db.connector("home_assistant")
         if row:
@@ -1831,25 +1967,27 @@ class FlagshipControlCenter(QWidget):
         buttons = QWidget()
         buttons_layout = QHBoxLayout(buttons)
         buttons_layout.setContentsMargins(0, 0, 0, 0)
-        save = QPushButton("保存連線設定")
-        test = QPushButton("測試連線")
-        load = QPushButton("讀取裝置")
+        save = QPushButton(self._t("保存連線設定"))
+        test = QPushButton(self._t("測試連線"))
+        load = QPushButton(self._t("讀取裝置"))
         buttons_layout.addWidget(save)
         buttons_layout.addWidget(test)
         buttons_layout.addWidget(load)
-        self.ha_status = QLabel("尚未測試")
+        self.ha_status = QLabel(self._t("尚未測試"))
         self.ha_entities = QListWidget()
         self.ha_entities.setMinimumHeight(260)
         form.addRow(self.ha_enabled)
-        form.addRow("Home Assistant 位址", self.ha_url)
-        form.addRow("長期存取權杖", self.ha_token)
+        form.addRow(self._t("Home Assistant 位址"), self.ha_url)
+        form.addRow(self._t("長期存取權杖"), self.ha_token)
         form.addRow("", self.ha_tls)
         form.addRow("", buttons)
-        form.addRow("連線狀態", self.ha_status)
-        form.addRow("裝置狀態", self.ha_entities)
+        form.addRow(self._t("連線狀態"), self.ha_status)
+        form.addRow(self._t("裝置狀態"), self.ha_entities)
         warning = QLabel(
-            "門鎖、警報與加熱設備永遠套用高風險政策。"
-            "墨寒不能因對話內容自行降低安全等級。"
+            self._t(
+                "門鎖、警報與加熱設備永遠套用高風險政策。"
+                "墨寒不能因對話內容自行降低安全等級。"
+            )
         )
         warning.setWordWrap(True)
         warning.setStyleSheet("color:#8a5a13;")
@@ -1858,9 +1996,10 @@ class FlagshipControlCenter(QWidget):
         test.clicked.connect(self.test_home_connection)
         load.clicked.connect(self.load_home_entities)
         if not self.platform_services.capabilities.secure_secret_storage:
-            unavailable = (
-                f"{self.platform_services.capabilities.display_name} 的安全金鑰保存尚未"
-                "完成實機驗證；Home Assistant 連線暫停，且不會儲存明文權杖。"
+            unavailable = self._t(
+                "{platform} 的安全金鑰保存尚未完成實機驗證；"
+                "Home Assistant 連線暫停，且不會儲存明文權杖。",
+                platform=self.platform_services.capabilities.display_name,
             )
             self.ha_enabled.setChecked(False)
             self.ha_enabled.setEnabled(False)
@@ -1873,22 +2012,29 @@ class FlagshipControlCenter(QWidget):
         url = self.ha_url.text().strip()
         token = self.ha_token.text().strip()
         if self.ha_enabled.isChecked() and not url:
-            QMessageBox.information(self, "Home Assistant", "請先填入連線位址。")
+            QMessageBox.information(
+                self,
+                "Home Assistant",
+                self._t("請先填入連線位址。"),
+            )
             return
         if token:
             try:
                 self.ha_secret.save(token)
             except OSError as exc:
-                self.ha_status.setText(f"無法安全保存權杖：{exc}")
+                safe_message = safe_error_message(self.language, exc)
+                self.ha_status.setText(
+                    self._t("無法安全保存權杖：{error}", error=safe_message)
+                )
                 QMessageBox.warning(
                     self,
                     "Home Assistant",
-                    f"無法安全保存權杖：{exc}",
+                    self._t("無法安全保存權杖：{error}", error=safe_message),
                 )
                 return
             self.ha_token.clear()
             self.ha_token.setPlaceholderText(
-                "已由作業系統安全保存（留空不變）"
+                self._t("已由作業系統安全保存（留空不變）")
             )
         self.db.save_connector(
             "home_assistant",
@@ -1901,15 +2047,15 @@ class FlagshipControlCenter(QWidget):
         )
         self._register_home_tools()
         self.refresh_health()
-        self.ha_status.setText("設定已保存")
+        self.ha_status.setText(self._t("設定已保存"))
 
     def _home_client(self) -> HomeAssistantClient:
         row = self.db.connector("home_assistant")
         token = self.ha_secret.load()
         if row is None or not bool(row["enabled"]):
-            raise PermissionError("Home Assistant 尚未啟用")
+            raise PermissionError(self._t("Home Assistant 尚未啟用"))
         if not token:
-            raise PermissionError("尚未保存 Home Assistant 權杖")
+            raise PermissionError(self._t("尚未保存 Home Assistant 權杖"))
         config = json.loads(row["configuration"])
         return HomeAssistantClient(
             HomeAssistantConfig(
@@ -1922,7 +2068,7 @@ class FlagshipControlCenter(QWidget):
     def _register_home_tools(self) -> None:
         try:
             client = self._home_client()
-        except (PermissionError, ValueError):
+        except PermissionError, ValueError:
             return
         self.executor.register("home_read", client.action_read)
         for capability in (
@@ -1942,16 +2088,26 @@ class FlagshipControlCenter(QWidget):
         try:
             healthy = self._home_client().health()
         except Exception as exc:  # noqa: BLE001 -- user-visible integration boundary
-            self.ha_status.setText(f"連線失敗：{exc}")
+            self.ha_status.setText(
+                self._t(
+                    "連線失敗：{error}",
+                    error=safe_error_message(self.language, exc),
+                )
+            )
             return
-        self.ha_status.setText("連線正常" if healthy else "API 回應不正確")
+        self.ha_status.setText(self._t("連線正常" if healthy else "API 回應不正確"))
 
     def load_home_entities(self) -> None:
         self.ha_entities.clear()
         try:
             states = self._home_client().states()
         except Exception as exc:  # noqa: BLE001 -- user-visible integration boundary
-            self.ha_status.setText(f"讀取失敗：{exc}")
+            self.ha_status.setText(
+                self._t(
+                    "讀取失敗：{error}",
+                    error=safe_error_message(self.language, exc),
+                )
+            )
             return
         for state in states:
             entity = str(state.get("entity_id", ""))
@@ -1974,12 +2130,18 @@ class FlagshipControlCenter(QWidget):
             self.ha_entities.addItem(f"{name}　｜　{entity}　｜　{state.get('state')}")
         issues = home_health_issues(states)
         issue_text = (
-            "；".join(issue["message"] for issue in issues[:5])
+            "；".join(
+                self._translator.home_issue(issue["message"]) for issue in issues[:5]
+            )
             if issues
-            else "未發現離線或低電量裝置"
+            else self._t("未發現離線或低電量裝置")
         )
         self.ha_status.setText(
-            f"已讀取 {self.ha_entities.count()} 個可用項目。{issue_text}"
+            self._t(
+                "已讀取 {count} 個可用項目。{issues}",
+                count=self.ha_entities.count(),
+                issues=issue_text,
+            )
         )
 
     def _remote_port_control(self) -> QWidget:
@@ -1994,8 +2156,8 @@ class FlagshipControlCenter(QWidget):
         self.remote_port_up = QPushButton("▲")
         self.remote_port_down = QPushButton("▼")
         for button, tooltip in (
-            (self.remote_port_up, "增加連線埠"),
-            (self.remote_port_down, "減少連線埠"),
+            (self.remote_port_up, self._t("增加連線埠")),
+            (self.remote_port_down, self._t("減少連線埠")),
         ):
             button.setFixedWidth(46)
             button.setAutoRepeat(True)
@@ -2010,35 +2172,37 @@ class FlagshipControlCenter(QWidget):
         return port_control
 
     def _initialize_remote_fields(self) -> None:
-        self.remote_enabled = QCheckBox("啟用手機／私人網路遠端服務")
+        self.remote_enabled = QCheckBox(self._t("啟用手機／私人網路遠端服務"))
         self.remote_host = QComboBox()
         self.remote_host.addItem(
-            "僅本機測試（127.0.0.1）",
+            self._t("僅本機測試（127.0.0.1）"),
             "127.0.0.1",
         )
         self.remote_host.addItem(
-            "私人網路／Tailscale（0.0.0.0）",
+            self._t("私人網路／Tailscale（0.0.0.0）"),
             "0.0.0.0",
         )
         self.remote_trusted = QCheckBox(
-            "我確認已使用 Tailscale、Home Assistant Cloud 或其他加密私人網路"
+            self._t("我確認已使用 Tailscale、Home Assistant Cloud 或其他加密私人網路")
         )
-        self.remote_commands = QCheckBox("允許傳送文字指令")
+        self.remote_commands = QCheckBox(self._t("允許傳送文字指令"))
         self.remote_commands.setChecked(True)
-        self.remote_screen = QCheckBox("允許查看墨寒程式視窗（不擷取整個桌面）")
-        self.remote_files = QCheckBox("允許下載白名單內的非敏感檔案")
-        self.camera_enabled = QCheckBox("允許本機攝影機在場偵測")
+        self.remote_screen = QCheckBox(
+            self._t("允許查看墨寒程式視窗（不擷取整個桌面）")
+        )
+        self.remote_files = QCheckBox(self._t("允許下載白名單內的非敏感檔案"))
+        self.camera_enabled = QCheckBox(self._t("允許本機攝影機在場偵測"))
         self.face_identity = QCheckBox(
-            "本機臉部身分辨識（需另裝可稽核的辨識外掛）"
+            self._t("本機臉部身分辨識（需另裝可稽核的辨識外掛）")
         )
         self.camera_enabled.setChecked(
             bool(self.db.setting("camera_presence_enabled", False))
         )
         self.face_identity.setChecked(False)
         self.face_identity.setEnabled(False)
-        self.camera_status = QLabel("攝影機已關閉")
+        self.camera_status = QLabel(self._t("攝影機已關閉"))
         self.camera_status.setWordWrap(True)
-        self.remote_status = QLabel("遠端功能預設關閉")
+        self.remote_status = QLabel(self._t("遠端功能預設關閉"))
         self.remote_status.setWordWrap(True)
         self.device_list = QListWidget()
 
@@ -2046,9 +2210,9 @@ class FlagshipControlCenter(QWidget):
         controls = QWidget()
         line = QHBoxLayout(controls)
         line.setContentsMargins(0, 0, 0, 0)
-        start = QPushButton("啟動／套用")
-        stop = QPushButton("停止遠端服務")
-        pair = QPushButton("配對新手機")
+        start = QPushButton(self._t("啟動／套用"))
+        stop = QPushButton(self._t("停止遠端服務"))
+        pair = QPushButton(self._t("配對新手機"))
         line.addWidget(start)
         line.addWidget(stop)
         line.addWidget(pair)
@@ -2063,29 +2227,31 @@ class FlagshipControlCenter(QWidget):
         port_control: QWidget,
         controls: QWidget,
     ) -> None:
-        apply_camera = QPushButton("套用攝影機隱私設定")
-        revoke = QPushButton("撤銷選取裝置")
+        apply_camera = QPushButton(self._t("套用攝影機隱私設定"))
+        revoke = QPushButton(self._t("撤銷選取裝置"))
         form.addRow(self.remote_enabled)
-        form.addRow("監聽範圍", self.remote_host)
-        form.addRow("連線埠", port_control)
+        form.addRow(self._t("監聽範圍"), self.remote_host)
+        form.addRow(self._t("連線埠"), port_control)
         form.addRow("", self.remote_trusted)
         form.addRow("", self.remote_commands)
         form.addRow("", self.remote_screen)
         form.addRow("", self.remote_files)
-        form.addRow(QLabel("<b>攝影機與身分辨識</b>"))
+        form.addRow(QLabel(self._t("<b>攝影機與身分辨識</b>")))
         form.addRow("", self.camera_enabled)
         form.addRow("", self.face_identity)
         form.addRow("", apply_camera)
-        form.addRow("攝影機狀態", self.camera_status)
+        form.addRow(self._t("攝影機狀態"), self.camera_status)
         camera_note = QLabel(
-            "攝影機預設關閉；啟用時必須顯示狀態。畫面不會默默上傳，"
-            "也不會辨識未登錄的陌生人。"
+            self._t(
+                "攝影機預設關閉；啟用時必須顯示狀態。畫面不會默默上傳，"
+                "也不會辨識未登錄的陌生人。"
+            )
         )
         camera_note.setWordWrap(True)
         form.addRow(camera_note)
         form.addRow("", controls)
-        form.addRow("服務狀態", self.remote_status)
-        form.addRow("已配對裝置", self.device_list)
+        form.addRow(self._t("服務狀態"), self.remote_status)
+        form.addRow(self._t("已配對裝置"), self.device_list)
         form.addRow("", revoke)
         revoke.clicked.connect(self.revoke_device)
         apply_camera.clicked.connect(self.apply_camera_settings)
@@ -2116,43 +2282,77 @@ class FlagshipControlCenter(QWidget):
             self.camera_enabled.setChecked(False)
             QMessageBox.information(
                 self,
-                "攝影機權限",
-                f"安全政策已阻擋：{decision.reason}",
+                self._t("攝影機權限"),
+                self._t(
+                    "安全政策已阻擋：{reason}",
+                    reason=self._system_text(decision.reason),
+                ),
             )
             return
-        if QMessageBox.question(
-            self,
-            "啟用攝影機",
-            "墨寒只會在本機分析粗略移動與明暗，不保存影像、"
-            "不傳送雲端，也不辨識陌生人。是否啟用？",
-        ) != QMessageBox.Yes:
+        if (
+            QMessageBox.question(
+                self,
+                self._t("啟用攝影機"),
+                self._t(
+                    "墨寒只會在本機分析粗略移動與明暗，不保存影像、"
+                    "不傳送雲端，也不辨識陌生人。是否啟用？"
+                ),
+            )
+            != QMessageBox.Yes
+        ):
             self.camera_enabled.setChecked(False)
             return
         try:
             self.camera_presence.start()
         except RuntimeError as exc:
             self.camera_enabled.setChecked(False)
-            self.camera_status.setText(str(exc))
+            self.camera_status.setText(
+                self._t(
+                    "攝影機啟動失敗：{error}",
+                    error=safe_error_message(self.language, exc),
+                )
+            )
             return
         self.db.set_setting("camera_presence_enabled", True)
         self.db.set_setting("face_identity_enabled", False)
 
     def _camera_status_changed(self, status: str) -> None:
         if hasattr(self, "camera_status"):
-            self.camera_status.setText(status)
+            self.camera_status.setText(self._camera_status_text(status))
+
+    def _camera_status_text(self, status: str) -> str:
+        value = str(status)
+        if value == "攝影機已關閉":
+            return self._t("攝影機已關閉")
+        if value.startswith("攝影機錯誤："):
+            return self._t(
+                "攝影機錯誤：{error}",
+                error=value.removeprefix("攝影機錯誤："),
+            )
+        prefix = "攝影機使用中："
+        suffix = "（僅本機在場偵測）"
+        if value.startswith(prefix) and value.endswith(suffix):
+            return self._t(
+                "攝影機使用中：{device}（僅本機在場偵測）",
+                device=value[len(prefix) : -len(suffix)],
+            )
+        return value
 
     def _presence_changed(self, present: bool) -> None:
         self.db.set_setting("camera_presence_state", bool(present))
         if hasattr(self, "camera_status"):
             base = self.camera_status.text().split("｜", 1)[0]
             self.camera_status.setText(
-                f"{base}｜{'偵測到有人在場' if present else '暫未偵測到在場'}"
+                self._t(
+                    "{base}｜偵測到有人在場" if present else "{base}｜暫未偵測到在場",
+                    base=base,
+                )
             )
 
     def start_remote(self) -> None:
         self.stop_remote(silent=True)
         if not self.remote_enabled.isChecked():
-            self.remote_status.setText("遠端服務未啟用")
+            self.remote_status.setText(self._t("遠端服務未啟用"))
             return
         host = str(self.remote_host.currentData())
         trusted = self.remote_trusted.isChecked()
@@ -2184,14 +2384,23 @@ class FlagshipControlCenter(QWidget):
             self.remote_server.start()
         except (OSError, PermissionError) as exc:
             self.remote_server = None
-            self.remote_status.setText(f"啟動失敗：{exc}")
+            self.remote_status.setText(
+                self._t(
+                    "啟動失敗：{error}",
+                    error=safe_error_message(self.language, exc),
+                )
+            )
             return
         self.db.set_setting("remote_port", self.remote_port.value())
         self.db.set_setting("camera_presence_enabled", self.camera_enabled.isChecked())
         self.db.set_setting("face_identity_enabled", self.face_identity.isChecked())
         self.remote_status.setText(
-            f"已啟動：http://{host}:{self.remote_port.value()}\n"
-            "只有已配對且具備相應權限的裝置可以存取。"
+            self._t(
+                "已啟動：http://{host}:{port}\n"
+                "只有已配對且具備相應權限的裝置可以存取。",
+                host=host,
+                port=self.remote_port.value(),
+            )
         )
         self.refresh_health()
 
@@ -2200,12 +2409,17 @@ class FlagshipControlCenter(QWidget):
             self.remote_server.stop()
             self.remote_server = None
         if hasattr(self, "remote_status") and not silent:
-            self.remote_status.setText("遠端服務已停止，既有權杖未刪除但無法連線。")
+            self.remote_status.setText(
+                self._t("遠端服務已停止，既有權杖未刪除但無法連線。")
+            )
         if hasattr(self, "health_summary"):
             self.refresh_health()
 
     def pair_device(self) -> None:
-        name, ok = self._simple_text_dialog("配對新裝置", "裝置名稱")
+        name, ok = self._simple_text_dialog(
+            self._t("配對新裝置"),
+            self._t("裝置名稱"),
+        )
         if not ok:
             return
         permissions = ["status"]
@@ -2218,9 +2432,11 @@ class FlagshipControlCenter(QWidget):
         token = TokenRegistry(self.db).pair(name, permissions)
         QMessageBox.information(
             self,
-            "一次性配對權杖",
-            "請只在可信任裝置輸入下列權杖。關閉視窗後不會再次顯示：\n\n"
-            + token,
+            self._t("一次性配對權杖"),
+            self._t(
+                "請只在可信任裝置輸入下列權杖。關閉視窗後不會再次顯示：\n\n{token}",
+                token=token,
+            ),
         )
         self.refresh_devices()
 
@@ -2232,6 +2448,8 @@ class FlagshipControlCenter(QWidget):
         editor = QLineEdit()
         root.addWidget(editor)
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.button(QDialogButtonBox.Ok).setText(self._t("確定"))
+        buttons.button(QDialogButtonBox.Cancel).setText(self._t("取消"))
         buttons.accepted.connect(dialog.accept)
         buttons.rejected.connect(dialog.reject)
         root.addWidget(buttons)
@@ -2242,8 +2460,12 @@ class FlagshipControlCenter(QWidget):
         self.device_list.clear()
         for row in self.db.paired_devices():
             item = QListWidgetItem(
-                f"{'有效' if row['enabled'] else '已撤銷'}｜"
-                f"{row['device_name']}｜最後連線：{row['last_seen_at'] or '從未'}"
+                self._t(
+                    "{status}｜{device}｜最後連線：{last_seen}",
+                    status=self._t("有效" if row["enabled"] else "已撤銷"),
+                    device=row["device_name"],
+                    last_seen=row["last_seen_at"] or self._t("從未"),
+                )
             )
             item.setData(Qt.UserRole, int(row["id"]))
             self.device_list.addItem(item)
@@ -2272,7 +2494,10 @@ class FlagshipControlCenter(QWidget):
 
     def _queue_remote_command(self, text: str, device_name: str) -> dict[str, Any]:
         self._remote_commands.put((text, device_name))
-        return {"accepted": True, "message": "已送交墨寒並等待本機權限判斷"}
+        return {
+            "accepted": True,
+            "message": self._t("已送交墨寒並等待本機權限判斷"),
+        }
 
     def _drain_remote_commands(self) -> None:
         if self._closed:
@@ -2287,7 +2512,11 @@ class FlagshipControlCenter(QWidget):
                 {"device": device, "text": text[:500]},
             )
             self.remote_command_received.emit(
-                f"[遠端裝置：{device}] {text}"
+                self._t(
+                    "[遠端裝置：{device}] {text}",
+                    device=device,
+                    text=text,
+                )
             )
 
     def _refresh_screen_cache(self) -> None:
@@ -2310,21 +2539,21 @@ class FlagshipControlCenter(QWidget):
 
     def _screen_bytes(self) -> bytes:
         if not self._screen_cache:
-            raise PermissionError("尚無可用的程式視窗畫面")
+            raise PermissionError(self._t("尚無可用的程式視窗畫面"))
         return self._screen_cache
 
     def _security_target_section(self, form: QFormLayout) -> None:
-        target_heading = QLabel("<b>允許操作的資料夾與程式</b>")
+        target_heading = QLabel(self._t("<b>允許操作的資料夾與程式</b>"))
         target_heading.setStyleSheet("color:#2f6987;font-size:15px;")
         self.target_list = QListWidget()
         self.target_list.setMinimumHeight(130)
         target_buttons = QWidget()
         target_line = QHBoxLayout(target_buttons)
         target_line.setContentsMargins(0, 0, 0, 0)
-        add_folder = QPushButton("加入資料夾")
-        add_app = QPushButton("加入程式")
-        add_web = QPushButton("加入網站")
-        remove_target = QPushButton("移除選取項目")
+        add_folder = QPushButton(self._t("加入資料夾"))
+        add_app = QPushButton(self._t("加入程式"))
+        add_web = QPushButton(self._t("加入網站"))
+        remove_target = QPushButton(self._t("移除選取項目"))
         target_line.addWidget(add_folder)
         target_line.addWidget(add_app)
         target_line.addWidget(add_web)
@@ -2343,34 +2572,40 @@ class FlagshipControlCenter(QWidget):
         form: QFormLayout,
         stored: dict[str, Any],
     ) -> None:
-        permission_heading = QLabel("<b>能力權限</b>")
+        permission_heading = QLabel(self._t("<b>能力權限</b>"))
         permission_heading.setStyleSheet("color:#2f6987;font-size:15px;")
         form.addRow(permission_heading)
         for capability, label in CORE_PERMISSION_LABELS.items():
             combo = QComboBox()
-            combo.addItems(["禁止", "每次詢問", "允許"])
-            risk = self.policy.evaluate(
-                ActionRequest(capability, label)
-            ).risk
+            for canonical in ("禁止", "每次詢問", "允許"):
+                combo.addItem(self._t(canonical), canonical)
+            risk = self.policy.evaluate(ActionRequest(capability, label)).risk
             default = (
-                "允許"
-                if risk.value == 1
-                else "每次詢問"
-                if risk.value < 4
-                else "禁止"
+                "允許" if risk.value == 1 else "每次詢問" if risk.value < 4 else "禁止"
             )
-            combo.setCurrentText(str(stored.get(capability, default)))
+            stored_mode = str(stored.get(capability, default))
+            stored_index = combo.findData(stored_mode)
+            combo.setCurrentIndex(max(stored_index, 0))
             if risk.value >= 3:
-                combo.setToolTip("即使選擇允許，高風險政策仍會要求確認。")
+                combo.setToolTip(self._t("即使選擇允許，高風險政策仍會要求確認。"))
             self._permission_controls[capability] = combo
-            form.addRow(f"{label}（{RISK_NAMES[risk]}）", combo)
+            form.addRow(
+                self._t(
+                    "{label}（{risk}）",
+                    label=self._t(label),
+                    risk=self._t(RISK_NAMES[risk]),
+                ),
+                combo,
+            )
 
     def _security_footer(self, form: QFormLayout) -> None:
-        save = QPushButton("保存安全權限")
+        save = QPushButton(self._t("保存安全權限"))
         save.clicked.connect(self.save_security)
         note = QLabel(
-            "付款、購買、密碼匯出、停用安全防護、任意 PowerShell／管理員命令"
-            "永遠禁止自動執行，無法由此頁解除。"
+            self._t(
+                "付款、購買、密碼匯出、停用安全防護、任意 PowerShell／管理員命令"
+                "永遠禁止自動執行，無法由此頁解除。"
+            )
         )
         note.setWordWrap(True)
         note.setStyleSheet("color:#8a5a13;")
@@ -2389,13 +2624,17 @@ class FlagshipControlCenter(QWidget):
         self.target_list.clear()
         for row in self.db.allowed_targets():
             kind = {
-                "folder": "資料夾",
-                "app": "程式",
-                "web": "網站",
+                "folder": self._t("資料夾"),
+                "app": self._t("程式"),
+                "web": self._t("網站"),
             }.get(str(row["target_type"]), str(row["target_type"]))
+            access_mode = {
+                "read": self._t("只讀"),
+                "write": self._t("可寫"),
+                "control": self._t("控制"),
+            }.get(str(row["access_mode"]), str(row["access_mode"]))
             item = QListWidgetItem(
-                f"{kind}｜{row['display_name']}｜{row['target_value']}｜"
-                f"{row['access_mode']}"
+                f"{kind}｜{row['display_name']}｜{row['target_value']}｜{access_mode}"
             )
             item.setData(Qt.UserRole, int(row["id"]))
             self.target_list.addItem(item)
@@ -2403,13 +2642,13 @@ class FlagshipControlCenter(QWidget):
     def add_allowed_folder(self) -> None:
         path = QFileDialog.getExistingDirectory(
             self,
-            "選擇允許墨寒操作的資料夾",
+            self._t("選擇允許墨寒操作的資料夾"),
         )
         if not path:
             return
         mode, ok = self._simple_text_dialog(
-            "資料夾權限",
-            "輸入 read（只讀）或 write（可建立、移動與重新命名）",
+            self._t("資料夾權限"),
+            self._t("輸入 read（只讀）或 write（可建立、移動與重新命名）"),
         )
         if not ok:
             return
@@ -2426,19 +2665,19 @@ class FlagshipControlCenter(QWidget):
     def add_allowed_app(self) -> None:
         path, _filter = QFileDialog.getOpenFileName(
             self,
-            "選擇允許墨寒啟動的程式",
+            self._t("選擇允許墨寒啟動的程式"),
             "",
             (
-                "Windows 程式 (*.exe);;所有檔案 (*)"
+                self._t("Windows 程式 (*.exe);;所有檔案 (*)")
                 if self.platform_services.capabilities.platform_id == "windows"
-                else "應用程式／可執行檔 (*);;所有檔案 (*)"
+                else self._t("應用程式／可執行檔 (*);;所有檔案 (*)")
             ),
         )
         if not path:
             return
         name, ok = self._simple_text_dialog(
-            "程式別名",
-            "日後對墨寒說的程式名稱",
+            self._t("程式別名"),
+            self._t("日後對墨寒說的程式名稱"),
         )
         if not ok or not name:
             return
@@ -2453,8 +2692,8 @@ class FlagshipControlCenter(QWidget):
 
     def add_allowed_web(self) -> None:
         url, ok = self._simple_text_dialog(
-            "加入允許網站",
-            "輸入完整 HTTPS 網址（可限制到指定路徑）",
+            self._t("加入允許網站"),
+            self._t("輸入完整 HTTPS 網址（可限制到指定路徑）"),
         )
         if not ok or not url:
             return
@@ -2462,8 +2701,8 @@ class FlagshipControlCenter(QWidget):
         if parsed.scheme != "https" or not parsed.netloc:
             QMessageBox.information(
                 self,
-                "網站白名單",
-                "公開網站只接受完整 HTTPS 網址。",
+                self._t("網站白名單"),
+                self._t("公開網站只接受完整 HTTPS 網址。"),
             )
             return
         self.db.add_allowed_target(
@@ -2479,11 +2718,14 @@ class FlagshipControlCenter(QWidget):
         item = self.target_list.currentItem()
         if item is None:
             return
-        if QMessageBox.question(
-            self,
-            "移除允許項目",
-            "確定撤銷墨寒對此項目的存取權？",
-        ) != QMessageBox.Yes:
+        if (
+            QMessageBox.question(
+                self,
+                self._t("移除允許項目"),
+                self._t("確定撤銷墨寒對此項目的存取權？"),
+            )
+            != QMessageBox.Yes
+        ):
             return
         self.db.remove_allowed_target(int(item.data(Qt.UserRole)))
         self.refresh_allowed_targets()
@@ -2491,13 +2733,13 @@ class FlagshipControlCenter(QWidget):
 
     def save_security(self) -> None:
         values = {
-            key: combo.currentText()
+            key: str(combo.currentData())
             for key, combo in self._permission_controls.items()
         }
         self.db.set_setting("flagship_permissions", values)
         self._configure_executor()
         self.speak_requested.emit(
-            "安全權限已保存。妾會守住這條界線。",
+            self._t("安全權限已保存。妾會守住這條界線。"),
             "happy",
         )
 
@@ -2505,7 +2747,7 @@ class FlagshipControlCenter(QWidget):
         page = QWidget()
         layout = QVBoxLayout(page)
         top = QHBoxLayout()
-        refresh = QPushButton("重新整理")
+        refresh = QPushButton(self._t("重新整理"))
         top.addWidget(refresh)
         top.addStretch()
         self.audit_view = QTextBrowser()
@@ -2527,10 +2769,9 @@ class FlagshipControlCenter(QWidget):
             except json.JSONDecodeError:
                 summary = str(row["payload"])[:500]
             lines.append(
-                f"<p><b>{row['created_at']}｜{row['event_type']}</b><br>"
-                f"{summary}</p>"
+                f"<p><b>{row['created_at']}｜{row['event_type']}</b><br>{summary}</p>"
             )
-        self.audit_view.setHtml("".join(lines) or "<p>尚無工具操作紀錄。</p>")
+        self.audit_view.setHtml("".join(lines) or self._t("<p>尚無工具操作紀錄。</p>"))
 
     def _confirm_action(
         self,
@@ -2539,9 +2780,9 @@ class FlagshipControlCenter(QWidget):
         index: int,
     ) -> bool:
         title = (
-            "高風險操作二次確認"
+            self._t("高風險操作二次確認")
             if decision.confirmation_count > 1 and index > 1
-            else "墨寒請求執行工具"
+            else self._t("墨寒請求執行工具")
         )
         detail = json.dumps(
             request.arguments,
@@ -2552,10 +2793,14 @@ class FlagshipControlCenter(QWidget):
         answer = QMessageBox.question(
             self,
             title,
-            f"風險：{RISK_NAMES[decision.risk]}\n"
-            f"來源：{request.source}\n"
-            f"操作：{request.description}\n\n"
-            f"參數預覽：\n{detail}\n\n是否允許？",
+            self._t(
+                "風險：{risk}\n來源：{source}\n操作：{description}\n\n"
+                "參數預覽：\n{detail}\n\n是否允許？",
+                risk=self._t(RISK_NAMES[decision.risk]),
+                source=request.source,
+                description=request.description,
+                detail=detail,
+            ),
         )
         return answer == QMessageBox.Yes
 
@@ -2570,11 +2815,14 @@ class FlagshipControlCenter(QWidget):
             {"at": local_wall_time().isoformat(timespec="seconds")},
         )
         self.emergency_stop_requested.emit()
-        self.speak_requested.emit("已停手。所有工具與遠端連線均已中止。", "worried")
+        self.speak_requested.emit(
+            self._t("已停手。所有工具與遠端連線均已中止。"),
+            "worried",
+        )
         QMessageBox.information(
             self,
-            "緊急停止",
-            "所有進行中的工具任務與遠端服務均已停止。",
+            self._t("緊急停止"),
+            self._t("所有進行中的工具任務與遠端服務均已停止。"),
         )
 
     def _register_home_action_from_request(
