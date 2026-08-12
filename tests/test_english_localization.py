@@ -153,12 +153,13 @@ def assert_companion_voice_policy() -> list[tuple[str, str]]:
 def assert_empty_voice_selection_fails() -> None:
     # The runtime never lets an empty selection fall through to an arbitrary
     # Windows system default, which could be male.
-    tts = WindowsTTS()
+    tts = WindowsTTS(language="en")
     failures: list[str] = []
     tts.failed.connect(failures.append)
     with patch("speech.windows_voices", return_value=[]):
         tts._run("Hello", "", 0)
-    assert failures and "女性" in failures[-1]
+    assert failures and "female" in failures[-1].casefold()
+    assert "女性" not in failures[-1]
 
 
 def assert_english_wizard(app: QApplication, db: StudioDB) -> None:
@@ -207,6 +208,17 @@ def assert_english_dashboard(
             DashboardDependencies(listener, FakeSecretStore()),
         )
     assert dashboard.tabs.tabText(0) == "Chat"
+    assert dashboard.tabs.tabText(1) == "Today"
+    assert dashboard.todo_input.placeholderText().startswith("Enter a task")
+    assert dashboard.todo_category.itemText(0) == "Comic"
+    assert dashboard.todo_category.itemData(0) == "漫畫"
+    assert dashboard.today_add_button.text() == "＋ Add task"
+    assert dashboard.today_save_idea_button.text() == "✦ Save idea"
+    assert dashboard.today_tasks_heading.text() == "<b>Tasks for today</b>"
+    assert dashboard.creative_ideas_heading.text() == "<b>Creative ideas</b>"
+    assert dashboard.todo_count.text() == "0 open"
+    assert dashboard.idea_count.text() == "0 saved"
+    assert dashboard.work_label.text().startswith("Today ")
     assert dashboard.voice_engine.currentData() == VOICE_ENGINE_WINDOWS
     assert dashboard.windows_voice.currentData() == "OneCore::Microsoft Zira"
     assert dashboard.permission_controls["delete_files"].currentData() == "禁止"

@@ -15,7 +15,7 @@ Inno Setup EXE 是一般互動式安裝器。它會偵測 Windows 使用者語�
 
 選定語言只影響安裝器與解除安裝器介面。墨寒本身的首次啟動精靈仍是應用程式 UI 語言的權威來源。
 
-EXE 與 MSI 捷徑必須指向安裝完成後的執行檔，並使用安裝目錄內的 `assets/mohan-halfbody.ico`，不得保留建置機器或 GitHub runner 的絕對路徑。兩種捷徑與執行中視窗都使用 `FlamebladeStudio.MoHanDesktopAssistant` 工作列身分。Windows CI 必須讀回 EXE 捷徑的目標與圖示位置，並在解除安裝後確認捷徑已移除。
+EXE 與 MSI 捷徑必須指向安裝完成後的執行檔，並使用該執行檔內嵌的墨寒半身圖示，不得保留建置機器或 GitHub runner 的絕對路徑。兩種捷徑與執行中視窗都使用 `FlamebladeStudio.MoHanDesktopAssistant` 工作列身分。Windows CI 必須讀回兩種捷徑的目標與圖示位置，並在解除安裝後確認捷徑已移除。
 
 ### MSI 封裝
 
@@ -53,7 +53,7 @@ Inno Setup EXE 是常规交互式安装程序。它会检测 Windows 用户语�
 
 所选语言只影响安装程序与卸载程序界面。墨寒本身的首次运行向导仍是应用程序 UI 语言的权威来源。
 
-EXE 与 MSI 快捷方式必须指向安装完成后的可执行文件，并使用安装目录内的 `assets/mohan-halfbody.ico`，不得保留构建计算机或 GitHub runner 的绝对路径。两种快捷方式与运行中的窗口都使用 `FlamebladeStudio.MoHanDesktopAssistant` 任务栏身份。Windows CI 必须读回 EXE 快捷方式的目标与图标位置，并在卸载后确认快捷方式已删除。
+EXE 与 MSI 快捷方式必须指向安装完成后的可执行文件，并使用该可执行文件内嵌的墨寒半身图标，不得保留构建计算机或 GitHub runner 的绝对路径。两种快捷方式与运行中的窗口都使用 `FlamebladeStudio.MoHanDesktopAssistant` 任务栏身份。Windows CI 必须读回两种快捷方式的目标与图标位置，并在卸载后确认快捷方式已删除。
 
 ### MSI 封装
 
@@ -91,7 +91,7 @@ The Inno Setup EXE is the normal interactive installer. It detects the Windows u
 
 The selected language affects only the installer and uninstaller interface. MoHan's own first-run wizard remains the authority for the application UI language.
 
-EXE and MSI shortcuts must target the installed executable and use `assets/mohan-halfbody.ico` from the installation directory; they must never retain an absolute build-machine or GitHub runner path. Both shortcut formats and the running window use the `FlamebladeStudio.MoHanDesktopAssistant` taskbar identity. Windows CI must read back the EXE shortcut target and icon location and confirm that uninstall removes the shortcut.
+EXE and MSI shortcuts must target the installed executable and use the MoHan half-body icon embedded in that executable; they must never retain an absolute build-machine or GitHub runner path. Both shortcut formats and the running window use the `FlamebladeStudio.MoHanDesktopAssistant` taskbar identity. Windows CI must read back both shortcut targets and icon locations and confirm that uninstall removes each shortcut.
 
 ### MSI package
 
@@ -129,7 +129,7 @@ Inno Setup EXE は通常の対話式インストーラーです。Windows のユ
 
 選択した言語が影響するのは、インストーラーとアンインストーラーの画面だけです。アプリケーション UI 言語の正式な決定元は、引き続き墨寒本体の初回起動ウィザードです。
 
-EXE と MSI のショートカットは、インストール済み実行ファイルを参照し、インストール先の `assets/mohan-halfbody.ico` を使用しなければなりません。ビルドマシンや GitHub runner の絶対パスを残してはなりません。両形式のショートカットと実行中ウィンドウは、`FlamebladeStudio.MoHanDesktopAssistant` のタスクバー ID を共有します。Windows CI は EXE ショートカットのリンク先とアイコン位置を読み戻し、アンインストール後にショートカットが削除されたことを確認します。
+EXE と MSI のショートカットは、インストール済み実行ファイルを参照し、その実行ファイルに埋め込まれた墨寒半身アイコンを使用しなければなりません。ビルドマシンや GitHub runner の絶対パスを残してはなりません。両形式のショートカットと実行中ウィンドウは、`FlamebladeStudio.MoHanDesktopAssistant` のタスクバー ID を共有します。Windows CI は両形式のショートカットのリンク先とアイコン位置を読み戻し、アンインストール後に各ショートカットが削除されたことを確認します。
 
 ### MSI パッケージ
 

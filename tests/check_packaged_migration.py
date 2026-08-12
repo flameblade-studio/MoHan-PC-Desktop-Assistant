@@ -76,7 +76,7 @@ def verify() -> None:
     text_model = connection.execute(
         "SELECT value FROM settings WHERE key='ai_model'"
     ).fetchone()
-    traditional_chat = connection.execute(
+    preserved_chat = connection.execute(
         "SELECT content FROM chat_log ORDER BY id DESC LIMIT 1"
     ).fetchone()
     connection.close()
@@ -87,8 +87,8 @@ def verify() -> None:
     assert tts_voice is not None and "coral" in tts_voice[0]
     assert realtime_voice is not None and "coral" in realtime_voice[0]
     assert text_model is not None and "gpt-5.6-luna" in text_model[0]
-    assert traditional_chat is not None and traditional_chat[0] == (
-        "會保持專注，開啟軟體和滑鼠。"
+    assert preserved_chat is not None and preserved_chat[0] == (
+        "会保持专注，打开软件和鼠标。"
     )
     print("PACKAGED_MIGRATION_DATA_OK")
 

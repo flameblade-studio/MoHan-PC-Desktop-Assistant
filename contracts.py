@@ -51,6 +51,8 @@ class LocalSpeechEnginePort(Protocol):
         rate: int = -1,
     ) -> None: ...
 
+    def stop(self) -> None: ...
+
 
 class CloudSpeechEnginePort(Protocol):
     finished: SignalPort
@@ -82,7 +84,10 @@ class AzureSpeechEnginePort(Protocol):
         api_key: str,
         region: str,
         voice: str,
+        locale: str = "",
     ) -> None: ...
+
+    def stop(self) -> None: ...
 
     def refresh_voice_catalog(
         self,
@@ -123,13 +128,19 @@ class RealtimeVoicePort(Protocol):
     speaking_changed: SignalPort
     viseme_cue: SignalPort
     failed: SignalPort
+    output_text_started: SignalPort
+    output_text_delta: SignalPort
+    output_text_done: SignalPort
+    output_interrupted: SignalPort
     running: bool
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None: ...
 
+    def set_external_playback_active(self, active: bool) -> None: ...
+
     def start(self, *args: Any, **kwargs: Any) -> None: ...
 
-    def stop(self) -> None: ...
+    def stop(self) -> int: ...
 
 
 class SpeechListenerPort(Protocol):

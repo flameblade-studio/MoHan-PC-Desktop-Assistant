@@ -11,6 +11,7 @@ lazy from urllib.request import Request, urlopen
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from ai_client import ActionPlannerWorker
+lazy from safe_error import sanitize_error
 lazy from secret_store import SecretStore
 
 
@@ -48,15 +49,16 @@ def main(data_path_text: str) -> int:
             f"elapsed={time.monotonic() - started:.2f}s"
         )
     except HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")[:800]
+        error = sanitize_error(exc, http_status=exc.code)
         print(
-            f"MODEL_CHECK=http_{exc.code},"
-            f"elapsed={time.monotonic() - started:.2f}s,detail={detail}"
+            f"MODEL_CHECK=failed,{error},"
+            f"elapsed={time.monotonic() - started:.2f}s"
         )
         return 3
-    except Exception as exc:  # noqa: BLE001 -- diagnostic prints the terminal cause
+    except Exception as exc:  # noqa: BLE001 -- external errors become finite metadata
+        error = sanitize_error(exc)
         print(
-            f"MODEL_CHECK={type(exc).__name__}:{exc},"
+            f"MODEL_CHECK=failed,{error},"
             f"elapsed={time.monotonic() - started:.2f}s"
         )
         return 4
@@ -76,7 +78,8 @@ def main(data_path_text: str) -> int:
     worker.run()
     elapsed = time.monotonic() - started
     if errors:
-        print(f"PLANNER=failed,elapsed={elapsed:.2f}s,error={errors[0]}")
+        error = sanitize_error(errors[0])
+        print(f"PLANNER=failed,{error},elapsed={elapsed:.2f}s")
         return 5
     if not plans:
         print(f"PLANNER=no_signal,elapsed={elapsed:.2f}s")

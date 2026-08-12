@@ -4,6 +4,8 @@ lazy import time
 
 lazy from PySide6.QtCore import QObject, Signal
 
+lazy from service_status_localization import ServiceStatus, service_status
+
 try:
     from PySide6.QtMultimedia import (
         QCamera,
@@ -22,8 +24,9 @@ class CameraPresenceController(QObject):
     presence_changed = Signal(bool)
     status_changed = Signal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, *, language: str = "zh-TW"):
         super().__init__(parent)
+        self.language = language
         self.camera = None
         self.session = None
         self.sink = None
@@ -38,10 +41,20 @@ class CameraPresenceController(QObject):
 
     def start(self, device_index: int = 0) -> None:
         if QCamera is None:
-            raise RuntimeError("此封裝未包含 QtMultimedia 攝影機元件")
+            raise RuntimeError(
+                service_status(
+                    self.language,
+                    ServiceStatus.CAMERA_COMPONENT_UNAVAILABLE,
+                )
+            )
         devices = QMediaDevices.videoInputs()
         if not devices:
-            raise RuntimeError("找不到可用攝影機")
+            raise RuntimeError(
+                service_status(
+                    self.language,
+                    ServiceStatus.CAMERA_NOT_FOUND,
+                )
+            )
         if self.camera is not None:
             return
         index = max(0, min(int(device_index), len(devices) - 1))
@@ -53,12 +66,26 @@ class CameraPresenceController(QObject):
         self.sink.videoFrameChanged.connect(self._frame)
         self.camera.errorOccurred.connect(
             lambda _error, message: self.status_changed.emit(
-                f"攝影機錯誤：{message}"
+                service_status(
+                    self.language,
+                    ServiceStatus.CAMERA_ERROR,
+                    detail=message,
+                )
+            )
+        )
+        self.status_changed.emit(
+            service_status(
+                self.language,
+                ServiceStatus.CAMERA_STARTING,
             )
         )
         self.camera.start()
         self.status_changed.emit(
-            f"攝影機使用中：{devices[index].description()}（僅本機在場偵測）"
+            service_status(
+                self.language,
+                ServiceStatus.CAMERA_ACTIVE,
+                device=devices[index].description(),
+            )
         )
 
     def stop(self) -> None:
@@ -72,7 +99,12 @@ class CameraPresenceController(QObject):
         if self._present:
             self._present = False
             self.presence_changed.emit(False)
-        self.status_changed.emit("攝影機已關閉")
+        self.status_changed.emit(
+            service_status(
+                self.language,
+                ServiceStatus.CAMERA_CLOSED,
+            )
+        )
 
     def _frame(self, frame: QVideoFrame) -> None:
         now = time.monotonic()

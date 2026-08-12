@@ -28,6 +28,13 @@ class _CachedCatalog:
     catalog: AzureVoiceCatalog
 
 
+@dataclass(frozen=True, slots=True)
+class _CatalogCacheKey:
+    region: str
+    language: str
+    hd_only: bool
+
+
 def _language_locales(language: str) -> tuple[str, ...]:
     normalized = str(language or "").strip().lower()
     if normalized == "zh-cn":
@@ -105,7 +112,10 @@ class AzureVoiceCatalogService:
     """Query Azure for female voices and retain only a short-lived cache.
 
     Subscription keys are passed directly to the SDK configuration and are
-    never stored in this service, cache keys, exceptions, or diagnostics.
+    never stored, transformed, fingerprinted, logged, or placed in cache keys.
+    Each service instance is one credential domain. Call ``invalidate`` when
+    that domain's credential or resource changes; MoHan's standard and Dragon
+    HD engines intentionally own separate service instances.
     """
 
     def __init__(
@@ -118,8 +128,9 @@ class AzureVoiceCatalogService:
         self._cache_seconds = max(0.0, float(cache_seconds))
         self._clock = clock
         self._sdk_loader = sdk_loader or self._load_sdk
-        self._cache: dict[tuple[str, str, bool], _CachedCatalog] = {}
+        self._cache: dict[_CatalogCacheKey, _CachedCatalog] = {}
         self._lock = threading.Lock()
+        self._generation = 0
 
     @staticmethod
     def _load_sdk() -> Any:
@@ -133,12 +144,17 @@ class AzureVoiceCatalogService:
         *,
         hd_only: bool,
     ) -> AzureVoiceCatalog:
-        cache_key = (region, language, hd_only)
+        cache_key = _CatalogCacheKey(
+            region=region,
+            language=language,
+            hd_only=hd_only,
+        )
         now = self._clock()
         with self._lock:
             cached = self._cache.get(cache_key)
             if cached is not None and cached.expires_at > now:
                 return cached.catalog
+            query_generation = self._generation
 
         sdk = self._sdk_loader()
         speech_config = sdk.SpeechConfig(subscription=api_key, region=region)
@@ -165,19 +181,21 @@ class AzureVoiceCatalogService:
             source="azure",
         )
         with self._lock:
-            self._cache[cache_key] = _CachedCatalog(
-                expires_at=now + self._cache_seconds,
-                catalog=catalog,
-            )
+            if query_generation == self._generation:
+                self._cache[cache_key] = _CachedCatalog(
+                    expires_at=now + self._cache_seconds,
+                    catalog=catalog,
+                )
         return catalog
 
     def invalidate(self, region: str | None = None) -> None:
         with self._lock:
+            self._generation += 1
             if region is None:
                 self._cache.clear()
                 return
             self._cache = {
                 key: value
                 for key, value in self._cache.items()
-                if key[0] != region
+                if key.region != region
             }

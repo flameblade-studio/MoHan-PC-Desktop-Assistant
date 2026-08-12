@@ -36,11 +36,13 @@ taiwan
 open-source
 ```
 
-### 已準備的公開預發行版
+### 已準備的公開版本
 
-- 標籤：`v3.1.1`
-- 標題：`MoHan Desktop Assistant v3.1.1`
+- 標籤：`v3.1.2`
+- 標題：`MoHan Desktop Assistant v3.1.2`
 - 發布條件：只有在所有必要 CI、套件 smoke、安全及發布政策檢查成功後才可發布。
+- 本版完整保留並預設使用 OpenAI Realtime 原生聲音，作為三種回覆聲音中額外延遲最低的路徑；另提供使用者明確選擇的 Realtime 即時理解＋一般 Azure Speech 或 Dragon HD 串流發聲。三種模式完全隔離且不混音，不得改動其他語音供應器；Dragon HD 單句失敗時依序只退回一般 Azure 一次及 Windows 本機女性聲線一次，一般 Azure 單句失敗時只退回 Windows 本機女性聲線一次。回退只能發生在該句尚未播放任何音訊時；播放開始後的串流失敗必須停止該句且不得整句重播，以防重複發聲與計費。
+- 混合模式增加 TTS 網路與合成階段；以安全短句依序合成及首段音訊即播降低等待，但發布說明不得宣稱零延遲或未經驗證的效能數字。
 - 內容包含 Windows x64 可攜式 ZIP、每位使用者安裝的 EXE 與 MSI、英文／簡體中文／日文 MSI 轉換檔、macOS Apple Silicon（arm64）與 Intel（x86_64）功能受限 Preview DMG、Linux x86_64 功能受限 Preview AppImage、SHA-256 清單、可重現的 CycloneDX 1.7 SBOM 與驗證報告、已去識別化的 Tachyon 證據與效能摘要、更新資訊清單及產物證明。
 
 ### 後續發行系列
@@ -201,11 +203,13 @@ taiwan
 open-source
 ```
 
-### 已准备的公开预发布版
+### 已准备的公开版本
 
-- 标签：`v3.1.1`
-- 标题：`MoHan Desktop Assistant v3.1.1`
+- 标签：`v3.1.2`
+- 标题：`MoHan Desktop Assistant v3.1.2`
 - 发布条件：只有在所有必要 CI、软件包 smoke、安全及发布政策检查成功后才可发布。
+- 本版本完整保留并默认使用 OpenAI Realtime 原生声音，作为三种回复声音中额外延迟最低的路径；另提供用户明确选择的 Realtime 即时理解＋一般 Azure Speech 或 Dragon HD 流式发声。三种模式完全隔离且不混音，不得改动其他语音供应器；Dragon HD 单句失败时依次只回退到一般 Azure 一次及 Windows 本地女性声线一次，一般 Azure 单句失败时只回退到 Windows 本地女性声线一次。回退只能发生在该句尚未播放任何音频时；播放开始后的流式失败必须停止该句且不得整句重播，以防重复发声及计费。
+- 混合模式增加 TTS 网络与合成阶段；通过安全短句依次合成及首段音频即播降低等待，但发布说明不得宣称零延迟或未经验证的性能数字。
 - 内容包括 Windows x64 便携式 ZIP、按用户安装的 EXE 与 MSI、英文／简体中文／日文 MSI 转换文件、macOS Apple Silicon（arm64）与 Intel（x86_64）功能受限 Preview DMG、Linux x86_64 功能受限 Preview AppImage、SHA-256 清单、可重现的 CycloneDX 1.7 SBOM 与验证报告、已去除身份信息的 Tachyon 证据与性能摘要、更新清单及产物证明。
 
 ### 后续发布系列
@@ -366,11 +370,13 @@ taiwan
 open-source
 ```
 
-### Prepared public pre-release
+### Prepared public release
 
-- Tag: `v3.1.1`
-- Title: `MoHan Desktop Assistant v3.1.1`
+- Tag: `v3.1.2`
+- Title: `MoHan Desktop Assistant v3.1.2`
 - Publication condition: publish only after every required CI, package smoke, security, and release-policy check succeeds.
+- This release fully preserves native OpenAI Realtime voice and keeps it as the default, lowest-added-latency route among the three response-voice choices. Users may explicitly select Realtime understanding with standard Azure Speech or Dragon HD streaming output. The three modes remain isolated and unmixed and must not change other speech providers. A failed Dragon HD clause falls back once to standard Azure and then once to a local Windows female voice; standard Azure falls back once to the local Windows female voice. Fallback is permitted only before the clause has played any audio. A stream failure after playback begins must stop the clause without replaying it in full, preventing duplicate speech and charges.
+- Hybrid mode adds a TTS network and synthesis stage. Safe short-clause synthesis in order and first-chunk playback reduce the wait, but publication notes must not claim zero latency or unverified performance figures.
 - Includes the Windows x64 portable ZIP, per-user EXE and MSI installers, English/Simplified Chinese/Japanese MSI transforms, macOS Apple Silicon (arm64) and Intel (x86_64) limited Preview DMGs, Linux x86_64 limited Preview AppImage, SHA-256 catalog, reproducible CycloneDX 1.7 SBOMs and validation report, sanitized Tachyon evidence and performance summary, update manifest, and artifact attestations.
 
 ### Next release line
@@ -531,11 +537,13 @@ taiwan
 open-source
 ```
 
-### 準備済みの公開プレリリース
+### 準備済みの公開版
 
-- タグ：`v3.1.1`
-- タイトル：`MoHan Desktop Assistant v3.1.1`
+- タグ：`v3.1.2`
+- タイトル：`MoHan Desktop Assistant v3.1.2`
 - 公開条件：必須の CI、パッケージ smoke、セキュリティ、リリースポリシーの全検査が成功した場合に限り公開します。
+- 本版は OpenAI Realtime のネイティブ音声を完全に維持して既定値とし、三つの応答音声の中で追加遅延が最も少ない経路とします。利用者は Realtime の即時理解と通常 Azure Speech または Dragon HD のストリーミング発話を組み合わせるモードを明示的に選べます。三つのモードは完全に分離して混音せず、他の音声供給元を変更してはなりません。Dragon HD が一つの句で失敗した場合は通常 Azure へ一度、続いて Windows 本機女性音声へ一度だけ代替し、通常 Azure が失敗した場合は Windows 本機女性音声へ一度だけ代替します。代替できるのは、その句の音声がまだ再生されていない場合だけです。再生開始後のストリーム障害では句を停止し、全体を再生し直さず、重複発話と重複課金を防がなければなりません。
+- ハイブリッドモードでは TTS の通信と合成工程が増えます。安全な短い句を順番に合成し、最初の音声断片から再生して待ち時間を抑えますが、公開説明でゼロ遅延や未検証の性能値をうたってはなりません。
 - Windows x64 ポータブル ZIP、ユーザー単位の EXE および MSI インストーラー、英語／簡体字中国語／日本語の MSI 変換ファイル、macOS Apple Silicon（arm64）および Intel（x86_64）の機能限定 Preview DMG、Linux x86_64 の機能限定 Preview AppImage、SHA-256 カタログ、再現可能な CycloneDX 1.7 SBOM と検証レポート、匿名化済み Tachyon 証拠と性能要約、更新マニフェスト、成果物証明を含みます。
 
 ### 次のリリース系列

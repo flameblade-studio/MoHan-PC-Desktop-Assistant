@@ -5,14 +5,15 @@ lazy import sys
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
+lazy from unittest.mock import patch
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtCore import QObject, Signal
-lazy from PySide6.QtWidgets import QApplication, QLineEdit
+lazy from PySide6.QtWidgets import QApplication, QLineEdit, QMessageBox
 
-lazy from app import CompanionWindow
+lazy from app import CompanionWindow, SpeechCredentials
 lazy from db import StudioDB
 lazy from realtime_voice import RealtimeVoiceRequest
 lazy from service_container import CompanionServices
@@ -41,12 +42,21 @@ class FakeSpeechEngine(QObject):
         super().__init__()
         self.volume_calls: list[tuple[int, bool]] = []
         self.speak_calls: list[tuple[tuple, dict]] = []
+        self.voice_catalog_regions: set[str] = set()
+        self.voice_catalog_invalidations: list[str | None] = []
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None:
         self.volume_calls.append((volume_percent, muted))
 
     def speak(self, *args, **kwargs) -> None:
         self.speak_calls.append((args, kwargs))
+
+    def invalidate_voice_catalog(self, region: str | None = None) -> None:
+        self.voice_catalog_invalidations.append(region)
+        if region is None:
+            self.voice_catalog_regions.clear()
+        else:
+            self.voice_catalog_regions.discard(region)
 
 
 class FakeRealtime(QObject):
@@ -56,6 +66,10 @@ class FakeRealtime(QObject):
     speaking_changed = Signal(bool)
     viseme_cue = Signal(str, float)
     failed = Signal(str)
+    output_text_started = Signal(int)
+    output_text_delta = Signal(int, str)
+    output_text_done = Signal(int)
+    output_interrupted = Signal(int)
 
     def __init__(self) -> None:
         super().__init__()
@@ -71,9 +85,26 @@ class FakeRealtime(QObject):
         self.start_requests.append(request)
         self.running = True
 
-    def stop(self) -> None:
+    def stop(self) -> int:
         self.running = False
         self.stop_calls += 1
+        return self.stop_calls
+
+    def set_external_playback_active(self, _active: bool) -> None:
+        return
+
+
+def _assert_credential_repr_is_redacted() -> None:
+    secrets = ("openai-secret", "azure-secret", "azure-hd-secret")
+    credentials = SpeechCredentials(
+        openai_api_key=secrets[0],
+        azure_api_key=secrets[1],
+        azure_region="eastasia",
+        azure_hd_api_key=secrets[2],
+        azure_hd_region="westus2",
+    )
+    rendered = repr(credentials)
+    assert all(secret not in rendered for secret in secrets)
 
 
 class FakeListener(QObject):
@@ -278,6 +309,63 @@ def _assert_secret_fields_save_consistently_and_securely(
     )
     assert all(secret not in database_text for *_prefix, secret in fields)
 
+
+def _assert_azure_key_changes_invalidate_isolated_catalogs(
+    context: InjectedTestContext,
+) -> None:
+    dashboard = context.window.dashboard
+    standard = context.azure_tts
+    hd = context.azure_hd_tts
+
+    standard.voice_catalog_invalidations.clear()
+    hd.voice_catalog_invalidations.clear()
+    standard.voice_catalog_regions.clear()
+    hd.voice_catalog_regions.clear()
+    standard.voice_catalog_regions.update(("eastasia", "westus2"))
+    hd.voice_catalog_regions.update(("centralindia", "southeastasia"))
+    dashboard.azure_key_input.setText("azure-standard-replacement")
+    dashboard.azure_key_input.editingFinished.emit()
+
+    assert standard.voice_catalog_invalidations == [None]
+    assert not standard.voice_catalog_regions
+    assert hd.voice_catalog_invalidations == []
+    assert hd.voice_catalog_regions == {"centralindia", "southeastasia"}
+
+    standard.voice_catalog_regions.update(("eastasia", "westus2"))
+    dashboard.azure_hd_key_input.setText("azure-hd-replacement")
+    dashboard.azure_hd_key_input.editingFinished.emit()
+
+    assert hd.voice_catalog_invalidations == [None]
+    assert not hd.voice_catalog_regions
+    assert standard.voice_catalog_invalidations == [None]
+    assert standard.voice_catalog_regions == {"eastasia", "westus2"}
+
+    with patch.object(
+        QMessageBox,
+        "question",
+        return_value=QMessageBox.Yes,
+    ):
+        dashboard.clear_azure_speech_key()
+
+    assert context.azure_secret_store.load() == ""
+    assert standard.voice_catalog_invalidations == [None, None]
+    assert not standard.voice_catalog_regions
+    assert hd.voice_catalog_invalidations == [None]
+
+    hd.voice_catalog_regions.update(("centralindia", "southeastasia"))
+    with patch.object(
+        QMessageBox,
+        "question",
+        return_value=QMessageBox.Yes,
+    ):
+        dashboard.clear_azure_hd_speech_key()
+
+    assert context.azure_hd_secret_store.load() == ""
+    assert hd.voice_catalog_invalidations == [None, None]
+    assert not hd.voice_catalog_regions
+    assert standard.voice_catalog_invalidations == [None, None]
+
+
 def _assert_cloud_failure_uses_local_tts(
     context: InjectedTestContext,
 ) -> None:
@@ -316,6 +404,7 @@ def _assert_azure_failure_uses_local_tts(
         "test-key",
         "eastasia",
         "zh-TW-HsiaoChenNeural",
+        "zh-TW",
     )
     context.azure_tts.failed.emit("模擬 Azure 播放失敗")
     context.app.processEvents()
@@ -355,6 +444,7 @@ def _assert_controls_and_shutdown(context: InjectedTestContext) -> None:
 
 
 def run() -> None:
+    _assert_credential_repr_is_redacted()
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
         context = _create_injected_context(temp_dir)
         _assert_dependencies_are_injected(context)
@@ -364,6 +454,7 @@ def run() -> None:
         _assert_azure_failure_uses_local_tts(context)
         _assert_missing_azure_settings_fail_locally(context)
         _assert_secret_fields_save_consistently_and_securely(context)
+        _assert_azure_key_changes_invalidate_isolated_catalogs(context)
         _assert_controls_and_shutdown(context)
     print("DEPENDENCY_INJECTION_OK")
 

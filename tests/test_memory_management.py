@@ -52,9 +52,9 @@ def _assert_memory_update(db: StudioDB, person_id: int) -> None:
         5,
     )
     updated = db.memory(person_id)
-    assert updated["title"] == "主要出版視窗"
+    assert updated["title"] == "主要出版窗口"
     assert updated["category"] == "工作流程"
-    assert updated["content"] == "林小姐是主上的主要出版視窗，週一聯絡。"
+    assert updated["content"] == "林小姐是主上的主要出版窗口，週一聯絡。"
     assert updated["importance"] == 5
     db.add_memory(
         "林小姐是主上的主要出版窗口，週一聯絡。",
@@ -62,7 +62,7 @@ def _assert_memory_update(db: StudioDB, person_id: int) -> None:
         "conversation",
         4,
     )
-    assert db.memory(person_id)["title"] == "主要出版視窗"
+    assert db.memory(person_id)["title"] == "主要出版窗口"
 
 
 def _assert_delete_and_conflict_handling(
@@ -95,8 +95,8 @@ def _assert_editor_and_archive(db: StudioDB, person_id: int) -> None:
     assert editor.category_input.currentText() == "工作流程"
     assert editor.importance_input.value() == 5
     assert editor.values() == (
-        "主要出版視窗",
-        "林小姐是主上的主要出版視窗，週一聯絡。",
+        "主要出版窗口",
+        "林小姐是主上的主要出版窗口，週一聯絡。",
         "工作流程",
         5,
     )

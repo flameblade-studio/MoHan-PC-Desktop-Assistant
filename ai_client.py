@@ -2,7 +2,8 @@ from __future__ import annotations
 
 lazy import json
 lazy import os
-lazy from dataclasses import dataclass
+lazy from dataclasses import dataclass, field
+lazy from typing import NotRequired, TypedDict, Unpack
 lazy from urllib.error import HTTPError, URLError
 lazy from urllib.request import Request, urlopen
 
@@ -16,6 +17,8 @@ lazy from language_support import (
     is_simplified_chinese,
     response_language_instruction,
 )
+lazy from safe_error import sanitize_error
+lazy from service_status_localization import ServiceStatus, service_status
 
 DEFAULT_TEXT_MODEL = "gpt-5.6-luna"
 TEXT_MODELS = (
@@ -262,6 +265,13 @@ class ActionPlannerSignals(QObject):
     failed = Signal(str)
 
 
+class _ActionPlannerOptions(TypedDict):
+    api_key: str
+    model: str
+    available_targets: str
+    source: NotRequired[str]
+
+
 class ActionPlannerWorker(QRunnable):
     """Ask the model for a plan only; the model never executes local tools."""
 
@@ -269,23 +279,34 @@ class ActionPlannerWorker(QRunnable):
         self,
         instruction: str,
         *,
-        api_key: str,
-        model: str,
-        available_targets: str,
-        source: str = "local",
+        language: str = "zh-TW",
+        **options: Unpack[_ActionPlannerOptions],
     ):
         super().__init__()
         self.instruction = instruction
-        self.api_key = api_key
-        self.model = model or DEFAULT_TEXT_MODEL
-        self.available_targets = available_targets
-        self.source = source
+        self.api_key = options["api_key"]
+        self.model = options["model"] or DEFAULT_TEXT_MODEL
+        self.available_targets = options["available_targets"]
+        self.source = options.get("source", "local")
+        self.language = language
         self.signals = ActionPlannerSignals()
+
+    @property
+    def waiting_status(self) -> str:
+        return service_status(
+            self.language,
+            ServiceStatus.AI_PLANNING,
+        )
 
     def run(self) -> None:
         key = (self.api_key or os.getenv("OPENAI_API_KEY", "")).strip()
         if not key:
-            self.signals.failed.emit("尚未設定 OpenAI API 金鑰，無法理解自由語句工具任務")
+            self.signals.failed.emit(
+                service_status(
+                    self.language,
+                    ServiceStatus.AI_PLANNER_KEY_MISSING,
+                )
+            )
             return
         schema = {
             "type": "object",
@@ -398,26 +419,44 @@ class ActionPlannerWorker(QRunnable):
                 and item.get("name") == "propose_action_plan"
             ]
             if len(calls) != 1:
-                raise ValueError("API 未傳回唯一的安全任務計畫")
+                raise ValueError(
+                    service_status(
+                        self.language,
+                        ServiceStatus.AI_PLAN_RESPONSE_MISSING,
+                    )
+                )
             arguments = calls[0].get("arguments", "")
             plan = json.loads(arguments)
             if not isinstance(plan, dict):
-                raise TypeError("任務計畫格式錯誤")
+                raise TypeError(
+                    service_status(
+                        self.language,
+                        ServiceStatus.AI_PLAN_FORMAT_INVALID,
+                    )
+                )
             for step in plan.get("steps", []):
                 if not isinstance(step, dict):
-                    raise TypeError("任務步驟格式錯誤")
+                    raise TypeError(
+                        service_status(
+                            self.language,
+                            ServiceStatus.AI_PLAN_STEP_INVALID,
+                        )
+                    )
                 raw_arguments = step.pop("arguments_json", "{}")
                 parsed_arguments = json.loads(raw_arguments)
                 if not isinstance(parsed_arguments, dict):
-                    raise TypeError("工具參數必須是 JSON 物件")
+                    raise TypeError(
+                        service_status(
+                            self.language,
+                            ServiceStatus.AI_PLAN_ARGUMENTS_INVALID,
+                        )
+                    )
                 step["arguments"] = parsed_arguments
             self.signals.done.emit(plan)
         except Exception as exc:  # noqa: BLE001 -- UI worker must always report failure
             # This worker is a UI task boundary. Socket timeouts and unexpected
             # response-shape errors must always release the "規劃中" state.
-            self.signals.failed.emit(
-                f"{type(exc).__name__}: {exc}"
-            )
+            self.signals.failed.emit(str(sanitize_error(exc)))
 
 
 @dataclass(frozen=True, slots=True)
@@ -425,7 +464,7 @@ class AIWorkerRequest:
     user_text: str
     mode: str
     history: tuple[dict[str, str], ...] = ()
-    api_key: str = ""
+    api_key: str = field(default="", repr=False)
     memories: str = ""
     model: str = DEFAULT_TEXT_MODEL
     persona: str = PERSONA
@@ -518,7 +557,12 @@ class AIWorker(QRunnable):
                 ]
                 text = "".join(chunks).strip()
             if not text:
-                raise ValueError("API 沒有傳回文字")
+                raise ValueError(
+                    service_status(
+                        request_data.response_language,
+                        ServiceStatus.AI_RESPONSE_EMPTY,
+                    )
+                )
             self.signals.done.emit(text)
         except (URLError, HTTPError, ValueError) as exc:
-            self.signals.failed.emit(str(exc))
+            self.signals.failed.emit(str(sanitize_error(exc)))

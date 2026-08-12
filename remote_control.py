@@ -6,15 +6,19 @@ lazy import json
 lazy import os
 lazy import secrets
 lazy import sqlite3
+lazy import stat
 lazy import threading
 lazy import time
 lazy from collections.abc import Callable, Iterator, Mapping
+lazy from contextlib import suppress
 lazy from dataclasses import dataclass
 lazy from http import HTTPStatus
 lazy from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 lazy from pathlib import Path
-lazy from typing import Any
+lazy from typing import Any, BinaryIO
 lazy from urllib.parse import parse_qs, urlparse
+
+lazy from language_support import canonical_ui_language
 
 StatusProvider = Callable[[], dict[str, Any]]
 CommandHandler = Callable[[str, str], dict[str, Any]]
@@ -47,6 +51,19 @@ PROTECTED_REMOTE_PARTS = frozenset({
     "passwords",
 })
 PROTECTED_REMOTE_SUFFIXES = frozenset({".kdbx", ".key", ".pem", ".pfx"})
+REMOTE_FILE_UNAVAILABLE_MESSAGES = frozendict({
+    "zh-TW": "檔案目前無法提供",
+    "zh-CN": "文件目前无法提供",
+    "en-US": "The file is currently unavailable.",
+    "ja-JP": "現在このファイルを提供できません。",
+})
+REMOTE_FILE_UNAVAILABLE = REMOTE_FILE_UNAVAILABLE_MESSAGES["zh-TW"]
+
+
+def remote_file_unavailable(language: str) -> str:
+    normalized = canonical_ui_language(language)
+    key = "en-US" if normalized == "en" else normalized
+    return REMOTE_FILE_UNAVAILABLE_MESSAGES[key]
 
 MOBILE_PAGE = """<!doctype html>
 <html lang="zh-Hant-TW"><meta charset="utf-8">
@@ -93,6 +110,7 @@ class RemoteServerConfig:
     allow_screen: bool = False
     allow_files: bool = False
     max_requests_per_minute: int = 60
+    language: str = "zh-TW"
 
 
 @dataclass(frozen=True, slots=True)
@@ -469,25 +487,49 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
             )
             return
         raw_path = parse_qs(query_string).get("path", [""])[0]
+        stream: BinaryIO | None = None
+        content_length = 0
+        open_failed = False
         try:
             target = owner._allowed_file(raw_path)
-            content_length = target.stat().st_size
-        except (OSError, PermissionError) as exc:
+            stream = target.open("rb")
+            opened_file = os.fstat(stream.fileno())
+            if stat.S_ISREG(opened_file.st_mode):
+                content_length = opened_file.st_size
+            else:
+                open_failed = True
+        except (OSError, RuntimeError, ValueError):
+            open_failed = True
+
+        if open_failed or stream is None:
+            if stream is not None:
+                with suppress(OSError):
+                    stream.close()
             self._json(
                 HTTPStatus.FORBIDDEN,
-                {"error": str(exc)},
+                {"error": remote_file_unavailable(owner.config.language)},
             )
             return
+
         content_type, disposition = owner._download_metadata(target)
-        self._send_headers(
-            HTTPStatus.OK,
-            content_length,
-            content_type,
-            {"Content-Disposition": disposition},
-        )
-        with target.open("rb") as stream:
-            while chunk := stream.read(64 * 1024):
-                self.wfile.write(chunk)
+        try:
+            with stream:
+                self._send_headers(
+                    HTTPStatus.OK,
+                    content_length,
+                    content_type,
+                    {"Content-Disposition": disposition},
+                )
+                remaining = content_length
+                while remaining and (
+                    chunk := stream.read(min(64 * 1024, remaining))
+                ):
+                    self.wfile.write(chunk)
+                    remaining -= len(chunk)
+        except (OSError, RuntimeError, ValueError):
+            # Headers may already be committed. Close the truncated response
+            # without exposing the local I/O failure through a server traceback.
+            self.close_connection = True
 
     def do_GET(self) -> None:
         parsed = urlparse(self.path)

@@ -37,7 +37,7 @@
 - Windows ZIP、EXE 與 MSI 仍是唯一完整產品封裝。
 - 分開提供的 macOS Apple Silicon（arm64）、Intel（x86_64）DMG，以及 Linux x86_64 AppImage，內含 `preview_app.py`，而非 Windows 的 `app.py` 外殼。其用途是驗證原生封裝、啟動、在地化、路徑與安全邊界。
 - Pull Request 可在封裝層級 smoke test 通過後上傳短期 artifact，但絕不建立 GitHub Release。
-- 只有既有的 `v2.3.0-rc.N` tag 可以發布多平台候選版本。唯讀中繼資料工作負責收集全部平台輸出並建立 SBOM、中繼資料與 checksum；另一個最小權限工作則重新檢查完全相同的 artifact 與 tag commit、產生證明，並發布單一 Release。
+- 只有符合 `vN.N.N` 或 `vN.N.N-rc.N` 規則且已存在的不可變 tag 可以發布多平台版本；正式 tag 建立 Stable Release，RC tag 建立 Pre-release。唯讀中繼資料工作負責收集全部平台輸出並建立 SBOM、中繼資料與 checksum；另一個最小權限工作則重新檢查完全相同的 artifact 與 tag commit、產生證明，並發布單一 Release。
 - 發布證據把可觀測性與供應鏈資料視為門檻，而非裝飾。Tachyon 證據必須完成淨化、JIT 驗證、取樣品質檢查，且可由單一二進位資料流重現；原始資料流僅能暫存。CycloneDX 1.7 清冊必須符合鎖定的執行期需求、包含完整根依賴邊、PURL 與宣告的 SPDX 授權，通過官方 schema 與隱私門檻，並分開追蹤僅建置使用的工具。
 - 每一個 Windows 與預覽二進位發行包，都必須在終端使用者可閱讀的位置攜帶 MIT 授權與第三方聲明。
 - 只有當 AppImage 建置工具的官方來源 commit、資產身分與 SHA-256 均符合已審查常數時，才可接受該工具。GitHub Actions 必須固定至完整 commit SHA。
@@ -108,7 +108,7 @@
 - Windows ZIP、EXE 与 MSI 仍是唯一完整产品封装。
 - 分别提供的 macOS Apple Silicon（arm64）、Intel（x86_64）DMG，以及 Linux x86_64 AppImage，内含 `preview_app.py`，而非 Windows 的 `app.py` 外壳。其用途是验证原生封装、启动、本地化、路径与安全边界。
 - Pull Request 可在封装层级 smoke test 通过后上传短期 artifact，但绝不创建 GitHub Release。
-- 只有现有的 `v2.3.0-rc.N` tag 可以发布多平台候选版本。只读元数据作业负责收集全部平台输出并创建 SBOM、元数据与 checksum；另一个最小权限作业则重新检查完全相同的 artifact 与 tag commit、生成证明，并发布单一 Release。
+- 只有符合 `vN.N.N` 或 `vN.N.N-rc.N` 规则且已存在的不可变 tag 可以发布多平台版本；正式 tag 创建 Stable Release，RC tag 创建 Pre-release。只读元数据作业负责收集全部平台输出并创建 SBOM、元数据与 checksum；另一个最小权限作业则重新检查完全相同的 artifact 与 tag commit、生成证明，并发布单一 Release。
 - 发布证据把可观测性与供应链数据视为门槛，而非装饰。Tachyon 证据必须完成净化、JIT 验证、采样质量检查，且可由单一二进制数据流重现；原始数据流只能暂存。CycloneDX 1.7 清单必须符合锁定的运行时需求、包含完整根依赖边、PURL 与声明的 SPDX 许可证，通过官方 schema 与隐私门槛，并分别追踪仅构建使用的工具。
 - 每一个 Windows 与预览二进制发行包，都必须在最终用户可阅读的位置携带 MIT 许可证与第三方声明。
 - 只有当 AppImage 构建工具的官方源 commit、资产身份与 SHA-256 均符合已审查常量时，才可接受该工具。GitHub Actions 必须固定至完整 commit SHA。
@@ -179,7 +179,7 @@ Circular local imports are prohibited and enforced by `tests/test_architecture_c
 - Windows ZIP, EXE, and MSI remain the only complete product packages.
 - Separate macOS Apple Silicon (arm64) and Intel (x86_64) DMGs plus the Linux x86_64 AppImage contain `preview_app.py`, not the Windows `app.py` shell. Their purpose is native packaging, startup, localization, path, and safety-boundary validation.
 - Pull requests may upload short-lived package artifacts after a package-level smoke test. They never create a GitHub Release.
-- Only an existing `v2.3.0-rc.N` tag may publish the multi-platform candidate. A read-only metadata job gathers all platform outputs and creates SBOMs, metadata, and checksums; a separate minimal privileged job rechecks the exact artifacts and tag commit, attests them, and publishes one Release.
+- Only an existing immutable tag matching `vN.N.N` or `vN.N.N-rc.N` may publish multi-platform packages; stable tags create Stable Releases and RC tags create Pre-releases. A read-only metadata job gathers all platform outputs and creates SBOMs, metadata, and checksums; a separate minimal privileged job rechecks the exact artifacts and tag commit, attests them, and publishes one Release.
 - Release evidence treats observability and supply-chain data as gates, not decoration. Tachyon evidence must be sanitized, JIT-verified, sample-quality checked, and reproducible from one binary stream; raw streams are temporary. CycloneDX 1.7 inventories must match pinned runtime requirements, include complete root dependency edges, PURLs and declared SPDX licenses, pass the official schema and privacy gates, and track build-only tools separately.
 - Every Windows and Preview binary distribution carries the MIT license and third-party notices in an end-user-readable location.
 - The AppImage build tool is accepted only when its official source commit, asset identity, and SHA-256 match the reviewed constants. GitHub Actions are pinned to complete commit SHAs.
@@ -250,7 +250,7 @@ Do not add a second setting, timer, or signal for behavior that already has a ca
 - Windows ZIP、EXE、MSI は、引き続き唯一の完全な製品パッケージです。
 - 個別に提供する macOS Apple Silicon（arm64）および Intel（x86_64）DMG と Linux x86_64 AppImage には、Windows の `app.py` シェルではなく `preview_app.py` を含めます。目的は、ネイティブパッケージング、起動、ローカライズ、パス、安全境界の検証です。
 - Pull Request では、パッケージレベルの smoke test 後に短期 artifact をアップロードできますが、GitHub Release は決して作成しません。
-- 既存の `v2.3.0-rc.N` tag だけがマルチプラットフォーム候補を公開できます。読み取り専用メタデータジョブが全プラットフォームの出力を収集して SBOM、メタデータ、checksum を作成し、別の最小権限ジョブが同一の artifact と tag commit を再検査して証明を生成し、単一の Release を公開します。
+- `vN.N.N` または `vN.N.N-rc.N` に一致する既存の不変 tag だけがマルチプラットフォームパッケージを公開できます。正式 tag は Stable Release、RC tag は Pre-release を作成します。読み取り専用メタデータジョブが全プラットフォームの出力を収集して SBOM、メタデータ、checksum を作成し、別の最小権限ジョブが同一の artifact と tag commit を再検査して証明を生成し、単一の Release を公開します。
 - リリース証拠では、可観測性とサプライチェーンデータを装飾ではなくゲートとして扱います。Tachyon 証拠はサニタイズ、JIT 検証、サンプル品質検査を完了し、単一のバイナリストリームから再現できなければなりません。生ストリームは一時保存に限ります。CycloneDX 1.7 インベントリは、固定された実行時要件と一致し、完全なルート依存エッジ、PURL、宣言済み SPDX ライセンスを含み、公式 schema とプライバシーゲートに合格し、ビルド専用ツールを分離して追跡しなければなりません。
 - すべての Windows および Preview バイナリ配布物には、エンドユーザーが読める場所に MIT ライセンスと第三者通知を収録します。
 - AppImage ビルドツールは、公式ソース commit、asset identity、SHA-256 が審査済み定数と一致する場合にだけ受け入れます。GitHub Actions は完全な commit SHA に固定します。

@@ -8,6 +8,7 @@ lazy from ui_localization_ja import JAPANESE_UI
 
 _ENGLISH: Mapping[str, str] = deep_freeze({
     "first_run_title": "First-run setup",
+    "first_run_brand": "MoHan",
     "first_run_heading": "<b>Welcome to MoHan Desktop Assistant</b>",
     "first_run_hero_tagline": (
         "A thousand-year-old Northern Song sword spirit who listens, "
@@ -50,6 +51,311 @@ _ENGLISH: Mapping[str, str] = deep_freeze({
     "tab_voice": "Voice",
     "tab_permissions": "Computer permissions",
     "tab_settings": "Settings",
+    "today_input_placeholder": (
+        "Enter a task, for example: Finish the storyboard for chapter 3"
+    ),
+    "todo_category_comic": "Comic",
+    "todo_category_article": "Article",
+    "todo_category_music": "Music",
+    "todo_category_stickers": "Stickers",
+    "todo_category_publishing": "Publishing",
+    "todo_category_administration": "Administration",
+    "todo_category_other": "Other",
+    "add_todo": "＋ Add task",
+    "save_as_idea": "✦ Save idea",
+    "today_tasks_heading": "<b>Tasks for today</b>",
+    "creative_ideas_heading": "<b>Creative ideas</b>",
+    "edit_selected_idea": "Edit selected idea",
+    "edit_selected_idea_tooltip": (
+        "You can also double-click an idea below"
+    ),
+    "delete_checked_ideas": "Delete checked ideas",
+    "delete_checked_ideas_tooltip": (
+        "Deletes only checked ideas and asks for confirmation first"
+    ),
+    "todo_complete_tooltip": "Mark as completed",
+    "todo_category_suffix": "Task for today",
+    "delete": "Delete",
+    "delete_todo_tooltip": "Delete this task",
+    "idea_editor_title": "Edit creative idea",
+    "idea_title": "<b>Idea title</b>",
+    "idea_title_placeholder": "Give this idea a clear title",
+    "idea_content": "<b>Idea details</b>",
+    "idea_content_placeholder": (
+        "Record the scene, dialogue, music direction, or next action…"
+    ),
+    "cancel": "Cancel",
+    "save_idea": "Save idea",
+    "idea_title_required_title": "Title required",
+    "idea_title_required": "Enter an idea title first.",
+    "todo_count": "{count} open",
+    "todo_empty": (
+        "No tasks yet today.\nWrite down the one thing that matters most."
+    ),
+    "idea_count": "{count} saved",
+    "idea_empty": (
+        "No ideas saved yet. Enter text above and choose “Save idea”."
+    ),
+    "idea_edit_tooltip": "Double-click to edit the title and details",
+    "today_time": "Today {total} | {state}",
+    "timing_active": "Timing",
+    "timing_inactive": "Not timing",
+    "todo_title_required": "Enter a task title first.",
+    "todo_added": "✓ Task added: {text}",
+    "todo_added_speech": "Added to today's tasks.",
+    "idea_capture_required": "Enter an idea to save first.",
+    "idea_added": "✓ Idea saved: {text}",
+    "idea_added_speech": "I saved that idea before it slipped away.",
+    "idea_select_edit": "Select an idea to edit first.",
+    "idea_not_found": (
+        "That idea could not be found. Refresh and try again."
+    ),
+    "idea_updated": "✓ Idea updated: {title}",
+    "idea_select_delete": "Check one or more ideas to delete first.",
+    "idea_delete_title": "Delete creative ideas",
+    "idea_delete_confirm": "Permanently delete the {count} checked ideas?",
+    "idea_deleted": "✓ Deleted {count} ideas.",
+    "platform_name_placeholder": (
+        "Platform, system, or tool name, for example: ERP, Notion, client portal"
+    ),
+    "platform_url_placeholder": "URL (optional, for example: https://example.com)",
+    "add_platform": "Add work platform",
+    "platform_filter_all": "All platforms",
+    "platform_filter_active": "In progress",
+    "platform_filter_blocked": "Missing information / blocked",
+    "platform_filter_finished": "Completed / published",
+    "platform_filter_not_started": "Not started",
+    "save_all_platforms": "Save all now",
+    "show": "Show",
+    "platform_empty": (
+        "No work platforms yet.\nAdd a company system, collaboration tool, "
+        "client portal, or any platform you use above."
+    ),
+    "platform_intro": (
+        "Manage the platforms, systems, client portals, and collaboration "
+        "tools you use. Each user creates their own list; no industry is assumed."
+    ),
+    "platform_auto_save_note": (
+        "Changes save automatically. You can also use each card's Save button."
+    ),
+    "platform_item_placeholder": "Current task, project, or case",
+    "platform_missing_placeholder": (
+        "Missing information, pending replies, or blockers; leave blank if none"
+    ),
+    "platform_next_placeholder": "Next concrete action and deadline",
+    "platform_notes_placeholder": "Notes, rules, contacts, or other details",
+    "platform_url_card_placeholder": "https://… (optional)",
+    "platform_not_saved": "Not saved",
+    "save_platform": "Save platform",
+    "platform_field_item": "Task / project",
+    "platform_field_missing": "Missing / blocked",
+    "platform_field_next": "Next action",
+    "platform_field_notes": "Notes",
+    "platform_field_url": "URL",
+    "open_platform": "Open website / tool",
+    "delete_platform": "Delete platform",
+    "platform_updated": "Updated: {updated}",
+    "platform_updated_unknown": "Update time unknown",
+    "save_changes": "Save changes",
+    "platform_waiting_auto_save": "{platform} changed; waiting to auto-save…",
+    "platform_validation_finished_blocked": (
+        "This work is completed but still lists missing information or blockers."
+    ),
+    "platform_validation_revision_details": (
+        "Describe the needed revision under Missing, Next action, or Notes."
+    ),
+    "platform_validation_not_started_data": (
+        "This card already has work details. Consider changing its status to "
+        "Preparing materials."
+    ),
+    "platform_validation_item_name": (
+        "Add a task, project, or case name so it is easy to identify later."
+    ),
+    "platform_summary_unsaved": " | Unsaved {count}",
+    "platform_summary": (
+        "{total} platforms | Completed {finished} | In progress {active} | "
+        "Not started {not_started} | Missing / blocked {blocked}{unsaved}"
+    ),
+    "platform_saved": "{platform} saved.",
+    "platform_saved_automatic": "{platform} saved automatically.",
+    "all_platforms_saved": (
+        "All work platforms saved; {count} still list missing information or blockers."
+    ),
+    "all_platforms_saved_speech": (
+        "Work platforms saved. {count} still have missing information or blockers."
+    ),
+    "memory_intro": (
+        "MoHan stores only people, preferences, goals, workflows, and important "
+        "dates that you allow. Memories stay on this computer and can be "
+        "browsed by category, edited individually, or deleted."
+    ),
+    "memory_input_placeholder": (
+        "For example: Finish the comic before administrative work"
+    ),
+    "remember": "Remember this",
+    "memory_filter_label": "Browse by category",
+    "all_memories": "All memories",
+    "edit_selected_memory": "Edit selected memory",
+    "edit_memory_tooltip": "You can also double-click a memory below",
+    "delete_checked_memories": "Delete checked memories",
+    "delete_checked_memories_tooltip": (
+        "Deletes only checked memories and asks for confirmation first"
+    ),
+    "clear_all_memories": "Clear all memories",
+    "optimize_memories": "Safely organize memories",
+    "optimize_memories_tooltip": (
+        "Merges low-importance duplicates and archives older overflow first"
+    ),
+    "view_archived_memories": "View archived memories",
+    "auto_memory": (
+        "Create memories from explicit phrases such as “remember this”, "
+        "“I like”, or “I usually”"
+    ),
+    "memory_count": "{count} saved",
+    "memory_empty": "There are no memories in this category.",
+    "memory_source_manual_short": "Manual",
+    "memory_source_conversation_short": "Conversation",
+    "memory_untitled": "Untitled memory",
+    "memory_item": (
+        "[{category}] {title}  Importance {importance}/5\n{content}\n"
+        "Source: {source}  Updated: {updated}"
+    ),
+    "memory_added_speech": (
+        "I saved that. You can review or change it individually later."
+    ),
+    "memory_select_edit_title": "No memory selected",
+    "memory_select_edit": "Select a memory to edit first.",
+    "memory_not_found_title": "Memory not found",
+    "memory_not_found": (
+        "That memory no longer exists. The list will be refreshed."
+    ),
+    "memory_save_failed_title": "Memory could not be saved",
+    "memory_save_failed": (
+        "An identical memory may already exist. Existing data was not changed."
+    ),
+    "memory_select_delete_title": "No memories checked",
+    "memory_select_delete": "Check one or more memories to delete first.",
+    "memory_delete_title": "Delete long-term memories",
+    "memory_delete_confirm": (
+        "Permanently delete the {count} checked memories?"
+    ),
+    "memory_clear_title": "Clear long-term memory",
+    "memory_clear_confirm": (
+        "Delete every long-term memory stored by MoHan? This cannot be undone."
+    ),
+    "memory_optimize_title": "Memory organization complete",
+    "memory_optimize_result": (
+        "Merged {deduplicated} similar memories and archived {pruned} older, "
+        "low-importance memories.\nActive: {active}; archived and restorable: "
+        "{archived}."
+    ),
+    "memory_editor_title": "Edit long-term memory",
+    "memory_title_label": "<b>Memory title</b>",
+    "memory_title_placeholder": "Use a short title to identify this memory",
+    "memory_category_label": "<b>Category</b>",
+    "memory_importance_label": "<b>Importance</b>",
+    "memory_content_label": "<b>Memory details</b>",
+    "memory_content_placeholder": (
+        "Record the person, preference, goal, workflow, or important date…"
+    ),
+    "memory_source_manual": "Created manually",
+    "memory_source_conversation": "Explicitly remembered from a conversation",
+    "memory_metadata": (
+        "Source: {source}  Created: {created}  Updated: {updated}"
+    ),
+    "save_memory": "Save memory",
+    "memory_title_required_title": "Title required",
+    "memory_title_required": "Enter a memory title first.",
+    "memory_content_required_title": "Details required",
+    "memory_content_required": "Enter the memory details first.",
+    "archived_memory_title": "Archived long-term memories",
+    "archived_memory_intro": (
+        "Automatic organization only archives older, low-importance "
+        "conversation memories; it does not destroy them. Check any item here "
+        "to restore it."
+    ),
+    "restore_checked_memories": "Restore checked memories",
+    "close": "Close",
+    "archived_memory_item": (
+        "[{category}] {title}\n{content}\nArchive reason: {reason}  "
+        "Archived: {archived}"
+    ),
+    "archived_memory_count": "{count} memories can be restored",
+    "archived_memory_select_title": "No memories checked",
+    "archived_memory_select": "Check one or more memories to restore first.",
+    "archived_memory_restored": "Restored {count} memories.",
+    "chat_history_title": "Manage / clear chats",
+    "chat_history_intro": (
+        "Chats stay on this computer and are not deleted automatically. Check "
+        "only the entries you are certain you want to delete permanently."
+    ),
+    "delete_checked_chats": "Delete checked chats",
+    "chat_history_item": "{created} | {speaker}\n{content}",
+    "chat_history_truncated_suffix": (
+        " (This window shows only the 500 most recent entries.)"
+    ),
+    "chat_history_status": "{count} chats are stored on this computer.{suffix}",
+    "chat_select_delete_title": "No chats checked",
+    "chat_select_delete": "Check one or more chats to delete first.",
+    "chat_delete_title": "Permanently delete chats",
+    "chat_delete_confirm": "Permanently delete the {count} checked chats?",
+    "load_older_chat_tooltip": "Load 50 earlier chats from this computer",
+    "manage_chat_tooltip": (
+        "Select and delete specific chats without affecting the others"
+    ),
+    "chat_zoom_out_tooltip": "Make chat text smaller (Ctrl + wheel down)",
+    "chat_zoom_in_tooltip": "Make chat text larger (Ctrl + wheel up)",
+    "chat_retention_status": (
+        "{total} chats stored locally; showing the most recent {shown}"
+    ),
+    "platform_name_required": "Enter a platform, system, or tool name first.",
+    "platform_duplicate": "“{platform}” already exists. Use a different name.",
+    "platform_added": "Work platform added: {platform}",
+    "platform_delete_title": "Delete work platform",
+    "platform_delete_confirm": (
+        "Delete “{platform}” and its work progress? This cannot be undone."
+    ),
+    "platform_not_found": "Work platform not found: {platform}",
+    "platform_deleted": "Work platform deleted: {platform}",
+    "platform_url_missing_title": "URL not set",
+    "platform_url_missing": (
+        "Enter the website or tool URL on the “{platform}” card first."
+    ),
+    "platform_url_unsupported_title": "Unsupported URL format",
+    "platform_url_unsupported": "Only http:// or https:// URLs can be opened.",
+    "permission_open_platform": "open the {platform} website",
+    "echo_guard_tooltip": (
+        "Pauses microphone upload while MoHan speaks and resumes after playback; "
+        "you cannot interrupt while this option is enabled."
+    ),
+    "hybrid_transcript_tooltip": (
+        "Realtime keeps native audio understanding. After each utterance, the "
+        "screen text uses a high-accuracy OpenAI transcription of the complete "
+        "recording, and MoHan replies only after it succeeds."
+    ),
+    "flagship_heading": "<b>Flagship control center</b>",
+    "increase": "Increase",
+    "decrease": "Decrease",
+    "voice_section": "Voice",
+    "profile_required_title": "Required profile details missing",
+    "profile_required": (
+        "Assistant name and how the assistant addresses you cannot be blank."
+    ),
+    "send_chat_required_title": "No message entered",
+    "send_chat_required": (
+        "Enter text on the left and choose Send; you can also use the microphone."
+    ),
+    "thinking_status": "{assistant} is thinking…",
+    "answering_status": "Answering…",
+    "api_connection_failed": "OpenAI API: connection failed ({error})",
+    "voice_ready_short": "Ready",
+    "microphone_idle": "🎙 Microphone",
+    "microphone_send_now": "⏹ Send now",
+    "microphone_recognizing": "Recognizing…",
+    "voice_status_format": "Voice status: {phase}",
+    "bubble_full_content": "…\n(See the Chat page for the complete message.)",
+    "tray_open_today": "Open Today",
+    "tray_quit": "Quit MoHan",
     "chat_retention": "Chats stay on this computer and are not auto-deleted",
     "load_older_chat": "Load older chats",
     "manage_chat": "Manage / clear chats",
@@ -74,7 +380,29 @@ _ENGLISH: Mapping[str, str] = deep_freeze({
         "{platform} local voice has not completed device verification"
     ),
     "tts_voice": "OpenAI text-to-speech voice",
-    "realtime_voice": "Realtime conversation voice",
+    "realtime_output_source": "Realtime response voice source",
+    "realtime_output_openai": (
+        "Native OpenAI Realtime voice (lowest latency, existing default)"
+    ),
+    "realtime_output_azure": "Azure Speech female voice (gentle streaming)",
+    "realtime_output_azure_hd": (
+        "Azure Dragon HD female voice (requires S0)"
+    ),
+    "realtime_output_note_openai": (
+        "Uses the OpenAI Realtime native voice below. This is the lowest-"
+        "latency option and preserves native OpenAI Realtime speech output."
+    ),
+    "realtime_output_note_azure": (
+        "Uses the Azure Speech female voice, region, and key configured above. "
+        "OpenAI Realtime handles live understanding while Azure streams the "
+        "spoken response."
+    ),
+    "realtime_output_note_azure_hd": (
+        "Uses the Dragon HD female voice, S0 region, and separate key "
+        "configured above. OpenAI Realtime handles live understanding while "
+        "Dragon HD streams the spoken response."
+    ),
+    "realtime_voice": "Native OpenAI Realtime voice",
     "realtime_model": "Realtime model",
     "realtime_transcription_model": "Realtime transcription model",
     "realtime_noise": "Realtime microphone noise reduction",
@@ -161,6 +489,14 @@ _ENGLISH: Mapping[str, str] = deep_freeze({
     "no_transcription_error": "No transcription errors recorded",
     "preview_voice": "Preview: Commander, I am here.",
     "realtime_disconnected": "Realtime: Disconnected",
+    "realtime_status_format": "Realtime: {status}",
+    "realtime_disconnected_status": "Disconnected",
+    "realtime_error_status": "Error: {error}",
+    "realtime_voice_title": "Realtime voice",
+    "realtime_output_unavailable": (
+        "Realtime Azure speech output is unavailable, so the live "
+        "conversation was not started."
+    ),
     "start_realtime": "Start Realtime conversation",
     "stop_realtime": "Stop Realtime conversation",
     "near_field": "Close microphone (recommended)",
@@ -278,6 +614,7 @@ _ENGLISH: Mapping[str, str] = deep_freeze({
 
 _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze({
     "first_run_title": "首次启动设置",
+    "first_run_brand": "墨寒  MoHan",
     "first_run_heading": "<b>欢迎使用墨寒桌面助手</b>",
     "first_run_hero_tagline": (
         "来自北宋的千年女剑魂，陪您说话、记忆，也陪您把工作做好。"
@@ -315,6 +652,237 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze({
     "tab_voice": "语音",
     "tab_permissions": "电脑权限",
     "tab_settings": "设置",
+    "today_input_placeholder": (
+        "输入待办标题，例如：完成漫画第 3 话分镜"
+    ),
+    "todo_category_comic": "漫画",
+    "todo_category_article": "文章",
+    "todo_category_music": "音乐",
+    "todo_category_stickers": "贴图",
+    "todo_category_publishing": "出版",
+    "todo_category_administration": "行政",
+    "todo_category_other": "其他",
+    "add_todo": "＋ 添加待办",
+    "save_as_idea": "✦ 保存灵感",
+    "today_tasks_heading": "<b>今天要做</b>",
+    "creative_ideas_heading": "<b>创作灵感</b>",
+    "edit_selected_idea": "编辑选中灵感",
+    "edit_selected_idea_tooltip": "也可以双击下方任一灵感",
+    "delete_checked_ideas": "删除勾选灵感",
+    "delete_checked_ideas_tooltip": "只删除已勾选的灵感，执行前会再次确认",
+    "todo_complete_tooltip": "标记为已完成",
+    "todo_category_suffix": "今日待办",
+    "delete": "删除",
+    "delete_todo_tooltip": "删除这项待办",
+    "idea_editor_title": "编辑创作灵感",
+    "idea_title": "<b>灵感标题</b>",
+    "idea_title_placeholder": "为这则灵感填写清楚的标题",
+    "idea_content": "<b>灵感内容</b>",
+    "idea_content_placeholder": (
+        "记录情节、画面、对白、音乐方向或后续可执行的想法……"
+    ),
+    "cancel": "取消",
+    "save_idea": "保存灵感",
+    "idea_title_required_title": "缺少标题",
+    "idea_title_required": "请先填写灵感标题。",
+    "todo_count": "{count} 项未完成",
+    "todo_empty": "今日待办尚空。\n请先写下一件真正重要的事。",
+    "idea_count": "{count} 则",
+    "idea_empty": (
+        "尚无灵感记录；输入上方文字后点击“保存灵感”。"
+    ),
+    "idea_edit_tooltip": "双击打开并编辑标题与内容",
+    "today_time": "今日 {total}｜{state}",
+    "timing_active": "计时中",
+    "timing_inactive": "未计时",
+    "todo_title_required": "请先输入待办标题。",
+    "todo_added": "✓ 已添加待办：{text}",
+    "todo_added_speech": "已收入今日待办。",
+    "idea_capture_required": "请先输入要保存的灵感。",
+    "idea_added": "✓ 已保存灵感：{text}",
+    "idea_added_speech": "灵感稍纵即逝，妾已替您收好。",
+    "idea_select_edit": "请先选择一则要编辑的灵感。",
+    "idea_not_found": "找不到这则灵感，请刷新后再试。",
+    "idea_updated": "✓ 已更新灵感：{title}",
+    "idea_select_delete": "请先勾选要删除的灵感。",
+    "idea_delete_title": "删除创作灵感",
+    "idea_delete_confirm": "确定永久删除勾选的 {count} 则灵感吗？",
+    "idea_deleted": "✓ 已删除 {count} 则灵感。",
+    "platform_name_placeholder": "平台、系统或工具名称，例如：公司 ERP、Notion、客户后台",
+    "platform_url_placeholder": "网址（可留空，例如：https://example.com）",
+    "add_platform": "添加工作平台",
+    "platform_filter_all": "全部平台",
+    "platform_filter_active": "进行中",
+    "platform_filter_blocked": "待补资料／受阻",
+    "platform_filter_finished": "已完成／已发布",
+    "platform_filter_not_started": "尚未开始",
+    "save_all_platforms": "立即保存全部",
+    "show": "显示",
+    "platform_empty": (
+        "尚未建立工作平台。\n请在上方输入公司系统、协作工具、客户后台或任何工作平台。"
+    ),
+    "platform_intro": (
+        "集中管理工作中使用的平台、系统、客户入口或协作工具。"
+        "每位用户都可以建立自己的工作平台，不预设绑定任何行业。"
+    ),
+    "platform_auto_save_note": "修改后会自动保存；也可以使用每张卡片的保存按钮。",
+    "platform_item_placeholder": "当前负责的工作事项、项目或案件",
+    "platform_missing_placeholder": "待补资料、等待他人回复或其他阻碍；没有可留空",
+    "platform_next_placeholder": "下一个具体动作与期限",
+    "platform_notes_placeholder": "备注、规则、联系窗口或其他补充",
+    "platform_url_card_placeholder": "https://…（可留空）",
+    "platform_not_saved": "尚未保存",
+    "save_platform": "保存此平台",
+    "platform_field_item": "工作事项／项目",
+    "platform_field_missing": "待补资料／阻碍",
+    "platform_field_next": "下一步",
+    "platform_field_notes": "备注",
+    "platform_field_url": "网址",
+    "open_platform": "打开网站／工具",
+    "delete_platform": "删除平台",
+    "platform_updated": "更新：{updated}",
+    "platform_updated_unknown": "更新时间未知",
+    "save_changes": "保存修改",
+    "platform_waiting_auto_save": "{platform} 有修改，正在等待自动保存……",
+    "platform_validation_finished_blocked": "注意：工作已完成，但仍列有待补资料或阻碍。",
+    "platform_validation_revision_details": "请在待补资料／阻碍、下一步或备注中写明需修改的内容。",
+    "platform_validation_not_started_data": "已有工作资料，请确认状态是否应改为“准备资料”。",
+    "platform_validation_item_name": "建议填写工作事项、项目或案件名称，日后较容易辨认。",
+    "platform_summary_unsaved": "｜未保存 {count}",
+    "platform_summary": (
+        "{total} 个平台｜已完成 {finished}｜进行中 {active}｜"
+        "尚未开始 {not_started}｜待补／阻碍 {blocked}{unsaved}"
+    ),
+    "platform_saved": "{platform} 已保存。",
+    "platform_saved_automatic": "{platform} 已自动保存。",
+    "all_platforms_saved": "全部工作平台已保存；{count} 个平台仍列有待补资料或阻碍。",
+    "all_platforms_saved_speech": "工作平台已保存。仍有 {count} 个平台标有待补资料或阻碍。",
+    "memory_intro": (
+        "墨寒只保存您允许留下的人物、偏好、目标、工作流程与重要日期。"
+        "记忆保存在本机，可按分类浏览、逐项编辑或删除。"
+    ),
+    "memory_input_placeholder": "例如：先完成漫画，再处理行政工作",
+    "remember": "让墨寒记住",
+    "memory_filter_label": "分类浏览",
+    "all_memories": "全部记忆",
+    "edit_selected_memory": "编辑选中记忆",
+    "edit_memory_tooltip": "也可以双击下方任一记忆",
+    "delete_checked_memories": "删除勾选记忆",
+    "delete_checked_memories_tooltip": "只删除已勾选的记忆，执行前会再次确认",
+    "clear_all_memories": "清除全部记忆",
+    "optimize_memories": "安全整理记忆",
+    "optimize_memories_tooltip": "合并低重要度重复内容，超量旧记忆只会先封存",
+    "view_archived_memories": "查看已封存记忆",
+    "auto_memory": "从“请记住／我喜欢／我习惯”等明确说法自动建立记忆",
+    "memory_count": "{count} 则",
+    "memory_empty": "这个分类目前没有记忆。",
+    "memory_source_manual_short": "手动",
+    "memory_source_conversation_short": "对话",
+    "memory_untitled": "未命名记忆",
+    "memory_item": (
+        "【{category}】{title}　重要度 {importance}／5\n{content}\n"
+        "来源：{source}　更新：{updated}"
+    ),
+    "memory_added_speech": "妾已记下。您日后若要更改，也可逐项整理。",
+    "memory_select_edit_title": "尚未选中",
+    "memory_select_edit": "请先选择一则要编辑的记忆。",
+    "memory_not_found_title": "找不到记忆",
+    "memory_not_found": "这则记忆已不存在，列表将重新整理。",
+    "memory_save_failed_title": "无法保存记忆",
+    "memory_save_failed": "可能已有内容完全相同的记忆。原有数据未被更改。",
+    "memory_select_delete_title": "尚未勾选",
+    "memory_select_delete": "请先勾选要删除的记忆。",
+    "memory_delete_title": "删除长期记忆",
+    "memory_delete_confirm": "确定永久删除勾选的 {count} 则记忆吗？",
+    "memory_clear_title": "清除长期记忆",
+    "memory_clear_confirm": "确定删除墨寒保存的全部长期记忆吗？此操作无法恢复。",
+    "memory_optimize_title": "记忆整理完成",
+    "memory_optimize_result": (
+        "合并 {deduplicated} 则近似记忆，封存 {pruned} 则较旧低重要度记忆。\n"
+        "目前使用中 {active} 则；可恢复封存 {archived} 则。"
+    ),
+    "memory_editor_title": "编辑长期记忆",
+    "memory_title_label": "<b>记忆标题</b>",
+    "memory_title_placeholder": "用一句短标题识别这则记忆",
+    "memory_category_label": "<b>分类</b>",
+    "memory_importance_label": "<b>重要度</b>",
+    "memory_content_label": "<b>记忆内容</b>",
+    "memory_content_placeholder": "完整记录人物背景、偏好、目标、工作流程或重要日期……",
+    "memory_source_manual": "手动建立",
+    "memory_source_conversation": "由对话明确记住",
+    "memory_metadata": "来源：{source}　建立：{created}　更新：{updated}",
+    "save_memory": "保存记忆",
+    "memory_title_required_title": "尚无标题",
+    "memory_title_required": "请先填写记忆标题。",
+    "memory_content_required_title": "尚无内容",
+    "memory_content_required": "请先填写记忆内容。",
+    "archived_memory_title": "已封存的长期记忆",
+    "archived_memory_intro": (
+        "自动整理只会封存较旧、低重要度的对话记忆，不会直接销毁。"
+        "您可以在这里随时勾选恢复。"
+    ),
+    "restore_checked_memories": "恢复勾选记忆",
+    "close": "关闭",
+    "archived_memory_item": (
+        "【{category}】{title}\n{content}\n封存原因：{reason}　时间：{archived}"
+    ),
+    "archived_memory_count": "目前共有 {count} 则可恢复记忆",
+    "archived_memory_select_title": "尚未选中",
+    "archived_memory_select": "请先勾选要恢复的记忆。",
+    "archived_memory_restored": "已恢复 {count} 则记忆。",
+    "chat_history_title": "管理／清除对话",
+    "chat_history_intro": (
+        "对话平时保存在本机，不会自动删除。请只勾选确定要永久删除的记录。"
+    ),
+    "delete_checked_chats": "删除勾选对话",
+    "chat_history_item": "{created}｜{speaker}\n{content}",
+    "chat_history_truncated_suffix": "（管理窗口最多显示最近 500 则）",
+    "chat_history_status": "本机共保存 {count} 则对话。{suffix}",
+    "chat_select_delete_title": "尚未勾选",
+    "chat_select_delete": "请先勾选要删除的对话。",
+    "chat_delete_title": "永久删除对话",
+    "chat_delete_confirm": "确定永久删除勾选的 {count} 则对话吗？",
+    "load_older_chat_tooltip": "每次向前加载 50 则本机对话",
+    "manage_chat_tooltip": "勾选并删除指定对话，其他内容不受影响",
+    "chat_zoom_out_tooltip": "缩小对话文字（Ctrl＋鼠标滚轮向下）",
+    "chat_zoom_in_tooltip": "放大对话文字（Ctrl＋鼠标滚轮向上）",
+    "chat_retention_status": "本机保存 {total} 则对话，目前显示最近 {shown} 则",
+    "platform_name_required": "请先输入平台、系统或工具名称。",
+    "platform_duplicate": "“{platform}”已存在，请使用不同名称。",
+    "platform_added": "已添加工作平台：{platform}",
+    "platform_delete_title": "删除工作平台",
+    "platform_delete_confirm": "确定删除“{platform}”及其工作进度吗？此操作无法恢复。",
+    "platform_not_found": "找不到工作平台：{platform}",
+    "platform_deleted": "已删除工作平台：{platform}",
+    "platform_url_missing_title": "尚未设置网址",
+    "platform_url_missing": "请先在“{platform}”卡片填写网站或工具网址。",
+    "platform_url_unsupported_title": "网址格式不支持",
+    "platform_url_unsupported": "只允许打开 http:// 或 https:// 网址。",
+    "permission_open_platform": "打开 {platform} 网站",
+    "echo_guard_tooltip": "墨寒说话时暂停上传麦克风，播放结束后再恢复；启用时无法在她说话途中插话。",
+    "hybrid_transcript_tooltip": (
+        "Realtime 保留原生音频理解；每句说完后，界面文字改用完整录音的 "
+        "OpenAI 高精度转录。成功后才允许墨寒回答。"
+    ),
+    "flagship_heading": "<b>旗舰控制中心</b>",
+    "increase": "增加",
+    "decrease": "减少",
+    "voice_section": "语音",
+    "profile_required_title": "尚缺必要资料",
+    "profile_required": "助手名称与助手对您的称呼不可留空。",
+    "send_chat_required_title": "尚未输入内容",
+    "send_chat_required": "请先在左侧输入文字，再点击“发送”；也可以直接使用麦克风。",
+    "thinking_status": "{assistant}思考中……",
+    "answering_status": "回答中……",
+    "api_connection_failed": "OpenAI API：连接失败（{error}）",
+    "voice_ready_short": "准备就绪",
+    "microphone_idle": "🎙 麦克风",
+    "microphone_send_now": "⏹ 立即发送",
+    "microphone_recognizing": "识别中……",
+    "voice_status_format": "语音状态：{phase}",
+    "bubble_full_content": "……\n（完整内容请见对话页）",
+    "tray_open_today": "打开今日待办",
+    "tray_quit": "退出墨寒",
     "chat_retention": "对话保存在本机，不会自动删除",
     "load_older_chat": "加载更早对话",
     "manage_chat": "管理／清除对话",
@@ -339,7 +907,27 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze({
         "{platform} 本机语音尚未完成设备实测"
     ),
     "tts_voice": "OpenAI 文字转语音声音",
-    "realtime_voice": "Realtime 对话声音",
+    "realtime_output_source": "Realtime 回复声音来源",
+    "realtime_output_openai": (
+        "OpenAI Realtime 原生语音（最低延迟，现有默认）"
+    ),
+    "realtime_output_azure": "Azure Speech 女性声线（柔和流式播放）",
+    "realtime_output_azure_hd": (
+        "Azure Dragon HD 女性声线（需 S0）"
+    ),
+    "realtime_output_note_openai": (
+        "使用下方“OpenAI Realtime 原生声线”；延迟最低，完整保留 "
+        "OpenAI Realtime 的原生实时语音输出。"
+    ),
+    "realtime_output_note_azure": (
+        "沿用上方“Azure Speech 女性声线”、区域与密钥。OpenAI Realtime "
+        "负责实时理解，Azure 以流式方式发声。"
+    ),
+    "realtime_output_note_azure_hd": (
+        "沿用上方“Dragon HD 女性声线”、S0 区域与独立密钥。OpenAI "
+        "Realtime 负责实时理解，Dragon HD 以流式方式发声。"
+    ),
+    "realtime_voice": "OpenAI Realtime 原生声线",
     "realtime_model": "Realtime 模型",
     "realtime_transcription_model": "Realtime 转录模型",
     "realtime_noise": "Realtime 麦克风降噪",
@@ -416,6 +1004,13 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze({
     "no_transcription_error": "没有转录错误记录",
     "preview_voice": "试听：主上，妾在。",
     "realtime_disconnected": "Realtime：未连接",
+    "realtime_status_format": "Realtime：{status}",
+    "realtime_disconnected_status": "未连接",
+    "realtime_error_status": "错误：{error}",
+    "realtime_voice_title": "Realtime 语音",
+    "realtime_output_unavailable": (
+        "Realtime Azure 语音输出服务尚未建立，未启动实时对话。"
+    ),
     "start_realtime": "启动 Realtime 自然对话",
     "stop_realtime": "停止 Realtime 自然对话",
     "near_field": "近距离麦克风（推荐）",
@@ -535,6 +1130,29 @@ WORK_TYPE_LABELS: Mapping[str, str] = frozendict({
     "其他（可自行輸入）": "Other (enter your own)",
 })
 
+PLATFORM_STATUS_LABELS: Mapping[str, str] = frozendict({
+    "尚未開始": "Not started",
+    "準備資料": "Preparing materials",
+    "進行中": "In progress",
+    "待送出": "Ready to submit",
+    "等待回覆": "Waiting for response",
+    "審核中": "Under review",
+    "需修正": "Needs revision",
+    "已排程": "Scheduled",
+    "已完成": "Completed",
+    "已上架": "Published",
+    "暫停": "Paused",
+})
+
+MEMORY_CATEGORY_LABELS: Mapping[str, str] = frozendict({
+    "人物": "People",
+    "偏好": "Preferences",
+    "目標": "Goals",
+    "工作流程": "Workflows",
+    "重要日期": "Important dates",
+    "其他": "Other",
+})
+
 SIMPLIFIED_MODE_LABELS: Mapping[str, str] = frozendict({
     "工作": "工作",
     "陪伴": "陪伴",
@@ -553,6 +1171,29 @@ SIMPLIFIED_WORK_TYPE_LABELS: Mapping[str, str] = frozendict({
     "教育／研究": "教育／研究",
     "銷售／客戶服務": "销售／客户服务",
     "其他（可自行輸入）": "其他（可自行输入）",
+})
+
+SIMPLIFIED_PLATFORM_STATUS_LABELS: Mapping[str, str] = frozendict({
+    "尚未開始": "尚未开始",
+    "準備資料": "准备资料",
+    "進行中": "进行中",
+    "待送出": "待提交",
+    "等待回覆": "等待回复",
+    "審核中": "审核中",
+    "需修正": "需修改",
+    "已排程": "已排期",
+    "已完成": "已完成",
+    "已上架": "已发布",
+    "暫停": "暂停",
+})
+
+SIMPLIFIED_MEMORY_CATEGORY_LABELS: Mapping[str, str] = frozendict({
+    "人物": "人物",
+    "偏好": "偏好",
+    "目標": "目标",
+    "工作流程": "工作流程",
+    "重要日期": "重要日期",
+    "其他": "其他",
 })
 
 

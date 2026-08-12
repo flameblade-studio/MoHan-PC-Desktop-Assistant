@@ -82,7 +82,7 @@ def run() -> None:
         temp.write(b"RIFF-test")
     diagnostics: list[str] = []
     failures: list[str] = []
-    worker = SpeechListener(Path("voice_listener.ps1"))
+    worker = SpeechListener(Path("voice_listener.ps1"), language="en")
     worker._busy.set()
     worker.diagnostic_changed.connect(diagnostics.append)
     worker.failed.connect(failures.append)
@@ -103,8 +103,9 @@ def run() -> None:
             "繁中詞庫",
             False,
         )
-    assert diagnostics and "成功連線" in diagnostics[-1]
-    assert failures and "備援目前已關閉" in failures[-1]
+    assert diagnostics and "internal_failure" in diagnostics[-1]
+    assert "成功連線" not in diagnostics[-1]
+    assert failures and "fallback recognition is currently disabled" in failures[-1]
     assert not audio_path.exists()
     assert not worker.is_busy
     print("TRANSCRIPTION_CONTROL_OK")

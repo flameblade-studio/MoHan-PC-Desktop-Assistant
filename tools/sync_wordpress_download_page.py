@@ -6,7 +6,7 @@ lazy import html
 lazy import json
 lazy import os
 lazy from pathlib import Path
-lazy from urllib.error import HTTPError
+lazy from urllib.error import HTTPError, URLError
 lazy from urllib.parse import urlencode, urlparse
 lazy from urllib.request import Request, urlopen
 
@@ -33,46 +33,103 @@ DOWNLOAD_LABELS = {
 }
 
 
+def _wordpress_credentials(url: str) -> tuple[str, str]:
+    configuration_failed = False
+    base_url = ""
+    username = ""
+    password = ""
+    try:
+        base_url = os.environ["WORDPRESS_BASE_URL"].rstrip("/")
+        username = os.environ["WORDPRESS_USERNAME"]
+        password = os.environ["WORDPRESS_APP_PASSWORD"].replace(" ", "")
+        parsed_base = urlparse(base_url)
+        parsed_url = urlparse(url)
+        same_host = parsed_url.hostname == parsed_base.hostname
+    except (KeyError, TypeError, ValueError):
+        configuration_failed = True
+        same_host = False
+    if configuration_failed:
+        raise RuntimeError("WordPress API configuration is invalid")
+    if parsed_base.scheme != "https" or parsed_url.scheme != "https" or not same_host:
+        raise RuntimeError("WordPress API must use the configured HTTPS host")
+    return username, password
+
+
+def _wordpress_request(
+    url: str,
+    method: str,
+    payload: dict | None,
+) -> Request:
+    username, password = _wordpress_credentials(url)
+    request_failed = False
+    request: Request | None = None
+    try:
+        token = base64.b64encode(f"{username}:{password}".encode()).decode()
+        data = None
+        headers = {
+            "Authorization": f"Basic {token}",
+            "Accept": "application/json",
+            "User-Agent": "MoHan-GitHub-Release-Sync",
+        }
+        if payload is not None:
+            data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+            headers["Content-Type"] = "application/json; charset=utf-8"
+        request = Request(
+            url,
+            data=data,
+            headers=headers,
+            method=method,
+        )
+    except (RecursionError, TypeError, ValueError, UnicodeError):
+        request_failed = True
+    if request_failed or request is None:
+        raise RuntimeError("WordPress API request could not be prepared")
+    return request
+
+
+def _read_wordpress_json(request: Request) -> object:
+    response_failure: str | None = None
+    result: object | None = None
+    try:
+        with urlopen(request, timeout=30) as response:
+            result = json.load(response)
+    except HTTPError:
+        response_failure = "WordPress API request was rejected"
+    except (URLError, TimeoutError, OSError):
+        response_failure = "WordPress API is unavailable"
+    except (
+        AttributeError,
+        UnicodeError,
+        json.JSONDecodeError,
+        RecursionError,
+        RuntimeError,
+        TypeError,
+        ValueError,
+    ):
+        response_failure = "WordPress API returned invalid JSON"
+    if response_failure is not None:
+        raise RuntimeError(response_failure)
+    return result
+
+
 def request_json(
     url: str,
     method: str = "GET",
     payload: dict | None = None,
 ) -> object:
-    base_url = os.environ["WORDPRESS_BASE_URL"].rstrip("/")
-    parsed_base = urlparse(base_url)
-    parsed_url = urlparse(url)
-    if (
-        parsed_base.scheme != "https"
-        or parsed_url.scheme != "https"
-        or parsed_url.hostname != parsed_base.hostname
-    ):
-        raise RuntimeError("WordPress API must use the configured HTTPS host")
-    username = os.environ["WORDPRESS_USERNAME"]
-    password = os.environ["WORDPRESS_APP_PASSWORD"].replace(" ", "")
-    token = base64.b64encode(f"{username}:{password}".encode()).decode()
-    data = None
-    headers = {
-        "Authorization": f"Basic {token}",
-        "Accept": "application/json",
-        "User-Agent": "MoHan-GitHub-Release-Sync",
-    }
-    if payload is not None:
-        data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-        headers["Content-Type"] = "application/json; charset=utf-8"
-    request = Request(
-        url,
-        data=data,
-        headers=headers,
-        method=method,
-    )
+    return _read_wordpress_json(_wordpress_request(url, method, payload))
+
+
+def load_manifest(path: Path) -> dict:
+    manifest_failed = False
+    manifest: object | None = None
     try:
-        with urlopen(request, timeout=30) as response:
-            return json.load(response)
-    except HTTPError as exc:
-        detail = exc.read(2048).decode("utf-8", "replace")
-        raise RuntimeError(
-            f"WordPress API returned {exc.code}: {detail}"
-        ) from exc
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError, RecursionError):
+        manifest_failed = True
+    if manifest_failed or not isinstance(manifest, dict):
+        raise RuntimeError("Release manifest could not be loaded")
+    return manifest
 
 
 def release_block(manifest: dict, release_url: str) -> str:
@@ -194,7 +251,7 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--release-url", required=True)
     args = parser.parse_args()
-    manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+    manifest = load_manifest(args.manifest)
     base = os.environ["WORDPRESS_BASE_URL"].rstrip("/")
     api = f"{base}/wp-json/wp/v2/pages"
     page_id = os.environ.get("WORDPRESS_DOWNLOAD_PAGE_ID", "").strip()

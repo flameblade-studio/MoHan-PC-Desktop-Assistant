@@ -27,6 +27,12 @@ lazy from lip_sync import (
     infer_vowel_pcm16,
 )
 lazy from pcm_audio import PcmAudioError, scale_pcm16, stereo_to_mono_pcm16
+lazy from safe_error import sanitize_error
+lazy from service_status_localization import (
+    ServiceStatus,
+    append_service_status,
+    service_status,
+)
 
 if os.name == "nt":
     lazy import winsound
@@ -105,6 +111,7 @@ class SpeechEndpointDetector:
     quiet_blocks: int = 0
     threshold: float = 120.0
     baseline: list[float] = field(default_factory=list)
+    language: str = "zh-TW"
 
     def _handle_manual_stop(self, stop_requested: bool) -> bool:
         if not stop_requested:
@@ -112,7 +119,10 @@ class SpeechEndpointDetector:
         if self.speech_started:
             return True
         raise RuntimeError(
-            "尚未偵測到說話聲，沒有送出空白錄音。"
+            service_status(
+                self.language,
+                ServiceStatus.SPEECH_EMPTY_MANUAL_CAPTURE,
+            )
         )
 
     def _calibrate(self, level: float) -> bool:
@@ -161,48 +171,80 @@ class SpeechEndpointDetector:
                 return True
         elif captured_blocks >= self.limits.initial_silence_blocks:
             raise RuntimeError(
-                "沒有偵測到說話聲，請靠近麥克風後再試一次。"
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_NOT_DETECTED,
+                )
             )
         if self.speech_started:
             self.speech_blocks += 1
         return False
 
 
+@dataclass(frozen=True, slots=True)
+class SpeechTranscriptionLocale:
+    """Provider transcription language paired with its UI locale."""
+
+    provider_language: str = ""
+    ui_language: str = "zh-TW"
+
+
 def transcription_http_error_message(
     status: int,
     detail: str,
+    *,
+    language: str = "zh-TW",
 ) -> str:
     lowered = detail.lower()
     match status:
         case 401:
-            message = "OpenAI API 金鑰無效或已被撤銷（HTTP 401）。"
+            key = ServiceStatus.SPEECH_OPENAI_KEY_INVALID
         case 403:
-            message = "OpenAI Project 未授權使用語音轉錄（HTTP 403）。"
+            key = ServiceStatus.SPEECH_OPENAI_NOT_AUTHORIZED
         case 404:
-            message = "OpenAI 找不到轉錄模型，或此 Project 無權使用（HTTP 404）。"
+            key = ServiceStatus.SPEECH_OPENAI_MODEL_NOT_FOUND
         case 429 if any(
             marker in lowered
             for marker in ("insufficient_quota", "quota", "billing")
         ):
-            message = "OpenAI API 額度不足或尚未啟用計費（HTTP 429）。"
+            key = ServiceStatus.SPEECH_OPENAI_QUOTA_EXHAUSTED
         case 429:
-            message = "OpenAI 語音轉錄請求過於頻繁，已達速率限制（HTTP 429）。"
+            key = ServiceStatus.SPEECH_OPENAI_RATE_LIMITED
         case _ if status >= 500:
-            message = f"OpenAI 語音轉錄服務暫時異常（HTTP {status}）。"
+            safe = sanitize_error(detail, http_status=status)
+            return (
+                service_status(
+                    language,
+                    ServiceStatus.SPEECH_OPENAI_SERVICE_ERROR,
+                    status=status,
+                )
+                + f" [{safe}]"
+            )
         case _:
-            compact = " ".join(detail.split())[:180]
-            message = f"OpenAI 轉錄失敗（HTTP {status}）：{compact}"
-    return message
+            return service_status(
+                language,
+                ServiceStatus.SPEECH_OPENAI_HTTP_ERROR,
+                status=status,
+                detail=str(sanitize_error(detail, http_status=status)),
+            )
+    return service_status(language, key)
 
 
 def transcribe_wav_bytes(
     audio: bytes,
     api_key: str,
     model: str,
-    language: str = "",
+    language: str | SpeechTranscriptionLocale = "",
     prompt: str = "",
 ) -> str:
     """Transcribe a complete WAV utterance through the accurate endpoint."""
+    locale = (
+        language
+        if isinstance(language, SpeechTranscriptionLocale)
+        else SpeechTranscriptionLocale(
+            provider_language=language,
+        )
+    )
     boundary = f"----MohanBoundary{os.urandom(12).hex()}"
     parts: list[bytes] = []
 
@@ -220,8 +262,8 @@ def transcribe_wav_bytes(
         )
 
     add_field("model", model or SpeechListener.TRANSCRIPTION_MODEL)
-    if language:
-        add_field("language", language)
+    if locale.provider_language:
+        add_field("language", locale.provider_language)
     if prompt:
         add_field("prompt", prompt)
     parts.extend(
@@ -253,19 +295,38 @@ def transcribe_wav_bytes(
             result = json.load(response)
     except HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(
-            transcription_http_error_message(exc.code, detail)
-        ) from exc
+        failure = transcription_http_error_message(
+            exc.code,
+            detail,
+            language=locale.ui_language,
+        )
+        result = None
     except URLError as exc:
-        raise RuntimeError(
-            f"無法連線到 OpenAI：{exc.reason}"
-        ) from exc
+        failure = service_status(
+            locale.ui_language,
+            ServiceStatus.SPEECH_OPENAI_CONNECTION_ERROR,
+            detail=sanitize_error(exc),
+        )
+        result = None
     except TimeoutError as exc:
-        raise RuntimeError("OpenAI 轉錄連線逾時。") from exc
+        del exc
+        failure = service_status(
+            locale.ui_language,
+            ServiceStatus.SPEECH_OPENAI_TIMEOUT,
+        )
+        result = None
+    else:
+        failure = ""
+    if failure:
+        raise RuntimeError(failure)
+    assert result is not None
     text = str(result.get("text", "")).strip()
     if not text:
         raise RuntimeError(
-            "OpenAI 已成功連線，但沒有從這段錄音辨識出文字。"
+            service_status(
+                locale.ui_language,
+                ServiceStatus.SPEECH_OPENAI_EMPTY_RESULT,
+            )
         )
     return text
 
@@ -374,6 +435,10 @@ def emit_wave_viseme_cues(
             timeline_ready.set()
 
 
+class _SpeechPlaybackUnavailable(OSError):
+    """The current platform has no verified audio playback adapter."""
+
+
 def play_wave_with_visemes(
     audio: bytes,
     volume_percent: int,
@@ -384,8 +449,11 @@ def play_wave_with_visemes(
     """Play provider WAV audio through the single lip-sync implementation."""
 
     if winsound is None:
-        raise OSError(
-            "此平台的音訊播放介面尚未完成實機驗證；未播放這段語音。"
+        raise _SpeechPlaybackUnavailable(
+            service_status(
+                "zh-TW",
+                ServiceStatus.SPEECH_PLAYBACK_UNAVAILABLE,
+            )
         )
 
     playback_audio = apply_wav_volume(audio, volume_percent, muted)
@@ -650,32 +718,183 @@ def preferred_windows_voice(
     return voices[0][0] if voices else ""
 
 
+class _SpeechCancelled(Exception):
+    """End one obsolete local-speech generation without user-facing errors."""
+
+
 class WindowsTTS(QObject):
     failed = Signal(str)
     finished = Signal()
     viseme_cue = Signal(float, str)
+    _failed_ready = Signal(int, str)
+    _finished_ready = Signal(int)
+    _viseme_ready = Signal(int, float, str)
 
-    def __init__(self, parent: QObject | None = None):
+    def __init__(
+        self,
+        parent: QObject | None = None,
+        *,
+        language: str = "zh-TW",
+    ):
         super().__init__(parent)
+        self.language = language
         self.volume_percent = 125
         self.muted = False
+        self._state_lock = threading.RLock()
+        self._generation = 0
+        self._active_process: subprocess.Popen[bytes] | None = None
+        self._active_stream: sd.RawOutputStream | None = None
+        self._failed_ready.connect(self._deliver_failed)
+        self._finished_ready.connect(self._deliver_finished)
+        self._viseme_ready.connect(self._deliver_viseme)
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None:
         self.volume_percent = max(0, min(160, int(volume_percent)))
         self.muted = bool(muted)
 
     def speak(self, text: str, voice_name: str = "", rate: int = -1) -> None:
+        generation = self._begin_generation()
         if os.name != "nt" or not text.strip():
-            self.finished.emit()
+            self._emit_finished(generation)
             return
         threading.Thread(
             target=self._run,
-            args=(text, voice_name, rate),
+            args=(text, voice_name, rate, generation),
             daemon=True,
         ).start()
 
-    def _run(self, text: str, voice_name: str, rate: int) -> None:
+    def stop(self) -> None:
+        self._begin_generation()
+
+    def _begin_generation(self) -> int:
+        with self._state_lock:
+            self._generation += 1
+            generation = self._generation
+            process = self._active_process
+            stream = self._active_stream
+            self._active_process = None
+            self._active_stream = None
+        self._terminate_process(process)
+        self._abort_stream(stream)
+        return generation
+
+    def _is_current(self, generation: int) -> bool:
+        with self._state_lock:
+            return generation == self._generation
+
+    def _ensure_current(self, generation: int) -> None:
+        if not self._is_current(generation):
+            raise _SpeechCancelled
+
+    def _emit_finished(self, generation: int) -> None:
+        if self._is_current(generation):
+            self._finished_ready.emit(generation)
+
+    def _deliver_finished(self, generation: int) -> None:
+        with self._state_lock:
+            if generation == self._generation:
+                self.finished.emit()
+
+    def _emit_failed(self, generation: int, message: str) -> None:
+        if self._is_current(generation):
+            self._failed_ready.emit(generation, message)
+
+    def _deliver_failed(self, generation: int, message: str) -> None:
+        with self._state_lock:
+            if generation == self._generation:
+                self.failed.emit(message)
+
+    def _emit_viseme(
+        self,
+        generation: int,
+        level: float,
+        vowel: str,
+    ) -> None:
+        if self._is_current(generation):
+            self._viseme_ready.emit(generation, level, vowel)
+
+    def _deliver_viseme(
+        self,
+        generation: int,
+        level: float,
+        vowel: str,
+    ) -> None:
+        with self._state_lock:
+            if generation == self._generation:
+                self.viseme_cue.emit(level, vowel)
+
+    def _register_process(
+        self,
+        generation: int,
+        process: subprocess.Popen[bytes],
+    ) -> bool:
+        with self._state_lock:
+            if generation != self._generation:
+                return False
+            self._active_process = process
+            return True
+
+    def _release_process(
+        self,
+        process: subprocess.Popen[bytes],
+    ) -> None:
+        with self._state_lock:
+            if self._active_process is process:
+                self._active_process = None
+
+    def _register_stream(
+        self,
+        generation: int,
+        stream: sd.RawOutputStream,
+    ) -> bool:
+        with self._state_lock:
+            if generation != self._generation:
+                return False
+            self._active_stream = stream
+            return True
+
+    def _release_stream(self, stream: sd.RawOutputStream) -> None:
+        with self._state_lock:
+            if self._active_stream is stream:
+                self._active_stream = None
+
+    @staticmethod
+    def _terminate_process(
+        process: subprocess.Popen[bytes] | None,
+    ) -> None:
+        if process is None or process.poll() is not None:
+            return
         try:
+            process.terminate()
+        except OSError:
+            # The worker still has the generation gate, so a process that
+            # exited during this race cannot publish obsolete results.
+            return
+
+    @staticmethod
+    def _abort_stream(stream: sd.RawOutputStream | None) -> None:
+        if stream is None:
+            return
+        try:
+            stream.abort()
+        except (OSError, RuntimeError, sd.PortAudioError):
+            # PortAudio can report that another thread already closed the
+            # stream. The generation gate remains the authoritative stop.
+            return
+
+    def _run(
+        self,
+        text: str,
+        voice_name: str,
+        rate: int,
+        generation: int | None = None,
+    ) -> None:
+        # Keep the established direct-call contract used by diagnostics while
+        # treating such a call as a new, independently cancellable utterance.
+        if generation is None:
+            generation = self._begin_generation()
+        try:
+            self._ensure_current(generation)
             installed = windows_voices()
             selected_voice = preferred_windows_voice(
                 installed,
@@ -683,19 +902,36 @@ class WindowsTTS(QObject):
                 "",
             )
             if not selected_voice:
-                raise RuntimeError(
-                    "Windows 沒有偵測到已明確標示為女性的本機語音。"
+                self._emit_failed(
+                    generation,
+                    service_status(
+                        self.language,
+                        ServiceStatus.SPEECH_WINDOWS_FEMALE_VOICE_MISSING,
+                    ),
                 )
+                self._emit_finished(generation)
+                return
             voice_name = selected_voice
             if voice_name.startswith("OneCore::"):
                 self._run_onecore(
                     text,
                     voice_name.removeprefix("OneCore::"),
+                    generation,
                 )
             else:
-                self._run_sapi(text, voice_name, rate)
-            self.finished.emit()
-        except (OSError, subprocess.SubprocessError, RuntimeError) as exc:
+                self._run_sapi(text, voice_name, rate, generation)
+            self._emit_finished(generation)
+        except _SpeechCancelled:
+            return
+        except (
+            OSError,
+            RuntimeError,
+            subprocess.SubprocessError,
+            wave.Error,
+            sd.PortAudioError,
+        ) as exc:
+            if not self._is_current(generation):
+                return
             if voice_name.startswith("OneCore::"):
                 try:
                     desktop_voices = [
@@ -704,15 +940,29 @@ class WindowsTTS(QObject):
                         if not voice[0].startswith("OneCore::")
                     ]
                     fallback = preferred_windows_voice(desktop_voices)
-                    self._run_sapi(text, fallback, rate)
-                    self.finished.emit()
+                    self._run_sapi(text, fallback, rate, generation)
+                    self._emit_finished(generation)
                     return
-                except (OSError, subprocess.SubprocessError, RuntimeError):
+                except _SpeechCancelled:
+                    return
+                except (
+                    OSError,
+                    RuntimeError,
+                    subprocess.SubprocessError,
+                    wave.Error,
+                    sd.PortAudioError,
+                ):
                     pass
-            self.failed.emit(str(exc))
-            self.finished.emit()
+            self._emit_failed(generation, str(sanitize_error(exc)))
+            self._emit_finished(generation)
 
-    def _run_sapi(self, text: str, voice_name: str, rate: int) -> None:
+    def _run_sapi(
+        self,
+        text: str,
+        voice_name: str,
+        rate: int,
+        generation: int,
+    ) -> None:
         fd, name = tempfile.mkstemp(prefix="mohan-sapi-", suffix=".wav")
         os.close(fd)
         audio_path = Path(name)
@@ -736,21 +986,29 @@ class WindowsTTS(QObject):
         )
         command = base64.b64encode(script.encode("utf-16le")).decode("ascii")
         try:
-            result = subprocess.run(
-                ["powershell.exe", "-NoProfile", "-EncodedCommand", command],
-                capture_output=True,
-                creationflags=CREATE_NO_WINDOW,
-                timeout=120,
-                check=False,
+            self._synthesize_with_powershell(
+                command,
+                audio_path,
+                generation,
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_WINDOWS_LEGACY_FAILED,
+                ),
+                240,
             )
-            if result.returncode or not audio_path.exists():
-                detail = result.stderr.decode("utf-8", errors="replace")[:240]
-                raise RuntimeError(detail or "Windows 傳統語音播放失敗。")
-            self._play_wave_bytes(audio_path.read_bytes(), audio_path)
+            self._play_wave_bytes(
+                audio_path.read_bytes(),
+                generation,
+            )
         finally:
             audio_path.unlink(missing_ok=True)
 
-    def _run_onecore(self, text: str, voice_name: str) -> None:
+    def _run_onecore(
+        self,
+        text: str,
+        voice_name: str,
+        generation: int,
+    ) -> None:
         fd, name = tempfile.mkstemp(prefix="mohan-onecore-", suffix=".wav")
         os.close(fd)
         audio_path = Path(name)
@@ -759,6 +1017,13 @@ class WindowsTTS(QObject):
         voice_encoded = base64.b64encode(voice_name.encode("utf-8")).decode("ascii")
         path_encoded = base64.b64encode(
             str(audio_path).encode("utf-8")
+        ).decode("ascii")
+        missing_voice_encoded = base64.b64encode(
+            service_status(
+                self.language,
+                ServiceStatus.SPEECH_ONECORE_VOICE_MISSING,
+                voice=voice_name,
+            ).encode("utf-8")
         ).decode("ascii")
         script = (
             "Add-Type -AssemblyName System.Runtime.WindowsRuntime;"
@@ -776,11 +1041,12 @@ class WindowsTTS(QObject):
             f"$text=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{text_encoded}'));"
             f"$voiceName=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{voice_encoded}'));"
             f"$path=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{path_encoded}'));"
+            f"$missingVoice=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{missing_voice_encoded}'));"
             "$synth=[Windows.Media.SpeechSynthesis.SpeechSynthesizer]::new();"
             "$voice=[Windows.Media.SpeechSynthesis.SpeechSynthesizer]::AllVoices|"
             "Where-Object{$_.DisplayName -eq $voiceName -or $_.Id -like ('*'+$voiceName+'*')}|"
             "Select-Object -First 1;"
-            "if(-not $voice){throw ('找不到 OneCore 聲音：'+$voiceName)};"
+            "if(-not $voice){throw $missingVoice};"
             "$synth.Voice=$voice;"
             "$stream=Await ($synth.SynthesizeTextToStreamAsync($text)) "
             "([Windows.Media.SpeechSynthesis.SpeechSynthesisStream]);"
@@ -793,32 +1059,124 @@ class WindowsTTS(QObject):
         )
         command = base64.b64encode(script.encode("utf-16le")).decode("ascii")
         try:
-            result = subprocess.run(
-                ["powershell.exe", "-NoProfile", "-EncodedCommand", command],
-                capture_output=True,
-                creationflags=CREATE_NO_WINDOW,
-                timeout=120,
-                check=False,
+            self._synthesize_with_powershell(
+                command,
+                audio_path,
+                generation,
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_ONECORE_FAILED,
+                ),
+                3000,
             )
-            if result.returncode or not audio_path.exists():
-                detail = result.stderr.decode("utf-8", errors="replace")[:3000]
-                raise RuntimeError(detail or "OneCore 語音合成失敗。")
-            self._play_wave_bytes(audio_path.read_bytes(), audio_path)
+            self._play_wave_bytes(
+                audio_path.read_bytes(),
+                generation,
+            )
         finally:
             audio_path.unlink(missing_ok=True)
+
+    def _synthesize_with_powershell(
+        self,
+        command: str,
+        audio_path: Path,
+        generation: int,
+        failure_message: str,
+        detail_limit: int,
+    ) -> None:
+        self._ensure_current(generation)
+        process = subprocess.Popen(
+            ["powershell.exe", "-NoProfile", "-EncodedCommand", command],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            creationflags=CREATE_NO_WINDOW,
+        )
+        if not self._register_process(generation, process):
+            self._terminate_process(process)
+            raise _SpeechCancelled
+        try:
+            try:
+                _stdout, stderr = process.communicate(timeout=120)
+            except subprocess.TimeoutExpired as exc:
+                self._terminate_process(process)
+                process.communicate()
+                self._ensure_current(generation)
+                raise RuntimeError(
+                    service_status(
+                        self.language,
+                        ServiceStatus.SPEECH_WINDOWS_SYNTHESIS_TIMEOUT,
+                    )
+                ) from exc
+        finally:
+            self._release_process(process)
+        self._ensure_current(generation)
+        if process.returncode or not audio_path.exists():
+            detail = stderr.decode("utf-8", errors="replace")[:detail_limit]
+            raise RuntimeError(
+                str(sanitize_error(detail)) if detail else failure_message
+            )
 
     def _play_wave_bytes(
         self,
         audio: bytes,
-        audio_path: Path | None = None,
+        generation: int,
     ) -> None:
-        play_wave_with_visemes(
+        playback_audio = apply_wav_volume(
             audio,
             self.volume_percent,
             self.muted,
-            self.viseme_cue.emit,
-            audio_path,
         )
+        with (
+            wave.open(io.BytesIO(audio), "rb") as cue_source,
+            wave.open(io.BytesIO(playback_audio), "rb") as source,
+        ):
+            channels = source.getnchannels()
+            sample_rate = source.getframerate()
+            if (
+                source.getsampwidth() != 2
+                or source.getcomptype() != "NONE"
+                or cue_source.getnchannels() != channels
+                or cue_source.getsampwidth() != 2
+                or cue_source.getframerate() != sample_rate
+                or cue_source.getcomptype() != "NONE"
+            ):
+                raise RuntimeError(
+                    service_status(
+                        self.language,
+                        ServiceStatus.SPEECH_WINDOWS_WAV_UNSUPPORTED,
+                    )
+                )
+            frames_per_cue = max(
+                1,
+                sample_rate // VISEME_CUES_PER_SECOND,
+            )
+            stream = sd.RawOutputStream(
+                samplerate=sample_rate,
+                channels=channels,
+                dtype="int16",
+                blocksize=frames_per_cue,
+            )
+            if not self._register_stream(generation, stream):
+                stream.close()
+                raise _SpeechCancelled
+            try:
+                self._ensure_current(generation)
+                stream.start()
+                while chunk := source.readframes(frames_per_cue):
+                    self._ensure_current(generation)
+                    cue_chunk = cue_source.readframes(frames_per_cue)
+                    level, vowel = infer_vowel_pcm16(
+                        _mono_wave_chunk(cue_chunk, channels),
+                        sample_rate,
+                    )
+                    self._emit_viseme(generation, level, vowel)
+                    stream.write(chunk)
+                self._ensure_current(generation)
+                stream.stop()
+                self._emit_viseme(generation, 0.0, "CLOSED")
+            finally:
+                self._release_stream(stream)
+                stream.close()
 
     def _emit_wave_cues(
         self,
@@ -859,14 +1217,23 @@ class UnavailableSystemTTS(QObject):
             self.failed.emit(self.reason)
         self.finished.emit()
 
+    def stop(self) -> None:
+        """Match the local speech contract when no adapter is available."""
+
 
 class OpenAITTS(QObject):
     failed = Signal(str)
     finished = Signal()
     viseme_cue = Signal(float, str)
 
-    def __init__(self, parent: QObject | None = None):
+    def __init__(
+        self,
+        parent: QObject | None = None,
+        *,
+        language: str = "zh-TW",
+    ):
         super().__init__(parent)
+        self.language = language
         self.volume_percent = 125
         self.muted = False
 
@@ -882,7 +1249,12 @@ class OpenAITTS(QObject):
         instructions: str = "",
     ) -> None:
         if not text.strip() or not api_key.strip():
-            self.failed.emit("尚未設定 OpenAI API 金鑰")
+            self.failed.emit(
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_OPENAI_KEY_MISSING,
+                )
+            )
             return
         threading.Thread(
             target=self._run,
@@ -918,6 +1290,13 @@ class OpenAITTS(QObject):
                 self.viseme_cue.emit,
             )
             self.finished.emit()
+        except _SpeechPlaybackUnavailable:
+            self.failed.emit(
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_PLAYBACK_UNAVAILABLE,
+                )
+            )
         except (
             URLError,
             HTTPError,
@@ -926,7 +1305,7 @@ class OpenAITTS(QObject):
             TimeoutError,
             wave.Error,
         ) as exc:
-            self.failed.emit(str(exc))
+            self.failed.emit(str(sanitize_error(exc)))
 
     def _emit_wave_cues(
         self,
@@ -963,8 +1342,11 @@ class SpeechListener(QObject):
         script_path: Path,
         providers: SpeechListenerProviders | None = None,
         parent: QObject | None = None,
+        *,
+        language: str = "zh-TW",
     ):
         super().__init__(parent)
+        self.language = language
         resolved = providers or SpeechListenerProviders()
         self.script_path = script_path
         self.api_key_provider = resolved.api_key
@@ -998,7 +1380,12 @@ class SpeechListener(QObject):
     def toggle_listening(self) -> None:
         if self._recording_active.is_set():
             self._stop_recording.set()
-            self.status_changed.emit("正在結束收音並送出…")
+            self.status_changed.emit(
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_CAPTURE_STOPPING,
+                )
+            )
             return
         if self._busy.is_set():
             return
@@ -1013,12 +1400,21 @@ class SpeechListener(QObject):
         api_key = (self.api_key_provider() or os.getenv("OPENAI_API_KEY", "")).strip()
         if mode.startswith("OpenAI"):
             if not api_key:
-                reason = "未設定 OpenAI API 金鑰。"
+                reason = service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_OPENAI_KEY_MISSING_SENTENCE,
+                )
                 self.diagnostic_changed.emit(reason)
                 if self.windows_fallback_provider():
                     self._start_windows(fallback_reason=reason)
                 else:
-                    self.failed.emit(reason + "Windows 備援目前已關閉。")
+                    self.failed.emit(
+                        append_service_status(
+                            self.language,
+                            reason,
+                            ServiceStatus.SPEECH_WINDOWS_FALLBACK_DISABLED,
+                        )
+                    )
                 return
             # Freeze every SQLite-backed provider on the Qt/main thread.
             # Accessing StudioDB from the recording worker raises SQLite's
@@ -1036,7 +1432,10 @@ class SpeechListener(QObject):
             self.listening_changed.emit(True)
             self.recording_changed.emit(True)
             self.status_changed.emit(
-                "收音中…再次點擊麥克風可立即送出"
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_RECORDING,
+                )
             )
             threading.Thread(
                 target=self._listen_with_openai,
@@ -1065,13 +1464,29 @@ class SpeechListener(QObject):
         self.audio_path = audio_path
         self.process = QProcess(self)
         self.process.finished.connect(self._finished)
-        self.process.errorOccurred.connect(lambda _e: self.failed.emit("無法啟動語音辨識"))
+        self.process.errorOccurred.connect(
+            lambda _error: self.failed.emit(
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_RECOGNITION_START_FAILED,
+                )
+            )
+        )
         if audio_path is None:
             self.listening_changed.emit(True)
-            self.status_changed.emit("收音與辨識中…")
+            self.status_changed.emit(
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_WINDOWS_LISTENING,
+                )
+            )
         else:
             self.status_changed.emit(
-                f"{fallback_reason} 正在使用 Windows 備援辨識…"
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_WINDOWS_FALLBACK,
+                    detail=fallback_reason,
+                )
             )
         arguments = [
             "-NoProfile",
@@ -1104,12 +1519,16 @@ class SpeechListener(QObject):
             return 0.0
         return (sum(sample * sample for sample in samples) / len(samples)) ** 0.5
 
-    @staticmethod
-    def _require_recording_dependency() -> None:
+    def _require_recording_dependency(self) -> None:
         try:
             _ = sd.RawInputStream
         except (AttributeError, ImportError) as exc:
-            raise RuntimeError("缺少麥克風錄音元件 sounddevice。") from exc
+            raise RuntimeError(
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_RECORDING_COMPONENT_MISSING,
+                )
+            ) from exc
 
     def _recording_limits(self) -> RecordingLimits:
         block_seconds = self.RECORD_BLOCK_SECONDS
@@ -1135,7 +1554,10 @@ class SpeechListener(QObject):
         block_size: int,
     ) -> tuple[bytes, ...]:
         limits = self._recording_limits()
-        detector = SpeechEndpointDetector(limits)
+        detector = SpeechEndpointDetector(
+            limits,
+            language=self.language,
+        )
         frames: list[bytes] = []
         with sd.RawInputStream(
             samplerate=sample_rate,
@@ -1155,7 +1577,10 @@ class SpeechListener(QObject):
                     break
         if not detector.speech_started:
             raise RuntimeError(
-                "沒有偵測到說話聲，請靠近麥克風後再試一次。"
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_NOT_DETECTED,
+                )
             )
         return tuple(frames)
 
@@ -1189,7 +1614,13 @@ class SpeechListener(QObject):
         except RuntimeError:
             raise
         except Exception as exc:
-            raise RuntimeError(f"無法使用 Windows 預設麥克風：{exc}") from exc
+            raise RuntimeError(
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_WINDOWS_MICROPHONE_ERROR,
+                    detail=sanitize_error(exc),
+                )
+            ) from exc
         return self._write_recording(frames, sample_rate)
 
     def _transcribe(
@@ -1213,13 +1644,25 @@ class SpeechListener(QObject):
             audio_path.read_bytes(),
             api_key,
             resolved_model,
-            language or "",
+            SpeechTranscriptionLocale(
+                provider_language=language or "",
+                ui_language=self.language,
+            ),
             prompt or "",
         )
 
     @staticmethod
-    def _http_error_message(status: int, detail: str) -> str:
-        return transcription_http_error_message(status, detail)
+    def _http_error_message(
+        status: int,
+        detail: str,
+        *,
+        language: str = "zh-TW",
+    ) -> str:
+        return transcription_http_error_message(
+            status,
+            detail,
+            language=language,
+        )
 
     def _listen_with_openai(
         self,
@@ -1234,7 +1677,12 @@ class SpeechListener(QObject):
             audio_path = self._record_wav()
             self._recording_active.clear()
             self.recording_changed.emit(False)
-            self.status_changed.emit("辨識中…")
+            self.status_changed.emit(
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_RECOGNIZING,
+                )
+            )
             text = self._transcribe(
                 audio_path,
                 api_key,
@@ -1243,7 +1691,11 @@ class SpeechListener(QObject):
                 prompt=prompt,
             )
             self.diagnostic_changed.emit(
-                f"OpenAI 轉錄成功：{model}"
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_TRANSCRIPTION_SUCCEEDED,
+                    model=model,
+                )
             )
             self.recognized.emit(text)
             audio_path.unlink(missing_ok=True)
@@ -1252,7 +1704,7 @@ class SpeechListener(QObject):
         except Exception as exc:  # noqa: BLE001 -- worker restores UI state on failure
             self._recording_active.clear()
             self.recording_changed.emit(False)
-            reason = str(exc)
+            reason = str(sanitize_error(exc))
             self.diagnostic_changed.emit(reason)
             if audio_path and audio_path.exists():
                 if fallback_enabled:
@@ -1261,7 +1713,14 @@ class SpeechListener(QObject):
                 else:
                     audio_path.unlink(missing_ok=True)
                     self._busy.clear()
-                    self.failed.emit(reason + " Windows 備援目前已關閉。")
+                    self.failed.emit(
+                        append_service_status(
+                            self.language,
+                            reason,
+                            ServiceStatus.SPEECH_WINDOWS_FALLBACK_DISABLED,
+                            separate=True,
+                        )
+                    )
                     self.listening_changed.emit(False)
             else:
                 self._busy.clear()
@@ -1286,21 +1745,42 @@ class SpeechListener(QObject):
         self.process = None
         if text == "__ERROR__:NO_RECOGNIZER":
             self.failed.emit(
-                "Windows 尚未安裝中文語音辨識套件，請先在語言設定加入中文語音功能。"
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_WINDOWS_RECOGNIZER_MISSING,
+                )
             )
         elif text.startswith("__ERROR__:"):
             detail = text.removeprefix("__ERROR__:")
             if "0x80070005" in detail or "Access is denied" in detail:
                 self.failed.emit(
-                    "Windows 拒絕墨寒使用麥克風。請到「設定 → "
-                    "隱私權與安全性 → 麥克風」，開啟麥克風存取權、"
-                    "讓應用程式存取麥克風，以及讓桌面應用程式存取麥克風。"
+                    service_status(
+                        self.language,
+                        ServiceStatus.SPEECH_WINDOWS_MICROPHONE_DENIED,
+                    )
                 )
             else:
-                self.failed.emit("Windows 語音辨識無法使用：" + detail)
+                self.failed.emit(
+                    service_status(
+                        self.language,
+                        ServiceStatus.SPEECH_WINDOWS_RECOGNITION_ERROR,
+                        detail=sanitize_error(detail),
+                    )
+                )
         elif text and text != "__EMPTY__":
             self.recognized.emit(text)
         elif stderr:
-            self.failed.emit(f"Windows 語音辨識啟動失敗：{stderr[:180]}")
+            self.failed.emit(
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_WINDOWS_RECOGNITION_START_ERROR,
+                    detail=sanitize_error(stderr),
+                )
+            )
         else:
-            self.failed.emit("寒方才未聽清，請再說一次。")
+            self.failed.emit(
+                service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_NOT_UNDERSTOOD,
+                )
+            )

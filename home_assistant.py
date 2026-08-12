@@ -9,6 +9,7 @@ lazy from urllib.parse import urlparse
 lazy from urllib.request import Request, urlopen
 
 lazy from flagship_core import ActionRequest, ActionResult
+lazy from safe_error import sanitize_error
 
 HIGH_RISK_DOMAINS = frozenset({"lock", "alarm_control_panel"})
 HEAT_DOMAINS = frozenset({"climate", "water_heater"})
@@ -40,6 +41,16 @@ class HomeAssistantConfig:
 
 class HomeAssistantError(RuntimeError):
     pass
+
+
+def _sanitized_external_error(
+    error: BaseException | str,
+    *,
+    http_status: int | None = None,
+) -> str:
+    """Discard remote detail before an error crosses the service boundary."""
+    safe_input = UnicodeError() if isinstance(error, json.JSONDecodeError) else error
+    return str(sanitize_error(safe_input, http_status=http_status))
 
 
 class HomeAssistantClient:
@@ -76,24 +87,25 @@ class HomeAssistantClient:
         path: str,
         payload: dict[str, Any] | None = None,
     ) -> Any:
-        data = (
-            json.dumps(payload).encode("utf-8")
-            if payload is not None
-            else None
-        )
-        request = Request(
-            f"{self.base_url}{path}",
-            data=data,
-            method=method,
-            headers={
-                "Authorization": f"Bearer {self.config.token}",
-                "Content-Type": "application/json",
-            },
-        )
-        context = None
-        if not self.config.verify_tls:
-            context = ssl._create_unverified_context()
+        request_failure: str | None = None
         try:
+            data = (
+                json.dumps(payload).encode("utf-8")
+                if payload is not None
+                else None
+            )
+            request = Request(
+                f"{self.base_url}{path}",
+                data=data,
+                method=method,
+                headers={
+                    "Authorization": f"Bearer {self.config.token}",
+                    "Content-Type": "application/json",
+                },
+            )
+            context = None
+            if not self.config.verify_tls:
+                context = ssl._create_unverified_context()
             with urlopen(
                 request,
                 timeout=self.config.timeout_seconds,
@@ -101,13 +113,15 @@ class HomeAssistantClient:
             ) as response:
                 raw = response.read()
                 return json.loads(raw.decode("utf-8")) if raw else None
-        except HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")[:500]
-            raise HomeAssistantError(
-                f"Home Assistant HTTP {exc.code}: {detail}"
-            ) from exc
-        except URLError as exc:
-            raise HomeAssistantError(f"無法連線 Home Assistant：{exc.reason}") from exc
+        except (
+            HTTPError,
+            URLError,
+            OSError,
+            UnicodeError,
+            json.JSONDecodeError,
+        ) as exc:
+            request_failure = _sanitized_external_error(exc)
+        raise HomeAssistantError(request_failure)
 
     def health(self) -> bool:
         response = self._request("GET", "/api/")

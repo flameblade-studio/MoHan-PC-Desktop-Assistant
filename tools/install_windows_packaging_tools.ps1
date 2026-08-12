@@ -24,7 +24,7 @@ gh release download $InnoTag `
     --clobber
 if ($LASTEXITCODE -ne 0) { throw "Official Inno Setup download failed" }
 
-gh release verify-asset $InnoDownload --repo jrsoftware/issrc
+gh release verify-asset $InnoTag $InnoDownload --repo jrsoftware/issrc
 if ($LASTEXITCODE -ne 0) {
     throw "Official Inno Setup release attestation verification failed"
 }

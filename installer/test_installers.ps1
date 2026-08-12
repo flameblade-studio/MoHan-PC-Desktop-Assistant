@@ -122,6 +122,53 @@ foreach ($Transform in $MsiVariants) {
     ) {
         throw "MSI $Variant application self-test failed"
     }
+    $MsiShortcutPath = Join-Path $ProgramsFolder (
+        "MoHan Desktop Assistant\MoHan Desktop Assistant.lnk"
+    )
+    if (-not (Test-Path -LiteralPath $MsiShortcutPath)) {
+        throw "MSI $Variant did not create the Start menu shortcut"
+    }
+    $MsiShortcut = (New-Object -ComObject WScript.Shell).CreateShortcut(
+        $MsiShortcutPath
+    )
+    $ExpectedMsiIconLocation = $InstalledMsiExe + ",0"
+    if (-not [string]::Equals(
+        $MsiShortcut.TargetPath,
+        $InstalledMsiExe,
+        [StringComparison]::OrdinalIgnoreCase
+    )) {
+        throw "MSI $Variant shortcut target escaped the install directory"
+    }
+    $ShortcutBytes = [IO.File]::ReadAllBytes($MsiShortcutPath)
+    [uint32]$ShellLinkHeaderSize = 0x0000004C
+    if (
+        $ShortcutBytes.Length -lt $ShellLinkHeaderSize -or
+        [BitConverter]::ToUInt32($ShortcutBytes, 0) -ne $ShellLinkHeaderSize
+    ) {
+        throw "MSI $Variant shortcut has an invalid Shell Link header"
+    }
+    [uint32]$LinkFlags = [BitConverter]::ToUInt32($ShortcutBytes, 20)
+    [uint32]$HasIconLocationFlag = 0x00000040
+    if (($LinkFlags -band $HasIconLocationFlag) -ne 0) {
+        throw "MSI $Variant shortcut contains an independent icon location"
+    }
+    $ReportedIconLocation = ([string]$MsiShortcut.IconLocation).Trim()
+    $IconLocationIsAllowed = (
+        [string]::IsNullOrEmpty($ReportedIconLocation) -or
+        [string]::Equals(
+            $ReportedIconLocation,
+            ",0",
+            [StringComparison]::Ordinal
+        ) -or
+        [string]::Equals(
+            $ReportedIconLocation,
+            $ExpectedMsiIconLocation,
+            [StringComparison]::OrdinalIgnoreCase
+        )
+    )
+    if (-not $IconLocationIsAllowed) {
+        throw "MSI $Variant shortcut icon escaped the installed MoHan executable"
+    }
     $UninstallArguments = @(
         "/x", $MsiInstaller.FullName, "/qn", "/norestart"
     )
@@ -132,6 +179,9 @@ foreach ($Transform in $MsiVariants) {
         -Wait -PassThru
     if ($Process.ExitCode -ne 0) {
         throw "MSI $Variant uninstall verification failed"
+    }
+    if (Test-Path -LiteralPath $MsiShortcutPath) {
+        throw "MSI $Variant uninstaller left the Start menu shortcut behind"
     }
 }
 

@@ -78,8 +78,9 @@ def run() -> None:
     ):
         timeout_worker.run()
     assert len(errors) == 1
-    assert "TimeoutError" in errors[0]
-    assert "連線等待逾時" in errors[0]
+    assert "type=timeout_error" in errors[0]
+    assert "diagnostic=request_timeout" in errors[0]
+    assert "連線等待逾時" not in errors[0]
     print("ACTION_PLANNER_CONTRACT_OK")
 
 
