@@ -248,7 +248,7 @@ Azure Speech 是預設關閉、由使用者自行啟用的預覽供應器，需�
 
 尚未數位簽署的開源預覽版可能觸發 Windows SmartScreen；請確認官方下載來源與 SHA-256 後再執行。
 
-v3.1.2 預定提供 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`；這些產物必須先通過本版最終發布門檻。它們是功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
+v3.1.2 的跨平台發行範圍包含 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`；每一項實際產物只有在通過本版完整發布門檻後才會公開。這些產物定位為功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
 
 #### 自動化發布邊界
 
@@ -647,7 +647,7 @@ Azure Speech 是默认关闭、由用户自行启用的预览供应器，需要�
 
 尚未数字签名的开源预览版可能触发 Windows SmartScreen；请确认官方下载来源与 SHA-256 后再运行。
 
-v3.1.2 计划提供 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`；这些产物必须先通过本版本最终发布关卡。它们是功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
+v3.1.2 的跨平台发布范围包含 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`；每一项实际产物只有在通过本版本完整发布关卡后才会公开。这些产物定位为功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
 
 #### 自动化发布边界
 
@@ -1046,7 +1046,7 @@ General users do not need to install Python:
 
 Unsigned open-source previews may trigger Windows SmartScreen. Verify the official download source and SHA-256 before running them.
 
-v3.1.2 is planned to provide separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`; these artifacts must first pass this release's final publication gates. They are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
+The v3.1.2 cross-platform release scope covers separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`; each actual artifact is published only after it passes this release's complete publication gates. These artifacts are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
 
 #### Automated release boundary
 
@@ -1445,7 +1445,7 @@ Azure Speech は初期状態で無効な Preview 供給元で、利用者が明�
 
 署名のないオープンソース Preview は Windows SmartScreen の警告を出す場合があります。公式配布元と SHA-256 を確認してから実行してください。
 
-v3.1.2 では、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` の提供を予定しており、これらの成果物は本版の最終公開ゲートに合格しなければなりません。いずれも機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
+v3.1.2 のクロスプラットフォーム公開範囲には、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` が含まれ、各成果物は本版の完全な公開ゲートに合格した場合にのみ公開されます。いずれも機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
 
 #### 自動リリースの境界
 

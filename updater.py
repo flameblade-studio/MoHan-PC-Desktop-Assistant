@@ -107,23 +107,34 @@ class UpdateManager:
 
     @staticmethod
     def _validate_url(url: str) -> None:
-        parsed = urlparse(url)
-        if parsed.scheme != "https" or parsed.hostname not in ALLOWED_DOWNLOAD_HOSTS:
+        parsed = None
+        try:
+            parsed = urlparse(url)
+            hostname = parsed.hostname
+        except (AttributeError, TypeError, ValueError):
+            hostname = None
+        if (
+            parsed is None
+            or parsed.scheme != "https"
+            or hostname not in ALLOWED_DOWNLOAD_HOSTS
+        ):
             raise UpdateError("更新網址不是受信任的 GitHub HTTPS 來源。")
         if parsed.username or parsed.password:
             raise UpdateError("更新網址不得包含登入憑證。")
 
     def _request_bytes(self, url: str, limit: int) -> bytes:
         self._validate_url(url)
-        request = Request(
-            url,
-            headers={
-                "Accept": "application/vnd.github+json",
-                "User-Agent": "MoHan-Desktop-Assistant-Updater",
-                "X-GitHub-Api-Version": "2022-11-28",
-            },
-        )
+        failure: str | None = None
+        data: bytes | None = None
         try:
+            request = Request(
+                url,
+                headers={
+                    "Accept": "application/vnd.github+json",
+                    "User-Agent": "MoHan-Desktop-Assistant-Updater",
+                    "X-GitHub-Api-Version": "2022-11-28",
+                },
+            )
             with self._opener(
                 request,
                 timeout=20,
@@ -133,23 +144,39 @@ class UpdateManager:
                 self._validate_url(final_url)
                 announced = response.headers.get("Content-Length")
                 if announced and int(announced) > limit:
-                    raise UpdateError("更新資料超過安全大小限制。")
-                data = response.read(limit + 1)
+                    failure = "更新資料超過安全大小限制。"
+                else:
+                    data = response.read(limit + 1)
+        except UpdateError:
+            failure = "GitHub 更新服務回應格式不正確。"
         except HTTPError as exc:
-            if exc.code == 404:
-                raise UpdateError("目前沒有符合更新頻道的已發布版本。") from exc
-            raise UpdateError(f"GitHub 更新服務回應錯誤（{exc.code}）。") from exc
-        except (URLError, TimeoutError, OSError) as exc:
-            raise UpdateError("無法連線至 GitHub 更新服務。") from exc
+            failure = (
+                "目前沒有符合更新頻道的已發布版本。"
+                if exc.code == 404
+                else "GitHub 更新服務回應錯誤。"
+            )
+        except (URLError, TimeoutError, OSError):
+            failure = "無法連線至 GitHub 更新服務。"
+        except (AttributeError, RuntimeError, TypeError, ValueError):
+            failure = "GitHub 更新服務回應格式不正確。"
+        if failure is not None:
+            raise UpdateError(failure)
+        if data is None:
+            raise UpdateError("GitHub 更新服務沒有回傳資料。")
         if len(data) > limit:
             raise UpdateError("更新資料超過安全大小限制。")
         return data
 
     def _request_json(self, url: str, limit: int = MAX_MANIFEST_BYTES) -> Any:
+        invalid_json = False
+        result: Any = None
         try:
-            return json.loads(self._request_bytes(url, limit).decode("utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-            raise UpdateError("GitHub 更新資料格式不正確。") from exc
+            result = json.loads(self._request_bytes(url, limit).decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError, RecursionError):
+            invalid_json = True
+        if invalid_json:
+            raise UpdateError("GitHub 更新資料格式不正確。")
+        return result
 
     def _release_candidates(self, channel: str) -> list[dict[str, Any]]:
         endpoint = f"https://api.github.com/repos/{self.repository}/releases"
@@ -252,7 +279,13 @@ class UpdateManager:
         name = str(item.get("name", ""))
         url = str(item.get("url", ""))
         digest = str(item.get("sha256", "")).lower()
-        size = int(item.get("size", 0))
+        invalid_size = False
+        try:
+            size = int(item.get("size", 0))
+        except (TypeError, ValueError, OverflowError):
+            invalid_size = True
+        if invalid_size:
+            raise UpdateError("安裝程式大小格式錯誤。")
         if Path(name).name != name or not re.fullmatch(
             r"[A-Za-z0-9_.-]+",
             name,
@@ -271,16 +304,42 @@ class UpdateManager:
         progress: Callable[[int, int], None] | None = None,
     ) -> Path:
         self._validate_url(asset.url)
-        self.download_dir.mkdir(parents=True, exist_ok=True)
         target = self.download_dir / asset.name
         partial = target.with_suffix(target.suffix + ".part")
-        request = Request(
-            asset.url,
-            headers={"User-Agent": "MoHan-Desktop-Assistant-Updater"},
+        received, actual_digest, failure = self._download_to_partial(
+            asset,
+            partial,
+            progress,
         )
+        if failure is not None:
+            self._discard_partial(partial)
+            raise UpdateError(failure)
+        if received != asset.size:
+            self._discard_partial(partial)
+            raise UpdateError("安裝程式下載不完整。")
+        if actual_digest != asset.sha256:
+            self._discard_partial(partial)
+            raise UpdateError("安裝程式 SHA256 驗證失敗，已拒絕執行。")
+        if not self._replace_partial(partial, target):
+            self._discard_partial(partial)
+            raise UpdateError("安裝程式無法安全儲存。")
+        return target
+
+    def _download_to_partial(
+        self,
+        asset: InstallerAsset,
+        partial: Path,
+        progress: Callable[[int, int], None] | None,
+    ) -> tuple[int, str, str | None]:
         digest = hashlib.sha256()
         received = 0
+        failure: str | None = None
         try:
+            request = Request(
+                asset.url,
+                headers={"User-Agent": "MoHan-Desktop-Assistant-Updater"},
+            )
+            self.download_dir.mkdir(parents=True, exist_ok=True)
             with self._opener(
                 request,
                 timeout=30,
@@ -293,20 +352,39 @@ class UpdateManager:
                         break
                     received += len(chunk)
                     if received > asset.size or received > MAX_INSTALLER_BYTES:
-                        raise UpdateError("安裝程式下載大小與清單不符。")
+                        failure = "安裝程式下載大小與清單不符。"
+                        break
                     digest.update(chunk)
                     handle.write(chunk)
                     if progress:
                         progress(received, asset.size)
-            if received != asset.size:
-                raise UpdateError("安裝程式下載不完整。")
-            if digest.hexdigest().lower() != asset.sha256:
-                raise UpdateError("安裝程式 SHA256 驗證失敗，已拒絕執行。")
-            os.replace(partial, target)
-            return target
         except UpdateError:
-            partial.unlink(missing_ok=True)
-            raise
-        except (URLError, TimeoutError, OSError) as exc:
-            partial.unlink(missing_ok=True)
-            raise UpdateError("安裝程式下載失敗。") from exc
+            failure = "安裝程式下載失敗。"
+        except (
+            AttributeError,
+            HTTPError,
+            OSError,
+            RuntimeError,
+            TimeoutError,
+            TypeError,
+            URLError,
+            ValueError,
+        ):
+            failure = "安裝程式下載失敗。"
+        return received, digest.hexdigest().lower(), failure
+
+    @staticmethod
+    def _replace_partial(partial: Path, target: Path) -> bool:
+        try:
+            os.replace(partial, target)
+        except (OSError, TypeError, ValueError):
+            return False
+        return True
+
+    @staticmethod
+    def _discard_partial(path: Path) -> None:
+        try:
+            path.unlink(missing_ok=True)
+        except (OSError, TypeError, ValueError):
+            # The original safe failure must not be replaced by a private path.
+            return

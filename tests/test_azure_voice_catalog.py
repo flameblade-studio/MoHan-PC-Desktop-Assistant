@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import sys
+lazy import threading
 lazy from pathlib import Path
 lazy from types import SimpleNamespace
 
@@ -29,6 +30,56 @@ def _voice(short_name: str, locale: str, gender: str) -> object:
         locale=locale,
         gender=SimpleNamespace(name=gender),
     )
+
+
+def _assert_invalidated_query_cannot_repopulate_cache() -> None:
+    entered = threading.Event()
+    release = threading.Event()
+
+    class BlockingFuture:
+        def get(self) -> object:
+            entered.set()
+            if not release.wait(timeout=2.0):
+                raise TimeoutError("catalog test did not release")
+            return SimpleNamespace(
+                voices=(
+                    _voice("zh-TW-NewWomanNeural", "zh-TW", "Female"),
+                )
+            )
+
+    class BlockingSynthesizer:
+        def __init__(self, **_kwargs: object) -> None:
+            pass
+
+        def get_voices_async(self) -> BlockingFuture:
+            return BlockingFuture()
+
+    fake_sdk = SimpleNamespace(
+        SpeechConfig=lambda **kwargs: SimpleNamespace(**kwargs),
+        SpeechSynthesizer=BlockingSynthesizer,
+    )
+    service = AzureVoiceCatalogService(sdk_loader=lambda: fake_sdk)
+    results: list[object] = []
+    worker = threading.Thread(
+        target=lambda: results.append(
+            service.query(
+                "superseded-secret",
+                "eastasia",
+                "zh-TW",
+                hd_only=False,
+            )
+        ),
+        daemon=True,
+    )
+    worker.start()
+    assert entered.wait(timeout=1.0)
+    service.invalidate()
+    release.set()
+    worker.join(timeout=1.0)
+
+    assert not worker.is_alive()
+    assert len(results) == 1
+    assert service._cache == {}
 
 
 def run() -> None:
@@ -92,23 +143,24 @@ def run() -> None:
         "zh-TW",
         hd_only=True,
     )
-    assert different_credentials is not hd
-    assert FakeSynthesizer.query_count == 3
-    assert service.query(
+    assert different_credentials is hd
+    assert FakeSynthesizer.query_count == 2
+
+    service.invalidate("westus2")
+    refreshed_credentials = service.query(
         "a-different-secret",
         "westus2",
         "zh-TW",
         hd_only=True,
-    ) is different_credentials
+    )
+    assert refreshed_credentials is not hd
     assert FakeSynthesizer.query_count == 3
 
     cache_representation = repr(service._cache)
     assert "secret-never-cached" not in cache_representation
     assert "a-different-secret" not in cache_representation
-    assert all(
-        "credential_fingerprint" not in repr(key)
-        for key in service._cache
-    )
+    assert "credential" not in repr(service._cache).lower()
+    _assert_invalidated_query_cannot_repopulate_cache()
     print("AZURE_VOICE_CATALOG_OK")
 
 

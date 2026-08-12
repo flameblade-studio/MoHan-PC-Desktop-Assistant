@@ -96,7 +96,6 @@ lazy from ai_client import (
     AIWorker,
     AIWorkerRequest,
 )
-lazy from safe_error_localization import safe_error_message
 lazy from azure_regions import (
     azure_region_identifiers,
     azure_region_options,
@@ -168,6 +167,7 @@ lazy from realtime_voice import (
     RealtimeVoiceClient,
     RealtimeVoiceRequest,
 )
+lazy from safe_error_localization import safe_error_message
 lazy from service_container import CompanionServices, create_default_services
 lazy from settings_ui_localization import (
     PHYSICS_TEXT_KEYS,
@@ -6699,6 +6699,7 @@ class Dashboard(QDialog):
         )
         if answer == QMessageBox.Yes:
             self.azure_secret_store.clear()
+            self._invalidate_azure_voice_catalog(hd_only=False)
             self.azure_key_input.clear()
             self.azure_key_input.setPlaceholderText(
                 self._t(
@@ -6723,6 +6724,7 @@ class Dashboard(QDialog):
         )
         if answer == QMessageBox.Yes:
             self.azure_hd_secret_store.clear()
+            self._invalidate_azure_voice_catalog(hd_only=True)
             self.azure_hd_key_input.clear()
             self.azure_hd_key_input.setPlaceholderText(
                 self._t(
@@ -6858,46 +6860,40 @@ class Dashboard(QDialog):
     def _save_azure_key_immediately(self) -> None:
         if self._persist_azure_key(silent=False):
             self.realtime_output_settings_changed.emit()
-            invalidate = getattr(
-                self.azure_tts,
-                "invalidate_voice_catalog",
-                None,
-            )
-            if invalidate is not None:
-                invalidate(
-                    str(self.azure_region.currentData() or "")
-                )
             self._request_azure_voice_catalog(hd_only=False)
 
     def _save_azure_hd_key_immediately(self) -> None:
         if self._persist_azure_hd_key(silent=False):
             self.realtime_output_settings_changed.emit()
-            invalidate = getattr(
-                self.azure_hd_tts,
-                "invalidate_voice_catalog",
-                None,
-            )
-            if invalidate is not None:
-                invalidate(
-                    str(self.azure_hd_region.currentData() or "")
-                )
             self._request_azure_voice_catalog(hd_only=True)
 
     def _persist_azure_key(self, *, silent: bool) -> bool:
-        return self._persist_secret_input(
+        saved = self._persist_secret_input(
             self.azure_key_input,
             self.azure_secret_store,
             AZURE_SECRET_POLICY,
             silent=silent,
         )
+        if saved:
+            self._invalidate_azure_voice_catalog(hd_only=False)
+        return saved
 
     def _persist_azure_hd_key(self, *, silent: bool) -> bool:
-        return self._persist_secret_input(
+        saved = self._persist_secret_input(
             self.azure_hd_key_input,
             self.azure_hd_secret_store,
             AZURE_HD_SECRET_POLICY,
             silent=silent,
         )
+        if saved:
+            self._invalidate_azure_voice_catalog(hd_only=True)
+        return saved
+
+    def _invalidate_azure_voice_catalog(self, *, hd_only: bool) -> None:
+        engine = self.azure_hd_tts if hd_only else self.azure_tts
+        invalidate = getattr(engine, "invalidate_voice_catalog", None)
+        if invalidate is not None:
+            invalidate()
 
     def _persist_secret_input(
         self,
@@ -6920,7 +6916,7 @@ class Dashboard(QDialog):
                     self._t(
                         policy.error_key,
                         policy.error_fallback,
-                        error=exc,
+                        error=safe_error_message(self.ui_language, exc),
                     ),
                 )
             return False
@@ -7293,7 +7289,7 @@ class Dashboard(QDialog):
                 self._settings_text(SettingsText.AUTOSTART_ERROR_TITLE),
                 self._settings_text(
                     SettingsText.AUTOSTART_ERROR,
-                    reason=exc,
+                    reason=safe_error_message(self.ui_language, exc),
                 ),
             )
             return

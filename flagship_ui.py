@@ -77,8 +77,6 @@ lazy from flagship_core import (
     parse_plan_json,
 )
 lazy from flagship_ui_localization import FlagshipTranslator
-lazy from safe_error import sanitize_error
-lazy from safe_error_localization import safe_error_message
 lazy from home_assistant import (
     HomeAssistantClient,
     HomeAssistantConfig,
@@ -93,6 +91,8 @@ lazy from remote_control import (
     RemoteServerServices,
     TokenRegistry,
 )
+lazy from safe_error import sanitize_error
+lazy from safe_error_localization import safe_error_message
 lazy from secret_store import platform_secret_store_factory
 lazy from time_utils import local_aware_time, local_wall_time
 lazy from windows_tools import WindowTools
@@ -1254,7 +1254,11 @@ class FlagshipControlCenter(QWidget):
                 enabled=workflow.enabled,
             )
         except (ValueError, json.JSONDecodeError) as exc:
-            QMessageBox.warning(self, self._t("工作流程"), str(exc))
+            QMessageBox.warning(
+                self,
+                self._t("工作流程"),
+                safe_error_message(self.language, exc),
+            )
             return
         self.refresh_workflows()
 
@@ -1280,7 +1284,11 @@ class FlagshipControlCenter(QWidget):
         try:
             plan = workflow.to_plan()
         except ValueError as exc:
-            QMessageBox.warning(self, self._t("工作流程"), str(exc))
+            QMessageBox.warning(
+                self,
+                self._t("工作流程"),
+                safe_error_message(self.language, exc),
+            )
             return
         if workflow.require_preview:
             preview = "\n".join(
@@ -2364,6 +2372,7 @@ class FlagshipControlCenter(QWidget):
             allow_commands=self.remote_commands.isChecked(),
             allow_screen=self.remote_screen.isChecked(),
             allow_files=self.remote_files.isChecked(),
+            language=self.language,
         )
         folders = [
             str(row["target_value"])

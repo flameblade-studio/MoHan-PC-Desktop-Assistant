@@ -55,38 +55,6 @@ def language_sections(document: str, source: str) -> tuple[str, ...]:
     )
 
 
-def assert_no_premature_publication(
-    document: str,
-    source: str,
-) -> None:
-    publication_terms = (
-        "已發布",
-        "已发布",
-        "has been published",
-        "is published",
-        "公開完了",
-        "公開済み",
-    )
-    preparation_terms = (
-        "尚未",
-        "不代表",
-        "並不代表",
-        "并不代表",
-        "not published",
-        "does not mean",
-        "未公開",
-        "示しません",
-    )
-    for line in document.splitlines():
-        if VERSION not in line:
-            continue
-        if not any(term in line for term in publication_terms):
-            continue
-        assert any(term in line for term in preparation_terms), (
-            f"{source} prematurely describes {TAG} as published: {line}"
-        )
-
-
 def test_runtime_and_package_versions() -> None:
     assert APP_VERSION == VERSION
     assert FALLBACK_VERSION == VERSION
@@ -103,16 +71,16 @@ def test_runtime_and_package_versions() -> None:
 def test_readme_uses_one_dynamic_release_badge_per_language() -> None:
     readme = read("README.md")
     sections = language_sections(readme, "README.md")
-    prepared_descriptions = (
+    release_gate_descriptions = (
         "實際產物仍須通過本版最終發布門檻",
         "实际产物仍须通过本版本最终发布关卡",
         "actual artifacts must still pass this release's final publication gates",
         "実際の成果物は本版の最終公開ゲートに合格する必要があります",
     )
 
-    for section, prepared_description in zip(
+    for section, release_gate_description in zip(
         sections,
-        prepared_descriptions,
+        release_gate_descriptions,
         strict=True,
     ):
         badge_block = section.split("</p>", maxsplit=1)[0]
@@ -131,41 +99,59 @@ def test_readme_uses_one_dynamic_release_badge_per_language() -> None:
             "version that may later be Stable or RC"
         )
 
-        assert prepared_description in section
-
-    assert_no_premature_publication(readme, "README.md")
+        assert release_gate_description in section
 
 
-def test_four_language_release_sources_are_prepared_not_published() -> None:
+def assert_no_stale_release_status(document: str, source: str) -> None:
+    stale_status_patterns = (
+        r"v3\.1\.2[^\n]*(?:尚未發布|預定)",
+        r"v3\.1\.2[^\n]*(?:尚未发布|计划)",
+        r"v3\.1\.2[^\n]*(?:not published|is planned)",
+        r"v3\.1\.2[^\n]*(?:未公開|予定)",
+    )
+    for pattern in stale_status_patterns:
+        assert re.search(pattern, document, flags=re.IGNORECASE) is None, (
+            f"{source} contains stale v3.1.2 publication wording: {pattern}"
+        )
+
+
+def test_four_language_release_sources_are_complete_and_permanent() -> None:
+    readme = read("README.md")
     changelog = read("CHANGELOG.md")
     notes = read(f"docs/releases/{TAG}.md")
 
+    language_sections(readme, "README.md")
     language_sections(changelog, "CHANGELOG.md")
-    language_sections(notes, f"docs/releases/{TAG}.md")
-    assert changelog.count(f"### {TAG} — 2026-08-12") == 4
+    note_sections = language_sections(notes, f"docs/releases/{TAG}.md")
+    assert changelog.count(f"### {TAG} — 2026-08-13") == 4
     assert notes.startswith(
         "# 墨寒桌面助理 v3.1.2／墨寒桌面助手 v3.1.2／"
         "MoHan Desktop Assistant v3.1.2／"
         "墨寒デスクトップアシスタント v3.1.2\n"
     )
 
-    for marker in (
-        "v3.1.2 尚未發布",
-        "v3.1.2 尚未发布",
-        "v3.1.2 is not published",
-        "v3.1.2 は未公開",
+    permanent_descriptions = (
+        "本版完整提供繁體中文、簡體中文、英文與日文介面",
+        "本版本完整提供繁体中文、简体中文、英文与日文界面",
+        (
+            "This release provides complete Traditional Chinese, Simplified "
+            + "Chinese, English, and Japanese interfaces"
+        ),
+        "本版は繁体字中国語、簡体字中国語、英語、日本語の完全な画面を提供します",
+    )
+    for section, description in zip(
+        note_sections,
+        permanent_descriptions,
+        strict=True,
     ):
-        assert marker in changelog, marker
-    for marker in (
-        "不代表 CI 已全綠或 v3.1.2 已發布",
-        "并不代表 CI 已全部通过或 v3.1.2 已发布",
-        "does not mean CI is all green or v3.1.2 has been published",
-        "CI の全成功や v3.1.2 の公開完了を示しません",
-    ):
-        assert marker in notes, marker
+        assert description in section, description
 
-    assert_no_premature_publication(changelog, "CHANGELOG.md")
-    assert_no_premature_publication(notes, f"docs/releases/{TAG}.md")
+    for source, document in (
+        ("README.md", readme),
+        ("CHANGELOG.md", changelog),
+        (f"docs/releases/{TAG}.md", notes),
+    ):
+        assert_no_stale_release_status(document, source)
 
 
 def test_release_workflow_derives_and_validates_the_exact_tag() -> None:
@@ -242,7 +228,7 @@ def test_python315_node24_and_jit_release_contract() -> None:
 def main() -> None:
     test_runtime_and_package_versions()
     test_readme_uses_one_dynamic_release_badge_per_language()
-    test_four_language_release_sources_are_prepared_not_published()
+    test_four_language_release_sources_are_complete_and_permanent()
     test_release_workflow_derives_and_validates_the_exact_tag()
     test_python315_node24_and_jit_release_contract()
     print("V312_RELEASE_CONSISTENCY_OK")

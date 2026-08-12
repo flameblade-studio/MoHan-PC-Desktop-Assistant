@@ -15,6 +15,7 @@ lazy from urllib.parse import urlparse
 
 lazy from platform_contracts import PlatformServicePort
 lazy from platform_services import current_platform_services
+lazy from safe_error import sanitize_error
 lazy from time_utils import local_wall_time
 
 
@@ -378,16 +379,22 @@ class ActionExecutor:
                 "尚未安裝此工具的執行器",
             )
         handler, verifier = registered
+        handler_error: Exception | None = None
         try:
             result = handler(request)
             self._verify_result(request, result, verifier)
-            return result
         except Exception as exc:  # noqa: BLE001 -- tool boundary
+            handler_error = exc
+
+        if handler_error is not None:
+            safe_failure = str(sanitize_error(handler_error))
+            del handler_error
             return ActionResult(
                 request.request_id,
                 False,
-                f"工具執行失敗：{type(exc).__name__}: {exc}",
+                f"工具執行失敗：{safe_failure}",
             )
+        return result
 
     @staticmethod
     def _verify_result(

@@ -8,6 +8,7 @@ lazy import zipfile
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
+lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -18,6 +19,13 @@ lazy from profile_transfer import (
     ProfileManifest,
     ProfileTransferError,
 )
+lazy from profile_transfer_ui import localized_profile_failure
+lazy from safe_error_localization import safe_error_message
+
+_BAIT_PATH = r"C:\Users\private-owner\Documents\mohan-private.db"
+_BAIT_TOKEN = "sk-fake-profile-transfer-token"
+_BAIT_DETAIL = f"{_BAIT_PATH}; token={_BAIT_TOKEN}"
+_LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 
 
 def seed_profile(db: StudioDB, prefix: str) -> None:
@@ -234,7 +242,10 @@ def _assert_atomic_rollback(fixture: TransferFixture) -> None:
     try:
         fixture.target_manager.import_profile(second_bundle)
     except ProfileTransferError as exc:
-        assert "forced rollback" in str(exc)
+        assert "forced rollback" not in str(exc)
+        assert exc.safe_error is not None
+        assert exc.__cause__ is None
+        assert exc.__context__ is None
     else:
         raise AssertionError("forced import failure must be reported")
     assert second_manifest.snapshot_id != previous_snapshot
@@ -246,6 +257,91 @@ def _assert_atomic_rollback(fixture: TransferFixture) -> None:
         "SELECT content FROM chat_log"
     ).fetchone()[0] == previous_chat
     fixture.target_db.conn.execute("DROP TRIGGER reject_portable_todo_delete")
+    fixture.target_db.conn.commit()
+
+
+def _assert_external_failure_is_safe(error: ProfileTransferError) -> None:
+    assert error.safe_error is not None
+    assert error.__cause__ is None
+    assert error.__context__ is None
+    surfaces = [str(error)]
+    surfaces.extend(
+        safe_error_message(language, error.safe_error)
+        for language in _LANGUAGES
+    )
+    for surface in surfaces:
+        assert _BAIT_PATH not in surface
+        assert _BAIT_TOKEN not in surface
+        assert _BAIT_DETAIL not in surface
+    assert all(surface.strip() for surface in surfaces)
+
+
+def _assert_four_language_ui_discards_private_detail() -> None:
+    error = OSError(_BAIT_DETAIL)
+    messages = tuple(
+        localized_profile_failure(language, error)
+        for language in _LANGUAGES
+    )
+    assert len(set(messages)) == len(_LANGUAGES)
+    for message in messages:
+        assert _BAIT_PATH not in message
+        assert _BAIT_TOKEN not in message
+        assert _BAIT_DETAIL not in message
+        assert "diagnostic=local_io_failure" in message
+
+
+def _assert_export_error_discards_private_detail(
+    fixture: TransferFixture,
+) -> None:
+    with patch.object(
+        fixture.source_manager,
+        "_write_archive",
+        side_effect=OSError(_BAIT_DETAIL),
+    ):
+        try:
+            fixture.source_manager.export_profile(
+                fixture.root / "private-export"
+            )
+        except ProfileTransferError as exc:
+            _assert_external_failure_is_safe(exc)
+        else:
+            raise AssertionError("mocked export failure must be reported")
+
+
+def _assert_inspection_error_discards_private_detail(
+    fixture: TransferFixture,
+) -> None:
+    private_source = fixture.root / f"{_BAIT_TOKEN}.mohan-profile"
+    private_source.write_text(_BAIT_DETAIL, encoding="utf-8")
+    try:
+        fixture.target_manager.inspect_profile(private_source)
+    except ProfileTransferError as exc:
+        _assert_external_failure_is_safe(exc)
+    else:
+        raise AssertionError("invalid profile must be rejected")
+
+
+def _assert_sqlite_error_discards_private_detail(
+    fixture: TransferFixture,
+) -> None:
+    fixture.source_db.set_setting("assistant_name", "安全邊界測試")
+    bundle, _manifest = fixture.source_manager.export_profile(
+        fixture.root / "安全邊界測試"
+    )
+    trigger = _BAIT_DETAIL.replace("'", "''")
+    fixture.target_db.conn.execute(
+        "CREATE TRIGGER reject_private_profile_delete "
+        "BEFORE DELETE ON todos BEGIN "
+        f"SELECT RAISE(ABORT,'{trigger}'); END"
+    )
+    fixture.target_db.conn.commit()
+    try:
+        fixture.target_manager.import_profile(bundle)
+    except ProfileTransferError as exc:
+        _assert_external_failure_is_safe(exc)
+    else:
+        raise AssertionError("mocked SQLite failure must be reported")
+    fixture.target_db.conn.execute("DROP TRIGGER reject_private_profile_delete")
     fixture.target_db.conn.commit()
 
 
@@ -270,6 +366,10 @@ def run() -> None:
             _assert_duplicate_snapshot_rejected(fixture)
             _assert_atomic_rollback(fixture)
             _assert_unsafe_archive_rejected(fixture)
+            _assert_export_error_discards_private_detail(fixture)
+            _assert_inspection_error_discards_private_detail(fixture)
+            _assert_sqlite_error_discards_private_detail(fixture)
+            _assert_four_language_ui_discards_private_detail()
         finally:
             fixture.source_db.close()
             fixture.target_db.close()

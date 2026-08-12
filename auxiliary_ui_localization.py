@@ -4,6 +4,8 @@ lazy from collections.abc import Mapping
 lazy from enum import StrEnum
 
 lazy from language_support import canonical_ui_language
+lazy from safe_error import SafeError
+lazy from safe_error_localization import safe_error_message
 
 
 class AuxiliaryText(StrEnum):
@@ -611,13 +613,15 @@ def _profile_error_key(message: str) -> AuxiliaryText:
 
 def localized_operation_error(
     language: str,
-    message: str,
+    message: str | SafeError,
     *,
     operation: AuxiliaryOperation,
 ) -> str:
     """Localize backend failures without leaking source-language UI text."""
 
     normalized_language = canonical_ui_language(language)
+    if isinstance(message, SafeError):
+        return safe_error_message(normalized_language, message)
     if normalized_language == "zh-TW":
         return str(message).strip() or auxiliary_text(
             language,

@@ -1,18 +1,14 @@
 from __future__ import annotations
 
-lazy import hmac
-lazy import secrets
 lazy import threading
 lazy import time
 lazy from collections.abc import Callable
-lazy from dataclasses import dataclass, field
+lazy from dataclasses import dataclass
 lazy from typing import Any
 
 lazy from azure.cognitiveservices import speech as speechsdk
 
 lazy from azure_regions import azure_region_supports_hd_flash
-
-_CREDENTIAL_FINGERPRINT_SECRET = secrets.token_bytes(32)
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,17 +33,6 @@ class _CatalogCacheKey:
     region: str
     language: str
     hd_only: bool
-    credential_fingerprint: bytes = field(repr=False)
-
-
-def _credential_fingerprint(api_key: str) -> bytes:
-    """Return a process-local, irreversible credential identity."""
-
-    return hmac.digest(
-        _CREDENTIAL_FINGERPRINT_SECRET,
-        api_key.encode("utf-8"),
-        "sha256",
-    )
 
 
 def _language_locales(language: str) -> tuple[str, ...]:
@@ -127,9 +112,10 @@ class AzureVoiceCatalogService:
     """Query Azure for female voices and retain only a short-lived cache.
 
     Subscription keys are passed directly to the SDK configuration and are
-    never stored in this service, cache keys, exceptions, or diagnostics.
-    A process-local, non-reversible fingerprint isolates cached catalogues
-    belonging to different Azure credentials without exposing either key.
+    never stored, transformed, fingerprinted, logged, or placed in cache keys.
+    Each service instance is one credential domain. Call ``invalidate`` when
+    that domain's credential or resource changes; MoHan's standard and Dragon
+    HD engines intentionally own separate service instances.
     """
 
     def __init__(
@@ -144,6 +130,7 @@ class AzureVoiceCatalogService:
         self._sdk_loader = sdk_loader or self._load_sdk
         self._cache: dict[_CatalogCacheKey, _CachedCatalog] = {}
         self._lock = threading.Lock()
+        self._generation = 0
 
     @staticmethod
     def _load_sdk() -> Any:
@@ -161,13 +148,13 @@ class AzureVoiceCatalogService:
             region=region,
             language=language,
             hd_only=hd_only,
-            credential_fingerprint=_credential_fingerprint(api_key),
         )
         now = self._clock()
         with self._lock:
             cached = self._cache.get(cache_key)
             if cached is not None and cached.expires_at > now:
                 return cached.catalog
+            query_generation = self._generation
 
         sdk = self._sdk_loader()
         speech_config = sdk.SpeechConfig(subscription=api_key, region=region)
@@ -194,14 +181,16 @@ class AzureVoiceCatalogService:
             source="azure",
         )
         with self._lock:
-            self._cache[cache_key] = _CachedCatalog(
-                expires_at=now + self._cache_seconds,
-                catalog=catalog,
-            )
+            if query_generation == self._generation:
+                self._cache[cache_key] = _CachedCatalog(
+                    expires_at=now + self._cache_seconds,
+                    catalog=catalog,
+                )
         return catalog
 
     def invalidate(self, region: str | None = None) -> None:
         with self._lock:
+            self._generation += 1
             if region is None:
                 self._cache.clear()
                 return

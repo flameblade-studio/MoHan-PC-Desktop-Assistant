@@ -18,7 +18,7 @@ lazy import camera_presence
 lazy import flagship_ui
 lazy import speech
 lazy from ai_client import ActionPlannerWorker, AIWorker, AIWorkerRequest
-lazy from app import CompanionWindow
+lazy from app import AZURE_SECRET_POLICY, CompanionWindow, Dashboard
 lazy from camera_presence import CameraPresenceController
 lazy from flagship_ui import OAuthWorker
 lazy from realtime_voice import RealtimeVoiceClient
@@ -432,6 +432,93 @@ def _assert_generic_service_status_boundary() -> None:
     )
 
 
+def _assert_settings_error_boundaries() -> None:
+    class FailingSecretStore:
+        def save(self, _value: str) -> None:
+            raise OSError(_bait_detail())
+
+    key_input = SimpleNamespace(text=lambda: _BAIT_MARKER)
+    fake = SimpleNamespace(
+        ui_language="en",
+        _t=lambda _key, fallback, **values: fallback.format(**values),
+    )
+    warning = _SignalRecorder()
+    with patch.object(
+        app,
+        "QMessageBox",
+        SimpleNamespace(warning=warning),
+    ):
+        saved = Dashboard._persist_secret_input(
+            fake,
+            key_input,
+            FailingSecretStore(),
+            AZURE_SECRET_POLICY,
+            silent=False,
+        )
+    assert saved is False
+    _parent, _title, message = warning.single()
+    _assert_sanitized(
+        message,
+        error_type=SafeErrorType.OPERATING_SYSTEM_ERROR,
+        diagnostic=SafeDiagnostic.LOCAL_IO_FAILURE,
+    )
+
+
+def _assert_workflow_validation_boundaries() -> None:
+    warning = _SignalRecorder()
+    center = SimpleNamespace(
+        language="en",
+        _t=lambda source, **_values: source,
+    )
+    invalid_workflow = SimpleNamespace(
+        require_preview=False,
+        to_plan=lambda: (_ for _ in ()).throw(
+            ValueError(_bait_detail())
+        ),
+    )
+    with patch.object(
+        flagship_ui,
+        "QMessageBox",
+        SimpleNamespace(warning=warning),
+    ):
+        flagship_ui.FlagshipControlCenter.run_workflow(
+            center,
+            invalid_workflow,
+        )
+    _parent, _title, message = warning.single()
+    _assert_sanitized(
+        message,
+        error_type=SafeErrorType.VALIDATION_ERROR,
+        diagnostic=SafeDiagnostic.INVALID_INPUT,
+    )
+
+    warning = _SignalRecorder()
+    fake = SimpleNamespace(
+        ui_language="en",
+        autostart=SimpleNamespace(isChecked=lambda: True),
+        platform_services=SimpleNamespace(
+            capabilities=SimpleNamespace(desktop_autostart=True)
+        ),
+        db=SimpleNamespace(set_setting=lambda *_args: None),
+        _settings_text=lambda _key, **values: values.get("reason", "title"),
+    )
+    with (
+        patch.object(app, "set_autostart", side_effect=OSError(_bait_detail())),
+        patch.object(
+            app,
+            "QMessageBox",
+            SimpleNamespace(warning=warning),
+        ),
+    ):
+        Dashboard._save_autostart_setting(fake)
+    _parent, _title, message = warning.single()
+    _assert_sanitized(
+        message,
+        error_type=SafeErrorType.OPERATING_SYSTEM_ERROR,
+        diagnostic=SafeDiagnostic.LOCAL_IO_FAILURE,
+    )
+
+
 def run() -> None:
     _assert_openai_transcription_http_error()
     _assert_realtime_error_boundaries()
@@ -440,6 +527,8 @@ def run() -> None:
     _assert_ai_worker_boundaries()
     _assert_dashboard_and_online_voice_boundaries()
     _assert_generic_service_status_boundary()
+    _assert_settings_error_boundaries()
+    _assert_workflow_validation_boundaries()
     print("SAFE_ERROR_INTEGRATION_OK")
 
 

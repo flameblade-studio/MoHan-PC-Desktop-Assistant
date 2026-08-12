@@ -394,6 +394,8 @@ class AzureSpeechTTS(QObject):
     operation_viseme_cue = Signal(int, float, str)
     voice_catalog_ready = Signal(object)
     voice_catalog_failed = Signal(str, str, bool)
+    _voice_catalog_result_pending = Signal(int, object)
+    _voice_catalog_fallback_pending = Signal(int, str, str, bool)
 
     def __init__(
         self,
@@ -405,10 +407,18 @@ class AzureSpeechTTS(QObject):
         self.muted = False
         self.last_synthesis_latency_ms: float | None = None
         self._catalog_service = catalog_service or AzureVoiceCatalogService()
+        self._catalog_lock = threading.Lock()
+        self._catalog_generation = 0
         self._playback_lock = threading.RLock()
         self._playback_generation = 0
         self._active_reader: _PushAudioReader | None = None
         self._active_synthesizer: object | None = None
+        self._voice_catalog_result_pending.connect(
+            self._publish_voice_catalog_result
+        )
+        self._voice_catalog_fallback_pending.connect(
+            self._publish_fallback_catalog
+        )
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None:
         self.volume_percent = max(0, min(160, int(volume_percent)))
@@ -479,7 +489,18 @@ class AzureSpeechTTS(QObject):
                 stop_speaking()
 
     def invalidate_voice_catalog(self, region: str | None = None) -> None:
+        with self._catalog_lock:
+            self._catalog_generation += 1
         self._catalog_service.invalidate(region)
+
+    def _begin_catalog_request(self) -> int:
+        with self._catalog_lock:
+            self._catalog_generation += 1
+            return self._catalog_generation
+
+    def _is_current_catalog_request(self, generation: int) -> bool:
+        with self._catalog_lock:
+            return generation == self._catalog_generation
 
     def refresh_voice_catalog(
         self,
@@ -489,21 +510,30 @@ class AzureSpeechTTS(QObject):
         *,
         hd_only: bool,
     ) -> None:
+        generation = self._begin_catalog_request()
         try:
             normalized_region = normalize_azure_region(region)
         except ValueError:
-            self.voice_catalog_failed.emit(region, language, hd_only)
+            if self._is_current_catalog_request(generation):
+                self.voice_catalog_failed.emit(region, language, hd_only)
             return
         if not api_key.strip():
-            self._emit_fallback_catalog(
+            self._queue_fallback_catalog(
                 normalized_region,
                 language,
                 hd_only,
+                generation,
             )
             return
         threading.Thread(
             target=self._query_voice_catalog,
-            args=(api_key, normalized_region, language, hd_only),
+            args=(
+                api_key,
+                normalized_region,
+                language,
+                hd_only,
+                generation,
+            ),
             daemon=True,
         ).start()
 
@@ -513,6 +543,7 @@ class AzureSpeechTTS(QObject):
         region: str,
         language: str,
         hd_only: bool,
+        generation: int,
     ) -> None:
         try:
             catalog = self._catalog_service.query(
@@ -522,16 +553,47 @@ class AzureSpeechTTS(QObject):
                 hd_only=hd_only,
             )
         except OSError, RuntimeError, TimeoutError, ValueError:
-            self._emit_fallback_catalog(region, language, hd_only)
+            self._queue_fallback_catalog(
+                region,
+                language,
+                hd_only,
+                generation,
+            )
             return
-        self.voice_catalog_ready.emit(catalog)
+        self._voice_catalog_result_pending.emit(generation, catalog)
 
-    def _emit_fallback_catalog(
+    def _queue_fallback_catalog(
         self,
         region: str,
         language: str,
         hd_only: bool,
+        generation: int,
     ) -> None:
+        self._voice_catalog_fallback_pending.emit(
+            generation,
+            region,
+            language,
+            hd_only,
+        )
+
+    def _publish_voice_catalog_result(
+        self,
+        generation: int,
+        catalog: AzureVoiceCatalog,
+    ) -> None:
+        if not self._is_current_catalog_request(generation):
+            return
+        self.voice_catalog_ready.emit(catalog)
+
+    def _publish_fallback_catalog(
+        self,
+        generation: int,
+        region: str,
+        language: str,
+        hd_only: bool,
+    ) -> None:
+        if not self._is_current_catalog_request(generation):
+            return
         if hd_only:
             voices = azure_hd_female_voices(
                 language,

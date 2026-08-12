@@ -28,7 +28,34 @@ lazy from profile_transfer import (
     PortableProfileManager,
     ProfileTransferError,
 )
+lazy from safe_error import SafeError, sanitize_error
 lazy from time_utils import local_wall_time
+
+
+def localized_profile_failure(
+    language: str,
+    error: BaseException,
+) -> str:
+    """Return a four-language profile error without external error detail."""
+
+    safe: SafeError | None = None
+    if isinstance(error, ProfileTransferError):
+        safe = error.safe_error
+        if safe is None:
+            return localized_operation_error(
+                language,
+                str(error),
+                operation=AuxiliaryOperation.PROFILE,
+            )
+    else:
+        safe = sanitize_error(error)
+    if safe is None:
+        raise AssertionError("profile failure is missing safe metadata")
+    return localized_operation_error(
+        language,
+        safe,
+        operation=AuxiliaryOperation.PROFILE,
+    )
 
 
 class PortableProfilePanel(QWidget):
@@ -70,11 +97,19 @@ class PortableProfilePanel(QWidget):
     def _t(self, key: AuxiliaryText, **values: object) -> str:
         return auxiliary_text(self.language, key, **values)
 
-    def _profile_error(self, message: str) -> str:
-        return localized_operation_error(
-            self.language,
-            message,
-            operation=AuxiliaryOperation.PROFILE,
+    def _profile_error(self, error: BaseException) -> str:
+        return localized_profile_failure(self.language, error)
+
+    def _show_failure(
+        self,
+        title: AuxiliaryText,
+        message: AuxiliaryText,
+        error: BaseException,
+    ) -> None:
+        QMessageBox.warning(
+            self,
+            self._t(title),
+            self._t(message, reason=self._profile_error(error)),
         )
 
     def export_profile(self) -> None:
@@ -106,13 +141,10 @@ class PortableProfilePanel(QWidget):
         try:
             saved_path, manifest = self.manager.export_profile(Path(target))
         except (OSError, sqlite3.Error, ProfileTransferError) as exc:
-            QMessageBox.warning(
-                self,
-                self._t(AuxiliaryText.EXPORT_FAILED_TITLE),
-                self._t(
-                    AuxiliaryText.EXPORT_FAILED,
-                    reason=self._profile_error(str(exc)),
-                ),
+            self._show_failure(
+                AuxiliaryText.EXPORT_FAILED_TITLE,
+                AuxiliaryText.EXPORT_FAILED,
+                exc,
             )
             return
         total = sum(manifest.record_counts.values())
@@ -149,13 +181,10 @@ class PortableProfilePanel(QWidget):
             sqlite3.Error,
             ProfileTransferError,
         ) as exc:
-            QMessageBox.warning(
-                self,
-                self._t(AuxiliaryText.IMPORT_READ_FAILED_TITLE),
-                self._t(
-                    AuxiliaryText.IMPORT_READ_FAILED,
-                    reason=self._profile_error(str(exc)),
-                ),
+            self._show_failure(
+                AuxiliaryText.IMPORT_READ_FAILED_TITLE,
+                AuxiliaryText.IMPORT_READ_FAILED,
+                exc,
             )
             return
         total = sum(manifest.record_counts.values())
@@ -200,13 +229,10 @@ class PortableProfilePanel(QWidget):
             sqlite3.Error,
             ProfileTransferError,
         ) as exc:
-            QMessageBox.warning(
-                self,
-                self._t(AuxiliaryText.IMPORT_FAILED_TITLE),
-                self._t(
-                    AuxiliaryText.IMPORT_FAILED,
-                    reason=self._profile_error(str(exc)),
-                ),
+            self._show_failure(
+                AuxiliaryText.IMPORT_FAILED_TITLE,
+                AuxiliaryText.IMPORT_FAILED,
+                exc,
             )
             return
         QMessageBox.information(

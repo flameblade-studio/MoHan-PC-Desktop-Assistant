@@ -209,6 +209,7 @@ class RealtimeSpeechOutput(QObject):
     def configure(self, config: RealtimeSpeechOutputConfig) -> None:
         if config.mode not in REALTIME_OUTPUT_MODES:
             raise ValueError(f"Unsupported Realtime output mode: {config.mode}")
+        previous = self._config
         self.cancel(self._response_generation)
         self._config = RealtimeSpeechOutputConfig(
             mode=config.mode,
@@ -217,6 +218,22 @@ class RealtimeSpeechOutput(QObject):
             azure_hd=config.azure_hd,
             local=config.local,
         )
+        self._invalidate_changed_azure_catalogs(previous, self._config)
+
+    def _invalidate_changed_azure_catalogs(
+        self,
+        previous: RealtimeSpeechOutputConfig,
+        current: RealtimeSpeechOutputConfig,
+    ) -> None:
+        for engine, old_voice, new_voice in (
+            (self._azure_speech, previous.azure, current.azure),
+            (self._azure_hd_speech, previous.azure_hd, current.azure_hd),
+        ):
+            if old_voice == new_voice:
+                continue
+            invalidate = getattr(engine, "invalidate_voice_catalog", None)
+            if invalidate is not None:
+                invalidate()
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None:
         self._azure_speech.set_volume(volume_percent, muted)

@@ -9,6 +9,8 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+lazy from PySide6.QtCore import QCoreApplication
+
 lazy from azure_regions import (
     azure_region_identifiers,
     azure_region_options,
@@ -573,6 +575,18 @@ class _ObservedAzureSpeechTTS(AzureSpeechTTS):
             self.worker_finished.set()
 
 
+class _ObservedCatalogAzureSpeechTTS(AzureSpeechTTS):
+    def __init__(self, catalog_service: _BlockingCatalogService) -> None:
+        super().__init__(catalog_service=catalog_service)
+        self.catalog_worker_finished = threading.Event()
+
+    def _query_voice_catalog(self, *args: object) -> None:
+        try:
+            super()._query_voice_catalog(*args)
+        finally:
+            self.catalog_worker_finished.set()
+
+
 def _assert_dynamic_voice_query_does_not_block_speak() -> None:
     dynamic_voice = "zh-CN-XiaobeiNeural"
     catalog_service = _BlockingCatalogService(dynamic_voice)
@@ -589,6 +603,28 @@ def _assert_dynamic_voice_query_does_not_block_speak() -> None:
     engine.stop()
     catalog_service.release.set()
     assert engine.worker_finished.wait(timeout=1.0)
+
+
+def _assert_stale_catalog_query_cannot_emit_after_invalidation() -> None:
+    app = QCoreApplication.instance() or QCoreApplication([])
+    catalog_service = _BlockingCatalogService("zh-CN-XiaobeiNeural")
+    engine = _ObservedCatalogAzureSpeechTTS(catalog_service)
+    ready: list[AzureVoiceCatalog] = []
+    engine.voice_catalog_ready.connect(ready.append)
+
+    engine.refresh_voice_catalog(
+        "old-key",
+        "eastasia",
+        "zh-TW",
+        hd_only=False,
+    )
+    assert catalog_service.entered.wait(timeout=1.0)
+    engine.invalidate_voice_catalog()
+    catalog_service.release.set()
+
+    assert engine.catalog_worker_finished.wait(timeout=1.0)
+    app.processEvents()
+    assert ready == []
 
 
 def run() -> None:
@@ -613,6 +649,7 @@ def run() -> None:
     _assert_audio_queue_is_bounded_under_pressure()
     _assert_dynamic_voice_trust_is_credential_bound()
     _assert_dynamic_voice_query_does_not_block_speak()
+    _assert_stale_catalog_query_cannot_emit_after_invalidation()
     print("AZURE_SPEECH_OK")
 
 

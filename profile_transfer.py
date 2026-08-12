@@ -14,6 +14,12 @@ lazy from typing import Any
 
 lazy from backup_manager import BackupManager
 lazy from contracts import ProfileDatabasePort
+lazy from safe_error import (
+    SafeDiagnostic,
+    SafeError,
+    SafeErrorType,
+    sanitize_error,
+)
 
 PROFILE_EXTENSION = ".mohan-profile"
 PROFILE_FORMAT_VERSION = 1
@@ -83,7 +89,28 @@ MACHINE_BOUND_TABLES = (
 
 
 class ProfileTransferError(RuntimeError):
-    pass
+    """Profile boundary failure that never retains an external error detail."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        safe_error: SafeError | None = None,
+    ) -> None:
+        self.safe_error = safe_error
+        super().__init__(str(safe_error) if safe_error is not None else message)
+
+
+def _external_profile_error(error: BaseException) -> ProfileTransferError:
+    """Discard external detail before it can reach UI or persistent state."""
+
+    safe = sanitize_error(error)
+    if isinstance(error, sqlite3.Error):
+        safe = SafeError(
+            SafeErrorType.OPERATING_SYSTEM_ERROR,
+            SafeDiagnostic.LOCAL_IO_FAILURE,
+        )
+    return ProfileTransferError("", safe_error=safe)
 
 
 @dataclass(frozen=True, slots=True)
@@ -157,13 +184,16 @@ class PortableProfileManager:
         counts = payload.get("record_counts")
         if not isinstance(counts, Mapping):
             raise ProfileTransferError("攜帶檔缺少資料筆數資訊。")
+        failure: ProfileTransferError | None = None
         try:
             normalized_counts = frozendict(
                 (str(key), max(0, int(value)))
                 for key, value in counts.items()
             )
         except (TypeError, ValueError) as exc:
-            raise ProfileTransferError("攜帶檔資料筆數格式錯誤。") from exc
+            failure = _external_profile_error(exc)
+        if failure is not None:
+            raise failure
         return ProfileManifest(
             created_at=str(payload.get("created_at", "")),
             snapshot_id=str(payload.get("snapshot_id", ""))[:64],
@@ -352,25 +382,37 @@ class PortableProfileManager:
             temporary_target.unlink(missing_ok=True)
 
     def export_profile(self, target: Path) -> tuple[Path, ProfileManifest]:
-        destination = normalized_profile_path(Path(target))
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        installation_id = self._source_installation_id()
-        with TemporaryDirectory(prefix="mohan-profile-export-") as temp:
-            snapshot_path = Path(temp) / DATABASE_FILENAME
-            record_counts, profile = self._create_snapshot(snapshot_path)
-            manifest_payload = self._manifest_payload(
-                snapshot_path,
-                installation_id,
-                record_counts,
-                profile,
-            )
-            manifest = self._manifest_from_payload(manifest_payload)
-            self._write_archive(
-                destination,
-                snapshot_path,
-                manifest_payload,
-            )
-        return destination, manifest
+        failure: ProfileTransferError | None = None
+        result: tuple[Path, ProfileManifest] | None = None
+        try:
+            destination = normalized_profile_path(Path(target))
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            installation_id = self._source_installation_id()
+            with TemporaryDirectory(prefix="mohan-profile-export-") as temp:
+                snapshot_path = Path(temp) / DATABASE_FILENAME
+                record_counts, profile = self._create_snapshot(snapshot_path)
+                manifest_payload = self._manifest_payload(
+                    snapshot_path,
+                    installation_id,
+                    record_counts,
+                    profile,
+                )
+                manifest = self._manifest_from_payload(manifest_payload)
+                self._write_archive(
+                    destination,
+                    snapshot_path,
+                    manifest_payload,
+                )
+            result = destination, manifest
+        except ProfileTransferError:
+            raise
+        except (OSError, sqlite3.Error, ValueError, zipfile.LargeZipFile) as exc:
+            failure = _external_profile_error(exc)
+        if failure is not None:
+            raise failure
+        if result is None:
+            raise AssertionError("profile export finished without a result")
+        return result
 
     @staticmethod
     def _validated_source(source: Path) -> Path:
@@ -495,9 +537,12 @@ class PortableProfileManager:
         self,
         source: Path,
     ) -> tuple[ProfileManifest, Path, TemporaryDirectory]:
-        profile_path = self._validated_source(source)
-        temporary = TemporaryDirectory(prefix="mohan-profile-import-")
+        temporary: TemporaryDirectory | None = None
+        failure: ProfileTransferError | None = None
+        result: tuple[ProfileManifest, Path, TemporaryDirectory] | None = None
         try:
+            profile_path = self._validated_source(source)
+            temporary = TemporaryDirectory(prefix="mohan-profile-import-")
             payload, database_bytes = self._read_archive(profile_path)
             manifest = self._verified_manifest(payload, database_bytes)
             database_path = self._materialize_database(
@@ -505,19 +550,28 @@ class PortableProfileManager:
                 database_bytes,
             )
             self._validate_incoming_database(database_path, manifest)
-            return manifest, database_path, temporary
+            result = manifest, database_path, temporary
         except (
+            OSError,
+            sqlite3.Error,
             zipfile.BadZipFile,
+            zipfile.LargeZipFile,
             json.JSONDecodeError,
             UnicodeDecodeError,
+            ValueError,
         ) as exc:
-            temporary.cleanup()
-            raise ProfileTransferError(
-                "攜帶檔不是有效的墨寒進度檔。"
-            ) from exc
+            failure = _external_profile_error(exc)
+            if temporary is not None:
+                temporary.cleanup()
         except Exception:
-            temporary.cleanup()
+            if temporary is not None:
+                temporary.cleanup()
             raise
+        if failure is not None:
+            raise failure
+        if result is None:
+            raise AssertionError("profile inspection finished without a result")
+        return result
 
     def _assert_snapshot_not_imported(
         self,
@@ -696,6 +750,8 @@ class PortableProfileManager:
 
     def import_profile(self, source: Path) -> ProfileImportResult:
         manifest, database_path, temporary = self.inspect_profile(source)
+        failure: ProfileTransferError | None = None
+        result: ProfileImportResult | None = None
         try:
             self._assert_snapshot_not_imported(manifest)
             payload = self._load_profile_payload(database_path)
@@ -706,12 +762,21 @@ class PortableProfileManager:
                 payload,
                 manifest,
             )
-            return ProfileImportResult(
+            result = ProfileImportResult(
                 manifest=manifest,
                 backup_path=backup,
                 imported_counts=imported_counts,
             )
+        except ProfileTransferError:
+            raise
         except sqlite3.Error as exc:
-            raise ProfileTransferError(f"匯入資料庫失敗：{exc}") from exc
+            failure = _external_profile_error(exc)
+        except OSError as exc:
+            failure = _external_profile_error(exc)
         finally:
             temporary.cleanup()
+        if failure is not None:
+            raise failure
+        if result is None:
+            raise AssertionError("profile import finished without a result")
+        return result

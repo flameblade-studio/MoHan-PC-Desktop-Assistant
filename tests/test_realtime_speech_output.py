@@ -45,6 +45,7 @@ class FakeSpeechEngine:
         self.locales: list[str] = []
         self.stop_calls = 0
         self.volume_calls: list[tuple[int, bool]] = []
+        self.catalog_invalidations: list[str | None] = []
 
     def speak(
         self,
@@ -62,6 +63,9 @@ class FakeSpeechEngine:
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None:
         self.volume_calls.append((volume_percent, muted))
+
+    def invalidate_voice_catalog(self, region: str | None = None) -> None:
+        self.catalog_invalidations.append(region)
 
 
 class FakeOperationSpeechEngine(FakeSpeechEngine):
@@ -533,6 +537,48 @@ def _assert_switching_routes_stops_only_the_active_engine() -> None:
     assert [call[0] for call in hd.speak_calls] == ["Dragon HD 接手。"]
 
 
+def _assert_changed_realtime_credentials_invalidate_isolated_catalogs() -> None:
+    output, standard, hd, _local = _create_output()
+    initial = _hybrid_config(REALTIME_OUTPUT_AZURE)
+    output.configure(initial)
+    assert standard.catalog_invalidations == [None]
+    assert hd.catalog_invalidations == [None]
+
+    standard.catalog_invalidations.clear()
+    hd.catalog_invalidations.clear()
+    output.configure(initial)
+    assert standard.catalog_invalidations == []
+    assert hd.catalog_invalidations == []
+
+    changed_standard = RealtimeSpeechOutputConfig(
+        mode=REALTIME_OUTPUT_AZURE,
+        azure=AzureRealtimeVoice(
+            "replacement-standard-key",
+            initial.azure.region,
+            initial.azure.voice,
+        ),
+        azure_hd=initial.azure_hd,
+        local=initial.local,
+    )
+    output.configure(changed_standard)
+    assert standard.catalog_invalidations == [None]
+    assert hd.catalog_invalidations == []
+
+    changed_hd = RealtimeSpeechOutputConfig(
+        mode=REALTIME_OUTPUT_AZURE_HD,
+        azure=changed_standard.azure,
+        azure_hd=AzureRealtimeVoice(
+            "replacement-hd-key",
+            initial.azure_hd.region,
+            initial.azure_hd.voice,
+        ),
+        local=initial.local,
+    )
+    output.configure(changed_hd)
+    assert standard.catalog_invalidations == [None]
+    assert hd.catalog_invalidations == [None]
+
+
 def _assert_azure_stop_discards_audio_and_isolates_instances() -> None:
     first = AzureSpeechTTS()
     second = AzureSpeechTTS()
@@ -830,6 +876,7 @@ def run() -> None:
     _assert_fallback_chain_is_one_way_and_isolated()
     _assert_native_mode_never_starts_azure_engines()
     _assert_switching_routes_stops_only_the_active_engine()
+    _assert_changed_realtime_credentials_invalidate_isolated_catalogs()
     _assert_azure_stop_discards_audio_and_isolates_instances()
     _assert_text_mode_rejects_unexpected_openai_audio()
     _assert_official_response_lifecycle_commits_only_completed_text()
