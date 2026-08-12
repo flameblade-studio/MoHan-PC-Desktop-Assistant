@@ -67,7 +67,29 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
         "{platform} 本機音声は実機検証が完了していません"
     ),
     "tts_voice": "OpenAI 読み上げ音声",
-    "realtime_voice": "Realtime 会話音声",
+    "realtime_output_source": "Realtime 応答音声の出力元",
+    "realtime_output_openai": (
+        "OpenAI Realtime ネイティブ音声（最小遅延、従来の初期設定）"
+    ),
+    "realtime_output_azure": "Azure Speech 女性音声（穏やかなストリーミング）",
+    "realtime_output_azure_hd": (
+        "Azure Dragon HD 女性音声（S0 必須）"
+    ),
+    "realtime_output_note_openai": (
+        "下の「OpenAI Realtime ネイティブ音声」を使用します。遅延が最も"
+        "小さく、OpenAI Realtime 本来のリアルタイム音声出力を維持します。"
+    ),
+    "realtime_output_note_azure": (
+        "上で設定した Azure Speech 女性音声、リージョン、キーを使用します。"
+        "リアルタイムの理解は OpenAI Realtime、音声のストリーミング再生は "
+        "Azure が担当します。"
+    ),
+    "realtime_output_note_azure_hd": (
+        "上で設定した Dragon HD 女性音声、S0 リージョン、専用キーを使用します。"
+        "リアルタイムの理解は OpenAI Realtime、音声のストリーミング再生は "
+        "Dragon HD が担当します。"
+    ),
+    "realtime_voice": "OpenAI Realtime ネイティブ音声",
     "realtime_model": "Realtime モデル",
     "realtime_transcription_model": "Realtime 文字起こしモデル",
     "realtime_noise": "Realtime マイクノイズ低減",
@@ -146,6 +168,14 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "no_transcription_error": "文字起こしエラーはありません",
     "preview_voice": "試聴：主様、妾はここにおります。",
     "realtime_disconnected": "Realtime：未接続",
+    "realtime_status_format": "Realtime：{status}",
+    "realtime_disconnected_status": "未接続",
+    "realtime_error_status": "エラー：{error}",
+    "realtime_voice_title": "Realtime 音声",
+    "realtime_output_unavailable": (
+        "Realtime の Azure 音声出力を利用できないため、"
+        "リアルタイム会話を開始しませんでした。"
+    ),
     "start_realtime": "Realtime 会話を開始",
     "stop_realtime": "Realtime 会話を停止",
     "near_field": "近距離マイク（推奨）",

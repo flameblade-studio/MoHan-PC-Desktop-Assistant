@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import sys
+lazy from dataclasses import fields
 lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -126,6 +127,8 @@ def run() -> None:
         api_key="not-a-real-key",
         instructions="calm",
     )
+    assert "not-a-real-key" not in repr(request)
+    assert fields(SpeechRequest)[3].repr is False
     registry.provider(WINDOWS_LOCAL_PROVIDER).speak(request)
     registry.provider(OPENAI_SPEECH_PROVIDER).speak(request)
     registry.provider(AZURE_SPEECH_PROVIDER).speak(
@@ -133,7 +136,7 @@ def run() -> None:
             text=request.text,
             voice="zh-TW-HsiaoChenNeural",
             api_key=request.api_key,
-            options={"region": "eastasia"},
+            options={"region": "eastasia", "locale": "zh-CN"},
         )
     )
     assert local.calls == [("主上，妾在。", "female-test", -2)]
@@ -146,6 +149,7 @@ def run() -> None:
             "not-a-real-key",
             "eastasia",
             "zh-TW-HsiaoChenNeural",
+            "zh-CN",
         )
     ]
 

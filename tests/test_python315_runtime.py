@@ -5,6 +5,7 @@ lazy import re
 lazy import subprocess
 lazy import sys
 lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -25,6 +26,7 @@ lazy from time_utils import (
     local_wall_time,
     local_wall_time_from_timestamp,
 )
+lazy from tools.migrate_python315_imports import python_files
 
 
 def assert_immutable_mapping(value: object) -> None:
@@ -63,6 +65,15 @@ def main() -> None:
     missing = sentinel("MISSING")
     assert repr(missing) == "MISSING"
     assert missing is not sentinel("MISSING")
+
+    with TemporaryDirectory() as temp_dir:
+        inventory_root = Path(temp_dir)
+        project_source = inventory_root / "project_source.py"
+        project_source.write_text("lazy import json\n", encoding="utf-8")
+        cpython_source = inventory_root / "_python315" / "Lib"
+        cpython_source.mkdir(parents=True)
+        (cpython_source / "test_fixture.py").write_bytes(b"# \xe9\n")
+        assert python_files(inventory_root) == [project_source]
 
     for mapping in (
         DEFAULT_PROFILE,

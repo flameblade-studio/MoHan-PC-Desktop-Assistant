@@ -148,6 +148,12 @@ def test_inno_setup_and_artwork_contract() -> None:
     installer_test = read("installer/test_installers.ps1")
     assert 'MOHAN_ALLOW_INSTALLER_MUTATION -ne "1"' in installer_test
     assert '"/MERGETASKS=!desktopicon"' in installer_test
+    for required in (
+        "MSI $Variant shortcut target escaped the install directory",
+        "MSI $Variant shortcut icon is not the installed MoHan icon",
+        "MSI $Variant uninstaller left the Start menu shortcut behind",
+    ):
+        assert required in installer_test
 
     canonical = ROOT / "assets/expressions/idle_front.png"
     assert_image(canonical, (1254, 1254))
@@ -166,7 +172,7 @@ def test_inno_setup_and_artwork_contract() -> None:
     assert 'stroke="#ffffff"' in checkmark.read_text(encoding="utf-8")
 
 
-def test_windows_taskbar_icon_contract() -> None:
+def test_windows_taskbar_icon_contract() -> None:  # noqa: PLR0914 -- one explicit end-to-end icon contract
     canonical = ROOT / "assets/expressions/idle_front.png"
     png_icon = ROOT / "assets/mohan-taskbar-icon.png"
     windows_icon = ROOT / "assets/mohan-halfbody.ico"

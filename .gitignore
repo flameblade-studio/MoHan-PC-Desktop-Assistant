@@ -9,6 +9,7 @@ __pycache__/
 .venv/
 venv/
 env/
+_python315/
 
 build/
 dist/

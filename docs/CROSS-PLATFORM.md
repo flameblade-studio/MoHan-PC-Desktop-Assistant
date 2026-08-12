@@ -26,7 +26,7 @@
   金鑰、OAuth 與 Home Assistant 權杖輸入，且不顯示 Windows 專用語音選項。
 - GitHub Actions 的三系統測試只證明原始碼可匯入、核心邏輯與無畫面 Qt
   守門通過，不等同真實麥克風、喇叭或完整桌面環境驗證。
-- `v2.3.0-rc.N` 另在原生 runner 產生兩種 macOS 架構的 DMG 與 Linux
+- 符合 `vN.N.N` 或 `vN.N.N-rc.N` 的發布系列，另在原生 runner 產生兩種 macOS 架構的 DMG 與 Linux
   AppImage，並從完成的安裝包執行
   啟動與四語畫面 smoke test。預覽殼層不提供秘密輸入、語音、完整桌面角色、
   雲端連接器與系統工具；這是刻意的 fail-closed 邊界，不是功能遺失。
@@ -57,7 +57,7 @@ Windows 正式版本的完整功能。Windows 仍是目前唯一经过真机使�
 - 设置页与旗舰控制中心共用同一个可注入密钥边界；未验证平台会停用密钥、
   OAuth 与 Home Assistant 权杖输入，也不会显示 Windows 专用语音选项。
 - 三系统 CI 不等同真实麦克风、扬声器或完整桌面环境验证。
-- `v2.3.0-rc.N` 会在原生 runner 生成两种 macOS 架构的 DMG 与 Linux
+- 符合 `vN.N.N` 或 `vN.N.N-rc.N` 的发布系列会在原生 runner 生成两种 macOS 架构的 DMG 与 Linux
   AppImage，并从完成的安装包执行
   启动与四语界面 smoke test。预览外壳不提供秘密输入、语音、完整桌面角色、
   云端连接器或系统工具，这是刻意的 fail-closed 边界。
@@ -94,7 +94,7 @@ suite, installer testing, and published packages.
   inputs and do not advertise Windows-only speech controls.
 - A green matrix proves imports, pure-core behavior, and headless Qt only. It is
   not evidence of real microphones, speakers, or a complete desktop session.
-- The `v2.3.0-rc.N` line also builds both macOS architecture DMGs and the Linux
+- Release lines matching `vN.N.N` or `vN.N.N-rc.N` also build both macOS architecture DMGs and the Linux
   AppImage on native runners
   and smoke-tests startup and all four UI languages from the finished package.
   The Preview shell exposes no secret entry, voice, complete character UI,
@@ -131,7 +131,7 @@ macOS／Linux が Windows 版と同等に完成したという意味ではあり
   Windows 専用音声も表示しません。
 - 三 OS の CI 合格は、実機のマイク、スピーカー、デスクトップ環境、
   完全なデスクトップ利用の検証を意味しません。
-- `v2.3.0-rc.N` 系列では、ネイティブ runner で macOS 両アーキテクチャの
+- `vN.N.N` または `vN.N.N-rc.N` に一致するリリース系列では、ネイティブ runner で macOS 両アーキテクチャの
   DMG と Linux AppImage を作成し、
   完成した配布物から起動と四言語画面の smoke test を実行します。Preview
   シェルには秘密情報入力、音声、完全なキャラクター画面、クラウド連携、

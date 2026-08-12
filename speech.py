@@ -650,32 +650,177 @@ def preferred_windows_voice(
     return voices[0][0] if voices else ""
 
 
+class _SpeechCancelled(Exception):
+    """End one obsolete local-speech generation without user-facing errors."""
+
+
 class WindowsTTS(QObject):
     failed = Signal(str)
     finished = Signal()
     viseme_cue = Signal(float, str)
+    _failed_ready = Signal(int, str)
+    _finished_ready = Signal(int)
+    _viseme_ready = Signal(int, float, str)
 
     def __init__(self, parent: QObject | None = None):
         super().__init__(parent)
         self.volume_percent = 125
         self.muted = False
+        self._state_lock = threading.RLock()
+        self._generation = 0
+        self._active_process: subprocess.Popen[bytes] | None = None
+        self._active_stream: sd.RawOutputStream | None = None
+        self._failed_ready.connect(self._deliver_failed)
+        self._finished_ready.connect(self._deliver_finished)
+        self._viseme_ready.connect(self._deliver_viseme)
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None:
         self.volume_percent = max(0, min(160, int(volume_percent)))
         self.muted = bool(muted)
 
     def speak(self, text: str, voice_name: str = "", rate: int = -1) -> None:
+        generation = self._begin_generation()
         if os.name != "nt" or not text.strip():
-            self.finished.emit()
+            self._emit_finished(generation)
             return
         threading.Thread(
             target=self._run,
-            args=(text, voice_name, rate),
+            args=(text, voice_name, rate, generation),
             daemon=True,
         ).start()
 
-    def _run(self, text: str, voice_name: str, rate: int) -> None:
+    def stop(self) -> None:
+        self._begin_generation()
+
+    def _begin_generation(self) -> int:
+        with self._state_lock:
+            self._generation += 1
+            generation = self._generation
+            process = self._active_process
+            stream = self._active_stream
+            self._active_process = None
+            self._active_stream = None
+        self._terminate_process(process)
+        self._abort_stream(stream)
+        return generation
+
+    def _is_current(self, generation: int) -> bool:
+        with self._state_lock:
+            return generation == self._generation
+
+    def _ensure_current(self, generation: int) -> None:
+        if not self._is_current(generation):
+            raise _SpeechCancelled
+
+    def _emit_finished(self, generation: int) -> None:
+        if self._is_current(generation):
+            self._finished_ready.emit(generation)
+
+    def _deliver_finished(self, generation: int) -> None:
+        with self._state_lock:
+            if generation == self._generation:
+                self.finished.emit()
+
+    def _emit_failed(self, generation: int, message: str) -> None:
+        if self._is_current(generation):
+            self._failed_ready.emit(generation, message)
+
+    def _deliver_failed(self, generation: int, message: str) -> None:
+        with self._state_lock:
+            if generation == self._generation:
+                self.failed.emit(message)
+
+    def _emit_viseme(
+        self,
+        generation: int,
+        level: float,
+        vowel: str,
+    ) -> None:
+        if self._is_current(generation):
+            self._viseme_ready.emit(generation, level, vowel)
+
+    def _deliver_viseme(
+        self,
+        generation: int,
+        level: float,
+        vowel: str,
+    ) -> None:
+        with self._state_lock:
+            if generation == self._generation:
+                self.viseme_cue.emit(level, vowel)
+
+    def _register_process(
+        self,
+        generation: int,
+        process: subprocess.Popen[bytes],
+    ) -> bool:
+        with self._state_lock:
+            if generation != self._generation:
+                return False
+            self._active_process = process
+            return True
+
+    def _release_process(
+        self,
+        process: subprocess.Popen[bytes],
+    ) -> None:
+        with self._state_lock:
+            if self._active_process is process:
+                self._active_process = None
+
+    def _register_stream(
+        self,
+        generation: int,
+        stream: sd.RawOutputStream,
+    ) -> bool:
+        with self._state_lock:
+            if generation != self._generation:
+                return False
+            self._active_stream = stream
+            return True
+
+    def _release_stream(self, stream: sd.RawOutputStream) -> None:
+        with self._state_lock:
+            if self._active_stream is stream:
+                self._active_stream = None
+
+    @staticmethod
+    def _terminate_process(
+        process: subprocess.Popen[bytes] | None,
+    ) -> None:
+        if process is None or process.poll() is not None:
+            return
         try:
+            process.terminate()
+        except OSError:
+            # The worker still has the generation gate, so a process that
+            # exited during this race cannot publish obsolete results.
+            return
+
+    @staticmethod
+    def _abort_stream(stream: sd.RawOutputStream | None) -> None:
+        if stream is None:
+            return
+        try:
+            stream.abort()
+        except (OSError, RuntimeError, sd.PortAudioError):
+            # PortAudio can report that another thread already closed the
+            # stream. The generation gate remains the authoritative stop.
+            return
+
+    def _run(
+        self,
+        text: str,
+        voice_name: str,
+        rate: int,
+        generation: int | None = None,
+    ) -> None:
+        # Keep the established direct-call contract used by diagnostics while
+        # treating such a call as a new, independently cancellable utterance.
+        if generation is None:
+            generation = self._begin_generation()
+        try:
+            self._ensure_current(generation)
             installed = windows_voices()
             selected_voice = preferred_windows_voice(
                 installed,
@@ -691,11 +836,22 @@ class WindowsTTS(QObject):
                 self._run_onecore(
                     text,
                     voice_name.removeprefix("OneCore::"),
+                    generation,
                 )
             else:
-                self._run_sapi(text, voice_name, rate)
-            self.finished.emit()
-        except (OSError, subprocess.SubprocessError, RuntimeError) as exc:
+                self._run_sapi(text, voice_name, rate, generation)
+            self._emit_finished(generation)
+        except _SpeechCancelled:
+            return
+        except (
+            OSError,
+            RuntimeError,
+            subprocess.SubprocessError,
+            wave.Error,
+            sd.PortAudioError,
+        ) as exc:
+            if not self._is_current(generation):
+                return
             if voice_name.startswith("OneCore::"):
                 try:
                     desktop_voices = [
@@ -704,15 +860,29 @@ class WindowsTTS(QObject):
                         if not voice[0].startswith("OneCore::")
                     ]
                     fallback = preferred_windows_voice(desktop_voices)
-                    self._run_sapi(text, fallback, rate)
-                    self.finished.emit()
+                    self._run_sapi(text, fallback, rate, generation)
+                    self._emit_finished(generation)
                     return
-                except (OSError, subprocess.SubprocessError, RuntimeError):
+                except _SpeechCancelled:
+                    return
+                except (
+                    OSError,
+                    RuntimeError,
+                    subprocess.SubprocessError,
+                    wave.Error,
+                    sd.PortAudioError,
+                ):
                     pass
-            self.failed.emit(str(exc))
-            self.finished.emit()
+            self._emit_failed(generation, str(exc))
+            self._emit_finished(generation)
 
-    def _run_sapi(self, text: str, voice_name: str, rate: int) -> None:
+    def _run_sapi(
+        self,
+        text: str,
+        voice_name: str,
+        rate: int,
+        generation: int,
+    ) -> None:
         fd, name = tempfile.mkstemp(prefix="mohan-sapi-", suffix=".wav")
         os.close(fd)
         audio_path = Path(name)
@@ -736,21 +906,26 @@ class WindowsTTS(QObject):
         )
         command = base64.b64encode(script.encode("utf-16le")).decode("ascii")
         try:
-            result = subprocess.run(
-                ["powershell.exe", "-NoProfile", "-EncodedCommand", command],
-                capture_output=True,
-                creationflags=CREATE_NO_WINDOW,
-                timeout=120,
-                check=False,
+            self._synthesize_with_powershell(
+                command,
+                audio_path,
+                generation,
+                "Windows 傳統語音播放失敗。",
+                240,
             )
-            if result.returncode or not audio_path.exists():
-                detail = result.stderr.decode("utf-8", errors="replace")[:240]
-                raise RuntimeError(detail or "Windows 傳統語音播放失敗。")
-            self._play_wave_bytes(audio_path.read_bytes(), audio_path)
+            self._play_wave_bytes(
+                audio_path.read_bytes(),
+                generation,
+            )
         finally:
             audio_path.unlink(missing_ok=True)
 
-    def _run_onecore(self, text: str, voice_name: str) -> None:
+    def _run_onecore(
+        self,
+        text: str,
+        voice_name: str,
+        generation: int,
+    ) -> None:
         fd, name = tempfile.mkstemp(prefix="mohan-onecore-", suffix=".wav")
         os.close(fd)
         audio_path = Path(name)
@@ -793,32 +968,111 @@ class WindowsTTS(QObject):
         )
         command = base64.b64encode(script.encode("utf-16le")).decode("ascii")
         try:
-            result = subprocess.run(
-                ["powershell.exe", "-NoProfile", "-EncodedCommand", command],
-                capture_output=True,
-                creationflags=CREATE_NO_WINDOW,
-                timeout=120,
-                check=False,
+            self._synthesize_with_powershell(
+                command,
+                audio_path,
+                generation,
+                "OneCore 語音合成失敗。",
+                3000,
             )
-            if result.returncode or not audio_path.exists():
-                detail = result.stderr.decode("utf-8", errors="replace")[:3000]
-                raise RuntimeError(detail or "OneCore 語音合成失敗。")
-            self._play_wave_bytes(audio_path.read_bytes(), audio_path)
+            self._play_wave_bytes(
+                audio_path.read_bytes(),
+                generation,
+            )
         finally:
             audio_path.unlink(missing_ok=True)
+
+    def _synthesize_with_powershell(
+        self,
+        command: str,
+        audio_path: Path,
+        generation: int,
+        failure_message: str,
+        detail_limit: int,
+    ) -> None:
+        self._ensure_current(generation)
+        process = subprocess.Popen(
+            ["powershell.exe", "-NoProfile", "-EncodedCommand", command],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            creationflags=CREATE_NO_WINDOW,
+        )
+        if not self._register_process(generation, process):
+            self._terminate_process(process)
+            raise _SpeechCancelled
+        try:
+            try:
+                _stdout, stderr = process.communicate(timeout=120)
+            except subprocess.TimeoutExpired as exc:
+                self._terminate_process(process)
+                process.communicate()
+                self._ensure_current(generation)
+                raise RuntimeError("Windows 本機語音合成逾時。") from exc
+        finally:
+            self._release_process(process)
+        self._ensure_current(generation)
+        if process.returncode or not audio_path.exists():
+            detail = stderr.decode("utf-8", errors="replace")[:detail_limit]
+            raise RuntimeError(detail or failure_message)
 
     def _play_wave_bytes(
         self,
         audio: bytes,
-        audio_path: Path | None = None,
+        generation: int,
     ) -> None:
-        play_wave_with_visemes(
+        playback_audio = apply_wav_volume(
             audio,
             self.volume_percent,
             self.muted,
-            self.viseme_cue.emit,
-            audio_path,
         )
+        with (
+            wave.open(io.BytesIO(audio), "rb") as cue_source,
+            wave.open(io.BytesIO(playback_audio), "rb") as source,
+        ):
+            channels = source.getnchannels()
+            sample_rate = source.getframerate()
+            if (
+                source.getsampwidth() != 2
+                or source.getcomptype() != "NONE"
+                or cue_source.getnchannels() != channels
+                or cue_source.getsampwidth() != 2
+                or cue_source.getframerate() != sample_rate
+                or cue_source.getcomptype() != "NONE"
+            ):
+                raise RuntimeError(
+                    "Windows 本機語音回傳了不支援的 WAV 格式。"
+                )
+            frames_per_cue = max(
+                1,
+                sample_rate // VISEME_CUES_PER_SECOND,
+            )
+            stream = sd.RawOutputStream(
+                samplerate=sample_rate,
+                channels=channels,
+                dtype="int16",
+                blocksize=frames_per_cue,
+            )
+            if not self._register_stream(generation, stream):
+                stream.close()
+                raise _SpeechCancelled
+            try:
+                self._ensure_current(generation)
+                stream.start()
+                while chunk := source.readframes(frames_per_cue):
+                    self._ensure_current(generation)
+                    cue_chunk = cue_source.readframes(frames_per_cue)
+                    level, vowel = infer_vowel_pcm16(
+                        _mono_wave_chunk(cue_chunk, channels),
+                        sample_rate,
+                    )
+                    self._emit_viseme(generation, level, vowel)
+                    stream.write(chunk)
+                self._ensure_current(generation)
+                stream.stop()
+                self._emit_viseme(generation, 0.0, "CLOSED")
+            finally:
+                self._release_stream(stream)
+                stream.close()
 
     def _emit_wave_cues(
         self,
@@ -858,6 +1112,9 @@ class UnavailableSystemTTS(QObject):
         if text.strip():
             self.failed.emit(self.reason)
         self.finished.emit()
+
+    def stop(self) -> None:
+        """Match the local speech contract when no adapter is available."""
 
 
 class OpenAITTS(QObject):

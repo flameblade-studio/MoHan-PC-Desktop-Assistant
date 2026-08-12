@@ -74,7 +74,29 @@ _ENGLISH: Mapping[str, str] = deep_freeze({
         "{platform} local voice has not completed device verification"
     ),
     "tts_voice": "OpenAI text-to-speech voice",
-    "realtime_voice": "Realtime conversation voice",
+    "realtime_output_source": "Realtime response voice source",
+    "realtime_output_openai": (
+        "Native OpenAI Realtime voice (lowest latency, existing default)"
+    ),
+    "realtime_output_azure": "Azure Speech female voice (gentle streaming)",
+    "realtime_output_azure_hd": (
+        "Azure Dragon HD female voice (requires S0)"
+    ),
+    "realtime_output_note_openai": (
+        "Uses the OpenAI Realtime native voice below. This is the lowest-"
+        "latency option and preserves native OpenAI Realtime speech output."
+    ),
+    "realtime_output_note_azure": (
+        "Uses the Azure Speech female voice, region, and key configured above. "
+        "OpenAI Realtime handles live understanding while Azure streams the "
+        "spoken response."
+    ),
+    "realtime_output_note_azure_hd": (
+        "Uses the Dragon HD female voice, S0 region, and separate key "
+        "configured above. OpenAI Realtime handles live understanding while "
+        "Dragon HD streams the spoken response."
+    ),
+    "realtime_voice": "Native OpenAI Realtime voice",
     "realtime_model": "Realtime model",
     "realtime_transcription_model": "Realtime transcription model",
     "realtime_noise": "Realtime microphone noise reduction",
@@ -161,6 +183,14 @@ _ENGLISH: Mapping[str, str] = deep_freeze({
     "no_transcription_error": "No transcription errors recorded",
     "preview_voice": "Preview: Commander, I am here.",
     "realtime_disconnected": "Realtime: Disconnected",
+    "realtime_status_format": "Realtime: {status}",
+    "realtime_disconnected_status": "Disconnected",
+    "realtime_error_status": "Error: {error}",
+    "realtime_voice_title": "Realtime voice",
+    "realtime_output_unavailable": (
+        "Realtime Azure speech output is unavailable, so the live "
+        "conversation was not started."
+    ),
     "start_realtime": "Start Realtime conversation",
     "stop_realtime": "Stop Realtime conversation",
     "near_field": "Close microphone (recommended)",
@@ -339,7 +369,27 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze({
         "{platform} 本机语音尚未完成设备实测"
     ),
     "tts_voice": "OpenAI 文字转语音声音",
-    "realtime_voice": "Realtime 对话声音",
+    "realtime_output_source": "Realtime 回复声音来源",
+    "realtime_output_openai": (
+        "OpenAI Realtime 原生语音（最低延迟，现有默认）"
+    ),
+    "realtime_output_azure": "Azure Speech 女性声线（柔和流式播放）",
+    "realtime_output_azure_hd": (
+        "Azure Dragon HD 女性声线（需 S0）"
+    ),
+    "realtime_output_note_openai": (
+        "使用下方“OpenAI Realtime 原生声线”；延迟最低，完整保留 "
+        "OpenAI Realtime 的原生实时语音输出。"
+    ),
+    "realtime_output_note_azure": (
+        "沿用上方“Azure Speech 女性声线”、区域与密钥。OpenAI Realtime "
+        "负责实时理解，Azure 以流式方式发声。"
+    ),
+    "realtime_output_note_azure_hd": (
+        "沿用上方“Dragon HD 女性声线”、S0 区域与独立密钥。OpenAI "
+        "Realtime 负责实时理解，Dragon HD 以流式方式发声。"
+    ),
+    "realtime_voice": "OpenAI Realtime 原生声线",
     "realtime_model": "Realtime 模型",
     "realtime_transcription_model": "Realtime 转录模型",
     "realtime_noise": "Realtime 麦克风降噪",
@@ -416,6 +466,13 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze({
     "no_transcription_error": "没有转录错误记录",
     "preview_voice": "试听：主上，妾在。",
     "realtime_disconnected": "Realtime：未连接",
+    "realtime_status_format": "Realtime：{status}",
+    "realtime_disconnected_status": "未连接",
+    "realtime_error_status": "错误：{error}",
+    "realtime_voice_title": "Realtime 语音",
+    "realtime_output_unavailable": (
+        "Realtime Azure 语音输出服务尚未建立，未启动实时对话。"
+    ),
     "start_realtime": "启动 Realtime 自然对话",
     "stop_realtime": "停止 Realtime 自然对话",
     "near_field": "近距离麦克风（推荐）",

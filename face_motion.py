@@ -5,14 +5,12 @@ lazy from dataclasses import dataclass, replace
 lazy from face_rig import (
     ExpressionShape,
     FaceMotionFrame,
-    FacePose,
     MouthShape,
     Viseme,
     parse_pose,
     parse_viseme,
 )
 lazy from lip_sync import VisemeFrame
-
 
 VISEME_MOUTH_TARGETS = frozendict(
     {
@@ -71,7 +69,7 @@ class FaceMotionController:
             expression=str(expression),
             viseme=Viseme.CLOSED,
             mouth=MouthShape(),
-            expression_shape=_expression_target(expression, speaking=False),
+            expression_shape=_expression_target(expression),
         )
 
     def advance(
@@ -122,7 +120,7 @@ class FaceMotionController:
             corner_smile=0.0,
         ).clamped()
         expression_shape = replace(
-            _expression_target(expression, speaking=viseme is not Viseme.CLOSED),
+            _expression_target(expression),
             blink=blink,
         ).clamped()
         self.current = FaceMotionFrame(
@@ -136,7 +134,7 @@ class FaceMotionController:
 
     def close(self, *, pose: str, expression: str) -> FaceMotionFrame:
         closed = self.neutral(pose, expression)
-        expression_shape = _expression_target(expression, speaking=False)
+        expression_shape = _expression_target(expression)
         corner_smile = 0.62 if expression in HAPPY_EXPRESSIONS else 0.0
         self.current = replace(
             closed,
@@ -146,7 +144,7 @@ class FaceMotionController:
         return self.current
 
 
-def _expression_target(expression: str, *, speaking: bool) -> ExpressionShape:
+def _expression_target(expression: str) -> ExpressionShape:
     happy = expression in HAPPY_EXPRESSIONS
     return ExpressionShape(
         eye_smile=0.72 if happy else 0.0,

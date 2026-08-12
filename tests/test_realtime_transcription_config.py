@@ -1,12 +1,14 @@
+from __future__ import annotations
+
 lazy import sys
-lazy from types import SimpleNamespace
+lazy from dataclasses import fields
 lazy from pathlib import Path
+lazy from types import SimpleNamespace
 lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy import realtime_voice
-
 lazy from realtime_voice import (
     RealtimeSessionConfig,
     RealtimeVoiceClient,
@@ -57,8 +59,51 @@ def assert_stale_connection_callbacks_are_ignored() -> None:
     assert client.running
     assert statuses == []
 
+
+def assert_request_locales_are_normalized() -> None:
+    aliases = {
+        "zh-TW": "zh-TW",
+        "zh-CN": "zh-CN",
+        "zh-Hans": "zh-CN",
+        "zh-SG": "zh-CN",
+        "en": "en",
+        "en-US": "en",
+        "en-GB": "en",
+        "ja": "ja-JP",
+        "ja-JP": "ja-JP",
+        "fr-FR": "zh-TW",
+        "": "zh-TW",
+    }
+    assert RealtimeSessionConfig().locale == "zh-TW"
+    for supplied, expected in aliases.items():
+        request = RealtimeVoiceRequest(
+            api_key="  test-key  ",
+            instructions="test",
+            memory_context="",
+            session=RealtimeSessionConfig(locale=supplied),
+        )
+        normalized = RealtimeVoiceClient._normalized_request(request)
+        assert normalized.session.locale == expected
+        assert normalized.api_key == "test-key"
+        assert request.session.locale == supplied
+
+
+def assert_request_secret_repr_is_redacted() -> None:
+    secret = "realtime-secret-must-not-appear"
+    request = RealtimeVoiceRequest(
+        api_key=secret,
+        instructions="test",
+        memory_context="",
+        session=RealtimeSessionConfig(),
+    )
+    assert secret not in repr(request)
+    assert fields(RealtimeVoiceRequest)[0].repr is False
+
+
 def run() -> None:
     assert_stale_connection_callbacks_are_ignored()
+    assert_request_locales_are_normalized()
+    assert_request_secret_repr_is_redacted()
     event = RealtimeVoiceClient._session_update_event(
         RealtimeSessionConfig(
             transcription_prompt="常用詞：墨寒、主上、炎劍文化工作室。",

@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QObject, Signal
 lazy from PySide6.QtWidgets import QApplication, QLineEdit
 
-lazy from app import CompanionWindow
+lazy from app import CompanionWindow, SpeechCredentials
 lazy from db import StudioDB
 lazy from realtime_voice import RealtimeVoiceRequest
 lazy from service_container import CompanionServices
@@ -56,6 +56,10 @@ class FakeRealtime(QObject):
     speaking_changed = Signal(bool)
     viseme_cue = Signal(str, float)
     failed = Signal(str)
+    output_text_started = Signal(int)
+    output_text_delta = Signal(int, str)
+    output_text_done = Signal(int)
+    output_interrupted = Signal(int)
 
     def __init__(self) -> None:
         super().__init__()
@@ -71,9 +75,26 @@ class FakeRealtime(QObject):
         self.start_requests.append(request)
         self.running = True
 
-    def stop(self) -> None:
+    def stop(self) -> int:
         self.running = False
         self.stop_calls += 1
+        return self.stop_calls
+
+    def set_external_playback_active(self, _active: bool) -> None:
+        return
+
+
+def _assert_credential_repr_is_redacted() -> None:
+    secrets = ("openai-secret", "azure-secret", "azure-hd-secret")
+    credentials = SpeechCredentials(
+        openai_api_key=secrets[0],
+        azure_api_key=secrets[1],
+        azure_region="eastasia",
+        azure_hd_api_key=secrets[2],
+        azure_hd_region="westus2",
+    )
+    rendered = repr(credentials)
+    assert all(secret not in rendered for secret in secrets)
 
 
 class FakeListener(QObject):
@@ -316,6 +337,7 @@ def _assert_azure_failure_uses_local_tts(
         "test-key",
         "eastasia",
         "zh-TW-HsiaoChenNeural",
+        "zh-TW",
     )
     context.azure_tts.failed.emit("模擬 Azure 播放失敗")
     context.app.processEvents()
@@ -355,6 +377,7 @@ def _assert_controls_and_shutdown(context: InjectedTestContext) -> None:
 
 
 def run() -> None:
+    _assert_credential_repr_is_redacted()
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
         context = _create_injected_context(temp_dir)
         _assert_dependencies_are_injected(context)

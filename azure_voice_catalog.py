@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+lazy import hmac
+lazy import secrets
 lazy import threading
 lazy import time
 lazy from collections.abc import Callable
-lazy from dataclasses import dataclass
+lazy from dataclasses import dataclass, field
 lazy from typing import Any
 
 lazy from azure.cognitiveservices import speech as speechsdk
 
 lazy from azure_regions import azure_region_supports_hd_flash
+
+_CREDENTIAL_FINGERPRINT_SECRET = secrets.token_bytes(32)
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,6 +30,24 @@ class AzureVoiceCatalog:
 class _CachedCatalog:
     expires_at: float
     catalog: AzureVoiceCatalog
+
+
+@dataclass(frozen=True, slots=True)
+class _CatalogCacheKey:
+    region: str
+    language: str
+    hd_only: bool
+    credential_fingerprint: bytes = field(repr=False)
+
+
+def _credential_fingerprint(api_key: str) -> bytes:
+    """Return a process-local, irreversible credential identity."""
+
+    return hmac.digest(
+        _CREDENTIAL_FINGERPRINT_SECRET,
+        api_key.encode("utf-8"),
+        "sha256",
+    )
 
 
 def _language_locales(language: str) -> tuple[str, ...]:
@@ -106,6 +128,8 @@ class AzureVoiceCatalogService:
 
     Subscription keys are passed directly to the SDK configuration and are
     never stored in this service, cache keys, exceptions, or diagnostics.
+    A process-local, non-reversible fingerprint isolates cached catalogues
+    belonging to different Azure credentials without exposing either key.
     """
 
     def __init__(
@@ -118,7 +142,7 @@ class AzureVoiceCatalogService:
         self._cache_seconds = max(0.0, float(cache_seconds))
         self._clock = clock
         self._sdk_loader = sdk_loader or self._load_sdk
-        self._cache: dict[tuple[str, str, bool], _CachedCatalog] = {}
+        self._cache: dict[_CatalogCacheKey, _CachedCatalog] = {}
         self._lock = threading.Lock()
 
     @staticmethod
@@ -133,7 +157,12 @@ class AzureVoiceCatalogService:
         *,
         hd_only: bool,
     ) -> AzureVoiceCatalog:
-        cache_key = (region, language, hd_only)
+        cache_key = _CatalogCacheKey(
+            region=region,
+            language=language,
+            hd_only=hd_only,
+            credential_fingerprint=_credential_fingerprint(api_key),
+        )
         now = self._clock()
         with self._lock:
             cached = self._cache.get(cache_key)
@@ -179,5 +208,5 @@ class AzureVoiceCatalogService:
             self._cache = {
                 key: value
                 for key, value in self._cache.items()
-                if key[0] != region
+                if key.region != region
             }

@@ -172,6 +172,7 @@ jobs:
       - name: Compile and audit source
         run: |
           python -m compileall -q .
+          python -m ruff check .
           python tools/audit_public_release.py
 
       - name: Run full Windows regression suite
@@ -623,12 +624,6 @@ jobs:
             sha256sum --check --strict "$base-SHA256SUMS.txt"
           )
 
-      - name: Attest every published artifact
-        if: ${{ github.event_name == 'push' || inputs.publish }}
-        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
-        with:
-          subject-path: release-artifacts/*
-
       - name: Require the release tag to still identify the validated commit
         shell: bash
         env:
@@ -642,6 +637,12 @@ jobs:
             echo "Release tag changed after validation; refusing publication." >&2
             exit 4
           fi
+
+      - name: Attest every published artifact
+        if: ${{ github.event_name == 'push' || inputs.publish }}
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-path: release-artifacts/*
 
       - name: Verify existing release without modifying it
         if: ${{ github.event_name == 'workflow_dispatch' && !inputs.publish }}
@@ -658,12 +659,29 @@ jobs:
             exit 7
           }
           [[ "$(gh api "repos/${{ github.repository }}/releases/$release_id" --jq ".draft == false and .prerelease == $EXPECTED_PRERELEASE")" == true ]]
-          mapfile -t actual_assets < <(gh api --paginate "repos/${{ github.repository }}/releases/$release_id/assets" --jq '.[].name' | sort)
+          assets_json="$(mktemp)"
+          gh api --paginate "repos/${{ github.repository }}/releases/$release_id/assets" > "$assets_json"
+          mapfile -t actual_assets < <(jq -r '.[].name' "$assets_json" | sort)
           mapfile -t expected_assets < <(find release-artifacts -maxdepth 1 -type f -printf '%f\n' | sort)
           [[ "$(printf '%s\n' "${actual_assets[@]}")" == "$(printf '%s\n' "${expected_assets[@]}")" ]] || {
             echo "Existing Release assets differ from the exact verified set." >&2
             exit 8
           }
+          while IFS= read -r expected; do
+            name="$(basename "$expected")"
+            expected_size="$(stat -c '%s' "$expected")"
+            asset="$(jq -c --arg name "$name" '.[] | select(.name == $name)' "$assets_json")"
+            [[ "$(jq -r '.size' <<< "$asset")" == "$expected_size" ]] || {
+              echo "Existing Release asset size differs: $name" >&2
+              exit 9
+            }
+            downloaded="$(mktemp)"
+            gh api -H 'Accept: application/octet-stream' "$(jq -r '.url' <<< "$asset")" > "$downloaded"
+            cmp --silent "$expected" "$downloaded" || {
+              echo "Existing Release asset content differs: $name" >&2
+              exit 10
+            }
+          done < <(find release-artifacts -maxdepth 1 -type f | sort)
           echo "Release $tag is unchanged and matches the verified artifact set."
 
       - name: Publish one GitHub release

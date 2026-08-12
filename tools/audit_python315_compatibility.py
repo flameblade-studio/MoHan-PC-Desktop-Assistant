@@ -146,7 +146,7 @@ class CompatibilityAudit(ast.NodeVisitor):
             if alias.name in removed_names:
                 self.issue(node, f"REMOVED_API {node.module}.{alias.name}")
 
-    def visit_Call(self, node: ast.Call) -> None:
+    def visit_Call(self, node: ast.Call) -> None:  # noqa: C901, PLR0912 -- one explicit compatibility rule table
         name = call_name(node.func)
         if name in REMOVED_CALLS or (
             isinstance(node.func, ast.Attribute)

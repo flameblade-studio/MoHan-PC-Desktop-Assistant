@@ -2,7 +2,7 @@ from __future__ import annotations
 
 lazy import json
 lazy import os
-lazy from dataclasses import dataclass
+lazy from dataclasses import dataclass, field
 lazy from urllib.error import HTTPError, URLError
 lazy from urllib.request import Request, urlopen
 
@@ -425,7 +425,7 @@ class AIWorkerRequest:
     user_text: str
     mode: str
     history: tuple[dict[str, str], ...] = ()
-    api_key: str = ""
+    api_key: str = field(default="", repr=False)
     memories: str = ""
     model: str = DEFAULT_TEXT_MODEL
     persona: str = PERSONA

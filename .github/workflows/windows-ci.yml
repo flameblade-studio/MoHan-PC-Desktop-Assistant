@@ -49,6 +49,8 @@ jobs:
 
       - name: Compile source
         run: python -m compileall -q .
+      - name: Enforce Ruff static quality gate
+        run: python -m ruff check .
 
       - name: Audit public release contents
         run: python tools/audit_public_release.py

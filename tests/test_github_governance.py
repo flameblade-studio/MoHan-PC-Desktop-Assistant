@@ -267,6 +267,7 @@ def test_preview_and_windows_workflows() -> None:
         "tools/benchmark_python315_hotpaths.py",
         "tools/build_python315_jit_runtime.py",
         "tools/profile_mohan_tachyon.py",
+        "python -m ruff check .",
         "--target all",
         "--min-samples 100",
         "--max-sample-read-error-percent 15",
@@ -274,6 +275,17 @@ def test_preview_and_windows_workflows() -> None:
         "windows-tachyon-evidence",
     ):
         assert required in windows_ci
+    assert "python -m ruff check ." in read(".github/workflows/release.yml")
+    release_workflow = read(".github/workflows/release.yml")
+    assert release_workflow.index(
+        "Require the release tag to still identify the validated commit"
+    ) < release_workflow.index("Attest every published artifact")
+    for required in (
+        "Existing Release asset size differs",
+        "Existing Release asset content differs",
+        "Accept: application/octet-stream",
+    ):
+        assert required in release_workflow
 
 
 def test_secret_defense_and_community_files() -> None:

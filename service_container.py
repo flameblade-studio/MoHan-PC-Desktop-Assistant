@@ -22,6 +22,7 @@ lazy from db import StudioDB
 lazy from language_support import localized_transcription_prompt
 lazy from platform_contracts import PlatformServicePort
 lazy from platform_services import current_platform_services
+lazy from realtime_speech_output import RealtimeSpeechOutput
 lazy from realtime_voice import RealtimeVoiceClient
 lazy from secret_store import platform_secret_store_factory
 lazy from speech import (
@@ -49,6 +50,7 @@ class CompanionServices:
     cloud_tts: CloudSpeechEnginePort
     realtime: RealtimeVoicePort
     listener: SpeechListenerPort
+    realtime_speech_output: RealtimeSpeechOutput | None = None
     backup_manager: BackupManager | None = None
     speech_providers: SpeechProviderRegistryPort | None = None
     azure_speech: AzureSpeechEnginePort | None = None
@@ -57,6 +59,31 @@ class CompanionServices:
     azure_hd_secret_store: SecretStorePort | None = None
     secret_store_factory: SecretStoreFactoryPort | None = None
     platform_services: PlatformServicePort | None = None
+
+
+def _local_speech_engine(
+    platform_services: PlatformServicePort,
+    parent: QObject | None,
+) -> LocalSpeechEnginePort:
+    if platform_services.capabilities.system_local_speech:
+        return WindowsTTS(parent)
+    return UnavailableSystemTTS(
+        f"{platform_services.capabilities.display_name} 本機語音"
+        "尚未完成實機驗證。",
+        parent,
+    )
+
+
+def _realtime_speech_output(
+    platform_services: PlatformServicePort,
+    parent: QObject | None,
+) -> RealtimeSpeechOutput:
+    return RealtimeSpeechOutput(
+        AzureSpeechTTS(parent),
+        AzureSpeechTTS(parent),
+        _local_speech_engine(platform_services, parent),
+        parent,
+    )
 
 
 def create_default_services(
@@ -142,14 +169,7 @@ def create_default_services(
         ),
         parent=parent,
     )
-    if runtime_platform.capabilities.system_local_speech:
-        local_tts: LocalSpeechEnginePort = WindowsTTS(parent)
-    else:
-        local_tts = UnavailableSystemTTS(
-            f"{runtime_platform.capabilities.display_name} 本機語音"
-            "尚未完成實機驗證。",
-            parent,
-        )
+    local_tts = _local_speech_engine(runtime_platform, parent)
     cloud_tts = OpenAITTS(parent)
     azure_tts = AzureSpeechTTS(parent)
     azure_hd_tts = AzureSpeechTTS(parent)
@@ -174,6 +194,10 @@ def create_default_services(
         cloud_tts=cloud_tts,
         realtime=RealtimeVoiceClient(parent),
         listener=listener,
+        realtime_speech_output=_realtime_speech_output(
+            runtime_platform,
+            parent,
+        ),
         backup_manager=backup_manager,
         speech_providers=create_builtin_speech_registry(
             local_tts,

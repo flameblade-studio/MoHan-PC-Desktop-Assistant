@@ -14,6 +14,7 @@ lazy from collections.abc import Iterable
 lazy from contextlib import suppress
 lazy from ctypes import wintypes
 lazy from dataclasses import dataclass
+lazy from dataclasses import field as dataclass_field
 lazy from datetime import datetime
 lazy from datetime import time as clock_time
 lazy from pathlib import Path
@@ -153,6 +154,14 @@ lazy from lip_sync import (
 lazy from platform_contracts import PlatformCapabilities, PlatformServicePort
 lazy from platform_services import current_platform_services, resolved_data_dir
 lazy from profile_transfer_ui import PortableProfilePanel
+lazy from realtime_speech_output import (
+    REALTIME_OUTPUT_AZURE,
+    REALTIME_OUTPUT_AZURE_HD,
+    REALTIME_OUTPUT_OPENAI,
+    AzureRealtimeVoice,
+    LocalRealtimeVoice,
+    RealtimeSpeechOutputConfig,
+)
 lazy from realtime_voice import (
     RealtimeSessionConfig,
     RealtimeVoiceClient,
@@ -223,10 +232,10 @@ class QueuedSpeech:
 
 @dataclass(frozen=True, slots=True)
 class SpeechCredentials:
-    openai_api_key: str
-    azure_api_key: str
+    openai_api_key: str = dataclass_field(repr=False)
+    azure_api_key: str = dataclass_field(repr=False)
     azure_region: str
-    azure_hd_api_key: str
+    azure_hd_api_key: str = dataclass_field(repr=False)
     azure_hd_region: str
 
 
@@ -1884,6 +1893,8 @@ class Dashboard(QDialog):
     voice_preview_requested = Signal()
     realtime_toggle_requested = Signal(bool)
     realtime_voice_changed = Signal(str)
+    realtime_output_mode_changed = Signal(str)
+    realtime_output_settings_changed = Signal()
     state_requested = Signal(str)
     ai_wait_expression_requested = Signal(int, str, float)
     ai_wait_expression_finished = Signal(int)
@@ -3350,6 +3361,14 @@ class Dashboard(QDialog):
         self.azure_clear_key.setEnabled(secure_storage)
 
     def _initialize_realtime_controls(self) -> None:
+        self.realtime_output_mode = self._realtime_output_mode_combo()
+        self.realtime_output_mode_note = self._voice_note("")
+        self._apply_realtime_output_mode_state(
+            str(
+                self.realtime_output_mode.currentData()
+                or REALTIME_OUTPUT_OPENAI
+            )
+        )
         self.realtime_model = self._editable_combo(
             ("gpt-realtime-2.1-mini", "gpt-realtime-2.1"),
             str(
@@ -3378,6 +3397,65 @@ class Dashboard(QDialog):
         self.realtime_hybrid_transcription = (
             self._realtime_hybrid_transcription_checkbox()
         )
+
+    def _realtime_output_mode_combo(self) -> QComboBox:
+        combo = QComboBox()
+        combo.addItem(
+            self._t(
+                "realtime_output_openai",
+                "OpenAI Realtime 原生語音（最低延遲，既有預設）",
+            ),
+            REALTIME_OUTPUT_OPENAI,
+        )
+        combo.addItem(
+            self._t(
+                "realtime_output_azure",
+                "Azure Speech 女性聲線（柔和串流）",
+            ),
+            REALTIME_OUTPUT_AZURE,
+        )
+        combo.addItem(
+            self._t(
+                "realtime_output_azure_hd",
+                "Azure Dragon HD 女性聲線（需 S0）",
+            ),
+            REALTIME_OUTPUT_AZURE_HD,
+        )
+        self._select_combo_data(
+            combo,
+            str(
+                self.db.setting(
+                    "realtime_output_mode",
+                    REALTIME_OUTPUT_OPENAI,
+                )
+            ),
+        )
+        return combo
+
+    def _apply_realtime_output_mode_state(self, mode: str) -> None:
+        native_output = mode == REALTIME_OUTPUT_OPENAI
+        self.realtime_voice.setEnabled(native_output)
+        if mode == REALTIME_OUTPUT_AZURE:
+            note = self._t(
+                "realtime_output_note_azure",
+                "沿用上方「Azure Speech 女性聲線」、區域與金鑰。"
+                "OpenAI Realtime 負責即時理解，Azure 以串流方式發聲。",
+            )
+        elif mode == REALTIME_OUTPUT_AZURE_HD:
+            note = self._t(
+                "realtime_output_note_azure_hd",
+                "沿用上方「Dragon HD 女性聲線」、S0 區域與獨立金鑰。"
+                "OpenAI Realtime 負責即時理解，Dragon HD 以串流方式發聲。",
+            )
+        else:
+            note = self._t(
+                "realtime_output_note_openai",
+                "使用下方「OpenAI Realtime 原生聲線」；延遲最低，"
+                "完整保留 OpenAI Realtime 的原生即時語音輸出。",
+            )
+        self.realtime_output_mode_note.setText(note)
+        self.realtime_output_mode.setToolTip(note)
+        self.realtime_voice.setToolTip(note)
 
     def _realtime_noise_reduction_combo(self) -> QComboBox:
         combo = QComboBox()
@@ -3492,6 +3570,7 @@ class Dashboard(QDialog):
         self.voice_rate_up.setFixedWidth(48)
         self.voice_rate_down.clicked.connect(self.voice_rate.stepDown)
         self.voice_rate_up.clicked.connect(self.voice_rate.stepUp)
+        self.voice_rate.valueChanged.connect(self._voice_rate_changed)
         layout.addWidget(self.voice_rate_down)
         layout.addWidget(self.voice_rate, 1)
         layout.addWidget(self.voice_rate_up)
@@ -3752,7 +3831,15 @@ class Dashboard(QDialog):
 
     def _add_realtime_rows(self, form: QFormLayout) -> None:
         form.addRow(
-            self._t("realtime_voice", "Realtime 對話聲音"),
+            self._t(
+                "realtime_output_source",
+                "Realtime 回覆聲音來源",
+            ),
+            self.realtime_output_mode,
+        )
+        form.addRow("", self.realtime_output_mode_note)
+        form.addRow(
+            self._t("realtime_voice", "OpenAI Realtime 原生聲線"),
             self.realtime_voice,
         )
         form.addRow(
@@ -3854,6 +3941,9 @@ class Dashboard(QDialog):
         )
         self.realtime_voice.currentTextChanged.connect(
             self._realtime_voice_changed
+        )
+        self.realtime_output_mode.currentIndexChanged.connect(
+            self._realtime_output_mode_index_changed
         )
         return tab
 
@@ -5662,6 +5752,11 @@ class Dashboard(QDialog):
         self.db.set_setting(
             "windows_voice", str(self.windows_voice.currentData() or "")
         )
+        self.realtime_output_settings_changed.emit()
+
+    def _voice_rate_changed(self, rate: int) -> None:
+        self.db.set_setting("voice_rate", rate)
+        self.realtime_output_settings_changed.emit()
 
     def _openai_voice_changed(self, voice: str) -> None:
         selected_voice = voice.strip()
@@ -5675,10 +5770,12 @@ class Dashboard(QDialog):
         if not selected_voice:
             return
         self.db.set_setting("azure_speech_voice", selected_voice)
+        self.realtime_output_settings_changed.emit()
 
     def _azure_region_changed(self, _index: int) -> None:
         region = str(self.azure_region.currentData() or "")
         self.db.set_setting("azure_speech_region", region)
+        self.realtime_output_settings_changed.emit()
         self._request_azure_voice_catalog(hd_only=False)
 
     def _azure_hd_voice_changed(self, voice: str) -> None:
@@ -5686,6 +5783,7 @@ class Dashboard(QDialog):
         if not selected_voice:
             return
         self.db.set_setting("azure_hd_speech_voice", selected_voice)
+        self.realtime_output_settings_changed.emit()
 
     def _azure_hd_region_changed(self, _index: int) -> None:
         region = str(self.azure_hd_region.currentData() or "")
@@ -5740,6 +5838,8 @@ class Dashboard(QDialog):
         combo.setCurrentText(selected_voice)
         combo.blockSignals(False)
         self.db.set_setting(setting_key, selected_voice)
+        if selected_voice != current_voice:
+            self.realtime_output_settings_changed.emit()
 
     def _refresh_azure_hd_voice_options(self, region: str) -> None:
         voices = azure_hd_female_voices(
@@ -5754,6 +5854,7 @@ class Dashboard(QDialog):
         self.azure_hd_voice.setCurrentText(selected_voice)
         self.azure_hd_voice.blockSignals(False)
         self.db.set_setting("azure_hd_speech_voice", selected_voice)
+        self.realtime_output_settings_changed.emit()
 
     def _realtime_voice_changed(self, voice: str) -> None:
         selected_voice = voice.strip()
@@ -5761,6 +5862,15 @@ class Dashboard(QDialog):
             return
         self.db.set_setting("realtime_voice", selected_voice)
         self.realtime_voice_changed.emit(selected_voice)
+
+    def _realtime_output_mode_index_changed(self, _index: int) -> None:
+        mode = str(
+            self.realtime_output_mode.currentData()
+            or REALTIME_OUTPUT_OPENAI
+        )
+        self.db.set_setting("realtime_output_mode", mode)
+        self._apply_realtime_output_mode_state(mode)
+        self.realtime_output_mode_changed.emit(mode)
 
     def clear_azure_speech_key(self) -> None:
         if self.azure_secret_store is None:
@@ -5783,6 +5893,7 @@ class Dashboard(QDialog):
                     "貼上 Azure Speech 資源金鑰",
                 )
             )
+            self.realtime_output_settings_changed.emit()
 
     def clear_azure_hd_speech_key(self) -> None:
         if self.azure_hd_secret_store is None:
@@ -5806,6 +5917,7 @@ class Dashboard(QDialog):
                     "貼上獨立的 Dragon HD S0 資源金鑰",
                 )
             )
+            self.realtime_output_settings_changed.emit()
 
     def _update_voice_volume_label(self) -> None:
         self.voice_volume_label.setText(f"{self.voice_volume.value()}%")
@@ -5868,6 +5980,13 @@ class Dashboard(QDialog):
         self.db.set_setting("cloud_voice", self.tts_voice.currentText())
         self.db.set_setting("realtime_voice", self.realtime_voice.currentText())
         self.db.set_setting(
+            "realtime_output_mode",
+            str(
+                self.realtime_output_mode.currentData()
+                or REALTIME_OUTPUT_OPENAI
+            ),
+        )
+        self.db.set_setting(
             "azure_speech_voice",
             self.azure_voice.currentText(),
         )
@@ -5922,6 +6041,7 @@ class Dashboard(QDialog):
 
     def _save_azure_key_immediately(self) -> None:
         if self._persist_azure_key(silent=False):
+            self.realtime_output_settings_changed.emit()
             invalidate = getattr(
                 self.azure_tts,
                 "invalidate_voice_catalog",
@@ -5935,6 +6055,7 @@ class Dashboard(QDialog):
 
     def _save_azure_hd_key_immediately(self) -> None:
         if self._persist_azure_hd_key(silent=False):
+            self.realtime_output_settings_changed.emit()
             invalidate = getattr(
                 self.azure_hd_tts,
                 "invalidate_voice_catalog",
@@ -5946,16 +6067,16 @@ class Dashboard(QDialog):
                 )
             self._request_azure_voice_catalog(hd_only=True)
 
-    def _persist_azure_key(self, *, silent: bool) -> None:
-        self._persist_secret_input(
+    def _persist_azure_key(self, *, silent: bool) -> bool:
+        return self._persist_secret_input(
             self.azure_key_input,
             self.azure_secret_store,
             AZURE_SECRET_POLICY,
             silent=silent,
         )
 
-    def _persist_azure_hd_key(self, *, silent: bool) -> None:
-        self._persist_secret_input(
+    def _persist_azure_hd_key(self, *, silent: bool) -> bool:
+        return self._persist_secret_input(
             self.azure_hd_key_input,
             self.azure_hd_secret_store,
             AZURE_HD_SECRET_POLICY,
@@ -5994,7 +6115,13 @@ class Dashboard(QDialog):
         return True
 
     def set_realtime_status(self, status: str, active: bool | None = None) -> None:
-        self.realtime_status.setText(f"Realtime：{status}")
+        self.realtime_status.setText(
+            self._t(
+                "realtime_status_format",
+                "Realtime：{status}",
+                status=status,
+            )
+        )
         if active is not None:
             self.realtime_btn.blockSignals(True)
             self.realtime_btn.setChecked(active)
@@ -6453,6 +6580,7 @@ class CompanionWindow(QMainWindow):
             )
         )
         self.realtime = services.realtime
+        self.realtime_speech_output = services.realtime_speech_output
         self.listener = services.listener
 
     def _run_first_run_wizard_if_needed(
@@ -6495,6 +6623,12 @@ class CompanionWindow(QMainWindow):
         )
         self.dashboard.realtime_voice_changed.connect(
             self._apply_realtime_voice_change
+        )
+        self.dashboard.realtime_output_mode_changed.connect(
+            self._apply_realtime_voice_change
+        )
+        self.dashboard.realtime_output_settings_changed.connect(
+            self._refresh_realtime_output_settings
         )
         self.dashboard.volume_changed.connect(self._apply_voice_volume)
         self.dashboard.visibility_changed.connect(
@@ -6553,6 +6687,34 @@ class CompanionWindow(QMainWindow):
         )
         self.realtime.viseme_cue.connect(self._audio_viseme_cue)
         self.realtime.failed.connect(self._realtime_failed)
+        if self.realtime_speech_output is not None:
+            self.realtime.output_text_started.connect(
+                self.realtime_speech_output.begin_response
+            )
+            self.realtime.output_text_delta.connect(
+                self.realtime_speech_output.add_text
+            )
+            self.realtime.output_text_done.connect(
+                self.realtime_speech_output.finish_response
+            )
+            self.realtime.output_interrupted.connect(
+                self.realtime_speech_output.cancel
+            )
+            self.realtime_speech_output.speaking_changed.connect(
+                self._realtime_speaking
+            )
+            self.realtime_speech_output.playback_guard_changed.connect(
+                self.realtime.set_external_playback_active
+            )
+            self.realtime_speech_output.viseme_cue.connect(
+                self._audio_viseme_cue
+            )
+            self.realtime_speech_output.status_changed.connect(
+                self._realtime_status
+            )
+            self.realtime_speech_output.failed.connect(
+                self._realtime_failed
+            )
 
     def _initialize_companion_state(self, startup_speech: bool) -> None:
         self.state = "idle"
@@ -9899,7 +10061,8 @@ class CompanionWindow(QMainWindow):
                     credentials.azure_hd_region
                     if provider_id == VOICE_ENGINE_AZURE_HD
                     else credentials.azure_region
-                )
+                ),
+                "locale": str(self.db.setting("ui_language", "zh-TW")),
             },
         )
         self.speech_providers.provider(provider_id).speak(request)
@@ -10002,6 +10165,8 @@ class CompanionWindow(QMainWindow):
             engines.append(self.azure_tts)
         if self.azure_hd_tts is not None:
             engines.append(self.azure_hd_tts)
+        if self.realtime_speech_output is not None:
+            engines.append(self.realtime_speech_output)
         for engine in engines:
             engine.set_volume(volume_percent, muted)
 
@@ -10042,10 +10207,55 @@ class CompanionWindow(QMainWindow):
             lines.append(f"{labels[role]}：{normalized}")
         return "\n".join(lines)[-5000:]
 
+    def _configure_realtime_speech_output(self, mode: str) -> None:
+        output = self.realtime_speech_output
+        if output is None:
+            if mode == REALTIME_OUTPUT_OPENAI:
+                return
+            raise RuntimeError(
+                ui_text(
+                    profile_setting(self.db, "ui_language"),
+                    "realtime_output_unavailable",
+                    "Realtime Azure 語音輸出服務尚未建立，未啟動即時對話。",
+                )
+            )
+        credentials = self._speech_credentials()
+        output.configure(
+            RealtimeSpeechOutputConfig(
+                mode=mode,
+                locale=profile_setting(self.db, "ui_language"),
+                azure=AzureRealtimeVoice(
+                    credentials.azure_api_key,
+                    credentials.azure_region,
+                    str(self.db.setting("azure_speech_voice", "")),
+                ),
+                azure_hd=AzureRealtimeVoice(
+                    credentials.azure_hd_api_key,
+                    credentials.azure_hd_region,
+                    str(self.db.setting("azure_hd_speech_voice", "")),
+                ),
+                local=LocalRealtimeVoice(
+                    available=bool(
+                        self.platform_services.capabilities.system_local_speech
+                        and self.db.setting("windows_voice", "")
+                    ),
+                    voice=str(self.db.setting("windows_voice", "")),
+                    rate=int(self.db.setting("voice_rate", -1)),
+                ),
+            )
+        )
+
     def toggle_realtime(self, enabled: bool) -> None:
         if not enabled:
-            self.realtime.stop()
-            self.dashboard.set_realtime_status("未連線", False)
+            self._stop_realtime_output()
+            self.dashboard.set_realtime_status(
+                ui_text(
+                    profile_setting(self.db, "ui_language"),
+                    "realtime_disconnected_status",
+                    "未連線",
+                ),
+                False,
+            )
             return
         self.dashboard.cancel_ai_wait_expression()
         self.dashboard.save_voice_settings(silent=True)
@@ -10061,6 +10271,35 @@ class CompanionWindow(QMainWindow):
                 SpeechListener.TRANSCRIPTION_PROMPT,
             )
         )
+        output_mode = str(
+            self.db.setting(
+                "realtime_output_mode",
+                REALTIME_OUTPUT_OPENAI,
+            )
+        )
+        try:
+            self._configure_realtime_speech_output(output_mode)
+        except (RuntimeError, ValueError) as exc:
+            language = profile_setting(self.db, "ui_language")
+            self.dashboard.set_realtime_status(
+                ui_text(
+                    language,
+                    "realtime_error_status",
+                    "錯誤：{error}",
+                    error=exc,
+                ),
+                False,
+            )
+            QMessageBox.warning(
+                self.dashboard,
+                ui_text(
+                    language,
+                    "realtime_voice_title",
+                    "Realtime 語音",
+                ),
+                str(exc),
+            )
+            return
         self.realtime.start(
             RealtimeVoiceRequest(
                 api_key=self.secret_store.load(),
@@ -10128,6 +10367,10 @@ class CompanionWindow(QMainWindow):
                             True,
                         )
                     ),
+                    output_mode=str(
+                        output_mode
+                    ),
+                    locale=profile_setting(self.db, "ui_language"),
                 ),
             ),
         )
@@ -10138,9 +10381,17 @@ class CompanionWindow(QMainWindow):
         self.toggle_realtime(False)
         self.toggle_realtime(True)
 
+    def _refresh_realtime_output_settings(self) -> None:
+        if not self.realtime.running:
+            return
+        mode = str(
+            self.db.setting("realtime_output_mode", REALTIME_OUTPUT_OPENAI)
+        )
+        if mode != REALTIME_OUTPUT_OPENAI:
+            self._configure_realtime_speech_output(mode)
+
     def _realtime_status(self, status: str) -> None:
-        active = self.realtime.running and status != "未連線"
-        self.dashboard.set_realtime_status(status, active)
+        self.dashboard.set_realtime_status(status, self.realtime.running)
 
     def _realtime_user_text(self, text: str) -> None:
         text = normalize_for_language(
@@ -10326,9 +10577,31 @@ class CompanionWindow(QMainWindow):
             )
 
     def _realtime_failed(self, message: str) -> None:
-        self.dashboard.set_realtime_status(f"錯誤：{message[:90]}", False)
-        self.realtime.stop()
-        QMessageBox.warning(self.dashboard, "Realtime 語音", message)
+        language = profile_setting(self.db, "ui_language")
+        self._stop_realtime_output()
+        self.dashboard.set_realtime_status(
+            ui_text(
+                language,
+                "realtime_error_status",
+                "錯誤：{error}",
+                error=message[:90],
+            ),
+            False,
+        )
+        QMessageBox.warning(
+            self.dashboard,
+            ui_text(
+                language,
+                "realtime_voice_title",
+                "Realtime 語音",
+            ),
+            message,
+        )
+
+    def _stop_realtime_output(self) -> None:
+        barrier = self.realtime.stop()
+        if self.realtime_speech_output is not None:
+            self.realtime_speech_output.cancel(barrier)
 
     def _cloud_voice_failed(self, message: str) -> None:
         self._online_voice_failed(
@@ -10420,7 +10693,10 @@ class CompanionWindow(QMainWindow):
                             credentials.azure_region
                             if fallback_provider_id == VOICE_ENGINE_AZURE
                             else ""
-                        )
+                        ),
+                        "locale": str(
+                            self.db.setting("ui_language", "zh-TW")
+                        ),
                     },
                 )
             )
@@ -10799,7 +11075,7 @@ class CompanionWindow(QMainWindow):
             animation = getattr(self, animation_name, None)
             if animation is not None:
                 animation.stop()
-        self.realtime.stop()
+        self._stop_realtime_output()
         for timer_name in (
             "idle_timer",
             "pose_timer",

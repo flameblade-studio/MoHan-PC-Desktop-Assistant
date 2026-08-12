@@ -10,6 +10,7 @@ EXCLUDED_PARTS = frozenset({
     ".ruff_cache",
     ".venv",
     ".venv315",
+    "_python315",
     "__pycache__",
     "build",
     "build-temp",
@@ -69,7 +70,10 @@ def python_files(root: Path = ROOT) -> list[Path]:
     return sorted(
         path
         for path in root.rglob("*.py")
-        if not any(part in EXCLUDED_PARTS for part in path.parts)
+        if not any(
+            part in EXCLUDED_PARTS
+            for part in path.relative_to(root).parts
+        )
     )
 
 

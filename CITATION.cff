@@ -5,7 +5,7 @@ type: software
 authors:
   - family-names: "CHOU"
     given-names: "MING HUA"
-version: "3.1.1"
+version: "3.1.2"
 date-released: "2026-08-12"
 license: MIT
 abstract: >-

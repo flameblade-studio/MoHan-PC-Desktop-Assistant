@@ -113,6 +113,7 @@ def _assert_ai_worker_defaults() -> None:
             api_key="sk-test",
         )
     )
+    assert "sk-test" not in repr(worker.request)
     worker.signals.done.connect(replies.append)
     fake_response = io.BytesIO(
         json.dumps({"output_text": "主上，妾在。"}).encode("utf-8")
@@ -557,6 +558,22 @@ def _assert_realtime_playback(realtime: RealtimeVoiceClient) -> None:
     realtime._playback_loop(muted_queue, muted_probe, 24000)
     realtime.running = False
     assert set(array("h", b"".join(muted_probe.chunks))) == {0}
+
+    cancellation_queue = _playback_queue()
+
+    class CancellingPlaybackProbe(PlaybackProbe):
+        def write(self, chunk: bytes) -> None:
+            super().write(chunk)
+            if len(self.chunks) == 1:
+                realtime._discard_native_playback()
+
+    cancellation_probe = CancellingPlaybackProbe()
+    realtime.set_volume(125, False)
+    realtime._begin_assistant_audio()
+    realtime.running = True
+    realtime._playback_loop(cancellation_queue, cancellation_probe, 24000)
+    realtime.running = False
+    assert len(cancellation_probe.chunks) == 1
 
 
 def _assert_traditional_text_normalization() -> None:

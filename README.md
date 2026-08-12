@@ -14,7 +14,7 @@
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台進度：** Windows 仍是唯一完成實機、完整回歸、安裝與發布驗證的平台。v3.1.1 的 macOS／Linux 版本具備安全的平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI，並提供可啟動、可切換四語但功能受限的 DMG／AppImage Preview；CI 不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
+> **跨平台進度：** Windows 仍是唯一完成實機、完整回歸、安裝與發布驗證的平台。v3.1.2 的 macOS／Linux 版本具備安全的平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI，並提供可啟動、可切換四語但功能受限的 DMG／AppImage Preview；CI 不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
 > 本專案遵循[炎劍開源軟體家族品質標準](PUBLISHING.md)。
 
@@ -226,7 +226,7 @@ Azure Speech 是預設關閉、由使用者自行啟用的預覽供應器，需�
 
 ### 整合驗證狀態
 
-> **公開預覽版注意事項：** Microsoft、GitHub 與 Home Assistant 的架構、權限邊界及內部測試已建立；截至 `v2.1.0-rc.1`，尚未以全部真實帳號、儲存庫、主機與實體設備完成端到端驗證。它們是實驗性預覽功能，不是所有環境都可完整運作的保證。
+> **公開 Preview 注意事項：** Azure Speech 已完成下列真實資源驗證；Microsoft 帳號整合、GitHub 與 Home Assistant 雖已建立架構、權限邊界及內部測試，仍未以全部真實帳號、儲存庫、主機與實體設備完成端到端驗證。尚未完成真實驗證的部分屬於實驗性 Preview，不保證可在所有環境完整運作。
 
 - Azure Speech 已完成本專案的真實 Free F0 資源、HTTPS 合成、RIFF 音訊與 Windows 播放驗證；每位使用者仍須自行建立 Speech 資源並承擔其帳號、配額與費用。
 - Microsoft 帳號的真實登入、權杖更新，以及 Outlook、OneDrive、Calendar 完整讀寫流程尚未驗證。
@@ -248,7 +248,7 @@ Azure Speech 是預設關閉、由使用者自行啟用的預覽供應器，需�
 
 尚未數位簽署的開源預覽版可能觸發 Windows SmartScreen；請確認官方下載來源與 SHA-256 後再執行。
 
-v3.1.1 另提供 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`。它們是功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
+v3.1.2 另提供 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`。它們是功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
 
 #### 自動化發布邊界
 
@@ -268,6 +268,14 @@ v3.1.1 另提供 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各
 | Realtime 即時語音 | `gpt-realtime-2.1-mini` |
 | 語音轉文字 | `gpt-4o-mini-transcribe` |
 | OpenAI 文字轉語音 | `gpt-4o-mini-tts` |
+
+#### Realtime 回覆聲音
+
+`v3.1.2` 完整保留 OpenAI Realtime 原生聲音，並維持為預設選項。原生模式由 Realtime 透過同一路徑理解並直接輸出音訊，適合偏好原有聲線，或希望在這些選項中取得最低額外延遲的使用者。
+
+使用者也可明確改選「Realtime 即時理解＋一般 Azure Speech 串流發聲」或「Realtime 即時理解＋Azure Dragon HD 串流發聲」。混合模式只把 Realtime 產生的文字交給所選 Azure 引擎；安全短句一完成便排入順序播放，首段音訊抵達即開始發聲，避免等待完整回答與完整音檔。不過，多出的 TTS 網路與合成階段仍會增加發話等待，因此本專案不宣稱零延遲。
+
+三種模式彼此隔離，同一時間只有一條輸出路徑掌管播放，不會混音，也不會改動一般 Windows 本機語音、OpenAI TTS、一般 Azure 朗讀或其他語音模型。Dragon HD 單句失敗時，依序只退回一般 Azure 一次及 Windows 本機女性聲線一次；一般 Azure 單句失敗時只退回 Windows 本機女性聲線一次。上述回退僅適用於該句尚未播放任何音訊時；若串流已開始後才失敗，系統會立即停止該句而不整句重播，以避免重複發聲與重複計費。Azure 選項不會取代原生 Realtime。
 
 從 `v2.1.0-rc.1` 起，文字對話預設改為 `gpt-5.6-luna`，設定清單不再提供 `gpt-5.4-mini`；既有 mini 設定會遷移至 Luna，使用者主動選擇的 Terra、Sol 或其他自訂模型不會被覆蓋。實際可用性取決於帳號、Project、地區與當時供應狀態。
 
@@ -359,12 +367,12 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.1"
+.\build.ps1 -Version "3.1.2"
 ```
 
 歷史上的 v2.1.0 RC1 在發布前通過 55 項自動測試程式，以及 Windows 發布工作流程的原始碼稽核、封裝自我測試、安裝／移除驗證與安全檢查；自動測試不能取代尚未完成的第三方真實環境驗證。
 
-每個合格標籤都必須先完成完整回歸、成品層級 smoke test、SHA-256 複驗、SBOM 驗證、Tachyon 證據門檻、Artifact Attestation 與四語 Release 說明，才可建立預發行版。Windows 更新器只接受官方 GitHub HTTPS 的 EXE／MSI，並在詢問執行前驗證宣告大小與 SHA-256。
+每個合格標籤都必須先完成完整回歸、成品層級 smoke test、SHA-256 複驗、SBOM 驗證、Tachyon 證據門檻、Artifact Attestation 與四語 Release 說明，才可建立對應的 Stable Release 或 Pre-release。Windows 更新器只接受官方 GitHub HTTPS 的 EXE／MSI，並在詢問執行前驗證宣告大小與 SHA-256。
 
 互動式 EXE 安裝程式提供臺灣繁中、簡中、英文、日文；MSI 維持臺灣繁中基底，並提供經測試的 en-US、zh-CN、ja-JP 語言轉換，詳見 [安裝程式在地化](installer/LOCALIZATION.md)。
 
@@ -405,7 +413,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台进度：** Windows 仍是唯一完成真机、完整回归、安装与发布验证的平台。v3.1.1 的 macOS／Linux 版本具备安全的平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI，并提供可启动、可切换四语但功能受限的 DMG／AppImage Preview；CI 不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
+> **跨平台进度：** Windows 仍是唯一完成真机、完整回归、安装与发布验证的平台。v3.1.2 的 macOS／Linux 版本具备安全的平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI，并提供可启动、可切换四语但功能受限的 DMG／AppImage Preview；CI 不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
 > 本项目遵循[炎剑开源软件家族质量标准](PUBLISHING.md)。
 
@@ -617,7 +625,7 @@ Azure Speech 是默认关闭、由用户自行启用的预览供应器，需要�
 
 ### 集成验证状态
 
-> **公开预览版注意事项：** Microsoft、GitHub 与 Home Assistant 的架构、权限边界及内部测试已建立；截至 `v2.1.0-rc.1`，尚未以全部真实账号、仓库、主机与实体设备完成端到端验证。它们是实验性预览功能，不是所有环境都可完整运行的保证。
+> **公开 Preview 注意事项：** Azure Speech 已完成下列真实资源验证；Microsoft 账号集成、GitHub 与 Home Assistant 虽已建立架构、权限边界及内部测试，仍未以全部真实账号、仓库、主机与实体设备完成端到端验证。尚未完成真实验证的部分属于实验性 Preview，不保证可在所有环境完整运行。
 
 - Azure Speech 已完成本项目的真实 Free F0 资源、HTTPS 合成、RIFF 音频与 Windows 播放验证；每位用户仍须自行建立 Speech 资源并承担其账号、配额与费用。
 - Microsoft 账号的真实登录、令牌更新，以及 Outlook、OneDrive、Calendar 完整读写流程尚未验证。
@@ -639,7 +647,7 @@ Azure Speech 是默认关闭、由用户自行启用的预览供应器，需要�
 
 尚未数字签名的开源预览版可能触发 Windows SmartScreen；请确认官方下载来源与 SHA-256 后再运行。
 
-v3.1.1 另提供 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`。它们是功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
+v3.1.2 另提供 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`。它们是功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
 
 #### 自动化发布边界
 
@@ -659,6 +667,14 @@ v3.1.1 另提供 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各
 | Realtime 即时语音 | `gpt-realtime-2.1-mini` |
 | 语音转文字 | `gpt-4o-mini-transcribe` |
 | OpenAI 文字转语音 | `gpt-4o-mini-tts` |
+
+#### Realtime 回复声音
+
+`v3.1.2` 完整保留 OpenAI Realtime 原生声音，并继续作为默认选项。原生模式由 Realtime 通过同一路径理解并直接输出音频，适合偏好原有声线，或希望在这些选项中获得最低额外延迟的用户。
+
+用户也可明确改选“Realtime 即时理解＋一般 Azure Speech 流式发声”或“Realtime 即时理解＋Azure Dragon HD 流式发声”。混合模式只把 Realtime 生成的文字交给所选 Azure 引擎；安全短句完成后立即按顺序排队，首段音频到达即开始发声，避免等待完整回答与完整音频文件。但是，新增的 TTS 网络与合成阶段仍会增加发话等待，因此本项目不宣称零延迟。
+
+三种模式彼此隔离，同一时间只有一条输出路径负责播放，不会混音，也不会改动一般 Windows 本地语音、OpenAI TTS、一般 Azure 朗读或其他语音模型。Dragon HD 单句失败时，依次只回退到一般 Azure 一次及 Windows 本地女性声线一次；一般 Azure 单句失败时只回退到 Windows 本地女性声线一次。上述回退仅适用于该句尚未播放任何音频时；若流式播放开始后才失败，系统会立即停止该句而不整句重播，以避免重复发声及重复计费。Azure 选项不会取代原生 Realtime。
 
 从 `v2.1.0-rc.1` 起，文字对话默认改为 `gpt-5.6-luna`，设置列表不再提供 `gpt-5.4-mini`；现有 mini 设置会迁移至 Luna，用户主动选择的 Terra、Sol 或其他自定义模型不会被覆盖。实际可用性取决于账号、Project、地区与当时供应状态。
 
@@ -750,12 +766,12 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.1"
+.\build.ps1 -Version "3.1.2"
 ```
 
 历史上的 v2.1.0 RC1 在发布前通过 55 项自动测试程序，以及 Windows 发布工作流的源代码审计、打包自测、安装／卸载验证与安全检查；自动测试不能代替尚未完成的第三方真实环境验证。
 
-每个合格标签都必须先完成完整回归、成品级 smoke test、SHA-256 复验、SBOM 验证、Tachyon 证据门槛、Artifact Attestation 与四语 Release 说明，才可创建预发布版。Windows 更新器只接受官方 GitHub HTTPS 的 EXE／MSI，并在询问运行前验证声明大小与 SHA-256。
+每个合格标签都必须先完成完整回归、成品级 smoke test、SHA-256 复验、SBOM 验证、Tachyon 证据门槛、Artifact Attestation 与四语 Release 说明，才可创建对应的 Stable Release 或 Pre-release。Windows 更新器只接受官方 GitHub HTTPS 的 EXE／MSI，并在询问运行前验证声明大小与 SHA-256。
 
 交互式 EXE 安装程序提供台湾繁中、简中、英文、日文；MSI 保持台湾繁中基础，并提供经过测试的 en-US、zh-CN、ja-JP 语言转换，详情请见 [安装程序本地化](installer/LOCALIZATION.md)。
 
@@ -796,7 +812,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **Cross-platform status:** Windows remains the only platform validated through real-device use, the full regression suite, installation, and publication. The v3.1.1 macOS/Linux builds have safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen, and provide launchable, four-language, deliberately limited DMG/AppImage Previews. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
+> **Cross-platform status:** Windows remains the only platform validated through real-device use, the full regression suite, installation, and publication. The v3.1.2 macOS/Linux builds have safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen, and provide launchable, four-language, deliberately limited DMG/AppImage Previews. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
 
 > This project follows the [Flameblade Open Source Software Family Quality Standard](PUBLISHING.md).
 
@@ -1008,7 +1024,7 @@ On August 11, 2026, a real Azure Speech Free F0 resource in East Asia completed 
 
 ### Integration verification status
 
-> **Public preview notice:** Microsoft, GitHub, and Home Assistant architecture, permission boundaries, and internal tests are implemented. As of `v2.1.0-rc.1`, end-to-end validation across all real accounts, repositories, servers, and physical devices is incomplete. These are experimental Preview features, not a guarantee of complete operation in every environment.
+> **Public Preview notice:** Azure Speech has completed the live-resource validation described below. Microsoft account integration, GitHub, and Home Assistant have architecture, permission boundaries, and internal tests, but have not completed end-to-end validation across every real account, repository, server, and physical device. The portions without live validation remain experimental Preview features and are not guaranteed to operate completely in every environment.
 
 - Azure Speech completed this project's live Free F0 resource, HTTPS synthesis, RIFF audio, and Windows playback validation; every user must still create a Speech resource and remains responsible for account, quota, and cost.
 - Microsoft account real sign-in, token renewal, and complete Outlook, OneDrive, and Calendar read/write flows remain unverified.
@@ -1030,7 +1046,7 @@ General users do not need to install Python:
 
 Unsigned open-source previews may trigger Windows SmartScreen. Verify the official download source and SHA-256 before running them.
 
-v3.1.1 also provides separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`. These are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
+v3.1.2 also provides separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`. These are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
 
 #### Automated release boundary
 
@@ -1050,6 +1066,14 @@ Current default models:
 | Realtime voice | `gpt-realtime-2.1-mini` |
 | Speech-to-text | `gpt-4o-mini-transcribe` |
 | OpenAI text-to-speech | `gpt-4o-mini-tts` |
+
+#### Realtime response voice
+
+`v3.1.2` fully preserves native OpenAI Realtime voice and keeps it as the default. Native mode lets Realtime understand and emit audio through the same path, serving people who prefer the original voices or want the lowest added latency among these options.
+
+Users may instead explicitly select “Realtime understanding + standard Azure Speech streaming” or “Realtime understanding + Azure Dragon HD streaming.” Hybrid mode sends only Realtime-generated text to the selected Azure engine. Safe, short clauses enter the ordered queue as soon as they complete, and speech starts with the first audio chunk instead of waiting for the full response or complete audio file. The added TTS network and synthesis stage still increases the wait before speech, so this project does not claim zero latency.
+
+The three modes are isolated: only one output route owns playback at a time, with no mixing and no changes to standard Windows local speech, OpenAI TTS, regular Azure reading, or other voice models. If Dragon HD fails for a clause, it falls back once to standard Azure and then once to a local Windows female voice; standard Azure falls back once to the local Windows female voice. Those fallbacks apply only before any audio from that clause has played. If a stream fails after playback begins, MoHan stops that clause instead of replaying it in full, preventing duplicate speech and duplicate charges. Azure choices do not replace native Realtime.
 
 Starting with `v2.1.0-rc.1`, text chat defaults to `gpt-5.6-luna`, and `gpt-5.4-mini` is no longer listed in Settings. Existing mini settings migrate to Luna without overwriting user-selected Terra, Sol, or other custom models. Actual availability depends on the account, Project, region, and current service state.
 
@@ -1141,12 +1165,12 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.1"
+.\build.ps1 -Version "3.1.2"
 ```
 
 Historically, v2.1.0 RC1 passed 55 automated test programs plus the Windows release workflow's source audit, packaged self-test, install/uninstall verification, and security checks before publication. Automated tests do not replace incomplete third-party live validation.
 
-Every accepted tag must complete the full regression suite, package-level smoke tests, SHA-256 revalidation, SBOM validation, Tachyon evidence gates, Artifact Attestations, and four-language Release notes before a pre-release can be created. The Windows updater accepts only official GitHub HTTPS EXE/MSI sources and verifies declared size and SHA-256 before requesting permission to run an installer.
+Every accepted tag must complete the full regression suite, package-level smoke tests, SHA-256 revalidation, SBOM validation, Tachyon evidence gates, Artifact Attestations, and four-language Release notes before its corresponding Stable Release or Pre-release can be created. The Windows updater accepts only official GitHub HTTPS EXE/MSI sources and verifies declared size and SHA-256 before requesting permission to run an installer.
 
 The interactive EXE installer provides Taiwan Traditional Chinese, Simplified Chinese, English, and Japanese. The MSI retains a Taiwan Traditional Chinese base with tested en-US, zh-CN, and ja-JP transforms; see [installer localization](installer/LOCALIZATION.md).
 
@@ -1187,7 +1211,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **クロスプラットフォーム状況：** 実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。v3.1.1 の macOS／Linux 版には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI があり、起動と四言語切替が可能な機能限定 DMG／AppImage Preview も提供します。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
+> **クロスプラットフォーム状況：** 実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。v3.1.2 の macOS／Linux 版には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI があり、起動と四言語切替が可能な機能限定 DMG／AppImage Preview も提供します。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
 > 本プロジェクトは[炎剣オープンソース・ソフトウェア・ファミリー品質基準](PUBLISHING.md)に従います。
 
@@ -1399,7 +1423,7 @@ Azure Speech は初期状態で無効な Preview 供給元で、利用者が明�
 
 ### 統合の検証状況
 
-> **公開 Preview の注意：** Microsoft、GitHub、Home Assistant の構造、権限境界、内部テストは実装済みです。`v2.1.0-rc.1` 時点で、すべての実アカウント、リポジトリ、サーバー、実機器を使うエンドツーエンド検証は未完了です。これらは実験的 Preview であり、あらゆる環境で完全動作する保証ではありません。
+> **公開 Preview の注意：** Azure Speech は、以下に記載する実リソース検証を完了しています。Microsoft アカウント連携、GitHub、Home Assistant は構造、権限境界、内部テストを実装済みですが、すべての実アカウント、リポジトリ、サーバー、実機器を使うエンドツーエンド検証は未完了です。実検証が完了していない部分は実験的 Preview であり、あらゆる環境で完全動作する保証はありません。
 
 - Azure Speech は本プロジェクトの実 Free F0 リソース、HTTPS 合成、RIFF 音声、Windows 再生検証を完了しました。各利用者は自身の Speech リソースを作成し、アカウント、割り当て、費用に責任を負う必要があります。
 - Microsoft アカウントの実ログイン、token 更新、Outlook、OneDrive、Calendar の完全な読み書きは未検証です。
@@ -1421,7 +1445,7 @@ Azure Speech は初期状態で無効な Preview 供給元で、利用者が明�
 
 署名のないオープンソース Preview は Windows SmartScreen の警告を出す場合があります。公式配布元と SHA-256 を確認してから実行してください。
 
-v3.1.1 は、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` も提供します。これらは機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
+v3.1.2 は、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` も提供します。これらは機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
 
 #### 自動リリースの境界
 
@@ -1441,6 +1465,14 @@ v3.1.1 は、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`
 | Realtime 即時音声 | `gpt-realtime-2.1-mini` |
 | 音声から文字 | `gpt-4o-mini-transcribe` |
 | OpenAI 文字から音声 | `gpt-4o-mini-tts` |
+
+#### Realtime 応答音声
+
+`v3.1.2` は OpenAI Realtime のネイティブ音声を完全に維持し、引き続き既定値とします。ネイティブモードでは Realtime が同じ経路で理解と音声出力を行うため、従来の音声を好む利用者や、これらの選択肢の中で追加遅延を最小にしたい利用者に適しています。
+
+利用者は「Realtime 即時理解＋通常 Azure Speech ストリーミング発話」または「Realtime 即時理解＋Azure Dragon HD ストリーミング発話」を明示的に選ぶこともできます。ハイブリッドモードは Realtime が生成した文字だけを選択中の Azure エンジンへ渡します。安全な短い句が完成するたび順番待ちへ追加し、完全な応答や音声ファイルを待たず、最初の音声断片から発話を始めます。ただし TTS の通信と合成工程が増えるため、発話前の待ち時間は長くなり得ます。本プロジェクトはゼロ遅延をうたいません。
+
+三つのモードは完全に分離し、同時に再生を管理する出力経路は一つだけです。音声を混合せず、通常の Windows 本機音声、OpenAI TTS、通常 Azure 読み上げ、その他の音声モデルも変更しません。Dragon HD が一つの句で失敗した場合は通常 Azure へ一度、続いて Windows 本機女性音声へ一度だけ代替し、通常 Azure が失敗した場合は Windows 本機女性音声へ一度だけ代替します。この代替は、その句の音声がまだ一切再生されていない場合に限ります。ストリーミング再生の開始後に失敗した場合は、重複発話と重複課金を避けるため、句全体を再生し直さず直ちに停止します。Azure の選択肢がネイティブ Realtime を置き換えることはありません。
 
 `v2.1.0-rc.1` から文字会話の既定値は `gpt-5.6-luna` で、設定一覧から `gpt-5.4-mini` を外しました。既存 mini 設定は Luna へ移行しますが、利用者が選んだ Terra、Sol、その他の独自モデルを上書きしません。実際の利用可否はアカウント、Project、地域、提供状況に依存します。
 
@@ -1532,12 +1564,12 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.1"
+.\build.ps1 -Version "3.1.2"
 ```
 
 過去の v2.1.0 RC1 は公開前に 55 個の自動テストプログラムと、Windows リリースワークフローのソース監査、パッケージ自己試験、インストール／削除検証、安全検査に合格しました。自動テストは、未完了の第三者実環境検証に代わりません。
 
-受理された各タグは、完全回帰、完成品 smoke test、SHA-256 再検証、SBOM 検証、Tachyon 証拠ゲート、Artifact Attestation、四言語 Release 説明を完了しなければプレリリースを作成できません。Windows 更新機能は公式 GitHub HTTPS の EXE／MSI だけを受理し、実行許可を求める前に宣言サイズと SHA-256 を検証します。
+受理された各タグは、完全回帰、完成品 smoke test、SHA-256 再検証、SBOM 検証、Tachyon 証拠ゲート、Artifact Attestation、四言語 Release 説明を完了しなければ、対応する Stable Release または Pre-release を作成できません。Windows 更新機能は公式 GitHub HTTPS の EXE／MSI だけを受理し、実行許可を求める前に宣言サイズと SHA-256 を検証します。
 
 対話型 EXE インストーラーは台湾繁体字中国語、簡体字中国語、英語、日本語を提供します。MSI は台湾繁体字中国語を基底とし、検証済み en-US、zh-CN、ja-JP 変換を提供します。詳しくは[インストーラーのローカライズ](installer/LOCALIZATION.md)をご覧ください。
 

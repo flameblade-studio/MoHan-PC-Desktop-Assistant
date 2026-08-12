@@ -78,7 +78,7 @@ class SpeechRequest:
     text: str
     voice: str = ""
     rate: int = -1
-    api_key: str = ""
+    api_key: str = field(default="", repr=False)
     instructions: str = ""
     options: Mapping[str, str] = field(default_factory=dict)
 
@@ -177,6 +177,7 @@ class AzureSpeechProvider:
             request.api_key,
             str(request.options.get("region", "")),
             request.voice,
+            str(request.options.get("locale", "zh-TW")),
         )
 
 

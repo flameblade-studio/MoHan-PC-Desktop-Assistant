@@ -32,6 +32,7 @@ def _voice(short_name: str, locale: str, gender: str) -> object:
 
 
 def run() -> None:
+    FakeSynthesizer.query_count = 0
     FakeSynthesizer.voices = (
         _voice("zh-CN-NewWomanNeural", "zh-CN", "Female"),
         _voice("zh-TW-NewWomanNeural", "zh-TW", "Female"),
@@ -76,15 +77,36 @@ def run() -> None:
     )
     assert hd.voices == ("zh-CN-NewWoman:DragonHDLatestNeural",)
     assert all("Man" not in voice for voice in (*normal.voices, *hd.voices))
-    service.query(
+    same_credentials = service.query(
+        "secret-never-cached",
+        "westus2",
+        "zh-TW",
+        hd_only=True,
+    )
+    assert same_credentials is hd
+    assert FakeSynthesizer.query_count == 2
+
+    different_credentials = service.query(
         "a-different-secret",
         "westus2",
         "zh-TW",
         hd_only=True,
     )
-    assert FakeSynthesizer.query_count == 2
+    assert different_credentials is not hd
+    assert FakeSynthesizer.query_count == 3
+    assert service.query(
+        "a-different-secret",
+        "westus2",
+        "zh-TW",
+        hd_only=True,
+    ) is different_credentials
+    assert FakeSynthesizer.query_count == 3
+
+    cache_representation = repr(service._cache)
+    assert "secret-never-cached" not in cache_representation
+    assert "a-different-secret" not in cache_representation
     assert all(
-        "secret" not in repr(key)
+        "credential_fingerprint" not in repr(key)
         for key in service._cache
     )
     print("AZURE_VOICE_CATALOG_OK")

@@ -4,6 +4,14 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### v3.1.2 — 2026-08-12
+
+- 完整保留 OpenAI Realtime 原生聲音並維持為預設及最低額外延遲選項；偏好原有聲線的使用者不會被迫改用 Azure。
+- 新增可選的 Realtime 即時理解＋一般 Azure Speech 或 Dragon HD 串流發聲；安全短句完成後立即依序合成，首段音訊抵達即播放，以降低額外 TTS 等待，但不宣稱零延遲。
+- 三種輸出模式完全隔離且不混音，不改動其他語音供應器；Dragon HD 單句失敗時依序只退回一般 Azure 一次及 Windows 本機女性聲線一次，一般 Azure 單句失敗時只退回 Windows 本機女性聲線一次。回退僅發生於該句尚未播放音訊時；串流已開始後若失敗則立即停止，不整句重播，以免重複發聲與計費。
+- 只有狀態為 `completed` 的 Realtime 回覆才提交最終文字；取消、失敗、不完整、斷線及舊回覆的遲到事件不會發聲或污染後續回覆。
+- Azure 與 Windows 本機語音都支援真正停止目前播放；操作識別碼、受限佇列與過長回覆保護會隔離遲到回呼並限制記憶體壓力，敏感金鑰也不會出現在物件表示內容中。
+
 ### v3.1.1 — 2026-08-12
 
 - 一般 Azure 與 Dragon HD 依選定區域及各自的加密金鑰動態查詢實際女性聲線，排除男性、不相容模型及區域不支援的 HD Flash；固定清單只作查詢失敗時的安全備援。
@@ -190,6 +198,14 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
+### v3.1.2 — 2026-08-12
+
+- 完整保留 OpenAI Realtime 原生声音，并继续作为默认及最低额外延迟选项；偏好原有声线的用户不会被迫改用 Azure。
+- 新增可选的 Realtime 即时理解＋一般 Azure Speech 或 Dragon HD 流式发声；安全短句完成后立即依次合成，首段音频到达即播放，以降低新增的 TTS 等待，但不宣称零延迟。
+- 三种输出模式完全隔离且不混音，不改动其他语音供应器；Dragon HD 单句失败时依次只回退到一般 Azure 一次及 Windows 本地女性声线一次，一般 Azure 单句失败时只回退到 Windows 本地女性声线一次。回退仅发生于该句尚未播放音频时；流式播放开始后若失败则立即停止，不整句重播，以免重复发声及计费。
+- 只有状态为 `completed` 的 Realtime 回复才提交最终文字；取消、失败、不完整、断线及旧回复的迟到事件不会发声或污染后续回复。
+- Azure 与 Windows 本地语音都支持真正停止当前播放；操作标识、受限队列与过长回复保护会隔离迟到回调并限制内存压力，敏感密钥也不会出现在对象表示内容中。
+
 ### v3.1.1 — 2026-08-12
 
 - 一般 Azure 与 Dragon HD 根据所选区域及各自的加密密钥动态查询实际女性声线，排除男性、不兼容模型及区域不支持的 HD Flash；固定列表仅作为查询失败时的安全备用。
@@ -374,6 +390,14 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 ## English
 
 All notable public changes to MoHan Desktop Assistant are documented here.
+
+### v3.1.2 — 2026-08-12
+
+- Fully preserves native OpenAI Realtime voice as the default and lowest-added-latency option; users who prefer its original voices are never forced onto Azure.
+- Adds optional Realtime understanding with standard Azure Speech or Dragon HD streaming output. Safe short clauses synthesize in order as they complete, and playback starts with the first audio chunk to reduce the added TTS wait without claiming zero latency.
+- Keeps all three output modes isolated and unmixed, without changing other speech providers. A failed Dragon HD clause falls back once to standard Azure and then once to a local Windows female voice; standard Azure falls back once to the local Windows female voice. Fallback occurs only before that clause has played any audio. A stream failure after playback begins stops the clause without replaying it in full, preventing duplicate speech and charges.
+- Commits final text only when a Realtime response has status `completed`; cancelled, failed, incomplete, disconnected, and late events from older responses cannot speak or contaminate the next response.
+- Azure and Windows local speech can both stop current playback. Operation IDs, bounded queues, and oversized-response guards isolate late callbacks and cap memory pressure, while secret keys stay out of object representations.
 
 ### v3.1.1 — 2026-08-12
 
@@ -599,6 +623,14 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### v3.1.2 — 2026-08-12
+
+- OpenAI Realtime のネイティブ音声を完全に維持し、既定かつ追加遅延が最も少ない選択肢とします。従来の音声を好む利用者へ Azure を強制しません。
+- Realtime による即時理解と、通常 Azure Speech または Dragon HD のストリーミング発話を組み合わせる任意モードを追加します。安全な短い句が完成するたび順番に合成し、最初の音声断片から再生して TTS の追加待ち時間を抑えますが、ゼロ遅延はうたいません。
+- 三つの出力モードを完全に分離して混音せず、他の音声供給元も変更しません。Dragon HD が一つの句で失敗した場合は通常 Azure へ一度、続いて Windows 本機女性音声へ一度だけ代替し、通常 Azure が失敗した場合は Windows 本機女性音声へ一度だけ代替します。代替するのは、その句の音声がまだ再生されていない場合だけです。再生開始後のストリーム障害では句を直ちに停止し、全体を再生し直さないことで重複発話と重複課金を防ぎます。
+- Realtime 応答の状態が `completed` の場合だけ最終テキストを確定します。取消、失敗、未完了、切断、過去の応答から遅れて届いたイベントは発話せず、次の応答も汚染しません。
+- Azure と Windows 本機音声は、どちらも現在の再生を実際に停止できます。操作 ID、上限付きキュー、長すぎる応答の保護により遅延コールバックを隔離してメモリ負荷を制限し、秘密キーをオブジェクト表現へ出しません。
 
 ### v3.1.1 — 2026-08-12
 
