@@ -45,9 +45,7 @@
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="MoHan Desktop Assistant"
                   Target="[INSTALLFOLDER]$(var.ExecutableName)"
-                  WorkingDirectory="INSTALLFOLDER"
-                  Icon="MohanIcon"
-                  IconIndex="0">
+                  WorkingDirectory="INSTALLFOLDER">
           <ShortcutProperty Key="System.AppUserModel.ID"
                             Value="FlamebladeStudio.MoHanDesktopAssistant" />
         </Shortcut>

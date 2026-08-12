@@ -139,12 +139,35 @@ foreach ($Transform in $MsiVariants) {
     )) {
         throw "MSI $Variant shortcut target escaped the install directory"
     }
-    if (-not [string]::Equals(
-        $MsiShortcut.IconLocation,
-        $ExpectedMsiIconLocation,
-        [StringComparison]::OrdinalIgnoreCase
-    )) {
-        throw "MSI $Variant shortcut icon is not the installed MoHan icon"
+    $ShortcutBytes = [IO.File]::ReadAllBytes($MsiShortcutPath)
+    [uint32]$ShellLinkHeaderSize = 0x0000004C
+    if (
+        $ShortcutBytes.Length -lt $ShellLinkHeaderSize -or
+        [BitConverter]::ToUInt32($ShortcutBytes, 0) -ne $ShellLinkHeaderSize
+    ) {
+        throw "MSI $Variant shortcut has an invalid Shell Link header"
+    }
+    [uint32]$LinkFlags = [BitConverter]::ToUInt32($ShortcutBytes, 20)
+    [uint32]$HasIconLocationFlag = 0x00000040
+    if (($LinkFlags -band $HasIconLocationFlag) -ne 0) {
+        throw "MSI $Variant shortcut contains an independent icon location"
+    }
+    $ReportedIconLocation = ([string]$MsiShortcut.IconLocation).Trim()
+    $IconLocationIsAllowed = (
+        [string]::IsNullOrEmpty($ReportedIconLocation) -or
+        [string]::Equals(
+            $ReportedIconLocation,
+            ",0",
+            [StringComparison]::Ordinal
+        ) -or
+        [string]::Equals(
+            $ReportedIconLocation,
+            $ExpectedMsiIconLocation,
+            [StringComparison]::OrdinalIgnoreCase
+        )
+    )
+    if (-not $IconLocationIsAllowed) {
+        throw "MSI $Variant shortcut icon escaped the installed MoHan executable"
     }
     $UninstallArguments = @(
         "/x", $MsiInstaller.FullName, "/qn", "/norestart"

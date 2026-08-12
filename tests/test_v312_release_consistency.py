@@ -13,6 +13,7 @@ lazy from version_info import APP_VERSION, FALLBACK_VERSION
 
 VERSION = "3.1.2"
 TAG = f"v{VERSION}"
+RELEASE_DATE = "2026-08-13"
 PYTHON_VERSION = "3.15.0-rc.1"
 LANGUAGE_HEADINGS = (
     "## 繁體中文",
@@ -66,6 +67,7 @@ def test_runtime_and_package_versions() -> None:
 
     citation = read("CITATION.cff")
     assert f'version: "{VERSION}"' in citation
+    assert f'date-released: "{RELEASE_DATE}"' in citation
 
 
 def test_readme_uses_one_dynamic_release_badge_per_language() -> None:
@@ -123,7 +125,7 @@ def test_four_language_release_sources_are_complete_and_permanent() -> None:
     language_sections(readme, "README.md")
     language_sections(changelog, "CHANGELOG.md")
     note_sections = language_sections(notes, f"docs/releases/{TAG}.md")
-    assert changelog.count(f"### {TAG} — 2026-08-13") == 4
+    assert changelog.count(f"### {TAG} — {RELEASE_DATE}") == 4
     assert notes.startswith(
         "# 墨寒桌面助理 v3.1.2／墨寒桌面助手 v3.1.2／"
         "MoHan Desktop Assistant v3.1.2／"

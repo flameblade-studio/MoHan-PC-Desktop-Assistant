@@ -13,6 +13,7 @@
 - Azure 與 Windows 本機語音都支援真正停止目前播放；操作識別碼、受限佇列與過長回覆保護會隔離遲到回呼並限制記憶體壓力，敏感金鑰也不會出現在物件表示內容中。
 - 修正語音結束後身體短暫回彈的程式根因：音訊結束時立即將發話動作目標釋放至中央，待實際位移收束後才切換狀態；Realtime、Windows 本機、OpenAI 與 Azure 共用同一結束流程，並取消狀態交接時重複的表情進場動作，避免同一影格出現兩個動作來源。
 - 新增 75%、100%、180% 縮放的逐影格座標回歸，驗證動作只會平滑、單調地返回中央，且所有角色圖層保持同步。本修正已納入自動化驗證，但仍待使用者以候選安裝包進行實機確認，不能宣稱實機已通過。
+- 修正 WiX MSI 的 Windows 開始功能表捷徑，使其直接沿用目標 EXE 內嵌的墨寒半身圖示，不再引用 MSI 的獨立圖示資源。
 - 本版四語介面修正以繁中、簡中、英文、日文相同功能邊界納入驗證；任何正式版或候選版產物都只有在完整在地化、回歸、封裝、安全及發行檢查全部通過後才會公開。
 
 ### v3.1.1 — 2026-08-12
@@ -210,6 +211,7 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 - Azure 与 Windows 本地语音都支持真正停止当前播放；操作标识、受限队列与过长回复保护会隔离迟到回调并限制内存压力，敏感密钥也不会出现在对象表示内容中。
 - 修复语音结束后身体短暂回弹的程序根因：音频结束时立即将发话动作目标释放至中央，待实际位移收束后才切换状态；Realtime、Windows 本地、OpenAI 与 Azure 共用同一结束流程，并取消状态交接时重复的表情进场动作，避免同一帧出现两个动作来源。
 - 新增 75%、100%、180% 缩放的逐帧坐标回归，验证动作只会平滑、单调地返回中央，且所有角色图层保持同步。本修正已纳入自动化验证，但仍待用户使用候选安装包进行真机确认，不能宣称真机已通过。
+- 修复 WiX MSI 的 Windows 开始菜单快捷方式，使其直接沿用目标 EXE 内嵌的墨寒半身图标，不再引用 MSI 的独立图标资源。
 - 本版本四语界面修复以繁中、简中、英文、日文相同功能边界纳入验证；任何正式版或候选版产物都只有在完整本地化、回归、打包、安全及发布检查全部通过后才会公开。
 
 ### v3.1.1 — 2026-08-12
@@ -406,6 +408,7 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 - Azure and Windows local speech can both stop current playback. Operation IDs, bounded queues, and oversized-response guards isolate late callbacks and cap memory pressure, while secret keys stay out of object representations.
 - Fixes the underlying motion-handoff cause of the brief body rebound after speech: speech motion begins releasing toward the centre as soon as audio ends, and state hand-off waits until the actual offset settles. Realtime, Windows local, OpenAI, and Azure share this completion path, while duplicate expression entrance motion is suppressed during hand-off so only one motion owner controls each frame.
 - Adds frame-by-frame coordinate regressions at 75%, 100%, and 180% scale, verifying that motion returns to centre smoothly and monotonically while all character layers remain aligned. Automated coverage includes this fix, but owner validation with a candidate installer remains pending; this does not claim that real-device validation has passed.
+- Fixes the WiX MSI Windows Start menu shortcut so it inherits MoHan's embedded half-body icon directly from the target EXE instead of referencing a separate MSI icon resource.
 - This release validates its Traditional Chinese, Simplified Chinese, English, and Japanese interface fixes against the same functional boundaries; Stable Release and release-candidate artifacts are published only after complete localization, regression, packaging, security, and publication checks pass.
 
 ### v3.1.1 — 2026-08-12
@@ -642,6 +645,7 @@ speech, gaze, and physics stress test passed before this release candidate.
 - Azure と Windows 本機音声は、どちらも現在の再生を実際に停止できます。操作 ID、上限付きキュー、長すぎる応答の保護により遅延コールバックを隔離してメモリ負荷を制限し、秘密キーをオブジェクト表現へ出しません。
 - 発話終了後に身体が短時間跳ね戻る動作引き継ぎ上の根本原因を修正します。音声の終了時点で発話動作の目標を直ちに中央へ解放し、実際の変位が収束してから状態を切り替えます。Realtime、Windows 本機、OpenAI、Azure は同じ終了処理を共有し、状態引き継ぎ時の重複した表情開始動作を抑えて、同一フレームを一つの動作所有者だけが制御するようにします。
 - 75%、100%、180% の各表示倍率でフレームごとの座標回帰を追加し、全キャラクターレイヤーの同期を保ちながら動作が中央へ滑らかかつ単調に戻ることを検証します。修正は自動テスト対象ですが、候補インストーラーによる所有者の実機確認は未完了であり、実機検証済みとは表明しません。
+- WiX MSI の Windows スタートメニューショートカットを修正し、MSI 内の個別アイコンリソースではなく、対象 EXE に内蔵された墨寒の半身アイコンを直接継承するようにしました。
 - 本版の繁体字中国語、簡体字中国語、英語、日本語の画面修正は、同じ機能境界で検証します。正式版とリリース候補版の成果物は、完全なローカライズ、回帰、パッケージ、セキュリティ、公開検査がすべて成功した場合にのみ公開されます。
 
 ### v3.1.1 — 2026-08-12

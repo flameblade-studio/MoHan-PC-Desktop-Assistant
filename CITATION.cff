@@ -6,7 +6,7 @@ authors:
   - family-names: "CHOU"
     given-names: "MING HUA"
 version: "3.1.2"
-date-released: "2026-08-12"
+date-released: "2026-08-13"
 license: MIT
 abstract: >-
   A configurable Windows AI desktop companion and permission-gated

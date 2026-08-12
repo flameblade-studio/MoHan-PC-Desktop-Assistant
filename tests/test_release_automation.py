@@ -150,7 +150,9 @@ def test_inno_setup_and_artwork_contract() -> None:
     assert '"/MERGETASKS=!desktopicon"' in installer_test
     for required in (
         "MSI $Variant shortcut target escaped the install directory",
-        "MSI $Variant shortcut icon is not the installed MoHan icon",
+        "MSI $Variant shortcut has an invalid Shell Link header",
+        "MSI $Variant shortcut contains an independent icon location",
+        "MSI $Variant shortcut icon escaped the installed MoHan executable",
         "MSI $Variant uninstaller left the Start menu shortcut behind",
     ):
         assert required in installer_test
@@ -250,8 +252,8 @@ def test_wix_source_and_localization_contract() -> None:
     assert_contains(
         wix_source,
         (
-            'Icon="MohanIcon"',
-            'IconIndex="0"',
+            '<Property Id="ARPPRODUCTICON" Value="MohanIcon" />',
+            '<Icon Id="MohanIcon" SourceFile="$(var.IconPath)" />',
             'Key="System.AppUserModel.ID"',
             'Value="FlamebladeStudio.MoHanDesktopAssistant"',
             'Language="$(var.ProductLanguage)"',
@@ -259,6 +261,12 @@ def test_wix_source_and_localization_contract() -> None:
             '<Files Directory="INSTALLFOLDER"',
         ),
     )
+    shortcut = wix_source.split(
+        '<Shortcut Id="ApplicationStartMenuShortcut"',
+        maxsplit=1,
+    )[1].split("</Shortcut>", maxsplit=1)[0]
+    assert 'Icon="' not in shortcut
+    assert 'IconIndex="' not in shortcut
     installer_build = read("installer/build_installers.ps1")
     installer_test = read("installer/test_installers.ps1")
     policy = read("installer/LOCALIZATION.md")
