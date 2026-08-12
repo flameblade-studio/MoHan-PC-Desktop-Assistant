@@ -22,8 +22,8 @@ lazy from profile_transfer import (
 lazy from profile_transfer_ui import localized_profile_failure
 lazy from safe_error_localization import safe_error_message
 
-_BAIT_PATH = r"C:\Users\private-owner\Documents\mohan-private.db"
-_BAIT_TOKEN = "sk-fake-profile-transfer-token"
+_BAIT_PATH = r"Z:\private-fixture\owner\mohan-private.db"
+_BAIT_TOKEN = "fixture-profile-private-token"
 _BAIT_DETAIL = f"{_BAIT_PATH}; token={_BAIT_TOKEN}"
 _LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 
