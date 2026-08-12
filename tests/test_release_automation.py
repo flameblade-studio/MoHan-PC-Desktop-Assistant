@@ -335,6 +335,7 @@ def test_packaging_tools_and_public_media() -> None:
             "Get-AuthenticodeSignature",
             "Pyrsys B\\.V\\.",
             'InnoVersion = "7.0.2"',
+            "gh release verify-asset $InnoTag $InnoDownload --repo jrsoftware/issrc",
             'WixVersion = "7.0.0"',
         ),
     )
