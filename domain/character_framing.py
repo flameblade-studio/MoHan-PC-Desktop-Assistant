@@ -1,0 +1,231 @@
+from __future__ import annotations
+
+lazy import time
+lazy from collections.abc import Callable
+lazy from dataclasses import dataclass
+lazy from enum import IntEnum, StrEnum
+
+
+class FramingMode(IntEnum):
+    CLOSE = 0
+    HALF = 1
+    THREE_QUARTER = 2
+    FULL_BODY = 3
+
+
+class FramingReason(StrEnum):
+    DAILY_COMPANION = "daily-companion"
+    QUIET_CONCERN = "quiet-concern"
+    LARGE_GESTURE = "large-gesture"
+    ARRIVAL = "arrival"
+    OUTFIT_PREVIEW = "outfit-preview"
+    TURNING_AWAY = "turning-away"
+    SMALL_VIEWPORT = "small-viewport"
+    SPEECH_HOLD = "speech-hold"
+    RATE_LIMIT = "rate-limit"
+
+
+@dataclass(frozen=True, slots=True)
+class NormalizedRect:
+    left: float
+    top: float
+    right: float
+    bottom: float
+
+    def __post_init__(self) -> None:
+        if not (
+            0.0 <= self.left < self.right <= 1.0
+            and 0.0 <= self.top < self.bottom <= 1.0
+        ):
+            raise ValueError("Normalized framing rectangle must be within 0..1.")
+
+    @property
+    def width(self) -> float:
+        return self.right - self.left
+
+    @property
+    def height(self) -> float:
+        return self.bottom - self.top
+
+    def contains(self, other: NormalizedRect) -> bool:
+        return (
+            self.left <= other.left
+            and self.top <= other.top
+            and self.right >= other.right
+            and self.bottom >= other.bottom
+        )
+
+
+FRAMING_RECTS = frozendict(
+    {
+        FramingMode.CLOSE: NormalizedRect(0.25, 0.00, 0.75, 0.34),
+        FramingMode.HALF: NormalizedRect(0.15, 0.00, 0.85, 0.57),
+        FramingMode.THREE_QUARTER: NormalizedRect(0.08, 0.00, 0.92, 0.82),
+        FramingMode.FULL_BODY: NormalizedRect(0.00, 0.00, 1.00, 1.00),
+    }
+)
+
+
+@dataclass(frozen=True, slots=True)
+class FramingContext:
+    available_width_px: int
+    available_height_px: int
+    speech_active: bool = False
+    mouth_closed: bool = True
+    emotion_intensity: float = 0.0
+    gesture_bounds: NormalizedRect | None = None
+    owner_arrived: bool = False
+    outfit_preview: bool = False
+    turning_away: bool = False
+    adaptive_enabled: bool = True
+
+    def __post_init__(self) -> None:
+        if self.available_width_px <= 0 or self.available_height_px <= 0:
+            raise ValueError("Available desktop viewport must be positive.")
+        if not 0.0 <= self.emotion_intensity <= 1.0:
+            raise ValueError("Emotion intensity must be within 0..1.")
+
+
+@dataclass(frozen=True, slots=True)
+class FramingDecision:
+    mode: FramingMode
+    crop: NormalizedRect
+    transition_ms: int
+    held: bool
+    reason: FramingReason
+
+
+class CharacterFramingDirector:
+    """Select a human-like shot while keeping one full-body identity source."""
+
+    minimum_transition_gap_seconds = 1.2
+
+    def __init__(
+        self,
+        clock: Callable[[], float] | None = None,
+        *,
+        initial_mode: FramingMode = FramingMode.HALF,
+    ) -> None:
+        self._clock = clock or time.monotonic
+        self._mode = initial_mode
+        self._last_change_at = float("-inf")
+        self._pending: tuple[FramingMode, FramingReason] | None = None
+
+    @property
+    def mode(self) -> FramingMode:
+        return self._mode
+
+    def decide(self, context: FramingContext) -> FramingDecision:
+        if not context.adaptive_enabled:
+            return self._decision(self._mode, True, FramingReason.DAILY_COMPANION)
+
+        requested, reason = self._requested(context)
+        fitted = self._fit_viewport(requested, context)
+        if fitted != requested:
+            reason = FramingReason.SMALL_VIEWPORT
+        requested = fitted
+
+        if context.speech_active and not context.mouth_closed and requested != self._mode:
+            self._pending = (requested, reason)
+            return self._decision(self._mode, True, FramingReason.SPEECH_HOLD)
+
+        if context.mouth_closed and self._pending is not None:
+            requested, reason = self._pending
+            requested = self._fit_viewport(requested, context)
+            self._pending = None
+
+        now = float(self._clock())
+        if (
+            requested != self._mode
+            and now - self._last_change_at < self.minimum_transition_gap_seconds
+        ):
+            return self._decision(self._mode, True, FramingReason.RATE_LIMIT)
+        if requested != self._mode:
+            self._mode = self._step_toward(self._mode, requested)
+            self._last_change_at = now
+            held = False
+        else:
+            held = True
+
+        crop = self._crop_with_gesture(self._mode, context.gesture_bounds)
+        mode = self._mode_for_crop(self._mode, crop)
+        if mode != self._mode:
+            self._mode = mode
+            self._last_change_at = now
+            held = False
+        return FramingDecision(
+            self._mode,
+            crop,
+            480 if held else 720,
+            held,
+            reason,
+        )
+
+    def _requested(
+        self,
+        context: FramingContext,
+    ) -> tuple[FramingMode, FramingReason]:
+        if context.outfit_preview:
+            return FramingMode.FULL_BODY, FramingReason.OUTFIT_PREVIEW
+        if context.turning_away:
+            return FramingMode.FULL_BODY, FramingReason.TURNING_AWAY
+        if context.owner_arrived:
+            return FramingMode.FULL_BODY, FramingReason.ARRIVAL
+        if context.gesture_bounds is not None and not FRAMING_RECTS[
+            FramingMode.HALF
+        ].contains(context.gesture_bounds):
+            return FramingMode.THREE_QUARTER, FramingReason.LARGE_GESTURE
+        if context.emotion_intensity >= 0.78:
+            return FramingMode.CLOSE, FramingReason.QUIET_CONCERN
+        return FramingMode.HALF, FramingReason.DAILY_COMPANION
+
+    @staticmethod
+    def _fit_viewport(
+        requested: FramingMode,
+        context: FramingContext,
+    ) -> FramingMode:
+        if context.available_height_px < 560 or context.available_width_px < 420:
+            return FramingMode.HALF
+        if context.available_height_px < 760 and requested is FramingMode.FULL_BODY:
+            return FramingMode.THREE_QUARTER
+        return requested
+
+    @staticmethod
+    def _step_toward(current: FramingMode, requested: FramingMode) -> FramingMode:
+        if abs(int(requested) - int(current)) <= 1:
+            return requested
+        return FramingMode(int(current) + (1 if requested > current else -1))
+
+    @staticmethod
+    def _crop_with_gesture(
+        mode: FramingMode,
+        gesture: NormalizedRect | None,
+    ) -> NormalizedRect:
+        crop = FRAMING_RECTS[mode]
+        if gesture is None or crop.contains(gesture):
+            return crop
+        for candidate in (
+            FramingMode.THREE_QUARTER,
+            FramingMode.FULL_BODY,
+        ):
+            if FRAMING_RECTS[candidate].contains(gesture):
+                return FRAMING_RECTS[candidate]
+        return FRAMING_RECTS[FramingMode.FULL_BODY]
+
+    @staticmethod
+    def _mode_for_crop(
+        current: FramingMode,
+        crop: NormalizedRect,
+    ) -> FramingMode:
+        for mode, candidate in FRAMING_RECTS.items():
+            if crop == candidate:
+                return mode
+        return current
+
+    def _decision(
+        self,
+        mode: FramingMode,
+        held: bool,
+        reason: FramingReason,
+    ) -> FramingDecision:
+        return FramingDecision(mode, FRAMING_RECTS[mode], 480, held, reason)

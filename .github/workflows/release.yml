@@ -3,6 +3,7 @@ name: Multi-platform Release
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   PYTHONUTF8: "1"
+  RUSTUP_TOOLCHAIN: "1.97.1"
 
 on:
   push:
@@ -76,10 +77,10 @@ jobs:
           commit=$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")
           git merge-base --is-ancestor "$commit" origin/main
           mapfile -t source_versions < <(
-            sed -n 's/^FALLBACK_VERSION = "\([^"]*\)"$/\1/p' version_info.py
+            sed -n 's/^FALLBACK_VERSION = "\([^"]*\)"$/\1/p' domain/version_info.py
           )
           if [[ "${#source_versions[@]}" -ne 1 ]]; then
-            echo "Expected exactly one literal FALLBACK_VERSION in version_info.py" >&2
+            echo "Expected exactly one literal FALLBACK_VERSION in domain/version_info.py" >&2
             exit 3
           fi
           source_version="${source_versions[0]}"
@@ -129,6 +130,20 @@ jobs:
           python-version: "3.15.0-rc.1"
           allow-prereleases: true
 
+      - name: Enforce thin app composition root before packaging
+        shell: bash
+        env:
+          PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}
+        run: |
+          "$PREFLIGHT_PYTHON" tools/check_app_composition_root.py app.py
+
+      - name: Validate MoHan Qt 3.15 compatibility policy before packaging
+        shell: bash
+        env:
+          PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}
+        run: |
+          "$PREFLIGHT_PYTHON" tools/check_python315_qt_compatibility.py
+
       - name: Require curated four-language Release notes before packaging
         shell: bash
         env:
@@ -138,6 +153,28 @@ jobs:
           notes="docs/releases/$RELEASE_TAG.md"
           [[ -s "$notes" ]]
           "$PREFLIGHT_PYTHON" tools/check_four_language_docs.py
+
+      - name: Enforce reproducible v4 OpenAI Vision package gate
+        shell: bash
+        env:
+          PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          "$PREFLIGHT_PYTHON" tools/check_openai_vision_release.py \
+            --version "$RELEASE_VERSION"
+
+      - name: Audit optional PoseAtlas candidate without promoting it
+        shell: bash
+        env:
+          PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+          MOHAN_FULL_BODY_V4: ${{ vars.MOHAN_FULL_BODY_V4 }}
+        run: |
+          "$PREFLIGHT_PYTHON" tools/check_pose_atlas_release.py \
+            --version "$RELEASE_VERSION" \
+            --asset-root assets/pose-atlas/v4 \
+            --audit-evidence assets/pose-atlas/v4/release-audits.json \
+            --optional-not-included
 
   windows:
     name: Windows formal packages
@@ -157,8 +194,13 @@ jobs:
           allow-prereleases: true
           cache: pip
 
+      - name: Build verified Qt 3.15 compatibility wheelhouse
+        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse
+
       - name: Install pinned runtime dependencies
-        run: python tools/install_python315_dependencies.py
+        run: >-
+          python tools/install_python315_dependencies.py
+          --qt-compat-wheelhouse qt315-wheelhouse
 
       - name: Install pinned development quality tools
         run: >-
@@ -200,7 +242,16 @@ jobs:
 
       - name: Install dependencies into JIT-default Python
         shell: pwsh
-        run: '& $env:MOHAN_JIT_PYTHON tools/install_python315_dependencies.py'
+        run: >-
+          & $env:MOHAN_JIT_PYTHON tools/install_python315_dependencies.py
+          --qt-compat-wheelhouse qt315-wheelhouse
+
+      - name: Install pinned Rust native build toolchain
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
+          & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all: -r requirements-dev.txt
+          & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all: maturin==1.14.1
 
       - name: Capture and package sanitized Tachyon evidence
         shell: pwsh
@@ -233,6 +284,19 @@ jobs:
           .\build.ps1
           -Version "${{ needs.resolve-release.outputs.version }}"
           -Python $env:MOHAN_JIT_PYTHON
+
+      - name: Verify native equivalence and packaged operations
+        shell: pwsh
+        run: |
+          $version = "${{ needs.resolve-release.outputs.version }}"
+          $evidenceDir = Join-Path $env:RUNNER_TEMP "mohan-native-release"
+          New-Item -ItemType Directory -Force $evidenceDir | Out-Null
+          & $env:MOHAN_JIT_PYTHON -m pytest tests/test_native_equivalence.py tests/test_native_rgba_equivalence.py -q
+          & $env:MOHAN_JIT_PYTHON tools/benchmark_native_rgba.py --width 512 --height 512 --iterations 3
+          & $env:MOHAN_JIT_PYTHON tools/verify_packaged_native_acceleration.py `
+            "dist\MoHan-Desktop-Assistant-$version" `
+            --label "onedir" `
+            --output (Join-Path $evidenceDir "onedir.json")
 
       - name: Run packaged self-test and event-loop smoke test
         shell: pwsh
@@ -276,6 +340,15 @@ jobs:
           New-Item -ItemType Directory -Force release-artifacts | Out-Null
           $zip = Join-Path $PWD "release-artifacts\MoHan-Desktop-Assistant-$tag-Windows-x64.zip"
           Compress-Archive -Path $appDir -DestinationPath $zip -CompressionLevel Optimal
+          $extract = Join-Path $env:RUNNER_TEMP "mohan-release-zip"
+          Expand-Archive -LiteralPath $zip -DestinationPath $extract
+          $packageRoot = Join-Path $extract (Split-Path $appDir -Leaf)
+          $evidenceDir = Join-Path $env:RUNNER_TEMP "mohan-native-release"
+          & $env:MOHAN_JIT_PYTHON tools/verify_packaged_native_acceleration.py `
+            $packageRoot `
+            --label "zip" `
+            --artifact $zip `
+            --output (Join-Path $evidenceDir "zip.json")
 
       - name: Build and verify EXE and MSI installers
         shell: pwsh
@@ -288,7 +361,26 @@ jobs:
             -OutputDir "release-artifacts"
           .\installer\test_installers.ps1 `
             -ArtifactsDir "release-artifacts" `
-            -Version $version
+            -Version $version `
+            -Python $env:MOHAN_JIT_PYTHON `
+            -NativeEvidenceDir (Join-Path $env:RUNNER_TEMP "mohan-native-release")
+
+      - name: Finalize native evidence and Rust SBOM
+        shell: pwsh
+        run: |
+          $tag = "${{ needs.resolve-release.outputs.tag }}"
+          $base = "MoHan-Desktop-Assistant-$tag"
+          $evidenceDir = Join-Path $env:RUNNER_TEMP "mohan-native-release"
+          $nativeEvidence = Join-Path $PWD "release-artifacts\$base-Native-Evidence.json"
+          & $env:MOHAN_JIT_PYTHON tools/finalize_native_release_evidence.py `
+            --verifications $evidenceDir `
+            --artifacts "release-artifacts" `
+            --tag $tag `
+            --output $nativeEvidence
+          & $env:MOHAN_JIT_PYTHON tools/generate_native_sbom.py `
+            --evidence $nativeEvidence `
+            --tag $tag `
+            --output "release-artifacts\$base-Windows-Native-SBOM.cdx.json"
 
       - name: Upload verified Windows packages
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -327,8 +419,14 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-preview.txt
 
+      - name: Build verified Qt 3.15 compatibility wheelhouse
+        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse --requirements requirements-preview.txt
+
       - name: Install pinned Preview dependencies
-        run: python tools/install_python315_dependencies.py --requirements requirements-preview.txt
+        run: >-
+          python tools/install_python315_dependencies.py
+          --requirements requirements-preview.txt
+          --qt-compat-wheelhouse qt315-wheelhouse
 
       - name: Verify source Preview contract
         run: python tests/test_preview_packaging.py
@@ -357,6 +455,7 @@ jobs:
         run: >-
           "$MOHAN_JIT_PYTHON" tools/install_python315_dependencies.py
           --requirements requirements-preview.txt
+          --qt-compat-wheelhouse qt315-wheelhouse
 
       - name: Build native macOS Preview DMG
         run: >-
@@ -410,8 +509,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes libegl1
 
+      - name: Build verified Qt 3.15 compatibility wheelhouse
+        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse --requirements requirements-preview.txt
+
       - name: Install pinned Preview dependencies
-        run: python tools/install_python315_dependencies.py --requirements requirements-preview.txt
+        run: >-
+          python tools/install_python315_dependencies.py
+          --requirements requirements-preview.txt
+          --qt-compat-wheelhouse qt315-wheelhouse
 
       - name: Verify source Preview contract
         run: python tests/test_preview_packaging.py
@@ -440,6 +545,7 @@ jobs:
         run: >-
           "$MOHAN_JIT_PYTHON" tools/install_python315_dependencies.py
           --requirements requirements-preview.txt
+          --qt-compat-wheelhouse qt315-wheelhouse
 
       - name: Download and verify pinned official appimagetool
         shell: bash
@@ -542,6 +648,10 @@ jobs:
             --entry preview "release-artifacts/$base-Preview-SBOM.cdx.json" requirements-preview-runtime.txt sbom/preview.pyproject.toml mohan-desktop-assistant-preview \
             --schema-python "$sbom_python" \
             --output "release-artifacts/$base-SBOM-Validation.json"
+          "$runtime_python" tools/validate_native_sbom.py \
+            --sbom "release-artifacts/$base-Windows-Native-SBOM.cdx.json" \
+            --evidence "release-artifacts/$base-Native-Evidence.json" \
+            --schema-python "$sbom_python"
           "$runtime_python" tools/create_release_metadata.py \
             --artifacts release-artifacts \
             --tag "${{ needs.resolve-release.outputs.tag }}" \
@@ -552,7 +662,8 @@ jobs:
         with:
           name: release-metadata
           path: |
-            release-artifacts/*-SBOM.cdx.json
+            release-artifacts/*-Windows-SBOM.cdx.json
+            release-artifacts/*-Preview-SBOM.cdx.json
             release-artifacts/*-SBOM-Validation.json
             release-artifacts/*-update.json
             release-artifacts/*-SHA256SUMS.txt
@@ -601,8 +712,10 @@ jobs:
             "$base-macOS-x86_64-Preview.dmg"
             "$base-Linux-x86_64-Preview.AppImage"
             "$base-Windows-SBOM.cdx.json"
+            "$base-Windows-Native-SBOM.cdx.json"
             "$base-Preview-SBOM.cdx.json"
             "$base-SBOM-Validation.json"
+            "$base-Native-Evidence.json"
             "$base-Performance-Evidence.zip"
             "$base-Performance-Summary.json"
             "$base-update.json"
@@ -694,9 +807,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           EXPECTED_PRERELEASE: ${{ needs.resolve-release.outputs.prerelease }}
+          LANG: C.UTF-8
+          LC_ALL: C.UTF-8
         run: |
           set -euo pipefail
           tag="${{ needs.resolve-release.outputs.tag }}"
+          release_title="墨寒桌面助理 $tag／墨寒桌面助手 $tag／MoHan Desktop Assistant $tag／墨寒デスクトップアシスタント $tag"
+          readonly release_title
           existing_id="$(gh api --paginate "repos/${{ github.repository }}/releases?per_page=100" --jq ".[] | select(.tag_name == \"$tag\") | .id" | head -n 1)"
           if [[ -n "$existing_id" ]]; then
             echo "Release $tag already exists; refusing to overwrite it." >&2
@@ -719,7 +836,7 @@ jobs:
             --repo "${{ github.repository }}"
             --verify-tag
             --draft
-            --title "墨寒桌面助理 $tag／墨寒桌面助手 $tag／MoHan Desktop Assistant $tag／墨寒デスクトップアシスタント $tag"
+            --title "$release_title"
             --notes-file "docs/releases/$tag.md"
           )
           if [[ "$EXPECTED_PRERELEASE" == true ]]; then

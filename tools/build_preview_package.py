@@ -98,6 +98,8 @@ def _pyinstaller(
         str(temp_root / "build"),
         "--specpath",
         str(temp_root / "spec"),
+        "--paths",
+        str(ROOT),
         "--icon",
         str(icon),
         "--add-data",
@@ -118,7 +120,7 @@ def _pyinstaller(
                 "tw.com.flamebladestudio.mohan.preview",
             ]
         )
-    command.append(str(ROOT / "preview_app.py"))
+    command.append(str(ROOT / "presentation" / "preview_app.py"))
     _run(command)
     return dist
 
@@ -164,7 +166,6 @@ def _preview_notice() -> str:
 简体中文：此预览包只验证启动、四语界面、平台路径与安全停用边界；不是 Windows 完整版。
 English: This limited Preview validates launch, four-language UI, platform paths, and fail-closed boundaries. It is not feature parity with Windows.
 日本語：この限定 Preview は起動、四言語画面、保存先、安全な無効化を確認するもので、Windows 完全版と同等ではありません。
-
 Voice, cloud connectors, system tools, autostart, and secret entry remain disabled until verified on real devices.
 """
 

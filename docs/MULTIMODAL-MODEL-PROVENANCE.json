@@ -1,0 +1,40 @@
+{
+  "schema": "mohan-multimodal-model-provenance-v1",
+  "runtime": "opencv-dnn",
+  "repository": "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant",
+  "models": [
+    {
+      "name": "MediaPipe Face Mesh 468-landmark model",
+      "filename": "face_landmark_468.tflite",
+      "source_url": "https://storage.googleapis.com/mediapipe-assets/face_landmark.tflite",
+      "source_revision": "face_landmark.tflite",
+      "license": "Apache-2.0",
+      "sha256": "1055cb9d4a9ca8b8c688902a3a5194311138ba256bcc94e336d8373a5f30c814",
+      "size_bytes": 1242398,
+      "input": "192x192 RGB crop",
+      "output": "468 3D landmarks"
+    },
+    {
+      "name": "MediaPipe Iris landmark model",
+      "filename": "iris_landmark.tflite",
+      "source_url": "https://storage.googleapis.com/mediapipe-assets/iris_landmark.tflite",
+      "source_revision": "iris_landmark.tflite",
+      "license": "Apache-2.0",
+      "sha256": "d1744d2a09c25f501d39eba4faff47e53ecca8852c5ce19bce8eeac39357521f",
+      "size_bytes": 2640568,
+      "input": "64x64 RGB eye crop",
+      "output": "5 3D landmarks per eye"
+    },
+    {
+      "name": "Silero VAD ONNX model",
+      "filename": "silero_vad_v4.0.onnx",
+      "source_url": "https://github.com/snakers4/silero-vad/raw/v4.0/files/silero_vad.onnx",
+      "source_revision": "v4.0",
+      "license": "MIT",
+      "sha256": "a35ebf52fd3ce5f1469b2a36158dba761bc47b973ea3382b3186ca15b1f5af28",
+      "size_bytes": 1807522,
+      "input": "512 samples at 16000 Hz with recurrent state",
+      "output": "voice probability and recurrent state"
+    }
+  ]
+}

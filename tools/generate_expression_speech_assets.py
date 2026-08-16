@@ -12,17 +12,38 @@ lazy from PySide6.QtCore import QRect, QTimer
 lazy from PySide6.QtGui import QImage
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import (
+lazy from companion_animation_contract import (
     EXPRESSION_POSES,
-    GESTURE_SPEECH_EXPRESSIONS,
-    CompanionWindow,
+    EXPRESSION_SPEECH_MOUTH_RECTS,
 )
+lazy from companion_window import CompanionWindow
 
 POSE_MOUTH_RECTS = {
     "cheek": QRect(174, 198, 52, 34),
     "lean": QRect(162, 198, 54, 34),
     "front": QRect(206, 199, 54, 35),
 }
+
+
+def specialized_speech_expressions() -> frozenset[str]:
+    bounds_by_pose = {
+        pose: tuple(
+            EXPRESSION_SPEECH_MOUTH_RECTS[expression].getRect()
+            for expression, expression_pose in EXPRESSION_POSES.items()
+            if expression_pose == pose
+        )
+        for pose in frozenset(EXPRESSION_POSES.values())
+    }
+    canonical_bounds = {
+        pose: max(bounds, key=lambda value: (bounds.count(value), value))
+        for pose, bounds in bounds_by_pose.items()
+    }
+    return frozenset(
+        expression
+        for expression, pose in EXPRESSION_POSES.items()
+        if EXPRESSION_SPEECH_MOUTH_RECTS[expression].getRect()
+        != canonical_bounds[pose]
+    )
 
 
 def changed_bbox(first: QImage, second: QImage) -> QRect:
@@ -71,8 +92,9 @@ def generate(output_dir: Path) -> None:
             timer.stop()
         output_dir.mkdir(parents=True, exist_ok=True)
 
+        specialized_expressions = specialized_speech_expressions()
         for expression, pose in EXPRESSION_POSES.items():
-            if expression in GESTURE_SPEECH_EXPRESSIONS:
+            if expression in specialized_expressions:
                 continue
             suffix = window._pose_suffix(pose)
             window.state = "speaking"

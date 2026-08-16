@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="96" viewBox="0 0 160 96" fill="none">
+  <title>MoHan ink cloud ornament</title>
+  <defs>
+    <linearGradient id="silver" x1="18" y1="20" x2="142" y2="76" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7EA6BD" stop-opacity="0.30"/>
+      <stop offset="0.54" stop-color="#315F7D" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#B5CCD8" stop-opacity="0.18"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="36" y1="34" x2="127" y2="66" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C6E8F4" stop-opacity="0.18"/>
+      <stop offset="0.55" stop-color="#5BB5D5" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#E8F8FC" stop-opacity="0.12"/>
+    </linearGradient>
+  </defs>
+  <path d="M13 60c18-2 21-20 37-20 11 0 14 9 24 9 14 0 17-23 36-23 14 0 19 12 26 20 5 6 11 10 17 11" stroke="url(#silver)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M7 70c24 1 27-12 43-12 13 0 18 9 31 9 18 0 26-18 43-17 12 0 20 8 29 12" stroke="url(#glow)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M34 40c4-10 14-17 25-17 9 0 17 4 23 11M99 26c4-6 10-10 18-10 9 0 16 5 20 12" stroke="#87AFC2" stroke-opacity="0.28" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="80" cy="67" r="2.5" fill="#74C7DF" fill-opacity="0.78"/>
+</svg>

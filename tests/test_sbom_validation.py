@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import json
 lazy import sys
 lazy import tempfile
+lazy import tomllib
 lazy from collections.abc import Callable
 lazy from pathlib import Path
 
@@ -10,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+lazy from domain.version_info import FALLBACK_VERSION
 lazy from tools.validate_release_sboms import (
     ComponentPolicy,
     SbomEntry,
@@ -24,7 +26,6 @@ lazy from tools.validate_release_sboms import (
     _validate_components,
     load_policies,
 )
-lazy from version_info import FALLBACK_VERSION
 
 CURRENT_TAG = f"v{FALLBACK_VERSION}"
 CURRENT_PACKAGE_VERSION = _release_version(CURRENT_TAG)
@@ -68,8 +69,21 @@ def test_release_version_and_repository_policy_are_synchronized() -> None:
         policy.normalized_name: policy.version for policy in preview
     }
     assert {policy.name for policy in policies if policy.scope == "build"} == {
-        "PyInstaller"
+        "Maturin",
+        "PyInstaller",
+        "PyO3",
+        "Rayon",
+        "Rust",
     }
+    build_policies = {
+        policy.name: policy for policy in policies if policy.scope == "build"
+    }
+    assert build_policies["Rust"].version == "1.97.1"
+    assert build_policies["Maturin"].version == "1.14.1"
+    assert build_policies["PyO3"].version == "0.29.2"
+    assert build_policies["Rayon"].version == "1.12.0"
+    for name in ("Rust", "Maturin", "PyO3", "Rayon"):
+        assert build_policies[name].profiles == ("windows",)
 
     _project_metadata(
         SbomEntry(
@@ -136,6 +150,26 @@ def test_component_license_and_dependency_graph_are_complete() -> None:
     assert "node set is incomplete" in message
 
 
+def test_openai_responses_api_is_external_not_an_sdk_component() -> None:
+    document = tomllib.loads(
+        (ROOT / "sbom" / "components.toml").read_text(encoding="utf-8")
+    )
+    assert document["external_service"] == [
+        {
+            "name": "OpenAI Responses API",
+            "endpoint": "https://api.openai.com/v1/responses",
+            "transport": "Python standard library urllib.request over HTTPS",
+            "sdk_package": "openai",
+            "sdk_runtime_dependency": False,
+            "inventory_policy": "external-service-not-packaged",
+            "profiles": ["windows"],
+        }
+    ]
+
+    policies = load_policies(ROOT / "sbom" / "components.toml")
+    assert all(policy.normalized_name != "openai" for policy in policies)
+
+
 def test_privacy_gate_rejects_paths_and_secret_like_values() -> None:
     with tempfile.TemporaryDirectory(prefix="mohan-sbom-test-") as raw:
         path = Path(raw) / "inventory.json"
@@ -163,6 +197,7 @@ def test_privacy_gate_rejects_paths_and_secret_like_values() -> None:
 def main() -> None:
     test_release_version_and_repository_policy_are_synchronized()
     test_component_license_and_dependency_graph_are_complete()
+    test_openai_responses_api_is_external_not_an_sdk_component()
     test_privacy_gate_rejects_paths_and_secret_like_values()
     print("CYCLONEDX_RELEASE_SBOM_GOVERNANCE_OK")
 

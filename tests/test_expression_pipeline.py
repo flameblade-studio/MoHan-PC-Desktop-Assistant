@@ -13,7 +13,7 @@ lazy from PySide6.QtGui import QImage, QPixmap
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import (
+lazy from companion_animation_contract import (
     EXPRESSION_BLINK_FRAMES,
     EXPRESSION_FACE_OFFSETS,
     EXPRESSION_POSES,
@@ -23,8 +23,8 @@ lazy from app import (
     EYES_CLOSED_EXPRESSIONS,
     GESTURE_SPEECH_FRAMES,
     NEW_EXPRESSION_ASSETS,
-    CompanionWindow,
 )
+lazy from companion_window import CompanionWindow
 
 FEATURES = (
     "physics_sleeves",
@@ -529,8 +529,16 @@ def assert_expression_generation_guards(window: CompanionWindow) -> None:
 
     window.set_state("attentive_front", force=True)
     window._schedule_return_to_idle(20, "attentive_front")
-    QTest.qWait(35)
-    assert window.state == "idle"
+    assert window.expression_return_timer.isActive()
+    window._release_scheduled_expression()
+    assert window.state == "idle", (
+        "scheduled expression release did not restore idle: "
+        f"state={window.state!r}, "
+        f"generation={window.expression_generation}, "
+        f"speech_playing={window.speech_playing!r}, "
+        f"realtime_mouth_active={window.realtime_mouth_active!r}"
+    )
+    assert not window.expression_return_timer.isActive()
 
 
 def assert_ai_emotion_metadata(window: CompanionWindow) -> None:

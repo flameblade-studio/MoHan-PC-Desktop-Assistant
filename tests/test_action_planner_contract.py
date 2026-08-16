@@ -6,7 +6,7 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from ai_client import ActionPlannerWorker
+lazy from integrations.ai_client import ActionPlannerWorker
 
 
 def run() -> None:
@@ -48,7 +48,7 @@ def run() -> None:
         ).encode("utf-8")
     )
     with patch(
-        "ai_client.urlopen",
+        "integrations.ai_client.urlopen",
         return_value=response,
     ) as mocked:
         worker.run()
@@ -73,7 +73,7 @@ def run() -> None:
     )
     timeout_worker.signals.failed.connect(errors.append)
     with patch(
-        "ai_client.urlopen",
+        "integrations.ai_client.urlopen",
         side_effect=TimeoutError("連線等待逾時"),
     ):
         timeout_worker.run()

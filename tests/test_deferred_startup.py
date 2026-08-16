@@ -11,7 +11,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import EXPRESSION_IMAGE_ASSETS, CompanionWindow
+lazy from companion_animation_contract import EXPRESSION_IMAGE_ASSETS
+lazy from companion_window import CompanionWindow
 
 
 def run() -> None:

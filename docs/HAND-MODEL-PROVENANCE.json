@@ -1,0 +1,29 @@
+{
+  "schema": "mohan-hand-model-provenance-v1",
+  "repository": "https://github.com/opencv/opencv_zoo",
+  "license": "Apache-2.0",
+  "models": [
+    {
+      "filename": "palm_detection_mediapipe_2023feb.onnx",
+      "path": "models/palm_detection_mediapipe/palm_detection_mediapipe_2023feb.onnx",
+      "commit": "8de36535ea29e8f9d41e6e3fa5a0df14bab00ec5",
+      "lfs_oid_sha256": "78ff51c38496b7fc8b8ebdb6cc8c1abb02fa6c38427c6848254cdaba57fcce7c",
+      "sha256": "78ff51c38496b7fc8b8ebdb6cc8c1abb02fa6c38427c6848254cdaba57fcce7c",
+      "size_bytes": 3905734,
+      "pointer_url": "https://raw.githubusercontent.com/opencv/opencv_zoo/8de36535ea29e8f9d41e6e3fa5a0df14bab00ec5/models/palm_detection_mediapipe/palm_detection_mediapipe_2023feb.onnx",
+      "readme_url": "https://github.com/opencv/opencv_zoo/blob/8de36535ea29e8f9d41e6e3fa5a0df14bab00ec5/models/palm_detection_mediapipe/README.md",
+      "license_url": "https://github.com/opencv/opencv_zoo/blob/8de36535ea29e8f9d41e6e3fa5a0df14bab00ec5/models/palm_detection_mediapipe/LICENSE"
+    },
+    {
+      "filename": "handpose_estimation_mediapipe_2023feb.onnx",
+      "path": "models/handpose_estimation_mediapipe/handpose_estimation_mediapipe_2023feb.onnx",
+      "commit": "56cef36ae45e5a6da7eba01a91631f6d7e955da1",
+      "lfs_oid_sha256": "db0898ae717b76b075d9bf563af315b29562e11f8df5027a1ef07b02bef6d81c",
+      "sha256": "db0898ae717b76b075d9bf563af315b29562e11f8df5027a1ef07b02bef6d81c",
+      "size_bytes": 4099621,
+      "pointer_url": "https://raw.githubusercontent.com/opencv/opencv_zoo/56cef36ae45e5a6da7eba01a91631f6d7e955da1/models/handpose_estimation_mediapipe/handpose_estimation_mediapipe_2023feb.onnx",
+      "readme_url": "https://github.com/opencv/opencv_zoo/blob/56cef36ae45e5a6da7eba01a91631f6d7e955da1/models/handpose_estimation_mediapipe/README.md",
+      "license_url": "https://github.com/opencv/opencv_zoo/blob/56cef36ae45e5a6da7eba01a91631f6d7e955da1/models/handpose_estimation_mediapipe/LICENSE"
+    }
+  ]
+}

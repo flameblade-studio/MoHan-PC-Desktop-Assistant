@@ -1,0 +1,68 @@
+{
+  "height": 1536,
+  "landmarks": {
+    "crown": [
+      521,
+      84
+    ],
+    "left_ankle": [
+      552,
+      1397
+    ],
+    "left_heel": [
+      542,
+      1476
+    ],
+    "left_hip": [
+      619,
+      870
+    ],
+    "left_knee": [
+      586,
+      1178
+    ],
+    "left_sole": [
+      552,
+      1482
+    ],
+    "left_toe": [
+      563,
+      1476
+    ],
+    "right_ankle": [
+      448,
+      1397
+    ],
+    "right_heel": [
+      420,
+      1476
+    ],
+    "right_hip": [
+      404,
+      870
+    ],
+    "right_knee": [
+      426,
+      1178
+    ],
+    "right_sole": [
+      448,
+      1482
+    ],
+    "right_toe": [
+      476,
+      1476
+    ]
+  },
+  "measurement": {
+    "method": "normalized-alpha-silhouette-registration",
+    "occlusion_policy": "no_coordinates_are invented for an occluded side",
+    "source_sha256": "72a611b5a481ff72413abc005df1083f1061bccd7326bcd767b63b9762439dce",
+    "target_subject_height": 1404
+  },
+  "occluded_landmarks": [],
+  "schema_version": 2,
+  "view_id": "yaw-150-pitch+00",
+  "width": 1024,
+  "yaw_degrees": -150
+}

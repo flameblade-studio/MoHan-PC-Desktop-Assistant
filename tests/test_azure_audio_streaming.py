@@ -8,7 +8,7 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from speech import play_pcm16_stream_with_visemes
+lazy from integrations.speech import play_pcm16_stream_with_visemes
 
 
 class FakeOutputStream:
@@ -47,7 +47,7 @@ def run() -> None:
         return size
 
     with patch(
-        "speech.sd",
+        "integrations.speech.sd",
         SimpleNamespace(RawOutputStream=FakeOutputStream),
     ):
         play_pcm16_stream_with_visemes(

@@ -11,22 +11,23 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from app import DEFAULT_PROFILE, EXPRESSION_POSES
-lazy from cloud_connectors import PROVIDERS
-lazy from db import DEFAULT_REMINDERS
+lazy from app_profile import DEFAULT_PROFILE
+lazy from companion_animation_contract import EXPRESSION_POSES
+lazy from domain.flagship_action_models import CAPABILITY_RISK, RISK_NAMES
 lazy from expression_system import EMOTION_TO_EXPRESSION, EXPRESSION_RULES
-lazy from flagship_core import CAPABILITY_RISK, RISK_NAMES
-lazy from home_assistant import ALLOWED_SERVICES
+lazy from infrastructure.db import DEFAULT_REMINDERS
+lazy from integrations.cloud_connectors import PROVIDERS
+lazy from integrations.home_assistant import ALLOWED_SERVICES
 lazy from language_support import TRANSCRIPTION_PROMPT_BASES
 lazy from lip_sync import VISEME_MIN_HOLD_SECONDS
-lazy from preview_app import _TEXT
+lazy from presentation.preview_app import _TEXT
 lazy from runtime_bootstrap import JIT_DISABLE_ENV, JIT_REEXEC_ENV
 lazy from time_utils import (
     local_aware_time,
     local_wall_time,
     local_wall_time_from_timestamp,
 )
-lazy from tools.migrate_python315_imports import python_files
+lazy from tools.migrate_python315_imports import inventory, python_files
 
 
 def assert_immutable_mapping(value: object) -> None:
@@ -38,7 +39,7 @@ def assert_immutable_mapping(value: object) -> None:
     raise AssertionError("configuration mapping accepted a runtime mutation")
 
 
-def main() -> None:
+def _assert_python315_language_features() -> None:
     assert sys.version_info[:2] == (3, 15), sys.version
     assert callable(sys.get_lazy_imports)
     assert callable(sys.set_lazy_imports)
@@ -66,6 +67,8 @@ def main() -> None:
     assert repr(missing) == "MISSING"
     assert missing is not sentinel("MISSING")
 
+
+def _assert_lazy_import_audit_contract() -> None:
     with TemporaryDirectory() as temp_dir:
         inventory_root = Path(temp_dir)
         project_source = inventory_root / "project_source.py"
@@ -73,8 +76,28 @@ def main() -> None:
         cpython_source = inventory_root / "_python315" / "Lib"
         cpython_source.mkdir(parents=True)
         (cpython_source / "test_fixture.py").write_bytes(b"# \xe9\n")
+        generated_source = (
+            inventory_root
+            / "native"
+            / "mohan_accel"
+            / "target"
+            / "generated.py"
+        )
+        generated_source.parent.mkdir(parents=True)
+        generated_source.write_text("from generated import *\n", encoding="utf-8")
         assert python_files(inventory_root) == [project_source]
+        eager_source = inventory_root / "eager_source.py"
+        eager_source.write_text("import json\n", encoding="utf-8")
+        assert inventory(eager_source).eligible == [1]
 
+    concurrency_inventory = inventory(
+        ROOT / "domain" / "python315_concurrency.py"
+    )
+    assert concurrency_inventory.eligible == []
+    assert len(concurrency_inventory.exceptions) == 3
+
+
+def _assert_immutable_configuration() -> None:
     for mapping in (
         DEFAULT_PROFILE,
         EXPRESSION_POSES,
@@ -93,6 +116,8 @@ def main() -> None:
     assert type(ALLOWED_SERVICES["light"]) is frozenset
     assert type(_TEXT["zh-TW"]) is frozendict
 
+
+def _run_governance_audits() -> None:
     probe = subprocess.run(
         [
             sys.executable,
@@ -121,6 +146,9 @@ def main() -> None:
     )
     assert audit.returncode == 0, audit.stdout + audit.stderr
     assert "pending=0" in audit.stdout
+    assert "configured_exceptions=" in audit.stdout
+    assert "compatibility_alias_imports=" in audit.stdout
+    assert "unmatched_exceptions=0" in audit.stdout
 
     compatibility = subprocess.run(
         [
@@ -163,6 +191,13 @@ def main() -> None:
     )
     assert dependencies.returncode == 0, dependencies.stdout + dependencies.stderr
     assert "QT_STABLE_ABI_OK" in dependencies.stdout
+
+
+def main() -> None:
+    _assert_python315_language_features()
+    _assert_lazy_import_audit_contract()
+    _assert_immutable_configuration()
+    _run_governance_audits()
     print("PYTHON315_AND_PEP810_IMPORTS_OK")
 
 

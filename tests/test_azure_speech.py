@@ -11,12 +11,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtCore import QCoreApplication
 
-lazy from azure_regions import (
+lazy from integrations.azure_regions import (
     azure_region_identifiers,
     azure_region_options,
     azure_region_supports_hd_flash,
 )
-lazy from azure_speech import (
+lazy from integrations.azure_speech import (
     AZURE_FEMALE_VOICES,
     AzureSpeechTTS,
     _PushAudioReader,
@@ -27,7 +27,7 @@ lazy from azure_speech import (
     build_azure_ssml,
     normalize_azure_region,
 )
-lazy from azure_voice_catalog import AzureVoiceCatalog
+lazy from integrations.azure_voice_catalog import AzureVoiceCatalog
 lazy from ui_localization import ui_text
 
 
@@ -266,9 +266,9 @@ def _assert_successful_streaming_synthesis(
         on_first_audio()
 
     with (
-        patch("azure_speech.speechsdk", fake_sdk),
+        patch("integrations.azure_speech.speechsdk", fake_sdk),
         patch(
-            "azure_speech.play_pcm16_stream_with_visemes",
+            "integrations.azure_speech.play_pcm16_stream_with_visemes",
             side_effect=fake_playback,
         ) as playback,
     ):
@@ -296,7 +296,7 @@ def _assert_operation_ids_are_monotonic() -> None:
     engine = AzureSpeechTTS()
     operation_ids: list[int] = []
     engine.operation_started.connect(operation_ids.append)
-    with patch("azure_speech.threading.Thread") as thread_type:
+    with patch("integrations.azure_speech.threading.Thread") as thread_type:
         engine.speak(
             "第一輪",
             "not-a-real-key",
@@ -326,7 +326,7 @@ def _assert_new_operation_cancels_previous_playback() -> None:
     engine._active_reader = reader
     engine._active_synthesizer = synthesizer
 
-    with patch("azure_speech.threading.Thread"):
+    with patch("integrations.azure_speech.threading.Thread"):
         engine.speak(
             "新語音",
             "not-a-real-key",
@@ -381,7 +381,7 @@ def _assert_stale_operation_events_are_suppressed() -> None:
     engine.finished.connect(lambda: legacy_events.append(("finished",)))
     engine.failed.connect(lambda message: legacy_events.append(("failed", message)))
 
-    with patch("azure_speech.threading.Thread"):
+    with patch("integrations.azure_speech.threading.Thread"):
         engine.speak(
             "舊語音",
             "not-a-real-key",
@@ -419,6 +419,65 @@ def _assert_stale_operation_events_are_suppressed() -> None:
         "finished",
         "failed",
     ]
+
+
+class _FakeTimingSignal:
+    def __init__(self) -> None:
+        self.callback = None
+
+    def connect(self, callback) -> None:
+        self.callback = callback
+
+    def emit(self, event: object) -> None:
+        if self.callback is not None:
+            self.callback(event)
+
+
+def _assert_native_timing_is_private_current_and_deduplicated() -> None:
+    engine = AzureSpeechTTS()
+    received: list[object] = []
+    engine.operation_timing_event.connect(received.append)
+    engine._playback_generation = 1
+    word_signal, viseme_signal = _FakeTimingSignal(), _FakeTimingSignal()
+    synthesizer = SimpleNamespace(
+        synthesis_word_boundary=word_signal,
+        viseme_received=viseme_signal,
+    )
+    engine._connect_native_timing(synthesizer, 1)
+    word = SimpleNamespace(
+        audio_offset=5_000_000,
+        duration=2_000_000,
+        boundary_type="Word",
+        text="private text",
+    )
+    word_signal.emit(word)
+    word_signal.emit(word)
+    viseme_signal.emit(SimpleNamespace(audio_offset=6_000_000, viseme_id=7))
+    assert len(received) == 2
+    assert all(event.operation_id == 1 for event in received)
+    assert "private text" not in repr(received)
+
+    engine.stop()
+    word_signal.emit(SimpleNamespace(audio_offset=7_000_000, duration=1, boundary_type="Word"))
+    assert len(received) == 2
+
+    engine._playback_generation = 3
+    retry_word, retry_viseme = _FakeTimingSignal(), _FakeTimingSignal()
+    engine._connect_native_timing(
+        SimpleNamespace(synthesis_word_boundary=retry_word, viseme_received=retry_viseme),
+        3,
+    )
+    retry_word.emit(SimpleNamespace(audio_offset=5_000_000, duration=2_000_000, boundary_type="Word"))
+    assert len(received) == 3
+    assert received[-1].operation_id == 3
+
+
+def _assert_native_timing_falls_back_without_sdk_signals() -> None:
+    engine = AzureSpeechTTS()
+    received: list[object] = []
+    engine.operation_timing_event.connect(received.append)
+    engine._connect_native_timing(SimpleNamespace(), 0)
+    assert received == []
 
 
 def _assert_audio_queue_is_bounded_under_pressure() -> None:
@@ -587,6 +646,40 @@ class _ObservedCatalogAzureSpeechTTS(AzureSpeechTTS):
             self.catalog_worker_finished.set()
 
 
+class _UnavailableCatalogService:
+    def query(self, *_args: object, **_kwargs: object) -> AzureVoiceCatalog:
+        raise ModuleNotFoundError("azure")
+
+    def fallback(
+        self,
+        region: str,
+        language: str,
+        *,
+        hd_only: bool,
+    ) -> AzureVoiceCatalog:
+        return AzureVoiceCatalog(
+            region=region,
+            language=language,
+            hd_only=hd_only,
+            voices=(),
+            source="fallback",
+        )
+
+    def invalidate(self, _region: str | None = None) -> None:
+        return
+
+
+def _assert_missing_sdk_uses_safe_catalog_fallback() -> None:
+    app = QCoreApplication.instance() or QCoreApplication([])
+    engine = _ObservedCatalogAzureSpeechTTS(_UnavailableCatalogService())
+    ready: list[AzureVoiceCatalog] = []
+    engine.voice_catalog_ready.connect(ready.append)
+    engine.refresh_voice_catalog("key", "eastasia", "zh-TW", hd_only=False)
+    assert engine.catalog_worker_finished.wait(timeout=1.0)
+    app.processEvents()
+    assert ready and ready[-1].source == "fallback"
+
+
 def _assert_dynamic_voice_query_does_not_block_speak() -> None:
     dynamic_voice = "zh-CN-XiaobeiNeural"
     catalog_service = _BlockingCatalogService(dynamic_voice)
@@ -627,6 +720,28 @@ def _assert_stale_catalog_query_cannot_emit_after_invalidation() -> None:
     assert ready == []
 
 
+def _assert_closed_engine_cannot_publish_catalog() -> None:
+    app = QCoreApplication.instance() or QCoreApplication([])
+    catalog_service = _BlockingCatalogService("zh-CN-XiaobeiNeural")
+    engine = _ObservedCatalogAzureSpeechTTS(catalog_service)
+    ready: list[AzureVoiceCatalog] = []
+    engine.voice_catalog_ready.connect(ready.append)
+
+    engine.refresh_voice_catalog(
+        "closing-key",
+        "eastasia",
+        "zh-TW",
+        hd_only=False,
+    )
+    assert catalog_service.entered.wait(timeout=1.0)
+    engine.close()
+    catalog_service.release.set()
+
+    assert engine.catalog_worker_finished.wait(timeout=1.0)
+    app.processEvents()
+    assert ready == []
+
+
 def run() -> None:
     _assert_region_normalization()
     _assert_region_catalog()
@@ -646,10 +761,14 @@ def run() -> None:
     _assert_operation_ids_are_monotonic()
     _assert_new_operation_cancels_previous_playback()
     _assert_stale_operation_events_are_suppressed()
+    _assert_native_timing_is_private_current_and_deduplicated()
+    _assert_native_timing_falls_back_without_sdk_signals()
     _assert_audio_queue_is_bounded_under_pressure()
     _assert_dynamic_voice_trust_is_credential_bound()
     _assert_dynamic_voice_query_does_not_block_speak()
     _assert_stale_catalog_query_cannot_emit_after_invalidation()
+    _assert_closed_engine_cannot_publish_catalog()
+    _assert_missing_sdk_uses_safe_catalog_fallback()
     print("AZURE_SPEECH_OK")
 
 

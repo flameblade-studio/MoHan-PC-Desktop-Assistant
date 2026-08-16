@@ -12,11 +12,11 @@ lazy from PySide6.QtCore import QRect, QTimer
 lazy from PySide6.QtGui import QImage
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import (
+lazy from companion_animation_contract import (
     CHEEK_SPEECH_CLOSED_EXPRESSION,
     EXPRESSION_SPEECH_MOUTH_RECTS,
-    CompanionWindow,
 )
+lazy from companion_window import CompanionWindow
 
 
 def changed_pixel_count(first: QImage, second: QImage, rect: QRect) -> int:

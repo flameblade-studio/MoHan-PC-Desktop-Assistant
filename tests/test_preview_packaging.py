@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import ast
+lazy import importlib
 lazy import os
 lazy import re
 lazy import subprocess
@@ -16,7 +17,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from preview_app import (
+lazy from application.preview_app import validate_preview_runtime
+lazy from domain.version_info import APP_VERSION, FALLBACK_VERSION
+lazy from presentation.preview_app import (
     _TEXT,
     SUPPORTED_LANGUAGES,
     PreviewRuntime,
@@ -30,7 +33,7 @@ lazy from tools.build_preview_package import (
     APPIMAGETOOL_URL,
     _validate_version,
 )
-lazy from version_info import APP_VERSION, FALLBACK_VERSION
+lazy from tools.check_layered_imports import inspect_layered_imports
 
 
 def read(relative: str) -> str:
@@ -65,8 +68,88 @@ def test_preview_ui_contract() -> None:
         window.close()
 
 
+def test_preview_owners_and_compatibility_identity() -> None:
+    compatibility = importlib.import_module("preview_app")
+    presentation = importlib.import_module("presentation.preview_app")
+    application = importlib.import_module("application.preview_app")
+
+    assert compatibility is presentation
+    assert presentation.PreviewWindow.__module__ == "presentation.preview_app"
+    assert presentation.PreviewRuntime is application.PreviewRuntime
+    assert presentation.validate_preview_runtime is application.validate_preview_runtime
+    runtime = presentation.PreviewRuntime(
+        platform_id="linux",
+        platform_name="Linux",
+        version="4.0.0",
+        architecture="x86_64",
+    )
+    assert type(runtime) is application.PreviewRuntime
+
+    root_tree = ast.parse(read("preview_app.py"))
+    assert not any(
+        isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
+        for node in root_tree.body
+    )
+
+
+def test_preview_runtime_rejects_unverified_capabilities() -> None:
+    runtime = PreviewRuntime(
+        platform_id="linux",
+        platform_name="Linux",
+        version="4.0.0",
+        architecture="x86_64",
+        enabled_product_capabilities=frozenset({"secure_secret_storage"}),
+    )
+    try:
+        validate_preview_runtime(runtime)
+    except RuntimeError as error:
+        assert "secure_secret_storage" in str(error)
+    else:
+        raise AssertionError("Preview capability validation must fail closed")
+
+
+def test_preview_and_service_status_have_real_layer_owners() -> None:
+    report = inspect_layered_imports(ROOT)
+    targets = {"preview_app", "service_status_localization"}
+    target_issues = tuple(
+        issue
+        for issue in report.issues
+        if issue.module.rpartition(".")[2] in targets
+        or any(target in issue.message for target in targets)
+    )
+    assert not target_issues, target_issues
+
+    preview_tree = ast.parse(read("presentation/preview_app.py"))
+    assert any(
+        isinstance(node, ast.ClassDef) and node.name == "PreviewWindow"
+        for node in preview_tree.body
+    )
+    assert any(
+        isinstance(node, ast.FunctionDef) and node.name == "main"
+        for node in preview_tree.body
+    )
+
+    status_tree = ast.parse(read("domain/service_status_localization.py"))
+    defined = {
+        node.name
+        for node in status_tree.body
+        if isinstance(node, (ast.ClassDef, ast.FunctionDef))
+    }
+    assert {"ServiceStatus", "service_status", "append_service_status"} <= defined
+
+    for relative in (
+        "application/camera_presence.py",
+        "integrations/ai_client.py",
+        "integrations/speech.py",
+    ):
+        source = read(relative)
+        assert "from domain.service_status_localization import" in source
+        assert "from service_status_localization import" not in source
+
+
 def test_preview_shell_is_isolated_from_full_application() -> None:
-    tree = ast.parse(read("preview_app.py"))
+    source_path = "presentation/preview_app.py"
+    tree = ast.parse(read(source_path))
     imported_roots: set[str] = set()
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -79,7 +162,7 @@ def test_preview_shell_is_isolated_from_full_application() -> None:
     assert "cloud_connectors" not in imported_roots
     assert "oauth" not in imported_roots
     assert "realtime" not in imported_roots
-    source = read("preview_app.py").lower()
+    source = read(source_path).lower()
     assert "qlineedit" not in source
     assert "api_key" not in source
     assert "client_secret" not in source
@@ -90,7 +173,8 @@ def test_source_smoke_rejects_wrong_embedded_version() -> None:
         marker = Path(raw) / "smoke.txt"
         command = [
             sys.executable,
-            str(ROOT / "preview_app.py"),
+            "-m",
+            "presentation.preview_app",
             "--preview-platform=linux",
             f"--preview-smoke-output={marker}",
         ]
@@ -118,6 +202,8 @@ def test_build_tool_is_pinned() -> None:
         "https://github.com/AppImage/appimagetool/releases/download/"
     )
     build_source = read("tools/build_preview_package.py")
+    assert 'ROOT / "presentation" / "preview_app.py"' in build_source
+    assert '"--paths"' in build_source
     assert 'os.symlink("/Applications"' in build_source
     assert '"hdiutil",' in build_source
     assert "APPIMAGETOOL_SHA256" in build_source
@@ -153,7 +239,7 @@ def test_release_gate_is_pinned() -> None:
     assert "artifact-metadata: write" in release
     assert "--draft" in release
     assert 'gh release create "${release_args[@]}"' in release
-    assert 'release_args+=(--prerelease)' in release
+    assert "release_args+=(--prerelease)" in release
     assert 'prerelease="$EXPECTED_PRERELEASE"' in release
     assert "/releases/tags/$tag" not in release
     assert "and .draft == true" in release
@@ -184,20 +270,20 @@ def test_release_gate_is_pinned() -> None:
     assert "if: ${{ always() }}" in preview
     assert "APPIMAGE_EXTRACT_AND_RUN" in read("tools/smoke_preview_package.py")
     assert "--appimage-extract" in read("tools/smoke_preview_package.py")
-    assert "Contents\" / \"Resources\" / \"LICENSE" in read(
+    assert 'Contents" / "Resources" / "LICENSE' in read(
         "tools/smoke_preview_package.py"
     )
     assert "--expected-version 2.3.0-rc.0" in preview
-    assert "--preview-expected-version" in read("preview_app.py")
+    assert "--preview-expected-version" in read("application/preview_app.py")
 
     action_pattern = re.compile(r"^[ \t-]*uses:\s*([^\s#]+)", re.MULTILINE)
     for workflow in sorted((ROOT / ".github" / "workflows").glob("*.yml")):
         for reference in action_pattern.findall(workflow.read_text(encoding="utf-8")):
             if reference.startswith("./"):
                 continue
-            assert re.fullmatch(
-                r"[^@]+@[0-9a-f]{40}", reference
-            ), f"GitHub Action is not pinned to a full commit: {workflow.name}: {reference}"
+            assert re.fullmatch(r"[^@]+@[0-9a-f]{40}", reference), (
+                f"GitHub Action is not pinned to a full commit: {workflow.name}: {reference}"
+            )
 
 
 def test_release_version_has_one_source_of_truth() -> None:
@@ -209,12 +295,19 @@ def test_release_version_has_one_source_of_truth() -> None:
     assert (ROOT / "docs" / "releases" / f"{tag}.md").is_file()
     release = read(".github/workflows/release.yml")
     assert "from version_info import FALLBACK_VERSION" not in release
+    assert "domain/version_info.py" in release
     assert 'source_version="${source_versions[0]}"' in release
-    assert "Expected exactly one literal FALLBACK_VERSION" in release
+    assert (
+        "Expected exactly one literal FALLBACK_VERSION in domain/version_info.py"
+        in release
+    )
     for guide in ("QUICKSTART.md", "README.md"):
         text = read(guide)
         assert "MoHan-Desktop-Assistant-2.1.0-rc.1.exe" not in text
-    assert 'FALLBACK_VERSION = "2.1.0-rc.1"' not in read("version_info.py")
+    assert (
+        'FALLBACK_VERSION = "2.1.0-rc.1"'
+        not in read("domain/version_info.py")
+    )
 
 
 def test_four_language_release_notes_and_boundaries() -> None:
@@ -239,6 +332,9 @@ def test_four_language_release_notes_and_boundaries() -> None:
 
 def main() -> None:
     test_preview_ui_contract()
+    test_preview_owners_and_compatibility_identity()
+    test_preview_runtime_rejects_unverified_capabilities()
+    test_preview_and_service_status_have_real_layer_owners()
     test_preview_shell_is_isolated_from_full_application()
     test_source_smoke_rejects_wrong_embedded_version()
     test_build_tool_is_pinned()

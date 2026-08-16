@@ -20,17 +20,17 @@ lazy from PySide6.QtWidgets import (
     QScrollArea,
 )
 
-lazy from app import (
-    STYLE,
+lazy from domain.speech_configuration import QueuedSpeech
+lazy from domain.time_utils import local_wall_time
+lazy from infrastructure.app_resources import STYLE
+lazy from infrastructure.db import StudioDB
+lazy from presentation.companion_window import CompanionWindow
+lazy from presentation.dashboard_dialogs import (
     ChatHistoryDialog,
-    CompanionWindow,
-    FirstRunWizard,
     IdeaEditorDialog,
     MemoryEditorDialog,
-    QueuedSpeech,
 )
-lazy from db import StudioDB
-lazy from time_utils import local_wall_time
+lazy from presentation.first_run_wizard import FirstRunWizard
 
 
 def _prepare_database(tmp: str) -> None:
@@ -143,7 +143,10 @@ def _create_window(app: QApplication) -> CompanionWindow:
         ("OneCore::Microsoft Hanhan", "zh-TW"),
         ("OneCore::Microsoft Zhiwei", "zh-TW"),
     ]
-    with patch("app.windows_voices", return_value=test_voices):
+    with patch(
+        "application.service_container.windows_voices",
+        return_value=test_voices,
+    ):
         window = CompanionWindow(startup_speech=False)
     window.show()
     app.processEvents()
@@ -208,6 +211,7 @@ def _assert_portable_profile_and_features(window: CompanionWindow) -> None:
         "memory",
         "voice",
         "permissions",
+        "wardrobe",
         "settings",
     }
 
@@ -626,7 +630,7 @@ def _assert_physics_settings_contract(window: CompanionWindow) -> None:
 
 
 def _assert_dashboard_layout_contract(app: QApplication, window: CompanionWindow) -> None:
-    assert window.dashboard.tabs.count() == 7
+    assert window.dashboard.tabs.count() == 8
     assert window.dashboard.windowTitle() == "墨寒．炎劍文化工作室"
     assert (
         window.dashboard.layout().sizeConstraint()
@@ -636,8 +640,9 @@ def _assert_dashboard_layout_contract(app: QApplication, window: CompanionWindow
     assert window.dashboard.maximumHeight() > 10000
     dashboard_was_visible = window.dashboard.isVisible()
     window.dashboard.show()
-    for tab_index in (4, 5, 6):
-        form_scroll = window.dashboard.tabs.widget(tab_index)
+    for tab_index in (4, 5, 7):
+        feature_page = window.dashboard.tabs.widget(tab_index)
+        form_scroll = feature_page.findChild(QScrollArea, "formScrollPage")
         assert isinstance(form_scroll, QScrollArea)
         assert form_scroll.objectName() == "formScrollPage"
         assert form_scroll.widget().objectName() == "formScrollContent"
@@ -645,7 +650,8 @@ def _assert_dashboard_layout_contract(app: QApplication, window: CompanionWindow
         app.processEvents()
         rendered = form_scroll.viewport().grab().toImage()
         assert not rendered.isNull()
-        assert rendered.pixelColor(3, 3).name().lower() == "#ffffff"
+        corner = rendered.pixelColor(3, 3)
+        assert corner.alpha() == 0
     window.dashboard.tabs.setCurrentIndex(1)
     app.processEvents()
     split_sizes = window.dashboard.today_splitter.sizes()
@@ -1138,7 +1144,7 @@ def _assert_profile_customization_contract(app: QApplication, window: CompanionW
     window.dashboard.profile_user_title.setText("Alex")
     window.dashboard.profile_organization_name.setText("Example Team")
     window.dashboard.profile_window_title.setText("Ava Workspace")
-    with patch("app.set_autostart"):
+    with patch.object(window.dashboard, "autostart_configurator"):
         window.dashboard.save_settings()
     app.processEvents()
     assert window.db.setting("assistant_name") == "Ava"

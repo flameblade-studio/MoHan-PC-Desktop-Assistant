@@ -1,0 +1,205 @@
+from __future__ import annotations
+
+lazy import sys
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
+
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtWidgets import QApplication, QPushButton
+
+lazy from domain.text_normalizer import to_taiwan_traditional
+lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path
+lazy from integrations.realtime_voice import (
+    RealtimeSessionConfig,
+    RealtimeVoiceClient,
+)
+lazy from integrations.speech import SpeechListener
+
+
+def _visible_windows_voices(window) -> tuple[str, ...]:
+    combo = window.dashboard.windows_voice
+    return tuple(
+        str(combo.itemData(index) or "")
+        for index in range(combo.count())
+    )
+
+
+@dataclass(frozen=True, slots=True)
+class _SelfTestCheck:
+    name: str
+    passed: bool
+
+
+def _physics_checks(window) -> tuple[_SelfTestCheck, ...]:
+    return tuple(
+        _SelfTestCheck(name, passed)
+        for pose in ("cheek", "lean", "front")
+        for name, passed in (
+            (f"visual.physics.{pose}.ornament", not window.physics_sources[pose].isNull()),
+            (f"visual.physics.{pose}.face", not window.face_sources[pose].isNull()),
+            (f"visual.physics.{pose}.eyes", not window.eye_sources[pose].isNull()),
+            *(
+                (
+                    f"visual.physics.{pose}.hair.{side}",
+                    not window.hair_sources[pose][side].isNull(),
+                )
+                for side in ("left", "right")
+            ),
+            *(
+                (
+                    f"visual.physics.{pose}.sleeve.{side}",
+                    not window.sleeve_sources[pose][side].isNull(),
+                )
+                for side in ("left", "right")
+            ),
+        )
+    )
+
+
+def _flagship_checks(window) -> tuple[_SelfTestCheck, ...]:
+    center = getattr(window.dashboard, "flagship_center", None)
+    if center is None:
+        return (_SelfTestCheck("flagship.center", False),)
+    return (
+        _SelfTestCheck("flagship.center", True),
+        _SelfTestCheck("flagship.tab_count", center.tabs.count() == 8),
+        _SelfTestCheck("flagship.remote_disabled", not center.remote_enabled.isChecked()),
+        _SelfTestCheck("flagship.camera_disabled", not center.camera_enabled.isChecked()),
+        _SelfTestCheck("flagship.camera_closed", center.camera_presence.camera is None),
+        _SelfTestCheck("flagship.remote_server_closed", center.remote_server is None),
+        _SelfTestCheck("flagship.payment_handler_absent", "payment" not in center.executor.handlers),
+        _SelfTestCheck("flagship.shell_handler_absent", "shell" not in center.executor.handlers),
+    )
+
+
+def _visual_checks(app: QApplication, window) -> tuple[_SelfTestCheck, ...]:
+    checks = (
+        _SelfTestCheck("visual.character_pixmap", window.character.pixmap() is not None),
+        _SelfTestCheck(
+            "visual.expression_pixmaps",
+            all(not pixmap.isNull() for pixmap in window.expression_pixmaps.values()),
+        ),
+        *_physics_checks(window),
+        *(
+            _SelfTestCheck(f"visual.{key}", window._physics_enabled(key))
+            for key in (
+                "physics_sleeves",
+                "physics_hair",
+                "physics_ornament",
+                "physics_eye_tracking",
+                "physics_face_parallax",
+            )
+        ),
+        _SelfTestCheck("visual.character_opacity", window.character_opacity.opacity() == 1.0),
+        _SelfTestCheck("dashboard.tab_count", window.dashboard.tabs.count() == 8),
+        _SelfTestCheck(
+            "dashboard.no_default_buttons",
+            all(
+                not button.autoDefault() and not button.isDefault()
+                for button in window.dashboard.findChildren(QPushButton)
+            ),
+        ),
+        *_flagship_checks(window),
+        _SelfTestCheck(
+            "dashboard.not_always_on_top",
+            not (window.dashboard.windowFlags() & Qt.WindowStaysOnTopHint),
+        ),
+        _SelfTestCheck("assets.voice_listener", resource_path("voice_listener.ps1").exists()),
+        _SelfTestCheck("assets.application_icon", resource_path(APP_ICON_PATH).exists()),
+        _SelfTestCheck("icons.application", not app.windowIcon().isNull()),
+        _SelfTestCheck("icons.dashboard", not window.dashboard.windowIcon().isNull()),
+        _SelfTestCheck("icons.tray", not window.tray.icon().isNull()),
+    )
+    return tuple(checks)
+
+
+def _voice_checks(window, voices: tuple[str, ...]) -> tuple[_SelfTestCheck, ...]:
+    dashboard = window.dashboard
+    return (
+        _SelfTestCheck("voice.windows_voices_present", bool(voices)),
+        _SelfTestCheck("voice.realtime_dependencies", RealtimeVoiceClient.dependencies_available()),
+        _SelfTestCheck(
+            "voice.windows_default",
+            bool(voices) and str(dashboard.windows_voice.currentData() or "") == voices[0],
+        ),
+        _SelfTestCheck("voice.zira_excluded", all("zira" not in voice.casefold() for voice in voices)),
+        _SelfTestCheck(
+            "voice.transcription_model",
+            dashboard.transcription_model.currentText() == SpeechListener.TRANSCRIPTION_MODEL,
+        ),
+        _SelfTestCheck(
+            "voice.realtime_transcription_model",
+            dashboard.realtime_transcription_model.currentText() == SpeechListener.TRANSCRIPTION_MODEL,
+        ),
+        _SelfTestCheck("voice.noise_reduction", dashboard.realtime_noise_reduction.currentData() == "near_field"),
+        _SelfTestCheck("voice.turn_detection", dashboard.realtime_turn_detection.currentData() == "server_vad"),
+        _SelfTestCheck("voice.hybrid_transcription", dashboard.realtime_hybrid_transcription.isChecked()),
+        _SelfTestCheck("voice.windows_fallback", dashboard.windows_transcription_fallback.isChecked()),
+        _SelfTestCheck("voice.end_silence", SpeechListener.END_SILENCE_SECONDS == 0.85),
+        _SelfTestCheck("voice.max_record", SpeechListener.MAX_RECORD_SECONDS == 10.0),
+        _SelfTestCheck("voice.traditional_normalization", to_taiwan_traditional("打开软件") == "開啟軟體"),
+    )
+
+
+def _realtime_checks() -> tuple[_SelfTestCheck, ...]:
+    session = RealtimeVoiceClient._session_update_event(
+        RealtimeSessionConfig(
+            transcription_model=SpeechListener.TRANSCRIPTION_MODEL,
+        ),
+        "test",
+    )["session"]
+    return (
+        _SelfTestCheck(
+            "realtime.prompt_sanitized",
+            "請使用" not in RealtimeVoiceClient._sanitize_realtime_transcription_prompt(
+                SpeechListener.TRANSCRIPTION_PROMPT
+            ),
+        ),
+        _SelfTestCheck(
+            "realtime.instructions_composed",
+            "好呀你說" in RealtimeVoiceClient._compose_instructions("人格", "記憶", "最近對話"),
+        ),
+        _SelfTestCheck(
+            "realtime.response_creation_disabled",
+            not session["audio"]["input"]["turn_detection"]["create_response"],
+        ),
+        _SelfTestCheck("realtime.transcription_disabled", session["audio"]["input"]["transcription"] is None),
+    )
+
+
+def _collect_checks(app: QApplication, window) -> tuple[_SelfTestCheck, ...]:
+    voices = _visible_windows_voices(window)
+    return (*_visual_checks(app, window), *_voice_checks(window, voices), *_realtime_checks())
+
+
+def _report_failures(checks: tuple[_SelfTestCheck, ...]) -> None:
+    failed = tuple(check.name for check in checks if not check.passed)
+    if failed:
+        sys.stderr.write("PACKAGED_SELFTEST_FAILED_CHECKS=" + ",".join(failed) + "\n")
+
+
+def _write_result(path: str, passed: bool) -> None:
+    if not path:
+        return
+    Path(path).write_text(
+        "PACKAGED_SELFTEST_OK" if passed else "PACKAGED_SELFTEST_FAILED",
+        encoding="utf-8",
+    )
+
+
+def run_packaged_self_test(
+    app: QApplication,
+    window,
+    *,
+    output_path: str = "",
+) -> int:
+    checks = _collect_checks(app, window)
+    passed = all(check.passed for check in checks)
+    _write_result(output_path, passed)
+    _report_failures(checks)
+    window.close()
+    app.processEvents()
+    return 0 if passed else 2
+
+
+__all__ = ("run_packaged_self_test",)

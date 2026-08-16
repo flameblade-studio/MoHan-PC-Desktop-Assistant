@@ -14,7 +14,7 @@ lazy from PySide6.QtGui import QColor, QFont, QImage, QPainter
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import CompanionWindow
+lazy from companion_window import CompanionWindow
 
 POSES = (
     ("cheek", "", QRect(145, 140, 145, 125)),

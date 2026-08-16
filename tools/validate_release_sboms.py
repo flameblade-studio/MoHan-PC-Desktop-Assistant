@@ -30,8 +30,8 @@ SECRET_VALUE = re.compile(
     r"[\s\"']*[:=][\s\"']*[A-Za-z0-9_./+=-]{8,}"
 )
 SCHEMA_VALIDATION_PROGRAM = """
-import sys
-from pathlib import Path
+lazy import sys
+lazy from pathlib import Path
 from cyclonedx.schema import OutputFormat, SchemaVersion
 from cyclonedx.validation import make_schemabased_validator
 
@@ -46,6 +46,11 @@ if error is not None:
 """
 
 type JsonObject = dict[str, object]
+
+ALLOWED_OUTFIT_ASSET_ROLES = frozenset({"garment", "accessory", "occlusion"})
+FORBIDDEN_OUTFIT_ASSET_ROLES = frozenset(
+    {"identity", "face", "skin-tone", "body-shape", "core-body-skin"}
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -66,6 +71,23 @@ class ComponentPolicy:
 
 
 @dataclass(frozen=True, slots=True)
+class AssetPolicy:
+    name: str
+    version: str
+    component_type: str
+    path: Path
+    sha256: str
+    source: str
+    source_revision: str
+    license_expression: str
+    profiles: tuple[str, ...]
+
+    @property
+    def bom_ref(self) -> str:
+        return f"urn:flameblade:asset:{self.sha256}"
+
+
+@dataclass(frozen=True, slots=True)
 class SbomEntry:
     profile: str
     path: Path
@@ -79,6 +101,24 @@ class InventoryResult:
     profile: str
     path: Path
     report: JsonObject
+
+
+@dataclass(frozen=True, slots=True)
+class InventoryRequest:
+    entry: SbomEntry
+    policies: tuple[ComponentPolicy, ...]
+    tag: str
+    version: str
+    schema_python: Path
+    assets: tuple[AssetPolicy, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class ValidatedInventory:
+    bom: JsonObject
+    components: Mapping[str, JsonObject]
+    expected_refs: set[str]
+    generators: Mapping[str, str]
 
 
 def arguments() -> argparse.Namespace:
@@ -222,6 +262,201 @@ def load_policies(path: Path) -> tuple[ComponentPolicy, ...]:
     if len(normalized) != len(set(normalized)):
         raise ValueError("SBOM component policy contains duplicate names.")
     return policies
+
+
+def _asset_from_row(row: JsonObject, index: int) -> AssetPolicy:
+    context = f"SBOM policy asset {index}"
+    component_type = _required_string(row, "type", context)
+    if component_type not in {"file", "machine-learning-model"}:
+        raise ValueError(f"{context}.type is unsupported.")
+    relative_path = Path(_required_string(row, "path", context))
+    if relative_path.is_absolute() or ".." in relative_path.parts:
+        raise ValueError(f"{context}.path must stay inside the package root.")
+    sha256 = _required_string(row, "sha256", context).casefold()
+    if re.fullmatch(r"[0-9a-f]{64}", sha256) is None:
+        raise ValueError(f"{context}.sha256 must be a SHA-256 digest.")
+    source = _required_string(row, "source", context)
+    if not source.startswith("https://"):
+        raise ValueError(f"{context}.source must use HTTPS.")
+    return AssetPolicy(
+        name=_required_string(row, "name", context),
+        version=_required_string(row, "version", context),
+        component_type=component_type,
+        path=relative_path,
+        sha256=sha256,
+        source=source,
+        source_revision=_required_string(row, "source_revision", context),
+        license_expression=_required_string(row, "license", context),
+        profiles=_string_list(row.get("profiles"), f"{context}.profiles"),
+    )
+
+
+def load_asset_policies(path: Path) -> tuple[AssetPolicy, ...]:
+    document = _load_toml(path.resolve())
+    assets = tuple(
+        _asset_from_row(row, index)
+        for index, row in enumerate(
+            _object_list(document.get("asset", []), "SBOM policy assets"),
+            start=1,
+        )
+    )
+    paths = [asset.path.as_posix().casefold() for asset in assets]
+    if len(paths) != len(set(paths)):
+        raise ValueError("SBOM asset policy contains duplicate paths.")
+    return assets
+
+
+def _required_bool(
+    value: Mapping[str, object],
+    key: str,
+    context: str,
+) -> bool:
+    candidate = value.get(key)
+    if not isinstance(candidate, bool):
+        raise TypeError(f"{context}.{key} must be a boolean.")
+    return candidate
+
+
+def _asset_package_identity(document: JsonObject) -> tuple[str, str]:
+    package = _json_object(document.get("package"), "asset package")
+    package_id = _required_string(package, "id", "asset package")
+    version = _required_string(package, "version", "asset package")
+    provenance = _required_string(package, "provenance", "asset package")
+    if provenance != "original-derivative-design":
+        raise ValueError("Asset package provenance must be original-derivative-design.")
+    reference_policy = _required_string(
+        package,
+        "reference_policy",
+        "asset package",
+    )
+    if reference_policy != "design-reference-only":
+        raise ValueError("Asset package references must be design-reference-only.")
+    return package_id, version
+
+
+def _approved_core_body_skin(
+    document: JsonObject,
+    official_core_body_skin: Mapping[str, str],
+) -> tuple[str, str]:
+    core = _json_object(document.get("core_body_skin"), "core_body_skin reference")
+    core_id = _required_string(core, "id", "core_body_skin reference")
+    core_hash = _required_string(
+        core,
+        "sha256",
+        "core_body_skin reference",
+    ).casefold()
+    if re.fullmatch(r"[0-9a-f]{64}", core_hash) is None:
+        raise ValueError("core_body_skin reference must use SHA-256.")
+    if official_core_body_skin.get(core_id) != core_hash:
+        raise ValueError("Asset package must reference an approved core_body_skin hash.")
+    return core_id, core_hash
+
+
+def _asset_package_variant_ids(document: JsonObject) -> set[str]:
+    variants = _object_list(document.get("variant"), "asset package variants")
+    variant_ids = {
+        _required_string(variant, "id", "asset package variant")
+        for variant in variants
+    }
+    if not variant_ids or len(variant_ids) != len(variants):
+        raise ValueError("Asset package variants must have unique IDs.")
+    return variant_ids
+
+
+def _asset_package_reference_ids(document: JsonObject) -> tuple[set[str], int]:
+    references = _object_list(document.get("reference", []), "design references")
+    reference_ids: set[str] = set()
+    for reference in references:
+        reference_id = _required_string(reference, "id", "design reference")
+        if reference_id in reference_ids:
+            raise ValueError("Design reference IDs must be unique.")
+        reference_ids.add(reference_id)
+        source = _required_string(reference, "source", "design reference")
+        if not source.startswith("https://"):
+            raise ValueError("Design reference source must use HTTPS.")
+        _required_string(reference, "license", "design reference")
+        policy = _required_string(reference, "policy", "design reference")
+        if policy != "design-reference-only":
+            raise ValueError("Reality-photo references must be design-reference-only.")
+        if _required_bool(reference, "redistributable", "design reference"):
+            raise ValueError("Design references must not be redistributable by default.")
+        if _required_bool(reference, "packaged", "design reference"):
+            raise ValueError("Design references must not be included in the package.")
+    return reference_ids, len(references)
+
+
+def _governed_asset(
+    asset: JsonObject,
+    variant_ids: set[str],
+    reference_ids: set[str],
+) -> JsonObject:
+    context = "asset package item"
+    role = _required_string(asset, "role", context)
+    if role in FORBIDDEN_OUTFIT_ASSET_ROLES or role not in ALLOWED_OUTFIT_ASSET_ROLES:
+        raise ValueError(f"Asset package role is forbidden: {role}.")
+    if _required_string(asset, "provenance", context) != "original-derivative-design":
+        raise ValueError("Packaged outfit assets must be original derivative designs.")
+    if not _required_bool(asset, "redistributable", context):
+        raise ValueError("Packaged outfit assets must have redistribution permission.")
+    license_expression = _required_string(asset, "license", context)
+    asset_hash = _required_string(asset, "sha256", context).casefold()
+    if re.fullmatch(r"[0-9a-f]{64}", asset_hash) is None:
+        raise ValueError("Asset package item must use SHA-256.")
+    asset_variants = set(_string_list(asset.get("variants"), f"{context}.variants"))
+    if not asset_variants or not asset_variants.issubset(variant_ids):
+        raise ValueError("Asset package item references an unknown variant.")
+    asset_references = set(
+        _string_list(asset.get("references", []), f"{context}.references")
+    )
+    if not asset_references.issubset(reference_ids):
+        raise ValueError("Asset package item references unknown provenance.")
+    return {
+        "license": license_expression,
+        "name": _required_string(asset, "name", context),
+        "role": role,
+        "sha256": asset_hash,
+        "variants": sorted(asset_variants),
+    }
+
+
+def validate_asset_package_manifest(
+    path: Path,
+    *,
+    official_core_body_skin: Mapping[str, str],
+) -> JsonObject:
+    """Validate a multi-variant theme/outfit package without loading its code."""
+
+    document = _load_toml(path.resolve())
+    if document.get("schema") != 1:
+        raise ValueError("Unsupported asset package manifest schema.")
+    package_id, version = _asset_package_identity(document)
+    core_id, core_hash = _approved_core_body_skin(document, official_core_body_skin)
+    variant_ids = _asset_package_variant_ids(document)
+    reference_ids, reference_count = _asset_package_reference_ids(document)
+    assets = _object_list(document.get("asset"), "asset package assets")
+    if not assets:
+        raise ValueError("Asset package must contain at least one governed asset.")
+    governed_assets = [
+        _governed_asset(asset, variant_ids, reference_ids)
+        for asset in assets
+    ]
+    return {
+        "asset_count": len(governed_assets),
+        "assets": governed_assets,
+        "core_body_skin": {"id": core_id, "sha256": core_hash},
+        "package_id": package_id,
+        "reference_count": reference_count,
+        "status": "pass",
+        "variant_count": len(variant_ids),
+        "version": version,
+    }
+
+
+def _profile_assets(
+    assets: tuple[AssetPolicy, ...],
+    profile: str,
+) -> tuple[AssetPolicy, ...]:
+    return tuple(asset for asset in assets if profile in asset.profiles)
 
 
 def _entry(raw: Sequence[str]) -> SbomEntry:
@@ -483,6 +718,66 @@ def _validate_components(
     return refs
 
 
+def _asset_component(asset: AssetPolicy) -> JsonObject:
+    source_revision = asset.source_revision
+    properties = [
+        {
+            "name": "com.flamebladestudio.asset.package-path",
+            "value": asset.path.as_posix(),
+        },
+        {
+            "name": "com.flamebladestudio.asset.source-revision",
+            "value": source_revision,
+        },
+    ]
+    return {
+        "type": asset.component_type,
+        "name": asset.name,
+        "version": asset.version,
+        "bom-ref": asset.bom_ref,
+        "hashes": [{"alg": "SHA-256", "content": asset.sha256}],
+        "licenses": [
+            {
+                "expression": asset.license_expression,
+                "acknowledgement": "declared",
+            }
+        ],
+        "externalReferences": [
+            {"type": "distribution", "url": asset.source}
+        ],
+        "properties": properties,
+    }
+
+
+def _add_and_validate_assets(
+    bom: JsonObject,
+    assets: tuple[AssetPolicy, ...],
+    *,
+    package_root: Path = ROOT,
+) -> set[str]:
+    components = _object_list(bom.get("components"), "CycloneDX components")
+    existing_refs = {
+        _required_string(component, "bom-ref", "CycloneDX component")
+        for component in components
+    }
+    refs: set[str] = set()
+    for asset in assets:
+        path = package_root / asset.path
+        if not path.is_file():
+            raise FileNotFoundError(f"SBOM asset is not packaged: {asset.path.as_posix()}")
+        if _sha256(path) != asset.sha256:
+            raise ValueError(f"SBOM asset hash drifted: {asset.path.as_posix()}")
+        if asset.bom_ref in existing_refs or asset.bom_ref in refs:
+            raise ValueError(f"Duplicate CycloneDX asset bom-ref: {asset.bom_ref}.")
+        components.append(_asset_component(asset))
+        refs.add(asset.bom_ref)
+    bom["components"] = components
+    dependencies = _object_list(bom.get("dependencies"), "CycloneDX dependencies")
+    dependencies.extend({"ref": reference, "dependsOn": []} for reference in sorted(refs))
+    bom["dependencies"] = dependencies
+    return refs
+
+
 def _set_root_properties(
     root: JsonObject,
     entry: SbomEntry,
@@ -490,7 +785,7 @@ def _set_root_properties(
 ) -> None:
     managed = {
         "com.flamebladestudio.sbom.inventory-basis": (
-            "pinned-runtime-requirements"
+            "pinned-runtime-requirements-and-packaged-assets"
         ),
         "com.flamebladestudio.sbom.profile": entry.profile,
         "com.flamebladestudio.sbom.release-tag": tag,
@@ -611,43 +906,80 @@ def _component_report(
     ]
 
 
-def finalize_inventory(
-    entry: SbomEntry,
-    policies: tuple[ComponentPolicy, ...],
-    tag: str,
-    version: str,
-    schema_python: Path,
-) -> InventoryResult:
+def _asset_report(assets: tuple[AssetPolicy, ...]) -> list[JsonObject]:
+    return [
+        {
+            "license": asset.license_expression,
+            "name": asset.name,
+            "package_path": asset.path.as_posix(),
+            "sha256": asset.sha256,
+            "source": asset.source,
+            "source_revision": asset.source_revision,
+            "type": asset.component_type,
+            "version": asset.version,
+        }
+        for asset in sorted(assets, key=lambda item: item.path.as_posix())
+    ]
+
+
+def _validated_component_refs(
+    bom: JsonObject,
+    request: InventoryRequest,
+) -> tuple[Mapping[str, JsonObject], set[str]]:
+    asset_refs = _add_and_validate_assets(bom, request.assets)
+    components, component_refs = _component_index(bom)
+    asset_names = {normalize_name(asset.name) for asset in request.assets}
+    python_components = {
+        name: component
+        for name, component in components.items()
+        if name not in asset_names
+    }
+    expected_refs = {
+        *_validate_components(python_components, request.policies).values(),
+        *asset_refs,
+    }
+    if component_refs != expected_refs:
+        raise ValueError(f"{request.entry.profile} SBOM component references drifted.")
+    return components, expected_refs
+
+
+def _validated_inventory(request: InventoryRequest) -> ValidatedInventory:
+    entry = request.entry
     requirements = _pinned_requirements(entry.requirements)
-    expected = _expected_versions(policies)
+    expected = _expected_versions(request.policies)
     if requirements != expected:
         raise ValueError(f"{entry.requirements.name} dependency policy drifted.")
-    _project_metadata(entry, version, policies)
+    _project_metadata(entry, request.version, request.policies)
 
     bom = _load_json(entry.path)
     _validate_header(bom)
     metadata, root = _metadata_and_root(bom)
     _validate_reproducible_metadata(metadata)
     generators = _tool_versions(metadata)
-    root_ref = _validate_root(root, entry, version)
-    components, component_refs = _component_index(bom)
-    expected_refs = set(_validate_components(components, policies).values())
-    if component_refs != expected_refs:
-        raise ValueError(f"{entry.profile} SBOM component references drifted.")
-    _set_root_properties(root, entry, tag)
+    root_ref = _validate_root(root, entry, request.version)
+    components, expected_refs = _validated_component_refs(bom, request)
+    _set_root_properties(root, entry, request.tag)
     _finalize_dependency_graph(bom, root_ref, expected_refs)
+    return ValidatedInventory(bom, components, expected_refs, generators)
 
-    _write_json(entry.path, bom)
+
+def finalize_inventory(request: InventoryRequest) -> InventoryResult:
+    entry = request.entry
+    validated = _validated_inventory(request)
+
+    _write_json(entry.path, validated.bom)
     _privacy_gate(entry.path)
-    _schema_gate(schema_python, entry.path)
+    _schema_gate(request.schema_python, entry.path)
     report: JsonObject = {
         "artifact": entry.path.name,
-        "component_count": len(components),
-        "components": _component_report(policies),
-        "dependency_edge_count": len(expected_refs),
-        "dependency_node_count": len(expected_refs) + 1,
-        "generator_versions": generators,
-        "inventory_basis": "pinned-runtime-requirements",
+        "asset_count": len(request.assets),
+        "assets": _asset_report(request.assets),
+        "component_count": len(validated.components),
+        "components": _component_report(request.policies),
+        "dependency_edge_count": len(validated.expected_refs),
+        "dependency_node_count": len(validated.expected_refs) + 1,
+        "generator_versions": validated.generators,
+        "inventory_basis": "pinned-runtime-requirements-and-packaged-assets",
         "license_coverage_percent": 100.0,
         "profile": entry.profile,
         "purl_coverage_percent": 100.0,
@@ -658,7 +990,7 @@ def finalize_inventory(
         "sha256": _sha256(entry.path),
         "spec_version": "1.7",
         "status": "pass",
-        "version": version,
+        "version": request.version,
     }
     return InventoryResult(entry.profile, entry.path, report)
 
@@ -689,14 +1021,18 @@ def main() -> int:
     args = arguments()
     version = _release_version(args.tag)
     policies = load_policies(args.policy)
+    assets = load_asset_policies(args.policy)
     entries = _entries(args.entry)
     results = tuple(
         finalize_inventory(
-            entry,
-            _profile_policies(policies, entry.profile),
-            args.tag,
-            version,
-            args.schema_python.resolve(),
+            InventoryRequest(
+                entry=entry,
+                policies=_profile_policies(policies, entry.profile),
+                tag=args.tag,
+                version=version,
+                schema_python=args.schema_python.resolve(),
+                assets=_profile_assets(assets, entry.profile),
+            )
         )
         for entry in entries
     )

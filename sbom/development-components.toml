@@ -1,0 +1,23 @@
+schema = 1
+profile = "development"
+
+[[component]]
+name = "pytest"
+version = "9.1.1"
+license = "MIT"
+scope = "development"
+profiles = ["ci", "local"]
+
+[[component]]
+name = "ruff"
+version = "0.16.0"
+license = "MIT"
+scope = "development"
+profiles = ["ci", "local"]
+
+[[compiled_component]]
+name = "Rayon"
+version = "1.12.0"
+license = "MIT OR Apache-2.0"
+scope = "compiled"
+profiles = ["native-build", "packaged-native"]

@@ -1,0 +1,260 @@
+{
+  "hands": [
+    {
+      "landmarks": [
+        [
+          333,
+          765
+        ],
+        [
+          315,
+          775
+        ],
+        [
+          304,
+          794
+        ],
+        [
+          299,
+          815
+        ],
+        [
+          297,
+          834
+        ],
+        [
+          295,
+          803
+        ],
+        [
+          283,
+          829
+        ],
+        [
+          278,
+          845
+        ],
+        [
+          276,
+          858
+        ],
+        [
+          306,
+          808
+        ],
+        [
+          296,
+          836
+        ],
+        [
+          294,
+          852
+        ],
+        [
+          294,
+          864
+        ],
+        [
+          317,
+          812
+        ],
+        [
+          312,
+          836
+        ],
+        [
+          307,
+          850
+        ],
+        [
+          307,
+          860
+        ],
+        [
+          325,
+          809
+        ],
+        [
+          318,
+          832
+        ],
+        [
+          317,
+          842
+        ],
+        [
+          316,
+          847
+        ]
+      ],
+      "model_evidence": {
+        "augmentation": "flip-horizontal",
+        "confidence": 0.956652,
+        "model_handedness": "right",
+        "pixel_refinement": "nearest-skin-within-8px"
+      },
+      "roi": [
+        268,
+        757,
+        74,
+        116
+      ],
+      "side": "left",
+      "thumb_side_check": false
+    },
+    {
+      "landmarks": [
+        [
+          665,
+          770
+        ],
+        [
+          648,
+          789
+        ],
+        [
+          642,
+          803
+        ],
+        [
+          643,
+          824
+        ],
+        [
+          644,
+          842
+        ],
+        [
+          669,
+          813
+        ],
+        [
+          669,
+          843
+        ],
+        [
+          666,
+          858
+        ],
+        [
+          663,
+          870
+        ],
+        [
+          681,
+          814
+        ],
+        [
+          680,
+          845
+        ],
+        [
+          673,
+          860
+        ],
+        [
+          668,
+          869
+        ],
+        [
+          688,
+          814
+        ],
+        [
+          687,
+          841
+        ],
+        [
+          681,
+          855
+        ],
+        [
+          674,
+          863
+        ],
+        [
+          690,
+          813
+        ],
+        [
+          691,
+          836
+        ],
+        [
+          687,
+          846
+        ],
+        [
+          682,
+          853
+        ]
+      ],
+      "model_evidence": {
+        "augmentation": "rotate-clockwise",
+        "confidence": 0.980894,
+        "model_handedness": "left",
+        "pixel_refinement": "nearest-skin-within-8px"
+      },
+      "roi": [
+        634,
+        762,
+        66,
+        117
+      ],
+      "side": "left",
+      "thumb_side_check": false
+    }
+  ],
+  "height": 1536,
+  "inference": {
+    "augmentations": [
+      "native",
+      "flip-horizontal",
+      "rotate-clockwise",
+      "rotate-counterclockwise"
+    ],
+    "hand_confidence_threshold": 0.65,
+    "palm_threshold": 0.45,
+    "pipeline": "OpenCV Zoo MediaPipe PalmDet + HandPose FP32 ONNX",
+    "source_sha256": "9dad8388b05b3072fc38bb7f628ea1d85fcccfdc92838319ce5947a4bbaa32ee"
+  },
+  "occluded_hands": [
+    {
+      "occluder_id": "robe-or-view-occlusion",
+      "reason": "No reliable 21-point hand observation was visible after the approved fixed augmentations.",
+      "region": [
+        0,
+        73,
+        1024,
+        1400
+      ],
+      "side": "right",
+      "status": "occluded"
+    }
+  ],
+  "occluders": [],
+  "protected_regions": [
+    {
+      "label": "face",
+      "rect": [
+        412,
+        153,
+        200,
+        220
+      ]
+    },
+    {
+      "label": "body",
+      "rect": [
+        412,
+        333,
+        200,
+        220
+      ]
+    }
+  ],
+  "schema_version": 1,
+  "view_id": "yaw+060-pitch+00",
+  "width": 1024,
+  "yaw_degrees": 60
+}

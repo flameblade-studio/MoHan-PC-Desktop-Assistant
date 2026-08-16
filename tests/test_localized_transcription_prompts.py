@@ -8,13 +8,13 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from db import StudioDB
+lazy from infrastructure.db import StudioDB
+lazy from integrations.realtime_voice import RealtimeVoiceClient
 lazy from language_support import (
     LEGACY_TRANSCRIPTION_PROMPT,
     is_builtin_transcription_prompt,
     localized_transcription_prompt,
 )
-lazy from realtime_voice import RealtimeVoiceClient
 
 
 def _create_existing_profile(

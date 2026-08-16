@@ -20,12 +20,12 @@ if str(ROOT) not in sys.path:
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import (
+lazy from companion_animation_contract import (
     MOTION_FRAME_INTERVAL_MS,
     SPEECH_MOTION_RELEASE_LIMIT,
-    CompanionWindow,
 )
-lazy from db import StudioDB
+lazy from companion_window import CompanionWindow
+lazy from infrastructure.db import StudioDB
 
 VISEME_FRAME_BUDGET_MS = 20.0
 MOTION_FRAME_BUDGET_MS = float(MOTION_FRAME_INTERVAL_MS)

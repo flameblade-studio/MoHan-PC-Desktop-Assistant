@@ -1,6 +1,8 @@
 param(
     [Parameter(Mandatory = $true)][string]$ArtifactsDir,
-    [Parameter(Mandatory = $true)][string]$Version
+    [Parameter(Mandatory = $true)][string]$Version,
+    [Parameter(Mandatory = $true)][string]$Python,
+    [Parameter(Mandatory = $true)][string]$NativeEvidenceDir
 )
 
 $ErrorActionPreference = "Stop"
@@ -15,12 +17,50 @@ if (
     )
 }
 $ResolvedArtifacts = (Resolve-Path $ArtifactsDir).Path
+$ResolvedNativeEvidence = [IO.Path]::GetFullPath($NativeEvidenceDir)
+$ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+$NativeVerifier = Join-Path $ProjectRoot (
+    "tools\verify_packaged_native_acceleration.py"
+)
+New-Item -ItemType Directory -Force $ResolvedNativeEvidence | Out-Null
 $ExeInstaller = Get-Item (Join-Path $ResolvedArtifacts "*Setup.exe")
 $MsiInstaller = Get-Item (Join-Path $ResolvedArtifacts "*.msi")
 $MsiTransforms = Get-ChildItem (Join-Path $ResolvedArtifacts "*.mst") |
     Sort-Object Name
 $ExpectedTransformLocales = @("en-US", "ja-JP", "zh-CN")
 $ProgramsFolder = [Environment]::GetFolderPath("Programs")
+$ExpectedNativeLabels = @(
+    "exe",
+    "msi-zh-TW",
+    "msi-en-US",
+    "msi-zh-CN",
+    "msi-ja-JP"
+)
+
+function Invoke-NativeVerification {
+    param(
+        [Parameter(Mandatory = $true)][string]$PackageRoot,
+        [Parameter(Mandatory = $true)][string]$Label,
+        [Parameter(Mandatory = $true)][array]$Artifacts
+    )
+    if ($Label -notin $ExpectedNativeLabels) {
+        throw "Unexpected native installer verification label: $Label"
+    }
+    $Arguments = @(
+        $NativeVerifier,
+        $PackageRoot,
+        "--label", $Label,
+        "--output", (Join-Path $ResolvedNativeEvidence "$Label.json")
+    )
+    foreach ($Artifact in $Artifacts) {
+        $Arguments += @("--artifact", $Artifact)
+    }
+    & $Python @Arguments
+    if ($LASTEXITCODE -ne 0) {
+        throw "$Label strict native acceleration verification failed"
+    }
+}
+
 foreach ($Locale in $ExpectedTransformLocales) {
     if (-not ($MsiTransforms.Name -match "-$Locale\.mst$")) {
         throw "Missing MSI language transform: $Locale"
@@ -54,6 +94,10 @@ if (
 ) {
     throw "EXE-installed application self-test failed"
 }
+Invoke-NativeVerification `
+    -PackageRoot $ExeInstallDir `
+    -Label "exe" `
+    -Artifacts @($ExeInstaller.FullName)
 $ExeShortcutPath = Join-Path $ProgramsFolder "MoHan Desktop Assistant.lnk"
 if (-not (Test-Path -LiteralPath $ExeShortcutPath)) {
     throw "EXE installer did not create the Start menu shortcut"
@@ -87,7 +131,15 @@ if (Test-Path -LiteralPath $ExeShortcutPath) {
 
 $MsiVariants = @($null) + @($MsiTransforms)
 foreach ($Transform in $MsiVariants) {
-    $Variant = if ($null -eq $Transform) { "zh-TW" } else { $Transform.BaseName }
+    $Variant = if ($null -eq $Transform) {
+        "zh-TW"
+    }
+    else {
+        $ExpectedTransformLocales |
+            Where-Object { $Transform.Name -match "-$_\.mst$" } |
+            Select-Object -First 1
+    }
+    if (-not $Variant) { throw "Could not identify MSI transform locale" }
     $MsiInstallDir = Join-Path $env:RUNNER_TEMP "mohan-msi-install-$Variant"
     $InstallArguments = @(
         "/i", $MsiInstaller.FullName, "/qn", "/norestart",
@@ -122,6 +174,14 @@ foreach ($Transform in $MsiVariants) {
     ) {
         throw "MSI $Variant application self-test failed"
     }
+    $NativeArtifacts = @($MsiInstaller.FullName)
+    if ($null -ne $Transform) {
+        $NativeArtifacts += $Transform.FullName
+    }
+    Invoke-NativeVerification `
+        -PackageRoot $MsiInstallDir `
+        -Label "msi-$Variant" `
+        -Artifacts $NativeArtifacts
     $MsiShortcutPath = Join-Path $ProgramsFolder (
         "MoHan Desktop Assistant\MoHan Desktop Assistant.lnk"
     )

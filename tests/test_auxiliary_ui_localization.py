@@ -19,14 +19,28 @@ lazy from auxiliary_ui_localization import (
     AuxiliaryText,
     auxiliary_text,
 )
-lazy from db import StudioDB
-lazy from profile_transfer import ProfileTransferError
+lazy from infrastructure.db import StudioDB
+lazy from infrastructure.profile_transfer import ProfileTransferError
+lazy from infrastructure.updater import ReleaseInfo
 lazy from profile_transfer_ui import PortableProfilePanel
-lazy from updater import ReleaseInfo
 lazy from updater_ui import UpdatePanel
 
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 CJK = re.compile(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]")
+MOJIBAKE = re.compile(r"(?:\ufffd|[ÃÂ]{2,}|(?:銝|隞|撠|雿|蝟|摰)[\ue000-\uf8ff])")
+SENSITIVE_PROFILE_KEYS = (
+    AuxiliaryText.INCLUDE_ENCRYPTED_SENSITIVE_DATA,
+    AuxiliaryText.STRONG_PASSWORD,
+    AuxiliaryText.CONFIRM_STRONG_PASSWORD,
+    AuxiliaryText.SENSITIVE_DATA_WARNING,
+    AuxiliaryText.PASSWORD_MISMATCH,
+    AuxiliaryText.EXPORT_COMPLETE_WITH_SENSITIVE,
+    AuxiliaryText.EXPORT_COMPLETE_WITHOUT_SENSITIVE,
+    AuxiliaryText.IMPORT_ENCRYPTED_PASSWORD_PROMPT,
+    AuxiliaryText.ENCRYPTED_CONTENT_AUTH_FAILED,
+    AuxiliaryText.IMPORT_VISION_REMAINS_OFF,
+    AuxiliaryText.SENSITIVE_DATA_RESTORED,
+)
 
 
 def format_fields(template: str) -> frozenset[str]:
@@ -45,6 +59,9 @@ def assert_complete_translation_contract() -> None:
     for language in LANGUAGES:
         assert set(TRANSLATIONS[language]) == expected
         assert all(TRANSLATIONS[language].values())
+        assert not MOJIBAKE.search(
+            "\n".join(TRANSLATIONS[language][key] for key in SENSITIVE_PROFILE_KEYS)
+        ), language
     for key in AuxiliaryText:
         fields = format_fields(TRANSLATIONS["zh-TW"][key])
         assert all(
@@ -59,6 +76,44 @@ def assert_complete_translation_contract() -> None:
     for filename in ("updater_ui.py", "profile_transfer_ui.py"):
         source = (ROOT / filename).read_text(encoding="utf-8")
         assert not CJK.search(source), filename
+
+
+def assert_sensitive_profile_text_contract() -> None:
+    for language in LANGUAGES:
+        values = TRANSLATIONS[language]
+        assert all(values[key].strip() for key in SENSITIVE_PROFILE_KEYS)
+
+    # Public builds must describe sensitive export as optional and excluded by
+    # default. UI state remains the responsibility of profile_transfer_ui.py.
+    assert "選用" in auxiliary_text(
+        "zh-TW", AuxiliaryText.INCLUDE_ENCRYPTED_SENSITIVE_DATA
+    )
+    assert "可选" in auxiliary_text(
+        "zh-CN", AuxiliaryText.INCLUDE_ENCRYPTED_SENSITIVE_DATA
+    )
+    assert "optional" in auxiliary_text(
+        "en", AuxiliaryText.INCLUDE_ENCRYPTED_SENSITIVE_DATA
+    ).lower()
+    assert "任意" in auxiliary_text(
+        "ja-JP", AuxiliaryText.INCLUDE_ENCRYPTED_SENSITIVE_DATA
+    )
+    for language in LANGUAGES:
+        note = auxiliary_text(language, AuxiliaryText.PROFILE_NOTE)
+        warning = auxiliary_text(language, AuxiliaryText.SENSITIVE_DATA_WARNING)
+        assert note
+        assert warning
+    assert "permissions" in auxiliary_text(
+        "en", AuxiliaryText.SENSITIVE_DATA_WARNING
+    )
+    assert "local paths" in auxiliary_text(
+        "en", AuxiliaryText.SENSITIVE_DATA_WARNING
+    )
+    assert "camera" in auxiliary_text(
+        "en", AuxiliaryText.IMPORT_VISION_REMAINS_OFF
+    ).lower()
+    assert "face recognition" in auxiliary_text(
+        "en", AuxiliaryText.IMPORT_VISION_REMAINS_OFF
+    ).lower()
 
 
 def visible_update_text(panel: UpdatePanel) -> tuple[str, ...]:
@@ -132,8 +187,8 @@ def assert_english_has_no_han_characters(
 
 def assert_update_runtime_messages(panel: UpdatePanel, language: str) -> None:
     panel.release = ReleaseInfo(
-        version="3.2.0",
-        tag="v3.2.0",
+        version="4.0.0",
+        tag="v4.0.0",
         release_url="https://github.com/example/release",
         notes="",
         published_at="2026-08-12T00:00:00Z",
@@ -147,7 +202,7 @@ def assert_update_runtime_messages(panel: UpdatePanel, language: str) -> None:
     assert panel.status.text() == auxiliary_text(
         language,
         AuxiliaryText.NEW_VERSION,
-        version="3.2.0",
+        version="4.0.0",
     )
     assert panel.notes.toPlainText() == auxiliary_text(
         language,
@@ -158,7 +213,7 @@ def assert_update_runtime_messages(panel: UpdatePanel, language: str) -> None:
         auxiliary_text(
             language,
             AuxiliaryText.NEW_VERSION_AVAILABLE,
-            version="3.2.0",
+            version="4.0.0",
         ),
     )
 
@@ -260,6 +315,7 @@ def assert_default_language_is_backward_compatible(
 
 def run() -> None:
     assert_complete_translation_contract()
+    assert_sensitive_profile_text_contract()
     app = QApplication.instance() or QApplication([])
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
         root = Path(temp)

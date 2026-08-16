@@ -13,13 +13,13 @@ lazy from PySide6.QtGui import QImage, QPixmap
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import (
+lazy from companion_animation_contract import (
     EXPRESSION_DERIVED_VISEME_FRAMES,
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_FRAMES,
     EXPRESSION_VISEME_FRAMES,
-    CompanionWindow,
 )
+lazy from companion_window import CompanionWindow
 
 
 def signature(pixmap: QPixmap, rect: QRect) -> tuple[int, ...]:

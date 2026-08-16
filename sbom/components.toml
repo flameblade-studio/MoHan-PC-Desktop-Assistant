@@ -1,5 +1,14 @@
 schema = 1
 
+[[external_service]]
+name = "OpenAI Responses API"
+endpoint = "https://api.openai.com/v1/responses"
+transport = "Python standard library urllib.request over HTTPS"
+sdk_package = "openai"
+sdk_runtime_dependency = false
+inventory_policy = "external-service-not-packaged"
+profiles = ["windows"]
+
 [[component]]
 name = "PySide6"
 version = "6.11.1"
@@ -36,8 +45,153 @@ scope = "runtime"
 profiles = ["windows"]
 
 [[component]]
+name = "cryptography"
+version = "50.0.0"
+license = "Apache-2.0 OR BSD-3-Clause"
+scope = "runtime"
+profiles = ["windows"]
+
+[[component]]
+name = "numpy"
+version = "2.5.2"
+license = "BSD-3-Clause"
+scope = "runtime"
+profiles = ["windows"]
+
+[[component]]
+name = "opencv-python"
+version = "5.0.0.93"
+license = "Apache-2.0"
+scope = "runtime"
+profiles = ["windows"]
+
+[[component]]
 name = "PyInstaller"
 version = "6.21.0"
 license = "GPL-2.0-or-later WITH Bootloader-exception"
 scope = "build"
 profiles = ["windows", "preview"]
+
+[[component]]
+name = "Rust"
+version = "1.97.1"
+license = "MIT OR Apache-2.0"
+scope = "build"
+profiles = ["windows"]
+
+[[component]]
+name = "Maturin"
+version = "1.14.1"
+license = "MIT OR Apache-2.0"
+scope = "build"
+profiles = ["windows"]
+
+[[component]]
+name = "PyO3"
+version = "0.29.2"
+license = "MIT OR Apache-2.0"
+scope = "build"
+profiles = ["windows"]
+
+[[component]]
+name = "Rayon"
+version = "1.12.0"
+license = "MIT OR Apache-2.0"
+scope = "build"
+profiles = ["windows"]
+
+[[asset]]
+name = "OpenCV Zoo YuNet face detector"
+version = "2023mar"
+type = "machine-learning-model"
+path = "assets/vision-models/face_detection_yunet_2023mar.onnx"
+sha256 = "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4"
+size_bytes = 232589
+source = "https://media.githubusercontent.com/media/opencv/opencv_zoo/f12e12798e8314f7c074a6656816c048dcc95b7a/models/face_detection_yunet/face_detection_yunet_2023mar.onnx"
+source_revision = "f12e12798e8314f7c074a6656816c048dcc95b7a"
+license = "MIT"
+profiles = ["windows"]
+
+[[asset]]
+name = "OpenCV Zoo SFace face recognizer"
+version = "2021dec"
+type = "machine-learning-model"
+path = "assets/vision-models/face_recognition_sface_2021dec.onnx"
+sha256 = "0ba9fbfa01b5270c96627c4ef784da859931e02f04419c829e83484087c34e79"
+size_bytes = 38696353
+source = "https://media.githubusercontent.com/media/opencv/opencv_zoo/ba91a3b91d00d76e86540d4013f944bd6b514e39/models/face_recognition_sface/face_recognition_sface_2021dec.onnx"
+source_revision = "ba91a3b91d00d76e86540d4013f944bd6b514e39"
+license = "Apache-2.0"
+profiles = ["windows"]
+
+[[asset]]
+name = "OpenCV Zoo NanoDet object detector"
+version = "2022nov"
+type = "machine-learning-model"
+path = "assets/vision-models/object_detection_nanodet_2022nov.onnx"
+sha256 = "4b82da9944b88577175ee23a459dce2e26e6e4be573def65b1055dc2d9720186"
+size_bytes = 3800954
+source = "https://media.githubusercontent.com/media/opencv/opencv_zoo/510899a2a0adb8c25957915fd030d66dbd553919/models/object_detection_nanodet/object_detection_nanodet_2022nov.onnx"
+source_revision = "510899a2a0adb8c25957915fd030d66dbd553919"
+license = "Apache-2.0"
+profiles = ["windows"]
+
+[[asset]]
+name = "OpenCV Zoo MediaPipe palm detector"
+version = "2023feb"
+type = "machine-learning-model"
+path = "assets/vision-models/palm_detection_mediapipe_2023feb.onnx"
+sha256 = "78ff51c38496b7fc8b8ebdb6cc8c1abb02fa6c38427c6848254cdaba57fcce7c"
+size_bytes = 3905734
+source = "https://media.githubusercontent.com/media/opencv/opencv_zoo/8de36535ea29e8f9d41e6e3fa5a0df14bab00ec5/models/palm_detection_mediapipe/palm_detection_mediapipe_2023feb.onnx"
+source_revision = "8de36535ea29e8f9d41e6e3fa5a0df14bab00ec5"
+license = "Apache-2.0"
+profiles = ["windows"]
+
+[[asset]]
+name = "OpenCV Zoo MediaPipe hand-pose estimator"
+version = "2023feb"
+type = "machine-learning-model"
+path = "assets/vision-models/handpose_estimation_mediapipe_2023feb.onnx"
+sha256 = "db0898ae717b76b075d9bf563af315b29562e11f8df5027a1ef07b02bef6d81c"
+size_bytes = 4099621
+source = "https://media.githubusercontent.com/media/opencv/opencv_zoo/56cef36ae45e5a6da7eba01a91631f6d7e955da1/models/handpose_estimation_mediapipe/handpose_estimation_mediapipe_2023feb.onnx"
+source_revision = "56cef36ae45e5a6da7eba01a91631f6d7e955da1"
+license = "Apache-2.0"
+profiles = ["windows"]
+
+[[asset]]
+name = "MediaPipe Face Mesh 468-landmark model"
+version = "468"
+type = "machine-learning-model"
+path = "assets/vision-models/face_landmark_468.tflite"
+sha256 = "1055cb9d4a9ca8b8c688902a3a5194311138ba256bcc94e336d8373a5f30c814"
+size_bytes = 1242398
+source = "https://storage.googleapis.com/mediapipe-assets/face_landmark.tflite"
+source_revision = "face_landmark.tflite"
+license = "Apache-2.0"
+profiles = ["windows"]
+
+[[asset]]
+name = "MediaPipe Iris landmark model"
+version = "iris-5-points-per-eye"
+type = "machine-learning-model"
+path = "assets/vision-models/iris_landmark.tflite"
+sha256 = "d1744d2a09c25f501d39eba4faff47e53ecca8852c5ce19bce8eeac39357521f"
+size_bytes = 2640568
+source = "https://storage.googleapis.com/mediapipe-assets/iris_landmark.tflite"
+source_revision = "iris_landmark.tflite"
+license = "Apache-2.0"
+profiles = ["windows"]
+
+[[asset]]
+name = "Silero VAD ONNX model"
+version = "v4.0"
+type = "machine-learning-model"
+path = "assets/vision-models/silero_vad_v4.0.onnx"
+sha256 = "a35ebf52fd3ce5f1469b2a36158dba761bc47b973ea3382b3186ca15b1f5af28"
+size_bytes = 1807522
+source = "https://github.com/snakers4/silero-vad/raw/v4.0/files/silero_vad.onnx"
+source_revision = "v4.0"
+license = "MIT"
+profiles = ["windows"]

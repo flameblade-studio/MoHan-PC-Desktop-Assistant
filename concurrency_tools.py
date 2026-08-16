@@ -1,8 +1,8 @@
+"""Compatibility alias for :mod:`infrastructure.concurrency_tools`."""
+
 from __future__ import annotations
 
-lazy from concurrent.futures import ThreadPoolExecutor
+import importlib
+import sys
 
-
-def thread_pool_executor(max_workers: int) -> ThreadPoolExecutor:
-    """Create a concrete executor behind a PEP 810 module boundary."""
-    return ThreadPoolExecutor(max_workers=max_workers)
+sys.modules[__name__] = importlib.import_module("infrastructure.concurrency_tools")

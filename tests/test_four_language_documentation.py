@@ -12,23 +12,17 @@ sys.path.insert(0, str(ROOT / "tools"))
 lazy from check_four_language_docs import audit_repository, audit_text
 
 DOCUMENT = """# 文件／文档／Document／文書
-
 ## 繁體中文
 
 繁體說明。
-
 ## 简体中文
-
 简体说明。
-
 ## English
 
 English description.
 
 ## 日本語
-
-日本語の説明。
-"""
+日本語の説明。"""
 
 
 def test_document_contract() -> None:
@@ -36,7 +30,7 @@ def test_document_contract() -> None:
 
 
 def test_document_requires_h1_and_only_language_h2_headings() -> None:
-    errors = audit_text(DOCUMENT.split("\n", maxsplit=2)[2], require_h1=True)
+    errors = audit_text(DOCUMENT.split("\n", maxsplit=1)[1], require_h1=True)
     assert "a four-language H1 is required" in errors
 
     extra_h2 = DOCUMENT.replace("繁體說明。", "繁體說明。\n\n## 額外章節")

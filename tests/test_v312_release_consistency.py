@@ -1,15 +1,9 @@
 from __future__ import annotations
 
 lazy import re
-lazy import sys
-lazy import tomllib
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-lazy from version_info import APP_VERSION, FALLBACK_VERSION
 
 VERSION = "3.1.2"
 TAG = f"v{VERSION}"
@@ -27,13 +21,6 @@ def read(relative: str) -> str:
     path = ROOT / relative
     assert path.is_file(), f"missing v3.1.2 release input: {relative}"
     return path.read_text(encoding="utf-8")
-
-
-def project_metadata(relative: str) -> dict[str, object]:
-    document = tomllib.loads(
-        (ROOT / relative).read_text(encoding="utf-8")
-    )
-    return document["project"]
 
 
 def language_sections(document: str, source: str) -> tuple[str, ...]:
@@ -56,15 +43,7 @@ def language_sections(document: str, source: str) -> tuple[str, ...]:
     )
 
 
-def test_runtime_and_package_versions() -> None:
-    assert APP_VERSION == VERSION
-    assert FALLBACK_VERSION == VERSION
-
-    for metadata_path in ("pyproject.toml", "sbom/preview.pyproject.toml"):
-        metadata = project_metadata(metadata_path)
-        assert metadata["version"] == VERSION, metadata_path
-        assert metadata["requires-python"] == ">=3.15,<3.16", metadata_path
-
+def test_historical_release_metadata_is_preserved() -> None:
     citation = read("CITATION.cff")
     assert f'version: "{VERSION}"' in citation
     assert f'date-released: "{RELEASE_DATE}"' in citation
@@ -228,7 +207,7 @@ def test_python315_node24_and_jit_release_contract() -> None:
 
 
 def main() -> None:
-    test_runtime_and_package_versions()
+    test_historical_release_metadata_is_preserved()
     test_readme_uses_one_dynamic_release_badge_per_language()
     test_four_language_release_sources_are_complete_and_permanent()
     test_release_workflow_derives_and_validates_the_exact_tag()

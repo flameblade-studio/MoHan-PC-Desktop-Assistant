@@ -12,13 +12,13 @@ lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication, QMessageBox
 
-lazy from db import StudioDB
 lazy from flagship_core import ActionRequest
 lazy from flagship_ui import FlagshipControlCenter
+lazy from infrastructure.db import StudioDB
 
 
 def assert_tabs_and_defaults(center: FlagshipControlCenter) -> None:
-    assert center.tabs.count() == 7
+    assert center.tabs.count() == 8
     assert [
         center.tabs.tabText(index) for index in range(center.tabs.count())
     ] == [
@@ -27,6 +27,7 @@ def assert_tabs_and_defaults(center: FlagshipControlCenter) -> None:
         "雲端連接器",
         "智慧家庭",
         "遠端與隱私",
+        "陪伴與關心",
         "安全權限",
         "稽核紀錄",
     ]
@@ -150,7 +151,7 @@ def assert_calendar_read(center: FlagshipControlCenter) -> None:
     with (
         patch.object(center, "_cloud_token", return_value="token"),
         patch(
-            "cloud_connectors.GoogleCalendarConnector.events",
+            "integrations.cloud_connectors.GoogleCalendarConnector.events",
             return_value=[],
         ) as events,
     ):
@@ -173,7 +174,7 @@ def assert_drive_read(center: FlagshipControlCenter) -> None:
     with (
         patch.object(center, "_cloud_token", return_value="token"),
         patch(
-            "cloud_connectors.GoogleDriveConnector.search",
+            "integrations.cloud_connectors.GoogleDriveConnector.search",
             return_value=[],
         ) as drive_search,
     ):

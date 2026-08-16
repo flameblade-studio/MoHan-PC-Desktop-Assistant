@@ -13,12 +13,12 @@ lazy from PySide6.QtCore import Qt, QTimer
 lazy from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import (
+lazy from companion_animation_contract import (
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_FRAMES,
     EXPRESSION_VISEME_FRAMES,
-    CompanionWindow,
 )
+lazy from companion_window import CompanionWindow
 
 LABELS = ("CLOSED", "CONS", "A", "I", "U", "E", "O", "BLINK+E")
 CELL_WIDTH = 170

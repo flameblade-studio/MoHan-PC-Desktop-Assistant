@@ -10,8 +10,9 @@ lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication, QPushButton
 
-lazy from app import CompanionWindow, Dashboard
-lazy from db import StudioDB
+lazy from companion_window import CompanionWindow
+lazy from dashboard_window import Dashboard
+lazy from infrastructure.db import StudioDB
 
 
 def _create_test_window(

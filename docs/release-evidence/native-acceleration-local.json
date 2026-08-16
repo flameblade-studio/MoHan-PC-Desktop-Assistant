@@ -1,0 +1,196 @@
+{
+  "concurrency": {
+    "asyncio_loop_progressed": true,
+    "completed_without_deadlock": true,
+    "fixed_worker_count": 6,
+    "python_heartbeat_progressed": true
+  },
+  "data_policy": "Deterministic synthetic buffers only; no user audio or pixels.",
+  "fault_isolation": {
+    "pcm_native_calls_after_two_requests": 1,
+    "pcm_observed_failure_count": 1,
+    "pcm_operation_disabled_after_first_fault": true,
+    "rgba_disabled_operations": [
+      "crossfade_rgba"
+    ],
+    "rgba_native_calls_after_two_requests": 1,
+    "rgba_operation_disabled_after_first_fault": true
+  },
+  "limitations": [
+    "Measurements are descriptive and are not unstable release thresholds.",
+    "The 50 Hz schedule run is descriptive; Python and the host OS are not hard real-time.",
+    "This is a short local observation, not a long-duration real-device soak.",
+    "No physical microphone, camera, or private media was used."
+  ],
+  "memory": {
+    "interpretation": "Short local observation only; not a long-duration soak test.",
+    "pcm_iterations": 1000,
+    "rgba_iterations": 40,
+    "rss_growth_bytes": 331776,
+    "traced_current_growth_bytes": 0,
+    "traced_peak_bytes": 1048689
+  },
+  "performance": {
+    "pcm_20ms_analysis": {
+      "equivalent": true,
+      "median_speedup": 39.7273,
+      "python_jit": {
+        "iterations": 500,
+        "median_ms": 0.0437,
+        "p95_ms": 0.0753
+      },
+      "rust": {
+        "iterations": 500,
+        "median_ms": 0.0011,
+        "p95_ms": 0.0013
+      }
+    },
+    "pcm_20ms_viseme": {
+      "equivalent": true,
+      "median_speedup": 33.8333,
+      "python_jit": {
+        "iterations": 500,
+        "median_ms": 0.0406,
+        "p95_ms": 0.0736
+      },
+      "rust": {
+        "iterations": 500,
+        "median_ms": 0.0012,
+        "p95_ms": 0.0013
+      }
+    },
+    "pcm_empty_analysis": {
+      "equivalent": true,
+      "median_speedup": 0.3333,
+      "python_jit": {
+        "iterations": 500,
+        "median_ms": 0.0001,
+        "p95_ms": 0.0001
+      },
+      "rust": {
+        "iterations": 500,
+        "median_ms": 0.0003,
+        "p95_ms": 0.0003
+      }
+    },
+    "rgba_1254x1254_alpha": {
+      "equivalent": true,
+      "median_speedup": 235.1234,
+      "python_jit": {
+        "iterations": 3,
+        "median_ms": 879.9495,
+        "p95_ms": 1038.1937
+      },
+      "rust": {
+        "iterations": 3,
+        "median_ms": 3.7425,
+        "p95_ms": 3.8692
+      }
+    },
+    "rgba_1254x1254_crossfade": {
+      "equivalent": true,
+      "median_speedup": 211.638,
+      "python_jit": {
+        "iterations": 3,
+        "median_ms": 715.3788,
+        "p95_ms": 719.3182
+      },
+      "rust": {
+        "iterations": 3,
+        "median_ms": 3.3802,
+        "p95_ms": 3.6563
+      }
+    },
+    "rgba_1254x1254_region": {
+      "equivalent": true,
+      "median_speedup": 185.9394,
+      "python_jit": {
+        "iterations": 3,
+        "median_ms": 2100.2604,
+        "p95_ms": 2179.0821
+      },
+      "rust": {
+        "iterations": 3,
+        "median_ms": 11.2954,
+        "p95_ms": 11.451
+      }
+    },
+    "rgba_16x16_alpha": {
+      "equivalent": true,
+      "median_speedup": 92.5,
+      "python_jit": {
+        "iterations": 500,
+        "median_ms": 0.148,
+        "p95_ms": 0.3174
+      },
+      "rust": {
+        "iterations": 500,
+        "median_ms": 0.0016,
+        "p95_ms": 0.0017
+      }
+    },
+    "rgba_parallel_threshold": {
+      "large_workload_crosses_threshold": true,
+      "large_workload_pixels": 1572516,
+      "pixels": 262144
+    }
+  },
+  "provenance": {
+    "loaded_native_binary": {
+      "module": "_mohan_accel._mohan_accel",
+      "path": "_mohan_accel/_mohan_accel.pyd",
+      "path_kind": "python-import-root-relative",
+      "sha256": "b98151470e2d20795fc30ef96c3deeb6e61584927450734d8165628643a8dc2b",
+      "size_bytes": 370688
+    },
+    "validation_wheel": {
+      "cli_expected_sha256": "dda5f2c4703987a035a0aac4eff6ef26493c70da93b0f69bff68d89c93c22725",
+      "filename": "mohan_accel-0.1.0-cp315-abi3.abi3t-win_amd64.whl",
+      "native_binary_matches_loaded": true,
+      "native_binary_member": "_mohan_accel/_mohan_accel.pyd",
+      "native_binary_sha256": "b98151470e2d20795fc30ef96c3deeb6e61584927450734d8165628643a8dc2b",
+      "native_binary_size_bytes": 370688,
+      "sha256": "dda5f2c4703987a035a0aac4eff6ef26493c70da93b0f69bff68d89c93c22725",
+      "sha256_matches_cli": true
+    }
+  },
+  "result": "pass",
+  "runtime": {
+    "jit_enabled": true,
+    "native_module_version": "0.1.0",
+    "python": "3.15.0candidate1"
+  },
+  "schedule_50hz": {
+    "clock": "time.perf_counter_ns",
+    "completed": true,
+    "deadline_lateness_ms": {
+      "maximum_ms": 0.7264,
+      "median_ms": 0.4107,
+      "p95_ms": 0.5501,
+      "samples": 50
+    },
+    "elapsed_ms": 1000.5142,
+    "evidence_kind": "descriptive-local-scheduler-observation",
+    "hard_realtime_claimed": false,
+    "native_processing_ms": {
+      "maximum_ms": 0.0234,
+      "median_ms": 0.0153,
+      "p95_ms": 0.0185,
+      "samples": 50
+    },
+    "observed_intervals_ms": {
+      "maximum_ms": 20.2492,
+      "median_ms": 20.0216,
+      "p95_ms": 20.1938,
+      "samples": 49
+    },
+    "observed_rate_hz": 50.002082,
+    "requested_rate_hz": 50,
+    "scheduler": "Absolute deadlines with time.sleep; no busy waiting.",
+    "target_interval_ms": 20.0,
+    "tick_count": 50,
+    "workload": "One deterministic 20 ms PCM viseme inference per tick."
+  },
+  "schema": 2,
+  "scope": "Rust/PyO3 PCM, lip-sync, and RGBA local integration evidence"
+}

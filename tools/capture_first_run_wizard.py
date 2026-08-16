@@ -14,8 +14,9 @@ sys.path.insert(0, str(ROOT))
 
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import FirstRunWizard, application_ui_font
-lazy from db import StudioDB
+lazy from first_run_wizard import FirstRunWizard
+lazy from infrastructure.app_resources import application_ui_font
+lazy from infrastructure.db import StudioDB
 
 
 def render(output: Path) -> None:

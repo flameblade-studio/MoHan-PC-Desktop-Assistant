@@ -8,8 +8,8 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from azure_speech import AzureSpeechTTS, _PushAudioReader
-lazy from realtime_speech_output import (
+lazy from integrations.azure_speech import AzureSpeechTTS, _PushAudioReader
+lazy from integrations.realtime_speech_output import (
     REALTIME_OUTPUT_AZURE,
     REALTIME_OUTPUT_AZURE_HD,
     REALTIME_OUTPUT_OPENAI,
@@ -17,9 +17,11 @@ lazy from realtime_speech_output import (
     LocalRealtimeVoice,
     RealtimeSpeechOutput,
     RealtimeSpeechOutputConfig,
+    RealtimeSpeechTiming,
     RealtimeTextSegmenter,
 )
-lazy from realtime_voice import RealtimeSessionConfig, RealtimeVoiceClient
+lazy from integrations.realtime_voice import RealtimeSessionConfig, RealtimeVoiceClient
+lazy from speech_boundary import SpeechTimingEvent, SpeechTimingKind
 
 
 class FakeSignal:
@@ -76,6 +78,7 @@ class FakeOperationSpeechEngine(FakeSpeechEngine):
         self.operation_failed = FakeSignal()
         self.operation_viseme_cue = FakeSignal()
         self.operation_synthesis_latency_measured = FakeSignal()
+        self.operation_timing_event = FakeSignal()
         self.operation_ids: list[int] = []
 
     def speak(
@@ -391,6 +394,79 @@ def _assert_stale_same_engine_callbacks_cannot_close_new_operation() -> None:
 
     assert visemes == [(0.5, "I")]
     assert len(standard.speak_calls) == 3
+
+
+def _timing(operation_id: int, offset: float = 0.5) -> SpeechTimingEvent:
+    return SpeechTimingEvent(
+        operation_id,
+        offset,
+        0.2,
+        SpeechTimingKind.WORD,
+        False,
+    )
+
+
+def _assert_provider_neutral_timing_respects_operation_barrier() -> None:
+    output, standard, hd, _local = _create_operation_output()
+    events: list[SpeechTimingEvent] = []
+    output.speech_timing.connect(events.append)
+    output.configure(_hybrid_config(REALTIME_OUTPUT_AZURE_HD))
+    output.begin_response(1)
+    output.add_text(1, "Dragon HD 時序。")
+    old_operation = hd.operation_ids[-1]
+    current = _timing(old_operation)
+    hd.operation_timing_event.emit(current)
+    hd.operation_timing_event.emit(current)
+    standard.operation_timing_event.emit(current)
+    assert len(events) == 1
+    assert isinstance(events[0], RealtimeSpeechTiming)
+    assert events[0].operation_id == current.operation_id
+
+    output.begin_response(2)
+    output.add_text(2, "新一輪 Dragon HD。")
+    new_operation = hd.operation_ids[-1]
+    hd.operation_timing_event.emit(_timing(old_operation, 0.7))
+    fresh = _timing(new_operation, 0.5)
+    hd.operation_timing_event.emit(fresh)
+    assert [event.operation_id for event in events] == [old_operation, new_operation]
+
+    output.cancel(3)
+    hd.operation_timing_event.emit(_timing(new_operation, 0.8))
+    assert [event.operation_id for event in events] == [old_operation, new_operation]
+
+
+def _assert_standard_azure_timing_and_fallback_are_isolated() -> None:
+    output, standard, hd, _local = _create_operation_output()
+    events: list[SpeechTimingEvent] = []
+    output.speech_timing.connect(events.append)
+    output.configure(_hybrid_config(REALTIME_OUTPUT_AZURE))
+    output.begin_response(1)
+    output.add_text(1, "一般 Azure 時序。")
+    operation_id = standard.operation_ids[-1]
+    event = SpeechTimingEvent(
+        operation_id,
+        0.1,
+        0.0,
+        SpeechTimingKind.VISEME,
+        True,
+        7,
+    )
+    standard.operation_timing_event.emit(event)
+    hd.operation_timing_event.emit(event)
+    assert len(events) == 1
+    assert isinstance(events[0], RealtimeSpeechTiming)
+    assert events[0].cue_id == 7
+
+
+def _assert_native_openai_mode_emits_no_hybrid_timing() -> None:
+    output, standard, hd, _local = _create_operation_output()
+    events: list[object] = []
+    output.speech_timing.connect(events.append)
+    output.configure(_hybrid_config(REALTIME_OUTPUT_OPENAI))
+    output.begin_response(1)
+    standard.operation_timing_event.emit(_timing(1))
+    hd.operation_timing_event.emit(_timing(1))
+    assert events == []
 
 
 def _assert_stale_failure_does_not_trigger_fallback() -> None:
@@ -870,6 +946,9 @@ def run() -> None:
     _assert_interruption_stops_and_discards_pending_speech()
     _assert_newer_cancel_barrier_blocks_queued_generation()
     _assert_stale_same_engine_callbacks_cannot_close_new_operation()
+    _assert_provider_neutral_timing_respects_operation_barrier()
+    _assert_standard_azure_timing_and_fallback_are_isolated()
+    _assert_native_openai_mode_emits_no_hybrid_timing()
     _assert_stale_failure_does_not_trigger_fallback()
     _assert_hd_falls_back_to_standard_once()
     _assert_partial_audio_failure_does_not_repeat_the_clause()

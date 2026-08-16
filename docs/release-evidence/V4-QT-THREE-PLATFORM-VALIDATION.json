@@ -1,0 +1,96 @@
+{
+  "schema": "mohan.v4.qt-three-platform-validation.v1",
+  "recorded_on": "2026-08-14",
+  "target_python": "3.15.0rc1",
+  "qt_version": "6.11.1",
+  "source_build": {
+    "repository": "https://code.qt.io/pyside/pyside-setup.git",
+    "commit": "1e708e23e1b7a221e662bc2e5c51fae9e7a8764f",
+    "wheel_version": "6.11.1+mohan.py315.1",
+    "abi": "cp310-abi3",
+    "resolver_bypass": false,
+    "requires_python": ">=3.15,<3.16"
+  },
+  "wheelhouse": [
+    {
+      "filename": "pyside6-6.11.1+mohan.py315.1-cp310-abi3-win_amd64.whl",
+      "sha256": "5cfc5dfc20ffca9d330cc75cac5a7a396564e037087c86dc753a51e56bb311f0",
+      "size_bytes": 264923,
+      "tag": "win_amd64",
+      "requires_python": ">=3.10,<3.16"
+    },
+    {
+      "filename": "pyside6_addons-6.11.1+mohan.py315.1-cp310-abi3-win_amd64.whl",
+      "sha256": "74d5bace0b2a685079b892506e4ea585c38d7fc559f6b19ef2f558c4ada101df",
+      "size_bytes": 10593492,
+      "tag": "win_amd64",
+      "requires_python": ">=3.10,<3.16"
+    },
+    {
+      "filename": "pyside6_essentials-6.11.1+mohan.py315.1-cp310-abi3-win_amd64.whl",
+      "sha256": "e56fb61952e139ed62de4ef6395f09a5590da14aa06ef8a9be57b6f3d7f724c6",
+      "size_bytes": 30334398,
+      "tag": "win_amd64",
+      "requires_python": ">=3.10,<3.16"
+    },
+    {
+      "filename": "shiboken6-6.11.1+mohan.py315.1-cp310-abi3-win_amd64.whl",
+      "sha256": "1939f476d2f8099f162ff3bc9597564b018df13ee4677c84ea1da686a2c49f4d",
+      "size_bytes": 292098,
+      "tag": "win_amd64",
+      "requires_python": ">=3.10,<3.16"
+    },
+    {
+      "filename": "shiboken6_generator-6.11.1+mohan.py315.1-cp310-abi3-win_amd64.whl",
+      "sha256": "900371e5efb8ff103a5aafdceb9a3ffa3e0b82b261bf600c2ff1b88792d90115",
+      "size_bytes": 5637751,
+      "tag": "win_amd64",
+      "requires_python": ">=3.10,<3.16"
+    }
+  ],
+  "platforms": [
+    {
+      "platform": "windows",
+      "architecture": "x86_64",
+      "status": "passed",
+      "evidence": [
+        "clean Python 3.15.0rc1 virtual environment",
+        "normal pip resolver from local wheelhouse",
+        "no --ignore-requires-python",
+        "pip check passed",
+        "PySide6 Core, Gui, Widgets, Network, Multimedia, Svg, and Test imported",
+        "offscreen QApplication and QWidget smoke passed"
+      ]
+    },
+    {
+      "platform": "macos",
+      "architecture": "arm64",
+      "status": "blocked_unverified",
+      "reason": "No macOS arm64 wheel or native runner evidence exists in this validation record."
+    },
+    {
+      "platform": "macos",
+      "architecture": "x86_64",
+      "status": "blocked_unverified",
+      "reason": "No macOS x86_64 wheel or native runner evidence exists in this validation record."
+    },
+    {
+      "platform": "linux",
+      "architecture": "x86_64",
+      "status": "blocked_unverified",
+      "reason": "No Linux x86_64 wheel or native runner evidence exists in this validation record."
+    }
+  ],
+  "official_pypi_gate": {
+    "status": "blocked",
+    "reason": "Official PySide6 6.11.1 metadata still excludes Python 3.15.",
+    "bypass_used": false
+  },
+  "release_decision": "blocked",
+  "required_next_evidence": [
+    "Native macOS arm64 and x86_64 source builds or supported wheels.",
+    "Native Linux x86_64 source build or supported wheel.",
+    "Three-platform clean resolver installation and Qt smoke.",
+    "Packaged application loading, SBOM, checksums, and full regression evidence on each supported target."
+  ]
+}

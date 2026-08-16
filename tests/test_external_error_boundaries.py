@@ -18,8 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+lazy from infrastructure.updater import InstallerAsset, UpdateError, UpdateManager
 lazy from tools import sync_wordpress_download_page as wordpress_sync
-lazy from updater import InstallerAsset, UpdateError, UpdateManager
 
 _FAKE_TOKEN = "NOT-A-REAL-TOKEN-EXTERNAL-BOUNDARY"
 _PRIVATE_PATH = "C:" + "\\Users\\private-user\\AppData\\MoHan\\secret.json"

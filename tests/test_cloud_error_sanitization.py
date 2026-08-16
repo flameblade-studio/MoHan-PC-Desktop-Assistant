@@ -11,7 +11,7 @@ lazy from urllib.error import HTTPError, URLError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from cloud_connectors import (
+lazy from integrations.cloud_connectors import (
     PROVIDERS,
     GoogleDriveConnector,
     JsonApiClient,
@@ -20,7 +20,7 @@ lazy from cloud_connectors import (
     _authorization_code,
     refresh_oauth_token,
 )
-lazy from home_assistant import (
+lazy from integrations.home_assistant import (
     HomeAssistantClient,
     HomeAssistantConfig,
     HomeAssistantError,
@@ -128,7 +128,7 @@ def _assert_oauth_callback_is_sanitized() -> None:
 
 def _assert_oauth_exchange_is_sanitized() -> None:
     flow = OAuthPKCEFlow(PROVIDERS["google"], "public-client")
-    with patch("cloud_connectors.urlopen", side_effect=_http_error(401)):
+    with patch("integrations.cloud_connectors.urlopen", side_effect=_http_error(401)):
         _assert_sanitized(
             lambda: flow._exchange(
                 "authorization-code",
@@ -145,7 +145,7 @@ def _assert_oauth_exchange_is_sanitized() -> None:
 
 
 def _assert_oauth_refresh_is_sanitized() -> None:
-    with patch("cloud_connectors.urlopen", side_effect=_http_error(429)):
+    with patch("integrations.cloud_connectors.urlopen", side_effect=_http_error(429)):
         _assert_sanitized(
             lambda: refresh_oauth_token(
                 PROVIDERS["google"],
@@ -165,7 +165,7 @@ def _assert_oauth_refresh_is_sanitized() -> None:
 
 def _assert_json_api_errors_are_sanitized() -> None:
     client = JsonApiClient("opaque-access-value", "https://api.example.invalid")
-    with patch("cloud_connectors.urlopen", side_effect=_http_error(503)):
+    with patch("integrations.cloud_connectors.urlopen", side_effect=_http_error(503)):
         _assert_sanitized(
             lambda: client.request("GET", "/private"),
             OAuthError,
@@ -177,7 +177,7 @@ def _assert_json_api_errors_are_sanitized() -> None:
         )
 
     with patch(
-        "cloud_connectors.urlopen",
+        "integrations.cloud_connectors.urlopen",
         return_value=_Response(_external_body() + b" invalid-json"),
     ):
         _assert_sanitized(
@@ -188,7 +188,7 @@ def _assert_json_api_errors_are_sanitized() -> None:
 
     connection_detail = " | ".join(_sensitive_values())
     with patch(
-        "cloud_connectors.urlopen",
+        "integrations.cloud_connectors.urlopen",
         side_effect=URLError(connection_detail),
     ):
         _assert_sanitized(
@@ -208,7 +208,7 @@ def _assert_json_api_errors_are_sanitized() -> None:
 
 def _assert_drive_upload_error_is_sanitized() -> None:
     connector = GoogleDriveConnector("opaque-access-value")
-    with patch("cloud_connectors.urlopen", side_effect=_http_error(403)):
+    with patch("integrations.cloud_connectors.urlopen", side_effect=_http_error(403)):
         _assert_sanitized(
             lambda: connector.upload_small("safe.txt", b"content"),
             OAuthError,
@@ -227,7 +227,7 @@ def _assert_home_assistant_errors_are_sanitized() -> None:
             "opaque-home-token",
         )
     )
-    with patch("home_assistant.urlopen", side_effect=_http_error(404)):
+    with patch("integrations.home_assistant.urlopen", side_effect=_http_error(404)):
         _assert_sanitized(
             lambda: client._request("GET", "/api/states/private"),
             HomeAssistantError,
@@ -239,7 +239,7 @@ def _assert_home_assistant_errors_are_sanitized() -> None:
         )
 
     with patch(
-        "home_assistant.urlopen",
+        "integrations.home_assistant.urlopen",
         side_effect=URLError(" | ".join(_sensitive_values())),
     ):
         _assert_sanitized(
@@ -252,7 +252,7 @@ def _assert_home_assistant_errors_are_sanitized() -> None:
         )
 
     with patch(
-        "home_assistant.urlopen",
+        "integrations.home_assistant.urlopen",
         return_value=_Response(_external_body() + b" malformed"),
     ):
         _assert_sanitized(
@@ -265,7 +265,7 @@ def _assert_home_assistant_errors_are_sanitized() -> None:
 def _assert_success_paths_are_unchanged() -> None:
     api = JsonApiClient("opaque-access-value", "https://api.example.invalid")
     with patch(
-        "cloud_connectors.urlopen",
+        "integrations.cloud_connectors.urlopen",
         return_value=_Response(b'{"ok": true}'),
     ):
         assert api.request("GET", "/health") == {"ok": True}
@@ -277,7 +277,7 @@ def _assert_success_paths_are_unchanged() -> None:
         )
     )
     with patch(
-        "home_assistant.urlopen",
+        "integrations.home_assistant.urlopen",
         return_value=_Response(b'{"message": "API running."}'),
     ):
         assert home.health() is True

@@ -28,8 +28,9 @@ lazy from PySide6.QtGui import (
 )
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import CompanionWindow, FirstRunWizard
-lazy from db import StudioDB
+lazy from companion_window import CompanionWindow
+lazy from first_run_wizard import FirstRunWizard
+lazy from infrastructure.db import StudioDB
 
 WIDTH = 1280
 HEIGHT = 720

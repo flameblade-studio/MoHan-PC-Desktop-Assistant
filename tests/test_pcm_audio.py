@@ -4,11 +4,14 @@ lazy import sys
 lazy from array import array
 lazy from pathlib import Path
 
+lazy import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 lazy from pcm_audio import (
+    Pcm16RateState,
     PcmAudioError,
     rate_convert_pcm16,
     scale_pcm16,
@@ -77,6 +80,31 @@ def test_downsampling_and_stereo_channels_remain_aligned() -> None:
         2,
     )
     assert unpack(converted) == (0, 100, 2000, 2100)
+
+
+@pytest.mark.parametrize(
+    ("channels", "input_rate", "output_rate", "state"),
+    (
+        (1.0, 1, 1, None),
+        (sys.maxsize + 1, 1, 1, None),
+        (1, 1.0, 1.0, None),
+        (1, 1 << 32, 2, None),
+        (1, 1, 1 << 32, None),
+        (1, 1 << 64, 2, None),
+        (1, 1, 1 << 64, None),
+        (1, 1, 2, Pcm16RateState((0,), -1)),
+        (1, 1, 2, Pcm16RateState((0,), 1 << 64)),
+        (1, 1, 1, Pcm16RateState((32_768,), 0)),
+    ),
+)
+def test_rate_conversion_rejects_values_outside_native_integer_contract(
+    channels: object,
+    input_rate: object,
+    output_rate: object,
+    state: Pcm16RateState | None,
+) -> None:
+    with pytest.raises(PcmAudioError):
+        rate_convert_pcm16(b"\x00\x00", channels, input_rate, output_rate, state)
 
 
 def main() -> None:

@@ -40,8 +40,13 @@ jobs:
           allow-prereleases: true
           cache: pip
           cache-dependency-path: requirements-preview.txt
+      - name: Build verified Qt 3.15 compatibility wheelhouse
+        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse --requirements requirements-preview.txt
       - name: Install pinned Preview dependencies
-        run: python tools/install_python315_dependencies.py --requirements requirements-preview.txt
+        run: >-
+          python tools/install_python315_dependencies.py
+          --requirements requirements-preview.txt
+          --qt-compat-wheelhouse qt315-wheelhouse
       - name: Verify source Preview contract
         run: python tests/test_preview_packaging.py
       - name: Check out pinned CPython 3.15.0rc1 source
@@ -65,6 +70,7 @@ jobs:
         run: >-
           "$MOHAN_JIT_PYTHON" tools/install_python315_dependencies.py
           --requirements requirements-preview.txt
+          --qt-compat-wheelhouse qt315-wheelhouse
       - name: Build and smoke-test DMG
         shell: bash
         run: |
@@ -101,8 +107,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --yes libegl1
+      - name: Build verified Qt 3.15 compatibility wheelhouse
+        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse --requirements requirements-preview.txt
       - name: Install pinned Preview dependencies
-        run: python tools/install_python315_dependencies.py --requirements requirements-preview.txt
+        run: >-
+          python tools/install_python315_dependencies.py
+          --requirements requirements-preview.txt
+          --qt-compat-wheelhouse qt315-wheelhouse
       - name: Verify source Preview contract
         run: python tests/test_preview_packaging.py
       - name: Check out pinned CPython 3.15.0rc1 source
@@ -126,6 +137,7 @@ jobs:
         run: >-
           "$MOHAN_JIT_PYTHON" tools/install_python315_dependencies.py
           --requirements requirements-preview.txt
+          --qt-compat-wheelhouse qt315-wheelhouse
       - name: Fetch checksum-locked official appimagetool
         shell: bash
         run: |

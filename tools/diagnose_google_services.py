@@ -4,20 +4,24 @@ lazy import json
 lazy import sys
 lazy import time
 lazy from collections.abc import Callable
-lazy from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 lazy from functools import partial
 lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from cloud_connectors import (
+from domain.python315_concurrency import (
+    Future,
+    ThreadPoolExecutor,
+    as_completed,
+)
+lazy from flagship_ui import FlagshipControlCenter
+lazy from infrastructure.secret_store import SecretStore
+lazy from integrations.cloud_connectors import (
     GmailConnector,
     GoogleCalendarConnector,
     GoogleDriveConnector,
     normalize_cloud_provider,
 )
-lazy from flagship_ui import FlagshipControlCenter
-lazy from secret_store import SecretStore
 
 Probe = Callable[[], None]
 

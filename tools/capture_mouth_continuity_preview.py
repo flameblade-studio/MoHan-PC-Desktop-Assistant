@@ -13,7 +13,8 @@ lazy from PySide6.QtGui import QColor, QFont, QImage, QPainter
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import STYLE, CompanionWindow
+lazy from companion_window import CompanionWindow
+lazy from infrastructure.app_resources import STYLE
 
 FRAME_WIDTH = 300
 FRAME_HEIGHT = 250

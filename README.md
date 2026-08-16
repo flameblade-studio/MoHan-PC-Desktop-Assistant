@@ -16,6 +16,10 @@
 
 > **跨平台進度：** Windows 仍是唯一完成既有公開版本實機、完整回歸、安裝與發布驗證的平台。v3.1.2 的 macOS／Linux 功能受限 DMG／AppImage Preview 已納入安全平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI；實際產物仍須通過本版最終發布門檻，CI 也不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
+> **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.0.0`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 為準。
+
+> **目前開發版本：** `4.0.0`；這是尚未發布的開發草稿。Windows 建置命令：`.\build.ps1 -Version "4.0.0"`。
+
 > 本專案遵循[炎劍開源軟體家族品質標準](PUBLISHING.md)。
 
 <p align="center">
@@ -186,6 +190,8 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我始終負責�
 - 可插拔語音供應器；Realtime 或雲端不可用時優先回到 Windows 本機女聲。
 - 已完成真實連線驗證的 Azure Speech 女性聲線預覽；中文介面可跨語系選擇臺灣華語與簡體普通話，使用者自備金鑰與區域，失敗時立即回到 Windows 本機女聲。
 - 可選的 Azure Dragon HD／HD Omni 女性聲線預覽，使用獨立 S0 金鑰與支援區域；失敗時依序退回一般 Azure Speech 與 Windows 本機女聲。
+- v4.0.0 多感知核心已建立可測試的資料融合與非阻塞注入邊界：公開版預設關閉，使用者在控制台明確啟用並全域保存後，才持續授權攝影機感知直到主動關閉；系統不會逐幀詢問，授權狀態始終可見，並可設定配額與成本上限、取消未完成分析或立即撤銷。本機視覺控制器仍由 OpenCV 負責低成本感知，雲端語意分析只在低頻或事件觸發時，且使用者已啟用、已設定服務並允許配額時，才交給 GPT-5.6 模型處理；原始影像不儲存、不記錄 Base64，視覺路徑也不自行開啟網路。`MultimodalFusionHub` 可接收既有手部 21 點結果、468／478 點 Face Mesh 結果、音訊片段與文字，輸出事件、保守表情／虹膜視線資料、語音活動、嘴型包絡與既有 2.5D 參數；478 點才提供虹膜視線，468 點會安全回報未知，不假造精確視線。缺少輸入、模型、網路、額度或辨識流程不可用時，只停用相關路徑，不影響既有聊天、語音、角色、工作與離線功能。辨識結果可能不準確，不應用於安全、醫療或其他高風險決策。
+- 空中互動核心已加入防抖、遲滯與冷卻：可觀測捏合／空氣點擊、左右滑動與雙手擊掌，並將事件以受信任的觀察資料送入多模態 Prompt；`MultimodalController` 以單一背景工作槽處理融合，避免阻塞 Qt 主執行緒。事件本身不直接執行作業系統命令，既有手勢動作仍由原本的授權與確認路徑處理。Face Mesh、虹膜與 Silero VAD 模型已隨 Windows 正式封裝提供，並以 OpenCV 5 DNN 在本機載入；檔案、來源、授權、大小與 SHA-256 均有 SBOM／NOTICE 證據。模型或執行引擎不可用時，仍由明確的未知／低成本 RMS 退化路徑安全運作。完整 Windows EXE 真攝影機驗收、完整回歸與封裝證據仍須以本版發布 gate 實際重跑確認，不能只因核心測試通過就誇稱全部實機完成。
 - 對話保存、可編輯長期記憶、待辦、創作靈感、工作計時、提醒與上架進度。
 - 工作、陪伴、勿擾、會議、離開及睡眠模式。
 - 具風險分級、確認、雙重確認、允許清單、稽核與緊急停止的電腦工具中心。
@@ -340,7 +346,8 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - PEP 661 `sentinel` 已納入治理測試；目前沒有舊式 `object()` 哨兵可替換，未來需要區分未傳值與 `None` 時必須使用內建機制。
 - JIT 預設啟用，並保留 `MOHAN_DISABLE_JIT=1` 相容性開關；`PYTHON_JIT=0` 只用於效能與相容性對照。
 - PEP 799 Tachyon 以去識別化方式分析啟動、50 Hz 嘴型同步與表情仲裁，不發布原始二進位取樣流。
-- PEP 803／820／793 Stable ABI 與 C API 邊界會驗證官方 ABI3 輪子；墨寒沒有第一方 C 擴充。
+- Windows 正式封裝規格要求以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建置第一方 `_mohan_accel` abi3t 原生模組，並逐項核對 PCM16、嘴型音訊分析與 RGBA 圖層合成結果是否與 Python 參考實作一致；這是 v4.0.0 Windows 正式發行的必要證據。RGBA 路徑使用 Rayon 1.12.0，在 262,144 pixels 以上且有多個工作執行緒時才條件式平行化；Rust serial／Rayon 邊界測試與 Python／native 實測提供等價及效能證據。`PyBackedBytes` 借用輸入以避免額外輸入複製，但輸出仍建立新的 `bytes`，故不宣稱端到端零複製，也不宣稱未實作的 SIMD。原生模組無法載入或單項運算失敗時，應用程式會留下可觀測診斷並回退 Python；建置工具鏈不屬於執行期相依套件。macOS／Linux Preview 不宣稱封裝同等支援。
+- OpenAI Responses API 路徑使用 Python 標準庫 `urllib.request` 經 HTTPS 直接呼叫；墨寒沒有 `openai` Python SDK 執行期相依，也不會為不存在的 SDK 虛構版本或授權。OpenAI 是外部服務而非封裝元件，SBOM 以機器可讀政策記錄此邊界，Release 閘門會拒絕意外加入的 SDK。
 - CycloneDX 1.7 Windows／Preview SBOM 必須符合鎖定依賴、授權、PURL、完整根依賴邊、官方結構與隱私驗證。
 
 兩輪各 20,000 次表情、物理與嘴型整合壓測均通過；JIT 關閉／開啟分別耗時 24.639／25.068 秒，工作集成長 10.62／12.94 MB。同一部 Ryzen 5 5600X Windows 實機另執行三輪熱路徑比較；JIT 開啟相對關閉時，120,000 次表情仲裁為 0.86–0.98 倍（中位數 0.97 倍，未證實加速），2,000 個 50 Hz 嘴型節拍為 1.45–1.65 倍（中位數 1.48 倍），每輪的決策與校驗結果完全相同。
@@ -367,7 +374,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.2"
+.\build.ps1 -Version "<source-version>"
 ```
 
 歷史上的 v2.1.0 RC1 在發布前通過 55 項自動測試程式，以及 Windows 發布工作流程的原始碼稽核、封裝自我測試、安裝／移除驗證與安全檢查；自動測試不能取代尚未完成的第三方真實環境驗證。
@@ -414,6 +421,10 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </p>
 
 > **跨平台进度：** Windows 仍是唯一完成现有公开版本真机、完整回归、安装与发布验证的平台。v3.1.2 的 macOS／Linux 功能受限 DMG／AppImage Preview 已纳入安全平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI；实际产物仍须通过本版本最终发布关卡，CI 也不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
+
+> **当前发布目标：** 源代码与软件包元数据已同步至 `v4.0.0`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 为准。
+
+> **当前开发版本：** `4.0.0`；这是尚未发布的开发草稿。Windows 构建命令：`.\build.ps1 -Version "4.0.0"`。
 
 > 本项目遵循[炎剑开源软件家族质量标准](PUBLISHING.md)。
 
@@ -585,6 +596,8 @@ Codex 协助我把想法转译成程序架构与代码；而我始终负责决�
 - 可插拔语音供应器；Realtime 或云端不可用时优先回退到 Windows 本地女声。
 - 已完成真实连接验证的 Azure Speech 女性声线预览；中文界面可跨语言选择台湾华语与简体普通话，用户自备密钥与区域，失败时立即回退到 Windows 本地女声。
 - 可选的 Azure Dragon HD／HD Omni 女性声线预览，使用独立 S0 密钥与支持区域；失败时依次回退到一般 Azure Speech 与 Windows 本地女声。
+- v4.0.0 多感知核心已建立可测试的数据融合与非阻塞注入边界：公开版默认关闭，用户在控制台明确启用并全局保存后，才持续授权摄像头感知直到主动关闭；系统不会逐帧询问，授权状态始终可见，并可设置配额与成本上限、取消未完成分析或立即撤销。本地视觉控制器仍由 OpenCV 负责低成本感知，云端语义分析只在低频或事件触发时，且用户已启用、已设置服务并允许配额时，才交给 GPT-5.6 模型处理；原始图像不保存、不记录 Base64，视觉路径也不会自行开启网络。`MultimodalFusionHub` 可接收既有手部 21 点结果、468／478 点 Face Mesh 结果、音频片段与文字，输出事件、保守表情／虹膜视线数据、语音活动、口型包络与既有 2.5D 参数；只有 478 点提供虹膜视线，468 点会安全报告未知，不伪造精确视线。缺少输入、模型、网络、额度或识别流程不可用时，只停用相关路径，不影响既有聊天、语音、角色、工作与离线功能。识别结果可能不准确，不应用于安全、医疗或其他高风险决策。
+- 空中交互核心已加入防抖、迟滞与冷却：可观测捏合／空中点击、左右滑动与双手击掌，并将事件以受信任的观察资料送入多模态 Prompt；`MultimodalController` 以单一后台工作槽处理融合，避免阻塞 Qt 主线程。事件本身不直接执行操作系统命令，既有手势动作仍由原本的授权与确认路径处理。Face Mesh、虹膜与 Silero VAD 模型已随 Windows 正式打包提供，并以 OpenCV 5 DNN 在本机加载；文件、来源、许可证、大小与 SHA-256 均有 SBOM／NOTICE 证据。模型或运行引擎不可用时，仍由明确的未知／低成本 RMS 退化路径安全运行。完整 Windows EXE 真摄像头验收、完整回归与打包证据仍须以本版发布 gate 实际重跑确认，不能只因核心测试通过就夸称全部实机完成。
 - 对话保存、可编辑长期记忆、待办事项、创作灵感、工作计时、提醒与上架进度。
 - 工作、陪伴、勿扰、会议、离开及睡眠模式。
 - 具有风险分级、确认、双重确认、允许列表、审计与紧急停止的电脑工具中心。
@@ -739,7 +752,8 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - PEP 661 `sentinel` 已纳入治理测试；当前没有旧式 `object()` 哨兵可替换，未来需要区分未传值与 `None` 时必须使用内置机制。
 - JIT 默认启用，并保留 `MOHAN_DISABLE_JIT=1` 兼容性开关；`PYTHON_JIT=0` 只用于性能与兼容性对照。
 - PEP 799 Tachyon 以去标识化方式分析启动、50 Hz 口型同步与表情仲裁，不发布原始二进制采样流。
-- PEP 803／820／793 Stable ABI 与 C API 边界会验证官方 ABI3 轮子；墨寒没有第一方 C 扩展。
+- Windows 正式打包规范要求使用 Rust 1.97.1、Maturin 1.14.1 与 PyO3 0.29.2 构建第一方 `_mohan_accel` abi3t 原生模块，并逐项核对 PCM16、口型音频分析与 RGBA 图层合成结果是否和 Python 参考实现一致；这是 v4.0.0 Windows 正式发布的必要证据。RGBA 路径使用 Rayon 1.12.0，在 262,144 pixels 以上且有多个工作线程时才条件式并行化；Rust serial／Rayon 边界测试与 Python／native 实测提供等价和性能证据。`PyBackedBytes` 借用输入以避免额外输入复制，但输出仍创建新的 `bytes`，因此不声明端到端零复制，也不声明尚未实现的 SIMD。原生模块无法加载或单项运算失败时，应用程序会留下可观察诊断并回退 Python；构建工具链不属于运行时依赖包。macOS／Linux Preview 不声明打包同等支持。
+- OpenAI Responses API 路径使用 Python 标准库 `urllib.request` 通过 HTTPS 直接调用；墨寒没有 `openai` Python SDK 运行时依赖，也不会为不存在的 SDK 虚构版本或许可。OpenAI 是外部服务而不是打包组件，SBOM 以机器可读策略记录此边界，Release 关卡会拒绝意外加入的 SDK。
 - CycloneDX 1.7 Windows／Preview SBOM 必须符合锁定依赖、许可证、PURL、完整根依赖边、官方结构与隐私验证。
 
 两轮各 20,000 次表情、物理与口型集成压力测试均通过；JIT 关闭／开启分别耗时 24.639／25.068 秒，工作集增长 10.62／12.94 MB。同一台 Ryzen 5 5600X Windows 真机另执行三轮热路径比较；JIT 开启相对关闭时，120,000 次表情仲裁为 0.86–0.98 倍（中位数 0.97 倍，未证实加速），2,000 个 50 Hz 口型节拍为 1.45–1.65 倍（中位数 1.48 倍），每轮的决策与校验结果完全相同。
@@ -766,7 +780,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.2"
+.\build.ps1 -Version "<source-version>"
 ```
 
 历史上的 v2.1.0 RC1 在发布前通过 55 项自动测试程序，以及 Windows 发布工作流的源代码审计、打包自测、安装／卸载验证与安全检查；自动测试不能代替尚未完成的第三方真实环境验证。
@@ -813,6 +827,10 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </p>
 
 > **Cross-platform status:** Windows remains the only platform whose existing public releases have completed real-device use, the full regression suite, installation, and publication validation. The limited v3.1.2 macOS/Linux DMG/AppImage Previews include safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen; the actual artifacts must still pass this release's final publication gates. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
+
+> **Current release target:** Source and package metadata are synchronized at `v4.0.0`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
+
+> **Current development version:** `4.0.0`; this is an unreleased development draft. Windows build command: `.\build.ps1 -Version "4.0.0"`.
 
 > This project follows the [Flameblade Open Source Software Family Quality Standard](PUBLISHING.md).
 
@@ -984,6 +1002,8 @@ If this project encourages even one person without an engineering background to 
 - Pluggable speech providers with verified-female Windows local speech as the first fallback when Realtime or cloud speech is unavailable.
 - A live-validated Azure Speech female-voice Preview. Chinese UI can select both Taiwan Mandarin and Simplified Chinese Mandarin; users supply their own key and region, with immediate Windows fallback on failure.
 - An optional Azure Dragon HD/HD Omni female-voice Preview with a separate S0 key and supported region; failures fall back to standard Azure Speech and then Windows local female speech.
+- The v4.0.0 multisensory core now provides a tested data-fusion and non-blocking injection boundary. Public builds remain off by default; explicitly enabling and globally saving the feature in the control center grants continuous authorization for camera perception until the user turns it off. The system does not ask for consent frame by frame, authorization status remains visible, and quotas, cost limits, cancellation of unfinished analysis, and immediate revocation remain available. The local vision controller still uses OpenCV for low-cost perception. Cloud semantic analysis occurs only at low frequency or on an event trigger when enabled, configured, and within quota, using the GPT-5.6 model; raw images are not retained, Base64 is not logged, and the vision path does not enable networking by itself. `MultimodalFusionHub` accepts existing 21-point hand results, 468／478-point Face Mesh results, audio chunks, and text, then emits events, conservative expression／iris-gaze data, voice activity, a mouth envelope, and existing 2.5D parameters. Iris gaze is emitted only for 478 points; 468 points safely report unknown rather than inventing precision. Missing inputs, models, network, quota, or recognition paths disable only the affected path without harming established chat, speech, character, work, or offline features. Recognition may be wrong and must not be used for safety, medical, or other high-risk decisions.
+- The air-interaction core adds debouncing, hysteresis, and cooldown: it can observe pinch／air-click, left and right swipes, and two-hand high-five, then pass those events as trusted observations into the multimodal Prompt. `MultimodalController` processes fusion in one bounded background slot without blocking the Qt main thread. Events do not execute operating-system commands directly; established gesture actions still use their existing authorization and confirmation path. Face Mesh, iris, and Silero VAD models are bundled in the formal Windows package and loaded locally through OpenCV 5 DNN; file, source, license, size, and SHA-256 evidence is recorded in the SBOM and NOTICE. If a model or runtime engine is unavailable, explicit unknown／low-cost RMS fallback behavior remains in place. Full Windows EXE camera acceptance, full regression, and packaging evidence still must be rerun by the release gate; core tests alone must not be presented as complete physical acceptance.
 - Persistent conversations, editable long-term memory, tasks, creative ideas, work timers, reminders, and release progress.
 - Work, companion, do-not-disturb, meeting, away, and sleep modes.
 - A computer-tool center with risk levels, confirmation, double confirmation, allowlists, auditing, and emergency stop.
@@ -1138,7 +1158,8 @@ MoHan supports only the CPython `3.15.0rc1` runtime and does not retain a second
 - PEP 661 `sentinel` is governed by tests; no legacy `object()` sentinel currently needs replacement, and future code that distinguishes an omitted value from `None` must use the built-in mechanism.
 - JIT is on by default with the `MOHAN_DISABLE_JIT=1` compatibility switch; `PYTHON_JIT=0` is used only for performance and compatibility comparisons.
 - PEP 799 Tachyon analyzes startup, 50 Hz lip sync, and expression arbitration through sanitized evidence without publishing raw binary sample streams.
-- PEP 803/820/793 Stable ABI and C API boundaries validate official ABI3 wheels; MoHan has no first-party C extension.
+- The formal Windows packaging contract requires building the first-party `_mohan_accel` abi3t native module with Rust 1.97.1, Maturin 1.14.1, and PyO3 0.29.2, then checking PCM16, lip-sync audio analysis, and RGBA layer-composition results against the Python reference implementations; this is required evidence for the v4.0.0 Windows formal release. The RGBA path uses Rayon 1.12.0 and conditionally parallelizes only at 262,144 pixels or more when multiple worker threads are available; Rust serial／Rayon boundary tests and Python／native measurements provide equivalence and performance evidence. `PyBackedBytes` borrows inputs to avoid an additional input copy, while outputs still allocate new `bytes`; end-to-end zero-copy is therefore not claimed, and neither is unimplemented SIMD. If the module cannot load or an individual operation fails, the application records observable diagnostics and falls back to Python. The build toolchain is not a runtime dependency. The macOS/Linux Previews do not claim equivalent packaging support.
+- The OpenAI Responses API path calls HTTPS directly through Python's standard-library `urllib.request`. MoHan has no `openai` Python SDK runtime dependency and does not invent a version or license for an SDK it does not ship. OpenAI is an external service, not a packaged component; a machine-readable SBOM policy records this boundary, and the Release gate rejects accidental SDK inclusion.
 - CycloneDX 1.7 Windows/Preview SBOMs must pass pinned-dependency, license, PURL, complete root-edge, official-structure, and privacy validation.
 
 Two 20,000-cycle integrated expression, physics, and lip-sync stress runs passed. JIT-off/on times were 24.639/25.068 seconds with working-set growth of 10.62/12.94 MB. Three additional hot-path comparisons ran on the same Ryzen 5 5600X Windows host. With JIT on relative to off, 120,000 expression-arbitration operations measured 0.86–0.98x speed (0.97x median, with no demonstrated speedup), while 2,000 50 Hz lip-sync ticks measured 1.45–1.65x (1.48x median); decisions and validation results matched in every run.
@@ -1165,7 +1186,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.2"
+.\build.ps1 -Version "<source-version>"
 ```
 
 Historically, v2.1.0 RC1 passed 55 automated test programs plus the Windows release workflow's source audit, packaged self-test, install/uninstall verification, and security checks before publication. Automated tests do not replace incomplete third-party live validation.
@@ -1212,6 +1233,10 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </p>
 
 > **クロスプラットフォーム状況：** 既存の公開版について、実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。v3.1.2 の macOS／Linux 機能限定 DMG／AppImage Preview には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI を導入していますが、実際の成果物は本版の最終公開ゲートに合格する必要があります。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
+
+> **現在の公開目標：** ソースとパッケージのメタデータは `v4.0.0` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) を正とします。
+
+> **現在の開発版：** `4.0.0`。これは未公開の開発草案です。Windows のビルドコマンド：`.\build.ps1 -Version "4.0.0"`。
 
 > 本プロジェクトは[炎剣オープンソース・ソフトウェア・ファミリー品質基準](PUBLISHING.md)に従います。
 
@@ -1383,6 +1408,8 @@ Codex は私の思いをアーキテクチャとコードへ翻訳する手助�
 - Realtime またはクラウドが利用できない時、Windows 本機女性音声を第一代替にする交換可能な音声供給元。
 - 実接続検証済みの任意 Azure Speech 女性音声 Preview。中国語画面では台湾華語と簡体字普通話を言語横断で選択でき、利用者がキーとリージョンを用意し、失敗時は直ちに Windows へ戻ります。
 - 独立した S0 キーと対応リージョンを使う任意の Azure Dragon HD／HD Omni 女性音声 Preview。失敗時は通常の Azure Speech、Windows 本機女性音声の順に戻ります。
+- v4.0.0 で追加したマルチセンサー視覚認識は、公開版では既定で無効です。利用者がコントロールセンターで明示的に有効化して全体設定を保存すると、自ら無効にするまでカメラ感知への継続的な許可となります。フレームごとに許可を求めることはありません。Face Mesh、虹彩、Silero VAD は Windows 正式パッケージに同梱し、OpenCV 5 DNN でローカルに読み込みます。モデルの出典、ライセンス、サイズ、SHA-256 は SBOM と NOTICE に記録され、モデルや実行エンジンが利用できない場合は既存の未知／RMS 経路へ安全に戻ります。`MultimodalFusionHub` と `MultimodalController` がデータ融合と非ブロッキング処理を担当します。許可状態は常に表示され、利用枠と費用の上限を設定して直ちに取り消せます。端末内の OpenCV が低コストの継続感知を担当し、低頻度またはイベント発生時に限り、一時的な画像一枚を設定済み GPT-5.6 モデルへ渡して意味解析します。元画像を保存せず、Base64 をログへ記録せず、システムが自らネットワークを有効にすることもありません。遠隔解析は、利用者が有効化し、サービスを設定し、選択した利用枠内にある場合だけ実行され、未完了の解析はいつでも取り消せます。顔の本人識別テンプレートは端末内で暗号化して保存し、すべて削除できます。カメラ、モデル、ネットワーク、利用枠、認識処理の失敗は該当する視覚経路だけを停止し、既存の会話、音声、2.5D キャラクター、作業、オフライン機能には影響しません。誤認識の可能性があるため、安全、医療、その他の高リスク判断には使用できません。
+- 同じく開発中で未公開の任意ローカルジェスチャー機能は、八つの内蔵ジェスチャーを備え、カスタム 21 点骨格の追加、改名、削除と、ドロップダウンによる一般動作への再割り当てを可能にします。静かにしてほしいという意図は口元領域と指位置を保守的に融合して判定し、単一の手掛かりだけで正しい認識を保証しません。元画像は保存しません。カスタム骨格は保護された暗号化ストレージだけに保存し、機密データを明示的に選択して強力なパスワードを設定した場合だけ暗号化可搬内容へ含められます。カメラ、モデル、十分な信頼度がない場合、ジェスチャー経路は安全に無効となり、既存機能へ影響しません。Windows EXE での実カメラ実機受入試験と完全な回帰テストが未完了であり、公開済みまたは完成済みとして扱いません。
 - 会話保存、編集可能な長期記憶、タスク、創作アイデア、作業時間、リマインダー、公開進捗。
 - 仕事、同伴、集中、会議、離席、休眠モード。
 - 危険度、確認、二重確認、許可リスト、監査、緊急停止を備えたパソコンツールセンター。
@@ -1537,7 +1564,8 @@ Home Assistant や墨寒の遠隔ポートを公衆インターネットへ直�
 - PEP 661 `sentinel` はテストで管理します。置換対象となる旧式 `object()` sentinel は現在なく、未指定値と `None` を区別する将来コードでは組み込み機構を使います。
 - JIT は既定で有効で、`MOHAN_DISABLE_JIT=1` 互換スイッチを保持します。`PYTHON_JIT=0` は性能と互換性の比較だけに使います。
 - PEP 799 Tachyon は起動、50 Hz リップシンク、表情調停を匿名化済み証拠で分析し、生のバイナリサンプルストリームを公開しません。
-- PEP 803／820／793 Stable ABI と C API 境界は公式 ABI3 wheel を検証します。墨寒に第一者 C 拡張はありません。
+- Windows 正式パッケージ化の契約では、Rust 1.97.1、Maturin 1.14.1、PyO3 0.29.2 を用いて第一者 `_mohan_accel` abi3t ネイティブモジュールをビルドし、PCM16、リップシンク音声解析、RGBA レイヤー合成の結果を Python 参照実装と項目別に照合することを v4.0.0 Windows 正式公開の必要証拠とします。RGBA 経路は Rayon 1.12.0 を使用し、262,144 pixels 以上かつ複数のワーカースレッドが利用できる場合だけ条件付きで並列化します。Rust serial／Rayon 境界テストと Python／native 実測により等価性と性能の証拠を得ています。`PyBackedBytes` は入力を借用して追加の入力コピーを避けますが、出力では新しい `bytes` を生成するため、エンドツーエンドのゼロコピーは表明せず、未実装の SIMD も表明しません。モジュールを読み込めない場合、または個別処理に失敗した場合、アプリケーションは観測可能な診断を記録して Python へフォールバックします。ビルド用ツールチェーンは実行時依存ではありません。macOS／Linux Preview は同等のパッケージ対応を表明しません。
+- OpenAI Responses API 経路は Python 標準ライブラリの `urllib.request` から HTTPS で直接呼び出します。墨寒に `openai` Python SDK の実行時依存はなく、同梱しない SDK のバージョンやライセンスを架空登録しません。OpenAI は同梱コンポーネントではなく外部サービスであり、機械可読な SBOM ポリシーにこの境界を記録し、Release ゲートは SDK の誤混入を拒否します。
 - CycloneDX 1.7 Windows／Preview SBOM は固定依存関係、ライセンス、PURL、完全なルート依存エッジ、公式構造、プライバシー検証に合格しなければなりません。
 
 表情、物理、リップシンクを統合した各 20,000 回のストレス試験を二回実行し合格しました。JIT 無効／有効時は 24.639／25.068 秒、ワーキングセット増加は 10.62／12.94 MB でした。同じ Ryzen 5 5600X Windows 実機でホットパス比較をさらに三回実行しました。JIT 無効時に対する有効時の速度比は、120,000 回の表情調停で 0.86～0.98 倍（中央値 0.97 倍、加速は確認できず）、2,000 回の 50 Hz リップシンク tick で 1.45～1.65 倍（中央値 1.48 倍）となり、各回の判断と検証結果は一致しました。
@@ -1564,7 +1592,7 @@ python app.py
 ```powershell
 python tools\audit_public_release.py
 python tests\run_all.py
-.\build.ps1 -Version "3.1.2"
+.\build.ps1 -Version "<source-version>"
 ```
 
 過去の v2.1.0 RC1 は公開前に 55 個の自動テストプログラムと、Windows リリースワークフローのソース監査、パッケージ自己試験、インストール／削除検証、安全検査に合格しました。自動テストは、未完了の第三者実環境検証に代わりません。

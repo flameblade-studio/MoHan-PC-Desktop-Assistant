@@ -1,0 +1,16 @@
+schema_version = 1
+source_repository = "https://code.qt.io/pyside/pyside-setup.git"
+pyside_source_commit = "1e708e23e1b7a221e662bc2e5c51fae9e7a8764f"
+qt_sdk_version = "6.11.1"
+python_requirement = ">=3.15,<3.16"
+wheel_version = "6.11.1+mohan.py315.1"
+wheel_abi = "cp310-abi3"
+module_subset = ["Core", "Gui", "Widgets", "Network", "Multimedia", "Svg", "Test"]
+designer_plugin = true
+official_pypi_metadata_allows_python315 = false
+requires_clean_resolver = true
+requires_ignore_requires_python = false
+
+[patches.designer_msvc_python_embed]
+file = "patches/pyside-designer-python-embed.patch"
+purpose = "Link the embedded Designer plugin against Python::Python while retaining the stable ABI boundary for the binding modules."

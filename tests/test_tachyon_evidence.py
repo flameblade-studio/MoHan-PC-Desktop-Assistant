@@ -54,14 +54,17 @@ def test_chunked_tachyon_tables_and_aggregates() -> None:
         {
             "type": "string_table",
             "strings": [
-                {"str_id": 1, "value": str(ROOT / "speech.py")},
+                {"str_id": 1, "value": str(ROOT / "integrations" / "speech.py")},
                 {"str_id": 2, "value": "emit_viseme"},
             ],
         },
         {
             "type": "string_table",
             "strings": [
-                {"str_id": 3, "value": str(ROOT / "expression_system.py")},
+                {
+                    "str_id": 3,
+                    "value": str(ROOT / "domain" / "expression_system.py"),
+                },
                 {"str_id": 4, "value": "arbitrate"},
             ],
         },
@@ -112,8 +115,8 @@ def test_chunked_tachyon_tables_and_aggregates() -> None:
     assert total_samples == 100
     assert len(frames) == 2
     assert {frame.path for frame in frames} == {
-        "<project>/speech.py",
-        "<project>/expression_system.py",
+        "<project>/integrations/speech.py",
+        "<project>/domain/expression_system.py",
     }
     assert _top_frames(
         frames,
@@ -134,7 +137,7 @@ def test_profile_paths_are_private_and_binary_is_temporary() -> None:
             project_path = project_path.swapcase()
         private_values = "\n".join(
             (
-                str(Path(project_path) / "speech.py"),
+                str(Path(project_path) / "integrations" / "speech.py"),
                 str(temporary / "tachyon_target.py"),
                 str(Path.home() / "private-profile.json"),
                 r"Z:\unregistered-runner\private\trace.py",
@@ -164,8 +167,8 @@ def test_profile_paths_are_private_and_binary_is_temporary() -> None:
             assert "unregistered-runner" not in content
             assert "<project>" in content or "<temporary>" in content
 
-    assert _sanitize_profile_path(str(ROOT / "lip_sync.py")) == (
-        "<project>/lip_sync.py"
+    assert _sanitize_profile_path(str(ROOT / "domain" / "lip_sync.py")) == (
+        "<project>/domain/lip_sync.py"
     )
 
 

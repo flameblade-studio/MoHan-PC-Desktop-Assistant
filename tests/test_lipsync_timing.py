@@ -15,8 +15,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtCore import QCoreApplication
 
+lazy from integrations.speech import (
+    WindowsTTS,
+    emit_wave_viseme_cues,
+    play_wave_with_visemes,
+)
 lazy from lip_sync import VISEME_CUES_PER_SECOND
-lazy from speech import WindowsTTS, emit_wave_viseme_cues, play_wave_with_visemes
 
 
 def make_test_wave(duration: float = 1.2, rate: int = 24000) -> bytes:
@@ -90,7 +94,7 @@ def run() -> None:
     timeline_ready = threading.Event()
     gated_cues: list[tuple[float, str]] = []
     with patch(
-        "speech.infer_vowel_pcm16",
+        "domain.audio_acceleration.PythonPcmAcceleration.infer_vowel_pcm16",
         return_value=(0.5, "A"),
     ) as analyzer:
         worker = threading.Thread(
@@ -123,13 +127,18 @@ def run() -> None:
             time.sleep(0.03)
             order.append("playback-end")
 
-    def prepared_audio(audio: bytes, _volume: int, _muted: bool) -> bytes:
+    def prepared_audio(
+        audio: bytes,
+        _volume: int,
+        _muted: bool,
+        **_options: object,
+    ) -> bytes:
         order.append("volume-ready")
         return audio
 
     with (
-        patch("speech.winsound", FakeWinSound),
-        patch("speech.apply_wav_volume", side_effect=prepared_audio),
+        patch("integrations.speech.winsound", FakeWinSound),
+        patch("integrations.speech.apply_wav_volume", side_effect=prepared_audio),
     ):
         play_wave_with_visemes(
             make_test_wave(0.08),
@@ -159,8 +168,11 @@ def run() -> None:
         return 0.7, "A"
 
     with (
-        patch("speech.winsound", ShortPlayback),
-        patch("speech.infer_vowel_pcm16", side_effect=slow_analyzer),
+        patch("integrations.speech.winsound", ShortPlayback),
+        patch(
+            "domain.audio_acceleration.PythonPcmAcceleration.infer_vowel_pcm16",
+            side_effect=slow_analyzer,
+        ),
     ):
         play_wave_with_visemes(
             make_test_wave(0.12),

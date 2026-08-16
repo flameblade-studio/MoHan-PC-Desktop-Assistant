@@ -15,13 +15,13 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+lazy from domain.version_info import FALLBACK_VERSION
 lazy from tools.sync_wordpress_download_page import (
     END_MARKER,
     START_MARKER,
     release_block,
     replace_managed_block,
 )
-lazy from version_info import FALLBACK_VERSION
 
 VERSION = FALLBACK_VERSION
 VERSION_PREFIX, CANDIDATE_NUMBER = VERSION.rsplit(".", maxsplit=1)
@@ -47,7 +47,7 @@ def assert_image(path: Path, size: tuple[int, int]) -> None:
 
 
 def test_version_runtime_and_evidence_policy() -> None:
-    assert f'FALLBACK_VERSION = "{VERSION}"' in read("version_info.py")
+    assert f'FALLBACK_VERSION = "{VERSION}"' in read("domain/version_info.py")
     package_version = VERSION.replace("-rc.", "rc")
     for metadata in ("pyproject.toml", "sbom/preview.pyproject.toml"):
         assert f'version = "{package_version}"' in read(metadata)
@@ -60,8 +60,10 @@ def test_version_runtime_and_evidence_policy() -> None:
             "CITATION.cff",
         )
     }
-    for name, content in current_docs.items():
-        assert VERSION in content, f"current release missing from {name}"
+    assert VERSION in current_docs["README.md"], (
+        "README.md must identify the current source development version"
+    )
+    assert "unreleased development draft" in current_docs["README.md"]
     for name in ("README.md", "QUICKSTART.md"):
         assert "2.0.14-rc.3.exe" not in current_docs[name]
     assert_contains(
@@ -81,13 +83,25 @@ def test_version_runtime_and_evidence_policy() -> None:
             "python = $PythonVersion",
             '--add-data "LICENSE;."',
             '--add-data "THIRD_PARTY_NOTICES.md;."',
+            "tools/build_native_acceleration.py",
+            "--install",
+            '--hidden-import "_mohan_accel"',
+            "tools\\jit_launcher.py",
+            "Move-Item -LiteralPath $PublicExecutable",
+            "--onefile",
         ),
     )
+    launcher = read("tools/jit_launcher.py")
+    assert 'environment["PYTHON_JIT"] = "1"' in launcher
     for workflow_name in ("windows-ci.yml", "release.yml"):
         workflow = read(f".github/workflows/{workflow_name}")
         assert 'python-version: "3.15.0-rc.1"' in workflow
         assert 'python-version: "3.12"' not in workflow
         assert 'FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"' in workflow
+        assert "rustup toolchain install 1.97.1" in workflow
+        assert 'RUSTUP_TOOLCHAIN: "1.97.1"' in workflow
+        assert "rustup default" not in workflow
+        assert "maturin==1.14.1" in workflow
 
     security_audit = read(".github/workflows/security-audit.yml")
     assert_contains(
@@ -104,7 +118,8 @@ def test_version_runtime_and_evidence_policy() -> None:
     assert_contains(
         release,
         (
-            "Expected exactly one literal FALLBACK_VERSION",
+            "domain/version_info.py",
+            "Expected exactly one literal FALLBACK_VERSION in domain/version_info.py",
             'source_version="${source_versions[0]}"',
             "PACKAGED_JIT_DEFAULT_OK",
             "tools/profile_mohan_tachyon.py",
@@ -114,6 +129,9 @@ def test_version_runtime_and_evidence_policy() -> None:
             "SBOM-Validation.json",
             "Performance-Evidence.zip",
             "Performance-Summary.json",
+            "tools/verify_packaged_native_acceleration.py",
+            "tests/test_native_equivalence.py",
+            "tests/test_native_rgba_equivalence.py",
         ),
     )
 
@@ -162,7 +180,7 @@ def test_inno_setup_and_artwork_contract() -> None:
     assert hashlib.sha256(canonical.read_bytes()).hexdigest() == (
         "5a5970c1e91b3a89a8cc4efd8e3bb72b417f4b644c73a6074cd073d577eab373"
     )
-    for consumer in ("app.py", "tools/build_installer_artwork.py"):
+    for consumer in ("infrastructure/face_assets.py", "tools/build_installer_artwork.py"):
         content = read(consumer)
         assert "idle_front.png" in content
         assert "mohan-hero-rain-canonical.webp" not in content
@@ -229,16 +247,19 @@ def test_windows_taskbar_icon_contract() -> None:  # noqa: PLR0914 -- one explic
         ROOT / "assets/onboarding/mohan-hero-rain-canonical.webp"
     ).exists()
 
-    app = read("app.py")
-    dashboard_setup = app.split(
+    dashboard_owner = read("presentation/dashboard_shell.py")
+    dashboard_setup = dashboard_owner.split(
         "def _configure_dashboard_window(self) -> None:",
         maxsplit=1,
     )[1].split("\n    def ", maxsplit=1)[0]
-    assert "QIcon(str(resource_path(APP_ICON_PATH)))" not in app
+    character_owner = read("presentation/companion_visual_dynamics.py")
+    assert "QIcon(str(resource_path(APP_ICON_PATH)))" not in (
+        dashboard_owner + character_owner
+    )
     assert dashboard_setup.index("self.setWindowFlags(") < dashboard_setup.index(
         "self.setWindowIcon(application_icon())"
     )
-    character_setup = app.split(
+    character_setup = character_owner.split(
         "def _configure_character_window(self) -> None:",
         maxsplit=1,
     )[1].split("\n    def ", maxsplit=1)[0]

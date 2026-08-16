@@ -113,7 +113,7 @@ def _run(urlopen_replacement, *, planner=_FailedPlanner) -> tuple[int, str]:
     output = io.StringIO()
     with (
         patch.object(diagnostic, "SecretStore", _SecretStore),
-        patch.object(diagnostic.sqlite3, "connect", return_value=_Connection()),
+        patch("sqlite3.connect", return_value=_Connection()),
         patch.object(diagnostic, "urlopen", urlopen_replacement),
         patch.object(diagnostic, "ActionPlannerWorker", planner),
         redirect_stdout(output),

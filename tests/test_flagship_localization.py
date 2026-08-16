@@ -23,13 +23,13 @@ lazy from PySide6.QtWidgets import (
     QWidget,
 )
 
-lazy from db import StudioDB
 lazy from flagship_ui import FlagshipControlCenter, WorkflowEditor
 lazy from flagship_ui_localization import (
     FLAGSHIP_TRANSLATIONS,
     FlagshipTranslator,
     validate_flagship_translations,
 )
+lazy from infrastructure.db import StudioDB
 
 HAN_CHARACTER = re.compile(r"[\u3400-\u9fff]")
 ENGLISH_ALLOWED_HAN = frozenset({
@@ -89,13 +89,14 @@ def _assert_canonical_values(center: FlagshipControlCenter) -> None:
 
 def _assert_english_center(center: FlagshipControlCenter) -> None:
     assert center.language == "en"
-    assert center.tabs.count() == 7
-    assert [center.tabs.tabText(index) for index in range(7)] == [
+    assert center.tabs.count() == 8
+    assert [center.tabs.tabText(index) for index in range(8)] == [
         "Task Center",
         "Workflows",
         "Cloud Connectors",
         "Smart Home",
         "Remote & Privacy",
+        "Companion Care",
         "Security Permissions",
         "Audit Log",
     ]
@@ -118,13 +119,14 @@ def _assert_english_center(center: FlagshipControlCenter) -> None:
 
 def _assert_japanese_center(center: FlagshipControlCenter) -> None:
     assert center.language == "ja-JP"
-    assert center.tabs.count() == 7
-    assert [center.tabs.tabText(index) for index in range(7)] == [
+    assert center.tabs.count() == 8
+    assert [center.tabs.tabText(index) for index in range(8)] == [
         "タスクセンター",
         "ワークフロー",
         "クラウド接続",
         "スマートホーム",
         "リモートとプライバシー",
+        "寄り添いと気遣い",
         "セキュリティ権限",
         "監査ログ",
     ]
