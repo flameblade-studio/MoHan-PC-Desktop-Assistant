@@ -82,11 +82,11 @@
     }
   ],
   "official_pypi_gate": {
-    "status": "blocked",
-    "reason": "Official PySide6 6.11.1 metadata still excludes Python 3.15.",
+    "status": "observed_not_release_gate",
+    "reason": "Official PySide6 6.11.1 prebuilt metadata excludes Python 3.15; the project uses its approved audited compatibility supply chain instead.",
     "bypass_used": false
   },
-  "release_decision": "blocked",
+  "release_decision": "pending_independent_release_evidence",
   "required_next_evidence": [
     "Native macOS arm64 and x86_64 source builds or supported wheels.",
     "Native Linux x86_64 source build or supported wheel.",

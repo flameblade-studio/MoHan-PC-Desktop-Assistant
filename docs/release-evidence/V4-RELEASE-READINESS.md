@@ -2,14 +2,14 @@
 
 ## 繁體中文
 
-> **RELEASE-READY／可發布。** 本文件記錄 2026-08-14 的可重現發版路徑；GitHub Release 仍須由鎖定的 tag、必要 CI、完整回歸與實際封裝證據共同產生。
+> **RELEASE-PENDING／尚未可發布。** 本文件記錄可重現發版路徑；GitHub Release 仍須由鎖定的 tag、必要 CI、完整回歸、實際封裝與必需 PoseAtlas 證據共同產生。
 
 ### 目前判定
 
 - **Windows 正式路徑：READY。** Python 3.15.0rc1、Rust／PyO3 原生模組、Windows 安裝包、完整回歸、SBOM、SHA-256 與發版前置檢查由 workflow 驗證。
 - **Qt 相容層：READY。** 官方 PyPI wheel 的二進位內容經固定雜湊取得，metadata 以 `6.11.1+mohan.py315.1` 相容層重建；正常 pip resolver、`pip check`、Qt 匯入與離屏 smoke 已在 Windows 通過。
 - **macOS／Linux：Preview。** CI 原生 runner 可提供建置與 smoke 證據，但開發者沒有該平台實機；本文件不宣稱實機認證或 Windows 功能同等。
-- **PoseAtlas：未納入 v4.0.0。** 候選素材仍缺完整來源授權與正式 sidecar，正式稽核工具維持 fail-closed；Release 只記錄 `optional-not-included`，不把候選素材放入套件。
+- **PoseAtlas：v4.0.0 必須納入，尚未就緒。** 使用與公開再散布權已由炎劍文化工作室確認；仍須 24 視角、landmarks／hands、可稽核來源與真實 `release-audits.json` 全數通過。正式稽核維持 fail-closed，缺一不可發布。
 - **必要安全線仍保留。** 秘密隔離、完整回歸、封裝內容、SBOM、SHA-256、artifact 完整性、可回退與四語文件不能取消。
 
 ### 可重現證據
@@ -27,14 +27,14 @@
 
 ## 简体中文
 
-> **RELEASE-READY／可发布。** 本文记录 2026-08-14 的可复现发布路径；GitHub Release 仍须由锁定的 tag、必要 CI、完整回归与实际打包证据共同产生。
+> **RELEASE-PENDING／尚未可发布。** 本文记录可复现发布路径；GitHub Release 仍须由锁定的 tag、必要 CI、完整回归、实际打包与必需 PoseAtlas 证据共同产生。
 
 ### 当前判定
 
 - **Windows 正式路径：READY。** Python 3.15.0rc1、Rust／PyO3 原生模块、Windows 安装包、完整回归、SBOM、SHA-256 与发布前置检查由 workflow 验证。
 - **Qt 兼容层：READY。** 官方 PyPI wheel 的二进制内容通过固定哈希取得，metadata 以 `6.11.1+mohan.py315.1` 兼容层重建；正常 pip resolver、`pip check`、Qt 导入与离屏 smoke 已在 Windows 通过。
 - **macOS／Linux：Preview。** CI 原生 runner 可提供构建与 smoke 证据，但开发者没有这些平台实机；本文不声明实机认证或 Windows 功能同等。
-- **PoseAtlas：未纳入 v4.0.0。** 候选素材仍缺完整来源授权与正式 sidecar，正式审计工具维持 fail-closed；Release 只记录 `optional-not-included`，不把候选素材放入软件包。
+- **PoseAtlas：v4.0.0 必须纳入，尚未就绪。** 使用与公开再分发权已由炎剑文化工作室确认；仍须 24 视角、landmarks／hands、可审计来源与真实 `release-audits.json` 全数通过。正式审计保持 fail-closed，缺一不可发布。
 - **必要安全线仍保留。** 秘密隔离、完整回归、打包内容、SBOM、SHA-256、artifact 完整性、可回退与四语文档不能取消。
 
 ### 可复现证据
@@ -52,14 +52,14 @@
 
 ## English
 
-> **RELEASE-READY.** This document records the reproducible path as of 2026-08-14. A GitHub Release still requires the immutable tag, required CI, full regression, and actual packaging evidence together.
+> **RELEASE-PENDING.** This document records the reproducible release path. A GitHub Release still requires the immutable tag, required CI, full regression, actual packaging, and required PoseAtlas evidence together.
 
 ### Current decision
 
 - **Windows formal path: READY.** Python 3.15.0rc1, the Rust／PyO3 native module, Windows installers, full regression, SBOM, SHA-256, and release preflight are verified by the workflow.
 - **Qt compatibility layer: READY.** Binary contents come from official PyPI wheels verified by fixed digests, while metadata is rebuilt as the `6.11.1+mohan.py315.1` compatibility layer; the normal pip resolver, `pip check`, Qt imports, and an offscreen smoke test passed on Windows.
 - **macOS／Linux: Preview.** Native CI runners can provide build and smoke evidence, but the developer does not have those physical platforms; this document does not claim physical certification or Windows feature parity.
-- **PoseAtlas: excluded from v4.0.0.** Candidate assets still lack complete provenance authorization and formal sidecars. The formal audit tool remains fail-closed; the Release records `optional-not-included` and does not package the candidates.
+- **PoseAtlas: mandatory for v4.0.0 and not yet ready.** Flameblade Studio has confirmed use and public-redistribution rights. All 24 views, landmarks/hands, auditable provenance, and a genuine `release-audits.json` must pass. The formal audit remains fail-closed; any absence blocks publication.
 - **The necessary safety line remains.** Secret isolation, full regression, package contents, SBOM, SHA-256, artifact integrity, fallback behavior, and four-language documentation cannot be removed.
 
 ### Reproducible evidence
@@ -77,14 +77,14 @@
 
 ## 日本語
 
-> **RELEASE-READY／公開準備完了。** 本文書は 2026-08-14 時点の再現可能な公開経路を記録します。GitHub Release には、不変 tag、必須 CI、完全回帰、実際のパッケージ証拠が引き続き必要です。
+> **RELEASE-PENDING／未公開。** 本文書は再現可能な公開経路を記録します。GitHub Release には、不変 tag、必須 CI、完全回帰、実際のパッケージ、必須 PoseAtlas 証拠が引き続き必要です。
 
 ### 現在の判定
 
 - **Windows 正式経路：READY。** Python 3.15.0rc1、Rust／PyO3 ネイティブモジュール、Windows インストーラー、完全回帰、SBOM、SHA-256、公開前検査を workflow で検証します。
 - **Qt 互換レイヤー：READY。** バイナリ内容は固定ダイジェストで検証した公式 PyPI wheel から取得し、metadata は `6.11.1+mohan.py315.1` 互換レイヤーとして再構成します。通常の pip resolver、`pip check`、Qt import、offscreen smoke は Windows で合格しました。
 - **macOS／Linux：Preview。** ネイティブ CI runner は build と smoke の証拠を提供できますが、開発者はこれらの実機を持ちません。本書は実機認証や Windows との機能同等性を表明しません。
-- **PoseAtlas：v4.0.0 には含めません。** 候補素材には完全な出典許諾と正式 sidecar がまだありません。正式監査ツールは fail-closed のままとし、Release には `optional-not-included` を記録して候補を同梱しません。
+- **PoseAtlas：v4.0.0 では必須で、まだ準備完了ではありません。** 使用と公開再配布権は炎剣文化工作室が確認済みです。全24視角、landmarks／hands、監査可能な出典、真正な `release-audits.json` のすべてが合格する必要があります。正式監査は fail-closed のままとし、欠落があれば公開を停止します。
 - **必要な安全線は残ります。** 秘密分離、完全回帰、パッケージ内容、SBOM、SHA-256、フォールバック動作、四言語文書は削除できません。
 
 ### 再現可能な証拠

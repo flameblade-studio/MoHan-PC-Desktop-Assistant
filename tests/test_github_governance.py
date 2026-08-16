@@ -221,13 +221,11 @@ def _assert_release_preflight_precedes_packaging(release: str) -> None:
         '"$PREFLIGHT_PYTHON" tools/check_four_language_docs.py',
         "Enforce reproducible v4 OpenAI Vision package gate",
         '"$PREFLIGHT_PYTHON" tools/check_openai_vision_release.py',
-        "Audit optional PoseAtlas candidate without promoting it",
+        "Require audited PoseAtlas release assets",
         '"$PREFLIGHT_PYTHON" tools/check_pose_atlas_release.py',
         '--version "$RELEASE_VERSION"',
         "--asset-root assets/pose-atlas/v4",
         "--audit-evidence assets/pose-atlas/v4/release-audits.json",
-        "--optional-not-included",
-        "MOHAN_FULL_BODY_V4: ${{ vars.MOHAN_FULL_BODY_V4 }}",
     ):
         assert required in resolve_job
     assert 'python-version: "3.14' not in resolve_job
@@ -241,9 +239,7 @@ def _assert_release_preflight_precedes_packaging(release: str) -> None:
     qt_preflight = resolve_job.index(
         "Validate MoHan Qt 3.15 compatibility policy before packaging"
     )
-    pose_audit = resolve_job.index(
-        "Audit optional PoseAtlas candidate without promoting it"
-    )
+    pose_audit = resolve_job.index("Require audited PoseAtlas release assets")
     assert resolve_job.index("Set up Python 3.15 release preflight runtime") < (
         app_preflight
     )

@@ -46,25 +46,9 @@ def run_preflight(
     audit_evidence_path: Path,
     *,
     explicit_v4: bool = False,
-    optional_not_included: bool = False,
 ) -> tuple[int, str]:
     if not requires_v4_gate(version, explicit_v4):
         return 0, _json({"schema_version": 1, "status": "not-required", "version": version})
-    if optional_not_included and not asset_root.exists() and not audit_evidence_path.exists():
-        missing_inputs = tuple(
-            path.name
-            for path in (asset_root, audit_evidence_path)
-            if not path.exists()
-        )
-        if missing_inputs:
-            return 0, _json(
-                {
-                    "schema_version": 1,
-                    "status": "optional-not-included",
-                    "version": version,
-                    "missing_inputs": missing_inputs,
-                }
-            )
     try:
         bundle = _read_bundle(audit_evidence_path)
         config = _build_config(bundle)
@@ -208,11 +192,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--asset-root", type=Path, required=True)
     parser.add_argument("--audit-evidence", type=Path, required=True)
     parser.add_argument("--full-body-v4", action="store_true")
-    parser.add_argument(
-        "--optional-not-included",
-        action="store_true",
-        help="Allow a feature that is explicitly not packaged when its inputs are absent.",
-    )
     args = parser.parse_args(argv)
     try:
         explicit = args.full_body_v4 or _environment_v4_flag()
@@ -221,7 +200,6 @@ def main(argv: list[str] | None = None) -> int:
             args.asset_root,
             args.audit_evidence,
             explicit_v4=explicit,
-            optional_not_included=args.optional_not_included,
         )
     except ValueError as error:
         code, output = 2, _blocked(str(error))

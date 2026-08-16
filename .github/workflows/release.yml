@@ -163,18 +163,16 @@ jobs:
           "$PREFLIGHT_PYTHON" tools/check_openai_vision_release.py \
             --version "$RELEASE_VERSION"
 
-      - name: Audit optional PoseAtlas candidate without promoting it
+      - name: Require audited PoseAtlas release assets
         shell: bash
         env:
           PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
-          MOHAN_FULL_BODY_V4: ${{ vars.MOHAN_FULL_BODY_V4 }}
         run: |
           "$PREFLIGHT_PYTHON" tools/check_pose_atlas_release.py \
             --version "$RELEASE_VERSION" \
             --asset-root assets/pose-atlas/v4 \
-            --audit-evidence assets/pose-atlas/v4/release-audits.json \
-            --optional-not-included
+            --audit-evidence assets/pose-atlas/v4/release-audits.json
 
   windows:
     name: Windows formal packages

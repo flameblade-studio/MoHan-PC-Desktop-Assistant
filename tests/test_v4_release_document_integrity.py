@@ -88,7 +88,7 @@ def test_release_status_is_unambiguously_ready_in_all_languages() -> None:
         "v4.0.0-draft.md",
     )
     blockers = (
-        ("RELEASE-READY／可發布", "RELEASE-READY／可发布", "RELEASE-READY", "RELEASE-READY／公開準備完了"),
+        ("RELEASE-PENDING／尚未可發布", "RELEASE-PENDING／尚未可发布", "RELEASE-PENDING", "RELEASE-PENDING／未公開"),
         ("正式 Release 說明", "正式 Release 说明", "formal v4.0.0 Release Notes", "正式 Release 説明"),
         ("開發草稿", "开发草稿", "development draft", "開発草案"),
     )

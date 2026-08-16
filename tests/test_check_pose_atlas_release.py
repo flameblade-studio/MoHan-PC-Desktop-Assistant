@@ -169,19 +169,18 @@ def assert_v4_missing_assets_and_failed_audit_block() -> None:
         assert str(root.resolve()) not in output
 
 
-def assert_optional_pose_atlas_is_only_skipped_when_inputs_are_absent() -> None:
+def assert_v4_missing_pose_atlas_inputs_fail_closed() -> None:
     with TemporaryDirectory() as temporary:
         root = Path(temporary)
         code, output = run_preflight(
             "4.0.0",
             root / "missing-assets",
             root / "missing-audits.json",
-            optional_not_included=True,
         )
-        assert code == 0
+        assert code == 1
         payload = json.loads(output)
-        assert payload["status"] == "optional-not-included"
-        assert payload["missing_inputs"] == ["missing-assets", "missing-audits.json"]
+        assert payload["status"] == "blocked"
+        assert payload["issues"] == [{"code": "audit_evidence_invalid"}]
 
         audits = root / "audits.json"
         write_audits(audits)
@@ -189,7 +188,6 @@ def assert_optional_pose_atlas_is_only_skipped_when_inputs_are_absent() -> None:
             "4.0.0",
             root / "missing-assets",
             audits,
-            optional_not_included=True,
         )
         assert code == 1
         assert json.loads(output)["status"] == "blocked"
@@ -248,7 +246,7 @@ def assert_explicit_v4_flag_gates_older_versions() -> None:
 def run() -> None:
     assert_v3_bypasses_without_reading_v4_paths()
     assert_v4_missing_assets_and_failed_audit_block()
-    assert_optional_pose_atlas_is_only_skipped_when_inputs_are_absent()
+    assert_v4_missing_pose_atlas_inputs_fail_closed()
     assert_v4_complete_evidence_passes_deterministically()
     assert_boolean_hands_cannot_replace_physical_sidecars()
     assert_physical_hand_hash_or_missing_digit_blocks()
