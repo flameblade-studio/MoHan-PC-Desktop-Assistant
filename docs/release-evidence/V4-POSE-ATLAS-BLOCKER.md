@@ -4,11 +4,11 @@
 
 ### 結論
 
-v4.0.0 的 PoseAtlas 發布門檻目前必須維持阻擋。`assets/pose-atlas/v4/` 不存在，repo 內也沒有具明確來源與再散布權、可重現產生墨寒 24 個完整全身旋轉視角的原始視覺資產。現有表情圖、半身圖示、入門圖片與文件截圖無法推導不可見的背面、四肢、足底與雙手；不得用補畫、鏡射、幾何假人、測試 fixture 或不明授權素材冒充正式資產。
+v4.0.0 的 PoseAtlas 發布門檻目前必須維持阻擋。炎劍文化工作室已於 2026-08-16 確認此批墨寒參考圖的使用及公開再散布權，並授權其衍生 PoseAtlas v4 素材依本專案授權公開發布；但 `assets/pose-atlas/v4/` 仍不存在，候選視覺資產尚未完成可重現的 24 個完整全身旋轉視角、真實 landmarks／hands 與正式稽核。現有表情圖、半身圖示、入門圖片與文件截圖無法推導不可見的背面、四肢、足底與雙手；不得用補畫、鏡射、幾何假人、測試 fixture 或不明授權素材冒充正式資產。
 
 ### 2026-08-14 開發進度（不是正式發布證據）
 
-`assets/pose-atlas/v4-source/` 現已保存 24 張候選透明 PNG，涵蓋 `yaw-180` 至 `yaw+165` 的 15 度間隔視角。離線檔案檢查已確認每張圖片為 1024×1536、RGBA、具有非空 alpha 邊界、主體未貼齊畫布邊緣，且 24 張均通過這項機械檢查。這只代表候選檔案的基本完整性；來源／再散布權、人物身分連續性、服裝與配件轉面邏輯、身體 landmarks、雙手 21 點、相鄰視角連續性與正式稽核證據仍未完成。候選檔案必須與正式 `assets/pose-atlas/v4/` 分離保存，不得據此解除發布阻擋。
+`assets/pose-atlas/v4-source/` 現已保存 24 張候選透明 PNG，涵蓋 `yaw-180` 至 `yaw+165` 的 15 度間隔視角。離線檔案檢查已確認每張圖片為 1024×1536、RGBA、具有非空 alpha 邊界、主體未貼齊畫布邊緣，且 24 張均通過這項機械檢查。使用與公開再散布權已由權利人確認；這只代表候選檔案的基本完整性，人物身分連續性、服裝與配件轉面邏輯、身體 landmarks、雙手 21 點、相鄰視角連續性與正式稽核證據仍未完成。候選檔案必須與正式 `assets/pose-atlas/v4/` 分離保存，不得據此解除發布阻擋。
 
 ### 精確缺件
 
@@ -35,11 +35,11 @@ v4.0.0 的 PoseAtlas 發布門檻目前必須維持阻擋。`assets/pose-atlas/v
 
 ### 结论
 
-v4.0.0 的 PoseAtlas 发布门槛目前必须保持阻挡。`assets/pose-atlas/v4/` 不存在，repo 内也没有来源与再分发权明确、可重现生成墨寒 24 个完整全身旋转视角的原始视觉资产。现有表情图、半身图标、入门图片与文档截图无法推导不可见的背面、四肢、脚底与双手；不得使用补画、镜像、几何假人、测试 fixture 或许可不明的素材冒充正式资产。
+v4.0.0 的 PoseAtlas 发布门槛目前必须保持阻挡。炎剑文化工作室已于 2026-08-16 确认这批墨寒参考图的使用及公开再分发权，并授权其衍生 PoseAtlas v4 素材依本项目许可公开发布；但 `assets/pose-atlas/v4/` 仍不存在，候选视觉资产尚未完成可重现的 24 个完整全身旋转视角、真实 landmarks／hands 与正式审计。现有表情图、半身图标、入门图片与文档截图无法推导不可见的背面、四肢、脚底与双手；不得使用补画、镜像、几何假人、测试 fixture 或许可不明的素材冒充正式资产。
 
 ### 2026-08-14 开发进度（不是正式发布证据）
 
-`assets/pose-atlas/v4-source/` 现已保存 24 张候选透明 PNG，覆盖 `yaw-180` 至 `yaw+165` 的 15 度间隔视角。离线文件检查已确认每张图片为 1024×1536、RGBA、具有非空 alpha 边界、主体未贴齐画布边缘，并且 24 张全部通过这项机械检查。这只代表候选文件的基本完整性；来源／再分发权、人物身份连续性、服装与配件转面逻辑、身体 landmarks、双手 21 点、相邻视角连续性与正式审计证据仍未完成。候选文件必须与正式 `assets/pose-atlas/v4/` 分开保存，不得据此解除发布阻挡。
+`assets/pose-atlas/v4-source/` 现已保存 24 张候选透明 PNG，覆盖 `yaw-180` 至 `yaw+165` 的 15 度间隔视角。离线文件检查已确认每张图片为 1024×1536、RGBA、具有非空 alpha 边界、主体未贴齐画布边缘，并且 24 张全部通过这项机械检查。使用及公开再分发权已由权利人确认；这只代表候选文件的基本完整性，人物身份连续性、服装与配件转面逻辑、身体 landmarks、双手 21 点、相邻视角连续性与正式审计证据仍未完成。候选文件必须与正式 `assets/pose-atlas/v4/` 分开保存，不得据此解除发布阻挡。
 
 ### 精确缺件
 
@@ -66,11 +66,11 @@ v4.0.0 的 PoseAtlas 发布门槛目前必须保持阻挡。`assets/pose-atlas/v
 
 ### Conclusion
 
-The v4.0.0 PoseAtlas release gate must remain blocked. `assets/pose-atlas/v4/` does not exist, and the repository contains no source visual set with clear provenance and redistribution rights from which MoHan's 24 complete full-body rotational views can be reproduced. Existing expression images, half-body icons, onboarding art, and documentation screenshots cannot recover unseen rear anatomy, limbs, soles, or hands. Inpainting, mirroring, geometric stand-ins, test fixtures, or material with unknown licensing must not impersonate release assets.
+The v4.0.0 PoseAtlas release gate must remain blocked. On 2026-08-16, Flameblade Studio confirmed its right to use and publicly redistribute this MoHan reference-image set and authorized its derivative PoseAtlas v4 material for public release under this project's license. However, `assets/pose-atlas/v4/` does not yet exist, and the candidate visual assets have not completed reproducible 24 full-body rotational views, genuine landmarks/hands, and the formal audits. Existing expression images, half-body icons, onboarding art, and documentation screenshots cannot recover unseen rear anatomy, limbs, soles, or hands. Inpainting, mirroring, geometric stand-ins, test fixtures, or material with unknown licensing must not impersonate release assets.
 
 ### Development evidence on 2026-08-14 (not release evidence)
 
-`assets/pose-atlas/v4-source/` now contains 24 transparent PNG candidates covering 15-degree views from `yaw-180` through `yaw+165`. An offline file check confirmed that every image is 1024×1536 RGBA, has a non-empty alpha boundary, and keeps the subject away from the canvas edge; all 24 passed that mechanical check. This proves only basic candidate-file integrity. Provenance and redistribution rights, identity continuity, clothing and accessory turn consistency, body landmarks, 21-point hand evidence, adjacent-view continuity, and genuine release-audit evidence remain incomplete. Candidate files must remain separate from formal `assets/pose-atlas/v4/` and must not remove this release blocker.
+`assets/pose-atlas/v4-source/` now contains 24 transparent PNG candidates covering 15-degree views from `yaw-180` through `yaw+165`. An offline file check confirmed that every image is 1024×1536 RGBA, has a non-empty alpha boundary, and keeps the subject away from the canvas edge; all 24 passed that mechanical check. Use and public-redistribution rights are confirmed by the rights holder; this proves only basic candidate-file integrity, while identity continuity, clothing and accessory turn consistency, body landmarks, 21-point hand evidence, adjacent-view continuity, and genuine release-audit evidence remain incomplete. Candidate files must remain separate from formal `assets/pose-atlas/v4/` and must not remove this release blocker.
 
 ### Exact missing files
 
@@ -97,11 +97,11 @@ The source must be original complete full-body 360° MoHan material for which Fl
 
 ### 結論
 
-v4.0.0 の PoseAtlas 公開ゲートは、現時点で阻害状態を維持しなければなりません。`assets/pose-atlas/v4/` は存在せず、墨寒の完全な全身回転 24 視角を再現できる、出典と再配布権が明確な元視覚素材もリポジトリ内にありません。既存の表情画像、半身アイコン、導入画像、文書スクリーンショットから、見えていない背面、四肢、足裏、両手を復元することはできません。補完描画、鏡像、幾何学的な代用品、テスト fixture、不明なライセンス素材を正式素材として扱ってはなりません。
+v4.0.0 の PoseAtlas 公開ゲートは、現時点で阻害状態を維持しなければなりません。炎剣文化スタジオは 2026-08-16 に、この墨寒参考画像セットの使用および公開再配布権を確認し、その派生 PoseAtlas v4 素材を本プロジェクトのライセンスで公開することを許可しました。しかし `assets/pose-atlas/v4/` はまだ存在せず、候補視覚素材は再現可能な全身回転 24 視角、実際の landmarks／hands、正式監査を完了していません。既存の表情画像、半身アイコン、導入画像、文書スクリーンショットから、見えていない背面、四肢、足裏、両手を復元することはできません。補完描画、鏡像、幾何学的な代用品、テスト fixture、不明なライセンス素材を正式素材として扱ってはなりません。
 
 ### 2026-08-14 の開発進捗（公開証拠ではありません）
 
-`assets/pose-atlas/v4-source/` に、`yaw-180` から `yaw+165` まで 15 度間隔の 24 視角候補透明 PNG を保存しました。オフラインのファイル検査では、全画像が 1024×1536、RGBA、空でない alpha 境界を持ち、主体が canvas の端に接していないことを確認し、24 枚すべてがこの機械検査に合格しました。これは候補ファイルの基本完全性だけを示します。出典／再配布権、人物同一性、衣装と装飾品の回転整合性、body landmarks、両手 21 点、隣接視角の連続性、正式監査証拠は未完了です。候補ファイルは正式な `assets/pose-atlas/v4/` と分離し、これを根拠に公開阻害を解除してはいけません。
+`assets/pose-atlas/v4-source/` に、`yaw-180` から `yaw+165` まで 15 度間隔の 24 視角候補透明 PNG を保存しました。オフラインのファイル検査では、全画像が 1024×1536、RGBA、空でない alpha 境界を持ち、主体が canvas の端に接していないことを確認し、24 枚すべてがこの機械検査に合格しました。使用および公開再配布権は権利者により確認済みです。これは候補ファイルの基本完全性だけを示し、人物同一性、衣装と装飾品の回転整合性、body landmarks、両手 21 点、隣接視角の連続性、正式監査証拠は未完了です。候補ファイルは正式な `assets/pose-atlas/v4/` と分離し、これを根拠に公開阻害を解除してはいけません。
 
 ### 正確な不足ファイル
 
