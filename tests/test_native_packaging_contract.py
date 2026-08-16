@@ -110,6 +110,7 @@ def test_windows_release_verifies_every_distributed_package_form() -> None:
         "[string]$NativeEvidenceDir",
         "[string]$Python",
         "$ResolvedNativeEvidence",
+        "installer-upgrade",
         '"--output"',
         "& $Python @Arguments",
         "Invoke-NativeVerification",
@@ -130,6 +131,7 @@ def test_windows_release_verifies_every_distributed_package_form() -> None:
             "tools/finalize_native_release_evidence.py",
             "tools/generate_native_sbom.py",
             "tools/validate_native_sbom.py",
+            "if ($LASTEXITCODE -ne 0)",
         ):
             assert required in workflow, f"{relative}: {required}"
 

@@ -214,6 +214,7 @@ jobs:
       - name: Finalize native evidence and Rust SBOM
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
           $tag = "v4.0.0-rc.1"
           $base = "MoHan-Desktop-Assistant-$tag"
           $evidenceDir = Join-Path $env:RUNNER_TEMP "mohan-native-ci"
@@ -223,14 +224,23 @@ jobs:
             --artifacts "ci-installers" `
             --tag $tag `
             --output $nativeEvidence
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
           & $env:MOHAN_JIT_PYTHON tools/generate_native_sbom.py `
             --evidence $nativeEvidence `
             --tag $tag `
             --output "ci-installers\$base-Windows-Native-SBOM.cdx.json"
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
           $sbomPython = "${{ steps.sbom-python.outputs.python-path }}"
           & $sbomPython -m pip install `
             --only-binary=:all: `
             cyclonedx-bom==7.3.0
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
           & $env:MOHAN_JIT_PYTHON tools/validate_native_sbom.py `
             --sbom "ci-installers\$base-Windows-Native-SBOM.cdx.json" `
             --evidence $nativeEvidence `

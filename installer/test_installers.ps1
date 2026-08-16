@@ -29,6 +29,8 @@ $NativeVerifier = Join-Path $ProjectRoot (
     "tools\verify_packaged_native_acceleration.py"
 )
 New-Item -ItemType Directory -Force $ResolvedNativeEvidence | Out-Null
+$UpgradeEvidenceDir = Join-Path $ResolvedNativeEvidence "installer-upgrade"
+New-Item -ItemType Directory -Force $UpgradeEvidenceDir | Out-Null
 $ExeInstaller = Get-Item (Join-Path $ResolvedArtifacts "*Setup.exe")
 $MsiInstaller = Get-Item (Join-Path $ResolvedArtifacts "*.msi")
 $MsiTransforms = Get-ChildItem (Join-Path $ResolvedArtifacts "*.mst") |
@@ -377,7 +379,7 @@ if ($HasPreviousUpgrade) {
     }
     $UpgradeEvidence.passed = $true
     $UpgradeEvidence | ConvertTo-Json | Set-Content `
-        -LiteralPath (Join-Path $ResolvedNativeEvidence "installer-upgrade.json") `
+        -LiteralPath (Join-Path $UpgradeEvidenceDir "installer-upgrade.json") `
         -Encoding utf8
 }
 

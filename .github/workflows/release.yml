@@ -362,6 +362,7 @@ jobs:
         shell: pwsh
         run: |
           $tag = "${{ needs.resolve-release.outputs.tag }}"
+          $ErrorActionPreference = "Stop"
           $base = "MoHan-Desktop-Assistant-$tag"
           $evidenceDir = Join-Path $env:RUNNER_TEMP "mohan-native-release"
           $nativeEvidence = Join-Path $PWD "release-artifacts\$base-Native-Evidence.json"
@@ -370,10 +371,16 @@ jobs:
             --artifacts "release-artifacts" `
             --tag $tag `
             --output $nativeEvidence
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
           & $env:MOHAN_JIT_PYTHON tools/generate_native_sbom.py `
             --evidence $nativeEvidence `
             --tag $tag `
             --output "release-artifacts\$base-Windows-Native-SBOM.cdx.json"
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
 
       - name: Upload verified Windows packages
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
