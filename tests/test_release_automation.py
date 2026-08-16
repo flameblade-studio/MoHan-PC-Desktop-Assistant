@@ -155,6 +155,7 @@ def test_inno_setup_and_artwork_contract() -> None:
             "WizardImageFile={#WizardImagePath}",
             "WizardSmallImageFile={#WizardSmallImagePath}",
             "DisableWelcomePage=no",
+            'Type: files; Name: "{app}\\MoHan-Desktop-Assistant-*.exe"',
         ),
     )
     assert inno_script.count(

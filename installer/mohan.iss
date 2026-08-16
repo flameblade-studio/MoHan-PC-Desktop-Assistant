@@ -73,6 +73,7 @@ chinesetraditional.LaunchMoHan=啟動墨寒
 chinesesimplified.CreateDesktopIcon=创建桌面快捷方式
 chinesesimplified.Shortcuts=快捷方式：
 chinesesimplified.LaunchMoHan=启动墨寒
+
 english.CreateDesktopIcon=Create a desktop shortcut
 english.Shortcuts=Shortcuts:
 english.LaunchMoHan=Launch MoHan
@@ -80,6 +81,9 @@ japanese.CreateDesktopIcon=デスクトップにショートカットを作成
 japanese.Shortcuts=ショートカット：
 japanese.LaunchMoHan=墨寒を起動
 
+
+[InstallDelete]
+Type: files; Name: "{app}\MoHan-Desktop-Assistant-*.exe"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:Shortcuts}"; Flags: unchecked
 
