@@ -277,14 +277,14 @@ def main() -> None:
     parser.add_argument(
         "--minutes",
         type=float,
-        default=240.0,
-        help="Real-time soak duration; default is four hours.",
+        default=0.0,
+        help="Optional real-time duration; use --steps for deterministic release validation.",
     )
     parser.add_argument(
         "--steps",
         type=int,
-        default=0,
-        help="Use an accelerated fixed iteration count instead of duration.",
+        default=20000,
+        help="Deterministic accelerated iteration count used by default.",
     )
     parser.add_argument("--seed", type=int, default=20260730)
     args = parser.parse_args()

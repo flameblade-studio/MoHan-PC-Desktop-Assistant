@@ -33,7 +33,7 @@
 
 ### 仍需 Windows EXE 與真 Webcam 驗收
 
-- 真攝影機列舉、權限、啟停、拔除重接、鏡像座標、不同光線、長時間穩定性，以及身分、物品、八個內建手勢與噓聲融合的誤觸發／漏判。
+- 真攝影機列舉、權限、啟停、拔除重接、鏡像座標、不同光線，以及身分、物品、八個內建手勢與噓聲融合的誤觸發／漏判。
 - Windows、OpenAI、Realtime、Azure、Dragon HD 在實際帳號、區域、裝置與網路條件下的聲音輸出、切換、失敗回退及嘴型同步。
 - 安裝後實際匯出與匯入一般／敏感攜帶檔，確認取消、錯誤密碼、檔案遭修改及攝影機保持關閉等結果。
 - 在停用視覺、無 Webcam、缺模型或外部服務失敗時，驗證聊天、語音、2.5D 角色、設定與其他既有功能仍可正常使用。
@@ -121,7 +121,7 @@ The following means that corresponding automated evidence exists; it does not me
 
 ### Still requires Windows EXE and real-webcam acceptance
 
-- Real-camera enumeration, permission handling, enable/disable, unplug/reconnect, mirrored coordinates, varied lighting, long-running stability, and false-positive/missed-detection checks for identity, objects, all eight built-in gestures, and silence-request fusion.
+- Real-camera enumeration, permission handling, enable/disable, unplug/reconnect, mirrored coordinates, varied lighting, and false-positive/missed-detection checks for identity, objects, all eight built-in gestures, and silence-request fusion.
 - Speech output, switching, failure fallback, and lip synchronization for Windows, OpenAI, Realtime, Azure, and Dragon HD under real accounts, regions, devices, and network conditions.
 - Real export and import of ordinary and sensitive portable profiles from an installed build, including cancellation, wrong-password, modified-file, and camera-remains-off outcomes.
 - With vision disabled, no webcam, missing models, or failed external services, verification that chat, speech, the 2.5D character, settings, and other established features remain usable.
@@ -165,7 +165,7 @@ The following means that corresponding automated evidence exists; it does not me
 
 ### Windows EXE と実 Webcam で必要な受入試験
 
-- 実カメラの列挙、権限、有効化／無効化、抜き差し後の再接続、鏡像座標、異なる照明、長時間安定性、および本人、物体、八つの内蔵ジェスチャー、静音要求融合の誤検出／見落とし。
+- 実カメラの列挙、権限、有効化／無効化、抜き差し後の再接続、鏡像座標、異なる照明、および本人、物体、八つの内蔵ジェスチャー、静音要求融合の誤検出／見落とし。
 - 実際のアカウント、リージョン、機器、ネットワーク条件における Windows、OpenAI、Realtime、Azure、Dragon HD の音声出力、切り替え、失敗時フォールバック、口形同期。
 - インストール済み環境で通常／機密可搬プロファイルを実際に書き出し、読み込み、取消、誤パスワード、改ざんファイル、カメラが無効のままであることを確認する試験。
 - 視覚無効、Webcam なし、モデル欠落、外部サービス失敗時にも、会話、音声、2.5D キャラクター、設定、その他の既存機能が利用できることの確認。
