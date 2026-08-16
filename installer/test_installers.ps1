@@ -2,7 +2,12 @@ param(
     [Parameter(Mandatory = $true)][string]$ArtifactsDir,
     [Parameter(Mandatory = $true)][string]$Version,
     [Parameter(Mandatory = $true)][string]$Python,
-    [Parameter(Mandatory = $true)][string]$NativeEvidenceDir
+    [Parameter(Mandatory = $true)][string]$NativeEvidenceDir,
+    [string]$PreviousVersion,
+    [string]$PreviousExeUrl,
+    [string]$PreviousExeSha256,
+    [string]$PreviousMsiUrl,
+    [string]$PreviousMsiSha256
 )
 
 $ErrorActionPreference = "Stop"
@@ -36,6 +41,56 @@ $ExpectedNativeLabels = @(
     "msi-zh-CN",
     "msi-ja-JP"
 )
+$PreviousUpgradeArguments = @(
+    $PreviousVersion,
+    $PreviousExeUrl,
+    $PreviousExeSha256,
+    $PreviousMsiUrl,
+    $PreviousMsiSha256
+)
+$HasPreviousUpgrade = @($PreviousUpgradeArguments | Where-Object {
+    -not [string]::IsNullOrWhiteSpace($_)
+}).Count -gt 0
+if ($HasPreviousUpgrade -and @($PreviousUpgradeArguments | Where-Object {
+    [string]::IsNullOrWhiteSpace($_)
+}).Count -gt 0) {
+    throw "Previous-version upgrade verification requires every version, URL, and SHA-256 argument"
+}
+
+function Get-VerifiedPreviousInstaller {
+    param(
+        [Parameter(Mandatory = $true)][string]$Url,
+        [Parameter(Mandatory = $true)][string]$Sha256,
+        [Parameter(Mandatory = $true)][string]$Destination
+    )
+    Invoke-WebRequest -Uri $Url -OutFile $Destination
+    $Actual = (Get-FileHash -LiteralPath $Destination -Algorithm SHA256).Hash
+    if (-not [string]::Equals($Actual, $Sha256, [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Previous installer SHA-256 mismatch: $Destination"
+    }
+    return $Destination
+}
+
+$UpgradeEvidence = [ordered]@{
+    schema = "mohan.installer-upgrade-evidence.v1"
+    passed = $false
+    previous_version = $PreviousVersion
+    target_version = $Version
+    exe = $false
+    msi = $false
+}
+if ($HasPreviousUpgrade) {
+    $PreviousRoot = Join-Path $env:RUNNER_TEMP "mohan-previous-$PreviousVersion"
+    New-Item -ItemType Directory -Force $PreviousRoot | Out-Null
+    $PreviousExeInstaller = Get-VerifiedPreviousInstaller `
+        -Url $PreviousExeUrl `
+        -Sha256 $PreviousExeSha256 `
+        -Destination (Join-Path $PreviousRoot "MoHan-$PreviousVersion-Setup.exe")
+    $PreviousMsiInstaller = Get-VerifiedPreviousInstaller `
+        -Url $PreviousMsiUrl `
+        -Sha256 $PreviousMsiSha256 `
+        -Destination (Join-Path $PreviousRoot "MoHan-$PreviousVersion.msi")
+}
 
 function Invoke-NativeVerification {
     param(
@@ -73,12 +128,35 @@ $ExeInstallDir = Join-Path $env:RUNNER_TEMP "mohan-exe-install"
 $env:MOHAN_DATA_DIR = Join-Path $env:RUNNER_TEMP "mohan-installer-profile"
 New-Item -ItemType Directory -Force $env:MOHAN_DATA_DIR | Out-Null
 
+$PreviousExePath = $null
+if ($HasPreviousUpgrade) {
+    $Process = Start-Process $PreviousExeInstaller -ArgumentList @(
+        "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART",
+        "/MERGETASKS=!desktopicon", "/DIR=$ExeInstallDir"
+    ) -Wait -PassThru
+    if ($Process.ExitCode -ne 0) { throw "Previous EXE installer failed" }
+    $PreviousExePath = Join-Path $ExeInstallDir (
+        "MoHan-Desktop-Assistant-$PreviousVersion.exe"
+    )
+    if (-not (Test-Path -LiteralPath $PreviousExePath)) {
+        throw "Previous EXE installer did not install the expected application"
+    }
+}
 $Process = Start-Process $ExeInstaller.FullName -ArgumentList @(
     "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART",
     "/MERGETASKS=!desktopicon", "/DIR=$ExeInstallDir"
 ) -Wait -PassThru
 if ($Process.ExitCode -ne 0) { throw "EXE installer failed" }
 $InstalledExe = Join-Path $ExeInstallDir "MoHan-Desktop-Assistant-$Version.exe"
+if ($HasPreviousUpgrade) {
+    if (-not (Test-Path -LiteralPath $InstalledExe)) {
+        throw "EXE in-place upgrade did not install the target application"
+    }
+    if (Test-Path -LiteralPath $PreviousExePath) {
+        throw "EXE in-place upgrade left the previous application executable behind"
+    }
+    $UpgradeEvidence.exe = $true
+}
 foreach ($Notice in @("LICENSE", "THIRD_PARTY_NOTICES.md")) {
     if (-not (Test-Path (Join-Path $ExeInstallDir "_internal\$Notice"))) {
         throw "EXE installer omitted required distribution notice: $Notice"
@@ -141,6 +219,24 @@ foreach ($Transform in $MsiVariants) {
     }
     if (-not $Variant) { throw "Could not identify MSI transform locale" }
     $MsiInstallDir = Join-Path $env:RUNNER_TEMP "mohan-msi-install-$Variant"
+    $PreviousMsiPath = $null
+    if ($HasPreviousUpgrade -and $Variant -eq "zh-TW") {
+        $PreviousMsiArguments = @(
+            "/i", $PreviousMsiInstaller, "/qn", "/norestart",
+            "INSTALLFOLDER=$MsiInstallDir"
+        )
+        $Process = Start-Process msiexec.exe -ArgumentList $PreviousMsiArguments `
+            -Wait -PassThru
+        if ($Process.ExitCode -ne 0) {
+            throw "Previous MSI installer failed: $($Process.ExitCode)"
+        }
+        $PreviousMsiPath = Join-Path $MsiInstallDir (
+            "MoHan-Desktop-Assistant-$PreviousVersion.exe"
+        )
+        if (-not (Test-Path -LiteralPath $PreviousMsiPath)) {
+            throw "Previous MSI installer did not install the expected application"
+        }
+    }
     $InstallArguments = @(
         "/i", $MsiInstaller.FullName, "/qn", "/norestart",
         "INSTALLFOLDER=$MsiInstallDir"
@@ -158,6 +254,12 @@ foreach ($Transform in $MsiVariants) {
     )
     if (-not (Test-Path $InstalledMsiExe)) {
         throw "MSI $Variant did not install the application"
+    }
+    if ($HasPreviousUpgrade -and $Variant -eq "zh-TW") {
+        if (Test-Path -LiteralPath $PreviousMsiPath) {
+            throw "MSI in-place upgrade left the previous application executable behind"
+        }
+        $UpgradeEvidence.msi = $true
     }
     foreach ($Notice in @("LICENSE", "THIRD_PARTY_NOTICES.md")) {
         if (-not (Test-Path (Join-Path $MsiInstallDir "_internal\$Notice"))) {
@@ -243,6 +345,16 @@ foreach ($Transform in $MsiVariants) {
     if (Test-Path -LiteralPath $MsiShortcutPath) {
         throw "MSI $Variant uninstaller left the Start menu shortcut behind"
     }
+}
+
+if ($HasPreviousUpgrade) {
+    if (-not ($UpgradeEvidence.exe -and $UpgradeEvidence.msi)) {
+        throw "Installer upgrade evidence is incomplete"
+    }
+    $UpgradeEvidence.passed = $true
+    $UpgradeEvidence | ConvertTo-Json | Set-Content `
+        -LiteralPath (Join-Path $ResolvedNativeEvidence "installer-upgrade.json") `
+        -Encoding utf8
 }
 
 "INSTALLER_EXE_AND_4_LANGUAGE_MSI_OK"

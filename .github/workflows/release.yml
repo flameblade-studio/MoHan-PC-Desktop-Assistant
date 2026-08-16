@@ -363,7 +363,12 @@ jobs:
             -ArtifactsDir "release-artifacts" `
             -Version $version `
             -Python $env:MOHAN_JIT_PYTHON `
-            -NativeEvidenceDir (Join-Path $env:RUNNER_TEMP "mohan-native-release")
+            -NativeEvidenceDir (Join-Path $env:RUNNER_TEMP "mohan-native-release") `
+            -PreviousVersion "3.1.2" `
+            -PreviousExeUrl "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases/download/v3.1.2/MoHan-Desktop-Assistant-v3.1.2-Windows-x64-Setup.exe" `
+            -PreviousExeSha256 "1a3cf537faab72ca9508a8440a4c3bd2115b6af927f260217f272cfb39631c8e" `
+            -PreviousMsiUrl "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases/download/v3.1.2/MoHan-Desktop-Assistant-v3.1.2-Windows-x64.msi" `
+            -PreviousMsiSha256 "1f0118f2c88497e1e88b62668e968a4d82dc0f64ac5971739d4f895e3fc619a9"
 
       - name: Finalize native evidence and Rust SBOM
         shell: pwsh
