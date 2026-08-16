@@ -9,6 +9,7 @@ lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from unittest.mock import patch
 lazy from urllib.error import HTTPError, URLError
+lazy from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -215,18 +216,26 @@ def test_stdlib_https_transport_is_private_and_non_persistent() -> None:
     assert frame_field.repr is False
     provider_tree = tree("openai_vision_provider")
     imports = imported_roots("openai_vision_provider")
-    responses_endpoint = "https://api.openai.com/v1/responses"
+    expected_endpoint = urlsplit("https://api.openai.com/v1/responses")
     endpoints = {
-        value
+        endpoint
         for value in string_constants(provider_tree)
-        if value == responses_endpoint
+        for endpoint in (urlsplit(value),)
+        if (
+            endpoint.scheme == expected_endpoint.scheme
+            and endpoint.hostname == expected_endpoint.hostname
+            and endpoint.port == expected_endpoint.port
+            and endpoint.path == expected_endpoint.path
+            and not endpoint.query
+            and not endpoint.fragment
+        )
     }
     failures: list[str] = []
     if "urllib" not in imports:
         failures.append("stdlib urllib transport missing")
     if "importlib" in imports or "openai" in imports:
         failures.append("dynamic OpenAI SDK loading remains")
-    if endpoints != {responses_endpoint}:
+    if endpoints != {expected_endpoint}:
         failures.append(f"Responses HTTPS endpoint mismatch: {sorted(endpoints)}")
     if "Authorization" not in string_constants(provider_tree):
         failures.append("Authorization header construction missing")
