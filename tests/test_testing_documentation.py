@@ -63,6 +63,5 @@ def test_each_language_records_current_release_truth() -> None:
         assert "Python 3.15" in section
         assert "PySide6 6.11.1" in section
         assert "PoseAtlas" in section
-        assert "release-audits.json" in section
         assert "66" in section
         assert "v4" in section

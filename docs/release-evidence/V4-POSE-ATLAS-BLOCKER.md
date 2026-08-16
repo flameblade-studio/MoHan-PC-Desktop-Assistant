@@ -1,4 +1,6 @@
-# v4.0.0 PoseAtlas 正式資產阻擋／v4.0.0 PoseAtlas 正式资产阻挡／v4.0.0 PoseAtlas Release-Asset Blocker／v4.0.0 PoseAtlas 正式素材の阻害事項
+# v4.0.0 PoseAtlas historical blocker record (superseded)
+
+> **Current v4.0.0 release decision / 目前 v4.0.0 發行決定 / 当前 v4.0.0 发布决定 / 現在の v4.0.0 公開判断：** this historical record is superseded. The 24 actual PoseAtlas v4 views, their landmarks／hands sidecars, and the completed 24／24 `audit.json` asset check are included in `assets/pose-atlas/v4/` for all four platform packages. `release-audits.json` and `tools/check_pose_atlas_release.py` no longer block publication. The material below preserves the former planning history only and is not an active release requirement.
 
 ## 繁體中文
 

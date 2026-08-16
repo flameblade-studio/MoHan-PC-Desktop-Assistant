@@ -3,7 +3,11 @@ from __future__ import annotations
 lazy import argparse
 lazy import hashlib
 lazy import json
+lazy import sys
 lazy from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain.hand_asset_evidence import (

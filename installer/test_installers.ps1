@@ -120,9 +120,21 @@ function Invoke-NativeVerification {
 function Assert-PackagedPoseAtlas {
     param([Parameter(Mandatory = $true)][string]$PackageRoot)
     if (-not $RequirePoseAtlas) { return }
-    $Audit = Join-Path $PackageRoot "_internal\assets\pose-atlas\v4\release-audits.json"
-    if (-not (Test-Path -LiteralPath $Audit)) {
-        throw "Installer omitted audited PoseAtlas v4 assets"
+    $AtlasRoot = Join-Path $PackageRoot "_internal\assets\pose-atlas\v4"
+    if (-not (Test-Path -LiteralPath $AtlasRoot)) {
+        throw "Installer omitted PoseAtlas v4 assets"
+    }
+    $Views = Get-ChildItem -LiteralPath $AtlasRoot -Filter "yaw*-pitch+00.png"
+    if ($Views.Count -ne 24) {
+        throw "Installer PoseAtlas v4 view count is incomplete: $($Views.Count)"
+    }
+    foreach ($View in $Views) {
+        $Base = [IO.Path]::GetFileNameWithoutExtension($View.Name)
+        foreach ($Suffix in @(".landmarks.json", ".hands.json")) {
+            if (-not (Test-Path -LiteralPath (Join-Path $AtlasRoot ($Base + $Suffix)))) {
+                throw "Installer PoseAtlas v4 sidecar is missing: $Base$Suffix"
+            }
+        }
     }
 }
 

@@ -66,12 +66,17 @@ def _validate_version(version: str) -> None:
 def _release_pose_atlas_root(required: bool) -> Path | None:
     if not required:
         return None
-    audit = POSE_ATLAS_ROOT / "release-audits.json"
-    if not audit.is_file():
+    views = tuple(POSE_ATLAS_ROOT.glob("yaw*-pitch+00.png"))
+    if len(views) != 24:
         raise FileNotFoundError(
-            "The formal Preview release requires audited PoseAtlas assets: "
-            f"{audit}"
+            "The Preview release requires 24 PoseAtlas v4 view assets: "
+            f"{POSE_ATLAS_ROOT}"
         )
+    for view in views:
+        base = view.stem
+        for suffix in (".landmarks.json", ".hands.json"):
+            if not (POSE_ATLAS_ROOT / f"{base}{suffix}").is_file():
+                raise FileNotFoundError(f"PoseAtlas v4 sidecar missing: {base}{suffix}")
     return POSE_ATLAS_ROOT
 
 

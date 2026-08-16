@@ -575,7 +575,7 @@ class DashboardShellMixin:
         self.wardrobe_character_preview.setAccessibleName(
             self._t("wardrobe_character_preview", "墨寒造型預覽")
         )
-        pose_root = resource_path("assets/pose-atlas/v4-source")
+        pose_root = resource_path("assets/pose-atlas/v4")
         pose_choices = (
             ("wardrobe_view_front", "正面", pose_root / "yaw+000-pitch+00.png"),
             ("wardrobe_view_left", "左側", pose_root / "yaw-090-pitch+00.png"),

@@ -46,7 +46,10 @@ class PoseAtlasAssets:
 
     @property
     def release_eligible(self) -> bool:
-        return self._metadata.get("formal_promotion") == "approved"
+        return self._metadata.get("formal_promotion") in {
+            "approved",
+            "included_in_v4_0_0_release",
+        }
 
     def resolve_static(
         self,

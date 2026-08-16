@@ -15,10 +15,10 @@ lazy from presentation.pose_atlas_assets import PoseAtlasAssets
 
 def run() -> None:
     application = QApplication.instance() or QApplication([])
-    root = Path(__file__).resolve().parents[1] / "assets" / "pose-atlas" / "v4-working"
+    root = Path(__file__).resolve().parents[1] / "assets" / "pose-atlas" / "v4"
     assets = PoseAtlasAssets(root, image_size=465)
     assert assets.enabled
-    assert not assets.release_eligible
+    assert assets.release_eligible
     front = assets.resolve_static("front-crossed", "front-000")
     back = assets.resolve_static("back-full", "back-180")
     assert front is not None and back is not None

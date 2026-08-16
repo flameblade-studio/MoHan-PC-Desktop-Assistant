@@ -113,7 +113,7 @@ class CompanionCoreMixin:
                     stage_frame,
                     image_size=CHARACTER_IMAGE_SIZE,
                     assets=PoseAtlasAssets(
-                        resource_path("assets/pose-atlas/v4-working"),
+                        resource_path("assets/pose-atlas/v4"),
                         image_size=CHARACTER_IMAGE_SIZE,
                     ),
                 )

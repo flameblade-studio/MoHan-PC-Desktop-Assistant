@@ -281,7 +281,7 @@ def test_release_gate_is_pinned() -> None:
     assert "--expected-version 2.3.0-rc.0" in preview
     assert "--preview-expected-version" in read("application/preview_app.py")
     assert release.count("--require-pose-atlas") == 4
-    assert "Preview package omitted audited PoseAtlas v4 assets" in read(
+    assert "Preview package omitted PoseAtlas v4 assets" in read(
         "tools/smoke_preview_package.py"
     )
 
