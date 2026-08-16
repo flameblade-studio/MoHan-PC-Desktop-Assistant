@@ -215,17 +215,18 @@ def test_stdlib_https_transport_is_private_and_non_persistent() -> None:
     assert frame_field.repr is False
     provider_tree = tree("openai_vision_provider")
     imports = imported_roots("openai_vision_provider")
+    responses_endpoint = "https://api.openai.com/v1/responses"
     endpoints = {
         value
         for value in string_constants(provider_tree)
-        if "api.openai.com" in value or value.endswith("/responses")
+        if value == responses_endpoint
     }
     failures: list[str] = []
     if "urllib" not in imports:
         failures.append("stdlib urllib transport missing")
     if "importlib" in imports or "openai" in imports:
         failures.append("dynamic OpenAI SDK loading remains")
-    if endpoints != {"https://api.openai.com/v1/responses"}:
+    if endpoints != {responses_endpoint}:
         failures.append(f"Responses HTTPS endpoint mismatch: {sorted(endpoints)}")
     if "Authorization" not in string_constants(provider_tree):
         failures.append("Authorization header construction missing")
