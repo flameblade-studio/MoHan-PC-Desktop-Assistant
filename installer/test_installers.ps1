@@ -7,7 +7,8 @@ param(
     [string]$PreviousExeUrl,
     [string]$PreviousExeSha256,
     [string]$PreviousMsiUrl,
-    [string]$PreviousMsiSha256
+    [string]$PreviousMsiSha256,
+    [switch]$RequirePoseAtlas
 )
 
 $ErrorActionPreference = "Stop"
@@ -116,6 +117,15 @@ function Invoke-NativeVerification {
     }
 }
 
+function Assert-PackagedPoseAtlas {
+    param([Parameter(Mandatory = $true)][string]$PackageRoot)
+    if (-not $RequirePoseAtlas) { return }
+    $Audit = Join-Path $PackageRoot "_internal\assets\pose-atlas\v4\release-audits.json"
+    if (-not (Test-Path -LiteralPath $Audit)) {
+        throw "Installer omitted audited PoseAtlas v4 assets"
+    }
+}
+
 foreach ($Locale in $ExpectedTransformLocales) {
     if (-not ($MsiTransforms.Name -match "-$Locale\.mst$")) {
         throw "Missing MSI language transform: $Locale"
@@ -172,6 +182,7 @@ if (
 ) {
     throw "EXE-installed application self-test failed"
 }
+Assert-PackagedPoseAtlas -PackageRoot $ExeInstallDir
 Invoke-NativeVerification `
     -PackageRoot $ExeInstallDir `
     -Label "exe" `
@@ -276,6 +287,7 @@ foreach ($Transform in $MsiVariants) {
     ) {
         throw "MSI $Variant application self-test failed"
     }
+    Assert-PackagedPoseAtlas -PackageRoot $MsiInstallDir
     $NativeArtifacts = @($MsiInstaller.FullName)
     if ($null -ne $Transform) {
         $NativeArtifacts += $Transform.FullName

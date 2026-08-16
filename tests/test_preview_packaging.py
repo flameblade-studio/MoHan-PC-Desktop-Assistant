@@ -212,6 +212,8 @@ def test_build_tool_is_pinned() -> None:
     assert "ROOT / 'LICENSE'" in build_source
     assert 'stage / "LICENSE.txt"' in build_source
     assert '"mohan-desktop-assistant"' in build_source
+    assert "POSE_ATLAS_ROOT" in build_source
+    assert "--require-pose-atlas" in build_source
     _validate_version("2.3.0-rc.0")
     _validate_version("2.3.0-rc.1")
     _validate_version("2.3.0-rc.2")
@@ -275,6 +277,10 @@ def test_release_gate_is_pinned() -> None:
     )
     assert "--expected-version 2.3.0-rc.0" in preview
     assert "--preview-expected-version" in read("application/preview_app.py")
+    assert release.count("--require-pose-atlas") == 4
+    assert "Preview package omitted audited PoseAtlas v4 assets" in read(
+        "tools/smoke_preview_package.py"
+    )
 
     action_pattern = re.compile(r"^[ \t-]*uses:\s*([^\s#]+)", re.MULTILINE)
     for workflow in sorted((ROOT / ".github" / "workflows").glob("*.yml")):

@@ -366,7 +366,8 @@ jobs:
             -PreviousExeUrl "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases/download/v3.1.2/MoHan-Desktop-Assistant-v3.1.2-Windows-x64-Setup.exe" `
             -PreviousExeSha256 "1a3cf537faab72ca9508a8440a4c3bd2115b6af927f260217f272cfb39631c8e" `
             -PreviousMsiUrl "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases/download/v3.1.2/MoHan-Desktop-Assistant-v3.1.2-Windows-x64.msi" `
-            -PreviousMsiSha256 "1f0118f2c88497e1e88b62668e968a4d82dc0f64ac5971739d4f895e3fc619a9"
+            -PreviousMsiSha256 "1f0118f2c88497e1e88b62668e968a4d82dc0f64ac5971739d4f895e3fc619a9" `
+            -RequirePoseAtlas
 
       - name: Finalize native evidence and Rust SBOM
         shell: pwsh
@@ -466,6 +467,7 @@ jobs:
           --platform macos
           --version "${{ needs.resolve-release.outputs.version }}"
           --output-dir release-artifacts
+          --require-pose-atlas
 
       - name: Mount DMG and smoke-test packaged app
         shell: bash
@@ -475,7 +477,8 @@ jobs:
           python tools/smoke_preview_package.py \
             --platform macos \
             --package "${package[0]}" \
-            --expected-version "${{ needs.resolve-release.outputs.version }}"
+            --expected-version "${{ needs.resolve-release.outputs.version }}" \
+            --require-pose-atlas
 
       - name: Upload verified macOS Preview
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -568,7 +571,8 @@ jobs:
             --platform linux \
             --version "${{ needs.resolve-release.outputs.version }}" \
             --output-dir release-artifacts \
-            --appimagetool "$RUNNER_TEMP/appimagetool-x86_64.AppImage"
+            --appimagetool "$RUNNER_TEMP/appimagetool-x86_64.AppImage" \
+            --require-pose-atlas
 
       - name: Execute packaged AppImage smoke test
         shell: bash
@@ -578,7 +582,8 @@ jobs:
           python tools/smoke_preview_package.py \
             --platform linux \
             --package "${package[0]}" \
-            --expected-version "${{ needs.resolve-release.outputs.version }}"
+            --expected-version "${{ needs.resolve-release.outputs.version }}" \
+            --require-pose-atlas
 
       - name: Upload verified Linux Preview
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

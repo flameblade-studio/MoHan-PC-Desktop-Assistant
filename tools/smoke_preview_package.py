@@ -17,6 +17,12 @@ def _require_license(path: Path) -> None:
         raise RuntimeError(f"Packaged MIT license is missing or invalid: {path}")
 
 
+def _require_pose_atlas(root: Path) -> None:
+    matches = tuple(root.rglob("release-audits.json"))
+    if len(matches) != 1 or matches[0].parent.name != "v4":
+        raise RuntimeError("Preview package omitted audited PoseAtlas v4 assets")
+
+
 def _run(
     executable: Path,
     output: Path,
@@ -47,7 +53,7 @@ def _run(
         raise RuntimeError("Preview package did not enable Python 3.15 JIT by default")
 
 
-def smoke_macos(package: Path, expected_version: str) -> None:
+def smoke_macos(package: Path, expected_version: str, *, require_pose_atlas: bool) -> None:
     with tempfile.TemporaryDirectory(prefix="mohan-preview-mount-") as raw:
         mount = Path(raw) / "mount"
         mount.mkdir()
@@ -71,6 +77,8 @@ def smoke_macos(package: Path, expected_version: str) -> None:
             _require_license(apps[0] / "Contents" / "Resources" / "LICENSE")
             if not (mount / "THIRD_PARTY_NOTICES.md").is_file():
                 raise RuntimeError("DMG omitted third-party notices")
+            if require_pose_atlas:
+                _require_pose_atlas(apps[0])
             executables = [
                 path
                 for path in (apps[0] / "Contents" / "MacOS").iterdir()
@@ -96,7 +104,7 @@ def smoke_macos(package: Path, expected_version: str) -> None:
             )
 
 
-def smoke_linux(package: Path, expected_version: str) -> None:
+def smoke_linux(package: Path, expected_version: str, *, require_pose_atlas: bool) -> None:
     package.chmod(
         package.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
     )
@@ -127,6 +135,8 @@ def smoke_linux(package: Path, expected_version: str) -> None:
         _require_license(documentation / "LICENSE.txt")
         if not (documentation / "THIRD_PARTY_NOTICES.md").is_file():
             raise RuntimeError("AppImage omitted third-party notices")
+        if require_pose_atlas:
+            _require_pose_atlas(extraction / "squashfs-root")
         output = Path(raw) / "smoke.txt"
         environment = os.environ.copy()
         environment.update(
@@ -148,14 +158,23 @@ def main() -> int:
     parser.add_argument("--platform", choices=("macos", "linux"), required=True)
     parser.add_argument("--package", type=Path, required=True)
     parser.add_argument("--expected-version", required=True)
+    parser.add_argument("--require-pose-atlas", action="store_true")
     args = parser.parse_args()
     package = args.package.resolve()
     if not package.is_file():
         raise FileNotFoundError(package)
     if args.platform == "macos":
-        smoke_macos(package, args.expected_version)
+        smoke_macos(
+            package,
+            args.expected_version,
+            require_pose_atlas=args.require_pose_atlas,
+        )
     else:
-        smoke_linux(package, args.expected_version)
+        smoke_linux(
+            package,
+            args.expected_version,
+            require_pose_atlas=args.require_pose_atlas,
+        )
     print(EXPECTED)
     return 0
 

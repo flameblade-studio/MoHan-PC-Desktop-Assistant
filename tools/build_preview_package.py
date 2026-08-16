@@ -26,6 +26,7 @@ APPIMAGETOOL_URL = (
     "https://github.com/AppImage/appimagetool/releases/download/continuous/"
     "appimagetool-x86_64.AppImage"
 )
+POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
 
 
 def _run(command: list[str], *, env: dict[str, str] | None = None) -> None:
@@ -45,6 +46,18 @@ def _validate_version(version: str) -> None:
         raise ValueError(
             "Preview packages require an N.N.N or N.N.N-rc.N version"
         )
+
+
+def _release_pose_atlas_root(required: bool) -> Path | None:
+    if not required:
+        return None
+    audit = POSE_ATLAS_ROOT / "release-audits.json"
+    if not audit.is_file():
+        raise FileNotFoundError(
+            "The formal Preview release requires audited PoseAtlas assets: "
+            f"{audit}"
+        )
+    return POSE_ATLAS_ROOT
 
 
 def _write_build_info(path: Path, version: str, target: str) -> None:
@@ -78,6 +91,7 @@ def _pyinstaller(
     target: str,
     icon: Path,
     temp_root: Path,
+    pose_atlas_root: Path | None,
 ) -> Path:
     build_info = temp_root / "build-info.json"
     _write_build_info(build_info, version, target)
@@ -113,6 +127,13 @@ def _pyinstaller(
         "--add-data",
         f"{build_info}{data_separator}.",
     ]
+    if pose_atlas_root is not None:
+        command.extend(
+            [
+                "--add-data",
+                f"{pose_atlas_root}{data_separator}assets/pose-atlas/v4",
+            ]
+        )
     if target == "macos":
         command.extend(
             [
@@ -170,7 +191,7 @@ Voice, cloud connectors, system tools, autostart, and secret entry remain disabl
 """
 
 
-def build_macos(version: str, output_dir: Path) -> Path:
+def build_macos(version: str, output_dir: Path, *, require_pose_atlas: bool) -> Path:
     if sys.platform != "darwin":
         raise RuntimeError("macOS DMG packages must be built on a macOS runner")
     reported_architecture = platform.machine().lower()
@@ -187,6 +208,7 @@ def build_macos(version: str, output_dir: Path) -> Path:
         )
     with tempfile.TemporaryDirectory(prefix="mohan-preview-macos-") as raw:
         temp_root = Path(raw)
+        pose_atlas_root = _release_pose_atlas_root(require_pose_atlas)
         icon = _create_icns(temp_root)
         dist = _pyinstaller(
             name="MoHan Desktop Assistant Preview",
@@ -194,6 +216,7 @@ def build_macos(version: str, output_dir: Path) -> Path:
             target="macos",
             icon=icon,
             temp_root=temp_root,
+            pose_atlas_root=pose_atlas_root,
         )
         app = dist / "MoHan Desktop Assistant Preview.app"
         if not app.is_dir():
@@ -236,7 +259,13 @@ def _write_executable(path: Path, content: str) -> None:
     path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
-def build_linux(version: str, output_dir: Path, appimagetool: Path) -> Path:
+def build_linux(
+    version: str,
+    output_dir: Path,
+    appimagetool: Path,
+    *,
+    require_pose_atlas: bool,
+) -> Path:
     if not sys.platform.startswith("linux"):
         raise RuntimeError("Linux AppImage packages must be built on Linux")
     architecture = platform.machine().lower()
@@ -252,6 +281,7 @@ def build_linux(version: str, output_dir: Path, appimagetool: Path) -> Path:
 
     with tempfile.TemporaryDirectory(prefix="mohan-preview-linux-") as raw:
         temp_root = Path(raw)
+        pose_atlas_root = _release_pose_atlas_root(require_pose_atlas)
         icon = ROOT / "installer" / "artwork" / "wizard-small.png"
         dist = _pyinstaller(
             name="mohan-preview",
@@ -259,6 +289,7 @@ def build_linux(version: str, output_dir: Path, appimagetool: Path) -> Path:
             target="linux",
             icon=icon,
             temp_root=temp_root,
+            pose_atlas_root=pose_atlas_root,
         )
         bundle = dist / "mohan-preview"
         executable = bundle / "mohan-preview"
@@ -326,15 +357,25 @@ def main() -> int:
     parser.add_argument("--version", required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--appimagetool", type=Path)
+    parser.add_argument("--require-pose-atlas", action="store_true")
     args = parser.parse_args()
     _validate_version(args.version)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     if args.platform == "macos":
-        package = build_macos(args.version, args.output_dir)
+        package = build_macos(
+            args.version,
+            args.output_dir,
+            require_pose_atlas=args.require_pose_atlas,
+        )
     else:
         if args.appimagetool is None:
             raise ValueError("--appimagetool is required for Linux packages")
-        package = build_linux(args.version, args.output_dir, args.appimagetool)
+        package = build_linux(
+            args.version,
+            args.output_dir,
+            args.appimagetool,
+            require_pose_atlas=args.require_pose_atlas,
+        )
     print(package)
     return 0
 

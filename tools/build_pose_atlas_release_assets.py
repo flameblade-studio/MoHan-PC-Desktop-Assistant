@@ -802,10 +802,10 @@ def _working_provenance(
     return {
         "schema": PROVENANCE_SCHEMA,
         "status": "working-evidence-only",
-        "formal_promotion": "blocked_until_explicit_source_authorization",
+        "formal_promotion": "blocked_until_visual_review_and_release_audits",
         "source_root": source_root.name,
-        "source_authorization": "pending_owner_confirmation",
-        "redistribution": "blocked_until_source_authorization_and_visual_review",
+        "source_authorization": "confirmed_by_rights_holder_2026-08-16",
+        "redistribution": "authorized_under_project_license_pending_visual_review_and_release_gates",
         "normalization": {
             "canvas": [CANVAS_WIDTH, CANVAS_HEIGHT],
             "target_subject_height": target_height,
@@ -832,8 +832,8 @@ def _write_working_readme(output_root: Path, provenance: dict[str, object]) -> N
         "Hand sidecars contain only observations produced by the project ONNX hand model after the\n"
         "fixed augmentations recorded in `BUILD-METADATA.json`. Natural occlusion is represented by\n"
         "explicit declarations and never by invented landmark coordinates.\n\n"
-        "Source authorization and redistribution remain blocked until the owner confirms the source\n"
-        "rights and completes visual review.\n"
+        "Source authorization and redistribution were confirmed by the rights holder on 2026-08-16.\n"
+        "Formal promotion still requires visual review and every release audit to pass.\n"
     )
     (output_root / "README.md").write_text(text, encoding="utf-8")
 
