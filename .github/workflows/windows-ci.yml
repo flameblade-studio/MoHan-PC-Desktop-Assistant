@@ -204,6 +204,13 @@ jobs:
             -PreviousExeSha256 "1a3cf537faab72ca9508a8440a4c3bd2115b6af927f260217f272cfb39631c8e" `
             -PreviousMsiUrl "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases/download/v3.1.2/MoHan-Desktop-Assistant-v3.1.2-Windows-x64.msi" `
             -PreviousMsiSha256 "1f0118f2c88497e1e88b62668e968a4d82dc0f64ac5971739d4f895e3fc619a9"
+
+      - name: Set up isolated Python 3.14 SBOM tooling runtime
+        id: sbom-python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.14.7"
+
       - name: Finalize native evidence and Rust SBOM
         shell: pwsh
         run: |
@@ -220,10 +227,11 @@ jobs:
             --evidence $nativeEvidence `
             --tag $tag `
             --output "ci-installers\$base-Windows-Native-SBOM.cdx.json"
-          & $env:MOHAN_JIT_PYTHON -m pip install `
+          $sbomPython = "${{ steps.sbom-python.outputs.python-path }}"
+          & $sbomPython -m pip install `
             --only-binary=:all: `
             cyclonedx-bom==7.3.0
           & $env:MOHAN_JIT_PYTHON tools/validate_native_sbom.py `
             --sbom "ci-installers\$base-Windows-Native-SBOM.cdx.json" `
             --evidence $nativeEvidence `
-            --schema-python $env:MOHAN_JIT_PYTHON
+            --schema-python $sbomPython

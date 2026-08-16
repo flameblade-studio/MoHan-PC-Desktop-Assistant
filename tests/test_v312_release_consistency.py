@@ -166,7 +166,10 @@ def test_python315_node24_and_jit_release_contract() -> None:
     windows_python_versions = set(
         re.findall(r'python-version:\s*"([^"]+)"', windows)
     )
-    assert windows_python_versions == {PYTHON_VERSION}
+    assert windows_python_versions == {PYTHON_VERSION, "3.14.7"}
+    assert windows.count('python-version: "3.14.7"') == 1, (
+        "Python 3.14 must remain isolated to third-party SBOM tooling"
+    )
     release_python_versions = re.findall(
         r'python-version:\s*"([^"]+)"',
         release,
