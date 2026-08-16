@@ -22,7 +22,7 @@ def run() -> None:
     assert "24／24" in text
     assert "assets/pose-atlas/v4/" in text
     assert "release-audits.json" in text
-    assert "no longer block publication" in text
+    assert "no longer blocks publication" in text
     print("POSE_ATLAS_RELEASE_DOCUMENTATION_OK")
 
 
