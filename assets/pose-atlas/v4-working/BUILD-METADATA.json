@@ -1,5 +1,5 @@
 {
-  "formal_promotion": "blocked_until_explicit_source_authorization",
+  "formal_promotion": "blocked_until_formal_audits_pass",
   "hand_evidence": {
     "augmentations": [
       "native",
@@ -22,9 +22,9 @@
     "target_sole_baseline": 1487,
     "target_subject_height": 1404
   },
-  "redistribution": "blocked_until_source_authorization_and_visual_review",
+  "redistribution": "authorized_under_project_license_pending_release_gates",
   "schema": "mohan.pose-atlas.working-build.v1",
-  "source_authorization": "pending_owner_confirmation",
+  "source_authorization": "confirmed_by_rights_holder_2026-08-16",
   "source_root": "v4-source",
   "status": "working-evidence-only",
   "views": [
