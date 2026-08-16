@@ -45,7 +45,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install --yes libegl1
+          sudo apt-get install --yes libegl1 libportaudio2
 
       - name: Build verified Qt 3.15 compatibility wheelhouse
         run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse
