@@ -206,6 +206,9 @@ def test_build_tool_is_pinned() -> None:
     assert '"--paths"' in build_source
     assert 'os.symlink("/Applications"' in build_source
     assert '"hdiutil",' in build_source
+    assert "def _create_dmg" in build_source
+    assert "DMG_CREATE_ATTEMPTS = 3" in build_source
+    assert "DMG_CREATE_RETRY_SECONDS = 3" in build_source
     assert "APPIMAGETOOL_SHA256" in build_source
     assert '"arm64": "arm64"' in build_source
     assert '"x86_64": "x86_64"' in build_source

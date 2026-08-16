@@ -11,6 +11,7 @@ lazy import stat
 lazy import subprocess
 lazy import sys
 lazy import tempfile
+lazy import time
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,10 +28,24 @@ APPIMAGETOOL_URL = (
     "appimagetool-x86_64.AppImage"
 )
 POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
+DMG_CREATE_ATTEMPTS = 3
+DMG_CREATE_RETRY_SECONDS = 3
 
 
 def _run(command: list[str], *, env: dict[str, str] | None = None) -> None:
     subprocess.run(command, cwd=ROOT, env=env, check=True)
+
+
+def _create_dmg(command: list[str], output: Path) -> None:
+    for attempt in range(1, DMG_CREATE_ATTEMPTS + 1):
+        output.unlink(missing_ok=True)
+        try:
+            _run(command)
+            return
+        except subprocess.CalledProcessError:
+            if attempt == DMG_CREATE_ATTEMPTS:
+                raise
+            time.sleep(DMG_CREATE_RETRY_SECONDS)
 
 
 def _sha256(path: Path) -> str:
@@ -236,8 +251,7 @@ def build_macos(version: str, output_dir: Path, *, require_pose_atlas: bool) -> 
         output = output_dir / (
             f"MoHan-Desktop-Assistant-v{version}-macOS-{architecture}-Preview.dmg"
         )
-        output.unlink(missing_ok=True)
-        _run(
+        _create_dmg(
             [
                 "hdiutil",
                 "create",
@@ -249,7 +263,8 @@ def build_macos(version: str, output_dir: Path, *, require_pose_atlas: bool) -> 
                 "UDZO",
                 "-ov",
                 str(output),
-            ]
+            ],
+            output,
         )
         return output
 
