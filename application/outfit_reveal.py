@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
+lazy from collections.abc import Mapping
 lazy from dataclasses import dataclass
 lazy from typing import Protocol
 
