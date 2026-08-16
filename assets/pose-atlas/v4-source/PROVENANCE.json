@@ -3,7 +3,7 @@
   "bundle_id": "mohan-pose-atlas-v4-candidate-20260814",
   "record_status": "complete",
   "asset_directory": "assets/pose-atlas/v4-source",
-  "release_status": "candidate_blocked",
+  "release_status": "candidate_pending_formal_validation",
   "source_records": [
     {
       "source_id": "user-supplied-reference-set",
@@ -15,8 +15,8 @@
         "ja": "本タスクでユーザーが提供した墨寒の正面、側面、背面、衣装、装飾品の参考画像。"
       },
       "source_location": "user_supplied_outside_repository",
-      "ownership_status": "not_asserted_by_automation",
-      "permission_status": "pending_explicit_owner_confirmation"
+      "ownership_status": "confirmed_by_rights_holder_2026-08-16",
+      "permission_status": "confirmed_for_project_use_by_rights_holder_2026-08-16"
     },
     {
       "source_id": "generated-pose-atlas-candidates",
@@ -30,9 +30,9 @@
       "generator": "OpenAI image generation tool used in this Codex task",
       "derivation": "derived_from_user_supplied_reference_set",
       "asset_count": 24,
-      "ownership_status": "not_asserted_by_automation",
-      "permission_status": "pending_explicit_owner_confirmation",
-      "redistribution_status": "blocked_until_confirmed"
+      "ownership_status": "confirmed_by_rights_holder_2026-08-16",
+      "permission_status": "confirmed_for_project_use_by_rights_holder_2026-08-16",
+      "redistribution_status": "authorized_under_project_license_pending_release_gates"
     }
   ],
   "hand_model_evidence": {
@@ -43,13 +43,11 @@
     "report_status": "candidate_evidence_only"
   },
   "required_confirmations_before_release": [
-    "The user has the right to use the supplied reference images for this project.",
-    "The generated candidate assets may be redistributed with the project license.",
     "Every view passes identity, clothing, accessory, body, and hand evidence review.",
     "Every formal asset has a verified hash, body sidecar, hands sidecar, and packaged load evidence."
   ],
   "release_decision": {
-    "formal_pose_atlas_promotion": "blocked",
+    "formal_pose_atlas_promotion": "blocked_pending_evidence_validation",
     "copy_to_assets_pose_atlas_v4": false,
     "public_redistribution": false
   }
