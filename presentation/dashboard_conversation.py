@@ -15,11 +15,6 @@ lazy from PySide6.QtWidgets import (
     QWidget,
 )
 
-lazy from application.presentation_ports import (
-    DEFAULT_TEXT_MODEL,
-    AIWorkerRequest,
-    format_duration,
-)
 lazy from application.companion_phrasebook import (
     PHRASEBOOK_SETTING,
     CompanionPhrasebook,
@@ -28,6 +23,11 @@ lazy from application.outfit_reveal import (
     LAST_REVEALED_OUTFIT_KEY,
     is_outfit_origin_question,
     outfit_origin_reply,
+)
+lazy from application.presentation_ports import (
+    DEFAULT_TEXT_MODEL,
+    AIWorkerRequest,
+    format_duration,
 )
 lazy from domain.app_profile import (
     persona_for_profile,

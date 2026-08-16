@@ -1,14 +1,16 @@
 from __future__ import annotations
 
+lazy import copy
 lazy import json
 lazy import re
 lazy import shutil
-lazy import copy
 lazy from dataclasses import dataclass, replace
 lazy from datetime import datetime
 lazy from pathlib import Path
 lazy from typing import Protocol
 
+lazy from application.outfit_pack_builder import build_outfit_pack
+lazy from application.wardrobe_storage import WardrobeStorageGuard
 lazy from domain.outfit_pack import (
     POSE_ATLAS_SILHOUETTES,
     REQUIRED_SILHOUETTES,
@@ -17,8 +19,6 @@ lazy from domain.outfit_pack import (
     install_outfit_pack,
     validated_asset_dimensions,
 )
-lazy from application.outfit_pack_builder import build_outfit_pack
-lazy from application.wardrobe_storage import WardrobeStorageGuard
 
 JOB_ID = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,46}[a-z0-9])?\Z")
 GENERATED_PACK_PREFIX = "generated-"

@@ -192,7 +192,7 @@ def test_inno_setup_and_artwork_contract() -> None:
     assert 'stroke="#ffffff"' in checkmark.read_text(encoding="utf-8")
 
 
-def test_windows_taskbar_icon_contract() -> None:  # noqa: PLR0914 -- one explicit end-to-end icon contract
+def test_windows_taskbar_icon_contract() -> None:
     canonical = ROOT / "assets/expressions/idle_front.png"
     png_icon = ROOT / "assets/mohan-taskbar-icon.png"
     windows_icon = ROOT / "assets/mohan-halfbody.ico"

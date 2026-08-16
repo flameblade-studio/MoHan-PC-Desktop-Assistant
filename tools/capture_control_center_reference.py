@@ -10,10 +10,10 @@ TESTS = ROOT / "tests"
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(TESTS))
 
-lazy from PySide6.QtWidgets import QApplication
 lazy from PySide6.QtGui import QFont, QFontDatabase
-lazy from test_wardrobe_ui import build_language_dashboard
+lazy from PySide6.QtWidgets import QApplication
 lazy from test_global_settings_actions import close_dashboard
+lazy from test_wardrobe_ui import build_language_dashboard
 
 
 def _preview_font_family() -> str:

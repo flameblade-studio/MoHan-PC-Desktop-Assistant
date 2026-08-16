@@ -32,7 +32,7 @@ class RecordingRgbaCompositor:
     ) -> bytes:
         return crossfade_rgba_python(first, second, second_weight)
 
-    def composite_region_rgba(  # noqa: PLR0913, PLR0917 -- protocol spy
+    def composite_region_rgba(
         self,
         target: bytes,
         target_width: int,

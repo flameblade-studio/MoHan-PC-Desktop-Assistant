@@ -39,7 +39,7 @@ class CompanionWindow(
 
     # These are independent injected composition boundaries, not one coupled
     # parameter bundle; keeping them named makes isolated regression tests clear.
-    def __init__(  # noqa: PLR0913 -- explicit injectable composition boundaries
+    def __init__(
         self,
         startup_speech: bool = True,
         services: CompanionServices | None = None,

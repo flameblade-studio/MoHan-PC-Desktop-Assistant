@@ -144,7 +144,7 @@ class WavePlaybackBoundary:
     emit_timeline: Callable[..., None]
 
 
-def play_wave_with_visemes_impl(  # noqa: PLR0913 -- stable public playback contract
+def play_wave_with_visemes_impl(
     audio: bytes,
     volume_percent: int,
     muted: bool,
@@ -210,7 +210,7 @@ def play_wave_with_visemes_impl(  # noqa: PLR0913 -- stable public playback cont
         emit_cue(0.0, "CLOSED")
 
 
-def play_pcm16_stream_with_visemes_impl(  # noqa: PLR0913 -- stable streaming contract
+def play_pcm16_stream_with_visemes_impl(
     read_chunk: Callable[[bytearray], int],
     *,
     volume_percent: int,

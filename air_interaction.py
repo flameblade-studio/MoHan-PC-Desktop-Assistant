@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 lazy from domain.air_interaction import (
-    AirHandPoint,
     AirHandParameters,
+    AirHandPoint,
     AirHandSample,
     AirInteractionConfig,
     AirInteractionDetector,
@@ -12,8 +12,8 @@ lazy from domain.air_interaction import (
 )
 
 __all__ = (
-    "AirHandPoint",
     "AirHandParameters",
+    "AirHandPoint",
     "AirHandSample",
     "AirInteractionConfig",
     "AirInteractionDetector",

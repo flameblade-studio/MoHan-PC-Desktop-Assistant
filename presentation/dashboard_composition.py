@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-lazy from pathlib import Path
 lazy from collections.abc import Callable
+lazy from pathlib import Path
 
 lazy from application.cloud_vision_ui_bridge import CloudVisionServiceFactoryPort
 lazy from application.presentation_ports import (

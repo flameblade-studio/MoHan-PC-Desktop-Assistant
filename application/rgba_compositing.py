@@ -20,7 +20,7 @@ class RgbaCompositorPort(Protocol):
         second_weight: int,
     ) -> bytes: ...
 
-    def composite_region_rgba(  # noqa: PLR0913, PLR0917 -- pixel-buffer contract
+    def composite_region_rgba(
         self,
         target: bytes,
         target_width: int,

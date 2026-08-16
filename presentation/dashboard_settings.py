@@ -49,13 +49,13 @@ lazy from presentation.dashboard_settings_persistence import (
 lazy from presentation.first_run_wizard import FirstRunWizard
 lazy from presentation.flagship.control_center import FlagshipControlCenter
 lazy from presentation.profile_transfer_ui import PortableProfilePanel
-lazy from presentation.theme_pack_ui import ThemePackPanel
 lazy from presentation.settings_ui_localization import (
     PHYSICS_TEXT_KEYS,
     PROACTIVE_MODE_KEYS,
     TOPMOST_MODE_KEYS,
     SettingsText,
 )
+lazy from presentation.theme_pack_ui import ThemePackPanel
 lazy from presentation.ui_localization import (
     SIMPLIFIED_WORK_TYPE_LABELS,
     WORK_TYPE_LABELS,

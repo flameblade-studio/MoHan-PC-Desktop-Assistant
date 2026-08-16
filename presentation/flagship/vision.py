@@ -43,7 +43,7 @@ __all__ = ('FlagshipVisionMixin',)
 
 
 class FlagshipVisionMixin:
-    def _openai_vision_preference_card(  # noqa: PLR0915 -- one explicit UI card
+    def _openai_vision_preference_card(
         self,
     ) -> QFrame:
         preferences = self._openai_vision_draft.value

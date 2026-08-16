@@ -6,7 +6,6 @@ lazy from enum import StrEnum
 
 lazy from domain.gesture_intent import HandSide
 
-
 LANDMARKS_PER_HAND = 21
 
 
@@ -46,13 +45,13 @@ class AirInteractionConfig:
             raise ValueError("air interaction confidence is invalid")
         if not 0.0 < self.pinch_start_ratio < self.pinch_release_ratio:
             raise ValueError("pinch hysteresis thresholds are invalid")
-        if not 0.0 < self.minimum_palm_span:
+        if not self.minimum_palm_span > 0.0:
             raise ValueError("minimum palm span must be positive")
-        if not 0.0 < self.swipe_distance:
+        if not self.swipe_distance > 0.0:
             raise ValueError("swipe distance must be positive")
-        if not 0.0 < self.swipe_vertical_tolerance:
+        if not self.swipe_vertical_tolerance > 0.0:
             raise ValueError("swipe vertical tolerance must be positive")
-        if not 0.0 < self.swipe_window_seconds:
+        if not self.swipe_window_seconds > 0.0:
             raise ValueError("swipe window must be positive")
         if not self.high_five_palm_span >= self.minimum_palm_span:
             raise ValueError("high-five palm span must cover the minimum span")

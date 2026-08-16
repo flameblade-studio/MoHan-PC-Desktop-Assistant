@@ -4,10 +4,10 @@ lazy from dataclasses import dataclass
 lazy from datetime import datetime, timedelta, timezone
 
 lazy from domain.outfit_pack import (
-    AutonomousStyleProfile,
     MOOD_TAGS,
     OCCASION_TAGS,
     WEATHER_TAGS,
+    AutonomousStyleProfile,
 )
 
 DEFAULT_CHANGE_COOLDOWN = timedelta(hours=6)

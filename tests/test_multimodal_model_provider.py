@@ -14,7 +14,6 @@ lazy from multimodal_model_provider import (
     OpenCVMultiModalModelProvider,
 )
 
-
 MODEL_EXPECTATIONS = {
     "face_landmark_468.tflite": (
         1_242_398,

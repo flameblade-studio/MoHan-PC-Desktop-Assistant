@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-lazy import sys
 lazy import json
+lazy import sys
 lazy from dataclasses import replace
 lazy from datetime import datetime, timezone
 lazy from pathlib import Path

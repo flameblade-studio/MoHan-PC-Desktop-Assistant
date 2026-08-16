@@ -19,7 +19,6 @@ lazy from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QPushButton,
-    QScrollArea,
     QSpinBox,
     QSplitter,
     QTabWidget,
@@ -33,7 +32,6 @@ lazy from application.presentation_ports import (
     format_duration,
 )
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
-lazy from domain.outfit_pack import OutfitPackError
 lazy from domain.app_profile import (
     personalize_text,
     profile_setting,
@@ -45,6 +43,7 @@ lazy from domain.language_support import (
     is_japanese,
     is_simplified_chinese,
 )
+lazy from domain.outfit_pack import OutfitPackError
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.flagship_theme import (

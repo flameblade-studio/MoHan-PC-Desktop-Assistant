@@ -179,9 +179,7 @@ def _audit_view(
     elif len(visible_soles) == 2 and (
         abs(visible_soles[0] - visible_soles[1]) > sole_tolerance
         or max(visible_soles) != view.bottom
-    ):
-        issues.append(FullBodyAuditIssue("unbalanced_sole_baseline", yaw))
-    elif len(visible_soles) == 1 and visible_soles[0] != view.bottom:
+    ) or len(visible_soles) == 1 and visible_soles[0] != view.bottom:
         issues.append(FullBodyAuditIssue("unbalanced_sole_baseline", yaw))
 
     center_x = (view.left + view.right) / 2

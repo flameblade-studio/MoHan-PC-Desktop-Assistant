@@ -108,7 +108,7 @@ class ArticulationOverlayPort(Protocol):
 class BodyPoseRenderer:
     """Atomically compose complete authored views and safe crossfades."""
 
-    def __init__(  # noqa: PLR0913 -- renderer ports are explicit dependencies
+    def __init__(
         self,
         width: int,
         height: int,

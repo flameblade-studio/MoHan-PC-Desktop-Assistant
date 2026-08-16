@@ -11,7 +11,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtCore import QCoreApplication
 
-lazy from domain.air_interaction import AirHandSample
 lazy from application.gesture_action_router import (
     GestureActionDecision as OwnerGestureActionDecision,
 )
@@ -21,6 +20,7 @@ lazy from application.gesture_action_router import (
 lazy from application.gesture_action_router import (
     GestureActionSafety as OwnerGestureActionSafety,
 )
+lazy from domain.air_interaction import AirHandSample
 lazy from gesture_action_router import (
     GestureActionDecision,
 )

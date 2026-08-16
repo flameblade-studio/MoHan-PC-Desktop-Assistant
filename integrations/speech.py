@@ -148,7 +148,7 @@ def transcribe_wav_bytes(
     )
 
 
-def play_wave_with_visemes(  # noqa: PLR0913 -- stable public playback contract
+def play_wave_with_visemes(
     audio: bytes,
     volume_percent: int,
     muted: bool,
@@ -174,7 +174,7 @@ def play_wave_with_visemes(  # noqa: PLR0913 -- stable public playback contract
     )
 
 
-def play_pcm16_stream_with_visemes(  # noqa: PLR0913 -- stable streaming contract
+def play_pcm16_stream_with_visemes(
     read_chunk: Callable[[bytearray], int],
     *,
     volume_percent: int,

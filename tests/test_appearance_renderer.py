@@ -88,7 +88,7 @@ def asset(path: str, color: tuple[int, int, int, int]) -> ResolvedLayerAsset:
     return ResolvedLayerAsset(path, 3, 3, data)
 
 
-def layer(  # noqa: PLR0913 -- mirrors the immutable layer contract
+def layer(
     path: str,
     *,
     slot: str,

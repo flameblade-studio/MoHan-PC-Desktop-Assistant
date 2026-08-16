@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 lazy from dataclasses import dataclass
-lazy from typing import Mapping, Protocol
+lazy from typing import Protocol
 
 lazy from application.companion_phrasebook import (
     WARDROBE_REVEAL_ORIGIN,

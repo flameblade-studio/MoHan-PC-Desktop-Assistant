@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 lazy from dataclasses import dataclass
 lazy from datetime import datetime
-lazy from typing import Mapping, Protocol
+lazy from typing import Protocol
 
 lazy from application.outfit_reveal import OutfitRevealStateStore
 lazy from application.wardrobe_service import WardrobeService

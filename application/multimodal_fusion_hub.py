@@ -10,10 +10,8 @@ lazy from domain.air_interaction import (
     AirInteractionConfig,
     AirInteractionDetector,
     AirInteractionEvent,
-    AirInteractionKind,
     measure_hand_parameters,
 )
-
 
 FACE_MESH_LANDMARKS = frozenset({468, 478})
 

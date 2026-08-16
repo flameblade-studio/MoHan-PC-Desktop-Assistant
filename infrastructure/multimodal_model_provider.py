@@ -18,7 +18,6 @@ lazy from infrastructure.opencv_vision import (
     load_opencv_runtime,
 )
 
-
 FACE_MESH_MODEL_SIZE = 192
 IRIS_MODEL_SIZE = 64
 SILERO_SAMPLE_RATE = 16_000
@@ -36,7 +35,7 @@ class MultimodalModelPaths:
     silero_vad: Path
 
     @classmethod
-    def from_directory(cls, directory: Path) -> "MultimodalModelPaths":
+    def from_directory(cls, directory: Path) -> MultimodalModelPaths:
         root = Path(directory)
         return cls(
             root / "face_detection_yunet_2023mar.onnx",

@@ -7,7 +7,6 @@ lazy import subprocess
 lazy import sys
 lazy from pathlib import Path
 
-
 RUNTIME_SUFFIX = "-runtime.exe"
 
 

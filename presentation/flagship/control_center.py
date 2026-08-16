@@ -88,7 +88,7 @@ class FlagshipControlCenter(
     openai_vision_authorization_changed = Signal(object)
     openai_vision_stop_requested = Signal()
 
-    def __init__(  # noqa: PLR0913 -- stable API keeps dependencies explicit
+    def __init__(
         self,
         db,
         data_path: Path,

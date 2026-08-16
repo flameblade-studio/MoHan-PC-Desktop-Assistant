@@ -16,9 +16,9 @@ sys.path.insert(0, str(ROOT))
 
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from infrastructure.hand_landmark_provider import (
+    Handedness,
     HandLandmark,
     HandObservation,
-    Handedness,
     OpenCVZooHandRunner,
 )
 
@@ -351,7 +351,7 @@ def _alpha_point(
 ) -> list[int]:
     target_x = min(max(target_x, left + 1), right - 1)
     target_y = min(max(target_y, top + 1), bottom - 1)
-    for radius in range(0, 48):
+    for radius in range(48):
         x0 = max(left + 1, round(target_x) - radius)
         x1 = min(right - 1, round(target_x) + radius)
         y0 = max(top + 1, round(target_y) - radius)

@@ -11,7 +11,6 @@ lazy from application.object_interaction import (
     ObjectSemanticScope,
     propose_object_interaction,
 )
-lazy from domain.air_interaction import AirInteractionEvent
 lazy from application.visual_social_cues import (
     FacialCueMeasurements,
     GazeHeadDirection,
@@ -19,6 +18,7 @@ lazy from application.visual_social_cues import (
     VisualSocialCueObservation,
     observe_social_cues,
 )
+lazy from domain.air_interaction import AirInteractionEvent
 lazy from domain.gesture_intent import (
     GestureFrame,
     GestureIntentDecision,

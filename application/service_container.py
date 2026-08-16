@@ -377,7 +377,7 @@ def _realtime_speech_output(
     )
 
 
-def create_default_services(  # noqa: PLR0914 -- one explicit composition root
+def create_default_services(
     data_path: Path,
     listener_script: Path,
     parent: QObject | None = None,

@@ -59,7 +59,7 @@ def crossfade_rgba_python(
     )
 
 
-def composite_region_rgba_python(  # noqa: PLR0913, PLR0917 -- typed pixel contract
+def composite_region_rgba_python(
     target: bytes,
     target_width: int,
     target_height: int,
@@ -174,7 +174,7 @@ class NativeRgbaAcceleration:
             expected_length=len(first),
         )
 
-    def composite_region_rgba(  # noqa: PLR0913, PLR0917 -- typed pixel contract
+    def composite_region_rgba(
         self,
         target: bytes,
         target_width: int,
@@ -359,7 +359,7 @@ def _validate_crossfade_weight(second_weight: int) -> None:
         )
 
 
-def _validate_region_inputs(  # noqa: PLR0913, PLR0917 -- typed pixel contract
+def _validate_region_inputs(
     target: bytes,
     target_width: int,
     target_height: int,

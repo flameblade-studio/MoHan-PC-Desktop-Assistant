@@ -11,6 +11,7 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+lazy from application.outfit_pack_builder import build_outfit_pack
 lazy from outfit_pack import (
     EXPRESSION_SILHOUETTE_ALIASES,
     GESTURE_SILHOUETTES,
@@ -30,7 +31,6 @@ lazy from outfit_pack import (
     resolve_variant_for_view,
     restore_builtin_outfit,
 )
-lazy from application.outfit_pack_builder import build_outfit_pack
 
 
 def _png() -> bytes:

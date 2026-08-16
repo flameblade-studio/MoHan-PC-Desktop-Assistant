@@ -14,7 +14,6 @@ lazy from domain.autonomous_wardrobe import (
 )
 lazy from domain.outfit_pack import AutonomousStyleProfile
 
-
 NOW = datetime(2026, 8, 15, 12, 0, tzinfo=timezone.utc)
 
 

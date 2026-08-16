@@ -21,9 +21,10 @@ lazy from PySide6.QtWidgets import (
     QSplitter,
     QWidget,
 )
-lazy from presentation.presentation_resources import resource_path
 lazy from test_global_settings_actions import close_dashboard
 lazy from test_wardrobe_ui import build_language_dashboard
+
+lazy from presentation.presentation_resources import resource_path
 
 
 def _frames(page, role: str) -> tuple[QFrame, ...]:
