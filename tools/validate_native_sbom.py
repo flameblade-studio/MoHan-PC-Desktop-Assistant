@@ -10,8 +10,8 @@ lazy from collections.abc import Mapping, Sequence
 lazy from pathlib import Path
 
 SCHEMA_VALIDATION_PROGRAM = """
-lazy import sys
-lazy from pathlib import Path
+import sys
+from pathlib import Path
 from cyclonedx.schema import OutputFormat, SchemaVersion
 from cyclonedx.validation import make_schemabased_validator
 

@@ -8,7 +8,7 @@ lazy import pytest
 
 lazy from tools.finalize_native_release_evidence import finalize_evidence
 lazy from tools.generate_native_sbom import NativeSbomIdentity, build_native_sbom
-lazy from tools.validate_native_sbom import validate_document
+lazy from tools.validate_native_sbom import SCHEMA_VALIDATION_PROGRAM, validate_document
 
 LABELS = (
     "onedir",
@@ -195,3 +195,7 @@ def test_native_sbom_contains_root_rayon_transitives_and_evidence() -> None:
             ),
             evidence_sha256="7" * 64,
         )
+
+
+def test_native_sbom_schema_program_is_standard_python() -> None:
+    compile(SCHEMA_VALIDATION_PROGRAM, "native-sbom-schema.py", "exec")
