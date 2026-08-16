@@ -119,6 +119,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.app_resources",
         "integrations.realtime_voice",
         "integrations.speech",
+        "presentation.pose_atlas_assets",
     }),
     "application.proactive_companion_composition": frozenset({
         "infrastructure.companion_proactivity_preferences_store",

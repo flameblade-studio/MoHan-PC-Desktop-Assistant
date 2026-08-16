@@ -51,6 +51,10 @@ class PoseAtlasAssets:
             "included_in_v4_0_0_release",
         }
 
+    @property
+    def view_ids(self) -> tuple[str, ...]:
+        return tuple(str(item["view_id"]) for item in self._metadata["views"])
+
     def resolve_static(
         self,
         _pose_id: str,

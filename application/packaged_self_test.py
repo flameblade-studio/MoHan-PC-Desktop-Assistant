@@ -14,6 +14,7 @@ lazy from integrations.realtime_voice import (
     RealtimeVoiceClient,
 )
 lazy from integrations.speech import SpeechListener
+lazy from presentation.pose_atlas_assets import PoseAtlasAssets
 
 
 def _visible_windows_voices(window) -> tuple[str, ...]:
@@ -72,6 +73,27 @@ def _flagship_checks(window) -> tuple[_SelfTestCheck, ...]:
     )
 
 
+def _pose_atlas_checks() -> tuple[_SelfTestCheck, ...]:
+    root = resource_path("assets/pose-atlas/v4")
+    try:
+        assets = PoseAtlasAssets(root, image_size=465)
+        view_ids = assets.view_ids
+        views = tuple(assets.resolve_static("release-self-test", view_id) for view_id in view_ids)
+    except (OSError, TypeError, ValueError, KeyError):
+        return (_SelfTestCheck("pose_atlas.load", False),)
+    sidecars_complete = all(
+        (root / f"{view_id}{suffix}").is_file()
+        for view_id in view_ids
+        for suffix in (".landmarks.json", ".hands.json")
+    )
+    return (
+        _SelfTestCheck("pose_atlas.release_eligible", assets.release_eligible),
+        _SelfTestCheck("pose_atlas.complete_ring", len(view_ids) == 24),
+        _SelfTestCheck("pose_atlas.sidecars", sidecars_complete),
+        _SelfTestCheck("pose_atlas.all_views_load", all(view is not None for view in views)),
+    )
+
+
 def _visual_checks(app: QApplication, window) -> tuple[_SelfTestCheck, ...]:
     checks = (
         _SelfTestCheck("visual.character_pixmap", window.character.pixmap() is not None),
@@ -80,6 +102,7 @@ def _visual_checks(app: QApplication, window) -> tuple[_SelfTestCheck, ...]:
             all(not pixmap.isNull() for pixmap in window.expression_pixmaps.values()),
         ),
         *_physics_checks(window),
+        *_pose_atlas_checks(),
         *(
             _SelfTestCheck(f"visual.{key}", window._physics_enabled(key))
             for key in (
