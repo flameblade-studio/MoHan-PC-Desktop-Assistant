@@ -1,2 +1,3 @@
-# Static quality gate; keep exact for reproducible local and CI results.
+# Development-only test and quality gates; keep exact for reproducible results.
+pytest==9.1.1
 ruff==0.16.0

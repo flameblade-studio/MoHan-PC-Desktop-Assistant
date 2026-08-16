@@ -1,0 +1,290 @@
+{
+  "failed_view_count": 14,
+  "passed": false,
+  "passed_view_count": 10,
+  "schema": "mohan.pose-atlas.working-audit.v1",
+  "view_count": 24,
+  "views": [
+    {
+      "issues": [],
+      "occluded_sides": [],
+      "passed": true,
+      "view_id": "yaw-180-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [
+        "right"
+      ],
+      "passed": false,
+      "view_id": "yaw-165-pitch+00",
+      "visible_sides": [
+        "left"
+      ]
+    },
+    {
+      "issues": [],
+      "occluded_sides": [
+        "right"
+      ],
+      "passed": true,
+      "view_id": "yaw-150-pitch+00",
+      "visible_sides": [
+        "left"
+      ]
+    },
+    {
+      "issues": [],
+      "occluded_sides": [
+        "right"
+      ],
+      "passed": true,
+      "view_id": "yaw-135-pitch+00",
+      "visible_sides": [
+        "left"
+      ]
+    },
+    {
+      "issues": [],
+      "occluded_sides": [
+        "right"
+      ],
+      "passed": true,
+      "view_id": "yaw-120-pitch+00",
+      "visible_sides": [
+        "left"
+      ]
+    },
+    {
+      "issues": [
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [
+        "right"
+      ],
+      "passed": false,
+      "view_id": "yaw-105-pitch+00",
+      "visible_sides": [
+        "left"
+      ]
+    },
+    {
+      "issues": [],
+      "occluded_sides": [
+        "right"
+      ],
+      "passed": true,
+      "view_id": "yaw-090-pitch+00",
+      "visible_sides": [
+        "left"
+      ]
+    },
+    {
+      "issues": [],
+      "occluded_sides": [],
+      "passed": true,
+      "view_id": "yaw-075-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [],
+      "occluded_sides": [],
+      "passed": true,
+      "view_id": "yaw-060-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [],
+      "occluded_sides": [],
+      "passed": true,
+      "view_id": "yaw-045-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [],
+      "passed": false,
+      "view_id": "yaw-030-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [
+        "hand_finger_proportion"
+      ],
+      "occluded_sides": [],
+      "passed": false,
+      "view_id": "yaw-015-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [],
+      "passed": false,
+      "view_id": "yaw+000-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [],
+      "passed": false,
+      "view_id": "yaw+015-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [],
+      "passed": false,
+      "view_id": "yaw+030-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [
+        "hand_joint_order",
+        "hand_fused_digits",
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [],
+      "passed": false,
+      "view_id": "yaw+045-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [],
+      "passed": false,
+      "view_id": "yaw+060-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [],
+      "passed": false,
+      "view_id": "yaw+075-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "issues": [
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [
+        "right"
+      ],
+      "passed": false,
+      "view_id": "yaw+090-pitch+00",
+      "visible_sides": [
+        "left"
+      ]
+    },
+    {
+      "issues": [
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [
+        "right"
+      ],
+      "passed": false,
+      "view_id": "yaw+105-pitch+00",
+      "visible_sides": [
+        "left"
+      ]
+    },
+    {
+      "issues": [],
+      "occluded_sides": [
+        "right"
+      ],
+      "passed": true,
+      "view_id": "yaw+120-pitch+00",
+      "visible_sides": [
+        "left"
+      ]
+    },
+    {
+      "issues": [],
+      "occluded_sides": [
+        "right"
+      ],
+      "passed": true,
+      "view_id": "yaw+135-pitch+00",
+      "visible_sides": [
+        "left"
+      ]
+    },
+    {
+      "issues": [
+        "hand_extra_digit"
+      ],
+      "occluded_sides": [
+        "right"
+      ],
+      "passed": false,
+      "view_id": "yaw+150-pitch+00",
+      "visible_sides": [
+        "left"
+      ]
+    },
+    {
+      "issues": [
+        "hand_fused_digits"
+      ],
+      "occluded_sides": [],
+      "passed": false,
+      "view_id": "yaw+165-pitch+00",
+      "visible_sides": [
+        "left",
+        "right"
+      ]
+    }
+  ]
+}

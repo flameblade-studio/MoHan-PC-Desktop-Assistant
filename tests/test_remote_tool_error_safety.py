@@ -12,10 +12,12 @@ lazy from urllib.request import Request, urlopen
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy import flagship_core
-lazy from db import StudioDB
-lazy from flagship_core import ActionExecutor, ActionPlan, ActionRequest, PolicyEngine
-lazy from remote_control import (
+lazy from application import flagship_action_runtime
+lazy from application.flagship_action_runtime import ActionExecutor
+lazy from domain.flagship_action_models import ActionPlan, ActionRequest
+lazy from domain.flagship_action_policy import PolicyEngine
+lazy from infrastructure.db import StudioDB
+lazy from integrations.remote_control import (
     REMOTE_FILE_UNAVAILABLE,
     REMOTE_FILE_UNAVAILABLE_MESSAGES,
     RemoteControlServer,
@@ -154,7 +156,7 @@ def _assert_tool_error_boundary() -> None:
     executor.register("read_status", failing_handler)
     request = ActionRequest("read_status", "讀取安全測試狀態")
     with patch.object(
-        flagship_core,
+        flagship_action_runtime,
         "sanitize_error",
         side_effect=checked_sanitizer,
     ):

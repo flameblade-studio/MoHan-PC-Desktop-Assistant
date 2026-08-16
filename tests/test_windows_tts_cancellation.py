@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QCoreApplication
 
 lazy from contracts import LocalSpeechEnginePort
-lazy from speech import UnavailableSystemTTS, WindowsTTS
+lazy from integrations.speech import UnavailableSystemTTS, WindowsTTS
 
 
 def _test_wave(duration: float = 0.20, rate: int = 24_000) -> bytes:
@@ -156,7 +156,7 @@ def _assert_synthesis_is_cancellable(app: QCoreApplication) -> None:
     tts = WindowsTTS()
     events = _signals(tts)
     with (
-        patch("speech.windows_voices", return_value=[("Hanhan", "zh-TW")]),
+        patch("integrations.speech.windows_voices", return_value=[("Hanhan", "zh-TW")]),
         patch("subprocess.Popen", BlockingPowerShell),
     ):
         tts.speak("合成期間取消", "Hanhan")
@@ -185,7 +185,7 @@ def _assert_playback_is_cancellable(app: QCoreApplication) -> None:
         tts._play_wave_bytes(audio, generation)
 
     with (
-        patch("speech.windows_voices", return_value=[("Hanhan", "zh-TW")]),
+        patch("integrations.speech.windows_voices", return_value=[("Hanhan", "zh-TW")]),
         patch.object(tts, "_run_sapi", side_effect=play_synthesized),
         patch("sounddevice.RawOutputStream", BlockingRawOutputStream),
     ):
@@ -223,7 +223,7 @@ def _assert_new_speech_invalidates_old_generation(
             tts._emit_viseme(generation, 0.8, "A")
 
     with (
-        patch("speech.windows_voices", return_value=[("Hanhan", "zh-TW")]),
+        patch("integrations.speech.windows_voices", return_value=[("Hanhan", "zh-TW")]),
         patch.object(tts, "_run_sapi", side_effect=controlled_synthesis),
     ):
         tts.speak("第一句", "Hanhan")
@@ -254,7 +254,7 @@ def _assert_normal_speech_still_completes(app: QCoreApplication) -> None:
         tts._play_wave_bytes(audio, generation)
 
     with (
-        patch("speech.windows_voices", return_value=[("Hanhan", "zh-TW")]),
+        patch("integrations.speech.windows_voices", return_value=[("Hanhan", "zh-TW")]),
         patch.object(tts, "_run_sapi", side_effect=play_synthesized),
         patch("sounddevice.RawOutputStream", CompletingRawOutputStream),
     ):

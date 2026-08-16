@@ -2,9 +2,9 @@ from __future__ import annotations
 
 lazy import os
 lazy import sys
+lazy from dataclasses import replace
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
-lazy from unittest.mock import patch
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -12,17 +12,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QEvent, QObject, QTimer, Signal
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from ai_client import JAPANESE_PERSONA, offline_reply
-lazy from app import (
-    VOICE_ENGINE_WINDOWS,
-    Dashboard,
-    DashboardDependencies,
-    FirstRunWizard,
-    normalize_for_language,
-)
-lazy from azure_speech import azure_female_voices
-lazy from db import StudioDB
-lazy from language_support import (
+lazy from application.presentation_ports import PlatformCapabilities, PlatformPaths
+lazy from application.service_container import create_presentation_ports
+lazy from domain.app_profile import default_persona_for_language
+lazy from domain.language_normalization import normalize_for_language
+lazy from domain.language_support import (
     JAPANESE_REMINDER_LINES,
     is_japanese,
     japanese_voice_instructions,
@@ -30,9 +24,15 @@ lazy from language_support import (
     response_language_instruction,
     transcription_language_for_ui,
 )
-lazy from speech import preferred_windows_voice
-lazy from ui_localization import _ENGLISH
-lazy from ui_localization_ja import JAPANESE_UI
+lazy from domain.speech_configuration import VOICE_ENGINE_WINDOWS
+lazy from infrastructure.db import StudioDB
+lazy from integrations.ai_client import offline_reply
+lazy from integrations.azure_speech import azure_female_voices
+lazy from integrations.speech import preferred_windows_voice
+lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.dashboard_window import Dashboard
+lazy from presentation.first_run_wizard import FirstRunWizard
+lazy from presentation.ui_localization import _ENGLISH, _JAPANESE
 
 
 class FakeSecretStore:
@@ -58,6 +58,67 @@ class FakeListener(QObject):
         return None
 
 
+class StaticVoiceCatalog:
+    def __init__(self, voices: list[tuple[str, str]]) -> None:
+        self._voices = tuple(voices)
+
+    def windows_voices(self) -> list[tuple[str, str]]:
+        return list(self._voices)
+
+
+class OfflinePlatformServices:
+    capabilities = PlatformCapabilities(
+        platform_id="windows",
+        display_name="Windows",
+        system_local_speech=True,
+        verified_female_voice_catalog=True,
+        offline_speech_recognition=True,
+        secure_secret_storage=True,
+        desktop_autostart=True,
+        native_window_management=True,
+        published_installers=("portable-zip", "exe", "msi"),
+    )
+
+    def __init__(self, root: Path) -> None:
+        self.paths = PlatformPaths(
+            data=root / "data",
+            config=root / "config",
+            cache=root / "cache",
+        )
+
+    def set_autostart(
+        self,
+        _enabled: bool,
+        *,
+        application_id: str,
+        command: str,
+    ) -> None:
+        raise AssertionError(
+            f"Localization test attempted autostart: {application_id} {command}"
+        )
+
+    def open_path(self, path: Path) -> None:
+        raise AssertionError(f"Localization test attempted external open: {path}")
+
+
+def dashboard_dependencies(
+    db: StudioDB,
+    listener: FakeListener,
+    voices: list[tuple[str, str]],
+) -> DashboardDependencies:
+    ports = replace(
+        create_presentation_ports(),
+        voice_catalog=StaticVoiceCatalog(voices),
+        autostart_configurator=lambda _enabled, _platform: None,
+    )
+    return DashboardDependencies(
+        listener=listener,
+        secret_store=FakeSecretStore(),
+        platform_services=OfflinePlatformServices(db.path.parent),
+        presentation_ports=ports,
+    )
+
+
 def close_dashboard(app: QApplication, dashboard: Dashboard) -> None:
     for timer in dashboard.findChildren(QTimer):
         timer.stop()
@@ -68,7 +129,7 @@ def close_dashboard(app: QApplication, dashboard: Dashboard) -> None:
 
 
 def assert_japanese_language_contracts() -> list[tuple[str, str]]:
-    assert set(JAPANESE_UI) == set(_ENGLISH)
+    assert set(_JAPANESE) == set(_ENGLISH)
     assert is_japanese("ja-JP")
     assert transcription_language_for_ui("ja-JP") == "ja"
     assert "自然で明瞭な日本語" in response_language_instruction("ja-JP")
@@ -128,7 +189,7 @@ def assert_japanese_wizard(app: QApplication, db: StudioDB) -> None:
         db.setting("transcription_prompt")
     )
     assert db.setting("voice_engine") == VOICE_ENGINE_WINDOWS
-    assert db.setting("persona_prompt") == JAPANESE_PERSONA
+    assert db.setting("persona_prompt") == default_persona_for_language("ja-JP")
     assert db.setting("voice_instructions") == japanese_voice_instructions()
     wizard.close()
 
@@ -139,15 +200,16 @@ def assert_japanese_dashboard(
     windows_voices: list[tuple[str, str]],
 ) -> None:
     listener = FakeListener()
-    with patch("app.windows_voices", return_value=windows_voices):
-        dashboard = Dashboard(
-            db,
-            DashboardDependencies(listener, FakeSecretStore()),
-        )
+    dashboard = Dashboard(
+        db,
+        dashboard_dependencies(db, listener, windows_voices),
+    )
     assert dashboard.tabs.tabText(0) == "会話"
     assert dashboard.windows_voice.currentData() == "OneCore::Microsoft Ayumi"
     assert dashboard.permission_controls["delete_files"].currentText() == "禁止"
-    assert dashboard.persona_prompt.toPlainText().strip() == JAPANESE_PERSONA.strip()
+    assert dashboard.persona_prompt.toPlainText().strip() == (
+        default_persona_for_language("ja-JP").strip()
+    )
     spoken: list[str] = []
     dashboard.speak_requested.connect(
         lambda text, _expression: spoken.append(text)

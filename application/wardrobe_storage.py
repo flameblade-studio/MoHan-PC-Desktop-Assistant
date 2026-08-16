@@ -1,0 +1,116 @@
+from __future__ import annotations
+
+lazy from dataclasses import dataclass
+lazy from datetime import datetime, timedelta, timezone
+lazy from pathlib import Path
+
+
+@dataclass(frozen=True, slots=True)
+class WardrobeStoragePolicy:
+    max_installed_packages: int = 16
+    max_quarantine_jobs: int = 5
+    max_total_bytes: int = 6 * 1024 * 1024 * 1024
+    minimum_generation_interval: timedelta = timedelta(days=7)
+
+    def __post_init__(self) -> None:
+        if self.max_installed_packages < 1:
+            raise ValueError("Wardrobe package limit must be positive.")
+        if self.max_quarantine_jobs < 1:
+            raise ValueError("Wardrobe quarantine limit must be positive.")
+        if self.max_total_bytes < 1024 * 1024:
+            raise ValueError("Wardrobe storage limit is too small.")
+        if self.minimum_generation_interval < timedelta(0):
+            raise ValueError("Wardrobe generation interval cannot be negative.")
+
+
+@dataclass(frozen=True, slots=True)
+class WardrobeStorageStatus:
+    allowed: bool
+    reason: str
+    installed_packages: int
+    quarantine_jobs: int
+    total_bytes: int
+
+
+def _directory_bytes(root: Path) -> int:
+    if not root.is_dir():
+        return 0
+    total = 0
+    for path in root.rglob("*"):
+        if path.is_file():
+            try:
+                total += path.stat().st_size
+            except OSError:
+                return total
+    return total
+
+
+class WardrobeStorageGuard:
+    """Prevent unbounded generation without deleting user-owned outfits."""
+
+    def __init__(
+        self,
+        outfit_store: Path,
+        quarantine_root: Path,
+        policy: WardrobeStoragePolicy = WardrobeStoragePolicy(),
+    ) -> None:
+        self.outfit_store = Path(outfit_store)
+        self.quarantine_root = Path(quarantine_root)
+        self.policy = policy
+
+    def inspect(
+        self,
+        now: datetime,
+        last_generated_at: datetime | None,
+        *,
+        special_occasion: bool,
+    ) -> WardrobeStorageStatus:
+        if now.tzinfo is None or now.utcoffset() is None:
+            raise ValueError("Wardrobe storage time must include a timezone.")
+        normalized = now.astimezone(timezone.utc)
+        packages = self.outfit_store / "packages"
+        installed = (
+            len(tuple(packages.glob("generated-*.mohan-outfit")))
+            if packages.is_dir()
+            else 0
+        )
+        jobs = (
+            len(tuple(
+                path
+                for path in self.quarantine_root.iterdir()
+                if path.is_dir()
+                and (
+                    (path / "quarantined.json").is_file()
+                    or (path / "source").is_dir()
+                )
+            ))
+            if self.quarantine_root.is_dir()
+            else 0
+        )
+        generated_bytes = sum(
+            path.stat().st_size
+            for path in packages.glob("generated-*.mohan-outfit")
+            if path.is_file()
+        ) if packages.is_dir() else 0
+        total = generated_bytes + _directory_bytes(self.quarantine_root)
+        reason = "ready"
+        if installed >= self.policy.max_installed_packages:
+            reason = "package-limit"
+        elif jobs >= self.policy.max_quarantine_jobs:
+            reason = "quarantine-limit"
+        elif total >= self.policy.max_total_bytes:
+            reason = "storage-limit"
+        elif (
+            not special_occasion
+            and last_generated_at is not None
+            and normalized - last_generated_at.astimezone(timezone.utc)
+            < self.policy.minimum_generation_interval
+        ):
+            reason = "generation-cooldown"
+        return WardrobeStorageStatus(
+            reason == "ready",
+            reason,
+            installed,
+            jobs,
+            total,
+        )

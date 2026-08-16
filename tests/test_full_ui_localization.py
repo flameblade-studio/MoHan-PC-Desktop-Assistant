@@ -6,7 +6,8 @@ lazy import subprocess
 lazy import sys
 lazy import webbrowser
 lazy from contextlib import ExitStack, contextmanager
-lazy from dataclasses import dataclass
+lazy from dataclasses import dataclass, replace
+lazy from datetime import UTC, datetime
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 lazy from unittest.mock import patch
@@ -33,15 +34,21 @@ lazy from PySide6.QtWidgets import (
     QWidget,
 )
 
-lazy from app import (
+lazy from application.multisensory_interaction import (
+    InteractionKind,
+    ProactiveInteraction,
+    interaction_text,
+)
+lazy from application.service_container import create_presentation_ports
+lazy from infrastructure.db import StudioDB
+lazy from infrastructure.platform_contracts import PlatformCapabilities, PlatformPaths
+lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.dashboard_dialogs import (
     ArchivedMemoryDialog,
     ChatHistoryDialog,
-    Dashboard,
-    DashboardDependencies,
     MemoryEditorDialog,
 )
-lazy from db import StudioDB
-lazy from platform_contracts import PlatformCapabilities, PlatformPaths
+lazy from presentation.dashboard_window import Dashboard
 
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 CJK = re.compile(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]")
@@ -66,8 +73,8 @@ USER_SEEDS = {
 }
 
 EXPECTED_TABS = {
-    "zh-TW": ("對話", "今日待辦", "工作平台", "長期記憶", "聲音", "電腦權限", "設定"),
-    "zh-CN": ("对话", "今日待办", "工作平台", "长期记忆", "语音", "电脑权限", "设置"),
+    "zh-TW": ("對話", "今日待辦", "工作平台", "長期記憶", "聲音", "電腦權限", "雲裳閣", "設定"),
+    "zh-CN": ("对话", "今日待办", "工作平台", "长期记忆", "语音", "电脑权限", "云裳阁", "设置"),
     "en": (
         "Chat",
         "Today",
@@ -75,9 +82,10 @@ EXPECTED_TABS = {
         "Long-term memory",
         "Voice",
         "Computer permissions",
+        "Wardrobe Pavilion",
         "Settings",
     ),
-    "ja-JP": ("会話", "今日", "仕事プラットフォーム", "長期記憶", "音声", "パソコンの権限", "設定"),
+    "ja-JP": ("会話", "今日", "仕事プラットフォーム", "長期記憶", "音声", "パソコンの権限", "雲裳閣", "設定"),
 }
 
 EXPECTED_RUNTIME_PHRASES = {
@@ -269,6 +277,11 @@ class FakeListener(QObject):
         return None
 
 
+class StaticVoiceCatalog:
+    def windows_voices(self) -> list[tuple[str, str]]:
+        return list(WINDOWS_VOICES)
+
+
 class OfflinePlatformServices:
     capabilities = PlatformCapabilities(
         platform_id="windows",
@@ -328,11 +341,11 @@ def offline_runtime():
     """Make accidental I/O fail closed while runtime widgets are constructed."""
     with ExitStack() as stack:
         for target in (
-            "ai_client.urlopen",
-            "cloud_connectors.urlopen",
-            "home_assistant.urlopen",
-            "speech.urlopen",
-            "updater.urlopen",
+            "integrations.ai_client.urlopen",
+            "integrations.cloud_connectors.urlopen",
+            "integrations.home_assistant.urlopen",
+            "integrations.speech.urlopen",
+            "infrastructure.updater.urlopen",
             "socket.create_connection",
             "websocket.WebSocketApp",
         ):
@@ -721,6 +734,11 @@ def seed_database(db: StudioDB) -> tuple[int, dict[str, str]]:
 
 
 def dashboard_dependencies(root: Path) -> DashboardDependencies:
+    presentation_ports = replace(
+        create_presentation_ports(),
+        voice_catalog=StaticVoiceCatalog(),
+        autostart_configurator=lambda _enabled, _platform: None,
+    )
     return DashboardDependencies(
         listener=FakeListener(),
         secret_store=FakeSecretStore(),
@@ -728,6 +746,7 @@ def dashboard_dependencies(root: Path) -> DashboardDependencies:
         azure_hd_secret_store=FakeSecretStore(),
         secret_store_factory=fake_secret_store_factory,
         platform_services=OfflinePlatformServices(root),
+        presentation_ports=presentation_ports,
     )
 
 
@@ -741,10 +760,7 @@ def build_language_evidence(
         db = StudioDB(root / f"mohan-{language}.db")
         try:
             configure_language(db, language)
-            with (
-                offline_runtime(),
-                patch("app.windows_voices", return_value=WINDOWS_VOICES),
-            ):
+            with offline_runtime():
                 empty_dashboard = Dashboard(db, dashboard_dependencies(root))
                 empty_tabs = tuple(
                     empty_dashboard.tabs.tabText(index)
@@ -967,6 +983,27 @@ def validate_canonical_item_data(
                 )
 
 
+def validate_morning_welcome_localization() -> None:
+    interaction = ProactiveInteraction(InteractionKind.WELCOME_BACK, "happy")
+    morning = datetime(2026, 8, 13, 8, 0, tzinfo=UTC)
+    lines = {
+        language: interaction_text(
+            language,
+            interaction,
+            user_title="Owner",
+            wall_time=morning,
+        )
+        for language in LANGUAGES
+    }
+    assert lines == {
+        "zh-TW": "早安，Owner。",
+        "zh-CN": "早上好，Owner。",
+        "en": "Good morning, Owner.",
+        "ja-JP": "おはようございます、Owner。",
+    }
+    assert len(set(lines.values())) == len(LANGUAGES)
+
+
 def format_issues(issues: set[GateIssue]) -> str:
     ordered = sorted(
         issues,
@@ -981,6 +1018,7 @@ def format_issues(issues: set[GateIssue]) -> str:
 
 
 def run() -> None:
+    validate_morning_welcome_localization()
     application = QApplication.instance() or QApplication([])
     application.setQuitOnLastWindowClosed(False)
     evidence_by_language = {

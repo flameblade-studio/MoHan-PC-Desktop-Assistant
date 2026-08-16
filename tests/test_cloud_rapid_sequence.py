@@ -11,10 +11,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from concurrency_tools import thread_pool_executor
-lazy from db import StudioDB
 lazy from flagship_core import ActionRequest
 lazy from flagship_ui import FlagshipControlCenter
+lazy from infrastructure.concurrency_tools import thread_pool_executor
+lazy from infrastructure.db import StudioDB
 
 
 class FakeStore:
@@ -70,15 +70,15 @@ def run() -> None:
 
             with (
                 patch(
-                    "cloud_connectors.GmailConnector.search",
+                    "integrations.cloud_connectors.GmailConnector.search",
                     return_value=[],
                 ),
                 patch(
-                    "cloud_connectors.GoogleCalendarConnector.events",
+                    "integrations.cloud_connectors.GoogleCalendarConnector.events",
                     return_value=[],
                 ),
                 patch(
-                    "cloud_connectors.GoogleDriveConnector.search",
+                    "integrations.cloud_connectors.GoogleDriveConnector.search",
                     return_value=[],
                 ),
                 thread_pool_executor(max_workers=12) as pool,

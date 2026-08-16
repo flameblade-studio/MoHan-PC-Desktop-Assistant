@@ -8,8 +8,8 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy import realtime_voice
-lazy from realtime_voice import (
+lazy from integrations import realtime_session
+lazy from integrations.realtime_voice import (
     RealtimeSessionConfig,
     RealtimeVoiceClient,
     RealtimeVoiceRequest,
@@ -49,7 +49,7 @@ def assert_stale_connection_callbacks_are_ignored() -> None:
     statuses: list[str] = []
     client.status_changed.connect(statuses.append)
     websocket_module = SimpleNamespace(WebSocketApp=create_websocket)
-    with patch.object(realtime_voice, "websocket", websocket_module):
+    with patch.object(realtime_session, "websocket", websocket_module):
         client._connect(request, generation=7)
 
     assert sockets[0].run_calls == 1
@@ -164,7 +164,7 @@ def run() -> None:
         "prompt": "常用詞：墨寒、主上。",
     }
 
-    source = Path("realtime_voice.py").read_text(encoding="utf-8")
+    source = Path("integrations/realtime_voice.py").read_text(encoding="utf-8")
     assert "gpt-realtime-whisper" not in source
     print("REALTIME_TRANSCRIPTION_CONFIG_OK")
 

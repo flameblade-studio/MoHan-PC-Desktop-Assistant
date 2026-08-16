@@ -13,8 +13,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from datetime import datetime
 
-lazy from backup_manager import BackupManager
-lazy from db import StudioDB
 lazy from flagship_core import (
     ActionExecutor,
     ActionPlan,
@@ -26,12 +24,14 @@ lazy from flagship_core import (
     parse_plan_json,
     sanitize_external_content,
 )
-lazy from home_assistant import (
+lazy from infrastructure.backup_manager import BackupManager
+lazy from infrastructure.db import StudioDB
+lazy from integrations.home_assistant import (
     HomeAssistantClient,
     HomeAssistantConfig,
     classify_home_capability,
 )
-lazy from remote_control import (
+lazy from integrations.remote_control import (
     RemoteControlServer,
     RemoteServerConfig,
     RemoteServerServices,

@@ -14,28 +14,28 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from ai_client import (
+lazy from command_parser import is_start_work_command, is_stop_work_command
+lazy from infrastructure.db import PlatformProgressUpdate, StudioDB, format_duration
+lazy from integrations.ai_client import (
     DEFAULT_TEXT_MODEL,
     TEXT_MODELS,
     AIWorker,
     AIWorkerRequest,
     offline_reply,
 )
-lazy from app import (
-    VOICE_GENERATION_PROMPT,
-    migrate_voice_defaults,
-)
-lazy from command_parser import is_start_work_command, is_stop_work_command
-lazy from db import PlatformProgressUpdate, StudioDB, format_duration
-lazy from lip_sync import VOWEL_FORMANTS, analyze_pcm16, infer_vowel_pcm16
-lazy from realtime_voice import RealtimeVoiceClient
-lazy from speech import (
+lazy from integrations.realtime_voice import RealtimeVoiceClient
+lazy from integrations.speech import (
     SpeechListener,
     WindowsTTS,
     apply_wav_volume,
     female_windows_voices_for_language,
     preferred_windows_voice,
     windows_voices,
+)
+lazy from lip_sync import VOWEL_FORMANTS, analyze_pcm16, infer_vowel_pcm16
+lazy from speech_configuration import (
+    VOICE_GENERATION_PROMPT,
+    migrate_voice_defaults,
 )
 lazy from text_normalizer import to_taiwan_traditional
 
@@ -119,7 +119,7 @@ def _assert_ai_worker_defaults() -> None:
         json.dumps({"output_text": "主上，妾在。"}).encode("utf-8")
     )
     with patch(
-        "ai_client.urlopen",
+        "integrations.ai_client.urlopen",
         return_value=fake_response,
     ) as mocked_urlopen:
         worker.run()

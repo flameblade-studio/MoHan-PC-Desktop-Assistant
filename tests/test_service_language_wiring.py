@@ -10,8 +10,8 @@ os.environ["QT_QPA_PLATFORM"] = "offscreen"
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
 
-lazy from db import StudioDB
-lazy from platform_contracts import PlatformCapabilities, PlatformPaths
+lazy from infrastructure.db import StudioDB
+lazy from infrastructure.platform_contracts import PlatformCapabilities, PlatformPaths
 lazy from service_container import create_default_services
 
 UI_LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")

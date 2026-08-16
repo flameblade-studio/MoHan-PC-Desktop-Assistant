@@ -6,9 +6,9 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from ai_client import PERSONA
-lazy from app import persona_for_profile
-lazy from db import StudioDB
+lazy from app_profile import persona_for_profile
+lazy from infrastructure.db import StudioDB
+lazy from integrations.ai_client import PERSONA
 
 LEGACY_PERSONA = (
     "你是墨寒。你稱使用者為主上。"

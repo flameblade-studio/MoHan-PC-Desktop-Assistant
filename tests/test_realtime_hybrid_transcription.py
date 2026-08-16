@@ -9,8 +9,8 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from realtime_voice import RealtimeVoiceClient
-lazy from speech import transcribe_wav_bytes
+lazy from integrations.realtime_voice import RealtimeVoiceClient
+lazy from integrations.speech import transcribe_wav_bytes
 
 
 class _Socket:
@@ -83,7 +83,7 @@ def run() -> None:
         }
     )
     with patch(
-        "realtime_voice.threading.Thread",
+        "integrations.realtime_voice.threading.Thread",
         _CapturedThread,
     ):
         client._handle_server_event(
@@ -145,7 +145,7 @@ def run() -> None:
     } in client.ws.sent
 
     with patch(
-        "speech.urlopen",
+        "integrations.speech.urlopen",
         return_value=_Response(),
     ) as mocked:
         text = transcribe_wav_bytes(

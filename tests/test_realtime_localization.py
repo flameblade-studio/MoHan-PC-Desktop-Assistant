@@ -7,8 +7,8 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy import realtime_voice
-lazy from realtime_voice import (
+lazy from integrations import realtime_voice
+lazy from integrations.realtime_voice import (
     _REALTIME_MESSAGES,
     MAX_ASSISTANT_RESPONSE_CHARACTERS,
     RealtimeSessionConfig,

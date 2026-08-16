@@ -68,6 +68,12 @@ python tests\run_all.py
 git diff --check
 ```
 
+### v4.0.0 平台與 Qt 相容層政策
+
+- 官方 PySide6 metadata 是否宣告 Python 3.15，不再是硬閘門；改以固定雜湊的官方 wheel 二進位、`6.11.1+mohan.py315.1` metadata、正常 pip resolver、`pip check` 與 Qt smoke 證據驗證相容層。
+- Windows 是正式支援平台。macOS／Linux 為功能受限 Preview；CI runner 的建置與 smoke 不等於開發者本人實機認證，也不宣稱 Windows 功能同等。
+- 安全、秘密隔離、完整回歸、包內內容、SBOM、SHA-256、artifact 完整性、四語說明與可回退行為仍不可取消。PoseAtlas 未具完整授權與 sidecar 時必須排除，不得用候選素材繞過正式稽核。
+
 絕對不得發布 `.env`、API 金鑰、OAuth 認證資料／權杖、Home Assistant 權杖、SQLite 資料庫、`.mohan-profile` 檔案、錄音、本機日誌或個人設定。
 
 ### 重建 README 媒體
@@ -234,6 +240,12 @@ python tools\audit_public_release.py
 python tests\run_all.py
 git diff --check
 ```
+
+### v4.0.0 平台与 Qt 兼容层政策
+
+- 官方 PySide6 metadata 是否声明 Python 3.15，不再是硬关卡；改用固定哈希的官方 wheel 二进制、`6.11.1+mohan.py315.1` metadata、正常 pip resolver、`pip check` 与 Qt smoke 证据验证兼容层。
+- Windows 是正式支持平台。macOS／Linux 为功能受限 Preview；CI runner 的构建与 smoke 不等于开发者本人实机认证，也不声明 Windows 功能同等。
+- 安全、秘密隔离、完整回归、包内内容、SBOM、SHA-256、artifact 完整性、四语说明与可回退行为仍不可取消。PoseAtlas 没有完整授权与 sidecar 时必须排除，不得用候选素材绕过正式审计。
 
 绝对不得发布 `.env`、API 密钥、OAuth 凭据／令牌、Home Assistant 令牌、SQLite 数据库、`.mohan-profile` 文件、录音、本地日志或个人设置。
 
@@ -402,6 +414,12 @@ python tests\run_all.py
 git diff --check
 ```
 
+### v4.0.0 platform and Qt compatibility-layer policy
+
+- Official PySide6 metadata declaring Python 3.15 is no longer a hard gate; the compatibility layer is verified with fixed-digest official wheel binaries, `6.11.1+mohan.py315.1` metadata, the normal pip resolver, `pip check`, and Qt smoke evidence.
+- Windows is formal support. macOS/Linux are limited Previews; CI-runner builds and smoke tests are not the developer's physical-device certification and do not claim Windows feature parity.
+- Security, secret isolation, full regression, packaged contents, SBOM, SHA-256, artifact integrity, four-language notes, and fallback behavior remain mandatory. PoseAtlas must be excluded when complete authorization and sidecars are absent; candidate assets may not bypass the formal audit.
+
 Never publish `.env`, API keys, OAuth credentials/tokens, Home Assistant tokens, SQLite databases, `.mohan-profile` files, recordings, local logs, or personal settings.
 
 ### Rebuild the README media
@@ -568,6 +586,12 @@ python tools\audit_public_release.py
 python tests\run_all.py
 git diff --check
 ```
+
+### v4.0.0 プラットフォームと Qt 互換レイヤーのポリシー
+
+- 公式 PySide6 metadata が Python 3.15 を宣言しているかどうかは硬いゲートではありません。固定ダイジェストの公式 wheel バイナリ、`6.11.1+mohan.py315.1` metadata、通常の pip resolver、`pip check`、Qt smoke 証拠で互換レイヤーを検証します。
+- Windows を正式対応とし、macOS/Linux は機能限定 Preview とします。CI runner の build と smoke は開発者本人の実機認証ではなく、Windows との機能同等性も表明しません。
+- セキュリティ、秘密分離、完全回帰、パッケージ内容、SBOM、SHA-256、artifact 整合性、四言語説明、フォールバック動作は必須です。完全な許諾と sidecar がない PoseAtlas は除外し、候補素材で正式監査を迂回してはいけません。
 
 `.env`、API キー、OAuth 認証情報／トークン、Home Assistant トークン、SQLite データベース、`.mohan-profile` ファイル、録音、ローカルログ、個人設定は絶対に公開しません。
 

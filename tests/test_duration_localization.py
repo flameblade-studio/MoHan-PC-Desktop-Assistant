@@ -6,7 +6,7 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from db import format_duration
+lazy from infrastructure.db import format_duration
 
 EXPECTED_DURATIONS = frozendict({
     "zh-TW": (

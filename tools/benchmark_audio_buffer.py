@@ -10,7 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 lazy from audio_buffer import BoundedAudioQueue
-lazy from realtime_voice import RealtimeVoiceClient
+lazy from integrations.realtime_voice import RealtimeVoiceClient
 
 
 def main() -> None:

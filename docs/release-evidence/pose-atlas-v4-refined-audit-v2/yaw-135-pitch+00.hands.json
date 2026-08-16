@@ -1,0 +1,158 @@
+{
+  "hands": [
+    {
+      "landmarks": [
+        [
+          716,
+          765
+        ],
+        [
+          728,
+          776
+        ],
+        [
+          737,
+          798
+        ],
+        [
+          739,
+          817
+        ],
+        [
+          735,
+          831
+        ],
+        [
+          743,
+          797
+        ],
+        [
+          747,
+          828
+        ],
+        [
+          743,
+          845
+        ],
+        [
+          738,
+          856
+        ],
+        [
+          735,
+          795
+        ],
+        [
+          735,
+          831
+        ],
+        [
+          729,
+          849
+        ],
+        [
+          721,
+          860
+        ],
+        [
+          723,
+          794
+        ],
+        [
+          723,
+          828
+        ],
+        [
+          718,
+          846
+        ],
+        [
+          712,
+          857
+        ],
+        [
+          710,
+          793
+        ],
+        [
+          711,
+          819
+        ],
+        [
+          710,
+          833
+        ],
+        [
+          707,
+          842
+        ]
+      ],
+      "model_evidence": {
+        "augmentation": "rotate-counterclockwise",
+        "confidence": 0.937117,
+        "model_handedness": "right",
+        "pixel_refinement": "nearest-skin-within-8px"
+      },
+      "roi": [
+        699,
+        757,
+        57,
+        112
+      ],
+      "side": "left",
+      "thumb_side_check": false
+    }
+  ],
+  "height": 1536,
+  "inference": {
+    "augmentations": [
+      "native",
+      "flip-horizontal",
+      "rotate-clockwise",
+      "rotate-counterclockwise"
+    ],
+    "hand_confidence_threshold": 0.65,
+    "palm_threshold": 0.45,
+    "pipeline": "OpenCV Zoo MediaPipe PalmDet + HandPose FP32 ONNX",
+    "source_sha256": "9b411fd775c8df594f74b15929b4eff93b3f68911e605e986cd86f02edaf8171"
+  },
+  "occluded_hands": [
+    {
+      "occluder_id": "robe-or-view-occlusion",
+      "reason": "No reliable 21-point hand observation was visible after the approved fixed augmentations.",
+      "region": [
+        0,
+        62,
+        1024,
+        1417
+      ],
+      "side": "right",
+      "status": "occluded"
+    }
+  ],
+  "occluders": [],
+  "protected_regions": [
+    {
+      "label": "face",
+      "rect": [
+        412,
+        142,
+        200,
+        220
+      ]
+    },
+    {
+      "label": "body",
+      "rect": [
+        412,
+        322,
+        200,
+        220
+      ]
+    }
+  ],
+  "schema_version": 1,
+  "view_id": "yaw-135-pitch+00",
+  "width": 1024,
+  "yaw_degrees": -135
+}

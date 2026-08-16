@@ -14,29 +14,31 @@ sys.path.insert(0, str(PROJECT))
 
 lazy from PySide6.QtWidgets import QApplication, QMessageBox, QWidget
 
-lazy from app import Dashboard, DashboardDependencies, set_autostart
-lazy from db import StudioDB
-lazy from flagship_ui import FlagshipControlCenter
-lazy from platform_contracts import (
-    PlatformCapabilities,
-    PlatformPaths,
-    PlatformServicePort,
-    UnsupportedPlatformFeature,
-)
-lazy from platform_services import (
-    create_platform_services,
-    normalized_platform_id,
-    resolved_data_dir,
-)
-lazy from secret_store import platform_secret_store_factory
-lazy from service_container import create_default_services
-lazy from speech import preferred_windows_voice
-lazy from speech_providers import (
+lazy from application.service_container import create_default_services
+lazy from domain.speech_providers import (
     LEGACY_WINDOWS_LOCAL_PROVIDER,
     SYSTEM_LOCAL_PROVIDER,
     WindowsSpeechProvider,
     normalize_speech_provider_id,
 )
+lazy from infrastructure.app_resources import set_autostart
+lazy from infrastructure.db import StudioDB
+lazy from infrastructure.platform_contracts import (
+    PlatformCapabilities,
+    PlatformPaths,
+    PlatformServicePort,
+    UnsupportedPlatformFeature,
+)
+lazy from infrastructure.platform_services import (
+    create_platform_services,
+    normalized_platform_id,
+    resolved_data_dir,
+)
+lazy from infrastructure.secret_store import platform_secret_store_factory
+lazy from integrations.speech import preferred_windows_voice
+lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.dashboard_window import Dashboard
+lazy from presentation.flagship_ui import FlagshipControlCenter
 
 
 def eager_direct_imports(path: Path) -> set[str]:
@@ -168,10 +170,7 @@ def _create_macos_platform() -> PlatformServicePort:
 
 
 def _assert_platform_detection() -> None:
-    with patch("sys.platform", "darwin"), patch(
-        "platform_services.os.name",
-        "posix",
-    ):
+    with patch("sys.platform", "darwin"):
         assert normalized_platform_id() == "macos"
     try:
         normalized_platform_id("posix")
@@ -245,8 +244,12 @@ def _assert_autostart_delegation() -> None:
 
 def _assert_platform_modules_are_lazy() -> None:
     assert "winreg" not in eager_direct_imports(PROJECT / "app.py")
-    assert "winreg" not in eager_direct_imports(PROJECT / "platform_windows.py")
-    assert "winsound" not in eager_direct_imports(PROJECT / "speech.py")
+    assert "winreg" not in eager_direct_imports(
+        PROJECT / "infrastructure" / "platform_windows.py"
+    )
+    assert "winsound" not in eager_direct_imports(
+        PROJECT / "integrations" / "speech.py"
+    )
 
 
 def _assert_core_modules_import() -> None:
@@ -312,6 +315,7 @@ def _create_dashboard(root: Path, linux: PlatformServicePort):
             azure_secret_store=services.azure_secret_store,
             secret_store_factory=services.secret_store_factory,
             platform_services=linux,
+            presentation_ports=services.presentation_ports,
         ),
     )
     return services, dashboard

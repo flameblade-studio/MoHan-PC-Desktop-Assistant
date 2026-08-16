@@ -13,7 +13,7 @@ lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication, QWidget
 
-lazy from app import CompanionWindow
+lazy from companion_window import CompanionWindow
 
 FEATURES = (
     "physics_sleeves",

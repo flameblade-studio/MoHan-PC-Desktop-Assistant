@@ -9,14 +9,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from cloud_connectors import (
+lazy from flagship_ui import CloudHealthWorker, FlagshipControlCenter
+lazy from infrastructure.db import StudioDB
+lazy from integrations.cloud_connectors import (
     PROVIDERS,
     GoogleDriveConnector,
     normalize_cloud_provider,
     register_cloud_provider_alias,
 )
-lazy from db import StudioDB
-lazy from flagship_ui import CloudHealthWorker, FlagshipControlCenter
 
 
 def run() -> None:
@@ -32,15 +32,15 @@ def run() -> None:
 
     with (
         patch(
-            "flagship_ui.GmailConnector.request",
+            "integrations.cloud_connectors.GmailConnector.request",
             return_value={"emailAddress": "user@example.com"},
         ),
         patch(
-            "flagship_ui.GoogleCalendarConnector.request",
+            "integrations.cloud_connectors.GoogleCalendarConnector.request",
             return_value={"items": []},
         ),
         patch(
-            "flagship_ui.GoogleDriveConnector.request",
+            "integrations.cloud_connectors.GoogleDriveConnector.request",
             return_value={"files": []},
         ),
     ):
@@ -58,15 +58,15 @@ def run() -> None:
 
     with (
         patch(
-            "flagship_ui.GmailConnector.request",
+            "integrations.cloud_connectors.GmailConnector.request",
             side_effect=PermissionError("scope"),
         ),
         patch(
-            "flagship_ui.GoogleCalendarConnector.request",
+            "integrations.cloud_connectors.GoogleCalendarConnector.request",
             return_value={"items": []},
         ),
         patch(
-            "flagship_ui.GoogleDriveConnector.request",
+            "integrations.cloud_connectors.GoogleDriveConnector.request",
             return_value={"files": []},
         ),
     ):

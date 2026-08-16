@@ -13,10 +13,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QObject, Signal
 lazy from PySide6.QtWidgets import QApplication, QLineEdit, QMessageBox
 
-lazy from app import CompanionWindow, SpeechCredentials
-lazy from db import StudioDB
-lazy from realtime_voice import RealtimeVoiceRequest
-lazy from service_container import CompanionServices
+lazy from application.presentation_ports import (
+    AzureRealtimeVoice,
+    LocalRealtimeVoice,
+    PresentationPorts,
+    RealtimeSpeechOutputConfigRequest,
+    create_realtime_output_config,
+)
+lazy from companion_window import CompanionWindow
+lazy from infrastructure.db import StudioDB
+lazy from integrations.realtime_voice import RealtimeVoiceRequest
+lazy from service_container import CompanionServices, create_presentation_ports
+lazy from speech_configuration import SpeechCredentials
 
 
 class FakeSecretStore:
@@ -106,6 +114,34 @@ def _assert_credential_repr_is_redacted() -> None:
     rendered = repr(credentials)
     assert all(secret not in rendered for secret in secrets)
 
+    request = RealtimeSpeechOutputConfigRequest(
+        mode="azure-dragon-hd",
+        locale="zh-TW",
+        azure=AzureRealtimeVoice(
+            secrets[1],
+            "eastasia",
+            "zh-TW-HsiaoChenNeural",
+        ),
+        azure_hd=AzureRealtimeVoice(
+            secrets[2],
+            "westus2",
+            "zh-CN-Xiaoxiao:DragonHDLatestNeural",
+        ),
+        local=LocalRealtimeVoice(
+            available=True,
+            voice="OneCore::Microsoft Yating",
+            rate=-1,
+        ),
+    )
+    config = create_realtime_output_config(request)
+    assert config.mode == request.mode
+    assert config.locale == request.locale
+    assert config.azure is request.azure
+    assert config.azure_hd is request.azure_hd
+    assert config.local is request.local
+    assert all(secret not in repr(request) for secret in secrets[1:])
+    assert all(secret not in repr(config) for secret in secrets[1:])
+
 
 class FakeListener(QObject):
     recognized = Signal(str)
@@ -137,6 +173,7 @@ class InjectedTestContext:
     azure_hd_tts: FakeSpeechEngine
     realtime: FakeRealtime
     listener: FakeListener
+    presentation_ports: PresentationPorts
     window: CompanionWindow
 
 
@@ -156,6 +193,7 @@ def _create_injected_context(temp_dir: str) -> InjectedTestContext:
     azure_hd_tts = FakeSpeechEngine()
     realtime = FakeRealtime()
     listener = FakeListener()
+    presentation_ports = create_presentation_ports()
     services = CompanionServices(
         db=db,
         secret_store=secret_store,
@@ -163,6 +201,7 @@ def _create_injected_context(temp_dir: str) -> InjectedTestContext:
         cloud_tts=cloud_tts,
         realtime=realtime,
         listener=listener,
+        presentation_ports=presentation_ports,
         azure_speech=azure_tts,
         azure_hd_speech=azure_hd_tts,
         azure_secret_store=azure_secret_store,
@@ -181,6 +220,7 @@ def _create_injected_context(temp_dir: str) -> InjectedTestContext:
         azure_hd_tts=azure_hd_tts,
         realtime=realtime,
         listener=listener,
+        presentation_ports=presentation_ports,
         window=window,
     )
 
@@ -192,11 +232,11 @@ def _assert_dependencies_are_injected(context: InjectedTestContext) -> None:
     assert context.window.cloud_tts is context.cloud_tts
     assert context.window.azure_tts is context.azure_tts
     assert context.window.azure_hd_tts is context.azure_hd_tts
-    assert context.window.azure_hd_secret_store is (
-        context.azure_hd_secret_store
-    )
+    assert context.window.azure_hd_secret_store is (context.azure_hd_secret_store)
     assert context.window.realtime is context.realtime
     assert context.window.listener is context.listener
+    assert context.window.presentation_ports is context.presentation_ports
+    assert context.window.dashboard.presentation_ports is context.presentation_ports
     assert context.local_tts.volume_calls[-1] == (137, False)
     assert context.cloud_tts.volume_calls[-1] == (137, False)
     assert context.azure_tts.volume_calls[-1] == (137, False)
@@ -223,7 +263,6 @@ def _assert_provider_switch_persists_and_routes(
     assert context.local_tts.speak_calls[-1][0][0] == "本機語音測試。"
 
 
-
 def _assert_voice_choices_save_and_apply_immediately(
     context: InjectedTestContext,
 ) -> None:
@@ -235,10 +274,7 @@ def _assert_voice_choices_save_and_apply_immediately(
 
     assert dashboard.azure_voice.findText("zh-CN-XiaoxiaoNeural") >= 0
     dashboard.azure_voice.setCurrentText("zh-CN-XiaoxiaoNeural")
-    assert (
-        context.db.setting("azure_speech_voice")
-        == "zh-CN-XiaoxiaoNeural"
-    )
+    assert context.db.setting("azure_speech_voice") == "zh-CN-XiaoxiaoNeural"
 
     southeast_asia = dashboard.azure_region.findData("southeastasia")
     assert southeast_asia >= 0

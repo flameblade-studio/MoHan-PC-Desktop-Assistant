@@ -15,7 +15,6 @@ BODY = """## 繁體中文
 - `python tests/run_all.py`
 
 ## 简体中文
-
 说明。
 
 - `python tests/run_all.py`
@@ -27,7 +26,6 @@ Description.
 - `python tests/run_all.py`
 
 ## 日本語
-
 説明。
 
 - `python tests/run_all.py`

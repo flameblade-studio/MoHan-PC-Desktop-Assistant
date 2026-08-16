@@ -85,7 +85,7 @@ def test_security_workflows() -> None:
     assert "cannot\n      # start on 3.15" in audit
 
 
-def test_release_supply_chain(release: str) -> None:
+def _assert_release_supply_chain(release: str) -> None:
     assert_action_pinned(release, "actions/upload-artifact")
     assert_action_pinned(release, "actions/download-artifact")
     assert "actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6" in release
@@ -121,15 +121,31 @@ def test_release_supply_chain(release: str) -> None:
         assert artifact in release
     assert "tools/profile_mohan_tachyon.py" in release
     assert "tools/check_four_language_docs.py" in release
-    assert (
+    release_title = (
         "墨寒桌面助理 $tag／墨寒桌面助手 $tag／"
         "MoHan Desktop Assistant $tag／"
         "墨寒デスクトップアシスタント $tag"
-    ) in release
+    )
+    assert f'release_title="{release_title}"' in release
+    assert '--title "$release_title"' in release
+    publish_job = release.split("\n  publish:\n", maxsplit=1)[1]
+    assert "LANG: C.UTF-8" in publish_job
+    assert "LC_ALL: C.UTF-8" in publish_job
+    assert "\ufffd" not in release_title
+    for maturity_label in (
+        "正式版",
+        "預覽版",
+        "预览版",
+        "stable release",
+        "preview release",
+        "正式リリース",
+        "プレビュー版",
+    ):
+        assert maturity_label.casefold() not in release_title.casefold()
     assert "SHA256" in release
 
 
-def test_release_runtime_and_packages(release: str) -> None:
+def _assert_release_runtime_and_packages(release: str) -> None:
     public_audit = read("tools/audit_public_release.py")
     assert "safe.directory={ROOT.as_posix()}" in public_audit
     for required in (
@@ -161,7 +177,7 @@ def test_release_runtime_and_packages(release: str) -> None:
     assert "WORDPRESS_APP_PASSWORD" not in release
 
 
-def test_release_publication_boundary(release: str) -> None:
+def _assert_release_publication_boundary(release: str) -> None:
     for required in (
         "docs/releases/$RELEASE_TAG.md",
         "git merge-base --is-ancestor",
@@ -184,7 +200,7 @@ def test_release_publication_boundary(release: str) -> None:
     assert "client_secret" not in release
 
 
-def test_release_preflight_precedes_packaging(release: str) -> None:
+def _assert_release_preflight_precedes_packaging(release: str) -> None:
     resolve_job = release.split("\n  resolve-release:\n", maxsplit=1)[1].split(
         "\n  windows:\n",
         maxsplit=1,
@@ -196,24 +212,50 @@ def test_release_preflight_precedes_packaging(release: str) -> None:
         "Set up Python 3.15 release preflight runtime",
         "id: preflight-python",
         'python-version: "3.15.0-rc.1"',
+        "Enforce thin app composition root before packaging",
+        '"$PREFLIGHT_PYTHON" tools/check_app_composition_root.py app.py',
+        "Validate MoHan Qt 3.15 compatibility policy before packaging",
+        '"$PREFLIGHT_PYTHON" tools/check_python315_qt_compatibility.py',
         "Require curated four-language Release notes before packaging",
         "PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}",
         '"$PREFLIGHT_PYTHON" tools/check_four_language_docs.py',
+        "Enforce reproducible v4 OpenAI Vision package gate",
+        '"$PREFLIGHT_PYTHON" tools/check_openai_vision_release.py',
     ):
         assert required in resolve_job
+    assert "Require audited PoseAtlas release assets" not in resolve_job
+    assert "tools/check_pose_atlas_release.py" not in resolve_job
     assert 'python-version: "3.14' not in resolve_job
     assert not re.search(r"(?m)^\s+python tools/", resolve_job)
     assert resolve_job.index("Validate Release publication mode") < (
         resolve_job.index("Set up Python 3.15 release preflight runtime")
     )
+    app_preflight = resolve_job.index(
+        "Enforce thin app composition root before packaging"
+    )
+    qt_preflight = resolve_job.index(
+        "Validate MoHan Qt 3.15 compatibility policy before packaging"
+    )
+    assert resolve_job.index("Set up Python 3.15 release preflight runtime") < (
+        app_preflight
+    )
+    assert app_preflight < qt_preflight
+    assert qt_preflight < resolve_job.index(
+        "Require curated four-language Release notes before packaging"
+    )
+    assert qt_preflight < resolve_job.index(
+        "Enforce reproducible v4 OpenAI Vision package gate"
+    )
+    assert "--ignore-requires-python" not in resolve_job
+    assert "continue-on-error" not in resolve_job
 
 
 def test_release_workflow() -> None:
     release = read(".github/workflows/release.yml")
-    test_release_supply_chain(release)
-    test_release_runtime_and_packages(release)
-    test_release_publication_boundary(release)
-    test_release_preflight_precedes_packaging(release)
+    _assert_release_supply_chain(release)
+    _assert_release_runtime_and_packages(release)
+    _assert_release_publication_boundary(release)
+    _assert_release_preflight_precedes_packaging(release)
 
 
 def test_publishing_merge_policy() -> None:

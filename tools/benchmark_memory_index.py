@@ -7,7 +7,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from memory_index import MemoryVectorIndex
+lazy from infrastructure.memory_index import MemoryVectorIndex
 lazy from time_utils import local_wall_time
 
 

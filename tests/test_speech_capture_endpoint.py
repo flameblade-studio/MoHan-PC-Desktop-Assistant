@@ -7,7 +7,7 @@ lazy from typing import ClassVar
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from speech import SpeechListener
+lazy from integrations.speech import SpeechListener
 
 
 def pcm_block(level: int) -> bytes:

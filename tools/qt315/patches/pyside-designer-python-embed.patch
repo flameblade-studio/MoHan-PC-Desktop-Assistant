@@ -1,0 +1,29 @@
+diff --git a/sources/pyside6/plugins/designer/CMakeLists.txt b/sources/pyside6/plugins/designer/CMakeLists.txt
+index d474465..1f3f290 100644
+--- a/sources/pyside6/plugins/designer/CMakeLists.txt
++++ b/sources/pyside6/plugins/designer/CMakeLists.txt
+@@ -20,6 +20,12 @@ target_sources(PySidePlugin PRIVATE
+
+ target_compile_definitions(PySidePlugin PRIVATE -DQT_NO_KEYWORDS=1)
+
++if(MSVC)
++    # Python 3.14+ otherwise adds an automatic link dependency on the
++    # version-specific import library, despite this target using python3.lib.
++    target_compile_definitions(PySidePlugin PRIVATE -DPy_NO_LINK_LIB)
++endif()
++
+ if(FORCE_LIMITED_API)
+     target_compile_definitions(PySidePlugin PRIVATE "-DPy_LIMITED_API=0x030a0000")
+ endif()
+@@ -54,4 +60,11 @@ target_link_libraries(PySidePlugin PRIVATE
+                       Qt::Widgets
+                       ${SHIBOKEN_PYTHON_LIBRARIES})
+
++if(MSVC)
++    # This embedded-interpreter plugin calls PyRun_StringFlags, which is not
++    # exported by the Windows stable-ABI import library.
++    find_package(Python COMPONENTS Development.Embed REQUIRED)
++    target_link_libraries(PySidePlugin PRIVATE Python::Python)
++endif()
++
+ install(TARGETS PySidePlugin LIBRARY DESTINATION "${QT6_INSTALL_PLUGINS}/designer")

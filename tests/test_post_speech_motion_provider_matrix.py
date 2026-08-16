@@ -14,8 +14,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication, QLabel
 
-lazy from app import CompanionWindow, QueuedSpeech
-lazy from db import StudioDB
+lazy from companion_window import CompanionWindow
+lazy from infrastructure.db import StudioDB
+lazy from speech_configuration import QueuedSpeech
 
 COMPLETION_PATHS = ("general", "realtime")
 SCALE_PERCENTAGES = (75, 100, 180)

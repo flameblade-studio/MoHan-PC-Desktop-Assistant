@@ -8,6 +8,7 @@ lazy from tempfile import TemporaryDirectory
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 PROJECT = Path(__file__).resolve().parents[1]
+COMPANION_WINDOW_PATH = PROJECT / "presentation" / "companion_window.py"
 sys.path.insert(0, str(PROJECT))
 
 lazy from PySide6.QtWidgets import QApplication, QLabel, QTabWidget
@@ -60,8 +61,8 @@ def assert_acyclic(graph: dict[str, set[str]]) -> None:
 
 def companion_private_dashboard_accesses() -> list[str]:
     tree = ast.parse(
-        (PROJECT / "app.py").read_text(encoding="utf-8"),
-        filename="app.py",
+        COMPANION_WINDOW_PATH.read_text(encoding="utf-8"),
+        filename=str(COMPANION_WINDOW_PATH),
     )
     companion = next(
         node
@@ -69,19 +70,45 @@ def companion_private_dashboard_accesses() -> list[str]:
         if isinstance(node, ast.ClassDef)
         and node.name == "CompanionWindow"
     )
-    violations: list[str] = []
-    for node in ast.walk(companion):
-        if not isinstance(node, ast.Attribute):
+    imported_owners = {
+        **{
+            alias.asname or alias.name: node.module
+            for alias in node.names
+        }
+        for node in tree.body
+        if isinstance(node, ast.ImportFrom) and node.module
+    }
+    owners = [companion]
+    for base in companion.bases:
+        if not isinstance(base, ast.Name) or not base.id.endswith("Mixin"):
             continue
-        owner = node.value
-        if (
-            node.attr.startswith("_")
-            and isinstance(owner, ast.Attribute)
-            and owner.attr == "dashboard"
-            and isinstance(owner.value, ast.Name)
-            and owner.value.id == "self"
-        ):
-            violations.append(node.attr)
+        module = imported_owners[base.id]
+        path = (PROJECT / Path(*module.split("."))).with_suffix(".py")
+        owner_tree = ast.parse(
+            path.read_text(encoding="utf-8"),
+            filename=str(path),
+        )
+        owners.append(
+            next(
+                node
+                for node in owner_tree.body
+                if isinstance(node, ast.ClassDef) and node.name == base.id
+            )
+        )
+    violations: list[str] = []
+    for implementation in owners:
+        for node in ast.walk(implementation):
+            if not isinstance(node, ast.Attribute):
+                continue
+            owner = node.value
+            if (
+                node.attr.startswith("_")
+                and isinstance(owner, ast.Attribute)
+                and owner.attr == "dashboard"
+                and isinstance(owner.value, ast.Name)
+                and owner.value.id == "self"
+            ):
+                violations.append(node.attr)
     return sorted(set(violations))
 
 
@@ -126,9 +153,7 @@ def run() -> None:
         ), f"{module} imports a UI/composition module"
 
     assert companion_private_dashboard_accesses() == []
-    assert "profile_transfer" not in graph["app"]
-    assert "profile_transfer_ui" in graph["app"]
-    assert "service_container" in graph["app"]
+    assert graph["app"] == set()
     assert "app" not in graph["service_container"]
 
     with TemporaryDirectory() as _temp:

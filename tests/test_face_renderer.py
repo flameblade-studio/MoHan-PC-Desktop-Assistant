@@ -11,7 +11,6 @@ lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from face_renderer import FaceRenderLayers, ParametricFaceRenderer
 lazy from face_rig import (
     ExpressionShape,
     FaceMotionFrame,
@@ -19,6 +18,7 @@ lazy from face_rig import (
     MouthShape,
     Viseme,
 )
+lazy from infrastructure.face_renderer import FaceRenderLayers, ParametricFaceRenderer
 
 
 def solid(color: str) -> QPixmap:

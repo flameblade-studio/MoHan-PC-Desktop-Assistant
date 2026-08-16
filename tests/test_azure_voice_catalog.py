@@ -7,7 +7,7 @@ lazy from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from azure_voice_catalog import AzureVoiceCatalogService
+lazy from integrations.azure_voice_catalog import AzureVoiceCatalogService
 
 
 class FakeSynthesizer:

@@ -13,9 +13,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import CompanionWindow, Dashboard
-lazy from db import StudioDB
-lazy from expression_system import AI_WAIT_TIMEOUT_MS
+lazy from domain.expression_system import AI_WAIT_TIMEOUT_MS
+lazy from infrastructure.db import StudioDB
+lazy from presentation.companion_window import CompanionWindow
+lazy from presentation.dashboard_window import Dashboard
 
 type ScheduledCallback = tuple[int, Callable[[], None]]
 
@@ -45,7 +46,7 @@ def _schedule_wait_expression(
 ) -> list[ScheduledCallback]:
     callbacks: list[ScheduledCallback] = []
     with patch(
-        "app.QTimer.singleShot",
+        "presentation.dashboard_conversation.QTimer.singleShot",
         side_effect=lambda delay, callback: callbacks.append((delay, callback)),
     ):
         dashboard._schedule_ai_wait_expressions(prompt)

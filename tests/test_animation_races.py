@@ -12,8 +12,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import CompanionWindow
-lazy from db import StudioDB
+lazy from companion_window import CompanionWindow
+lazy from infrastructure.db import StudioDB
 
 
 def _create_test_window(

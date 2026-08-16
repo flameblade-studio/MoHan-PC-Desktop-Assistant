@@ -12,8 +12,9 @@ lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import CompanionWindow, QueuedSpeech
-lazy from db import StudioDB
+lazy from companion_window import CompanionWindow
+lazy from infrastructure.db import StudioDB
+lazy from speech_configuration import QueuedSpeech
 
 
 def _process_after(app: QApplication, milliseconds: int) -> None:

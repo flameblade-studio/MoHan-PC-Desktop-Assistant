@@ -12,14 +12,17 @@ lazy from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy import camera_presence
-lazy from ai_client import ActionPlannerWorker
+lazy import service_status_localization as compatibility_status
 lazy from camera_presence import CameraPresenceController
-lazy from service_status_localization import (
+lazy from domain import service_status_localization as domain_status
+lazy from domain.service_status_localization import (
     SUPPORTED_SERVICE_LANGUAGES,
     ServiceStatus,
     service_status,
 )
-lazy from speech import SpeechListener, SpeechListenerProviders
+lazy from integrations.ai_client import ActionPlannerWorker
+lazy from integrations.speech import SpeechListener, SpeechListenerProviders
+lazy from presentation import service_status_localization as presentation_status
 
 HAN_TEXT = re.compile(r"[\u3400-\u9fff]")
 FORMAT_VALUES = {
@@ -90,6 +93,15 @@ class _FakeMediaDevices:
 
 
 def _assert_catalog_contract() -> None:
+    assert compatibility_status is presentation_status
+    assert presentation_status.ServiceStatus is domain_status.ServiceStatus
+    assert presentation_status.service_status.__module__ == (
+        "presentation.service_status_localization"
+    )
+    assert presentation_status.service_status(
+        "en",
+        ServiceStatus.CAMERA_CLOSED,
+    ) == domain_status.service_status("en", ServiceStatus.CAMERA_CLOSED)
     for language in SUPPORTED_SERVICE_LANGUAGES:
         for key in ServiceStatus:
             rendered = service_status(
@@ -105,10 +117,13 @@ def _assert_catalog_contract() -> None:
         "en-US",
         ServiceStatus.CAMERA_CLOSED,
     ) == service_status("en", ServiceStatus.CAMERA_CLOSED)
-    assert service_status(
-        "unknown",
-        ServiceStatus.CAMERA_CLOSED,
-    ) == "攝影機已關閉"
+    assert (
+        service_status(
+            "unknown",
+            ServiceStatus.CAMERA_CLOSED,
+        )
+        == "攝影機已關閉"
+    )
     camera_error = service_status(
         "en",
         ServiceStatus.CAMERA_ERROR,
@@ -138,7 +153,7 @@ def _assert_speech_states() -> None:
     listener.failed.connect(failures.append)
     listener.recognized.connect(recognized.append)
 
-    with patch("speech.threading.Thread", _CapturedThread):
+    with patch("integrations.speech.threading.Thread", _CapturedThread):
         listener.listen_once()
     assert statuses[-1].startswith("Listening")
 
@@ -199,9 +214,7 @@ def _assert_speech_states() -> None:
             "prompt",
             False,
         )
-    assert failures[-1].endswith(
-        "Windows fallback recognition is currently disabled."
-    )
+    assert failures[-1].endswith("Windows fallback recognition is currently disabled.")
 
 
 def _assert_camera_states() -> None:
@@ -243,22 +256,18 @@ def _assert_camera_states() -> None:
 
 def _planner_response() -> io.BytesIO:
     return io.BytesIO(
-        json.dumps(
-            {
-                "output": [
-                    {
-                        "type": "function_call",
-                        "name": "propose_action_plan",
-                        "arguments": json.dumps(
-                            {
-                                "title": "Open project",
-                                "steps": [],
-                            }
-                        ),
-                    }
-                ]
-            }
-        ).encode("utf-8")
+        json.dumps({
+            "output": [
+                {
+                    "type": "function_call",
+                    "name": "propose_action_plan",
+                    "arguments": json.dumps({
+                        "title": "Open project",
+                        "steps": [],
+                    }),
+                }
+            ]
+        }).encode("utf-8")
     )
 
 
@@ -273,7 +282,7 @@ def _assert_ai_states() -> None:
     )
     assert worker.waiting_status == "Planning…"
     worker.signals.done.connect(completed.append)
-    with patch("ai_client.urlopen", return_value=_planner_response()):
+    with patch("integrations.ai_client.urlopen", return_value=_planner_response()):
         worker.run()
     assert completed == [{"title": "Open project", "steps": []}]
 

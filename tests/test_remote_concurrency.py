@@ -1,14 +1,14 @@
 lazy import json
 lazy import sys
-lazy from concurrent.futures import ThreadPoolExecutor
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 lazy from urllib.request import Request, urlopen
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from db import StudioDB
-lazy from remote_control import (
+from domain.python315_concurrency import ThreadPoolExecutor
+lazy from infrastructure.db import StudioDB
+lazy from integrations.remote_control import (
     RemoteControlServer,
     RemoteServerConfig,
     RemoteServerServices,

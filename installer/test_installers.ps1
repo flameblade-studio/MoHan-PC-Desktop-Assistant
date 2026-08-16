@@ -1,6 +1,14 @@
 param(
     [Parameter(Mandatory = $true)][string]$ArtifactsDir,
-    [Parameter(Mandatory = $true)][string]$Version
+    [Parameter(Mandatory = $true)][string]$Version,
+    [Parameter(Mandatory = $true)][string]$Python,
+    [Parameter(Mandatory = $true)][string]$NativeEvidenceDir,
+    [string]$PreviousVersion,
+    [string]$PreviousExeUrl,
+    [string]$PreviousExeSha256,
+    [string]$PreviousMsiUrl,
+    [string]$PreviousMsiSha256,
+    [switch]$RequirePoseAtlas
 )
 
 $ErrorActionPreference = "Stop"
@@ -15,12 +23,123 @@ if (
     )
 }
 $ResolvedArtifacts = (Resolve-Path $ArtifactsDir).Path
+$ResolvedNativeEvidence = [IO.Path]::GetFullPath($NativeEvidenceDir)
+$ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+$NativeVerifier = Join-Path $ProjectRoot (
+    "tools\verify_packaged_native_acceleration.py"
+)
+New-Item -ItemType Directory -Force $ResolvedNativeEvidence | Out-Null
+$UpgradeEvidenceDir = Join-Path $ResolvedNativeEvidence "installer-upgrade"
+New-Item -ItemType Directory -Force $UpgradeEvidenceDir | Out-Null
 $ExeInstaller = Get-Item (Join-Path $ResolvedArtifacts "*Setup.exe")
 $MsiInstaller = Get-Item (Join-Path $ResolvedArtifacts "*.msi")
 $MsiTransforms = Get-ChildItem (Join-Path $ResolvedArtifacts "*.mst") |
     Sort-Object Name
 $ExpectedTransformLocales = @("en-US", "ja-JP", "zh-CN")
 $ProgramsFolder = [Environment]::GetFolderPath("Programs")
+$ExpectedNativeLabels = @(
+    "exe",
+    "msi-zh-TW",
+    "msi-en-US",
+    "msi-zh-CN",
+    "msi-ja-JP"
+)
+$PreviousUpgradeArguments = @(
+    $PreviousVersion,
+    $PreviousExeUrl,
+    $PreviousExeSha256,
+    $PreviousMsiUrl,
+    $PreviousMsiSha256
+)
+$HasPreviousUpgrade = @($PreviousUpgradeArguments | Where-Object {
+    -not [string]::IsNullOrWhiteSpace($_)
+}).Count -gt 0
+if ($HasPreviousUpgrade -and @($PreviousUpgradeArguments | Where-Object {
+    [string]::IsNullOrWhiteSpace($_)
+}).Count -gt 0) {
+    throw "Previous-version upgrade verification requires every version, URL, and SHA-256 argument"
+}
+
+function Get-VerifiedPreviousInstaller {
+    param(
+        [Parameter(Mandatory = $true)][string]$Url,
+        [Parameter(Mandatory = $true)][string]$Sha256,
+        [Parameter(Mandatory = $true)][string]$Destination
+    )
+    Invoke-WebRequest -Uri $Url -OutFile $Destination
+    $Actual = (Get-FileHash -LiteralPath $Destination -Algorithm SHA256).Hash
+    if (-not [string]::Equals($Actual, $Sha256, [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Previous installer SHA-256 mismatch: $Destination"
+    }
+    return $Destination
+}
+
+$UpgradeEvidence = [ordered]@{
+    schema = "mohan.installer-upgrade-evidence.v1"
+    passed = $false
+    previous_version = $PreviousVersion
+    target_version = $Version
+    exe = $false
+    msi = $false
+}
+if ($HasPreviousUpgrade) {
+    $PreviousRoot = Join-Path $env:RUNNER_TEMP "mohan-previous-$PreviousVersion"
+    New-Item -ItemType Directory -Force $PreviousRoot | Out-Null
+    $PreviousExeInstaller = Get-VerifiedPreviousInstaller `
+        -Url $PreviousExeUrl `
+        -Sha256 $PreviousExeSha256 `
+        -Destination (Join-Path $PreviousRoot "MoHan-$PreviousVersion-Setup.exe")
+    $PreviousMsiInstaller = Get-VerifiedPreviousInstaller `
+        -Url $PreviousMsiUrl `
+        -Sha256 $PreviousMsiSha256 `
+        -Destination (Join-Path $PreviousRoot "MoHan-$PreviousVersion.msi")
+}
+
+function Invoke-NativeVerification {
+    param(
+        [Parameter(Mandatory = $true)][string]$PackageRoot,
+        [Parameter(Mandatory = $true)][string]$Label,
+        [Parameter(Mandatory = $true)][array]$Artifacts
+    )
+    if ($Label -notin $ExpectedNativeLabels) {
+        throw "Unexpected native installer verification label: $Label"
+    }
+    $Arguments = @(
+        $NativeVerifier,
+        $PackageRoot,
+        "--label", $Label,
+        "--output", (Join-Path $ResolvedNativeEvidence "$Label.json")
+    )
+    foreach ($Artifact in $Artifacts) {
+        $Arguments += @("--artifact", $Artifact)
+    }
+    & $Python @Arguments
+    if ($LASTEXITCODE -ne 0) {
+        throw "$Label strict native acceleration verification failed"
+    }
+}
+
+function Assert-PackagedPoseAtlas {
+    param([Parameter(Mandatory = $true)][string]$PackageRoot)
+    if (-not $RequirePoseAtlas) { return }
+    $AtlasRoot = Join-Path $PackageRoot "_internal\assets\pose-atlas\v4"
+    if (-not (Test-Path -LiteralPath $AtlasRoot)) {
+        throw "Installer omitted PoseAtlas v4 assets"
+    }
+    $Views = Get-ChildItem -LiteralPath $AtlasRoot -Filter "yaw*-pitch+00.png"
+    if ($Views.Count -ne 24) {
+        throw "Installer PoseAtlas v4 view count is incomplete: $($Views.Count)"
+    }
+    foreach ($View in $Views) {
+        $Base = [IO.Path]::GetFileNameWithoutExtension($View.Name)
+        foreach ($Suffix in @(".landmarks.json", ".hands.json")) {
+            if (-not (Test-Path -LiteralPath (Join-Path $AtlasRoot ($Base + $Suffix)))) {
+                throw "Installer PoseAtlas v4 sidecar is missing: $Base$Suffix"
+            }
+        }
+    }
+}
+
 foreach ($Locale in $ExpectedTransformLocales) {
     if (-not ($MsiTransforms.Name -match "-$Locale\.mst$")) {
         throw "Missing MSI language transform: $Locale"
@@ -33,12 +152,35 @@ $ExeInstallDir = Join-Path $env:RUNNER_TEMP "mohan-exe-install"
 $env:MOHAN_DATA_DIR = Join-Path $env:RUNNER_TEMP "mohan-installer-profile"
 New-Item -ItemType Directory -Force $env:MOHAN_DATA_DIR | Out-Null
 
+$PreviousExePath = $null
+if ($HasPreviousUpgrade) {
+    $Process = Start-Process $PreviousExeInstaller -ArgumentList @(
+        "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART",
+        "/MERGETASKS=!desktopicon", "/DIR=$ExeInstallDir"
+    ) -Wait -PassThru
+    if ($Process.ExitCode -ne 0) { throw "Previous EXE installer failed" }
+    $PreviousExePath = Join-Path $ExeInstallDir (
+        "MoHan-Desktop-Assistant-$PreviousVersion.exe"
+    )
+    if (-not (Test-Path -LiteralPath $PreviousExePath)) {
+        throw "Previous EXE installer did not install the expected application"
+    }
+}
 $Process = Start-Process $ExeInstaller.FullName -ArgumentList @(
     "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART",
     "/MERGETASKS=!desktopicon", "/DIR=$ExeInstallDir"
 ) -Wait -PassThru
 if ($Process.ExitCode -ne 0) { throw "EXE installer failed" }
 $InstalledExe = Join-Path $ExeInstallDir "MoHan-Desktop-Assistant-$Version.exe"
+if ($HasPreviousUpgrade) {
+    if (-not (Test-Path -LiteralPath $InstalledExe)) {
+        throw "EXE in-place upgrade did not install the target application"
+    }
+    if (Test-Path -LiteralPath $PreviousExePath) {
+        throw "EXE in-place upgrade left the previous application executable behind"
+    }
+    $UpgradeEvidence.exe = $true
+}
 foreach ($Notice in @("LICENSE", "THIRD_PARTY_NOTICES.md")) {
     if (-not (Test-Path (Join-Path $ExeInstallDir "_internal\$Notice"))) {
         throw "EXE installer omitted required distribution notice: $Notice"
@@ -54,6 +196,11 @@ if (
 ) {
     throw "EXE-installed application self-test failed"
 }
+Assert-PackagedPoseAtlas -PackageRoot $ExeInstallDir
+Invoke-NativeVerification `
+    -PackageRoot $ExeInstallDir `
+    -Label "exe" `
+    -Artifacts @($ExeInstaller.FullName)
 $ExeShortcutPath = Join-Path $ProgramsFolder "MoHan Desktop Assistant.lnk"
 if (-not (Test-Path -LiteralPath $ExeShortcutPath)) {
     throw "EXE installer did not create the Start menu shortcut"
@@ -87,8 +234,34 @@ if (Test-Path -LiteralPath $ExeShortcutPath) {
 
 $MsiVariants = @($null) + @($MsiTransforms)
 foreach ($Transform in $MsiVariants) {
-    $Variant = if ($null -eq $Transform) { "zh-TW" } else { $Transform.BaseName }
+    $Variant = if ($null -eq $Transform) {
+        "zh-TW"
+    }
+    else {
+        $ExpectedTransformLocales |
+            Where-Object { $Transform.Name -match "-$_\.mst$" } |
+            Select-Object -First 1
+    }
+    if (-not $Variant) { throw "Could not identify MSI transform locale" }
     $MsiInstallDir = Join-Path $env:RUNNER_TEMP "mohan-msi-install-$Variant"
+    $PreviousMsiPath = $null
+    if ($HasPreviousUpgrade -and $Variant -eq "zh-TW") {
+        $PreviousMsiArguments = @(
+            "/i", $PreviousMsiInstaller, "/qn", "/norestart",
+            "INSTALLFOLDER=$MsiInstallDir"
+        )
+        $Process = Start-Process msiexec.exe -ArgumentList $PreviousMsiArguments `
+            -Wait -PassThru
+        if ($Process.ExitCode -ne 0) {
+            throw "Previous MSI installer failed: $($Process.ExitCode)"
+        }
+        $PreviousMsiPath = Join-Path $MsiInstallDir (
+            "MoHan-Desktop-Assistant-$PreviousVersion.exe"
+        )
+        if (-not (Test-Path -LiteralPath $PreviousMsiPath)) {
+            throw "Previous MSI installer did not install the expected application"
+        }
+    }
     $InstallArguments = @(
         "/i", $MsiInstaller.FullName, "/qn", "/norestart",
         "INSTALLFOLDER=$MsiInstallDir"
@@ -107,6 +280,12 @@ foreach ($Transform in $MsiVariants) {
     if (-not (Test-Path $InstalledMsiExe)) {
         throw "MSI $Variant did not install the application"
     }
+    if ($HasPreviousUpgrade -and $Variant -eq "zh-TW") {
+        if (Test-Path -LiteralPath $PreviousMsiPath) {
+            throw "MSI in-place upgrade left the previous application executable behind"
+        }
+        $UpgradeEvidence.msi = $true
+    }
     foreach ($Notice in @("LICENSE", "THIRD_PARTY_NOTICES.md")) {
         if (-not (Test-Path (Join-Path $MsiInstallDir "_internal\$Notice"))) {
             throw "MSI $Variant omitted required distribution notice: $Notice"
@@ -122,6 +301,15 @@ foreach ($Transform in $MsiVariants) {
     ) {
         throw "MSI $Variant application self-test failed"
     }
+    Assert-PackagedPoseAtlas -PackageRoot $MsiInstallDir
+    $NativeArtifacts = @($MsiInstaller.FullName)
+    if ($null -ne $Transform) {
+        $NativeArtifacts += $Transform.FullName
+    }
+    Invoke-NativeVerification `
+        -PackageRoot $MsiInstallDir `
+        -Label "msi-$Variant" `
+        -Artifacts $NativeArtifacts
     $MsiShortcutPath = Join-Path $ProgramsFolder (
         "MoHan Desktop Assistant\MoHan Desktop Assistant.lnk"
     )
@@ -183,6 +371,16 @@ foreach ($Transform in $MsiVariants) {
     if (Test-Path -LiteralPath $MsiShortcutPath) {
         throw "MSI $Variant uninstaller left the Start menu shortcut behind"
     }
+}
+
+if ($HasPreviousUpgrade) {
+    if (-not ($UpgradeEvidence.exe -and $UpgradeEvidence.msi)) {
+        throw "Installer upgrade evidence is incomplete"
+    }
+    $UpgradeEvidence.passed = $true
+    $UpgradeEvidence | ConvertTo-Json | Set-Content `
+        -LiteralPath (Join-Path $UpgradeEvidenceDir "installer-upgrade.json") `
+        -Encoding utf8
 }
 
 "INSTALLER_EXE_AND_4_LANGUAGE_MSI_OK"

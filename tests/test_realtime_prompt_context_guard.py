@@ -5,8 +5,8 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from app import CompanionWindow
-lazy from realtime_voice import RealtimeVoiceClient
+lazy from companion_window import CompanionWindow
+lazy from integrations.realtime_voice import RealtimeVoiceClient
 
 OLD_PROMPT = (
     "請使用台灣繁體中文轉錄。常用詞：墨寒、寒、主上、妾、"

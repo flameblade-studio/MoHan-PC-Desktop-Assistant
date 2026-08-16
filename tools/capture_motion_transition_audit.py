@@ -13,8 +13,9 @@ lazy from PySide6.QtGui import QColor, QFont, QImage, QPainter
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import STYLE, CompanionWindow
-lazy from db import StudioDB
+lazy from companion_window import CompanionWindow
+lazy from infrastructure.app_resources import STYLE
+lazy from infrastructure.db import StudioDB
 
 FRAME_COLUMNS = 5
 FRAME_ROWS = 4

@@ -1,0 +1,27 @@
+[package]
+name = "mohan-accel"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.97.1"
+description = "Optional native PCM16, lip-sync, and RGBA acceleration for MoHan"
+license = "MIT"
+publish = false
+
+[lib]
+name = "_mohan_accel"
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+extension-module = ["pyo3/extension-module"]
+
+[dependencies]
+pyo3 = { version = "=0.29.2", features = ["abi3t-py315"] }
+rayon = "=1.12.0"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"
+pedantic = "warn"

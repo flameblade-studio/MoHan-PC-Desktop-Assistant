@@ -1,0 +1,247 @@
+{
+  "hands": [
+    {
+      "landmarks": [
+        [
+          317,
+          773
+        ],
+        [
+          293,
+          786
+        ],
+        [
+          289,
+          791
+        ],
+        [
+          285,
+          809
+        ],
+        [
+          282,
+          823
+        ],
+        [
+          280,
+          808
+        ],
+        [
+          270,
+          827
+        ],
+        [
+          266,
+          839
+        ],
+        [
+          264,
+          849
+        ],
+        [
+          289,
+          813
+        ],
+        [
+          283,
+          834
+        ],
+        [
+          282,
+          847
+        ],
+        [
+          282,
+          855
+        ],
+        [
+          299,
+          815
+        ],
+        [
+          291,
+          833
+        ],
+        [
+          291,
+          844
+        ],
+        [
+          290,
+          852
+        ],
+        [
+          303,
+          813
+        ],
+        [
+          301,
+          826
+        ],
+        [
+          299,
+          837
+        ],
+        [
+          299,
+          837
+        ]
+      ],
+      "model_evidence": {
+        "augmentation": "native",
+        "confidence": 0.940348,
+        "model_handedness": "right",
+        "pixel_refinement": "nearest-skin-within-8px"
+      },
+      "roi": [
+        256,
+        765,
+        70,
+        99
+      ],
+      "side": "left",
+      "thumb_side_check": false
+    },
+    {
+      "landmarks": [
+        [
+          681,
+          770
+        ],
+        [
+          675,
+          789
+        ],
+        [
+          664,
+          799
+        ],
+        [
+          669,
+          818
+        ],
+        [
+          672,
+          835
+        ],
+        [
+          694,
+          806
+        ],
+        [
+          700,
+          834
+        ],
+        [
+          700,
+          850
+        ],
+        [
+          698,
+          862
+        ],
+        [
+          704,
+          806
+        ],
+        [
+          707,
+          836
+        ],
+        [
+          703,
+          852
+        ],
+        [
+          697,
+          862
+        ],
+        [
+          707,
+          808
+        ],
+        [
+          709,
+          833
+        ],
+        [
+          704,
+          848
+        ],
+        [
+          698,
+          857
+        ],
+        [
+          707,
+          809
+        ],
+        [
+          708,
+          829
+        ],
+        [
+          705,
+          841
+        ],
+        [
+          700,
+          849
+        ]
+      ],
+      "model_evidence": {
+        "augmentation": "native",
+        "confidence": 0.983801,
+        "model_handedness": "left",
+        "pixel_refinement": "nearest-skin-within-8px"
+      },
+      "roi": [
+        656,
+        762,
+        62,
+        109
+      ],
+      "side": "right",
+      "thumb_side_check": false
+    }
+  ],
+  "height": 1536,
+  "inference": {
+    "augmentations": [
+      "native",
+      "flip-horizontal",
+      "rotate-clockwise",
+      "rotate-counterclockwise"
+    ],
+    "hand_confidence_threshold": 0.65,
+    "palm_threshold": 0.45,
+    "pipeline": "OpenCV Zoo MediaPipe PalmDet + HandPose FP32 ONNX",
+    "source_sha256": "3f94d142291a614aedb375ce8f50999419a62d1f7f44552edf517f44f8d39cfe"
+  },
+  "occluded_hands": [],
+  "occluders": [],
+  "protected_regions": [
+    {
+      "label": "face",
+      "rect": [
+        412,
+        156,
+        200,
+        220
+      ]
+    },
+    {
+      "label": "body",
+      "rect": [
+        412,
+        336,
+        200,
+        220
+      ]
+    }
+  ],
+  "schema_version": 1,
+  "view_id": "yaw+030-pitch+00",
+  "width": 1024,
+  "yaw_degrees": 30
+}

@@ -14,7 +14,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import EXPRESSION_SPEECH_FRAMES, CompanionWindow
+lazy from companion_animation_contract import EXPRESSION_SPEECH_FRAMES
+lazy from companion_window import CompanionWindow
 lazy from lip_sync import (
     VISEME_CHANGE_TRANSITION_SECONDS,
     VISEME_CLOSE_TRANSITION_SECONDS,
@@ -38,7 +39,11 @@ def _assert_runtime_source_contract() -> None:
     project_root = Path(__file__).resolve().parents[1]
     runtime_sources = {
         name: (project_root / name).read_text(encoding="utf-8")
-        for name in ("app.py", "speech.py", "realtime_voice.py")
+        for name in (
+            "app.py",
+            "integrations/speech.py",
+            "integrations/realtime_voice.py",
+        )
     }
     combined_runtime = "\n".join(runtime_sources.values())
     assert "_audio_mouth_cue" not in combined_runtime

@@ -10,8 +10,8 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from app import VOICE_GENERATION_PROMPT
-lazy from speech import OpenAITTS
+lazy from domain.speech_configuration import VOICE_GENERATION_PROMPT
+lazy from integrations.speech import OpenAITTS
 
 
 def silent_wav() -> bytes:
@@ -29,7 +29,7 @@ def captured_tts_payload(instructions: str) -> dict:
     tts = OpenAITTS()
     with (
         patch(
-            "speech.urlopen",
+            "integrations.speech.urlopen",
             return_value=response,
         ) as mocked_urlopen,
         patch.object(tts, "_emit_wave_cues"),
@@ -44,7 +44,12 @@ def run() -> None:
     root = Path(__file__).resolve().parents[1]
     runtime_sources = "\n".join(
         (root / name).read_text(encoding="utf-8")
-        for name in ("app.py", "speech.py", "realtime_voice.py", "ai_client.py")
+        for name in (
+            "integrations/speech.py",
+            "domain/speech_configuration.py",
+            "integrations/realtime_voice.py",
+            "integrations/ai_client.py",
+        )
     )
     assert runtime_sources.count(
         "請使用台灣繁體中文，以自然的台灣中文口音說話。"

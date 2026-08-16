@@ -12,8 +12,9 @@ lazy from PySide6.QtCore import QPoint, Qt
 lazy from PySide6.QtTest import QSignalSpy, QTest
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import ClickableLabel, CompanionWindow
-lazy from db import StudioDB
+lazy from companion_window import CompanionWindow
+lazy from dashboard_dialogs import ClickableLabel
+lazy from infrastructure.db import StudioDB
 
 
 def run() -> None:

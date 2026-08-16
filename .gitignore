@@ -3,6 +3,7 @@ __pycache__/
 *.pyd
 *.log
 .pytest_cache/
+.test-tmp/
 .mypy_cache/
 .ruff_cache/
 
@@ -15,6 +16,10 @@ build/
 dist/
 build-temp/
 build-info.json
+native-wheels/
+native-wheels-*/
+qt315-wheelhouse/
+.qt315-compat-*/
 release/
 release-artifacts/
 deliverables/

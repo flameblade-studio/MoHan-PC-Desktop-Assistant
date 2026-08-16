@@ -4,6 +4,7 @@ lazy import io
 lazy import os
 lazy import sys
 lazy import traceback
+lazy from importlib import import_module
 lazy from pathlib import Path
 lazy from types import SimpleNamespace
 lazy from unittest.mock import patch
@@ -12,18 +13,23 @@ lazy from urllib.error import HTTPError
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy import ai_client
-lazy import app
-lazy import camera_presence
-lazy import flagship_ui
-lazy import speech
-lazy from ai_client import ActionPlannerWorker, AIWorker, AIWorkerRequest
-lazy from app import AZURE_SECRET_POLICY, CompanionWindow, Dashboard
-lazy from camera_presence import CameraPresenceController
-lazy from flagship_ui import OAuthWorker
-lazy from realtime_voice import RealtimeVoiceClient
-lazy from safe_error import SafeDiagnostic, SafeErrorType
-lazy from service_status_localization import ServiceStatus, service_status
+lazy from application import camera_presence
+lazy from application.camera_presence import CameraPresenceController
+lazy from domain.safe_error import SafeDiagnostic, SafeErrorType
+lazy from domain.service_status_localization import ServiceStatus, service_status
+lazy from domain.speech_configuration import AZURE_SECRET_POLICY
+lazy from integrations import ai_client, speech
+lazy from integrations.ai_client import ActionPlannerWorker, AIWorker, AIWorkerRequest
+lazy from integrations.realtime_voice import RealtimeVoiceClient
+lazy from presentation import (
+    companion_speech_runtime,
+    dashboard_settings_persistence,
+    dashboard_voice_runtime,
+)
+lazy from presentation.companion_window import CompanionWindow
+lazy from presentation.dashboard_window import Dashboard
+lazy from presentation.flagship.oauth import OAuthWorker
+lazy from presentation.flagship.workflows import FlagshipWorkflowMixin
 
 _BAIT_MARKER = "NOT" + "-A-REAL-SECRET-42"
 _PRIVATE_WINDOWS_PATH = "C:" + "\\Users\\private-user\\AppData\\secret.txt"
@@ -196,7 +202,7 @@ def _assert_oauth_worker_boundary() -> None:
     )
     failed = _SignalRecorder()
     worker.signals.failed.connect(failed)
-    with patch.object(flagship_ui, "OAuthPKCEFlow", _FailingOAuthFlow):
+    with patch.object(OAuthWorker, "flow_factory", _FailingOAuthFlow):
         worker.run()
     provider_id, message = failed.single()
     assert provider_id == "google"
@@ -382,7 +388,7 @@ def _assert_dashboard_and_online_voice_boundaries() -> None:
     )
     warning = _SignalRecorder()
     with patch.object(
-        app,
+        companion_speech_runtime,
         "QMessageBox",
         SimpleNamespace(warning=warning),
     ):
@@ -444,7 +450,7 @@ def _assert_settings_error_boundaries() -> None:
     )
     warning = _SignalRecorder()
     with patch.object(
-        app,
+        dashboard_voice_runtime,
         "QMessageBox",
         SimpleNamespace(warning=warning),
     ):
@@ -476,12 +482,13 @@ def _assert_workflow_validation_boundaries() -> None:
             ValueError(_bait_detail())
         ),
     )
+    workflow_module = import_module("presentation.flagship.workflows")
     with patch.object(
-        flagship_ui,
+        workflow_module,
         "QMessageBox",
         SimpleNamespace(warning=warning),
     ):
-        flagship_ui.FlagshipControlCenter.run_workflow(
+        FlagshipWorkflowMixin.run_workflow(
             center,
             invalid_workflow,
         )
@@ -502,13 +509,14 @@ def _assert_workflow_validation_boundaries() -> None:
         db=SimpleNamespace(set_setting=lambda *_args: None),
         _settings_text=lambda _key, **values: values.get("reason", "title"),
     )
-    with (
-        patch.object(app, "set_autostart", side_effect=OSError(_bait_detail())),
-        patch.object(
-            app,
-            "QMessageBox",
-            SimpleNamespace(warning=warning),
-        ),
+    def failing_autostart(*_args: object) -> None:
+        raise OSError(_bait_detail())
+
+    fake.autostart_configurator = failing_autostart
+    with patch.object(
+        dashboard_settings_persistence,
+        "QMessageBox",
+        SimpleNamespace(warning=warning),
     ):
         Dashboard._save_autostart_setting(fake)
     _parent, _title, message = warning.single()

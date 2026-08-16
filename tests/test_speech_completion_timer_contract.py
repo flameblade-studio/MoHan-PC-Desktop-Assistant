@@ -14,8 +14,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QAbstractAnimation, QPoint, QTimer
 lazy from PySide6.QtWidgets import QApplication, QLabel
 
-lazy from app import CompanionWindow, QueuedSpeech
-lazy from db import StudioDB
+lazy from companion_window import CompanionWindow
+lazy from infrastructure.db import StudioDB
+lazy from speech_configuration import QueuedSpeech
 
 FINAL_STATE = "proud_front"
 FINAL_STATE_SOURCE = "ai_tag"

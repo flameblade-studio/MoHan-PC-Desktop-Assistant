@@ -1,0 +1,18 @@
+[build-system]
+requires = ["maturin==1.14.1"]
+build-backend = "maturin"
+
+[project]
+name = "mohan-accel"
+version = "0.1.0"
+description = "Optional native PCM16, lip-sync, and RGBA acceleration for MoHan"
+requires-python = ">=3.15"
+license = "MIT"
+authors = [
+  { name = "Flameblade Studio" },
+]
+
+[tool.maturin]
+bindings = "pyo3"
+module-name = "_mohan_accel"
+features = ["extension-module"]

@@ -11,6 +11,7 @@ lazy import stat
 lazy import subprocess
 lazy import sys
 lazy import tempfile
+lazy import time
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,10 +27,25 @@ APPIMAGETOOL_URL = (
     "https://github.com/AppImage/appimagetool/releases/download/continuous/"
     "appimagetool-x86_64.AppImage"
 )
+POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
+DMG_CREATE_ATTEMPTS = 3
+DMG_CREATE_RETRY_SECONDS = 3
 
 
 def _run(command: list[str], *, env: dict[str, str] | None = None) -> None:
     subprocess.run(command, cwd=ROOT, env=env, check=True)
+
+
+def _create_dmg(command: list[str], output: Path) -> None:
+    for attempt in range(1, DMG_CREATE_ATTEMPTS + 1):
+        output.unlink(missing_ok=True)
+        try:
+            _run(command)
+            return
+        except subprocess.CalledProcessError:
+            if attempt == DMG_CREATE_ATTEMPTS:
+                raise
+            time.sleep(DMG_CREATE_RETRY_SECONDS)
 
 
 def _sha256(path: Path) -> str:
@@ -45,6 +61,23 @@ def _validate_version(version: str) -> None:
         raise ValueError(
             "Preview packages require an N.N.N or N.N.N-rc.N version"
         )
+
+
+def _release_pose_atlas_root(required: bool) -> Path | None:
+    if not required:
+        return None
+    views = tuple(POSE_ATLAS_ROOT.glob("yaw*-pitch+00.png"))
+    if len(views) != 24:
+        raise FileNotFoundError(
+            "The Preview release requires 24 PoseAtlas v4 view assets: "
+            f"{POSE_ATLAS_ROOT}"
+        )
+    for view in views:
+        base = view.stem
+        for suffix in (".landmarks.json", ".hands.json"):
+            if not (POSE_ATLAS_ROOT / f"{base}{suffix}").is_file():
+                raise FileNotFoundError(f"PoseAtlas v4 sidecar missing: {base}{suffix}")
+    return POSE_ATLAS_ROOT
 
 
 def _write_build_info(path: Path, version: str, target: str) -> None:
@@ -78,6 +111,7 @@ def _pyinstaller(
     target: str,
     icon: Path,
     temp_root: Path,
+    pose_atlas_root: Path | None,
 ) -> Path:
     build_info = temp_root / "build-info.json"
     _write_build_info(build_info, version, target)
@@ -98,6 +132,8 @@ def _pyinstaller(
         str(temp_root / "build"),
         "--specpath",
         str(temp_root / "spec"),
+        "--paths",
+        str(ROOT),
         "--icon",
         str(icon),
         "--add-data",
@@ -111,6 +147,13 @@ def _pyinstaller(
         "--add-data",
         f"{build_info}{data_separator}.",
     ]
+    if pose_atlas_root is not None:
+        command.extend(
+            [
+                "--add-data",
+                f"{pose_atlas_root}{data_separator}assets/pose-atlas/v4",
+            ]
+        )
     if target == "macos":
         command.extend(
             [
@@ -118,7 +161,7 @@ def _pyinstaller(
                 "tw.com.flamebladestudio.mohan.preview",
             ]
         )
-    command.append(str(ROOT / "preview_app.py"))
+    command.append(str(ROOT / "presentation" / "preview_app.py"))
     _run(command)
     return dist
 
@@ -164,12 +207,11 @@ def _preview_notice() -> str:
 简体中文：此预览包只验证启动、四语界面、平台路径与安全停用边界；不是 Windows 完整版。
 English: This limited Preview validates launch, four-language UI, platform paths, and fail-closed boundaries. It is not feature parity with Windows.
 日本語：この限定 Preview は起動、四言語画面、保存先、安全な無効化を確認するもので、Windows 完全版と同等ではありません。
-
 Voice, cloud connectors, system tools, autostart, and secret entry remain disabled until verified on real devices.
 """
 
 
-def build_macos(version: str, output_dir: Path) -> Path:
+def build_macos(version: str, output_dir: Path, *, require_pose_atlas: bool) -> Path:
     if sys.platform != "darwin":
         raise RuntimeError("macOS DMG packages must be built on a macOS runner")
     reported_architecture = platform.machine().lower()
@@ -186,6 +228,7 @@ def build_macos(version: str, output_dir: Path) -> Path:
         )
     with tempfile.TemporaryDirectory(prefix="mohan-preview-macos-") as raw:
         temp_root = Path(raw)
+        pose_atlas_root = _release_pose_atlas_root(require_pose_atlas)
         icon = _create_icns(temp_root)
         dist = _pyinstaller(
             name="MoHan Desktop Assistant Preview",
@@ -193,6 +236,7 @@ def build_macos(version: str, output_dir: Path) -> Path:
             target="macos",
             icon=icon,
             temp_root=temp_root,
+            pose_atlas_root=pose_atlas_root,
         )
         app = dist / "MoHan Desktop Assistant Preview.app"
         if not app.is_dir():
@@ -212,8 +256,7 @@ def build_macos(version: str, output_dir: Path) -> Path:
         output = output_dir / (
             f"MoHan-Desktop-Assistant-v{version}-macOS-{architecture}-Preview.dmg"
         )
-        output.unlink(missing_ok=True)
-        _run(
+        _create_dmg(
             [
                 "hdiutil",
                 "create",
@@ -225,7 +268,8 @@ def build_macos(version: str, output_dir: Path) -> Path:
                 "UDZO",
                 "-ov",
                 str(output),
-            ]
+            ],
+            output,
         )
         return output
 
@@ -235,7 +279,13 @@ def _write_executable(path: Path, content: str) -> None:
     path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
-def build_linux(version: str, output_dir: Path, appimagetool: Path) -> Path:
+def build_linux(
+    version: str,
+    output_dir: Path,
+    appimagetool: Path,
+    *,
+    require_pose_atlas: bool,
+) -> Path:
     if not sys.platform.startswith("linux"):
         raise RuntimeError("Linux AppImage packages must be built on Linux")
     architecture = platform.machine().lower()
@@ -251,6 +301,7 @@ def build_linux(version: str, output_dir: Path, appimagetool: Path) -> Path:
 
     with tempfile.TemporaryDirectory(prefix="mohan-preview-linux-") as raw:
         temp_root = Path(raw)
+        pose_atlas_root = _release_pose_atlas_root(require_pose_atlas)
         icon = ROOT / "installer" / "artwork" / "wizard-small.png"
         dist = _pyinstaller(
             name="mohan-preview",
@@ -258,6 +309,7 @@ def build_linux(version: str, output_dir: Path, appimagetool: Path) -> Path:
             target="linux",
             icon=icon,
             temp_root=temp_root,
+            pose_atlas_root=pose_atlas_root,
         )
         bundle = dist / "mohan-preview"
         executable = bundle / "mohan-preview"
@@ -325,15 +377,25 @@ def main() -> int:
     parser.add_argument("--version", required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--appimagetool", type=Path)
+    parser.add_argument("--require-pose-atlas", action="store_true")
     args = parser.parse_args()
     _validate_version(args.version)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     if args.platform == "macos":
-        package = build_macos(args.version, args.output_dir)
+        package = build_macos(
+            args.version,
+            args.output_dir,
+            require_pose_atlas=args.require_pose_atlas,
+        )
     else:
         if args.appimagetool is None:
             raise ValueError("--appimagetool is required for Linux packages")
-        package = build_linux(args.version, args.output_dir, args.appimagetool)
+        package = build_linux(
+            args.version,
+            args.output_dir,
+            args.appimagetool,
+            require_pose_atlas=args.require_pose_atlas,
+        )
     print(package)
     return 0
 

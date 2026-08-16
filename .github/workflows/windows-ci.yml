@@ -3,6 +3,7 @@ name: Windows CI
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   PYTHONUTF8: "1"
+  RUSTUP_TOOLCHAIN: "1.97.1"
 
 on:
   push:
@@ -34,12 +35,33 @@ jobs:
           allow-prereleases: true
           cache: pip
 
+      - name: Build verified Qt 3.15 compatibility wheelhouse
+        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse
+
       - name: Install dependencies
-        run: python tools/install_python315_dependencies.py
+        run: >-
+          python tools/install_python315_dependencies.py
+          --qt-compat-wheelhouse qt315-wheelhouse
 
       - name: Install pinned development quality tools
         run: >-
           python -m pip install --only-binary=:all: -r requirements-dev.txt
+
+      - name: Install pinned Rust native build toolchain
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
+          python -m pip install --only-binary=:all: maturin==1.14.1
+
+      - name: Build and verify native acceleration
+        shell: pwsh
+        run: |
+          python tools/build_native_acceleration.py `
+            --output-dir native-wheels `
+            --evidence native-wheels/build-evidence.json `
+            --install
+          python -m pytest tests/test_native_equivalence.py tests/test_native_rgba_equivalence.py -q
+          python tools/benchmark_native_rgba.py --width 512 --height 512 --iterations 3
 
       - name: Verify PYTHON_JIT forwarding and compare MoHan hot paths
         shell: pwsh
@@ -93,6 +115,8 @@ jobs:
           python-version: "3.15.0-rc.1"
           allow-prereleases: true
           cache: pip
+      - name: Build verified Qt 3.15 compatibility wheelhouse
+        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse
       - name: Check out pinned CPython 3.15.0rc1 source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -109,7 +133,15 @@ jobs:
           "MOHAN_JIT_PYTHON=$PWD\_python315\PCbuild\amd64\python.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Install runtime dependencies into JIT-default Python
         shell: pwsh
-        run: '& $env:MOHAN_JIT_PYTHON tools/install_python315_dependencies.py'
+        run: >-
+          & $env:MOHAN_JIT_PYTHON tools/install_python315_dependencies.py
+          --qt-compat-wheelhouse qt315-wheelhouse
+      - name: Install pinned Rust and native build toolchain
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
+          & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all: -r requirements-dev.txt
+          & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all: maturin==1.14.1
       - name: Install Windows installer toolchains
         env:
           GH_TOKEN: ${{ github.token }}
@@ -120,15 +152,96 @@ jobs:
           -WixVersion "7.0.0"
       - name: Build packaged application
         shell: pwsh
-        run: .\build.ps1 -Version "2.0.15-ci" -Python $env:MOHAN_JIT_PYTHON
+        run: .\build.ps1 -Version "4.0.0-rc.1" -Python $env:MOHAN_JIT_PYTHON
+      - name: Verify native equivalence and packaged operations
+        shell: pwsh
+        run: |
+          $evidenceDir = Join-Path $env:RUNNER_TEMP "mohan-native-ci"
+          New-Item -ItemType Directory -Force $evidenceDir | Out-Null
+          & $env:MOHAN_JIT_PYTHON -m pytest tests/test_native_equivalence.py tests/test_native_rgba_equivalence.py -q
+          & $env:MOHAN_JIT_PYTHON tools/benchmark_native_rgba.py --width 512 --height 512 --iterations 3
+          & $env:MOHAN_JIT_PYTHON tools/verify_packaged_native_acceleration.py `
+            "dist\MoHan-Desktop-Assistant-4.0.0-rc.1" `
+            --label "onedir" `
+            --output (Join-Path $evidenceDir "onedir.json")
+      - name: Extract and strictly verify portable ZIP
+        shell: pwsh
+        run: |
+          $tag = "v4.0.0-rc.1"
+          $version = "4.0.0-rc.1"
+          $appDir = Join-Path $PWD "dist\MoHan-Desktop-Assistant-$version"
+          $artifacts = Join-Path $PWD "ci-installers"
+          $extract = Join-Path $env:RUNNER_TEMP "mohan-ci-zip"
+          $evidenceDir = Join-Path $env:RUNNER_TEMP "mohan-native-ci"
+          New-Item -ItemType Directory -Force $artifacts | Out-Null
+          $zip = Join-Path $artifacts "MoHan-Desktop-Assistant-$tag-Windows-x64.zip"
+          Compress-Archive -Path $appDir -DestinationPath $zip -CompressionLevel Optimal
+          Expand-Archive -LiteralPath $zip -DestinationPath $extract
+          $packageRoot = Join-Path $extract (Split-Path $appDir -Leaf)
+          & $env:MOHAN_JIT_PYTHON tools/verify_packaged_native_acceleration.py `
+            $packageRoot `
+            --label "zip" `
+            --artifact $zip `
+            --output (Join-Path $evidenceDir "zip.json")
       - name: Build EXE and MSI installers
         shell: pwsh
         run: |
           .\installer\build_installers.ps1 `
-            -AppDir "dist\MoHan-Desktop-Assistant-2.0.15-ci" `
-            -Version "2.0.15-ci" `
-            -Tag "v2.0.15-ci" `
+            -AppDir "dist\MoHan-Desktop-Assistant-4.0.0-rc.1" `
+            -Version "4.0.0-rc.1" `
+            -Tag "v4.0.0-rc.1" `
             -OutputDir "ci-installers"
       - name: Install, self-test, and uninstall both formats
         shell: pwsh
-        run: .\installer\test_installers.ps1 -ArtifactsDir "ci-installers" -Version "2.0.15-ci"
+        run: |
+          .\installer\test_installers.ps1 `
+            -ArtifactsDir "ci-installers" `
+            -Version "4.0.0-rc.1" `
+            -Python $env:MOHAN_JIT_PYTHON `
+            -NativeEvidenceDir (Join-Path $env:RUNNER_TEMP "mohan-native-ci") `
+            -PreviousVersion "3.1.2" `
+            -PreviousExeUrl "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases/download/v3.1.2/MoHan-Desktop-Assistant-v3.1.2-Windows-x64-Setup.exe" `
+            -PreviousExeSha256 "1a3cf537faab72ca9508a8440a4c3bd2115b6af927f260217f272cfb39631c8e" `
+            -PreviousMsiUrl "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases/download/v3.1.2/MoHan-Desktop-Assistant-v3.1.2-Windows-x64.msi" `
+            -PreviousMsiSha256 "1f0118f2c88497e1e88b62668e968a4d82dc0f64ac5971739d4f895e3fc619a9"
+
+      - name: Set up isolated Python 3.14 SBOM tooling runtime
+        id: sbom-python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.14.7"
+
+      - name: Finalize native evidence and Rust SBOM
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $tag = "v4.0.0-rc.1"
+          $base = "MoHan-Desktop-Assistant-$tag"
+          $evidenceDir = Join-Path $env:RUNNER_TEMP "mohan-native-ci"
+          $nativeEvidence = Join-Path $PWD "ci-installers\$base-Native-Evidence.json"
+          & $env:MOHAN_JIT_PYTHON tools/finalize_native_release_evidence.py `
+            --verifications $evidenceDir `
+            --artifacts "ci-installers" `
+            --tag $tag `
+            --output $nativeEvidence
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+          & $env:MOHAN_JIT_PYTHON tools/generate_native_sbom.py `
+            --evidence $nativeEvidence `
+            --tag $tag `
+            --output "ci-installers\$base-Windows-Native-SBOM.cdx.json"
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+          $sbomPython = "${{ steps.sbom-python.outputs.python-path }}"
+          & $sbomPython -m pip install `
+            --only-binary=:all: `
+            cyclonedx-bom==7.3.0
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+          & $env:MOHAN_JIT_PYTHON tools/validate_native_sbom.py `
+            --sbom "ci-installers\$base-Windows-Native-SBOM.cdx.json" `
+            --evidence $nativeEvidence `
+            --schema-python $sbomPython

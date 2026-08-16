@@ -2,6 +2,7 @@ name: Cross-platform core
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  RUSTUP_TOOLCHAIN: "1.97.1"
 
 on:
   push:
@@ -44,10 +45,27 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install --yes libegl1
+          sudo apt-get install --yes libegl1 libportaudio2
+
+      - name: Build verified Qt 3.15 compatibility wheelhouse
+        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse
 
       - name: Install dependencies
-        run: python tools/install_python315_dependencies.py
+        run: >-
+          python tools/install_python315_dependencies.py
+          --qt-compat-wheelhouse qt315-wheelhouse
+
+      - name: Install pinned native build toolchain
+        run: |
+          rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
+          python -m pip install --only-binary=:all: -r requirements-dev.txt
+          python -m pip install --only-binary=:all: maturin==1.14.1
+
+      - name: Build and verify native acceleration
+        run: |
+          python tools/build_native_acceleration.py --output-dir native-wheels --evidence native-wheels/build-evidence.json --install
+          python -m pytest tests/test_native_equivalence.py tests/test_native_rgba_equivalence.py -q
+          python tools/benchmark_native_rgba.py --width 512 --height 512 --iterations 3
 
       - name: Compile source
         run: python -m compileall -q .

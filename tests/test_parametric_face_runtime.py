@@ -11,7 +11,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from app import EXPRESSION_SPEECH_EXPRESSIONS, CompanionWindow
+lazy from companion_animation_contract import EXPRESSION_SPEECH_EXPRESSIONS
+lazy from companion_window import CompanionWindow
 lazy from face_rig import FacePose, Viseme
 
 
