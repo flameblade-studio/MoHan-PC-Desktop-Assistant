@@ -217,10 +217,9 @@ def test_stdlib_https_transport_is_private_and_non_persistent() -> None:
     provider_tree = tree("openai_vision_provider")
     imports = imported_roots("openai_vision_provider")
     expected_endpoint = urlsplit("https://api.openai.com/v1/responses")
-    endpoints = {
-        endpoint
-        for value in string_constants(provider_tree)
-        for endpoint in (urlsplit(value),)
+    endpoints: set[object] = set()
+    for value in string_constants(provider_tree):
+        endpoint = urlsplit(value)
         if (
             endpoint.scheme == expected_endpoint.scheme
             and endpoint.hostname == expected_endpoint.hostname
@@ -228,8 +227,8 @@ def test_stdlib_https_transport_is_private_and_non_persistent() -> None:
             and endpoint.path == expected_endpoint.path
             and not endpoint.query
             and not endpoint.fragment
-        )
-    }
+        ):
+            endpoints.add(endpoint)
     failures: list[str] = []
     if "urllib" not in imports:
         failures.append("stdlib urllib transport missing")
