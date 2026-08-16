@@ -306,20 +306,19 @@ def _body_sidecar(
 
 
 def _foot_runs(mask: object, bottom: int) -> tuple[_FootRun, ...]:
-    candidates = []
     start = max(0, bottom - 72)
     for y in range(bottom, start - 1, -1):
         runs = tuple(
             (left, right)
             for left, right in _row_runs(mask[y])
-            if 8 <= right - left + 1 <= 190
+            if 4 <= right - left + 1 <= 190
         )
         if runs:
-            candidates.append((len(runs), y, runs))
-    if not candidates:
-        return ()
-    _, y, runs = max(candidates, key=lambda item: (item[0], item[1]))
-    return tuple(_FootRun(left, right, y) for left, right in runs)
+            # The lowest alpha-supported run is the only defensible sole
+            # reference.  Choosing a higher row solely because ornamentation
+            # creates more fragments can fabricate a false baseline.
+            return tuple(_FootRun(left, right, y) for left, right in runs)
+    return ()
 
 
 def _foot_side_map(
@@ -349,13 +348,13 @@ def _alpha_point(
     right: int,
     bottom: int,
 ) -> list[int]:
-    target_x = min(max(target_x, left + 1), right - 1)
-    target_y = min(max(target_y, top + 1), bottom - 1)
+    target_x = min(max(target_x, left + 1), right)
+    target_y = min(max(target_y, top + 1), bottom)
     for radius in range(48):
         x0 = max(left + 1, round(target_x) - radius)
-        x1 = min(right - 1, round(target_x) + radius)
+        x1 = min(right, round(target_x) + radius)
         y0 = max(top + 1, round(target_y) - radius)
-        y1 = min(bottom - 1, round(target_y) + radius)
+        y1 = min(bottom, round(target_y) + radius)
         ys, xs = numpy.nonzero(mask[y0 : y1 + 1, x0 : x1 + 1])
         if len(xs):
             distances = (xs + x0 - target_x) ** 2 + (ys + y0 - target_y) ** 2
@@ -390,6 +389,7 @@ def _hand_sidecar(
         enforce_screen_thumb_side=source.yaw == 0,
     )
     hands = []
+    occluders = []
     for hand in selected:
         model_points = tuple(
             (
@@ -400,11 +400,18 @@ def _hand_sidecar(
         )
         points = _refine_landmarks_to_skin(model_points, rgba)
         roi = _hand_roi(points, rgba.shape[1], rgba.shape[0])
+        occlusions, detected_occluders = _thumb_base_garment_occlusions(
+            hand.observation.handedness,
+            points,
+            rgba,
+        )
+        occluders.extend(detected_occluders)
         hands.append(
             {
                 "side": hand.observation.handedness.value,
                 "roi": list(roi),
                 "landmarks": [list(point) for point in points],
+                "occlusions": occlusions,
                 "thumb_side_check": source.yaw == 0,
                 "model_evidence": {
                     "augmentation": hand.augmentation,
@@ -451,7 +458,7 @@ def _hand_sidecar(
         "hands": sorted(hands, key=lambda item: str(item["side"])),
         "occluded_hands": occluded,
         "protected_regions": protected,
-        "occluders": [],
+        "occluders": occluders,
         "inference": {
             "pipeline": "OpenCV Zoo MediaPipe PalmDet + HandPose FP32 ONNX",
             "palm_threshold": HAND_PALM_THRESHOLD,
@@ -470,6 +477,31 @@ def _hand_sidecar(
         ),
     }
     return payload, report
+
+
+def _thumb_base_garment_occlusions(
+    side: Handedness,
+    points: tuple[tuple[int, int], ...],
+    rgba: object,
+) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
+    """Record only a physically sampled sleeve covering a thumb root.
+
+    The remaining three thumb landmarks must still be visible; the hand audit
+    rejects any other base joint and every fingertip occlusion.
+    """
+
+    x, y = points[1]
+    skin = _skin_mask(rgba)
+    if _local_skin_coverage(skin, x, y) >= 0.35:
+        return [], []
+    b, g, r, alpha = (int(value) for value in rgba[y, x])
+    if alpha < 96 or not (b > r + 20 and b > g + 10):
+        return [], []
+    identifier = f"sampled-blue-garment-{side.value}-thumb-root"
+    return (
+        [{"landmark_index": 1, "occluder_id": identifier}],
+        [{"id": identifier, "rgb": [r, g, b], "tolerance": 24}],
+    )
 
 
 def _augmentations(rgb: object) -> tuple[_Augmentation, ...]:

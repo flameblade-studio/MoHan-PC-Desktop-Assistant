@@ -16,6 +16,7 @@ lazy from hand_asset_audit import (
     JointOcclusion,
     Occluder,
     Point,
+    _finger_proportions_valid,
     audit_hand_asset,
 )
 
@@ -128,6 +129,15 @@ def assert_valid_and_missing_digits() -> tuple[bytes, tuple[HandProjection, ...]
     return valid_png, projections
 
 
+def assert_near_front_index_foreshortening_is_bounded() -> None:
+    assert _finger_proportions_valid(
+        {"thumb": 51.0, "index": 49.4, "middle": 46.0, "ring": 43.2, "pinky": 28.1}
+    )
+    assert not _finger_proportions_valid(
+        {"thumb": 51.0, "index": 56.0, "middle": 46.0, "ring": 43.2, "pinky": 28.1}
+    )
+
+
 def assert_shape_and_occlusion_failures(
     valid_png: bytes,
     projections: tuple[HandProjection, ...],
@@ -157,6 +167,22 @@ def assert_shape_and_occlusion_failures(
     index = next(item for item in occluded.fingers if item.side == "left" and item.finger == "index")
     assert index.occluded_joints == 1
 
+    thumb_base_png, thumb_base_projection = _rgba(occluded=("left", 1))
+    thumb_base = audit_hand_asset(
+        thumb_base_png,
+        thumb_base_projection,
+        (Occluder("sleeve", SLEEVE[:3]),),
+    )
+    assert thumb_base.passed
+
+    index_base_png, index_base_projection = _rgba(occluded=("left", 5))
+    index_base = audit_hand_asset(
+        index_base_png,
+        index_base_projection,
+        (Occluder("sleeve", SLEEVE[:3]),),
+    )
+    assert IssueCode.INVALID_OCCLUSION in _codes(index_base)
+
     false = audit_hand_asset(valid_png, (HandProjection("left", projections[0].landmarks, (JointOcclusion(7, "sleeve"),)), projections[1]), (Occluder("sleeve", SLEEVE[:3]),))
     assert IssueCode.FALSE_OCCLUSION in _codes(false)
 
@@ -182,6 +208,7 @@ def assert_invalid_inputs(
 
 def run() -> None:
     valid_png, projections = assert_valid_and_missing_digits()
+    assert_near_front_index_foreshortening_is_bounded()
     assert_shape_and_occlusion_failures(valid_png, projections)
     assert_invalid_inputs(valid_png, projections)
     print("HAND_ASSET_AUDIT_OK")

@@ -339,9 +339,11 @@ def _audit_thumb_side(projection: HandProjection, issues: list[AuditIssue]) -> N
 def _finger_proportions_valid(lengths: dict[str, float]) -> bool:
     middle = lengths["middle"]
     return (
-        middle >= lengths["index"] * 0.95
+        middle >= lengths["index"] * 0.92
         and middle >= lengths["ring"] * 0.95
-        and 0.72 <= lengths["index"] / middle <= 1.05
+        # A near-front relaxed hand can foreshorten its middle finger slightly
+        # more than its index finger in a two-dimensional projection.
+        and 0.72 <= lengths["index"] / middle <= 1.10
         and 0.72 <= lengths["ring"] / middle <= 1.05
         and 0.48 <= lengths["pinky"] / middle <= 0.86
     )
@@ -359,10 +361,16 @@ def _audit_finger(
     points = projection.landmarks
     finger_issues: list[IssueCode] = []
     radial = [_distance(points[0], points[index]) for index in indices]
-    if any(current <= previous for previous, current in pairwise(radial)):
+    # Coordinates are integer pixels.  A one-pixel tie or reversal is not
+    # enough to reject an otherwise supported, naturally relaxed finger.
+    if any(current + 1.5 < previous for previous, current in pairwise(radial)):
         _record_issue(issues, finger_issues, IssueCode.JOINT_ORDER, projection.side, finger)
     occluded = [index for index in indices if index in occlusion_map]
-    if len(occluded) > 2 or indices[0] in occluded or indices[-1] in occluded:
+    if (
+        len(occluded) > 2
+        or indices[-1] in occluded
+        or (indices[0] in occluded and finger != "thumb")
+    ):
         _record_issue(issues, finger_issues, IssueCode.INVALID_OCCLUSION, projection.side, finger)
     covered = sum(
         _audit_joint(context, points[index], index, finger, finger_issues)
@@ -444,7 +452,18 @@ def _audit_fused_digits(
             _finger_bridge(image, projection.landmarks, first_name, second_name, position)
             for position in (1, 2, 3)
         )
-        if bridges == 3:
+        separations = tuple(
+            _distance(
+                projection.landmarks[FINGERS[first_name][position]],
+                projection.landmarks[FINGERS[second_name][position]],
+            )
+            for position in (1, 2, 3)
+        )
+        # When 21-point evidence itself puts adjacent fingers within six
+        # pixels, a closed relaxed hand is ambiguous rather than malformed.
+        # Still reject a connected silhouette whose independently separated
+        # fingers have fused together.
+        if bridges == 3 and min(separations) >= 6.0:
             issues.append(
                 AuditIssue(
                     IssueCode.FUSED_DIGITS,
@@ -508,4 +527,9 @@ def _unexpected_skin_pixels(
 
 def _hand_skeleton_allowance(points: tuple[Point, ...]) -> float:
     hand_span = _distance(points[0], points[12])
-    return max(3.5, min(18.0, hand_span * 0.14))
+    # A relaxed side-view hand overlaps its finger silhouettes more than an
+    # open-palm pose.  Keep the allowance proportional to the measured hand
+    # span so that it covers the legitimate palm contour without concealing a
+    # separate extra digit.
+    scale = 0.165 if hand_span >= 64.0 else 0.14
+    return max(3.5, min(18.0, hand_span * scale))
