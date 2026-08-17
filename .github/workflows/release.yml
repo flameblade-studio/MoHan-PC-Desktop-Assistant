@@ -193,6 +193,16 @@ jobs:
         run: >-
           python -m pip install --only-binary=:all: -r requirements-dev.txt
 
+      - name: Build native acceleration for full Windows regression
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
+          python -m pip install --only-binary=:all: maturin==1.14.1
+          python tools/build_native_acceleration.py `
+            --output-dir native-wheels `
+            --evidence native-wheels/build-evidence.json `
+            --install
+
       - name: Install pinned Windows installer toolchains
         env:
           GH_TOKEN: ${{ github.token }}
@@ -233,10 +243,9 @@ jobs:
           & $env:MOHAN_JIT_PYTHON tools/install_python315_dependencies.py
           --qt-compat-wheelhouse qt315-wheelhouse
 
-      - name: Install pinned Rust native build toolchain
+      - name: Install native build dependencies into JIT-default Python
         shell: pwsh
         run: |
-          rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
           & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all: -r requirements-dev.txt
           & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all: maturin==1.14.1
 
