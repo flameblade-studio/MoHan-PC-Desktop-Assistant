@@ -316,6 +316,18 @@ def assert_return_thresholds_checkin_and_neutral_public_text() -> None:
     assert check_in is not None and check_in.priority is CandidatePriority.CHECK_IN
 
 
+def assert_visual_presence_arrival_uses_the_approved_speech_path() -> None:
+    engine, *_ = runtime()
+    selected = engine.propose(
+        environment(visual_presence_arrival=True),
+        CompanionProactivityPreferences(),
+    )
+    assert selected is not None
+    assert selected.source is ProactiveSource.VISUAL_PRESENCE
+    assert selected.priority is CandidatePriority.VISUAL_PRESENCE
+    assert selected.performance.expression == "happy"
+
+
 def assert_private_phrasebook_is_injected_not_built_in() -> None:
     private = CompanionPhrasebook(
         {"warm": ("Private welcome.",)},
@@ -380,6 +392,7 @@ def run() -> None:
     assert_all_wellbeing_triggers_and_preference_guards()
     assert_two_phase_commit_failure_does_not_consume_budget()
     assert_return_thresholds_checkin_and_neutral_public_text()
+    assert_visual_presence_arrival_uses_the_approved_speech_path()
     assert_private_phrasebook_is_injected_not_built_in()
     assert_day_rollover_resets_budget()
     assert_pending_delivery_is_bounded_and_expires()

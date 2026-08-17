@@ -287,6 +287,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'answering_status': '回答中……',
  'api_connection_failed': 'OpenAI API：连接失败（{error}）',
  'voice_ready_short': '准备就绪',
+ 'sleep_mode_status': '休眠模式已启动；墨寒会保持安静，提醒与紧急警报仍会按规则处理。',
  'microphone_idle': '🎙 麦克风',
  'microphone_send_now': '⏹ 立即发送',
  'microphone_recognizing': '识别中……',

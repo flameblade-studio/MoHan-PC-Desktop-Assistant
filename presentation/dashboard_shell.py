@@ -1097,6 +1097,17 @@ class DashboardShellMixin:
     def _mode_changed(self, mode: str) -> None:
         self.mode = mode
         self.db.set_setting("mode", mode)
+        if mode == "休眠":
+            # Sleep is an intentional quiet state.  Do not synthesize a
+            # confirmation through a fallback provider, which can make the
+            # selected companion voice appear to change unexpectedly.
+            self.set_api_status(
+                self._t(
+                    "sleep_mode_status",
+                    "休眠模式已啟；墨寒會保持安靜，提醒與緊急警報仍照規則處理。",
+                )
+            )
+            return
         if is_english(self.ui_language):
             lines = {
                 "工作": "Work mode enabled. I will interrupt only when necessary.",

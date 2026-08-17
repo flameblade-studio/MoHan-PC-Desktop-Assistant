@@ -393,6 +393,9 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "answering_status": "Answering…",
     "api_connection_failed": "OpenAI API: connection failed ({error})",
     "voice_ready_short": "Ready",
+    "sleep_mode_status": (
+        "Sleep mode is active. MoHan will remain quiet; reminders and urgent alerts still follow their rules."
+    ),
     "microphone_idle": "🎙 Microphone",
     "microphone_send_now": "⏹ Send now",
     "microphone_recognizing": "Recognizing…",

@@ -320,19 +320,27 @@ class CompanionPlatformMixin:
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.LeftButton:
-            self.drag_offset = (
-                event.globalPosition().toPoint() - self.frameGeometry().topLeft()
-            )
+            self._begin_character_drag(event.globalPosition().toPoint())
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         if self.drag_offset and event.buttons() & Qt.LeftButton:
-            self.move(event.globalPosition().toPoint() - self.drag_offset)
+            self._move_character_drag(event.globalPosition().toPoint())
         super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        self.drag_offset = None
+        self._finish_character_drag()
         super().mouseReleaseEvent(event)
+
+    def _begin_character_drag(self, global_position: QPoint) -> None:
+        self.drag_offset = global_position - self.frameGeometry().topLeft()
+
+    def _move_character_drag(self, global_position: QPoint) -> None:
+        if self.drag_offset is not None:
+            self.move(global_position - self.drag_offset)
+
+    def _finish_character_drag(self) -> None:
+        self.drag_offset = None
 
     def _stop_window_timers(self) -> None:
         for timer_name in (

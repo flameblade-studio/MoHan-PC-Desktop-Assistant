@@ -230,6 +230,9 @@ class CompanionVisualDynamicsMixin:
             CHARACTER_IMAGE_SIZE,
         )
         self.character.clicked.connect(self._character_clicked)
+        self.character.drag_started.connect(self._begin_character_drag)
+        self.character.drag_moved.connect(self._move_character_drag)
+        self.character.drag_finished.connect(self._finish_character_drag)
 
     def _build_expression_overlay(self, root: QWidget) -> None:
         self.expression_overlay = QLabel(root)

@@ -145,11 +145,13 @@ def assert_visual_presence_and_absence_are_normalized_only_when_enabled() -> Non
         camera_presence=PresenceState.PRESENT,
         camera_absence_seconds=600.0,
         recognized_user=True,
+        visual_presence_arrival=True,
     )
     app_bridge.dispatch(ProactiveAppEvent(visual))
     environment = runtime.environments[-1]
     assert environment.user_present
     assert environment.absence_duration_seconds == 600.0
+    assert environment.visual_presence_arrival
     try:
         state(recognized_user=True)
     except ValueError:

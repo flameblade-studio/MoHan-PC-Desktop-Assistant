@@ -117,6 +117,7 @@ class CompanionProactiveMixin:
         timer_trigger: ReminderTrigger | None = None,
         scheduled_request: ProactiveSpeakRequest | None = None,
         camera_observation: VisualObservation | None = None,
+        visual_presence_arrival: bool = False,
     ):
         bridge = getattr(self, "_proactive_companion_bridge", None)
         if bridge is None or self._closing:
@@ -196,6 +197,11 @@ class CompanionProactiveMixin:
             ),
             user_looking=bool(
                 recognized or (not camera_enabled and session_user_active)
+            ),
+            visual_presence_arrival=bool(
+                visual_presence_arrival
+                and camera_enabled
+                and presence is PresenceState.PRESENT
             ),
         )
         return bridge.dispatch(
@@ -280,7 +286,18 @@ class CompanionProactiveMixin:
         ):
             self._last_visual_motion_at = now
             self.set_state("happy", source="visual", intensity=0.50)
-        self._dispatch_proactive_companion(camera_observation=observation)
+        arrival = bool(
+            observation.presence is PresenceState.PRESENT
+            and previous is not PresenceState.PRESENT
+            and now - getattr(self, "_last_visual_arrival_at", float("-inf"))
+            >= 90.0
+        )
+        if arrival:
+            self._last_visual_arrival_at = now
+        self._dispatch_proactive_companion(
+            camera_observation=observation,
+            visual_presence_arrival=arrival,
+        )
 
     def _consider_desktop_presence(self) -> None:
         center = getattr(self.dashboard, "flagship_center", None)

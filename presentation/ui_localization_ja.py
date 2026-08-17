@@ -283,6 +283,9 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "answering_status": "回答中…",
     "api_connection_failed": "OpenAI API：接続失敗（{error}）",
     "voice_ready_short": "準備完了",
+    "sleep_mode_status": (
+        "休眠モードを開始しました。墨寒は静かに待機し、リマインダーと緊急通知は規則どおり処理します。"
+    ),
     "microphone_idle": "🎙 マイク",
     "microphone_send_now": "⏹ 今すぐ送信",
     "microphone_recognizing": "認識中…",

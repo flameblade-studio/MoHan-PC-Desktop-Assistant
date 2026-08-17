@@ -49,6 +49,7 @@ class ProactiveAppState:
     enabled: bool = True
     pending_outfit_id: str = ""
     user_looking: bool = False
+    visual_presence_arrival: bool = False
 
     def __post_init__(self) -> None:
         if self.generation < 0:
@@ -66,6 +67,11 @@ class ProactiveAppState:
             or self.camera_presence is not PresenceState.PRESENT
         ):
             raise ValueError("Recognition requires an enabled camera and presence.")
+        if self.visual_presence_arrival and (
+            not self.camera_enabled
+            or self.camera_presence is not PresenceState.PRESENT
+        ):
+            raise ValueError("Visual arrival requires an enabled camera and presence.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -324,6 +330,7 @@ def _environment(event: ProactiveAppEvent) -> NormalizedCompanionEnvironment:
         speech_active=state.speech_active,
         pending_outfit_id=state.pending_outfit_id,
         user_looking=state.user_looking,
+        visual_presence_arrival=state.visual_presence_arrival,
     )
 
 
@@ -344,6 +351,7 @@ def _event_signature(event: ProactiveAppEvent) -> tuple[object, ...]:
         state.seconds_since_user_interaction,
         state.pending_outfit_id,
         state.user_looking,
+        state.visual_presence_arrival,
         event.timer_trigger,
         (
             event.scheduled_request.cue_token
