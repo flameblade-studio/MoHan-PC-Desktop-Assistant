@@ -407,6 +407,17 @@ QWidget[mohanFlagshipTheme="true"] QScrollBar::add-line:vertical,
 QWidget[mohanFlagshipTheme="true"] QScrollBar::sub-line:vertical {{
     height: 0;
 }}
+QWidget[mohanFlagshipTheme="true"] QSplitter::handle {{
+    background: transparent;
+    image: none;
+    border: none;
+}}
+QWidget[mohanFlagshipTheme="true"] QSplitter::handle:hover {{
+    background: {colors['line']};
+}}
+QWidget[mohanFlagshipTheme="true"] QSplitter::handle:pressed {{
+    background: {colors['glow']};
+}}
 QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="card"] {{
     background: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,

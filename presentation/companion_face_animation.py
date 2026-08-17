@@ -358,6 +358,9 @@ class CompanionFaceAnimationMixin:
         QTimer.singleShot(3_400, self.bubble.hide)
 
     def _set_expression(self, expression: str, fade: bool = True) -> None:
+        # Legacy expression rendering resumes ownership of the canvas, so the
+        # half-body overlays suppressed by a v4 full-body publish may return.
+        self._adaptive_full_body_active = False
         if expression not in self.expression_pixmaps:
             expression = "idle"
         self._cancel_expression_transition()
@@ -698,6 +701,9 @@ class CompanionFaceAnimationMixin:
         clean frame is retained separately so ending a blink never restores a
         stale viseme from before the blink began.
         """
+        # Legacy mouth rendering resumes ownership of the canvas, so the
+        # half-body overlays suppressed by a v4 full-body publish may return.
+        self._adaptive_full_body_active = False
         self.speech_visual_pixmap = QPixmap(clean_pixmap)
         visible = (
             self._blink_composite(

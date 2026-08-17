@@ -64,6 +64,9 @@ class CompanionWindow(
                 authorize=self._authorize_gesture_action,
             )
         )
+        self._gesture_controller.recognition_changed.connect(
+            self._on_gesture_recognition
+        )
         self.dashboard = self._create_dashboard(self._gesture_controller)
         self._connect_dashboard_signals()
         self._connect_speech_service_signals()

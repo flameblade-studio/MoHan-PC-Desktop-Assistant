@@ -680,6 +680,13 @@ class CompanionVisualDynamicsMixin:
             self.face_overlay.hide()
             self.eye_overlay.hide()
             return
+        if getattr(self, "_adaptive_full_body_active", False):
+            # The v4 full-body frame carries its own photographed face and eyes.
+            # Drawing the legacy gaze/lighting patches above it duplicates the
+            # eyelids and lips, so keep the attention layers out of the stack.
+            self.face_overlay.hide()
+            self.eye_overlay.hide()
+            return
         active = (
             self.state in {"idle", "speaking"}
             or self._render_base_expression() in EXPRESSION_POSES
