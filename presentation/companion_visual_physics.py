@@ -53,6 +53,16 @@ class CompanionVisualPhysicsMethods:
     def _apply_physics_visibility(self, expression: str | None = None) -> None:
         if not hasattr(self, "physics_overlay"):
             return
+        if getattr(self, "_adaptive_full_body_active", False):
+            # A published v4 full-body frame already includes sleeves, hair and
+            # ornament.  Keep these legacy layers hidden until legacy rendering
+            # takes the canvas back over.
+            self.sleeve_left_overlay.hide()
+            self.sleeve_right_overlay.hide()
+            self.hair_left_overlay.hide()
+            self.hair_right_overlay.hide()
+            self.physics_overlay.hide()
+            return
         pose_supported = (
             expression
             if expression is not None

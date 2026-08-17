@@ -3,7 +3,7 @@ from __future__ import annotations
 lazy import os
 lazy import sys
 lazy from pathlib import Path
-lazy from unittest.mock import patch
+lazy from unittest.mock import Mock, patch
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -300,3 +300,38 @@ def test_gesture_actions_reuse_existing_application_paths(
     dispatch(dispatcher, GestureAction.STOP_SPEECH)
     assert [engine.stop_calls for engine in engines] == [1, 1, 1]
     assert not window.speech_queue
+
+
+def test_wave_recognition_acknowledges_with_expression_and_greeting(
+    window: CompanionWindow,
+) -> None:
+    state_calls: list[tuple[str, str, float]] = []
+    speak_calls: list[tuple[str, str]] = []
+    window.set_state = lambda state, *, source, intensity: state_calls.append((
+        state,
+        source,
+        intensity,
+    ))
+    window.speak = lambda text, state: speak_calls.append((text, state))
+
+    wave = Mock()
+    wave.gesture_id = "wave"
+    wave.triggered = True
+    result = Mock()
+    result.recognitions = (wave,)
+    window._on_gesture_recognition(result)
+
+    assert state_calls == [("happy", "visual", 0.6)]
+    assert speak_calls == [("嗨，我在這裡！", "happy")]
+
+    state_calls.clear()
+    speak_calls.clear()
+    other = Mock()
+    other.gesture_id = "open-palm"
+    other.triggered = True
+    ignored = Mock()
+    ignored.recognitions = (other,)
+    window._on_gesture_recognition(ignored)
+
+    assert state_calls == []
+    assert speak_calls == []

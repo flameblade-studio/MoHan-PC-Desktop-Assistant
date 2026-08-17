@@ -98,6 +98,7 @@ class CompanionCoreMixin:
         self._performance_app_bridge = None
         self._adaptive_character_generation = 0
         self._staged_adaptive_frame = None
+        self._adaptive_full_body_active = False
         selected = (
             bool(self.db.setting("adaptive_character_v4_enabled", True))
             if enabled is None
@@ -225,6 +226,30 @@ class CompanionCoreMixin:
         ).copy()
         self.character.setPixmap(QPixmap.fromImage(image))
         self._staged_adaptive_frame = None
+        # The published RGBA already contains the complete photographed body,
+        # so the legacy half-body overlays must not be drawn above it.  Leaving
+        # the idle physics/attention layers visible stacks a second set of
+        # sleeves, hair, ornament and gaze patches over the full-body frame,
+        # which is the double-image reported at startup greeting.
+        self._adaptive_full_body_active = True
+        self._hide_legacy_character_overlays()
+
+    def _hide_legacy_character_overlays(self) -> None:
+        """Hide every legacy half-body overlay while the full-body owns the canvas."""
+
+        for attribute in (
+            "expression_overlay",
+            "sleeve_left_overlay",
+            "sleeve_right_overlay",
+            "hair_left_overlay",
+            "hair_right_overlay",
+            "physics_overlay",
+            "face_overlay",
+            "eye_overlay",
+        ):
+            overlay = getattr(self, attribute, None)
+            if overlay is not None:
+                overlay.hide()
 
     def _cancel_adaptive_character_composition(self) -> None:
         """Close the active v4 generation without disturbing legacy shutdown."""
@@ -391,10 +416,47 @@ class CompanionCoreMixin:
             if "physics_expression_poses" not in str(exc):
                 raise
 
+    def _on_gesture_recognition(self, result: object) -> None:
+        """Answer a waved greeting with an expression and a spoken hello."""
+
+        recognitions = tuple(getattr(result, "recognitions", ()) or ())
+        wave_detected = any(
+            str(getattr(recognition, "gesture_id", "")) == "wave"
+            and bool(getattr(recognition, "triggered", False))
+            for recognition in recognitions
+        )
+        if not wave_detected:
+            return
+        self._acknowledge_wave()
+
+    def _acknowledge_wave(self) -> None:
+        """Acknowledge a recognized wave once within a short cooldown window."""
+
+        now = time.monotonic()
+        if now - getattr(self, "_last_wave_acknowledged_at", 0.0) < 8.0:
+            return
+        self._last_wave_acknowledged_at = now
+        if hasattr(self, "expression_arbiter"):
+            try:
+                self.set_state("happy", source="visual", intensity=0.6)
+            except AttributeError as exc:
+                # A deferred visual startup can still acknowledge a wave
+                # through the voice path while pose assets are unavailable.
+                if "physics_expression_poses" not in str(exc):
+                    raise
+        language = str(self.db.setting("ui_language", "zh-TW"))
+        responses = {
+            "zh-TW": "嗨，我在這裡！",
+            "zh-CN": "嗨，我在这里！",
+            "en": "Hi there, I'm here!",
+            "ja-JP": "こんにちは、ここにいますよ。",
+        }
+        self.speak(responses.get(language, responses["zh-TW"]), "happy")
+
     def _open_dashboard_from_gesture(self) -> None:
         """Open the keyboard conversation surface and acknowledge a wave."""
         self.open_dashboard()
-        self._acknowledge_gesture()
+        self._acknowledge_wave()
         try:
             # The status card is informative only.  Its transient widget
             # lifecycle must never prevent the real companion from opening
@@ -402,14 +464,6 @@ class CompanionCoreMixin:
             self.dashboard.set_desktop_companion_gesture_status("wave")
         except Exception:  # noqa: BLE001 - isolated optional Qt presentation
             pass
-        language = str(self.db.setting("ui_language", "zh-TW"))
-        responses = {
-            "zh-TW": "主上，妾在。可以直接在控制台輸入想說的話。",
-            "zh-CN": "主上，妾在。可以直接在控制台输入想说的话。",
-            "en": "I am here. You can type to me directly in the control center.",
-            "ja-JP": "ここにいます。コントロールセンターから直接入力してください。",
-        }
-        self.speak(responses.get(language, responses["zh-TW"]), "happy")
 
     def _submit_gesture_text_command(self, command: str) -> None:
         dashboard = getattr(self, "dashboard", None)
@@ -576,6 +630,7 @@ class CompanionCoreMixin:
         )
         self._latest_visual_scene = None
         self._recognized_scene_streak = 0
+        self._last_wave_acknowledged_at = 0.0
         self._multisensory_variation_index = int(
             self.db.setting("multisensory_variation_index", 0)
         )
