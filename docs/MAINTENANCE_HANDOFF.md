@@ -89,3 +89,23 @@ chat history.
    merged commit and GitHub release/tag alignment.
 5. Update this handoff with the final merge SHA, validation results, and any
    remaining real-device follow-up before committing the record.
+
+## `儲存進度` operating command
+
+When the project owner says **「儲存進度」**, treat it as authorization to
+perform this complete checkpoint procedure without requiring a separate list
+of routine approvals:
+
+1. Inspect the active branch, working tree, latest commit, open PRs, and
+   GitHub Actions state.
+2. Update this handoff with completed work, current commit/PR references,
+   verification results, unresolved items, and the exact continuation step.
+3. Run a proportionate non-destructive verification for the changes made in
+   the current session.
+4. Commit the checkpoint deliberately and push it to the project repository.
+5. Return a concise, copy-ready summary for the cloud ChatGPT project. The
+   user may paste that summary there because Codex-local conversation history
+   is not a bidirectional ChatGPT conversation sync.
+
+Do not include API keys, tokens, passwords, private local paths unrelated to
+the project, or raw conversation transcripts in the checkpoint.
