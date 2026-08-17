@@ -34,6 +34,7 @@ lazy from tools.build_preview_package import (
     _validate_version,
 )
 lazy from tools.check_layered_imports import inspect_layered_imports
+lazy from tools.smoke_preview_package import _require_pose_atlas
 
 
 def read(relative: str) -> str:
@@ -338,6 +339,19 @@ def test_four_language_release_notes_and_boundaries() -> None:
     for forbidden_claim in ("feature parity achieved", "完整支援 macOS"):
         assert forbidden_claim not in guide
 
+
+
+def test_pose_atlas_smoke_accepts_complete_duplicate_bundle_roots(tmp_path: Path) -> None:
+    for duplicate in ("Contents/Resources", "Contents/Frameworks"):
+        atlas = tmp_path / duplicate / "assets" / "pose-atlas" / "v4"
+        atlas.mkdir(parents=True)
+        for index in range(24):
+            stem = f"yaw{index:03}-pitch+00"
+            (atlas / f"{stem}.png").write_bytes(b"png")
+            (atlas / f"{stem}.landmarks.json").write_text("{}", encoding="utf-8")
+            (atlas / f"{stem}.hands.json").write_text("{}", encoding="utf-8")
+
+    _require_pose_atlas(tmp_path)
 
 def main() -> None:
     test_preview_ui_contract()

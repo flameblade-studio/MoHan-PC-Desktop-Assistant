@@ -19,16 +19,16 @@ def _require_license(path: Path) -> None:
 
 def _require_pose_atlas(root: Path) -> None:
     atlas_roots = tuple(path for path in root.rglob("v4") if path.is_dir() and path.parent.name == "pose-atlas")
-    if len(atlas_roots) != 1:
+    if not atlas_roots:
         raise RuntimeError("Preview package omitted PoseAtlas v4 assets")
-    atlas_root = atlas_roots[0]
-    views = tuple(atlas_root.glob("yaw*-pitch+00.png"))
-    if len(views) != 24:
-        raise RuntimeError("Preview package PoseAtlas v4 view count is incomplete")
-    for view in views:
-        for suffix in (".landmarks.json", ".hands.json"):
-            if not (atlas_root / f"{view.stem}{suffix}").is_file():
-                raise RuntimeError(f"Preview package PoseAtlas v4 sidecar missing: {view.stem}{suffix}")
+    for atlas_root in atlas_roots:
+        views = tuple(atlas_root.glob("yaw*-pitch+00.png"))
+        if len(views) != 24:
+            raise RuntimeError("Preview package PoseAtlas v4 view count is incomplete")
+        for view in views:
+            for suffix in (".landmarks.json", ".hands.json"):
+                if not (atlas_root / f"{view.stem}{suffix}").is_file():
+                    raise RuntimeError(f"Preview package PoseAtlas v4 sidecar missing: {view.stem}{suffix}")
 
 
 def _run(
