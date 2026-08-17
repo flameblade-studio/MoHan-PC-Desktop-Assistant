@@ -348,6 +348,9 @@ def _assert_ambient_expression_contract(window: CompanionWindow) -> None:
 
 
 def _assert_dashboard_topmost_contract(app: QApplication, window: CompanionWindow) -> None:
+    window.show()
+    app.processEvents()
+    assert window.isVisible()
     window.dashboard.move(80, 80)
     app.processEvents()
     assert not (
@@ -356,9 +359,11 @@ def _assert_dashboard_topmost_contract(app: QApplication, window: CompanionWindo
     assert window.character_topmost_active
     window.dashboard.show()
     app.processEvents()
+    assert window.isVisible()
     assert not window.character_topmost_active
     window.dashboard.hide()
     app.processEvents()
+    assert window.isVisible()
     assert window.character_topmost_active
 
 

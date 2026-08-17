@@ -280,6 +280,23 @@ def test_save_updates_database_settings_snapshot() -> None:
             close_dashboard(dashboard, db)
 
 
+def test_global_save_emits_one_confirmation_not_a_permission_duplicate() -> None:
+    QApplication.instance() or QApplication([])
+    with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
+        db, dashboard = build_dashboard(Path(temp))
+        try:
+            confirmations: list[str] = []
+            dashboard.speak_requested.connect(
+                lambda text, _mood: confirmations.append(text)
+            )
+            dashboard._persist_external_settings = lambda: None
+            assert dashboard.save_all_settings() is True
+            expected = dashboard._t("settings_saved", "設定已保存。")
+            assert confirmations == [expected]
+        finally:
+            close_dashboard(dashboard, db)
+
+
 def test_center_failure_rolls_back_dashboard_settings() -> None:
     QApplication.instance() or QApplication([])
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:

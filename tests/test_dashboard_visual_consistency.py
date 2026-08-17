@@ -79,7 +79,8 @@ def run() -> None:
                     assert _frames(page, "portraitCard")
                     continue
                 assert _frames(page, "pageBanner"), title
-                assert _frames(page, "characterStage"), title
+                stages = _frames(page, "desktopCompanionStage")
+                assert stages and stages[0].isHidden(), title
                 assert _frames(page, "featureDock"), title
                 splitter = page.findChild(QSplitter, "featurePageSplitter")
                 assert splitter is not None, title
@@ -94,6 +95,7 @@ def run() -> None:
                 assert portrait is not None, title
                 assert portrait.pixmap() is not None, title
                 assert not portrait.pixmap().isNull(), title
+                assert portrait.isHidden(), title
                 assert page.property("mohanRole") == "featurePage", title
             settings_index = next(
                 index

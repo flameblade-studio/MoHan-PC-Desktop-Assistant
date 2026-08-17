@@ -127,7 +127,14 @@ class DashboardShellMixin:
                 finish=False,
             ):
                 return False
-            self.save_permissions()
+            # The global transaction emits one final confirmation below.  The
+            # nested tool-permission save therefore stays quiet, avoiding two
+            # consecutive confirmations for one button press.
+            self._saving_all_settings = True
+            try:
+                self.save_permissions()
+            finally:
+                self._saving_all_settings = False
             if center is not None and not center.save_draft_settings(center_values):
                 raise RuntimeError("Control-center settings were not saved.")
             theme_session = getattr(self, "theme_session", None)
@@ -398,7 +405,7 @@ class DashboardShellMixin:
             button.setChecked(button_index == index)
 
     def _themed_feature_page(self, factory, title: str) -> QWidget:
-        """Place one real feature panel beside the persistent character stage."""
+        """Place one feature panel beside the desktop companion's reserved stage."""
 
         content = factory()
         content.setProperty("mohanRole", "featureContent")
@@ -409,7 +416,7 @@ class DashboardShellMixin:
         page_layout.setSpacing(14)
 
         stage = QFrame()
-        stage.setProperty("mohanRole", "characterStage")
+        stage.setProperty("mohanRole", "desktopCompanionStage")
         stage.setMinimumWidth(400)
         stage_layout = QVBoxLayout(stage)
         stage_layout.setContentsMargins(18, 18, 18, 18)
@@ -443,6 +450,10 @@ class DashboardShellMixin:
         stage_title.setProperty("mohanRole", "stageTitle")
         stage_caption_layout.addWidget(stage_title)
         stage_layout.addWidget(stage_caption)
+        # The desktop companion remains the one interactive character while
+        # this dashboard is open.  Do not render a second PoseAtlas portrait
+        # inside the input surface, which otherwise produces a visual double.
+        stage.hide()
 
         dock = QFrame()
         dock.setProperty("mohanRole", "featureDock")

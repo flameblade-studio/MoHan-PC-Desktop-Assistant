@@ -14,6 +14,7 @@ CONTRACT_PATH = Path(__file__).resolve()
 
 EXPECTED_METHODS = frozenset({
     "_initialize_adaptive_character_composition",
+    "_publish_adaptive_idle_frame",
     "_stage_adaptive_character_frame",
     "_dispatch_adaptive_character_frame",
     "_publish_adaptive_character_frame",
@@ -28,6 +29,7 @@ EXPECTED_METHODS = frozenset({
     "_stop_current_speech_from_gesture",
     "_set_gesture_interaction_mode",
     "_acknowledge_gesture",
+    "_open_dashboard_from_gesture",
     "_submit_gesture_text_command",
     "_connect_dashboard_signals",
     "_apply_multimodal_result",
