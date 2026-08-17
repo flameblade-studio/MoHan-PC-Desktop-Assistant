@@ -522,6 +522,28 @@ class DashboardShellMixin:
             if label is not None:
                 label.setText(self._desktop_companion_status_values[key])
 
+    def set_desktop_companion_visual_status(
+        self, presence: str, *, active: bool = False
+    ) -> None:
+        """Present camera activity in the console's current interface language."""
+
+        if active and presence == "present":
+            translation_key, fallback = "desktop_status_vision_motion", "偵測到活動"
+        else:
+            translation_key, fallback = {
+                "present": ("desktop_status_vision_present", "已看見您"),
+                "away": ("desktop_status_vision_away", "暫時未看見您"),
+            }.get(presence, ("desktop_status_vision_unknown", "鏡頭待命"))
+        self.set_desktop_companion_status("vision", self._t(translation_key, fallback))
+
+    def set_desktop_companion_gesture_status(self, gesture: str) -> None:
+        """Show recognized gestures without leaking untranslated internal labels."""
+
+        translation_key, fallback = {
+            "wave": ("desktop_status_gesture_wave", "已辨識揮手"),
+        }.get(gesture, ("desktop_status_gesture_waiting", "等待手勢"))
+        self.set_desktop_companion_status("gesture", self._t(translation_key, fallback))
+
     def _wardrobe_tab(self) -> QWidget:
         tab = QWidget()
         root = QVBoxLayout(tab)
