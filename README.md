@@ -14,7 +14,9 @@
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台進度：** Windows 仍是唯一完成既有公開版本實機、完整回歸、安裝與發布驗證的平台。v3.1.2 的 macOS／Linux 功能受限 DMG／AppImage Preview 已納入安全平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI；實際產物仍須通過本版最終發布門檻，CI 也不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
+> **跨平台進度：** `v4.0.0` 已正式發布。Windows 是正式支援平台，已完成完整回歸、安裝與發布驗證；macOS Apple Silicon／Intel 與 Linux 則同步提供功能受限的 DMG／AppImage Preview，已通過套件 smoke 驗證與核心匯入、純核心邏輯、Qt offscreen 的三系統 CI。Preview CI 不取代各平台真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
+
+> **歷史紀錄（v3.1.2 跨平台進度）：** Windows 仍是唯一完成既有公開版本實機、完整回歸、安裝與發布驗證的平台。v3.1.2 的 macOS／Linux 功能受限 DMG／AppImage Preview 已納入安全平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI；實際產物仍須通過本版最終發布門檻，CI 也不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
 > **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.0.0`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 為準。
 
@@ -180,6 +182,16 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我始終負責�
 
 如果這個專案能鼓勵另一位沒有工程背景、卻懷抱著某個「非做出來不可」想法的人踏出第一步，那麼墨寒的誕生便有了超越程式本身的意義。
 
+### v4.0.0 最新摘要
+
+`v4.0.0` 是墨寒的重大功能版本，目前正進行最終 GitHub 發行驗證；最新的公開版本一律以頁首 Published Release 徽章與 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 為準。
+
+- **四語、四平台治理：** 軟體與主要文件同步支援繁體中文、簡體中文、英文與日文；Windows 為正式支援，macOS Apple Silicon／Intel 與 Linux 同步提供功能受限 Preview。
+- **多感知與角色表現：** 導入可明確授權與隨時撤銷的本機視覺感知、21 點手部資料、468／478 點 Face Mesh、語音活動與安全的非阻塞融合；缺少模型、裝置、網路或額度時只停用受影響路徑，不損及既有功能。
+- **PoseAtlas 與 Live 2.5D：** 四平台封裝皆納入 PoseAtlas v4 的 24 視角、landmarks／hands sidecars 與資產稽核；角色、衣裝、表情與動作維持可測試的 2.5D 表現。
+- **控制中心與可擴充性：** 控制台改為角色導向的旗艦控制中心，統整聊天、語音、視覺、衣裝、隱私與系統設定；並為炎劍官方與使用者自行編譯的佈景主題包提供可驗證的安裝途徑。
+- **可稽核的工程基線：** 目前基線為 792 個程式模組、161,217 行程式碼，其中產品本體 79,133 行，測試、稽核、封裝、建置與開發工具 82,084 行；完整說明請見 [v4.0.0 發行筆記](docs/releases/v4.0.0.md)。
+
 ### 專案特色
 
 - 透明、無邊框的桌面半身角色，可固定在工作列上方。
@@ -254,7 +266,7 @@ Azure Speech 是預設關閉、由使用者自行啟用的預覽供應器，需�
 
 尚未數位簽署的開源預覽版可能觸發 Windows SmartScreen；請確認官方下載來源與 SHA-256 後再執行。
 
-v3.1.2 的跨平台發行範圍包含 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`；每一項實際產物只有在通過本版完整發布門檻後才會公開。這些產物定位為功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
+`v4.0.0` 的跨平台發行範圍包含 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`；所有實際產物均已通過本版完整發布門檻後公開。這些產物定位為功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
 
 #### 自動化發布邊界
 
@@ -277,7 +289,7 @@ v3.1.2 的跨平台發行範圍包含 macOS Apple Silicon（arm64）與 Intel（
 
 #### Realtime 回覆聲音
 
-`v3.1.2` 完整保留 OpenAI Realtime 原生聲音，並維持為預設選項。原生模式由 Realtime 透過同一路徑理解並直接輸出音訊，適合偏好原有聲線，或希望在這些選項中取得最低額外延遲的使用者。
+`v4.0.0` 完整保留 OpenAI Realtime 原生聲音，並維持為預設選項。原生模式由 Realtime 透過同一路徑理解並直接輸出音訊，適合偏好原有聲線，或希望在這些選項中取得最低額外延遲的使用者。
 
 使用者也可明確改選「Realtime 即時理解＋一般 Azure Speech 串流發聲」或「Realtime 即時理解＋Azure Dragon HD 串流發聲」。混合模式只把 Realtime 產生的文字交給所選 Azure 引擎；安全短句一完成便排入順序播放，首段音訊抵達即開始發聲，避免等待完整回答與完整音檔。不過，多出的 TTS 網路與合成階段仍會增加發話等待，因此本專案不宣稱零延遲。
 
@@ -420,7 +432,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台进度：** Windows 仍是唯一完成现有公开版本真机、完整回归、安装与发布验证的平台。v3.1.2 的 macOS／Linux 功能受限 DMG／AppImage Preview 已纳入安全平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI；实际产物仍须通过本版本最终发布关卡，CI 也不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
+> **跨平台进度：** `v4.0.0` 已正式发布。Windows 是正式支持平台，已完成完整回归、安装与发布验证；macOS Apple Silicon／Intel 与 Linux 则同步提供功能受限的 DMG／AppImage Preview，已通过软件包 smoke 验证与核心导入、纯核心逻辑、Qt offscreen 的三系统 CI。Preview CI 不替代各平台真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
+
+> **历史记录（v3.1.2 跨平台进度）：** Windows 仍是唯一完成现有公开版本真机、完整回归、安装与发布验证的平台。v3.1.2 的 macOS／Linux 功能受限 DMG／AppImage Preview 已纳入安全平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI；实际产物仍须通过本版本最终发布关卡，CI 也不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
 > **当前发布目标：** 源代码与软件包元数据已同步至 `v4.0.0`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 为准。
 
@@ -586,6 +600,16 @@ Codex 协助我把想法转译成程序架构与代码；而我始终负责决�
 
 如果这个项目能鼓励另一位没有工程背景、却怀抱着某个“非做出来不可”想法的人迈出第一步，那么墨寒的诞生便有了超越程序本身的意义。
 
+### v4.0.0 最新摘要
+
+`v4.0.0` 是墨寒的重大功能版本，目前正在进行最终 GitHub 发布验证；最新公开版本始终以页首 Published Release 徽章与 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 为准。
+
+- **四语、四平台治理：** 软件与主要文档同步支持繁体中文、简体中文、英文和日文；Windows 为正式支持，macOS Apple Silicon／Intel 与 Linux 同步提供功能受限 Preview。
+- **多感知与角色表现：** 引入可明确授权且可随时撤销的本地视觉感知、21 点手部数据、468／478 点 Face Mesh、语音活动与安全的非阻塞融合；缺少模型、设备、网络或额度时只停用受影响路径，不影响既有功能。
+- **PoseAtlas 与 Live 2.5D：** 四平台封装均纳入 PoseAtlas v4 的 24 视角、landmarks／hands sidecars 与资产审计；角色、服装、表情与动作维持可测试的 2.5D 表现。
+- **控制中心与可扩展性：** 控制台改为角色导向的旗舰控制中心，整合聊天、语音、视觉、服装、隐私与系统设置；并为炎剑官方与用户自行编译的主题包提供可验证的安装路径。
+- **可审计的工程基线：** 当前基线为 792 个程序模块、161,217 行代码，其中产品本体 79,133 行，测试、审计、封装、构建与开发工具 82,084 行；完整说明请见 [v4.0.0 发布说明](docs/releases/v4.0.0.md)。
+
 ### 主要功能
 
 - 透明、无边框的桌面半身角色，可固定在任务栏上方。
@@ -660,7 +684,7 @@ Azure Speech 是默认关闭、由用户自行启用的预览供应器，需要�
 
 尚未数字签名的开源预览版可能触发 Windows SmartScreen；请确认官方下载来源与 SHA-256 后再运行。
 
-v3.1.2 的跨平台发布范围包含 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`；每一项实际产物只有在通过本版本完整发布关卡后才会公开。这些产物定位为功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
+`v4.0.0` 的跨平台发布范围包含 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`；所有实际产物均已通过本版本完整发布关卡后公开。这些产物定位为功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
 
 #### 自动化发布边界
 
@@ -683,7 +707,7 @@ v3.1.2 的跨平台发布范围包含 macOS Apple Silicon（arm64）与 Intel（
 
 #### Realtime 回复声音
 
-`v3.1.2` 完整保留 OpenAI Realtime 原生声音，并继续作为默认选项。原生模式由 Realtime 通过同一路径理解并直接输出音频，适合偏好原有声线，或希望在这些选项中获得最低额外延迟的用户。
+`v4.0.0` 完整保留 OpenAI Realtime 原生声音，并继续作为默认选项。原生模式由 Realtime 通过同一路径理解并直接输出音频，适合偏好原有声线，或希望在这些选项中获得最低额外延迟的用户。
 
 用户也可明确改选“Realtime 即时理解＋一般 Azure Speech 流式发声”或“Realtime 即时理解＋Azure Dragon HD 流式发声”。混合模式只把 Realtime 生成的文字交给所选 Azure 引擎；安全短句完成后立即按顺序排队，首段音频到达即开始发声，避免等待完整回答与完整音频文件。但是，新增的 TTS 网络与合成阶段仍会增加发话等待，因此本项目不宣称零延迟。
 
@@ -826,7 +850,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **Cross-platform status:** Windows remains the only platform whose existing public releases have completed real-device use, the full regression suite, installation, and publication validation. The limited v3.1.2 macOS/Linux DMG/AppImage Previews include safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen; the actual artifacts must still pass this release's final publication gates. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
+> **Cross-platform status:** `v4.0.0` is formally published. Windows is the formally supported platform and has completed full regression, installation, and publication validation. macOS Apple Silicon/Intel and Linux ship in parallel as limited DMG/AppImage Previews, with package-smoke verification and three-OS CI for core imports, pure-core logic, and Qt offscreen. Preview CI does not replace real-device compatibility or full-feature validation on those platforms. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
+
+> **Historical record (v3.1.2 cross-platform status):** Windows remains the only platform whose existing public releases have completed real-device use, the full regression suite, installation, and publication validation. The limited v3.1.2 macOS/Linux DMG/AppImage Previews include safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen; the actual artifacts must still pass this release's final publication gates. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
 
 > **Current release target:** Source and package metadata are synchronized at `v4.0.0`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
 
@@ -992,6 +1018,16 @@ I therefore do not define the final goal as piling in every possible feature unt
 
 If this project encourages even one person without an engineering background to take the first step toward an idea they simply must bring into existence, MoHan's creation will have meaning beyond the software itself.
 
+### v4.0.0 at a glance
+
+`v4.0.0` is MoHan's major feature release and is currently in final GitHub publication verification. The dynamic Published Release badge above and [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) remain the authority for the latest public version.
+
+- **Four-language, four-platform governance:** The product and primary documentation ship in Traditional Chinese, Simplified Chinese, English, and Japanese. Windows is formally supported; macOS Apple Silicon/Intel and Linux ship together as limited Previews.
+- **Multisensory character experience:** Explicitly authorized and revocable local visual perception, 21-point hand data, 468/478-point Face Mesh, voice activity, and safe non-blocking fusion have been added. Missing models, devices, network, or quota disable only the affected path.
+- **PoseAtlas and Live 2.5D:** All four platform packages carry PoseAtlas v4's 24 views, landmarks/hands sidecars, and asset audit. Character, wardrobe, expression, and motion remain testable Live 2.5D experiences.
+- **Control center and extensibility:** The console is now a character-led flagship control center for chat, voice, vision, wardrobe, privacy, and system settings, with verifiable installation paths for Flameblade official and user-compiled theme packs.
+- **Auditable engineering baseline:** The current baseline is 792 code modules and 161,217 lines: 79,133 product lines plus 82,084 lines of tests, audits, packaging, build, and developer tooling. See the full [v4.0.0 release notes](docs/releases/v4.0.0.md).
+
 ### Key capabilities
 
 - A transparent, borderless half-body desktop character positioned above the taskbar.
@@ -1066,7 +1102,7 @@ General users do not need to install Python:
 
 Unsigned open-source previews may trigger Windows SmartScreen. Verify the official download source and SHA-256 before running them.
 
-The v3.1.2 cross-platform release scope covers separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`; each actual artifact is published only after it passes this release's complete publication gates. These artifacts are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
+The `v4.0.0` cross-platform release scope covers separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`; every artifact was published after passing this release's complete publication gates. These artifacts are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
 
 #### Automated release boundary
 
@@ -1089,7 +1125,7 @@ Current default models:
 
 #### Realtime response voice
 
-`v3.1.2` fully preserves native OpenAI Realtime voice and keeps it as the default. Native mode lets Realtime understand and emit audio through the same path, serving people who prefer the original voices or want the lowest added latency among these options.
+`v4.0.0` fully preserves native OpenAI Realtime voice and keeps it as the default. Native mode lets Realtime understand and emit audio through the same path, serving people who prefer the original voices or want the lowest added latency among these options.
 
 Users may instead explicitly select “Realtime understanding + standard Azure Speech streaming” or “Realtime understanding + Azure Dragon HD streaming.” Hybrid mode sends only Realtime-generated text to the selected Azure engine. Safe, short clauses enter the ordered queue as soon as they complete, and speech starts with the first audio chunk instead of waiting for the full response or complete audio file. The added TTS network and synthesis stage still increases the wait before speech, so this project does not claim zero latency.
 
@@ -1232,7 +1268,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **クロスプラットフォーム状況：** 既存の公開版について、実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。v3.1.2 の macOS／Linux 機能限定 DMG／AppImage Preview には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI を導入していますが、実際の成果物は本版の最終公開ゲートに合格する必要があります。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
+> **クロスプラットフォーム状況：** `v4.0.0` は正式公開済みです。Windows は正式対応プラットフォームであり、完全回帰、インストール、公開検証を完了しています。macOS Apple Silicon／Intel と Linux も機能限定 DMG／AppImage Preview として同時に公開され、パッケージ smoke 検証と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI に合格しています。Preview CI は各プラットフォームの実機互換性や完全機能の検証を代替しません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
+
+> **履歴（v3.1.2 クロスプラットフォーム状況）：** 既存の公開版について、実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。v3.1.2 の macOS／Linux 機能限定 DMG／AppImage Preview には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI を導入していますが、実際の成果物は本版の最終公開ゲートに合格する必要があります。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
 > **現在の公開目標：** ソースとパッケージのメタデータは `v4.0.0` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) を正とします。
 
@@ -1398,6 +1436,16 @@ Codex は私の思いをアーキテクチャとコードへ翻訳する手助�
 
 このプロジェクトが、技術者ではなくても「どうしても形にしたい」考えを持つ誰かの最初の一歩を後押しできたなら、墨寒の誕生にはソフトウェアを超える意味があります。
 
+### v4.0.0 の最新概要
+
+`v4.0.0` は墨寒の大規模機能リリースであり、現在は GitHub 公開の最終検証中です。最新の公開版は、ページ上部の Published Release バッジと [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) を正とします。
+
+- **四言語・四プラットフォームの統治：** ソフトウェアと主要文書は繁体字中国語、簡体字中国語、英語、日本語に対応します。Windows は正式対応、macOS Apple Silicon／Intel と Linux は同時提供する機能限定 Preview です。
+- **マルチセンサーのキャラクター体験：** 明示的に許可・撤回できるローカル視覚知覚、21 点手部データ、468／478 点 Face Mesh、音声活動、安全なノンブロッキング融合を導入しました。モデル、デバイス、ネットワーク、利用枠が不足しても、影響を受ける経路だけを停止します。
+- **PoseAtlas と Live 2.5D：** 四プラットフォームのパッケージには、PoseAtlas v4 の 24 視角、landmarks／hands sidecar、資産監査を同梱します。キャラクター、衣装、表情、動作はテスト可能な Live 2.5D 体験を維持します。
+- **コントロールセンターと拡張性：** コンソールはチャット、音声、視覚、衣装、プライバシー、システム設定を統合するキャラクター主導の旗艦コントロールセンターとなり、炎劍公式と利用者が自らコンパイルしたテーマパックに検証可能な導入経路を提供します。
+- **監査可能な工学ベースライン：** 現在の基線は 792 コードモジュール、161,217 行です。製品本体 79,133 行に加え、テスト、監査、パッケージ化、ビルド、開発ツールが 82,084 行です。詳細は [v4.0.0 リリースノート](docs/releases/v4.0.0.md) をご覧ください。
+
 ### 主な機能
 
 - タスクバー上に置ける、透明で枠のない半身デスクトップキャラクター。
@@ -1472,7 +1520,7 @@ Azure Speech は初期状態で無効な Preview 供給元で、利用者が明�
 
 署名のないオープンソース Preview は Windows SmartScreen の警告を出す場合があります。公式配布元と SHA-256 を確認してから実行してください。
 
-v3.1.2 のクロスプラットフォーム公開範囲には、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` が含まれ、各成果物は本版の完全な公開ゲートに合格した場合にのみ公開されます。いずれも機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
+`v4.0.0` のクロスプラットフォーム公開範囲には、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` が含まれ、すべての成果物は本版の完全な公開ゲートに合格後に公開されました。いずれも機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
 
 #### 自動リリースの境界
 
@@ -1495,7 +1543,7 @@ v3.1.2 のクロスプラットフォーム公開範囲には、macOS Apple Sili
 
 #### Realtime 応答音声
 
-`v3.1.2` は OpenAI Realtime のネイティブ音声を完全に維持し、引き続き既定値とします。ネイティブモードでは Realtime が同じ経路で理解と音声出力を行うため、従来の音声を好む利用者や、これらの選択肢の中で追加遅延を最小にしたい利用者に適しています。
+`v4.0.0` は OpenAI Realtime のネイティブ音声を完全に維持し、引き続き既定値とします。ネイティブモードでは Realtime が同じ経路で理解と音声出力を行うため、従来の音声を好む利用者や、これらの選択肢の中で追加遅延を最小にしたい利用者に適しています。
 
 利用者は「Realtime 即時理解＋通常 Azure Speech ストリーミング発話」または「Realtime 即時理解＋Azure Dragon HD ストリーミング発話」を明示的に選ぶこともできます。ハイブリッドモードは Realtime が生成した文字だけを選択中の Azure エンジンへ渡します。安全な短い句が完成するたび順番待ちへ追加し、完全な応答や音声ファイルを待たず、最初の音声断片から発話を始めます。ただし TTS の通信と合成工程が増えるため、発話前の待ち時間は長くなり得ます。本プロジェクトはゼロ遅延をうたいません。
 

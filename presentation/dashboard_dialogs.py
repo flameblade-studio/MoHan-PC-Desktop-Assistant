@@ -46,6 +46,9 @@ __all__ = (
 
 class ClickableLabel(QLabel):
     clicked = Signal()
+    drag_started = Signal(QPoint)
+    drag_moved = Signal(QPoint)
+    drag_finished = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -56,6 +59,7 @@ class ClickableLabel(QLabel):
         if event.button() == Qt.LeftButton:
             self._press_position = event.position().toPoint()
             self._dragged = False
+            self.drag_started.emit(event.globalPosition().toPoint())
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
@@ -68,6 +72,8 @@ class ClickableLabel(QLabel):
             >= QApplication.startDragDistance()
         ):
             self._dragged = True
+        if event.buttons() & Qt.LeftButton:
+            self.drag_moved.emit(event.globalPosition().toPoint())
         super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
@@ -83,6 +89,7 @@ class ClickableLabel(QLabel):
         )
         self._press_position = None
         self._dragged = False
+        self.drag_finished.emit()
         if is_click:
             self.clicked.emit()
         super().mouseReleaseEvent(event)

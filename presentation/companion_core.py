@@ -133,6 +133,24 @@ class CompanionCoreMixin:
             ),
             self._dispatch_adaptive_character_frame,
         )
+        self._publish_adaptive_idle_frame()
+
+    def _publish_adaptive_idle_frame(self) -> None:
+        """Publish a complete PoseAtlas body before the first spoken reply."""
+        try:
+            prepared = self.speech_performance.prepare("desktop-idle")
+            self._record_speech_performance(prepared)
+            generation = prepared[0].generation
+            self._record_speech_performance(
+                self.speech_performance.final_audio(generation=generation)
+            )
+            self._record_speech_performance(
+                self.speech_performance.mouth_closed(generation=generation)
+            )
+        except LookupError, RuntimeError, TypeError, ValueError:
+            # The proven legacy surface remains available if an optional v4
+            # frame cannot be assembled during startup.
+            return
 
     def _stage_adaptive_character_frame(self, frame: object) -> None:
         """Hold adapter output until the atomic coordinator approves publish."""
@@ -297,7 +315,7 @@ class CompanionCoreMixin:
 
         return GestureApplicationAdapter(
             GestureApplicationCallbacks(
-                show_control_center=self.open_dashboard,
+                show_control_center=self._open_dashboard_from_gesture,
                 hide_control_center=self.dashboard_hide_if_available,
                 set_audio_muted=self._set_gesture_audio_muted,
                 stop_current_speech=self._stop_current_speech_from_gesture,
@@ -362,8 +380,36 @@ class CompanionCoreMixin:
             dashboard.mode_combo.setCurrentIndex(index)
 
     def _acknowledge_gesture(self) -> None:
-        if hasattr(self, "expression_arbiter"):
+        if not hasattr(self, "expression_arbiter"):
+            return
+        try:
             self.set_state("happy", source="conversation", intensity=0.55)
+        except AttributeError as exc:
+            # A deferred visual startup deliberately does not allocate pose
+            # assets. It can still acknowledge a gesture through the status
+            # card and voice path, but cannot animate until assets are ready.
+            if "physics_expression_poses" not in str(exc):
+                raise
+
+    def _open_dashboard_from_gesture(self) -> None:
+        """Open the keyboard conversation surface and acknowledge a wave."""
+        self.open_dashboard()
+        self._acknowledge_gesture()
+        try:
+            # The status card is informative only.  Its transient widget
+            # lifecycle must never prevent the real companion from opening
+            # the keyboard conversation or answering a recognized wave.
+            self.dashboard.set_desktop_companion_gesture_status("wave")
+        except Exception:  # noqa: BLE001 - isolated optional Qt presentation
+            pass
+        language = str(self.db.setting("ui_language", "zh-TW"))
+        responses = {
+            "zh-TW": "主上，妾在。可以直接在控制台輸入想說的話。",
+            "zh-CN": "主上，妾在。可以直接在控制台输入想说的话。",
+            "en": "I am here. You can type to me directly in the control center.",
+            "ja-JP": "ここにいます。コントロールセンターから直接入力してください。",
+        }
+        self.speak(responses.get(language, responses["zh-TW"]), "happy")
 
     def _submit_gesture_text_command(self, command: str) -> None:
         dashboard = getattr(self, "dashboard", None)

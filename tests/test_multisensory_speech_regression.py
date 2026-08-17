@@ -10,7 +10,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy import pytest
-lazy from PySide6.QtCore import QObject, QTimer, Signal
+lazy from PySide6.QtCore import QEvent, QObject, QTimer, Signal
 lazy from PySide6.QtWidgets import QApplication, QWidget
 
 lazy from application.presentation_ports import PresentationPorts
@@ -322,6 +322,8 @@ def context(tmp_path: Path) -> _OfflineContext:
     )
     yield value
     window.close()
+    window.deleteLater()
+    QApplication.sendPostedEvents(None, QEvent.DeferredDelete)
     QApplication.processEvents()
 
 

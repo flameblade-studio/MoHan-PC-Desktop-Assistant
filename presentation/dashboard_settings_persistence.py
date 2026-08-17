@@ -40,13 +40,14 @@ class DashboardSettingsPersistenceMixin:
             for key, combo in self.permission_controls.items()
         }
         self.db.set_setting("tool_permissions", permissions)
-        self.speak_requested.emit(
-            self._t(
-                "permission_saved_speech",
-                "電腦工具權限已保存。妾會照此邊界行事。",
-            ),
-            "happy",
-        )
+        if not getattr(self, "_saving_all_settings", False):
+            self.speak_requested.emit(
+                self._t(
+                    "permission_saved_speech",
+                    "電腦工具權限已保存。妾會照此邊界行事。",
+                ),
+                "happy",
+            )
 
     def _permission_allowed(self, key: str, action: str) -> bool:
         stored = self.db.setting("tool_permissions", {})

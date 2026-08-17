@@ -283,6 +283,26 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "answering_status": "回答中…",
     "api_connection_failed": "OpenAI API：接続失敗（{error}）",
     "voice_ready_short": "準備完了",
+    "sleep_mode_status": (
+        "休眠モードを開始しました。墨寒は静かに待機し、リマインダーと緊急通知は規則どおり処理します。"
+    ),
+    "desktop_status_title": "墨寒はデスクトップであなたと対話しています",
+    "desktop_status_description": (
+        "デスクトップ上の墨寒だけが表示・ドラッグ・応答するキャラクターです。"
+    ),
+    "desktop_status_mode": "モード",
+    "desktop_status_expression": "姿勢／表情",
+    "desktop_status_voice": "音声",
+    "desktop_status_vision": "カメラ認識",
+    "desktop_status_gesture": "ジェスチャー",
+    "desktop_status_idle": "待機中",
+    "desktop_status_camera_waiting": "カメラ待機中",
+    "desktop_status_gesture_waiting": "ジェスチャー待機中",
+    "desktop_status_vision_present": "あなたを確認しました",
+    "desktop_status_vision_away": "現在はあなたを確認できません",
+    "desktop_status_vision_motion": "動きを検出しました",
+    "desktop_status_vision_unknown": "カメラ待機中",
+    "desktop_status_gesture_wave": "手を振る動きを認識しました",
     "microphone_idle": "🎙 マイク",
     "microphone_send_now": "⏹ 今すぐ送信",
     "microphone_recognizing": "認識中…",

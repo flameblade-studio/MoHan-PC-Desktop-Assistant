@@ -184,6 +184,42 @@ QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="characterStage"] {{
     background: transparent;
     border: none;
 }}
+QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="desktopCompanionStage"] {{
+    background: transparent;
+    border: none;
+}}
+QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="desktopCompanionStatusCard"] {{
+    background: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 rgba(45, 50, 112, 224), stop:1 rgba(72, 61, 129, 212)
+    );
+    border: 1px solid rgba(237, 221, 255, 184);
+    border-radius: {_scaled(20, scale)}px;
+}}
+QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="desktopCompanionStatusTitle"] {{
+    color: #fff8ff;
+    font-family: "DFKai-SB", "KaiTi", "Microsoft JhengHei UI";
+    font-size: {_scaled(20, scale)}px;
+    font-weight: 750;
+}}
+QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="desktopCompanionStatusNote"] {{
+    color: #e9e5ff;
+    font-size: {_scaled(13, scale)}px;
+}}
+QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="desktopCompanionStatusRow"] {{
+    background: rgba(255, 255, 255, 26);
+    border: 1px solid rgba(236, 228, 255, 72);
+    border-radius: {_scaled(11, scale)}px;
+}}
+QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="desktopCompanionStatusName"] {{
+    color: #ddd6fa;
+    font-size: {_scaled(12, scale)}px;
+}}
+QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="desktopCompanionStatusValue"] {{
+    color: #fffaf5;
+    font-size: {_scaled(13, scale)}px;
+    font-weight: 650;
+}}
 QWidget[mohanFlagshipTheme="true"] QLabel#dashboardCharacterStagePortrait {{
     background: qradialgradient(
         cx:0.50, cy:0.64, radius:0.60,

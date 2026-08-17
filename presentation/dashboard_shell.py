@@ -46,6 +46,14 @@ lazy from domain.language_support import (
 lazy from domain.outfit_pack import OutfitPackError
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.desktop_companion_status import (
+    build_desktop_companion_stage,
+    desktop_companion_initial_status,
+    gesture_status_message,
+    mode_status_label,
+    update_desktop_companion_status,
+    visual_status_message,
+)
 lazy from presentation.flagship_theme import (
     create_flagship_ornament,
     mark_flagship_card,
@@ -127,7 +135,14 @@ class DashboardShellMixin:
                 finish=False,
             ):
                 return False
-            self.save_permissions()
+            # The global transaction emits one final confirmation below.  The
+            # nested tool-permission save therefore stays quiet, avoiding two
+            # consecutive confirmations for one button press.
+            self._saving_all_settings = True
+            try:
+                self.save_permissions()
+            finally:
+                self._saving_all_settings = False
             if center is not None and not center.save_draft_settings(center_values):
                 raise RuntimeError("Control-center settings were not saved.")
             theme_session = getattr(self, "theme_session", None)
@@ -198,6 +213,8 @@ class DashboardShellMixin:
         self.organization_name = profile_setting(
             db, "organization_name"
         )
+        self._desktop_companion_status_values = desktop_companion_initial_status(self)
+        self._desktop_companion_status_labels: list[dict[str, QLabel]] = []
 
     def _configure_dashboard_window(self) -> None:
         db = self.db
@@ -398,7 +415,7 @@ class DashboardShellMixin:
             button.setChecked(button_index == index)
 
     def _themed_feature_page(self, factory, title: str) -> QWidget:
-        """Place one real feature panel beside the persistent character stage."""
+        """Place one feature panel beside a live status card for the desktop companion."""
 
         content = factory()
         content.setProperty("mohanRole", "featureContent")
@@ -408,41 +425,10 @@ class DashboardShellMixin:
         page_layout.setContentsMargins(14, 14, 14, 14)
         page_layout.setSpacing(14)
 
-        stage = QFrame()
-        stage.setProperty("mohanRole", "characterStage")
-        stage.setMinimumWidth(400)
-        stage_layout = QVBoxLayout(stage)
-        stage_layout.setContentsMargins(18, 18, 18, 18)
-        stage_portrait = QLabel()
-        stage_portrait.setObjectName("dashboardCharacterStagePortrait")
-        stage_portrait.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
-        stage_portrait.setAccessibleName(profile_window_title(self.db))
-        stage_source = QPixmap(
-            str(
-                resource_path(
-                    "assets/pose-atlas/v4-working/yaw+000-pitch+00.png"
-                )
-            )
+        stage, labels = build_desktop_companion_stage(
+            self, self._desktop_companion_status_values
         )
-        if not stage_source.isNull():
-            stage_portrait.setPixmap(
-                stage_source.scaled(
-                    370,
-                    580,
-                    Qt.KeepAspectRatio,
-                    Qt.SmoothTransformation,
-                )
-            )
-        stage_layout.addWidget(stage_portrait, 1)
-        stage_caption = QFrame()
-        stage_caption.setProperty("mohanRole", "stageCaption")
-        stage_caption_layout = QVBoxLayout(stage_caption)
-        stage_caption_layout.setContentsMargins(14, 9, 14, 9)
-        stage_title = QLabel(title)
-        stage_title.setAlignment(Qt.AlignCenter)
-        stage_title.setProperty("mohanRole", "stageTitle")
-        stage_caption_layout.addWidget(stage_title)
-        stage_layout.addWidget(stage_caption)
+        self._desktop_companion_status_labels.append(labels)
 
         dock = QFrame()
         dock.setProperty("mohanRole", "featureDock")
@@ -472,6 +458,35 @@ class DashboardShellMixin:
         feature_splitter.setSizes((540, 630))
         page_layout.addWidget(feature_splitter, 1)
         return page
+
+    def set_desktop_companion_status(self, key: str, value: str) -> None:
+        """Reflect the one desktop companion without rendering a duplicate."""
+
+        if key not in self._desktop_companion_status_values:
+            return
+        self._desktop_companion_status_labels = update_desktop_companion_status(
+            self,
+            self._desktop_companion_status_values,
+            self._desktop_companion_status_labels,
+            key,
+            value,
+        )
+
+    def set_desktop_companion_visual_status(
+        self, presence: str, *, active: bool = False
+    ) -> None:
+        """Present camera activity in the console's current interface language."""
+
+        translation_key, fallback = visual_status_message(
+            presence, active=active
+        )
+        self.set_desktop_companion_status("vision", self._t(translation_key, fallback))
+
+    def set_desktop_companion_gesture_status(self, gesture: str) -> None:
+        """Show recognized gestures without leaking untranslated internal labels."""
+
+        translation_key, fallback = gesture_status_message(gesture)
+        self.set_desktop_companion_status("gesture", self._t(translation_key, fallback))
 
     def _wardrobe_tab(self) -> QWidget:
         tab = QWidget()
@@ -1086,6 +1101,18 @@ class DashboardShellMixin:
     def _mode_changed(self, mode: str) -> None:
         self.mode = mode
         self.db.set_setting("mode", mode)
+        self.set_desktop_companion_status("mode", mode_status_label(self, mode))
+        if mode == "休眠":
+            # Sleep is an intentional quiet state.  Do not synthesize a
+            # confirmation through a fallback provider, which can make the
+            # selected companion voice appear to change unexpectedly.
+            self.set_api_status(
+                self._t(
+                    "sleep_mode_status",
+                    "休眠模式已啟；墨寒會保持安靜，提醒與緊急警報仍照規則處理。",
+                )
+            )
+            return
         if is_english(self.ui_language):
             lines = {
                 "工作": "Work mode enabled. I will interrupt only when necessary.",

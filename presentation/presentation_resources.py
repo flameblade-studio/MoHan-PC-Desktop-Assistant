@@ -25,6 +25,15 @@ QLineEdit, QTextBrowser, QTextEdit, QListWidget, QComboBox, QTimeEdit, QSpinBox 
     background: #ffffff; color: #20364a; border: 1px solid #b8c8d6; border-radius: 9px; padding: 7px;
     selection-background-color: #9fc4dc; selection-color: #102a3d;
 }
+QComboBox QAbstractItemView {
+    background: #ffffff; color: #20364a; border: 1px solid #b8c8d6;
+    selection-background-color: #cfe0ee; selection-color: #17344f;
+    outline: 0;
+}
+QComboBox QAbstractItemView::item { min-height: 30px; padding: 5px 10px; }
+QComboBox QAbstractItemView::item:hover { background: #d9e6f0; color: #17344f; }
+QComboBox QAbstractItemView::item:selected { background: #cfe0ee; color: #17344f; }
+QComboBox QAbstractItemView::item:disabled { color: #7890a3; background: #f3f6f9; }
 QScrollArea#todoScroll { background: #ffffff; border: 1px solid #c3d0dc; border-radius: 10px; }
 QScrollArea#formScrollPage { background: #ffffff; border: none; }
 QScrollArea#formScrollPage QWidget#qt_scrollarea_viewport { background: #ffffff; }

@@ -836,6 +836,7 @@ class DashboardConversationMixin:
 
 
     def set_voice_phase(self, phase: str) -> None:
+        self.set_desktop_companion_status("voice", phase)
         self.voice_phase.setText(
             self._t(
                 "voice_status_format",

@@ -278,7 +278,9 @@ class GestureRecognizer:
             current.wrist_x - previous.wrist_x
             for previous, current in pairwise(ordered)
         )
-        significant = tuple(value for value in movements if abs(value) >= 0.035)
+        # Webcam sampling is deliberately throttled; accept a natural wave
+        # across four stable frames without requiring exaggerated arm swings.
+        significant = tuple(value for value in movements if abs(value) >= 0.022)
         reversals = sum(
             left * right < 0.0
             for left, right in pairwise(significant)
@@ -286,7 +288,7 @@ class GestureRecognizer:
         span = max(point.wrist_x for point in history) - min(
             point.wrist_x for point in history
         )
-        if len(significant) >= 3 and reversals >= 2 and span >= 0.08:
+        if len(significant) >= 3 and reversals >= 1 and span >= 0.06:
             history.clear()
             return GestureRecognition(
                 GestureId.WAVE,

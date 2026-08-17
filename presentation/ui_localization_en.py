@@ -393,6 +393,26 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "answering_status": "Answering…",
     "api_connection_failed": "OpenAI API: connection failed ({error})",
     "voice_ready_short": "Ready",
+    "sleep_mode_status": (
+        "Sleep mode is active. MoHan will remain quiet; reminders and urgent alerts still follow their rules."
+    ),
+    "desktop_status_title": "MoHan is interacting with you on the desktop",
+    "desktop_status_description": (
+        "The desktop MoHan is the only visible, draggable character that responds to you."
+    ),
+    "desktop_status_mode": "Mode",
+    "desktop_status_expression": "Pose / expression",
+    "desktop_status_voice": "Voice",
+    "desktop_status_vision": "Camera sensing",
+    "desktop_status_gesture": "Gesture",
+    "desktop_status_idle": "Idle",
+    "desktop_status_camera_waiting": "Camera standing by",
+    "desktop_status_gesture_waiting": "Waiting for a gesture",
+    "desktop_status_vision_present": "I can see you",
+    "desktop_status_vision_away": "I cannot see you right now",
+    "desktop_status_vision_motion": "Movement detected",
+    "desktop_status_vision_unknown": "Camera standing by",
+    "desktop_status_gesture_wave": "Wave recognized",
     "microphone_idle": "🎙 Microphone",
     "microphone_send_now": "⏹ Send now",
     "microphone_recognizing": "Recognizing…",

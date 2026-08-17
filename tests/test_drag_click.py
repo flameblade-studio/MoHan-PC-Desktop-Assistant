@@ -69,6 +69,7 @@ def run() -> None:
         window.show()
         window.dashboard.hide()
         app.processEvents()
+        original_position = window.pos()
         QTest.mousePress(
             window.character,
             Qt.LeftButton,
@@ -85,6 +86,7 @@ def run() -> None:
             pos=QPoint(290, 270),
         )
         app.processEvents()
+        assert window.pos() != original_position
         assert not window.dashboard.isVisible()
         QTest.mouseClick(
             window.character,

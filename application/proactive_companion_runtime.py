@@ -45,6 +45,7 @@ class ProactiveSource(StrEnum):
     RETURN = "return"
     CHECK_IN = "check_in"
     WARDROBE = "wardrobe"
+    VISUAL_PRESENCE = "visual_presence"
 
 
 class CandidatePriority(IntEnum):
@@ -59,6 +60,7 @@ class CandidatePriority(IntEnum):
     WARDROBE_REVEAL = 45
     LONG_RETURN = 40
     BRIEF_RETURN = 30
+    VISUAL_PRESENCE = 35
     CHECK_IN = 20
 
 
@@ -78,6 +80,7 @@ class NormalizedCompanionEnvironment:
     speech_active: bool = False
     pending_outfit_id: str = ""
     user_looking: bool = False
+    visual_presence_arrival: bool = False
 
     def __post_init__(self) -> None:
         if self.now.tzinfo is None:
@@ -181,6 +184,7 @@ class ProactiveCompanionRuntime:
                 self._occasion_candidate(environment, preferences),
                 self._wellbeing_candidate(environment, preferences),
                 self._wardrobe_candidate(environment),
+                self._visual_presence_candidate(environment),
                 self._return_candidate(environment, preferences),
                 self._check_in_candidate(environment),
             )
@@ -411,6 +415,25 @@ class ProactiveCompanionRuntime:
         )
         return self._local_candidate(environment, interaction, priority)
 
+    def _visual_presence_candidate(
+        self,
+        environment: NormalizedCompanionEnvironment,
+    ) -> _Candidate | None:
+        """Acknowledge a newly seen person through the normal speech boundary."""
+
+        if not environment.visual_presence_arrival:
+            return None
+        return self._local_candidate(
+            environment,
+            ProactiveInteraction(
+                InteractionKind.WELCOME_BACK,
+                "happy",
+                WelcomeStyle.WARM,
+            ),
+            CandidatePriority.VISUAL_PRESENCE,
+            source=ProactiveSource.VISUAL_PRESENCE,
+        )
+
     def _check_in_candidate(
         self,
         environment: NormalizedCompanionEnvironment,
@@ -432,6 +455,8 @@ class ProactiveCompanionRuntime:
         environment: NormalizedCompanionEnvironment,
         interaction: ProactiveInteraction,
         priority: CandidatePriority,
+        *,
+        source: ProactiveSource | None = None,
     ) -> _Candidate | None:
         variation = _stable_variation(environment.now, interaction)
         text = interaction_text(
@@ -452,7 +477,7 @@ class ProactiveCompanionRuntime:
         if not text:
             return None
         token = _local_token(environment.now, interaction, variation)
-        source = (
+        source = source or (
             ProactiveSource.RETURN
             if interaction.kind is InteractionKind.WELCOME_BACK
             else ProactiveSource.CHECK_IN

@@ -18,7 +18,11 @@ lazy from application.proactive_companion_app_bridge import (
 lazy from application.proactive_companion_composition import (
     create_proactive_companion_bridge,
 )
-lazy from application.visual_perception import PresenceState, VisualObservation
+lazy from application.visual_perception import (
+    ActivityState,
+    PresenceState,
+    VisualObservation,
+)
 lazy from application.wellbeing_app_bridge import ReminderTrigger
 lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeakRequest
 lazy from domain.app_profile import personalize_text, profile_setting
@@ -113,6 +117,7 @@ class CompanionProactiveMixin:
         timer_trigger: ReminderTrigger | None = None,
         scheduled_request: ProactiveSpeakRequest | None = None,
         camera_observation: VisualObservation | None = None,
+        visual_presence_arrival: bool = False,
     ):
         bridge = getattr(self, "_proactive_companion_bridge", None)
         if bridge is None or self._closing:
@@ -193,6 +198,11 @@ class CompanionProactiveMixin:
             user_looking=bool(
                 recognized or (not camera_enabled and session_user_active)
             ),
+            visual_presence_arrival=bool(
+                visual_presence_arrival
+                and camera_enabled
+                and presence is PresenceState.PRESENT
+            ),
         )
         return bridge.dispatch(
             ProactiveAppEvent(state, timer_trigger, scheduled_request)
@@ -255,7 +265,47 @@ class CompanionProactiveMixin:
     def _consider_visual_interaction(self, observation) -> None:
         if not isinstance(observation, VisualObservation):
             return
-        self._dispatch_proactive_companion(camera_observation=observation)
+        now = time.monotonic()
+        previous = getattr(
+            self,
+            "_desktop_visual_presence",
+            PresenceState.UNKNOWN,
+        )
+        self._desktop_visual_presence = observation.presence
+        self.dashboard.set_desktop_companion_visual_status(
+            "present"
+            if observation.presence is PresenceState.PRESENT
+            else "away"
+            if observation.presence is PresenceState.AWAY
+            else "unknown",
+            active=observation.activity is ActivityState.ACTIVE,
+        )
+        if observation.presence is PresenceState.PRESENT:
+            self.set_state(
+                "gentle_smile_front",
+                source="visual",
+                intensity=0.35,
+            )
+            if previous is not PresenceState.PRESENT:
+                self.set_state("happy", source="visual", intensity=0.50)
+        if (
+            observation.activity is ActivityState.ACTIVE
+            and now - getattr(self, "_last_visual_motion_at", 0.0) >= 2.0
+        ):
+            self._last_visual_motion_at = now
+            self.set_state("happy", source="visual", intensity=0.50)
+        arrival = bool(
+            observation.presence is PresenceState.PRESENT
+            and previous is not PresenceState.PRESENT
+            and now - getattr(self, "_last_visual_arrival_at", float("-inf"))
+            >= 90.0
+        )
+        if arrival:
+            self._last_visual_arrival_at = now
+        self._dispatch_proactive_companion(
+            camera_observation=observation,
+            visual_presence_arrival=arrival,
+        )
 
     def _consider_desktop_presence(self) -> None:
         center = getattr(self.dashboard, "flagship_center", None)
