@@ -387,6 +387,13 @@ class CompanionCoreMixin:
         """Open the keyboard conversation surface and acknowledge a wave."""
         self.open_dashboard()
         self._acknowledge_gesture()
+        try:
+            # The status card is informative only.  Its transient widget
+            # lifecycle must never prevent the real companion from opening
+            # the keyboard conversation or answering a recognized wave.
+            self.dashboard.set_desktop_companion_gesture_status("wave")
+        except Exception:  # noqa: BLE001 - isolated optional Qt presentation
+            pass
         language = str(self.db.setting("ui_language", "zh-TW"))
         responses = {
             "zh-TW": "主上，妾在。可以直接在控制台輸入想說的話。",
