@@ -4,7 +4,7 @@ lazy import ctypes
 lazy import os
 lazy from ctypes import wintypes
 
-lazy from PySide6.QtCore import Qt, QTimer
+lazy from PySide6.QtCore import QPoint, Qt, QTimer
 lazy from PySide6.QtGui import QAction, QMouseEvent
 lazy from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 
