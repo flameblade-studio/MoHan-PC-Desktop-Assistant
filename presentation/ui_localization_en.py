@@ -396,6 +396,18 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "sleep_mode_status": (
         "Sleep mode is active. MoHan will remain quiet; reminders and urgent alerts still follow their rules."
     ),
+    "desktop_status_title": "MoHan is interacting with you on the desktop",
+    "desktop_status_description": (
+        "The desktop MoHan is the only visible, draggable character that responds to you."
+    ),
+    "desktop_status_mode": "Mode",
+    "desktop_status_expression": "Pose / expression",
+    "desktop_status_voice": "Voice",
+    "desktop_status_vision": "Camera sensing",
+    "desktop_status_gesture": "Gesture",
+    "desktop_status_idle": "Idle",
+    "desktop_status_camera_waiting": "Camera standing by",
+    "desktop_status_gesture_waiting": "Waiting for a gesture",
     "microphone_idle": "🎙 Microphone",
     "microphone_send_now": "⏹ Send now",
     "microphone_recognizing": "Recognizing…",

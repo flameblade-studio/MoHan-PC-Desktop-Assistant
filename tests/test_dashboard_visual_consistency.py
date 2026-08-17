@@ -80,7 +80,9 @@ def run() -> None:
                     continue
                 assert _frames(page, "pageBanner"), title
                 stages = _frames(page, "desktopCompanionStage")
-                assert stages and stages[0].isHidden(), title
+                assert stages and not stages[0].isHidden(), title
+                status_cards = _frames(page, "desktopCompanionStatusCard")
+                assert status_cards and not status_cards[0].isHidden(), title
                 assert _frames(page, "featureDock"), title
                 splitter = page.findChild(QSplitter, "featurePageSplitter")
                 assert splitter is not None, title
@@ -88,14 +90,10 @@ def run() -> None:
                 assert splitter.widget(0).minimumWidth() >= 400, title
                 assert splitter.widget(1).minimumWidth() >= 500, title
                 assert splitter.widget(1).width() >= 500, title
-                portrait = page.findChild(
+                assert page.findChild(
                     QLabel,
                     "dashboardCharacterStagePortrait",
-                )
-                assert portrait is not None, title
-                assert portrait.pixmap() is not None, title
-                assert not portrait.pixmap().isNull(), title
-                assert portrait.isHidden(), title
+                ) is None, title
                 assert page.property("mohanRole") == "featurePage", title
             settings_index = next(
                 index

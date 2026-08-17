@@ -975,6 +975,10 @@ class CompanionFaceAnimationMixin:
         self._stop_gesture_animation()
         self.expression_generation += 1
         self.state = state
+        self.dashboard.set_desktop_companion_status(
+            "expression",
+            state.replace("_", " "),
+        )
         if state == "idle":
             expression = self._idle_expression()
         elif state == "speaking":

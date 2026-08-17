@@ -272,6 +272,16 @@ class CompanionProactiveMixin:
             PresenceState.UNKNOWN,
         )
         self._desktop_visual_presence = observation.presence
+        visual_status = (
+            "present"
+            if observation.presence is PresenceState.PRESENT
+            else "away"
+            if observation.presence is PresenceState.AWAY
+            else "unknown"
+        )
+        if observation.activity is ActivityState.ACTIVE:
+            visual_status = f"{visual_status} · motion"
+        self.dashboard.set_desktop_companion_status("vision", visual_status)
         if observation.presence is PresenceState.PRESENT:
             self.set_state(
                 "gentle_smile_front",

@@ -205,6 +205,20 @@ class DashboardShellMixin:
         self.organization_name = profile_setting(
             db, "organization_name"
         )
+        self._desktop_companion_status_values = {
+            "mode": display_label(
+                self.ui_language,
+                self.mode,
+                MODE_LABELS,
+                SIMPLIFIED_MODE_LABELS,
+                JAPANESE_MODE_LABELS,
+            ),
+            "expression": self._t("desktop_status_idle", "待機中"),
+            "voice": self._t("voice_ready_short", "準備就緒"),
+            "vision": self._t("desktop_status_camera_waiting", "鏡頭待命"),
+            "gesture": self._t("desktop_status_gesture_waiting", "等待手勢"),
+        }
+        self._desktop_companion_status_labels: list[dict[str, QLabel]] = []
 
     def _configure_dashboard_window(self) -> None:
         db = self.db
@@ -405,7 +419,7 @@ class DashboardShellMixin:
             button.setChecked(button_index == index)
 
     def _themed_feature_page(self, factory, title: str) -> QWidget:
-        """Place one feature panel beside the desktop companion's reserved stage."""
+        """Place one feature panel beside a live status card for the desktop companion."""
 
         content = factory()
         content.setProperty("mohanRole", "featureContent")
@@ -420,40 +434,53 @@ class DashboardShellMixin:
         stage.setMinimumWidth(400)
         stage_layout = QVBoxLayout(stage)
         stage_layout.setContentsMargins(18, 18, 18, 18)
-        stage_portrait = QLabel()
-        stage_portrait.setObjectName("dashboardCharacterStagePortrait")
-        stage_portrait.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
-        stage_portrait.setAccessibleName(profile_window_title(self.db))
-        stage_source = QPixmap(
-            str(
-                resource_path(
-                    "assets/pose-atlas/v4-working/yaw+000-pitch+00.png"
-                )
+        status_card = QFrame()
+        status_card.setProperty("mohanRole", "desktopCompanionStatusCard")
+        status_layout = QVBoxLayout(status_card)
+        status_layout.setContentsMargins(18, 18, 18, 18)
+        status_layout.setSpacing(12)
+        status_title = QLabel(
+            self._t("desktop_status_title", "墨寒正在桌面上與您互動")
+        )
+        status_title.setProperty("mohanRole", "desktopCompanionStatusTitle")
+        status_title.setWordWrap(True)
+        status_layout.addWidget(status_title)
+        status_note = QLabel(
+            self._t(
+                "desktop_status_description",
+                "桌面上的墨寒是唯一可見、可拖移並會回應您的角色。",
             )
         )
-        if not stage_source.isNull():
-            stage_portrait.setPixmap(
-                stage_source.scaled(
-                    370,
-                    580,
-                    Qt.KeepAspectRatio,
-                    Qt.SmoothTransformation,
-                )
-            )
-        stage_layout.addWidget(stage_portrait, 1)
-        stage_caption = QFrame()
-        stage_caption.setProperty("mohanRole", "stageCaption")
-        stage_caption_layout = QVBoxLayout(stage_caption)
-        stage_caption_layout.setContentsMargins(14, 9, 14, 9)
-        stage_title = QLabel(title)
-        stage_title.setAlignment(Qt.AlignCenter)
-        stage_title.setProperty("mohanRole", "stageTitle")
-        stage_caption_layout.addWidget(stage_title)
-        stage_layout.addWidget(stage_caption)
-        # The desktop companion remains the one interactive character while
-        # this dashboard is open.  Do not render a second PoseAtlas portrait
-        # inside the input surface, which otherwise produces a visual double.
-        stage.hide()
+        status_note.setProperty("mohanRole", "desktopCompanionStatusNote")
+        status_note.setWordWrap(True)
+        status_layout.addWidget(status_note)
+        labels: dict[str, QLabel] = {}
+        for key, caption in (
+            ("mode", self._t("desktop_status_mode", "模式")),
+            ("expression", self._t("desktop_status_expression", "姿態／表情")),
+            ("voice", self._t("desktop_status_voice", "語音")),
+            ("vision", self._t("desktop_status_vision", "鏡頭感知")),
+            ("gesture", self._t("desktop_status_gesture", "手勢")),
+        ):
+            row = QFrame()
+            row.setProperty("mohanRole", "desktopCompanionStatusRow")
+            row_layout = QHBoxLayout(row)
+            row_layout.setContentsMargins(10, 8, 10, 8)
+            row_layout.setSpacing(10)
+            name = QLabel(caption)
+            name.setProperty("mohanRole", "desktopCompanionStatusName")
+            value = QLabel(self._desktop_companion_status_values[key])
+            value.setObjectName(f"desktopCompanionStatus{key.title()}")
+            value.setProperty("mohanRole", "desktopCompanionStatusValue")
+            value.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            value.setWordWrap(True)
+            row_layout.addWidget(name)
+            row_layout.addWidget(value, 1)
+            status_layout.addWidget(row)
+            labels[key] = value
+        status_layout.addStretch(1)
+        stage_layout.addWidget(status_card, 1)
+        self._desktop_companion_status_labels.append(labels)
 
         dock = QFrame()
         dock.setProperty("mohanRole", "featureDock")
@@ -483,6 +510,17 @@ class DashboardShellMixin:
         feature_splitter.setSizes((540, 630))
         page_layout.addWidget(feature_splitter, 1)
         return page
+
+    def set_desktop_companion_status(self, key: str, value: str) -> None:
+        """Reflect the one desktop companion without rendering a duplicate."""
+
+        if key not in self._desktop_companion_status_values:
+            return
+        self._desktop_companion_status_values[key] = str(value).strip()
+        for labels in self._desktop_companion_status_labels:
+            label = labels.get(key)
+            if label is not None:
+                label.setText(self._desktop_companion_status_values[key])
 
     def _wardrobe_tab(self) -> QWidget:
         tab = QWidget()
@@ -1097,6 +1135,16 @@ class DashboardShellMixin:
     def _mode_changed(self, mode: str) -> None:
         self.mode = mode
         self.db.set_setting("mode", mode)
+        self.set_desktop_companion_status(
+            "mode",
+            display_label(
+                self.ui_language,
+                mode,
+                MODE_LABELS,
+                SIMPLIFIED_MODE_LABELS,
+                JAPANESE_MODE_LABELS,
+            ),
+        )
         if mode == "休眠":
             # Sleep is an intentional quiet state.  Do not synthesize a
             # confirmation through a fallback provider, which can make the
