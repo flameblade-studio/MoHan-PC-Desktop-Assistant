@@ -18,7 +18,11 @@ lazy from application.proactive_companion_app_bridge import (
 lazy from application.proactive_companion_composition import (
     create_proactive_companion_bridge,
 )
-lazy from application.visual_perception import PresenceState, VisualObservation
+lazy from application.visual_perception import (
+    ActivityState,
+    PresenceState,
+    VisualObservation,
+)
 lazy from application.wellbeing_app_bridge import ReminderTrigger
 lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeakRequest
 lazy from domain.app_profile import personalize_text, profile_setting
@@ -255,6 +259,27 @@ class CompanionProactiveMixin:
     def _consider_visual_interaction(self, observation) -> None:
         if not isinstance(observation, VisualObservation):
             return
+        now = time.monotonic()
+        previous = getattr(
+            self,
+            "_desktop_visual_presence",
+            PresenceState.UNKNOWN,
+        )
+        self._desktop_visual_presence = observation.presence
+        if observation.presence is PresenceState.PRESENT:
+            self.set_state(
+                "gentle_smile_front",
+                source="visual",
+                intensity=0.35,
+            )
+            if previous is not PresenceState.PRESENT:
+                self.set_state("happy", source="visual", intensity=0.50)
+        if (
+            observation.activity is ActivityState.ACTIVE
+            and now - getattr(self, "_last_visual_motion_at", 0.0) >= 2.0
+        ):
+            self._last_visual_motion_at = now
+            self.set_state("happy", source="visual", intensity=0.50)
         self._dispatch_proactive_companion(camera_observation=observation)
 
     def _consider_desktop_presence(self) -> None:
