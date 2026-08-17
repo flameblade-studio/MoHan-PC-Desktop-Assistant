@@ -517,10 +517,19 @@ class DashboardShellMixin:
         if key not in self._desktop_companion_status_values:
             return
         self._desktop_companion_status_values[key] = str(value).strip()
+        live_label_sets: list[dict[str, QLabel]] = []
         for labels in self._desktop_companion_status_labels:
             label = labels.get(key)
-            if label is not None:
-                label.setText(self._desktop_companion_status_values[key])
+            try:
+                if label is not None:
+                    label.setText(self._desktop_companion_status_values[key])
+            except RuntimeError:
+                # Feature pages can be reconstructed while the dashboard is
+                # hidden.  Discard only their released Qt labels; a gesture
+                # must still be able to open the real desktop conversation.
+                continue
+            live_label_sets.append(labels)
+        self._desktop_companion_status_labels = live_label_sets
 
     def set_desktop_companion_visual_status(
         self, presence: str, *, active: bool = False
