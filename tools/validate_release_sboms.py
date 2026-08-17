@@ -30,8 +30,8 @@ SECRET_VALUE = re.compile(
     r"[\s\"']*[:=][\s\"']*[A-Za-z0-9_./+=-]{8,}"
 )
 SCHEMA_VALIDATION_PROGRAM = """
-lazy import sys
-lazy from pathlib import Path
+import sys
+from pathlib import Path
 from cyclonedx.schema import OutputFormat, SchemaVersion
 from cyclonedx.validation import make_schemabased_validator
 
