@@ -16,6 +16,8 @@
 
 > **跨平台進度：** `v4.0.0` 已正式發布。Windows 是正式支援平台，已完成完整回歸、安裝與發布驗證；macOS Apple Silicon／Intel 與 Linux 則同步提供功能受限的 DMG／AppImage Preview，已通過套件 smoke 驗證與核心匯入、純核心邏輯、Qt offscreen 的三系統 CI。Preview CI 不取代各平台真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
+> **歷史紀錄（v3.1.2 跨平台進度）：** Windows 仍是唯一完成既有公開版本實機、完整回歸、安裝與發布驗證的平台。v3.1.2 的 macOS／Linux 功能受限 DMG／AppImage Preview 已納入安全平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI；實際產物仍須通過本版最終發布門檻，CI 也不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
+
 > **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.0.0`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 為準。
 
 > **目前開發版本：** `4.0.0`；這是尚未發布的開發草稿。Windows 建置命令：`.\build.ps1 -Version "4.0.0"`。
@@ -431,6 +433,8 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </p>
 
 > **跨平台进度：** `v4.0.0` 已正式发布。Windows 是正式支持平台，已完成完整回归、安装与发布验证；macOS Apple Silicon／Intel 与 Linux 则同步提供功能受限的 DMG／AppImage Preview，已通过软件包 smoke 验证与核心导入、纯核心逻辑、Qt offscreen 的三系统 CI。Preview CI 不替代各平台真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
+
+> **历史记录（v3.1.2 跨平台进度）：** Windows 仍是唯一完成现有公开版本真机、完整回归、安装与发布验证的平台。v3.1.2 的 macOS／Linux 功能受限 DMG／AppImage Preview 已纳入安全平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI；实际产物仍须通过本版本最终发布关卡，CI 也不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
 > **当前发布目标：** 源代码与软件包元数据已同步至 `v4.0.0`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 为准。
 
@@ -848,6 +852,8 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 > **Cross-platform status:** `v4.0.0` is formally published. Windows is the formally supported platform and has completed full regression, installation, and publication validation. macOS Apple Silicon/Intel and Linux ship in parallel as limited DMG/AppImage Previews, with package-smoke verification and three-OS CI for core imports, pure-core logic, and Qt offscreen. Preview CI does not replace real-device compatibility or full-feature validation on those platforms. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
 
+> **Historical record (v3.1.2 cross-platform status):** Windows remains the only platform whose existing public releases have completed real-device use, the full regression suite, installation, and publication validation. The limited v3.1.2 macOS/Linux DMG/AppImage Previews include safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen; the actual artifacts must still pass this release's final publication gates. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
+
 > **Current release target:** Source and package metadata are synchronized at `v4.0.0`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
 
 > **Current development version:** `4.0.0`; this is an unreleased development draft. Windows build command: `.\build.ps1 -Version "4.0.0"`.
@@ -1263,6 +1269,8 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </p>
 
 > **クロスプラットフォーム状況：** `v4.0.0` は正式公開済みです。Windows は正式対応プラットフォームであり、完全回帰、インストール、公開検証を完了しています。macOS Apple Silicon／Intel と Linux も機能限定 DMG／AppImage Preview として同時に公開され、パッケージ smoke 検証と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI に合格しています。Preview CI は各プラットフォームの実機互換性や完全機能の検証を代替しません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
+
+> **履歴（v3.1.2 クロスプラットフォーム状況）：** 既存の公開版について、実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。v3.1.2 の macOS／Linux 機能限定 DMG／AppImage Preview には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI を導入していますが、実際の成果物は本版の最終公開ゲートに合格する必要があります。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
 > **現在の公開目標：** ソースとパッケージのメタデータは `v4.0.0` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) を正とします。
 

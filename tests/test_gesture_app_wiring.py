@@ -270,7 +270,12 @@ def test_gesture_actions_reuse_existing_application_paths(
     dispatch(dispatcher, GestureAction.UNMUTE_AUDIO)
     assert dashboard.voice_muted.isChecked() is False
 
-    dispatch(dispatcher, GestureAction.SHOW_DASHBOARD)
+    # Opening the console from a wave intentionally acknowledges the user
+    # through the existing speech path.  Keep this wiring test offline while
+    # asserting that the acknowledgement remains part of the interaction.
+    with patch.object(window, "speak") as speak:
+        dispatch(dispatcher, GestureAction.SHOW_DASHBOARD)
+    speak.assert_called_once()
     assert dashboard.isVisible()
     dispatch(dispatcher, GestureAction.HIDE_DASHBOARD)
     assert not dashboard.isVisible()

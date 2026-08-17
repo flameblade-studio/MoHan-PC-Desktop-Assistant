@@ -46,6 +46,14 @@ lazy from domain.language_support import (
 lazy from domain.outfit_pack import OutfitPackError
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.desktop_companion_status import (
+    build_desktop_companion_stage,
+    desktop_companion_initial_status,
+    gesture_status_message,
+    mode_status_label,
+    update_desktop_companion_status,
+    visual_status_message,
+)
 lazy from presentation.flagship_theme import (
     create_flagship_ornament,
     mark_flagship_card,
@@ -205,19 +213,7 @@ class DashboardShellMixin:
         self.organization_name = profile_setting(
             db, "organization_name"
         )
-        self._desktop_companion_status_values = {
-            "mode": display_label(
-                self.ui_language,
-                self.mode,
-                MODE_LABELS,
-                SIMPLIFIED_MODE_LABELS,
-                JAPANESE_MODE_LABELS,
-            ),
-            "expression": self._t("desktop_status_idle", "待機中"),
-            "voice": self._t("voice_ready_short", "準備就緒"),
-            "vision": self._t("desktop_status_camera_waiting", "鏡頭待命"),
-            "gesture": self._t("desktop_status_gesture_waiting", "等待手勢"),
-        }
+        self._desktop_companion_status_values = desktop_companion_initial_status(self)
         self._desktop_companion_status_labels: list[dict[str, QLabel]] = []
 
     def _configure_dashboard_window(self) -> None:
@@ -429,57 +425,9 @@ class DashboardShellMixin:
         page_layout.setContentsMargins(14, 14, 14, 14)
         page_layout.setSpacing(14)
 
-        stage = QFrame()
-        stage.setProperty("mohanRole", "desktopCompanionStage")
-        stage.setMinimumWidth(400)
-        stage_layout = QVBoxLayout(stage)
-        stage_layout.setContentsMargins(18, 18, 18, 18)
-        status_card = QFrame()
-        status_card.setProperty("mohanRole", "desktopCompanionStatusCard")
-        status_layout = QVBoxLayout(status_card)
-        status_layout.setContentsMargins(18, 18, 18, 18)
-        status_layout.setSpacing(12)
-        status_title = QLabel(
-            self._t("desktop_status_title", "墨寒正在桌面上與您互動")
+        stage, labels = build_desktop_companion_stage(
+            self, self._desktop_companion_status_values
         )
-        status_title.setProperty("mohanRole", "desktopCompanionStatusTitle")
-        status_title.setWordWrap(True)
-        status_layout.addWidget(status_title)
-        status_note = QLabel(
-            self._t(
-                "desktop_status_description",
-                "桌面上的墨寒是唯一可見、可拖移並會回應您的角色。",
-            )
-        )
-        status_note.setProperty("mohanRole", "desktopCompanionStatusNote")
-        status_note.setWordWrap(True)
-        status_layout.addWidget(status_note)
-        labels: dict[str, QLabel] = {}
-        for key, caption in (
-            ("mode", self._t("desktop_status_mode", "模式")),
-            ("expression", self._t("desktop_status_expression", "姿態／表情")),
-            ("voice", self._t("desktop_status_voice", "語音")),
-            ("vision", self._t("desktop_status_vision", "鏡頭感知")),
-            ("gesture", self._t("desktop_status_gesture", "手勢")),
-        ):
-            row = QFrame()
-            row.setProperty("mohanRole", "desktopCompanionStatusRow")
-            row_layout = QHBoxLayout(row)
-            row_layout.setContentsMargins(10, 8, 10, 8)
-            row_layout.setSpacing(10)
-            name = QLabel(caption)
-            name.setProperty("mohanRole", "desktopCompanionStatusName")
-            value = QLabel(self._desktop_companion_status_values[key])
-            value.setObjectName(f"desktopCompanionStatus{key.title()}")
-            value.setProperty("mohanRole", "desktopCompanionStatusValue")
-            value.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-            value.setWordWrap(True)
-            row_layout.addWidget(name)
-            row_layout.addWidget(value, 1)
-            status_layout.addWidget(row)
-            labels[key] = value
-        status_layout.addStretch(1)
-        stage_layout.addWidget(status_card, 1)
         self._desktop_companion_status_labels.append(labels)
 
         dock = QFrame()
@@ -516,41 +464,28 @@ class DashboardShellMixin:
 
         if key not in self._desktop_companion_status_values:
             return
-        self._desktop_companion_status_values[key] = str(value).strip()
-        live_label_sets: list[dict[str, QLabel]] = []
-        for labels in self._desktop_companion_status_labels:
-            label = labels.get(key)
-            try:
-                if label is not None:
-                    label.setText(self._desktop_companion_status_values[key])
-            except RuntimeError:
-                # Feature pages can be reconstructed while the dashboard is
-                # hidden.  Discard only their released Qt labels; a gesture
-                # must still be able to open the real desktop conversation.
-                continue
-            live_label_sets.append(labels)
-        self._desktop_companion_status_labels = live_label_sets
+        self._desktop_companion_status_labels = update_desktop_companion_status(
+            self,
+            self._desktop_companion_status_values,
+            self._desktop_companion_status_labels,
+            key,
+            value,
+        )
 
     def set_desktop_companion_visual_status(
         self, presence: str, *, active: bool = False
     ) -> None:
         """Present camera activity in the console's current interface language."""
 
-        if active and presence == "present":
-            translation_key, fallback = "desktop_status_vision_motion", "偵測到活動"
-        else:
-            translation_key, fallback = {
-                "present": ("desktop_status_vision_present", "已看見您"),
-                "away": ("desktop_status_vision_away", "暫時未看見您"),
-            }.get(presence, ("desktop_status_vision_unknown", "鏡頭待命"))
+        translation_key, fallback = visual_status_message(
+            presence, active=active
+        )
         self.set_desktop_companion_status("vision", self._t(translation_key, fallback))
 
     def set_desktop_companion_gesture_status(self, gesture: str) -> None:
         """Show recognized gestures without leaking untranslated internal labels."""
 
-        translation_key, fallback = {
-            "wave": ("desktop_status_gesture_wave", "已辨識揮手"),
-        }.get(gesture, ("desktop_status_gesture_waiting", "等待手勢"))
+        translation_key, fallback = gesture_status_message(gesture)
         self.set_desktop_companion_status("gesture", self._t(translation_key, fallback))
 
     def _wardrobe_tab(self) -> QWidget:
@@ -1166,16 +1101,7 @@ class DashboardShellMixin:
     def _mode_changed(self, mode: str) -> None:
         self.mode = mode
         self.db.set_setting("mode", mode)
-        self.set_desktop_companion_status(
-            "mode",
-            display_label(
-                self.ui_language,
-                mode,
-                MODE_LABELS,
-                SIMPLIFIED_MODE_LABELS,
-                JAPANESE_MODE_LABELS,
-            ),
-        )
+        self.set_desktop_companion_status("mode", mode_status_label(self, mode))
         if mode == "休眠":
             # Sleep is an intentional quiet state.  Do not synthesize a
             # confirmation through a fallback provider, which can make the

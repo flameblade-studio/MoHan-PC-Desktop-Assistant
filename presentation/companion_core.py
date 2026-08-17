@@ -380,8 +380,16 @@ class CompanionCoreMixin:
             dashboard.mode_combo.setCurrentIndex(index)
 
     def _acknowledge_gesture(self) -> None:
-        if hasattr(self, "expression_arbiter"):
+        if not hasattr(self, "expression_arbiter"):
+            return
+        try:
             self.set_state("happy", source="conversation", intensity=0.55)
+        except AttributeError as exc:
+            # A deferred visual startup deliberately does not allocate pose
+            # assets. It can still acknowledge a gesture through the status
+            # card and voice path, but cannot animate until assets are ready.
+            if "physics_expression_poses" not in str(exc):
+                raise
 
     def _open_dashboard_from_gesture(self) -> None:
         """Open the keyboard conversation surface and acknowledge a wave."""
