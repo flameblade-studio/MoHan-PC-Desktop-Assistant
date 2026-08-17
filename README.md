@@ -14,7 +14,7 @@
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台進度：** Windows 仍是唯一完成既有公開版本實機、完整回歸、安裝與發布驗證的平台。v3.1.2 的 macOS／Linux 功能受限 DMG／AppImage Preview 已納入安全平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI；實際產物仍須通過本版最終發布門檻，CI 也不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
+> **跨平台進度：** `v4.0.0` 已正式發布。Windows 是正式支援平台，已完成完整回歸、安裝與發布驗證；macOS Apple Silicon／Intel 與 Linux 則同步提供功能受限的 DMG／AppImage Preview，已通過套件 smoke 驗證與核心匯入、純核心邏輯、Qt offscreen 的三系統 CI。Preview CI 不取代各平台真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
 > **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.0.0`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 為準。
 
@@ -264,7 +264,7 @@ Azure Speech 是預設關閉、由使用者自行啟用的預覽供應器，需�
 
 尚未數位簽署的開源預覽版可能觸發 Windows SmartScreen；請確認官方下載來源與 SHA-256 後再執行。
 
-v3.1.2 的跨平台發行範圍包含 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`；每一項實際產物只有在通過本版完整發布門檻後才會公開。這些產物定位為功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
+`v4.0.0` 的跨平台發行範圍包含 macOS Apple Silicon（arm64）與 Intel（x86_64）`.dmg`（各內含對應 `.app`），以及 Linux x86_64 `.AppImage`；所有實際產物均已通過本版完整發布門檻後公開。這些產物定位為功能受限 Preview，只開放 `preview_app.py` 啟動畫面、四語說明、平台資料路徑與安全停用邊界；語音、透明桌面角色、完整聊天與工作介面、雲端連接器、系統工具、自動啟動及秘密輸入均維持停用。詳見 [Preview 安裝包說明](docs/PREVIEW-PACKAGES.md) 與 [QUICKSTART](QUICKSTART.md)。
 
 #### 自動化發布邊界
 
@@ -287,7 +287,7 @@ v3.1.2 的跨平台發行範圍包含 macOS Apple Silicon（arm64）與 Intel（
 
 #### Realtime 回覆聲音
 
-`v3.1.2` 完整保留 OpenAI Realtime 原生聲音，並維持為預設選項。原生模式由 Realtime 透過同一路徑理解並直接輸出音訊，適合偏好原有聲線，或希望在這些選項中取得最低額外延遲的使用者。
+`v4.0.0` 完整保留 OpenAI Realtime 原生聲音，並維持為預設選項。原生模式由 Realtime 透過同一路徑理解並直接輸出音訊，適合偏好原有聲線，或希望在這些選項中取得最低額外延遲的使用者。
 
 使用者也可明確改選「Realtime 即時理解＋一般 Azure Speech 串流發聲」或「Realtime 即時理解＋Azure Dragon HD 串流發聲」。混合模式只把 Realtime 產生的文字交給所選 Azure 引擎；安全短句一完成便排入順序播放，首段音訊抵達即開始發聲，避免等待完整回答與完整音檔。不過，多出的 TTS 網路與合成階段仍會增加發話等待，因此本專案不宣稱零延遲。
 
@@ -430,7 +430,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台进度：** Windows 仍是唯一完成现有公开版本真机、完整回归、安装与发布验证的平台。v3.1.2 的 macOS／Linux 功能受限 DMG／AppImage Preview 已纳入安全平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI；实际产物仍须通过本版本最终发布关卡，CI 也不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
+> **跨平台进度：** `v4.0.0` 已正式发布。Windows 是正式支持平台，已完成完整回归、安装与发布验证；macOS Apple Silicon／Intel 与 Linux 则同步提供功能受限的 DMG／AppImage Preview，已通过软件包 smoke 验证与核心导入、纯核心逻辑、Qt offscreen 的三系统 CI。Preview CI 不替代各平台真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
 > **当前发布目标：** 源代码与软件包元数据已同步至 `v4.0.0`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 为准。
 
@@ -680,7 +680,7 @@ Azure Speech 是默认关闭、由用户自行启用的预览供应器，需要�
 
 尚未数字签名的开源预览版可能触发 Windows SmartScreen；请确认官方下载来源与 SHA-256 后再运行。
 
-v3.1.2 的跨平台发布范围包含 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`；每一项实际产物只有在通过本版本完整发布关卡后才会公开。这些产物定位为功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
+`v4.0.0` 的跨平台发布范围包含 macOS Apple Silicon（arm64）与 Intel（x86_64）`.dmg`（各内含对应 `.app`），以及 Linux x86_64 `.AppImage`；所有实际产物均已通过本版本完整发布关卡后公开。这些产物定位为功能受限 Preview，只开放 `preview_app.py` 启动画面、四语说明、平台数据路径与安全停用边界；语音、透明桌面角色、完整聊天与工作界面、云端连接器、系统工具、自动启动及秘密输入均保持停用。详情请见 [Preview 安装包说明](docs/PREVIEW-PACKAGES.md) 与 [QUICKSTART](QUICKSTART.md)。
 
 #### 自动化发布边界
 
@@ -703,7 +703,7 @@ v3.1.2 的跨平台发布范围包含 macOS Apple Silicon（arm64）与 Intel（
 
 #### Realtime 回复声音
 
-`v3.1.2` 完整保留 OpenAI Realtime 原生声音，并继续作为默认选项。原生模式由 Realtime 通过同一路径理解并直接输出音频，适合偏好原有声线，或希望在这些选项中获得最低额外延迟的用户。
+`v4.0.0` 完整保留 OpenAI Realtime 原生声音，并继续作为默认选项。原生模式由 Realtime 通过同一路径理解并直接输出音频，适合偏好原有声线，或希望在这些选项中获得最低额外延迟的用户。
 
 用户也可明确改选“Realtime 即时理解＋一般 Azure Speech 流式发声”或“Realtime 即时理解＋Azure Dragon HD 流式发声”。混合模式只把 Realtime 生成的文字交给所选 Azure 引擎；安全短句完成后立即按顺序排队，首段音频到达即开始发声，避免等待完整回答与完整音频文件。但是，新增的 TTS 网络与合成阶段仍会增加发话等待，因此本项目不宣称零延迟。
 
@@ -846,7 +846,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **Cross-platform status:** Windows remains the only platform whose existing public releases have completed real-device use, the full regression suite, installation, and publication validation. The limited v3.1.2 macOS/Linux DMG/AppImage Previews include safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen; the actual artifacts must still pass this release's final publication gates. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
+> **Cross-platform status:** `v4.0.0` is formally published. Windows is the formally supported platform and has completed full regression, installation, and publication validation. macOS Apple Silicon/Intel and Linux ship in parallel as limited DMG/AppImage Previews, with package-smoke verification and three-OS CI for core imports, pure-core logic, and Qt offscreen. Preview CI does not replace real-device compatibility or full-feature validation on those platforms. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
 
 > **Current release target:** Source and package metadata are synchronized at `v4.0.0`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
 
@@ -1096,7 +1096,7 @@ General users do not need to install Python:
 
 Unsigned open-source previews may trigger Windows SmartScreen. Verify the official download source and SHA-256 before running them.
 
-The v3.1.2 cross-platform release scope covers separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`; each actual artifact is published only after it passes this release's complete publication gates. These artifacts are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
+The `v4.0.0` cross-platform release scope covers separate macOS Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`, plus a Linux x86_64 `.AppImage`; every artifact was published after passing this release's complete publication gates. These artifacts are limited Previews that expose only the `preview_app.py` launch surface, four-language information, platform data paths, and fail-closed safety boundaries. Voice, the transparent character, full chat and productivity UI, cloud connectors, system tools, autostart, and secret entry remain disabled. Read the [Preview package guide](docs/PREVIEW-PACKAGES.md) and [QUICKSTART](QUICKSTART.md).
 
 #### Automated release boundary
 
@@ -1119,7 +1119,7 @@ Current default models:
 
 #### Realtime response voice
 
-`v3.1.2` fully preserves native OpenAI Realtime voice and keeps it as the default. Native mode lets Realtime understand and emit audio through the same path, serving people who prefer the original voices or want the lowest added latency among these options.
+`v4.0.0` fully preserves native OpenAI Realtime voice and keeps it as the default. Native mode lets Realtime understand and emit audio through the same path, serving people who prefer the original voices or want the lowest added latency among these options.
 
 Users may instead explicitly select “Realtime understanding + standard Azure Speech streaming” or “Realtime understanding + Azure Dragon HD streaming.” Hybrid mode sends only Realtime-generated text to the selected Azure engine. Safe, short clauses enter the ordered queue as soon as they complete, and speech starts with the first audio chunk instead of waiting for the full response or complete audio file. The added TTS network and synthesis stage still increases the wait before speech, so this project does not claim zero latency.
 
@@ -1262,7 +1262,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **クロスプラットフォーム状況：** 既存の公開版について、実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。v3.1.2 の macOS／Linux 機能限定 DMG／AppImage Preview には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI を導入していますが、実際の成果物は本版の最終公開ゲートに合格する必要があります。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
+> **クロスプラットフォーム状況：** `v4.0.0` は正式公開済みです。Windows は正式対応プラットフォームであり、完全回帰、インストール、公開検証を完了しています。macOS Apple Silicon／Intel と Linux も機能限定 DMG／AppImage Preview として同時に公開され、パッケージ smoke 検証と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI に合格しています。Preview CI は各プラットフォームの実機互換性や完全機能の検証を代替しません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
 > **現在の公開目標：** ソースとパッケージのメタデータは `v4.0.0` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) を正とします。
 
@@ -1512,7 +1512,7 @@ Azure Speech は初期状態で無効な Preview 供給元で、利用者が明�
 
 署名のないオープンソース Preview は Windows SmartScreen の警告を出す場合があります。公式配布元と SHA-256 を確認してから実行してください。
 
-v3.1.2 のクロスプラットフォーム公開範囲には、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` が含まれ、各成果物は本版の完全な公開ゲートに合格した場合にのみ公開されます。いずれも機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
+`v4.0.0` のクロスプラットフォーム公開範囲には、macOS Apple Silicon（arm64）版と Intel（x86_64）版の `.dmg`（各対応 `.app` を収録）、Linux x86_64 `.AppImage` が含まれ、すべての成果物は本版の完全な公開ゲートに合格後に公開されました。いずれも機能限定 Preview で、`preview_app.py` の起動画面、四言語案内、OS ごとのデータパス、安全な無効化境界だけを公開します。音声、透明キャラクター、完全な会話と仕事画面、クラウド接続、システム操作、自動起動、秘密情報入力は無効です。[Preview 配布物の説明](docs/PREVIEW-PACKAGES.md)と [QUICKSTART](QUICKSTART.md)をお読みください。
 
 #### 自動リリースの境界
 
@@ -1535,7 +1535,7 @@ v3.1.2 のクロスプラットフォーム公開範囲には、macOS Apple Sili
 
 #### Realtime 応答音声
 
-`v3.1.2` は OpenAI Realtime のネイティブ音声を完全に維持し、引き続き既定値とします。ネイティブモードでは Realtime が同じ経路で理解と音声出力を行うため、従来の音声を好む利用者や、これらの選択肢の中で追加遅延を最小にしたい利用者に適しています。
+`v4.0.0` は OpenAI Realtime のネイティブ音声を完全に維持し、引き続き既定値とします。ネイティブモードでは Realtime が同じ経路で理解と音声出力を行うため、従来の音声を好む利用者や、これらの選択肢の中で追加遅延を最小にしたい利用者に適しています。
 
 利用者は「Realtime 即時理解＋通常 Azure Speech ストリーミング発話」または「Realtime 即時理解＋Azure Dragon HD ストリーミング発話」を明示的に選ぶこともできます。ハイブリッドモードは Realtime が生成した文字だけを選択中の Azure エンジンへ渡します。安全な短い句が完成するたび順番待ちへ追加し、完全な応答や音声ファイルを待たず、最初の音声断片から発話を始めます。ただし TTS の通信と合成工程が増えるため、発話前の待ち時間は長くなり得ます。本プロジェクトはゼロ遅延をうたいません。
 
