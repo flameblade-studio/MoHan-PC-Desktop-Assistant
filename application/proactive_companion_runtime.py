@@ -13,6 +13,7 @@ lazy from application.companion_phrasebook import (
 lazy from application.multisensory_interaction import (
     InteractionKind,
     InteractionTextContext,
+    MultisensoryInteractionArbiter,
     ProactiveInteraction,
     WelcomeStyle,
     interaction_text,
@@ -81,6 +82,7 @@ class NormalizedCompanionEnvironment:
     pending_outfit_id: str = ""
     user_looking: bool = False
     visual_presence_arrival: bool = False
+    proactive_mode: str = "balanced"
 
     def __post_init__(self) -> None:
         if self.now.tzinfo is None:
@@ -190,6 +192,16 @@ class ProactiveCompanionRuntime:
             )
             if candidate is not None
         )
+        if (
+            MultisensoryInteractionArbiter._mode_key(environment.proactive_mode)
+            == "quiet"
+        ):
+            candidates = tuple(
+                candidate
+                for candidate in candidates
+                if candidate.request.source
+                in (ProactiveSource.SCHEDULED, ProactiveSource.WELLBEING)
+            )
         available = tuple(
             item
             for item in candidates
@@ -438,7 +450,10 @@ class ProactiveCompanionRuntime:
         self,
         environment: NormalizedCompanionEnvironment,
     ) -> _Candidate | None:
-        if environment.seconds_since_user_interaction < 45.0 * 60.0:
+        threshold = _check_in_threshold(environment.proactive_mode)
+        if threshold is None:
+            return None
+        if environment.seconds_since_user_interaction < threshold:
             return None
         interaction = ProactiveInteraction(
             InteractionKind.GENTLE_CHECK_IN,
@@ -582,6 +597,15 @@ def _trigger_enabled(
         ReminderTrigger.OVERWORK: preferences.prolonged_sitting_enabled,
         ReminderTrigger.PROLONGED_SITTING: preferences.prolonged_sitting_enabled,
     }[trigger]
+
+
+def _check_in_threshold(mode: str) -> float | None:
+    key = MultisensoryInteractionArbiter._mode_key(mode)
+    if key == "quiet":
+        return None
+    if key == "active":
+        return 15.0 * 60.0
+    return 45.0 * 60.0
 
 
 def _signature(request: ProactiveCompanionRequest) -> tuple[object, ...]:

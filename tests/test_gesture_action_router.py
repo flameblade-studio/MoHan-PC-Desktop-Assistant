@@ -103,15 +103,15 @@ def assert_device_cloud_and_custom_commands_preserve_security_boundaries() -> No
 def assert_time_order_and_reset_are_explicit() -> None:
     router = GestureActionRouter()
     configuration = GestureConfiguration(enabled=True)
-    router.route(GestureTrigger("wave", 1.0, 2.0), configuration)
+    router.route(GestureTrigger("silence", 1.0, 2.0), configuration)
     try:
-        router.route(GestureTrigger("wave", 1.0, 1.0), configuration)
+        router.route(GestureTrigger("silence", 1.0, 1.0), configuration)
     except ValueError:
         pass
     else:
         raise AssertionError("out-of-order gesture trigger was accepted")
     router.reset()
-    assert router.route(GestureTrigger("wave", 1.0, 1.0), configuration).executable
+    assert router.route(GestureTrigger("silence", 1.0, 1.0), configuration).executable
 
 
 def run() -> None:

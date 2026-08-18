@@ -286,6 +286,18 @@ def assert_focus_meeting_fullscreen_and_speech_pass_through() -> None:
     assert environment.speech_active
 
 
+def assert_proactive_mode_flows_into_environment() -> None:
+    app_bridge, runtime, *_ = bridge()
+    app_bridge.dispatch(
+        ProactiveAppEvent(state(proactive_mode="active"), ReminderTrigger.HYDRATION)
+    )
+    environment = runtime.environments[-1]
+    assert environment.proactive_mode == "active"
+    app_bridge, runtime, *_ = bridge()
+    app_bridge.dispatch(ProactiveAppEvent(state()))
+    assert runtime.environments[-1].proactive_mode == "balanced"
+
+
 def assert_pending_speech_is_bounded_superseded_and_expires() -> None:
     app_bridge, runtime, _prefs, _phrases, speech, _factory = bridge()
     first = app_bridge.dispatch(ProactiveAppEvent(state(generation=1)))
@@ -325,6 +337,7 @@ def run() -> None:
     assert_newer_bypass_does_not_invalidate_active_delivery()
     assert_timer_uses_active_session_even_when_camera_reports_away()
     assert_focus_meeting_fullscreen_and_speech_pass_through()
+    assert_proactive_mode_flows_into_environment()
     assert_pending_speech_is_bounded_superseded_and_expires()
     print("PROACTIVE_COMPANION_APP_BRIDGE_OK")
 

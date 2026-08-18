@@ -161,6 +161,9 @@ class CompanionProactiveMixin:
             and self._recognized_scene_streak >= 3
         )
         self._proactive_generation += 1
+        proactive_mode = MultisensoryInteractionArbiter._mode_key(
+            str(self.db.setting("proactive_mode", "平衡（推薦）"))
+        )
         state = ProactiveAppState(
             generation=self._proactive_generation,
             now=local_aware_time(),
@@ -203,6 +206,7 @@ class CompanionProactiveMixin:
                 and camera_enabled
                 and presence is PresenceState.PRESENT
             ),
+            proactive_mode=proactive_mode,
         )
         return bridge.dispatch(
             ProactiveAppEvent(state, timer_trigger, scheduled_request)

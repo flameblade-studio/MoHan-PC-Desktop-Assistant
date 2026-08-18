@@ -3,7 +3,7 @@ from __future__ import annotations
 lazy import math
 lazy import time
 lazy from collections.abc import Callable
-lazy from dataclasses import dataclass
+lazy from dataclasses import dataclass, replace
 lazy from enum import StrEnum
 lazy from pathlib import Path
 lazy from typing import NotRequired, Protocol, TypedDict, Unpack
@@ -190,6 +190,20 @@ class GestureController(QObject):
     def sampling_enabled(self) -> bool:
         return self._enabled and self._health.ready
 
+    @property
+    def _effective_configuration(self) -> GestureConfiguration:
+        """Configuration the runtime should observe.
+
+        The gesture store persists hand-gesture *bindings* while camera
+        perception is a UI-level preference. When the camera is enabled the
+        controller becomes READY through ``perception_enabled`` even if the
+        persisted binding set is disabled, so the runtime must treat the
+        configuration as enabled in that case or every recognition is dropped.
+        """
+        if self._perception_enabled and not self._configuration.enabled:
+            return replace(self._configuration, enabled=True)
+        return self._configuration
+
     def configure(
         self,
         configuration: GestureConfiguration,
@@ -355,18 +369,19 @@ class GestureController(QObject):
         )
         self.hand_samples_changed.emit(hand_samples, observed_at)
         lips = self._current_lip_region(observed_at)
+        configuration = self._effective_configuration
         try:
             if lips is None:
                 runtime_result = self._runtime.update(
                     observed_at,
                     result.hands,
-                    self._configuration,
+                    configuration,
                 )
             else:
                 runtime_result = self._runtime.update(
                     observed_at,
                     result.hands,
-                    self._configuration,
+                    configuration,
                     lips=lips,
                 )
         except _TASK_BOUNDARY_ERRORS:

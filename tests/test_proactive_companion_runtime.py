@@ -328,6 +328,60 @@ def assert_visual_presence_arrival_uses_the_approved_speech_path() -> None:
     assert selected.performance.expression == "happy"
 
 
+def assert_proactive_mode_shapes_candidate_scope_and_frequency() -> None:
+    prefs = CompanionProactivityPreferences()
+
+    # 安靜：只保留必要提醒（wellbeing／scheduled），不寒暄、不歡迎回來。
+    engine, *_ = runtime()
+    assert engine.propose(
+        environment(
+            proactive_mode="quiet",
+            seconds_since_user_interaction=3 * 60 * 60,
+        ),
+        prefs,
+    ) is None
+    engine, *_ = runtime()
+    assert engine.propose(
+        environment(
+            proactive_mode="quiet",
+            absence_duration_seconds=8 * 60 * 60,
+        ),
+        prefs,
+    ) is None
+    engine, *_ = runtime()
+    quiet_wellbeing = engine.propose(
+        environment(
+            proactive_mode="quiet",
+            reminder_trigger=ReminderTrigger.LUNCH,
+        ),
+        prefs,
+    )
+    assert quiet_wellbeing is not None
+    assert quiet_wellbeing.source is ProactiveSource.WELLBEING
+
+    # 積極：縮短寒暄沉默門檻（15 分鐘即主動關心）。
+    engine, *_ = runtime()
+    active = engine.propose(
+        environment(
+            proactive_mode="active",
+            seconds_since_user_interaction=15 * 60,
+        ),
+        prefs,
+    )
+    assert active is not None
+    assert active.priority is CandidatePriority.CHECK_IN
+
+    # 平衡：維持原 45 分鐘門檻。
+    engine, *_ = runtime()
+    assert engine.propose(
+        environment(
+            proactive_mode="balanced",
+            seconds_since_user_interaction=30 * 60,
+        ),
+        prefs,
+    ) is None
+
+
 def assert_private_phrasebook_is_injected_not_built_in() -> None:
     private = CompanionPhrasebook(
         {"warm": ("Private welcome.",)},
@@ -393,6 +447,7 @@ def run() -> None:
     assert_two_phase_commit_failure_does_not_consume_budget()
     assert_return_thresholds_checkin_and_neutral_public_text()
     assert_visual_presence_arrival_uses_the_approved_speech_path()
+    assert_proactive_mode_shapes_candidate_scope_and_frequency()
     assert_private_phrasebook_is_injected_not_built_in()
     assert_day_rollover_resets_budget()
     assert_pending_delivery_is_bounded_and_expires()

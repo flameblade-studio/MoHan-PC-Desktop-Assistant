@@ -155,7 +155,11 @@ class GestureDefinition:
 
 
 DEFAULT_GESTURE_BINDINGS: Final = frozendict({
-    "wave": GestureBinding(GestureAction.SHOW_DASHBOARD),
+    # A wave is answered by the companion's own greeting path
+    # (``_on_gesture_recognition`` -> ``_acknowledge_wave``), not by opening the
+    # console.  Binding it to ``NONE`` keeps the greeting as the only response
+    # so the desktop companion stays in focus instead of popping the dashboard.
+    "wave": GestureBinding(GestureAction.NONE),
     "silence": GestureBinding(GestureAction.MUTE_AUDIO),
     "open-palm": GestureBinding(GestureAction.STOP_SPEECH),
     "closed-fist": GestureBinding(),

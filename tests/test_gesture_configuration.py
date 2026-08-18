@@ -72,7 +72,7 @@ def assert_defaults_are_complete_safe_and_four_language() -> None:
     assert tuple(BUILTIN_GESTURE_LABELS) == tuple(
         definition.gesture_id for definition in configuration.definitions
     )
-    assert configuration.definition("wave").binding.action is GestureAction.SHOW_DASHBOARD
+    assert configuration.definition("wave").binding.action is GestureAction.NONE
     assert configuration.definition("silence").binding.action is GestureAction.MUTE_AUDIO
     assert configuration.definition("closed-fist").binding.action is GestureAction.NONE
     labels = (*BUILTIN_GESTURE_LABELS.values(), *GESTURE_ACTION_LABELS.values())

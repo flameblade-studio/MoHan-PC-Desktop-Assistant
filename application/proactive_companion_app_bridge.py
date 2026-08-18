@@ -50,6 +50,7 @@ class ProactiveAppState:
     pending_outfit_id: str = ""
     user_looking: bool = False
     visual_presence_arrival: bool = False
+    proactive_mode: str = "balanced"
 
     def __post_init__(self) -> None:
         if self.generation < 0:
@@ -331,6 +332,7 @@ def _environment(event: ProactiveAppEvent) -> NormalizedCompanionEnvironment:
         pending_outfit_id=state.pending_outfit_id,
         user_looking=state.user_looking,
         visual_presence_arrival=state.visual_presence_arrival,
+        proactive_mode=state.proactive_mode,
     )
 
 
@@ -352,6 +354,7 @@ def _event_signature(event: ProactiveAppEvent) -> tuple[object, ...]:
         state.pending_outfit_id,
         state.user_looking,
         state.visual_presence_arrival,
+        state.proactive_mode,
         event.timer_trigger,
         (
             event.scheduled_request.cue_token
