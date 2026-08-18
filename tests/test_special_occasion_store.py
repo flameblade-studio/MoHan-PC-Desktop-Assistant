@@ -59,6 +59,8 @@ def populated_state() -> SpecialOccasionState:
     responses = {
         OccasionKind.MOHAN_BIRTHDAY: OccasionResponse.ACKNOWLEDGED,
         OccasionKind.VALENTINES_DAY: OccasionResponse.CELEBRATED,
+        OccasionKind.WHITE_DAY: OccasionResponse.SNOOZED,
+        OccasionKind.QIXI: OccasionResponse.NONE,
         OccasionKind.CHRISTMAS_DAY: OccasionResponse.DISMISSED,
     }
     return SpecialOccasionState(

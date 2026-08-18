@@ -203,17 +203,22 @@ class PoseAtlasAssets:
         face_rect: tuple[float, float, float, float],
         viseme: str,
     ) -> bytes | None:
-        # A procedural mouth: a dark rounded ellipse whose aperture follows the
-        # viseme.  This keeps the full-body mouth visibly in sync with speech
-        # without requiring authored per-viseme full-body photographs.
+        # A procedural mouth whose aperture and width follow the viseme.  The
+        # full-body photograph is a single static PNG, so speech overlays a
+        # two-lip mouth at the face position recorded in the hands sidecar.
+        # A closed mouth contributes no layer (the authored photograph already
+        # shows a neutral mouth).
         fx, fy, fw, fh = face_rect
-        mouth_cx = fx + fw * 0.5
-        mouth_cy = fy + fh * 0.62
-        aperture = self._viseme_aperture(viseme)
+        aperture, width_scale = self._viseme_shape(viseme)
         if aperture <= 0.0:
             return None
-        mouth_w = max(2.0, fw * 0.34)
-        mouth_h = max(2.0, fh * 0.16 * aperture)
+        # The mouth sits in the lower third of the face region.  The authored
+        # face rect is generous (it includes the chin), so anchor the mouth
+        # slightly above the vertical centre of the lower half.
+        mouth_cx = fx + fw * 0.5
+        mouth_cy = fy + fh * 0.60
+        mouth_w = max(2.0, fw * 0.30 * width_scale)
+        mouth_h = max(2.0, fh * 0.14 * aperture)
         image = QImage(
             self._image_size,
             self._image_size,
@@ -223,7 +228,8 @@ class PoseAtlasAssets:
         painter = QPainter(image)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setPen(Qt.NoPen)
-        painter.setBrush(QColor(90, 40, 45, 235))
+        # Dark oral cavity behind the lips.
+        painter.setBrush(QColor(70, 30, 38, 235))
         painter.drawEllipse(
             QRectF(
                 mouth_cx - mouth_w / 2.0,
@@ -232,19 +238,54 @@ class PoseAtlasAssets:
                 mouth_h,
             )
         )
+        # Upper and lower lips as two rounded bands that separate with the
+        # aperture, giving a readable "open mouth" instead of a flat dot.
+        lip_thickness = max(1.5, mouth_h * 0.28)
+        lip_color = QColor(150, 78, 88, 245)
+        painter.setBrush(lip_color)
+        painter.drawRoundedRect(
+            QRectF(
+                mouth_cx - mouth_w / 2.0,
+                mouth_cy - mouth_h / 2.0 - lip_thickness,
+                mouth_w,
+                lip_thickness,
+            ),
+            lip_thickness / 2.0,
+            lip_thickness / 2.0,
+        )
+        painter.drawRoundedRect(
+            QRectF(
+                mouth_cx - mouth_w / 2.0,
+                mouth_cy + mouth_h / 2.0,
+                mouth_w,
+                lip_thickness,
+            ),
+            lip_thickness / 2.0,
+            lip_thickness / 2.0,
+        )
         painter.end()
         return bytes(image.constBits())
 
     @staticmethod
-    def _viseme_aperture(viseme: str) -> float:
+    def _viseme_shape(viseme: str) -> tuple[float, float]:
+        """Return (aperture, width_scale) for a viseme.
+
+        Aperture controls the vertical opening; width_scale controls the
+        horizontal spread.  Rounded vowels (O, U) narrow the mouth while open
+        vowels (A) widen it, and spread vowels (E, I) stay wide but shallow.
+        """
         normalized = str(viseme or "CLOSED").upper()
         if normalized in {"CLOSED", "CONSONANT"}:
-            return 0.0
-        if normalized in {"A", "O", "U"}:
-            return 1.0
+            return 0.0, 1.0
+        if normalized == "A":
+            return 1.0, 1.15
+        if normalized == "O":
+            return 0.85, 0.72
+        if normalized == "U":
+            return 0.7, 0.6
         if normalized in {"E", "I"}:
-            return 0.55
-        return 0.7
+            return 0.5, 1.05
+        return 0.7, 1.0
 
     def _load_metadata(self) -> dict[str, object]:
         path = self._root / "BUILD-METADATA.json"

@@ -83,7 +83,12 @@ def assert_deterministic_and_seeded_variation() -> None:
         for seed in range(12)
     }
     assert len(variants) >= 2
-    assert variants <= {"front-crossed", "left-neutral", "right-neutral"}
+    assert variants <= {
+        "front-crossed",
+        "left-neutral",
+        "right-neutral",
+        "left-cheek-rest",
+    }
     turn_zero = BehaviorDirector(clock=lambda: 0.0, seed=7).direct(
         replace(context(), conversation_turn=0)
     )

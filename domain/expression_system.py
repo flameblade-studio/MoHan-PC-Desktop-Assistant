@@ -223,6 +223,26 @@ SOURCE_PRIORITY_BONUS = frozendict({
 })
 BASE_EXPRESSIONS = frozenset({"idle", "speaking"})
 
+# The exclusive-favor (主上專屬寵溺) devotion bonus.  When the companion is
+# "devoted" (favor >= FAVOR_DEVOTED_THRESHOLD), every user-facing expression
+# gains this priority bonus so her fondness for the user outranks competing
+# states such as jealousy or drowsiness.  It is a small, bounded nudge — never
+# enough to override a safety or reminder cue, but enough to let a devoted
+# companion smile at the user even while she is tired or a little jealous.
+DEVOTION_PRIORITY_BONUS = 6
+FAVOR_DEVOTED_THRESHOLD = 0.7
+
+
+def devotion_bonus(favor_score: float) -> int:
+    """Return the priority bonus granted by the exclusive-favor coefficient.
+
+    ``favor_score`` is in [0, 1].  Below the devoted threshold the bonus is
+    zero; at or above it the companion earns ``DEVOTION_PRIORITY_BONUS``.
+    """
+    if float(favor_score) >= FAVOR_DEVOTED_THRESHOLD:
+        return DEVOTION_PRIORITY_BONUS
+    return 0
+
 
 @dataclass(frozen=True, slots=True)
 class ExpressionDecision:
@@ -275,11 +295,16 @@ class ExpressionArbiter:
         intensity: float = 0.5,
         force: bool = False,
         now_ms: int | None = None,
+        favor_score: float = 0.0,
     ) -> ExpressionDecision:
         now = self._now_ms() if now_ms is None else int(now_ms)
         expression = str(expression)
         rule = self.rule(expression)
-        priority = rule.priority + SOURCE_PRIORITY_BONUS.get(source, 0)
+        priority = (
+            rule.priority
+            + SOURCE_PRIORITY_BONUS.get(source, 0)
+            + devotion_bonus(favor_score)
+        )
         hold_ms = self.hold_duration(expression, intensity)
         rejection = self._rejection_reason(
             expression,

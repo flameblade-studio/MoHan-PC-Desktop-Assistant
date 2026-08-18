@@ -164,6 +164,7 @@ class CompanionProactiveMixin:
         proactive_mode = MultisensoryInteractionArbiter._mode_key(
             str(self.db.setting("proactive_mode", "平衡（推薦）"))
         )
+        memory_topics = self._recent_memory_topics()
         state = ProactiveAppState(
             generation=self._proactive_generation,
             now=local_aware_time(),
@@ -207,13 +208,35 @@ class CompanionProactiveMixin:
                 and presence is PresenceState.PRESENT
             ),
             proactive_mode=proactive_mode,
+            memory_topics=memory_topics,
         )
         return bridge.dispatch(
             ProactiveAppEvent(state, timer_trigger, scheduled_request)
         )
 
+    def _recent_memory_topics(self, limit: int = 3) -> tuple[str, ...]:
+        """Return a few recent memory contents as natural conversation topics."""
+        try:
+            rows = self.db.list_memories(limit)
+        except (AttributeError, LookupError):
+            return ()
+        topics = []
+        for row in rows:
+            content = str(row["content"] or "").strip()
+            if content and len(content) <= 40:
+                topics.append(content)
+        return tuple(topics)
+
     def _note_human_interaction(self) -> None:
         self.multisensory_arbiter.note_human_interaction()
+        affinity = getattr(self, "affinity_state", None)
+        if affinity is not None:
+            snapshot = affinity.note_interaction()
+            self.db.set_setting("affinity_value", snapshot.affinity)
+            self.db.set_setting("jealousy_value", snapshot.jealousy)
+            self.db.set_setting(
+                "affinity_interaction_count", snapshot.interaction_count
+            )
 
     def _current_multisensory_config(self) -> tuple[float, float, float, float]:
         return (
@@ -284,20 +307,30 @@ class CompanionProactiveMixin:
             else "unknown",
             active=observation.activity is ActivityState.ACTIVE,
         )
-        if observation.presence is PresenceState.PRESENT:
-            self.set_state(
-                "gentle_smile_front",
-                source="visual",
-                intensity=0.35,
-            )
-            if previous is not PresenceState.PRESENT:
+        # While the companion is speaking, visual presence/motion must not
+        # switch the expression state.  A visual-triggered set_state would
+        # leave the speaking state, freezing the mouth animation, and the
+        # arrival/turn framing would keep rotating the body toward the camera
+        # instead of letting the user converse in peace.
+        speaking = bool(
+            getattr(self, "speech_playing", False)
+            or getattr(self, "state", "") == "speaking"
+        )
+        if not speaking:
+            if observation.presence is PresenceState.PRESENT:
+                self.set_state(
+                    "gentle_smile_front",
+                    source="visual",
+                    intensity=0.35,
+                )
+                if previous is not PresenceState.PRESENT:
+                    self.set_state("happy", source="visual", intensity=0.50)
+            if (
+                observation.activity is ActivityState.ACTIVE
+                and now - getattr(self, "_last_visual_motion_at", 0.0) >= 2.0
+            ):
+                self._last_visual_motion_at = now
                 self.set_state("happy", source="visual", intensity=0.50)
-        if (
-            observation.activity is ActivityState.ACTIVE
-            and now - getattr(self, "_last_visual_motion_at", 0.0) >= 2.0
-        ):
-            self._last_visual_motion_at = now
-            self.set_state("happy", source="visual", intensity=0.50)
         arrival = bool(
             observation.presence is PresenceState.PRESENT
             and previous is not PresenceState.PRESENT
@@ -312,6 +345,23 @@ class CompanionProactiveMixin:
         )
 
     def _consider_desktop_presence(self) -> None:
+        # Time sovereignty: sample the local hour on the existing presence timer
+        # so the companion grows drowsy deep into the night without any blocking
+        # work on the Qt main thread.
+        sovereignty = getattr(self, "time_sovereignty_state", None)
+        if sovereignty is not None:
+            try:
+                local_now = local_aware_time()
+                hour = local_now.hour
+            except (AttributeError, TypeError, ValueError):
+                hour = 0
+            sovereignty.update(hour=hour)
+            self._drowsy_blink_interval = sovereignty.blink_interval()
+        # Wardrobe intuition + satiety: refresh the outfit suggestion and the
+        # sluggish-blink interval from the persisted weather and satiety level.
+        apply_weather = getattr(self, "_apply_weather_and_satiety", None)
+        if apply_weather is not None:
+            apply_weather()
         center = getattr(self.dashboard, "flagship_center", None)
         camera_active = bool(
             center is not None and center.camera_presence.camera is not None

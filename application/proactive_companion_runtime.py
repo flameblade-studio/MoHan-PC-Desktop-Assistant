@@ -83,6 +83,7 @@ class NormalizedCompanionEnvironment:
     user_looking: bool = False
     visual_presence_arrival: bool = False
     proactive_mode: str = "balanced"
+    memory_topics: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if self.now.tzinfo is None:
@@ -459,6 +460,25 @@ class ProactiveCompanionRuntime:
             InteractionKind.GENTLE_CHECK_IN,
             "gentle",
         )
+        # Natural topic: when a recent memory topic is available, weave it
+        # into the check-in so the companion recalls the user's life instead
+        # of repeating a canned greeting.
+        if environment.memory_topics:
+            topic = environment.memory_topics[0]
+            text = _memory_check_in_text(environment.language, environment.user_title, topic)
+            if text:
+                token = _local_token(environment.now, interaction, 0)
+                speak = SpeakRequest(text, ProactiveSource.CHECK_IN.value, token)
+                return _Candidate(
+                    ProactiveCompanionRequest(
+                        speak,
+                        interaction,
+                        ProactiveSource.CHECK_IN,
+                        CandidatePriority.CHECK_IN,
+                        token,
+                    ),
+                    token,
+                )
         return self._local_candidate(
             environment,
             interaction,
@@ -606,6 +626,21 @@ def _check_in_threshold(mode: str) -> float | None:
     if key == "active":
         return 15.0 * 60.0
     return 45.0 * 60.0
+
+
+def _memory_check_in_text(language: str, user_title: str, topic: str) -> str:
+    """Weave a remembered topic into a natural check-in line."""
+    topic = str(topic).strip()
+    if not topic:
+        return ""
+    locale = str(language).strip().lower()
+    if locale.startswith(("zh-cn", "zh-hans")):
+        return f"{user_title}，之前您提到「{topic}」，后来如何了？"
+    if locale.startswith("en"):
+        return f"{user_title}, you mentioned \"{topic}\" earlier — how did that go?"
+    if locale.startswith("ja"):
+        return f"{user_title}、以前「{topic}」とおっしゃっていましたが、その後いかがですか？"
+    return f"{user_title}，之前你提到「{topic}」，後來如何了？"
 
 
 def _signature(request: ProactiveCompanionRequest) -> tuple[object, ...]:

@@ -8,10 +8,29 @@ MOHAN_BIRTHDAY_MONTH = 1
 MOHAN_BIRTHDAY_DAY = 8
 MOHAN_ZODIAC = "capricorn"
 
+# 農曆七夕（農曆七月初七）對應的國曆日期，預先寫入未來十年。
+# 農曆換算不依賴外部套件，改以內建查表維持離線可用性。
+_QIXI_GREGORIAN_DATES = frozendict(
+    {
+        2026: (8, 19),
+        2027: (8, 8),
+        2028: (8, 26),
+        2029: (8, 16),
+        2030: (8, 5),
+        2031: (8, 24),
+        2032: (8, 12),
+        2033: (8, 2),
+        2034: (8, 21),
+        2035: (8, 10),
+    }
+)
+
 
 class OccasionKind(StrEnum):
     MOHAN_BIRTHDAY = "mohan_birthday"
     VALENTINES_DAY = "valentines_day"
+    WHITE_DAY = "white_day"
+    QIXI = "qixi"
     CHRISTMAS_DAY = "christmas_day"
 
 
@@ -83,9 +102,17 @@ OCCASIONS = (
         4.0 * 60.0 * 60.0,
     ),
     OccasionDefinition(
+        OccasionKind.WHITE_DAY,
+        3,
+        14,
+        10,
+        19,
+        4.0 * 60.0 * 60.0,
+    ),
+    OccasionDefinition(
         OccasionKind.CHRISTMAS_DAY,
         12,
-        25,
+        24,
         10,
         20,
         4.0 * 60.0 * 60.0,
@@ -199,12 +226,25 @@ class SpecialOccasionPolicy:
         )
 
 
+def _qixi_gregorian(year: int) -> tuple[int, int] | None:
+    """Return the Gregorian (month, day) of Qixi for a given year, if known."""
+    return _QIXI_GREGORIAN_DATES.get(year)
+
+
 def active_occasion(moment: datetime) -> OccasionDefinition | None:
-    return next(
-        (
-            occasion
-            for occasion in OCCASIONS
-            if (occasion.month, occasion.day) == (moment.month, moment.day)
-        ),
-        None,
-    )
+    # Fixed Gregorian occasions match directly.
+    for occasion in OCCASIONS:
+        if (occasion.month, occasion.day) == (moment.month, moment.day):
+            return occasion
+    # Qixi is lunar 7/7 and is resolved through the built-in lookup table.
+    qixi = _qixi_gregorian(moment.year)
+    if qixi is not None and qixi == (moment.month, moment.day):
+        return OccasionDefinition(
+            OccasionKind.QIXI,
+            qixi[0],
+            qixi[1],
+            10,
+            19,
+            4.0 * 60.0 * 60.0,
+        )
+    return None

@@ -214,10 +214,10 @@ class FlagshipCompanionMixin:
         self.companion_phrasebook_summary.setWordWrap(True)
         phrase_layout.addWidget(self.companion_phrasebook_summary)
         self.companion_phrasebook_button = QPushButton(
-            self._t("編輯 24 組多情境詞庫")
+            self._t("編輯 28 組多情境詞庫")
         )
         self.companion_phrasebook_button.setAccessibleName(
-            self._t("編輯 24 組多情境詞庫")
+            self._t("編輯 28 組多情境詞庫")
         )
         self.companion_phrasebook_button.clicked.connect(
             self.edit_companion_phrasebook

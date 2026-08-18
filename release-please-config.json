@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "python",
+  "include-v-in-tag": true,
+  "changelog-sections": [
+    { "type": "feat", "section": "✨ 新功能 / 新功能 / New features / 新機能", "hidden": false },
+    { "type": "fix", "section": "🐛 修正 / 修复 / Fixes / 修正", "hidden": false },
+    { "type": "perf", "section": "⚡ 效能 / 性能 / Performance / パフォーマンス", "hidden": false },
+    { "type": "refactor", "section": "♻️ 重構 / 重构 / Refactor / リファクタリング", "hidden": false },
+    { "type": "docs", "section": "📚 文件 / 文档 / Documentation / ドキュメント", "hidden": false },
+    { "type": "chore", "section": "🛠 其他變更 / 其他变更 / Other changes / その他の変更", "hidden": false },
+    { "type": "deps", "section": "📦 相依套件 / 依赖项 / Dependencies / 依存関係", "hidden": false },
+    { "type": "security", "section": "🔐 安全性 / 安全性 / Security / セキュリティ", "hidden": false }
+  ],
+  "packages": {
+    ".": {
+      "changelog-path": "CHANGELOG.md",
+      "release-type": "python",
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "extra-files": [
+        {
+          "type": "toml",
+          "path": "pyproject.toml",
+          "jsonpath": "$.project.version"
+        },
+        {
+          "type": "toml",
+          "path": "sbom/preview.pyproject.toml",
+          "jsonpath": "$.project.version"
+        },
+        {
+          "type": "generic",
+          "path": "domain/version_info.py"
+        },
+        {
+          "type": "generic",
+          "path": "tests/test_v4_development_version_consistency.py"
+        }
+      ]
+    }
+  }
+}

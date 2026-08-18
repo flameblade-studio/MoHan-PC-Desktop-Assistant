@@ -42,7 +42,10 @@ def assert_character_canon_and_dates() -> None:
     assert MOHAN_ZODIAC == "capricorn"
     assert active_occasion(moment(1, 8, 9)).kind is OccasionKind.MOHAN_BIRTHDAY
     assert active_occasion(moment(2, 14, 12)).kind is OccasionKind.VALENTINES_DAY
-    assert active_occasion(moment(12, 25, 12)).kind is OccasionKind.CHRISTMAS_DAY
+    assert active_occasion(moment(3, 14, 12)).kind is OccasionKind.WHITE_DAY
+    assert active_occasion(moment(12, 24, 12)).kind is OccasionKind.CHRISTMAS_DAY
+    # Qixi is lunar 7/7, resolved through the built-in Gregorian lookup table.
+    assert active_occasion(moment(8, 8, 12)).kind is OccasionKind.QIXI
     assert active_occasion(moment(8, 13, 12)) is None
 
 
@@ -100,18 +103,18 @@ def assert_attention_and_autonomy_guards() -> None:
 
 def assert_no_repetition_or_premature_grumble() -> None:
     policy = SpecialOccasionPolicy()
-    hint_time = moment(12, 25, 17)
+    hint_time = moment(12, 24, 17)
     delivered_hint = frozenset({OccasionStage.SUBTLE_HINT})
     assert policy.decide(
         context(
-            moment(12, 25, 20),
+            moment(12, 24, 20),
             delivered_stages=delivered_hint,
             first_hint_at=hint_time,
         )
     ) is None
     assert policy.decide(
         context(
-            moment(12, 25, 22),
+            moment(12, 24, 22),
             delivered_stages=frozenset(
                 {
                     OccasionStage.SUBTLE_HINT,

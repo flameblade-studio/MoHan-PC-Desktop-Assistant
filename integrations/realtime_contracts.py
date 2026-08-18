@@ -133,7 +133,7 @@ _REALTIME_MESSAGES = deep_freeze({
             "開啟麥克風存取權及「讓桌面應用程式存取麥克風」，並確認沒有其他"
             "程式獨占麥克風。詳細資訊：{error}"
         ),
-        "audio_failed": "音訊裝置無法啟動：{error}",
+        "audio_failed": "音訊裝置無法啟動：{error}。請到「設定」頁重新選擇輸入／輸出裝置後再試。",
     },
     "zh-CN": {
         "missing_key": "请先保存 OpenAI API 密钥",
@@ -181,7 +181,7 @@ _REALTIME_MESSAGES = deep_freeze({
             "开启麦克风访问权限及“允许桌面应用访问麦克风”，并确认没有其他"
             "程序独占麦克风。详细信息：{error}"
         ),
-        "audio_failed": "音频设备无法启动：{error}",
+        "audio_failed": "音频设备无法启动：{error}。请到「设置」页重新选择输入／输出设备后再试。",
     },
     "en": {
         "missing_key": "Save an OpenAI API key first",
@@ -230,7 +230,7 @@ _REALTIME_MESSAGES = deep_freeze({
             "access, and confirm that no other program has exclusive control. "
             "Details: {error}"
         ),
-        "audio_failed": "The audio device could not start: {error}",
+        "audio_failed": "The audio device could not start: {error}. Please reselect the input/output device on the Settings page and try again.",
     },
     "ja-JP": {
         "missing_key": "先に OpenAI API キーを保存してください",
@@ -279,7 +279,7 @@ _REALTIME_MESSAGES = deep_freeze({
             "有効にし、他のプログラムがマイクを占有していないことを確認して"
             "ください。詳細：{error}"
         ),
-        "audio_failed": "音声デバイスを開始できませんでした：{error}",
+        "audio_failed": "音声デバイスを開始できませんでした：{error}。「設定」ページで入出力デバイスを選び直してから再試行してください。",
     },
 })
 

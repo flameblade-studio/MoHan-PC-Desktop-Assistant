@@ -114,7 +114,20 @@ class CompanionFaceAnimationMixin:
         self._schedule_pose_change()
 
     def _schedule_blink(self) -> None:
-        self.blink_timer.start(random.randint(2_800, 6_200))
+        # Time sovereignty: deep into the night the companion grows drowsy and
+        # her blinks lengthen, so she quietly keeps the user company while
+        # fighting sleep.  The interval eases smoothly via the drowsiness state.
+        # Satiety (軍糧飽食度) also lengthens the blink when she is hungry, so
+        # the two vitality signals combine into one sluggish-blink interval.
+        drowsy_interval = getattr(self, "_drowsy_blink_interval", None)
+        satiety_interval = getattr(self, "_satiety_blink_interval", None)
+        if drowsy_interval is not None or satiety_interval is not None:
+            drowsy = drowsy_interval if drowsy_interval is not None else 4.0
+            satiety = satiety_interval if satiety_interval is not None else 4.0
+            base_ms = int(max(drowsy, satiety) * 1000.0)
+            self.blink_timer.start(random.randint(base_ms, base_ms + 2_200))
+        else:
+            self.blink_timer.start(random.randint(2_800, 6_200))
 
     def _blink(self) -> None:
         if getattr(self, "pose_transition_active", False):
@@ -321,6 +334,30 @@ class CompanionFaceAnimationMixin:
 
     def _schedule_attention_glance(self) -> None:
         self.gaze_timer.start(random.randint(38_000, 78_000))
+
+    def _schedule_saccade(self) -> None:
+        # Saccades are far more frequent than the full attention glance: a
+        # real person's eyes wander every few seconds, not every minute.
+        self.saccade_timer.start(random.randint(4_000, 11_000))
+
+    def _start_saccade(self) -> None:
+        if self.state != "idle" or getattr(self, "idle_blinking", False):
+            self._schedule_saccade()
+            return
+        # A small, nearby drift rather than a full turn away.  The eyes move
+        # to a random point within a modest radius and then return.
+        self._saccade_active = True
+        self._saccade_target_x = random.uniform(-0.55, 0.55)
+        self._saccade_target_y = random.uniform(-0.35, 0.35)
+        self._saccade_expires_at = time.monotonic() + random.uniform(0.5, 1.4)
+        QTimer.singleShot(
+            random.randint(500, 1_400),
+            self._end_saccade,
+        )
+
+    def _end_saccade(self) -> None:
+        self._saccade_active = False
+        self._schedule_saccade()
 
     def _schedule_ambient_expression(self) -> None:
         self.ambient_timer.start(random.randint(42_000, 88_000))
@@ -984,11 +1021,14 @@ class CompanionFaceAnimationMixin:
         force: bool = False,
         animate_gesture: bool = True,
     ) -> bool:
+        favor = getattr(self, "favor_exclusive_state", None)
+        favor_score = favor.snapshot() if favor is not None else 0.0
         decision = self.expression_arbiter.request(
             state,
             source=source,
             intensity=intensity,
             force=force or state in {"idle", "speaking"},
+            favor_score=favor_score,
         )
         if not decision.accepted:
             return False
@@ -1000,11 +1040,26 @@ class CompanionFaceAnimationMixin:
             state.replace("_", " "),
         )
         if state == "idle":
-            expression = self._idle_expression()
+            # Emotional continuity: instead of snapping straight back to a
+            # neutral face, ease through the decaying afterglow of the last
+            # expressive state (a lingering shyness, a softened smile).  The
+            # residue fades exponentially and yields to idle on its own.
+            residual = getattr(self, "affective_state", None)
+            lingering = (
+                residual.residual_expression()
+                if residual is not None
+                else None
+            )
+            expression = lingering or self._idle_expression()
         elif state == "speaking":
             expression = self._speaking_expression()
         else:
             expression = state
+            # Record the expressive state so its afterglow can linger after
+            # this expression ends.  Idle and speaking are not recorded.
+            residual = getattr(self, "affective_state", None)
+            if residual is not None:
+                residual.note_expression(state, intensity=intensity)
         if getattr(self, "_adaptive_full_body_active", False):
             # The v4 full-body photograph owns the canvas and has no authored
             # per-expression variants.  Switching the legacy half-body sprite
@@ -1032,6 +1087,7 @@ class CompanionFaceAnimationMixin:
             *NEW_EXPRESSION_ASSETS,
         }
         if state in expressive_states and animate_gesture:
+            motion_scale = 3.0 if getattr(self, "_adaptive_full_body_active", False) else 1.0
             animation = QVariantAnimation(self)
             animation.setDuration(
                 720
@@ -1051,8 +1107,8 @@ class CompanionFaceAnimationMixin:
             animation.setKeyValueAt(
                 0.35,
                 QPoint(
-                    -5 if state in {"caught", "shy_front", "shy_cute_front"} else 0,
-                    -7
+                    round((-5 if state in {"caught", "shy_front", "shy_cute_front"} else 0) * motion_scale),
+                    round((-7
                     if state == "happy"
                     else -9
                     if state in {"mock_scold", "mock_hit_front"}
@@ -1065,22 +1121,22 @@ class CompanionFaceAnimationMixin:
                         "proud_front",
                         "eureka_front",
                     }
-                    else 0,
+                    else 0) * motion_scale),
                 ),
             )
             animation.setKeyValueAt(
                 0.62,
                 QPoint(
-                    5
+                    round((5
                     if state in {"worried", "worried_front", "caught"}
                     else 2
                     if state in {"mock_scold", "mock_hit_front"}
-                    else 0,
-                    -5
+                    else 0) * motion_scale),
+                    round((-5
                     if state == "mock_scold"
                     else -2
                     if state in {"thinking_front", "proud_front"}
-                    else 0,
+                    else 0) * motion_scale),
                 ),
             )
             animation.setEndValue(QPoint(0, 0))

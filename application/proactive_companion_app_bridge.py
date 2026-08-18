@@ -51,6 +51,7 @@ class ProactiveAppState:
     user_looking: bool = False
     visual_presence_arrival: bool = False
     proactive_mode: str = "balanced"
+    memory_topics: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         if self.generation < 0:
@@ -333,6 +334,7 @@ def _environment(event: ProactiveAppEvent) -> NormalizedCompanionEnvironment:
         user_looking=state.user_looking,
         visual_presence_arrival=state.visual_presence_arrival,
         proactive_mode=state.proactive_mode,
+        memory_topics=state.memory_topics,
     )
 
 
@@ -355,6 +357,7 @@ def _event_signature(event: ProactiveAppEvent) -> tuple[object, ...]:
         state.user_looking,
         state.visual_presence_arrival,
         state.proactive_mode,
+        state.memory_topics,
         event.timer_trigger,
         (
             event.scheduled_request.cue_token

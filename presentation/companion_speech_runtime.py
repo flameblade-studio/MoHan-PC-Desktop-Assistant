@@ -5,7 +5,6 @@ lazy from PySide6.QtWidgets import QMessageBox
 
 lazy from application.behavior_director import (
     BehaviorInput,
-    SemanticEmotion,
     SpeechLifecycle,
 )
 lazy from application.performance_app_bridge import PerformanceBridgeInput
@@ -56,6 +55,10 @@ lazy from domain.speech_providers import (
     SpeechRequest,
     normalize_speech_provider_id,
 )
+lazy from presentation.companion_speech_emotion import (
+    _emotion_rate_adjustment,
+    _semantic_emotion_for_state,
+)
 lazy from presentation.companion_wait_expression import (
     finish_ai_wait_expression,
     start_ai_wait_expression,
@@ -63,6 +66,7 @@ lazy from presentation.companion_wait_expression import (
 lazy from presentation.ui_localization import ui_text
 
 __all__ = ("CompanionSpeechRuntimeMixin",)
+
 
 class CompanionSpeechRuntimeMixin:
     """Provider-neutral speech, Realtime, and return-to-idle runtime."""
@@ -120,13 +124,9 @@ class CompanionSpeechRuntimeMixin:
             "interrupted": SpeechLifecycle.ENDING,
             "idle": SpeechLifecycle.IDLE,
         }[directive.phase.value]
-        emotion = {
-            "happy": SemanticEmotion.HAPPY,
-            "sad": SemanticEmotion.SAD,
-            "concerned": SemanticEmotion.WORRIED,
-            "angry": SemanticEmotion.ANGRY,
-            "reminder": SemanticEmotion.REMINDER,
-        }.get(str(getattr(self, "state", "idle")), SemanticEmotion.NEUTRAL)
+        emotion = _semantic_emotion_for_state(
+            str(getattr(self, "state", "idle"))
+        )
         self._adaptive_behavior_generation = (
             getattr(self, "_adaptive_behavior_generation", 0) + 1
         )
@@ -210,7 +210,7 @@ class CompanionSpeechRuntimeMixin:
         self.show()
         self.raise_()
         if tts_enabled:
-            self._start_speech_provider(queued.text)
+            self._start_speech_provider(queued.text, queued.requested_state)
             return
         self._prepare_speech_performance("visual-only")
         QTimer.singleShot(
@@ -341,7 +341,7 @@ class CompanionSpeechRuntimeMixin:
             if configured
         )
 
-    def _start_speech_provider(self, text: str) -> None:
+    def _start_speech_provider(self, text: str, state: str = "speaking") -> None:
         credentials = self._speech_credentials()
         selected_provider_id = normalize_speech_provider_id(
             self.db.setting("voice_engine", VOICE_ENGINE_SYSTEM)
@@ -359,10 +359,15 @@ class CompanionSpeechRuntimeMixin:
         self._prepare_speech_performance(provider_id)
         self.speech_fallback_attempts.add(provider_id)
         voice, api_key = self._speech_voice_and_key(provider_id, credentials)
+        # Emotional prosody: a shy or gentle line is spoken a touch slower,
+        # while an excited or proud line is spoken a touch faster.  The user's
+        # configured rate remains the baseline; the emotion only nudges it.
+        base_rate = int(self.db.setting("voice_rate", -1))
+        rate = base_rate + _emotion_rate_adjustment(state)
         request = SpeechRequest(
             text=text,
             voice=voice,
-            rate=int(self.db.setting("voice_rate", -1)),
+            rate=rate,
             api_key=api_key,
             instructions=str(
                 self.db.setting(
@@ -712,6 +717,7 @@ class CompanionSpeechRuntimeMixin:
             profile_setting(self.db, "user_title"), clean
         )
         self.dashboard.capture_explicit_memory(clean)
+        self._observe_personality_mirror()
         self._handle_realtime_local_command(clean)
 
     def _handle_realtime_local_command(self, text: str) -> None:
@@ -964,6 +970,12 @@ class CompanionSpeechRuntimeMixin:
         provider_label: str,
         message: str,
     ) -> None:
+        # Track consecutive failures so a repeatedly failing provider is
+        # proactively demoted on the next synthesis request.
+        try:
+            self.speech_providers.record_failure(failed_provider_id)
+        except (AttributeError, LookupError):
+            pass
         language = profile_setting(self.db, "ui_language")
         safe_message = safe_error_message(language, message)
         credentials = self._speech_credentials()
@@ -1040,6 +1052,10 @@ class CompanionSpeechRuntimeMixin:
         self._speech_audio_finished()
 
     def _windows_voice_failed(self, message: str) -> None:
+        try:
+            self.speech_providers.record_failure(VOICE_ENGINE_SYSTEM)
+        except (AttributeError, LookupError):
+            pass
         platform_name = self.platform_services.capabilities.display_name
         language = profile_setting(self.db, "ui_language")
         self.dashboard.set_api_status(
@@ -1099,6 +1115,10 @@ class CompanionSpeechRuntimeMixin:
             animate_gesture=False,
         )
         completed_source = self.active_speech_source
+        try:
+            self.speech_providers.record_success(self.active_speech_engine)
+        except (AttributeError, LookupError):
+            pass
         self._complete_proactive_companion_speech(True)
         self.speech_playing = False
         self.active_speech_text = ""

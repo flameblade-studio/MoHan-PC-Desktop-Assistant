@@ -54,6 +54,14 @@ class AutonomousWardrobeRuntime:
         values = self._settings.read(
             (ACTIVE_OUTFIT_KEY, LAST_CHANGED_KEY, MANUAL_LOCK_KEY)
         )
+        # Persist the observed weather so the companion's wardrobe intuition and
+        # sensory synesthesia can read the same temperature/condition snapshot.
+        self._settings.write(
+            {
+                "weather_temperature_c": situation.temperature_c,
+                "weather_condition": situation.weather,
+            }
+        )
         current = str(values.get(ACTIVE_OUTFIT_KEY, "") or "").strip()
         if not current:
             current = self._service.selected_outfit(current)

@@ -108,8 +108,8 @@ def assert_phrasebook_has_24_discoverable_staged_groups(root: Path) -> None:
         for _group, group_categories in grouped_phrasebook_categories()
         for item in group_categories
     )
-    assert len(categories) == 24
-    assert len({key for key, _title in categories}) == 24
+    assert len(categories) == 28
+    assert len({key for key, _title in categories}) == 28
     db, _store, center = build_center(root)
     try:
         before = db.settings_snapshot()
@@ -117,7 +117,7 @@ def assert_phrasebook_has_24_discoverable_staged_groups(root: Path) -> None:
             center.edit_companion_phrasebook()
         assert db.settings_snapshot() == before
         assert center.companion_phrasebook_button.text() == (
-            "編輯 24 組多情境詞庫"
+            "編輯 28 組多情境詞庫"
         )
         visible_subpage_saves = [
             button.text()
