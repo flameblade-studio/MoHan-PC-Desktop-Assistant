@@ -4,8 +4,8 @@ lazy import hashlib
 lazy import json
 lazy from pathlib import Path
 
-lazy from PySide6.QtCore import Qt
-lazy from PySide6.QtGui import QImage, QPainter
+lazy from PySide6.QtCore import QRectF, Qt
+lazy from PySide6.QtGui import QColor, QImage, QPainter
 
 lazy from application.body_pose_renderer import LAYER_DEPTHS, BodyPoseLayer
 lazy from application.full_body_render_adapter import (
@@ -35,6 +35,8 @@ class PoseAtlasAssets:
             for item in self._metadata["views"]
         }
         self._cache: dict[str, FullBodyRenderSpec] = {}
+        self._current_view_id: str | None = None
+        self._face_rects: dict[str, tuple[float, float, float, float]] = {}
 
     @property
     def generation(self) -> int:
@@ -64,6 +66,7 @@ class PoseAtlasAssets:
             canonical = normalize_view_id(view_id)
         except (TypeError, ValueError):
             return None
+        self._current_view_id = canonical
         cached = self._cache.get(canonical)
         if cached is not None:
             return cached
@@ -114,10 +117,134 @@ class PoseAtlasAssets:
     def resolve_speech(
         self,
         _face: str | None,
-        _viseme: str,
+        viseme: str,
         mouth_closed: bool,
     ) -> tuple[FullBodyRenderLayer, ...] | None:
-        return () if mouth_closed else None
+        # The v4 full-body photograph is a single static PNG per view.  Speech
+        # must therefore overlay a procedural mouth layer at the face position
+        # recorded in the per-view hands sidecar.  A closed mouth contributes
+        # no layer (the authored photograph already shows a neutral mouth).
+        if mouth_closed:
+            return ()
+        view_id = self._current_view_id
+        if view_id is None:
+            return None
+        face_rect = self._face_rect(view_id)
+        if face_rect is None:
+            return None
+        rgba = self._render_mouth_layer(face_rect, viseme)
+        if rgba is None:
+            return None
+        evidence = FullBodyLayerEvidence(
+            "mouth",
+            hashlib.sha256(rgba).hexdigest(),
+            f"pose-atlas:{view_id}:mouth:{viseme}",
+        )
+        layer = FullBodyRenderLayer(
+            BodyPoseLayer("mouth", LAYER_DEPTHS["mouth"], rgba),
+            evidence,
+        )
+        return (layer,)
+
+    def _face_rect(
+        self,
+        view_id: str,
+    ) -> tuple[float, float, float, float] | None:
+        cached = self._face_rects.get(view_id)
+        if cached is not None:
+            return cached
+        path = self._root / f"{view_id}.hands.json"
+        if not path.is_file():
+            return None
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return None
+        for region in payload.get("protected_regions", ()) or ():
+            if region.get("label") != "face":
+                continue
+            rect = region.get("rect")
+            if not isinstance(rect, list) or len(rect) != 4:
+                return None
+            source_width = int(payload.get("width", 1024))
+            source_height = int(payload.get("height", 1536))
+            if source_width <= 0 or source_height <= 0:
+                return None
+            normalized = self._normalize_face_rect(
+                rect,
+                source_width,
+                source_height,
+            )
+            self._face_rects[view_id] = normalized
+            return normalized
+        return None
+
+    def _normalize_face_rect(
+        self,
+        rect: list[object],
+        source_width: int,
+        source_height: int,
+    ) -> tuple[float, float, float, float]:
+        # The authored PNG is 1024x1536 and is scaled into the square canvas
+        # with KeepAspectRatio (height fills the canvas, width is centered).
+        scale = self._image_size / source_height
+        scaled_width = source_width * scale
+        offset_x = (self._image_size - scaled_width) / 2.0
+        x, y, w, h = (float(value) for value in rect)
+        return (
+            offset_x + x * scale,
+            y * scale,
+            w * scale,
+            h * scale,
+        )
+
+    def _render_mouth_layer(
+        self,
+        face_rect: tuple[float, float, float, float],
+        viseme: str,
+    ) -> bytes | None:
+        # A procedural mouth: a dark rounded ellipse whose aperture follows the
+        # viseme.  This keeps the full-body mouth visibly in sync with speech
+        # without requiring authored per-viseme full-body photographs.
+        fx, fy, fw, fh = face_rect
+        mouth_cx = fx + fw * 0.5
+        mouth_cy = fy + fh * 0.62
+        aperture = self._viseme_aperture(viseme)
+        if aperture <= 0.0:
+            return None
+        mouth_w = max(2.0, fw * 0.34)
+        mouth_h = max(2.0, fh * 0.16 * aperture)
+        image = QImage(
+            self._image_size,
+            self._image_size,
+            QImage.Format_RGBA8888,
+        )
+        image.fill(Qt.transparent)
+        painter = QPainter(image)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QColor(90, 40, 45, 235))
+        painter.drawEllipse(
+            QRectF(
+                mouth_cx - mouth_w / 2.0,
+                mouth_cy - mouth_h / 2.0,
+                mouth_w,
+                mouth_h,
+            )
+        )
+        painter.end()
+        return bytes(image.constBits())
+
+    @staticmethod
+    def _viseme_aperture(viseme: str) -> float:
+        normalized = str(viseme or "CLOSED").upper()
+        if normalized in {"CLOSED", "CONSONANT"}:
+            return 0.0
+        if normalized in {"A", "O", "U"}:
+            return 1.0
+        if normalized in {"E", "I"}:
+            return 0.55
+        return 0.7
 
     def _load_metadata(self) -> dict[str, object]:
         path = self._root / "BUILD-METADATA.json"

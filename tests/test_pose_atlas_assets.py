@@ -27,7 +27,12 @@ def run() -> None:
     assert front.static_layers[0].layer.name == AUTHORED_FULL_BODY_SLOT
     assert len(front.static_layers[0].layer.rgba) == 465 * 465 * 4
     assert assets.resolve_speech("neutral", "CLOSED", True) == ()
-    assert assets.resolve_speech("neutral", "A", False) is None
+    # A spoken viseme now produces a procedural mouth layer aligned to the
+    # per-view face region recorded in the hands sidecar.
+    spoken = assets.resolve_speech("neutral", "A", False)
+    assert spoken is not None and len(spoken) == 1
+    assert spoken[0].layer.name == "mouth"
+    assert len(spoken[0].layer.rgba) == 465 * 465 * 4
     assert assets.resolve_static("front-crossed", "invalid-view") is None
     application.processEvents()
     print("POSE_ATLAS_ASSETS_OK")

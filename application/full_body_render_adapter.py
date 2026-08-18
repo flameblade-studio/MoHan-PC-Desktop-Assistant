@@ -261,8 +261,10 @@ class FullBodyRenderAdapter:
         ):
             return self._current_frame
         validated = self._validate_layers(layers, SPEECH_LAYER_SLOTS, exact=False)
-        if validated is None or not layers:
+        if validated is None:
             return self._current_frame
+        # An empty layer set means the mouth has closed: restore the authored
+        # static photograph so a previously overlaid mouth never lingers.
         frame = self._static_rgba
         for item in validated:
             frame = self._rgba.alpha_over_rgba(frame, item.layer.rgba)

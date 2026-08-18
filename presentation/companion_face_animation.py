@@ -1005,7 +1005,16 @@ class CompanionFaceAnimationMixin:
             expression = self._speaking_expression()
         else:
             expression = state
-        self._set_expression(expression)
+        if getattr(self, "_adaptive_full_body_active", False):
+            # The v4 full-body photograph owns the canvas and has no authored
+            # per-expression variants.  Switching the legacy half-body sprite
+            # here would reset the ownership flag and stack the suppressed
+            # overlays back over the full-body frame (the reported double
+            # image).  The gesture animation below still moves the full-body
+            # widget so a wave or arrival still gets a visible body response.
+            self.current_expression = expression
+        else:
+            self._set_expression(expression)
         expressive_states = {
             "happy",
             "reminder",
