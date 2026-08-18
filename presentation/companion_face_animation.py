@@ -665,6 +665,13 @@ class CompanionFaceAnimationMixin:
         self.mouth_frame_index = 0
         self.mouth_open = False
         self.speech_current_expression = self.speech_closed_expression
+        if getattr(self, "_adaptive_full_body_active", False):
+            # The v4 full-body composition owns the canvas and renders its own
+            # speech mouth frames from speech-performance events. Legacy
+            # half-body mouth rendering must not overwrite the full-body frame
+            # or resume ownership of the suppressed overlays (the startup
+            # full/half-body double image).
+            return
         self._set_expression(self.speech_closed_expression, fade=False)
         closed_frame = self._mouth_aperture_pixmap(
             self.speech_closed_expression,

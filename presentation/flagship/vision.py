@@ -323,12 +323,17 @@ class FlagshipVisionMixin:
             self.camera_enabled.setChecked(False)
             return
         try:
+            # The presence/gesture pipeline must never be held hostage by
+            # face-recognition readiness (cv2 FaceDetectorYN/FaceRecognizerSF
+            # plus three exactly-matched ONNX models).  A webcam that reports
+            # video inputs is enough to start presence detection and gesture
+            # sampling; vision readiness only gates face/scene analysis.
+            if not self.camera_presence.available():
+                raise RuntimeError("camera-unavailable")
             health = self.vision_controller.configure(
                 enabled=True,
-                camera_available=self.camera_presence.available(),
+                camera_available=True,
             )
-            if not health.ready:
-                raise RuntimeError(health.readiness.value)
             self.multimodal_controller.configure(enabled=True)
             self.camera_presence.start()
             self._configure_gesture_runtime()
@@ -342,7 +347,7 @@ class FlagshipVisionMixin:
             )
             return
         self.db.set_setting("camera_presence_enabled", True)
-        self.face_identity.setEnabled(True)
+        self.face_identity.setEnabled(health.ready)
         self.db.set_setting(
             "face_identity_enabled",
             self.face_identity.isChecked(),
@@ -353,15 +358,15 @@ class FlagshipVisionMixin:
         if not self.camera_enabled.isChecked():
             return
         try:
+            if not self.camera_presence.available():
+                return
             health = self.vision_controller.configure(
                 enabled=True,
-                camera_available=self.camera_presence.available(),
+                camera_available=True,
             )
-            if not health.ready:
-                return
             self.multimodal_controller.configure(enabled=True)
             self.camera_presence.start()
-            self.face_identity.setEnabled(True)
+            self.face_identity.setEnabled(health.ready)
             self._configure_gesture_runtime()
         except RuntimeError as exc:
             self.camera_status.setText(
