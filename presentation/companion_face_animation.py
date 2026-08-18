@@ -759,6 +759,13 @@ class CompanionFaceAnimationMixin:
         self._compose_character_position()
 
     def _audio_viseme_cue(self, level: float, vowel: str) -> None:
+        if getattr(self, "_adaptive_full_body_active", False):
+            # The v4 full-body composition renders its own speech mouth from
+            # speech-performance events.  The legacy viseme path must not run
+            # in parallel: it would reset the ownership flag and let the
+            # suppressed half-body overlays return, stacking a second body over
+            # the full-body frame (the reported double image).
+            return
         if (
             self.state != "speaking"
             or not self.audio_driven_mouth
