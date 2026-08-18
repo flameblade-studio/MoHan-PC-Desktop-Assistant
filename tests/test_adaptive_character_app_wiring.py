@@ -187,6 +187,40 @@ def assert_audio_viseme_does_not_reset_full_body_ownership() -> None:
         window.close()
 
 
+def assert_expression_state_does_not_reset_full_body_ownership() -> None:
+    """A wave/arrival expression must not hand the canvas back to legacy sprites.
+
+    ``set_state`` switches the legacy half-body sprite for expressive states.
+    In full-body mode that switch would reset ``_adaptive_full_body_active`` and
+    stack the suppressed overlays back over the full-body photograph (the
+    reported double image).  The full-body widget must keep owning the canvas
+    while the gesture animation still provides a visible body response.
+    """
+    factory = FakeFactory()
+    window = CompanionWindow(
+        startup_speech=False,
+        defer_visual_startup=True,
+        adaptive_character_factory=factory,
+        adaptive_character_enabled=True,
+    )
+    try:
+        runtime = factory.runtime
+        assert runtime is not None
+        runtime.publish = True
+        decision = window._dispatch_adaptive_character_frame(atomic_frame())
+        assert decision is not None and decision.should_publish
+        assert window._adaptive_full_body_active is True
+
+        accepted = window.set_state("happy", source="visual", intensity=0.6)
+        assert accepted is True
+        assert window._adaptive_full_body_active is True, (
+            "set_state must not reset full-body ownership"
+        )
+        assert window.state == "happy"
+    finally:
+        window.close()
+
+
 def run() -> None:
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
         os.environ["LOCALAPPDATA"] = temp
@@ -195,6 +229,7 @@ def run() -> None:
         assert_missing_assets_bypass_without_crash()
         assert_v4_publish_and_speech_hold_preserve_geometry()
         assert_audio_viseme_does_not_reset_full_body_ownership()
+        assert_expression_state_does_not_reset_full_body_ownership()
         application.processEvents()
     print("ADAPTIVE_CHARACTER_APP_WIRING_OK")
 

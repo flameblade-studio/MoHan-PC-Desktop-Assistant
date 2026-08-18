@@ -13,6 +13,11 @@ LANGUAGE_HEADINGS = (
     "日本語",
 )
 DOCUMENT_GLOBS = ("*.md", "*.mdx", "*.rst")
+# Machine/AI-readable configuration files are not user-facing documents and
+# therefore carry no four-language translation requirement.  ``.clinerules.md``
+# is an exclusion/instruction rule set (glob patterns plus agent directives),
+# analogous to ``.gitignore``, not prose to be localized.
+NON_DOCUMENT_BASENAMES = frozenset({".clinerules.md"})
 LANGUAGE_HEADING_PATTERN = re.compile(
     r"(?m)^## (繁體中文|简体中文|English|日本語)\s*$"
 )
@@ -56,6 +61,8 @@ def _tracked_documents(root: Path) -> tuple[Path, ...]:
     documents: list[Path] = []
     for relative_path in relative_paths:
         path = root / relative_path
+        if path.name in NON_DOCUMENT_BASENAMES:
+            continue
         if path.is_file():
             documents.append(path)
     return tuple(documents)

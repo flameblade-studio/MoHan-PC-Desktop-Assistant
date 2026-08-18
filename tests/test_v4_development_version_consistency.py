@@ -6,7 +6,7 @@ lazy import tomllib
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DEVELOPMENT_VERSION = "4.2.0"
+DEVELOPMENT_VERSION = "4.2.1"
 VERSION_AUTHORITY = "domain/version_info.py"
 LANGUAGE_HEADINGS = (
     "## 繁體中文",
