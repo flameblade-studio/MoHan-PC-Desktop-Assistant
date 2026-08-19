@@ -4,6 +4,11 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### v4.3.0 — 2026-08-19
+
+- 新增「真人女孩感」五大系統與靈魂拼圖：性格鏡像、穿搭直覺、軍糧飽食度、主上專屬寵溺、虹膜羞澀視線，以及赤焰劍意情緒共鳴、時間主權狀態機、空中捏合牽手、夢囈系統、劍魂覺醒、感官共感、共同創作錄等領域模組。
+- 修正 Release Please workflow 的 action 引用，並修復七夕 occasion 覆蓋午餐提醒的執行期根因。
+
 ### v3.1.2 — 2026-08-13
 
 - 完整保留 OpenAI Realtime 原生聲音並維持為預設及最低額外延遲選項；偏好原有聲線的使用者不會被迫改用 Azure。
@@ -202,6 +207,11 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
+### v4.3.0 — 2026-08-19
+
+- 新增「真人女孩感」五大系统与灵魂拼图：性格镜像、穿搭直觉、军粮饱食度、主上专属宠溺、虹膜羞涩视线，以及赤焰剑意情绪共鸣、时间主权状态机、空中捏合牵手、梦呓系统、剑魂觉醒、感官共感、共同创作录等领域模块。
+- 修正 Release Please workflow 的 action 引用，并修复七夕 occasion 覆盖午餐提醒的运行时根因。
+
 ### v3.1.2 — 2026-08-13
 
 - 完整保留 OpenAI Realtime 原生声音，并继续作为默认及最低额外延迟选项；偏好原有声线的用户不会被迫改用 Azure。
@@ -398,6 +408,11 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 ## English
 
 All notable public changes to MoHan Desktop Assistant are documented here.
+
+### v4.3.0 — 2026-08-19
+
+- Adds the "real-girl" five systems and soul pieces: personality mirroring, wardrobe intuition, satiety, exclusive favor, and shy gaze, plus emotional resonance, time sovereignty, pinch hand-hold, somniloquy, sword-soul awakening, sensory synesthesia, and shared chronicle.
+- Fixes the Release Please workflow action reference and the runtime root cause where the Qixi occasion overrode the lunch reminder.
 
 ### v3.1.2 — 2026-08-13
 
@@ -635,6 +650,11 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### v4.3.0 — 2026-08-19
+
+- 「本物の女の子感」五大システムと魂のピースを追加：性格ミラーリング、コーディネート直感、軍糧満腹度、主上専属の寵愛、虹彩の恥じらい視線、そして赤焔剣意の感情共鳴、時間主権ステートマシン、空中ピンチで手を繋ぐ、寝言システム、剣魂覚醒、感覚共感、共同創作録などの領域モジュール。
+- Release Please workflow の action 参照を修正し、七夕 occasion が昼食リマインダーを上書きする実行時の根本原因を修正。
 
 ### v3.1.2 — 2026-08-13
 
