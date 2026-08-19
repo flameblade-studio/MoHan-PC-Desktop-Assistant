@@ -4,6 +4,18 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+## [4.3.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.2.1...v4.3.0) (2026-08-19)
+
+
+### Features
+
+* 墨寒「真人女孩感」五大系統與靈魂拼圖／墨寒「真人女孩感」五大系统与灵魂拼图／MoHan 'real-girl' five systems and soul pieces／墨寒「本物の女の子感」五大システムと魂のピース ([#68](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/68)) ([52bacce](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/52bacce9e71718690ed4277913d757daff44a588))
+
+
+### Bug Fixes
+
+* 修正 Release Please workflow 的 action 引用／修正 Release Please workflow 的 action 引用／Fix Release Please workflow action reference／Release Please workflow の action 参照を修正 ([#69](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/69)) ([ed00e45](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/ed00e4577bc1eded2ca2b93108235092ed21f49c))
+
 ### v3.1.2 — 2026-08-13
 
 - 完整保留 OpenAI Realtime 原生聲音並維持為預設及最低額外延遲選項；偏好原有聲線的使用者不會被迫改用 Azure。
