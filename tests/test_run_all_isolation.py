@@ -109,7 +109,9 @@ def test_each_child_receives_an_independent_sanitized_environment() -> None:
 
 def test_first_failure_stops_the_sorted_run_and_preserves_exit_code() -> None:
     called: list[str] = []
-    return_codes = iter((0, 23))
+    # test_alpha passes (0); test_bravo fails twice in a row (23, 23) so the
+    # single retry cannot rescue it and the suite stops with its exit code.
+    return_codes = iter((0, 23, 23))
 
     def fail_second(command, **_kwargs):
         called.append(_command_test_name(command))
@@ -129,12 +131,15 @@ def test_first_failure_stops_the_sorted_run_and_preserves_exit_code() -> None:
         ):
             assert run_all.main() == 23
 
-    assert called == ["test_alpha.py", "test_bravo.py"]
+    assert called == ["test_alpha.py", "test_bravo.py", "test_bravo.py"]
     assert stdout.getvalue().splitlines() == [
         "[1/3] test_alpha.py",
         "[2/3] test_bravo.py",
     ]
-    assert stderr.getvalue().splitlines() == ["FAILED: test_bravo.py (exit 23)"]
+    assert stderr.getvalue().splitlines() == [
+        "RETRY: test_bravo.py (attempt 1 failed, retrying in a fresh environment)",
+        "FAILED: test_bravo.py (exit 23)",
+    ]
 
 
 def test_malformed_test_source_fails_closed_without_starting_a_child() -> None:

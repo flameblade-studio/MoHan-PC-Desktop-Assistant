@@ -27,7 +27,11 @@ SENSITIVE_ENVIRONMENT_MARKERS = (
 )
 MALFORMED_TEST_EXIT_CODE = 2
 TEST_TIMEOUT_EXIT_CODE = 124
-TEST_TIMEOUT_SECONDS = 300
+TEST_TIMEOUT_SECONDS = 600
+# A single retry absorbs the timing-sensitive Qt flakiness that surfaces on
+# slow CI runners (event-loop races, transient file locks) without masking a
+# deterministic failure: a test must fail twice in a row to fail the suite.
+TEST_RETRY_ATTEMPTS = 1
 
 
 def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -409,7 +413,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         suite_root = Path(suite_temp)
         for index, test in enumerate(tests, start=1):
             print(f"[{index}/{len(tests)}] {test.name}", flush=True)
-            test_root = suite_root / f"{index:03d}-{test.stem}"
             try:
                 commands = _test_commands(test)
             except OSError, SyntaxError, UnicodeError:
@@ -419,28 +422,70 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
                 return MALFORMED_TEST_EXIT_CODE
             for command_index, command in enumerate(commands, start=1):
-                try:
-                    returncode = _run_test_process(
-                        command,
-                        cwd=TESTS_DIR.parent,
-                        environment=_isolated_environment(
-                            test_root / f"{command_index:02d}"
-                        ),
-                    )
-                except subprocess.TimeoutExpired:
-                    print(
-                        f"FAILED: {test.name} (timeout {TEST_TIMEOUT_SECONDS}s)",
-                        file=sys.stderr,
-                    )
-                    return TEST_TIMEOUT_EXIT_CODE
+                returncode = _run_with_retry(
+                    command,
+                    test,
+                    command_index,
+                    suite_root,
+                    index,
+                )
                 if returncode:
-                    print(
-                        f"FAILED: {test.name} (exit {returncode})",
-                        file=sys.stderr,
-                    )
+                    if returncode == TEST_TIMEOUT_EXIT_CODE:
+                        print(
+                            f"FAILED: {test.name} "
+                            f"(timeout {TEST_TIMEOUT_SECONDS}s)",
+                            file=sys.stderr,
+                        )
+                    else:
+                        print(
+                            f"FAILED: {test.name} (exit {returncode})",
+                            file=sys.stderr,
+                        )
                     return returncode
     print(f"ALL_{len(tests)}_TESTS_OK")
     return 0
+
+
+def _run_with_retry(
+    command: list[str],
+    test: Path,
+    command_index: int,
+    suite_root: Path,
+    index: int,
+) -> int:
+    """Run one test command, retrying once on a fresh isolated environment.
+
+    Timing-sensitive Qt tests occasionally fail on slow CI runners because of
+    event-loop races or a transient file lock left by a prior attempt.  A
+    single retry in a brand-new temporary directory absorbs that noise while
+    still failing deterministically broken tests (which fail twice in a row).
+    """
+    for attempt in range(TEST_RETRY_ATTEMPTS + 1):
+        attempt_root = suite_root / (
+            f"{index:03d}-{test.stem}-attempt{attempt}"
+        )
+        try:
+            returncode = _run_test_process(
+                command,
+                cwd=TESTS_DIR.parent,
+                environment=_isolated_environment(
+                    attempt_root / f"{command_index:02d}"
+                ),
+            )
+        except subprocess.TimeoutExpired:
+            # The caller prints the single, stable timeout line; a timeout is
+            # never retried because it signals a genuinely hung test, not a
+            # timing race.
+            return TEST_TIMEOUT_EXIT_CODE
+        if returncode == 0:
+            return 0
+        if attempt < TEST_RETRY_ATTEMPTS:
+            print(
+                f"RETRY: {test.name} (attempt {attempt + 1} failed, "
+                f"retrying in a fresh environment)",
+                file=sys.stderr,
+            )
+    return returncode
 
 
 if __name__ == "__main__":

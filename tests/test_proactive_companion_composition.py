@@ -4,6 +4,7 @@ lazy import sys
 lazy import tempfile
 lazy from datetime import datetime
 lazy from pathlib import Path
+lazy from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -50,9 +51,18 @@ def run() -> None:
             second=0,
             microsecond=0,
         )
-        result = bridge.dispatch(
-            ProactiveAppEvent(_state(now), ReminderTrigger.LUNCH)
-        )
+        # The occasion service reads the real wall clock (not the injected
+        # ``now``), so on a special-occasion day such as Qixi it would outrank
+        # the lunch reminder and change the submitted speech state.  Neutralise
+        # the occasion lookup so this test deterministically exercises the
+        # reminder path regardless of the calendar date.
+        with patch(
+            "application.wellbeing_runtime.active_occasion",
+            return_value=None,
+        ):
+            result = bridge.dispatch(
+                ProactiveAppEvent(_state(now), ReminderTrigger.LUNCH)
+            )
         assert result.disposition is ProactiveAppDisposition.SUBMITTED
         assert len(submitted) == 1
         assert submitted[0][0].strip()

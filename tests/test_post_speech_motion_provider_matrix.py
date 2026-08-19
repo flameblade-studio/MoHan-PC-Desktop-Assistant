@@ -55,6 +55,12 @@ def _create_window(
     db_path = Path(temp_dir) / "YanJianStudio" / "MoHan" / "mohan.db"
     preflight = StudioDB(db_path)
     preflight.set_setting("tts_enabled", False)
+    # The v4 full-body composition owns the canvas and renders its own speech
+    # mouth, which disables the legacy ``_audio_viseme_cue`` path this matrix
+    # exercises.  Pinning the legacy surface keeps ``speech_motion_y`` driven
+    # deterministically by the viseme cues instead of racing the asynchronous
+    # full-body publish on slow CI runners.
+    preflight.set_setting("adaptive_character_v4_enabled", False)
     preflight.close()
     app = QApplication([])
     window = CompanionWindow(startup_speech=False)
