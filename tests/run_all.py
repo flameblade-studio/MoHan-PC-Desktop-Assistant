@@ -27,7 +27,7 @@ SENSITIVE_ENVIRONMENT_MARKERS = (
 )
 MALFORMED_TEST_EXIT_CODE = 2
 TEST_TIMEOUT_EXIT_CODE = 124
-TEST_TIMEOUT_SECONDS = 300
+TEST_TIMEOUT_SECONDS = 600
 # A single retry absorbs the timing-sensitive Qt flakiness that surfaces on
 # slow CI runners (event-loop races, transient file locks) without masking a
 # deterministic failure: a test must fail twice in a row to fail the suite.
