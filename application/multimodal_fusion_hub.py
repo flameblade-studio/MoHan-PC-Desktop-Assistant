@@ -65,11 +65,13 @@ class FaceMeshAnalysis:
     gaze_confidence: float
     gaze_state: GazeState
     chin_resting: bool
+    brow_tension: float = 0.0
 
     def __post_init__(self) -> None:
         for value in (
             self.smile_confidence,
             self.gaze_confidence,
+            self.brow_tension,
         ):
             if not 0.0 <= value <= 1.0:
                 raise ValueError("face analysis confidence must be normalized")
@@ -287,6 +289,17 @@ class MultimodalFusionHub:
             <= face_height * 0.40
             for hand in hands
         )
+        # Brow tension: when the inner brows (landmarks 105 and 334) draw
+        # together, the normalized distance shrinks.  A small distance maps to
+        # a high tension score, describing a furrowed brow without claiming an
+        # emotion.
+        brow_distance = _distance(
+            points[105].x,
+            points[105].y,
+            points[334].x,
+            points[334].y,
+        )
+        brow_tension = _positive_clamp(1.0 - brow_distance / (face_height * 0.55))
         return FaceMeshAnalysis(
             expression,
             smile_score,
@@ -295,6 +308,7 @@ class MultimodalFusionHub:
             gaze_confidence,
             gaze_state,
             chin_resting,
+            brow_tension,
         )
 
     def _live2d(
@@ -348,6 +362,8 @@ class MultimodalFusionHub:
                 events.append("looking-at-character")
             if face.chin_resting:
                 events.append("resting-chin")
+            if face.brow_tension >= 0.55:
+                events.append("brow-tension-like")
         if voice.state is VoiceActivityState.ACTIVE:
             events.append("voice-active")
         if air is not None:

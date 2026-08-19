@@ -38,6 +38,9 @@ EXPECTED_METHODS = frozenset({
     "_apply_multimodal_result",
     "_connect_speech_service_signals",
     "_initialize_companion_state",
+    "_persist_affection",
+    "_apply_weather_and_satiety",
+    "_observe_personality_mirror",
 })
 
 

@@ -202,6 +202,9 @@ class SpeechProviderRegistry:
 
     def __init__(self, providers: tuple[SpeechProviderPort, ...] = ()):
         self._providers: dict[str, SpeechProviderPort] = {}
+        # Consecutive-failure tracking lets a repeatedly failing provider be
+        # proactively demoted before the user hears another broken reply.
+        self._consecutive_failures: dict[str, int] = {}
         for provider in providers:
             self.register(provider)
 
@@ -222,6 +225,23 @@ class SpeechProviderRegistry:
 
     def provider_ids(self) -> tuple[str, ...]:
         return tuple(self._providers)
+
+    def record_failure(self, provider_id: object) -> None:
+        """Count one consecutive failure for a provider."""
+        normalized = normalize_speech_provider_id(provider_id)
+        self._consecutive_failures[normalized] = (
+            self._consecutive_failures.get(normalized, 0) + 1
+        )
+
+    def record_success(self, provider_id: object) -> None:
+        """Reset the consecutive-failure counter after a successful reply."""
+        normalized = normalize_speech_provider_id(provider_id)
+        self._consecutive_failures[normalized] = 0
+
+    def is_degraded(self, provider_id: object, threshold: int = 3) -> bool:
+        """True when a provider has failed too many times in a row."""
+        normalized = normalize_speech_provider_id(provider_id)
+        return self._consecutive_failures.get(normalized, 0) >= threshold
 
     def output_provider_id(
         self,
@@ -254,6 +274,13 @@ class SpeechProviderRegistry:
         )
         configured.add(SYSTEM_LOCAL_PROVIDER)
         if selected in self._providers and selected in configured:
+            # A provider that has failed repeatedly is proactively demoted to
+            # its fallback so the user hears a working voice instead of another
+            # broken reply.
+            if self.is_degraded(selected):
+                fallback = self.fallback_provider_id(selected)
+                if fallback is not None and fallback in configured:
+                    return fallback
             return selected
         if (
             selected == AZURE_HD_SPEECH_PROVIDER

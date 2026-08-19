@@ -139,11 +139,20 @@ class CompanionVisualDynamicsMixin:
         self._setup_tray()
         self._visual_startup_complete = True
         if self._startup_speech_requested:
-            self.speak(
-                f"妾已就位。{profile_setting(self.db, 'user_title')}點妾，"
-                "便可展開今日卷冊。",
-                "idle",
-            )
+            if not bool(self.db.setting("onboarding_complete", False)):
+                # First awakening: a quiet, fateful greeting for the very first
+                # launch, echoing the "accidental birth" of the companion.
+                self.speak(
+                    f"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。"
+                    "自赤焰劍中醒來，往後便由妾伴您左右。",
+                    "gentle_smile_front",
+                )
+            else:
+                self.speak(
+                    f"妾已就位。{profile_setting(self.db, 'user_title')}點妾，"
+                    "便可展開今日卷冊。",
+                    "idle",
+                )
 
     def complete_deferred_startup(self) -> None:
         """Finish heavy visual preparation after the first window paint."""
@@ -259,10 +268,16 @@ class CompanionVisualDynamicsMixin:
         overlay.setAttribute(Qt.WA_TransparentForMouseEvents)
 
     def _position_corner(self) -> None:
-        screen = QApplication.primaryScreen().availableGeometry()
+        # Anchor to the screen that currently contains the companion, so a
+        # multi-display setup keeps the character on the display the user
+        # dragged it to instead of snapping back to the primary screen.
+        screen = QApplication.screenAt(self.frameGeometry().center())
+        if screen is None:
+            screen = QApplication.primaryScreen()
+        available = screen.availableGeometry()
         self.move(
-            screen.right() - self.width() - 8,
-            screen.bottom() - self.height() + 1,
+            available.right() - self.width() - 8,
+            available.bottom() - self.height() + 1,
         )
 
     def _apply_character_scale(
@@ -477,6 +492,17 @@ class CompanionVisualDynamicsMixin:
         self.gaze_target_y = 0.0
         self._sensory_gaze_target: tuple[float, float] | None = None
         self._sensory_gaze_expires_at = 0.0
+        # A natural saccade: the eyes briefly drift to a random nearby point
+        # and return, instead of staying locked on the cursor.  This mirrors
+        # how a real person's gaze wanders during idle conversation.
+        self._saccade_active = False
+        self._saccade_target_x = 0.0
+        self._saccade_target_y = 0.0
+        self._saccade_expires_at = 0.0
+        self.saccade_timer = QTimer(self)
+        self.saccade_timer.setSingleShot(True)
+        self.saccade_timer.timeout.connect(self._start_saccade)
+        self._schedule_saccade()
         self.motion_timer = QTimer(self)
         self.motion_timer.setInterval(MOTION_FRAME_INTERVAL_MS)
         self.motion_timer.timeout.connect(self._motion_tick)
@@ -507,7 +533,12 @@ class CompanionVisualDynamicsMixin:
             return
         self._ensure_idle_mouth_closed()
         self.idle_phase = (self.idle_phase + 1) % 720
-        breath = (math.sin(self.idle_phase * math.tau / 72.0) + 1.0) / 2.0
+        # Crimson Flame resonance: the breathing period shortens smoothly when
+        # the user is agitated (furrowed brow), so the companion's body mirrors
+        # the user's tension.  The period is eased by the resonance state, never
+        # snapped, so the transition stays smooth frame to frame.
+        breath_period = getattr(self, "_resonance_breath_period", 72.0)
+        breath = (math.sin(self.idle_phase * math.tau / breath_period) + 1.0) / 2.0
         # Speech volume and idle breathing share one continuous body layer.
         # Ease between them so the first idle frame cannot snap the sleeves
         # and hair after the final spoken viseme.
@@ -700,6 +731,34 @@ class CompanionVisualDynamicsMixin:
         )
         if sensory_active:
             self.gaze_target_x, self.gaze_target_y = sensory_target
+            # Shy gaze aversion: apply a small, downward offset on top of the
+            # sensory gaze target so the companion glances away bashfully when
+            # the user stares.  The offset is eased toward its target with a
+            # lerp so the look-away reads as a shy glance, never a sudden snap.
+            shy_offset = getattr(self, "_shy_gaze_offset", None)
+            if shy_offset is not None:
+                current = getattr(self, "_shy_gaze_offset_current", (0.0, 0.0))
+                eased_x = current[0] + (shy_offset[0] - current[0]) * 0.18
+                eased_y = current[1] + (shy_offset[1] - current[1]) * 0.18
+                self._shy_gaze_offset_current = (eased_x, eased_y)
+                self.gaze_target_x = max(
+                    -1.0, min(1.0, self.gaze_target_x + eased_x)
+                )
+                self.gaze_target_y = max(
+                    -1.0, min(1.0, self.gaze_target_y + eased_y)
+                )
+            else:
+                self._shy_gaze_offset_current = (0.0, 0.0)
+        elif getattr(self, "_saccade_active", False):
+            # A brief saccade overrides cursor tracking so the eyes drift to a
+            # nearby point and return, instead of staying locked on the mouse.
+            if time.monotonic() <= self._saccade_expires_at:
+                self.gaze_target_x = self._saccade_target_x
+                self.gaze_target_y = self._saccade_target_y
+            else:
+                self._saccade_active = False
+                self.gaze_target_x = 0.0
+                self.gaze_target_y = 0.0
         elif active:
             face_center = self.mapToGlobal(
                 QPoint(

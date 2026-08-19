@@ -136,6 +136,7 @@ class _Candidate:
 _SPEECH_ACTIVE = frozenset({SpeechLifecycle.STARTING, SpeechLifecycle.SPEAKING})
 _BACK_DEPTH = frozendict({
     "front-crossed": 0,
+    "left-cheek-rest": 0,
     "left-neutral": 1,
     "right-neutral": 1,
     "back-two-thirds-left": 2,
@@ -403,6 +404,14 @@ class BehaviorDirector:
                 "right-neutral", "right-030", face, "relaxed", "relaxed",
                 gaze, BreathStyle.CALM, TransitionStyle.SOFT,
                 2_200, True, "ambient-right",
+            ),
+            # A cheek-rest pose adds a thoughtful, lively variation to idle
+            # time.  It is not speech-safe, so the director will substitute a
+            # safe pose the moment speech begins.
+            _Candidate(
+                "left-cheek-rest", "left-030", "cheek", "relaxed", "relaxed",
+                GazeTarget.NEAR_USER, BreathStyle.CALM, TransitionStyle.SOFT,
+                2_600, False, "ambient-cheek-rest",
             ),
         )
         return self._choose(choices, offset=context.conversation_turn)

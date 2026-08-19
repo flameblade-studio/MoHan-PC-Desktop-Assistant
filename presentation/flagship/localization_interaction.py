@@ -174,7 +174,7 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
         "Edit all 24 greeting, care, wellbeing, special-occasion, and wardrobe phrase groups.",
         "挨拶、気遣い、健康、特別な日、新装披露の全24グループを編集できます。",
     ),
-    "編輯 24 組多情境詞庫": translations("编辑 24 组多情境词库", "Edit all 24 phrase groups", "24グループのフレーズを編集"),
+    "編輯 28 組多情境詞庫": translations("编辑 28 组多情境词库", "Edit all 28 phrase groups", "28グループのフレーズを編集"),
     "完成編輯": translations("完成编辑", "Done editing", "編集を完了"),
     "用膳提醒": translations("用餐提醒", "Meal reminder", "食事リマインダー"),
     "飲水提醒": translations("饮水提醒", "Hydration reminder", "水分補給リマインダー"),

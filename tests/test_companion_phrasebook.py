@@ -44,7 +44,7 @@ def run() -> None:
     assert malformed == CompanionPhrasebook({}, (), {})
 
     assert len(WELLBEING_PHRASE_KEYS) == 8
-    assert len(OCCASION_PHRASE_KEYS) == 6
+    assert len(OCCASION_PHRASE_KEYS) == 10
     groups = grouped_phrasebook_categories()
     assert tuple(group for group, _ in groups) == (
         "歸來問候",
@@ -58,7 +58,7 @@ def run() -> None:
         for _, categories in groups
         for key, _ in categories
     )
-    assert len(grouped_keys) == len(set(grouped_keys)) == 24
+    assert len(grouped_keys) == len(set(grouped_keys)) == 28
     for locale in ("zh-TW", "zh-CN", "en", "ja-JP"):
         assert set(PUBLIC_COMPANION_LINES[locale]) == {
             *WELLBEING_PHRASE_KEYS,

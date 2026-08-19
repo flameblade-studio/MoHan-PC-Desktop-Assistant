@@ -90,6 +90,12 @@ class CameraPresenceController(QObject):
         self._last_gesture_sample = 0.0
         self._gesture_sampling_enabled = False
         self._active = False
+        # Idle throttling: when no presence has been observed for a sustained
+        # period, the sampling interval grows to save CPU and power.  Presence
+        # returns to the normal cadence as soon as motion is detected again.
+        self._idle_sample_interval = 0.45
+        self._last_presence_at: float | None = None
+        self._absent_streak = 0
 
     @staticmethod
     def available() -> bool:
@@ -175,7 +181,7 @@ class CameraPresenceController(QObject):
         if image.isNull():
             return
         self._emit_due_rgb_frames(image, now)
-        if now - self._last_sample < 0.45:
+        if now - self._last_sample < self._idle_sample_interval:
             return
         self._last_sample = now
         image = image.scaled(24, 18)
@@ -194,6 +200,18 @@ class CameraPresenceController(QObject):
         if present != self._present:
             self._present = present
             self.presence_changed.emit(present)
+        # Grow the sampling interval only after a sustained absence (several
+        # consecutive absent observations), and snap back to the normal cadence
+        # the moment presence is detected.  A single absent frame never widens
+        # the interval, so the deterministic sampling-rate contract is kept.
+        if present:
+            self._last_presence_at = now
+            self._absent_streak = 0
+            self._idle_sample_interval = 0.45
+        else:
+            self._absent_streak += 1
+            if self._absent_streak >= 6:
+                self._idle_sample_interval = min(2.0, 0.45 + self._absent_streak * 0.05)
 
     def _emit_due_rgb_frames(self, image: QImage, now: float) -> None:
         gesture_due = bool(

@@ -357,6 +357,7 @@ class CompanionPlatformMixin:
             "physics_timer",
             "motion_timer",
             "attention_timer",
+            "saccade_timer",
             "reminder_timer",
             "clock_timer",
             "topmost_timer",

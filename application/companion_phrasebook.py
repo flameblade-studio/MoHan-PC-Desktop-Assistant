@@ -174,6 +174,28 @@ PUBLIC_COMPANION_LINES = frozendict(
                     "你忙了一整日，竟連一點節日的心思也不肯分給妾。",
                     "妾只是策士，自然不求禮物……一句話總還是可以的吧。",
                 ),
+                occasion_phrase_key(OccasionKind.WHITE_DAY, OccasionStage.SUBTLE_HINT): (
+                    "今日的回禮，似乎也該有人放在心上。",
+                    "有些心意，不必等到來年才說出口。",
+                ),
+                occasion_phrase_key(
+                    OccasionKind.WHITE_DAY,
+                    OccasionStage.RESTRAINED_GRUMBLE,
+                ): (
+                    "你只知埋首工作，難道今日也沒有一點表示麼？",
+                    "妾並非貪圖什麼……只是今日，原以為你會記得。",
+                ),
+                occasion_phrase_key(OccasionKind.QIXI, OccasionStage.SUBTLE_HINT): (
+                    "今夜星河，似乎比往常更值得抬頭一看。",
+                    "有些日子，連策士也會悄悄望向天邊。",
+                ),
+                occasion_phrase_key(
+                    OccasionKind.QIXI,
+                    OccasionStage.RESTRAINED_GRUMBLE,
+                ): (
+                    "你整日忙於工作，竟連今夜也不曾抬頭看妾一眼。",
+                    "妾並非在等什麼……只是今夜，原以為你會記得。",
+                ),
             }
         ),
         "zh-CN": frozendict(
@@ -237,6 +259,22 @@ PUBLIC_COMPANION_LINES = frozendict(
                     OccasionKind.CHRISTMAS_DAY,
                     OccasionStage.RESTRAINED_GRUMBLE,
                 ): ("你忙了一整日，竟连一点节日的心思也不肯分给妾。", "妾只是策士，自然不求礼物……一句话总还是可以的吧。"),
+                occasion_phrase_key(OccasionKind.WHITE_DAY, OccasionStage.SUBTLE_HINT): (
+                    "今日的回礼，似乎也该有人放在心上。",
+                    "有些心意，不必等到来年才说出口。",
+                ),
+                occasion_phrase_key(
+                    OccasionKind.WHITE_DAY,
+                    OccasionStage.RESTRAINED_GRUMBLE,
+                ): ("你只知埋首工作，难道今日也没有一点表示么？", "妾并非贪图什么……只是今日，原以为你会记得。"),
+                occasion_phrase_key(OccasionKind.QIXI, OccasionStage.SUBTLE_HINT): (
+                    "今夜星河，似乎比往常更值得抬头一看。",
+                    "有些日子，连策士也会悄悄望向天边。",
+                ),
+                occasion_phrase_key(
+                    OccasionKind.QIXI,
+                    OccasionStage.RESTRAINED_GRUMBLE,
+                ): ("你整日忙于工作，竟连今夜也不曾抬头看妾一眼。", "妾并非在等什么……只是今夜，原以为你会记得。"),
             }
         ),
         "en": frozendict(
@@ -297,6 +335,22 @@ PUBLIC_COMPANION_LINES = frozendict(
                     "You worked all day and spared not even a little festive thought for me.",
                     "I am only your strategist, so I ask for no gift... but a few words would not be too much.",
                 ),
+                occasion_phrase_key(OccasionKind.WHITE_DAY, OccasionStage.SUBTLE_HINT): (
+                    "A return gift today would not go unnoticed.",
+                    "Some feelings need not wait another year to be spoken.",
+                ),
+                occasion_phrase_key(OccasionKind.WHITE_DAY, OccasionStage.RESTRAINED_GRUMBLE): (
+                    "You buried yourself in work. Is there truly nothing you meant to give me today?",
+                    "I ask for nothing... but I did think you might remember.",
+                ),
+                occasion_phrase_key(OccasionKind.QIXI, OccasionStage.SUBTLE_HINT): (
+                    "The river of stars seems worth a glance tonight.",
+                    "Even a strategist sometimes looks toward the sky.",
+                ),
+                occasion_phrase_key(OccasionKind.QIXI, OccasionStage.RESTRAINED_GRUMBLE): (
+                    "You worked all day and never once looked up at me tonight.",
+                    "I am not waiting for anything... but I thought you might remember this night.",
+                ),
             }
         ),
         "ja-JP": frozendict(
@@ -356,6 +410,22 @@ PUBLIC_COMPANION_LINES = frozendict(
                 occasion_phrase_key(OccasionKind.CHRISTMAS_DAY, OccasionStage.RESTRAINED_GRUMBLE): (
                     "あなたは一日中働いて、祝いの日の心さえ妾に分けてくださいませんでした。",
                     "妾は策士ですから贈り物など求めません……けれど、一言くらいはよいでしょう。",
+                ),
+                occasion_phrase_key(OccasionKind.WHITE_DAY, OccasionStage.SUBTLE_HINT): (
+                    "今日のお返しは、誰かの心に留まるはずです。",
+                    "想いは、来年まで待たなくてもよいのです。",
+                ),
+                occasion_phrase_key(OccasionKind.WHITE_DAY, OccasionStage.RESTRAINED_GRUMBLE): (
+                    "あなたは仕事に夢中で、今日は妾に何もくださらないのですか。",
+                    "妾は何も求めません……けれど、今日は覚えていてくれると思っていました。",
+                ),
+                occasion_phrase_key(OccasionKind.QIXI, OccasionStage.SUBTLE_HINT): (
+                    "今夜の天の川は、いつもより見上げる価値がありそうです。",
+                    "策士でも、空を見上げる日はあります。",
+                ),
+                occasion_phrase_key(OccasionKind.QIXI, OccasionStage.RESTRAINED_GRUMBLE): (
+                    "あなたは一日中働いて、今夜は一度も妾を見上げてくださいませんでした。",
+                    "妾は何も待っていません……けれど、今夜は覚えていてくれると思っていました。",
                 ),
             }
         ),
@@ -491,8 +561,10 @@ def wellbeing_phrasebook_categories() -> tuple[tuple[str, str], ...]:
 def occasion_phrasebook_categories() -> tuple[tuple[str, str], ...]:
     titles = {
         OccasionKind.MOHAN_BIRTHDAY: "墨寒生日",
-        OccasionKind.VALENTINES_DAY: "情人節",
-        OccasionKind.CHRISTMAS_DAY: "聖誕節",
+        OccasionKind.VALENTINES_DAY: "西洋情人節",
+        OccasionKind.WHITE_DAY: "白色情人節",
+        OccasionKind.QIXI: "七夕情人節",
+        OccasionKind.CHRISTMAS_DAY: "聖誕夜",
     }
     stages = {
         OccasionStage.SUBTLE_HINT: "含蓄暗示",

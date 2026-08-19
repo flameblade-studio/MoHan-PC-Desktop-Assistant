@@ -29,22 +29,6 @@ GENERATED_TREES = (("native", "mohan_accel", "target"),)
 # imports form the one documented compatibility boundary; every other
 # top-level import remains subject to PEP 810 migration.
 EAGER_IMPORT_EXCEPTIONS = frozendict({
-    "application/service_container.py": frozenset({
-        (
-            "from",
-            "integrations.speech",
-            (
-                "OpenAITTS",
-                "SpeechListener",
-                "SpeechListenerProviders",
-                "UnavailableSystemTTS",
-                "WindowsTTS",
-                "female_windows_voices_for_language",
-                "preferred_windows_voice",
-                "windows_voices",
-            ),
-        ),
-    }),
     "application/background_agents.py": frozenset({
         ("from", "domain.python315_concurrency", ("Future", "ThreadPoolExecutor")),
     }),

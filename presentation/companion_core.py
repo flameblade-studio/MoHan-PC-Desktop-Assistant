@@ -31,8 +31,27 @@ lazy from application.multimodal_fusion_hub import MultimodalFusionResult
 lazy from application.presentation_ports import fallback_platform_services
 lazy from application.service_container import CompanionServices
 lazy from application.speech_performance import SpeechPerformanceTimeline
+lazy from domain.affective_state import AffectiveState
+lazy from domain.affinity_state import AffinityState
 lazy from domain.companion_animation_contract import EXPRESSION_POSES
-lazy from domain.expression_system import ExpressionArbiter
+lazy from domain.emotional_resonance import EmotionalResonanceState
+lazy from domain.favor_exclusive import FavorExclusiveState
+lazy from domain.personality_state import PersonalityMirrorState
+lazy from domain.satiety import SatietyState
+lazy from domain.shy_gaze import ShyGazeState
+lazy from domain.time_sovereignty import TimeSovereigntyState
+lazy from domain.wardrobe_intuition import (
+    OutfitWeight,
+    comfort_verdict,
+    complaint_line,
+    suggested_weight,
+)
+lazy from domain.expression_system import (
+    DEVOTION_PRIORITY_BONUS,
+    FAVOR_DEVOTED_THRESHOLD,
+    ExpressionArbiter,
+)
+lazy from domain.time_utils import local_wall_time
 lazy from domain.framing_context_policy import (
     EmotionValence,
     FocusState,
@@ -169,6 +188,14 @@ class CompanionCoreMixin:
             return None
         performance = atomic_frame.performance
         speech_active = not performance.mouth_closed
+        # A pending wardrobe reveal asks the director for a full-body shot so
+        # the new outfit/accessory is visible.  Reading the pending-outfit
+        # setting here (instead of hard-coding False) lets the director switch
+        # to FULL_BODY only while a reveal is actually pending, then return to
+        # HALF for ordinary conversation.
+        pending_outfit = bool(
+            str(self.db.setting("wardrobe_reveal_pending_outfit_id", "") or "").strip()
+        )
         policy = FramingPolicyContext(
             away_seconds=0.0,
             returned_to_seat=False,
@@ -180,7 +207,7 @@ class CompanionCoreMixin:
             mouth_closed=performance.mouth_closed,
             gesture_bounds=None,
             weapon_or_large_prop=False,
-            outfit_preview=False,
+            outfit_preview=pending_outfit,
             focus_state=FocusState.AVAILABLE,
             proactive_greeting=False,
             close_framing_allowed=True,
@@ -430,10 +457,17 @@ class CompanionCoreMixin:
         self._acknowledge_wave()
 
     def _acknowledge_wave(self) -> None:
-        """Acknowledge a recognized wave once within a short cooldown window."""
+        """Acknowledge a recognized wave with a varied, proactive greeting.
+
+        A wave in front of the camera is treated as the user actively seeking
+        the companion's attention, so the response is a spoken greeting rather
+        than a silent expression.  Greeting lines rotate across a small set of
+        variations per language so repeated waves feel like a real exchange
+        instead of a canned reply.
+        """
 
         now = time.monotonic()
-        if now - getattr(self, "_last_wave_acknowledged_at", 0.0) < 8.0:
+        if now - getattr(self, "_last_wave_acknowledged_at", 0.0) < 6.0:
             return
         self._last_wave_acknowledged_at = now
         if hasattr(self, "expression_arbiter"):
@@ -446,12 +480,35 @@ class CompanionCoreMixin:
                     raise
         language = str(self.db.setting("ui_language", "zh-TW"))
         responses = {
-            "zh-TW": "嗨，我在這裡！",
-            "zh-CN": "嗨，我在这里！",
-            "en": "Hi there, I'm here!",
-            "ja-JP": "こんにちは、ここにいますよ。",
+            "zh-TW": (
+                "嗨，我在這裡！",
+                "主上喚我麼？妾一直都在。",
+                "你揮手，妾便來了。",
+                "許久不見，近來可好？",
+            ),
+            "zh-CN": (
+                "嗨，我在这里！",
+                "主上唤我么？妾一直都在。",
+                "你挥手，妾便来了。",
+                "许久不见，近来可好？",
+            ),
+            "en": (
+                "Hi there, I'm here!",
+                "You called? I have been here all along.",
+                "You waved, so here I am.",
+                "It has been a while. How have you been?",
+            ),
+            "ja-JP": (
+                "こんにちは、ここにいますよ。",
+                "お呼びですか？妾はずっとここに。",
+                "手を振ってくれたので、参りました。",
+                "お久しぶりです。お元気でしたか？",
+            ),
         }
-        self.speak(responses.get(language, responses["zh-TW"]), "happy")
+        lines = responses.get(language, responses["zh-TW"])
+        index = getattr(self, "_wave_greeting_index", 0)
+        self._wave_greeting_index = (index + 1) % len(lines)
+        self.speak(lines[index], "happy")
 
     def _open_dashboard_from_gesture(self) -> None:
         """Open the keyboard conversation surface and acknowledge a wave."""
@@ -521,6 +578,77 @@ class CompanionCoreMixin:
         self.proactive_presence_timer.timeout.connect(self._consider_desktop_presence)
         self.proactive_presence_timer.start()
 
+    def _observe_personality_mirror(self) -> None:
+        """Feed the recent conversation window into the personality mirror.
+
+        The mirror reads the full recent dialogue (up to the 1M-token context)
+        but reduces it to cheap scalar signals, so it never blocks the UI.
+        """
+        mirror = getattr(self, "personality_mirror_state", None)
+        if mirror is None:
+            return
+        window = " ".join(
+            str(row["content"]) for row in self.db.recent_chat(64)
+        )
+        mirror.observe_conversation(window)
+
+    def _apply_weather_and_satiety(self) -> None:
+        """Drive wardrobe intuition and satiety from the persisted weather.
+
+        The wardrobe runtime writes ``weather_temperature_c`` and
+        ``weather_condition`` settings; this method reads them, derives the
+        outfit-weight suggestion and comfort verdict, and refreshes the
+        satiety-driven blink interval so a hungry companion blinks sluggishly.
+        """
+        temperature_c = float(self.db.setting("weather_temperature_c", 20.0))
+        language = str(self.db.setting("ui_language", "zh-TW"))
+        # Wardrobe intuition: suggest an outfit weight for the temperature and
+        # judge the currently worn weight against it.
+        suggested = suggested_weight(temperature_c)
+        current_weight = OutfitWeight(
+            str(self.db.setting("wardrobe_current_weight", suggested.value))
+        )
+        verdict = comfort_verdict(temperature_c, current_weight)
+        self._wardrobe_suggestion = suggested.value
+        self._wardrobe_verdict = verdict.value
+        complaint = complaint_line(language, verdict)
+        if complaint:
+            self._wardrobe_complaint = complaint
+        # Satiety: refresh the sluggish-blink interval from the current level.
+        satiety = getattr(self, "satiety_state", None)
+        if satiety is not None:
+            self._satiety_blink_interval = satiety.blink_interval()
+            self.db.set_setting("satiety_value", satiety.snapshot())
+
+    def _persist_affection(self) -> None:
+        """Write the companion's exclusive-favor coefficients to the dedicated
+        ``companion_affection`` table so the expression arbiter can read one
+        consistent snapshot (favor, trust, jealousy, satiety, devotion bonus)."""
+        favor = getattr(self, "favor_exclusive_state", None)
+        satiety = getattr(self, "satiety_state", None)
+        affinity = getattr(self, "affinity_state", None)
+        favor_score = favor.snapshot() if favor is not None else 0.0
+        satiety_level = satiety.snapshot() if satiety is not None else 1.0
+        jealousy_meter = (
+            affinity.snapshot().jealousy if affinity is not None else 0.0
+        )
+        trust_level = (
+            affinity.snapshot().affinity if affinity is not None else 0.0
+        )
+        devotion_bonus = (
+            DEVOTION_PRIORITY_BONUS
+            if favor_score >= FAVOR_DEVOTED_THRESHOLD
+            else 0
+        )
+        self.db.upsert_affection(
+            favor_score=favor_score,
+            trust_level=trust_level,
+            jealousy_meter=jealousy_meter,
+            satiety_level=satiety_level,
+            devotion_bonus=devotion_bonus,
+            last_interaction_ts=local_wall_time().isoformat(timespec="seconds"),
+        )
+
     def _apply_multimodal_result(self, result: object) -> None:
         if not isinstance(result, MultimodalFusionResult):
             return
@@ -532,6 +660,15 @@ class CompanionCoreMixin:
                 max(-1.0, min(1.0, face.gaze_y)),
             )
             self._sensory_gaze_expires_at = now + 0.90
+        # Shy gaze aversion: when the user stares at the companion for a
+        # sustained stretch, she glances down and away for a few seconds.  The
+        # offset is small and downward so it reads as bashful, never an eye-roll.
+        # It is kept in a separate field so it never pollutes the raw sensory
+        # gaze target; the visual dynamics layer applies it on top.
+        shy = getattr(self, "shy_gaze_state", None)
+        if shy is not None and face is not None:
+            aversion = shy.update(gaze_confidence=face.gaze_confidence, now=now)
+            self._shy_gaze_offset = aversion
         if (
             "smile-like" in result.events
             and now - getattr(self, "_last_multimodal_smile_at", 0.0) >= 8.0
@@ -542,18 +679,103 @@ class CompanionCoreMixin:
                 source="visual",
                 intensity=0.35,
             )
+        # Mirroring: when the user rests their chin (a thoughtful or tired
+        # posture), the companion mirrors a gentle thinking pose instead of
+        # staying neutral.  This is a quiet, non-verbal act of empathy that
+        # makes the companion feel present without interrupting.
+        if (
+            "resting-chin" in result.events
+            and now - getattr(self, "_last_multimodal_chin_at", 0.0) >= 14.0
+        ):
+            self._last_multimodal_chin_at = now
+            self.set_state(
+                "thinking_front",
+                source="visual",
+                intensity=0.30,
+            )
+        # Mirroring: a furrowed brow (brow tension) is met with a gentle,
+        # concerned expression rather than a neutral face.  This is a quiet
+        # non-verbal acknowledgment that the companion notices the user's
+        # tension without interrupting.
+        if (
+            "brow-tension-like" in result.events
+            and now - getattr(self, "_last_multimodal_brow_at", 0.0) >= 16.0
+        ):
+            self._last_multimodal_brow_at = now
+            self.set_state(
+                "worried_front",
+                source="visual",
+                intensity=0.30,
+            )
+        # Crimson Flame resonance: a furrowed brow (brow tension) feeds a smooth
+        # resonance level that shortens the idle breathing period and quickens
+        # the blink rate, so the companion's body mirrors the user's agitation.
+        # The typing-rate input is left at zero here because keystroke sampling
+        # belongs to a separate background slot; brow tension alone is enough to
+        # drive the resonance without blocking the Qt main thread.
+        resonance = getattr(self, "emotional_resonance_state", None)
+        if resonance is not None and face is not None:
+            resonance.update(
+                brow_tension=face.brow_tension,
+                typing_rate_kps=0.0,
+                now=now,
+            )
+            self._resonance_breath_period = resonance.breath_period()
         if (
             "high-five" in result.events
             and now - getattr(self, "_last_multimodal_high_five_at", 0.0) >= 12.0
         ):
             self._last_multimodal_high_five_at = now
             self.set_state("happy", source="visual", intensity=0.75)
+            # A palm-up high-five is a cross-dimensional hand-hold: a warm
+            # gesture that spikes affection.
+            affinity = getattr(self, "affinity_state", None)
+            if affinity is not None:
+                snapshot = affinity.note_affection_boost()
+                self.db.set_setting("affinity_value", snapshot.affinity)
+                self.db.set_setting("jealousy_value", snapshot.jealousy)
+                self.db.set_setting(
+                    "affinity_interaction_count", snapshot.interaction_count
+                )
+            favor = getattr(self, "favor_exclusive_state", None)
+            if favor is not None:
+                self.db.set_setting("favor_value", favor.note_gesture())
+            self._persist_affection()
             language = str(self.db.setting("ui_language", "zh-TW"))
             responses = {
                 "zh-TW": "擊掌！今日也配合得很好。",
                 "zh-CN": "击掌！今天也配合得很好。",
                 "en": "High five! We worked well together today.",
                 "ja-JP": "ハイタッチ！今日も息がぴったりですね。",
+            }
+            self.speak(responses.get(language, responses["zh-TW"]), "happy")
+        # Cross-dimensional feeding: a pinch gesture released near the companion
+        # reads as the user offering her a treat.  She opens her lips, smiles,
+        # and her affection spikes.
+        if (
+            "pinch" in result.events
+            and now - getattr(self, "_last_multimodal_pinch_at", 0.0) >= 10.0
+        ):
+            self._last_multimodal_pinch_at = now
+            self.set_state("happy", source="visual", intensity=0.65)
+            affinity = getattr(self, "affinity_state", None)
+            if affinity is not None:
+                snapshot = affinity.note_affection_boost()
+                self.db.set_setting("affinity_value", snapshot.affinity)
+                self.db.set_setting("jealousy_value", snapshot.jealousy)
+                self.db.set_setting(
+                    "affinity_interaction_count", snapshot.interaction_count
+                )
+            favor = getattr(self, "favor_exclusive_state", None)
+            if favor is not None:
+                self.db.set_setting("favor_value", favor.note_gesture())
+            self._persist_affection()
+            language = str(self.db.setting("ui_language", "zh-TW"))
+            responses = {
+                "zh-TW": "主上餵妾的……妾、妾便收下了。",
+                "zh-CN": "主上喂妾的……妾、妾便收下了。",
+                "en": "A treat from you… I shall accept it.",
+                "ja-JP": "主上から頂いたもの……妾、頂戴いたします。",
             }
             self.speak(responses.get(language, responses["zh-TW"]), "happy")
 
@@ -604,6 +826,30 @@ class CompanionCoreMixin:
         self.expression_generation = 0
         self.expression_arbiter = ExpressionArbiter(
             set(EXPRESSION_POSES) | {"idle", "speaking"}
+        )
+        self.affective_state = AffectiveState()
+        self.affinity_state = AffinityState(
+            affinity=float(self.db.setting("affinity_value", 0.0)),
+            jealousy=float(self.db.setting("jealousy_value", 0.0)),
+            interaction_count=int(self.db.setting("affinity_interaction_count", 0)),
+        )
+        self.shy_gaze_state = ShyGazeState()
+        self._shy_gaze_offset: tuple[float, float] | None = None
+        self._shy_gaze_offset_current: tuple[float, float] = (0.0, 0.0)
+        self.emotional_resonance_state = EmotionalResonanceState()
+        self._resonance_breath_period = 72.0
+        self.time_sovereignty_state = TimeSovereigntyState()
+        self._drowsy_blink_interval: float | None = None
+        self._satiety_blink_interval: float | None = None
+        self._wardrobe_suggestion: str = "moderate"
+        self._wardrobe_verdict: str = "comfortable"
+        self._wardrobe_complaint: str = ""
+        self.personality_mirror_state = PersonalityMirrorState()
+        self.satiety_state = SatietyState(
+            satiety=float(self.db.setting("satiety_value", 1.0)),
+        )
+        self.favor_exclusive_state = FavorExclusiveState(
+            favor=float(self.db.setting("favor_value", 0.0)),
         )
         self.active_ai_wait_generation = 0
         self.active_ai_wait_expression = ""

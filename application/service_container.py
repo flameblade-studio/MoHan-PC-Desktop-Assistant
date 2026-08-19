@@ -9,7 +9,7 @@ lazy from typing import Protocol
 
 lazy from PySide6.QtCore import QObject
 
-from integrations.speech import (
+lazy from integrations.speech import (
     OpenAITTS,
     SpeechListener,
     SpeechListenerProviders,

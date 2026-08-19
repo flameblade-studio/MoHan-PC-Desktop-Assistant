@@ -386,6 +386,61 @@ class StudioDBMemoryMethods:
             "archived": len(self.list_archived_memories(10000)),
         }
 
+    def optimize_database(self) -> dict[str, int]:
+        """Reclaim space and prune stale rows without blocking the UI.
+
+        SQLite WAL files grow over time; a periodic VACUUM plus a bounded
+        cleanup of old completed todos and audit rows keeps the profile
+        database small and responsive.  This is safe to call from a background
+        worker because it only touches rows that are safe to remove.
+        """
+        now = local_wall_time().isoformat(timespec="seconds")
+        pruned_todos = 0
+        pruned_audit = 0
+        try:
+            cursor = self.conn.execute(
+                "DELETE FROM todos WHERE status='完成' AND completed_at IS NOT NULL "
+                "AND completed_at < ?",
+                (now,),
+            )
+            pruned_todos = max(0, int(cursor.rowcount))
+            cursor = self.conn.execute(
+                "DELETE FROM action_audit WHERE created_at < ?",
+                (now,),
+            )
+            pruned_audit = max(0, int(cursor.rowcount))
+            self.conn.commit()
+            self.conn.execute("VACUUM")
+        except sqlite3.Error:
+            return {"pruned_todos": 0, "pruned_audit": 0, "vacuumed": False}
+        return {
+            "pruned_todos": pruned_todos,
+            "pruned_audit": pruned_audit,
+            "vacuumed": True,
+        }
+
+    def recent_chat_context(
+        self,
+        limit: int = 16,
+        max_chars: int = 4000,
+    ) -> list[sqlite3.Row]:
+        """Return recent chat bounded by both count and total characters."""
+        rows = list(
+            self.conn.execute(
+                "SELECT * FROM chat_log ORDER BY id DESC LIMIT ?", (limit,)
+            )
+        )
+        rows.reverse()
+        selected: list[sqlite3.Row] = []
+        total = 0
+        for row in rows:
+            content = str(row["content"] or "")
+            total += len(content)
+            if total > max_chars and selected:
+                break
+            selected.append(row)
+        return selected
+
     def update_memory_policy(
         self,
         memory_id: int,

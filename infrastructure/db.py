@@ -14,6 +14,7 @@ lazy from domain.language_support import (
     localized_transcription_prompt,
 )
 lazy from domain.time_utils import local_wall_time
+lazy from infrastructure.db_affection import StudioDBAffectionMethods
 lazy from infrastructure.db_memory import StudioDBMemoryMethods
 lazy from infrastructure.memory_index import MemoryVectorIndex
 
@@ -226,6 +227,8 @@ class StudioDBSettingsPort:
 
 
 class StudioDB:
+    affection_row = StudioDBAffectionMethods.affection_row
+    upsert_affection = StudioDBAffectionMethods.upsert_affection
     add_memory = StudioDBMemoryMethods.add_memory
     list_memories = StudioDBMemoryMethods.list_memories
     memory = StudioDBMemoryMethods.memory
@@ -362,6 +365,16 @@ class StudioDB:
                 enabled INTEGER NOT NULL DEFAULT 1,
                 created_at TEXT NOT NULL,
                 last_seen_at TEXT
+            );
+            CREATE TABLE IF NOT EXISTS companion_affection (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                favor_score REAL NOT NULL DEFAULT 0.0,
+                trust_level REAL NOT NULL DEFAULT 0.0,
+                jealousy_meter REAL NOT NULL DEFAULT 0.0,
+                satiety_level REAL NOT NULL DEFAULT 1.0,
+                devotion_bonus INTEGER NOT NULL DEFAULT 0,
+                last_interaction_ts TEXT,
+                updated_at TEXT NOT NULL
             );
             """
         )
@@ -581,6 +594,15 @@ class StudioDB:
 
     def add_todo(self, title: str, category: str = "其他") -> int:
         title = title.strip()
+        # An identical active todo is a duplicate, not a new task.  Return the
+        # existing row so the UI can surface "already added" instead of piling
+        # up near-identical entries.
+        existing = self.conn.execute(
+            "SELECT id FROM todos WHERE title=? AND status='待辦' ORDER BY id DESC LIMIT 1",
+            (title,),
+        ).fetchone()
+        if existing is not None:
+            return int(existing["id"])
         cur = self.conn.execute(
             "INSERT INTO todos(title,category,created_at) VALUES(?,?,?)",
             (
@@ -618,6 +640,14 @@ class StudioDB:
     def add_idea(self, text: str, content: str = "") -> int:
         text = text.strip()
         content = content.strip()
+        # An identical idea is a duplicate; return the existing row instead of
+        # creating a near-identical entry.
+        existing = self.conn.execute(
+            "SELECT id FROM ideas WHERE text=? ORDER BY id DESC LIMIT 1",
+            (text,),
+        ).fetchone()
+        if existing is not None:
+            return int(existing["id"])
         now = local_wall_time().isoformat(timespec="seconds")
         cur = self.conn.execute(
             "INSERT INTO ideas(text,title,content,created_at,updated_at) "

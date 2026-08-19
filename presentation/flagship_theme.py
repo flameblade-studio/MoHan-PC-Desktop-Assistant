@@ -439,6 +439,27 @@ QWidget[mohanFlagshipTheme="true"] QSpinBox {{
     selection-background-color: {colors['glow']};
     selection-color: #ffffff;
 }}
+QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView {{
+    color: {colors['ink']};
+    background: rgba(255, 250, 247, 255);
+    border: 1px solid {colors['line']};
+    border-radius: {_scaled(8, scale)}px;
+    selection-background-color: {colors['glow']};
+    selection-color: #ffffff;
+    outline: 0;
+}}
+QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView::item {{
+    min-height: {_scaled(30, scale)}px;
+    padding: {_scaled(5, scale)}px {_scaled(10, scale)}px;
+}}
+QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView::item:hover {{
+    background: rgba(235, 244, 249, 255);
+    color: {colors['ink']};
+}}
+QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView::item:selected {{
+    background: {colors['glow']};
+    color: #ffffff;
+}}
 QWidget[mohanFlagshipTheme="true"] QListWidget {{
     color: {colors['ink']};
     background: rgba(255, 255, 255, 184);
