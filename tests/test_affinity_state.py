@@ -7,9 +7,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from domain.affinity_state import (
     AFFECTION_BOOST_PER_GESTURE,
-    AFFINITY_ACQUAINTED,
-    AFFINITY_CLOSE,
-    AFFINITY_DEVOTED,
     AffinityState,
 )
 

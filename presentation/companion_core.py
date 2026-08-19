@@ -601,7 +601,6 @@ class CompanionCoreMixin:
         satiety-driven blink interval so a hungry companion blinks sluggishly.
         """
         temperature_c = float(self.db.setting("weather_temperature_c", 20.0))
-        weather = str(self.db.setting("weather_condition", "clear"))
         language = str(self.db.setting("ui_language", "zh-TW"))
         # Wardrobe intuition: suggest an outfit weight for the temperature and
         # judge the currently worn weight against it.

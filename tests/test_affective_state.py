@@ -7,7 +7,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from domain.affective_state import (
     DEFAULT_RESIDUE_HALF_LIFE_SECONDS,
-    MINIMUM_RESIDUAL_STRENGTH,
     RESIDUAL_EXPRESSION,
     AffectiveResidue,
     AffectiveState,

@@ -13,8 +13,6 @@ This is pure domain logic with no Qt dependency.  It maps elapsed days and a
 commit count to a bounded, monotonic "awakening" level.
 """
 
-lazy import math
-
 # Awakening grows with elapsed days and commit count, each contributing.
 DAYS_WEIGHT = 0.6
 COMMITS_WEIGHT = 0.4

@@ -13,7 +13,6 @@ This is pure domain logic with no Qt dependency.  It only consumes cheap scalar
 summaries (sentiment polarity and a style score), so it never blocks the UI.
 """
 
-lazy import math
 lazy import re
 
 # How strongly sentiment and style each shape the mirrored temperature.
