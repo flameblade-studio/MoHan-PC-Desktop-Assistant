@@ -105,17 +105,21 @@ jobs:
           cache-dependency-path: requirements-preview.txt
       - name: Install Ubuntu Qt runtime
         run: |
+          # libegl1 ships preinstalled on the hosted ubuntu-latest image, so the
+          # Qt offscreen platform already has its EGL runtime.  Only touch apt
+          # when the package is genuinely missing; the apt mirror can stall
+          # indefinitely on busy runners and must never block the whole smoke.
+          if dpkg -s libegl1 >/dev/null 2>&1; then
+            echo "libegl1 already installed; skipping apt entirely"
+            exit 0
+          fi
           sudo rm -f /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock-frontend
-          # The apt mirror can stall indefinitely on busy runners; wrap every
-          # apt invocation in a hard wall-clock timeout so a hung update can
-          # never block the whole Preview smoke for the full 120-minute budget.
           timeout 120 sudo apt-get update \
             -o Acquire::Retries=2 \
             -o Acquire::http::Timeout=20 \
-            -o Acquire::https::Timeout=20 \
-            -o Acquire::Retries=2 || echo "apt-get update timed out; continuing"
+            -o Acquire::https::Timeout=20 || echo "apt-get update timed out; continuing"
           timeout 120 sudo apt-get install --yes --no-install-recommends libegl1 \
-            || echo "libegl1 install skipped (already present or unavailable)"
+            || echo "libegl1 install skipped (unavailable)"
       - name: Build verified Qt 3.15 compatibility wheelhouse
         run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse --requirements requirements-preview.txt
       - name: Install pinned Preview dependencies
