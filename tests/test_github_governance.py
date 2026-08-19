@@ -376,7 +376,16 @@ def test_preview_and_windows_workflows() -> None:
 
 def test_secret_defense_and_community_files() -> None:
     secret_defense = read(".github/workflows/secret-defense.yml")
-    assert_action_pinned(secret_defense, "gitleaks/gitleaks-action")
+    # The gitleaks-action wrapper requires a paid license for organization
+    # repositories, so the workflow downloads the free gitleaks OSS CLI
+    # directly and verifies its SHA-256 checksum before scanning.
+    assert_action_pinned(secret_defense, "actions/checkout")
+    assert "gitleaks_8.30.1_linux_x64.tar.gz" in secret_defense
+    assert (
+        "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+        in secret_defense
+    )
+    assert "./gitleaks detect" in secret_defense
     assert "fetch-depth: 0" in secret_defense
     release_notes = read(".github/release.yml")
     assert "新功能 / 新功能 / New features / 新機能" in release_notes
