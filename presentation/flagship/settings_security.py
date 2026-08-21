@@ -28,6 +28,9 @@ lazy from domain.companion_proactivity_preferences import (
     CompanionProactivityPreferences,
 )
 lazy from domain.flagship_action_models import RISK_NAMES, ActionRequest
+
+HIGH_RISK_THRESHOLD = 3
+MEDIUM_RISK_THRESHOLD = 4
 lazy from domain.gesture_configuration import (
     GestureAction,
     GestureBinding,
@@ -95,12 +98,12 @@ class FlagshipSettingsSecurityMixin:
                 combo.addItem(self._t(canonical), canonical)
             risk = self.policy.evaluate(ActionRequest(capability, label)).risk
             default = (
-                "允許" if risk.value == 1 else "每次詢問" if risk.value < 4 else "禁止"
+                "允許" if risk.value == 1 else "每次詢問" if risk.value < MEDIUM_RISK_THRESHOLD else "禁止"
             )
             stored_mode = str(stored.get(capability, default))
             stored_index = combo.findData(stored_mode)
             combo.setCurrentIndex(max(stored_index, 0))
-            if risk.value >= 3:
+            if risk.value >= HIGH_RISK_THRESHOLD:
                 combo.setToolTip(self._t("即使選擇允許，高風險政策仍會要求確認。"))
             self._permission_controls[capability] = combo
             form.addRow(
@@ -214,11 +217,11 @@ class FlagshipSettingsSecurityMixin:
                 self.db.set_setting(key, value)
             self._rebuild_draft_settings()
             self._after_successful_settings_save(validated.vision)
-        except Exception:  # noqa: BLE001 -- one settings transaction boundary
+        except Exception:
             rollback_incomplete = False
             try:
                 self.db.restore_settings_snapshot(before)
-            except Exception:  # noqa: BLE001 -- fixed-code rollback audit boundary
+            except Exception:
                 rollback_incomplete = True
             try:
                 self.gesture_store.restore(gesture_before)
@@ -226,7 +229,7 @@ class FlagshipSettingsSecurityMixin:
                 rollback_incomplete = True
             try:
                 self._rebuild_draft_settings()
-            except Exception:  # noqa: BLE001 -- never escape the Qt save boundary
+            except Exception:
                 rollback_incomplete = True
             self.last_settings_transaction_error = (
                 "rollback-incomplete"

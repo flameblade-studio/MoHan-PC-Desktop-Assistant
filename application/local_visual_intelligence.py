@@ -28,6 +28,9 @@ lazy from domain.gesture_intent import (
     NormalizedPoint,
     SilenceGestureDetector,
 )
+
+SPARSE_FACE_POINTS = 5
+MIN_DENSE_LANDMARKS = 20
 lazy from domain.vision_domain import (
     BoundingBox,
     IdentityObservation,
@@ -75,7 +78,7 @@ class PresenceIdentityEvidence:
 
     def __post_init__(self) -> None:
         landmarks = self.sparse_face_landmarks
-        if landmarks is not None and len(landmarks) != 5:
+        if landmarks is not None and len(landmarks) != SPARSE_FACE_POINTS:
             raise ValueError("YuNet sparse face evidence must contain five points.")
 
 
@@ -86,7 +89,7 @@ class DenseFacialEvidence:
     lips: LipRegion | None = None
 
     def __post_init__(self) -> None:
-        if len(self.landmarks) < 20:
+        if len(self.landmarks) < MIN_DENSE_LANDMARKS:
             raise ValueError("Dense facial evidence requires at least 20 landmarks.")
 
 
@@ -106,7 +109,7 @@ class LocalFrameAnalysis:
     def __post_init__(self) -> None:
         if not math.isfinite(self.observed_at):
             raise ValueError("Local frame time must be finite.")
-        if self.sparse_face_landmarks is not None and len(self.sparse_face_landmarks) != 5:
+        if self.sparse_face_landmarks is not None and len(self.sparse_face_landmarks) != SPARSE_FACE_POINTS:
             raise ValueError("Sparse face analysis must contain exactly five points.")
         if self.hands is not None and len({hand.side for hand in self.hands}) != len(self.hands):
             raise ValueError("A local frame cannot contain duplicate hand sides.")

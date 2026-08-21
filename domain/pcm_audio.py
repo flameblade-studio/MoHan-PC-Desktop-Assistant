@@ -5,6 +5,9 @@ lazy import sys
 lazy from array import array
 lazy from dataclasses import dataclass
 
+# Re-exported from the centralized constants module for a single source of truth.
+lazy from domain.constants import PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE, PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE
+
 
 class PcmAudioError(ValueError):
     """Raised when a PCM16 buffer or conversion request is invalid."""
@@ -118,7 +121,7 @@ def validate_pcm16_rate_state(
     if any(
         isinstance(sample, bool)
         or not isinstance(sample, int)
-        or not -32_768 <= sample <= 32_767
+        or not MIN_PCM16_SAMPLE <= sample <= MAX_PCM16_SAMPLE
         for sample in state.tail_frame
     ):
         raise PcmAudioError("resampling state is outside the PCM16 contract")

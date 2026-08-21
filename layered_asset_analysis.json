@@ -1,0 +1,6302 @@
+{
+  "asset_dir": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered",
+  "reference_layer": "body",
+  "outlier_threshold_pixels": 2,
+  "total_views": 24,
+  "total_layers_per_view": 25,
+  "views_found": [
+    "yaw+000-pitch+00",
+    "yaw+015-pitch+00",
+    "yaw+030-pitch+00",
+    "yaw+045-pitch+00",
+    "yaw+060-pitch+00",
+    "yaw+075-pitch+00",
+    "yaw+090-pitch+00",
+    "yaw+105-pitch+00",
+    "yaw+120-pitch+00",
+    "yaw+135-pitch+00",
+    "yaw+150-pitch+00",
+    "yaw+165-pitch+00",
+    "yaw-015-pitch+00",
+    "yaw-030-pitch+00",
+    "yaw-045-pitch+00",
+    "yaw-060-pitch+00",
+    "yaw-075-pitch+00",
+    "yaw-090-pitch+00",
+    "yaw-105-pitch+00",
+    "yaw-120-pitch+00",
+    "yaw-135-pitch+00",
+    "yaw-150-pitch+00",
+    "yaw-165-pitch+00",
+    "yaw-180-pitch+00"
+  ],
+  "missing_layers": {
+    "yaw-180-pitch+00": [
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ],
+    "yaw-165-pitch+00": [
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ],
+    "yaw-150-pitch+00": [
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ],
+    "yaw-135-pitch+00": [
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ],
+    "yaw-120-pitch+00": [
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ],
+    "yaw-105-pitch+00": [
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ],
+    "yaw-045-pitch+00": [
+      "blush_left"
+    ],
+    "yaw+105-pitch+00": [
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ],
+    "yaw+120-pitch+00": [
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ],
+    "yaw+135-pitch+00": [
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ],
+    "yaw+150-pitch+00": [
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ],
+    "yaw+165-pitch+00": [
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ]
+  },
+  "unparsed_files": [],
+  "outliers": [
+    {
+      "view_id": "yaw-150-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": -150,
+      "center": [
+        -0.5,
+        -700.5
+      ],
+      "expected_center": [
+        0.25,
+        -706.25
+      ],
+      "jump_pixels": 5.75
+    },
+    {
+      "view_id": "yaw-135-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": -135,
+      "center": [
+        0.0,
+        -710.0
+      ],
+      "expected_center": [
+        -0.25,
+        -701.0
+      ],
+      "jump_pixels": 9.0
+    },
+    {
+      "view_id": "yaw-105-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": -105,
+      "center": [
+        2.5,
+        -691.5
+      ],
+      "expected_center": [
+        16.25,
+        -696.0
+      ],
+      "jump_pixels": 13.75
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": -90,
+      "center": [
+        32.5,
+        -690.5
+      ],
+      "expected_center": [
+        11.75,
+        -696.5
+      ],
+      "jump_pixels": 20.75
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": -75,
+      "center": [
+        21.0,
+        -701.5
+      ],
+      "expected_center": [
+        24.5,
+        -695.75
+      ],
+      "jump_pixels": 5.75
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": -60,
+      "center": [
+        16.5,
+        -701.0
+      ],
+      "expected_center": [
+        1.0,
+        -701.5
+      ],
+      "jump_pixels": 15.5
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": -45,
+      "center": [
+        -19.0,
+        -701.5
+      ],
+      "expected_center": [
+        1.25,
+        -701.25
+      ],
+      "jump_pixels": 20.25
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": -30,
+      "center": [
+        -14.0,
+        -701.5
+      ],
+      "expected_center": [
+        -17.5,
+        -701.5
+      ],
+      "jump_pixels": 3.5
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": -15,
+      "center": [
+        -16.0,
+        -701.5
+      ],
+      "expected_center": [
+        -7.25,
+        -701.5
+      ],
+      "jump_pixels": 8.75
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": 0,
+      "center": [
+        -0.5,
+        -701.5
+      ],
+      "expected_center": [
+        -11.0,
+        -701.5
+      ],
+      "jump_pixels": 10.5
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": 15,
+      "center": [
+        -6.0,
+        -701.5
+      ],
+      "expected_center": [
+        -2.25,
+        -701.5
+      ],
+      "jump_pixels": 3.75
+    },
+    {
+      "view_id": "yaw+045-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": 45,
+      "center": [
+        -4.5,
+        -701.0
+      ],
+      "expected_center": [
+        -2.25,
+        -701.25
+      ],
+      "jump_pixels": 2.25
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": 60,
+      "center": [
+        -0.5,
+        -701.0
+      ],
+      "expected_center": [
+        -4.0,
+        -701.25
+      ],
+      "jump_pixels": 3.5
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": 75,
+      "center": [
+        -3.5,
+        -701.5
+      ],
+      "expected_center": [
+        -11.25,
+        -698.0
+      ],
+      "jump_pixels": 7.75
+    },
+    {
+      "view_id": "yaw+090-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": 90,
+      "center": [
+        -22.0,
+        -695.0
+      ],
+      "expected_center": [
+        -1.75,
+        -710.5
+      ],
+      "jump_pixels": 20.25
+    },
+    {
+      "view_id": "yaw+105-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": 105,
+      "center": [
+        0.0,
+        -719.5
+      ],
+      "expected_center": [
+        -8.75,
+        -707.5
+      ],
+      "jump_pixels": 12.0
+    },
+    {
+      "view_id": "yaw+120-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": 120,
+      "center": [
+        4.5,
+        -720.0
+      ],
+      "expected_center": [
+        0.0,
+        -721.0
+      ],
+      "jump_pixels": 4.5
+    },
+    {
+      "view_id": "yaw+135-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": 135,
+      "center": [
+        0.0,
+        -722.5
+      ],
+      "expected_center": [
+        2.25,
+        -711.5
+      ],
+      "jump_pixels": 11.0
+    },
+    {
+      "view_id": "yaw+150-pitch+00",
+      "layer": "hair_back",
+      "yaw_degrees": 150,
+      "center": [
+        0.0,
+        -703.0
+      ],
+      "expected_center": [
+        8.25,
+        -721.0
+      ],
+      "jump_pixels": 18.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "base",
+      "yaw_degrees": -75,
+      "center": [
+        -18.5,
+        -1017.5
+      ],
+      "expected_center": [
+        -24.25,
+        -1017.5
+      ],
+      "jump_pixels": 5.75
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "base",
+      "yaw_degrees": -60,
+      "center": [
+        -16.0,
+        -1017.5
+      ],
+      "expected_center": [
+        -21.5,
+        -1017.5
+      ],
+      "jump_pixels": 5.5
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "base",
+      "yaw_degrees": -45,
+      "center": [
+        -24.5,
+        -1017.5
+      ],
+      "expected_center": [
+        -15.5,
+        -1017.5
+      ],
+      "jump_pixels": 9.0
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "base",
+      "yaw_degrees": -30,
+      "center": [
+        -15.0,
+        -1017.5
+      ],
+      "expected_center": [
+        -18.25,
+        -1017.5
+      ],
+      "jump_pixels": 3.25
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "base",
+      "yaw_degrees": -15,
+      "center": [
+        -12.0,
+        -1017.5
+      ],
+      "expected_center": [
+        -6.5,
+        -1017.5
+      ],
+      "jump_pixels": 5.5
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "base",
+      "yaw_degrees": 0,
+      "center": [
+        2.0,
+        -1017.5
+      ],
+      "expected_center": [
+        -4.25,
+        -1017.5
+      ],
+      "jump_pixels": 6.25
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "base",
+      "yaw_degrees": 15,
+      "center": [
+        3.5,
+        -1017.5
+      ],
+      "expected_center": [
+        7.75,
+        -1017.5
+      ],
+      "jump_pixels": 4.25
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "base",
+      "yaw_degrees": 75,
+      "center": [
+        35.0,
+        -1017.5
+      ],
+      "expected_center": [
+        32.75,
+        -1017.5
+      ],
+      "jump_pixels": 2.25
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "jaw",
+      "yaw_degrees": -75,
+      "center": [
+        -21.5,
+        -967.5
+      ],
+      "expected_center": [
+        -26.25,
+        -967.5
+      ],
+      "jump_pixels": 4.75
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "jaw",
+      "yaw_degrees": -60,
+      "center": [
+        -16.0,
+        -967.5
+      ],
+      "expected_center": [
+        -25.25,
+        -967.5
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "jaw",
+      "yaw_degrees": -45,
+      "center": [
+        -29.0,
+        -967.5
+      ],
+      "expected_center": [
+        -18.5,
+        -967.5
+      ],
+      "jump_pixels": 10.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "jaw",
+      "yaw_degrees": -30,
+      "center": [
+        -21.0,
+        -967.5
+      ],
+      "expected_center": [
+        -24.0,
+        -967.5
+      ],
+      "jump_pixels": 3.0
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "jaw",
+      "yaw_degrees": -15,
+      "center": [
+        -19.0,
+        -967.5
+      ],
+      "expected_center": [
+        -10.25,
+        -967.5
+      ],
+      "jump_pixels": 8.75
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "jaw",
+      "yaw_degrees": 0,
+      "center": [
+        0.5,
+        -967.5
+      ],
+      "expected_center": [
+        -8.0,
+        -967.5
+      ],
+      "jump_pixels": 8.5
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "jaw",
+      "yaw_degrees": 15,
+      "center": [
+        3.0,
+        -967.5
+      ],
+      "expected_center": [
+        7.0,
+        -967.5
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "jaw",
+      "yaw_degrees": 75,
+      "center": [
+        38.5,
+        -967.5
+      ],
+      "expected_center": [
+        34.5,
+        -967.5
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "oral_cavity",
+      "yaw_degrees": -75,
+      "center": [
+        -21.5,
+        -973.5
+      ],
+      "expected_center": [
+        -26.25,
+        -973.5
+      ],
+      "jump_pixels": 4.75
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "oral_cavity",
+      "yaw_degrees": -60,
+      "center": [
+        -16.0,
+        -973.5
+      ],
+      "expected_center": [
+        -32.25,
+        -973.5
+      ],
+      "jump_pixels": 16.25
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "oral_cavity",
+      "yaw_degrees": -45,
+      "center": [
+        -43.0,
+        -973.5
+      ],
+      "expected_center": [
+        -23.0,
+        -973.5
+      ],
+      "jump_pixels": 20.0
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "oral_cavity",
+      "yaw_degrees": -30,
+      "center": [
+        -30.0,
+        -973.5
+      ],
+      "expected_center": [
+        -33.5,
+        -973.5
+      ],
+      "jump_pixels": 3.5
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "oral_cavity",
+      "yaw_degrees": -15,
+      "center": [
+        -24.0,
+        -973.5
+      ],
+      "expected_center": [
+        -14.75,
+        -973.5
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "oral_cavity",
+      "yaw_degrees": 0,
+      "center": [
+        0.5,
+        -973.5
+      ],
+      "expected_center": [
+        -10.5,
+        -973.5
+      ],
+      "jump_pixels": 11.0
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "oral_cavity",
+      "yaw_degrees": 15,
+      "center": [
+        3.0,
+        -973.5
+      ],
+      "expected_center": [
+        7.0,
+        -973.5
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "oral_cavity",
+      "yaw_degrees": 75,
+      "center": [
+        38.5,
+        -973.5
+      ],
+      "expected_center": [
+        34.5,
+        -973.5
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "teeth_tongue",
+      "yaw_degrees": -75,
+      "center": [
+        -21.5,
+        -973.5
+      ],
+      "expected_center": [
+        -26.25,
+        -973.5
+      ],
+      "jump_pixels": 4.75
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "teeth_tongue",
+      "yaw_degrees": -60,
+      "center": [
+        -16.0,
+        -973.5
+      ],
+      "expected_center": [
+        -32.25,
+        -973.5
+      ],
+      "jump_pixels": 16.25
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "teeth_tongue",
+      "yaw_degrees": -45,
+      "center": [
+        -43.0,
+        -973.5
+      ],
+      "expected_center": [
+        -23.0,
+        -973.5
+      ],
+      "jump_pixels": 20.0
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "teeth_tongue",
+      "yaw_degrees": -30,
+      "center": [
+        -30.0,
+        -973.5
+      ],
+      "expected_center": [
+        -33.5,
+        -973.5
+      ],
+      "jump_pixels": 3.5
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "teeth_tongue",
+      "yaw_degrees": -15,
+      "center": [
+        -24.0,
+        -973.5
+      ],
+      "expected_center": [
+        -14.75,
+        -973.5
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "teeth_tongue",
+      "yaw_degrees": 0,
+      "center": [
+        0.5,
+        -973.5
+      ],
+      "expected_center": [
+        -10.5,
+        -973.5
+      ],
+      "jump_pixels": 11.0
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "teeth_tongue",
+      "yaw_degrees": 15,
+      "center": [
+        3.0,
+        -973.5
+      ],
+      "expected_center": [
+        7.0,
+        -973.5
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "teeth_tongue",
+      "yaw_degrees": 75,
+      "center": [
+        38.5,
+        -973.5
+      ],
+      "expected_center": [
+        34.5,
+        -973.5
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "lip_lower",
+      "yaw_degrees": -75,
+      "center": [
+        -21.5,
+        -973.5
+      ],
+      "expected_center": [
+        -26.25,
+        -973.5
+      ],
+      "jump_pixels": 4.75
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "lip_lower",
+      "yaw_degrees": -60,
+      "center": [
+        -16.0,
+        -973.5
+      ],
+      "expected_center": [
+        -32.25,
+        -973.5
+      ],
+      "jump_pixels": 16.25
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "lip_lower",
+      "yaw_degrees": -45,
+      "center": [
+        -43.0,
+        -973.5
+      ],
+      "expected_center": [
+        -23.0,
+        -973.5
+      ],
+      "jump_pixels": 20.0
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "lip_lower",
+      "yaw_degrees": -30,
+      "center": [
+        -30.0,
+        -973.5
+      ],
+      "expected_center": [
+        -33.5,
+        -973.5
+      ],
+      "jump_pixels": 3.5
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "lip_lower",
+      "yaw_degrees": -15,
+      "center": [
+        -24.0,
+        -973.5
+      ],
+      "expected_center": [
+        -14.75,
+        -973.5
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "lip_lower",
+      "yaw_degrees": 0,
+      "center": [
+        0.5,
+        -973.5
+      ],
+      "expected_center": [
+        -10.5,
+        -973.5
+      ],
+      "jump_pixels": 11.0
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "lip_lower",
+      "yaw_degrees": 15,
+      "center": [
+        3.0,
+        -973.5
+      ],
+      "expected_center": [
+        7.0,
+        -973.5
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "lip_lower",
+      "yaw_degrees": 75,
+      "center": [
+        38.5,
+        -973.5
+      ],
+      "expected_center": [
+        34.5,
+        -973.5
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "lip_upper",
+      "yaw_degrees": -75,
+      "center": [
+        -21.5,
+        -973.5
+      ],
+      "expected_center": [
+        -26.25,
+        -973.5
+      ],
+      "jump_pixels": 4.75
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "lip_upper",
+      "yaw_degrees": -60,
+      "center": [
+        -16.0,
+        -973.5
+      ],
+      "expected_center": [
+        -32.25,
+        -973.5
+      ],
+      "jump_pixels": 16.25
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "lip_upper",
+      "yaw_degrees": -45,
+      "center": [
+        -43.0,
+        -973.5
+      ],
+      "expected_center": [
+        -23.0,
+        -973.5
+      ],
+      "jump_pixels": 20.0
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "lip_upper",
+      "yaw_degrees": -30,
+      "center": [
+        -30.0,
+        -973.5
+      ],
+      "expected_center": [
+        -33.5,
+        -973.5
+      ],
+      "jump_pixels": 3.5
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "lip_upper",
+      "yaw_degrees": -15,
+      "center": [
+        -24.0,
+        -973.5
+      ],
+      "expected_center": [
+        -14.75,
+        -973.5
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "lip_upper",
+      "yaw_degrees": 0,
+      "center": [
+        0.5,
+        -973.5
+      ],
+      "expected_center": [
+        -10.5,
+        -973.5
+      ],
+      "jump_pixels": 11.0
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "lip_upper",
+      "yaw_degrees": 15,
+      "center": [
+        3.0,
+        -973.5
+      ],
+      "expected_center": [
+        7.0,
+        -973.5
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "lip_upper",
+      "yaw_degrees": 75,
+      "center": [
+        38.5,
+        -973.5
+      ],
+      "expected_center": [
+        34.5,
+        -973.5
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "corner_left",
+      "yaw_degrees": -75,
+      "center": [
+        -40.5,
+        -973.5
+      ],
+      "expected_center": [
+        -42.75,
+        -973.5
+      ],
+      "jump_pixels": 2.25
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "corner_left",
+      "yaw_degrees": -60,
+      "center": [
+        -35.0,
+        -973.5
+      ],
+      "expected_center": [
+        -50.25,
+        -970.5
+      ],
+      "jump_pixels": 15.25
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "corner_left",
+      "yaw_degrees": -45,
+      "center": [
+        -60.0,
+        -967.5
+      ],
+      "expected_center": [
+        -42.0,
+        -973.5
+      ],
+      "jump_pixels": 18.0
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "corner_left",
+      "yaw_degrees": -30,
+      "center": [
+        -49.0,
+        -973.5
+      ],
+      "expected_center": [
+        -51.5,
+        -970.5
+      ],
+      "jump_pixels": 3.0
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "corner_left",
+      "yaw_degrees": -15,
+      "center": [
+        -43.0,
+        -973.5
+      ],
+      "expected_center": [
+        -34.75,
+        -973.5
+      ],
+      "jump_pixels": 8.25
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "corner_left",
+      "yaw_degrees": 0,
+      "center": [
+        -20.5,
+        -973.5
+      ],
+      "expected_center": [
+        -29.5,
+        -973.5
+      ],
+      "jump_pixels": 9.0
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "corner_left",
+      "yaw_degrees": 15,
+      "center": [
+        -16.0,
+        -973.5
+      ],
+      "expected_center": [
+        -13.0,
+        -973.5
+      ],
+      "jump_pixels": 3.0
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "corner_left",
+      "yaw_degrees": 60,
+      "center": [
+        14.0,
+        -973.5
+      ],
+      "expected_center": [
+        11.5,
+        -973.5
+      ],
+      "jump_pixels": 2.5
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "corner_right",
+      "yaw_degrees": -75,
+      "center": [
+        -2.5,
+        -973.5
+      ],
+      "expected_center": [
+        -9.75,
+        -973.5
+      ],
+      "jump_pixels": 7.25
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "corner_right",
+      "yaw_degrees": -60,
+      "center": [
+        3.0,
+        -973.5
+      ],
+      "expected_center": [
+        -14.0,
+        -973.5
+      ],
+      "jump_pixels": 17.0
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "corner_right",
+      "yaw_degrees": -45,
+      "center": [
+        -25.5,
+        -973.5
+      ],
+      "expected_center": [
+        -4.0,
+        -973.5
+      ],
+      "jump_pixels": 21.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "corner_right",
+      "yaw_degrees": -30,
+      "center": [
+        -11.0,
+        -973.5
+      ],
+      "expected_center": [
+        -15.25,
+        -973.5
+      ],
+      "jump_pixels": 4.25
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "corner_right",
+      "yaw_degrees": -15,
+      "center": [
+        -5.0,
+        -973.5
+      ],
+      "expected_center": [
+        5.25,
+        -973.5
+      ],
+      "jump_pixels": 10.25
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "corner_right",
+      "yaw_degrees": 0,
+      "center": [
+        21.5,
+        -973.5
+      ],
+      "expected_center": [
+        8.5,
+        -973.5
+      ],
+      "jump_pixels": 13.0
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "corner_right",
+      "yaw_degrees": 15,
+      "center": [
+        22.0,
+        -973.5
+      ],
+      "expected_center": [
+        27.0,
+        -973.5
+      ],
+      "jump_pixels": 5.0
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "corner_right",
+      "yaw_degrees": 75,
+      "center": [
+        56.5,
+        -973.5
+      ],
+      "expected_center": [
+        50.5,
+        -973.5
+      ],
+      "jump_pixels": 6.0
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "blush_left",
+      "yaw_degrees": -60,
+      "center": [
+        -53.5,
+        -994.5
+      ],
+      "expected_center": [
+        -57.17,
+        -993.67
+      ],
+      "jump_pixels": 3.67
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "blush_left",
+      "yaw_degrees": -30,
+      "center": [
+        -53.5,
+        -992.0
+      ],
+      "expected_center": [
+        -53.17,
+        -994.17
+      ],
+      "jump_pixels": 2.17
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "blush_left",
+      "yaw_degrees": -15,
+      "center": [
+        -53.0,
+        -994.0
+      ],
+      "expected_center": [
+        -47.25,
+        -993.25
+      ],
+      "jump_pixels": 5.75
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "blush_left",
+      "yaw_degrees": 0,
+      "center": [
+        -41.0,
+        -994.5
+      ],
+      "expected_center": [
+        -43.25,
+        -994.25
+      ],
+      "jump_pixels": 2.25
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "blush_left",
+      "yaw_degrees": 60,
+      "center": [
+        -3.5,
+        -994.5
+      ],
+      "expected_center": [
+        -6.5,
+        -994.5
+      ],
+      "jump_pixels": 3.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "blush_right",
+      "yaw_degrees": -75,
+      "center": [
+        16.0,
+        -994.5
+      ],
+      "expected_center": [
+        5.75,
+        -994.5
+      ],
+      "jump_pixels": 10.25
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "blush_right",
+      "yaw_degrees": -60,
+      "center": [
+        21.5,
+        -994.5
+      ],
+      "expected_center": [
+        4.5,
+        -994.5
+      ],
+      "jump_pixels": 17.0
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "blush_right",
+      "yaw_degrees": -45,
+      "center": [
+        -7.0,
+        -994.5
+      ],
+      "expected_center": [
+        14.5,
+        -994.5
+      ],
+      "jump_pixels": 21.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "blush_right",
+      "yaw_degrees": -30,
+      "center": [
+        7.5,
+        -994.5
+      ],
+      "expected_center": [
+        3.25,
+        -994.5
+      ],
+      "jump_pixels": 4.25
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "blush_right",
+      "yaw_degrees": -15,
+      "center": [
+        13.5,
+        -994.5
+      ],
+      "expected_center": [
+        24.75,
+        -994.5
+      ],
+      "jump_pixels": 11.25
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "blush_right",
+      "yaw_degrees": 0,
+      "center": [
+        42.0,
+        -994.5
+      ],
+      "expected_center": [
+        26.5,
+        -994.5
+      ],
+      "jump_pixels": 15.5
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "blush_right",
+      "yaw_degrees": 15,
+      "center": [
+        39.5,
+        -994.5
+      ],
+      "expected_center": [
+        46.5,
+        -994.5
+      ],
+      "jump_pixels": 7.0
+    },
+    {
+      "view_id": "yaw+030-pitch+00",
+      "layer": "blush_right",
+      "yaw_degrees": 30,
+      "center": [
+        51.0,
+        -994.5
+      ],
+      "expected_center": [
+        48.75,
+        -994.5
+      ],
+      "jump_pixels": 2.25
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "blush_right",
+      "yaw_degrees": 75,
+      "center": [
+        75.0,
+        -994.5
+      ],
+      "expected_center": [
+        65.5,
+        -994.5
+      ],
+      "jump_pixels": 9.5
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "iris_left",
+      "yaw_degrees": -60,
+      "center": [
+        -47.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -58.5,
+        -1030.75
+      ],
+      "jump_pixels": 11.5
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "iris_left",
+      "yaw_degrees": -45,
+      "center": [
+        -64.5,
+        -1032.0
+      ],
+      "expected_center": [
+        -51.0,
+        -1030.0
+      ],
+      "jump_pixels": 13.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "iris_left",
+      "yaw_degrees": -30,
+      "center": [
+        -55.0,
+        -1030.5
+      ],
+      "expected_center": [
+        -58.75,
+        -1030.75
+      ],
+      "jump_pixels": 3.75
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "iris_left",
+      "yaw_degrees": -15,
+      "center": [
+        -53.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -44.25,
+        -1030.0
+      ],
+      "jump_pixels": 8.75
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "iris_left",
+      "yaw_degrees": 0,
+      "center": [
+        -33.5,
+        -1029.5
+      ],
+      "expected_center": [
+        -40.0,
+        -1029.5
+      ],
+      "jump_pixels": 6.5
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "iris_left",
+      "yaw_degrees": 60,
+      "center": [
+        3.0,
+        -1029.5
+      ],
+      "expected_center": [
+        0.0,
+        -1029.5
+      ],
+      "jump_pixels": 3.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "iris_right",
+      "yaw_degrees": -75,
+      "center": [
+        9.5,
+        -1029.5
+      ],
+      "expected_center": [
+        0.25,
+        -1029.5
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "iris_right",
+      "yaw_degrees": -60,
+      "center": [
+        15.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -2.0,
+        -1029.5
+      ],
+      "jump_pixels": 17.0
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "iris_right",
+      "yaw_degrees": -45,
+      "center": [
+        -13.5,
+        -1029.5
+      ],
+      "expected_center": [
+        8.0,
+        -1029.5
+      ],
+      "jump_pixels": 21.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "iris_right",
+      "yaw_degrees": -30,
+      "center": [
+        1.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -3.25,
+        -1029.5
+      ],
+      "jump_pixels": 4.25
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "iris_right",
+      "yaw_degrees": -15,
+      "center": [
+        7.0,
+        -1029.5
+      ],
+      "expected_center": [
+        17.75,
+        -1029.5
+      ],
+      "jump_pixels": 10.75
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "iris_right",
+      "yaw_degrees": 0,
+      "center": [
+        34.5,
+        -1029.5
+      ],
+      "expected_center": [
+        20.0,
+        -1029.5
+      ],
+      "jump_pixels": 14.5
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "iris_right",
+      "yaw_degrees": 15,
+      "center": [
+        33.0,
+        -1029.5
+      ],
+      "expected_center": [
+        39.5,
+        -1029.5
+      ],
+      "jump_pixels": 6.5
+    },
+    {
+      "view_id": "yaw+030-pitch+00",
+      "layer": "iris_right",
+      "yaw_degrees": 30,
+      "center": [
+        44.5,
+        -1029.5
+      ],
+      "expected_center": [
+        42.25,
+        -1029.5
+      ],
+      "jump_pixels": 2.25
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "iris_right",
+      "yaw_degrees": 75,
+      "center": [
+        68.5,
+        -1029.5
+      ],
+      "expected_center": [
+        60.0,
+        -1029.5
+      ],
+      "jump_pixels": 8.5
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "eyelid_left",
+      "yaw_degrees": -60,
+      "center": [
+        -47.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -58.5,
+        -1030.75
+      ],
+      "jump_pixels": 11.5
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "eyelid_left",
+      "yaw_degrees": -45,
+      "center": [
+        -64.5,
+        -1032.0
+      ],
+      "expected_center": [
+        -51.0,
+        -1030.0
+      ],
+      "jump_pixels": 13.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "eyelid_left",
+      "yaw_degrees": -30,
+      "center": [
+        -55.0,
+        -1030.5
+      ],
+      "expected_center": [
+        -58.75,
+        -1030.75
+      ],
+      "jump_pixels": 3.75
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "eyelid_left",
+      "yaw_degrees": -15,
+      "center": [
+        -53.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -44.25,
+        -1030.0
+      ],
+      "jump_pixels": 8.75
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "eyelid_left",
+      "yaw_degrees": 0,
+      "center": [
+        -33.5,
+        -1029.5
+      ],
+      "expected_center": [
+        -40.0,
+        -1029.5
+      ],
+      "jump_pixels": 6.5
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "eyelid_left",
+      "yaw_degrees": 60,
+      "center": [
+        3.0,
+        -1029.5
+      ],
+      "expected_center": [
+        0.0,
+        -1029.5
+      ],
+      "jump_pixels": 3.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "eyelid_right",
+      "yaw_degrees": -75,
+      "center": [
+        9.5,
+        -1029.5
+      ],
+      "expected_center": [
+        0.25,
+        -1029.5
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "eyelid_right",
+      "yaw_degrees": -60,
+      "center": [
+        15.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -2.0,
+        -1029.5
+      ],
+      "jump_pixels": 17.0
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "eyelid_right",
+      "yaw_degrees": -45,
+      "center": [
+        -13.5,
+        -1029.5
+      ],
+      "expected_center": [
+        8.0,
+        -1029.5
+      ],
+      "jump_pixels": 21.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "eyelid_right",
+      "yaw_degrees": -30,
+      "center": [
+        1.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -3.25,
+        -1029.5
+      ],
+      "jump_pixels": 4.25
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "eyelid_right",
+      "yaw_degrees": -15,
+      "center": [
+        7.0,
+        -1029.5
+      ],
+      "expected_center": [
+        17.75,
+        -1029.5
+      ],
+      "jump_pixels": 10.75
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "eyelid_right",
+      "yaw_degrees": 0,
+      "center": [
+        34.5,
+        -1029.5
+      ],
+      "expected_center": [
+        20.0,
+        -1029.5
+      ],
+      "jump_pixels": 14.5
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "eyelid_right",
+      "yaw_degrees": 15,
+      "center": [
+        33.0,
+        -1029.5
+      ],
+      "expected_center": [
+        39.5,
+        -1029.5
+      ],
+      "jump_pixels": 6.5
+    },
+    {
+      "view_id": "yaw+030-pitch+00",
+      "layer": "eyelid_right",
+      "yaw_degrees": 30,
+      "center": [
+        44.5,
+        -1029.5
+      ],
+      "expected_center": [
+        42.25,
+        -1029.5
+      ],
+      "jump_pixels": 2.25
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "eyelid_right",
+      "yaw_degrees": 75,
+      "center": [
+        68.5,
+        -1029.5
+      ],
+      "expected_center": [
+        60.0,
+        -1029.5
+      ],
+      "jump_pixels": 8.5
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "eyeliner_left",
+      "yaw_degrees": -60,
+      "center": [
+        -47.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -58.5,
+        -1030.75
+      ],
+      "jump_pixels": 11.5
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "eyeliner_left",
+      "yaw_degrees": -45,
+      "center": [
+        -64.5,
+        -1032.0
+      ],
+      "expected_center": [
+        -51.0,
+        -1030.0
+      ],
+      "jump_pixels": 13.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "eyeliner_left",
+      "yaw_degrees": -30,
+      "center": [
+        -55.0,
+        -1030.5
+      ],
+      "expected_center": [
+        -58.75,
+        -1030.75
+      ],
+      "jump_pixels": 3.75
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "eyeliner_left",
+      "yaw_degrees": -15,
+      "center": [
+        -53.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -44.25,
+        -1030.0
+      ],
+      "jump_pixels": 8.75
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "eyeliner_left",
+      "yaw_degrees": 0,
+      "center": [
+        -33.5,
+        -1029.5
+      ],
+      "expected_center": [
+        -40.0,
+        -1029.5
+      ],
+      "jump_pixels": 6.5
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "eyeliner_left",
+      "yaw_degrees": 60,
+      "center": [
+        3.0,
+        -1029.5
+      ],
+      "expected_center": [
+        0.0,
+        -1029.5
+      ],
+      "jump_pixels": 3.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "eyeliner_right",
+      "yaw_degrees": -75,
+      "center": [
+        9.5,
+        -1029.5
+      ],
+      "expected_center": [
+        0.25,
+        -1029.5
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "eyeliner_right",
+      "yaw_degrees": -60,
+      "center": [
+        15.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -2.0,
+        -1029.5
+      ],
+      "jump_pixels": 17.0
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "eyeliner_right",
+      "yaw_degrees": -45,
+      "center": [
+        -13.5,
+        -1029.5
+      ],
+      "expected_center": [
+        8.0,
+        -1029.5
+      ],
+      "jump_pixels": 21.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "eyeliner_right",
+      "yaw_degrees": -30,
+      "center": [
+        1.0,
+        -1029.5
+      ],
+      "expected_center": [
+        -3.25,
+        -1029.5
+      ],
+      "jump_pixels": 4.25
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "eyeliner_right",
+      "yaw_degrees": -15,
+      "center": [
+        7.0,
+        -1029.5
+      ],
+      "expected_center": [
+        17.75,
+        -1029.5
+      ],
+      "jump_pixels": 10.75
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "eyeliner_right",
+      "yaw_degrees": 0,
+      "center": [
+        34.5,
+        -1029.5
+      ],
+      "expected_center": [
+        20.0,
+        -1029.5
+      ],
+      "jump_pixels": 14.5
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "eyeliner_right",
+      "yaw_degrees": 15,
+      "center": [
+        33.0,
+        -1029.5
+      ],
+      "expected_center": [
+        39.5,
+        -1029.5
+      ],
+      "jump_pixels": 6.5
+    },
+    {
+      "view_id": "yaw+030-pitch+00",
+      "layer": "eyeliner_right",
+      "yaw_degrees": 30,
+      "center": [
+        44.5,
+        -1029.5
+      ],
+      "expected_center": [
+        42.25,
+        -1029.5
+      ],
+      "jump_pixels": 2.25
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "eyeliner_right",
+      "yaw_degrees": 75,
+      "center": [
+        68.5,
+        -1029.5
+      ],
+      "expected_center": [
+        60.0,
+        -1029.5
+      ],
+      "jump_pixels": 8.5
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "brow_left",
+      "yaw_degrees": -60,
+      "center": [
+        -47.0,
+        -1061.5
+      ],
+      "expected_center": [
+        -59.5,
+        -1061.5
+      ],
+      "jump_pixels": 12.5
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "brow_left",
+      "yaw_degrees": -45,
+      "center": [
+        -66.5,
+        -1061.5
+      ],
+      "expected_center": [
+        -52.0,
+        -1061.5
+      ],
+      "jump_pixels": 14.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "brow_left",
+      "yaw_degrees": -30,
+      "center": [
+        -57.0,
+        -1061.5
+      ],
+      "expected_center": [
+        -60.5,
+        -1061.5
+      ],
+      "jump_pixels": 3.5
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "brow_left",
+      "yaw_degrees": -15,
+      "center": [
+        -54.5,
+        -1061.5
+      ],
+      "expected_center": [
+        -45.25,
+        -1061.5
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "brow_left",
+      "yaw_degrees": 0,
+      "center": [
+        -33.5,
+        -1061.5
+      ],
+      "expected_center": [
+        -40.75,
+        -1061.5
+      ],
+      "jump_pixels": 7.25
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "brow_left",
+      "yaw_degrees": 60,
+      "center": [
+        3.0,
+        -1061.5
+      ],
+      "expected_center": [
+        0.0,
+        -1061.5
+      ],
+      "jump_pixels": 3.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "brow_right",
+      "yaw_degrees": -75,
+      "center": [
+        9.5,
+        -1061.5
+      ],
+      "expected_center": [
+        0.25,
+        -1061.5
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "brow_right",
+      "yaw_degrees": -60,
+      "center": [
+        15.0,
+        -1061.5
+      ],
+      "expected_center": [
+        -2.0,
+        -1061.5
+      ],
+      "jump_pixels": 17.0
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "brow_right",
+      "yaw_degrees": -45,
+      "center": [
+        -13.5,
+        -1061.5
+      ],
+      "expected_center": [
+        8.0,
+        -1061.5
+      ],
+      "jump_pixels": 21.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "brow_right",
+      "yaw_degrees": -30,
+      "center": [
+        1.0,
+        -1061.5
+      ],
+      "expected_center": [
+        -3.25,
+        -1061.5
+      ],
+      "jump_pixels": 4.25
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "brow_right",
+      "yaw_degrees": -15,
+      "center": [
+        7.0,
+        -1061.5
+      ],
+      "expected_center": [
+        17.75,
+        -1061.5
+      ],
+      "jump_pixels": 10.75
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "brow_right",
+      "yaw_degrees": 0,
+      "center": [
+        34.5,
+        -1061.5
+      ],
+      "expected_center": [
+        20.0,
+        -1061.5
+      ],
+      "jump_pixels": 14.5
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "brow_right",
+      "yaw_degrees": 15,
+      "center": [
+        33.0,
+        -1061.5
+      ],
+      "expected_center": [
+        39.5,
+        -1061.5
+      ],
+      "jump_pixels": 6.5
+    },
+    {
+      "view_id": "yaw+030-pitch+00",
+      "layer": "brow_right",
+      "yaw_degrees": 30,
+      "center": [
+        44.5,
+        -1061.5
+      ],
+      "expected_center": [
+        42.25,
+        -1061.5
+      ],
+      "jump_pixels": 2.25
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "brow_right",
+      "yaw_degrees": 75,
+      "center": [
+        68.5,
+        -1061.5
+      ],
+      "expected_center": [
+        60.0,
+        -1061.5
+      ],
+      "jump_pixels": 8.5
+    },
+    {
+      "view_id": "yaw-150-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": -150,
+      "center": [
+        -123.0,
+        -701.5
+      ],
+      "expected_center": [
+        -120.5,
+        -701.25
+      ],
+      "jump_pixels": 2.5
+    },
+    {
+      "view_id": "yaw-135-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": -135,
+      "center": [
+        -111.5,
+        -702.0
+      ],
+      "expected_center": [
+        -116.25,
+        -701.75
+      ],
+      "jump_pixels": 4.75
+    },
+    {
+      "view_id": "yaw-120-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": -120,
+      "center": [
+        -109.5,
+        -702.0
+      ],
+      "expected_center": [
+        -115.25,
+        -701.25
+      ],
+      "jump_pixels": 5.75
+    },
+    {
+      "view_id": "yaw-105-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": -105,
+      "center": [
+        -119.0,
+        -700.5
+      ],
+      "expected_center": [
+        -89.0,
+        -702.0
+      ],
+      "jump_pixels": 30.0
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": -90,
+      "center": [
+        -68.5,
+        -702.0
+      ],
+      "expected_center": [
+        -109.0,
+        -701.25
+      ],
+      "jump_pixels": 40.5
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": -75,
+      "center": [
+        -99.0,
+        -702.0
+      ],
+      "expected_center": [
+        -85.75,
+        -702.0
+      ],
+      "jump_pixels": 13.25
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": -60,
+      "center": [
+        -103.0,
+        -702.0
+      ],
+      "expected_center": [
+        -123.0,
+        -696.75
+      ],
+      "jump_pixels": 20.0
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": -45,
+      "center": [
+        -147.0,
+        -691.5
+      ],
+      "expected_center": [
+        -121.75,
+        -698.0
+      ],
+      "jump_pixels": 25.25
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": -30,
+      "center": [
+        -140.5,
+        -694.0
+      ],
+      "expected_center": [
+        -145.0,
+        -691.75
+      ],
+      "jump_pixels": 4.5
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": -15,
+      "center": [
+        -143.0,
+        -692.0
+      ],
+      "expected_center": [
+        -140.0,
+        -697.75
+      ],
+      "jump_pixels": 5.75
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": 0,
+      "center": [
+        -139.5,
+        -701.5
+      ],
+      "expected_center": [
+        -136.25,
+        -694.25
+      ],
+      "jump_pixels": 7.25
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": 15,
+      "center": [
+        -129.5,
+        -696.5
+      ],
+      "expected_center": [
+        -134.25,
+        -700.75
+      ],
+      "jump_pixels": 4.75
+    },
+    {
+      "view_id": "yaw+030-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": 30,
+      "center": [
+        -129.0,
+        -700.0
+      ],
+      "expected_center": [
+        -128.5,
+        -697.0
+      ],
+      "jump_pixels": 3.0
+    },
+    {
+      "view_id": "yaw+045-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": 45,
+      "center": [
+        -127.5,
+        -697.5
+      ],
+      "expected_center": [
+        -123.75,
+        -698.0
+      ],
+      "jump_pixels": 3.75
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": 60,
+      "center": [
+        -118.5,
+        -696.0
+      ],
+      "expected_center": [
+        -126.5,
+        -695.0
+      ],
+      "jump_pixels": 8.0
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": 75,
+      "center": [
+        -125.5,
+        -692.5
+      ],
+      "expected_center": [
+        -97.5,
+        -694.75
+      ],
+      "jump_pixels": 28.0
+    },
+    {
+      "view_id": "yaw+090-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": 90,
+      "center": [
+        -76.5,
+        -693.5
+      ],
+      "expected_center": [
+        -114.5,
+        -697.25
+      ],
+      "jump_pixels": 38.0
+    },
+    {
+      "view_id": "yaw+105-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": 105,
+      "center": [
+        -103.5,
+        -702.0
+      ],
+      "expected_center": [
+        -88.0,
+        -690.5
+      ],
+      "jump_pixels": 15.5
+    },
+    {
+      "view_id": "yaw+120-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": 120,
+      "center": [
+        -99.5,
+        -687.5
+      ],
+      "expected_center": [
+        -106.0,
+        -699.75
+      ],
+      "jump_pixels": 12.25
+    },
+    {
+      "view_id": "yaw+135-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": 135,
+      "center": [
+        -108.5,
+        -697.5
+      ],
+      "expected_center": [
+        -109.0,
+        -691.75
+      ],
+      "jump_pixels": 5.75
+    },
+    {
+      "view_id": "yaw+150-pitch+00",
+      "layer": "hair_left",
+      "yaw_degrees": 150,
+      "center": [
+        -118.5,
+        -696.0
+      ],
+      "expected_center": [
+        -109.25,
+        -699.0
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw-165-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": -165,
+      "center": [
+        131.0,
+        -701.5
+      ],
+      "expected_center": [
+        135.75,
+        -702.0
+      ],
+      "jump_pixels": 4.75
+    },
+    {
+      "view_id": "yaw-150-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": -150,
+      "center": [
+        121.5,
+        -702.0
+      ],
+      "expected_center": [
+        125.5,
+        -701.75
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw-135-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": -135,
+      "center": [
+        120.0,
+        -702.0
+      ],
+      "expected_center": [
+        112.25,
+        -702.0
+      ],
+      "jump_pixels": 7.75
+    },
+    {
+      "view_id": "yaw-120-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": -120,
+      "center": [
+        103.0,
+        -702.0
+      ],
+      "expected_center": [
+        123.0,
+        -702.0
+      ],
+      "jump_pixels": 20.0
+    },
+    {
+      "view_id": "yaw-105-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": -105,
+      "center": [
+        126.0,
+        -702.0
+      ],
+      "expected_center": [
+        90.75,
+        -699.5
+      ],
+      "jump_pixels": 35.25
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": -90,
+      "center": [
+        78.5,
+        -697.0
+      ],
+      "expected_center": [
+        137.75,
+        -690.75
+      ],
+      "jump_pixels": 59.25
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": -75,
+      "center": [
+        149.5,
+        -679.5
+      ],
+      "expected_center": [
+        110.25,
+        -695.25
+      ],
+      "jump_pixels": 39.25
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": -60,
+      "center": [
+        142.0,
+        -693.5
+      ],
+      "expected_center": [
+        126.0,
+        -690.75
+      ],
+      "jump_pixels": 16.0
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": -45,
+      "center": [
+        102.5,
+        -702.0
+      ],
+      "expected_center": [
+        127.75,
+        -697.75
+      ],
+      "jump_pixels": 25.25
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": -30,
+      "center": [
+        113.5,
+        -702.0
+      ],
+      "expected_center": [
+        106.0,
+        -702.0
+      ],
+      "jump_pixels": 7.5
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": -15,
+      "center": [
+        109.5,
+        -702.0
+      ],
+      "expected_center": [
+        126.5,
+        -702.0
+      ],
+      "jump_pixels": 17.0
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": 0,
+      "center": [
+        139.5,
+        -702.0
+      ],
+      "expected_center": [
+        112.0,
+        -702.0
+      ],
+      "jump_pixels": 27.5
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": 15,
+      "center": [
+        114.5,
+        -702.0
+      ],
+      "expected_center": [
+        126.75,
+        -702.0
+      ],
+      "jump_pixels": 12.25
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": 60,
+      "center": [
+        108.5,
+        -702.0
+      ],
+      "expected_center": [
+        112.0,
+        -702.0
+      ],
+      "jump_pixels": 3.5
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": 75,
+      "center": [
+        111.5,
+        -702.0
+      ],
+      "expected_center": [
+        90.25,
+        -702.0
+      ],
+      "jump_pixels": 21.25
+    },
+    {
+      "view_id": "yaw+090-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": 90,
+      "center": [
+        72.0,
+        -702.0
+      ],
+      "expected_center": [
+        111.5,
+        -702.0
+      ],
+      "jump_pixels": 39.5
+    },
+    {
+      "view_id": "yaw+105-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": 105,
+      "center": [
+        111.5,
+        -702.0
+      ],
+      "expected_center": [
+        93.5,
+        -702.0
+      ],
+      "jump_pixels": 18.0
+    },
+    {
+      "view_id": "yaw+120-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": 120,
+      "center": [
+        115.0,
+        -702.0
+      ],
+      "expected_center": [
+        111.25,
+        -702.0
+      ],
+      "jump_pixels": 3.75
+    },
+    {
+      "view_id": "yaw+135-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": 135,
+      "center": [
+        111.0,
+        -702.0
+      ],
+      "expected_center": [
+        117.0,
+        -702.0
+      ],
+      "jump_pixels": 6.0
+    },
+    {
+      "view_id": "yaw+150-pitch+00",
+      "layer": "hair_right",
+      "yaw_degrees": 150,
+      "center": [
+        119.0,
+        -702.0
+      ],
+      "expected_center": [
+        127.75,
+        -702.0
+      ],
+      "jump_pixels": 8.75
+    },
+    {
+      "view_id": "yaw-165-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": -165,
+      "center": [
+        -168.5,
+        -604.0
+      ],
+      "expected_center": [
+        -171.5,
+        -604.0
+      ],
+      "jump_pixels": 3.0
+    },
+    {
+      "view_id": "yaw-135-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": -135,
+      "center": [
+        -147.5,
+        -604.0
+      ],
+      "expected_center": [
+        -151.25,
+        -604.0
+      ],
+      "jump_pixels": 3.75
+    },
+    {
+      "view_id": "yaw-120-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": -120,
+      "center": [
+        -142.5,
+        -604.0
+      ],
+      "expected_center": [
+        -151.75,
+        -604.0
+      ],
+      "jump_pixels": 9.25
+    },
+    {
+      "view_id": "yaw-105-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": -105,
+      "center": [
+        -156.0,
+        -604.0
+      ],
+      "expected_center": [
+        -114.25,
+        -604.0
+      ],
+      "jump_pixels": 41.75
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": -90,
+      "center": [
+        -86.0,
+        -604.0
+      ],
+      "expected_center": [
+        -146.75,
+        -604.0
+      ],
+      "jump_pixels": 60.75
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": -75,
+      "center": [
+        -137.5,
+        -604.0
+      ],
+      "expected_center": [
+        -113.25,
+        -604.0
+      ],
+      "jump_pixels": 24.25
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": -60,
+      "center": [
+        -140.5,
+        -604.0
+      ],
+      "expected_center": [
+        -161.5,
+        -604.0
+      ],
+      "jump_pixels": 21.0
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": -45,
+      "center": [
+        -185.5,
+        -604.0
+      ],
+      "expected_center": [
+        -159.5,
+        -604.0
+      ],
+      "jump_pixels": 26.0
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": -30,
+      "center": [
+        -178.5,
+        -604.0
+      ],
+      "expected_center": [
+        -183.5,
+        -604.0
+      ],
+      "jump_pixels": 5.0
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": 0,
+      "center": [
+        -181.5,
+        -604.0
+      ],
+      "expected_center": [
+        -174.25,
+        -604.0
+      ],
+      "jump_pixels": 7.25
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": 15,
+      "center": [
+        -167.0,
+        -604.0
+      ],
+      "expected_center": [
+        -174.0,
+        -604.0
+      ],
+      "jump_pixels": 7.0
+    },
+    {
+      "view_id": "yaw+045-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": 45,
+      "center": [
+        -164.5,
+        -604.0
+      ],
+      "expected_center": [
+        -160.25,
+        -604.0
+      ],
+      "jump_pixels": 4.25
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": 60,
+      "center": [
+        -154.0,
+        -604.0
+      ],
+      "expected_center": [
+        -163.5,
+        -604.0
+      ],
+      "jump_pixels": 9.5
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": 75,
+      "center": [
+        -162.5,
+        -604.0
+      ],
+      "expected_center": [
+        -126.25,
+        -604.0
+      ],
+      "jump_pixels": 36.25
+    },
+    {
+      "view_id": "yaw+090-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": 90,
+      "center": [
+        -98.5,
+        -604.0
+      ],
+      "expected_center": [
+        -149.75,
+        -604.0
+      ],
+      "jump_pixels": 51.25
+    },
+    {
+      "view_id": "yaw+105-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": 105,
+      "center": [
+        -137.0,
+        -604.0
+      ],
+      "expected_center": [
+        -116.5,
+        -604.0
+      ],
+      "jump_pixels": 20.5
+    },
+    {
+      "view_id": "yaw+120-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": 120,
+      "center": [
+        -134.5,
+        -604.0
+      ],
+      "expected_center": [
+        -140.25,
+        -604.0
+      ],
+      "jump_pixels": 5.75
+    },
+    {
+      "view_id": "yaw+135-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": 135,
+      "center": [
+        -143.5,
+        -604.0
+      ],
+      "expected_center": [
+        -145.75,
+        -604.0
+      ],
+      "jump_pixels": 2.25
+    },
+    {
+      "view_id": "yaw+150-pitch+00",
+      "layer": "sleeve_left",
+      "yaw_degrees": 150,
+      "center": [
+        -157.0,
+        -604.0
+      ],
+      "expected_center": [
+        -145.75,
+        -604.0
+      ],
+      "jump_pixels": 11.25
+    },
+    {
+      "view_id": "yaw-165-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": -165,
+      "center": [
+        170.0,
+        -604.0
+      ],
+      "expected_center": [
+        176.0,
+        -604.0
+      ],
+      "jump_pixels": 6.0
+    },
+    {
+      "view_id": "yaw-150-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": -150,
+      "center": [
+        158.5,
+        -604.0
+      ],
+      "expected_center": [
+        163.0,
+        -604.0
+      ],
+      "jump_pixels": 4.5
+    },
+    {
+      "view_id": "yaw-135-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": -135,
+      "center": [
+        156.0,
+        -604.0
+      ],
+      "expected_center": [
+        147.25,
+        -604.0
+      ],
+      "jump_pixels": 8.75
+    },
+    {
+      "view_id": "yaw-120-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": -120,
+      "center": [
+        136.0,
+        -604.0
+      ],
+      "expected_center": [
+        159.5,
+        -604.0
+      ],
+      "jump_pixels": 23.5
+    },
+    {
+      "view_id": "yaw-105-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": -105,
+      "center": [
+        163.0,
+        -604.0
+      ],
+      "expected_center": [
+        118.0,
+        -604.0
+      ],
+      "jump_pixels": 45.0
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": -90,
+      "center": [
+        100.0,
+        -604.0
+      ],
+      "expected_center": [
+        175.5,
+        -604.0
+      ],
+      "jump_pixels": 75.5
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": -75,
+      "center": [
+        188.0,
+        -604.0
+      ],
+      "expected_center": [
+        139.75,
+        -604.0
+      ],
+      "jump_pixels": 48.25
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": -60,
+      "center": [
+        179.5,
+        -604.0
+      ],
+      "expected_center": [
+        164.5,
+        -604.0
+      ],
+      "jump_pixels": 15.0
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": -45,
+      "center": [
+        141.0,
+        -604.0
+      ],
+      "expected_center": [
+        165.5,
+        -604.0
+      ],
+      "jump_pixels": 24.5
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": -30,
+      "center": [
+        151.5,
+        -604.0
+      ],
+      "expected_center": [
+        144.5,
+        -604.0
+      ],
+      "jump_pixels": 7.0
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": -15,
+      "center": [
+        148.0,
+        -604.0
+      ],
+      "expected_center": [
+        166.5,
+        -604.0
+      ],
+      "jump_pixels": 18.5
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": 0,
+      "center": [
+        181.5,
+        -604.0
+      ],
+      "expected_center": [
+        150.0,
+        -604.0
+      ],
+      "jump_pixels": 31.5
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": 15,
+      "center": [
+        152.0,
+        -604.0
+      ],
+      "expected_center": [
+        166.5,
+        -604.0
+      ],
+      "jump_pixels": 14.5
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": 60,
+      "center": [
+        144.0,
+        -604.0
+      ],
+      "expected_center": [
+        149.0,
+        -604.0
+      ],
+      "jump_pixels": 5.0
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": 75,
+      "center": [
+        148.5,
+        -604.0
+      ],
+      "expected_center": [
+        118.0,
+        -604.0
+      ],
+      "jump_pixels": 30.5
+    },
+    {
+      "view_id": "yaw+090-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": 90,
+      "center": [
+        92.0,
+        -604.0
+      ],
+      "expected_center": [
+        146.75,
+        -604.0
+      ],
+      "jump_pixels": 54.75
+    },
+    {
+      "view_id": "yaw+105-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": 105,
+      "center": [
+        145.0,
+        -604.0
+      ],
+      "expected_center": [
+        121.0,
+        -604.0
+      ],
+      "jump_pixels": 24.0
+    },
+    {
+      "view_id": "yaw+120-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": 120,
+      "center": [
+        150.0,
+        -604.0
+      ],
+      "expected_center": [
+        145.5,
+        -604.0
+      ],
+      "jump_pixels": 4.5
+    },
+    {
+      "view_id": "yaw+135-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": 135,
+      "center": [
+        146.0,
+        -604.0
+      ],
+      "expected_center": [
+        153.75,
+        -604.0
+      ],
+      "jump_pixels": 7.75
+    },
+    {
+      "view_id": "yaw+150-pitch+00",
+      "layer": "sleeve_right",
+      "yaw_degrees": 150,
+      "center": [
+        157.5,
+        -604.0
+      ],
+      "expected_center": [
+        164.25,
+        -604.0
+      ],
+      "jump_pixels": 6.75
+    },
+    {
+      "view_id": "yaw-165-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": -165,
+      "center": [
+        32.0,
+        -1086.0
+      ],
+      "expected_center": [
+        -1.25,
+        -1112.25
+      ],
+      "jump_pixels": 33.25
+    },
+    {
+      "view_id": "yaw-150-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": -150,
+      "center": [
+        -1.0,
+        -1087.5
+      ],
+      "expected_center": [
+        27.5,
+        -1085.75
+      ],
+      "jump_pixels": 28.5
+    },
+    {
+      "view_id": "yaw-135-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": -135,
+      "center": [
+        23.0,
+        -1085.5
+      ],
+      "expected_center": [
+        3.75,
+        -1086.5
+      ],
+      "jump_pixels": 19.25
+    },
+    {
+      "view_id": "yaw-120-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": -120,
+      "center": [
+        8.5,
+        -1085.5
+      ],
+      "expected_center": [
+        12.5,
+        -1085.5
+      ],
+      "jump_pixels": 4.0
+    },
+    {
+      "view_id": "yaw-105-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": -105,
+      "center": [
+        2.0,
+        -1085.5
+      ],
+      "expected_center": [
+        14.25,
+        -1086.5
+      ],
+      "jump_pixels": 12.25
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": -90,
+      "center": [
+        20.0,
+        -1087.5
+      ],
+      "expected_center": [
+        -5.0,
+        -1086.75
+      ],
+      "jump_pixels": 25.0
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": -75,
+      "center": [
+        -12.0,
+        -1088.0
+      ],
+      "expected_center": [
+        5.0,
+        -1089.5
+      ],
+      "jump_pixels": 17.0
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": -60,
+      "center": [
+        -10.0,
+        -1091.5
+      ],
+      "expected_center": [
+        0.75,
+        -1091.0
+      ],
+      "jump_pixels": 10.75
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": -45,
+      "center": [
+        13.5,
+        -1094.0
+      ],
+      "expected_center": [
+        3.5,
+        -1089.75
+      ],
+      "jump_pixels": 10.0
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": -30,
+      "center": [
+        17.0,
+        -1088.0
+      ],
+      "expected_center": [
+        16.5,
+        -1094.0
+      ],
+      "jump_pixels": 6.0
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": -15,
+      "center": [
+        19.5,
+        -1094.0
+      ],
+      "expected_center": [
+        14.25,
+        -1091.0
+      ],
+      "jump_pixels": 5.25
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": 0,
+      "center": [
+        11.5,
+        -1094.0
+      ],
+      "expected_center": [
+        20.25,
+        -1094.0
+      ],
+      "jump_pixels": 8.75
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": 15,
+      "center": [
+        21.0,
+        -1094.0
+      ],
+      "expected_center": [
+        12.75,
+        -1094.0
+      ],
+      "jump_pixels": 8.25
+    },
+    {
+      "view_id": "yaw+030-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": 30,
+      "center": [
+        14.0,
+        -1094.0
+      ],
+      "expected_center": [
+        19.5,
+        -1093.75
+      ],
+      "jump_pixels": 5.5
+    },
+    {
+      "view_id": "yaw+045-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": 45,
+      "center": [
+        18.0,
+        -1093.5
+      ],
+      "expected_center": [
+        14.5,
+        -1090.5
+      ],
+      "jump_pixels": 3.5
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": 60,
+      "center": [
+        15.0,
+        -1087.0
+      ],
+      "expected_center": [
+        18.5,
+        -1090.5
+      ],
+      "jump_pixels": 3.5
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": 75,
+      "center": [
+        19.0,
+        -1087.5
+      ],
+      "expected_center": [
+        1.5,
+        -1087.75
+      ],
+      "jump_pixels": 17.5
+    },
+    {
+      "view_id": "yaw+090-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": 90,
+      "center": [
+        -12.0,
+        -1088.5
+      ],
+      "expected_center": [
+        15.0,
+        -1091.5
+      ],
+      "jump_pixels": 27.0
+    },
+    {
+      "view_id": "yaw+105-pitch+00",
+      "layer": "ornament",
+      "yaw_degrees": 105,
+      "center": [
+        11.0,
+        -1095.5
+      ],
+      "expected_center": [
+        1.5,
+        -1092.5
+      ],
+      "jump_pixels": 9.5
+    }
+  ],
+  "outlier_count": 256,
+  "crop_coordinates": {
+    "yaw+000-pitch+00": {
+      "base": [
+        440,
+        183,
+        588,
+        366
+      ],
+      "blush_left": [
+        451,
+        284,
+        491,
+        311
+      ],
+      "blush_right": [
+        534,
+        284,
+        574,
+        311
+      ],
+      "body": [
+        265,
+        1096,
+        759,
+        1488
+      ],
+      "brow_left": [
+        462,
+        225,
+        495,
+        236
+      ],
+      "brow_right": [
+        530,
+        225,
+        563,
+        236
+      ],
+      "corner_left": [
+        485,
+        307,
+        498,
+        330
+      ],
+      "corner_right": [
+        527,
+        307,
+        540,
+        330
+      ],
+      "eyelid_left": [
+        462,
+        250,
+        495,
+        275
+      ],
+      "eyelid_right": [
+        530,
+        250,
+        563,
+        275
+      ],
+      "eyeliner_left": [
+        462,
+        250,
+        495,
+        275
+      ],
+      "eyeliner_right": [
+        530,
+        250,
+        563,
+        275
+      ],
+      "hair_back": [
+        260,
+        85,
+        763,
+        1096
+      ],
+      "hair_left": [
+        232,
+        85,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        791,
+        1096
+      ],
+      "iris_left": [
+        462,
+        250,
+        495,
+        275
+      ],
+      "iris_right": [
+        530,
+        250,
+        563,
+        275
+      ],
+      "jaw": [
+        451,
+        288,
+        574,
+        361
+      ],
+      "lip_lower": [
+        491,
+        307,
+        534,
+        330
+      ],
+      "lip_upper": [
+        491,
+        307,
+        534,
+        330
+      ],
+      "oral_cavity": [
+        491,
+        307,
+        534,
+        330
+      ],
+      "ornament": [
+        445,
+        86,
+        602,
+        310
+      ],
+      "sleeve_left": [
+        232,
+        421,
+        429,
+        955
+      ],
+      "sleeve_right": [
+        596,
+        421,
+        791,
+        955
+      ],
+      "teeth_tongue": [
+        491,
+        307,
+        534,
+        330
+      ]
+    },
+    "yaw+015-pitch+00": {
+      "base": [
+        454,
+        183,
+        588,
+        366
+      ],
+      "blush_left": [
+        466,
+        284,
+        502,
+        311
+      ],
+      "blush_right": [
+        539,
+        284,
+        575,
+        311
+      ],
+      "body": [
+        274,
+        1096,
+        761,
+        1488
+      ],
+      "brow_left": [
+        475,
+        225,
+        506,
+        236
+      ],
+      "brow_right": [
+        535,
+        225,
+        566,
+        236
+      ],
+      "corner_left": [
+        496,
+        307,
+        507,
+        330
+      ],
+      "corner_right": [
+        534,
+        307,
+        545,
+        330
+      ],
+      "eyelid_left": [
+        475,
+        250,
+        506,
+        275
+      ],
+      "eyelid_right": [
+        535,
+        250,
+        566,
+        275
+      ],
+      "eyeliner_left": [
+        475,
+        250,
+        506,
+        275
+      ],
+      "eyeliner_right": [
+        535,
+        250,
+        566,
+        275
+      ],
+      "hair_back": [
+        287,
+        85,
+        736,
+        1096
+      ],
+      "hair_left": [
+        263,
+        95,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        752,
+        1096
+      ],
+      "iris_left": [
+        475,
+        250,
+        506,
+        275
+      ],
+      "iris_right": [
+        535,
+        250,
+        566,
+        275
+      ],
+      "jaw": [
+        465,
+        288,
+        576,
+        361
+      ],
+      "lip_lower": [
+        501,
+        307,
+        540,
+        330
+      ],
+      "lip_upper": [
+        501,
+        307,
+        540,
+        330
+      ],
+      "oral_cavity": [
+        501,
+        307,
+        540,
+        330
+      ],
+      "ornament": [
+        453,
+        86,
+        624,
+        310
+      ],
+      "sleeve_left": [
+        263,
+        421,
+        438,
+        955
+      ],
+      "sleeve_right": [
+        587,
+        421,
+        752,
+        955
+      ],
+      "teeth_tongue": [
+        501,
+        307,
+        540,
+        330
+      ]
+    },
+    "yaw+030-pitch+00": {
+      "base": [
+        461,
+        183,
+        598,
+        366
+      ],
+      "blush_left": [
+        474,
+        284,
+        510,
+        311
+      ],
+      "blush_right": [
+        549,
+        284,
+        585,
+        311
+      ],
+      "body": [
+        269,
+        1096,
+        763,
+        1488
+      ],
+      "brow_left": [
+        483,
+        225,
+        514,
+        236
+      ],
+      "brow_right": [
+        545,
+        225,
+        576,
+        236
+      ],
+      "corner_left": [
+        505,
+        307,
+        516,
+        330
+      ],
+      "corner_right": [
+        543,
+        307,
+        554,
+        330
+      ],
+      "eyelid_left": [
+        483,
+        250,
+        514,
+        275
+      ],
+      "eyelid_right": [
+        545,
+        250,
+        576,
+        275
+      ],
+      "eyeliner_left": [
+        483,
+        250,
+        514,
+        275
+      ],
+      "eyeliner_right": [
+        545,
+        250,
+        576,
+        275
+      ],
+      "hair_back": [
+        286,
+        85,
+        738,
+        1096
+      ],
+      "hair_left": [
+        261,
+        88,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        748,
+        1096
+      ],
+      "iris_left": [
+        483,
+        250,
+        514,
+        275
+      ],
+      "iris_right": [
+        545,
+        250,
+        576,
+        275
+      ],
+      "jaw": [
+        473,
+        288,
+        586,
+        361
+      ],
+      "lip_lower": [
+        510,
+        307,
+        549,
+        330
+      ],
+      "lip_upper": [
+        510,
+        307,
+        549,
+        330
+      ],
+      "oral_cavity": [
+        510,
+        307,
+        549,
+        330
+      ],
+      "ornament": [
+        446,
+        86,
+        614,
+        310
+      ],
+      "sleeve_left": [
+        261,
+        421,
+        438,
+        955
+      ],
+      "sleeve_right": [
+        587,
+        421,
+        748,
+        955
+      ],
+      "teeth_tongue": [
+        510,
+        307,
+        549,
+        330
+      ]
+    },
+    "yaw+045-pitch+00": {
+      "base": [
+        470,
+        183,
+        605,
+        366
+      ],
+      "blush_left": [
+        483,
+        284,
+        519,
+        311
+      ],
+      "blush_right": [
+        556,
+        284,
+        592,
+        311
+      ],
+      "body": [
+        273,
+        1096,
+        759,
+        1488
+      ],
+      "brow_left": [
+        492,
+        225,
+        523,
+        236
+      ],
+      "brow_right": [
+        552,
+        225,
+        583,
+        236
+      ],
+      "corner_left": [
+        513,
+        307,
+        524,
+        330
+      ],
+      "corner_right": [
+        551,
+        307,
+        562,
+        330
+      ],
+      "eyelid_left": [
+        492,
+        250,
+        523,
+        275
+      ],
+      "eyelid_right": [
+        552,
+        250,
+        583,
+        275
+      ],
+      "eyeliner_left": [
+        492,
+        250,
+        523,
+        275
+      ],
+      "eyeliner_right": [
+        552,
+        250,
+        583,
+        275
+      ],
+      "hair_back": [
+        289,
+        86,
+        734,
+        1096
+      ],
+      "hair_left": [
+        264,
+        93,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        745,
+        1096
+      ],
+      "iris_left": [
+        492,
+        250,
+        523,
+        275
+      ],
+      "iris_right": [
+        552,
+        250,
+        583,
+        275
+      ],
+      "jaw": [
+        482,
+        288,
+        593,
+        361
+      ],
+      "lip_lower": [
+        518,
+        307,
+        557,
+        330
+      ],
+      "lip_upper": [
+        518,
+        307,
+        557,
+        330
+      ],
+      "oral_cavity": [
+        518,
+        307,
+        557,
+        330
+      ],
+      "ornament": [
+        448,
+        87,
+        620,
+        310
+      ],
+      "sleeve_left": [
+        264,
+        421,
+        439,
+        955
+      ],
+      "sleeve_right": [
+        586,
+        421,
+        745,
+        955
+      ],
+      "teeth_tongue": [
+        518,
+        307,
+        557,
+        330
+      ]
+    },
+    "yaw+060-pitch+00": {
+      "base": [
+        480,
+        183,
+        605,
+        366
+      ],
+      "blush_left": [
+        492,
+        284,
+        526,
+        311
+      ],
+      "blush_right": [
+        563,
+        284,
+        597,
+        311
+      ],
+      "body": [
+        275,
+        1096,
+        750,
+        1488
+      ],
+      "brow_left": [
+        501,
+        225,
+        530,
+        236
+      ],
+      "brow_right": [
+        559,
+        225,
+        588,
+        236
+      ],
+      "corner_left": [
+        521,
+        307,
+        532,
+        330
+      ],
+      "corner_right": [
+        557,
+        307,
+        568,
+        330
+      ],
+      "eyelid_left": [
+        501,
+        250,
+        530,
+        275
+      ],
+      "eyelid_right": [
+        559,
+        250,
+        588,
+        275
+      ],
+      "eyeliner_left": [
+        501,
+        250,
+        530,
+        275
+      ],
+      "eyeliner_right": [
+        559,
+        250,
+        588,
+        275
+      ],
+      "hair_back": [
+        298,
+        86,
+        726,
+        1096
+      ],
+      "hair_left": [
+        275,
+        96,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        730,
+        1096
+      ],
+      "iris_left": [
+        501,
+        250,
+        530,
+        275
+      ],
+      "iris_right": [
+        559,
+        250,
+        588,
+        275
+      ],
+      "jaw": [
+        492,
+        288,
+        597,
+        361
+      ],
+      "lip_lower": [
+        526,
+        307,
+        563,
+        330
+      ],
+      "lip_upper": [
+        526,
+        307,
+        563,
+        330
+      ],
+      "oral_cavity": [
+        526,
+        307,
+        563,
+        330
+      ],
+      "ornament": [
+        441,
+        100,
+        614,
+        310
+      ],
+      "sleeve_left": [
+        275,
+        421,
+        442,
+        955
+      ],
+      "sleeve_right": [
+        583,
+        421,
+        730,
+        955
+      ],
+      "teeth_tongue": [
+        526,
+        307,
+        563,
+        330
+      ]
+    },
+    "yaw+075-pitch+00": {
+      "base": [
+        487,
+        183,
+        613,
+        366
+      ],
+      "blush_left": [
+        500,
+        284,
+        534,
+        311
+      ],
+      "blush_right": [
+        573,
+        284,
+        607,
+        311
+      ],
+      "body": [
+        273,
+        1096,
+        757,
+        1488
+      ],
+      "brow_left": [
+        508,
+        225,
+        539,
+        236
+      ],
+      "brow_right": [
+        568,
+        225,
+        599,
+        236
+      ],
+      "corner_left": [
+        530,
+        307,
+        541,
+        330
+      ],
+      "corner_right": [
+        566,
+        307,
+        577,
+        330
+      ],
+      "eyelid_left": [
+        508,
+        250,
+        539,
+        275
+      ],
+      "eyelid_right": [
+        568,
+        250,
+        599,
+        275
+      ],
+      "eyeliner_left": [
+        508,
+        250,
+        539,
+        275
+      ],
+      "eyeliner_right": [
+        568,
+        250,
+        599,
+        275
+      ],
+      "hair_back": [
+        291,
+        85,
+        732,
+        1096
+      ],
+      "hair_left": [
+        266,
+        103,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        741,
+        1096
+      ],
+      "iris_left": [
+        508,
+        250,
+        539,
+        275
+      ],
+      "iris_right": [
+        568,
+        250,
+        599,
+        275
+      ],
+      "jaw": [
+        499,
+        288,
+        608,
+        361
+      ],
+      "lip_lower": [
+        535,
+        307,
+        572,
+        330
+      ],
+      "lip_upper": [
+        535,
+        307,
+        572,
+        330
+      ],
+      "oral_cavity": [
+        535,
+        307,
+        572,
+        330
+      ],
+      "ornament": [
+        446,
+        99,
+        622,
+        310
+      ],
+      "sleeve_left": [
+        266,
+        421,
+        439,
+        955
+      ],
+      "sleeve_right": [
+        586,
+        421,
+        741,
+        955
+      ],
+      "teeth_tongue": [
+        535,
+        307,
+        572,
+        330
+      ]
+    },
+    "yaw+090-pitch+00": {
+      "base": [
+        499,
+        183,
+        595,
+        366
+      ],
+      "blush_left": [
+        509,
+        284,
+        535,
+        311
+      ],
+      "blush_right": [
+        562,
+        284,
+        588,
+        311
+      ],
+      "body": [
+        330,
+        1096,
+        693,
+        1488
+      ],
+      "brow_left": [
+        515,
+        225,
+        538,
+        236
+      ],
+      "brow_right": [
+        559,
+        225,
+        582,
+        236
+      ],
+      "corner_left": [
+        530,
+        307,
+        539,
+        330
+      ],
+      "corner_right": [
+        558,
+        307,
+        567,
+        330
+      ],
+      "eyelid_left": [
+        515,
+        250,
+        538,
+        275
+      ],
+      "eyelid_right": [
+        559,
+        250,
+        582,
+        275
+      ],
+      "eyeliner_left": [
+        515,
+        250,
+        538,
+        275
+      ],
+      "eyeliner_right": [
+        559,
+        250,
+        582,
+        275
+      ],
+      "hair_back": [
+        358,
+        98,
+        621,
+        1096
+      ],
+      "hair_left": [
+        357,
+        101,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        655,
+        1096
+      ],
+      "iris_left": [
+        515,
+        250,
+        538,
+        275
+      ],
+      "iris_right": [
+        559,
+        250,
+        582,
+        275
+      ],
+      "jaw": [
+        508,
+        288,
+        589,
+        361
+      ],
+      "lip_lower": [
+        534,
+        307,
+        563,
+        330
+      ],
+      "lip_upper": [
+        534,
+        307,
+        563,
+        330
+      ],
+      "oral_cavity": [
+        534,
+        307,
+        563,
+        330
+      ],
+      "ornament": [
+        417,
+        97,
+        582,
+        310
+      ],
+      "sleeve_left": [
+        368,
+        421,
+        458,
+        955
+      ],
+      "sleeve_right": [
+        567,
+        421,
+        640,
+        955
+      ],
+      "teeth_tongue": [
+        534,
+        307,
+        563,
+        330
+      ]
+    },
+    "yaw+105-pitch+00": {
+      "body": [
+        289,
+        1096,
+        735,
+        1488
+      ],
+      "hair_back": [
+        311,
+        85,
+        713,
+        1060
+      ],
+      "hair_left": [
+        304,
+        84,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        735,
+        1096
+      ],
+      "ornament": [
+        452,
+        85,
+        594,
+        308
+      ],
+      "sleeve_left": [
+        304,
+        421,
+        446,
+        955
+      ],
+      "sleeve_right": [
+        579,
+        421,
+        735,
+        955
+      ]
+    },
+    "yaw+120-pitch+00": {
+      "body": [
+        279,
+        1096,
+        744,
+        1488
+      ],
+      "hair_back": [
+        311,
+        86,
+        721,
+        1058
+      ],
+      "hair_left": [
+        311,
+        113,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        741,
+        1096
+      ],
+      "ornament": [
+        463,
+        87,
+        590,
+        304
+      ],
+      "sleeve_left": [
+        311,
+        421,
+        443,
+        955
+      ],
+      "sleeve_right": [
+        582,
+        421,
+        741,
+        955
+      ]
+    },
+    "yaw+135-pitch+00": {
+      "body": [
+        279,
+        1096,
+        744,
+        1488
+      ],
+      "hair_back": [
+        302,
+        85,
+        721,
+        1054
+      ],
+      "hair_left": [
+        293,
+        93,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        733,
+        1096
+      ],
+      "ornament": [
+        455,
+        86,
+        601,
+        303
+      ],
+      "sleeve_left": [
+        293,
+        421,
+        443,
+        955
+      ],
+      "sleeve_right": [
+        582,
+        421,
+        733,
+        955
+      ]
+    },
+    "yaw+150-pitch+00": {
+      "body": [
+        256,
+        1096,
+        767,
+        1488
+      ],
+      "hair_back": [
+        282,
+        85,
+        741,
+        1093
+      ],
+      "hair_left": [
+        273,
+        96,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        749,
+        1096
+      ],
+      "ornament": [
+        457,
+        86,
+        605,
+        303
+      ],
+      "sleeve_left": [
+        273,
+        421,
+        436,
+        955
+      ],
+      "sleeve_right": [
+        589,
+        421,
+        749,
+        955
+      ]
+    },
+    "yaw+165-pitch+00": {
+      "body": [
+        259,
+        1096,
+        731,
+        1488
+      ],
+      "hair_back": [
+        282,
+        85,
+        741,
+        1060
+      ],
+      "hair_left": [
+        257,
+        87,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        767,
+        1096
+      ],
+      "ornament": [
+        441,
+        87,
+        590,
+        307
+      ],
+      "sleeve_left": [
+        257,
+        421,
+        437,
+        955
+      ],
+      "sleeve_right": [
+        588,
+        421,
+        767,
+        955
+      ]
+    },
+    "yaw-015-pitch+00": {
+      "base": [
+        458,
+        183,
+        573,
+        366
+      ],
+      "blush_left": [
+        465,
+        285,
+        484,
+        311
+      ],
+      "blush_right": [
+        523,
+        284,
+        559,
+        311
+      ],
+      "body": [
+        288,
+        1096,
+        767,
+        1488
+      ],
+      "brow_left": [
+        458,
+        225,
+        488,
+        236
+      ],
+      "brow_right": [
+        519,
+        225,
+        550,
+        236
+      ],
+      "corner_left": [
+        479,
+        307,
+        490,
+        330
+      ],
+      "corner_right": [
+        517,
+        307,
+        528,
+        330
+      ],
+      "eyelid_left": [
+        461,
+        250,
+        488,
+        275
+      ],
+      "eyelid_right": [
+        519,
+        250,
+        550,
+        275
+      ],
+      "eyeliner_left": [
+        461,
+        250,
+        488,
+        275
+      ],
+      "eyeliner_right": [
+        519,
+        250,
+        550,
+        275
+      ],
+      "hair_back": [
+        282,
+        85,
+        741,
+        1096
+      ],
+      "hair_left": [
+        256,
+        104,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        762,
+        1096
+      ],
+      "iris_left": [
+        461,
+        250,
+        488,
+        275
+      ],
+      "iris_right": [
+        519,
+        250,
+        550,
+        275
+      ],
+      "jaw": [
+        456,
+        288,
+        561,
+        361
+      ],
+      "lip_lower": [
+        484,
+        307,
+        523,
+        330
+      ],
+      "lip_upper": [
+        484,
+        307,
+        523,
+        330
+      ],
+      "oral_cavity": [
+        484,
+        307,
+        523,
+        330
+      ],
+      "ornament": [
+        466,
+        86,
+        628,
+        310
+      ],
+      "sleeve_left": [
+        256,
+        421,
+        436,
+        955
+      ],
+      "sleeve_right": [
+        589,
+        421,
+        762,
+        955
+      ],
+      "teeth_tongue": [
+        484,
+        307,
+        523,
+        330
+      ]
+    },
+    "yaw-030-pitch+00": {
+      "base": [
+        456,
+        183,
+        565,
+        366
+      ],
+      "blush_left": [
+        468,
+        292,
+        476,
+        308
+      ],
+      "blush_right": [
+        515,
+        284,
+        551,
+        311
+      ],
+      "body": [
+        289,
+        1096,
+        762,
+        1488
+      ],
+      "brow_left": [
+        457,
+        225,
+        480,
+        236
+      ],
+      "brow_right": [
+        511,
+        225,
+        542,
+        236
+      ],
+      "corner_left": [
+        471,
+        307,
+        482,
+        330
+      ],
+      "corner_right": [
+        509,
+        307,
+        520,
+        330
+      ],
+      "eyelid_left": [
+        461,
+        250,
+        480,
+        273
+      ],
+      "eyelid_right": [
+        511,
+        250,
+        542,
+        275
+      ],
+      "eyeliner_left": [
+        461,
+        250,
+        480,
+        273
+      ],
+      "eyeliner_right": [
+        511,
+        250,
+        542,
+        275
+      ],
+      "hair_back": [
+        282,
+        85,
+        741,
+        1096
+      ],
+      "hair_left": [
+        257,
+        100,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        766,
+        1096
+      ],
+      "iris_left": [
+        461,
+        250,
+        480,
+        273
+      ],
+      "iris_right": [
+        511,
+        250,
+        542,
+        275
+      ],
+      "jaw": [
+        456,
+        288,
+        553,
+        361
+      ],
+      "lip_lower": [
+        476,
+        307,
+        515,
+        330
+      ],
+      "lip_upper": [
+        476,
+        307,
+        515,
+        330
+      ],
+      "oral_cavity": [
+        476,
+        307,
+        515,
+        330
+      ],
+      "ornament": [
+        465,
+        98,
+        620,
+        310
+      ],
+      "sleeve_left": [
+        257,
+        421,
+        437,
+        955
+      ],
+      "sleeve_right": [
+        588,
+        421,
+        766,
+        955
+      ],
+      "teeth_tongue": [
+        476,
+        307,
+        515,
+        330
+      ]
+    },
+    "yaw-045-pitch+00": {
+      "base": [
+        457,
+        183,
+        556,
+        366
+      ],
+      "blush_right": [
+        506,
+        284,
+        542,
+        311
+      ],
+      "body": [
+        293,
+        1096,
+        769,
+        1488
+      ],
+      "brow_left": [
+        458,
+        225,
+        471,
+        236
+      ],
+      "brow_right": [
+        502,
+        225,
+        533,
+        236
+      ],
+      "corner_left": [
+        469,
+        319,
+        473,
+        330
+      ],
+      "corner_right": [
+        500,
+        307,
+        511,
+        330
+      ],
+      "eyelid_left": [
+        462,
+        251,
+        471,
+        269
+      ],
+      "eyelid_right": [
+        502,
+        250,
+        533,
+        275
+      ],
+      "eyeliner_left": [
+        462,
+        251,
+        471,
+        269
+      ],
+      "eyeliner_right": [
+        502,
+        250,
+        533,
+        275
+      ],
+      "hair_back": [
+        281,
+        85,
+        743,
+        1096
+      ],
+      "hair_left": [
+        255,
+        105,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        755,
+        1096
+      ],
+      "iris_left": [
+        462,
+        251,
+        471,
+        269
+      ],
+      "iris_right": [
+        502,
+        250,
+        533,
+        275
+      ],
+      "jaw": [
+        460,
+        288,
+        544,
+        361
+      ],
+      "lip_lower": [
+        470,
+        307,
+        506,
+        330
+      ],
+      "lip_upper": [
+        470,
+        307,
+        506,
+        330
+      ],
+      "oral_cavity": [
+        470,
+        307,
+        506,
+        330
+      ],
+      "ornament": [
+        465,
+        86,
+        624,
+        310
+      ],
+      "sleeve_left": [
+        255,
+        421,
+        436,
+        955
+      ],
+      "sleeve_right": [
+        589,
+        421,
+        755,
+        955
+      ],
+      "teeth_tongue": [
+        470,
+        307,
+        506,
+        330
+      ]
+    },
+    "yaw-060-pitch+00": {
+      "base": [
+        411,
+        183,
+        548,
+        366
+      ],
+      "blush_left": [
+        424,
+        284,
+        460,
+        311
+      ],
+      "blush_right": [
+        499,
+        284,
+        535,
+        311
+      ],
+      "body": [
+        261,
+        1096,
+        730,
+        1488
+      ],
+      "brow_left": [
+        433,
+        225,
+        464,
+        236
+      ],
+      "brow_right": [
+        503,
+        225,
+        518,
+        236
+      ],
+      "corner_left": [
+        455,
+        307,
+        466,
+        330
+      ],
+      "corner_right": [
+        493,
+        307,
+        504,
+        330
+      ],
+      "eyelid_left": [
+        433,
+        250,
+        464,
+        275
+      ],
+      "eyelid_right": [
+        503,
+        250,
+        518,
+        275
+      ],
+      "eyeliner_left": [
+        433,
+        250,
+        464,
+        275
+      ],
+      "eyeliner_right": [
+        503,
+        250,
+        518,
+        275
+      ],
+      "hair_back": [
+        286,
+        86,
+        738,
+        1096
+      ],
+      "hair_left": [
+        272,
+        84,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        101,
+        763,
+        1096
+      ],
+      "iris_left": [
+        433,
+        250,
+        464,
+        275
+      ],
+      "iris_right": [
+        503,
+        250,
+        518,
+        275
+      ],
+      "jaw": [
+        423,
+        288,
+        536,
+        361
+      ],
+      "lip_lower": [
+        460,
+        307,
+        499,
+        330
+      ],
+      "lip_upper": [
+        460,
+        307,
+        499,
+        330
+      ],
+      "oral_cavity": [
+        460,
+        307,
+        499,
+        330
+      ],
+      "ornament": [
+        403,
+        91,
+        568,
+        310
+      ],
+      "sleeve_left": [
+        272,
+        421,
+        438,
+        955
+      ],
+      "sleeve_right": [
+        587,
+        421,
+        763,
+        955
+      ],
+      "teeth_tongue": [
+        460,
+        307,
+        499,
+        330
+      ]
+    },
+    "yaw-075-pitch+00": {
+      "base": [
+        406,
+        183,
+        539,
+        366
+      ],
+      "blush_left": [
+        414,
+        284,
+        450,
+        311
+      ],
+      "blush_right": [
+        489,
+        284,
+        525,
+        311
+      ],
+      "body": [
+        255,
+        1096,
+        727,
+        1488
+      ],
+      "brow_left": [
+        423,
+        225,
+        454,
+        236
+      ],
+      "brow_right": [
+        493,
+        225,
+        508,
+        236
+      ],
+      "corner_left": [
+        445,
+        307,
+        456,
+        330
+      ],
+      "corner_right": [
+        483,
+        307,
+        494,
+        330
+      ],
+      "eyelid_left": [
+        423,
+        250,
+        454,
+        275
+      ],
+      "eyelid_right": [
+        493,
+        250,
+        508,
+        275
+      ],
+      "eyeliner_left": [
+        423,
+        250,
+        454,
+        275
+      ],
+      "eyeliner_right": [
+        493,
+        250,
+        508,
+        275
+      ],
+      "hair_back": [
+        281,
+        85,
+        743,
+        1096
+      ],
+      "hair_left": [
+        271,
+        84,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        129,
+        769,
+        1096
+      ],
+      "iris_left": [
+        423,
+        250,
+        454,
+        275
+      ],
+      "iris_right": [
+        493,
+        250,
+        508,
+        275
+      ],
+      "jaw": [
+        412,
+        288,
+        527,
+        361
+      ],
+      "lip_lower": [
+        450,
+        307,
+        489,
+        330
+      ],
+      "lip_upper": [
+        450,
+        307,
+        489,
+        330
+      ],
+      "oral_cavity": [
+        450,
+        307,
+        489,
+        330
+      ],
+      "ornament": [
+        395,
+        98,
+        563,
+        310
+      ],
+      "sleeve_left": [
+        271,
+        421,
+        436,
+        955
+      ],
+      "sleeve_right": [
+        589,
+        421,
+        769,
+        955
+      ],
+      "teeth_tongue": [
+        450,
+        307,
+        489,
+        330
+      ]
+    },
+    "yaw-090-pitch+00": {
+      "base": [
+        434,
+        183,
+        525,
+        366
+      ],
+      "blush_left": [
+        436,
+        284,
+        462,
+        311
+      ],
+      "blush_right": [
+        489,
+        284,
+        515,
+        311
+      ],
+      "body": [
+        329,
+        1096,
+        695,
+        1488
+      ],
+      "brow_left": [
+        442,
+        225,
+        465,
+        236
+      ],
+      "brow_right": [
+        492,
+        225,
+        503,
+        236
+      ],
+      "corner_left": [
+        457,
+        307,
+        466,
+        330
+      ],
+      "corner_right": [
+        485,
+        307,
+        494,
+        330
+      ],
+      "eyelid_left": [
+        442,
+        250,
+        465,
+        275
+      ],
+      "eyelid_right": [
+        492,
+        250,
+        503,
+        275
+      ],
+      "eyeliner_left": [
+        442,
+        250,
+        465,
+        275
+      ],
+      "eyeliner_right": [
+        492,
+        250,
+        503,
+        275
+      ],
+      "hair_back": [
+        422,
+        107,
+        667,
+        1096
+      ],
+      "hair_left": [
+        374,
+        84,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        94,
+        669,
+        1096
+      ],
+      "iris_left": [
+        442,
+        250,
+        465,
+        275
+      ],
+      "iris_right": [
+        492,
+        250,
+        503,
+        275
+      ],
+      "jaw": [
+        435,
+        288,
+        516,
+        361
+      ],
+      "lip_lower": [
+        461,
+        307,
+        490,
+        330
+      ],
+      "lip_upper": [
+        461,
+        307,
+        490,
+        330
+      ],
+      "oral_cavity": [
+        461,
+        307,
+        490,
+        330
+      ],
+      "ornament": [
+        447,
+        99,
+        617,
+        310
+      ],
+      "sleeve_left": [
+        394,
+        421,
+        458,
+        955
+      ],
+      "sleeve_right": [
+        567,
+        421,
+        657,
+        955
+      ],
+      "teeth_tongue": [
+        461,
+        307,
+        490,
+        330
+      ]
+    },
+    "yaw-105-pitch+00": {
+      "body": [
+        265,
+        1096,
+        754,
+        1488
+      ],
+      "hair_back": [
+        290,
+        105,
+        734,
+        1096
+      ],
+      "hair_left": [
+        268,
+        87,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        759,
+        1096
+      ],
+      "ornament": [
+        441,
+        104,
+        582,
+        309
+      ],
+      "sleeve_left": [
+        268,
+        421,
+        439,
+        955
+      ],
+      "sleeve_right": [
+        586,
+        421,
+        759,
+        955
+      ]
+    },
+    "yaw-120-pitch+00": {
+      "body": [
+        292,
+        1096,
+        732,
+        1488
+      ],
+      "hair_back": [
+        314,
+        104,
+        710,
+        1077
+      ],
+      "hair_left": [
+        292,
+        84,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        718,
+        1096
+      ],
+      "ornament": [
+        452,
+        104,
+        589,
+        309
+      ],
+      "sleeve_left": [
+        292,
+        421,
+        447,
+        955
+      ],
+      "sleeve_right": [
+        578,
+        421,
+        718,
+        955
+      ]
+    },
+    "yaw-135-pitch+00": {
+      "body": [
+        272,
+        1096,
+        752,
+        1488
+      ],
+      "hair_back": [
+        296,
+        88,
+        728,
+        1076
+      ],
+      "hair_left": [
+        288,
+        84,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        752,
+        1096
+      ],
+      "ornament": [
+        464,
+        103,
+        606,
+        310
+      ],
+      "sleeve_left": [
+        288,
+        421,
+        441,
+        955
+      ],
+      "sleeve_right": [
+        584,
+        421,
+        752,
+        955
+      ]
+    },
+    "yaw-150-pitch+00": {
+      "body": [
+        271,
+        1096,
+        755,
+        1488
+      ],
+      "hair_back": [
+        292,
+        104,
+        733,
+        1079
+      ],
+      "hair_left": [
+        267,
+        85,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        757,
+        1096
+      ],
+      "ornament": [
+        435,
+        104,
+        589,
+        305
+      ],
+      "sleeve_left": [
+        267,
+        421,
+        439,
+        955
+      ],
+      "sleeve_right": [
+        586,
+        421,
+        757,
+        955
+      ]
+    },
+    "yaw-165-pitch+00": {
+      "body": [
+        259,
+        1096,
+        764,
+        1488
+      ],
+      "hair_back": [
+        277,
+        88,
+        747,
+        1091
+      ],
+      "hair_left": [
+        251,
+        87,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        85,
+        773,
+        1096
+      ],
+      "ornament": [
+        472,
+        105,
+        615,
+        307
+      ],
+      "sleeve_left": [
+        251,
+        421,
+        435,
+        955
+      ],
+      "sleeve_right": [
+        590,
+        421,
+        773,
+        955
+      ]
+    },
+    "yaw-180-pitch+00": {
+      "body": [
+        223,
+        1096,
+        790,
+        1488
+      ],
+      "hair_back": [
+        250,
+        86,
+        773,
+        1096
+      ],
+      "hair_left": [
+        221,
+        84,
+        513,
+        1096
+      ],
+      "hair_right": [
+        512,
+        84,
+        801,
+        1096
+      ],
+      "ornament": [
+        431,
+        86,
+        579,
+        224
+      ],
+      "sleeve_left": [
+        221,
+        421,
+        426,
+        955
+      ],
+      "sleeve_right": [
+        599,
+        421,
+        801,
+        955
+      ]
+    }
+  }
+}

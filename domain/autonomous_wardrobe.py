@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 lazy from dataclasses import dataclass
-lazy from datetime import datetime, timedelta, timezone
+lazy from datetime import UTC, datetime, timedelta
 
 lazy from domain.outfit_pack import (
     MOOD_TAGS,
@@ -13,6 +13,14 @@ lazy from domain.outfit_pack import (
 DEFAULT_CHANGE_COOLDOWN = timedelta(hours=6)
 SPECIAL_OCCASIONS = frozenset({"birthday", "christmas", "valentines"})
 PROTECTIVE_WEATHER = frozenset({"rain", "storm", "snow"})
+
+# Thermal-band boundaries (Celsius).
+HOT_TEMPERATURE = 30.0
+WARM_TEMPERATURE = 24.0
+MILD_TEMPERATURE = 18.0
+COOL_TEMPERATURE = 12.0
+MIN_TEMPERATURE = -80.0
+MAX_TEMPERATURE = 70.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,13 +50,13 @@ class WardrobeDecision:
 
 
 def thermal_band(temperature_c: float) -> str:
-    if temperature_c >= 30.0:
+    if temperature_c >= HOT_TEMPERATURE:
         return "hot"
-    if temperature_c >= 24.0:
+    if temperature_c >= WARM_TEMPERATURE:
         return "warm"
-    if temperature_c >= 18.0:
+    if temperature_c >= MILD_TEMPERATURE:
         return "mild"
-    if temperature_c >= 12.0:
+    if temperature_c >= COOL_TEMPERATURE:
         return "cool"
     return "cold"
 
@@ -56,7 +64,7 @@ def thermal_band(temperature_c: float) -> str:
 def _aware_utc(value: datetime) -> datetime:
     if value.tzinfo is None or value.utcoffset() is None:
         raise ValueError("Wardrobe timestamps must include a timezone.")
-    return value.astimezone(timezone.utc)
+    return value.astimezone(UTC)
 
 
 def _validate_context(context: WardrobeContext) -> None:
@@ -67,7 +75,7 @@ def _validate_context(context: WardrobeContext) -> None:
         raise ValueError("Unknown companion mood.")
     if context.occasion not in OCCASION_TAGS:
         raise ValueError("Unknown wardrobe occasion.")
-    if not -80.0 <= context.temperature_c <= 70.0:
+    if not MIN_TEMPERATURE <= context.temperature_c <= MAX_TEMPERATURE:
         raise ValueError("Temperature is outside the supported range.")
     for value in (context.last_changed_at, context.manual_lock_until):
         if value is not None:

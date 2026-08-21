@@ -33,7 +33,7 @@ def hand(
     points[2] = GestureLandmark(0.43 + shift_x, 0.70, 0.0)
     points[4] = GestureLandmark(0.25 + shift_x, 0.58, 0.0)
     if gesture in {"closed-fist", "thumbs-up", "thumbs-down"}:
-        for base, middle, tip, x in bases:
+        for _base, middle, tip, x in bases:
             points[middle] = GestureLandmark(x + shift_x, 0.69, 0.0)
             points[tip] = GestureLandmark(0.50 + shift_x, 0.72, 0.0)
         points[4] = GestureLandmark(0.45 + shift_x, 0.71, 0.0)
@@ -44,7 +44,7 @@ def hand(
         points[2] = GestureLandmark(0.43 + shift_x, 0.62, 0.0)
         points[4] = GestureLandmark(0.43 + shift_x, 0.92, 0.0)
     elif gesture in {"point-left", "point-right"}:
-        for base, middle, tip, x in bases[1:]:
+        for _base, middle, tip, x in bases[1:]:
             points[middle] = GestureLandmark(x + shift_x, 0.69, 0.0)
             points[tip] = GestureLandmark(0.50 + shift_x, 0.72, 0.0)
         direction = -1.0 if gesture == "point-left" else 1.0

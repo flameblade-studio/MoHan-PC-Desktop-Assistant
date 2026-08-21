@@ -18,9 +18,12 @@ lazy from integrations.azure_speech import AzureSpeechTTS, _SynthesisRequest
 lazy from integrations.realtime_voice import RealtimeVoiceClient
 lazy from integrations.speech import OpenAITTS, WindowsTTS
 
+STEREO_CHANNELS = 2
+TTS_ENGINE_COUNT = 2
+
 
 def _wave(*, channels: int = 1, frames: int = 480) -> bytes:
-    samples = (1_000, -700) if channels == 2 else (1_000,)
+    samples = (1_000, -700) if channels == STEREO_CHANNELS else (1_000,)
     frame = b"".join(
         sample.to_bytes(2, "little", signed=True) for sample in samples
     )
@@ -193,11 +196,11 @@ def test_windows_and_openai_wave_paths_use_the_injected_port() -> None:
         windows._play_wave_bytes(audio, windows._begin_generation())
         openai._play_wave_bytes(audio, openai._begin_generation())
 
-    assert accelerator.calls["scale_pcm16"] == 2
-    assert accelerator.calls["stereo_to_mono_pcm16"] == 2
-    assert accelerator.calls["infer_vowel_pcm16"] == 2
+    assert accelerator.calls["scale_pcm16"] == TTS_ENGINE_COUNT
+    assert accelerator.calls["stereo_to_mono_pcm16"] == TTS_ENGINE_COUNT
+    assert accelerator.calls["infer_vowel_pcm16"] == TTS_ENGINE_COUNT
     assert cues[-1] == (0.0, "CLOSED")
-    assert len(_OutputStream.instances) == 2
+    assert len(_OutputStream.instances) == TTS_ENGINE_COUNT
     assert all(stream.stopped and stream.closed for stream in _OutputStream.instances)
 
 
@@ -230,7 +233,7 @@ def test_realtime_input_and_output_use_resample_scale_and_50_hz_port() -> None:
     )
 
     assert sent
-    assert accelerator.calls["rate_convert_pcm16"] == 2
+    assert accelerator.calls["rate_convert_pcm16"] == TTS_ENGINE_COUNT
     assert accelerator.calls["infer_vowel_pcm16"] == 1
     assert accelerator.calls["scale_pcm16"] == 1
     assert output.writes

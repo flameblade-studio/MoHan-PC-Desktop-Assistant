@@ -21,6 +21,8 @@ lazy from pose_runtime_loader import (
 
 WIDTH = 2
 HEIGHT = 2
+RGBA_HEADER_LENGTH = 6
+VIEW_COUNT = 24
 
 
 def encoded(yaw: int, *, invalid: bool = False) -> bytes:
@@ -112,7 +114,7 @@ class Decoder:
         if self.block:
             self.entered.set()
             assert self.release.wait(timeout=2.0)
-        if len(data) < 6 or data[:4] != b"RGBA":
+        if len(data) < RGBA_HEADER_LENGTH or data[:4] != b"RGBA":
             raise ValueError("invalid image")
         width, height = data[4], data[5]
         rgba = data[6:]
@@ -186,7 +188,7 @@ def assert_complete_atlas_activates_atomically() -> None:
     assert result.active_atlas.complete_360
     assert result.active_atlas.full_body
     assert not result.active_atlas.legacy_fallback
-    assert len(result.active_atlas.views) == 24
+    assert len(result.active_atlas.views) == VIEW_COUNT
     assert result.active_atlas.audit_evidence == "audit-proof-v1"
     assert auditor.calls[0].source_evidence == "source-proof-v1"
     assert activator.calls == [result.active_atlas]

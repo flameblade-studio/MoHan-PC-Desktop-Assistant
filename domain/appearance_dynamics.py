@@ -23,6 +23,11 @@ class MotionGroup(StrEnum):
     ACCESSORY = "accessory"
 
 
+MAX_SUBSTEPS = 8
+MAX_BREATHING_PIXELS = 4.0
+MAX_BREATHING_SCALE = 0.01
+
+
 @dataclass(frozen=True, slots=True)
 class MotionTransform:
     offset_x: float = 0.0
@@ -63,9 +68,9 @@ class DynamicsConfiguration:
         if (
             self.fixed_step_seconds > self.maximum_dt_seconds
             or type(self.maximum_substeps) is not int
-            or not 1 <= self.maximum_substeps <= 8
-            or self.breathing_pixels > 4.0
-            or self.breathing_scale > 0.01
+            or not 1 <= self.maximum_substeps <= MAX_SUBSTEPS
+            or self.breathing_pixels > MAX_BREATHING_PIXELS
+            or self.breathing_scale > MAX_BREATHING_SCALE
         ):
             raise AppearanceDynamicsError("Dynamics limits are invalid.")
 
@@ -366,7 +371,7 @@ class AppearanceDynamics:
     def _static_frame(self) -> DynamicsFrame:
         return DynamicsFrame(
             self._tick,
-            frozendict({group: IDENTITY_TRANSFORM for group in MotionGroup}),
+            frozendict(dict.fromkeys(MotionGroup, IDENTITY_TRANSFORM)),
             True,
         )
 

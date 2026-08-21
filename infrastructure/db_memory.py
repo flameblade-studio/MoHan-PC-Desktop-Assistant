@@ -11,6 +11,11 @@ lazy from infrastructure.memory_index import cosine_similarity, hashed_text_vect
 
 __all__ = ("StudioDBMemoryMethods",)
 
+MAX_TITLE_LENGTH = 36
+MAX_MEMORIES = 500
+LOW_IMPORTANCE_THRESHOLD = 2
+MEMORY_AGE_DAYS = 90
+
 
 class StudioDBMemoryMethods:
     def add_memory(
@@ -28,8 +33,8 @@ class StudioDBMemoryMethods:
         memory_title = title.strip()
         if not memory_title:
             memory_title = " ".join(text.split())
-            if len(memory_title) > 36:
-                memory_title = memory_title[:36].rstrip() + "…"
+            if len(memory_title) > MAX_TITLE_LENGTH:
+                memory_title = memory_title[:MAX_TITLE_LENGTH].rstrip() + "…"
         now = local_wall_time().isoformat(timespec="seconds")
         conflict_title = (
             "title=excluded.title," if title_was_supplied else "title=memories.title,"
@@ -64,7 +69,7 @@ class StudioDBMemoryMethods:
         total = self.conn.execute("SELECT COUNT(*) AS total FROM memories").fetchone()[
             "total"
         ]
-        if int(total) > 500:
+        if int(total) > MAX_MEMORIES:
             self.optimize_memories()
         return memory_id
 
@@ -287,7 +292,7 @@ class StudioDBMemoryMethods:
         candidates = [
             row
             for row in rows
-            if str(row["source"]) == "conversation" and int(row["importance"]) <= 2
+            if str(row["source"]) == "conversation" and int(row["importance"]) <= LOW_IMPORTANCE_THRESHOLD
         ]
         vectors = {
             int(row["id"]): hashed_text_vector(str(row["content"]))
@@ -366,8 +371,8 @@ class StudioDBMemoryMethods:
                 row
                 for row in rows
                 if str(row["source"]) == "conversation"
-                and int(row["importance"]) <= 2
-                and self._memory_age_days(row, reference) >= 90
+                and int(row["importance"]) <= LOW_IMPORTANCE_THRESHOLD
+                and self._memory_age_days(row, reference) >= MEMORY_AGE_DAYS
             ),
             key=lambda row: (
                 int(row["importance"]),

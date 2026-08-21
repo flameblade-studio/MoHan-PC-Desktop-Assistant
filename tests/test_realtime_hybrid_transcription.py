@@ -12,6 +12,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from integrations.realtime_voice import RealtimeVoiceClient
 lazy from integrations.speech import transcribe_wav_bytes
 
+MIN_INPUT_OFFSET_MS = 2999
+MAX_INPUT_OFFSET_MS = 3001
+EXPECTED_GENERATION = 7
+SAMPLE_RATE = 24000
+MIN_DURATION_SECONDS = 1.99
+MAX_DURATION_SECONDS = 2.01
+
 
 class _Socket:
     connected = True
@@ -71,7 +78,7 @@ def run() -> None:
     packet = b"\x10\x00" * 2400
     for _ in range(30):
         client._remember_sent_audio(packet)
-    assert 2999 <= client._current_input_offset_ms() <= 3001
+    assert MIN_INPUT_OFFSET_MS <= client._current_input_offset_ms() <= MAX_INPUT_OFFSET_MS
 
     transcripts: list[str] = []
     client.user_transcript.connect(transcripts.append)
@@ -97,13 +104,13 @@ def run() -> None:
     assert _CapturedThread.target == client._run_hybrid_transcription
     item_id, wav_audio, generation = _CapturedThread.args
     assert item_id == "utterance-1"
-    assert generation == 7
+    assert generation == EXPECTED_GENERATION
     with wave.open(io.BytesIO(wav_audio), "rb") as recording:
-        assert recording.getframerate() == 24000
+        assert recording.getframerate() == SAMPLE_RATE
         assert recording.getnchannels() == 1
-        assert 1.99 <= (
+        assert MIN_DURATION_SECONDS <= (
             recording.getnframes() / recording.getframerate()
-        ) <= 2.01
+        ) <= MAX_DURATION_SECONDS
 
     client._finish_hybrid_transcription(
         "utterance-1",

@@ -58,6 +58,9 @@ __all__ = (
 SensitiveCollector = Callable[[], Mapping[str, object]]
 SensitiveRestorer = Callable[[Mapping[str, object]], None]
 
+MIN_PASSWORD_LENGTH = 12
+MIN_PASSWORD_CATEGORIES = 3
+
 
 @dataclass(frozen=True, slots=True)
 class SensitiveProfileCallbacks:
@@ -127,7 +130,7 @@ def is_strong_profile_password(password: str) -> bool:
         any(character.isdigit() for character in password),
         any(not character.isalnum() for character in password),
     )
-    return len(password) >= 12 and sum(categories) >= 3
+    return len(password) >= MIN_PASSWORD_LENGTH and sum(categories) >= MIN_PASSWORD_CATEGORIES
 
 
 def localized_profile_failure(

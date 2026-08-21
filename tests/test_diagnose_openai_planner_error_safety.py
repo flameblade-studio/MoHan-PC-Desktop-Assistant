@@ -15,6 +15,10 @@ if str(ROOT) not in sys.path:
 
 lazy from tools import diagnose_openai_planner as diagnostic
 
+EXIT_CODE_HTTP_ERROR = 3
+EXIT_CODE_OS_ERROR = 4
+EXIT_CODE_PLANNER_FAILED = 5
+
 _FAKE_TOKEN = "NOT-A-REAL-TOKEN-DIAGNOSTIC-BOUNDARY"
 _PRIVATE_PATH = "C:" + "\\Users\\private-user\\AppData\\MoHan\\secret.json"
 _RESPONSE_BODY = json.dumps(
@@ -132,7 +136,7 @@ def test_http_error_exposes_only_finite_metadata() -> None:
     error = _http_error()
     result, output = _run(_raise(error))
 
-    assert result == 3
+    assert result == EXIT_CODE_HTTP_ERROR
     assert "MODEL_CHECK=failed" in output
     assert "type=http_error" in output
     assert "diagnostic=remote_service_failure" in output
@@ -146,7 +150,7 @@ def test_raw_exception_and_planner_failure_are_sanitized() -> None:
     error = OSError(_UNTRUSTED_DETAIL)
     result, output = _run(_raise(error))
 
-    assert result == 4
+    assert result == EXIT_CODE_OS_ERROR
     assert "type=operating_system_error" in output
     assert "diagnostic=local_io_failure" in output
     assert error.__cause__ is None
@@ -156,7 +160,7 @@ def test_raw_exception_and_planner_failure_are_sanitized() -> None:
     response = io.BytesIO(b'{"id":"gpt-safe-model"}')
     result, output = _run(lambda *_args, **_kwargs: response)
 
-    assert result == 5
+    assert result == EXIT_CODE_PLANNER_FAILED
     assert "PLANNER=failed" in output
     assert "type=unknown_error" in output
     assert "diagnostic=unknown_failure" in output

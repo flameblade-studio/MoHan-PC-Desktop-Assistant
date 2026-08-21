@@ -10,6 +10,10 @@ lazy from urllib.request import Request, urlopen
 lazy from domain.safe_error import sanitize_error
 lazy from domain.service_status_localization import ServiceStatus, service_status
 
+BASELINE_SAMPLES = 3
+SPEECH_START_THRESHOLD = 500
+SERVER_ERROR_BOUNDARY = 500
+
 
 @dataclass(frozen=True, slots=True)
 class RecordingLimits:
@@ -44,12 +48,12 @@ class SpeechEndpointDetector:
 
     def _calibrate(self, level: float) -> bool:
         baseline = self.baseline
-        if self.speech_started or len(baseline) >= 3:
+        if self.speech_started or len(baseline) >= BASELINE_SAMPLES:
             return False
         baseline.append(level)
-        if level > 500:
+        if level > SPEECH_START_THRESHOLD:
             self.speech_started = True
-        elif len(baseline) == 3:
+        elif len(baseline) == BASELINE_SAMPLES:
             self.threshold = max(
                 120.0,
                 (sum(baseline) / 3) * 2.2,
@@ -124,7 +128,7 @@ def transcription_http_error_message(
             key = ServiceStatus.SPEECH_OPENAI_QUOTA_EXHAUSTED
         case 429:
             key = ServiceStatus.SPEECH_OPENAI_RATE_LIMITED
-        case _ if status >= 500:
+        case _ if status >= SERVER_ERROR_BOUNDARY:
             safe = sanitize_error(detail, http_status=status)
             return (
                 service_status(

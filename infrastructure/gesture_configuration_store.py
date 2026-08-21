@@ -97,7 +97,7 @@ class GestureConfigurationStore[SnapshotT]:
     def load(self) -> GestureConfiguration:
         try:
             raw = self._settings.read(PORTABLE_GESTURE_SETTING_KEYS)
-        except Exception:  # noqa: BLE001 -- persistence boundary fails closed
+        except Exception:
             return GestureConfiguration()
         if not isinstance(raw, Mapping):
             return GestureConfiguration()
@@ -145,7 +145,7 @@ class GestureConfigurationStore[SnapshotT]:
 
         try:
             settings = self._settings.snapshot(PORTABLE_GESTURE_SETTING_KEYS)
-        except Exception:  # noqa: BLE001 -- persistence boundary hides details
+        except Exception:
             raise GestureConfigurationStoreError(
                 "Gesture configuration could not be snapshotted."
             ) from None
@@ -172,7 +172,7 @@ class GestureConfigurationStore[SnapshotT]:
         restored = True
         try:
             self._settings.restore(snapshot.settings)
-        except Exception:  # noqa: BLE001 -- rollback failure is fixed-detail
+        except Exception:
             restored = False
         if self._template_store is not None:
             protected = snapshot.protected_templates
@@ -199,7 +199,7 @@ class GestureConfigurationStore[SnapshotT]:
             self._settings.write(values)
             if self._template_store is not None:
                 self._template_store.save(configuration)
-        except Exception:  # noqa: BLE001 -- one cross-layer transaction boundary
+        except Exception:
             try:
                 self.restore(before)
             except GestureConfigurationStoreError:

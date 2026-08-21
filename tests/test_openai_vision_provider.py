@@ -23,6 +23,9 @@ lazy from integrations.openai_vision_provider import (
     create_openai_vision_provider,
 )
 
+REQUEST_TIMEOUT_SECONDS = 20.0
+MAX_CANCELLED_OPERATION_ID = 9_999
+
 
 def assert_legacy_sdk_status_migrates_to_transport() -> None:
     assert VisionResultStatus("sdk_unavailable") is (
@@ -131,7 +134,7 @@ def assert_responses_request_is_private_and_typed() -> None:
     assert result.understanding.claims[1].status is ClaimStatus.INFERRED
     request = client.responses.calls[0]
     assert request["store"] is False
-    assert request["timeout"] == 20.0
+    assert request["timeout"] == REQUEST_TIMEOUT_SECONDS
     content = request["input"][0]["content"]  # type: ignore[index]
     assert content[0]["type"] == "input_text"
     assert "present an inference as fact" in content[0]["text"]
@@ -206,7 +209,7 @@ def assert_cancelled_and_active_operation_state_is_bounded() -> None:
     for operation_id in range(10_000):
         service.cancel(operation_id)
     assert not hasattr(service, "_cancelled")
-    assert service._cancelled_through == 9_999
+    assert service._cancelled_through == MAX_CANCELLED_OPERATION_ID
     assert service.analyze(frame(0)).status is VisionResultStatus.CANCELLED
 
     clock = Clock()
@@ -279,7 +282,7 @@ def assert_http_factory_uses_responses_api_without_sdk() -> None:
     assert len(captured) == 1
     request, timeout = captured[0]
     assert request.full_url == "https://api.openai.com/v1/responses"
-    assert timeout == 20.0
+    assert timeout == REQUEST_TIMEOUT_SECONDS
     payload = json.loads(request.data.decode("utf-8"))
     assert payload["store"] is False
     assert payload["model"] == "gpt-5.6-luna"

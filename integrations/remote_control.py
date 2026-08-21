@@ -24,6 +24,11 @@ StatusProvider = Callable[[], dict[str, Any]]
 CommandHandler = Callable[[str, str], dict[str, Any]]
 ScreenProvider = Callable[[], bytes]
 
+MAX_PORT = 65_535
+RATE_LIMIT_WINDOW_SECONDS = 60
+MAX_REQUEST_BYTES = 16_384
+MAX_COMMAND_TEXT_LENGTH = 2000
+
 SAFE_DOWNLOAD_TYPES = frozendict({
     ".csv": "text/csv; charset=utf-8",
     ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -223,7 +228,7 @@ class RemoteControlServer:
                 "非本機綁定必須先確認使用 Home Assistant Cloud、"
                 "Tailscale 或其他可信任的加密私人網路"
             )
-        if not 0 <= int(self.config.port) <= 65_535:
+        if not 0 <= int(self.config.port) <= MAX_PORT:
             raise ValueError("遠端服務連接埠必須介於 0 與 65535")
 
     def start(self) -> None:
@@ -267,7 +272,7 @@ class RemoteControlServer:
         digest = hashlib.sha256(client_key.encode("utf-8")).hexdigest()
         now = time.monotonic()
         with self._lock:
-            recent = [stamp for stamp in self._rate.get(digest, []) if now - stamp < 60]
+            recent = [stamp for stamp in self._rate.get(digest, []) if now - stamp < RATE_LIMIT_WINDOW_SECONDS]
             if len(recent) >= max(5, self.config.max_requests_per_minute):
                 self._rate[digest] = recent
                 return False
@@ -556,7 +561,7 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
             length = int(self.headers.get("Content-Length", "0"))
         except ValueError:
             length = 0
-        if not 0 < length <= 16_384:
+        if not 0 < length <= MAX_REQUEST_BYTES:
             self._json(
                 HTTPStatus.BAD_REQUEST,
                 {"error": "請求大小不正確"},
@@ -579,7 +584,7 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
             )
             return None
         text = str(payload.get("text", "")).strip()
-        if not text or len(text) > 2000:
+        if not text or len(text) > MAX_COMMAND_TEXT_LENGTH:
             self._json(
                 HTTPStatus.BAD_REQUEST,
                 {"error": "指令文字不正確"},

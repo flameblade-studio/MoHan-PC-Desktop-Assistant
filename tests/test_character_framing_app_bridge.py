@@ -31,6 +31,8 @@ lazy from wellbeing_reminder import (
     WellbeingKind,
 )
 
+EXPECTED_GENERATION = 7
+
 
 class Clock:
     def __init__(self) -> None:
@@ -126,7 +128,7 @@ def assert_atomic_command_has_generation_crop_transition_and_audit() -> None:
     assert result.disposition is FramingBridgeDisposition.EMITTED
     command = result.command
     assert command is not None
-    assert command.generation == 7
+    assert command.generation == EXPECTED_GENERATION
     assert command.mode is FramingMode.CLOSE
     assert command.crop.width > 0.0 and command.crop.height > 0.0
     assert command.transition_ms > 0

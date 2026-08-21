@@ -14,11 +14,15 @@ lazy from domain.audio_acceleration import (
     PYTHON_PCM_ACCELERATION,
     PcmAccelerationPort,
 )
+lazy from domain.constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.lip_sync import (
     VISEME_CUES_PER_SECOND,
 )
 lazy from domain.pcm_audio import PcmAudioError
 lazy from domain.service_status_localization import ServiceStatus, service_status
+
+PCM16_SAMPLE_WIDTH = 2
+FULL_VOLUME_PERCENT = 100
 
 
 def apply_wav_volume(
@@ -30,12 +34,12 @@ def apply_wav_volume(
 ) -> bytes:
     """Apply application-local gain without changing the Windows mixer."""
     gain = 0.0 if muted else max(0, min(160, int(volume_percent))) / 100.0
-    if gain == 1.0:
+    if abs(gain - 1.0) < FLOAT_COMPARISON_EPSILON:
         return audio
     try:
         with wave.open(io.BytesIO(audio), "rb") as source:
             params = source.getparams()
-            if params.sampwidth != 2:
+            if params.sampwidth != PCM16_SAMPLE_WIDTH:
                 return audio
             frame_chunks = []
             while chunk := source.readframes(4096):
@@ -63,7 +67,7 @@ def _mono_wave_chunk(
     channels: int,
     pcm_acceleration: PcmAccelerationPort = PYTHON_PCM_ACCELERATION,
 ) -> bytes:
-    if channels == 2:
+    if channels == PCM16_SAMPLE_WIDTH:
         return pcm_acceleration.stereo_to_mono_pcm16(chunk)
     return chunk
 
@@ -78,7 +82,7 @@ def _emit_wave_timeline(
 ) -> None:
     rate = source.getframerate()
     channels = source.getnchannels()
-    if source.getsampwidth() != 2:
+    if source.getsampwidth() != PCM16_SAMPLE_WIDTH:
         return
     frames_per_chunk = max(1, rate // VISEME_CUES_PER_SECOND)
     chunk = source.readframes(frames_per_chunk)
@@ -191,7 +195,7 @@ def play_wave_with_visemes_impl(
     # long replies do not pay an up-front full-file analysis delay.
     playback_start.set()
     try:
-        if audio_path is not None and volume_percent == 100 and not muted:
+        if audio_path is not None and volume_percent == FULL_VOLUME_PERCENT and not muted:
             boundary.winsound_adapter.PlaySound(
                 str(audio_path),
                 boundary.winsound_adapter.SND_FILENAME,
@@ -313,10 +317,10 @@ def _play_cancellable_wave_bytes(
         channels = source.getnchannels()
         sample_rate = source.getframerate()
         if (
-            source.getsampwidth() != 2
+            source.getsampwidth() != PCM16_SAMPLE_WIDTH
             or source.getcomptype() != "NONE"
             or cue_source.getnchannels() != channels
-            or cue_source.getsampwidth() != 2
+            or cue_source.getsampwidth() != PCM16_SAMPLE_WIDTH
             or cue_source.getframerate() != sample_rate
             or cue_source.getcomptype() != "NONE"
         ):

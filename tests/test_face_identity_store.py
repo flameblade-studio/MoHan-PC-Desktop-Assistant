@@ -12,6 +12,8 @@ lazy from infrastructure.face_identity_store import (
 )
 lazy from vision_domain import IdentityState, cosine_similarity
 
+EXPECTED_PROFILE_COUNT = 2
+
 
 class MemorySecretStore:
     def __init__(self) -> None:
@@ -128,7 +130,7 @@ def run() -> None:
     legacy_payload = json.loads(secret.value)
     legacy_payload.pop("version")
     secret.value = json.dumps(legacy_payload)
-    assert len(identities.profiles()) == 2
+    assert len(identities.profiles()) == EXPECTED_PROFILE_COUNT
     assert identities.delete(profile.profile_id)
     assert identities.delete(second.profile_id)
     assert identities.profiles() == ()

@@ -47,7 +47,10 @@ lazy from presentation.dashboard_settings_persistence import (
     DashboardSettingsPersistenceMixin,
 )
 lazy from presentation.first_run_wizard import FirstRunWizard
-lazy from presentation.flagship.control_center import FlagshipControlCenter
+lazy from presentation.flagship.control_center import (
+    ControlCenterDependencies,
+    FlagshipControlCenter,
+)
 lazy from presentation.profile_transfer_ui import PortableProfilePanel
 lazy from presentation.settings_ui_localization import (
     PHYSICS_TEXT_KEYS,
@@ -215,11 +218,13 @@ class DashboardSettingsMixin:
             self.db,
             self.db.path.parent,
             self,
-            platform_services=self.platform_services,
-            secret_store_factory=self.secret_store_factory,
-            cloud_vision_service_factory=self.cloud_vision_service_factory,
-            dense_face_provider_factory=self.dense_face_provider_factory,
-            gesture_controller=self.gesture_controller,
+            dependencies=ControlCenterDependencies(
+                platform_services=self.platform_services,
+                secret_store_factory=self.secret_store_factory,
+                cloud_vision_service_factory=self.cloud_vision_service_factory,
+                dense_face_provider_factory=self.dense_face_provider_factory,
+                gesture_controller=self.gesture_controller,
+            ),
             language=self.ui_language,
         )
         self.flagship_center.setMinimumHeight(720)

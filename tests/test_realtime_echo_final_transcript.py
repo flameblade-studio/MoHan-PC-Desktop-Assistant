@@ -9,6 +9,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from integrations.realtime_voice import RealtimeVoiceClient
 
+EXPECTED_RESPONSE_EVENT_COUNT = 2
+EXPECTED_CLEAR_EVENT_COUNT = 2
+
 
 class _Socket:
     connected = True
@@ -81,7 +84,7 @@ def run() -> None:
         for event in client.ws.sent
         if event == {"type": "response.create"}
     ]
-    assert len(response_events) == 2
+    assert len(response_events) == EXPECTED_RESPONSE_EVENT_COUNT
     client._handle_server_event(
         {
             "type": (
@@ -99,7 +102,7 @@ def run() -> None:
         for event in client.ws.sent
         if event == {"type": "response.create"}
     ]
-    assert len(response_events) == 2
+    assert len(response_events) == EXPECTED_RESPONSE_EVENT_COUNT
     assert {
         "type": "conversation.item.delete",
         "item_id": "noise-turn",
@@ -118,7 +121,7 @@ def run() -> None:
         for event in client.ws.sent
         if event == {"type": "input_audio_buffer.clear"}
     ]
-    assert len(clear_events) >= 2
+    assert len(clear_events) >= EXPECTED_CLEAR_EVENT_COUNT
 
     # A packet that was dequeued before playback began must still be rejected
     # by the second guard immediately before WebSocket transmission.

@@ -28,6 +28,8 @@ APPIMAGETOOL_URL = (
     "appimagetool-x86_64.AppImage"
 )
 POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
+VIEW_RING_COUNT = 24
+MAX_ICON_SIZE = 1024
 DMG_CREATE_ATTEMPTS = 3
 DMG_CREATE_RETRY_SECONDS = 3
 
@@ -67,7 +69,7 @@ def _release_pose_atlas_root(required: bool) -> Path | None:
     if not required:
         return None
     views = tuple(POSE_ATLAS_ROOT.glob("yaw*-pitch+00.png"))
-    if len(views) != 24:
+    if len(views) != VIEW_RING_COUNT:
         raise FileNotFoundError(
             "The Preview release requires 24 PoseAtlas v4 view assets: "
             f"{POSE_ATLAS_ROOT}"
@@ -183,7 +185,7 @@ def _create_icns(temp_root: Path) -> Path:
             ]
         )
         doubled = size * 2
-        if doubled <= 1024:
+        if doubled <= MAX_ICON_SIZE:
             _run(
                 [
                     "sips",

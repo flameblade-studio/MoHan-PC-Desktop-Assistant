@@ -19,6 +19,13 @@ MAX_TOTAL_BYTES = 16 * 1024 * 1024
 MAX_COMPRESSION_RATIO = 100
 MAX_IMAGE_WIDTH = 4096
 MAX_IMAGE_HEIGHT = 4096
+SYMLINK_FILE_TYPE = 0o120000
+MIN_PNG_HEADER_LENGTH = 24
+VIEWBOX_DIMENSIONS = 4
+MAX_NAME_LENGTH = 80
+MAX_RADIUS = 48
+MIN_CONTRAST_RATIO = 4.5
+SRGB_LINEAR_THRESHOLD = 0.04045
 LANGUAGES = frozenset({"zh-TW", "zh-CN", "en", "ja-JP"})
 MEMBERS = frozenset({MANIFEST, "assets/background.svg", "assets/background.png"})
 MANIFEST_KEYS = frozenset({
@@ -100,7 +107,7 @@ def _safe_member(info: zipfile.ZipInfo) -> None:
         raise ThemePackError("Unsafe archive path.")
     if info.flag_bits & 1 or info.file_size > MAX_MEMBER_BYTES:
         raise ThemePackError("Unsafe archive member.")
-    if (info.external_attr >> 16) & 0o170000 == 0o120000:
+    if (info.external_attr >> 16) & 0o170000 == SYMLINK_FILE_TYPE:
         raise ThemePackError("Symbolic links are forbidden.")
     compressed = max(1, info.compress_size)
     if info.file_size / compressed > MAX_COMPRESSION_RATIO:
@@ -108,7 +115,7 @@ def _safe_member(info: zipfile.ZipInfo) -> None:
 
 
 def _png_dimensions(data: bytes) -> tuple[int, int]:
-    if len(data) < 24 or data[:8] != b"\x89PNG\r\n\x1a\n" or data[12:16] != b"IHDR":
+    if len(data) < MIN_PNG_HEADER_LENGTH or data[:8] != b"\x89PNG\r\n\x1a\n" or data[12:16] != b"IHDR":
         raise ThemePackError("Invalid PNG background.")
     return struct.unpack(">II", data[16:24])
 
@@ -150,7 +157,7 @@ def _declared_svg_dimensions(root: ElementTree.Element) -> tuple[int, int]:
         dimensions = int(float(width)), int(float(height))
     except ValueError:
         viewbox = root.attrib.get("viewBox", "").split()
-        if len(viewbox) != 4:
+        if len(viewbox) != VIEWBOX_DIMENSIONS:
             raise ThemePackError("SVG requires numeric dimensions.") from None
         try:
             dimensions = int(float(viewbox[2])), int(float(viewbox[3]))
@@ -168,7 +175,7 @@ def _text_map(value: object) -> frozendict[str, str]:
     if not isinstance(value, dict) or set(value) != LANGUAGES:
         raise ThemePackError("All four localized display names are required.")
     result = {str(key): str(text).strip() for key, text in value.items()}
-    if any(not text or len(text) > 80 for text in result.values()):
+    if any(not text or len(text) > MAX_NAME_LENGTH for text in result.values()):
         raise ThemePackError("Invalid localized display name.")
     return frozendict(result)
 
@@ -253,7 +260,7 @@ def _theme_from_manifest(
     if not FONT.fullmatch(font):
         raise ThemePackError("Invalid theme font.")
     radius = manifest["radius"]
-    if not isinstance(radius, int) or isinstance(radius, bool) or not 0 <= radius <= 48:
+    if not isinstance(radius, int) or isinstance(radius, bool) or not 0 <= radius <= MAX_RADIUS:
         raise ThemePackError("Invalid theme radius.")
     source_channel, source_kind, author, license_name = _validated_source(
         manifest["source"]
@@ -468,7 +475,7 @@ def build_stylesheet(theme: ThemePack) -> str:
 def _readable_foreground(background: str, preferred: str) -> str:
     """Keep theme text readable when a package supplies a deep or pale surface."""
 
-    if _contrast_ratio(background, preferred) >= 4.5:
+    if _contrast_ratio(background, preferred) >= MIN_CONTRAST_RATIO:
         return preferred
     candidates = ("#111827", "#FFFFFF")
     return max(candidates, key=lambda color: _contrast_ratio(background, color))
@@ -489,7 +496,7 @@ def _relative_luminance(color: str) -> float:
     )
     linear = tuple(
         channel / 12.92
-        if channel <= 0.04045
+        if channel <= SRGB_LINEAR_THRESHOLD
         else ((channel + 0.055) / 1.055) ** 2.4
         for channel in channels
     )

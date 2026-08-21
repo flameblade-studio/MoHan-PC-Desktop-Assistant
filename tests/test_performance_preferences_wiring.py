@@ -24,6 +24,10 @@ lazy from performance_preferences import (
     PerformancePreferences,
 )
 
+DEFAULT_INTENSITY_PERCENT = 60
+COMMITTED_INTENSITY_PERCENT = 72
+IMPORTED_INTENSITY_PERCENT = 77
+
 PRIVATE_SETTINGS = {
     "api_key": "fixture-secret",
     "azure_speech_key": "fixture-azure-secret",
@@ -51,11 +55,11 @@ def assert_db_port_is_atomic_and_cancel_does_not_write(root: Path) -> None:
         draft.cancel()
         assert database.conn.total_changes == before_changes
         assert database.setting(PROACTIVE_BODY_KEY) is True
-        assert database.setting(INTENSITY_KEY) == 60
+        assert database.setting(INTENSITY_KEY) == DEFAULT_INTENSITY_PERCENT
 
         committed = store.begin_edit().update(intensity_percent=72).commit()
-        assert committed.intensity_percent == 72
-        assert database.setting(INTENSITY_KEY) == 72
+        assert committed.intensity_percent == COMMITTED_INTENSITY_PERCENT
+        assert database.setting(INTENSITY_KEY) == COMMITTED_INTENSITY_PERCENT
         assert database.setting(STORE_SCHEMA_KEY) == 1
     finally:
         database.close()
@@ -157,7 +161,7 @@ def assert_unknown_portable_fields_never_reach_database(root: Path) -> None:
                 },
             }
         )
-        assert imported.intensity_percent == 77
+        assert imported.intensity_percent == IMPORTED_INTENSITY_PERCENT
         raw = dict(database.conn.execute("SELECT key,value FROM settings"))
         forbidden = {
             "future_motion",

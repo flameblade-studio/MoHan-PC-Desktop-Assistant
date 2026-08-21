@@ -23,6 +23,7 @@ REQUIRED_OPERATIONS = (
     "crossfade_rgba",
     "composite_region_rgba",
 )
+PARALLEL_PIXEL_THRESHOLD = 262_144
 NATIVE_READY = NATIVE is not None and all(
     hasattr(NATIVE, operation) for operation in REQUIRED_OPERATIONS
 )
@@ -69,7 +70,7 @@ def test_native_crossfade_matches_python_for_every_rounding_boundary() -> None:
 
 def test_native_parallel_boundary_remains_bit_exact() -> None:
     threshold = NATIVE.__rgba_parallel_pixel_threshold__
-    assert threshold == 262_144
+    assert threshold == PARALLEL_PIXEL_THRESHOLD
     for pixels in (threshold - 1, threshold):
         target = bytes((17, 37, 59, 211)) * pixels
         source = bytes((181, 97, 43, 127)) * pixels

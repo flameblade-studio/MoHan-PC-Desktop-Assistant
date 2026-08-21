@@ -24,8 +24,10 @@ LAYER_NAMES = (
     "infrastructure",
 )
 MAX_LAYER_MODULE_LINES = 1_200
+MAX_ROOT_APP_LINES = 50
 NON_PRODUCT_PYTHON_DIRECTORIES = frozenset({
     "build-temp",  # generated packaging/build output
+    "constants",  # shared, dependency-free constant library (not a product layer)
     "dist",  # generated release/package output
     "native",  # Rust workspace; any Python files below it are generated bindings
     "tests",
@@ -778,7 +780,7 @@ def test_root_app_is_required_thin_composition_entrypoint() -> None:
 
     source = path.read_text(encoding="utf-8-sig")
     physical_lines = len(source.splitlines())
-    assert physical_lines <= 50, (
+    assert physical_lines <= MAX_ROOT_APP_LINES, (
         "Root app.py must be a composition-only entrypoint with at most "
         f"50 physical lines; found {physical_lines}"
     )

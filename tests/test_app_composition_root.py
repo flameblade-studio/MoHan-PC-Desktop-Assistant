@@ -6,6 +6,8 @@ lazy from pathlib import Path
 lazy from tools.check_app_composition_root import inspect_composition_root
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+MAX_PHYSICAL_LINES = 50
+PAIR_LENGTH = 2
 
 
 def inspect_source(source: str):
@@ -37,7 +39,7 @@ if __name__ == "__main__":
 def test_thin_composition_root_passes() -> None:
     report = inspect_source(valid_root())
     assert report.passed, report.issues
-    assert report.physical_lines <= 50
+    assert report.physical_lines <= MAX_PHYSICAL_LINES
 
 
 def test_physical_line_limit_is_strict() -> None:
@@ -73,7 +75,7 @@ def test_integration_and_infrastructure_imports_are_forbidden() -> None:
     )
     issues = inspect_source(source).issues
     forbidden = [issue for issue in issues if issue.code == "infrastructure_import_forbidden"]
-    assert len(forbidden) == 2
+    assert len(forbidden) == PAIR_LENGTH
     assert all("must not import" in issue.message for issue in forbidden)
 
 

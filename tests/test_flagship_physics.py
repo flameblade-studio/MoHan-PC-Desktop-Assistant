@@ -23,6 +23,13 @@ FEATURES = (
     "physics_face_parallax",
 )
 
+MOUTH_APERTURE_MIN = 0.16
+ORNAMENT_ANGLE_MAX = 1.15
+HAIR_LEFT_ANGLE_MAX = 0.34
+HAIR_RIGHT_ANGLE_MAX = 0.32
+SLEEVE_LEFT_ANGLE_MAX = 0.16
+SLEEVE_RIGHT_ANGLE_MAX = 0.15
+
 
 def stop_automatic_timers(window: CompanionWindow) -> None:
     for timer in window.findChildren(QTimer):
@@ -146,7 +153,7 @@ def assert_viseme_hysteresis(
     window._audio_viseme_cue(0.55, "O")
     assert window.viseme_dynamics.current == "O"
     assert window.speech_current_expression == "mouth_o"
-    assert 0.16 <= window.mouth_aperture_target < 1.0
+    assert MOUTH_APERTURE_MIN <= window.mouth_aperture_target < 1.0
     assert window.character.pixmap().cacheKey() != (
         window.expression_pixmaps["mouth_o"].cacheKey()
     )
@@ -213,11 +220,11 @@ def assert_physics_stability(window: CompanionWindow) -> None:
         assert math.isfinite(window.hair_right_angle)
         assert math.isfinite(window.sleeve_left_angle)
         assert math.isfinite(window.sleeve_right_angle)
-        assert abs(window.ornament_angle) <= 1.15
-        assert abs(window.hair_left_angle) <= 0.34
-        assert abs(window.hair_right_angle) <= 0.32
-        assert abs(window.sleeve_left_angle) <= 0.16
-        assert abs(window.sleeve_right_angle) <= 0.15
+        assert abs(window.ornament_angle) <= ORNAMENT_ANGLE_MAX
+        assert abs(window.hair_left_angle) <= HAIR_LEFT_ANGLE_MAX
+        assert abs(window.hair_right_angle) <= HAIR_RIGHT_ANGLE_MAX
+        assert abs(window.sleeve_left_angle) <= SLEEVE_LEFT_ANGLE_MAX
+        assert abs(window.sleeve_right_angle) <= SLEEVE_RIGHT_ANGLE_MAX
 
 
 def assert_idle_closes_mouth(window: CompanionWindow) -> None:

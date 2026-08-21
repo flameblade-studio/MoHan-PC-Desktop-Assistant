@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 # These fixtures intentionally model MoHan's offset-free local wall clock.
-# ruff: noqa: DTZ001
 lazy import sys
 lazy import time
 lazy from datetime import datetime
@@ -17,6 +16,8 @@ lazy from background_agents import (
     VisibleAppWorker,
     is_quiet_time,
 )
+
+PAIR_LENGTH = 2
 
 
 class FakeClock:
@@ -79,7 +80,7 @@ def run() -> None:
         diagnostic = DiagnosticReportWorker(lambda: report)
         observations = list(diagnostic.poll())
         assert len(observations) == 1
-        assert observations[0].metadata["issue_lines"] == 2
+        assert observations[0].metadata["issue_lines"] == PAIR_LENGTH
         assert observations[0].metadata["read_only"] is True
         assert list(diagnostic.poll()) == []
         assert report.read_text(encoding="utf-8").startswith("warning")

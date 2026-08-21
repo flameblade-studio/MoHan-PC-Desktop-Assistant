@@ -6,6 +6,14 @@ lazy from collections import deque
 lazy from collections.abc import Callable, Collection
 lazy from dataclasses import dataclass
 
+# Complex-prompt length thresholds (characters) for wait-expression scoring.
+COMPLEX_PROMPT_LENGTH = 56
+VERY_COMPLEX_PROMPT_LENGTH = 110
+ATTENTIVE_PROMPT_LENGTH = 34
+MIN_QUESTION_MARKS = 2
+MIN_SENTENCE_BREAKS = 2
+MIN_COMPLEX_SCORE = 2
+
 EMOTION_TO_EXPRESSION = frozendict({
     "neutral": "speaking",
     "thinking": "thinking_front",
@@ -123,17 +131,17 @@ def plan_wait_expressions(prompt: str) -> tuple[WaitExpressionCue, ...]:
     score = 0
     marker_hits = sum(word in compact for word in _DEEP_THINKING_MARKERS)
     score += min(4, marker_hits * 2)
-    if len(compact) >= 56:
+    if len(compact) >= COMPLEX_PROMPT_LENGTH:
         score += 1
-    if len(compact) >= 110:
+    if len(compact) >= VERY_COMPLEX_PROMPT_LENGTH:
         score += 1
-    if compact.count("？") + compact.count("?") >= 2:
+    if compact.count("？") + compact.count("?") >= MIN_QUESTION_MARKS:
         score += 1
-    if sum(compact.count(mark) for mark in ("。", "；", ";", "\n")) >= 2:
+    if sum(compact.count(mark) for mark in ("。", "；", ";", "\n")) >= MIN_SENTENCE_BREAKS:
         score += 1
 
     cues: list[WaitExpressionCue] = []
-    if score >= 2:
+    if score >= MIN_COMPLEX_SCORE:
         cues.append(
             WaitExpressionCue(
                 "thinking_front",
@@ -142,7 +150,7 @@ def plan_wait_expressions(prompt: str) -> tuple[WaitExpressionCue, ...]:
                 "complex_prompt_still_pending",
             )
         )
-    elif len(compact) >= 34:
+    elif len(compact) >= ATTENTIVE_PROMPT_LENGTH:
         cues.append(
             WaitExpressionCue(
                 "attentive_front",

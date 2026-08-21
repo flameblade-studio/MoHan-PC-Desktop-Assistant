@@ -8,6 +8,12 @@ lazy from enum import StrEnum
 
 lazy from domain.openai_vision_preferences import VisionDetail
 
+# Vision-response length and item-count bounds.
+MAX_CLAIM_LENGTH = 500
+MAX_SUMMARY_LENGTH = 1_000
+MAX_CLAIMS = 32
+MAX_UNCERTAINTIES = 16
+
 
 class ClaimStatus(StrEnum):
     OBSERVED = "observed"
@@ -44,11 +50,11 @@ class VisualClaim:
     evidence: str
 
     def __post_init__(self) -> None:
-        if not self.text.strip() or len(self.text) > 500:
+        if not self.text.strip() or len(self.text) > MAX_CLAIM_LENGTH:
             raise ValueError("Claim text must contain 1 to 500 characters.")
         if not math.isfinite(self.confidence) or not 0.0 <= self.confidence <= 1.0:
             raise ValueError("Claim confidence must be between zero and one.")
-        if len(self.evidence) > 500:
+        if len(self.evidence) > MAX_CLAIM_LENGTH:
             raise ValueError("Claim evidence exceeds the supported length.")
         if self.status is ClaimStatus.OBSERVED and not self.evidence.strip():
             raise ValueError("Observed claims require visible evidence.")
@@ -63,11 +69,11 @@ class VisualUnderstanding:
     independently_verified: bool = False
 
     def __post_init__(self) -> None:
-        if not self.summary.strip() or len(self.summary) > 1_000:
+        if not self.summary.strip() or len(self.summary) > MAX_SUMMARY_LENGTH:
             raise ValueError("Summary must contain 1 to 1000 characters.")
-        if len(self.claims) > 32 or len(self.uncertainties) > 16:
+        if len(self.claims) > MAX_CLAIMS or len(self.uncertainties) > MAX_UNCERTAINTIES:
             raise ValueError("Vision response exceeds the supported item count.")
-        if any(not item.strip() or len(item) > 500 for item in self.uncertainties):
+        if any(not item.strip() or len(item) > MAX_CLAIM_LENGTH for item in self.uncertainties):
             raise ValueError("Uncertainty entries must contain 1 to 500 characters.")
         if not self.model_reported or self.independently_verified:
             raise ValueError("Remote vision output cannot be marked independently verified.")

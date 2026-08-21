@@ -19,6 +19,10 @@ lazy from infrastructure.hand_landmark_provider import (
     _Palm,
 )
 
+HAND_COUNT = 2
+LANDMARK_COUNT = 21
+MIRRORED_X = 0.8
+
 
 class FakeNet:
     def __init__(self, outputs: tuple[Any, ...] = ()) -> None:
@@ -167,8 +171,8 @@ def test_returns_two_typed_hands_without_retaining_source_frame(tmp_path: Path) 
     result = provider.analyze(_frame(), 4, 3)
 
     assert result.status is HandLandmarkStatus.OK
-    assert len(result.hands) == 2
-    assert all(len(hand.landmarks) == 21 for hand in result.hands)
+    assert len(result.hands) == HAND_COUNT
+    assert all(len(hand.landmarks) == LANDMARK_COUNT for hand in result.hands)
     assert not hasattr(provider, "_frame")
     assert len(runner.frames) == 1
 
@@ -184,7 +188,7 @@ def test_selfie_mode_mirrors_x_and_swaps_handedness(tmp_path: Path) -> None:
     result = provider.analyze(_frame(), 4, 3, mirror=MirrorMode.SELFIE)
 
     assert result.hands[0].handedness is Handedness.RIGHT
-    assert result.hands[0].landmarks[0].x == 0.8
+    assert result.hands[0].landmarks[0].x == MIRRORED_X
 
 
 def test_missing_and_corrupt_models_fail_closed(tmp_path: Path) -> None:

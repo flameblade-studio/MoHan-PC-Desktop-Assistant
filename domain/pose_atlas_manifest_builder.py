@@ -21,6 +21,9 @@ lazy from domain.pose_atlas_release_gate import PoseReleaseViewInput
 lazy from domain.pose_runtime_loader import PoseAtlasManifest, PoseViewSpec
 
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+MIN_PNG_HEADER_LENGTH = 33
+PNG_BIT_DEPTH = 8
+PNG_COLOR_TYPE_RGBA = 6
 REQUIRED_CORRECTIONS = frozenset(
     {
         "left-leg-correction",
@@ -317,7 +320,7 @@ def _validate_config(config: PoseAtlasBuildConfig) -> list[PoseAtlasBuildIssue]:
 
 def _png_dimensions(data: bytes) -> tuple[int, int]:
     if (
-        len(data) < 33
+        len(data) < MIN_PNG_HEADER_LENGTH
         or data[:8] != PNG_SIGNATURE
         or data[12:16] != b"IHDR"
     ):
@@ -328,8 +331,8 @@ def _png_dimensions(data: bytes) -> tuple[int, int]:
     if (
         width <= 0
         or height <= 0
-        or depth != 8
-        or color != 6
+        or depth != PNG_BIT_DEPTH
+        or color != PNG_COLOR_TYPE_RGBA
         or compression
         or filtering
         or interlace

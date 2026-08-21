@@ -3,6 +3,8 @@ from __future__ import annotations
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
 
+MAX_TEXT_COMMAND_LENGTH = 256
+
 
 @dataclass(frozen=True, slots=True)
 class GestureApplicationCallbacks:
@@ -75,7 +77,7 @@ class GestureApplicationAdapter:
 
     def submit_safe_text_command(self, command: str) -> None:
         canonical = command.strip()
-        if not canonical or len(canonical) > 256 or any(
+        if not canonical or len(canonical) > MAX_TEXT_COMMAND_LENGTH or any(
             character in canonical for character in "\r\n\0"
         ):
             raise ValueError("Gesture text command must be one short line.")

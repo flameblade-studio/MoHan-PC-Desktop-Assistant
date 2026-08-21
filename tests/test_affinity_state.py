@@ -10,15 +10,20 @@ lazy from domain.affinity_state import (
     AffinityState,
 )
 
+INTERACTION_COUNT = 10
+JEALOUSY_THRESHOLD = 0.5
+JEALOUSY_FADED_THRESHOLD = 0.1
+JEALOUSY_DECAY_LOWER = 0.2
+
 
 def test_affinity_grows_with_interaction() -> None:
     state = AffinityState()
     assert state.affinity == 0.0
     assert state.interaction_count == 0
-    for _ in range(10):
+    for _ in range(INTERACTION_COUNT):
         state.note_interaction(now=0.0)
     assert state.affinity > 0.0
-    assert state.interaction_count == 10
+    assert state.interaction_count == INTERACTION_COUNT
 
 
 def test_affinity_stage_progresses() -> None:
@@ -33,9 +38,9 @@ def test_jealousy_spikes_and_fades() -> None:
     state = AffinityState()
     assert state.jealousy == 0.0
     state.note_jealousy(now=0.0)
-    assert state.jealousy > 0.5
+    assert state.jealousy > JEALOUSY_THRESHOLD
     # Far in the future the jealousy has faded.
-    assert state.snapshot(now=10_000.0).jealousy < 0.1
+    assert state.snapshot(now=10_000.0).jealousy < JEALOUSY_FADED_THRESHOLD
 
 
 def test_jealousy_lingers_for_minutes() -> None:
@@ -43,10 +48,10 @@ def test_jealousy_lingers_for_minutes() -> None:
     state = AffinityState()
     state.note_jealousy(now=0.0)
     # After two minutes the jealousy is still clearly present.
-    assert state.snapshot(now=120.0).jealousy > 0.5
+    assert state.snapshot(now=120.0).jealousy > JEALOUSY_THRESHOLD
     # After ten minutes (one half-life) it has decayed but not to zero.
     later = state.snapshot(now=600.0).jealousy
-    assert 0.2 < later < 0.5
+    assert JEALOUSY_DECAY_LOWER < later < JEALOUSY_THRESHOLD
 
 
 def test_affection_boost_is_larger_than_routine_interaction() -> None:

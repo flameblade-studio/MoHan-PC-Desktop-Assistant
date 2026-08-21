@@ -42,6 +42,20 @@ VISEME_MIN_HOLD_SECONDS = frozendict({
 VISEME_OPEN_TRANSITION_SECONDS = 0.055
 VISEME_CLOSE_TRANSITION_SECONDS = 0.050
 VISEME_CHANGE_TRANSITION_SECONDS = 0.050
+
+# Silence / voiced detection thresholds.
+SILENCE_SMOOTHED_THRESHOLD = 0.012
+SILENCE_LEVEL_THRESHOLD = 0.035
+MIN_PCM_SAMPLES = 4
+MIN_VOWEL_LEVEL = 0.025
+CONSONANT_ARTICULATION_THRESHOLD = 0.48
+MIN_VOWEL_SAMPLES = 32
+
+# Formant frequency bands (Hz) for vowel classification.
+MIN_LOW_FORMANT = 250.0
+MAX_LOW_FORMANT = 850.0
+MIN_HIGH_FORMANT = 800.0
+MAX_HIGH_FORMANT = 3000.0
 VALID_VISEMES = frozenset({
     "A",
     "I",
@@ -99,7 +113,7 @@ class VisemeDynamics:
         )
         return (
             "CLOSED"
-            if confirmed or self.smoothed_level < 0.012
+            if confirmed or self.smoothed_level < SILENCE_SMOOTHED_THRESHOLD
             else self.current
         )
 
@@ -137,7 +151,7 @@ class VisemeDynamics:
         held_for = self.hold_frames / VISEME_CUES_PER_SECOND
         minimum_hold = VISEME_MIN_HOLD_SECONDS.get(self.current, 0.065)
         is_silence = (
-            self.smoothed_level < 0.035 or normalized_vowel == "CLOSED"
+            self.smoothed_level < SILENCE_LEVEL_THRESHOLD or normalized_vowel == "CLOSED"
         )
         selected = (
             self._select_silence(held_for, minimum_hold)
@@ -218,7 +232,7 @@ def _pcm16_samples(pcm: pcm_audio.Pcm16Buffer) -> array:
 def _analyze_pcm16_validated(
     pcm: pcm_audio.Pcm16Buffer,
 ) -> tuple[float, float]:
-    if len(pcm) < 4:
+    if len(pcm) < MIN_PCM_SAMPLES:
         return 0.0, 0.0
     samples = _pcm16_samples(pcm)
     if not samples:
@@ -268,15 +282,15 @@ def infer_vowel_pcm16(
     """Estimate loudness and an A/I/U/E/O viseme from short mono PCM16."""
     pcm, sample_rate = validate_vowel_inference_request(pcm, sample_rate)
     level, articulation = _analyze_pcm16_validated(pcm)
-    if level < 0.025:
+    if level < MIN_VOWEL_LEVEL:
         return level, "CLOSED"
     # Unvoiced consonants and short fricative/plosive attacks have far more
     # zero crossings than sustained vowels. Treat them as a brief neutral
     # consonant pose instead of forcing a false A/I/U/E/O classification.
-    if articulation >= 0.48:
+    if articulation >= CONSONANT_ARTICULATION_THRESHOLD:
         return level, "CONSONANT"
     raw = _pcm16_samples(pcm)
-    if len(raw) < 32:
+    if len(raw) < MIN_VOWEL_SAMPLES:
         return level, "E"
     mean = sum(raw) / len(raw)
     scale = max(1.0, max(abs(sample - mean) for sample in raw))
@@ -312,10 +326,10 @@ def infer_vowel_pcm16(
         if frequency < sample_rate / 2
     }
     low_frequencies = [
-        frequency for frequency in powers if 250.0 <= frequency <= 850.0
+        frequency for frequency in powers if MIN_LOW_FORMANT <= frequency <= MAX_LOW_FORMANT
     ]
     high_frequencies = [
-        frequency for frequency in powers if 800.0 <= frequency <= 3000.0
+        frequency for frequency in powers if MIN_HIGH_FORMANT <= frequency <= MAX_HIGH_FORMANT
     ]
     if not low_frequencies or not high_frequencies:
         return level, "E"

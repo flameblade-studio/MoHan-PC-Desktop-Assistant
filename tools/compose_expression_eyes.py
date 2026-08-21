@@ -5,6 +5,8 @@ lazy from pathlib import Path
 
 lazy from PIL import Image, ImageChops, ImageFilter
 
+BOX_DIMENSIONS = 4
+
 
 def ellipse_mask(
     size: tuple[int, int],
@@ -88,7 +90,7 @@ def main() -> None:
         tuple(int(value) for value in item.split(","))
         for item in args.boxes.split(";")
     )
-    if not boxes or any(len(box) != 4 for box in boxes):
+    if not boxes or any(len(box) != BOX_DIMENSIONS for box in boxes):
         raise ValueError("--boxes 必須包含一至多個四值矩形")
     compose(args.base, args.donor, args.out, boxes)
 

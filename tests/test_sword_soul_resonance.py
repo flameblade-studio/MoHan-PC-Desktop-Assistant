@@ -10,6 +10,8 @@ lazy from domain.sword_soul_resonance import (
     SwordSoulResonanceState,
 )
 
+AWAKENING_THRESHOLD = 0.6
+
 
 def test_awakening_starts_at_zero() -> None:
     state = SwordSoulResonanceState()
@@ -33,7 +35,7 @@ def test_awakening_is_monotonic() -> None:
 
 
 def test_awakened_threshold() -> None:
-    assert AWAKENED_THRESHOLD == 0.6
+    assert AWAKENED_THRESHOLD == AWAKENING_THRESHOLD
     assert SwordSoulResonanceState(days=90.0, commits=300).is_awakened
     assert not SwordSoulResonanceState(days=10.0, commits=10).is_awakened
 

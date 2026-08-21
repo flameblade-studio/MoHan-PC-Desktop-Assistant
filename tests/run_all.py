@@ -391,7 +391,7 @@ def _isolated_environment(test_root: Path) -> dict[str, str]:
     environment.update({name: str(location) for name, location in locations.items()})
     environment["PYTHONPATH"] = str(TESTS_DIR.parent)
     environment.pop("PYTEST_ADDOPTS", None)
-    environment.update({name: "" for name in SENSITIVE_ENVIRONMENT_VARIABLES})
+    environment.update(dict.fromkeys(SENSITIVE_ENVIRONMENT_VARIABLES, ""))
     return environment
 
 

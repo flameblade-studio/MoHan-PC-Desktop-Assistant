@@ -27,6 +27,8 @@ lazy from infrastructure.gesture_configuration_store import (
     GestureConfigurationStoreError,
 )
 
+CUSTOM_GESTURE_SAMPLE_COUNT = 2
+
 
 class MemorySettings:
     def __init__(
@@ -94,7 +96,7 @@ def assert_custom_gestures_can_be_added_edited_and_deleted() -> None:
     )
     custom = configuration.definition("custom:my-gesture")
     assert custom.source is GestureSource.CUSTOM
-    assert len(custom.samples) == 2
+    assert len(custom.samples) == CUSTOM_GESTURE_SAMPLE_COUNT
     updated = GestureDefinition(
         custom.gesture_id,
         "新的名稱",

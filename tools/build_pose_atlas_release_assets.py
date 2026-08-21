@@ -31,6 +31,17 @@ HAND_CONFIDENCE_THRESHOLD = 0.65
 HAND_ROI_MARGIN = 8
 HAND_CLUSTER_DISTANCE = 72.0
 PROVENANCE_SCHEMA = "mohan.pose-atlas.working-build.v1"
+RGBA_CHANNEL_COUNT = 4
+BGR_CHANNEL_COUNT = 3
+MAX_FOOT_RUN_WIDTH = 190
+FRONT_HALF_YAW = 90
+MIN_FOOT_RUN_WIDTH = 4
+TWO_HANDS = 2
+ONE_HAND = 1
+SKIN_COVERAGE_THRESHOLD = 0.35
+MIN_OPAQUE_ALPHA = 96
+MIN_SKIN_RED = 80
+MIN_SKIN_CHANNEL_SPREAD = 10
 
 
 @dataclass(frozen=True, slots=True)
@@ -311,7 +322,7 @@ def _foot_runs(mask: object, bottom: int) -> tuple[_FootRun, ...]:
         runs = tuple(
             (left, right)
             for left, right in _row_runs(mask[y])
-            if 4 <= right - left + 1 <= 190
+            if MIN_FOOT_RUN_WIDTH <= right - left + 1 <= MAX_FOOT_RUN_WIDTH
         )
         if runs:
             # The lowest alpha-supported run is the only defensible sole
@@ -327,11 +338,11 @@ def _foot_side_map(
     yaw: int,
 ) -> dict[str, _FootRun]:
     ordered = tuple(sorted(runs, key=lambda item: item.center))
-    if len(ordered) >= 2:
+    if len(ordered) >= TWO_HANDS:
         return {"right": ordered[0], "left": ordered[-1]}
     run = ordered[0]
     screen_left = run.center < center
-    front_half = abs(yaw) < 90
+    front_half = abs(yaw) < FRONT_HALF_YAW
     if front_half:
         side = "right" if screen_left else "left"
     else:
@@ -374,15 +385,12 @@ def _hand_sidecar(
     mapped = []
     for augmentation in _augmentations(rgb):
         observations = runner.infer(augmentation.rgb, palm_net, hand_net)
-        for observation in observations:
-            mapped.append(
-                _map_hand(
+        mapped.extend(_map_hand(
                     observation,
                     augmentation,
                     rgba.shape[1],
                     rgba.shape[0],
-                )
-            )
+                ) for observation in observations)
     selected = _deduplicate_hands(
         mapped,
         rgba,
@@ -422,18 +430,13 @@ def _hand_sidecar(
             }
         )
     sides = {str(item["side"]) for item in hands}
-    occluded = []
-    for side in ("left", "right"):
-        if side not in sides:
-            occluded.append(
-                {
+    occluded = [{
                     "side": side,
                     "status": "occluded",
                     "reason": "No reliable 21-point hand observation was visible after the approved fixed augmentations.",
                     "occluder_id": "robe-or-view-occlusion",
                     "region": [0, source.top, rgba.shape[1], max(1, source.bottom - source.top + 1)],
-                }
-            )
+                } for side in ("left", "right") if side not in sides]
     body_left = max(0, rgba.shape[1] // 2 - 100)
     body_top = min(rgba.shape[0] - 1, source.top + 260)
     body_height = min(220, rgba.shape[0] - body_top - 1)
@@ -492,10 +495,10 @@ def _thumb_base_garment_occlusions(
 
     x, y = points[1]
     skin = _skin_mask(rgba)
-    if _local_skin_coverage(skin, x, y) >= 0.35:
+    if _local_skin_coverage(skin, x, y) >= SKIN_COVERAGE_THRESHOLD:
         return [], []
     b, g, r, alpha = (int(value) for value in rgba[y, x])
-    if alpha < 96 or not (b > r + 20 and b > g + 10):
+    if alpha < MIN_OPAQUE_ALPHA or not (b > r + 20 and b > g + 10):
         return [], []
     identifier = f"sampled-blue-garment-{side.value}-thumb-root"
     return (
@@ -573,7 +576,7 @@ def _deduplicate_hands(
         reverse=True,
     )
     for candidate in ordered:
-        if len(selected) == 2:
+        if len(selected) == TWO_HANDS:
             break
         center = _hand_center(candidate.observation)
         if any(
@@ -590,9 +593,9 @@ def _assign_screen_sides(
     width: int,
 ) -> tuple[_MappedHand, ...]:
     ordered = tuple(sorted(selected, key=lambda item: _hand_center(item.observation)[0]))
-    if len(ordered) == 2:
+    if len(ordered) == TWO_HANDS:
         sides = (Handedness.LEFT, Handedness.RIGHT)
-    elif len(ordered) == 1:
+    elif len(ordered) == ONE_HAND:
         sides = (
             Handedness.LEFT
             if _hand_center(ordered[0].observation)[0] < width / 2
@@ -601,7 +604,7 @@ def _assign_screen_sides(
     else:
         return ()
     assigned = []
-    for item, side in zip(ordered, sides):
+    for item, side in zip(ordered, sides, strict=False):
         observation = HandObservation(
             side,
             item.observation.confidence,
@@ -656,7 +659,7 @@ def _hand_topology_penalty(points: tuple[tuple[int, int], ...]) -> float:
     for mcp, pip, dip, tip in ((5, 6, 7, 8), (9, 10, 11, 12), (13, 14, 15, 16), (17, 18, 19, 20)):
         distances = tuple(_pixel_distance(wrist, points[index]) for index in (mcp, pip, dip, tip))
         penalty += sum(
-            1.0 for inner, outer in zip(distances, distances[1:]) if outer + 2.0 < inner
+            1.0 for inner, outer in zip(distances, distances[1:], strict=False) if outer + 2.0 < inner
         )
     palm_width = max(1.0, _pixel_distance(points[5], points[17]))
     finger_lengths = tuple(
@@ -696,7 +699,7 @@ def _refine_landmarks_to_skin(
             continue
         candidates = tuple(
             (int(candidate_x + x0), int(candidate_y + y0))
-            for candidate_x, candidate_y in zip(xs, ys)
+            for candidate_x, candidate_y in zip(xs, ys, strict=False)
         )
         best = max(
             candidates,
@@ -740,11 +743,11 @@ def _skin_mask(rgba: object) -> object:
         numpy.minimum(r, g), b
     )
     return (
-        (alpha >= 96)
-        & (r >= 80)
+        (alpha >= MIN_OPAQUE_ALPHA)
+        & (r >= MIN_SKIN_RED)
         & (r > b)
         & (r >= g.astype(numpy.float32) * 0.85)
-        & (spread >= 10)
+        & (spread >= MIN_SKIN_CHANNEL_SPREAD)
     )
 
 
@@ -781,7 +784,7 @@ def _rgba_to_rgb(rgba: object) -> object:
 
 def _read_rgba(path: Path) -> object:
     rgba = cv2.imdecode(numpy.fromfile(str(path), dtype=numpy.uint8), cv2.IMREAD_UNCHANGED)
-    if rgba is None or len(rgba.shape) != 3 or rgba.shape[2] != 4:
+    if rgba is None or len(rgba.shape) != BGR_CHANNEL_COUNT or rgba.shape[2] != RGBA_CHANNEL_COUNT:
         raise BuildError(f"invalid_rgba_png:{path.name}")
     if rgba.shape[1] != CANVAS_WIDTH or rgba.shape[0] != CANVAS_HEIGHT:
         raise BuildError(f"unexpected_canvas:{path.name}")

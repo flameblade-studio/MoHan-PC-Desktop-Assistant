@@ -13,6 +13,10 @@ lazy from application.visual_perception import (
     VisualObservation,
 )
 
+LATE_NIGHT_HOUR = 23
+LATE_NIGHT_END_HOUR = 5
+MORNING_END_HOUR = 10
+
 
 class InteractionKind(StrEnum):
     WELCOME_BACK = "welcome_back"
@@ -390,9 +394,9 @@ def _interaction_style(
     if "possible_reading" in context.activities:
         return WelcomeStyle.WITH_BOOK
     hour = context.local_time.hour
-    if hour >= 23 or hour < 5:
+    if hour >= LATE_NIGHT_HOUR or hour < LATE_NIGHT_END_HOUR:
         return WelcomeStyle.LATE_NIGHT
-    return WelcomeStyle.MORNING if hour < 10 else interaction.style
+    return WelcomeStyle.MORNING if hour < MORNING_END_HOUR else interaction.style
 
 
 def _custom_interaction_choices(

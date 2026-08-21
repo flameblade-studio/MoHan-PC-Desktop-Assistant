@@ -13,6 +13,8 @@ lazy from domain.satiety import (
     SatietyState,
 )
 
+HUNGRY_THRESHOLD = 0.3
+
 
 def test_satiety_starts_full() -> None:
     state = SatietyState()
@@ -35,7 +37,7 @@ def test_satiety_is_bounded_at_one() -> None:
 
 
 def test_satiety_decays_over_time() -> None:
-    state = SatietyState(satiety=1.0)
+    state = SatietyState(clock=lambda: 0.0, satiety=1.0)
     # One day later, satiety has decayed but not to zero.
     later = state.snapshot(now=24.0 * 60.0 * 60.0)
     assert 0.0 < later < 1.0
@@ -49,7 +51,7 @@ def test_hungry_state_slows_blink() -> None:
 
 
 def test_hungry_threshold() -> None:
-    assert SATIETY_HUNGRY_THRESHOLD == 0.3
+    assert SATIETY_HUNGRY_THRESHOLD == HUNGRY_THRESHOLD
     assert SatietyState(satiety=0.29).is_hungry
     assert not SatietyState(satiety=0.31).is_hungry
 

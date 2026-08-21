@@ -262,7 +262,7 @@ class FlagshipVisionMixin:
             if self._openai_vision_key_probe is not None:
                 return self._openai_vision_key_probe() is True
             return bool(self.openai_secret.load().strip())
-        except Exception:  # noqa: BLE001 -- external status boundary fails closed
+        except Exception:
             return False
     @staticmethod
     def _vision_limit_control(

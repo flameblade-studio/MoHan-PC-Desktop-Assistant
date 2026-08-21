@@ -23,6 +23,7 @@ AUDITED_FILES = (
     Path(__file__),
 )
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
+TRANSLATION_LANGUAGE_COUNT = 3
 LABEL_FIELDS = (
     "traditional_chinese",
     "simplified_chinese",
@@ -178,7 +179,7 @@ def test_every_gesture_ui_control_status_error_and_safety_text_is_translated() -
     for source in GESTURE_UI_SOURCES:
         assert source in FLAGSHIP_TRANSLATIONS
         translated_tuple = FLAGSHIP_TRANSLATIONS[source]
-        assert len(translated_tuple) == 3
+        assert len(translated_tuple) == TRANSLATION_LANGUAGE_COUNT
         assert _format_fields(source) == _format_fields(translated_tuple[0])
         assert _format_fields(source) == _format_fields(translated_tuple[1])
         assert _format_fields(source) == _format_fields(translated_tuple[2])

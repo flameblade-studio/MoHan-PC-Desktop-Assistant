@@ -12,6 +12,9 @@ lazy from domain.safe_error import (
 
 __all__ = ["safe_error_message"]
 
+MIN_HTTP_STATUS = 100
+MAX_HTTP_STATUS = 599
+
 
 def _text(
     traditional_chinese: str,
@@ -165,7 +168,7 @@ def _decode_safe_error(value: str) -> SafeError | None:
     try:
         status_text = fields.get("http_status")
         status = int(status_text) if status_text is not None else None
-        if status is not None and not 100 <= status <= 599:
+        if status is not None and not MIN_HTTP_STATUS <= status <= MAX_HTTP_STATUS:
             return None
         return SafeError(
             SafeErrorType(fields["type"]),

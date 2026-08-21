@@ -22,6 +22,13 @@ lazy from integrations.realtime_speech_output import (
     REALTIME_OUTPUT_OPENAI,
 )
 
+# Transcription-prompt heuristics.
+MAX_TERM_LENGTH = 40
+MAX_TERMS = 16
+MIN_COMPARISON_LENGTH = 16
+MIN_SUBSTRING_LENGTH = 20
+SIMILARITY_THRESHOLD = 0.82
+
 
 def _realtime_message(
     locale: str,
@@ -322,7 +329,7 @@ class RealtimeSessionMethods:
             self.status_changed.emit(
                 _realtime_message(self._locale, "listening")
             )
-        except Exception as exc:  # noqa: BLE001 -- audio startup reports all failures
+        except Exception as exc:
             self._emit_failure(
                 self._audio_error_message(exc, self._locale),
                 trusted=True,
@@ -369,7 +376,7 @@ class RealtimeSessionMethods:
             value = value.strip(" 「」『』：:")
             if (
                 value
-                and len(value) <= 40
+                and len(value) <= MAX_TERM_LENGTH
                 and not re.prefixmatch(
                     r"^(?:請|使用|保留|不要|轉錄|語言|请|准确|"
                     r"Please|Preserve|Keep|do not|日本語|固有名詞)",
@@ -379,7 +386,7 @@ class RealtimeSessionMethods:
                 and value not in terms
             ):
                 terms.append(value)
-            if len(terms) >= 16:
+            if len(terms) >= MAX_TERMS:
                 break
         if not terms:
             return ""
@@ -398,11 +405,11 @@ class RealtimeSessionMethods:
         *prompts: str,
     ) -> bool:
         candidate = cls._comparison_text(text)
-        if len(candidate) < 16:
+        if len(candidate) < MIN_COMPARISON_LENGTH:
             return False
         for prompt in prompts:
             reference = cls._comparison_text(prompt)
-            if len(reference) < 16:
+            if len(reference) < MIN_COMPARISON_LENGTH:
                 continue
             if candidate == reference:
                 return True
@@ -410,13 +417,13 @@ class RealtimeSessionMethods:
                 (candidate, reference),
                 key=len,
             )
-            if len(shorter) >= 20 and shorter in longer:
+            if len(shorter) >= MIN_SUBSTRING_LENGTH and shorter in longer:
                 return True
             if SequenceMatcher(
                 None,
                 candidate,
                 reference,
-            ).ratio() >= 0.82:
+            ).ratio() >= SIMILARITY_THRESHOLD:
                 return True
         return False
 

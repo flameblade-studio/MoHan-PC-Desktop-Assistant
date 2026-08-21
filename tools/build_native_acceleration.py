@@ -24,6 +24,7 @@ CARGO_LOCK = NATIVE_ROOT / "Cargo.lock"
 PINNED_RUST_VERSION = "1.97.1"
 PINNED_MATURIN_VERSION = "1.14.1"
 EXPECTED_MODULE_VERSION = "0.1.0"
+WHEEL_TAG_FIELD_COUNT = 3
 
 
 @dataclass(frozen=True, slots=True)
@@ -157,9 +158,9 @@ def wheel_tags(path: Path) -> tuple[str, ...]:
 def validate_wheel(path: Path) -> tuple[str, ...]:
     tags = wheel_tags(path)
     parsed_tags = tuple(tag.split("-", maxsplit=2) for tag in tags)
-    python_values = tuple(fields[0] for fields in parsed_tags if len(fields) == 3)
-    abi_values = tuple(fields[1] for fields in parsed_tags if len(fields) == 3)
-    platform_values = tuple(fields[2] for fields in parsed_tags if len(fields) == 3)
+    python_values = tuple(fields[0] for fields in parsed_tags if len(fields) == WHEEL_TAG_FIELD_COUNT)
+    abi_values = tuple(fields[1] for fields in parsed_tags if len(fields) == WHEEL_TAG_FIELD_COUNT)
+    platform_values = tuple(fields[2] for fields in parsed_tags if len(fields) == WHEEL_TAG_FIELD_COUNT)
     if (
         not tags
         or len(python_values) != len(tags)

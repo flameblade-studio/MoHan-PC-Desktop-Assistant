@@ -39,6 +39,8 @@ lazy from speech_providers import (
     SYSTEM_LOCAL_PROVIDER,
 )
 
+EXPECTED_STOP_CALLS = 2
+
 
 class _MemorySecretStore:
     def __init__(self, value: str = "") -> None:
@@ -568,7 +570,7 @@ def test_stop_speech_stops_every_engine_and_is_idempotent_without_motion_jitter(
     assert first_engine_stops == (1, 1, 1, 1)
     assert _stop_calls(context) == (2, 2, 2, 2)
     assert first_realtime_stops == 1
-    assert context.realtime.stop_calls == 2
+    assert context.realtime.stop_calls == EXPECTED_STOP_CALLS
     assert first_output_cancels == (1,)
     assert context.realtime_output.cancel_calls == [1, 2]
     assert not window.speech_queue

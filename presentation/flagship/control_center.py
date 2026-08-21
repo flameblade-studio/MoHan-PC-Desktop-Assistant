@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import sys
 lazy from collections.abc import Callable
+lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from typing import Any
 
@@ -59,7 +60,28 @@ lazy from presentation.flagship_theme import (
 )
 lazy from presentation.flagship_ui_localization import FlagshipTranslator
 
-__all__ = ("FlagshipControlCenter",)
+__all__ = ("FlagshipControlCenter", "ControlCenterDependencies")
+
+
+@dataclass(frozen=True, slots=True)
+class ControlCenterDependencies:
+    """Optional dependency-injection bundle for :class:`FlagshipControlCenter`.
+
+    Grouping the eleven keyword-only collaborators into a single parameter
+    object keeps the constructor signature small while preserving the
+    explicit, backward-compatible wiring used by the dashboard and tests.
+    """
+
+    platform_services: PlatformServicePort | None = None
+    secret_store_factory: SecretStoreFactoryPort | None = None
+    proactivity_store: CompanionProactivityPreferencesStore | None = None
+    openai_vision_store: OpenAIVisionPreferencesStore | None = None
+    gesture_store: GestureConfigurationStore | None = None
+    gesture_recorder: GestureRecorderPort | None = None
+    gesture_controller: GestureController | None = None
+    openai_vision_key_available: Callable[[], bool] | None = None
+    cloud_vision_service_factory: CloudVisionServiceFactoryPort | None = None
+    dense_face_provider_factory: Callable[[], object] | None = None
 
 
 class FlagshipControlCenter(
@@ -94,19 +116,11 @@ class FlagshipControlCenter(
         data_path: Path,
         parent=None,
         *,
-        platform_services: PlatformServicePort | None = None,
-        secret_store_factory: SecretStoreFactoryPort | None = None,
-        proactivity_store: CompanionProactivityPreferencesStore | None = None,
-        openai_vision_store: OpenAIVisionPreferencesStore | None = None,
-        gesture_store: GestureConfigurationStore | None = None,
-        gesture_recorder: GestureRecorderPort | None = None,
-        gesture_controller: GestureController | None = None,
-        openai_vision_key_available: Callable[[], bool] | None = None,
-        cloud_vision_service_factory: CloudVisionServiceFactoryPort | None = None,
-        dense_face_provider_factory: Callable[[], object] | None = None,
+        dependencies: ControlCenterDependencies | None = None,
         language: str = "zh-TW",
     ):
         """Build the center with an explicit, backward-compatible language."""
+        deps = dependencies or ControlCenterDependencies()
         super().__init__(parent)
         self._translator = _active_translator_factory()(language)
         self.language = self._translator.language
@@ -117,31 +131,31 @@ class FlagshipControlCenter(
         self._initialize_services(
             db,
             data_path,
-            platform_services,
-            secret_store_factory,
+            deps.platform_services,
+            deps.secret_store_factory,
         )
-        self.proactivity_store = proactivity_store or (
+        self.proactivity_store = deps.proactivity_store or (
             CompanionProactivityPreferencesStore(StudioDBSettingsPort(db))
         )
         self._proactivity_draft = self.proactivity_store.begin_edit()
-        self.gesture_store = gesture_store or GestureConfigurationStore(
+        self.gesture_store = deps.gesture_store or GestureConfigurationStore(
             StudioDBSettingsPort(db),
             ProtectedGestureTemplateStore(self.gesture_template_secret),
         )
         self._gesture_draft = self.gesture_store.begin_edit()
-        self._gesture_controller = gesture_controller
+        self._gesture_controller = deps.gesture_controller
         self._gesture_recorder = (
-            gesture_recorder
-            or gesture_controller
+            deps.gesture_recorder
+            or deps.gesture_controller
             or UnavailableGestureRecorder()
         )
-        self.openai_vision_store = openai_vision_store or (
+        self.openai_vision_store = deps.openai_vision_store or (
             OpenAIVisionPreferencesStore(StudioDBSettingsPort(db))
         )
         self._openai_vision_draft = self.openai_vision_store.begin_edit()
-        self._openai_vision_key_probe = openai_vision_key_available
-        self._cloud_vision_service_factory = cloud_vision_service_factory
-        self._dense_face_provider_factory = dense_face_provider_factory
+        self._openai_vision_key_probe = deps.openai_vision_key_available
+        self._cloud_vision_service_factory = deps.cloud_vision_service_factory
+        self._dense_face_provider_factory = deps.dense_face_provider_factory
         self._phrasebook_draft = CompanionPhrasebook.from_setting(
             self.db.setting(PHRASEBOOK_SETTING, {})
         )

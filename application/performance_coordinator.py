@@ -22,7 +22,10 @@ lazy from domain.character_pose import (
     canonical_view_id,
     normalize_view_id,
 )
+lazy from domain.constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.performance_preferences import PerformancePreferences
+
+BACK_DEPTH_TWO_THIRDS = 2
 
 
 class PoseRegistryPort(Protocol):
@@ -434,7 +437,7 @@ class PerformanceCoordinator:
         } or (
             event.kind is SpeechEventKind.VISEME
             and event.viseme.upper() == "CLOSED"
-            and event.level == 0.0
+            and event.level < FLOAT_COMPARISON_EPSILON
         )
 
     @staticmethod
@@ -448,7 +451,7 @@ class PerformanceCoordinator:
         candidate_depth = _BACK_DEPTH.get(candidate.pose, 0)
         return (
             previous_depth != candidate_depth
-            and max(previous_depth, candidate_depth) >= 2
+            and max(previous_depth, candidate_depth) >= BACK_DEPTH_TWO_THIRDS
         )
 
     @staticmethod

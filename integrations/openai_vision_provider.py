@@ -20,6 +20,7 @@ SUPPORTED_IMAGE_MEDIA_TYPES = frozenset({
     "image/png",
     "image/webp",
 })
+RATE_LIMIT_STATUS = 429
 
 
 lazy from domain.openai_vision_preferences import VisionDetail
@@ -81,9 +82,9 @@ class ResponsesClient(Protocol):
     responses: ResponsesEndpoint
 
 
+@dataclass(frozen=True, slots=True)
 class _ResponsePayload:
-    def __init__(self, output_text: str) -> None:
-        self.output_text = output_text
+    output_text: str
 
 
 ModelSelector = Callable[[], str]
@@ -478,6 +479,6 @@ def _classify_http_status(
 ) -> VisionResultStatus:
     if status_code in {401, 403}:
         return VisionResultStatus("authentication_failed")
-    if status_code == 429:
+    if status_code == RATE_LIMIT_STATUS:
         return VisionResultStatus("rate_limited")
     return VisionResultStatus("service_unavailable")

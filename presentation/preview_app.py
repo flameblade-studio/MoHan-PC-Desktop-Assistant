@@ -403,7 +403,7 @@ def main(argv: list[str] | None = None) -> int:
                     "Preview package version mismatch: "
                     f"expected {args.preview_expected_version}, got {runtime.version}"
                 )
-        except Exception:  # noqa: BLE001 -- smoke contract records every failure
+        except Exception:
             args.preview_smoke_output.write_text(
                 "PREVIEW_PACKAGE_SMOKE_FAILED", encoding="utf-8"
             )

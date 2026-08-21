@@ -39,6 +39,22 @@ lazy from speech_configuration import (
 )
 lazy from text_normalizer import to_taiwan_traditional
 
+EXPECTED_RMS = 1000
+END_SILENCE_SECONDS = 0.85
+MIN_SPEECH_SECONDS = 0.8
+INITIAL_SILENCE_SECONDS = 2.0
+MAX_RECORD_SECONDS = 10.0
+ACTIVE_SPEECH_THRESHOLD_RATIO = 0.68
+VOICED_ARTICULATION_THRESHOLD = 0.05
+BRIGHT_ARTICULATION_THRESHOLD = 0.9
+VOWEL_LEVEL_THRESHOLD = 0.5
+BOOSTED_SAMPLE_THRESHOLD = 7000
+EXPECTED_FRAME_COUNT = 1920
+EXPECTED_FRAME_BYTES = 3840
+MAX_VOLUME_PERCENT = 160
+PLAYBACK_CHUNK_COUNT = 5
+EXPECTED_MAX_SAMPLE = 8750
+
 
 class PlaybackProbe:
     def __init__(self) -> None:
@@ -285,13 +301,13 @@ def _assert_speech_listener_contract() -> None:
     quiet = b"\x00\x00" * 160
     loud = b"\xe8\x03" * 160
     assert SpeechListener._rms(quiet) == 0
-    assert SpeechListener._rms(loud) == 1000
+    assert SpeechListener._rms(loud) == EXPECTED_RMS
     assert SpeechListener.TRANSCRIPTION_MODEL == "gpt-4o-mini-transcribe"
-    assert SpeechListener.END_SILENCE_SECONDS == 0.85
-    assert SpeechListener.MIN_SPEECH_SECONDS == 0.8
-    assert SpeechListener.INITIAL_SILENCE_SECONDS == 2.0
-    assert SpeechListener.MAX_RECORD_SECONDS == 10.0
-    assert SpeechListener.ACTIVE_SPEECH_THRESHOLD_RATIO == 0.68
+    assert SpeechListener.END_SILENCE_SECONDS == END_SILENCE_SECONDS
+    assert SpeechListener.MIN_SPEECH_SECONDS == MIN_SPEECH_SECONDS
+    assert SpeechListener.INITIAL_SILENCE_SECONDS == INITIAL_SILENCE_SECONDS
+    assert SpeechListener.MAX_RECORD_SECONDS == MAX_RECORD_SECONDS
+    assert SpeechListener.ACTIVE_SPEECH_THRESHOLD_RATIO == ACTIVE_SPEECH_THRESHOLD_RATIO
     assert "金鑰無效" in SpeechListener._http_error_message(401, "")
     assert "未授權" in SpeechListener._http_error_message(403, "")
     assert "找不到轉錄模型" in SpeechListener._http_error_message(404, "")
@@ -314,9 +330,9 @@ def _assert_pcm_analysis() -> None:
     )
     assert silent_level == silent_articulation == 0.0
     assert voiced_level > silent_level
-    assert voiced_articulation < 0.05
+    assert voiced_articulation < VOICED_ARTICULATION_THRESHOLD
     assert bright_level > voiced_level
-    assert bright_articulation > 0.9
+    assert bright_articulation > BRIGHT_ARTICULATION_THRESHOLD
 
 
 def _assert_vowel_inference() -> None:
@@ -338,7 +354,7 @@ def _assert_vowel_inference() -> None:
             synthetic_vowel.tobytes(),
             24000,
         )
-        assert vowel_level > 0.5
+        assert vowel_level > VOWEL_LEVEL_THRESHOLD
         assert inferred_vowel == expected_vowel
     assert infer_vowel_pcm16(b"\x00\x00" * 960) == (0.0, "CLOSED")
 
@@ -385,7 +401,7 @@ def _assert_wave_volume(wave_data: bytes) -> None:
         boosted_samples = array("h", reader.readframes(reader.getnframes()))
     with wave.open(io.BytesIO(muted_wave), "rb") as reader:
         muted_samples = array("h", reader.readframes(reader.getnframes()))
-    assert max(abs(sample) for sample in boosted_samples) > 7000
+    assert max(abs(sample) for sample in boosted_samples) > BOOSTED_SAMPLE_THRESHOLD
     assert max(abs(sample) for sample in muted_samples) == 0
 
 
@@ -402,13 +418,13 @@ def _assert_streaming_wave_rebuild(wave_data: bytes) -> None:
         False,
     )
     with wave.open(io.BytesIO(rebuilt_streaming_wave), "rb") as reader:
-        assert reader.getnframes() == 1920
-        assert len(reader.readframes(reader.getnframes())) == 3840
+        assert reader.getnframes() == EXPECTED_FRAME_COUNT
+        assert len(reader.readframes(reader.getnframes())) == EXPECTED_FRAME_BYTES
 
 
 def _assert_tts_volume_clamping(tts_probe: WindowsTTS) -> None:
     tts_probe.set_volume(999, True)
-    assert tts_probe.volume_percent == 160
+    assert tts_probe.volume_percent == MAX_VOLUME_PERCENT
     assert tts_probe.muted
 
 
@@ -549,10 +565,10 @@ def _assert_realtime_playback(realtime: RealtimeVoiceClient) -> None:
     realtime.running = True
     realtime._playback_loop(playback_queue, playback_probe, 24000)
     realtime.running = False
-    assert len(playback_probe.chunks) == 5
+    assert len(playback_probe.chunks) == PLAYBACK_CHUNK_COUNT
     realtime_samples = array("h", b"".join(playback_probe.chunks))
-    assert max(realtime_samples) == 8750
-    assert len(playback_visemes) >= 5
+    assert max(realtime_samples) == EXPECTED_MAX_SAMPLE
+    assert len(playback_visemes) >= PLAYBACK_CHUNK_COUNT
     muted_queue = _playback_queue()
     muted_probe = PlaybackProbe()
     realtime.set_volume(125, True)

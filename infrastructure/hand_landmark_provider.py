@@ -11,6 +11,9 @@ _PALM_INPUT_SIZE = 192
 _HAND_INPUT_SIZE = 224
 _LANDMARK_COUNT = 21
 _MAX_HANDS = 2
+_HANDEDNESS_THRESHOLD = 0.5
+_PALM_OUTPUT_COUNT = 2
+_HAND_OUTPUT_COUNT = 4
 # Model loaders and injected inference backends can raise vendor-specific
 # Exception subclasses. This boundary deliberately excludes BaseException.
 _FAULT_BOUNDARY_ERRORS = (Exception,)
@@ -175,7 +178,7 @@ class OpenCVZooHandRunner:
         blob, letterbox = self._letterbox(frame, width, height)
         net.setInput(blob[self._np.newaxis, ...])
         outputs = net.forward(net.getUnconnectedOutLayersNames())
-        if len(outputs) != 2:
+        if len(outputs) != _PALM_OUTPUT_COUNT:
             raise ValueError("palm_output_shape_invalid")
         regressions = self._np.asarray(outputs[0])[0]
         logits = self._np.asarray(outputs[1])[0, :, 0]
@@ -344,7 +347,7 @@ class OpenCVZooHandRunner:
         width: int,
         height: int,
     ) -> HandObservation | None:
-        if len(outputs) != 4:
+        if len(outputs) != _HAND_OUTPUT_COUNT:
             raise ValueError("hand_output_shape_invalid")
         raw_landmarks = self._np.asarray(outputs[0])[0].reshape(-1, 3)
         world_landmarks = self._np.asarray(outputs[3])[0].reshape(-1, 3)
@@ -368,7 +371,7 @@ class OpenCVZooHandRunner:
             )
             for pixel_x, pixel_y, pixel_z in screen
         )
-        handedness = Handedness.RIGHT if handedness_score >= 0.5 else Handedness.LEFT
+        handedness = Handedness.RIGHT if handedness_score >= _HANDEDNESS_THRESHOLD else Handedness.LEFT
         return HandObservation(handedness, _clamp(confidence), points)
 
     def _project_screen_landmarks(self, landmarks: Any, crop: _HandCrop) -> Any:

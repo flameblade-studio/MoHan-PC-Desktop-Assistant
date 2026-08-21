@@ -8,6 +8,8 @@ RUST_VERSION = "1.97.1"
 MATURIN_VERSION = "1.14.1"
 PYO3_VERSION = "0.29.2"
 RAYON_VERSION = "1.12.0"
+NATIVE_VERIFICATION_INVOCATION_COUNT = 2
+LANGUAGE_DOC_COUNT = 4
 
 
 def read(relative: str) -> str:
@@ -116,7 +118,7 @@ def test_windows_release_verifies_every_distributed_package_form() -> None:
         "Invoke-NativeVerification",
     ):
         assert required in installer_test
-    assert installer_test.count("Invoke-NativeVerification `") == 2
+    assert installer_test.count("Invoke-NativeVerification `") == NATIVE_VERIFICATION_INVOCATION_COUNT
 
     for relative in (
         ".github/workflows/windows-ci.yml",
@@ -216,11 +218,11 @@ def test_four_language_docs_state_the_precise_rgba_contract() -> None:
         "docs/releases/v4.0.0-draft.md",
     ):
         content = read(relative)
-        assert content.count("Rayon 1.12.0") >= 4, relative
-        assert content.count("262,144") >= 4, relative
-        assert content.casefold().count("simd") >= 4, relative
+        assert content.count("Rayon 1.12.0") >= LANGUAGE_DOC_COUNT, relative
+        assert content.count("262,144") >= LANGUAGE_DOC_COUNT, relative
+        assert content.casefold().count("simd") >= LANGUAGE_DOC_COUNT, relative
     notices = read("THIRD_PARTY_NOTICES.md")
-    assert notices.count("| [Rayon]") == 4
+    assert notices.count("| [Rayon]") == LANGUAGE_DOC_COUNT
 
 
 def main() -> None:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 lazy import sys
-lazy from dataclasses import replace
+lazy from dataclasses import dataclass, replace
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
@@ -21,6 +21,9 @@ lazy from tools.build_pose_contact_sheet import build_contact_sheet
 
 WIDTH = 6
 HEIGHT = 6
+REAR_YAW = -180
+VIEW_COUNT = 24
+YAW_DEGREES = 45
 EXPECTED_ROLES = (
     ("hair-back", 10, "hair"),
     ("body", 20, "core-body"),
@@ -43,17 +46,11 @@ class Hands(HandAuditPort):
         return view_id not in self.failed
 
 
+@dataclass(frozen=True, slots=True)
 class IdentityReport:
-    def __init__(
-        self,
-        passed: bool,
-        problems: tuple[str, ...] = (),
-        *,
-        embedding: tuple[float, ...] = (0.1, 0.2),
-    ) -> None:
-        self.passed = passed
-        self.problems = problems
-        self.embedding = embedding
+    passed: bool
+    problems: tuple[str, ...] = ()
+    embedding: tuple[float, ...] = (0.1, 0.2)
 
 
 class Identity(IdentityAuditPort):
@@ -98,7 +95,7 @@ def layers(yaw: int) -> tuple[AtlasLayerEvidence, ...]:
         AtlasLayerEvidence(role, depth, owner, f"proof:{yaw}:{role}")
         for role, depth, owner in EXPECTED_ROLES
     )
-    if yaw == -180:
+    if yaw == REAR_YAW:
         return result
     return (*result, AtlasLayerEvidence("face", 85, "core-identity", f"face:{yaw}"))
 
@@ -126,12 +123,12 @@ def assert_complete_ring_passes_with_adjacent_metrics() -> None:
     identity = Identity()
     report = audit_pose_atlas(complete_ring(), Hands(), identity_audit=identity)
     assert report.passed
-    assert len(report.views) == 24
-    assert len(report.adjacent_metrics) == 24
+    assert len(report.views) == VIEW_COUNT
+    assert len(report.adjacent_metrics) == VIEW_COUNT
     assert report.problems == ()
     assert report.identity_problems == ()
-    assert report.adjacent_metrics[-1].second_yaw == -180
-    assert len(identity.calls[0]) == 24
+    assert report.adjacent_metrics[-1].second_yaw == REAR_YAW
+    assert len(identity.calls[0]) == VIEW_COUNT
 
 
 def assert_identity_failures_are_hard_gates_without_embedding_leakage() -> None:
@@ -184,7 +181,7 @@ def assert_body_audit_is_an_opt_in_hard_gate() -> None:
     report = audit_pose_atlas(complete_ring(), Hands(), body_audit=failed)
     assert not report.passed
     assert report.body_problems[0].code == "height_median_drift"
-    assert report.body_problems[0].yaw_degrees == 45
+    assert report.body_problems[0].yaw_degrees == YAW_DEGREES
     assert "body_audit_failed:height_median_drift" in report.problems
     assert "must-not-leak" not in repr(report)
 

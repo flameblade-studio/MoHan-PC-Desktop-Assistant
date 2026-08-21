@@ -19,6 +19,7 @@ LABELS = (
     "msi-zh-CN",
     "msi-ja-JP",
 )
+RELEASE_ARTIFACT_COUNT = 6
 
 
 def _sha256(path: Path) -> str:
@@ -113,7 +114,7 @@ def test_release_evidence_requires_all_seven_verified_forms(tmp_path: Path) -> N
     assert evidence["verified_labels"] == list(LABELS)
     assert evidence["native_files"]["module"]["sha256"] == "b" * 64
     assert evidence["build"]["wheel_module_sha256"] == "b" * 64
-    assert len(evidence["release_artifacts"]) == 6
+    assert len(evidence["release_artifacts"]) == RELEASE_ARTIFACT_COUNT
 
     (verifications / "msi-ja-JP.json").unlink()
     with pytest.raises(RuntimeError, match="verification labels"):

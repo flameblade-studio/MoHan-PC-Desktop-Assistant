@@ -162,7 +162,7 @@ class FlagshipHomeMixin:
         self.save_home_settings()
         try:
             healthy = self._home_client().health()
-        except Exception as exc:  # noqa: BLE001 -- user-visible integration boundary
+        except Exception as exc:
             self.ha_status.setText(
                 self._t(
                     "連線失敗：{error}",
@@ -175,7 +175,7 @@ class FlagshipHomeMixin:
         self.ha_entities.clear()
         try:
             states = self._home_client().states()
-        except Exception as exc:  # noqa: BLE001 -- user-visible integration boundary
+        except Exception as exc:
             self.ha_status.setText(
                 self._t(
                     "讀取失敗：{error}",

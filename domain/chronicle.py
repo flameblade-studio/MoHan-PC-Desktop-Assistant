@@ -42,7 +42,7 @@ class Chronicle:
     def milestones(self) -> tuple[Milestone, ...]:
         return self._milestones
 
-    def record(self, kind: MilestoneKind, day: int) -> "Chronicle":
+    def record(self, kind: MilestoneKind, day: int) -> Chronicle:
         """Record a milestone, deduplicating by kind (first occurrence wins)."""
         if any(m.kind is kind for m in self._milestones):
             return self

@@ -160,7 +160,7 @@ def preferred_windows_voice(
         for name, culture in voices
         if not is_known_male_windows_voice(name)
     ]
-    installed = {name: culture for name, culture in voices}
+    installed = dict(voices)
     if saved in installed:
         return saved
     target = str(target_language or "").strip().lower()

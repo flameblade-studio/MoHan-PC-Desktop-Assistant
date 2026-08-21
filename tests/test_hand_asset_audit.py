@@ -23,6 +23,8 @@ lazy from hand_asset_audit import (
 WIDTH, HEIGHT = 132, 72
 SKIN = (214, 155, 126, 255)
 SLEEVE = (30, 70, 130, 255)
+FINGER_COUNT = 10
+COVERED_JOINTS_PER_FINGER = 4
 
 
 def _points(side: str) -> tuple[Point, ...]:
@@ -119,8 +121,8 @@ def assert_valid_and_missing_digits() -> tuple[bytes, tuple[HandProjection, ...]
     valid_png, projections = _rgba()
     valid = audit_hand_asset(valid_png, projections)
     assert valid.passed
-    assert len(valid.fingers) == 10
-    assert all(evidence.covered_joints == 4 for evidence in valid.fingers)
+    assert len(valid.fingers) == FINGER_COUNT
+    assert all(evidence.covered_joints == COVERED_JOINTS_PER_FINGER for evidence in valid.fingers)
 
     missing_png, missing_projection = _rgba(omit=("left", "pinky"))
     missing = audit_hand_asset(missing_png, missing_projection)

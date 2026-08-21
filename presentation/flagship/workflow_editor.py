@@ -21,6 +21,8 @@ lazy from presentation.flagship_ui_localization import FlagshipTranslator
 
 __all__ = ("WorkflowEditor",)
 
+STEP_PART_COUNT = 3
+
 
 class WorkflowEditor(QDialog):
     def __init__(self, parent=None, *, language: str = "zh-TW"):
@@ -151,7 +153,7 @@ class WorkflowEditor(QDialog):
             if not line:
                 continue
             parts = [part.strip() for part in line.split("｜", 2)]
-            if len(parts) != 3:
+            if len(parts) != STEP_PART_COUNT:
                 raise ValueError(self._t("步驟格式不正確：{line}", line=line))
             capability, description, raw_argument = parts
             steps.append({

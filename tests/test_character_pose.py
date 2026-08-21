@@ -22,6 +22,15 @@ lazy from character_pose import (
     relaxed_hand_pose,
 )
 
+CANONICAL_YAW_COUNT = 24
+REAR_YAW = -180
+YAW_STEP = 15
+HALF = 0.5
+FRONT_LEFT_YAW = 165
+MISSING_RING_COUNT = 22
+DIGIT_COUNT = 5
+LANDMARK_COUNT = 21
+
 
 def _view(yaw: int) -> ViewAnchor:
     return ViewAnchor(
@@ -52,20 +61,20 @@ def assert_original_three_pose_compatibility() -> None:
 
 def assert_complete_360_degree_atlas() -> None:
     atlas = ViewAtlas(tuple(_view(yaw) for yaw in CANONICAL_YAWS))
-    assert len(atlas.anchors) == 24
+    assert len(atlas.anchors) == CANONICAL_YAW_COUNT
     assert atlas.has_complete_horizontal_ring()
     assert atlas.missing_horizontal_ring() == ()
     assert atlas.resolve(0).first.yaw_degrees == 0
-    assert atlas.resolve(-180).first.yaw_degrees == -180
+    assert atlas.resolve(REAR_YAW).first.yaw_degrees == REAR_YAW
     between = atlas.resolve(7.5)
     assert between.interpolated
     assert between.first.yaw_degrees == 0
-    assert between.second.yaw_degrees == 15
-    assert between.second_weight == 0.5
+    assert between.second.yaw_degrees == YAW_STEP
+    assert between.second_weight == HALF
     wrap = atlas.resolve(172.5)
     assert wrap.interpolated
-    assert wrap.first.yaw_degrees == 165
-    assert wrap.second.yaw_degrees == -180
+    assert wrap.first.yaw_degrees == FRONT_LEFT_YAW
+    assert wrap.second.yaw_degrees == REAR_YAW
     assert normalize_view_id("front-000") == canonical_view_id(0)
     assert normalize_view_id("left-030") == canonical_view_id(-30)
     assert normalize_view_id("right-030") == canonical_view_id(30)
@@ -76,7 +85,7 @@ def assert_complete_360_degree_atlas() -> None:
 def assert_missing_angles_never_fake_a_turn() -> None:
     sparse = ViewAtlas((_view(0), _view(-180)))
     assert not sparse.has_complete_horizontal_ring()
-    assert len(sparse.missing_horizontal_ring()) == 22
+    assert len(sparse.missing_horizontal_ring()) == MISSING_RING_COUNT
     result = sparse.resolve(90)
     assert not result.interpolated
     assert result.reason == "authored_gap"
@@ -107,8 +116,8 @@ def assert_left_and_right_hands_have_correct_five_digits() -> None:
         report = audit_hand_anatomy(hand, side)
         report.require_valid()
         assert report.valid
-        assert report.digit_count == 5
-        assert report.landmark_count == 21
+        assert report.digit_count == DIGIT_COUNT
+        assert report.landmark_count == LANDMARK_COUNT
         assert set(hand.landmarks) == set(HAND_LANDMARK_NAMES)
         assert report.finger_lengths["middle"] >= report.finger_lengths["index"]
         assert report.finger_lengths["middle"] >= report.finger_lengths["ring"]

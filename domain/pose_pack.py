@@ -53,6 +53,16 @@ MAX_TOTAL_BYTES = 512 * 1024 * 1024
 MAX_MEMBERS = 2048
 MAX_COMPRESSION_RATIO = 100
 MAX_DIMENSION = 8192
+MIN_ANCHOR_COORDINATE = -8192
+MAX_ANCHOR_COORDINATE = 8192
+MIN_DEPTH = -1000
+MAX_DEPTH = 1000
+MAX_NAME_LENGTH = 80
+MIN_PNG_HEADER_LENGTH = 24
+MIN_WEBP_HEADER_LENGTH = 30
+SYMLINK_FILE_TYPE = 0o120000
+ANCHOR_DIMENSIONS = 2
+MAX_TEXT_FIELD_LENGTH = 240
 IDENTIFIER = re.compile(r"[a-z0-9](?:[a-z0-9.-]{0,62}[a-z0-9])?\Z")
 SEMVER = re.compile(r"\d+\.\d+\.\d+\Z")
 APP_RANGE = re.compile(r">=\d+\.\d+\.\d+,<\d+\.\d+\.\d+\Z")
@@ -154,7 +164,7 @@ def _localized_names(value: object) -> frozendict[str, str]:
     if not isinstance(value, dict) or set(value) != LANGUAGES or any(not isinstance(text, str) for text in value.values()):
         raise PosePackError("All four localized names are required.")
     names = {language: text.strip() for language, text in value.items()}
-    if any(not text or len(text) > 80 for text in names.values()):
+    if any(not text or len(text) > MAX_NAME_LENGTH for text in names.values()):
         raise PosePackError("Invalid localized name.")
     return frozendict(names)
 
@@ -165,7 +175,7 @@ def _safe_member(info: zipfile.ZipInfo) -> None:
         raise PosePackError("Unsafe archive path.")
     if info.flag_bits & 1 or info.file_size > MAX_MEMBER_BYTES:
         raise PosePackError("Unsafe archive member.")
-    if (info.external_attr >> 16) & 0o170000 == 0o120000:
+    if (info.external_attr >> 16) & 0o170000 == SYMLINK_FILE_TYPE:
         raise PosePackError("Symbolic links are forbidden.")
     if info.filename != MANIFEST and not ASSET_PATH.fullmatch(info.filename):
         raise PosePackError("Executable or unsupported member.")
@@ -175,10 +185,10 @@ def _safe_member(info: zipfile.ZipInfo) -> None:
 
 def _dimensions(data: bytes, suffix: str) -> tuple[int, int]:
     if suffix == ".png":
-        if len(data) < 24 or data[:8] != b"\x89PNG\r\n\x1a\n" or data[12:16] != b"IHDR":
+        if len(data) < MIN_PNG_HEADER_LENGTH or data[:8] != b"\x89PNG\r\n\x1a\n" or data[12:16] != b"IHDR":
             raise PosePackError("Invalid PNG layer.")
         return struct.unpack(">II", data[16:24])
-    if len(data) < 30 or data[:4] != b"RIFF" or data[8:12] != b"WEBP" or data[12:16] != b"VP8X":
+    if len(data) < MIN_WEBP_HEADER_LENGTH or data[:4] != b"RIFF" or data[8:12] != b"WEBP" or data[12:16] != b"VP8X":
         raise PosePackError("Invalid or non-extended WebP layer.")
     return int.from_bytes(data[24:27], "little") + 1, int.from_bytes(data[27:30], "little") + 1
 
@@ -192,12 +202,12 @@ def _layer(value: object, archive: zipfile.ZipFile, names: set[str]) -> PoseLaye
         raise PosePackError("Unknown layer role or path.")
     anchor = value["anchor"]
     integers = (value["width"], value["height"], value["depth"])
-    if not isinstance(value["sha256"], str) or not SHA256.fullmatch(value["sha256"]) or not isinstance(anchor, list) or len(anchor) != 2:
+    if not isinstance(value["sha256"], str) or not SHA256.fullmatch(value["sha256"]) or not isinstance(anchor, list) or len(anchor) != ANCHOR_DIMENSIONS:
         raise PosePackError("Invalid layer hash or anchor.")
     if any(not isinstance(item, int) or isinstance(item, bool) for item in (*integers, *anchor)):
         raise PosePackError("Invalid layer geometry.")
     width, height, depth = integers
-    if not (1 <= width <= MAX_DIMENSION and 1 <= height <= MAX_DIMENSION and -8192 <= anchor[0] <= 8192 and -8192 <= anchor[1] <= 8192 and -1000 <= depth <= 1000):
+    if not (1 <= width <= MAX_DIMENSION and 1 <= height <= MAX_DIMENSION and MIN_ANCHOR_COORDINATE <= anchor[0] <= MAX_ANCHOR_COORDINATE and MIN_ANCHOR_COORDINATE <= anchor[1] <= MAX_ANCHOR_COORDINATE and MIN_DEPTH <= depth <= MAX_DEPTH):
         raise PosePackError("Layer geometry is outside the allowed range.")
     if value["occlusion"] not in OCCLUSION_RULES:
         raise PosePackError("Invalid layer occlusion rule.")
@@ -390,7 +400,7 @@ def _source_declaration(value: object) -> _SourceDeclaration:
     text_fields = (value["author"], value["provenance"])
     if (
         any(
-            not isinstance(item, str) or not item.strip() or len(item) > 240
+            not isinstance(item, str) or not item.strip() or len(item) > MAX_TEXT_FIELD_LENGTH
             for item in text_fields
         )
         or not isinstance(value["license"], str)

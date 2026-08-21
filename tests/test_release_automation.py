@@ -23,6 +23,13 @@ lazy from tools.sync_wordpress_download_page import (
     replace_managed_block,
 )
 
+MIN_LANGUAGE_FILE_SIZE = 20_000
+EXPECTED_OCCURRENCE_COUNT = 2
+MIN_EXPRESSION_CARD_COUNT = 6
+SUPPORT_CARD_COUNT = 3
+MIN_TOTAL_CARD_COUNT = 9
+SCENE_COUNT = 6
+
 VERSION = FALLBACK_VERSION
 VERSION_PREFIX, CANDIDATE_NUMBER = VERSION.rsplit(".", maxsplit=1)
 NEXT_VERSION = f"{VERSION_PREFIX}.{int(CANDIDATE_NUMBER) + 1}"
@@ -140,7 +147,7 @@ def test_inno_setup_and_artwork_contract() -> None:
     inno_script = read("installer/mohan.iss")
     for language in ("ChineseTraditional", "ChineseSimplified"):
         messages = ROOT / "installer" / "languages" / f"{language}.isl"
-        assert messages.is_file() and messages.stat().st_size > 20_000
+        assert messages.is_file() and messages.stat().st_size > MIN_LANGUAGE_FILE_SIZE
     assert "compiler:Languages\\ChineseTraditional.isl" not in inno_script
     assert_contains(
         inno_script,
@@ -160,9 +167,9 @@ def test_inno_setup_and_artwork_contract() -> None:
     )
     assert inno_script.count(
         'AppUserModelID: "FlamebladeStudio.MoHanDesktopAssistant"'
-    ) == 2
+    ) == EXPECTED_OCCURRENCE_COUNT
     installed_icon = 'IconFilename: "{app}\\{#ExecutableName}"'
-    assert inno_script.count(installed_icon) == 2
+    assert inno_script.count(installed_icon) == EXPECTED_OCCURRENCE_COUNT
     assert 'IconFilename: "{#IconPath}"' not in inno_script
     installer_test = read("installer/test_installers.ps1")
     assert 'MOHAN_ALLOW_INSTALLER_MUTATION -ne "1"' in installer_test
@@ -412,9 +419,9 @@ def test_readme_language_and_contribution_contract() -> None:
     support_cards = readme.count(
         'width="33%" align="center" valign="top"><img src="docs/media/support-'
     )
-    assert expression_cards >= 6
-    assert support_cards == 3
-    assert expression_cards + support_cards >= 9
+    assert expression_cards >= MIN_EXPRESSION_CARD_COUNT
+    assert support_cards == SUPPORT_CARD_COUNT
+    assert expression_cards + support_cards >= MIN_TOTAL_CARD_COUNT
     assert_contains(
         readme,
         (
@@ -551,8 +558,8 @@ def assert_release_website_block(manifest: dict[str, object]) -> None:
     assert "buymeacoffee.com" not in block.lower()
     assert "paypal.com/paypalme" not in block.lower()
     assert "wp-content/uploads" not in block
-    assert block.count('class="mohan-scene"') >= 6
-    assert block.count('loading="eager"') == 6
+    assert block.count('class="mohan-scene"') >= SCENE_COUNT
+    assert block.count('loading="eager"') == SCENE_COUNT
 
     initial = "<p>保留的網站內容</p>"
     first = replace_managed_block(initial, block)

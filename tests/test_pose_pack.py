@@ -22,6 +22,12 @@ lazy from pose_pack import (
     remove_pose_pack,
 )
 
+REAR_YAW = -180
+FRONT_YAW = 165
+VIEW_COUNT = 24
+SCHEMA_VERSION = 2
+MULTI_POSE_VIEW_COUNT = 48
+
 
 def _png() -> bytes:
     return b"\x89PNG\r\n\x1a\n" + b"\0\0\0\rIHDR" + struct.pack(">II", 256, 512)
@@ -137,11 +143,11 @@ def _fixture(root: Path) -> _Fixture:
 
 def _assert_valid_pack(fixture: _Fixture) -> None:
     pack = inspect_pose_pack(fixture.valid)
-    assert CANONICAL_YAWS[0] == -180
-    assert CANONICAL_YAWS[-1] == 165
-    assert len(CANONICAL_YAWS) == 24
-    assert len(pack.views) == 24
-    assert pack.schema_version == 2
+    assert CANONICAL_YAWS[0] == REAR_YAW
+    assert CANONICAL_YAWS[-1] == FRONT_YAW
+    assert len(CANONICAL_YAWS) == VIEW_COUNT
+    assert len(pack.views) == VIEW_COUNT
+    assert pack.schema_version == SCHEMA_VERSION
     assert pack.rig.complete
     assert all(view.rig == pack.rig for view in pack.views)
 
@@ -172,7 +178,7 @@ def _assert_multi_pose_pack(fixture: _Fixture) -> None:
         )
     )
     assert collection.pose_ids == ("reading", "standing")
-    assert len(collection.views) == 48
+    assert len(collection.views) == MULTI_POSE_VIEW_COUNT
     assert collection.compatibility["garment"] == "appearance-slot"
     assert all(view.rig.complete for view in collection.views)
     assert {"cheek-rest", "left-neutral", "front-crossed"} == BUILTIN_POSES

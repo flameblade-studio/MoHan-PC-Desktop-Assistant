@@ -19,6 +19,8 @@ lazy from theme_pack_ui import ThemeCatalogEntry, ThemePackPanel
 
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 CJK = re.compile(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]")
+EXPECTED_THEME_COUNT = 2
+EXPECTED_THEME_COUNT_AFTER_UPLOAD = 3
 NAMES = frozendict({
     "zh-TW": "月色",
     "zh-CN": "月色",
@@ -141,7 +143,7 @@ def assert_four_language_visual_contract() -> None:
                 *list_text(panel),
             ))
             assert all(text in visible for text in expected[language]), language
-            assert panel.theme_list.count() == 2
+            assert panel.theme_list.count() == EXPECTED_THEME_COUNT
             assert not any(
                 button.text() in {"保存設定", "保存设置", "Save settings", "設定を保存"}
                 for button in panel.findChildren(QPushButton)
@@ -192,7 +194,7 @@ def assert_install_refreshes_without_preview() -> None:
         catalog.entries.append(
             ThemeCatalogEntry(
                 "dawn",
-                frozendict({language: "Dawn" for language in LANGUAGES}),
+                frozendict(dict.fromkeys(LANGUAGES, "Dawn")),
             )
         )
         return object()
@@ -205,7 +207,7 @@ def assert_install_refreshes_without_preview() -> None:
             return_value=("C:/Downloads/dawn.mohan-theme", ""),
         ):
             panel._upload_one_file()
-        assert panel.theme_list.count() == 3
+        assert panel.theme_list.count() == EXPECTED_THEME_COUNT_AFTER_UPLOAD
         assert tuple(session.preview_calls) == previous_calls
         assert panel.theme_list.currentItem().data(Qt.UserRole) == "builtin"
     finally:

@@ -17,6 +17,7 @@ lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_TARGETS = ("startup", "lipsync", "expression")
+MAX_PERCENT = 100.0
 TARGET_SCRIPTS = frozendict(
     {
         "startup": ROOT / "app.py",
@@ -223,11 +224,11 @@ def _validate_arguments(args: argparse.Namespace) -> None:
         raise SystemExit("--duration must be positive.")
     if args.top_frames <= 0 or args.min_samples <= 0:
         raise SystemExit("Frame and sample limits must be positive.")
-    if not 0.0 <= args.max_sample_read_error_percent <= 100.0:
+    if not 0.0 <= args.max_sample_read_error_percent <= MAX_PERCENT:
         raise SystemExit(
             "--max-sample-read-error-percent must be from 0 through 100."
         )
-    if not 0.0 <= args.max_missed_samples_percent <= 100.0:
+    if not 0.0 <= args.max_missed_samples_percent <= MAX_PERCENT:
         raise SystemExit(
             "--max-missed-samples-percent must be from 0 through 100."
         )

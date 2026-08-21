@@ -33,6 +33,10 @@ lazy from speech_performance import (
 
 WIDTH = 2
 HEIGHT = 2
+STATIC_COMPOSITIONS_AFTER_BEHAVIOR = 2
+STATIC_COMPOSITIONS_AFTER_SPEECH = 2
+STATIC_COMPOSITIONS_AFTER_FRAMING = 3
+STATIC_COMPOSITIONS_AFTER_ASSETS = 4
 
 
 def pixels(color: tuple[int, int, int, int]) -> bytes:
@@ -119,7 +123,12 @@ class Assets:
     fail_dynamic: bool = False
     on_static: object | None = None
 
-    def resolve_static(self, _pose: str, view: str) -> FullBodyRenderSpec | None:
+    def resolve_static(
+        self,
+        _pose: str,
+        view: str,
+        _motion: object | None = None,
+    ) -> FullBodyRenderSpec | None:
         if callable(self.on_static):
             self.on_static()
         if self.fail_static:
@@ -131,6 +140,7 @@ class Assets:
         _face: str | None,
         viseme: str,
         _mouth_closed: bool,
+        _motion: object | None = None,
     ) -> tuple[FullBodyRenderLayer, ...] | None:
         if self.missing_dynamic:
             return None
@@ -216,18 +226,18 @@ def assert_body_framing_or_assets_generation_rebuilds_static_once() -> None:
         engine.dispatch(request(engine, behavior)).disposition
         is FullBodyBridgeDisposition.PUBLISHED
     )
-    assert adapter.static_compositions == 2
+    assert adapter.static_compositions == STATIC_COMPOSITIONS_AFTER_BEHAVIOR
     speech_only = performance(speech_generation=3, behavior_generation=2, viseme="E")
     assert (
         engine.dispatch(request(engine, speech_only)).disposition
         is FullBodyBridgeDisposition.PUBLISHED
     )
-    assert adapter.static_compositions == 2
+    assert adapter.static_compositions == STATIC_COMPOSITIONS_AFTER_SPEECH
     assert (
         engine.dispatch(request(engine, speech_only, framing_generation=2)).disposition
         is FullBodyBridgeDisposition.PUBLISHED
     )
-    assert adapter.static_compositions == 3
+    assert adapter.static_compositions == STATIC_COMPOSITIONS_AFTER_FRAMING
     assert (
         engine.dispatch(
             request(
@@ -236,7 +246,7 @@ def assert_body_framing_or_assets_generation_rebuilds_static_once() -> None:
         ).disposition
         is FullBodyBridgeDisposition.PUBLISHED
     )
-    assert adapter.static_compositions == 4
+    assert adapter.static_compositions == STATIC_COMPOSITIONS_AFTER_ASSETS
 
 
 def assert_stale_cancel_dedupe_and_lkg_are_explicit() -> None:
@@ -270,8 +280,8 @@ def assert_stale_cancel_dedupe_and_lkg_are_explicit() -> None:
     before = adapter.current_frame
     invalid = Assets()
     original = invalid.resolve_static
-    invalid.resolve_static = lambda pose, view: replace(
-        original(pose, view), rig_id="bad"
+    invalid.resolve_static = lambda pose, view, motion=None: replace(
+        original(pose, view, motion), rig_id="bad"
     )  # type: ignore[arg-type,method-assign]
     result = engine.dispatch(
         request(engine, performance(speech_generation=2), assets=invalid)

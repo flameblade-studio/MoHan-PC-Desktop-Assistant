@@ -15,6 +15,9 @@ lazy from companion_animation_contract import EXPRESSION_SPEECH_EXPRESSIONS
 lazy from companion_window import CompanionWindow
 lazy from face_rig import FacePose, Viseme
 
+SMILE_THRESHOLD = 0.5
+BLUSH_THRESHOLD = 0.8
+
 
 def configure(window: CompanionWindow, expression: str) -> None:
     window.state = "speaking"
@@ -73,10 +76,10 @@ def assert_all_expression_layers(window: CompanionWindow) -> None:
             window._render_audio_mouth_transition()
             assert not window.speech_visual_pixmap.isNull(), expression
         if expression == "happy":
-            assert window.face_motion_frame.expression_shape.eye_smile > 0.5
+            assert window.face_motion_frame.expression_shape.eye_smile > SMILE_THRESHOLD
             assert window.face_motion_frame.mouth.corner_smile == 0.0
         if expression in {"shy_front", "shy_cute_front"}:
-            assert window.face_motion_frame.expression_shape.blush > 0.8
+            assert window.face_motion_frame.expression_shape.blush > BLUSH_THRESHOLD
         window._stop_mouth_animation()
 
 

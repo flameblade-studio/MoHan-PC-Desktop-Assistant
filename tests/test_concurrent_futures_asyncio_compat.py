@@ -18,6 +18,7 @@ lazy from application.background_agents import AgentObservation, ManagerWorkerSc
 lazy from presentation.flagship.cloud_health import CloudHealthWorker
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_ASYNCIO_TO_THREAD_RESULT = 315
 BOUNDARY_PATH = "domain/python315_concurrency.py"
 BOUNDARY_IMPORTS = {
     "application/background_agents.py": {"Future", "ThreadPoolExecutor"},
@@ -68,7 +69,7 @@ def test_affected_module_import_preserves_asyncio_to_thread(
     module = importlib.import_module(module_name)
     importlib.reload(module)
 
-    assert _asyncio_to_thread_result() == 315
+    assert _asyncio_to_thread_result() == EXPECTED_ASYNCIO_TO_THREAD_RESULT
 
 
 def test_concurrency_consumers_use_one_eager_compatibility_boundary() -> None:
@@ -194,7 +195,7 @@ def test_background_scheduler_remains_operational() -> None:
         scheduler.close()
 
     assert [item.event_key for item in observations] == ["completed"]
-    assert _asyncio_to_thread_result() == 315
+    assert _asyncio_to_thread_result() == EXPECTED_ASYNCIO_TO_THREAD_RESULT
 
 
 def test_cloud_health_probes_remain_concurrent_and_isolated() -> None:
@@ -239,4 +240,4 @@ def test_cloud_health_probes_remain_concurrent_and_isolated() -> None:
     assert results["Gmail"]["ok"] is True
     assert results["Calendar"]["ok"] is True
     assert results["Drive"]["ok"] is False
-    assert _asyncio_to_thread_result() == 315
+    assert _asyncio_to_thread_result() == EXPECTED_ASYNCIO_TO_THREAD_RESULT

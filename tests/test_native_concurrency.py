@@ -21,6 +21,7 @@ lazy from domain.python315_concurrency import ThreadPoolExecutor
 NATIVE = importlib.import_module("_mohan_accel")
 RGBA_SIDE = 512
 RGBA_PIXELS = RGBA_SIDE * RGBA_SIDE
+TIMEOUT_SECONDS = 30
 
 
 def _pcm(samples: list[int]) -> bytes:
@@ -103,7 +104,7 @@ def test_pcm_50_hz_and_rgba_parallel_pressure_complete_without_deadlock() -> Non
     stop.set()
     monitor.join(timeout=2)
 
-    assert elapsed < 30
+    assert elapsed < TIMEOUT_SECONDS
     assert results[:4] == [expected_pcm] * 4
     assert results[4:] == [expected_rgba] * 2
     assert progress > 0

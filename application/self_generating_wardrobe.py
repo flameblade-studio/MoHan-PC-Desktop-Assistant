@@ -163,11 +163,13 @@ def _require_requested_categories(
             raise OutfitPackError(
                 f"Generated appearance omitted requested category: {category}."
             )
-        if category in {"weapon", "handheld", "jewelry", "foreground-effect"}:
-            if category not in accessory_kinds:
-                raise OutfitPackError(
-                    f"Generated appearance omitted requested category: {category}."
-                )
+        if (
+            category in {"weapon", "handheld", "jewelry", "foreground-effect"}
+            and category not in accessory_kinds
+        ):
+            raise OutfitPackError(
+                f"Generated appearance omitted requested category: {category}."
+            )
         if selections.get(category) is None:
             raise OutfitPackError(
                 f"Generated ensemble did not select requested category: {category}."

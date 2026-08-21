@@ -15,6 +15,8 @@ lazy from application.native_rgba_acceleration import (
     crossfade_rgba_python,
 )
 
+CALL_COUNT = 2
+
 
 def _rgba(*pixels: tuple[int, int, int, int]) -> bytes:
     return bytes(channel for pixel in pixels for channel in pixel)
@@ -205,7 +207,7 @@ def test_native_operation_is_first_call_verified_then_used_directly() -> None:
     assert accelerator.alpha_over_rgba(target, source) == expected
     assert accelerator.alpha_over_rgba(target, source) == expected
     status = accelerator.status()
-    assert calls == 2
+    assert calls == CALL_COUNT
     assert status.verified_operations == ("alpha_over_rgba",)
     assert status.disabled_operations == ()
 

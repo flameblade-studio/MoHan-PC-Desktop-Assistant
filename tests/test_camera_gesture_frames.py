@@ -13,6 +13,10 @@ lazy from PySide6.QtTest import QSignalSpy
 
 lazy from camera_presence import CameraPresenceController
 
+EXPECTED_GESTURE_COUNT = 5
+EXPECTED_SCENE_COUNT = 2
+EXPECTED_OBSERVATION_COUNT = 3
+
 
 class VideoFrame:
     def __init__(self, *, valid: bool = True) -> None:
@@ -56,9 +60,9 @@ def assert_default_off_and_independent_sampling_rates() -> None:
         clock.now = moment
         controller._frame(frame)  # type: ignore[arg-type]
     application.processEvents()
-    assert gestures.count() == 5
-    assert scenes.count() == 2
-    assert observations.count() == 3
+    assert gestures.count() == EXPECTED_GESTURE_COUNT
+    assert scenes.count() == EXPECTED_SCENE_COUNT
+    assert observations.count() == EXPECTED_OBSERVATION_COUNT
     payload, width, height = gestures.at(0)
     assert isinstance(payload, bytes) and payload
     assert width > 0 and height > 0

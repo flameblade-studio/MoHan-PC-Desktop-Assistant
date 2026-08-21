@@ -26,6 +26,9 @@ lazy from vision_domain import (
     SceneUnderstanding,
 )
 
+EXPECTED_OPERATION_ID = 7
+EXPECTED_OBSERVED_AT = 1234.5
+
 
 def cloud_result(operation_id: int = 7) -> CloudVisionResult:
     understanding = VisualUnderstanding(
@@ -69,7 +72,7 @@ def cloud_result(operation_id: int = 7) -> CloudVisionResult:
 def assert_ui_result_is_typed_and_suppresses_unsafe_claims() -> None:
     safe = _safe_ui_result(cloud_result())
     assert isinstance(safe.interpretation, CloudSceneInterpretation)
-    assert safe.interpretation.operation_id == 7
+    assert safe.interpretation.operation_id == EXPECTED_OPERATION_ID
     assert all(
         fact.kind is not SceneFactKind.PERSON
         for fact in safe.interpretation.facts
@@ -89,12 +92,12 @@ def assert_merge_preserves_local_identity_time_and_rejects_stale_results() -> No
     )
     local = SceneUnderstanding(owner, (), ("at_computer",), ())
     integrator = CloudLocalSceneIntegrator()
-    integrator.observe_local(local, observed_at=1234.5)
+    integrator.observe_local(local, observed_at=EXPECTED_OBSERVED_AT)
     safe = _safe_ui_result(cloud_result())
     merged = integrator.merge_cloud(safe)
     assert merged is not None
     assert merged.scene.identity is owner
-    assert merged.observed_at == 1234.5
+    assert merged.observed_at == EXPECTED_OBSERVED_AT
     assert merged.scene.activities == ("at_computer", "possible_reading")
     assert integrator.merge_cloud(safe) is None
     assert integrator.merge_cloud(

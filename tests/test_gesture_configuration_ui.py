@@ -19,7 +19,7 @@ lazy from PySide6.QtWidgets import (
     QScrollArea,
 )
 
-lazy from flagship_ui import FlagshipControlCenter
+lazy from flagship_ui import ControlCenterDependencies, FlagshipControlCenter
 lazy from gesture_configuration import (
     GESTURE_ACTION_LABELS,
     LANDMARKS_PER_HAND,
@@ -46,6 +46,8 @@ lazy from infrastructure.profile_transfer import (
     PORTABLE_SETTING_KEYS,
     PortableProfileManager,
 )
+
+MIN_GESTURE_LIST_COUNT = 8
 
 
 @pytest.fixture
@@ -98,8 +100,10 @@ def build_center(root: Path, language: str = "zh-TW", recorder=None):
         db,
         root,
         language=language,
-        gesture_store=store,
-        gesture_recorder=recorder,
+        dependencies=ControlCenterDependencies(
+            gesture_store=store,
+            gesture_recorder=recorder,
+        ),
     )
     center.show()
     QApplication.processEvents()
@@ -361,7 +365,7 @@ def test_four_languages_actions_layout_and_portable_contract(root: Path) -> None
             QApplication.processEvents()
             assert center.gesture_enabled.text() == enabled_text
             assert center.gesture_action.count() == len(GESTURE_ACTION_LABELS)
-            assert center.gesture_list.count() >= 8
+            assert center.gesture_list.count() >= MIN_GESTURE_LIST_COUNT
             assert isinstance(center.tabs.widget(5), QScrollArea)
             controls = (
                 center.gesture_enabled,

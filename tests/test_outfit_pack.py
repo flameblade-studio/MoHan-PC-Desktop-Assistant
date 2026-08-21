@@ -32,6 +32,8 @@ lazy from outfit_pack import (
     restore_builtin_outfit,
 )
 
+EXPECTED_INSTALLED_SELECTIONS = 7
+
 
 def _png() -> bytes:
     return b"\x89PNG\r\n\x1a\n" + b"\0\0\0\rIHDR" + struct.pack(">II", 512, 768)
@@ -61,7 +63,7 @@ def _pose_assets(prefix: str, data: bytes, slots: tuple[str, ...]) -> tuple[dict
 
 
 def _silhouette_rules(value: str) -> dict[str, str]:
-    return {silhouette: value for silhouette in REQUIRED_SILHOUETTES}
+    return dict.fromkeys(REQUIRED_SILHOUETTES, value)
 
 
 def _body_visibility() -> dict[str, dict[str, str]]:
@@ -76,7 +78,7 @@ def _body_visibility() -> dict[str, dict[str, str]]:
         "leg-right",
     )
     return {
-        silhouette: {region: "covered" for region in regions}
+        silhouette: dict.fromkeys(regions, "covered")
         for silhouette in REQUIRED_SILHOUETTES
     }
 
@@ -276,7 +278,7 @@ def _prepare_store(root: Path, valid: Path) -> Path:
     store = root / "store"
     install_outfit_pack(valid, store)
     assert not (store / "active.json").exists()
-    assert len(list_installed_selections(store)) == 7
+    assert len(list_installed_selections(store)) == EXPECTED_INSTALLED_SELECTIONS
     assert len(list_installed_selections(store, "hairstyle")) == 1
     assert len(list_installed_ensembles(store)) == 1
     return store

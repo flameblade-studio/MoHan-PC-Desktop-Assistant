@@ -21,6 +21,11 @@ LAYERS = (
     "eyes",
 )
 
+FEATHER_ALPHA_THRESHOLD = 220
+MIN_VISIBLE_PIXELS = 100
+MIN_FEATHER_PIXELS = 80
+EXPECTED_CHECKED_COUNT = 21
+
 
 def run() -> None:
     checked = 0
@@ -55,12 +60,12 @@ def run() -> None:
                 ), (
                     f"non-original color introduced: {path}"
                 )
-                if alpha < 220:
+                if alpha < FEATHER_ALPHA_THRESHOLD:
                     feather_count += 1
-            assert visible_count > 100, path
-            assert feather_count > 80, f"hard edge lacks feather: {path}"
+            assert visible_count > MIN_VISIBLE_PIXELS, path
+            assert feather_count > MIN_FEATHER_PIXELS, f"hard edge lacks feather: {path}"
             checked += 1
-    assert checked == 21
+    assert checked == EXPECTED_CHECKED_COUNT
     print("V120_ASSET_INTEGRITY_OK")
 
 

@@ -24,6 +24,8 @@ __all__ = (
     "parse_plan_json",
 )
 
+MAX_PLAN_STEPS = 25
+
 Handler = Callable[[ActionRequest], ActionResult]
 Verifier = Callable[[ActionRequest, ActionResult], bool]
 Confirm = Callable[[ActionRequest, PolicyDecision, int], bool]
@@ -161,7 +163,7 @@ class ActionExecutor:
         try:
             result = handler(request)
             self._verify_result(request, result, verifier)
-        except Exception as exc:  # noqa: BLE001 -- explicit external-tool boundary
+        except Exception as exc:
             handler_error = exc
 
         if handler_error is not None:
@@ -215,7 +217,7 @@ def parse_plan_json(value: str, *, source: str = "local") -> ActionPlan:
         raise ValueError("任務計畫缺少標題")
     if not isinstance(raw_steps, list):
         raise TypeError("任務計畫步驟必須是陣列")
-    if len(raw_steps) > 25:
+    if len(raw_steps) > MAX_PLAN_STEPS:
         raise ValueError("單一任務最多 25 個步驟")
     steps: list[ActionRequest] = []
     for raw in raw_steps:

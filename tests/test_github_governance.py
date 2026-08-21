@@ -5,6 +5,7 @@ lazy import struct
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+MIN_PREVIEW_BYTES = 100_000
 
 
 def read(relative: str) -> str:
@@ -424,7 +425,7 @@ def test_secret_defense_and_community_files() -> None:
     read("GOVERNANCE.md")
 
     preview = ROOT / "docs/media/github-social-preview.png"
-    assert preview.is_file() and preview.stat().st_size > 100_000
+    assert preview.is_file() and preview.stat().st_size > MIN_PREVIEW_BYTES
     header = preview.read_bytes()[:24]
     assert header[:8] == b"\x89PNG\r\n\x1a\n"
     assert struct.unpack(">II", header[16:24]) == (1280, 640)

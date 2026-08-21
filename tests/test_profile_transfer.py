@@ -23,6 +23,8 @@ lazy from infrastructure.db import StudioDB
 lazy from infrastructure.framing_preferences_store import (
     STORE_SCHEMA_KEY as FRAMING_STORE_SCHEMA_KEY,
 )
+
+UUID_HEX_LENGTH = 32
 lazy from infrastructure.performance_preferences_store import STORE_SCHEMA_KEY
 lazy from infrastructure.portable_secrets import (
     PORTABLE_SECRETS_FORMAT,
@@ -298,8 +300,8 @@ def _create_fixture(root: Path) -> TransferFixture:
 def _assert_export_manifest(fixture: TransferFixture) -> None:
     assert fixture.bundle.name.endswith(".mohan-profile")
     assert fixture.manifest.assistant_name == "筆電墨寒"
-    assert len(fixture.manifest.snapshot_id) == 32
-    assert len(fixture.manifest.source_installation_id) == 32
+    assert len(fixture.manifest.snapshot_id) == UUID_HEX_LENGTH
+    assert len(fixture.manifest.source_installation_id) == UUID_HEX_LENGTH
     assert set(PORTABLE_TABLES) <= set(fixture.manifest.record_counts)
     with zipfile.ZipFile(fixture.bundle, "r") as archive:
         manifest = json.loads(archive.read("manifest.json"))

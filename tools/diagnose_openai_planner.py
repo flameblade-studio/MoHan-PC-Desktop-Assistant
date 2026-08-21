@@ -55,7 +55,7 @@ def main(data_path_text: str) -> int:
             f"elapsed={time.monotonic() - started:.2f}s"
         )
         return 3
-    except Exception as exc:  # noqa: BLE001 -- external errors become finite metadata
+    except Exception as exc:
         error = sanitize_error(exc)
         print(
             f"MODEL_CHECK=failed,{error},"

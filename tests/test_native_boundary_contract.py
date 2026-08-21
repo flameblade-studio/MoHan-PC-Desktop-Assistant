@@ -5,12 +5,15 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 NATIVE_ROOT = ROOT / "native" / "mohan_accel"
 
+NATIVE_OPERATION_COUNT = 5
+I16_DECODE_COUNT = 2
+
 
 def test_native_bindings_borrow_bytes_and_release_python() -> None:
     bindings = (NATIVE_ROOT / "src" / "lib.rs").read_text(encoding="utf-8")
     assert "use pyo3::pybacked::PyBackedBytes;" in bindings
-    assert bindings.count("data: PyBackedBytes") >= 5
-    assert bindings.count("py.detach(move ||") >= 5
+    assert bindings.count("data: PyBackedBytes") >= NATIVE_OPERATION_COUNT
+    assert bindings.count("py.detach(move ||") >= NATIVE_OPERATION_COUNT
     for operation in (
         "analyze_pcm16",
         "infer_vowel_pcm16",
@@ -26,7 +29,7 @@ def test_pcm16_is_decoded_explicitly_without_float_reinterpretation() -> None:
         path.read_text(encoding="utf-8")
         for path in sorted((NATIVE_ROOT / "src").glob("*.rs"))
     )
-    assert rust_sources.count("i16::from_le_bytes") >= 2
+    assert rust_sources.count("i16::from_le_bytes") >= I16_DECODE_COUNT
     assert "&[f32]" not in rust_sources
     assert "from_raw_parts" not in rust_sources
     cargo_manifest = (NATIVE_ROOT / "Cargo.toml").read_text(encoding="utf-8")

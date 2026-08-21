@@ -23,6 +23,8 @@ lazy from appearance_renderer import (
 
 WIDTH = 8
 HEIGHT = 8
+MAX_OFFSET_X = 10
+MAX_ROTATION_DEGREES = 12
 
 
 def rgba(width: int, height: int, color: tuple[int, int, int, int]) -> bytes:
@@ -282,8 +284,8 @@ def assert_dynamic_modes_emit_bounded_known_slot_descriptions() -> None:
             DynamicsInput(1.0 / 60.0, motion_x=0.8),
         )
         assert tuple(item.slot for item in frame.layer_transforms) == expected_slots
-        assert all(abs(item.transform.offset_x) <= 10 for item in frame.layer_transforms)
-        assert all(abs(item.transform.rotation_degrees) <= 12 for item in frame.layer_transforms)
+        assert all(abs(item.transform.offset_x) <= MAX_OFFSET_X for item in frame.layer_transforms)
+        assert all(abs(item.transform.rotation_degrees) <= MAX_ROTATION_DEGREES for item in frame.layer_transforms)
         assert frame.rgba == AppearanceRenderer(
             core_manifest(), Resolver(ASSETS)
         ).render("front-crossed", layers).rgba

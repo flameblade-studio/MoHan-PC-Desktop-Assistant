@@ -31,11 +31,13 @@
         },
         {
           "type": "generic",
-          "path": "domain/version_info.py"
+          "path": "domain/version_info.py",
+          "replace": "FALLBACK_VERSION = \"$VERSION\""
         },
         {
           "type": "generic",
-          "path": "tests/test_v4_development_version_consistency.py"
+          "path": "tests/test_v4_development_version_consistency.py",
+          "replace": "DEVELOPMENT_VERSION = \"$VERSION\""
         }
       ]
     }

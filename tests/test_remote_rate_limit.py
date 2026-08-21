@@ -17,6 +17,8 @@ lazy from integrations.remote_control import (
     TokenRegistry,
 )
 
+HTTP_TOO_MANY_REQUESTS = 429
+
 
 def run() -> None:
     with TemporaryDirectory() as temp:
@@ -52,7 +54,7 @@ def run() -> None:
             try:
                 urlopen(request, timeout=3)
             except HTTPError as exc:
-                assert exc.code == 429
+                assert exc.code == HTTP_TOO_MANY_REQUESTS
                 assert json.load(exc) == {"error": "請求過於頻繁"}
             else:
                 raise AssertionError("rate limit must return HTTP 429")

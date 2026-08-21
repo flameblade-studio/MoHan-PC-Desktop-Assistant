@@ -8,6 +8,8 @@ lazy from PySide6.QtGui import QPainter, QPixmap, QTransform
 
 lazy from domain.face_rig import FaceMotionFrame, MouthShape, Viseme
 
+MOUTH_APERTURE_THRESHOLD = 0.01
+
 
 @dataclass(frozen=True, slots=True)
 class FaceRenderLayers:
@@ -58,7 +60,7 @@ class ParametricFaceRenderer:
         actual_aperture = (
             motion.mouth.aperture if aperture is None else float(aperture)
         )
-        if motion.viseme is not Viseme.CLOSED or actual_aperture > 0.01:
+        if motion.viseme is not Viseme.CLOSED or actual_aperture > MOUTH_APERTURE_THRESHOLD:
             self._paint_mouth(
                 result,
                 layers,
@@ -185,7 +187,7 @@ class LegacyFaceRenderer:
         actual_aperture = (
             motion.mouth.aperture if aperture is None else float(aperture)
         )
-        if motion.viseme is Viseme.CLOSED and actual_aperture <= 0.01:
+        if motion.viseme is Viseme.CLOSED and actual_aperture <= MOUTH_APERTURE_THRESHOLD:
             return QPixmap(base)
         result = QPixmap(base)
         ParametricFaceRenderer._paint_masked(

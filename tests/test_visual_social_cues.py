@@ -13,6 +13,9 @@ lazy from visual_social_cues import (
     observe_social_cues,
 )
 
+EXPECTED_CONFIDENCE = 0.91
+EXPECTED_AMBIGUOUS_CONFIDENCE = 0.49
+
 
 def assert_only_observable_candidates_are_exposed() -> None:
     observation = observe_social_cues(
@@ -30,7 +33,7 @@ def assert_only_observable_candidates_are_exposed() -> None:
         ObservableFacialCue.FATIGUE_CANDIDATE,
     )
     assert observation.gaze_head_direction is GazeHeadDirection.SCREEN_LIKE
-    assert observation.confidence == 0.91
+    assert observation.confidence == EXPECTED_CONFIDENCE
     assert isclose(observation.uncertainty, 0.09)
 
 
@@ -40,7 +43,7 @@ def assert_ambiguous_and_missing_evidence_remain_unknown() -> None:
     )
     assert ambiguous.facial_cues == (ObservableFacialCue.UNKNOWN,)
     assert ambiguous.gaze_head_direction is GazeHeadDirection.UNKNOWN
-    assert ambiguous.confidence == 0.49
+    assert ambiguous.confidence == EXPECTED_AMBIGUOUS_CONFIDENCE
     absent = observe_social_cues(FacialCueMeasurements())
     assert absent.facial_cues == (ObservableFacialCue.UNKNOWN,)
     assert absent.confidence == 0.0

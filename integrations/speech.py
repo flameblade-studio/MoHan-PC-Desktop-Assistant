@@ -1089,7 +1089,7 @@ class SpeechListener(QObject):
             audio_path.unlink(missing_ok=True)
             self._busy.clear()
             self.listening_changed.emit(False)
-        except Exception as exc:  # noqa: BLE001 -- worker restores UI state on failure
+        except Exception as exc:
             self._recording_active.clear()
             self.recording_changed.emit(False)
             reason = str(sanitize_error(exc))

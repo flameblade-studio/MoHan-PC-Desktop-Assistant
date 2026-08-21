@@ -14,8 +14,12 @@ lazy from typing import TypeVar, cast
 lazy from domain import lip_sync as python_lip_sync
 lazy from domain import pcm_audio as python_pcm_audio
 
+# Re-exported from the centralized constants module for a single source of truth.
+lazy from domain.constants import PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE, PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE
+
 LOGGER = logging.getLogger(__name__)
 NATIVE_MODULE_NAME = "_mohan_accel"
+PAIR_LENGTH = 2
 _Result = TypeVar("_Result")
 
 
@@ -188,7 +192,7 @@ class NativeAcceleration:
             native_operation = getattr(module, operation)
             result = native_operation(*arguments)
             native_result = cast(_Result, result) if normalize is None else normalize(result)
-        except Exception as error:  # noqa: BLE001 - optional native trust boundary
+        except Exception as error:
             expected = fallback()
             self._observe_operation_failure(operation, error)
             return expected
@@ -221,7 +225,7 @@ class NativeAcceleration:
                 return self._module
             try:
                 self._module = self._module_loader(NATIVE_MODULE_NAME)
-            except Exception as error:  # noqa: BLE001 - optional module boundary
+            except Exception as error:
                 self._load_error = _error_summary(error)
                 LOGGER.info(
                     "MoHan native acceleration is unavailable; using Python: %s",
@@ -277,8 +281,8 @@ def _results_are_equivalent(
         if not isinstance(native_result, tuple) or not isinstance(python_result, tuple):
             return False
         return (
-            len(native_result) == 2
-            and len(python_result) == 2
+            len(native_result) == PAIR_LENGTH
+            and len(python_result) == PAIR_LENGTH
             and native_result[1] == python_result[1]
             and math.isclose(
                 float(native_result[0]),
@@ -293,7 +297,7 @@ def _results_are_equivalent(
 def _float_pair_is_close(left: object, right: object) -> bool:
     if not isinstance(left, tuple) or not isinstance(right, tuple):
         return False
-    if len(left) != 2 or len(right) != 2:
+    if len(left) != PAIR_LENGTH or len(right) != PAIR_LENGTH:
         return False
     return all(
         math.isclose(
@@ -307,7 +311,7 @@ def _float_pair_is_close(left: object, right: object) -> bool:
 
 
 def _normalize_analysis_result(result: object) -> tuple[float, float]:
-    if not isinstance(result, tuple) or len(result) != 2:
+    if not isinstance(result, tuple) or len(result) != PAIR_LENGTH:
         raise TypeError("native analysis returned an invalid result")
     loudness, articulation = result
     if not isinstance(loudness, float) or not isinstance(articulation, float):
@@ -320,7 +324,7 @@ def _normalize_analysis_result(result: object) -> tuple[float, float]:
 
 
 def _normalize_vowel_result(result: object) -> tuple[float, str]:
-    if not isinstance(result, tuple) or len(result) != 2:
+    if not isinstance(result, tuple) or len(result) != PAIR_LENGTH:
         raise TypeError("native vowel inference returned an invalid result")
     level, vowel = result
     if not isinstance(level, float) or not math.isfinite(level):
@@ -345,14 +349,14 @@ def _normalize_rate_result(
     *,
     channels: int,
 ) -> tuple[bytes, python_pcm_audio.Pcm16RateState | None]:
-    if not isinstance(result, tuple) or len(result) != 2:
+    if not isinstance(result, tuple) or len(result) != PAIR_LENGTH:
         raise TypeError("native rate conversion returned an invalid result")
     converted, native_state = result
     if not isinstance(converted, bytes):
         raise TypeError("native rate conversion did not return bytes")
     if native_state is None:
         return converted, None
-    if not isinstance(native_state, tuple) or len(native_state) != 2:
+    if not isinstance(native_state, tuple) or len(native_state) != PAIR_LENGTH:
         raise TypeError("native rate conversion returned an invalid state")
     tail_frame, phase = native_state
     if not isinstance(tail_frame, (list, tuple)) or not isinstance(phase, int):
@@ -361,7 +365,7 @@ def _normalize_rate_result(
         raise TypeError("native rate conversion returned invalid PCM16 samples")
     if len(tail_frame) != channels:
         raise ValueError("native rate conversion returned a mismatched channel state")
-    if any(not -32_768 <= sample <= 32_767 for sample in tail_frame):
+    if any(not MIN_PCM16_SAMPLE <= sample <= MAX_PCM16_SAMPLE for sample in tail_frame):
         raise ValueError("native rate conversion returned out-of-range PCM16 samples")
     if phase < 0:
         raise ValueError("native rate conversion returned a negative phase")

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 lazy import sys
-lazy from datetime import datetime, timedelta, timezone
+lazy from datetime import UTC, datetime, timedelta
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
@@ -14,7 +14,7 @@ lazy from application.wardrobe_storage import (
 
 
 def run() -> None:
-    now = datetime(2026, 8, 15, tzinfo=timezone.utc)
+    now = datetime(2026, 8, 15, tzinfo=UTC)
     with TemporaryDirectory() as temporary:
         root = Path(temporary)
         policy = WardrobeStoragePolicy(

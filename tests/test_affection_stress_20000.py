@@ -18,6 +18,8 @@ lazy from domain.personality_state import PersonalityMirrorState
 lazy from domain.satiety import SatietyState
 
 ITERATIONS = 20_000
+MIRROR_TEMP_MIN = -0.3
+MIRROR_TEMP_MAX = 0.3
 
 
 def _round(label: str) -> None:
@@ -47,7 +49,7 @@ def _round(label: str) -> None:
         assert 0.0 <= affinity.jealousy <= 1.0
         assert 0.0 <= favor.favor <= 1.0
         assert 0.0 <= satiety.satiety <= 1.0
-        assert -0.3 <= mirror.temperature <= 0.3
+        assert MIRROR_TEMP_MIN <= mirror.temperature <= MIRROR_TEMP_MAX
     current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     gc.collect()

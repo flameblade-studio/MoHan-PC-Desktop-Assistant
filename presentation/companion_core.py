@@ -5,6 +5,7 @@ lazy import time
 lazy from collections import deque
 lazy from collections.abc import Callable
 lazy from contextlib import suppress
+lazy from dataclasses import replace
 
 lazy from PySide6.QtCore import QPoint, Qt, QTimer
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
@@ -38,7 +39,17 @@ lazy from domain.emotional_resonance import EmotionalResonanceState
 lazy from domain.favor_exclusive import FavorExclusiveState
 lazy from domain.personality_state import PersonalityMirrorState
 lazy from domain.satiety import SatietyState
+
+WAVE_ACKNOWLEDGE_COOLDOWN_SECONDS = 6.0
+GAZE_CONFIDENCE_THRESHOLD = 0.35
+SMILE_COOLDOWN_SECONDS = 8.0
+CHIN_COOLDOWN_SECONDS = 14.0
+BROW_COOLDOWN_SECONDS = 16.0
+HIGH_FIVE_COOLDOWN_SECONDS = 12.0
+PINCH_COOLDOWN_SECONDS = 10.0
+lazy from domain.face_motion import FaceMotionController, blend_shyness
 lazy from domain.shy_gaze import ShyGazeState
+lazy from domain.shyness import ShynessState
 lazy from domain.time_sovereignty import TimeSovereigntyState
 lazy from domain.wardrobe_intuition import (
     OutfitWeight,
@@ -52,6 +63,7 @@ lazy from domain.expression_system import (
     ExpressionArbiter,
 )
 lazy from domain.time_utils import local_wall_time
+lazy from domain.character_framing import FramingMode
 lazy from domain.framing_context_policy import (
     EmotionValence,
     FocusState,
@@ -68,6 +80,10 @@ lazy from presentation.pose_atlas_assets import PoseAtlasAssets
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = ("CompanionCoreMixin",)
+
+# Framing modes that publish the v4 full-body photograph.  HALF/CLOSE keep the
+# legacy half-body poses (cheek-rest, left-neutral, front-crossed) instead.
+_FULL_BODY_MODES = frozenset({FramingMode.THREE_QUARTER, FramingMode.FULL_BODY})
 
 
 def _current_legacy_character_frame(window: object, generation: int) -> BodyPoseFrame:
@@ -118,6 +134,7 @@ class CompanionCoreMixin:
         self._adaptive_character_generation = 0
         self._staged_adaptive_frame = None
         self._adaptive_full_body_active = False
+        self._last_atomic_frame = None
         selected = (
             bool(self.db.setting("adaptive_character_v4_enabled", True))
             if enabled is None
@@ -186,6 +203,10 @@ class CompanionCoreMixin:
         composition = self._adaptive_character_composition
         if not self._adaptive_character_enabled or composition is None or self._closing:
             return None
+        # Remember the last atomic frame so the gaze timer can re-compose the
+        # full body when the pointer/saccade/shy-aversion moves the eyes without
+        # a new speech or behavior event.
+        self._last_atomic_frame = atomic_frame
         performance = atomic_frame.performance
         speech_active = not performance.mouth_closed
         # A pending wardrobe reveal asks the director for a full-body shot so
@@ -228,13 +249,95 @@ class CompanionCoreMixin:
                     FramingPreferences(),
                     composition.assets,
                     v4_enabled=True,
+                    face_motion=self._face_motion_with_live_state(),
                 )
             )
         except LookupError, RuntimeError, TypeError, ValueError:
             return None
         if decision.should_publish and not decision.used_legacy:
-            self._publish_adaptive_character_frame(decision.frame)
+            framing = getattr(decision, "framing", None)
+            if framing is not None and framing.mode in _FULL_BODY_MODES:
+                # Full-body shots are reserved for gestures, hand actions,
+                # accessory reveals, owner arrival and special occasions.  Only
+                # these publish the v4 full-body photograph.
+                self._publish_adaptive_character_frame(decision.frame)
+            else:
+                # HALF/CLOSE (idle and speech) keep the legacy half-body poses
+                # (cheek-rest, left-neutral, front-crossed).  Do not publish the
+                # full-body photograph so the half-body sprites stay in charge.
+                self._release_adaptive_full_body()
         return decision
+
+    def _face_motion_with_live_state(self):
+        """Return the face-motion frame with live gaze/blink/breath/expression.
+
+        The full-body renderer consumes a single :class:`FaceMotionFrame`, but
+        the gaze, blink, breath and expression all live in separate ``self``
+        attributes that update on their own timers.  This method stamps the
+        current values onto a copy of the frame so the layered renderer sees the
+        complete, up-to-date face state on every composition.
+        """
+        motion = getattr(self, "face_motion_frame", None)
+        if motion is None:
+            return None
+        gaze_x = getattr(self, "gaze_x", 0.0)
+        gaze_y = getattr(self, "gaze_y", 0.0)
+        blink = getattr(self, "blink_opacity", 0.0)
+        breath = getattr(self, "current_breath", 0.0)
+        expression = getattr(self, "current_expression", motion.expression)
+        # Re-map the expression onto its continuous shape when it changed, so a
+        # happy/shy/worried switch actually deforms the brows/blush/eye-smile.
+        if expression != motion.expression:
+            target = FaceMotionController.neutral(
+                str(motion.pose.value),
+                expression,
+            )
+            expression_shape = replace(
+                target.expression_shape,
+                blink=blink,
+            )
+        else:
+            expression_shape = replace(
+                motion.expression_shape,
+                blink=blink,
+            )
+        return replace(
+            motion,
+            expression=expression,
+            expression_shape=expression_shape,
+            gaze_x=gaze_x,
+            gaze_y=gaze_y,
+            breath=breath,
+        )
+
+    def _refresh_full_body(self) -> None:
+        """Re-compose the full body when live state moved without a new event.
+
+        The full-body composition is event-driven, but the gaze, blink, breath
+        and expression update on their own timers.  When the full body owns the
+        canvas, replay the last atomic frame so the layered renderer re-applies
+        the current face state.
+        """
+        if not getattr(self, "_adaptive_full_body_active", False):
+            return
+        atomic_frame = getattr(self, "_last_atomic_frame", None)
+        if atomic_frame is None:
+            return
+        self._dispatch_adaptive_character_frame(atomic_frame)
+
+    def _release_adaptive_full_body(self) -> None:
+        """Hand the canvas back to the legacy half-body poses."""
+        if not getattr(self, "_adaptive_full_body_active", False):
+            return
+        self._adaptive_full_body_active = False
+        # Restore the current half-body expression sprite and let the physics
+        # and attention layers re-apply their own visibility rules (instead of
+        # blindly showing every overlay).
+        expression = self.current_expression
+        if expression in self.expression_pixmaps:
+            self.character.setPixmap(self.expression_pixmaps[expression])
+        self._apply_physics_visibility()
+        self._render_attention_layers(force=True)
 
     def _publish_adaptive_character_frame(self, frame: object) -> None:
         """Publish approved RGBA without resizing the character widget."""
@@ -467,7 +570,7 @@ class CompanionCoreMixin:
         """
 
         now = time.monotonic()
-        if now - getattr(self, "_last_wave_acknowledged_at", 0.0) < 6.0:
+        if now - getattr(self, "_last_wave_acknowledged_at", 0.0) < WAVE_ACKNOWLEDGE_COOLDOWN_SECONDS:
             return
         self._last_wave_acknowledged_at = now
         if hasattr(self, "expression_arbiter"):
@@ -514,13 +617,11 @@ class CompanionCoreMixin:
         """Open the keyboard conversation surface and acknowledge a wave."""
         self.open_dashboard()
         self._acknowledge_wave()
-        try:
-            # The status card is informative only.  Its transient widget
-            # lifecycle must never prevent the real companion from opening
-            # the keyboard conversation or answering a recognized wave.
+        # The status card is informative only.  Its transient widget lifecycle
+        # must never prevent the real companion from opening the keyboard
+        # conversation or answering a recognized wave.
+        with suppress(Exception):
             self.dashboard.set_desktop_companion_gesture_status("wave")
-        except Exception:  # noqa: BLE001 - isolated optional Qt presentation
-            pass
 
     def _submit_gesture_text_command(self, command: str) -> None:
         dashboard = getattr(self, "dashboard", None)
@@ -654,7 +755,7 @@ class CompanionCoreMixin:
             return
         now = time.monotonic()
         face = result.face
-        if face is not None and face.gaze_confidence >= 0.35:
+        if face is not None and face.gaze_confidence >= GAZE_CONFIDENCE_THRESHOLD:
             self._sensory_gaze_target = (
                 max(-1.0, min(1.0, -face.gaze_x)),
                 max(-1.0, min(1.0, face.gaze_y)),
@@ -669,9 +770,28 @@ class CompanionCoreMixin:
         if shy is not None and face is not None:
             aversion = shy.update(gaze_confidence=face.gaze_confidence, now=now)
             self._shy_gaze_offset = aversion
+        # Shyness micro-expression chain: gaze + favor + context drive a
+        # continuous shyness level, which is blended into the face-motion frame
+        # so the blush/gaze/lip cascade grows on top of the current emotion.
+        shyness = getattr(self, "shyness_state", None)
+        if shyness is not None and face is not None:
+            favor = getattr(self, "favor_exclusive_state", None)
+            favor_score = favor.snapshot() if favor is not None else 0.0
+            expression = getattr(self, "current_expression", "")
+            self._shyness_level = shyness.update(
+                gaze_confidence=face.gaze_confidence,
+                favor=favor_score,
+                expression=expression,
+            )
+            motion = getattr(self, "face_motion_frame", None)
+            if motion is not None:
+                self.face_motion_frame = blend_shyness(
+                    motion,
+                    self._shyness_level,
+                )
         if (
             "smile-like" in result.events
-            and now - getattr(self, "_last_multimodal_smile_at", 0.0) >= 8.0
+            and now - getattr(self, "_last_multimodal_smile_at", 0.0) >= SMILE_COOLDOWN_SECONDS
         ):
             self._last_multimodal_smile_at = now
             self.set_state(
@@ -685,7 +805,7 @@ class CompanionCoreMixin:
         # makes the companion feel present without interrupting.
         if (
             "resting-chin" in result.events
-            and now - getattr(self, "_last_multimodal_chin_at", 0.0) >= 14.0
+            and now - getattr(self, "_last_multimodal_chin_at", 0.0) >= CHIN_COOLDOWN_SECONDS
         ):
             self._last_multimodal_chin_at = now
             self.set_state(
@@ -699,7 +819,7 @@ class CompanionCoreMixin:
         # tension without interrupting.
         if (
             "brow-tension-like" in result.events
-            and now - getattr(self, "_last_multimodal_brow_at", 0.0) >= 16.0
+            and now - getattr(self, "_last_multimodal_brow_at", 0.0) >= BROW_COOLDOWN_SECONDS
         ):
             self._last_multimodal_brow_at = now
             self.set_state(
@@ -723,7 +843,7 @@ class CompanionCoreMixin:
             self._resonance_breath_period = resonance.breath_period()
         if (
             "high-five" in result.events
-            and now - getattr(self, "_last_multimodal_high_five_at", 0.0) >= 12.0
+            and now - getattr(self, "_last_multimodal_high_five_at", 0.0) >= HIGH_FIVE_COOLDOWN_SECONDS
         ):
             self._last_multimodal_high_five_at = now
             self.set_state("happy", source="visual", intensity=0.75)
@@ -754,7 +874,7 @@ class CompanionCoreMixin:
         # and her affection spikes.
         if (
             "pinch" in result.events
-            and now - getattr(self, "_last_multimodal_pinch_at", 0.0) >= 10.0
+            and now - getattr(self, "_last_multimodal_pinch_at", 0.0) >= PINCH_COOLDOWN_SECONDS
         ):
             self._last_multimodal_pinch_at = now
             self.set_state("happy", source="visual", intensity=0.65)
@@ -836,6 +956,8 @@ class CompanionCoreMixin:
         self.shy_gaze_state = ShyGazeState()
         self._shy_gaze_offset: tuple[float, float] | None = None
         self._shy_gaze_offset_current: tuple[float, float] = (0.0, 0.0)
+        self.shyness_state = ShynessState()
+        self._shyness_level = 0.0
         self.emotional_resonance_state = EmotionalResonanceState()
         self._resonance_breath_period = 72.0
         self.time_sovereignty_state = TimeSovereigntyState()

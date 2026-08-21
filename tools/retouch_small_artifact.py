@@ -6,6 +6,8 @@ lazy from pathlib import Path
 lazy import numpy as np
 lazy from PIL import Image, ImageFilter
 
+BOX_DIMENSIONS = 4
+
 
 def ellipse_mask(
     size: tuple[int, int],
@@ -79,7 +81,7 @@ def main() -> None:
     )
     args = parser.parse_args()
     box = tuple(int(value) for value in args.box.split(","))
-    if len(box) != 4:
+    if len(box) != BOX_DIMENSIONS:
         raise ValueError("--box must contain four comma-separated integers")
     retouch(args.source, args.out, box)
 

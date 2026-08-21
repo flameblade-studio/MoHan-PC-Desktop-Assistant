@@ -17,6 +17,8 @@ lazy from tools.validate_release_sboms import (
     validate_asset_package_manifest,
 )
 
+COMMIT_HASH_LENGTH = 40
+EXPECTED_VARIANT_COUNT = 2
 EXPECTED_MODEL_REVISIONS = {
     "assets/vision-models/face_detection_yunet_2023mar.onnx": (
         "f12e12798e8314f7c074a6656816c048dcc95b7a"
@@ -71,7 +73,7 @@ def assert_models_are_machine_verifiable() -> None:
         if path.endswith(".onnx") and path not in {
             "assets/vision-models/silero_vad_v4.0.onnx",
         }:
-            assert len(expected_revision) == 40
+            assert len(expected_revision) == COMMIT_HASH_LENGTH
         assert expected_revision in asset.source
     assert {asset.license_expression for asset in windows} == {"MIT", "Apache-2.0"}
     bom: dict[str, object] = {"components": [], "dependencies": []}
@@ -202,8 +204,8 @@ def assert_outfit_pack_identity_and_reference_boundaries() -> None:
             manifest,
             official_core_body_skin=approved_core,
         )
-        assert report["variant_count"] == 2
-        assert report["asset_count"] == 2
+        assert report["variant_count"] == EXPECTED_VARIANT_COUNT
+        assert report["asset_count"] == EXPECTED_VARIANT_COUNT
         assert report["reference_count"] == 1
         assert report["core_body_skin"] == {
             "id": "mohan-core-body-skin-v1",

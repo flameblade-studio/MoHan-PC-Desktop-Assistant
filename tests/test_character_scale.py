@@ -18,6 +18,10 @@ lazy from companion_animation_contract import (
 )
 lazy from companion_window import CompanionWindow
 
+SCALE_PERCENT_150 = 150
+CANONICAL_SOURCE_PX = 465
+SCALE_PERCENT_135 = 135
+
 
 def run() -> None:
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
@@ -41,9 +45,9 @@ def run() -> None:
             window.eye_overlay,
         )
 
-        window._apply_character_scale(150, preserve_anchor=False)
+        window._apply_character_scale(SCALE_PERCENT_150, preserve_anchor=False)
         expected_size = round(CHARACTER_IMAGE_SIZE * 1.5)
-        assert window.character_scale_percent == 150
+        assert window.character_scale_percent == SCALE_PERCENT_150
         assert window.width() == max(
             CHARACTER_CANVAS_WIDTH,
             expected_size + 5,
@@ -62,8 +66,8 @@ def run() -> None:
         assert window.bubble.x() == (window.width() - 430) // 2
         # Rendering continues from the canonical high-quality 465px sources;
         # only the display canvas changes size.
-        assert window.expression_pixmaps["idle"].size().width() == 465
-        assert window.expression_pixmaps["idle"].size().height() == 465
+        assert window.expression_pixmaps["idle"].size().width() == CANONICAL_SOURCE_PX
+        assert window.expression_pixmaps["idle"].size().height() == CANONICAL_SOURCE_PX
         window._attention_tick()
         window._physics_tick()
         assert window.physics_overlay.isVisible()
@@ -77,12 +81,12 @@ def run() -> None:
             CHARACTER_CANVAS_WIDTH - expected_size
         ) // 2
 
-        window.dashboard.character_scale_slider.setValue(135)
+        window.dashboard.character_scale_slider.setValue(SCALE_PERCENT_135)
         app.processEvents()
-        assert window.character_scale_percent == 135
+        assert window.character_scale_percent == SCALE_PERCENT_135
         assert int(
             window.db.setting("character_scale_percent", 0)
-        ) == 135
+        ) == SCALE_PERCENT_135
         assert window.dashboard.character_scale_label.text() == "135%"
 
         window.close()

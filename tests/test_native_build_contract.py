@@ -8,6 +8,8 @@ lazy import pytest
 
 lazy from tools import build_native_acceleration
 
+SHA256_HEX_LENGTH = 64
+
 
 def _wheel(path: Path, *tags: str) -> Path:
     with zipfile.ZipFile(path, "w") as archive:
@@ -90,4 +92,4 @@ def test_wheel_evidence_hashes_the_exact_native_member(tmp_path: Path) -> None:
     member = build_native_acceleration.wheel_native_extension(wheel)
     assert member.path == "_mohan_accel/_mohan_accel.pyd"
     assert member.size == len(b"native-extension")
-    assert len(member.sha256) == 64
+    assert len(member.sha256) == SHA256_HEX_LENGTH

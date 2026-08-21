@@ -16,6 +16,8 @@ lazy from flagship_ui import FlagshipControlCenter
 lazy from infrastructure.concurrency_tools import thread_pool_executor
 lazy from infrastructure.db import StudioDB
 
+EXPECTED_RESULT_COUNT = 90
+
 
 class FakeStore:
     def __init__(self, value: str):
@@ -85,7 +87,7 @@ def run() -> None:
             ):
                 results = list(pool.map(execute, requests))
 
-            assert len(results) == 90
+            assert len(results) == EXPECTED_RESULT_COUNT
             assert all(result.success for result in results)
         finally:
             center.close_services()

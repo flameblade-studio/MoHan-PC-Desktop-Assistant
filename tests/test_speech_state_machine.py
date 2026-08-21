@@ -16,6 +16,9 @@ lazy from companion_window import CompanionWindow
 lazy from infrastructure.db import StudioDB
 lazy from speech_configuration import QueuedSpeech
 
+BREATH_CHANGE_LIMIT = 0.22
+EMOTION_INTENSITY = 0.86
+
 
 def _process_after(app: QApplication, milliseconds: int) -> None:
     QTest.qWait(milliseconds)
@@ -84,7 +87,7 @@ def _assert_completion_breath_is_continuous(window: CompanionWindow) -> None:
     window.set_state("idle", force=True)
     before_idle_tick = window.current_breath
     window._idle_tick()
-    assert abs(window.current_breath - before_idle_tick) <= 0.22, (
+    assert abs(window.current_breath - before_idle_tick) <= BREATH_CHANGE_LIMIT, (
         "the first idle breath frame snapped after speech completion"
     )
 
@@ -139,7 +142,7 @@ def _assert_emotion_metadata_hidden(window: CompanionWindow) -> None:
         "主上，妾會護著你。[[MOHAN_EMOTION:protective:0.86]]"
     )
     assert window.realtime_after_speech_state == "protective_front"
-    assert window.realtime_after_speech_intensity == 0.86
+    assert window.realtime_after_speech_intensity == EMOTION_INTENSITY
     assert "MOHAN_EMOTION" not in window.bubble_text.text()
     assert "MOHAN_EMOTION" not in window.db.recent_chat(1)[0]["content"]
     window._realtime_speaking(False)

@@ -24,6 +24,9 @@ lazy from performance_preferences import (
     UnsupportedPreferencesVersion,
 )
 
+MIGRATED_INTENSITY_PERCENT = 35
+ROUND_TRIP_INTENSITY_PERCENT = 88
+
 
 class MemorySettings:
     def __init__(
@@ -146,7 +149,7 @@ def assert_versioned_legacy_migration_preserves_old_and_unrelated_values() -> No
     store = PerformancePreferencesStore(settings)
     migrated = store.migrate()
     assert migrated.proactive_body_enabled is False
-    assert migrated.intensity_percent == 35
+    assert migrated.intensity_percent == MIGRATED_INTENSITY_PERCENT
     assert migrated.camera_context_enabled is False
     assert settings.values[STORE_SCHEMA_KEY] == STORE_SCHEMA_VERSION
     assert settings.values["proactive_performance_enabled"] is False
@@ -184,7 +187,7 @@ def assert_portable_round_trip_is_complete_and_private_data_is_dropped() -> None
     target_settings = MemorySettings({"api_key": "local-secret-remains"})
     imported = PerformancePreferencesStore(target_settings).import_portable(payload)
     assert imported.proactive_body_enabled is False
-    assert imported.intensity_percent == 88
+    assert imported.intensity_percent == ROUND_TRIP_INTENSITY_PERCENT
     assert imported.camera_context_enabled is True
     assert target_settings.values["api_key"] == "local-secret-remains"
     assert "future_field" not in target_settings.values

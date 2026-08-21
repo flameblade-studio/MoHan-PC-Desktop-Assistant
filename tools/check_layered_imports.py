@@ -133,6 +133,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.db",
         "infrastructure.face_assets",
         "infrastructure.face_renderer",
+        "infrastructure.layered_face_renderer",
         "infrastructure.multimodal_model_provider",
         "infrastructure.platform_contracts",
         "infrastructure.platform_services",
@@ -203,6 +204,9 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.companion_proactivity_preferences_store",
         "infrastructure.gesture_configuration_store",
         "infrastructure.openai_vision_preferences_store",
+    }),
+    "presentation.pose_atlas_assets": frozenset({
+        "infrastructure.layered_full_body_renderer",
     }),
 }
 # Root modules not listed in ``PHYSICALLY_LAYERED_ROOTS`` have not yet moved.
@@ -279,6 +283,9 @@ LEGACY_ROOT_MODULE_GROUPS: Final = {
     ("domain", "language-time"): frozenset({
         "command_parser", "language_normalization", "language_support",
         "safe_error_localization", "text_normalizer", "time_utils",
+    }),
+    ("domain", "constants"): frozenset({
+        "constants",
     }),
     ("domain", "speech-model"): frozenset({
         "audio_buffer", "lip_sync", "pcm_audio", "prompt_cache",

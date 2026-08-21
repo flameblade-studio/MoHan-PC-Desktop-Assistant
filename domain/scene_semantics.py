@@ -6,6 +6,8 @@ lazy from domain.vision_domain import (
     SceneUnderstanding,
 )
 
+DETECTION_CONFIDENCE_THRESHOLD = 0.45
+
 
 class LocalSceneInterpreter:
     """Infer conservative scene facts from spatially stable local detections."""
@@ -18,7 +20,7 @@ class LocalSceneInterpreter:
         identity: IdentityObservation,
         detections: tuple[ObjectDetection, ...],
     ) -> SceneUnderstanding:
-        labels = {detection.label for detection in detections if detection.confidence >= 0.45}
+        labels = {detection.label for detection in detections if detection.confidence >= DETECTION_CONFIDENCE_THRESHOLD}
         activities: list[str] = []
         uncertainty: list[str] = []
         if "person" in labels and labels & self._DRINK_CONTAINERS:

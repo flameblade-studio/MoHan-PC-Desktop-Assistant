@@ -30,7 +30,7 @@ lazy from domain.vision_provider_contracts import (
     VisualClaim,
     VisualUnderstanding,
 )
-lazy from flagship_ui import FlagshipControlCenter
+lazy from flagship_ui import ControlCenterDependencies, FlagshipControlCenter
 lazy from infrastructure.db import StudioDB, StudioDBSettingsPort
 lazy from infrastructure.openai_vision_preferences_store import (
     OpenAIVisionPreferencesStore,
@@ -40,6 +40,9 @@ lazy from openai_vision_preferences import (
     OpenAIVisionPreferences,
 )
 lazy from vision_domain import IdentityObservation, IdentityState, SceneUnderstanding
+
+EXPECTED_OPERATION_ID = 8
+PAIR_LENGTH = 2
 
 
 class FakeRuntime:
@@ -188,8 +191,8 @@ def assert_safe_ui_result_contains_typed_sanitized_interpretation() -> None:
     )
     assert isinstance(safe, CloudVisionUIResult)
     assert isinstance(safe.interpretation, CloudSceneInterpretation)
-    assert safe.interpretation.operation_id == 8
-    assert safe.interpretation.suppressed_claims == 2
+    assert safe.interpretation.operation_id == EXPECTED_OPERATION_ID
+    assert safe.interpretation.suppressed_claims == PAIR_LENGTH
     assert all(fact.label != "person" for fact in safe.interpretation.facts)
     assert "Alice" not in repr(safe)
     failed = _safe_ui_result(
@@ -247,9 +250,11 @@ def assert_control_center_merges_cloud_into_latest_local_scene(root: Path) -> No
     center = FlagshipControlCenter(
         db,
         root,
-        openai_vision_store=store,
-        openai_vision_key_available=lambda: True,
-        cloud_vision_service_factory=factory,
+        dependencies=ControlCenterDependencies(
+            openai_vision_store=store,
+            openai_vision_key_available=lambda: True,
+            cloud_vision_service_factory=factory,
+        ),
     )
     emitted: list[SceneUnderstanding] = []
     center.visual_scene_changed.connect(emitted.append)
@@ -273,7 +278,7 @@ def assert_control_center_merges_cloud_into_latest_local_scene(root: Path) -> No
             CloudVisionResult(11, CloudVisionStatus.SUCCESS, 1, understanding)
         )
         center._cloud_vision_result(result)
-        assert len(emitted) == 2
+        assert len(emitted) == PAIR_LENGTH
         merged = emitted[-1]
         assert merged.identity is owner
         assert merged.activities == ("at_computer", "possible_reading")
@@ -281,7 +286,7 @@ def assert_control_center_merges_cloud_into_latest_local_scene(root: Path) -> No
         center._cloud_vision_result(
             CloudVisionUIResult(CloudVisionStatus.CANCELLED)
         )
-        assert len(emitted) == 2
+        assert len(emitted) == PAIR_LENGTH
         assert not hasattr(result, "speak")
         assert not hasattr(result, "execute")
     finally:
@@ -296,9 +301,11 @@ def assert_control_center_saved_lifecycle(root: Path) -> None:
     center = FlagshipControlCenter(
         db,
         root,
-        openai_vision_store=store,
-        openai_vision_key_available=lambda: True,
-        cloud_vision_service_factory=factory,
+        dependencies=ControlCenterDependencies(
+            openai_vision_store=store,
+            openai_vision_key_available=lambda: True,
+            cloud_vision_service_factory=factory,
+        ),
     )
     service = factory.service
     assert service is not None
@@ -319,7 +326,7 @@ def assert_control_center_saved_lifecycle(root: Path) -> None:
         center.apply_camera_settings()
         assert service.cancel_calls == 1
         center.stop_openai_vision_immediately()
-        assert service.cancel_calls == 2
+        assert service.cancel_calls == PAIR_LENGTH
         assert store.load().enabled is False
     finally:
         center.close_services()

@@ -60,7 +60,7 @@ def main() -> int:
         canvas.fill(QColor("#253746"))
         painter = QPainter(canvas)
         painter.setFont(QFont("Microsoft JhengHei UI", 12))
-        for index, (expression, frame) in enumerate(zip(expressions, frames)):
+        for index, (expression, frame) in enumerate(zip(expressions, frames, strict=False)):
             row, column = divmod(index, 3)
             x = margin + column * (cell_width + margin)
             y = margin + row * (cell_height + title_height + margin)

@@ -28,11 +28,16 @@ lazy from domain.audio_acceleration import (
     PcmAccelerationPort,
 )
 lazy from domain.audio_buffer import BoundedAudioQueue, PcmPacketizer
+lazy from domain.constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.lip_sync import VISEME_CUES_PER_SECOND
 lazy from domain.safe_error import sanitize_error
 lazy from integrations.realtime_events import RealtimeEventMethods
 lazy from integrations.realtime_session import RealtimeSessionMethods
 lazy from integrations.speech import transcribe_wav_bytes
+
+REALTIME_SAMPLE_RATE = 24000
+MAX_TRANSCRIPT_ITEMS = 256
+IDLE_FINISH_SECONDS = 4.0
 
 __all__ = (
     "MAX_ASSISTANT_RESPONSE_CHARACTERS",
@@ -271,9 +276,9 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
                 break
             if self._microphone_blocked():
                 continue
-            if input_rate != 24000:
+            if input_rate != REALTIME_SAMPLE_RATE:
                 audio, rate_state = self._pcm.rate_convert_pcm16(
-                    audio, 1, input_rate, 24000, rate_state
+                    audio, 1, input_rate, REALTIME_SAMPLE_RATE, rate_state
                 )
             ws = self.ws
             if not ws or not ws.sock or not ws.sock.connected:
@@ -297,7 +302,7 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
                         self.status_changed.emit(
                             _realtime_message(self._locale, "sender_lag")
                         )
-            except Exception:  # noqa: BLE001 -- connection loss ends sender loop
+            except Exception:
                 break
 
     def _queue_playback_chunk(self, chunk: bytes) -> bool:
@@ -368,11 +373,11 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
                         continue
                     vowel_level, vowel = self._pcm.infer_vowel_pcm16(
                         source_chunk,
-                        24000,
+                        REALTIME_SAMPLE_RATE,
                     )
                     self.viseme_cue.emit(vowel_level, vowel)
                     playback_chunk = source_chunk
-                    if output_rate != 24000:
+                    if output_rate != REALTIME_SAMPLE_RATE:
                         playback_chunk, rate_state = self._pcm.rate_convert_pcm16(
                             source_chunk,
                             1,
@@ -385,13 +390,13 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
                         if self.muted
                         else self.volume_percent / 100.0
                     )
-                    if gain != 1.0:
+                    if abs(gain - 1.0) >= FLOAT_COMPARISON_EPSILON:
                         playback_chunk = self._pcm.scale_pcm16(
                             playback_chunk,
                             gain,
                         )
                     output_stream.write(playback_chunk)
-            except Exception as exc:  # noqa: BLE001 -- playback reports all failures
+            except Exception as exc:
                 self._report_playback_error(exc, playback_generation)
                 break
             finally:
@@ -544,7 +549,7 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
                 max(0.0, end_ms - 10_000.0),
             )
         pcm = self._pcm_for_audio_range(start_ms, end_ms)
-        if len(pcm) < 24000:
+        if len(pcm) < REALTIME_SAMPLE_RATE:
             self.status_changed.emit(
                 _realtime_message(self._locale, "clip_too_short")
             )
@@ -577,7 +582,7 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
                 self._hybrid_prompt,
             )
             error = ""
-        except Exception as exc:  # noqa: BLE001 -- transcription returns diagnostics
+        except Exception as exc:
             text = ""
             error = str(sanitize_error(exc))
         self._hybrid_result.emit(
@@ -658,7 +663,7 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
         if item_id:
             if item_id in self._final_transcript_item_ids:
                 return False
-            if len(self._final_transcript_item_order) >= 256:
+            if len(self._final_transcript_item_order) >= MAX_TRANSCRIPT_ITEMS:
                 oldest = self._final_transcript_item_order.popleft()
                 self._final_transcript_item_ids.discard(oldest)
             self._final_transcript_item_order.append(item_id)
@@ -681,7 +686,7 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
             if not self.native_audio_output:
                 response["response"] = {"output_modalities": ["text"]}
             ws.send(json.dumps(response))
-        except Exception:  # noqa: BLE001 -- failed request clears pending state
+        except Exception:
             self._response_pending.clear()
             return False
         self.status_changed.emit(
@@ -705,7 +710,7 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
                     }
                 )
             )
-        except Exception:  # noqa: BLE001 -- deletion is best-effort and observable
+        except Exception:
             return False
         return True
 
@@ -768,7 +773,7 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
                     time.monotonic() - self._last_assistant_audio_at
                 )
             if (
-                idle_for >= 4.0
+                idle_for >= IDLE_FINISH_SECONDS
                 and self._audio_queue.empty()
                 and not self._playback_busy.is_set()
             ):
