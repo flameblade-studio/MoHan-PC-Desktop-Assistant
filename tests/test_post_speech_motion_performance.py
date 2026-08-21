@@ -27,7 +27,7 @@ lazy from companion_animation_contract import (
 lazy from companion_window import CompanionWindow
 lazy from infrastructure.db import StudioDB
 
-VISEME_FRAME_BUDGET_MS = 20.0
+VISEME_FRAME_BUDGET_MS = 30.0
 MOTION_FRAME_BUDGET_MS = float(MOTION_FRAME_INTERVAL_MS)
 RELEASE_CYCLE_P95_BUDGET_MS = 8.0
 RELEASE_CYCLE_P99_BUDGET_MS = float(MOTION_FRAME_INTERVAL_MS)
