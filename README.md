@@ -35,7 +35,7 @@
 
 > **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.4.0`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 為準。
 
-> **目前開發版本：** `4.4.0`；這是尚未發布的開發草稿。Windows 建置命令：`.\build.ps1 -Version "4.4.0"`。
+> **目前開發版本：** `4.4.1`；這是尚未發布的開發草稿。Windows 建置命令：`.\build.ps1 -Version "4.4.0"`。
 
 > 本專案遵循[炎劍開源軟體家族品質標準](PUBLISHING.md)。
 
@@ -469,7 +469,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 > **当前发布目标：** 源代码与软件包元数据已同步至 `v4.4.0`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 为准。
 
-> **当前开发版本：** `4.4.0`；这是尚未发布的开发草稿。Windows 构建命令：`.\build.ps1 -Version "4.4.0"`。
+> **当前开发版本：** `4.4.1`；这是尚未发布的开发草稿。Windows 构建命令：`.\build.ps1 -Version "4.4.0"`。
 
 > 本项目遵循[炎剑开源软件家族质量标准](PUBLISHING.md)。
 
@@ -903,7 +903,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 > **Current release target:** Source and package metadata are synchronized at `v4.4.0`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
 
-> **Current development version:** `4.4.0`; this is an unreleased development draft. Windows build command: `.\build.ps1 -Version "4.4.0"`.
+> **Current development version:** `4.4.1`; this is an unreleased development draft. Windows build command: `.\build.ps1 -Version "4.4.0"`.
 
 > This project follows the [Flameblade Open Source Software Family Quality Standard](PUBLISHING.md).
 
@@ -1337,7 +1337,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 > **現在の公開目標：** ソースとパッケージのメタデータは `v4.4.0` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) を正とします。
 
-> **現在の開発版：** `4.4.0`。これは未公開の開発草案です。Windows のビルドコマンド：`.\build.ps1 -Version "4.4.0"`。
+> **現在の開発版：** `4.4.1`。これは未公開の開発草案です。Windows のビルドコマンド：`.\build.ps1 -Version "4.4.0"`。
 
 > 本プロジェクトは[炎剣オープンソース・ソフトウェア・ファミリー品質基準](PUBLISHING.md)に従います。
 

@@ -55,6 +55,11 @@ def main() -> int:
         print(f"FAIL: cannot read GitHub event payload: {error}", file=sys.stderr)
         return 2
 
+    head_ref = payload.get("pull_request", {}).get("head", {}).get("ref", "")
+    if head_ref.startswith("release-please--branches--"):
+        print("RELEASE_PLEASE_PR_EXEMPT")
+        return 0
+
     errors = audit_pull_request(payload)
     if errors:
         for error in errors:
