@@ -163,6 +163,16 @@ jobs:
           "$PREFLIGHT_PYTHON" tools/check_openai_vision_release.py \
             --version "$RELEASE_VERSION"
 
+      - name: Synchronize version references from pyproject.toml
+        shell: bash
+        env:
+          PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}
+        run: |
+          # Release Please only rewrites pyproject.toml reliably; propagate the
+          # authoritative version to every other reference so the packaged
+          # artifacts and the consistency checks always agree.
+          "$PREFLIGHT_PYTHON" tools/sync_version.py
+
   windows:
     name: Windows formal packages
     needs: resolve-release

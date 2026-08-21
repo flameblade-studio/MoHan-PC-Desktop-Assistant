@@ -23,41 +23,6 @@
           "type": "toml",
           "path": "pyproject.toml",
           "jsonpath": "$.project.version"
-        },
-        {
-          "type": "toml",
-          "path": "sbom/preview.pyproject.toml",
-          "jsonpath": "$.project.version"
-        },
-        {
-          "type": "generic",
-          "path": "domain/version_info.py",
-          "replace": "FALLBACK_VERSION = \"$VERSION\""
-        },
-        {
-          "type": "generic",
-          "path": "tests/test_v4_development_version_consistency.py",
-          "replace": "DEVELOPMENT_VERSION = \"$VERSION\""
-        },
-        {
-          "type": "generic",
-          "path": "README.md",
-          "replace": "目前開發版本：** `$VERSION`"
-        },
-        {
-          "type": "generic",
-          "path": "README.md",
-          "replace": "当前开发版本：** `$VERSION`"
-        },
-        {
-          "type": "generic",
-          "path": "README.md",
-          "replace": "Current development version:** `$VERSION`"
-        },
-        {
-          "type": "generic",
-          "path": "README.md",
-          "replace": "現在の開発版：** `$VERSION`"
         }
       ]
     }
