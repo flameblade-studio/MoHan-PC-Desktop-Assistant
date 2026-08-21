@@ -448,18 +448,9 @@ class CompanionFaceAnimationMixin:
         self._start_expression_crossfade(expression)
 
     def _update_face_motion_for_expression(self, expression: str) -> None:
-        """Stamp the current expression onto the face-motion frame.
-
-        The parametric renderer reads the continuous ``expression_shape`` and
-        ``pose`` from the face-motion frame, so an expression switch must update
-        that frame (not just swap a legacy sprite) for the half-body portrait to
-        reflect the new emotion.
-        """
+        """Stamp the current expression onto the face-motion frame."""
         controller = getattr(self, "face_motion_controller", None)
         if controller is None:
-            # The mouth-animation state (and its controller) is initialized
-            # after the first idle expression, so fall back to the legacy sprite
-            # until the parametric controller exists.
             return
         pose = self.physics_expression_poses.get(
             expression,
@@ -506,9 +497,7 @@ class CompanionFaceAnimationMixin:
             self._update_physics_pose(expression)
 
     def _start_expression_crossfade(self, expression: str) -> None:
-        # Compose the target expression from the parametric renderer so the
-        # crossfade overlay matches the half-body portrait instead of a legacy
-        # whole-expression sprite.
+        # Compose the target from the parametric renderer (not a legacy sprite).
         self._update_face_motion_for_expression(expression)
         pixmap = self._render_half_body_frame()
         self.expression_overlay.setPixmap(pixmap)
@@ -788,6 +777,9 @@ class CompanionFaceAnimationMixin:
         """Render speech over its emotional base without a full-sprite swap."""
         if expression not in self.expression_pixmaps:
             expression = self.speech_mid_expression
+        # Keep the discrete mouth target in sync so a speaking blink re-composes
+        # the same mouth aperture instead of falling back to a stale target.
+        self.mouth_aperture_target = max(0.0, min(1.0, float(aperture)))
         self._render_speech_pixmap(
             self._mouth_aperture_pixmap(
                 expression,
@@ -799,15 +791,7 @@ class CompanionFaceAnimationMixin:
         self._render_attention_layers(force=True)
 
     def _render_speech_pixmap(self, clean_pixmap: QPixmap) -> None:
-        """Display the latest mouth frame.
-
-        The parametric renderer already stamps the speaking blink onto the
-        face-motion frame (``_audio_viseme_cue`` passes ``blink`` into
-        ``advance``), so the composed ``clean_pixmap`` already carries the
-        eyelids. No legacy blink mask is layered on top.
-        """
-        # Legacy mouth rendering resumes ownership of the canvas, so the
-        # half-body overlays suppressed by a v4 full-body publish may return.
+        """Display the latest mouth frame (blink is already stamped in)."""
         self._adaptive_full_body_active = False
         self.speech_visual_pixmap = QPixmap(clean_pixmap)
         self.character.setPixmap(clean_pixmap)
@@ -916,14 +900,7 @@ class CompanionFaceAnimationMixin:
         return expression
 
     def _render_half_body_frame(self) -> QPixmap:
-        """Compose the half-body portrait from the parametric layered renderer.
-
-        The layered renderer owns the whole half-body portrait (body, hair,
-        sleeves, ornament and the 18 facial layers), so every half-body state
-        (idle, expression switch, blink, speech) must come from it. This is the
-        single entry point that keeps the half-body canvas on the parametric
-        renderer instead of the legacy whole-expression sprites.
-        """
+        """Compose the half-body portrait from the parametric layered renderer."""
         motion = self.face_motion_frame
         if motion is None:
             return QPixmap(
@@ -933,9 +910,7 @@ class CompanionFaceAnimationMixin:
                 )
             )
         base = self.expression_pixmaps["idle"]
-        # During speech the mouth aperture is driven by the discrete transition
-        # target, not the smoothed face-motion value, so re-composing (e.g. for
-        # a speaking blink) must reuse that same target to keep the mouth stable.
+        # Speech reuses the discrete transition target to keep the mouth stable.
         aperture = (
             getattr(self, "mouth_aperture_target", None)
             if self.state == "speaking"
@@ -948,15 +923,7 @@ class CompanionFaceAnimationMixin:
         expression: str,
         aperture: float,
     ) -> QPixmap:
-        """Compose the speech mouth from the parametric layered renderer.
-
-        The layered renderer owns the whole half-body portrait (body, hair,
-        sleeves, ornament and the 18 facial layers), so the closed and open
-        mouth frames must both come from it. Returning the legacy whole-
-        expression sprite for the closed mouth while the open mouth came from
-        the layered renderer stacked two different coordinate systems and
-        produced the reported black eye ellipses, blush discs and jaw residue.
-        """
+        """Compose the speech mouth from the parametric layered renderer."""
         motion = self.face_motion_frame
         if motion is None:
             return QPixmap(self.expression_pixmaps[self.speech_closed_expression])
