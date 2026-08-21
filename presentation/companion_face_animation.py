@@ -902,7 +902,7 @@ class CompanionFaceAnimationMixin:
     def _render_half_body_frame(self) -> QPixmap:
         """Compose the half-body portrait from the parametric layered renderer."""
         motion = self.face_motion_frame
-        if motion is None:
+        if motion is None or self.face_renderer is None:
             return QPixmap(
                 self.expression_pixmaps.get(
                     self.current_expression,
@@ -925,7 +925,7 @@ class CompanionFaceAnimationMixin:
     ) -> QPixmap:
         """Compose the speech mouth from the parametric layered renderer."""
         motion = self.face_motion_frame
-        if motion is None:
+        if motion is None or self.face_renderer is None:
             return QPixmap(self.expression_pixmaps[self.speech_closed_expression])
         base = self.expression_pixmaps[self.speech_closed_expression]
         return self.face_renderer.render(
