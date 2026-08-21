@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 lazy import io
+lazy import sys
 lazy import threading
 lazy import time
 lazy import wave
 lazy from collections.abc import Callable
+lazy from contextlib import suppress
 lazy from dataclasses import dataclass, field
 lazy from pathlib import Path
 
@@ -23,6 +25,25 @@ lazy from domain.service_status_localization import ServiceStatus, service_statu
 
 PCM16_SAMPLE_WIDTH = 2
 FULL_VOLUME_PERCENT = 100
+
+
+def preferred_output_device(sounddevice: object = sd) -> int | None:
+    """Return the WASAPI default output device id, or None to use the default.
+
+    On Windows the platform default can resolve to a virtual or MME/DirectSound
+    device that produces no audible output. Prefer the WASAPI host API's default
+    output device so every speech path (OpenAI, Azure, Windows local, Realtime)
+    plays through the same real output device.
+    """
+    if not sys.platform.startswith("win"):
+        return None
+    with suppress(Exception):
+        for hostapi in sounddevice.query_hostapis():
+            if "WASAPI" in hostapi["name"]:
+                candidate = int(hostapi["default_output_device"])
+                if candidate >= 0:
+                    return candidate
+    return None
 
 
 def apply_wav_volume(
@@ -239,6 +260,7 @@ def play_pcm16_stream_with_visemes_impl(
             samplerate=sample_rate,
             channels=1,
             dtype="int16",
+            device=preferred_output_device(sounddevice),
             blocksize=frames_per_cue,
         ) as output:
             while True:
@@ -333,11 +355,13 @@ def _play_cancellable_wave_bytes(
             playback.ensure_current()
             playback.emit_viseme(0.0, "CLOSED")
             return
+        device = preferred_output_device(playback.sounddevice)
         stream = playback.sounddevice.RawOutputStream(
             samplerate=sample_rate,
             channels=channels,
             dtype="int16",
             blocksize=frames_per_cue,
+            device=device,
         )
         if not playback.register_stream(stream):
             stream.close()
