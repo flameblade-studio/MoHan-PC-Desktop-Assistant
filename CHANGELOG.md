@@ -4,6 +4,14 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+## [4.4.1](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.4.0...v4.4.1) (2026-08-21)
+
+
+### Bug Fixes
+
+* 以單一權威版本來源徹底修復 Release Please 版本號同步／以单一权威版本来源彻底修复 Release Please 版本号同步／Fix Release Please version sync with a single authoritative source／単一の権威バージョンソースで Release Please のバージョン同期を根本修正 ([#78](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/78)) ([8406b5b](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/8406b5b404c0d075955e98221179eaea0b646fe6))
+* 半身說話路徑改用參數化分層渲染器合成嘴型，修復臉部破圖／半身说话路径改用参数化分层渲染器合成嘴型，修复脸部破图／Fix half-body speech face tearing by composing the mouth via the parametric layered renderer／半身発話パスの口元をパラメトリックレイヤードレンダラーで合成し顔の破綻を修正 ([#80](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/80)) ([0442d82](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/0442d8223d65db6ced30e5faf25b3265ab09cf9c))
+
 ## [4.4.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.3.0...v4.4.0) (2026-08-21)
 
 
