@@ -23,6 +23,53 @@
           "type": "toml",
           "path": "pyproject.toml",
           "jsonpath": "$.project.version"
+        },
+        {
+          "type": "generic",
+          "path": "domain/version_info.py",
+          "pattern": "FALLBACK_VERSION = \"[^\"]*\"",
+          "replace": "FALLBACK_VERSION = \"{{version}}\""
+        },
+        {
+          "type": "toml",
+          "path": "sbom/preview.pyproject.toml",
+          "jsonpath": "$.project.version"
+        },
+        {
+          "type": "generic",
+          "path": "tests/test_v4_development_version_consistency.py",
+          "pattern": "DEVELOPMENT_VERSION = \"[^\"]*\"",
+          "replace": "DEVELOPMENT_VERSION = \"{{version}}\""
+        },
+        {
+          "type": "generic",
+          "path": "README.md",
+          "pattern": "開發版本：\\*\\* `[^`]*`",
+          "replace": "開發版本：** `{{version}}`"
+        },
+        {
+          "type": "generic",
+          "path": "README.md",
+          "pattern": "开发版本：\\*\\* `[^`]*`",
+          "replace": "开发版本：** `{{version}}`"
+        },
+        {
+          "type": "generic",
+          "path": "README.md",
+          "pattern": "development version:\\*\\* `[^`]*`",
+          "replace": "development version:** `{{version}}`"
+        },
+        {
+          "type": "generic",
+          "path": "README.md",
+          "pattern": "開発版：\\*\\* `[^`]*`",
+          "replace": "開発版：** `{{version}}`"
+        },
+        {
+          "type": "generic",
+          "path": "README.md",
+          "pattern": "build\\.ps1 -Version \"[0-9][^\"]*\"",
+          "replace": "build.ps1 -Version \"{{version}}\""
         }
       ]
     }
