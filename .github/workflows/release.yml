@@ -9,6 +9,8 @@ on:
   push:
     tags:
       - "v*.*.*"
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       tag:
@@ -118,6 +120,20 @@ jobs:
               echo "Existing Release maturity does not match its tag: $RELEASE_TAG" >&2
               exit 7
             }
+          elif [[ "$EVENT_NAME" == "release" || "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            # release-please 透過 API 建立 tag/release（不觸發 push 事件）。
+            # release 事件或明確的 workflow_dispatch 都允許在 release 已存在時
+            # 上傳資產（而非重建），以補齊 release-please 建立的空 release。
+            if [[ -n "$release_id" ]]; then
+              release_mode_matches="$(
+                gh api "$releases_api/$release_id" \
+                  --jq ".draft == false and .prerelease == $EXPECTED_PRERELEASE"
+              )"
+              [[ "$release_mode_matches" == true ]] || {
+                echo "Existing Release maturity does not match its tag: $RELEASE_TAG" >&2
+                exit 7
+              }
+            fi
           elif [[ -n "$release_id" ]]; then
             echo "Release already exists; refusing to rebuild it: $RELEASE_TAG" >&2
             exit 7
@@ -779,7 +795,7 @@ jobs:
           fi
 
       - name: Attest every published artifact
-        if: ${{ github.event_name == 'push' || inputs.publish }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'release' || inputs.publish }}
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
         with:
           subject-path: release-artifacts/*
@@ -824,8 +840,8 @@ jobs:
           done < <(find release-artifacts -maxdepth 1 -type f | sort)
           echo "Release $tag is unchanged and matches the verified artifact set."
 
-      - name: Publish one GitHub release
-        if: ${{ github.event_name == 'push' || inputs.publish }}
+      - name: Publish or upload one GitHub release
+        if: ${{ github.event_name == 'push' || github.event_name == 'release' || inputs.publish }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -837,45 +853,51 @@ jobs:
           tag="${{ needs.resolve-release.outputs.tag }}"
           release_title="墨寒桌面助理 $tag／墨寒桌面助手 $tag／MoHan Desktop Assistant $tag／墨寒デスクトップアシスタント $tag"
           readonly release_title
+          mapfile -d '' assets < <(find release-artifacts -maxdepth 1 -type f -print0 | sort -z)
           existing_id="$(gh api --paginate "repos/${{ github.repository }}/releases?per_page=100" --jq ".[] | select(.tag_name == \"$tag\") | .id" | head -n 1)"
           if [[ -n "$existing_id" ]]; then
-            echo "Release $tag already exists; refusing to overwrite it." >&2
-            exit 7
-          fi
-          mapfile -d '' assets < <(find release-artifacts -maxdepth 1 -type f -print0 | sort -z)
-          release_id=''
-          published=false
-          cleanup_failed_draft() {
-            status=$?
-            if [[ $status -ne 0 && "$published" != true && -n "$release_id" ]]; then
-              gh api --method DELETE "repos/${{ github.repository }}/releases/$release_id" >/dev/null 2>&1 || true
+            # release-please 已建立 release（可能無資產）：直接上傳資產，不重建。
+            echo "Release $tag already exists; uploading verified assets instead of rebuilding."
+            release_id="$existing_id"
+            for asset in "${assets[@]}"; do
+              gh release upload "$tag" "$asset" --repo "${{ github.repository }}" --clobber
+            done
+          else
+            release_id=''
+            published=false
+            cleanup_failed_draft() {
+              status=$?
+              if [[ $status -ne 0 && "$published" != true && -n "$release_id" ]]; then
+                gh api --method DELETE "repos/${{ github.repository }}/releases/$release_id" >/dev/null 2>&1 || true
+              fi
+              trap - EXIT
+              exit "$status"
+            }
+            trap cleanup_failed_draft EXIT
+            release_args=(
+              "$tag" "${assets[@]}"
+              --repo "${{ github.repository }}"
+              --verify-tag
+              --draft
+              --title "$release_title"
+              --notes-file "docs/releases/$tag.md"
+            )
+            if [[ "$EXPECTED_PRERELEASE" == true ]]; then
+              release_args+=(--prerelease)
             fi
+            gh release create "${release_args[@]}"
+            release_id="$(gh api --paginate "repos/${{ github.repository }}/releases?per_page=100" --jq ".[] | select(.tag_name == \"$tag\" and .draft == true) | .id" | head -n 1)"
+            [[ "$release_id" =~ ^[0-9]+$ ]]
+            gh api --method PATCH "repos/${{ github.repository }}/releases/$release_id" \
+              -F draft=false -F prerelease="$EXPECTED_PRERELEASE" >/dev/null
+            [[ "$(gh api "repos/${{ github.repository }}/releases/$release_id" --jq ".draft == false and .prerelease == $EXPECTED_PRERELEASE")" == true ]]
+            published=true
             trap - EXIT
-            exit "$status"
-          }
-          trap cleanup_failed_draft EXIT
-          release_args=(
-            "$tag" "${assets[@]}"
-            --repo "${{ github.repository }}"
-            --verify-tag
-            --draft
-            --title "$release_title"
-            --notes-file "docs/releases/$tag.md"
-          )
-          if [[ "$EXPECTED_PRERELEASE" == true ]]; then
-            release_args+=(--prerelease)
           fi
-          gh release create "${release_args[@]}"
-          release_id="$(gh api --paginate "repos/${{ github.repository }}/releases?per_page=100" --jq ".[] | select(.tag_name == \"$tag\" and .draft == true) | .id" | head -n 1)"
-          [[ "$release_id" =~ ^[0-9]+$ ]]
           mapfile -t actual_assets < <(gh api --paginate "repos/${{ github.repository }}/releases/$release_id/assets" --jq '.[].name' | sort)
           mapfile -t expected_assets < <(printf '%s\n' "${assets[@]##*/}" | sort)
           [[ "$(printf '%s\n' "${actual_assets[@]}")" == "$(printf '%s\n' "${expected_assets[@]}")" ]] || {
-            echo "Draft Release assets differ from the exact verified set." >&2
+            echo "Release assets differ from the exact verified set." >&2
             exit 8
           }
-          gh api --method PATCH "repos/${{ github.repository }}/releases/$release_id" \
-            -F draft=false -F prerelease="$EXPECTED_PRERELEASE" >/dev/null
-          [[ "$(gh api "repos/${{ github.repository }}/releases/$release_id" --jq ".draft == false and .prerelease == $EXPECTED_PRERELEASE")" == true ]]
-          published=true
-          trap - EXIT
+          echo "Release $tag now carries the exact verified asset set."
