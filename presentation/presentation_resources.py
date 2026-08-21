@@ -25,6 +25,21 @@ QLineEdit, QTextBrowser, QTextEdit, QListWidget, QComboBox, QTimeEdit, QSpinBox 
     background: #ffffff; color: #20364a; border: 1px solid #b8c8d6; border-radius: 9px; padding: 7px;
     selection-background-color: #9fc4dc; selection-color: #102a3d;
 }
+QSpinBox::up-button, QSpinBox::down-button {
+    background: #dce9f3; border: 1px solid #8eabc0; width: 22px; border-radius: 5px;
+}
+QSpinBox::up-button:hover, QSpinBox::down-button:hover { background: #c9dfed; }
+QSpinBox::up-button:pressed, QSpinBox::down-button:pressed { background: #aecbdc; }
+QSpinBox::up-arrow {
+    width: 0; height: 0;
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-bottom: 7px solid #17344f;
+}
+QSpinBox::down-arrow {
+    width: 0; height: 0;
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-top: 7px solid #17344f;
+}
 QComboBox QAbstractItemView {
     background: #ffffff; color: #20364a; border: 1px solid #b8c8d6;
     selection-background-color: #cfe0ee; selection-color: #17344f;

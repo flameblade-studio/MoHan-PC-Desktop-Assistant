@@ -148,6 +148,13 @@ class DashboardSettingsMixin:
         combo.setEditable(True)
         combo.addItems(list(items))
         combo.setCurrentText(current_text)
+        # An editable combo's popup view does not always inherit the light
+        # QComboBox QAbstractItemView palette, so pin it explicitly to keep the
+        # dropdown readable on the light control-centre theme.
+        combo.view().setStyleSheet(
+            "QAbstractItemView { background: #ffffff; color: #20364a;"
+            " selection-background-color: #cfe0ee; selection-color: #17344f; }"
+        )
         return combo
 
     @staticmethod
