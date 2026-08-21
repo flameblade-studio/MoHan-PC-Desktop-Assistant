@@ -44,26 +44,26 @@
         {
           "type": "generic",
           "path": "README.md",
-          "pattern": "開發版本：\\*\\* `[^`]*`",
-          "replace": "開發版本：** `{{version}}`"
+          "pattern": "目前開發版本：\\*\\* `[^`]*`",
+          "replace": "目前開發版本：** `{{version}}`"
         },
         {
           "type": "generic",
           "path": "README.md",
-          "pattern": "开发版本：\\*\\* `[^`]*`",
-          "replace": "开发版本：** `{{version}}`"
+          "pattern": "当前开发版本：\\*\\* `[^`]*`",
+          "replace": "当前开发版本：** `{{version}}`"
         },
         {
           "type": "generic",
           "path": "README.md",
-          "pattern": "development version:\\*\\* `[^`]*`",
-          "replace": "development version:** `{{version}}`"
+          "pattern": "Current development version:\\*\\* `[^`]*`",
+          "replace": "Current development version:** `{{version}}`"
         },
         {
           "type": "generic",
           "path": "README.md",
-          "pattern": "開発版：\\*\\* `[^`]*`",
-          "replace": "開発版：** `{{version}}`"
+          "pattern": "現在の開発版：\\*\\* `[^`]*`",
+          "replace": "現在の開発版：** `{{version}}`"
         },
         {
           "type": "generic",
