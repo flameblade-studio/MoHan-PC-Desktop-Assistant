@@ -4,6 +4,18 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+## [4.4.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.3.0...v4.4.0) (2026-08-21)
+
+
+### Features
+
+* 全身渲染器完整接入與參數化重塑／全身渲染器完整接入与参数化重塑／Full-body renderer integration and parametric reforging／全身レンダラー統合とパラメトリック再鍛造 ([#76](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/76)) ([2ebb73e](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/2ebb73e05421c9b8b6470c0766c2962e41689621))
+
+
+### Bug Fixes
+
+* 將 CHANGELOG.md 豁免四國語言治理並修正 Release Please 版本號替換規則 ([5b9ec12](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/5b9ec124b995b4d07d7c616734d2c82e1f091bbd))
+
 ### v4.3.0 — 2026-08-19
 
 - 新增「真人女孩感」五大系統與靈魂拼圖：性格鏡像、穿搭直覺、軍糧飽食度、主上專屬寵溺、虹膜羞澀視線，以及赤焰劍意情緒共鳴、時間主權狀態機、空中捏合牽手、夢囈系統、劍魂覺醒、感官共感、共同創作錄等領域模組。

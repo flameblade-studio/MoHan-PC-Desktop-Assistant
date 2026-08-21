@@ -19,6 +19,16 @@ jobs:
       - name: Require minimum four-language PR metadata
         shell: bash
         run: |
+          # Release Please auto-generates its release PRs with a single-language
+          # title and a robot body.  Those PRs are machine-authored version bumps,
+          # not human prose, so they are exempt from the four-language metadata
+          # requirement.  This prevents every automated release PR from failing
+          # the governance check and needing a manual title/body rewrite.
+          head_ref=$(jq -r '.pull_request.head.ref // ""' "$GITHUB_EVENT_PATH")
+          if [[ "$head_ref" == release-please--branches--* ]]; then
+            echo "RELEASE_PLEASE_PR_EXEMPT"
+            exit 0
+          fi
           title=$(jq -r '.pull_request.title // ""' "$GITHUB_EVENT_PATH")
           body=$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")
           # GitHub's web editor stores CRLF. Normalize line endings before
