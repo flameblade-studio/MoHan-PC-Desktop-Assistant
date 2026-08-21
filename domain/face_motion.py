@@ -300,4 +300,7 @@ def interpolate_frame(
         viseme=end.viseme,
         mouth=mouth,
         expression_shape=expression_shape,
+        gaze_x=_lerp(start.gaze_x, end.gaze_x, t),
+        gaze_y=_lerp(start.gaze_y, end.gaze_y, t),
+        breath=_lerp(start.breath, end.breath, t),
     ).clamped()

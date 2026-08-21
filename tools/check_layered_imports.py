@@ -102,6 +102,10 @@ FORBIDDEN_LAYER_IMPORTS: Final = {
 # never blanket layer exemptions, so an unrelated reverse dependency still
 # fails closed.
 FEATURE_COMPOSITION_IMPORTS: Final = {
+    "presentation.autonomous_outfit_generation_controller": frozenset({
+        "infrastructure.db",
+        "integrations.openai_outfit_generator",
+    }),
     "application.application_bootstrap": frozenset({
         "infrastructure.app_resources",
         "presentation.companion_window",

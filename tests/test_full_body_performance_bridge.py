@@ -128,7 +128,9 @@ class Assets:
         _pose: str,
         view: str,
         _motion: object | None = None,
+        **performance: object,
     ) -> FullBodyRenderSpec | None:
+        self.last_static_performance = performance
         if callable(self.on_static):
             self.on_static()
         if self.fail_static:
@@ -191,8 +193,15 @@ def request(
 
 def assert_atomic_input_produces_one_publishable_v4_frame() -> None:
     engine, adapter, publisher = bridge()
-    result = engine.dispatch(request(engine))
+    assets = Assets()
+    result = engine.dispatch(request(engine, assets=assets))
     assert result.disposition is FullBodyBridgeDisposition.PUBLISHED
+    assert assets.last_static_performance == {
+        "left_hand": "relaxed-left",
+        "right_hand": "relaxed-right",
+        "body_energy": 0.4,
+        "gesture_beat": False,
+    }
     assert not result.used_legacy
     assert result.frame.contract == "full-body-v4"
     assert result.frame.crop == (0.1, 0.0, 0.8, 1.0)

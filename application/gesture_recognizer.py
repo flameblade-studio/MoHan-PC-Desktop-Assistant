@@ -290,7 +290,7 @@ class GestureRecognizer:
         builtin: GestureRecognition | None,
     ) -> GestureRecognition | None:
         history = self._wave[skeleton.side]
-        if builtin is None or builtin.gesture_id is not GestureId.OPEN_PALM:
+        if not _wave_palm_visible(skeleton, builtin):
             history.clear()
             return None
         history.append(_WavePoint(skeleton.observed_at, skeleton.landmarks[0].x))
@@ -300,6 +300,16 @@ class GestureRecognizer:
         if len(history) < MIN_WAVE_FRAMES:
             return None
         ordered = tuple(history)
+        span = max(point.wrist_x for point in ordered) - min(
+            point.wrist_x for point in ordered
+        )
+        if span < MIN_WAVE_SPAN:
+            # A held open hand is not a wave.  Retain only enough recent
+            # context to notice when it starts moving instead of keeping a
+            # full sampling-window of identical skeletons indefinitely.
+            while len(history) > 2:
+                history.popleft()
+            return None
         movements = tuple(
             current.wrist_x - previous.wrist_x
             for previous, current in pairwise(ordered)
@@ -312,9 +322,6 @@ class GestureRecognizer:
         reversals = sum(
             left * right < 0.0
             for left, right in pairwise(significant)
-        )
-        span = max(point.wrist_x for point in history) - min(
-            point.wrist_x for point in history
         )
         if len(significant) >= MIN_SIGNIFICANT_MOVEMENTS and reversals >= 1 and span >= MIN_WAVE_SPAN:
             history.clear()
@@ -379,6 +386,18 @@ def _classify_builtin(skeleton: HandSkeleton) -> GestureRecognition | None:
             gesture_id = GestureId.POINT_LEFT if vector_x < 0.0 else GestureId.POINT_RIGHT
             return _candidate(gesture_id, horizontal, skeleton.side)
     return None
+
+
+def _wave_palm_visible(
+    skeleton: HandSkeleton,
+    builtin: GestureRecognition | None,
+) -> bool:
+    """Accept a natural waving hand even when the thumb is partly tucked."""
+
+    if builtin is not None and builtin.gesture_id is GestureId.OPEN_PALM:
+        return True
+    points = skeleton.landmarks
+    return all(_finger_extended(points, *indices) for indices in _FINGERS)
 
 
 def _finger_extended(

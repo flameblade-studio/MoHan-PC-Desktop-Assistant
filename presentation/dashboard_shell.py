@@ -11,7 +11,6 @@ lazy from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
     QFileDialog,
-    QFormLayout,
     QFrame,
     QHBoxLayout,
     QLabel,
@@ -19,7 +18,6 @@ lazy from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QPushButton,
-    QSpinBox,
     QSplitter,
     QTabWidget,
     QVBoxLayout,
@@ -571,9 +569,13 @@ class DashboardShellMixin:
         self.wardrobe_restore_button = QPushButton(
             self._t("wardrobe_restore_builtin", "還原內建服裝")
         )
+        self.wardrobe_generate_button = QPushButton(
+            self._t("wardrobe_generate_now", "立即生成新衣（將使用圖片 API）")
+        )
         row.addWidget(self.wardrobe_import_button)
         row.addWidget(self.wardrobe_apply_button)
         row.addWidget(self.wardrobe_restore_button)
+        row.addWidget(self.wardrobe_generate_button)
         library.addWidget(self.wardrobe_packages, 1)
         library.addWidget(self.wardrobe_status)
         library.addWidget(wardrobe_compatibility)
@@ -598,7 +600,46 @@ class DashboardShellMixin:
         self.wardrobe_restore_button.clicked.connect(
             self._restore_builtin_outfit
         )
+        self.wardrobe_generate_button.clicked.connect(
+            self._request_outfit_generation
+        )
         return tab
+
+    def _request_outfit_generation(self) -> None:
+        """Persist explicit consent immediately before the chargeable request."""
+
+        self._save_wardrobe_preferences()
+        if not self.self_outfit_generation_enabled.isChecked():
+            self.wardrobe_status.setText(
+                self._t("wardrobe_generation_not_enabled", "請先勾選允許雲端自創新衣。")
+            )
+            return
+        self.wardrobe_generate_button.setEnabled(False)
+        self.wardrobe_status.setText(
+            self._t("wardrobe_generation_starting", "正在建立 31 視角新衣並執行安全稽核……")
+        )
+        self.outfit_generation_requested.emit()
+
+    def set_outfit_generation_status(self, status: str) -> None:
+        if not hasattr(self, "wardrobe_status"):
+            return
+        messages = {
+            "generating": self._t("wardrobe_generation_running", "正在生成、稽核並封裝新衣……"),
+            "installed": self._t("wardrobe_generation_installed", "新衣已通過稽核、安裝並套用。"),
+            "not-enabled": self._t("wardrobe_generation_not_enabled", "請先勾選允許雲端自創新衣。"),
+            "api-key-unavailable": self._t("wardrobe_generation_no_key", "尚未設定可用的 OpenAI API Key。"),
+            "already-generating": self._t("wardrobe_generation_running", "正在生成、稽核並封裝新衣……"),
+            "capacity-blocked": self._t("wardrobe_generation_capacity", "已達自創服裝容量或冷卻限制。"),
+            "quarantined": self._t("wardrobe_generation_quarantined", "新衣未通過稽核，已隔離且未套用。"),
+            "automatic-selection-disabled": self._t("wardrobe_automatic_selection_disabled", "自主選裝目前已關閉。"),
+            "automatic-selection-failed": self._t("wardrobe_automatic_selection_failed", "自主選裝評估失敗，已保留目前衣裝。"),
+            "outfit-selected": self._t("wardrobe_automatic_outfit_selected", "墨寒已依情境自主換裝。"),
+        }
+        self.wardrobe_status.setText(
+            messages.get(status, self._t("wardrobe_generation_failed", "新衣生成失敗，未安裝任何素材。"))
+        )
+        if status != "generating" and hasattr(self, "wardrobe_generate_button"):
+            self.wardrobe_generate_button.setEnabled(True)
 
     def _wardrobe_hero(self) -> QFrame:
         hero = QFrame()
@@ -700,84 +741,6 @@ class DashboardShellMixin:
         for button in self.wardrobe_pose_buttons:
             button.setChecked(button is active)
 
-    def _wardrobe_preferences_card(self) -> QFrame:
-        preferences_card = QFrame()
-        mark_flagship_card(preferences_card)
-        preferences = QVBoxLayout(preferences_card)
-        preferences_title = QLabel(
-            self._t("wardrobe_autonomous_enabled", "允許墨寒自主選裝")
-        )
-        preferences_title.setProperty("mohanRole", "cardTitle")
-        preferences.addWidget(preferences_title)
-        self.autonomous_wardrobe_enabled = QCheckBox(
-            self._t("wardrobe_autonomous_enabled", "允許墨寒自主選裝")
-        )
-        self.autonomous_wardrobe_enabled.setChecked(
-            bool(self.db.setting("autonomous_wardrobe_enabled", True))
-        )
-        self.self_outfit_generation_enabled = QCheckBox(
-            self._t("wardrobe_self_generation_enabled", "允許墨寒雲端自創新衣（可能產生費用）")
-        )
-        self.self_outfit_generation_enabled.setChecked(
-            bool(self.db.setting("self_outfit_generation_enabled", False))
-        )
-        self.fashion_trend_search_enabled = QCheckBox(
-            self._t("wardrobe_trend_search_enabled", "允許搜尋流行趨勢作為原創靈感")
-        )
-        self.fashion_trend_search_enabled.setChecked(
-            bool(self.db.setting("fashion_trend_search_enabled", False))
-        )
-        self.generated_outfit_limit = QSpinBox()
-        self.generated_outfit_limit.setRange(1, 64)
-        self.generated_outfit_limit.setValue(
-            int(self.db.setting("generated_outfit_limit", 16))
-        )
-        self.generated_outfit_storage_gb = QSpinBox()
-        self.generated_outfit_storage_gb.setRange(1, 64)
-        self.generated_outfit_storage_gb.setSuffix(" GB")
-        self.generated_outfit_storage_gb.setValue(
-            int(self.db.setting("generated_outfit_storage_gb", 6))
-        )
-        preferences.addWidget(self.autonomous_wardrobe_enabled)
-        preferences.addWidget(self.self_outfit_generation_enabled)
-        preferences.addWidget(self.fashion_trend_search_enabled)
-        limits = QFormLayout()
-        limits.addRow(
-            self._t("wardrobe_generated_limit", "自創服裝保留上限"),
-            self.generated_outfit_limit,
-        )
-        limits.addRow(
-            self._t("wardrobe_storage_limit", "自創服裝容量上限"),
-            self.generated_outfit_storage_gb,
-        )
-        preferences.addLayout(limits)
-        preferences.addStretch(1)
-        return preferences_card
-
-    def _save_wardrobe_preferences(self) -> None:
-        if not hasattr(self, "autonomous_wardrobe_enabled"):
-            return
-        self.db.set_setting(
-            "autonomous_wardrobe_enabled",
-            self.autonomous_wardrobe_enabled.isChecked(),
-        )
-        self.db.set_setting(
-            "self_outfit_generation_enabled",
-            self.self_outfit_generation_enabled.isChecked(),
-        )
-        self.db.set_setting(
-            "fashion_trend_search_enabled",
-            self.fashion_trend_search_enabled.isChecked(),
-        )
-        self.db.set_setting(
-            "generated_outfit_limit",
-            self.generated_outfit_limit.value(),
-        )
-        self.db.set_setting(
-            "generated_outfit_storage_gb",
-            self.generated_outfit_storage_gb.value(),
-        )
-
     def _import_outfit_package(self) -> None:
         source, _filter = QFileDialog.getOpenFileName(
             self,
@@ -826,7 +789,7 @@ class DashboardShellMixin:
                 )
             )
             return
-        self.db.set_setting("active_outfit_id", outfit_id)
+        self._record_manual_outfit_selection(outfit_id)
         if outfit_id != BUILTIN_OUTFIT_ID:
             self.db.set_setting(
                 "wardrobe_reveal_pending_outfit_id",
@@ -838,7 +801,7 @@ class DashboardShellMixin:
 
     def _restore_builtin_outfit(self) -> None:
         self.wardrobe_service.apply(BUILTIN_OUTFIT_ID)
-        self.db.set_setting("active_outfit_id", BUILTIN_OUTFIT_ID)
+        self._record_manual_outfit_selection(BUILTIN_OUTFIT_ID)
         self.db.set_setting("wardrobe_reveal_pending_outfit_id", "")
         for index in range(self.wardrobe_packages.count()):
             item = self.wardrobe_packages.item(index)

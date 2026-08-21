@@ -1,8 +1,6 @@
 from __future__ import annotations
-
 lazy from PySide6.QtCore import QPoint, QTimer
 lazy from PySide6.QtWidgets import QMessageBox
-
 lazy from application.behavior_director import (
     BehaviorInput,
     SpeechLifecycle,
@@ -181,7 +179,12 @@ class CompanionSpeechRuntimeMixin:
                     False,
                 ),
                 preferences,
-                frozenset({"idle_front.png", "idle_lean.png", "idle.png"}),
+                frozenset({
+                    "idle_front.png",
+                    "idle_lean.png",
+                    "idle.png",
+                    "pose-atlas-v4",
+                }),
                 True,
             )
         )
@@ -205,6 +208,8 @@ class CompanionSpeechRuntimeMixin:
             return
         self.speech_finish_timer.stop()
         queued = self.speech_queue.popleft()
+        self.speech_playback_generation += 1
+        playback_generation = self.speech_playback_generation
         self._begin_speech_presentation(queued)
         tts_enabled = bool(self.db.setting("tts_enabled", True))
         self._start_mouth_animation(audio_driven=tts_enabled)
@@ -216,7 +221,11 @@ class CompanionSpeechRuntimeMixin:
         self._prepare_speech_performance("visual-only")
         QTimer.singleShot(
             max(1200, min(5000, len(queued.text) * 80)),
-            self._speech_audio_finished,
+            lambda generation=playback_generation: (
+                self._speech_audio_finished()
+                if self.speech_playback_generation == generation
+                else None
+            ),
         )
 
     def _begin_speech_presentation(self, queued: QueuedSpeech) -> None:

@@ -75,9 +75,7 @@ def _assert_local_speech_completion(
     assert not window.speech_finish_timer.isActive()
     assert not window.mouth_visual_timer.isActive()
     assert window.state == "idle"
-    assert window.character.pixmap().cacheKey() == (
-        window.expression_pixmaps["idle_front"].cacheKey()
-    )
+    assert window.character.pixmap().toImage() == window._render_half_body_frame().toImage()
 
 
 def _assert_completion_breath_is_continuous(window: CompanionWindow) -> None:

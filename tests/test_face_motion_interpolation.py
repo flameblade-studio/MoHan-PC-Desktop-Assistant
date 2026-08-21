@@ -45,11 +45,32 @@ def _frame(
 
 
 def test_interpolate_frame_midpoint_halves_continuous_controls() -> None:
-    start = _frame(aperture=0.0, blush=0.0)
-    end = _frame(aperture=0.9, blush=0.6)
+    start = FaceMotionFrame(
+        FacePose.FRONT,
+        "idle_front",
+        Viseme.CLOSED,
+        MouthShape(aperture=0.0),
+        ExpressionShape(blush=0.0),
+        gaze_x=-0.5,
+        gaze_y=0.0,
+        breath=0.2,
+    )
+    end = FaceMotionFrame(
+        FacePose.FRONT,
+        "idle_front",
+        Viseme.CLOSED,
+        MouthShape(aperture=0.9),
+        ExpressionShape(blush=0.6),
+        gaze_x=0.5,
+        gaze_y=0.5,
+        breath=0.8,
+    )
     mid = interpolate_frame(start, end, 0.5)
     assert abs(mid.mouth.aperture - 0.45) < FLOAT_EPSILON
     assert abs(mid.expression_shape.blush - 0.3) < FLOAT_EPSILON
+    assert abs(mid.gaze_x - 0.0) < FLOAT_EPSILON
+    assert abs(mid.gaze_y - 0.25) < FLOAT_EPSILON
+    assert abs(mid.breath - 0.5) < FLOAT_EPSILON
 
 
 def test_interpolate_frame_endpoint_returns_end_labels() -> None:

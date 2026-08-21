@@ -792,7 +792,13 @@ class CompanionVisualDynamicsMixin:
         else:
             self.gaze_target_x = 0.0
             self.gaze_target_y = 0.0
-        smoothing = 0.15 if active else 0.22
+        # Sword-soul awakening lets her gaze linger instead of snapping back
+        # with the same mechanical timing forever.  The bounded reduction is
+        # subtle (0.15 -> 0.10) and therefore cannot stall pointer tracking.
+        linger = max(0.0, min(1.0, float(
+            getattr(self, "_sword_soul_gaze_linger", 0.0)
+        )))
+        smoothing = (0.15 - 0.05 * linger) if active else 0.22
         self.gaze_x += (self.gaze_target_x - self.gaze_x) * smoothing
         self.gaze_y += (self.gaze_target_y - self.gaze_y) * smoothing
         if full_body:

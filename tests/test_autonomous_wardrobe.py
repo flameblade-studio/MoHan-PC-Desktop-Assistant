@@ -96,6 +96,24 @@ def run() -> None:
     assert urgent.outfit_id == "rain" and urgent.changed
     absent = director.decide(context(), ())
     assert absent.outfit_id == "formal" and absent.reason == "no-complete-match"
+
+    # Source is intentionally not part of WardrobeCandidate or its score.
+    # Official, user-authored, and cloud-generated packs share one neutral
+    # candidate pool; context/profile quality alone determines the winner.
+    neutral_profile = profile(
+        ("hot",),
+        ("clear", "indoor"),
+        ("cheerful",),
+    )
+    source_neutral = director.decide(
+        context(current_outfit_id="missing"),
+        (
+            WardrobeCandidate("official/studio-look", neutral_profile),
+            WardrobeCandidate("user/handmade-look", neutral_profile),
+            WardrobeCandidate("generated-cloud-look", neutral_profile),
+        ),
+    )
+    assert source_neutral.outfit_id == "generated-cloud-look"
     print("AUTONOMOUS_WARDROBE_OK")
 
 

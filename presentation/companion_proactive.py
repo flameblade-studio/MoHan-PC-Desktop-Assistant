@@ -26,6 +26,13 @@ lazy from application.visual_perception import (
 lazy from application.wellbeing_app_bridge import ReminderTrigger
 lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeakRequest
 lazy from domain.app_profile import personalize_text, profile_setting
+lazy from domain.sensory_synesthesia import (
+    complaint_line as sensory_complaint_line,
+    rain_alpha,
+    sweat_frequency,
+    weather_mood,
+)
+lazy from domain.somniloquy import random_somniloquy, should_murmur
 lazy from domain.speech_configuration import QueuedSpeech
 lazy from domain.time_utils import local_aware_time
 
@@ -34,6 +41,10 @@ RECOGNIZED_STREAK_THRESHOLD = 3
 MAX_TOPIC_LENGTH = 40
 VISUAL_MOTION_INTERVAL = 2.0
 VISUAL_ARRIVAL_INTERVAL = 90.0
+VISUAL_ACTIVITY_ACTIVE_INTERVAL = 10.0 * 60.0
+VISUAL_ACTIVITY_BALANCED_INTERVAL = 30.0 * 60.0
+SENSORY_COMPLAINT_COOLDOWN_SECONDS = 2.0 * 60.0 * 60.0
+PROJECT_START_DATE = (2026, 7, 28)
 lazy from domain.vision_domain import IdentityState
 
 __all__ = ("CompanionProactiveMixin",)
@@ -124,6 +135,7 @@ class CompanionProactiveMixin:
         scheduled_request: ProactiveSpeakRequest | None = None,
         camera_observation: VisualObservation | None = None,
         visual_presence_arrival: bool = False,
+        visual_activity: bool = False,
     ):
         bridge = getattr(self, "_proactive_companion_bridge", None)
         if bridge is None or self._closing:
@@ -170,7 +182,11 @@ class CompanionProactiveMixin:
         proactive_mode = MultisensoryInteractionArbiter._mode_key(
             str(self.db.setting("proactive_mode", "平衡（推薦）"))
         )
-        memory_topics = self._recent_memory_topics()
+        memory_topics = (
+            self._recent_memory_topics()
+            if not require_identity or recognized
+            else ()
+        )
         state = ProactiveAppState(
             generation=self._proactive_generation,
             now=local_aware_time(),
@@ -191,16 +207,7 @@ class CompanionProactiveMixin:
                 or getattr(self.listener, "is_recording", False)
             ),
             seconds_since_user_interaction=max(0.0, idle_seconds or 0.0),
-            enabled=bool(
-                self.db.setting("proactive_interaction_enabled", True)
-                and (
-                    timer_trigger is not None
-                    or scheduled_request is not None
-                    or not require_identity
-                    or recognized
-                    or not camera_enabled
-                )
-            ),
+            enabled=bool(self.db.setting("proactive_interaction_enabled", True)),
             pending_outfit_id=str(
                 self.db.setting("wardrobe_reveal_pending_outfit_id", "")
                 or ""
@@ -210,6 +217,11 @@ class CompanionProactiveMixin:
             ),
             visual_presence_arrival=bool(
                 visual_presence_arrival
+                and camera_enabled
+                and presence is PresenceState.PRESENT
+            ),
+            visual_activity=bool(
+                visual_activity
                 and camera_enabled
                 and presence is PresenceState.PRESENT
             ),
@@ -345,9 +357,30 @@ class CompanionProactiveMixin:
         )
         if arrival:
             self._last_visual_arrival_at = now
+        mode = MultisensoryInteractionArbiter._mode_key(
+            str(self.db.setting("proactive_mode", "平衡（推薦）"))
+        )
+        activity_interval = (
+            VISUAL_ACTIVITY_ACTIVE_INTERVAL
+            if mode == "active"
+            else VISUAL_ACTIVITY_BALANCED_INTERVAL
+        )
+        activity_prompt = bool(
+            not arrival
+            and not speaking
+            and mode != "quiet"
+            and observation.presence is PresenceState.PRESENT
+            and observation.activity is ActivityState.ACTIVE
+            and now
+            - getattr(self, "_last_visual_activity_prompt_at", float("-inf"))
+            >= activity_interval
+        )
+        if activity_prompt:
+            self._last_visual_activity_prompt_at = now
         self._dispatch_proactive_companion(
             camera_observation=observation,
             visual_presence_arrival=arrival,
+            visual_activity=activity_prompt,
         )
 
     def _consider_desktop_presence(self) -> None:
@@ -368,13 +401,92 @@ class CompanionProactiveMixin:
         apply_weather = getattr(self, "_apply_weather_and_satiety", None)
         if apply_weather is not None:
             apply_weather()
+        idle_seconds = seconds_since_local_input()
+        self._advance_soul_continuity(idle_seconds)
         center = getattr(self.dashboard, "flagship_center", None)
         camera_active = bool(
             center is not None and center.camera_presence.camera is not None
         )
         if camera_active:
             return
-        idle_seconds = seconds_since_local_input()
         if idle_seconds is None:
             return
         self._dispatch_proactive_companion()
+
+    def _advance_soul_continuity(self, idle_seconds: float | None) -> None:
+        """Connect the v4.3 soul modules to the existing one-minute runtime tick."""
+
+        now = local_aware_time()
+        start = now.date().replace(
+            year=PROJECT_START_DATE[0],
+            month=PROJECT_START_DATE[1],
+            day=PROJECT_START_DATE[2],
+        )
+        elapsed_days = max(0, (now.date() - start).days)
+        sword = getattr(self, "sword_soul_resonance_state", None)
+        if sword is not None:
+            sword.update(
+                days=float(elapsed_days),
+                commits=max(0, int(self.db.setting("sword_soul_commit_count", 0))),
+            )
+            self._sword_soul_gaze_linger = sword.gaze_linger()
+
+        temperature = float(self.db.setting("weather_temperature_c", 24.0))
+        condition = str(self.db.setting("weather_condition", "clear") or "clear")
+        sensory = weather_mood(temperature, condition)
+        self._sensory_rain_alpha = rain_alpha(sensory)
+        self._sensory_sweat_frequency = sweat_frequency(sensory)
+        previous = getattr(self, "_sensory_weather_mood", None)
+        self._sensory_weather_mood = sensory
+        monotonic_now = time.monotonic()
+        can_speak = not bool(
+            getattr(self, "speech_playing", False)
+            or getattr(self, "realtime_mouth_active", False)
+        )
+        last_weather_line = getattr(
+            self, "_last_sensory_weather_line_at", float("-inf")
+        )
+        if (
+            sensory.value != "clear"
+            and sensory != previous
+            and can_speak
+            and monotonic_now - last_weather_line >= SENSORY_COMPLAINT_COOLDOWN_SECONDS
+        ):
+            line = sensory_complaint_line(
+                str(self.db.setting("ui_language", "zh-TW")), sensory
+            )
+            if line:
+                self._last_sensory_weather_line_at = monotonic_now
+                self.set_state("gentle_smile_front", source="visual", intensity=0.45)
+                self.speak(line, "gentle_smile_front")
+                return
+
+        drowsiness = float(
+            getattr(getattr(self, "time_sovereignty_state", None), "drowsiness", 0.0)
+        )
+        if (
+            can_speak
+            and (idle_seconds or 0.0) >= 10.0 * 60.0
+            and drowsiness >= 0.25
+            and should_murmur()
+        ):
+            self.speak(
+                random_somniloquy(str(self.db.setting("ui_language", "zh-TW"))),
+                "gentle_smile_front",
+            )
+            return
+
+        # Recall a shared milestone once on each 30-day project anniversary.
+        if elapsed_days <= 0 or elapsed_days % 30:
+            return
+        if int(self.db.setting("chronicle_last_recollection_day", -1)) == elapsed_days:
+            return
+        chronicle = getattr(self, "shared_chronicle", None)
+        if chronicle is None or not can_speak or (idle_seconds or 0.0) < 120.0:
+            return
+        line = chronicle.recollection(
+            str(self.db.setting("ui_language", "zh-TW")), elapsed_days
+        )
+        if line:
+            self.db.set_setting("chronicle_last_recollection_day", elapsed_days)
+            self.speak(line, "happy")

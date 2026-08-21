@@ -50,6 +50,7 @@ class ProactiveAppState:
     pending_outfit_id: str = ""
     user_looking: bool = False
     visual_presence_arrival: bool = False
+    visual_activity: bool = False
     proactive_mode: str = "balanced"
     memory_topics: tuple[str, ...] = ()
 
@@ -74,6 +75,11 @@ class ProactiveAppState:
             or self.camera_presence is not PresenceState.PRESENT
         ):
             raise ValueError("Visual arrival requires an enabled camera and presence.")
+        if self.visual_activity and (
+            not self.camera_enabled
+            or self.camera_presence is not PresenceState.PRESENT
+        ):
+            raise ValueError("Visual activity requires an enabled camera and presence.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -333,6 +339,7 @@ def _environment(event: ProactiveAppEvent) -> NormalizedCompanionEnvironment:
         pending_outfit_id=state.pending_outfit_id,
         user_looking=state.user_looking,
         visual_presence_arrival=state.visual_presence_arrival,
+        visual_activity=state.visual_activity,
         proactive_mode=state.proactive_mode,
         memory_topics=state.memory_topics,
     )
@@ -356,6 +363,7 @@ def _event_signature(event: ProactiveAppEvent) -> tuple[object, ...]:
         state.pending_outfit_id,
         state.user_looking,
         state.visual_presence_arrival,
+        state.visual_activity,
         state.proactive_mode,
         state.memory_topics,
         event.timer_trigger,

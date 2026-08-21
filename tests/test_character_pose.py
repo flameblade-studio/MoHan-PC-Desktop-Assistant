@@ -44,17 +44,27 @@ def _view(yaw: int) -> ViewAnchor:
 
 def assert_original_three_pose_compatibility() -> None:
     registry = default_pose_registry()
-    assert tuple(registry.poses) == (
+    assert tuple(registry.poses)[:3] == (
         "front-crossed",
         "left-neutral",
         "left-cheek-rest",
     )
+    assert set(registry.poses) >= {
+        "right-neutral",
+        "back-two-thirds-left",
+        "back-two-thirds-right",
+        "back-full",
+    }
     assert registry.get("front-crossed").legacy_face_pose == "front"
     assert registry.get("left-neutral").legacy_face_pose == "lean"
     assert registry.get("left-cheek-rest").legacy_face_pose == "cheek"
     assert registry.get("front-crossed").view_id == canonical_view_id(0)
     assert registry.get("left-neutral").view_id == canonical_view_id(-30)
-    assert all(pose.speech_safe for pose in registry.poses.values())
+    assert all(
+        pose.speech_safe
+        for pose in registry.poses.values()
+        if not pose.pose_id.startswith("back-")
+    )
     assert registry.available("front-crossed", {"idle_front.png"})
     assert not registry.available("front-crossed", ())
 

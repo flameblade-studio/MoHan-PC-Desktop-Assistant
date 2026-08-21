@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import os
 lazy import sys
+lazy from datetime import datetime
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 lazy from unittest.mock import patch
@@ -14,6 +15,7 @@ sys.path.insert(0, str(TESTS))
 
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import (
+    QAbstractSpinBox,
     QApplication,
     QCheckBox,
     QComboBox,
@@ -186,6 +188,35 @@ def test_wardrobe_tab_and_controls_have_four_language_contract() -> None:
                         assert pixmap is not None and not pixmap.isNull()
                         pose_keys.append(pixmap.cacheKey())
                     assert len(set(pose_keys)) == POSE_BUTTON_COUNT
+                    dashboard._restore_builtin_outfit()
+                    lock_until = datetime.fromisoformat(
+                        str(db.setting("wardrobe_manual_lock_until", ""))
+                    )
+                    changed_at = datetime.fromisoformat(
+                        str(db.setting("wardrobe_last_changed_at", ""))
+                    )
+                    assert lock_until > changed_at
+                    assert db.setting("active_outfit_id", "") == (
+                        "mohan.default.blue-silver"
+                    )
+                    dashboard.manual_wardrobe_lock_hours.setValue(2)
+                    application.processEvents()
+                    revised_lock = datetime.fromisoformat(
+                        str(db.setting("wardrobe_manual_lock_until", ""))
+                    )
+                    assert int((revised_lock - changed_at).total_seconds()) == 7200
+                    dashboard.manual_wardrobe_lock_hours.setValue(0)
+                    application.processEvents()
+                    assert db.setting("wardrobe_manual_lock_until", "missing") == ""
+                    spin = dashboard.manual_wardrobe_lock_hours
+                    assert spin.buttonSymbols() == QAbstractSpinBox.UpDownArrows
+                    spin.setValue(spin.maximum())
+                    assert spin.stepEnabled() & QAbstractSpinBox.StepUpEnabled
+                    assert spin.stepEnabled() & QAbstractSpinBox.StepDownEnabled
+                    spin.stepUp()
+                    assert spin.value() == spin.minimum()
+                    spin.stepDown()
+                    assert spin.value() == spin.maximum()
                     forbidden = sorted(
                         text for text in texts if text in FORBIDDEN_SUBPAGE_ACTIONS
                     )

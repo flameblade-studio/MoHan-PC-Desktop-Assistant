@@ -328,6 +328,30 @@ def assert_visual_presence_arrival_uses_the_approved_speech_path() -> None:
     assert selected.performance.expression == "happy"
 
 
+def assert_visual_activity_uses_warm_localized_speech_with_quiet_guard() -> None:
+    engine, *_ = runtime()
+    selected = engine.propose(
+        environment(
+            visual_activity=True,
+            language="zh-TW",
+            user_title="主人",
+        ),
+        CompanionProactivityPreferences(),
+    )
+    assert selected is not None
+    assert selected.source is ProactiveSource.VISUAL_ACTIVITY
+    assert selected.priority is CandidatePriority.VISUAL_ACTIVITY
+    assert selected.performance.expression == "happy"
+    assert "主人" in selected.speak.text
+
+    engine, *_ = runtime()
+    quiet = engine.propose(
+        environment(visual_activity=True, proactive_mode="quiet"),
+        CompanionProactivityPreferences(),
+    )
+    assert quiet is None
+
+
 def assert_proactive_mode_shapes_candidate_scope_and_frequency() -> None:
     prefs = CompanionProactivityPreferences()
 
@@ -447,6 +471,7 @@ def run() -> None:
     assert_two_phase_commit_failure_does_not_consume_budget()
     assert_return_thresholds_checkin_and_neutral_public_text()
     assert_visual_presence_arrival_uses_the_approved_speech_path()
+    assert_visual_activity_uses_warm_localized_speech_with_quiet_guard()
     assert_proactive_mode_shapes_candidate_scope_and_frequency()
     assert_private_phrasebook_is_injected_not_built_in()
     assert_day_rollover_resets_budget()

@@ -34,11 +34,14 @@ lazy from application.service_container import CompanionServices
 lazy from application.speech_performance import SpeechPerformanceTimeline
 lazy from domain.affective_state import AffectiveState
 lazy from domain.affinity_state import AffinityState
+lazy from domain.chronicle import Chronicle, Milestone, MilestoneKind
 lazy from domain.companion_animation_contract import EXPRESSION_POSES
 lazy from domain.emotional_resonance import EmotionalResonanceState
 lazy from domain.favor_exclusive import FavorExclusiveState
 lazy from domain.personality_state import PersonalityMirrorState
 lazy from domain.satiety import SatietyState
+lazy from domain.sensory_synesthesia import WeatherMood
+lazy from domain.sword_soul_resonance import SwordSoulResonanceState
 
 WAVE_ACKNOWLEDGE_COOLDOWN_SECONDS = 6.0
 GAZE_CONFIDENCE_THRESHOLD = 0.35
@@ -63,7 +66,7 @@ lazy from domain.expression_system import (
     ExpressionArbiter,
 )
 lazy from domain.time_utils import local_wall_time
-lazy from domain.character_framing import FramingMode
+lazy from domain.character_framing import FramingMode, NormalizedRect
 lazy from domain.framing_context_policy import (
     EmotionValence,
     FocusState,
@@ -217,20 +220,42 @@ class CompanionCoreMixin:
         pending_outfit = bool(
             str(self.db.setting("wardrobe_reveal_pending_outfit_id", "") or "").strip()
         )
+        hand_action = any(
+            not str(value).strip().lower().startswith(("relaxed", "neutral"))
+            for value in (
+                getattr(performance, "left_hand", "relaxed"),
+                getattr(performance, "right_hand", "relaxed"),
+            )
+        )
+        gesture_bounds = (
+            NormalizedRect(0.02, 0.0, 0.98, 0.92)
+            if hand_action
+            else NormalizedRect(0.10, 0.0, 0.90, 0.75)
+            if bool(getattr(performance, "gesture_beat", False))
+            else None
+        )
+        affinity = getattr(self, "affinity_state", None)
+        intimacy = (
+            max(0.0, min(1.0, float(affinity.snapshot().affinity)))
+            if affinity is not None
+            else 0.5
+        )
         policy = FramingPolicyContext(
             away_seconds=0.0,
             returned_to_seat=False,
-            intimacy=0.5,
+            intimacy=intimacy,
             emotion_intensity=min(1.0, max(0.0, performance.body_energy)),
             emotion_valence=EmotionValence.NEUTRAL,
-            angry_back_turn=performance.pose.startswith("back-"),
+            angry_back_turn=str(getattr(performance, "pose", "")).startswith("back-"),
             speech_active=speech_active,
             mouth_closed=performance.mouth_closed,
-            gesture_bounds=None,
+            gesture_bounds=gesture_bounds,
             weapon_or_large_prop=False,
             outfit_preview=pending_outfit,
             focus_state=FocusState.AVAILABLE,
-            proactive_greeting=False,
+            proactive_greeting=(
+                str(getattr(self, "active_speech_source", "")) == "proactive"
+            ),
             close_framing_allowed=True,
         )
         framing_state = AppFramingState(
@@ -570,7 +595,10 @@ class CompanionCoreMixin:
         """
 
         now = time.monotonic()
-        if now - getattr(self, "_last_wave_acknowledged_at", 0.0) < WAVE_ACKNOWLEDGE_COOLDOWN_SECONDS:
+        if (
+            now - getattr(self, "_last_wave_acknowledged_at", float("-inf"))
+            < WAVE_ACKNOWLEDGE_COOLDOWN_SECONDS
+        ):
             return
         self._last_wave_acknowledged_at = now
         if hasattr(self, "expression_arbiter"):
@@ -961,6 +989,16 @@ class CompanionCoreMixin:
         self.emotional_resonance_state = EmotionalResonanceState()
         self._resonance_breath_period = 72.0
         self.time_sovereignty_state = TimeSovereigntyState()
+        self.sword_soul_resonance_state = SwordSoulResonanceState()
+        self.shared_chronicle = Chronicle(
+            (
+                Milestone(MilestoneKind.FIRST_RELEASE, 20),
+            )
+        )
+        self._sword_soul_gaze_linger = 0.0
+        self._sensory_weather_mood = WeatherMood.CLEAR
+        self._sensory_rain_alpha = 0.0
+        self._sensory_sweat_frequency = 0.0
         self._drowsy_blink_interval: float | None = None
         self._satiety_blink_interval: float | None = None
         self._wardrobe_suggestion: str = "moderate"
@@ -981,6 +1019,7 @@ class CompanionCoreMixin:
         self.active_speech_engine = ""
         self.active_speech_source = ""
         self.active_speech_delivery_token = ""
+        self.speech_playback_generation = 0
         self._proactive_speech_completions: dict[str, Callable[[bool], None]] = {}
         self.speech_performance = SpeechPerformanceTimeline()
         self.last_speech_performance_event = None
@@ -998,7 +1037,7 @@ class CompanionCoreMixin:
         )
         self._latest_visual_scene = None
         self._recognized_scene_streak = 0
-        self._last_wave_acknowledged_at = 0.0
+        self._last_wave_acknowledged_at = float("-inf")
         self._multisensory_variation_index = int(
             self.db.setting("multisensory_variation_index", 0)
         )

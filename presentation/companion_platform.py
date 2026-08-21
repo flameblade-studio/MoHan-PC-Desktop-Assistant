@@ -376,6 +376,9 @@ class CompanionPlatformMixin:
                 timer.stop()
 
     def _close_runtime_services(self) -> None:
+        outfit_generation = getattr(self, "_autonomous_outfit_generation", None)
+        if outfit_generation is not None:
+            outfit_generation.stop()
         scheduler = getattr(self, "background_scheduler", None)
         if scheduler is not None:
             scheduler.close()

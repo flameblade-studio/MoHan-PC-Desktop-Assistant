@@ -15,12 +15,16 @@ lazy from presentation.dashboard_settings import DashboardSettingsMixin
 lazy from presentation.dashboard_shell import DashboardShellMixin
 lazy from presentation.dashboard_today_memory import DashboardTodayMemoryMixin
 lazy from presentation.dashboard_voice import DashboardVoiceMixin
+lazy from presentation.dashboard_wardrobe_preferences import (
+    DashboardWardrobePreferencesMixin,
+)
 lazy from presentation.flagship_theme import apply_flagship_theme
 
 __all__ = ("Dashboard",)
 
 
 class Dashboard(
+    DashboardWardrobePreferencesMixin,
     DashboardShellMixin,
     DashboardSettingsMixin,
     DashboardVoiceMixin,
@@ -48,6 +52,7 @@ class Dashboard(
     visual_scene_changed = Signal(object)
     multimodal_result_changed = Signal(object)
     human_interaction = Signal()
+    outfit_generation_requested = Signal()
 
     def __init__(
         self,

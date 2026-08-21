@@ -2,14 +2,14 @@
 
 ## 繁體中文
 
-本檔是可攜、受版本控制的專案交接點；不得記錄憑證、密碼、API 金鑰、原始對話內容或不必要的私人本機路徑。程式碼、文件、發行證據與本檔均以 GitHub 為跨電腦的基準；目前修復工作位於 [PR #63](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/63)，分支為 fix/v4-readme-windows-ci，已發布的穩定版本為 v4.0.0。
+本檔是可攜、受版本控制的專案交接點；不得記錄憑證、密碼、API 金鑰、原始對話內容或不必要的私人本機路徑。程式碼、文件、發行證據與本檔均以 [Flameblade Studio 組織儲存庫](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) 為跨電腦基準；目前 v4.4.2 候選修復位於 `fix/release-please-release-trigger`，已發布穩定版本為 v4.4.1。
 
-- 此 PR 更新四語 README、Windows Qt 清理與發行後的互動修復。
-- 控制台改為即時狀態卡，桌面墨寒是唯一可見、可拖移、可鍵盤對話的角色。
-- 鏡頭在場、動作與揮手會觸發既有回應路徑；狀態卡不得阻斷主要互動。
-- 合併前必須確認 Windows CI、三平台預覽、跨平台核心、安全、相依、CodeQL 與四語治理皆為綠燈。
+- v4.4.2 修復半身／全身分層說話破圖、無聲與嘴型停止，並限制渲染快取以排除「記憶體已滿」。
+- 鏡頭活動與自然揮手會觸發四語主動回應；全身路徑已接入手勢節拍、手部狀態與安全的小幅身體動勢。
+- GPT Image 2 雲端製衣、官方 DLC、使用者 DLC 可並存；使用者手動換裝預設鎖定 6 小時，可調 0–720 小時，▲／▼ 於邊界皆可用。
+- 發版前必須確認完整回歸、Windows CI、三平台預覽、跨平台核心、安全、相依、CodeQL 與四語治理皆為綠燈。
 
-實機驗收須確認沒有第二個角色、文字對話可用、保存只說一次、鏡頭在場／動作／揮手得到回應、休眠模式維持音色與順暢拖移，以及每個下拉選單皆可閱讀。若有差異，建立 GitHub issue 或後續 PR，而不只記在本機聊天。
+實機驗收須確認半身／全身說話均無破圖且有聲有嘴型、沒有第二個角色、文字對話可用、鏡頭活動／揮手得到明顯回應、自主選裝與手動鎖定能共存，且鎖定時數的 ▲／▼ 在最小值與最大值都可操作。若有差異，建立 GitHub issue 或後續 PR，而不只記在本機聊天。
 
 1. 在其他電腦取得 main 與最新開放 PR，閱讀本檔及 PR 說明。
 2. 依 GitHub Actions 的實際工作日誌確認失敗原因，進行最小直接修復並推送。
@@ -19,14 +19,14 @@
 
 ## 简体中文
 
-本文件是可携带、受版本控制的项目交接点；不得记录凭据、密码、API 密钥、原始对话内容或不必要的私人本机路径。代码、文档、发布证据与本文件均以 GitHub 为跨电脑的基准；当前修复工作位于 [PR #63](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/63)，分支为 fix/v4-readme-windows-ci，已发布的稳定版本为 v4.0.0。
+本文件是可携带、受版本控制的项目交接点；不得记录凭据、密码、API 密钥、原始对话内容或不必要的私人本机路径。代码、文档、发布证据与本文件均以 [Flameblade Studio 组织仓库](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) 为跨电脑基准；当前 v4.4.2 候选修复位于 `fix/release-please-release-trigger`，已发布稳定版本为 v4.4.1。
 
-- 此 PR 更新四语 README、Windows Qt 清理与发布后的互动修复。
-- 控制台改为实时状态卡，桌面墨寒是唯一可见、可拖动、可键盘对话的角色。
-- 镜头在场、动作与挥手会触发既有回应路径；状态卡不得阻断主要互动。
-- 合并前必须确认 Windows CI、三平台预览、跨平台核心、安全、依赖、CodeQL 与四语治理皆为绿灯。
+- v4.4.2 修复半身／全身分层说话破图、无声与嘴型停止，并限制渲染缓存以排除“内存已满”。
+- 镜头活动与自然挥手会触发四语主动回应；全身路径已接入手势节拍、手部状态与安全的小幅身体动势。
+- GPT Image 2 云端制衣、官方 DLC、用户 DLC 可以共存；手动换装默认锁定 6 小时，可调 0–720 小时，▲／▼ 在边界均可用。
+- 发布前必须确认完整回归、Windows CI、三平台预览、跨平台核心、安全、依赖、CodeQL 与四语治理皆为绿灯。
 
-实机验收须确认没有第二个角色、文字对话可用、保存只说一次、镜头在场／动作／挥手得到回应、休眠模式维持音色与顺畅拖动，以及每个下拉菜单皆可阅读。若有差异，建立 GitHub issue 或后续 PR，而不只记在本机聊天。
+实机验收须确认半身／全身说话均无破图且有声有嘴型、没有第二个角色、文字对话可用、镜头活动／挥手得到明显回应、自主选装与手动锁定能共存，且锁定时数的 ▲／▼ 在最小值与最大值都可操作。若有差异，建立 GitHub issue 或后续 PR，而不只记在本机聊天。
 
 1. 在其他电脑取得 main 与最新开放 PR，阅读本文件及 PR 说明。
 2. 依 GitHub Actions 的实际工作日志确认失败原因，进行最小直接修复并推送。
@@ -36,14 +36,14 @@
 
 ## English
 
-This document is the portable, version-controlled project handoff; never record credentials, passwords, API keys, raw conversation content, or unnecessary private local paths. GitHub is the cross-computer baseline for code, documentation, release evidence, and this document; current repair work is in [PR #63](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/63) on fix/v4-readme-windows-ci, and the published stable release is v4.0.0.
+This document is the portable, version-controlled project handoff; never record credentials, passwords, API keys, raw conversation content, or unnecessary private local paths. The [Flameblade Studio organization repository](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) is the cross-computer baseline. The v4.4.2 candidate is on `fix/release-please-release-trigger`; the published stable release is v4.4.1.
 
-- This PR refreshes four-language READMEs, Windows Qt cleanup, and post-release interaction repairs.
-- The console is a live status card; desktop MoHan is the one visible, draggable, keyboard-chat companion.
-- Camera presence, activity, and waving use the established response path; the status card must not block primary interaction.
-- Before merge, Windows CI, three-platform preview, cross-platform core, security, dependencies, CodeQL, and four-language governance must all be green.
+- v4.4.2 repairs torn half/full-body layered speech, silent playback and stopped mouth motion, and bounds render caches to prevent “memory full”.
+- Camera activity and natural waves receive proactive four-language responses; hand state, gesture beats, and conservative visible body motion reach full-body rendering.
+- GPT Image 2 cloud outfits coexist with official and user DLC. Manual selection locks autonomous changes for a configurable 0–720 hours (default 6); ▲ and ▼ remain usable at both boundaries.
+- Before publication, the full regression, Windows CI, three-platform preview, cross-platform core, security, dependencies, CodeQL, and four-language governance must all be green.
 
-For device acceptance, confirm no second character, working text chat, one save acknowledgement, responses to camera presence/activity/waving, a consistent voice with smooth dragging in sleep mode, and readable dropdowns. If a discrepancy remains, open a GitHub issue or follow-up PR rather than recording it only in a local chat.
+For device acceptance, confirm both framings speak without corruption and with audio/lip motion, no second character appears, text chat works, camera activity/waving receives visible responses, autonomous and manual wardrobes coexist, and both lock-duration arrows work at minimum and maximum. If a discrepancy remains, open a GitHub issue or follow-up PR rather than recording it only in a local chat.
 
 1. On another computer, obtain main and the newest open PR, then read this document and the PR description.
 2. Use the exact GitHub Actions job log to identify a failure, make the smallest direct repair, and push it.
@@ -53,14 +53,14 @@ For device acceptance, confirm no second character, working text chat, one save 
 
 ## 日本語
 
-この文書は持ち運び可能でバージョン管理されたプロジェクト引継ぎです。認証情報、パスワード、API キー、生の会話内容、不要な私的ローカルパスは記録しません。コード、文書、公開証跡、この文書のクロスコンピュータ基準は GitHub です。現在の修正は [PR #63](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pull/63) の fix/v4-readme-windows-ci にあり、公開済み安定版は v4.0.0 です。
+この文書は持ち運び可能でバージョン管理されたプロジェクト引継ぎです。認証情報、パスワード、API キー、生の会話内容、不要な私的ローカルパスは記録しません。[Flameblade Studio 組織リポジトリ](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) がクロスコンピュータ基準です。v4.4.2 候補は `fix/release-please-release-trigger` にあり、公開済み安定版は v4.4.1 です。
 
-- この PR は四言語 README、Windows Qt のクリーンアップ、公開後の対話修正を更新します。
-- コントロールセンターはライブ状態カードであり、デスクトップの墨寒だけが表示、ドラッグ、キーボード会話できる伴侶です。
-- カメラの在席、動き、手を振る操作は既存の応答経路を使い、状態カードは主対話を妨げてはいけません。
-- マージ前に Windows CI、三プラットフォームのプレビュー、クロスプラットフォームコア、セキュリティ、依存関係、CodeQL、四言語ガバナンスがすべて緑でなければなりません。
+- v4.4.2 は半身／全身レイヤー発話の崩れ、無音、口パク停止を修正し、「メモリ不足」を防ぐため描画キャッシュを制限します。
+- カメラ上の活動と自然な手振りへ四言語で能動的に反応し、手状態、ジェスチャービート、安全な小幅身体動勢を全身描画へ接続します。
+- GPT Image 2 クラウド衣装、公式 DLC、ユーザー DLC は共存します。手動変更ロックは既定 6 時間、0–720 時間で、▲／▼ は上下限でも使用できます。
+- 公開前に完全回帰、Windows CI、三プラットフォーム Preview、クロスプラットフォームコア、セキュリティ、依存関係、CodeQL、四言語ガバナンスがすべて緑でなければなりません。
 
-実機受け入れでは二人目のキャラクターがなく、文字会話が動き、保存時の発話が一度だけで、カメラの在席／動き／手振りに応答し、休眠モードで音色と滑らかなドラッグを保ち、すべてのドロップダウンが読めることを確認します。差異が残る場合は、ローカルチャットだけに記録せず GitHub issue または後続 PR を作成します。
+実機受け入れでは半身／全身発話に崩れがなく音声と口パクが動き、二人目のキャラクターがなく、文字会話が動き、カメラ活動／手振りへ明確に反応し、自主選装と手動ロックが共存し、ロック時間の ▲／▼ が最小・最大でも操作できることを確認します。差異が残る場合は、ローカルチャットだけに記録せず GitHub issue または後続 PR を作成します。
 
 1. 別のコンピュータでは main と最新のオープン PR を取得し、この文書と PR 説明を読みます。
 2. 正確な GitHub Actions ジョブログで失敗を確認し、最小の直接修正を行ってプッシュします。

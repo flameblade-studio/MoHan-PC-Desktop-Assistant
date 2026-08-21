@@ -54,6 +54,11 @@ class LoadedV4Assets(Protocol):
         pose_id: str,
         view_id: str,
         motion: FaceMotionFrame | None = None,
+        *,
+        left_hand: str = "relaxed",
+        right_hand: str = "relaxed",
+        body_energy: float = 0.0,
+        gesture_beat: bool = False,
     ) -> FullBodyRenderSpec | None: ...
 
     def resolve_speech(
@@ -194,6 +199,10 @@ class FullBodyPerformanceBridge:
                 performance.pose,
                 performance.view,
                 request.face_motion,
+                left_hand=performance.left_hand,
+                right_hand=performance.right_hand,
+                body_energy=performance.body_energy,
+                gesture_beat=performance.gesture_beat,
             )
             dynamic_layers = assets.resolve_speech(
                 performance.face,

@@ -5,6 +5,9 @@ from __future__ import annotations
 lazy from PySide6.QtWidgets import QMainWindow
 
 lazy from application.adaptive_character_composition import AdaptiveCharacterFactory
+lazy from presentation.autonomous_outfit_generation_controller import (
+    AutonomousOutfitGenerationController,
+)
 lazy from application.gesture_action_dispatcher import GestureActionDispatcher
 lazy from application.gesture_controller import GestureController
 lazy from application.presentation_ports import default_data_dir
@@ -68,6 +71,19 @@ class CompanionWindow(
             self._on_gesture_recognition
         )
         self.dashboard = self._create_dashboard(self._gesture_controller)
+        self._autonomous_outfit_generation = AutonomousOutfitGenerationController(
+            db=self.db,
+            secret_store=self.secret_store,
+            project_root=resource_path("."),
+            parent=self,
+        )
+        self.dashboard.outfit_generation_requested.connect(
+            self._autonomous_outfit_generation.request_generation
+        )
+        self._autonomous_outfit_generation.status_changed.connect(
+            self.dashboard.set_outfit_generation_status
+        )
+        self._autonomous_outfit_generation.start()
         self._connect_dashboard_signals()
         self._connect_speech_service_signals()
         self._initialize_companion_state(startup_speech)
