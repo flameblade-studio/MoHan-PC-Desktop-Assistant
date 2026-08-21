@@ -908,15 +908,23 @@ class CompanionFaceAnimationMixin:
         expression: str,
         aperture: float,
     ) -> QPixmap:
-        closed = self.expression_pixmaps[self.speech_closed_expression]
-        if expression == self.speech_closed_expression or aperture <= MOUTH_CLOSED_THRESHOLD:
-            return QPixmap(closed)
-        source = self.expression_pixmaps[expression]
-        suffix = self._active_speech_pose_suffix()
+        """Compose the speech mouth from the parametric layered renderer.
+
+        The layered renderer owns the whole half-body portrait (body, hair,
+        sleeves, ornament and the 18 facial layers), so the closed and open
+        mouth frames must both come from it. Returning the legacy whole-
+        expression sprite for the closed mouth while the open mouth came from
+        the layered renderer stacked two different coordinate systems and
+        produced the reported black eye ellipses, blush discs and jaw residue.
+        """
+        motion = self.face_motion_frame
+        if motion is None:
+            return QPixmap(self.expression_pixmaps[self.speech_closed_expression])
+        base = self.expression_pixmaps[self.speech_closed_expression]
         return self.face_renderer.render(
-            closed,
-            self.face_motion_frame,
-            self._face_render_layers(source, suffix),
+            base,
+            motion,
+            None,
             aperture=aperture,
         )
 
@@ -1035,19 +1043,13 @@ class CompanionFaceAnimationMixin:
             min(1.0, elapsed / self.mouth_transition_duration),
         )
         eased = 0.5 - 0.5 * math.cos(progress * math.pi)
-        suffix = self._active_speech_pose_suffix()
+        # Both transition endpoints are now full parametric layered frames, so
+        # crossfade the whole portrait instead of patching a legacy mouth mask
+        # over the previous frame (which misaligned the two coordinate systems).
         blended = QPixmap(self.mouth_transition_from)
         painter = QPainter(blended)
         painter.setOpacity(eased)
-        painter.drawPixmap(
-            0,
-            0,
-            self._speech_mouth_patch(
-                self.mouth_transition_to,
-                suffix,
-                source_already_aligned=True,
-            ),
-        )
+        painter.drawPixmap(0, 0, self.mouth_transition_to)
         painter.end()
         self._render_speech_pixmap(blended)
         if progress >= 1.0:

@@ -12,6 +12,7 @@ the rollback path; this renderer is the new default once every gate passes.
 
 from __future__ import annotations
 
+lazy from dataclasses import replace
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import Qt
@@ -88,11 +89,20 @@ class LayeredParametricFaceRenderer:
         :class:`FaceRendererPort` but are ignored: the layered renderer draws
         from its own authored assets instead of a whole-expression image. The
         mouth opening is driven by ``motion.mouth.aperture`` (already smoothed
-        by the face-motion controller), not by the legacy ``aperture`` override.
-        The composed frame is scaled to ``base``'s size so the caller's canvas
-        dimensions are preserved.
+        by the face-motion controller), unless the caller supplies an explicit
+        ``aperture`` override (the legacy speech path passes a discrete 0.0/1.0
+        target during mouth transitions). The composed frame is scaled to
+        ``base``'s size so the caller's canvas dimensions are preserved.
         """
 
+        if aperture is not None:
+            motion = replace(
+                motion,
+                mouth=replace(
+                    motion.mouth,
+                    aperture=max(0.0, min(1.0, float(aperture))),
+                ),
+            )
         composed = self.render_pose(self._pose(motion), motion)
         if composed.isNull() or base.isNull():
             return composed
