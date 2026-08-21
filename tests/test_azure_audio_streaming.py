@@ -22,6 +22,7 @@ class FakeOutputStream:
             "channels": 1,
             "dtype": "int16",
             "blocksize": 480,
+            "device": None,
         }
 
     def __enter__(self):
