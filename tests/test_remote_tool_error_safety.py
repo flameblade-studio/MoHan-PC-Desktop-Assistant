@@ -29,6 +29,9 @@ lazy from integrations.remote_control import (
 )
 lazy from safe_error import sanitize_error as canonical_sanitize_error
 
+HTTP_FORBIDDEN = 403
+HTTP_OK = 200
+
 _BAIT_MARKER = "NOT" + "-A-REAL-SECRET-42"
 _PRIVATE_PATH = "C:" + "\\Users\\private-user\\AppData\\secret.txt"
 _FORBIDDEN = (_BAIT_MARKER, _PRIVATE_PATH, "private-user", "api_key=")
@@ -53,7 +56,7 @@ def _read_fixed_file_error(request: Request) -> dict[str, str]:
     try:
         urlopen(request, timeout=3)
     except HTTPError as exc:
-        assert exc.code == 403
+        assert exc.code == HTTP_FORBIDDEN
         payload = json.load(exc)
     else:
         raise AssertionError("unavailable remote files must fail closed")
@@ -95,7 +98,7 @@ def _assert_remote_file_boundary(root: Path) -> None:
             _authorized_request(f"{endpoint}?{query}", token),
             timeout=3,
         ) as response:
-            assert response.status == 200
+            assert response.status == HTTP_OK
             assert response.read() == shared_content
             disposition = response.headers["Content-Disposition"]
         assert shared_file.name not in disposition

@@ -34,6 +34,13 @@ lazy from domain.speech_providers import (
     OPENAI_REALTIME_PROVIDER,
 )
 
+# Transcription-prompt heuristics.
+MAX_TERM_LENGTH = 40
+MAX_TERMS = 16
+MIN_COMPARISON_LENGTH = 16
+MIN_SUBSTRING_LENGTH = 20
+SIMILARITY_THRESHOLD = 0.82
+
 DEFAULT_TEXT_MODEL = "gpt-5.6-luna"
 TEXT_MODELS = (
     "gpt-5.6-luna",
@@ -390,7 +397,7 @@ def sanitize_realtime_transcription_prompt(prompt: str) -> str:
         normalized = value.strip(" 「」『』：:")
         if (
             normalized
-            and len(normalized) <= 40
+            and len(normalized) <= MAX_TERM_LENGTH
             and not re.prefixmatch(
                 r"^(?:請|使用|保留|不要|轉錄|語言|请|准确|"
                 r"Please|Preserve|Keep|do not|日本語|固有名詞)",
@@ -400,7 +407,7 @@ def sanitize_realtime_transcription_prompt(prompt: str) -> str:
             and normalized not in terms
         ):
             terms.append(normalized)
-        if len(terms) >= 16:
+        if len(terms) >= MAX_TERMS:
             break
     return "可能出現的專有名詞：" + "、".join(terms) + "。" if terms else ""
 
@@ -410,18 +417,18 @@ def resembles_transcription_prompt(text: str, *prompts: str) -> bool:
         return re.sub(r"[\W_]+", "", (value or "").casefold())
 
     candidate = comparison_text(text)
-    if len(candidate) < 16:
+    if len(candidate) < MIN_COMPARISON_LENGTH:
         return False
     for prompt in prompts:
         reference = comparison_text(prompt)
-        if len(reference) < 16:
+        if len(reference) < MIN_COMPARISON_LENGTH:
             continue
         if candidate == reference:
             return True
         shorter, longer = sorted((candidate, reference), key=len)
-        if len(shorter) >= 20 and shorter in longer:
+        if len(shorter) >= MIN_SUBSTRING_LENGTH and shorter in longer:
             return True
-        if SequenceMatcher(None, candidate, reference).ratio() >= 0.82:
+        if SequenceMatcher(None, candidate, reference).ratio() >= SIMILARITY_THRESHOLD:
             return True
     return False
 
@@ -620,7 +627,7 @@ def preferred_windows_voice(
             for marker in ("david", "mark", "zhiwei", "yunxi", "yunyang")
         )
     ]
-    installed = {name: culture for name, culture in filtered}
+    installed = dict(filtered)
     if saved in installed:
         return saved
     target = str(target_language or "").strip().lower()

@@ -17,6 +17,12 @@ class FaceVisibility(StrEnum):
     REAR = "rear"
 
 
+REAR_YAW = 180
+REAR_THREE_QUARTER_YAW = 120
+PROFILE_YAW = 75
+THREE_QUARTER_YAW = 30
+
+
 SIGNATURE_FIELDS = (
     "face_length_width",
     "eye_spacing_width",
@@ -146,13 +152,13 @@ class CharacterIdentityAuditReport:
 
 def expected_visibility(yaw_degrees: int) -> FaceVisibility:
     absolute = abs(yaw_degrees)
-    if absolute == 180:
+    if absolute == REAR_YAW:
         return FaceVisibility.REAR
-    if absolute >= 120:
+    if absolute >= REAR_THREE_QUARTER_YAW:
         return FaceVisibility.REAR_THREE_QUARTER
-    if absolute >= 75:
+    if absolute >= PROFILE_YAW:
         return FaceVisibility.PROFILE
-    if absolute >= 30:
+    if absolute >= THREE_QUARTER_YAW:
         return FaceVisibility.THREE_QUARTER
     return FaceVisibility.FRONT
 

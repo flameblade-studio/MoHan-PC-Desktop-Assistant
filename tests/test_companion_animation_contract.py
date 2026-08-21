@@ -25,7 +25,10 @@ CONSUMER_MODULES = (
     "presentation.companion_speech_runtime",
 )
 ANIMATION_MODULES = (CONTRACT_MODULE, *CONSUMER_MODULES)
+ANIMATION_CONSTANT_COUNT = 38
+GESTURE_SPEECH_ASSET_COUNT = 12
 ANIMATION_CONSTANTS = frozenset({
+    "ATTENTION_FRAME_INTERVAL_MS",
     "BLUSH_PRESERVING_BLINK_EXPRESSIONS",
     "CHARACTER_BASE_Y",
     "CHARACTER_CANVAS_WIDTH",
@@ -53,10 +56,12 @@ ANIMATION_CONSTANTS = frozenset({
     "GESTURE_SPEECH_FRAMES",
     "GESTURE_SPEECH_MOUTH_RECTS",
     "HAPPY_SPEECH_CLOSED_EXPRESSION",
+    "IDLE_FRAME_INTERVAL_MS",
     "MOTION_FRAME_INTERVAL_MS",
     "MOUTH_CLOSE_DEADLINE_MS",
     "NEUTRAL_VISEME_ASSET_STEMS",
     "NEW_EXPRESSION_ASSETS",
+    "PHYSICS_FRAME_INTERVAL_MS",
     "PHYSICS_POSE_SUFFIXES",
     "PHYSICS_SPEECH_FRAME_PREFIXES",
     "SPEAKING_BLINK_PREFIXES",
@@ -114,7 +119,7 @@ def imported_modules(tree: ast.Module) -> set[str]:
 
 
 def test_contract_is_the_unique_owner_of_all_35_animation_constants() -> None:
-    assert len(ANIMATION_CONSTANTS) == 35
+    assert len(ANIMATION_CONSTANTS) == ANIMATION_CONSTANT_COUNT
     assert assigned_names(module_tree(CONTRACT_MODULE)) & ANIMATION_CONSTANTS == (
         ANIMATION_CONSTANTS
     )
@@ -163,7 +168,7 @@ def test_gesture_speech_contract_preserves_the_four_expression_behavior() -> Non
             is EXPRESSION_SPEECH_MOUTH_RECTS[expression]
         )
 
-    assert len(GESTURE_SPEECH_ASSETS) == 12
+    assert len(GESTURE_SPEECH_ASSETS) == GESTURE_SPEECH_ASSET_COUNT
     assert set(GESTURE_SPEECH_ASSETS) == expected_assets
     assert tuple(
         asset

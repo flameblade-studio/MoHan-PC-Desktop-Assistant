@@ -13,6 +13,8 @@ SIDECAR_SCHEMA_VERSION = 2
 SUPPORTED_SIDECAR_VERSIONS = frozenset({1, SIDECAR_SCHEMA_VERSION})
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 PNG_RGBA_COLOR_TYPE = 6
+PNG_HEADER_LENGTH = 26
+POINT_DIMENSIONS = 2
 REQUIRED_LANDMARKS = frozenset(
     {
         "crown",
@@ -251,11 +253,11 @@ def _load_sidecar(path: Path) -> dict[str, object]:
 
 def _is_native_rgba_png(path: Path) -> bool:
     try:
-        header = path.read_bytes()[:26]
+        header = path.read_bytes()[:PNG_HEADER_LENGTH]
     except OSError:
         return False
     return (
-        len(header) == 26
+        len(header) == PNG_HEADER_LENGTH
         and header[:8] == PNG_SIGNATURE
         and header[12:16] == b"IHDR"
         and header[25] == PNG_RGBA_COLOR_TYPE
@@ -296,7 +298,7 @@ def _parse_landmarks(
         if (
             not isinstance(name, str)
             or not isinstance(point, list)
-            or len(point) != 2
+            or len(point) != POINT_DIMENSIONS
             or any(isinstance(value, bool) or not isinstance(value, int) for value in point)
         ):
             return None, frozenset()

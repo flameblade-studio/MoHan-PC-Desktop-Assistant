@@ -8,6 +8,7 @@ lazy import tempfile
 lazy from pathlib import Path
 
 EXPECTED = "PREVIEW_PACKAGE_SMOKE_OK"
+VIEW_RING_COUNT = 24
 
 
 def _require_license(path: Path) -> None:
@@ -23,7 +24,7 @@ def _require_pose_atlas(root: Path) -> None:
         raise RuntimeError("Preview package omitted PoseAtlas v4 assets")
     for atlas_root in atlas_roots:
         views = tuple(atlas_root.glob("yaw*-pitch+00.png"))
-        if len(views) != 24:
+        if len(views) != VIEW_RING_COUNT:
             raise RuntimeError("Preview package PoseAtlas v4 view count is incomplete")
         for view in views:
             for suffix in (".landmarks.json", ".hands.json"):

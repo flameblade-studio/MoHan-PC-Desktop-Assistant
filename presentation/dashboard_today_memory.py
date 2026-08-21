@@ -35,6 +35,9 @@ lazy from presentation.dashboard_shared import (
 
 __all__ = ("DashboardTodayMemoryMixin", "MemoryTabActions")
 
+MEMORY_PREVIEW_LENGTH = 90
+IDEA_PREVIEW_LENGTH = 58
+
 
 @dataclass(frozen=True, slots=True)
 class MemoryTabActions:
@@ -365,7 +368,7 @@ class DashboardTodayMemoryMixin:
             category=selected_category or None,
         )
         all_rows = self.db.list_memories(limit=1000)
-        counts = {category: 0 for category in MEMORY_CATEGORIES}
+        counts = dict.fromkeys(MEMORY_CATEGORIES, 0)
         for row in all_rows:
             category = to_taiwan_traditional(str(row["category"]))
             counts[category] = counts.get(category, 0) + 1
@@ -408,8 +411,8 @@ class DashboardTodayMemoryMixin:
             content = " ".join(
                 str(row["content"]).split()
             )
-            if len(content) > 90:
-                content = content[:90].rstrip() + "…"
+            if len(content) > MEMORY_PREVIEW_LENGTH:
+                content = content[:MEMORY_PREVIEW_LENGTH].rstrip() + "…"
             title = str(
                 row["title"]
                 or content
@@ -485,8 +488,8 @@ class DashboardTodayMemoryMixin:
             title = str(row["title"] or row["text"])
             content = str(row["content"] or "")
             preview = " ".join(content.split())
-            if len(preview) > 58:
-                preview = preview[:58] + "…"
+            if len(preview) > IDEA_PREVIEW_LENGTH:
+                preview = preview[:IDEA_PREVIEW_LENGTH] + "…"
             line = title
             if preview:
                 line += f"\n{preview}"

@@ -4,6 +4,9 @@ lazy import math
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 
+HAND_LANDMARK_COUNT = 21
+MIN_FRAMES = 2
+
 
 class HandSide(StrEnum):
     LEFT = "left"
@@ -57,7 +60,7 @@ class HandLandmarks:
     points: tuple[NormalizedPoint, ...]
 
     def __post_init__(self) -> None:
-        if len(self.points) != 21:
+        if len(self.points) != HAND_LANDMARK_COUNT:
             raise ValueError("A hand observation must contain exactly 21 landmarks.")
 
 
@@ -94,7 +97,7 @@ class SilenceGestureDetector:
         cooldown: float = 2.0,
         lip_distance: float = 1.35,
     ) -> None:
-        if minimum_frames < 2:
+        if minimum_frames < MIN_FRAMES:
             raise ValueError("minimum_frames must be at least two.")
         if minimum_duration <= 0.0 or cooldown < 0.0 or lip_distance <= 0.0:
             raise ValueError("Gesture timing and distance settings are invalid.")

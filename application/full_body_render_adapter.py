@@ -20,6 +20,8 @@ lazy from domain.character_full_body_rig import FULL_BODY_RIG_SCHEMA_VERSION
 
 FULL_BODY_CONTRACT = "full-body-v4"
 FULL_BODY_RIG_ID = "mohan-full-body-v1"
+SHA256_HEX_LENGTH = 64
+VERSION_RANGE_LENGTH = 2
 AUTHORED_FULL_BODY_SLOT = "authored-full-body"
 V4_STATIC_LAYER_SLOTS = frozenset(
     {
@@ -80,7 +82,7 @@ class FullBodyLayerEvidence:
     def __post_init__(self) -> None:
         if (
             not self.slot.strip()
-            or len(self.sha256) != 64
+            or len(self.sha256) != SHA256_HEX_LENGTH
             or any(character not in "0123456789abcdef" for character in self.sha256)
             or not self.evidence.strip()
         ):
@@ -382,7 +384,7 @@ class FullBodyRenderAdapter:
     @staticmethod
     def _range_contains(value: tuple[int, int], version: int) -> bool:
         return bool(
-            len(value) == 2
+            len(value) == VERSION_RANGE_LENGTH
             and all(isinstance(item, int) and not isinstance(item, bool) for item in value)
             and value[0] <= version < value[1]
         )

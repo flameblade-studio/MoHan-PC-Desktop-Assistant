@@ -48,6 +48,8 @@ lazy from vision_domain import IdentityObservation, IdentityState, SceneUndersta
 lazy from wellbeing_app_bridge import SpeakRequest
 
 NOW = datetime(2027, 1, 8, 12, tzinfo=UTC)
+EXPECTED_REPORT_COUNT = 2
+EXPECTED_OPERATION_ID = 7
 
 
 class DeviceRecorder:
@@ -331,7 +333,7 @@ def assert_proactive_timeout_close_and_provider_failure_release_once() -> None:
         ("delivery-2", False),
     ]
     speech.finish(1, True)
-    assert len(runtime.reports) == 2
+    assert len(runtime.reports) == EXPECTED_REPORT_COUNT
 
     rejected, rejected_runtime, _speech = proactive_bridge(
         speech_accepts=False
@@ -350,7 +352,7 @@ def assert_speech_timing_is_deduplicated_data_not_a_control_loop() -> None:
     collector = SpeechTimingCollector(7)
     first = collector.word_boundary(Boundary())
     assert first is not None
-    assert first.operation_id == 7
+    assert first.operation_id == EXPECTED_OPERATION_ID
     assert collector.word_boundary(Boundary()) is None
 
 

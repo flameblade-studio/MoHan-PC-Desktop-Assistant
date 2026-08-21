@@ -20,6 +20,7 @@ REQUIRED_SECTION_HEADINGS = (
     ("### 完全回帰の暫定状況", "### 現在の公開阻害事項", "### 未パッケージ・未公開"),
 )
 MOJIBAKE_MARKERS = ("\ufffd", "銝", "嚗", "ã€", "縺", "譁")
+SECTION_HEADING_COUNT = 6
 
 
 def document_bytes() -> bytes:
@@ -53,7 +54,7 @@ def test_four_language_order_and_equivalent_section_structure() -> None:
     for section, required in zip(sections, REQUIRED_SECTION_HEADINGS, strict=True):
         positions = tuple(section.index(heading) for heading in required)
         assert positions == tuple(sorted(positions))
-        assert section.count("### ") == 6
+        assert section.count("### ") == SECTION_HEADING_COUNT
 
 
 def test_each_language_records_current_release_truth() -> None:

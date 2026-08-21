@@ -16,9 +16,11 @@ lazy from character_identity_audit import (
 )
 lazy from character_pose import CANONICAL_YAWS, canonical_view_id
 
+CANONICAL_YAW_COUNT = 24
+
 
 def signature(change: tuple[str, float] | None = None) -> FaceGeometrySignature:
-    values = {name: 0.5 for name in SIGNATURE_FIELDS}
+    values = dict.fromkeys(SIGNATURE_FIELDS, 0.5)
     if change is not None:
         values[change[0]] = change[1]
     return FaceGeometrySignature(frozendict(values))
@@ -54,13 +56,13 @@ def ring() -> tuple[CharacterIdentityEvidence, ...]:
 
 
 def heights(value: float = 1453.0) -> frozendict[int, float]:
-    return frozendict({yaw: value for yaw in CANONICAL_YAWS})
+    return frozendict(dict.fromkeys(CANONICAL_YAWS, value))
 
 
 def assert_complete_identity_ring_passes() -> None:
     report = audit_character_identity(ring(), normalized_subject_heights=heights())
     assert report.passed
-    assert len(report.views) == 24
+    assert len(report.views) == CANONICAL_YAW_COUNT
 
 
 def assert_missing_duplicate_and_rear_face_fail() -> None:

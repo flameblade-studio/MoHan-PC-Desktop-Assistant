@@ -26,6 +26,9 @@ lazy from presentation.presentation_resources import resource_path
 
 __all__ = ("CompanionFaceAssetMethods",)
 
+IMPROVEMENT_THRESHOLD = 0.018
+MIN_OPAQUE_ALPHA = 180
+
 
 class CompanionFaceAssetMethods:
     def _idle_expression(self) -> str:
@@ -522,7 +525,7 @@ class CompanionFaceAssetMethods:
             if zero_score <= 0.0
             else max(0.0, (zero_score - best_score) / zero_score)
         )
-        if improvement < 0.018:
+        if improvement < IMPROVEMENT_THRESHOLD:
             best_x = 0
             best_y = 0
         confidence = min(1.0, improvement / 0.16)
@@ -563,7 +566,7 @@ class CompanionFaceAssetMethods:
     ) -> int | None:
         alpha_first = (first >> 24) & 0xFF
         alpha_second = (second >> 24) & 0xFF
-        if alpha_first < 180 or alpha_second < 180:
+        if alpha_first < MIN_OPAQUE_ALPHA or alpha_second < MIN_OPAQUE_ALPHA:
             return None
         return (
             abs(((first >> 16) & 0xFF) - ((second >> 16) & 0xFF))

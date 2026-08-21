@@ -7,6 +7,8 @@ lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 
+BACK_DEPTH_TWO_THIRDS = 2
+
 
 class SpeechLifecycle(StrEnum):
     IDLE = "idle"
@@ -47,6 +49,13 @@ class TransitionStyle(StrEnum):
     TURN_AWAY = "turn_away"
     TURN_BACK = "turn_back"
     SAFETY = "safety"
+
+
+# Behavior-director thresholds.
+PRIORITY_COOLDOWN_THRESHOLD = 90
+ANGER_LEVEL_1_THRESHOLD = 0.55
+ANGER_LEVEL_2_THRESHOLD = 0.86
+AWAY_SECONDS_THRESHOLD = 30
 
 
 @dataclass(frozen=True, slots=True)
@@ -204,7 +213,7 @@ class BehaviorDirector:
         if context.speech in _SPEECH_ACTIVE and not candidate.speech_safe:
             candidate = self._speech_safe_candidate(context)
         if (
-            priority < 90
+            priority < PRIORITY_COOLDOWN_THRESHOLD
             and now - self._last_change_ms < self._cooldown_ms
             and self._active is not None
             and not speech_requires_safe
@@ -255,8 +264,8 @@ class BehaviorDirector:
         return 40
 
     def _anger_candidate(self, context: BehaviorInput) -> _Candidate:
-        target = 1 if context.emotion_intensity < 0.55 else (
-            2 if context.emotion_intensity < 0.86 else 3
+        target = 1 if context.emotion_intensity < ANGER_LEVEL_1_THRESHOLD else (
+            2 if context.emotion_intensity < ANGER_LEVEL_2_THRESHOLD else 3
         )
         if context.speech in _SPEECH_ACTIVE:
             target = min(target, 1)
@@ -270,7 +279,7 @@ class BehaviorDirector:
                 f"{side}-neutral",
                 f"{side}-045",
                 "displeased-speaking" if speaking else (
-                    "hurt-controlled" if target >= 2 else "displeased"
+                    "hurt-controlled" if target >= BACK_DEPTH_TWO_THIRDS else "displeased"
                 ),
                 "relaxed",
                 "relaxed",
@@ -281,7 +290,7 @@ class BehaviorDirector:
                 True,
                 f"anger-side-{side}",
             )
-        if next_depth == 2:
+        if next_depth == BACK_DEPTH_TWO_THIRDS:
             return _Candidate(
                 f"back-two-thirds-{self._back_side}",
                 f"back-{self._back_side}-120",
@@ -311,7 +320,7 @@ class BehaviorDirector:
 
     def _recovery_candidate(self, context: BehaviorInput) -> _Candidate:
         next_depth = max(0, self._back_depth - 1)
-        if next_depth == 2:
+        if next_depth == BACK_DEPTH_TWO_THIRDS:
             return _Candidate(
                 f"back-two-thirds-{self._back_side}",
                 f"back-{self._back_side}-120",
@@ -375,7 +384,7 @@ class BehaviorDirector:
 
     def _ambient_candidate(self, context: BehaviorInput, now: int) -> _Candidate:
         del now
-        if not context.user_present or context.away_seconds >= 30:
+        if not context.user_present or context.away_seconds >= AWAY_SECONDS_THRESHOLD:
             return _Candidate(
                 "front-crossed", "front-000", "idle", "relaxed", "relaxed",
                 GazeTarget.DOWN, BreathStyle.CALM, TransitionStyle.SOFT,

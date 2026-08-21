@@ -12,6 +12,9 @@ lazy from domain.emotional_resonance import (
     EmotionalResonanceState,
 )
 
+RESONANCE_HALF_THRESHOLD = 0.5
+RESONANCE_DECAY_THRESHOLD = 0.1
+
 
 def test_resonance_starts_at_rest() -> None:
     state = EmotionalResonanceState()
@@ -25,7 +28,7 @@ def test_resonance_rises_with_brow_tension_and_typing() -> None:
     # A furrowed brow plus fast typing drives resonance toward 1.0.
     for step in range(20):
         state.update(brow_tension=0.9, typing_rate_kps=8.0, now=float(step))
-    assert state.resonance > 0.5
+    assert state.resonance > RESONANCE_HALF_THRESHOLD
     assert state.breath_period() < BREATH_PERIOD_REST
     assert state.blink_interval() < BLINK_INTERVAL_REST
 
@@ -34,7 +37,7 @@ def test_resonance_eases_smoothly_without_snapping() -> None:
     state = EmotionalResonanceState()
     # A single agitated sample must not snap the resonance to full.
     first = state.update(brow_tension=0.9, typing_rate_kps=8.0, now=0.0)
-    assert first < 0.5, "resonance must ease in, not snap"
+    assert first < RESONANCE_HALF_THRESHOLD, "resonance must ease in, not snap"
     # Over many samples it approaches but never exceeds 1.0.
     for step in range(100):
         level = state.update(brow_tension=0.9, typing_rate_kps=8.0, now=float(step))
@@ -45,11 +48,11 @@ def test_resonance_decays_back_to_rest() -> None:
     state = EmotionalResonanceState()
     for step in range(20):
         state.update(brow_tension=0.9, typing_rate_kps=8.0, now=float(step))
-    assert state.resonance > 0.5
+    assert state.resonance > RESONANCE_HALF_THRESHOLD
     # Calm inputs ease the resonance back down.
     for step in range(200):
         state.update(brow_tension=0.0, typing_rate_kps=0.0, now=20.0 + float(step))
-    assert state.resonance < 0.1
+    assert state.resonance < RESONANCE_DECAY_THRESHOLD
     assert state.breath_period() > BREATH_PERIOD_AGITATED
 
 

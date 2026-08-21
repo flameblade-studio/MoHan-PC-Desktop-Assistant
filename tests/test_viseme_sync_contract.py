@@ -24,6 +24,11 @@ lazy from lip_sync import (
     infer_vowel_pcm16,
 )
 
+EXPECTED_VOWEL_CHANGE_LATENCY = 0.101
+EXPECTED_SUSTAIN_CHANGE_LATENCY = 0.061
+EXPECTED_CONSONANT_LATENCY = 0.021
+BLINK_REMAINDER = 4
+
 
 class CueDriver:
     def __init__(self, window: CompanionWindow, clock: list[float]) -> None:
@@ -85,7 +90,7 @@ def _assert_initial_open(window: CompanionWindow, cue: CueDriver) -> None:
         assert window.viseme_dynamics.current == "E"
     cue("A")
     assert window.viseme_dynamics.current == "A"
-    assert cue.clock[0] <= 0.101
+    assert cue.clock[0] <= EXPECTED_VOWEL_CHANGE_LATENCY
     assert window.mouth_transition_duration == VISEME_CHANGE_TRANSITION_SECONDS
 
 
@@ -105,7 +110,7 @@ def _assert_sustain_and_vowel_change(
     assert window.viseme_dynamics.current == "A"
     cue("O")
     assert window.viseme_dynamics.current == "O"
-    assert cue.clock[0] - vowel_change_started <= 0.061
+    assert cue.clock[0] - vowel_change_started <= EXPECTED_SUSTAIN_CHANGE_LATENCY
 
 
 def _assert_consonant_and_close(
@@ -118,7 +123,7 @@ def _assert_consonant_and_close(
     consonant_started = cue.clock[0]
     cue("CONSONANT", 0.35)
     assert window.viseme_dynamics.current == "CONSONANT"
-    assert cue.clock[0] - consonant_started <= 0.021
+    assert cue.clock[0] - consonant_started <= EXPECTED_CONSONANT_LATENCY
     cue("CLOSED", 0.0)
     assert window.viseme_dynamics.current == "CONSONANT"
     cue("CLOSED", 0.0)
@@ -158,7 +163,7 @@ def _assert_long_mixed_stream(
         cue(vowel, _random_level(vowel, generator))
         if index % 113 == 0 and not window.speech_blinking:
             window._blink()
-        if window.speech_blinking and index % 113 == 4:
+        if window.speech_blinking and index % 113 == BLINK_REMAINDER:
             window._finish_speaking_blink(window.blink_generation)
         assert window.viseme_dynamics.current in valid_states
         assert not window.speech_visual_pixmap.isNull()

@@ -81,7 +81,7 @@ class CloudHealthWorker(QRunnable):
                 name = futures[future]
                 try:
                     results[name] = {"ok": True, "detail": future.result()}
-                except Exception as exc:  # noqa: BLE001 -- isolate each health probe
+                except Exception as exc:
                     results[name] = {
                         "ok": False,
                         "detail": safe_error_message(
@@ -117,7 +117,7 @@ class CloudHealthWorker(QRunnable):
                         "detail": str(identity),
                     }
                 }
-            except Exception as exc:  # noqa: BLE001 -- cloud probe returns diagnostics
+            except Exception as exc:
                 results = {
                     PROVIDERS[self.provider_id].display_name: {
                         "ok": False,

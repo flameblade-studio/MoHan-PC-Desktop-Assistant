@@ -11,12 +11,19 @@ lazy from domain.companion_animation_contract import (
     EXPRESSION_DERIVED_VISEME_FRAMES,
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_FRAMES,
+    PHYSICS_FRAME_INTERVAL_MS,
     PHYSICS_POSE_SUFFIXES,
     PHYSICS_SPEECH_FRAME_PREFIXES,
 )
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = ("CompanionVisualPhysicsMethods",)
+
+# Physics-layer redraw thresholds (radians) to avoid redundant repaints.
+SLEEVE_ANGLE_EPSILON = 0.012
+BREATH_LIFT_EPSILON = 0.08
+HAIR_ANGLE_EPSILON = 0.025
+ORNAMENT_ANGLE_EPSILON = 0.04
 
 
 class CompanionVisualPhysicsMethods:
@@ -39,7 +46,7 @@ class CompanionVisualPhysicsMethods:
         self._reset_physics_dynamics()
         self.physics_timer = QTimer(self)
         self.physics_timer.timeout.connect(self._physics_tick)
-        self.physics_timer.start(33)
+        self.physics_timer.start(PHYSICS_FRAME_INTERVAL_MS)
 
     def _physics_enabled(self, key: str) -> bool:
         return bool(self.physics_features.get(key, True))
@@ -389,9 +396,9 @@ class CompanionVisualPhysicsMethods:
         previous = self.last_rendered_sleeves
         if (
             not force
-            and abs(current[0] - previous[0]) < 0.012
-            and abs(current[1] - previous[1]) < 0.012
-            and abs(current[2] - previous[2]) < 0.08
+            and abs(current[0] - previous[0]) < SLEEVE_ANGLE_EPSILON
+            and abs(current[1] - previous[1]) < SLEEVE_ANGLE_EPSILON
+            and abs(current[2] - previous[2]) < BREATH_LIFT_EPSILON
         ):
             return
         pose = getattr(self, "active_physics_pose", "front")
@@ -431,8 +438,8 @@ class CompanionVisualPhysicsMethods:
         previous = self.last_rendered_hair_angles
         if (
             not force
-            and abs(current[0] - previous[0]) < 0.025
-            and abs(current[1] - previous[1]) < 0.025
+            and abs(current[0] - previous[0]) < HAIR_ANGLE_EPSILON
+            and abs(current[1] - previous[1]) < HAIR_ANGLE_EPSILON
         ):
             return
         pose = getattr(self, "active_physics_pose", "front")
@@ -467,7 +474,7 @@ class CompanionVisualPhysicsMethods:
         pose = getattr(self, "active_physics_pose", "front")
         if (
             not force
-            and abs(self.ornament_angle - self.last_rendered_ornament_angle) < 0.04
+            and abs(self.ornament_angle - self.last_rendered_ornament_angle) < ORNAMENT_ANGLE_EPSILON
         ):
             return
         source = self._local_physics_source(

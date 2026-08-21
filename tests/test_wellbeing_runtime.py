@@ -30,6 +30,8 @@ lazy from wellbeing_runtime import (
     WellbeingRuntimeError,
 )
 
+EXPECTED_VARIATION_INDEX = 7
+
 
 class MemorySettings:
     def __init__(self) -> None:
@@ -95,7 +97,7 @@ def assert_four_kinds_decide_without_side_effects() -> None:
         assert cue.cue.kind is kind
         assert cue.cue.stage is ReminderStage.INITIAL
         assert cue.line_key == f"wellbeing.{kind.value}.initial"
-        assert cue.variation_index == 7
+        assert cue.variation_index == EXPECTED_VARIATION_INDEX
     assert settings.writes == 0
 
 

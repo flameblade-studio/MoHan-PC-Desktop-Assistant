@@ -11,6 +11,9 @@ lazy from domain.favor_exclusive import (
     FavorExclusiveState,
 )
 
+EXPECTED_DEVOTED_THRESHOLD = 0.7
+EXPECTED_TOLERANCE_AT_HALF_FAVOR = 0.5
+
 
 def test_favor_starts_at_zero() -> None:
     state = FavorExclusiveState()
@@ -38,14 +41,14 @@ def test_favor_decays_slowly() -> None:
 
 
 def test_devoted_threshold() -> None:
-    assert FAVOR_DEVOTED_THRESHOLD == 0.7
+    assert FAVOR_DEVOTED_THRESHOLD == EXPECTED_DEVOTED_THRESHOLD
     assert FavorExclusiveState(favor=0.71).is_devoted
     assert not FavorExclusiveState(favor=0.69).is_devoted
 
 
 def test_tolerance_tracks_favor() -> None:
     state = FavorExclusiveState(favor=0.5)
-    assert state.tolerance(now=0.0) == 0.5
+    assert state.tolerance(now=0.0) == EXPECTED_TOLERANCE_AT_HALF_FAVOR
 
 
 def run() -> None:

@@ -20,6 +20,8 @@ lazy from pose_atlas_release_gate import (
 )
 lazy from pose_runtime_loader import PoseAtlasManifest, PoseViewSpec
 
+VIEW_COUNT = 24
+
 
 @dataclass(frozen=True)
 class Report:
@@ -104,7 +106,7 @@ def assert_complete_evidence_is_releasable_and_deterministic() -> None:
     first = gate()
     second = gate()
     assert first.releasable
-    assert len(first.views) == 24
+    assert len(first.views) == VIEW_COUNT
     assert first.issues == ()
     assert first.to_json() == second.to_json()
     payload = json.loads(first.to_json())

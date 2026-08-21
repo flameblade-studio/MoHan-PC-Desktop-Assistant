@@ -71,12 +71,18 @@ class FaceMotionFrame:
     viseme: Viseme
     mouth: MouthShape
     expression_shape: ExpressionShape
+    gaze_x: float = 0.0
+    gaze_y: float = 0.0
+    breath: float = 0.0
 
     def clamped(self) -> FaceMotionFrame:
         return replace(
             self,
             mouth=self.mouth.clamped(),
             expression_shape=self.expression_shape.clamped(),
+            gaze_x=_signed_unit(self.gaze_x),
+            gaze_y=_signed_unit(self.gaze_y),
+            breath=_unit(self.breath),
         )
 
 

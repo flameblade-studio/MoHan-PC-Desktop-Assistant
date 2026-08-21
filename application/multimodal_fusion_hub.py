@@ -5,6 +5,7 @@ lazy from collections.abc import Callable, Mapping, Sequence
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 
+lazy from domain.constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.air_interaction import (
     AirHandSample,
     AirInteractionConfig,
@@ -14,6 +15,10 @@ lazy from domain.air_interaction import (
 )
 
 FACE_MESH_LANDMARKS = frozenset({468, 478})
+FACEMESH_POINT_COUNT = 478
+SMILE_THRESHOLD = 0.35
+GAZE_THRESHOLD = 0.35
+BROW_TENSION_THRESHOLD = 0.55
 
 
 class FaceExpression(StrEnum):
@@ -272,15 +277,15 @@ class MultimodalFusionHub:
         )
         expression = (
             FaceExpression.SMILE_LIKE
-            if smile_score >= 0.35
+            if smile_score >= SMILE_THRESHOLD
             else FaceExpression.NEUTRAL
         )
         gaze_x, gaze_y, gaze_confidence = _iris_gaze(points)
         gaze_state = (
             GazeState.UNKNOWN
-            if gaze_confidence == 0.0
+            if gaze_confidence < FLOAT_COMPARISON_EPSILON
             else GazeState.SCREEN_LIKE
-            if abs(gaze_x) <= 0.35 and abs(gaze_y) <= 0.35
+            if abs(gaze_x) <= GAZE_THRESHOLD and abs(gaze_y) <= GAZE_THRESHOLD
             else GazeState.AWAY
         )
         chin = points[152]
@@ -362,7 +367,7 @@ class MultimodalFusionHub:
                 events.append("looking-at-character")
             if face.chin_resting:
                 events.append("resting-chin")
-            if face.brow_tension >= 0.55:
+            if face.brow_tension >= BROW_TENSION_THRESHOLD:
                 events.append("brow-tension-like")
         if voice.state is VoiceActivityState.ACTIVE:
             events.append("voice-active")
@@ -374,7 +379,7 @@ class MultimodalFusionHub:
 def _iris_gaze(
     points: tuple[FaceMeshPoint, ...],
 ) -> tuple[float, float, float]:
-    if len(points) != 478:
+    if len(points) != FACEMESH_POINT_COUNT:
         return 0.0, 0.0, 0.0
     left_iris = _centroid(points[468:473])
     right_iris = _centroid(points[473:478])

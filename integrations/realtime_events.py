@@ -22,6 +22,8 @@ lazy from integrations.realtime_contracts import (
 
 __all__ = ("RealtimeEventMethods",)
 
+MAX_TERMINAL_RESPONSES = 256
+
 class RealtimeEventMethods:
     def _handle_audio_delta(self, event: dict[str, Any]) -> None:
         if not self.native_audio_output:
@@ -446,7 +448,7 @@ class RealtimeEventMethods:
     def _remember_terminal_response_locked(self, response_id: str) -> None:
         if not response_id or response_id in self._terminal_response_ids:
             return
-        if len(self._terminal_response_order) >= 256:
+        if len(self._terminal_response_order) >= MAX_TERMINAL_RESPONSES:
             oldest = self._terminal_response_order.popleft()
             self._terminal_response_ids.discard(oldest)
         self._terminal_response_order.append(response_id)

@@ -28,6 +28,11 @@ lazy from domain.lip_sync import (
     VisemeFrame,
 )
 lazy from presentation.companion_face_assets import CompanionFaceAssetMethods
+
+POSE_SWITCH_PROBABILITY = 0.55
+BLINK_PROBABILITY = 0.16
+MOUTH_CLOSED_THRESHOLD = 0.01
+MOUTH_OPEN_THRESHOLD = 0.05
 lazy from presentation.presentation_resources import FaceRenderLayers
 
 __all__ = ("CompanionFaceAnimationMixin",)
@@ -106,7 +111,7 @@ class CompanionFaceAnimationMixin:
         if self.state == "idle":
             if self.idle_pose == "cheek":
                 self.idle_pose = random.choice(["lean", "front"])
-            elif self.idle_pose == "lean" and random.random() < 0.55:
+            elif self.idle_pose == "lean" and random.random() < POSE_SWITCH_PROBABILITY:
                 self.idle_pose = "front"
             else:
                 self.idle_pose = "cheek"
@@ -131,6 +136,16 @@ class CompanionFaceAnimationMixin:
 
     def _blink(self) -> None:
         if getattr(self, "pose_transition_active", False):
+            self._schedule_blink()
+            return
+        if getattr(self, "_adaptive_full_body_active", False):
+            # The v4 full-body composition owns the canvas and renders its own
+            # eyelids from the continuous ``blink_opacity`` stamped onto the
+            # face-motion frame.  Running the legacy half-body blink composite
+            # here would overwrite the full-body photograph with a half-body
+            # blink patch (the reported double image).  Drive the blink through
+            # the live-state refresh instead.
+            self._full_body_blink()
             self._schedule_blink()
             return
         self.blink_generation += 1
@@ -205,6 +220,24 @@ class CompanionFaceAnimationMixin:
             )
         self._schedule_blink()
 
+    def _full_body_blink(self) -> None:
+        """Blink via the full-body renderer (mutate ``blink_opacity`` only)."""
+        self.blink_generation = getattr(self, "blink_generation", 0) + 1
+        generation = self.blink_generation
+        self._set_full_body_blink(generation, 0.45)
+        QTimer.singleShot(32, lambda: self._set_full_body_blink(generation, 1.0))
+        QTimer.singleShot(92, lambda: self._set_full_body_blink(generation, 0.42))
+        QTimer.singleShot(
+            random.randint(118, 145),
+            lambda: self._set_full_body_blink(generation, 0.0),
+        )
+
+    def _set_full_body_blink(self, generation: int, opacity: float) -> None:
+        if generation != self.blink_generation:
+            return
+        self.blink_opacity = opacity
+        self._refresh_full_body()
+
     def _advance_idle_blink(
         self,
         base_expression: str,
@@ -265,7 +298,7 @@ class CompanionFaceAnimationMixin:
         self.blink_opacity = 0.0
         self._render_attention_layers(force=True)
         self._attention_tick()
-        if random.random() < 0.16:
+        if random.random() < BLINK_PROBABILITY:
             QTimer.singleShot(170, self._blink)
 
     def _finish_speaking_blink(
@@ -292,6 +325,13 @@ class CompanionFaceAnimationMixin:
             or self.speech_blinking
         ):
             return False
+        if getattr(self, "_adaptive_full_body_active", False):
+            # The full-body renderer has a single continuous blink value and no
+            # per-eye wink layer, so a deliberate wink degrades to a full blink
+            # driven through the live-state refresh instead of a half-body wink
+            # patch that would overwrite the full-body photograph.
+            self._full_body_blink()
+            return True
         base_expression = self.current_expression
         render_base = self._render_base_expression()
         if render_base not in self.physics_expression_poses:
@@ -796,17 +836,11 @@ class CompanionFaceAnimationMixin:
         self._compose_character_position()
 
     def _audio_viseme_cue(self, level: float, vowel: str) -> None:
-        if getattr(self, "_adaptive_full_body_active", False):
-            # The v4 full-body composition renders its own speech mouth from
-            # speech-performance events.  The legacy viseme path must not run
-            # in parallel: it would reset the ownership flag and let the
-            # suppressed half-body overlays return, stacking a second body over
-            # the full-body frame (the reported double image).
-            return
         if (
             self.state != "speaking"
             or not self.audio_driven_mouth
-            or self.mouth_closing
+            or getattr(self, "mouth_closing", False)
+            or getattr(self, "viseme_dynamics", None) is None
         ):
             return
         # A live viseme owns the full photographed face. Remove any gaze
@@ -827,6 +861,14 @@ class CompanionFaceAnimationMixin:
             expression=motion_expression,
             blink=1.0 if self.speech_blinking else 0.0,
         )
+        if getattr(self, "_adaptive_full_body_active", False):
+            # The v4 full-body composition renders its own speech mouth from
+            # the continuous ``face_motion_frame`` produced above.  The legacy
+            # half-body mouth patch and head-motion path must not run in
+            # parallel: it would reset the ownership flag and let the
+            # suppressed half-body overlays return, stacking a second body over
+            # the full-body frame (the reported double image).
+            return
         self.mouth_frame_index = frame.frame_index
         self.mouth_open = frame.mouth_open
         self.speech_current_expression = expression
@@ -867,7 +909,7 @@ class CompanionFaceAnimationMixin:
         aperture: float,
     ) -> QPixmap:
         closed = self.expression_pixmaps[self.speech_closed_expression]
-        if expression == self.speech_closed_expression or aperture <= 0.01:
+        if expression == self.speech_closed_expression or aperture <= MOUTH_CLOSED_THRESHOLD:
             return QPixmap(closed)
         source = self.expression_pixmaps[expression]
         suffix = self._active_speech_pose_suffix()
@@ -961,8 +1003,8 @@ class CompanionFaceAnimationMixin:
             expression,
             next_aperture,
         )
-        opening = previous_aperture <= 0.05 < next_aperture
-        closing = next_aperture <= 0.05 < previous_aperture
+        opening = previous_aperture <= MOUTH_OPEN_THRESHOLD < next_aperture
+        closing = next_aperture <= MOUTH_OPEN_THRESHOLD < previous_aperture
         self.mouth_transition_duration = (
             VISEME_OPEN_TRANSITION_SECONDS
             if opening

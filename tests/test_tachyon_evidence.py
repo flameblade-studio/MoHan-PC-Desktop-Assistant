@@ -20,6 +20,12 @@ lazy from tools.profile_mohan_tachyon import (
     _top_frames,
 )
 
+EXPECTED_MISSED_SAMPLES = 25.0
+EXPECTED_MISSED_PERCENT = 2.5
+EXPECTED_TOTAL_SAMPLES = 100
+EXPECTED_FRAME_COUNT = 2
+EXPECTED_FAILURE_COUNT = 6
+
 
 def test_capture_statistics_support_current_and_legacy_output() -> None:
     current = _capture_statistics(
@@ -44,8 +50,8 @@ def test_capture_statistics_support_current_and_legacy_output() -> None:
         "missed 25 samples while sampling (2.50%)",
         2.0,
     )
-    assert legacy["missed_samples"] == 25.0
-    assert legacy["missed_samples_percent"] == 2.5
+    assert legacy["missed_samples"] == EXPECTED_MISSED_SAMPLES
+    assert legacy["missed_samples_percent"] == EXPECTED_MISSED_PERCENT
     assert legacy["sample_read_error_percent"] is None
 
 
@@ -112,8 +118,8 @@ def test_chunked_tachyon_tables_and_aggregates() -> None:
     ]
 
     total_samples, frames = _frame_statistics(records)
-    assert total_samples == 100
-    assert len(frames) == 2
+    assert total_samples == EXPECTED_TOTAL_SAMPLES
+    assert len(frames) == EXPECTED_FRAME_COUNT
     assert {frame.path for frame in frames} == {
         "<project>/integrations/speech.py",
         "<project>/domain/expression_system.py",
@@ -198,7 +204,7 @@ def test_quality_gate_requires_samples_low_error_and_jit() -> None:
         },
         {"exit_code": 1, "jit_available": False, "jit_enabled": False},
     )
-    assert len(failing) == 6
+    assert len(failing) == EXPECTED_FAILURE_COUNT
     assert any("below minimum" in item for item in failing)
     assert any("sample-read error" in item for item in failing)
     assert any("missed samples" in item for item in failing)

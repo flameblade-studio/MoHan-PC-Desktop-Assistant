@@ -10,6 +10,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from integrations.speech import play_pcm16_stream_with_visemes
 
+EXPECTED_CUE_COUNT = 4
+
 
 class FakeOutputStream:
     writes: ClassVar[list[bytes]] = []
@@ -61,7 +63,7 @@ def run() -> None:
     assert first_audio == [True]
     assert [len(chunk) for chunk in FakeOutputStream.writes] == [960, 960, 480]
     assert cues[-1] == (0.0, "CLOSED")
-    assert len(cues) == 4
+    assert len(cues) == EXPECTED_CUE_COUNT
     print("AZURE_AUDIO_STREAMING_OK")
 
 

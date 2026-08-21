@@ -89,7 +89,7 @@ def main() -> int:
             ("color", "彩色桌布"),
         )
         poses = ("托腮姿勢", "倚靠姿勢", "正面姿勢")
-        for row, (pose_label, captured) in enumerate(zip(poses, captures)):
+        for row, (pose_label, captured) in enumerate(zip(poses, captures, strict=False)):
             for index, (kind, label) in enumerate(backgrounds):
                 x = margin + index * (cell_width + margin)
                 y = (

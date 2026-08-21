@@ -18,6 +18,9 @@ lazy from behavior_director import (
     TransitionStyle,
 )
 
+PAIR_LENGTH = 2
+MIN_HOLD_MS = 2_200
+
 
 class Clock:
     def __init__(self) -> None:
@@ -82,7 +85,7 @@ def assert_deterministic_and_seeded_variation() -> None:
         BehaviorDirector(clock=lambda: 0.0, seed=seed).direct(context()).pose
         for seed in range(12)
     }
-    assert len(variants) >= 2
+    assert len(variants) >= PAIR_LENGTH
     assert variants <= {
         "front-crossed",
         "left-neutral",
@@ -185,7 +188,7 @@ def assert_minimum_hold_prevents_twitch_and_then_varies() -> None:
     third = director.direct(
         context(emotion=SemanticEmotion.HAPPY, intensity=0.9)
     )
-    assert third.hold_ms >= 2_200
+    assert third.hold_ms >= MIN_HOLD_MS
     assert third.face == "gentle-smile"
 
 

@@ -14,6 +14,8 @@ lazy from companion_proactivity_preferences import (
     import_companion_proactivity_preferences,
 )
 
+DAILY_LIMIT = 8
+
 
 def assert_defaults_are_public_neutral_and_safe() -> None:
     preferences = CompanionProactivityPreferences()
@@ -29,7 +31,7 @@ def assert_defaults_are_public_neutral_and_safe() -> None:
     assert preferences.focus_protection_enabled is True
     assert preferences.meeting_protection_enabled is True
     assert preferences.fullscreen_protection_enabled is True
-    assert preferences.daily_limit == 8
+    assert preferences.daily_limit == DAILY_LIMIT
     assert "title" not in repr(preferences).lower()
     assert "phrase" not in repr(preferences).lower()
 

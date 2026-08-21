@@ -27,6 +27,9 @@ lazy from vision_domain import (
     SceneUnderstanding,
 )
 
+EXPECTED_SUPPRESSED_CLAIMS = 5
+EXPECTED_OBSERVED_AT = 1234.5
+
 
 def claim(
     text: str,
@@ -82,7 +85,7 @@ def assert_low_confidence_and_sensitive_exact_claims_are_suppressed() -> None:
     )
     assert interpreted.facts == ()
     assert interpreted.increment.objects == ()
-    assert interpreted.suppressed_claims == 5
+    assert interpreted.suppressed_claims == EXPECTED_SUPPRESSED_CLAIMS
     offers = [
         candidate
         for candidate in interpreted.interaction_candidates
@@ -112,12 +115,12 @@ def assert_local_verified_identity_timestamp_and_evidence_win() -> None:
     )
     merged = CloudSceneInterpreter().merge(
         local,
-        local_observed_at=1234.5,
+        local_observed_at=EXPECTED_OBSERVED_AT,
         cloud=cloud,
     )
     assert merged.scene.identity is owner
     assert merged.scene.objects == (local_laptop,)
-    assert merged.observed_at == 1234.5
+    assert merged.observed_at == EXPECTED_OBSERVED_AT
     assert all(fact.label != "laptop" for fact in merged.cloud_facts)
     assert merged.scene.activities == ("at_computer",)
 

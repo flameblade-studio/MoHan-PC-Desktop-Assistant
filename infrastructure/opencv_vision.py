@@ -34,6 +34,12 @@ COCO_LABELS = (
     "scissors", "teddy bear", "hair drier", "toothbrush",
 )
 
+YUNET_POINT_COUNT = 5
+YUNET_MIN_VALUES = 14
+MAX_DETECTION_CANDIDATES = 1000
+TWO_DIMENSIONAL = 2
+THREE_DIMENSIONAL = 3
+
 
 class OpenCVDependencyError(RuntimeError):
     """The installed OpenCV runtime cannot satisfy the vision adapter contract."""
@@ -108,7 +114,7 @@ class OpenCVFrameEvidence:
     lip_region: LipRegion | None = None
 
     def __post_init__(self) -> None:
-        if self.sparse_face_landmarks is not None and len(self.sparse_face_landmarks) != 5:
+        if self.sparse_face_landmarks is not None and len(self.sparse_face_landmarks) != YUNET_POINT_COUNT:
             raise ValueError("YuNet sparse evidence must contain exactly five points.")
         if self.lip_region is not None and self.sparse_face_landmarks is None:
             raise ValueError("Lip evidence requires one detected face.")
@@ -217,7 +223,7 @@ def yunet_single_face_geometry(
     if width <= 0 or height <= 0:
         raise ValueError("source dimensions must be positive")
     values = tuple(float(value) for value in face)
-    if len(values) < 14 or not all(math.isfinite(value) for value in values):
+    if len(values) < YUNET_MIN_VALUES or not all(math.isfinite(value) for value in values):
         raise ValueError("invalid YuNet face evidence")
     left, top, box_width, box_height = values[:4]
     if box_width <= 0.0 or box_height <= 0.0:
@@ -246,7 +252,7 @@ def yunet_lip_region(
 ) -> LipRegion:
     """Derive a conservative touch target from YuNet's two mouth corners."""
 
-    if len(landmarks) != 5 or width <= 0 or height <= 0:
+    if len(landmarks) != YUNET_POINT_COUNT or width <= 0 or height <= 0:
         raise ValueError("invalid YuNet lip evidence")
     left, right = landmarks[3:5]
     mouth_width = left.distance_to(right)
@@ -318,8 +324,8 @@ class NanoDetDecoder:
         class_score = self._squeeze(class_score)
         box_prediction = self._squeeze(box_prediction)
         if (
-            class_score.ndim != 2
-            or box_prediction.ndim != 2
+            class_score.ndim != TWO_DIMENSIONAL
+            or box_prediction.ndim != TWO_DIMENSIONAL
             or class_score.shape[0] != anchors.shape[0]
             or box_prediction.shape != (anchors.shape[0], 4 * (self._reg_max + 1))
         ):
@@ -331,8 +337,8 @@ class NanoDetDecoder:
             raise ValueError("NanoDet output contains non-finite values")
         probabilities = self._softmax(box_prediction.reshape(-1, self._reg_max + 1))
         distances = (probabilities @ self._project).reshape(-1, 4) * stride
-        if class_score.shape[0] > 1000:
-            selected = class_score.max(axis=1).argsort()[::-1][:1000]
+        if class_score.shape[0] > MAX_DETECTION_CANDIDATES:
+            selected = class_score.max(axis=1).argsort()[::-1][:MAX_DETECTION_CANDIDATES]
             class_score = class_score[selected]
             distances = distances[selected]
             anchors = anchors[selected]
@@ -388,7 +394,7 @@ class NanoDetDecoder:
 
     @staticmethod
     def _squeeze(value: Any) -> Any:
-        return value.squeeze(axis=0) if value.ndim == 3 else value
+        return value.squeeze(axis=0) if value.ndim == THREE_DIMENSIONAL else value
 
     def _softmax(self, value: Any) -> Any:
         shifted = value - value.max(axis=1, keepdims=True)

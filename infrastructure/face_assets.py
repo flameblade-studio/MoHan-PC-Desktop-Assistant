@@ -6,6 +6,8 @@ lazy from pathlib import Path
 
 lazy from domain.face_rig import FacePose
 
+PNG_HEADER_LENGTH = 24
+
 
 @dataclass(frozen=True, slots=True)
 class FaceAssetManifest:
@@ -97,7 +99,7 @@ def validate_face_assets(root: Path) -> tuple[Path, ...]:
 
 def _png_dimensions(path: Path) -> tuple[int, int]:
     with path.open("rb") as source:
-        header = source.read(24)
-    if len(header) != 24 or header[:8] != b"\x89PNG\r\n\x1a\n":
+        header = source.read(PNG_HEADER_LENGTH)
+    if len(header) != PNG_HEADER_LENGTH or header[:8] != b"\x89PNG\r\n\x1a\n":
         raise ValueError(f"invalid face-rig PNG: {path.name}")
     return struct.unpack(">II", header[16:24])

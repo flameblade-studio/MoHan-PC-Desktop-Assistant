@@ -7,6 +7,7 @@ lazy import os
 lazy import sys
 lazy import threading
 lazy from collections.abc import Callable
+lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
@@ -20,6 +21,8 @@ sys.path.insert(0, str(ROOT))
 MAX_COMPATIBILITY_ENTRY_LINES = 200
 MAX_COMPATIBILITY_DEFINITION_LINES = 40
 MAX_IMPLEMENTATION_OWNER_LINES = 1_200
+MINIMUM_AWAY_MINUTES = 7
+CONVERSATION_SILENCE_MINUTES = 31
 
 REQUIRED_PUBLIC_SYMBOLS = frozenset({
     "ASSIST_INTENT_MARKERS",
@@ -54,11 +57,7 @@ REQUIRED_CLASS_SYMBOLS = frozenset({
     "WorkflowEditor",
 })
 EXTRACTED_PUBLIC_OWNER_MODULES = {
-    **{
-        name: "presentation.flagship.shared"
-        for name in REQUIRED_PUBLIC_SYMBOLS
-        - REQUIRED_CLASS_SYMBOLS
-    },
+    **dict.fromkeys(REQUIRED_PUBLIC_SYMBOLS - REQUIRED_CLASS_SYMBOLS, "presentation.flagship.shared"),
     "CloudHealthSignals": "presentation.flagship.cloud_health",
     "CloudHealthWorker": "presentation.flagship.cloud_health",
     "FlagshipControlCenter": "presentation.flagship.control_center",
@@ -123,9 +122,9 @@ class _FailingSecretStoreFactory:
         raise _PartialInitializationProbeError("partial initialization probe")
 
 
+@dataclass(frozen=True, slots=True)
 class _TranslatorProbe:
-    def __init__(self, language: str) -> None:
-        self.language = language
+    language: str
 
 
 def _resolve_export(value: object) -> object:
@@ -370,7 +369,7 @@ def _record_cleanup(
 ) -> object | None:
     try:
         return callback()
-    except Exception as error:  # noqa: BLE001 -- preserve every cleanup failure
+    except Exception as error:
         error.add_note(operation)
         errors.append(error)
         return None
@@ -403,7 +402,7 @@ def _verify_thread_pool_stopped(
         "checking the flagship thread pool",
         thread_pool.activeThreadCount,
     )
-    if active_count not in (None, 0):
+    if active_count not in {None, 0}:
         errors.append(
             AssertionError(
                 f"flagship thread pool retained {active_count} active task(s)"
@@ -750,8 +749,7 @@ def test_legacy_constructor_signatures_remain_compatible() -> None:
     _assert_parameter(center, "db", positional)
     _assert_parameter(center, "data_path", positional)
     _assert_parameter(center, "parent", positional, default=None)
-    _assert_parameter(center, "platform_services", keyword_only, default=None)
-    _assert_parameter(center, "secret_store_factory", keyword_only, default=None)
+    _assert_parameter(center, "dependencies", keyword_only, default=None)
     _assert_parameter(center, "language", keyword_only, default="zh-TW")
     _assert_no_new_required_parameters(
         center,
@@ -759,8 +757,7 @@ def test_legacy_constructor_signatures_remain_compatible() -> None:
             "db",
             "data_path",
             "parent",
-            "platform_services",
-            "secret_store_factory",
+            "dependencies",
             "language",
         }),
     )
@@ -924,7 +921,9 @@ def test_partial_initialization_cleanup_preserves_the_primary_error() -> None:
             partial_center,
             None,
             Path(temporary.name),
-            secret_store_factory=_FailingSecretStoreFactory(),
+            dependencies=flagship_module.ControlCenterDependencies(
+                secret_store_factory=_FailingSecretStoreFactory(),
+            ),
         )
     except _PartialInitializationProbeError as error:
         constructor_error = error
@@ -984,11 +983,16 @@ def _assert_language_settings_round_trip(
         secrets = _MemorySecretStoreFactory()
         platform = _offline_platform(language_root)
 
+        dependencies = importlib.import_module(
+            center_class.__module__
+        ).ControlCenterDependencies
         center = center_class(
             database,
             language_root,
-            platform_services=platform,
-            secret_store_factory=secrets,
+            dependencies=dependencies(
+                platform_services=platform,
+                secret_store_factory=secrets,
+            ),
             language=language,
         )
         open_centers.append(center)
@@ -1007,16 +1011,18 @@ def _assert_language_settings_round_trip(
         reopened = center_class(
             database,
             language_root,
-            platform_services=platform,
-            secret_store_factory=secrets,
+            dependencies=dependencies(
+                platform_services=platform,
+                secret_store_factory=secrets,
+            ),
             language=language,
         )
         open_centers.append(reopened)
         application.processEvents()
         assert reopened.tabs.tabText(0) == task_label
         assert reopened.proactive_mode.currentData() == "active"
-        assert reopened.minimum_away_minutes.value() == 7
-        assert reopened.conversation_silence_minutes.value() == 31
+        assert reopened.minimum_away_minutes.value() == MINIMUM_AWAY_MINUTES
+        assert reopened.conversation_silence_minutes.value() == CONVERSATION_SILENCE_MINUTES
         assert reopened._permission_controls["email_send"].currentData() == "禁止"
         assert database.settings_snapshot() == persisted
     finally:

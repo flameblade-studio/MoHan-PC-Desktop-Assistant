@@ -39,6 +39,12 @@ lazy from application.native_rgba_acceleration import (
 )
 lazy from domain import lip_sync
 
+SHA256_HEX_LENGTH = 64
+SHA256_RAW_LENGTH = 32
+FLOAT_PAIR_LENGTH = 2
+FLOAT_TOLERANCE = 1e-12
+MIN_SCHEDULE_TICKS = 2
+
 EVIDENCE_PATH = Path("docs/release-evidence/native-acceleration-local.json")
 PCM_SAMPLE_RATE = 24_000
 PCM_FRAME_SAMPLES = 480
@@ -74,7 +80,7 @@ def _normalized_sha256(value: str) -> str:
         raw = bytes.fromhex(normalized)
     except ValueError as error:
         raise RuntimeError("Expected validation wheel SHA-256 is invalid.") from error
-    if len(normalized) != 64 or len(raw) != 32:
+    if len(normalized) != SHA256_HEX_LENGTH or len(raw) != SHA256_RAW_LENGTH:
         raise RuntimeError("Expected validation wheel SHA-256 is invalid.")
     return normalized
 
@@ -263,10 +269,10 @@ def _comparison(
 def _float_pair_close(actual: object, expected: object) -> bool:
     if not isinstance(actual, tuple) or not isinstance(expected, tuple):
         return False
-    if len(actual) != 2 or len(expected) != 2:
+    if len(actual) != FLOAT_PAIR_LENGTH or len(expected) != FLOAT_PAIR_LENGTH:
         return False
     return all(
-        abs(float(left) - float(right)) <= 1e-12
+        abs(float(left) - float(right)) <= FLOAT_TOLERANCE
         for left, right in zip(actual, expected, strict=True)
     )
 
@@ -275,7 +281,7 @@ def _viseme_close(actual: object, expected: object) -> bool:
     if not isinstance(actual, tuple) or not isinstance(expected, tuple):
         return False
     return (
-        actual[1] == expected[1] and abs(float(actual[0]) - float(expected[0])) <= 1e-12
+        actual[1] == expected[1] and abs(float(actual[0]) - float(expected[0])) <= FLOAT_TOLERANCE
     )
 
 
@@ -490,7 +496,7 @@ def _schedule_50hz_evidence(
     *,
     tick_count: int,
 ) -> dict[str, object]:
-    if tick_count < 2:
+    if tick_count < MIN_SCHEDULE_TICKS:
         raise ValueError("50 Hz schedule evidence requires at least two ticks.")
     pcm = _pcm_frame(2026081405)
     expected = lip_sync.infer_vowel_pcm16(pcm, PCM_SAMPLE_RATE)
@@ -743,7 +749,7 @@ def main() -> int:
     arguments = parser.parse_args()
     if arguments.small_iterations <= 0 or arguments.large_iterations <= 0:
         parser.error("iteration counts must be positive")
-    if arguments.schedule_ticks < 2:
+    if arguments.schedule_ticks < MIN_SCHEDULE_TICKS:
         parser.error("schedule ticks must be at least two")
     if (
         arguments.output.is_absolute()

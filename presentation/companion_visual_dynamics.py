@@ -27,11 +27,13 @@ lazy from domain.companion_animation_contract import (
     CHARACTER_BASE_Y,
     CHARACTER_CANVAS_WIDTH,
     CHARACTER_IMAGE_SIZE,
+    ATTENTION_FRAME_INTERVAL_MS,
     CHARACTER_SCALE_DEFAULT,
     CHARACTER_SCALE_MAX,
     CHARACTER_SCALE_MIN,
     EXPRESSION_IMAGE_ASSETS,
     EXPRESSION_POSES,
+    IDLE_FRAME_INTERVAL_MS,
     MOTION_FRAME_INTERVAL_MS,
     SPEECH_MOTION_RELEASE_LIMIT,
 )
@@ -44,6 +46,10 @@ lazy from presentation.presentation_resources import application_icon, resource_
 lazy from presentation.ui_localization import ui_text
 
 __all__ = ("CompanionVisualDynamicsMixin",)
+
+MAX_BUBBLE_LENGTH = 230
+GAZE_DISTANCE_THRESHOLD = 1050
+MOTION_ZERO_THRESHOLD = 0.015
 
 
 class CompanionVisualDynamicsMixin:
@@ -366,7 +372,7 @@ class CompanionVisualDynamicsMixin:
 
     def _show_bubble(self, text: str) -> None:
         normalized = text.strip()
-        if len(normalized) > 230:
+        if len(normalized) > MAX_BUBBLE_LENGTH:
             display = normalized[:227].rstrip() + ui_text(
                 profile_setting(self.db, "ui_language"),
                 "bubble_full_content",
@@ -409,7 +415,7 @@ class CompanionVisualDynamicsMixin:
         self._set_expression(self._idle_expression(), fade=False)
         self.idle_timer = QTimer(self)
         self.idle_timer.timeout.connect(self._idle_tick)
-        self.idle_timer.start(90)
+        self.idle_timer.start(IDLE_FRAME_INTERVAL_MS)
         self.pose_timer = QTimer(self)
         self.pose_timer.setSingleShot(True)
         self.pose_timer.timeout.connect(self._rotate_idle_pose)
@@ -469,7 +475,7 @@ class CompanionVisualDynamicsMixin:
         self.mouth_timer.setSingleShot(True)
         self.mouth_timer.timeout.connect(self._mouth_tick)
         self.mouth_visual_timer = QTimer(self)
-        self.mouth_visual_timer.setInterval(16)
+        self.mouth_visual_timer.setInterval(MOTION_FRAME_INTERVAL_MS)
         self.mouth_visual_timer.timeout.connect(self._render_audio_mouth_transition)
         self.speech_finish_timer = QTimer(self)
         self.speech_finish_timer.setSingleShot(True)
@@ -510,7 +516,7 @@ class CompanionVisualDynamicsMixin:
         self.attention_pose = ""
         self.attention_timer = QTimer(self)
         self.attention_timer.timeout.connect(self._attention_tick)
-        self.attention_timer.start(40)
+        self.attention_timer.start(ATTENTION_FRAME_INTERVAL_MS)
 
     def _initialize_service_timers(self) -> None:
         self.reminder_timer = QTimer(self)
@@ -711,13 +717,7 @@ class CompanionVisualDynamicsMixin:
             self.face_overlay.hide()
             self.eye_overlay.hide()
             return
-        if getattr(self, "_adaptive_full_body_active", False):
-            # The v4 full-body frame carries its own photographed face and eyes.
-            # Drawing the legacy gaze/lighting patches above it duplicates the
-            # eyelids and lips, so keep the attention layers out of the stack.
-            self.face_overlay.hide()
-            self.eye_overlay.hide()
-            return
+        full_body = getattr(self, "_adaptive_full_body_active", False)
         active = (
             self.state in {"idle", "speaking"}
             or self._render_base_expression() in EXPRESSION_POSES
@@ -770,7 +770,7 @@ class CompanionVisualDynamicsMixin:
             delta_x = cursor.x() - face_center.x()
             delta_y = cursor.y() - face_center.y()
             distance = math.hypot(delta_x, delta_y)
-            if distance <= 1050:
+            if distance <= GAZE_DISTANCE_THRESHOLD:
                 distance_weight = max(0.0, 1.0 - max(0.0, distance - 720) / 330)
                 self.gaze_target_x = (
                     max(
@@ -795,6 +795,15 @@ class CompanionVisualDynamicsMixin:
         smoothing = 0.15 if active else 0.22
         self.gaze_x += (self.gaze_target_x - self.gaze_x) * smoothing
         self.gaze_y += (self.gaze_target_y - self.gaze_y) * smoothing
+        if full_body:
+            # The full-body frame owns the canvas and renders its own eyes from
+            # the gaze vector computed above.  Keep the legacy gaze/lighting
+            # patches hidden, but re-compose the full body so the iris layers
+            # track the pointer, saccade and shy look-away.
+            self.face_overlay.hide()
+            self.eye_overlay.hide()
+            self._refresh_full_body()
+            return
         if not active:
             self.face_overlay.hide()
             self.eye_overlay.hide()
@@ -854,7 +863,7 @@ class CompanionVisualDynamicsMixin:
             "speech_motion_y",
         ):
             value = getattr(self, attribute)
-            if abs(value) < 0.015:
+            if abs(value) < MOTION_ZERO_THRESHOLD:
                 setattr(self, attribute, 0.0)
         self._compose_character_position()
 

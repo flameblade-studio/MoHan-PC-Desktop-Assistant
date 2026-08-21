@@ -9,6 +9,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from integrations.speech import SpeechListener
 
+MIN_RECORDING_DURATION = 2.8
+MAX_RECORDING_DURATION = 3.1
+MIN_MANUAL_DURATION = 0.9
+MAX_MANUAL_DURATION = 1.1
+
 
 def pcm_block(level: int) -> bytes:
     samples = int(16000 * SpeechListener.RECORD_BLOCK_SECONDS)
@@ -65,8 +70,8 @@ def run() -> None:
         path = listener._record_wav()
         with wave.open(str(path), "rb") as recording:
             duration = recording.getnframes() / recording.getframerate()
-        assert duration >= 2.8, duration
-        assert duration < 3.1, duration
+        assert duration >= MIN_RECORDING_DURATION, duration
+        assert duration < MAX_RECORDING_DURATION, duration
         path.unlink(missing_ok=True)
         path = None
 
@@ -80,7 +85,7 @@ def run() -> None:
             manual_duration = (
                 recording.getnframes() / recording.getframerate()
             )
-        assert 0.9 <= manual_duration <= 1.1, manual_duration
+        assert MIN_MANUAL_DURATION <= manual_duration <= MAX_MANUAL_DURATION, manual_duration
     finally:
         if previous is None:
             sys.modules.pop("sounddevice", None)

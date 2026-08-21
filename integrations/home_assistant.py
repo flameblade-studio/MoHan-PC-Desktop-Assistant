@@ -13,6 +13,13 @@ lazy from domain.safe_error import sanitize_error
 
 HIGH_RISK_DOMAINS = frozenset({"lock", "alarm_control_panel"})
 HEAT_DOMAINS = frozenset({"climate", "water_heater"})
+IPV4_OCTET_COUNT = 4
+PRIVATE_CLASS_A_FIRST_OCTET = 10
+PRIVATE_CLASS_B_FIRST_OCTET = 172
+PRIVATE_CLASS_B_SECOND_OCTET_MIN = 16
+PRIVATE_CLASS_B_SECOND_OCTET_MAX = 31
+LOW_BATTERY_THRESHOLD = 20
+CRITICAL_BATTERY_THRESHOLD = 10
 ALLOWED_SERVICES = frozendict({
     "light": frozenset({"turn_on", "turn_off", "toggle"}),
     "switch": frozenset({"turn_on", "turn_off", "toggle"}),
@@ -71,14 +78,14 @@ class HomeAssistantClient:
     @staticmethod
     def _is_private_host(host: str) -> bool:
         parts = host.split(".")
-        if len(parts) != 4 or not all(part.isdigit() for part in parts):
+        if len(parts) != IPV4_OCTET_COUNT or not all(part.isdigit() for part in parts):
             return False
         values = [int(part) for part in parts]
         return (
-            values[0] == 10
+            values[0] == PRIVATE_CLASS_A_FIRST_OCTET
             or values[:2] == [192, 168]
-            or values[0] == 172
-            and 16 <= values[1] <= 31
+            or values[0] == PRIVATE_CLASS_B_FIRST_OCTET
+            and PRIVATE_CLASS_B_SECOND_OCTET_MIN <= values[1] <= PRIVATE_CLASS_B_SECOND_OCTET_MAX
         )
 
     def _request(
@@ -237,10 +244,10 @@ def home_health_issues(states: list[dict[str, Any]]) -> list[dict[str, str]]:
             battery_value = float(battery)
         except (TypeError, ValueError):
             continue
-        if battery_value < 20:
+        if battery_value < LOW_BATTERY_THRESHOLD:
             issues.append(
                 {
-                    "severity": "warning" if battery_value >= 10 else "critical",
+                    "severity": "warning" if battery_value >= CRITICAL_BATTERY_THRESHOLD else "critical",
                     "entity_id": entity_id,
                     "message": f"{name} 電量只剩 {battery_value:g}%",
                 }

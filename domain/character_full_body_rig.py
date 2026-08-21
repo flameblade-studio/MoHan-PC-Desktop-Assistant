@@ -26,6 +26,23 @@ SOLE_LANDMARK_NAMES = frozenset(
     {"heel_outer", "heel_inner", "toe_inner", "toe_outer"}
 )
 
+# Safe limb-length and joint-angle ranges for the 2.5D body rig.
+MIN_LIMB_LENGTH = 0.05
+MAX_LIMB_LENGTH = 0.40
+MIN_HIP_DEGREES = 55.0
+MAX_HIP_DEGREES = 125.0
+MIN_KNEE_DEGREES = -145.0
+MAX_KNEE_DEGREES = 145.0
+MIN_ANKLE_DEGREES = -55.0
+MAX_ANKLE_DEGREES = 70.0
+MIN_FOOT_CHAIN_LENGTH = 0.03
+MIN_SOLE_AREA = 0.0002
+
+# Foot-direction yaw boundaries (degrees).
+FORWARD_YAW_LIMIT = 45
+RIGHT_YAW_LIMIT = 135
+LEFT_YAW_LIMIT = -135
+
 
 class FootDirection(StrEnum):
     """Semantic facing of a foot in the authored 2.5D view."""
@@ -118,15 +135,15 @@ class LegRig:
     def __post_init__(self) -> None:
         if not _point_is_finite(self.hip):
             raise ValueError("Hip anchor must be finite.")
-        if not 0.05 <= self.thigh_length <= 0.40:
+        if not MIN_LIMB_LENGTH <= self.thigh_length <= MAX_LIMB_LENGTH:
             raise ValueError("Thigh length is outside the safe body range.")
-        if not 0.05 <= self.shin_length <= 0.40:
+        if not MIN_LIMB_LENGTH <= self.shin_length <= MAX_LIMB_LENGTH:
             raise ValueError("Shin length is outside the safe body range.")
-        if not 55.0 <= self.hip_degrees <= 125.0:
+        if not MIN_HIP_DEGREES <= self.hip_degrees <= MAX_HIP_DEGREES:
             raise ValueError("Hip rotation is outside its safe range.")
-        if not -145.0 <= self.knee_degrees <= 145.0:
+        if not MIN_KNEE_DEGREES <= self.knee_degrees <= MAX_KNEE_DEGREES:
             raise ValueError("Knee rotation is outside its safe range.")
-        if not -55.0 <= self.ankle_degrees <= 70.0:
+        if not MIN_ANKLE_DEGREES <= self.ankle_degrees <= MAX_ANKLE_DEGREES:
             raise ValueError("Ankle rotation is outside its safe range.")
 
     @property
@@ -158,7 +175,7 @@ class FootRig:
         if any(not _point_is_finite(point) for point in points):
             raise ValueError("Foot geometry must be finite.")
         travel = Point2D(self.toe.x - self.ankle.x, self.toe.y - self.ankle.y)
-        if _length(travel) < 0.03:
+        if _length(travel) < MIN_FOOT_CHAIN_LENGTH:
             raise ValueError("Foot and toe chain is collapsed.")
         if _dot(travel, _direction_vector(self.direction)) <= 0.0:
             raise ValueError("Foot geometry disagrees with its declared direction.")
@@ -168,7 +185,7 @@ class FootRig:
             "toe_inner",
             "toe_outer",
         ))
-        if abs(_polygon_area(outline)) < 0.0002:
+        if abs(_polygon_area(outline)) < MIN_SOLE_AREA:
             raise ValueError("Shoe sole is not fully visible as a usable surface.")
 
 
@@ -410,11 +427,11 @@ def _view_yaw(view_id: str) -> int:
 
 
 def _foot_direction(yaw: int) -> FootDirection:
-    if -45 <= yaw <= 45:
+    if -FORWARD_YAW_LIMIT <= yaw <= FORWARD_YAW_LIMIT:
         return FootDirection.FORWARD
-    if 45 < yaw < 135:
+    if FORWARD_YAW_LIMIT < yaw < RIGHT_YAW_LIMIT:
         return FootDirection.RIGHT
-    if -135 < yaw < -45:
+    if LEFT_YAW_LIMIT < yaw < -FORWARD_YAW_LIMIT:
         return FootDirection.LEFT
     return FootDirection.BACK
 

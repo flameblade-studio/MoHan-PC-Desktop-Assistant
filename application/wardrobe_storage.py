@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 lazy from dataclasses import dataclass
-lazy from datetime import datetime, timedelta, timezone
+lazy from datetime import UTC, datetime, timedelta
 lazy from pathlib import Path
 
 
@@ -52,11 +52,11 @@ class WardrobeStorageGuard:
         self,
         outfit_store: Path,
         quarantine_root: Path,
-        policy: WardrobeStoragePolicy = WardrobeStoragePolicy(),
+        policy: WardrobeStoragePolicy | None = None,
     ) -> None:
         self.outfit_store = Path(outfit_store)
         self.quarantine_root = Path(quarantine_root)
-        self.policy = policy
+        self.policy = policy or WardrobeStoragePolicy()
 
     def inspect(
         self,
@@ -67,7 +67,7 @@ class WardrobeStorageGuard:
     ) -> WardrobeStorageStatus:
         if now.tzinfo is None or now.utcoffset() is None:
             raise ValueError("Wardrobe storage time must include a timezone.")
-        normalized = now.astimezone(timezone.utc)
+        normalized = now.astimezone(UTC)
         packages = self.outfit_store / "packages"
         installed = (
             len(tuple(packages.glob("generated-*.mohan-outfit")))
@@ -103,7 +103,7 @@ class WardrobeStorageGuard:
         elif (
             not special_occasion
             and last_generated_at is not None
-            and normalized - last_generated_at.astimezone(timezone.utc)
+            and normalized - last_generated_at.astimezone(UTC)
             < self.policy.minimum_generation_interval
         ):
             reason = "generation-cooldown"

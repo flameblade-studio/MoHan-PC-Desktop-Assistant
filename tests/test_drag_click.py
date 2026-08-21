@@ -16,6 +16,8 @@ lazy from companion_window import CompanionWindow
 lazy from dashboard_dialogs import ClickableLabel
 lazy from infrastructure.db import StudioDB
 
+EXPECTED_CLICK_COUNT_AFTER_DRAG = 2
+
 
 def run() -> None:
     app = QApplication([])
@@ -49,7 +51,7 @@ def run() -> None:
         pos=QPoint(50 + small_delta, 50),
     )
     app.processEvents()
-    assert spy.count() == 2
+    assert spy.count() == EXPECTED_CLICK_COUNT_AFTER_DRAG
 
     label.close()
     app.processEvents()

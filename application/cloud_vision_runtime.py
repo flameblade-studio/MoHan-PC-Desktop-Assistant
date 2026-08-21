@@ -21,6 +21,8 @@ lazy from domain.vision_provider_contracts import (
     VisualUnderstanding,
 )
 
+MINUTE_WINDOW_SECONDS = 60.0
+
 
 class CloudVisionStatus(StrEnum):
     SUCCESS = "success"
@@ -342,7 +344,7 @@ class CloudVisionRuntime:
         return None
 
     def _prune_quotas(self, now: float) -> None:
-        while self._minute_requests and now - self._minute_requests[0] >= 60.0:
+        while self._minute_requests and now - self._minute_requests[0] >= MINUTE_WINDOW_SECONDS:
             self._minute_requests.popleft()
         day_start = now - (now % 86_400.0)
         while self._daily_requests and self._daily_requests[0] < day_start:

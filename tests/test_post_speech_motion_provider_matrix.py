@@ -20,6 +20,7 @@ lazy from speech_configuration import QueuedSpeech
 
 COMPLETION_PATHS = ("general", "realtime")
 SCALE_PERCENTAGES = (75, 100, 180)
+STRONG_VISEME_MOTION_THRESHOLD = -2.0
 POSES = ("front", "lean", "cheek")
 FINAL_KINDS = ("idle", "emotion")
 POSE_SUFFIXES = {
@@ -177,7 +178,7 @@ def _drive_strong_visemes(window: CompanionWindow) -> None:
         _sample(window)
     assert window.state == "speaking"
     assert window.audio_driven_mouth
-    assert window.speech_motion_y < -2.0
+    assert window.speech_motion_y < STRONG_VISEME_MOTION_THRESHOLD
     assert window.current_expression != window.speech_closed_expression
 
 

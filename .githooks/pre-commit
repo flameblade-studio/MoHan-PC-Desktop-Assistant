@@ -1,0 +1,31 @@
+，#!/bin/sh
+# MoHan pre-commit hook: reject new magic numbers (PLR2004) and Pyflakes errors.
+#
+# This is a lightweight alternative to the pre-commit framework. Enable it with:
+#   git config core.hooksPath .githooks
+#
+# It runs the same release-blocking ruff gate as CI (ruff.toml `select`),
+# so a commit that introduces a bare magic-number comparison is rejected
+# before it ever reaches a pull request.
+
+set -eu
+
+# Locate ruff. Prefer the project's pinned virtualenv, then fall back to PATH.
+RUFF=""
+for candidate in \
+    ".qt315-compat-full/Scripts/ruff.exe" \
+    ".venv315/Scripts/ruff.exe" \
+    "ruff"; do
+    if command -v "$candidate" >/dev/null 2>&1; then
+        RUFF="$candidate"
+        break
+    fi
+done
+
+if [ -z "$RUFF" ]; then
+    echo "pre-commit: ruff not found; skipping magic-number gate." >&2
+    exit 0
+fi
+
+echo "pre-commit: running ruff (Pyflakes + magic-value-comparison)..." >&2
+"$RUFF" check .

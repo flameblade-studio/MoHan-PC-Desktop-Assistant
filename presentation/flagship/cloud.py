@@ -486,7 +486,7 @@ class FlagshipCloudMixin:
         provider_id = str(self.cloud_provider.currentData())
         try:
             token = self._cloud_token(provider_id)
-        except Exception as exc:  # noqa: BLE001 -- user-visible credential boundary
+        except Exception as exc:
             self.cloud_status.setText(
                 self._t(
                     "測試失敗：{error}",

@@ -14,6 +14,8 @@ lazy from air_interaction import (
 )
 lazy from gesture_intent import HandSide
 
+MIN_PALM_SCALE = 0.17
+
 
 def hand(
     side: HandSide,
@@ -84,7 +86,7 @@ def assert_two_open_palms_trigger_high_five_only_after_stability() -> None:
     assert event is not None
     assert event.kind is AirInteractionKind.HIGH_FIVE
     assert event.side is None
-    assert event.palm_scale > 0.17
+    assert event.palm_scale > MIN_PALM_SCALE
 
 
 def assert_invalid_confidence_and_disabled_detector_fail_closed() -> None:

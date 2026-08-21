@@ -43,6 +43,9 @@ __all__ = (
     "ZoomTextBrowser",
 )
 
+CHAT_HISTORY_PREVIEW_LENGTH = 110
+MAX_CHAT_HISTORY_ITEMS = 500
+
 
 class ClickableLabel(QLabel):
     clicked = Signal()
@@ -604,8 +607,8 @@ class ChatHistoryDialog(QDialog):
             content = " ".join(
                 str(row["content"]).split()
             )
-            if len(content) > 110:
-                content = content[:110] + "…"
+            if len(content) > CHAT_HISTORY_PREVIEW_LENGTH:
+                content = content[:CHAT_HISTORY_PREVIEW_LENGTH] + "…"
             item = QListWidgetItem(
                 ui_text(
                     self.language,
@@ -628,7 +631,7 @@ class ChatHistoryDialog(QDialog):
                 "chat_history_truncated_suffix",
                 "（管理視窗最多顯示最近 500 則）",
             )
-            if total > 500
+            if total > MAX_CHAT_HISTORY_ITEMS
             else ""
         )
         self.history_status.setText(

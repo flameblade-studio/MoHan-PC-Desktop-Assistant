@@ -9,6 +9,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from integrations.azure_voice_catalog import AzureVoiceCatalogService
 
+PAIR_LENGTH = 2
+TRIO_LENGTH = 3
+
 
 class FakeSynthesizer:
     voices: tuple[object, ...] = ()
@@ -135,7 +138,7 @@ def run() -> None:
         hd_only=True,
     )
     assert same_credentials is hd
-    assert FakeSynthesizer.query_count == 2
+    assert FakeSynthesizer.query_count == PAIR_LENGTH
 
     different_credentials = service.query(
         "a-different-secret",
@@ -144,7 +147,7 @@ def run() -> None:
         hd_only=True,
     )
     assert different_credentials is hd
-    assert FakeSynthesizer.query_count == 2
+    assert FakeSynthesizer.query_count == PAIR_LENGTH
 
     service.invalidate("westus2")
     refreshed_credentials = service.query(
@@ -154,7 +157,7 @@ def run() -> None:
         hd_only=True,
     )
     assert refreshed_credentials is not hd
-    assert FakeSynthesizer.query_count == 3
+    assert FakeSynthesizer.query_count == TRIO_LENGTH
 
     cache_representation = repr(service._cache)
     assert "secret-never-cached" not in cache_representation

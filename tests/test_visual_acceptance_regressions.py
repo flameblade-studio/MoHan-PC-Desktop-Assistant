@@ -18,6 +18,8 @@ lazy from companion_animation_contract import (
 )
 lazy from companion_window import CompanionWindow
 
+MIN_CHANGED_PIXELS = 24
+
 
 def changed_pixel_count(first: QImage, second: QImage, rect: QRect) -> int:
     return sum(
@@ -139,7 +141,7 @@ def _assert_left_facing_mouth_replaces_right_corner(
         "mouth_o_lean",
     ):
         frame = window.expression_pixmaps[expression].toImage()
-        assert changed_pixel_count(closed, frame, right_corner) >= 24, (
+        assert changed_pixel_count(closed, frame, right_corner) >= MIN_CHANGED_PIXELS, (
             f"{expression} left the closed-mouth right edge behind"
         )
 

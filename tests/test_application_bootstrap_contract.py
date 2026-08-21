@@ -10,6 +10,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 APP_PATH = PROJECT_ROOT / "app.py"
 BOOTSTRAP_PATH = PROJECT_ROOT / "application" / "application_bootstrap.py"
 SELF_TEST_PATH = PROJECT_ROOT / "application" / "packaged_self_test.py"
+APP_LINE_COUNT = 13
 
 
 def module_tree(path: Path) -> ast.Module:
@@ -52,7 +53,7 @@ def string_literals(tree: ast.AST) -> set[str]:
 
 def test_app_is_exact_thirteen_line_thin_delegate() -> None:
     source = APP_PATH.read_text(encoding="utf-8")
-    assert len(source.splitlines()) == 13
+    assert len(source.splitlines()) == APP_LINE_COUNT
     tree = module_tree(APP_PATH)
     functions = top_level_functions(tree)
     assert set(functions) == {"main"}

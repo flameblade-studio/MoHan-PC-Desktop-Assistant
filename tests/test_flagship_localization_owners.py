@@ -33,6 +33,7 @@ lazy from presentation.flagship.localization_workflows import (
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_LOCALIZATION_OWNER_LINES = 1_200
+TRANSLATION_LANGUAGE_COUNT = 3
 CATALOGS = (
     INTERACTION_TRANSLATIONS,
     WORKFLOW_TRANSLATIONS,
@@ -117,7 +118,7 @@ def test_every_language_preserves_runtime_format_fields() -> None:
 
     for source, translations in FLAGSHIP_TRANSLATIONS.items():
         source_fields = _format_fields(source)
-        assert len(translations) == 3
+        assert len(translations) == TRANSLATION_LANGUAGE_COUNT
         assert all(value.strip() for value in translations)
         assert all(_format_fields(value) == source_fields for value in translations)
 

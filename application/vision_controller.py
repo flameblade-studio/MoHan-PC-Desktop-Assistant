@@ -27,6 +27,8 @@ lazy from infrastructure.opencv_vision import (
     VisionModelPaths,
 )
 
+MAX_CONSECUTIVE_ANALYSIS_FAILURES = 3
+
 # Providers and protected stores are replaceable external boundaries. They can
 # raise implementation-specific Exception subclasses, but process-control
 # BaseException subclasses must always propagate.
@@ -389,7 +391,7 @@ class VisionController(QObject):
             return
         self._busy = False
         self._consecutive_analysis_failures += 1
-        if self._consecutive_analysis_failures < 3:
+        if self._consecutive_analysis_failures < MAX_CONSECUTIVE_ANALYSIS_FAILURES:
             return
         self._enabled = False
         self._provider = None

@@ -8,8 +8,36 @@ lazy from enum import StrEnum
 lazy from itertools import pairwise
 lazy from operator import itemgetter
 
+lazy from domain.constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.gesture_configuration import GestureLandmark, GestureSample
 lazy from domain.gesture_intent import HandSide
+
+# Hand-skeleton validation bounds.
+LANDMARK_COUNT = 21
+MIN_Z = -8.0
+MAX_Z = 8.0
+MIN_HAND_SCALE = 1e-6
+
+# Static-gesture debounce thresholds.
+MINIMUM_FRAMES = 3
+MINIMUM_DURATION = 0.18
+MIN_CONFIDENCE_LOWER_BOUND = 0.5
+DEFAULT_MINIMUM_CONFIDENCE = 0.72
+
+# Wave-gesture detection thresholds.
+MIN_WAVE_MOVEMENT = 0.035
+MIN_WAVE_REVERSALS = 2
+MIN_WAVE_FRAMES = 4
+SIGNIFICANT_WAVE_MOVEMENT = 0.018
+MIN_SIGNIFICANT_MOVEMENTS = 3
+MIN_WAVE_SPAN = 0.045
+
+# Built-in gesture classification thresholds.
+THUMB_EXTENDED_RATIO = 0.42
+FULL_EXTENDED_FINGERS = 4
+THUMB_UP_THRESHOLD = -0.72
+THUMB_DOWN_THRESHOLD = 0.72
+POINT_HORIZONTAL_THRESHOLD = 0.78
 
 
 class GestureId(StrEnum):
@@ -41,7 +69,7 @@ class HandSkeleton:
             raise ValueError("Gesture observation time must be finite.")
         if not isinstance(self.side, HandSide):
             raise TypeError("Gesture hand side must be canonical.")
-        if len(self.landmarks) != 21:
+        if len(self.landmarks) != LANDMARK_COUNT:
             raise ValueError("Gesture recognition requires exactly 21 landmarks.")
         if any(
             not 0.0 <= coordinate <= 1.0
@@ -50,11 +78,11 @@ class HandSkeleton:
         ):
             raise ValueError("Gesture x/y landmarks must be normalized to [0, 1].")
         if any(
-            not math.isfinite(point.z) or not -8.0 <= point.z <= 8.0
+            not math.isfinite(point.z) or not MIN_Z <= point.z <= MAX_Z
             for point in self.landmarks
         ):
             raise ValueError("Gesture z landmarks must remain within [-8, 8].")
-        if _hand_scale(self.landmarks) <= 1e-6:
+        if _hand_scale(self.landmarks) <= MIN_HAND_SCALE:
             raise ValueError("Gesture skeleton must have non-zero scale.")
 
 
@@ -70,7 +98,7 @@ class GestureRecognition:
             raise TypeError("Gesture identifier must be typed text.")
         if not math.isfinite(self.confidence) or not 0.0 <= self.confidence <= 1.0:
             raise ValueError("Gesture confidence must be normalized.")
-        if self.gesture_id is GestureId.UNKNOWN and self.confidence != 0.0:
+        if self.gesture_id is GestureId.UNKNOWN and abs(self.confidence) >= FLOAT_COMPARISON_EPSILON:
             raise ValueError("Unknown gestures cannot claim confidence.")
 
     @property
@@ -102,7 +130,7 @@ class GestureTiming:
     def __post_init__(self) -> None:
         if self.cooldown_seconds < 0.0 or self.wave_window_seconds <= 0.0:
             raise ValueError("Gesture timing windows must be valid.")
-        if self.minimum_frames < 3 or self.minimum_duration < 0.18:
+        if self.minimum_frames < MINIMUM_FRAMES or self.minimum_duration < MINIMUM_DURATION:
             raise ValueError("Static gestures require at least 3 frames over 0.18 seconds.")
 
 
@@ -121,7 +149,7 @@ class GestureRecognizer:
         custom_max_distance: float = 0.18,
         timing: GestureTiming = DEFAULT_GESTURE_TIMING,
     ) -> None:
-        if not 0.5 <= minimum_confidence <= 1.0:
+        if not MIN_CONFIDENCE_LOWER_BOUND <= minimum_confidence <= 1.0:
             raise ValueError("Minimum gesture confidence is invalid.")
         if custom_max_distance <= 0.0:
             raise ValueError("Gesture distance must be valid.")
@@ -137,9 +165,7 @@ class GestureRecognizer:
         self._last_time: dict[HandSide, float] = {
             side: float("-inf") for side in HandSide
         }
-        self._candidate: dict[HandSide, _CandidateSequence | None] = {
-            side: None for side in HandSide
-        }
+        self._candidate: dict[HandSide, _CandidateSequence | None] = dict.fromkeys(HandSide)
         self._cooldown_until: dict[HandSide, float] = {
             side: float("-inf") for side in HandSide
         }
@@ -227,14 +253,14 @@ class GestureRecognizer:
 
     def _wave_is_pending(self, side: HandSide) -> bool:
         history = tuple(self._wave[side])
-        if len(history) < 3:
+        if len(history) < MINIMUM_FRAMES:
             return False
         movements = tuple(
             current.wrist_x - previous.wrist_x
             for previous, current in pairwise(history)
-            if abs(current.wrist_x - previous.wrist_x) >= 0.035
+            if abs(current.wrist_x - previous.wrist_x) >= MIN_WAVE_MOVEMENT
         )
-        return len(movements) >= 2 and any(
+        return len(movements) >= MIN_WAVE_REVERSALS and any(
             left * right < 0.0 for left, right in pairwise(movements)
         )
 
@@ -271,7 +297,7 @@ class GestureRecognizer:
         cutoff = skeleton.observed_at - self._timing.wave_window_seconds
         while history and history[0].observed_at < cutoff:
             history.popleft()
-        if len(history) < 4:
+        if len(history) < MIN_WAVE_FRAMES:
             return None
         ordered = tuple(history)
         movements = tuple(
@@ -282,7 +308,7 @@ class GestureRecognizer:
         # across four stable frames without requiring exaggerated arm swings.
         # Thresholds are kept forgiving so a casual side-to-side wave in front
         # of the camera reliably registers as a greeting.
-        significant = tuple(value for value in movements if abs(value) >= 0.018)
+        significant = tuple(value for value in movements if abs(value) >= SIGNIFICANT_WAVE_MOVEMENT)
         reversals = sum(
             left * right < 0.0
             for left, right in pairwise(significant)
@@ -290,7 +316,7 @@ class GestureRecognizer:
         span = max(point.wrist_x for point in history) - min(
             point.wrist_x for point in history
         )
-        if len(significant) >= 3 and reversals >= 1 and span >= 0.045:
+        if len(significant) >= MIN_SIGNIFICANT_MOVEMENTS and reversals >= 1 and span >= MIN_WAVE_SPAN:
             history.clear()
             return GestureRecognition(
                 GestureId.WAVE,
@@ -332,24 +358,24 @@ def _classify_builtin(skeleton: HandSkeleton) -> GestureRecognition | None:
     thumb_vector = (points[4].x - points[2].x, points[4].y - points[2].y)
     thumb_length = math.hypot(*thumb_vector)
     scale = _hand_scale(points)
-    thumb_extended = thumb_length / scale >= 0.42
+    thumb_extended = thumb_length / scale >= THUMB_EXTENDED_RATIO
     extended_count = sum(fingers)
-    if extended_count == 4 and thumb_extended:
+    if extended_count == FULL_EXTENDED_FINGERS and thumb_extended:
         return _candidate(GestureId.OPEN_PALM, 0.94, skeleton.side)
     if extended_count == 0 and not thumb_extended:
         return _candidate(GestureId.CLOSED_FIST, 0.92, skeleton.side)
     if extended_count == 0 and thumb_extended:
         vertical = thumb_vector[1] / max(thumb_length, 1e-9)
-        if vertical <= -0.72:
+        if vertical <= THUMB_UP_THRESHOLD:
             return _candidate(GestureId.THUMBS_UP, abs(vertical), skeleton.side)
-        if vertical >= 0.72:
+        if vertical >= THUMB_DOWN_THRESHOLD:
             return _candidate(GestureId.THUMBS_DOWN, abs(vertical), skeleton.side)
     if fingers == (True, False, False, False) and not thumb_extended:
         vector_x = points[8].x - points[5].x
         vector_y = points[8].y - points[5].y
         length = math.hypot(vector_x, vector_y)
         horizontal = abs(vector_x) / max(length, 1e-9)
-        if horizontal >= 0.78:
+        if horizontal >= POINT_HORIZONTAL_THRESHOLD:
             gesture_id = GestureId.POINT_LEFT if vector_x < 0.0 else GestureId.POINT_RIGHT
             return _candidate(gesture_id, horizontal, skeleton.side)
     return None

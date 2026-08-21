@@ -29,6 +29,8 @@ lazy from time_utils import (
 )
 lazy from tools.migrate_python315_imports import inventory, python_files
 
+EXPECTED_EXCEPTION_COUNT = 3
+
 
 def assert_immutable_mapping(value: object) -> None:
     assert type(value) is frozendict
@@ -94,7 +96,7 @@ def _assert_lazy_import_audit_contract() -> None:
         ROOT / "domain" / "python315_concurrency.py"
     )
     assert concurrency_inventory.eligible == []
-    assert len(concurrency_inventory.exceptions) == 3
+    assert len(concurrency_inventory.exceptions) == EXPECTED_EXCEPTION_COUNT
 
 
 def _assert_immutable_configuration() -> None:

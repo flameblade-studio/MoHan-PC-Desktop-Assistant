@@ -20,6 +20,11 @@ lazy from companion_phrasebook import (
 lazy from special_occasion import OccasionKind, OccasionStage
 lazy from wellbeing_reminder import ReminderStage, WellbeingKind
 
+WELLBEING_PHRASE_KEY_COUNT = 8
+OCCASION_PHRASE_KEY_COUNT = 10
+GROUPED_KEY_COUNT = 28
+PAIR_LENGTH = 2
+
 
 def run() -> None:
     phrasebook = CompanionPhrasebook.from_setting(
@@ -43,8 +48,8 @@ def run() -> None:
     )
     assert malformed == CompanionPhrasebook({}, (), {})
 
-    assert len(WELLBEING_PHRASE_KEYS) == 8
-    assert len(OCCASION_PHRASE_KEYS) == 10
+    assert len(WELLBEING_PHRASE_KEYS) == WELLBEING_PHRASE_KEY_COUNT
+    assert len(OCCASION_PHRASE_KEYS) == OCCASION_PHRASE_KEY_COUNT
     groups = grouped_phrasebook_categories()
     assert tuple(group for group, _ in groups) == (
         "歸來問候",
@@ -58,19 +63,19 @@ def run() -> None:
         for _, categories in groups
         for key, _ in categories
     )
-    assert len(grouped_keys) == len(set(grouped_keys)) == 28
+    assert len(grouped_keys) == len(set(grouped_keys)) == GROUPED_KEY_COUNT
     for locale in ("zh-TW", "zh-CN", "en", "ja-JP"):
         assert set(PUBLIC_COMPANION_LINES[locale]) == {
             *WELLBEING_PHRASE_KEYS,
             *OCCASION_PHRASE_KEYS,
         }
         assert all(
-            len(lines) >= 2
+            len(lines) >= PAIR_LENGTH
             for lines in PUBLIC_COMPANION_LINES[locale].values()
         )
         assert set(WARDROBE_PUBLIC_LINES[locale]) == set(WARDROBE_PHRASE_KEYS)
         assert all(
-            len(lines) >= 2
+            len(lines) >= PAIR_LENGTH
             for lines in WARDROBE_PUBLIC_LINES[locale].values()
         )
     meal_key = wellbeing_phrase_key(

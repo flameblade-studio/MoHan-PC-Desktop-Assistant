@@ -28,6 +28,19 @@ lazy from prompt_cache import (
     prompt_cache_prefix_fingerprint,
 )
 
+REQUEST_TIMEOUT_SECONDS = 45
+EXACT_TOKEN_COUNT = 1024
+SHORT_TOKEN_COUNT = 1023
+CACHE_KEY_MAX_LENGTH = 64
+EXPECTED_BASELINE_COST_UNITS = 1024.0
+EXPECTED_ACTUAL_COST_UNITS = 1280.0
+EXPECTED_NET_SAVINGS_UNITS = -256.0
+EXPECTED_CACHE_HIT_ACTUAL_COST = 102.4
+EXPECTED_CACHE_HIT_NET_SAVINGS = 921.6
+EXPECTED_UNCACHED_TOKEN_COUNT = 400
+EXPECTED_MIXED_ACTUAL_COST = 830.0
+EXPECTED_MIXED_NET_SAVINGS = 1570.0
+
 
 class Response(io.BytesIO):
     pass
@@ -83,7 +96,7 @@ def captured_worker_payload(request: AIWorkerRequest) -> tuple[dict, list[str]]:
     answers: list[str] = []
 
     def open_request(http_request, *, timeout: int):
-        assert timeout == 45
+        assert timeout == REQUEST_TIMEOUT_SECONDS
         payloads.append(json.loads(http_request.data.decode("utf-8")))
         return response(cached=1800, written=200)
 
@@ -210,7 +223,7 @@ def assert_exact_count_evidence_is_injected_counted_once_and_fail_closed() -> No
     first = evidence_cache.evidence_for("gpt-5.6-luna", stable, breakpoint)
     second = evidence_cache.evidence_for("gpt-5.6-luna", stable, breakpoint)
     assert first == second
-    assert first is not None and first.exact_tokens == 1024
+    assert first is not None and first.exact_tokens == EXACT_TOKEN_COUNT
     assert len(counter.requests) == 1
     assert counter.requests[0] == exact_input_token_count_request(
         "gpt-5.6-luna", stable, breakpoint
@@ -227,7 +240,7 @@ def assert_exact_count_evidence_is_injected_counted_once_and_fail_closed() -> No
     short_counter = FakeTokenCounter(1023)
     short_cache = InMemoryPromptTokenEvidence(short_counter)
     short = short_cache.evidence_for("gpt-5.6-luna", stable, breakpoint)
-    assert short is not None and short.exact_tokens == 1023
+    assert short is not None and short.exact_tokens == SHORT_TOKEN_COUNT
     assert not explicit_prompt_cache_eligible(
         "gpt-5.6-luna", stable, breakpoint, short
     )
@@ -238,7 +251,7 @@ def assert_cache_key_is_stable_private_and_prefix_specific() -> None:
     assert first == explicit_prompt_cache_key("stable prefix")
     assert first != explicit_prompt_cache_key("changed prefix")
     assert "stable prefix" not in first
-    assert len(first) <= 64
+    assert len(first) <= CACHE_KEY_MAX_LENGTH
 
 
 def assert_usage_is_numeric_only_and_malformed_usage_degrades_to_zero() -> None:
@@ -297,7 +310,7 @@ def assert_action_planner_remains_uncached() -> None:
     )
 
     def open_request(http_request, *, timeout: int):
-        assert timeout == 45
+        assert timeout == REQUEST_TIMEOUT_SECONDS
         payloads.append(json.loads(http_request.data.decode("utf-8")))
         return Response(
             json.dumps(
@@ -322,20 +335,20 @@ def assert_action_planner_remains_uncached() -> None:
 
 def assert_cost_report_proves_write_loss_and_later_net_savings() -> None:
     first_write = prompt_cache_cost_report(PromptCacheTelemetry(1024, 0, 1024))
-    assert first_write.baseline_cost_units == 1024.0
-    assert first_write.actual_cost_units == 1280.0
-    assert first_write.net_savings_units == -256.0
+    assert first_write.baseline_cost_units == EXPECTED_BASELINE_COST_UNITS
+    assert first_write.actual_cost_units == EXPECTED_ACTUAL_COST_UNITS
+    assert first_write.net_savings_units == EXPECTED_NET_SAVINGS_UNITS
     cache_hit = prompt_cache_cost_report(PromptCacheTelemetry(1024, 1024, 0))
-    assert cache_hit.actual_cost_units == 102.4
-    assert cache_hit.net_savings_units == 921.6
+    assert cache_hit.actual_cost_units == EXPECTED_CACHE_HIT_ACTUAL_COST
+    assert cache_hit.net_savings_units == EXPECTED_CACHE_HIT_NET_SAVINGS
     cumulative_savings = (
         first_write.net_savings_units + cache_hit.net_savings_units
     )
     assert cumulative_savings > 0.0
     mixed = prompt_cache_cost_report(PromptCacheTelemetry(2400, 1800, 200))
-    assert mixed.uncached_tokens == 400
-    assert mixed.actual_cost_units == 830.0
-    assert mixed.net_savings_units == 1570.0
+    assert mixed.uncached_tokens == EXPECTED_UNCACHED_TOKEN_COUNT
+    assert mixed.actual_cost_units == EXPECTED_MIXED_ACTUAL_COST
+    assert mixed.net_savings_units == EXPECTED_MIXED_NET_SAVINGS
     invalid = prompt_cache_cost_report(PromptCacheTelemetry(10, 9, 9))
     assert invalid.cached_tokens == 0
     assert invalid.cache_write_tokens == 0

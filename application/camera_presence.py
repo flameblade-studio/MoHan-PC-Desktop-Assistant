@@ -24,6 +24,9 @@ try:
 except ImportError:  # packaged editions can omit QtMultimedia
     QCamera = None
 
+ABSENT_STREAK_THRESHOLD = 6
+GESTURE_SAMPLE_INTERVAL = 0.1
+
 
 @dataclass(slots=True)
 class PresenceDebouncer:
@@ -210,13 +213,13 @@ class CameraPresenceController(QObject):
             self._idle_sample_interval = 0.45
         else:
             self._absent_streak += 1
-            if self._absent_streak >= 6:
+            if self._absent_streak >= ABSENT_STREAK_THRESHOLD:
                 self._idle_sample_interval = min(2.0, 0.45 + self._absent_streak * 0.05)
 
     def _emit_due_rgb_frames(self, image: QImage, now: float) -> None:
         gesture_due = bool(
             self._gesture_sampling_enabled
-            and now - self._last_gesture_sample >= 0.1
+            and now - self._last_gesture_sample >= GESTURE_SAMPLE_INTERVAL
         )
         vision_due = now - self._last_vision_sample >= 1.0
         if gesture_due or vision_due:

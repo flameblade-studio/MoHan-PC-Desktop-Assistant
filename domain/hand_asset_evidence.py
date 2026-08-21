@@ -10,6 +10,11 @@ lazy from pathlib import Path, PurePosixPath
 
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain.hand_asset_audit import (
+    BYTES_PER_PIXEL,
+    BYTE_MAX,
+    MAX_PNG_DIMENSION,
+    PNG_BIT_DEPTH,
+    PNG_COLOR_TYPE_RGBA,
     HandProjection,
     JointOcclusion,
     Occluder,
@@ -17,12 +22,27 @@ lazy from domain.hand_asset_audit import (
     audit_hand_asset,
 )
 
+# Re-exported from the centralized constants module for a single source of truth.
+lazy from domain.constants import (
+    PNG_MIN_HEADER_LENGTH as MIN_PNG_HEADER_LENGTH,
+    PNG_SIGNATURE,
+    RGB_CHANNELS,
+    SHA256_HEX_LENGTH,
+)
+
 SIDECAR_SCHEMA_VERSION = 1
 LANDMARK_COUNT = 21
 HAND_SIDES = frozenset({"left", "right"})
-PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 ROI_LANDMARK_MARGIN = 3
 ROI_GAP = 8
+PNG_FILTER_NONE = 1
+PNG_FILTER_SUB = 2
+PNG_FILTER_UP = 3
+PNG_FILTER_AVERAGE = 4
+TWO_HANDS = 2
+POINT_DIMENSIONS = 2
+ROI_DIMENSIONS = 4
+FACE_AND_BODY_REGIONS = 2
 
 
 @dataclass(frozen=True, slots=True)
@@ -215,16 +235,16 @@ def _resolve_asset(root: Path, relative: str, suffix: str) -> Path:
 
 
 def _png_dimensions(data: bytes) -> tuple[int, int]:
-    if len(data) < 33 or data[:8] != PNG_SIGNATURE or data[12:16] != b"IHDR":
+    if len(data) < MIN_PNG_HEADER_LENGTH or data[:8] != PNG_SIGNATURE or data[12:16] != b"IHDR":
         raise ValueError("invalid_png")
     width, height, depth, color, compression, filtering, interlace = struct.unpack(
         ">IIBBBBB", data[16:29]
     )
     if (
-        not 1 <= width <= 4096
-        or not 1 <= height <= 4096
-        or depth != 8
-        or color != 6
+        not 1 <= width <= MAX_PNG_DIMENSION
+        or not 1 <= height <= MAX_PNG_DIMENSION
+        or depth != PNG_BIT_DEPTH
+        or color != PNG_COLOR_TYPE_RGBA
         or compression
         or filtering
         or interlace
@@ -254,7 +274,7 @@ def _decode_rgba(data: bytes, width: int, height: int) -> bytes:
         elif kind == b"IEND":
             break
     raw = zlib.decompress(compressed)
-    stride = width * 4
+    stride = width * BYTES_PER_PIXEL
     if len(raw) != height * (stride + 1):
         raise ValueError("png_scanline_mismatch")
     result = bytearray()
@@ -272,22 +292,22 @@ def _decode_rgba(data: bytes, width: int, height: int) -> bytes:
 
 def _unfilter(current: bytearray, previous: bytearray, filter_type: int) -> None:
     for index in range(len(current)):
-        left = current[index - 4] if index >= 4 else 0
+        left = current[index - BYTES_PER_PIXEL] if index >= BYTES_PER_PIXEL else 0
         above = previous[index]
-        upper_left = previous[index - 4] if index >= 4 else 0
-        if filter_type == 1:
-            current[index] = (current[index] + left) & 255
-        elif filter_type == 2:
-            current[index] = (current[index] + above) & 255
-        elif filter_type == 3:
-            current[index] = (current[index] + (left + above) // 2) & 255
-        elif filter_type == 4:
+        upper_left = previous[index - BYTES_PER_PIXEL] if index >= BYTES_PER_PIXEL else 0
+        if filter_type == PNG_FILTER_NONE:
+            current[index] = (current[index] + left) & BYTE_MAX
+        elif filter_type == PNG_FILTER_SUB:
+            current[index] = (current[index] + above) & BYTE_MAX
+        elif filter_type == PNG_FILTER_UP:
+            current[index] = (current[index] + (left + above) // 2) & BYTE_MAX
+        elif filter_type == PNG_FILTER_AVERAGE:
             estimate = left + above - upper_left
             candidates = (left, above, upper_left)
             current[index] = (
                 current[index]
                 + min(candidates, key=lambda value: abs(estimate - value))
-            ) & 255
+            ) & BYTE_MAX
         elif filter_type != 0:
             raise ValueError("unsupported_png_filter")
 
@@ -376,7 +396,7 @@ def _audit_canvas(
     height: int,
 ) -> tuple[bytes, tuple[HandProjection, ...], frozenset[str], frozenset[str]]:
     hands = payload.get("hands")
-    if not isinstance(hands, list) or not 0 <= len(hands) <= 2:
+    if not isinstance(hands, list) or not 0 <= len(hands) <= TWO_HANDS:
         raise ValueError("visible_hand_required")
     parsed = tuple(_hand_with_roi(hand, width, height) for hand in hands)
     projections = tuple(item[0] for item in parsed)
@@ -389,7 +409,7 @@ def _audit_canvas(
     if visible_sides | occluded_sides != HAND_SIDES:
         raise ValueError("hand_side_coverage_incomplete")
     rois = tuple(item[1] for item in parsed)
-    if len(rois) == 2 and _intersects(rois[0], rois[1]):
+    if len(rois) == TWO_HANDS and _intersects(rois[0], rois[1]):
         raise ValueError("hand_rois_overlap")
     protected = _protected_regions(payload, width, height)
     if any(_intersects(roi, region) for roi in rois for region in protected):
@@ -397,7 +417,7 @@ def _audit_canvas(
     canvas_width = sum(roi.width for roi in rois) + ROI_GAP * max(0, len(rois) - 1)
     canvas_height = max((roi.height for roi in rois), default=1)
     canvas_width = max(canvas_width, 1)
-    canvas = bytearray(canvas_width * canvas_height * 4)
+    canvas = bytearray(canvas_width * canvas_height * BYTES_PER_PIXEL)
     transformed = []
     offset_x = 0
     for projection, roi in parsed:
@@ -463,7 +483,7 @@ def _projection(value: object, width: int, height: int) -> HandProjection:
 def _point(value: object, width: int, height: int) -> Point:
     if (
         not isinstance(value, list)
-        or len(value) != 2
+        or len(value) != POINT_DIMENSIONS
         or any(
             not isinstance(item, (int, float))
             or isinstance(item, bool)
@@ -481,7 +501,7 @@ def _point(value: object, width: int, height: int) -> Point:
 def _roi(value: object, width: int, height: int) -> _Roi:
     if (
         not isinstance(value, list)
-        or len(value) != 4
+        or len(value) != ROI_DIMENSIONS
         or any(not isinstance(item, int) or isinstance(item, bool) for item in value)
     ):
         raise TypeError("invalid_roi")
@@ -521,7 +541,7 @@ def _protected_regions(
             raise TypeError("invalid_protected_region")
         labels.append(value["label"])
         regions.append(_roi(value.get("rect"), width, height))
-    if set(labels) != {"face", "body"} or len(labels) != 2:
+    if set(labels) != {"face", "body"} or len(labels) != FACE_AND_BODY_REGIONS:
         raise ValueError("face_and_body_regions_required")
     return tuple(regions)
 
@@ -601,18 +621,18 @@ def _occluder(value: object) -> Occluder:
         not isinstance(identifier, str)
         or not identifier.strip()
         or not isinstance(rgb, list)
-        or len(rgb) != 3
-        or any(not isinstance(item, int) or isinstance(item, bool) or not 0 <= item <= 255 for item in rgb)
+        or len(rgb) != RGB_CHANNELS
+        or any(not isinstance(item, int) or isinstance(item, bool) or not 0 <= item <= BYTE_MAX for item in rgb)
         or not isinstance(tolerance, int)
         or isinstance(tolerance, bool)
-        or not 0 <= tolerance <= 255
+        or not 0 <= tolerance <= BYTE_MAX
     ):
         raise ValueError("invalid_occluder")
     return Occluder(identifier, tuple(rgb), tolerance)  # type: ignore[arg-type]
 
 
 def _safe_hash(value: str) -> bool:
-    return len(value) == 64 and all(character in "0123456789abcdef" for character in value)
+    return len(value) == SHA256_HEX_LENGTH and all(character in "0123456789abcdef" for character in value)
 
 
 def _failure(

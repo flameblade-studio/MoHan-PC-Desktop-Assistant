@@ -32,6 +32,8 @@ lazy from flagship_ui_localization import (
 lazy from infrastructure.db import StudioDB
 
 HAN_CHARACTER = re.compile(r"[\u3400-\u9fff]")
+FLAGSHIP_TAB_COUNT = 8
+TRANSLATION_LANGUAGE_COUNT = 3
 ENGLISH_ALLOWED_HAN = frozenset({
     # User-owned profile data and the character's proper name are content,
     # not system UI. They are allowed to remain verbatim.
@@ -89,8 +91,8 @@ def _assert_canonical_values(center: FlagshipControlCenter) -> None:
 
 def _assert_english_center(center: FlagshipControlCenter) -> None:
     assert center.language == "en"
-    assert center.tabs.count() == 8
-    assert [center.tabs.tabText(index) for index in range(8)] == [
+    assert center.tabs.count() == FLAGSHIP_TAB_COUNT
+    assert [center.tabs.tabText(index) for index in range(FLAGSHIP_TAB_COUNT)] == [
         "Task Center",
         "Workflows",
         "Cloud Connectors",
@@ -119,8 +121,8 @@ def _assert_english_center(center: FlagshipControlCenter) -> None:
 
 def _assert_japanese_center(center: FlagshipControlCenter) -> None:
     assert center.language == "ja-JP"
-    assert center.tabs.count() == 8
-    assert [center.tabs.tabText(index) for index in range(8)] == [
+    assert center.tabs.count() == FLAGSHIP_TAB_COUNT
+    assert [center.tabs.tabText(index) for index in range(FLAGSHIP_TAB_COUNT)] == [
         "タスクセンター",
         "ワークフロー",
         "クラウド接続",
@@ -164,7 +166,7 @@ def _assert_user_data_is_preserved(center: FlagshipControlCenter) -> None:
 
 def run() -> None:
     validate_flagship_translations()
-    assert all(len(row) == 3 for row in FLAGSHIP_TRANSLATIONS.values())
+    assert all(len(row) == TRANSLATION_LANGUAGE_COUNT for row in FLAGSHIP_TRANSLATIONS.values())
     assert FlagshipTranslator("zh-CN").text("任務中心") == "任务中心"
 
     app = QApplication.instance() or QApplication([])

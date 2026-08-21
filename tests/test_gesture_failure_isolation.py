@@ -48,6 +48,8 @@ lazy from vision_runtime import VisionHealth, VisionReadiness
 
 SENSITIVE_PATH = r"C:\Users\USERNAME\secret-models\mohan.onnx"
 FRAME = b"\x00\x00\x00"
+EXPECTED_PROVIDER_CALLS = 3
+EXPECTED_RUNTIME_CALLS = 5
 READY_DECISION = GestureActionDecision(
     GestureActionDisposition.READY,
     "open-palm",
@@ -318,7 +320,7 @@ def test_three_inference_failures_disable_only_gesture_sampling(
             controller.health.detail_code == HandLandmarkStatus.INFERENCE_FAILED.value
         )
         assert not controller.sampling_enabled
-        assert provider.calls == 3
+        assert provider.calls == EXPECTED_PROVIDER_CALLS
     finally:
         controller.close()
 
@@ -339,7 +341,7 @@ def test_runtime_exception_is_sanitized_and_disables_only_gestures(
         assert controller.health.detail_code == "runtime-invalid"
         assert SENSITIVE_PATH not in controller.health.detail_code
         assert not controller.sampling_enabled
-        assert runtime.calls == 3
+        assert runtime.calls == EXPECTED_PROVIDER_CALLS
     finally:
         controller.close()
 
@@ -367,7 +369,7 @@ def test_successful_runtime_update_resets_the_consecutive_failure_streak(
         assert controller.health.status is GestureControllerStatus.INFERENCE_FAILED
         assert controller.health.detail_code == "runtime-invalid"
         assert not controller.sampling_enabled
-        assert runtime.calls == 5
+        assert runtime.calls == EXPECTED_RUNTIME_CALLS
     finally:
         controller.close()
 

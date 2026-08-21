@@ -21,6 +21,7 @@ FRAME_COLUMNS = 5
 FRAME_ROWS = 4
 FRAME_HEIGHT = 465
 LABEL_HEIGHT = 28
+GESTURE_FRAME_COUNT = 10
 
 
 def capture_frames(
@@ -104,8 +105,8 @@ def draw_labeled_frames(
         y = row * (FRAME_HEIGHT + LABEL_HEIGHT)
         painter.drawImage(x, y, frame)
         painter.setPen(QColor("#e7f6ff"))
-        phase = "gesture" if index < 10 else "pose"
-        number = index + 1 if index < 10 else index - 9
+        phase = "gesture" if index < GESTURE_FRAME_COUNT else "pose"
+        number = index + 1 if index < GESTURE_FRAME_COUNT else index - (GESTURE_FRAME_COUNT - 1)
         painter.drawText(
             QRect(x, y + FRAME_HEIGHT, cell_width, LABEL_HEIGHT),
             Qt.AlignCenter,

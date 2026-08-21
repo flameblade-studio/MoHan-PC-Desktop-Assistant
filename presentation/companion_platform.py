@@ -14,7 +14,7 @@ lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeak
 lazy from domain.app_profile import profile_setting, profile_window_title
 lazy from domain.language_support import localized_reminder_line
 lazy from domain.time_utils import local_wall_time
-lazy from presentation.presentation_resources import application_icon
+lazy from presentation.presentation_resources import LIGHT_MENU_STYLE, application_icon
 lazy from presentation.ui_localization import ui_text
 
 __all__ = (
@@ -22,6 +22,8 @@ __all__ = (
     "CompanionPlatformMixin",
     "reminder_line",
 )
+
+MIN_OVERLAP_AREA = 256
 
 REMINDER_LINES = frozendict({
     "work": "主上，今日之局已開。若要開始，妾替你計時。",
@@ -47,6 +49,11 @@ class CompanionPlatformMixin:
         self.tray = QSystemTrayIcon(application_icon(), self)
         self.tray.setToolTip(profile_window_title(self.db))
         menu = QMenu()
+        # The tray menu is a system-level popup that does not inherit the
+        # dashboard's flagship theme.  Apply the shared light palette so its
+        # items stay readable instead of falling back to the OS dark theme
+        # (black background with grey text).
+        menu.setStyleSheet(LIGHT_MENU_STYLE)
         self.tray_menu = menu
         language = profile_setting(self.db, "ui_language")
         open_action = QAction(
@@ -156,7 +163,7 @@ class CompanionPlatformMixin:
             0,
             min(ext_bottom, char_bottom) - max(ext_top, char_top),
         )
-        return overlap_width * overlap_height >= 256
+        return overlap_width * overlap_height >= MIN_OVERLAP_AREA
 
     def _external_foreground_overlaps_character(self) -> bool:
         self._smart_overlap_hwnd = 0

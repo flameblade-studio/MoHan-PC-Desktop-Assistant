@@ -10,6 +10,8 @@ lazy from domain.gesture_configuration import (
     GestureSource,
 )
 
+MIN_CONFIDENCE_THRESHOLD = 0.5
+
 
 class GestureActionDisposition(StrEnum):
     READY = "ready"
@@ -93,7 +95,7 @@ class GestureActionRouter:
         confidence_threshold: float = 0.78,
         cooldown_seconds: float = 2.0,
     ) -> None:
-        if not math.isfinite(confidence_threshold) or not 0.5 <= confidence_threshold <= 1.0:
+        if not math.isfinite(confidence_threshold) or not MIN_CONFIDENCE_THRESHOLD <= confidence_threshold <= 1.0:
             raise ValueError("Gesture action confidence threshold is invalid.")
         if not math.isfinite(cooldown_seconds) or cooldown_seconds < 0.0:
             raise ValueError("Gesture action cooldown is invalid.")

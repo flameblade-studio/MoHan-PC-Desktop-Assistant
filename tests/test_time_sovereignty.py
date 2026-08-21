@@ -12,6 +12,9 @@ lazy from domain.time_sovereignty import (
     is_late_night,
 )
 
+DROWSINESS_THRESHOLD = 0.5
+DROWSINESS_DECAY_THRESHOLD = 0.1
+
 
 def test_late_night_window() -> None:
     assert is_late_night(2)
@@ -32,24 +35,24 @@ def test_drowsiness_rises_during_late_night() -> None:
     state = TimeSovereigntyState()
     for step in range(200):
         state.update(hour=3, now=float(step))
-    assert state.drowsiness > 0.5
+    assert state.drowsiness > DROWSINESS_THRESHOLD
     assert state.blink_interval() > BLINK_INTERVAL_ALERT
 
 
 def test_drowsiness_eases_smoothly_without_snapping() -> None:
     state = TimeSovereigntyState()
     first = state.update(hour=3, now=0.0)
-    assert first < 0.5, "drowsiness must ease in, not snap"
+    assert first < DROWSINESS_THRESHOLD, "drowsiness must ease in, not snap"
 
 
 def test_drowsiness_decays_outside_late_night() -> None:
     state = TimeSovereigntyState()
     for step in range(200):
         state.update(hour=3, now=float(step))
-    assert state.drowsiness > 0.5
+    assert state.drowsiness > DROWSINESS_THRESHOLD
     for step in range(400):
         state.update(hour=10, now=200.0 + float(step))
-    assert state.drowsiness < 0.1
+    assert state.drowsiness < DROWSINESS_DECAY_THRESHOLD
     assert state.blink_interval() < BLINK_INTERVAL_DROWSY
 
 

@@ -5,6 +5,11 @@ lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, replace
 lazy from enum import StrEnum
 
+lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+
+BOUNDARY_ESTIMATION_THRESHOLD = 0.32
+GESTURE_EMPHASIS_THRESHOLD = 0.42
+
 
 class SpeechPerformancePhase(StrEnum):
     IDLE = "idle"
@@ -223,7 +228,7 @@ class SpeechPerformanceTimeline:
             segment_index=next_index,
             last_viseme=normalized_viseme,
             last_level=bounded,
-            mouth_closed=normalized_viseme == "CLOSED" and bounded == 0.0,
+            mouth_closed=normalized_viseme == "CLOSED" and bounded < FLOAT_COMPARISON_EPSILON,
         )
         event = self._event(
             SpeechEventKind.VISEME,
@@ -371,13 +376,13 @@ class SpeechPerformanceTimeline:
             )
 
     def _should_estimate_boundary(self, now: float, level: float) -> bool:
-        if self._has_rich_boundary or level < 0.32:
+        if self._has_rich_boundary or level < BOUNDARY_ESTIMATION_THRESHOLD:
             return False
         reference = self._snapshot.last_boundary_at or self._snapshot.audio_started_at
         return reference > 0.0 and now - reference >= self.estimated_segment_seconds
 
     def _consume_gesture_window(self, now: float, emphasis: float) -> bool:
-        if emphasis < 0.42 or now - self._last_gesture_at < self.minimum_gesture_gap_seconds:
+        if emphasis < GESTURE_EMPHASIS_THRESHOLD or now - self._last_gesture_at < self.minimum_gesture_gap_seconds:
             return False
         self._last_gesture_at = now
         return True

@@ -32,6 +32,28 @@ lazy from presentation.dashboard_dialogs import (
 )
 lazy from presentation.first_run_wizard import FirstRunWizard
 
+WIZARD_MIN_WIDTH = 1100
+WIZARD_MIN_HEIGHT = 720
+WINDOW_HEIGHT = 680
+BUBBLE_MIN_HEIGHT = 105
+BUBBLE_MAX_HEIGHT = 202
+SMART_OVERLAP_HWND = 24680
+SMART_OVERLAP_HWND_ALT = 13579
+TAB_COUNT = 8
+DASHBOARD_MIN_HEIGHT = 480
+DASHBOARD_MAX_HEIGHT_MIN = 10000
+SPLIT_SIZE_COUNT = 2
+SPLIT_SIZE_DIFF_LIMIT = 4
+IDEA_LIST_MAX_HEIGHT_MIN = 10000
+DASHBOARD_WIDTH = 760
+DASHBOARD_HEIGHT = 500
+DASHBOARD_WIDTH_ALT = 1080
+DASHBOARD_HEIGHT_ALT = 820
+VOICE_VOLUME = 125
+VOICE_VOLUME_SET = 140
+CHAT_ZOOM_PERCENT = 110
+CHAT_ZOOM_PERCENT_DEFAULT = 100
+
 
 def _prepare_database(tmp: str) -> None:
     os.environ["LOCALAPPDATA"] = tmp
@@ -84,8 +106,8 @@ def _assert_checkbox_contract(app: QApplication) -> None:
 def _assert_first_run_wizard(app: QApplication, tmp: str) -> None:
     wizard_db = StudioDB(Path(tmp) / "wizard-new-user.db")
     wizard = FirstRunWizard(wizard_db)
-    assert wizard.minimumWidth() >= 1100
-    assert wizard.minimumHeight() >= 720
+    assert wizard.minimumWidth() >= WIZARD_MIN_WIDTH
+    assert wizard.minimumHeight() >= WIZARD_MIN_HEIGHT
     assert not wizard.hero_image.pixmap().isNull()
     assert all(
         label.alignment() & Qt.AlignVCenter
@@ -220,10 +242,10 @@ def _assert_character_surface(app: QApplication, window: CompanionWindow) -> Non
     assert window.character.pixmap() is not None
     assert window.character_opacity.opacity() == 1.0
     assert window.overlay_opacity.opacity() == 0.0
-    assert window.height() == 680
+    assert window.height() == WINDOW_HEIGHT
     window._show_bubble("這是一段需要自動換行的長回覆。" * 30)
     app.processEvents()
-    assert 105 < window.bubble.height() <= 202
+    assert BUBBLE_MIN_HEIGHT < window.bubble.height() <= BUBBLE_MAX_HEIGHT
     assert "完整內容請見對話頁" in window.bubble_text.text()
     window.bubble.hide()
 
@@ -379,12 +401,12 @@ def _assert_smart_topmost_contract(window: CompanionWindow) -> None:
     window.dashboard.topmost_mode.setCurrentText("智慧置頂（推薦）")
     window._topmost_policy_tick()
     assert not window.character_topmost_active
-    assert window.character_behind_hwnd == 24680
-    assert z_order_calls[-1] == (False, 24680)
+    assert window.character_behind_hwnd == SMART_OVERLAP_HWND
+    assert z_order_calls[-1] == (False, SMART_OVERLAP_HWND)
     window._smart_overlap_hwnd = 13579
     window._topmost_policy_tick()
-    assert window.character_behind_hwnd == 13579
-    assert z_order_calls[-1] == (False, 13579)
+    assert window.character_behind_hwnd == SMART_OVERLAP_HWND_ALT
+    assert z_order_calls[-1] == (False, SMART_OVERLAP_HWND_ALT)
     window._external_foreground_overlaps_character = lambda: False
     window._topmost_policy_tick()
     assert window.character_topmost_active
@@ -635,14 +657,14 @@ def _assert_physics_settings_contract(window: CompanionWindow) -> None:
 
 
 def _assert_dashboard_layout_contract(app: QApplication, window: CompanionWindow) -> None:
-    assert window.dashboard.tabs.count() == 8
+    assert window.dashboard.tabs.count() == TAB_COUNT
     assert window.dashboard.windowTitle() == "墨寒．炎劍文化工作室"
     assert (
         window.dashboard.layout().sizeConstraint()
         == QLayout.SetNoConstraint
     )
-    assert window.dashboard.minimumSize().height() == 480
-    assert window.dashboard.maximumHeight() > 10000
+    assert window.dashboard.minimumSize().height() == DASHBOARD_MIN_HEIGHT
+    assert window.dashboard.maximumHeight() > DASHBOARD_MAX_HEIGHT_MIN
     dashboard_was_visible = window.dashboard.isVisible()
     window.dashboard.show()
     for tab_index in (4, 5, 7):
@@ -660,21 +682,21 @@ def _assert_dashboard_layout_contract(app: QApplication, window: CompanionWindow
     window.dashboard.tabs.setCurrentIndex(1)
     app.processEvents()
     split_sizes = window.dashboard.today_splitter.sizes()
-    assert len(split_sizes) == 2
+    assert len(split_sizes) == SPLIT_SIZE_COUNT
     assert min(split_sizes) > 0
-    assert abs(split_sizes[0] - split_sizes[1]) <= 4
+    assert abs(split_sizes[0] - split_sizes[1]) <= SPLIT_SIZE_DIFF_LIMIT
     assert window.dashboard.todo_scroll.widgetResizable()
-    assert window.dashboard.idea_list.maximumHeight() > 10000
+    assert window.dashboard.idea_list.maximumHeight() > IDEA_LIST_MAX_HEIGHT_MIN
     if not dashboard_was_visible:
         window.dashboard.hide()
     window.dashboard.resize(760, 500)
     app.processEvents()
-    assert window.dashboard.size().width() == 760
-    assert window.dashboard.size().height() == 500
+    assert window.dashboard.size().width() == DASHBOARD_WIDTH
+    assert window.dashboard.size().height() == DASHBOARD_HEIGHT
     window.dashboard.resize(1080, 820)
     app.processEvents()
-    assert window.dashboard.size().width() == 1080
-    assert window.dashboard.size().height() == 820
+    assert window.dashboard.size().width() == DASHBOARD_WIDTH_ALT
+    assert window.dashboard.size().height() == DASHBOARD_HEIGHT_ALT
 
 
 def _assert_custom_platform_contract(window: CompanionWindow) -> None:
@@ -867,13 +889,13 @@ def _assert_voice_controls_contract(window: CompanionWindow) -> None:
     assert window.dashboard.voice_rate.value() == 0
     QTest.mouseClick(window.dashboard.voice_rate_down, Qt.LeftButton)
     assert window.dashboard.voice_rate.value() == -1
-    assert window.dashboard.voice_volume.value() == 125
+    assert window.dashboard.voice_volume.value() == VOICE_VOLUME
     assert window.dashboard.voice_volume_label.text() == "125%"
     window.dashboard.voice_volume.setValue(140)
-    assert window.db.setting("voice_volume_percent") == 140
-    assert window.tts.volume_percent == 140
-    assert window.cloud_tts.volume_percent == 140
-    assert window.realtime.volume_percent == 140
+    assert window.db.setting("voice_volume_percent") == VOICE_VOLUME_SET
+    assert window.tts.volume_percent == VOICE_VOLUME_SET
+    assert window.cloud_tts.volume_percent == VOICE_VOLUME_SET
+    assert window.realtime.volume_percent == VOICE_VOLUME_SET
     window.dashboard.voice_muted.setChecked(True)
     assert window.db.setting("voice_muted") is True
     assert window.tts.muted
@@ -909,10 +931,10 @@ def _assert_reminder_controls_contract(window: CompanionWindow) -> None:
 def _assert_chat_zoom_contract(window: CompanionWindow) -> None:
     assert window.dashboard.chat_zoom_label.text() == "100%"
     QTest.mouseClick(window.dashboard.chat_zoom_up, Qt.LeftButton)
-    assert window.dashboard.chat_zoom_percent == 110
-    assert window.db.setting("chat_zoom_percent") == 110
+    assert window.dashboard.chat_zoom_percent == CHAT_ZOOM_PERCENT
+    assert window.db.setting("chat_zoom_percent") == CHAT_ZOOM_PERCENT
     window.dashboard.chat.zoom_step_requested.emit(-1)
-    assert window.dashboard.chat_zoom_percent == 100
+    assert window.dashboard.chat_zoom_percent == CHAT_ZOOM_PERCENT_DEFAULT
 
 
 def _assert_listener_state_contract(app: QApplication, window: CompanionWindow) -> None:

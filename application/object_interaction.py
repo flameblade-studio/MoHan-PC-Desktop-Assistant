@@ -6,6 +6,8 @@ lazy from enum import StrEnum
 
 lazy from domain.vision_domain import ObjectDetection, SceneUnderstanding
 
+MIN_CONFIDENCE_THRESHOLD = 0.5
+
 
 class ObjectInteractionAction(StrEnum):
     NONE = "none"
@@ -55,7 +57,7 @@ def propose_object_interaction(
 ) -> ObjectInteractionCandidate:
     """Offer a hedged local observation or consent request; never perform lookup."""
 
-    if not math.isfinite(confidence_threshold) or not 0.5 <= confidence_threshold <= 1.0:
+    if not math.isfinite(confidence_threshold) or not MIN_CONFIDENCE_THRESHOLD <= confidence_threshold <= 1.0:
         raise ValueError("confidence_threshold must be finite and conservative.")
     detection = _best_supported_detection(request.scene.objects)
     if detection is None or detection.confidence < confidence_threshold:

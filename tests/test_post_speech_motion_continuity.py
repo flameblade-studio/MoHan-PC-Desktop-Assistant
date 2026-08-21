@@ -15,6 +15,8 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from companion_window import CompanionWindow
 lazy from infrastructure.db import StudioDB
 
+MAX_MOTION_DELTA = 2
+
 
 def _create_window(temp_dir: str) -> tuple[QApplication, CompanionWindow]:
     os.environ["LOCALAPPDATA"] = temp_dir
@@ -95,7 +97,7 @@ def _assert_release_is_gradual(window: CompanionWindow) -> None:
             for previous, current in pairwise(positions)
         ]
         assert all(delta >= 0 for delta in deltas)
-        assert max(deltas, default=0) <= 2
+        assert max(deltas, default=0) <= MAX_MOTION_DELTA
         assert round(window.speech_motion_y * window.character_scale) == 0
 
 

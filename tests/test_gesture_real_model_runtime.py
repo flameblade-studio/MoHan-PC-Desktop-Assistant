@@ -35,6 +35,7 @@ MODELS = HandModelPaths(
 )
 WIDTH = 320
 HEIGHT = 240
+MAX_SUBMIT_FRAME_SECONDS = 0.10
 
 
 class Runtime:
@@ -100,7 +101,7 @@ def test_real_provider_controller_is_nonblocking_and_no_hand_stays_ready() -> No
     frame = blank_frame()
     started = time.monotonic()
     controller.submit_frame(frame, WIDTH, HEIGHT)
-    assert time.monotonic() - started < 0.10
+    assert time.monotonic() - started < MAX_SUBMIT_FRAME_SECONDS
     deadline = time.monotonic() + 5.0
     while runtime.calls == 0 and time.monotonic() < deadline:
         application.processEvents()

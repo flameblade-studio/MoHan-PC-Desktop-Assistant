@@ -34,7 +34,7 @@ class PixelMask:
             raise ValueError("Mask dimensions must be positive.")
         if len(self.values) != self.width * self.height:
             raise ValueError("Mask size does not match its dimensions.")
-        if any(value not in (0, 1) for value in self.values):
+        if any(value not in {0, 1} for value in self.values):
             raise ValueError("Mask values must be binary.")
 
 

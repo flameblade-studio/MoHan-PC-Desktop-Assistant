@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import io
 lazy import sys
+lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from urllib.error import HTTPError, URLError
 
@@ -13,10 +14,15 @@ lazy from safe_error import (
     sanitize_error,
 )
 
+HTTP_BAD_GATEWAY = 502
+HTTP_TOO_MANY_REQUESTS = 429
+HTTP_GATEWAY_TIMEOUT = 504
+HTTP_SERVICE_UNAVAILABLE = 503
 
+
+@dataclass(frozen=True)
 class _Response:
-    def __init__(self, status_code: int) -> None:
-        self.status_code = status_code
+    status_code: int
 
 
 class _ResponseError(Exception):
@@ -111,20 +117,20 @@ def _assert_http_status_is_preserved_safely() -> None:
         assert str(status) in str(safe)
 
     response_error = sanitize_error(_ResponseError("opaque", 502))
-    assert response_error.http_status == 502
+    assert response_error.http_status == HTTP_BAD_GATEWAY
     assert response_error.diagnostic is SafeDiagnostic.REMOTE_SERVICE_FAILURE
 
     parsed = sanitize_error("HTTP/1.1 429 followed by untrusted Unicode 🔐")
-    assert parsed.http_status == 429
+    assert parsed.http_status == HTTP_TOO_MANY_REQUESTS
     assert parsed.diagnostic is SafeDiagnostic.RATE_LIMITED
 
     exception_text = sanitize_error(RuntimeError("HTTP 504", *_bait_details()))
-    assert exception_text.http_status == 504
+    assert exception_text.http_status == HTTP_GATEWAY_TIMEOUT
     assert exception_text.diagnostic is SafeDiagnostic.REQUEST_TIMEOUT
     assert "NOT-A-REAL-SECRET" not in _surfaces(exception_text)
 
     explicit_wins = sanitize_error("HTTP 401", http_status=503)
-    assert explicit_wins.http_status == 503
+    assert explicit_wins.http_status == HTTP_SERVICE_UNAVAILABLE
     assert explicit_wins.diagnostic is SafeDiagnostic.REMOTE_SERVICE_FAILURE
 
 

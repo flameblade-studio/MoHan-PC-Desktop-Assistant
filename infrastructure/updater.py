@@ -15,6 +15,7 @@ lazy from urllib.request import Request, urlopen
 
 MAX_MANIFEST_BYTES = 256 * 1024
 MAX_INSTALLER_BYTES = 750 * 1024 * 1024
+HTTP_NOT_FOUND = 404
 ALLOWED_DOWNLOAD_HOSTS = frozenset(
     {
         "api.github.com",
@@ -152,7 +153,7 @@ class UpdateManager:
         except HTTPError as exc:
             failure = (
                 "目前沒有符合更新頻道的已發布版本。"
-                if exc.code == 404
+                if exc.code == HTTP_NOT_FOUND
                 else "GitHub 更新服務回應錯誤。"
             )
         except (URLError, TimeoutError, OSError):

@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import QApplication, QScrollArea
 
-lazy from flagship_ui import FlagshipControlCenter
+lazy from flagship_ui import ControlCenterDependencies, FlagshipControlCenter
 lazy from infrastructure.db import StudioDB, StudioDBSettingsPort
 lazy from infrastructure.openai_vision_preferences_store import (
     OpenAIVisionPreferencesStore,
@@ -26,8 +26,10 @@ def build_center(root: Path, language: str, *, key_available: bool = True):
         db,
         root,
         language=language,
-        openai_vision_store=store,
-        openai_vision_key_available=lambda: key_available,
+        dependencies=ControlCenterDependencies(
+            openai_vision_store=store,
+            openai_vision_key_available=lambda: key_available,
+        ),
     )
     return db, store, center
 

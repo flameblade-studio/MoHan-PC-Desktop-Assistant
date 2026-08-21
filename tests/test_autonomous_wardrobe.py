@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 lazy import sys
-lazy from datetime import datetime, timedelta, timezone
+lazy from datetime import UTC, datetime, timedelta
 lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -14,7 +14,7 @@ lazy from domain.autonomous_wardrobe import (
 )
 lazy from domain.outfit_pack import AutonomousStyleProfile
 
-NOW = datetime(2026, 8, 15, 12, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 8, 15, 12, 0, tzinfo=UTC)
 
 
 def profile(

@@ -7,6 +7,13 @@ lazy from typing import Final
 PREFERENCES_FORMAT: Final = "mohan-companion-proactivity-preferences"
 PREFERENCES_VERSION: Final = 1
 
+# Time and limit bounds (seconds) for proactivity thresholds.
+MIN_BRIEF_ABSENCE_SECONDS: Final = 60
+MAX_BRIEF_ABSENCE_SECONDS: Final = 12 * 60 * 60
+MIN_LONG_WAIT_SECONDS: Final = 5 * 60
+MAX_LONG_WAIT_SECONDS: Final = 30 * 24 * 60 * 60
+MAX_DAILY_LIMIT: Final = 32
+
 MASTER_ENABLED_KEY: Final = "companion_proactivity_enabled"
 MEAL_ENABLED_KEY: Final = "companion_meal_reminders_enabled"
 HYDRATION_ENABLED_KEY: Final = "companion_hydration_reminders_enabled"
@@ -97,17 +104,17 @@ class CompanionProactivityPreferences:
             raise TypeError("Companion proactivity flags must be boolean.")
         if (
             type(self.brief_absence_seconds) is not int
-            or not 60 <= self.brief_absence_seconds <= 12 * 60 * 60
+            or not MIN_BRIEF_ABSENCE_SECONDS <= self.brief_absence_seconds <= MAX_BRIEF_ABSENCE_SECONDS
         ):
             raise ValueError("Brief absence threshold is invalid.")
         if (
             type(self.long_wait_seconds) is not int
-            or not 5 * 60 <= self.long_wait_seconds <= 30 * 24 * 60 * 60
+            or not MIN_LONG_WAIT_SECONDS <= self.long_wait_seconds <= MAX_LONG_WAIT_SECONDS
         ):
             raise ValueError("Long wait threshold is invalid.")
         if self.brief_absence_seconds >= self.long_wait_seconds:
             raise ValueError("Brief absence and long wait thresholds overlap.")
-        if type(self.daily_limit) is not int or not 1 <= self.daily_limit <= 32:
+        if type(self.daily_limit) is not int or not 1 <= self.daily_limit <= MAX_DAILY_LIMIT:
             raise ValueError("Daily proactivity limit is invalid.")
 
 
@@ -192,13 +199,13 @@ def _safe_field_value(
     if name in _BOOLEAN_FIELDS:
         return value if type(value) is bool else default
     if name == "brief_absence_seconds":
-        return value if type(value) is int and 60 <= value <= 43200 else default
+        return value if type(value) is int and MIN_BRIEF_ABSENCE_SECONDS <= value <= MAX_BRIEF_ABSENCE_SECONDS else default
     if name == "long_wait_seconds":
         return (
             value
-            if type(value) is int and 300 <= value <= 2592000
+            if type(value) is int and MIN_LONG_WAIT_SECONDS <= value <= MAX_LONG_WAIT_SECONDS
             else default
         )
     if name == "daily_limit":
-        return value if type(value) is int and 1 <= value <= 32 else default
+        return value if type(value) is int and 1 <= value <= MAX_DAILY_LIMIT else default
     raise AssertionError("Unknown companion proactivity preference field.")

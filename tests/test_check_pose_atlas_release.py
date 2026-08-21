@@ -62,7 +62,7 @@ def hand_points(side: str) -> tuple[Point, ...]:
     else:
         wrist, bases, tips = Point(105, 61), ((85, 50), (92, 49), (101, 48), (110, 49), (119, 51)), ((76, 38), (92, 25), (101, 21), (110, 26), (119, 35))
     result = [wrist]
-    for base, tip in zip(bases, tips):
+    for base, tip in zip(bases, tips, strict=False):
         result.extend(Point(base[0] + (tip[0] - base[0]) * step / 3, base[1] + (tip[1] - base[1]) * step / 3) for step in range(4))
     return tuple(result)
 

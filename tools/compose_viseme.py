@@ -6,6 +6,10 @@ lazy from pathlib import Path
 
 lazy from PySide6.QtGui import QColor, QImage
 
+BLEND_CORE_THRESHOLD = 0.55
+BLEND_FALLOFF = 0.45
+ARGV_COUNT = 5
+
 
 def smoothstep(value: float) -> float:
     value = max(0.0, min(1.0, value))
@@ -38,8 +42,8 @@ def composite_mouth(
             )
             if distance >= 1.0:
                 continue
-            weight = 1.0 if distance <= 0.55 else 1.0 - smoothstep(
-                (distance - 0.55) / 0.45
+            weight = 1.0 if distance <= BLEND_CORE_THRESHOLD else 1.0 - smoothstep(
+                (distance - BLEND_CORE_THRESHOLD) / BLEND_FALLOFF
             )
             original = base.pixelColor(x, y)
             edited = generated.pixelColor(x, y)
@@ -56,7 +60,7 @@ def composite_mouth(
 
 
 def main() -> int:
-    if len(sys.argv) != 5:
+    if len(sys.argv) != ARGV_COUNT:
         raise SystemExit(
             "usage: compose_viseme.py BASE GENERATED OUTPUT X,Y,W,H"
         )

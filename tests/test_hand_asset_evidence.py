@@ -87,7 +87,7 @@ def draw_hands(pixels, omit, omit_hand, omit_hands, fused) -> None:
             for index in indices:
                 disk(pixels, hand[index])
         if fused:
-            for first_name, second_name in zip(("index", "middle", "ring"), ("middle", "ring", "pinky")):
+            for first_name, second_name in zip(("index", "middle", "ring"), ("middle", "ring", "pinky"), strict=False):
                 for position in (1, 2, 3):
                     line(pixels, hand[FINGERS[first_name][position]], hand[FINGERS[second_name][position]], 2)
 

@@ -29,6 +29,12 @@ lazy from infrastructure.hand_landmark_provider import (
 )
 
 PRIVATE_FRAME = b"performance-contract-private-frame"
+MIN_GESTURE_SAMPLE_COUNT = 10
+MAX_GESTURE_SAMPLE_COUNT = 11
+VISION_SAMPLE_COUNT = 2
+MIN_GESTURE_INTERVAL = 0.099
+MIN_VISION_INTERVAL = 0.999
+MAX_RUNTIME_STATE_ENTRIES = 2
 
 
 class _Clock:
@@ -59,13 +65,13 @@ def test_camera_sampling_has_independent_one_and_ten_hertz_budgets() -> None:
         clock.now = 100.0 + index / 100.0
         controller._emit_due_rgb_frames(image, clock.now)
 
-    assert 10 <= len(gesture_times) <= 11
-    assert len(vision_times) == 2
+    assert MIN_GESTURE_SAMPLE_COUNT <= len(gesture_times) <= MAX_GESTURE_SAMPLE_COUNT
+    assert len(vision_times) == VISION_SAMPLE_COUNT
     assert all(
-        later - earlier >= 0.099
+        later - earlier >= MIN_GESTURE_INTERVAL
         for earlier, later in pairwise(gesture_times)
     )
-    assert vision_times[1] - vision_times[0] >= 0.999
+    assert vision_times[1] - vision_times[0] >= MIN_VISION_INTERVAL
 
 
 def test_controller_allows_one_inference_and_drops_busy_frames() -> None:
@@ -107,8 +113,8 @@ def test_runtime_state_remains_bounded_during_many_skeleton_updates() -> None:
 
     final_shape = _runtime_state_shape(runtime)
     assert initial_shape[0] == final_shape[0]
-    assert final_shape[1] <= 2
-    assert final_shape[2] <= 2
+    assert final_shape[1] <= MAX_RUNTIME_STATE_ENTRIES
+    assert final_shape[2] <= MAX_RUNTIME_STATE_ENTRIES
     assert final_shape[3] <= len(configuration.definitions)
 
 

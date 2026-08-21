@@ -13,6 +13,13 @@ lazy from infrastructure.db import StudioDB
 lazy from infrastructure.memory_index import MemoryVectorIndex
 lazy from time_utils import local_wall_time
 
+TARGET_ACTIVE_COUNT = 400
+EXPECTED_PRUNED_COUNT = 107
+EXPECTED_ARCHIVED_COUNT = 107
+EXPECTED_ARCHIVED_AFTER_RESTORE = 106
+RANK_RESULT_COUNT = 24
+MAX_RANK_ELAPSED_MS = 500
+
 
 def _insert_old_low_importance_memories(
     db: StudioDB,
@@ -82,16 +89,16 @@ def run() -> None:
             )
             _insert_old_low_importance_memories(db, 505)
             result = db.optimize_memories(max_active=500, target_active=400)
-            assert result["active"] == 400
-            assert result["pruned"] == 107
+            assert result["active"] == TARGET_ACTIVE_COUNT
+            assert result["pruned"] == EXPECTED_PRUNED_COUNT
             assert db.memory(protected_manual) is not None
             assert db.memory(protected_conversation) is not None
             archived = db.list_archived_memories(200)
-            assert len(archived) == 107
+            assert len(archived) == EXPECTED_ARCHIVED_COUNT
             restored_id = db.restore_archived_memory(int(archived[0]["id"]))
             assert restored_id > 0
             assert db.memory(restored_id) is not None
-            assert len(db.list_archived_memories(200)) == 106
+            assert len(db.list_archived_memories(200)) == EXPECTED_ARCHIVED_AFTER_RESTORE
         finally:
             db.close()
 
@@ -113,8 +120,8 @@ def run() -> None:
     started = time.perf_counter()
     ranked = index.rank("記憶檢索專案 777", rows, 24)
     elapsed_ms = (time.perf_counter() - started) * 1000
-    assert len(ranked) == 24
-    assert elapsed_ms < 500, elapsed_ms
+    assert len(ranked) == RANK_RESULT_COUNT
+    assert elapsed_ms < MAX_RANK_ELAPSED_MS, elapsed_ms
 
     print(f"MEMORY_VECTOR_AND_PRUNING_OK elapsed_ms={elapsed_ms:.2f}")
 

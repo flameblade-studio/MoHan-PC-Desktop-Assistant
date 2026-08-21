@@ -6,6 +6,8 @@ lazy from pathlib import Path
 
 lazy import packaged_self_test
 
+FAILURE_EXIT_CODE = 2
+
 
 class FakeWindow:
     def __init__(self) -> None:
@@ -50,7 +52,7 @@ def test_single_failure_reports_only_stable_check_name(tmp_path: Path, monkeypat
         packaged_self_test._SelfTestCheck("voice.windows_default", False),
     )
     exit_code, token, error = run_with_checks(tmp_path, monkeypatch, checks)
-    assert exit_code == 2
+    assert exit_code == FAILURE_EXIT_CODE
     assert token == "PACKAGED_SELFTEST_FAILED"
     assert error == "PACKAGED_SELFTEST_FAILED_CHECKS=voice.windows_default\n"
 

@@ -64,6 +64,7 @@ lazy from presentation.companion_wait_expression import (
     start_ai_wait_expression,
 )
 lazy from presentation.ui_localization import ui_text
+lazy import contextlib
 
 __all__ = ("CompanionSpeechRuntimeMixin",)
 
@@ -972,10 +973,8 @@ class CompanionSpeechRuntimeMixin:
     ) -> None:
         # Track consecutive failures so a repeatedly failing provider is
         # proactively demoted on the next synthesis request.
-        try:
+        with contextlib.suppress(AttributeError, LookupError):
             self.speech_providers.record_failure(failed_provider_id)
-        except (AttributeError, LookupError):
-            pass
         language = profile_setting(self.db, "ui_language")
         safe_message = safe_error_message(language, message)
         credentials = self._speech_credentials()
@@ -1052,10 +1051,8 @@ class CompanionSpeechRuntimeMixin:
         self._speech_audio_finished()
 
     def _windows_voice_failed(self, message: str) -> None:
-        try:
+        with contextlib.suppress(AttributeError, LookupError):
             self.speech_providers.record_failure(VOICE_ENGINE_SYSTEM)
-        except (AttributeError, LookupError):
-            pass
         platform_name = self.platform_services.capabilities.display_name
         language = profile_setting(self.db, "ui_language")
         self.dashboard.set_api_status(
@@ -1115,10 +1112,8 @@ class CompanionSpeechRuntimeMixin:
             animate_gesture=False,
         )
         completed_source = self.active_speech_source
-        try:
+        with contextlib.suppress(AttributeError, LookupError):
             self.speech_providers.record_success(self.active_speech_engine)
-        except (AttributeError, LookupError):
-            pass
         self._complete_proactive_companion_speech(True)
         self.speech_playing = False
         self.active_speech_text = ""

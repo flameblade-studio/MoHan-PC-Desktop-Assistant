@@ -24,6 +24,9 @@ lazy from vision_domain import (
 )
 lazy from vision_runtime import VisionReadiness
 
+EXPECTED_GENERATION = 7
+EXPECTED_CONSECUTIVE_FAILURES = 2
+
 
 class MemorySecretStore:
     def load(self) -> str:
@@ -89,7 +92,7 @@ def assert_worker_exception_never_escapes(application: QCoreApplication) -> None
     task.run()
     application.processEvents()
     assert failures.count() == 1
-    assert failures.at(0)[-1] == 7
+    assert failures.at(0)[-1] == EXPECTED_GENERATION
     assert str(failures.at(0)[0]) == "RuntimeError"
     assert completions.count() == 0
 
@@ -109,7 +112,7 @@ def assert_controller_reports_and_recovers_from_worker_failure(
     controller._analysis_failed("RuntimeError", controller._generation)
     application.processEvents()
     assert health_events.count() == 0
-    assert controller._consecutive_analysis_failures == 2
+    assert controller._consecutive_analysis_failures == EXPECTED_CONSECUTIVE_FAILURES
     controller._analysis_failed("RuntimeError", controller._generation)
     application.processEvents()
     assert health_events.count() == 1

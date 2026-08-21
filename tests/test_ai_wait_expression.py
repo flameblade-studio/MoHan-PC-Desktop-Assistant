@@ -18,6 +18,9 @@ lazy from infrastructure.db import StudioDB
 lazy from presentation.companion_window import CompanionWindow
 lazy from presentation.dashboard_window import Dashboard
 
+PAIR_LENGTH = 2
+MIN_COMPLEX_WAIT_DELAY_MS = 1_000
+
 type ScheduledCallback = tuple[int, Callable[[], None]]
 
 
@@ -82,8 +85,8 @@ def _assert_complex_wait_and_completion(
         dashboard,
         "請分析兩個方案的利弊、風險與優先順序。",
     )
-    assert len(complex_callbacks) == 2
-    assert complex_callbacks[0][0] >= 1_000
+    assert len(complex_callbacks) == PAIR_LENGTH
+    assert complex_callbacks[0][0] >= MIN_COMPLEX_WAIT_DELAY_MS
     assert window.state == "idle"
     complex_callbacks[0][1]()
     assert window.state == "thinking_front"

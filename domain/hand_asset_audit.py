@@ -9,7 +9,43 @@ lazy from enum import StrEnum
 lazy from itertools import pairwise
 lazy from pathlib import Path
 
+# Re-exported from the centralized constants module for a single source of truth.
+lazy from domain.constants import (
+    BYTES_PER_PIXEL,
+    BYTE_MAX,
+    PNG_BIT_DEPTH,
+    PNG_COLOR_TYPE_RGBA,
+)
+
 LANDMARK_COUNT = 21
+JOINTS_PER_FINGER = 3
+MAX_OCCLUDED_JOINTS = 2
+
+# PNG decoding constraints (RFC 2083 / RGBA8 hand assets).
+MAX_PNG_DIMENSION = 4096
+
+# Skin-detection thresholds for hand silhouettes.
+MIN_OPAQUE_ALPHA = 96
+MIN_SKIN_RED = 80
+SKIN_RED_GREEN_RATIO = 0.85
+MIN_SKIN_CHANNEL_SPREAD = 10
+
+# Finger-proportion bounds (ratio of each finger to the middle finger).
+INDEX_TO_MIDDLE_MIN = 0.72
+INDEX_TO_MIDDLE_MAX = 1.10
+RING_TO_MIDDLE_MIN = 0.72
+RING_TO_MIDDLE_MAX = 1.05
+PINKY_TO_MIDDLE_MIN = 0.48
+PINKY_TO_MIDDLE_MAX = 0.86
+
+# Coverage / fusion thresholds.
+MIN_COVERAGE = 0.35
+MIN_BRIDGE_COVERAGE = 0.55
+MAX_BRIDGE_LUMINANCE_SPREAD = 10.0
+MIN_FUSED_SEPARATION = 6.0
+MAX_UNEXPECTED_SKIN_PIXELS = 28
+HAND_SPAN_THRESHOLD = 64.0
+
 FINGERS = frozendict({
     "thumb": (1, 2, 3, 4),
     "index": (5, 6, 7, 8),
@@ -147,7 +183,7 @@ def _png_chunks(data: bytes) -> tuple[int, int, bytes]:
             compressed.extend(payload)
         elif kind == b"IEND":
             break
-    if not (1 <= width <= 4096 and 1 <= height <= 4096):
+    if not (1 <= width <= MAX_PNG_DIMENSION and 1 <= height <= MAX_PNG_DIMENSION):
         raise ValueError
     return width, height, bytes(compressed)
 
@@ -156,14 +192,14 @@ def _png_dimensions(payload: bytes) -> tuple[int, int]:
     width, height, depth, color, compression, filtering, interlace = struct.unpack(
         ">IIBBBBB", payload
     )
-    if depth != 8 or color != 6 or compression or filtering or interlace:
+    if depth != PNG_BIT_DEPTH or color != PNG_COLOR_TYPE_RGBA or compression or filtering or interlace:
         raise ValueError
     return width, height
 
 
 def _decode_png_rows(compressed: bytes, width: int, height: int) -> bytes:
     raw = zlib.decompress(compressed)
-    stride = width * 4
+    stride = width * BYTES_PER_PIXEL
     if len(raw) != height * (stride + 1):
         raise ValueError
     rows, previous, cursor = bytearray(), bytearray(stride), 0
@@ -181,9 +217,9 @@ def _unfilter_row(current: bytearray, previous: bytearray, filter_type: int) -> 
     if filter_type not in range(5):
         raise ValueError
     for index in range(len(current)):
-        left = current[index - 4] if index >= 4 else 0
+        left = current[index - BYTES_PER_PIXEL] if index >= BYTES_PER_PIXEL else 0
         above = previous[index]
-        upper_left = previous[index - 4] if index >= 4 else 0
+        upper_left = previous[index - BYTES_PER_PIXEL] if index >= BYTES_PER_PIXEL else 0
         predictors = (
             0,
             left,
@@ -191,7 +227,7 @@ def _unfilter_row(current: bytearray, previous: bytearray, filter_type: int) -> 
             (left + above) // 2,
             _paeth(left, above, upper_left),
         )
-        current[index] = (current[index] + predictors[filter_type]) & 255
+        current[index] = (current[index] + predictors[filter_type]) & BYTE_MAX
 
 
 def _paeth(left: int, above: int, upper_left: int) -> int:
@@ -205,7 +241,7 @@ def _distance(first: Point, second: Point) -> float:
 
 
 def _near_color(pixel: tuple[int, int, int, int], rgb: tuple[int, int, int], tolerance: int) -> bool:
-    return pixel[3] >= 96 and max(abs(pixel[index] - rgb[index]) for index in range(3)) <= tolerance
+    return pixel[3] >= MIN_OPAQUE_ALPHA and max(abs(pixel[index] - rgb[index]) for index in range(3)) <= tolerance
 
 
 def _coverage(
@@ -225,7 +261,13 @@ def _coverage(
 
 def _skin(pixel: tuple[int, int, int, int]) -> bool:
     red, green, blue, alpha = pixel
-    return alpha >= 96 and red >= 80 and red > blue and red >= green * 0.85 and max(red, green, blue) - min(red, green, blue) >= 10
+    return (
+        alpha >= MIN_OPAQUE_ALPHA
+        and red >= MIN_SKIN_RED
+        and red > blue
+        and red >= green * SKIN_RED_GREEN_RATIO
+        and max(red, green, blue) - min(red, green, blue) >= MIN_SKIN_CHANNEL_SPREAD
+    )
 
 
 def _segment_distance(point: Point, first: Point, second: Point) -> float:
@@ -269,7 +311,7 @@ def audit_hand_asset(
             continue
         valid_point_sets.append(projection.landmarks)
         fingers.extend(_audit_projection(image, projection, allowlist, issues))
-    if valid_point_sets and _unexpected_skin_pixels(image, valid_point_sets) > 28:
+    if valid_point_sets and _unexpected_skin_pixels(image, valid_point_sets) > MAX_UNEXPECTED_SKIN_PIXELS:
         issues.append(AuditIssue(IssueCode.EXTRA_DIGIT, None, None, None))
     unique = tuple(dict.fromkeys(issues))
     return HandAuditReport(not unique, unique, tuple(fingers))
@@ -343,9 +385,9 @@ def _finger_proportions_valid(lengths: dict[str, float]) -> bool:
         and middle >= lengths["ring"] * 0.95
         # A near-front relaxed hand can foreshorten its middle finger slightly
         # more than its index finger in a two-dimensional projection.
-        and 0.72 <= lengths["index"] / middle <= 1.10
-        and 0.72 <= lengths["ring"] / middle <= 1.05
-        and 0.48 <= lengths["pinky"] / middle <= 0.86
+        and INDEX_TO_MIDDLE_MIN <= lengths["index"] / middle <= INDEX_TO_MIDDLE_MAX
+        and RING_TO_MIDDLE_MIN <= lengths["ring"] / middle <= RING_TO_MIDDLE_MAX
+        and PINKY_TO_MIDDLE_MIN <= lengths["pinky"] / middle <= PINKY_TO_MIDDLE_MAX
     )
 
 
@@ -367,7 +409,7 @@ def _audit_finger(
         _record_issue(issues, finger_issues, IssueCode.JOINT_ORDER, projection.side, finger)
     occluded = [index for index in indices if index in occlusion_map]
     if (
-        len(occluded) > 2
+        len(occluded) > MAX_OCCLUDED_JOINTS
         or indices[-1] in occluded
         or (indices[0] in occluded and finger != "thumb")
     ):
@@ -376,7 +418,7 @@ def _audit_finger(
         _audit_joint(context, points[index], index, finger, finger_issues)
         for index in indices
     )
-    if covered + len(occluded) < 3:
+    if covered + len(occluded) < JOINTS_PER_FINGER:
         _record_issue(issues, finger_issues, IssueCode.MISSING_DIGIT, projection.side, finger)
     return FingerEvidence(
         projection.side,
@@ -418,7 +460,7 @@ def _joint_issue(
     allowlist: dict[str, Occluder],
 ) -> IssueCode | None:
     if index not in occlusion_map:
-        return None if _coverage(image, point, _skin) >= 0.35 else IssueCode.MISSING_PIXEL_COVERAGE
+        return None if _coverage(image, point, _skin) >= MIN_COVERAGE else IssueCode.MISSING_PIXEL_COVERAGE
     occluder = allowlist.get(occlusion_map[index])
     if occluder is None:
         return IssueCode.INVALID_OCCLUSION
@@ -427,7 +469,7 @@ def _joint_issue(
         point,
         lambda pixel: _near_color(pixel, occluder.rgb, occluder.tolerance),
     )
-    return None if covered >= 0.35 else IssueCode.FALSE_OCCLUSION
+    return None if covered >= MIN_COVERAGE else IssueCode.FALSE_OCCLUSION
 
 
 def _record_issue(
@@ -463,7 +505,7 @@ def _audit_fused_digits(
         # pixels, a closed relaxed hand is ambiguous rather than malformed.
         # Still reject a connected silhouette whose independently separated
         # fingers have fused together.
-        if bridges == 3 and min(separations) >= 6.0:
+        if bridges == JOINTS_PER_FINGER and min(separations) >= MIN_FUSED_SEPARATION:
             issues.append(
                 AuditIssue(
                     IssueCode.FUSED_DIGITS,
@@ -490,10 +532,10 @@ def _finger_bridge(
         )
         for step in range(9)
     )
-    if not all(_coverage(image, sample, _skin, 1) >= 0.55 for sample in samples[1:-1]):
+    if not all(_coverage(image, sample, _skin, 1) >= MIN_BRIDGE_COVERAGE for sample in samples[1:-1]):
         return False
     luminance = tuple(_luminance(image.rgba(round(sample.x), round(sample.y))) for sample in samples)
-    return max(luminance) - min(luminance) < 10.0
+    return max(luminance) - min(luminance) < MAX_BRIDGE_LUMINANCE_SPREAD
 
 
 def _luminance(pixel: tuple[int, int, int, int]) -> float:
@@ -517,7 +559,7 @@ def _unexpected_skin_pixels(
         _skin(image.rgba(x, y))
         and min(
             _segment_distance(Point(x, y), points[first], points[second]) - allowance
-            for points, allowance in zip(point_sets, allowances)
+            for points, allowance in zip(point_sets, allowances, strict=False)
             for first, second in BONES
         ) > 0
         for y in range(top, bottom + 1)
@@ -531,5 +573,5 @@ def _hand_skeleton_allowance(points: tuple[Point, ...]) -> float:
     # open-palm pose.  Keep the allowance proportional to the measured hand
     # span so that it covers the legitimate palm contour without concealing a
     # separate extra digit.
-    scale = 0.165 if hand_span >= 64.0 else 0.14
+    scale = 0.165 if hand_span >= HAND_SPAN_THRESHOLD else 0.14
     return max(3.5, min(18.0, hand_span * scale))

@@ -38,8 +38,9 @@ lazy from visual_social_cues import (
     VisualSocialCueObservation,
 )
 
-OWNER = IdentityObservation(IdentityState.RECOGNIZED, "owner", "Owner", 0.98)
+EXPECTED_OBSERVED_AT = 123.5
 
+OWNER = IdentityObservation(IdentityState.RECOGNIZED, "owner", "Owner", 0.98)
 
 def local_result(
     *,
@@ -208,7 +209,7 @@ def assert_deterministic_and_local_timestamp_preserved() -> None:
         VisualContextFusionRequest(second_generation, local_result(), request_facts)
     )
     assert first == second
-    assert first.observed_at == 123.5
+    assert first.observed_at == EXPECTED_OBSERVED_AT
 
 
 def run() -> None:

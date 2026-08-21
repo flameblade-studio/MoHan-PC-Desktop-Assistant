@@ -21,6 +21,8 @@ ISOLATED_PATH_VARIABLES = (
     "PYTHONPYCACHEPREFIX",
 )
 
+EXPECTED_EXIT_CODE = 23
+
 
 def _test_file(root: Path, name: str, source: str = "") -> None:
     (root / name).write_text(source, encoding="utf-8")
@@ -129,7 +131,7 @@ def test_first_failure_stops_the_sorted_run_and_preserves_exit_code() -> None:
             redirect_stdout(stdout := StringIO()),
             redirect_stderr(stderr := StringIO()),
         ):
-            assert run_all.main() == 23
+            assert run_all.main() == EXPECTED_EXIT_CODE
 
     assert called == ["test_alpha.py", "test_bravo.py", "test_bravo.py"]
     assert stdout.getvalue().splitlines() == [

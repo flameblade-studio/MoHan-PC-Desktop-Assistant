@@ -90,7 +90,7 @@ class PerformancePreferencesStore[SnapshotT]:
 
     def load(self) -> PerformancePreferences:
         version = self._stored_version()
-        if version not in (None, STORE_SCHEMA_VERSION):
+        if version not in {None, STORE_SCHEMA_VERSION}:
             return PerformancePreferences()
         return self._service.load()
 

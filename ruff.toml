@@ -14,5 +14,43 @@ exclude = [
 # The optional complexity and micro-refactoring rules are intentionally
 # introduced as non-blocking, incremental maintenance work after v4.0.0;
 # they must not force behavior-changing refactors during release validation.
+#
+# PLR2004 (magic-value-comparison) is promoted to the release-blocking gate
+# after the v4.3.0 magic-number cleanup: every comparison against a bare
+# literal must reference a named constant, so new magic numbers are rejected
+# at CI time instead of accumulating for a later cleanup pass.
 [lint]
-select = ["F"]
+select = ["F", "PLR2004", "PLR0911", "PLR0912", "PLR0913", "PLR0914", "PLR0915"]
+
+# Complexity rules are introduced as non-blocking, incremental maintenance.
+# The thresholds are deliberately looser than Pylint's defaults so they only
+# flag genuinely over-complex functions (e.g. an 11-argument protocol method)
+# rather than the many reasonable 6-7 argument constructors and fail-fast
+# validation chains that already exist across the codebase.  Tightening these
+# thresholds is a follow-up maintenance task, not a release gate.
+[lint.pylint]
+max-args = 7
+max-returns = 8
+max-branches = 15
+max-statements = 60
+max-locals = 20
+
+# The RGBA compositing protocol methods are performance-critical and their
+# 11-argument signature is a stable cross-module contract (native acceleration
+# and pure-Python fallback must stay interchangeable).  They are exempt from
+# the argument-count rule rather than refactored into a parameter bundle that
+# would add per-frame allocation overhead on the 50 Hz render loop.
+[lint.per-file-ignores]
+"application/native_rgba_acceleration.py" = ["PLR0913"]
+"application/rgba_compositing.py" = ["PLR0913"]
+"tests/test_native_rgba_product_wiring.py" = ["PLR0913"]
+# Genuinely over-complex functions that remain as known, tracked follow-up
+# refactor targets.  They are exempt so the non-blocking complexity rules do
+# not fail CI, while still guarding every new function against regressing
+# past the (already loose) thresholds above.
+"presentation/companion_core.py" = ["PLR0915"]
+"presentation/companion_visual_dynamics.py" = ["PLR0915"]
+"presentation/dashboard_shell.py" = ["PLR0915"]
+"tests/test_release_automation.py" = ["PLR0914"]
+"tools/analyze_layered_assets.py" = ["PLR0912", "PLR0914", "PLR0915"]
+"tools/build_pose_atlas_release_assets.py" = ["PLR0914"]

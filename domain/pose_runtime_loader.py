@@ -14,6 +14,11 @@ type LoadStatus = Literal["activated", "rejected", "cancelled", "stale"]
 type RigContract = Literal["full-body-v4", "legacy-v3"]
 FULL_BODY_RIG_ID = "mohan-full-body-v1"
 LEGACY_YAWS = (-30, 0, 30)
+SHA256_HEX_LENGTH = 64
+SERVICES_WITH_LIMITS = 3
+SERVICES_WITHOUT_LIMITS = 2
+FULL_BODY_SCHEMA_VERSION = 2
+VERSION_RANGE_LENGTH = 2
 FULL_BODY_CORRECTIONS = frozenset({
     "left-leg-correction", "right-leg-correction", "left-foot-correction",
     "right-foot-correction", "left-sole-correction", "right-sole-correction",
@@ -137,9 +142,9 @@ class PoseRuntimeLoader:
         *services: object,
         limits: PoseRuntimeLimits = DEFAULT_RUNTIME_LIMITS,
     ) -> None:
-        if len(services) == 3 and isinstance(services[-1], PoseRuntimeLimits):
+        if len(services) == SERVICES_WITH_LIMITS and isinstance(services[-1], PoseRuntimeLimits):
             auditor, activator, limits = services
-        elif len(services) == 2:
+        elif len(services) == SERVICES_WITHOUT_LIMITS:
             auditor, activator = services
         else:
             raise TypeError("Pose runtime requires an auditor and activator.")
@@ -348,7 +353,7 @@ class PoseRuntimeLoader:
         problems: list[str],
     ) -> None:
         checks = (
-            (manifest.schema_version == 2, "invalid_full_body_schema"),
+            (manifest.schema_version == FULL_BODY_SCHEMA_VERSION, "invalid_full_body_schema"),
             (manifest.body_profile_id == MOHAN_BODY_PROFILE.profile_id, "body_profile_mismatch"),
             (
                 self._range_contains(
@@ -423,7 +428,7 @@ class PoseRuntimeLoader:
 
     @staticmethod
     def _valid_hash(value: str) -> bool:
-        return len(value) == 64 and all(
+        return len(value) == SHA256_HEX_LENGTH and all(
             character in "0123456789abcdef" for character in value
         )
 
@@ -431,7 +436,7 @@ class PoseRuntimeLoader:
     def _range_contains(value: tuple[int, int] | None, version: int) -> bool:
         return bool(
             value is not None
-            and len(value) == 2
+            and len(value) == VERSION_RANGE_LENGTH
             and all(isinstance(item, int) and not isinstance(item, bool) for item in value)
             and value[0] <= version < value[1]
         )

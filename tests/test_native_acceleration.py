@@ -9,6 +9,8 @@ lazy import pytest
 lazy from application.native_acceleration import NativeAcceleration
 lazy from domain import lip_sync, pcm_audio
 
+NATIVE_OPERATION_COUNT = 5
+
 
 def _pcm(*samples: int) -> bytes:
     return b"".join(sample.to_bytes(2, "little", signed=True) for sample in samples)
@@ -234,7 +236,7 @@ def test_verified_operations_prevalidate_every_request_against_python_contract(
 
     assert calls == dict.fromkeys(calls, 0)
     status = accelerator.status()
-    assert len(status.verified_operations) == 5
+    assert len(status.verified_operations) == NATIVE_OPERATION_COUNT
     assert status.disabled_operations == ()
     assert status.operation_failures == ()
 
@@ -316,7 +318,7 @@ def test_every_native_operation_fault_falls_back(caplog) -> None:
         ("scale_pcm16", 1),
         ("stereo_to_mono_pcm16", 1),
     )
-    assert caplog.text.count("RuntimeError") == 5
+    assert caplog.text.count("RuntimeError") == NATIVE_OPERATION_COUNT
     assert mono.hex() not in caplog.text
 
 

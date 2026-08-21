@@ -12,6 +12,9 @@ lazy from domain.pose_runtime_loader import PoseAtlasManifest
 
 ReleaseStatus = Literal["releasable", "blocked"]
 
+CANONICAL_YAW_STRING_LENGTH = 4
+SHA256_HEX_LENGTH = 64
+
 
 class AuditReportPort(Protocol):
     passed: bool
@@ -260,14 +263,14 @@ def _safe_view_id(value: str) -> str | None:
     canonical = {canonical_view_id(yaw) for yaw in CANONICAL_YAWS}
     if value in canonical:
         return value
-    if len(value) == 4 and value[:1] in "+-" and value[1:].isdigit():
+    if len(value) == CANONICAL_YAW_STRING_LENGTH and value[:1] in "+-" and value[1:].isdigit():
         yaw = int(value)
         return canonical_view_id(yaw) if yaw in CANONICAL_YAWS else None
     return None
 
 
 def _safe_hash(value: str) -> bool:
-    return len(value) == 64 and all(character in "0123456789abcdef" for character in value)
+    return len(value) == SHA256_HEX_LENGTH and all(character in "0123456789abcdef" for character in value)
 
 
 def _manifest_hash(manifest: PoseAtlasManifest) -> str:

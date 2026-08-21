@@ -19,6 +19,8 @@ lazy from domain.gesture_configuration import (
 GESTURE_TEMPLATES_FORMAT: Final = "mohan-protected-gesture-templates"
 GESTURE_TEMPLATES_VERSION: Final = 1
 MAX_GESTURE_TEMPLATES_BYTES: Final = 2 * 1024 * 1024
+MAX_GESTURE_ID_LENGTH = 80
+LANDMARK_COORDINATE_DIMENSIONS = 3
 _PAYLOAD_KEYS: Final = frozenset({"format", "version", "templates"})
 _BOUNDARY_ERRORS: Final = (Exception,)
 
@@ -184,7 +186,7 @@ def _decode_templates(payload: object) -> GestureTemplates:
         if (
             not isinstance(gesture_id, str)
             or not gesture_id.startswith("custom:")
-            or len(gesture_id) > 80
+            or len(gesture_id) > MAX_GESTURE_ID_LENGTH
         ):
             raise GestureTemplateStoreError(
                 "A protected gesture-template identifier is invalid."
@@ -214,7 +216,7 @@ def _decode_sample(payload: object) -> GestureSample:
             if (
                 not isinstance(coordinates, Sequence)
                 or isinstance(coordinates, (str, bytes))
-                or len(coordinates) != 3
+                or len(coordinates) != LANDMARK_COORDINATE_DIMENSIONS
                 or not all(type(value) in {int, float} for value in coordinates)
             ):
                 raise GestureTemplateStoreError(

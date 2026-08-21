@@ -1,5 +1,4 @@
 # These fixtures intentionally model MoHan's offset-free local wall clock.
-# ruff: noqa: DTZ001
 
 lazy import json
 lazy import sys
@@ -39,6 +38,9 @@ lazy from integrations.remote_control import (
 )
 lazy from workflow_engine import Workflow, schedule_due
 
+RED_RISK_CONFIRMATION_COUNT = 2
+HTTP_UNAUTHORIZED = 401
+
 
 def assert_untrusted_instruction_guards() -> None:
     assert contains_untrusted_instruction(
@@ -55,7 +57,7 @@ def assert_policy_engine_contract() -> None:
         ActionRequest("delete_file", "永久刪除", {"path": "C:/x"})
     )
     assert blocked.risk == RiskLevel.RED
-    assert blocked.confirmation_count == 2
+    assert blocked.confirmation_count == RED_RISK_CONFIRMATION_COUNT
     never = PolicyEngine({"payment": "允許"}).evaluate(
         ActionRequest("payment", "付款")
     )
@@ -208,7 +210,7 @@ def assert_http_unauthorized(request: Request, message: str) -> None:
     try:
         urlopen(request, timeout=3)
     except HTTPError as exc:
-        assert exc.code == 401
+        assert exc.code == HTTP_UNAUTHORIZED
     else:
         raise AssertionError(message)
 

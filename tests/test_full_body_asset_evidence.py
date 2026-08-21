@@ -21,6 +21,8 @@ WIDTH = 64
 HEIGHT = 64
 YAW = 0
 VIEW_ID = canonical_view_id(YAW)
+EXPECTED_PERSON_HEIGHT = 48
+EXPECTED_SOLE_Y = 55
 
 
 def landmarks() -> dict[str, list[int]]:
@@ -109,8 +111,8 @@ def assert_real_rgba_png_produces_non_image_evidence() -> None:
     assert result.passed
     evidence = result.evidence
     assert evidence is not None
-    assert evidence.person_height == 48
-    assert evidence.left_sole_y == evidence.right_sole_y == 55
+    assert evidence.person_height == EXPECTED_PERSON_HEIGHT
+    assert evidence.left_sole_y == evidence.right_sole_y == EXPECTED_SOLE_Y
     assert evidence.limbs_unclipped
     serialized = repr(result)
     assert "PNG" not in serialized

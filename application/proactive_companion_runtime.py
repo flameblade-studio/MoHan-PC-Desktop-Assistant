@@ -28,6 +28,8 @@ lazy from application.special_occasion import OccasionCue, OccasionKind, Occasio
 lazy from application.wellbeing_app_bridge import ReminderTrigger, SpeakRequest
 lazy from application.wellbeing_reminder import WellbeingCue, WellbeingKind
 lazy from application.wellbeing_runtime import RuntimeAttention, RuntimeCue
+
+MIN_ABSENCE_SECONDS = 60.0
 lazy from domain.companion_proactivity_preferences import (
     CompanionProactivityPreferences,
 )
@@ -201,7 +203,7 @@ class ProactiveCompanionRuntime:
                 candidate
                 for candidate in candidates
                 if candidate.request.source
-                in (ProactiveSource.SCHEDULED, ProactiveSource.WELLBEING)
+                in {ProactiveSource.SCHEDULED, ProactiveSource.WELLBEING}
             )
         available = tuple(
             item
@@ -410,7 +412,7 @@ class ProactiveCompanionRuntime:
         preferences: CompanionProactivityPreferences,
     ) -> _Candidate | None:
         away = environment.absence_duration_seconds
-        if away < 60.0:
+        if away < MIN_ABSENCE_SECONDS:
             return None
         if away >= preferences.long_wait_seconds:
             style = WelcomeStyle.CEREMONIAL

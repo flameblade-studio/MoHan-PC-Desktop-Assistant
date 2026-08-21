@@ -4,6 +4,8 @@ lazy import math
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 
+MIN_CONFIDENCE_THRESHOLD = 0.5
+
 
 class ObservableFacialCue(StrEnum):
     SMILE_LIKE = "smile-like"
@@ -103,5 +105,5 @@ def observe_social_cues(
 
 
 def _validate_threshold(value: float, name: str) -> None:
-    if not math.isfinite(value) or not 0.5 <= value <= 1.0:
+    if not math.isfinite(value) or not MIN_CONFIDENCE_THRESHOLD <= value <= 1.0:
         raise ValueError(f"{name} must be finite and between 0.5 and 1.0.")

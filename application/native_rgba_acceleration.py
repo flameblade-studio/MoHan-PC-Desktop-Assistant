@@ -34,6 +34,23 @@ class NativeRgbaAccelerationStatus:
     operation_failures: tuple[tuple[str, int], ...]
 
 
+@dataclass(frozen=True, slots=True)
+class _RegionCompositeInput:
+    """One anchored layer composite request, grouped to avoid an 11-arg call."""
+
+    target: bytes
+    target_width: int
+    target_height: int
+    source: bytes
+    source_width: int
+    source_height: int
+    anchor_x: int
+    anchor_y: int
+    approved_region: bytes
+    immutable_identity: bytes
+    occlusion_masks: Sequence[bytes] = ()
+
+
 def alpha_over_rgba_python(target: bytes, source: bytes) -> bytes:
     """Return source-over-target RGBA using the established integer formula."""
     _validate_equal_rgba(target, source)
@@ -75,17 +92,19 @@ def composite_region_rgba_python(
     """Composite one anchored layer while enforcing masks and canvas bounds."""
     masks = tuple(occlusion_masks)
     _validate_region_inputs(
-        target,
-        target_width,
-        target_height,
-        source,
-        source_width,
-        source_height,
-        anchor_x,
-        anchor_y,
-        approved_region,
-        immutable_identity,
-        masks,
+        _RegionCompositeInput(
+            target,
+            target_width,
+            target_height,
+            source,
+            source_width,
+            source_height,
+            anchor_x,
+            anchor_y,
+            approved_region,
+            immutable_identity,
+            masks,
+        )
     )
 
     output = bytearray(target)
@@ -190,17 +209,19 @@ class NativeRgbaAcceleration:
     ) -> bytes:
         masks = tuple(occlusion_masks)
         _validate_region_inputs(
-            target,
-            target_width,
-            target_height,
-            source,
-            source_width,
-            source_height,
-            anchor_x,
-            anchor_y,
-            approved_region,
-            immutable_identity,
-            masks,
+            _RegionCompositeInput(
+                target,
+                target_width,
+                target_height,
+                source,
+                source_width,
+                source_height,
+                anchor_x,
+                anchor_y,
+                approved_region,
+                immutable_identity,
+                masks,
+            )
         )
         return self._call_bytes(
             "composite_region_rgba",
@@ -247,7 +268,7 @@ class NativeRgbaAcceleration:
         try:
             native_operation = getattr(module, operation)
             native_result = native_operation(*arguments)
-        except Exception as native_error:  # noqa: BLE001 -- isolated native boundary
+        except Exception as native_error:
             return self._fallback_after_native_failure(
                 operation,
                 native_error,
@@ -301,7 +322,7 @@ class NativeRgbaAcceleration:
                 return self._module
             try:
                 self._module = self._module_loader(NATIVE_RGBA_MODULE_NAME)
-            except Exception as error:  # noqa: BLE001 -- import-time native fault
+            except Exception as error:
                 self._load_error = _error_summary(error)
                 LOGGER.info(
                     "MoHan native RGBA acceleration is unavailable; using Python: %s",
@@ -359,28 +380,16 @@ def _validate_crossfade_weight(second_weight: int) -> None:
         )
 
 
-def _validate_region_inputs(
-    target: bytes,
-    target_width: int,
-    target_height: int,
-    source: bytes,
-    source_width: int,
-    source_height: int,
-    anchor_x: int,
-    anchor_y: int,
-    approved_region: bytes,
-    immutable_identity: bytes,
-    occlusion_masks: Sequence[bytes],
-) -> None:
-    target_pixels = _pixel_count(target_width, target_height)
-    source_pixels = _pixel_count(source_width, source_height)
-    _validate_rgba_size(target, target_pixels)
-    _validate_rgba_size(source, source_pixels)
-    _validate_coordinate(anchor_x)
-    _validate_coordinate(anchor_y)
-    _validate_mask(approved_region, target_pixels)
-    _validate_mask(immutable_identity, target_pixels)
-    for mask in occlusion_masks:
+def _validate_region_inputs(inputs: _RegionCompositeInput) -> None:
+    target_pixels = _pixel_count(inputs.target_width, inputs.target_height)
+    source_pixels = _pixel_count(inputs.source_width, inputs.source_height)
+    _validate_rgba_size(inputs.target, target_pixels)
+    _validate_rgba_size(inputs.source, source_pixels)
+    _validate_coordinate(inputs.anchor_x)
+    _validate_coordinate(inputs.anchor_y)
+    _validate_mask(inputs.approved_region, target_pixels)
+    _validate_mask(inputs.immutable_identity, target_pixels)
+    for mask in inputs.occlusion_masks:
         _validate_mask(mask, target_pixels)
 
 
@@ -412,7 +421,7 @@ def _validate_coordinate(value: int) -> None:
 
 def _validate_mask(mask: bytes, pixels: int) -> None:
     _validate_bytes(mask)
-    if len(mask) != pixels or any(value not in (0, 1) for value in mask):
+    if len(mask) != pixels or any(value not in {0, 1} for value in mask):
         raise RgbaAccelerationError(
             "RGBA masks must be binary and match the target canvas."
         )

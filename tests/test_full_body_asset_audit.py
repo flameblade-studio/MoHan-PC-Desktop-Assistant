@@ -9,6 +9,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from character_pose import CANONICAL_YAWS
 lazy from full_body_asset_audit import FullBodyViewEvidence, audit_full_body_assets
 
+REAR_YAW = -180
+
 
 def evidence(yaw: int) -> FullBodyViewEvidence:
     return FullBodyViewEvidence(
@@ -112,7 +114,7 @@ def assert_invalid_geometry_fails_without_sensitive_output() -> None:
 
 def assert_rear_view_does_not_require_face_evidence() -> None:
     rear = complete_ring()[0]
-    assert rear.yaw_degrees == -180
+    assert rear.yaw_degrees == REAR_YAW
     assert not hasattr(rear, "face_visible")
     assert audit_full_body_assets(complete_ring()).passed
 

@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 GESTURE_DOC = ROOT / "docs" / "GESTURE-INTERACTION.md"
 RELEASE_DRAFT = ROOT / "docs" / "releases" / "v4.0.0-draft.md"
 LANGUAGE_HEADINGS = ("## 繁體中文", "## 简体中文", "## English", "## 日本語")
+LANGUAGE_SECTION_COUNT = 4
 GESTURE_IDS = (
     "wave",
     "silence",
@@ -44,7 +45,7 @@ def language_sections(text: str) -> tuple[str, ...]:
 
 def test_gesture_document_has_complete_ordered_four_language_contract() -> None:
     sections = language_sections(GESTURE_DOC.read_text(encoding="utf-8"))
-    assert len(sections) == 4
+    assert len(sections) == LANGUAGE_SECTION_COUNT
     for section in sections:
         assert "Apache-2.0" in section
         assert "FP32" in section

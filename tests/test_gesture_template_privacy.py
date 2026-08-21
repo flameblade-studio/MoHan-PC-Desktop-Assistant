@@ -22,6 +22,9 @@ lazy from infrastructure.gesture_template_store import (
     ProtectedGestureTemplateStore,
 )
 
+SAMPLE_COUNT = 2
+LANDMARK_COUNT = 21
+
 
 class MemorySecretStore:
     def __init__(
@@ -115,8 +118,8 @@ def test_public_export_excludes_samples_and_protected_export_is_opt_in() -> None
         for definition in protected_payload["definitions"]
         if definition["gesture_id"] == "custom:synthetic-private"
     )
-    assert len(custom["samples"]) == 2
-    assert len(custom["samples"][0]) == 21
+    assert len(custom["samples"]) == SAMPLE_COUNT
+    assert len(custom["samples"][0]) == LANDMARK_COUNT
 
 
 def test_protected_store_saves_loads_and_deletes_templates() -> None:

@@ -22,6 +22,7 @@ REQUIRED_LAYER_RESPONSIBILITIES = frozendict(
     }
 )
 BACK_YAWS = frozenset({-180})
+CANONICAL_YAW_STRING_LENGTH = 4
 
 
 @dataclass(frozen=True, slots=True)
@@ -201,7 +202,7 @@ def _body_problem(problem: str) -> BodyAuditProblem:
 
 def _safe_canonical_yaw(detail: str) -> bool:
     return bool(
-        len(detail) == 4
+        len(detail) == CANONICAL_YAW_STRING_LENGTH
         and detail[0] in "+-"
         and detail[1:].isdigit()
         and int(detail) in CANONICAL_YAWS
@@ -240,7 +241,7 @@ def _safe_identity_detail(detail: str) -> bool:
     if detail in {canonical_view_id(yaw) for yaw in CANONICAL_YAWS}:
         return True
     return bool(
-        len(detail) == 4
+        len(detail) == CANONICAL_YAW_STRING_LENGTH
         and detail[0] in "+-"
         and detail[1:].isdigit()
         and int(detail) in CANONICAL_YAWS

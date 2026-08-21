@@ -64,7 +64,7 @@ lazy from infrastructure.app_resources import set_autostart
 lazy from infrastructure.backup_manager import BackupManager
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
-lazy from infrastructure.face_renderer import ParametricFaceRenderer
+lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
 lazy from infrastructure.multimodal_model_provider import (
     MultimodalModelPaths,
     OpenCVMultiModalModelProvider,
@@ -225,7 +225,7 @@ def create_presentation_ports() -> PresentationPorts:
         portable_secret_binder=bind_dashboard_portable_secrets,
         autostart_configurator=set_autostart,
         validate_face_assets=validate_face_assets,
-        face_renderer_factory=ParametricFaceRenderer,
+        face_renderer_factory=LayeredParametricFaceRenderer,
         visible_windows=visible_windows,
     )
 

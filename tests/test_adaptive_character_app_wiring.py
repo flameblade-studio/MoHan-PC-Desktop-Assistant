@@ -10,9 +10,11 @@ lazy from types import SimpleNamespace
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from adaptive_character_composition import AdaptiveCharacterComposition
+lazy from character_framing import FramingMode
 lazy from companion_window import CompanionWindow
 
 
@@ -24,10 +26,16 @@ class FakeFrame:
 
 
 @dataclass(frozen=True, slots=True)
+class FakeFraming:
+    mode: object
+
+
+@dataclass(frozen=True, slots=True)
 class FakeDecision:
     should_publish: bool
     used_legacy: bool
     frame: object
+    framing: object | None = None
 
 
 class FakeAdaptiveRuntime:
@@ -37,6 +45,7 @@ class FakeAdaptiveRuntime:
         self.cancelled: list[int] = []
         self.requests: list[object] = []
         self.publish = False
+        self.framing_mode: object | None = None
 
     def begin_operation(self) -> int:
         self.generation += 1
@@ -52,7 +61,12 @@ class FakeAdaptiveRuntime:
             return FakeDecision(False, True, legacy)
         frame = FakeFrame(2, 2, bytes((20, 40, 80, 255)) * 4)
         self._stage_frame(frame)
-        return FakeDecision(True, False, frame)
+        framing = (
+            FakeFraming(self.framing_mode)
+            if self.framing_mode is not None
+            else None
+        )
+        return FakeDecision(True, False, frame, framing)
 
 
 @dataclass(frozen=True, slots=True)
@@ -134,6 +148,7 @@ def assert_v4_publish_and_speech_hold_preserve_geometry() -> None:
         )
         assert runtime.requests
         runtime.publish = True
+        runtime.framing_mode = FramingMode.FULL_BODY
         before = window.character.size()
         first = window._dispatch_adaptive_character_frame(atomic_frame())
         second = window._dispatch_adaptive_character_frame(
@@ -171,6 +186,7 @@ def assert_audio_viseme_does_not_reset_full_body_ownership() -> None:
         runtime = factory.runtime
         assert runtime is not None
         runtime.publish = True
+        runtime.framing_mode = FramingMode.FULL_BODY
         decision = window._dispatch_adaptive_character_frame(atomic_frame())
         assert decision is not None and decision.should_publish
         assert window._adaptive_full_body_active is True
@@ -207,6 +223,7 @@ def assert_expression_state_does_not_reset_full_body_ownership() -> None:
         runtime = factory.runtime
         assert runtime is not None
         runtime.publish = True
+        runtime.framing_mode = FramingMode.FULL_BODY
         decision = window._dispatch_adaptive_character_frame(atomic_frame())
         assert decision is not None and decision.should_publish
         assert window._adaptive_full_body_active is True
@@ -221,6 +238,86 @@ def assert_expression_state_does_not_reset_full_body_ownership() -> None:
         window.close()
 
 
+def assert_blink_does_not_reset_full_body_ownership() -> None:
+    """A blink must not overwrite the full-body photograph with a half-body patch.
+
+    The legacy ``_blink`` path composites a half-body blink sprite over the
+    current pixmap.  In full-body mode that would stack a half-body blink patch
+    over the full-body photograph (the reported double image).  The full-body
+    renderer owns its own eyelids from ``blink_opacity``, so a blink must only
+    mutate ``blink_opacity`` and re-compose the full body, never reset the
+    ownership flag or hand the canvas back to the legacy half-body renderer.
+    """
+    factory = FakeFactory()
+    window = CompanionWindow(
+        startup_speech=False,
+        defer_visual_startup=True,
+        adaptive_character_factory=factory,
+        adaptive_character_enabled=True,
+    )
+    try:
+        runtime = factory.runtime
+        assert runtime is not None
+        runtime.publish = True
+        runtime.framing_mode = FramingMode.FULL_BODY
+        decision = window._dispatch_adaptive_character_frame(atomic_frame())
+        assert decision is not None and decision.should_publish
+        assert window._adaptive_full_body_active is True
+
+        window.state = "idle"
+        # ``defer_visual_startup`` skips the blink timer wiring, so provide a
+        # minimal timer for ``_schedule_blink`` to arm without a real event loop.
+        window.blink_timer = QTimer(window)
+        window.blink_timer.setSingleShot(True)
+        window._blink()
+        assert window._adaptive_full_body_active is True, (
+            "_blink must not reset full-body ownership"
+        )
+        assert window.blink_opacity > 0.0, (
+            "_blink must drive blink_opacity for the full-body renderer"
+        )
+    finally:
+        window.close()
+
+
+def assert_half_body_framing_does_not_publish_full_body() -> None:
+    """HALF/CLOSE framing (idle and speech) must keep the half-body poses.
+
+    The v4 full-body photograph is reserved for gestures, hand actions,
+    accessory reveals, owner arrival and special occasions (THREE_QUARTER /
+    FULL_BODY framing).  Idle and speech use HALF framing, which must not
+    publish the full-body photograph — the legacy half-body poses (cheek-rest,
+    left-neutral, front-crossed) stay in charge.
+    """
+    factory = FakeFactory()
+    window = CompanionWindow(
+        startup_speech=False,
+        defer_visual_startup=True,
+        adaptive_character_factory=factory,
+        adaptive_character_enabled=True,
+    )
+    try:
+        runtime = factory.runtime
+        assert runtime is not None
+        runtime.publish = True
+        # HALF framing must not publish the full-body photograph.
+        runtime.framing_mode = FramingMode.HALF
+        decision = window._dispatch_adaptive_character_frame(atomic_frame())
+        assert decision is not None and decision.should_publish
+        assert window._adaptive_full_body_active is False, (
+            "HALF framing must not publish the full-body photograph"
+        )
+        # FULL_BODY framing must publish the full-body photograph.
+        runtime.framing_mode = FramingMode.FULL_BODY
+        decision = window._dispatch_adaptive_character_frame(atomic_frame())
+        assert decision is not None and decision.should_publish
+        assert window._adaptive_full_body_active is True, (
+            "FULL_BODY framing must publish the full-body photograph"
+        )
+    finally:
+        window.close()
+
+
 def run() -> None:
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
         os.environ["LOCALAPPDATA"] = temp
@@ -230,6 +327,8 @@ def run() -> None:
         assert_v4_publish_and_speech_hold_preserve_geometry()
         assert_audio_viseme_does_not_reset_full_body_ownership()
         assert_expression_state_does_not_reset_full_body_ownership()
+        assert_blink_does_not_reset_full_body_ownership()
+        assert_half_body_framing_does_not_publish_full_body()
         application.processEvents()
     print("ADAPTIVE_CHARACTER_APP_WIRING_OK")
 

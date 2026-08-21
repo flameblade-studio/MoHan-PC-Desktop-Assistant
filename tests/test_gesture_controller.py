@@ -33,6 +33,7 @@ lazy from infrastructure.hand_landmark_provider import (
 )
 
 FRAME = b"private-rgb-frame"
+EXPECTED_PROVIDER_CALLS_AFTER_FAILURES = 3
 
 
 class DeferredPool:
@@ -242,7 +243,7 @@ def assert_cancel_stop_and_three_failures_disable(
         )
     )
     state.controller.configure(enabled(), camera_available=True)
-    for index in range(3):
+    for _index in range(3):
         state.controller.submit_frame(FRAME, 3, 2)
         run_task(state, application, index=-1)
     assert not state.controller.sampling_enabled
@@ -250,7 +251,7 @@ def assert_cancel_stop_and_three_failures_disable(
     state.controller.stop()
     assert state.runtime.reset_count >= 1
     state.controller.submit_frame(FRAME, 3, 2)
-    assert len(state.provider.calls) == 3
+    assert len(state.provider.calls) == EXPECTED_PROVIDER_CALLS_AFTER_FAILURES
 
 
 def assert_completed_task_releases_original_bytes(

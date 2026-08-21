@@ -25,6 +25,10 @@ lazy from integrations.azure_voice_catalog import (
 )
 lazy from integrations.speech import play_pcm16_stream_with_visemes
 
+VOICE_LOCALE_PREFIX_LENGTH = 5
+RATE_LIMIT_STATUS = 429
+SERVER_ERROR_BOUNDARY = 500
+
 AZURE_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict({
     "zh-TW": (
         "zh-TW-HsiaoChenNeural",
@@ -372,7 +376,7 @@ def build_azure_ssml(text: str, voice: str) -> bytes:
 
 
 def _voice_locale(voice: str) -> str:
-    return _VOICE_LOCALE.get(voice, voice[:5] if len(voice) >= 5 else "zh-TW")
+    return _VOICE_LOCALE.get(voice, voice[:VOICE_LOCALE_PREFIX_LENGTH] if len(voice) >= VOICE_LOCALE_PREFIX_LENGTH else "zh-TW")
 
 
 def azure_speech_error_message(
@@ -383,9 +387,9 @@ def azure_speech_error_message(
     _ = detail  # Never echo a remote response that could contain user data.
     if status in {401, 403}:
         return _message(locale, "credentials")
-    if status == 429:
+    if status == RATE_LIMIT_STATUS:
         return _message(locale, "quota")
-    if status >= 500:
+    if status >= SERVER_ERROR_BOUNDARY:
         return _message(locale, "service", status=status)
     return _message(locale, "request", status=status)
 

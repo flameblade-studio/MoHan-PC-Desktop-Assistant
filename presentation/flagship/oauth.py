@@ -47,7 +47,7 @@ class OAuthWorker(QRunnable):
             if self.client_secret:
                 token["client_secret"] = self.client_secret
             self.signals.done.emit(self.provider_id, token)
-        except Exception as exc:  # noqa: BLE001 -- OAuth worker reports all failures
+        except Exception as exc:
             self.signals.failed.emit(self.provider_id, str(sanitize_error(exc)))
 
 
