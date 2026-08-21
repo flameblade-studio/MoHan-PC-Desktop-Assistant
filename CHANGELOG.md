@@ -4,6 +4,13 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+## [4.4.2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.4.1...v4.4.2) (2026-08-21)
+
+
+### Bug Fixes
+
+* 完成 v4.4.2 分層說話、多感知與自主製衣修復／完成 v4.4.2 分层说话、多感知与自主制衣修复／Complete v4.4.2 layered speech, multisensory, and autonomous outfit repairs／v4.4.2 レイヤー発話・多感覚・自律衣装修正を完成 ([#83](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/83)) ([2061ea5](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/2061ea5539c417b7583ae6a13f3ef293570ce213))
+
 ## [4.4.1](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.4.0...v4.4.1) (2026-08-21)
 
 
