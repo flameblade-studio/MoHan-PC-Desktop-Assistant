@@ -4,6 +4,47 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+## [4.5.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.4.0...v4.5.0) (2026-08-21)
+
+
+### Features
+
+* add Azure Speech preview and Japanese support ([#24](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/24)) ([a129238](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/a129238f246d529d5db8d43d33af150445f8852d))
+* add local semantic memory maintenance ([#21](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/21)) ([790b679](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/790b67952ec015d74b5144ef83ad4eab8ab94013))
+* add pluggable speech provider foundation ([#23](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/23)) ([0c187da](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/0c187dae7885c07431230a724ac0152421ed23d9))
+* add safe background manager workers ([#22](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/22)) ([df6447f](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/df6447f9b7e444cedaf7f36f836744d53efb0f62))
+* bound Realtime audio latency ([#19](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/19)) ([adecb1f](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/adecb1f8561bf7533a925b316c488ef0b8048185))
+* default text chat to GPT-5.6 Luna ([#25](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/25)) ([9a28a10](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/9a28a105c728acbf58df965d45e133df73bc193d))
+* dynamically discover and stream Azure voices ([#57](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/57)) ([ff321b1](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/ff321b1c07e1d5419a86749853bb8f32099f96e0))
+* establish safe cross-platform core / 建立安全跨平台核心 ([#34](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/34)) ([9f04bdc](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/9f04bdccfcef460c192efe7f5d6779a52dbffd71))
+* migrate MoHan runtime to Python 3.14 ([#18](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/18)) ([edf81d2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/edf81d2dbd5c4d4f3e8cc408b3f1827ce4f5bf14))
+* migrate MoHan to Python 3.15 with enterprise release evidence ([#45](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/45)) ([7f401ad](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/7f401adb7a93b539520242e3cfa276e77fc212bf))
+* polished four-language installer and bright readable UI ([#26](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/26)) ([ee7d9f1](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/ee7d9f1e8613915590e429f6188866de4141e137))
+* 三平台候選封裝 / Cross-platform RC packages / 3プラットフォームRC ([#35](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/35)) ([61e661a](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/61e661a063397c858a936035b1110b1d5918b189))
+* 全身渲染器完整接入與參數化重塑／全身渲染器完整接入与参数化重塑／Full-body renderer integration and parametric reforging／全身レンダラー統合とパラメトリック再鍛造 ([#76](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/76)) ([2ebb73e](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/2ebb73e05421c9b8b6470c0766c2962e41689621))
+* 墨寒「真人女孩感」五大系統與靈魂拼圖／墨寒「真人女孩感」五大系统与灵魂拼图／MoHan 'real-girl' five systems and soul pieces／墨寒「本物の女の子感」五大システムと魂のピース ([#68](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/68)) ([52bacce](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/52bacce9e71718690ed4277913d757daff44a588))
+
+
+### Bug Fixes
+
+* accept duplicate macOS PoseAtlas bundle roots ([#60](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/60)) ([b903634](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/b903634a4d2a17992b2ad190947154857f093bd1))
+* align audio and viseme timing ([#38](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/38)) ([f93b019](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/f93b01996e8eedaba4d0d6f73eccca6ff0f85ab6))
+* build native module before Windows release regression ([#61](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/61)) ([525cb25](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/525cb2515e239989e355bfccdd829921faf7f2a2))
+* eliminate pose transition ghosting ([#20](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/20)) ([3c59d00](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/3c59d005754bc2e34a692785da8c0526d9a34313))
+* freeze cheek-rest speech corners ([#37](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/37)) ([7f95104](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/7f95104675ebe89a61e53ab424a9552efe702540))
+* keep legacy transcription defaults neutral ([#33](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/33)) ([bd27899](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/bd27899695cce9dd6ccc5059bae9bd2033e4449f))
+* keep SBOM schema validator program executable ([#62](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/62)) ([e730c08](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/e730c08dc985ba0e76a09ccb5cc255c8ecae0d4a))
+* make draft release publication recoverable ([#36](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/36)) ([5d5c735](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/5d5c735bd464ae41a1926f6663fc37a0502f5041))
+* prepare natural blink and speech RC2 ([#40](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/40)) ([48da013](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/48da0133ba54aa9152d6c30172dfe51653cdbbd3))
+* Python 3.15 發布預檢／Python 3.15 发布预检／Python 3.15 release preflight／Python 3.15 リリース事前検証 ([#46](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/46)) ([7c1bae8](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/7c1bae85f6084e8f0c35c1964edd363deac8a445))
+* 修正 Release Please workflow 的 action 引用／修正 Release Please workflow 的 action 引用／Fix Release Please workflow action reference／Release Please workflow の action 参照を修正 ([#69](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/69)) ([ed00e45](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/ed00e4577bc1eded2ca2b93108235092ed21f49c))
+* 將 CHANGELOG.md 豁免四國語言治理並修正 Release Please 版本號替換規則 ([5b9ec12](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/5b9ec124b995b4d07d7c616734d2c82e1f091bbd))
+
+
+### Documentation
+
+* share MoHan creation journey ([#39](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/39)) ([2f27efe](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/2f27efeb5ab2f3483678121bfeb55cbfd9304d73))
+
 ## [4.4.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.3.0...v4.4.0) (2026-08-21)
 
 
