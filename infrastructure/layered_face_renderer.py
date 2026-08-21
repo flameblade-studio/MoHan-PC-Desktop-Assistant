@@ -16,7 +16,7 @@ lazy from collections import OrderedDict
 lazy from dataclasses import replace
 lazy from pathlib import Path
 
-lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QPainter, QPixmap, QRegion, QTransform
 
 lazy from domain.constants import FLOAT_COMPARISON_EPSILON
@@ -55,6 +55,7 @@ class LayeredParametricFaceRenderer:
         # process lifetime after pose changes.
         self._pixmap_cache: OrderedDict[str, QPixmap] = OrderedDict()
         self._layer_center_cache: dict[str, tuple[float, float]] = {}
+        self._mask_bounds_cache: dict[int, QRect] = {}
 
     def _manifest_or_load(self) -> LayeredFaceManifest:
         """Return the injected manifest, or lazily load the authored assets."""
@@ -264,8 +265,8 @@ class LayeredParametricFaceRenderer:
         painter.drawPixmap(round(dx), round(dy), source)
         painter.end()
 
-    @staticmethod
     def _paint_masked(
+        self,
         target: QPixmap,
         source: QPixmap | None,
         mask: QPixmap | None,
@@ -273,16 +274,43 @@ class LayeredParametricFaceRenderer:
     ) -> None:
         if source is None or mask is None or source.isNull() or mask.isNull():
             return
-        layer = QPixmap(source.size())
+        mask_key = int(mask.cacheKey())
+        bounds = self._mask_bounds_cache.get(mask_key)
+        if bounds is None:
+            bounds = QRegion(mask.mask()).boundingRect()
+            self._mask_bounds_cache[mask_key] = bounds
+        if bounds.isEmpty():
+            return
+        # The speech mask occupies only a small mouth rectangle. Allocating and
+        # alpha-compositing a full 1254x1254 portrait for every 50 Hz viseme was
+        # the dominant Windows p95 cost. Preserve the same DestinationIn blend
+        # while restricting the temporary surface to the authored mask bounds.
+        layer = QPixmap(bounds.size())
         layer.fill(Qt.transparent)
         mask_painter = QPainter(layer)
-        mask_painter.drawPixmap(0, 0, source)
+        mask_painter.drawPixmap(
+            0,
+            0,
+            source,
+            bounds.x(),
+            bounds.y(),
+            bounds.width(),
+            bounds.height(),
+        )
         mask_painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
-        mask_painter.drawPixmap(0, 0, mask)
+        mask_painter.drawPixmap(
+            0,
+            0,
+            mask,
+            bounds.x(),
+            bounds.y(),
+            bounds.width(),
+            bounds.height(),
+        )
         mask_painter.end()
         painter = QPainter(target)
         painter.setOpacity(max(0.0, min(1.0, float(opacity))))
-        painter.drawPixmap(0, 0, layer)
+        painter.drawPixmap(bounds.topLeft(), layer)
         painter.end()
 
     def _paint_mouth_lips(self, target: QPixmap, pose: LayeredFacePose, mouth) -> None:
@@ -346,15 +374,14 @@ class LayeredParametricFaceRenderer:
         transform.translate(center_x + dx, center_y + dy)
         transform.scale(scale_x, scale_y)
         transform.translate(-center_x, -center_y)
-        transformed = QPixmap(source.size())
-        transformed.fill(Qt.transparent)
-        painter = QPainter(transformed)
+        # Paint the transformed layer directly into the destination. The old
+        # path allocated a full-canvas temporary for every lip/cavity layer on
+        # every viseme, then copied that canvas a second time. Direct painting
+        # is pixel-equivalent and removes four large allocations per frame.
+        painter = QPainter(target)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
         painter.setTransform(transform)
         painter.drawPixmap(0, 0, source)
-        painter.end()
-        painter = QPainter(target)
-        painter.drawPixmap(0, 0, transformed)
         painter.end()
 
     def _layer_center(self, path, source: QPixmap) -> tuple[float, float]:
