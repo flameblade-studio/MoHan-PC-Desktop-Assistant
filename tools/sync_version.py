@@ -47,6 +47,10 @@ _README_DEV_LINES = (
     ("現在の開発版：** `", "`"),
 )
 
+_BUILD_COMMAND_PATTERN = re.compile(
+    r'(\\build\.ps1 -Version ")[0-9][^"]*(")'
+)
+
 
 def _authoritative_version() -> str:
     data = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
@@ -75,6 +79,7 @@ def _sync_readme(version: str) -> bool:
             prefix + version + suffix,
             updated,
         )
+    updated = _BUILD_COMMAND_PATTERN.sub(r"\g<1>" + version + r"\g<2>", updated)
     if updated == original:
         return False
     path.write_text(updated, encoding="utf-8")
