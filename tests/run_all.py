@@ -388,8 +388,22 @@ def _isolated_environment(test_root: Path) -> dict[str, str]:
         if not any(marker in name.upper() for marker in SENSITIVE_ENVIRONMENT_MARKERS)
     }
     environment.pop("MOHAN_DATA_DIR", None)
+    # GitHub Actions injects GIT_CONFIG_COUNT/KEY_n/VALUE_n as one atomic
+    # protocol.  The generic secret filter removes KEY_n; retaining COUNT (or
+    # VALUE_n) leaves git itself malformed.  Tests must receive none of it.
+    environment.pop("GIT_CONFIG_COUNT", None)
+    for name in tuple(environment):
+        if name.startswith("GIT_CONFIG_VALUE_"):
+            environment.pop(name, None)
     environment.update({name: str(location) for name, location in locations.items()})
-    environment["PYTHONPATH"] = str(TESTS_DIR.parent)
+    import_roots = [str(TESTS_DIR.parent)]
+    # The project-owned Python 3.15 runtime keeps its source-built Qt wheel in
+    # this compatibility root.  Preserve test isolation while making that
+    # explicit, repository-scoped dependency visible to child processes.
+    qt_compat = TESTS_DIR.parent / ".qt315-compat-full" / "Lib" / "site-packages"
+    if qt_compat.is_dir():
+        import_roots.append(str(qt_compat))
+    environment["PYTHONPATH"] = os.pathsep.join(import_roots)
     environment.pop("PYTEST_ADDOPTS", None)
     environment.update(dict.fromkeys(SENSITIVE_ENVIRONMENT_VARIABLES, ""))
     return environment

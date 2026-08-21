@@ -41,8 +41,10 @@ def run() -> None:
         packages = root / "store" / "packages"
         packages.mkdir(parents=True)
         (packages / "official.mohan-outfit").write_bytes(b"official")
+        (packages / "user-tailored.mohan-outfit").write_bytes(b"user")
         user_owned = guard.inspect(now, None, special_occasion=True)
         assert user_owned.allowed and user_owned.installed_packages == 0
+        assert user_owned.total_bytes == 0
         (packages / "generated-one.mohan-outfit").write_bytes(b"one")
         (packages / "generated-two.mohan-outfit").write_bytes(b"two")
         full = guard.inspect(now, None, special_occasion=True)

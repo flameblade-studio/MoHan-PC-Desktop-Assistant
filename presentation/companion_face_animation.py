@@ -910,27 +910,31 @@ class CompanionFaceAnimationMixin:
                 )
             )
         base = self.expression_pixmaps["idle"]
-        # Speech reuses the discrete transition target to keep the mouth stable.
-        aperture = (
-            getattr(self, "mouth_aperture_target", None)
-            if self.state == "speaking"
-            else None
-        )
-        return self.face_renderer.render(base, motion, None, aperture=aperture)
+        if self.state == "speaking":
+            return self._mouth_aperture_pixmap(
+                getattr(self, "speech_current_expression", self.speech_closed_expression),
+                getattr(self, "mouth_aperture_target", 0.0),
+            )
+        return self.face_renderer.render(base, motion, None)
 
-    def _mouth_aperture_pixmap(
-        self,
-        expression: str,
-        aperture: float,
-    ) -> QPixmap:
+    def _mouth_aperture_pixmap(self, expression: str, aperture: float) -> QPixmap:
         """Compose the speech mouth from the parametric layered renderer."""
         closed = self.expression_pixmaps[self.speech_closed_expression]
-        if expression == self.speech_closed_expression or aperture <= MOUTH_CLOSED_THRESHOLD:
-            return QPixmap(closed)
         motion = self.face_motion_frame
         if motion is None or self.face_renderer is None:
             return QPixmap(closed)
-        return self.face_renderer.render(closed, motion, None, aperture=aperture)
+        return self.face_renderer.render(
+            closed,
+            motion,
+            self._face_render_layers(
+                self.expression_pixmaps.get(
+                    expression,
+                    self.expression_pixmaps[self.speech_mid_expression],
+                ),
+                self._active_speech_pose_suffix(),
+            ),
+            aperture=aperture,
+        )
 
     def _face_render_layers(
         self,
@@ -1047,9 +1051,8 @@ class CompanionFaceAnimationMixin:
             min(1.0, elapsed / self.mouth_transition_duration),
         )
         eased = 0.5 - 0.5 * math.cos(progress * math.pi)
-        # Both transition endpoints are now full parametric layered frames, so
-        # crossfade the whole portrait instead of patching a legacy mouth mask
-        # over the previous frame (which misaligned the two coordinate systems).
+        # Both transition endpoints are full parametric layered frames, so
+        # crossfade the whole portrait without mixing coordinate systems.
         blended = QPixmap(self.mouth_transition_from)
         painter = QPainter(blended)
         painter.setOpacity(eased)

@@ -18,6 +18,7 @@ WINDOW_BASES = {
         "QMainWindow",
     ),
     "presentation.dashboard_window": (
+        "DashboardWardrobePreferencesMixin",
         "DashboardShellMixin",
         "DashboardSettingsMixin",
         "DashboardVoiceMixin",
@@ -40,6 +41,9 @@ MIXIN_OWNERS = {
     "DashboardConversationMixin": "presentation.dashboard_conversation",
     "DashboardTodayMemoryMixin": "presentation.dashboard_today_memory",
     "DashboardPlatformMixin": "presentation.dashboard_platforms",
+    "DashboardWardrobePreferencesMixin": (
+        "presentation.dashboard_wardrobe_preferences"
+    ),
 }
 
 

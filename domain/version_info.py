@@ -4,7 +4,7 @@ lazy import json
 lazy import sys
 lazy from pathlib import Path
 
-PROJECT_REPOSITORY = "hitoshic1982/MoHan-PC-Desktop-Assistant"
+PROJECT_REPOSITORY = "flameblade-studio/MoHan-PC-Desktop-Assistant"
 FALLBACK_VERSION = "4.4.1"
 
 

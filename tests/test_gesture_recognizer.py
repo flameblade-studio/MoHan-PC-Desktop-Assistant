@@ -93,6 +93,19 @@ def assert_wave_requires_ordered_debounced_sequence() -> None:
     assert out_of_order.gesture_id is GestureId.UNKNOWN
 
 
+def assert_wave_accepts_a_natural_partly_tucked_thumb() -> None:
+    recognizer = GestureRecognizer(timing=GestureTiming(cooldown_seconds=1.0))
+    frames = []
+    for at, shift in ((0.0, 0.0), (0.2, 0.08), (0.4, -0.06), (0.6, 0.09)):
+        source = hand("open-palm", at, shift_x=shift)
+        points = list(source.landmarks)
+        points[4] = GestureLandmark(0.46 + shift, 0.69, 0.0)
+        frames.append(HandSkeleton(at, source.side, tuple(points)))
+    results = tuple(recognizer.update(frame) for frame in frames)
+    assert results[-1].gesture_id is GestureId.WAVE
+    assert results[-1].triggered
+
+
 def assert_cooldown_is_single_trigger_and_resettable() -> None:
     recognizer = GestureRecognizer(timing=GestureTiming(cooldown_seconds=2.0))
     recognizer.update(hand("thumbs-up", 1.0))
@@ -196,6 +209,7 @@ def assert_relative_negative_z_is_supported_but_invalid_depth_is_rejected() -> N
 def run() -> None:
     assert_builtin_classification_and_both_hands()
     assert_wave_requires_ordered_debounced_sequence()
+    assert_wave_accepts_a_natural_partly_tucked_thumb()
     assert_cooldown_is_single_trigger_and_resettable()
     assert_custom_templates_are_translation_scale_and_mirror_invariant()
     assert_candidate_interruption_cancel_and_hand_isolation()

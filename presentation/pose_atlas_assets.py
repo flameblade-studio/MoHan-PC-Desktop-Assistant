@@ -60,9 +60,14 @@ class PoseAtlasAssets:
 
     def resolve_static(
         self,
-        _pose_id: str,
+        pose_id: str,
         view_id: str,
         motion: FaceMotionFrame | None = None,
+        *,
+        left_hand: str = "relaxed",
+        right_hand: str = "relaxed",
+        body_energy: float = 0.0,
+        gesture_beat: bool = False,
     ) -> FullBodyRenderSpec | None:
         try:
             canonical = normalize_view_id(view_id)
@@ -72,15 +77,37 @@ class PoseAtlasAssets:
         # motion frame there is nothing to compose, so fail closed.
         if motion is None:
             return None
-        return self._resolve_layered(canonical, motion)
+        return self._resolve_layered(
+            canonical,
+            motion,
+            pose_id=pose_id,
+            left_hand=left_hand,
+            right_hand=right_hand,
+            body_energy=body_energy,
+            gesture_beat=gesture_beat,
+        )
 
     def _resolve_layered(
         self,
         canonical: str,
         motion: FaceMotionFrame,
+        *,
+        pose_id: str,
+        left_hand: str,
+        right_hand: str,
+        body_energy: float,
+        gesture_beat: bool,
     ) -> FullBodyRenderSpec | None:
         """Compose the parametric full body for one view and motion frame."""
-        composed = self._layered_renderer.render_view(canonical, motion)
+        composed = self._layered_renderer.render_view(
+            canonical,
+            motion,
+            pose_id=pose_id,
+            left_hand=left_hand,
+            right_hand=right_hand,
+            body_energy=body_energy,
+            gesture_beat=gesture_beat,
+        )
         if composed.isNull():
             return None
         rgba = self._pixmap_rgba(composed)

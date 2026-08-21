@@ -49,6 +49,7 @@ class ProactiveSource(StrEnum):
     CHECK_IN = "check_in"
     WARDROBE = "wardrobe"
     VISUAL_PRESENCE = "visual_presence"
+    VISUAL_ACTIVITY = "visual_activity"
 
 
 class CandidatePriority(IntEnum):
@@ -64,6 +65,7 @@ class CandidatePriority(IntEnum):
     LONG_RETURN = 40
     BRIEF_RETURN = 30
     VISUAL_PRESENCE = 35
+    VISUAL_ACTIVITY = 25
     CHECK_IN = 20
 
 
@@ -84,6 +86,7 @@ class NormalizedCompanionEnvironment:
     pending_outfit_id: str = ""
     user_looking: bool = False
     visual_presence_arrival: bool = False
+    visual_activity: bool = False
     proactive_mode: str = "balanced"
     memory_topics: tuple[str, ...] = ()
 
@@ -190,6 +193,7 @@ class ProactiveCompanionRuntime:
                 self._wellbeing_candidate(environment, preferences),
                 self._wardrobe_candidate(environment),
                 self._visual_presence_candidate(environment),
+                self._visual_activity_candidate(environment),
                 self._return_candidate(environment, preferences),
                 self._check_in_candidate(environment),
             )
@@ -449,6 +453,38 @@ class ProactiveCompanionRuntime:
             source=ProactiveSource.VISUAL_PRESENCE,
         )
 
+    def _visual_activity_candidate(
+        self,
+        environment: NormalizedCompanionEnvironment,
+    ) -> _Candidate | None:
+        """Warmly acknowledge visible activity without claiming identity."""
+
+        if not environment.visual_activity:
+            return None
+        interaction = ProactiveInteraction(
+            InteractionKind.GENTLE_CHECK_IN,
+            "happy",
+        )
+        variation = _visual_activity_variation(environment.now)
+        text = _visual_activity_text(
+            environment.language,
+            environment.user_title,
+            variation,
+        )
+        if not text:
+            return None
+        token = _visual_activity_token(environment.now, variation)
+        return _Candidate(
+            ProactiveCompanionRequest(
+                SpeakRequest(text, ProactiveSource.VISUAL_ACTIVITY.value, token),
+                interaction,
+                ProactiveSource.VISUAL_ACTIVITY,
+                CandidatePriority.VISUAL_ACTIVITY,
+                token,
+            ),
+            token,
+        )
+
     def _check_in_candidate(
         self,
         environment: NormalizedCompanionEnvironment,
@@ -643,6 +679,50 @@ def _memory_check_in_text(language: str, user_title: str, topic: str) -> str:
     if locale.startswith("ja"):
         return f"{user_title}、以前「{topic}」とおっしゃっていましたが、その後いかがですか？"
     return f"{user_title}，之前你提到「{topic}」，後來如何了？"
+
+
+def _visual_activity_variation(now: datetime) -> int:
+    payload = f"mohan-visual-activity-v1\0{now.date()}\0{now.hour // 2}"
+    return int.from_bytes(
+        hashlib.blake2s(payload.encode(), digest_size=2).digest(),
+        "big",
+    )
+
+
+def _visual_activity_token(now: datetime, variation: int) -> str:
+    bucket = int(now.timestamp()) // (10 * 60)
+    payload = f"visual-activity\0{bucket}\0{variation}"
+    return hashlib.sha256(payload.encode()).hexdigest()
+
+
+def _visual_activity_text(language: str, user_title: str, variation: int) -> str:
+    locale = str(language).strip().lower()
+    lines = (
+        (
+            f"看見您在這裡，墨寒很安心，{user_title}。",
+            f"{user_title}，墨寒有留意到您。今天還順利嗎？",
+            f"您一動，墨寒就注意到了。想和我說說話嗎，{user_title}？",
+        )
+        if not locale.startswith(("zh-cn", "zh-hans", "en", "ja"))
+        else (
+            f"看见您在这里，墨寒很安心，{user_title}。",
+            f"{user_title}，墨寒有留意到您。今天还顺利吗？",
+            f"您一动，墨寒就注意到了。想和我说说话吗，{user_title}？",
+        )
+        if locale.startswith(("zh-cn", "zh-hans"))
+        else (
+            f"I am glad to see you here, {user_title}.",
+            f"I noticed you, {user_title}. Is everything going well today?",
+            f"You caught my attention, {user_title}. Would you like to talk?",
+        )
+        if locale.startswith("en")
+        else (
+            f"ここにいらっしゃるのが見えて、安心しました、{user_title}。",
+            f"{user_title}、ちゃんと気づいていますよ。今日は順調ですか？",
+            f"動かれたので気づきました、{user_title}。少しお話ししませんか？",
+        )
+    )
+    return lines[variation % len(lines)]
 
 
 def _signature(request: ProactiveCompanionRequest) -> tuple[object, ...]:

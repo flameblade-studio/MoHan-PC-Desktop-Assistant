@@ -73,6 +73,20 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_trend_search_enabled": "Allow fashion trend search for original inspiration",
     "wardrobe_generated_limit": "Generated outfit retention limit",
     "wardrobe_storage_limit": "Generated outfit storage limit",
+    "wardrobe_manual_lock_hours": "Manual outfit lock duration",
+    "wardrobe_manual_lock_off": "No lock",
+    "wardrobe_generate_now": "Generate a new outfit now (uses the Image API)",
+    "wardrobe_generation_starting": "Creating and auditing a new 31-view outfit…",
+    "wardrobe_generation_running": "Generating, auditing, and packaging a new outfit…",
+    "wardrobe_generation_installed": "The new outfit passed audit, was installed, and is now active.",
+    "wardrobe_generation_not_enabled": "Enable cloud outfit creation first.",
+    "wardrobe_generation_no_key": "No usable OpenAI API key is configured.",
+    "wardrobe_generation_capacity": "The generated-outfit capacity or cooldown limit was reached.",
+    "wardrobe_generation_quarantined": "The new outfit failed audit and was quarantined without being applied.",
+    "wardrobe_generation_failed": "Outfit generation failed; no assets were installed.",
+    "wardrobe_automatic_selection_disabled": "Autonomous outfit selection is currently disabled.",
+    "wardrobe_automatic_selection_failed": "Autonomous selection failed; the current outfit was preserved.",
+    "wardrobe_automatic_outfit_selected": "MoHan changed outfits autonomously for the current context.",
     "wardrobe_pavilion_subtitle": (
         "Let MoHan choose a complete look for the weather, mood, and occasion "
         "while preserving your final say."

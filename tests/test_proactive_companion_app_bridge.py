@@ -163,6 +163,26 @@ def assert_visual_presence_and_absence_are_normalized_only_when_enabled() -> Non
         raise AssertionError("Disabled camera must not claim user recognition")
 
 
+def assert_visual_activity_is_normalized_without_an_identity_claim() -> None:
+    app_bridge, runtime, *_ = bridge()
+    visual = state(
+        camera_enabled=True,
+        camera_presence=PresenceState.PRESENT,
+        recognized_user=False,
+        visual_activity=True,
+    )
+    app_bridge.dispatch(ProactiveAppEvent(visual))
+    environment = runtime.environments[-1]
+    assert environment.user_present
+    assert environment.visual_activity
+    try:
+        state(visual_activity=True)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Disabled camera must not claim visual activity")
+
+
 def assert_speech_port_is_used_and_two_phase_commit_waits_for_callback() -> None:
     app_bridge, runtime, _prefs, _phrases, speech, _factory = bridge()
     result = app_bridge.dispatch(
@@ -332,6 +352,7 @@ def assert_pending_speech_is_bounded_superseded_and_expires() -> None:
 def run() -> None:
     assert_timer_triggers_normalize_without_visual_identity_claim()
     assert_visual_presence_and_absence_are_normalized_only_when_enabled()
+    assert_visual_activity_is_normalized_without_an_identity_claim()
     assert_speech_port_is_used_and_two_phase_commit_waits_for_callback()
     assert_failure_does_not_commit_and_releases_pending()
     assert_generation_stale_dedupe_and_lkg()

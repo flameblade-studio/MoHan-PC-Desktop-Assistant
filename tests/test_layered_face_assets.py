@@ -26,9 +26,17 @@ lazy from infrastructure.layered_face_assets import (
     LAYER_NAMES,
     load_layered_face_assets,
 )
-lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from infrastructure.layered_face_renderer import (
+    MAX_CACHED_LAYER_PIXMAPS,
+    MAX_CACHED_NEUTRAL_POSES,
+    LayeredParametricFaceRenderer,
+)
 
 LAYERED_DIR = ROOT / "assets" / "expressions" / "layered"
+AUTHORITY_DIR = ROOT / "assets" / "expressions"
+MAX_MEAN_CHANNEL_ERROR = 6.0
+MAX_TRANSPARENT_SAMPLE_RATIO = 0.01
+IDENTITY_SAMPLE_STEP = 4
 
 
 def _app() -> object:
@@ -76,6 +84,61 @@ def test_renderer_handles_open_mouth_and_blink() -> None:
     assert not out.isNull()
 
 
+def _sampled_identity_error(
+    rendered: QPixmap,
+    authority_path: Path,
+) -> tuple[float, float]:
+    actual = rendered.toImage()
+    expected = QPixmap(str(authority_path)).toImage()
+    differences: list[int] = []
+    unexpected_transparent = 0
+    for y in range(0, expected.height(), IDENTITY_SAMPLE_STEP):
+        for x in range(0, expected.width(), IDENTITY_SAMPLE_STEP):
+            expected_pixel = expected.pixelColor(x, y)
+            if expected_pixel.alpha() == 0:
+                continue
+            actual_pixel = actual.pixelColor(x, y)
+            unexpected_transparent += actual_pixel.alpha() == 0
+            differences.append(
+                max(
+                    abs(actual_pixel.red() - expected_pixel.red()),
+                    abs(actual_pixel.green() - expected_pixel.green()),
+                    abs(actual_pixel.blue() - expected_pixel.blue()),
+                    abs(actual_pixel.alpha() - expected_pixel.alpha()),
+                )
+            )
+    return (
+        sum(differences) / len(differences),
+        unexpected_transparent / len(differences),
+    )
+
+
+def test_neutral_renderer_reconstructs_authority_portraits() -> None:
+    _app()
+    manifest = load_layered_face_assets(LAYERED_DIR)
+    renderer = LayeredParametricFaceRenderer(manifest)
+    authorities = {
+        FacePose.CHEEK: "idle.png",
+        FacePose.LEAN: "idle_lean.png",
+        FacePose.FRONT: "idle_front.png",
+    }
+    for pose, filename in authorities.items():
+        frame = FaceMotionFrame(
+            pose,
+            filename.removesuffix(".png"),
+            Viseme.CLOSED,
+            MouthShape(),
+            ExpressionShape(),
+        )
+        rendered = renderer.render_pose(manifest.pose(pose), frame)
+        mean_error, transparent_ratio = _sampled_identity_error(
+            rendered,
+            AUTHORITY_DIR / filename,
+        )
+        assert mean_error < MAX_MEAN_CHANNEL_ERROR
+        assert transparent_ratio < MAX_TRANSPARENT_SAMPLE_RATIO
+
+
 def test_renderer_port_entry_scales_to_base_size() -> None:
     _app()
     renderer = LayeredParametricFaceRenderer()
@@ -93,12 +156,36 @@ def test_renderer_port_entry_scales_to_base_size() -> None:
     assert out.size() == base.size()
 
 
+def test_decoded_layer_cache_stays_bounded_across_pose_changes() -> None:
+    _app()
+    manifest = load_layered_face_assets(LAYERED_DIR)
+    renderer = LayeredParametricFaceRenderer(manifest)
+    for _ in range(3):
+        for pose in FacePose:
+            frame = FaceMotionFrame(
+                pose,
+                "speaking",
+                Viseme.A,
+                MouthShape(aperture=0.8, width=0.7, jaw=0.6),
+                ExpressionShape(blink=0.4, blush=0.4),
+            )
+            assert not renderer.render_pose(manifest.pose(pose), frame).isNull()
+            assert len(renderer._pixmap_cache) <= MAX_CACHED_LAYER_PIXMAPS
+            assert len(renderer._neutral_pose_cache) <= MAX_CACHED_NEUTRAL_POSES
+            assert len(renderer._top_pose_cache) <= MAX_CACHED_NEUTRAL_POSES
+    assert len(renderer._pixmap_cache) == MAX_CACHED_LAYER_PIXMAPS
+    assert len(renderer._neutral_pose_cache) == len(FacePose)
+    assert len(renderer._top_pose_cache) == len(FacePose)
+
+
 def run() -> None:
     test_layered_manifest_loads_all_three_poses()
     test_each_pose_has_all_twenty_five_layers()
     test_renderer_produces_non_null_frame_for_every_pose()
     test_renderer_handles_open_mouth_and_blink()
+    test_neutral_renderer_reconstructs_authority_portraits()
     test_renderer_port_entry_scales_to_base_size()
+    test_decoded_layer_cache_stays_bounded_across_pose_changes()
     print("LAYERED_FACE_ASSETS_OK")
 
 

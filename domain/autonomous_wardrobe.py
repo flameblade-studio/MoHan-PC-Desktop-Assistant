@@ -11,6 +11,7 @@ lazy from domain.outfit_pack import (
 )
 
 DEFAULT_CHANGE_COOLDOWN = timedelta(hours=6)
+DEFAULT_MANUAL_LOCK = timedelta(hours=6)
 SPECIAL_OCCASIONS = frozenset({"birthday", "christmas", "valentines"})
 PROTECTIVE_WEATHER = frozenset({"rain", "storm", "snow"})
 

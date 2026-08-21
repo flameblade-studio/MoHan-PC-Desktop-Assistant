@@ -27,13 +27,22 @@ PCM16_SAMPLE_WIDTH = 2
 FULL_VOLUME_PERCENT = 100
 
 
-def preferred_output_device(sounddevice: object = sd) -> int | None:
-    """Return the WASAPI default output device id, or None to use the default.
+def preferred_output_device(
+    sounddevice: object = sd,
+    *,
+    sample_rate: int,
+    channels: int,
+    dtype: str = "int16",
+) -> int | None:
+    """Return a format-compatible WASAPI output, or use the system default.
 
     On Windows the platform default can resolve to a virtual or MME/DirectSound
     device that produces no audible output. Prefer the WASAPI host API's default
     output device so every speech path (OpenAI, Azure, Windows local, Realtime)
-    plays through the same real output device.
+    plays through the same real output device.  A WASAPI endpoint can still
+    reject a provider's native sample rate (notably 24 kHz).  Validate the
+    exact stream format before selecting it; ``None`` lets PortAudio use its
+    already-working platform default when the WASAPI candidate is incompatible.
     """
     if not sys.platform.startswith("win"):
         return None
@@ -42,6 +51,12 @@ def preferred_output_device(sounddevice: object = sd) -> int | None:
             if "WASAPI" in hostapi["name"]:
                 candidate = int(hostapi["default_output_device"])
                 if candidate >= 0:
+                    sounddevice.check_output_settings(
+                        device=candidate,
+                        samplerate=sample_rate,
+                        channels=channels,
+                        dtype=dtype,
+                    )
                     return candidate
     return None
 
@@ -260,7 +275,12 @@ def play_pcm16_stream_with_visemes_impl(
             samplerate=sample_rate,
             channels=1,
             dtype="int16",
-            device=preferred_output_device(sounddevice),
+            device=preferred_output_device(
+                sounddevice,
+                sample_rate=sample_rate,
+                channels=1,
+                dtype="int16",
+            ),
             blocksize=frames_per_cue,
         ) as output:
             while True:
@@ -355,7 +375,12 @@ def _play_cancellable_wave_bytes(
             playback.ensure_current()
             playback.emit_viseme(0.0, "CLOSED")
             return
-        device = preferred_output_device(playback.sounddevice)
+        device = preferred_output_device(
+            playback.sounddevice,
+            sample_rate=sample_rate,
+            channels=channels,
+            dtype="int16",
+        )
         stream = playback.sounddevice.RawOutputStream(
             samplerate=sample_rate,
             channels=channels,
