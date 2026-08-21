@@ -26,6 +26,11 @@ lazy from presentation.preview_app import (
     PreviewWindow,
     validate_preview_contract,
 )
+
+FAILURE_EXIT_CODE = 2
+COMMIT_REFERENCE_COUNT = 5
+POSE_ATLAS_FLAG_COUNT = 4
+
 lazy from tools.build_preview_package import (
     APPIMAGETOOL_ASSET_ID,
     APPIMAGETOOL_SHA256,
@@ -191,7 +196,7 @@ def test_source_smoke_rejects_wrong_embedded_version() -> None:
             check=False,
             env={**os.environ, "QT_QPA_PLATFORM": "offscreen"},
         )
-        assert invalid.returncode == 2
+        assert invalid.returncode == FAILURE_EXIT_CODE
         assert marker.read_text(encoding="utf-8") == "PREVIEW_PACKAGE_SMOKE_FAILED"
 
 
@@ -254,7 +259,7 @@ def test_release_gate_is_pinned() -> None:
     assert "Draft Release assets differ from the exact verified set" in release
     assert "needs: [resolve-release, windows, macos-preview, linux-preview]" in release
     assert "commit: ${{ steps.source.outputs.commit }}" in release
-    assert release.count("ref: ${{ needs.resolve-release.outputs.commit }}") == 5
+    assert release.count("ref: ${{ needs.resolve-release.outputs.commit }}") == COMMIT_REFERENCE_COUNT
     assert "Release tag changed after validation" in release
     assert "SHA256SUMS" in release
     assert "cyclonedx-bom==7.3.0" in release
@@ -281,7 +286,7 @@ def test_release_gate_is_pinned() -> None:
     )
     assert "--expected-version 2.3.0-rc.0" in preview
     assert "--preview-expected-version" in read("application/preview_app.py")
-    assert release.count("--require-pose-atlas") == 4
+    assert release.count("--require-pose-atlas") == POSE_ATLAS_FLAG_COUNT
     assert "Preview package omitted PoseAtlas v4 assets" in read(
         "tools/smoke_preview_package.py"
     )

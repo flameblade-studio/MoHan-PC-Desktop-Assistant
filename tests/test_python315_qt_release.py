@@ -16,6 +16,7 @@ lazy from tools.check_python315_qt_release import (
 
 ROOT = Path(__file__).resolve().parents[1]
 BLOCKER = ROOT / "docs" / "release-evidence" / "V4-PYTHON315-QT-BLOCKER.md"
+QT_DISTRIBUTION_COUNT = 4
 
 
 def metadata(requires_python: str) -> dict[str, tuple[dict, str]]:
@@ -36,8 +37,8 @@ def metadata(requires_python: str) -> dict[str, tuple[dict, str]]:
 def test_official_metadata_shape_blocks_python315_rc1() -> None:
     report = inspect_metadata(metadata(">=3.10,<3.15"))
     assert not report.releasable
-    assert len(report.evidence) == 4
-    assert len(report.issues) == 4
+    assert len(report.evidence) == QT_DISTRIBUTION_COUNT
+    assert len(report.issues) == QT_DISTRIBUTION_COUNT
     assert all(not item.target_supported for item in report.evidence)
 
 

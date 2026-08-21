@@ -116,7 +116,7 @@ def _report_probe(name: str, began: float, future: Future[None]) -> bool:
         future.result()
         print(f"{name}=ok,elapsed={elapsed:.2f}s")
         return True
-    except Exception as exc:  # noqa: BLE001 -- diagnostic must report each probe
+    except Exception as exc:
         print(
             f"{name}=failed,elapsed={elapsed:.2f}s,"
             f"error={type(exc).__name__}:{exc}"

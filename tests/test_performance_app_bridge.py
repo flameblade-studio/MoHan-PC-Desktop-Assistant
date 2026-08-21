@@ -24,6 +24,8 @@ lazy from speech_performance import (
     SpeechPerformancePhase,
 )
 
+EXPECTED_PUBLISHED_COUNT = 2
+
 CORRECTIONS = frozenset({"idle_front.png", "idle_lean.png", "idle.png"})
 
 
@@ -181,7 +183,7 @@ def assert_50hz_throttle_but_lifecycle_bypasses() -> None:
     assert app_bridge.dispatch(
         input_value(viseme_event, viseme_directive, behavior_generation=3)
     ) is BridgeDisposition.THROTTLED
-    assert len(published) == 2 and renderer.calls == 2
+    assert len(published) == EXPECTED_PUBLISHED_COUNT and renderer.calls == EXPECTED_PUBLISHED_COUNT
     clock.advance(0.06)
     assert app_bridge.dispatch(
         input_value(viseme_event, viseme_directive, behavior_generation=3)

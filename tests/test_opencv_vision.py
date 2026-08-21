@@ -18,6 +18,11 @@ lazy from infrastructure.opencv_vision import (
     yunet_single_face_geometry,
 )
 
+CONFIDENCE_THRESHOLD = 0.9
+IMAGE_WIDTH = 832
+IMAGE_HEIGHT = 624
+LANDMARK_COUNT = 5
+
 
 def assert_required_opencv_runtime_is_installed() -> None:
     assert version("opencv-python") == "5.0.0.93"
@@ -75,9 +80,9 @@ def assert_official_layout_decodes() -> None:
     assert len(detections) == 1
     detection = detections[0]
     assert detection.label == "bottle"
-    assert detection.confidence > 0.9
-    assert 0 <= detection.box.left < detection.box.right <= 832
-    assert 0 <= detection.box.top < detection.box.bottom <= 624
+    assert detection.confidence > CONFIDENCE_THRESHOLD
+    assert 0 <= detection.box.left < detection.box.right <= IMAGE_WIDTH
+    assert 0 <= detection.box.top < detection.box.bottom <= IMAGE_HEIGHT
 
 
 def assert_unknown_layout_fails_closed() -> None:
@@ -129,7 +134,7 @@ def assert_yunet_single_face_geometry_is_typed_and_normalized() -> None:
     )
     box, landmarks = yunet_single_face_geometry(face, 256, 192)
     assert (box.left, box.top, box.right, box.bottom) == (64.0, 48.0, 192.0, 144.0)
-    assert len(landmarks) == 5
+    assert len(landmarks) == LANDMARK_COUNT
     assert landmarks[0] == NormalizedPoint(0.375, 0.375)
     assert landmarks[-1] == NormalizedPoint(0.59375, 0.625)
     for invalid in (face[:13], np.full(15, np.nan, dtype=np.float32)):

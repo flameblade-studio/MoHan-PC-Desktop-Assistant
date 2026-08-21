@@ -7,6 +7,14 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import QApplication, QPushButton
 
+lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.face_rig import (
+    ExpressionShape,
+    FaceMotionFrame,
+    FacePose,
+    MouthShape,
+    Viseme,
+)
 lazy from domain.text_normalizer import to_taiwan_traditional
 lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path
 lazy from integrations.realtime_voice import (
@@ -15,6 +23,11 @@ lazy from integrations.realtime_voice import (
 )
 lazy from integrations.speech import SpeechListener
 lazy from presentation.pose_atlas_assets import PoseAtlasAssets
+
+TAB_COUNT = 8
+VIEW_COUNT = 24
+END_SILENCE_SECONDS = 0.85
+MAX_RECORD_SECONDS = 10.0
 
 
 def _visible_windows_voices(window) -> tuple[str, ...]:
@@ -63,7 +76,7 @@ def _flagship_checks(window) -> tuple[_SelfTestCheck, ...]:
         return (_SelfTestCheck("flagship.center", False),)
     return (
         _SelfTestCheck("flagship.center", True),
-        _SelfTestCheck("flagship.tab_count", center.tabs.count() == 8),
+        _SelfTestCheck("flagship.tab_count", center.tabs.count() == TAB_COUNT),
         _SelfTestCheck("flagship.remote_disabled", not center.remote_enabled.isChecked()),
         _SelfTestCheck("flagship.camera_disabled", not center.camera_enabled.isChecked()),
         _SelfTestCheck("flagship.camera_closed", center.camera_presence.camera is None),
@@ -73,12 +86,29 @@ def _flagship_checks(window) -> tuple[_SelfTestCheck, ...]:
     )
 
 
+def _neutral_face_motion() -> FaceMotionFrame:
+    """A neutral face frame used to exercise the layered full-body renderer."""
+    return FaceMotionFrame(
+        FacePose.FRONT,
+        "idle",
+        Viseme.CLOSED,
+        MouthShape(),
+        ExpressionShape(),
+    )
+
+
 def _pose_atlas_checks() -> tuple[_SelfTestCheck, ...]:
     root = resource_path("assets/pose-atlas/v4")
     try:
         assets = PoseAtlasAssets(root, image_size=465)
         view_ids = assets.view_ids
-        views = tuple(assets.resolve_static("release-self-test", view_id) for view_id in view_ids)
+        # The parametric layered renderer is the sole full-body path; it needs a
+        # neutral motion frame to compose each view.
+        neutral = _neutral_face_motion()
+        views = tuple(
+            assets.resolve_static("release-self-test", view_id, neutral)
+            for view_id in view_ids
+        )
     except (OSError, TypeError, ValueError, KeyError):
         return (_SelfTestCheck("pose_atlas.load", False),)
     sidecars_complete = all(
@@ -88,7 +118,7 @@ def _pose_atlas_checks() -> tuple[_SelfTestCheck, ...]:
     )
     return (
         _SelfTestCheck("pose_atlas.release_eligible", assets.release_eligible),
-        _SelfTestCheck("pose_atlas.complete_ring", len(view_ids) == 24),
+        _SelfTestCheck("pose_atlas.complete_ring", len(view_ids) == VIEW_COUNT),
         _SelfTestCheck("pose_atlas.sidecars", sidecars_complete),
         _SelfTestCheck("pose_atlas.all_views_load", all(view is not None for view in views)),
     )
@@ -113,8 +143,11 @@ def _visual_checks(app: QApplication, window) -> tuple[_SelfTestCheck, ...]:
                 "physics_face_parallax",
             )
         ),
-        _SelfTestCheck("visual.character_opacity", window.character_opacity.opacity() == 1.0),
-        _SelfTestCheck("dashboard.tab_count", window.dashboard.tabs.count() == 8),
+        _SelfTestCheck(
+            "visual.character_opacity",
+            abs(window.character_opacity.opacity() - 1.0) < FLOAT_COMPARISON_EPSILON,
+        ),
+        _SelfTestCheck("dashboard.tab_count", window.dashboard.tabs.count() == TAB_COUNT),
         _SelfTestCheck(
             "dashboard.no_default_buttons",
             all(
@@ -158,8 +191,8 @@ def _voice_checks(window, voices: tuple[str, ...]) -> tuple[_SelfTestCheck, ...]
         _SelfTestCheck("voice.turn_detection", dashboard.realtime_turn_detection.currentData() == "server_vad"),
         _SelfTestCheck("voice.hybrid_transcription", dashboard.realtime_hybrid_transcription.isChecked()),
         _SelfTestCheck("voice.windows_fallback", dashboard.windows_transcription_fallback.isChecked()),
-        _SelfTestCheck("voice.end_silence", SpeechListener.END_SILENCE_SECONDS == 0.85),
-        _SelfTestCheck("voice.max_record", SpeechListener.MAX_RECORD_SECONDS == 10.0),
+        _SelfTestCheck("voice.end_silence", SpeechListener.END_SILENCE_SECONDS == END_SILENCE_SECONDS),
+        _SelfTestCheck("voice.max_record", SpeechListener.MAX_RECORD_SECONDS == MAX_RECORD_SECONDS),
         _SelfTestCheck("voice.traditional_normalization", to_taiwan_traditional("打开软件") == "開啟軟體"),
     )
 

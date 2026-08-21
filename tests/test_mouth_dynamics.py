@@ -13,6 +13,8 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from companion_window import CompanionWindow
 lazy from infrastructure.db import StudioDB
 
+MIN_APERTURE = 0.08
+
 
 def run() -> None:
     with TemporaryDirectory() as temp_dir:
@@ -46,7 +48,7 @@ def run() -> None:
             cue(0.55, "A")
             apertures.append(window.mouth_aperture_target)
         assert window.viseme_dynamics.current == "A"
-        assert apertures[0] >= 0.08
+        assert apertures[0] >= MIN_APERTURE
         assert apertures == sorted(apertures)
         assert apertures[-1] < 1.0
 

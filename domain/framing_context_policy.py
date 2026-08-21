@@ -5,6 +5,13 @@ lazy from enum import StrEnum
 
 lazy from domain.character_framing import FramingMode, NormalizedRect
 
+# Framing scoring thresholds.
+LONG_ABSENCE_SECONDS = 300.0
+HIGH_INTIMACY_THRESHOLD = 0.72
+LOW_INTIMACY_THRESHOLD = 0.25
+HIGH_EMOTION_THRESHOLD = 0.78
+EMOTION_WEIGHT_THRESHOLD = 0.62
+
 
 class EmotionValence(StrEnum):
     NEGATIVE = "negative"
@@ -228,7 +235,7 @@ def evaluate_framing_context(
 def _score_return(context, scores, reasons) -> None:
     if not context.returned_to_seat:
         return
-    if context.away_seconds >= 300.0:
+    if context.away_seconds >= LONG_ABSENCE_SECONDS:
         scores[FramingMode.THREE_QUARTER] += 0.24
         reasons[FramingMode.THREE_QUARTER].append(
             FramingReasonCode.RETURNED_AFTER_ABSENCE
@@ -244,11 +251,11 @@ def _score_return(context, scores, reasons) -> None:
 
 
 def _score_relationship(context, scores, reasons) -> None:
-    if context.intimacy >= 0.72:
+    if context.intimacy >= HIGH_INTIMACY_THRESHOLD:
         scores[FramingMode.CLOSE] += 0.12
         scores[FramingMode.HALF] += 0.08
         reasons[FramingMode.CLOSE].append(FramingReasonCode.HIGH_INTIMACY)
-    elif context.intimacy <= 0.25:
+    elif context.intimacy <= LOW_INTIMACY_THRESHOLD:
         scores[FramingMode.CLOSE] -= 0.16
         reasons[FramingMode.CLOSE].append(FramingReasonCode.LOW_INTIMACY)
 
@@ -261,7 +268,7 @@ def _score_emotion(context, scores, reasons) -> None:
     elif context.emotion_valence is EmotionValence.NEGATIVE:
         scores[FramingMode.HALF] += 0.08 * weighted
         reasons[FramingMode.HALF].append(FramingReasonCode.NEGATIVE_EMOTION)
-    if weighted >= 0.78 and not context.angry_back_turn:
+    if weighted >= HIGH_EMOTION_THRESHOLD and not context.angry_back_turn:
         scores[FramingMode.CLOSE] += 0.16
         reasons[FramingMode.CLOSE].append(FramingReasonCode.HIGH_EMOTION)
     if context.angry_back_turn:
@@ -371,8 +378,8 @@ def _apply_close_restraint(context, scores, reasons) -> None:
             FramingReasonCode.CLOSE_PRIVACY_BLOCKED
         )
     if not (
-        context.intimacy >= 0.72
-        and context.emotion_intensity >= 0.62
+        context.intimacy >= HIGH_INTIMACY_THRESHOLD
+        and context.emotion_intensity >= EMOTION_WEIGHT_THRESHOLD
         and context.close_framing_allowed
         and context.focus_state is FocusState.AVAILABLE
         and not context.angry_back_turn

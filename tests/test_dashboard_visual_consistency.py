@@ -26,6 +26,12 @@ lazy from test_wardrobe_ui import build_language_dashboard
 
 lazy from presentation.presentation_resources import resource_path
 
+DASHBOARD_TAB_COUNT = 8
+NAVIGATION_BUTTON_COUNT = 8
+SPLITTER_PANE_COUNT = 2
+SPLITTER_LEFT_MIN_WIDTH = 400
+SPLITTER_RIGHT_MIN_WIDTH = 500
+
 
 def _frames(page, role: str) -> tuple[QFrame, ...]:
     return tuple(
@@ -46,7 +52,7 @@ def run() -> None:
             assert resource_path(
                 "assets/ui/mohan-strategist-lobby-v1.png"
             ).is_file()
-            assert dashboard.tabs.count() == 8
+            assert dashboard.tabs.count() == DASHBOARD_TAB_COUNT
             assert dashboard.tabs.tabBar().isHidden()
             brand_line = dashboard._t(
                 "dashboard_brand_line",
@@ -56,7 +62,7 @@ def run() -> None:
                 label.text() == brand_line
                 for label in dashboard.findChildren(QLabel)
             ) == 1
-            assert len(dashboard.game_navigation_buttons) == 8
+            assert len(dashboard.game_navigation_buttons) == NAVIGATION_BUTTON_COUNT
             assert all(
                 isinstance(button, QPushButton)
                 and button.property("mohanAction") == "navigation"
@@ -86,10 +92,10 @@ def run() -> None:
                 assert _frames(page, "featureDock"), title
                 splitter = page.findChild(QSplitter, "featurePageSplitter")
                 assert splitter is not None, title
-                assert splitter.count() == 2, title
-                assert splitter.widget(0).minimumWidth() >= 400, title
-                assert splitter.widget(1).minimumWidth() >= 500, title
-                assert splitter.widget(1).width() >= 500, title
+                assert splitter.count() == SPLITTER_PANE_COUNT, title
+                assert splitter.widget(0).minimumWidth() >= SPLITTER_LEFT_MIN_WIDTH, title
+                assert splitter.widget(1).minimumWidth() >= SPLITTER_RIGHT_MIN_WIDTH, title
+                assert splitter.widget(1).width() >= SPLITTER_RIGHT_MIN_WIDTH, title
                 assert page.findChild(
                     QLabel,
                     "dashboardCharacterStagePortrait",

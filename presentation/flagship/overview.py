@@ -65,7 +65,7 @@ class FlagshipOverviewMixin:
                 self.db,
                 self.data_path / "backups",
             ).create("manual")
-        except Exception as exc:  # noqa: BLE001 -- user-visible backup boundary
+        except Exception as exc:
             QMessageBox.warning(
                 self,
                 self._t("資料備份"),

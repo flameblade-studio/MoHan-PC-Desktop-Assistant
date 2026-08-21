@@ -5,6 +5,8 @@ lazy from pathlib import Path
 
 lazy from migrate_python315_imports import ROOT, python_files
 
+MIN_POSITIONAL_ARGS = 2
+
 REMOVED_CALLS = frozenset({
     "ctypes.SetPointerType",
     "glob.glob0",
@@ -87,7 +89,7 @@ def literal_mode(node: ast.Call) -> str | None:
         value = next(
             keyword.value for keyword in node.keywords if keyword.arg == "mode"
         )
-    elif len(node.args) >= 2:
+    elif len(node.args) >= MIN_POSITIONAL_ARGS:
         value = node.args[1]
     else:
         return "r"
@@ -164,7 +166,7 @@ class CompatibilityAudit(ast.NodeVisitor):
         if name in {"NamedTuple", "typing.NamedTuple"} and node.keywords:
             self.issue(node, f"REMOVED_KEYWORD_FORM {name}")
         if name in {"TypedDict", "typing.TypedDict"} and (
-            len(node.args) < 2
+            len(node.args) < MIN_POSITIONAL_ARGS
             or (
                 isinstance(node.args[1], ast.Constant)
                 and node.args[1].value is None

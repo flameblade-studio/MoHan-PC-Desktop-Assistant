@@ -28,6 +28,9 @@ lazy from infrastructure.platform_contracts import PlatformServicePort
 lazy from infrastructure.platform_services import current_platform_services
 lazy from infrastructure.secret_store import platform_secret_store_factory
 lazy from infrastructure.windows_tools import WindowTools
+
+MULTIMODAL_TIME_TOLERANCE = 0.75
+MAX_CLIPBOARD_CHARS = 100000
 lazy from integrations.ai_client import ActionPlannerWorker
 lazy from integrations.remote_control import RemoteControlServer
 lazy from presentation.flagship.cloud_health import CloudHealthWorker
@@ -182,7 +185,7 @@ class FlagshipRuntimeMixin:
         self._latest_multimodal_hands = (hands, observed_at)
         face_is_recent = (
             self._latest_multimodal_face is not None
-            and abs(observed_at - self._latest_multimodal_face[1]) <= 0.75
+            and abs(observed_at - self._latest_multimodal_face[1]) <= MULTIMODAL_TIME_TOLERANCE
         )
         if not face_is_recent:
             self._submit_multimodal_observation(observed_at)
@@ -191,12 +194,12 @@ class FlagshipRuntimeMixin:
         face = None
         if self._latest_multimodal_face is not None:
             candidate, candidate_time = self._latest_multimodal_face
-            if abs(observed_at - candidate_time) <= 0.75:
+            if abs(observed_at - candidate_time) <= MULTIMODAL_TIME_TOLERANCE:
                 face = candidate
         hands: tuple[AirHandSample, ...] = ()
         if self._latest_multimodal_hands is not None:
             candidate_hands, candidate_time = self._latest_multimodal_hands
-            if abs(observed_at - candidate_time) <= 0.75:
+            if abs(observed_at - candidate_time) <= MULTIMODAL_TIME_TOLERANCE:
                 hands = candidate_hands
         self.multimodal_controller.submit(
             hands=hands,
@@ -302,12 +305,12 @@ class FlagshipRuntimeMixin:
             request.request_id,
             True,
             self._t("已讀取剪貼簿文字"),
-            {"text": text[:100000]},
+            {"text": text[:MAX_CLIPBOARD_CHARS]},
         )
 
     def _clipboard_write(self, request: ActionRequest) -> ActionResult:
         text = str(request.arguments.get("text", ""))
-        if len(text) > 100000:
+        if len(text) > MAX_CLIPBOARD_CHARS:
             raise ValueError(self._t("剪貼簿文字不可超過 100,000 字"))
         QApplication.clipboard().setText(text)
         return ActionResult(

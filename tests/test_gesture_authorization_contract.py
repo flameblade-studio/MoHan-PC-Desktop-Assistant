@@ -276,7 +276,7 @@ def _persist_permission_mode(window: CompanionWindow, mode: str) -> None:
     })
     window.db.set_setting(
         "flagship_permissions",
-        {capability: mode for capability in capabilities},
+        dict.fromkeys(capabilities, mode),
     )
     window.db.set_setting(
         "gesture_permissions",
@@ -591,7 +591,7 @@ def run() -> None:
     for test in tests:
         try:
             test()
-        except Exception as exc:  # noqa: BLE001 -- aggregate independent contracts
+        except Exception as exc:
             failures.append(f"{test.__name__}: {type(exc).__name__}: {exc}")
     if failures:
         raise AssertionError("\n".join(failures))

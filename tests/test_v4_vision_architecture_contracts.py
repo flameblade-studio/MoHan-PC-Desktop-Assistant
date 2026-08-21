@@ -42,6 +42,8 @@ lazy from presentation.flagship_ui_localization import (
 )
 lazy from visual_perception import LocalVisualAnalyzer, PresenceState
 
+TRANSLATION_COUNT = 3
+
 LOCAL_CORE_MODULES = (
     "vision_domain",
     "visual_perception",
@@ -426,7 +428,7 @@ def test_four_language_continuous_authorization_keys_are_complete() -> None:
     )
     for source_text in required_sources:
         translations = FLAGSHIP_TRANSLATIONS[source_text]
-        assert len(translations) == 3
+        assert len(translations) == TRANSLATION_COUNT
         assert all(value.strip() for value in translations)
 
     retired_consent_markers = (

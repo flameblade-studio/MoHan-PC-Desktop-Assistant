@@ -28,6 +28,12 @@ lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeak
 lazy from domain.app_profile import personalize_text, profile_setting
 lazy from domain.speech_configuration import QueuedSpeech
 lazy from domain.time_utils import local_aware_time
+
+IDLE_SECONDS_THRESHOLD = 120.0
+RECOGNIZED_STREAK_THRESHOLD = 3
+MAX_TOPIC_LENGTH = 40
+VISUAL_MOTION_INTERVAL = 2.0
+VISUAL_ARRIVAL_INTERVAL = 90.0
 lazy from domain.vision_domain import IdentityState
 
 __all__ = ("CompanionProactiveMixin",)
@@ -150,7 +156,7 @@ class CompanionProactiveMixin:
             self._camera_away_started_at = None
         idle_seconds = seconds_since_local_input()
         session_user_active = bool(
-            idle_seconds is not None and idle_seconds <= 120.0
+            idle_seconds is not None and idle_seconds <= IDLE_SECONDS_THRESHOLD
         )
         require_identity = bool(
             self.db.setting("face_identity_enabled", False)
@@ -158,7 +164,7 @@ class CompanionProactiveMixin:
         recognized = bool(
             camera_enabled
             and presence is PresenceState.PRESENT
-            and self._recognized_scene_streak >= 3
+            and self._recognized_scene_streak >= RECOGNIZED_STREAK_THRESHOLD
         )
         self._proactive_generation += 1
         proactive_mode = MultisensoryInteractionArbiter._mode_key(
@@ -223,7 +229,7 @@ class CompanionProactiveMixin:
         topics = []
         for row in rows:
             content = str(row["content"] or "").strip()
-            if content and len(content) <= 40:
+            if content and len(content) <= MAX_TOPIC_LENGTH:
                 topics.append(content)
         return tuple(topics)
 
@@ -327,7 +333,7 @@ class CompanionProactiveMixin:
                     self.set_state("happy", source="visual", intensity=0.50)
             if (
                 observation.activity is ActivityState.ACTIVE
-                and now - getattr(self, "_last_visual_motion_at", 0.0) >= 2.0
+                and now - getattr(self, "_last_visual_motion_at", 0.0) >= VISUAL_MOTION_INTERVAL
             ):
                 self._last_visual_motion_at = now
                 self.set_state("happy", source="visual", intensity=0.50)
@@ -335,7 +341,7 @@ class CompanionProactiveMixin:
             observation.presence is PresenceState.PRESENT
             and previous is not PresenceState.PRESENT
             and now - getattr(self, "_last_visual_arrival_at", float("-inf"))
-            >= 90.0
+            >= VISUAL_ARRIVAL_INTERVAL
         )
         if arrival:
             self._last_visual_arrival_at = now

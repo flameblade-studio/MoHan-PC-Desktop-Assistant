@@ -28,6 +28,9 @@ lazy from PySide6.QtWidgets import (
 )
 lazy from test_global_settings_actions import close_dashboard, dependencies
 
+TAB_COUNT = 8
+POSE_BUTTON_COUNT = 4
+
 lazy from infrastructure.db import StudioDB
 lazy from presentation.dashboard_window import Dashboard
 
@@ -151,7 +154,7 @@ def test_wardrobe_tab_and_controls_have_four_language_contract() -> None:
                     tabs.tabText(index) for index in range(tabs.count())
                 )
                 try:
-                    assert tabs.count() == 8, (
+                    assert tabs.count() == TAB_COUNT, (
                         f"{language}: Dashboard must have 8 tabs; found "
                         f"{tabs.count()} ({tab_names!r})"
                     )
@@ -174,7 +177,7 @@ def test_wardrobe_tab_and_controls_have_four_language_contract() -> None:
                             capability,
                         )
                     pose_keys: list[int] = []
-                    assert len(dashboard.wardrobe_pose_buttons) == 4
+                    assert len(dashboard.wardrobe_pose_buttons) == POSE_BUTTON_COUNT
                     for button in dashboard.wardrobe_pose_buttons:
                         button.click()
                         application.processEvents()
@@ -182,7 +185,7 @@ def test_wardrobe_tab_and_controls_have_four_language_contract() -> None:
                         pixmap = dashboard.wardrobe_character_preview.pixmap()
                         assert pixmap is not None and not pixmap.isNull()
                         pose_keys.append(pixmap.cacheKey())
-                    assert len(set(pose_keys)) == 4
+                    assert len(set(pose_keys)) == POSE_BUTTON_COUNT
                     forbidden = sorted(
                         text for text in texts if text in FORBIDDEN_SUBPAGE_ACTIONS
                     )

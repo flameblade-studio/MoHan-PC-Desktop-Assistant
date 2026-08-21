@@ -16,6 +16,8 @@ LANGUAGE_HEADINGS = (
     "## 日本語",
 )
 
+LANGUAGE_COUNT = 4
+
 
 def read(relative: str) -> str:
     path = ROOT / relative
@@ -104,7 +106,7 @@ def test_four_language_release_sources_are_complete_and_permanent() -> None:
     language_sections(readme, "README.md")
     language_sections(changelog, "CHANGELOG.md")
     note_sections = language_sections(notes, f"docs/releases/{TAG}.md")
-    assert changelog.count(f"### {TAG} — {RELEASE_DATE}") == 4
+    assert changelog.count(f"### {TAG} — {RELEASE_DATE}") == LANGUAGE_COUNT
     assert notes.startswith(
         "# 墨寒桌面助理 v3.1.2／墨寒桌面助手 v3.1.2／"
         "MoHan Desktop Assistant v3.1.2／"

@@ -42,6 +42,9 @@ lazy from presentation.dashboard_dialogs import ChatHistoryDialog, ZoomTextBrows
 
 __all__ = ("DashboardConversationMixin", "classify_memory_text")
 
+MIN_CHAT_ZOOM_PERCENT = 60
+MAX_CHAT_ZOOM_PERCENT = 200
+
 EMERGENCY_COMMANDS = frozenset(
     {
         "墨寒停手",
@@ -311,8 +314,8 @@ class DashboardConversationMixin:
         self.chat.setFont(font)
         self.chat.document().setDefaultFont(font)
         self.chat_zoom_label.setText(f"{self.chat_zoom_percent}%")
-        self.chat_zoom_down.setEnabled(self.chat_zoom_percent > 60)
-        self.chat_zoom_up.setEnabled(self.chat_zoom_percent < 200)
+        self.chat_zoom_down.setEnabled(self.chat_zoom_percent > MIN_CHAT_ZOOM_PERCENT)
+        self.chat_zoom_up.setEnabled(self.chat_zoom_percent < MAX_CHAT_ZOOM_PERCENT)
         self.db.set_setting("chat_zoom_percent", self.chat_zoom_percent)
 
 

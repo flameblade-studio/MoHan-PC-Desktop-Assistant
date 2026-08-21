@@ -18,6 +18,11 @@ lazy from framing_context_policy import (
     evaluate_framing_context,
 )
 
+FULL_BODY_SCORE_MAX = 0.14
+CLOSE_SCORE_MIN = 0.25
+CLOSE_SCORE_MAX = 0.04
+HALF_SCORE_MIN = 0.62
+
 
 def context(**changes: object) -> FramingPolicyContext:
     base = FramingPolicyContext(
@@ -61,7 +66,7 @@ def assert_typed_frozen_complete_contract() -> None:
 def assert_daily_companion_prefers_half() -> None:
     result = evaluate_framing_context(context())
     assert result.recommended.mode is FramingMode.HALF
-    assert proposal(result, FramingMode.FULL_BODY).score <= 0.14
+    assert proposal(result, FramingMode.FULL_BODY).score <= FULL_BODY_SCORE_MAX
     assert FramingReasonCode.FULL_BODY_NOT_JUSTIFIED in proposal(
         result, FramingMode.FULL_BODY
     ).reasons
@@ -103,12 +108,12 @@ def assert_close_is_private_and_restrained() -> None:
     )
     allowed = evaluate_framing_context(intimate)
     assert allowed.recommended.mode in {FramingMode.CLOSE, FramingMode.HALF}
-    assert proposal(allowed, FramingMode.CLOSE).score > 0.25
+    assert proposal(allowed, FramingMode.CLOSE).score > CLOSE_SCORE_MIN
     blocked = evaluate_framing_context(
         replace(intimate, close_framing_allowed=False)
     )
     close = proposal(blocked, FramingMode.CLOSE)
-    assert close.score <= 0.04
+    assert close.score <= CLOSE_SCORE_MAX
     assert FramingReasonCode.CLOSE_PRIVACY_BLOCKED in close.reasons
     assert blocked.recommended.mode is not FramingMode.CLOSE
 
@@ -193,7 +198,7 @@ def assert_conflict_priority_is_auditable() -> None:
     )
     assert result.recommended.mode is FramingMode.FULL_BODY
     assert FramingReasonCode.OUTFIT_PREVIEW in result.recommended.reasons
-    assert proposal(result, FramingMode.HALF).score > 0.62
+    assert proposal(result, FramingMode.HALF).score > HALF_SCORE_MIN
     assert FramingReasonCode.USER_DEEP_FOCUS in proposal(
         result, FramingMode.HALF
     ).reasons

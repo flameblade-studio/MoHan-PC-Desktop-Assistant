@@ -6,6 +6,9 @@ lazy from dataclasses import dataclass
 lazy from datetime import datetime
 lazy from enum import StrEnum
 
+MAX_DAILY_REINFORCEMENTS = 8
+MAX_ELIGIBILITY_PERCENT = 60
+
 
 class WellbeingKind(StrEnum):
     MEAL = "meal"
@@ -70,9 +73,9 @@ class WellbeingRule:
             raise ValueError("A wellbeing reinforcement must never be immediate.")
         if self.same_kind_cooldown_seconds < self.reinforcement_delay_seconds:
             raise ValueError("A wellbeing cooldown cannot be shorter than its delay.")
-        if not 1 <= self.maximum_daily_reinforcements <= 8:
+        if not 1 <= self.maximum_daily_reinforcements <= MAX_DAILY_REINFORCEMENTS:
             raise ValueError("Daily wellbeing reinforcement budget is invalid.")
-        if not 1 <= self.eligibility_percent <= 60:
+        if not 1 <= self.eligibility_percent <= MAX_ELIGIBILITY_PERCENT:
             raise ValueError("A reinforcement must remain occasional.")
 
 

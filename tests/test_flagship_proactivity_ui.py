@@ -18,11 +18,14 @@ lazy from companion_phrasebook import (
     grouped_phrasebook_categories,
 )
 lazy from companion_proactivity_preferences import CompanionProactivityPreferences
-lazy from flagship_ui import FlagshipControlCenter
+lazy from flagship_ui import ControlCenterDependencies, FlagshipControlCenter
 lazy from infrastructure.companion_proactivity_preferences_store import (
     CompanionProactivityPreferencesStore,
 )
 lazy from infrastructure.db import StudioDB, StudioDBSettingsPort
+
+PHRASEBOOK_CATEGORY_COUNT = 28
+LONG_WAIT_MIN_MINUTES = 121
 
 
 def build_center(root: Path, language: str = "zh-TW"):
@@ -32,7 +35,7 @@ def build_center(root: Path, language: str = "zh-TW"):
         db,
         root,
         language=language,
-        proactivity_store=store,
+        dependencies=ControlCenterDependencies(proactivity_store=store),
     )
     return db, store, center
 
@@ -108,8 +111,8 @@ def assert_phrasebook_has_24_discoverable_staged_groups(root: Path) -> None:
         for _group, group_categories in grouped_phrasebook_categories()
         for item in group_categories
     )
-    assert len(categories) == 28
-    assert len({key for key, _title in categories}) == 28
+    assert len(categories) == PHRASEBOOK_CATEGORY_COUNT
+    assert len({key for key, _title in categories}) == PHRASEBOOK_CATEGORY_COUNT
     db, _store, center = build_center(root)
     try:
         before = db.settings_snapshot()
@@ -187,8 +190,8 @@ def assert_four_languages_accessibility_and_small_layout(root: Path) -> None:
                 QApplication.processEvents()
                 assert editor.value() == before
             center.companion_brief_minutes.setValue(120)
-            assert center.companion_long_wait_minutes.minimum() == 121
-            assert center.companion_long_wait_minutes.value() >= 121
+            assert center.companion_long_wait_minutes.minimum() == LONG_WAIT_MIN_MINUTES
+            assert center.companion_long_wait_minutes.value() >= LONG_WAIT_MIN_MINUTES
         finally:
             close_center(db, center)
 

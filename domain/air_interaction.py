@@ -7,6 +7,9 @@ lazy from enum import StrEnum
 lazy from domain.gesture_intent import HandSide
 
 LANDMARKS_PER_HAND = 21
+OPEN_PALM_THRESHOLD = 0.55
+MIN_PALM_SPAN = 1e-6
+TWO_HANDS = 2
 
 
 class AirInteractionKind(StrEnum):
@@ -210,10 +213,10 @@ class AirInteractionDetector:
         observed_at: float,
         metrics: tuple[_HandMetrics, ...],
     ) -> AirInteractionEvent | None:
-        qualifies = len(metrics) == 2 and all(
+        qualifies = len(metrics) == TWO_HANDS and all(
             item.sample.confidence >= self._config.minimum_confidence
             and item.palm_span >= self._config.high_five_palm_span
-            and item.open_palm_score >= 0.55
+            and item.open_palm_score >= OPEN_PALM_THRESHOLD
             for item in metrics
         )
         self._high_five_candidates = (
@@ -359,7 +362,7 @@ def _select_hands(hands: tuple[AirHandSample, ...]) -> tuple[AirHandSample, ...]
 def _measure(hand: AirHandSample) -> _HandMetrics:
     points = hand.landmarks
     palm_span = _distance(points[5], points[17])
-    if palm_span < 1e-6:
+    if palm_span < MIN_PALM_SPAN:
         raise ValueError("air hand palm span is too small")
     pinch_ratio = _distance(points[4], points[8]) / palm_span
     extension_scores = tuple(
@@ -392,7 +395,7 @@ def _finger_extension(
     wrist = points[0]
     pip_distance = _distance(points[pip], wrist)
     tip_distance = _distance(points[tip], wrist)
-    length_score = _clamp((tip_distance / max(pip_distance, 1e-6) - 1.05) / 0.35)
+    length_score = _clamp((tip_distance / max(pip_distance, MIN_PALM_SPAN) - 1.05) / 0.35)
     angle = _angle(points[tip], points[pip], points[mcp])
     angle_score = _clamp((angle - 2.0) / (math.pi - 2.0))
     return min(length_score, angle_score)
@@ -411,7 +414,7 @@ def _angle(
     second_vector = (second.x - vertex.x, second.y - vertex.y)
     first_length = math.hypot(*first_vector)
     second_length = math.hypot(*second_vector)
-    if first_length < 1e-6 or second_length < 1e-6:
+    if first_length < MIN_PALM_SPAN or second_length < MIN_PALM_SPAN:
         return 0.0
     cosine = (
         first_vector[0] * second_vector[0]

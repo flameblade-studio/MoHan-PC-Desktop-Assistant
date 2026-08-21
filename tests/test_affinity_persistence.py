@@ -7,6 +7,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from domain.affinity_state import AffinityState
 
+INTERACTION_COUNT = 10
+EXPECTED_AFFINITY = 0.6
+EXPECTED_INTERACTION_COUNT = 42
+JEALOUSY_THRESHOLD = 0.5
+
 
 class _FakeDB:
     """Minimal settings store mirroring the db.setting / db.set_setting contract."""
@@ -45,23 +50,23 @@ def test_affinity_survives_restart() -> None:
     assert state.interaction_count == 0
 
     # Simulate a session of interactions, persisting after each.
-    for _ in range(10):
+    for _ in range(INTERACTION_COUNT):
         _save_affinity(db, state)
 
     # A "restart" rebuilds the state purely from the db.
     rebuilt = _load_affinity(db)
     assert rebuilt.affinity > 0.0
-    assert rebuilt.interaction_count == 10
+    assert rebuilt.interaction_count == INTERACTION_COUNT
     assert rebuilt.affinity == state.affinity
 
 
 def test_affinity_loads_existing_value() -> None:
     db = _FakeDB()
-    db.set_setting("affinity_value", 0.6)
-    db.set_setting("affinity_interaction_count", 42)
+    db.set_setting("affinity_value", EXPECTED_AFFINITY)
+    db.set_setting("affinity_interaction_count", EXPECTED_INTERACTION_COUNT)
     state = _load_affinity(db)
-    assert state.affinity == 0.6
-    assert state.interaction_count == 42
+    assert state.affinity == EXPECTED_AFFINITY
+    assert state.interaction_count == EXPECTED_INTERACTION_COUNT
     assert state.snapshot(now=0.0).stage == "close"
 
 
@@ -82,7 +87,7 @@ def test_jealousy_survives_restart() -> None:
     # A "restart" rebuilds the state purely from the db.
     rebuilt = _load_affinity(db)
     assert rebuilt.jealousy == state.jealousy
-    assert rebuilt.jealousy > 0.5
+    assert rebuilt.jealousy > JEALOUSY_THRESHOLD
 
 
 def run() -> None:

@@ -17,6 +17,12 @@ lazy from appearance_dynamics import (
     motion_group_for_slot,
 )
 
+EXPECTED_TICK_COUNT = 20
+MAX_SUBSTEPS = 3
+MOTION_GROUP_COUNT = 4
+SCALE_Y_LOWER = 0.99
+SCALE_Y_UPPER = 1.01
+
 
 def _enabled(mode: DynamicsMode = DynamicsMode.FULL) -> DynamicsConfiguration:
     return DynamicsConfiguration(enabled=True, mode=mode)
@@ -45,7 +51,7 @@ def test_fixed_step_sequence_is_reproducible() -> None:
     first_frames = tuple(first.advance(sample) for sample in samples)
     second_frames = tuple(second.advance(sample) for sample in samples)
     assert first_frames == second_frames
-    assert first_frames[-1].tick == 20
+    assert first_frames[-1].tick == EXPECTED_TICK_COUNT
     assert first_frames[-1].for_group(MotionGroup.BODY) != IDENTITY_TRANSFORM
     assert first_frames[-1].for_group(MotionGroup.SLEEVE) != IDENTITY_TRANSFORM
     assert first_frames[-1].for_group(MotionGroup.HAIR) != IDENTITY_TRANSFORM
@@ -63,8 +69,8 @@ def test_dt_input_and_state_are_strictly_bounded() -> None:
     frame = engine.advance(
         DynamicsInput(10_000.0, motion_x=10_000.0, motion_y=-10_000.0)
     )
-    assert frame.tick == 3
-    assert engine.state_count == len(MotionGroup) == 4
+    assert frame.tick == MAX_SUBSTEPS
+    assert engine.state_count == len(MotionGroup) == MOTION_GROUP_COUNT
     for _index in range(20_000):
         frame = engine.advance(DynamicsInput(0.01, motion_x=99.0, gravity_x=-99.0))
     limits = {
@@ -78,8 +84,8 @@ def test_dt_input_and_state_are_strictly_bounded() -> None:
         assert abs(transform.offset_x) <= offset_limit
         assert abs(transform.offset_y) <= offset_limit + 1.2
         assert abs(transform.rotation_degrees) <= rotation_limit
-        assert 0.99 <= transform.scale_y <= 1.01
-    assert engine.state_count == 4
+        assert SCALE_Y_LOWER <= transform.scale_y <= SCALE_Y_UPPER
+    assert engine.state_count == MOTION_GROUP_COUNT
 
 
 def test_reduced_mode_and_reset_are_explicit() -> None:

@@ -66,7 +66,7 @@ class ManagerWorkerScheduler:
             thread_name_prefix="mohan-background",
         )
         self._futures: dict[str, Future[list[AgentObservation]]] = {}
-        self._next_due = {worker_id: 0.0 for worker_id in self._workers}
+        self._next_due = dict.fromkeys(self._workers, 0.0)
         self._last_event: dict[str, float] = {}
         self._last_delivery = float("-inf")
         self._event_cooldown = max(0.0, event_cooldown_seconds)

@@ -4,6 +4,8 @@ lazy import math
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 
+lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+
 
 class IdentityState(StrEnum):
     NO_FACE = "no_face"
@@ -54,6 +56,6 @@ def cosine_similarity(left: tuple[float, ...], right: tuple[float, ...]) -> floa
     numerator = sum(a * b for a, b in zip(left, right, strict=True))
     left_norm = math.sqrt(sum(value * value for value in left))
     right_norm = math.sqrt(sum(value * value for value in right))
-    if left_norm == 0.0 or right_norm == 0.0:
+    if left_norm < FLOAT_COMPARISON_EPSILON or right_norm < FLOAT_COMPARISON_EPSILON:
         return 0.0
     return numerator / (left_norm * right_norm)

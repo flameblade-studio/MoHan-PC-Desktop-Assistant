@@ -13,6 +13,7 @@ CANONICAL_OWNERS = (
     "infrastructure.flagship_windows_toolbox",
 )
 FACADE_OWNER = "presentation.flagship_core"
+MAX_OWNER_LINE_COUNT = 300
 
 
 def imported_modules(path: Path) -> frozenset[str]:
@@ -98,6 +99,6 @@ def test_flagship_core_owners_stay_bounded() -> None:
             .read_text(encoding="utf-8")
             .splitlines()
         )
-        > 300
+        > MAX_OWNER_LINE_COUNT
     }
     assert oversized == {}

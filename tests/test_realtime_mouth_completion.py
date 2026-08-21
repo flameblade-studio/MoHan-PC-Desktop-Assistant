@@ -16,6 +16,7 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from companion_window import CompanionWindow
 lazy from infrastructure.db import StudioDB
 
+DUPLICATE_EVENT_PROBABILITY = 0.35
 COMPLETION_EVENTS = (
     "response.output_audio.done",
     "response.audio.done",
@@ -61,7 +62,7 @@ def run() -> None:
                 window.realtime._handle_server_event(
                     {"type": event_type}
                 )
-                if rng.random() < 0.35:
+                if rng.random() < DUPLICATE_EVENT_PROBABILITY:
                     # Duplicate and out-of-order completion events are legal
                     # cleanup noise and must remain harmless.
                     window.realtime._handle_server_event(

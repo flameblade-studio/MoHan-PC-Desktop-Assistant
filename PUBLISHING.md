@@ -153,6 +153,7 @@ Windows 安裝程式建置會鎖定 Inno Setup `7.0.2` 與 WiX `7.0.0`。Inno Se
 6. 不誇大平台：CI 通過不等於真機驗證；未實測的平台與功能必須清楚標示限制。
 7. 同步對外資訊：程式、文件、Release 與官網的版本、連結及可見行為須保持一致。
 8. 拒絕單次手工例外：優先建立可重複、自動化、可測試的流程，不靠臨時人工補救維護。
+9. 擇難而行：炎劍文化工作室出品的軟體，其產製過程永遠選擇最複雜、最困難、風險最大的那條路，不因省事而降低標準。
 
 ### 驗證 Release 產物
 
@@ -326,6 +327,7 @@ Windows 安装程序构建会锁定 Inno Setup `7.0.2` 与 WiX `7.0.0`。Inno Se
 6. 不夸大平台：CI 通过不等于真机验证；未实测的平台与功能必须清楚标示限制。
 7. 同步对外信息：程序、文档、Release 与官网的版本、链接及可见行为须保持一致。
 8. 拒绝一次性手工例外：优先建立可重复、自动化、可测试的流程，不靠临时人工补救维护。
+9. 择难而行：炎剑文化工作室出品的软件，其产制过程永远选择最复杂、最困难、风险最大的那条路，不因省事而降低标准。
 
 ### 验证 Release 产物
 
@@ -499,6 +501,7 @@ This is the shared long-term maintenance contract for MoHan, FB2Blogger, and FB2
 6. No platform overclaiming: passing CI is not real-device validation; untested platforms and features state their limits clearly.
 7. Synchronized public information: source, documentation, Releases, and website versions, links, and visible behavior stay aligned.
 8. No one-off manual exceptions: prefer repeatable, automated, testable maintenance over temporary manual repairs.
+9. Choose the harder path: for software produced by Flameblade Studio, the production process always takes the most complex, most difficult, and highest-risk path, never lowering standards for convenience.
 
 ### Verify Release artifacts
 
@@ -672,6 +675,7 @@ Windows インストーラービルドでは Inno Setup `7.0.2` と WiX `7.0.0` 
 6. 対応 OS を誇張しない：CI 成功を実機検証とは見なさず、未検証の OS と機能の制限を明記します。
 7. 公開情報を同期：ソース、文書、Release、公式サイトの版、リンク、見える動作を一致させます。
 8. 一度限りの手作業を例外化しない：一時的な手直しより、再利用可能で自動化・テスト可能な保守手順を優先します。
+9. 困難な道を選ぶ：炎剣文化工作室が制作するソフトウェアは、その制作過程において常に最も複雑で、最も困難で、最もリスクの高い道を選び、手間を省くために基準を下げません。
 
 ### Release 成果物の検証
 

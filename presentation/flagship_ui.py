@@ -10,7 +10,10 @@ lazy from presentation.flagship.cloud_health import (
     CloudHealthSignals,
     CloudHealthWorker,
 )
-lazy from presentation.flagship.control_center import FlagshipControlCenter
+lazy from presentation.flagship.control_center import (
+    ControlCenterDependencies,
+    FlagshipControlCenter,
+)
 lazy from presentation.flagship.oauth import OAuthPKCEFlow, OAuthSignals, OAuthWorker
 lazy from presentation.flagship.shared import (
     ASSIST_INTENT_MARKERS,
@@ -53,6 +56,7 @@ __all__ = (
     "READ_INTENT_MARKERS",
     "CloudHealthSignals",
     "CloudHealthWorker",
+    "ControlCenterDependencies",
     "FlagshipControlCenter",
     "FlagshipDraftValues",
     "FlagshipTranslator",
@@ -85,6 +89,7 @@ _MATERIALIZED_EXPORTS = (
     READ_INTENT_MARKERS,
     CloudHealthSignals,
     CloudHealthWorker,
+    ControlCenterDependencies,
     FlagshipControlCenter,
     FlagshipDraftValues,
     FlagshipTranslator,

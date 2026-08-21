@@ -22,6 +22,9 @@ lazy from application.visual_perception import (
     VisualObservation,
 )
 
+MINIMUM_AWAY_SECONDS = 60
+LANGUAGE_LINE_COUNT = 4
+
 
 class Clock:
     def __init__(self) -> None:
@@ -138,7 +141,7 @@ def assert_quiet_and_busy_guards() -> None:
 
 def assert_welcome_timing_boundaries() -> None:
     rules = WelcomeTimingRules()
-    assert rules.minimum_away_seconds == 60
+    assert rules.minimum_away_seconds == MINIMUM_AWAY_SECONDS
     assert rules.brief_max_seconds == 30 * 60
     assert rules.long_away_seconds == 4 * 60 * 60
     for invalid in (
@@ -185,7 +188,7 @@ def assert_four_language_lines() -> None:
         for language in ("zh-TW", "zh-CN", "en-US", "ja-JP")
     }
     assert all("Owner" in line for line in lines.values())
-    assert len(set(lines.values())) == 4
+    assert len(set(lines.values())) == LANGUAGE_LINE_COUNT
     assert "主上" in interaction_text("zh-TW", interaction, user_title="主上")
     diagnostic_words = ("辨識", "识别", "recognized", "confidence", "認識度")
     assert all(

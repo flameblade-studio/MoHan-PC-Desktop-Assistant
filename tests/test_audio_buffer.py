@@ -11,6 +11,12 @@ if str(ROOT) not in sys.path:
 lazy from audio_buffer import BoundedAudioQueue, PcmPacketizer
 lazy from integrations.realtime_voice import RealtimeVoiceClient
 
+EXPECTED_PEAK_DEPTH = 3
+DEVICE_BLOCK_MILLISECONDS = 20
+INPUT_QUEUE_CHUNKS = 32
+LATENCY_BUDGET_MS = 640
+PLAYBACK_LATENCY_BUDGET_MS = 1500
+
 
 class _Socket:
     connected = True
@@ -39,7 +45,7 @@ def test_live_input_keeps_the_newest_audio_when_delayed() -> None:
     snapshot = pending.snapshot()
     assert snapshot.dropped_oldest == 1
     assert snapshot.rejected_newest == 0
-    assert snapshot.peak_depth == 3
+    assert snapshot.peak_depth == EXPECTED_PEAK_DEPTH
 
 
 def test_playback_never_silently_discards_spoken_audio() -> None:
@@ -67,17 +73,17 @@ def test_shutdown_sentinel_is_guaranteed_even_when_full() -> None:
 
 
 def test_realtime_latency_budget_is_bounded() -> None:
-    assert RealtimeVoiceClient.DEVICE_BLOCK_MILLISECONDS == 20
-    assert RealtimeVoiceClient.INPUT_QUEUE_CHUNKS == 32
+    assert RealtimeVoiceClient.DEVICE_BLOCK_MILLISECONDS == DEVICE_BLOCK_MILLISECONDS
+    assert RealtimeVoiceClient.INPUT_QUEUE_CHUNKS == INPUT_QUEUE_CHUNKS
     assert (
         RealtimeVoiceClient.DEVICE_BLOCK_MILLISECONDS
         * RealtimeVoiceClient.INPUT_QUEUE_CHUNKS
-        <= 640
+        <= LATENCY_BUDGET_MS
     )
     assert (
         RealtimeVoiceClient.DEVICE_BLOCK_MILLISECONDS
         * RealtimeVoiceClient.PLAYBACK_QUEUE_CHUNKS
-        <= 1500
+        <= PLAYBACK_LATENCY_BUDGET_MS
     )
 
 

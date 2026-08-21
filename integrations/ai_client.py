@@ -346,7 +346,7 @@ class ActionPlannerWorker(QRunnable):
                     )
                 step["arguments"] = parsed_arguments
             self.signals.done.emit(plan)
-        except Exception as exc:  # noqa: BLE001 -- UI worker must always report failure
+        except Exception as exc:
             # This worker is a UI task boundary. Socket timeouts and unexpected
             # response-shape errors must always release the "規劃中" state.
             self.signals.failed.emit(str(sanitize_error(exc)))
@@ -511,5 +511,5 @@ class AIWorker(QRunnable):
             return
         try:
             sink(parse_prompt_cache_telemetry(response))
-        except Exception:  # noqa: BLE001 -- optional telemetry never owns replies
+        except Exception:
             return

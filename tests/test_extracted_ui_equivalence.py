@@ -46,6 +46,7 @@ DASHBOARD_DIALOG_CLASSES = (
     "ChatHistoryDialog",
 )
 EXTRACTED_UI_CLASSES = (*DASHBOARD_DIALOG_CLASSES, "FirstRunWizard")
+ADD_ITEM_ARG_COUNT = 2
 
 DEFAULT_PROFILE = {
     "assistant_name": "墨寒",
@@ -184,7 +185,7 @@ def _language_choices(wizard_class: ast.ClassDef) -> tuple[tuple[str, str], ...]
             and call.func.attr == "addItem"
             and isinstance(call.func.value, ast.Attribute)
             and call.func.value.attr == "ui_language"
-            and len(call.args) == 2
+            and len(call.args) == ADD_ITEM_ARG_COUNT
         ):
             choices.append(
                 (

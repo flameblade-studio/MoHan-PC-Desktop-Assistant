@@ -5,6 +5,14 @@ lazy from pathlib import Path
 
 lazy from PySide6.QtGui import QImage
 
+MIN_OPAQUE_ALPHA = 5
+COOL_METAL_BRIGHTNESS_MIN = 72
+DARK_HAIR_BRIGHTNESS_MAX = 122
+DARK_HAIR_SPREAD_MAX = 76
+BLUE_FABRIC_BRIGHTNESS_MIN = 54
+BLUE_FABRIC_RED_MAX = 188
+EMBROIDERY_BRIGHTNESS_MIN = 108
+
 SPECS = {
     "": ("idle.png", (780, 175, 885, 525), 835),
     "_lean": ("idle_lean.png", (780, 170, 875, 520), 820),
@@ -50,13 +58,13 @@ def extract(source: Path, output: Path, box, free_edge: int) -> None:
     for y in range(top, bottom):
         for x in range(left, right):
             color = original.pixelColor(x, y)
-            if color.alpha() <= 5:
+            if color.alpha() <= MIN_OPAQUE_ALPHA:
                 continue
             brightness = max(color.red(), color.green(), color.blue())
             cool_metal = (
                 color.blue() >= color.red() * 0.88
                 and color.blue() >= color.green() * 0.82
-                and brightness >= 72
+                and brightness >= COOL_METAL_BRIGHTNESS_MIN
             )
             if x >= free_edge or (
                 x >= free_edge - 18 and y < top + 125 and cool_metal
@@ -75,14 +83,14 @@ def extract_hair(source: Path, output: Path, box) -> None:
     for y in range(top, bottom):
         for x in range(left, right):
             color = original.pixelColor(x, y)
-            if color.alpha() <= 5:
+            if color.alpha() <= MIN_OPAQUE_ALPHA:
                 continue
             channels = (color.red(), color.green(), color.blue())
             brightness = max(channels)
             spread = max(channels) - min(channels)
             dark_hair = (
-                brightness <= 122
-                and spread <= 76
+                brightness <= DARK_HAIR_BRIGHTNESS_MAX
+                and spread <= DARK_HAIR_SPREAD_MAX
                 and color.blue() >= color.red() * 0.82
             )
             if dark_hair:
@@ -101,20 +109,20 @@ def extract_sleeve(source: Path, output: Path, box) -> None:
     for y in range(top, bottom):
         for x in range(left, right):
             color = original.pixelColor(x, y)
-            if color.alpha() <= 5:
+            if color.alpha() <= MIN_OPAQUE_ALPHA:
                 continue
             red = color.red()
             green = color.green()
             blue = color.blue()
             brightness = max(red, green, blue)
             blue_fabric = (
-                brightness >= 54
+                brightness >= BLUE_FABRIC_BRIGHTNESS_MIN
                 and blue >= red + 9
                 and blue >= green - 4
-                and red <= 188
+                and red <= BLUE_FABRIC_RED_MAX
             )
             cool_embroidery = (
-                brightness >= 108
+                brightness >= EMBROIDERY_BRIGHTNESS_MIN
                 and blue >= red * 0.93
                 and blue >= green * 0.90
             )

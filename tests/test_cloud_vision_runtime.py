@@ -26,6 +26,9 @@ lazy from openai_vision_preferences import (
     VisionTriggerPolicy,
 )
 
+TRIO_LENGTH = 3
+EXPECTED_GENERATION = 7
+
 
 def assert_legacy_sdk_status_migrates_to_transport() -> None:
     assert CloudVisionStatus("sdk_unavailable") is (
@@ -137,7 +140,7 @@ def assert_saved_enable_allows_repeated_requests_without_consent() -> None:
         result = runtime.analyze(frame(operation_id))
         assert result.status is CloudVisionStatus.SUCCESS
         clock.value += 2.0
-    assert len(provider.requests) == 3
+    assert len(provider.requests) == TRIO_LENGTH
 
 
 def assert_unsaved_draft_never_enables_cloud() -> None:
@@ -226,11 +229,11 @@ def assert_minute_and_daily_quotas_are_enforced() -> None:
 def assert_restart_loads_persisted_authorization() -> None:
     source = AuthorizationSource(authorization(7))
     first = CloudVisionRuntime(Provider(), source)
-    assert first.authorization.generation == 7
+    assert first.authorization.generation == EXPECTED_GENERATION
     restarted_provider = Provider()
     restarted = CloudVisionRuntime(restarted_provider, source)
     result = restarted.analyze(frame(1))
-    assert result.succeeded and result.authorization_generation == 7
+    assert result.succeeded and result.authorization_generation == EXPECTED_GENERATION
 
 
 def assert_event_trigger_requires_saved_event_policy() -> None:

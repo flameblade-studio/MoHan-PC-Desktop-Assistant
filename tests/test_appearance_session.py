@@ -14,6 +14,11 @@ lazy from appearance_session import (
     AppearanceSession,
 )
 
+EXPECTED_CALLS_AFTER_SAVE = 2
+EXPECTED_CALLS_AFTER_CANCEL = 3
+EXPECTED_CALLS_AFTER_PREVIEW_FAILURE = 5
+EXPECTED_CALLS_AFTER_SAVE_FAILURE = 6
+
 
 def component(pack_id: str, item_id: str) -> AppearanceComponent:
     return AppearanceComponent(pack_id, item_id, "default")
@@ -253,9 +258,9 @@ def assert_lifecycle_boundaries_clear_secondary_motion() -> None:
     session.preview_slot("weapon", component("weapon-pack", "weapon"))
     assert dynamics.calls == 1
     session.save()
-    assert dynamics.calls == 2
+    assert dynamics.calls == EXPECTED_CALLS_AFTER_SAVE
     session.cancel()
-    assert dynamics.calls == 3
+    assert dynamics.calls == EXPECTED_CALLS_AFTER_CANCEL
 
     session.preview_slot("handheld", component("handheld-pack", "handheld"))
     preview.fail_on = session.preview_selection.replace(
@@ -267,7 +272,7 @@ def assert_lifecycle_boundaries_clear_secondary_motion() -> None:
         pass
     else:
         raise AssertionError("preview failure must remain visible")
-    assert dynamics.calls == 5
+    assert dynamics.calls == EXPECTED_CALLS_AFTER_PREVIEW_FAILURE
 
     commits.fail = True
     try:
@@ -276,7 +281,7 @@ def assert_lifecycle_boundaries_clear_secondary_motion() -> None:
         pass
     else:
         raise AssertionError("save failure must remain visible")
-    assert dynamics.calls == 6
+    assert dynamics.calls == EXPECTED_CALLS_AFTER_SAVE_FAILURE
 
 
 def run() -> None:

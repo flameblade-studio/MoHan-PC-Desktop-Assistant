@@ -3,7 +3,7 @@ from __future__ import annotations
 lazy import json
 lazy import sys
 lazy from dataclasses import replace
-lazy from datetime import datetime, timezone
+lazy from datetime import UTC, datetime
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
@@ -76,7 +76,7 @@ def request(job_id: str) -> OutfitCreationRequest:
         "cheerful",
         "everyday",
         "原創現代服裝",
-        datetime(2026, 8, 15, tzinfo=timezone.utc),
+        datetime(2026, 8, 15, tzinfo=UTC),
     )
 
 

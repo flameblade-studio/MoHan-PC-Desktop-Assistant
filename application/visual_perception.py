@@ -24,6 +24,11 @@ class ActivityState(StrEnum):
     ACTIVE = "active"
 
 
+DARK_THRESHOLD = 8.0
+DIM_THRESHOLD = 42.0
+COMFORTABLE_THRESHOLD = 205.0
+
+
 @dataclass(frozen=True, slots=True)
 class VisualObservation:
     """Non-identifying measurements derived from one local camera sample."""
@@ -58,11 +63,11 @@ class LocalVisualAnalyzer:
 
     @staticmethod
     def lighting_for(brightness: float) -> LightingState:
-        if brightness < 8.0:
+        if brightness < DARK_THRESHOLD:
             return LightingState.DARK
-        if brightness < 42.0:
+        if brightness < DIM_THRESHOLD:
             return LightingState.DIM
-        if brightness < 205.0:
+        if brightness < COMFORTABLE_THRESHOLD:
             return LightingState.COMFORTABLE
         return LightingState.BRIGHT
 

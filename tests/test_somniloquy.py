@@ -14,11 +14,14 @@ lazy from domain.somniloquy import (
     validate_library,
 )
 
+MIN_DREAM_FRAGMENTS = 5
+MAX_TRIGGER_PROBABILITY = 0.01
+
 
 def test_all_languages_have_dream_fragments() -> None:
     for language in ("zh-TW", "zh-CN", "en", "ja-JP"):
         lines = somniloquy_lines(language)
-        assert len(lines) >= 5, language
+        assert len(lines) >= MIN_DREAM_FRAGMENTS, language
         assert all(line.strip() for line in lines), language
 
 
@@ -44,7 +47,7 @@ def test_random_somniloquy_stays_in_library() -> None:
 def test_murmur_probability_is_very_low() -> None:
     # The trigger probability must stay tiny so the companion never chatters
     # constantly during idle.
-    assert SOMNILOQUY_TRIGGER_PROBABILITY < 0.01
+    assert SOMNILOQUY_TRIGGER_PROBABILITY < MAX_TRIGGER_PROBABILITY
     # A deterministic RNG below the threshold always murmurs; above never does.
     import random as _random
     always = _random.Random(0)

@@ -18,6 +18,8 @@ lazy import re
 # How strongly sentiment and style each shape the mirrored temperature.
 SENTIMENT_WEIGHT = 0.5
 STYLE_WEIGHT = 0.5
+RESERVED_TEMPERATURE_THRESHOLD = -0.1
+PLAYFUL_TEMPERATURE_THRESHOLD = 0.1
 
 # Word markers used to derive a cheap sentiment/style signal from raw
 # conversation text.  These are deliberately lightweight so the mirror can
@@ -64,9 +66,9 @@ class PersonalityMirrorState:
     @property
     def style(self) -> str:
         """A word-style preference derived from the mirrored temperature."""
-        if self._temperature < -0.1:
+        if self._temperature < RESERVED_TEMPERATURE_THRESHOLD:
             return "reserved"
-        if self._temperature > 0.1:
+        if self._temperature > PLAYFUL_TEMPERATURE_THRESHOLD:
             return "playful"
         return "balanced"
 

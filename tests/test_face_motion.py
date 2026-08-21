@@ -9,6 +9,9 @@ lazy from face_motion import FaceMotionController
 lazy from face_rig import FacePose, Viseme
 lazy from lip_sync import VisemeDynamics
 
+SMILE_THRESHOLD = 0.5
+BLUSH_THRESHOLD = 0.8
+
 
 def run() -> None:
     dynamics = VisemeDynamics()
@@ -27,7 +30,7 @@ def run() -> None:
         FacePose.LEAN,
         FacePose.CHEEK,
     }
-    assert all(frame.expression_shape.eye_smile > 0.5 for frame in frames)
+    assert all(frame.expression_shape.eye_smile > SMILE_THRESHOLD for frame in frames)
     assert all(frame.mouth.corner_smile == 0.0 for frame in frames)
     assert frames[-1].mouth.aperture > 0.0
 
@@ -40,13 +43,13 @@ def run() -> None:
         )
     assert shy.viseme in {Viseme.I, Viseme.E}
     assert shy.expression_shape.blink == 1.0
-    assert shy.expression_shape.blush > 0.8
+    assert shy.expression_shape.blush > BLUSH_THRESHOLD
 
     closed = controller.close(pose="cheek", expression="happy")
     assert closed.viseme is Viseme.CLOSED
     assert closed.mouth.aperture == 0.0
-    assert closed.mouth.corner_smile > 0.5
-    assert closed.expression_shape.eye_smile > 0.5
+    assert closed.mouth.corner_smile > SMILE_THRESHOLD
+    assert closed.expression_shape.eye_smile > SMILE_THRESHOLD
     print("FACE_MOTION_OK")
 
 

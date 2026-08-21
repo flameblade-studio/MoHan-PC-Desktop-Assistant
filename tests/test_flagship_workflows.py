@@ -19,6 +19,10 @@ lazy from application.flagship_workflows import (
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SERVICE_PATH = PROJECT_ROOT / "application" / "flagship_workflows.py"
 
+NEW_WORKFLOW_ID = 100
+STORED_WORKFLOW_ID = 7
+WORK_STARTED_WORKFLOW_ID = 31
+
 
 @dataclass(frozen=True, slots=True)
 class FakePlan:
@@ -294,7 +298,7 @@ def test_crud_uses_the_repository_port_and_preserves_identity() -> None:
     service = make_service(repository)
 
     created = workflow(None, "Created", enabled=False)
-    assert service.save_workflow(created) == 100
+    assert service.save_workflow(created) == NEW_WORKFLOW_ID
     assert repository.saved[-1] == (
         "Created",
         created.definition,
@@ -303,7 +307,7 @@ def test_crud_uses_the_repository_port_and_preserves_identity() -> None:
     )
 
     stored.definition = '{"updated":true}'
-    assert service.save_workflow(stored) == 7
+    assert service.save_workflow(stored) == STORED_WORKFLOW_ID
     assert repository.saved[-1] == (
         "Stored",
         stored.definition,
@@ -549,6 +553,6 @@ def test_work_started_executes_only_enabled_work_start_workflows() -> None:
 
     assert repository.workflow_list_queries == [True]
     assert len(runs) == 1
-    assert runs[0].workflow_id == 31
+    assert runs[0].workflow_id == WORK_STARTED_WORKFLOW_ID
     assert runs[0].executed
     assert repository.marked == [31]

@@ -7,14 +7,18 @@ lazy from pathlib import Path
 
 lazy from PIL import Image
 
+RED_CHANNEL_MIN = 220
+GREEN_BLUE_CHANNEL_MAX = 90
+MIN_COMPONENT_SIZE = 8
+
 
 def boxes(path: Path) -> list[tuple[int, int, int, int]]:
     image = Image.open(path).convert("RGB")
     red = {
         *((x, y) for x in range(image.width) if (
-            image.getpixel((x, y))[0] > 220
-            and image.getpixel((x, y))[1] < 90
-            and image.getpixel((x, y))[2] < 90
+            image.getpixel((x, y))[0] > RED_CHANNEL_MIN
+            and image.getpixel((x, y))[1] < GREEN_BLUE_CHANNEL_MAX
+            and image.getpixel((x, y))[2] < GREEN_BLUE_CHANNEL_MAX
         ))
         for y in range(image.height)
     }
@@ -35,7 +39,7 @@ def boxes(path: Path) -> list[tuple[int, int, int, int]]:
                     red.remove(neighbor)
                     queue.append(neighbor)
                     component.append(neighbor)
-        if len(component) < 8:
+        if len(component) < MIN_COMPONENT_SIZE:
             continue
         xs = [point[0] for point in component]
         ys = [point[1] for point in component]

@@ -21,6 +21,10 @@ lazy from wellbeing_reminder import ReminderResponse, WellbeingKind
 
 NOW = datetime(2027, 1, 8, 12, tzinfo=UTC)
 
+MAX_DAILY_REINFORCEMENTS = 7
+SAME_KIND_COOLDOWN_SECONDS = 7200
+SAME_KIND_COOLDOWN_SECONDS_ALT = 3600
+
 
 class MemorySettings:
     def __init__(
@@ -111,8 +115,8 @@ def assert_date_rollover_resets_daily_state_only() -> None:
     assert meal.initial_delivered_at is None
     assert meal.reinforcement_delivered_at is None
     assert meal.daily_reinforcement_count == 0
-    assert meal.maximum_daily_reinforcements == 7
-    assert meal.same_kind_cooldown_seconds == 7200
+    assert meal.maximum_daily_reinforcements == MAX_DAILY_REINFORCEMENTS
+    assert meal.same_kind_cooldown_seconds == SAME_KIND_COOLDOWN_SECONDS
 
 
 def assert_corruption_fails_closed_and_future_fields_are_ignored() -> None:
@@ -142,7 +146,7 @@ def assert_corruption_fails_closed_and_future_fields_are_ignored() -> None:
         MemorySettings({WELLBEING_STATE_KEY: payload})
     ).load(NOW)
     assert state.for_kind(WellbeingKind.REST).enabled is True
-    assert state.for_kind(WellbeingKind.MEAL).same_kind_cooldown_seconds == 3600
+    assert state.for_kind(WellbeingKind.MEAL).same_kind_cooldown_seconds == SAME_KIND_COOLDOWN_SECONDS_ALT
     for invalid_version in (True, "1", 2):
         damaged = copy.deepcopy(payload)
         damaged["version"] = invalid_version

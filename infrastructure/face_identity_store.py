@@ -13,6 +13,8 @@ lazy from domain.vision_domain import (
     cosine_similarity,
 )
 
+MIN_FACE_SAMPLES = 3
+
 
 @dataclass(frozen=True, slots=True)
 class FaceProfile:
@@ -136,7 +138,7 @@ class FaceIdentityStore:
 
     @classmethod
     def _validate_embeddings(cls, value: object) -> tuple[tuple[float, ...], ...]:
-        if not isinstance(value, (list, tuple)) or len(value) < 3:
+        if not isinstance(value, (list, tuple)) or len(value) < MIN_FACE_SAMPLES:
             raise ValueError("at least three non-empty face samples are required")
         embeddings: list[tuple[float, ...]] = []
         for sample in value:

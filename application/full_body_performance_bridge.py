@@ -12,6 +12,7 @@ lazy from application.full_body_render_adapter import (
     NormalizedCrop,
 )
 lazy from application.performance_runtime import AtomicPerformanceFrame
+lazy from domain.face_rig import FaceMotionFrame
 
 _RECOVERABLE_BOUNDARY_ERRORS = (
     LookupError,
@@ -52,6 +53,7 @@ class LoadedV4Assets(Protocol):
         self,
         pose_id: str,
         view_id: str,
+        motion: FaceMotionFrame | None = None,
     ) -> FullBodyRenderSpec | None: ...
 
     def resolve_speech(
@@ -59,6 +61,7 @@ class LoadedV4Assets(Protocol):
         face: str | None,
         viseme: str,
         mouth_closed: bool,
+        motion: FaceMotionFrame | None,
     ) -> tuple[FullBodyRenderLayer, ...] | None: ...
 
 
@@ -69,6 +72,7 @@ class FullBodyBridgeRequest:
     framing: FramingCommand
     assets: LoadedV4Assets | None
     v4_enabled: bool = True
+    face_motion: FaceMotionFrame | None = None
 
     def __post_init__(self) -> None:
         if self.operation_generation < 0:
@@ -186,11 +190,16 @@ class FullBodyPerformanceBridge:
         performance = request.atomic_frame.performance
         legacy = request.atomic_frame.body
         try:
-            specification = assets.resolve_static(performance.pose, performance.view)
+            specification = assets.resolve_static(
+                performance.pose,
+                performance.view,
+                request.face_motion,
+            )
             dynamic_layers = assets.resolve_speech(
                 performance.face,
                 performance.viseme,
                 performance.mouth_closed,
+                request.face_motion,
             )
         except _RECOVERABLE_BOUNDARY_ERRORS:
             return self._asset_failure(legacy)
@@ -211,6 +220,7 @@ class FullBodyPerformanceBridge:
                 performance.face,
                 performance.viseme,
                 performance.mouth_closed,
+                request.face_motion,
                 dynamic_layers,
             ),
         )
@@ -373,6 +383,7 @@ class FullBodyPerformanceBridge:
         face: str | None,
         viseme: str,
         mouth_closed: bool,
+        motion: FaceMotionFrame | None,
         layers: tuple[FullBodyRenderLayer, ...],
     ) -> tuple[object, ...]:
         return (
@@ -380,8 +391,42 @@ class FullBodyPerformanceBridge:
             face,
             viseme,
             mouth_closed,
+            _face_motion_signature(motion),
             tuple(
                 (item.layer.name, item.evidence.sha256, item.evidence.evidence)
                 for item in layers
             ),
         )
+
+
+def _face_motion_signature(motion: FaceMotionFrame | None) -> tuple[object, ...]:
+    """Reduce a continuous face frame to a dedupe-safe signature.
+
+    The full-body renderer deforms the mouth, eyelids, brows, irises, blush and
+    lips from the continuous controls in :class:`FaceMotionFrame`.  Two frames
+    that differ only in those controls must not be deduplicated, so the
+    signature captures every continuous value (rounded to a stable precision)
+    alongside the discrete pose/expression/viseme labels.
+    """
+    if motion is None:
+        return ()
+    mouth = motion.mouth
+    shape = motion.expression_shape
+    return (
+        motion.pose,
+        motion.expression,
+        motion.viseme,
+        round(mouth.aperture, 6),
+        round(mouth.width, 6),
+        round(mouth.rounding, 6),
+        round(mouth.jaw, 6),
+        round(mouth.corner_smile, 6),
+        round(shape.blink, 6),
+        round(shape.eye_smile, 6),
+        round(shape.brow_lift, 6),
+        round(shape.brow_tension, 6),
+        round(shape.blush, 6),
+        round(motion.gaze_x, 6),
+        round(motion.gaze_y, 6),
+        round(motion.breath, 6),
+    )

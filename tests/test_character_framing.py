@@ -69,6 +69,38 @@ def assert_speech_holds_and_settles_before_reframing() -> None:
     assert not settling.held
 
 
+def assert_speech_is_fixed_at_half_body() -> None:
+    """Speech must stay at the half-body shot, never full-body then half-body.
+
+    A lingering FULL_BODY from an idle full-body view must not be held across
+    the start of speech.  The director should settle on HALF immediately so the
+    companion does not speak a few words in full-body before snapping back.
+    """
+    clock = Clock()
+    framing = CharacterFramingDirector(clock)
+    # Drive the director into FULL_BODY first (owner arrival).
+    framing.decide(context(owner_arrived=True))
+    clock.advance()
+    framing.decide(context(owner_arrived=True))
+    clock.advance()
+    assert framing.mode is FramingMode.FULL_BODY
+    # Speech begins: the director must not hold FULL_BODY.
+    speaking = framing.decide(
+        context(speech_active=True, mouth_closed=False)
+    )
+    assert speaking.mode is FramingMode.HALF, (
+        "speech must settle on HALF, not hold a lingering FULL_BODY"
+    )
+    # High emotion during speech must still stay HALF, not CLOSE.
+    clock.advance()
+    emotional = framing.decide(
+        context(speech_active=True, mouth_closed=False, emotion_intensity=0.95)
+    )
+    assert emotional.mode is FramingMode.HALF, (
+        "speech must stay HALF even under high emotion"
+    )
+
+
 def assert_large_hands_are_never_cropped() -> None:
     clock = Clock()
     framing = CharacterFramingDirector(clock)
@@ -101,6 +133,7 @@ def assert_disabled_mode_is_stable() -> None:
 def run() -> None:
     assert_human_like_context_shots()
     assert_speech_holds_and_settles_before_reframing()
+    assert_speech_is_fixed_at_half_body()
     assert_large_hands_are_never_cropped()
     assert_small_viewport_preserves_readable_face()
     assert_disabled_mode_is_stable()

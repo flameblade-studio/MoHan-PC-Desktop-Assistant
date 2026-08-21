@@ -5,6 +5,8 @@ lazy import json
 lazy import math
 lazy from pathlib import Path
 
+lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+
 
 def _embedding(
     image_path: Path,
@@ -41,7 +43,7 @@ def cosine_similarity(left: tuple[float, ...], right: tuple[float, ...]) -> floa
     dot = sum(a * b for a, b in zip(left, right, strict=True))
     left_norm = math.sqrt(sum(value * value for value in left))
     right_norm = math.sqrt(sum(value * value for value in right))
-    if left_norm == 0.0 or right_norm == 0.0:
+    if left_norm < FLOAT_COMPARISON_EPSILON or right_norm < FLOAT_COMPARISON_EPSILON:
         raise ValueError("Face embedding norm must not be zero.")
     return dot / (left_norm * right_norm)
 

@@ -24,6 +24,9 @@ lazy from pose_atlas_release_gate import (
     manifest_sha256,
 )
 
+SHA256_HEX_LENGTH = 64
+VIEW_COUNT = 24
+
 WIDTH = 132
 HEIGHT = 128
 
@@ -73,7 +76,7 @@ def hand_points(side: str) -> tuple[Point, ...]:
     else:
         wrist, bases, tips = Point(105, 61), ((85, 50), (92, 49), (101, 48), (110, 49), (119, 51)), ((76, 38), (92, 25), (101, 21), (110, 26), (119, 35))
     result = [wrist]
-    for base, tip in zip(bases, tips):
+    for base, tip in zip(bases, tips, strict=False):
         result.extend(Point(base[0] + (tip[0] - base[0]) * step / 3, base[1] + (tip[1] - base[1]) * step / 3) for step in range(4))
     return tuple(result)
 
@@ -165,9 +168,9 @@ def assert_complete_ring_is_sorted_deterministic_and_relative() -> None:
     assert first.to_json_bytes() == second.to_json_bytes()
     assert root_text.encode("utf-8") not in first.to_json_bytes()
     assert all(not Path(record.rgba_path).is_absolute() for record in first.records)
-    assert all(len(record.rgba_sha256) == 64 for record in first.records)
-    assert all(len(record.sidecar_sha256) == 64 for record in first.records)
-    assert all(len(record.hands_sha256) == 64 for record in first.records)
+    assert all(len(record.rgba_sha256) == SHA256_HEX_LENGTH for record in first.records)
+    assert all(len(record.sidecar_sha256) == SHA256_HEX_LENGTH for record in first.records)
+    assert all(len(record.hands_sha256) == SHA256_HEX_LENGTH for record in first.records)
 
 
 def assert_missing_or_mismatched_assets_fail_closed() -> None:
@@ -206,7 +209,7 @@ def assert_no_landmarks_or_hand_evidence_are_invented() -> None:
         assert result.release_views() == ()
         write_ring(root)
         result = build_pose_atlas_manifest(root, config())
-        assert len(result.release_views()) == 24
+        assert len(result.release_views()) == VIEW_COUNT
 
 
 def assert_output_feeds_release_gate_without_adapter_guessing() -> None:
@@ -216,7 +219,7 @@ def assert_output_feeds_release_gate_without_adapter_guessing() -> None:
         result = build_pose_atlas_manifest(root, config())
         views = result.release_views()
     assert result.manifest is not None
-    assert len(views) == 24
+    assert len(views) == VIEW_COUNT
     load = PoseLoadReleaseEvidence(
         True,
         manifest_sha256(result.manifest),

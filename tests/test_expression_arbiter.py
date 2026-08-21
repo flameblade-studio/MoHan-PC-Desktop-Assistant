@@ -14,6 +14,14 @@ lazy from expression_system import (
     plan_wait_expressions,
 )
 
+MIN_COMPLEX_DELAY_MS = 1_000
+EXPECTED_TAGGED_INTENSITY = 0.72
+SPEAKING_FORCE_PROBABILITY = 0.06
+IDLE_FORCE_PROBABILITY = 0.08
+MIN_ACCEPTED_COUNT = 500
+MIN_REJECTED_COUNT = 500
+AUDIT_CAPACITY = 256
+
 
 class VirtualClock:
     def __init__(self) -> None:
@@ -43,7 +51,7 @@ def assert_wait_expression_plans() -> None:
         "thinking_front",
         "thinking_front",
     ]
-    assert complex_prompt[0].delay_ms >= 1_000
+    assert complex_prompt[0].delay_ms >= MIN_COMPLEX_DELAY_MS
     assert complex_prompt[0].delay_ms < AI_WAIT_TIMEOUT_MS
 
     narrative = plan_wait_expressions(
@@ -109,7 +117,7 @@ def assert_internal_emotion_parsing() -> None:
     )
     assert tagged.text == "主上，妾已想明白。"
     assert tagged.expression == "thinking_front"
-    assert tagged.intensity == 0.72
+    assert tagged.intensity == EXPECTED_TAGGED_INTENSITY
     assert tagged.valid_tag
 
     multiple = parse_internal_emotion(
@@ -162,13 +170,13 @@ def assert_eight_hour_arbitration_soak(
         assert decision.generation == arbiter.generation
         assert decision.hold_ms > 0
         assert arbiter.active in arbiter.allowed
-        if random.random() < 0.06:
+        if random.random() < SPEAKING_FORCE_PROBABILITY:
             arbiter.request("speaking", force=True)
-        if random.random() < 0.08:
+        if random.random() < IDLE_FORCE_PROBABILITY:
             arbiter.request("idle", force=True)
-    assert accepted > 500
-    assert rejected > 500
-    assert len(arbiter.audit) == 256
+    assert accepted > MIN_ACCEPTED_COUNT
+    assert rejected > MIN_REJECTED_COUNT
+    assert len(arbiter.audit) == AUDIT_CAPACITY
 
 
 def run() -> None:

@@ -16,6 +16,10 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from companion_animation_contract import EXPRESSION_SPEECH_FRAMES
 lazy from companion_window import CompanionWindow
 
+MAX_MEAN_MS = 8.0
+MAX_P95_MS = 16.0
+MAX_P99_MS = 24.0
+
 
 def percentile(values: list[float], ratio: float) -> float:
     ordered = sorted(values)
@@ -69,9 +73,9 @@ def run() -> None:
         mean_ms = statistics.fmean(timings_ms)
         p95_ms = percentile(timings_ms, 0.95)
         p99_ms = percentile(timings_ms, 0.99)
-        assert mean_ms < 8.0, mean_ms
-        assert p95_ms < 16.0, p95_ms
-        assert p99_ms < 24.0, p99_ms
+        assert mean_ms < MAX_MEAN_MS, mean_ms
+        assert p95_ms < MAX_P95_MS, p95_ms
+        assert p99_ms < MAX_P99_MS, p99_ms
         assert not window.character.pixmap().isNull()
 
         window.close()

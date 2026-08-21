@@ -22,6 +22,15 @@ lazy from integrations.speech import (
 )
 lazy from lip_sync import VISEME_CUES_PER_SECOND
 
+EXPECTED_VISEME_CUES_PER_SECOND = 50
+MIN_EMITTED_CUES = 56
+FIRST_CUE_MAX_SECONDS = 0.04
+LAST_CUE_MIN_SECONDS = 1.05
+LAST_CUE_MAX_SECONDS = 1.24
+INTERVAL_TOLERANCE_SECONDS = 0.07
+MEAN_INTERVAL_TOLERANCE_SECONDS = 0.003
+MIN_GATED_CUES = 5
+
 
 def make_test_wave(duration: float = 1.2, rate: int = 24000) -> bytes:
     output = io.BytesIO()
@@ -66,19 +75,19 @@ def measure(_tts: WindowsTTS, duration: float) -> list[float]:
 
 def run() -> None:
     app = QCoreApplication.instance() or QCoreApplication([])
-    assert VISEME_CUES_PER_SECOND == 50
+    assert VISEME_CUES_PER_SECOND == EXPECTED_VISEME_CUES_PER_SECOND
     tts = WindowsTTS()
     emitted_at = measure(tts, 1.2)
     app.processEvents()
-    assert len(emitted_at) >= 56
-    assert emitted_at[0] < 0.04
-    assert 1.05 <= emitted_at[-1] <= 1.24
+    assert len(emitted_at) >= MIN_EMITTED_CUES
+    assert emitted_at[0] < FIRST_CUE_MAX_SECONDS
+    assert LAST_CUE_MIN_SECONDS <= emitted_at[-1] <= LAST_CUE_MAX_SECONDS
     long_emitted_at = measure(tts, 4.0)
     app.processEvents()
     expected_last = (
         len(long_emitted_at) - 1
     ) / VISEME_CUES_PER_SECOND
-    assert abs(long_emitted_at[-1] - expected_last) < 0.07
+    assert abs(long_emitted_at[-1] - expected_last) < INTERVAL_TOLERANCE_SECONDS
     intervals = [
         current - previous
         for previous, current in pairwise(long_emitted_at)
@@ -86,7 +95,7 @@ def run() -> None:
     assert abs(
         sum(intervals) / len(intervals)
         - 1.0 / VISEME_CUES_PER_SECOND
-    ) < 0.003
+    ) < MEAN_INTERVAL_TOLERANCE_SECONDS
 
     # Only the first 20 ms WAV cue is prepared before playback, and no visual
     # cue may escape until the real playback-start gate releases it.
@@ -112,7 +121,7 @@ def run() -> None:
         assert analyzer.call_count == 1
         playback_start.set()
         worker.join(timeout=1.0)
-    assert len(gated_cues) >= 5
+    assert len(gated_cues) >= MIN_GATED_CUES
 
     # Volume preparation must finish before the playback gate can emit a cue.
     order: list[str] = []

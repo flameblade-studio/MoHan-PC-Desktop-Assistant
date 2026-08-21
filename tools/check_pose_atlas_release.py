@@ -25,6 +25,7 @@ lazy from pose_atlas_release_gate import (
 
 VERSION_PATTERN = re.compile(r"^(\d+)\.(\d+)\.(\d+)(?:-rc\.[1-9]\d*)?$")
 TRUE_VALUES = frozenset({"1", "true", "yes", "on"})
+VERSION_RANGE_LENGTH = 2
 
 
 @dataclass(frozen=True, slots=True)
@@ -151,7 +152,7 @@ def _version_range(parent: dict[str, object], name: str) -> tuple[int, int]:
     value = parent.get(name)
     if (
         not isinstance(value, list)
-        or len(value) != 2
+        or len(value) != VERSION_RANGE_LENGTH
         or any(not isinstance(item, int) or isinstance(item, bool) for item in value)
         or value[0] >= value[1]
     ):

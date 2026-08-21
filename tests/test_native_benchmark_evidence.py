@@ -16,6 +16,10 @@ lazy from tools.benchmark_native_integrated import (
     _validate_safe_evidence,
 )
 
+REQUESTED_RATE_HZ = 50
+TARGET_INTERVAL_MS = 20.0
+TICK_COUNT = 2
+
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -105,8 +109,8 @@ def test_50hz_schedule_is_descriptive_and_not_a_hard_realtime_claim() -> None:
     evidence = _schedule_50hz_evidence(native, tick_count=2)
 
     assert evidence["completed"] is True
-    assert evidence["requested_rate_hz"] == 50
-    assert evidence["target_interval_ms"] == 20.0
-    assert evidence["tick_count"] == 2
+    assert evidence["requested_rate_hz"] == REQUESTED_RATE_HZ
+    assert evidence["target_interval_ms"] == TARGET_INTERVAL_MS
+    assert evidence["tick_count"] == TICK_COUNT
     assert evidence["hard_realtime_claimed"] is False
     assert evidence["observed_intervals_ms"]["samples"] == 1

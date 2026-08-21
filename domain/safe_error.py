@@ -15,6 +15,17 @@ __all__ = [
 type ErrorInput = BaseException | str
 type _Classification = tuple["SafeErrorType", "SafeDiagnostic"]
 
+# HTTP status-code bounds for sanitization and classification.
+# Re-exported from the centralized constants module so every module shares
+# one source of truth; the local names are kept for backward compatibility.
+lazy from domain.constants import (
+    HTTP_CLIENT_ERROR_BOUNDARY as CLIENT_ERROR_BOUNDARY,
+    HTTP_MAX_STATUS as MAX_HTTP_STATUS,
+    HTTP_MIN_STATUS as MIN_HTTP_STATUS,
+    HTTP_SERVER_ERROR_BOUNDARY as SERVER_ERROR_BOUNDARY,
+    HTTP_SERVER_ERROR_MAX as SERVER_ERROR_MAX,
+)
+
 
 class SafeErrorType(StrEnum):
     """Approved, language-independent error types exposed outside services."""
@@ -210,7 +221,7 @@ _TEXT_CLASSIFICATIONS: tuple[
 def _valid_http_status(value: object) -> int | None:
     if type(value) is not int:
         return None
-    return value if 100 <= value <= 599 else None
+    return value if MIN_HTTP_STATUS <= value <= MAX_HTTP_STATUS else None
 
 
 def _status_from_object(error: ErrorInput) -> int | None:
@@ -258,9 +269,9 @@ def _http_diagnostic(status: int) -> SafeDiagnostic:
             diagnostic = SafeDiagnostic.CONFLICT
         case 429:
             diagnostic = SafeDiagnostic.RATE_LIMITED
-        case value if 400 <= value < 500:
+        case value if CLIENT_ERROR_BOUNDARY <= value < SERVER_ERROR_BOUNDARY:
             diagnostic = SafeDiagnostic.INVALID_INPUT
-        case value if 500 <= value < 600:
+        case value if SERVER_ERROR_BOUNDARY <= value < SERVER_ERROR_MAX:
             diagnostic = SafeDiagnostic.REMOTE_SERVICE_FAILURE
     return diagnostic
 

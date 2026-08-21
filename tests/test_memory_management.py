@@ -18,6 +18,8 @@ lazy from dashboard_dialogs import (
 lazy from dashboard_shared import MEMORY_CATEGORIES
 lazy from infrastructure.db import StudioDB
 
+EXPECTED_IMPORTANCE = 5
+
 
 def _add_primary_memories(db: StudioDB) -> tuple[int, int]:
     person_id = db.add_memory(
@@ -55,7 +57,7 @@ def _assert_memory_update(db: StudioDB, person_id: int) -> None:
     assert updated["title"] == "主要出版窗口"
     assert updated["category"] == "工作流程"
     assert updated["content"] == "林小姐是主上的主要出版窗口，週一聯絡。"
-    assert updated["importance"] == 5
+    assert updated["importance"] == EXPECTED_IMPORTANCE
     db.add_memory(
         "林小姐是主上的主要出版窗口，週一聯絡。",
         "工作流程",
@@ -93,7 +95,7 @@ def _assert_editor_and_archive(db: StudioDB, person_id: int) -> None:
     app = QApplication.instance() or QApplication([])
     editor = MemoryEditorDialog(db.memory(person_id))
     assert editor.category_input.currentText() == "工作流程"
-    assert editor.importance_input.value() == 5
+    assert editor.importance_input.value() == EXPECTED_IMPORTANCE
     assert editor.values() == (
         "主要出版窗口",
         "林小姐是主上的主要出版窗口，週一聯絡。",

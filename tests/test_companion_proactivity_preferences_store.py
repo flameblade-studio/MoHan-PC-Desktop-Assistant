@@ -22,6 +22,9 @@ lazy from infrastructure.companion_proactivity_preferences_store import (
     CompanionProactivityPreferencesStoreError,
 )
 
+BRIEF_ABSENCE_SECONDS = 1200
+LONG_WAIT_SECONDS = 10800
+
 
 class MemorySettings:
     def __init__(
@@ -97,20 +100,20 @@ def assert_legacy_migration_preserves_source_and_unrelated_values() -> None:
     settings = MemorySettings(
         {
             "proactive_interaction_enabled": False,
-            "multisensory_welcome_brief_max_seconds": 1200,
-            "multisensory_welcome_long_seconds": 10800,
+            "multisensory_welcome_brief_max_seconds": BRIEF_ABSENCE_SECONDS,
+            "multisensory_welcome_long_seconds": LONG_WAIT_SECONDS,
             "unrelated": {"keep": True},
         }
     )
     store = CompanionProactivityPreferencesStore(settings)
     loaded = store.load()
     assert loaded.enabled is False
-    assert loaded.brief_absence_seconds == 1200
-    assert loaded.long_wait_seconds == 10800
+    assert loaded.brief_absence_seconds == BRIEF_ABSENCE_SECONDS
+    assert loaded.long_wait_seconds == LONG_WAIT_SECONDS
     assert store.migrate() == loaded
     assert settings.values[MASTER_ENABLED_KEY] is False
-    assert settings.values[BRIEF_ABSENCE_SECONDS_KEY] == 1200
-    assert settings.values[LONG_WAIT_SECONDS_KEY] == 10800
+    assert settings.values[BRIEF_ABSENCE_SECONDS_KEY] == BRIEF_ABSENCE_SECONDS
+    assert settings.values[LONG_WAIT_SECONDS_KEY] == LONG_WAIT_SECONDS
     assert settings.values["proactive_interaction_enabled"] is False
     assert settings.values["unrelated"] == {"keep": True}
 

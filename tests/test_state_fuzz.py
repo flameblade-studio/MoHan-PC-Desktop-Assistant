@@ -16,6 +16,15 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from companion_window import CompanionWindow
 lazy from infrastructure.db import StudioDB
 
+ORNAMENT_ANGLE_LIMIT = 1.15
+HAIR_LEFT_ANGLE_LIMIT = 0.34
+HAIR_RIGHT_ANGLE_LIMIT = 0.32
+SLEEVE_LEFT_ANGLE_LIMIT = 0.16
+SLEEVE_RIGHT_ANGLE_LIMIT = 0.15
+POSE_OPERATION_MAX = 2
+IDLE_OPERATION = 3
+SPEAKING_OPERATION = 4
+PHYSICS_OPERATION = 5
 FEATURES = (
     "physics_sleeves",
     "physics_hair",
@@ -78,11 +87,11 @@ def assert_motion_bounds(window: CompanionWindow) -> None:
         window.sleeve_right_angle,
     )
     assert all(math.isfinite(value) for value in values)
-    assert abs(window.ornament_angle) <= 1.15
-    assert abs(window.hair_left_angle) <= 0.34
-    assert abs(window.hair_right_angle) <= 0.32
-    assert abs(window.sleeve_left_angle) <= 0.16
-    assert abs(window.sleeve_right_angle) <= 0.15
+    assert abs(window.ornament_angle) <= ORNAMENT_ANGLE_LIMIT
+    assert abs(window.hair_left_angle) <= HAIR_LEFT_ANGLE_LIMIT
+    assert abs(window.hair_right_angle) <= HAIR_RIGHT_ANGLE_LIMIT
+    assert abs(window.sleeve_left_angle) <= SLEEVE_LEFT_ANGLE_LIMIT
+    assert abs(window.sleeve_right_angle) <= SLEEVE_RIGHT_ANGLE_LIMIT
 
 
 def _create_window(temp_dir: str) -> tuple[QApplication, CompanionWindow]:
@@ -101,7 +110,7 @@ def _create_window(temp_dir: str) -> tuple[QApplication, CompanionWindow]:
 
 def _apply_random_operation(window: CompanionWindow) -> None:
     operation = random.randrange(7)
-    if operation <= 2:
+    if operation <= POSE_OPERATION_MAX:
         pose = random.choice(tuple(POSES))
         window.idle_pose = pose
         expression = random.choice(POSES[pose])
@@ -111,10 +120,10 @@ def _apply_random_operation(window: CompanionWindow) -> None:
             else "idle"
         )
         window._set_expression(expression, fade=False)
-    elif operation == 3:
+    elif operation == IDLE_OPERATION:
         window.state = "idle"
         window._set_expression(random.choice(SPECIAL), fade=False)
-    elif operation == 4:
+    elif operation == SPEAKING_OPERATION:
         window.state = "speaking"
         window.audio_driven_mouth = True
         window.speech_blinking = False
@@ -122,7 +131,7 @@ def _apply_random_operation(window: CompanionWindow) -> None:
             random.random(),
             random.choice(("A", "I", "U", "E", "O", "CLOSED")),
         )
-    elif operation == 5:
+    elif operation == PHYSICS_OPERATION:
         feature = random.choice(FEATURES)
         window.physics_features[feature] = not window.physics_features[feature]
         window._apply_physics_visibility()
@@ -151,7 +160,7 @@ def _run_fuzz_sequence(app: QApplication, window: CompanionWindow) -> None:
 
 
 def _assert_idle_reset(window: CompanionWindow) -> None:
-    window.physics_features.update({key: True for key in FEATURES})
+    window.physics_features.update(dict.fromkeys(FEATURES, True))
     window.state = "idle"
     window.idle_pose = "front"
     window._set_expression("idle_front", fade=False)

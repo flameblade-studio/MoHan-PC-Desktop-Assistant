@@ -22,6 +22,7 @@ lazy from application.full_body_performance_bridge import (
 )
 lazy from application.full_body_render_adapter import NormalizedCrop
 lazy from application.performance_runtime import AtomicPerformanceFrame
+lazy from domain.face_rig import FaceMotionFrame
 lazy from domain.framing_preferences import FramingPreferences
 
 
@@ -43,6 +44,7 @@ class AdaptiveCharacterRequest:
     assets: LoadedV4Assets | None
     approved_wellbeing_cue: ApprovedWellbeingPerformance | None = None
     v4_enabled: bool = True
+    face_motion: FaceMotionFrame | None = None
 
     def __post_init__(self) -> None:
         if self.operation_generation < 0:
@@ -125,6 +127,7 @@ class AdaptiveCharacterRuntime:
                     _body_framing(framing),
                     request.assets,
                     True,
+                    request.face_motion,
                 )
             )
         except (LookupError, RuntimeError, TypeError, ValueError):

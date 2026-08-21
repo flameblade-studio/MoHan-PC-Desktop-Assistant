@@ -6,6 +6,12 @@ lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MEDIA = ROOT / "docs" / "media"
+MIN_IMAGE_WIDTH = 600
+MIN_IMAGE_HEIGHT = 400
+LANGUAGE_NAV_COUNT = 4
+MIN_VIDEO_SIZE_BYTES = 100_000
+SUPPORT_COLUMN_COUNT = 3
+STRATEGIST_CARD_COUNT = 4
 PNG_FILES = {
     "mohan-hero.png": (1600, 900),
     "first-run-wizard.png": None,
@@ -93,7 +99,7 @@ def _assert_readme_images(readme: str) -> None:
         path = MEDIA / filename
         assert path.is_file(), f"missing README image: {filename}"
         width, height = png_size(path)
-        assert width >= 600 and height >= 400, (
+        assert width >= MIN_IMAGE_WIDTH and height >= MIN_IMAGE_HEIGHT, (
             f"README image is too small: {filename} ({width}x{height})"
         )
         if expected_size:
@@ -110,7 +116,7 @@ def _assert_single_readme_entry_point(readme: str) -> None:
         "[繁體中文](#繁體中文) · [簡體中文](#简体中文) · "
         "[English](#english) · [日本語](#日本語)"
     )
-    assert readme.count(language_navigation) == 4
+    assert readme.count(language_navigation) == LANGUAGE_NAV_COUNT
     for obsolete_readme in ("README.zh-CN.md", "README.ja.md"):
         assert not (ROOT / obsolete_readme).exists(), (
             f"duplicate README entry point returned: {obsolete_readme}"
@@ -180,7 +186,7 @@ def _assert_demo_video(readme: str) -> None:
     video = MEDIA / "mohan-demo.mp4"
     assert video.is_file(), "missing 30–60 second demonstration video"
     size = video.stat().st_size
-    assert 100_000 <= size <= 20 * 1024 * 1024, (
+    assert MIN_VIDEO_SIZE_BYTES <= size <= 20 * 1024 * 1024, (
         f"unexpected demonstration video size: {size} bytes"
     )
     header = video.read_bytes()[:32]
@@ -217,11 +223,11 @@ def _assert_support_section(readme: str) -> None:
         assert f'src="docs/media/{filename}" width="220" height="220"' in readme, (
             f"support portrait lacks fixed aligned dimensions: {filename}"
         )
-    assert readme.count('width="33%" align="center" valign="top"') == 3, (
+    assert readme.count('width="33%" align="center" valign="top"') == SUPPORT_COLUMN_COUNT, (
         "support columns must be top-aligned so shorter captions cannot push "
         "the complete image-and-text column downward on GitHub"
     )
-    assert readme.count('width="25%" align="center" valign="top"') == 4, (
+    assert readme.count('width="25%" align="center" valign="top"') == STRATEGIST_CARD_COUNT, (
         "all four strategist-theatre cards must be top-aligned so shorter "
         "captions cannot push the first images and text downward on GitHub"
     )

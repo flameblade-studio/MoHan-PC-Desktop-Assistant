@@ -112,7 +112,7 @@ class GestureActionDispatcher:
             return authorization
         try:
             self._execute(decision)
-        except Exception:  # noqa: BLE001 - external application boundary
+        except Exception:
             return GestureDispatchResult(
                 GestureDispatchDisposition.FAILED,
                 decision.action,
@@ -141,7 +141,7 @@ class GestureActionDispatcher:
             )
         try:
             allowed = self._authorize(decision)
-        except Exception:  # noqa: BLE001 - external authorization boundary
+        except Exception:
             return GestureDispatchResult(
                 GestureDispatchDisposition.FAILED,
                 decision.action,

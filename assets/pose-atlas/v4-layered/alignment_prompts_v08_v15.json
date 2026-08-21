@@ -1,0 +1,1270 @@
+{
+  "schema_version": 1,
+  "status": "staged_for_deepseek_integration",
+  "source_report": "C:\\Users\\hitos\\.codex\\attachments\\923495a7-dbd2-4cd6-bc30-2ab7e971f000\\pasted-text.txt",
+  "asset_dir": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered",
+  "canvas": {
+    "width": 1024,
+    "height": 1536
+  },
+  "view_order": "canonical_yaw_ascending_1_based",
+  "body_center_constant": {
+    "name": "BODY_CENTER_CONSTANT",
+    "x": 512,
+    "y": 1292,
+    "derivation": "median alpha-trimmed body bbox center from the supplied report",
+    "authoritative": true,
+    "requires_deepseek_confirmation": false,
+    "confirmation": "DeepSeek alignment review supplied by the user"
+  },
+  "offset_policy": {
+    "offset_x": 0,
+    "offset_y": 0,
+    "meaning": "all layers are already full-canvas registered; runtime translation is disabled",
+    "do_not_recenter_layer_geometry": true
+  },
+  "transition_contract": {
+    "clock_hz": 50,
+    "frame_interval_ms": 20,
+    "view_step_degrees": 15,
+    "weight_interpolation": "clamped_linear_per_tick",
+    "wraparound": true,
+    "runtime_verification_required": true,
+    "note": "This metadata does not change the renderer; DeepSeek must wire and test the contract.",
+    "confirmed": true
+  },
+  "report_summary": {
+    "total_views": 24,
+    "total_layers_per_view": 25,
+    "outlier_threshold_pixels": 2,
+    "outlier_count": 256
+  },
+  "purpose": "accepted natural-projection prompts for clothing layers in canonical views 08-15",
+  "selected_views": [
+    {
+      "ordinal": 8,
+      "view_id": "yaw-075-pitch+00",
+      "yaw_degrees": null,
+      "body_center_constant": [
+        512,
+        1292
+      ],
+      "layers": [
+        {
+          "layer": "body",
+          "target_relative_center_to_body": [
+            0,
+            0
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured body relative center [0,0] px from the body is a valid natural 3D-to-2D projection for yaw-075-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            0,
+            0
+          ]
+        },
+        {
+          "layer": "hair_back",
+          "target_relative_center_to_body": [
+            24.5,
+            -695.75
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_back relative center [21,-701.5] px from the body is a valid natural 3D-to-2D projection for yaw-075-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            21,
+            -701.5
+          ]
+        },
+        {
+          "layer": "hair_left",
+          "target_relative_center_to_body": [
+            -85.75,
+            -702
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_left relative center [-99,-702] px from the body is a valid natural 3D-to-2D projection for yaw-075-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -99,
+            -702
+          ]
+        },
+        {
+          "layer": "hair_right",
+          "target_relative_center_to_body": [
+            110.25,
+            -695.25
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_right relative center [149.5,-679.5] px from the body is a valid natural 3D-to-2D projection for yaw-075-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            149.5,
+            -679.5
+          ]
+        },
+        {
+          "layer": "sleeve_left",
+          "target_relative_center_to_body": [
+            -113.25,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_left relative center [-137.5,-604] px from the body is a valid natural 3D-to-2D projection for yaw-075-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -137.5,
+            -604
+          ]
+        },
+        {
+          "layer": "sleeve_right",
+          "target_relative_center_to_body": [
+            139.75,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_right relative center [188,-604] px from the body is a valid natural 3D-to-2D projection for yaw-075-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            188,
+            -604
+          ]
+        },
+        {
+          "layer": "ornament",
+          "target_relative_center_to_body": [
+            5,
+            -1089.5
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured ornament relative center [-12,-1088] px from the body is a valid natural 3D-to-2D projection for yaw-075-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -12,
+            -1088
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 9,
+      "view_id": "yaw-060-pitch+00",
+      "yaw_degrees": null,
+      "body_center_constant": [
+        512,
+        1292
+      ],
+      "layers": [
+        {
+          "layer": "body",
+          "target_relative_center_to_body": [
+            0,
+            0
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured body relative center [0,0] px from the body is a valid natural 3D-to-2D projection for yaw-060-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            0,
+            0
+          ]
+        },
+        {
+          "layer": "hair_back",
+          "target_relative_center_to_body": [
+            1,
+            -701.5
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_back relative center [16.5,-701] px from the body is a valid natural 3D-to-2D projection for yaw-060-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            16.5,
+            -701
+          ]
+        },
+        {
+          "layer": "hair_left",
+          "target_relative_center_to_body": [
+            -123,
+            -696.75
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_left relative center [-103,-702] px from the body is a valid natural 3D-to-2D projection for yaw-060-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -103,
+            -702
+          ]
+        },
+        {
+          "layer": "hair_right",
+          "target_relative_center_to_body": [
+            126,
+            -690.75
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_right relative center [142,-693.5] px from the body is a valid natural 3D-to-2D projection for yaw-060-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            142,
+            -693.5
+          ]
+        },
+        {
+          "layer": "sleeve_left",
+          "target_relative_center_to_body": [
+            -161.5,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_left relative center [-140.5,-604] px from the body is a valid natural 3D-to-2D projection for yaw-060-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -140.5,
+            -604
+          ]
+        },
+        {
+          "layer": "sleeve_right",
+          "target_relative_center_to_body": [
+            164.5,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_right relative center [179.5,-604] px from the body is a valid natural 3D-to-2D projection for yaw-060-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            179.5,
+            -604
+          ]
+        },
+        {
+          "layer": "ornament",
+          "target_relative_center_to_body": [
+            0.75,
+            -1091
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured ornament relative center [-10,-1091.5] px from the body is a valid natural 3D-to-2D projection for yaw-060-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -10,
+            -1091.5
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 10,
+      "view_id": "yaw-045-pitch+00",
+      "yaw_degrees": null,
+      "body_center_constant": [
+        512,
+        1292
+      ],
+      "layers": [
+        {
+          "layer": "body",
+          "target_relative_center_to_body": [
+            0,
+            0
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured body relative center [0,0] px from the body is a valid natural 3D-to-2D projection for yaw-045-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            0,
+            0
+          ]
+        },
+        {
+          "layer": "hair_back",
+          "target_relative_center_to_body": [
+            1.25,
+            -701.25
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_back relative center [-19,-701.5] px from the body is a valid natural 3D-to-2D projection for yaw-045-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -19,
+            -701.5
+          ]
+        },
+        {
+          "layer": "hair_left",
+          "target_relative_center_to_body": [
+            -121.75,
+            -698
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_left relative center [-147,-691.5] px from the body is a valid natural 3D-to-2D projection for yaw-045-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -147,
+            -691.5
+          ]
+        },
+        {
+          "layer": "hair_right",
+          "target_relative_center_to_body": [
+            127.75,
+            -697.75
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_right relative center [102.5,-702] px from the body is a valid natural 3D-to-2D projection for yaw-045-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            102.5,
+            -702
+          ]
+        },
+        {
+          "layer": "sleeve_left",
+          "target_relative_center_to_body": [
+            -159.5,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_left relative center [-185.5,-604] px from the body is a valid natural 3D-to-2D projection for yaw-045-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -185.5,
+            -604
+          ]
+        },
+        {
+          "layer": "sleeve_right",
+          "target_relative_center_to_body": [
+            165.5,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_right relative center [141,-604] px from the body is a valid natural 3D-to-2D projection for yaw-045-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            141,
+            -604
+          ]
+        },
+        {
+          "layer": "ornament",
+          "target_relative_center_to_body": [
+            3.5,
+            -1089.75
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured ornament relative center [13.5,-1094] px from the body is a valid natural 3D-to-2D projection for yaw-045-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            13.5,
+            -1094
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 11,
+      "view_id": "yaw-030-pitch+00",
+      "yaw_degrees": null,
+      "body_center_constant": [
+        512,
+        1292
+      ],
+      "layers": [
+        {
+          "layer": "body",
+          "target_relative_center_to_body": [
+            0,
+            0
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured body relative center [0,0] px from the body is a valid natural 3D-to-2D projection for yaw-030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            0,
+            0
+          ]
+        },
+        {
+          "layer": "hair_back",
+          "target_relative_center_to_body": [
+            -17.5,
+            -701.5
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_back relative center [-14,-701.5] px from the body is a valid natural 3D-to-2D projection for yaw-030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -14,
+            -701.5
+          ]
+        },
+        {
+          "layer": "hair_left",
+          "target_relative_center_to_body": [
+            -145,
+            -691.75
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_left relative center [-140.5,-694] px from the body is a valid natural 3D-to-2D projection for yaw-030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -140.5,
+            -694
+          ]
+        },
+        {
+          "layer": "hair_right",
+          "target_relative_center_to_body": [
+            106,
+            -702
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_right relative center [113.5,-702] px from the body is a valid natural 3D-to-2D projection for yaw-030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            113.5,
+            -702
+          ]
+        },
+        {
+          "layer": "sleeve_left",
+          "target_relative_center_to_body": [
+            -183.5,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_left relative center [-178.5,-604] px from the body is a valid natural 3D-to-2D projection for yaw-030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -178.5,
+            -604
+          ]
+        },
+        {
+          "layer": "sleeve_right",
+          "target_relative_center_to_body": [
+            144.5,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_right relative center [151.5,-604] px from the body is a valid natural 3D-to-2D projection for yaw-030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            151.5,
+            -604
+          ]
+        },
+        {
+          "layer": "ornament",
+          "target_relative_center_to_body": [
+            16.5,
+            -1094
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured ornament relative center [17,-1088] px from the body is a valid natural 3D-to-2D projection for yaw-030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            17,
+            -1088
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 12,
+      "view_id": "yaw-015-pitch+00",
+      "yaw_degrees": null,
+      "body_center_constant": [
+        512,
+        1292
+      ],
+      "layers": [
+        {
+          "layer": "body",
+          "target_relative_center_to_body": [
+            0,
+            0
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured body relative center [0,0] px from the body is a valid natural 3D-to-2D projection for yaw-015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            0,
+            0
+          ]
+        },
+        {
+          "layer": "hair_back",
+          "target_relative_center_to_body": [
+            -7.25,
+            -701.5
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_back relative center [-16,-701.5] px from the body is a valid natural 3D-to-2D projection for yaw-015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -16,
+            -701.5
+          ]
+        },
+        {
+          "layer": "hair_left",
+          "target_relative_center_to_body": [
+            -140,
+            -697.75
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_left relative center [-143,-692] px from the body is a valid natural 3D-to-2D projection for yaw-015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -143,
+            -692
+          ]
+        },
+        {
+          "layer": "hair_right",
+          "target_relative_center_to_body": [
+            126.5,
+            -702
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_right relative center [109.5,-702] px from the body is a valid natural 3D-to-2D projection for yaw-015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            109.5,
+            -702
+          ]
+        },
+        {
+          "layer": "sleeve_left",
+          "target_relative_center_to_body": [
+            -181.5,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_left relative center [-181.5,-604] px from the body is a valid natural 3D-to-2D projection for yaw-015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -181.5,
+            -604
+          ]
+        },
+        {
+          "layer": "sleeve_right",
+          "target_relative_center_to_body": [
+            166.5,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_right relative center [148,-604] px from the body is a valid natural 3D-to-2D projection for yaw-015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            148,
+            -604
+          ]
+        },
+        {
+          "layer": "ornament",
+          "target_relative_center_to_body": [
+            14.25,
+            -1091
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured ornament relative center [19.5,-1094] px from the body is a valid natural 3D-to-2D projection for yaw-015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            19.5,
+            -1094
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 13,
+      "view_id": "yaw+000-pitch+00",
+      "yaw_degrees": null,
+      "body_center_constant": [
+        512,
+        1292
+      ],
+      "layers": [
+        {
+          "layer": "body",
+          "target_relative_center_to_body": [
+            0,
+            0
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured body relative center [0,0] px from the body is a valid natural 3D-to-2D projection for yaw+000-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            0,
+            0
+          ]
+        },
+        {
+          "layer": "hair_back",
+          "target_relative_center_to_body": [
+            -11,
+            -701.5
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_back relative center [-0.5,-701.5] px from the body is a valid natural 3D-to-2D projection for yaw+000-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -0.5,
+            -701.5
+          ]
+        },
+        {
+          "layer": "hair_left",
+          "target_relative_center_to_body": [
+            -136.25,
+            -694.25
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_left relative center [-139.5,-701.5] px from the body is a valid natural 3D-to-2D projection for yaw+000-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -139.5,
+            -701.5
+          ]
+        },
+        {
+          "layer": "hair_right",
+          "target_relative_center_to_body": [
+            112,
+            -702
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_right relative center [139.5,-702] px from the body is a valid natural 3D-to-2D projection for yaw+000-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            139.5,
+            -702
+          ]
+        },
+        {
+          "layer": "sleeve_left",
+          "target_relative_center_to_body": [
+            -174.25,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_left relative center [-181.5,-604] px from the body is a valid natural 3D-to-2D projection for yaw+000-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -181.5,
+            -604
+          ]
+        },
+        {
+          "layer": "sleeve_right",
+          "target_relative_center_to_body": [
+            150,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_right relative center [181.5,-604] px from the body is a valid natural 3D-to-2D projection for yaw+000-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            181.5,
+            -604
+          ]
+        },
+        {
+          "layer": "ornament",
+          "target_relative_center_to_body": [
+            20.25,
+            -1094
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured ornament relative center [11.5,-1094] px from the body is a valid natural 3D-to-2D projection for yaw+000-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            11.5,
+            -1094
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 14,
+      "view_id": "yaw+015-pitch+00",
+      "yaw_degrees": null,
+      "body_center_constant": [
+        512,
+        1292
+      ],
+      "layers": [
+        {
+          "layer": "body",
+          "target_relative_center_to_body": [
+            0,
+            0
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured body relative center [0,0] px from the body is a valid natural 3D-to-2D projection for yaw+015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            0,
+            0
+          ]
+        },
+        {
+          "layer": "hair_back",
+          "target_relative_center_to_body": [
+            -2.25,
+            -701.5
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_back relative center [-6,-701.5] px from the body is a valid natural 3D-to-2D projection for yaw+015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -6,
+            -701.5
+          ]
+        },
+        {
+          "layer": "hair_left",
+          "target_relative_center_to_body": [
+            -134.25,
+            -700.75
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_left relative center [-129.5,-696.5] px from the body is a valid natural 3D-to-2D projection for yaw+015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -129.5,
+            -696.5
+          ]
+        },
+        {
+          "layer": "hair_right",
+          "target_relative_center_to_body": [
+            126.75,
+            -702
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_right relative center [114.5,-702] px from the body is a valid natural 3D-to-2D projection for yaw+015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            114.5,
+            -702
+          ]
+        },
+        {
+          "layer": "sleeve_left",
+          "target_relative_center_to_body": [
+            -174,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_left relative center [-167,-604] px from the body is a valid natural 3D-to-2D projection for yaw+015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -167,
+            -604
+          ]
+        },
+        {
+          "layer": "sleeve_right",
+          "target_relative_center_to_body": [
+            166.5,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_right relative center [152,-604] px from the body is a valid natural 3D-to-2D projection for yaw+015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            152,
+            -604
+          ]
+        },
+        {
+          "layer": "ornament",
+          "target_relative_center_to_body": [
+            12.75,
+            -1094
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured ornament relative center [21,-1094] px from the body is a valid natural 3D-to-2D projection for yaw+015-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            21,
+            -1094
+          ]
+        }
+      ]
+    },
+    {
+      "ordinal": 15,
+      "view_id": "yaw+030-pitch+00",
+      "yaw_degrees": null,
+      "body_center_constant": [
+        512,
+        1292
+      ],
+      "layers": [
+        {
+          "layer": "body",
+          "target_relative_center_to_body": [
+            0,
+            0
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured body relative center [0,0] px from the body is a valid natural 3D-to-2D projection for yaw+030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            0,
+            0
+          ]
+        },
+        {
+          "layer": "hair_back",
+          "target_relative_center_to_body": [
+            -4,
+            -701.5
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_back relative center [-4,-701.5] px from the body is a valid natural 3D-to-2D projection for yaw+030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -4,
+            -701.5
+          ]
+        },
+        {
+          "layer": "hair_left",
+          "target_relative_center_to_body": [
+            -128.5,
+            -697
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_left relative center [-129,-700] px from the body is a valid natural 3D-to-2D projection for yaw+030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -129,
+            -700
+          ]
+        },
+        {
+          "layer": "hair_right",
+          "target_relative_center_to_body": [
+            114,
+            -702
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured hair_right relative center [114,-702] px from the body is a valid natural 3D-to-2D projection for yaw+030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            114,
+            -702
+          ]
+        },
+        {
+          "layer": "sleeve_left",
+          "target_relative_center_to_body": [
+            -166.5,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_left relative center [-166.5,-604] px from the body is a valid natural 3D-to-2D projection for yaw+030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            -166.5,
+            -604
+          ]
+        },
+        {
+          "layer": "sleeve_right",
+          "target_relative_center_to_body": [
+            151.5,
+            -604
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured sleeve_right relative center [151.5,-604] px from the body is a valid natural 3D-to-2D projection for yaw+030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": false,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            151.5,
+            -604
+          ]
+        },
+        {
+          "layer": "ornament",
+          "target_relative_center_to_body": [
+            19.5,
+            -1093.75
+          ],
+          "repair_delta": [
+            0,
+            0
+          ],
+          "outlier": false,
+          "prompt": "MoHan authoritative character identity; full-body PoseAtlas v4 layered asset; 1024x1536 RGBA transparent full canvas; BODY_CENTER_CONSTANT is authoritative [512, 1292]. Preserve the existing costume, hair, ornament, silhouette, lighting, and full-canvas registration. The measured ornament relative center [14,-1094] px from the body is a valid natural 3D-to-2D projection for yaw+030-pitch+00; do not recenter, straighten, interpolate, or otherwise correct it. Keep the layer-specific relative geometry, anti-aliased edges, no scaling, no crop, no duplicate silhouette, and runtime offset_x=0, offset_y=0.",
+          "detector_outlier": true,
+          "review_status": "accepted_natural_projection",
+          "requires_correction": false,
+          "accepted_relative_center_to_body": [
+            14,
+            -1094
+          ]
+        }
+      ]
+    }
+  ],
+  "selected_view_ids": [
+    "yaw-075-pitch+00",
+    "yaw-060-pitch+00",
+    "yaw-045-pitch+00",
+    "yaw-030-pitch+00",
+    "yaw-015-pitch+00",
+    "yaw+000-pitch+00",
+    "yaw+015-pitch+00",
+    "yaw+030-pitch+00"
+  ],
+  "interpretation_note": "The supplied report has no ordinal labels, so views 08-15 are interpreted as the 1-based canonical order declared by the PoseAtlas specification: yaw-075 through yaw+030.",
+  "review": {
+    "natural_motion_outliers_accepted": true,
+    "accepted_clothing_outlier_count": 43,
+    "accepted_scope": "canonical views 08-15 clothing layers only",
+    "raw_detector_semantics": "continuity detector flags are diagnostic and are not correction verdicts"
+  }
+}

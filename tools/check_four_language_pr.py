@@ -8,13 +8,14 @@ lazy from pathlib import Path
 lazy from check_four_language_docs import audit_text
 
 TITLE_SEPARATOR = "／"
+LANGUAGE_COUNT = 4
 
 
 def _title_errors(title: object) -> list[str]:
     if not isinstance(title, str):
         return ["pull-request title must be a string"]
     parts = tuple(part.strip() for part in title.split(TITLE_SEPARATOR))
-    if len(parts) != 4 or any(not part for part in parts):
+    if len(parts) != LANGUAGE_COUNT or any(not part for part in parts):
         return [
             (
                 "pull-request title must contain four non-empty translations "

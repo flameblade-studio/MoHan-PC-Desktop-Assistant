@@ -7,6 +7,8 @@ lazy from typing import Final
 
 PREFERENCES_FORMAT: Final = "mohan-openai-vision-preferences"
 PREFERENCES_VERSION: Final = 1
+MAX_DAILY_LIMIT = 1000
+MAX_PER_MINUTE_LIMIT = 60
 
 
 @dataclass(frozen=True, slots=True)
@@ -101,11 +103,11 @@ class OpenAIVisionPreferences:
             raise TypeError("OpenAI vision detail is invalid.")
         if not isinstance(self.trigger_policy, VisionTriggerPolicy):
             raise TypeError("OpenAI vision trigger policy is invalid.")
-        if type(self.daily_limit) is not int or not 1 <= self.daily_limit <= 1000:
+        if type(self.daily_limit) is not int or not 1 <= self.daily_limit <= MAX_DAILY_LIMIT:
             raise ValueError("OpenAI vision daily limit is invalid.")
         if (
             type(self.per_minute_limit) is not int
-            or not 1 <= self.per_minute_limit <= 60
+            or not 1 <= self.per_minute_limit <= MAX_PER_MINUTE_LIMIT
             or self.per_minute_limit > self.daily_limit
         ):
             raise ValueError("OpenAI vision per-minute limit is invalid.")

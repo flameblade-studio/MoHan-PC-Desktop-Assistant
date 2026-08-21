@@ -23,6 +23,9 @@ lazy from proactive_companion_runtime import (
     ProactiveSource,
 )
 lazy from visual_perception import PresenceState
+
+ABSENCE_SECONDS = 600.0
+EXPECTED_REPORT_COUNT = 2
 lazy from wellbeing_app_bridge import ReminderTrigger, SpeakRequest
 
 NOW = datetime(2027, 1, 8, 12, tzinfo=UTC)
@@ -150,7 +153,7 @@ def assert_visual_presence_and_absence_are_normalized_only_when_enabled() -> Non
     app_bridge.dispatch(ProactiveAppEvent(visual))
     environment = runtime.environments[-1]
     assert environment.user_present
-    assert environment.absence_duration_seconds == 600.0
+    assert environment.absence_duration_seconds == ABSENCE_SECONDS
     assert environment.visual_presence_arrival
     try:
         state(recognized_user=True)
@@ -263,7 +266,7 @@ def assert_timer_uses_active_session_even_when_camera_reports_away() -> None:
     app_bridge.dispatch(ProactiveAppEvent(away, ReminderTrigger.HYDRATION))
     environment = runtime.environments[-1]
     assert environment.user_present
-    assert environment.absence_duration_seconds == 600.0
+    assert environment.absence_duration_seconds == ABSENCE_SECONDS
 
 
 def assert_focus_meeting_fullscreen_and_speech_pass_through() -> None:
@@ -323,7 +326,7 @@ def assert_pending_speech_is_bounded_superseded_and_expires() -> None:
     assert len(app_bridge._pending) == 1
     speech.finish(0, True)
     speech.finish(1, True)
-    assert len(runtime.reports) == 2
+    assert len(runtime.reports) == EXPECTED_REPORT_COUNT
 
 
 def run() -> None:

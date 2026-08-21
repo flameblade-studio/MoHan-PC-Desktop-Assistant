@@ -16,9 +16,13 @@ lazy from flagship_core import ActionRequest
 lazy from flagship_ui import FlagshipControlCenter
 lazy from infrastructure.db import StudioDB
 
+FLAGSHIP_TAB_COUNT = 8
+CALENDAR_RANGE_DAYS = 2
+PLANNER_GENERATION_AFTER_TIMEOUT = 4
+
 
 def assert_tabs_and_defaults(center: FlagshipControlCenter) -> None:
-    assert center.tabs.count() == 8
+    assert center.tabs.count() == FLAGSHIP_TAB_COUNT
     assert [
         center.tabs.tabText(index) for index in range(center.tabs.count())
     ] == [
@@ -147,7 +151,7 @@ def assert_calendar_read(center: FlagshipControlCenter) -> None:
     assert (
         datetime.fromisoformat(legacy_end)
         - datetime.fromisoformat(legacy_start)
-    ).days == 2
+    ).days == CALENDAR_RANGE_DAYS
     with (
         patch.object(center, "_cloud_token", return_value="token"),
         patch(
@@ -241,7 +245,7 @@ def assert_planner_timeout(center: FlagshipControlCenter) -> None:
         center._planner_timed_out()
     assert warning.call_count == 1
     assert center.planner_busy is False
-    assert center._planner_generation == 4
+    assert center._planner_generation == PLANNER_GENERATION_AFTER_TIMEOUT
     assert center.plan_button.isEnabled()
     assert center.plan_button.text() == "先產生安全計畫"
     assert not center.planner_timeout.isActive()

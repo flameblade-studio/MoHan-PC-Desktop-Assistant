@@ -15,6 +15,8 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from companion_window import CompanionWindow
 lazy from infrastructure.db import StudioDB
 
+MAX_GESTURE_MOTION_PX = 3
+
 
 def _create_test_window(
     temp_dir: str,
@@ -153,7 +155,7 @@ def _assert_layered_gesture_motion(
         abs(current.x() - previous.x())
         + abs(current.y() - previous.y())
         for previous, current in pairwise(positions)
-    ) <= 3
+    ) <= MAX_GESTURE_MOTION_PX
     assert window.gesture_motion_x == 0.0
     assert window.gesture_motion_y == 0.0
 

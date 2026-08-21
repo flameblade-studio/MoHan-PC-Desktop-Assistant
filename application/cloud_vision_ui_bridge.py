@@ -44,6 +44,8 @@ lazy from infrastructure.openai_vision_preferences_store import (
     OpenAIVisionPreferencesStore,
 )
 
+MIN_ARGUMENT_PAIR_COUNT = 2
+
 
 @dataclass(frozen=True, slots=True)
 class CloudVisionUIResult:
@@ -328,7 +330,7 @@ def _suppress_person_facts(
         candidate
         for candidate in interpretation.interaction_candidates
         if not candidate.arguments
-        or len(candidate.arguments) < 2
+        or len(candidate.arguments) < MIN_ARGUMENT_PAIR_COUNT
         or (candidate.arguments[0][1], candidate.arguments[1][1]) in allowed
     )
     return CloudSceneInterpretation(

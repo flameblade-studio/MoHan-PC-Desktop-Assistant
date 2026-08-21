@@ -6,6 +6,7 @@ lazy from typing import Protocol, TypeVar
 
 PREFERENCES_FORMAT = "mohan-performance-preferences"
 PREFERENCES_VERSION = 1
+MAX_INTENSITY_PERCENT = 100
 
 PROACTIVE_BODY_KEY = "performance_proactive_body_enabled"
 INTENSITY_KEY = "performance_intensity_percent"
@@ -97,7 +98,7 @@ class PerformancePreferences:
             raise ValueError("Performance preference flags must be boolean.")
         if (
             type(self.intensity_percent) is not int
-            or not 0 <= self.intensity_percent <= 100
+            or not 0 <= self.intensity_percent <= MAX_INTENSITY_PERCENT
         ):
             raise ValueError("Performance intensity must be from 0 to 100.")
 
@@ -213,7 +214,7 @@ def _field_for_key(key: str) -> str:
 def _safe_value(field: str, value: object) -> bool | int:
     default = getattr(PerformancePreferences(), field)
     if field == "intensity_percent":
-        return value if type(value) is int and 0 <= value <= 100 else default
+        return value if type(value) is int and 0 <= value <= MAX_INTENSITY_PERCENT else default
     return value if type(value) is bool else default
 
 

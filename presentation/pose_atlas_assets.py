@@ -4,8 +4,8 @@ lazy import hashlib
 lazy import json
 lazy from pathlib import Path
 
-lazy from PySide6.QtCore import QRectF, Qt
-lazy from PySide6.QtGui import QColor, QImage, QPainter
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QImage, QPainter
 
 lazy from application.body_pose_renderer import LAYER_DEPTHS, BodyPoseLayer
 lazy from application.full_body_render_adapter import (
@@ -19,6 +19,10 @@ lazy from application.full_body_render_adapter import (
 lazy from domain.character_body_profile import MOHAN_BODY_PROFILE
 lazy from domain.character_full_body_rig import FULL_BODY_RIG_SCHEMA_VERSION
 lazy from domain.character_pose import normalize_view_id
+lazy from domain.face_rig import FaceMotionFrame
+lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
+
+VIEW_RING_COUNT = 24
 
 
 class PoseAtlasAssets:
@@ -30,13 +34,10 @@ class PoseAtlasAssets:
         self._root = Path(root)
         self._image_size = int(image_size)
         self._metadata = self._load_metadata()
-        self._hashes = {
-            str(item["view_id"]): str(item["normalized_sha256"])
-            for item in self._metadata["views"]
-        }
-        self._cache: dict[str, FullBodyRenderSpec] = {}
-        self._current_view_id: str | None = None
-        self._face_rects: dict[str, tuple[float, float, float, float]] = {}
+        # The parametric 24-view × 25-layer renderer is the sole full-body
+        # rendering path.  The legacy static photograph + procedural mouth have
+        # been removed entirely.
+        self._layered_renderer = LayeredFullBodyRenderer()
 
     @property
     def generation(self) -> int:
@@ -44,7 +45,7 @@ class PoseAtlasAssets:
 
     @property
     def enabled(self) -> bool:
-        return bool(self._hashes)
+        return bool(self._metadata.get("views"))
 
     @property
     def release_eligible(self) -> bool:
@@ -61,27 +62,46 @@ class PoseAtlasAssets:
         self,
         _pose_id: str,
         view_id: str,
+        motion: FaceMotionFrame | None = None,
     ) -> FullBodyRenderSpec | None:
         try:
             canonical = normalize_view_id(view_id)
         except (TypeError, ValueError):
             return None
-        self._current_view_id = canonical
-        cached = self._cache.get(canonical)
-        if cached is not None:
-            return cached
-        expected = self._hashes.get(canonical)
-        path = self._root / f"{canonical}.png"
-        if expected is None or not path.is_file():
+        # The parametric layered renderer is the sole full-body path.  Without a
+        # motion frame there is nothing to compose, so fail closed.
+        if motion is None:
             return None
-        source = path.read_bytes()
-        if hashlib.sha256(source).hexdigest() != expected:
+        return self._resolve_layered(canonical, motion)
+
+    def _resolve_layered(
+        self,
+        canonical: str,
+        motion: FaceMotionFrame,
+    ) -> FullBodyRenderSpec | None:
+        """Compose the parametric full body for one view and motion frame."""
+        composed = self._layered_renderer.render_view(canonical, motion)
+        if composed.isNull():
             return None
-        rgba = self._normalized_rgba(path)
+        rgba = self._pixmap_rgba(composed)
+        if rgba is None:
+            return None
+        return self._specification(
+            canonical,
+            rgba,
+            f"layered:{canonical}:{motion.viseme}",
+        )
+
+    def _specification(
+        self,
+        canonical: str,
+        rgba: bytes,
+        evidence_tag: str,
+    ) -> FullBodyRenderSpec:
         evidence = FullBodyLayerEvidence(
             AUTHORED_FULL_BODY_SLOT,
             hashlib.sha256(rgba).hexdigest(),
-            f"pose-atlas:{canonical}:{expected}",
+            f"pose-atlas:{canonical}:{evidence_tag}",
         )
         layer = FullBodyRenderLayer(
             BodyPoseLayer(
@@ -92,7 +112,7 @@ class PoseAtlasAssets:
             evidence,
         )
         measurements = MOHAN_BODY_PROFILE.measurements
-        specification = FullBodyRenderSpec(
+        return FullBodyRenderSpec(
             canonical,
             self._image_size,
             self._image_size,
@@ -111,157 +131,13 @@ class PoseAtlasAssets:
             (layer,),
             f"{self._root / 'BUILD-METADATA.json'}#{canonical}",
         )
-        self._cache[canonical] = specification
-        return specification
 
-    def resolve_speech(
-        self,
-        _face: str | None,
-        viseme: str,
-        mouth_closed: bool,
-    ) -> tuple[FullBodyRenderLayer, ...] | None:
-        # The v4 full-body photograph is a single static PNG per view.  Speech
-        # must therefore overlay a procedural mouth layer at the face position
-        # recorded in the per-view hands sidecar.  A closed mouth contributes
-        # no layer (the authored photograph already shows a neutral mouth).
-        if mouth_closed:
-            return ()
-        view_id = self._current_view_id
-        if view_id is None:
+    def _pixmap_rgba(self, pixmap) -> bytes | None:
+        """Convert a composed QPixmap to the square RGBA canvas bytes."""
+        image = pixmap.toImage().convertToFormat(QImage.Format_RGBA8888)
+        if image.isNull():
             return None
-        face_rect = self._face_rect(view_id)
-        if face_rect is None:
-            return None
-        rgba = self._render_mouth_layer(face_rect, viseme)
-        if rgba is None:
-            return None
-        evidence = FullBodyLayerEvidence(
-            "mouth",
-            hashlib.sha256(rgba).hexdigest(),
-            f"pose-atlas:{view_id}:mouth:{viseme}",
-        )
-        layer = FullBodyRenderLayer(
-            BodyPoseLayer("mouth", LAYER_DEPTHS["mouth"], rgba),
-            evidence,
-        )
-        return (layer,)
-
-    def _face_rect(
-        self,
-        view_id: str,
-    ) -> tuple[float, float, float, float] | None:
-        cached = self._face_rects.get(view_id)
-        if cached is not None:
-            return cached
-        path = self._root / f"{view_id}.hands.json"
-        if not path.is_file():
-            return None
-        try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, ValueError):
-            return None
-        for region in payload.get("protected_regions", ()) or ():
-            if region.get("label") != "face":
-                continue
-            rect = region.get("rect")
-            if not isinstance(rect, list) or len(rect) != 4:
-                return None
-            source_width = int(payload.get("width", 1024))
-            source_height = int(payload.get("height", 1536))
-            if source_width <= 0 or source_height <= 0:
-                return None
-            normalized = self._normalize_face_rect(
-                rect,
-                source_width,
-                source_height,
-            )
-            self._face_rects[view_id] = normalized
-            return normalized
-        return None
-
-    def _normalize_face_rect(
-        self,
-        rect: list[object],
-        source_width: int,
-        source_height: int,
-    ) -> tuple[float, float, float, float]:
-        # The authored PNG is 1024x1536 and is scaled into the square canvas
-        # with KeepAspectRatio (height fills the canvas, width is centered).
-        scale = self._image_size / source_height
-        scaled_width = source_width * scale
-        offset_x = (self._image_size - scaled_width) / 2.0
-        x, y, w, h = (float(value) for value in rect)
-        return (
-            offset_x + x * scale,
-            y * scale,
-            w * scale,
-            h * scale,
-        )
-
-    def _render_mouth_layer(
-        self,
-        face_rect: tuple[float, float, float, float],
-        viseme: str,
-    ) -> bytes | None:
-        # A procedural mouth: a dark rounded ellipse whose aperture follows the
-        # viseme.  This keeps the full-body mouth visibly in sync with speech
-        # without requiring authored per-viseme full-body photographs.
-        fx, fy, fw, fh = face_rect
-        mouth_cx = fx + fw * 0.5
-        mouth_cy = fy + fh * 0.62
-        aperture = self._viseme_aperture(viseme)
-        if aperture <= 0.0:
-            return None
-        mouth_w = max(2.0, fw * 0.34)
-        mouth_h = max(2.0, fh * 0.16 * aperture)
-        image = QImage(
-            self._image_size,
-            self._image_size,
-            QImage.Format_RGBA8888,
-        )
-        image.fill(Qt.transparent)
-        painter = QPainter(image)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setPen(Qt.NoPen)
-        painter.setBrush(QColor(90, 40, 45, 235))
-        painter.drawEllipse(
-            QRectF(
-                mouth_cx - mouth_w / 2.0,
-                mouth_cy - mouth_h / 2.0,
-                mouth_w,
-                mouth_h,
-            )
-        )
-        painter.end()
-        return bytes(image.constBits())
-
-    @staticmethod
-    def _viseme_aperture(viseme: str) -> float:
-        normalized = str(viseme or "CLOSED").upper()
-        if normalized in {"CLOSED", "CONSONANT"}:
-            return 0.0
-        if normalized in {"A", "O", "U"}:
-            return 1.0
-        if normalized in {"E", "I"}:
-            return 0.55
-        return 0.7
-
-    def _load_metadata(self) -> dict[str, object]:
-        path = self._root / "BUILD-METADATA.json"
-        value = json.loads(path.read_text(encoding="utf-8"))
-        if value.get("schema") != "mohan.pose-atlas.working-build.v1":
-            raise ValueError("Unsupported PoseAtlas build metadata.")
-        views = value.get("views")
-        if not isinstance(views, list) or len(views) != 24:
-            raise ValueError("PoseAtlas must contain the complete 24-view ring.")
-        return value
-
-    def _normalized_rgba(self, path: Path) -> bytes:
-        source = QImage(str(path))
-        if source.isNull():
-            raise ValueError(f"PoseAtlas image cannot be decoded: {path.name}")
-        source = source.convertToFormat(QImage.Format_RGBA8888)
-        scaled = source.scaled(
+        scaled = image.scaled(
             self._image_size,
             self._image_size,
             Qt.KeepAspectRatio,
@@ -281,3 +157,26 @@ class PoseAtlasAssets:
         )
         painter.end()
         return bytes(canvas.constBits())
+
+    def resolve_speech(
+        self,
+        _face: str | None,
+        _viseme: str,
+        _mouth_closed: bool,
+        _motion: FaceMotionFrame | None = None,
+    ) -> tuple[FullBodyRenderLayer, ...] | None:
+        # The parametric layered renderer already deforms the mouth, lips, jaw
+        # and oral cavity inside the composed full-body frame produced by
+        # ``resolve_static``.  There is no separate procedural mouth patch to
+        # overlay, so speech contributes no additional layer.
+        return ()
+
+    def _load_metadata(self) -> dict[str, object]:
+        path = self._root / "BUILD-METADATA.json"
+        value = json.loads(path.read_text(encoding="utf-8"))
+        if value.get("schema") != "mohan.pose-atlas.working-build.v1":
+            raise ValueError("Unsupported PoseAtlas build metadata.")
+        views = value.get("views")
+        if not isinstance(views, list) or len(views) != VIEW_RING_COUNT:
+            raise ValueError("PoseAtlas must contain the complete 24-view ring.")
+        return value

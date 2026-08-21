@@ -27,12 +27,21 @@ lazy from presentation.flagship_theme import (
     mark_flagship_card,
 )
 
+SRGB_LINEARIZATION_THRESHOLD = 0.04045
+MIN_CONTRAST_RATIO = 4.5
+EXPECTED_SCALE = 1.35
+THEMED_SCROLL_AREA_COUNT = 4
+WRAPPED_LABEL_COUNT = 4
+MAX_SCALE = 2.0
+MIN_SCALE = 0.85
+TAB_COUNT = 4
+
 
 def _relative_luminance(color: str) -> float:
     channels = [int(color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
     linear = [
         value / 12.92
-        if value <= 0.04045
+        if value <= SRGB_LINEARIZATION_THRESHOLD
         else ((value + 0.055) / 1.055) ** 2.4
         for value in channels
     ]
@@ -57,7 +66,7 @@ def assert_control_text_contrast() -> None:
         ("#f8f5ff", "#46519d"),
     )
     for foreground, background in pairs:
-        assert _contrast_ratio(foreground, background) >= 4.5
+        assert _contrast_ratio(foreground, background) >= MIN_CONTRAST_RATIO
 
 
 def _fixture() -> tuple[QWidget, QTabWidget, QScrollArea, QLabel, QLineEdit]:
@@ -96,10 +105,10 @@ def assert_theme_contract(app: QApplication) -> None:
     app.processEvents()
 
     assert root.property("mohanFlagshipTheme") is True
-    assert result.scale == 1.35
+    assert result.scale == EXPECTED_SCALE
     assert result.themed_tabs == 1
-    assert result.themed_scroll_areas == 4
-    assert result.wrapped_labels == 4
+    assert result.themed_scroll_areas == THEMED_SCROLL_AREA_COUNT
+    assert result.wrapped_labels == WRAPPED_LABEL_COUNT
     assert tabs.tabBar().usesScrollButtons()
     assert tabs.tabBar().elideMode() == Qt.ElideRight
     assert tabs.tabBar().focusPolicy() == Qt.StrongFocus
@@ -110,8 +119,8 @@ def assert_theme_contract(app: QApplication) -> None:
     assert "#347fa5" in root.styleSheet().lower()
 
     repeated = apply_flagship_theme(root, scale=9.0)
-    assert repeated.scale == 2.0
-    assert tabs.count() == 4
+    assert repeated.scale == MAX_SCALE
+    assert tabs.count() == TAB_COUNT
     root.close()
 
 
@@ -119,7 +128,7 @@ def assert_high_contrast_and_ornament(app: QApplication) -> None:
     root, *_ = _fixture()
     result = apply_flagship_theme(root, high_contrast=True, scale=0.1)
     assert result.high_contrast
-    assert result.scale == 0.85
+    assert result.scale == MIN_SCALE
     stylesheet = root.styleSheet().lower()
     assert "#071b2d" in stylesheet
     assert "#a63d00" in stylesheet

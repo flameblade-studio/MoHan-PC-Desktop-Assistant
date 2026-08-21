@@ -29,6 +29,7 @@ FORBIDDEN_SUBPAGE_ACTIONS = frozenset({
     "保存安全權限",
     "保存連線設定",
 })
+MAX_BUTTON_GAP = 16
 
 
 class FakeSecretStore:
@@ -174,7 +175,7 @@ def test_global_actions_are_grouped_bottom_right_and_keyboard_usable() -> None:
             assert cancel.isVisible() and cancel.isEnabled()
             assert save.isVisible() and save.isEnabled()
             assert cancel.geometry().center().x() < save.geometry().center().x()
-            assert save.geometry().left() - cancel.geometry().right() <= 16
+            assert save.geometry().left() - cancel.geometry().right() <= MAX_BUTTON_GAP
             assert save.geometry().right() >= tabs.geometry().right() - 24
             assert cancel.geometry().top() >= tabs.geometry().bottom()
             assert save.geometry().top() >= tabs.geometry().bottom()

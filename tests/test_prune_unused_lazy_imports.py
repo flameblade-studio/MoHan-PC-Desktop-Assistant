@@ -5,6 +5,8 @@ lazy from pathlib import Path
 
 lazy from tools.prune_unused_lazy_imports import prune_unused_lazy_imports
 
+EXPECTED_PRUNED_COUNT = 2
+
 
 def test_prunes_only_unused_lazy_aliases(tmp_path: Path) -> None:
     source = tmp_path / "owner.py"
@@ -18,7 +20,7 @@ def test_prunes_only_unused_lazy_aliases(tmp_path: Path) -> None:
         encoding="utf-8",
     )
 
-    assert prune_unused_lazy_imports(source) == 2
+    assert prune_unused_lazy_imports(source) == EXPECTED_PRUNED_COUNT
 
     rewritten = source.read_text(encoding="utf-8")
     ast.parse(rewritten)

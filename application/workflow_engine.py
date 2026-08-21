@@ -11,6 +11,9 @@ lazy from domain.flagship_action_models import (
     ActionRequest,
 )
 
+MAX_WORKFLOW_STEPS = 25
+SCHEDULE_TIME_LENGTH = 5
+
 
 @dataclass(slots=True)
 class Workflow:
@@ -24,7 +27,7 @@ class Workflow:
     def validate(self) -> None:
         if not self.name.strip():
             raise ValueError("工作流程名稱不可留空")
-        if len(self.steps) > 25:
+        if len(self.steps) > MAX_WORKFLOW_STEPS:
             raise ValueError("單一工作流程最多 25 個步驟")
         trigger_type = str(self.trigger.get("type", "manual"))
         if trigger_type not in {"manual", "schedule", "app_start", "work_start"}:
@@ -79,7 +82,7 @@ class Workflow:
 
 def _parse_schedule_time(value: object) -> tuple[int, int] | None:
     at = str(value)
-    if len(at) != 5 or at[2] != ":":
+    if len(at) != SCHEDULE_TIME_LENGTH or at[2] != ":":
         return None
     try:
         hour, minute = (int(part) for part in at.split(":"))

@@ -7,10 +7,32 @@ lazy from enum import StrEnum
 lazy from itertools import pairwise
 
 lazy from domain.character_body_profile import MOHAN_BODY_PROFILE
+lazy from domain.constants import FLOAT_COMPARISON_EPSILON
 
 POSE_SCHEMA_VERSION = 1
 CANONICAL_YAW_STEP_DEGREES = 15
 CANONICAL_YAWS = tuple(range(-180, 180, CANONICAL_YAW_STEP_DEGREES))
+
+# 2.5D view and arm-rig angle/length bounds.
+MIN_PITCH_DEGREES = -45
+MAX_PITCH_DEGREES = 45
+INTERPOLATION_MIDPOINT = 0.5
+MIN_ARM_SEGMENT_LENGTH = 0.01
+MAX_ARM_SEGMENT_LENGTH = 0.5
+MIN_SHOULDER_DEGREES = -180.0
+MAX_SHOULDER_DEGREES = 180.0
+MIN_ELBOW_DEGREES = -165.0
+MAX_ELBOW_DEGREES = 165.0
+MIN_WRIST_DEGREES = -95.0
+MAX_WRIST_DEGREES = 95.0
+
+# Hand-anatomy audit thresholds.
+MIN_FINGER_LENGTH = 0.05
+FINGER_COUNT = 5
+MIN_FINGER_ROOT_GAP = 0.01
+MIN_THUMB_PINKY_SPAN = 0.20
+MIN_THUMB_RATIO = 0.45
+MAX_THUMB_RATIO = 0.90
 LEGACY_VIEW_ALIASES = frozendict(
     {
         "front-000": 0,
@@ -98,7 +120,7 @@ class ViewAnchor:
             raise ValueError("View identifiers must not be empty.")
         if self.yaw_degrees not in CANONICAL_YAWS:
             raise ValueError("View yaw must use the canonical 15-degree grid.")
-        if not -45 <= self.pitch_degrees <= 45:
+        if not MIN_PITCH_DEGREES <= self.pitch_degrees <= MAX_PITCH_DEGREES:
             raise ValueError("2.5D view pitch must remain within -45..45 degrees.")
         if not self.required_layers:
             raise ValueError("Every view requires an authored correction layer set.")
@@ -207,13 +229,13 @@ class ViewAtlas:
         if gap <= 0.0:
             return ViewBlend(first, first, 0.0, False, "invalid_gap")
         weight = max(0.0, min(1.0, (target - start) / gap))
-        if weight == 0.0:
+        if weight < FLOAT_COMPARISON_EPSILON:
             return ViewBlend(first, first, 0.0, False, "exact_anchor")
-        if weight == 1.0:
+        if weight > 1.0 - FLOAT_COMPARISON_EPSILON:
             return ViewBlend(second, second, 0.0, False, "exact_anchor")
         if gap <= self.maximum_interpolation_gap:
             return ViewBlend(first, second, weight, True, "adjacent_crossfade")
-        nearest = first if weight < 0.5 else second
+        nearest = first if weight < INTERPOLATION_MIDPOINT else second
         return ViewBlend(nearest, nearest, 0.0, False, "authored_gap")
 
 
@@ -234,7 +256,7 @@ class ArmRig:
         if not 0.0 <= self.shoulder.x <= 1.0 or not 0.0 <= self.shoulder.y <= 1.0:
             raise ValueError("Shoulder anchor must be inside normalized canvas space.")
         if not all(
-            0.01 <= length <= 0.5
+            MIN_ARM_SEGMENT_LENGTH <= length <= MAX_ARM_SEGMENT_LENGTH
             for length in (
                 self.upper_arm_length,
                 self.forearm_length,
@@ -242,11 +264,11 @@ class ArmRig:
             )
         ):
             raise ValueError("Arm segment lengths are outside safe 2.5D limits.")
-        if not -180.0 <= self.shoulder_degrees <= 180.0:
+        if not MIN_SHOULDER_DEGREES <= self.shoulder_degrees <= MAX_SHOULDER_DEGREES:
             raise ValueError("Shoulder rotation is outside its safe range.")
-        if not -165.0 <= self.elbow_degrees <= 165.0:
+        if not MIN_ELBOW_DEGREES <= self.elbow_degrees <= MAX_ELBOW_DEGREES:
             raise ValueError("Elbow rotation is outside its safe range.")
-        if not -95.0 <= self.wrist_degrees <= 95.0:
+        if not MIN_WRIST_DEGREES <= self.wrist_degrees <= MAX_WRIST_DEGREES:
             raise ValueError("Wrist rotation is outside its safe range.")
 
     @property
@@ -345,29 +367,29 @@ def audit_hand_anatomy(hand: HandPose, side: BodySide) -> HandAnatomyReport:
             for finger, chain in FINGER_CHAINS.items()
         }
     )
-    if any(length <= 0.05 for length in lengths.values()):
+    if any(length <= MIN_FINGER_LENGTH for length in lengths.values()):
         problems.append("collapsed_digit")
-    if len({_quantized_tip(hand.landmarks[chain[-1]]) for chain in FINGER_CHAINS.values()}) != 5:
+    if len({_quantized_tip(hand.landmarks[chain[-1]]) for chain in FINGER_CHAINS.values()}) != FINGER_COUNT:
         problems.append("duplicate_or_fused_tip")
 
     roots = tuple(hand.landmarks[name].x for name in PALM_ROOT_ORDER)
     root_direction = 1.0 if side is BodySide.LEFT else -1.0
     if any(
-        (next_root - root) * root_direction <= 0.01
+        (next_root - root) * root_direction <= MIN_FINGER_ROOT_GAP
         for root, next_root in pairwise(roots)
     ):
         problems.append("finger_root_order")
 
     thumb_tip = hand.landmarks["thumb_tip"].x
     pinky_tip = hand.landmarks["pinky_tip"].x
-    if (pinky_tip - thumb_tip) * root_direction <= 0.20:
+    if (pinky_tip - thumb_tip) * root_direction <= MIN_THUMB_PINKY_SPAN:
         problems.append("thumb_pinky_side")
 
     if lengths["middle"] + 0.03 < max(lengths["index"], lengths["ring"]):
         problems.append("middle_finger_length")
     if lengths["pinky"] >= min(lengths["index"], lengths["ring"]):
         problems.append("pinky_finger_length")
-    if not 0.45 <= lengths["thumb"] / lengths["middle"] <= 0.90:
+    if not MIN_THUMB_RATIO <= lengths["thumb"] / lengths["middle"] <= MAX_THUMB_RATIO:
         problems.append("thumb_finger_ratio")
 
     return HandAnatomyReport(

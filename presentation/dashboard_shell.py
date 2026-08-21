@@ -74,6 +74,8 @@ lazy from presentation.ui_localization_ja import JAPANESE_MODE_LABELS
 
 __all__ = ("DashboardShellMixin",)
 
+MIN_SPLITTER_HEIGHT = 20
+
 
 class DashboardShellMixin:
     """Dashboard window shell and cross-tab coordination behavior."""
@@ -149,7 +151,7 @@ class DashboardShellMixin:
             if theme_session is not None:
                 theme_session.save()
             self._save_wardrobe_preferences()
-        except Exception:  # noqa: BLE001 -- global settings rollback boundary
+        except Exception:
             self.db.restore_settings_snapshot(before)
             if center is not None:
                 center.reload_draft_settings()
@@ -493,26 +495,7 @@ class DashboardShellMixin:
         root = QVBoxLayout(tab)
         root.setContentsMargins(18, 18, 18, 18)
         root.setSpacing(14)
-
-        hero = QFrame()
-        hero.setProperty("mohanRole", "hero")
-        hero_row = QHBoxLayout(hero)
-        hero_text = QVBoxLayout()
-        hero_title = QLabel("✦ " + self._t("tab_wardrobe", "雲裳閣") + " ✦")
-        hero_title.setProperty("mohanRole", "sectionTitle")
-        hero_subtitle = QLabel(
-            self._t(
-                "wardrobe_pavilion_subtitle",
-                "讓墨寒依天候、心情與場合挑選完整造型，也保留您的決定。",
-            )
-        )
-        hero_subtitle.setWordWrap(True)
-        hero_subtitle.setProperty("mohanRole", "muted")
-        hero_text.addWidget(hero_title)
-        hero_text.addWidget(hero_subtitle)
-        hero_row.addLayout(hero_text, 1)
-        hero_row.addWidget(create_flagship_ornament(hero, size=110))
-        root.addWidget(hero)
+        root.addWidget(self._wardrobe_hero())
 
         columns = QHBoxLayout()
         columns.setSpacing(14)
@@ -573,6 +556,72 @@ class DashboardShellMixin:
         source_policy.setWordWrap(True)
         source_policy.setProperty("mohanRole", "muted")
 
+        preview_card = self._wardrobe_preview_card()
+
+        preferences_card = self._wardrobe_preferences_card()
+        actions = QWidget()
+        row = QHBoxLayout(actions)
+        row.setContentsMargins(0, 0, 0, 0)
+        self.wardrobe_import_button = QPushButton(
+            self._t("wardrobe_import", "匯入服裝套件")
+        )
+        self.wardrobe_apply_button = QPushButton(
+            self._t("wardrobe_apply", "套用選取服裝")
+        )
+        self.wardrobe_restore_button = QPushButton(
+            self._t("wardrobe_restore_builtin", "還原內建服裝")
+        )
+        row.addWidget(self.wardrobe_import_button)
+        row.addWidget(self.wardrobe_apply_button)
+        row.addWidget(self.wardrobe_restore_button)
+        library.addWidget(self.wardrobe_packages, 1)
+        library.addWidget(self.wardrobe_status)
+        library.addWidget(wardrobe_compatibility)
+        library.addWidget(source_policy)
+        library.addWidget(actions)
+        controls = QVBoxLayout()
+        controls.setSpacing(12)
+        controls.addWidget(library_card, 5)
+        controls.addWidget(preferences_card, 4)
+        columns.addWidget(preview_card, 6)
+        columns.addLayout(controls, 4)
+        root.addLayout(columns, 1)
+        self.wardrobe_packages.currentItemChanged.connect(
+            self._update_wardrobe_preview_name
+        )
+        self.wardrobe_import_button.clicked.connect(
+            self._import_outfit_package
+        )
+        self.wardrobe_apply_button.clicked.connect(
+            self._preview_selected_outfit
+        )
+        self.wardrobe_restore_button.clicked.connect(
+            self._restore_builtin_outfit
+        )
+        return tab
+
+    def _wardrobe_hero(self) -> QFrame:
+        hero = QFrame()
+        hero.setProperty("mohanRole", "hero")
+        hero_row = QHBoxLayout(hero)
+        hero_text = QVBoxLayout()
+        hero_title = QLabel("✦ " + self._t("tab_wardrobe", "雲裳閣") + " ✦")
+        hero_title.setProperty("mohanRole", "sectionTitle")
+        hero_subtitle = QLabel(
+            self._t(
+                "wardrobe_pavilion_subtitle",
+                "讓墨寒依天候、心情與場合挑選完整造型，也保留您的決定。",
+            )
+        )
+        hero_subtitle.setWordWrap(True)
+        hero_subtitle.setProperty("mohanRole", "muted")
+        hero_text.addWidget(hero_title)
+        hero_text.addWidget(hero_subtitle)
+        hero_row.addLayout(hero_text, 1)
+        hero_row.addWidget(create_flagship_ornament(hero, size=110))
+        return hero
+
+    def _wardrobe_preview_card(self) -> QFrame:
         preview_card = QFrame()
         preview_card.setProperty("mohanRole", "portraitCard")
         preview = QVBoxLayout(preview_card)
@@ -624,7 +673,34 @@ class DashboardShellMixin:
         preview.addWidget(self.wardrobe_character_preview, 1)
         preview.addLayout(pose_actions)
         preview.addWidget(self.wardrobe_preview_name)
+        return preview_card
 
+    def _update_wardrobe_preview_name(
+        self,
+        current: QListWidgetItem | None,
+        _previous: QListWidgetItem | None,
+    ) -> None:
+        if current is None:
+            return
+        self.wardrobe_preview_name.setText(current.text())
+
+    def _show_wardrobe_pose(self, path: Path, active: QPushButton) -> None:
+        pose = QPixmap(str(path))
+        if pose.isNull():
+            return
+        self._wardrobe_pose_source = pose
+        self.wardrobe_character_preview.setPixmap(
+            pose.scaled(
+                300,
+                400,
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation,
+            )
+        )
+        for button in self.wardrobe_pose_buttons:
+            button.setChecked(button is active)
+
+    def _wardrobe_preferences_card(self) -> QFrame:
         preferences_card = QFrame()
         mark_flagship_card(preferences_card)
         preferences = QVBoxLayout(preferences_card)
@@ -662,26 +738,6 @@ class DashboardShellMixin:
         self.generated_outfit_storage_gb.setValue(
             int(self.db.setting("generated_outfit_storage_gb", 6))
         )
-        actions = QWidget()
-        row = QHBoxLayout(actions)
-        row.setContentsMargins(0, 0, 0, 0)
-        self.wardrobe_import_button = QPushButton(
-            self._t("wardrobe_import", "匯入服裝套件")
-        )
-        self.wardrobe_apply_button = QPushButton(
-            self._t("wardrobe_apply", "套用選取服裝")
-        )
-        self.wardrobe_restore_button = QPushButton(
-            self._t("wardrobe_restore_builtin", "還原內建服裝")
-        )
-        row.addWidget(self.wardrobe_import_button)
-        row.addWidget(self.wardrobe_apply_button)
-        row.addWidget(self.wardrobe_restore_button)
-        library.addWidget(self.wardrobe_packages, 1)
-        library.addWidget(self.wardrobe_status)
-        library.addWidget(wardrobe_compatibility)
-        library.addWidget(source_policy)
-        library.addWidget(actions)
         preferences.addWidget(self.autonomous_wardrobe_enabled)
         preferences.addWidget(self.self_outfit_generation_enabled)
         preferences.addWidget(self.fashion_trend_search_enabled)
@@ -696,51 +752,7 @@ class DashboardShellMixin:
         )
         preferences.addLayout(limits)
         preferences.addStretch(1)
-        controls = QVBoxLayout()
-        controls.setSpacing(12)
-        controls.addWidget(library_card, 5)
-        controls.addWidget(preferences_card, 4)
-        columns.addWidget(preview_card, 6)
-        columns.addLayout(controls, 4)
-        root.addLayout(columns, 1)
-        self.wardrobe_packages.currentItemChanged.connect(
-            self._update_wardrobe_preview_name
-        )
-        self.wardrobe_import_button.clicked.connect(
-            self._import_outfit_package
-        )
-        self.wardrobe_apply_button.clicked.connect(
-            self._preview_selected_outfit
-        )
-        self.wardrobe_restore_button.clicked.connect(
-            self._restore_builtin_outfit
-        )
-        return tab
-
-    def _update_wardrobe_preview_name(
-        self,
-        current: QListWidgetItem | None,
-        _previous: QListWidgetItem | None,
-    ) -> None:
-        if current is None:
-            return
-        self.wardrobe_preview_name.setText(current.text())
-
-    def _show_wardrobe_pose(self, path: Path, active: QPushButton) -> None:
-        pose = QPixmap(str(path))
-        if pose.isNull():
-            return
-        self._wardrobe_pose_source = pose
-        self.wardrobe_character_preview.setPixmap(
-            pose.scaled(
-                300,
-                400,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation,
-            )
-        )
-        for button in self.wardrobe_pose_buttons:
-            button.setChecked(button is active)
+        return preferences_card
 
     def _save_wardrobe_preferences(self) -> None:
         if not hasattr(self, "autonomous_wardrobe_enabled"):
@@ -909,8 +921,8 @@ class DashboardShellMixin:
             self.today_splitter.height()
             - self.today_splitter.handleWidth()
         )
-        if available <= 20:
-            QTimer.singleShot(20, self._initialize_today_equal_split)
+        if available <= MIN_SPLITTER_HEIGHT:
+            QTimer.singleShot(MIN_SPLITTER_HEIGHT, self._initialize_today_equal_split)
             return
         first = available // 2
         self.today_splitter.setSizes([first, available - first])

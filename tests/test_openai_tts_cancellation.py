@@ -20,6 +20,10 @@ lazy from contracts import CloudSpeechEnginePort
 lazy from domain.service_status_localization import ServiceStatus, service_status
 lazy from integrations.speech import OpenAITTS
 
+STOP_TIMEOUT_SECONDS = 0.10
+EXPECTED_WRITE_COUNT = 6
+EXPECTED_VISEME_COUNT = 7
+
 
 def _test_wave(duration: float = 0.20, rate: int = 24_000) -> bytes:
     output = io.BytesIO()
@@ -197,7 +201,7 @@ def _assert_stop_after_network_return_blocks_stale_playback(
         _wait_until(app, response.response_read.is_set)
         started_at = time.perf_counter()
         tts.stop()
-        assert time.perf_counter() - started_at < 0.10
+        assert time.perf_counter() - started_at < STOP_TIMEOUT_SECONDS
         response.release.set()
         time.sleep(0.03)
         app.processEvents()
@@ -270,7 +274,7 @@ def _assert_playback_stop_is_nonblocking_and_silent(
         event_count_at_stop = len(events)
         started_at = time.perf_counter()
         tts.stop()
-        assert time.perf_counter() - started_at < 0.10
+        assert time.perf_counter() - started_at < STOP_TIMEOUT_SECONDS
         assert stream.aborted.is_set()
         assert not stream.closed.is_set()
         stream.release.set()
@@ -321,8 +325,8 @@ def _assert_normal_speech_keeps_the_50_hz_mouth_clock(
         )
     stream = _CompletingRawOutputStream.instances[0]
     mouth_events = [value for name, value in events if name == "viseme"]
-    assert len(stream.writes) == 6
-    assert len(mouth_events) == 7
+    assert len(stream.writes) == EXPECTED_WRITE_COUNT
+    assert len(mouth_events) == EXPECTED_VISEME_COUNT
     assert mouth_events[-1] == (0.0, "CLOSED")
     assert events[-1] == ("finished", None)
     assert all(name != "failed" for name, _ in events)

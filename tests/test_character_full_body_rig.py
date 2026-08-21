@@ -20,6 +20,11 @@ lazy from character_full_body_rig import (
 )
 lazy from character_pose import BodySide, Point2D, default_pose_registry
 
+LANDMARK_COUNT = 21
+MIRROR_EPSILON = 1e-9
+CANONICAL_YAW_COUNT = 24
+REAR_YAW = -30
+
 
 def _front_rig():
     pose = default_pose_registry().get("front-crossed")
@@ -62,8 +67,8 @@ def assert_complete_joint_contract_and_existing_limbs_are_reused() -> None:
     assert rig.right_arm is source.right_arm
     assert rig.left_hand is source.left_hand
     assert rig.right_hand is source.right_hand
-    assert len(rig.left_hand.landmarks) == 21
-    assert len(rig.right_hand.landmarks) == 21
+    assert len(rig.left_hand.landmarks) == LANDMARK_COUNT
+    assert len(rig.right_hand.landmarks) == LANDMARK_COUNT
 
 
 def assert_fixed_proportions_and_frozen_models() -> None:
@@ -92,13 +97,13 @@ def assert_left_right_geometry_is_mirrored() -> None:
         assert pose is not None
         rig = adapt_character_pose(pose, yaw_degrees=yaw)
         center = rig.axial.root.x
-        assert abs((center - rig.left_leg.hip.x) - (rig.right_leg.hip.x - center)) < 1e-9
+        assert abs((center - rig.left_leg.hip.x) - (rig.right_leg.hip.x - center)) < MIRROR_EPSILON
         assert audit_full_body_rig(rig).valid
 
 
 def assert_all_24_canonical_yaws_are_supported() -> None:
     assert compatible_yaws() == tuple(range(-180, 180, 15))
-    assert len(compatible_yaws()) == 24
+    assert len(compatible_yaws()) == CANONICAL_YAW_COUNT
     pose = default_pose_registry().get("front-crossed")
     assert pose is not None
     assert {adapt_character_pose(pose, yaw_degrees=yaw).yaw_degrees for yaw in compatible_yaws()} == set(compatible_yaws())
@@ -165,8 +170,8 @@ def assert_legacy_three_views_adapt_without_mutation() -> None:
     assert tuple(adapted) == LEGACY_POSE_IDS
     assert source.poses == before
     assert adapted["front-crossed"].yaw_degrees == 0
-    assert adapted["left-neutral"].yaw_degrees == -30
-    assert adapted["left-cheek-rest"].yaw_degrees == -30
+    assert adapted["left-neutral"].yaw_degrees == REAR_YAW
+    assert adapted["left-cheek-rest"].yaw_degrees == REAR_YAW
     assert all(audit_full_body_rig(rig).valid for rig in adapted.values())
 
 

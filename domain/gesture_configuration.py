@@ -12,6 +12,11 @@ GESTURE_CONFIGURATION_VERSION: Final = 1
 MAX_CUSTOM_GESTURES: Final = 32
 MAX_SAMPLES_PER_GESTURE: Final = 20
 LANDMARKS_PER_HAND: Final = 21
+MAX_COMMAND_LENGTH: Final = 256
+MIN_COORDINATE: Final = -8.0
+MAX_COORDINATE: Final = 8.0
+MAX_NAME_LENGTH: Final = 80
+COORDINATE_DIMENSIONS: Final = 3
 
 
 class GestureSource(StrEnum):
@@ -94,7 +99,7 @@ class GestureBinding:
         if not isinstance(self.action, GestureAction):
             raise TypeError("Gesture action must be canonical.")
         command = self.custom_command.strip()
-        if len(command) > 256 or any(character in command for character in "\r\n\0"):
+        if len(command) > MAX_COMMAND_LENGTH or any(character in command for character in "\r\n\0"):
             raise ValueError("Custom gesture commands must be one short text command.")
         if self.action is GestureAction.CUSTOM_COMMAND and not command:
             raise ValueError("A custom-command binding requires command text.")
@@ -111,7 +116,7 @@ class GestureLandmark:
     z: float = 0.0
 
     def __post_init__(self) -> None:
-        if not all(math.isfinite(value) and -8.0 <= value <= 8.0 for value in (self.x, self.y, self.z)):
+        if not all(math.isfinite(value) and MIN_COORDINATE <= value <= MAX_COORDINATE for value in (self.x, self.y, self.z)):
             raise ValueError("Gesture landmark coordinates are invalid.")
 
 
@@ -136,7 +141,7 @@ class GestureDefinition:
     def __post_init__(self) -> None:
         identifier = self.gesture_id.strip()
         name = self.display_name.strip()
-        if not identifier or len(identifier) > 80 or not name or len(name) > 80:
+        if not identifier or len(identifier) > MAX_NAME_LENGTH or not name or len(name) > MAX_NAME_LENGTH:
             raise ValueError("Gesture identity and display name must be short and explicit.")
         if any(character.isspace() for character in identifier):
             raise ValueError("Gesture identifiers cannot contain whitespace.")
@@ -398,7 +403,7 @@ def _sample_from_payload(payload: object) -> GestureSample:
     for coordinates in payload:
         if not isinstance(coordinates, Sequence) or isinstance(coordinates, (str, bytes)):
             raise TypeError("Gesture landmark coordinates must be a sequence.")
-        if len(coordinates) != 3:
+        if len(coordinates) != COORDINATE_DIMENSIONS:
             raise ValueError("Gesture landmark coordinates must contain x, y and z.")
         x, y, z = coordinates
         if not all(type(value) in {int, float} for value in (x, y, z)):

@@ -23,6 +23,9 @@ IRIS_MODEL_SIZE = 64
 SILERO_SAMPLE_RATE = 16_000
 SILERO_CHUNK_SIZE = 512
 SILERO_STATE_SHAPE = (2, 1, 64)
+IRIS_OUTPUT_SIZE = 15
+FACEMESH_POINT_COUNT = 468
+MIN_CROP_SIDE = 2.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -153,7 +156,7 @@ class OpenCVMultiModalModelProvider:
         )
         self._iris.setInput(iris_blob)
         iris_output = self._iris.forward().reshape(-1)
-        if iris_output.size != 15:
+        if iris_output.size != IRIS_OUTPUT_SIZE:
             raise RuntimeError("bundled iris output shape is unsupported")
         self._silero_infer(self._np.zeros(SILERO_CHUNK_SIZE, dtype=self._np.float32))
         self.reset_voice()
@@ -245,7 +248,7 @@ class OpenCVMultiModalModelProvider:
         _, faces = self._face_detector.detect(image)
         if faces is None:
             return ()
-        return tuple(row for row in faces if len(row) >= 15)
+        return tuple(row for row in faces if len(row) >= IRIS_OUTPUT_SIZE)
 
     def _infer_face_mesh(
         self,
@@ -264,7 +267,7 @@ class OpenCVMultiModalModelProvider:
         )
         self._face_mesh.setInput(blob)
         output = self._face_mesh.forward().reshape(-1)
-        if output.size != 468 * 3 or not self._np.isfinite(output).all():
+        if output.size != FACEMESH_POINT_COUNT * 3 or not self._np.isfinite(output).all():
             return None
         points: list[FaceMeshPoint] = []
         for index in range(0, output.size, 3):
@@ -287,7 +290,7 @@ class OpenCVMultiModalModelProvider:
         width: int,
         height: int,
     ) -> tuple[FaceMeshPoint, ...] | None:
-        if len(face_landmarks) != 468:
+        if len(face_landmarks) != FACEMESH_POINT_COUNT:
             return None
         all_iris: list[FaceMeshPoint] = []
         for eye_indices in ((33, 133, 159, 145), (263, 362, 386, 374)):
@@ -309,7 +312,7 @@ class OpenCVMultiModalModelProvider:
             )
             self._iris.setInput(blob)
             output = self._iris.forward().reshape(-1)
-            if output.size != 15 or not self._np.isfinite(output).all():
+            if output.size != IRIS_OUTPUT_SIZE or not self._np.isfinite(output).all():
                 return None
             for index in range(0, output.size, 3):
                 x = left + float(output[index]) * side / IRIS_MODEL_SIZE
@@ -422,7 +425,7 @@ def _square_crop_from_points(
     xs = tuple(point.x * width for point in points)
     ys = tuple(point.y * height for point in points)
     side = max(max(xs) - min(xs), max(ys) - min(ys)) * (1.0 + margin * 2.0)
-    if side < 2.0:
+    if side < MIN_CROP_SIDE:
         return None, 0, 0, 0
     crop, left, top, side = _square_crop(
         image,
@@ -442,9 +445,9 @@ def _square_crop(
     side: float,
 ) -> tuple[Any, int, int, int]:
     height, width = image.shape[:2]
-    integer_side = max(2, min(int(round(side)), width, height))
-    left = max(0, min(width - integer_side, int(round(center_x - integer_side / 2.0))))
-    top = max(0, min(height - integer_side, int(round(center_y - integer_side / 2.0))))
+    integer_side = max(2, min(round(side), width, height))
+    left = max(0, min(width - integer_side, round(center_x - integer_side / 2.0)))
+    top = max(0, min(height - integer_side, round(center_y - integer_side / 2.0)))
     crop = image[top : top + integer_side, left : left + integer_side]
     return crop, left, top, integer_side
 

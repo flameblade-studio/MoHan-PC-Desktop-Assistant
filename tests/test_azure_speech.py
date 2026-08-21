@@ -30,6 +30,13 @@ lazy from integrations.azure_speech import (
 lazy from integrations.azure_voice_catalog import AzureVoiceCatalog
 lazy from ui_localization import ui_text
 
+REGION_COUNT = 33
+SAMPLE_RATE = 960
+PAIR_LENGTH = 2
+TRIO_LENGTH = 3
+AUDIO_QUEUE_MAXSIZE = 64
+MAX_BACKGROUND_VALIDATION_SECONDS = 0.25
+
 
 def _assert_region_normalization() -> None:
     assert normalize_azure_region(" EastAsia ") == "eastasia"
@@ -45,7 +52,7 @@ def _assert_region_normalization() -> None:
 def _assert_region_catalog() -> None:
     all_regions = azure_region_identifiers()
     hd_regions = azure_region_identifiers(hd_only=True)
-    assert len(all_regions) == len(set(all_regions)) == 33
+    assert len(all_regions) == len(set(all_regions)) == REGION_COUNT
     assert "eastasia" in all_regions
     assert "eastasia" not in hd_regions
     assert "southeastasia" in hd_regions
@@ -261,7 +268,7 @@ def _assert_successful_streaming_synthesis(
     def fake_playback(read_chunk, *_args, on_first_audio=None, **_kwargs):
         assert on_first_audio is not None
         buffer = bytearray(1_024)
-        assert read_chunk(buffer) == 960
+        assert read_chunk(buffer) == SAMPLE_RATE
         assert read_chunk(buffer) == 0
         on_first_audio()
 
@@ -311,7 +318,7 @@ def _assert_operation_ids_are_monotonic() -> None:
         )
 
     assert operation_ids == [1, 2]
-    assert thread_type.call_count == 2
+    assert thread_type.call_count == PAIR_LENGTH
 
 
 def _assert_new_operation_cancels_previous_playback() -> None:
@@ -453,13 +460,13 @@ def _assert_native_timing_is_private_current_and_deduplicated() -> None:
     word_signal.emit(word)
     word_signal.emit(word)
     viseme_signal.emit(SimpleNamespace(audio_offset=6_000_000, viseme_id=7))
-    assert len(received) == 2
+    assert len(received) == PAIR_LENGTH
     assert all(event.operation_id == 1 for event in received)
     assert "private text" not in repr(received)
 
     engine.stop()
     word_signal.emit(SimpleNamespace(audio_offset=7_000_000, duration=1, boundary_type="Word"))
-    assert len(received) == 2
+    assert len(received) == PAIR_LENGTH
 
     engine._playback_generation = 3
     retry_word, retry_viseme = _FakeTimingSignal(), _FakeTimingSignal()
@@ -468,8 +475,8 @@ def _assert_native_timing_is_private_current_and_deduplicated() -> None:
         3,
     )
     retry_word.emit(SimpleNamespace(audio_offset=5_000_000, duration=2_000_000, boundary_type="Word"))
-    assert len(received) == 3
-    assert received[-1].operation_id == 3
+    assert len(received) == TRIO_LENGTH
+    assert received[-1].operation_id == TRIO_LENGTH
 
 
 def _assert_native_timing_falls_back_without_sdk_signals() -> None:
@@ -495,7 +502,7 @@ def _assert_audio_queue_is_bounded_under_pressure() -> None:
         read = reader.read(buffer)
         assert read <= len(buffer)
         consumed.extend(buffer[:read])
-        assert reader._chunks.qsize() <= reader._chunks.maxsize == 64
+        assert reader._chunks.qsize() <= reader._chunks.maxsize == AUDIO_QUEUE_MAXSIZE
     writer.join(timeout=1.0)
     reader.close()
 
@@ -690,7 +697,7 @@ def _assert_dynamic_voice_query_does_not_block_speak() -> None:
     engine.speak("背景驗證", "key-a", " EastAsia ", dynamic_voice)
     elapsed = time.perf_counter() - started
 
-    assert elapsed < 0.25
+    assert elapsed < MAX_BACKGROUND_VALIDATION_SECONDS
     assert catalog_service.entered.wait(timeout=1.0)
     assert catalog_service.query_thread_id != caller_thread_id
     engine.stop()

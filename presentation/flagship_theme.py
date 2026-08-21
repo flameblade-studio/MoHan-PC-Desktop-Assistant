@@ -596,6 +596,37 @@ QWidget[mohanFlagshipTheme="true"] QPushButton:disabled {{
     color: {colors['disabled']};
     background: {colors['wash']};
 }}
+QMenu {{
+    background: #ffffff;
+    color: #24364a;
+    border: 1px solid #9eb5c7;
+    border-radius: {_scaled(8, scale)}px;
+    padding: {_scaled(5, scale)}px;
+}}
+QMenu::item {{
+    color: #24364a;
+    background: transparent;
+    padding: {_scaled(7, scale)}px {_scaled(18, scale)}px;
+    border-radius: {_scaled(6, scale)}px;
+}}
+QMenu::item:selected {{
+    color: #17344f;
+    background: #dce8ef;
+}}
+QMenu::item:disabled {{
+    color: #8997a3;
+}}
+QMenu::separator {{
+    height: 1px;
+    background: #c9ced3;
+    margin: {_scaled(4, scale)}px {_scaled(8, scale)}px;
+}}
+QToolTip {{
+    background: #ffffff;
+    color: #24364a;
+    border: 1px solid #9eb5c7;
+    padding: {_scaled(5, scale)}px;
+}}
 """
 
 

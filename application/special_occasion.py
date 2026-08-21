@@ -7,6 +7,9 @@ lazy from enum import StrEnum
 MOHAN_BIRTHDAY_MONTH = 1
 MOHAN_BIRTHDAY_DAY = 8
 MOHAN_ZODIAC = "capricorn"
+MAX_MONTH = 12
+MAX_DAY = 31
+MAX_HOUR = 23
 
 # 農曆七夕（農曆七月初七）對應的國曆日期，預先寫入未來十年。
 # 農曆換算不依賴外部套件，改以內建查表維持離線可用性。
@@ -76,9 +79,9 @@ class OccasionDefinition:
     minimum_grumble_delay_seconds: float
 
     def __post_init__(self) -> None:
-        if not 1 <= self.month <= 12 or not 1 <= self.day <= 31:
+        if not 1 <= self.month <= MAX_MONTH or not 1 <= self.day <= MAX_DAY:
             raise ValueError("Occasion date is invalid.")
-        if not 0 <= self.hint_hour < self.grumble_hour <= 23:
+        if not 0 <= self.hint_hour < self.grumble_hour <= MAX_HOUR:
             raise ValueError("Occasion hours must be ordered within one day.")
         if self.minimum_grumble_delay_seconds < 60.0 * 60.0:
             raise ValueError("A restrained grumble must never follow immediately.")

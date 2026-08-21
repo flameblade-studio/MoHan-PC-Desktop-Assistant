@@ -28,6 +28,8 @@ lazy from vision_domain import (
 )
 lazy from vision_runtime import VisionEnvironmentProbe, VisionReadiness
 
+EXPECTED_CONSECUTIVE_FAILURES = 3
+
 VISION_MODULES = (
     "camera_presence.py",
     "infrastructure/face_identity_store.py",
@@ -210,7 +212,7 @@ def assert_three_inference_failures_disable_vision(
     assert not controller._busy
     assert not controller._enabled
     assert controller._provider is None
-    assert controller._consecutive_analysis_failures == 3
+    assert controller._consecutive_analysis_failures == EXPECTED_CONSECUTIVE_FAILURES
     assert health_events.count() == 1
     health = health_events.at(0)[0]
     assert health.readiness is VisionReadiness.RUNTIME_ERROR

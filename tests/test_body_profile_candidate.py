@@ -10,6 +10,8 @@ lazy from PySide6.QtGui import QColor, QImage
 
 lazy from tools.compose_body_profile_candidate import compose_candidate
 
+RGB_MAX = 255
+
 
 def _image(path: Path, color: str) -> None:
     image = QImage(200, 200, QImage.Format_RGBA8888)
@@ -34,7 +36,7 @@ def test_composition_changes_only_the_approved_torso() -> None:
         assert result.pixelColor(2, 2) == QColor("#102030")
         assert result.pixelColor(100, 130) == QColor("#D0A080")
         assert result.pixelColor(100, 190) == QColor("#102030")
-        assert result.pixelColor(2, 2).alpha() == 255
+        assert result.pixelColor(2, 2).alpha() == RGB_MAX
 
 
 def test_protected_overlay_is_also_clipped_to_the_torso() -> None:

@@ -11,6 +11,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MIGRATED_LAYERS = frozenset({"application", "domain"})
+MAX_ROOT_APP_LINE_COUNT = 50
 
 
 def _owner_modules() -> dict[str, str]:
@@ -57,7 +58,7 @@ def test_domain_and_application_have_physical_owners_and_no_root_detours() -> No
 def test_root_app_remains_the_thin_composition_entrypoint() -> None:
     source = (PROJECT_ROOT / "app.py").read_text(encoding="utf-8")
     tree = ast.parse(source, filename="app.py")
-    assert len(source.splitlines()) <= 50
+    assert len(source.splitlines()) <= MAX_ROOT_APP_LINE_COUNT
     assert any(
         isinstance(node, ast.ImportFrom)
         and node.module == "application.application_bootstrap"

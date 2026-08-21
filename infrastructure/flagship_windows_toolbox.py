@@ -13,6 +13,8 @@ lazy from infrastructure.platform_services import current_platform_services
 
 __all__ = ("WindowsToolbox",)
 
+MAX_SEARCH_RESULTS = 200
+
 
 class ActionRegistrar(Protocol):
     def register(self, capability: str, handler, verifier=None) -> None: ...
@@ -130,7 +132,7 @@ class WindowsToolbox:
             if not root.is_dir():
                 continue
             for path in root.rglob("*"):
-                if len(results) >= 200:
+                if len(results) >= MAX_SEARCH_RESULTS:
                     break
                 try:
                     relative = path.relative_to(root)
@@ -150,7 +152,7 @@ class WindowsToolbox:
             request.request_id,
             True,
             f"找到 {len(results)} 個符合項目",
-            {"results": results, "truncated": len(results) >= 200},
+            {"results": results, "truncated": len(results) >= MAX_SEARCH_RESULTS},
         )
 
     def rename_file(self, request: ActionRequest) -> ActionResult:

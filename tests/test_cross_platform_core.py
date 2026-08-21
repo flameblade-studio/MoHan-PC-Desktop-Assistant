@@ -38,7 +38,10 @@ lazy from infrastructure.secret_store import platform_secret_store_factory
 lazy from integrations.speech import preferred_windows_voice
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_window import Dashboard
-lazy from presentation.flagship_ui import FlagshipControlCenter
+lazy from presentation.flagship_ui import (
+    ControlCenterDependencies,
+    FlagshipControlCenter,
+)
 
 
 def eager_direct_imports(path: Path) -> set[str]:
@@ -374,8 +377,10 @@ def _assert_macos_control_center_paths(
     mac_center = FlagshipControlCenter(
         mac_db,
         root,
-        platform_services=macos,
-        secret_store_factory=mac_factory,
+        dependencies=ControlCenterDependencies(
+            platform_services=macos,
+            secret_store_factory=mac_factory,
+        ),
     )
     mac_protected = set(mac_center.policy.protected_paths)
     for path in (macos.paths.data, macos.paths.config, macos.paths.cache):

@@ -11,6 +11,9 @@ lazy from domain.personality_state import (
     PersonalityMirrorState,
 )
 
+RESERVED_TEMPERATURE_THRESHOLD = -0.1
+PLAYFUL_TEMPERATURE_THRESHOLD = 0.1
+
 
 def test_mirror_starts_balanced() -> None:
     state = PersonalityMirrorState()
@@ -22,7 +25,7 @@ def test_serious_user_makes_reserved() -> None:
     state = PersonalityMirrorState()
     for _ in range(20):
         state.update(sentiment_polarity=-1.0, style_score=-1.0)
-    assert state.temperature < -0.1
+    assert state.temperature < RESERVED_TEMPERATURE_THRESHOLD
     assert state.style == "reserved"
 
 
@@ -30,7 +33,7 @@ def test_playful_user_makes_playful() -> None:
     state = PersonalityMirrorState()
     for _ in range(20):
         state.update(sentiment_polarity=1.0, style_score=1.0)
-    assert state.temperature > 0.1
+    assert state.temperature > PLAYFUL_TEMPERATURE_THRESHOLD
     assert state.style == "playful"
 
 

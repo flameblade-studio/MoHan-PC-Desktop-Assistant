@@ -35,6 +35,8 @@ _DECISION = GestureActionDecision(
     GestureActionSafety.LOCAL_REVERSIBLE,
 )
 
+EXPECTED_FRAME_COUNT = 2
+
 
 class UnexpectedDispatchFailure(Exception):
     pass
@@ -167,9 +169,9 @@ def test_dispatch_exception_is_failed_without_poisoning_qt_or_next_frame(
 
     assert event_loop_completed == [True]
     assert escaped == []
-    assert provider.calls == 2
-    assert dispatcher.calls == 2
-    assert len(results) == 2
+    assert provider.calls == EXPECTED_FRAME_COUNT
+    assert dispatcher.calls == EXPECTED_FRAME_COUNT
+    assert len(results) == EXPECTED_FRAME_COUNT
     assert results[0].disposition is GestureDispatchDisposition.FAILED
     assert results[0].action is GestureAction.SHOW_DASHBOARD
     assert results[0].reason_code == "dispatch-boundary-failed"

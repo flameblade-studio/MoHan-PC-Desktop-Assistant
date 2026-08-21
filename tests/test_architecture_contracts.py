@@ -15,6 +15,8 @@ lazy from PySide6.QtWidgets import QApplication, QLabel, QTabWidget
 
 lazy from feature_registry import DashboardFeatureRegistry
 
+PAIR_LENGTH = 2
+
 
 def local_import_graph() -> dict[str, set[str]]:
     modules = {
@@ -163,7 +165,7 @@ def run() -> None:
         registry.register("alpha", "Alpha", lambda: QLabel("A"))
         registry.register("beta", "Beta", lambda: QLabel("B"))
         registry.mount(tabs)
-        assert tabs.count() == 2
+        assert tabs.count() == PAIR_LENGTH
         assert tabs.widget(0).property("mohanFeatureId") == "alpha"
         assert tabs.widget(1).property("mohanFeatureId") == "beta"
         try:

@@ -21,6 +21,8 @@ lazy from infrastructure.hand_landmark_provider import (
     HandObservation,
 )
 
+TRIGGERED_RECOGNITION_COUNT = 2
+
 
 def hand(
     gesture: str,
@@ -114,7 +116,7 @@ def assert_two_hand_conflict_has_one_deterministic_winner() -> None:
         hand("thumbs-down", side=Handedness.LEFT),
     )
     result = frames(runtime, both, configuration)[-1]
-    assert len(tuple(item for item in result.recognitions if item.triggered)) == 2
+    assert len(tuple(item for item in result.recognitions if item.triggered)) == TRIGGERED_RECOGNITION_COUNT
     assert result.decision is not None
     assert result.decision.gesture_id == "thumbs-down"
 

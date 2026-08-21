@@ -163,3 +163,9 @@ MOUTH_CLOSE_DEADLINE_MS = max(
 )
 MOTION_FRAME_INTERVAL_MS = 16
 SPEECH_MOTION_RELEASE_LIMIT = 12
+# Attention (gaze/blink) and physics (breath/sleeve) timers run on their own
+# cadence so the pointer tracking and fabric motion never fight the 60 Hz
+# motion clock.  These are named so a future cadence change stays in one place.
+ATTENTION_FRAME_INTERVAL_MS = 40
+PHYSICS_FRAME_INTERVAL_MS = 33
+IDLE_FRAME_INTERVAL_MS = 90

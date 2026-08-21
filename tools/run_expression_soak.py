@@ -36,6 +36,8 @@ ARBITER_SOURCES = (
 )
 VISEMES = ("A", "I", "U", "E", "O")
 CHARACTER_SCALES = (75, 100, 125, 150, 180)
+BASELINE_ITERATION = 500
+MAX_AUDIT_ENTRIES = 256
 
 
 class ProcessMemoryCounters(ctypes.Structure):
@@ -213,7 +215,7 @@ def _exercise_speech(
 def _sample_runtime(state: SoakState) -> None:
     if state.iterations % 23 == 0:
         state.app.processEvents()
-    if state.iterations == 500:
+    if state.iterations == BASELINE_ITERATION:
         state.baseline_memory = working_set_bytes()
     if state.iterations % 100 == 0:
         state.peak_memory = max(state.peak_memory, working_set_bytes())
@@ -245,7 +247,7 @@ def _result(state: SoakState) -> dict[str, object]:
     assert len(state.window.expression_anchor_profiles) >= len(
         EXPRESSION_POSES
     )
-    assert len(state.window.expression_arbiter.audit) <= 256
+    assert len(state.window.expression_arbiter.audit) <= MAX_AUDIT_ENTRIES
     state.window.close()
     state.window.db.close()
     state.app.processEvents()

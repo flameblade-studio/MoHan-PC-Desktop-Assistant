@@ -5,6 +5,8 @@ lazy from pathlib import Path
 
 lazy from PIL import Image, ImageChops, ImageFilter
 
+BOX_DIMENSIONS = 4
+
 
 def mouth_mask(size: tuple[int, int], box: tuple[int, int, int, int]) -> Image.Image:
     left, top, right, bottom = box
@@ -74,7 +76,7 @@ def main() -> None:
     )
     args = parser.parse_args()
     box = tuple(int(value) for value in args.box.split(","))
-    if len(box) != 4:
+    if len(box) != BOX_DIMENSIONS:
         raise ValueError("--box 必須包含四個整數")
     compose(args.base, args.donor, args.out, box)
 

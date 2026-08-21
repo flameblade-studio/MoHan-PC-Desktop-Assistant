@@ -29,14 +29,17 @@ lazy from integrations.openai_vision_provider import (
 )
 lazy from openai_vision_preferences import PREFERENCES_VERSION, OpenAIVisionPreferences
 
+RECENT_HISTORY_BOUND = 3
+EXPECTED_PREVIEW_CALLS = 2_000
+
 
 def test_behavior_director_recent_history_has_a_hard_three_item_bound() -> None:
     director = BehaviorDirector(clock=lambda: 10_000.0, seed=7, cooldown_ms=0)
     for index in range(2_000):
         director.direct(_behavior_input(f"action-{index}"))
 
-    assert director._recent.maxlen == 3
-    assert len(director._recent) == 3
+    assert director._recent.maxlen == RECENT_HISTORY_BOUND
+    assert len(director._recent) == RECENT_HISTORY_BOUND
     assert tuple(director._recent) == (
         "action-1997",
         "action-1998",
@@ -99,7 +102,7 @@ def test_appearance_session_state_is_fixed_to_declared_slots() -> None:
         "_statuses",
         "_last_commit",
     }
-    assert preview.calls == 2_000
+    assert preview.calls == EXPECTED_PREVIEW_CALLS
 
 
 def test_cloud_runtime_retains_no_frame_or_provider_response_payload() -> None:

@@ -78,6 +78,16 @@ MAX_TOTAL_BYTES = 2 * 1024 * 1024 * 1024
 MAX_MEMBERS = 2048
 MAX_COMPRESSION_RATIO = 100
 MAX_IMAGE_DIMENSION = 4096
+MIN_ANCHOR_COORDINATE = -4096
+MAX_ANCHOR_COORDINATE = 4096
+MIN_Z_ORDER = -100
+MAX_Z_ORDER = 100
+MAX_NAME_LENGTH = 80
+MAX_AUTHOR_LENGTH = 120
+MIN_PNG_HEADER_LENGTH = 24
+MIN_WEBP_HEADER_LENGTH = 30
+SYMLINK_FILE_TYPE = 0o120000
+ANCHOR_DIMENSIONS = 2
 IDENTIFIER = re.compile(r"[a-z0-9](?:[a-z0-9.-]{0,62}[a-z0-9])?\Z")
 SEMVER = re.compile(r"\d+\.\d+\.\d+\Z")
 APP_RANGE = re.compile(r">=\d+\.\d+\.\d+,<\d+\.\d+\.\d+\Z")
@@ -269,7 +279,7 @@ def _safe_member(info: zipfile.ZipInfo) -> None:
         raise OutfitPackError("Unsafe archive path.")
     if info.flag_bits & 1 or info.file_size > MAX_MEMBER_BYTES:
         raise OutfitPackError("Unsafe archive member.")
-    if (info.external_attr >> 16) & 0o170000 == 0o120000:
+    if (info.external_attr >> 16) & 0o170000 == SYMLINK_FILE_TYPE:
         raise OutfitPackError("Symbolic links are forbidden.")
     if info.filename != MANIFEST and not ASSET_PATH.fullmatch(info.filename):
         raise OutfitPackError("Executable or unsupported member.")
@@ -278,13 +288,13 @@ def _safe_member(info: zipfile.ZipInfo) -> None:
 
 
 def _png_dimensions(data: bytes) -> tuple[int, int]:
-    if len(data) < 24 or data[:8] != b"\x89PNG\r\n\x1a\n" or data[12:16] != b"IHDR":
+    if len(data) < MIN_PNG_HEADER_LENGTH or data[:8] != b"\x89PNG\r\n\x1a\n" or data[12:16] != b"IHDR":
         raise OutfitPackError("Invalid PNG asset.")
     return struct.unpack(">II", data[16:24])
 
 
 def _webp_dimensions(data: bytes) -> tuple[int, int]:
-    if len(data) < 30 or data[:4] != b"RIFF" or data[8:12] != b"WEBP":
+    if len(data) < MIN_WEBP_HEADER_LENGTH or data[:4] != b"RIFF" or data[8:12] != b"WEBP":
         raise OutfitPackError("Invalid WebP asset.")
     if data[12:16] != b"VP8X":
         raise OutfitPackError("Unsupported WebP header.")
@@ -344,7 +354,7 @@ def _names(value: object) -> frozendict[str, str]:
     if not isinstance(value, dict) or set(value) != LANGUAGES or any(not isinstance(text, str) for text in value.values()):
         raise OutfitPackError("All four localized names are required.")
     names = {language: text.strip() for language, text in value.items()}
-    if any(not text or len(text) > 80 for text in names.values()):
+    if any(not text or len(text) > MAX_NAME_LENGTH for text in names.values()):
         raise OutfitPackError("Invalid localized name.")
     return frozendict(names)
 
@@ -356,7 +366,7 @@ def _identifier(value: object, label: str) -> str:
 
 
 def _author(value: object) -> str:
-    if not isinstance(value, str) or not value.strip() or len(value.strip()) > 120:
+    if not isinstance(value, str) or not value.strip() or len(value.strip()) > MAX_AUTHOR_LENGTH:
         raise OutfitPackError("Invalid author declaration.")
     return value.strip()
 
@@ -372,12 +382,12 @@ def _asset(entry: object, allowed_slots: frozenset[str], archive: zipfile.ZipFil
         raise OutfitPackError("Core identity, skin and geometry cannot be replaced.")
     anchor = entry["anchor"]
     values = (entry["width"], entry["height"], entry["z_order"])
-    if not isinstance(entry["sha256"], str) or not SHA256.fullmatch(entry["sha256"]) or not isinstance(anchor, list) or len(anchor) != 2:
+    if not isinstance(entry["sha256"], str) or not SHA256.fullmatch(entry["sha256"]) or not isinstance(anchor, list) or len(anchor) != ANCHOR_DIMENSIONS:
         raise OutfitPackError("Invalid hash or anchor.")
     if any(not isinstance(value, int) or isinstance(value, bool) for value in (*values, *anchor)):
         raise OutfitPackError("Invalid asset geometry.")
     width, height, z_order = values
-    if not (1 <= width <= MAX_IMAGE_DIMENSION and 1 <= height <= MAX_IMAGE_DIMENSION and -4096 <= anchor[0] <= 4096 and -4096 <= anchor[1] <= 4096 and -100 <= z_order <= 100):
+    if not (1 <= width <= MAX_IMAGE_DIMENSION and 1 <= height <= MAX_IMAGE_DIMENSION and MIN_ANCHOR_COORDINATE <= anchor[0] <= MAX_ANCHOR_COORDINATE and MIN_ANCHOR_COORDINATE <= anchor[1] <= MAX_ANCHOR_COORDINATE and MIN_Z_ORDER <= z_order <= MAX_Z_ORDER):
         raise OutfitPackError("Asset geometry is outside the allowed range.")
     data = archive.read(path)
     if hashlib.sha256(data).hexdigest() != entry["sha256"] or _dimensions(data, Path(path).suffix) != (width, height):
@@ -611,7 +621,7 @@ def _autonomous_profile(value: object) -> AutonomousStyleProfile:
         return result
 
     priority = value["priority"]
-    if not isinstance(priority, int) or isinstance(priority, bool) or not -100 <= priority <= 100:
+    if not isinstance(priority, int) or isinstance(priority, bool) or not MIN_Z_ORDER <= priority <= MAX_Z_ORDER:
         raise OutfitPackError("Invalid autonomous outfit priority.")
     return AutonomousStyleProfile(
         tags("thermal_bands", THERMAL_BANDS),

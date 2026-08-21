@@ -18,6 +18,8 @@ lazy from infrastructure.db_affection import StudioDBAffectionMethods
 lazy from infrastructure.db_memory import StudioDBMemoryMethods
 lazy from infrastructure.memory_index import MemoryVectorIndex
 
+MAX_MEMORY_TITLE_LENGTH = 36
+
 DEFAULT_REMINDERS = frozendict({
     "work": ("開始工作", "09:30", 1),
     "lunch": ("吃飯", "12:30", 1),
@@ -429,8 +431,8 @@ class StudioDB:
         ).fetchall()
         for row in rows:
             title = " ".join(str(row["content"]).split())
-            if len(title) > 36:
-                title = title[:36].rstrip() + "…"
+            if len(title) > MAX_MEMORY_TITLE_LENGTH:
+                title = title[:MAX_MEMORY_TITLE_LENGTH].rstrip() + "…"
             self.conn.execute(
                 "UPDATE memories SET title=? WHERE id=?",
                 (title or "未命名記憶", int(row["id"])),

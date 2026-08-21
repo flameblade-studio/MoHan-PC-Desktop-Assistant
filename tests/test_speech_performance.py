@@ -18,6 +18,8 @@ lazy from speech_providers import (
     SYSTEM_LOCAL_PROVIDER,
 )
 
+BODY_ENERGY_THRESHOLD = 0.3
+
 
 class VirtualClock:
     def __init__(self) -> None:
@@ -59,7 +61,7 @@ def assert_every_provider_uses_one_timeline() -> None:
         assert cue.provider_id == provider
         assert cue.estimated
         assert directive.gesture_beat
-        assert directive.body_energy > 0.3
+        assert directive.body_energy > BODY_ENERGY_THRESHOLD
 
         final, settling = timeline.final_audio()
         assert final.kind is SpeechEventKind.FINAL_AUDIO

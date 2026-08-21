@@ -23,6 +23,12 @@ lazy from integrations.realtime_speech_output import (
 lazy from integrations.realtime_voice import RealtimeSessionConfig, RealtimeVoiceClient
 lazy from speech_boundary import SpeechTimingEvent, SpeechTimingKind
 
+QUEUE_MAX_LENGTH = 1_024
+EXPECTED_SPEAK_CALLS_TWO = 2
+EXPECTED_SPEAK_CALLS_THREE = 3
+EXPECTED_CUE_ID = 7
+AUDIO_BUFFER_SIZE = 960
+
 
 class FakeSignal:
     def __init__(self) -> None:
@@ -255,14 +261,14 @@ def _assert_4096_token_text_remains_bounded() -> None:
     output.add_text(generation, source)
     output.finish_response(generation)
 
-    assert output._queue.maxlen == 1_024
+    assert output._queue.maxlen == QUEUE_MAX_LENGTH
     assert len(output._queue) < output._queue.maxlen
     while output._active_operation_id is not None:
         standard.operation_finished.emit(output._active_operation_id)
 
     spoken = "".join(call[0] for call in standard.speak_calls)
     assert spoken.replace(" ", "") == source.replace(" ", "")
-    assert len(standard.speak_calls) <= 1_024
+    assert len(standard.speak_calls) <= QUEUE_MAX_LENGTH
     assert hd.speak_calls == []
     assert local.speak_calls == []
 
@@ -383,7 +389,7 @@ def _assert_stale_same_engine_callbacks_cannot_close_new_operation() -> None:
     standard.operation_finished.emit(old_operation)
     standard.operation_failed.emit(old_operation, "stale failure")
 
-    assert len(standard.speak_calls) == 2
+    assert len(standard.speak_calls) == EXPECTED_SPEAK_CALLS_TWO
     assert visemes == []
     assert failures == []
     assert output._active_operation_id == new_operation
@@ -393,7 +399,7 @@ def _assert_stale_same_engine_callbacks_cannot_close_new_operation() -> None:
     standard.operation_finished.emit(new_operation)
 
     assert visemes == [(0.5, "I")]
-    assert len(standard.speak_calls) == 3
+    assert len(standard.speak_calls) == EXPECTED_SPEAK_CALLS_THREE
 
 
 def _timing(operation_id: int, offset: float = 0.5) -> SpeechTimingEvent:
@@ -455,7 +461,7 @@ def _assert_standard_azure_timing_and_fallback_are_isolated() -> None:
     hd.operation_timing_event.emit(event)
     assert len(events) == 1
     assert isinstance(events[0], RealtimeSpeechTiming)
-    assert events[0].cue_id == 7
+    assert events[0].cue_id == EXPECTED_CUE_ID
 
 
 def _assert_native_openai_mode_emits_no_hybrid_timing() -> None:
@@ -487,7 +493,7 @@ def _assert_stale_failure_does_not_trigger_fallback() -> None:
     hd.operation_failed.emit(old_operation, "stale failure")
 
     assert new_operation != old_operation
-    assert len(hd.speak_calls) == 2
+    assert len(hd.speak_calls) == EXPECTED_SPEAK_CALLS_TWO
     assert standard.speak_calls == []
     assert local.speak_calls == []
     assert output._active_operation_id == new_operation
@@ -675,7 +681,7 @@ def _assert_azure_stop_discards_audio_and_isolates_instances() -> None:
     assert first_synthesizer.stop_calls == 1
     assert first._active_reader is None
     assert first._active_synthesizer is None
-    assert second_reader.read(bytearray(960)) == 960
+    assert second_reader.read(bytearray(AUDIO_BUFFER_SIZE)) == AUDIO_BUFFER_SIZE
     assert second_synthesizer.stop_calls == 0
     assert second._active_reader is second_reader
     assert second._active_synthesizer is second_synthesizer

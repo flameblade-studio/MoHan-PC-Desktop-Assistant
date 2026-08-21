@@ -17,6 +17,13 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIR = ROOT / "assets"
 sys.path.insert(0, str(ROOT))
 
+HERO_SCENE_END = 0.18
+VOICE_SCENE_END = 0.40
+REALTIME_SCENE_END = 0.58
+TASKS_SCENE_END = 0.72
+MEMORY_SCENE_END = 0.86
+SPEAKING_START_SECOND = 5.0
+
 lazy from PySide6.QtCore import QPoint, QRect, QSize, Qt, QTimer
 lazy from PySide6.QtGui import (
     QColor,
@@ -503,22 +510,22 @@ def ffmpeg_binary(explicit: str = "") -> str:
 
 def video_scene(second: float, duration: float) -> tuple[str, str, str]:
     progress = second / duration
-    if progress < 0.18:
+    if progress < HERO_SCENE_END:
         return "hero", "桌面陪伴", "自然眨眼、呼吸與視線反應"
-    if progress < 0.40:
+    if progress < VOICE_SCENE_END:
         return "voice", "一般語音模式", "按下麥克風後轉錄、回答並朗讀"
-    if progress < 0.58:
+    if progress < REALTIME_SCENE_END:
         return "voice", "Realtime 自然語音", "連續收音、最終確認轉錄與回音抑制"
-    if progress < 0.72:
+    if progress < TASKS_SCENE_END:
         return "tasks", "工作模式", "待辦、靈感、工作計時與休息提醒"
-    if progress < 0.86:
+    if progress < MEMORY_SCENE_END:
         return "memory", "可控長期記憶", "逐項分類、編輯、儲存或刪除"
     return "security", "安全權限", "工具執行前經過權限、確認與稽核"
 
 
 def speech_character_filename(second: float) -> str:
     blink_phase = int(second * 10) % 43
-    if blink_phase in (0, 1):
+    if blink_phase in {0, 1}:
         filename = "blink_front.png"
     else:
         sequence = (
@@ -652,7 +659,7 @@ def render_video_frame(
     painter = QPainter(frame)
     painter.setRenderHint(QPainter.Antialiasing)
     speaking = (
-        5.0
+        SPEAKING_START_SECOND
         < second
         < min(
             timing.audio_duration + 0.4,

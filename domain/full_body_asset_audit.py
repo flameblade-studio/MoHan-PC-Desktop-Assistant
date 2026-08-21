@@ -6,6 +6,9 @@ lazy from statistics import median
 
 lazy from domain.character_pose import CANONICAL_YAWS
 
+TWO_SOLES = 2
+ONE_SOLE = 1
+
 
 @dataclass(frozen=True, slots=True)
 class FullBodyViewEvidence:
@@ -176,10 +179,10 @@ def _audit_view(
     )
     if not soles_inside:
         issues.append(FullBodyAuditIssue("invalid_sole_baseline", yaw))
-    elif len(visible_soles) == 2 and (
+    elif len(visible_soles) == TWO_SOLES and (
         abs(visible_soles[0] - visible_soles[1]) > sole_tolerance
         or max(visible_soles) != view.bottom
-    ) or len(visible_soles) == 1 and visible_soles[0] != view.bottom:
+    ) or len(visible_soles) == ONE_SOLE and visible_soles[0] != view.bottom:
         issues.append(FullBodyAuditIssue("unbalanced_sole_baseline", yaw))
 
     center_x = (view.left + view.right) / 2

@@ -17,6 +17,9 @@ WELLBEING_STATE_FORMAT: Final = "mohan-wellbeing-reminder-state"
 WELLBEING_STATE_VERSION: Final = 1
 PORTABLE_SETTING_KEYS: Final = (WELLBEING_STATE_KEY,)
 _BOUNDARY_ERRORS: Final = (Exception,)
+MAX_DAILY_REINFORCEMENTS: Final = 8
+MIN_COOLDOWN_SECONDS: Final = 300
+MAX_COOLDOWN_SECONDS: Final = 86400
 
 
 class WellbeingReminderStoreError(RuntimeError):
@@ -38,13 +41,13 @@ class WellbeingKindState:
     def __post_init__(self) -> None:
         if type(self.enabled) is not bool:
             raise TypeError("Wellbeing enabled state must be boolean.")
-        if not 0 <= self.daily_reinforcement_count <= 8:
+        if not 0 <= self.daily_reinforcement_count <= MAX_DAILY_REINFORCEMENTS:
             raise ValueError("Wellbeing daily count is invalid.")
-        if not 1 <= self.maximum_daily_reinforcements <= 8:
+        if not 1 <= self.maximum_daily_reinforcements <= MAX_DAILY_REINFORCEMENTS:
             raise ValueError("Wellbeing daily budget is invalid.")
         if self.daily_reinforcement_count > self.maximum_daily_reinforcements:
             raise ValueError("Wellbeing daily count exceeds its budget.")
-        if not 300 <= self.same_kind_cooldown_seconds <= 86400:
+        if not MIN_COOLDOWN_SECONDS <= self.same_kind_cooldown_seconds <= MAX_COOLDOWN_SECONDS:
             raise ValueError("Wellbeing cooldown is invalid.")
         for moment in (
             self.snooze_until,

@@ -13,6 +13,12 @@ class FramingMode(IntEnum):
     FULL_BODY = 3
 
 
+QUIET_CONCERN_THRESHOLD = 0.78
+MIN_HEIGHT_PX = 560
+MIN_WIDTH_PX = 420
+FULL_BODY_HEIGHT_PX = 760
+
+
 class FramingReason(StrEnum):
     DAILY_COMPANION = "daily-companion"
     QUIET_CONCERN = "quiet-concern"
@@ -125,8 +131,20 @@ class CharacterFramingDirector:
             reason = FramingReason.SMALL_VIEWPORT
         requested = fitted
 
-        if context.speech_active and not context.mouth_closed and requested != self._mode:
-            self._pending = (requested, reason)
+        if context.speech_active and not context.mouth_closed:
+            # Speech is fixed at the half-body shot.  Jump straight to HALF
+            # instead of stepping through THREE_QUARTER, so a lingering
+            # FULL_BODY (from an idle full-body view) or CLOSE never lingers
+            # across the start of speech.  The companion must not speak a few
+            # words in full-body before snapping back to half-body.
+            if self._mode is not FramingMode.HALF:
+                self._mode = FramingMode.HALF
+                self._last_change_at = float(self._clock())
+                return self._decision(
+                    self._mode,
+                    False,
+                    FramingReason.SPEECH_HOLD,
+                )
             return self._decision(self._mode, True, FramingReason.SPEECH_HOLD)
 
         if context.mouth_closed and self._pending is not None:
@@ -175,7 +193,12 @@ class CharacterFramingDirector:
             FramingMode.HALF
         ].contains(context.gesture_bounds):
             return FramingMode.THREE_QUARTER, FramingReason.LARGE_GESTURE
-        if context.emotion_intensity >= 0.78:
+        if context.speech_active:
+            # Speech is fixed at the half-body shot so the mouth and eyes stay
+            # clearly readable.  Full-body is reserved for gestures, hand
+            # actions, accessory reveals, and non-conversation idle time.
+            return FramingMode.HALF, FramingReason.SPEECH_HOLD
+        if context.emotion_intensity >= QUIET_CONCERN_THRESHOLD:
             return FramingMode.CLOSE, FramingReason.QUIET_CONCERN
         return FramingMode.HALF, FramingReason.DAILY_COMPANION
 
@@ -184,9 +207,9 @@ class CharacterFramingDirector:
         requested: FramingMode,
         context: FramingContext,
     ) -> FramingMode:
-        if context.available_height_px < 560 or context.available_width_px < 420:
+        if context.available_height_px < MIN_HEIGHT_PX or context.available_width_px < MIN_WIDTH_PX:
             return FramingMode.HALF
-        if context.available_height_px < 760 and requested is FramingMode.FULL_BODY:
+        if context.available_height_px < FULL_BODY_HEIGHT_PX and requested is FramingMode.FULL_BODY:
             return FramingMode.THREE_QUARTER
         return requested
 
