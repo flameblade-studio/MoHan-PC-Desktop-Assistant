@@ -176,19 +176,10 @@ class CompanionFaceAnimationMixin:
                 lambda: self._finish_blink(base_expression, generation),
             )
         elif self.state == "speaking" and not self.speech_blinking:
-            current = self.speech_visual_pixmap
-            if current.isNull():
-                visible = self.character.pixmap()
-                current = (
-                    QPixmap(visible)
-                    if visible is not None and not visible.isNull()
-                    else QPixmap(self.expression_pixmaps[self.speech_closed_expression])
-                )
-            self.speech_blink_restore_pixmap = QPixmap(current)
             self.speech_blinking = True
             self.blink_opacity = 0.45
             self.eye_overlay.hide()
-            self._render_speech_pixmap(current)
+            self._set_half_body_blink(generation, 0.45)
             QTimer.singleShot(
                 32,
                 lambda: self._advance_speaking_blink(generation, 1.0),
@@ -273,11 +264,7 @@ class CompanionFaceAnimationMixin:
         ):
             return
         self.blink_opacity = opacity
-        current = self.speech_visual_pixmap
-        if current.isNull():
-            current = self.speech_blink_restore_pixmap
-        if not current.isNull():
-            self._render_speech_pixmap(current)
+        self._set_half_body_blink(generation, opacity)
 
     def _finish_blink(
         self,
@@ -310,8 +297,7 @@ class CompanionFaceAnimationMixin:
             return
         self.speech_blinking = False
         self.blink_opacity = 0.0
-        if not self.speech_visual_pixmap.isNull():
-            self.character.setPixmap(self.speech_visual_pixmap)
+        self._set_half_body_blink(generation, 0.0)
         self._render_attention_layers(force=True)
         self._attention_tick()
 
@@ -520,7 +506,11 @@ class CompanionFaceAnimationMixin:
             self._update_physics_pose(expression)
 
     def _start_expression_crossfade(self, expression: str) -> None:
-        pixmap = self.expression_pixmaps[expression]
+        # Compose the target expression from the parametric renderer so the
+        # crossfade overlay matches the half-body portrait instead of a legacy
+        # whole-expression sprite.
+        self._update_face_motion_for_expression(expression)
+        pixmap = self._render_half_body_frame()
         self.expression_overlay.setPixmap(pixmap)
         self.expression_overlay.show()
         self.expression_overlay.raise_()
@@ -639,7 +629,8 @@ class CompanionFaceAnimationMixin:
         ):
             return
         self.character_opacity.setOpacity(0.0)
-        self.character.setPixmap(self.expression_pixmaps[expression])
+        self._update_face_motion_for_expression(expression)
+        self.character.setPixmap(self._render_half_body_frame())
         self.current_expression = expression
         self.active_physics_pose = target_pose
         self._render_sleeve_layers(force=True)
@@ -683,7 +674,8 @@ class CompanionFaceAnimationMixin:
         self._attention_tick()
 
     def _finish_expression_change(self, expression: str) -> None:
-        self.character.setPixmap(self.expression_pixmaps[expression])
+        self._update_face_motion_for_expression(expression)
+        self.character.setPixmap(self._render_half_body_frame())
         self.character_opacity.setOpacity(1.0)
         self.expression_overlay.hide()
         self.current_expression = expression
@@ -807,26 +799,18 @@ class CompanionFaceAnimationMixin:
         self._render_attention_layers(force=True)
 
     def _render_speech_pixmap(self, clean_pixmap: QPixmap) -> None:
-        """Display the latest mouth frame with blink as an independent layer.
+        """Display the latest mouth frame.
 
-        Mouth animation keeps advancing while the eyelids are closed.  The
-        clean frame is retained separately so ending a blink never restores a
-        stale viseme from before the blink began.
+        The parametric renderer already stamps the speaking blink onto the
+        face-motion frame (``_audio_viseme_cue`` passes ``blink`` into
+        ``advance``), so the composed ``clean_pixmap`` already carries the
+        eyelids. No legacy blink mask is layered on top.
         """
         # Legacy mouth rendering resumes ownership of the canvas, so the
         # half-body overlays suppressed by a v4 full-body publish may return.
         self._adaptive_full_body_active = False
         self.speech_visual_pixmap = QPixmap(clean_pixmap)
-        visible = (
-            self._blink_composite(
-                clean_pixmap,
-                self.speech_gesture_expression or self.speech_closed_expression,
-                self.blink_opacity,
-            )
-            if self.speech_blinking
-            else clean_pixmap
-        )
-        self.character.setPixmap(visible)
+        self.character.setPixmap(clean_pixmap)
 
     def _stop_mouth_animation(self) -> None:
         self.blink_generation += 1
@@ -949,7 +933,15 @@ class CompanionFaceAnimationMixin:
                 )
             )
         base = self.expression_pixmaps["idle"]
-        return self.face_renderer.render(base, motion, None)
+        # During speech the mouth aperture is driven by the discrete transition
+        # target, not the smoothed face-motion value, so re-composing (e.g. for
+        # a speaking blink) must reuse that same target to keep the mouth stable.
+        aperture = (
+            getattr(self, "mouth_aperture_target", None)
+            if self.state == "speaking"
+            else None
+        )
+        return self.face_renderer.render(base, motion, None, aperture=aperture)
 
     def _mouth_aperture_pixmap(
         self,
