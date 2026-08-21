@@ -22,7 +22,10 @@ concurrency:
 jobs:
   test:
     runs-on: windows-latest
-    timeout-minutes: 30
+    # The complete 304-module Windows regression suite plus the verified
+    # Python 3.15/Qt/Rust setup can legitimately exceed 30 minutes on a
+    # hosted runner. Keep the full gate and give it enough time to finish.
+    timeout-minutes: 60
 
     steps:
       - name: Check out source
