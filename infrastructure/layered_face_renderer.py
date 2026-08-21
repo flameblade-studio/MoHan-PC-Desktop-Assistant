@@ -36,6 +36,7 @@ SCALE_EPSILON = 1e-4
 LAYERED_FACE_ASSET_DIR = Path("assets") / "expressions" / "layered"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 30
+MAX_CACHED_NEUTRAL_POSES = 3
 
 
 class LayeredParametricFaceRenderer:
@@ -54,6 +55,14 @@ class LayeredParametricFaceRenderer:
         # unbounded cache retained every full-canvas pose layer for the entire
         # process lifetime after pose changes.
         self._pixmap_cache: OrderedDict[str, QPixmap] = OrderedDict()
+        # A neutral pose is the immutable result of compositing all 25 authored
+        # layers.  Speech changes only the small dynamic feature cut-outs, so
+        # rebuilding the same 1254px body, hair, clothing and neutral face for
+        # both endpoints of every phoneme transition wastes most of the 20ms
+        # frame budget.  Keep at most the three authored poses; returned
+        # QPixmaps detach on first paint and cannot mutate these authorities.
+        self._neutral_pose_cache: OrderedDict[str, QPixmap] = OrderedDict()
+        self._top_pose_cache: OrderedDict[str, QPixmap] = OrderedDict()
         self._layer_center_cache: dict[str, tuple[float, float]] = {}
         self._mask_bounds_cache: dict[int, QRect] = {}
 
@@ -168,17 +177,12 @@ class LayeredParametricFaceRenderer:
     ) -> QPixmap:
         """Render one complete half-body frame for the given pose and motion."""
 
-        # Body + back hair sit below the face base layer.
-        body = self._cached_pixmap(pose.path("body"))
-        if body.isNull():
+        neutral = self._neutral_pose(pose)
+        if neutral.isNull():
             return QPixmap()
-        result = QPixmap(body)
-        self._paint_opacity(result, pose.path("hair_back"), 1.0)
-
-        base = self._cached_pixmap(pose.path("base"))
-        if base.isNull():
-            return QPixmap()
-        self._paint_opacity(result, pose.path("base"), 1.0)
+        # QPixmap uses implicit sharing.  Dynamic painting detaches this frame
+        # while the cached neutral authority remains unchanged.
+        result = QPixmap(neutral)
         expression = motion.expression_shape
         mouth = motion.mouth
 
@@ -188,62 +192,111 @@ class LayeredParametricFaceRenderer:
         # Motion is then layered over that stable reconstruction.  Treating
         # these as effect-only overlays produced the reported black eye/cheek
         # holes as soon as speech handed the canvas to this renderer.
-        self._paint_opacity(result, pose.path("jaw"), 1.0)
         # ``jaw`` is a registered skin replacement, not a detached sprite.
         # Repainting it after translation duplicates the chin and creates a
         # floating skin fragment.  Keep the neutral cutout registered; the
         # lip/cavity controls below provide the visible articulation.
 
-        self._paint_opacity(result, pose.path("oral_cavity"), 1.0)
-        self._paint_opacity(result, pose.path("teeth_tongue"), 1.0)
         if motion.viseme is not Viseme.CLOSED or mouth.aperture > MOUTH_APERTURE_THRESHOLD:
             self._paint_mouth_opening(result, pose, mouth)
 
-        self._paint_opacity(result, pose.path("lip_lower"), 1.0)
-        self._paint_opacity(result, pose.path("lip_upper"), 1.0)
         self._paint_mouth_lips(result, pose, mouth)
 
-        self._paint_opacity(result, pose.path("corner_left"), 1.0)
-        self._paint_opacity(result, pose.path("corner_right"), 1.0)
         corner = mouth.corner_smile
         if abs(corner) >= FLOAT_COMPARISON_EPSILON:
             self._paint_translated(result, pose.path("corner_left"), dx=-corner * 2.0, dy=-corner * 1.0)
             self._paint_translated(result, pose.path("corner_right"), dx=corner * 2.0, dy=-corner * 1.0)
 
-        self._paint_opacity(result, pose.path("blush_left"), 1.0)
-        self._paint_opacity(result, pose.path("blush_right"), 1.0)
         if expression.blush > 0.0:
             self._paint_opacity(result, pose.path("blush_left"), expression.blush)
             self._paint_opacity(result, pose.path("blush_right"), expression.blush)
 
-        self._paint_opacity(result, pose.path("iris_left"), 1.0)
-        self._paint_opacity(result, pose.path("iris_right"), 1.0)
-
-        self._paint_opacity(result, pose.path("eyelid_left"), 1.0)
-        self._paint_opacity(result, pose.path("eyelid_right"), 1.0)
-        self._paint_opacity(result, pose.path("eyeliner_left"), 1.0)
-        self._paint_opacity(result, pose.path("eyeliner_right"), 1.0)
         if expression.blink > 0.0:
             self._paint_opacity(result, pose.path("eyelid_left"), expression.blink)
             self._paint_opacity(result, pose.path("eyelid_right"), expression.blink)
             self._paint_opacity(result, pose.path("eyeliner_left"), expression.blink)
             self._paint_opacity(result, pose.path("eyeliner_right"), expression.blink)
 
-        self._paint_opacity(result, pose.path("brow_left"), 1.0)
-        self._paint_opacity(result, pose.path("brow_right"), 1.0)
         brow_dy = -expression.brow_lift * 3.0 + expression.brow_tension * 1.5
         if abs(brow_dy) >= FLOAT_COMPARISON_EPSILON:
             self._paint_translated(result, pose.path("brow_left"), dy=brow_dy)
             self._paint_translated(result, pose.path("brow_right"), dy=brow_dy)
 
-        # Front hair, sleeves and ornament sit above the face (topmost layers).
-        self._paint_opacity(result, pose.path("hair_left"), 1.0)
-        self._paint_opacity(result, pose.path("hair_right"), 1.0)
-        self._paint_opacity(result, pose.path("sleeve_left"), 1.0)
-        self._paint_opacity(result, pose.path("sleeve_right"), 1.0)
-        self._paint_opacity(result, pose.path("ornament"), 1.0)
-
+        # Restore the authored topmost occlusion after dynamic facial layers;
+        # bangs, sleeves and ornaments must stay in front of the face.
+        self._paint_top_pose(result, pose)
         return result
+
+    def _neutral_pose(self, pose: LayeredFacePose) -> QPixmap:
+        """Return the cached exact 25-layer neutral composite for one pose."""
+
+        key = pose.pose.value
+        cached = self._neutral_pose_cache.get(key)
+        if cached is not None:
+            self._neutral_pose_cache.move_to_end(key)
+            return cached
+        body = self._cached_pixmap(pose.path("body"))
+        if body.isNull():
+            return QPixmap()
+        neutral = QPixmap(body)
+        # Preserve the authoritative shared half/full-body Z-order.  This is a
+        # layered-renderer cache, not a fallback to a legacy whole portrait.
+        for layer_name in (
+            "hair_back",
+            "base",
+            "jaw",
+            "oral_cavity",
+            "teeth_tongue",
+            "lip_lower",
+            "lip_upper",
+            "corner_left",
+            "corner_right",
+            "blush_left",
+            "blush_right",
+            "iris_left",
+            "iris_right",
+            "eyelid_left",
+            "eyelid_right",
+            "eyeliner_left",
+            "eyeliner_right",
+            "brow_left",
+            "brow_right",
+        ):
+            self._paint_opacity(neutral, pose.path(layer_name), 1.0)
+        self._neutral_pose_cache[key] = neutral
+        self._neutral_pose_cache.move_to_end(key)
+        while len(self._neutral_pose_cache) > MAX_CACHED_NEUTRAL_POSES:
+            self._neutral_pose_cache.popitem(last=False)
+        return neutral
+
+    def _paint_top_pose(self, target: QPixmap, pose: LayeredFacePose) -> None:
+        """Paint one cached transparent top-layer composite in canonical order."""
+
+        key = pose.pose.value
+        top = self._top_pose_cache.get(key)
+        if top is None:
+            body = self._cached_pixmap(pose.path("body"))
+            if body.isNull():
+                return
+            top = QPixmap(body.size())
+            top.fill(Qt.transparent)
+            for layer_name in (
+                "hair_left",
+                "hair_right",
+                "sleeve_left",
+                "sleeve_right",
+                "ornament",
+            ):
+                self._paint_opacity(top, pose.path(layer_name), 1.0)
+            self._top_pose_cache[key] = top
+            self._top_pose_cache.move_to_end(key)
+            while len(self._top_pose_cache) > MAX_CACHED_NEUTRAL_POSES:
+                self._top_pose_cache.popitem(last=False)
+        else:
+            self._top_pose_cache.move_to_end(key)
+        painter = QPainter(target)
+        painter.drawPixmap(0, 0, top)
+        painter.end()
 
     # -- painting helpers ---------------------------------------------------
 

@@ -28,6 +28,7 @@ lazy from infrastructure.layered_face_assets import (
 )
 lazy from infrastructure.layered_face_renderer import (
     MAX_CACHED_LAYER_PIXMAPS,
+    MAX_CACHED_NEUTRAL_POSES,
     LayeredParametricFaceRenderer,
 )
 
@@ -170,7 +171,11 @@ def test_decoded_layer_cache_stays_bounded_across_pose_changes() -> None:
             )
             assert not renderer.render_pose(manifest.pose(pose), frame).isNull()
             assert len(renderer._pixmap_cache) <= MAX_CACHED_LAYER_PIXMAPS
+            assert len(renderer._neutral_pose_cache) <= MAX_CACHED_NEUTRAL_POSES
+            assert len(renderer._top_pose_cache) <= MAX_CACHED_NEUTRAL_POSES
     assert len(renderer._pixmap_cache) == MAX_CACHED_LAYER_PIXMAPS
+    assert len(renderer._neutral_pose_cache) == len(FacePose)
+    assert len(renderer._top_pose_cache) == len(FacePose)
 
 
 def run() -> None:
