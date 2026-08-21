@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+lazy from dataclasses import replace
 lazy import math
 lazy import random
 lazy import time
@@ -158,35 +159,17 @@ class CompanionFaceAnimationMixin:
         )
         if can_idle_blink:
             base_expression = self.current_expression
-            current = self.character.pixmap()
-            if current is None or current.isNull():
-                current = self.expression_pixmaps[base_expression]
-            self.blink_restore_pixmap = QPixmap(current)
             self.idle_blinking = True
             self.blink_opacity = 0.45
             self.eye_overlay.hide()
-            self.character.setPixmap(
-                self._blink_composite(
-                    current,
-                    render_base,
-                    self.blink_opacity,
-                )
-            )
+            self._set_half_body_blink(generation, 0.45)
             QTimer.singleShot(
                 32,
-                lambda: self._advance_idle_blink(
-                    base_expression,
-                    generation,
-                    1.0,
-                ),
+                lambda: self._set_half_body_blink(generation, 1.0),
             )
             QTimer.singleShot(
                 92,
-                lambda: self._advance_idle_blink(
-                    base_expression,
-                    generation,
-                    0.42,
-                ),
+                lambda: self._set_half_body_blink(generation, 0.42),
             )
             QTimer.singleShot(
                 random.randint(118, 145),
@@ -237,6 +220,23 @@ class CompanionFaceAnimationMixin:
             return
         self.blink_opacity = opacity
         self._refresh_full_body()
+
+    def _set_half_body_blink(self, generation: int, opacity: float) -> None:
+        """Blink via the parametric half-body renderer (mutate ``blink`` only)."""
+        if generation != self.blink_generation:
+            return
+        self.blink_opacity = opacity
+        motion = self.face_motion_frame
+        if motion is None:
+            return
+        self.face_motion_frame = replace(
+            motion,
+            expression_shape=replace(
+                motion.expression_shape,
+                blink=max(0.0, min(1.0, float(opacity))),
+            ),
+        )
+        self.character.setPixmap(self._render_half_body_frame())
 
     def _advance_idle_blink(
         self,
@@ -292,8 +292,7 @@ class CompanionFaceAnimationMixin:
             self.idle_blinking = False
             self.blink_opacity = 0.0
             return
-        if not self.blink_restore_pixmap.isNull():
-            self.character.setPixmap(self.blink_restore_pixmap)
+        self._set_half_body_blink(generation, 0.0)
         self.idle_blinking = False
         self.blink_opacity = 0.0
         self._render_attention_layers(force=True)
@@ -451,10 +450,39 @@ class CompanionFaceAnimationMixin:
         if expression == self.current_expression:
             return
         if not fade:
-            self.character.setPixmap(self.expression_pixmaps[expression])
+            if getattr(self, "face_motion_controller", None) is None:
+                # The parametric controller is not ready yet (early startup);
+                # keep the legacy sprite until it is initialized.
+                self.character.setPixmap(self.expression_pixmaps[expression])
+            else:
+                self._update_face_motion_for_expression(expression)
+                self.character.setPixmap(self._render_half_body_frame())
             self.current_expression = expression
             return
         self._start_expression_crossfade(expression)
+
+    def _update_face_motion_for_expression(self, expression: str) -> None:
+        """Stamp the current expression onto the face-motion frame.
+
+        The parametric renderer reads the continuous ``expression_shape`` and
+        ``pose`` from the face-motion frame, so an expression switch must update
+        that frame (not just swap a legacy sprite) for the half-body portrait to
+        reflect the new emotion.
+        """
+        controller = getattr(self, "face_motion_controller", None)
+        if controller is None:
+            # The mouth-animation state (and its controller) is initialized
+            # after the first idle expression, so fall back to the legacy sprite
+            # until the parametric controller exists.
+            return
+        pose = self.physics_expression_poses.get(
+            expression,
+            getattr(self, "idle_pose", "front"),
+        )
+        self.face_motion_frame = controller.close(
+            pose=pose,
+            expression=expression,
+        )
 
     def _active_pose_transition_owns(self, expression: str) -> bool:
         """Keep one in-flight pose transition or cancel it before replacement."""
@@ -902,6 +930,26 @@ class CompanionFaceAnimationMixin:
                 else f"{stem}{self._active_speech_pose_suffix()}"
             )
         return expression
+
+    def _render_half_body_frame(self) -> QPixmap:
+        """Compose the half-body portrait from the parametric layered renderer.
+
+        The layered renderer owns the whole half-body portrait (body, hair,
+        sleeves, ornament and the 18 facial layers), so every half-body state
+        (idle, expression switch, blink, speech) must come from it. This is the
+        single entry point that keeps the half-body canvas on the parametric
+        renderer instead of the legacy whole-expression sprites.
+        """
+        motion = self.face_motion_frame
+        if motion is None:
+            return QPixmap(
+                self.expression_pixmaps.get(
+                    self.current_expression,
+                    self.expression_pixmaps["idle"],
+                )
+            )
+        base = self.expression_pixmaps["idle"]
+        return self.face_renderer.render(base, motion, None)
 
     def _mouth_aperture_pixmap(
         self,
