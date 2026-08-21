@@ -256,7 +256,7 @@ def test_release_gate_is_pinned() -> None:
     assert "and .draft == true" in release
     assert "draft=false" in release
     assert "cleanup_failed_draft" in release
-    assert "Draft Release assets differ from the exact verified set" in release
+    assert "Release assets differ from the exact verified set" in release
     assert "needs: [resolve-release, windows, macos-preview, linux-preview]" in release
     assert "commit: ${{ steps.source.outputs.commit }}" in release
     assert release.count("ref: ${{ needs.resolve-release.outputs.commit }}") == COMMIT_REFERENCE_COUNT
