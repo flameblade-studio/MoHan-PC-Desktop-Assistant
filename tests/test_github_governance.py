@@ -187,7 +187,7 @@ def _assert_release_publication_boundary(release: str) -> None:
         "Release tag changed after validation",
         "Verify existing release without modifying it",
         "Existing Release assets differ from the exact verified set.",
-        "github.event_name == 'push' || inputs.publish",
+        "github.event_name == 'push' || github.event_name == 'release' || inputs.publish",
         "metadata:",
         "name: generate-release-metadata",
         "name: Re-verify exact artifact set and SHA256 catalog",
