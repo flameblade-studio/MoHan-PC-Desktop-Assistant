@@ -42,6 +42,7 @@ BREATH_LIFT_SCALE = 6.0
 # from the underlying hand.
 MAX_SLEEVE_LIFT = 4.0
 MAX_GESTURE_SWAY = 3.0
+GESTURE_ENERGY_THRESHOLD = 0.45
 
 FULL_BODY_ASSET_DIR = Path("assets") / "pose-atlas" / "v4-layered"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -151,7 +152,7 @@ class LayeredFullBodyRenderer:
         body_energy: float,
         gesture_beat: bool,
     ) -> float:
-        if not gesture_beat and body_energy < 0.45:
+        if not gesture_beat and body_energy < GESTURE_ENERGY_THRESHOLD:
             return 0.0
         seed = f"{pose_id}:{left_hand}:{right_hand}"
         direction = -1.0 if sum(map(ord, seed)) % 2 else 1.0

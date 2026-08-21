@@ -32,6 +32,7 @@ lazy from test_global_settings_actions import close_dashboard, dependencies
 
 TAB_COUNT = 8
 POSE_BUTTON_COUNT = 4
+TWO_HOURS_SECONDS = 2 * 60 * 60
 
 lazy from infrastructure.db import StudioDB
 lazy from presentation.dashboard_window import Dashboard
@@ -204,7 +205,9 @@ def test_wardrobe_tab_and_controls_have_four_language_contract() -> None:
                     revised_lock = datetime.fromisoformat(
                         str(db.setting("wardrobe_manual_lock_until", ""))
                     )
-                    assert int((revised_lock - changed_at).total_seconds()) == 7200
+                    assert int(
+                        (revised_lock - changed_at).total_seconds()
+                    ) == TWO_HOURS_SECONDS
                     dashboard.manual_wardrobe_lock_hours.setValue(0)
                     application.processEvents()
                     assert db.setting("wardrobe_manual_lock_until", "missing") == ""

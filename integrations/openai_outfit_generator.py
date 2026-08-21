@@ -25,11 +25,7 @@ lazy from application.self_generating_wardrobe import (
     GeneratedOutfitDraft,
     OutfitCreationRequest,
 )
-lazy from domain.outfit_pack import (
-    BASE_SILHOUETTES,
-    GESTURE_SILHOUETTES,
-    POSE_ATLAS_SILHOUETTES,
-)
+lazy from domain.outfit_pack import POSE_ATLAS_SILHOUETTES
 
 OPENAI_IMAGE_EDITS_URL = "https://api.openai.com/v1/images/edits"
 OPENAI_IMAGE_MODEL = "gpt-image-2"
@@ -42,6 +38,10 @@ BODY_REGIONS = (
     "neck", "shoulder-left", "shoulder-right", "arm-left", "arm-right",
     "torso", "leg-left", "leg-right",
 )
+IMAGE_DIMENSIONS = 3
+RGBA_CHANNELS = 4
+ALPHA_CONTENT_THRESHOLD = 8
+MAX_FACE_OVERLAP_RATIO = 0.005
 
 
 class OutfitImageGenerationError(RuntimeError):
@@ -198,7 +198,11 @@ def _decode_registered_png(
     target: tuple[int, int],
 ) -> tuple[bytes, np.ndarray]:
     matrix = cv2.imdecode(np.frombuffer(data, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
-    if matrix is None or matrix.ndim != 3 or matrix.shape[2] != 4:
+    if (
+        matrix is None
+        or matrix.ndim != IMAGE_DIMENSIONS
+        or matrix.shape[2] != RGBA_CHANNELS
+    ):
         raise OutfitImageGenerationError(
             "Generated outfit must be an RGBA image with transparency."
         )
@@ -248,7 +252,7 @@ class OpenAIOutfitDraftGenerator:
         self._transport = transport
         self._root = Path(project_root)
 
-    def create(
+    def create(  # noqa: PLR0914 - one atomic multi-view draft transaction
         self,
         request: OutfitCreationRequest,
         trends: tuple[FashionTrendSignal, ...],
@@ -562,7 +566,11 @@ class GeneratedOutfitImageAuditor:
                 continue
             image = cv2.imread(str(source / Path(*path.split("/"))), cv2.IMREAD_UNCHANGED)
             expected = FULL_SIZE if view_id in POSE_ATLAS_SILHOUETTES else HALF_SIZE
-            if image is None or image.ndim != 3 or image.shape[2] != 4:
+            if (
+                image is None
+                or image.ndim != IMAGE_DIMENSIONS
+                or image.shape[2] != RGBA_CHANNELS
+            ):
                 issues.append(f"{issue_id}:not-rgba")
                 continue
             if (image.shape[1], image.shape[0]) != expected:
@@ -579,15 +587,20 @@ class GeneratedOutfitImageAuditor:
                 protected = cv2.imread(str(protected_path), cv2.IMREAD_UNCHANGED)
                 if (
                     protected is None
-                    or protected.ndim != 3
-                    or protected.shape[2] != 4
+                    or protected.ndim != IMAGE_DIMENSIONS
+                    or protected.shape[2] != RGBA_CHANNELS
                     or protected.shape[:2] != image.shape[:2]
                 ):
                     issues.append(f"{issue_id}:protected-mask-unavailable")
                     continue
-                face_alpha = protected[:, :, 3] > 8
+                face_alpha = (
+                    protected[:, :, RGBA_CHANNELS - 1] > ALPHA_CONTENT_THRESHOLD
+                )
                 face_pixels = int(np.count_nonzero(face_alpha))
-                overlap = int(np.count_nonzero((image[:, :, 3] > 8) & face_alpha))
-                if face_pixels and overlap / face_pixels > 0.005:
+                outfit_alpha = (
+                    image[:, :, RGBA_CHANNELS - 1] > ALPHA_CONTENT_THRESHOLD
+                )
+                overlap = int(np.count_nonzero(outfit_alpha & face_alpha))
+                if face_pixels and overlap / face_pixels > MAX_FACE_OVERLAP_RATIO:
                     issues.append(f"{issue_id}:face-overlap")
         return tuple(issues)

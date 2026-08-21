@@ -44,6 +44,8 @@ VISUAL_ARRIVAL_INTERVAL = 90.0
 VISUAL_ACTIVITY_ACTIVE_INTERVAL = 10.0 * 60.0
 VISUAL_ACTIVITY_BALANCED_INTERVAL = 30.0 * 60.0
 SENSORY_COMPLAINT_COOLDOWN_SECONDS = 2.0 * 60.0 * 60.0
+SOMNILOQUY_DROWSINESS_THRESHOLD = 0.25
+CHRONICLE_RECOLLECTION_IDLE_SECONDS = 120.0
 PROJECT_START_DATE = (2026, 7, 28)
 lazy from domain.vision_domain import IdentityState
 
@@ -467,7 +469,7 @@ class CompanionProactiveMixin:
         if (
             can_speak
             and (idle_seconds or 0.0) >= 10.0 * 60.0
-            and drowsiness >= 0.25
+            and drowsiness >= SOMNILOQUY_DROWSINESS_THRESHOLD
             and should_murmur()
         ):
             self.speak(
@@ -482,7 +484,11 @@ class CompanionProactiveMixin:
         if int(self.db.setting("chronicle_last_recollection_day", -1)) == elapsed_days:
             return
         chronicle = getattr(self, "shared_chronicle", None)
-        if chronicle is None or not can_speak or (idle_seconds or 0.0) < 120.0:
+        if (
+            chronicle is None
+            or not can_speak
+            or (idle_seconds or 0.0) < CHRONICLE_RECOLLECTION_IDLE_SECONDS
+        ):
             return
         line = chronicle.recollection(
             str(self.db.setting("ui_language", "zh-TW")), elapsed_days

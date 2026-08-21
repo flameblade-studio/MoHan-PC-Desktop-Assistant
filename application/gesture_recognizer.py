@@ -28,6 +28,7 @@ DEFAULT_MINIMUM_CONFIDENCE = 0.72
 MIN_WAVE_MOVEMENT = 0.035
 MIN_WAVE_REVERSALS = 2
 MIN_WAVE_FRAMES = 4
+STATIC_HISTORY_FRAMES = 2
 SIGNIFICANT_WAVE_MOVEMENT = 0.018
 MIN_SIGNIFICANT_MOVEMENTS = 3
 MIN_WAVE_SPAN = 0.045
@@ -307,7 +308,7 @@ class GestureRecognizer:
             # A held open hand is not a wave.  Retain only enough recent
             # context to notice when it starts moving instead of keeping a
             # full sampling-window of identical skeletons indefinitely.
-            while len(history) > 2:
+            while len(history) > STATIC_HISTORY_FRAMES:
                 history.popleft()
             return None
         movements = tuple(

@@ -9,6 +9,8 @@ lazy import cv2
 lazy import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_HALF_VIEWS = 7
+EXPECTED_FULL_VIEWS = 24
 sys.path.insert(0, str(ROOT))
 
 lazy from application.self_generating_wardrobe import OutfitCreationRequest
@@ -74,8 +76,8 @@ def run() -> None:
     full_views = tuple(
         view for view in REQUIRED_SILHOUETTES if view.startswith("yaw")
     )
-    assert len(half_views) == 7
-    assert len(full_views) == 24
+    assert len(half_views) == EXPECTED_HALF_VIEWS
+    assert len(full_views) == EXPECTED_FULL_VIEWS
     three_quarter = FRAMING_RECTS[FramingMode.THREE_QUARTER]
     assert 0.0 <= three_quarter.left < three_quarter.right <= 1.0
     assert 0.0 <= three_quarter.top < three_quarter.bottom <= 1.0
