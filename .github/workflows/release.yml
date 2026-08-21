@@ -66,14 +66,6 @@ jobs:
           ref: refs/tags/${{ steps.release.outputs.tag }}
           fetch-depth: 0
 
-      - name: Synchronize version references from pyproject.toml
-        shell: bash
-        run: |
-          # Release Please only rewrites pyproject.toml reliably; propagate the
-          # authoritative version to every other reference so the packaged
-          # artifacts and the consistency checks always agree.
-          python tools/sync_version.py
-
       - name: Require the tagged commit to belong to main history
         id: source
         shell: bash
@@ -170,6 +162,16 @@ jobs:
         run: |
           "$PREFLIGHT_PYTHON" tools/check_openai_vision_release.py \
             --version "$RELEASE_VERSION"
+
+      - name: Synchronize version references from pyproject.toml
+        shell: bash
+        env:
+          PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}
+        run: |
+          # Release Please only rewrites pyproject.toml reliably; propagate the
+          # authoritative version to every other reference so the packaged
+          # artifacts and the consistency checks always agree.
+          "$PREFLIGHT_PYTHON" tools/sync_version.py
 
   windows:
     name: Windows formal packages
