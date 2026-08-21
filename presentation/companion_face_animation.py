@@ -924,16 +924,13 @@ class CompanionFaceAnimationMixin:
         aperture: float,
     ) -> QPixmap:
         """Compose the speech mouth from the parametric layered renderer."""
+        closed = self.expression_pixmaps[self.speech_closed_expression]
+        if expression == self.speech_closed_expression or aperture <= MOUTH_CLOSED_THRESHOLD:
+            return QPixmap(closed)
         motion = self.face_motion_frame
         if motion is None or self.face_renderer is None:
-            return QPixmap(self.expression_pixmaps[self.speech_closed_expression])
-        base = self.expression_pixmaps[self.speech_closed_expression]
-        return self.face_renderer.render(
-            base,
-            motion,
-            None,
-            aperture=aperture,
-        )
+            return QPixmap(closed)
+        return self.face_renderer.render(closed, motion, None, aperture=aperture)
 
     def _face_render_layers(
         self,
