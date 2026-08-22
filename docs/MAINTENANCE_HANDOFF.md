@@ -2,7 +2,7 @@
 
 ## 繁體中文
 
-本檔是可攜、受版本控制的專案交接點；不得記錄憑證、密碼、API 金鑰、原始對話內容或不必要的私人本機路徑。程式碼、文件、發行證據與本檔均以 [Flameblade Studio 組織儲存庫](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) 為跨電腦基準；目前 v4.4.2 候選修復位於 `fix/release-please-release-trigger`，已發布穩定版本為 v4.4.1。
+本檔是可攜、受版本控制的專案交接點；不得記錄憑證、密碼、API 金鑰、原始對話內容或不必要的私人本機路徑。程式碼、文件、發行證據與本檔均以 [Flameblade Studio 組織儲存庫](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) 為跨電腦基準；已發布穩定版本為 [v4.4.2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/tag/v4.4.2)，不可變標籤指向 `9dd7ebffff3e35f849752ed7ae8b1120d4fbd8ea`，四平台正式封裝、Windows EXE／MSI 安裝生命週期、19 項精確資產、SBOM 與 SHA256 驗證已由 [Multi-platform Release #32541158913](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/runs/32541158913) 通過。
 
 - v4.4.2 修復半身／全身分層說話破圖、無聲與嘴型停止，並限制渲染快取以排除「記憶體已滿」。
 - 鏡頭活動與自然揮手會觸發四語主動回應；全身路徑已接入手勢節拍、手部狀態與安全的小幅身體動勢。
@@ -19,7 +19,7 @@
 
 ## 简体中文
 
-本文件是可携带、受版本控制的项目交接点；不得记录凭据、密码、API 密钥、原始对话内容或不必要的私人本机路径。代码、文档、发布证据与本文件均以 [Flameblade Studio 组织仓库](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) 为跨电脑基准；当前 v4.4.2 候选修复位于 `fix/release-please-release-trigger`，已发布稳定版本为 v4.4.1。
+本文件是可携带、受版本控制的项目交接点；不得记录凭据、密码、API 密钥、原始对话内容或不必要的私人本机路径。代码、文档、发布证据与本文件均以 [Flameblade Studio 组织仓库](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) 为跨电脑基准；已发布稳定版本为 [v4.4.2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/tag/v4.4.2)，不可变标签指向 `9dd7ebffff3e35f849752ed7ae8b1120d4fbd8ea`，四平台正式封装、Windows EXE／MSI 安装生命周期、19 项精确资产、SBOM 与 SHA256 验证已由 [Multi-platform Release #32541158913](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/runs/32541158913) 通过。
 
 - v4.4.2 修复半身／全身分层说话破图、无声与嘴型停止，并限制渲染缓存以排除“内存已满”。
 - 镜头活动与自然挥手会触发四语主动回应；全身路径已接入手势节拍、手部状态与安全的小幅身体动势。
@@ -36,7 +36,7 @@
 
 ## English
 
-This document is the portable, version-controlled project handoff; never record credentials, passwords, API keys, raw conversation content, or unnecessary private local paths. The [Flameblade Studio organization repository](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) is the cross-computer baseline. The v4.4.2 candidate is on `fix/release-please-release-trigger`; the published stable release is v4.4.1.
+This document is the portable, version-controlled project handoff; never record credentials, passwords, API keys, raw conversation content, or unnecessary private local paths. The [Flameblade Studio organization repository](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) is the cross-computer baseline. The published stable release is [v4.4.2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/tag/v4.4.2); its immutable tag identifies `9dd7ebffff3e35f849752ed7ae8b1120d4fbd8ea`, and [Multi-platform Release #32541158913](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/runs/32541158913) passed four-platform packaging, the Windows EXE/MSI installation lifecycle, the exact 19-asset set, SBOM, and SHA256 verification.
 
 - v4.4.2 repairs torn half/full-body layered speech, silent playback and stopped mouth motion, and bounds render caches to prevent “memory full”.
 - Camera activity and natural waves receive proactive four-language responses; hand state, gesture beats, and conservative visible body motion reach full-body rendering.
@@ -53,7 +53,7 @@ For device acceptance, confirm both framings speak without corruption and with a
 
 ## 日本語
 
-この文書は持ち運び可能でバージョン管理されたプロジェクト引継ぎです。認証情報、パスワード、API キー、生の会話内容、不要な私的ローカルパスは記録しません。[Flameblade Studio 組織リポジトリ](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) がクロスコンピュータ基準です。v4.4.2 候補は `fix/release-please-release-trigger` にあり、公開済み安定版は v4.4.1 です。
+この文書は持ち運び可能でバージョン管理されたプロジェクト引継ぎです。認証情報、パスワード、API キー、生の会話内容、不要な私的ローカルパスは記録しません。[Flameblade Studio 組織リポジトリ](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) がクロスコンピュータ基準です。公開済み安定版は [v4.4.2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/tag/v4.4.2) で、不変タグは `9dd7ebffff3e35f849752ed7ae8b1120d4fbd8ea` を指します。[Multi-platform Release #32541158913](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/runs/32541158913) により、4 プラットフォーム正式パッケージ、Windows EXE／MSI のインストールライフサイクル、厳密な 19 資産セット、SBOM、SHA256 検証が通過しています。
 
 - v4.4.2 は半身／全身レイヤー発話の崩れ、無音、口パク停止を修正し、「メモリ不足」を防ぐため描画キャッシュを制限します。
 - カメラ上の活動と自然な手振りへ四言語で能動的に反応し、手状態、ジェスチャービート、安全な小幅身体動勢を全身描画へ接続します。
