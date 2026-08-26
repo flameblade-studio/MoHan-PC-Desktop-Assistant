@@ -25,7 +25,7 @@ lazy from infrastructure.layered_full_body_assets import (
     VIEW_IDS,
     load_layered_full_body_assets,
 )
-lazy from infrastructure.mouth_geometry import inward_lerped_u_layer
+lazy from infrastructure.mouth_geometry import paint_inward_lerped_u_layer
 
 MOUTH_APERTURE_THRESHOLD = 0.01
 BLINK_VISIBLE_EPSILON = 1e-6
@@ -49,6 +49,9 @@ GESTURE_ENERGY_THRESHOLD = 0.45
 FULL_BODY_ASSET_DIR = Path("assets") / "pose-atlas" / "v4-layered"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 50
+# One static base composite (body..authority face) per recently used view;
+# four covers the two adjacent views of a turn plus hysteresis.
+MAX_CACHED_STATIC_COMPOSITES = 4
 SEAM_HEAL_RADIUS = 7
 REGISTERED_COMPOSITE_LAYERS = (
     # oral_cavity / teeth_tongue are clean speech overlays rebuilt by
@@ -84,6 +87,7 @@ class LayeredFullBodyRenderer:
         # detection in the packaged runtime.
         self._pixmap_cache: OrderedDict[str, QPixmap] = OrderedDict()
         self._seam_region_cache: dict[str, QRegion] = {}
+        self._static_composite_cache: OrderedDict[tuple, QPixmap] = OrderedDict()
         self._face_region_cache: dict[str, QRegion] = {}
 
     def _manifest_or_load(self) -> LayeredFullBodyManifest:
@@ -122,25 +126,13 @@ class LayeredFullBodyRenderer:
     ) -> QPixmap:
         """Render one complete full-body frame for the given view and motion."""
         view = self._manifest_or_load().view(view_id)
-        body = self._cached_pixmap(view.path("body"))
-        if body.isNull():
-            return QPixmap()
-        result = QPixmap(body)
-        self._paint_opacity(result, view.path("hair_back"), 1.0)
-        self._paint_opacity(result, view.path("base"), 1.0)
-        self._paint_face_layers(result, view, motion)
-
-        # Front hair, sleeves, ornament.
-        self._paint_opacity(result, view.path("hair_left"), 1.0)
-        self._paint_opacity(result, view.path("hair_right"), 1.0)
         bounded_energy = max(0.0, min(1.0, float(body_energy)))
-        left_lift = self._sleeve_lift(left_hand, pose_id, bounded_energy)
-        right_lift = self._sleeve_lift(right_hand, pose_id, bounded_energy)
-        self._paint_translated(result, view.path("sleeve_left"), dy=left_lift)
-        self._paint_translated(result, view.path("sleeve_right"), dy=right_lift)
-        self._paint_opacity(result, view.path("ornament"), 1.0)
-        self._heal_registered_seams(result, view)
-        self._restore_authority_face(result, view)
+        static = self._static_base_composite(
+            view, pose_id, left_hand, right_hand, bounded_energy
+        )
+        if static.isNull():
+            return QPixmap()
+        result = QPixmap(static)
         # Authority restoration removes seam-healing artefacts, but also
         # restores the neutral eye pixels. Re-apply only bounded eye motion
         # afterwards so dynamic pixels cannot escape their authored masks.
@@ -198,69 +190,81 @@ class LayeredFullBodyRenderer:
         direction = -1.0 if sum(map(ord, seed)) % 2 else 1.0
         return direction * MAX_GESTURE_SWAY * max(0.4, body_energy)
 
-    def _paint_face_layers(
+    def _static_base_composite(
+        self,
+        view: LayeredFullBodyView,
+        pose_id: str,
+        left_hand: str,
+        right_hand: str,
+        bounded_energy: float,
+    ) -> QPixmap:
+        """Compose and cache every motion-independent layer of one view.
+
+        Everything from the body up to and including the authority-face
+        restoration is identical for every animation frame of a given view,
+        pose and hand state: the neutral face cutouts painted here are fully
+        covered again by ``_restore_authority_face``.  Rebuilding this stack
+        on the 50 Hz viseme path dominated the frame budget, so it is cached
+        and only the dynamic eye/mouth layers are painted per frame.
+        """
+
+        key = (
+            view.view_id,
+            pose_id,
+            left_hand,
+            right_hand,
+            round(bounded_energy, 3),
+        )
+        cached = self._static_composite_cache.get(key)
+        if cached is not None:
+            self._static_composite_cache.move_to_end(key)
+            return cached
+        body = self._cached_pixmap(view.path("body"))
+        if body.isNull():
+            return QPixmap()
+        result = QPixmap(body)
+        self._paint_opacity(result, view.path("hair_back"), 1.0)
+        self._paint_opacity(result, view.path("base"), 1.0)
+        self._paint_neutral_face_layers(result, view)
+
+        # Front hair, sleeves, ornament.
+        self._paint_opacity(result, view.path("hair_left"), 1.0)
+        self._paint_opacity(result, view.path("hair_right"), 1.0)
+        left_lift = self._sleeve_lift(left_hand, pose_id, bounded_energy)
+        right_lift = self._sleeve_lift(right_hand, pose_id, bounded_energy)
+        self._paint_translated(result, view.path("sleeve_left"), dy=left_lift)
+        self._paint_translated(result, view.path("sleeve_right"), dy=right_lift)
+        self._paint_opacity(result, view.path("ornament"), 1.0)
+        self._heal_registered_seams(result, view)
+        self._restore_authority_face(result, view)
+        self._static_composite_cache[key] = result
+        self._static_composite_cache.move_to_end(key)
+        while len(self._static_composite_cache) > MAX_CACHED_STATIC_COMPOSITES:
+            self._static_composite_cache.popitem(last=False)
+        return result
+
+    def _paint_neutral_face_layers(
         self,
         result: QPixmap,
         view: LayeredFullBodyView,
-        motion: FaceMotionFrame,
     ) -> None:
-        """Paint registered neutral cutouts and their parameter motion."""
+        """Paint the registered neutral facial cutouts (no parameter motion).
 
-        expression = motion.expression_shape
-        mouth = motion.mouth
+        The authored facial layers are neutral registered cutouts, not
+        effect-only overlays: painting them fills the transparent holes in
+        ``base``.  Every pixel painted here sits inside the authority-face
+        region and is replaced by ``_restore_authority_face``, so parameter
+        motion (corner smile, gaze) is intentionally not applied — dynamic
+        eye and mouth motion is re-applied after restoration instead.
+        """
 
-        # The authored facial layers are neutral registered cutouts, not
-        # effect-only overlays. Paint every cutout first so the transparent
-        # holes in ``base`` are always filled, then add parameter motion.
-        self._paint_opacity(result, view.path("jaw"), 1.0)
-        # ``jaw`` is a registered replacement cutout. Translating and painting
-        # a second copy produces the floating chin fragment seen at runtime.
-
-        # The rebuilt oral-cavity layer is an accepted authority speech mouth,
-        # not a neutral skin replacement. Keep it absent while closed;
-        # registered lip/corner cut-outs below reconstruct the authority mouth.
-        self._paint_opacity(result, view.path("lip_lower"), 1.0)
-        self._paint_opacity(result, view.path("lip_upper"), 1.0)
-        self._paint_opacity(result, view.path("corner_left"), 1.0)
-        self._paint_opacity(result, view.path("corner_right"), 1.0)
-        corner = mouth.corner_smile
-        if abs(corner) >= FLOAT_COMPARISON_EPSILON:
-            self._paint_translated(result, view.path("corner_left"), dx=-corner * 2.0, dy=-corner * 1.0)
-            self._paint_translated(result, view.path("corner_right"), dx=corner * 2.0, dy=-corner * 1.0)
-
-        self._paint_opacity(result, view.path("blush_left"), 1.0)
-        self._paint_opacity(result, view.path("blush_right"), 1.0)
-
-        # Irises: translate by the gaze vector so the eyes track the pointer,
-        # the shy look-away, and the natural saccade.  The offset is small and
-        # bounded so the iris never leaves the sclera.
-        gaze_dx = motion.gaze_x * IRIS_GAZE_SCALE_X
-        gaze_dy = motion.gaze_y * IRIS_GAZE_SCALE_Y
-        if abs(gaze_dx) >= FLOAT_COMPARISON_EPSILON or abs(gaze_dy) >= FLOAT_COMPARISON_EPSILON:
-            self._paint_translated(
-                result, view.path("iris_left"), dx=gaze_dx, dy=gaze_dy
-            )
-            self._paint_translated(
-                result, view.path("iris_right"), dx=gaze_dx, dy=gaze_dy
-            )
-        else:
-            self._paint_opacity(result, view.path("iris_left"), 1.0)
-            self._paint_opacity(result, view.path("iris_right"), 1.0)
-
-        self._paint_opacity(result, view.path("eyelid_left"), 1.0)
-        self._paint_opacity(result, view.path("eyelid_right"), 1.0)
-        self._paint_opacity(result, view.path("eyeliner_left"), 1.0)
-        self._paint_opacity(result, view.path("eyeliner_right"), 1.0)
-
-        self._paint_opacity(result, view.path("brow_left"), 1.0)
-        self._paint_opacity(result, view.path("brow_right"), 1.0)
-
-        # Eyelid, brow and blush assets are neutral registered replacements.
-        # Repainting them for a control value alpha-composites the same skin
-        # cut-out twice and reveals its circular/oval calibration boundary at
-        # runtime.  Keep each replacement atomic; only the mouth cavity is a
-        # safe deformable full-body feature in the current authored set.
-        _ = expression
+        for layer_name in (
+            "jaw", "lip_lower", "lip_upper", "corner_left", "corner_right",
+            "blush_left", "blush_right", "iris_left", "iris_right",
+            "eyelid_left", "eyelid_right", "eyeliner_left", "eyeliner_right",
+            "brow_left", "brow_right",
+        ):
+            self._paint_opacity(result, view.path(layer_name), 1.0)
 
     def _heal_registered_seams(
         self,
@@ -534,12 +538,11 @@ class LayeredFullBodyRenderer:
             source = self._cached_pixmap(path)
             if source.isNull():
                 continue
-            transformed = inward_lerped_u_layer(
+            # inward_lerped_u_layer semantics, painted straight onto the
+            # composition target (see paint_inward_lerped_u_layer).
+            paint_inward_lerped_u_layer(
+                target,
                 source,
                 view.mouth_center_x,
                 u_inward,
             )
-            painter = QPainter(target)
-            painter.setRenderHint(QPainter.SmoothPixmapTransform)
-            painter.drawPixmap(0, 0, transformed)
-            painter.end()
