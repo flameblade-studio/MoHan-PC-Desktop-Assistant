@@ -7,7 +7,7 @@ lazy import shutil
 lazy from dataclasses import dataclass, replace
 lazy from datetime import datetime
 lazy from pathlib import Path
-lazy from typing import Protocol
+lazy from typing import Callable, Protocol
 
 lazy from application.outfit_pack_builder import build_outfit_pack
 lazy from application.wardrobe_storage import WardrobeStorageGuard
@@ -56,6 +56,7 @@ class OutfitCreationRequest:
     last_generated_at: datetime | None = None
     requested_categories: frozenset[str] = frozenset({"garment"})
     accessory_direction: str = ""
+    user_initiated: bool = False
 
     def __post_init__(self) -> None:
         unknown = self.requested_categories - GENERATABLE_APPEARANCE_CATEGORIES
@@ -94,6 +95,9 @@ class FashionTrendScout(Protocol):
         request: OutfitCreationRequest,
     ) -> tuple[FashionTrendSignal, ...]:
         raise NotImplementedError
+
+
+FashionTrendScoutFactory = Callable[[str, str], FashionTrendScout]
 
 
 class OutfitDraftGenerator(Protocol):
@@ -177,32 +181,39 @@ def _require_requested_categories(
 
 
 def _write_draft(job_directory: Path, draft: GeneratedOutfitDraft) -> Path:
-    job_directory.mkdir(parents=True, exist_ok=False)
-    asset_root = job_directory / "source"
-    for archive_path, data in draft.assets.items():
-        validated_asset_dimensions(archive_path, data)
-        destination = (asset_root / Path(*archive_path.split("/"))).resolve()
-        try:
-            destination.relative_to(asset_root.resolve())
-        except ValueError:
-            raise OutfitPackError("Generated outfit asset escaped quarantine.") from None
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(data)
-    manifest_path = job_directory / "authoring.json"
-    manifest_path.write_text(
-        json.dumps(draft.manifest, ensure_ascii=False, indent=2, sort_keys=True),
-        encoding="utf-8",
-    )
-    (job_directory / "generation-record.json").write_text(
-        json.dumps(
-            dict(draft.generation_record),
-            ensure_ascii=False,
-            indent=2,
-            sort_keys=True,
-        ),
-        encoding="utf-8",
-    )
-    return manifest_path
+    created = False
+    try:
+        job_directory.mkdir(parents=True, exist_ok=False)
+        created = True
+        asset_root = job_directory / "source"
+        for archive_path, data in draft.assets.items():
+            validated_asset_dimensions(archive_path, data)
+            destination = (asset_root / Path(*archive_path.split("/"))).resolve()
+            try:
+                destination.relative_to(asset_root.resolve())
+            except ValueError:
+                raise OutfitPackError("Generated outfit asset escaped quarantine.") from None
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(data)
+        manifest_path = job_directory / "authoring.json"
+        manifest_path.write_text(
+            json.dumps(draft.manifest, ensure_ascii=False, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
+        (job_directory / "generation-record.json").write_text(
+            json.dumps(
+                dict(draft.generation_record),
+                ensure_ascii=False,
+                indent=2,
+                sort_keys=True,
+            ),
+            encoding="utf-8",
+        )
+        return manifest_path
+    except (OSError, OutfitPackError):
+        if created:
+            shutil.rmtree(job_directory, ignore_errors=True)
+        raise
 
 
 def _generated_draft(
@@ -256,9 +267,12 @@ class SelfGeneratingWardrobe:
         storage = self.storage_guard.inspect(
             request.requested_at,
             request.last_generated_at,
-            special_occasion=request.occasion in {
-                "birthday", "christmas", "valentines",
-            },
+            special_occasion=(
+                request.user_initiated
+                or request.occasion in {
+                    "birthday", "christmas", "valentines",
+                }
+            ),
         )
         if not storage.allowed:
             return GeneratedOutfitResult(

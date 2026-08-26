@@ -222,6 +222,12 @@ def test_build_tool_is_pinned() -> None:
     assert 'stage / "LICENSE.txt"' in build_source
     assert '"mohan-desktop-assistant"' in build_source
     assert "POSE_ATLAS_ROOT" in build_source
+    assert "LAYERED_POSE_ATLAS_ROOT" in build_source
+    assert "LAYERED_EXPRESSION_ROOT" in build_source
+    assert "assets/pose-atlas/v4-layered" in build_source
+    assert "assets/expressions" in build_source
+    assert "expected_full_body_layers = VIEW_RING_COUNT * FULL_BODY_LAYER_COUNT" in build_source
+    assert "expected_half_body_layers = HALF_BODY_POSE_COUNT * FULL_BODY_LAYER_COUNT" in build_source
     assert "--require-pose-atlas" in build_source
     _validate_version("2.3.0-rc.0")
     _validate_version("2.3.0-rc.1")

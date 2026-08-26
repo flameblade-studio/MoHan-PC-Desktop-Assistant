@@ -266,8 +266,11 @@ def test_gesture_actions_reuse_existing_application_paths(
     assert chat_calls == [("gesture", "請顯示今天的工作摘要")]
 
     dispatch(dispatcher, GestureAction.MUTE_AUDIO)
-    assert dashboard.voice_muted.isChecked() is True
+    assert window._gesture_audio_muted is True
+    assert dashboard.voice_muted.isChecked() is False
+    assert window.db.setting("voice_muted", False) is False
     dispatch(dispatcher, GestureAction.UNMUTE_AUDIO)
+    assert window._gesture_audio_muted is False
     assert dashboard.voice_muted.isChecked() is False
 
     # Opening the console from a wave intentionally acknowledges the user

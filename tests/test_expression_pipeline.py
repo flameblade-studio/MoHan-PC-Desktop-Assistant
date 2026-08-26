@@ -457,6 +457,10 @@ def assert_gesture_speech_blink(
     show_expression_speech_frame(window, expression, gesture_frames)
     pre_gesture_blink = QPixmap(window.character.pixmap())
     window._blink()
+    # The discrete blink contract keeps HALF frames untouched when no
+    # registered half-eye source exists, so advance to the CLOSED authority
+    # frame before sampling the eye region.
+    window._advance_speaking_blink(window.blink_generation, 1.0)
     gesture_blink = QPixmap(window.character.pixmap())
     offset_x, offset_y = window._expression_eye_offset(expression)
     gesture_eye_rect = eye_rects["front"].translated(offset_x, offset_y)
@@ -481,6 +485,9 @@ def assert_expression_speech_blink_restore(
     window._blink()
     assert window.speech_blinking
     assert window.current_expression == expression_frames["mid"]
+    # Discrete blink contract: HALF frames stay untouched without a half-eye
+    # source, so sample the CLOSED authority frame.
+    window._advance_speaking_blink(window.blink_generation, 1.0)
     during_blink = QPixmap(window.character.pixmap())
     inside, outside = changed_pixels(
         pre_blink,

@@ -34,6 +34,7 @@ lazy from domain.sensory_synesthesia import (
 )
 lazy from domain.somniloquy import random_somniloquy, should_murmur
 lazy from domain.speech_configuration import QueuedSpeech
+lazy from presentation.companion_speech_queue import enqueue_bounded_speech
 lazy from domain.time_utils import local_aware_time
 
 IDLE_SECONDS_THRESHOLD = 120.0
@@ -96,16 +97,16 @@ class CompanionProactiveMixin:
             return False
         if delivery_token in self._proactive_speech_completions:
             return False
-        self._proactive_speech_completions[delivery_token] = completed
-        self.speech_queue.append(
-            QueuedSpeech(
+        queued = QueuedSpeech(
                 personalize_text(self.db, text),
                 state,
                 source="proactive",
                 delivery_token=delivery_token,
                 completed=completed,
-            )
         )
+        if not enqueue_bounded_speech(self.speech_queue, queued):
+            return False
+        self._proactive_speech_completions[delivery_token] = completed
         self._start_next_speech()
         return True
 
@@ -182,7 +183,12 @@ class CompanionProactiveMixin:
         )
         self._proactive_generation += 1
         proactive_mode = MultisensoryInteractionArbiter._mode_key(
-            str(self.db.setting("proactive_mode", "平衡（推薦）"))
+            str(
+                self.db.setting(
+                    "proactive_interaction_mode",
+                    self.db.setting("proactive_mode", "balanced"),
+                )
+            )
         )
         memory_topics = (
             self._recent_memory_topics()
@@ -360,7 +366,12 @@ class CompanionProactiveMixin:
         if arrival:
             self._last_visual_arrival_at = now
         mode = MultisensoryInteractionArbiter._mode_key(
-            str(self.db.setting("proactive_mode", "平衡（推薦）"))
+            str(
+                self.db.setting(
+                    "proactive_interaction_mode",
+                    self.db.setting("proactive_mode", "balanced"),
+                )
+            )
         )
         activity_interval = (
             VISUAL_ACTIVITY_ACTIVE_INTERVAL

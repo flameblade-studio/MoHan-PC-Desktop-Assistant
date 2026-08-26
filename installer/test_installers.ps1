@@ -138,6 +138,28 @@ function Assert-PackagedPoseAtlas {
             }
         }
     }
+    $LayeredAtlasRoot = Join-Path $PackageRoot "_internal\assets\pose-atlas\v4-layered"
+    if (-not (Test-Path -LiteralPath $LayeredAtlasRoot)) {
+        throw "Installer omitted layered PoseAtlas v4 assets"
+    }
+    $LayeredViews = Get-ChildItem -LiteralPath $LayeredAtlasRoot -Filter "yaw*-pitch+00_*.png"
+    if ($LayeredViews.Count -ne 600) {
+        throw "Installer layered PoseAtlas view count is incomplete: $($LayeredViews.Count)"
+    }
+    $LayeredExpressions = Join-Path $PackageRoot "_internal\assets\expressions\layered"
+    if (-not (Test-Path -LiteralPath $LayeredExpressions)) {
+        throw "Installer omitted layered half-body expression assets"
+    }
+    $HalfBodyLayers = Get-ChildItem -LiteralPath $LayeredExpressions -Filter "*.png"
+    if ($HalfBodyLayers.Count -ne 75) {
+        throw "Installer layered half-body count is incomplete: $($HalfBodyLayers.Count)"
+    }
+    foreach ($Authority in @("idle.png", "idle_lean.png", "idle_front.png")) {
+        $AuthorityPath = Join-Path $PackageRoot "_internal\assets\expressions\$Authority"
+        if (-not (Test-Path -LiteralPath $AuthorityPath)) {
+            throw "Installer omitted half-body identity authority: $Authority"
+        }
+    }
 }
 
 foreach ($Locale in $ExpectedTransformLocales) {

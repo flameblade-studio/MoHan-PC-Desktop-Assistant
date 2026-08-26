@@ -142,7 +142,7 @@ class _Response:
     def __exit__(self, *_args: object) -> None:
         return None
 
-    def read(self) -> bytes:
+    def read(self, _amount: int = -1) -> bytes:
         return self._audio
 
 

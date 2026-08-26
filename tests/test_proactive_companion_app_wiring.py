@@ -103,6 +103,10 @@ def assert_dispatch_normalizes_disabled_vision_and_timer_state(
         assert state_field in source, (
             "The app bridge state must explicitly normalize " + state_field + "."
         )
+    assert "proactive_interaction_mode" in source, (
+        "The desktop companion must consume the canonical mode saved by the "
+        "flagship control center, not only the retired proactive_mode key."
+    )
 
 
 def assert_existing_entrypoints_route_through_the_bridge(
@@ -120,6 +124,14 @@ def assert_existing_entrypoints_route_through_the_bridge(
             f"{method.name}() must not directly speak system recognition or "
             "reminder text."
         )
+    visual_source = ast.get_source_segment(
+        PROACTIVE_PATH.read_text(encoding="utf-8-sig"),
+        visual,
+    )
+    assert visual_source is not None
+    assert "proactive_interaction_mode" in visual_source, (
+        "Visual activity cadence must use the mode saved by the control center."
+    )
 
 
 def assert_speech_completion_and_shutdown_are_committed_once(

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-lazy from dataclasses import replace
 lazy import math
 lazy import random
 lazy import time
@@ -28,18 +27,28 @@ lazy from domain.lip_sync import (
     VISEME_OPEN_TRANSITION_SECONDS,
     VisemeFrame,
 )
+lazy from domain.face_microtiming import (
+    ATTENTION_GLANCE_INTERVAL_MS,
+    BLINK_CLOSED_TIMES_MS,
+    BLINK_HALF_CLOSE_TIMES_MS,
+    BLINK_HALF_OPEN_TIMES_MS,
+    BLINK_INTERVAL_MS,
+    BLINK_REST_AT_MS,
+    SACCADE_INTERVAL_MS,
+)
+lazy from domain.face_rig import EyeState, blink_for_eye_state
+lazy from presentation.companion_blink_runtime import CompanionBlinkRuntimeMixin
 lazy from presentation.companion_face_assets import CompanionFaceAssetMethods
-
+lazy from presentation.companion_speech_emotion import persist_wardrobe_mood
 POSE_SWITCH_PROBABILITY = 0.55
-BLINK_PROBABILITY = 0.16
 MOUTH_CLOSED_THRESHOLD = 0.01
 MOUTH_OPEN_THRESHOLD = 0.05
 lazy from presentation.presentation_resources import FaceRenderLayers
 
 __all__ = ("CompanionFaceAnimationMixin",)
 
-
-class CompanionFaceAnimationMixin:
+class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
+    _render_masked_blink_frame = CompanionFaceAssetMethods._render_masked_blink_frame
     _idle_expression = CompanionFaceAssetMethods._idle_expression
     _speaking_expression = CompanionFaceAssetMethods._speaking_expression
     _mouth_mid_expression = CompanionFaceAssetMethods._mouth_mid_expression
@@ -133,7 +142,7 @@ class CompanionFaceAnimationMixin:
             base_ms = int(max(drowsy, satiety) * 1000.0)
             self.blink_timer.start(random.randint(base_ms, base_ms + 2_200))
         else:
-            self.blink_timer.start(random.randint(2_800, 6_200))
+            self.blink_timer.start(random.randint(*BLINK_INTERVAL_MS))
 
     def _blink(self) -> None:
         if getattr(self, "pose_transition_active", False):
@@ -141,7 +150,7 @@ class CompanionFaceAnimationMixin:
             return
         if getattr(self, "_adaptive_full_body_active", False):
             # The v4 full-body composition owns the canvas and renders its own
-            # eyelids from the continuous ``blink_opacity`` stamped onto the
+            # eyelids from the discrete ``blink_opacity`` stamped onto the
             # face-motion frame.  Running the legacy half-body blink composite
             # here would overwrite the full-body photograph with a half-body
             # blink patch (the reported double image).  Drive the blink through
@@ -160,146 +169,65 @@ class CompanionFaceAnimationMixin:
         if can_idle_blink:
             base_expression = self.current_expression
             self.idle_blinking = True
-            self.blink_opacity = 0.45
+            self.blink_opacity = blink_for_eye_state(EyeState.HALF)
             self.eye_overlay.hide()
-            self._set_half_body_blink(generation, 0.45)
+            self._set_half_body_blink(generation, self.blink_opacity)
+            for delay in BLINK_HALF_CLOSE_TIMES_MS[1:]:
+                QTimer.singleShot(
+                    delay,
+                    lambda generation=generation: self._set_half_body_blink(
+                        generation, 0.5
+                    ),
+                )
+            for delay in BLINK_CLOSED_TIMES_MS:
+                QTimer.singleShot(
+                    delay,
+                    lambda generation=generation: self._set_half_body_blink(
+                        generation, 1.0
+                    ),
+                )
+            for delay in BLINK_HALF_OPEN_TIMES_MS:
+                QTimer.singleShot(
+                    delay,
+                    lambda generation=generation: self._set_half_body_blink(
+                        generation, 0.5
+                    ),
+                )
             QTimer.singleShot(
-                32,
-                lambda: self._set_half_body_blink(generation, 1.0),
-            )
-            QTimer.singleShot(
-                92,
-                lambda: self._set_half_body_blink(generation, 0.42),
-            )
-            QTimer.singleShot(
-                random.randint(118, 145),
+                BLINK_REST_AT_MS,
                 lambda: self._finish_blink(base_expression, generation),
             )
         elif self.state == "speaking" and not self.speech_blinking:
             self.speech_blinking = True
-            self.blink_opacity = 0.45
+            self.blink_opacity = blink_for_eye_state(EyeState.HALF)
             self.eye_overlay.hide()
-            self._set_half_body_blink(generation, 0.45)
+            self._set_half_body_blink(generation, self.blink_opacity)
+            for delay in BLINK_HALF_CLOSE_TIMES_MS[1:]:
+                QTimer.singleShot(
+                    delay,
+                    lambda generation=generation: self._advance_speaking_blink(
+                        generation, 0.5
+                    ),
+                )
+            for delay in BLINK_CLOSED_TIMES_MS:
+                QTimer.singleShot(
+                    delay,
+                    lambda generation=generation: self._advance_speaking_blink(
+                        generation, 1.0
+                    ),
+                )
+            for delay in BLINK_HALF_OPEN_TIMES_MS:
+                QTimer.singleShot(
+                    delay,
+                    lambda generation=generation: self._advance_speaking_blink(
+                        generation, 0.5
+                    ),
+                )
             QTimer.singleShot(
-                32,
-                lambda: self._advance_speaking_blink(generation, 1.0),
-            )
-            QTimer.singleShot(
-                92,
-                lambda: self._advance_speaking_blink(generation, 0.42),
-            )
-            QTimer.singleShot(
-                random.randint(118, 145),
+                BLINK_REST_AT_MS,
                 lambda: self._finish_speaking_blink(generation),
             )
         self._schedule_blink()
-
-    def _full_body_blink(self) -> None:
-        """Blink via the full-body renderer (mutate ``blink_opacity`` only)."""
-        self.blink_generation = getattr(self, "blink_generation", 0) + 1
-        generation = self.blink_generation
-        self._set_full_body_blink(generation, 0.45)
-        QTimer.singleShot(32, lambda: self._set_full_body_blink(generation, 1.0))
-        QTimer.singleShot(92, lambda: self._set_full_body_blink(generation, 0.42))
-        QTimer.singleShot(
-            random.randint(118, 145),
-            lambda: self._set_full_body_blink(generation, 0.0),
-        )
-
-    def _set_full_body_blink(self, generation: int, opacity: float) -> None:
-        if generation != self.blink_generation:
-            return
-        self.blink_opacity = opacity
-        self._refresh_full_body()
-
-    def _set_half_body_blink(self, generation: int, opacity: float) -> None:
-        """Blink via the parametric half-body renderer (mutate ``blink`` only)."""
-        if generation != self.blink_generation:
-            return
-        self.blink_opacity = opacity
-        motion = self.face_motion_frame
-        if motion is None:
-            return
-        self.face_motion_frame = replace(
-            motion,
-            expression_shape=replace(
-                motion.expression_shape,
-                blink=max(0.0, min(1.0, float(opacity))),
-            ),
-        )
-        self.character.setPixmap(self._render_half_body_frame())
-
-    def _advance_idle_blink(
-        self,
-        base_expression: str,
-        generation: int,
-        opacity: float,
-    ) -> None:
-        if (
-            not self.idle_blinking
-            or generation != self.blink_generation
-            or self.state == "speaking"
-            or self.current_expression != base_expression
-            or self.blink_restore_pixmap.isNull()
-        ):
-            return
-        self.blink_opacity = opacity
-        self.character.setPixmap(
-            self._blink_composite(
-                self.blink_restore_pixmap,
-                base_expression,
-                opacity,
-            )
-        )
-
-    def _advance_speaking_blink(
-        self,
-        generation: int,
-        opacity: float,
-    ) -> None:
-        if (
-            not self.speech_blinking
-            or generation != self.blink_generation
-            or self.state != "speaking"
-        ):
-            return
-        self.blink_opacity = opacity
-        self._set_half_body_blink(generation, opacity)
-
-    def _finish_blink(
-        self,
-        base_expression: str,
-        generation: int,
-    ) -> None:
-        if (
-            generation != self.blink_generation
-            or self.state == "speaking"
-            or self.current_expression != base_expression
-        ):
-            self.idle_blinking = False
-            self.blink_opacity = 0.0
-            return
-        self._set_half_body_blink(generation, 0.0)
-        self.idle_blinking = False
-        self.blink_opacity = 0.0
-        self._render_attention_layers(force=True)
-        self._attention_tick()
-        if random.random() < BLINK_PROBABILITY:
-            QTimer.singleShot(170, self._blink)
-
-    def _finish_speaking_blink(
-        self,
-        generation: int,
-    ) -> None:
-        if self.state != "speaking" or generation != self.blink_generation:
-            self.speech_blinking = False
-            self.blink_opacity = 0.0
-            return
-        self.speech_blinking = False
-        self.blink_opacity = 0.0
-        self._set_half_body_blink(generation, 0.0)
-        self._render_attention_layers(force=True)
-        self._attention_tick()
 
     def _wink_once(self) -> bool:
         """Play one deliberate, expression-preserving wink when idle."""
@@ -358,12 +286,12 @@ class CompanionFaceAnimationMixin:
         return True
 
     def _schedule_attention_glance(self) -> None:
-        self.gaze_timer.start(random.randint(38_000, 78_000))
+        self.gaze_timer.start(random.randint(*ATTENTION_GLANCE_INTERVAL_MS))
 
     def _schedule_saccade(self) -> None:
         # Saccades are far more frequent than the full attention glance: a
         # real person's eyes wander every few seconds, not every minute.
-        self.saccade_timer.start(random.randint(4_000, 11_000))
+        self.saccade_timer.start(random.randint(*SACCADE_INTERVAL_MS))
 
     def _start_saccade(self) -> None:
         if self.state != "idle" or getattr(self, "idle_blinking", False):
@@ -857,6 +785,14 @@ class CompanionFaceAnimationMixin:
             expression=motion_expression,
             blink=1.0 if self.speech_blinking else 0.0,
         )
+        # The adaptive full-body renderer is driven by the provider-neutral
+        # speech-performance bridge, not by the legacy half-body pixmap path.
+        # Publish every accepted audio cue before the ownership guard below;
+        # otherwise full-body speech keeps the canvas but never receives a
+        # changing viseme, which presents as "text only, mouth not moving".
+        self._record_speech_performance(
+            self.speech_performance.viseme(level, frame.selected)
+        )
         if getattr(self, "_adaptive_full_body_active", False):
             # The v4 full-body composition renders its own speech mouth from
             # the continuous ``face_motion_frame`` produced above.  The legacy
@@ -1086,6 +1022,7 @@ class CompanionFaceAnimationMixin:
         self._stop_gesture_animation()
         self.expression_generation += 1
         self.state = state
+        persist_wardrobe_mood(self.db, state)
         self.dashboard.set_desktop_companion_status(
             "expression",
             state.replace("_", " "),

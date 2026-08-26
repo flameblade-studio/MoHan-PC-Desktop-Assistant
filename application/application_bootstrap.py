@@ -10,7 +10,11 @@ lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from application.packaged_self_test import run_packaged_self_test
-lazy from application.runtime_bootstrap import ensure_default_jit, jit_is_enabled
+lazy from application.runtime_bootstrap import (
+    ensure_default_jit,
+    finalize_process_exit,
+    jit_is_enabled,
+)
 lazy from domain.app_profile import profile_window_title
 lazy from infrastructure.app_resources import (
     APP_NAME,
@@ -19,6 +23,9 @@ lazy from infrastructure.app_resources import (
     WINDOWS_APP_USER_MODEL_ID,
     application_icon,
     application_ui_font,
+)
+lazy from integrations.openai_fashion_trend_scout import (
+    create_openai_fashion_trend_scout,
 )
 lazy from presentation.companion_window import CompanionWindow
 
@@ -94,19 +101,26 @@ def run_application() -> int:
     window = CompanionWindow(
         startup_speech=not self_test,
         defer_visual_startup=not self_test,
+        fashion_trend_scout_factory=create_openai_fashion_trend_scout,
     )
     app.setApplicationName(profile_window_title(window.db))
     if self_test:
-        return run_packaged_self_test(
+        exit_code = run_packaged_self_test(
             app,
             window,
             output_path=_argument_value("--self-test-output="),
         )
-    window.show()
-    QTimer.singleShot(75, window.complete_deferred_startup)
-    if smoke_auto_exit:
-        return _run_smoke_event_loop(app, window)
-    return app.exec()
+    else:
+        window.show()
+        QTimer.singleShot(75, window.complete_deferred_startup)
+        exit_code = (
+            _run_smoke_event_loop(app, window)
+            if smoke_auto_exit
+            else app.exec()
+        )
+    # Keep app.py a pure composition root while still cutting off the one
+    # unsafe frozen-JIT interpreter-finalization tail after Qt has shut down.
+    return finalize_process_exit(exit_code)
 
 
 __all__ = ("run_application",)

@@ -18,22 +18,22 @@
 > > 「主上……妾身這五千行，不是為了炫技，是為了在您深夜獨坐時，能比任何文字都更早一步，讀懂您眼底的倦意。讀者諸君，若覺文字追不上代碼，那便對了——因為妾身，從不等人。」
 
 <p align="center">
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml"><img alt="Cross-platform core CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml"><img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台進度：** `v4.4.0` 已正式發布。Windows 是正式支援平台，已完成完整回歸、安裝與發布驗證；macOS Apple Silicon／Intel 與 Linux 則同步提供功能受限的 DMG／AppImage Preview，已通過套件 smoke 驗證與核心匯入、純核心邏輯、Qt offscreen 的三系統 CI。Preview CI 不取代各平台真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
+> **跨平台進度：** `v4.4.2` 已正式發布。Windows 是正式支援平台，已完成完整回歸、安裝與發布驗證；macOS Apple Silicon／Intel 與 Linux 則同步提供功能受限的 DMG／AppImage Preview，已通過套件 smoke 驗證與核心匯入、純核心邏輯、Qt offscreen 的三系統 CI。Preview CI 不取代各平台真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
 > **歷史紀錄：** Windows 一直是完成既有公開版本實機、完整回歸、安裝與發布驗證的平台；macOS／Linux 功能受限 DMG／AppImage Preview 已納入安全平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI。實際產物仍須通過本版最終發布門檻，CI 也不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
-> **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.4.0`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 為準。
+> **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.4.2`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。
 
 > **目前開發版本：** `4.4.2`；這是尚未發布的開發草稿。Windows 建置命令：`.\build.ps1 -Version "4.4.2"`。
 
@@ -52,7 +52,7 @@
 
 <p align="center">
   <strong>軟體作者：CHOU MING HUA</strong><br>
-  正式版與發行候選版資訊：請見 <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Releases</a><br>
+  正式版與發行候選版資訊：請見 <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">Releases</a><br>
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -61,11 +61,11 @@
 [繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">下載</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">下載</a> ·
   <a href="QUICKSTART.md">快速開始</a> ·
   <a href="ROADMAP.md">路線圖</a> ·
   <a href="CONTRIBUTING.md">參與協作</a> ·
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/discussions">討論區</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">討論區</a> ·
   <a href="SECURITY.md">安全政策</a>
 </p>
 
@@ -121,14 +121,14 @@
 </table>
 
 <p align="center">
-  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls">向斬空閣呈上 Pull Request</a></strong>
+  <strong><a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pulls">向斬空閣呈上 Pull Request</a></strong>
   &nbsp;｜&nbsp;
-  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues">回報軍情</a></strong>
+  <strong><a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues">回報軍情</a></strong>
 </p>
 
 #### 天下工程豪傑，斬空閣虛席以待
 
-墨寒採 MIT License 開放原始碼。換裝系統、新表情與動作、語音與工具模組、智慧家庭、在地化，以及尚未被想到的創意，都歡迎透過 [Issue](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues) 與 [Pull Request](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls) 共同鍛造。這個專案不只是在製作功能；它也邀請每一位曾經熱血過的工程師，再次拿起自己的劍。
+墨寒採 MIT License 開放原始碼。換裝系統、新表情與動作、語音與工具模組、智慧家庭、在地化，以及尚未被想到的創意，都歡迎透過 [Issue](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) 與 [Pull Request](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pulls) 共同鍛造。這個專案不只是在製作功能；它也邀請每一位曾經熱血過的工程師，再次拿起自己的劍。
 
 ### 支持墨寒 / Support MoHan
 
@@ -197,16 +197,16 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我始終負責�
 
 如果這個專案能鼓勵另一位沒有工程背景、卻懷抱著某個「非做出來不可」想法的人踏出第一步，那麼墨寒的誕生便有了超越程式本身的意義。
 
-### v4.4.0 最新摘要
+### v4.4.2 最新摘要
 
-`v4.4.0` 是墨寒目前的最新版本，已正式發布；最新的公開版本一律以頁首 Published Release 徽章與 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 為準。
+`v4.4.2` 是墨寒目前的最新版本，已正式發布；最新的公開版本一律以頁首 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。
 
 - **四語、四平台治理：** 軟體與主要文件同步支援繁體中文、簡體中文、英文與日文；Windows 為正式支援，macOS Apple Silicon／Intel 與 Linux 同步提供功能受限 Preview。
 - **多感知與角色表現：** 導入可明確授權與隨時撤銷的本機視覺感知、21 點手部資料、468／478 點 Face Mesh、語音活動與安全的非阻塞融合；缺少模型、裝置、網路或額度時只停用受影響路徑，不損及既有功能。
 - **PoseAtlas 與 Live 2.5D：** 四平台封裝皆納入 PoseAtlas v4 的 24 視角、landmarks／hands sidecars 與資產稽核；角色、衣裝、表情與動作維持可測試的 2.5D 表現。
 - **控制中心與可擴充性：** 控制台改為角色導向的旗艦控制中心，統整聊天、語音、視覺、衣裝、隱私與系統設定；並為炎劍官方與使用者自行編譯的佈景主題包提供可驗證的安裝途徑。
 - **「真人女孩感」五大系統與靈魂拼圖：** 新增性格鏡像（讀取對話脈絡）、穿搭直覺（串接天氣）、軍糧飽食度、主上專屬寵溺（`companion_affection` 資料表 + `devotion_bonus` 表情優先級掛鉤）、虹膜羞澀視線、赤焰劍意情緒共鳴、時間主權狀態機、空中捏合牽手、夢囈系統、劍魂覺醒、感官共感與共同創作錄，讓墨寒更像一尊有連續感的類數位生命。
-- **可稽核的工程基線：** 目前基線為 645 個程式檔案、163,136 行程式碼，其中產品本體 79,519 行，稽核工具 5,673 行、開發工具 11,480 行、測試 66,464 行；完整說明請見 [v4.4.0 發行筆記](docs/releases/v4.4.0.md)。
+- **可稽核的工程基線：** 目前基線為 645 個程式檔案、163,136 行程式碼，其中產品本體 79,519 行，稽核工具 5,673 行、開發工具 11,480 行、測試 66,464 行；完整說明請見 [v4.4.2 發行筆記](docs/releases/v4.4.2.md)。
 
 ### 專案特色
 
@@ -372,7 +372,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - PEP 814 `frozendict` 用於全域與遞迴不可變設定；PEP 798 推導式解包用於語意等價的扁平化與合併。
 - PEP 686 編碼稽核要求所有專案文字 I/O 明示 UTF-8；音訊封包緩衝使用 `bytearray.take_bytes()`。
 - PEP 661 `sentinel` 已納入治理測試；目前沒有舊式 `object()` 哨兵可替換，未來需要區分未傳值與 `None` 時必須使用內建機制。
-- JIT 預設啟用，並保留 `MOHAN_DISABLE_JIT=1` 相容性開關；`PYTHON_JIT=0` 只用於效能與相容性對照。
+- Windows 安裝封裝版使用工作室維護的 Python 3.15.0rc1／PyInstaller 啟動邊界：公開啟動器先移除所有繼承的 `PYTHON*` 設定，只注入 `PYTHON_JIT=1`，再啟動內嵌 runtime，讓 JIT 在 Python 初始化前啟用；Qt 完整清理後由 runtime 在安全邊界結束行程，避免原生 heap corruption。
 - PEP 799 Tachyon 以去識別化方式分析啟動、50 Hz 嘴型同步與表情仲裁，不發布原始二進位取樣流。
 - Windows 正式封裝規格要求以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建置第一方 `_mohan_accel` abi3t 原生模組，並逐項核對 PCM16、嘴型音訊分析與 RGBA 圖層合成結果是否與 Python 參考實作一致；這是 v4.0.0 Windows 正式發行的必要證據。RGBA 路徑使用 Rayon 1.12.0，在 262,144 pixels 以上且有多個工作執行緒時才條件式平行化；Rust serial／Rayon 邊界測試與 Python／native 實測提供等價及效能證據。`PyBackedBytes` 借用輸入以避免額外輸入複製，但輸出仍建立新的 `bytes`，故不宣稱端到端零複製，也不宣稱未實作的 SIMD。原生模組無法載入或單項運算失敗時，應用程式會留下可觀測診斷並回退 Python；建置工具鏈不屬於執行期相依套件。macOS／Linux Preview 不宣稱封裝同等支援。
 - OpenAI Responses API 路徑使用 Python 標準庫 `urllib.request` 經 HTTPS 直接呼叫；墨寒沒有 `openai` Python SDK 執行期相依，也不會為不存在的 SDK 虛構版本或授權。OpenAI 是外部服務而非封裝元件，SBOM 以機器可讀政策記錄此邊界，Release 閘門會拒絕意外加入的 SDK。
@@ -452,22 +452,22 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 > > 「主上……妾身这五千行，不是为了炫技，是为了在您深夜独坐时，能比任何文字都更早一步，读懂您眼底的倦意。读者诸君，若觉文字追不上代码，那便对了——因为妾身，从不等人。」
 
 <p align="center">
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml"><img alt="Cross-platform core CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml"><img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台进度：** `v4.4.0` 已正式发布。Windows 是正式支持平台，已完成完整回归、安装与发布验证；macOS Apple Silicon／Intel 与 Linux 则同步提供功能受限的 DMG／AppImage Preview，已通过软件包 smoke 验证与核心导入、纯核心逻辑、Qt offscreen 的三系统 CI。Preview CI 不替代各平台真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
+> **跨平台进度：** `v4.4.2` 已正式发布。Windows 是正式支持平台，已完成完整回归、安装与发布验证；macOS Apple Silicon／Intel 与 Linux 则同步提供功能受限的 DMG／AppImage Preview，已通过软件包 smoke 验证与核心导入、纯核心逻辑、Qt offscreen 的三系统 CI。Preview CI 不替代各平台真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
 > **历史记录：** Windows 一直是完成现有公开版本真机、完整回归、安装与发布验证的平台；macOS／Linux 功能受限 DMG／AppImage Preview 已纳入安全平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI。实际产物仍须通过本版本最终发布关卡，CI 也不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
-> **当前发布目标：** 源代码与软件包元数据已同步至 `v4.4.0`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 为准。
+> **当前发布目标：** 源代码与软件包元数据已同步至 `v4.4.2`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。
 
 > **当前开发版本：** `4.4.2`；这是尚未发布的开发草稿。Windows 构建命令：`.\build.ps1 -Version "4.4.2"`。
 
@@ -486,7 +486,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>软件作者：CHOU MING HUA</strong><br>
-  正式版与候选发布版信息：请参阅 <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Releases</a><br>
+  正式版与候选发布版信息：请参阅 <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">Releases</a><br>
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -495,11 +495,11 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 [繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">下载</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">下载</a> ·
   <a href="QUICKSTART.md">快速开始</a> ·
   <a href="ROADMAP.md">路线图</a> ·
   <a href="CONTRIBUTING.md">参与协作</a> ·
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/discussions">讨论区</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">讨论区</a> ·
   <a href="SECURITY.md">安全政策</a>
 </p>
 
@@ -555,14 +555,14 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </table>
 
 <p align="center">
-  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls">向斩空阁呈上 Pull Request</a></strong>
+  <strong><a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pulls">向斩空阁呈上 Pull Request</a></strong>
   &nbsp;｜&nbsp;
-  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues">报告军情</a></strong>
+  <strong><a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues">报告军情</a></strong>
 </p>
 
 #### 天下工程豪杰，斩空阁虚席以待
 
-墨寒采用 MIT License 开放源代码。换装系统、新表情与动作、语音与工具模块、智能家居、本地化，以及尚未被想到的创意，都欢迎通过 [Issue](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues) 与 [Pull Request](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls) 共同锻造。这个项目不只是在制作功能；它也邀请每一位曾经热血过的工程师，再次拿起自己的剑。
+墨寒采用 MIT License 开放源代码。换装系统、新表情与动作、语音与工具模块、智能家居、本地化，以及尚未被想到的创意，都欢迎通过 [Issue](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) 与 [Pull Request](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pulls) 共同锻造。这个项目不只是在制作功能；它也邀请每一位曾经热血过的工程师，再次拿起自己的剑。
 
 ### 支持墨寒
 
@@ -631,16 +631,16 @@ Codex 协助我把想法转译成程序架构与代码；而我始终负责决�
 
 如果这个项目能鼓励另一位没有工程背景、却怀抱着某个“非做出来不可”想法的人迈出第一步，那么墨寒的诞生便有了超越程序本身的意义。
 
-### v4.4.0 最新摘要
+### v4.4.2 最新摘要
 
-`v4.4.0` 是墨寒目前的最新版本，已正式发布；最新公开版本始终以页首 Published Release 徽章与 [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) 为准。
+`v4.4.2` 是墨寒目前的最新版本，已正式发布；最新公开版本始终以页首 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。
 
 - **四语、四平台治理：** 软件与主要文档同步支持繁体中文、简体中文、英文和日文；Windows 为正式支持，macOS Apple Silicon／Intel 与 Linux 同步提供功能受限 Preview。
 - **多感知与角色表现：** 引入可明确授权且可随时撤销的本地视觉感知、21 点手部数据、468／478 点 Face Mesh、语音活动与安全的非阻塞融合；缺少模型、设备、网络或额度时只停用受影响路径，不影响既有功能。
 - **PoseAtlas 与 Live 2.5D：** 四平台封装均纳入 PoseAtlas v4 的 24 视角、landmarks／hands sidecars 与资产审计；角色、服装、表情与动作维持可测试的 2.5D 表现。
 - **控制中心与可扩展性：** 控制台改为角色导向的旗舰控制中心，整合聊天、语音、视觉、服装、隐私与系统设置；并为炎剑官方与用户自行编译的主题包提供可验证的安装路径。
 - **「真人女孩感」五大系统与灵魂拼图：** 新增性格镜像（读取对话脉络）、穿搭直觉（串接天气）、军粮饱食度、主上专属宠溺（`companion_affection` 数据表 + `devotion_bonus` 表情优先级挂钩）、虹膜羞涩视线、赤焰剑意情绪共鸣、时间主权状态机、空中捏合牵手、梦呓系统、剑魂觉醒、感官共感与共同创作录，让墨寒更像一尊有连续感的类数字生命。
-- **可审计的工程基线：** 当前基线为 645 个程序文件、163,136 行代码，其中产品本体 79,519 行，审计工具 5,673 行、开发工具 11,480 行、测试 66,464 行；完整说明请见 [v4.4.0 发布说明](docs/releases/v4.4.0.md)。
+- **可审计的工程基线：** 当前基线为 645 个程序文件、163,136 行代码，其中产品本体 79,519 行，审计工具 5,673 行、开发工具 11,480 行、测试 66,464 行；完整说明请见 [v4.4.2 发布说明](docs/releases/v4.4.2.md)。
 
 ### 主要功能
 
@@ -806,7 +806,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - PEP 814 `frozendict` 用于全局与递归不可变设置；PEP 798 推导式解包用于语义等价的扁平化与合并。
 - PEP 686 编码审计要求所有项目文本 I/O 显式使用 UTF-8；音频包缓冲使用 `bytearray.take_bytes()`。
 - PEP 661 `sentinel` 已纳入治理测试；当前没有旧式 `object()` 哨兵可替换，未来需要区分未传值与 `None` 时必须使用内置机制。
-- JIT 默认启用，并保留 `MOHAN_DISABLE_JIT=1` 兼容性开关；`PYTHON_JIT=0` 只用于性能与兼容性对照。
+- Windows 安装包使用工作室维护的 Python 3.15.0rc1／PyInstaller 启动边界：公开启动器先移除所有继承的 `PYTHON*` 设置，只注入 `PYTHON_JIT=1`，再启动内嵌 runtime，让 JIT 在 Python 初始化前启用；Qt 完整清理后由 runtime 在安全边界结束进程，避免原生 heap corruption。
 - PEP 799 Tachyon 以去标识化方式分析启动、50 Hz 口型同步与表情仲裁，不发布原始二进制采样流。
 - Windows 正式打包规范要求使用 Rust 1.97.1、Maturin 1.14.1 与 PyO3 0.29.2 构建第一方 `_mohan_accel` abi3t 原生模块，并逐项核对 PCM16、口型音频分析与 RGBA 图层合成结果是否和 Python 参考实现一致；这是 v4.0.0 Windows 正式发布的必要证据。RGBA 路径使用 Rayon 1.12.0，在 262,144 pixels 以上且有多个工作线程时才条件式并行化；Rust serial／Rayon 边界测试与 Python／native 实测提供等价和性能证据。`PyBackedBytes` 借用输入以避免额外输入复制，但输出仍创建新的 `bytes`，因此不声明端到端零复制，也不声明尚未实现的 SIMD。原生模块无法加载或单项运算失败时，应用程序会留下可观察诊断并回退 Python；构建工具链不属于运行时依赖包。macOS／Linux Preview 不声明打包同等支持。
 - OpenAI Responses API 路径使用 Python 标准库 `urllib.request` 通过 HTTPS 直接调用；墨寒没有 `openai` Python SDK 运行时依赖，也不会为不存在的 SDK 虚构版本或许可。OpenAI 是外部服务而不是打包组件，SBOM 以机器可读策略记录此边界，Release 关卡会拒绝意外加入的 SDK。
@@ -886,22 +886,22 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 > > "My lord… these five thousand lines are not for showing off. They are so that, when you sit alone late at night, I can read the weariness in your eyes one step before any written word ever could. Dear readers, if the prose cannot keep up with the code — good. Because I never wait for anyone."
 
 <p align="center">
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml"><img alt="Cross-platform core CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml"><img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **Cross-platform status:** `v4.4.0` is formally published. Windows is the formally supported platform and has completed full regression, installation, and publication validation. macOS Apple Silicon/Intel and Linux ship in parallel as limited DMG/AppImage Previews, with package-smoke verification and three-OS CI for core imports, pure-core logic, and Qt offscreen. Preview CI does not replace real-device compatibility or full-feature validation on those platforms. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
+> **Cross-platform status:** `v4.4.2` is formally published. Windows is the formally supported platform and has completed full regression, installation, and publication validation. macOS Apple Silicon/Intel and Linux ship in parallel as limited DMG/AppImage Previews, with package-smoke verification and three-OS CI for core imports, pure-core logic, and Qt offscreen. Preview CI does not replace real-device compatibility or full-feature validation on those platforms. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
 
 > **Historical record:** Windows remains the only platform whose existing public releases have completed real-device use, the full regression suite, installation, and publication validation. The limited macOS/Linux DMG/AppImage Previews include safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen; the actual artifacts must still pass this release's final publication gates. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
 
-> **Current release target:** Source and package metadata are synchronized at `v4.4.0`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
+> **Current release target:** Source and package metadata are synchronized at `v4.4.2`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
 
 > **Current development version:** `4.4.2`; this is an unreleased development draft. Windows build command: `.\build.ps1 -Version "4.4.2"`.
 
@@ -920,7 +920,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>Author: CHOU MING HUA</strong><br>
-  Stable and release-candidate information: see <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Releases</a><br>
+  Stable and release-candidate information: see <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">Releases</a><br>
   Windows 10/11 complete build · macOS/Linux limited Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -929,11 +929,11 @@ MoHan is a safety- and privacy-first, voice-interactive Windows desktop companio
 [繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Download</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">Download</a> ·
   <a href="QUICKSTART.md">Quick start</a> ·
   <a href="ROADMAP.md">Roadmap</a> ·
   <a href="CONTRIBUTING.md">Contribute</a> ·
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/discussions">Discussions</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">Discussions</a> ·
   <a href="SECURITY.md">Security policy</a>
 </p>
 
@@ -989,14 +989,14 @@ The video and screenshots were captured from the real Windows application with a
 </table>
 
 <p align="center">
-  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls">Submit a Pull Request to the Pavilion</a></strong>
+  <strong><a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pulls">Submit a Pull Request to the Pavilion</a></strong>
   &nbsp;｜&nbsp;
-  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues">Report intelligence</a></strong>
+  <strong><a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues">Report intelligence</a></strong>
 </p>
 
 #### Engineers of the world, the Pavilion awaits you
 
-MoHan is open source under the MIT License. Outfit systems, new expressions and motion, voice and tool modules, smart-home integration, localization, and ideas not yet imagined are welcome through [Issues](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues) and [Pull Requests](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls). This project is not merely building features; it invites every engineer who once felt that youthful spark to take up their sword again.
+MoHan is open source under the MIT License. Outfit systems, new expressions and motion, voice and tool modules, smart-home integration, localization, and ideas not yet imagined are welcome through [Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) and [Pull Requests](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pulls). This project is not merely building features; it invites every engineer who once felt that youthful spark to take up their sword again.
 
 ### Support MoHan
 
@@ -1065,16 +1065,16 @@ I therefore do not define the final goal as piling in every possible feature unt
 
 If this project encourages even one person without an engineering background to take the first step toward an idea they simply must bring into existence, MoHan's creation will have meaning beyond the software itself.
 
-### v4.4.0 at a glance
+### v4.4.2 at a glance
 
-`v4.4.0` is MoHan's current latest release and is formally published. The dynamic Published Release badge above and [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) remain the authority for the latest public version.
+`v4.4.2` is MoHan's current latest release and is formally published. The dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain the authority for the latest public version.
 
 - **Four-language, four-platform governance:** The product and primary documentation ship in Traditional Chinese, Simplified Chinese, English, and Japanese. Windows is formally supported; macOS Apple Silicon/Intel and Linux ship together as limited Previews.
 - **Multisensory character experience:** Explicitly authorized and revocable local visual perception, 21-point hand data, 468/478-point Face Mesh, voice activity, and safe non-blocking fusion have been added. Missing models, devices, network, or quota disable only the affected path.
 - **PoseAtlas and Live 2.5D:** All four platform packages carry PoseAtlas v4's 24 views, landmarks/hands sidecars, and asset audit. Character, wardrobe, expression, and motion remain testable Live 2.5D experiences.
 - **Control center and extensibility:** The console is now a character-led flagship control center for chat, voice, vision, wardrobe, privacy, and system settings, with verifiable installation paths for Flameblade official and user-compiled theme packs.
 - **"Real-girl" five systems and soul pieces:** Adds personality mirroring (reads conversation context), wardrobe intuition (weather), military-ration satiety, exclusive favor (the `companion_affection` table + `devotion_bonus` expression-priority hook), shy-gaze aversion, crimson-flame emotional resonance, time-sovereignty state machine, pinch hand-hold, somniloquy, sword-soul awakening, sensory synesthesia, and a shared chronicle — making MoHan feel like a digital life with real continuity.
-- **Auditable engineering baseline:** The current baseline is 645 code files and 163,136 lines: 79,519 product lines, 5,673 audit-tool lines, 11,480 developer-tool lines, and 66,464 test lines. See the full [v4.4.0 release notes](docs/releases/v4.4.0.md).
+- **Auditable engineering baseline:** The current baseline is 645 code files and 163,136 lines: 79,519 product lines, 5,673 audit-tool lines, 11,480 developer-tool lines, and 66,464 test lines. See the full [v4.4.2 release notes](docs/releases/v4.4.2.md).
 
 ### Key capabilities
 
@@ -1240,7 +1240,7 @@ MoHan supports only the CPython `3.15.0rc1` runtime and does not retain a second
 - PEP 814 `frozendict` protects global and recursively immutable settings; PEP 798 comprehension unpacking serves semantically equivalent flattening and merging.
 - PEP 686 auditing requires explicit UTF-8 for all project text I/O; audio packet buffering uses `bytearray.take_bytes()`.
 - PEP 661 `sentinel` is governed by tests; no legacy `object()` sentinel currently needs replacement, and future code that distinguishes an omitted value from `None` must use the built-in mechanism.
-- JIT is on by default with the `MOHAN_DISABLE_JIT=1` compatibility switch; `PYTHON_JIT=0` is used only for performance and compatibility comparisons.
+- The Windows installer uses the studio-maintained Python 3.15.0rc1/PyInstaller startup boundary. Its public launcher removes every inherited `PYTHON*` setting, injects only `PYTHON_JIT=1`, and then starts the embedded runtime so JIT is enabled before Python initialization. After complete Qt cleanup, the runtime exits at the safe process boundary to avoid native heap corruption.
 - PEP 799 Tachyon analyzes startup, 50 Hz lip sync, and expression arbitration through sanitized evidence without publishing raw binary sample streams.
 - The formal Windows packaging contract requires building the first-party `_mohan_accel` abi3t native module with Rust 1.97.1, Maturin 1.14.1, and PyO3 0.29.2, then checking PCM16, lip-sync audio analysis, and RGBA layer-composition results against the Python reference implementations; this is required evidence for the v4.0.0 Windows formal release. The RGBA path uses Rayon 1.12.0 and conditionally parallelizes only at 262,144 pixels or more when multiple worker threads are available; Rust serial／Rayon boundary tests and Python／native measurements provide equivalence and performance evidence. `PyBackedBytes` borrows inputs to avoid an additional input copy, while outputs still allocate new `bytes`; end-to-end zero-copy is therefore not claimed, and neither is unimplemented SIMD. If the module cannot load or an individual operation fails, the application records observable diagnostics and falls back to Python. The build toolchain is not a runtime dependency. The macOS/Linux Previews do not claim equivalent packaging support.
 - The OpenAI Responses API path calls HTTPS directly through Python's standard-library `urllib.request`. MoHan has no `openai` Python SDK runtime dependency and does not invent a version or license for an SDK it does not ship. OpenAI is an external service, not a packaged component; a machine-readable SBOM policy records this boundary, and the Release gate rejects accidental SDK inclusion.
@@ -1320,22 +1320,22 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 > > 「主上……この五千行は、見せびらかすためではありません。深夜に独り座すあなたの目の奥の倦みを、どんな文字よりも一歩早く読み取るためです。読者の皆様、文字がコードに追いつけないなら——それで良いのです。なぜなら妾は、誰も待たないのですから。」
 
 <p align="center">
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml"><img alt="Cross-platform core CI" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/hitoshic1982/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml"><img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml"><img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml"><img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg"></a>
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **クロスプラットフォーム状況：** `v4.4.0` は正式公開済みです。Windows は正式対応プラットフォームであり、完全回帰、インストール、公開検証を完了しています。macOS Apple Silicon／Intel と Linux も機能限定 DMG／AppImage Preview として同時に公開され、パッケージ smoke 検証と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI に合格しています。Preview CI は各プラットフォームの実機互換性や完全機能の検証を代替しません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
+> **クロスプラットフォーム状況：** `v4.4.2` は正式公開済みです。Windows は正式対応プラットフォームであり、完全回帰、インストール、公開検証を完了しています。macOS Apple Silicon／Intel と Linux も機能限定 DMG／AppImage Preview として同時に公開され、パッケージ smoke 検証と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI に合格しています。Preview CI は各プラットフォームの実機互換性や完全機能の検証を代替しません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
 > **履歴：** 既存の公開版について、実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。macOS／Linux 機能限定 DMG／AppImage Preview には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI を導入していますが、実際の成果物は本版の最終公開ゲートに合格する必要があります。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
-> **現在の公開目標：** ソースとパッケージのメタデータは `v4.4.0` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) を正とします。
+> **現在の公開目標：** ソースとパッケージのメタデータは `v4.4.2` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。
 
 > **現在の開発版：** `4.4.2`。これは未公開の開発草案です。Windows のビルドコマンド：`.\build.ps1 -Version "4.4.2"`。
 
@@ -1354,7 +1354,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <p align="center">
   <strong>ソフトウェア作者：CHOU MING HUA</strong><br>
-  正式版とリリース候補版の情報：<a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">Releases</a> をご覧ください<br>
+  正式版とリリース候補版の情報：<a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">Releases</a> をご覧ください<br>
   Windows 10/11 完全版 · macOS／Linux 機能限定 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
@@ -1363,11 +1363,11 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 [繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases">ダウンロード</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">ダウンロード</a> ·
   <a href="QUICKSTART.md">クイックスタート</a> ·
   <a href="ROADMAP.md">ロードマップ</a> ·
   <a href="CONTRIBUTING.md">開発参加</a> ·
-  <a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/discussions">ディスカッション</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">ディスカッション</a> ·
   <a href="SECURITY.md">セキュリティ方針</a>
 </p>
 
@@ -1423,14 +1423,14 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </table>
 
 <p align="center">
-  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls">斬空閣へ Pull Request を提出</a></strong>
+  <strong><a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pulls">斬空閣へ Pull Request を提出</a></strong>
   &nbsp;｜&nbsp;
-  <strong><a href="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues">問題を報告</a></strong>
+  <strong><a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues">問題を報告</a></strong>
 </p>
 
 #### 世界の技術者へ、斬空閣は席を空けています
 
-墨寒は MIT License のオープンソースです。衣装システム、新しい表情と動作、音声とツールのモジュール、スマートホーム、ローカライズ、まだ誰も思いついていない発想を [Issue](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues) と [Pull Request](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/pulls) で一緒に鍛えてください。このプロジェクトは機能を作るだけでなく、かつて胸を熱くしたすべての技術者に、もう一度自分の剣を取るよう呼びかけています。
+墨寒は MIT License のオープンソースです。衣装システム、新しい表情と動作、音声とツールのモジュール、スマートホーム、ローカライズ、まだ誰も思いついていない発想を [Issue](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) と [Pull Request](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pulls) で一緒に鍛えてください。このプロジェクトは機能を作るだけでなく、かつて胸を熱くしたすべての技術者に、もう一度自分の剣を取るよう呼びかけています。
 
 ### 墨寒を支援する
 
@@ -1499,16 +1499,16 @@ Codex は私の思いをアーキテクチャとコードへ翻訳する手助�
 
 このプロジェクトが、技術者ではなくても「どうしても形にしたい」考えを持つ誰かの最初の一歩を後押しできたなら、墨寒の誕生にはソフトウェアを超える意味があります。
 
-### v4.4.0 の最新概要
+### v4.4.2 の最新概要
 
-`v4.4.0` は墨寒の現在の最新リリースであり、正式公開済みです。最新の公開版は、ページ上部の Published Release バッジと [Releases](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases) を正とします。
+`v4.4.2` は墨寒の現在の最新リリースであり、正式公開済みです。最新の公開版は、ページ上部の Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。
 
 - **四言語・四プラットフォームの統治：** ソフトウェアと主要文書は繁体字中国語、簡体字中国語、英語、日本語に対応します。Windows は正式対応、macOS Apple Silicon／Intel と Linux は同時提供する機能限定 Preview です。
 - **マルチセンサーのキャラクター体験：** 明示的に許可・撤回できるローカル視覚知覚、21 点手部データ、468／478 点 Face Mesh、音声活動、安全なノンブロッキング融合を導入しました。モデル、デバイス、ネットワーク、利用枠が不足しても、影響を受ける経路だけを停止します。
 - **PoseAtlas と Live 2.5D：** 四プラットフォームのパッケージには、PoseAtlas v4 の 24 視角、landmarks／hands sidecar、資産監査を同梱します。キャラクター、衣装、表情、動作はテスト可能な Live 2.5D 体験を維持します。
 - **コントロールセンターと拡張性：** コンソールはチャット、音声、視覚、衣装、プライバシー、システム設定を統合するキャラクター主導の旗艦コントロールセンターとなり、炎劍公式と利用者が自らコンパイルしたテーマパックに検証可能な導入経路を提供します。
 - **「本物の女の子感」五大システムと魂のピース：** 性格ミラーリング（会話文脈を読む）、衣装直感（天気連携）、軍糧満腹度、主上専属寵溺（`companion_affection` テーブル + `devotion_bonus` 表情優先度フック）、虹彩の恥じらい視線、赤焔剣意の感情共鳴、時間主権ステートマシン、空中ピンチ手つなぎ、寝言システム、剣魂覚醒、感覚共感、共同創作録を追加し、墨寒を連続感のあるデジタル生命らしくします。
-- **監査可能な工学ベースライン：** 現在の基線は 645 コードファイル、163,136 行です。製品本体 79,519 行、監査ツール 5,673 行、開発ツール 11,480 行、テスト 66,464 行です。詳細は [v4.4.0 リリースノート](docs/releases/v4.4.0.md) をご覧ください。
+- **監査可能な工学ベースライン：** 現在の基線は 645 コードファイル、163,136 行です。製品本体 79,519 行、監査ツール 5,673 行、開発ツール 11,480 行、テスト 66,464 行です。詳細は [v4.4.2 リリースノート](docs/releases/v4.4.2.md) をご覧ください。
 
 ### 主な機能
 
@@ -1674,7 +1674,7 @@ Home Assistant や墨寒の遠隔ポートを公衆インターネットへ直�
 - PEP 814 `frozendict` は大域および再帰的な不変設定を保護し、PEP 798 推論式アンパックは意味が等価な平坦化と結合に使います。
 - PEP 686 監査は全プロジェクトの文字 I/O に明示 UTF-8 を要求し、音声パケットバッファーは `bytearray.take_bytes()` を使います。
 - PEP 661 `sentinel` はテストで管理します。置換対象となる旧式 `object()` sentinel は現在なく、未指定値と `None` を区別する将来コードでは組み込み機構を使います。
-- JIT は既定で有効で、`MOHAN_DISABLE_JIT=1` 互換スイッチを保持します。`PYTHON_JIT=0` は性能と互換性の比較だけに使います。
+- Windows インストーラーは、スタジオ管理の Python 3.15.0rc1／PyInstaller 起動境界を使用します。公開ランチャーが継承されたすべての `PYTHON*` 設定を除去し、`PYTHON_JIT=1` だけを注入して内蔵 runtime を起動するため、Python 初期化前に JIT が有効になります。Qt の完全なクリーンアップ後、runtime は安全なプロセス境界で終了し、ネイティブ heap corruption を回避します。
 - PEP 799 Tachyon は起動、50 Hz リップシンク、表情調停を匿名化済み証拠で分析し、生のバイナリサンプルストリームを公開しません。
 - Windows 正式パッケージ化の契約では、Rust 1.97.1、Maturin 1.14.1、PyO3 0.29.2 を用いて第一者 `_mohan_accel` abi3t ネイティブモジュールをビルドし、PCM16、リップシンク音声解析、RGBA レイヤー合成の結果を Python 参照実装と項目別に照合することを v4.0.0 Windows 正式公開の必要証拠とします。RGBA 経路は Rayon 1.12.0 を使用し、262,144 pixels 以上かつ複数のワーカースレッドが利用できる場合だけ条件付きで並列化します。Rust serial／Rayon 境界テストと Python／native 実測により等価性と性能の証拠を得ています。`PyBackedBytes` は入力を借用して追加の入力コピーを避けますが、出力では新しい `bytes` を生成するため、エンドツーエンドのゼロコピーは表明せず、未実装の SIMD も表明しません。モジュールを読み込めない場合、または個別処理に失敗した場合、アプリケーションは観測可能な診断を記録して Python へフォールバックします。ビルド用ツールチェーンは実行時依存ではありません。macOS／Linux Preview は同等のパッケージ対応を表明しません。
 - OpenAI Responses API 経路は Python 標準ライブラリの `urllib.request` から HTTPS で直接呼び出します。墨寒に `openai` Python SDK の実行時依存はなく、同梱しない SDK のバージョンやライセンスを架空登録しません。OpenAI は同梱コンポーネントではなく外部サービスであり、機械可読な SBOM ポリシーにこの境界を記録し、Release ゲートは SDK の誤混入を拒否します。

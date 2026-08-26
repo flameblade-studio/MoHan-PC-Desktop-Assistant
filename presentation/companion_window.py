@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy from PySide6.QtWidgets import QMainWindow
 
 lazy from application.adaptive_character_composition import AdaptiveCharacterFactory
+lazy from application.self_generating_wardrobe import FashionTrendScoutFactory
 lazy from presentation.autonomous_outfit_generation_controller import (
     AutonomousOutfitGenerationController,
 )
@@ -51,6 +52,7 @@ class CompanionWindow(
         adaptive_character_factory: AdaptiveCharacterFactory | None = None,
         adaptive_character_enabled: bool | None = None,
         proactive_companion_factory: ProactiveCompanionFactory | None = None,
+        fashion_trend_scout_factory: FashionTrendScoutFactory | None = None,
     ):
         super().__init__()
         runtime_services = services or create_default_services(
@@ -75,10 +77,13 @@ class CompanionWindow(
             db=self.db,
             secret_store=self.secret_store,
             project_root=resource_path("."),
+            trend_scout_factory=fashion_trend_scout_factory,
             parent=self,
         )
         self.dashboard.outfit_generation_requested.connect(
-            self._autonomous_outfit_generation.request_generation
+            lambda: self._autonomous_outfit_generation.request_generation(
+                explicit=True
+            )
         )
         self._autonomous_outfit_generation.status_changed.connect(
             self.dashboard.set_outfit_generation_status

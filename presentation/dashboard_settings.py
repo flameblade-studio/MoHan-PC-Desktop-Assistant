@@ -520,7 +520,19 @@ class DashboardSettingsMixin:
             self.proactive_mode.addItem(self._settings_text(key), value)
         self._select_combo_data(
             self.proactive_mode,
-            str(self.db.setting("proactive_mode", proactive_values[1])),
+            {
+                "quiet": proactive_values[0],
+                "balanced": proactive_values[1],
+                "active": proactive_values[2],
+            }.get(
+                str(
+                    self.db.setting(
+                        "proactive_interaction_mode",
+                        self.db.setting("proactive_mode", proactive_values[1]),
+                    )
+                ),
+                str(self.db.setting("proactive_mode", proactive_values[1])),
+            ),
         )
         form.addRow(
             self._settings_text(SettingsText.AUTOSTART_LABEL),

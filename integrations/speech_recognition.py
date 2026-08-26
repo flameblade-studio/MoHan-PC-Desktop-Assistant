@@ -7,6 +7,9 @@ lazy from dataclasses import dataclass, field
 lazy from urllib.error import HTTPError, URLError
 lazy from urllib.request import Request, urlopen
 
+MAX_TRANSCRIPTION_RESPONSE_BYTES = 1024 * 1024
+MAX_TRANSCRIPTION_ERROR_BYTES = 64 * 1024
+
 lazy from domain.safe_error import sanitize_error
 lazy from domain.service_status_localization import ServiceStatus, service_status
 
@@ -210,9 +213,14 @@ def transcribe_wav_bytes_impl(
     )
     try:
         with http.open_request(request, timeout=60) as response:
-            result = json.load(response)
+            payload = response.read(MAX_TRANSCRIPTION_RESPONSE_BYTES + 1)
+        if len(payload) > MAX_TRANSCRIPTION_RESPONSE_BYTES:
+            raise ValueError("transcription-response-too-large")
+        result = json.loads(payload.decode("utf-8"))
     except HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")
+        detail = exc.read(MAX_TRANSCRIPTION_ERROR_BYTES).decode(
+            "utf-8", errors="replace"
+        )
         failure = transcription_http_error_message(
             exc.code,
             detail,
@@ -231,6 +239,12 @@ def transcribe_wav_bytes_impl(
         failure = service_status(
             locale.ui_language,
             ServiceStatus.SPEECH_OPENAI_TIMEOUT,
+        )
+        result = None
+    except (UnicodeError, ValueError, json.JSONDecodeError):
+        failure = service_status(
+            locale.ui_language,
+            ServiceStatus.SPEECH_OPENAI_EMPTY_RESULT,
         )
         result = None
     else:

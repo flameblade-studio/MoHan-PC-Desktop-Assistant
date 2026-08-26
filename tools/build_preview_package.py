@@ -28,7 +28,12 @@ APPIMAGETOOL_URL = (
     "appimagetool-x86_64.AppImage"
 )
 POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
+LAYERED_POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4-layered"
+EXPRESSION_ROOT = ROOT / "assets" / "expressions"
+LAYERED_EXPRESSION_ROOT = EXPRESSION_ROOT / "layered"
 VIEW_RING_COUNT = 24
+FULL_BODY_LAYER_COUNT = 25
+HALF_BODY_POSE_COUNT = 3
 MAX_ICON_SIZE = 1024
 DMG_CREATE_ATTEMPTS = 3
 DMG_CREATE_RETRY_SECONDS = 3
@@ -79,6 +84,25 @@ def _release_pose_atlas_root(required: bool) -> Path | None:
         for suffix in (".landmarks.json", ".hands.json"):
             if not (POSE_ATLAS_ROOT / f"{base}{suffix}").is_file():
                 raise FileNotFoundError(f"PoseAtlas v4 sidecar missing: {base}{suffix}")
+    full_body_layers = tuple(LAYERED_POSE_ATLAS_ROOT.glob("yaw*-pitch+00_*.png"))
+    expected_full_body_layers = VIEW_RING_COUNT * FULL_BODY_LAYER_COUNT
+    if len(full_body_layers) != expected_full_body_layers:
+        raise FileNotFoundError(
+            "The Preview release requires all 600 layered PoseAtlas assets: "
+            f"{LAYERED_POSE_ATLAS_ROOT}"
+        )
+    half_body_layers = tuple(LAYERED_EXPRESSION_ROOT.glob("*.png"))
+    expected_half_body_layers = HALF_BODY_POSE_COUNT * FULL_BODY_LAYER_COUNT
+    if len(half_body_layers) != expected_half_body_layers:
+        raise FileNotFoundError(
+            "The Preview release requires all 75 layered half-body assets: "
+            f"{LAYERED_EXPRESSION_ROOT}"
+        )
+    for authority in ("idle.png", "idle_lean.png", "idle_front.png"):
+        if not (EXPRESSION_ROOT / authority).is_file():
+            raise FileNotFoundError(
+                f"Half-body identity authority is missing: {authority}"
+            )
     return POSE_ATLAS_ROOT
 
 
@@ -92,7 +116,7 @@ def _write_build_info(path: Path, version: str, target: str) -> None:
         json.dumps(
             {
                 "version": version,
-                "repository": "hitoshic1982/MoHan-PC-Desktop-Assistant",
+                "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant",
                 "python": platform.python_version(),
                 "jit_default": True,
                 "target": target,
@@ -154,6 +178,10 @@ def _pyinstaller(
             [
                 "--add-data",
                 f"{pose_atlas_root}{data_separator}assets/pose-atlas/v4",
+                "--add-data",
+                f"{LAYERED_POSE_ATLAS_ROOT}{data_separator}assets/pose-atlas/v4-layered",
+                "--add-data",
+                f"{EXPRESSION_ROOT}{data_separator}assets/expressions",
             ]
         )
     if target == "macos":

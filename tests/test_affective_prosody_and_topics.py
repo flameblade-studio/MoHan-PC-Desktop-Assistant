@@ -6,7 +6,7 @@ lazy from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from application.proactive_companion_runtime import _memory_check_in_text
-lazy from presentation.companion_speech_runtime import _emotion_rate_adjustment
+lazy from presentation.companion_speech_emotion import _emotion_rate_adjustment
 
 
 def test_emotion_rate_adjustment_slows_shy_and_speeds_happy() -> None:

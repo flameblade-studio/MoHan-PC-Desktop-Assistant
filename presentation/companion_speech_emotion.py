@@ -17,6 +17,8 @@ lazy from domain.expression_system import EXPRESSION_TO_EMOTION
 __all__ = (
     "_emotion_rate_adjustment",
     "_semantic_emotion_for_state",
+    "persist_wardrobe_mood",
+    "wardrobe_mood_for_state",
 )
 
 
@@ -71,6 +73,23 @@ _EMOTION_TO_SEMANTIC = frozendict({
     "protective": SemanticEmotion.SAFETY,
 })
 
+_WARDROBE_MOOD_BY_EMOTION = frozendict({
+    "attentive": "focused",
+    "gentle": "affectionate",
+    "happy": "cheerful",
+    "proud": "cheerful",
+    "relieved": "calm",
+    "amused": "cheerful",
+    "worried": "upset",
+    "sad": "upset",
+    "angry": "upset",
+    "scold": "upset",
+    "mock_hit": "upset",
+    "exasperated": "upset",
+    "reminder": "focused",
+    "protective": "affectionate",
+})
+
 
 def _semantic_emotion_for_state(state: str) -> SemanticEmotion:
     """Resolve an expression state to a semantic emotion for body direction."""
@@ -78,3 +97,18 @@ def _semantic_emotion_for_state(state: str) -> SemanticEmotion:
     if emotion_name is None:
         return SemanticEmotion.NEUTRAL
     return _EMOTION_TO_SEMANTIC.get(emotion_name, SemanticEmotion.NEUTRAL)
+
+
+def wardrobe_mood_for_state(state: str) -> str | None:
+    """Map a real expressive state into the wardrobe's stable mood vocabulary."""
+
+    emotion_name = EXPRESSION_TO_EMOTION.get(str(state))
+    return _WARDROBE_MOOD_BY_EMOTION.get(emotion_name) if emotion_name else None
+
+
+def persist_wardrobe_mood(db, state: str) -> None:
+    """Persist only expressive states that carry wardrobe context."""
+
+    mood = wardrobe_mood_for_state(state)
+    if mood is not None:
+        db.set_setting("current_mood", mood)

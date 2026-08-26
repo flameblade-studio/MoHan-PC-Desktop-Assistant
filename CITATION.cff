@@ -5,6 +5,7 @@ type: software
 authors:
   - family-names: "CHOU"
     given-names: "MING HUA"
+    orcid: "https://orcid.org/0009-0008-9643-8694"
 version: "3.1.2"
 date-released: "2026-08-13"
 license: MIT

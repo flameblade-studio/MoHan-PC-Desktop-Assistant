@@ -67,9 +67,20 @@ def test_affected_module_import_preserves_asyncio_to_thread(
     module_name: str,
 ) -> None:
     module = importlib.import_module(module_name)
-    importlib.reload(module)
-
-    assert _asyncio_to_thread_result() == EXPECTED_ASYNCIO_TO_THREAD_RESULT
+    # Reload is the subject of this test, but class redefinition is observable
+    # process-wide.  Restore published owner identities afterwards so this
+    # probe cannot invalidate compatibility aliases collected by other tests.
+    public_exports = {
+        name: getattr(module, name)
+        for name in getattr(module, "__all__", ())
+        if hasattr(module, name)
+    }
+    try:
+        importlib.reload(module)
+        assert _asyncio_to_thread_result() == EXPECTED_ASYNCIO_TO_THREAD_RESULT
+    finally:
+        for name, value in public_exports.items():
+            setattr(module, name, value)
 
 
 def test_concurrency_consumers_use_one_eager_compatibility_boundary() -> None:

@@ -203,10 +203,10 @@ def test_python315_node24_and_jit_release_contract() -> None:
 
     readme = read("README.md")
     for statement in (
-        "JIT 預設啟用",
-        "JIT 默认启用",
-        "JIT is on by default",
-        "JIT は既定で有効",
+        "Windows 安裝封裝版使用工作室維護的 Python",
+        "Windows 安装包使用工作室维护的 Python",
+        "The Windows installer uses the studio-maintained Python",
+        "Windows インストーラーは、スタジオ管理の Python",
     ):
         assert statement in readme, statement
 

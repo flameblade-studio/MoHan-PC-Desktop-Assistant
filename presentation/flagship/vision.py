@@ -130,11 +130,18 @@ class FlagshipVisionMixin:
         form.addRow(self._t("影像細節"), self.openai_vision_detail)
         form.addRow(self._t("觸發策略"), self.openai_vision_trigger)
         form.addRow(
-            self._t("每日分析上限"), self.openai_vision_daily_limit
+            self._t("每日分析上限"),
+            self._companion_step_control(
+                self.openai_vision_daily_limit,
+                "openaiVisionDailyLimit",
+            ),
         )
         form.addRow(
             self._t("每分鐘分析上限"),
-            self.openai_vision_per_minute_limit,
+            self._companion_step_control(
+                self.openai_vision_per_minute_limit,
+                "openaiVisionPerMinuteLimit",
+            ),
         )
         form.addRow(self.openai_vision_object_semantics)
         form.addRow(self.openai_vision_web_suggestions)

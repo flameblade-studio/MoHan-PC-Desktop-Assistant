@@ -60,6 +60,15 @@ lazy from domain.service_status_localization import (
 )
 lazy from integrations.speech_windows_synthesis import WindowsSpeechSynthesisMethods
 
+MAX_TTS_RESPONSE_BYTES = 32 * 1024 * 1024
+
+
+def _emit_qt_callback_safely(callback: Callable[..., None], *args: object) -> None:
+    try:
+        callback(*args)
+    except RuntimeError:
+        return
+
 __all__ = (
     "DEFAULT_TRANSCRIPTION_MODEL",
     "DEFAULT_TRANSCRIPTION_PROMPT",
@@ -284,7 +293,7 @@ class WindowsTTS(QObject):
 
     def _emit_finished(self, generation: int) -> None:
         if self._is_current(generation):
-            self._finished_ready.emit(generation)
+            _emit_qt_callback_safely(self._finished_ready.emit, generation)
 
     def _deliver_finished(self, generation: int) -> None:
         with self._state_lock:
@@ -293,7 +302,7 @@ class WindowsTTS(QObject):
 
     def _emit_failed(self, generation: int, message: str) -> None:
         if self._is_current(generation):
-            self._failed_ready.emit(generation, message)
+            _emit_qt_callback_safely(self._failed_ready.emit, generation, message)
 
     def _deliver_failed(self, generation: int, message: str) -> None:
         with self._state_lock:
@@ -307,7 +316,9 @@ class WindowsTTS(QObject):
         vowel: str,
     ) -> None:
         if self._is_current(generation):
-            self._viseme_ready.emit(generation, level, vowel)
+            _emit_qt_callback_safely(
+                self._viseme_ready.emit, generation, level, vowel
+            )
 
     def _deliver_viseme(
         self,
@@ -584,7 +595,7 @@ class OpenAITTS(QObject):
 
     def _emit_finished(self, generation: int) -> None:
         if self._is_current(generation):
-            self._finished_ready.emit(generation)
+            _emit_qt_callback_safely(self._finished_ready.emit, generation)
 
     def _deliver_finished(self, generation: int) -> None:
         with self._state_lock:
@@ -593,7 +604,7 @@ class OpenAITTS(QObject):
 
     def _emit_failed(self, generation: int, message: str) -> None:
         if self._is_current(generation):
-            self._failed_ready.emit(generation, message)
+            _emit_qt_callback_safely(self._failed_ready.emit, generation, message)
 
     def _deliver_failed(self, generation: int, message: str) -> None:
         with self._state_lock:
@@ -607,7 +618,9 @@ class OpenAITTS(QObject):
         vowel: str,
     ) -> None:
         if self._is_current(generation):
-            self._viseme_ready.emit(generation, level, vowel)
+            _emit_qt_callback_safely(
+                self._viseme_ready.emit, generation, level, vowel
+            )
 
     def _deliver_viseme(
         self,
@@ -684,7 +697,9 @@ class OpenAITTS(QObject):
         try:
             self._ensure_current(generation)
             with urlopen(request, timeout=60) as response:
-                audio = response.read()
+                audio = response.read(MAX_TTS_RESPONSE_BYTES + 1)
+            if len(audio) > MAX_TTS_RESPONSE_BYTES:
+                raise RuntimeError("speech-response-too-large")
             self._ensure_current(generation)
             self._play_wave_bytes(audio, generation)
             self._emit_finished(generation)

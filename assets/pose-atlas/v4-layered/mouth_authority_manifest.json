@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "views": {
+    "yaw+000-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 510.898681640625
+    }
+  },
+  "notes": {
+    "source": "Contract value from tests/test_mouth_authority_geometry.py EXPECTED_YAW000_CENTER_X, ratified in the v4.4.2 mouth-geometry work; the manifest file itself was never written to disk in that session.",
+    "cross_check_2026_08_27": "Alpha-weighted centroid x of yaw+000 lip_upper+lip_lower layers measured 512.0000 (delta 1.10 px vs the trusted value). Recalibrate via a full owner-reviewed mouth-landmark pass before trusting any additional views.",
+    "other_views": "All other views intentionally omitted (untrusted) pending owner-reviewed calibration."
+  }
+}

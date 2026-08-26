@@ -56,7 +56,10 @@ class PerformanceBridgeOptions:
     clock: Callable[[], float] | None = None
     rng: random.Random | None = None
     seed: int | None = None
-    minimum_render_interval_seconds: float = 0.05
+    # Mouth cues are produced on the shared 50 Hz performance clock.  Keeping
+    # the bridge at 20 Hz silently discarded most visemes before they reached
+    # either layered renderer, making the new animation path look inert.
+    minimum_render_interval_seconds: float = 0.02
 
 
 class _ExistingSpeechPairTimeline:

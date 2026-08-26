@@ -27,33 +27,33 @@ PNG_FILES = {
 README_BADGES = (
     (
         "Windows CI",
-        ("https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        ("https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/"
         "actions/workflows/windows-ci.yml/badge.svg"),
     ),
     (
         "Cross-platform core CI",
-        ("https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        ("https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/"
         "actions/workflows/cross-platform-core.yml/badge.svg"),
     ),
     (
         "CodeQL",
-        ("https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        ("https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/"
         "actions/workflows/codeql.yml/badge.svg"),
     ),
     (
         "Python Security Audit",
-        ("https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        ("https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/"
         "actions/workflows/security-audit.yml/badge.svg"),
     ),
     (
         "Extended Secret Defense / Gitleaks",
-        ("https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/"
+        ("https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/"
         "actions/workflows/secret-defense.yml/badge.svg"),
     ),
     (
         "Latest Published Release",
         ("https://img.shields.io/github/v/release/"
-        "hitoshic1982/MoHan-PC-Desktop-Assistant?"
+        "flameblade-studio/MoHan-PC-Desktop-Assistant?"
         "include_prereleases&label=published"),
     ),
     ("MIT License", "https://img.shields.io/badge/license-MIT-blue.svg"),

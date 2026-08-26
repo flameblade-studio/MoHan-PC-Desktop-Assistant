@@ -70,7 +70,7 @@ def _assert_blush_survives_front_blink(window: CompanionWindow) -> None:
     ), "front blink replaced the expression's blush with neutral skin"
 
 
-def _assert_blink_uses_progressive_layer_opacity(
+def _assert_blink_uses_discrete_authority_frames(
     window: CompanionWindow,
 ) -> None:
     expression = "idle_front"
@@ -87,12 +87,34 @@ def _assert_blink_uses_progressive_layer_opacity(
         changed_pixel_count(base_image, closed, region)
         for region in eye_regions
     )
-    assert 0 < partial_change <= closed_change
+    assert partial_change == 0
+    assert closed_change > 0
+    assert all(
+        region_signature(partial, region)
+        == region_signature(base_image, region)
+        for region in eye_regions
+    ), "missing half authority must preserve rest instead of faking a blend"
     assert any(
         region_signature(partial, region)
         != region_signature(closed, region)
         for region in eye_regions
-    ), "partial and fully closed eyelids must not be identical"
+    ), "closed authority must remain distinct from fail-closed HALF"
+
+    # The runtime consumes a distinct registered HALF authority when present;
+    # inject the already registered closed pixmap under the HALF key only to
+    # prove routing (not to assert that the two authored states look alike).
+    window.expression_pixmaps["blink_half_front"] = window.expression_pixmaps[
+        "blink_front"
+    ]
+    try:
+        authored_half = window._blink_composite(base, expression, 0.5).toImage()
+        assert all(
+            region_signature(authored_half, region)
+            == region_signature(closed, region)
+            for region in eye_regions
+        )
+    finally:
+        window.expression_pixmaps.pop("blink_half_front", None)
 
 
 def _assert_chin_rest_smile_uses_neutral_speech_mouth(
@@ -155,7 +177,7 @@ def run() -> None:
             for timer in window.findChildren(QTimer):
                 timer.stop()
             _assert_blush_survives_front_blink(window)
-            _assert_blink_uses_progressive_layer_opacity(window)
+            _assert_blink_uses_discrete_authority_frames(window)
             _assert_chin_rest_smile_uses_neutral_speech_mouth(window)
             _assert_left_facing_mouth_replaces_right_corner(window)
         finally:

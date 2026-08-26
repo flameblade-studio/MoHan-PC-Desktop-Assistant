@@ -585,8 +585,10 @@ class DashboardVoiceMixin:
         return combo
 
     def _apply_realtime_output_mode_state(self, mode: str) -> None:
-        native_output = mode == REALTIME_OUTPUT_OPENAI
-        self.realtime_voice.setEnabled(native_output)
+        # The selected output route decides which provider speaks; it must not
+        # prevent the user from preselecting the native Realtime voice that
+        # will be used after switching back to OpenAI output.
+        self.realtime_voice.setEnabled(True)
         if mode == REALTIME_OUTPUT_AZURE:
             note = self._t(
                 "realtime_output_note_azure",

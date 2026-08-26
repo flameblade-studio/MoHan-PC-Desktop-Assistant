@@ -155,6 +155,7 @@ class CompanionCoreMixin:
                     assets=PoseAtlasAssets(
                         resource_path("assets/pose-atlas/v4"),
                         image_size=CHARACTER_IMAGE_SIZE,
+                        outfit_overlay=self.presentation_ports.outfit_overlay_factory(),
                     ),
                 )
             )
@@ -521,10 +522,21 @@ class CompanionCoreMixin:
             dashboard.hide()
 
     def _set_gesture_audio_muted(self, muted: bool) -> None:
+        """Apply a camera gesture mute for this process only.
+
+        Visual recognition is probabilistic.  It must never rewrite the
+        user's persisted global mute preference merely because one camera
+        frame looked like the silence gesture.
+        """
+
         dashboard = getattr(self, "dashboard", None)
         if dashboard is None:
             return
-        dashboard.voice_muted.setChecked(bool(muted))
+        self._gesture_audio_muted = bool(muted)
+        self._apply_voice_volume(
+            int(self.db.setting("voice_volume_percent", 100)),
+            bool(self.db.setting("voice_muted", False)) or self._gesture_audio_muted,
+        )
 
     def _stop_current_speech_from_gesture(self) -> None:
         for engine in (
@@ -970,6 +982,9 @@ class CompanionCoreMixin:
             self.realtime_speech_output.failed.connect(self._realtime_failed)
 
     def _initialize_companion_state(self, startup_speech: bool) -> None:
+        # Camera gestures may temporarily silence this process, but never
+        # persist a global mute preference across application restarts.
+        self._gesture_audio_muted = False
         self.state = "idle"
         self.expression_generation = 0
         self.expression_arbiter = ExpressionArbiter(

@@ -118,7 +118,7 @@ def bridge(clock: Clock):
         published.append,
         clock=clock,
         seed=3,
-        minimum_render_interval_seconds=0.05,
+        minimum_render_interval_seconds=0.02,
     )
     return value, renderer, published
 
@@ -184,7 +184,7 @@ def assert_50hz_throttle_but_lifecycle_bypasses() -> None:
         input_value(viseme_event, viseme_directive, behavior_generation=3)
     ) is BridgeDisposition.THROTTLED
     assert len(published) == EXPECTED_PUBLISHED_COUNT and renderer.calls == EXPECTED_PUBLISHED_COUNT
-    clock.advance(0.06)
+    clock.advance(0.02)
     assert app_bridge.dispatch(
         input_value(viseme_event, viseme_directive, behavior_generation=3)
     ) is BridgeDisposition.EMITTED

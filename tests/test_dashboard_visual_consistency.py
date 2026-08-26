@@ -29,8 +29,8 @@ lazy from presentation.presentation_resources import resource_path
 DASHBOARD_TAB_COUNT = 8
 NAVIGATION_BUTTON_COUNT = 8
 SPLITTER_PANE_COUNT = 2
-SPLITTER_LEFT_MIN_WIDTH = 400
-SPLITTER_RIGHT_MIN_WIDTH = 500
+SPLITTER_LEFT_MIN_WIDTH = 220
+SPLITTER_RIGHT_MIN_WIDTH = 360
 
 
 def _frames(page, role: str) -> tuple[QFrame, ...]:
@@ -96,11 +96,25 @@ def run() -> None:
                 assert splitter.widget(0).minimumWidth() >= SPLITTER_LEFT_MIN_WIDTH, title
                 assert splitter.widget(1).minimumWidth() >= SPLITTER_RIGHT_MIN_WIDTH, title
                 assert splitter.widget(1).width() >= SPLITTER_RIGHT_MIN_WIDTH, title
+                assert (
+                    splitter.widget(0).geometry().right()
+                    < splitter.widget(1).geometry().left()
+                ), title
                 assert page.findChild(
                     QLabel,
                     "dashboardCharacterStagePortrait",
                 ) is None, title
                 assert page.property("mohanRole") == "featurePage", title
+            chat_page = dashboard.tabs.widget(0)
+            chat_splitter = chat_page.findChild(QSplitter, "featurePageSplitter")
+            assert chat_splitter is not None
+            for compact_width in (900, 720):
+                dashboard.resize(compact_width, 660)
+                application.processEvents()
+                left = chat_splitter.widget(0).geometry()
+                right = chat_splitter.widget(1).geometry()
+                assert left.right() < right.left(), compact_width
+                assert right.right() <= chat_splitter.contentsRect().right(), compact_width
             settings_index = next(
                 index
                 for index in range(dashboard.tabs.count())

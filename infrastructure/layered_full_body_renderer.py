@@ -14,8 +14,8 @@ from __future__ import annotations
 lazy from collections import OrderedDict
 lazy from pathlib import Path
 
-lazy from PySide6.QtCore import Qt
-lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion
+lazy from PySide6.QtCore import QRectF, Qt
+lazy from PySide6.QtGui import QPainter, QPixmap, QRegion
 
 lazy from domain.constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.face_rig import FaceMotionFrame, Viseme
@@ -25,6 +25,7 @@ lazy from infrastructure.layered_full_body_assets import (
     VIEW_IDS,
     load_layered_full_body_assets,
 )
+lazy from infrastructure.mouth_geometry import inward_lerped_u_layer
 
 MOUTH_APERTURE_THRESHOLD = 0.01
 # Iris translation scale: gaze_x/gaze_y are normalized to [-1, 1]; this maps
@@ -47,18 +48,42 @@ GESTURE_ENERGY_THRESHOLD = 0.45
 FULL_BODY_ASSET_DIR = Path("assets") / "pose-atlas" / "v4-layered"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 50
+SEAM_HEAL_RADIUS = 7
+REGISTERED_COMPOSITE_LAYERS = (
+    # oral_cavity / teeth_tongue are clean speech overlays rebuilt by
+    # tools/rebuild_pose_atlas_mouth_layers.py; unlike the legacy skin
+    # replacement cut-outs, their edges must not be healed back to neutral.
+    "body", "hair_back", "base", "jaw", "lip_lower", "lip_upper",
+    "corner_left", "corner_right", "blush_left", "blush_right", "iris_left",
+    "iris_right", "eyelid_left", "eyelid_right", "eyeliner_left",
+    "eyeliner_right", "brow_left", "brow_right", "hair_left", "hair_right",
+    "sleeve_left", "sleeve_right", "ornament",
+)
+FACE_AUTHORITY_REGION_LAYERS = (
+    "base", "jaw", "lip_lower", "lip_upper", "corner_left", "corner_right",
+    "blush_left", "blush_right", "iris_left", "iris_right", "eyelid_left",
+    "eyelid_right", "eyeliner_left", "eyeliner_right", "brow_left",
+    "brow_right",
+)
 
 
 class LayeredFullBodyRenderer:
     """Compose the 25 authored layers across 24 yaw views."""
 
-    def __init__(self, manifest: LayeredFullBodyManifest | None = None) -> None:
+    def __init__(
+        self,
+        manifest: LayeredFullBodyManifest | None = None,
+        outfit_overlay=None,
+    ) -> None:
         self._manifest = manifest
+        self._outfit_overlay = outfit_overlay
         # Two adjacent 25-layer views are sufficient for one interpolated
         # frame. Keeping all 600 decoded 1024x1536 RGBA layers retained roughly
         # 3.5 GiB before Qt/GPU copies and triggered Windows RADAR pre-leak
         # detection in the packaged runtime.
         self._pixmap_cache: OrderedDict[str, QPixmap] = OrderedDict()
+        self._seam_region_cache: dict[str, QRegion] = {}
+        self._face_region_cache: dict[str, QRegion] = {}
 
     def _manifest_or_load(self) -> LayeredFullBodyManifest:
         if self._manifest is None:
@@ -113,6 +138,20 @@ class LayeredFullBodyRenderer:
         self._paint_translated(result, view.path("sleeve_left"), dy=left_lift)
         self._paint_translated(result, view.path("sleeve_right"), dy=right_lift)
         self._paint_opacity(result, view.path("ornament"), 1.0)
+        self._heal_registered_seams(result, view)
+        self._restore_authority_face(result, view)
+        # Authority restoration removes seam-healing artefacts, but also
+        # restores the neutral eye pixels. Re-apply only bounded eye motion
+        # afterwards so dynamic pixels cannot escape their authored masks.
+        self._paint_dynamic_eye_layers(result, view, motion)
+        self._paint_u_lip_layers(result, view, motion.mouth.u_inward)
+        if (
+            motion.viseme is not Viseme.CLOSED
+            or motion.mouth.aperture > MOUTH_APERTURE_THRESHOLD
+        ):
+            self._paint_visible_cavity(result, view, motion.mouth)
+        if self._outfit_overlay is not None:
+            result = self._outfit_overlay.apply(result, view_id)
 
         # Breathing moves the atomically composed character. Moving only the
         # body below stationary hair and face layers creates visible seams.
@@ -176,13 +215,11 @@ class LayeredFullBodyRenderer:
         # ``jaw`` is a registered replacement cutout. Translating and painting
         # a second copy produces the floating chin fragment seen at runtime.
 
-        self._paint_opacity(result, view.path("oral_cavity"), 1.0)
-        self._paint_opacity(result, view.path("teeth_tongue"), 1.0)
+        # The rebuilt oral-cavity layer is an accepted authority speech mouth,
+        # not a neutral skin replacement. Keep it absent while closed;
+        # registered lip/corner cut-outs below reconstruct the authority mouth.
         self._paint_opacity(result, view.path("lip_lower"), 1.0)
         self._paint_opacity(result, view.path("lip_upper"), 1.0)
-        if motion.viseme is not Viseme.CLOSED or mouth.aperture > MOUTH_APERTURE_THRESHOLD:
-            self._paint_visible_cavity(result, view, mouth)
-
         self._paint_opacity(result, view.path("corner_left"), 1.0)
         self._paint_opacity(result, view.path("corner_right"), 1.0)
         corner = mouth.corner_smile
@@ -192,9 +229,6 @@ class LayeredFullBodyRenderer:
 
         self._paint_opacity(result, view.path("blush_left"), 1.0)
         self._paint_opacity(result, view.path("blush_right"), 1.0)
-        if expression.blush > 0.0:
-            self._paint_opacity(result, view.path("blush_left"), expression.blush)
-            self._paint_opacity(result, view.path("blush_right"), expression.blush)
 
         # Irises: translate by the gaze vector so the eyes track the pointer,
         # the shy look-away, and the natural saccade.  The offset is small and
@@ -216,18 +250,91 @@ class LayeredFullBodyRenderer:
         self._paint_opacity(result, view.path("eyelid_right"), 1.0)
         self._paint_opacity(result, view.path("eyeliner_left"), 1.0)
         self._paint_opacity(result, view.path("eyeliner_right"), 1.0)
-        if expression.blink > 0.0:
-            self._paint_opacity(result, view.path("eyelid_left"), expression.blink)
-            self._paint_opacity(result, view.path("eyelid_right"), expression.blink)
-            self._paint_opacity(result, view.path("eyeliner_left"), expression.blink)
-            self._paint_opacity(result, view.path("eyeliner_right"), expression.blink)
 
         self._paint_opacity(result, view.path("brow_left"), 1.0)
         self._paint_opacity(result, view.path("brow_right"), 1.0)
-        brow_dy = -expression.brow_lift * 3.0 + expression.brow_tension * 1.5
-        if abs(brow_dy) >= FLOAT_COMPARISON_EPSILON:
-            self._paint_translated(result, view.path("brow_left"), dy=brow_dy)
-            self._paint_translated(result, view.path("brow_right"), dy=brow_dy)
+
+        # Eyelid, brow and blush assets are neutral registered replacements.
+        # Repainting them for a control value alpha-composites the same skin
+        # cut-out twice and reveals its circular/oval calibration boundary at
+        # runtime.  Keep each replacement atomic; only the mouth cavity is a
+        # safe deformable full-body feature in the current authored set.
+        _ = expression
+
+    def _heal_registered_seams(
+        self,
+        target: QPixmap,
+        view: LayeredFullBodyView,
+    ) -> None:
+        """Colour-register only authored cut-out boundaries to the view authority."""
+
+        region = self._seam_region_cache.get(view.view_id)
+        if region is None:
+            region = QRegion()
+            offsets = tuple(
+                (dx, dy)
+                for dx in range(-SEAM_HEAL_RADIUS, SEAM_HEAL_RADIUS + 1)
+                for dy in range(-SEAM_HEAL_RADIUS, SEAM_HEAL_RADIUS + 1)
+                if abs(dx) + abs(dy) <= SEAM_HEAL_RADIUS
+            )
+            for layer_name in REGISTERED_COMPOSITE_LAYERS:
+                path = view.path(layer_name)
+                if path is None:
+                    continue
+                source = self._cached_pixmap(path)
+                if source.isNull():
+                    continue
+                source_region = QRegion(source.mask())
+                if source_region.isEmpty():
+                    continue
+                outer = QRegion(source_region)
+                inner = QRegion(source_region)
+                for dx, dy in offsets:
+                    outer = outer.united(source_region.translated(dx, dy))
+                    inner = inner.intersected(source_region.translated(dx, dy))
+                region = region.united(outer.subtracted(inner))
+            self._seam_region_cache[view.view_id] = region
+        if region.isEmpty():
+            return
+        authority = self._cached_pixmap(
+            PROJECT_ROOT / "assets" / "pose-atlas" / "v4" / f"{view.view_id}.png"
+        )
+        if authority.isNull():
+            return
+        painter = QPainter(target)
+        painter.setClipRegion(region)
+        painter.drawPixmap(0, 0, authority)
+        painter.end()
+
+    def _restore_authority_face(
+        self,
+        target: QPixmap,
+        view: LayeredFullBodyView,
+    ) -> None:
+        """Remove broad skin-cutout artefacts without replacing body layers."""
+
+        region = self._face_region_cache.get(view.view_id)
+        if region is None:
+            region = QRegion()
+            for layer_name in FACE_AUTHORITY_REGION_LAYERS:
+                path = view.path(layer_name)
+                if path is None:
+                    continue
+                source = self._cached_pixmap(path)
+                if not source.isNull():
+                    region = region.united(QRegion(source.mask()))
+            self._face_region_cache[view.view_id] = region
+        if region.isEmpty():
+            return
+        authority = self._cached_pixmap(
+            PROJECT_ROOT / "assets" / "pose-atlas" / "v4" / f"{view.view_id}.png"
+        )
+        if authority.isNull():
+            return
+        painter = QPainter(target)
+        painter.setClipRegion(region)
+        painter.drawPixmap(0, 0, authority)
+        painter.end()
 
     @staticmethod
     def _translated_frame(source: QPixmap, dy: float, dx: float = 0.0) -> QPixmap:
@@ -274,6 +381,56 @@ class LayeredFullBodyRenderer:
         painter.end()
         return result
 
+    def _paint_dynamic_eye_layers(
+        self,
+        target: QPixmap,
+        view: LayeredFullBodyView,
+        motion: FaceMotionFrame,
+    ) -> None:
+        """Re-apply blink and gaze after authority restoration, mask-confined."""
+
+        expression = motion.expression_shape
+        gaze_dx = round(float(motion.gaze_x) * IRIS_GAZE_SCALE_X)
+        gaze_dy = round(float(motion.gaze_y) * IRIS_GAZE_SCALE_Y)
+        if gaze_dx or gaze_dy:
+            gaze_layers = ("iris_left", "iris_right")
+            gaze_region = QRegion()
+            for layer_name in gaze_layers:
+                source = self._cached_pixmap(view.path(layer_name))
+                if not source.isNull():
+                    gaze_region = gaze_region.united(QRegion(source.mask()))
+            if not gaze_region.isEmpty():
+                painter = QPainter(target)
+                painter.setClipRegion(gaze_region)
+                for layer_name in gaze_layers:
+                    source = self._cached_pixmap(view.path(layer_name))
+                    if not source.isNull():
+                        painter.drawPixmap(gaze_dx, gaze_dy, source)
+                painter.end()
+
+        blink = min(1.0, max(0.0, float(expression.blink)))
+        if blink > 1e-6:
+            blink_layers = (
+                "eyelid_left",
+                "eyelid_right",
+                "eyeliner_left",
+                "eyeliner_right",
+            )
+            blink_region = QRegion()
+            for layer_name in blink_layers:
+                source = self._cached_pixmap(view.path(layer_name))
+                if not source.isNull():
+                    blink_region = blink_region.united(QRegion(source.mask()))
+            if not blink_region.isEmpty():
+                blink_dy = max(1, round(blink * 4.0))
+                painter = QPainter(target)
+                painter.setClipRegion(blink_region)
+                for layer_name in blink_layers:
+                    source = self._cached_pixmap(view.path(layer_name))
+                    if not source.isNull():
+                        painter.drawPixmap(0, blink_dy, source)
+                painter.end()
+
     @staticmethod
     def _next_view(view_id: str) -> str:
         index = VIEW_IDS.index(view_id)
@@ -309,33 +466,79 @@ class LayeredFullBodyRenderer:
         view: LayeredFullBodyView,
         mouth,
     ) -> None:
-        """Reveal a compact natural cavity inside the registered lip texture.
-
-        The authored full-body mouth cutouts contain neutral skin/lip colour
-        and some are registered over the chin rather than the visible mouth.
-        Use the per-view face-base bounds to locate the actual mouth and paint
-        only its inner opening, preserving the surrounding layered portrait.
-        """
-        path = view.path("base")
-        if path is None:
+        """Fade in the accepted registered speech mouth without skin motion."""
+        cavity_path = view.path("oral_cavity")
+        if cavity_path is None:
             return
-        source = self._cached_pixmap(path)
-        if source.isNull():
+        cavity_source = self._cached_pixmap(cavity_path)
+        if cavity_source.isNull():
             return
-        bounds = QRegion(source.mask()).boundingRect()
+        bounds = QRegion(cavity_source.mask()).boundingRect()
+        if bounds.isEmpty():
+            # Back-side views intentionally contain no visible mouth.
+            return
         aperture = max(0.0, min(1.0, float(mouth.aperture)))
-        width = max(2.0, bounds.width() * (0.16 + mouth.width * 0.08))
-        height = max(1.5, bounds.height() * (0.003 + aperture * 0.024))
-        center_x = bounds.center().x()
-        center_y = bounds.y() + bounds.height() * 0.57
-        painter = QPainter(target)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setPen(Qt.NoPen)
-        painter.setBrush(QColor(75, 26, 36, 220))
-        painter.drawEllipse(
-            round(center_x - width / 2.0),
-            round(center_y - height / 2.0),
-            max(1, round(width)),
-            max(1, round(height)),
+        # This layer is a tightly cropped, softly feathered copy of the
+        # matching yaw view's own authority mouth.  Some accepted packs keep
+        # identical RGB at rest, so opacity alone cannot create speech. Apply
+        # a small, mouth-centred vertical aperture to this semantic cut-out;
+        # the transparent full-canvas registration keeps the deformation away
+        # from the chin and surrounding skin.
+        aperture_scale = 1.0 + aperture * 0.22
+        target_height = float(bounds.height()) * aperture_scale
+        target_rect = QRectF(
+            float(bounds.x()),
+            float(bounds.center().y()) - target_height / 2.0,
+            float(bounds.width()),
+            target_height,
         )
+        source_rect = QRectF(bounds)
+        base_source = self._cached_pixmap(view.path("base"))
+        face_bounds = QRegion(base_source.mask()).boundingRect()
+        protected_chin_y = round(
+            face_bounds.y() + face_bounds.height() * 0.76
+        )
+        mouth_clip = QRectF(
+            float(bounds.x()),
+            target_rect.y(),
+            float(bounds.width()),
+            max(0.0, float(protected_chin_y) - target_rect.y()),
+        )
+        painter = QPainter(target)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+        painter.setClipRect(mouth_clip)
+        painter.setOpacity(min(1.0, aperture / 0.24))
+        painter.drawPixmap(target_rect, cavity_source, source_rect)
         painter.end()
+
+    def _paint_u_lip_layers(
+        self,
+        target: QPixmap,
+        view: LayeredFullBodyView,
+        u_inward: float,
+    ) -> None:
+        """Apply U inward motion only to canonical semantic lip pixels."""
+
+        if view.mouth_center_x is None or u_inward <= 0.0:
+            return
+        for layer_name in (
+            "lip_upper",
+            "lip_lower",
+            "corner_left",
+            "corner_right",
+        ):
+            path = view.path(layer_name)
+            if path is None:
+                continue
+            source = self._cached_pixmap(path)
+            if source.isNull():
+                continue
+            transformed = inward_lerped_u_layer(
+                source,
+                view.mouth_center_x,
+                u_inward,
+            )
+            painter = QPainter(target)
+            painter.setRenderHint(QPainter.SmoothPixmapTransform)
+            painter.drawPixmap(0, 0, transformed)
+            painter.end()

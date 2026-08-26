@@ -165,7 +165,7 @@ class FlagshipRuntimeMixin:
             "assistant": str(self.db.setting("assistant_name", "墨寒")),
             "status": "starting",
         }
-        self._remote_commands: queue.Queue[tuple[str, str]] = queue.Queue()
+        self._remote_commands: queue.Queue[tuple[str, str]] = queue.Queue(maxsize=128)
         self._permission_controls: dict[str, QComboBox] = {}
         self._configure_executor()
 

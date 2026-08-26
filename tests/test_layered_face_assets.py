@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 lazy from PySide6.QtCore import Qt
-lazy from PySide6.QtGui import QPixmap
+lazy from PySide6.QtGui import QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from domain.face_rig import (
@@ -28,6 +28,7 @@ lazy from infrastructure.layered_face_assets import (
 )
 lazy from infrastructure.layered_face_renderer import (
     MAX_CACHED_LAYER_PIXMAPS,
+    MAX_CACHED_MASK_BOUNDS,
     MAX_CACHED_NEUTRAL_POSES,
     LayeredParametricFaceRenderer,
 )
@@ -82,6 +83,40 @@ def test_renderer_handles_open_mouth_and_blink() -> None:
     )
     out = renderer.render_pose(manifest.pose(FacePose.FRONT), frame)
     assert not out.isNull()
+
+
+def test_registered_control_cutouts_are_not_double_painted() -> None:
+    """Control values must not expose the authored extraction boundaries."""
+
+    _app()
+    manifest = load_layered_face_assets(LAYERED_DIR)
+    renderer = LayeredParametricFaceRenderer(manifest)
+    neutral_controls = FaceMotionFrame(
+        FacePose.FRONT,
+        "speaking_front",
+        Viseme.A,
+        MouthShape(aperture=0.82, width=0.72, rounding=0.12),
+        ExpressionShape(),
+    )
+    active_controls = FaceMotionFrame(
+        FacePose.FRONT,
+        "speaking_front",
+        Viseme.A,
+        MouthShape(aperture=0.82, width=0.72, rounding=0.12),
+        ExpressionShape(
+            blink=0.85,
+            brow_lift=0.7,
+            brow_tension=0.6,
+            blush=0.9,
+        ),
+    )
+    assert renderer.render_pose(
+        manifest.pose(FacePose.FRONT),
+        active_controls,
+    ).toImage() == renderer.render_pose(
+        manifest.pose(FacePose.FRONT),
+        neutral_controls,
+    ).toImage()
 
 
 def _sampled_identity_error(
@@ -156,6 +191,31 @@ def test_renderer_port_entry_scales_to_base_size() -> None:
     assert out.size() == base.size()
 
 
+def test_renderer_applies_active_outfit_to_the_matching_half_body_pose() -> None:
+    _app()
+
+    class Overlay:
+        calls: list[str] = []
+
+        def apply(self, frame: QPixmap, view_id: str) -> QPixmap:
+            self.calls.append(view_id)
+            return frame
+
+    overlay = Overlay()
+    renderer = LayeredParametricFaceRenderer(outfit_overlay=overlay)
+    frame = FaceMotionFrame(
+        FacePose.FRONT,
+        "idle_front",
+        Viseme.CLOSED,
+        MouthShape(),
+        ExpressionShape(),
+    )
+    base = QPixmap(465, 465)
+    base.fill(Qt.transparent)
+    assert not renderer.render(base, frame, None).isNull()
+    assert overlay.calls == ["front-crossed"]
+
+
 def test_decoded_layer_cache_stays_bounded_across_pose_changes() -> None:
     _app()
     manifest = load_layered_face_assets(LAYERED_DIR)
@@ -178,14 +238,36 @@ def test_decoded_layer_cache_stays_bounded_across_pose_changes() -> None:
     assert len(renderer._top_pose_cache) == len(FacePose)
 
 
+def test_transient_speech_mask_bounds_cache_stays_bounded() -> None:
+    _app()
+    renderer = LayeredParametricFaceRenderer()
+    target = QPixmap(128, 128)
+    target.fill(Qt.transparent)
+    source = QPixmap(128, 128)
+    source.fill(Qt.white)
+    masks: list[QPixmap] = []
+    for index in range(MAX_CACHED_MASK_BOUNDS + 17):
+        mask = QPixmap(128, 128)
+        mask.fill(Qt.transparent)
+        painter = QPainter(mask)
+        painter.fillRect(8 + (index % 12), 52, 34, 18, Qt.white)
+        painter.end()
+        masks.append(mask)
+        renderer._paint_masked(target, source, mask, 1.0)
+        assert len(renderer._mask_bounds_cache) <= MAX_CACHED_MASK_BOUNDS
+    assert len(renderer._mask_bounds_cache) == MAX_CACHED_MASK_BOUNDS
+
+
 def run() -> None:
     test_layered_manifest_loads_all_three_poses()
     test_each_pose_has_all_twenty_five_layers()
     test_renderer_produces_non_null_frame_for_every_pose()
     test_renderer_handles_open_mouth_and_blink()
+    test_registered_control_cutouts_are_not_double_painted()
     test_neutral_renderer_reconstructs_authority_portraits()
     test_renderer_port_entry_scales_to_base_size()
     test_decoded_layer_cache_stays_bounded_across_pose_changes()
+    test_transient_speech_mask_bounds_cache_stays_bounded()
     print("LAYERED_FACE_ASSETS_OK")
 
 

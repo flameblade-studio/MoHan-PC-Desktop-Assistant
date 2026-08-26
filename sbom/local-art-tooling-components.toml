@@ -1,0 +1,24 @@
+schema = 1
+profile = "local-art-tooling"
+
+[[component]]
+name = "BiRefNet_HR-matting"
+version = "5d6b6f8adcb5b417c871b1d84ceaae9871355b7f"
+license = "MIT"
+scope = "offline-art-production"
+profiles = ["local-art-tooling"]
+source = "https://huggingface.co/ZhengPeng7/BiRefNet_HR-matting/tree/5d6b6f8adcb5b417c871b1d84ceaae9871355b7f"
+license_file = "third_party_licenses/BiRefNet-LICENSE.txt"
+distributed_in_runtime = false
+distributed_in_installer = false
+
+[[component]]
+name = "InstantMesh"
+version = "08822c52fdc399b93ea00e4fa9e596344ed52ccc"
+license = "Apache-2.0"
+scope = "offline-art-production"
+profiles = ["local-art-tooling"]
+source = "https://github.com/TencentARC/InstantMesh/tree/08822c52fdc399b93ea00e4fa9e596344ed52ccc"
+license_file = "third_party_licenses/InstantMesh-LICENSE.txt"
+distributed_in_runtime = false
+distributed_in_installer = false

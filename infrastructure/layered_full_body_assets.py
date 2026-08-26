@@ -15,6 +15,8 @@ layer as an empty (transparent) layer rather than a hard failure.
 from __future__ import annotations
 
 lazy import struct
+lazy import json
+lazy import math
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
@@ -55,6 +57,7 @@ class LayeredFullBodyView:
 
     view_id: str
     layers: frozendict[str, Path]
+    mouth_center_x: float | None = None
 
     def path(self, layer: str) -> Path | None:
         return self.layers.get(layer)
@@ -81,6 +84,7 @@ def _png_dimensions(path: Path) -> tuple[int, int]:
 def load_layered_full_body_assets(root: Path) -> LayeredFullBodyManifest:
     """Load and validate all 600 full-body layers, failing closed on gaps."""
 
+    authority_centers = _load_authority_mouth_centers(root)
     views: dict[str, LayeredFullBodyView] = {}
     for view_id in VIEW_IDS:
         layers: dict[str, Path] = {}
@@ -100,5 +104,33 @@ def load_layered_full_body_assets(root: Path) -> LayeredFullBodyManifest:
                     f"unexpected full-body dimensions: {view_id}_{layer}.png"
                 )
             layers[layer] = path
-        views[view_id] = LayeredFullBodyView(view_id, frozendict(layers))
+        views[view_id] = LayeredFullBodyView(
+            view_id,
+            frozendict(layers),
+            authority_centers.get(view_id),
+        )
     return LayeredFullBodyManifest(frozendict(views))
+
+
+def _load_authority_mouth_centers(root: Path) -> dict[str, float]:
+    """Load only explicitly trusted centers; malformed data fails closed."""
+
+    path = root / "mouth_authority_manifest.json"
+    if not path.is_file():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return {}
+    if payload.get("schema_version") != 1:
+        return {}
+    centers: dict[str, float] = {}
+    for view_id, record in payload.get("views", {}).items():
+        if view_id not in VIEW_IDS or not isinstance(record, dict):
+            continue
+        if record.get("trusted") is not True:
+            continue
+        value = record.get("mouth_center_x")
+        if isinstance(value, (int, float)) and math.isfinite(float(value)):
+            centers[view_id] = float(value)
+    return centers

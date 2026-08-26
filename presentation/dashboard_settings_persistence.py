@@ -236,6 +236,16 @@ class DashboardSettingsPersistenceMixin:
     def _save_general_settings(self, ui_language: str) -> None:
         persona = self.persona_prompt.toPlainText().strip()
         overwork_message = self.overwork_message.text().strip()
+        proactive_mode = str(
+            self.proactive_mode.currentData() or "平衡（推薦）"
+        )
+        canonical_proactive_mode = (
+            "quiet"
+            if proactive_mode.startswith(("安靜", "安静"))
+            else "active"
+            if proactive_mode.startswith(("積極", "积极"))
+            else "balanced"
+        )
         settings = (
             ("break_minutes", self.break_minutes.value()),
             (
@@ -260,8 +270,9 @@ class DashboardSettingsPersistenceMixin:
             ),
             (
                 "proactive_mode",
-                str(self.proactive_mode.currentData() or "平衡（推薦）"),
+                proactive_mode,
             ),
+            ("proactive_interaction_mode", canonical_proactive_mode),
             (
                 "background_assistant_enabled",
                 self.background_assistant_enabled.isChecked(),

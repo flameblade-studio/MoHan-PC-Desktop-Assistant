@@ -948,12 +948,17 @@ def resolve_active_selection(store: Path, category: str) -> SelectionResolution:
     else:
         try:
             active = json.loads(active_path.read_text(encoding="utf-8"))
-            value = active.get(category, {})
+            if not isinstance(active, dict):
+                raise AttributeError
+            value = active.get(category)
         except (OSError, UnicodeError, json.JSONDecodeError, AttributeError):
             raise OutfitPackError("Invalid saved appearance state.") from None
-        if not isinstance(value, dict) or set(value) != {"pack_id", "item_id", "variant_id"} or any(not isinstance(value[key], str) for key in value):
+        if value is None:
+            requested = ("builtin", "builtin", "builtin")
+        elif not isinstance(value, dict) or set(value) != {"pack_id", "item_id", "variant_id"} or any(not isinstance(value[key], str) for key in value):
             raise OutfitPackError("Invalid saved appearance selection.")
-        requested = (value["pack_id"], value["item_id"], value["variant_id"])
+        else:
+            requested = (value["pack_id"], value["item_id"], value["variant_id"])
     if requested[0] == "builtin":
         status, effective = "builtin", requested
     else:

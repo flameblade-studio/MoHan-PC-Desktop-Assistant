@@ -60,11 +60,12 @@ lazy from domain.vision_provider_contracts import (
     VisionProviderResult,
     VisionResultStatus,
 )
-lazy from infrastructure.app_resources import set_autostart
+lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
 lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.multimodal_model_provider import (
     MultimodalModelPaths,
     OpenCVMultiModalModelProvider,
@@ -217,6 +218,12 @@ def _create_ai_worker(
 def create_presentation_ports() -> PresentationPorts:
     """Build every presentation adapter once at the composition boundary."""
 
+    def outfit_overlay_factory():
+        return ActiveOutfitOverlay(
+            presentation_contracts.default_data_dir() / "outfits",
+            resource_path("."),
+        )
+
     return PresentationPorts(
         ai_worker_factory=_create_ai_worker,
         voice_catalog=_ProductionVoiceCatalog(),
@@ -225,8 +232,11 @@ def create_presentation_ports() -> PresentationPorts:
         portable_secret_binder=bind_dashboard_portable_secrets,
         autostart_configurator=set_autostart,
         validate_face_assets=validate_face_assets,
-        face_renderer_factory=LayeredParametricFaceRenderer,
+        face_renderer_factory=lambda: LayeredParametricFaceRenderer(
+            outfit_overlay=outfit_overlay_factory()
+        ),
         visible_windows=visible_windows,
+        outfit_overlay_factory=outfit_overlay_factory,
     )
 
 

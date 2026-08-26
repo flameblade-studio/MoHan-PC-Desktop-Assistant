@@ -148,8 +148,23 @@ class CameraPresenceController(QObject):
 
     def stop(self) -> None:
         self._active = False
-        if self.camera is not None:
-            self.camera.stop()
+        camera, sink = self.camera, self.sink
+        if camera is not None:
+            camera.stop()
+        if sink is not None:
+            try:
+                sink.videoFrameChanged.disconnect(self._frame)
+            except (RuntimeError, TypeError):
+                pass
+            sink.deleteLater()
+        if camera is not None:
+            try:
+                camera.errorOccurred.disconnect(self._camera_error)
+            except (RuntimeError, TypeError):
+                pass
+            camera.deleteLater()
+        if self.session is not None:
+            self.session.deleteLater()
         self.camera = None
         self.session = None
         self.sink = None

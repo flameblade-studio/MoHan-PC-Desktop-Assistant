@@ -9,7 +9,13 @@ belongs to the presentation layer and only touches companion UI concerns.
 from __future__ import annotations
 
 lazy from PySide6.QtCore import Qt
-lazy from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout
+lazy from PySide6.QtWidgets import (
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QSizePolicy,
+    QVBoxLayout,
+)
 
 lazy from presentation.ui_localization import (
     MODE_LABELS,
@@ -63,12 +69,20 @@ def build_desktop_companion_stage(
     """
 
     stage = QFrame()
+    stage.setObjectName("desktopCompanionStage")
     stage.setProperty("mohanRole", "desktopCompanionStage")
-    stage.setMinimumWidth(400)
+    # Keep the live stage present on compact dashboards without forcing it
+    # underneath the conversation dock.  The old 400 px hard minimum combined
+    # with the dock's 500 px minimum exceeded the space left beside navigation.
+    stage.setMinimumWidth(220)
+    stage.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Expanding)
     stage_layout = QVBoxLayout(stage)
     stage_layout.setContentsMargins(18, 18, 18, 18)
     status_card = QFrame()
+    status_card.setObjectName("desktopCompanionStatusCard")
     status_card.setProperty("mohanRole", "desktopCompanionStatusCard")
+    status_card.setMinimumWidth(0)
+    status_card.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Expanding)
     status_layout = QVBoxLayout(status_card)
     status_layout.setContentsMargins(18, 18, 18, 18)
     status_layout.setSpacing(12)
@@ -102,11 +116,13 @@ def build_desktop_companion_stage(
         row_layout.setSpacing(10)
         name = QLabel(caption)
         name.setProperty("mohanRole", "desktopCompanionStatusName")
+        name.setMinimumWidth(0)
         value = QLabel(status_values[key])
         value.setObjectName(f"desktopCompanionStatus{key.title()}")
         value.setProperty("mohanRole", "desktopCompanionStatusValue")
         value.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         value.setWordWrap(True)
+        value.setMinimumWidth(0)
         row_layout.addWidget(name)
         row_layout.addWidget(value, 1)
         status_layout.addWidget(row)

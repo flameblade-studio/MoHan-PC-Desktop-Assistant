@@ -11,6 +11,7 @@ lazy import base64
 lazy import hashlib
 lazy import json
 lazy import secrets
+lazy import time
 lazy from urllib import error as urllib_error
 lazy from urllib import request as urllib_request
 lazy from dataclasses import dataclass
@@ -42,10 +43,36 @@ IMAGE_DIMENSIONS = 3
 RGBA_CHANNELS = 4
 ALPHA_CONTENT_THRESHOLD = 8
 MAX_FACE_OVERLAP_RATIO = 0.005
+MAX_PROVIDER_ERROR_BYTES = 64 * 1024
+MAX_TRANSIENT_ATTEMPTS = 3
+TRANSIENT_RETRY_DELAYS_SECONDS = (2.0, 6.0)
+HTTP_TOO_MANY_REQUESTS = 429
+HTTP_SERVER_ERROR_MINIMUM = 500
 
 
 class OutfitImageGenerationError(RuntimeError):
     """A sanitized, user-displayable image-provider failure."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        code: str = "provider-error",
+        http_status: int = 0,
+        request_id: str = "",
+        retryable: bool = False,
+    ) -> None:
+        super().__init__(message)
+        self.code = str(code or "provider-error")
+        self.http_status = int(http_status or 0)
+        self.request_id = str(request_id or "")
+        self.retryable = bool(retryable)
+
+    @property
+    def public_status(self) -> str:
+        """Return a stable, secret-free status suitable for UI and audit."""
+
+        return f"failed:{self.code}"
 
 
 class OutfitImageEditTransport(Protocol):
@@ -109,21 +136,7 @@ class OpenAIImageEditTransport:
                 "Accept": "application/json",
             },
         )
-        try:
-            with urllib_request.urlopen(
-                request,
-                timeout=self._options.timeout_seconds,
-            ) as response:
-                payload = response.read(MAX_RESPONSE_BYTES + 1)
-        except urllib_error.HTTPError as error:
-            status = int(getattr(error, "code", 0) or 0)
-            raise OutfitImageGenerationError(
-                f"GPT Image request failed with HTTP {status}."
-            ) from None
-        except (OSError, TimeoutError, urllib_error.URLError):
-            raise OutfitImageGenerationError(
-                "GPT Image request could not reach the provider."
-            ) from None
+        payload = self._open_with_retry(request)
         if len(payload) > MAX_RESPONSE_BYTES:
             raise OutfitImageGenerationError("GPT Image response was too large.")
         try:
@@ -135,6 +148,70 @@ class OpenAIImageEditTransport:
                 "GPT Image returned an invalid image response."
             ) from None
         return image
+
+    def _open_with_retry(self, request: urllib_request.Request) -> bytes:
+        """Send one edit request while preserving a sanitized failure cause."""
+
+        last_error: OutfitImageGenerationError | None = None
+        for attempt in range(MAX_TRANSIENT_ATTEMPTS):
+            try:
+                with urllib_request.urlopen(
+                    request,
+                    timeout=self._options.timeout_seconds,
+                ) as response:
+                    return response.read(MAX_RESPONSE_BYTES + 1)
+            except urllib_error.HTTPError as error:
+                failure = self._http_failure(error)
+            except (OSError, TimeoutError, urllib_error.URLError):
+                failure = OutfitImageGenerationError(
+                    "GPT Image request could not reach the provider.",
+                    code="network-unavailable",
+                    retryable=True,
+                )
+            last_error = failure
+            if not failure.retryable or attempt >= MAX_TRANSIENT_ATTEMPTS - 1:
+                raise failure from None
+            time.sleep(TRANSIENT_RETRY_DELAYS_SECONDS[attempt])
+        assert last_error is not None
+        raise last_error
+
+    @staticmethod
+    def _http_failure(error: urllib_error.HTTPError) -> OutfitImageGenerationError:
+        status = int(getattr(error, "code", 0) or 0)
+        headers = getattr(error, "headers", None)
+        request_id = str(headers.get("x-request-id", "") or "") if headers else ""
+        provider_code = ""
+        try:
+            payload = error.read(MAX_PROVIDER_ERROR_BYTES)
+            value = json.loads(payload.decode("utf-8"))
+            detail = value.get("error", {}) if isinstance(value, dict) else {}
+            if isinstance(detail, dict):
+                provider_code = str(detail.get("code") or detail.get("type") or "")
+        except (OSError, UnicodeError, ValueError, json.JSONDecodeError):
+            provider_code = ""
+        safe_code = {
+            400: "invalid-request",
+            401: "authentication-failed",
+            403: "model-access-denied",
+            HTTP_TOO_MANY_REQUESTS: "rate-limited",
+        }.get(
+            status,
+            "provider-unavailable"
+            if status >= HTTP_SERVER_ERROR_MINIMUM
+            else "provider-error",
+        )
+        if provider_code == "moderation_blocked":
+            safe_code = "moderation-blocked"
+        return OutfitImageGenerationError(
+            f"GPT Image request failed with HTTP {status}.",
+            code=safe_code,
+            http_status=status,
+            request_id=request_id,
+            retryable=(
+                status == HTTP_TOO_MANY_REQUESTS
+                or status >= HTTP_SERVER_ERROR_MINIMUM
+            ),
+        )
 
     @staticmethod
     def _multipart(
@@ -248,9 +325,69 @@ class OpenAIOutfitDraftGenerator:
         self,
         transport: OutfitImageEditTransport,
         project_root: Path,
+        checkpoint_root: Path | None = None,
     ) -> None:
         self._transport = transport
         self._root = Path(project_root)
+        self._checkpoint_root = (
+            Path(checkpoint_root) if checkpoint_root is not None else None
+        )
+
+    def _checkpointed_edit(
+        self,
+        request: OutfitCreationRequest,
+        view_id: str,
+        kind: str,
+        reference: bytes,
+        prompt: str,
+        requested: tuple[int, int],
+        target: tuple[int, int],
+    ) -> bytes:
+        """Resume a paid multi-view job without regenerating finished views."""
+
+        checkpoint = None
+        if self._checkpoint_root is not None:
+            if Path(request.job_id).name != request.job_id or any(
+                separator in request.job_id for separator in ("/", "\\", ":")
+            ):
+                raise OutfitImageGenerationError(
+                    "Outfit generation checkpoint identifier is invalid.",
+                    code="invalid-checkpoint-id",
+                )
+            checkpoint = (
+                self._checkpoint_root
+                / request.job_id
+                / f"{kind}-{_safe_view(view_id)}.png"
+            )
+            if checkpoint.is_file():
+                try:
+                    cached, _matrix = _decode_registered_png(
+                        checkpoint.read_bytes(), target
+                    )
+                except (OSError, OutfitImageGenerationError):
+                    # A torn write or externally damaged checkpoint must not
+                    # permanently brick every explicit retry.  Remove only the
+                    # exact registered view and regenerate it; all other paid
+                    # views remain resumable.
+                    checkpoint.unlink(missing_ok=True)
+                else:
+                    return cached
+        generated = self._transport.edit(reference, prompt, requested)
+        normalized, _matrix = _decode_registered_png(generated, target)
+        if checkpoint is not None:
+            checkpoint.parent.mkdir(parents=True, exist_ok=True)
+            temporary = checkpoint.with_suffix(".tmp")
+            try:
+                temporary.write_bytes(normalized)
+                temporary.replace(checkpoint)
+            except OSError as error:
+                temporary.unlink(missing_ok=True)
+                raise OutfitImageGenerationError(
+                    "Outfit checkpoint could not be saved.",
+                    code="checkpoint-write-failed",
+                    retryable=True,
+                ) from error
+        return normalized
 
     def create(  # noqa: PLR0914 - one atomic multi-view draft transaction
         self,
@@ -278,25 +415,28 @@ class OpenAIOutfitDraftGenerator:
             reference = reference_path.read_bytes()
             target = FULL_SIZE if view_id in POSE_ATLAS_SILHOUETTES else HALF_SIZE
             requested = target if target == FULL_SIZE else HALF_REQUEST_SIZE
-            generated = self._transport.edit(
+            normalized = self._checkpointed_edit(
+                request,
+                view_id,
+                "garment",
                 reference,
                 self._view_prompt(design, view_id, target),
                 requested,
+                target,
             )
-            normalized, _matrix = _decode_registered_png(generated, target)
             safe = _safe_view(view_id)
             garment_path = f"assets/garment-{safe}.png"
             assets[garment_path] = normalized
             garment_poses[view_id] = [_asset(garment_path, "outerwear", 10)]
 
             if "handheld" in request.requested_categories:
-                handheld = self._transport.edit(
+                normalized_handheld = self._checkpointed_edit(
+                    request,
+                    view_id,
+                    "handheld",
                     reference,
                     self._handheld_prompt(request, view_id, target),
                     requested,
-                )
-                normalized_handheld, _handheld_matrix = _decode_registered_png(
-                    handheld,
                     target,
                 )
                 handheld_path = f"assets/handheld-{safe}.png"
@@ -330,10 +470,20 @@ class OpenAIOutfitDraftGenerator:
             "model": OPENAI_IMAGE_MODEL,
             "quality": "provider-configured",
             "transparent_background_requested": True,
-            "design_prompt": design,
+            "design_prompt_sha256": hashlib.sha256(design.encode("utf-8")).hexdigest(),
+            "design_prompt_policy": "derived-context-only",
             "reference_sha256": reference_hashes,
             "view_count": len(required_views),
             "generated_categories": sorted(request.requested_categories),
+            "trend_sources": [
+                {
+                    "source_url": trend.source_url,
+                    "title": trend.title,
+                    "license_note": trend.license_note,
+                    "abstract_traits": list(trend.abstract_traits),
+                }
+                for trend in trends
+            ],
         }
         return GeneratedOutfitDraft(
             manifest,

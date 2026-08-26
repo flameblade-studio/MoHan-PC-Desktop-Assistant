@@ -221,12 +221,19 @@ class _FakeSignal:
     def connect(self, callback) -> None:
         self._callback = callback
 
+    def disconnect(self, callback) -> None:
+        assert self._callback is None or self._callback == callback
+        self._callback = None
+
     def emit(self, *values: object) -> None:
         assert self._callback is not None
         self._callback(*values)
 
 
 class _FakeCamera:
+    def deleteLater(self) -> None:
+        return None
+
     def __init__(self, _device: object) -> None:
         self.errorOccurred = _FakeSignal()
 
@@ -238,6 +245,9 @@ class _FakeCamera:
 
 
 class _FakeCaptureSession:
+    def deleteLater(self) -> None:
+        return None
+
     def setCamera(self, _camera: object) -> None:
         return None
 
@@ -246,6 +256,9 @@ class _FakeCaptureSession:
 
 
 class _FakeVideoSink:
+    def deleteLater(self) -> None:
+        return None
+
     def __init__(self) -> None:
         self.videoFrameChanged = _FakeSignal()
 

@@ -28,7 +28,7 @@
 
 ### 通報方式
 
-請勿公開敏感證據。一般行為疑慮請使用 GitHub 的檢舉工具回報相關公開內容。若必須提供私人細節，請使用本儲存庫的[私人通報管道](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/security/advisories/new)，並將標題設為 `Code of Conduct report`。若該管道無法使用，請建立標題為 `[Private contact request]` 的 Issue，但不得在其中附上細節。
+請勿公開敏感證據。一般行為疑慮請使用 GitHub 的檢舉工具回報相關公開內容。若必須提供私人細節，請使用本儲存庫的[私人通報管道](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)，並將標題設為 `Code of Conduct report`。若該管道無法使用，請建立標題為 `[Private contact request]` 的 Issue，但不得在其中附上細節。
 
 基於善意的通報會在實際可行範圍內保密處理。故意不實或報復性的通報本身亦可能違反本準則。
 
@@ -60,7 +60,7 @@
 
 ### 报告方式
 
-请勿公开敏感证据。一般行为疑虑请使用 GitHub 的举报工具报告相关公开内容。若必须提供私人细节，请使用本仓库的[私人报告渠道](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/security/advisories/new)，并将标题设为 `Code of Conduct report`。若该渠道无法使用，请创建标题为 `[Private contact request]` 的 Issue，但不得在其中附上细节。
+请勿公开敏感证据。一般行为疑虑请使用 GitHub 的举报工具报告相关公开内容。若必须提供私人细节，请使用本仓库的[私人报告渠道](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)，并将标题设为 `Code of Conduct report`。若该渠道无法使用，请创建标题为 `[Private contact request]` 的 Issue，但不得在其中附上细节。
 
 基于善意的报告会在实际可行范围内保密处理。故意不实或报复性的报告本身也可能违反本准则。
 
@@ -92,7 +92,7 @@ This policy applies to repository Issues, Pull Requests, Discussions, Release fe
 
 ### Reporting
 
-Do not publish sensitive evidence. For an ordinary conduct concern, report the relevant public content with GitHub's reporting tools. If private details are required, use the repository's [private advisory channel](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/security/advisories/new) with the title `Code of Conduct report`. If that channel is unavailable, open an Issue titled `[Private contact request]` without including the details.
+Do not publish sensitive evidence. For an ordinary conduct concern, report the relevant public content with GitHub's reporting tools. If private details are required, use the repository's [private advisory channel](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new) with the title `Code of Conduct report`. If that channel is unavailable, open an Issue titled `[Private contact request]` without including the details.
 
 Good-faith reports will be handled as confidentially as practical. Deliberately false or retaliatory reports may themselves violate this policy.
 
@@ -124,6 +124,6 @@ Good-faith reports will be handled as confidentially as practical. Deliberately 
 
 ### 報告方法
 
-機密性の高い証拠を公開しないでください。通常の行動上の懸念は、GitHub の報告ツールを使って該当する公開内容を報告してください。個人的な詳細が必要な場合は、リポジトリの[非公開報告窓口](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/security/advisories/new)を使用し、タイトルを `Code of Conduct report` としてください。その窓口を利用できない場合は、詳細を含めず、`[Private contact request]` というタイトルで Issue を作成してください。
+機密性の高い証拠を公開しないでください。通常の行動上の懸念は、GitHub の報告ツールを使って該当する公開内容を報告してください。個人的な詳細が必要な場合は、リポジトリの[非公開報告窓口](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)を使用し、タイトルを `Code of Conduct report` としてください。その窓口を利用できない場合は、詳細を含めず、`[Private contact request]` というタイトルで Issue を作成してください。
 
 善意による報告は、実務上可能な限り機密として扱われます。意図的な虚偽報告や報復目的の報告は、それ自体がこの規範への違反となる場合があります。

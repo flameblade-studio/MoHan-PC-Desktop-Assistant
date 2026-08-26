@@ -35,5 +35,5 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://www.flamebladestudio.com.tw/mohan-desktop-assistant/"
-Repository = "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant"
-Issues = "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/issues"
+Repository = "https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant"
+Issues = "https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues"

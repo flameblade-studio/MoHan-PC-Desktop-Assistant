@@ -16,7 +16,7 @@
     <Property Id="ARPURLINFOABOUT"
               Value="https://www.flamebladestudio.com.tw" />
     <Property Id="ARPURLUPDATEINFO"
-              Value="https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases" />
+              Value="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases" />
     <Icon Id="MohanIcon" SourceFile="$(var.IconPath)" />
 
     <Feature Id="Complete" Title="MoHan Desktop Assistant" Level="1">

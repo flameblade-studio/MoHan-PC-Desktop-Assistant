@@ -187,18 +187,45 @@ def assert_audio_viseme_does_not_reset_full_body_ownership() -> None:
         assert runtime is not None
         runtime.publish = True
         runtime.framing_mode = FramingMode.FULL_BODY
+        # This focused wiring test defers the full visual startup, so create
+        # the mouth/viseme state explicitly before injecting an audio cue.
+        window._initialize_mouth_animation_state()
+        window.physics_expression_poses = {}
+        window.idle_pose = "front"
         decision = window._dispatch_adaptive_character_frame(atomic_frame())
         assert decision is not None and decision.should_publish
         assert window._adaptive_full_body_active is True
+        window._record_speech_performance(
+            window.speech_performance.prepare("system-local")
+        )
+        recorded_updates = []
+        real_record = window._record_speech_performance
+
+        def record_viseme(update) -> None:
+            recorded_updates.append(update)
+            real_record(update)
+
+        window._record_speech_performance = record_viseme
 
         # A live viseme cue during speech must not hand the canvas back to the
-        # legacy half-body renderer.
+        # legacy half-body renderer, and it must still reach the adaptive
+        # renderer that owns the full-body mouth.
         window.state = "speaking"
         window.audio_driven_mouth = True
-        window._audio_viseme_cue(0.65, "A")
+        window.mouth_closing = False
+        cue_level = 0.65
+        # The production dynamics deliberately need five stable cues before a
+        # fresh vowel settles from CLOSED/E to A (anti-flicker contract).
+        for _ in range(5):
+            window._audio_viseme_cue(cue_level, "A")
         assert window._adaptive_full_body_active is True, (
             "_audio_viseme_cue must not reset full-body ownership"
         )
+        accepted_updates = [update for update in recorded_updates if update is not None]
+        assert accepted_updates, recorded_updates
+        viseme_event = accepted_updates[-1][0]
+        assert viseme_event.viseme == "A"
+        assert viseme_event.level == cue_level
     finally:
         window.close()
 

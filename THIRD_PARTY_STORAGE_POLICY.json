@@ -1,0 +1,32 @@
+{
+  "schema": "mohan.third-party-storage-policy.v1",
+  "updated_at": "2026-08-25",
+  "scope": "MoHan development and PoseAtlas production",
+  "system_drive_policy": "No third-party source, model weights, package caches, or build caches may be downloaded to the Windows system drive.",
+  "roots": {
+    "source_and_runtimes": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\tools\\third_party",
+    "model_weights": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\tools\\third_party\\models",
+    "shared_cache": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache",
+    "temporary_downloads": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\downloads"
+  },
+  "user_environment": {
+    "HF_HOME": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\huggingface",
+    "HF_HUB_CACHE": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\huggingface\\hub",
+    "HUGGINGFACE_HUB_CACHE": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\huggingface\\hub",
+    "HF_ASSETS_CACHE": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\huggingface\\assets",
+    "TRANSFORMERS_CACHE": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\huggingface\\transformers",
+    "TORCH_HOME": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\torch",
+    "TORCH_EXTENSIONS_DIR": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\torch-extensions",
+    "PIP_CACHE_DIR": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\pip",
+    "UV_CACHE_DIR": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\uv",
+    "CONDA_PKGS_DIRS": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\conda-pkgs",
+    "CUDA_CACHE_PATH": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\cuda",
+    "XDG_CACHE_HOME": "D:\\FlamebladeStudio\\CodexProjects\\.third-party-cache\\xdg"
+  },
+  "requirements": [
+    "A dependency must pass THIRD_PARTY_DENYLIST.json before download.",
+    "Source-code and model-weight licenses must be verified separately.",
+    "Denied dependencies are deleted rather than relocated.",
+    "Existing authority images, QA evidence, and user-authored assets are never cache-migration targets."
+  ]
+}

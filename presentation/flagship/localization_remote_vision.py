@@ -419,6 +419,11 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
         "Sent to MoHan and awaiting local permission checks",
         "墨寒へ送信し、ローカル権限の判定を待っています",
     ),
+    "待處理的遠端指令已達安全上限，請稍後重試": translations(
+        "待处理的远程指令已达安全上限，请稍后重试",
+        "The remote-command queue is at its safe limit. Please retry shortly.",
+        "リモート指令の待機数が安全上限に達しました。しばらくしてから再試行してください",
+    ),
     "[遠端裝置：{device}] {text}": translations(
         "[远程设备：{device}] {text}",
         "[Remote device: {device}] {text}",

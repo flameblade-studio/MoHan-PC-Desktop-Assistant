@@ -1,61 +1,85 @@
-# PoseAtlas 24／600 正式閘門 QA 總結（2026-08-26）
+# PoseAtlas 24/600 正式閘門 QA 總結／PoseAtlas 24/600 正式闸门 QA 总结／PoseAtlas 24/600 Formal Gate QA Summary／PoseAtlas 24/600 正式ゲート QA 総括
 
-執行環境：Windows 11、Git Bash、Python 3.13（qwen2509-standalone conda）＋ Pillow 12.3.0。
-所有命令退出碼均為 0；證據檔案均在本目錄與 seam-repair/、final-recheck/ 子目錄。
+## 繁體中文
 
-## 正式 24 主視角（assets/pose-atlas/v4-working）
+驗收日期：2026-08-26。所有命令退出碼均為 0；完整原始證據位於
+`artifacts/pose-atlas-rebuild/2026-08-26/formal-gate-qa/`（不入庫），
+本目錄保存入庫版摘要與關鍵對照圖。
 
-- 檔案閘門：24／24 PASS——RGBA、1024×1536、四角 Alpha=0、
-  alpha bbox 不貼畫布邊界（poseatlas-gate-qa.json）。
-- SHA-256：24 視角的 source 與 normalized 雜湊全部與
-  v4-working/BUILD-METADATA.json 記錄一致（HASH_MISMATCH=NONE）。
-- 綠幕殘留量測：嚴格綠殘（G>R+24 且 G>B+24、alpha≥128）全 24 視角
-  合計 ≤1 像素（最高 yaw+090 為 1）。
-- 人工目視 QA：24 視角全數逐張檢查——真墨寒身份一致、平底白鞋完整、
-  髮飾方向連續、無娃娃臉／木偶手／裁切／棋盤格。
-- 身份定錨：使用者 2026-08-26 分三批（18＋16＋11 張）展示並確認
-  「真墨寒」，與 v4-source 家族逐張對應（見 true-mohan-source-index/）。
-- 授權：v4-source/PROVENANCE.json，權利人 2026-08-16 確認。
-- B00 拇指黑點：權威母圖已於 2026-08-26 完成 v5 修復（154 像素、
-  Alpha 零變動、備份與前後 SHA-256 齊全）。
-- 落盤：approved-staging-24views/（24 張＋APPROVED-RECORDS.json，
-  每張含 SHA-256、閘門結果、目視結論、授權出處）。
+### 正式 24 主視角（assets/pose-atlas/v4-working）
 
-## 正式 600 分層（assets/pose-atlas/v4-layered）
+- 檔案閘門 24／24 PASS：RGBA、1024×1536、四角 Alpha=0、alpha bbox 不貼畫布邊界（poseatlas-gate-qa.json）。
+- SHA-256：24 視角的 source 與 normalized 雜湊全部與 BUILD-METADATA.json 一致。
+- 嚴格綠幕殘留（G>R+24 且 G>B+24、alpha≥128）：全 24 視角合計 ≤1 像素。
+- 人工目視 24／24：真墨寒身份一致、平底白鞋完整、髮飾方向連續，無娃娃臉／木偶手／裁切／棋盤格。
+- 身份定錨：使用者 2026-08-26 三批展示確認；授權：v4-source/PROVENANCE.json（權利人 2026-08-16 確認）。
 
-- 計數：PNG_COUNT=600、24 視角 × 25 層檔名精確覆蓋、MISSING=0、EXTRA=0。
-- 檔案閘門：600／600 RGBA、1024×1536（FILE_GATE_FAILURES=0）。
-- layer_manifest.json 存在：BODY_CENTER_CONSTANT=[512,1292]、
-  offset 全 0、50Hz／20ms／15° 過渡契約、Z-order 記載完整。
+### 正式 600 分層（assets/pose-atlas/v4-layered）
 
-### 接縫 Alpha 缺陷與修復（本輪主要修復工作）
+- 計數：600 張、24 視角 × 25 層精確覆蓋、零缺零多；600／600 RGBA 1024×1536。
+- 發現缺陷：Z-order 重組後層邊界羽化疊合使 Alpha 低於母圖（deficit max 64），於 yaw+000 頸部與唇下形成可見黑色虛線接縫（不可放行）。
+- 修復：以 Alpha 差額回補法修復全 24 視角（不重繪、不位移；差額補回該像素 Alpha 最大的語意擁有層；每視角 3 輪迭代；被改動層先備份並記錄修改前 SHA-256）。
+- 修復後重驗（layered600-gate-qa-final.json）：deficit 全 24 視角歸零；重組 RGB 與母圖零差；殘餘僅邊緣稍實型微差（最大簇 63 像素，4 倍放大目視不可辨），依 2026-08-26 核定驗收尺度放行；頸部黑線目視消失（neck-roi-before/after-repair-4x.png）。
 
-- 發現：Z-order 重組後與 v4-working 母圖比較，RGB 於不透明區零差，
-  但層邊界羽化疊合造成 Alpha 低於母圖（deficit max 64、每視角約
-  5,000–7,500 像素），在 yaw+000 頸部與下唇下形成可見黑色虛線接縫
-  （「頸頸拼貼環」類，不可放行）。
-- 修法：seam_alpha_repair.py——不重繪、不位移任何像素；把每個
-  deficit 像素的 Alpha 差額補回該像素 Alpha 最大的語意擁有層
-  （原 Alpha<8 時 RGB 取母圖值）。每視角迭代 3 輪收斂。
-- 備份：所有被修改的層先備份至 seam-repair/layer-backups/
-  （*.before-seam-repair.png），修改前 SHA-256 記錄於
-  seam-repair-applied.json。
-- 修復後最終重驗（final-recheck/layered600-gate-qa.json）：
-  - deficit（會露背景形成黑線／透環者）：全 24 視角歸零。
-  - 重組 RGB 差（alpha≥128 區）：全 24 視角為 0。
-  - 殘餘 Alpha 差全部為 surplus 型（邊緣稍實、不露背景、不閃爍）：
-    max 19–47；僅 yaw-045／-030／-015 有額頭髮際小簇 max 107–127
-    （各 19–63 像素），4 倍放大目視與母圖無法區分——依使用者
-    2026-08-26 核定的驗收尺度（正常顯示看不出即可放行）放行。
-  - yaw+000 頸部黑線與唇下細線目視確認消失
-    （neck-roi-recompose-after-repair-4x.png）。
+## 简体中文
 
-## 遺留事項（不阻塞 24／600 計數，待後續）
+验收日期：2026-08-26。所有命令退出码均为 0；完整原始证据位于
+`artifacts/pose-atlas-rebuild/2026-08-26/formal-gate-qa/`（不入库），
+本目录保存入库版摘要与关键对照图。
 
-- 灰底／白底展示版與素體底模、側臉特寫的實體檔案位置待雜湊定位。
-- layer_manifest.json 的 status 仍為 staged；正式晉升
-  assets/pose-atlas/v4/ 需依 POSE-PACKS.md 走包裝與三平台載入驗證。
-- 50Hz 執行期整合驗證屬程式端工作，非素材閘門。
-- Git 工作樹（分支 fix/v4.4.2-render-audio-regression、HEAD 6408fa8）
-  含大量既有修改；本輪僅新增 artifacts 與修復 v4-layered 接縫，
-  未動 v4-source／v4-working／權威母圖。commit 待使用者指示。
+### 正式 24 主视角（assets/pose-atlas/v4-working）
+
+- 文件闸门 24／24 PASS：RGBA、1024×1536、四角 Alpha=0、alpha bbox 不贴画布边界（poseatlas-gate-qa.json）。
+- SHA-256：24 视角的 source 与 normalized 哈希全部与 BUILD-METADATA.json 一致。
+- 严格绿幕残留（G>R+24 且 G>B+24、alpha≥128）：全 24 视角合计 ≤1 像素。
+- 人工目视 24／24：真墨寒身份一致、平底白鞋完整、发饰方向连续，无娃娃脸／木偶手／裁切／棋盘格。
+- 身份定锚：用户 2026-08-26 三批展示确认；授权：v4-source/PROVENANCE.json（权利人 2026-08-16 确认）。
+
+### 正式 600 分层（assets/pose-atlas/v4-layered）
+
+- 计数：600 张、24 视角 × 25 层精确覆盖、零缺零多；600／600 RGBA 1024×1536。
+- 发现缺陷：Z-order 重组后层边界羽化叠合使 Alpha 低于母图（deficit max 64），于 yaw+000 颈部与唇下形成可见黑色虚线接缝（不可放行）。
+- 修复：以 Alpha 差额回补法修复全 24 视角（不重绘、不位移；差额补回该像素 Alpha 最大的语义拥有层；每视角 3 轮迭代；被改动层先备份并记录修改前 SHA-256）。
+- 修复后重验（layered600-gate-qa-final.json）：deficit 全 24 视角归零；重组 RGB 与母图零差；残余仅边缘稍实型微差（最大簇 63 像素，4 倍放大目视不可辨），依 2026-08-26 核定验收尺度放行；颈部黑线目视消失（neck-roi-before/after-repair-4x.png）。
+
+## English
+
+Acceptance date: 2026-08-26. Every command exited with code 0. The complete
+raw evidence lives in `artifacts/pose-atlas-rebuild/2026-08-26/formal-gate-qa/`
+(not committed); this directory keeps the committed summary and key comparison images.
+
+### Formal 24 master views (assets/pose-atlas/v4-working)
+
+- File gate 24/24 PASS: RGBA, 1024×1536, all four corner alphas 0, alpha bbox clear of the canvas edge (poseatlas-gate-qa.json).
+- SHA-256: source and normalized hashes for all 24 views match BUILD-METADATA.json.
+- Strict green-screen residue (G>R+24 and G>B+24, alpha≥128): at most 1 pixel across all 24 views combined.
+- Human visual QA 24/24: consistent true-MoHan identity, intact flat white shoes, continuous hair-ornament orientation; no doll face, puppet hands, cropping, or checkerboard artifacts.
+- Identity anchor: confirmed by the owner's three batches on 2026-08-26; licensing: v4-source/PROVENANCE.json (rights holder confirmed 2026-08-16).
+
+### Formal 600 layers (assets/pose-atlas/v4-layered)
+
+- Count: exactly 600 files covering 24 views × 25 layers, none missing, none extra; 600/600 RGBA 1024×1536.
+- Defect found: after Z-order recomposition, feathered layer boundaries stacked to an alpha below the master view (deficit max 64), producing a visible dashed dark seam at the neck and below the lower lip on yaw+000 (not acceptable).
+- Repair: alpha-deficit backfill across all 24 views (no repainting, no displacement; each deficit pixel credited to the layer owning the highest alpha there; 3 iterations per view; every touched layer backed up with its pre-repair SHA-256 recorded).
+- Post-repair recheck (layered600-gate-qa-final.json): deficit zero across all 24 views; recomposed RGB identical to the master views; only slightly-firmer-edge surplus remains (largest cluster 63 pixels, indistinguishable at 4× zoom), released under the acceptance standard ratified on 2026-08-26; the neck seam is visually gone (neck-roi-before/after-repair-4x.png).
+
+## 日本語
+
+検収日：2026-08-26。すべてのコマンドの終了コードは 0。完全な生証拠は
+`artifacts/pose-atlas-rebuild/2026-08-26/formal-gate-qa/`（コミット対象外）にあり、
+本ディレクトリにはコミット版の要約と主要比較画像を保存する。
+
+### 正式 24 主視点（assets/pose-atlas/v4-working）
+
+- ファイルゲート 24／24 合格：RGBA、1024×1536、四隅アルファ 0、alpha bbox はキャンバス端に接しない（poseatlas-gate-qa.json）。
+- SHA-256：24 視点の source と normalized のハッシュはすべて BUILD-METADATA.json と一致。
+- 厳格グリーンバック残留（G>R+24 かつ G>B+24、alpha≥128）：全 24 視点合計で最大 1 ピクセル。
+- 目視 QA 24／24：真の墨寒の同一性、白い平底靴の完全性、髪飾りの向きの連続性を確認。人形顔・操り人形の手・切り欠け・市松模様なし。
+- 身元アンカー：オーナーが 2026-08-26 に三批提示で確認。ライセンス：v4-source/PROVENANCE.json（権利者 2026-08-16 確認）。
+
+### 正式 600 レイヤー（assets/pose-atlas/v4-layered）
+
+- 数量：600 枚、24 視点 × 25 層を過不足なく網羅。600／600 RGBA 1024×1536。
+- 発見欠陥：Z-order 再合成後、レイヤー境界の羽化重合によりアルファが母画像を下回り（deficit 最大 64）、yaw+000 の首と下唇下に可視の黒破線継ぎ目が発生（不合格）。
+- 修復：全 24 視点にアルファ差分補填法を適用（再描画・移動なし。各差分ピクセルをアルファ最大の意味的所有レイヤーへ補填。各視点 3 回反復。変更レイヤーは事前バックアップと変更前 SHA-256 を記録）。
+- 修復後再検証（layered600-gate-qa-final.json）：deficit は全 24 視点でゼロ。再合成 RGB は母画像と完全一致。残余はエッジがわずかに固くなる surplus 型のみ（最大クラスタ 63 ピクセル、4 倍拡大でも判別不能）で、2026-08-26 承認の検収基準により合格。首の黒線は目視で消失（neck-roi-before/after-repair-4x.png）。

@@ -1,0 +1,194 @@
+{
+  "schema": "mohan.pose-atlas-static-identity-audit.v1",
+  "exit_code_contract": {
+    "0": "all static identity checks passed",
+    "1": "one or more visual identity checks failed",
+    "2": "audit configuration or execution failed closed"
+  },
+  "passed": false,
+  "atlas_root": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4",
+  "views_checked": 24,
+  "files_checked": 24,
+  "issue_count": 18,
+  "issues_by_code": {
+    "adjacent_face_registration_jump": 1,
+    "forehead_curvature_discontinuity": 2,
+    "forehead_outward_bulge": 6,
+    "forehead_slope_discontinuity": 1,
+    "mouth_green_cyan_pixels": 8
+  },
+  "issues": [
+    {
+      "code": "mouth_green_cyan_pixels",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw+015-pitch+00.png",
+      "view_id": "yaw+015-pitch+00",
+      "message": "mouth/face ROI contains red-deficient green or cyan pixels",
+      "metrics": {
+        "anomalous_pixels": 1
+      }
+    },
+    {
+      "code": "mouth_green_cyan_pixels",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw+030-pitch+00.png",
+      "view_id": "yaw+030-pitch+00",
+      "message": "mouth/face ROI contains red-deficient green or cyan pixels",
+      "metrics": {
+        "anomalous_pixels": 4
+      }
+    },
+    {
+      "code": "forehead_outward_bulge",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw+060-pitch+00.png",
+      "view_id": "yaw+060-pitch+00",
+      "message": "profile forehead protrudes beyond the permitted smooth chord",
+      "metrics": {
+        "maximum": 0.025,
+        "outward_ratio": 0.035776
+      }
+    },
+    {
+      "code": "forehead_outward_bulge",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw+075-pitch+00.png",
+      "view_id": "yaw+075-pitch+00",
+      "message": "profile forehead protrudes beyond the permitted smooth chord",
+      "metrics": {
+        "maximum": 0.025,
+        "outward_ratio": 0.026004
+      }
+    },
+    {
+      "code": "mouth_green_cyan_pixels",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw+075-pitch+00.png",
+      "view_id": "yaw+075-pitch+00",
+      "message": "mouth/face ROI contains red-deficient green or cyan pixels",
+      "metrics": {
+        "anomalous_pixels": 3
+      }
+    },
+    {
+      "code": "forehead_curvature_discontinuity",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw+090-pitch+00.png",
+      "view_id": "yaw+090-pitch+00",
+      "message": "profile forehead contains an abrupt curvature step",
+      "metrics": {
+        "curvature_step_ratio": 0.049091,
+        "maximum": 0.04
+      }
+    },
+    {
+      "code": "forehead_outward_bulge",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw+090-pitch+00.png",
+      "view_id": "yaw+090-pitch+00",
+      "message": "profile forehead protrudes beyond the permitted smooth chord",
+      "metrics": {
+        "maximum": 0.025,
+        "outward_ratio": 0.050979
+      }
+    },
+    {
+      "code": "mouth_green_cyan_pixels",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw-015-pitch+00.png",
+      "view_id": "yaw-015-pitch+00",
+      "message": "mouth/face ROI contains red-deficient green or cyan pixels",
+      "metrics": {
+        "anomalous_pixels": 1
+      }
+    },
+    {
+      "code": "mouth_green_cyan_pixels",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw-030-pitch+00.png",
+      "view_id": "yaw-030-pitch+00",
+      "message": "mouth/face ROI contains red-deficient green or cyan pixels",
+      "metrics": {
+        "anomalous_pixels": 9
+      }
+    },
+    {
+      "code": "adjacent_face_registration_jump",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw-045-pitch+00.png",
+      "view_id": "yaw-045-pitch+00",
+      "message": "face registration jumps between yaw-060-pitch+00 and yaw-045-pitch+00",
+      "metrics": {
+        "center_delta": 0.01743,
+        "nose_position_delta": 0.573148
+      }
+    },
+    {
+      "code": "mouth_green_cyan_pixels",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw-045-pitch+00.png",
+      "view_id": "yaw-045-pitch+00",
+      "message": "mouth/face ROI contains red-deficient green or cyan pixels",
+      "metrics": {
+        "anomalous_pixels": 8
+      }
+    },
+    {
+      "code": "forehead_outward_bulge",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw-060-pitch+00.png",
+      "view_id": "yaw-060-pitch+00",
+      "message": "profile forehead protrudes beyond the permitted smooth chord",
+      "metrics": {
+        "maximum": 0.025,
+        "outward_ratio": 0.026629
+      }
+    },
+    {
+      "code": "mouth_green_cyan_pixels",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw-060-pitch+00.png",
+      "view_id": "yaw-060-pitch+00",
+      "message": "mouth/face ROI contains red-deficient green or cyan pixels",
+      "metrics": {
+        "anomalous_pixels": 1
+      }
+    },
+    {
+      "code": "forehead_outward_bulge",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw-075-pitch+00.png",
+      "view_id": "yaw-075-pitch+00",
+      "message": "profile forehead protrudes beyond the permitted smooth chord",
+      "metrics": {
+        "maximum": 0.025,
+        "outward_ratio": 0.030489
+      }
+    },
+    {
+      "code": "mouth_green_cyan_pixels",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw-075-pitch+00.png",
+      "view_id": "yaw-075-pitch+00",
+      "message": "mouth/face ROI contains red-deficient green or cyan pixels",
+      "metrics": {
+        "anomalous_pixels": 3
+      }
+    },
+    {
+      "code": "forehead_curvature_discontinuity",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw-090-pitch+00.png",
+      "view_id": "yaw-090-pitch+00",
+      "message": "profile forehead contains an abrupt curvature step",
+      "metrics": {
+        "curvature_step_ratio": 0.065957,
+        "maximum": 0.04
+      }
+    },
+    {
+      "code": "forehead_outward_bulge",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw-090-pitch+00.png",
+      "view_id": "yaw-090-pitch+00",
+      "message": "profile forehead protrudes beyond the permitted smooth chord",
+      "metrics": {
+        "maximum": 0.025,
+        "outward_ratio": 0.045766
+      }
+    },
+    {
+      "code": "forehead_slope_discontinuity",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4\\yaw-090-pitch+00.png",
+      "view_id": "yaw-090-pitch+00",
+      "message": "profile forehead contains an abrupt one-row slope step",
+      "metrics": {
+        "maximum": 0.05,
+        "slope_step_ratio": 0.065957
+      }
+    }
+  ]
+}

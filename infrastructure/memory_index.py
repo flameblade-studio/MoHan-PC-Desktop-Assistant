@@ -11,10 +11,11 @@ lazy from datetime import datetime
 lazy from domain.time_utils import local_wall_time
 
 _WORD_PATTERN = re.compile(r"[\w]+", re.UNICODE)
+MAX_INDEXED_TEXT_CHARS = 8000
 
 
 def _features(text: str) -> list[str]:
-    normalized = " ".join(str(text).casefold().split())
+    normalized = " ".join(str(text).casefold().split())[:MAX_INDEXED_TEXT_CHARS]
     words = _WORD_PATTERN.findall(normalized)
     compact = "".join(words)
     features = [f"w:{word}" for word in words]
@@ -73,7 +74,7 @@ class MemoryVectorIndex:
         return " ".join(
             str(row.get(key) or "")
             for key in ("category", "title", "content")
-        )
+        )[:MAX_INDEXED_TEXT_CHARS]
 
     def refresh(self, rows: Iterable[Mapping[str, object]]) -> None:
         active: set[int] = set()

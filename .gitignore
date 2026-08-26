@@ -25,6 +25,8 @@ release-artifacts/
 deliverables/
 tmp/
 work/
+/artifacts/
+/tools/third_party/
 *.spec
 *.zip
 *.7z

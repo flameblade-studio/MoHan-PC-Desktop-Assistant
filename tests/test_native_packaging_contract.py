@@ -58,6 +58,25 @@ def test_windows_package_builds_installs_and_collects_native_module() -> None:
         "python3t.dll",
         '--add-binary "$Abi3tCompatibilityDll;."',
         '--hidden-import "_mohan_accel"',
+        '--hidden-import "PySide6.QtCore"',
+        '--hidden-import "PySide6.QtGui"',
+        '--hidden-import "PySide6.QtMultimedia"',
+        '--hidden-import "PySide6.QtWidgets"',
+        '--hidden-import "azure.cognitiveservices.speech"',
+        '--hidden-import "sounddevice"',
+        '--hidden-import "websocket"',
+        '--collect-all "sounddevice"',
+        "tools.audit_speech_runtime_chain",
+        "speech runtime chain or PortAudio dependency is incomplete",
+        '--collect-all "opencc"',
+        '$env:PYTHON_JIT = "1"',
+        "tools/build_pyinstaller_jit_bootloader.py",
+        '.qt315-compat-full\\Lib\\site-packages',
+        "6.11.1+mohan.py315.",
+        'Move-Item -LiteralPath $PublicExecutable',
+        'tools\\jit_launcher.py',
+        '$env:PYTHON_JIT = "0"',
+        '$RuntimeExecutable',
         "mohan-native-build-evidence.json",
         "tools/verify_packaged_native_acceleration.py",
     ):
@@ -66,6 +85,24 @@ def test_windows_package_builds_installs_and_collects_native_module() -> None:
     assert "native-wheels/" in read(".gitignore")
     assert "native-wheels-*/" in read(".gitignore")
     assert '"native-wheels-$NativeBuildId"' in script
+
+
+def test_python315_jit_bootloader_contract_is_reproducible_and_narrow() -> None:
+    builder = read("tools/build_pyinstaller_jit_bootloader.py")
+    for required in (
+        'PYINSTALLER_VERSION = "6.21.0"',
+        "SOURCE_SHA256",
+        "MOHAN_JIT_ENV",
+        'config.isolated = 0',
+        'config.use_environment = 1',
+        'PyInitConfig_SetInt(config, \\\"isolated\\\", 0)',
+        'PyInitConfig_SetInt(config, \\\"use_environment\\\", 1)',
+        'for name in ("run.exe", "runw.exe")',
+    ):
+        assert required in builder
+    launcher = read("tools/jit_launcher.py")
+    assert "startswith(PYTHON_ENV_PREFIX)" in launcher
+    assert 'environment["PYTHON_JIT"] = "1"' in launcher
 
 
 def assert_native_workflow_contract(relative: str) -> None:
@@ -116,6 +153,11 @@ def test_windows_release_verifies_every_distributed_package_form() -> None:
         '"--output"',
         "& $Python @Arguments",
         "Invoke-NativeVerification",
+        "Installer omitted layered PoseAtlas v4 assets",
+        'if ($LayeredViews.Count -ne 600)',
+        "Installer omitted layered half-body expression assets",
+        'if ($HalfBodyLayers.Count -ne 75)',
+        'foreach ($Authority in @("idle.png", "idle_lean.png", "idle_front.png"))',
     ):
         assert required in installer_test
     assert installer_test.count("Invoke-NativeVerification `") == NATIVE_VERIFICATION_INVOCATION_COUNT

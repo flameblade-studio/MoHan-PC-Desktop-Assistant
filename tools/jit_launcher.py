@@ -8,6 +8,7 @@ lazy import sys
 lazy from pathlib import Path
 
 RUNTIME_SUFFIX = "-runtime.exe"
+PYTHON_ENV_PREFIX = "PYTHON"
 
 
 def runtime_path() -> Path:
@@ -25,7 +26,11 @@ def _forward_exit(code: int) -> int:
 
 def main() -> int:
     """Forward application arguments while setting the JIT startup contract."""
-    environment = os.environ.copy()
+    environment = {
+        key: value
+        for key, value in os.environ.items()
+        if not key.upper().startswith(PYTHON_ENV_PREFIX)
+    }
     if environment.get("MOHAN_DISABLE_JIT") != "1":
         environment["PYTHON_JIT"] = "1"
     runtime = runtime_path()

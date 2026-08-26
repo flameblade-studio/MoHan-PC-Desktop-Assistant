@@ -1,7 +1,7 @@
 {
   "schema": "mohan-multimodal-model-provenance-v1",
   "runtime": "opencv-dnn",
-  "repository": "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant",
+  "repository": "https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant",
   "models": [
     {
       "name": "MediaPipe Face Mesh 468-landmark model",

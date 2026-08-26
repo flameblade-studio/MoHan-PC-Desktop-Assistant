@@ -1,0 +1,901 @@
+{
+  "schema": "mohan.layered-full-body-semantic-audit.v1",
+  "exit_code_contract": {
+    "0": "all semantic checks passed",
+    "1": "one or more file-level semantic checks failed",
+    "2": "audit configuration or execution failed closed"
+  },
+  "passed": false,
+  "asset_root": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered",
+  "authority_root": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4",
+  "views_checked": 24,
+  "files_checked": 600,
+  "issue_count": 89,
+  "issues_by_code": {
+    "base_face_coverage_low": 4,
+    "lip_layers_byte_identical": 26,
+    "non_skin_layer_face_contamination": 13,
+    "oral_cavity_lip_misaligned": 9,
+    "ornament_contains_face": 13,
+    "teeth_tongue_all_views_empty": 24
+  },
+  "issues": [
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+000-pitch+00_lip_lower.png",
+      "view_id": "yaw+000-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+000-pitch+00_lip_upper.png",
+      "view_id": "yaw+000-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "oral_cavity_lip_misaligned",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+000-pitch+00_oral_cavity.png",
+      "view_id": "yaw+000-pitch+00",
+      "layer": "oral_cavity",
+      "message": "oral cavity center is detached from the lip center",
+      "metrics": {
+        "delta_x_face_width": 0.002611,
+        "delta_y_face_height": 0.235356
+      }
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+000-pitch+00_ornament.png",
+      "view_id": "yaw+000-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.685606
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+000-pitch+00_ornament.png",
+      "view_id": "yaw+000-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.685683,
+        "skin_face_ratio": 0.685606
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+000-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+000-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+015-pitch+00_lip_lower.png",
+      "view_id": "yaw+015-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+015-pitch+00_lip_upper.png",
+      "view_id": "yaw+015-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "oral_cavity_lip_misaligned",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+015-pitch+00_oral_cavity.png",
+      "view_id": "yaw+015-pitch+00",
+      "layer": "oral_cavity",
+      "message": "oral cavity center is detached from the lip center",
+      "metrics": {
+        "delta_x_face_width": 0.441671,
+        "delta_y_face_height": 0.286124
+      }
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+015-pitch+00_ornament.png",
+      "view_id": "yaw+015-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.690988
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+015-pitch+00_ornament.png",
+      "view_id": "yaw+015-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.696802,
+        "skin_face_ratio": 0.690988
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+015-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+015-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+030-pitch+00_lip_lower.png",
+      "view_id": "yaw+030-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+030-pitch+00_lip_upper.png",
+      "view_id": "yaw+030-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "oral_cavity_lip_misaligned",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+030-pitch+00_oral_cavity.png",
+      "view_id": "yaw+030-pitch+00",
+      "layer": "oral_cavity",
+      "message": "oral cavity center is detached from the lip center",
+      "metrics": {
+        "delta_x_face_width": 0.651215,
+        "delta_y_face_height": 0.296966
+      }
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+030-pitch+00_ornament.png",
+      "view_id": "yaw+030-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.72912
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+030-pitch+00_ornament.png",
+      "view_id": "yaw+030-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.735552,
+        "skin_face_ratio": 0.72912
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+030-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+030-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+045-pitch+00_lip_lower.png",
+      "view_id": "yaw+045-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+045-pitch+00_lip_upper.png",
+      "view_id": "yaw+045-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "oral_cavity_lip_misaligned",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+045-pitch+00_oral_cavity.png",
+      "view_id": "yaw+045-pitch+00",
+      "layer": "oral_cavity",
+      "message": "oral cavity center is detached from the lip center",
+      "metrics": {
+        "delta_x_face_width": 0.736911,
+        "delta_y_face_height": 0.291446
+      }
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+045-pitch+00_ornament.png",
+      "view_id": "yaw+045-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.693335
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+045-pitch+00_ornament.png",
+      "view_id": "yaw+045-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.703322,
+        "skin_face_ratio": 0.693335
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+045-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+045-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "base_face_coverage_low",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+060-pitch+00_base.png",
+      "view_id": "yaw+060-pitch+00",
+      "layer": "base",
+      "message": "base does not cover enough of the authority face",
+      "metrics": {
+        "coverage": 0.253498,
+        "minimum": 0.35
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+060-pitch+00_lip_lower.png",
+      "view_id": "yaw+060-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+060-pitch+00_lip_upper.png",
+      "view_id": "yaw+060-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "oral_cavity_lip_misaligned",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+060-pitch+00_oral_cavity.png",
+      "view_id": "yaw+060-pitch+00",
+      "layer": "oral_cavity",
+      "message": "oral cavity center is detached from the lip center",
+      "metrics": {
+        "delta_x_face_width": 0.955121,
+        "delta_y_face_height": 0.297833
+      }
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+060-pitch+00_ornament.png",
+      "view_id": "yaw+060-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.637963
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+060-pitch+00_ornament.png",
+      "view_id": "yaw+060-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.644753,
+        "skin_face_ratio": 0.637963
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+060-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+060-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "base_face_coverage_low",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+075-pitch+00_base.png",
+      "view_id": "yaw+075-pitch+00",
+      "layer": "base",
+      "message": "base does not cover enough of the authority face",
+      "metrics": {
+        "coverage": 0.246319,
+        "minimum": 0.35
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+075-pitch+00_lip_lower.png",
+      "view_id": "yaw+075-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+075-pitch+00_lip_upper.png",
+      "view_id": "yaw+075-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+075-pitch+00_ornament.png",
+      "view_id": "yaw+075-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.635465
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+075-pitch+00_ornament.png",
+      "view_id": "yaw+075-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.645351,
+        "skin_face_ratio": 0.635465
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+075-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+075-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "base_face_coverage_low",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+090-pitch+00_base.png",
+      "view_id": "yaw+090-pitch+00",
+      "layer": "base",
+      "message": "base does not cover enough of the authority face",
+      "metrics": {
+        "coverage": 0.0,
+        "minimum": 0.35
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+090-pitch+00_lip_lower.png",
+      "view_id": "yaw+090-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+090-pitch+00_lip_upper.png",
+      "view_id": "yaw+090-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+090-pitch+00_ornament.png",
+      "view_id": "yaw+090-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.441602
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+090-pitch+00_ornament.png",
+      "view_id": "yaw+090-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.45377,
+        "skin_face_ratio": 0.441602
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+090-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+090-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+105-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+105-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+120-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+120-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+135-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+135-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+150-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+150-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw+165-pitch+00_teeth_tongue.png",
+      "view_id": "yaw+165-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-015-pitch+00_lip_lower.png",
+      "view_id": "yaw-015-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-015-pitch+00_lip_upper.png",
+      "view_id": "yaw-015-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "oral_cavity_lip_misaligned",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-015-pitch+00_oral_cavity.png",
+      "view_id": "yaw-015-pitch+00",
+      "layer": "oral_cavity",
+      "message": "oral cavity center is detached from the lip center",
+      "metrics": {
+        "delta_x_face_width": 0.078449,
+        "delta_y_face_height": 0.312418
+      }
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-015-pitch+00_ornament.png",
+      "view_id": "yaw-015-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.634648
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-015-pitch+00_ornament.png",
+      "view_id": "yaw-015-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.641389,
+        "skin_face_ratio": 0.634648
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-015-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-015-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-030-pitch+00_lip_lower.png",
+      "view_id": "yaw-030-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-030-pitch+00_lip_upper.png",
+      "view_id": "yaw-030-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "oral_cavity_lip_misaligned",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-030-pitch+00_oral_cavity.png",
+      "view_id": "yaw-030-pitch+00",
+      "layer": "oral_cavity",
+      "message": "oral cavity center is detached from the lip center",
+      "metrics": {
+        "delta_x_face_width": 0.001406,
+        "delta_y_face_height": 0.3516
+      }
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-030-pitch+00_ornament.png",
+      "view_id": "yaw-030-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.65643
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-030-pitch+00_ornament.png",
+      "view_id": "yaw-030-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.660717,
+        "skin_face_ratio": 0.65643
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-030-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-030-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-045-pitch+00_lip_lower.png",
+      "view_id": "yaw-045-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-045-pitch+00_lip_upper.png",
+      "view_id": "yaw-045-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "oral_cavity_lip_misaligned",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-045-pitch+00_oral_cavity.png",
+      "view_id": "yaw-045-pitch+00",
+      "layer": "oral_cavity",
+      "message": "oral cavity center is detached from the lip center",
+      "metrics": {
+        "delta_x_face_width": 0.093169,
+        "delta_y_face_height": 0.29387
+      }
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-045-pitch+00_ornament.png",
+      "view_id": "yaw-045-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.631479
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-045-pitch+00_ornament.png",
+      "view_id": "yaw-045-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.638747,
+        "skin_face_ratio": 0.631479
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-045-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-045-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-060-pitch+00_lip_lower.png",
+      "view_id": "yaw-060-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-060-pitch+00_lip_upper.png",
+      "view_id": "yaw-060-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "oral_cavity_lip_misaligned",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-060-pitch+00_oral_cavity.png",
+      "view_id": "yaw-060-pitch+00",
+      "layer": "oral_cavity",
+      "message": "oral cavity center is detached from the lip center",
+      "metrics": {
+        "delta_x_face_width": 0.699558,
+        "delta_y_face_height": 0.391945
+      }
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-060-pitch+00_ornament.png",
+      "view_id": "yaw-060-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.681543
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-060-pitch+00_ornament.png",
+      "view_id": "yaw-060-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.68805,
+        "skin_face_ratio": 0.681543
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-060-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-060-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-075-pitch+00_lip_lower.png",
+      "view_id": "yaw-075-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-075-pitch+00_lip_upper.png",
+      "view_id": "yaw-075-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-075-pitch+00_ornament.png",
+      "view_id": "yaw-075-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.673978
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-075-pitch+00_ornament.png",
+      "view_id": "yaw-075-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.679978,
+        "skin_face_ratio": 0.673978
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-075-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-075-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "base_face_coverage_low",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-090-pitch+00_base.png",
+      "view_id": "yaw-090-pitch+00",
+      "layer": "base",
+      "message": "base does not cover enough of the authority face",
+      "metrics": {
+        "coverage": 0.0,
+        "minimum": 0.35
+      }
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-090-pitch+00_lip_lower.png",
+      "view_id": "yaw-090-pitch+00",
+      "layer": "lip_lower",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "lip_layers_byte_identical",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-090-pitch+00_lip_upper.png",
+      "view_id": "yaw-090-pitch+00",
+      "layer": "lip_upper",
+      "message": "upper and lower lip PNGs are byte-identical",
+      "metrics": {}
+    },
+    {
+      "code": "non_skin_layer_face_contamination",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-090-pitch+00_ornament.png",
+      "view_id": "yaw-090-pitch+00",
+      "layer": "ornament",
+      "message": "non-skin layer contains an abnormally large skin-colored face region",
+      "metrics": {
+        "maximum": 0.3,
+        "skin_face_ratio": 0.525129
+      }
+    },
+    {
+      "code": "ornament_contains_face",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-090-pitch+00_ornament.png",
+      "view_id": "yaw-090-pitch+00",
+      "layer": "ornament",
+      "message": "ornament layer contains most of a face instead of isolated adornments",
+      "metrics": {
+        "opaque_face_ratio": 0.534923,
+        "skin_face_ratio": 0.525129
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-090-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-090-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-105-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-105-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-120-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-120-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-135-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-135-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-150-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-150-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-165-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-165-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    },
+    {
+      "code": "teeth_tongue_all_views_empty",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered\\yaw-180-pitch+00_teeth_tongue.png",
+      "view_id": "yaw-180-pitch+00",
+      "layer": "teeth_tongue",
+      "message": "teeth/tongue semantic layer is empty in every audited view",
+      "metrics": {
+        "audited_views": 24
+      }
+    }
+  ]
+}

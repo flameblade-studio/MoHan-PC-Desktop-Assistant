@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "generated_on": "2026-08-23",
+  "scope": [
+    "dashboard-ui",
+    "python315-jit",
+    "windows-packaging",
+    "preview-assets",
+    "installer-contracts"
+  ],
+  "worktree": {
+    "tracked_modified": 722,
+    "untracked": 42,
+    "single_commit_safe": false,
+    "generated_specs_ignored": true
+  },
+  "commit_groups": [
+    {
+      "id": "ui-controls",
+      "ready": true,
+      "requires_hunk_staging": true,
+      "tests": [
+        "tests/test_dashboard_control_consistency.py",
+        "tests/test_dashboard_visual_consistency.py"
+      ]
+    },
+    {
+      "id": "jit-runtime-lifecycle",
+      "ready": true,
+      "requires_hunk_staging": true,
+      "tests": [
+        "tests/test_python315_runtime.py",
+        "tests/test_jit_launcher.py"
+      ]
+    },
+    {
+      "id": "windows-jit-packaging",
+      "ready": "contract-only",
+      "depends_on": ["jit-runtime-lifecycle"],
+      "remaining_evidence": ["frozen-launcher-runtime-smoke"]
+    },
+    {
+      "id": "cross-platform-layered-assets",
+      "ready": "code-only",
+      "release_blocked_by": ["visual-asset-gates"]
+    },
+    {
+      "id": "fail-closed-preflights",
+      "ready": false,
+      "depends_on": ["speech-owner-changes", "render-owner-changes", "approved-visual-assets"]
+    },
+    {
+      "id": "installer-release-plumbing",
+      "ready": true,
+      "requires_hunk_staging": true
+    }
+  ],
+  "critical_untracked_inputs": [
+    "presentation/dashboard_control_style.py",
+    "presentation/dashboard_wardrobe_status.py",
+    "tools/build_pyinstaller_jit_bootloader.py",
+    "tools/audit_speech_runtime_chain.py",
+    "tools/audit_layered_full_body_semantics.py",
+    "tools/audit_pose_atlas_identity.py",
+    "tools/audit_face_layer_asymmetry.py",
+    "tests/test_dashboard_control_consistency.py",
+    "tests/test_jit_launcher.py"
+  ],
+  "orphan_or_development_only": [
+    "tools/frozen_jit_qt_probe.py",
+    "generated *.spec files",
+    "candidate/smoothing tools unless intentionally reviewed"
+  ],
+  "packaging_asset_contract": {
+    "windows": "build.ps1 recursively adds assets",
+    "preview": [
+      "assets/pose-atlas/v4",
+      "assets/pose-atlas/v4-layered",
+      "assets/expressions"
+    ],
+    "installers": "recursively copy the built application directory"
+  },
+  "latest_targeted_evidence": {
+    "pytest": "24 passed",
+    "ruff": "passed",
+    "source_qt_jit_smoke": "jit=True; qt_exit=0",
+    "diff_check": "passed"
+  }
+}

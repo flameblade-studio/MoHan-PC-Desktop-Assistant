@@ -108,6 +108,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
     }),
     "application.application_bootstrap": frozenset({
         "infrastructure.app_resources",
+        "integrations.openai_fashion_trend_scout",
         "presentation.companion_window",
     }),
     "application.cloud_vision_ui_bridge": frozenset({
@@ -132,6 +133,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.wellbeing_reminder_store",
     }),
     "application.service_container": frozenset({
+        "infrastructure.active_outfit_overlay",
         "infrastructure.app_resources",
         "infrastructure.backup_manager",
         "infrastructure.db",

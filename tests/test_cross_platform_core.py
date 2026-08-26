@@ -364,6 +364,7 @@ def _assert_linux_dashboard_fails_closed(
     assert not list(root.glob("*.unavailable"))
     center.close_services()
     dashboard.close()
+    assert not dashboard.timer.isActive()
     services.db.close()
 
 

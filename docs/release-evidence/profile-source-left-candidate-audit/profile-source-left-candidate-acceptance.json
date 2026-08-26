@@ -1,0 +1,169 @@
+{
+  "schema": "mohan.profile-source-acceptance.v1",
+  "passed": false,
+  "candidate": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+  "authorities": [
+    "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\expressions\\idle_front.png",
+    "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\expressions\\idle_lean.png",
+    "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\expressions\\idle.png"
+  ],
+  "candidate_dimensions": [
+    1254,
+    1254
+  ],
+  "candidate_channels": 3,
+  "identity_similarities": {
+    "idle_front.png": 0.388168,
+    "idle_lean.png": 0.455065,
+    "idle.png": 0.460604
+  },
+  "geometry": {
+    "candidate": {
+      "face_aspect": 0.632141,
+      "eye_span_ratio": 0.348848,
+      "nose_eye_vertical_ratio": 0.191648,
+      "mouth_span_ratio": 0.287629,
+      "mouth_chin_proxy_ratio": 0.288822
+    },
+    "authority_medians": {
+      "face_aspect": 0.738407,
+      "eye_span_ratio": 0.452749,
+      "nose_eye_vertical_ratio": 0.202395,
+      "mouth_span_ratio": 0.365717,
+      "mouth_chin_proxy_ratio": 0.255831
+    },
+    "relative_drift": {
+      "face_aspect": 0.143912,
+      "eye_span_ratio": 0.229489,
+      "nose_eye_vertical_ratio": 0.053101,
+      "mouth_span_ratio": 0.21352,
+      "mouth_chin_proxy_ratio": 0.128956
+    },
+    "forehead_profile": {
+      "measured": 1.0,
+      "outward_ratio": 0.060133,
+      "curvature_ratio": 0.056855
+    }
+  },
+  "checkerboard_background_ratio": 0.543261,
+  "face_green_cyan_pixels": 52,
+  "face_roi_extraction_approved": false,
+  "mirrored_right_source_approved": false,
+  "issue_count": 12,
+  "issues_by_code": {
+    "ambiguous_face_detection": 1,
+    "checkerboard_background_embedded": 1,
+    "face_aspect_drift": 1,
+    "face_green_cyan_pixels": 1,
+    "face_roi_extraction_not_approved": 1,
+    "facial_proportion_drift": 2,
+    "forehead_curvature_discontinuity": 1,
+    "forehead_outward_bulge": 1,
+    "identity_similarity_low": 1,
+    "mirrored_right_source_not_approved": 1,
+    "source_has_no_alpha": 1
+  },
+  "issues": [
+    {
+      "code": "ambiguous_face_detection",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "candidate does not produce exactly one unambiguous face detection",
+      "metrics": {
+        "detected_faces": 2
+      }
+    },
+    {
+      "code": "checkerboard_background_embedded",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "checkerboard transparency preview is baked into RGB pixels",
+      "metrics": {
+        "maximum": 0.02,
+        "ratio": 0.543261
+      }
+    },
+    {
+      "code": "face_aspect_drift",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "profile face aspect differs from the identity authorities",
+      "metrics": {
+        "drift": 0.143912,
+        "maximum": 0.12
+      }
+    },
+    {
+      "code": "face_green_cyan_pixels",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "candidate face ROI contains red-deficient green/cyan pixels",
+      "metrics": {
+        "anomalous_pixels": 52
+      }
+    },
+    {
+      "code": "face_roi_extraction_not_approved",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "face ROI extraction is unsafe until identity/background/raster blockers pass",
+      "metrics": {}
+    },
+    {
+      "code": "facial_proportion_drift",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "candidate eye_span_ratio differs excessively from authority median",
+      "metrics": {
+        "drift": 0.229489,
+        "maximum": 0.2,
+        "metric": "eye_span_ratio"
+      }
+    },
+    {
+      "code": "facial_proportion_drift",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "candidate mouth_span_ratio differs excessively from authority median",
+      "metrics": {
+        "drift": 0.21352,
+        "maximum": 0.2,
+        "metric": "mouth_span_ratio"
+      }
+    },
+    {
+      "code": "forehead_curvature_discontinuity",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "candidate forehead contour contains an abrupt curvature change",
+      "metrics": {
+        "curvature_ratio": 0.056855,
+        "maximum": 0.04
+      }
+    },
+    {
+      "code": "forehead_outward_bulge",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "candidate forehead contour protrudes beyond the smooth profile limit",
+      "metrics": {
+        "maximum": 0.04,
+        "outward_ratio": 0.060133
+      }
+    },
+    {
+      "code": "identity_similarity_low",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "candidate does not match the three half-body identity authorities",
+      "metrics": {
+        "median_similarity": 0.455065,
+        "minimum": 0.65
+      }
+    },
+    {
+      "code": "mirrored_right_source_not_approved",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "right-side mirroring would duplicate the rejected source defects",
+      "metrics": {}
+    },
+    {
+      "code": "source_has_no_alpha",
+      "subject": "D:\\FlamebladeStudio\\CodexProjects\\release-evidence\\mohan-v4.4.2-visual-audit-2026-08-23\\profile-source-left-candidate.png",
+      "message": "candidate is opaque RGB and cannot be directly registered as a layer",
+      "metrics": {
+        "channels": 3
+      }
+    }
+  ]
+}
