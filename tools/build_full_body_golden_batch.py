@@ -17,6 +17,7 @@ lazy from PIL import Image
 
 
 SIZE = (1024, 1536)
+TOTAL_VIEWS = 24
 LAYERS = (
     "body", "hair_back", "base", "jaw", "oral_cavity", "teeth_tongue",
     "lip_lower", "lip_upper", "corner_left", "corner_right", "blush_left",
@@ -53,6 +54,31 @@ def _validate_rgba(path: Path) -> list[str]:
     transparent = rgba[..., 3] == 0
     if np.any(rgba[..., :3][transparent] != 0):
         failures.append(f"transparent_rgb_nonzero:{path.name}")
+    return failures
+
+
+def _audit_failures(audit_path: Path) -> list[str]:
+    if not audit_path.is_file():
+        return ["audit_missing"]
+    failures: list[str] = []
+    try:
+        audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        failures.append(f"audit_unreadable:{exc}")
+        audit = {}
+    if audit.get("passed") is not True:
+        failures.append("audit_not_passed")
+    metrics = audit.get("metrics", {})
+    for key in ("recompose_diff_pixels", "recompose_max_channel_error", "lip_green_cyan_pixels"):
+        if metrics.get(key) != 0:
+            failures.append(f"audit_metric_nonzero:{key}={metrics.get(key)!r}")
+    # The foreground must retain transparent clearance below the shoes.
+    # A bottom-exclusive coordinate of 1536 means the authority itself
+    # touches the canvas edge and can no longer prove that the soles are
+    # complete. Missing, non-integral and out-of-range values fail closed.
+    bottom = metrics.get("foreground_bottom_exclusive")
+    if not isinstance(bottom, int) or isinstance(bottom, bool) or not 0 < bottom < SIZE[1]:
+        failures.append(f"shoe_bottom_clearance_invalid:{bottom!r}")
     return failures
 
 
@@ -96,27 +122,7 @@ def build_manifest(repo: Path, registry_path: Path) -> dict:
         for name in sorted(expected_names & actual_names):
             view_failures.extend(_validate_rgba(layer_dir / name))
 
-        if not audit_path.is_file():
-            view_failures.append("audit_missing")
-        else:
-            try:
-                audit = json.loads(audit_path.read_text(encoding="utf-8"))
-            except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-                view_failures.append(f"audit_unreadable:{exc}")
-                audit = {}
-            if audit.get("passed") is not True:
-                view_failures.append("audit_not_passed")
-            metrics = audit.get("metrics", {})
-            for key in ("recompose_diff_pixels", "recompose_max_channel_error", "lip_green_cyan_pixels"):
-                if metrics.get(key) != 0:
-                    view_failures.append(f"audit_metric_nonzero:{key}={metrics.get(key)!r}")
-            # The foreground must retain transparent clearance below the shoes.
-            # A bottom-exclusive coordinate of 1536 means the authority itself
-            # touches the canvas edge and can no longer prove that the soles are
-            # complete. Missing, non-integral and out-of-range values fail closed.
-            bottom = metrics.get("foreground_bottom_exclusive")
-            if not isinstance(bottom, int) or isinstance(bottom, bool) or not 0 < bottom < SIZE[1]:
-                view_failures.append(f"shoe_bottom_clearance_invalid:{bottom!r}")
+        view_failures.extend(_audit_failures(audit_path))
 
         if view_failures:
             failures.extend(f"{view}:{failure}" for failure in view_failures)
@@ -154,7 +160,7 @@ def build_manifest(repo: Path, registry_path: Path) -> dict:
     return {
         "schema": "mohan.full-body-golden-batch.v1",
         "fail_closed": True,
-        "promotable": ready_views == 24 and not failures,
+        "promotable": ready_views == TOTAL_VIEWS and not failures,
         "policy": {
             "mirroring": "forbidden",
             "unregistered_authority_guessing": "forbidden",

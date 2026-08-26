@@ -28,6 +28,7 @@ lazy from infrastructure.layered_full_body_assets import (
 lazy from infrastructure.mouth_geometry import inward_lerped_u_layer
 
 MOUTH_APERTURE_THRESHOLD = 0.01
+BLINK_VISIBLE_EPSILON = 1e-6
 # Iris translation scale: gaze_x/gaze_y are normalized to [-1, 1]; this maps
 # them onto a small pixel offset so the eyes track the pointer without the iris
 # leaving the sclera.  The full-body layers are authored at 1024x1536, so a few
@@ -409,7 +410,7 @@ class LayeredFullBodyRenderer:
                 painter.end()
 
         blink = min(1.0, max(0.0, float(expression.blink)))
-        if blink > 1e-6:
+        if blink > BLINK_VISIBLE_EPSILON:
             blink_layers = (
                 "eyelid_left",
                 "eyelid_right",

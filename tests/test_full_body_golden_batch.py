@@ -1,4 +1,3 @@
-lazy import tempfile
 lazy import unittest
 lazy from pathlib import Path
 

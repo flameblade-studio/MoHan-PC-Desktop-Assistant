@@ -31,9 +31,13 @@ class NoseLipContractReport:
         return asdict(self)
 
 
+POINT_ARRAY_NDIM = 2
+POINT_MIN_COMPONENTS = 2
+
+
 def _points(value: np.ndarray, label: str) -> np.ndarray:
     points = np.asarray(value, dtype=np.float64)
-    if points.ndim != 2 or points.shape[1] < 2:
+    if points.ndim != POINT_ARRAY_NDIM or points.shape[1] < POINT_MIN_COMPONENTS:
         raise ValueError(f"{label} must have shape (N, >=2)")
     if points.shape[0] <= max(LANDMARK_INDICES):
         raise ValueError(f"{label} must contain landmark index 94")

@@ -39,6 +39,24 @@ def translated(image: Image.Image, dx: int, dy: int) -> Image.Image:
     )
 
 
+def _aligned_flat_shoe_layer(
+    base_size: tuple[int, int],
+    shoe_source: Image.Image,
+    shoe_polygons: list[list[tuple[int, int]]],
+) -> Image.Image:
+    source_mask = polygon_mask(base_size, shoe_polygons)
+    source_alpha = Image.fromarray(
+        np.minimum(
+            np.asarray(source_mask),
+            np.asarray(shoe_source.getchannel("A")),
+        ).astype(np.uint8),
+        mode="L",
+    )
+    shoe_layer = shoe_source.copy()
+    shoe_layer.putalpha(source_alpha)
+    return translated(shoe_layer, SHIFT_X, SHIFT_Y)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base", type=Path, required=True)
@@ -56,19 +74,7 @@ def main() -> int:
         [(357, 1451), (369, 1430), (396, 1415), (452, 1413), (488, 1433), (503, 1460), (492, 1482), (439, 1487), (365, 1478)],
         [(453, 1450), (466, 1429), (493, 1415), (546, 1410), (577, 1434), (596, 1460), (580, 1494), (518, 1497), (457, 1481)],
     ]
-    original_shoe_polygons = [
-        [(332, 1459), (344, 1438), (371, 1423), (427, 1421), (463, 1441), (478, 1468), (467, 1507), (414, 1510), (340, 1491)],
-        [(428, 1458), (441, 1437), (468, 1423), (521, 1418), (552, 1442), (571, 1468), (555, 1510), (493, 1512), (432, 1489)],
-    ]
-
-    source_mask = polygon_mask(base.size, corrected_shoe_polygons)
-    source_alpha = Image.fromarray(
-        np.minimum(np.asarray(source_mask), np.asarray(shoe_source.getchannel("A"))).astype(np.uint8),
-        mode="L",
-    )
-    shoe_layer = shoe_source.copy()
-    shoe_layer.putalpha(source_alpha)
-    shoe_layer = translated(shoe_layer, SHIFT_X, SHIFT_Y)
+    shoe_layer = _aligned_flat_shoe_layer(base.size, shoe_source, corrected_shoe_polygons)
 
     # Keep the original hem and ankles untouched.  The aligned flat-shoe layer
     # is opaque over the old heels, so erasing a broad polygon would introduce

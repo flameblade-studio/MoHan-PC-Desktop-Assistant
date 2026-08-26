@@ -11,6 +11,8 @@ lazy from PIL import Image, ImageDraw, ImageFilter
 
 SIZE = (1024, 1536)
 LOCK_Y = 1410
+# Only erase legacy heel pixels below this row (keeps skirt and ankles).
+HEEL_ERASE_MIN_Y = 1438
 DONOR_SHIFT = (-25, 8)
 
 
@@ -37,6 +39,41 @@ def translated(image: Image.Image, dx: int, dy: int) -> Image.Image:
         (1, 0, -dx, 0, 1, -dy),
         resample=Image.Resampling.BICUBIC,
     )
+
+
+def _donor_flat_shoe_layer(
+    donor: Image.Image,
+    donor_polygons: list[list[tuple[int, int]]],
+) -> Image.Image:
+    donor_area = polygon_mask(donor_polygons, blur=0.8)
+    donor_alpha_array = np.minimum(
+        np.asarray(donor_area, dtype=np.uint8),
+        np.asarray(donor.getchannel("A"), dtype=np.uint8),
+    )
+    # The donor includes the lower edge of its own white skirt in the broad
+    # shoe polygons.  Keep only the actual flat-shoe body; retaining the
+    # target's original ankles prevents a white triangular splice.
+    donor_alpha_array[:HEEL_ERASE_MIN_Y] = 0
+    donor_layer = donor.copy()
+    donor_layer.putalpha(Image.fromarray(donor_alpha_array, mode="L"))
+    return translated(donor_layer, *DONOR_SHIFT)
+
+
+def _composite_with_heel_erased(
+    base: Image.Image,
+    donor_layer: Image.Image,
+    old_shoe_polygons: list[list[tuple[int, int]]],
+) -> Image.Image:
+    # Remove the old shoe only below the ankle lock.  A slightly dilated donor
+    # footprint removes the former heel while keeping the skirt and ankles.
+    old_area = np.asarray(polygon_mask(old_shoe_polygons), dtype=np.uint8) > 0
+    donor_footprint = np.asarray(donor_layer.getchannel("A"), dtype=np.uint8) > 0
+    yy = np.indices((SIZE[1], SIZE[0]))[0]
+    erase = old_area & (yy >= HEEL_ERASE_MIN_Y) & donor_footprint
+    base_pixels = np.asarray(base, dtype=np.uint8).copy()
+    base_pixels[erase] = 0
+    cleared = Image.fromarray(base_pixels, mode="RGBA")
+    return Image.alpha_composite(cleared, donor_layer)
 
 
 def main() -> int:
@@ -66,31 +103,8 @@ def main() -> int:
          (500, 1520), (430, 1492)],
     ]
 
-    donor_area = polygon_mask(donor_polygons, blur=0.8)
-    donor_alpha_array = np.minimum(
-        np.asarray(donor_area, dtype=np.uint8),
-        np.asarray(donor.getchannel("A"), dtype=np.uint8),
-    )
-    # The donor includes the lower edge of its own white skirt in the broad
-    # shoe polygons.  Keep only the actual flat-shoe body; retaining the
-    # target's original ankles prevents a white triangular splice.
-    donor_alpha_array[:1438] = 0
-    donor_alpha = Image.fromarray(donor_alpha_array, mode="L")
-    donor_layer = donor.copy()
-    donor_layer.putalpha(donor_alpha)
-    donor_layer = translated(donor_layer, *DONOR_SHIFT)
-
-    # Remove the old shoe only below the ankle lock.  A slightly dilated donor
-    # footprint removes the former heel while keeping the skirt and ankles.
-    old_area = np.asarray(polygon_mask(old_shoe_polygons), dtype=np.uint8) > 0
-    donor_footprint = np.asarray(donor_layer.getchannel("A"), dtype=np.uint8) > 0
-    yy = np.indices((SIZE[1], SIZE[0]))[0]
-    erase = old_area & (yy >= 1438) & donor_footprint
-
-    base_pixels = np.asarray(base, dtype=np.uint8).copy()
-    base_pixels[erase] = 0
-    cleared = Image.fromarray(base_pixels, mode="RGBA")
-    result = Image.alpha_composite(cleared, donor_layer)
+    donor_layer = _donor_flat_shoe_layer(donor, donor_polygons)
+    result = _composite_with_heel_erased(base, donor_layer, old_shoe_polygons)
 
     result_pixels = np.asarray(result, dtype=np.uint8).copy()
     original_pixels = np.asarray(base, dtype=np.uint8)

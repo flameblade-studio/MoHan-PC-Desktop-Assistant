@@ -19,6 +19,8 @@ lazy from PIL import Image
 
 
 VIEW = "yaw+000-pitch+00"
+# Rows above this line default to hair_back ownership; rows below to body.
+HAIR_BODY_SPLIT_Y = 410
 LAYERS = (
     "body", "hair_back", "base", "jaw", "oral_cavity", "teeth_tongue",
     "lip_lower", "lip_upper", "corner_left", "corner_right", "blush_left",
@@ -84,20 +86,12 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def build(repo: Path, output: Path) -> dict:
-    canonical_path = repo / "assets/pose-atlas/v4" / f"{VIEW}.png"
-    authority_path = repo / "assets/pose-atlas/v4-working" / (
-        f"{VIEW}.user-approved-generated-alpha-clean-v3-20260823.png"
-    )
-    layer_dir = repo / "assets/pose-atlas/v4-layered"
-    canonical = _rgba(canonical_path)
-    authority = _rgba(authority_path)
-    if authority.shape != (1536, 1024, 4):
-        raise ValueError(f"authority shape must be 1536x1024 RGBA, got {authority.shape}")
-    h, w = authority.shape[:2]
-    foreground = authority[:, :, 3] > 0
-    matrix = _bbox_affine(canonical[:, :, 3], authority[:, :, 3])
-
+def _warped_layer_candidates(
+    layer_dir: Path,
+    matrix: np.ndarray,
+    foreground: np.ndarray,
+) -> dict[str, np.ndarray]:
+    h, w = foreground.shape
     candidates: dict[str, np.ndarray] = {}
     for layer in LAYERS:
         source = _rgba(layer_dir / f"{VIEW}_{layer}.png")
@@ -111,11 +105,46 @@ def build(repo: Path, output: Path) -> dict:
     face_support = candidates["base"] | candidates["jaw"]
     face_guard = cv2.dilate(face_support.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
     candidates["ornament"] &= ~face_guard
+    return candidates
 
-    # Legacy eye masks overlap exactly.  Assign every authority pixel once so
-    # blink and gaze layers remain independently addressable at runtime.
-    _partition_eye_layers(candidates)
 
+def _darkest_oral_band(
+    inner: np.ndarray,
+    authority: np.ndarray,
+    yy: np.ndarray,
+    y_mid: int,
+) -> np.ndarray:
+    mouth_rgb = authority[:, :, :3].astype(np.int16)
+    luminance = (54 * mouth_rgb[:, :, 2] + 183 * mouth_rgb[:, :, 1] +
+                 19 * mouth_rgb[:, :, 0]) // 256
+    oral = inner & (yy >= y_mid - 1) & (yy <= y_mid + 1)
+    if np.any(oral):
+        threshold = int(np.percentile(luminance[oral], 55))
+        oral &= luminance <= threshold
+    return oral
+
+
+def _clamp_oral_to_lips(
+    oral: np.ndarray,
+    upper: np.ndarray,
+    lower: np.ndarray,
+    xx: np.ndarray,
+    yy: np.ndarray,
+    y_mid: int,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    lx0, ly0, lx1, ly1 = _bbox(upper | lower)
+    kept_oral = oral & (xx >= lx0) & (xx < lx1) & (yy >= ly0) & (yy < ly1)
+    rejected_oral = oral & ~kept_oral
+    upper = upper | (rejected_oral & (yy < y_mid))
+    lower = lower | (rejected_oral & (yy >= y_mid))
+    return kept_oral, upper, lower
+
+
+def _rebuild_mouth_partitions(
+    candidates: dict[str, np.ndarray],
+    authority: np.ndarray,
+) -> None:
+    h, w = authority.shape[:2]
     # Rebuild the closed neutral mouth deterministically from authority pixels.
     # The current upper/lower masks are identical; split the shared support at
     # its vertical median, then reserve the darkest central strip as the oral
@@ -129,20 +158,10 @@ def build(repo: Path, output: Path) -> dict:
     corner_left = mouth & (xx < x0 + corner_width)
     corner_right = mouth & (xx >= x1 - corner_width)
     inner = mouth & ~corner_left & ~corner_right
-    mouth_rgb = authority[:, :, :3].astype(np.int16)
-    luminance = (54 * mouth_rgb[:, :, 2] + 183 * mouth_rgb[:, :, 1] +
-                 19 * mouth_rgb[:, :, 0]) // 256
-    oral = inner & (yy >= y_mid - 1) & (yy <= y_mid + 1)
-    if np.any(oral):
-        threshold = int(np.percentile(luminance[oral], 55))
-        oral &= luminance <= threshold
+    oral = _darkest_oral_band(inner, authority, yy, y_mid)
     upper = inner & (yy < y_mid) & ~oral
     lower = inner & (yy >= y_mid) & ~oral
-    lx0, ly0, lx1, ly1 = _bbox(upper | lower)
-    kept_oral = oral & (xx >= lx0) & (xx < lx1) & (yy >= ly0) & (yy < ly1)
-    rejected_oral = oral & ~kept_oral
-    upper |= rejected_oral & (yy < y_mid)
-    lower |= rejected_oral & (yy >= y_mid)
+    kept_oral, upper, lower = _clamp_oral_to_lips(oral, upper, lower, xx, yy, y_mid)
     if not upper.any() or not lower.any() or not corner_left.any() or not corner_right.any():
         raise RuntimeError("failed to partition mouth support")
     candidates["oral_cavity"] = kept_oral
@@ -151,21 +170,12 @@ def build(repo: Path, output: Path) -> dict:
     candidates["corner_left"] = corner_left
     candidates["corner_right"] = corner_right
 
-    # The legacy ornament mask also contains fragments of the facial feature
-    # masks.  Ornament owns only rigid jewellery: it must never pre-empt eyes,
-    # brows, blush or mouth pixels.  Subtract the deterministic feature union
-    # after the eye/mouth partitions have been rebuilt so every removed pixel
-    # is retained by its semantic facial layer during exclusive ownership.
-    facial_features = np.logical_or.reduce([
-        candidates[name] for name in (
-            "brow_left", "brow_right", "eyeliner_left", "eyeliner_right",
-            "eyelid_left", "eyelid_right", "iris_left", "iris_right",
-            "blush_left", "blush_right", "corner_left", "corner_right",
-            "lip_upper", "lip_lower", "oral_cavity",
-        )
-    ])
-    candidates["ornament"] &= ~facial_features
 
+def _exclusive_ownership(
+    candidates: dict[str, np.ndarray],
+    foreground: np.ndarray,
+) -> dict[str, np.ndarray]:
+    h, w = foreground.shape
     # Exclusive ownership is required for lossless alpha recomposition.
     # Fine features win over skin/hair/body.  Missing one-pixel authority edge
     # samples caused by registration are assigned to a deterministic substrate.
@@ -184,8 +194,49 @@ def build(repo: Path, output: Path) -> dict:
         claimed |= own
     missing = foreground & ~claimed
     yy = np.indices((h, w))[0]
-    owned["hair_back"] |= missing & (yy < 410)
-    owned["body"] |= missing & (yy >= 410)
+    owned["hair_back"] |= missing & (yy < HAIR_BODY_SPLIT_Y)
+    owned["body"] |= missing & (yy >= HAIR_BODY_SPLIT_Y)
+    return owned
+
+
+def build(repo: Path, output: Path) -> dict:
+    canonical_path = repo / "assets/pose-atlas/v4" / f"{VIEW}.png"
+    authority_path = repo / "assets/pose-atlas/v4-working" / (
+        f"{VIEW}.user-approved-generated-alpha-clean-v3-20260823.png"
+    )
+    layer_dir = repo / "assets/pose-atlas/v4-layered"
+    canonical = _rgba(canonical_path)
+    authority = _rgba(authority_path)
+    if authority.shape != (1536, 1024, 4):
+        raise ValueError(f"authority shape must be 1536x1024 RGBA, got {authority.shape}")
+    h, w = authority.shape[:2]
+    foreground = authority[:, :, 3] > 0
+    matrix = _bbox_affine(canonical[:, :, 3], authority[:, :, 3])
+
+    candidates = _warped_layer_candidates(layer_dir, matrix, foreground)
+
+    # Legacy eye masks overlap exactly.  Assign every authority pixel once so
+    # blink and gaze layers remain independently addressable at runtime.
+    _partition_eye_layers(candidates)
+
+    _rebuild_mouth_partitions(candidates, authority)
+
+    # The legacy ornament mask also contains fragments of the facial feature
+    # masks.  Ornament owns only rigid jewellery: it must never pre-empt eyes,
+    # brows, blush or mouth pixels.  Subtract the deterministic feature union
+    # after the eye/mouth partitions have been rebuilt so every removed pixel
+    # is retained by its semantic facial layer during exclusive ownership.
+    facial_features = np.logical_or.reduce([
+        candidates[name] for name in (
+            "brow_left", "brow_right", "eyeliner_left", "eyeliner_right",
+            "eyelid_left", "eyelid_right", "iris_left", "iris_right",
+            "blush_left", "blush_right", "corner_left", "corner_right",
+            "lip_upper", "lip_lower", "oral_cavity",
+        )
+    ])
+    candidates["ornament"] &= ~facial_features
+
+    owned = _exclusive_ownership(candidates, foreground)
 
     output.mkdir(parents=True, exist_ok=True)
     records = []

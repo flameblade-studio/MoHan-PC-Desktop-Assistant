@@ -33,6 +33,8 @@ DEFAULT_AUTHORITY_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
 DEFAULT_SEMANTIC_REPORT = ROOT / "work" / "full_body_semantic_audit.json"
 DEFAULT_AUDIT_OUTPUT = ROOT / "work" / "full_body_layer_pack_audit.json"
 DEFAULT_MANIFEST_OUTPUT = ROOT / "work" / "full_body_layer_rebuild_manifest.json"
+COLOR_IMAGE_NDIM = 3
+RGBA_CHANNELS = 4
 EXPECTED_WH = (1024, 1536)
 ALPHA_VISIBLE = 16
 SCHEMA = "mohan.full-body-layer-pack-audit.v1"
@@ -118,7 +120,7 @@ def audit_pack(asset_root: Path, semantic_report: Path) -> tuple[dict[str, Any],
                 findings.append(Finding("B", "unreadable_png", view_id, layer, str(path), {}))
                 continue
             checked += 1
-            if image.ndim != 3 or image.shape[2] != 4:
+            if image.ndim != COLOR_IMAGE_NDIM or image.shape[2] != RGBA_CHANNELS:
                 findings.append(Finding("B", "not_rgba", view_id, layer, str(path), {"shape": str(image.shape)}))
                 continue
             height, width = image.shape[:2]
