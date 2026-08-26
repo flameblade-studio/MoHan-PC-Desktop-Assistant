@@ -14,9 +14,14 @@ class FullBodyGoldenBatchTests(unittest.TestCase):
 
     def test_real_registry_is_fail_closed_partial(self):
         repo = Path(__file__).resolve().parents[1]
-        manifest = build_manifest(
-            repo, repo / "work/full-body-layer-golden-batch/authority-registry.json"
-        )
+        registry = repo / "work/full-body-layer-golden-batch/authority-registry.json"
+        if not registry.is_file():
+            # The registry is a local work product (git-ignored).  A checkout
+            # without it must still fail closed instead of inventing a state.
+            with self.assertRaises(FileNotFoundError):
+                build_manifest(repo, registry)
+            self.skipTest("local golden-batch registry not present in this checkout")
+        manifest = build_manifest(repo, registry)
         self.assertFalse(manifest["promotable"])
         self.assertEqual(1, manifest["summary"]["ready_views"])
         self.assertEqual(23, manifest["summary"]["blocked_views"])
