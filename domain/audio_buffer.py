@@ -42,7 +42,14 @@ class BoundedAudioQueue[T](queue.Queue[T]):
                 return self.offer(item, keep_latest=keep_latest)
             with self._stats_lock:
                 self._dropped_oldest += 1
-            super().put_nowait(item)
+            try:
+                super().put_nowait(item)
+            except queue.Full:
+                # A concurrent producer can win the freed slot between our
+                # get_nowait and this put.  A non-blocking API with an
+                # explicit overflow policy must never leak queue.Full into
+                # the audio callback thread — retry the whole policy instead.
+                return self.offer(item, keep_latest=keep_latest)
         depth = self.qsize()
         with self._stats_lock:
             self._accepted += 1
