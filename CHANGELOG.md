@@ -4,6 +4,18 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+## [4.5.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.4.2...v4.5.0) (2026-08-27)
+
+
+### Features
+
+* PoseAtlas 24/600 正式驗收與 v4.4.2 後續分層說話、離散眨眼、自主製衣批次／PoseAtlas 24/600 正式验收与 v4.4.2 后续分层说话、离散眨眼、自主制衣批次／PoseAtlas 24/600 formal acceptance plus the post-v4.4.2 layered-speech, discrete-blink and autonomous-wardrobe batch／PoseAtlas 24/600 正式検収と v4.4.2 後続レイヤー発話・離散瞬き・自律衣装バッチ ([#88](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/88)) ([29d4fc2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/29d4fc2fbe926fc40170623bac963dee5e09f342))
+
+
+### Documentation
+
+* 記錄 v4.4.2 正式發行交接 ([#85](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/85)) ([6408fa8](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/6408fa8bc2c3ce00fcd7ca7f19243fcef599ae87))
+
 ## [4.4.2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.4.1...v4.4.2) (2026-08-21)
 
 

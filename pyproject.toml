@@ -1,6 +1,6 @@
 [project]
 name = "mohan-desktop-assistant"
-version = "4.4.2"
+version = "4.5.0"
 description = "A multilingual, voice-interactive desktop companion by Flameblade Studio."
 readme = "README.md"
 requires-python = ">=3.15,<3.16"
