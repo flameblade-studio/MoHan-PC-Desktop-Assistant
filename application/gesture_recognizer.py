@@ -445,8 +445,15 @@ def _prepare_templates(
         identifier = gesture_id.strip()
         if not identifier.startswith("custom:") or not samples:
             raise ValueError("Custom templates require a custom identifier and samples.")
+        # Recorded samples carry no handedness, so prepare each sample in
+        # BOTH normalizations and let matching take the nearer one.  The
+        # right-only normalization made left-handed recordings unmatchable
+        # by either hand; this also makes every custom gesture usable with
+        # whichever hand the user prefers.
         prepared[identifier] = tuple(
-            _normalize(sample.landmarks, HandSide.RIGHT) for sample in samples
+            _normalize(sample.landmarks, side)
+            for sample in samples
+            for side in (HandSide.RIGHT, HandSide.LEFT)
         )
     return prepared
 
