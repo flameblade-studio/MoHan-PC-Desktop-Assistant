@@ -137,6 +137,18 @@ class FlagshipRemoteMixin:
                 ),
             )
         )
+        # These four are unmounted value holders read at save time (see
+        # settings_security); the visible controls live on the dashboard
+        # settings page. They stay parentless (the dashboard's control
+        # consistency contract audits every child control), so register them
+        # for explicit release in close_services() to avoid leaking them as
+        # top-level widgets.
+        self._unmounted_value_holders = (
+            self.proactive_enabled,
+            self.proactive_mode,
+            self.minimum_away_minutes,
+            self.conversation_silence_minutes,
+        )
         self.face_profile_list = QListWidget()
         self.face_profile_list.setMaximumHeight(100)
         self._refresh_face_profiles()

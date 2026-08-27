@@ -48,7 +48,9 @@ class CompanionPlatformMixin:
     def _setup_tray(self) -> None:
         self.tray = QSystemTrayIcon(application_icon(), self)
         self.tray.setToolTip(profile_window_title(self.db))
-        menu = QMenu()
+        # Parent the menu to the window so it is destroyed with it instead of
+        # surviving as a parentless top-level widget after shutdown.
+        menu = QMenu(self)
         # The tray menu is a system-level popup that does not inherit the
         # dashboard's flagship theme.  Apply the shared light palette so its
         # items stay readable instead of falling back to the OS dark theme
