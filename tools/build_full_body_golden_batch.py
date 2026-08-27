@@ -110,7 +110,11 @@ def build_manifest(repo: Path, registry_path: Path) -> dict:
         else:
             view_failures.extend(_validate_rgba(authority))
             expected_hash = entry.get("authority_sha256", "")
-            if expected_hash and _sha256(authority) != expected_hash:
+            if not expected_hash:
+                # Fail closed: an approved master without a pinned SHA-256
+                # cannot prove it is the bytes the owner actually approved.
+                view_failures.append("authority_sha256_missing")
+            elif _sha256(authority) != expected_hash:
                 view_failures.append("authority_sha256_mismatch")
 
         expected_names = {f"{view}_{layer}.png" for layer in LAYERS}
