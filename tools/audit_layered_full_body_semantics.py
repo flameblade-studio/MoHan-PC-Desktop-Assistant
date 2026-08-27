@@ -88,6 +88,9 @@ FACE_SEMANTIC_LAYERS = frozenset(
 BACK_VIEW_EMPTY_MOUTH_LAYERS = frozenset(
     {"lip_upper", "lip_lower", "oral_cavity", "teeth_tongue"}
 )
+# Near-profile views whose oral pixels were returned to the lip layers
+# (golden-batch ruling 2026-08-27): oral_cavity is licensed empty there.
+NEAR_PROFILE_MIN_ABS_YAW = 75
 HAIR_LAYERS = frozenset({"hair_back", "hair_left", "hair_right"})
 SLEEVE_LAYERS = frozenset({"sleeve_left", "sleeve_right"})
 YAW_PATTERN = re.compile(r"^yaw(?P<yaw>[+-]\d{3})-pitch[+-]\d{2}$")
@@ -264,23 +267,36 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
         if teeth is not None and np.any(_opaque(teeth)):
             teeth_nonempty += 1
 
-        # Empty transparent face-layer policy.  Exemptions: teeth_tongue is a
-        # valid all-empty neutral set at every view (ruling 2026-08-27), and
-        # the lip/oral-cavity/teeth layers of back views (|yaw| > 90) are
-        # legitimately empty under the speech-mouth contract.  ADVISORY ONLY
-        # for now: the shipped v4 assets also leave every other face layer
-        # empty on back views and a few visible-view layers empty
-        # (oral_cavity at yaw±075/±090, blush_left at yaw-045), so blocking
-        # would need an owner ruling first.
+        # Empty transparent face-layer policy — BLOCKING (ruling 2026-08-28).
+        # A regression that writes an all-transparent iris/eyelid/lip layer
+        # must not ship.  Licensed-empty exemptions, each backed by an
+        # existing owner-ratified ruling:
+        #   1. teeth_tongue at every view (all-empty neutral set,
+        #      ruling 2026-08-27);
+        #   2. every face layer on back views (|yaw| > 90): the face is not
+        #      visible from behind, exactly the state of the accepted
+        #      shipped assets;
+        #   3. oral_cavity at |yaw| >= 75: the near-profile oral pixels were
+        #      formally returned to the lip layers (golden-batch ruling
+        #      2026-08-27);
+        #   4. paired *_left/*_right layers on any turned view (yaw != 0):
+        #      one side being occluded empty is natural asymmetry, mirroring
+        #      the asymmetry audit's own convention.
         for layer in LAYER_NAMES:
             if layer not in FACE_SEMANTIC_LAYERS or layer == "teeth_tongue":
                 continue
-            if abs(yaw) > FACE_VISIBLE_MAX_ABS_YAW and layer in BACK_VIEW_EMPTY_MOUTH_LAYERS:
+            if abs(yaw) > FACE_VISIBLE_MAX_ABS_YAW:
+                continue
+            if layer == "oral_cavity" and abs(yaw) >= NEAR_PROFILE_MIN_ABS_YAW:
+                continue
+            if yaw != 0 and (
+                layer.endswith("_left") or layer.endswith("_right")
+            ):
                 continue
             image = view_images.get(layer)
             if image is not None and not np.any(_opaque(image)):
                 _issue(
-                    advisories, "face_semantic_layer_fully_transparent",
+                    issues, "face_semantic_layer_fully_transparent",
                     asset_root / f"{view_id}_{layer}.png", view_id, layer,
                     "face semantic layer exists but contains no opaque pixels",
                     yaw=yaw,
