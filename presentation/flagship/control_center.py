@@ -33,6 +33,9 @@ lazy from infrastructure.gesture_template_store import ProtectedGestureTemplateS
 lazy from infrastructure.openai_vision_preferences_store import (
     OpenAIVisionPreferencesStore,
 )
+lazy from infrastructure.performance_preferences_store import (
+    PerformancePreferencesStore,
+)
 lazy from infrastructure.platform_contracts import PlatformServicePort
 lazy from presentation.flagship.audit import FlagshipAuditMixin
 lazy from presentation.flagship.cloud import FlagshipCloudMixin
@@ -67,7 +70,7 @@ __all__ = ("FlagshipControlCenter", "ControlCenterDependencies")
 class ControlCenterDependencies:
     """Optional dependency-injection bundle for :class:`FlagshipControlCenter`.
 
-    Grouping the eleven keyword-only collaborators into a single parameter
+    Grouping the keyword-only collaborators into a single parameter
     object keeps the constructor signature small while preserving the
     explicit, backward-compatible wiring used by the dashboard and tests.
     """
@@ -76,6 +79,7 @@ class ControlCenterDependencies:
     secret_store_factory: SecretStoreFactoryPort | None = None
     proactivity_store: CompanionProactivityPreferencesStore | None = None
     openai_vision_store: OpenAIVisionPreferencesStore | None = None
+    performance_store: PerformancePreferencesStore | None = None
     gesture_store: GestureConfigurationStore | None = None
     gesture_recorder: GestureRecorderPort | None = None
     gesture_controller: GestureController | None = None
@@ -153,6 +157,10 @@ class FlagshipControlCenter(
             OpenAIVisionPreferencesStore(StudioDBSettingsPort(db))
         )
         self._openai_vision_draft = self.openai_vision_store.begin_edit()
+        self.performance_store = deps.performance_store or (
+            PerformancePreferencesStore(StudioDBSettingsPort(db))
+        )
+        self._performance_draft = self.performance_store.begin_edit()
         self._openai_vision_key_probe = deps.openai_vision_key_available
         self._cloud_vision_service_factory = deps.cloud_vision_service_factory
         self._dense_face_provider_factory = deps.dense_face_provider_factory

@@ -89,54 +89,9 @@ class FlagshipRemoteMixin:
             bool(self.db.setting("face_identity_enabled", False))
         )
         self.face_identity.setEnabled(self.camera_enabled.isChecked())
-        self.proactive_enabled = QCheckBox(
-            self._t("允許墨寒主動寒暄與關心")
-        )
-        self.proactive_enabled.setChecked(
-            bool(self.db.setting("proactive_interaction_enabled", True))
-        )
-        self.proactive_mode = QComboBox()
-        for label, value in (
-            (self._t("安靜（不主動寒暄）"), "quiet"),
-            (self._t("適度（推薦）"), "balanced"),
-            (self._t("積極（較常主動關心）"), "active"),
-        ):
-            self.proactive_mode.addItem(label, value)
-        mode_index = self.proactive_mode.findData(
-            str(self.db.setting("proactive_interaction_mode", "balanced"))
-        )
-        self.proactive_mode.setCurrentIndex(max(0, mode_index))
-        self.minimum_away_minutes = QSpinBox()
-        self.minimum_away_minutes.setRange(1, 30)
-        self.minimum_away_minutes.setValue(
-            max(
-                1,
-                round(
-                    float(
-                        self.db.setting(
-                            "multisensory_welcome_minimum_seconds", 60
-                        )
-                    )
-                    / 60
-                ),
-            )
-        )
-        self.conversation_silence_minutes = QSpinBox()
-        self.conversation_silence_minutes.setRange(10, 240)
-        self.conversation_silence_minutes.setValue(
-            max(
-                10,
-                round(
-                    float(
-                        self.db.setting(
-                            "multisensory_conversation_silence_seconds",
-                            45 * 60,
-                        )
-                    )
-                    / 60
-                ),
-            )
-        )
+        # 裁決 2026-08-28：主動寒暄模式與離座／沉默門檻控件改為「陪伴與關心」
+        # 分頁的可見控件（FlagshipCompanionMixin）。它們過去在此建構卻從未加入
+        # layout，導致保存時以建構當下的舊值覆寫使用者設定。
         self.face_profile_list = QListWidget()
         self.face_profile_list.setMaximumHeight(100)
         self._refresh_face_profiles()

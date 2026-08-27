@@ -13,6 +13,7 @@ lazy from domain.gesture_configuration import (
     GestureSample,
 )
 lazy from domain.openai_vision_preferences import OpenAIVisionPreferences
+lazy from domain.performance_preferences import PerformancePreferences
 
 __all__ = (
     "ASSIST_INTENT_MARKERS",
@@ -159,11 +160,16 @@ class FlagshipDraftValues:
     gesture: GestureConfiguration
     proactivity: CompanionProactivityPreferences
     vision: OpenAIVisionPreferences
+    performance: PerformancePreferences
     phrasebook: dict[str, object]
-    proactive_mode: str
-    welcome_minimum_seconds: int
-    conversation_silence_seconds: int
+    # ``None`` means the user never touched the control, so the persisted
+    # value must not be overwritten (another settings page may own it).
+    proactive_mode: str | None
+    welcome_minimum_seconds: int | None
+    conversation_silence_seconds: int | None
     security: tuple[tuple[str, str], ...]
+    high_contrast: bool
+    ui_scale: float
 ASSIST_INTENT_MARKERS = ("幫我", "請", "替我", "執行")
 GMAIL_MARKERS = ("gmail", "郵件", "電子郵件", "信件", "信箱")
 GMAIL_SEND_MARKERS = ("寄信", "寄出", "發信", "傳送郵件")
