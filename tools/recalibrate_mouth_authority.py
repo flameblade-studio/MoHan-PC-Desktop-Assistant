@@ -94,10 +94,10 @@ def main() -> int:
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    trusted = sum(
+    calibrated_views = sum(
         1 for view in manifest["views"].values() if view["trusted"]
     )
-    print(f"MOUTH_AUTHORITY_RECALIBRATED: {trusted} trusted views")
+    print(f"MOUTH_AUTHORITY_RECALIBRATED: {calibrated_views} calibrated views")
     return 0
 
 
