@@ -313,9 +313,21 @@ class ActiveOutfitOverlay:
 
     @staticmethod
     def _compatible(app_range: str) -> bool:
+        # Reject a malformed pack range first: the pack's own metadata is the
+        # untrusted input here and must fail closed.
         match = _RANGE.fullmatch(app_range)
-        version = tuple(int(value) for value in APP_VERSION.split(".")[:3])
-        if match is None or len(version) != SEMVER_COMPONENT_COUNT:
+        if match is None:
             return False
+        # Our own APP_VERSION may be a development build ("4.6.dev0", a git
+        # describe string, …).  Parsing it used to run before any guard, so
+        # the ValueError escaped into apply()'s broad handler and silently
+        # disabled every outfit on dev builds.  A non-semver local version now
+        # skips the range comparison and counts as compatible instead.
+        try:
+            version = tuple(int(value) for value in APP_VERSION.split(".")[:3])
+        except ValueError:
+            return True
+        if len(version) != SEMVER_COMPONENT_COUNT:
+            return True
         values = tuple(int(value) for value in match.groups())
         return values[:3] <= version < values[3:]
