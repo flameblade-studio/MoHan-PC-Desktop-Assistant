@@ -34,7 +34,6 @@ class ReminderCommand(StrEnum):
     DISMISS = "dismiss"
 
 
-MIDNIGHT_COMPLETION_GRACE_SECONDS = 3600.0
 TRIGGER_KINDS = frozendict({
     ReminderTrigger.LUNCH: WellbeingKind.MEAL,
     ReminderTrigger.DINNER: WellbeingKind.MEAL,
@@ -162,18 +161,7 @@ class WellbeingAppBridge:
             if pending is None:
                 return False
             self._pending_event_ids.discard(pending.occurrence.event_id)
-            # A cue decided at 23:59 legitimately finishes playing after
-            # midnight.  Rejecting on a bare date mismatch dropped those
-            # deliveries from the record and allowed a duplicate nag the
-            # next morning; accept any completion within one hour of the
-            # date change instead.
-            same_day = pending.created_at.date() == now.date()
-            crossed_midnight = (
-                not same_day
-                and (now - pending.created_at).total_seconds()
-                <= MIDNIGHT_COMPLETION_GRACE_SECONDS
-            )
-            if not (same_day or crossed_midnight):
+            if pending.created_at.date() != now.date():
                 return False
             if not succeeded:
                 self._runtime.record_delivery(pending.cue, succeeded=False)
