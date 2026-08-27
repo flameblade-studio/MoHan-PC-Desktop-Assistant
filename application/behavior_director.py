@@ -152,6 +152,18 @@ _BACK_DEPTH = frozendict({
     "back-two-thirds-right": 2,
     "back-full": 3,
 })
+# The canonical view for each pose, mirroring the candidate constructors.
+# _disabled_plan previously hard-coded "left-030" for every non-front pose,
+# rendering e.g. right-neutral from the opposite side's camera.
+_POSE_VIEWS = frozendict({
+    "front-crossed": "front-000",
+    "left-cheek-rest": "left-030",
+    "left-neutral": "left-045",
+    "right-neutral": "right-045",
+    "back-two-thirds-left": "back-left-120",
+    "back-two-thirds-right": "back-right-120",
+    "back-full": "back-180",
+})
 
 
 class BehaviorDirector:
@@ -239,7 +251,11 @@ class BehaviorDirector:
             pass
         else:
             self._back_depth = 0
-        if plan.pose.endswith("-right"):
+        if plan.pose.endswith("-right") or plan.pose == "right-neutral":
+            # "right-neutral" does not end with "-right"; without its own
+            # case the side memory stayed "left" and an anger escalation
+            # that began on her right side swept across the front to the
+            # left rear mid-sequence.
             self._back_side = "right"
         elif plan.pose.endswith("-left") or plan.pose == "left-neutral":
             self._back_side = "left"
@@ -510,13 +526,22 @@ class BehaviorDirector:
 
     @staticmethod
     def _disabled_plan(context: BehaviorInput) -> BodyPerformancePlan:
+        pose = context.current_pose
+        default_view = "right-030" if "right" in pose else "left-030"
+        # Rear poses must not gaze at the user (BodyPerformancePlan raises
+        # on that combination).  The previous USER/DOWN gaze made direct()
+        # throw on every frame while she was turned away with performances
+        # disabled, freezing the screen on her back permanently.
+        rear = _BACK_DEPTH.get(pose, 0) >= BACK_DEPTH_TWO_THIRDS
         return BodyPerformancePlan(
-            context.current_pose,
-            "front-000" if context.current_pose == "front-crossed" else "left-030",
+            pose,
+            _POSE_VIEWS.get(pose, default_view),
             "neutral",
             "relaxed",
             "relaxed",
-            GazeTarget.USER if context.user_present else GazeTarget.DOWN,
+            GazeTarget.AWAY
+            if rear
+            else (GazeTarget.USER if context.user_present else GazeTarget.DOWN),
             BreathStyle.CALM,
             TransitionStyle.HOLD,
             0,

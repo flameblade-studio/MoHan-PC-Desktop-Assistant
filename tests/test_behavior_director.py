@@ -241,6 +241,42 @@ def assert_disabled_and_absent_fallbacks() -> None:
     assert disabled.pose == "left-cheek-rest"
     assert disabled.face == "neutral"
     assert disabled.transition is TransitionStyle.HOLD
+
+
+def assert_disabled_while_turned_away_never_freezes() -> None:
+    """Ruling 2026-08-28: disabling performances mid-back-turn must not throw.
+
+    The old plan gazed at the user from a rear pose, violating the
+    BodyPerformancePlan contract on every frame; the runtime swallowed the
+    error and froze the screen on her back permanently.  Side poses also
+    rendered from the opposite camera (right-neutral shown as left-030).
+    """
+    for pose, view in (
+        ("back-full", "back-180"),
+        ("back-two-thirds-right", "back-right-120"),
+        ("right-neutral", "right-045"),
+        ("left-neutral", "left-045"),
+    ):
+        plan = BehaviorDirector(clock=lambda: 0.0, seed=9).direct(
+            context(current_pose=pose, disabled=True)
+        )
+        assert plan.pose == pose
+        assert plan.view == view
+
+
+def assert_right_side_anger_stays_on_her_right() -> None:
+    """right-neutral must set the side memory to "right" (2026-08-28)."""
+    clock = Clock()
+    director = BehaviorDirector(clock=clock, seed=1, cooldown_ms=0)
+    angry = context(emotion=SemanticEmotion.ANGRY, intensity=0.95)
+    first = director.direct(angry)
+    assert first.pose.endswith("-neutral")
+    side = "right" if first.pose.startswith("right") else "left"
+    clock.advance(5)
+    second = director.direct(angry)
+    assert second.pose == f"back-two-thirds-{side}", (
+        f"escalation flipped sides: {first.pose} -> {second.pose}"
+    )
     absent = BehaviorInput(
         speech=SpeechLifecycle.IDLE,
         emotion=SemanticEmotion.NEUTRAL,
@@ -279,6 +315,8 @@ def run() -> None:
     assert_minimum_hold_prevents_twitch_and_then_varies()
     assert_speech_preempts_unsafe_back_without_twitch()
     assert_disabled_and_absent_fallbacks()
+    assert_disabled_while_turned_away_never_freezes()
+    assert_right_side_anger_stays_on_her_right()
     assert_atomic_conflict_guards()
     print("BEHAVIOR_DIRECTOR_OK")
 
