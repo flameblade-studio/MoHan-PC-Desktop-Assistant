@@ -356,16 +356,13 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
                         delta_y_face_height=round(delta_y, 6),
                     )
 
-    if teeth_nonempty == 0:
-        for view_id in view_ids:
-            path = asset_root / f"{view_id}_teeth_tongue.png"
-            if path.is_file():
-                _issue(
-                    issues, "teeth_tongue_all_views_empty", path, view_id,
-                    "teeth_tongue",
-                    "teeth/tongue semantic layer is empty in every audited view",
-                    audited_views=len(view_ids),
-                )
+    # Ruling 2026-08-27: an all-empty teeth_tongue set is the valid neutral
+    # state, not a defect.  Every authority portrait is closed-mouth, so there
+    # are no licensed tooth pixels to package, and the mouth rebuild tool
+    # (tools/rebuild_pose_atlas_mouth_layers.py) deliberately never paints
+    # teeth.  Speech renders the licensed oral-cavity aperture instead, which
+    # is the look the owner accepted in the shipped v4.4.2 build.
+    _ = teeth_nonempty
 
     issues.sort(key=lambda item: (item.path, item.code, item.message))
     counts = dict(sorted(Counter(issue.code for issue in issues).items()))

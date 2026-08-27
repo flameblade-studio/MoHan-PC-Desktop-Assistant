@@ -180,12 +180,16 @@ def _exclusive_ownership(
     # Exclusive ownership is required for lossless alpha recomposition.
     # Fine features win over skin/hair/body.  Missing one-pixel authority edge
     # samples caused by registration are assigned to a deterministic substrate.
+    # Facial features and skin claim their pixels before the ornament: the
+    # hairpin may overlap the face in profile views, and letting it win there
+    # packages face skin inside the rigid-adornment layer.  The ornament still
+    # precedes the hair so jewellery stays above the strands it decorates.
     priority = (
-        "ornament", "brow_left", "brow_right", "eyeliner_left", "eyeliner_right",
+        "brow_left", "brow_right", "eyeliner_left", "eyeliner_right",
         "eyelid_left", "eyelid_right", "iris_left", "iris_right", "blush_left",
         "blush_right", "corner_left", "corner_right", "lip_upper", "lip_lower",
-        "oral_cavity", "jaw", "base", "hair_left", "hair_right", "sleeve_left",
-        "sleeve_right", "hair_back", "body",
+        "oral_cavity", "jaw", "base", "ornament", "hair_left", "hair_right",
+        "sleeve_left", "sleeve_right", "hair_back", "body",
     )
     owned: dict[str, np.ndarray] = {name: np.zeros((h, w), bool) for name in LAYERS}
     claimed = np.zeros((h, w), bool)
@@ -198,6 +202,47 @@ def _exclusive_ownership(
     owned["hair_back"] |= missing & (yy < HAIR_BODY_SPLIT_Y)
     owned["body"] |= missing & (yy >= HAIR_BODY_SPLIT_Y)
     return owned
+
+
+def _reclaim_face_pixels(
+    owned: dict[str, np.ndarray],
+    authority: np.ndarray,
+) -> None:
+    """Force authority face-box skin pixels out of ornament/hair ownership.
+
+    Legacy layer masks can carry whole face regions inside the ornament or
+    hair supports on profile views.  Ownership is corrected with the same
+    YuNet face box and skin classifier the packaging semantic audit uses, so
+    the split provably satisfies that gate: skin inside the detected face box
+    belongs to ``base`` unless a facial-detail layer already owns it.
+    """
+
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from tools.audit_layered_full_body_semantics import (
+        _box_slice,
+        _detect_face,
+        _skin,
+        DEFAULT_DETECTOR_MODEL,
+    )
+
+    # The audit helpers consume cv2-ordered BGRA arrays; this builder decodes
+    # with PIL (RGBA), so swap the colour channels before classifying skin.
+    authority_bgra = authority[:, :, [2, 1, 0, 3]]
+    try:
+        face = _detect_face(authority_bgra, DEFAULT_DETECTOR_MODEL)
+    except (ValueError, FileNotFoundError):
+        return
+    rows, columns = _box_slice(face)
+    face_zone = np.zeros(authority.shape[:2], bool)
+    face_zone[rows, columns] = True
+    face_skin = face_zone & _skin(authority_bgra)
+    for donor in ("ornament", "hair_left", "hair_right", "hair_back"):
+        moved = owned[donor] & face_skin
+        if moved.any():
+            owned[donor] &= ~moved
+            owned["base"] |= moved
 
 
 def build(
@@ -247,6 +292,8 @@ def build(
     candidates["ornament"] &= ~facial_features
 
     owned = _exclusive_ownership(candidates, foreground)
+    if face_visible:
+        _reclaim_face_pixels(owned, authority)
 
     output.mkdir(parents=True, exist_ok=True)
     records = []

@@ -107,21 +107,11 @@ def test_reports_identical_lips_and_detached_oral_cavity(tmp_path: Path) -> None
     assert report.issues_by_code["oral_cavity_lip_misaligned"] == 1
 
 
-def test_reports_every_file_when_all_teeth_layers_are_empty(tmp_path: Path) -> None:
-    views = ("yaw-015-pitch+00", "yaw+000-pitch+00", "yaw+015-pitch+00")
-    _clean_set(tmp_path, views)
-    for view in views:
-        _write(tmp_path / f"{view}_teeth_tongue.png", _blank())
-    report = _audit(tmp_path, views)
-    issues = [
-        issue for issue in report.issues
-        if issue.code == "teeth_tongue_all_views_empty"
-    ]
-    assert len(issues) == len(views)
-    assert {Path(issue.path).name for issue in issues} == {
-        f"{view}_teeth_tongue.png" for view in views
-    }
-
+def test_all_empty_teeth_layers_are_the_valid_neutral_state(tmp_path: Path) -> None:
+    _clean_set(tmp_path)
+    _write(tmp_path / f"{VIEW}_teeth_tongue.png", _blank())
+    report = _audit(tmp_path)
+    assert "teeth_tongue_all_views_empty" not in report.issues_by_code
 
 def test_reports_insufficient_base_face_coverage(tmp_path: Path) -> None:
     _clean_set(tmp_path)
