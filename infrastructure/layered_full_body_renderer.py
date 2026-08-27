@@ -52,6 +52,7 @@ MAX_CACHED_LAYER_PIXMAPS = 50
 # One static base composite (body..authority face) per recently used view;
 # four covers the two adjacent views of a turn plus hysteresis.
 MAX_CACHED_STATIC_COMPOSITES = 4
+MAX_CACHED_MASK_REGIONS = 256
 SEAM_HEAL_RADIUS = 7
 REGISTERED_COMPOSITE_LAYERS = (
     # oral_cavity / teeth_tongue are clean speech overlays rebuilt by
@@ -88,7 +89,24 @@ class LayeredFullBodyRenderer:
         self._pixmap_cache: OrderedDict[str, QPixmap] = OrderedDict()
         self._seam_region_cache: dict[str, QRegion] = {}
         self._static_composite_cache: OrderedDict[tuple, QPixmap] = OrderedDict()
+        self._mask_region_cache: dict[int, QRegion] = {}
         self._face_region_cache: dict[str, QRegion] = {}
+
+    def _mask_region(self, source: QPixmap) -> QRegion:
+        """Return the opaque region of a decoded layer, cached per pixmap.
+
+        ``QPixmap.mask()`` scans the full canvas on every call; the layer
+        pixmaps are immutable once decoded, so the region is derived once per
+        ``cacheKey`` and reused on the 50 Hz path.
+        """
+        key = source.cacheKey()
+        region = self._mask_region_cache.get(key)
+        if region is None:
+            region = QRegion(source.mask())
+            if len(self._mask_region_cache) > MAX_CACHED_MASK_REGIONS:
+                self._mask_region_cache.clear()
+            self._mask_region_cache[key] = region
+        return region
 
     def _manifest_or_load(self) -> LayeredFullBodyManifest:
         if self._manifest is None:
@@ -289,7 +307,7 @@ class LayeredFullBodyRenderer:
                 source = self._cached_pixmap(path)
                 if source.isNull():
                     continue
-                source_region = QRegion(source.mask())
+                source_region = self._mask_region(source)
                 if source_region.isEmpty():
                     continue
                 outer = QRegion(source_region)
@@ -327,7 +345,7 @@ class LayeredFullBodyRenderer:
                     continue
                 source = self._cached_pixmap(path)
                 if not source.isNull():
-                    region = region.united(QRegion(source.mask()))
+                    region = region.united(self._mask_region(source))
             self._face_region_cache[view.view_id] = region
         if region.isEmpty():
             return
@@ -403,7 +421,7 @@ class LayeredFullBodyRenderer:
             for layer_name in gaze_layers:
                 source = self._cached_pixmap(view.path(layer_name))
                 if not source.isNull():
-                    gaze_region = gaze_region.united(QRegion(source.mask()))
+                    gaze_region = gaze_region.united(self._mask_region(source))
             if not gaze_region.isEmpty():
                 painter = QPainter(target)
                 painter.setClipRegion(gaze_region)
@@ -425,7 +443,7 @@ class LayeredFullBodyRenderer:
             for layer_name in blink_layers:
                 source = self._cached_pixmap(view.path(layer_name))
                 if not source.isNull():
-                    blink_region = blink_region.united(QRegion(source.mask()))
+                    blink_region = blink_region.united(self._mask_region(source))
             if not blink_region.isEmpty():
                 blink_dy = max(1, round(blink * 4.0))
                 painter = QPainter(target)
@@ -478,7 +496,7 @@ class LayeredFullBodyRenderer:
         cavity_source = self._cached_pixmap(cavity_path)
         if cavity_source.isNull():
             return
-        bounds = QRegion(cavity_source.mask()).boundingRect()
+        bounds = self._mask_region(cavity_source).boundingRect()
         if bounds.isEmpty():
             # Back-side views intentionally contain no visible mouth.
             return
@@ -499,7 +517,7 @@ class LayeredFullBodyRenderer:
         )
         source_rect = QRectF(bounds)
         base_source = self._cached_pixmap(view.path("base"))
-        face_bounds = QRegion(base_source.mask()).boundingRect()
+        face_bounds = self._mask_region(base_source).boundingRect()
         protected_chin_y = round(
             face_bounds.y() + face_bounds.height() * 0.76
         )
