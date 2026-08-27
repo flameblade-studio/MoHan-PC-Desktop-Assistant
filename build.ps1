@@ -200,6 +200,9 @@ try {
 finally {
     Remove-Item -LiteralPath $BuildInfo -Force -ErrorAction SilentlyContinue
 }
+if ($LASTEXITCODE -ne 0) {
+    throw "MoHan $Version main application PyInstaller build failed with exit code $LASTEXITCODE."
+}
 
 $PackageRoot = Join-Path $ProjectRoot "dist\$AppName-$Version"
 $PublicExecutable = Join-Path $PackageRoot "$AppName-$Version.exe"
