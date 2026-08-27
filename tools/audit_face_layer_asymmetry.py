@@ -11,7 +11,14 @@ lazy import cv2
 lazy import numpy as np
 
 lazy from domain.face_motion import interpolate_frame
-lazy from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
+lazy from domain.face_rig import (
+    EYE_STATE_BLINK,
+    ExpressionShape,
+    FaceMotionFrame,
+    FacePose,
+    MouthShape,
+    Viseme,
+)
 lazy from infrastructure.layered_full_body_assets import VIEW_IDS
 
 
@@ -56,6 +63,26 @@ def audit_motion_series(values: tuple[float, ...]) -> tuple[str, ...]:
     return tuple(issues)
 
 
+def audit_discrete_blink_series(values: tuple[float, ...]) -> tuple[str, ...]:
+    """Check blink samples against the discrete authority-state contract.
+
+    Ruling 2026-08-27: blink never lerps. ``interpolate_frame`` holds the
+    start authority state for every sub-frame sample and may switch only on
+    the final 20 ms frame boundary, so open and closed eyes are never
+    alpha-blended into one frame. Smoothness limits therefore do not apply;
+    what must hold instead is that every sample is a licensed authority
+    value and that no transition happens before the boundary.
+    """
+
+    licensed = frozenset(EYE_STATE_BLINK.values())
+    issues = []
+    if any(value not in licensed for value in values):
+        issues.append("blink-unlicensed-intermediate-state")
+    if values and any(value != values[0] for value in values[:-1]):
+        issues.append("blink-early-transition")
+    return tuple(issues)
+
+
 def _runtime_motion_issues() -> tuple[AsymmetryIssue, ...]:
     start = FaceMotionFrame(
         FacePose.FRONT,
@@ -76,7 +103,6 @@ def _runtime_motion_issues() -> tuple[AsymmetryIssue, ...]:
     frames = tuple(interpolate_frame(start, end, index / 5) for index in range(6))
     controls = {
         "mouth": tuple(frame.mouth.aperture for frame in frames),
-        "blink": tuple(frame.expression_shape.blink for frame in frames),
         "gaze": tuple((frame.gaze_x + 0.5) for frame in frames),
     }
     issues = []
@@ -91,6 +117,17 @@ def _runtime_motion_issues() -> tuple[AsymmetryIssue, ...]:
                     "interpolate_frame:end",
                 )
             )
+    blink_series = tuple(frame.expression_shape.blink for frame in frames)
+    for code in audit_discrete_blink_series(blink_series):
+        issues.append(
+            AsymmetryIssue(
+                code,
+                "50hz-runtime",
+                "blink",
+                "interpolate_frame:start",
+                "interpolate_frame:end",
+            )
+        )
     return tuple(issues)
 
 
@@ -185,6 +222,7 @@ def audit_roots(
         "runtime_contract": {
             "pair_policy": "distinct-authority-layers-never-synthesized-by-mirroring",
             "control_policy": "shared-semantic-control-preserves-authored-pixel-differences",
+            "blink_policy": "discrete-authority-states-switch-only-on-frame-boundary",
             "clock_hz": 50,
             "max_control_step": MAX_CONTROL_STEP,
             "max_acceleration_step": MAX_ACCELERATION_STEP,

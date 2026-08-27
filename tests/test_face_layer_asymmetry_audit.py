@@ -5,7 +5,11 @@ lazy from pathlib import Path
 lazy import cv2
 lazy import numpy as np
 
-lazy from tools.audit_face_layer_asymmetry import audit_motion_series, audit_pair
+lazy from tools.audit_face_layer_asymmetry import (
+    audit_discrete_blink_series,
+    audit_motion_series,
+    audit_pair,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -75,3 +79,19 @@ def test_single_frame_control_pop_and_jerk_fail() -> None:
 
 def test_linear_50hz_micro_transition_passes() -> None:
     assert not audit_motion_series((0.0, 0.2, 0.4, 0.6, 0.8, 1.0))
+
+
+def test_discrete_blink_hold_until_boundary_passes() -> None:
+    # The ratified contract: hold the start authority state for every
+    # sub-frame sample and switch exactly once on the 20 ms boundary.
+    assert not audit_discrete_blink_series((0.0, 0.0, 0.0, 0.0, 0.0, 1.0))
+    assert not audit_discrete_blink_series((1.0, 1.0, 1.0, 1.0, 1.0, 0.5))
+    assert not audit_discrete_blink_series((0.5, 0.5, 0.5))
+
+
+def test_blink_lerp_or_early_transition_fails() -> None:
+    lerped = audit_discrete_blink_series((0.0, 0.2, 0.4, 0.6, 0.8, 1.0))
+    assert "blink-unlicensed-intermediate-state" in lerped
+    assert "blink-early-transition" in lerped
+    early = audit_discrete_blink_series((0.0, 1.0, 1.0, 1.0, 1.0, 1.0))
+    assert early == ("blink-early-transition",)
