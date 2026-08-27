@@ -1147,6 +1147,10 @@ class SpeechListener(QObject):
         if self.audio_path and self.audio_path.exists():
             self.audio_path.unlink(missing_ok=True)
         self.audio_path = None
+        if self.process is not None:
+            # The finished QProcess stays parented to this listener; release
+            # the native object so repeated recognitions cannot accumulate.
+            self.process.deleteLater()
         self.process = None
         if text == "__ERROR__:NO_RECOGNIZER":
             self.failed.emit(
