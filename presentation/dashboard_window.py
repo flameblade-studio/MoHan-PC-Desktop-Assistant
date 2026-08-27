@@ -147,4 +147,13 @@ class Dashboard(
         front_raise_timer = getattr(self, "front_raise_timer", None)
         if front_raise_timer is not None:
             front_raise_timer.stop()
+        self._abandon_ai_requests()
+        # Injected offline panels may not implement worker abandonment.
+        abandon_update_workers = getattr(
+            getattr(self, "update_panel", None),
+            "abandon_workers",
+            None,
+        )
+        if abandon_update_workers is not None:
+            abandon_update_workers()
         super().closeEvent(event)

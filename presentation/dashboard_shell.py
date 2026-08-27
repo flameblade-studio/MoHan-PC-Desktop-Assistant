@@ -209,6 +209,8 @@ class DashboardShellMixin:
         self.ai_busy = False
         self.ai_wait_generation = 0
         self.active_ai_wait_generation = 0
+        self._closed = False
+        self._ai_generation = 0
         self.next_expression_metadata: tuple[str, float, str] | None = None
         self.chat_loaded_limit = 50
         self.chat_zoom_percent = int(
@@ -960,6 +962,9 @@ class DashboardShellMixin:
 
     def showEvent(self, event) -> None:
         super().showEvent(event)
+        # A reopened dashboard accepts fresh AI work again; only callbacks of
+        # workers submitted before the previous close stay invalidated.
+        self._closed = False
         self._sync_restore_window_action()
         self.visibility_changed.emit(not self.isMinimized())
         self.front_raise_timer.start(0)

@@ -77,6 +77,10 @@ class UpdatePanel(QWidget):
         self.thread_pool = QThreadPool.globalInstance()
         self.release: ReleaseInfoPort | None = None
         self.silent_check = False
+        # Completion callbacks carry the generation active at submission;
+        # abandon_workers() advances it so late pool workers cannot touch a
+        # panel whose dashboard has already closed (planner.py guard pattern).
+        self._worker_generation = 0
 
         layout = QVBoxLayout(self)
         self.title = QLabel(self._t(AuxiliaryText.UPDATE_TITLE))
@@ -132,11 +136,25 @@ class UpdatePanel(QWidget):
     def _t(self, key: AuxiliaryText, **values: object) -> str:
         return auxiliary_text(self.language, key, **values)
 
+    def abandon_workers(self) -> None:
+        """Invalidate in-flight update callbacks when the dashboard closes."""
+        self._worker_generation += 1
+
     def start_automatic_check(self) -> None:
         if self._automatic_check_started or not self.automatic.isChecked():
             return
         self._automatic_check_started = True
-        QTimer.singleShot(5_000, lambda: self.check_updates(silent=True))
+        QTimer.singleShot(
+            5_000,
+            lambda generation=self._worker_generation: (
+                self._start_automatic_check_if_current(generation)
+            ),
+        )
+
+    def _start_automatic_check_if_current(self, generation: int) -> None:
+        if generation != self._worker_generation:
+            return
+        self.check_updates(silent=True)
 
     def _save_preferences(self) -> None:
         self.db.set_setting("update_channel", self.channel.currentData())
@@ -159,9 +177,42 @@ class UpdatePanel(QWidget):
                 str(self.channel.currentData())
             )
         )
-        worker.signals.completed.connect(self._check_completed)
-        worker.signals.failed.connect(self._operation_failed)
+        generation = self._worker_generation
+        worker.signals.completed.connect(
+            lambda result, request_generation=generation: (
+                self._check_completed_if_current(result, request_generation)
+            )
+        )
+        worker.signals.failed.connect(
+            lambda message, request_generation=generation: (
+                self._operation_failed_if_current(message, request_generation)
+            )
+        )
         self.thread_pool.start(worker)
+
+    def _check_completed_if_current(self, result, generation: int) -> None:
+        if generation != self._worker_generation:
+            return
+        self._check_completed(result)
+
+    def _download_completed_if_current(self, result, generation: int) -> None:
+        if generation != self._worker_generation:
+            return
+        self._download_completed(result)
+
+    def _operation_failed_if_current(
+        self,
+        message: str,
+        generation: int,
+    ) -> None:
+        if generation != self._worker_generation:
+            return
+        self._operation_failed(message)
+
+    def _progress_if_current(self, value: int, generation: int) -> None:
+        if generation != self._worker_generation:
+            return
+        self.progress.setValue(value)
 
     def _check_completed(self, result) -> None:
         self.release = result if result is not None else None
@@ -220,9 +271,22 @@ class UpdatePanel(QWidget):
             )
 
         worker = _Worker(download)
-        worker.signals.progress.connect(self.progress.setValue)
-        worker.signals.completed.connect(self._download_completed)
-        worker.signals.failed.connect(self._operation_failed)
+        generation = self._worker_generation
+        worker.signals.progress.connect(
+            lambda value, request_generation=generation: (
+                self._progress_if_current(value, request_generation)
+            )
+        )
+        worker.signals.completed.connect(
+            lambda result, request_generation=generation: (
+                self._download_completed_if_current(result, request_generation)
+            )
+        )
+        worker.signals.failed.connect(
+            lambda message, request_generation=generation: (
+                self._operation_failed_if_current(message, request_generation)
+            )
+        )
         self.thread_pool.start(worker)
 
     def _download_completed(self, result) -> None:
