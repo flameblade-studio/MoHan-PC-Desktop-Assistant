@@ -83,6 +83,15 @@ class ActionExecutor:
     ) -> None:
         self.handlers[capability] = (handler, verifier)
 
+    def unregister(self, capability: str) -> None:
+        """Remove a capability so a disabled integration cannot linger.
+
+        Later plans that still request the capability receive the regular
+        "尚未安裝此工具的執行器" failure instead of reaching a stale handler.
+        """
+
+        self.handlers.pop(capability, None)
+
     def execute(self, plan: ActionPlan) -> list[ActionResult]:
         cancel_event = self.cancellations.begin(plan.plan_id)
         self.audit("plan_started", plan.to_dict())
