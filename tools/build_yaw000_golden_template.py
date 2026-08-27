@@ -427,7 +427,7 @@ def build(
         # return their oral pixels to the lips and ship an empty cavity —
         # the same contract VISIBLE_SPEECH_MOUTH_VIEWS and the semantic
         # audit exemption encode.
-        yaw_match = re.match(r"^yaw([+-]\d{3})-pitch", view)
+        yaw_match = re.prefixmatch(r"yaw([+-]\d{3})-pitch", view)
         if yaw_match and abs(int(yaw_match.group(1))) >= NEAR_PROFILE_MIN_ABS_YAW:
             candidates["lip_lower"] |= candidates["oral_cavity"]
             candidates["oral_cavity"] = np.zeros_like(candidates["oral_cavity"])
