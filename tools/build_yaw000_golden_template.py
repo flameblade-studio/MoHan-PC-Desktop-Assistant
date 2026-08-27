@@ -115,9 +115,11 @@ def _darkest_oral_band(
     yy: np.ndarray,
     y_mid: int,
 ) -> np.ndarray:
+    # The authority array is decoded with PIL (RGBA): channel 0 is R and
+    # channel 2 is B, so the BT.709 weights are 54*R + 183*G + 19*B.
     mouth_rgb = authority[:, :, :3].astype(np.int16)
-    luminance = (54 * mouth_rgb[:, :, 2] + 183 * mouth_rgb[:, :, 1] +
-                 19 * mouth_rgb[:, :, 0]) // 256
+    luminance = (54 * mouth_rgb[:, :, 0] + 183 * mouth_rgb[:, :, 1] +
+                 19 * mouth_rgb[:, :, 2]) // 256
     oral = inner & (yy >= y_mid - 1) & (yy <= y_mid + 1)
     if np.any(oral):
         threshold = int(np.percentile(luminance[oral], 55))
