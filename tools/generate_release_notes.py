@@ -17,22 +17,23 @@ raw URLs match; otherwise the full bullet is kept verbatim in every section so
 the structural four-language audit still passes and a human can finish the
 translation split.
 
-The script must stay runnable by the stock ``python3`` on GitHub's Ubuntu
-runners, so it uses plain (non-lazy) stdlib imports only.
+The script follows the repository's PEP 810 lazy-import policy and therefore
+requires the pinned Python 3.15 runtime; the release workflow provisions it
+with ``actions/setup-python`` before invoking this tool.
 
 Run from the repository root::
 
-    python3 tools/generate_release_notes.py --version 4.5.0
+    python tools/generate_release_notes.py --version 4.5.0
 """
 
 from __future__ import annotations
 
-import argparse
-import re
-import sys
-from collections import Counter
-from pathlib import Path
-from typing import Sequence
+lazy import argparse
+lazy import re
+lazy import sys
+lazy from collections import Counter
+lazy from collections.abc import Sequence
+lazy from pathlib import Path
 
 LANGUAGE_COUNT = 4
 LANGUAGE_HEADINGS = ("繁體中文", "简体中文", "English", "日本語")

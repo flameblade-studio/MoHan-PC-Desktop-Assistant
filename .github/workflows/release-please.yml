@@ -35,17 +35,24 @@ jobs:
         with:
           ref: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
 
+      - name: Set up Python
+        if: ${{ steps.release.outputs.pr }}
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
+
       - name: Ensure a four-language release notes draft exists
         if: ${{ steps.release.outputs.pr }}
         shell: bash
         env:
           RELEASE_BRANCH: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
         run: |
-          version="$(python3 -c 'import json; print(json.load(open(".release-please-manifest.json"))["."])')"
+          version="$(python -c 'import json; print(json.load(open(".release-please-manifest.json"))["."])')"
           # Creates docs/releases/v<version>.md from the CHANGELOG section as
           # a four-language draft; an existing file is never overwritten so
           # human polish on the release branch is preserved.
-          python3 tools/generate_release_notes.py --version "$version"
+          python tools/generate_release_notes.py --version "$version"
           if [[ -z "$(git status --porcelain)" ]]; then
             echo "Release branch already carries the release notes"
             exit 0
