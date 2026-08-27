@@ -703,10 +703,15 @@ class DashboardShellMixin:
             self._t("wardrobe_character_preview", "墨寒造型預覽")
         )
         pose_root = resource_path("assets/pose-atlas/v4")
+        # Side labels follow MoHan's OWN left/right (owner ruling 2026-08-28).
+        # In yaw+090 she faces viewer-left, i.e. she has turned toward her
+        # own right, presenting her LEFT side to the camera; yaw-090 is the
+        # mirror case.  The previous mapping used the viewer's left/right
+        # and showed the opposite side of her.
         pose_choices = (
             ("wardrobe_view_front", "正面", pose_root / "yaw+000-pitch+00.png"),
-            ("wardrobe_view_left", "左側", pose_root / "yaw-090-pitch+00.png"),
-            ("wardrobe_view_right", "右側", pose_root / "yaw+090-pitch+00.png"),
+            ("wardrobe_view_left", "左側", pose_root / "yaw+090-pitch+00.png"),
+            ("wardrobe_view_right", "右側", pose_root / "yaw-090-pitch+00.png"),
             ("wardrobe_view_back", "背面", pose_root / "yaw-180-pitch+00.png"),
         )
         self._wardrobe_outfit_overlay = (
