@@ -20,6 +20,31 @@ lazy from infrastructure.memory_index import MemoryVectorIndex
 
 MAX_MEMORY_TITLE_LENGTH = 36
 
+# 裁決 2026-08-28：這些鍵是「執行期狀態」而非使用者可編輯的設定。設定對話框
+# 的取消／保存失敗會以開窗時的整表快照回復，但這批鍵在對話框開著時仍會被
+# 好感度、天氣觀測、自主衣櫥與新裝披露流程持續更新；整表回滾會把它們拉回
+# 開窗當下的舊值（例如吃掉一次好感成長、讓已生成的衣裝 job 消失）。
+# restore_settings_snapshot 於回復時原封保留它們的當前值。
+RUNTIME_PRESERVED_KEYS = frozenset({
+    "affinity_value",
+    "jealousy_value",
+    "affinity_interaction_count",
+    "favor_value",
+    "satiety_value",
+    "camera_presence_state",
+    "wardrobe_generation_pending_job_id",
+    "wardrobe_generation_last_attempt_at",
+    "wardrobe_generation_last_error",
+    "wardrobe_last_generated_at",
+    "active_outfit_id",
+    "wardrobe_last_changed_at",
+    "wardrobe_manual_lock_until",
+    "wardrobe_current_weight",
+    "weather_temperature_c",
+    "weather_condition",
+    "wardrobe_reveal_pending_outfit_id",
+})
+
 DEFAULT_REMINDERS = frozendict({
     "work": ("開始工作", "09:30", 1),
     "lunch": ("吃飯", "12:30", 1),
@@ -576,13 +601,35 @@ class StudioDB:
         )
 
     def restore_settings_snapshot(self, snapshot: Mapping[str, str]) -> None:
-        """Restore a trusted in-memory settings snapshot atomically."""
+        """Restore a trusted in-memory settings snapshot atomically.
+
+        裁決 2026-08-28（選擇性回滾）：設定對話框「取消／保存失敗」會用開窗
+        時拍的快照整表回復。快照拍下後，執行期仍在持續寫入好感、天氣、衣櫥
+        等運行時狀態；若一併回復，取消一次設定就會抹掉這些與使用者草稿無關
+        的進度。因此 :data:`RUNTIME_PRESERVED_KEYS` 內的鍵在回復時保留當前
+        值（含快照拍攝後新出現的鍵），其餘鍵才回到快照內容。
+        """
 
         with self.conn:
+            preserved = {
+                str(row["key"]): str(row["value"])
+                for row in self.conn.execute(
+                    "SELECT key,value FROM settings WHERE key IN ({})".format(
+                        ",".join("?" for _ in RUNTIME_PRESERVED_KEYS)
+                    ),
+                    tuple(RUNTIME_PRESERVED_KEYS),
+                )
+            }
             self.conn.execute("DELETE FROM settings")
+            restored = {
+                key: value
+                for key, value in snapshot.items()
+                if key not in RUNTIME_PRESERVED_KEYS
+            }
+            restored.update(preserved)
             self.conn.executemany(
                 "INSERT INTO settings(key,value) VALUES(?,?)",
-                tuple(snapshot.items()),
+                tuple(restored.items()),
             )
 
     def setting(self, key: str, default: object = None) -> object:
