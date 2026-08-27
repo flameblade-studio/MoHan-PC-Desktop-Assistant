@@ -183,7 +183,9 @@ class FlagshipCloudMixin:
                 "client_id": token.get("client_id", ""),
                 "scopes": self.cloud_scopes.toPlainText().splitlines(),
             },
-            last_health=self._t("OAuth 已連線"),
+            # Stored language-neutral (canonical zh-TW catalog source); the
+            # list view translates it to the active UI language on display.
+            last_health="OAuth 已連線",
         )
         self.cloud_client_secret.clear()
         self.cloud_status.setText(
@@ -543,7 +545,24 @@ class FlagshipCloudMixin:
         )
         row = self.db.connector(provider_id)
         configuration = json.loads(row["configuration"]) if row else {}
-        health = ("全部正常" if all_ok else "部分功能異常") + "｜" + "；".join(lines)
+        # Persist a language-neutral structured record instead of composed
+        # prose so the connection list can re-translate the status prefix and
+        # per-service labels whenever the UI language changes.  Probe details
+        # remain data snapshots (account names or safe error text).
+        health = json.dumps(
+            {
+                "all_ok": all_ok,
+                "services": [
+                    {
+                        "name": name,
+                        "ok": bool(value.get("ok")),
+                        "detail": str(value.get("detail", "")),
+                    }
+                    for name, value in results.items()
+                ],
+            },
+            ensure_ascii=False,
+        )
         self.db.save_connector(
             provider_id,
             PROVIDERS[provider_id].display_name,
@@ -612,13 +631,41 @@ class FlagshipCloudMixin:
         self._configure_executor()
         self.refresh_cloud_connections()
         self.cloud_status.setText(self._t("本機權杖已移除"))
+    def _health_summary(self, record: object) -> str:
+        """Render one stored ``last_health`` value in the active UI language.
+
+        Structured JSON records (the current format) are recomposed and
+        translated on every call; plain prose rows written by older builds
+        fall back to the catalog-based system-message translation.
+        """
+
+        value = str(record or "")
+        if not value:
+            return self._t("尚未測試")
+        try:
+            payload = json.loads(value)
+        except ValueError:
+            return self._system_text(value)
+        if not isinstance(payload, dict) or "services" not in payload:
+            return self._system_text(value)
+        lines = [
+            self._t(
+                "{name}：{status}（{detail}）",
+                name=str(service.get("name", "")),
+                status=self._t("正常" if service.get("ok") else "失敗"),
+                detail=str(service.get("detail", "")),
+            )
+            for service in payload["services"]
+        ]
+        prefix = self._t("全部正常" if payload.get("all_ok") else "部分功能異常")
+        return prefix + "｜" + "；".join(lines)
     def refresh_cloud_connections(self) -> None:
         self.cloud_connections.clear()
         for provider_id, provider in PROVIDERS.items():
             row = self.db.connector(provider_id)
             enabled = bool(row["enabled"]) if row else False
             health = (
-                self._system_text(str(row["last_health"] or "尚未測試"))
+                self._health_summary(row["last_health"])
                 if row
                 else self._t("未設定")
             )
