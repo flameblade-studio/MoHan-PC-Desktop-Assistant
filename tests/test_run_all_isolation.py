@@ -137,11 +137,77 @@ def test_first_failure_stops_the_sorted_run_and_preserves_exit_code() -> None:
     assert stdout.getvalue().splitlines() == [
         "[1/3] test_alpha.py",
         "[2/3] test_bravo.py",
+        "RETRIED_MODULES: test_bravo.py",
     ]
     assert stderr.getvalue().splitlines() == [
         "RETRY: test_bravo.py (attempt 1 failed, retrying in a fresh environment)",
         "FAILED: test_bravo.py (exit 23)",
     ]
+
+
+def test_retry_rescued_module_exits_zero_but_is_named_in_the_summary() -> None:
+    # test_alpha fails once and then passes on the retry: the suite must stay
+    # green (exit 0) while the final summary names the intermittent module.
+    return_codes = iter((9, 0, 0))
+
+    def flaky_first(command, **_kwargs):
+        del command
+        return next(return_codes)
+
+    with TemporaryDirectory() as directory:
+        tests_dir = Path(directory) / "tests"
+        tests_dir.mkdir()
+        _test_file(tests_dir, "test_alpha.py")
+        _test_file(tests_dir, "test_bravo.py")
+        with (
+            patch.object(run_all, "TESTS_DIR", tests_dir),
+            patch.object(run_all, "_run_test_process", side_effect=flaky_first),
+            redirect_stdout(stdout := StringIO()),
+            redirect_stderr(stderr := StringIO()),
+        ):
+            assert run_all.main() == 0
+
+    assert stdout.getvalue().splitlines() == [
+        "[1/2] test_alpha.py",
+        "[2/2] test_bravo.py",
+        "RETRIED_MODULES: test_alpha.py",
+        "ALL_2_TESTS_OK",
+    ]
+    assert stderr.getvalue().splitlines() == [
+        "RETRY: test_alpha.py (attempt 1 failed, retrying in a fresh environment)",
+    ]
+
+
+def test_orphan_assert_file_fails_the_collection_audit() -> None:
+    with TemporaryDirectory() as directory:
+        tests_dir = Path(directory) / "tests"
+        tests_dir.mkdir()
+        _test_file(tests_dir, "test_alpha.py")
+        _test_file(tests_dir, "helper.py", "def shared():\n    return 1\n")
+        _test_file(
+            tests_dir,
+            "check_orphan.py",
+            "def verify():\n    assert 1 + 1 == 2\n",
+        )
+        with (
+            patch.object(run_all, "TESTS_DIR", tests_dir),
+            patch.object(run_all, "_run_test_process") as child_run,
+            redirect_stderr(stderr := StringIO()),
+        ):
+            assert run_all.main() == run_all.COLLECTION_AUDIT_EXIT_CODE
+
+    child_run.assert_not_called()
+    lines = stderr.getvalue().splitlines()
+    assert len(lines) == 1
+    assert lines[0].startswith(
+        "COLLECTION_AUDIT: orphan checker is never collected: check_orphan.py"
+    )
+
+
+def test_repository_tests_directory_has_no_orphan_checkers() -> None:
+    assert run_all._collection_audit_errors(
+        tuple(sorted(run_all.TESTS_DIR.glob("test_*.py")))
+    ) == ()
 
 
 def test_malformed_test_source_fails_closed_without_starting_a_child() -> None:
@@ -514,6 +580,9 @@ def test_repository_never_runs_the_same_whole_test_file_twice() -> None:
 if __name__ == "__main__":
     test_each_child_receives_an_independent_sanitized_environment()
     test_first_failure_stops_the_sorted_run_and_preserves_exit_code()
+    test_retry_rescued_module_exits_zero_but_is_named_in_the_summary()
+    test_orphan_assert_file_fails_the_collection_audit()
+    test_repository_tests_directory_has_no_orphan_checkers()
     test_malformed_test_source_fails_closed_without_starting_a_child()
     test_mixed_module_uses_one_process_when_main_covers_pytest_nodes()
     test_mixed_module_only_collects_nodes_missing_from_main()
