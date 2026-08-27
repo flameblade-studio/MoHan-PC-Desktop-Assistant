@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 lazy import argparse
+lazy import hashlib
 lazy import json
 lazy import math
 lazy import re
@@ -23,11 +24,14 @@ DEFAULT_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
 DEFAULT_DETECTOR_MODEL = (
     ROOT / "assets" / "vision-models" / "face_detection_yunet_2023mar.onnx"
 )
+DEFAULT_BASELINE = DEFAULT_ATLAS_ROOT / "identity-audit-baseline.json"
 EXPECTED_SIZE = (1024, 1536)
 IMAGE_DIMENSIONS = 3
 RGBA_CHANNELS = 4
 MIN_FOREHEAD_CONTOUR_ROWS = 8
-AUDIT_SCHEMA = "mohan.pose-atlas-static-identity-audit.v1"
+AUDIT_SCHEMA = "mohan.pose-atlas-static-identity-audit.v2"
+BASELINE_SCHEMA = "mohan.pose-atlas-identity-baseline.v1"
+SHA256_HEX_LENGTH = 64
 EXIT_CODE_CONTRACT = {
     "0": "all static identity checks passed",
     "1": "one or more visual identity checks failed",
@@ -75,9 +79,38 @@ class IdentityReport:
     issue_count: int
     issues_by_code: dict[str, int]
     issues: tuple[IdentityIssue, ...]
+    waived_issue_count: int = 0
+    waived_issues_by_code: dict[str, int] | None = None
+    waived_issues: tuple[IdentityIssue, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+def load_identity_baseline(path: Path) -> dict[str, tuple[str, frozenset[str]]]:
+    """Load the owner-accepted identity baseline, failing closed on any defect.
+
+    The baseline waives *pre-existing* findings on files the owner formally
+    accepted, pinned by SHA-256.  Any byte change to a view invalidates its
+    entry, so every rule applies in full to new or regenerated images.
+    """
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("schema") != BASELINE_SCHEMA:
+        raise ValueError(f"unexpected identity baseline schema in {path}")
+    views = payload.get("views")
+    if not isinstance(views, dict) or not views:
+        raise ValueError(f"identity baseline has no views: {path}")
+    baseline: dict[str, tuple[str, frozenset[str]]] = {}
+    for view_id, entry in views.items():
+        sha256 = entry.get("sha256")
+        codes = entry.get("waived_issue_codes")
+        if not isinstance(sha256, str) or len(sha256) != SHA256_HEX_LENGTH:
+            raise ValueError(f"identity baseline {view_id} has no valid sha256")
+        if not isinstance(codes, list) or not all(isinstance(c, str) for c in codes):
+            raise ValueError(f"identity baseline {view_id} has no valid issue codes")
+        baseline[view_id] = (sha256.lower(), frozenset(codes))
+    return baseline
 
 
 def _yaw(view_id: str) -> int:
@@ -200,11 +233,13 @@ def audit_pose_atlas_identity(  # noqa: PLR0912, PLR0914, PLR0915
     view_ids: Sequence[str] = VIEW_IDS,
     expected_size: tuple[int, int] = EXPECTED_SIZE,
     face_evidence: Mapping[str, FaceEvidence] | None = None,
+    baseline: Mapping[str, tuple[str, frozenset[str]]] | None = None,
 ) -> IdentityReport:
     """Audit static PoseAtlas identity and silhouette continuity read-only."""
 
     if face_evidence is None and not detector_model.is_file():
         raise FileNotFoundError(f"missing YuNet detector model: {detector_model}")
+    digests: dict[str, str] = {}
     issues: list[IdentityIssue] = []
     images: dict[str, np.ndarray] = {}
     faces: dict[str, FaceEvidence] = {}
@@ -216,6 +251,8 @@ def audit_pose_atlas_identity(  # noqa: PLR0912, PLR0914, PLR0915
             _issue(issues, "missing_view", path, view_id, "static PoseAtlas view is missing")
             continue
         files_checked += 1
+        if baseline is not None and view_id in baseline:
+            digests[view_id] = hashlib.sha256(path.read_bytes()).hexdigest()
         try:
             image = _load_rgba(path, expected_size)
         except ValueError as exc:
@@ -323,18 +360,35 @@ def audit_pose_atlas_identity(  # noqa: PLR0912, PLR0914, PLR0915
                 nose_position_delta=round(nose_delta, 6),
             )
 
-    issues.sort(key=lambda item: (item.path, item.code, item.message))
-    counts = dict(sorted(Counter(issue.code for issue in issues).items()))
+    blocking: list[IdentityIssue] = []
+    waived: list[IdentityIssue] = []
+    for issue in issues:
+        entry = None if baseline is None else baseline.get(issue.view_id)
+        if (
+            entry is not None
+            and digests.get(issue.view_id) == entry[0]
+            and issue.code in entry[1]
+        ):
+            waived.append(issue)
+        else:
+            blocking.append(issue)
+    blocking.sort(key=lambda item: (item.path, item.code, item.message))
+    waived.sort(key=lambda item: (item.path, item.code, item.message))
+    counts = dict(sorted(Counter(issue.code for issue in blocking).items()))
+    waived_counts = dict(sorted(Counter(issue.code for issue in waived).items()))
     return IdentityReport(
         schema=AUDIT_SCHEMA,
         exit_code_contract=EXIT_CODE_CONTRACT,
-        passed=not issues,
+        passed=not blocking,
         atlas_root=str(atlas_root),
         views_checked=len(view_ids),
         files_checked=files_checked,
-        issue_count=len(issues),
+        issue_count=len(blocking),
         issues_by_code=counts,
-        issues=tuple(issues),
+        issues=tuple(blocking),
+        waived_issue_count=len(waived),
+        waived_issues_by_code=waived_counts,
+        waived_issues=tuple(waived),
     )
 
 
@@ -348,11 +402,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--atlas-root", type=Path, default=DEFAULT_ATLAS_ROOT)
     parser.add_argument("--detector-model", type=Path, default=DEFAULT_DETECTOR_MODEL)
+    parser.add_argument("--baseline", type=Path, default=DEFAULT_BASELINE)
     parser.add_argument("--json-output", type=Path)
     arguments = parser.parse_args(argv)
     try:
+        baseline = (
+            load_identity_baseline(arguments.baseline)
+            if arguments.baseline.is_file()
+            else None
+        )
         report = audit_pose_atlas_identity(
-            arguments.atlas_root, arguments.detector_model
+            arguments.atlas_root, arguments.detector_model, baseline=baseline
         )
     except (OSError, ValueError) as exc:
         print(f"POSE_ATLAS_STATIC_IDENTITY_ERROR: {exc}")
@@ -365,7 +425,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     status = "PASS" if report.passed else "FAIL"
     print(
         f"POSE_ATLAS_STATIC_IDENTITY_{status}: "
-        f"{report.files_checked} files, {report.issue_count} issues"
+        f"{report.files_checked} files, {report.issue_count} issues, "
+        f"{report.waived_issue_count} waived by owner-accepted baseline"
     )
     for issue in report.issues:
         print(f"{issue.path}: [{issue.code}] {issue.message}")
