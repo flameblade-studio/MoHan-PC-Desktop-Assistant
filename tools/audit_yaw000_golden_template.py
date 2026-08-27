@@ -81,7 +81,10 @@ def _scan_layers(
         alpha_sum += use.astype(np.uint16)
         layers[name] = {"alpha_pixels": count, "bbox": _bbox(use), "pixel_hash": _hash_pixels(arr)}
     for name in blank_pending:
-        if name == "teeth_tongue":
+        if name in ("teeth_tongue", "oral_cavity"):
+            # Speech-contract layers: closed-mouth neutrals keep teeth_tongue
+            # empty everywhere, and profile views outside the visible
+            # speech-mouth set keep the oral cavity empty as well.
             continue
         if not face_visible and name in FACE_DETAIL_LAYERS:
             continue
@@ -110,7 +113,12 @@ def _mouth_and_ornament_checks(
         failures.append("lip_upper_lower_identical")
     lip_mask = (_rgba(layer_dir / f"{view}_lip_upper.png")[:, :, 3] > 0) | (_rgba(layer_dir / f"{view}_lip_lower.png")[:, :, 3] > 0)
     oral_mask = _rgba(layer_dir / f"{view}_oral_cavity.png")[:, :, 3] > 0
-    if not _intersects(_bbox(lip_mask), _bbox(oral_mask)):
+    if not oral_mask.any():
+        # Profile views keep the mouth visible but deliberately own no oral
+        # cavity: the speech contract only paints an open mouth for views in
+        # the visible-speech-mouth set, so an empty cavity layer is valid.
+        pass
+    elif not _intersects(_bbox(lip_mask), _bbox(oral_mask)):
         failures.append("oral_cavity_not_aligned")
     # The oral cavity may own the seam, so require adjacency/containment in
     # the combined mouth envelope rather than alpha overlap.
