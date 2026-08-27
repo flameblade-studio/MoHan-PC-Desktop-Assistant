@@ -104,7 +104,11 @@ class CompanionProactiveMixin:
                 delivery_token=delivery_token,
                 completed=completed,
         )
-        if not enqueue_bounded_speech(self.speech_queue, queued):
+        if not enqueue_bounded_speech(
+            self.speech_queue,
+            queued,
+            proactive_completions=self._proactive_speech_completions,
+        ):
             return False
         self._proactive_speech_completions[delivery_token] = completed
         self._start_next_speech()

@@ -341,11 +341,20 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             return
         self.open_dashboard()
 
+    def _hide_bubble_unless_speaking(self) -> None:
+        # 延遲隱藏必須讓路給進行中的語音氣泡（含即時語音），
+        # 參照 _speech_audio_finished 內既有的 speech_playing 守衛。
+        if getattr(self, "speech_playing", False) or getattr(
+            self, "realtime_mouth_active", False
+        ):
+            return
+        self.bubble.hide()
+
     def _show_caught_reaction(self) -> None:
         self.set_state("caught", source="user_direct")
         self._show_bubble("????????????????????????????????????")
         self._schedule_return_to_idle(2_800, "caught")
-        QTimer.singleShot(3_400, self.bubble.hide)
+        QTimer.singleShot(3_400, self._hide_bubble_unless_speaking)
 
     def _set_expression(self, expression: str, fade: bool = True) -> None:
         # Legacy expression rendering resumes ownership of the canvas, so the
@@ -459,8 +468,13 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
 
     def _cancel_expression_transition(self) -> None:
         animation = getattr(self, "expression_animation", None)
-        if animation is not None and animation.state():
-            animation.stop()
+        if animation is not None:
+            if animation.state():
+                animation.stop()
+            # 交叉淡入淡出的動畫群組（含子動畫）以 self 為父物件；不
+            # deleteLater 會隨每次表情切換累積 QObject。
+            animation.deleteLater()
+            self.expression_animation = None
         if hasattr(self, "expression_overlay"):
             self.expression_overlay.hide()
         if hasattr(self, "character_opacity"):
@@ -480,6 +494,9 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             animation = getattr(self, animation_name, None)
             if animation is not None:
                 animation.stop()
+                # 世代守衛（pose_transition_generation）已讓佇列中的舊回呼
+                # 失效，deleteLater 只回收物件本身，不影響守衛語意。
+                animation.deleteLater()
             setattr(self, animation_name, None)
         self.pose_transition_active = False
         self.pose_transition_expression = None
@@ -583,6 +600,12 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         self.pose_transition_active = False
         self.pose_transition_expression = None
         self.pose_transition_target_pose = None
+        for finished_animation in (
+            self.pose_transition_out,
+            self.pose_transition_in,
+        ):
+            if finished_animation is not None:
+                finished_animation.deleteLater()
         self.pose_transition_out = None
         self.pose_transition_in = None
         self.character_opacity.setOpacity(1.0)
@@ -1075,6 +1098,13 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             *NEW_EXPRESSION_ASSETS,
         }
         if state in expressive_states and animate_gesture:
+            previous_animation = getattr(self, "state_animation", None)
+            if previous_animation is not None:
+                # 每次手勢動作都建立新的 QVariantAnimation（父物件為 self）；
+                # 先回收舊物件避免長時間執行後累積。
+                previous_animation.stop()
+                previous_animation.deleteLater()
+                self.state_animation = None
             motion_scale = 3.0 if getattr(self, "_adaptive_full_body_active", False) else 1.0
             animation = QVariantAnimation(self)
             animation.setDuration(

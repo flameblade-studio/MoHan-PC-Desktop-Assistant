@@ -783,7 +783,7 @@ class CompanionSpeechRuntimeMixin:
             "idle" if reply_expression == "speaking" else reply_expression
         )
         self._show_bubble(text)
-        QTimer.singleShot(3200, self.bubble.hide)
+        QTimer.singleShot(3200, self._hide_bubble_unless_speaking)
 
     def _realtime_speaking(self, speaking: bool) -> None:
         if self._closing:
