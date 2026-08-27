@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+lazy import json
+lazy import os
 lazy import sys
+lazy import tempfile
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 lazy from check_four_language_pr import audit_pull_request
+lazy from check_four_language_pr import main as check_pr_main
 
 BODY = """## 繁體中文
 
@@ -67,10 +71,45 @@ def test_body_requires_fixed_order_and_structural_parity() -> None:
     assert any("differs across language sections" in error for error in errors)
 
 
+def _run_main_with_payload(payload: dict) -> int:
+    with tempfile.TemporaryDirectory(prefix="mohan-four-language-pr-") as raw:
+        event_path = Path(raw) / "event.json"
+        event_path.write_text(json.dumps(payload), encoding="utf-8")
+        previous = os.environ.get("GITHUB_EVENT_PATH")
+        os.environ["GITHUB_EVENT_PATH"] = str(event_path)
+        try:
+            return check_pr_main()
+        finally:
+            if previous is None:
+                os.environ.pop("GITHUB_EVENT_PATH", None)
+            else:
+                os.environ["GITHUB_EVENT_PATH"] = previous
+
+
+def test_release_please_exemption_requires_bot_author() -> None:
+    payload = {
+        "pull_request": {
+            "title": "single-language title",
+            "body": "single-language body",
+            "head": {"ref": "release-please--branches--main"},
+            "user": {"login": "impostor"},
+        }
+    }
+    # A human-authored PR must not bypass governance via the branch name.
+    assert _run_main_with_payload(payload) == 1
+
+    payload["pull_request"]["user"]["login"] = "github-actions[bot]"
+    assert _run_main_with_payload(payload) == 0
+
+    payload["pull_request"]["head"]["ref"] = "feature/normal-branch"
+    assert _run_main_with_payload(payload) == 1
+
+
 def main() -> None:
     test_valid_pull_request_metadata()
     test_title_requires_exactly_four_nonempty_segments()
     test_body_requires_fixed_order_and_structural_parity()
+    test_release_please_exemption_requires_bot_author()
     print("FOUR_LANGUAGE_PR_TESTS_OK")
 
 
