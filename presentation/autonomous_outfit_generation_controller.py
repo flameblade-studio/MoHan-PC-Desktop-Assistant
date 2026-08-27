@@ -24,6 +24,10 @@ lazy from application.self_generating_wardrobe import (
 )
 lazy from application.wardrobe_service import WardrobeService
 lazy from application.wardrobe_storage import WardrobeStorageGuard, WardrobeStoragePolicy
+lazy from domain.constants import (
+    DEFAULT_WEATHER_CONDITION,
+    DEFAULT_WEATHER_TEMPERATURE_C,
+)
 lazy from domain.outfit_pack import (
     MOOD_TAGS,
     OCCASION_TAGS,
@@ -158,9 +162,9 @@ class AutonomousOutfitGenerationController(QObject):
 
         now = datetime.now(UTC)
         weather = _allowed_setting(
-            self._db.setting("weather_condition", "indoor"),
+            self._db.setting("weather_condition", DEFAULT_WEATHER_CONDITION),
             WEATHER_TAGS,
-            "indoor",
+            DEFAULT_WEATHER_CONDITION,
         )
         mood = _allowed_setting(
             self._db.setting("current_mood", "calm"),
@@ -176,7 +180,12 @@ class AutonomousOutfitGenerationController(QObject):
             decision = self._wardrobe_runtime.evaluate(
                 WardrobeSituation(
                     now,
-                    float(self._db.setting("weather_temperature_c", 24.0)),
+                    float(
+                        self._db.setting(
+                            "weather_temperature_c",
+                            DEFAULT_WEATHER_TEMPERATURE_C,
+                        )
+                    ),
                     weather,
                     mood,
                     occasion,
@@ -218,8 +227,15 @@ class AutonomousOutfitGenerationController(QObject):
         request = OutfitCreationRequest(
             job_id=job_id,
             language=str(self._db.setting("ui_language", "zh-TW") or "zh-TW"),
-            weather=str(self._db.setting("weather_condition", "indoor") or "indoor"),
-            temperature_c=float(self._db.setting("weather_temperature_c", 24.0)),
+            weather=str(
+                self._db.setting("weather_condition", DEFAULT_WEATHER_CONDITION)
+                or DEFAULT_WEATHER_CONDITION
+            ),
+            temperature_c=float(
+                self._db.setting(
+                    "weather_temperature_c", DEFAULT_WEATHER_TEMPERATURE_C
+                )
+            ),
             mood=str(self._db.setting("current_mood", "calm") or "calm"),
             occasion=self._wardrobe_occasion(),
             creative_direction=(

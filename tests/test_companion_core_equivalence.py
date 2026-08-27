@@ -44,6 +44,9 @@ EXPECTED_METHODS = frozenset({
     "_persist_affection",
     "_apply_weather_and_satiety",
     "_observe_personality_mirror",
+    "_reload_preference_caches",
+    "_current_performance_preferences",
+    "_current_framing_preferences",
 })
 
 
