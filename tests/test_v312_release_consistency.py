@@ -52,8 +52,11 @@ def test_citation_metadata_tracks_the_current_release() -> None:
         read("domain/version_info.py"),
     )
     assert fallback is not None
-    assert f'version: "{fallback.group(1)}"' in citation
-    assert re.search(r'(?m)^date-released: "\d{4}-\d{2}-\d{2}"$', citation)
+    assert f'version: "{fallback.group(1)}" # x-release-please-version' in citation
+    assert re.search(
+        r'(?m)^date-released: "\d{4}-\d{2}-\d{2}" # x-release-please-date$',
+        citation,
+    )
 
 
 def test_readme_uses_one_dynamic_release_badge_per_language() -> None:
