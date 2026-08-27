@@ -36,7 +36,7 @@ lazy from domain.face_microtiming import (
     BLINK_REST_AT_MS,
     SACCADE_INTERVAL_MS,
 )
-lazy from domain.face_rig import EyeState, blink_for_eye_state
+lazy from domain.face_rig import EyeState, blink_for_eye_state, eye_state_for_blink
 lazy from presentation.companion_blink_runtime import CompanionBlinkRuntimeMixin
 lazy from presentation.companion_face_assets import CompanionFaceAssetMethods
 lazy from presentation.companion_speech_emotion import persist_wardrobe_mood
@@ -995,15 +995,21 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         if not self.mouth_visual_timer.isActive():
             self.mouth_visual_timer.start()
 
-    def _render_audio_mouth_transition(self) -> None:
+    def _blended_mouth_transition_frame(self) -> tuple[QPixmap, float] | None:
+        """Return the in-flight mouth crossfade frame and progress, or None.
+
+        This is the single source of truth for "what the mouth looks like
+        right now" during an audio transition, shared by the mouth tick and
+        the blink stamp so the two timers compose the same base instead of
+        overwriting each other's work.
+        """
         if (
             self.state != "speaking"
-            or not self.audio_driven_mouth
+            or not getattr(self, "audio_driven_mouth", False)
             or self.mouth_transition_from.isNull()
             or self.mouth_transition_to.isNull()
         ):
-            self.mouth_visual_timer.stop()
-            return
+            return None
         elapsed = time.perf_counter() - self.mouth_transition_started
         progress = max(
             0.0,
@@ -1017,10 +1023,48 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         painter.setOpacity(eased)
         painter.drawPixmap(0, 0, self.mouth_transition_to)
         painter.end()
-        self._render_speech_pixmap(blended)
-        if progress >= 1.0:
-            self._render_speech_pixmap(self.mouth_transition_to)
+        return blended, progress
+
+    def _stamp_active_blink(self, frame: QPixmap) -> QPixmap:
+        """Re-stamp an in-flight blink so mouth ticks cannot reopen the eyes.
+
+        The blink runtime paints a closed-eye authority onto the displayed
+        pixmap, but the 16 ms mouth-transition timer used to repaint from
+        clean open-eyed endpoint frames — alternating the eyelids at
+        30-60 Hz for the whole blink (the reported eyelid flicker).
+        """
+        opacity = float(getattr(self, "blink_opacity", 0.0))
+        if eye_state_for_blink(opacity) is EyeState.REST:
+            return frame
+        expression = (
+            self.speech_gesture_expression
+            or getattr(self, "speech_current_expression", None)
+            or self.current_expression
+        )
+        return self._blink_composite(frame, str(expression), opacity)
+
+    def _render_audio_mouth_transition(self) -> None:
+        in_flight = self._blended_mouth_transition_frame()
+        if in_flight is None:
             self.mouth_visual_timer.stop()
+            return
+        blended, progress = in_flight
+        self._present_speech_frame(blended)
+        if progress >= 1.0:
+            self._present_speech_frame(QPixmap(self.mouth_transition_to))
+            self.mouth_visual_timer.stop()
+
+    def _present_speech_frame(self, clean: QPixmap) -> None:
+        """Archive the clean frame; display it with any in-flight blink.
+
+        ``speech_visual_pixmap`` must stay blink-free — the blink runtime
+        composes its eyelid patch over it — while the on-screen pixmap keeps
+        the closed eyes so the 16 ms mouth tick no longer alternates them
+        open (the reported eyelid flicker).
+        """
+        self._adaptive_full_body_active = False
+        self.speech_visual_pixmap = QPixmap(clean)
+        self.character.setPixmap(self._stamp_active_blink(clean))
 
     def set_state(
         self,
