@@ -246,7 +246,7 @@ class DashboardShellMixin:
         self.front_raise_timer.timeout.connect(self._bring_to_front)
         self.emergency_shortcut = QShortcut(QKeySequence("Esc"), self)
         self.emergency_shortcut.setContext(Qt.ApplicationShortcut)
-        self.emergency_shortcut.activated.connect(self._emergency_stop)
+        self.emergency_shortcut.activated.connect(self._emergency_shortcut_activated)
 
     def _enforce_readable_combo_popups(self) -> None:
         enforce_readable_combo_popups(self)
@@ -878,11 +878,11 @@ class DashboardShellMixin:
         self.timer.timeout.connect(self.refresh_work_time)
         self.timer.start(1000)
 
-    def _disable_implicit_default_buttons(self) -> None:
+    def _disable_implicit_default_buttons(self, root: QWidget | None = None) -> None:
         # QDialog otherwise makes the first push button ("開始工作") the
         # implicit Enter key target. Chat submission must never click an
-        # unrelated action button.
-        for button in self.findChildren(QPushButton):
+        # unrelated action button; dynamically rebuilt widgets pass ``root``.
+        for button in (self if root is None else root).findChildren(QPushButton):
             button.setAutoDefault(False)
             button.setDefault(False)
 

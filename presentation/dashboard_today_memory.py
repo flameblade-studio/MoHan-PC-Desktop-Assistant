@@ -467,6 +467,9 @@ class DashboardTodayMemoryMixin:
             widget = TodoRow(self.db, row, self.ui_language)
             widget.changed.connect(self.refresh_todos)
             self.todo_list.addWidget(widget)
+            # 動態重建的待辦卡片按鈕會重新取得 autoDefault=True；
+            # 必須立刻套用與建構時相同的 Enter 鍵防護。
+            self._disable_implicit_default_buttons(widget)
 
 
     def refresh_ideas(self) -> None:
