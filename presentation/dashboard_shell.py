@@ -6,28 +6,11 @@ lazy from functools import partial
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QEvent, Qt, QThreadPool, QTimer
-lazy from PySide6.QtGui import (
-    QKeySequence,
-    QMouseEvent,
-    QPixmap,
-    QShortcut,
-)
+lazy from PySide6.QtGui import QKeySequence, QMouseEvent, QPixmap, QShortcut
 lazy from PySide6.QtWidgets import (
-    QCheckBox,
-    QComboBox,
-    QFileDialog,
-    QFrame,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QListWidget,
-    QListWidgetItem,
-    QPushButton,
-    QSizePolicy,
-    QSplitter,
-    QTabWidget,
-    QVBoxLayout,
-    QWidget,
+    QCheckBox, QComboBox, QFileDialog, QFrame, QHBoxLayout, QLabel,
+    QLineEdit, QListWidget, QListWidgetItem, QPushButton, QSizePolicy,
+    QSplitter, QTabWidget, QVBoxLayout, QWidget,
 )
 
 lazy from application.presentation_ports import (
