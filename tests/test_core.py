@@ -542,7 +542,16 @@ def _assert_realtime_audio_lifecycle() -> RealtimeVoiceClient:
     realtime._begin_assistant_audio()
     with realtime._assistant_state_lock:
         realtime._last_assistant_audio_at = time.monotonic() - 5.0
-    time.sleep(0.4)
+    # The 0.25 s watchdog normally clears the flag well within 0.4 s, but a
+    # fixed sleep exploded on slow runners.  Poll with a generous 2 s
+    # deadline instead: the behavior (idle audio is finished by the
+    # watchdog) is still verified, without the wall-clock trap.
+    watchdog_deadline = time.monotonic() + 2.0
+    while (
+        realtime._assistant_audio_active.is_set()
+        and time.monotonic() < watchdog_deadline
+    ):
+        time.sleep(0.02)
     assert not realtime._assistant_audio_active.is_set()
     realtime.running = False
     return realtime

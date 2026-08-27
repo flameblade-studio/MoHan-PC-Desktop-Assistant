@@ -18,7 +18,11 @@ EXPECTED_PRUNED_COUNT = 107
 EXPECTED_ARCHIVED_COUNT = 107
 EXPECTED_ARCHIVED_AFTER_RESTORE = 106
 RANK_RESULT_COUNT = 24
-MAX_RANK_ELAPSED_MS = 500
+# Coarse anti-regression gate, not a performance benchmark (relaxed 500 ->
+# 2000 on 2026-08-27): warmed ranking over 1000 rows normally takes a few
+# milliseconds, so this only catches order-of-magnitude regressions without
+# exploding on slow or heavily loaded CI runners.
+MAX_RANK_ELAPSED_MS = 2000
 
 
 def _insert_old_low_importance_memories(
