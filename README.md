@@ -33,9 +33,9 @@
 
 > **歷史紀錄：** Windows 一直是完成既有公開版本實機、完整回歸、安裝與發布驗證的平台；macOS／Linux 功能受限 DMG／AppImage Preview 已納入安全平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI。實際產物仍須通過本版最終發布門檻，CI 也不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
-> **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.4.2`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。
+> **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.5.0`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。
 
-> **目前開發版本：** `4.5.0`；這是尚未發布的開發草稿。Windows 建置命令：`.\build.ps1 -Version "4.5.0"`。
+> **目前開發版本：** `4.5.1`；`v4.5.0` 已於 2026-08-27 正式發布，`4.5.1` 是尚未發布的開發草稿。Windows 建置命令：`.\build.ps1 -Version "4.5.1"`。
 
 > 本專案遵循[炎劍開源軟體家族品質標準](PUBLISHING.md)。
 
@@ -467,9 +467,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 > **历史记录：** Windows 一直是完成现有公开版本真机、完整回归、安装与发布验证的平台；macOS／Linux 功能受限 DMG／AppImage Preview 已纳入安全平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI。实际产物仍须通过本版本最终发布关卡，CI 也不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
-> **当前发布目标：** 源代码与软件包元数据已同步至 `v4.4.2`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。
+> **当前发布目标：** 源代码与软件包元数据已同步至 `v4.5.0`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。
 
-> **当前开发版本：** `4.5.0`；这是尚未发布的开发草稿。Windows 构建命令：`.\build.ps1 -Version "4.5.0"`。
+> **当前开发版本：** `4.5.1`；`v4.5.0` 已于 2026-08-27 正式发布，`4.5.1` 是尚未发布的开发草稿。Windows 构建命令：`.\build.ps1 -Version "4.5.1"`。
 
 > 本项目遵循[炎剑开源软件家族质量标准](PUBLISHING.md)。
 
@@ -901,9 +901,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 > **Historical record:** Windows remains the only platform whose existing public releases have completed real-device use, the full regression suite, installation, and publication validation. The limited macOS/Linux DMG/AppImage Previews include safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen; the actual artifacts must still pass this release's final publication gates. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
 
-> **Current release target:** Source and package metadata are synchronized at `v4.4.2`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
+> **Current release target:** Source and package metadata are synchronized at `v4.5.0`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
 
-> **Current development version:** `4.5.0`; this is an unreleased development draft. Windows build command: `.\build.ps1 -Version "4.5.0"`.
+> **Current development version:** `4.5.1`; `v4.5.0` was formally published on 2026-08-27, and `4.5.1` is the unreleased development draft. Windows build command: `.\build.ps1 -Version "4.5.1"`.
 
 > This project follows the [Flameblade Open Source Software Family Quality Standard](PUBLISHING.md).
 
@@ -1335,9 +1335,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 > **履歴：** 既存の公開版について、実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。macOS／Linux 機能限定 DMG／AppImage Preview には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI を導入していますが、実際の成果物は本版の最終公開ゲートに合格する必要があります。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
-> **現在の公開目標：** ソースとパッケージのメタデータは `v4.4.2` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。
+> **現在の公開目標：** ソースとパッケージのメタデータは `v4.5.0` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。
 
-> **現在の開発版：** `4.5.0`。これは未公開の開発草案です。Windows のビルドコマンド：`.\build.ps1 -Version "4.5.0"`。
+> **現在の開発版：** `4.5.1`。`v4.5.0` は 2026-08-27 に正式公開済みで、`4.5.1` は未公開の開発草案です。Windows のビルドコマンド：`.\build.ps1 -Version "4.5.1"`。
 
 > 本プロジェクトは[炎剣オープンソース・ソフトウェア・ファミリー品質基準](PUBLISHING.md)に従います。
 
