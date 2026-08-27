@@ -358,7 +358,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - 付款、購買、匯出密碼、關閉安全防護、任意 Shell 與系統管理員 Shell 永不自動化。
 - 外部郵件、網頁、文件、語音轉錄與模型輸出不能自行授予權限。
 - 遠端、相機、雲端連接器與 Home Assistant 預設關閉。
-- 緊急停止：按 `Esc`，或說 `墨寒，停手`。
+- 緊急停止：按 `Esc`，或說 `墨寒，停手`（也支援英語 `mohan stop`／`stop everything` 與日語 `墨寒、止まって`／`ぜんぶ止めて`）。
 - OpenAI、OAuth 與 Home Assistant 權杖使用 Windows DPAPI 分開保存，不存入 SQLite、原始碼或可攜檔。
 - 對話、記憶、待辦、工作紀錄與設定預設保留在本機應用程式資料目錄。
 
@@ -792,7 +792,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - 付款、购买、导出密码、关闭安全防护、任意 Shell 与管理员 Shell 永不自动化。
 - 外部邮件、网页、文档、语音转录与模型输出不能自行授予权限。
 - 远程、相机、云端连接器与 Home Assistant 默认关闭。
-- 紧急停止：按 `Esc`，或说 `墨寒，停手`。
+- 紧急停止：按 `Esc`，或说 `墨寒，停手`（也支持英语 `mohan stop`／`stop everything` 与日语 `墨寒、止まって`／`ぜんぶ止めて`）。
 - OpenAI、OAuth 与 Home Assistant 令牌使用 Windows DPAPI 分开保存，不存入 SQLite、源代码或便携文件。
 - 对话、记忆、待办事项、工作记录与设置默认保留在本地应用程序数据目录。
 
@@ -1226,7 +1226,7 @@ Never expose Home Assistant or MoHan's remote port directly to the public intern
 - Payments, purchases, password export, security disabling, arbitrary Shell, and administrator Shell are never automated.
 - External email, web pages, documents, speech transcripts, and model output cannot grant permissions.
 - Remote access, camera, cloud connectors, and Home Assistant are off by default.
-- Emergency stop: press `Esc` or say `墨寒，停手`.
+- Emergency stop: press `Esc`, or say `mohan stop` or `stop everything` (the Chinese `墨寒，停手` and Japanese `墨寒、止まって`／`ぜんぶ止めて` phrases also work).
 - OpenAI, OAuth, and Home Assistant tokens use separate Windows DPAPI storage and never enter SQLite, source code, or portable files.
 - Conversations, memories, tasks, work records, and settings stay in the local application data directory by default.
 
@@ -1660,7 +1660,7 @@ Home Assistant や墨寒の遠隔ポートを公衆インターネットへ直�
 - 支払い、購入、パスワード書出し、安全機能停止、任意 Shell、管理者 Shell は自動化しません。
 - 外部メール、ウェブページ、文書、音声文字起こし、モデル出力は権限を付与できません。
 - 遠隔操作、カメラ、クラウド接続、Home Assistant は初期状態で無効です。
-- 緊急停止：`Esc` を押すか、`墨寒，停手` と発話します。
+- 緊急停止：`Esc` を押すか、`墨寒、止まって` または `ぜんぶ止めて` と発話します（中国語の `墨寒，停手`、英語の `mohan stop` も利用できます）。
 - OpenAI、OAuth、Home Assistant の token は Windows DPAPI で分離保存し、SQLite、ソースコード、可搬ファイルへ入れません。
 - 会話、記憶、タスク、作業記録、設定は初期状態で本機アプリケーションデータに保存します。
 
