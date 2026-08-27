@@ -113,6 +113,50 @@ def test_all_empty_teeth_layers_are_the_valid_neutral_state(tmp_path: Path) -> N
     report = _audit(tmp_path)
     assert "teeth_tongue_all_views_empty" not in report.issues_by_code
 
+
+def test_empty_face_layers_surface_as_nonblocking_advisories(tmp_path: Path) -> None:
+    # _clean_set deliberately leaves the eye/brow/blush/corner/jaw layers
+    # blank, so a visible view must report them as advisories without ever
+    # blocking packaging: the shipped v4 assets still violate the strict
+    # rule and the owner has not ruled on them yet.
+    _clean_set(tmp_path)
+    report = _audit(tmp_path)
+    assert report.passed
+    assert report.issue_count == 0
+    advisory_pairs = {(a.view_id, a.layer) for a in report.advisories}
+    assert (VIEW, "iris_left") in advisory_pairs
+    assert (VIEW, "jaw") in advisory_pairs
+    # teeth_tongue is a valid all-empty neutral set at every view.
+    assert (VIEW, "teeth_tongue") not in advisory_pairs
+    assert report.advisory_count == len(report.advisories)
+    assert all(
+        advisory.code == "face_semantic_layer_fully_transparent"
+        for advisory in report.advisories
+    )
+
+
+def test_back_view_mouth_layers_are_exempt_from_empty_advisories(tmp_path: Path) -> None:
+    back = "yaw+105-pitch+00"
+    _clean_set(tmp_path, views=(back,))
+    for layer in ("lip_upper", "lip_lower", "oral_cavity", "teeth_tongue"):
+        _write(tmp_path / f"{back}_{layer}.png", _blank())
+    report = audit_layered_full_body_semantics(
+        tmp_path,
+        tmp_path / "authority",
+        tmp_path / "unused.onnx",
+        view_ids=(back,),
+        expected_size=SIZE,
+        face_boxes={},
+    )
+    assert report.passed
+    advisory_layers = {a.layer for a in report.advisories}
+    # Speech-mouth contract: back views legitimately ship empty mouth layers.
+    assert advisory_layers.isdisjoint(
+        {"lip_upper", "lip_lower", "oral_cavity", "teeth_tongue"}
+    )
+    # Other empty face layers on a back view are still surfaced for ruling.
+    assert "iris_left" in advisory_layers
+
 def test_reports_insufficient_base_face_coverage(tmp_path: Path) -> None:
     _clean_set(tmp_path)
     base = _blank()
