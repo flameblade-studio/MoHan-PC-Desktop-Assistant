@@ -337,7 +337,10 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
     def _character_clicked(self) -> None:
         if self.state == "glance":
             self._show_caught_reaction()
-            QTimer.singleShot(1_700, self.open_dashboard)
+            QTimer.singleShot(
+                1_700,
+                lambda: None if self._closing else self.open_dashboard(),
+            )
             return
         self.open_dashboard()
 
