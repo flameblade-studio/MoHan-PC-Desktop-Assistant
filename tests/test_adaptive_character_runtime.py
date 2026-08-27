@@ -237,6 +237,9 @@ def assert_half_framing_skips_full_body_composition() -> None:
     assert full_body.calls == 0
 
 
+RENDERS_AFTER_BLINK_CHANGE = 2
+
+
 def face_motion(blink: float) -> FaceMotionFrame:
     return FaceMotionFrame(
         FacePose.FRONT,
@@ -265,10 +268,10 @@ def assert_continuous_face_motion_is_never_deduplicated() -> None:
     # the render itself).
     blink_only = replace(base, face_motion=face_motion(blink=1.0))
     engine.dispatch(blink_only)
-    assert full_body.calls == 2
+    assert full_body.calls == RENDERS_AFTER_BLINK_CHANGE
     duplicate = engine.dispatch(blink_only)
     assert duplicate.disposition is AdaptiveCharacterDisposition.DEDUPED
-    assert full_body.calls == 2
+    assert full_body.calls == RENDERS_AFTER_BLINK_CHANGE
 
 
 def assert_atomic_publish_uses_both_ports_once() -> None:
