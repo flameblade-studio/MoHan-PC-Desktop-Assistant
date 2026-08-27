@@ -1075,6 +1075,12 @@ def _assert_queued_speech_contract(app: QApplication, window: CompanionWindow) -
     window._blink()
     assert window.speech_blinking is True
     assert window.current_expression == window.speech_mid_expression
+    # Discrete-blink contract: the first HALF step substitutes nothing when
+    # no half-eye asset exists, so the frame legitimately only changes at
+    # the CLOSED step.  (The old assertion right after _blink() passed only
+    # because the pre-fix renderer recomposed a fresh QPixmap every call,
+    # jittering the cacheKey without any visual change.)
+    window._advance_speaking_blink(window.blink_generation, 1.0)
     assert window.character.pixmap().cacheKey() != pre_blink_key
     # Blinking is an eye-only layer. Speech timing must keep advancing
     # underneath it instead of pausing and restoring a stale mouth frame.
@@ -1118,6 +1124,9 @@ def _assert_audio_viseme_contract(window: CompanionWindow) -> None:
     window._blink()
     assert window.speech_blinking is True
     assert window.current_expression == viseme_before_blink
+    # Same discrete-blink ruling as the queued-speech contract above: the
+    # visible change lands on the CLOSED step, not the assetless HALF step.
+    window._advance_speaking_blink(window.blink_generation, 1.0)
     assert window.character.pixmap().cacheKey() != viseme_pixmap_key
     window._finish_speaking_blink(
         window.blink_generation,
