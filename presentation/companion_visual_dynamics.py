@@ -2,6 +2,7 @@ from __future__ import annotations
 
 """Visual composition and motion behavior for the companion window."""
 
+lazy import contextlib
 lazy import math
 lazy import time
 lazy from pathlib import Path
@@ -371,6 +372,13 @@ class CompanionVisualDynamicsMixin:
             )
             self.move(proposed)
 
+    def _hide_bubble_unless_speaking(self) -> None:
+        """Hide the bubble after a delay; a late timer must survive teardown."""
+        if getattr(self, "_closing", False) or self.speech_playing:
+            return
+        with contextlib.suppress(RuntimeError):
+            self.bubble.hide()
+
     def _show_bubble(self, text: str) -> None:
         normalized = text.strip()
         if len(normalized) > MAX_BUBBLE_LENGTH:
@@ -635,10 +643,7 @@ class CompanionVisualDynamicsMixin:
                 continue
             self._show_bubble(observation.message)
             self._schedule_return_to_idle(2_800, observation.expression)
-            QTimer.singleShot(
-                3_400,
-                lambda: None if self.speech_playing else self.bubble.hide(),
-            )
+            QTimer.singleShot(3_400, self._hide_bubble_unless_speaking)
 
     def _build_attention_layers(self) -> None:
         self.face_sources = {}
