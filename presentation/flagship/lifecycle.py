@@ -19,6 +19,14 @@ class FlagshipLifecycleMixin:
         self.planner_busy = False
         self._planner_worker = None
         self._cloud_test_worker = None
+        # Wake an OAuth worker that is still waiting on its loopback socket;
+        # otherwise ~QThreadPool blocks shutdown until the browser
+        # authorization times out (up to 180 seconds).
+        oauth_worker = getattr(self, "_oauth_worker", None)
+        self._oauth_worker = None
+        if oauth_worker is not None:
+            with suppress(AttributeError, RuntimeError):
+                oauth_worker.abandon()
 
         for timer in self.findChildren(QTimer):
             timer.stop()

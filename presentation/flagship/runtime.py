@@ -77,6 +77,7 @@ class FlagshipRuntimeMixin:
         self.thread_pool.setMaxThreadCount(3)
         self.planner_busy = False
         self._planner_worker: ActionPlannerWorker | None = None
+        self._oauth_worker = None
         self._planner_generation = 0
         self.planner_timeout = QTimer(self)
         self.planner_timeout.setSingleShot(True)

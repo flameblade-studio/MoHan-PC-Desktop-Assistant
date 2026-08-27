@@ -35,20 +35,44 @@ class OAuthWorker(QRunnable):
         self.client_secret = client_secret
         self.scopes = scopes
         self.signals = OAuthSignals()
+        self._flow: object | None = None
+        self._abandoned = False
+
+    def abandon(self) -> None:
+        """Ask the flow to stop waiting so application exit is not blocked.
+
+        Called from the UI thread during shutdown while ``run`` may be inside
+        ``authorize`` on a pool thread; closing the loopback listener there
+        makes ``authorize`` raise promptly and the pool thread finish.
+        """
+        self._abandoned = True
+        abandon_flow = getattr(self._flow, "abandon", None)
+        if callable(abandon_flow):
+            abandon_flow()
 
     def run(self) -> None:
         try:
-            token = _active_oauth_flow_factory()(
+            flow = _active_oauth_flow_factory()(
                 PROVIDERS[self.provider_id],
                 self.client_id,
                 client_secret=self.client_secret,
                 scopes=self.scopes,
-            ).authorize()
+            )
+            self._flow = flow
+            if self._abandoned:
+                # abandon() ran between construction and publication; make
+                # sure the freshly created flow is cancelled as well.
+                abandon_flow = getattr(flow, "abandon", None)
+                if callable(abandon_flow):
+                    abandon_flow()
+            token = flow.authorize()
             if self.client_secret:
                 token["client_secret"] = self.client_secret
             self.signals.done.emit(self.provider_id, token)
         except Exception as exc:
             self.signals.failed.emit(self.provider_id, str(sanitize_error(exc)))
+        finally:
+            self._flow = None
 
 
 def configure_oauth_flow_factory(factory: OAuthFlowFactory) -> None:
