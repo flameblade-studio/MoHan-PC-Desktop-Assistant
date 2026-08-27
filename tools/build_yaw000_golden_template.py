@@ -22,6 +22,8 @@ lazy from PIL import Image
 VIEW = "yaw+000-pitch+00"
 # Rows above this line default to hair_back ownership; rows below to body.
 HAIR_BODY_SPLIT_Y = 410
+# Views at or past this |yaw| ship an empty oral cavity (speech-mouth ruling).
+NEAR_PROFILE_MIN_ABS_YAW = 75
 LAYERS = (
     "body", "hair_back", "base", "jaw", "oral_cavity", "teeth_tongue",
     "lip_lower", "lip_upper", "corner_left", "corner_right", "blush_left",
@@ -122,36 +124,14 @@ def _face_evidence(image_path: Path):
     return _detect(image, DEFAULT_DETECTOR_MODEL)
 
 
-def _remap_face_candidates(
-    candidates: dict[str, np.ndarray],
-    repo: Path,
-    layer_dir: Path,
-    view: str,
-    foreground: np.ndarray,
-) -> None:
-    """Replace mirrored face-detail candidates with front-anchored warps.
+def _face_alignment_matrix(front, target) -> np.ndarray:
+    """Solve the front-to-view affine over the five YuNet landmarks.
 
     A plain face-box scale mapped everything ~30px low (profile boxes start
     lower on the forehead), so the affine is solved least-squares over the
-    five YuNet landmarks (eyes, nose, mouth corners) instead.
+    five landmarks (eyes, nose, mouth corners) instead.
     """
 
-    # Source of truth: the half-body front layers.  They are the one layer
-    # set whose features verifiably sit on the face (iris centroids match
-    # the YuNet eye landmarks to <1px); the full-body golden layers carried
-    # the offset defect on EVERY view, including the front.
-    source_dir = repo / "assets/expressions/layered"
-    front = _face_evidence(repo / "assets/expressions/idle_front.png")
-    try:
-        target = _face_evidence(repo / "assets/pose-atlas/v4" / f"{view}.png")
-    except ValueError:
-        # Rear views have no detectable face; their face-detail layers are
-        # licensed empty (speech-mouth and back-view rulings).
-        h, w = foreground.shape
-        for layer in FACE_REMAP_LAYERS:
-            candidates[layer] = np.zeros((h, w), bool)
-        return
-    box_view = target.box
     source_points = np.asarray(front.landmarks, dtype=np.float64)
     target_points = np.asarray(target.landmarks, dtype=np.float64)
     front_eye_span = abs(source_points[1, 0] - source_points[0, 0])
@@ -171,30 +151,54 @@ def _remap_face_candidates(
         # features squashed into a vertical line and vanished).  Fall back
         # to a similarity transform: uniform scale from the eye-to-mouth
         # height, anchored on the eye/mouth mid-axis.
-        scale_x = scale_y
         source_axis = source_points.mean(axis=0)
         target_axis = target_points.mean(axis=0)
-        matrix = np.array(
+        return np.array(
             [
-                [scale_x, 0.0, target_axis[0] - source_axis[0] * scale_x],
+                [scale_y, 0.0, target_axis[0] - source_axis[0] * scale_y],
                 [0.0, scale_y, target_axis[1] - source_axis[1] * scale_y],
             ],
             dtype=np.float64,
         )
-    else:
-        design = np.column_stack(
-            (source_points, np.ones(len(source_points), dtype=np.float64))
-        )
-        coefficients, _, _, _ = np.linalg.lstsq(
-            design, target_points, rcond=None
-        )
-        matrix = np.array(
-            [
-                [coefficients[0, 0], coefficients[1, 0], coefficients[2, 0]],
-                [coefficients[0, 1], coefficients[1, 1], coefficients[2, 1]],
-            ],
-            dtype=np.float64,
-        )
+    design = np.column_stack(
+        (source_points, np.ones(len(source_points), dtype=np.float64))
+    )
+    coefficients, _, _, _ = np.linalg.lstsq(design, target_points, rcond=None)
+    return np.array(
+        [
+            [coefficients[0, 0], coefficients[1, 0], coefficients[2, 0]],
+            [coefficients[0, 1], coefficients[1, 1], coefficients[2, 1]],
+        ],
+        dtype=np.float64,
+    )
+
+
+def _remap_face_candidates(
+    candidates: dict[str, np.ndarray],
+    repo: Path,
+    layer_dir: Path,
+    view: str,
+    foreground: np.ndarray,
+) -> None:
+    """Replace mirrored face-detail candidates with front-anchored warps."""
+
+    # Source of truth: the half-body front layers.  They are the one layer
+    # set whose features verifiably sit on the face (iris centroids match
+    # the YuNet eye landmarks to <1px); the full-body golden layers carried
+    # the offset defect on EVERY view, including the front.
+    source_dir = repo / "assets/expressions/layered"
+    front = _face_evidence(repo / "assets/expressions/idle_front.png")
+    try:
+        target = _face_evidence(repo / "assets/pose-atlas/v4" / f"{view}.png")
+    except ValueError:
+        # Rear views have no detectable face; their face-detail layers are
+        # licensed empty (speech-mouth and back-view rulings).
+        h, w = foreground.shape
+        for layer in FACE_REMAP_LAYERS:
+            candidates[layer] = np.zeros((h, w), bool)
+        return
+    box_view = target.box
+    matrix = _face_alignment_matrix(front, target)
     h, w = foreground.shape
     # Constrain remapped features to a padded face zone so a far-side eye
     # that projects onto hair simply vanishes (licensed-empty on turned
@@ -424,7 +428,7 @@ def build(
         # the same contract VISIBLE_SPEECH_MOUTH_VIEWS and the semantic
         # audit exemption encode.
         yaw_match = re.match(r"^yaw([+-]\d{3})-pitch", view)
-        if yaw_match and abs(int(yaw_match.group(1))) >= 75:
+        if yaw_match and abs(int(yaw_match.group(1))) >= NEAR_PROFILE_MIN_ABS_YAW:
             candidates["lip_lower"] |= candidates["oral_cavity"]
             candidates["oral_cavity"] = np.zeros_like(candidates["oral_cavity"])
 
