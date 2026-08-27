@@ -10,6 +10,8 @@ lazy from infrastructure.db_affection import StudioDBAffectionMethods
 
 UPSERT_ROUNDS = 5
 LEGACY_ROWS = 3
+FLOAT_TOLERANCE = 1e-9
+REWRITTEN_FAVOR = 0.9
 
 
 class _AffectionStore(StudioDBAffectionMethods):
@@ -65,7 +67,7 @@ def test_upsert_updates_in_place_and_read_returns_latest() -> None:
     assert store.row_count() == 1
     row = store.affection_row()
     assert row is not None
-    assert abs(float(row["favor_score"]) - UPSERT_ROUNDS / 10.0) < 1e-9
+    assert abs(float(row["favor_score"]) - UPSERT_ROUNDS / 10.0) < FLOAT_TOLERANCE
 
 
 def test_read_repairs_databases_with_legacy_row_pileup() -> None:
@@ -80,12 +82,12 @@ def test_read_repairs_databases_with_legacy_row_pileup() -> None:
         )
     row = store.affection_row()
     assert row is not None
-    assert abs(float(row["favor_score"]) - LEGACY_ROWS / 10.0) < 1e-9
-    store.write(favor=0.9)
+    assert abs(float(row["favor_score"]) - LEGACY_ROWS / 10.0) < FLOAT_TOLERANCE
+    store.write(favor=REWRITTEN_FAVOR)
     assert store.row_count() == LEGACY_ROWS
     latest = store.affection_row()
     assert latest is not None
-    assert abs(float(latest["favor_score"]) - 0.9) < 1e-9
+    assert abs(float(latest["favor_score"]) - REWRITTEN_FAVOR) < FLOAT_TOLERANCE
 
 
 def run() -> None:

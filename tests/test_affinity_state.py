@@ -14,6 +14,7 @@ INTERACTION_COUNT = 10
 JEALOUSY_THRESHOLD = 0.5
 JEALOUSY_FADED_THRESHOLD = 0.1
 JEALOUSY_DECAY_LOWER = 0.2
+FLOAT_TOLERANCE = 1e-9
 
 
 def test_affinity_grows_with_interaction() -> None:
@@ -91,8 +92,8 @@ def test_repeated_snapshots_do_not_compound_decay() -> None:
         sampled.snapshot(now=float(second))
     sampled_after = sampled.snapshot(now=half_life).affinity
     direct_after = direct.snapshot(now=half_life).affinity
-    assert abs(sampled_after - direct_after) < 1e-9
-    assert abs(direct_after - before / 2.0) < 1e-9
+    assert abs(sampled_after - direct_after) < FLOAT_TOLERANCE
+    assert abs(direct_after - before / 2.0) < FLOAT_TOLERANCE
 
 
 def test_invalid_affinity_is_rejected() -> None:
