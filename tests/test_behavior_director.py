@@ -193,6 +193,14 @@ def assert_minimum_hold_prevents_twitch_and_then_varies() -> None:
 
 
 def assert_speech_preempts_unsafe_back_without_twitch() -> None:
+    """Ruling 2026-08-27: speech recovers from back-full one depth at a time.
+
+    The earlier expectation (back-full straight to a side/front pose) was
+    itself the forbidden two-level pose jump: the renderer's crossfade
+    safety check rejects it and keeps the old frame, which is how the
+    permanent back-turned lock manifested.  She now turns back through the
+    gradient while speaking, one safe step per hold window.
+    """
     clock = Clock()
     director = BehaviorDirector(clock=clock, seed=5, cooldown_ms=0)
     angry = context(emotion=SemanticEmotion.ANGRY, intensity=0.95)
@@ -202,14 +210,28 @@ def assert_speech_preempts_unsafe_back_without_twitch() -> None:
     clock.advance(5)
     full = director.direct(angry)
     assert full.pose == "back-full"
-    speaking = director.direct(
-        context(
-            speech=SpeechLifecycle.SPEAKING,
-            emotion=SemanticEmotion.NEUTRAL,
-        )
+    speech = context(
+        speech=SpeechLifecycle.SPEAKING,
+        emotion=SemanticEmotion.NEUTRAL,
     )
-    assert speaking.pose in {"left-neutral", "right-neutral", "front-crossed"}
-    assert speaking.breath is BreathStyle.SPEAKING
+    poses = []
+    for _ in range(8):
+        plan = director.direct(speech)
+        if not poses or plan.pose != poses[-1]:
+            poses.append(plan.pose)
+        assert plan.breath is BreathStyle.SPEAKING
+        if plan.pose in {"left-neutral", "right-neutral", "front-crossed"}:
+            break
+        clock.advance(5)
+    else:
+        raise AssertionError(f"speech never reached a visible pose: {poses}")
+    depths = {"back-full": 3}
+    depths.update({f"back-two-thirds-{s}": 2 for s in ("left", "right")})
+    depths.update({f"{s}-neutral": 1 for s in ("left", "right")})
+    trail = [3, *(depths.get(pose, 0) for pose in poses)]
+    assert all(
+        abs(a - b) <= 1 for a, b in zip(trail, trail[1:], strict=False)
+    ), f"unsafe pose jump in recovery trail: {trail}"
 
 
 def assert_disabled_and_absent_fallbacks() -> None:
