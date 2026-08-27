@@ -35,6 +35,19 @@ class OAuthWorker(QRunnable):
         self.client_secret = client_secret
         self.scopes = scopes
         self.signals = OAuthSignals()
+        self._abandoned = False
+
+    def abandon(self) -> None:
+        """Mark the in-flight browser flow as unwanted during shutdown.
+
+        The PKCE flow has no cancellation API: ``authorize()`` blocks on a
+        local loopback listener until the browser answers or its own timeout
+        expires.  Abandoning suppresses both completion callbacks so closing
+        the window can stop waiting; the parked worker thread is reclaimed by
+        process exit.
+        """
+
+        self._abandoned = True
 
     def run(self) -> None:
         try:
@@ -44,10 +57,14 @@ class OAuthWorker(QRunnable):
                 client_secret=self.client_secret,
                 scopes=self.scopes,
             ).authorize()
+            if self._abandoned:
+                return
             if self.client_secret:
                 token["client_secret"] = self.client_secret
             self.signals.done.emit(self.provider_id, token)
         except Exception as exc:
+            if self._abandoned:
+                return
             self.signals.failed.emit(self.provider_id, str(sanitize_error(exc)))
 
 
