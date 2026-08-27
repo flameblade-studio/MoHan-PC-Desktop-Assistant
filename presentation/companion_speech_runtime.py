@@ -53,18 +53,25 @@ lazy from domain.speech_providers import (
     SpeechRequest,
     normalize_speech_provider_id,
 )
-lazy from presentation.companion_speech_emotion import (
-    _emotion_rate_adjustment,
-    _semantic_emotion_for_state,
-)
+lazy from presentation import companion_speech_emotion as speech_emotion
 lazy from presentation.companion_wait_expression import (
     finish_ai_wait_expression,
     start_ai_wait_expression,
 )
+lazy from presentation.companion_voice_phase import (
+    apply_voice_volume,
+    release_failed_local_voice,
+    speech_audio_state,
+    sync_idle_voice_phase,
+)
+lazy from presentation.companion_speech_queue import enqueue_bounded_speech
 lazy from presentation.ui_localization import ui_text
 lazy import contextlib
-
 __all__ = ("CompanionSpeechRuntimeMixin",)
+# Compatibility boundary for integrations and tests that imported the mapping
+# from this former owner before the speech runtime was split into focused
+# modules. Keep one implementation in companion_speech_emotion.
+_semantic_emotion_for_state = speech_emotion._semantic_emotion_for_state
 
 
 class CompanionSpeechRuntimeMixin:
@@ -123,7 +130,7 @@ class CompanionSpeechRuntimeMixin:
             "interrupted": SpeechLifecycle.ENDING,
             "idle": SpeechLifecycle.IDLE,
         }[directive.phase.value]
-        emotion = _semantic_emotion_for_state(
+        emotion = speech_emotion._semantic_emotion_for_state(
             str(getattr(self, "state", "idle"))
         )
         self._adaptive_behavior_generation = (
@@ -198,8 +205,10 @@ class CompanionSpeechRuntimeMixin:
         pending = self.dashboard.consume_expression_metadata(state)
         if pending is not None:
             _, intensity, source = pending
-        self.speech_queue.append(
-            QueuedSpeech(text, state, intensity, source)
+        enqueue_bounded_speech(
+            self.speech_queue,
+            QueuedSpeech(text, state, intensity, source),
+            proactive_completions=self._proactive_speech_completions,
         )
         self._start_next_speech()
 
@@ -211,13 +220,18 @@ class CompanionSpeechRuntimeMixin:
         self.speech_playback_generation += 1
         playback_generation = self.speech_playback_generation
         self._begin_speech_presentation(queued)
-        tts_enabled = bool(self.db.setting("tts_enabled", True))
-        self._start_mouth_animation(audio_driven=tts_enabled)
+        tts_enabled, audio_enabled = speech_audio_state(
+            self.db,
+            session_muted=bool(getattr(self, "_gesture_audio_muted", False)),
+        )
+        self._start_mouth_animation(audio_driven=audio_enabled)
         self.show()
         self.raise_()
-        if tts_enabled:
+        if audio_enabled:
             self._start_speech_provider(queued.text, queued.requested_state)
             return
+        if tts_enabled and not audio_enabled:
+            sync_idle_voice_phase(self.dashboard, self.db, True)
         self._prepare_speech_performance("visual-only")
         QTimer.singleShot(
             max(1200, min(5000, len(queued.text) * 80)),
@@ -373,7 +387,7 @@ class CompanionSpeechRuntimeMixin:
         # while an excited or proud line is spoken a touch faster.  The user's
         # configured rate remains the baseline; the emotion only nudges it.
         base_rate = int(self.db.setting("voice_rate", -1))
-        rate = base_rate + _emotion_rate_adjustment(state)
+        rate = base_rate + speech_emotion._emotion_rate_adjustment(state)
         request = SpeechRequest(
             text=text,
             voice=voice,
@@ -489,15 +503,7 @@ class CompanionSpeechRuntimeMixin:
         volume_percent: int,
         muted: bool,
     ) -> None:
-        engines = [self.tts, self.cloud_tts, self.realtime]
-        if self.azure_tts is not None:
-            engines.append(self.azure_tts)
-        if self.azure_hd_tts is not None:
-            engines.append(self.azure_hd_tts)
-        if self.realtime_speech_output is not None:
-            engines.append(self.realtime_speech_output)
-        for engine in engines:
-            engine.set_volume(volume_percent, muted)
+        apply_voice_volume(self, volume_percent, muted)
 
     def _recent_realtime_context(
         self,
@@ -1060,14 +1066,7 @@ class CompanionSpeechRuntimeMixin:
         self._speech_audio_finished()
 
     def _windows_voice_failed(self, message: str) -> None:
-        with contextlib.suppress(AttributeError, LookupError):
-            self.speech_providers.record_failure(VOICE_ENGINE_SYSTEM)
-        platform_name = self.platform_services.capabilities.display_name
-        language = profile_setting(self.db, "ui_language")
-        self.dashboard.set_api_status(
-            f"{platform_name} 本機語音失敗："
-            f"{safe_error_message(language, message)}"
-        )
+        release_failed_local_voice(self, message)
 
     def _speech_audio_finished(self) -> None:
         if not self.speech_playing:

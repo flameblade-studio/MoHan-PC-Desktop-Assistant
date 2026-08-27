@@ -1,0 +1,58 @@
+{
+  "schema": "mohan.third-party-denylist.v1",
+  "updated_at": "2026-08-25",
+  "policy": {
+    "allowed_licenses": ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "CC0-1.0", "CC-BY"],
+    "forbidden_license_markers": ["AGPL", "GPL", "LGPL", "-NC", "-SA", "-ND", "UNKNOWN", "UNVERIFIED"]
+  },
+  "permanent_denials": [
+    {
+      "id": "nvdiffrast",
+      "aliases": ["nvdiffrast", "NVlabs/nvdiffrast", "https://github.com/NVlabs/nvdiffrast"],
+      "reason": "The locally inspected license is outside MoHan's production allowlist.",
+      "forbidden_operations": ["download", "install", "build", "import", "use", "package", "release"],
+      "exceptions": []
+    },
+    {
+      "id": "zero123plus-weights",
+      "aliases": ["Zero123++", "zero123plus-v1.2", "sudo-ai/zero123plus-v1.2", "https://huggingface.co/sudo-ai/zero123plus-v1.2"],
+      "reason": "The pinned local model-weight cache had no sufficiently clear license evidence.",
+      "forbidden_operations": ["download", "cache", "load", "use", "package", "release"],
+      "exceptions": []
+    },
+    {
+      "id": "comfyui-runtime",
+      "aliases": ["ComfyUI", "Comfy-Desktop", "https://github.com/comfyanonymous/ComfyUI"],
+      "reason": "GPL-3.0 is outside MoHan's production allowlist and would contaminate the intended permissive distribution boundary.",
+      "forbidden_operations": ["download", "install", "build", "import", "use", "package", "release"],
+      "exceptions": []
+    },
+    {
+      "id": "kandinsky-2.2-mohan-pose-atlas",
+      "aliases": ["kandinsky-2-2-prior", "kandinsky-2-2-controlnet-depth", "kandinsky-community/kandinsky-2-2-prior", "kandinsky-community/kandinsky-2-2-controlnet-depth"],
+      "reason": "Local MoHan tests completed technically but repeatedly failed identity, anatomy, clothing, and yaw art acceptance; this route is permanently unsuitable for the formal 24-view and 600-layer production line.",
+      "forbidden_operations": ["download", "cache", "load", "use", "package", "release"],
+      "exceptions": []
+    },
+    {
+      "id": "qwen-image-comfy-repacks",
+      "aliases": ["qwen-image-edit-2509-comfy", "Comfy-Org/Qwen-Image-Edit_ComfyUI", "Comfy-Org/Qwen-Image-Edit-2509_ComfyUI"],
+      "reason": "These repacks require the permanently denied ComfyUI runtime. Separate official Qwen model weights are governed by their own scoped policy entry.",
+      "forbidden_operations": ["download", "cache", "load", "use", "package", "release"],
+      "exceptions": []
+    },
+    {
+      "id": "qwen-image-edit-2509-weights-self-training",
+      "scope": "mohan_current_self_training_24_600_pipeline",
+      "aliases": ["Qwen/Qwen-Image-Edit-2509", "models--Qwen--Qwen-Image-Edit-2509", "Qwen-Image-Edit-2509 model weights"],
+      "reason": "The official Qwen-Image-Edit-2509 model weights are not required by the approved FLUX.1-schnell self-training path and are permanently excluded from the current MoHan 24-view and 600-layer self-training pipeline.",
+      "forbidden_operations": ["download", "cache", "load", "use", "package", "release"],
+      "exceptions": ["Preserve tools/third_party/qwen2509-standalone/.conda because it is a shared permissive Python runtime used by Diffusers, bitsandbytes, and BiRefNet; the environment is not Qwen model weights and must not be deleted under this denial"]
+    }
+  ],
+  "pipeline_effect": {
+    "instantmesh_source_code": "retained_apache_2_0_for_license_evidence_only_but_not_approved_as_a_complete_pipeline",
+    "instantmesh_end_to_end_pipeline": "disabled_because_it_requires_permanently_denied_components",
+    "approved_24_600_geometry_path": "MHR Apache-2.0 plus ufbx MIT Alternative A"
+  }
+}

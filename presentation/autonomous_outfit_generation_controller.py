@@ -3,6 +3,7 @@ from __future__ import annotations
 """Presentation composition for non-blocking cloud outfit creation."""
 
 lazy import secrets
+lazy import shutil
 lazy from datetime import UTC, datetime, timedelta
 lazy from pathlib import Path
 
@@ -15,6 +16,7 @@ lazy from application.autonomous_wardrobe_runtime import (
 )
 lazy from application.self_generating_wardrobe import (
     FashionTrendSignal,
+    FashionTrendScoutFactory,
     GeneratedOutfitResult,
     OutfitCreationRequest,
     OutfitGenerationPolicy,
@@ -22,17 +24,25 @@ lazy from application.self_generating_wardrobe import (
 )
 lazy from application.wardrobe_service import WardrobeService
 lazy from application.wardrobe_storage import WardrobeStorageGuard, WardrobeStoragePolicy
-lazy from domain.outfit_pack import MOOD_TAGS, OCCASION_TAGS, WEATHER_TAGS
+lazy from domain.outfit_pack import (
+    MOOD_TAGS,
+    OCCASION_TAGS,
+    WEATHER_TAGS,
+    OutfitPackError,
+)
 lazy from infrastructure.db import StudioDBSettingsPort
 lazy from integrations.openai_outfit_generator import (
     GeneratedOutfitImageAuditor,
     OpenAIImageEditOptions,
     OpenAIImageEditTransport,
     OpenAIOutfitDraftGenerator,
+    OutfitImageGenerationError,
 )
+lazy from application.presentation_ports import DEFAULT_TEXT_MODEL
 
 LAST_GENERATED_KEY = "wardrobe_last_generated_at"
 LAST_ATTEMPT_KEY = "wardrobe_generation_last_attempt_at"
+PENDING_JOB_KEY = "wardrobe_generation_pending_job_id"
 FAILED_ATTEMPT_BACKOFF = timedelta(hours=24)
 INITIAL_AUTONOMOUS_DELAY_MS = 30_000
 AUTONOMOUS_CHECK_INTERVAL_MS = 60 * 60 * 1000
@@ -65,7 +75,12 @@ class _GenerationWorker(QRunnable):
             result = self.wardrobe.create(self.request)
         except Exception as error:
             # Do not expose API keys, request payloads, or provider response text.
-            self.signals.failed.emit(type(error).__name__)
+            status = (
+                error.public_status
+                if isinstance(error, OutfitImageGenerationError)
+                else f"failed:{type(error).__name__}"
+            )
+            self.signals.failed.emit(status)
             return
         self.signals.completed.emit(result)
 
@@ -81,6 +96,7 @@ class AutonomousOutfitGenerationController(QObject):
         db,
         secret_store,
         project_root: Path,
+        trend_scout_factory: FashionTrendScoutFactory | None = None,
         parent: QObject | None = None,
     ) -> None:
         super().__init__(parent)
@@ -88,6 +104,7 @@ class AutonomousOutfitGenerationController(QObject):
         self._settings = StudioDBSettingsPort(db)
         self._secret_store = secret_store
         self._project_root = Path(project_root)
+        self._trend_scout_factory = trend_scout_factory
         self._data_root = Path(db.path).parent
         self._pool = QThreadPool.globalInstance()
         self._active_worker: _GenerationWorker | None = None
@@ -103,6 +120,8 @@ class AutonomousOutfitGenerationController(QObject):
         self._timer.timeout.connect(self.evaluate_automatic)
 
     def start(self) -> None:
+        if self._running:
+            return
         self._running = True
         self._timer.start()
         QTimer.singleShot(INITIAL_AUTONOMOUS_DELAY_MS, self.evaluate_automatic)
@@ -142,7 +161,7 @@ class AutonomousOutfitGenerationController(QObject):
             "calm",
         )
         occasion = _allowed_setting(
-            self._db.setting("current_occasion", "everyday"),
+            self._wardrobe_occasion(),
             OCCASION_TAGS,
             "everyday",
         )
@@ -162,7 +181,9 @@ class AutonomousOutfitGenerationController(QObject):
         if decision.changed:
             self.status_changed.emit("outfit-selected")
 
-    def request_generation(self) -> None:
+    def request_generation(self, *, explicit: bool = False) -> None:
+        """Start generation; an explicit button click may retry immediately."""
+
         if self._active_worker is not None:
             self.status_changed.emit("already-generating")
             return
@@ -176,14 +197,20 @@ class AutonomousOutfitGenerationController(QObject):
         now = datetime.now(UTC)
         last_attempt = _optional_time(self._db.setting(LAST_ATTEMPT_KEY, ""))
         if last_attempt is not None and now - last_attempt < FAILED_ATTEMPT_BACKOFF:
-            return
+            if not explicit:
+                self.status_changed.emit("cooldown-blocked")
+                return
+            # A user clicking the charge-labelled button is an intentional
+            # retry.  The backoff protects unattended generation only.
+        pending_job = str(self._db.setting(PENDING_JOB_KEY, "") or "").strip()
+        job_id = pending_job or f"{now:%Y%m%d}-{secrets.token_hex(4)}"
         request = OutfitCreationRequest(
-            job_id=f"{now:%Y%m%d}-{secrets.token_hex(4)}",
+            job_id=job_id,
             language=str(self._db.setting("ui_language", "zh-TW") or "zh-TW"),
             weather=str(self._db.setting("weather_condition", "indoor") or "indoor"),
             temperature_c=float(self._db.setting("weather_temperature_c", 24.0)),
             mood=str(self._db.setting("current_mood", "calm") or "calm"),
-            occasion=str(self._db.setting("current_occasion", "everyday") or "everyday"),
+            occasion=self._wardrobe_occasion(),
             creative_direction=(
                 "An elegant original Northern-Song-inspired outfit for MoHan, "
                 "adapted to the current weather and mood while preserving her "
@@ -193,13 +220,18 @@ class AutonomousOutfitGenerationController(QObject):
             last_generated_at=_optional_time(
                 self._db.setting(LAST_GENERATED_KEY, "")
             ),
+            user_initiated=explicit,
         )
         worker = _GenerationWorker(self._create_wardrobe(api_key), request)
         worker.signals.completed.connect(self._completed)
         worker.signals.failed.connect(self._failed)
         self._active_worker = worker
+        self._db.set_setting(PENDING_JOB_KEY, job_id)
         self._db.set_setting(LAST_ATTEMPT_KEY, now.isoformat())
-        self.status_changed.emit("generating")
+        trend_search = self._trend_search_enabled()
+        self.status_changed.emit(
+            "generating-with-trend-search" if trend_search else "generating"
+        )
         self._pool.start(worker)
 
     def _create_wardrobe(self, api_key: str) -> SelfGeneratingWardrobe:
@@ -213,32 +245,97 @@ class AutonomousOutfitGenerationController(QObject):
                 1, int(self._db.setting("generated_outfit_storage_gb", 6))
             ) * 1024 * 1024 * 1024,
         )
+        trend_search = self._trend_search_enabled()
+        trend_scout = (
+            self._trend_scout_factory(
+                api_key,
+                str(self._db.setting("ai_model", DEFAULT_TEXT_MODEL)),
+            )
+            if trend_search and self._trend_scout_factory is not None
+            else _NoTrendScout()
+        )
         return SelfGeneratingWardrobe(
             quarantine,
             outfit_store,
-            _NoTrendScout(),
+            trend_scout,
             OpenAIOutfitDraftGenerator(
                 OpenAIImageEditTransport(OpenAIImageEditOptions(api_key)),
                 self._project_root,
+                self._data_root / "outfit-generation-cache",
             ),
             GeneratedOutfitImageAuditor(self._project_root),
-            OutfitGenerationPolicy(enabled=True, install_after_audit=True),
+            OutfitGenerationPolicy(
+                enabled=True,
+                trend_search_enabled=trend_search,
+                install_after_audit=True,
+            ),
             WardrobeStorageGuard(outfit_store, quarantine, policy),
         )
+
+    def _trend_search_enabled(self) -> bool:
+        return self._trend_scout_factory is not None and bool(
+            self._db.setting("fashion_trend_search_enabled", False)
+        )
+
+    def _wardrobe_occasion(self) -> str:
+        """Use an explicit occasion, otherwise derive one from the live work mode."""
+
+        explicit = str(self._db.setting("current_occasion", "") or "").lower()
+        if explicit in OCCASION_TAGS:
+            return explicit
+        mode = str(self._db.setting("mode", "") or "")
+        return {
+            "工作": "work",
+            "會議": "formal",
+        }.get(mode, "everyday")
 
     def _completed(self, value: object) -> None:
         self._active_worker = None
         if not self._running:
             return
         if not isinstance(value, GeneratedOutfitResult):
+            self._abandon_pending_job()
             self.status_changed.emit("invalid-result")
             return
         if value.status != "installed" or value.installed_pack is None:
+            # A completed non-install result has no resumable transaction.
+            # Keep its quarantine evidence, but start any later request with a
+            # fresh job id. Reusing this id would collide with the preserved
+            # quarantine directory and make every retry fail immediately.
+            self._abandon_pending_job()
             self.status_changed.emit(value.status)
             return
-        outfit_id = f"{value.installed_pack.pack_id}/autonomous-look"
-        self._wardrobe_service.apply(outfit_id)
-        now = datetime.now(UTC).isoformat()
+        completed_job = str(self._db.setting(PENDING_JOB_KEY, "") or "").strip()
+        self._db.set_setting(PENDING_JOB_KEY, "")
+        if not value.installed_pack.ensembles:
+            self.status_changed.emit("activation-failed")
+            return
+        outfit_id = "/".join(
+            (
+                value.installed_pack.pack_id,
+                value.installed_pack.ensembles[0].ensemble_id,
+            )
+        )
+        now_value = datetime.now(UTC)
+        manual_lock_until = _optional_time(
+            self._db.setting("wardrobe_manual_lock_until", "")
+        )
+        if manual_lock_until is not None and manual_lock_until > now_value:
+            # Generation may finish hours after it was requested.  Installation
+            # is safe, but an autonomous completion must never override the
+            # user's current manually locked look.  The new pack remains a
+            # candidate after the lock expires or may be selected explicitly.
+            now = now_value.isoformat()
+            self._settings.write({LAST_GENERATED_KEY: now})
+            self._discard_completed_checkpoints(completed_job)
+            self.status_changed.emit("installed-manual-lock")
+            return
+        try:
+            self._wardrobe_service.apply(outfit_id)
+        except (OSError, ValueError, OutfitPackError):
+            self.status_changed.emit("activation-failed")
+            return
+        now = now_value.isoformat()
         self._settings.write(
             {
                 "active_outfit_id": outfit_id,
@@ -247,13 +344,41 @@ class AutonomousOutfitGenerationController(QObject):
             }
         )
         OutfitRevealStateStore(self._settings).mark_pending(outfit_id)
+        self._discard_completed_checkpoints(completed_job)
         self.status_changed.emit("installed")
 
-    def _failed(self, error_type: str) -> None:
+    def _abandon_pending_job(self) -> None:
+        """Forget a finished unusable job without deleting quarantine evidence."""
+
+        job_id = str(self._db.setting(PENDING_JOB_KEY, "") or "").strip()
+        self._db.set_setting(PENDING_JOB_KEY, "")
+        self._discard_completed_checkpoints(job_id)
+
+    def _discard_completed_checkpoints(self, job_id: str) -> None:
+        """Remove only the exact paid-generation checkpoint after installation."""
+
+        if not job_id or Path(job_id).name != job_id:
+            return
+        cache_root = (self._data_root / "outfit-generation-cache").resolve()
+        job_root = (cache_root / job_id).resolve()
+        if job_root.parent != cache_root or not job_root.is_dir():
+            return
+        try:
+            shutil.rmtree(job_root)
+        except OSError:
+            # The outfit has already been audited/installed at this point.
+            # A locked antivirus handle, read-only cache, or transient disk
+            # error must not turn that successful transaction into a silent UI
+            # failure.  Preserve that exact checkpoint directory for later
+            # maintenance instead of misreporting the installed transaction.
+            return
+
+    def _failed(self, status: str) -> None:
         self._active_worker = None
         if not self._running:
             return
-        self.status_changed.emit(f"failed:{error_type}")
+        self._db.set_setting("wardrobe_generation_last_error", status)
+        self.status_changed.emit(status)
 
 
 def _optional_time(value: object) -> datetime | None:

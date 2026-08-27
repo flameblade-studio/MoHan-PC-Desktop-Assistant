@@ -212,13 +212,15 @@ def test_wardrobe_tab_and_controls_have_four_language_contract() -> None:
                     application.processEvents()
                     assert db.setting("wardrobe_manual_lock_until", "missing") == ""
                     spin = dashboard.manual_wardrobe_lock_hours
-                    assert spin.buttonSymbols() == QAbstractSpinBox.UpDownArrows
+                    assert spin.buttonSymbols() == QAbstractSpinBox.NoButtons
+                    assert dashboard.manual_wardrobe_lock_hours_up.isEnabled()
+                    assert dashboard.manual_wardrobe_lock_hours_down.isEnabled()
                     spin.setValue(spin.maximum())
                     assert spin.stepEnabled() & QAbstractSpinBox.StepUpEnabled
                     assert spin.stepEnabled() & QAbstractSpinBox.StepDownEnabled
-                    spin.stepUp()
+                    dashboard.manual_wardrobe_lock_hours_up.click()
                     assert spin.value() == spin.minimum()
-                    spin.stepDown()
+                    dashboard.manual_wardrobe_lock_hours_down.click()
                     assert spin.value() == spin.maximum()
                     forbidden = sorted(
                         text for text in texts if text in FORBIDDEN_SUBPAGE_ACTIONS

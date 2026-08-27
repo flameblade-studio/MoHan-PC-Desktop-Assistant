@@ -342,7 +342,13 @@ class FlagshipRemoteMixin:
             "timestamp": local_wall_time().isoformat(timespec="seconds"),
         }
     def _queue_remote_command(self, text: str, device_name: str) -> dict[str, Any]:
-        self._remote_commands.put((text, device_name))
+        try:
+            self._remote_commands.put_nowait((text, device_name))
+        except queue.Full:
+            return {
+                "accepted": False,
+                "message": self._t("待處理的遠端指令已達安全上限，請稍後重試"),
+            }
         return {
             "accepted": True,
             "message": self._t("已送交墨寒並等待本機權限判斷"),

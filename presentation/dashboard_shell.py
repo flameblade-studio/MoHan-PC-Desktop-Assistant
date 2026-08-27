@@ -6,7 +6,12 @@ lazy from functools import partial
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QEvent, Qt, QThreadPool, QTimer
-lazy from PySide6.QtGui import QKeySequence, QMouseEvent, QPixmap, QShortcut
+lazy from PySide6.QtGui import (
+    QKeySequence,
+    QMouseEvent,
+    QPixmap,
+    QShortcut,
+)
 lazy from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -18,6 +23,7 @@ lazy from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QPushButton,
+    QSizePolicy,
     QSplitter,
     QTabWidget,
     QVBoxLayout,
@@ -44,6 +50,8 @@ lazy from domain.language_support import (
 lazy from domain.outfit_pack import OutfitPackError
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.dashboard_control_style import enforce_readable_combo_popups
+lazy from presentation.dashboard_wardrobe_status import wardrobe_generation_message
 lazy from presentation.desktop_companion_status import (
     build_desktop_companion_stage,
     desktop_companion_initial_status,
@@ -240,6 +248,9 @@ class DashboardShellMixin:
         self.emergency_shortcut.setContext(Qt.ApplicationShortcut)
         self.emergency_shortcut.activated.connect(self._emergency_stop)
 
+    def _enforce_readable_combo_popups(self) -> None:
+        enforce_readable_combo_popups(self)
+
     def _build_mode_combo(self) -> QComboBox:
         combo = QComboBox()
         for value in ("工作", "陪伴", "勿擾", "會議", "離席", "休眠"):
@@ -270,6 +281,18 @@ class DashboardShellMixin:
         self.work_label.setProperty("mohanRole", "headerStatus")
         start_btn = QPushButton(self._t("start_work", "開始工作"))
         stop_btn = QPushButton(self._t("stop_work", "結束工作"))
+        self.restore_window_button = QPushButton(
+            self._t("restore_dashboard_window", "還原視窗")
+        )
+        self.restore_window_button.setProperty("mohanAction", "secondary")
+        self.restore_window_button.setToolTip(
+            self._t(
+                "restore_dashboard_window_tooltip",
+                "將控制中心還原為可移動、可調整大小的視窗",
+            )
+        )
+        self.restore_window_button.clicked.connect(self.showNormal)
+        self.restore_window_button.hide()
         start_btn.setProperty("mohanAction", "primary")
         stop_btn.setProperty("mohanAction", "secondary")
         brand = QVBoxLayout()
@@ -289,6 +312,7 @@ class DashboardShellMixin:
         header.addWidget(QLabel(self._t("mode", "模式")))
         header.addWidget(self.mode_combo)
         header.addWidget(self.work_label)
+        header.addWidget(self.restore_window_button)
         header.addWidget(start_btn)
         header.addWidget(stop_btn)
         root.addWidget(command_deck)
@@ -431,8 +455,10 @@ class DashboardShellMixin:
         self._desktop_companion_status_labels.append(labels)
 
         dock = QFrame()
+        dock.setObjectName("featureDock")
         dock.setProperty("mohanRole", "featureDock")
-        dock.setMinimumWidth(500)
+        dock.setMinimumWidth(360)
+        dock.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         dock_layout = QVBoxLayout(dock)
         dock_layout.setContentsMargins(12, 12, 12, 12)
         dock_layout.setSpacing(10)
@@ -451,11 +477,12 @@ class DashboardShellMixin:
         feature_splitter = QSplitter(Qt.Horizontal)
         feature_splitter.setObjectName("featurePageSplitter")
         feature_splitter.setChildrenCollapsible(False)
+        feature_splitter.setHandleWidth(8)
         feature_splitter.addWidget(stage)
         feature_splitter.addWidget(dock)
-        feature_splitter.setStretchFactor(0, 6)
-        feature_splitter.setStretchFactor(1, 7)
-        feature_splitter.setSizes((540, 630))
+        feature_splitter.setStretchFactor(0, 2)
+        feature_splitter.setStretchFactor(1, 3)
+        feature_splitter.setSizes((360, 640))
         page_layout.addWidget(feature_splitter, 1)
         return page
 
@@ -510,30 +537,7 @@ class DashboardShellMixin:
         )
         self.wardrobe_packages = QListWidget()
         self.wardrobe_packages.setMinimumHeight(260)
-        selected_id = WardrobeService.selected_outfit(
-            self.db.setting("active_outfit_id", BUILTIN_OUTFIT_ID)
-        )
-        for outfit in self.wardrobe_service.outfits(self.ui_language):
-            label = outfit.display_name
-            if outfit.built_in:
-                label = self._t("wardrobe_default_outfit", "內建預設服裝")
-            item = QListWidgetItem(label)
-            item.setData(Qt.UserRole, outfit.outfit_id)
-            item.setToolTip(
-                self._t(
-                    "wardrobe_compatibility_status",
-                    "相容狀態",
-                )
-                + "："
-                + (
-                    self._t("wardrobe_compatible", "相容")
-                    if outfit.compatible
-                    else self._t("wardrobe_incompatible", "不相容")
-                )
-            )
-            self.wardrobe_packages.addItem(item)
-            if outfit.outfit_id == selected_id:
-                self.wardrobe_packages.setCurrentItem(item)
+        self._reload_wardrobe_packages()
         self.wardrobe_status = QLabel(
             self._t("wardrobe_status_ready", "雲裳系統已就緒")
         )
@@ -623,23 +627,41 @@ class DashboardShellMixin:
     def set_outfit_generation_status(self, status: str) -> None:
         if not hasattr(self, "wardrobe_status"):
             return
-        messages = {
-            "generating": self._t("wardrobe_generation_running", "正在生成、稽核並封裝新衣……"),
-            "installed": self._t("wardrobe_generation_installed", "新衣已通過稽核、安裝並套用。"),
-            "not-enabled": self._t("wardrobe_generation_not_enabled", "請先勾選允許雲端自創新衣。"),
-            "api-key-unavailable": self._t("wardrobe_generation_no_key", "尚未設定可用的 OpenAI API Key。"),
-            "already-generating": self._t("wardrobe_generation_running", "正在生成、稽核並封裝新衣……"),
-            "capacity-blocked": self._t("wardrobe_generation_capacity", "已達自創服裝容量或冷卻限制。"),
-            "quarantined": self._t("wardrobe_generation_quarantined", "新衣未通過稽核，已隔離且未套用。"),
-            "automatic-selection-disabled": self._t("wardrobe_automatic_selection_disabled", "自主選裝目前已關閉。"),
-            "automatic-selection-failed": self._t("wardrobe_automatic_selection_failed", "自主選裝評估失敗，已保留目前衣裝。"),
-            "outfit-selected": self._t("wardrobe_automatic_outfit_selected", "墨寒已依情境自主換裝。"),
-        }
-        self.wardrobe_status.setText(
-            messages.get(status, self._t("wardrobe_generation_failed", "新衣生成失敗，未安裝任何素材。"))
+        self.wardrobe_status.setText(wardrobe_generation_message(status, self._t))
+        if hasattr(self, "wardrobe_generate_button"):
+            self.wardrobe_generate_button.setEnabled(
+                status not in {"generating", "generating-with-trend-search"}
+            )
+        if status in {"installed", "installed-manual-lock", "outfit-selected"}:
+            self._reload_wardrobe_packages()
+
+    def _reload_wardrobe_packages(self) -> None:
+        if not hasattr(self, "wardrobe_packages"):
+            return
+        self.wardrobe_packages.clear()
+        selected_id = WardrobeService.selected_outfit(
+            self.db.setting("active_outfit_id", BUILTIN_OUTFIT_ID)
         )
-        if status != "generating" and hasattr(self, "wardrobe_generate_button"):
-            self.wardrobe_generate_button.setEnabled(True)
+        for outfit in self.wardrobe_service.outfits(self.ui_language):
+            label = (
+                self._t("wardrobe_default_outfit", "內建預設服裝")
+                if outfit.built_in
+                else outfit.display_name
+            )
+            item = QListWidgetItem(label)
+            item.setData(Qt.UserRole, outfit.outfit_id)
+            item.setToolTip(
+                self._t("wardrobe_compatibility_status", "相容狀態")
+                + "："
+                + (
+                    self._t("wardrobe_compatible", "相容")
+                    if outfit.compatible
+                    else self._t("wardrobe_incompatible", "不相容")
+                )
+            )
+            self.wardrobe_packages.addItem(item)
+            if outfit.outfit_id == selected_id:
+                self.wardrobe_packages.setCurrentItem(item)
 
     def _wardrobe_hero(self) -> QFrame:
         hero = QFrame()
@@ -687,7 +709,11 @@ class DashboardShellMixin:
             ("wardrobe_view_right", "右側", pose_root / "yaw+090-pitch+00.png"),
             ("wardrobe_view_back", "背面", pose_root / "yaw-180-pitch+00.png"),
         )
+        self._wardrobe_outfit_overlay = (
+            self.presentation_ports.outfit_overlay_factory()
+        )
         self._wardrobe_pose_source = QPixmap()
+        self._wardrobe_pose_path = pose_choices[0][2]
         self.wardrobe_pose_buttons: list[QPushButton] = []
         pose_actions = QHBoxLayout()
         pose_actions.setSpacing(5)
@@ -729,6 +755,10 @@ class DashboardShellMixin:
         pose = QPixmap(str(path))
         if pose.isNull():
             return
+        self._wardrobe_pose_path = Path(path)
+        overlay = getattr(self, "_wardrobe_outfit_overlay", None)
+        if overlay is not None:
+            pose = overlay.apply(pose, Path(path).stem)
         self._wardrobe_pose_source = pose
         self.wardrobe_character_preview.setPixmap(
             pose.scaled(
@@ -763,16 +793,7 @@ class DashboardShellMixin:
         self.wardrobe_status.setText(
             self._t("wardrobe_installed_inactive", "已安裝，尚未套用")
         )
-        self.wardrobe_packages.clear()
-        selected_id = WardrobeService.selected_outfit(
-            self.db.setting("active_outfit_id", BUILTIN_OUTFIT_ID)
-        )
-        for outfit in self.wardrobe_service.outfits(self.ui_language):
-            item = QListWidgetItem(outfit.display_name)
-            item.setData(Qt.UserRole, outfit.outfit_id)
-            self.wardrobe_packages.addItem(item)
-            if outfit.outfit_id == selected_id:
-                self.wardrobe_packages.setCurrentItem(item)
+        self._reload_wardrobe_packages()
 
     def _preview_selected_outfit(self) -> None:
         selected = self.wardrobe_packages.currentItem()
@@ -798,6 +819,11 @@ class DashboardShellMixin:
         self.wardrobe_status.setText(
             self._t("wardrobe_outfit_applied", "已套用所選完整服裝。")
         )
+        checked = next(
+            (button for button in self.wardrobe_pose_buttons if button.isChecked()),
+            self.wardrobe_pose_buttons[0],
+        )
+        self._show_wardrobe_pose(self._wardrobe_pose_path, checked)
 
     def _restore_builtin_outfit(self) -> None:
         self.wardrobe_service.apply(BUILTIN_OUTFIT_ID)
@@ -811,6 +837,11 @@ class DashboardShellMixin:
         self.wardrobe_status.setText(
             self._t("wardrobe_builtin_applied", "已套用內建預設服裝。")
         )
+        checked = next(
+            (button for button in self.wardrobe_pose_buttons if button.isChecked()),
+            self.wardrobe_pose_buttons[0],
+        )
+        self._show_wardrobe_pose(self._wardrobe_pose_path, checked)
 
     def _connect_dashboard_signals(
         self,
@@ -929,6 +960,7 @@ class DashboardShellMixin:
 
     def showEvent(self, event) -> None:
         super().showEvent(event)
+        self._sync_restore_window_action()
         self.visibility_changed.emit(not self.isMinimized())
         self.front_raise_timer.start(0)
 
@@ -939,9 +971,24 @@ class DashboardShellMixin:
     def changeEvent(self, event) -> None:
         super().changeEvent(event)
         if event.type() == QEvent.WindowStateChange:
+            self._sync_restore_window_action()
+            if self.windowState() & Qt.WindowFullScreen:
+                # The control centre has no fullscreen workflow.  Refuse an
+                # accidental transition that removes the native Windows
+                # caption buttons and strands mouse-only users.
+                QTimer.singleShot(0, self.showNormal)
             self.visibility_changed.emit(
                 self.isVisible() and not self.isMinimized()
             )
+
+    def _sync_restore_window_action(self) -> None:
+        button = getattr(self, "restore_window_button", None)
+        if button is None:
+            return
+        state = self.windowState()
+        button.setVisible(
+            bool(state & (Qt.WindowMaximized | Qt.WindowFullScreen))
+        )
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         self._bring_to_front()

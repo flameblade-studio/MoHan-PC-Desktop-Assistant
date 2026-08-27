@@ -48,6 +48,21 @@ class FakeRenderer:
         return self.current_frame
 
 
+class StableRenderer(FakeRenderer):
+    """A registered full-canvas body stays constant while the face speaks."""
+
+    def render(self, generation: int, *_args: object) -> BodyPoseFrame:
+        self.calls += 1
+        if self.fail:
+            raise RuntimeError("render failed")
+        if self.current_frame.generation == 0:
+            self.current_frame = BodyPoseFrame(
+                1, 1, bytes((1, 0, 0, 255)), generation,
+                ("rendered",), ("body",), True,
+            )
+        return self.current_frame
+
+
 @dataclass(frozen=True, slots=True)
 class FakeBlend:
     marker: str = "blend"
@@ -169,6 +184,34 @@ def assert_renderer_failure_keeps_last_atomic_frame() -> None:
     assert failed is good
 
 
+def assert_viseme_publishes_with_a_stable_registered_body() -> None:
+    renderer = StableRenderer()
+    engine = PerformanceRuntime(
+        default_pose_registry(), renderer, request,
+        preferences=PerformancePreferences(),
+        clock=lambda: 1.0,
+        seed=1,
+    )
+    start(engine)
+    generation = engine.timeline.snapshot.generation
+    before = engine.last_known_good
+    assert before is not None
+    viseme = engine.process(
+        event(
+            RuntimeSpeechEvent.VISEME,
+            speech_generation=generation,
+            behavior_generation=3,
+            viseme="O",
+            level=0.8,
+        ),
+        available_corrections=CORRECTIONS,
+    )
+    assert viseme is not None and viseme is not before
+    assert viseme.body is before.body
+    assert viseme.performance.viseme == "O"
+    assert not viseme.performance.mouth_closed
+
+
 def assert_interruption_and_failure_keep_closed_safe_frame() -> None:
     for kind in (RuntimeSpeechEvent.INTERRUPT, RuntimeSpeechEvent.FAILURE):
         engine, _renderer = runtime()
@@ -253,6 +296,7 @@ def run() -> None:
     assert_five_providers_share_runtime()
     assert_stale_generation_never_applies()
     assert_renderer_failure_keeps_last_atomic_frame()
+    assert_viseme_publishes_with_a_stable_registered_body()
     assert_interruption_and_failure_keep_closed_safe_frame()
     assert_post_speech_settles_before_motion()
     assert_preferences_gate_views_and_hands()

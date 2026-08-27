@@ -54,7 +54,7 @@ def _assert_version_ordering() -> None:
 def _release_responses() -> tuple[str, bytes, dict[str, bytes]]:
     installer_bytes = b"verified installer payload"
     digest = hashlib.sha256(installer_bytes).hexdigest()
-    repo = "hitoshic1982/MoHan-PC-Desktop-Assistant"
+    repo = "flameblade-studio/MoHan-PC-Desktop-Assistant"
     tag = "v2.0.15"
     manifest_name = f"MoHan-Desktop-Assistant-{tag}-update.json"
     installer_name = f"MoHan-Desktop-Assistant-{tag}-Windows-x64-Setup.exe"

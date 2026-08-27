@@ -7,6 +7,8 @@ lazy import sys
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
+lazy import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -21,6 +23,7 @@ lazy from integrations.home_assistant import ALLOWED_SERVICES
 lazy from language_support import TRANSCRIPTION_PROMPT_BASES
 lazy from lip_sync import VISEME_MIN_HOLD_SECONDS
 lazy from presentation.preview_app import _TEXT
+lazy from application import runtime_bootstrap
 lazy from runtime_bootstrap import JIT_DISABLE_ENV, JIT_REEXEC_ENV
 lazy from time_utils import (
     local_aware_time,
@@ -30,6 +33,28 @@ lazy from time_utils import (
 lazy from tools.migrate_python315_imports import inventory, python_files
 
 EXPECTED_EXCEPTION_COUNT = 3
+FROZEN_EXIT_PROBE_CODE = 7
+
+
+def test_frozen_runtime_requires_jit_default_cpython(monkeypatch) -> None:
+    monkeypatch.setattr(sys, "frozen", True, raising=False)
+    monkeypatch.setattr(runtime_bootstrap, "jit_is_enabled", lambda: False)
+    with pytest.raises(RuntimeError, match="launcher-enabled JIT"):
+        runtime_bootstrap.ensure_default_jit(
+            "application.application_bootstrap",
+            "app.py",
+        )
+
+
+def test_frozen_jit_exit_skips_unsafe_interpreter_finalizers(monkeypatch) -> None:
+    exits: list[int] = []
+    monkeypatch.setattr(sys, "frozen", True, raising=False)
+    monkeypatch.setattr(runtime_bootstrap, "jit_is_enabled", lambda: True)
+    monkeypatch.setattr(runtime_bootstrap, "_process_exit", exits.append)
+    assert runtime_bootstrap.finalize_process_exit(
+        FROZEN_EXIT_PROBE_CODE
+    ) == FROZEN_EXIT_PROBE_CODE
+    assert exits == [FROZEN_EXIT_PROBE_CODE]
 
 
 def assert_immutable_mapping(value: object) -> None:

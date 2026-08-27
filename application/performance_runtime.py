@@ -221,7 +221,18 @@ class PerformanceRuntime:
             request.second_pose,
         )
         if body == previous_body and previous_body.generation != 0:
-            return None
+            # Speech articulation is a performance-only update: the authored
+            # body photograph commonly remains byte-identical while viseme,
+            # mouth-closed state and continuous face controls change.  Dropping
+            # the atomic frame here disconnects audio cues from the layered
+            # full-body renderer and leaves the mouth frozen.  Deduplicate only
+            # when both halves of the atomic frame are unchanged.
+            if (
+                self._last_good is not None
+                and performance == self._last_good.performance
+            ):
+                return None
+            body = previous_body
         return AtomicPerformanceFrame(performance, body)
 
     def _speech(

@@ -372,9 +372,11 @@ def _play_cancellable_wave_bytes(
             sample_rate // VISEME_CUES_PER_SECOND,
         )
         if source.getnframes() == 0:
-            playback.ensure_current()
-            playback.emit_viseme(0.0, "CLOSED")
-            return
+            # A syntactically valid but empty provider WAV is not successful
+            # speech.  Treat it as a playback failure so the caller can report
+            # it and select the verified local fallback instead of silently
+            # completing a text reply with no sound and no mouth motion.
+            raise playback.unsupported_error()
         device = preferred_output_device(
             playback.sounddevice,
             sample_rate=sample_rate,

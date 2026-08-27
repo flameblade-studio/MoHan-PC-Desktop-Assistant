@@ -30,8 +30,14 @@ MoHan Desktop Assistant 採用 MIT License，但其原始碼及 Release 安裝�
 | [Maturin](https://github.com/PyO3/maturin) | 1.14.1 | MIT OR Apache-2.0 | 建置並驗證 Python wheel |
 | [PyO3](https://github.com/PyO3/pyo3) | 0.29.2 | MIT OR Apache-2.0 | Rust／Python 邊界的建置期繫結 |
 | [Rayon](https://github.com/rayon-rs/rayon) | 1.12.0 | MIT OR Apache-2.0 | 編譯進第一方原生模組；RGBA 達 262,144 pixels 且執行環境有多個工作執行緒時，條件式啟用平行處理 |
+| [BiRefNet HR Matting](https://huggingface.co/ZhengPeng7/BiRefNet_HR-matting) | `5d6b6f8adcb5b417c871b1d84ceaae9871355b7f` | MIT | 僅供本機美術製作流程進行高解析度人物去背；模型權重、推論環境及快取不屬於墨寒執行期，亦不隨安裝程式散布 |
+| [InstantMesh（TencentARC 官方實作）](https://github.com/TencentARC/InstantMesh) | `08822c52fdc399b93ea00e4fa9e596344ed52ccc` | Apache-2.0 | 原始碼僅保留作授權與來源證據；完整推論管線已停用，模型權重、推論環境及快取不得進入正式 24／600 產線、墨寒執行期或安裝程式 |
 
 `native-wheels/` 與 `native-wheels-<id>/` 只保存本機或 CI 建置產物與證據，已由 Git 忽略且不列為 Release 資產。macOS／Linux 目前只在核心 CI 建置並執行等價與效能測試，不宣稱 Preview 已封裝相同原生能力。Rayon 1.12.0 的 Rust serial／Rayon 邊界測試與 Python／native 實測提供結果等價及效能證據。PyO3 `PyBackedBytes` 借用輸入，避免額外複製輸入；輸出仍建立新的 Python `bytes`，因此不宣稱端到端零複製。沒有 SIMD 實作證據，故不宣稱 SIMD。
+
+BiRefNet 使用官方 `ZhengPeng7/BiRefNet_HR-matting` 原始碼與權重，固定於上列不可變 revision；兩者均依 MIT 授權使用。完整授權文字保存在 `third_party_licenses/BiRefNet-LICENSE.txt`，本機美術工具清冊記錄於 `sbom/local-art-tooling-components.toml`。本專案未使用或再散布 BRIA／RMBG-2.0 權重。
+
+InstantMesh 的 TencentARC 官方原始碼固定於上列不可變 commit，只保留作授權與來源證據。上游在該版本提供 Apache 2.0 `LICENSE`，但沒有獨立 `NOTICE` 或具名 copyright header；本清單因此不虛構著作權人，並原樣保留完整授權文字於 `third_party_licenses/InstantMesh-LICENSE.txt`。官方論文歸屬：*InstantMesh: Efficient 3D Mesh Generation from a Single Image with Sparse-view Large Reconstruction Models*，Jiale Xu、Weihao Cheng、Yiming Gao、Xintao Wang、Shenghua Gao、Ying Shan，arXiv:2404.07191（2024）。因完整管線依賴永久禁用的 `nvdiffrast` 與未獲充分權重授權證據的 Zero123++，該管線不得再次下載、建置、載入或用於正式 24／600 產線。
 
 ### v4.0.0 本機視覺模型
 
@@ -113,8 +119,14 @@ MoHan Desktop Assistant 采用 MIT License，但其源代码及 Release 安装�
 | [Maturin](https://github.com/PyO3/maturin) | 1.14.1 | MIT OR Apache-2.0 | 构建并验证 Python wheel |
 | [PyO3](https://github.com/PyO3/pyo3) | 0.29.2 | MIT OR Apache-2.0 | Rust／Python 边界的构建期绑定 |
 | [Rayon](https://github.com/rayon-rs/rayon) | 1.12.0 | MIT OR Apache-2.0 | 编译进第一方原生模块；RGBA 达到 262,144 pixels 且运行环境有多个工作线程时，条件式启用并行处理 |
+| [BiRefNet HR Matting](https://huggingface.co/ZhengPeng7/BiRefNet_HR-matting) | `5d6b6f8adcb5b417c871b1d84ceaae9871355b7f` | MIT | 仅用于本地美术制作流程的高分辨率人物去背；模型权重、推理环境与缓存不属于墨寒运行时，也不随安装程序分发 |
+| [InstantMesh（TencentARC 官方实现）](https://github.com/TencentARC/InstantMesh) | `08822c52fdc399b93ea00e4fa9e596344ed52ccc` | Apache-2.0 | 源代码仅保留为许可与来源证据；完整推理管线已停用，模型权重、推理环境与缓存不得进入正式 24／600 产线、墨寒运行时或安装程序 |
 
 `native-wheels/` 与 `native-wheels-<id>/` 只保存本地或 CI 构建产物与证据，已被 Git 忽略且不列为 Release 资产。macOS／Linux 目前仅在核心 CI 构建并运行等价与性能测试，不声明 Preview 已打包相同原生能力。Rayon 1.12.0 的 Rust serial／Rayon 边界测试与 Python／native 实测提供结果等价和性能证据。PyO3 `PyBackedBytes` 借用输入，避免额外复制输入；输出仍创建新的 Python `bytes`，因此不声明端到端零复制。没有 SIMD 实现证据，故不声明 SIMD。
+
+BiRefNet 使用官方 `ZhengPeng7/BiRefNet_HR-matting` 源代码与权重，并固定到上列不可变 revision；两者均按 MIT 许可证使用。完整许可证文本保存在 `third_party_licenses/BiRefNet-LICENSE.txt`，本地美术工具清单记录于 `sbom/local-art-tooling-components.toml`。本项目未使用或再分发 BRIA／RMBG-2.0 权重。
+
+InstantMesh 的 TencentARC 官方源代码固定到上列不可变 commit，仅保留为许可与来源证据。上游在该版本提供 Apache 2.0 `LICENSE`，但没有独立 `NOTICE` 或具名 copyright header；本清单因此不虚构著作权人，并在 `third_party_licenses/InstantMesh-LICENSE.txt` 原样保留完整许可证文本。官方论文署名：*InstantMesh: Efficient 3D Mesh Generation from a Single Image with Sparse-view Large Reconstruction Models*，Jiale Xu、Weihao Cheng、Yiming Gao、Xintao Wang、Shenghua Gao、Ying Shan，arXiv:2404.07191（2024）。由于完整管线依赖永久禁用的 `nvdiffrast` 与缺乏充分权重许可证据的 Zero123++，该管线不得再次下载、构建、加载或用于正式 24／600 产线。
 
 ### v4.0.0 本地视觉模型
 
@@ -196,8 +208,14 @@ The following components are used only to build, check, or package MoHan; they a
 | [Maturin](https://github.com/PyO3/maturin) | 1.14.1 | MIT OR Apache-2.0 | Build and validate the Python wheel |
 | [PyO3](https://github.com/PyO3/pyo3) | 0.29.2 | MIT OR Apache-2.0 | Build-time Rust／Python bindings |
 | [Rayon](https://github.com/rayon-rs/rayon) | 1.12.0 | MIT OR Apache-2.0 | Compiled into the first-party native module; conditionally enables parallel RGBA processing at 262,144 pixels when the runtime has multiple worker threads |
+| [BiRefNet HR Matting](https://huggingface.co/ZhengPeng7/BiRefNet_HR-matting) | `5d6b6f8adcb5b417c871b1d84ceaae9871355b7f` | MIT | High-resolution human matting for the local art-production workflow only; model weights, inference environment, and cache are not MoHan runtime components and are not distributed in installers |
+| [InstantMesh (official TencentARC implementation)](https://github.com/TencentARC/InstantMesh) | `08822c52fdc399b93ea00e4fa9e596344ed52ccc` | Apache-2.0 | Source retained only as license and provenance evidence; the complete inference pipeline is disabled, and its weights, environment, and cache must not enter the formal 24/600 pipeline, MoHan runtime, or installers |
 
 `native-wheels/` and `native-wheels-<id>/` store only local or CI build outputs and evidence. Git ignores them, and they are not Release assets. macOS／Linux currently build the module and run equivalence and performance tests only in core CI; equivalent Preview packaging is not claimed. Rayon 1.12.0 Rust serial／Rayon boundary tests and Python／native measurements provide equivalence and performance evidence. PyO3 `PyBackedBytes` borrows inputs and avoids an additional input copy; outputs still allocate new Python `bytes`, so end-to-end zero-copy is not claimed. There is no SIMD implementation evidence, so SIMD is not claimed.
+
+BiRefNet uses the official `ZhengPeng7/BiRefNet_HR-matting` source and weights pinned to the immutable revision above; both are used under the MIT License. The complete license text is preserved at `third_party_licenses/BiRefNet-LICENSE.txt`, and the local art-tooling inventory is recorded in `sbom/local-art-tooling-components.toml`. This project does not use or redistribute BRIA／RMBG-2.0 weights.
+
+InstantMesh source from the official TencentARC repository is pinned to the immutable commit above and retained only as license and provenance evidence. At that revision upstream provides an Apache 2.0 `LICENSE` but no separate `NOTICE` or named copyright header; this notice therefore does not invent a copyright holder. It preserves the license verbatim at `third_party_licenses/InstantMesh-LICENSE.txt`. Official paper attribution: *InstantMesh: Efficient 3D Mesh Generation from a Single Image with Sparse-view Large Reconstruction Models* by Jiale Xu, Weihao Cheng, Yiming Gao, Xintao Wang, Shenghua Gao, and Ying Shan, arXiv:2404.07191 (2024). Because the complete pipeline depends on permanently denied `nvdiffrast` and Zero123++ weights without sufficient license evidence, it must not be downloaded, built, loaded, or used for the formal 24/600 pipeline.
 
 ### v4.0.0 local vision models
 
@@ -279,8 +297,14 @@ MoHan Desktop Assistant は MIT License で提供されますが、そのソー�
 | [Maturin](https://github.com/PyO3/maturin) | 1.14.1 | MIT OR Apache-2.0 | Python wheel のビルドと検証 |
 | [PyO3](https://github.com/PyO3/pyo3) | 0.29.2 | MIT OR Apache-2.0 | Rust／Python 境界のビルド時バインディング |
 | [Rayon](https://github.com/rayon-rs/rayon) | 1.12.0 | MIT OR Apache-2.0 | 第一者ネイティブモジュールへコンパイルされ、RGBA が 262,144 pixels 以上かつ実行環境に複数のワーカースレッドがある場合に条件付きで並列処理を有効化 |
+| [BiRefNet HR Matting](https://huggingface.co/ZhengPeng7/BiRefNet_HR-matting) | `5d6b6f8adcb5b417c871b1d84ceaae9871355b7f` | MIT | ローカルのアート制作工程における高解像度人物切り抜き専用。モデル重み、推論環境、キャッシュは墨寒のランタイム構成要素ではなく、インストーラーにも同梱しません |
+| [InstantMesh（TencentARC 公式実装）](https://github.com/TencentARC/InstantMesh) | `08822c52fdc399b93ea00e4fa9e596344ed52ccc` | Apache-2.0 | ソースはライセンスと来歴の証拠としてのみ保持します。完全な推論パイプラインは無効で、重み、推論環境、キャッシュを正式な 24／600 パイプライン、墨寒ランタイム、インストーラーへ含めません |
 
 `native-wheels/` と `native-wheels-<id>/` はローカルまたは CI のビルド生成物と証拠だけを保存します。Git の対象外であり、Release アセットにも含めません。macOS／Linux は現在、中核 CI でモジュールをビルドし、等価性および性能テストを実行するだけで、Preview の同等パッケージ対応は表明しません。Rayon 1.12.0 の Rust serial／Rayon 境界テストと Python／native 実測により、結果の等価性と性能の証拠を得ています。PyO3 `PyBackedBytes` は入力を借用して追加の入力コピーを避けますが、出力では新しい Python `bytes` を生成するため、エンドツーエンドのゼロコピーは表明しません。SIMD の実装証拠はないため、SIMD は表明しません。
+
+BiRefNet は公式の `ZhengPeng7/BiRefNet_HR-matting` ソースコードと重みを使用し、上記の不変 revision に固定しています。両方とも MIT ライセンスに基づいて使用します。完全なライセンス本文は `third_party_licenses/BiRefNet-LICENSE.txt` に保存し、ローカル美術ツールのインベントリは `sbom/local-art-tooling-components.toml` に記録しています。本プロジェクトは BRIA／RMBG-2.0 の重みを使用または再配布しません。
+
+InstantMesh の TencentARC 公式ソースは上記の不変 commit に固定し、ライセンスと来歴の証拠としてのみ保持します。この版の上流には Apache 2.0 `LICENSE` がありますが、独立した `NOTICE` または名義付き copyright header はありません。そのため本一覧では著作権者を創作せず、完全なライセンス本文を `third_party_licenses/InstantMesh-LICENSE.txt` に原文のまま保存します。公式論文の帰属：*InstantMesh: Efficient 3D Mesh Generation from a Single Image with Sparse-view Large Reconstruction Models*、Jiale Xu、Weihao Cheng、Yiming Gao、Xintao Wang、Shenghua Gao、Ying Shan、arXiv:2404.07191（2024）。完全なパイプラインは永久禁止の `nvdiffrast` と、十分な重みライセンス証拠がない Zero123++ に依存するため、正式な 24／600 パイプライン向けに再ダウンロード、ビルド、ロード、使用してはなりません。
 
 ### v4.0.0 のローカル視覚モデル
 

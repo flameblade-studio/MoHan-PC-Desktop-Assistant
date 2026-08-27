@@ -359,6 +359,45 @@ def _route_speech(context: _OfflineContext, provider_id: str) -> None:
     window._start_speech_provider(f"offline regression: {provider_id}")
 
 
+def test_application_mute_is_visible_and_does_not_bill_a_provider(
+    context: _OfflineContext,
+) -> None:
+    """A persisted app mute must not masquerade as a failed TTS engine."""
+
+    window = context.window
+    window.db.set_setting("voice_muted", True)
+    before = _speech_calls(context)
+    with patch.object(QTimer, "singleShot") as completion:
+        window.speak("這一句在墨寒靜音時只顯示文字。", "happy")
+    assert _speech_calls(context) == before
+    assert window.audio_driven_mouth is False
+    assert "已靜音" in window.dashboard.voice_phase.text()
+    completion.assert_called_once()
+
+
+def test_local_voice_failure_releases_mouth_and_speech_queue(
+    context: _OfflineContext,
+) -> None:
+    """A failed SAPI request must not strand the companion in speaking mode."""
+
+    window = context.window
+    window.db.set_setting("voice_muted", False)
+    window.db.set_setting("voice_engine", SYSTEM_LOCAL_PROVIDER)
+    window.speak("本機語音失敗釋放測試。", "happy")
+    assert window.speech_playing is True
+    assert window.active_speech_engine == SYSTEM_LOCAL_PROVIDER
+
+    with patch.object(window, "_begin_speech_motion_release"), patch.object(
+        window,
+        "_speech_audio_finished",
+        wraps=window._speech_audio_finished,
+    ) as finish:
+        context.local.failed.emit("offline local failure")
+
+    finish.assert_called_once()
+    assert "本機語音失敗" in window.dashboard.api_status.text()
+
+
 def _configure_perception_environment(
     context: _OfflineContext,
     temporary_models: Path,

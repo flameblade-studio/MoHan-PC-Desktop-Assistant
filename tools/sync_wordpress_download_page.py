@@ -13,14 +13,14 @@ lazy from urllib.request import Request, urlopen
 START_MARKER = "<!-- MOHAN_RELEASE_START -->"
 END_MARKER = "<!-- MOHAN_RELEASE_END -->"
 DEFAULT_SLUG = "mohan-desktop-assistant"
-REPOSITORY_URL = "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant"
+REPOSITORY_URL = "https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant"
 MEDIA_ROOT = (
     "https://raw.githubusercontent.com/"
-    "hitoshic1982/MoHan-PC-Desktop-Assistant/main/docs/media"
+    "flameblade-studio/MoHan-PC-Desktop-Assistant/main/docs/media"
 )
 EXPRESSION_ROOT = (
     "https://raw.githubusercontent.com/"
-    "hitoshic1982/MoHan-PC-Desktop-Assistant/main/assets/expressions"
+    "flameblade-studio/MoHan-PC-Desktop-Assistant/main/assets/expressions"
 )
 KOFI_URL = "https://ko-fi.com/flamebladestudio"
 DOWNLOAD_LABELS = {

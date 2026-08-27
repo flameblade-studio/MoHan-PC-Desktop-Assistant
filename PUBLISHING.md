@@ -161,7 +161,7 @@ Release 產物可使用下列命令驗證：
 
 ```powershell
 Get-FileHash .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip -Algorithm SHA256
-gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo hitoshic1982/MoHan-PC-Desktop-Assistant
+gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo flameblade-studio/MoHan-PC-Desktop-Assistant
 ```
 
 ### 官網同步
@@ -335,7 +335,7 @@ Release 产物可使用以下命令验证：
 
 ```powershell
 Get-FileHash .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip -Algorithm SHA256
-gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo hitoshic1982/MoHan-PC-Desktop-Assistant
+gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo flameblade-studio/MoHan-PC-Desktop-Assistant
 ```
 
 ### 官网同步
@@ -509,7 +509,7 @@ Verify Release artifacts with the following commands:
 
 ```powershell
 Get-FileHash .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip -Algorithm SHA256
-gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo hitoshic1982/MoHan-PC-Desktop-Assistant
+gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo flameblade-studio/MoHan-PC-Desktop-Assistant
 ```
 
 ### Official website synchronization
@@ -683,7 +683,7 @@ Release 成果物は次のコマンドで検証できます。
 
 ```powershell
 Get-FileHash .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip -Algorithm SHA256
-gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo hitoshic1982/MoHan-PC-Desktop-Assistant
+gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo flameblade-studio/MoHan-PC-Desktop-Assistant
 ```
 
 ### 公式サイトとの同期

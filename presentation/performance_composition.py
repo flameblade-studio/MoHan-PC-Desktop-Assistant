@@ -46,5 +46,5 @@ def create_performance_app_bridge(
         render_request,
         publish,
         seed=315,
-        minimum_render_interval_seconds=0.05,
+        minimum_render_interval_seconds=0.02,
     )

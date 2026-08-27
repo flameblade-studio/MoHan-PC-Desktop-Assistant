@@ -26,6 +26,7 @@ LAYER_NAMES = (
 MAX_LAYER_MODULE_LINES = 1_200
 MAX_ROOT_APP_LINES = 50
 NON_PRODUCT_PYTHON_DIRECTORIES = frozenset({
+    "artifacts",  # ignored local generation, training, and validation evidence
     "build-temp",  # generated packaging/build output
     "constants",  # shared, dependency-free constant library (not a product layer)
     "dist",  # generated release/package output

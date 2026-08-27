@@ -13,6 +13,12 @@ class FramingMode(IntEnum):
     FULL_BODY = 3
 
 
+# Framing modes that publish the composed v4 full-body photograph.  CLOSE and
+# HALF keep the legacy half-body poses, so the expensive full-body composition
+# must not run for them at all.
+PUBLISHABLE_BODY_MODES = frozenset({FramingMode.THREE_QUARTER, FramingMode.FULL_BODY})
+
+
 QUIET_CONCERN_THRESHOLD = 0.78
 MIN_HEIGHT_PX = 560
 MIN_WIDTH_PX = 420

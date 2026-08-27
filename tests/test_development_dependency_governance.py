@@ -7,9 +7,12 @@ lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_DEVELOPMENT_DEPENDENCIES = {
+    "pillow": "12.3.0",
     "pytest": "9.1.1",
     "ruff": "0.16.0",
 }
+# Permissive licenses cleared by the project allow-list (MIT family only here).
+ALLOWED_DEVELOPMENT_LICENSES = frozenset({"MIT", "MIT-CMU"})
 DEVELOPMENT_PROFILES = ["ci", "local"]
 
 
@@ -116,7 +119,7 @@ def test_development_requirements_and_sbom_are_exactly_synchronized() -> None:
     for name, version in requirements.items():
         component = components[name]
         assert component["version"] == version
-        assert component["license"] == "MIT"
+        assert component["license"] in ALLOWED_DEVELOPMENT_LICENSES
         assert component["scope"] == "development"
         assert component["profiles"] == DEVELOPMENT_PROFILES
 

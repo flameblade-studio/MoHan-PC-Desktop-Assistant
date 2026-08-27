@@ -302,10 +302,18 @@
           "right"
         ]
       },
-      "normalized_sha256": "0595011857dd44638280d35e254b54992056adac28a54c0cf1efc1564f094ed8",
+      "normalized_sha256": "d5583ddd3b04a56f11812fa56cea59c648572d85324831bbb351301f44d37be7",
       "source_sha256": "33d8da1e7047d05c1eb1b5049568c5c62d4f7302071fed57237a29b3d8736ebb",
       "view_id": "yaw+000-pitch+00",
-      "yaw_degrees": 0
+      "yaw_degrees": 0,
+      "authority_upgrade_2026_08_27": {
+        "source": "assets/pose-atlas/v4-working/yaw+000-pitch+00.user-approved-generated-alpha-clean-v3-20260823.png",
+        "source_sha256": "7def305ba4f745ddc979f251dee15c4853dd35f05b33ce88637e506d661353a6",
+        "previous_sha256": "0595011857dd44638280d35e254b54992056adac28a54c0cf1efc1564f094ed8",
+        "transparent_rgb_pixels_zeroed": 0,
+        "backup": "artifacts/pose-atlas-rebuild/2026-08-27/v4-authority-upgrade-backup/yaw+000-pitch+00.before-upgrade.png",
+        "basis": "explicit user approval of the 2026-08-23 refined B00 (clean-v3)"
+      }
     },
     {
       "hand_inference": {

@@ -22,6 +22,7 @@ lazy from application.background_agents import (
     ManagerWorkerScheduler,
     VisibleAppWorker,
 )
+lazy from application.multisensory_interaction import MultisensoryInteractionArbiter
 lazy from domain.app_profile import profile_setting, profile_window_title
 lazy from domain.companion_animation_contract import (
     CHARACTER_BASE_Y,
@@ -568,7 +569,14 @@ class CompanionVisualDynamicsMixin:
         self.background_scheduler = None
         if not bool(self.db.setting("background_assistant_enabled", False)):
             return
-        proactive_mode = str(self.db.setting("proactive_mode", "平衡（推薦）"))
+        proactive_mode = MultisensoryInteractionArbiter._mode_key(
+            str(
+                self.db.setting(
+                    "proactive_interaction_mode",
+                    self.db.setting("proactive_mode", "balanced"),
+                )
+            )
+        )
         watched_names = [
             name.strip()[:80]
             for name in str(
@@ -580,7 +588,7 @@ class CompanionVisualDynamicsMixin:
             if name.strip()
         ][:12]
         workers = []
-        if watched_names and not proactive_mode.startswith("安靜"):
+        if watched_names and proactive_mode != "quiet":
             workers.append(
                 VisibleAppWorker(
                     self.presentation_ports.visible_windows,
@@ -595,9 +603,9 @@ class CompanionVisualDynamicsMixin:
             return
         event_cooldown = (
             1_800.0
-            if proactive_mode.startswith("安靜")
+            if proactive_mode == "quiet"
             else 300.0
-            if proactive_mode.startswith("積極")
+            if proactive_mode == "active"
             else 900.0
         )
         self.background_scheduler = ManagerWorkerScheduler(

@@ -127,12 +127,13 @@ def _mro_identity(owner: type, count: int) -> tuple[tuple[str, str], ...]:
 
 
 def test_window_mro_is_explicit_and_stable() -> None:
-    assert _mro_identity(CompanionWindow, 8) == (
+    assert _mro_identity(CompanionWindow, 9) == (
         ("presentation.companion_window", "CompanionWindow"),
         ("presentation.companion_core", "CompanionCoreMixin"),
         ("presentation.companion_proactive", "CompanionProactiveMixin"),
         ("presentation.companion_visual_dynamics", "CompanionVisualDynamicsMixin"),
         ("presentation.companion_face_animation", "CompanionFaceAnimationMixin"),
+        ("presentation.companion_blink_runtime", "CompanionBlinkRuntimeMixin"),
         ("presentation.companion_speech_runtime", "CompanionSpeechRuntimeMixin"),
         ("presentation.companion_platform", "CompanionPlatformMixin"),
         ("PySide6.QtWidgets", "QMainWindow"),

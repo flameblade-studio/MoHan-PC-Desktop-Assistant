@@ -89,6 +89,8 @@ class Dashboard(
             scale=float(self.db.setting("flagship_ui_scale", 1.0)),
         )
         self._apply_theme_resolution(self.theme_session.last_resolution)
+        self._enforce_readable_combo_popups()
+        self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
 
     def _initialize_theme_support(self) -> None:
         self.theme_pack_service = ThemePackService(
@@ -115,6 +117,9 @@ class Dashboard(
             scale=float(self.db.setting("flagship_ui_scale", 1.0)),
         )
         if resolution.resolved_id == "builtin":
+            self._enforce_readable_combo_popups()
+            if hasattr(self, "chat"):
+                self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
             return
         theme = resolution.payload
         if not isinstance(theme, ThemePack):
@@ -129,3 +134,17 @@ class Dashboard(
                 "}"
             )
         self.setStyleSheet(stylesheet)
+        self._enforce_readable_combo_popups()
+        if hasattr(self, "chat"):
+            self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
+
+    def closeEvent(self, event) -> None:
+        """Stop dashboard-owned callbacks before its database can be closed."""
+
+        timer = getattr(self, "timer", None)
+        if timer is not None:
+            timer.stop()
+        front_raise_timer = getattr(self, "front_raise_timer", None)
+        if front_raise_timer is not None:
+            front_raise_timer.stop()
+        super().closeEvent(event)

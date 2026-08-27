@@ -22,10 +22,12 @@ concurrency:
 jobs:
   test:
     runs-on: windows-latest
-    # The complete 304-module Windows regression suite plus the verified
+    # The complete 326-module Windows regression suite plus the verified
     # Python 3.15/Qt/Rust setup can legitimately exceed 30 minutes on a
-    # hosted runner. Keep the full gate and give it enough time to finish.
-    timeout-minutes: 60
+    # hosted runner; per-test retries in run_all.py add up to 20 minutes per
+    # flaky module on a slow shared VM. Keep the full gate and give it enough
+    # time to finish instead of losing the whole run to the job ceiling.
+    timeout-minutes: 90
 
     steps:
       - name: Check out source
@@ -203,9 +205,9 @@ jobs:
             -Python $env:MOHAN_JIT_PYTHON `
             -NativeEvidenceDir (Join-Path $env:RUNNER_TEMP "mohan-native-ci") `
             -PreviousVersion "3.1.2" `
-            -PreviousExeUrl "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases/download/v3.1.2/MoHan-Desktop-Assistant-v3.1.2-Windows-x64-Setup.exe" `
+            -PreviousExeUrl "https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/download/v3.1.2/MoHan-Desktop-Assistant-v3.1.2-Windows-x64-Setup.exe" `
             -PreviousExeSha256 "1a3cf537faab72ca9508a8440a4c3bd2115b6af927f260217f272cfb39631c8e" `
-            -PreviousMsiUrl "https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/releases/download/v3.1.2/MoHan-Desktop-Assistant-v3.1.2-Windows-x64.msi" `
+            -PreviousMsiUrl "https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/download/v3.1.2/MoHan-Desktop-Assistant-v3.1.2-Windows-x64.msi" `
             -PreviousMsiSha256 "1f0118f2c88497e1e88b62668e968a4d82dc0f64ac5971739d4f895e3fc619a9"
 
       - name: Set up isolated Python 3.14 SBOM tooling runtime

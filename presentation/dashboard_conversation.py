@@ -245,7 +245,7 @@ class DashboardConversationMixin:
         self.voice_phase.setStyleSheet("color: #356d88; padding-left: 4px;")
         layout.addWidget(self.voice_phase)
         self._connect_chat_controls(send)
-        self.apply_chat_zoom(self.chat_zoom_percent)
+        self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
         return tab
 
 
@@ -283,6 +283,10 @@ class DashboardConversationMixin:
             )
         )
         self.load_older_chat_btn.setEnabled(shown < total)
+        # QTextDocument.clear()/append() may restore the document's default
+        # font.  Reapply the persisted zoom after the initial/history reload so
+        # the displayed text agrees with the already-correct percentage label.
+        self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
 
 
     def load_older_chat(self) -> None:
@@ -305,7 +309,7 @@ class DashboardConversationMixin:
         self.apply_chat_zoom(self.chat_zoom_percent + (steps * 10))
 
 
-    def apply_chat_zoom(self, percent: int) -> None:
+    def apply_chat_zoom(self, percent: int, *, persist: bool = True) -> None:
         self.chat_zoom_percent = max(60, min(200, int(percent)))
         font = QFont(self.chat.font())
         font.setPointSizeF(
@@ -316,7 +320,8 @@ class DashboardConversationMixin:
         self.chat_zoom_label.setText(f"{self.chat_zoom_percent}%")
         self.chat_zoom_down.setEnabled(self.chat_zoom_percent > MIN_CHAT_ZOOM_PERCENT)
         self.chat_zoom_up.setEnabled(self.chat_zoom_percent < MAX_CHAT_ZOOM_PERCENT)
-        self.db.set_setting("chat_zoom_percent", self.chat_zoom_percent)
+        if persist:
+            self.db.set_setting("chat_zoom_percent", self.chat_zoom_percent)
 
 
     def send_chat(self) -> None:
@@ -382,7 +387,10 @@ class DashboardConversationMixin:
                 assistant=self.assistant_name,
             )
         )
-        history = [{"role": row["role"], "content": row["content"]} for row in self.db.recent_chat()]
+        history = [
+            {"role": row["role"], "content": row["content"]}
+            for row in self.db.recent_chat_context()
+        ]
         worker = self.ai_worker_factory(
             AIWorkerRequest(
                 user_text=text,

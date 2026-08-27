@@ -22,6 +22,7 @@ lazy from domain.companion_animation_contract import (
     SPEAKING_BLINK_PREFIXES,
 )
 lazy from domain.expression_system import FaceAnchorProfile
+lazy from domain.face_rig import EyeState, eye_state_for_blink
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = ("CompanionFaceAssetMethods",)
@@ -31,6 +32,21 @@ MIN_OPAQUE_ALPHA = 180
 
 
 class CompanionFaceAssetMethods:
+    def _render_masked_blink_frame(self, opacity: float) -> QPixmap:
+        """Stamp exactly one eyelid authority inside its identity mask."""
+
+        frame = self._render_half_body_frame()
+        if eye_state_for_blink(opacity) is EyeState.REST:
+            return frame
+        expression = self.current_expression
+        if self.state == "speaking":
+            expression = (
+                self.speech_gesture_expression
+                or getattr(self, "speech_current_expression", None)
+                or expression
+            )
+        return self._blink_composite(frame, str(expression), opacity)
+
     def _idle_expression(self) -> str:
         if self.idle_pose == "lean":
             return "idle_lean"
@@ -737,6 +753,9 @@ class CompanionFaceAssetMethods:
         base_expression: str,
         opacity: float = 1.0,
     ) -> QPixmap:
+        eye_state = eye_state_for_blink(opacity)
+        if eye_state is EyeState.REST:
+            return QPixmap(base_pixmap)
         # Emotional portraits are complete, identity-locked illustrations.
         # A neutral eye patch changes their eyelids, brows and face contour,
         # so they stay intact until a dedicated matching blink asset exists.
@@ -755,6 +774,34 @@ class CompanionFaceAssetMethods:
         suffix = self._pose_suffix(pose)
         offset_x, offset_y = self._expression_eye_offset(base_expression)
         dedicated_blink = EXPRESSION_BLINK_FRAMES.get(base_expression)
+        if eye_state is EyeState.HALF:
+            # A semantic HALF state is not permission to blend REST and CLOSED
+            # authority portraits. Use a dedicated registered half-eye source
+            # when one is authored. If it is absent, keep the REST authority
+            # untouched: the visual acceptance contract forbids substituting
+            # CLOSED for a partial value, which reads as a premature blink.
+            half_key = (
+                f"{dedicated_blink}_half"
+                if dedicated_blink is not None
+                else f"blink_half{suffix}"
+            )
+            half_source = self.expression_pixmaps.get(half_key)
+            if half_source is None or half_source.isNull():
+                return QPixmap(base_pixmap)
+            if half_source is not None and not half_source.isNull():
+                eye_mask = self.blink_masks[pose]
+                if offset_x or offset_y:
+                    eye_mask = self._translated_pixmap(
+                        eye_mask,
+                        offset_x,
+                        offset_y,
+                    )
+                half_patch = self._masked_region(half_source, eye_mask)
+                return self.face_renderer.render_overlay(
+                    base_pixmap,
+                    half_patch,
+                    opacity=1.0,
+                )
         if dedicated_blink is not None:
             blink_source = self.expression_pixmaps[dedicated_blink]
             eye_mask = self.blink_masks[pose]
@@ -782,7 +829,8 @@ class CompanionFaceAssetMethods:
         return self.face_renderer.render_overlay(
             base_pixmap,
             blink_patch,
-            opacity=opacity,
+            # Never alpha-crossfade two eye authorities.
+            opacity=1.0,
         )
 
     def _wink_composite(
@@ -792,6 +840,8 @@ class CompanionFaceAssetMethods:
         opacity: float = 1.0,
     ) -> QPixmap:
         """Close one eye without replacing the surrounding expression."""
+        if eye_state_for_blink(opacity) is EyeState.REST:
+            return QPixmap(base_pixmap)
         pose = self.physics_expression_poses.get(
             base_expression,
             getattr(self, "active_physics_pose", "front"),
@@ -810,7 +860,7 @@ class CompanionFaceAssetMethods:
         return self.face_renderer.render_overlay(
             base_pixmap,
             patch,
-            opacity=opacity,
+            opacity=1.0,
         )
 
     def _masked_eye_patch(self, source: QPixmap, pose: str) -> QPixmap:

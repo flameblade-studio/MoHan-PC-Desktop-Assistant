@@ -28,7 +28,7 @@ VIEW_RING_COUNT = 24
 class PoseAtlasAssets:
     """Load locally audited authored views without pretending they are split layers."""
 
-    def __init__(self, root: Path, *, image_size: int) -> None:
+    def __init__(self, root: Path, *, image_size: int, outfit_overlay=None) -> None:
         if image_size <= 0:
             raise ValueError("PoseAtlas image size must be positive.")
         self._root = Path(root)
@@ -37,7 +37,7 @@ class PoseAtlasAssets:
         # The parametric 24-view × 25-layer renderer is the sole full-body
         # rendering path.  The legacy static photograph + procedural mouth have
         # been removed entirely.
-        self._layered_renderer = LayeredFullBodyRenderer()
+        self._layered_renderer = LayeredFullBodyRenderer(outfit_overlay=outfit_overlay)
 
     @property
     def generation(self) -> int:

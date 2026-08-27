@@ -155,7 +155,10 @@ class StudioDBMemoryMethods:
         self._memory_index.clear()
 
     def memory_context(self, limit: int = 24, query: str = "") -> str:
-        pool = self.list_memories(5000)
+        # Retrieval must remain bounded even when the local archive is large.
+        # This limits transient vectors and prompt assembly without deleting
+        # any user-owned memory.
+        pool = self.list_memories(MAX_MEMORIES)
         if query.strip():
             row_by_id = {int(row["id"]): row for row in pool}
             rows = [
@@ -384,9 +387,35 @@ class StudioDBMemoryMethods:
             [int(row["id"]) for row in eligible[:excess]],
             "capacity-pruning",
         )
+        # A profile made entirely of recent/manual/high-importance memories has
+        # no rows eligible for the conservative age policy above.  Letting that
+        # case grow without bound eventually surfaces as a misleading
+        # "memory full" failure.  Preserve the oldest, least-important excess
+        # in the recoverable archive rather than deleting it or rejecting the
+        # newly saved memory.
+        active_rows = self.list_memories(10000)
+        fallback_excess = (
+            max(0, len(active_rows) - target_active)
+            if len(active_rows) > max_active
+            else 0
+        )
+        fallback_candidates = sorted(
+            active_rows,
+            key=lambda row: (
+                int(row["importance"]),
+                str(row["last_used_at"] or row["updated_at"] or row["created_at"]),
+                int(row["id"]),
+            ),
+        )
+        capacity_fallback = self._archive_memory_ids(
+            [int(row["id"]) for row in fallback_candidates[:fallback_excess]],
+            "capacity-overflow",
+        )
+        pruned += capacity_fallback
         return {
             "deduplicated": deduplicated,
             "pruned": pruned,
+            "capacity_fallback": capacity_fallback,
             "active": len(self.list_memories(10000)),
             "archived": len(self.list_archived_memories(10000)),
         }

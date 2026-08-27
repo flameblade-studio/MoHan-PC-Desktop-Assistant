@@ -43,7 +43,7 @@ Release 工作流程會將每個 GitHub Action 固定至完整 commit SHA。Linu
 
 ### 回報安全漏洞
 
-請勿將尚未修補的漏洞建立為公開 Issue。請使用 GitHub 的[私人漏洞通報管道](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/security/advisories/new)，並提供：
+請勿將尚未修補的漏洞建立為公開 Issue。請使用 GitHub 的[私人漏洞通報管道](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)，並提供：
 
 - 受影響版本及 Windows 版本；
 - 最小可重現步驟；
@@ -100,7 +100,7 @@ Release 工作流程会将每个 GitHub Action 固定至完整 commit SHA。Linu
 
 ### 报告安全漏洞
 
-不得将尚未修补的漏洞创建为公开 Issue。请使用 GitHub 的[私人漏洞报告渠道](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/security/advisories/new)，并提供：
+不得将尚未修补的漏洞创建为公开 Issue。请使用 GitHub 的[私人漏洞报告渠道](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)，并提供：
 
 - 受影响版本及 Windows 版本；
 - 最小可复现步骤；
@@ -157,7 +157,7 @@ Locks, alarms, heaters, and climate equipment remain high risk regardless of mod
 
 ### Reporting a vulnerability
 
-Do not open a public Issue for an unpatched vulnerability. Use GitHub's [private vulnerability reporting channel](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/security/advisories/new) and include:
+Do not open a public Issue for an unpatched vulnerability. Use GitHub's [private vulnerability reporting channel](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new) and include:
 
 - the affected version and Windows version;
 - the smallest reproducible sequence;
@@ -214,7 +214,7 @@ Release ワークフローでは、すべての GitHub Action を完全な commi
 
 ### 脆弱性の報告
 
-未修正の脆弱性について公開 Issue を作成しないでください。GitHub の[非公開脆弱性報告窓口](https://github.com/hitoshic1982/MoHan-PC-Desktop-Assistant/security/advisories/new)を使用し、次の情報を提供してください。
+未修正の脆弱性について公開 Issue を作成しないでください。GitHub の[非公開脆弱性報告窓口](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)を使用し、次の情報を提供してください。
 
 - 影響を受けるバージョンと Windows のバージョン。
 - 最小限の再現手順。

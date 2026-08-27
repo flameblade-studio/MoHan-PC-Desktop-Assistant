@@ -835,6 +835,26 @@ FaceRendererFactory = Callable[[], FaceRendererPort]
 VisibleWindowsProvider = Callable[[], list[dict[str, Any]]]
 
 
+class OutfitOverlayPort(Protocol):
+    """Apply the currently selected, validated appearance to one authored view."""
+
+    def apply(self, frame: Any, view_id: str) -> Any: ...
+
+
+class _NoOutfitOverlay:
+    @staticmethod
+    def apply(frame: Any, view_id: str) -> Any:
+        del view_id
+        return frame
+
+
+OutfitOverlayFactory = Callable[[], OutfitOverlayPort]
+
+
+def no_outfit_overlay_factory() -> OutfitOverlayPort:
+    return _NoOutfitOverlay()
+
+
 @dataclass(frozen=True, slots=True)
 class PresentationPorts:
     """Outer adapters required by presentation, supplied at composition."""
@@ -851,6 +871,7 @@ class PresentationPorts:
     realtime_output_config_factory: RealtimeSpeechOutputConfigFactory = (
         create_realtime_output_config
     )
+    outfit_overlay_factory: OutfitOverlayFactory = no_outfit_overlay_factory
 
 
 _PORTABLE_SECRET_IDS = frozenset(

@@ -13,6 +13,8 @@ lazy from domain.face_rig import (
     FaceMotionFrame,
     MouthShape,
     Viseme,
+    blink_for_eye_state,
+    eye_state_for_blink,
     parse_pose,
     parse_viseme,
 )
@@ -24,7 +26,7 @@ VISEME_MOUTH_TARGETS = frozendict(
         Viseme.CONSONANT: MouthShape(0.12, 0.55, 0.04, 0.08),
         Viseme.A: MouthShape(0.92, 0.78, 0.08, 1.0),
         Viseme.I: MouthShape(0.42, 1.0, 0.0, 0.45),
-        Viseme.U: MouthShape(0.46, 0.38, 1.0, 0.52),
+        Viseme.U: MouthShape(0.46, 0.38, 1.0, 0.52, u_inward=1.0),
         Viseme.E: MouthShape(0.50, 0.88, 0.05, 0.50),
         Viseme.O: MouthShape(0.78, 0.48, 0.90, 0.92),
     }
@@ -124,6 +126,11 @@ class FaceMotionController:
                 aperture_response,
             ),
             corner_smile=0.0,
+            u_inward=_approach(
+                previous.mouth.u_inward,
+                target.u_inward,
+                self.shape_response,
+            ),
         ).clamped()
         expression_shape = replace(
             _expression_target(expression),
@@ -199,6 +206,7 @@ def shyness_mouth(shyness_level: float) -> MouthShape:
         rounding=0.0,
         jaw=0.0,
         corner_smile=level * SHYNESS_LIP_WEIGHT,
+        u_inward=0.0,
     )
 
 
@@ -239,6 +247,7 @@ def blend_shyness(
             shy_mouth.corner_smile,
             level,
         ),
+        u_inward=existing_mouth.u_inward,
     )
     return replace(
         frame,
@@ -265,7 +274,10 @@ def interpolate_frame(
     call this with ``t`` in ``[0, 1]`` to produce a sub-frame blend so every
     deformation lands precisely within the 20 ms window. Pose, expression and
     viseme are taken from ``end`` (they are discrete labels, not continuous
-    controls); the continuous mouth and expression shapes are lerped.
+    controls); the continuous mouth and expression shapes are lerped. Blink is
+    the deliberate exception: it selects a complete authority state only at
+    the next 20 ms frame boundary, preventing open and closed eyes from being
+    visible in the same alpha-blended frame.
     """
 
     mouth = MouthShape(
@@ -274,9 +286,16 @@ def interpolate_frame(
         rounding=_lerp(start.mouth.rounding, end.mouth.rounding, t),
         jaw=_lerp(start.mouth.jaw, end.mouth.jaw, t),
         corner_smile=_lerp(start.mouth.corner_smile, end.mouth.corner_smile, t),
+        u_inward=_lerp(start.mouth.u_inward, end.mouth.u_inward, t),
+    )
+    bounded_t = max(0.0, min(1.0, float(t)))
+    blink_source = (
+        start.expression_shape.blink
+        if bounded_t < 1.0
+        else end.expression_shape.blink
     )
     expression_shape = ExpressionShape(
-        blink=_lerp(start.expression_shape.blink, end.expression_shape.blink, t),
+        blink=blink_for_eye_state(eye_state_for_blink(blink_source)),
         eye_smile=_lerp(
             start.expression_shape.eye_smile,
             end.expression_shape.eye_smile,

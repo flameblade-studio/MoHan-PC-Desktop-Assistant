@@ -116,10 +116,10 @@ class FramingPort:
         self.fail = False
         self.command = AtomicFramingCommand(
             1,
-            FramingMode.HALF,
-            FRAMING_RECTS[FramingMode.HALF],
+            FramingMode.THREE_QUARTER,
+            FRAMING_RECTS[FramingMode.THREE_QUARTER],
             480,
-            (FramingAuditEntry("test", "half"),),
+            (FramingAuditEntry("test", "three-quarter"),),
         )
 
     @property
@@ -205,6 +205,31 @@ def request(
     )
 
 
+def assert_half_framing_skips_full_body_composition() -> None:
+    """CLOSE/HALF framing must not render the full body at all.
+
+    The composed photograph is only published for THREE_QUARTER/FULL_BODY
+    framing, so producing it for half framing would burn a full render,
+    format conversion, and hash per speech event just to discard the frame.
+    """
+    engine, framing, full_body = runtime()
+    framing.command = AtomicFramingCommand(
+        1,
+        FramingMode.HALF,
+        FRAMING_RECTS[FramingMode.HALF],
+        480,
+        (FramingAuditEntry("test", "half"),),
+    )
+    operation = engine.begin_operation()
+    result = engine.dispatch(request(operation))
+    assert result.disposition is AdaptiveCharacterDisposition.HALF_FRAMING
+    assert not result.should_publish
+    assert result.used_legacy
+    assert result.framing is framing.command
+    assert framing.calls == 1
+    assert full_body.calls == 0
+
+
 def assert_atomic_publish_uses_both_ports_once() -> None:
     engine, framing, full_body = runtime()
     operation = engine.begin_operation()
@@ -288,6 +313,13 @@ def assert_50hz_speech_keeps_static_full_body_and_framing_stable() -> None:
 
 def assert_speech_hold_and_settle_do_not_jump_body_height() -> None:
     engine, framing, _full_body = runtime()
+    framing.command = AtomicFramingCommand(
+        1,
+        FramingMode.HALF,
+        FRAMING_RECTS[FramingMode.HALF],
+        480,
+        (FramingAuditEntry("test", "speech-hold-half"),),
+    )
     operation = engine.begin_operation()
     held = engine.dispatch(
         request(
@@ -323,6 +355,7 @@ def assert_speech_hold_and_settle_do_not_jump_body_height() -> None:
 
 def run() -> None:
     assert_atomic_publish_uses_both_ports_once()
+    assert_half_framing_skips_full_body_composition()
     assert_generation_stale_cancel_and_dedupe_are_barriers()
     assert_disabled_or_missing_assets_is_complete_legacy_bypass()
     assert_failure_preserves_last_known_good()

@@ -35,7 +35,7 @@ VERSION_PREFIX, CANDIDATE_NUMBER = VERSION.rsplit(".", maxsplit=1)
 NEXT_VERSION = f"{VERSION_PREFIX}.{int(CANDIDATE_NUMBER) + 1}"
 TAG = f"v{VERSION}"
 PREFIX = f"MoHan-Desktop-Assistant-{TAG}"
-REPOSITORY = "hitoshic1982/MoHan-PC-Desktop-Assistant"
+REPOSITORY = "flameblade-studio/MoHan-PC-Desktop-Assistant"
 
 
 def read(relative: str) -> str:
@@ -84,8 +84,12 @@ def test_version_runtime_and_evidence_policy() -> None:
         (
             "True:True",
             "JIT enabled by default",
+            "jit_supported = $true",
             "jit_default = $true",
             "Python 3.15.0rc1",
+            "import azure.cognitiveservices.speech, cryptography, cv2, numpy, opencc, sounddevice, websocket",
+            "import PySide6.QtCore, PySide6.QtGui, PySide6.QtMultimedia, PySide6.QtWidgets",
+            "packaging dependencies are incomplete",
             "platform.python_version()",
             "python = $PythonVersion",
             '--add-data "LICENSE;."',
@@ -93,13 +97,29 @@ def test_version_runtime_and_evidence_policy() -> None:
             "tools/build_native_acceleration.py",
             "--install",
             '--hidden-import "_mohan_accel"',
+            '--hidden-import "PySide6.QtCore"',
+            '--hidden-import "PySide6.QtGui"',
+            '--hidden-import "PySide6.QtMultimedia"',
+            '--hidden-import "PySide6.QtWidgets"',
+            '--hidden-import "azure.cognitiveservices.speech"',
+            '--hidden-import "sounddevice"',
+            '--hidden-import "websocket"',
+            '--collect-all "sounddevice"',
+            "tools.audit_speech_runtime_chain",
+            "speech runtime chain or PortAudio dependency is incomplete",
+            '--collect-all "opencc"',
+            '$env:PYTHON_JIT = "1"',
+            "tools/build_pyinstaller_jit_bootloader.py",
+            '.qt315-compat-full\\Lib\\site-packages',
+            "6.11.1+mohan.py315.",
             "tools\\jit_launcher.py",
             "Move-Item -LiteralPath $PublicExecutable",
-            "--onefile",
+            '$env:PYTHON_JIT = "0"',
         ),
     )
     launcher = read("tools/jit_launcher.py")
     assert 'environment["PYTHON_JIT"] = "1"' in launcher
+    assert "RUNTIME_SUFFIX = \"-runtime.exe\"" in launcher
     for workflow_name in ("windows-ci.yml", "release.yml"):
         workflow = read(f".github/workflows/{workflow_name}")
         assert 'python-version: "3.15.0-rc.1"' in workflow

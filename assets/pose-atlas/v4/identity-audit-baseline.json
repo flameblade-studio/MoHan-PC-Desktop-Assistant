@@ -1,0 +1,87 @@
+{
+  "schema": "mohan.pose-atlas-identity-baseline.v1",
+  "ruling": "Owner-accepted baseline, 2026-08-27. The 24 static PoseAtlas v4 views passed the owner's formal visual acceptance (24/24, approved-staging-24views; yaw+000 authority upgraded to the 2026-08-23 owner-approved master). The static identity audit was authored before that acceptance and its pre-existing findings on these exact files are therefore waived, pinned by SHA-256. Any byte change to a view voids its entry and re-exposes it to every rule.",
+  "views": {
+    "yaw+015-pitch+00": {
+      "sha256": "219a38987effac543d335f8974342c35d3a809c9d4e261da0646586ad405683e",
+      "waived_issue_codes": [
+        "mouth_green_cyan_pixels"
+      ]
+    },
+    "yaw+030-pitch+00": {
+      "sha256": "4c7a01938e80969b9991cb485415fc5e2e0c9e3af9d6dee1156d08e6f370e0a4",
+      "waived_issue_codes": [
+        "mouth_green_cyan_pixels"
+      ]
+    },
+    "yaw+045-pitch+00": {
+      "sha256": "5ed0afcb4e595523a4197cb931b95a87a46061b4f16fa9f5631ee83b4b6a1227",
+      "waived_issue_codes": [
+        "mouth_green_cyan_pixels"
+      ]
+    },
+    "yaw+060-pitch+00": {
+      "sha256": "7ece967731219d05bd97a18c3b18742c3ab0db01dfbb0e0b47f189a712639d53",
+      "waived_issue_codes": [
+        "forehead_outward_bulge",
+        "mouth_green_cyan_pixels"
+      ]
+    },
+    "yaw+075-pitch+00": {
+      "sha256": "c92de197916f2ea4e72c8818e83b141a0448e170524a61af20ffa16cfa7ac5ec",
+      "waived_issue_codes": [
+        "forehead_outward_bulge",
+        "mouth_green_cyan_pixels"
+      ]
+    },
+    "yaw+090-pitch+00": {
+      "sha256": "fd89f7be12fa1f754ddf01e26e76b58f46b1ba9cb9b861e04137831353f51d91",
+      "waived_issue_codes": [
+        "forehead_curvature_discontinuity",
+        "forehead_outward_bulge"
+      ]
+    },
+    "yaw-015-pitch+00": {
+      "sha256": "b137457f7562d1fd61e6c39d951c883cc3d661cada48bf7a69067cb50fbc86f6",
+      "waived_issue_codes": [
+        "mouth_green_cyan_pixels"
+      ]
+    },
+    "yaw-030-pitch+00": {
+      "sha256": "8da21f0e90f7d78b230458777879eabd21ef50f4d778ddfd19fb7027671c4ba5",
+      "waived_issue_codes": [
+        "mouth_green_cyan_pixels"
+      ]
+    },
+    "yaw-045-pitch+00": {
+      "sha256": "113734053266e65c32a0b8c80fa3e351990b05687cb40cf29f84ac096b8f65fb",
+      "waived_issue_codes": [
+        "adjacent_face_registration_jump",
+        "mouth_green_cyan_pixels"
+      ]
+    },
+    "yaw-060-pitch+00": {
+      "sha256": "8bc79ee3258796cdc6f69036de36a38227a7d3b0b83b065d32c49963f373d332",
+      "waived_issue_codes": [
+        "forehead_outward_bulge",
+        "mouth_green_cyan_pixels"
+      ]
+    },
+    "yaw-075-pitch+00": {
+      "sha256": "5fdfb871e9e3f1c806cd63355272c70b68a5c9d0d4a657df433f1ce7b6d8e6b6",
+      "waived_issue_codes": [
+        "forehead_outward_bulge",
+        "mouth_green_cyan_pixels"
+      ]
+    },
+    "yaw-090-pitch+00": {
+      "sha256": "53ab53dc8ed9da9fe8c003b6e0f89f6385cbfe3b78c8a956468e08b72a5a4d1f",
+      "waived_issue_codes": [
+        "forehead_curvature_discontinuity",
+        "forehead_outward_bulge",
+        "forehead_slope_discontinuity",
+        "mouth_green_cyan_pixels"
+      ]
+    }
+  }
+}

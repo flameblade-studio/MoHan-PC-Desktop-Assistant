@@ -15,6 +15,7 @@ lazy from urllib.error import URLError
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtCore import QCoreApplication
+lazy from shiboken6 import delete as delete_qt_object
 
 lazy from contracts import CloudSpeechEnginePort
 lazy from domain.service_status_localization import ServiceStatus, service_status
@@ -80,8 +81,8 @@ class _Response:
     def __exit__(self, *_args: object) -> None:
         return None
 
-    def read(self) -> bytes:
-        return self.audio
+    def read(self, limit: int = -1) -> bytes:
+        return self.audio if limit < 0 else self.audio[:limit]
 
 
 class _ExitBlockedResponse(_Response):
@@ -102,7 +103,8 @@ class _FailingBlockedResponse(_Response):
         self.read_started = threading.Event()
         self.release = threading.Event()
 
-    def read(self) -> bytes:
+    def read(self, limit: int = -1) -> bytes:
+        del limit
         self.read_started.set()
         if not self.release.wait(timeout=2.0):
             raise AssertionError("network-failure gate was not released")
@@ -307,6 +309,18 @@ def _assert_queued_obsolete_signals_are_rejected(
     assert events == []
 
 
+def _assert_deleted_receiver_rejects_late_provider_callbacks() -> None:
+    tts = OpenAITTS()
+    generation = tts._begin_generation()
+    delete_qt_object(tts)
+
+    # Closing the dashboard must not leave a provider worker crashing while it
+    # tries to publish a queued failure, completion, or mouth cue.
+    tts._emit_failed(generation, "private late failure")
+    tts._emit_finished(generation)
+    tts._emit_viseme(generation, 0.8, "A")
+
+
 def _assert_normal_speech_keeps_the_50_hz_mouth_clock(
     app: QCoreApplication,
 ) -> None:
@@ -343,6 +357,7 @@ def run() -> None:
     _assert_new_speech_invalidates_older_network_result(app)
     _assert_playback_stop_is_nonblocking_and_silent(app)
     _assert_queued_obsolete_signals_are_rejected(app)
+    _assert_deleted_receiver_rejects_late_provider_callbacks()
     _assert_normal_speech_keeps_the_50_hz_mouth_clock(app)
     print("OPENAI_TTS_CANCELLATION_OK")
 

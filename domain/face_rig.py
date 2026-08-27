@@ -20,6 +20,51 @@ class Viseme(StrEnum):
     O = "O"
 
 
+class EyeState(StrEnum):
+    """Discrete authority frames used for eyelid rendering."""
+
+    REST = "rest"
+    HALF = "half"
+    CLOSED = "closed"
+
+
+EYE_STATE_BLINK = frozendict({
+    EyeState.REST: 0.0,
+    EyeState.HALF: 0.5,
+    EyeState.CLOSED: 1.0,
+})
+EYE_CLOSED_THRESHOLD = 0.75
+VISEME_U_INWARD_LERP = 0.05
+
+
+def eye_state_for_blink(value: float) -> EyeState:
+    """Resolve a legacy continuous blink value to one semantic eye state."""
+
+    bounded = _unit(value)
+    if bounded <= 0.0:
+        return EyeState.REST
+    if bounded < EYE_CLOSED_THRESHOLD:
+        return EyeState.HALF
+    return EyeState.CLOSED
+
+
+def blink_for_eye_state(state: EyeState | str) -> float:
+    """Return the canonical wire value for a semantic eye state."""
+
+    return EYE_STATE_BLINK[EyeState(state)]
+
+
+def viseme_u_inward_scale(weight: float) -> float:
+    """Return the non-cumulative center scale for the authored U mouth.
+
+    ``weight`` is the 50 Hz transition weight stored on ``MouthShape``. The
+    source authority is always transformed from its original pixels, so
+    repeated frames can never accumulate another five-percent shrink.
+    """
+
+    return 1.0 - VISEME_U_INWARD_LERP * _unit(weight)
+
+
 @dataclass(frozen=True, slots=True)
 class MouthShape:
     """Continuous, renderer-independent articulation controls."""
@@ -29,6 +74,7 @@ class MouthShape:
     rounding: float = 0.0
     jaw: float = 0.0
     corner_smile: float = 0.0
+    u_inward: float = 0.0
 
     def clamped(self) -> MouthShape:
         return replace(
@@ -38,6 +84,7 @@ class MouthShape:
             rounding=_unit(self.rounding),
             jaw=_unit(self.jaw),
             corner_smile=_signed_unit(self.corner_smile),
+            u_inward=_unit(self.u_inward),
         )
 
 

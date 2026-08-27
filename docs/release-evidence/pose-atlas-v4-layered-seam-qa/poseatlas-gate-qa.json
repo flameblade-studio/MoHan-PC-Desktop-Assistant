@@ -1,0 +1,1256 @@
+{
+  "working": {
+    "yaw-180-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-180-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "544d7d5151d2c776ff0b35e8decf2f1c664f0b50251a3298ee82642f108c85e1",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        221,
+        84,
+        802,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-165-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-165-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "a5f5406d385541b059dbd720d26e40a8edce9ab03b5359373e773d349884bdd7",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        251,
+        84,
+        773,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-150-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-150-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "17fa37644dffe41f01cd1fab2ef6c6fa05714f49281b4bb5f950cc056a6d4fb4",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        267,
+        84,
+        757,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-135-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-135-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "b0a5b4dfc155ba8b14cbb5587721844f0e4ad92415436f33ded7b72a1ad616d2",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        272,
+        84,
+        752,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-120-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-120-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "6a791ea9997446affef16b2761acc655e0e8cab6a2e8e7a4cdef2b425fa64b4b",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        292,
+        84,
+        732,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-105-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-105-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "eab9622761efbe71a1d1b284da0ed201554c97a31b4d9d1e4ffe4ac86427f8da",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        265,
+        84,
+        759,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-090-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-090-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "53ab53dc8ed9da9fe8c003b6e0f89f6385cbfe3b78c8a956468e08b72a5a4d1f",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        329,
+        84,
+        695,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-075-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-075-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "5fdfb871e9e3f1c806cd63355272c70b68a5c9d0d4a657df433f1ce7b6d8e6b6",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        255,
+        84,
+        769,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-060-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-060-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "8bc79ee3258796cdc6f69036de36a38227a7d3b0b83b065d32c49963f373d332",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        261,
+        84,
+        763,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-045-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-045-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "113734053266e65c32a0b8c80fa3e351990b05687cb40cf29f84ac096b8f65fb",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        255,
+        84,
+        769,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-030-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-030-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "8da21f0e90f7d78b230458777879eabd21ef50f4d778ddfd19fb7027671c4ba5",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        257,
+        84,
+        766,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-015-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw-015-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "b137457f7562d1fd61e6c39d951c883cc3d661cada48bf7a69067cb50fbc86f6",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        256,
+        84,
+        767,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+000-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+000-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "0595011857dd44638280d35e254b54992056adac28a54c0cf1efc1564f094ed8",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        232,
+        84,
+        791,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+015-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+015-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "219a38987effac543d335f8974342c35d3a809c9d4e261da0646586ad405683e",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        262,
+        84,
+        761,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+030-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+030-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "4c7a01938e80969b9991cb485415fc5e2e0c9e3af9d6dee1156d08e6f370e0a4",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        261,
+        84,
+        763,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+045-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+045-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "5ed0afcb4e595523a4197cb931b95a87a46061b4f16fa9f5631ee83b4b6a1227",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        264,
+        84,
+        759,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+060-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+060-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "7ece967731219d05bd97a18c3b18742c3ab0db01dfbb0e0b47f189a712639d53",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        274,
+        84,
+        750,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+075-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+075-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "c92de197916f2ea4e72c8818e83b141a0448e170524a61af20ffa16cfa7ac5ec",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        266,
+        84,
+        757,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+090-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+090-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "fd89f7be12fa1f754ddf01e26e76b58f46b1ba9cb9b861e04137831353f51d91",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        329,
+        84,
+        694,
+        1488
+      ],
+      "green_cast_pixels_total": 1,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+105-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+105-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "d55d002959b1cd13683ebe40ef2af7b5dd812de36412d6e08eeadbe650663913",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        289,
+        84,
+        735,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+120-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+120-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "569a9bc4f763afe5622d8abd86a20d906c6bed9890e3385d88efb8e94c46cc9b",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        279,
+        84,
+        744,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+135-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+135-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "81e54c8a1bda6c352fafd336672806e4eb09a77a1174b7d0cbd31c685fe3f7a8",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        279,
+        84,
+        744,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+150-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+150-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "8f1f8cd80f834c1878bda0e8a65027591a197bbbe7332ca9d28c9dd1432fd906",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        256,
+        84,
+        767,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+165-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-working\\yaw+165-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "dc5cd47299b68622b87949a559c29e7e49746f5bc516a66b0781f44adf54e2e7",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        257,
+        84,
+        767,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    }
+  },
+  "source": {
+    "yaw-180-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-180-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "38427b08ffda065c96fbe5fde4aad6723473555a5ef8dd42630aa9f063fbe28b",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        218,
+        61,
+        802,
+        1473
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-165-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-165-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "28848d8886dfa5d76503b7594f0622ca9523ba9e1c884a9e45d6634fbe4b68ad",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        223,
+        63,
+        751,
+        1482
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-150-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-150-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "72a611b5a481ff72413abc005df1083f1061bccd7326bcd767b63b9762439dce",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        266,
+        60,
+        762,
+        1481
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-135-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-135-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "9b411fd775c8df594f74b15929b4eff93b3f68911e605e986cd86f02edaf8171",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        255,
+        62,
+        739,
+        1479
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-120-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-120-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "b3f1ef9d3eb849a207a313bef01527b123422c86cd9c3e636c046c081ba828a5",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        278,
+        63,
+        722,
+        1479
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-105-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-105-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "81f50e6de95dbfc1967e9bb6a6f48968d961c7ff033cfa5ebc4e6ee14e20e98a",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        254,
+        61,
+        756,
+        1488
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-090-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-090-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "1931d28b3458227b16d9a7e51738138a71d8412bf93ae4b0c14f0bb603f509b3",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        300,
+        65,
+        668,
+        1478
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-075-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-075-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "d0bc1c653aeffaa1778c63735184eb2703ab4c82920ae1cc5ac297c43ed92abb",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        241,
+        73,
+        756,
+        1479
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-060-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-060-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "a0808f548b324e9dbb64d7ffa3621567486652230df876a4408662536683a774",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        270,
+        75,
+        773,
+        1482
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-045-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-045-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "22cb1471d12c2cbc559bb3d1c753bf6d6abd4a7788b0c001f778574f916efe02",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        251,
+        72,
+        765,
+        1475
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-030-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-030-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "a851713d99472c5065f9f3498f16bc83b325195b1da00fac6608d30dd6339a9e",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        242,
+        72,
+        751,
+        1477
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw-015-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw-015-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "d0ddf32a39091a61fb0924fa75bb6ef5b70f99b49453727304c44b7711d7087f",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        253,
+        71,
+        765,
+        1477
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+000-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+000-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "33d8da1e7047d05c1eb1b5049568c5c62d4f7302071fed57237a29b3d8736ebb",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        234,
+        72,
+        791,
+        1472
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+015-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+015-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "b2a734aa2873e89868a0b267eb90cff81c154df5ffeea563ead496815e87f394",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        255,
+        73,
+        753,
+        1474
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+030-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+030-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "3f94d142291a614aedb375ce8f50999419a62d1f7f44552edf517f44f8d39cfe",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        261,
+        76,
+        760,
+        1471
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+045-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+045-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "0262ccd87655791ad6a14288db46b7507724c5af88ddbe1273736c2abe73a56f",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        255,
+        73,
+        748,
+        1472
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+060-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+060-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "9dad8388b05b3072fc38bb7f628ea1d85fcccfdc92838319ce5947a4bbaa32ee",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        272,
+        73,
+        747,
+        1473
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+075-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+075-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "406aca45faaa729f3940bbe25f8156891b40a44c0203deaec0b74272ada7e79b",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        257,
+        75,
+        746,
+        1472
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+090-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+090-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "3b02dd6f4ba966aaf36364a78801f72790ebb7620dad4188849a0993572e5d93",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        363,
+        78,
+        725,
+        1472
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+105-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+105-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "23496e213af0e37583b7e9541805a8e460570896aaf06dcc2f61470768d61477",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        279,
+        83,
+        723,
+        1480
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+120-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+120-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "233c070aee7a1e21c13f7fc74d11c2261d2bc205b377f0c71a62138abb18606a",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        269,
+        79,
+        733,
+        1479
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+135-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+135-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "6615b9a909f347e4107027558cd635211978d4bdf835632fbcd9064e9b253e16",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        261,
+        75,
+        726,
+        1479
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+150-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+150-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "66a3ee683a1cfa6912c98d1b6689202e6c5a23b5e9d6ce154dd1bd0b88905e25",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        239,
+        76,
+        750,
+        1479
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    },
+    "yaw+165-pitch+00": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-source\\yaw+165-pitch+00.png",
+      "mode": "RGBA",
+      "size": [
+        1024,
+        1536
+      ],
+      "sha256": "d228a6f484958f6dbd8539628e678cd4d3e472a443f9aa4e261bc2f7be686578",
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        251,
+        60,
+        767,
+        1480
+      ],
+      "green_cast_pixels_total": 0,
+      "green_cast_pixels_hand_band": 0,
+      "gate": "PASS_FILE_GATE"
+    }
+  },
+  "hash_match": {
+    "yaw-180-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw-165-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw-150-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw-135-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw-120-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw-105-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw-090-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw-075-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw-060-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw-045-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw-030-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw-015-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+000-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+015-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+030-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+045-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+060-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+075-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+090-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+105-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+120-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+135-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+150-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    },
+    "yaw+165-pitch+00": {
+      "normalized_matches_metadata": true,
+      "source_matches_metadata": true
+    }
+  }
+}

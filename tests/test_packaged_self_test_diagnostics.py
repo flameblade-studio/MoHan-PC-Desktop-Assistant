@@ -78,3 +78,31 @@ def test_diagnostics_never_include_sensitive_values(tmp_path: Path, monkeypatch)
         "PACKAGED_SELFTEST_FAILED_CHECKS="
         "voice.realtime_dependencies,assets.application_icon\n"
     )
+
+
+def test_packaged_speech_runtime_checks_are_green() -> None:
+    checks = packaged_self_test._speech_runtime_checks()
+
+    assert {check.name for check in checks} == {
+        "voice.portaudio_binary",
+        "voice.phase_speaking",
+        "voice.mouth_parameter_nonzero",
+        "voice.mouth_parameter_returns_zero",
+    }
+    assert all(check.passed for check in checks)
+
+
+def test_packaged_speech_runtime_fails_when_portaudio_is_missing(
+    monkeypatch,
+) -> None:
+    monkeypatch.setattr(
+        packaged_self_test.sounddevice,
+        "_libname",
+        "missing-portaudio.dll",
+    )
+
+    checks = packaged_self_test._speech_runtime_checks()
+
+    assert not next(
+        check.passed for check in checks if check.name == "voice.portaudio_binary"
+    )

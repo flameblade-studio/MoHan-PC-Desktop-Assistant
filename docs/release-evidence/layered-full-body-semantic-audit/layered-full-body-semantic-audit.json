@@ -1,0 +1,16 @@
+{
+  "schema": "mohan.layered-full-body-semantic-audit.v1",
+  "exit_code_contract": {
+    "0": "all semantic checks passed",
+    "1": "one or more file-level semantic checks failed",
+    "2": "audit configuration or execution failed closed"
+  },
+  "passed": true,
+  "asset_root": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered",
+  "authority_root": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4",
+  "views_checked": 24,
+  "files_checked": 600,
+  "issue_count": 0,
+  "issues_by_code": {},
+  "issues": []
+}

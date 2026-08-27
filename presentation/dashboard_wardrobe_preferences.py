@@ -5,7 +5,6 @@ from __future__ import annotations
 lazy from datetime import UTC, datetime, timedelta
 
 lazy from PySide6.QtWidgets import (
-    QAbstractSpinBox,
     QCheckBox,
     QFormLayout,
     QFrame,
@@ -50,7 +49,7 @@ class DashboardWardrobePreferencesMixin:
         self.fashion_trend_search_enabled = QCheckBox(
             self._t(
                 "wardrobe_trend_search_enabled",
-                "允許搜尋流行趨勢作為原創靈感",
+                "允許以五類情境搜尋流行趨勢作為原創靈感（可能產生費用）",
             )
         )
         self.fashion_trend_search_enabled.setChecked(
@@ -61,18 +60,31 @@ class DashboardWardrobePreferencesMixin:
         self.generated_outfit_limit.setValue(
             int(self.db.setting("generated_outfit_limit", 16))
         )
+        (
+            generated_limit_control,
+            self.generated_outfit_limit_up,
+            self.generated_outfit_limit_down,
+        ) = self._step_control(
+            self.generated_outfit_limit,
+            "generatedOutfitLimit",
+        )
         self.generated_outfit_storage_gb = QSpinBox()
         self.generated_outfit_storage_gb.setRange(1, 64)
         self.generated_outfit_storage_gb.setSuffix(" GB")
         self.generated_outfit_storage_gb.setValue(
             int(self.db.setting("generated_outfit_storage_gb", 6))
         )
+        (
+            generated_storage_control,
+            self.generated_outfit_storage_gb_up,
+            self.generated_outfit_storage_gb_down,
+        ) = self._step_control(
+            self.generated_outfit_storage_gb,
+            "generatedOutfitStorageGb",
+        )
         self.manual_wardrobe_lock_hours = QSpinBox()
         self.manual_wardrobe_lock_hours.setRange(0, 720)
         self.manual_wardrobe_lock_hours.setWrapping(True)
-        self.manual_wardrobe_lock_hours.setButtonSymbols(
-            QAbstractSpinBox.UpDownArrows
-        )
         self.manual_wardrobe_lock_hours.setSuffix(" h")
         self.manual_wardrobe_lock_hours.setSpecialValueText(
             self._t("wardrobe_manual_lock_off", "不鎖定")
@@ -83,21 +95,29 @@ class DashboardWardrobePreferencesMixin:
         self.manual_wardrobe_lock_hours.valueChanged.connect(
             self._manual_wardrobe_lock_changed
         )
+        (
+            manual_lock_control,
+            self.manual_wardrobe_lock_hours_up,
+            self.manual_wardrobe_lock_hours_down,
+        ) = self._step_control(
+            self.manual_wardrobe_lock_hours,
+            "manualWardrobeLockHours",
+        )
         preferences.addWidget(self.autonomous_wardrobe_enabled)
         preferences.addWidget(self.self_outfit_generation_enabled)
         preferences.addWidget(self.fashion_trend_search_enabled)
         limits = QFormLayout()
         limits.addRow(
             self._t("wardrobe_generated_limit", "自創服裝保留上限"),
-            self.generated_outfit_limit,
+            generated_limit_control,
         )
         limits.addRow(
             self._t("wardrobe_storage_limit", "自創服裝容量上限"),
-            self.generated_outfit_storage_gb,
+            generated_storage_control,
         )
         limits.addRow(
             self._t("wardrobe_manual_lock_hours", "手動換裝鎖定時數"),
-            self.manual_wardrobe_lock_hours,
+            manual_lock_control,
         )
         preferences.addLayout(limits)
         preferences.addStretch(1)

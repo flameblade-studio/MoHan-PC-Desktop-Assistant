@@ -17,9 +17,8 @@ lazy from dataclasses import replace
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QRect, Qt
-lazy from PySide6.QtGui import QPainter, QPixmap, QRegion, QTransform
+lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion, QTransform
 
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.face_rig import FaceMotionFrame, Viseme
 lazy from infrastructure.layered_face_assets import (
     LayeredFaceManifest,
@@ -37,6 +36,27 @@ LAYERED_FACE_ASSET_DIR = Path("assets") / "expressions" / "layered"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 30
 MAX_CACHED_NEUTRAL_POSES = 3
+MAX_CACHED_MASK_BOUNDS = 64
+SEAM_HEAL_RADIUS = 7
+FACE_AUTHORITY_FILES = frozendict({
+    "cheek": "idle.png",
+    "lean": "idle_lean.png",
+    "front": "idle_front.png",
+})
+REGISTERED_COMPOSITE_LAYERS = (
+    "body", "hair_back", "base", "jaw", "oral_cavity", "teeth_tongue",
+    "lip_lower", "lip_upper",
+    "corner_left", "corner_right", "blush_left", "blush_right", "iris_left",
+    "iris_right", "eyelid_left", "eyelid_right", "eyeliner_left",
+    "eyeliner_right", "brow_left", "brow_right", "hair_left", "hair_right",
+    "sleeve_left", "sleeve_right", "ornament",
+)
+FACE_AUTHORITY_REGION_LAYERS = (
+    "base", "jaw", "oral_cavity", "teeth_tongue", "lip_lower", "lip_upper",
+    "corner_left", "corner_right", "blush_left", "blush_right", "iris_left",
+    "iris_right", "eyelid_left", "eyelid_right", "eyeliner_left",
+    "eyeliner_right", "brow_left", "brow_right",
+)
 
 
 class LayeredParametricFaceRenderer:
@@ -49,8 +69,13 @@ class LayeredParametricFaceRenderer:
     composes from the 18 authored layers instead, keyed by ``motion.pose``.
     """
 
-    def __init__(self, manifest: LayeredFaceManifest | None = None) -> None:
+    def __init__(
+        self,
+        manifest: LayeredFaceManifest | None = None,
+        outfit_overlay=None,
+    ) -> None:
         self._manifest = manifest
+        self._outfit_overlay = outfit_overlay
         # One 25-layer pose plus a transition margin is sufficient. The former
         # unbounded cache retained every full-canvas pose layer for the entire
         # process lifetime after pose changes.
@@ -64,7 +89,13 @@ class LayeredParametricFaceRenderer:
         self._neutral_pose_cache: OrderedDict[str, QPixmap] = OrderedDict()
         self._top_pose_cache: OrderedDict[str, QPixmap] = OrderedDict()
         self._layer_center_cache: dict[str, tuple[float, float]] = {}
-        self._mask_bounds_cache: dict[int, QRect] = {}
+        # Speech masks may be regenerated as transient QPixmaps for the whole
+        # lifetime of the application, so their cache keys are not a finite
+        # authored-asset set. Retain only the recent working set.
+        self._mask_bounds_cache: OrderedDict[int, QRect] = OrderedDict()
+        self._seam_region_cache: dict[str, QRegion] = {}
+        self._face_region_cache: dict[str, QRegion] = {}
+        self._mouth_mask_cache: dict[str, QPixmap] = {}
 
     def _manifest_or_load(self) -> LayeredFaceManifest:
         """Return the injected manifest, or lazily load the authored assets."""
@@ -121,7 +152,17 @@ class LayeredParametricFaceRenderer:
                     aperture=max(0.0, min(1.0, float(aperture))),
                 ),
             )
-        composed = self.render_pose(self._pose(motion), motion)
+        # The presentation path already supplies the authored viseme frame and
+        # its pose-specific soft mouth mask.  Start from a clean 25-layer
+        # neutral composite here, then apply that one registered mouth patch
+        # exactly once below.  Deforming the neutral lip/cavity cut-outs first
+        # and painting the viseme a second time was the source of the doubled,
+        # fragmented mouth seen in packaged builds.
+        composed = self.render_pose(
+            self._pose(motion),
+            motion,
+            animate_mouth=False,
+        )
         if composed.isNull() or base.isNull():
             return composed
         result = (
@@ -145,6 +186,13 @@ class LayeredParametricFaceRenderer:
                 mouth_mask,
                 max(0.0, min(1.0, actual_aperture / 0.18)),
             )
+        if self._outfit_overlay is not None:
+            silhouette = {
+                "cheek": "cheek-rest",
+                "lean": "left-neutral",
+                "front": "front-crossed",
+            }[motion.pose.value]
+            result = self._outfit_overlay.apply(result, silhouette)
         return result
 
     def render_overlay(
@@ -174,6 +222,8 @@ class LayeredParametricFaceRenderer:
         self,
         pose: LayeredFacePose,
         motion: FaceMotionFrame,
+        *,
+        animate_mouth: bool = True,
     ) -> QPixmap:
         """Render one complete half-body frame for the given pose and motion."""
 
@@ -197,35 +247,151 @@ class LayeredParametricFaceRenderer:
         # floating skin fragment.  Keep the neutral cutout registered; the
         # lip/cavity controls below provide the visible articulation.
 
-        if motion.viseme is not Viseme.CLOSED or mouth.aperture > MOUTH_APERTURE_THRESHOLD:
-            self._paint_mouth_opening(result, pose, mouth)
-
-        self._paint_mouth_lips(result, pose, mouth)
-
-        corner = mouth.corner_smile
-        if abs(corner) >= FLOAT_COMPARISON_EPSILON:
-            self._paint_translated(result, pose.path("corner_left"), dx=-corner * 2.0, dy=-corner * 1.0)
-            self._paint_translated(result, pose.path("corner_right"), dx=corner * 2.0, dy=-corner * 1.0)
-
-        if expression.blush > 0.0:
-            self._paint_opacity(result, pose.path("blush_left"), expression.blush)
-            self._paint_opacity(result, pose.path("blush_right"), expression.blush)
-
-        if expression.blink > 0.0:
-            self._paint_opacity(result, pose.path("eyelid_left"), expression.blink)
-            self._paint_opacity(result, pose.path("eyelid_right"), expression.blink)
-            self._paint_opacity(result, pose.path("eyeliner_left"), expression.blink)
-            self._paint_opacity(result, pose.path("eyeliner_right"), expression.blink)
-
-        brow_dy = -expression.brow_lift * 3.0 + expression.brow_tension * 1.5
-        if abs(brow_dy) >= FLOAT_COMPARISON_EPSILON:
-            self._paint_translated(result, pose.path("brow_left"), dy=brow_dy)
-            self._paint_translated(result, pose.path("brow_right"), dy=brow_dy)
+        # The authored eyelid/brow/blush PNGs are registered replacement
+        # cut-outs from the authority portrait, not independent effect sprites.
+        # They are already present exactly once in ``neutral``. Painting those
+        # semi-transparent cut-outs a second time exposes their extraction
+        # boundaries as the reported forehead arc, cheek circles, eye bars and
+        # chin seam. Keep them atomic until a future asset revision supplies
+        # genuine alternate-state layers; mouth articulation below remains
+        # fully parametric and is confined to the mouth region.
+        _ = expression
 
         # Restore the authored topmost occlusion after dynamic facial layers;
         # bangs, sleeves and ornaments must stay in front of the face.
         self._paint_top_pose(result, pose)
+        # Every supplied layer is a full-canvas registered cut-out.  Heal only
+        # their extraction boundary after the final top occlusion is present;
+        # healing earlier allowed hair/sleeve/ornament seams to be painted back
+        # over the repaired face on the very next operation.
+        self._heal_registered_seams(result, pose)
+        # The first-generation face cut-outs contain broad skin-coloured
+        # interiors, not merely antialiased feature pixels.  Restore the exact
+        # authority face inside the union of those registered face layers so
+        # their rectangles/circles cannot become visible.  This is a facial
+        # identity sanitation pass only: body, hair, sleeves, ornaments and
+        # their physics remain the 25-layer composition above.
+        self._restore_authority_face(result, pose)
+        if (
+            animate_mouth
+            and (
+                motion.viseme is not Viseme.CLOSED
+                or mouth.aperture > MOUTH_APERTURE_THRESHOLD
+            )
+        ):
+            self._paint_registered_mouth(result, pose, motion)
         return result
+
+    def _restore_authority_face(
+        self,
+        target: QPixmap,
+        pose: LayeredFacePose,
+    ) -> None:
+        """Replace defective skin-filled cut-out interiors with clean identity."""
+
+        key = pose.pose.value
+        region = self._face_region_cache.get(key)
+        if region is None:
+            region = QRegion()
+            for layer_name in FACE_AUTHORITY_REGION_LAYERS:
+                source = self._cached_pixmap(pose.path(layer_name))
+                if not source.isNull():
+                    region = region.united(QRegion(source.mask()))
+            self._face_region_cache[key] = region
+        authority_name = FACE_AUTHORITY_FILES.get(key)
+        if not authority_name or region.isEmpty():
+            return
+        authority = self._cached_pixmap(
+            PROJECT_ROOT / "assets" / "expressions" / authority_name
+        )
+        if authority.isNull():
+            return
+        painter = QPainter(target)
+        painter.setClipRegion(region)
+        painter.drawPixmap(0, 0, authority)
+        painter.end()
+
+    def _paint_registered_mouth(
+        self,
+        target: QPixmap,
+        pose: LayeredFacePose,
+        motion: FaceMotionFrame,
+    ) -> None:
+        """Apply one identity-preserving authored mouth inside a soft mask.
+
+        The supplied lip/cavity PNGs are neutral registered cut-outs. Scaling
+        those cut-outs also scales their anti-aliased skin boundary, which
+        tears the face.  MoHan already has authority-aligned speech/viseme
+        portraits for all three half-body poses.  Use only the small mouth
+        region from the best matching authority while the remaining 25-layer
+        frame stays fully parametric.
+        """
+
+        key = pose.pose.value
+        suffix = "" if key == "cheek" else f"_{key}"
+        names = {
+            Viseme.A: f"speaking{suffix}",
+            Viseme.I: f"viseme_i{suffix}",
+            Viseme.U: f"viseme_round{suffix}",
+            Viseme.E: f"viseme_i{suffix}",
+            Viseme.O: f"viseme_o{suffix}",
+            Viseme.CONSONANT: f"speaking{suffix}",
+        }
+        requested = str(motion.expression).strip()
+        candidates = (
+            requested,
+            names.get(motion.viseme, f"speaking{suffix}"),
+            f"speaking{suffix}",
+        )
+        source = QPixmap()
+        for name in candidates:
+            path = PROJECT_ROOT / "assets" / "expressions" / f"{name}.png"
+            if path.is_file():
+                source = self._cached_pixmap(path)
+                if not source.isNull():
+                    break
+        if source.isNull():
+            return
+        mask = self._mouth_mask(pose)
+        opacity = max(
+            0.0,
+            min(1.0, float(motion.mouth.aperture) / 0.16),
+        )
+        self._paint_masked(target, source, mask, opacity)
+
+    def _mouth_mask(self, pose: LayeredFacePose) -> QPixmap:
+        key = pose.pose.value
+        cached = self._mouth_mask_cache.get(key)
+        if cached is not None:
+            return cached
+        region = QRegion()
+        for layer_name in (
+            "oral_cavity",
+            "teeth_tongue",
+            "lip_lower",
+            "lip_upper",
+            "corner_left",
+            "corner_right",
+        ):
+            source = self._cached_pixmap(pose.path(layer_name))
+            if not source.isNull():
+                region = region.united(QRegion(source.mask()))
+        bounds = region.boundingRect().adjusted(-12, -9, 12, 9)
+        body = self._cached_pixmap(pose.path("body"))
+        mask = QPixmap(body.size())
+        mask.fill(Qt.transparent)
+        if not bounds.isEmpty():
+            painter = QPainter(mask)
+            painter.setRenderHint(QPainter.Antialiasing)
+            painter.setPen(Qt.NoPen)
+            for inset, alpha in ((0, 46), (2, 86), (4, 150), (6, 255)):
+                rect = bounds.adjusted(inset, inset, -inset, -inset)
+                if not rect.isEmpty():
+                    painter.setBrush(QColor(255, 255, 255, alpha))
+                    painter.drawRoundedRect(rect, 10, 10)
+            painter.end()
+        self._mouth_mask_cache[key] = mask
+        return mask
 
     def _neutral_pose(self, pose: LayeredFacePose) -> QPixmap:
         """Return the cached exact 25-layer neutral composite for one pose."""
@@ -268,6 +434,58 @@ class LayeredParametricFaceRenderer:
         while len(self._neutral_pose_cache) > MAX_CACHED_NEUTRAL_POSES:
             self._neutral_pose_cache.popitem(last=False)
         return neutral
+
+    def _heal_registered_seams(
+        self,
+        target: QPixmap,
+        pose: LayeredFacePose,
+    ) -> None:
+        """Restore only extraction-edge pixels from the authority portrait.
+
+        The supplied feature PNGs are full-canvas registered cut-outs. Their
+        anti-aliased extraction edges carry slightly different premultiplied
+        skin colours, which form visible circles and the chin arc when stacked.
+        This is not a legacy portrait fallback: all 25 layers remain the frame
+        source and only a three-pixel boundary band is colour-registered to the
+        authority image before continuous controls are applied.
+        """
+
+        key = pose.pose.value
+        region = self._seam_region_cache.get(key)
+        if region is None:
+            region = QRegion()
+            offsets = tuple(
+                (dx, dy)
+                for dx in range(-SEAM_HEAL_RADIUS, SEAM_HEAL_RADIUS + 1)
+                for dy in range(-SEAM_HEAL_RADIUS, SEAM_HEAL_RADIUS + 1)
+                if abs(dx) + abs(dy) <= SEAM_HEAL_RADIUS
+            )
+            for layer_name in REGISTERED_COMPOSITE_LAYERS:
+                source = self._cached_pixmap(pose.path(layer_name))
+                if source.isNull():
+                    continue
+                source_region = QRegion(source.mask())
+                if source_region.isEmpty():
+                    continue
+                outer = QRegion(source_region)
+                inner = QRegion(source_region)
+                for dx, dy in offsets:
+                    outer = outer.united(source_region.translated(dx, dy))
+                    inner = inner.intersected(source_region.translated(dx, dy))
+                region = region.united(outer.subtracted(inner))
+            self._seam_region_cache[key] = region
+        authority_name = FACE_AUTHORITY_FILES.get(key)
+        if not authority_name or region.isEmpty():
+            return
+        authority = self._cached_pixmap(
+            PROJECT_ROOT / "assets" / "expressions" / authority_name
+        )
+        if authority.isNull():
+            return
+        painter = QPainter(target)
+        painter.setClipRegion(region)
+        painter.drawPixmap(0, 0, authority)
+        painter.end()
 
     def _paint_top_pose(self, target: QPixmap, pose: LayeredFacePose) -> None:
         """Paint one cached transparent top-layer composite in canonical order."""
@@ -332,6 +550,11 @@ class LayeredParametricFaceRenderer:
         if bounds is None:
             bounds = QRegion(mask.mask()).boundingRect()
             self._mask_bounds_cache[mask_key] = bounds
+            self._mask_bounds_cache.move_to_end(mask_key)
+            while len(self._mask_bounds_cache) > MAX_CACHED_MASK_BOUNDS:
+                self._mask_bounds_cache.popitem(last=False)
+        else:
+            self._mask_bounds_cache.move_to_end(mask_key)
         if bounds.isEmpty():
             return
         # The speech mask occupies only a small mouth rectangle. Allocating and

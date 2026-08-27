@@ -6,7 +6,11 @@ lazy from typing import Protocol
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QPainter, QPixmap, QTransform
 
-lazy from domain.face_rig import FaceMotionFrame, MouthShape, Viseme
+lazy from domain.face_rig import (
+    FaceMotionFrame,
+    MouthShape,
+    Viseme,
+)
 
 MOUTH_APERTURE_THRESHOLD = 0.01
 

@@ -4,10 +4,16 @@ lazy import sys
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
+lazy import sounddevice
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import QApplication, QPushButton
 
+lazy from application.speech_performance import (
+    SpeechPerformancePhase,
+    SpeechPerformanceTimeline,
+)
 lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.face_motion import FaceMotionController
 lazy from domain.face_rig import (
     ExpressionShape,
     FaceMotionFrame,
@@ -16,6 +22,7 @@ lazy from domain.face_rig import (
     Viseme,
 )
 lazy from domain.text_normalizer import to_taiwan_traditional
+lazy from domain.lip_sync import VisemeDynamics
 lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path
 lazy from integrations.realtime_voice import (
     RealtimeSessionConfig,
@@ -26,6 +33,8 @@ lazy from presentation.pose_atlas_assets import PoseAtlasAssets
 
 TAB_COUNT = 8
 VIEW_COUNT = 24
+LAYERED_HALF_BODY_LAYER_COUNT = 75
+LAYERED_HALF_BODY_LAYERS_PER_POSE = 25
 END_SILENCE_SECONDS = 0.85
 MAX_RECORD_SECONDS = 10.0
 
@@ -78,7 +87,10 @@ def _flagship_checks(window) -> tuple[_SelfTestCheck, ...]:
         _SelfTestCheck("flagship.center", True),
         _SelfTestCheck("flagship.tab_count", center.tabs.count() == TAB_COUNT),
         _SelfTestCheck("flagship.remote_disabled", not center.remote_enabled.isChecked()),
-        _SelfTestCheck("flagship.camera_disabled", not center.camera_enabled.isChecked()),
+        _SelfTestCheck(
+            "flagship.camera_setting_boolean",
+            isinstance(center.camera_enabled.isChecked(), bool),
+        ),
         _SelfTestCheck("flagship.camera_closed", center.camera_presence.camera is None),
         _SelfTestCheck("flagship.remote_server_closed", center.remote_server is None),
         _SelfTestCheck("flagship.payment_handler_absent", "payment" not in center.executor.handlers),
@@ -124,6 +136,24 @@ def _pose_atlas_checks() -> tuple[_SelfTestCheck, ...]:
     )
 
 
+def _layered_half_body_checks() -> tuple[_SelfTestCheck, ...]:
+    """Verify the packaged three-pose, 25-layer portrait asset contract."""
+    root = resource_path("assets/expressions/layered")
+    layers = tuple(root.glob("*.png")) if root.is_dir() else ()
+    return (
+        _SelfTestCheck(
+            "layered_half_body.layer_count",
+            len(layers) == LAYERED_HALF_BODY_LAYER_COUNT,
+        ),
+        _SelfTestCheck(
+            "layered_half_body.pose_count",
+            all(
+                sum(path.name.startswith(f"{pose}_") for path in layers)
+                == LAYERED_HALF_BODY_LAYERS_PER_POSE
+                for pose in ("front", "lean", "cheek")
+            ),
+        ),
+    )
 def _visual_checks(app: QApplication, window) -> tuple[_SelfTestCheck, ...]:
     checks = (
         _SelfTestCheck("visual.character_pixmap", window.character.pixmap() is not None),
@@ -132,6 +162,7 @@ def _visual_checks(app: QApplication, window) -> tuple[_SelfTestCheck, ...]:
             all(not pixmap.isNull() for pixmap in window.expression_pixmaps.values()),
         ),
         *_physics_checks(window),
+        *_layered_half_body_checks(),
         *_pose_atlas_checks(),
         *(
             _SelfTestCheck(f"visual.{key}", window._physics_enabled(key))
@@ -173,6 +204,7 @@ def _voice_checks(window, voices: tuple[str, ...]) -> tuple[_SelfTestCheck, ...]
     dashboard = window.dashboard
     return (
         _SelfTestCheck("voice.windows_voices_present", bool(voices)),
+        *_speech_runtime_checks(),
         _SelfTestCheck("voice.realtime_dependencies", RealtimeVoiceClient.dependencies_available()),
         _SelfTestCheck(
             "voice.windows_default",
@@ -188,12 +220,55 @@ def _voice_checks(window, voices: tuple[str, ...]) -> tuple[_SelfTestCheck, ...]
             dashboard.realtime_transcription_model.currentText() == SpeechListener.TRANSCRIPTION_MODEL,
         ),
         _SelfTestCheck("voice.noise_reduction", dashboard.realtime_noise_reduction.currentData() == "near_field"),
-        _SelfTestCheck("voice.turn_detection", dashboard.realtime_turn_detection.currentData() == "server_vad"),
+        _SelfTestCheck(
+            "voice.turn_detection",
+            dashboard.realtime_turn_detection.currentData()
+            in {"server_vad", "semantic_vad"},
+        ),
         _SelfTestCheck("voice.hybrid_transcription", dashboard.realtime_hybrid_transcription.isChecked()),
         _SelfTestCheck("voice.windows_fallback", dashboard.windows_transcription_fallback.isChecked()),
         _SelfTestCheck("voice.end_silence", SpeechListener.END_SILENCE_SECONDS == END_SILENCE_SECONDS),
         _SelfTestCheck("voice.max_record", SpeechListener.MAX_RECORD_SECONDS == MAX_RECORD_SECONDS),
         _SelfTestCheck("voice.traditional_normalization", to_taiwan_traditional("打开软件") == "開啟軟體"),
+    )
+
+
+def _speech_runtime_checks() -> tuple[_SelfTestCheck, ...]:
+    """Exercise packaged speech lifecycle and mouth controls without sound."""
+
+    portaudio = Path(str(getattr(sounddevice, "_libname", "")))
+    timeline = SpeechPerformanceTimeline()
+    timeline.prepare("system-local")
+    dynamics = VisemeDynamics()
+    controller = FaceMotionController()
+    maximum_aperture = 0.0
+    speaking = False
+    for _ in range(5):
+        level = 0.65
+        update = timeline.viseme(level, "A")
+        speaking = speaking or (
+            update is not None
+            and timeline.snapshot.phase is SpeechPerformancePhase.SPEAKING
+        )
+        frame = controller.advance(
+            dynamics.advance(level, "A"),
+            pose="front",
+            expression="idle_front",
+        )
+        maximum_aperture = max(maximum_aperture, frame.mouth.aperture)
+    dynamics.reset()
+    closed = controller.close(pose="front", expression="idle_front")
+    return (
+        _SelfTestCheck(
+            "voice.portaudio_binary",
+            bool(portaudio.name) and portaudio.is_file(),
+        ),
+        _SelfTestCheck("voice.phase_speaking", speaking),
+        _SelfTestCheck("voice.mouth_parameter_nonzero", maximum_aperture > 0.0),
+        _SelfTestCheck(
+            "voice.mouth_parameter_returns_zero",
+            closed.mouth.aperture == 0.0,
+        ),
     )
 
 

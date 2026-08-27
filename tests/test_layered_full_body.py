@@ -9,6 +9,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+lazy from PySide6.QtCore import QPoint
 lazy from PySide6.QtWidgets import QApplication
 lazy from PySide6.QtGui import QPixmap, QRegion
 
@@ -36,6 +37,17 @@ IDENTITY_SAMPLE_STEP = 6
 MAX_MEAN_CHANNEL_ERROR = 2.0
 MAX_TRANSPARENT_SAMPLE_RATIO = 0.015
 MIN_SPEAKING_MOUTH_CHANGED_PIXELS = 20
+VISIBLE_SPEECH_MOUTH_VIEWS = {
+    "yaw-060-pitch+00",
+    "yaw-045-pitch+00",
+    "yaw-030-pitch+00",
+    "yaw-015-pitch+00",
+    "yaw+000-pitch+00",
+    "yaw+015-pitch+00",
+    "yaw+030-pitch+00",
+    "yaw+045-pitch+00",
+    "yaw+060-pitch+00",
+}
 
 
 def _app() -> object:
@@ -65,6 +77,23 @@ def test_renderer_produces_non_null_frame() -> None:
     assert not out.isNull()
     assert out.width() == FULL_BODY_DIMENSION_WIDTH
     assert out.height() == FULL_BODY_DIMENSION_HEIGHT
+
+
+def test_renderer_applies_active_outfit_to_the_exact_yaw_view() -> None:
+    _app()
+
+    class Overlay:
+        calls: list[str] = []
+
+        def apply(self, frame: QPixmap, view_id: str) -> QPixmap:
+            self.calls.append(view_id)
+            return frame
+
+    overlay = Overlay()
+    manifest = load_layered_full_body_assets(FULL_BODY_DIR)
+    renderer = LayeredFullBodyRenderer(manifest, outfit_overlay=overlay)
+    assert not renderer.render_view("yaw+000-pitch+00", _frame()).isNull()
+    assert overlay.calls == ["yaw+000-pitch+00"]
 
 
 def test_renderer_blends_adjacent_views() -> None:
@@ -156,12 +185,19 @@ def test_speaking_moves_the_mouth_without_detaching_the_chin() -> None:
         ),
     ).toImage()
     face_bounds = QRegion(QPixmap(str(view.path("base"))).mask()).boundingRect()
-    mouth_center_y = round(face_bounds.y() + face_bounds.height() * 0.57)
+    # The first regression test inferred the mouth from a fixed percentage of
+    # the face bounds and accidentally sampled the nose on this asset set.
+    # The rebuilt cavity layer is the authoritative per-yaw mouth location;
+    # the original lip replacement exports were vertically misregistered.
+    mouth_bounds = QRegion(
+        QPixmap(str(view.path("oral_cavity"))).mask()
+    ).boundingRect()
+    mouth_center_y = mouth_bounds.center().y()
     mouth_changes = 0
     for y in range(mouth_center_y - 8, mouth_center_y + 9):
         for x in range(
-            round(face_bounds.center().x() - face_bounds.width() * 0.18),
-            round(face_bounds.center().x() + face_bounds.width() * 0.18),
+            mouth_bounds.x() - 3,
+            mouth_bounds.right() + 4,
         ):
             mouth_changes += neutral.pixel(x, y) != speaking.pixel(x, y)
     assert mouth_changes > MIN_SPEAKING_MOUTH_CHANGED_PIXELS
@@ -176,6 +212,80 @@ def test_speaking_moves_the_mouth_without_detaching_the_chin() -> None:
         for x in range(face_bounds.x(), face_bounds.right() + 1):
             chin_changes += neutral.pixel(x, y) != speaking.pixel(x, y)
     assert chin_changes == 0
+
+
+def test_registered_full_body_control_cutouts_are_not_double_painted() -> None:
+    """Speech/mood controls must not reveal circles or face-edge seams."""
+
+    _app()
+    manifest = load_layered_full_body_assets(FULL_BODY_DIR)
+    renderer = LayeredFullBodyRenderer(manifest)
+    mouth = MouthShape(aperture=0.86, width=0.74, rounding=0.1, jaw=0.8)
+    neutral_controls = FaceMotionFrame(
+        FacePose.FRONT,
+        "speaking_front",
+        Viseme.A,
+        mouth,
+        ExpressionShape(),
+        breath=0.5,
+    )
+    active_controls = FaceMotionFrame(
+        FacePose.FRONT,
+        "speaking_front",
+        Viseme.A,
+        mouth,
+        ExpressionShape(
+            blink=0.9,
+            brow_lift=0.7,
+            brow_tension=0.6,
+            blush=0.9,
+        ),
+        breath=0.5,
+    )
+    active_image = renderer.render_view(
+        "yaw+000-pitch+00",
+        active_controls,
+    ).toImage()
+    neutral_image = renderer.render_view(
+        "yaw+000-pitch+00",
+        neutral_controls,
+    ).toImage()
+    assert active_image != neutral_image
+
+    view = manifest.view("yaw+000-pitch+00")
+    allowed_eye_region = QRegion()
+    for layer_name in (
+        "eyelid_left",
+        "eyelid_right",
+        "eyeliner_left",
+        "eyeliner_right",
+    ):
+        allowed_eye_region = allowed_eye_region.united(
+            QRegion(QPixmap(str(view.path(layer_name))).mask())
+        )
+    changed_pixels = 0
+    for y in range(active_image.height()):
+        for x in range(active_image.width()):
+            if active_image.pixel(x, y) == neutral_image.pixel(x, y):
+                continue
+            changed_pixels += 1
+            assert allowed_eye_region.contains(QPoint(x, y))
+    assert changed_pixels > 0
+
+
+def test_full_body_speech_assets_never_paint_fake_teeth_or_back_view_dots() -> None:
+    """Only visible authority mouths may contain a speech replacement layer."""
+
+    _app()
+    manifest = load_layered_full_body_assets(FULL_BODY_DIR)
+    for view_id in VIEW_IDS:
+        view = manifest.view(view_id)
+        oral_region = QRegion(QPixmap(str(view.path("oral_cavity"))).mask())
+        teeth_region = QRegion(QPixmap(str(view.path("teeth_tongue"))).mask())
+        assert teeth_region.isEmpty(), f"{view_id} contains painted fake teeth"
+        assert oral_region.isEmpty() == (view_id not in VISIBLE_SPEECH_MOUTH_VIEWS), (
+            f"{view_id} has the wrong speech-mouth visibility"
+        )
 
 
 def test_decoded_layer_cache_stays_bounded_across_the_view_ring() -> None:
@@ -222,6 +332,8 @@ def run() -> None:
     test_renderer_wraps_view_ring()
     test_neutral_renderer_reconstructs_authority_views()
     test_speaking_moves_the_mouth_without_detaching_the_chin()
+    test_registered_full_body_control_cutouts_are_not_double_painted()
+    test_full_body_speech_assets_never_paint_fake_teeth_or_back_view_dots()
     test_decoded_layer_cache_stays_bounded_across_the_view_ring()
     test_behavior_performance_changes_the_full_body_frame()
     print("LAYERED_FULL_BODY_OK")

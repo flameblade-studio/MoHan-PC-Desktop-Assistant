@@ -16,10 +16,12 @@ EXCLUDED_PARTS = frozenset({
     ".qt315-compat-verify",
     ".qt315-compat-verify2",
     ".qt315-compat-windows",
+    "artifacts",
     "build",
     "build-temp",
     "dist",
     "release-artifacts",
+    "third_party",
     "tmp",
 })
 GENERATED_TREES = (("native", "mohan_accel", "target"),)

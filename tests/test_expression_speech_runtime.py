@@ -122,8 +122,11 @@ def assert_idle_pose_blink(
         )
     open_frame = QPixmap(window.character.pixmap())
     window._blink()
-    blink_frame = QPixmap(window.character.pixmap())
     assert window.idle_blinking
+    # Discrete blink contract: HALF frames stay untouched without a half-eye
+    # source, so sample the CLOSED authority frame.
+    window._set_half_body_blink(window.blink_generation, 1.0)
+    blink_frame = QPixmap(window.character.pixmap())
     for eye_region in window.dedicated_blink_regions[pose]:
         assert signature(open_frame, eye_region) != signature(
             blink_frame,
@@ -165,6 +168,9 @@ def assert_speaking_pose_blink(
     mouth_before = signature(clean_speech, mouth_region)
     window._blink()
     assert window.speech_blinking
+    # Discrete blink contract: HALF frames stay untouched without a half-eye
+    # source, so sample the CLOSED authority frame.
+    window._advance_speaking_blink(window.blink_generation, 1.0)
     blink_speech = QPixmap(window.character.pixmap())
     for eye_region in window.dedicated_blink_regions[pose]:
         assert signature(clean_speech, eye_region) != signature(
