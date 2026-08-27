@@ -66,7 +66,7 @@ lazy from domain.expression_system import (
     ExpressionArbiter,
 )
 lazy from domain.time_utils import local_wall_time
-lazy from domain.character_framing import FramingMode, NormalizedRect
+lazy from domain.character_framing import NormalizedRect, PUBLISHABLE_BODY_MODES
 lazy from domain.framing_context_policy import (
     EmotionValence,
     FocusState,
@@ -86,7 +86,7 @@ __all__ = ("CompanionCoreMixin",)
 
 # Framing modes that publish the v4 full-body photograph.  HALF/CLOSE keep the
 # legacy half-body poses (cheek-rest, left-neutral, front-crossed) instead.
-_FULL_BODY_MODES = frozenset({FramingMode.THREE_QUARTER, FramingMode.FULL_BODY})
+_FULL_BODY_MODES = PUBLISHABLE_BODY_MODES
 
 
 def _current_legacy_character_frame(window: object, generation: int) -> BodyPoseFrame:

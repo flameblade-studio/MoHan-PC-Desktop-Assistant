@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy from domain.character_framing import PUBLISHABLE_BODY_MODES
+
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 lazy from typing import Protocol
@@ -33,6 +35,7 @@ class AdaptiveCharacterDisposition(StrEnum):
     CANCELLED = "cancelled"
     DEDUPED = "deduped"
     LKG = "last-known-good"
+    HALF_FRAMING = "half-framing"
 
 
 @dataclass(frozen=True, slots=True)
@@ -119,6 +122,18 @@ class AdaptiveCharacterRuntime:
             return terminal
         if framing is None:
             raise AssertionError("Prepared adaptive framing is missing.")
+        if framing.mode not in PUBLISHABLE_BODY_MODES:
+            # CLOSE/HALF keep the legacy half-body poses on the canvas, so the
+            # full-body composition (render + convert + hash) is skipped
+            # entirely instead of being produced and then discarded.
+            return AtomicCharacterPublishDecision(
+                request.operation_generation,
+                AdaptiveCharacterDisposition.HALF_FRAMING,
+                False,
+                request.atomic_frame.body,
+                framing,
+                True,
+            )
         try:
             body_result = self._full_body.dispatch(
                 FullBodyBridgeRequest(
