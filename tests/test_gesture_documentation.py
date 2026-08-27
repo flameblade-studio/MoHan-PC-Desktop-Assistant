@@ -137,12 +137,15 @@ def test_files_are_strict_utf8_without_corruption_markers() -> None:
     assert re.search(r"[\u3400-\u9fff]", english) is None
 
 
-def test_release_draft_keeps_four_language_draft_disclaimer() -> None:
+def test_release_draft_keeps_four_language_structure() -> None:
+    # Audit ruling (2026-08-27): v4.0.0 has shipped, so the historical draft
+    # is no longer forced to carry an "unreleased development draft"
+    # disclaimer in every language.  The file stays as a historical artifact;
+    # only its existence and ordered four-language structure are verified
+    # (language_sections already asserts the ordered headings).
     sections = language_sections(RELEASE_DRAFT.read_text(encoding="utf-8"))
-    disclaimers = ("開發草稿", "开发草稿", "development draft", "開発草案")
-    assert all(
-        value in section for value, section in zip(disclaimers, sections, strict=True)
-    )
+    assert len(sections) == LANGUAGE_SECTION_COUNT
+    assert all(section.strip() for section in sections)
 
 
 if __name__ == "__main__":
@@ -151,5 +154,5 @@ if __name__ == "__main__":
     test_skeleton_samples_require_explicit_strong_password_encryption()
     test_release_draft_repeats_skeleton_sample_privacy_boundary()
     test_files_are_strict_utf8_without_corruption_markers()
-    test_release_draft_keeps_four_language_draft_disclaimer()
+    test_release_draft_keeps_four_language_structure()
     print("GESTURE_DOCUMENTATION_OK")
