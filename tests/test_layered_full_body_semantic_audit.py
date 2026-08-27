@@ -51,6 +51,21 @@ def _clean_set(root: Path, views: tuple[str, ...] = (VIEW,)) -> dict[str, tuple[
         _paint(layers["lip_upper"], (57, 65, 14, 2), (100, 100, 190, 255))
         _paint(layers["lip_lower"], (58, 71, 12, 2), (110, 110, 200, 255))
         _paint(layers["teeth_tongue"], (62, 68, 4, 1), (230, 230, 230, 255))
+        # Every remaining face semantic layer must carry opaque pixels on a
+        # visible view under the blocking empty-layer rule (2026-08-28).
+        _paint(layers["jaw"], (52, 78, 24, 8), (150, 180, 220, 255))
+        _paint(layers["iris_left"], (50, 44, 5, 4), (60, 40, 30, 255))
+        _paint(layers["iris_right"], (73, 44, 5, 4), (60, 42, 30, 255))
+        _paint(layers["eyelid_left"], (48, 40, 9, 3), (150, 178, 218, 255))
+        _paint(layers["eyelid_right"], (71, 40, 9, 3), (150, 178, 216, 255))
+        _paint(layers["eyeliner_left"], (48, 43, 9, 2), (40, 30, 30, 255))
+        _paint(layers["eyeliner_right"], (71, 43, 9, 2), (40, 30, 32, 255))
+        _paint(layers["brow_left"], (47, 34, 11, 3), (30, 25, 25, 255))
+        _paint(layers["brow_right"], (70, 34, 11, 3), (30, 25, 27, 255))
+        _paint(layers["blush_left"], (44, 60, 8, 6), (200, 150, 160, 255))
+        _paint(layers["blush_right"], (76, 60, 8, 6), (200, 150, 162, 255))
+        _paint(layers["corner_left"], (55, 66, 3, 3), (120, 100, 150, 255))
+        _paint(layers["corner_right"], (70, 66, 3, 3), (120, 100, 152, 255))
         for layer, image in layers.items():
             _write(root / f"{view}_{layer}.png", image)
     return boxes
@@ -114,31 +129,35 @@ def test_all_empty_teeth_layers_are_the_valid_neutral_state(tmp_path: Path) -> N
     assert "teeth_tongue_all_views_empty" not in report.issues_by_code
 
 
-def test_empty_face_layers_surface_as_nonblocking_advisories(tmp_path: Path) -> None:
-    # _clean_set deliberately leaves the eye/brow/blush/corner/jaw layers
-    # blank, so a visible view must report them as advisories without ever
-    # blocking packaging: the shipped v4 assets still violate the strict
-    # rule and the owner has not ruled on them yet.
+def test_empty_face_layers_block_on_visible_views(tmp_path: Path) -> None:
+    # Ruling 2026-08-28: the empty-layer rule is BLOCKING.  A regression
+    # that writes an all-transparent iris or jaw layer on a visible view
+    # must not ship.  teeth_tongue stays licensed empty everywhere.
     _clean_set(tmp_path)
+    for layer in ("iris_left", "jaw", "teeth_tongue"):
+        _write(tmp_path / f"{VIEW}_{layer}.png", _blank())
     report = _audit(tmp_path)
-    assert report.passed
-    assert report.issue_count == 0
-    advisory_pairs = {(a.view_id, a.layer) for a in report.advisories}
-    assert (VIEW, "iris_left") in advisory_pairs
-    assert (VIEW, "jaw") in advisory_pairs
-    # teeth_tongue is a valid all-empty neutral set at every view.
-    assert (VIEW, "teeth_tongue") not in advisory_pairs
-    assert report.advisory_count == len(report.advisories)
-    assert all(
-        advisory.code == "face_semantic_layer_fully_transparent"
-        for advisory in report.advisories
-    )
+    assert not report.passed
+    blocked = {
+        (issue.view_id, issue.layer)
+        for issue in report.issues
+        if issue.code == "face_semantic_layer_fully_transparent"
+    }
+    assert (VIEW, "iris_left") in blocked
+    assert (VIEW, "jaw") in blocked
+    assert (VIEW, "teeth_tongue") not in blocked
 
 
-def test_back_view_mouth_layers_are_exempt_from_empty_advisories(tmp_path: Path) -> None:
+def test_back_views_license_every_empty_face_layer(tmp_path: Path) -> None:
+    # Ruling 2026-08-28: the face is not visible from behind, so EVERY face
+    # semantic layer is licensed empty on back views (|yaw| > 90) — exactly
+    # the state of the owner-accepted shipped assets.
     back = "yaw+105-pitch+00"
     _clean_set(tmp_path, views=(back,))
-    for layer in ("lip_upper", "lip_lower", "oral_cavity", "teeth_tongue"):
+    for layer in (
+        "lip_upper", "lip_lower", "oral_cavity", "teeth_tongue",
+        "iris_left", "iris_right", "jaw", "base",
+    ):
         _write(tmp_path / f"{back}_{layer}.png", _blank())
     report = audit_layered_full_body_semantics(
         tmp_path,
@@ -148,14 +167,10 @@ def test_back_view_mouth_layers_are_exempt_from_empty_advisories(tmp_path: Path)
         expected_size=SIZE,
         face_boxes={},
     )
-    assert report.passed
-    advisory_layers = {a.layer for a in report.advisories}
-    # Speech-mouth contract: back views legitimately ship empty mouth layers.
-    assert advisory_layers.isdisjoint(
-        {"lip_upper", "lip_lower", "oral_cavity", "teeth_tongue"}
-    )
-    # Other empty face layers on a back view are still surfaced for ruling.
-    assert "iris_left" in advisory_layers
+    empty_codes = {
+        issue.code for issue in report.issues
+    } | {advisory.code for advisory in report.advisories}
+    assert "face_semantic_layer_fully_transparent" not in empty_codes
 
 def test_reports_insufficient_base_face_coverage(tmp_path: Path) -> None:
     _clean_set(tmp_path)
