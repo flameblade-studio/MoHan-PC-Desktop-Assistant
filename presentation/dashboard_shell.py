@@ -6,12 +6,7 @@ lazy from functools import partial
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QEvent, Qt, QThreadPool, QTimer
-lazy from PySide6.QtGui import (
-    QKeySequence,
-    QMouseEvent,
-    QPixmap,
-    QShortcut,
-)
+lazy from PySide6.QtGui import QKeySequence, QMouseEvent, QPixmap, QShortcut
 lazy from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -703,11 +698,9 @@ class DashboardShellMixin:
             self._t("wardrobe_character_preview", "墨寒造型預覽")
         )
         pose_root = resource_path("assets/pose-atlas/v4")
-        # Side labels follow MoHan's OWN left/right (owner ruling 2026-08-28).
-        # In yaw+090 she faces viewer-left, i.e. she has turned toward her
-        # own right, presenting her LEFT side to the camera; yaw-090 is the
-        # mirror case.  The previous mapping used the viewer's left/right
-        # and showed the opposite side of her.
+        # Side labels follow MoHan's OWN left/right (owner ruling 2026-08-28):
+        # yaw+090 presents her LEFT side to the camera, yaw-090 her right —
+        # the previous mapping used the viewer's left/right instead.
         pose_choices = (
             ("wardrobe_view_front", "正面", pose_root / "yaw+000-pitch+00.png"),
             ("wardrobe_view_left", "左側", pose_root / "yaw+090-pitch+00.png"),

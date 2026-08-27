@@ -5,20 +5,14 @@ lazy import random
 lazy import time
 
 lazy from PySide6.QtCore import (
-    QEasingCurve,
-    QParallelAnimationGroup,
-    QPoint,
-    QPropertyAnimation,
-    QTimer,
-    QVariantAnimation,
+    QEasingCurve, QParallelAnimationGroup, QPoint,
+    QPropertyAnimation, QTimer, QVariantAnimation,
 )
 lazy from PySide6.QtGui import QPainter, QPixmap
 
 lazy from domain.companion_animation_contract import (
-    CHEEK_SPEECH_CLOSED_EXPRESSION,
-    EXPRESSION_SPEECH_MOUTH_RECTS,
-    EXPRESSION_VISEME_FRAMES,
-    NEUTRAL_VISEME_ASSET_STEMS,
+    CHEEK_SPEECH_CLOSED_EXPRESSION, EXPRESSION_SPEECH_MOUTH_RECTS,
+    EXPRESSION_VISEME_FRAMES, NEUTRAL_VISEME_ASSET_STEMS,
     NEW_EXPRESSION_ASSETS,
 )
 lazy from domain.lip_sync import (
@@ -28,13 +22,9 @@ lazy from domain.lip_sync import (
     VisemeFrame,
 )
 lazy from domain.face_microtiming import (
-    ATTENTION_GLANCE_INTERVAL_MS,
-    BLINK_CLOSED_TIMES_MS,
-    BLINK_HALF_CLOSE_TIMES_MS,
-    BLINK_HALF_OPEN_TIMES_MS,
-    BLINK_INTERVAL_MS,
-    BLINK_REST_AT_MS,
-    SACCADE_INTERVAL_MS,
+    ATTENTION_GLANCE_INTERVAL_MS, BLINK_CLOSED_TIMES_MS,
+    BLINK_HALF_CLOSE_TIMES_MS, BLINK_HALF_OPEN_TIMES_MS,
+    BLINK_INTERVAL_MS, BLINK_REST_AT_MS, SACCADE_INTERVAL_MS,
 )
 lazy from domain.face_rig import EyeState, blink_for_eye_state, eye_state_for_blink
 lazy from presentation.companion_blink_runtime import CompanionBlinkRuntimeMixin
