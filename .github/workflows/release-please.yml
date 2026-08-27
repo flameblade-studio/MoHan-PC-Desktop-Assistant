@@ -17,10 +17,43 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      # Do NOT pass the ``release-type`` input here: release-please-action
+      # ignores ``config-file``/``manifest-file`` whenever ``release-type`` is
+      # set, which silently disables extra-files version bumps and the
+      # four-language changelog sections.
       - name: Run release-please
+        id: release
         uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: python
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      - name: Check out the release pull request branch
+        if: ${{ steps.release.outputs.pr }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
+
+      - name: Ensure four-language release notes draft and citation date
+        if: ${{ steps.release.outputs.pr }}
+        shell: bash
+        env:
+          RELEASE_BRANCH: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
+        run: |
+          version="$(python3 -c 'import json; print(json.load(open(".release-please-manifest.json"))["."])')"
+          # Creates docs/releases/v<version>.md from the CHANGELOG section as
+          # a four-language draft; an existing file is never overwritten so
+          # human polish on the release branch is preserved.
+          python3 tools/generate_release_notes.py --version "$version"
+          today="$(date -u +%Y-%m-%d)"
+          sed -i -E "s/^date-released: \"[0-9]{4}-[0-9]{2}-[0-9]{2}\"\$/date-released: \"$today\"/" CITATION.cff
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "Release branch already carries the notes draft and citation date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/releases CITATION.cff
+          git commit -m "chore: 補齊 v$version 四語發行說明初稿與引用日期／补齐 v$version 四语发布说明初稿与引用日期／Add the v$version four-language release-notes draft and citation date／v$version の四言語リリースノート草稿と引用日付を補完"
+          git push origin "HEAD:$RELEASE_BRANCH"

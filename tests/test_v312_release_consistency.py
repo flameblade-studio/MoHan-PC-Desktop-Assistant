@@ -45,10 +45,15 @@ def language_sections(document: str, source: str) -> tuple[str, ...]:
     )
 
 
-def test_historical_release_metadata_is_preserved() -> None:
+def test_citation_metadata_tracks_the_current_release() -> None:
     citation = read("CITATION.cff")
-    assert f'version: "{VERSION}"' in citation
-    assert f'date-released: "{RELEASE_DATE}"' in citation
+    fallback = re.search(
+        r'(?m)^FALLBACK_VERSION = "([^"]+)"$',
+        read("domain/version_info.py"),
+    )
+    assert fallback is not None
+    assert f'version: "{fallback.group(1)}"' in citation
+    assert re.search(r'(?m)^date-released: "\d{4}-\d{2}-\d{2}"$', citation)
 
 
 def test_readme_uses_one_dynamic_release_badge_per_language() -> None:
@@ -212,7 +217,7 @@ def test_python315_node24_and_jit_release_contract() -> None:
 
 
 def main() -> None:
-    test_historical_release_metadata_is_preserved()
+    test_citation_metadata_tracks_the_current_release()
     test_readme_uses_one_dynamic_release_badge_per_language()
     test_four_language_release_sources_are_complete_and_permanent()
     test_release_workflow_derives_and_validates_the_exact_tag()
