@@ -189,7 +189,7 @@ class ThemePackPanel(QWidget):
                 }:
                     label += " · " + self._t(
                         "wardrobe_installed_inactive",
-                        "已安裝，未啟用",
+                        "已安裝，尚未套用",
                     )
                 item = QListWidgetItem(label)
                 item.setData(Qt.UserRole, theme.theme_id)
