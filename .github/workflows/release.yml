@@ -223,11 +223,14 @@ jobs:
         shell: pwsh
         run: |
           rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m pip install --only-binary=:all: maturin==1.14.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python tools/build_native_acceleration.py `
             --output-dir native-wheels `
             --evidence native-wheels/build-evidence.json `
             --install
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Install pinned Windows installer toolchains
         env:
@@ -241,8 +244,11 @@ jobs:
       - name: Compile and audit source
         run: |
           python -m compileall -q .
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m ruff check .
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python tools/audit_public_release.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Run full Windows regression suite
         run: python tests/run_all.py
@@ -273,7 +279,9 @@ jobs:
         shell: pwsh
         run: |
           & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all: -r requirements-dev.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all: maturin==1.14.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Capture and package sanitized Tachyon evidence
         shell: pwsh
@@ -314,11 +322,14 @@ jobs:
           $evidenceDir = Join-Path $env:RUNNER_TEMP "mohan-native-release"
           New-Item -ItemType Directory -Force $evidenceDir | Out-Null
           & $env:MOHAN_JIT_PYTHON -m pytest tests/test_native_equivalence.py tests/test_native_rgba_equivalence.py -q
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $env:MOHAN_JIT_PYTHON tools/benchmark_native_rgba.py --width 512 --height 512 --iterations 3
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $env:MOHAN_JIT_PYTHON tools/verify_packaged_native_acceleration.py `
             "dist\MoHan-Desktop-Assistant-$version" `
             --label "onedir" `
             --output (Join-Path $evidenceDir "onedir.json")
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Run packaged self-test and event-loop smoke test
         shell: pwsh
