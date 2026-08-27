@@ -80,6 +80,20 @@ def test_microtiming_rejects_fixed_mechanical_period() -> None:
     assert "blink:mechanical-fixed-period" in issues
 
 
+def test_blink_duration_issues_classify_as_blink_not_gaze(monkeypatch) -> None:
+    monkeypatch.setattr(
+        audit,
+        "audit_runtime_microtiming",
+        lambda: ("blink-duration:microtiming-out-of-range",),
+    )
+
+    result = audit.run_audit()
+
+    assert not result.blink_microtiming_natural
+    assert result.gaze_microtiming_natural
+    assert not result.passed
+
+
 def test_missing_portaudio_binary_fails_closed(monkeypatch) -> None:
     monkeypatch.setattr(audit.sounddevice, "_libname", str(Path("missing-portaudio.dll")))
 
