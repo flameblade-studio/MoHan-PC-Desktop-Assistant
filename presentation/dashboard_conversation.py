@@ -341,6 +341,9 @@ class DashboardConversationMixin:
                 ),
             )
             self.chat_input.setFocus()
+            # 空輸入也要重置來源標記；否則語音／遠端標記會殘留到下一次
+            # 手動輸入，讓本機輸入被誤判來源。
+            self._input_source = "local"
             return
         self.chat_input.clear()
         self.human_interaction.emit()

@@ -109,6 +109,7 @@ class AutonomousOutfitGenerationController(QObject):
         self._pool = QThreadPool.globalInstance()
         self._active_worker: _GenerationWorker | None = None
         self._running = False
+        self._shutdown = False
         self._wardrobe_service = WardrobeService(self._data_root / "outfits")
         self._wardrobe_runtime = AutonomousWardrobeRuntime(
             self._wardrobe_service,
@@ -123,14 +124,20 @@ class AutonomousOutfitGenerationController(QObject):
         if self._running:
             return
         self._running = True
+        self._shutdown = False
         self._timer.start()
         QTimer.singleShot(INITIAL_AUTONOMOUS_DELAY_MS, self.evaluate_automatic)
 
     def stop(self) -> None:
-        """Detach future UI updates; an in-flight HTTP call remains bounded by timeout."""
+        """Detach future UI updates; an in-flight HTTP call remains bounded by timeout.
+
+        ``_active_worker`` is deliberately kept: clearing it here would let a
+        stop→start cycle launch a second generation in parallel with the
+        still-running worker.  The worker's completion callbacks clear it.
+        """
         self._running = False
+        self._shutdown = True
         self._timer.stop()
-        self._active_worker = None
 
     def evaluate_automatic(self) -> None:
         """Generate unattended only when both explicit wardrobe switches allow it."""
@@ -184,6 +191,10 @@ class AutonomousOutfitGenerationController(QObject):
     def request_generation(self, *, explicit: bool = False) -> None:
         """Start generation; an explicit button click may retry immediately."""
 
+        if self._shutdown:
+            # stop() 之後不得再啟動新工作：dashboard 可能已在收尾，資料庫
+            # 與檔案系統的後續寫入沒有安全宿主。
+            return
         if self._active_worker is not None:
             self.status_changed.emit("already-generating")
             return
