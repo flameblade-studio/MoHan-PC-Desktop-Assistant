@@ -203,6 +203,14 @@ class FlagshipRemoteMixin:
         )
         camera_note.setWordWrap(True)
         form.addRow(camera_note)
+        camera_consent_note = QLabel(
+            self._t(
+                "「啟動／套用」只會啟動遠端服務；攝影機與臉部辨識須按"
+                "「套用靈視設定」並完成同意後才會生效。"
+            )
+        )
+        camera_consent_note.setWordWrap(True)
+        form.addRow(camera_consent_note)
         form.addRow("", controls)
         form.addRow(self._t("服務狀態"), self.remote_status)
         form.addRow(self._t("已配對裝置"), self.device_list)
@@ -264,8 +272,10 @@ class FlagshipRemoteMixin:
             )
             return
         self.db.set_setting("remote_port", self.remote_port.value())
-        self.db.set_setting("camera_presence_enabled", self.camera_enabled.isChecked())
-        self.db.set_setting("face_identity_enabled", self.face_identity.isChecked())
+        # 隱私裁決：啟動遠端服務不得順手持久化攝影機／臉部辨識開關。
+        # 這兩個設定只能經由「套用靈視設定」（apply_camera_settings）的
+        # 政策檢查＋明確同意對話框寫入；勾選框在此僅顯示意向，未套用前
+        # 不生效。
         self.remote_status.setText(
             self._t(
                 "已啟動：http://{host}:{port}\n"
