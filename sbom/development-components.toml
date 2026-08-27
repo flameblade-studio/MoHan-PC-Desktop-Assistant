@@ -9,6 +9,13 @@ scope = "development"
 profiles = ["ci", "local"]
 
 [[component]]
+name = "Pillow"
+version = "12.3.0"
+license = "MIT-CMU"
+scope = "development"
+profiles = ["ci", "local"]
+
+[[component]]
 name = "ruff"
 version = "0.16.0"
 license = "MIT"

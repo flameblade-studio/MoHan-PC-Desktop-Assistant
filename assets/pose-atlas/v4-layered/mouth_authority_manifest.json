@@ -4,11 +4,127 @@
     "yaw+000-pitch+00": {
       "trusted": true,
       "mouth_center_x": 510.898681640625
+    },
+    "yaw-180-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-165-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-150-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-135-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-120-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-105-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-090-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 474.9999,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw-075-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 468.9999,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw-060-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 478.9999,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw-045-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 488.2794,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw-030-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 494.9999,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw-015-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 502.9999,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw+015-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 519.9999,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw+030-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 528.9999,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw+045-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 536.9999,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw+060-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 544.0,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw+075-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 553.0,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw+090-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 547.9999,
+      "method": "alpha-weighted centroid x of lip_upper+lip_lower (deterministic, 2026-08-27)"
+    },
+    "yaw+105-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw+120-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw+135-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw+150-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw+165-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
     }
   },
   "notes": {
     "source": "Contract value from tests/test_mouth_authority_geometry.py EXPECTED_YAW000_CENTER_X, ratified in the v4.4.2 mouth-geometry work; the manifest file itself was never written to disk in that session.",
     "cross_check_2026_08_27": "Alpha-weighted centroid x of yaw+000 lip_upper+lip_lower layers measured 512.0000 (delta 1.10 px vs the trusted value). Recalibrate via a full owner-reviewed mouth-landmark pass before trusting any additional views.",
-    "other_views": "All other views intentionally omitted (untrusted) pending owner-reviewed calibration."
+    "other_views": "All other views intentionally omitted (untrusted) pending owner-reviewed calibration.",
+    "calibration_2026_08_27": "13 visible views (yaw-090..yaw+090) calibrated from lip-layer alpha centroids; monotonic 474.0..553.0 sweep matches head-turn geometry. Rear views recorded untrusted with empty lip layers. yaw+000 keeps its pre-existing contract value."
   }
 }

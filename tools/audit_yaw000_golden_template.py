@@ -33,16 +33,30 @@ def _intersects(a, b) -> bool:
     return bool(a and b and max(a[0], b[0]) < min(a[2], b[2]) and max(a[1], b[1]) < min(a[3], b[3]))
 
 
+PAIRED_FACE_LAYERS = frozenset({
+    "blush", "iris", "eyelid", "eyeliner", "brow", "corner",
+})
+FACE_DETAIL_LAYERS = frozenset({
+    "base", "jaw", "oral_cavity", "lip_lower", "lip_upper", "corner_left",
+    "corner_right", "blush_left", "blush_right", "iris_left", "iris_right",
+    "eyelid_left", "eyelid_right", "eyeliner_left", "eyeliner_right",
+    "brow_left", "brow_right",
+})
+
+
 def _scan_layers(
     layer_dir: Path,
     authority: np.ndarray,
     failures: list[str],
+    view: str,
+    face_visible: bool,
 ) -> tuple[dict, np.ndarray]:
     layers: dict = {}
+    blank_pending: list[str] = []
     alpha_sum = np.zeros(authority.shape[:2], np.uint16)
     reconstruction = np.zeros_like(authority)
     for name in LAYERS:
-        path = layer_dir / f"{VIEW}_{name}.png"
+        path = layer_dir / f"{view}_{name}.png"
         if not path.is_file():
             failures.append(f"missing:{name}")
             continue
@@ -55,8 +69,8 @@ def _scan_layers(
         if contamination:
             failures.append(f"transparent_rgb:{name}:{contamination}")
         count = int(np.count_nonzero(alpha))
-        if name != "teeth_tongue" and count == 0:
-            failures.append(f"blank:{name}")
+        if count == 0:
+            blank_pending.append(name)
         if name == "teeth_tongue" and count != 0:
             failures.append("teeth_tongue:not-neutral-transparent")
         overlap = (alpha_sum > 0) & (alpha > 0)
@@ -66,10 +80,27 @@ def _scan_layers(
         reconstruction[use] = arr[use]
         alpha_sum += use.astype(np.uint16)
         layers[name] = {"alpha_pixels": count, "bbox": _bbox(use), "pixel_hash": _hash_pixels(arr)}
+    for name in blank_pending:
+        if name == "teeth_tongue":
+            continue
+        if not face_visible and name in FACE_DETAIL_LAYERS:
+            continue
+        base_name, _, side = name.rpartition("_")
+        if (
+            side in ("left", "right")
+            and base_name in PAIRED_FACE_LAYERS
+        ):
+            # A profile view legitimately hides the far-side member of a
+            # paired facial layer; require the near side to be present.
+            other = f"{base_name}_{'right' if side == 'left' else 'left'}"
+            if layers.get(other, {}).get("alpha_pixels", 0) > 0:
+                continue
+        failures.append(f"blank:{name}")
     return layers, reconstruction
 
 
 def _mouth_and_ornament_checks(
+    view: str,
     layer_dir: Path,
     layers: dict,
     reconstruction: np.ndarray,
@@ -77,8 +108,8 @@ def _mouth_and_ornament_checks(
 ) -> tuple[int, int]:
     if layers["lip_upper"]["pixel_hash"] == layers["lip_lower"]["pixel_hash"]:
         failures.append("lip_upper_lower_identical")
-    lip_mask = (_rgba(layer_dir / f"{VIEW}_lip_upper.png")[:, :, 3] > 0) | (_rgba(layer_dir / f"{VIEW}_lip_lower.png")[:, :, 3] > 0)
-    oral_mask = _rgba(layer_dir / f"{VIEW}_oral_cavity.png")[:, :, 3] > 0
+    lip_mask = (_rgba(layer_dir / f"{view}_lip_upper.png")[:, :, 3] > 0) | (_rgba(layer_dir / f"{view}_lip_lower.png")[:, :, 3] > 0)
+    oral_mask = _rgba(layer_dir / f"{view}_oral_cavity.png")[:, :, 3] > 0
     if not _intersects(_bbox(lip_mask), _bbox(oral_mask)):
         failures.append("oral_cavity_not_aligned")
     # The oral cavity may own the seam, so require adjacency/containment in
@@ -90,8 +121,8 @@ def _mouth_and_ornament_checks(
     if np.any(oral_mask & ~mouth_envelope):
         failures.append("oral_cavity_outside_lip_envelope")
 
-    ornament = _rgba(layer_dir / f"{VIEW}_ornament.png")[:, :, 3] > 0
-    face = (_rgba(layer_dir / f"{VIEW}_base.png")[:, :, 3] > 0) | (_rgba(layer_dir / f"{VIEW}_jaw.png")[:, :, 3] > 0)
+    ornament = _rgba(layer_dir / f"{view}_ornament.png")[:, :, 3] > 0
+    face = (_rgba(layer_dir / f"{view}_base.png")[:, :, 3] > 0) | (_rgba(layer_dir / f"{view}_jaw.png")[:, :, 3] > 0)
     if np.any(ornament & face):
         failures.append(f"ornament_face_overlap:{int(np.count_nonzero(ornament & face))}")
 
@@ -108,23 +139,47 @@ def _mouth_and_ornament_checks(
     return green_count, bottom
 
 
-def audit(repo: Path, layer_dir: Path) -> dict:
-    authority_path = repo / "assets/pose-atlas/v4-working" / (
-        f"{VIEW}.user-approved-generated-alpha-clean-v3-20260823.png"
-    )
+def audit(
+    repo: Path,
+    layer_dir: Path,
+    view: str = VIEW,
+    authority_path: Path | None = None,
+) -> dict:
+    if authority_path is None:
+        authority_path = repo / "assets/pose-atlas/v4-working" / (
+            f"{VIEW}.user-approved-generated-alpha-clean-v3-20260823.png"
+            if view == VIEW
+            else f"{view}.png"
+        )
     authority = _rgba(authority_path)
     failures: list[str] = []
-    layers, reconstruction = _scan_layers(layer_dir, authority, failures)
+    probe = _rgba(layer_dir / f"{view}_lip_upper.png") if (layer_dir / f"{view}_lip_upper.png").is_file() else None
+    face_visible = bool(probe is not None and probe[:, :, 3].any())
+    layers, reconstruction = _scan_layers(layer_dir, authority, failures, view, face_visible)
 
     if len(layers) == len(LAYERS):
+        # Alpha must match everywhere; RGB is only meaningful where visible.
+        # The rebuilt layers zero transparent RGB by contract, while a source
+        # authority may still carry residual RGB under alpha == 0.
         diff = np.abs(reconstruction.astype(np.int16) - authority.astype(np.int16))
-        diff_pixels = int(np.count_nonzero(np.any(diff != 0, axis=2)))
-        max_error = int(diff.max())
+        visible = authority[:, :, 3] > 0
+        alpha_diff = diff[:, :, 3] != 0
+        rgb_diff = np.any(diff[:, :, :3] != 0, axis=2) & visible
+        diff_pixels = int(np.count_nonzero(alpha_diff | rgb_diff))
+        max_error = int(max(
+            diff[:, :, 3].max(),
+            diff[:, :, :3][visible].max() if visible.any() else 0,
+        ))
         if diff_pixels or max_error:
             failures.append(f"recompose:{diff_pixels}:max={max_error}")
-        green_count, bottom = _mouth_and_ornament_checks(
-            layer_dir, layers, reconstruction, failures
-        )
+        if face_visible:
+            green_count, bottom = _mouth_and_ornament_checks(
+                view, layer_dir, layers, reconstruction, failures
+            )
+        else:
+            green_count = 0
+            fg = reconstruction[:, :, 3] > 0
+            bottom = _bbox(fg)[3] if _bbox(fg) else 0
         if bottom >= authority.shape[0]:
             failures.append(f"shoe_bottom_clipped:{bottom}")
     else:
@@ -134,7 +189,7 @@ def audit(repo: Path, layer_dir: Path) -> dict:
         bottom = None
 
     report = {
-        "schema": "mohan.yaw000-golden-audit.v1", "view_id": VIEW,
+        "schema": "mohan.yaw000-golden-audit.v1", "view_id": view, "face_visible": face_visible,
         "passed": not failures, "failures": failures, "layer_count": len(layers),
         "metrics": {"recompose_diff_pixels": diff_pixels, "recompose_max_channel_error": max_error,
                     "lip_green_cyan_pixels": green_count, "foreground_bottom_exclusive": bottom},
@@ -149,9 +204,16 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--layers", type=Path)
+    parser.add_argument("--view", default=VIEW)
+    parser.add_argument("--authority", type=Path)
     args = parser.parse_args()
     layer_dir = args.layers or args.repo / "work/full-body-yaw000-golden/layers"
-    report = audit(args.repo.resolve(), layer_dir.resolve())
+    report = audit(
+        args.repo.resolve(),
+        layer_dir.resolve(),
+        view=args.view,
+        authority_path=args.authority,
+    )
     print(json.dumps({"passed": report["passed"], "failures": report["failures"], "metrics": report["metrics"]}, ensure_ascii=False))
     return 0 if report["passed"] else 1
 

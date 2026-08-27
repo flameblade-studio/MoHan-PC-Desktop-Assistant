@@ -90,11 +90,12 @@ def _warped_layer_candidates(
     layer_dir: Path,
     matrix: np.ndarray,
     foreground: np.ndarray,
+    view: str,
 ) -> dict[str, np.ndarray]:
     h, w = foreground.shape
     candidates: dict[str, np.ndarray] = {}
     for layer in LAYERS:
-        source = _rgba(layer_dir / f"{VIEW}_{layer}.png")
+        source = _rgba(layer_dir / f"{view}_{layer}.png")
         candidates[layer] = _warp_mask(source[:, :, 3] > 0, matrix, (w, h)) & foreground
 
     # The neutral frame intentionally has no visible teeth/tongue.
@@ -199,11 +200,19 @@ def _exclusive_ownership(
     return owned
 
 
-def build(repo: Path, output: Path) -> dict:
-    canonical_path = repo / "assets/pose-atlas/v4" / f"{VIEW}.png"
-    authority_path = repo / "assets/pose-atlas/v4-working" / (
-        f"{VIEW}.user-approved-generated-alpha-clean-v3-20260823.png"
-    )
+def build(
+    repo: Path,
+    output: Path,
+    view: str = VIEW,
+    authority_path: Path | None = None,
+) -> dict:
+    canonical_path = repo / "assets/pose-atlas/v4" / f"{view}.png"
+    if authority_path is None:
+        authority_path = repo / "assets/pose-atlas/v4-working" / (
+            f"{VIEW}.user-approved-generated-alpha-clean-v3-20260823.png"
+            if view == VIEW
+            else f"{view}.png"
+        )
     layer_dir = repo / "assets/pose-atlas/v4-layered"
     canonical = _rgba(canonical_path)
     authority = _rgba(authority_path)
@@ -213,13 +222,14 @@ def build(repo: Path, output: Path) -> dict:
     foreground = authority[:, :, 3] > 0
     matrix = _bbox_affine(canonical[:, :, 3], authority[:, :, 3])
 
-    candidates = _warped_layer_candidates(layer_dir, matrix, foreground)
+    candidates = _warped_layer_candidates(layer_dir, matrix, foreground, view)
 
     # Legacy eye masks overlap exactly.  Assign every authority pixel once so
     # blink and gaze layers remain independently addressable at runtime.
-    _partition_eye_layers(candidates)
-
-    _rebuild_mouth_partitions(candidates, authority)
+    face_visible = bool(candidates["lip_upper"].any() or candidates["lip_lower"].any())
+    if face_visible:
+        _partition_eye_layers(candidates)
+        _rebuild_mouth_partitions(candidates, authority)
 
     # The legacy ornament mask also contains fragments of the facial feature
     # masks.  Ornament owns only rigid jewellery: it must never pre-empt eyes,
@@ -245,7 +255,7 @@ def build(repo: Path, output: Path) -> dict:
         if np.any(owned[name]):
             out[owned[name]] = authority[owned[name]]
         out[out[:, :, 3] == 0, :3] = 0
-        path = output / f"{VIEW}_{name}.png"
+        path = output / f"{view}_{name}.png"
         Image.fromarray(out, "RGBA").save(path, optimize=False)
         records.append({
             "layer": name,
@@ -256,7 +266,8 @@ def build(repo: Path, output: Path) -> dict:
 
     action_manifest = {
         "schema": "mohan.yaw000-golden-action.v1",
-        "view_id": VIEW,
+        "view_id": view,
+        "face_visible": face_visible,
         "authority": {
             "path": str(authority_path), "sha256": _sha256(authority_path),
             "qualification": "user-approved, Pillow RGBA, alpha-clean v3",
@@ -284,9 +295,16 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--view", default=VIEW)
+    parser.add_argument("--authority", type=Path)
     args = parser.parse_args()
     output = args.output or args.repo / "work/full-body-yaw000-golden/layers"
-    manifest = build(args.repo.resolve(), output.resolve())
+    manifest = build(
+        args.repo.resolve(),
+        output.resolve(),
+        view=args.view,
+        authority_path=args.authority,
+    )
     print(json.dumps({"output": manifest["output"], "layers": len(manifest["records"])}, ensure_ascii=False))
     return 0
 
