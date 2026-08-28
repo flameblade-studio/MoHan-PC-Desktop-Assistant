@@ -400,7 +400,7 @@ class FullBodyPerformanceBridge:
             face,
             viseme,
             mouth_closed,
-            _face_motion_signature(motion),
+            face_motion_signature(motion),
             tuple(
                 (item.layer.name, item.evidence.sha256, item.evidence.evidence)
                 for item in layers
@@ -408,7 +408,7 @@ class FullBodyPerformanceBridge:
         )
 
 
-def _face_motion_signature(motion: FaceMotionFrame | None) -> tuple[object, ...]:
+def face_motion_signature(motion: FaceMotionFrame | None) -> tuple[object, ...]:
     """Reduce a continuous face frame to a dedupe-safe signature.
 
     The full-body renderer deforms the mouth, eyelids, brows, irises, blush and
@@ -430,6 +430,9 @@ def _face_motion_signature(motion: FaceMotionFrame | None) -> tuple[object, ...]
         round(mouth.rounding, 6),
         round(mouth.jaw, 6),
         round(mouth.corner_smile, 6),
+        # u_inward was the one continuous control missing from this tuple,
+        # freezing the U-vowel pull-in tail whenever no other control moved.
+        round(mouth.u_inward, 6),
         round(shape.blink, 6),
         round(shape.eye_smile, 6),
         round(shape.brow_lift, 6),

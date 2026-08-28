@@ -31,7 +31,10 @@ lazy from application.gesture_controller import GestureController
 lazy from application.multimodal_fusion_hub import MultimodalFusionResult
 lazy from application.presentation_ports import fallback_platform_services
 lazy from application.service_container import CompanionServices
-lazy from application.speech_performance import SpeechPerformanceTimeline
+lazy from application.speech_performance import (
+    SpeechPerformancePhase,
+    SpeechPerformanceTimeline,
+)
 lazy from domain.affective_state import AffectiveState
 lazy from domain.affinity_state import AffinityState
 lazy from domain.chronicle import Chronicle, Milestone, MilestoneKind
@@ -212,7 +215,23 @@ class CompanionCoreMixin:
         # a new speech or behavior event.
         self._last_atomic_frame = atomic_frame
         performance = atomic_frame.performance
-        speech_active = not performance.mouth_closed
+        # Speech-activeness comes from the utterance lifecycle, not from the
+        # per-frame mouth shape: the coordinator reports mouth_closed=True on
+        # every mid-sentence silence viseme, and deriving speech_active from
+        # it made the framing oscillate HALF<->THREE_QUARTER on each >1.2s
+        # pause (verified by simulation, ruling 2026-08-28).
+        phase = getattr(performance, "phase", None)
+        speech_active = (
+            phase
+            in (
+                SpeechPerformancePhase.PREPARING,
+                SpeechPerformancePhase.SPEAKING,
+                SpeechPerformancePhase.PAUSING,
+                SpeechPerformancePhase.SETTLING,
+            )
+            if phase is not None
+            else not performance.mouth_closed
+        )
         # A pending wardrobe reveal asks the director for a full-body shot so
         # the new outfit/accessory is visible.  Reading the pending-outfit
         # setting here (instead of hard-coding False) lets the director switch

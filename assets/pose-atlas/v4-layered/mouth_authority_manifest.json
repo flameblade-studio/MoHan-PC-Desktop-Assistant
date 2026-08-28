@@ -1,10 +1,6 @@
 {
   "schema_version": 1,
   "views": {
-    "yaw+000-pitch+00": {
-      "trusted": true,
-      "mouth_center_x": 510.898681640625
-    },
     "yaw-180-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
@@ -37,63 +33,68 @@
     },
     "yaw-090-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 474.7183,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 596.1474,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw-075-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 468.6644,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 538.8671,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw-060-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 478.3609,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 542.1134,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw-045-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 489.3391,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 496.2623,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw-030-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 494.5083,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 498.1255,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw-015-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 502.6394,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 498.2523,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
+    },
+    "yaw+000-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 516.8029,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw+015-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 520.518,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 483.0843,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw+030-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 529.5497,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 475.8571,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw+045-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 537.6074,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 477.6897,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw+060-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 543.875,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 465.9257,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw+075-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 552.8469,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 472.0147,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw+090-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 548.3945,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (deterministic, 2026-08-27)"
+      "mouth_center_x": 439.0457,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-08-28)"
     },
     "yaw+105-pitch+00": {
       "trusted": false,
@@ -122,10 +123,6 @@
     }
   },
   "notes": {
-    "source": "Contract value from tests/test_mouth_authority_geometry.py EXPECTED_YAW000_CENTER_X, ratified in the v4.4.2 mouth-geometry work; the manifest file itself was never written to disk in that session.",
-    "cross_check_2026_08_27": "Alpha-weighted centroid x of yaw+000 lip_upper+lip_lower layers measured 512.0000 (delta 1.10 px vs the trusted value). Recalibrate via a full owner-reviewed mouth-landmark pass before trusting any additional views.",
-    "other_views": "All other views intentionally omitted (untrusted) pending owner-reviewed calibration.",
-    "calibration_2026_08_27": "13 visible views (yaw-090..yaw+090) calibrated from lip-layer alpha centroids; monotonic 474.0..553.0 sweep matches head-turn geometry. Rear views recorded untrusted with empty lip layers. yaw+000 keeps its pre-existing contract value.",
-    "golden_promotion_2026_08_27": "v4-layered replaced by the exclusive-ownership golden batch (24 views x 25 layers, recompose exact vs clean authority). Centers recalibrated from golden lip layers; yaw+000 keeps the pre-existing contract value. Pre-promotion backup with SHA-256: artifacts/pose-atlas-rebuild/2026-08-27/v4-layered-pre-golden-backup/"
+    "recalibration_2026_08_28": "Face-detail layers rebuilt from the half-body front source via a five-point YuNet landmark affine; the previous calibration was measured from mirrored-defect lip layers and swept in the OPPOSITE direction to the photographs. All visible views recalibrated, including yaw+000 (its old contract value inherited the same offset defect)."
   }
 }

@@ -211,6 +211,15 @@ class SpeechPerformanceTimeline:
     ) -> tuple[SpeechEvent, SpeechPerformanceDirective] | None:
         if not self._accepts(generation):
             return None
+        if (
+            self._snapshot.phase is SpeechPerformancePhase.IDLE
+            and self._snapshot.mouth_closed
+        ):
+            # The close event already settled this generation.  Provider
+            # volume cues arrive through queued signals and can land after
+            # it; letting one through flipped the timeline back to SPEAKING
+            # with the mouth open and no second close ever came.
+            return None
         self._ensure_audio_started()
         now = self._now()
         bounded = _unit(level)

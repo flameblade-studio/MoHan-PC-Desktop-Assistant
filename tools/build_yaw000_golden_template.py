@@ -11,6 +11,7 @@ from __future__ import annotations
 lazy import argparse
 lazy import hashlib
 lazy import json
+lazy import re
 lazy from pathlib import Path
 
 lazy import cv2
@@ -21,6 +22,8 @@ lazy from PIL import Image
 VIEW = "yaw+000-pitch+00"
 # Rows above this line default to hair_back ownership; rows below to body.
 HAIR_BODY_SPLIT_Y = 410
+# Views at or past this |yaw| ship an empty oral cavity (speech-mouth ruling).
+NEAR_PROFILE_MIN_ABS_YAW = 75
 LAYERS = (
     "body", "hair_back", "base", "jaw", "oral_cavity", "teeth_tongue",
     "lip_lower", "lip_upper", "corner_left", "corner_right", "blush_left",
@@ -47,6 +50,10 @@ def _partition_eye_layers(candidates: dict[str, np.ndarray]) -> None:
     for side in ("left", "right"):
         names = (f"iris_{side}", f"eyelid_{side}", f"eyeliner_{side}")
         support = np.logical_or.reduce([candidates[name] for name in names])
+        if not support.any():
+            # The far-side eye of a near-profile view is occluded and its
+            # layers are licensed empty; there is nothing to partition.
+            continue
         x0, y0, x1, y1 = _bbox(support)
         width, height = x1 - x0, y1 - y0
         liner_bottom = y0 + max(1, int(round(height * 0.20)))
@@ -84,6 +91,130 @@ def _sha256(path: Path) -> str:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             h.update(block)
     return h.hexdigest()
+
+
+# Face-detail layers whose legacy masks carry a mirrored-yaw defect on every
+# non-front view (audit 2026-08-28: centroids sit mirrored around the canvas
+# centre, up to ~100px off at |yaw|=90, cutting hair/cheek fragments instead
+# of eyes and lips).  Their candidates are re-derived from the CORRECT front
+# golden layers via a face-box-to-face-box affine, then refined by the
+# existing skin-reclaim and oral-clamp passes.
+FACE_REMAP_LAYERS = (
+    "jaw", "oral_cavity", "lip_lower", "lip_upper", "corner_left",
+    "corner_right", "blush_left", "blush_right", "iris_left", "iris_right",
+    "eyelid_left", "eyelid_right", "eyeliner_left", "eyeliner_right",
+    "brow_left", "brow_right",
+)
+
+
+def _face_evidence(image_path: Path):
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    import cv2 as _cv2
+
+    from tools.audit_pose_atlas_identity import (
+        DEFAULT_DETECTOR_MODEL,
+        _detect,
+    )
+
+    image = _cv2.imread(str(image_path), _cv2.IMREAD_UNCHANGED)
+    if image is None:
+        raise ValueError(f"cannot decode {image_path}")
+    return _detect(image, DEFAULT_DETECTOR_MODEL)
+
+
+def _face_alignment_matrix(front, target) -> np.ndarray:
+    """Solve the front-to-view affine over the five YuNet landmarks.
+
+    A plain face-box scale mapped everything ~30px low (profile boxes start
+    lower on the forehead), so the affine is solved least-squares over the
+    five landmarks (eyes, nose, mouth corners) instead.
+    """
+
+    source_points = np.asarray(front.landmarks, dtype=np.float64)
+    target_points = np.asarray(target.landmarks, dtype=np.float64)
+    front_eye_span = abs(source_points[1, 0] - source_points[0, 0])
+    target_eye_span = abs(target_points[1, 0] - target_points[0, 0])
+    front_face_height = abs(
+        (source_points[3, 1] + source_points[4, 1]) / 2.0
+        - (source_points[0, 1] + source_points[1, 1]) / 2.0
+    )
+    target_face_height = abs(
+        (target_points[3, 1] + target_points[4, 1]) / 2.0
+        - (target_points[0, 1] + target_points[1, 1]) / 2.0
+    )
+    scale_y = target_face_height / front_face_height
+    if target_eye_span < front_eye_span * 0.25:
+        # Near-profile views collapse the far-side landmarks onto the near
+        # side, degenerating the least-squares affine to ~zero x-scale (the
+        # features squashed into a vertical line and vanished).  Fall back
+        # to a similarity transform: uniform scale from the eye-to-mouth
+        # height, anchored on the eye/mouth mid-axis.
+        source_axis = source_points.mean(axis=0)
+        target_axis = target_points.mean(axis=0)
+        return np.array(
+            [
+                [scale_y, 0.0, target_axis[0] - source_axis[0] * scale_y],
+                [0.0, scale_y, target_axis[1] - source_axis[1] * scale_y],
+            ],
+            dtype=np.float64,
+        )
+    design = np.column_stack(
+        (source_points, np.ones(len(source_points), dtype=np.float64))
+    )
+    coefficients, _, _, _ = np.linalg.lstsq(design, target_points, rcond=None)
+    return np.array(
+        [
+            [coefficients[0, 0], coefficients[1, 0], coefficients[2, 0]],
+            [coefficients[0, 1], coefficients[1, 1], coefficients[2, 1]],
+        ],
+        dtype=np.float64,
+    )
+
+
+def _remap_face_candidates(
+    candidates: dict[str, np.ndarray],
+    repo: Path,
+    layer_dir: Path,
+    view: str,
+    foreground: np.ndarray,
+) -> None:
+    """Replace mirrored face-detail candidates with front-anchored warps."""
+
+    # Source of truth: the half-body front layers.  They are the one layer
+    # set whose features verifiably sit on the face (iris centroids match
+    # the YuNet eye landmarks to <1px); the full-body golden layers carried
+    # the offset defect on EVERY view, including the front.
+    source_dir = repo / "assets/expressions/layered"
+    front = _face_evidence(repo / "assets/expressions/idle_front.png")
+    try:
+        target = _face_evidence(repo / "assets/pose-atlas/v4" / f"{view}.png")
+    except ValueError:
+        # Rear views have no detectable face; their face-detail layers are
+        # licensed empty (speech-mouth and back-view rulings).
+        h, w = foreground.shape
+        for layer in FACE_REMAP_LAYERS:
+            candidates[layer] = np.zeros((h, w), bool)
+        return
+    box_view = target.box
+    matrix = _face_alignment_matrix(front, target)
+    h, w = foreground.shape
+    # Constrain remapped features to a padded face zone so a far-side eye
+    # that projects onto hair simply vanishes (licensed-empty on turned
+    # views) instead of claiming hair pixels.
+    pad_x, pad_y = box_view[2] * 0.25, box_view[3] * 0.25
+    zone = np.zeros((h, w), bool)
+    y0 = max(0, int(box_view[1] - pad_y))
+    y1 = min(h, int(box_view[1] + box_view[3] + pad_y * 1.6))
+    x0 = max(0, int(box_view[0] - pad_x))
+    x1 = min(w, int(box_view[0] + box_view[2] + pad_x))
+    zone[y0:y1, x0:x1] = True
+    for layer in FACE_REMAP_LAYERS:
+        source = _rgba(source_dir / f"front_{layer}.png")
+        candidates[layer] = (
+            _warp_mask(source[:, :, 3] > 0, matrix, (w, h)) & foreground & zone
+        )
 
 
 def _warped_layer_candidates(
@@ -164,6 +295,19 @@ def _rebuild_mouth_partitions(
     oral = _darkest_oral_band(inner, authority, yy, y_mid)
     upper = inner & (yy < y_mid) & ~oral
     lower = inner & (yy >= y_mid) & ~oral
+    if not upper.any() or not lower.any():
+        # On narrow turned-view mouths the darkest band can swallow an
+        # entire lip half (yaw+090 crashed here).  Fall back to the closed
+        # mouth's mid-seam — a thin strip on the median row — which keeps a
+        # non-empty cavity for the visible-speech-mouth contract while both
+        # lips survive.  Near-profile views clear the cavity downstream.
+        oral = inner & (np.abs(yy - y_mid) <= 1)
+        upper = inner & (yy < y_mid) & ~oral
+        lower = inner & (yy >= y_mid) & ~oral
+        if not upper.any() or not lower.any():
+            oral = np.zeros_like(mouth)
+            upper = inner & (yy < y_mid)
+            lower = inner & (yy >= y_mid)
     kept_oral, upper, lower = _clamp_oral_to_lips(oral, upper, lower, xx, yy, y_mid)
     if not upper.any() or not lower.any() or not corner_left.any() or not corner_right.any():
         raise RuntimeError("failed to partition mouth support")
@@ -270,6 +414,10 @@ def build(
     matrix = _bbox_affine(canonical[:, :, 3], authority[:, :, 3])
 
     candidates = _warped_layer_candidates(layer_dir, matrix, foreground, view)
+    # Every view is remapped — the legacy full-body feature masks carried
+    # the offset defect on the front view too (iris on the cheekbones, lip
+    # on the neck; only the x-symmetry hid it from centroid checks).
+    _remap_face_candidates(candidates, repo, layer_dir, view, foreground)
 
     # Legacy eye masks overlap exactly.  Assign every authority pixel once so
     # blink and gaze layers remain independently addressable at runtime.
@@ -277,6 +425,14 @@ def build(
     if face_visible:
         _partition_eye_layers(candidates)
         _rebuild_mouth_partitions(candidates, authority)
+        # Near-profile speech-mouth ruling (2026-08-27): |yaw| >= 75 views
+        # return their oral pixels to the lips and ship an empty cavity —
+        # the same contract VISIBLE_SPEECH_MOUTH_VIEWS and the semantic
+        # audit exemption encode.
+        yaw_match = re.prefixmatch(r"yaw([+-]\d{3})-pitch", view)
+        if yaw_match and abs(int(yaw_match.group(1))) >= NEAR_PROFILE_MIN_ABS_YAW:
+            candidates["lip_lower"] |= candidates["oral_cavity"]
+            candidates["oral_cavity"] = np.zeros_like(candidates["oral_cavity"])
 
     # The legacy ornament mask also contains fragments of the facial feature
     # masks.  Ornament owns only rigid jewellery: it must never pre-empt eyes,

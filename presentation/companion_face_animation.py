@@ -36,7 +36,8 @@ lazy from domain.face_microtiming import (
     BLINK_REST_AT_MS,
     SACCADE_INTERVAL_MS,
 )
-lazy from domain.face_rig import EyeState, blink_for_eye_state
+lazy from dataclasses import replace as dataclass_replace
+lazy from domain.face_rig import EyeState, FacePose, blink_for_eye_state
 lazy from presentation.companion_blink_runtime import CompanionBlinkRuntimeMixin
 lazy from presentation.companion_face_assets import CompanionFaceAssetMethods
 lazy from presentation.companion_speech_emotion import persist_wardrobe_mood
@@ -864,7 +865,7 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             return QPixmap(closed)
         return self.face_renderer.render(
             closed,
-            motion,
+            self._speech_aligned_motion(motion),
             self._face_render_layers(
                 self.expression_pixmaps.get(
                     expression,
@@ -874,6 +875,29 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             ),
             aperture=aperture,
         )
+
+    def _speech_aligned_motion(self, motion):
+        """Pin the motion pose to the speech expression's authored canvas.
+
+        The mouth layers handed to the renderer are cut on the speech
+        expression's pose canvas, while ``face_motion_frame`` is only
+        re-posed by the audio viseme loop.  Between speech configuration and
+        the first audio cue (the startup sentence hits exactly this window)
+        the stale pose composes a different-pose base under a correctly-cut
+        patch, which shows as the reported skin block beside the mouth.  The
+        renderer base and the patch must share one canvas, so the speech
+        pose is authoritative whenever speech frames are configured.
+        """
+        motion_expression = (
+            self.speech_gesture_expression or self.speech_closed_expression
+        )
+        pose_name = self.physics_expression_poses.get(
+            motion_expression,
+            getattr(self, "idle_pose", "front"),
+        )
+        if motion.pose.value == pose_name:
+            return motion
+        return dataclass_replace(motion, pose=FacePose(pose_name))
 
     def _face_render_layers(
         self,
