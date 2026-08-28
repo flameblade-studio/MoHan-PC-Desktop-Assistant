@@ -379,9 +379,12 @@ def main(argv: list[str] | None = None) -> int:
     values = sys.argv[1:] if argv is None else argv
     args = parse_preview_arguments(values)
     if args.jit_status_output:
+        # Same policy marker as application_bootstrap: the state must match
+        # the shipped JIT-off default (MOHAN_ENABLE_JIT=1 flips expectation).
+        expected_jit = os.environ.get("MOHAN_ENABLE_JIT") == "1"
         args.jit_status_output.write_text(
             "PACKAGED_JIT_DEFAULT_OK"
-            if jit_is_enabled()
+            if jit_is_enabled() == expected_jit
             else "PACKAGED_JIT_DEFAULT_FAILED",
             encoding="utf-8",
         )
