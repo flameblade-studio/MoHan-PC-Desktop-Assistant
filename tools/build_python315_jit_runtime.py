@@ -74,7 +74,7 @@ def build(source: Path, prefix: Path) -> Path:
             [
                 str(source / "configure"),
                 f"--prefix={prefix}",
-                "--enable-experimental-jit=yes",
+                "--enable-experimental-jit=yes-off",
                 "--enable-shared",
                 "--with-ensurepip=install",
             ],
@@ -124,20 +124,23 @@ def _probe(python: Path, value: str | None) -> dict[str, object]:
 
 
 def verify_runtime(python: Path) -> None:
+    # Shipped policy since 2026-08-29 (0xC0000409 family): the runtime keeps
+    # JIT capability compiled in (`yes-off`) but starts with it disabled;
+    # PYTHON_JIT=1 remains the explicit experiment switch.
     default = _probe(python, None)
-    disabled = _probe(python, "0")
+    enabled = _probe(python, "1")
     if default != {
-        "version": CPYTHON_VERSION,
-        "available": True,
-        "enabled": True,
-    }:
-        raise RuntimeError(f"CPython JIT-default contract failed: {default}")
-    if disabled != {
         "version": CPYTHON_VERSION,
         "available": True,
         "enabled": False,
     }:
-        raise RuntimeError(f"CPython PYTHON_JIT=0 contract failed: {disabled}")
+        raise RuntimeError(f"CPython JIT-off default contract failed: {default}")
+    if enabled != {
+        "version": CPYTHON_VERSION,
+        "available": True,
+        "enabled": True,
+    }:
+        raise RuntimeError(f"CPython PYTHON_JIT=1 contract failed: {enabled}")
 
 
 def main() -> int:

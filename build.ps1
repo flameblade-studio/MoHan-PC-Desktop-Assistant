@@ -165,7 +165,7 @@ $BuildInfo = Join-Path $ProjectRoot "build-info.json"
     repository = "flameblade-studio/MoHan-PC-Desktop-Assistant"
     python = $PythonVersion
     jit_supported = $true
-    jit_default = $true
+    jit_default = $false
 } | ConvertTo-Json | Set-Content -Encoding utf8 $BuildInfo
 
 try {
