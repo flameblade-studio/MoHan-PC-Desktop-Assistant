@@ -14,6 +14,7 @@ INTERACTION_COUNT = 10
 JEALOUSY_THRESHOLD = 0.5
 JEALOUSY_FADED_THRESHOLD = 0.1
 JEALOUSY_DECAY_LOWER = 0.2
+FLOAT_TOLERANCE = 1e-9
 
 
 def test_affinity_grows_with_interaction() -> None:
@@ -72,6 +73,29 @@ def test_affinity_decays_slowly_over_time() -> None:
     assert 0.0 < later < before
 
 
+def test_repeated_snapshots_do_not_compound_decay() -> None:
+    """Ruling 2026-08-27: reading state must never accelerate decay.
+
+    The decay anchor previously never advanced, so every snapshot() applied
+    the full since-last-interaction factor again and per-frame policy reads
+    emptied a one-week half-life in minutes.
+    """
+    half_life = 7.0 * 24.0 * 60.0 * 60.0
+    sampled = AffinityState(clock=lambda: 0.0)
+    direct = AffinityState(clock=lambda: 0.0)
+    for _ in range(INTERACTION_COUNT):
+        sampled.note_interaction(now=0.0)
+        direct.note_interaction(now=0.0)
+    before = direct.affinity
+    # Simulate one hour of per-second policy reads, then finish the week.
+    for second in range(1, 3601):
+        sampled.snapshot(now=float(second))
+    sampled_after = sampled.snapshot(now=half_life).affinity
+    direct_after = direct.snapshot(now=half_life).affinity
+    assert abs(sampled_after - direct_after) < FLOAT_TOLERANCE
+    assert abs(direct_after - before / 2.0) < FLOAT_TOLERANCE
+
+
 def test_invalid_affinity_is_rejected() -> None:
     try:
         AffinityState(affinity=1.5)
@@ -88,6 +112,7 @@ def run() -> None:
     test_jealousy_lingers_for_minutes()
     test_affection_boost_is_larger_than_routine_interaction()
     test_affinity_decays_slowly_over_time()
+    test_repeated_snapshots_do_not_compound_decay()
     test_invalid_affinity_is_rejected()
     print("AFFINITY_STATE_OK")
 
