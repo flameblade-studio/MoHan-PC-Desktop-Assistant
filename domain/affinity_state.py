@@ -148,6 +148,11 @@ class AffinityState:
         self._affinity *= math.exp(
             -math.log(2.0) * elapsed / AFFINITY_DECAY_HALF_LIFE_SECONDS
         )
+        # Advance the anchor after applying decay.  Without this, every
+        # snapshot() re-applies the full since-last-interaction factor and the
+        # decay compounds with each read (a per-frame policy read emptied a
+        # one-week half-life in minutes).  Mirrors satiety._decay.
+        self._last_interaction_at = now
 
     def _decay_jealousy(self, now: float) -> None:
         elapsed = max(0.0, now - self._jealousy_at)
@@ -156,3 +161,4 @@ class AffinityState:
         self._jealousy *= math.exp(
             -math.log(2.0) * elapsed / JEALOUSY_DECAY_HALF_LIFE_SECONDS
         )
+        self._jealousy_at = now

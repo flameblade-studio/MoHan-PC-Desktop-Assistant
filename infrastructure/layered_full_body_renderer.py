@@ -394,11 +394,12 @@ class LayeredFullBodyRenderer:
         following = self.render_view(next_view, motion)
         if current.isNull() or following.isNull():
             return current
-        result = QPixmap(current.size())
-        result.fill(Qt.transparent)
+        # Paint the current view fully opaque, then blend the next view over
+        # it.  Painting BOTH at partial opacity onto a transparent ground
+        # composited to alpha (1-b) + b*(1-(1-b)) < 1 — at blend 0.5 the
+        # character became ~75% opaque and the desktop showed through her.
+        result = QPixmap(current)
         painter = QPainter(result)
-        painter.setOpacity(1.0 - bounded)
-        painter.drawPixmap(0, 0, current)
         painter.setOpacity(bounded)
         painter.drawPixmap(0, 0, following)
         painter.end()

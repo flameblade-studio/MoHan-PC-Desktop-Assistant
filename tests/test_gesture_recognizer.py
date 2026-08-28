@@ -140,6 +140,36 @@ def assert_custom_templates_are_translation_scale_and_mirror_invariant() -> None
     assert mirrored_result.triggered
 
 
+def assert_left_handed_recordings_match_either_hand() -> None:
+    """Ruling 2026-08-27: recordings carry no handedness, so both must work.
+
+    A template recorded with the LEFT hand kept its left-hand geometry while
+    template preparation normalized it as RIGHT without mirroring — neither
+    hand could ever match it afterwards.  Templates are now prepared in both
+    normalizations.
+    """
+    right_template = hand("open-palm", 0.0).landmarks
+    left_recorded = tuple(
+        GestureLandmark(1.0 - point.x, point.y, point.z)
+        for point in right_template
+    )
+    recognizer = GestureRecognizer(
+        {"custom:fan": (GestureSample(left_recorded),)},
+        timing=GestureTiming(cooldown_seconds=0.0),
+    )
+    for at in (1.0, 1.09, 1.19):
+        left_result = recognizer.update(
+            HandSkeleton(at, HandSide.LEFT, left_recorded)
+        )
+    assert left_result.gesture_id == "custom:fan"
+    assert left_result.triggered
+    recognizer.reset()
+    for at in (3.0, 3.09, 3.19):
+        right_result = recognizer.update(hand("open-palm", at))
+    assert right_result.gesture_id == "custom:fan"
+    assert right_result.triggered
+
+
 def assert_candidate_interruption_cancel_and_hand_isolation() -> None:
     recognizer = GestureRecognizer(timing=GestureTiming(cooldown_seconds=0.0))
     assert recognizer.update(hand("thumbs-up", 1.0)).state is RecognitionState.CANDIDATE
@@ -212,6 +242,7 @@ def run() -> None:
     assert_wave_accepts_a_natural_partly_tucked_thumb()
     assert_cooldown_is_single_trigger_and_resettable()
     assert_custom_templates_are_translation_scale_and_mirror_invariant()
+    assert_left_handed_recordings_match_either_hand()
     assert_candidate_interruption_cancel_and_hand_isolation()
     assert_malformed_and_ambiguous_inputs_fail_closed()
     assert_relative_negative_z_is_supported_but_invalid_depth_is_rejected()

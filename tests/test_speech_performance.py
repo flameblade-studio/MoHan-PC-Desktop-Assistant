@@ -138,6 +138,34 @@ def assert_interrupt_and_failure_fail_closed() -> None:
     assert timeline.snapshot.mouth_closed
 
 
+def assert_late_viseme_cannot_reopen_a_closed_mouth() -> None:
+    """Ruling 2026-08-27: after mouth_closed, same-generation cues are spent.
+
+    Provider volume cues travel through queued signals and can land after
+    the close event.  Without this guard a late cue flipped the timeline
+    back to SPEAKING with the mouth open, and no second close ever came —
+    the mouth stayed open until the next utterance.
+    """
+    clock = VirtualClock()
+    timeline = SpeechPerformanceTimeline(clock)
+    timeline.prepare(OPENAI_REALTIME_PROVIDER)
+    timeline.first_audio()
+    assert timeline.viseme(0.9, "A") is not None
+    closed, idle = timeline.mouth_closed()
+    assert closed.kind is SpeechEventKind.MOUTH_CLOSED
+    assert idle.phase is SpeechPerformancePhase.IDLE
+    assert timeline.snapshot.mouth_closed
+    clock.advance(0.05)
+    assert timeline.viseme(0.8, "O") is None
+    assert timeline.snapshot.phase is SpeechPerformancePhase.IDLE
+    assert timeline.snapshot.mouth_closed
+    # A new utterance still speaks normally.
+    timeline.prepare(OPENAI_REALTIME_PROVIDER)
+    timeline.first_audio()
+    assert timeline.viseme(0.7, "E") is not None
+    assert not timeline.snapshot.mouth_closed
+
+
 def assert_timeline_keeps_no_text_or_secret_fields() -> None:
     clock = VirtualClock()
     timeline = SpeechPerformanceTimeline(clock)
@@ -153,6 +181,7 @@ def run() -> None:
     assert_gesture_beats_are_rate_limited()
     assert_stale_events_cannot_move_the_new_speech()
     assert_interrupt_and_failure_fail_closed()
+    assert_late_viseme_cannot_reopen_a_closed_mouth()
     assert_timeline_keeps_no_text_or_secret_fields()
     print("SPEECH_PERFORMANCE_OK")
 
