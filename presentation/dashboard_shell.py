@@ -14,21 +14,15 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from application.presentation_ports import (
-    PlatformServicePort,
-    PresentationDatabasePort,
-    format_duration,
+    PlatformServicePort, PresentationDatabasePort, format_duration,
 )
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
 lazy from domain.app_profile import (
-    personalize_text,
-    profile_setting,
-    profile_window_title,
+    personalize_text, profile_setting, profile_window_title,
 )
 lazy from domain.feature_registry import DashboardFeatureRegistry
 lazy from domain.language_support import (
-    is_english,
-    is_japanese,
-    is_simplified_chinese,
+    is_english, is_japanese, is_simplified_chinese,
 )
 lazy from domain.outfit_pack import OutfitPackError
 lazy from presentation.companion_platform import reminder_line
@@ -988,10 +982,8 @@ class DashboardShellMixin:
     def moveEvent(self, event) -> None:
         super().moveEvent(event)
         # Windows 移動視窗後可能不會觸發 Qt 的 mousePressEvent，再補一次置頂。
-        # 但最大化、還原、最小化同樣會觸發 moveEvent：在狀態轉換中 raise 會
-        # 與原生視框更新賽跑，曾把視窗卡成「最大尺寸、標題列按鈕消失」的
-        # 假全螢幕死鎖（v4.5.1 實機回報，2026-08-29）。只有一般狀態的拖動
-        # 才補置頂。
+        # 但狀態轉換（最大化／還原／最小化）也走 moveEvent：此時 raise 會與
+        # 原生視框更新賽跑成假全螢幕死鎖（v4.5.1 實機回報）——僅一般狀態補。
         if self.windowState() & (
             Qt.WindowMaximized | Qt.WindowMinimized | Qt.WindowFullScreen
         ):
