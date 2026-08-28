@@ -1100,7 +1100,13 @@ class SpeechListener(QObject):
                     model=model,
                 )
             )
-            self.recognized.emit(text)
+            # 比照 Windows 路徑（_finished）：空白轉寫改走 failed，不進對話流程。
+            if text.strip():
+                self.recognized.emit(text)
+            else:
+                self.failed.emit(
+                    service_status(self.language, ServiceStatus.SPEECH_NOT_UNDERSTOOD)
+                )
             audio_path.unlink(missing_ok=True)
             self._busy.clear()
             self.listening_changed.emit(False)

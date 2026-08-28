@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+lazy from dataclasses import replace
+
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import (
     QAbstractSpinBox,
+    QComboBox,
     QDialog,
     QDialogButtonBox,
     QFormLayout,
@@ -25,6 +28,7 @@ lazy from application.companion_phrasebook import (
 lazy from domain.companion_proactivity_preferences import (
     CompanionProactivityPreferences,
 )
+lazy from domain.performance_preferences import PerformancePreferences
 
 __all__ = ('FlagshipCompanionMixin',)
 
@@ -41,6 +45,7 @@ class FlagshipCompanionMixin:
         layout.setContentsMargins(12, 12, 12, 12)
         layout.setSpacing(12)
         layout.addWidget(self._companion_preference_card())
+        layout.addWidget(self._performance_preference_card())
         layout.addWidget(self._gesture_interaction_card())
         layout.addWidget(self._openai_vision_preference_card())
         layout.addWidget(self._companion_phrasebook_card())
@@ -114,7 +119,180 @@ class FlagshipCompanionMixin:
         ):
             preference_form.addRow(control)
         self._add_companion_numeric_controls(preference_form, preferences)
+        self._add_proactive_interaction_controls(preference_form)
         return preference_card
+    def _add_proactive_interaction_controls(self, form: QFormLayout) -> None:
+        """Visible owners of the proactive-mode and welcome-timing settings.
+
+        These three controls used to be constructed for the remote tab but were
+        never added to any layout, so every flagship save silently overwrote the
+        user's values with the ones read at construction time.  They now live on
+        the companion tab, and ``save_draft_settings`` persists each key only
+        after the user actually changed its control (see
+        ``_proactive_interaction_touched``).
+        """
+
+        self._proactive_interaction_touched: set[str] = set()
+        self.proactive_mode = QComboBox()
+        for label, value in (
+            (self._t("安靜（不主動寒暄）"), "quiet"),
+            (self._t("適度（推薦）"), "balanced"),
+            (self._t("積極（較常主動關心）"), "active"),
+        ):
+            self.proactive_mode.addItem(label, value)
+        self.proactive_mode.setAccessibleName(self._t("主動寒暄模式"))
+        self.minimum_away_minutes = QSpinBox()
+        self.minimum_away_minutes.setRange(1, 30)
+        self.minimum_away_minutes.setSuffix(self._t(" 分鐘"))
+        self.minimum_away_minutes.setAccessibleName(
+            self._t("歡迎回來的最短離座時間（分鐘）")
+        )
+        self.conversation_silence_minutes = QSpinBox()
+        self.conversation_silence_minutes.setRange(10, 240)
+        self.conversation_silence_minutes.setSuffix(self._t(" 分鐘"))
+        self.conversation_silence_minutes.setAccessibleName(
+            self._t("對話沉默關心門檻（分鐘）")
+        )
+        self._refresh_proactive_interaction_controls()
+        self.proactive_mode.currentIndexChanged.connect(
+            lambda _index: self._proactive_interaction_touched.add(
+                "proactive_interaction_mode"
+            )
+        )
+        self.minimum_away_minutes.valueChanged.connect(
+            lambda _value: self._proactive_interaction_touched.add(
+                "multisensory_welcome_minimum_seconds"
+            )
+        )
+        self.conversation_silence_minutes.valueChanged.connect(
+            lambda _value: self._proactive_interaction_touched.add(
+                "multisensory_conversation_silence_seconds"
+            )
+        )
+        form.addRow(self._t("主動寒暄模式"), self.proactive_mode)
+        form.addRow(
+            self._t("歡迎回來的最短離座時間"),
+            self._companion_step_control(
+                self.minimum_away_minutes,
+                "companionMinimumAwayMinutes",
+            ),
+        )
+        form.addRow(
+            self._t("對話沉默關心門檻"),
+            self._companion_step_control(
+                self.conversation_silence_minutes,
+                "companionConversationSilenceMinutes",
+            ),
+        )
+    def _refresh_proactive_interaction_controls(self) -> None:
+        """Re-read the persisted values and mark every control untouched."""
+
+        mode_index = self.proactive_mode.findData(
+            str(self.db.setting("proactive_interaction_mode", "balanced"))
+        )
+        self.proactive_mode.setCurrentIndex(max(0, mode_index))
+        self.minimum_away_minutes.setValue(
+            max(
+                1,
+                round(
+                    float(
+                        self.db.setting(
+                            "multisensory_welcome_minimum_seconds", 60
+                        )
+                    )
+                    / 60
+                ),
+            )
+        )
+        self.conversation_silence_minutes.setValue(
+            max(
+                10,
+                round(
+                    float(
+                        self.db.setting(
+                            "multisensory_conversation_silence_seconds",
+                            45 * 60,
+                        )
+                    )
+                    / 60
+                ),
+            )
+        )
+        self._proactive_interaction_touched.clear()
+    def _performance_preference_card(self) -> QFrame:
+        preferences = self._performance_draft.value
+        card = QFrame()
+        card.setObjectName("companionPerformanceCard")
+        card.setStyleSheet(
+            "QFrame#companionPerformanceCard{background:#f6f6fd;"
+            "border:1px solid #c6c8e4;border-radius:12px;padding:8px;}"
+        )
+        form = QFormLayout(card)
+        heading = QLabel(self._t("<b>演出偏好</b>"))
+        heading.setStyleSheet("color:#4a4f87;font-size:16px;")
+        form.addRow(heading)
+        note = QLabel(
+            self._t(
+                "背身與 360° 演出預設關閉；勾選後按全域保存設定才會生效。"
+            )
+        )
+        note.setWordWrap(True)
+        form.addRow(note)
+        self.performance_view_360 = self._preference_checkbox(
+            self._t("允許 360° 視角演出"), preferences.view_360_enabled
+        )
+        self.performance_full_back = self._preference_checkbox(
+            self._t("允許全背身演出"), preferences.full_back_view_enabled
+        )
+        self.performance_emotional_back = self._preference_checkbox(
+            self._t("允許情緒背身演出"),
+            preferences.emotional_back_view_enabled,
+        )
+        self.performance_camera_context = self._preference_checkbox(
+            self._t("允許攝影機情境驅動演出"),
+            preferences.camera_context_enabled,
+        )
+        for control in (
+            self.performance_view_360,
+            self.performance_full_back,
+            self.performance_emotional_back,
+            self.performance_camera_context,
+        ):
+            form.addRow(control)
+        self.performance_intensity = QSpinBox()
+        self.performance_intensity.setRange(0, 100)
+        self.performance_intensity.setValue(preferences.intensity_percent)
+        self.performance_intensity.setAccessibleName(self._t("演出強度"))
+        form.addRow(
+            self._t("演出強度"),
+            self._companion_step_control(
+                self.performance_intensity,
+                "companionPerformanceIntensity",
+            ),
+        )
+        return card
+    def _refresh_performance_controls(self) -> None:
+        preferences = self._performance_draft.value
+        self.performance_view_360.setChecked(preferences.view_360_enabled)
+        self.performance_full_back.setChecked(preferences.full_back_view_enabled)
+        self.performance_emotional_back.setChecked(
+            preferences.emotional_back_view_enabled
+        )
+        self.performance_camera_context.setChecked(
+            preferences.camera_context_enabled
+        )
+        self.performance_intensity.setValue(preferences.intensity_percent)
+    def _staged_performance_preferences(self) -> PerformancePreferences:
+        return replace(
+            self._performance_draft.value,
+            view_360_enabled=self.performance_view_360.isChecked(),
+            full_back_view_enabled=self.performance_full_back.isChecked(),
+            emotional_back_view_enabled=(
+                self.performance_emotional_back.isChecked()
+            ),
+            camera_context_enabled=self.performance_camera_context.isChecked(),
+            intensity_percent=self.performance_intensity.value(),
+        )
     def _add_companion_numeric_controls(
         self,
         form: QFormLayout,

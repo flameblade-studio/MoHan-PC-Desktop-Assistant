@@ -55,6 +55,76 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
     " 分鐘": translations(" 分鐘", " minutes", " 分"),
     "，減少": translations("，减少", ", decrease", "、減らす"),
     "，增加": translations("，增加", ", increase", "、増やす"),
+    "主動寒暄模式": translations(
+        "主动寒暄模式", "Proactive greeting mode", "自発的な挨拶モード"
+    ),
+    "歡迎回來的最短離座時間": translations(
+        "欢迎回来的最短离座时间",
+        "Minimum absence before a welcome-back",
+        "おかえり挨拶までの最短離席時間",
+    ),
+    "歡迎回來的最短離座時間（分鐘）": translations(
+        "欢迎回来的最短离座时间（分钟）",
+        "Minimum absence before a welcome-back (minutes)",
+        "おかえり挨拶までの最短離席時間（分）",
+    ),
+    "對話沉默關心門檻": translations(
+        "对话沉默关怀阈值",
+        "Conversation-silence check-in threshold",
+        "会話沈黙後の気遣いしきい値",
+    ),
+    "對話沉默關心門檻（分鐘）": translations(
+        "对话沉默关怀阈值（分钟）",
+        "Conversation-silence check-in threshold (minutes)",
+        "会話沈黙後の気遣いしきい値（分）",
+    ),
+    "<b>演出偏好</b>": translations(
+        "<b>演出偏好</b>",
+        "<b>Performance preferences</b>",
+        "<b>パフォーマンス設定</b>",
+    ),
+    "背身與 360° 演出預設關閉；勾選後按全域保存設定才會生效。": translations(
+        "背身与 360° 演出默认关闭；勾选后按全局保存设置才会生效。",
+        "Back-view and 360° performances are off by default; they take effect only after global Save Settings.",
+        "背面と360°パフォーマンスは既定で無効です。チェック後、全体設定を保存すると反映されます。",
+    ),
+    "允許 360° 視角演出": translations(
+        "允许 360° 视角演出",
+        "Allow 360° view performances",
+        "360°ビューのパフォーマンスを許可",
+    ),
+    "允許全背身演出": translations(
+        "允许全背身演出",
+        "Allow full back-view performances",
+        "完全な背面パフォーマンスを許可",
+    ),
+    "允許情緒背身演出": translations(
+        "允许情绪背身演出",
+        "Allow emotional back-view performances",
+        "感情表現の背面パフォーマンスを許可",
+    ),
+    "允許攝影機情境驅動演出": translations(
+        "允许摄像头情境驱动演出",
+        "Allow camera-context-driven performances",
+        "カメラ状況に応じたパフォーマンスを許可",
+    ),
+    "演出強度": translations(
+        "演出强度", "Performance intensity", "パフォーマンス強度"
+    ),
+    "<b>介面與無障礙</b>": translations(
+        "<b>界面与无障碍</b>",
+        "<b>Interface & accessibility</b>",
+        "<b>インターフェースとアクセシビリティ</b>",
+    ),
+    "高對比模式": translations(
+        "高对比模式", "High-contrast mode", "ハイコントラストモード"
+    ),
+    "介面縮放": translations("界面缩放", "Interface scale", "画面の拡大率"),
+    "保存設定後立即套用於旗艦中心；主控台重新啟動後套用。": translations(
+        "保存设置后立即应用于旗舰中心；主控台重新启动后应用。",
+        "Applies to the flagship center right after Save Settings; the dashboard applies it after a restart.",
+        "設定を保存するとフラッグシップセンターに即時適用され、ダッシュボードには再起動後に適用されます。",
+    ),
     "<b>手勢互動</b>": translations(
         "<b>手势互动</b>", "<b>Gesture interaction</b>", "<b>ジェスチャー操作</b>"
     ),

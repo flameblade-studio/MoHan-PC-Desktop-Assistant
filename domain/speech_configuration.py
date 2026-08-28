@@ -102,6 +102,11 @@ VOICE_GENERATION_PROMPT = (
     "避免中國普通話腔、兒童聲、過度甜膩、誇張撒嬌或舞台式朗誦。"
 )
 
+# Single source of truth for the voice-volume default.  The dashboard slider,
+# the startup volume application, and the gesture-mute path must all agree, or
+# a user who never touched the slider gets different loudness per code path.
+DEFAULT_VOICE_VOLUME_PERCENT = 125
+
 VOICE_ENGINE_SYSTEM = SYSTEM_LOCAL_PROVIDER
 # Compatibility export for extensions written before the provider ID became
 # platform-neutral.

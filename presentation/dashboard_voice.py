@@ -31,6 +31,7 @@ lazy from application.presentation_ports import (
 lazy from domain.app_profile import profile_setting
 lazy from domain.language_support import localized_transcription_prompt
 lazy from domain.speech_configuration import (
+    DEFAULT_VOICE_VOLUME_PERCENT,
     REALTIME_VOICES,
     TTS_VOICES,
     VOICE_ENGINE_AZURE,
@@ -735,7 +736,13 @@ class DashboardVoiceMixin:
         self.voice_volume.setRange(0, 160)
         self.voice_volume.setSingleStep(5)
         self.voice_volume.setPageStep(10)
-        self.voice_volume.setValue(int(self.db.setting("voice_volume_percent", 125)))
+        self.voice_volume.setValue(
+            int(
+                self.db.setting(
+                    "voice_volume_percent", DEFAULT_VOICE_VOLUME_PERCENT
+                )
+            )
+        )
         self.voice_volume_label = QLabel()
         self.voice_volume_label.setMinimumWidth(52)
         self.voice_volume_label.setAlignment(Qt.AlignCenter)

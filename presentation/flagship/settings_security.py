@@ -51,10 +51,14 @@ lazy from infrastructure.gesture_configuration_store import (
 lazy from infrastructure.openai_vision_preferences_store import (
     OpenAIVisionPreferencesStoreError,
 )
+lazy from infrastructure.performance_preferences_store import (
+    PerformancePreferencesStoreError,
+)
 lazy from presentation.flagship.shared import (
     CORE_PERMISSION_LABELS,
     FlagshipDraftValues,
 )
+lazy from presentation.flagship_theme import apply_flagship_theme
 
 __all__ = ('FlagshipSettingsSecurityMixin',)
 
@@ -127,22 +131,36 @@ class FlagshipSettingsSecurityMixin:
     def validate_draft_settings(self, *, show_error: bool = True) -> FlagshipDraftValues | None:
         """Build every typed value without touching persistence or external services."""
 
+        touched = self._proactive_interaction_touched
         try:
             gesture = self._staged_gesture_configuration()
             return FlagshipDraftValues(
                 gesture=gesture,
                 proactivity=self._staged_proactivity_preferences(),
                 vision=self._staged_openai_vision_preferences(),
+                performance=self._staged_performance_preferences(),
                 phrasebook=self._phrasebook_draft.as_setting(),
-                proactive_mode=str(self.proactive_mode.currentData()),
-                welcome_minimum_seconds=self.minimum_away_minutes.value() * 60,
+                proactive_mode=(
+                    str(self.proactive_mode.currentData())
+                    if "proactive_interaction_mode" in touched
+                    else None
+                ),
+                welcome_minimum_seconds=(
+                    self.minimum_away_minutes.value() * 60
+                    if "multisensory_welcome_minimum_seconds" in touched
+                    else None
+                ),
                 conversation_silence_seconds=(
                     self.conversation_silence_minutes.value() * 60
+                    if "multisensory_conversation_silence_seconds" in touched
+                    else None
                 ),
                 security=tuple(
                     (key, str(combo.currentData()))
                     for key, combo in self._permission_controls.items()
                 ),
+                high_contrast=self.flagship_high_contrast.isChecked(),
+                ui_scale=float(self.flagship_ui_scale.currentData()),
             )
         except (GestureConfigurationStoreError, TypeError, ValueError):
             if show_error:
@@ -204,15 +222,25 @@ class FlagshipSettingsSecurityMixin:
             self.openai_vision_store.save(validated.vision)
             self.gesture_store.save(validated.gesture)
             self.proactivity_store.save(validated.proactivity)
+            self.performance_store.save(validated.performance)
+            # ``None`` marks a control the user never touched: skip the write so
+            # this page cannot clobber values owned by another settings page
+            # (the dashboard also writes ``proactive_interaction_mode``).
             for key, value in (
                 ("proactive_interaction_mode", validated.proactive_mode),
                 ("multisensory_welcome_minimum_seconds", validated.welcome_minimum_seconds),
                 ("multisensory_conversation_silence_seconds", validated.conversation_silence_seconds),
+            ):
+                if value is not None:
+                    self.db.set_setting(key, value)
+            for key, value in (
                 (PHRASEBOOK_SETTING, validated.phrasebook),
                 ("proactive_interaction_enabled", validated.proactivity.enabled),
                 ("multisensory_welcome_brief_max_seconds", validated.proactivity.brief_absence_seconds),
                 ("multisensory_welcome_long_seconds", validated.proactivity.long_wait_seconds),
                 ("flagship_permissions", dict(validated.security)),
+                ("flagship_high_contrast", validated.high_contrast),
+                ("flagship_ui_scale", validated.ui_scale),
             ):
                 self.db.set_setting(key, value)
             self._rebuild_draft_settings()
@@ -240,6 +268,11 @@ class FlagshipSettingsSecurityMixin:
         return True
     def _after_successful_settings_save(self, vision: OpenAIVisionPreferences) -> None:
         self._configure_executor()
+        apply_flagship_theme(
+            self,
+            high_contrast=bool(self.db.setting("flagship_high_contrast", False)),
+            scale=float(self.db.setting("flagship_ui_scale", 1.0)),
+        )
         self._refresh_openai_vision_status(vision)
         if self.cloud_vision_service is not None:
             self.cloud_vision_service.refresh_authorization()
@@ -260,11 +293,13 @@ class FlagshipSettingsSecurityMixin:
             self._gesture_draft,
             self._proactivity_draft,
             self._openai_vision_draft,
+            self._performance_draft,
         ):
             with suppress(
                 GestureConfigurationStoreError,
                 CompanionProactivityPreferencesStoreError,
                 OpenAIVisionPreferencesStoreError,
+                PerformancePreferencesStoreError,
             ):
                 draft.cancel()
     def reload_draft_settings(self) -> None:
@@ -276,12 +311,16 @@ class FlagshipSettingsSecurityMixin:
         self._gesture_draft = self.gesture_store.begin_edit()
         self._proactivity_draft = self.proactivity_store.begin_edit()
         self._openai_vision_draft = self.openai_vision_store.begin_edit()
+        self._performance_draft = self.performance_store.begin_edit()
         self._phrasebook_draft = CompanionPhrasebook.from_setting(
             self.db.setting(PHRASEBOOK_SETTING, {})
         )
         self._refresh_gesture_controls()
         self._refresh_proactivity_controls()
         self._refresh_openai_vision_controls()
+        self._refresh_performance_controls()
+        self._refresh_proactive_interaction_controls()
+        self._refresh_accessibility_controls()
     def _refresh_gesture_controls(self) -> None:
         self.gesture_enabled.setChecked(self._gesture_draft.value.enabled)
         self._refresh_gesture_list()

@@ -9,13 +9,16 @@ lazy from application.outfit_reveal import OutfitRevealStateStore
 lazy from application.wardrobe_service import WardrobeService
 lazy from domain.autonomous_wardrobe import (
     AutonomousWardrobeDirector,
+    WardrobeCandidate,
     WardrobeContext,
     WardrobeDecision,
 )
+lazy from domain.wardrobe_intuition import weight_for_thermal_bands
 
 ACTIVE_OUTFIT_KEY = "active_outfit_id"
 LAST_CHANGED_KEY = "wardrobe_last_changed_at"
 MANUAL_LOCK_KEY = "wardrobe_manual_lock_until"
+CURRENT_WEIGHT_KEY = "wardrobe_current_weight"
 
 
 class WardrobeRuntimeSettingsPort(Protocol):
@@ -65,6 +68,7 @@ class AutonomousWardrobeRuntime:
         current = str(values.get(ACTIVE_OUTFIT_KEY, "") or "").strip()
         if not current:
             current = self._service.selected_outfit(current)
+        candidates = self._service.autonomous_candidates()
         decision = self._director.decide(
             WardrobeContext(
                 observed_at=situation.observed_at,
@@ -76,8 +80,9 @@ class AutonomousWardrobeRuntime:
                 last_changed_at=_optional_datetime(values.get(LAST_CHANGED_KEY)),
                 manual_lock_until=_optional_datetime(values.get(MANUAL_LOCK_KEY)),
             ),
-            self._service.autonomous_candidates(),
+            candidates,
         )
+        self._persist_current_weight(decision.outfit_id, candidates)
         if not decision.changed:
             return decision
         self._service.apply(decision.outfit_id)
@@ -89,6 +94,35 @@ class AutonomousWardrobeRuntime:
         )
         self._reveals.mark_pending(decision.outfit_id)
         return decision
+
+    def _persist_current_weight(
+        self,
+        outfit_id: str,
+        candidates: tuple[WardrobeCandidate, ...],
+    ) -> None:
+        """Record the worn outfit's weight for the comfort-complaint intuition.
+
+        ``wardrobe_current_weight`` previously had no writer, so the
+        too-hot/too-cold complaint could never trigger for autonomous outfits.
+        The weight is derived from the outfit's own thermal-band profile.
+        """
+        profile = next(
+            (
+                candidate.profile
+                for candidate in candidates
+                if candidate.outfit_id == outfit_id
+            ),
+            None,
+        )
+        if profile is None:
+            return
+        self._settings.write(
+            {
+                CURRENT_WEIGHT_KEY: weight_for_thermal_bands(
+                    profile.thermal_bands
+                ).value
+            }
+        )
 
 
 def _optional_datetime(value: object) -> datetime | None:
