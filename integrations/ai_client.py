@@ -146,6 +146,11 @@ def offline_reply(text: str, mode: str, response_language: str = "zh-TW") -> str
         reply = _traditional_chinese_offline_reply(text, mode)
     return reply
 
+# Chat/planner read timeout. 45s starved reasoning-model responses and the
+# escaped TimeoutError froze the dashboard (v4.5.1, 2026-08-29); 150s covers
+# slow reasoning turns while the worker's failure path shows real errors.
+REQUEST_TIMEOUT_SECONDS = 150
+
 
 class AIWorkerSignals(QObject):
     done = Signal(str)
@@ -302,7 +307,7 @@ class ActionPlannerWorker(QRunnable):
             method="POST",
         )
         try:
-            with urlopen(request, timeout=45) as response:
+            with urlopen(request, timeout=REQUEST_TIMEOUT_SECONDS) as response:
                 data = json.load(response)
             calls = [
                 item
@@ -489,7 +494,7 @@ class AIWorker(QRunnable):
             method="POST",
         )
         try:
-            with urlopen(req, timeout=150) as response:
+            with urlopen(req, timeout=REQUEST_TIMEOUT_SECONDS) as response:
                 data = json.load(response)
             self._report_prompt_cache_telemetry(data)
             text = data.get("output_text", "").strip()
