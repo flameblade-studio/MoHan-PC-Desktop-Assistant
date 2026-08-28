@@ -47,7 +47,7 @@ jobs:
         if: ${{ steps.release.outputs.pr }}
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
+          ref: ${{ fromJSON(steps.release.outputs.pr || '{}').headBranchName || '' }}
 
       - name: Set up Python
         if: ${{ steps.release.outputs.pr }}
@@ -60,7 +60,7 @@ jobs:
         if: ${{ steps.release.outputs.pr }}
         shell: bash
         env:
-          RELEASE_BRANCH: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
+          RELEASE_BRANCH: ${{ fromJSON(steps.release.outputs.pr || '{}').headBranchName || '' }}
         run: |
           version="$(python -c 'import json; print(json.load(open(".release-please-manifest.json"))["."])')"
           # Creates docs/releases/v<version>.md from the CHANGELOG section as
