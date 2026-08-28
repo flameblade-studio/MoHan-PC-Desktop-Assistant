@@ -672,22 +672,29 @@ class DashboardConversationMixin:
 
 
     def _ai_done(self, text: str) -> None:
-        self._finish_ai_wait_expression()
-        tagged = parse_internal_emotion(text)
-        clean = tagged.text or "妾在。主上方才所言，容妾再細想一遍。"
-        expression = (
-            tagged.expression
-            if tagged.valid_tag and tagged.expression is not None
-            else self._reply_expression(clean)
-        )
-        self._reply(
-            clean,
-            expression,
-            intensity=tagged.intensity,
-            source="ai_tag" if tagged.valid_tag else "fallback",
-        )
-        self.ai_busy = False
-        self._start_next_ai_request()
+        # ai_busy release is a hard gate: _reply drives speech, expressions,
+        # and the desktop companion (busiest while camera presence is on), and
+        # any exception it raises dies silently in the Qt event loop — the old
+        # flow then never reset ai_busy, freezing the dashboard on "thinking"
+        # while later messages only queued (reported on v4.5.1, 2026-08-29).
+        try:
+            self._finish_ai_wait_expression()
+            tagged = parse_internal_emotion(text)
+            clean = tagged.text or "妾在。主上方才所言，容妾再細想一遍。"
+            expression = (
+                tagged.expression
+                if tagged.valid_tag and tagged.expression is not None
+                else self._reply_expression(clean)
+            )
+            self._reply(
+                clean,
+                expression,
+                intensity=tagged.intensity,
+                source="ai_tag" if tagged.valid_tag else "fallback",
+            )
+        finally:
+            self.ai_busy = False
+            self._start_next_ai_request()
 
 
     @staticmethod
@@ -830,16 +837,20 @@ class DashboardConversationMixin:
             )
         else:
             message = "雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。"
-        self._reply(message, "worried")
-        self.api_status.setText(
-            self._t(
-                "api_connection_failed",
-                "OpenAI API：連線失敗（{error}）",
-                error=error[:70],
+        # Same hard gate as _ai_done: the failure reply must never leave
+        # ai_busy stuck when speech or expression delivery raises.
+        try:
+            self._reply(message, "worried")
+            self.api_status.setText(
+                self._t(
+                    "api_connection_failed",
+                    "OpenAI API：連線失敗（{error}）",
+                    error=error[:70],
+                )
             )
-        )
-        self.ai_busy = False
-        self._start_next_ai_request()
+        finally:
+            self.ai_busy = False
+            self._start_next_ai_request()
 
 
     def _voice_text(self, text: str) -> None:
