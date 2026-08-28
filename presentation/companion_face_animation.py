@@ -341,15 +341,6 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             return
         self.open_dashboard()
 
-    def _hide_bubble_unless_speaking(self) -> None:
-        # 延遲隱藏必須讓路給進行中的語音氣泡（含即時語音），
-        # 參照 _speech_audio_finished 內既有的 speech_playing 守衛。
-        if getattr(self, "speech_playing", False) or getattr(
-            self, "realtime_mouth_active", False
-        ):
-            return
-        self.bubble.hide()
-
     def _show_caught_reaction(self) -> None:
         self.set_state("caught", source="user_direct")
         self._show_bubble("????????????????????????????????????")

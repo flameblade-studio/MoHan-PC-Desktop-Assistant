@@ -374,7 +374,11 @@ class CompanionVisualDynamicsMixin:
 
     def _hide_bubble_unless_speaking(self) -> None:
         """Hide the bubble after a delay; a late timer must survive teardown."""
-        if getattr(self, "_closing", False) or self.speech_playing:
+        if (
+            getattr(self, "_closing", False)
+            or self.speech_playing
+            or getattr(self, "realtime_mouth_active", False)
+        ):
             return
         with contextlib.suppress(RuntimeError):
             self.bubble.hide()
