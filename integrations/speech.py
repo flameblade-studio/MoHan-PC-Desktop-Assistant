@@ -1,12 +1,6 @@
 from __future__ import annotations
 
-lazy import json
-lazy import math
-lazy import os
-lazy import subprocess
-lazy import tempfile
-lazy import threading
-lazy import wave
+lazy import json, math, os, subprocess, tempfile, threading, wave
 lazy from array import array
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
