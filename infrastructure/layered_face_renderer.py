@@ -165,6 +165,19 @@ class LayeredParametricFaceRenderer:
         )
         if composed.isNull() or base.isNull():
             return composed
+        # Apply the outfit overlay on the FULL authored canvas, before any
+        # scaling: the outfit assets and their anchor bounds live in the
+        # authority canvas coordinates (1254px for the half-body poses).
+        # Applying after the scale-down to the caller's canvas made every
+        # anchor check fail (or draw ~2.7x off), so installed outfits never
+        # appeared on the half-body poses at all.
+        if self._outfit_overlay is not None:
+            silhouette = {
+                "cheek": "cheek-rest",
+                "lean": "left-neutral",
+                "front": "front-crossed",
+            }[motion.pose.value]
+            composed = self._outfit_overlay.apply(composed, silhouette)
         result = (
             composed
             if composed.size() == base.size()
@@ -186,13 +199,6 @@ class LayeredParametricFaceRenderer:
                 mouth_mask,
                 max(0.0, min(1.0, actual_aperture / 0.18)),
             )
-        if self._outfit_overlay is not None:
-            silhouette = {
-                "cheek": "cheek-rest",
-                "lean": "left-neutral",
-                "front": "front-crossed",
-            }[motion.pose.value]
-            result = self._outfit_overlay.apply(result, silhouette)
         return result
 
     def render_overlay(

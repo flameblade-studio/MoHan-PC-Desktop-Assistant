@@ -21,6 +21,7 @@ lazy from application.full_body_performance_bridge import (
     FullBodyBridgeRequest,
     FullBodyBridgeResult,
     LoadedV4Assets,
+    face_motion_signature,
 )
 lazy from application.full_body_render_adapter import NormalizedCrop
 lazy from application.performance_runtime import AtomicPerformanceFrame
@@ -332,6 +333,12 @@ def _input_signature(request: AdaptiveCharacterRequest) -> tuple[object, ...]:
         performance.face,
         performance.viseme,
         performance.mouth_closed,
+        # The continuous controls (blink, breath, gaze, mouth smoothing)
+        # advance on their own timers without bumping any generation.  A
+        # discrete-only signature deduplicated those frames and froze the
+        # full-body blink/breath animation between discrete events — the
+        # downstream bridge's contract explicitly forbids that.
+        face_motion_signature(request.face_motion),
         request.framing_state,
         request.framing_preferences,
         request.approved_wellbeing_cue,

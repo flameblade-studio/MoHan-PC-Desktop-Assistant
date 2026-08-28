@@ -4,6 +4,8 @@ lazy from dataclasses import dataclass
 lazy from datetime import datetime
 lazy from enum import StrEnum
 
+lazy from domain.lunar_calendar import qixi_gregorian
+
 MOHAN_BIRTHDAY_MONTH = 1
 MOHAN_BIRTHDAY_DAY = 8
 MOHAN_ZODIAC = "capricorn"
@@ -11,22 +13,11 @@ MAX_MONTH = 12
 MAX_DAY = 31
 MAX_HOUR = 23
 
-# 農曆七夕（農曆七月初七）對應的國曆日期，預先寫入未來十年。
-# 農曆換算不依賴外部套件，改以內建查表維持離線可用性。
-_QIXI_GREGORIAN_DATES = frozendict(
-    {
-        2026: (8, 19),
-        2027: (8, 8),
-        2028: (8, 26),
-        2029: (8, 16),
-        2030: (8, 5),
-        2031: (8, 24),
-        2032: (8, 12),
-        2033: (8, 2),
-        2034: (8, 21),
-        2035: (8, 10),
-    }
-)
+# 農曆七夕（農曆七月初七）改由內建 1900–2100 萬年曆推算
+# （domain/lunar_calendar.py），維持離線可用、不再受十年查表到期限制。
+# 裁決 2026-08-27：舊十年表的 2033、2034 兩年各誤植晚一天
+# （正確為 2033-08-01、2034-08-20），已由萬年曆演算法與
+# 春節／閏月／中秋多重錨點交叉驗證後修正。
 
 
 class OccasionKind(StrEnum):
@@ -231,7 +222,10 @@ class SpecialOccasionPolicy:
 
 def _qixi_gregorian(year: int) -> tuple[int, int] | None:
     """Return the Gregorian (month, day) of Qixi for a given year, if known."""
-    return _QIXI_GREGORIAN_DATES.get(year)
+    resolved = qixi_gregorian(year)
+    if resolved is None:
+        return None
+    return (resolved.month, resolved.day)
 
 
 def active_occasion(moment: datetime) -> OccasionDefinition | None:
