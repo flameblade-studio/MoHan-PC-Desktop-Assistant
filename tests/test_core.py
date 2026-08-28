@@ -149,6 +149,32 @@ def _assert_ai_worker_defaults() -> None:
     assert replies == ["主上，妾在。"]
 
 
+def _assert_ai_worker_timeout_emits_failed() -> None:
+    # v4.5.1 regression (2026-08-29): a mid-read socket timeout raises
+    # TimeoutError, which the old (URLError, HTTPError, ValueError) tuple let
+    # escape — the runnable died silently, ai_busy never released, and the
+    # dashboard froze on "thinking" until restart.  Any exception must reach
+    # signals.failed instead.
+    failures: list[str] = []
+    replies: list[str] = []
+    worker = AIWorker(
+        AIWorkerRequest(
+            user_text="主上問候",
+            mode="陪伴",
+            api_key="sk-test",
+        )
+    )
+    worker.signals.done.connect(replies.append)
+    worker.signals.failed.connect(failures.append)
+    with patch(
+        "integrations.ai_client.urlopen",
+        side_effect=TimeoutError("The read operation timed out"),
+    ):
+        worker.run()
+    assert replies == []
+    assert len(failures) == 1
+
+
 def _assert_work_sessions(db: StudioDB) -> None:
     assert db.start_work() is True
     assert db.start_work() is False
@@ -264,6 +290,7 @@ def _assert_database_contracts() -> None:
         _assert_custom_model_is_preserved(temp_dir)
         _assert_voice_defaults_migrate_safely(temp_dir)
         _assert_ai_worker_defaults()
+        _assert_ai_worker_timeout_emits_failed()
         _assert_work_sessions(db)
         _assert_todos_and_ideas(db)
         _assert_platform_progress(db)

@@ -502,7 +502,13 @@ class AIWorker(QRunnable):
                     )
                 )
             self.signals.done.emit(text)
-        except (URLError, HTTPError, ValueError) as exc:
+        except Exception as exc:
+            # Same UI-task-boundary contract as the planner worker above: a
+            # mid-read socket timeout raises TimeoutError, which the previous
+            # (URLError, HTTPError, ValueError) tuple let escape — the runnable
+            # then died silently inside the thread pool, ai_busy was never
+            # released, and the dashboard froze on "thinking" until restart
+            # (reported on v4.5.1, 2026-08-29).
             self.signals.failed.emit(str(sanitize_error(exc)))
 
     def _report_prompt_cache_telemetry(self, response: object) -> None:
