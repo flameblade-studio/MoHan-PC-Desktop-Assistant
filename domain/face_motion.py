@@ -175,13 +175,14 @@ def _approach(current: float, target: float, response: float) -> float:
 def shyness_expression(shyness_level: float) -> ExpressionShape:
     """Map a shyness level onto a cascading micro-expression.
 
-    The cascade is ordered so the most subtle cue appears first and the most
-    deliberate cue last, mirroring how a real person blushes before lowering
-    their gaze and finally pursing their lips:
+    The cascade layers the subtle cues of a blush:
 
-    1. blush rises first (``SHYNESS_BLUSH_WEIGHT``),
-    2. then the gaze lowers (``SHYNESS_GAZE_WEIGHT``),
-    3. then the lips purse (``SHYNESS_LIP_WEIGHT``).
+    1. blush rises (``SHYNESS_BLUSH_WEIGHT``),
+    2. the eyes soften into a shy squint (``SHYNESS_GAZE_WEIGHT``
+       drives ``eye_smile``; the owner-accepted look keeps the gaze
+       itself steady — an earlier draft of this docstring promised a
+       lowered gaze that was never implemented),
+    3. the lips purse (``SHYNESS_LIP_WEIGHT``, via ``shyness_mouth``).
 
     ``shyness_level`` is clamped to ``[0, 1]``.
     """

@@ -6,12 +6,18 @@ lazy from pathlib import Path
 
 PROJECT_REPOSITORY = "flameblade-studio/MoHan-PC-Desktop-Assistant"
 # x-release-please-start-version
-FALLBACK_VERSION = "4.4.2"
+FALLBACK_VERSION = "4.5.0"
 # x-release-please-end
 
 
 def _build_info_path() -> Path:
-    base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
+    # Frozen builds bundle build-info.json at the _MEIPASS root; source
+    # checkouts have build.ps1 write it at the PROJECT root.  Resolving to
+    # this file's own directory (domain/) meant source runs never found it
+    # and always fell back to FALLBACK_VERSION.
+    base = Path(
+        getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[1])
+    )
     return base / "build-info.json"
 
 
