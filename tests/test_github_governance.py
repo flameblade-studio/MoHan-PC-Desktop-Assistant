@@ -171,7 +171,7 @@ def _assert_release_runtime_and_packages(release: str) -> None:
         "Linux limited Preview AppImage",
     ):
         assert required in release
-    assert "--enable-experimental-jit=yes" in read(
+    assert "--enable-experimental-jit=yes-off" in read(
         "tools/build_python315_jit_runtime.py"
     )
     assert "sync_wordpress_download_page.py" not in release

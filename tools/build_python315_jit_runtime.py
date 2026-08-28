@@ -59,7 +59,7 @@ def build(source: Path, prefix: Path) -> Path:
                 "x64",
                 "-c",
                 "Release",
-                "--experimental-jit",
+                "--experimental-jit-off",
             ],
             cwd=source,
         )
