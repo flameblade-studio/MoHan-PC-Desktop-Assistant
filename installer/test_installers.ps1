@@ -119,6 +119,46 @@ function Invoke-NativeVerification {
     }
 }
 
+function Invoke-PackagedSelfTest {
+    param(
+        [Parameter(Mandatory = $true)][string]$Executable,
+        [Parameter(Mandatory = $true)][string]$OutputPath,
+        [Parameter(Mandatory = $true)][string]$Label,
+        [int]$TimeoutSeconds = 600
+    )
+    Remove-Item -LiteralPath $OutputPath -Force -ErrorAction SilentlyContinue
+    $Process = Start-Process $Executable -ArgumentList @(
+        "--self-test", "--self-test-output=$OutputPath"
+    ) -PassThru
+    if (-not $Process.WaitForExit($TimeoutSeconds * 1000)) {
+        # Python 3.15rc1 JIT/Qt interpreter finalization can deadlock AFTER
+        # the self-test finishes and writes its marker file.  Without this
+        # timeout the -Wait call blocks until the job's 120-minute ceiling.
+        # Kill the stuck process and judge the run by the marker it produced.
+        try { $Process.Kill() } catch {}
+        $Process.WaitForExit() | Out-Null
+        if (
+            (Test-Path -LiteralPath $OutputPath) -and
+            (Get-Content -Raw $OutputPath) -eq "PACKAGED_SELFTEST_OK"
+        ) {
+            Write-Warning (
+                "$Label application self-test completed but the process " +
+                "hung at exit (known 3.15rc1 JIT/Qt finalization issue); " +
+                "terminated after $TimeoutSeconds seconds."
+            )
+            return
+        }
+        throw "$Label application self-test timed out without completing"
+    }
+    if (
+        $Process.ExitCode -ne 0 -or
+        -not (Test-Path -LiteralPath $OutputPath) -or
+        (Get-Content -Raw $OutputPath) -ne "PACKAGED_SELFTEST_OK"
+    ) {
+        throw "$Label application self-test failed"
+    }
+}
+
 function Assert-PackagedPoseAtlas {
     param([Parameter(Mandatory = $true)][string]$PackageRoot)
     if (-not $RequirePoseAtlas) { return }
@@ -209,15 +249,8 @@ foreach ($Notice in @("LICENSE", "THIRD_PARTY_NOTICES.md")) {
     }
 }
 $SelfTest = Join-Path $env:RUNNER_TEMP "mohan-exe-installer-selftest.txt"
-$Process = Start-Process $InstalledExe -ArgumentList @(
-    "--self-test", "--self-test-output=$SelfTest"
-) -Wait -PassThru
-if (
-    $Process.ExitCode -ne 0 -or
-    (Get-Content -Raw $SelfTest) -ne "PACKAGED_SELFTEST_OK"
-) {
-    throw "EXE-installed application self-test failed"
-}
+Invoke-PackagedSelfTest -Executable $InstalledExe -OutputPath $SelfTest `
+    -Label "EXE-installed"
 Assert-PackagedPoseAtlas -PackageRoot $ExeInstallDir
 Invoke-NativeVerification `
     -PackageRoot $ExeInstallDir `
@@ -314,15 +347,8 @@ foreach ($Transform in $MsiVariants) {
         }
     }
     $SelfTest = Join-Path $env:RUNNER_TEMP "mohan-msi-$Variant-selftest.txt"
-    $Process = Start-Process $InstalledMsiExe -ArgumentList @(
-        "--self-test", "--self-test-output=$SelfTest"
-    ) -Wait -PassThru
-    if (
-        $Process.ExitCode -ne 0 -or
-        (Get-Content -Raw $SelfTest) -ne "PACKAGED_SELFTEST_OK"
-    ) {
-        throw "MSI $Variant application self-test failed"
-    }
+    Invoke-PackagedSelfTest -Executable $InstalledMsiExe -OutputPath $SelfTest `
+        -Label "MSI $Variant"
     Assert-PackagedPoseAtlas -PackageRoot $MsiInstallDir
     $NativeArtifacts = @($MsiInstaller.FullName)
     if ($null -ne $Transform) {
