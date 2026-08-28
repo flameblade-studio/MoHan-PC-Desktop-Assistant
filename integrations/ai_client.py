@@ -388,6 +388,16 @@ class AIWorker(QRunnable):
         )
 
     def run(self) -> None:
+        # UI task boundary: ANY escape (payload assembly included — a bad
+        # history row raised here, outside the old try, and froze the
+        # dashboard on "thinking" across restarts because the poisoned
+        # history reloads from the DB every time) must reach signals.failed.
+        try:
+            self._run_request()
+        except Exception as exc:
+            self.signals.failed.emit(str(sanitize_error(exc)))
+
+    def _run_request(self) -> None:
         request_data = self.request
         key = (
             request_data.api_key or os.getenv("OPENAI_API_KEY", "")
@@ -479,7 +489,7 @@ class AIWorker(QRunnable):
             method="POST",
         )
         try:
-            with urlopen(req, timeout=45) as response:
+            with urlopen(req, timeout=150) as response:
                 data = json.load(response)
             self._report_prompt_cache_telemetry(data)
             text = data.get("output_text", "").strip()

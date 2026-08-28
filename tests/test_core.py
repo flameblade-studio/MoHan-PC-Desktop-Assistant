@@ -175,6 +175,28 @@ def _assert_ai_worker_timeout_emits_failed() -> None:
     assert len(failures) == 1
 
 
+def _assert_ai_worker_bad_history_emits_failed() -> None:
+    # Companion regression to the timeout fix: payload assembly ran OUTSIDE
+    # the old try block, so a poisoned history row (missing keys) raised
+    # before the request and froze the dashboard across restarts — the bad
+    # history reloads from the DB on every attempt.
+    failures: list[str] = []
+    replies: list[str] = []
+    worker = AIWorker(
+        AIWorkerRequest(
+            user_text="主上問候",
+            mode="陪伴",
+            api_key="sk-test",
+            history=({"role": "user"},),
+        )
+    )
+    worker.signals.done.connect(replies.append)
+    worker.signals.failed.connect(failures.append)
+    worker.run()
+    assert replies == []
+    assert len(failures) == 1
+
+
 def _assert_work_sessions(db: StudioDB) -> None:
     assert db.start_work() is True
     assert db.start_work() is False
@@ -291,6 +313,7 @@ def _assert_database_contracts() -> None:
         _assert_voice_defaults_migrate_safely(temp_dir)
         _assert_ai_worker_defaults()
         _assert_ai_worker_timeout_emits_failed()
+        _assert_ai_worker_bad_history_emits_failed()
         _assert_work_sessions(db)
         _assert_todos_and_ideas(db)
         _assert_platform_progress(db)
