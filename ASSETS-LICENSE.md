@@ -1,81 +1,97 @@
-# 素材授權／素材许可／Asset Licensing／素材ライセンス
+# 墨寒角色資產授權／墨寒角色资产授权／MoHan Character Assets License／墨寒キャラクター資産ライセンス
 
 ## 繁體中文
 
-### 授權範圍
+### 版權聲明
 
-除非個別檔案另有聲明，提交至本儲存庫的角色插圖、表情影格、動畫圖層與圖示，均依 `LICENSE` 所載的相同 MIT License 散布。
+「墨寒」角色之全部美術資產——包含但不限於 `assets/expressions/`、`assets/pose-atlas/`、`assets/onboarding/`、`assets/ui/` 下的角色圖像與分層素材、應用程式圖示中的角色形象，以及角色人設、故事設定與「墨寒／MoHan」名稱與形象——為 Copyright © 2026 CHOU MING HUA，**保留一切權利（All Rights Reserved）**。
 
-### 權威角色素材
+上述角色資產**不適用**本儲存庫 `LICENSE` 之 MIT License。`assets/vision-models/` 下的第三方模型依其原授權條款提供，詳見 `THIRD_PARTY_NOTICES.md`。
 
-`assets/expressions/idle_front.png` 是本儲存庫唯一的權威正面半身來源，其新版五官、臉型、輪廓、髮型、髮飾與服裝須持續對齊鐵人賽情境圖及炎劍文化工作室墨寒官方專頁。
+### 明示授權
 
-首次設定精靈、安裝程式美術、`assets/mohan-taskbar-icon.png` 與 `assets/mohan-halfbody.ico` 都只能由這份權威來源裁切或縮放，不得重新生成五官。舊版五官輪廓的全身像、雨景全身像與舊圖示已棄用，不得再作為產品、圖示或文件素材。
+取得本軟體副本者，得為**執行、開發、測試與除錯本軟體**之目的，使用並原樣重製上述角色資產（包含隨本軟體發行包之散布）。
 
-### 語音、服務與商標
+### 二創友善條款
 
-本儲存庫不散布專有語音模型或複製真人的聲音。Windows 語音及雲端生成語音仍分別受 Microsoft、OpenAI 或使用者所選服務的條款約束。第三方服務名稱與商標均屬其各自權利人所有。
+歡迎**非商業**之同人創作、二次創作與主題包：只需標示角色出處「墨寒（MoHan Desktop Assistant）」即可進行，無需另行申請。此條款不包含將資產原始檔案重新散布為素材包之權利。
 
-### 貢獻素材
+### 保留用途
 
-除非貢獻者具有充分的再散布權利，並記錄所有不同於本儲存庫 MIT License 的條款，否則不得提交第三方圖片、語音、標誌或品牌素材。
+以下用途需事先取得書面授權：商業使用、將角色資產單獨散布或轉售、將角色資產作為機器學習訓練資料，以及其他前述未明示授權之用途。授權洽詢請透過本儲存庫之 GitHub Issues 提出。
+
+### 名稱與形象
+
+「墨寒」之名稱與角色形象具識別性，作者保留其商標性使用之一切權利。
 
 ## 简体中文
 
-### 许可范围
+### 版权声明
 
-除非个别文件另有声明，提交至本仓库的角色插图、表情帧、动画图层与图标，均依 `LICENSE` 所载的相同 MIT License 分发。
+「墨寒」角色的全部美术资产——包括但不限于 `assets/expressions/`、`assets/pose-atlas/`、`assets/onboarding/`、`assets/ui/` 下的角色图像与分层素材、应用程序图标中的角色形象，以及角色人设、故事设定与「墨寒／MoHan」名称与形象——为 Copyright © 2026 CHOU MING HUA，**保留一切权利（All Rights Reserved）**。
 
-### 权威角色素材
+上述角色资产**不适用**本仓库 `LICENSE` 的 MIT License。`assets/vision-models/` 下的第三方模型依其原授权条款提供，详见 `THIRD_PARTY_NOTICES.md`。
 
-`assets/expressions/idle_front.png` 是本仓库唯一的权威正面半身来源，其新版五官、脸型、轮廓、发型、发饰与服装必须持续对齐铁人赛情境图及炎剑文化工作室墨寒官方专页。
+### 明示授权
 
-首次设置向导、安装程序美术、`assets/mohan-taskbar-icon.png` 与 `assets/mohan-halfbody.ico` 都只能由这份权威来源裁切或缩放，不得重新生成五官。旧版五官轮廓的全身像、雨景全身像与旧图标已弃用，不得再作为产品、图标或文档素材。
+获得本软件副本者，可为**运行、开发、测试与调试本软件**之目的，使用并原样复制上述角色资产（包括随本软件发行包的分发）。
 
-### 语音、服务与商标
+### 二创友好条款
 
-本仓库不分发专有语音模型或复制真人的声音。Windows 语音及云端生成语音仍分别受 Microsoft、OpenAI 或用户所选服务的条款约束。第三方服务名称与商标均归其各自权利人所有。
+欢迎**非商业**的同人创作、二次创作与主题包：只需标注角色出处「墨寒（MoHan Desktop Assistant）」即可进行，无需另行申请。此条款不包括将资产原始文件重新分发为素材包的权利。
 
-### 贡献素材
+### 保留用途
 
-除非贡献者具有充分的再分发权利，并记录所有不同于本仓库 MIT License 的条款，否则不得提交第三方图片、语音、标志或品牌素材。
+以下用途需事先取得书面授权：商业使用、将角色资产单独分发或转售、将角色资产用作机器学习训练数据，以及其他未明示授权的用途。授权洽询请通过本仓库的 GitHub Issues 提出。
+
+### 名称与形象
+
+「墨寒」的名称与角色形象具有识别性，作者保留其商标性使用的一切权利。
 
 ## English
 
-### Licensing scope
+### Copyright notice
 
-Unless an individual file carries a separate notice, the character illustrations, expression frames, animation layers, and icons committed to this repository are distributed under the same MIT License provided in `LICENSE`.
+All artwork of the character "MoHan" — including but not limited to the character images and layered assets under `assets/expressions/`, `assets/pose-atlas/`, `assets/onboarding/`, and `assets/ui/`, the character likeness in the application icons, and the character's persona, story setting, and the "墨寒 / MoHan" name and likeness — is Copyright © 2026 CHOU MING HUA, **All Rights Reserved**.
 
-### Canonical character asset
+These character assets are **not** covered by the MIT License in this repository's `LICENSE` file. Third-party models under `assets/vision-models/` are provided under their own license terms; see `THIRD_PARTY_NOTICES.md`.
 
-`assets/expressions/idle_front.png` is this repository's sole canonical front-facing half-body source. Its current facial features, face shape, silhouette, hairstyle, ornaments, and clothing must remain aligned with the Ironman scenario visuals and the official Flameblade Studio MoHan page.
+### Express grant
 
-The first-run wizard, installer artwork, `assets/mohan-taskbar-icon.png`, and `assets/mohan-halfbody.ico` may only crop or scale this canonical source and must not regenerate facial features. The obsolete full-body identity, rain-scene full-body image, and old icon are retired and must not be reused in the product, icons, or documentation.
+Anyone who obtains a copy of this software may use and reproduce these character assets verbatim for the purpose of **running, developing, testing, and debugging this software**, including their redistribution as part of this software's release packages.
 
-### Voices, services, and trademarks
+### Fan-work friendly terms
 
-This repository does not distribute a proprietary voice model or a cloned human voice. Windows voices and cloud-generated voices remain subject to the terms of Microsoft, OpenAI, or the service selected by the user. Third-party service names and trademarks remain the property of their respective owners.
+**Non-commercial** fan works, derivative art, and theme packs are welcome: simply credit the character as "MoHan (MoHan Desktop Assistant)" — no further permission is needed. This clause does not include the right to redistribute the original asset files as asset packs.
 
-### Contributed assets
+### Reserved uses
 
-Contributors must not submit third-party images, voices, logos, or branded material unless they have sufficient redistribution rights and document every term that differs from the repository's MIT License.
+The following require prior written permission: commercial use, standalone redistribution or resale of the character assets, use of the character assets as machine-learning training data, and any other use not expressly granted above. Please make licensing inquiries via this repository's GitHub Issues.
+
+### Name and likeness
+
+The "MoHan" name and character likeness are distinctive; the author reserves all rights to their trademark-like use.
 
 ## 日本語
 
-### ライセンスの範囲
+### 著作権表示
 
-個別のファイルに別段の表示がない限り、このリポジトリにコミットされたキャラクターイラスト、表情フレーム、アニメーションレイヤー、アイコンは、`LICENSE` に記載されたものと同じ MIT License に基づいて配布されます。
+キャラクター「墨寒」のすべての美術資産——`assets/expressions/`、`assets/pose-atlas/`、`assets/onboarding/`、`assets/ui/` 配下のキャラクター画像とレイヤー素材、アプリケーションアイコン内のキャラクター肖像、ならびにキャラクターの人物設定、物語設定、「墨寒／MoHan」の名称と肖像を含みますがこれらに限定されません——は Copyright © 2026 CHOU MING HUA であり、**すべての権利を留保します（All Rights Reserved）**。
 
-### 正式なキャラクター素材
+上記のキャラクター資産には、本リポジトリの `LICENSE` に記載された MIT License は**適用されません**。`assets/vision-models/` 配下の第三者モデルは各自のライセンス条件で提供されます。詳細は `THIRD_PARTY_NOTICES.md` を参照してください。
 
-`assets/expressions/idle_front.png` は、このリポジトリで唯一の正式な正面向き半身素材です。現在の顔立ち、顔型、輪郭、髪型、髪飾り、衣装は、鉄人賽の場面画像および Flameblade Studio の墨寒公式ページと常に一致させなければなりません。
+### 明示的許諾
 
-初回設定ウィザード、インストーラー画像、`assets/mohan-taskbar-icon.png`、`assets/mohan-halfbody.ico` は、この正式素材を切り抜くか縮小する場合に限って使用でき、顔立ちを再生成してはなりません。旧版の顔立ちを持つ全身像、雨景の全身像、旧アイコンは廃止され、製品、アイコン、文書へ再利用してはなりません。
+本ソフトウェアの複製を取得した方は、**本ソフトウェアの実行、開発、テスト、デバッグ**の目的に限り、上記キャラクター資産をそのまま使用・複製できます（本ソフトウェアのリリースパッケージの一部としての再配布を含みます）。
 
-### 音声、サービス、商標
+### 二次創作フレンドリー条項
 
-このリポジトリは、独自仕様の音声モデルや実在人物を複製した音声を配布しません。Windows 音声およびクラウド生成音声には、Microsoft、OpenAI、またはユーザーが選択したサービスの規約が引き続き適用されます。第三者のサービス名および商標は、それぞれの権利者に帰属します。
+**非商業**のファンアート、二次創作、テーマパックを歓迎します。出典として「墨寒（MoHan Desktop Assistant）」を明記するだけで、追加の許可は不要です。本条項には、資産の元ファイルを素材集として再配布する権利は含まれません。
 
-### 提供される素材
+### 留保される用途
 
-十分な再配布権を有し、このリポジトリの MIT License と異なるすべての条件を文書化できる場合を除き、コントリビューターは第三者の画像、音声、ロゴ、ブランド素材を提出してはなりません。
+以下の用途には事前の書面による許諾が必要です：商業利用、キャラクター資産の単独再配布または転売、機械学習の学習データとしての利用、その他上記で明示的に許諾されていない用途。ライセンスに関するお問い合わせは本リポジトリの GitHub Issues までお願いします。
+
+### 名称と肖像
+
+「墨寒」の名称とキャラクター肖像は識別性を有し、作者はその商標的使用に関するすべての権利を留保します。

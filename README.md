@@ -422,7 +422,7 @@ python tests\run_all.py
 ### 貢獻、授權與作者
 
 - 軟體作者：**CHOU MING HUA**。
-- 原始碼與本儲存庫自有角色素材採 [MIT License](LICENSE)。
+- 原始碼採 [MIT License](LICENSE)；「墨寒」角色素材、人設與名稱形象保留一切權利，不適用 MIT。
 - 素材授權見 [ASSETS-LICENSE](ASSETS-LICENSE.md)。
 - 第三方套件及服務聲明見 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 - 問題回報使用 GitHub Issues；安全問題依 [SECURITY](SECURITY.md) 私下通報。
@@ -856,7 +856,7 @@ python tests\run_all.py
 ### 贡献、许可证与作者
 
 - 软件作者：**CHOU MING HUA**。
-- 源代码与本仓库自有角色素材采用 [MIT License](LICENSE)。
+- 源代码采用 [MIT License](LICENSE)；「墨寒」角色素材、人设与名称形象保留一切权利，不适用 MIT。
 - 素材许可证见 [ASSETS-LICENSE](ASSETS-LICENSE.md)。
 - 第三方软件包及服务声明见 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 - 问题报告使用 GitHub Issues；安全问题依 [SECURITY](SECURITY.md) 私下报告。
@@ -1290,7 +1290,7 @@ The portable file deliberately excludes OpenAI keys, OAuth/Home Assistant tokens
 ### Contributing, license, and author
 
 - Author: **CHOU MING HUA**.
-- Source code and repository-owned character assets use the [MIT License](LICENSE).
+- Source code uses the [MIT License](LICENSE); the MoHan character artwork, persona, and name/likeness are All Rights Reserved and not covered by MIT.
 - Asset terms: [ASSETS-LICENSE](ASSETS-LICENSE.md).
 - Third-party packages and services: [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md).
 - Report ordinary problems through GitHub Issues and security concerns privately under [SECURITY](SECURITY.md).
@@ -1724,7 +1724,7 @@ python tests\run_all.py
 ### 開発参加、ライセンス、作者
 
 - 作者：**CHOU MING HUA**。
-- ソースコードと本リポジトリ所有の人物素材は [MIT License](LICENSE) です。
+- ソースコードは [MIT License](LICENSE) です。「墨寒」のキャラクター素材、人物設定、名称・肖像はすべての権利を留保し、MIT の適用外です。
 - 素材条件：[ASSETS-LICENSE](ASSETS-LICENSE.md)。
 - 第三者パッケージとサービス：[THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 - 通常の問題は GitHub Issues へ報告し、安全上の問題は [SECURITY](SECURITY.md) に従い非公開で報告します。
