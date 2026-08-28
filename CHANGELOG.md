@@ -4,6 +4,25 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+## [4.5.1](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.5.0...v4.5.1) (2026-08-28)
+
+
+### 🐛 修正 / 修复 / Fixes / 修正
+
+* 根治 Release Please 版號同步與四語發行說明自動化／根治 Release Please 版本号同步与四语发布说明自动化／Fix Release Please version sync and four-language release-notes automation at the root／Release Please のバージョン同期と四言語リリースノート自動化を根本修正 ([#89](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/89)) ([3d36550](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/3d36550b7fe2c787f210959e0a2d14092d06316e))
+* 總體檢 UI 戰區——誤觸防護、隱私同意、資源洩漏與眼皮閃爍十八項／总体检 UI 战区——误触防护、隐私同意、资源泄漏与眼皮闪烁十八项／Health-audit UI wave: misfire guards, privacy consent, resource leaks and the eyelid flicker, eighteen items／総点検 UI 波：誤操作防護・プライバシー同意・リソースリーク・まぶたのちらつき十八件 ([#94](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/94)) ([b4d2b19](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/b4d2b1966ba5ebbcdbc6a7b19e7e54475284bdde))
+* 總體檢核心戰區——好感度鏈、背身狀態機、動畫凍結、服裝畫布與七夕萬年曆／总体检核心战区——好感度链、背身状态机、动画冻结、服装画布与七夕万年历／Health-audit core wave: affection chain, back-turn state machine, animation freeze, outfit canvas and the Qixi perpetual calendar／総点検コア波：好感度チェーン・背向きステートマシン・アニメ凍結・衣装キャンバス・七夕万年暦 ([#91](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/91)) ([00da66f](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/00da66fc95f03680bdf68037fb46721762acf53f))
+
+
+### 📚 文件 / 文档 / Documentation / ドキュメント
+
+* 墨寒角色資產授權 ASSETS-LICENSE／墨寒角色资产授权 ASSETS-LICENSE／MoHan character assets license／墨寒キャラクター資産ライセンス ([#96](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/96)) ([9f20429](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/9f20429fd4d305ad95ad47f09086644e7d857595))
+
+
+### 🛠 其他變更 / 其他变更 / Other changes / その他の変更
+
+* PySide6 LGPL 合規三件套／PySide6 LGPL 合规三件套／PySide6 LGPL compliance set／PySide6 LGPL コンプライアンス三点セット ([#95](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/95)) ([e1845d2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/e1845d292365f57dc93f35374b6d465ec2c2e044))
+
 ## [4.5.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.4.2...v4.5.0) (2026-08-27)
 
 

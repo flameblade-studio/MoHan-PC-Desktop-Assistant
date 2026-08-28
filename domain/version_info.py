@@ -6,7 +6,7 @@ lazy from pathlib import Path
 
 PROJECT_REPOSITORY = "flameblade-studio/MoHan-PC-Desktop-Assistant"
 # x-release-please-start-version
-FALLBACK_VERSION = "4.5.0"
+FALLBACK_VERSION = "4.5.1"
 # x-release-please-end
 
 
