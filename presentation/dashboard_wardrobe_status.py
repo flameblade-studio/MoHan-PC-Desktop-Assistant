@@ -41,7 +41,7 @@ def wardrobe_generation_message(status: str, translate: Translate) -> str:
         ),
         "failed:authentication-failed": translate(
             "wardrobe_generation_auth_failed",
-            "OpenAI API Key 驗證失敗，請在電腦權限分頁重新儲存金鑰。",
+            "OpenAI API Key 驗證失敗，請在設定分頁重新儲存金鑰。",
         ),
         "failed:model-access-denied": translate(
             "wardrobe_generation_access_denied",

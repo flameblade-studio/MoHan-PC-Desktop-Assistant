@@ -36,26 +36,28 @@ LAYER_NAMES = (
 #   the module is gated as new from then on.
 MAX_LAYER_MODULE_LINES = 1_200
 MAX_NEW_LAYER_MODULE_LINES = 800
-# Measured 2026-08-28 with the gate's own counting rule
+# Measured 2026-08-28 (re-baselined after the audit-wave PRs #91-#96
+# landed; the original scan predated their in-flight line counts) with
+# the gate's own counting rule
 # (utf-8-sig decode + str.splitlines()).
 LAYER_MODULE_LINE_BASELINE = {
     "application.presentation_ports": 1_063,
     "domain.outfit_pack": 974,
-    "infrastructure.db": 1_170,
+    "infrastructure.db": 1_200,
     "infrastructure.profile_transfer": 1_075,
     "integrations.azure_speech": 864,
     "integrations.realtime_voice": 878,
-    "integrations.speech": 1_191,
-    "presentation.companion_core": 1_077,
+    "integrations.speech": 1_197,
+    "presentation.companion_core": 1_132,
     "presentation.companion_face_animation": 1_160,
-    "presentation.companion_face_assets": 884,
-    "presentation.companion_speech_runtime": 1_199,
+    "presentation.companion_face_assets": 898,
+    "presentation.companion_speech_runtime": 1_182,
     "presentation.companion_visual_dynamics": 960,
-    "presentation.dashboard_conversation": 857,
+    "presentation.dashboard_conversation": 884,
     "presentation.dashboard_settings": 888,
-    "presentation.dashboard_shell": 1_200,
-    "presentation.dashboard_today_memory": 819,
-    "presentation.dashboard_voice": 1_078,
+    "presentation.dashboard_shell": 1_198,
+    "presentation.dashboard_today_memory": 822,
+    "presentation.dashboard_voice": 1_085,
 }
 MAX_ROOT_APP_LINES = 50
 NON_PRODUCT_PYTHON_DIRECTORIES = frozenset({

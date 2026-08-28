@@ -46,6 +46,9 @@ __all__ = ("DashboardConversationMixin", "classify_memory_text")
 MIN_CHAT_ZOOM_PERCENT = 60
 MAX_CHAT_ZOOM_PERCENT = 200
 
+# Entries are stored pre-normalized: comma-free (`，`/`,`/`、` are stripped
+# from the incoming text), whitespace-collapsed, and casefolded, so every
+# phrase below must stay lowercase and comma-free to remain reachable.
 EMERGENCY_COMMANDS = frozenset(
     {
         "墨寒停手",
@@ -53,6 +56,14 @@ EMERGENCY_COMMANDS = frozenset(
         "停手",
         "停止所有操作",
         "取消所有任務",
+        "mohan stop",
+        "stop everything",
+        "stop all tasks",
+        "墨寒止まって",
+        "止まって",
+        "ぜんぶ止めて",
+        "全部止めて",
+        "すべて止めて",
     }
 )
 
@@ -520,7 +531,8 @@ class DashboardConversationMixin:
 
 
     def _handle_emergency_command(self, text: str) -> bool:
-        normalized = text.replace("，", "").replace(",", "").strip()
+        comma_free = text.replace("，", "").replace(",", "").replace("、", "")
+        normalized = " ".join(comma_free.split()).casefold()
         if normalized not in EMERGENCY_COMMANDS:
             return False
         self._emergency_stop()

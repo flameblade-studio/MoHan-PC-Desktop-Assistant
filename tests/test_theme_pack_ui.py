@@ -91,7 +91,7 @@ def assert_four_language_visual_contract() -> None:
             "上傳單一檔案",
             "還原主題",
             "移除外掛包",
-            "已安裝，未啟用",
+            "已安裝，尚未套用",
             "炎劍官方",
             "使用者自製",
         ),

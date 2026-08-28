@@ -131,7 +131,14 @@ def test_u_inward_lerp_is_u_only_and_non_cumulative() -> None:
     )
     assert abs(FULL_U_SCALE - 0.95) < FLOAT_EPSILON
     assert viseme_u_inward_scale(0.0) == 1.0
-    assert viseme_u_inward_scale(1.0) == viseme_u_inward_scale(1.0)
+    # 2026-08-27 audit fix: the previous assertion compared
+    # viseme_u_inward_scale(1.0) with itself and could never fail.  Full
+    # weight must land exactly on FULL_U_SCALE (asserted above to be 0.95),
+    # and out-of-range weights are clamped so repeated frames can never
+    # accumulate more than the authored five-percent shrink.
+    assert viseme_u_inward_scale(1.0) == FULL_U_SCALE
+    assert viseme_u_inward_scale(2.0) == FULL_U_SCALE
+    assert viseme_u_inward_scale(-1.0) == 1.0
 
 
 def test_u_inward_weight_enters_and_exits_smoothly_at_50hz() -> None:
