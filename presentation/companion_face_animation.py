@@ -12,14 +12,12 @@ lazy from PySide6.QtGui import QPainter, QPixmap
 
 lazy from domain.companion_animation_contract import (
     CHEEK_SPEECH_CLOSED_EXPRESSION, EXPRESSION_SPEECH_MOUTH_RECTS,
-    EXPRESSION_VISEME_FRAMES, NEUTRAL_VISEME_ASSET_STEMS,
     NEW_EXPRESSION_ASSETS,
 )
 lazy from domain.lip_sync import (
     VISEME_CHANGE_TRANSITION_SECONDS,
     VISEME_CLOSE_TRANSITION_SECONDS,
     VISEME_OPEN_TRANSITION_SECONDS,
-    VisemeFrame,
 )
 lazy from domain.face_microtiming import (
     ATTENTION_GLANCE_INTERVAL_MS, BLINK_CLOSED_TIMES_MS,
@@ -34,6 +32,9 @@ lazy from domain.face_rig import (
     eye_state_for_blink,
 )
 lazy from presentation.companion_blink_runtime import CompanionBlinkRuntimeMixin
+lazy from presentation.companion_viseme_cue import (
+    apply_audio_viseme_cue, viseme_expression,
+)
 lazy from presentation.companion_face_assets import CompanionFaceAssetMethods
 lazy from presentation.companion_speech_emotion import persist_wardrobe_mood
 POSE_SWITCH_PROBABILITY = 0.55
@@ -779,80 +780,10 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         self._compose_character_position()
 
     def _audio_viseme_cue(self, level: float, vowel: str) -> None:
-        if (
-            self.state != "speaking"
-            or not self.audio_driven_mouth
-            or getattr(self, "mouth_closing", False)
-            or getattr(self, "viseme_dynamics", None) is None
-        ):
-            return
-        # A live viseme owns the full photographed face. Remove any gaze
-        # overlay left by the preceding idle frame before drawing the mouth.
-        self.eye_overlay.hide()
-        frame: VisemeFrame = self.viseme_dynamics.advance(level, vowel)
-        expression = self._viseme_expression(frame.selected)
-        motion_expression = (
-            self.speech_gesture_expression or self.speech_closed_expression
-        )
-        motion_pose = self.physics_expression_poses.get(
-            motion_expression,
-            getattr(self, "idle_pose", "front"),
-        )
-        self.face_motion_frame = self.face_motion_controller.advance(
-            frame,
-            pose=motion_pose,
-            expression=motion_expression,
-            blink=1.0 if self.speech_blinking else 0.0,
-        )
-        # The adaptive full-body renderer is driven by the provider-neutral
-        # speech-performance bridge, not by the legacy half-body pixmap path.
-        # Publish every accepted audio cue before the ownership guard below;
-        # otherwise full-body speech keeps the canvas but never receives a
-        # changing viseme, which presents as "text only, mouth not moving".
-        self._record_speech_performance(
-            self.speech_performance.viseme(level, frame.selected)
-        )
-        if getattr(self, "_adaptive_full_body_active", False):
-            # The v4 full-body composition renders its own speech mouth from
-            # the continuous ``face_motion_frame`` produced above.  The legacy
-            # half-body mouth patch and head-motion path must not run in
-            # parallel: it would reset the ownership flag and let the
-            # suppressed half-body overlays return, stacking a second body over
-            # the full-body frame (the reported double image).
-            return
-        self.mouth_frame_index = frame.frame_index
-        self.mouth_open = frame.mouth_open
-        self.speech_current_expression = expression
-        if frame.selected != frame.previous or self.mouth_transition_to.isNull():
-            self._queue_audio_mouth_transition(
-                expression,
-                frame.jaw_aperture,
-            )
-        target_motion = min(
-            4.0,
-            self.viseme_dynamics.smoothed_level * 3.0 + frame.jaw_weight,
-        )
-        self.head_motion_y = self.head_motion_y * 0.62 + target_motion * 0.38
-        self.speech_motion_target_y = -self.head_motion_y
-        self._motion_tick()
+        apply_audio_viseme_cue(self, level, vowel)
 
     def _viseme_expression(self, viseme: str) -> str:
-        if viseme == "CLOSED":
-            expression = self.speech_closed_expression
-        elif viseme == "CONSONANT":
-            expression = self.speech_mid_expression
-        elif self.speech_gesture_expression is not None:
-            expression = EXPRESSION_VISEME_FRAMES[self.speech_gesture_expression].get(
-                viseme, self.speech_mid_expression
-            )
-        else:
-            stem = NEUTRAL_VISEME_ASSET_STEMS.get(viseme)
-            expression = (
-                self.speech_mid_expression
-                if stem is None
-                else f"{stem}{self._active_speech_pose_suffix()}"
-            )
-        return expression
+        return viseme_expression(self, viseme)
 
     def _render_half_body_frame(self) -> QPixmap:
         """Compose the half-body portrait from the parametric layered renderer."""
