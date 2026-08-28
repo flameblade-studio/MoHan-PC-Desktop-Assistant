@@ -33,10 +33,11 @@
 
 > **歷史紀錄：** Windows 一直是完成既有公開版本實機、完整回歸、安裝與發布驗證的平台；macOS／Linux 功能受限 DMG／AppImage Preview 已納入安全平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI。實際產物仍須通過本版最終發布門檻，CI 也不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
-> **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.4.2`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。
+> **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.5.0`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。
 
-> **目前開發版本：** `4.5.0`；這是尚未發布的開發草稿。<!-- x-release-please-version -->
-> Windows 建置命令：`.\build.ps1 -Version "4.5.0"`。<!-- x-release-please-version -->
+> **目前開發版本：** `4.5.0`；main 上的後續變更是尚未發布的開發草稿，將隨下一版發行。<!-- x-release-please-version -->
+> Windows 建置命令：`.uild.ps1 -Version "4.5.0"`。<!-- x-release-please-version -->
+> `v4.5.0` 已於 2026-08-27 正式發布。
 
 > 本專案遵循[炎劍開源軟體家族品質標準](PUBLISHING.md)。
 
@@ -144,7 +145,7 @@
 | 安全與隱私 | 風險控制 | 權限控管、稽核與敏感資料保護 |
 | 文件與在地化 | 可及性 | 降低新使用者與國際協作者的參與門檻 |
 
-墨寒依然免費並採 MIT 授權；支持不會換取特權，也不影響任何人使用或貢獻。
+墨寒的完整功能永遠免費、原始碼採 MIT 授權；支持不會換取任何功能上的特權，也不影響任何人使用或貢獻。贊助者可獲得服裝與佈景主題等純裝飾性 DLC 作為謝禮。
 
 <table>
   <tr>
@@ -359,7 +360,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - 付款、購買、匯出密碼、關閉安全防護、任意 Shell 與系統管理員 Shell 永不自動化。
 - 外部郵件、網頁、文件、語音轉錄與模型輸出不能自行授予權限。
 - 遠端、相機、雲端連接器與 Home Assistant 預設關閉。
-- 緊急停止：按 `Esc`，或說 `墨寒，停手`。
+- 緊急停止：按 `Esc`，或說 `墨寒，停手`（也支援英語 `mohan stop`／`stop everything` 與日語 `墨寒、止まって`／`ぜんぶ止めて`）。
 - OpenAI、OAuth 與 Home Assistant 權杖使用 Windows DPAPI 分開保存，不存入 SQLite、原始碼或可攜檔。
 - 對話、記憶、待辦、工作紀錄與設定預設保留在本機應用程式資料目錄。
 
@@ -423,7 +424,7 @@ python tests\run_all.py
 ### 貢獻、授權與作者
 
 - 軟體作者：**CHOU MING HUA**。
-- 原始碼與本儲存庫自有角色素材採 [MIT License](LICENSE)。
+- 原始碼採 [MIT License](LICENSE)；「墨寒」角色素材、人設與名稱形象保留一切權利，不適用 MIT。
 - 素材授權見 [ASSETS-LICENSE](ASSETS-LICENSE.md)。
 - 第三方套件及服務聲明見 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 - 問題回報使用 GitHub Issues；安全問題依 [SECURITY](SECURITY.md) 私下通報。
@@ -468,10 +469,11 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 > **历史记录：** Windows 一直是完成现有公开版本真机、完整回归、安装与发布验证的平台；macOS／Linux 功能受限 DMG／AppImage Preview 已纳入安全平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI。实际产物仍须通过本版本最终发布关卡，CI 也不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
-> **当前发布目标：** 源代码与软件包元数据已同步至 `v4.4.2`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。
+> **当前发布目标：** 源代码与软件包元数据已同步至 `v4.5.0`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。
 
-> **当前开发版本：** `4.5.0`；这是尚未发布的开发草稿。<!-- x-release-please-version -->
-> Windows 构建命令：`.\build.ps1 -Version "4.5.0"`。<!-- x-release-please-version -->
+> **当前开发版本：** `4.5.0`；main 上的后续变更是尚未发布的开发草稿，将随下一版发行。<!-- x-release-please-version -->
+> Windows 构建命令：`.uild.ps1 -Version "4.5.0"`。<!-- x-release-please-version -->
+> `v4.5.0` 已于 2026-08-27 正式发布。
 
 > 本项目遵循[炎剑开源软件家族质量标准](PUBLISHING.md)。
 
@@ -579,7 +581,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 | 安全与隐私 | 风险控制 | 权限控制、审计与敏感数据保护 |
 | 文档与本地化 | 可访问性 | 降低新用户与国际协作者的参与门槛 |
 
-墨寒依然免费并采用 MIT 许可证；支持不会换取特权，也不影响任何人使用或贡献。
+墨寒的完整功能永远免费、源代码采用 MIT 许可证；支持不会换取任何功能上的特权，也不影响任何人使用或贡献。赞助者可获得服装与布景主题等纯装饰性 DLC 作为谢礼。
 
 <table>
   <tr>
@@ -794,7 +796,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - 付款、购买、导出密码、关闭安全防护、任意 Shell 与管理员 Shell 永不自动化。
 - 外部邮件、网页、文档、语音转录与模型输出不能自行授予权限。
 - 远程、相机、云端连接器与 Home Assistant 默认关闭。
-- 紧急停止：按 `Esc`，或说 `墨寒，停手`。
+- 紧急停止：按 `Esc`，或说 `墨寒，停手`（也支持英语 `mohan stop`／`stop everything` 与日语 `墨寒、止まって`／`ぜんぶ止めて`）。
 - OpenAI、OAuth 与 Home Assistant 令牌使用 Windows DPAPI 分开保存，不存入 SQLite、源代码或便携文件。
 - 对话、记忆、待办事项、工作记录与设置默认保留在本地应用程序数据目录。
 
@@ -858,7 +860,7 @@ python tests\run_all.py
 ### 贡献、许可证与作者
 
 - 软件作者：**CHOU MING HUA**。
-- 源代码与本仓库自有角色素材采用 [MIT License](LICENSE)。
+- 源代码采用 [MIT License](LICENSE)；「墨寒」角色素材、人设与名称形象保留一切权利，不适用 MIT。
 - 素材许可证见 [ASSETS-LICENSE](ASSETS-LICENSE.md)。
 - 第三方软件包及服务声明见 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 - 问题报告使用 GitHub Issues；安全问题依 [SECURITY](SECURITY.md) 私下报告。
@@ -903,10 +905,11 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 > **Historical record:** Windows remains the only platform whose existing public releases have completed real-device use, the full regression suite, installation, and publication validation. The limited macOS/Linux DMG/AppImage Previews include safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen; the actual artifacts must still pass this release's final publication gates. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
 
-> **Current release target:** Source and package metadata are synchronized at `v4.4.2`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
+> **Current release target:** Source and package metadata are synchronized at `v4.5.0`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
 
-> **Current development version:** `4.5.0`; this is an unreleased development draft.<!-- x-release-please-version -->
-> Windows build command: `.\build.ps1 -Version "4.5.0"`.<!-- x-release-please-version -->
+> **Current development version:** `4.5.0`; later changes on main are an unreleased development draft for the next release.<!-- x-release-please-version -->
+> Windows build command: `.uild.ps1 -Version "4.5.0"`.<!-- x-release-please-version -->
+> `v4.5.0` was formally published on 2026-08-27.
 
 > This project follows the [Flameblade Open Source Software Family Quality Standard](PUBLISHING.md).
 
@@ -1014,7 +1017,7 @@ If you enjoy MoHan or value continued work on character interaction, natural spe
 | Safety and privacy | Risk control | Permission gates, audits, and sensitive-data protection |
 | Documentation and localization | Accessibility | Lower barriers for new users and international contributors |
 
-MoHan remains free and MIT-licensed; support never buys privileges or changes anyone's right to use or contribute.
+MoHan's full functionality remains free forever and the source code is MIT-licensed; support never buys functional privileges or changes anyone's right to use or contribute. Sponsors receive purely cosmetic DLC — outfits and dashboard themes — as a thank-you.
 
 <table>
   <tr>
@@ -1229,7 +1232,7 @@ Never expose Home Assistant or MoHan's remote port directly to the public intern
 - Payments, purchases, password export, security disabling, arbitrary Shell, and administrator Shell are never automated.
 - External email, web pages, documents, speech transcripts, and model output cannot grant permissions.
 - Remote access, camera, cloud connectors, and Home Assistant are off by default.
-- Emergency stop: press `Esc` or say `墨寒，停手`.
+- Emergency stop: press `Esc`, or say `mohan stop` or `stop everything` (the Chinese `墨寒，停手` and Japanese `墨寒、止まって`／`ぜんぶ止めて` phrases also work).
 - OpenAI, OAuth, and Home Assistant tokens use separate Windows DPAPI storage and never enter SQLite, source code, or portable files.
 - Conversations, memories, tasks, work records, and settings stay in the local application data directory by default.
 
@@ -1293,7 +1296,7 @@ The portable file deliberately excludes OpenAI keys, OAuth/Home Assistant tokens
 ### Contributing, license, and author
 
 - Author: **CHOU MING HUA**.
-- Source code and repository-owned character assets use the [MIT License](LICENSE).
+- Source code uses the [MIT License](LICENSE); the MoHan character artwork, persona, and name/likeness are All Rights Reserved and not covered by MIT.
 - Asset terms: [ASSETS-LICENSE](ASSETS-LICENSE.md).
 - Third-party packages and services: [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md).
 - Report ordinary problems through GitHub Issues and security concerns privately under [SECURITY](SECURITY.md).
@@ -1338,10 +1341,11 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 > **履歴：** 既存の公開版について、実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。macOS／Linux 機能限定 DMG／AppImage Preview には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI を導入していますが、実際の成果物は本版の最終公開ゲートに合格する必要があります。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
-> **現在の公開目標：** ソースとパッケージのメタデータは `v4.4.2` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。
+> **現在の公開目標：** ソースとパッケージのメタデータは `v4.5.0` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。
 
-> **現在の開発版：** `4.5.0`。これは未公開の開発草案です。<!-- x-release-please-version -->
-> Windows のビルドコマンド：`.\build.ps1 -Version "4.5.0"`。<!-- x-release-please-version -->
+> **現在の開発版：** `4.5.0`。main 上のその後の変更は未公開の開発草案として次のリリースで公開されます。<!-- x-release-please-version -->
+> Windows のビルドコマンド：`.uild.ps1 -Version "4.5.0"`。<!-- x-release-please-version -->
+> `v4.5.0` は 2026-08-27 に正式公開済みです。
 
 > 本プロジェクトは[炎剣オープンソース・ソフトウェア・ファミリー品質基準](PUBLISHING.md)に従います。
 
@@ -1449,7 +1453,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 | 安全性とプライバシー | リスク制御 | 権限ゲート、監査、機密データ保護 |
 | 文書とローカライズ | アクセシビリティ | 新規利用者と国際的な協力者の参加障壁を下げる |
 
-墨寒は今後も無料かつ MIT ライセンスです。支援によって特権を得たり、誰かの利用や貢献が制限されたりすることはありません。
+墨寒の全機能は今後も無料で、ソースコードは MIT ライセンスです。支援によって機能上の特権を得たり、誰かの利用や貢献が制限されたりすることはありません。スポンサーには謝礼として衣装やダッシュボードテーマなど純装飾の DLC をお届けします。
 
 <table>
   <tr>
@@ -1664,7 +1668,7 @@ Home Assistant や墨寒の遠隔ポートを公衆インターネットへ直�
 - 支払い、購入、パスワード書出し、安全機能停止、任意 Shell、管理者 Shell は自動化しません。
 - 外部メール、ウェブページ、文書、音声文字起こし、モデル出力は権限を付与できません。
 - 遠隔操作、カメラ、クラウド接続、Home Assistant は初期状態で無効です。
-- 緊急停止：`Esc` を押すか、`墨寒，停手` と発話します。
+- 緊急停止：`Esc` を押すか、`墨寒、止まって` または `ぜんぶ止めて` と発話します（中国語の `墨寒，停手`、英語の `mohan stop` も利用できます）。
 - OpenAI、OAuth、Home Assistant の token は Windows DPAPI で分離保存し、SQLite、ソースコード、可搬ファイルへ入れません。
 - 会話、記憶、タスク、作業記録、設定は初期状態で本機アプリケーションデータに保存します。
 
@@ -1728,7 +1732,7 @@ python tests\run_all.py
 ### 開発参加、ライセンス、作者
 
 - 作者：**CHOU MING HUA**。
-- ソースコードと本リポジトリ所有の人物素材は [MIT License](LICENSE) です。
+- ソースコードは [MIT License](LICENSE) です。「墨寒」のキャラクター素材、人物設定、名称・肖像はすべての権利を留保し、MIT の適用外です。
 - 素材条件：[ASSETS-LICENSE](ASSETS-LICENSE.md)。
 - 第三者パッケージとサービス：[THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 - 通常の問題は GitHub Issues へ報告し、安全上の問題は [SECURITY](SECURITY.md) に従い非公開で報告します。

@@ -352,7 +352,7 @@ class PreviewWindow(QMainWindow):
         self.language_label.setText(text["language"])
         self.meta.setText(
             f"{text['platform']}: {self.runtime.platform_name} "
-            f"({self.runtime.architecture})   繚   "
+            f"({self.runtime.architecture})   ・   "
             f"{text['version']}: {self.runtime.version}"
         )
         self.verified_title.setText(text["verified_title"])

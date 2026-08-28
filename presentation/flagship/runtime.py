@@ -4,7 +4,7 @@ lazy import queue
 lazy from pathlib import Path
 lazy from typing import Any
 
-lazy from PySide6.QtCore import QThreadPool, QTimer
+lazy from PySide6.QtCore import QRunnable, QThreadPool, QTimer
 lazy from PySide6.QtWidgets import QApplication, QComboBox
 
 lazy from application.camera_presence import CameraPresenceController
@@ -33,7 +33,7 @@ MULTIMODAL_TIME_TOLERANCE = 0.75
 MAX_CLIPBOARD_CHARS = 100000
 lazy from integrations.ai_client import ActionPlannerWorker
 lazy from integrations.remote_control import RemoteControlServer
-lazy from presentation.flagship.cloud_health import CloudHealthWorker
+lazy from presentation.flagship.oauth import OAuthWorker
 
 __all__ = ("FlagshipRuntimeMixin",)
 
@@ -87,7 +87,10 @@ class FlagshipRuntimeMixin:
         self._latest_local_scene: SceneUnderstanding | None = None
         self._latest_local_scene_observed_at = 0.0
         self._latest_cloud_operation_id = -1
-        self._cloud_test_worker: CloudHealthWorker | None = None
+        self._cloud_test_worker: QRunnable | None = None
+        self._cloud_connecting = False
+        self._oauth_worker: OAuthWorker | None = None
+        self._home_probe_worker: QRunnable | None = None
         self.cloud_test_timeout = QTimer(self)
         self.cloud_test_timeout.setSingleShot(True)
         self.cloud_test_timeout.setInterval(35_000)

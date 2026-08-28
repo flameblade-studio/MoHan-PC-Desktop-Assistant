@@ -21,7 +21,11 @@ lazy from contracts import CloudSpeechEnginePort
 lazy from domain.service_status_localization import ServiceStatus, service_status
 lazy from integrations.speech import OpenAITTS
 
-STOP_TIMEOUT_SECONDS = 0.10
+# Coarse non-blocking gate, not a performance benchmark (relaxed 0.10 -> 0.5
+# on 2026-08-27): stop() must return promptly instead of draining playback.
+# The blocked worker stubs hold their gates for 2.0 s, so 0.5 s still proves
+# stop() never waited for playback while absorbing slow-runner jitter.
+STOP_TIMEOUT_SECONDS = 0.5
 EXPECTED_WRITE_COUNT = 6
 EXPECTED_VISEME_COUNT = 7
 

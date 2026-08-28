@@ -75,8 +75,18 @@ lazy from domain.framing_context_policy import (
     FocusState,
     FramingPolicyContext,
 )
+lazy from domain.constants import DEFAULT_WEATHER_TEMPERATURE_C
 lazy from domain.framing_preferences import FramingPreferences
-lazy from domain.speech_configuration import QueuedSpeech
+lazy from domain.performance_preferences import PerformancePreferences
+lazy from infrastructure.db import StudioDBSettingsPort
+lazy from infrastructure.framing_preferences_store import FramingPreferencesStore
+lazy from infrastructure.performance_preferences_store import (
+    PerformancePreferencesStore,
+)
+lazy from domain.speech_configuration import (
+    DEFAULT_VOICE_VOLUME_PERCENT,
+    QueuedSpeech,
+)
 lazy from domain.speech_providers import create_builtin_speech_registry
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_window import Dashboard
@@ -291,7 +301,7 @@ class CompanionCoreMixin:
                     self._adaptive_character_generation,
                     atomic_frame,
                     framing_state,
-                    FramingPreferences(),
+                    self._current_framing_preferences(),
                     composition.assets,
                     v4_enabled=True,
                     face_motion=self._face_motion_with_live_state(),
@@ -553,7 +563,11 @@ class CompanionCoreMixin:
             return
         self._gesture_audio_muted = bool(muted)
         self._apply_voice_volume(
-            int(self.db.setting("voice_volume_percent", 100)),
+            int(
+                self.db.setting(
+                    "voice_volume_percent", DEFAULT_VOICE_VOLUME_PERCENT
+                )
+            ),
             bool(self.db.setting("voice_muted", False)) or self._gesture_audio_muted,
         )
 
@@ -723,7 +737,11 @@ class CompanionCoreMixin:
         )
         self.dashboard.human_interaction.connect(self._note_human_interaction)
         self._apply_voice_volume(
-            int(self.db.setting("voice_volume_percent", 125)),
+            int(
+                self.db.setting(
+                    "voice_volume_percent", DEFAULT_VOICE_VOLUME_PERCENT
+                )
+            ),
             bool(self.db.setting("voice_muted", False)),
         )
         self.background_scheduler: ManagerWorkerScheduler | None = None
@@ -733,10 +751,34 @@ class CompanionCoreMixin:
         self.dashboard.settings_saved.connect(
             self._reload_proactive_companion_app_bridge
         )
+        # Saved welcome/silence thresholds must reach the running arbiter, and
+        # the performance/framing preference caches must follow the stores.
+        self.dashboard.settings_saved.connect(self._refresh_multisensory_config)
+        self.dashboard.settings_saved.connect(self._reload_preference_caches)
         self.proactive_presence_timer = QTimer(self)
         self.proactive_presence_timer.setInterval(60_000)
         self.proactive_presence_timer.timeout.connect(self._consider_desktop_presence)
         self.proactive_presence_timer.start()
+
+    def _reload_preference_caches(self) -> None:
+        """Load the typed performance/framing preferences from their stores.
+
+        Domain defaults are deliberately conservative (360°, back views and
+        camera-context performances start disabled) and apply whenever the
+        user never saved the preferences.
+        """
+        self._performance_preferences_cache = (
+            self._performance_preferences_store.load()
+        )
+        self._framing_preferences_cache = self._framing_preferences_store.load()
+
+    def _current_performance_preferences(self) -> PerformancePreferences:
+        cached = getattr(self, "_performance_preferences_cache", None)
+        return cached if cached is not None else PerformancePreferences()
+
+    def _current_framing_preferences(self) -> FramingPreferences:
+        cached = getattr(self, "_framing_preferences_cache", None)
+        return cached if cached is not None else FramingPreferences()
 
     def _observe_personality_mirror(self) -> None:
         """Feed the recent conversation window into the personality mirror.
@@ -760,7 +802,11 @@ class CompanionCoreMixin:
         outfit-weight suggestion and comfort verdict, and refreshes the
         satiety-driven blink interval so a hungry companion blinks sluggishly.
         """
-        temperature_c = float(self.db.setting("weather_temperature_c", 20.0))
+        temperature_c = float(
+            self.db.setting(
+                "weather_temperature_c", DEFAULT_WEATHER_TEMPERATURE_C
+            )
+        )
         language = str(self.db.setting("ui_language", "zh-TW"))
         # Wardrobe intuition: suggest an outfit weight for the temperature and
         # judge the currently worn weight against it.
@@ -1069,6 +1115,15 @@ class CompanionCoreMixin:
         self.multisensory_arbiter = self._new_multisensory_arbiter(
             self._multisensory_config
         )
+        # Typed preference stores are the single source of truth for the
+        # performance and framing preferences (domain defaults apply when the
+        # user never saved them).  The caches refresh on every settings save.
+        settings_port = StudioDBSettingsPort(self.db)
+        self._performance_preferences_store = PerformancePreferencesStore(
+            settings_port
+        )
+        self._framing_preferences_store = FramingPreferencesStore(settings_port)
+        self._reload_preference_caches()
         self._latest_visual_scene = None
         self._recognized_scene_streak = 0
         self._last_wave_acknowledged_at = float("-inf")

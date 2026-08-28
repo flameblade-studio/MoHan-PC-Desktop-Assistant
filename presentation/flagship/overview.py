@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 lazy from PySide6.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QFormLayout,
     QLabel,
     QLineEdit,
     QMessageBox,
@@ -55,9 +58,58 @@ class FlagshipOverviewMixin:
         layout.addWidget(task_label)
         layout.addWidget(self.task_instruction)
         layout.addWidget(self.plan_button)
+        layout.addSpacing(12)
+        layout.addWidget(self._accessibility_section())
         layout.addStretch()
         self.refresh_health()
         return page
+
+    def _accessibility_section(self) -> QWidget:
+        """Visible writers for ``flagship_high_contrast``/``flagship_ui_scale``.
+
+        Both keys were read by the flagship and dashboard themes but had no
+        writer anywhere in the UI, so the accessibility options were dead.
+        """
+
+        section = QWidget()
+        form = QFormLayout(section)
+        form.setContentsMargins(0, 0, 0, 0)
+        heading = QLabel(self._t("<b>介面與無障礙</b>"))
+        heading.setStyleSheet("color:#2f6987;font-size:15px;")
+        form.addRow(heading)
+        self.flagship_high_contrast = QCheckBox(self._t("高對比模式"))
+        self.flagship_high_contrast.setAccessibleName(self._t("高對比模式"))
+        form.addRow(self.flagship_high_contrast)
+        self.flagship_ui_scale = QComboBox()
+        for label, value in (
+            ("100%", 1.0),
+            ("115%", 1.15),
+            ("130%", 1.3),
+            ("150%", 1.5),
+        ):
+            self.flagship_ui_scale.addItem(label, value)
+        self.flagship_ui_scale.setAccessibleName(self._t("介面縮放"))
+        form.addRow(self._t("介面縮放"), self.flagship_ui_scale)
+        accessibility_note = QLabel(
+            self._t("保存設定後立即套用於旗艦中心；主控台重新啟動後套用。")
+        )
+        accessibility_note.setWordWrap(True)
+        form.addRow(accessibility_note)
+        self._refresh_accessibility_controls()
+        return section
+
+    def _refresh_accessibility_controls(self) -> None:
+        self.flagship_high_contrast.setChecked(
+            bool(self.db.setting("flagship_high_contrast", False))
+        )
+        stored_scale = float(self.db.setting("flagship_ui_scale", 1.0))
+        closest_index = min(
+            range(self.flagship_ui_scale.count()),
+            key=lambda index: abs(
+                float(self.flagship_ui_scale.itemData(index)) - stored_scale
+            ),
+        )
+        self.flagship_ui_scale.setCurrentIndex(closest_index)
 
     def create_backup(self) -> None:
         try:

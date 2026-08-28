@@ -31,6 +31,24 @@ class ComfortVerdict(StrEnum):
     TOO_COLD = "too_cold"
 
 
+def weight_for_thermal_bands(thermal_bands: frozenset[str]) -> OutfitWeight:
+    """Derive a worn-outfit weight from an autonomous profile's thermal bands.
+
+    An outfit tailored for the hot band is light clothing; one tailored for the
+    cool/cold bands is warm clothing; anything that spans both extremes (or
+    neither) is a versatile moderate outfit.  This lets the wardrobe runtime
+    persist ``wardrobe_current_weight`` so the comfort-complaint intuition can
+    judge what MoHan is actually wearing.
+    """
+    covers_hot = "hot" in thermal_bands
+    covers_cold = bool(thermal_bands & {"cool", "cold"})
+    if covers_hot and not covers_cold:
+        return OutfitWeight.LIGHT
+    if covers_cold and not covers_hot:
+        return OutfitWeight.WARM
+    return OutfitWeight.MODERATE
+
+
 def suggested_weight(temperature_c: float) -> OutfitWeight:
     """Return the outfit weight that suits the current temperature."""
     if temperature_c >= HOT_THRESHOLD_C:
