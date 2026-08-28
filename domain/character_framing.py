@@ -143,6 +143,12 @@ class CharacterFramingDirector:
             # FULL_BODY (from an idle full-body view) or CLOSE never lingers
             # across the start of speech.  The companion must not speak a few
             # words in full-body before snapping back to half-body.
+            # Remember the framing the policy actually wanted so the
+            # mouth-closed branch below can restore it after speech; this
+            # was the missing producer of ``_pending`` (the consumer existed
+            # but nothing ever set it, so deferred restores never happened).
+            if requested is not FramingMode.HALF:
+                self._pending = (requested, reason)
             if self._mode is not FramingMode.HALF:
                 self._mode = FramingMode.HALF
                 self._last_change_at = float(self._clock())
