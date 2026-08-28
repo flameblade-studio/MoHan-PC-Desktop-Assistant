@@ -11,7 +11,7 @@ lazy import pytest
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from domain.performance_preferences import PerformancePreferences
-lazy from flagship_ui import ControlCenterDependencies, FlagshipControlCenter
+lazy from presentation.flagship_ui import ControlCenterDependencies, FlagshipControlCenter
 lazy from infrastructure.db import StudioDB, StudioDBSettingsPort
 lazy from infrastructure.performance_preferences_store import (
     PerformancePreferencesStore,

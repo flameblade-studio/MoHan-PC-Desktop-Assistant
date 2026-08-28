@@ -8,15 +8,15 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from expression_system import INTERNAL_EMOTION_INSTRUCTION
+lazy from domain.expression_system import INTERNAL_EMOTION_INSTRUCTION
 lazy from integrations.ai_client import (
     STABLE_PROMPT_CACHE_BREAKPOINT,
     ActionPlannerWorker,
     AIWorker,
     AIWorkerRequest,
 )
-lazy from language_support import response_language_instruction
-lazy from prompt_cache import (
+lazy from domain.language_support import response_language_instruction
+lazy from domain.prompt_cache import (
     InMemoryPromptTokenEvidence,
     PromptCacheTelemetry,
     PromptCacheTokenEvidence,

@@ -6,7 +6,7 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from face_rig import FacePose
+lazy from domain.face_rig import FacePose
 lazy from infrastructure.face_assets import FACE_ASSET_MANIFESTS, validate_face_assets
 
 FACE_ASSET_COUNT = 24

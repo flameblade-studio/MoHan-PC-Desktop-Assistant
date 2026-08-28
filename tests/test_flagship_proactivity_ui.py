@@ -12,13 +12,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import QApplication, QDialog, QPushButton, QScrollArea
 
-lazy from companion_phrasebook import (
+lazy from application.companion_phrasebook import (
     PHRASEBOOK_SETTING,
     CompanionPhrasebook,
     grouped_phrasebook_categories,
 )
-lazy from companion_proactivity_preferences import CompanionProactivityPreferences
-lazy from flagship_ui import ControlCenterDependencies, FlagshipControlCenter
+lazy from domain.companion_proactivity_preferences import CompanionProactivityPreferences
+lazy from presentation.flagship_ui import ControlCenterDependencies, FlagshipControlCenter
 lazy from infrastructure.companion_proactivity_preferences_store import (
     CompanionProactivityPreferencesStore,
 )

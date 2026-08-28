@@ -8,8 +8,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from multimodal_fusion_hub import MultimodalFusionHub, VoiceActivityState
-lazy from multimodal_model_provider import (
+lazy from application.multimodal_fusion_hub import MultimodalFusionHub, VoiceActivityState
+lazy from infrastructure.multimodal_model_provider import (
     MultimodalModelPaths,
     OpenCVMultiModalModelProvider,
 )

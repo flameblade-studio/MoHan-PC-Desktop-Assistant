@@ -6,7 +6,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from appearance_dynamics import (
+lazy from domain.appearance_dynamics import (
     IDENTITY_TRANSFORM,
     AppearanceDynamics,
     AppearanceDynamicsError,

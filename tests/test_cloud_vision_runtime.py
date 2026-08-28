@@ -7,7 +7,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from cloud_vision_runtime import (
+lazy from application.cloud_vision_runtime import (
     CloudVisionFrame,
     CloudVisionResult,
     CloudVisionRuntime,
@@ -20,7 +20,7 @@ lazy from integrations.openai_vision_provider import (
     VisionProviderResult,
     VisionResultStatus,
 )
-lazy from openai_vision_preferences import (
+lazy from domain.openai_vision_preferences import (
     PREFERENCES_VERSION,
     OpenAIVisionPreferences,
     VisionTriggerPolicy,

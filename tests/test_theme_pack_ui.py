@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT))
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import QApplication, QMessageBox, QPushButton
 
-lazy from theme_pack_ui import ThemeCatalogEntry, ThemePackPanel
+lazy from presentation.theme_pack_ui import ThemeCatalogEntry, ThemePackPanel
 
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 CJK = re.compile(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]")

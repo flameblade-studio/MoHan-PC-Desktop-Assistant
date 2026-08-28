@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtCore import QCoreApplication
 
-lazy from contracts import LocalSpeechEnginePort
+lazy from domain.contracts import LocalSpeechEnginePort
 lazy from integrations.speech import UnavailableSystemTTS, WindowsTTS
 
 

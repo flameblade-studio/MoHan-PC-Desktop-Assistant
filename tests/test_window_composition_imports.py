@@ -86,7 +86,7 @@ def test_composition_modules_import_without_loading_app() -> None:
     script = """
 import sys
 
-import application_bootstrap
+from application import application_bootstrap
 import presentation.companion_window
 import presentation.dashboard_window
 

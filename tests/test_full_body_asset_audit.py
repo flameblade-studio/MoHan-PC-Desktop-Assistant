@@ -6,8 +6,8 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_pose import CANONICAL_YAWS
-lazy from full_body_asset_audit import FullBodyViewEvidence, audit_full_body_assets
+lazy from domain.character_pose import CANONICAL_YAWS
+lazy from domain.full_body_asset_audit import FullBodyViewEvidence, audit_full_body_assets
 
 REAR_YAW = -180
 

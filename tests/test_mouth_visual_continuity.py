@@ -14,8 +14,8 @@ lazy from PySide6.QtCore import QRect, QTimer
 lazy from PySide6.QtGui import QImage
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from companion_animation_contract import CHEEK_SPEECH_CLOSED_EXPRESSION
-lazy from companion_window import CompanionWindow
+lazy from domain.companion_animation_contract import CHEEK_SPEECH_CLOSED_EXPRESSION
+lazy from presentation.companion_window import CompanionWindow
 
 VOWEL_REPEAT_COUNT = 5
 MIN_CORNER_CHANGED_PIXELS = 12

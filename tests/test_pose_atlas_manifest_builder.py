@@ -11,13 +11,13 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_pose import CANONICAL_YAWS, canonical_view_id
-lazy from hand_asset_audit import FINGERS, Point
-lazy from pose_atlas_manifest_builder import (
+lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
+lazy from domain.hand_asset_audit import FINGERS, Point
+lazy from domain.pose_atlas_manifest_builder import (
     PoseAtlasBuildConfig,
     build_pose_atlas_manifest,
 )
-lazy from pose_atlas_release_gate import (
+lazy from domain.pose_atlas_release_gate import (
     PoseAtlasAuditInputs,
     PoseLoadReleaseEvidence,
     audit_pose_atlas_release,

@@ -8,17 +8,17 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_pose import CANONICAL_YAWS, canonical_view_id
-lazy from full_body_asset_audit import FullBodyViewEvidence
-lazy from full_body_asset_evidence import FullBodyAssetEvidenceResult
-lazy from pose_atlas_release_gate import (
+lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
+lazy from domain.full_body_asset_audit import FullBodyViewEvidence
+lazy from domain.full_body_asset_evidence import FullBodyAssetEvidenceResult
+lazy from domain.pose_atlas_release_gate import (
     PoseAtlasAuditInputs,
     PoseLoadReleaseEvidence,
     PoseReleaseViewInput,
     audit_pose_atlas_release,
     manifest_sha256,
 )
-lazy from pose_runtime_loader import PoseAtlasManifest, PoseViewSpec
+lazy from domain.pose_runtime_loader import PoseAtlasManifest, PoseViewSpec
 
 VIEW_COUNT = 24
 

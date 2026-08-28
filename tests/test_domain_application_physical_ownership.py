@@ -67,14 +67,20 @@ def test_root_app_remains_the_thin_composition_entrypoint() -> None:
     )
 
 
-def test_compatibility_aliases_preserve_module_identity() -> None:
-    examples = {
-        "language_support": "domain.language_support",
-        "local_visual_intelligence": "application.local_visual_intelligence",
-        "vision_runtime": "application.vision_runtime",
-    }
-    for facade_name, owner_name in examples.items():
-        assert importlib.import_module(facade_name) is importlib.import_module(owner_name)
+def test_retired_compatibility_aliases_are_not_importable() -> None:
+    # The root-facade retirement (2026-08-28) removed these aliases; only the
+    # canonical owners may resolve from now on.
+    for facade_name, owner_name in (
+        ("language_support", "domain.language_support"),
+        ("local_visual_intelligence", "application.local_visual_intelligence"),
+        ("vision_runtime", "application.vision_runtime"),
+    ):
+        importlib.import_module(owner_name)
+        try:
+            importlib.import_module(facade_name)
+        except ModuleNotFoundError:
+            continue
+        raise AssertionError(f"retired root alias is importable again: {facade_name}")
 
 
 def test_silence_gesture_detector_is_a_callable_owner_export() -> None:

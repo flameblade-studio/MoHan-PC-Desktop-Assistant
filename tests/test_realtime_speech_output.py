@@ -21,7 +21,7 @@ lazy from integrations.realtime_speech_output import (
     RealtimeTextSegmenter,
 )
 lazy from integrations.realtime_voice import RealtimeSessionConfig, RealtimeVoiceClient
-lazy from speech_boundary import SpeechTimingEvent, SpeechTimingKind
+lazy from domain.speech_boundary import SpeechTimingEvent, SpeechTimingKind
 
 QUEUE_MAX_LENGTH = 1_024
 EXPECTED_SPEAK_CALLS_TWO = 2

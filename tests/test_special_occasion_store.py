@@ -19,7 +19,7 @@ lazy from infrastructure.special_occasion_store import (
     SpecialOccasionStoreError,
     default_special_occasion_state,
 )
-lazy from special_occasion import OccasionKind, OccasionResponse
+lazy from application.special_occasion import OccasionKind, OccasionResponse
 
 NOW = datetime(2027, 1, 8, 12, tzinfo=UTC)
 

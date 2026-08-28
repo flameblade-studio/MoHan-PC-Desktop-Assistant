@@ -5,13 +5,13 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from object_interaction import (
+lazy from application.object_interaction import (
     ObjectInteractionAction,
     ObjectInteractionRequest,
     ObjectSemanticScope,
     propose_object_interaction,
 )
-lazy from vision_domain import (
+lazy from domain.vision_domain import (
     BoundingBox,
     IdentityObservation,
     IdentityState,

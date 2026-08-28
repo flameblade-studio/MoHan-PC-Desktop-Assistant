@@ -7,15 +7,15 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from companion_phrasebook import CompanionPhrasebook
-lazy from companion_proactivity_preferences import CompanionProactivityPreferences
-lazy from proactive_companion_runtime import (
+lazy from application.companion_phrasebook import CompanionPhrasebook
+lazy from domain.companion_proactivity_preferences import CompanionProactivityPreferences
+lazy from application.proactive_companion_runtime import (
     CandidatePriority,
     NormalizedCompanionEnvironment,
     ProactiveCompanionRuntime,
     ProactiveSource,
 )
-lazy from special_occasion import (
+lazy from application.special_occasion import (
     OccasionCue,
     OccasionDelivery,
     OccasionExpression,
@@ -24,8 +24,8 @@ lazy from special_occasion import (
     OccasionKind,
     OccasionStage,
 )
-lazy from wellbeing_app_bridge import ReminderTrigger, SpeakRequest
-lazy from wellbeing_reminder import (
+lazy from application.wellbeing_app_bridge import ReminderTrigger, SpeakRequest
+lazy from application.wellbeing_reminder import (
     ReminderExpression,
     ReminderFraming,
     ReminderGaze,
@@ -34,7 +34,7 @@ lazy from wellbeing_reminder import (
     WellbeingCue,
     WellbeingKind,
 )
-lazy from wellbeing_runtime import RuntimeCue, RuntimeSource
+lazy from application.wellbeing_runtime import RuntimeCue, RuntimeSource
 
 NOW = datetime(2027, 1, 8, 20, tzinfo=UTC)
 

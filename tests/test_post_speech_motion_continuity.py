@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QAbstractAnimation, QTimer
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from companion_window import CompanionWindow
+lazy from presentation.companion_window import CompanionWindow
 lazy from infrastructure.db import StudioDB
 
 MAX_MOTION_DELTA = 2

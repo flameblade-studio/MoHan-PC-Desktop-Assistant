@@ -10,9 +10,9 @@ reassignment is rejected by the type checker.
 
 Import style::
 
-    from constants import HTTP_NOT_FOUND, SERVER_ERROR_BOUNDARY
-    from constants import PNG_SIGNATURE, SHA256_HEX_LENGTH
-    from constants import HOURS_PER_DAY, SECONDS_PER_DAY
+    from domain.constants import HTTP_NOT_FOUND, SERVER_ERROR_BOUNDARY
+    from domain.constants import PNG_SIGNATURE, SHA256_HEX_LENGTH
+    from domain.constants import HOURS_PER_DAY, SECONDS_PER_DAY
 """
 
 lazy from typing import Final

@@ -13,7 +13,7 @@ lazy from PySide6.QtCore import QRect, Qt, QTimer
 lazy from PySide6.QtGui import QColor, QFont, QImage, QPainter
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from companion_window import CompanionWindow
+lazy from presentation.companion_window import CompanionWindow
 
 FACE_RECTS = {
     "cheek": QRect(120, 100, 170, 155),

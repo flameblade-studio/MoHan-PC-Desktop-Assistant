@@ -14,7 +14,7 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from command_parser import is_start_work_command, is_stop_work_command
+lazy from domain.command_parser import is_start_work_command, is_stop_work_command
 lazy from infrastructure.db import PlatformProgressUpdate, StudioDB, format_duration
 lazy from integrations.ai_client import (
     DEFAULT_TEXT_MODEL,
@@ -32,12 +32,12 @@ lazy from integrations.speech import (
     preferred_windows_voice,
     windows_voices,
 )
-lazy from lip_sync import VOWEL_FORMANTS, analyze_pcm16, infer_vowel_pcm16
-lazy from speech_configuration import (
+lazy from domain.lip_sync import VOWEL_FORMANTS, analyze_pcm16, infer_vowel_pcm16
+lazy from domain.speech_configuration import (
     VOICE_GENERATION_PROMPT,
     migrate_voice_defaults,
 )
-lazy from text_normalizer import to_taiwan_traditional
+lazy from domain.text_normalizer import to_taiwan_traditional
 
 EXPECTED_RMS = 1000
 END_SILENCE_SECONDS = 0.85

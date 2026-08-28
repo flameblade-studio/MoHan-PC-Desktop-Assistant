@@ -9,7 +9,7 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from background_agents import (
+lazy from application.background_agents import (
     AgentObservation,
     DiagnosticReportWorker,
     ManagerWorkerScheduler,

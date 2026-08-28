@@ -172,14 +172,17 @@ def test_composition_root_builds_one_accelerator_for_every_pcm_engine() -> None:
         root = Path(temp_dir)
         with (
             patch(
-                "service_container.NativeAcceleration",
+                "application.service_container.NativeAcceleration",
                 return_value=accelerator,
             ) as acceleration_factory,
             patch(
-                "service_container.platform_secret_store_factory",
+                "application.service_container.platform_secret_store_factory",
                 return_value=secret_store_factory,
             ),
-            patch("service_container.BackupManager", _BackupManager),
+            patch(
+                "application.service_container.BackupManager",
+                _BackupManager,
+            ),
         ):
             services = service_container.create_default_services(
                 root / "data",

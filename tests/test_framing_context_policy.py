@@ -7,8 +7,8 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from character_framing import FramingMode, NormalizedRect
-lazy from framing_context_policy import (
+lazy from domain.character_framing import FramingMode, NormalizedRect
+lazy from domain.framing_context_policy import (
     EmotionValence,
     FocusState,
     FramingPolicyContext,

@@ -11,7 +11,7 @@ lazy from PySide6.QtCore import QCoreApplication
 lazy from PySide6.QtGui import QColor, QImage
 lazy from PySide6.QtTest import QSignalSpy
 
-lazy from camera_presence import CameraPresenceController
+lazy from application.camera_presence import CameraPresenceController
 
 EXPECTED_GESTURE_COUNT = 5
 EXPECTED_SCENE_COUNT = 2

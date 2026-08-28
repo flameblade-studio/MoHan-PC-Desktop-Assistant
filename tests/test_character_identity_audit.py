@@ -6,7 +6,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_identity_audit import (
+lazy from domain.character_identity_audit import (
     SIGNATURE_FIELDS,
     CharacterIdentityEvidence,
     FaceGeometrySignature,
@@ -14,7 +14,7 @@ lazy from character_identity_audit import (
     audit_character_identity,
     expected_visibility,
 )
-lazy from character_pose import CANONICAL_YAWS, canonical_view_id
+lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 
 CANONICAL_YAW_COUNT = 24
 

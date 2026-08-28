@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from datetime import datetime
 
-lazy from flagship_core import (
+lazy from presentation.flagship_core import (
     ActionExecutor,
     ActionPlan,
     ActionRequest,
@@ -36,7 +36,7 @@ lazy from integrations.remote_control import (
     RemoteServerServices,
     TokenRegistry,
 )
-lazy from workflow_engine import Workflow, schedule_due
+lazy from application.workflow_engine import Workflow, schedule_due
 
 RED_RISK_CONFIRMATION_COUNT = 2
 HTTP_UNAUTHORIZED = 401

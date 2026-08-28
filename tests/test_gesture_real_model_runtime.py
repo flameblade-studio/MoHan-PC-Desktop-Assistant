@@ -18,10 +18,10 @@ lazy import cv2
 lazy import numpy as np
 lazy from PySide6.QtCore import QCoreApplication
 
-lazy from gesture_action_router import GestureActionDecision
-lazy from gesture_configuration import GestureConfiguration
-lazy from gesture_controller import GestureController, GestureControllerStatus
-lazy from gesture_runtime import GestureRuntimeResult
+lazy from application.gesture_action_router import GestureActionDecision
+lazy from domain.gesture_configuration import GestureConfiguration
+lazy from application.gesture_controller import GestureController, GestureControllerStatus
+lazy from application.gesture_runtime import GestureRuntimeResult
 lazy from infrastructure.hand_landmark_provider import (
     HandLandmarkProvider,
     HandLandmarkStatus,
@@ -119,8 +119,8 @@ def test_hand_runtime_modules_have_no_network_imports_or_frame_writes() -> None:
     forbidden_writes = {"imwrite", "VideoWriter", "write_bytes"}
     for name in (
         "infrastructure/hand_landmark_provider.py",
-        "gesture_controller.py",
-        "gesture_runtime.py",
+        "application/gesture_controller.py",
+        "application/gesture_runtime.py",
     ):
         source = (PROJECT / name).read_text(encoding="utf-8")
         tree = ast.parse(source, filename=name)

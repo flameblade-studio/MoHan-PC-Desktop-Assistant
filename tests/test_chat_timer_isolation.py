@@ -10,8 +10,8 @@ lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication, QPushButton
 
-lazy from companion_window import CompanionWindow
-lazy from dashboard_window import Dashboard
+lazy from presentation.companion_window import CompanionWindow
+lazy from presentation.dashboard_window import Dashboard
 lazy from infrastructure.db import StudioDB
 
 

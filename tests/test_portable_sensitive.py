@@ -32,7 +32,9 @@ def _require_audited_aead_dependency() -> None:
 def _load_contract_module():
     _require_audited_aead_dependency()
     try:
-        portable_sensitive = importlib.import_module("portable_sensitive")
+        portable_sensitive = importlib.import_module(
+            "infrastructure.portable_sensitive"
+        )
     except ModuleNotFoundError as exc:
         raise AssertionError(
             "SECURITY_BLOCKED: 經稽核的 AEAD 模組必須可載入；目前找不到 "

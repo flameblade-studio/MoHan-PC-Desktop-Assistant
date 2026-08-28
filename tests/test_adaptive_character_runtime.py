@@ -7,37 +7,37 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from adaptive_character_runtime import (
+lazy from application.adaptive_character_runtime import (
     AdaptiveCharacterDisposition,
     AdaptiveCharacterRequest,
     AdaptiveCharacterRuntime,
 )
-lazy from behavior_director import BreathStyle, GazeTarget, TransitionStyle
-lazy from body_pose_renderer import BodyPoseFrame
-lazy from character_framing import FRAMING_RECTS, FramingMode
-lazy from character_framing_app_bridge import (
+lazy from application.behavior_director import BreathStyle, GazeTarget, TransitionStyle
+lazy from application.body_pose_renderer import BodyPoseFrame
+lazy from domain.character_framing import FRAMING_RECTS, FramingMode
+lazy from application.character_framing_app_bridge import (
     AppFramingState,
     AtomicFramingCommand,
     FramingBridgeDisposition,
     FramingBridgeResult,
 )
-lazy from face_rig import (
+lazy from domain.face_rig import (
     ExpressionShape as FaceExpressionShape,
     FaceMotionFrame,
     FacePose,
     MouthShape as FaceMouthShape,
     Viseme,
 )
-lazy from framing_context_policy import EmotionValence, FocusState, FramingPolicyContext
-lazy from framing_orchestrator import FramingAuditEntry
-lazy from framing_preferences import FramingPreferences
-lazy from full_body_performance_bridge import (
+lazy from domain.framing_context_policy import EmotionValence, FocusState, FramingPolicyContext
+lazy from application.framing_orchestrator import FramingAuditEntry
+lazy from domain.framing_preferences import FramingPreferences
+lazy from application.full_body_performance_bridge import (
     FullBodyBridgeDisposition,
     FullBodyBridgeResult,
 )
-lazy from performance_coordinator import PerformanceFrame
-lazy from performance_runtime import AtomicPerformanceFrame
-lazy from speech_performance import SpeechEventKind, SpeechPerformancePhase
+lazy from application.performance_coordinator import PerformanceFrame
+lazy from application.performance_runtime import AtomicPerformanceFrame
+lazy from application.speech_performance import SpeechEventKind, SpeechPerformancePhase
 
 
 def pixels(shade: int) -> bytes:

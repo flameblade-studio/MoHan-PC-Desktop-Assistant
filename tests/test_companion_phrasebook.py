@@ -5,7 +5,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from companion_phrasebook import (
+lazy from application.companion_phrasebook import (
     OCCASION_PHRASE_KEYS,
     PUBLIC_COMPANION_LINES,
     WARDROBE_PHRASE_KEYS,
@@ -17,8 +17,8 @@ lazy from companion_phrasebook import (
     public_companion_line,
     wellbeing_phrase_key,
 )
-lazy from special_occasion import OccasionKind, OccasionStage
-lazy from wellbeing_reminder import ReminderStage, WellbeingKind
+lazy from application.special_occasion import OccasionKind, OccasionStage
+lazy from application.wellbeing_reminder import ReminderStage, WellbeingKind
 
 WELLBEING_PHRASE_KEY_COUNT = 8
 OCCASION_PHRASE_KEY_COUNT = 10

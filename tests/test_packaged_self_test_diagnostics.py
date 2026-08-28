@@ -4,7 +4,7 @@ lazy import io
 lazy from contextlib import redirect_stderr
 lazy from pathlib import Path
 
-lazy import packaged_self_test
+lazy from application import packaged_self_test
 
 FAILURE_EXIT_CODE = 2
 

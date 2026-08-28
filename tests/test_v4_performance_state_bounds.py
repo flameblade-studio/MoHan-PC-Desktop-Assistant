@@ -5,19 +5,19 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from appearance_session import (
+lazy from application.appearance_session import (
     APPEARANCE_SLOTS,
     AppearanceComponent,
     AppearanceSelection,
     AppearanceSession,
 )
-lazy from behavior_director import (
+lazy from application.behavior_director import (
     BehaviorDirector,
     BehaviorInput,
     SemanticEmotion,
     SpeechLifecycle,
 )
-lazy from cloud_vision_runtime import (
+lazy from application.cloud_vision_runtime import (
     CloudVisionFrame,
     CloudVisionRuntime,
     CloudVisionStatus,
@@ -27,7 +27,7 @@ lazy from integrations.openai_vision_provider import (
     VisionProviderResult,
     VisionResultStatus,
 )
-lazy from openai_vision_preferences import PREFERENCES_VERSION, OpenAIVisionPreferences
+lazy from domain.openai_vision_preferences import PREFERENCES_VERSION, OpenAIVisionPreferences
 
 RECENT_HISTORY_BOUND = 3
 EXPECTED_PREVIEW_CALLS = 2_000

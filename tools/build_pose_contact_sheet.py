@@ -15,7 +15,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 lazy from PySide6.QtGui import QColor, QGuiApplication, QImage, QPainter, QPen
 
-lazy from pose_atlas_audit import (
+lazy from domain.pose_atlas_audit import (
     AtlasLayerEvidence,
     AtlasViewEvidence,
     PoseAtlasAuditReport,

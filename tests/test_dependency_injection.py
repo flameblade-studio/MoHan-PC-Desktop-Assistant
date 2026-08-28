@@ -20,11 +20,11 @@ lazy from application.presentation_ports import (
     RealtimeSpeechOutputConfigRequest,
     create_realtime_output_config,
 )
-lazy from companion_window import CompanionWindow
+lazy from presentation.companion_window import CompanionWindow
 lazy from infrastructure.db import StudioDB
 lazy from integrations.realtime_voice import RealtimeVoiceRequest
-lazy from service_container import CompanionServices, create_presentation_ports
-lazy from speech_configuration import SpeechCredentials
+lazy from application.service_container import CompanionServices, create_presentation_ports
+lazy from domain.speech_configuration import SpeechCredentials
 
 
 class FakeSecretStore:

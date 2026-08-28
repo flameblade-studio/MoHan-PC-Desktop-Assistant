@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.memory_index import MemoryVectorIndex
-lazy from time_utils import local_wall_time
+lazy from domain.time_utils import local_wall_time
 
 TARGET_ACTIVE_COUNT = 400
 EXPECTED_PRUNED_COUNT = 107

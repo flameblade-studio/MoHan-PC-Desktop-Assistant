@@ -12,7 +12,7 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from framing_preferences import (
+lazy from domain.framing_preferences import (
     ADAPTIVE_FRAMING_KEY,
     ALLOW_CLOSE_KEY,
     ALLOW_FULL_BODY_KEY,
@@ -36,7 +36,7 @@ lazy from infrastructure.profile_transfer import (
     ProfileManifest,
     ProfileTransferError,
 )
-lazy from performance_preferences import (
+lazy from domain.performance_preferences import (
     CAMERA_CONTEXT_KEY,
     EMOTIONAL_BACK_KEY,
     FULL_BACK_KEY,
@@ -46,8 +46,8 @@ lazy from performance_preferences import (
     RIGHT_GESTURES_KEY,
     VIEW_360_KEY,
 )
-lazy from profile_transfer_ui import localized_profile_failure
-lazy from safe_error_localization import safe_error_message
+lazy from presentation.profile_transfer_ui import localized_profile_failure
+lazy from domain.safe_error_localization import safe_error_message
 
 _BAIT_PATH = r"Z:\private-fixture\owner\mohan-private.db"
 _BAIT_TOKEN = "fixture-profile-private-token"

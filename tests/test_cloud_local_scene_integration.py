@@ -5,12 +5,12 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from cloud_scene_interpreter import CloudSceneInterpretation, SceneFactKind
-lazy from cloud_vision_runtime import (
+lazy from domain.cloud_scene_interpreter import CloudSceneInterpretation, SceneFactKind
+lazy from application.cloud_vision_runtime import (
     CloudVisionResult,
     CloudVisionStatus,
 )
-lazy from cloud_vision_ui_bridge import (
+lazy from application.cloud_vision_ui_bridge import (
     CloudLocalSceneIntegrator,
     CloudVisionUIResult,
     _safe_ui_result,
@@ -20,7 +20,7 @@ lazy from integrations.openai_vision_provider import (
     VisualClaim,
     VisualUnderstanding,
 )
-lazy from vision_domain import (
+lazy from domain.vision_domain import (
     IdentityObservation,
     IdentityState,
     SceneUnderstanding,

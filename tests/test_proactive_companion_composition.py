@@ -10,14 +10,14 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 lazy from infrastructure.db import StudioDB
-lazy from proactive_companion_app_bridge import (
+lazy from application.proactive_companion_app_bridge import (
     ProactiveAppDisposition,
     ProactiveAppEvent,
     ProactiveAppState,
 )
-lazy from proactive_companion_composition import create_proactive_companion_bridge
-lazy from visual_perception import PresenceState
-lazy from wellbeing_app_bridge import ReminderTrigger
+lazy from application.proactive_companion_composition import create_proactive_companion_bridge
+lazy from application.visual_perception import PresenceState
+lazy from application.wellbeing_app_bridge import ReminderTrigger
 
 
 def _state(now: datetime) -> ProactiveAppState:

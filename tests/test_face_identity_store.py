@@ -10,7 +10,7 @@ lazy from infrastructure.face_identity_store import (
     FaceIdentityDataError,
     FaceIdentityStore,
 )
-lazy from vision_domain import IdentityState, cosine_similarity
+lazy from domain.vision_domain import IdentityState, cosine_similarity
 
 EXPECTED_PROFILE_COUNT = 2
 

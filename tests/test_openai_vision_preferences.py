@@ -5,8 +5,8 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from openai_vision_authorization import OpenAIVisionAuthorization
-lazy from openai_vision_preferences import (
+lazy from domain.openai_vision_authorization import OpenAIVisionAuthorization
+lazy from domain.openai_vision_preferences import (
     OPENAI_VISION_MODELS,
     OpenAIVisionPreferences,
     UnsupportedOpenAIVisionPreferencesVersion,

@@ -8,25 +8,25 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from companion_phrasebook import CompanionPhrasebook
-lazy from companion_proactivity_preferences import CompanionProactivityPreferences
-lazy from multisensory_interaction import InteractionKind, ProactiveInteraction
-lazy from proactive_companion_app_bridge import (
+lazy from application.companion_phrasebook import CompanionPhrasebook
+lazy from domain.companion_proactivity_preferences import CompanionProactivityPreferences
+lazy from application.multisensory_interaction import InteractionKind, ProactiveInteraction
+lazy from application.proactive_companion_app_bridge import (
     ProactiveAppDisposition,
     ProactiveAppEvent,
     ProactiveAppState,
     ProactiveCompanionAppBridge,
 )
-lazy from proactive_companion_runtime import (
+lazy from application.proactive_companion_runtime import (
     CandidatePriority,
     ProactiveCompanionRequest,
     ProactiveSource,
 )
-lazy from visual_perception import PresenceState
+lazy from application.visual_perception import PresenceState
 
 ABSENCE_SECONDS = 600.0
 EXPECTED_REPORT_COUNT = 2
-lazy from wellbeing_app_bridge import ReminderTrigger, SpeakRequest
+lazy from application.wellbeing_app_bridge import ReminderTrigger, SpeakRequest
 
 NOW = datetime(2027, 1, 8, 12, tzinfo=UTC)
 

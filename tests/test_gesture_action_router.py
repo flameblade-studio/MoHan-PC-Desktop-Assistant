@@ -5,13 +5,13 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from gesture_action_router import (
+lazy from application.gesture_action_router import (
     GestureActionDisposition,
     GestureActionRouter,
     GestureActionSafety,
     GestureTrigger,
 )
-lazy from gesture_configuration import (
+lazy from domain.gesture_configuration import (
     GestureAction,
     GestureBinding,
     GestureConfiguration,

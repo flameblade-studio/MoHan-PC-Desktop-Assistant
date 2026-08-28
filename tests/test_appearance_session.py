@@ -5,7 +5,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from appearance_session import (
+lazy from application.appearance_session import (
     ACTIVE_OUTFIT_SETTING_KEY,
     APPEARANCE_SLOTS,
     AppearanceCommit,

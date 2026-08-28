@@ -6,7 +6,7 @@ lazy from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from speech_boundary import SpeechTimingCollector, SpeechTimingKind
+lazy from domain.speech_boundary import SpeechTimingCollector, SpeechTimingKind
 
 OPERATION_ID = 7
 AUDIO_OFFSET_SECONDS = 0.5

@@ -5,14 +5,14 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from air_interaction import (
+lazy from domain.air_interaction import (
     AirHandPoint,
     AirHandSample,
     AirInteractionConfig,
     AirInteractionDetector,
     AirInteractionKind,
 )
-lazy from gesture_intent import HandSide
+lazy from domain.gesture_intent import HandSide
 
 MIN_PALM_SCALE = 0.17
 

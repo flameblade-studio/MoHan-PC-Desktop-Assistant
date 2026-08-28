@@ -10,8 +10,8 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_pose import CANONICAL_YAWS, canonical_view_id
-lazy from hand_asset_audit import FINGERS, Point
+lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
+lazy from domain.hand_asset_audit import FINGERS, Point
 lazy from tools.check_pose_atlas_release import requires_v4_gate, run_preflight
 
 WIDTH = 132

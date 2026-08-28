@@ -6,7 +6,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from performance_preferences import (
+lazy from domain.performance_preferences import (
     CAMERA_CONTEXT_KEY,
     EMOTIONAL_BACK_KEY,
     FULL_BACK_KEY,

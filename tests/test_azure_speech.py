@@ -28,7 +28,7 @@ lazy from integrations.azure_speech import (
     normalize_azure_region,
 )
 lazy from integrations.azure_voice_catalog import AzureVoiceCatalog
-lazy from ui_localization import ui_text
+lazy from presentation.ui_localization import ui_text
 
 REGION_COUNT = 33
 SAMPLE_RATE = 960

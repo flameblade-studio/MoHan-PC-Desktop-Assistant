@@ -6,7 +6,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from expression_system import (
+lazy from domain.expression_system import (
     AI_WAIT_TIMEOUT_MS,
     EMOTION_TO_EXPRESSION,
     ExpressionArbiter,

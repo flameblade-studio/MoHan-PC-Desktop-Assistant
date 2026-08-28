@@ -5,16 +5,16 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from gesture_configuration import (
+lazy from domain.gesture_configuration import (
     GestureAction,
     GestureBinding,
     GestureConfiguration,
     GestureLandmark,
     GestureSample,
 )
-lazy from gesture_intent import HandSide
-lazy from gesture_recognizer import RecognitionState
-lazy from gesture_runtime import GestureRuntime
+lazy from domain.gesture_intent import HandSide
+lazy from application.gesture_recognizer import RecognitionState
+lazy from application.gesture_runtime import GestureRuntime
 lazy from infrastructure.hand_landmark_provider import (
     Handedness,
     HandLandmark,

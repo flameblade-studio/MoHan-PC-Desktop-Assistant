@@ -12,7 +12,7 @@ lazy from infrastructure.openai_vision_preferences_store import (
     OpenAIVisionPreferencesStore,
     OpenAIVisionPreferencesStoreError,
 )
-lazy from openai_vision_preferences import OpenAIVisionPreferences
+lazy from domain.openai_vision_preferences import OpenAIVisionPreferences
 
 
 class MemorySettings:

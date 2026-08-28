@@ -13,8 +13,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from companion_animation_contract import EXPRESSION_SPEECH_FRAMES
-lazy from companion_window import CompanionWindow
+lazy from domain.companion_animation_contract import EXPRESSION_SPEECH_FRAMES
+lazy from presentation.companion_window import CompanionWindow
 
 MAX_MEAN_MS = 8.0
 MAX_P95_MS = 16.0

@@ -19,8 +19,8 @@ lazy from PySide6.QtWidgets import (
     QScrollArea,
 )
 
-lazy from flagship_ui import ControlCenterDependencies, FlagshipControlCenter
-lazy from gesture_configuration import (
+lazy from presentation.flagship_ui import ControlCenterDependencies, FlagshipControlCenter
+lazy from domain.gesture_configuration import (
     GESTURE_ACTION_LABELS,
     LANDMARKS_PER_HAND,
     GestureAction,

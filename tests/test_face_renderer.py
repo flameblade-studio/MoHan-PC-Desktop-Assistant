@@ -11,7 +11,7 @@ lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from face_rig import (
+lazy from domain.face_rig import (
     ExpressionShape,
     FaceMotionFrame,
     FacePose,

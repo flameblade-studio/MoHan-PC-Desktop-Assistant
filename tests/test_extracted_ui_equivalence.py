@@ -19,13 +19,13 @@ lazy from presentation.dashboard_dialogs import (
     ZoomTextBrowser,
 )
 lazy from presentation.first_run_wizard import FirstRunWizard
-lazy from ui_localization import (
+lazy from presentation.ui_localization import (
     SIMPLIFIED_WORK_TYPE_LABELS,
     WORK_TYPE_LABELS,
     display_label,
     ui_text,
 )
-lazy from ui_localization_ja import JAPANESE_WORK_TYPE_LABELS
+lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:

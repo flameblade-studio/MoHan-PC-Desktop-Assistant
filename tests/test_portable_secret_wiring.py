@@ -15,7 +15,7 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from application.presentation_ports import (
     ProfileTransferError as ApplicationProfileTransferError,
 )
-lazy from dashboard_composition import (
+lazy from presentation.dashboard_composition import (
     DashboardDependencies,
     create_portable_secret_callbacks,
 )
@@ -26,7 +26,7 @@ lazy from infrastructure.profile_transfer import (
     ProfileManifest,
     ProfileTransferError,
 )
-lazy from profile_transfer_ui import PortableProfilePanel
+lazy from presentation.profile_transfer_ui import PortableProfilePanel
 
 
 class MemoryStore:

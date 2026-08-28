@@ -143,15 +143,19 @@ def test_physical_layer_owners_have_thin_root_facades() -> None:
 
 
 def test_compatibility_facades_preserve_module_and_symbol_identity() -> None:
-    identity_examples = {
-        "gesture_configuration_store": "infrastructure",
-        "gesture_template_store": "infrastructure",
-        "opencv_vision": "infrastructure",
-    }
-    for module, layer in identity_examples.items():
-        facade = importlib.import_module(module)
-        owner = importlib.import_module(f"{layer}.{module}")
-        assert facade is owner
+    # The root-facade retirement (2026-08-28) removed the root aliases; the
+    # canonical owners must import directly and the aliases must stay gone.
+    for module, layer in (
+        ("gesture_configuration_store", "infrastructure"),
+        ("gesture_template_store", "infrastructure"),
+        ("opencv_vision", "infrastructure"),
+    ):
+        importlib.import_module(f"{layer}.{module}")
+        try:
+            importlib.import_module(module)
+        except ModuleNotFoundError:
+            continue
+        raise AssertionError(f"retired root alias is importable again: {module}")
 
     gesture_store = importlib.import_module(
         "infrastructure.gesture_configuration_store"

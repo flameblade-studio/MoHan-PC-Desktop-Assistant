@@ -5,9 +5,9 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from face_motion import FaceMotionController
-lazy from face_rig import FacePose, Viseme
-lazy from lip_sync import VisemeDynamics
+lazy from domain.face_motion import FaceMotionController
+lazy from domain.face_rig import FacePose, Viseme
+lazy from domain.lip_sync import VisemeDynamics
 
 SMILE_THRESHOLD = 0.5
 BLUSH_THRESHOLD = 0.8

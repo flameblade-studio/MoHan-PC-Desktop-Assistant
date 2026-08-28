@@ -16,26 +16,26 @@ lazy from PySide6.QtCore import QObject, QTimer, Signal
 lazy from PySide6.QtWidgets import QApplication, QLabel, QPushButton
 
 lazy from application.presentation_ports import PresentationPorts
-lazy from dashboard_composition import DashboardDependencies
-lazy from dashboard_window import Dashboard
-lazy from flagship_ui import FlagshipControlCenter
-lazy from flagship_ui_localization import FlagshipTranslator
-lazy from gesture_action_dispatcher import (
+lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.dashboard_window import Dashboard
+lazy from presentation.flagship_ui import FlagshipControlCenter
+lazy from presentation.flagship_ui_localization import FlagshipTranslator
+lazy from application.gesture_action_dispatcher import (
     GestureDispatchDisposition,
     GestureDispatchResult,
 )
-lazy from gesture_action_router import (
+lazy from application.gesture_action_router import (
     GestureActionDecision,
     GestureActionDisposition,
     GestureActionSafety,
 )
-lazy from gesture_configuration import GestureAction, GestureConfiguration
-lazy from gesture_controller import (
+lazy from domain.gesture_configuration import GestureAction, GestureConfiguration
+lazy from application.gesture_controller import (
     GestureController,
     GestureControllerHealth,
     GestureControllerStatus,
 )
-lazy from gesture_runtime import GestureRuntimeResult
+lazy from application.gesture_runtime import GestureRuntimeResult
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_identity_store import FaceIdentityStore
 lazy from infrastructure.hand_landmark_provider import (
@@ -43,8 +43,8 @@ lazy from infrastructure.hand_landmark_provider import (
     HandLandmarkStatus,
 )
 lazy from infrastructure.platform_contracts import PlatformCapabilities, PlatformPaths
-lazy from vision_controller import VisionController
-lazy from vision_runtime import VisionHealth, VisionReadiness
+lazy from application.vision_controller import VisionController
+lazy from application.vision_runtime import VisionHealth, VisionReadiness
 
 SENSITIVE_PATH = r"C:\Users\USERNAME\secret-models\mohan.onnx"
 FRAME = b"\x00\x00\x00"
@@ -773,7 +773,10 @@ def test_optional_controllers_do_not_import_unrelated_application_features() -> 
         "realtime_voice",
         "speech",
     }
-    for filename in ("gesture_controller.py", "vision_controller.py"):
+    for filename in (
+        "application/gesture_controller.py",
+        "application/vision_controller.py",
+    ):
         tree = ast.parse((PROJECT_ROOT / filename).read_text(encoding="utf-8"))
         roots: set[str] = set()
         for node in ast.walk(tree):

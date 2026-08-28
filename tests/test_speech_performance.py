@@ -5,12 +5,12 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from speech_performance import (
+lazy from application.speech_performance import (
     SpeechEventKind,
     SpeechPerformancePhase,
     SpeechPerformanceTimeline,
 )
-lazy from speech_providers import (
+lazy from domain.speech_providers import (
     AZURE_HD_SPEECH_PROVIDER,
     AZURE_SPEECH_PROVIDER,
     OPENAI_REALTIME_PROVIDER,

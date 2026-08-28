@@ -5,8 +5,8 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from scene_semantics import LocalSceneInterpreter
-lazy from vision_domain import (
+lazy from domain.scene_semantics import LocalSceneInterpreter
+lazy from domain.vision_domain import (
     BoundingBox,
     IdentityObservation,
     IdentityState,

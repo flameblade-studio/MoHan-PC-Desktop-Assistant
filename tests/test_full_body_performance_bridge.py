@@ -7,15 +7,15 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from behavior_director import BreathStyle, GazeTarget, TransitionStyle
-lazy from body_pose_renderer import LAYER_DEPTHS, BodyPoseFrame, BodyPoseLayer
-lazy from full_body_performance_bridge import (
+lazy from application.behavior_director import BreathStyle, GazeTarget, TransitionStyle
+lazy from application.body_pose_renderer import LAYER_DEPTHS, BodyPoseFrame, BodyPoseLayer
+lazy from application.full_body_performance_bridge import (
     FramingCommand,
     FullBodyBridgeDisposition,
     FullBodyBridgeRequest,
     FullBodyPerformanceBridge,
 )
-lazy from full_body_render_adapter import (
+lazy from application.full_body_render_adapter import (
     SPEECH_LAYER_SLOTS,
     V4_STATIC_LAYER_SLOTS,
     FullBodyLayerEvidence,
@@ -24,9 +24,9 @@ lazy from full_body_render_adapter import (
     FullBodyRenderSpec,
     NormalizedCrop,
 )
-lazy from performance_coordinator import PerformanceFrame
-lazy from performance_runtime import AtomicPerformanceFrame
-lazy from speech_performance import (
+lazy from application.performance_coordinator import PerformanceFrame
+lazy from application.performance_runtime import AtomicPerformanceFrame
+lazy from application.speech_performance import (
     SpeechEventKind,
     SpeechPerformancePhase,
 )

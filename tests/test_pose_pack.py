@@ -12,7 +12,7 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from pose_pack import (
+lazy from domain.pose_pack import (
     BUILTIN_POSES,
     CANONICAL_YAWS,
     PosePackError,

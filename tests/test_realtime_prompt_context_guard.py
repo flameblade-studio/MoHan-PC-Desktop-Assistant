@@ -5,7 +5,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from companion_window import CompanionWindow
+lazy from presentation.companion_window import CompanionWindow
 lazy from integrations.realtime_voice import RealtimeVoiceClient
 
 OLD_PROMPT = (

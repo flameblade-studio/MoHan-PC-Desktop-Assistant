@@ -12,9 +12,9 @@ lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from companion_window import CompanionWindow
+lazy from presentation.companion_window import CompanionWindow
 lazy from infrastructure.db import StudioDB
-lazy from speech_configuration import QueuedSpeech
+lazy from domain.speech_configuration import QueuedSpeech
 
 BREATH_CHANGE_LIMIT = 0.22
 EMOTION_INTENSITY = 0.86

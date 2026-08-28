@@ -11,18 +11,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy import pytest
 lazy from PySide6.QtCore import QCoreApplication, QEventLoop, QTimer
 
-lazy from gesture_action_dispatcher import (
+lazy from application.gesture_action_dispatcher import (
     GestureDispatchDisposition,
     GestureDispatchResult,
 )
-lazy from gesture_action_router import (
+lazy from application.gesture_action_router import (
     GestureActionDecision,
     GestureActionDisposition,
     GestureActionSafety,
 )
-lazy from gesture_configuration import GestureAction, GestureConfiguration
-lazy from gesture_controller import GestureController, _HandAnalysisOutcome
-lazy from gesture_runtime import GestureRuntimeResult
+lazy from domain.gesture_configuration import GestureAction, GestureConfiguration
+lazy from application.gesture_controller import GestureController, _HandAnalysisOutcome
+lazy from application.gesture_runtime import GestureRuntimeResult
 lazy from infrastructure.hand_landmark_provider import (
     HandLandmarkResult,
     HandLandmarkStatus,

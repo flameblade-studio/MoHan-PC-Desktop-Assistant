@@ -12,9 +12,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from flagship_ui import FlagshipControlCenter
+lazy from presentation.flagship_ui import FlagshipControlCenter
 lazy from infrastructure.db import StudioDB
-lazy from vision_runtime import VisionHealth, VisionReadiness
+lazy from application.vision_runtime import VisionHealth, VisionReadiness
 
 
 def assert_close_stops_every_owned_timer(

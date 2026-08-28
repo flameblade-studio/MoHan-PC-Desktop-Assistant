@@ -75,11 +75,9 @@ def test_preview_ui_contract() -> None:
 
 
 def test_preview_owners_and_compatibility_identity() -> None:
-    compatibility = importlib.import_module("preview_app")
     presentation = importlib.import_module("presentation.preview_app")
     application = importlib.import_module("application.preview_app")
 
-    assert compatibility is presentation
     assert presentation.PreviewWindow.__module__ == "presentation.preview_app"
     assert presentation.PreviewRuntime is application.PreviewRuntime
     assert presentation.validate_preview_runtime is application.validate_preview_runtime
@@ -90,12 +88,6 @@ def test_preview_owners_and_compatibility_identity() -> None:
         architecture="x86_64",
     )
     assert type(runtime) is application.PreviewRuntime
-
-    root_tree = ast.parse(read("preview_app.py"))
-    assert not any(
-        isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
-        for node in root_tree.body
-    )
 
 
 def test_preview_runtime_rejects_unverified_capabilities() -> None:

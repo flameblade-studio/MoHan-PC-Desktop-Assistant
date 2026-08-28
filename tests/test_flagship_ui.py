@@ -12,8 +12,8 @@ lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication, QMessageBox
 
-lazy from flagship_core import ActionRequest
-lazy from flagship_ui import FlagshipControlCenter
+lazy from presentation.flagship_core import ActionRequest
+lazy from presentation.flagship_ui import FlagshipControlCenter
 lazy from infrastructure.db import StudioDB
 
 FLAGSHIP_TAB_COUNT = 8

@@ -6,7 +6,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_pose import (
+lazy from domain.character_pose import (
     CANONICAL_YAWS,
     HAND_LANDMARK_NAMES,
     ArmRig,

@@ -7,7 +7,7 @@ lazy import zipfile
 lazy from pathlib import Path
 lazy from tempfile import NamedTemporaryFile
 
-lazy from theme_pack import ThemePack, ThemePackError, inspect_theme_pack
+lazy from domain.theme_pack import ThemePack, ThemePackError, inspect_theme_pack
 
 LANGUAGE_ORDER = ("zh-TW", "zh-CN", "en", "ja-JP")
 SPEC_KEYS = frozenset({"id", "display_names", "colors", "font", "radius", "source"})

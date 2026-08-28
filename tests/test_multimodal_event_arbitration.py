@@ -11,41 +11,41 @@ sys.path.insert(0, str(ROOT))
 lazy from PySide6.QtCore import QCoreApplication
 lazy from PySide6.QtTest import QSignalSpy
 
-lazy from companion_proactivity_preferences import CompanionProactivityPreferences
-lazy from gesture_action_dispatcher import (
+lazy from domain.companion_proactivity_preferences import CompanionProactivityPreferences
+lazy from application.gesture_action_dispatcher import (
     GestureActionDispatcher,
     GestureDispatchDisposition,
 )
-lazy from gesture_action_router import (
+lazy from application.gesture_action_router import (
     GestureActionDecision,
     GestureActionDisposition,
     GestureActionRouter,
     GestureActionSafety,
     GestureTrigger,
 )
-lazy from gesture_configuration import (
+lazy from domain.gesture_configuration import (
     GestureAction,
     GestureBinding,
     GestureConfiguration,
 )
-lazy from multisensory_interaction import InteractionKind, ProactiveInteraction
-lazy from proactive_companion_app_bridge import (
+lazy from application.multisensory_interaction import InteractionKind, ProactiveInteraction
+lazy from application.proactive_companion_app_bridge import (
     ProactiveAppDisposition,
     ProactiveAppEvent,
     ProactiveAppState,
     ProactiveCompanionAppBridge,
 )
-lazy from proactive_companion_runtime import (
+lazy from application.proactive_companion_runtime import (
     CandidatePriority,
     NormalizedCompanionEnvironment,
     ProactiveCompanionRequest,
     ProactiveCompanionRuntime,
     ProactiveSource,
 )
-lazy from speech_boundary import SpeechTimingCollector
-lazy from vision_controller import VisionController
-lazy from vision_domain import IdentityObservation, IdentityState, SceneUnderstanding
-lazy from wellbeing_app_bridge import SpeakRequest
+lazy from domain.speech_boundary import SpeechTimingCollector
+lazy from application.vision_controller import VisionController
+lazy from domain.vision_domain import IdentityObservation, IdentityState, SceneUnderstanding
+lazy from application.wellbeing_app_bridge import SpeakRequest
 
 NOW = datetime(2027, 1, 8, 12, tzinfo=UTC)
 EXPECTED_REPORT_COUNT = 2

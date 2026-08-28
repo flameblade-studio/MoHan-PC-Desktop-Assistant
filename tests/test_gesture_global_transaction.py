@@ -14,9 +14,9 @@ lazy from PySide6.QtCore import QObject, QTimer, Signal
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from application.presentation_ports import PresentationPorts
-lazy from dashboard_composition import DashboardDependencies
-lazy from dashboard_window import Dashboard
-lazy from gesture_configuration import (
+lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.dashboard_window import Dashboard
+lazy from domain.gesture_configuration import (
     GestureConfiguration,
     GestureLandmark,
     GestureSample,

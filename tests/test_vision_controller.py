@@ -8,21 +8,21 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QCoreApplication
 lazy from PySide6.QtTest import QSignalSpy
 
-lazy from gesture_intent import NormalizedPoint
+lazy from domain.gesture_intent import NormalizedPoint
 lazy from infrastructure.face_identity_store import FaceIdentityStore
 lazy from infrastructure.opencv_vision import OpenCVFrameEvidence
-lazy from local_visual_intelligence import (
+lazy from application.local_visual_intelligence import (
     ConservativeDegradation,
     EvidenceAvailability,
 )
-lazy from vision_controller import VisionController, _AnalysisTask
-lazy from vision_domain import (
+lazy from application.vision_controller import VisionController, _AnalysisTask
+lazy from domain.vision_domain import (
     BoundingBox,
     IdentityObservation,
     IdentityState,
     SceneUnderstanding,
 )
-lazy from vision_runtime import VisionReadiness
+lazy from application.vision_runtime import VisionReadiness
 
 EXPECTED_GENERATION = 7
 EXPECTED_CONSECUTIVE_FAILURES = 2

@@ -13,7 +13,7 @@ sys.path.insert(0, str(PROJECT))
 
 lazy from PySide6.QtWidgets import QApplication, QLabel, QTabWidget
 
-lazy from feature_registry import DashboardFeatureRegistry
+lazy from domain.feature_registry import DashboardFeatureRegistry
 
 PAIR_LENGTH = 2
 
@@ -118,45 +118,15 @@ def run() -> None:
     graph = local_import_graph()
     assert_acyclic(graph)
 
-    core_modules = {
-        "ai_client",
-        "backup_manager",
-        "cloud_connectors",
-        "command_parser",
-        "contracts",
-        "db",
-        "expression_system",
-        "face_assets",
-        "face_motion",
-        "face_renderer",
-        "face_rig",
-        "flagship_core",
-        "home_assistant",
-        "lip_sync",
-        "platform_contracts",
-        "platform_linux",
-        "platform_macos",
-        "platform_services",
-        "platform_windows",
-        "profile_transfer",
-        "realtime_voice",
-        "remote_control",
-        "secret_store",
-        "service_container",
-        "speech",
-        "text_normalizer",
-        "windows_tools",
-        "workflow_engine",
-    }
-    forbidden_upward = {"app", "flagship_ui", "profile_transfer_ui"}
-    for module in core_modules:
-        assert not (
-            graph.get(module, set()) & forbidden_upward
-        ), f"{module} imports a UI/composition module"
+    # The root-facade retirement (2026-08-28) leaves exactly two root
+    # modules: the composition root and the packaged-runtime version facade.
+    # Layer-level upward-import rules now live entirely in
+    # tools/check_layered_imports.py and its tests.
+    assert set(graph) == {"app", "version_info"}
+    assert graph["app"] == set()
+    assert graph["version_info"] == set()
 
     assert companion_private_dashboard_accesses() == []
-    assert graph["app"] == set()
-    assert "app" not in graph["service_container"]
 
     with TemporaryDirectory() as _temp:
         app = QApplication.instance() or QApplication([])

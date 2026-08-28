@@ -5,9 +5,9 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from air_interaction import AirHandPoint, AirHandSample
-lazy from gesture_intent import HandSide
-lazy from multimodal_fusion_hub import (
+lazy from domain.air_interaction import AirHandPoint, AirHandSample
+lazy from domain.gesture_intent import HandSide
+lazy from application.multimodal_fusion_hub import (
     FaceExpression,
     FaceMeshFrame,
     FaceMeshPoint,

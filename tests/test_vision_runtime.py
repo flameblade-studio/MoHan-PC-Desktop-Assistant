@@ -8,7 +8,7 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from vision_runtime import (
+lazy from application.vision_runtime import (
     OFFICIAL_MODEL_SPECS,
     VisionEnvironmentProbe,
     VisionReadiness,

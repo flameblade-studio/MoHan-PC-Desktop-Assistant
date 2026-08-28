@@ -14,7 +14,7 @@ from domain.python315_concurrency import (
     ThreadPoolExecutor,
     as_completed,
 )
-lazy from flagship_ui import FlagshipControlCenter
+lazy from presentation.flagship_ui import FlagshipControlCenter
 lazy from infrastructure.secret_store import SecretStore
 lazy from integrations.cloud_connectors import (
     GmailConnector,

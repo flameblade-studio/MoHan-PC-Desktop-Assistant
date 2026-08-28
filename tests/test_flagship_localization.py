@@ -23,8 +23,8 @@ lazy from PySide6.QtWidgets import (
     QWidget,
 )
 
-lazy from flagship_ui import FlagshipControlCenter, WorkflowEditor
-lazy from flagship_ui_localization import (
+lazy from presentation.flagship_ui import FlagshipControlCenter, WorkflowEditor
+lazy from presentation.flagship_ui_localization import (
     FLAGSHIP_TRANSLATIONS,
     FlagshipTranslator,
     validate_flagship_translations,

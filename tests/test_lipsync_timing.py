@@ -20,7 +20,7 @@ lazy from integrations.speech import (
     emit_wave_viseme_cues,
     play_wave_with_visemes,
 )
-lazy from lip_sync import VISEME_CUES_PER_SECOND
+lazy from domain.lip_sync import VISEME_CUES_PER_SECOND
 
 EXPECTED_VISEME_CUES_PER_SECOND = 50
 MIN_EMITTED_CUES = 56
