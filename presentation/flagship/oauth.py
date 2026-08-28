@@ -70,6 +70,8 @@ class OAuthWorker(QRunnable):
                 token["client_secret"] = self.client_secret
             self.signals.done.emit(self.provider_id, token)
         except Exception as exc:
+            if self._abandoned:
+                return
             self.signals.failed.emit(self.provider_id, str(sanitize_error(exc)))
         finally:
             self._flow = None

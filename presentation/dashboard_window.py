@@ -138,12 +138,31 @@ class Dashboard(
         if hasattr(self, "chat"):
             self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
 
+    def showEvent(self, event) -> None:
+        if not event.spontaneous():
+            # 「取消（不要保存）」的回滾基準改為每次開啟控制中心時刷新：
+            # 取消僅回滾本次開啟後的變更，而不是回到程式啟動或上次保存
+            # 當下的狀態。
+            self._settings_draft_snapshot = self.db.settings_snapshot()
+            # 使用者按 X 關窗只是隱藏視窗並停掉 closeEvent 裡的計時器；
+            # 重新開啟時必須復活工作時間刷新，否則牆鐘永遠停格。
+            if getattr(self, "_timer_stopped_by_close", False):
+                self._timer_stopped_by_close = False
+                timer = getattr(self, "timer", None)
+                if timer is not None and not timer.isActive():
+                    timer.start(1000)
+        super().showEvent(event)
+
     def closeEvent(self, event) -> None:
         """Stop dashboard-owned callbacks before its database can be closed."""
 
         timer = getattr(self, "timer", None)
-        if timer is not None:
+        if timer is not None and timer.isActive():
             timer.stop()
+            # 使用者按 X 只是隱藏控制中心；記下計時器是被關窗停掉的，
+            # 下次 showEvent 才知道要復活牆鐘刷新（App 收尾路徑不再顯示，
+            # 因此不受影響）。
+            self._timer_stopped_by_close = True
         front_raise_timer = getattr(self, "front_raise_timer", None)
         if front_raise_timer is not None:
             front_raise_timer.stop()

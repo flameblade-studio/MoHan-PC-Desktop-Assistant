@@ -170,12 +170,20 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
     "presentation.flagship.cloud_health": frozenset({
         "integrations.cloud_connectors",
     }),
+    "presentation.companion_core": frozenset({
+        # Composition of the typed performance/framing preference readers
+        # (audit wave 2: readers must follow the stores' domain defaults).
+        "infrastructure.db",
+        "infrastructure.framing_preferences_store",
+        "infrastructure.performance_preferences_store",
+    }),
     "presentation.flagship.control_center": frozenset({
         "infrastructure.companion_proactivity_preferences_store",
         "infrastructure.db",
         "infrastructure.gesture_configuration_store",
         "infrastructure.gesture_template_store",
         "infrastructure.openai_vision_preferences_store",
+        "infrastructure.performance_preferences_store",
         "infrastructure.platform_contracts",
     }),
     "presentation.flagship.home": frozenset({
@@ -210,6 +218,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.companion_proactivity_preferences_store",
         "infrastructure.gesture_configuration_store",
         "infrastructure.openai_vision_preferences_store",
+        "infrastructure.performance_preferences_store",
     }),
     "presentation.pose_atlas_assets": frozenset({
         "infrastructure.layered_full_body_renderer",

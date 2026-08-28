@@ -19,6 +19,7 @@ class FlagshipLifecycleMixin:
         self.planner_busy = False
         self._planner_worker = None
         self._cloud_test_worker = None
+        self._home_probe_worker = None
         # Wake an OAuth worker that is still waiting on its loopback socket;
         # otherwise ~QThreadPool blocks shutdown until the browser
         # authorization times out (up to 180 seconds).
@@ -56,6 +57,8 @@ class FlagshipLifecycleMixin:
         if thread_pool is not None:
             with suppress(RuntimeError):
                 thread_pool.clear()
+                # 上限維持在 3000ms 以下：被棄單的 OAuth 執行緒可能仍在
+                # 等待瀏覽器，關窗不應為它久候；殘留執行緒由行程退出回收。
                 thread_pool.waitForDone(1500)
 
     def closeEvent(self, event) -> None:

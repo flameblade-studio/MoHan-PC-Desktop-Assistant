@@ -26,6 +26,10 @@ lazy from application.visual_perception import (
 lazy from application.wellbeing_app_bridge import ReminderTrigger
 lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeakRequest
 lazy from domain.app_profile import personalize_text, profile_setting
+lazy from domain.constants import (
+    DEFAULT_WEATHER_CONDITION,
+    DEFAULT_WEATHER_TEMPERATURE_C,
+)
 lazy from domain.sensory_synesthesia import (
     complaint_line as sensory_complaint_line,
     rain_alpha,
@@ -104,7 +108,11 @@ class CompanionProactiveMixin:
                 delivery_token=delivery_token,
                 completed=completed,
         )
-        if not enqueue_bounded_speech(self.speech_queue, queued):
+        if not enqueue_bounded_speech(
+            self.speech_queue,
+            queued,
+            proactive_completions=self._proactive_speech_completions,
+        ):
             return False
         self._proactive_speech_completions[delivery_token] = completed
         self._start_next_speech()
@@ -440,12 +448,23 @@ class CompanionProactiveMixin:
         if sword is not None:
             sword.update(
                 days=float(elapsed_days),
+                # TODO(sword-soul): ``sword_soul_commit_count`` has no writer
+                # yet, so the resonance currently only grows with elapsed days.
+                # A future release-note importer should persist the real commit
+                # count; until then the conservative 0 default applies.
                 commits=max(0, int(self.db.setting("sword_soul_commit_count", 0))),
             )
             self._sword_soul_gaze_linger = sword.gaze_linger()
 
-        temperature = float(self.db.setting("weather_temperature_c", 24.0))
-        condition = str(self.db.setting("weather_condition", "clear") or "clear")
+        temperature = float(
+            self.db.setting(
+                "weather_temperature_c", DEFAULT_WEATHER_TEMPERATURE_C
+            )
+        )
+        condition = str(
+            self.db.setting("weather_condition", DEFAULT_WEATHER_CONDITION)
+            or DEFAULT_WEATHER_CONDITION
+        )
         sensory = weather_mood(temperature, condition)
         self._sensory_rain_alpha = rain_alpha(sensory)
         self._sensory_sweat_frequency = sweat_frequency(sensory)

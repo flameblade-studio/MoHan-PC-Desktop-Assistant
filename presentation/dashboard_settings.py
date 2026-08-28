@@ -793,7 +793,7 @@ class DashboardSettingsMixin:
         if key_saved:
             return self._t(
                 "api_status_saved",
-                "OpenAI API：金鑰已由 Windows 加密保存",
+                "OpenAI API：金鑰已由作業系統安全保存",
             )
         if not capabilities.secure_secret_storage:
             return self._t(
@@ -867,7 +867,7 @@ class DashboardSettingsMixin:
             parent=tab,
         )
         form.addRow(
-            QLabel(self._t("theme_preview", "<b>控制台佈景主題</b>")),
+            QLabel(self._t("theme_section_title", "<b>控制台佈景主題</b>")),
         )
         form.addRow(self.theme_pack_panel)
         return tab

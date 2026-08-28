@@ -23,7 +23,42 @@ LAYER_NAMES = (
     "integrations",
     "infrastructure",
 )
+# Layer-module line-count ratchet (approved by the project owner on 2026-08-28):
+# * MAX_LAYER_MODULE_LINES is the global ceiling; the release plan steps it
+#   down (v4.5.x = 1200, v4.6 = 1100, then -100 per release) until it meets
+#   MAX_NEW_LAYER_MODULE_LINES.
+# * Modules absent from LAYER_MODULE_LINE_BASELINE are new and must stay
+#   within MAX_NEW_LAYER_MODULE_LINES.
+# * Baselined modules may never exceed min(baseline, MAX_LAYER_MODULE_LINES),
+#   and the baseline only moves down: whoever slims a module must lower its
+#   entry to the new measured count in the same PR (and say so in the PR
+#   body); entries at or below MAX_NEW_LAYER_MODULE_LINES must be removed so
+#   the module is gated as new from then on.
 MAX_LAYER_MODULE_LINES = 1_200
+MAX_NEW_LAYER_MODULE_LINES = 800
+# Measured 2026-08-28 (re-baselined after the audit-wave PRs #91-#96
+# landed; the original scan predated their in-flight line counts) with
+# the gate's own counting rule
+# (utf-8-sig decode + str.splitlines()).
+LAYER_MODULE_LINE_BASELINE = {
+    "application.presentation_ports": 1_063,
+    "domain.outfit_pack": 974,
+    "infrastructure.db": 1_200,
+    "infrastructure.profile_transfer": 1_075,
+    "integrations.azure_speech": 864,
+    "integrations.realtime_voice": 878,
+    "integrations.speech": 1_197,
+    "presentation.companion_core": 1_132,
+    "presentation.companion_face_animation": 1_160,
+    "presentation.companion_face_assets": 898,
+    "presentation.companion_speech_runtime": 1_182,
+    "presentation.companion_visual_dynamics": 960,
+    "presentation.dashboard_conversation": 884,
+    "presentation.dashboard_settings": 888,
+    "presentation.dashboard_shell": 1_198,
+    "presentation.dashboard_today_memory": 822,
+    "presentation.dashboard_voice": 1_085,
+}
 MAX_ROOT_APP_LINES = 50
 NON_PRODUCT_PYTHON_DIRECTORIES = frozenset({
     "artifacts",  # ignored local generation, training, and validation evidence
@@ -991,20 +1026,62 @@ def test_layer_packages_have_no_reverse_dependencies() -> None:
     )
 
 
+def layer_module_line_counts() -> dict[str, int]:
+    return {
+        module: len(source.splitlines())
+        for module, (_path, source) in discover_local_modules().items()
+        if module.partition(".")[0] in LAYER_NAMES
+    }
+
+
+def layer_module_line_limit(module: str) -> int:
+    baseline = LAYER_MODULE_LINE_BASELINE.get(module, MAX_NEW_LAYER_MODULE_LINES)
+    return min(baseline, MAX_LAYER_MODULE_LINES)
+
+
 def test_layer_implementations_do_not_hide_in_new_giant_modules() -> None:
     oversized = tuple(
         sorted(
-            (len(source.splitlines()), module)
-            for module, (_path, source) in discover_local_modules().items()
-            if module.partition(".")[0] in LAYER_NAMES
-            and len(source.splitlines()) > MAX_LAYER_MODULE_LINES
+            f"{module}={lines} (limit {layer_module_line_limit(module)})"
+            for module, lines in layer_module_line_counts().items()
+            if lines > layer_module_line_limit(module)
         )
     )
     assert not oversized, (
-        f"Layer modules must stay within {MAX_LAYER_MODULE_LINES} lines: "
-        + ", ".join(
-            f"{module}={lines}" for lines, module in oversized
+        "Layer modules must honour the line-count ratchet (new modules stay "
+        f"within {MAX_NEW_LAYER_MODULE_LINES} lines, baselined modules within "
+        f"min(baseline, {MAX_LAYER_MODULE_LINES})): " + ", ".join(oversized)
+    )
+
+
+def test_layer_module_line_baseline_only_ratchets_down() -> None:
+    counts = layer_module_line_counts()
+    orphaned = tuple(sorted(frozenset(LAYER_MODULE_LINE_BASELINE) - frozenset(counts)))
+    assert not orphaned, (
+        "Line-count baseline lists modules that no longer exist; remove them: "
+        + ", ".join(orphaned)
+    )
+    stale = tuple(
+        sorted(
+            f"{module}: baseline {baseline} -> measured {counts[module]}"
+            for module, baseline in LAYER_MODULE_LINE_BASELINE.items()
+            if counts[module] < baseline
         )
+    )
+    assert not stale, (
+        "Slimmed modules must ratchet their baseline down to the measured "
+        "count in the same PR: " + ", ".join(stale)
+    )
+    graduated = tuple(
+        sorted(
+            f"{module}={baseline}"
+            for module, baseline in LAYER_MODULE_LINE_BASELINE.items()
+            if baseline <= MAX_NEW_LAYER_MODULE_LINES
+        )
+    )
+    assert not graduated, (
+        f"Baseline entries at or below {MAX_NEW_LAYER_MODULE_LINES} lines "
+        "must be removed so the module is gated as new: " + ", ".join(graduated)
     )
 
 

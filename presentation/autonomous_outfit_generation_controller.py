@@ -24,6 +24,10 @@ lazy from application.self_generating_wardrobe import (
 )
 lazy from application.wardrobe_service import WardrobeService
 lazy from application.wardrobe_storage import WardrobeStorageGuard, WardrobeStoragePolicy
+lazy from domain.constants import (
+    DEFAULT_WEATHER_CONDITION,
+    DEFAULT_WEATHER_TEMPERATURE_C,
+)
 lazy from domain.outfit_pack import (
     MOOD_TAGS,
     OCCASION_TAGS,
@@ -109,6 +113,7 @@ class AutonomousOutfitGenerationController(QObject):
         self._pool = QThreadPool.globalInstance()
         self._active_worker: _GenerationWorker | None = None
         self._running = False
+        self._shutdown = False
         self._wardrobe_service = WardrobeService(self._data_root / "outfits")
         self._wardrobe_runtime = AutonomousWardrobeRuntime(
             self._wardrobe_service,
@@ -130,12 +135,19 @@ class AutonomousOutfitGenerationController(QObject):
         if self._running:
             return
         self._running = True
+        self._shutdown = False
         self._timer.start()
         self._initial_timer.start()
 
     def stop(self) -> None:
-        """Detach future UI updates; an in-flight HTTP call remains bounded by timeout."""
+        """Detach future UI updates; an in-flight HTTP call remains bounded by timeout.
+
+        ``_active_worker`` is deliberately kept: clearing it here would let a
+        stop→start cycle launch a second generation in parallel with the
+        still-running worker.  The worker's completion callbacks clear it.
+        """
         self._running = False
+        self._shutdown = True
         self._timer.stop()
         self._initial_timer.stop()
         self._active_worker = None
@@ -160,9 +172,9 @@ class AutonomousOutfitGenerationController(QObject):
 
         now = datetime.now(UTC)
         weather = _allowed_setting(
-            self._db.setting("weather_condition", "indoor"),
+            self._db.setting("weather_condition", DEFAULT_WEATHER_CONDITION),
             WEATHER_TAGS,
-            "indoor",
+            DEFAULT_WEATHER_CONDITION,
         )
         mood = _allowed_setting(
             self._db.setting("current_mood", "calm"),
@@ -178,7 +190,12 @@ class AutonomousOutfitGenerationController(QObject):
             decision = self._wardrobe_runtime.evaluate(
                 WardrobeSituation(
                     now,
-                    float(self._db.setting("weather_temperature_c", 24.0)),
+                    float(
+                        self._db.setting(
+                            "weather_temperature_c",
+                            DEFAULT_WEATHER_TEMPERATURE_C,
+                        )
+                    ),
                     weather,
                     mood,
                     occasion,
@@ -193,6 +210,10 @@ class AutonomousOutfitGenerationController(QObject):
     def request_generation(self, *, explicit: bool = False) -> None:
         """Start generation; an explicit button click may retry immediately."""
 
+        if self._shutdown:
+            # stop() 之後不得再啟動新工作：dashboard 可能已在收尾，資料庫
+            # 與檔案系統的後續寫入沒有安全宿主。
+            return
         if self._active_worker is not None:
             self.status_changed.emit("already-generating")
             return
@@ -216,8 +237,15 @@ class AutonomousOutfitGenerationController(QObject):
         request = OutfitCreationRequest(
             job_id=job_id,
             language=str(self._db.setting("ui_language", "zh-TW") or "zh-TW"),
-            weather=str(self._db.setting("weather_condition", "indoor") or "indoor"),
-            temperature_c=float(self._db.setting("weather_temperature_c", 24.0)),
+            weather=str(
+                self._db.setting("weather_condition", DEFAULT_WEATHER_CONDITION)
+                or DEFAULT_WEATHER_CONDITION
+            ),
+            temperature_c=float(
+                self._db.setting(
+                    "weather_temperature_c", DEFAULT_WEATHER_TEMPERATURE_C
+                )
+            ),
             mood=str(self._db.setting("current_mood", "calm") or "calm"),
             occasion=self._wardrobe_occasion(),
             creative_direction=(

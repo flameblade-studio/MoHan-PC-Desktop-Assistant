@@ -125,7 +125,13 @@ def test_readme_distinguishes_development_from_published_versions() -> None:
         assert section.count(build_command) == 1
 
 
-def test_v4_release_document_remains_a_four_language_draft() -> None:
+def test_v4_release_document_keeps_four_language_structure() -> None:
+    # Audit ruling (2026-08-27): v4.0.0 has shipped, so this test no longer
+    # forces the historical draft to claim it is unreleased.  The draft file
+    # is kept as a historical artifact; only its existence and its ordered
+    # four-language structure remain under test.  The former assertions on
+    # "development draft" / "GitHub Releases remains authoritative" wording
+    # were fossils contradicting reality and were removed.
     draft = read("docs/releases/v4.0.0-draft.md")
     assert draft.startswith(
         "# 墨寒桌面助理 v4.0.0 發布草稿／"
@@ -134,26 +140,7 @@ def test_v4_release_document_remains_a_four_language_draft() -> None:
         "墨寒デスクトップアシスタント v4.0.0 公開草案\n"
     )
     sections = language_sections(draft)
-    draft_markers = (
-        "本文件是開發草稿",
-        "本文件是开发草稿",
-        "This is a development draft",
-        "本文書は開発草案です",
-    )
-    public_authorities = (
-        "最新公開版本仍以 GitHub Releases 為準",
-        "最新公开版本仍以 GitHub Releases 为准",
-        "GitHub Releases remains authoritative for the latest public version",
-        "最新の公開版は GitHub Releases を正とします",
-    )
-    for section, draft_marker, public_authority in zip(
-        sections,
-        draft_markers,
-        public_authorities,
-        strict=True,
-    ):
-        assert draft_marker in section
-        assert public_authority in section
+    for section in sections:
         assert re.search(r"(?<![\d.])4\.0\.0(?![\d.])", section)
 
 
@@ -162,7 +149,7 @@ def main() -> None:
     test_root_version_module_is_only_a_runtime_compatibility_facade()
     test_development_tools_do_not_leak_into_runtime_metadata()
     test_readme_distinguishes_development_from_published_versions()
-    test_v4_release_document_remains_a_four_language_draft()
+    test_v4_release_document_keeps_four_language_structure()
     print("V4_DEVELOPMENT_VERSION_CONSISTENCY_OK")
 
 

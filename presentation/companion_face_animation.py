@@ -5,40 +5,36 @@ lazy import random
 lazy import time
 
 lazy from PySide6.QtCore import (
-    QEasingCurve,
-    QParallelAnimationGroup,
-    QPoint,
-    QPropertyAnimation,
-    QTimer,
-    QVariantAnimation,
+    QEasingCurve, QParallelAnimationGroup, QPoint,
+    QPropertyAnimation, QTimer, QVariantAnimation,
 )
 lazy from PySide6.QtGui import QPainter, QPixmap
 
 lazy from domain.companion_animation_contract import (
-    CHEEK_SPEECH_CLOSED_EXPRESSION,
-    EXPRESSION_SPEECH_MOUTH_RECTS,
-    EXPRESSION_VISEME_FRAMES,
-    NEUTRAL_VISEME_ASSET_STEMS,
+    CHEEK_SPEECH_CLOSED_EXPRESSION, EXPRESSION_SPEECH_MOUTH_RECTS,
     NEW_EXPRESSION_ASSETS,
 )
 lazy from domain.lip_sync import (
     VISEME_CHANGE_TRANSITION_SECONDS,
     VISEME_CLOSE_TRANSITION_SECONDS,
     VISEME_OPEN_TRANSITION_SECONDS,
-    VisemeFrame,
 )
 lazy from domain.face_microtiming import (
-    ATTENTION_GLANCE_INTERVAL_MS,
-    BLINK_CLOSED_TIMES_MS,
-    BLINK_HALF_CLOSE_TIMES_MS,
-    BLINK_HALF_OPEN_TIMES_MS,
-    BLINK_INTERVAL_MS,
-    BLINK_REST_AT_MS,
-    SACCADE_INTERVAL_MS,
+    ATTENTION_GLANCE_INTERVAL_MS, BLINK_CLOSED_TIMES_MS,
+    BLINK_HALF_CLOSE_TIMES_MS, BLINK_HALF_OPEN_TIMES_MS,
+    BLINK_INTERVAL_MS, BLINK_REST_AT_MS, SACCADE_INTERVAL_MS,
 )
 lazy from dataclasses import replace as dataclass_replace
-lazy from domain.face_rig import EyeState, FacePose, blink_for_eye_state
+lazy from domain.face_rig import (
+    EyeState,
+    FacePose,
+    blink_for_eye_state,
+    eye_state_for_blink,
+)
 lazy from presentation.companion_blink_runtime import CompanionBlinkRuntimeMixin
+lazy from presentation.companion_viseme_cue import (
+    apply_audio_viseme_cue, viseme_expression,
+)
 lazy from presentation.companion_face_assets import CompanionFaceAssetMethods
 lazy from presentation.companion_speech_emotion import persist_wardrobe_mood
 POSE_SWITCH_PROBABILITY = 0.55
@@ -345,11 +341,20 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             return
         self.open_dashboard()
 
+    def _hide_bubble_unless_speaking(self) -> None:
+        # 延遲隱藏必須讓路給進行中的語音氣泡（含即時語音），
+        # 參照 _speech_audio_finished 內既有的 speech_playing 守衛。
+        if getattr(self, "speech_playing", False) or getattr(
+            self, "realtime_mouth_active", False
+        ):
+            return
+        self.bubble.hide()
+
     def _show_caught_reaction(self) -> None:
         self.set_state("caught", source="user_direct")
         self._show_bubble("????????????????????????????????????")
         self._schedule_return_to_idle(2_800, "caught")
-        QTimer.singleShot(3_400, self.bubble.hide)
+        QTimer.singleShot(3_400, self._hide_bubble_unless_speaking)
 
     def _set_expression(self, expression: str, fade: bool = True) -> None:
         # Legacy expression rendering resumes ownership of the canvas, so the
@@ -463,8 +468,13 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
 
     def _cancel_expression_transition(self) -> None:
         animation = getattr(self, "expression_animation", None)
-        if animation is not None and animation.state():
-            animation.stop()
+        if animation is not None:
+            if animation.state():
+                animation.stop()
+            # 交叉淡入淡出的動畫群組（含子動畫）以 self 為父物件；不
+            # deleteLater 會隨每次表情切換累積 QObject。
+            animation.deleteLater()
+            self.expression_animation = None
         if hasattr(self, "expression_overlay"):
             self.expression_overlay.hide()
         if hasattr(self, "character_opacity"):
@@ -484,6 +494,9 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             animation = getattr(self, animation_name, None)
             if animation is not None:
                 animation.stop()
+                # 世代守衛（pose_transition_generation）已讓佇列中的舊回呼
+                # 失效，deleteLater 只回收物件本身，不影響守衛語意。
+                animation.deleteLater()
             setattr(self, animation_name, None)
         self.pose_transition_active = False
         self.pose_transition_expression = None
@@ -587,6 +600,12 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         self.pose_transition_active = False
         self.pose_transition_expression = None
         self.pose_transition_target_pose = None
+        for finished_animation in (
+            self.pose_transition_out,
+            self.pose_transition_in,
+        ):
+            if finished_animation is not None:
+                finished_animation.deleteLater()
         self.pose_transition_out = None
         self.pose_transition_in = None
         self.character_opacity.setOpacity(1.0)
@@ -764,80 +783,10 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         self._compose_character_position()
 
     def _audio_viseme_cue(self, level: float, vowel: str) -> None:
-        if (
-            self.state != "speaking"
-            or not self.audio_driven_mouth
-            or getattr(self, "mouth_closing", False)
-            or getattr(self, "viseme_dynamics", None) is None
-        ):
-            return
-        # A live viseme owns the full photographed face. Remove any gaze
-        # overlay left by the preceding idle frame before drawing the mouth.
-        self.eye_overlay.hide()
-        frame: VisemeFrame = self.viseme_dynamics.advance(level, vowel)
-        expression = self._viseme_expression(frame.selected)
-        motion_expression = (
-            self.speech_gesture_expression or self.speech_closed_expression
-        )
-        motion_pose = self.physics_expression_poses.get(
-            motion_expression,
-            getattr(self, "idle_pose", "front"),
-        )
-        self.face_motion_frame = self.face_motion_controller.advance(
-            frame,
-            pose=motion_pose,
-            expression=motion_expression,
-            blink=1.0 if self.speech_blinking else 0.0,
-        )
-        # The adaptive full-body renderer is driven by the provider-neutral
-        # speech-performance bridge, not by the legacy half-body pixmap path.
-        # Publish every accepted audio cue before the ownership guard below;
-        # otherwise full-body speech keeps the canvas but never receives a
-        # changing viseme, which presents as "text only, mouth not moving".
-        self._record_speech_performance(
-            self.speech_performance.viseme(level, frame.selected)
-        )
-        if getattr(self, "_adaptive_full_body_active", False):
-            # The v4 full-body composition renders its own speech mouth from
-            # the continuous ``face_motion_frame`` produced above.  The legacy
-            # half-body mouth patch and head-motion path must not run in
-            # parallel: it would reset the ownership flag and let the
-            # suppressed half-body overlays return, stacking a second body over
-            # the full-body frame (the reported double image).
-            return
-        self.mouth_frame_index = frame.frame_index
-        self.mouth_open = frame.mouth_open
-        self.speech_current_expression = expression
-        if frame.selected != frame.previous or self.mouth_transition_to.isNull():
-            self._queue_audio_mouth_transition(
-                expression,
-                frame.jaw_aperture,
-            )
-        target_motion = min(
-            4.0,
-            self.viseme_dynamics.smoothed_level * 3.0 + frame.jaw_weight,
-        )
-        self.head_motion_y = self.head_motion_y * 0.62 + target_motion * 0.38
-        self.speech_motion_target_y = -self.head_motion_y
-        self._motion_tick()
+        apply_audio_viseme_cue(self, level, vowel)
 
     def _viseme_expression(self, viseme: str) -> str:
-        if viseme == "CLOSED":
-            expression = self.speech_closed_expression
-        elif viseme == "CONSONANT":
-            expression = self.speech_mid_expression
-        elif self.speech_gesture_expression is not None:
-            expression = EXPRESSION_VISEME_FRAMES[self.speech_gesture_expression].get(
-                viseme, self.speech_mid_expression
-            )
-        else:
-            stem = NEUTRAL_VISEME_ASSET_STEMS.get(viseme)
-            expression = (
-                self.speech_mid_expression
-                if stem is None
-                else f"{stem}{self._active_speech_pose_suffix()}"
-            )
-        return expression
+        return viseme_expression(self, viseme)
 
     def _render_half_body_frame(self) -> QPixmap:
         """Compose the half-body portrait from the parametric layered renderer."""
@@ -999,15 +948,21 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         if not self.mouth_visual_timer.isActive():
             self.mouth_visual_timer.start()
 
-    def _render_audio_mouth_transition(self) -> None:
+    def _blended_mouth_transition_frame(self) -> tuple[QPixmap, float] | None:
+        """Return the in-flight mouth crossfade frame and progress, or None.
+
+        This is the single source of truth for "what the mouth looks like
+        right now" during an audio transition, shared by the mouth tick and
+        the blink stamp so the two timers compose the same base instead of
+        overwriting each other's work.
+        """
         if (
             self.state != "speaking"
-            or not self.audio_driven_mouth
+            or not getattr(self, "audio_driven_mouth", False)
             or self.mouth_transition_from.isNull()
             or self.mouth_transition_to.isNull()
         ):
-            self.mouth_visual_timer.stop()
-            return
+            return None
         elapsed = time.perf_counter() - self.mouth_transition_started
         progress = max(
             0.0,
@@ -1021,10 +976,48 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         painter.setOpacity(eased)
         painter.drawPixmap(0, 0, self.mouth_transition_to)
         painter.end()
-        self._render_speech_pixmap(blended)
-        if progress >= 1.0:
-            self._render_speech_pixmap(self.mouth_transition_to)
+        return blended, progress
+
+    def _stamp_active_blink(self, frame: QPixmap) -> QPixmap:
+        """Re-stamp an in-flight blink so mouth ticks cannot reopen the eyes.
+
+        The blink runtime paints a closed-eye authority onto the displayed
+        pixmap, but the 16 ms mouth-transition timer used to repaint from
+        clean open-eyed endpoint frames — alternating the eyelids at
+        30-60 Hz for the whole blink (the reported eyelid flicker).
+        """
+        opacity = float(getattr(self, "blink_opacity", 0.0))
+        if eye_state_for_blink(opacity) is EyeState.REST:
+            return frame
+        expression = (
+            self.speech_gesture_expression
+            or getattr(self, "speech_current_expression", None)
+            or self.current_expression
+        )
+        return self._blink_composite(frame, str(expression), opacity)
+
+    def _render_audio_mouth_transition(self) -> None:
+        in_flight = self._blended_mouth_transition_frame()
+        if in_flight is None:
             self.mouth_visual_timer.stop()
+            return
+        blended, progress = in_flight
+        self._present_speech_frame(blended)
+        if progress >= 1.0:
+            self._present_speech_frame(QPixmap(self.mouth_transition_to))
+            self.mouth_visual_timer.stop()
+
+    def _present_speech_frame(self, clean: QPixmap) -> None:
+        """Archive the clean frame; display it with any in-flight blink.
+
+        ``speech_visual_pixmap`` must stay blink-free — the blink runtime
+        composes its eyelid patch over it — while the on-screen pixmap keeps
+        the closed eyes so the 16 ms mouth tick no longer alternates them
+        open (the reported eyelid flicker).
+        """
+        self._adaptive_full_body_active = False
+        self.speech_visual_pixmap = QPixmap(clean)
+        self.character.setPixmap(self._stamp_active_blink(clean))
 
     def set_state(
         self,
@@ -1102,6 +1095,13 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             *NEW_EXPRESSION_ASSETS,
         }
         if state in expressive_states and animate_gesture:
+            previous_animation = getattr(self, "state_animation", None)
+            if previous_animation is not None:
+                # 每次手勢動作都建立新的 QVariantAnimation（父物件為 self）；
+                # 先回收舊物件避免長時間執行後累積。
+                previous_animation.stop()
+                previous_animation.deleteLater()
+                self.state_animation = None
             motion_scale = 3.0 if getattr(self, "_adaptive_full_body_active", False) else 1.0
             animation = QVariantAnimation(self)
             animation.setDuration(

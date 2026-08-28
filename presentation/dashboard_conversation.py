@@ -6,6 +6,7 @@ from PySide6.QtCore import QTimer
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QFont
 lazy from PySide6.QtWidgets import (
+    QApplication,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -45,6 +46,9 @@ __all__ = ("DashboardConversationMixin", "classify_memory_text")
 MIN_CHAT_ZOOM_PERCENT = 60
 MAX_CHAT_ZOOM_PERCENT = 200
 
+# Entries are stored pre-normalized: comma-free (`，`/`,`/`、` are stripped
+# from the incoming text), whitespace-collapsed, and casefolded, so every
+# phrase below must stay lowercase and comma-free to remain reachable.
 EMERGENCY_COMMANDS = frozenset(
     {
         "墨寒停手",
@@ -52,6 +56,14 @@ EMERGENCY_COMMANDS = frozenset(
         "停手",
         "停止所有操作",
         "取消所有任務",
+        "mohan stop",
+        "stop everything",
+        "stop all tasks",
+        "墨寒止まって",
+        "止まって",
+        "ぜんぶ止めて",
+        "全部止めて",
+        "すべて止めて",
     }
 )
 
@@ -340,6 +352,9 @@ class DashboardConversationMixin:
                 ),
             )
             self.chat_input.setFocus()
+            # 空輸入也要重置來源標記；否則語音／遠端標記會殘留到下一次
+            # 手動輸入，讓本機輸入被誤判來源。
+            self._input_source = "local"
             return
         self.chat_input.clear()
         self.human_interaction.emit()
@@ -547,7 +562,8 @@ class DashboardConversationMixin:
 
 
     def _handle_emergency_command(self, text: str) -> bool:
-        normalized = text.replace("，", "").replace(",", "").strip()
+        comma_free = text.replace("，", "").replace(",", "").replace("、", "")
+        normalized = " ".join(comma_free.split()).casefold()
         if normalized not in EMERGENCY_COMMANDS:
             return False
         self._emergency_stop()
@@ -617,6 +633,17 @@ class DashboardConversationMixin:
             "thinking_front",
         )
         return True
+
+
+    def _emergency_shortcut_activated(self) -> None:
+        # 裁決：Esc 是全域緊急停止，但模態對話框開啟時，應用程式層級的
+        # 捷徑會攔截 Esc、把使用者想關閉 QMessageBox 的按鍵變成全域停止，
+        # 且對話框仍留在畫面上。此時改為關閉該模態對話框。
+        modal = QApplication.activeModalWidget()
+        if modal is not None and modal is not self:
+            modal.close()
+            return
+        self._emergency_stop()
 
 
     def _emergency_stop(self) -> None:

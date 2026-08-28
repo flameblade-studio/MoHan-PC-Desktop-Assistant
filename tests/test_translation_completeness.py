@@ -84,7 +84,7 @@ WARDROBE_SOURCES = {
     "wardrobe_view_right": "右側",
     "wardrobe_view_back": "背面",
     "wardrobe_upload_single_file": "上傳單一檔案",
-    "wardrobe_installed_inactive": "已安裝，未啟用",
+    "wardrobe_installed_inactive": "已安裝，尚未套用",
     "wardrobe_outfit_preview": "服裝預覽",
     "wardrobe_hairstyle_preview": "髮型預覽",
     "wardrobe_headwear_accessories": "頭飾與配件",

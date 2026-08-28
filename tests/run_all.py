@@ -26,7 +26,12 @@ SENSITIVE_ENVIRONMENT_MARKERS = (
     "TOKEN",
 )
 MALFORMED_TEST_EXIT_CODE = 2
+COLLECTION_AUDIT_EXIT_CODE = 3
 TEST_TIMEOUT_EXIT_CODE = 124
+# Non-test .py files that legitimately live in tests/ without being collected.
+# Anything else that carries assert statements is an orphan checker (like the
+# former check_packaged_migration.py) and fails the collection audit.
+ORPHAN_EXEMPT_FILES = frozenset({"run_all.py", "__init__.py", "conftest.py"})
 TEST_TIMEOUT_SECONDS = 600
 # A single retry absorbs the timing-sensitive Qt flakiness that surfaces on
 # slow CI runners (event-loop races, transient file locks) without masking a
@@ -409,12 +414,70 @@ def _isolated_environment(test_root: Path) -> dict[str, str]:
     return environment
 
 
+def _contains_assertions(path: Path) -> bool:
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    except OSError, SyntaxError, UnicodeError:
+        # An unreadable checker still counts as an orphan: fail closed.
+        return True
+    return any(isinstance(node, ast.Assert) for node in ast.walk(tree))
+
+
+def _collection_audit_errors(collected: Sequence[Path]) -> tuple[str, ...]:
+    """Reconcile the tests/ directory manifest with the collected set.
+
+    Two guarantees keep orphan checkers from silently losing coverage again:
+    the number of ``test_*.py`` files on disk must equal the number the
+    runner collected, and no other ``.py`` file in tests/ may contain assert
+    statements unless it is a known non-test file (``ORPHAN_EXEMPT_FILES``).
+    """
+
+    errors: list[str] = []
+    present = tuple(
+        path
+        for path in sorted(TESTS_DIR.iterdir())
+        if path.is_file()
+        and path.suffix == ".py"
+        and path.name.startswith("test_")
+    )
+    if len(present) != len(collected):
+        errors.append(
+            f"collection mismatch: {len(present)} test_*.py files present "
+            f"but {len(collected)} collected"
+        )
+    collected_names = frozenset(path.name for path in collected)
+    for path in sorted(TESTS_DIR.glob("*.py")):
+        if path.name in collected_names or path.name in ORPHAN_EXEMPT_FILES:
+            continue
+        if _contains_assertions(path):
+            errors.append(
+                f"orphan checker is never collected: {path.name} "
+                "(rename it to test_*.py or add it to ORPHAN_EXEMPT_FILES)"
+            )
+    return tuple(errors)
+
+
+def _print_retried_modules(retried_modules: Sequence[str]) -> None:
+    """Keep intermittent failures visible even when a retry rescued them."""
+
+    if retried_modules:
+        print(
+            "RETRIED_MODULES: " + ", ".join(retried_modules),
+            flush=True,
+        )
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = _arguments(argv)
     all_tests = tuple(sorted(TESTS_DIR.glob("test_*.py")))
     if not all_tests:
         print("No tests found.", file=sys.stderr)
         return 2
+    audit_errors = _collection_audit_errors(all_tests)
+    if audit_errors:
+        for error in audit_errors:
+            print(f"COLLECTION_AUDIT: {error}", file=sys.stderr)
+        return COLLECTION_AUDIT_EXIT_CODE
     tests = _select_shard(
         all_tests,
         shard_index=arguments.shard_index,
@@ -423,6 +486,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not tests:
         print("No tests selected for this shard.", file=sys.stderr)
         return 2
+    retried_modules: list[str] = []
     with TemporaryDirectory(prefix="mohan-test-suite-") as suite_temp:
         suite_root = Path(suite_temp)
         for index, test in enumerate(tests, start=1):
@@ -434,6 +498,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     f"FAILED: {test.name} (exit {MALFORMED_TEST_EXIT_CODE})",
                     file=sys.stderr,
                 )
+                _print_retried_modules(retried_modules)
                 return MALFORMED_TEST_EXIT_CODE
             for command_index, command in enumerate(commands, start=1):
                 returncode = _run_with_retry(
@@ -442,6 +507,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     command_index,
                     suite_root,
                     index,
+                    retried_modules,
                 )
                 if returncode:
                     if returncode == TEST_TIMEOUT_EXIT_CODE:
@@ -455,7 +521,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                             f"FAILED: {test.name} (exit {returncode})",
                             file=sys.stderr,
                         )
+                    _print_retried_modules(retried_modules)
                     return returncode
+    # A module that only passed after a retry still exits 0, but the summary
+    # must name it so intermittent failures never stay invisible.
+    _print_retried_modules(retried_modules)
     print(f"ALL_{len(tests)}_TESTS_OK")
     return 0
 
@@ -466,6 +536,7 @@ def _run_with_retry(
     command_index: int,
     suite_root: Path,
     index: int,
+    retried_modules: list[str],
 ) -> int:
     """Run one test command, retrying once on a fresh isolated environment.
 
@@ -494,6 +565,8 @@ def _run_with_retry(
         if returncode == 0:
             return 0
         if attempt < TEST_RETRY_ATTEMPTS:
+            if test.name not in retried_modules:
+                retried_modules.append(test.name)
             print(
                 f"RETRY: {test.name} (attempt {attempt + 1} failed, "
                 f"retrying in a fresh environment)",

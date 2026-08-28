@@ -20,6 +20,18 @@ lazy from infrastructure.memory_index import MemoryVectorIndex
 
 MAX_MEMORY_TITLE_LENGTH = 36
 
+# 裁決 2026-08-28：這些鍵是執行期狀態（好感、天氣、自主衣櫥、新裝披露），
+# 而非使用者可編輯的設定；restore_settings_snapshot 於快照回復時保留當前值。
+RUNTIME_PRESERVED_KEYS = frozenset({
+    "affinity_value", "jealousy_value", "affinity_interaction_count",
+    "favor_value", "satiety_value", "camera_presence_state",
+    "wardrobe_generation_pending_job_id", "wardrobe_generation_last_attempt_at",
+    "wardrobe_generation_last_error", "wardrobe_last_generated_at",
+    "active_outfit_id", "wardrobe_last_changed_at", "wardrobe_manual_lock_until",
+    "wardrobe_current_weight", "weather_temperature_c", "weather_condition",
+    "wardrobe_reveal_pending_outfit_id",
+})
+
 DEFAULT_REMINDERS = frozendict({
     "work": ("開始工作", "09:30", 1),
     "lunch": ("吃飯", "12:30", 1),
@@ -576,13 +588,31 @@ class StudioDB:
         )
 
     def restore_settings_snapshot(self, snapshot: Mapping[str, str]) -> None:
-        """Restore a trusted in-memory settings snapshot atomically."""
+        """Restore a trusted snapshot atomically, keeping live runtime state.
+
+        裁決 2026-08-28（選擇性回滾）：:data:`RUNTIME_PRESERVED_KEYS` 內的鍵
+        保留當前值（含快照後新出現的鍵），其餘鍵才回到快照內容。
+        """
 
         with self.conn:
+            keys = tuple(RUNTIME_PRESERVED_KEYS)
+            preserved = {
+                str(row["key"]): str(row["value"])
+                for row in self.conn.execute(
+                    "SELECT key,value FROM settings WHERE key IN "
+                    f"({','.join('?' for _ in keys)})",
+                    keys,
+                )
+            }
+            kept = {
+                key: value for key, value in snapshot.items()
+                if key not in RUNTIME_PRESERVED_KEYS
+            }
+            restored = kept | preserved
             self.conn.execute("DELETE FROM settings")
             self.conn.executemany(
                 "INSERT INTO settings(key,value) VALUES(?,?)",
-                tuple(snapshot.items()),
+                tuple(restored.items()),
             )
 
     def setting(self, key: str, default: object = None) -> object:

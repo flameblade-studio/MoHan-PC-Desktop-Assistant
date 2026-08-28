@@ -136,31 +136,14 @@ class CompanionSpeechRuntimeMixin:
         self._adaptive_behavior_generation = (
             getattr(self, "_adaptive_behavior_generation", 0) + 1
         )
-        preferences = PerformancePreferences(
-            proactive_body_enabled=bool(
-                self.db.setting("performance_proactive_body_enabled", True)
-            ),
-            intensity_percent=int(
-                self.db.setting("performance_intensity_percent", 60)
-            ),
-            view_360_enabled=bool(
-                self.db.setting("performance_360_view_enabled", True)
-            ),
-            full_back_view_enabled=bool(
-                self.db.setting("performance_full_back_view_enabled", True)
-            ),
-            emotional_back_view_enabled=bool(
-                self.db.setting("performance_emotional_back_view_enabled", True)
-            ),
-            left_gestures_enabled=bool(
-                self.db.setting("performance_left_gestures_enabled", True)
-            ),
-            right_gestures_enabled=bool(
-                self.db.setting("performance_right_gestures_enabled", True)
-            ),
-            camera_context_enabled=bool(
-                self.db.setting("performance_camera_context_enabled", True)
-            ),
+        # The typed store (with the domain's conservative defaults — back
+        # views, 360° and camera context start disabled) is the single source
+        # of truth; the flagship's 演出偏好 card is its writer.  The old ad-hoc
+        # reads defaulted every flag to True, contradicting the domain
+        # contract and every saved preference.
+        reader = getattr(self, "_current_performance_preferences", None)
+        preferences = (
+            reader() if callable(reader) else PerformancePreferences()
         )
         bridge.dispatch(
             PerformanceBridgeInput(
@@ -783,7 +766,7 @@ class CompanionSpeechRuntimeMixin:
             "idle" if reply_expression == "speaking" else reply_expression
         )
         self._show_bubble(text)
-        QTimer.singleShot(3200, self.bubble.hide)
+        QTimer.singleShot(3200, self._hide_bubble_unless_speaking)
 
     def _realtime_speaking(self, speaking: bool) -> None:
         if self._closing:
