@@ -68,9 +68,9 @@ def test_version_runtime_and_evidence_policy() -> None:
         )
     }
     assert VERSION in current_docs["README.md"], (
-        "README.md must identify the current source development version"
+        "README.md must identify the current source release version"
     )
-    assert "unreleased development draft" in current_docs["README.md"]
+    assert "Latest formal release:" in current_docs["README.md"]
     for name in ("README.md", "QUICKSTART.md"):
         assert "2.0.14-rc.3.exe" not in current_docs[name]
     assert_contains(

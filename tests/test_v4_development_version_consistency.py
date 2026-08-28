@@ -98,33 +98,21 @@ def test_development_tools_do_not_leak_into_runtime_metadata() -> None:
         assert not any(item.startswith("ruff") for item in normalized), source
 
 
-def test_readme_distinguishes_development_from_published_versions() -> None:
+def test_readme_advertises_the_synchronized_latest_release() -> None:
     readme = read("README.md")
     sections = language_sections(readme)
-    development_labels = (
-        "**目前開發版本：**",
-        "**当前开发版本：**",
-        "**Current development version:**",
-        "**現在の開発版：**",
+    release_labels = (
+        "**最新正式版本：**",
+        "**最新正式版本：**",
+        "**Latest formal release:**",
+        "**最新正式リリース：**",
     )
-    unreleased_statements = (
-        "尚未發布的開發草稿",
-        "尚未发布的开发草稿",
-        "unreleased development draft",
-        "未公開の開発草案",
-    )
-    build_command = f'.\\build.ps1 -Version "{DEVELOPMENT_VERSION}"'
+    versioned_release = f"`v{DEVELOPMENT_VERSION}`"
 
-    for section, label, unreleased in zip(
-        sections,
-        development_labels,
-        unreleased_statements,
-        strict=True,
-    ):
+    for section, label in zip(sections, release_labels, strict=True):
         assert section.count(label) == 1
-        assert DEVELOPMENT_VERSION in section
-        assert unreleased in section
-        assert section.count(build_command) == 1
+        assert versioned_release in section
+        assert section.count("<!-- x-release-please-version-date -->") == 1
 
 
 def test_v4_release_document_keeps_four_language_structure() -> None:
@@ -150,7 +138,7 @@ def main() -> None:
     test_current_development_version_authorities_are_synchronized()
     test_root_version_module_is_only_a_runtime_compatibility_facade()
     test_development_tools_do_not_leak_into_runtime_metadata()
-    test_readme_distinguishes_development_from_published_versions()
+    test_readme_advertises_the_synchronized_latest_release()
     test_v4_release_document_keeps_four_language_structure()
     print("V4_DEVELOPMENT_VERSION_CONSISTENCY_OK")
 

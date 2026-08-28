@@ -6,7 +6,7 @@ Please's ``extra-files`` array is unreliable for multiple entries, so this
 script is the single, deterministic place that propagates the version to every
 other reference: ``domain/version_info.py``, ``sbom/preview.pyproject.toml``,
 ``tests/test_v4_development_version_consistency.py``, and the four-language
-README development-version lines.
+README latest-release lines.
 
 Run it from the repository root: ``python tools/sync_version.py``.
 """
@@ -41,14 +41,9 @@ _TARGETS = (
 )
 
 _README_DEV_LINES = (
-    ("目前開發版本：** `", "`"),
-    ("当前开发版本：** `", "`"),
-    ("Current development version:** `", "`"),
-    ("現在の開発版：** `", "`"),
-)
-
-_BUILD_COMMAND_PATTERN = re.compile(
-    r'(\\build\.ps1 -Version ")[0-9][^"]*(")'
+    ("最新正式版本：** `v", "`"),
+    ("Latest formal release:** `v", "`"),
+    ("最新正式リリース：** `v", "`"),
 )
 
 
@@ -79,7 +74,6 @@ def _sync_readme(version: str) -> bool:
             prefix + version + suffix,
             updated,
         )
-    updated = _BUILD_COMMAND_PATTERN.sub(r"\g<1>" + version + r"\g<2>", updated)
     if updated == original:
         return False
     path.write_text(updated, encoding="utf-8")

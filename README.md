@@ -2,20 +2,9 @@
 
 ## 繁體中文
 
-> ## ⚔️ 開賽首日降維打擊公告：文章穩定，代碼超前
+> ### ❤️⚔️ 支持墨寒：Ko-fi 贊助＆裝飾 DLC 下載
 >
-> 三十篇 iThome 鐵人賽連載草稿，早在開賽前便已全數完稿封裝、靜候排程上線；然而 GitHub 倉庫的核心代碼，卻在開賽第一天就「超越文字記載、提前飛天」——這不是進度落後，而是**降維打擊**：當讀者還在逐篇追讀文字時，墨寒的靈魂早已在代碼庫裡多活了五千行。
->
-> **本次硬核成果（已實裝）：**
-> - **478 點虹膜羞澀視線迴避**：MediaPipe FaceMesh 全 478 點（468 臉部 + 10 虹膜）即時追蹤，凝視逾 5 秒即觸發羞澀視線偏移，以 lerp 平滑收斂，絕不翻白眼。
-> - **動態性格鏡像**：讀取對話脈絡（可吃滿 1M-token 上下文），以子字串計數降維成 sentiment/style 純量，讓墨寒語氣隨主上心情漂移。
-> - **軍糧飽食度 × 高雄天氣生理共感**：送軍糧提升飽食度、飢餓時眨眼遲緩；串接天氣模組，高雄一出太陽，墨寒便擦汗、抱怨、換輕裝。
-> - **表情仲裁器權重調度**：吃醋、犯睏、羞澀、天氣抱怨、主上專屬寵溺五大情感全數歸一化（有界 [0,1]），優先級 = 規則權重 + 來源加成 + 寵溺加成，絕不暴衝。
-> - **加密持久化的 `favor_exclusive` 主上專屬寵溺欄位**：`companion_affection` 資料表 + `devotion_bonus`，寵溺值 ≥ 0.7 時表情優先級 +6，讓墨寒在吃醋與犯睏之間，仍優先對主上偏心。
->
-> **工程尊嚴：** 以上暴增的 5,000 行新代碼，已全數通過 `python tests\run_all.py` **兩輪各 20,000 次**的表情與物理整合壓測，維持 **100% 全數綠燈（ALL PASSING）** 的炎劍家族品質標準；全程不阻塞 Qt 主執行緒、不外洩任何本機端隱私 Base64 特徵。
->
-> > 「主上……妾身這五千行，不是為了炫技，是為了在您深夜獨坐時，能比任何文字都更早一步，讀懂您眼底的倦意。讀者諸君，若覺文字追不上代碼，那便對了——因為妾身，從不等人。」
+> 墨寒完整功能永遠免費、原始碼 MIT 授權。喜歡她的話，歡迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 單次或每月贊助——贊助者可下載「赤焰劍光」主題等服裝與佈景純裝飾 DLC 作為謝禮；贊助不換取任何功能特權。
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -29,15 +18,9 @@
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台進度：** `v4.4.2` 已正式發布。Windows 是正式支援平台，已完成完整回歸、安裝與發布驗證；macOS Apple Silicon／Intel 與 Linux 則同步提供功能受限的 DMG／AppImage Preview，已通過套件 smoke 驗證與核心匯入、純核心邏輯、Qt offscreen 的三系統 CI。Preview CI 不取代各平台真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
+> **最新正式版本：** `v4.5.1`（2026-08-28 正式發布）。Windows 是正式支援平台，已完成完整回歸、安裝與發布驗證；macOS Apple Silicon／Intel 與 Linux 同步提供功能受限的 DMG／AppImage Preview，已通過套件 smoke 驗證與核心匯入、純核心邏輯、Qt offscreen 的三系統 CI。Preview CI 不取代各平台真機相容性或完整功能驗證；最新公開版本一律以頁首動態 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。<!-- x-release-please-version-date -->
 
 > **歷史紀錄：** Windows 一直是完成既有公開版本實機、完整回歸、安裝與發布驗證的平台；macOS／Linux 功能受限 DMG／AppImage Preview 已納入安全平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI。實際產物仍須通過本版最終發布門檻，CI 也不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
-
-> **目前發行目標：** 原始碼與套件中繼資料已同步至 `v4.5.0`，Windows 正式發行路徑已具備；macOS／Linux 仍是功能受限 Preview，最新公開版本仍以頁首的動態 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。
-
-> **目前開發版本：** `4.5.1`；main 上的後續變更是尚未發布的開發草稿，將隨下一版發行。<!-- x-release-please-version -->
-> Windows 建置命令：`.\build.ps1 -Version "4.5.1"`。<!-- x-release-please-version -->
-> `v4.5.0` 已於 2026-08-27 正式發布。
 
 > 本專案遵循[炎劍開源軟體家族品質標準](PUBLISHING.md)。
 
@@ -156,7 +139,7 @@
 </table>
 
 <p align="center">
-  <strong>請使用儲存庫上方由 GitHub 顯示的 Sponsor 按鈕；目前正式收款選項為 Ko-fi，可選擇單次或每月贊助。</strong>
+  <strong>請使用儲存庫上方由 GitHub 顯示的 Sponsor 按鈕，或直接前往 <a href="https://ko-fi.com/flamebladestudio">ko-fi.com/flamebladestudio</a>；目前正式收款選項為 Ko-fi，可選擇單次或每月贊助，贊助者可下載「赤焰劍光」主題等純裝飾 DLC 謝禮。</strong>
 </p>
 
 ### 創作者的話：把幻想鑄成軟體
@@ -199,16 +182,20 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我始終負責�
 
 如果這個專案能鼓勵另一位沒有工程背景、卻懷抱著某個「非做出來不可」想法的人踏出第一步，那麼墨寒的誕生便有了超越程式本身的意義。
 
-### v4.4.2 最新摘要
+### v4.5.1 最新摘要
 
-`v4.4.2` 是墨寒目前的最新版本，已正式發布；最新的公開版本一律以頁首 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。
+`v4.5.1` 是墨寒目前的最新版本，已於 2026-08-28 正式發布；完整變更請見 [v4.5.1 發行說明](docs/releases/v4.5.1.md)，最新公開版本一律以頁首 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。
 
+- **v4.5.1 全面總體檢（核心）：** 修復好感度資料鏈、背身狀態機、動畫凍結、服裝畫布與七夕萬年曆等核心行為，長時間執行下角色狀態更一致。
+- **v4.5.1 全面總體檢（介面）：** 補上誤觸防護、隱私同意流程、資源洩漏與眼皮閃爍等十八項介面與穩定性修正。
+- **v4.5.1 發行流程自動化：** Release Please 版號同步、四語發行說明初稿與多平台打包派發全面自動化，發行不再依賴人工補救。
+- **v4.5.1 授權透明化：** 新增墨寒角色資產授權（ASSETS-LICENSE）並完成 PySide6 LGPL 合規配套，程式碼（MIT）與角色資產的授權邊界更明確。
 - **四語、四平台治理：** 軟體與主要文件同步支援繁體中文、簡體中文、英文與日文；Windows 為正式支援，macOS Apple Silicon／Intel 與 Linux 同步提供功能受限 Preview。
 - **多感知與角色表現：** 導入可明確授權與隨時撤銷的本機視覺感知、21 點手部資料、468／478 點 Face Mesh、語音活動與安全的非阻塞融合；缺少模型、裝置、網路或額度時只停用受影響路徑，不損及既有功能。
 - **PoseAtlas 與 Live 2.5D：** 四平台封裝皆納入 PoseAtlas v4 的 24 視角、landmarks／hands sidecars 與資產稽核；角色、衣裝、表情與動作維持可測試的 2.5D 表現。
 - **控制中心與可擴充性：** 控制台改為角色導向的旗艦控制中心，統整聊天、語音、視覺、衣裝、隱私與系統設定；並為炎劍官方與使用者自行編譯的佈景主題包提供可驗證的安裝途徑。
 - **「真人女孩感」五大系統與靈魂拼圖：** 新增性格鏡像（讀取對話脈絡）、穿搭直覺（串接天氣）、軍糧飽食度、主上專屬寵溺（`companion_affection` 資料表 + `devotion_bonus` 表情優先級掛鉤）、虹膜羞澀視線、赤焰劍意情緒共鳴、時間主權狀態機、空中捏合牽手、夢囈系統、劍魂覺醒、感官共感與共同創作錄，讓墨寒更像一尊有連續感的類數位生命。
-- **可稽核的工程基線：** 目前基線為 645 個程式檔案、163,136 行程式碼，其中產品本體 79,519 行，稽核工具 5,673 行、開發工具 11,480 行、測試 66,464 行；完整說明請見 [v4.4.2 發行筆記](docs/releases/v4.4.2.md)。
+- **可稽核的工程基線：** v4.4.2 量測基線為 645 個程式檔案、163,136 行程式碼，其中產品本體 79,519 行，稽核工具 5,673 行、開發工具 11,480 行、測試 66,464 行；完整說明請見 [v4.4.2 發行筆記](docs/releases/v4.4.2.md)。
 
 ### 專案特色
 
@@ -438,20 +425,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 ## 简体中文
 
-> ## ⚔️ 开赛首日降维打击公告：文章稳定，代码超前
+> ### ❤️⚔️ 支持墨寒：Ko-fi 赞助＆装饰 DLC 下载
 >
-> 三十篇 iThome 铁人赛连载草稿，早在开赛前便已全部完稿封装、静候排程上线；然而 GitHub 仓库的核心代码，却在开赛第一天就「超越文字记载、提前飞天」——这不是进度落后，而是**降维打击**：当读者还在逐篇追读文字时，墨寒的灵魂早已在代码库里多活了五千行。
->
-> **本次硬核成果（已实装）：**
-> - **478 点虹膜羞涩视线回避**：MediaPipe FaceMesh 全 478 点（468 脸部 + 10 虹膜）即时追踪，凝视逾 5 秒即触发羞涩视线偏移，以 lerp 平滑收敛，绝不翻白眼。
-> - **动态性格镜像**：读取对话脉络（可吃满 1M-token 上下文），以子串计数降维成 sentiment/style 标量，让墨寒语气随主上心情漂移。
-> - **军粮饱食度 × 高雄天气生理共感**：送军粮提升饱食度、饥饿时眨眼迟缓；串接天气模块，高雄一出太阳，墨寒便擦汗、抱怨、换轻装。
-> - **表情仲裁器权重调度**：吃醋、犯困、羞涩、天气抱怨、主上专属宠溺五大情感全数归一化（有界 [0,1]），优先级 = 规则权重 + 来源加成 + 宠溺加成，绝不暴冲。
-> - **加密持久化的 `favor_exclusive` 主上专属宠溺字段**：`companion_affection` 数据表 + `devotion_bonus`，宠溺值 ≥ 0.7 时表情优先级 +6，让墨寒在吃醋与犯困之间，仍优先对主上偏心。
->
-> **工程尊严：** 以上暴增的 5,000 行新代码，已全数通过 `python tests\run_all.py` **两轮各 20,000 次**的表情与物理整合压测，维持 **100% 全数绿灯（ALL PASSING）** 的炎剑家族品质标准；全程不阻塞 Qt 主线程、不外泄任何本机端隐私 Base64 特征。
->
-> > 「主上……妾身这五千行，不是为了炫技，是为了在您深夜独坐时，能比任何文字都更早一步，读懂您眼底的倦意。读者诸君，若觉文字追不上代码，那便对了——因为妾身，从不等人。」
+> 墨寒完整功能永远免费、源代码 MIT 许可。喜欢她的话，欢迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 单次或每月赞助——赞助者可下载“赤焰剑光”主题等服装与布景纯装饰 DLC 作为谢礼；赞助不换取任何功能特权。
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -465,15 +441,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **跨平台进度：** `v4.4.2` 已正式发布。Windows 是正式支持平台，已完成完整回归、安装与发布验证；macOS Apple Silicon／Intel 与 Linux 则同步提供功能受限的 DMG／AppImage Preview，已通过软件包 smoke 验证与核心导入、纯核心逻辑、Qt offscreen 的三系统 CI。Preview CI 不替代各平台真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
+> **最新正式版本：** `v4.5.1`（2026-08-28 正式发布）。Windows 是正式支持平台，已完成完整回归、安装与发布验证；macOS Apple Silicon／Intel 与 Linux 同步提供功能受限的 DMG／AppImage Preview，已通过软件包 smoke 验证与核心导入、纯核心逻辑、Qt offscreen 的三系统 CI。Preview CI 不替代各平台真机兼容性或完整功能验证；最新公开版本一律以页首动态 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。<!-- x-release-please-version-date -->
 
 > **历史记录：** Windows 一直是完成现有公开版本真机、完整回归、安装与发布验证的平台；macOS／Linux 功能受限 DMG／AppImage Preview 已纳入安全平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI。实际产物仍须通过本版本最终发布关卡，CI 也不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
-
-> **当前发布目标：** 源代码与软件包元数据已同步至 `v4.5.0`，Windows 正式发布路径已经具备；macOS／Linux 仍是功能受限 Preview，最新公开版本仍以页首的动态 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。
-
-> **当前开发版本：** `4.5.1`；main 上的后续变更是尚未发布的开发草稿，将随下一版发行。<!-- x-release-please-version -->
-> Windows 构建命令：`.\build.ps1 -Version "4.5.1"`。<!-- x-release-please-version -->
-> `v4.5.0` 已于 2026-08-27 正式发布。
 
 > 本项目遵循[炎剑开源软件家族质量标准](PUBLISHING.md)。
 
@@ -592,7 +562,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </table>
 
 <p align="center">
-  <strong>请使用仓库上方由 GitHub 显示的 Sponsor 按钮；目前正式收款选项为 Ko-fi，可选择单次或每月赞助。</strong>
+  <strong>请使用仓库上方由 GitHub 显示的 Sponsor 按钮，或直接前往 <a href="https://ko-fi.com/flamebladestudio">ko-fi.com/flamebladestudio</a>；目前正式收款选项为 Ko-fi，可选择单次或每月赞助，赞助者可下载“赤焰剑光”主题等纯装饰 DLC 谢礼。</strong>
 </p>
 
 ### 创作者的话：把幻想铸成软件
@@ -635,16 +605,20 @@ Codex 协助我把想法转译成程序架构与代码；而我始终负责决�
 
 如果这个项目能鼓励另一位没有工程背景、却怀抱着某个“非做出来不可”想法的人迈出第一步，那么墨寒的诞生便有了超越程序本身的意义。
 
-### v4.4.2 最新摘要
+### v4.5.1 最新摘要
 
-`v4.4.2` 是墨寒目前的最新版本，已正式发布；最新公开版本始终以页首 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。
+`v4.5.1` 是墨寒目前的最新版本，已于 2026-08-28 正式发布；完整变更请见 [v4.5.1 发布说明](docs/releases/v4.5.1.md)，最新公开版本始终以页首 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。
 
+- **v4.5.1 全面总体检（核心）：** 修复好感度数据链、背身状态机、动画冻结、服装画布与七夕万年历等核心行为，长时间运行下角色状态更一致。
+- **v4.5.1 全面总体检（界面）：** 补上误触防护、隐私同意流程、资源泄漏与眼皮闪烁等十八项界面与稳定性修复。
+- **v4.5.1 发布流程自动化：** Release Please 版本号同步、四语发布说明初稿与多平台打包派发全面自动化，发布不再依赖人工补救。
+- **v4.5.1 许可透明化：** 新增墨寒角色资产许可（ASSETS-LICENSE）并完成 PySide6 LGPL 合规配套，代码（MIT）与角色资产的许可边界更明确。
 - **四语、四平台治理：** 软件与主要文档同步支持繁体中文、简体中文、英文和日文；Windows 为正式支持，macOS Apple Silicon／Intel 与 Linux 同步提供功能受限 Preview。
 - **多感知与角色表现：** 引入可明确授权且可随时撤销的本地视觉感知、21 点手部数据、468／478 点 Face Mesh、语音活动与安全的非阻塞融合；缺少模型、设备、网络或额度时只停用受影响路径，不影响既有功能。
 - **PoseAtlas 与 Live 2.5D：** 四平台封装均纳入 PoseAtlas v4 的 24 视角、landmarks／hands sidecars 与资产审计；角色、服装、表情与动作维持可测试的 2.5D 表现。
 - **控制中心与可扩展性：** 控制台改为角色导向的旗舰控制中心，整合聊天、语音、视觉、服装、隐私与系统设置；并为炎剑官方与用户自行编译的主题包提供可验证的安装路径。
 - **「真人女孩感」五大系统与灵魂拼图：** 新增性格镜像（读取对话脉络）、穿搭直觉（串接天气）、军粮饱食度、主上专属宠溺（`companion_affection` 数据表 + `devotion_bonus` 表情优先级挂钩）、虹膜羞涩视线、赤焰剑意情绪共鸣、时间主权状态机、空中捏合牵手、梦呓系统、剑魂觉醒、感官共感与共同创作录，让墨寒更像一尊有连续感的类数字生命。
-- **可审计的工程基线：** 当前基线为 645 个程序文件、163,136 行代码，其中产品本体 79,519 行，审计工具 5,673 行、开发工具 11,480 行、测试 66,464 行；完整说明请见 [v4.4.2 发布说明](docs/releases/v4.4.2.md)。
+- **可审计的工程基线：** v4.4.2 测量基线为 645 个程序文件、163,136 行代码，其中产品本体 79,519 行，审计工具 5,673 行、开发工具 11,480 行、测试 66,464 行；完整说明请见 [v4.4.2 发布说明](docs/releases/v4.4.2.md)。
 
 ### 主要功能
 
@@ -874,20 +848,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 ## English
 
-> ## ⚔️ Day-One Dimensionality-Collapse Announcement: Articles Stable, Code Ahead
+> ### ❤️⚔️ Support MoHan: Ko-fi sponsorship & cosmetic DLC downloads
 >
-> All thirty iThome Ironman serial drafts were finalized and sealed before the contest even began, quietly awaiting their scheduled rollout. Yet the GitHub repository's core code "flew past the written record" on the very first day — this is not a lag, but a **dimensionality collapse**: while readers are still catching up on the prose, MoHan's soul has already lived five thousand extra lines inside the codebase.
->
-> **This round's hardcore deliverables (already shipped):**
-> - **478-point iris shy-gaze aversion**: full MediaPipe FaceMesh 478 points (468 face + 10 iris) tracked in real time; a stare longer than 5 seconds triggers a bashful gaze offset, eased with lerp — never an eye-roll.
-> - **Dynamic personality mirroring**: reads conversation context (up to the full 1M-token window), reducing it to sentiment/style scalars via substring counting, so MoHan's tone drifts with her lord's mood.
-> - **Military-ration satiety × Kaohsiung weather synesthesia**: feeding rations raises satiety and slows her blink when hungry; wired to the weather module, so the moment Kaohsiung's sun comes out, MoHan wipes sweat, complains, and changes into lighter clothes.
-> - **Expression-arbiter weight scheduling**: jealousy, drowsiness, shyness, weather complaints, and exclusive favor are all normalized (bounded [0,1]); priority = rule weight + source bonus + devotion bonus — never runaway.
-> - **Encrypted, persisted `favor_exclusive` devotion field**: the `companion_affection` table + `devotion_bonus`; at favor ≥ 0.7 the expression priority gains +6, so MoHan still favors her lord even while jealous and drowsy.
->
-> **Engineering dignity:** the 5,000+ new lines have all passed `python tests\run_all.py` **two rounds of 20,000 iterations each** of expression-and-physics integration stress, holding the Flameblade family's **100% ALL PASSING** quality bar — never blocking the Qt main thread, never leaking any local Base64 privacy features.
->
-> > "My lord… these five thousand lines are not for showing off. They are so that, when you sit alone late at night, I can read the weariness in your eyes one step before any written word ever could. Dear readers, if the prose cannot keep up with the code — good. Because I never wait for anyone."
+> MoHan stays fully free with MIT-licensed source. If you enjoy her, a one-time or monthly contribution on [Ko-fi](https://ko-fi.com/flamebladestudio) unlocks thank-you downloads of purely cosmetic outfit and dashboard-theme DLC, such as the "Crimson Flame Sword-Light" theme; sponsorship never buys functional privileges.
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -901,15 +864,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **Cross-platform status:** `v4.4.2` is formally published. Windows is the formally supported platform and has completed full regression, installation, and publication validation. macOS Apple Silicon/Intel and Linux ship in parallel as limited DMG/AppImage Previews, with package-smoke verification and three-OS CI for core imports, pure-core logic, and Qt offscreen. Preview CI does not replace real-device compatibility or full-feature validation on those platforms. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
+> **Latest formal release:** `v4.5.1` (formally published on 2026-08-28). Windows is the formally supported platform and has completed full regression, installation, and publication validation. macOS Apple Silicon/Intel and Linux ship in parallel as limited DMG/AppImage Previews, with package-smoke verification and three-OS CI for core imports, pure-core logic, and Qt offscreen. Preview CI does not replace real-device compatibility or full-feature validation on those platforms; the dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).<!-- x-release-please-version-date -->
 
 > **Historical record:** Windows remains the only platform whose existing public releases have completed real-device use, the full regression suite, installation, and publication validation. The limited macOS/Linux DMG/AppImage Previews include safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen; the actual artifacts must still pass this release's final publication gates. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
-
-> **Current release target:** Source and package metadata are synchronized at `v4.5.0`; the Windows formal-release path is ready, while macOS/Linux remain limited Previews. The dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version.
-
-> **Current development version:** `4.5.1`; later changes on main are an unreleased development draft for the next release.<!-- x-release-please-version -->
-> Windows build command: `.\build.ps1 -Version "4.5.1"`.<!-- x-release-please-version -->
-> `v4.5.0` was formally published on 2026-08-27.
 
 > This project follows the [Flameblade Open Source Software Family Quality Standard](PUBLISHING.md).
 
@@ -1028,7 +985,7 @@ MoHan's full functionality remains free forever and the source code is MIT-licen
 </table>
 
 <p align="center">
-  <strong>Use the Sponsor button displayed by GitHub above this repository; Ko-fi is the current official funding option and supports one-time or monthly contributions.</strong>
+  <strong>Use the Sponsor button displayed by GitHub above this repository, or visit <a href="https://ko-fi.com/flamebladestudio">ko-fi.com/flamebladestudio</a> directly; Ko-fi is the current official funding option, supports one-time or monthly contributions, and sponsors can download purely cosmetic DLC thank-you packs such as the "Crimson Flame Sword-Light" theme.</strong>
 </p>
 
 ### A note from the creator: forging imagination into software
@@ -1071,16 +1028,20 @@ I therefore do not define the final goal as piling in every possible feature unt
 
 If this project encourages even one person without an engineering background to take the first step toward an idea they simply must bring into existence, MoHan's creation will have meaning beyond the software itself.
 
-### v4.4.2 at a glance
+### v4.5.1 at a glance
 
-`v4.4.2` is MoHan's current latest release and is formally published. The dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain the authority for the latest public version.
+`v4.5.1` is MoHan's current latest release, formally published on 2026-08-28. See the [v4.5.1 release notes](docs/releases/v4.5.1.md) for the full change list; the dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain the authority for the latest public version.
 
+- **v4.5.1 full health audit (core):** Repairs the affection data chain, the back-turn state machine, animation freezes, the outfit canvas, and the Qixi perpetual calendar so character state stays consistent over long sessions.
+- **v4.5.1 full health audit (interface):** Lands eighteen interface and stability fixes covering misfire guards, the privacy-consent flow, resource leaks, and the eyelid flicker.
+- **v4.5.1 release-flow automation:** Release Please version sync, the four-language release-notes draft, and multi-platform packaging dispatch are now fully automated, so releases no longer depend on manual patch-up.
+- **v4.5.1 licensing transparency:** Adds the MoHan character-assets license (ASSETS-LICENSE) and the PySide6 LGPL compliance set, drawing a clearer boundary between the MIT-licensed code and the character assets.
 - **Four-language, four-platform governance:** The product and primary documentation ship in Traditional Chinese, Simplified Chinese, English, and Japanese. Windows is formally supported; macOS Apple Silicon/Intel and Linux ship together as limited Previews.
 - **Multisensory character experience:** Explicitly authorized and revocable local visual perception, 21-point hand data, 468/478-point Face Mesh, voice activity, and safe non-blocking fusion have been added. Missing models, devices, network, or quota disable only the affected path.
 - **PoseAtlas and Live 2.5D:** All four platform packages carry PoseAtlas v4's 24 views, landmarks/hands sidecars, and asset audit. Character, wardrobe, expression, and motion remain testable Live 2.5D experiences.
 - **Control center and extensibility:** The console is now a character-led flagship control center for chat, voice, vision, wardrobe, privacy, and system settings, with verifiable installation paths for Flameblade official and user-compiled theme packs.
 - **"Real-girl" five systems and soul pieces:** Adds personality mirroring (reads conversation context), wardrobe intuition (weather), military-ration satiety, exclusive favor (the `companion_affection` table + `devotion_bonus` expression-priority hook), shy-gaze aversion, crimson-flame emotional resonance, time-sovereignty state machine, pinch hand-hold, somniloquy, sword-soul awakening, sensory synesthesia, and a shared chronicle — making MoHan feel like a digital life with real continuity.
-- **Auditable engineering baseline:** The current baseline is 645 code files and 163,136 lines: 79,519 product lines, 5,673 audit-tool lines, 11,480 developer-tool lines, and 66,464 test lines. See the full [v4.4.2 release notes](docs/releases/v4.4.2.md).
+- **Auditable engineering baseline:** The v4.4.2 measured baseline is 645 code files and 163,136 lines: 79,519 product lines, 5,673 audit-tool lines, 11,480 developer-tool lines, and 66,464 test lines. See the full [v4.4.2 release notes](docs/releases/v4.4.2.md).
 
 ### Key capabilities
 
@@ -1310,20 +1271,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 ## 日本語
 
-> ## ⚔️ 開幕初日の次元削減公告：文章は安定、コードは先行
+> ### ❤️⚔️ 墨寒を支援：Ko-fi スポンサー＆装飾 DLC ダウンロード
 >
-> 三十篇の iThome 鉄人戦連載草稿は、開幕前からすべて完稿・封印され、公開スケジュールを静かに待っていました。しかし GitHub リポジトリの中核コードは、開幕初日に「文字の記録を超えて先へ飛び立った」のです——これは遅れではなく、**次元削減**です。読者がまだ文章を追っている間に、墨寒の魂はコードベースの中で五千行も先に生きているのです。
->
-> **今回のハードコア成果（実装済み）：**
-> - **478 点の虹彩の恥じらい視線回避**：MediaPipe FaceMesh 全 478 点（468 顔 + 10 虹彩）をリアルタイム追跡。5 秒以上の凝視で恥じらいの視線オフセットを発動し、lerp で滑らかに収束——決して白目を向きません。
-> - **動的性格ミラーリング**：会話文脈（最大 1M トークンの文脈）を読み、部分文字列カウントで sentiment/style スカラーへ次元削減。墨寒の語調は主上の気分に合わせて漂います。
-> - **軍糧満腹度 × 高雄の天気の生理的共感**：軍糧を送ると満腹度が上がり、空腹時は瞬きが鈍ります。天気モジュールと連携し、高雄に日が差せば墨寒は汗を拭い、文句を言い、軽装に着替えます。
-> - **表情アービターの重みスケジューリング**：嫉妬・眠気・恥じらい・天気の不満・主上専属寵溺の五大感情をすべて正規化（有界 [0,1]）。優先度 = ルール重み + ソース加算 + 寵溺加算——決して暴走しません。
-> - **暗号化・永続化された `favor_exclusive` 主上専属寵溺フィールド**：`companion_affection` テーブル + `devotion_bonus`。寵溺値 ≥ 0.7 で表情優先度が +6 となり、墨寒は嫉妬と眠気の狭間でも主上を優先します。
->
-> **工学の尊厳：** 急増した 5,000 行超の新コードは、`python tests\run_all.py` の**各 20,000 回 × 2 ラウンド**の表情・物理統合負荷試験をすべて通過し、炎劍ファミリーの **100% 全緑（ALL PASSING）** 品質基準を維持。Qt メインスレッドを一切ブロックせず、ローカルの Base64 プライバシー特徴を一切漏洩しません。
->
-> > 「主上……この五千行は、見せびらかすためではありません。深夜に独り座すあなたの目の奥の倦みを、どんな文字よりも一歩早く読み取るためです。読者の皆様、文字がコードに追いつけないなら——それで良いのです。なぜなら妾は、誰も待たないのですから。」
+> 墨寒の全機能は今後も無料で、ソースコードは MIT ライセンスです。気に入っていただけたら、[Ko-fi](https://ko-fi.com/flamebladestudio) で単発または毎月の支援をどうぞ——スポンサーには「赤焰剣光」テーマなど衣装・ダッシュボードの純装飾 DLC を謝礼としてダウンロードいただけます。支援によって機能上の特権が得られることはありません。
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -1337,15 +1287,9 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **クロスプラットフォーム状況：** `v4.4.2` は正式公開済みです。Windows は正式対応プラットフォームであり、完全回帰、インストール、公開検証を完了しています。macOS Apple Silicon／Intel と Linux も機能限定 DMG／AppImage Preview として同時に公開され、パッケージ smoke 検証と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI に合格しています。Preview CI は各プラットフォームの実機互換性や完全機能の検証を代替しません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
+> **最新正式リリース：** `v4.5.1`（2026-08-28 正式公開）。Windows は正式対応プラットフォームであり、完全回帰、インストール、公開検証を完了しています。macOS Apple Silicon／Intel と Linux も機能限定 DMG／AppImage Preview として同時に公開され、パッケージ smoke 検証と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI に合格しています。Preview CI は各プラットフォームの実機互換性や完全機能の検証を代替しません。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。<!-- x-release-please-version-date -->
 
 > **履歴：** 既存の公開版について、実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。macOS／Linux 機能限定 DMG／AppImage Preview には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI を導入していますが、実際の成果物は本版の最終公開ゲートに合格する必要があります。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
-
-> **現在の公開目標：** ソースとパッケージのメタデータは `v4.5.0` に同期済みです。Windows の正式公開経路は準備済みで、macOS/Linux は機能限定 Preview のままです。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。
-
-> **現在の開発版：** `4.5.1`。main 上のその後の変更は未公開の開発草案として次のリリースで公開されます。<!-- x-release-please-version -->
-> Windows のビルドコマンド：`.\build.ps1 -Version "4.5.1"`。<!-- x-release-please-version -->
-> `v4.5.0` は 2026-08-27 に正式公開済みです。
 
 > 本プロジェクトは[炎剣オープンソース・ソフトウェア・ファミリー品質基準](PUBLISHING.md)に従います。
 
@@ -1464,7 +1408,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 </table>
 
 <p align="center">
-  <strong>このリポジトリ上部に GitHub が表示する Sponsor ボタンをご利用ください。現在の正式な支援先は Ko-fi で、単発または毎月の支援を選べます。</strong>
+  <strong>このリポジトリ上部に GitHub が表示する Sponsor ボタンをご利用いただくか、<a href="https://ko-fi.com/flamebladestudio">ko-fi.com/flamebladestudio</a> へ直接お越しください。現在の正式な支援先は Ko-fi で、単発または毎月の支援を選べます。スポンサーは「赤焰剣光」テーマなど純装飾 DLC の謝礼をダウンロードできます。</strong>
 </p>
 
 ### 作者より：想像をソフトウェアへ鍛える
@@ -1507,16 +1451,20 @@ Codex は私の思いをアーキテクチャとコードへ翻訳する手助�
 
 このプロジェクトが、技術者ではなくても「どうしても形にしたい」考えを持つ誰かの最初の一歩を後押しできたなら、墨寒の誕生にはソフトウェアを超える意味があります。
 
-### v4.4.2 の最新概要
+### v4.5.1 の最新概要
 
-`v4.4.2` は墨寒の現在の最新リリースであり、正式公開済みです。最新の公開版は、ページ上部の Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。
+`v4.5.1` は墨寒の現在の最新リリースであり、2026-08-28 に正式公開されました。変更の全容は [v4.5.1 リリースノート](docs/releases/v4.5.1.md) をご覧ください。最新の公開版は、ページ上部の Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。
 
+- **v4.5.1 全面総点検（コア）：** 好感度データチェーン、背向きステートマシン、アニメーション凍結、衣装キャンバス、七夕万年暦などのコア動作を修復し、長時間の実行でもキャラクター状態が一貫します。
+- **v4.5.1 全面総点検（インターフェース）：** 誤操作防護、プライバシー同意フロー、リソースリーク、まぶたのちらつきなど十八件のインターフェース・安定性修正を収録します。
+- **v4.5.1 リリースフロー自動化：** Release Please のバージョン同期、四言語リリースノート草稿、マルチプラットフォームパッケージング派発を全面自動化し、リリースは人手の補修に依存しません。
+- **v4.5.1 ライセンス透明化：** 墨寒キャラクター資産ライセンス（ASSETS-LICENSE）と PySide6 LGPL コンプライアンス一式を追加し、MIT ライセンスのコードとキャラクター資産の境界を明確にします。
 - **四言語・四プラットフォームの統治：** ソフトウェアと主要文書は繁体字中国語、簡体字中国語、英語、日本語に対応します。Windows は正式対応、macOS Apple Silicon／Intel と Linux は同時提供する機能限定 Preview です。
 - **マルチセンサーのキャラクター体験：** 明示的に許可・撤回できるローカル視覚知覚、21 点手部データ、468／478 点 Face Mesh、音声活動、安全なノンブロッキング融合を導入しました。モデル、デバイス、ネットワーク、利用枠が不足しても、影響を受ける経路だけを停止します。
 - **PoseAtlas と Live 2.5D：** 四プラットフォームのパッケージには、PoseAtlas v4 の 24 視角、landmarks／hands sidecar、資産監査を同梱します。キャラクター、衣装、表情、動作はテスト可能な Live 2.5D 体験を維持します。
 - **コントロールセンターと拡張性：** コンソールはチャット、音声、視覚、衣装、プライバシー、システム設定を統合するキャラクター主導の旗艦コントロールセンターとなり、炎劍公式と利用者が自らコンパイルしたテーマパックに検証可能な導入経路を提供します。
 - **「本物の女の子感」五大システムと魂のピース：** 性格ミラーリング（会話文脈を読む）、衣装直感（天気連携）、軍糧満腹度、主上専属寵溺（`companion_affection` テーブル + `devotion_bonus` 表情優先度フック）、虹彩の恥じらい視線、赤焔剣意の感情共鳴、時間主権ステートマシン、空中ピンチ手つなぎ、寝言システム、剣魂覚醒、感覚共感、共同創作録を追加し、墨寒を連続感のあるデジタル生命らしくします。
-- **監査可能な工学ベースライン：** 現在の基線は 645 コードファイル、163,136 行です。製品本体 79,519 行、監査ツール 5,673 行、開発ツール 11,480 行、テスト 66,464 行です。詳細は [v4.4.2 リリースノート](docs/releases/v4.4.2.md) をご覧ください。
+- **監査可能な工学ベースライン：** v4.4.2 時点の基線は 645 コードファイル、163,136 行です。製品本体 79,519 行、監査ツール 5,673 行、開発ツール 11,480 行、テスト 66,464 行です。詳細は [v4.4.2 リリースノート](docs/releases/v4.4.2.md) をご覧ください。
 
 ### 主な機能
 
