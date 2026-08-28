@@ -59,7 +59,7 @@ def _run(
         not jit_output.is_file()
         or jit_output.read_text(encoding="utf-8") != "PACKAGED_JIT_DEFAULT_OK"
     ):
-        raise RuntimeError("Preview package did not enable Python 3.15 JIT by default")
+        raise RuntimeError("Preview package JIT state did not match the shipped policy")
 
 
 def smoke_macos(package: Path, expected_version: str, *, require_pose_atlas: bool) -> None:

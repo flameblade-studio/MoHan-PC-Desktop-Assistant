@@ -55,8 +55,8 @@ if ($LASTEXITCODE -ne 0 -or $PythonVersion -ne "3.15.0rc1") {
     throw "MoHan $Version packages must be built with Python 3.15.0rc1; found $PythonVersion."
 }
 $JitContract = (& $Python -c "import sys; print(f'{sys._jit.is_available()}:{sys._jit.is_enabled()}')").Trim()
-if ($LASTEXITCODE -ne 0 -or $JitContract -ne "True:True") {
-    throw "MoHan $Version packages require a Python 3.15.0rc1 runtime built with JIT enabled by default; found $JitContract."
+if ($LASTEXITCODE -ne 0 -or $JitContract -ne "True:False") {
+    throw "MoHan $Version packages require a JIT-capable Python 3.15.0rc1 runtime running with the JIT off (shipped policy since 2026-08-29); found $JitContract."
 }
 
 & $Python -c "import azure.cognitiveservices.speech, cryptography, cv2, numpy, opencc, sounddevice, websocket; import PySide6.QtCore, PySide6.QtGui, PySide6.QtMultimedia, PySide6.QtWidgets"

@@ -44,9 +44,10 @@ def _write_jit_status() -> None:
     output_path = _argument_value("--jit-status-output=")
     if not output_path:
         return
+    expected_jit = os.environ.get("MOHAN_ENABLE_JIT") == "1"
     Path(output_path).write_text(
         "PACKAGED_JIT_DEFAULT_OK"
-        if jit_is_enabled()
+        if jit_is_enabled() == expected_jit
         else "PACKAGED_JIT_DEFAULT_FAILED",
         encoding="utf-8",
     )

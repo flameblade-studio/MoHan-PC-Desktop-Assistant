@@ -5,7 +5,7 @@ lazy import subprocess
 lazy import sys
 lazy from os import _exit as _process_exit
 
-JIT_DISABLE_ENV = "MOHAN_DISABLE_JIT"
+JIT_ENABLE_ENV = "MOHAN_ENABLE_JIT"
 JIT_REEXEC_ENV = "MOHAN_JIT_REEXEC"
 
 
@@ -30,25 +30,29 @@ def finalize_process_exit(code: int) -> int:
 
 
 def ensure_default_jit(module_name: str, script_path: str) -> None:
-    """Require frozen builds to start with JIT enabled before Python init.
+    """Require the runtime JIT state to match the shipped policy.
 
-    Development entry points may restart once with ``PYTHON_JIT=1``. Frozen
-    applications are started by the public launcher, which removes inherited
-    ``PYTHON*`` settings and supplies only ``PYTHON_JIT=1`` to the narrowly
-    patched bootloader. The runtime must already have JIT enabled here.
+    Stability-first since 2026-08-29: a JIT-enabled runtime crashed with
+    0xC0000409 mid-session on a user machine, so the launcher now supplies
+    ``PYTHON_JIT=0`` by default and ``MOHAN_ENABLE_JIT=1`` opts back in as an
+    explicit experiment. Frozen builds assert the state matches that policy;
+    development entry points restart once only when the experiment asks for
+    a JIT the current process does not have.
     """
+    expect_jit = os.environ.get(JIT_ENABLE_ENV) == "1"
     is_frozen_entrypoint = bool(getattr(sys, "frozen", False))
     if is_frozen_entrypoint:
-        if not jit_is_enabled():
+        if jit_is_enabled() != expect_jit:
             raise RuntimeError(
-                "Frozen MoHan runtime requires launcher-enabled JIT"
+                "Frozen MoHan runtime JIT state does not match the "
+                "launcher policy"
             )
         return
     if (
         module_name != "__main__"
     ) or sys.version_info[:2] != (3, 15):
         return
-    if os.environ.get(JIT_DISABLE_ENV) == "1" or jit_is_enabled():
+    if not expect_jit or jit_is_enabled():
         return
     jit = getattr(sys, "_jit", None)
     if not jit or not jit.is_available() or os.environ.get(JIT_REEXEC_ENV) == "1":
