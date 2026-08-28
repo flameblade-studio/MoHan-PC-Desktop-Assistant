@@ -7,13 +7,13 @@ neutrals, gold accents, and danger reds keep their semantic roles.
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
+lazy import sys
+lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from domain.theme_retint import retint_stylesheet
-from presentation.flagship_theme import _theme_stylesheet
+lazy from domain.theme_retint import retint_stylesheet
+lazy from presentation.flagship_theme import _theme_stylesheet
 
 CRIMSON_TOKENS = {"primary": "#D9481C"}
 
