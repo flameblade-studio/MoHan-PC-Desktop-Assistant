@@ -55,8 +55,15 @@ def main() -> int:
         print(f"FAIL: cannot read GitHub event payload: {error}", file=sys.stderr)
         return 2
 
-    head_ref = payload.get("pull_request", {}).get("head", {}).get("ref", "")
-    if head_ref.startswith("release-please--branches--"):
+    pull_request = payload.get("pull_request", {})
+    head_ref = (pull_request.get("head") or {}).get("ref", "")
+    pr_author = (pull_request.get("user") or {}).get("login", "")
+    # The branch name alone must not bypass governance: the exemption only
+    # applies to release PRs actually authored by the GitHub Actions bot.
+    if (
+        head_ref.startswith("release-please--branches--")
+        and pr_author == "github-actions[bot]"
+    ):
         print("RELEASE_PLEASE_PR_EXEMPT")
         return 0
 

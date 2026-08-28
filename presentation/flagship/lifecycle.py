@@ -20,17 +20,24 @@ class FlagshipLifecycleMixin:
         self._planner_worker = None
         self._cloud_test_worker = None
         self._home_probe_worker = None
-        # 進行中的瀏覽器 OAuth 流程沒有取消 API；先標記棄單讓完成回呼
-        # 早退，waitForDone 才不會被授權流程逼到上限。仍卡在 authorize()
-        # 的執行緒（上限 180 秒）由行程退出回收。
+        # Wake an OAuth worker that is still waiting on its loopback socket;
+        # otherwise ~QThreadPool blocks shutdown until the browser
+        # authorization times out (up to 180 seconds).
         oauth_worker = getattr(self, "_oauth_worker", None)
+        self._oauth_worker = None
         if oauth_worker is not None:
             with suppress(AttributeError, RuntimeError):
                 oauth_worker.abandon()
-            self._oauth_worker = None
 
         for timer in self.findChildren(QTimer):
             timer.stop()
+        # Parentless value-holder widgets are never destroyed by Qt's
+        # parent-child ownership; release them here so no top-level widget
+        # outlives the control center.
+        for holder in getattr(self, "_unmounted_value_holders", ()):
+            with suppress(RuntimeError):
+                holder.deleteLater()
+        self._unmounted_value_holders = ()
         with suppress(AttributeError, RuntimeError):
             self.stop_remote(silent=True)
 

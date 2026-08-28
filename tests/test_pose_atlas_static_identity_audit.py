@@ -76,6 +76,38 @@ def test_forehead_spike_and_green_mouth_pixel_block_packaging(tmp_path: Path) ->
     assert "mouth_green_cyan_pixels" in report.issues_by_code
 
 
+def test_adjacent_registration_jump_reports_both_views(tmp_path: Path) -> None:
+    left_view = "yaw+015-pitch+00"
+    right_view = "yaw+030-pitch+00"
+    right_face = FaceEvidence(
+        box=(60.0, 20.0, 48.0, 70.0),
+        landmarks=tuple((x + 20.0, y) for x, y in FACE.landmarks),
+        confidence=0.99,
+    )
+    left_image = _image()
+    right_image = np.zeros((SIZE[1], SIZE[0], 4), dtype=np.uint8)
+    right_image[20:90, 60:108] = (150, 180, 220, 255)
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    assert cv2.imwrite(str(tmp_path / f"{left_view}.png"), left_image)
+    assert cv2.imwrite(str(tmp_path / f"{right_view}.png"), right_image)
+    report = audit_pose_atlas_identity(
+        tmp_path,
+        tmp_path / "unused.onnx",
+        view_ids=(left_view, right_view),
+        expected_size=SIZE,
+        face_evidence={left_view: FACE, right_view: right_face},
+    )
+    jump_views = sorted(
+        issue.view_id
+        for issue in report.issues
+        if issue.code == "adjacent_face_registration_jump"
+    )
+    # The pair jump must pin BOTH sides so a baseline waiver only holds
+    # while neither owner-accepted file changes.
+    assert jump_views == [left_view, right_view]
+    assert preflight_exit_code(report) == 1
+
+
 def test_baseline_waives_only_exact_accepted_bytes(tmp_path: Path) -> None:
     image = _image()
     image[35:38, 34:40] = (150, 180, 220, 255)

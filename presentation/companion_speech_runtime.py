@@ -1131,10 +1131,7 @@ class CompanionSpeechRuntimeMixin:
                     ),
                     final_state,
                 )
-            QTimer.singleShot(
-                2800,
-                lambda: None if self.speech_playing else self.bubble.hide(),
-            )
+            QTimer.singleShot(2800, self._hide_bubble_unless_speaking)
             if completed_source == "wardrobe-origin":
                 QTimer.singleShot(120, self._wink_once)
 

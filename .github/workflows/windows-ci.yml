@@ -56,7 +56,9 @@ jobs:
         shell: pwsh
         run: |
           rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m pip install --only-binary=:all: maturin==1.14.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Build and verify native acceleration
         shell: pwsh
@@ -65,18 +67,24 @@ jobs:
             --output-dir native-wheels `
             --evidence native-wheels/build-evidence.json `
             --install
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m pytest tests/test_native_equivalence.py tests/test_native_rgba_equivalence.py -q
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python tools/benchmark_native_rgba.py --width 512 --height 512 --iterations 3
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Verify PYTHON_JIT forwarding and compare MoHan hot paths
         shell: pwsh
         run: |
           $env:PYTHON_JIT = "0"
           python -c "import sys; assert sys._jit.is_available() and not sys._jit.is_enabled()"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $env:PYTHON_JIT = "1"
           python -c "import sys; assert sys._jit.is_available() and sys._jit.is_enabled()"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Remove-Item Env:PYTHON_JIT -ErrorAction SilentlyContinue
           python tools/benchmark_python315_hotpaths.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Compile source
         run: python -m compileall -q .
@@ -145,8 +153,11 @@ jobs:
         shell: pwsh
         run: |
           rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all: -r requirements-dev.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all: maturin==1.14.1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Install Windows installer toolchains
         env:
           GH_TOKEN: ${{ github.token }}
@@ -164,11 +175,14 @@ jobs:
           $evidenceDir = Join-Path $env:RUNNER_TEMP "mohan-native-ci"
           New-Item -ItemType Directory -Force $evidenceDir | Out-Null
           & $env:MOHAN_JIT_PYTHON -m pytest tests/test_native_equivalence.py tests/test_native_rgba_equivalence.py -q
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $env:MOHAN_JIT_PYTHON tools/benchmark_native_rgba.py --width 512 --height 512 --iterations 3
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $env:MOHAN_JIT_PYTHON tools/verify_packaged_native_acceleration.py `
             "dist\MoHan-Desktop-Assistant-4.0.0-rc.1" `
             --label "onedir" `
             --output (Join-Path $evidenceDir "onedir.json")
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Extract and strictly verify portable ZIP
         shell: pwsh
         run: |

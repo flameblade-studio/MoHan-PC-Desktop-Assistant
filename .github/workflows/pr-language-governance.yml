@@ -24,8 +24,12 @@ jobs:
           # not human prose, so they are exempt from the four-language metadata
           # requirement.  This prevents every automated release PR from failing
           # the governance check and needing a manual title/body rewrite.
+          # The exemption is only for PRs actually authored by the GitHub
+          # Actions bot; a branch name alone must not bypass governance.
           head_ref=$(jq -r '.pull_request.head.ref // ""' "$GITHUB_EVENT_PATH")
-          if [[ "$head_ref" == release-please--branches--* ]]; then
+          pr_author=$(jq -r '.pull_request.user.login // ""' "$GITHUB_EVENT_PATH")
+          if [[ "$head_ref" == release-please--branches--* \
+                && "$pr_author" == "github-actions[bot]" ]]; then
             echo "RELEASE_PLEASE_PR_EXEMPT"
             exit 0
           fi

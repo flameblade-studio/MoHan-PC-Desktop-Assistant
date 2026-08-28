@@ -298,11 +298,14 @@ def run_audit() -> SpeechRuntimeAudit:
     )
     trace_issues = audit_event_trace(tuple(event_trace))
     microtiming_issues = audit_runtime_microtiming()
+    # Microtiming issue names are "blink:...", "blink-duration:...",
+    # "attention-gaze:..." and "saccade-gaze:...": every blink-family issue
+    # starts with "blink", not only the bare "blink:" interval label.
     blink_issues = tuple(
-        issue for issue in microtiming_issues if issue.startswith("blink:")
+        issue for issue in microtiming_issues if issue.startswith("blink")
     )
     gaze_issues = tuple(
-        issue for issue in microtiming_issues if not issue.startswith("blink:")
+        issue for issue in microtiming_issues if not issue.startswith("blink")
     )
     checks = {
         "tts_bytes_nonempty": len(tts_bytes) > MINIMUM_WAVE_HEADER_BYTES,

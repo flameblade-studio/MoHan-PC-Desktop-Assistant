@@ -42,6 +42,26 @@ lazy from speech_providers import (
 )
 
 EXPECTED_STOP_CALLS = 2
+# Deferred deletions usually settle in a couple of rounds; the cap only stops
+# a defective teardown from spinning forever.
+MAX_CLEANUP_ROUNDS = 25
+# Kept as a printed warning plus a generous ceiling instead of a strict zero
+# so one stubborn widget cannot re-introduce intermittent CI failures.
+MAX_LEAKED_TOP_LEVEL_WIDGETS = 4
+
+
+def _drain_deferred_deletions(app: QApplication) -> int:
+    """Flush queued deleteLater/timer work until top-level widgets stabilize."""
+    previous = -1
+    for _ in range(MAX_CLEANUP_ROUNDS):
+        app.processEvents()
+        QApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        gc.collect()
+        count = len(app.topLevelWidgets())
+        if count == previous:
+            break
+        previous = count
+    return len(app.topLevelWidgets())
 
 
 class _MemorySecretStore:
@@ -257,7 +277,23 @@ _SPEECH_ROUTES = (
 
 @pytest.fixture(scope="module", autouse=True)
 def application() -> QApplication:
-    return QApplication.instance() or QApplication([])
+    app = QApplication.instance() or QApplication([])
+    yield app
+    # Module finalizer: settle every deferred deletion queued by the per-test
+    # teardowns so no leaked top-level widget survives into the next module.
+    leaked = _drain_deferred_deletions(app)
+    leftovers = [
+        f"{type(widget).__name__}(objectName={widget.objectName()!r})"
+        for widget in app.topLevelWidgets()
+    ]
+    if leftovers:
+        # Diagnostic listing for future leak hunts; the relaxed cap below is
+        # the only hard gate.
+        print(
+            "[multisensory-speech-regression] leaked top-level widgets "
+            f"({leaked}): {leftovers}"
+        )
+    assert leaked <= MAX_LEAKED_TOP_LEVEL_WIDGETS, leftovers
 
 
 @pytest.fixture
@@ -327,7 +363,17 @@ def context(tmp_path: Path) -> _OfflineContext:
     yield value
     window.close()
     window.deleteLater()
-    QApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+    # The dashboard is a parentless top-level dialog: closing the companion
+    # window hides it but never deletes it, so release it explicitly.
+    dashboard = getattr(window, "dashboard", None)
+    if dashboard is not None:
+        dashboard.close()
+        dashboard.deleteLater()
+    # Several rounds so already-expired singleShot callbacks fire now, while
+    # their guards still see this window, instead of during a later test.
+    for _ in range(4):
+        QApplication.processEvents()
+        QApplication.sendPostedEvents(None, QEvent.DeferredDelete)
     QApplication.processEvents()
     # Each test builds a full CompanionWindow; without clearing Qt's global
     # pixmap cache and forcing a GC pass, the six windows in this module

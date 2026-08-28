@@ -124,8 +124,9 @@ class CompanionBlinkRuntimeMixin:
             or self.state == "speaking"
             or self.current_expression != base_expression
         ):
+            # A newer blink cycle owns the shared ``blink_opacity`` now; only
+            # retire this cycle's own flag instead of zeroing the live value.
             self.idle_blinking = False
-            self.blink_opacity = 0.0
             return
         self._set_half_body_blink(generation, 0.0)
         self.idle_blinking = False
@@ -133,15 +134,24 @@ class CompanionBlinkRuntimeMixin:
         self._render_attention_layers(force=True)
         self._attention_tick()
         if random.random() < BLINK_PROBABILITY:
-            QTimer.singleShot(170, self._blink)
+            QTimer.singleShot(
+                170,
+                lambda: self._reblink_if_current(generation),
+            )
+
+    def _reblink_if_current(self, generation: int) -> None:
+        """Run the follow-up blink only while its owner window is still live."""
+        if getattr(self, "_closing", False) or generation != self.blink_generation:
+            return
+        self._blink()
 
     def _finish_speaking_blink(
         self,
         generation: int,
     ) -> None:
         if self.state != "speaking" or generation != self.blink_generation:
+            # Do not clear the shared ``blink_opacity`` for a superseded cycle.
             self.speech_blinking = False
-            self.blink_opacity = 0.0
             return
         self.speech_blinking = False
         self.blink_opacity = 0.0
