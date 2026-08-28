@@ -5,7 +5,6 @@ lazy import os
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, field
 lazy from typing import NotRequired, TypedDict, Unpack
-lazy from urllib.error import HTTPError, URLError
 lazy from urllib.request import Request, urlopen
 
 lazy from PySide6.QtCore import QObject, QRunnable, Signal
