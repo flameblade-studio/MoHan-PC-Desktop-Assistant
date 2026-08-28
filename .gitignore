@@ -61,3 +61,4 @@ home-assistant*.dpapi
 .vs/
 Thumbs.db
 Desktop.ini
+.chroma-pipeline/
