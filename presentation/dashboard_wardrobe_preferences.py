@@ -105,12 +105,17 @@ class DashboardWardrobePreferencesMixin:
             "manualWardrobeLockHours",
         )
         self.outfit_image_quality = QComboBox()
-        for value, key, fallback in (
-            ("low", "wardrobe_quality_low", "快速（畫質較低，最省時省費）"),
-            ("medium", "wardrobe_quality_medium", "標準（建議）"),
-            ("high", "wardrobe_quality_high", "精緻（最耗時，費用最高）"),
-        ):
-            self.outfit_image_quality.addItem(self._t(key, fallback), value)
+        self.outfit_image_quality.addItem(
+            self._t("wardrobe_quality_low", "快速（畫質較低，最省時省費）"),
+            "low",
+        )
+        self.outfit_image_quality.addItem(
+            self._t("wardrobe_quality_medium", "標準（建議）"), "medium"
+        )
+        self.outfit_image_quality.addItem(
+            self._t("wardrobe_quality_high", "精緻（最耗時，費用最高）"),
+            "high",
+        )
         stored_quality = str(
             self.db.setting("outfit_image_quality", "medium")
         )
