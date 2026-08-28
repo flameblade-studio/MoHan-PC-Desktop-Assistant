@@ -75,7 +75,7 @@ Linux x86_64 功能受限 Preview 使用官方 [AppImage `appimagetool`](https:/
 
 Windows 單一目錄安裝包亦可能包含 Python（PSF License）、Qt 及 Shiboken（LGPL／GPL／商業條款）、NumPy（BSD-3-Clause）、CFFI（MIT）、PortAudio（MIT）、OpenSSL（Apache-2.0）、SQLite（public domain），以及它們所需的執行階段函式庫。macOS 與 Linux 功能受限 Preview 安裝包只包含 `requirements-preview.txt` 宣告的較小 Preview 相依集合。
 
-封裝版面會將動態連結的 Qt／PySide 函式庫保留為 `_internal` 下的獨立檔案，讓接收者可以檢查或替換這些函式庫。對應的 Qt for Python 原始碼 Release 可從 [Qt 官方下載封存](https://download.qt.io/official_releases/QtForPython/)取得。
+封裝版面會將動態連結的 Qt／PySide 函式庫保留為 `_internal` 下的獨立檔案，讓接收者可以檢查或替換這些函式庫。對應的 Qt for Python 原始碼 Release 可從 [Qt 官方下載封存](https://download.qt.io/official_releases/QtForPython/)取得。GNU LGPL-3.0 與 GNU GPL-3.0 的授權全文收錄於安裝目錄的 `third_party_licenses` 資料夾。
 
 完整授權文字及原始碼連結可在各上游專案與已安裝套件的中繼資料中取得。散布者應檢查實際交付的精確相依版本，並保留所有上游著作權及授權聲明。
 
@@ -164,7 +164,7 @@ Linux x86_64 功能受限 Preview 使用官方 [AppImage `appimagetool`](https:/
 
 Windows 单一目录安装包也可能包含 Python（PSF License）、Qt 及 Shiboken（LGPL／GPL／商业条款）、NumPy（BSD-3-Clause）、CFFI（MIT）、PortAudio（MIT）、OpenSSL（Apache-2.0）、SQLite（public domain），以及它们所需的运行时库。macOS 与 Linux 功能受限 Preview 安装包只包含 `requirements-preview.txt` 声明的较小 Preview 依赖集合。
 
-封装布局会将动态链接的 Qt／PySide 库保留为 `_internal` 下的独立文件，让接收者可以检查或替换这些库。对应的 Qt for Python 源代码 Release 可从 [Qt 官方下载存档](https://download.qt.io/official_releases/QtForPython/)取得。
+封装布局会将动态链接的 Qt／PySide 库保留为 `_internal` 下的独立文件，让接收者可以检查或替换这些库。对应的 Qt for Python 源代码 Release 可从 [Qt 官方下载存档](https://download.qt.io/official_releases/QtForPython/)取得。GNU LGPL-3.0 与 GNU GPL-3.0 的授权全文收录于安装目录的 `third_party_licenses` 文件夹。
 
 完整许可文本及源代码链接可在各上游项目与已安装软件包的元数据中取得。分发者应检查实际交付的精确依赖版本，并保留所有上游著作权及许可声明。
 
@@ -253,7 +253,7 @@ The Linux x86_64 limited Preview is assembled with the official [AppImage `appim
 
 The Windows one-directory package may also contain Python (PSF License), Qt and Shiboken (LGPL/GPL/commercial terms), NumPy (BSD-3-Clause), CFFI (MIT), PortAudio (MIT), OpenSSL (Apache-2.0), SQLite (public domain), and their required runtime libraries. The macOS and Linux limited Preview packages contain only the smaller Preview dependency set declared in `requirements-preview.txt`.
 
-The packaged layout keeps dynamically linked Qt/PySide libraries as separate files under `_internal`, so recipients can inspect or replace those libraries. Corresponding Qt for Python source releases are available from the [official Qt download archive](https://download.qt.io/official_releases/QtForPython/).
+The packaged layout keeps dynamically linked Qt/PySide libraries as separate files under `_internal`, so recipients can inspect or replace those libraries. Corresponding Qt for Python source releases are available from the [official Qt download archive](https://download.qt.io/official_releases/QtForPython/). The full texts of the GNU LGPL-3.0 and GNU GPL-3.0 are included in the `third_party_licenses` folder of the install directory.
 
 Complete license texts and source links are available in each upstream project and installed package metadata. Distributors should review the exact dependency versions they ship and preserve all upstream copyright and license notices.
 
@@ -342,7 +342,7 @@ Linux x86_64 の機能制限付き Preview は、公式の [AppImage `appimageto
 
 Windows のワンディレクトリパッケージには、Python（PSF License）、Qt および Shiboken（LGPL／GPL／商用条件）、NumPy（BSD-3-Clause）、CFFI（MIT）、PortAudio（MIT）、OpenSSL（Apache-2.0）、SQLite（public domain）、ならびにそれらに必要なランタイムライブラリが含まれる場合があります。macOS および Linux の機能制限付き Preview パッケージには、`requirements-preview.txt` で宣言された小規模な Preview 依存セットだけが含まれます。
 
-パッケージでは、動的リンクされる Qt／PySide ライブラリを `_internal` 配下の個別ファイルとして保持するため、受領者はこれらのライブラリを確認または置換できます。対応する Qt for Python のソース Release は、[Qt 公式ダウンロードアーカイブ](https://download.qt.io/official_releases/QtForPython/)から取得できます。
+パッケージでは、動的リンクされる Qt／PySide ライブラリを `_internal` 配下の個別ファイルとして保持するため、受領者はこれらのライブラリを確認または置換できます。対応する Qt for Python のソース Release は、[Qt 公式ダウンロードアーカイブ](https://download.qt.io/official_releases/QtForPython/)から取得できます。GNU LGPL-3.0 と GNU GPL-3.0 のライセンス全文は、インストールフォルダーの `third_party_licenses` に同梱されています。
 
 完全なライセンス本文とソースへのリンクは、各上流プロジェクトおよびインストール済みパッケージのメタデータで確認できます。配布者は、実際に出荷する正確な依存バージョンを確認し、上流の著作権表示とライセンス表示をすべて保持してください。
 

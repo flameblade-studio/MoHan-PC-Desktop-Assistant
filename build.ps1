@@ -178,6 +178,7 @@ try {
         --add-data "voice_listener.ps1;." `
         --add-data "LICENSE;." `
         --add-data "THIRD_PARTY_NOTICES.md;." `
+        --add-data "third_party_licenses;third_party_licenses" `
         --add-data "build-info.json;." `
         --add-data "$NativeEvidence;." `
         --add-binary "$Abi3tCompatibilityDll;." `

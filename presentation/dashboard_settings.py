@@ -38,6 +38,7 @@ lazy from domain.companion_animation_contract import (
     CHARACTER_SCALE_MAX,
     CHARACTER_SCALE_MIN,
 )
+lazy from domain.version_info import APP_VERSION
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import (
     DashboardDependencies,
@@ -870,7 +871,30 @@ class DashboardSettingsMixin:
             QLabel(self._t("theme_preview", "<b>控制台佈景主題</b>")),
         )
         form.addRow(self.theme_pack_panel)
+        self._add_about_section(form)
         return tab
+
+    def _add_about_section(self, form: QFormLayout) -> None:
+        form.addRow(QLabel(self._t("about_heading", "<b>關於墨寒</b>")))
+        about = QLabel(
+            self._t(
+                "about_body",
+                "墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與"
+                " MoHan Desktop Assistant 貢獻者，依 MIT License 發行。<br>"
+                "本軟體以動態連結方式使用 Qt for Python（PySide6，"
+                "GNU LGPL-3.0 授權）；Qt 函式庫以獨立檔案封裝於安裝目錄的"
+                " _internal 資料夾，您可自行檢查或替換這些函式庫。<br>"
+                "完整第三方授權聲明見安裝目錄的 THIRD_PARTY_NOTICES.md 與"
+                " third_party_licenses 資料夾；Qt 原始碼可自"
+                ' <a href="https://download.qt.io/official_releases/'
+                'QtForPython/">Qt 官方下載封存</a>取得。',
+                version=APP_VERSION,
+            )
+        )
+        about.setWordWrap(True)
+        about.setTextFormat(Qt.RichText)
+        about.setOpenExternalLinks(True)
+        form.addRow(about)
 
     def open_work_folder(self) -> None:
         value = self.work_folder.text().strip()

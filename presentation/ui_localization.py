@@ -471,6 +471,17 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'api_status_secret_unavailable': 'OpenAI API：{platform} 安全密钥保存尚未完成设备实测',
  'api_status_offline': 'OpenAI API：未设置，使用离线人格',
  'restart_language_note': '保存界面语言后，重新启动墨寒即可完整应用。',
+ 'about_heading': '<b>关于墨寒</b>',
+ 'about_body': (
+     '墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'
+     ' MoHan Desktop Assistant 贡献者，依 MIT License 发行。<br>'
+     '本软件以动态链接方式使用 Qt for Python（PySide6，GNU LGPL-3.0 授权）；'
+     'Qt 库以独立文件封装于安装目录的 _internal 文件夹，您可自行检查或替换这些库。<br>'
+     '完整第三方授权声明见安装目录的 THIRD_PARTY_NOTICES.md 与'
+     ' third_party_licenses 文件夹；Qt 源代码可从'
+     ' <a href="https://download.qt.io/official_releases/QtForPython/">'
+     'Qt 官方下载存档</a>获取。'
+ ),
  'reminder_work': '开始工作',
  'reminder_lunch': '午餐',
  'reminder_dinner': '晚餐',
