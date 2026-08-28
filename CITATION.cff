@@ -6,8 +6,8 @@ authors:
   - family-names: "CHOU"
     given-names: "MING HUA"
     orcid: "https://orcid.org/0009-0008-9643-8694"
-version: "4.5.0"
-date-released: "2026-08-27"
+version: "4.5.0" # x-release-please-version
+date-released: "2026-08-27" # x-release-please-date
 license: MIT
 abstract: >-
   A configurable Windows AI desktop companion and permission-gated

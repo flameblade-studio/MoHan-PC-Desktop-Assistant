@@ -11,16 +11,68 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   release-please:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      # Do NOT pass the ``release-type`` input here: release-please-action
+      # ignores ``config-file``/``manifest-file`` whenever ``release-type`` is
+      # set, which silently disables extra-files version bumps and the
+      # four-language changelog sections.
       - name: Run release-please
+        id: release
         uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: python
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      # Tags and releases created with GITHUB_TOKEN never fire `push` tag or
+      # `release` events (GitHub's anti-recursion rule), so the Multi-platform
+      # Release packaging workflow must be dispatched explicitly; dispatching
+      # through the API with GITHUB_TOKEN is allowed.
+      - name: Dispatch multi-platform packaging for the published release
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          gh workflow run release.yml --repo "$GITHUB_REPOSITORY" --ref main -f "tag=$RELEASE_TAG" -f "publish=true"
+
+      - name: Check out the release pull request branch
+        if: ${{ steps.release.outputs.pr }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
+
+      - name: Set up Python
+        if: ${{ steps.release.outputs.pr }}
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
+
+      - name: Ensure a four-language release notes draft exists
+        if: ${{ steps.release.outputs.pr }}
+        shell: bash
+        env:
+          RELEASE_BRANCH: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
+        run: |
+          version="$(python -c 'import json; print(json.load(open(".release-please-manifest.json"))["."])')"
+          # Creates docs/releases/v<version>.md from the CHANGELOG section as
+          # a four-language draft; an existing file is never overwritten so
+          # human polish on the release branch is preserved.
+          python tools/generate_release_notes.py --version "$version"
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "Release branch already carries the release notes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/releases
+          git commit -m "chore: 補齊 v$version 四語發行說明初稿／补齐 v$version 四语发布说明初稿／Add the v$version four-language release-notes draft／v$version の四言語リリースノート草稿を補完"
+          git push origin "HEAD:$RELEASE_BRANCH"
