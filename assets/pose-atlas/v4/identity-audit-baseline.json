@@ -63,6 +63,7 @@
     "yaw-060-pitch+00": {
       "sha256": "8bc79ee3258796cdc6f69036de36a38227a7d3b0b83b065d32c49963f373d332",
       "waived_issue_codes": [
+        "adjacent_face_registration_jump",
         "forehead_outward_bulge",
         "mouth_green_cyan_pixels"
       ]

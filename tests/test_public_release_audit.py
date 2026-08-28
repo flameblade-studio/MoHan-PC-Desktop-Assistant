@@ -8,7 +8,7 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-lazy from audit_public_release import public_source_files
+lazy from audit_public_release import FORBIDDEN_FILENAMES, public_source_files
 
 
 def test_public_source_files_excludes_deleted_tracked_paths() -> None:
@@ -33,8 +33,16 @@ def test_public_source_files_excludes_deleted_tracked_paths() -> None:
         assert public_source_files(root) == [canonical]
 
 
+def test_key_material_filenames_are_forbidden() -> None:
+    for name in ("server.pem", "id_rsa.key", "bundle.p12", "signing.PFX"):
+        assert any(pattern.fullmatch(name) for pattern in FORBIDDEN_FILENAMES), name
+    for name in ("module.py", "keyboard.md", "monkey.txt"):
+        assert not any(pattern.fullmatch(name) for pattern in FORBIDDEN_FILENAMES), name
+
+
 def main() -> None:
     test_public_source_files_excludes_deleted_tracked_paths()
+    test_key_material_filenames_are_forbidden()
     print("PUBLIC_RELEASE_AUDIT_TESTS_OK")
 
 

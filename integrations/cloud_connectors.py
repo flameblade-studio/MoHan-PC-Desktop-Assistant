@@ -180,13 +180,26 @@ def _wait_for_callback(
     server: HTTPServer,
     ready: threading.Event,
     timeout_seconds: float,
+    abandoned: threading.Event | None = None,
 ) -> None:
     deadline = time.monotonic() + timeout_seconds
     try:
-        while not ready.is_set() and time.monotonic() < deadline:
-            server.handle_request()
+        while (
+            not ready.is_set()
+            and time.monotonic() < deadline
+            and (abandoned is None or not abandoned.is_set())
+        ):
+            try:
+                server.handle_request()
+            except (OSError, ValueError):
+                # abandon() closed the listener socket from another thread;
+                # leave the wait loop immediately instead of erroring out.
+                break
     finally:
-        server.server_close()
+        try:
+            server.server_close()
+        except OSError:
+            pass
 
 
 def _authorization_code(received: dict[str, str], expected_state: str) -> str:
@@ -216,8 +229,26 @@ class OAuthPKCEFlow:
         self.client_secret = client_secret.strip()
         self.scopes = scopes or list(provider.default_scopes)
         self.timeout_seconds = timeout_seconds
+        self._abandoned = threading.Event()
+        self._server: HTTPServer | None = None
         if not self.client_id:
             raise ValueError("OAuth Client ID 不可留空")
+
+    def abandon(self) -> None:
+        """Cancel the loopback wait so the worker thread can exit immediately.
+
+        Safe to call from any thread: it marks the flow abandoned and closes
+        the listener socket, which wakes ``handle_request`` at once instead of
+        letting application shutdown wait out the browser-authorization
+        timeout.
+        """
+        self._abandoned.set()
+        server = self._server
+        if server is not None:
+            try:
+                server.server_close()
+            except OSError:
+                pass
 
     def authorize(self) -> dict[str, Any]:
         verifier = secrets.token_urlsafe(64)
@@ -232,6 +263,14 @@ class OAuthPKCEFlow:
             _callback_handler(received, ready),
         )
         server.timeout = 0.5
+        self._server = server
+        if self._abandoned.is_set():
+            # abandon() may have raced construction; never start waiting.
+            try:
+                server.server_close()
+            except OSError:
+                pass
+            raise OAuthError("授權流程已取消")
         redirect_uri = f"http://127.0.0.1:{server.server_port}/oauth/callback"
         parameters = self._authorization_parameters(
             redirect_uri,
@@ -244,7 +283,17 @@ class OAuthPKCEFlow:
             + urlencode(parameters),
             new=2,
         )
-        _wait_for_callback(server, ready, self.timeout_seconds)
+        try:
+            _wait_for_callback(
+                server,
+                ready,
+                self.timeout_seconds,
+                self._abandoned,
+            )
+        finally:
+            self._server = None
+        if self._abandoned.is_set():
+            raise OAuthError("授權流程已取消")
         if not ready.is_set():
             raise OAuthError("等待瀏覽器授權逾時")
         code = _authorization_code(received, state)

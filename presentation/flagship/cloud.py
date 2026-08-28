@@ -203,6 +203,9 @@ class FlagshipCloudMixin:
             )
         )
         worker.signals.failed.connect(self._cloud_failed)
+        # Keep the worker reachable so close_services() can abandon its
+        # loopback wait at shutdown instead of blocking on ~QThreadPool.
+        worker.setAutoDelete(False)
         self._cloud_connecting = True
         self._oauth_worker = worker
         self.cloud_connect_button.setEnabled(False)
@@ -220,6 +223,7 @@ class FlagshipCloudMixin:
         token: dict[str, Any],
         scopes: tuple[str, ...] = (),
     ) -> None:
+        self._oauth_worker = None
         if self._closed:
             return
         self._finish_cloud_connect_attempt()
@@ -260,6 +264,7 @@ class FlagshipCloudMixin:
         self._register_cloud_tools()
         self.refresh_cloud_connections()
     def _cloud_failed(self, provider_id: str, error: str) -> None:
+        self._oauth_worker = None
         if self._closed:
             return
         self._finish_cloud_connect_attempt()

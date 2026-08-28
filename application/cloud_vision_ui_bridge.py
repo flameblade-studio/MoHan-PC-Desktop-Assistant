@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import hashlib
 lazy import json
+lazy import logging
 lazy import math
 lazy import threading
 lazy from collections.abc import Callable
@@ -45,6 +46,8 @@ lazy from infrastructure.openai_vision_preferences_store import (
 )
 
 MIN_ARGUMENT_PAIR_COUNT = 2
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, slots=True)
@@ -172,7 +175,18 @@ class _AnalyzeWorker(QRunnable):
         self.signals = _WorkerSignals()
 
     def run(self) -> None:
-        result = self._runtime.analyze(self._frame)
+        # ``CloudVisionRuntime.analyze`` reloads authorization and cancels the
+        # provider outside its own try block, so a half-closed runtime can
+        # raise here. An unhandled exception in QRunnable.run would only add
+        # interpreter noise and skip the busy bookkeeping; log it and report
+        # the analysis as unavailable instead.
+        try:
+            result: object = self._runtime.analyze(self._frame)
+        except Exception:
+            _LOGGER.exception(
+                "Cloud vision analysis failed outside the provider boundary."
+            )
+            result = None
         self.signals.done.emit(result, self._generation)
 
 

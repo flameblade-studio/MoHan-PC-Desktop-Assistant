@@ -23,6 +23,7 @@ TEXT_SUFFIXES = {
 FORBIDDEN_FILENAMES = (
     re.compile(r"^\.env$", re.IGNORECASE),
     re.compile(r".*\.(?:db|sqlite|sqlite3|dpapi|mohan-profile)$", re.IGNORECASE),
+    re.compile(r".*\.(?:pem|key|p12|pfx)$", re.IGNORECASE),
     re.compile(
         r"(?:client[_-]?secret|credentials|oauth|token|secret).*\.(?:json|txt)$",
         re.IGNORECASE,

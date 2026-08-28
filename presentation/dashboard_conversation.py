@@ -422,10 +422,41 @@ class DashboardConversationMixin:
                 ),
             )
         )
-        worker.signals.done.connect(self._ai_done)
-        worker.signals.failed.connect(self._ai_failed)
+        # Same guard pattern as presentation/flagship/planner.py: completion
+        # callbacks carry the generation active at submission and are dropped
+        # once the dashboard closes, so a late worker can never touch the
+        # closed database or deleted widgets.
+        generation = self._ai_generation
+        worker.signals.done.connect(
+            lambda text, request_generation=generation: (
+                self._ai_done_if_current(text, request_generation)
+            )
+        )
+        worker.signals.failed.connect(
+            lambda error, request_generation=generation: (
+                self._ai_failed_if_current(error, request_generation)
+            )
+        )
         self.thread_pool.start(worker)
         self._schedule_ai_wait_expressions(text)
+
+    def _ai_done_if_current(self, text: str, generation: int) -> None:
+        if self._closed or generation != self._ai_generation:
+            return
+        self._ai_done(text)
+
+    def _ai_failed_if_current(self, error: str, generation: int) -> None:
+        if self._closed or generation != self._ai_generation:
+            return
+        self._ai_failed(error)
+
+    def _abandon_ai_requests(self) -> None:
+        """Invalidate in-flight AI callbacks when the dashboard closes."""
+        self._closed = True
+        self._ai_generation += 1
+        self.ai_queue.clear()
+        self.ai_busy = False
+        self._finish_ai_wait_expression()
 
 
     def _schedule_ai_wait_expressions(self, text: str) -> None:

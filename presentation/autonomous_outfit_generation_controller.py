@@ -123,6 +123,13 @@ class AutonomousOutfitGenerationController(QObject):
         self._timer = QTimer(self)
         self._timer.setInterval(AUTONOMOUS_CHECK_INTERVAL_MS)
         self._timer.timeout.connect(self.evaluate_automatic)
+        # A controller-owned single-shot timer (instead of QTimer.singleShot)
+        # so stop() can cancel the initial delayed evaluation outright and no
+        # orphaned callback survives this controller's lifetime.
+        self._initial_timer = QTimer(self)
+        self._initial_timer.setSingleShot(True)
+        self._initial_timer.setInterval(INITIAL_AUTONOMOUS_DELAY_MS)
+        self._initial_timer.timeout.connect(self.evaluate_automatic)
 
     def start(self) -> None:
         if self._running:
@@ -130,7 +137,7 @@ class AutonomousOutfitGenerationController(QObject):
         self._running = True
         self._shutdown = False
         self._timer.start()
-        QTimer.singleShot(INITIAL_AUTONOMOUS_DELAY_MS, self.evaluate_automatic)
+        self._initial_timer.start()
 
     def stop(self) -> None:
         """Detach future UI updates; an in-flight HTTP call remains bounded by timeout.
@@ -142,13 +149,16 @@ class AutonomousOutfitGenerationController(QObject):
         self._running = False
         self._shutdown = True
         self._timer.stop()
+        self._initial_timer.stop()
+        self._active_worker = None
 
     def evaluate_automatic(self) -> None:
         """Generate unattended only when both explicit wardrobe switches allow it."""
 
-        # QTimer.singleShot cannot be cancelled.  The dashboard closes its DB
-        # before that delayed callback may run, so make lifecycle state the
-        # first boundary and never touch persistence after stop().
+        # Both owned timers stop with stop(), yet an already-queued timeout can
+        # still be delivered afterwards.  The dashboard closes its DB before
+        # that delayed callback may run, so make lifecycle state the first
+        # boundary and never touch persistence after stop().
         if not self._running:
             return
         if not bool(self._db.setting("autonomous_wardrobe_enabled", True)):

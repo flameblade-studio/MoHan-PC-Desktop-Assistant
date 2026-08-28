@@ -8,7 +8,9 @@ on:
     branches: ["main"]
     paths:
       - "requirements.txt"
+      - "requirements-runtime.txt"
       - "requirements-preview.txt"
+      - "requirements-preview-runtime.txt"
       - ".github/workflows/security-audit.yml"
   pull_request:
     branches: ["main"]
@@ -48,4 +50,6 @@ jobs:
       - name: Audit runtime requirements
         run: |
           python -m pip_audit -r requirements.txt --strict
+          python -m pip_audit -r requirements-runtime.txt --strict
           python -m pip_audit -r requirements-preview.txt --strict
+          python -m pip_audit -r requirements-preview-runtime.txt --strict

@@ -70,6 +70,27 @@ LAYER_NAMES = (
 NON_SKIN_LAYERS = frozenset(
     {"hair_back", "hair_left", "hair_right", "sleeve_left", "sleeve_right", "ornament"}
 )
+# Face semantic layers that are expected to actually carry pixels.  A fully
+# transparent iris or base is a silent packaging defect: the PNG exists, so
+# geometric checks pass, but the runtime face is missing that feature.
+FACE_SEMANTIC_LAYERS = frozenset(
+    {
+        "iris_left", "iris_right", "eyelid_left", "eyelid_right",
+        "eyeliner_left", "eyeliner_right", "brow_left", "brow_right",
+        "lip_upper", "lip_lower", "corner_left", "corner_right",
+        "blush_left", "blush_right", "oral_cavity", "teeth_tongue",
+        "base", "jaw",
+    }
+)
+# Speech-mouth contract: back views (|yaw| > 90) legitimately have no lips,
+# oral cavity, or teeth/tongue pixels.  teeth_tongue is additionally exempt at
+# every view (ruling 2026-08-27 below: the neutral set is all-empty).
+BACK_VIEW_EMPTY_MOUTH_LAYERS = frozenset(
+    {"lip_upper", "lip_lower", "oral_cavity", "teeth_tongue"}
+)
+# Near-profile views whose oral pixels were returned to the lip layers
+# (golden-batch ruling 2026-08-27): oral_cavity is licensed empty there.
+NEAR_PROFILE_MIN_ABS_YAW = 75
 HAIR_LAYERS = frozenset({"hair_back", "hair_left", "hair_right"})
 SLEEVE_LAYERS = frozenset({"sleeve_left", "sleeve_right"})
 YAW_PATTERN = re.compile(r"^yaw(?P<yaw>[+-]\d{3})-pitch[+-]\d{2}$")
@@ -101,6 +122,12 @@ class AuditReport:
     issue_count: int
     issues_by_code: dict[str, int]
     issues: tuple[AuditIssue, ...]
+    # Advisory findings never affect ``passed`` or the exit code.  The empty
+    # face-layer rule is currently advisory-only because the shipped v4
+    # layered assets violate it in a few places the owner has not ruled on.
+    advisory_count: int = 0
+    advisories_by_code: dict[str, int] | None = None
+    advisories: tuple[AuditIssue, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -208,6 +235,7 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
     """Audit layer semantics without modifying any input file."""
 
     issues: list[AuditIssue] = []
+    advisories: list[AuditIssue] = []
     images: dict[str, dict[str, np.ndarray]] = {}
     files_checked = 0
     teeth_nonempty = 0
@@ -216,7 +244,7 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
         raise FileNotFoundError(f"missing YuNet detector model: {detector_model}")
 
     for view_id in view_ids:
-        _yaw(view_id)
+        yaw = _yaw(view_id)
         view_images: dict[str, np.ndarray] = {}
         for layer in LAYER_NAMES:
             path = asset_root / f"{view_id}_{layer}.png"
@@ -238,6 +266,41 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
         teeth = view_images.get("teeth_tongue")
         if teeth is not None and np.any(_opaque(teeth)):
             teeth_nonempty += 1
+
+        # Empty transparent face-layer policy — BLOCKING (ruling 2026-08-28).
+        # A regression that writes an all-transparent iris/eyelid/lip layer
+        # must not ship.  Licensed-empty exemptions, each backed by an
+        # existing owner-ratified ruling:
+        #   1. teeth_tongue at every view (all-empty neutral set,
+        #      ruling 2026-08-27);
+        #   2. every face layer on back views (|yaw| > 90): the face is not
+        #      visible from behind, exactly the state of the accepted
+        #      shipped assets;
+        #   3. oral_cavity at |yaw| >= 75: the near-profile oral pixels were
+        #      formally returned to the lip layers (golden-batch ruling
+        #      2026-08-27);
+        #   4. paired *_left/*_right layers on any turned view (yaw != 0):
+        #      one side being occluded empty is natural asymmetry, mirroring
+        #      the asymmetry audit's own convention.
+        for layer in LAYER_NAMES:
+            if layer not in FACE_SEMANTIC_LAYERS or layer == "teeth_tongue":
+                continue
+            if abs(yaw) > FACE_VISIBLE_MAX_ABS_YAW:
+                continue
+            if layer == "oral_cavity" and abs(yaw) >= NEAR_PROFILE_MIN_ABS_YAW:
+                continue
+            if yaw != 0 and (
+                layer.endswith("_left") or layer.endswith("_right")
+            ):
+                continue
+            image = view_images.get(layer)
+            if image is not None and not np.any(_opaque(image)):
+                _issue(
+                    issues, "face_semantic_layer_fully_transparent",
+                    asset_root / f"{view_id}_{layer}.png", view_id, layer,
+                    "face semantic layer exists but contains no opaque pixels",
+                    yaw=yaw,
+                )
 
     for view_id in view_ids:
         view_images = images[view_id]
@@ -365,7 +428,11 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
     _ = teeth_nonempty
 
     issues.sort(key=lambda item: (item.path, item.code, item.message))
+    advisories.sort(key=lambda item: (item.path, item.code, item.message))
     counts = dict(sorted(Counter(issue.code for issue in issues).items()))
+    advisory_counts = dict(
+        sorted(Counter(advisory.code for advisory in advisories).items())
+    )
     return AuditReport(
         schema=AUDIT_SCHEMA,
         exit_code_contract=EXIT_CODE_CONTRACT,
@@ -377,6 +444,9 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
         issue_count=len(issues),
         issues_by_code=counts,
         issues=tuple(issues),
+        advisory_count=len(advisories),
+        advisories_by_code=advisory_counts,
+        advisories=tuple(advisories),
     )
 
 
@@ -411,10 +481,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     status = "PASS" if report.passed else "FAIL"
     print(
         f"LAYERED_FULL_BODY_SEMANTICS_{status}: "
-        f"{report.files_checked} files, {report.issue_count} issues"
+        f"{report.files_checked} files, {report.issue_count} issues, "
+        f"{report.advisory_count} advisories"
     )
     for issue in report.issues:
         print(f"{issue.path}: [{issue.code}] {issue.message}")
+    for advisory in report.advisories:
+        print(f"ADVISORY {advisory.path}: [{advisory.code}] {advisory.message}")
     return preflight_exit_code(report)
 
 

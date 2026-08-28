@@ -352,13 +352,18 @@ def audit_pose_atlas_identity(  # noqa: PLR0912, PLR0914, PLR0915
         right_nose = (right.landmarks[2][0] - right.box[0]) / right.box[2]
         nose_delta = abs(left_nose - right_nose)
         if center_delta > ADJACENT_FACE_CENTER_DELTA_MAX or nose_delta > ADJACENT_NOSE_POSITION_DELTA_MAX:
-            path = atlas_root / f"{right_id}.png"
-            _issue(
-                issues, "adjacent_face_registration_jump", path, right_id,
-                f"face registration jumps between {left_id} and {right_id}",
-                center_delta=round(center_delta, 6),
-                nose_position_delta=round(nose_delta, 6),
-            )
+            # The jump belongs to the pair, so record one issue per view.
+            # A baseline waiver then only holds while BOTH owner-accepted
+            # files keep their exact pinned bytes: regenerating either side
+            # of the pair re-exposes the registration rule in full.
+            for view_id in (left_id, right_id):
+                _issue(
+                    issues, "adjacent_face_registration_jump",
+                    atlas_root / f"{view_id}.png", view_id,
+                    f"face registration jumps between {left_id} and {right_id}",
+                    center_delta=round(center_delta, 6),
+                    nose_position_delta=round(nose_delta, 6),
+                )
 
     blocking: list[IdentityIssue] = []
     waived: list[IdentityIssue] = []

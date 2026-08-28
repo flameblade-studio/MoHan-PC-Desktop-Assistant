@@ -1,5 +1,9 @@
+lazy import json
+lazy import tempfile
 lazy import unittest
 lazy from pathlib import Path
+
+lazy from PIL import Image
 
 lazy from tools.build_full_body_golden_batch import build_manifest, expected_views
 
@@ -11,6 +15,36 @@ class FullBodyGoldenBatchTests(unittest.TestCase):
         self.assertEqual("yaw-180-pitch+00", views[0])
         self.assertEqual("yaw+000-pitch+00", views[12])
         self.assertEqual("yaw+165-pitch+00", views[-1])
+
+    def test_registry_entry_without_authority_sha256_is_blocked(self):
+        with tempfile.TemporaryDirectory(prefix="mohan-golden-batch-") as raw:
+            repo = Path(raw)
+            Image.new("RGBA", (1024, 1536), (0, 0, 0, 0)).save(repo / "authority.png")
+            registry = repo / "registry.json"
+            registry.write_text(
+                json.dumps({
+                    "approved_views": {
+                        "yaw+000-pitch+00": {
+                            "status": "approved",
+                            "authority_path": "authority.png",
+                            "layer_dir": "layers",
+                            "audit_path": "audit.json",
+                        }
+                    }
+                }),
+                encoding="utf-8",
+            )
+            manifest = build_manifest(repo, registry)
+        view = next(
+            record for record in manifest["views"]
+            if record["view_id"] == "yaw+000-pitch+00"
+        )
+        # Fail closed: an approved master without a pinned SHA-256 cannot
+        # prove it is the owner-approved bytes, so it must block instead of
+        # silently skipping the hash comparison.
+        self.assertEqual("blocked_invalid_approved_master", view["status"])
+        self.assertIn("authority_sha256_missing", view["failures"])
+        self.assertFalse(manifest["promotable"])
 
     def test_real_registry_is_fail_closed_partial(self):
         repo = Path(__file__).resolve().parents[1]
