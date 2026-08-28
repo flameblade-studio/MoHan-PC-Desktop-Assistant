@@ -191,7 +191,8 @@ def test_quality_gate_requires_samples_low_error_and_jit() -> None:
             "sample_read_error_percent": 1.0,
             "missed_samples_percent": 0.5,
         },
-        {"exit_code": 0, "jit_available": True, "jit_enabled": True},
+        # Shipped policy is JIT-off (2026-08-29); evidence must match it.
+        {"exit_code": 0, "jit_available": True, "jit_enabled": False},
     )
     assert passing == ()
 
@@ -202,7 +203,7 @@ def test_quality_gate_requires_samples_low_error_and_jit() -> None:
             "sample_read_error_percent": 7.0,
             "missed_samples_percent": 8.0,
         },
-        {"exit_code": 1, "jit_available": False, "jit_enabled": False},
+        {"exit_code": 1, "jit_available": False, "jit_enabled": True},
     )
     assert len(failing) == EXPECTED_FAILURE_COUNT
     assert any("below minimum" in item for item in failing)

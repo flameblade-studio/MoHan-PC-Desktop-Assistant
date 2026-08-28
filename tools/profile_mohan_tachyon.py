@@ -959,8 +959,15 @@ def _quality_violations(
         )
     if runtime.get("jit_available") is not True:
         violations.append("target runtime did not expose the CPython JIT")
-    if runtime.get("jit_enabled") is not True:
-        violations.append("target runtime did not enable the CPython JIT")
+    # Evidence must match the shipped JIT policy (off by default since the
+    # 2026-08-29 0xC0000409 crash; MOHAN_ENABLE_JIT=1 profiles the experiment).
+    expect_jit = os.environ.get("MOHAN_ENABLE_JIT") == "1"
+    if runtime.get("jit_enabled") is not expect_jit:
+        violations.append(
+            "target runtime JIT state "
+            f"{runtime.get('jit_enabled')!r} does not match the "
+            f"shipped policy (expected {expect_jit})"
+        )
     return tuple(violations)
 
 
