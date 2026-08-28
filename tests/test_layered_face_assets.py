@@ -196,9 +196,11 @@ def test_renderer_applies_active_outfit_to_the_matching_half_body_pose() -> None
 
     class Overlay:
         calls: list[str] = []
+        frame_sizes: list[tuple[int, int]] = []
 
         def apply(self, frame: QPixmap, view_id: str) -> QPixmap:
             self.calls.append(view_id)
+            self.frame_sizes.append((frame.width(), frame.height()))
             return frame
 
     overlay = Overlay()
@@ -212,8 +214,22 @@ def test_renderer_applies_active_outfit_to_the_matching_half_body_pose() -> None
     )
     base = QPixmap(465, 465)
     base.fill(Qt.transparent)
-    assert not renderer.render(base, frame, None).isNull()
+    out = renderer.render(base, frame, None)
+    assert not out.isNull()
+    assert out.size() == base.size()
     assert overlay.calls == ["front-crossed"]
+    # Ruling 2026-08-27: the overlay must receive the FULL authored canvas,
+    # before any scale-down.  Outfit assets and their anchor bounds live in
+    # authority-canvas coordinates; applying after the scale to the caller's
+    # 465px canvas made every anchor check fail and installed outfits never
+    # appeared on the half-body poses.
+    composed = renderer.render_pose(
+        renderer._manifest_or_load().pose(FacePose.FRONT),
+        frame,
+        animate_mouth=False,
+    )
+    assert overlay.frame_sizes[0] == (composed.width(), composed.height())
+    assert overlay.frame_sizes[0] != (base.width(), base.height())
 
 
 def test_decoded_layer_cache_stays_bounded_across_pose_changes() -> None:

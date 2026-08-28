@@ -21,6 +21,13 @@ lazy from character_framing_app_bridge import (
     FramingBridgeDisposition,
     FramingBridgeResult,
 )
+lazy from face_rig import (
+    ExpressionShape as FaceExpressionShape,
+    FaceMotionFrame,
+    FacePose,
+    MouthShape as FaceMouthShape,
+    Viseme,
+)
 lazy from framing_context_policy import EmotionValence, FocusState, FramingPolicyContext
 lazy from framing_orchestrator import FramingAuditEntry
 lazy from framing_preferences import FramingPreferences
@@ -230,6 +237,43 @@ def assert_half_framing_skips_full_body_composition() -> None:
     assert full_body.calls == 0
 
 
+RENDERS_AFTER_BLINK_CHANGE = 2
+
+
+def face_motion(blink: float) -> FaceMotionFrame:
+    return FaceMotionFrame(
+        FacePose.FRONT,
+        "speaking",
+        Viseme.A,
+        FaceMouthShape(aperture=0.5),
+        FaceExpressionShape(blink=blink),
+    )
+
+
+def assert_continuous_face_motion_is_never_deduplicated() -> None:
+    """Ruling 2026-08-27: frames differing only in continuous controls render.
+
+    The discrete-only input signature deduplicated blink/breath/gaze frames
+    between discrete events, freezing the full-body animation — the exact
+    behaviour the bridge's face_motion_signature contract forbids.
+    """
+    engine, _framing, full_body = runtime()
+    operation = engine.begin_operation()
+    base = request(operation)
+    first = replace(base, face_motion=face_motion(blink=0.0))
+    assert engine.dispatch(first).should_publish
+    # A blink-only change must reach the renderer (the fake port renders
+    # identical bytes for it, so output-level dedupe may still withhold the
+    # publish — that part is correct economy; the input gate must not stop
+    # the render itself).
+    blink_only = replace(base, face_motion=face_motion(blink=1.0))
+    engine.dispatch(blink_only)
+    assert full_body.calls == RENDERS_AFTER_BLINK_CHANGE
+    duplicate = engine.dispatch(blink_only)
+    assert duplicate.disposition is AdaptiveCharacterDisposition.DEDUPED
+    assert full_body.calls == RENDERS_AFTER_BLINK_CHANGE
+
+
 def assert_atomic_publish_uses_both_ports_once() -> None:
     engine, framing, full_body = runtime()
     operation = engine.begin_operation()
@@ -355,6 +399,7 @@ def assert_speech_hold_and_settle_do_not_jump_body_height() -> None:
 
 def run() -> None:
     assert_atomic_publish_uses_both_ports_once()
+    assert_continuous_face_motion_is_never_deduplicated()
     assert_half_framing_skips_full_body_composition()
     assert_generation_stale_cancel_and_dedupe_are_barriers()
     assert_disabled_or_missing_assets_is_complete_legacy_bypass()

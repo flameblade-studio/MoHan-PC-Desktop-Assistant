@@ -12,7 +12,11 @@ lazy from infrastructure.layered_full_body_assets import (
 )
 lazy from infrastructure.mouth_geometry import inward_lerped_u_layer
 
-EXPECTED_YAW000_CENTER_X = 510.898681640625
+# Ruling 2026-08-28: recalibrated after the face-detail layers were rebuilt
+# from the half-body source via the five-point landmark affine.  The old
+# contract value (510.898681640625) was measured from the offset-defect lip
+# layers (mirrored on side views, ~30px low on the front).
+EXPECTED_YAW000_CENTER_X = 516.8029
 OPAQUE_ALPHA = 255
 _APP = QApplication.instance() or QApplication([])
 
