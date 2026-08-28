@@ -988,6 +988,14 @@ class DashboardShellMixin:
     def moveEvent(self, event) -> None:
         super().moveEvent(event)
         # Windows 移動視窗後可能不會觸發 Qt 的 mousePressEvent，再補一次置頂。
+        # 但最大化、還原、最小化同樣會觸發 moveEvent：在狀態轉換中 raise 會
+        # 與原生視框更新賽跑，曾把視窗卡成「最大尺寸、標題列按鈕消失」的
+        # 假全螢幕死鎖（v4.5.1 實機回報，2026-08-29）。只有一般狀態的拖動
+        # 才補置頂。
+        if self.windowState() & (
+            Qt.WindowMaximized | Qt.WindowMinimized | Qt.WindowFullScreen
+        ):
+            return
         self.front_raise_timer.start(0)
 
     def refresh_all(self) -> None:

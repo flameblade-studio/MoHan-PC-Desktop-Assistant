@@ -241,3 +241,16 @@ def test_every_owned_qtimer_has_an_explicit_stop_owner() -> None:
     )
     assert "stop" in _called_attributes(_method(platform_owner, "save_platform"))
     assert "stop" in _called_attributes(_method(platform_owner, "save_platforms"))
+
+
+def test_move_event_never_raises_during_state_transitions() -> None:
+    # v4.5.1 regression (2026-08-29): moveEvent fires for maximize/restore/
+    # minimize transitions too, and re-raising there races the native frame
+    # update — the window got stuck at maximized size with its caption
+    # buttons gone.  The handler must consult windowState() before arming
+    # the front-raise timer.
+    move_event = _method(
+        _class("presentation/dashboard_shell.py", "DashboardShellMixin"),
+        "moveEvent",
+    )
+    assert "windowState" in _called_attributes(move_event)
