@@ -143,7 +143,7 @@
 | 安全與隱私 | 風險控制 | 權限控管、稽核與敏感資料保護 |
 | 文件與在地化 | 可及性 | 降低新使用者與國際協作者的參與門檻 |
 
-墨寒依然免費並採 MIT 授權；支持不會換取特權，也不影響任何人使用或貢獻。
+墨寒的完整功能永遠免費、原始碼採 MIT 授權；支持不會換取任何功能上的特權，也不影響任何人使用或貢獻。贊助者可獲得服裝與佈景主題等純裝飾性 DLC 作為謝禮。
 
 <table>
   <tr>
@@ -422,7 +422,7 @@ python tests\run_all.py
 ### 貢獻、授權與作者
 
 - 軟體作者：**CHOU MING HUA**。
-- 原始碼與本儲存庫自有角色素材採 [MIT License](LICENSE)。
+- 原始碼採 [MIT License](LICENSE)；「墨寒」角色素材、人設與名稱形象保留一切權利，不適用 MIT。
 - 素材授權見 [ASSETS-LICENSE](ASSETS-LICENSE.md)。
 - 第三方套件及服務聲明見 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 - 問題回報使用 GitHub Issues；安全問題依 [SECURITY](SECURITY.md) 私下通報。
@@ -577,7 +577,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 | 安全与隐私 | 风险控制 | 权限控制、审计与敏感数据保护 |
 | 文档与本地化 | 可访问性 | 降低新用户与国际协作者的参与门槛 |
 
-墨寒依然免费并采用 MIT 许可证；支持不会换取特权，也不影响任何人使用或贡献。
+墨寒的完整功能永远免费、源代码采用 MIT 许可证；支持不会换取任何功能上的特权，也不影响任何人使用或贡献。赞助者可获得服装与布景主题等纯装饰性 DLC 作为谢礼。
 
 <table>
   <tr>
@@ -856,7 +856,7 @@ python tests\run_all.py
 ### 贡献、许可证与作者
 
 - 软件作者：**CHOU MING HUA**。
-- 源代码与本仓库自有角色素材采用 [MIT License](LICENSE)。
+- 源代码采用 [MIT License](LICENSE)；「墨寒」角色素材、人设与名称形象保留一切权利，不适用 MIT。
 - 素材许可证见 [ASSETS-LICENSE](ASSETS-LICENSE.md)。
 - 第三方软件包及服务声明见 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 - 问题报告使用 GitHub Issues；安全问题依 [SECURITY](SECURITY.md) 私下报告。
@@ -1011,7 +1011,7 @@ If you enjoy MoHan or value continued work on character interaction, natural spe
 | Safety and privacy | Risk control | Permission gates, audits, and sensitive-data protection |
 | Documentation and localization | Accessibility | Lower barriers for new users and international contributors |
 
-MoHan remains free and MIT-licensed; support never buys privileges or changes anyone's right to use or contribute.
+MoHan's full functionality remains free forever and the source code is MIT-licensed; support never buys functional privileges or changes anyone's right to use or contribute. Sponsors receive purely cosmetic DLC — outfits and dashboard themes — as a thank-you.
 
 <table>
   <tr>
@@ -1290,7 +1290,7 @@ The portable file deliberately excludes OpenAI keys, OAuth/Home Assistant tokens
 ### Contributing, license, and author
 
 - Author: **CHOU MING HUA**.
-- Source code and repository-owned character assets use the [MIT License](LICENSE).
+- Source code uses the [MIT License](LICENSE); the MoHan character artwork, persona, and name/likeness are All Rights Reserved and not covered by MIT.
 - Asset terms: [ASSETS-LICENSE](ASSETS-LICENSE.md).
 - Third-party packages and services: [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md).
 - Report ordinary problems through GitHub Issues and security concerns privately under [SECURITY](SECURITY.md).
@@ -1445,7 +1445,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 | 安全性とプライバシー | リスク制御 | 権限ゲート、監査、機密データ保護 |
 | 文書とローカライズ | アクセシビリティ | 新規利用者と国際的な協力者の参加障壁を下げる |
 
-墨寒は今後も無料かつ MIT ライセンスです。支援によって特権を得たり、誰かの利用や貢献が制限されたりすることはありません。
+墨寒の全機能は今後も無料で、ソースコードは MIT ライセンスです。支援によって機能上の特権を得たり、誰かの利用や貢献が制限されたりすることはありません。スポンサーには謝礼として衣装やダッシュボードテーマなど純装飾の DLC をお届けします。
 
 <table>
   <tr>
@@ -1724,7 +1724,7 @@ python tests\run_all.py
 ### 開発参加、ライセンス、作者
 
 - 作者：**CHOU MING HUA**。
-- ソースコードと本リポジトリ所有の人物素材は [MIT License](LICENSE) です。
+- ソースコードは [MIT License](LICENSE) です。「墨寒」のキャラクター素材、人物設定、名称・肖像はすべての権利を留保し、MIT の適用外です。
 - 素材条件：[ASSETS-LICENSE](ASSETS-LICENSE.md)。
 - 第三者パッケージとサービス：[THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 - 通常の問題は GitHub Issues へ報告し、安全上の問題は [SECURITY](SECURITY.md) に従い非公開で報告します。
