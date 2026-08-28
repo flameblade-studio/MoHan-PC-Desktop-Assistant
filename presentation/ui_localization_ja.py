@@ -529,6 +529,19 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     ),
     "api_status_offline": "OpenAI API：未設定、オフライン人格を使用",
     "restart_language_note": "画面言語は墨寒の再起動後に完全適用されます。",
+    "about_heading": "<b>墨寒について</b>",
+    "about_body": (
+        "墨寒デスクトップアシスタント v{version}、Copyright © 2026"
+        " CHOU MING HUA および MoHan Desktop Assistant コントリビューター、"
+        "MIT License で公開。<br>本ソフトウェアは Qt for Python（PySide6、"
+        "GNU LGPL-3.0 ライセンス）を動的リンクで使用しています。Qt"
+        " ライブラリはインストールフォルダーの _internal に独立ファイルとして"
+        "同梱され、確認や差し替えが可能です。<br>第三者ライセンスの詳細は"
+        "インストールフォルダーの THIRD_PARTY_NOTICES.md と"
+        " third_party_licenses フォルダーを参照してください。Qt のソース"
+        'コードは <a href="https://download.qt.io/official_releases/'
+        'QtForPython/">Qt 公式ダウンロードアーカイブ</a>から取得できます。'
+    ),
     "reminder_work": "仕事開始",
     "reminder_lunch": "昼食",
     "reminder_dinner": "夕食",

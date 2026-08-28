@@ -680,6 +680,19 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "restart_language_note": (
         "The interface language will be fully applied after restarting MoHan."
     ),
+    "about_heading": "<b>About MoHan</b>",
+    "about_body": (
+        "MoHan Desktop Assistant v{version}, Copyright © 2026 CHOU MING HUA"
+        " and MoHan Desktop Assistant contributors, released under the"
+        " MIT License.<br>This software dynamically links Qt for Python"
+        " (PySide6, licensed under the GNU LGPL-3.0); the Qt libraries are"
+        " packaged as separate files in the _internal folder of the install"
+        " directory, and you may inspect or replace them.<br>Full third-party"
+        " license notices are in THIRD_PARTY_NOTICES.md and the"
+        " third_party_licenses folder of the install directory; Qt source"
+        ' code is available from the <a href="https://download.qt.io/'
+        'official_releases/QtForPython/">official Qt download archive</a>.'
+    ),
     "reminder_work": "Start work",
     "reminder_lunch": "Lunch",
     "reminder_dinner": "Dinner",

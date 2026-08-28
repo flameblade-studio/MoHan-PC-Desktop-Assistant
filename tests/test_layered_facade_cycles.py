@@ -54,7 +54,7 @@ LAYER_MODULE_LINE_BASELINE = {
     "presentation.companion_speech_runtime": 1_179,
     "presentation.companion_visual_dynamics": 969,
     "presentation.dashboard_conversation": 915,
-    "presentation.dashboard_settings": 888,
+    "presentation.dashboard_settings": 912,
     "presentation.dashboard_shell": 1_191,
     "presentation.dashboard_today_memory": 822,
     "presentation.dashboard_voice": 1_085,
