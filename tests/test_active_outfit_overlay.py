@@ -165,6 +165,26 @@ def test_incompatible_runtime_range_is_rejected() -> None:
     assert not ActiveOutfitOverlay._compatible("any")
 
 
+def test_dev_app_version_tolerates_range_comparison(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A non-semver local build must not silently disable every outfit.
+
+    ``int()`` used to run before any guard, so a dev version raised ValueError
+    into ``apply()``'s broad handler and every layer vanished without a trace.
+    A malformed pack range still fails closed; only our own dev version is
+    tolerated.
+    """
+
+    monkeypatch.setattr(adapter_module, "APP_VERSION", "4.6.dev0")
+    assert ActiveOutfitOverlay._compatible(">=4.0.0,<5.0.0")
+    assert not ActiveOutfitOverlay._compatible("any")
+    monkeypatch.setattr(adapter_module, "APP_VERSION", "4.6")
+    assert ActiveOutfitOverlay._compatible(">=99.0.0,<100.0.0")
+    monkeypatch.setattr(adapter_module, "APP_VERSION", "5.0.0-rc.1")
+    assert ActiveOutfitOverlay._compatible(">=4.0.0,<5.0.0")
+
+
 def test_missing_optional_category_in_active_state_is_transparent_builtin(
     tmp_path: Path,
 ) -> None:

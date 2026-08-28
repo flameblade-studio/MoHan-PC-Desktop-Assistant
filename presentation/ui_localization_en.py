@@ -88,6 +88,13 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_generation_cooldown": "Automatic generation is cooling down after a failure; use Generate now to retry manually.",
     "wardrobe_generation_quarantined": "The new outfit failed audit and was quarantined without being applied.",
     "wardrobe_generation_failed": "Outfit generation failed; no assets were installed.",
+    "wardrobe_generation_rate_limited": "The image service is busy right now; MoHan retried safely and can resume from the saved progress later.",
+    "wardrobe_generation_auth_failed": "OpenAI API key authentication failed; save the key again on the Settings tab.",
+    "wardrobe_generation_access_denied": "The current OpenAI project has no GPT Image 2 access yet or has not completed organization verification.",
+    "wardrobe_generation_moderation_blocked": "This image request failed the provider's content check; nothing was added to the wardrobe.",
+    "wardrobe_generation_invalid_request": "The image service rejected the generation request; the error was kept for repair and no incomplete assets were installed.",
+    "wardrobe_generation_network_unavailable": "The image service cannot be reached right now; no incomplete assets were installed.",
+    "wardrobe_generation_provider_unavailable": "The image service is temporarily unavailable; no incomplete assets were installed.",
     "wardrobe_automatic_selection_disabled": "Autonomous outfit selection is currently disabled.",
     "wardrobe_automatic_selection_failed": "Autonomous selection failed; the current outfit was preserved.",
     "wardrobe_automatic_outfit_selected": "MoHan changed outfits autonomously for the current context.",
@@ -120,6 +127,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_switch_before_remove": "Switch packages before removing the active one",
     "wardrobe_missing_package_fallback": "Package missing; kept the current look",
     "theme_preview": "Theme preview",
+    "theme_section_title": "<b>Dashboard theme</b>",
     "theme_restore": "Restore theme",
     "theme_source_official": "Flameblade official",
     "theme_source_user": "User-created",
@@ -413,6 +421,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "answering_status": "Answering…",
     "api_connection_failed": "OpenAI API: connection failed ({error})",
     "voice_ready_short": "Ready",
+    "voice_muted_short": "Muted",
     "sleep_mode_status": (
         "Sleep mode is active. MoHan will remain quiet; reminders and urgent alerts still follow their rules."
     ),
@@ -661,7 +670,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "secret_auto_save_hint": (
         "Press Enter or leave the field to store the key securely and automatically."
     ),
-    "api_status_saved": "OpenAI API: Key encrypted by Windows",
+    "api_status_saved": "OpenAI API: Key stored securely by the operating system",
     "api_status_environment": "OpenAI API: Key supplied by an environment variable",
     "api_status_secret_unavailable": (
         "OpenAI API: {platform} secure secret storage has not completed "

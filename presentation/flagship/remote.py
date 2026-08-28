@@ -89,54 +89,9 @@ class FlagshipRemoteMixin:
             bool(self.db.setting("face_identity_enabled", False))
         )
         self.face_identity.setEnabled(self.camera_enabled.isChecked())
-        self.proactive_enabled = QCheckBox(
-            self._t("允許墨寒主動寒暄與關心")
-        )
-        self.proactive_enabled.setChecked(
-            bool(self.db.setting("proactive_interaction_enabled", True))
-        )
-        self.proactive_mode = QComboBox()
-        for label, value in (
-            (self._t("安靜（不主動寒暄）"), "quiet"),
-            (self._t("適度（推薦）"), "balanced"),
-            (self._t("積極（較常主動關心）"), "active"),
-        ):
-            self.proactive_mode.addItem(label, value)
-        mode_index = self.proactive_mode.findData(
-            str(self.db.setting("proactive_interaction_mode", "balanced"))
-        )
-        self.proactive_mode.setCurrentIndex(max(0, mode_index))
-        self.minimum_away_minutes = QSpinBox()
-        self.minimum_away_minutes.setRange(1, 30)
-        self.minimum_away_minutes.setValue(
-            max(
-                1,
-                round(
-                    float(
-                        self.db.setting(
-                            "multisensory_welcome_minimum_seconds", 60
-                        )
-                    )
-                    / 60
-                ),
-            )
-        )
-        self.conversation_silence_minutes = QSpinBox()
-        self.conversation_silence_minutes.setRange(10, 240)
-        self.conversation_silence_minutes.setValue(
-            max(
-                10,
-                round(
-                    float(
-                        self.db.setting(
-                            "multisensory_conversation_silence_seconds",
-                            45 * 60,
-                        )
-                    )
-                    / 60
-                ),
-            )
-        )
+        # 裁決 2026-08-28：主動寒暄模式與離座／沉默門檻控件改為「陪伴與關心」
+        # 分頁的可見控件（FlagshipCompanionMixin）。它們過去在此建構卻從未加入
+        # layout，導致保存時以建構當下的舊值覆寫使用者設定。
         self.face_profile_list = QListWidget()
         self.face_profile_list.setMaximumHeight(100)
         self._refresh_face_profiles()
@@ -203,6 +158,14 @@ class FlagshipRemoteMixin:
         )
         camera_note.setWordWrap(True)
         form.addRow(camera_note)
+        camera_consent_note = QLabel(
+            self._t(
+                "「啟動／套用」只會啟動遠端服務；攝影機與臉部辨識須按"
+                "「套用靈視設定」並完成同意後才會生效。"
+            )
+        )
+        camera_consent_note.setWordWrap(True)
+        form.addRow(camera_consent_note)
         form.addRow("", controls)
         form.addRow(self._t("服務狀態"), self.remote_status)
         form.addRow(self._t("已配對裝置"), self.device_list)
@@ -264,8 +227,10 @@ class FlagshipRemoteMixin:
             )
             return
         self.db.set_setting("remote_port", self.remote_port.value())
-        self.db.set_setting("camera_presence_enabled", self.camera_enabled.isChecked())
-        self.db.set_setting("face_identity_enabled", self.face_identity.isChecked())
+        # 隱私裁決：啟動遠端服務不得順手持久化攝影機／臉部辨識開關。
+        # 這兩個設定只能經由「套用靈視設定」（apply_camera_settings）的
+        # 政策檢查＋明確同意對話框寫入；勾選框在此僅顯示意向，未套用前
+        # 不生效。
         self.remote_status.setText(
             self._t(
                 "已啟動：http://{host}:{port}\n"

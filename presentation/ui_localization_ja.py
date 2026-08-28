@@ -283,6 +283,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "answering_status": "回答中…",
     "api_connection_failed": "OpenAI API：接続失敗（{error}）",
     "voice_ready_short": "準備完了",
+    "voice_muted_short": "ミュート中",
     "sleep_mode_status": (
         "休眠モードを開始しました。墨寒は静かに待機し、リマインダーと緊急通知は規則どおり処理します。"
     ),
@@ -521,7 +522,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "secret_auto_save_hint": (
         "Enter キーを押すかフォーカスを移すと、自動的に安全に保存されます。"
     ),
-    "api_status_saved": "OpenAI API：キーは Windows で暗号化済み",
+    "api_status_saved": "OpenAI API：キーは OS により安全に保管済み",
     "api_status_environment": "OpenAI API：環境変数からキーを使用中",
     "api_status_secret_unavailable": (
         "OpenAI API：{platform} の安全なキー保存は実機検証が完了していません"

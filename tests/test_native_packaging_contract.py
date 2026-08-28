@@ -253,11 +253,15 @@ def test_governance_does_not_claim_unimplemented_simd_or_zero_copy() -> None:
 
 
 def test_four_language_docs_state_the_precise_rgba_contract() -> None:
+    # Audit ruling (2026-08-27): docs/releases/v4.0.0-draft.md is a frozen
+    # historical artifact of the shipped v4.0.0 release, no longer a living
+    # document.  Requiring it to track the current RGBA contract wording was
+    # a fossil assertion, so it was removed from this list; the living docs
+    # below still carry the full four-language contract.
     for relative in (
         "README.md",
         "THIRD_PARTY_NOTICES.md",
         "native/mohan_accel/README.md",
-        "docs/releases/v4.0.0-draft.md",
     ):
         content = read(relative)
         assert content.count("Rayon 1.12.0") >= LANGUAGE_DOC_COUNT, relative

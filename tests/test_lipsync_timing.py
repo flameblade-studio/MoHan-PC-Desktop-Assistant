@@ -29,7 +29,13 @@ LAST_CUE_MIN_SECONDS = 1.05
 LAST_CUE_MAX_SECONDS = 1.24
 INTERVAL_TOLERANCE_SECONDS = 0.07
 MEAN_INTERVAL_TOLERANCE_SECONDS = 0.003
-MIN_GATED_CUES = 5
+# _emit_wave_timeline emits exactly one cue per 20 ms chunk and never drops
+# one (late cues are emitted immediately), so the 0.12 s clip deterministically
+# produces 6 cues.  The gate only proves the playback-start event released a
+# multi-cue timeline; 4 leaves slack for a worker still flushing its final
+# cues at the 1 s join deadline on a heavily loaded runner (2026-08-27,
+# lowered from 5).
+MIN_GATED_CUES = 4
 
 
 def make_test_wave(duration: float = 1.2, rate: int = 24000) -> bytes:

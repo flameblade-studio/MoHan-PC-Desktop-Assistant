@@ -7,6 +7,9 @@ lazy from datetime import datetime, timedelta
 lazy from email.message import EmailMessage
 lazy from typing import Any
 
+lazy from collections.abc import Callable
+
+lazy from PySide6.QtCore import QObject, QRunnable, Signal
 lazy from PySide6.QtWidgets import (
     QComboBox,
     QHBoxLayout,
@@ -36,6 +39,45 @@ lazy from presentation.flagship.cloud_health import CloudHealthWorker
 lazy from presentation.flagship.oauth import OAuthWorker
 
 __all__ = ('FlagshipCloudMixin',)
+
+
+class _CloudTestSignals(QObject):
+    done = Signal(str, object)
+    failed = Signal(str, str)
+
+
+class _CloudTokenHealthWorker(QRunnable):
+    """Resolve (and possibly refresh) the OAuth token off the UI thread.
+
+    ``_cloud_token`` may perform a synchronous network refresh; running it on
+    the UI thread froze the dashboard.  The token resolution therefore happens
+    inside this worker before the regular health probes run.
+    """
+
+    def __init__(
+        self,
+        provider_id: str,
+        resolve_token: Callable[[str], str],
+        language: str,
+    ) -> None:
+        super().__init__()
+        self.provider_id = provider_id
+        self._resolve_token = resolve_token
+        self._language = language
+        self.signals = _CloudTestSignals()
+
+    def run(self) -> None:
+        try:
+            token = self._resolve_token(self.provider_id)
+        except Exception as exc:
+            self.signals.failed.emit(
+                self.provider_id,
+                safe_error_message(self._language, exc),
+            )
+            return
+        probe = CloudHealthWorker(self.provider_id, token, self._language)
+        probe.signals.done.connect(self.signals.done)
+        probe.run()
 
 
 class FlagshipCloudMixin:
@@ -129,6 +171,9 @@ class FlagshipCloudMixin:
                 )
             )
             return
+        # 連線期間擋住連點：同時只允許一個 OAuth 流程進行。
+        if getattr(self, "_cloud_connecting", False):
+            return
         provider_id = str(self.cloud_provider.currentData())
         client_id = self.cloud_client_id.text().strip()
         if not client_id:
@@ -150,16 +195,34 @@ class FlagshipCloudMixin:
             self.cloud_client_secret.text().strip(),
             scopes,
         )
-        worker.signals.done.connect(self._cloud_connected)
+        # 完成回呼必須使用發起當下的 scopes 快照；瀏覽器授權期間使用者
+        # 可能已切換供應商，直接讀 UI 會把 A 供應商的 scopes 寫進 B。
+        worker.signals.done.connect(
+            lambda done_provider, token, snapshot=tuple(scopes): (
+                self._cloud_connected(done_provider, token, snapshot)
+            )
+        )
         worker.signals.failed.connect(self._cloud_failed)
+        self._cloud_connecting = True
+        self._oauth_worker = worker
+        self.cloud_connect_button.setEnabled(False)
         self.thread_pool.start(worker)
+    def _finish_cloud_connect_attempt(self) -> None:
+        self._cloud_connecting = False
+        self._oauth_worker = None
+        if hasattr(self, "cloud_connect_button"):
+            self.cloud_connect_button.setEnabled(
+                self.platform_services.capabilities.secure_secret_storage
+            )
     def _cloud_connected(
         self,
         provider_id: str,
         token: dict[str, Any],
+        scopes: tuple[str, ...] = (),
     ) -> None:
         if self._closed:
             return
+        self._finish_cloud_connect_attempt()
         try:
             self._oauth_store(provider_id).save(json.dumps(token, ensure_ascii=False))
         except OSError as exc:
@@ -181,9 +244,11 @@ class FlagshipCloudMixin:
             True,
             {
                 "client_id": token.get("client_id", ""),
-                "scopes": self.cloud_scopes.toPlainText().splitlines(),
+                "scopes": list(scopes),
             },
-            last_health=self._t("OAuth 已連線"),
+            # Stored language-neutral (canonical zh-TW catalog source); the
+            # list view translates it to the active UI language on display.
+            last_health="OAuth 已連線",
         )
         self.cloud_client_secret.clear()
         self.cloud_status.setText(
@@ -197,6 +262,7 @@ class FlagshipCloudMixin:
     def _cloud_failed(self, provider_id: str, error: str) -> None:
         if self._closed:
             return
+        self._finish_cloud_connect_attempt()
         self.cloud_status.setText(
             self._t(
                 "{provider} 連線失敗：{error}",
@@ -484,16 +550,6 @@ class FlagshipCloudMixin:
         )
     def test_cloud(self) -> None:
         provider_id = str(self.cloud_provider.currentData())
-        try:
-            token = self._cloud_token(provider_id)
-        except Exception as exc:
-            self.cloud_status.setText(
-                self._t(
-                    "測試失敗：{error}",
-                    error=safe_error_message(self.language, exc),
-                )
-            )
-            return
         self._cloud_test_generation += 1
         generation = self._cloud_test_generation
         self.cloud_test_button.setEnabled(False)
@@ -503,7 +559,13 @@ class FlagshipCloudMixin:
             if provider_id == "google"
             else self._t("正在檢查選取的服務……")
         )
-        worker = CloudHealthWorker(provider_id, token, self.language)
+        # 權杖到期時 _cloud_token 會同步向服務商換發新權杖；這屬於網路
+        # 呼叫，必須連同健康檢查一起移出 UI 執行緒。
+        worker = _CloudTokenHealthWorker(
+            provider_id,
+            self._cloud_token,
+            self.language,
+        )
         worker.setAutoDelete(False)
         self._cloud_test_worker = worker
         worker.signals.done.connect(
@@ -515,8 +577,32 @@ class FlagshipCloudMixin:
                 )
             )
         )
+        worker.signals.failed.connect(
+            lambda result_provider, message, request_generation=generation: (
+                self._cloud_test_failed(
+                    result_provider,
+                    message,
+                    request_generation,
+                )
+            )
+        )
         self.cloud_test_timeout.start()
         self.thread_pool.start(worker)
+    def _cloud_test_failed(
+        self,
+        _provider_id: str,
+        message: str,
+        generation: int,
+    ) -> None:
+        if self._closed or generation != self._cloud_test_generation:
+            return
+        self.cloud_test_timeout.stop()
+        self._cloud_test_worker = None
+        self.cloud_test_button.setEnabled(True)
+        self.cloud_test_button.setText(self._t("測試選取服務"))
+        self.cloud_status.setText(
+            self._t("測試失敗：{error}", error=message)
+        )
     def _cloud_test_done(
         self,
         provider_id: str,
@@ -543,7 +629,24 @@ class FlagshipCloudMixin:
         )
         row = self.db.connector(provider_id)
         configuration = json.loads(row["configuration"]) if row else {}
-        health = ("全部正常" if all_ok else "部分功能異常") + "｜" + "；".join(lines)
+        # Persist a language-neutral structured record instead of composed
+        # prose so the connection list can re-translate the status prefix and
+        # per-service labels whenever the UI language changes.  Probe details
+        # remain data snapshots (account names or safe error text).
+        health = json.dumps(
+            {
+                "all_ok": all_ok,
+                "services": [
+                    {
+                        "name": name,
+                        "ok": bool(value.get("ok")),
+                        "detail": str(value.get("detail", "")),
+                    }
+                    for name, value in results.items()
+                ],
+            },
+            ensure_ascii=False,
+        )
         self.db.save_connector(
             provider_id,
             PROVIDERS[provider_id].display_name,
@@ -612,13 +715,41 @@ class FlagshipCloudMixin:
         self._configure_executor()
         self.refresh_cloud_connections()
         self.cloud_status.setText(self._t("本機權杖已移除"))
+    def _health_summary(self, record: object) -> str:
+        """Render one stored ``last_health`` value in the active UI language.
+
+        Structured JSON records (the current format) are recomposed and
+        translated on every call; plain prose rows written by older builds
+        fall back to the catalog-based system-message translation.
+        """
+
+        value = str(record or "")
+        if not value:
+            return self._t("尚未測試")
+        try:
+            payload = json.loads(value)
+        except ValueError:
+            return self._system_text(value)
+        if not isinstance(payload, dict) or "services" not in payload:
+            return self._system_text(value)
+        lines = [
+            self._t(
+                "{name}：{status}（{detail}）",
+                name=str(service.get("name", "")),
+                status=self._t("正常" if service.get("ok") else "失敗"),
+                detail=str(service.get("detail", "")),
+            )
+            for service in payload["services"]
+        ]
+        prefix = self._t("全部正常" if payload.get("all_ok") else "部分功能異常")
+        return prefix + "｜" + "；".join(lines)
     def refresh_cloud_connections(self) -> None:
         self.cloud_connections.clear()
         for provider_id, provider in PROVIDERS.items():
             row = self.db.connector(provider_id)
             enabled = bool(row["enabled"]) if row else False
             health = (
-                self._system_text(str(row["last_health"] or "尚未測試"))
+                self._health_summary(row["last_health"])
                 if row
                 else self._t("未設定")
             )

@@ -150,3 +150,13 @@ FULL_BODY_LAYER_Z_ORDER: Final = (
     "sleeve_right",    # right sleeve (in front of torso)
     "ornament",        # hair ornament / accessory (topmost)
 )
+
+# ---------------------------------------------------------------------------
+# Weather defaults (裁決 2026-08-28): before the wardrobe runtime has written
+# ``weather_temperature_c``/``weather_condition``, every reader must assume the
+# same comfortable indoor scene.  24 °C sits in the "warm" thermal band and
+# "indoor" fits every outfit profile, so nothing complains or changes clothes
+# based on weather that was never observed.
+# ---------------------------------------------------------------------------
+DEFAULT_WEATHER_TEMPERATURE_C: Final = 24.0
+DEFAULT_WEATHER_CONDITION: Final = "indoor"

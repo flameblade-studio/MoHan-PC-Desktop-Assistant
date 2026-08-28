@@ -211,6 +211,9 @@ class DashboardPlatformMixin:
             max(0, self.platform_card_layout.count() - 1),
             controls.card,
         )
+        # 新增平台或重建卡片時，新按鈕的 autoDefault 會恢復 True，
+        # Enter 送出聊天就可能誤觸卡片按鈕；統一在建立處關閉。
+        self._disable_implicit_default_buttons(controls.card)
         if row is not None:
             self._load_platform_row(row)
 
@@ -260,7 +263,9 @@ class DashboardPlatformMixin:
             validation=QLabel(),
             updated=QLabel(self._t("platform_not_saved", "尚未保存")),
             save_button=QPushButton(self._t("save_platform", "保存此平台")),
-            timer=QTimer(self),
+            # 計時器的父物件必須是卡片本身：卡片 deleteLater 時一併回收，
+            # 不會在重建清單後累積掛在 Dashboard 上的孤兒 QTimer。
+            timer=QTimer(card),
         )
         controls.validation.setWordWrap(True)
         controls.updated.setStyleSheet("color:#64788a;font-size:11px;")

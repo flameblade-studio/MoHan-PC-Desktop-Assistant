@@ -177,6 +177,7 @@ try {
         --add-data "assets;assets" `
         --add-data "voice_listener.ps1;." `
         --add-data "LICENSE;." `
+        --add-data "ASSETS-LICENSE.md;." `
         --add-data "THIRD_PARTY_NOTICES.md;." `
         --add-data "third_party_licenses;third_party_licenses" `
         --add-data "build-info.json;." `

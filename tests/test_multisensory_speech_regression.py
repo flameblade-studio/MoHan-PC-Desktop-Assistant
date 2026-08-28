@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+lazy import gc
 lazy import os
 lazy import sys
 lazy from dataclasses import dataclass
@@ -11,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy import pytest
 lazy from PySide6.QtCore import QEvent, QObject, QTimer, Signal
+lazy from PySide6.QtGui import QPixmapCache
 lazy from PySide6.QtWidgets import QApplication, QWidget
 
 lazy from application.presentation_ports import PresentationPorts
@@ -327,6 +329,12 @@ def context(tmp_path: Path) -> _OfflineContext:
     window.deleteLater()
     QApplication.sendPostedEvents(None, QEvent.DeferredDelete)
     QApplication.processEvents()
+    # Each test builds a full CompanionWindow; without clearing Qt's global
+    # pixmap cache and forcing a GC pass, the six windows in this module
+    # accumulate every loaded atlas layer and exhaust the 7 GB CI runner
+    # (repeated MemoryError in this module on GitHub-hosted Windows).
+    QPixmapCache.clear()
+    gc.collect()
 
 
 def _speech_calls(context: _OfflineContext) -> tuple[int, ...]:
