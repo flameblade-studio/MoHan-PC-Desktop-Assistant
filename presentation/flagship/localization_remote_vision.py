@@ -170,6 +170,16 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
         "カメラは既定でオフです。有効時は状態を常に表示します。映像を無断でアップロードせず、"
         "未登録の人物を識別しません。",
     ),
+    "「啟動／套用」只會啟動遠端服務；攝影機與臉部辨識須按"
+    "「套用靈視設定」並完成同意後才會生效。": translations(
+        "「启动／应用」只会启动远程服务；摄像头与面部识别须按"
+        "「应用灵视设置」并完成同意后才会生效。",
+        "\"Start / Apply\" only starts the remote service; the camera and "
+        "face identity take effect only after pressing \"Apply Vision "
+        "Settings\" and completing the consent step.",
+        "「起動／適用」はリモート機能のみを起動します。カメラと顔識別は"
+        "「視覚認識設定を適用」を押して同意を完了した後にのみ有効になります。",
+    ),
     "服務狀態": translations("服务状态", "Service status", "サービス状態"),
     "已配對裝置": translations("已配对设备", "Paired devices", "ペアリング済み端末"),
     "攝影機權限": translations("摄像头权限", "Camera Permission", "カメラ権限"),

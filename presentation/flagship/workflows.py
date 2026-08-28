@@ -158,13 +158,20 @@ class FlagshipWorkflowMixin:
             self.refresh_workflows()
 
     def run_due_workflows(self) -> None:
-        if self._closed:
+        if self._closed or getattr(self, "_due_workflows_running", False):
+            # run_workflow 會開啟模態確認／結果對話框，模態事件迴圈會讓
+            # 30 秒計時器的下一次 tick 重入本方法；旗標防止同一批工作流
+            # 疊加執行。
             return
-        now = local_wall_time()
-        for row in self.db.workflows(enabled_only=True):
-            workflow = Workflow.from_row(row)
-            if schedule_due(workflow, now, row["last_run_at"]):
-                self.run_workflow(workflow)
+        self._due_workflows_running = True
+        try:
+            now = local_wall_time()
+            for row in self.db.workflows(enabled_only=True):
+                workflow = Workflow.from_row(row)
+                if schedule_due(workflow, now, row["last_run_at"]):
+                    self.run_workflow(workflow)
+        finally:
+            self._due_workflows_running = False
 
     def work_started(self) -> None:
         for row in self.db.workflows(enabled_only=True):

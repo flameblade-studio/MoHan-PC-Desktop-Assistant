@@ -6,6 +6,7 @@ from PySide6.QtCore import QTimer
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QFont
 lazy from PySide6.QtWidgets import (
+    QApplication,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -351,6 +352,9 @@ class DashboardConversationMixin:
                 ),
             )
             self.chat_input.setFocus()
+            # 空輸入也要重置來源標記；否則語音／遠端標記會殘留到下一次
+            # 手動輸入，讓本機輸入被誤判來源。
+            self._input_source = "local"
             return
         self.chat_input.clear()
         self.human_interaction.emit()
@@ -598,6 +602,17 @@ class DashboardConversationMixin:
             "thinking_front",
         )
         return True
+
+
+    def _emergency_shortcut_activated(self) -> None:
+        # 裁決：Esc 是全域緊急停止，但模態對話框開啟時，應用程式層級的
+        # 捷徑會攔截 Esc、把使用者想關閉 QMessageBox 的按鍵變成全域停止，
+        # 且對話框仍留在畫面上。此時改為關閉該模態對話框。
+        modal = QApplication.activeModalWidget()
+        if modal is not None and modal is not self:
+            modal.close()
+            return
+        self._emergency_stop()
 
 
     def _emergency_stop(self) -> None:

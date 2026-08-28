@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import json
 
+lazy from PySide6.QtCore import QObject, QRunnable, Signal
 lazy from PySide6.QtWidgets import (
     QCheckBox,
     QHBoxLayout,
@@ -23,6 +24,45 @@ lazy from integrations.home_assistant import (
 )
 
 __all__ = ('FlagshipHomeMixin',)
+
+HOME_CAPABILITIES = (
+    "home_read",
+    "home_control",
+    "home_lock",
+    "home_alarm",
+    "home_heat",
+)
+
+
+class _HomeProbeSignals(QObject):
+    done = Signal(str, object)
+    failed = Signal(str, str)
+
+
+class _HomeProbeWorker(QRunnable):
+    """Run one blocking Home Assistant call off the UI thread."""
+
+    def __init__(self, operation: str, client, language: str) -> None:
+        super().__init__()
+        self._operation = operation
+        self._client = client
+        self._language = language
+        self.signals = _HomeProbeSignals()
+
+    def run(self) -> None:
+        try:
+            result = (
+                self._client.health()
+                if self._operation == "health"
+                else self._client.states()
+            )
+        except Exception as exc:
+            self.signals.failed.emit(
+                self._operation,
+                safe_error_message(self._language, exc),
+            )
+            return
+        self.signals.done.emit(self._operation, result)
 
 
 class FlagshipHomeMixin:
@@ -145,6 +185,12 @@ class FlagshipHomeMixin:
         try:
             client = self._home_client()
         except PermissionError, ValueError:
+            # 停用或未設定時必須反註冊：dashboard 的全域保存流程會先
+            # 重建 executor（讀到舊設定）、之後才寫入 home 設定並再次
+            # 呼叫本方法；若不移除，舊的 Home Assistant 工具會殘留到
+            # 下一次重建為止。
+            for capability in HOME_CAPABILITIES:
+                self.executor.unregister(capability)
             return
         self.executor.register("home_read", client.action_read)
         for capability in (
@@ -158,31 +204,59 @@ class FlagshipHomeMixin:
                 client.action_control,
                 client.verify_control,
             )
+    def _start_home_probe(self, operation: str) -> bool:
+        """Launch health()/states() in a worker so HTTP can never block the UI."""
+
+        if getattr(self, "_home_probe_worker", None) is not None:
+            return False
+        try:
+            client = self._home_client()
+        except Exception as exc:
+            self.ha_status.setText(
+                self._t(
+                    "連線失敗：{error}" if operation == "health" else "讀取失敗：{error}",
+                    error=safe_error_message(self.language, exc),
+                )
+            )
+            return False
+        worker = _HomeProbeWorker(operation, client, self.language)
+        worker.setAutoDelete(False)
+        self._home_probe_worker = worker
+        worker.signals.done.connect(self._home_probe_done)
+        worker.signals.failed.connect(self._home_probe_failed)
+        self.ha_status.setText(self._t("測試中…"))
+        self.thread_pool.start(worker)
+        return True
+
+    def _home_probe_done(self, operation: str, result: object) -> None:
+        if self._closed:
+            return
+        self._home_probe_worker = None
+        if operation == "health":
+            self.ha_status.setText(
+                self._t("連線正常" if bool(result) else "API 回應不正確")
+            )
+            return
+        self._render_home_entities(list(result))
+
+    def _home_probe_failed(self, operation: str, message: str) -> None:
+        if self._closed:
+            return
+        self._home_probe_worker = None
+        self.ha_status.setText(
+            self._t(
+                "連線失敗：{error}" if operation == "health" else "讀取失敗：{error}",
+                error=message,
+            )
+        )
+
     def test_home_connection(self) -> None:
         self.save_home_settings()
-        try:
-            healthy = self._home_client().health()
-        except Exception as exc:
-            self.ha_status.setText(
-                self._t(
-                    "連線失敗：{error}",
-                    error=safe_error_message(self.language, exc),
-                )
-            )
-            return
-        self.ha_status.setText(self._t("連線正常" if healthy else "API 回應不正確"))
+        self._start_home_probe("health")
     def load_home_entities(self) -> None:
         self.ha_entities.clear()
-        try:
-            states = self._home_client().states()
-        except Exception as exc:
-            self.ha_status.setText(
-                self._t(
-                    "讀取失敗：{error}",
-                    error=safe_error_message(self.language, exc),
-                )
-            )
-            return
+        self._start_home_probe("states")
+    def _render_home_entities(self, states: list) -> None:
         for state in states:
             entity = str(state.get("entity_id", ""))
             if entity.split(".", 1)[0] not in {

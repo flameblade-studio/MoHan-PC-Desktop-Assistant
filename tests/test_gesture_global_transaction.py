@@ -243,6 +243,12 @@ def test_late_db_failure_restores_both_layers_and_rebuilds_ui(
 ) -> None:
     value, db, protected = dashboard
     stage_changed_protected_sample(value)
+    center = value.flagship_center
+    # ``proactive_interaction_mode`` is only written after the user touches
+    # its control (untouched controls no longer overwrite other pages).
+    center.proactive_mode.setCurrentIndex(
+        center.proactive_mode.findData("active")
+    )
     before_db = db.settings_snapshot()
     before_secret = protected.value
     external_calls = install_dashboard_transaction_probes(value, db)

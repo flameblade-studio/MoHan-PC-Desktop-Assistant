@@ -35,7 +35,21 @@ class CompanionFaceAssetMethods:
     def _render_masked_blink_frame(self, opacity: float) -> QPixmap:
         """Stamp exactly one eyelid authority inside its identity mask."""
 
-        frame = self._render_half_body_frame()
+        # While speaking, compose over the archived clean speech frame — the
+        # exact mouth currently on screen — not a recomposition at the
+        # target aperture.  The old recomposition made the mouth jump to
+        # its target the instant a blink stamped, then snap back on the
+        # next transition tick.
+        archived = (
+            getattr(self, "speech_visual_pixmap", None)
+            if self.state == "speaking"
+            else None
+        )
+        frame = (
+            QPixmap(archived)
+            if archived is not None and not archived.isNull()
+            else self._render_half_body_frame()
+        )
         if eye_state_for_blink(opacity) is EyeState.REST:
             return frame
         expression = self.current_expression
