@@ -200,15 +200,19 @@ def _assert_support_section(readme: str) -> None:
         "docs/media/support-proud.png",
         "docs/media/support-shy-aligned.png",
         "docs/media/support-mock-hit.png",
-        "請使用儲存庫上方由 GitHub 顯示的 Sponsor 按鈕；目前正式收款選項為 Ko-fi，可選擇單次或每月贊助。",
-        "请使用仓库上方由 GitHub 显示的 Sponsor 按钮；目前正式收款选项为 Ko-fi，可选择单次或每月赞助。",
-        "Use the Sponsor button displayed by GitHub above this repository; Ko-fi is the current official funding option and supports one-time or monthly contributions.",
-        "このリポジトリ上部に GitHub が表示する Sponsor ボタンをご利用ください。現在の正式な支援先は Ko-fi で、単発または毎月の支援を選べます。",
+        "請使用儲存庫上方由 GitHub 顯示的 Sponsor 按鈕，或直接前往",
+        "请使用仓库上方由 GitHub 显示的 Sponsor 按钮，或直接前往",
+        "Use the Sponsor button displayed by GitHub above this repository, or visit",
+        "このリポジトリ上部に GitHub が表示する Sponsor ボタンをご利用いただくか、",
+        "支持墨寒：Ko-fi 贊助＆裝飾 DLC 下載",
+        "支持墨寒：Ko-fi 赞助＆装饰 DLC 下载",
+        "Support MoHan: Ko-fi sponsorship & cosmetic DLC downloads",
+        "墨寒を支援：Ko-fi スポンサー＆装飾 DLC ダウンロード",
+        "https://ko-fi.com/flamebladestudio",
     )
     for requirement in support_requirements:
         assert requirement in readme, f"missing project support content: {requirement}"
     for retired_support in (
-        "ko-fi.com/",
         "buymeacoffee.com",
         "paypal.com/paypalme",
     ):
