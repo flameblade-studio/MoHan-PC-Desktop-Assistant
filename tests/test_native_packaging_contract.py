@@ -69,7 +69,7 @@ def test_windows_package_builds_installs_and_collects_native_module() -> None:
         "tools.audit_speech_runtime_chain",
         "speech runtime chain or PortAudio dependency is incomplete",
         '--collect-all "opencc"',
-        '$env:PYTHON_JIT = "1"',
+        '$env:PYTHON_JIT = "0"',
         "tools/build_pyinstaller_jit_bootloader.py",
         '.qt315-compat-full\\Lib\\site-packages',
         "6.11.1+mohan.py315.",
@@ -102,7 +102,7 @@ def test_python315_jit_bootloader_contract_is_reproducible_and_narrow() -> None:
         assert required in builder
     launcher = read("tools/jit_launcher.py")
     assert "startswith(PYTHON_ENV_PREFIX)" in launcher
-    assert 'environment["PYTHON_JIT"] = "1"' in launcher
+    assert 'environment["PYTHON_JIT"] = "0"' in launcher
 
 
 def assert_native_workflow_contract(relative: str) -> None:

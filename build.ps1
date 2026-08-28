@@ -43,11 +43,12 @@ if ($LASTEXITCODE -ne 0) {
     }
 }
 
-# CPython 3.15's JIT is selected before interpreter initialization.  `-X jit`
-# only records an xoption and does not enable sys._jit, so every build-time
-# child must inherit the real startup switch.  The installed public launcher
-# applies the same contract to the frozen runtime below.
-$env:PYTHON_JIT = "1"
+# CPython 3.15's JIT is selected before interpreter initialization.  After a
+# 0xC0000409 mid-session crash on a user machine (2026-08-29) joined the CI
+# JIT/Qt failure history, every build-time child and the frozen runtime now
+# run with the JIT off; MOHAN_ENABLE_JIT=1 on the launcher re-enables it as
+# an explicit experiment.
+$env:PYTHON_JIT = "0"
 
 $PythonVersion = (& $Python -c "import platform; print(platform.python_version())").Trim()
 if ($LASTEXITCODE -ne 0 -or $PythonVersion -ne "3.15.0rc1") {
