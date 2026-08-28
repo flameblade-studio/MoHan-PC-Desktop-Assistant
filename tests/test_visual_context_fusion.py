@@ -5,7 +5,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from cloud_scene_interpreter import (
+lazy from domain.cloud_scene_interpreter import (
     CloudSceneInterpretation,
     InteractionCandidateKind,
     LocalizedInteractionCandidate,
@@ -13,26 +13,26 @@ lazy from cloud_scene_interpreter import (
     SceneFactKind,
     SceneFactStatus,
 )
-lazy from gesture_intent import GestureIntentDecision, GestureState
-lazy from local_visual_intelligence import (
+lazy from domain.gesture_intent import GestureIntentDecision, GestureState
+lazy from application.local_visual_intelligence import (
     ConservativeDegradation,
     EvidenceAvailability,
     LocalVisualIntelligenceResult,
     PresenceIdentityEvidence,
 )
-lazy from object_interaction import (
+lazy from application.object_interaction import (
     ObjectInteractionAction,
     ObjectInteractionCandidate,
 )
-lazy from vision_domain import IdentityObservation, IdentityState, SceneUnderstanding
-lazy from visual_context_fusion import (
+lazy from domain.vision_domain import IdentityObservation, IdentityState, SceneUnderstanding
+lazy from application.visual_context_fusion import (
     FusionDisposition,
     VisualContextFusion,
     VisualContextFusionRequest,
     VisualEvidenceClass,
     VisualEvidenceSource,
 )
-lazy from visual_social_cues import (
+lazy from application.visual_social_cues import (
     GazeHeadDirection,
     ObservableFacialCue,
     VisualSocialCueObservation,

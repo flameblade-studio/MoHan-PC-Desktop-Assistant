@@ -8,8 +8,8 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_pose import CANONICAL_YAWS, canonical_view_id
-lazy from pose_runtime_loader import (
+lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
+lazy from domain.pose_runtime_loader import (
     AtlasApproval,
     DecodedRgba,
     PoseAtlasManifest,

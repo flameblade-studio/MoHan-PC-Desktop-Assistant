@@ -14,13 +14,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QObject, Signal
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from cloud_scene_interpreter import CloudSceneInterpretation
-lazy from cloud_vision_runtime import (
+lazy from domain.cloud_scene_interpreter import CloudSceneInterpretation
+lazy from application.cloud_vision_runtime import (
     CloudVisionResult,
     CloudVisionStatus,
     SavedVisionAuthorization,
 )
-lazy from cloud_vision_ui_bridge import (
+lazy from application.cloud_vision_ui_bridge import (
     CloudVisionRuntimeService,
     CloudVisionUIResult,
     _safe_ui_result,
@@ -30,16 +30,16 @@ lazy from domain.vision_provider_contracts import (
     VisualClaim,
     VisualUnderstanding,
 )
-lazy from flagship_ui import ControlCenterDependencies, FlagshipControlCenter
+lazy from presentation.flagship_ui import ControlCenterDependencies, FlagshipControlCenter
 lazy from infrastructure.db import StudioDB, StudioDBSettingsPort
 lazy from infrastructure.openai_vision_preferences_store import (
     OpenAIVisionPreferencesStore,
 )
-lazy from openai_vision_preferences import (
+lazy from domain.openai_vision_preferences import (
     PREFERENCES_VERSION,
     OpenAIVisionPreferences,
 )
-lazy from vision_domain import IdentityObservation, IdentityState, SceneUnderstanding
+lazy from domain.vision_domain import IdentityObservation, IdentityState, SceneUnderstanding
 
 EXPECTED_OPERATION_ID = 8
 PAIR_LENGTH = 2

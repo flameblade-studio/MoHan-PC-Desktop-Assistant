@@ -15,8 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from cloud_scene_interpreter import CloudSceneInterpreter
-lazy from cloud_vision_runtime import (
+lazy from domain.cloud_scene_interpreter import CloudSceneInterpreter
+lazy from application.cloud_vision_runtime import (
     CloudVisionFrame,
     CloudVisionRuntime,
     CloudVisionStatus,
@@ -32,7 +32,7 @@ lazy from integrations.openai_vision_provider import (
     VisionResultStatus,
     create_openai_vision_provider,
 )
-lazy from openai_vision_preferences import (
+lazy from domain.openai_vision_preferences import (
     PREFERENCES_VERSION,
     OpenAIVisionPreferences,
 )
@@ -40,7 +40,7 @@ lazy from presentation.flagship_ui_localization import (
     FLAGSHIP_TRANSLATIONS,
     FlagshipTranslator,
 )
-lazy from visual_perception import LocalVisualAnalyzer, PresenceState
+lazy from application.visual_perception import LocalVisualAnalyzer, PresenceState
 
 TRANSLATION_COUNT = 3
 

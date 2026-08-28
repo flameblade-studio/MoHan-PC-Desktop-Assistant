@@ -23,8 +23,8 @@ lazy from infrastructure.wellbeing_reminder_store import (
     WellbeingReminderStore,
     default_wellbeing_state,
 )
-lazy from special_occasion import OccasionKind, OccasionResponse
-lazy from wellbeing_reminder import ReminderResponse, WellbeingKind
+lazy from application.special_occasion import OccasionKind, OccasionResponse
+lazy from application.wellbeing_reminder import ReminderResponse, WellbeingKind
 
 NOW = datetime(2027, 1, 8, 12, tzinfo=UTC)
 FORBIDDEN_SETTINGS = {

@@ -12,11 +12,11 @@ lazy from PySide6.QtCore import QRect, Qt, QTimer
 lazy from PySide6.QtGui import QColor, QFont, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from companion_animation_contract import (
+lazy from domain.companion_animation_contract import (
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_FRAMES,
 )
-lazy from companion_window import CompanionWindow
+lazy from presentation.companion_window import CompanionWindow
 
 EXPRESSION_COLUMNS = 4
 EXPRESSION_CARD_WIDTH = 300

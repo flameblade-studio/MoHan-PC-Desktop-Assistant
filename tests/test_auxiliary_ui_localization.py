@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT))
 
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from auxiliary_ui_localization import (
+lazy from presentation.auxiliary_ui_localization import (
     TRANSLATIONS,
     AuxiliaryText,
     auxiliary_text,
@@ -22,8 +22,8 @@ lazy from auxiliary_ui_localization import (
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.profile_transfer import ProfileTransferError
 lazy from infrastructure.updater import ReleaseInfo
-lazy from profile_transfer_ui import PortableProfilePanel
-lazy from updater_ui import UpdatePanel
+lazy from presentation.profile_transfer_ui import PortableProfilePanel
+lazy from presentation.updater_ui import UpdatePanel
 
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 CJK = re.compile(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]")
@@ -73,7 +73,10 @@ def assert_complete_translation_contract() -> None:
             TRANSLATIONS[language][key].format(**values)
     english_contract = "\n".join(TRANSLATIONS["en"].values())
     assert not CJK.search(english_contract), english_contract
-    for filename in ("updater_ui.py", "profile_transfer_ui.py"):
+    for filename in (
+        "presentation/updater_ui.py",
+        "presentation/profile_transfer_ui.py",
+    ):
         source = (ROOT / filename).read_text(encoding="utf-8")
         assert not CJK.search(source), filename
 

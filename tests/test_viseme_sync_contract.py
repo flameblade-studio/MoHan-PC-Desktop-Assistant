@@ -14,9 +14,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from companion_animation_contract import EXPRESSION_SPEECH_FRAMES
-lazy from companion_window import CompanionWindow
-lazy from lip_sync import (
+lazy from domain.companion_animation_contract import EXPRESSION_SPEECH_FRAMES
+lazy from presentation.companion_window import CompanionWindow
+lazy from domain.lip_sync import (
     VISEME_CHANGE_TRANSITION_SECONDS,
     VISEME_CLOSE_TRANSITION_SECONDS,
     VISEME_CUES_PER_SECOND,

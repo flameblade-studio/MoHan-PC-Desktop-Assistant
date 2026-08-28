@@ -15,7 +15,7 @@ lazy from infrastructure.performance_preferences_store import (
     PerformancePreferencesStore,
 )
 lazy from infrastructure.profile_transfer import PortableProfileManager
-lazy from performance_preferences import (
+lazy from domain.performance_preferences import (
     INTENSITY_KEY,
     PREFERENCES_FORMAT,
     PREFERENCES_VERSION,

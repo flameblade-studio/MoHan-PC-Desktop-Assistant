@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from flagship_ui import CloudHealthWorker, FlagshipControlCenter
+lazy from presentation.flagship_ui import CloudHealthWorker, FlagshipControlCenter
 lazy from infrastructure.db import StudioDB
 lazy from integrations.cloud_connectors import (
     PROVIDERS,

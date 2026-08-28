@@ -13,7 +13,7 @@ lazy from PySide6.QtGui import QImage, QPixmap
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from companion_animation_contract import (
+lazy from domain.companion_animation_contract import (
     EXPRESSION_BLINK_FRAMES,
     EXPRESSION_FACE_OFFSETS,
     EXPRESSION_POSES,
@@ -24,7 +24,7 @@ lazy from companion_animation_contract import (
     GESTURE_SPEECH_FRAMES,
     NEW_EXPRESSION_ASSETS,
 )
-lazy from companion_window import CompanionWindow
+lazy from presentation.companion_window import CompanionWindow
 
 ANCHOR_OFFSET_BOUND = 6
 ANCHOR_CONFIDENCE_THRESHOLD = 0.15

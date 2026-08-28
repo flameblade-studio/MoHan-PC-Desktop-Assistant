@@ -6,7 +6,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from speech_providers import (
+lazy from domain.speech_providers import (
     AZURE_SPEECH_PROVIDER,
     LEGACY_WINDOWS_LOCAL_PROVIDER,
     OPENAI_REALTIME_PROVIDER,

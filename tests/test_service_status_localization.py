@@ -11,9 +11,9 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy import camera_presence
-lazy import service_status_localization as compatibility_status
-lazy from camera_presence import CameraPresenceController
+lazy from application import camera_presence
+lazy from presentation import service_status_localization as compatibility_status
+lazy from application.camera_presence import CameraPresenceController
 lazy from domain import service_status_localization as domain_status
 lazy from domain.service_status_localization import (
     SUPPORTED_SERVICE_LANGUAGES,

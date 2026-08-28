@@ -21,12 +21,12 @@ lazy from application.gesture_action_router import (
     GestureActionSafety as OwnerGestureActionSafety,
 )
 lazy from domain.air_interaction import AirHandSample
-lazy from gesture_action_router import (
+lazy from application.gesture_action_router import (
     GestureActionDecision,
 )
-lazy from gesture_configuration import GestureAction, GestureConfiguration
-lazy from gesture_controller import GestureController
-lazy from gesture_runtime import GestureRuntimeResult
+lazy from domain.gesture_configuration import GestureAction, GestureConfiguration
+lazy from application.gesture_controller import GestureController
+lazy from application.gesture_runtime import GestureRuntimeResult
 lazy from infrastructure.hand_landmark_provider import (
     HandLandmarkResult,
     HandLandmarkStatus,

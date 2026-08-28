@@ -12,9 +12,9 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_pose import canonical_view_id
-lazy from hand_asset_audit import FINGERS, Point
-lazy from hand_asset_evidence import (
+lazy from domain.character_pose import canonical_view_id
+lazy from domain.hand_asset_audit import FINGERS, Point
+lazy from domain.hand_asset_evidence import (
     HandAssetManifestEvidence,
     build_hand_asset_evidence,
 )

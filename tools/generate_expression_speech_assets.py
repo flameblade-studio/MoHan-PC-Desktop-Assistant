@@ -12,11 +12,11 @@ lazy from PySide6.QtCore import QRect, QTimer
 lazy from PySide6.QtGui import QImage
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from companion_animation_contract import (
+lazy from domain.companion_animation_contract import (
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_MOUTH_RECTS,
 )
-lazy from companion_window import CompanionWindow
+lazy from presentation.companion_window import CompanionWindow
 
 POSE_MOUTH_RECTS = {
     "cheek": QRect(174, 198, 52, 34),

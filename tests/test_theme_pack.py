@@ -9,7 +9,7 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from theme_pack import (
+lazy from domain.theme_pack import (
     ThemePackError,
     apply_theme,
     build_stylesheet,

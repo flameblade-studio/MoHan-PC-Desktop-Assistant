@@ -16,7 +16,7 @@ lazy from domain.face_rig import (
     MouthShape,
     Viseme,
 )
-lazy from full_body_render_adapter import AUTHORED_FULL_BODY_SLOT
+lazy from application.full_body_render_adapter import AUTHORED_FULL_BODY_SLOT
 lazy from presentation.pose_atlas_assets import PoseAtlasAssets
 
 

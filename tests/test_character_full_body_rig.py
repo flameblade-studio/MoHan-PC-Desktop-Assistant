@@ -6,7 +6,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_full_body_rig import (
+lazy from domain.character_full_body_rig import (
     LEGACY_POSE_IDS,
     MOHAN_BODY_PROPORTIONS,
     AxialRig,
@@ -18,7 +18,7 @@ lazy from character_full_body_rig import (
     audit_full_body_rig,
     compatible_yaws,
 )
-lazy from character_pose import BodySide, Point2D, default_pose_registry
+lazy from domain.character_pose import BodySide, Point2D, default_pose_registry
 
 LANDMARK_COUNT = 21
 MIRROR_EPSILON = 1e-9

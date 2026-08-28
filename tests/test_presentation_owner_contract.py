@@ -57,68 +57,18 @@ def test_presentation_owners_never_import_their_root_facades() -> None:
     assert violations == {}
 
 
-def _facade_contract(name: str) -> tuple[str, tuple[str, ...], tuple[str, ...]]:
-    tree = ast.parse(
-        (ROOT / f"{name}.py").read_text(encoding="utf-8"),
-        filename=f"{name}.py",
-    )
-    imports = [
-        node
-        for node in tree.body
-        if isinstance(node, ast.ImportFrom) and node.module != "__future__"
-    ]
-    exports = [
-        node
-        for node in tree.body
-        if isinstance(node, ast.Assign)
-        and any(
-            isinstance(target, ast.Name) and target.id == "__all__"
-            for target in node.targets
-        )
-    ]
-    assert len(imports) == 1
-    assert len(exports) == 1
-    module = imports[0].module
-    assert module is not None
-    imported_names = tuple(alias.name for alias in imports[0].names)
-    exported_names = ast.literal_eval(exports[0].value)
-    return module, imported_names, exported_names
-
-
-def _alias_target(name: str) -> str | None:
-    tree = ast.parse(
-        (ROOT / f"{name}.py").read_text(encoding="utf-8"),
-        filename=f"{name}.py",
-    )
-    for node in ast.walk(tree):
-        if (
-            isinstance(node, ast.Call)
-            and isinstance(node.func, ast.Attribute)
-            and isinstance(node.func.value, ast.Name)
-            and node.func.value.id == "importlib"
-            and node.func.attr == "import_module"
-            and len(node.args) == 1
-            and isinstance(node.args[0], ast.Constant)
-            and isinstance(node.args[0].value, str)
-        ):
-            return node.args[0].value
-    return None
-
-
-def test_root_facades_export_exact_owner_symbols() -> None:
+def test_retired_root_facades_never_return() -> None:
+    # The root-facade retirement (2026-08-28) deleted every presentation
+    # compatibility shim from the repository root; each owner module is the
+    # single import path from now on.
     for facade_name, owner_name in PRESENTATION_OWNERS.items():
-        alias_target = _alias_target(facade_name)
-        if alias_target is not None:
-            assert alias_target == owner_name
-            continue
-        module, imported_names, exported_names = _facade_contract(facade_name)
-        assert module == owner_name
-        assert imported_names
-        assert exported_names == imported_names
+        assert not (ROOT / f"{facade_name}.py").exists(), facade_name
+        assert (
+            ROOT / Path(*owner_name.split("."))
+        ).with_suffix(".py").is_file(), owner_name
 
 
 def test_flagship_theme_public_operations_are_directly_callable() -> None:
-    facade = importlib.import_module("flagship_theme")
     owner = importlib.import_module("presentation.flagship_theme")
     for symbol in (
         "FlagshipThemeResult",
@@ -126,13 +76,11 @@ def test_flagship_theme_public_operations_are_directly_callable() -> None:
         "create_flagship_ornament",
         "mark_flagship_card",
     ):
-        facade_value = getattr(facade, symbol)
-        assert callable(facade_value), symbol
-        assert facade_value is getattr(owner, symbol)
+        assert callable(getattr(owner, symbol)), symbol
 
 
 def test_flagship_ui_receives_callable_theme_operations() -> None:
-    flagship_ui = importlib.import_module("flagship_ui")
+    flagship_ui = importlib.import_module("presentation.flagship_ui")
     owner = importlib.import_module("presentation.flagship_theme")
     for symbol in (
         "apply_flagship_theme",

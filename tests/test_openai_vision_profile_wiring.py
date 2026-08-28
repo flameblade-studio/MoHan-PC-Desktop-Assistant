@@ -12,7 +12,7 @@ lazy from infrastructure.profile_transfer import (
     PORTABLE_SETTING_KEYS,
     PortableProfileManager,
 )
-lazy from openai_vision_preferences import SETTING_KEYS
+lazy from domain.openai_vision_preferences import SETTING_KEYS
 
 
 def assert_real_profile_round_trip_excludes_key(root: Path) -> None:

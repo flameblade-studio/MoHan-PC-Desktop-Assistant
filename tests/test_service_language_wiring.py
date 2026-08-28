@@ -12,7 +12,7 @@ sys.path.insert(0, str(PROJECT))
 
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.platform_contracts import PlatformCapabilities, PlatformPaths
-lazy from service_container import create_default_services
+lazy from application.service_container import create_default_services
 
 UI_LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 TEST_SECRETS = (
@@ -126,12 +126,12 @@ def _assert_language_wiring(
         return db
 
     with (
-        patch("service_container.StudioDB", side_effect=open_database),
+        patch("application.service_container.StudioDB", side_effect=open_database),
         patch(
-            "service_container.platform_secret_store_factory",
+            "application.service_container.platform_secret_store_factory",
             return_value=factory,
         ),
-        patch("service_container.BackupManager", _BackupManagerProbe),
+        patch("application.service_container.BackupManager", _BackupManagerProbe),
     ):
         services = create_default_services(
             data_path,

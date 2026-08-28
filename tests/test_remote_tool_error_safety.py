@@ -27,7 +27,7 @@ lazy from integrations.remote_control import (
     TokenRegistry,
     remote_file_unavailable,
 )
-lazy from safe_error import sanitize_error as canonical_sanitize_error
+lazy from domain.safe_error import sanitize_error as canonical_sanitize_error
 
 HTTP_FORBIDDEN = 403
 HTTP_OK = 200

@@ -5,7 +5,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_body_profile import (
+lazy from domain.character_body_profile import (
     MOHAN_BODY_PROFILE,
     body_profile_reference,
 )

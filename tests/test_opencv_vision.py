@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy import cv2
 lazy import numpy as np
 
-lazy from gesture_intent import NormalizedPoint
+lazy from domain.gesture_intent import NormalizedPoint
 lazy from infrastructure.opencv_vision import (
     NanoDetDecoder,
     OpenCVDependencyError,

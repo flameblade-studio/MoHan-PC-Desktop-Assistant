@@ -8,7 +8,7 @@ lazy from urllib.error import HTTPError, URLError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from safe_error import (
+lazy from domain.safe_error import (
     SafeDiagnostic,
     SafeErrorType,
     sanitize_error,

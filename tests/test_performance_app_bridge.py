@@ -7,17 +7,17 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from behavior_director import BehaviorInput, SemanticEmotion, SpeechLifecycle
-lazy from body_pose_renderer import BodyPoseFrame
-lazy from character_pose import default_pose_registry
-lazy from performance_app_bridge import (
+lazy from application.behavior_director import BehaviorInput, SemanticEmotion, SpeechLifecycle
+lazy from application.body_pose_renderer import BodyPoseFrame
+lazy from domain.character_pose import default_pose_registry
+lazy from application.performance_app_bridge import (
     BridgeDisposition,
     PerformanceAppBridge,
     PerformanceBridgeInput,
 )
-lazy from performance_preferences import PerformancePreferences
-lazy from performance_runtime import BodyRenderRequest
-lazy from speech_performance import (
+lazy from domain.performance_preferences import PerformancePreferences
+lazy from application.performance_runtime import BodyRenderRequest
+lazy from application.speech_performance import (
     SpeechEvent,
     SpeechEventKind,
     SpeechPerformanceDirective,

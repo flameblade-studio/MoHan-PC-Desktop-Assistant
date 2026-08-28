@@ -17,7 +17,7 @@ lazy from infrastructure.wellbeing_reminder_store import (
     WellbeingReminderStoreError,
     default_wellbeing_state,
 )
-lazy from wellbeing_reminder import ReminderResponse, WellbeingKind
+lazy from application.wellbeing_reminder import ReminderResponse, WellbeingKind
 
 NOW = datetime(2027, 1, 8, 12, tzinfo=UTC)
 

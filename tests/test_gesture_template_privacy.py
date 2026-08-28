@@ -5,7 +5,7 @@ lazy from collections.abc import Mapping
 
 lazy import pytest
 
-lazy from gesture_configuration import (
+lazy from domain.gesture_configuration import (
     GestureConfiguration,
     GestureLandmark,
     GestureSample,

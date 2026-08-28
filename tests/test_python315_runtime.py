@@ -13,19 +13,19 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from app_profile import DEFAULT_PROFILE
-lazy from companion_animation_contract import EXPRESSION_POSES
+lazy from domain.app_profile import DEFAULT_PROFILE
+lazy from domain.companion_animation_contract import EXPRESSION_POSES
 lazy from domain.flagship_action_models import CAPABILITY_RISK, RISK_NAMES
-lazy from expression_system import EMOTION_TO_EXPRESSION, EXPRESSION_RULES
+lazy from domain.expression_system import EMOTION_TO_EXPRESSION, EXPRESSION_RULES
 lazy from infrastructure.db import DEFAULT_REMINDERS
 lazy from integrations.cloud_connectors import PROVIDERS
 lazy from integrations.home_assistant import ALLOWED_SERVICES
-lazy from language_support import TRANSCRIPTION_PROMPT_BASES
-lazy from lip_sync import VISEME_MIN_HOLD_SECONDS
+lazy from domain.language_support import TRANSCRIPTION_PROMPT_BASES
+lazy from domain.lip_sync import VISEME_MIN_HOLD_SECONDS
 lazy from presentation.preview_app import _TEXT
 lazy from application import runtime_bootstrap
-lazy from runtime_bootstrap import JIT_DISABLE_ENV, JIT_REEXEC_ENV
-lazy from time_utils import (
+lazy from application.runtime_bootstrap import JIT_DISABLE_ENV, JIT_REEXEC_ENV
+lazy from domain.time_utils import (
     local_aware_time,
     local_wall_time,
     local_wall_time_from_timestamp,

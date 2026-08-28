@@ -5,7 +5,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_framing import (
+lazy from domain.character_framing import (
     CharacterFramingDirector,
     FramingContext,
     FramingMode,

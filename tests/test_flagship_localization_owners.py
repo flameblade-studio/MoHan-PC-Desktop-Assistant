@@ -7,7 +7,7 @@ lazy from string import Formatter
 
 lazy import pytest
 
-lazy from flagship_ui_localization import (
+lazy from presentation.flagship_ui_localization import (
     FLAGSHIP_TRANSLATIONS,
     FlagshipTranslator,
     validate_flagship_translations,
@@ -123,14 +123,9 @@ def test_every_language_preserves_runtime_format_fields() -> None:
         assert all(_format_fields(value) == source_fields for value in translations)
 
 
-def test_compatibility_facade_reexports_exact_owner_objects() -> None:
-    facade = importlib.import_module("flagship_ui_localization")
+def test_canonical_owner_exposes_the_public_localization_objects() -> None:
     owner = importlib.import_module("presentation.flagship_ui_localization")
 
-    assert facade.FLAGSHIP_TRANSLATIONS is owner.FLAGSHIP_TRANSLATIONS
-    assert facade.FlagshipTranslator is owner.FlagshipTranslator
-    assert (
-        facade.validate_flagship_translations
-        is owner.validate_flagship_translations
-    )
+    assert FLAGSHIP_TRANSLATIONS is owner.FLAGSHIP_TRANSLATIONS
     assert FlagshipTranslator is owner.FlagshipTranslator
+    assert validate_flagship_translations is owner.validate_flagship_translations

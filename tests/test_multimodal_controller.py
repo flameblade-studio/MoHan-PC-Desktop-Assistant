@@ -8,8 +8,8 @@ sys.path.insert(0, str(ROOT))
 
 lazy from PySide6 import QtCore
 
-lazy import multimodal_controller
-lazy import multimodal_fusion_hub
+lazy from application import multimodal_controller
+lazy from application import multimodal_fusion_hub
 
 
 def assert_cancel_replaces_running_hub_without_shared_reset() -> None:

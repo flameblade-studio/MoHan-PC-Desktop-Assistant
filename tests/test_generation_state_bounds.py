@@ -6,16 +6,16 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from adaptive_character_runtime import (
+lazy from application.adaptive_character_runtime import (
     AdaptiveCharacterDisposition,
     AdaptiveCharacterRuntime,
 )
-lazy from full_body_performance_bridge import (
+lazy from application.full_body_performance_bridge import (
     FullBodyBridgeDisposition,
     FullBodyPerformanceBridge,
 )
-lazy from pose_runtime_loader import PoseRuntimeLoader
-lazy from visual_context_fusion import FusionDisposition, VisualContextFusion
+lazy from domain.pose_runtime_loader import PoseRuntimeLoader
+lazy from application.visual_context_fusion import FusionDisposition, VisualContextFusion
 
 ITERATIONS = 20_000
 

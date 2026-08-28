@@ -15,8 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from expression_system import EXPRESSION_RULES, ExpressionArbiter
-lazy from lip_sync import (
+lazy from domain.expression_system import EXPRESSION_RULES, ExpressionArbiter
+lazy from domain.lip_sync import (
     VISEME_CUES_PER_SECOND,
     VisemeDynamics,
     infer_vowel_pcm16,

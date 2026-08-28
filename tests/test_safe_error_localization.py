@@ -5,9 +5,9 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy import safe_error_localization as localization
-lazy from safe_error import SafeDiagnostic, SafeError, SafeErrorType
-lazy from safe_error_localization import safe_error_message
+lazy from domain import safe_error_localization as localization
+lazy from domain.safe_error import SafeDiagnostic, SafeError, SafeErrorType
+lazy from domain.safe_error_localization import safe_error_message
 
 SUPPORTED_LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 

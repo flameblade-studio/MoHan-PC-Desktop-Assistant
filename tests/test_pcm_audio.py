@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from pcm_audio import (
+lazy from domain.pcm_audio import (
     Pcm16RateState,
     PcmAudioError,
     rate_convert_pcm16,

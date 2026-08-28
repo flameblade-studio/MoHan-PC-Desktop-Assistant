@@ -6,14 +6,14 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from camera_presence import PresenceDebouncer
-lazy from multisensory_interaction import (
+lazy from application.camera_presence import PresenceDebouncer
+lazy from application.multisensory_interaction import (
     InteractionKind,
     MultisensoryInteractionArbiter,
     WelcomeStyle,
     WelcomeTimingRules,
 )
-lazy from visual_perception import (
+lazy from application.visual_perception import (
     ActivityState,
     LightingState,
     PresenceState,

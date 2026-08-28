@@ -8,7 +8,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from hand_asset_audit import (
+lazy from domain.hand_asset_audit import (
     FINGERS,
     AuditIssue,
     HandProjection,

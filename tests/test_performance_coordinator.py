@@ -7,7 +7,7 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from behavior_director import (
+lazy from application.behavior_director import (
     BehaviorInput,
     BodyPerformancePlan,
     BreathStyle,
@@ -16,10 +16,10 @@ lazy from behavior_director import (
     SpeechLifecycle,
     TransitionStyle,
 )
-lazy from character_pose import canonical_view_id
-lazy from performance_coordinator import PerformanceCoordinator
-lazy from performance_preferences import PerformancePreferences
-lazy from speech_performance import (
+lazy from domain.character_pose import canonical_view_id
+lazy from application.performance_coordinator import PerformanceCoordinator
+lazy from domain.performance_preferences import PerformancePreferences
+lazy from application.speech_performance import (
     SpeechEvent,
     SpeechEventKind,
     SpeechPerformanceDirective,

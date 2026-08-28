@@ -6,7 +6,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from special_occasion import (
+lazy from application.special_occasion import (
     MOHAN_BIRTHDAY_DAY,
     MOHAN_BIRTHDAY_MONTH,
     MOHAN_ZODIAC,

@@ -7,7 +7,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from flagship_ui_localization import FlagshipTranslator
+lazy from presentation.flagship_ui_localization import FlagshipTranslator
 
 VISION_UI_SOURCES = (
     "啟用墨寒本機視覺感知",

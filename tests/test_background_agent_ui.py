@@ -10,8 +10,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from background_agents import AgentObservation
-lazy from companion_window import CompanionWindow
+lazy from application.background_agents import AgentObservation
+lazy from presentation.companion_window import CompanionWindow
 lazy from infrastructure.db import StudioDB
 
 

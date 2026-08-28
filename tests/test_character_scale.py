@@ -11,12 +11,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from companion_animation_contract import (
+lazy from domain.companion_animation_contract import (
     CHARACTER_BASE_Y,
     CHARACTER_CANVAS_WIDTH,
     CHARACTER_IMAGE_SIZE,
 )
-lazy from companion_window import CompanionWindow
+lazy from presentation.companion_window import CompanionWindow
 
 SCALE_PERCENT_150 = 150
 CANONICAL_SOURCE_PX = 465

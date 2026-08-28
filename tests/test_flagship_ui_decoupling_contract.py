@@ -66,7 +66,7 @@ EXTRACTED_PUBLIC_OWNER_MODULES = {
     "WorkflowEditor": "presentation.flagship.workflow_editor",
 }
 PUBLIC_EXPORT_CASES = tuple(sorted(REQUIRED_PUBLIC_SYMBOLS))
-COMPATIBILITY_ENTRY = (ROOT / "flagship_ui.py").resolve()
+COMPATIBILITY_ENTRY = (ROOT / "presentation" / "flagship_ui.py").resolve()
 
 EXPECTED_SIGNAL_ARITIES = {
     "OAuthSignals": {"done": 2, "failed": 2},
@@ -133,7 +133,7 @@ def _resolve_export(value: object) -> object:
 
 
 def _flagship_module() -> object:
-    return importlib.import_module("flagship_ui")
+    return importlib.import_module("presentation.flagship_ui")
 
 
 def _public_classes() -> dict[str, type]:
@@ -327,7 +327,7 @@ def _public_export_owner_sources() -> dict[str, Path]:
 
 
 def _offline_platform(root: Path) -> object:
-    contracts = importlib.import_module("platform_contracts")
+    contracts = importlib.import_module("infrastructure.platform_contracts")
 
     class OfflinePlatform:
         capabilities = contracts.PlatformCapabilities(
@@ -787,7 +787,7 @@ def test_required_qt_inheritance_and_signals_remain_compatible() -> None:
 
 
 def test_flagship_ui_is_a_thin_compatibility_entry() -> None:
-    entry_path = ROOT / "flagship_ui.py"
+    entry_path = ROOT / "presentation" / "flagship_ui.py"
     source_lines = entry_path.read_text(encoding="utf-8").splitlines()
     assert len(source_lines) <= MAX_COMPATIBILITY_ENTRY_LINES, (
         "flagship_ui.py must be a thin compatibility entry, not an implementation "
@@ -812,7 +812,7 @@ def test_flagship_ui_is_a_thin_compatibility_entry() -> None:
 
 
 def test_flagship_compatibility_entry_does_not_depend_on_app() -> None:
-    entry_path = ROOT / "flagship_ui.py"
+    entry_path = ROOT / "presentation" / "flagship_ui.py"
     assert not _imports_app(entry_path), "flagship_ui.py must not import app.py"
 
 
@@ -821,7 +821,7 @@ def test_flagship_public_implementations_are_owned_outside_the_entry() -> None:
     still_owned = {
         name: owner.__module__
         for name, owner in classes.items()
-        if owner.__module__ == "flagship_ui"
+        if owner.__module__ == "presentation.flagship_ui"
     }
     assert still_owned == {}, (
         "published classes must have real owners outside the compatibility entry: "
@@ -1055,7 +1055,7 @@ def test_four_language_settings_round_trip_and_qt_lifecycle(
     language: str,
     task_label: str,
 ) -> None:
-    database_module = importlib.import_module("db")
+    database_module = importlib.import_module("infrastructure.db")
     center_class = _public_classes()["FlagshipControlCenter"]
     application = _qt_application()
     _assert_language_settings_round_trip(

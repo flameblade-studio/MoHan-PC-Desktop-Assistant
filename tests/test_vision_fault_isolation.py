@@ -17,28 +17,28 @@ lazy from PySide6.QtCore import QCoreApplication
 lazy from PySide6.QtGui import QColor, QImage
 lazy from PySide6.QtTest import QSignalSpy
 
-lazy import camera_presence
-lazy from camera_presence import CameraPresenceController
+lazy from application import camera_presence
+lazy from application.camera_presence import CameraPresenceController
 lazy from infrastructure.face_identity_store import FaceIdentityStore
-lazy from vision_controller import VisionController
-lazy from vision_domain import (
+lazy from application.vision_controller import VisionController
+lazy from domain.vision_domain import (
     IdentityObservation,
     IdentityState,
     SceneUnderstanding,
 )
-lazy from vision_runtime import VisionEnvironmentProbe, VisionReadiness
+lazy from application.vision_runtime import VisionEnvironmentProbe, VisionReadiness
 
 EXPECTED_CONSECUTIVE_FAILURES = 3
 
 VISION_MODULES = (
-    "camera_presence.py",
+    "application/camera_presence.py",
     "infrastructure/face_identity_store.py",
     "infrastructure/opencv_vision.py",
-    "scene_semantics.py",
-    "vision_controller.py",
-    "vision_domain.py",
-    "vision_runtime.py",
-    "visual_perception.py",
+    "domain/scene_semantics.py",
+    "application/vision_controller.py",
+    "domain/vision_domain.py",
+    "application/vision_runtime.py",
+    "application/visual_perception.py",
 )
 FORBIDDEN_NETWORK_ROOTS = frozenset(
     {

@@ -15,8 +15,8 @@ lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication, QPushButton, QWidget
 
 lazy from application.presentation_ports import PresentationPorts
-lazy from dashboard_composition import DashboardDependencies
-lazy from dashboard_window import Dashboard
+lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.dashboard_window import Dashboard
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.gesture_configuration_store import (
     GestureConfigurationStoreError,

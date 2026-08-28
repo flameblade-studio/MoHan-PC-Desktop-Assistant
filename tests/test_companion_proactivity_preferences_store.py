@@ -7,7 +7,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from companion_proactivity_preferences import (
+lazy from domain.companion_proactivity_preferences import (
     BRIEF_ABSENCE_SECONDS_KEY,
     LONG_WAIT_SECONDS_KEY,
     MASTER_ENABLED_KEY,

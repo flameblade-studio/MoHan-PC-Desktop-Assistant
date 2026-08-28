@@ -14,11 +14,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QCoreApplication
 lazy from PySide6.QtGui import QColor, QImage
 
-lazy from camera_presence import CameraPresenceController
-lazy from gesture_configuration import GestureConfiguration
-lazy from gesture_controller import GestureController
-lazy from gesture_intent import LipRegion, NormalizedPoint
-lazy from gesture_runtime import GestureRuntime
+lazy from application.camera_presence import CameraPresenceController
+lazy from domain.gesture_configuration import GestureConfiguration
+lazy from application.gesture_controller import GestureController
+lazy from domain.gesture_intent import LipRegion, NormalizedPoint
+lazy from application.gesture_runtime import GestureRuntime
 lazy from infrastructure.hand_landmark_provider import (
     Handedness,
     HandLandmark,

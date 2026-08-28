@@ -9,9 +9,9 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from appearance_session import ACTIVE_OUTFIT_SETTING_KEY
-lazy from framing_preferences import SETTING_KEYS as FRAMING_SETTING_KEYS
-lazy from gesture_configuration import LANDMARKS_PER_HAND
+lazy from application.appearance_session import ACTIVE_OUTFIT_SETTING_KEY
+lazy from domain.framing_preferences import SETTING_KEYS as FRAMING_SETTING_KEYS
+lazy from domain.gesture_configuration import LANDMARKS_PER_HAND
 lazy from infrastructure.companion_proactivity_preferences_store import (
     PORTABLE_SETTING_KEYS as PROACTIVITY_SETTING_KEYS,
 )
@@ -34,9 +34,9 @@ lazy from infrastructure.profile_transfer import (
     PORTABLE_SETTING_KEYS,
     PortableProfileManager,
 )
-lazy from openai_vision_preferences import SETTING_KEYS as VISION_SETTING_KEYS
-lazy from performance_preferences import SETTING_KEYS as PERFORMANCE_SETTING_KEYS
-lazy from theme_session import ACTIVE_THEME_SETTING_KEY
+lazy from domain.openai_vision_preferences import SETTING_KEYS as VISION_SETTING_KEYS
+lazy from domain.performance_preferences import SETTING_KEYS as PERFORMANCE_SETTING_KEYS
+lazy from domain.theme_session import ACTIVE_THEME_SETTING_KEY
 
 VOICE_SETTING_KEYS = frozenset(
     {

@@ -6,7 +6,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from visual_social_cues import (
+lazy from application.visual_social_cues import (
     FacialCueMeasurements,
     GazeHeadDirection,
     ObservableFacialCue,

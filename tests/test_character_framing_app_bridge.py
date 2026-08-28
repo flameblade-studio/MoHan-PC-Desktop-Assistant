@@ -7,21 +7,21 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from character_framing import CharacterFramingDirector, FramingMode
-lazy from character_framing_app_bridge import (
+lazy from domain.character_framing import CharacterFramingDirector, FramingMode
+lazy from application.character_framing_app_bridge import (
     AppFramingState,
     CharacterFramingAppBridge,
     FramingBridgeDisposition,
     FramingBridgeInput,
 )
-lazy from framing_context_policy import (
+lazy from domain.framing_context_policy import (
     EmotionValence,
     FocusState,
     FramingPolicyContext,
 )
-lazy from framing_orchestrator import FramingOrchestrator
-lazy from framing_preferences import FramingPreferences
-lazy from wellbeing_reminder import (
+lazy from application.framing_orchestrator import FramingOrchestrator
+lazy from domain.framing_preferences import FramingPreferences
+lazy from application.wellbeing_reminder import (
     ReminderExpression,
     ReminderFraming,
     ReminderGaze,

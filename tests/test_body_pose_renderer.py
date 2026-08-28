@@ -6,14 +6,14 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from body_pose_renderer import (
+lazy from application.body_pose_renderer import (
     LAYER_DEPTHS,
     BodyPoseFrame,
     BodyPoseLayer,
     BodyPoseRenderer,
     PoseAssetSet,
 )
-lazy from character_pose import ViewBlend, default_pose_registry
+lazy from domain.character_pose import ViewBlend, default_pose_registry
 
 WIDTH = 2
 HEIGHT = 2

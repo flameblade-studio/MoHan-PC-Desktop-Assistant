@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QCoreApplication
 lazy from shiboken6 import delete as delete_qt_object
 
-lazy from contracts import CloudSpeechEnginePort
+lazy from domain.contracts import CloudSpeechEnginePort
 lazy from domain.service_status_localization import ServiceStatus, service_status
 lazy from integrations.speech import OpenAITTS
 

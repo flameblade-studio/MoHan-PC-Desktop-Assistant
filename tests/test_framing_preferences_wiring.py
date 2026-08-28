@@ -8,7 +8,7 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from framing_preferences import (
+lazy from domain.framing_preferences import (
     SETTING_KEYS,
     FramingPreferences,
     PreferredFraming,

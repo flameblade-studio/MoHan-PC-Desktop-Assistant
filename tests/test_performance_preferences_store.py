@@ -13,7 +13,7 @@ lazy from infrastructure.performance_preferences_store import (
     PerformancePreferencesStore,
     PerformancePreferencesStoreError,
 )
-lazy from performance_preferences import (
+lazy from domain.performance_preferences import (
     CAMERA_CONTEXT_KEY,
     INTENSITY_KEY,
     PREFERENCES_FORMAT,

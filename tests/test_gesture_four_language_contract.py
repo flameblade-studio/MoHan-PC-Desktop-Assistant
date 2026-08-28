@@ -9,8 +9,8 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from flagship_ui_localization import FLAGSHIP_TRANSLATIONS, FlagshipTranslator
-lazy from gesture_configuration import (
+lazy from presentation.flagship_ui_localization import FLAGSHIP_TRANSLATIONS, FlagshipTranslator
+lazy from domain.gesture_configuration import (
     BUILTIN_GESTURE_LABELS,
     GESTURE_ACTION_LABELS,
     GestureAction,
@@ -18,8 +18,8 @@ lazy from gesture_configuration import (
 )
 
 AUDITED_FILES = (
-    ROOT / "gesture_configuration.py",
-    ROOT / "flagship_ui_localization.py",
+    ROOT / "domain" / "gesture_configuration.py",
+    ROOT / "presentation" / "flagship_ui_localization.py",
     Path(__file__),
 )
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")

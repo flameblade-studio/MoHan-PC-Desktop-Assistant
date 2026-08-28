@@ -12,7 +12,7 @@ lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QFont, QImage, QLinearGradient, QPainter
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from companion_window import CompanionWindow
+lazy from presentation.companion_window import CompanionWindow
 lazy from infrastructure.app_resources import STYLE
 
 

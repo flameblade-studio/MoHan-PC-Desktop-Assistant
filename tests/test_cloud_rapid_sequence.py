@@ -11,8 +11,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from flagship_core import ActionRequest
-lazy from flagship_ui import FlagshipControlCenter
+lazy from presentation.flagship_core import ActionRequest
+lazy from presentation.flagship_ui import FlagshipControlCenter
 lazy from infrastructure.concurrency_tools import thread_pool_executor
 lazy from infrastructure.db import StudioDB
 

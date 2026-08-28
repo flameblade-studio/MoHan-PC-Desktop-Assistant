@@ -5,7 +5,7 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from gesture_intent import (
+lazy from domain.gesture_intent import (
     GestureIntent,
     GestureState,
     HandLandmarks,
@@ -13,7 +13,7 @@ lazy from gesture_intent import (
     LipRegion,
     NormalizedPoint,
 )
-lazy from local_visual_intelligence import (
+lazy from application.local_visual_intelligence import (
     ConservativeDegradation,
     DenseFacialEvidence,
     EvidenceAvailability,
@@ -21,15 +21,15 @@ lazy from local_visual_intelligence import (
     LocalFrameAnalysis,
     LocalVisualIntelligencePipeline,
 )
-lazy from object_interaction import ObjectInteractionAction, ObjectSemanticScope
-lazy from vision_domain import (
+lazy from application.object_interaction import ObjectInteractionAction, ObjectSemanticScope
+lazy from domain.vision_domain import (
     BoundingBox,
     IdentityObservation,
     IdentityState,
     ObjectDetection,
     SceneUnderstanding,
 )
-lazy from visual_social_cues import (
+lazy from application.visual_social_cues import (
     FacialCueMeasurements,
     GazeHeadDirection,
     ObservableFacialCue,

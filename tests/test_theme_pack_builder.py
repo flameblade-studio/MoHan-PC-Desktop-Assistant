@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 lazy from build_theme_pack import ThemePackBuildError, build_theme_pack
 
-lazy from theme_pack import inspect_theme_pack
+lazy from domain.theme_pack import inspect_theme_pack
 
 
 def _spec() -> dict:

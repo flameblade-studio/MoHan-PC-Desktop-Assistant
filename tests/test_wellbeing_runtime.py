@@ -20,9 +20,9 @@ lazy from infrastructure.wellbeing_reminder_store import (
     WellbeingReminderStore,
     WellbeingReminderStoreError,
 )
-lazy from special_occasion import OccasionKind, OccasionResponse, OccasionStage
-lazy from wellbeing_reminder import ReminderResponse, ReminderStage, WellbeingKind
-lazy from wellbeing_runtime import (
+lazy from application.special_occasion import OccasionKind, OccasionResponse, OccasionStage
+lazy from application.wellbeing_reminder import ReminderResponse, ReminderStage, WellbeingKind
+lazy from application.wellbeing_runtime import (
     RuntimeAttention,
     RuntimePolicies,
     RuntimeSource,

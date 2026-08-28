@@ -27,39 +27,21 @@ def imported_modules(path: Path) -> frozenset[str]:
     return frozenset(modules)
 
 
-def imported_alias_target(tree: ast.Module) -> str | None:
-    for node in ast.walk(tree):
-        if (
-            isinstance(node, ast.Call)
-            and isinstance(node.func, ast.Attribute)
-            and isinstance(node.func.value, ast.Name)
-            and node.func.value.id == "importlib"
-            and node.func.attr == "import_module"
-            and len(node.args) == 1
-            and not node.keywords
-            and isinstance(node.args[0], ast.Constant)
-            and isinstance(node.args[0].value, str)
-        ):
-            return node.args[0].value
-    return None
-
-
-def test_flagship_core_facade_is_static_and_exact() -> None:
-    path = PROJECT_ROOT / "flagship_core.py"
+def test_flagship_core_api_is_static_and_exact() -> None:
+    path = PROJECT_ROOT / "presentation" / "flagship_core.py"
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-    assert not any(isinstance(node, ast.ClassDef) for node in tree.body)
-    assert imported_modules(path) == frozenset({"__future__", "importlib", "sys"})
-    assert imported_alias_target(tree) == FACADE_OWNER
+    assert not any(
+        isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
+        for node in tree.body
+    )
+    assert imported_modules(path) <= frozenset({"__future__", *CANONICAL_OWNERS})
 
 
 def test_flagship_core_public_symbols_preserve_canonical_identity() -> None:
-    facade = importlib.import_module("flagship_core")
     presentation_api = importlib.import_module(FACADE_OWNER)
     canonical = tuple(importlib.import_module(name) for name in CANONICAL_OWNERS)
-    assert tuple(facade.__all__) == tuple(presentation_api.__all__)
-    for name in facade.__all__:
-        public_value = getattr(facade, name)
-        assert public_value is getattr(presentation_api, name)
+    for name in presentation_api.__all__:
+        public_value = getattr(presentation_api, name)
         assert any(
             hasattr(owner, name) and public_value is getattr(owner, name)
             for owner in canonical

@@ -6,15 +6,15 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from companion_phrasebook import CompanionPhrasebook
-lazy from wellbeing_app_bridge import (
+lazy from application.companion_phrasebook import CompanionPhrasebook
+lazy from application.wellbeing_app_bridge import (
     ReminderCommand,
     ReminderTrigger,
     WellbeingAppBridge,
     WellbeingAppBridgeError,
     normalize_occurrence,
 )
-lazy from wellbeing_reminder import (
+lazy from application.wellbeing_reminder import (
     ReminderExpression,
     ReminderFraming,
     ReminderGaze,
@@ -23,7 +23,7 @@ lazy from wellbeing_reminder import (
     WellbeingCue,
     WellbeingKind,
 )
-lazy from wellbeing_runtime import RuntimeAttention, RuntimeCue, RuntimeSource
+lazy from application.wellbeing_runtime import RuntimeAttention, RuntimeCue, RuntimeSource
 
 
 class MutableClock:

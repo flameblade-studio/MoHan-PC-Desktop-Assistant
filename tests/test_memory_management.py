@@ -10,12 +10,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from dashboard_conversation import classify_memory_text
-lazy from dashboard_dialogs import (
+lazy from presentation.dashboard_conversation import classify_memory_text
+lazy from presentation.dashboard_dialogs import (
     ArchivedMemoryDialog,
     MemoryEditorDialog,
 )
-lazy from dashboard_shared import MEMORY_CATEGORIES
+lazy from presentation.dashboard_shared import MEMORY_CATEGORIES
 lazy from infrastructure.db import StudioDB
 
 EXPECTED_IMPORTANCE = 5

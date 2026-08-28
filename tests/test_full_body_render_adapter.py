@@ -7,8 +7,8 @@ lazy from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from body_pose_renderer import LAYER_DEPTHS, BodyPoseFrame, BodyPoseLayer
-lazy from full_body_render_adapter import (
+lazy from application.body_pose_renderer import LAYER_DEPTHS, BodyPoseFrame, BodyPoseLayer
+lazy from application.full_body_render_adapter import (
     AUTHORED_FULL_BODY_SLOT,
     SPEECH_LAYER_SLOTS,
     V4_STATIC_LAYER_SLOTS,

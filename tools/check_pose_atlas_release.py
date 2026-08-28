@@ -11,12 +11,12 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from full_body_asset_audit import audit_full_body_assets
-lazy from pose_atlas_manifest_builder import (
+lazy from domain.full_body_asset_audit import audit_full_body_assets
+lazy from domain.pose_atlas_manifest_builder import (
     PoseAtlasBuildConfig,
     build_pose_atlas_manifest,
 )
-lazy from pose_atlas_release_gate import (
+lazy from domain.pose_atlas_release_gate import (
     PoseAtlasAuditInputs,
     PoseLoadReleaseEvidence,
     audit_pose_atlas_release,

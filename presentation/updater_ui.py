@@ -244,8 +244,8 @@ class UpdatePanel(QWidget):
     def download_update(self) -> None:
         if self.release is None:
             return
-        # 自動檢查會把 silent_check 留在 True；下載一定是使用者主動觸發，
-        # 失敗時必須重新顯示警告對話框。
+        # Automatic checks leave silent_check True; a download is always
+        # user-initiated, so failures must re-show the warning dialog.
         self.silent_check = False
         asset = self.release.preferred_installer()
         answer = QMessageBox.question(

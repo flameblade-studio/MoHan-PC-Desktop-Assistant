@@ -13,22 +13,22 @@ lazy from PySide6.QtCore import QObject, QTimer, Signal
 lazy from PySide6.QtWidgets import QApplication, QWidget
 
 lazy from application.presentation_ports import PresentationPorts
-lazy from companion_window import CompanionWindow
-lazy from gesture_action_dispatcher import (
+lazy from presentation.companion_window import CompanionWindow
+lazy from application.gesture_action_dispatcher import (
     GestureActionDispatcher,
     GestureDispatchDisposition,
 )
-lazy from gesture_action_router import (
+lazy from application.gesture_action_router import (
     GestureActionDecision,
     GestureActionDisposition,
     GestureActionSafety,
 )
-lazy from gesture_application_adapter import GestureApplicationAdapter
-lazy from gesture_configuration import GestureAction, GestureSource
-lazy from gesture_controller import GestureController
+lazy from application.gesture_application_adapter import GestureApplicationAdapter
+lazy from domain.gesture_configuration import GestureAction, GestureSource
+lazy from application.gesture_controller import GestureController
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.platform_contracts import PlatformCapabilities, PlatformPaths
-lazy from service_container import CompanionServices
+lazy from application.service_container import CompanionServices
 
 
 class MemorySecretStore:

@@ -7,7 +7,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from domain.gesture_intent import LipRegion as OwnerLipRegion
 lazy from domain.gesture_intent import NormalizedPoint as OwnerNormalizedPoint
-lazy from gesture_intent import (
+lazy from domain.gesture_intent import (
     GestureFrame,
     GestureIntent,
     GestureState,

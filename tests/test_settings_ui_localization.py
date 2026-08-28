@@ -8,7 +8,7 @@ lazy from string import Formatter
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from settings_ui_localization import (
+lazy from presentation.settings_ui_localization import (
     LANGUAGE_ORDER,
     PHYSICS_TEXT_KEYS,
     PROACTIVE_MODE_KEYS,

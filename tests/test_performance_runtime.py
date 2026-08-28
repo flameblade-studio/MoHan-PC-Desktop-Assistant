@@ -7,20 +7,20 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy import performance_preferences
-lazy import performance_runtime
-lazy from behavior_director import SemanticEmotion
-lazy from body_pose_renderer import BodyPoseFrame
-lazy from character_pose import default_pose_registry
-lazy from performance_preferences import PerformancePreferences
-lazy from performance_runtime import (
+lazy from domain import performance_preferences
+lazy from application import performance_runtime
+lazy from application.behavior_director import SemanticEmotion
+lazy from application.body_pose_renderer import BodyPoseFrame
+lazy from domain.character_pose import default_pose_registry
+lazy from domain.performance_preferences import PerformancePreferences
+lazy from application.performance_runtime import (
     AtomicPerformanceFrame,
     BodyRenderRequest,
     PerformanceContextEvent,
     PerformanceRuntime,
     RuntimeSpeechEvent,
 )
-lazy from speech_performance import SpeechEventKind
+lazy from application.speech_performance import SpeechEventKind
 
 PROVIDERS = ("windows", "openai", "realtime", "azure", "dragon-hd")
 CORRECTIONS = frozenset({"idle_front.png", "idle_lean.png", "idle.png"})

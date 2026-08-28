@@ -14,14 +14,14 @@ sys.path.insert(0, str(ROOT))
 
 lazy from PySide6.QtWidgets import QApplication, QLineEdit, QMessageBox
 
-lazy from auxiliary_ui_localization import AuxiliaryText, auxiliary_text
+lazy from presentation.auxiliary_ui_localization import AuxiliaryText, auxiliary_text
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.profile_transfer import (
     ProfileImportResult,
     ProfileManifest,
     ProfileTransferError,
 )
-lazy from profile_transfer_ui import (
+lazy from presentation.profile_transfer_ui import (
     PortableProfilePanel,
     ProfileArchiveInspection,
     SensitiveProfileCallbacks,

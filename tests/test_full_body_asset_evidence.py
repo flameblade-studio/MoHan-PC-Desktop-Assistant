@@ -10,8 +10,8 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from character_pose import canonical_view_id
-lazy from full_body_asset_evidence import (
+lazy from domain.character_pose import canonical_view_id
+lazy from domain.full_body_asset_evidence import (
     FullBodyAssetManifestView,
     ImageBackendUnavailable,
     build_full_body_asset_evidence,
