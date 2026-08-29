@@ -251,6 +251,10 @@ class StudioDB:
     delete_memories = StudioDBMemoryMethods.delete_memories
     clear_memories = StudioDBMemoryMethods.clear_memories
     memory_context = StudioDBMemoryMethods.memory_context
+    # v4.4.2 後續批次（#88）起 dashboard 便呼叫此方法，但委派清單漏掛，
+    # 文字對話自此在收集歷史時以 AttributeError 無聲死亡（v4.5.1「思考中
+    # 凍結」與 v4.6.0「不理我」實機回報的第一因，2026-08-30 定案）。
+    recent_chat_context = StudioDBMemoryMethods.recent_chat_context
     _archive_memory_ids = StudioDBMemoryMethods._archive_memory_ids
     list_archived_memories = StudioDBMemoryMethods.list_archived_memories
     restore_archived_memory = StudioDBMemoryMethods.restore_archived_memory
