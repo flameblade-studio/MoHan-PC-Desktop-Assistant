@@ -4,6 +4,33 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+## [4.6.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.5.1...v4.6.0) (2026-08-29)
+
+
+### ✨ 新功能 / 新功能 / New features / 新機能
+
+* 雲端製衣畫質選項／云端制衣画质选项／cloud outfit image-quality option／クラウド衣装生成の画質オプション ([#110](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/110)) ([e938da5](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/e938da5806c2d33bddc627ef1c35bd41f56a583c))
+
+
+### 🐛 修正 / 修复 / Fixes / 修正
+
+* release-please 工作流在打 tag 場景不再因空 PR 輸出而失敗／release-please 工作流在打 tag 场景不再因空 PR 输出而失败／stop the release-please workflow from failing on empty PR output in the tagging scenario／タグ付けシナリオで release-please ワークフローが空の PR 出力で失敗しないよう修正 ([#102](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/102)) ([9eeb52a](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/9eeb52a81dc0315c9b1f6373467d59e570784be1))
+* 佈景主題色彩重映射染遍全 App／布景主题色彩重映射染遍全 App／theme-pack retint reskins the whole app／テーマパック色再マッピングでアプリ全体を再着色 ([#108](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/108)) ([a3dfacf](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/a3dfacf8c0a2285f6a04149f53ea55fc9758a370))
+* 執行期預設停用 3.15 JIT／执行期默认停用 3.15 JIT／disable the 3.15 JIT by default at runtime／実行時に 3.15 JIT を既定で無効化 ([#109](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/109)) ([b3b1e2e](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/b3b1e2efdf3bcf0a0116a72ff6709ad4c5605a4e))
+* 文字對話逾時凍結「思考中」根治／文字对话超时冻结「思考中」根治／cure the permanent "thinking" freeze on chat timeout／チャットのタイムアウトによる「思考中」永久凍結を根治 ([#106](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/106)) ([af7b93a](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/af7b93a35f0ce344d9ffaa64e3855ce8e2930b54))
+* 視窗最大化還原後假全螢幕死鎖根治／视窗最大化还原后假全屏死锁根治／cure the fake-fullscreen lock-up after maximize-restore／最大化復元後の疑似フルスクリーン膠着を根治 ([#107](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/107)) ([1295718](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/129571897e369de3e65169d47f4eced203f5f057))
+
+
+### ♻️ 重構 / 重构 / Refactor / リファクタリング
+
+* 退役根目錄一百七十五個相容殼檔／退役根目录一百七十五个兼容壳文件／Retire the 175 root compatibility facades／ルートの互換ファサード 175 件を退役 ([#103](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/103)) ([5adedf4](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/5adedf42dbb52e33cb4388b112a937ff7bb71f13))
+
+
+### 📚 文件 / 文档 / Documentation / ドキュメント
+
+* v4.5.1 發行說明新增【純淨之路】四語段落／v4.5.1 发布说明新增【纯净之路】四语段落／add the four-language "road of purity" section to the v4.5.1 release notes／v4.5.1 リリースノートに四言語の【純浄への道】セクションを追加 ([#104](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/104)) ([0cc93d5](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/0cc93d5f9846d141fc1c94f3d8662b384f8672b3))
+* 梳理四語 README——v4.5.1 最新摘要、版號段落精簡與 Ko-fi DLC 專區／梳理四语 README——v4.5.1 最新摘要、版本号段落精简与 Ko-fi DLC 专区／Streamline the four-language README with v4.5.1 highlights, leaner version banners and a Ko-fi DLC spotlight／四言語 README を整理——v4.5.1 ハイライト・バージョン欄の簡素化・Ko-fi DLC コーナー ([#101](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/101)) ([c5d86d4](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/c5d86d434415fd2d63aa05c6db61bbf198de3689))
+
 ## [4.5.1](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.5.0...v4.5.1) (2026-08-28)
 
 
