@@ -12,8 +12,6 @@ lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
 lazy from application.adaptive_character_composition import (
     DEFAULT_CHARACTER_IMAGE_SIZE as CHARACTER_IMAGE_SIZE,
-)
-lazy from application.adaptive_character_composition import (
     AdaptiveCharacterComposition,
     AdaptiveCharacterFactory,
     create_adaptive_character_composition,
@@ -165,9 +163,7 @@ class CompanionCoreMixin:
                 create_adaptive_character_composition(
                     stage_frame,
                     image_size=CHARACTER_IMAGE_SIZE,
-                    framing_style=str(
-                        self.db.setting("framing_style", "steady")
-                    ),
+                    framing_style=str(self.db.setting("framing_style", "steady")),
                     assets=PoseAtlasAssets(
                         resource_path("assets/pose-atlas/v4"),
                         image_size=CHARACTER_IMAGE_SIZE,
