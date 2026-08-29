@@ -145,6 +145,11 @@ class FlagshipSettingsSecurityMixin:
                     if "proactive_interaction_mode" in touched
                     else None
                 ),
+                framing_style=(
+                    str(self.framing_style.currentData())
+                    if "framing_style" in touched
+                    else None
+                ),
                 welcome_minimum_seconds=(
                     self.minimum_away_minutes.value() * 60
                     if "multisensory_welcome_minimum_seconds" in touched
@@ -228,6 +233,7 @@ class FlagshipSettingsSecurityMixin:
             # (the dashboard also writes ``proactive_interaction_mode``).
             for key, value in (
                 ("proactive_interaction_mode", validated.proactive_mode),
+                ("framing_style", validated.framing_style),
                 ("multisensory_welcome_minimum_seconds", validated.welcome_minimum_seconds),
                 ("multisensory_conversation_silence_seconds", validated.conversation_silence_seconds),
             ):

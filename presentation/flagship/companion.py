@@ -141,6 +141,19 @@ class FlagshipCompanionMixin:
         ):
             self.proactive_mode.addItem(label, value)
         self.proactive_mode.setAccessibleName(self._t("主動寒暄模式"))
+        self.framing_style = QComboBox()
+        for label, value in (
+            (self._t("沉穩（對話期間固定半身，建議）"), "steady"),
+            (self._t("靈動（依情境切換全身與半身）"), "lively"),
+            (self._t("固定半身（僅換裝預覽顯示全身）"), "half-only"),
+        ):
+            self.framing_style.addItem(label, value)
+        self.framing_style.setAccessibleName(self._t("桌面角色構圖風格"))
+        self.framing_style.currentIndexChanged.connect(
+            lambda _index: self._proactive_interaction_touched.add(
+                "framing_style"
+            )
+        )
         self.minimum_away_minutes = QSpinBox()
         self.minimum_away_minutes.setRange(1, 30)
         self.minimum_away_minutes.setSuffix(self._t(" 分鐘"))
@@ -169,6 +182,7 @@ class FlagshipCompanionMixin:
                 "multisensory_conversation_silence_seconds"
             )
         )
+        form.addRow(self._t("桌面角色構圖風格"), self.framing_style)
         form.addRow(self._t("主動寒暄模式"), self.proactive_mode)
         form.addRow(
             self._t("歡迎回來的最短離座時間"),
@@ -191,6 +205,10 @@ class FlagshipCompanionMixin:
             str(self.db.setting("proactive_interaction_mode", "balanced"))
         )
         self.proactive_mode.setCurrentIndex(max(0, mode_index))
+        style_index = self.framing_style.findData(
+            str(self.db.setting("framing_style", "steady"))
+        )
+        self.framing_style.setCurrentIndex(max(0, style_index))
         self.minimum_away_minutes.setValue(
             max(
                 1,

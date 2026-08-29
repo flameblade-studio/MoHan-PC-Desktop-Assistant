@@ -69,6 +69,26 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
         "Allow MoHan to greet me and check in proactively",
         "墨寒から自発的に挨拶や気遣いをすることを許可",
     ),
+    "桌面角色構圖風格": translations(
+        "桌面角色构图风格",
+        "Desktop companion framing style",
+        "デスクトップキャラクターの構図スタイル",
+    ),
+    "沉穩（對話期間固定半身，建議）": translations(
+        "沉稳（对话期间固定半身，建议）",
+        "Steady (half-body during conversations, recommended)",
+        "落ち着き（会話中は半身固定・推奨）",
+    ),
+    "靈動（依情境切換全身與半身）": translations(
+        "灵动（依情境切换全身与半身）",
+        "Lively (switches between full and half body by context)",
+        "軽やか（状況に応じて全身と半身を切り替え）",
+    ),
+    "固定半身（僅換裝預覽顯示全身）": translations(
+        "固定半身（仅换装预览显示全身）",
+        "Half-body only (full body just for outfit previews)",
+        "半身固定（衣装プレビューのみ全身表示）",
+    ),
     "安靜（不主動寒暄）": translations(
         "安静（不主动寒暄）",
         "Quiet (no proactive greetings)",

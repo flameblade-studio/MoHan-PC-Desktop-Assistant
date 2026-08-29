@@ -165,6 +165,7 @@ class FlagshipDraftValues:
     # ``None`` means the user never touched the control, so the persisted
     # value must not be overwritten (another settings page may own it).
     proactive_mode: str | None
+    framing_style: str | None
     welcome_minimum_seconds: int | None
     conversation_silence_seconds: int | None
     security: tuple[tuple[str, str], ...]

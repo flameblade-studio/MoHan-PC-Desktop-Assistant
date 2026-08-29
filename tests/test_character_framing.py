@@ -35,7 +35,7 @@ def context(**changes: object) -> FramingContext:
 
 def assert_human_like_context_shots() -> None:
     clock = Clock()
-    framing = CharacterFramingDirector(clock)
+    framing = CharacterFramingDirector(clock, style="lively")
     assert framing.decide(context()).mode is FramingMode.HALF
     clock.advance()
     assert framing.decide(context(owner_arrived=True)).mode is FramingMode.THREE_QUARTER
@@ -55,7 +55,7 @@ def assert_human_like_context_shots() -> None:
 
 def assert_speech_holds_and_settles_before_reframing() -> None:
     clock = Clock()
-    framing = CharacterFramingDirector(clock)
+    framing = CharacterFramingDirector(clock, style="lively")
     held = framing.decide(
         context(owner_arrived=True, speech_active=True, mouth_closed=False)
     )
@@ -77,7 +77,7 @@ def assert_speech_is_fixed_at_half_body() -> None:
     companion does not speak a few words in full-body before snapping back.
     """
     clock = Clock()
-    framing = CharacterFramingDirector(clock)
+    framing = CharacterFramingDirector(clock, style="lively")
     # Drive the director into FULL_BODY first (owner arrival).
     framing.decide(context(owner_arrived=True))
     clock.advance()
@@ -103,7 +103,7 @@ def assert_speech_is_fixed_at_half_body() -> None:
 
 def assert_large_hands_are_never_cropped() -> None:
     clock = Clock()
-    framing = CharacterFramingDirector(clock)
+    framing = CharacterFramingDirector(clock, style="lively")
     gesture = NormalizedRect(0.02, 0.20, 0.98, 0.72)
     result = framing.decide(context(gesture_bounds=gesture))
     assert result.crop.contains(gesture)
@@ -111,7 +111,7 @@ def assert_large_hands_are_never_cropped() -> None:
 
 
 def assert_small_viewport_preserves_readable_face() -> None:
-    framing = CharacterFramingDirector(Clock())
+    framing = CharacterFramingDirector(Clock(), style="lively")
     result = framing.decide(
         context(
             available_width_px=400,
@@ -124,10 +124,59 @@ def assert_small_viewport_preserves_readable_face() -> None:
 
 
 def assert_disabled_mode_is_stable() -> None:
-    framing = CharacterFramingDirector(Clock())
+    framing = CharacterFramingDirector(Clock(), style="lively")
     result = framing.decide(context(owner_arrived=True, adaptive_enabled=False))
     assert result.mode is FramingMode.HALF
     assert result.held
+
+
+def assert_steady_style_holds_half_body_between_turns() -> None:
+    # Owner ruling 2026-08-29: in the default "steady" style the whole
+    # conversation session stays at the half-body shot — the frame must not
+    # bounce back to full body the moment the mouth closes between turns.
+    clock = Clock()
+    framing = CharacterFramingDirector(clock, style="steady")
+    framing.decide(
+        context(owner_arrived=True, speech_active=True, mouth_closed=False)
+    )
+    clock.advance(10.0)
+    between_turns = framing.decide(
+        context(owner_arrived=True, speech_active=False, mouth_closed=True)
+    )
+    assert between_turns.mode is FramingMode.HALF
+    assert between_turns.reason is FramingReason.SPEECH_HOLD
+    # After the conversation cooldown the deferred full-body request resumes
+    # (stepping through THREE_QUARTER as usual).
+    clock.advance(120.0)
+    resumed = framing.decide(
+        context(owner_arrived=True, speech_active=False, mouth_closed=True)
+    )
+    assert resumed.mode is FramingMode.THREE_QUARTER
+
+
+def assert_half_only_style_never_leaves_half_body() -> None:
+    clock = Clock()
+    framing = CharacterFramingDirector(clock, style="half-only")
+    for changes in (
+        {"owner_arrived": True},
+        {"turning_away": True},
+        {"emotion_intensity": 0.9},
+    ):
+        clock.advance(20.0)
+        assert framing.decide(context(**changes)).mode is FramingMode.HALF
+    # The outfit preview is the single functional exception: the garment can
+    # only be judged on the full photograph.
+    clock.advance(20.0)
+    framing.decide(context(outfit_preview=True))
+    clock.advance(20.0)
+    framing.decide(context(outfit_preview=True))
+    clock.advance(20.0)
+    assert framing.decide(context(outfit_preview=True)).mode is FramingMode.FULL_BODY
+
+
+def assert_unknown_style_falls_back_to_steady() -> None:
+    framing = CharacterFramingDirector(Clock(), style="chaotic")
+    assert framing.style == "steady"
 
 
 def run() -> None:
@@ -137,6 +186,9 @@ def run() -> None:
     assert_large_hands_are_never_cropped()
     assert_small_viewport_preserves_readable_face()
     assert_disabled_mode_is_stable()
+    assert_steady_style_holds_half_body_between_turns()
+    assert_half_only_style_never_leaves_half_body()
+    assert_unknown_style_falls_back_to_steady()
     print("CHARACTER_FRAMING_OK")
 
 
