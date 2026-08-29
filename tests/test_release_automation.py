@@ -82,10 +82,10 @@ def test_version_runtime_and_evidence_policy() -> None:
     assert_contains(
         build_script,
         (
-            "True:True",
-            "JIT enabled by default",
+            "True:False",
+            "running with the JIT off",
             "jit_supported = $true",
-            "jit_default = $true",
+            "jit_default = $false",
             "Python 3.15.0rc1",
             "import azure.cognitiveservices.speech, cryptography, cv2, numpy, opencc, sounddevice, websocket",
             "import PySide6.QtCore, PySide6.QtGui, PySide6.QtMultimedia, PySide6.QtWidgets",

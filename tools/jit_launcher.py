@@ -1,4 +1,4 @@
-"""Launch the embedded MoHan runtime with Python 3.15 JIT enabled."""
+"""Launch the embedded MoHan runtime; the 3.15 JIT is opt-in only."""
 
 from __future__ import annotations
 
@@ -31,8 +31,15 @@ def main() -> int:
         for key, value in os.environ.items()
         if not key.upper().startswith(PYTHON_ENV_PREFIX)
     }
-    if environment.get("MOHAN_DISABLE_JIT") != "1":
+    # Stability-first default (2026-08-29): the JIT-enabled runtime crashed
+    # with 0xC0000409 mid-session on a user machine (Windows event log,
+    # 03:13:24) — the same 3.15rc1 JIT/Qt failure family as the CI history,
+    # now during live operation rather than finalization.  The JIT stays
+    # available as an explicit experiment via MOHAN_ENABLE_JIT=1.
+    if environment.get("MOHAN_ENABLE_JIT") == "1":
         environment["PYTHON_JIT"] = "1"
+    else:
+        environment["PYTHON_JIT"] = "0"
     runtime = runtime_path()
     result = subprocess.run(
         [str(runtime), *sys.argv[1:]],

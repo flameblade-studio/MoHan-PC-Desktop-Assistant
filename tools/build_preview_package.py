@@ -108,9 +108,10 @@ def _release_pose_atlas_root(required: bool) -> Path | None:
 
 def _write_build_info(path: Path, version: str, target: str) -> None:
     jit = getattr(sys, "_jit", None)
-    if not jit or not jit.is_available() or not jit.is_enabled():
+    if not jit or not jit.is_available() or jit.is_enabled():
         raise RuntimeError(
-            "Preview packages require Python 3.15 with JIT enabled by default"
+            "Preview packages require a JIT-capable Python 3.15 running "
+            "with the JIT off (shipped policy since 2026-08-29)"
         )
     path.write_text(
         json.dumps(
@@ -118,7 +119,7 @@ def _write_build_info(path: Path, version: str, target: str) -> None:
                 "version": version,
                 "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant",
                 "python": platform.python_version(),
-                "jit_default": True,
+                "jit_default": False,
                 "target": target,
                 "maturity": "preview",
             },

@@ -24,7 +24,7 @@ lazy from domain.language_support import TRANSCRIPTION_PROMPT_BASES
 lazy from domain.lip_sync import VISEME_MIN_HOLD_SECONDS
 lazy from presentation.preview_app import _TEXT
 lazy from application import runtime_bootstrap
-lazy from application.runtime_bootstrap import JIT_DISABLE_ENV, JIT_REEXEC_ENV
+lazy from application.runtime_bootstrap import JIT_ENABLE_ENV, JIT_REEXEC_ENV
 lazy from domain.time_utils import (
     local_aware_time,
     local_wall_time,
@@ -36,14 +36,29 @@ EXPECTED_EXCEPTION_COUNT = 3
 FROZEN_EXIT_PROBE_CODE = 7
 
 
-def test_frozen_runtime_requires_jit_default_cpython(monkeypatch) -> None:
+def test_frozen_runtime_enforces_jit_policy(monkeypatch) -> None:
+    # Policy flipped 2026-08-29 (0xC0000409 mid-session crash): the shipped
+    # default is JIT-off, and a frozen runtime that still has the JIT on
+    # violates the launcher contract; MOHAN_ENABLE_JIT=1 flips the
+    # expectation for the explicit experiment.
     monkeypatch.setattr(sys, "frozen", True, raising=False)
+    monkeypatch.delenv("MOHAN_ENABLE_JIT", raising=False)
     monkeypatch.setattr(runtime_bootstrap, "jit_is_enabled", lambda: False)
-    with pytest.raises(RuntimeError, match="launcher-enabled JIT"):
+    runtime_bootstrap.ensure_default_jit(
+        "application.application_bootstrap",
+        "app.py",
+    )
+    monkeypatch.setattr(runtime_bootstrap, "jit_is_enabled", lambda: True)
+    with pytest.raises(RuntimeError, match="does not match the"):
         runtime_bootstrap.ensure_default_jit(
             "application.application_bootstrap",
             "app.py",
         )
+    monkeypatch.setenv("MOHAN_ENABLE_JIT", "1")
+    runtime_bootstrap.ensure_default_jit(
+        "application.application_bootstrap",
+        "app.py",
+    )
 
 
 def test_frozen_jit_exit_skips_unsafe_interpreter_finalizers(monkeypatch) -> None:
@@ -74,7 +89,7 @@ def _assert_python315_language_features() -> None:
     assert callable(sys.set_lazy_imports_filter)
     assert io.text_encoding(None) == "utf-8"
     assert re.prefixmatch(r"^MoHan", "MoHan Desktop Assistant") is not None
-    assert JIT_DISABLE_ENV == "MOHAN_DISABLE_JIT"
+    assert JIT_ENABLE_ENV == "MOHAN_ENABLE_JIT"
     assert JIT_REEXEC_ENV == "MOHAN_JIT_REEXEC"
     aware_now = local_aware_time()
     wall_now = local_wall_time()

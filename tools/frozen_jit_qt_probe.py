@@ -1,7 +1,8 @@
-"""Minimal frozen-runtime probe for the Python 3.15 JIT + Qt exit contract."""
+"""Minimal frozen-runtime probe for the Python 3.15 JIT-policy + Qt exit contract."""
 
 from __future__ import annotations
 
+lazy import os
 lazy import sys
 lazy from pathlib import Path
 
@@ -33,7 +34,9 @@ def main() -> int:
             f"jit_enabled={jit_is_enabled()};qt_exit={exit_code}",
             encoding="utf-8",
         )
-    return finalize_process_exit(0 if jit_is_enabled() and exit_code == 0 else 2)
+    expect_jit = os.environ.get("MOHAN_ENABLE_JIT") == "1"
+    policy_ok = jit_is_enabled() == expect_jit
+    return finalize_process_exit(0 if policy_ok and exit_code == 0 else 2)
 
 
 if __name__ == "__main__":

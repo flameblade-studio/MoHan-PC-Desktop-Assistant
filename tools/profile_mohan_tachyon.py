@@ -379,10 +379,15 @@ def _profile_environment(
             for marker in ("API_KEY", "TOKEN", "SECRET", "PASSWORD")
         ):
             environment.pop(key, None)
-    environment["PYTHON_JIT"] = "1"
+    # Profile what we ship: the runtime now defaults to JIT-off (0xC0000409
+    # family, 2026-08-29), and forcing the JIT here both diverged the evidence
+    # from the product and made this gate flaky by betting each CI run on a
+    # JIT startup crash.  MOHAN_ENABLE_JIT=1 profiles the experiment instead.
+    environment["PYTHON_JIT"] = (
+        "1" if environment.get("MOHAN_ENABLE_JIT") == "1" else "0"
+    )
     environment["PYTHONUTF8"] = "1"
     environment["QT_QPA_PLATFORM"] = "offscreen"
-    environment.pop("MOHAN_DISABLE_JIT", None)
     if not use_user_profile:
         environment["MOHAN_DATA_DIR"] = str(temp_dir / "profile")
     return environment
@@ -954,8 +959,15 @@ def _quality_violations(
         )
     if runtime.get("jit_available") is not True:
         violations.append("target runtime did not expose the CPython JIT")
-    if runtime.get("jit_enabled") is not True:
-        violations.append("target runtime did not enable the CPython JIT")
+    # Evidence must match the shipped JIT policy (off by default since the
+    # 2026-08-29 0xC0000409 crash; MOHAN_ENABLE_JIT=1 profiles the experiment).
+    expect_jit = os.environ.get("MOHAN_ENABLE_JIT") == "1"
+    if runtime.get("jit_enabled") is not expect_jit:
+        violations.append(
+            "target runtime JIT state "
+            f"{runtime.get('jit_enabled')!r} does not match the "
+            f"shipped policy (expected {expect_jit})"
+        )
     return tuple(violations)
 
 

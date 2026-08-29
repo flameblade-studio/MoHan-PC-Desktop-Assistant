@@ -205,7 +205,7 @@ def test_python315_node24_and_jit_release_contract() -> None:
         "$env:MOHAN_DISABLE_JIT = $null",
     ):
         assert required in release, required
-    assert "--enable-experimental-jit=yes" in read(
+    assert "--enable-experimental-jit=yes-off" in read(
         "tools/build_python315_jit_runtime.py"
     )
 
