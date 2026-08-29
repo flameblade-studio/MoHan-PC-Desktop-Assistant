@@ -262,7 +262,7 @@ def assert_fixed_preference_wins_without_bypassing_permissions() -> None:
 
 def assert_director_preserves_speech_settle_cooldown_and_steps() -> None:
     clock = Clock()
-    orchestrator = FramingOrchestrator(CharacterFramingDirector(clock))
+    orchestrator = FramingOrchestrator(CharacterFramingDirector(clock, style="lively"))
     speaking = policy(
         speech_active=True,
         mouth_closed=False,

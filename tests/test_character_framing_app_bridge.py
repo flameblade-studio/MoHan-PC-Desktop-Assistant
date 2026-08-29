@@ -119,7 +119,7 @@ def cue() -> WellbeingCue:
 
 def bridge(clock: Clock | None = None) -> CharacterFramingAppBridge:
     timer = clock or Clock()
-    director = CharacterFramingDirector(timer)
+    director = CharacterFramingDirector(timer, style="lively")
     return CharacterFramingAppBridge(FramingOrchestrator(director))
 
 
@@ -165,7 +165,7 @@ def assert_equivalent_output_is_deduplicated_across_generations() -> None:
 def assert_failure_returns_last_known_good_without_mutation() -> None:
     clock = Clock()
     switchable = SwitchableOrchestrator(
-        FramingOrchestrator(CharacterFramingDirector(clock))
+        FramingOrchestrator(CharacterFramingDirector(clock, style="lively"))
     )
     app_bridge = CharacterFramingAppBridge(switchable)
     emitted = app_bridge.dispatch(value(state(1)))
