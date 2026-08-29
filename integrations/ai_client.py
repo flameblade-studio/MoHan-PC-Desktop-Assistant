@@ -5,7 +5,6 @@ lazy import os
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, field
 lazy from typing import NotRequired, TypedDict, Unpack
-lazy from urllib.error import HTTPError, URLError
 lazy from urllib.request import Request, urlopen
 
 lazy from PySide6.QtCore import QObject, QRunnable, Signal
@@ -146,6 +145,11 @@ def offline_reply(text: str, mode: str, response_language: str = "zh-TW") -> str
     else:
         reply = _traditional_chinese_offline_reply(text, mode)
     return reply
+
+# Chat/planner read timeout. 45s starved reasoning-model responses and the
+# escaped TimeoutError froze the dashboard (v4.5.1, 2026-08-29); 150s covers
+# slow reasoning turns while the worker's failure path shows real errors.
+REQUEST_TIMEOUT_SECONDS = 150
 
 
 class AIWorkerSignals(QObject):
@@ -303,7 +307,7 @@ class ActionPlannerWorker(QRunnable):
             method="POST",
         )
         try:
-            with urlopen(request, timeout=45) as response:
+            with urlopen(request, timeout=REQUEST_TIMEOUT_SECONDS) as response:
                 data = json.load(response)
             calls = [
                 item
@@ -389,6 +393,16 @@ class AIWorker(QRunnable):
         )
 
     def run(self) -> None:
+        # UI task boundary: ANY escape (payload assembly included — a bad
+        # history row raised here, outside the old try, and froze the
+        # dashboard on "thinking" across restarts because the poisoned
+        # history reloads from the DB every time) must reach signals.failed.
+        try:
+            self._run_request()
+        except Exception as exc:
+            self.signals.failed.emit(str(sanitize_error(exc)))
+
+    def _run_request(self) -> None:
         request_data = self.request
         key = (
             request_data.api_key or os.getenv("OPENAI_API_KEY", "")
@@ -480,7 +494,7 @@ class AIWorker(QRunnable):
             method="POST",
         )
         try:
-            with urlopen(req, timeout=45) as response:
+            with urlopen(req, timeout=REQUEST_TIMEOUT_SECONDS) as response:
                 data = json.load(response)
             self._report_prompt_cache_telemetry(data)
             text = data.get("output_text", "").strip()
@@ -502,7 +516,13 @@ class AIWorker(QRunnable):
                     )
                 )
             self.signals.done.emit(text)
-        except (URLError, HTTPError, ValueError) as exc:
+        except Exception as exc:
+            # Same UI-task-boundary contract as the planner worker above: a
+            # mid-read socket timeout raises TimeoutError, which the previous
+            # (URLError, HTTPError, ValueError) tuple let escape — the runnable
+            # then died silently inside the thread pool, ai_busy was never
+            # released, and the dashboard froze on "thinking" until restart
+            # (reported on v4.5.1, 2026-08-29).
             self.signals.failed.emit(str(sanitize_error(exc)))
 
     def _report_prompt_cache_telemetry(self, response: object) -> None:

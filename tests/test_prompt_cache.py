@@ -28,7 +28,7 @@ lazy from domain.prompt_cache import (
     prompt_cache_prefix_fingerprint,
 )
 
-REQUEST_TIMEOUT_SECONDS = 45
+lazy from integrations.ai_client import REQUEST_TIMEOUT_SECONDS
 EXACT_TOKEN_COUNT = 1024
 SHORT_TOKEN_COUNT = 1023
 CACHE_KEY_MAX_LENGTH = 64

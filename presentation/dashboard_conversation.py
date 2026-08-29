@@ -6,19 +6,12 @@ from PySide6.QtCore import QTimer
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QFont
 lazy from PySide6.QtWidgets import (
-    QApplication,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QMessageBox,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
+    QApplication, QHBoxLayout, QLabel, QLineEdit,
+    QMessageBox, QPushButton, QVBoxLayout, QWidget,
 )
 
 lazy from application.companion_phrasebook import (
-    PHRASEBOOK_SETTING,
-    CompanionPhrasebook,
+    PHRASEBOOK_SETTING, CompanionPhrasebook,
 )
 lazy from application.outfit_reveal import (
     LAST_REVEALED_OUTFIT_KEY,
@@ -672,22 +665,26 @@ class DashboardConversationMixin:
 
 
     def _ai_done(self, text: str) -> None:
-        self._finish_ai_wait_expression()
-        tagged = parse_internal_emotion(text)
-        clean = tagged.text or "妾在。主上方才所言，容妾再細想一遍。"
-        expression = (
-            tagged.expression
-            if tagged.valid_tag and tagged.expression is not None
-            else self._reply_expression(clean)
-        )
-        self._reply(
-            clean,
-            expression,
-            intensity=tagged.intensity,
-            source="ai_tag" if tagged.valid_tag else "fallback",
-        )
-        self.ai_busy = False
-        self._start_next_ai_request()
+        # finally 鐵閘：_reply（語音／表情／桌寵）拋例外會被 Qt 事件圈吞掉，
+        # 舊流程 ai_busy 永不釋放、面板凍在思考中（v4.5.1 實機回報）。
+        try:
+            self._finish_ai_wait_expression()
+            tagged = parse_internal_emotion(text)
+            clean = tagged.text or "妾在。主上方才所言，容妾再細想一遍。"
+            expression = (
+                tagged.expression
+                if tagged.valid_tag and tagged.expression is not None
+                else self._reply_expression(clean)
+            )
+            self._reply(
+                clean,
+                expression,
+                intensity=tagged.intensity,
+                source="ai_tag" if tagged.valid_tag else "fallback",
+            )
+        finally:
+            self.ai_busy = False
+            self._start_next_ai_request()
 
 
     @staticmethod
@@ -830,16 +827,19 @@ class DashboardConversationMixin:
             )
         else:
             message = "雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。"
-        self._reply(message, "worried")
-        self.api_status.setText(
-            self._t(
-                "api_connection_failed",
-                "OpenAI API：連線失敗（{error}）",
-                error=error[:70],
+        # 與 _ai_done 相同的 finally 鐵閘。
+        try:
+            self._reply(message, "worried")
+            self.api_status.setText(
+                self._t(
+                    "api_connection_failed",
+                    "OpenAI API：連線失敗（{error}）",
+                    error=error[:70],
+                )
             )
-        )
-        self.ai_busy = False
-        self._start_next_ai_request()
+        finally:
+            self.ai_busy = False
+            self._start_next_ai_request()
 
 
     def _voice_text(self, text: str) -> None:
