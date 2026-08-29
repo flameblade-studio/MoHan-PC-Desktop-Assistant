@@ -76,10 +76,25 @@ def test_full_flagship_stylesheet_recolors_without_structural_drift() -> None:
     assert themed.count("}") == base.count("}")
 
 
+def test_theme_application_never_overlays_structural_rules() -> None:
+    # v4.6.0 live report (2026-08-30): the build_stylesheet overlay painted
+    # every unstyled QFrame with the pack's dark card color plus a universal
+    # border — black bands and stray rectangles across the dashboard.  Theme
+    # application must stay retint-plus-font only.
+    source = (
+        Path(__file__).resolve().parents[1]
+        / "presentation"
+        / "dashboard_window.py"
+    ).read_text(encoding="utf-8")
+    assert "build_stylesheet(theme)" not in source
+    assert "retint_stylesheet" in source
+
+
 if __name__ == "__main__":
     test_neutrals_and_semantic_accents_stay_put()
     test_blue_violet_band_moves_to_theme_family()
     test_rgba_alpha_survives()
     test_neutral_primary_disables_retint()
     test_full_flagship_stylesheet_recolors_without_structural_drift()
+    test_theme_application_never_overlays_structural_rules()
     print("THEME_RETINT_OK")
