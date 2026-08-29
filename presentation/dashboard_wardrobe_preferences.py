@@ -6,6 +6,7 @@ lazy from datetime import UTC, datetime, timedelta
 
 lazy from PySide6.QtWidgets import (
     QCheckBox,
+    QComboBox,
     QFormLayout,
     QFrame,
     QLabel,
@@ -103,10 +104,33 @@ class DashboardWardrobePreferencesMixin:
             self.manual_wardrobe_lock_hours,
             "manualWardrobeLockHours",
         )
+        self.outfit_image_quality = QComboBox()
+        self.outfit_image_quality.addItem(
+            self._t("wardrobe_quality_low", "快速（畫質較低，最省時省費）"),
+            "low",
+        )
+        self.outfit_image_quality.addItem(
+            self._t("wardrobe_quality_medium", "標準（建議）"), "medium"
+        )
+        self.outfit_image_quality.addItem(
+            self._t("wardrobe_quality_high", "精緻（最耗時，費用最高）"),
+            "high",
+        )
+        stored_quality = str(
+            self.db.setting("outfit_image_quality", "medium")
+        )
+        quality_index = self.outfit_image_quality.findData(stored_quality)
+        self.outfit_image_quality.setCurrentIndex(
+            quality_index if quality_index >= 0 else 1
+        )
         preferences.addWidget(self.autonomous_wardrobe_enabled)
         preferences.addWidget(self.self_outfit_generation_enabled)
         preferences.addWidget(self.fashion_trend_search_enabled)
         limits = QFormLayout()
+        limits.addRow(
+            self._t("wardrobe_image_quality", "雲端製衣畫質"),
+            self.outfit_image_quality,
+        )
         limits.addRow(
             self._t("wardrobe_generated_limit", "自創服裝保留上限"),
             generated_limit_control,
@@ -133,6 +157,9 @@ class DashboardWardrobePreferencesMixin:
             "generated_outfit_limit": self.generated_outfit_limit.value(),
             "generated_outfit_storage_gb": self.generated_outfit_storage_gb.value(),
             "manual_wardrobe_lock_hours": self.manual_wardrobe_lock_hours.value(),
+            "outfit_image_quality": str(
+                self.outfit_image_quality.currentData() or "medium"
+            ),
         }
         for key, value in settings.items():
             self.db.set_setting(key, value)

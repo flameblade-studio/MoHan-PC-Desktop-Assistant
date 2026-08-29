@@ -296,7 +296,12 @@ class AutonomousOutfitGenerationController(QObject):
             outfit_store,
             trend_scout,
             OpenAIOutfitDraftGenerator(
-                OpenAIImageEditTransport(OpenAIImageEditOptions(api_key)),
+                OpenAIImageEditTransport(
+                    OpenAIImageEditOptions(
+                        api_key,
+                        quality=self._outfit_image_quality(),
+                    )
+                ),
                 self._project_root,
                 self._data_root / "outfit-generation-cache",
             ),
@@ -308,6 +313,10 @@ class AutonomousOutfitGenerationController(QObject):
             ),
             WardrobeStorageGuard(outfit_store, quarantine, policy),
         )
+
+    def _outfit_image_quality(self) -> str:
+        quality = str(self._db.setting("outfit_image_quality", "medium"))
+        return quality if quality in {"low", "medium", "high"} else "medium"
 
     def _trend_search_enabled(self) -> bool:
         return self._trend_scout_factory is not None and bool(
