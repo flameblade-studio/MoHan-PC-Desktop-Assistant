@@ -60,6 +60,9 @@ def _theme_stylesheet(scale: float, *, high_contrast: bool) -> str:
             "line": "#315f7d",
             "silver": "#d8e8f2",
             "glow": "#0078b8",
+            # White selected text on this needs >=4.5:1 (WCAG 1.4.3); the
+            # glow itself stays for decorative uses (scrollbars, splitters).
+            "selection": "#005a85",
             "focus": "#0078b8",
             "disabled": "#687985",
             "action": "#a63d00",
@@ -73,6 +76,8 @@ def _theme_stylesheet(scale: float, *, high_contrast: bool) -> str:
             "line": "#9aaed0",
             "silver": "#dce6f5",
             "glow": "#7189c7",
+            # 5.47:1 against white selected text (glow alone is only 3.44:1).
+            "selection": "#56679f",
             "focus": "#f0d58b",
             "disabled": "#667085",
             "action": "#6d67b7",
@@ -436,7 +441,7 @@ QWidget[mohanFlagshipTheme="true"] QSpinBox {{
     border: 1px solid {colors['line']};
     border-radius: {_scaled(8, scale)}px;
     padding: {padding_y}px {padding_x}px;
-    selection-background-color: {colors['glow']};
+    selection-background-color: {colors['selection']};
     selection-color: #ffffff;
 }}
 QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView {{
@@ -444,7 +449,7 @@ QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView {{
     background: rgba(255, 250, 247, 255);
     border: 1px solid {colors['line']};
     border-radius: {_scaled(8, scale)}px;
-    selection-background-color: {colors['glow']};
+    selection-background-color: {colors['selection']};
     selection-color: #ffffff;
     outline: 0;
 }}
@@ -457,7 +462,7 @@ QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView::item:hover {{
     color: {colors['ink']};
 }}
 QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView::item:selected {{
-    background: {colors['glow']};
+    background: {colors['selection']};
     color: #ffffff;
 }}
 QWidget[mohanFlagshipTheme="true"] QListWidget {{
