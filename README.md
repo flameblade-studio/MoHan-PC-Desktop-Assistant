@@ -18,7 +18,7 @@
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **最新正式版本：** `v4.5.1`（2026-08-28 正式發布）。Windows 是正式支援平台，已完成完整回歸、安裝與發布驗證；macOS Apple Silicon／Intel 與 Linux 同步提供功能受限的 DMG／AppImage Preview，已通過套件 smoke 驗證與核心匯入、純核心邏輯、Qt offscreen 的三系統 CI。Preview CI 不取代各平台真機相容性或完整功能驗證；最新公開版本一律以頁首動態 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。<!-- x-release-please-version-date -->
+> **最新正式版本：** `v4.6.0`（2026-08-29 正式發布）。Windows 是正式支援平台，已完成完整回歸、安裝與發布驗證；macOS Apple Silicon／Intel 與 Linux 同步提供功能受限的 DMG／AppImage Preview，已通過套件 smoke 驗證與核心匯入、純核心邏輯、Qt offscreen 的三系統 CI。Preview CI 不取代各平台真機相容性或完整功能驗證；最新公開版本一律以頁首動態 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。<!-- x-release-please-version-date -->
 
 > **歷史紀錄：** Windows 一直是完成既有公開版本實機、完整回歸、安裝與發布驗證的平台；macOS／Linux 功能受限 DMG／AppImage Preview 已納入安全平台邊界，以及核心匯入、純核心邏輯與 Qt offscreen 的三系統 CI。實際產物仍須通過本版最終發布門檻，CI 也不能取代真機相容性或完整功能驗證。詳見[跨平台狀態與能力矩陣](docs/CROSS-PLATFORM.md)。
 
@@ -441,7 +441,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **最新正式版本：** `v4.5.1`（2026-08-28 正式发布）。Windows 是正式支持平台，已完成完整回归、安装与发布验证；macOS Apple Silicon／Intel 与 Linux 同步提供功能受限的 DMG／AppImage Preview，已通过软件包 smoke 验证与核心导入、纯核心逻辑、Qt offscreen 的三系统 CI。Preview CI 不替代各平台真机兼容性或完整功能验证；最新公开版本一律以页首动态 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。<!-- x-release-please-version-date -->
+> **最新正式版本：** `v4.6.0`（2026-08-29 正式发布）。Windows 是正式支持平台，已完成完整回归、安装与发布验证；macOS Apple Silicon／Intel 与 Linux 同步提供功能受限的 DMG／AppImage Preview，已通过软件包 smoke 验证与核心导入、纯核心逻辑、Qt offscreen 的三系统 CI。Preview CI 不替代各平台真机兼容性或完整功能验证；最新公开版本一律以页首动态 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。<!-- x-release-please-version-date -->
 
 > **历史记录：** Windows 一直是完成现有公开版本真机、完整回归、安装与发布验证的平台；macOS／Linux 功能受限 DMG／AppImage Preview 已纳入安全平台边界，以及核心导入、纯核心逻辑与 Qt offscreen 的三系统 CI。实际产物仍须通过本版本最终发布关卡，CI 也不能代替真机兼容性或完整功能验证。详情请见[跨平台状态与能力矩阵](docs/CROSS-PLATFORM.md)。
 
@@ -864,7 +864,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **Latest formal release:** `v4.5.1` (formally published on 2026-08-28). Windows is the formally supported platform and has completed full regression, installation, and publication validation. macOS Apple Silicon/Intel and Linux ship in parallel as limited DMG/AppImage Previews, with package-smoke verification and three-OS CI for core imports, pure-core logic, and Qt offscreen. Preview CI does not replace real-device compatibility or full-feature validation on those platforms; the dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).<!-- x-release-please-version-date -->
+> **Latest formal release:** `v4.6.0` (formally published on 2026-08-29). Windows is the formally supported platform and has completed full regression, installation, and publication validation. macOS Apple Silicon/Intel and Linux ship in parallel as limited DMG/AppImage Previews, with package-smoke verification and three-OS CI for core imports, pure-core logic, and Qt offscreen. Preview CI does not replace real-device compatibility or full-feature validation on those platforms; the dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative for the latest public version. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).<!-- x-release-please-version-date -->
 
 > **Historical record:** Windows remains the only platform whose existing public releases have completed real-device use, the full regression suite, installation, and publication validation. The limited macOS/Linux DMG/AppImage Previews include safe platform boundaries plus three-OS CI for core imports, pure-core logic, and Qt offscreen; the actual artifacts must still pass this release's final publication gates. CI does not replace real-device compatibility or full-feature validation. See the [cross-platform status and capability matrix](docs/CROSS-PLATFORM.md).
 
@@ -1287,7 +1287,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
 </p>
 
-> **最新正式リリース：** `v4.5.1`（2026-08-28 正式公開）。Windows は正式対応プラットフォームであり、完全回帰、インストール、公開検証を完了しています。macOS Apple Silicon／Intel と Linux も機能限定 DMG／AppImage Preview として同時に公開され、パッケージ smoke 検証と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI に合格しています。Preview CI は各プラットフォームの実機互換性や完全機能の検証を代替しません。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。<!-- x-release-please-version-date -->
+> **最新正式リリース：** `v4.6.0`（2026-08-29 正式公開）。Windows は正式対応プラットフォームであり、完全回帰、インストール、公開検証を完了しています。macOS Apple Silicon／Intel と Linux も機能限定 DMG／AppImage Preview として同時に公開され、パッケージ smoke 検証と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI に合格しています。Preview CI は各プラットフォームの実機互換性や完全機能の検証を代替しません。最新の公開版は、ページ上部の動的な Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。<!-- x-release-please-version-date -->
 
 > **履歴：** 既存の公開版について、実機、完全回帰、インストール、公開まで検証済みなのは現在も Windows だけです。macOS／Linux 機能限定 DMG／AppImage Preview には、安全なプラットフォーム境界と、中核インポート、純粋な中核ロジック、Qt offscreen を検査する三 OS CI を導入していますが、実際の成果物は本版の最終公開ゲートに合格する必要があります。CI は実機互換性や完全機能の検証に代わりません。詳しくは[クロスプラットフォーム状況と機能表](docs/CROSS-PLATFORM.md)をご覧ください。
 
