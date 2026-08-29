@@ -145,6 +145,15 @@ class Dashboard(
         if hasattr(self, "chat"):
             self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
 
+    def hasHeightForWidth(self) -> bool:
+        # Word-wrapped labels propagate height-for-width up to this top-level
+        # layout, and Qt then treats the window height as a function of its
+        # width: the native frame accepts horizontal resizes but refuses the
+        # top/bottom edges and all four corners (v4.5.1 live report,
+        # 2026-08-29). The dashboard scrolls its own content, so the window
+        # height must stay a free variable.
+        return False
+
     def showEvent(self, event) -> None:
         if not event.spontaneous():
             # 「取消（不要保存）」的回滾基準改為每次開啟控制中心時刷新：
