@@ -15,3 +15,4 @@ date	item	decision	decided_by	rationale	evidence
 2026-08-31	幾何條件化 strength 0.95	撤回代理判定，strength 需以可證偽指標重新選定	agent-retracted	diffusers 的 t_start = int(steps - steps*strength)；steps=34、s=0.95 時只跳過 1 步，初始圖被加噪到幾乎全是雜訊。兩張構圖差異極大的初始圖同種子產出只差 2.1% 像素，證明構圖未被保留	scratchpad/iou-probe.log 與 docs/AGENT-CAPABILITIES-INDEX.md 撤回段
 2026-08-31	img2img 輸出尺寸	一律顯式傳 height/width	agent-assessed	不傳則退回 1024x1024 方形；方形畫布誘導模型畫成正面+側面的角色設定表，一張圖出現兩人，負向詞壓不住	work/second-gen-body/chroma-views-v10-geo/_rejected-uncropped-init-2figures-yaw+000.png
 2026-08-31	157 項待裁決佇列	依判準是否仍成立分流，126 項判為已被架構決策取代	agent-assessed	identity 已由 LoRA v2 承擔、24 視角改為從控制圖確定性產生，這兩個決策讓多數項目當初等待的判準失效；剩 31 項仍需擁有者過目。待擁有者確認	scratchpad/queue-triage.tsv
+2026-08-31	v9 那 17 張可用素體的角度有效性	判定實際只有 2 個角度，不足以支撐 24 視角轉盤	agent-assessed	逐張量鼻眼偏移：yaw+000 為 -0.04，+015 到 +105 全落在 +0.50~+0.62，全距的 82% 集中在 0 度到 15 度那一跳；並排對照確認身體亦未轉動。待擁有者確認	work/second-gen-body/chroma-views-v9/angle-progression-check.png
