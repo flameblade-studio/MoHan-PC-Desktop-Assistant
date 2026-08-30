@@ -1,0 +1,14 @@
+date	item	decision	decided_by	rationale	evidence
+2026-08-30	iCloud 照片本機儲存策略	改為隨選下載，並保留 D 槽離線封存	owner	C 槽回收 40.83 GB；本機仍留一份離線副本以防 iCloud 或網路失效	D:\照片離線封存-20260830\這是什麼-請先讀我.txt
+2026-08-30	iCloud 749 個取不回的檔案	記錄為已知風險，不再嘗試自動補齊	agent-assessed	逐一實測皆於約 121 秒逾時；含 146 個影片、30.85 GB，目前只存在雲端	同上說明檔的警告段
+2026-08-30	能見度工程中需本人執行的項目	放棄 #121 #127	owner	不讓能見度變成另一份無償勞動；#127 的代價已於該 issue 量化記錄	issue #121 #127
+2026-08-30	能見度工程 #126 官網英文頁	不需要	owner	炎劍官網凡肉眼可見文字段落本來就中英雙語	issue #126
+2026-08-30	能見度工程 #128 鐵人賽典藏	早已安排，非放棄	owner	官網已設定賽後自行典藏	issue #128
+2026-08-31	identity LoRA 權重	0.85	owner	1.00 壓不住髮型（長髮綁進身份）；0.70 正面臉型變窄變尖	work/second-gen-body/hair-probe/ 與 frontal-probe/
+2026-08-31	素體 ±yaw 左右視角	以 −yaw 水平鏡像產生 +yaw	owner	提示詞的 to her right/left 完全失效，四組對照皆同向；鏡像另可保證左右完全一致	work/second-gen-body/chroma-views-v9/mirror-check.png
+2026-08-31	幾何條件化初始圖	採用 shaded-render，不用 normal map	owner	normal map 在 0.90 與 0.95 兩檔皆造成系統性腳掌翹起	work/second-gen-body/normal-init-probe/feet-compare.png
+2026-08-31	幾何條件化 strength	0.95	agent-assessed	0.70/0.80/0.88 殘留人偶體型，0.90 仍有色偏；0.95 才乾淨。待擁有者確認	work/second-gen-body/normal-init-probe/sheet.png
+2026-08-31	幾何條件化的識別度	相對 v9 純 t2i 基準無退步	agent-assessed	四方並排顯示與 v9 為同一張臉；未宣稱等同權威圖。待擁有者確認	work/second-gen-body/s095-identity-check.png
+2026-08-31	幾何控制權威產出入庫範圍	核心 54.2 MB 入庫，180 MB 原始 NetPBM 不入庫	owner	光柵化器為確定性且指令已記錄，可位元重生；git 永不遺忘，入庫不可逆	PR #131
+2026-08-31	yaw-180 背面候選的美術閘門	撤回代理判定，以既有正式裁決為準	agent-retracted	代理在未讀 REPORT.md 的情況下誤給通過；正式結論為 REJECTED_DUPLICATE_ORNAMENT_HAND_SHOE_GATES_REAR_ANGLE_PASS	artifacts/.../yaw-180-candidate-v1-rear-audit-agent-b/REPORT.md
+2026-08-31	背面段 ±135 以上的提示詞工程	停止，不再更換措辭	agent-assessed	負向禁令、語意正向、幾何錨點三種手段各一輪皆 7/7 失敗；既有稽核亦記錄同一失敗模式	scratchpad/retry-back.log 與上述 REPORT.md
