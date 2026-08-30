@@ -35,6 +35,11 @@ NON_DOCUMENT_BASENAMES = frozenset({
     "LAYERED_ASSET_ALIGNMENT_REPORT.md",
     # Internal AI-to-AI response brief; not user-facing prose.
     "CODEX_RESPONSE_BODY_CENTER.md",
+    # Internal AI-to-AI rework-prevention index: which capabilities already
+    # exist and which approaches were already proven to fail.  Written for
+    # handover between coding agents, not for users; keeping four synchronised
+    # translations of a fast-moving index would guarantee they rot apart.
+    "AGENT-CAPABILITIES-INDEX.md",
 })
 LANGUAGE_HEADING_PATTERN = re.compile(
     r"(?m)^## (繁體中文|简体中文|English|日本語)\s*$"
