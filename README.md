@@ -2,9 +2,23 @@
 
 ## 繁體中文
 
-> ### ❤️⚔️ 支持墨寒：Ko-fi 贊助＆裝飾 DLC 下載
->
-> 墨寒完整功能永遠免費、原始碼 MIT 授權。喜歡她的話，歡迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 單次或每月贊助——贊助者可下載「赤焰劍光」主題等服裝與佈景純裝飾 DLC 作為謝禮；贊助不換取任何功能特權。
+<div align="center">
+  <img src="docs/media/mohan-demo.gif" alt="墨寒桌面語音互動虛擬助理三十六秒實際運作展示" width="100%">
+</div>
+
+墨寒是一套重視安全、隱私與角色連續感的 Windows 語音互動桌面助理，結合透明桌面角色、自然語音、由使用者控制的長期記憶、工作管理、權限控管工具，以及可擴充的雲端與智慧家庭連接器。她的角色背景是來自北宋、附生於赤焰劍中的千年女劍魂。
+
+<div align="center">
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ 下載 Windows 版</strong></a> ·
+  <a href="QUICKSTART.md">快速開始</a> ·
+  <a href="docs/LICENSE-PURITY.md">授權純淨承諾</a> ·
+  <a href="ROADMAP.md">路線圖</a> ·
+  <a href="CONTRIBUTING.md">參與協作</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">討論區</a> ·
+  <a href="SECURITY.md">安全政策</a>
+</div>
+
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -41,18 +55,10 @@
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
-墨寒是一套重視安全、隱私與角色連續感的 Windows 語音互動桌面助理，結合透明桌面角色、自然語音、由使用者控制的長期記憶、工作管理、權限控管工具，以及可擴充的雲端與智慧家庭連接器。她的角色背景是來自北宋、附生於赤焰劍中的千年女劍魂。
 
-[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
-
-<p align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">下載</a> ·
-  <a href="QUICKSTART.md">快速開始</a> ·
-  <a href="ROADMAP.md">路線圖</a> ·
-  <a href="CONTRIBUTING.md">參與協作</a> ·
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">討論區</a> ·
-  <a href="SECURITY.md">安全政策</a>
-</p>
+> ### ❤️⚔️ 支持墨寒：Ko-fi 贊助＆裝飾 DLC 下載
+>
+> 墨寒完整功能永遠免費、原始碼 MIT 授權。喜歡她的話，歡迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 單次或每月贊助——贊助者可下載「赤焰劍光」主題等服裝與佈景純裝飾 DLC 作為謝禮；贊助不換取任何功能特權。
 
 ### 實際展示
 
@@ -425,9 +431,23 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 ## 简体中文
 
-> ### ❤️⚔️ 支持墨寒：Ko-fi 赞助＆装饰 DLC 下载
->
-> 墨寒完整功能永远免费、源代码 MIT 许可。喜欢她的话，欢迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 单次或每月赞助——赞助者可下载“赤焰剑光”主题等服装与布景纯装饰 DLC 作为谢礼；赞助不换取任何功能特权。
+<div align="center">
+  <img src="docs/media/mohan-demo.gif" alt="墨寒桌面语音互动虚拟助手三十六秒实际运行展示" width="100%">
+</div>
+
+墨寒是一款重视安全、隐私与角色连续感的 Windows 语音互动桌面助手，结合透明桌面角色、自然语音、由用户控制的长期记忆、工作管理、权限控制工具，以及可扩展的云端与智能家居连接器。她的角色背景是来自北宋、寄宿于赤焰剑中的千年女剑魂。
+
+<div align="center">
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ 下载 Windows 版</strong></a> ·
+  <a href="QUICKSTART.md">快速开始</a> ·
+  <a href="docs/LICENSE-PURITY.md">授权纯净承诺</a> ·
+  <a href="ROADMAP.md">路线图</a> ·
+  <a href="CONTRIBUTING.md">参与协作</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">讨论区</a> ·
+  <a href="SECURITY.md">安全政策</a>
+</div>
+
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -464,18 +484,10 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
-墨寒是一款重视安全、隐私与角色连续感的 Windows 语音互动桌面助手，结合透明桌面角色、自然语音、由用户控制的长期记忆、工作管理、权限控制工具，以及可扩展的云端与智能家居连接器。她的角色背景是来自北宋、寄宿于赤焰剑中的千年女剑魂。
 
-[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
-
-<p align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">下载</a> ·
-  <a href="QUICKSTART.md">快速开始</a> ·
-  <a href="ROADMAP.md">路线图</a> ·
-  <a href="CONTRIBUTING.md">参与协作</a> ·
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">讨论区</a> ·
-  <a href="SECURITY.md">安全政策</a>
-</p>
+> ### ❤️⚔️ 支持墨寒：Ko-fi 赞助＆装饰 DLC 下载
+>
+> 墨寒完整功能永远免费、源代码 MIT 许可。喜欢她的话，欢迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 单次或每月赞助——赞助者可下载“赤焰剑光”主题等服装与布景纯装饰 DLC 作为谢礼；赞助不换取任何功能特权。
 
 ### 实际展示
 
@@ -848,9 +860,23 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 ## English
 
-> ### ❤️⚔️ Support MoHan: Ko-fi sponsorship & cosmetic DLC downloads
->
-> MoHan stays fully free with MIT-licensed source. If you enjoy her, a one-time or monthly contribution on [Ko-fi](https://ko-fi.com/flamebladestudio) unlocks thank-you downloads of purely cosmetic outfit and dashboard-theme DLC, such as the "Crimson Flame Sword-Light" theme; sponsorship never buys functional privileges.
+<div align="center">
+  <img src="docs/media/mohan-demo.gif" alt="Thirty-six seconds of MoHan Desktop Assistant running on a real desktop" width="100%">
+</div>
+
+MoHan is a safety- and privacy-first, voice-interactive Windows desktop companion that combines a transparent character, natural speech, user-controlled long-term memory, productivity management, permission-gated tools, and extensible cloud and smart-home connectors. Her character is a thousand-year-old female sword spirit from the Northern Song dynasty who resides within the Crimson Flame Sword.
+
+<div align="center">
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ Download for Windows</strong></a> ·
+  <a href="QUICKSTART.md">Quick start</a> ·
+  <a href="docs/LICENSE-PURITY.md">License purity</a> ·
+  <a href="ROADMAP.md">Roadmap</a> ·
+  <a href="CONTRIBUTING.md">Contribute</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">Discussions</a> ·
+  <a href="SECURITY.md">Security policy</a>
+</div>
+
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -887,18 +913,10 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   Windows 10/11 complete build · macOS/Linux limited Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
-MoHan is a safety- and privacy-first, voice-interactive Windows desktop companion that combines a transparent character, natural speech, user-controlled long-term memory, productivity management, permission-gated tools, and extensible cloud and smart-home connectors. Her character is a thousand-year-old female sword spirit from the Northern Song dynasty who resides within the Crimson Flame Sword.
 
-[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
-
-<p align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">Download</a> ·
-  <a href="QUICKSTART.md">Quick start</a> ·
-  <a href="ROADMAP.md">Roadmap</a> ·
-  <a href="CONTRIBUTING.md">Contribute</a> ·
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">Discussions</a> ·
-  <a href="SECURITY.md">Security policy</a>
-</p>
+> ### ❤️⚔️ Support MoHan: Ko-fi sponsorship & cosmetic DLC downloads
+>
+> MoHan stays fully free with MIT-licensed source. If you enjoy her, a one-time or monthly contribution on [Ko-fi](https://ko-fi.com/flamebladestudio) unlocks thank-you downloads of purely cosmetic outfit and dashboard-theme DLC, such as the "Crimson Flame Sword-Light" theme; sponsorship never buys functional privileges.
 
 ### Live demonstration
 
@@ -1271,9 +1289,23 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 ## 日本語
 
-> ### ❤️⚔️ 墨寒を支援：Ko-fi スポンサー＆装飾 DLC ダウンロード
->
-> 墨寒の全機能は今後も無料で、ソースコードは MIT ライセンスです。気に入っていただけたら、[Ko-fi](https://ko-fi.com/flamebladestudio) で単発または毎月の支援をどうぞ——スポンサーには「赤焰剣光」テーマなど衣装・ダッシュボードの純装飾 DLC を謝礼としてダウンロードいただけます。支援によって機能上の特権が得られることはありません。
+<div align="center">
+  <img src="docs/media/mohan-demo.gif" alt="墨寒デスクトップアシスタントの三十六秒の実動デモ" width="100%">
+</div>
+
+墨寒（MoHan）は、安全性、プライバシー、人格の連続性を大切にする音声対話型 Windows デスクトップアシスタントです。透明なデスクトップキャラクター、自然な音声、利用者が管理する長期記憶、仕事管理、権限付きツール、拡張可能なクラウドおよびスマートホーム接続を統合します。人物設定は、中国・北宋から来て赤焰剣に宿る千年の女性剣魂です。
+
+<div align="center">
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ Windows 版をダウンロード</strong></a> ·
+  <a href="QUICKSTART.md">クイックスタート</a> ·
+  <a href="docs/LICENSE-PURITY.md">ライセンス純度</a> ·
+  <a href="ROADMAP.md">ロードマップ</a> ·
+  <a href="CONTRIBUTING.md">開発参加</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">ディスカッション</a> ·
+  <a href="SECURITY.md">セキュリティ方針</a>
+</div>
+
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -1310,18 +1342,10 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   Windows 10/11 完全版 · macOS／Linux 機能限定 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
-墨寒（MoHan）は、安全性、プライバシー、人格の連続性を大切にする音声対話型 Windows デスクトップアシスタントです。透明なデスクトップキャラクター、自然な音声、利用者が管理する長期記憶、仕事管理、権限付きツール、拡張可能なクラウドおよびスマートホーム接続を統合します。人物設定は、中国・北宋から来て赤焰剣に宿る千年の女性剣魂です。
 
-[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
-
-<p align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">ダウンロード</a> ·
-  <a href="QUICKSTART.md">クイックスタート</a> ·
-  <a href="ROADMAP.md">ロードマップ</a> ·
-  <a href="CONTRIBUTING.md">開発参加</a> ·
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">ディスカッション</a> ·
-  <a href="SECURITY.md">セキュリティ方針</a>
-</p>
+> ### ❤️⚔️ 墨寒を支援：Ko-fi スポンサー＆装飾 DLC ダウンロード
+>
+> 墨寒の全機能は今後も無料で、ソースコードは MIT ライセンスです。気に入っていただけたら、[Ko-fi](https://ko-fi.com/flamebladestudio) で単発または毎月の支援をどうぞ——スポンサーには「赤焰剣光」テーマなど衣装・ダッシュボードの純装飾 DLC を謝礼としてダウンロードいただけます。支援によって機能上の特権が得られることはありません。
 
 ### 実機デモ
 
