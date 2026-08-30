@@ -7,8 +7,11 @@ date	item	decision	decided_by	rationale	evidence
 2026-08-31	identity LoRA 權重	0.85	owner	1.00 壓不住髮型（長髮綁進身份）；0.70 正面臉型變窄變尖	work/second-gen-body/hair-probe/ 與 frontal-probe/
 2026-08-31	素體 ±yaw 左右視角	以 −yaw 水平鏡像產生 +yaw	owner	提示詞的 to her right/left 完全失效，四組對照皆同向；鏡像另可保證左右完全一致	work/second-gen-body/chroma-views-v9/mirror-check.png
 2026-08-31	幾何條件化初始圖	採用 shaded-render，不用 normal map	owner	normal map 在 0.90 與 0.95 兩檔皆造成系統性腳掌翹起	work/second-gen-body/normal-init-probe/feet-compare.png
-2026-08-31	幾何條件化 strength	0.95	agent-assessed	0.70/0.80/0.88 殘留人偶體型，0.90 仍有色偏；0.95 才乾淨。待擁有者確認	work/second-gen-body/normal-init-probe/sheet.png
-2026-08-31	幾何條件化的識別度	相對 v9 純 t2i 基準無退步	agent-assessed	四方並排顯示與 v9 為同一張臉；未宣稱等同權威圖。待擁有者確認	work/second-gen-body/s095-identity-check.png
+2026-08-31	幾何條件化 strength	0.95（已於同日撤回，見下方 2026-08-31 撤回列）	agent-assessed	0.70/0.80/0.88 殘留人偶體型，0.90 仍有色偏；0.95 才乾淨。待擁有者確認	work/second-gen-body/normal-init-probe/sheet.png
+2026-08-31	幾何條件化的識別度	相對 v9 純 t2i 基準無退步（此結論不構成幾何條件化有效的證據）	agent-assessed	四方並排顯示與 v9 為同一張臉；未宣稱等同權威圖。附註：受測圖為 s0.95，而 s0.95 幾乎等同純 t2i，故「與 t2i 無差異」在此近乎套套邏輯，識別度需在真正生效的強度下重測	work/second-gen-body/s095-identity-check.png
 2026-08-31	幾何控制權威產出入庫範圍	核心 54.2 MB 入庫，180 MB 原始 NetPBM 不入庫	owner	光柵化器為確定性且指令已記錄，可位元重生；git 永不遺忘，入庫不可逆	PR #131
 2026-08-31	yaw-180 背面候選的美術閘門	撤回代理判定，以既有正式裁決為準	agent-retracted	代理在未讀 REPORT.md 的情況下誤給通過；正式結論為 REJECTED_DUPLICATE_ORNAMENT_HAND_SHOE_GATES_REAR_ANGLE_PASS	artifacts/.../yaw-180-candidate-v1-rear-audit-agent-b/REPORT.md
 2026-08-31	背面段 ±135 以上的提示詞工程	停止，不再更換措辭	agent-assessed	負向禁令、語意正向、幾何錨點三種手段各一輪皆 7/7 失敗；既有稽核亦記錄同一失敗模式	scratchpad/retry-back.log 與上述 REPORT.md
+2026-08-31	幾何條件化 strength 0.95	撤回代理判定，strength 需以可證偽指標重新選定	agent-retracted	diffusers 的 t_start = int(steps - steps*strength)；steps=34、s=0.95 時只跳過 1 步，初始圖被加噪到幾乎全是雜訊。兩張構圖差異極大的初始圖同種子產出只差 2.1% 像素，證明構圖未被保留	scratchpad/iou-probe.log 與 docs/AGENT-CAPABILITIES-INDEX.md 撤回段
+2026-08-31	img2img 輸出尺寸	一律顯式傳 height/width	agent-assessed	不傳則退回 1024x1024 方形；方形畫布誘導模型畫成正面+側面的角色設定表，一張圖出現兩人，負向詞壓不住	work/second-gen-body/chroma-views-v10-geo/_rejected-uncropped-init-2figures-yaw+000.png
+2026-08-31	157 項待裁決佇列	依判準是否仍成立分流，126 項判為已被架構決策取代	agent-assessed	identity 已由 LoRA v2 承擔、24 視角改為從控制圖確定性產生，這兩個決策讓多數項目當初等待的判準失效；剩 31 項仍需擁有者過目。待擁有者確認	scratchpad/queue-triage.tsv
