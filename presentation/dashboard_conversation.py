@@ -14,19 +14,13 @@ lazy from application.companion_phrasebook import (
     PHRASEBOOK_SETTING, CompanionPhrasebook,
 )
 lazy from application.outfit_reveal import (
-    LAST_REVEALED_OUTFIT_KEY,
-    is_outfit_origin_question,
-    outfit_origin_reply,
+    LAST_REVEALED_OUTFIT_KEY, is_outfit_origin_question, outfit_origin_reply,
 )
 lazy from application.presentation_ports import (
-    DEFAULT_TEXT_MODEL,
-    AIWorkerRequest,
-    format_duration,
+    DEFAULT_TEXT_MODEL, AIWorkerRequest, format_duration,
 )
 lazy from domain.app_profile import (
-    persona_for_profile,
-    personalize_text,
-    profile_setting,
+    persona_for_profile, personalize_text, profile_setting,
 )
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
 lazy from domain.expression_system import parse_internal_emotion, plan_wait_expressions
@@ -198,7 +192,6 @@ class DashboardConversationMixin:
         history_row.addWidget(self.chat_zoom_label)
         history_row.addWidget(self.chat_zoom_up)
         return history_row
-
 
     def _connect_chat_controls(self, send_button: QPushButton) -> None:
         send_button.clicked.connect(self.send_chat)
@@ -388,6 +381,13 @@ class DashboardConversationMixin:
             return
         text, mode = self.ai_queue.popleft()
         self.ai_busy = True
+        try:
+            self._launch_ai_worker(text, mode)
+        except Exception as exc:  # UI 邊界：組裝炸掉必須顯形（#88 病史）
+            self.ai_busy = False
+            self._ai_failed(str(exc))
+
+    def _launch_ai_worker(self, text: str, mode: str) -> None:
         self.set_voice_phase(
             self._t(
                 "thinking_status",

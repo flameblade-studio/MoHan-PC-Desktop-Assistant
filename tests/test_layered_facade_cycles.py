@@ -43,7 +43,7 @@ MAX_NEW_LAYER_MODULE_LINES = 800
 LAYER_MODULE_LINE_BASELINE = {
     "application.presentation_ports": 1_063,
     "domain.outfit_pack": 974,
-    "infrastructure.db": 1_200,
+    "infrastructure.db": 1_199,
     "infrastructure.profile_transfer": 1_075,
     "integrations.azure_speech": 864,
     "integrations.realtime_voice": 878,

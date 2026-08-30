@@ -8,10 +8,7 @@ lazy from datetime import datetime, timedelta
 lazy from pathlib import Path
 
 lazy from domain.language_support import (
-    LEGACY_AUTHOR_ORGANIZATION,
-    LEGACY_TRANSCRIPTION_PROMPT,
-    canonical_ui_language,
-    localized_transcription_prompt,
+    LEGACY_AUTHOR_ORGANIZATION, LEGACY_TRANSCRIPTION_PROMPT, canonical_ui_language, localized_transcription_prompt,
 )
 lazy from domain.time_utils import local_wall_time
 lazy from infrastructure.db_affection import StudioDBAffectionMethods
@@ -251,6 +248,8 @@ class StudioDB:
     delete_memories = StudioDBMemoryMethods.delete_memories
     clear_memories = StudioDBMemoryMethods.clear_memories
     memory_context = StudioDBMemoryMethods.memory_context
+    # #88 起 dashboard 呼叫此方法但委派漏掛——兩版「思考中」懸案第一因。
+    recent_chat_context = StudioDBMemoryMethods.recent_chat_context
     _archive_memory_ids = StudioDBMemoryMethods._archive_memory_ids
     list_archived_memories = StudioDBMemoryMethods.list_archived_memories
     restore_archived_memory = StudioDBMemoryMethods.restore_archived_memory
