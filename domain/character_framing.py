@@ -107,21 +107,43 @@ class FramingDecision:
     reason: FramingReason
 
 
+# Framing styles (owner ruling 2026-08-29, after the v4.5.1 "jumping between
+# full body and half body" report): "steady" keeps the whole conversation
+# session at the half-body shot and only relaxes after a quiet cooldown;
+# "lively" is the original event-driven behaviour; "half-only" never leaves
+# the half-body shot except for the outfit preview, which needs the full
+# photograph to show the garment.
+FRAMING_STYLES = ("steady", "lively", "half-only")
+DEFAULT_FRAMING_STYLE = "steady"
+STEADY_TRANSITION_GAP_SECONDS = 8.0
+LIVELY_TRANSITION_GAP_SECONDS = 1.2
+CONVERSATION_HOLD_SECONDS = 75.0
+
+
 class CharacterFramingDirector:
     """Select a human-like shot while keeping one full-body identity source."""
 
-    minimum_transition_gap_seconds = 1.2
+    minimum_transition_gap_seconds = LIVELY_TRANSITION_GAP_SECONDS
 
     def __init__(
         self,
         clock: Callable[[], float] | None = None,
         *,
         initial_mode: FramingMode = FramingMode.HALF,
+        style: str = DEFAULT_FRAMING_STYLE,
     ) -> None:
         self._clock = clock or time.monotonic
         self._mode = initial_mode
         self._last_change_at = float("-inf")
         self._pending: tuple[FramingMode, FramingReason] | None = None
+        self._style = style if style in FRAMING_STYLES else DEFAULT_FRAMING_STYLE
+        if self._style == "steady":
+            self.minimum_transition_gap_seconds = STEADY_TRANSITION_GAP_SECONDS
+        self._last_speech_at = float("-inf")
+
+    @property
+    def style(self) -> str:
+        return self._style
 
     @property
     def mode(self) -> FramingMode:
@@ -132,10 +154,17 @@ class CharacterFramingDirector:
             return self._decision(self._mode, True, FramingReason.DAILY_COMPANION)
 
         requested, reason = self._requested(context)
+        if self._style == "half-only" and not context.outfit_preview:
+            # The owner asked for a completely still companion: everything but
+            # the outfit preview stays at the half-body shot.
+            requested, reason = FramingMode.HALF, FramingReason.DAILY_COMPANION
         fitted = self._fit_viewport(requested, context)
         if fitted != requested:
             reason = FramingReason.SMALL_VIEWPORT
         requested = fitted
+
+        if context.speech_active:
+            self._last_speech_at = float(self._clock())
 
         if context.speech_active and not context.mouth_closed:
             # Speech is fixed at the half-body shot.  Jump straight to HALF
@@ -160,9 +189,19 @@ class CharacterFramingDirector:
             return self._decision(self._mode, True, FramingReason.SPEECH_HOLD)
 
         if context.mouth_closed and self._pending is not None:
-            requested, reason = self._pending
-            requested = self._fit_viewport(requested, context)
-            self._pending = None
+            if (
+                self._style == "steady"
+                and float(self._clock()) - self._last_speech_at
+                < CONVERSATION_HOLD_SECONDS
+            ):
+                # Conversation stickiness: between turns (the user typing, the
+                # companion waiting) the shot stays half-body instead of
+                # bouncing back to full body the moment the mouth closes.
+                requested, reason = FramingMode.HALF, FramingReason.SPEECH_HOLD
+            else:
+                requested, reason = self._pending
+                requested = self._fit_viewport(requested, context)
+                self._pending = None
 
         now = float(self._clock())
         if (

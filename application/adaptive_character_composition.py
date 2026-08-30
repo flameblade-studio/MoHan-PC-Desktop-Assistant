@@ -10,7 +10,10 @@ lazy from application.character_framing_app_bridge import CharacterFramingAppBri
 lazy from application.framing_orchestrator import FramingOrchestrator
 lazy from application.full_body_performance_bridge import FullBodyPerformanceBridge
 lazy from application.full_body_render_adapter import FullBodyRenderAdapter
-lazy from domain.character_framing import CharacterFramingDirector
+lazy from domain.character_framing import (
+    DEFAULT_FRAMING_STYLE,
+    CharacterFramingDirector,
+)
 
 DEFAULT_CHARACTER_IMAGE_SIZE = 465
 
@@ -52,11 +55,14 @@ def create_adaptive_character_composition(
     *,
     image_size: int = DEFAULT_CHARACTER_IMAGE_SIZE,
     assets: object | None = None,
+    framing_style: str = DEFAULT_FRAMING_STYLE,
 ) -> AdaptiveCharacterComposition:
     """Build the optional 2.5D runtime behind one explicit boundary."""
 
     framing = CharacterFramingAppBridge(
-        FramingOrchestrator(CharacterFramingDirector(time.monotonic))
+        FramingOrchestrator(
+            CharacterFramingDirector(time.monotonic, style=framing_style)
+        )
     )
     renderer = FullBodyRenderAdapter(
         image_size,

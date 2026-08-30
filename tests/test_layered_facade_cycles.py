@@ -48,7 +48,7 @@ LAYER_MODULE_LINE_BASELINE = {
     "integrations.azure_speech": 864,
     "integrations.realtime_voice": 878,
     "integrations.speech": 1_195,
-    "presentation.companion_core": 1_132,
+    "presentation.companion_core": 1_131,
     "presentation.companion_face_animation": 1_154,
     "presentation.companion_face_assets": 898,
     "presentation.companion_speech_runtime": 1_179,
