@@ -11,8 +11,8 @@ date	item	decision	decided_by	rationale	evidence
 2026-08-31	幾何條件化的識別度	相對 v9 純 t2i 基準無退步（此結論不構成幾何條件化有效的證據）	agent-assessed	四方並排顯示與 v9 為同一張臉；未宣稱等同權威圖。附註：受測圖為 s0.95，而 s0.95 幾乎等同純 t2i，故「與 t2i 無差異」在此近乎套套邏輯，識別度需在真正生效的強度下重測	work/second-gen-body/s095-identity-check.png
 2026-08-31	幾何控制權威產出入庫範圍	核心 54.2 MB 入庫，180 MB 原始 NetPBM 不入庫	owner	光柵化器為確定性且指令已記錄，可位元重生；git 永不遺忘，入庫不可逆	PR #131
 2026-08-31	yaw-180 背面候選的美術閘門	撤回代理判定，以既有正式裁決為準	agent-retracted	代理在未讀 REPORT.md 的情況下誤給通過；正式結論為 REJECTED_DUPLICATE_ORNAMENT_HAND_SHOE_GATES_REAR_ANGLE_PASS	artifacts/.../yaw-180-candidate-v1-rear-audit-agent-b/REPORT.md
-2026-08-31	背面段 ±135 以上的提示詞工程	停止，不再更換措辭	agent-assessed	負向禁令、語意正向、幾何錨點三種手段各一輪皆 7/7 失敗；既有稽核亦記錄同一失敗模式	scratchpad/retry-back.log 與上述 REPORT.md
-2026-08-31	幾何條件化 strength 0.95	撤回代理判定，strength 需以可證偽指標重新選定	agent-retracted	diffusers 的 t_start = int(steps - steps*strength)；steps=34、s=0.95 時只跳過 1 步，初始圖被加噪到幾乎全是雜訊。兩張構圖差異極大的初始圖同種子產出只差 2.1% 像素，證明構圖未被保留	scratchpad/iou-probe.log 與 docs/AGENT-CAPABILITIES-INDEX.md 撤回段
+2026-08-31	背面段 ±135 以上的提示詞工程	停止，不再更換措辭	agent-assessed	負向禁令、語意正向、幾何錨點三種手段各一輪皆 7/7 失敗；既有稽核亦記錄同一失敗模式	docs/AGENT-CAPABILITIES-INDEX.md 背面段落與上述 REPORT.md（原始 retry-back.log 為暫存檔，已不可長期引用）
+2026-08-31	幾何條件化 strength 0.95	撤回代理判定，strength 需以可證偽指標重新選定	agent-retracted	diffusers 的 t_start = int(steps - steps*strength)；steps=34、s=0.95 時只跳過 1 步，初始圖被加噪到幾乎全是雜訊。兩張構圖差異極大的初始圖同種子產出只差 2.1% 像素，證明構圖未被保留	docs/evidence/2026-08-31-geometry-strength-probe.log 與 docs/AGENT-CAPABILITIES-INDEX.md 撤回段
 2026-08-31	img2img 輸出尺寸	一律顯式傳 height/width	agent-assessed	不傳則退回 1024x1024 方形；方形畫布誘導模型畫成正面+側面的角色設定表，一張圖出現兩人，負向詞壓不住	work/second-gen-body/chroma-views-v10-geo/_rejected-uncropped-init-2figures-yaw+000.png
-2026-08-31	157 項待裁決佇列	依判準是否仍成立分流，126 項判為已被架構決策取代	agent-assessed	identity 已由 LoRA v2 承擔、24 視角改為從控制圖確定性產生，這兩個決策讓多數項目當初等待的判準失效；剩 31 項仍需擁有者過目。待擁有者確認	scratchpad/queue-triage.tsv
+2026-08-31	157 項待裁決佇列	依判準是否仍成立分流，126 項判為已被架構決策取代	agent-assessed	identity 已由 LoRA v2 承擔、24 視角改為從控制圖確定性產生，這兩個決策讓多數項目當初等待的判準失效；剩 31 項仍需擁有者過目。待擁有者確認	docs/evidence/2026-08-31-decision-queue-triage.tsv
 2026-08-31	v9 那 17 張可用素體的角度有效性	判定實際只有 2 個角度，不足以支撐 24 視角轉盤	agent-assessed	逐張量鼻眼偏移：yaw+000 為 -0.04，+015 到 +105 全落在 +0.50~+0.62，全距的 82% 集中在 0 度到 15 度那一跳；並排對照確認身體亦未轉動。待擁有者確認	work/second-gen-body/chroma-views-v9/angle-progression-check.png
