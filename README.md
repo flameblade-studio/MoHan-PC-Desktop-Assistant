@@ -2,9 +2,23 @@
 
 ## 繁體中文
 
-> ### ❤️⚔️ 支持墨寒：Ko-fi 贊助＆裝飾 DLC 下載
->
-> 墨寒完整功能永遠免費、原始碼 MIT 授權。喜歡她的話，歡迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 單次或每月贊助——贊助者可下載「赤焰劍光」主題等服裝與佈景純裝飾 DLC 作為謝禮；贊助不換取任何功能特權。
+<div align="center">
+  <img src="docs/media/mohan-demo.gif" alt="墨寒桌面語音互動虛擬助理三十六秒實際運作展示" width="100%">
+</div>
+
+墨寒是一套重視安全、隱私與角色連續感的 Windows 語音互動桌面助理，結合透明桌面角色、自然語音、由使用者控制的長期記憶、工作管理、權限控管工具，以及可擴充的雲端與智慧家庭連接器。她的角色背景是來自北宋、附生於赤焰劍中的千年女劍魂。
+
+<div align="center">
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ 下載 Windows 版</strong></a> ·
+  <a href="QUICKSTART.md">快速開始</a> ·
+  <a href="docs/LICENSE-PURITY.md">授權純淨承諾</a> ·
+  <a href="ROADMAP.md">路線圖</a> ·
+  <a href="CONTRIBUTING.md">參與協作</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">討論區</a> ·
+  <a href="SECURITY.md">安全政策</a>
+</div>
+
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -41,18 +55,10 @@
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
-墨寒是一套重視安全、隱私與角色連續感的 Windows 語音互動桌面助理，結合透明桌面角色、自然語音、由使用者控制的長期記憶、工作管理、權限控管工具，以及可擴充的雲端與智慧家庭連接器。她的角色背景是來自北宋、附生於赤焰劍中的千年女劍魂。
 
-[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
-
-<p align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">下載</a> ·
-  <a href="QUICKSTART.md">快速開始</a> ·
-  <a href="ROADMAP.md">路線圖</a> ·
-  <a href="CONTRIBUTING.md">參與協作</a> ·
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">討論區</a> ·
-  <a href="SECURITY.md">安全政策</a>
-</p>
+> ### ❤️⚔️ 支持墨寒：Ko-fi 贊助＆裝飾 DLC 下載
+>
+> 墨寒完整功能永遠免費、原始碼 MIT 授權。喜歡她的話，歡迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 單次或每月贊助——贊助者可下載「赤焰劍光」主題等服裝與佈景純裝飾 DLC 作為謝禮；贊助不換取任何功能特權。
 
 ### 實際展示
 
@@ -182,20 +188,20 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我始終負責�
 
 如果這個專案能鼓勵另一位沒有工程背景、卻懷抱著某個「非做出來不可」想法的人踏出第一步，那麼墨寒的誕生便有了超越程式本身的意義。
 
-### v4.5.1 最新摘要
+### 最新版本摘要
 
-`v4.5.1` 是墨寒目前的最新版本，已於 2026-08-28 正式發布；完整變更請見 [v4.5.1 發行說明](docs/releases/v4.5.1.md)，最新公開版本一律以頁首 Published Release 徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。
+墨寒目前的最新版本是 `v4.6.0`；完整變更請見 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 與 [CHANGELOG](CHANGELOG.md)，最新公開版本一律以頁首 Published Release 徽章為準。<!-- x-release-please-version -->
 
-- **v4.5.1 全面總體檢（核心）：** 修復好感度資料鏈、背身狀態機、動畫凍結、服裝畫布與七夕萬年曆等核心行為，長時間執行下角色狀態更一致。
-- **v4.5.1 全面總體檢（介面）：** 補上誤觸防護、隱私同意流程、資源洩漏與眼皮閃爍等十八項介面與穩定性修正。
-- **v4.5.1 發行流程自動化：** Release Please 版號同步、四語發行說明初稿與多平台打包派發全面自動化，發行不再依賴人工補救。
-- **v4.5.1 授權透明化：** 新增墨寒角色資產授權（ASSETS-LICENSE）並完成 PySide6 LGPL 合規配套，程式碼（MIT）與角色資產的授權邊界更明確。
+- **實機實操列為發版必修：** 上一版通過八十六項靜態體檢與全套自動化測試後，仍在一夜實測中現形四顆重大缺陷。此後每次發版都必須像使用者一樣實際操作——測試套件證明程式沒寫錯，只有實機實操證明產品真的能用。
+- **對話與視窗穩定性：** 「思考中」永久凍結的三層病灶（逾時例外逃逸、防護圈外的無聲死亡、收尾例外鎖死佇列）已根治，回話流程改為 `finally` 鐵閘並有回歸測試守門；視窗最大化還原後卡成假全螢幕的置頂競態亦已修復，並以 AST 契約防止守衛被未來重構移除。
+- **佈景主題色彩重映射：** 主題引擎改為對整份旗艦樣式表做色彩重映射——藍紫色帶依主題主色聚攏轉色、明暗層次保留、金色點綴與警示紅不動，贊助者 DLC 主題可真正染遍全應用程式。
+- **Python 3.15 JIT 政策：** 能力保留、預設關閉。啟動器、打包契約、自建 CPython、啟動守門、探針與煙霧標記八條線一致對齊，`MOHAN_ENABLE_JIT=1` 保留為顯式實驗通道。
+- **雲端製衣畫質三檔位：** 快速／標準／精緻可於雲裳閣直選，取代先前寫死且不可見的中檔設定。
+- **架構分層落實：** 一百七十五個根目錄相容殼檔全數退役，根目錄由 239 項瘦身至 64 項，二百零一個呼叫端改用正式分層路徑，「退役別名不得復活」已入契約。
 - **四語、四平台治理：** 軟體與主要文件同步支援繁體中文、簡體中文、英文與日文；Windows 為正式支援，macOS Apple Silicon／Intel 與 Linux 同步提供功能受限 Preview。
-- **多感知與角色表現：** 導入可明確授權與隨時撤銷的本機視覺感知、21 點手部資料、468／478 點 Face Mesh、語音活動與安全的非阻塞融合；缺少模型、裝置、網路或額度時只停用受影響路徑，不損及既有功能。
-- **PoseAtlas 與 Live 2.5D：** 四平台封裝皆納入 PoseAtlas v4 的 24 視角、landmarks／hands sidecars 與資產稽核；角色、衣裝、表情與動作維持可測試的 2.5D 表現。
-- **控制中心與可擴充性：** 控制台改為角色導向的旗艦控制中心，統整聊天、語音、視覺、衣裝、隱私與系統設定；並為炎劍官方與使用者自行編譯的佈景主題包提供可驗證的安裝途徑。
-- **「真人女孩感」五大系統與靈魂拼圖：** 新增性格鏡像（讀取對話脈絡）、穿搭直覺（串接天氣）、軍糧飽食度、主上專屬寵溺（`companion_affection` 資料表 + `devotion_bonus` 表情優先級掛鉤）、虹膜羞澀視線、赤焰劍意情緒共鳴、時間主權狀態機、空中捏合牽手、夢囈系統、劍魂覺醒、感官共感與共同創作錄，讓墨寒更像一尊有連續感的類數位生命。
-- **可稽核的工程基線：** v4.4.2 量測基線為 645 個程式檔案、163,136 行程式碼，其中產品本體 79,519 行，稽核工具 5,673 行、開發工具 11,480 行、測試 66,464 行；完整說明請見 [v4.4.2 發行筆記](docs/releases/v4.4.2.md)。
+- **多感知與角色表現：** 可明確授權與隨時撤銷的本機視覺感知、21 點手部資料、468／478 點 Face Mesh、語音活動偵測與安全的非阻塞融合；缺少模型、裝置、網路或額度時只停用受影響路徑，不損及既有功能。
+- **授權純淨與開源回饋：** 產線只採用 MIT／Apache 2.0／CC0／CC BY 授權（見[授權純淨承諾](docs/LICENSE-PURITY.md)）；開發期間並向上游 ai-toolkit 回饋兩顆缺陷修復。
+- **可稽核的工程基線：** 734 個 Python 檔、184,534 行，其中產品本體 87,565 行、測試 74,174 行、開發工具 22,795 行。
 
 ### 專案特色
 
@@ -425,9 +431,23 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 ## 简体中文
 
-> ### ❤️⚔️ 支持墨寒：Ko-fi 赞助＆装饰 DLC 下载
->
-> 墨寒完整功能永远免费、源代码 MIT 许可。喜欢她的话，欢迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 单次或每月赞助——赞助者可下载“赤焰剑光”主题等服装与布景纯装饰 DLC 作为谢礼；赞助不换取任何功能特权。
+<div align="center">
+  <img src="docs/media/mohan-demo.gif" alt="墨寒桌面语音互动虚拟助手三十六秒实际运行展示" width="100%">
+</div>
+
+墨寒是一款重视安全、隐私与角色连续感的 Windows 语音互动桌面助手，结合透明桌面角色、自然语音、由用户控制的长期记忆、工作管理、权限控制工具，以及可扩展的云端与智能家居连接器。她的角色背景是来自北宋、寄宿于赤焰剑中的千年女剑魂。
+
+<div align="center">
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ 下载 Windows 版</strong></a> ·
+  <a href="QUICKSTART.md">快速开始</a> ·
+  <a href="docs/LICENSE-PURITY.md">授权纯净承诺</a> ·
+  <a href="ROADMAP.md">路线图</a> ·
+  <a href="CONTRIBUTING.md">参与协作</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">讨论区</a> ·
+  <a href="SECURITY.md">安全政策</a>
+</div>
+
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -464,18 +484,10 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
-墨寒是一款重视安全、隐私与角色连续感的 Windows 语音互动桌面助手，结合透明桌面角色、自然语音、由用户控制的长期记忆、工作管理、权限控制工具，以及可扩展的云端与智能家居连接器。她的角色背景是来自北宋、寄宿于赤焰剑中的千年女剑魂。
 
-[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
-
-<p align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">下载</a> ·
-  <a href="QUICKSTART.md">快速开始</a> ·
-  <a href="ROADMAP.md">路线图</a> ·
-  <a href="CONTRIBUTING.md">参与协作</a> ·
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">讨论区</a> ·
-  <a href="SECURITY.md">安全政策</a>
-</p>
+> ### ❤️⚔️ 支持墨寒：Ko-fi 赞助＆装饰 DLC 下载
+>
+> 墨寒完整功能永远免费、源代码 MIT 许可。喜欢她的话，欢迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 单次或每月赞助——赞助者可下载“赤焰剑光”主题等服装与布景纯装饰 DLC 作为谢礼；赞助不换取任何功能特权。
 
 ### 实际展示
 
@@ -605,20 +617,20 @@ Codex 协助我把想法转译成程序架构与代码；而我始终负责决�
 
 如果这个项目能鼓励另一位没有工程背景、却怀抱着某个“非做出来不可”想法的人迈出第一步，那么墨寒的诞生便有了超越程序本身的意义。
 
-### v4.5.1 最新摘要
+### 最新版本摘要
 
-`v4.5.1` 是墨寒目前的最新版本，已于 2026-08-28 正式发布；完整变更请见 [v4.5.1 发布说明](docs/releases/v4.5.1.md)，最新公开版本始终以页首 Published Release 徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。
+墨寒目前的最新版本是 `v4.6.0`；完整变更请见 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 与 [CHANGELOG](CHANGELOG.md)，最新公开版本一律以页首 Published Release 徽章为准。<!-- x-release-please-version -->
 
-- **v4.5.1 全面总体检（核心）：** 修复好感度数据链、背身状态机、动画冻结、服装画布与七夕万年历等核心行为，长时间运行下角色状态更一致。
-- **v4.5.1 全面总体检（界面）：** 补上误触防护、隐私同意流程、资源泄漏与眼皮闪烁等十八项界面与稳定性修复。
-- **v4.5.1 发布流程自动化：** Release Please 版本号同步、四语发布说明初稿与多平台打包派发全面自动化，发布不再依赖人工补救。
-- **v4.5.1 许可透明化：** 新增墨寒角色资产许可（ASSETS-LICENSE）并完成 PySide6 LGPL 合规配套，代码（MIT）与角色资产的许可边界更明确。
-- **四语、四平台治理：** 软件与主要文档同步支持繁体中文、简体中文、英文和日文；Windows 为正式支持，macOS Apple Silicon／Intel 与 Linux 同步提供功能受限 Preview。
-- **多感知与角色表现：** 引入可明确授权且可随时撤销的本地视觉感知、21 点手部数据、468／478 点 Face Mesh、语音活动与安全的非阻塞融合；缺少模型、设备、网络或额度时只停用受影响路径，不影响既有功能。
-- **PoseAtlas 与 Live 2.5D：** 四平台封装均纳入 PoseAtlas v4 的 24 视角、landmarks／hands sidecars 与资产审计；角色、服装、表情与动作维持可测试的 2.5D 表现。
-- **控制中心与可扩展性：** 控制台改为角色导向的旗舰控制中心，整合聊天、语音、视觉、服装、隐私与系统设置；并为炎剑官方与用户自行编译的主题包提供可验证的安装路径。
-- **「真人女孩感」五大系统与灵魂拼图：** 新增性格镜像（读取对话脉络）、穿搭直觉（串接天气）、军粮饱食度、主上专属宠溺（`companion_affection` 数据表 + `devotion_bonus` 表情优先级挂钩）、虹膜羞涩视线、赤焰剑意情绪共鸣、时间主权状态机、空中捏合牵手、梦呓系统、剑魂觉醒、感官共感与共同创作录，让墨寒更像一尊有连续感的类数字生命。
-- **可审计的工程基线：** v4.4.2 测量基线为 645 个程序文件、163,136 行代码，其中产品本体 79,519 行，审计工具 5,673 行、开发工具 11,480 行、测试 66,464 行；完整说明请见 [v4.4.2 发布说明](docs/releases/v4.4.2.md)。
+- **实机实操列为发版必修：** 上一版通过八十六项静态体检与全套自动化测试后，仍在一夜实测中现形四颗重大缺陷。此后每次发版都必须像用户一样实际操作——测试套件证明代码没写错，只有实机实操证明产品真的能用。
+- **对话与窗口稳定性：** 「思考中」永久冻结的三层病灶（超时异常逃逸、防护圈外的无声死亡、收尾异常锁死队列）已根治，回话流程改为 `finally` 铁闸并有回归测试守门；窗口最大化还原后卡成假全屏的置顶竞态亦已修复，并以 AST 契约防止守卫被未来重构移除。
+- **主题色彩重映射：** 主题引擎改为对整份旗舰样式表做色彩重映射——蓝紫色带依主题主色聚拢转色、明暗层次保留、金色点缀与警示红不动，赞助者 DLC 主题可真正染遍全应用程序。
+- **Python 3.15 JIT 策略：** 能力保留、默认关闭。启动器、打包契约、自建 CPython、启动守门、探针与冒烟标记八条线一致对齐，`MOHAN_ENABLE_JIT=1` 保留为显式实验通道。
+- **云端制衣画质三档位：** 快速／标准／精致可于云裳阁直选，取代先前写死且不可见的中档设置。
+- **架构分层落实：** 一百七十五个根目录兼容壳文件全数退役，根目录由 239 项瘦身至 64 项，二百零一个调用端改用正式分层路径，「退役别名不得复活」已入契约。
+- **四语、四平台治理：** 软件与主要文档同步支持繁体中文、简体中文、英文与日文；Windows 为正式支持，macOS Apple Silicon／Intel 与 Linux 同步提供功能受限 Preview。
+- **多感知与角色表现：** 可明确授权与随时撤销的本机视觉感知、21 点手部数据、468／478 点 Face Mesh、语音活动检测与安全的非阻塞融合；缺少模型、设备、网络或额度时只停用受影响路径，不损及既有功能。
+- **授权纯净与开源回馈：** 产线只采用 MIT／Apache 2.0／CC0／CC BY 授权（见[授权纯净承诺](docs/LICENSE-PURITY.md)）；开发期间并向上游 ai-toolkit 回馈两颗缺陷修复。
+- **可稽核的工程基线：** 734 个 Python 文件、184,534 行，其中产品本体 87,565 行、测试 74,174 行、开发工具 22,795 行。
 
 ### 主要功能
 
@@ -848,9 +860,23 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 ## English
 
-> ### ❤️⚔️ Support MoHan: Ko-fi sponsorship & cosmetic DLC downloads
->
-> MoHan stays fully free with MIT-licensed source. If you enjoy her, a one-time or monthly contribution on [Ko-fi](https://ko-fi.com/flamebladestudio) unlocks thank-you downloads of purely cosmetic outfit and dashboard-theme DLC, such as the "Crimson Flame Sword-Light" theme; sponsorship never buys functional privileges.
+<div align="center">
+  <img src="docs/media/mohan-demo.gif" alt="Thirty-six seconds of MoHan Desktop Assistant running on a real desktop" width="100%">
+</div>
+
+MoHan is a safety- and privacy-first, voice-interactive Windows desktop companion that combines a transparent character, natural speech, user-controlled long-term memory, productivity management, permission-gated tools, and extensible cloud and smart-home connectors. Her character is a thousand-year-old female sword spirit from the Northern Song dynasty who resides within the Crimson Flame Sword.
+
+<div align="center">
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ Download for Windows</strong></a> ·
+  <a href="QUICKSTART.md">Quick start</a> ·
+  <a href="docs/LICENSE-PURITY.md">License purity</a> ·
+  <a href="ROADMAP.md">Roadmap</a> ·
+  <a href="CONTRIBUTING.md">Contribute</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">Discussions</a> ·
+  <a href="SECURITY.md">Security policy</a>
+</div>
+
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -887,18 +913,10 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   Windows 10/11 complete build · macOS/Linux limited Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
-MoHan is a safety- and privacy-first, voice-interactive Windows desktop companion that combines a transparent character, natural speech, user-controlled long-term memory, productivity management, permission-gated tools, and extensible cloud and smart-home connectors. Her character is a thousand-year-old female sword spirit from the Northern Song dynasty who resides within the Crimson Flame Sword.
 
-[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
-
-<p align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">Download</a> ·
-  <a href="QUICKSTART.md">Quick start</a> ·
-  <a href="ROADMAP.md">Roadmap</a> ·
-  <a href="CONTRIBUTING.md">Contribute</a> ·
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">Discussions</a> ·
-  <a href="SECURITY.md">Security policy</a>
-</p>
+> ### ❤️⚔️ Support MoHan: Ko-fi sponsorship & cosmetic DLC downloads
+>
+> MoHan stays fully free with MIT-licensed source. If you enjoy her, a one-time or monthly contribution on [Ko-fi](https://ko-fi.com/flamebladestudio) unlocks thank-you downloads of purely cosmetic outfit and dashboard-theme DLC, such as the "Crimson Flame Sword-Light" theme; sponsorship never buys functional privileges.
 
 ### Live demonstration
 
@@ -1028,20 +1046,20 @@ I therefore do not define the final goal as piling in every possible feature unt
 
 If this project encourages even one person without an engineering background to take the first step toward an idea they simply must bring into existence, MoHan's creation will have meaning beyond the software itself.
 
-### v4.5.1 at a glance
+### Latest release summary
 
-`v4.5.1` is MoHan's current latest release, formally published on 2026-08-28. See the [v4.5.1 release notes](docs/releases/v4.5.1.md) for the full change list; the dynamic Published Release badge above and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain the authority for the latest public version.
+The current release is `v4.6.0`; see [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) and the [CHANGELOG](CHANGELOG.md) for the full record, with the Published Release badge above remaining authoritative.<!-- x-release-please-version -->
 
-- **v4.5.1 full health audit (core):** Repairs the affection data chain, the back-turn state machine, animation freezes, the outfit canvas, and the Qixi perpetual calendar so character state stays consistent over long sessions.
-- **v4.5.1 full health audit (interface):** Lands eighteen interface and stability fixes covering misfire guards, the privacy-consent flow, resource leaks, and the eyelid flicker.
-- **v4.5.1 release-flow automation:** Release Please version sync, the four-language release-notes draft, and multi-platform packaging dispatch are now fully automated, so releases no longer depend on manual patch-up.
-- **v4.5.1 licensing transparency:** Adds the MoHan character-assets license (ASSETS-LICENSE) and the PySide6 LGPL compliance set, drawing a clearer boundary between the MIT-licensed code and the character assets.
-- **Four-language, four-platform governance:** The product and primary documentation ship in Traditional Chinese, Simplified Chinese, English, and Japanese. Windows is formally supported; macOS Apple Silicon/Intel and Linux ship together as limited Previews.
-- **Multisensory character experience:** Explicitly authorized and revocable local visual perception, 21-point hand data, 468/478-point Face Mesh, voice activity, and safe non-blocking fusion have been added. Missing models, devices, network, or quota disable only the affected path.
-- **PoseAtlas and Live 2.5D:** All four platform packages carry PoseAtlas v4's 24 views, landmarks/hands sidecars, and asset audit. Character, wardrobe, expression, and motion remain testable Live 2.5D experiences.
-- **Control center and extensibility:** The console is now a character-led flagship control center for chat, voice, vision, wardrobe, privacy, and system settings, with verifiable installation paths for Flameblade official and user-compiled theme packs.
-- **"Real-girl" five systems and soul pieces:** Adds personality mirroring (reads conversation context), wardrobe intuition (weather), military-ration satiety, exclusive favor (the `companion_affection` table + `devotion_bonus` expression-priority hook), shy-gaze aversion, crimson-flame emotional resonance, time-sovereignty state machine, pinch hand-hold, somniloquy, sword-soul awakening, sensory synesthesia, and a shared chronicle — making MoHan feel like a digital life with real continuity.
-- **Auditable engineering baseline:** The v4.4.2 measured baseline is 645 code files and 163,136 lines: 79,519 product lines, 5,673 audit-tool lines, 11,480 developer-tool lines, and 66,464 test lines. See the full [v4.4.2 release notes](docs/releases/v4.4.2.md).
+- **Hands-on operation is now mandatory before shipping.** The previous release cleared eighty-six static health checks and the whole automated suite, and then four significant defects surfaced during a single evening of ordinary use. Every release since must be driven the way a user drives it: a test suite proves the code is not wrong, while only hands-on operation proves the product works.
+- **Conversation and window stability.** The permanent "thinking" freeze had three layers — an escaping timeout exception, a silent death outside the guard ring, and a completion exception that locked the queue — and all three are resolved, with the reply path moved behind a `finally` barrier and covered by regression tests. The always-on-top race that trapped a restored window in a false full-screen state is fixed as well, with an AST contract preventing later refactors from removing that guard.
+- **Theme colour remapping.** The theme engine remaps colour across the entire flagship stylesheet: the blue-violet band converges toward each theme's primary hue, tonal depth survives, and gold accents and warning reds stay untouched, so a sponsor DLC theme finally reaches every corner of the application.
+- **Python 3.15 JIT policy.** The capability is retained but disabled by default, aligned across eight surfaces — launcher, packaging contract, self-built CPython, startup guard, probe and smoke markers — with `MOHAN_ENABLE_JIT=1` kept as an explicit experimental channel.
+- **Three cloud garment quality tiers.** Fast, standard and refined are selectable in the wardrobe, replacing a hard-coded middle setting that users could neither see nor change.
+- **Layered architecture enforced.** All one hundred and seventy-five root compatibility facades are retired, the root directory falls from 239 entries to 64, two hundred and one call sites now use formal layered paths, and "retired aliases must not return" is written into a contract.
+- **Four languages, four platforms.** The software and its principal documents carry Traditional Chinese, Simplified Chinese, English and Japanese. Windows is formally supported, while macOS Apple Silicon and Intel, plus Linux, ship as limited Previews.
+- **Multi-sensory perception and character expression.** Explicitly consented and revocable local vision, 21-point hand data, a 468/478-point face mesh, voice activity detection and a safe non-blocking fusion path. A missing model, device, network or quota disables only the affected route and leaves everything else intact.
+- **License purity and upstream contribution.** The pipeline admits only MIT, Apache 2.0, CC0 and CC BY material — see the [License Purity Commitment](docs/LICENSE-PURITY.md) — and two defect fixes went upstream to ai-toolkit during development.
+- **An auditable engineering baseline.** 734 Python files and 184,534 lines: 87,565 in the product itself, 74,174 in tests, and 22,795 in development tooling.
 
 ### Key capabilities
 
@@ -1271,9 +1289,23 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 ## 日本語
 
-> ### ❤️⚔️ 墨寒を支援：Ko-fi スポンサー＆装飾 DLC ダウンロード
->
-> 墨寒の全機能は今後も無料で、ソースコードは MIT ライセンスです。気に入っていただけたら、[Ko-fi](https://ko-fi.com/flamebladestudio) で単発または毎月の支援をどうぞ——スポンサーには「赤焰剣光」テーマなど衣装・ダッシュボードの純装飾 DLC を謝礼としてダウンロードいただけます。支援によって機能上の特権が得られることはありません。
+<div align="center">
+  <img src="docs/media/mohan-demo.gif" alt="墨寒デスクトップアシスタントの三十六秒の実動デモ" width="100%">
+</div>
+
+墨寒（MoHan）は、安全性、プライバシー、人格の連続性を大切にする音声対話型 Windows デスクトップアシスタントです。透明なデスクトップキャラクター、自然な音声、利用者が管理する長期記憶、仕事管理、権限付きツール、拡張可能なクラウドおよびスマートホーム接続を統合します。人物設定は、中国・北宋から来て赤焰剣に宿る千年の女性剣魂です。
+
+<div align="center">
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ Windows 版をダウンロード</strong></a> ·
+  <a href="QUICKSTART.md">クイックスタート</a> ·
+  <a href="docs/LICENSE-PURITY.md">ライセンス純度</a> ·
+  <a href="ROADMAP.md">ロードマップ</a> ·
+  <a href="CONTRIBUTING.md">開発参加</a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">ディスカッション</a> ·
+  <a href="SECURITY.md">セキュリティ方針</a>
+</div>
+
+[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
 <p align="center">
   <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml"><img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg"></a>
@@ -1310,18 +1342,10 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
   Windows 10/11 完全版 · macOS／Linux 機能限定 Preview · Python 3.15 · PySide6 · MIT License
 </p>
 
-墨寒（MoHan）は、安全性、プライバシー、人格の連続性を大切にする音声対話型 Windows デスクトップアシスタントです。透明なデスクトップキャラクター、自然な音声、利用者が管理する長期記憶、仕事管理、権限付きツール、拡張可能なクラウドおよびスマートホーム接続を統合します。人物設定は、中国・北宋から来て赤焰剣に宿る千年の女性剣魂です。
 
-[繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
-
-<p align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">ダウンロード</a> ·
-  <a href="QUICKSTART.md">クイックスタート</a> ·
-  <a href="ROADMAP.md">ロードマップ</a> ·
-  <a href="CONTRIBUTING.md">開発参加</a> ·
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions">ディスカッション</a> ·
-  <a href="SECURITY.md">セキュリティ方針</a>
-</p>
+> ### ❤️⚔️ 墨寒を支援：Ko-fi スポンサー＆装飾 DLC ダウンロード
+>
+> 墨寒の全機能は今後も無料で、ソースコードは MIT ライセンスです。気に入っていただけたら、[Ko-fi](https://ko-fi.com/flamebladestudio) で単発または毎月の支援をどうぞ——スポンサーには「赤焰剣光」テーマなど衣装・ダッシュボードの純装飾 DLC を謝礼としてダウンロードいただけます。支援によって機能上の特権が得られることはありません。
 
 ### 実機デモ
 
@@ -1451,20 +1475,20 @@ Codex は私の思いをアーキテクチャとコードへ翻訳する手助�
 
 このプロジェクトが、技術者ではなくても「どうしても形にしたい」考えを持つ誰かの最初の一歩を後押しできたなら、墨寒の誕生にはソフトウェアを超える意味があります。
 
-### v4.5.1 の最新概要
+### 最新リリース概要
 
-`v4.5.1` は墨寒の現在の最新リリースであり、2026-08-28 に正式公開されました。変更の全容は [v4.5.1 リリースノート](docs/releases/v4.5.1.md) をご覧ください。最新の公開版は、ページ上部の Published Release バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を正とします。
+現在の最新リリースは `v4.6.0` です。変更の全容は [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) と [CHANGELOG](CHANGELOG.md) をご覧ください。最新の公開版はページ上部の Published Release バッジを正とします。<!-- x-release-please-version -->
 
-- **v4.5.1 全面総点検（コア）：** 好感度データチェーン、背向きステートマシン、アニメーション凍結、衣装キャンバス、七夕万年暦などのコア動作を修復し、長時間の実行でもキャラクター状態が一貫します。
-- **v4.5.1 全面総点検（インターフェース）：** 誤操作防護、プライバシー同意フロー、リソースリーク、まぶたのちらつきなど十八件のインターフェース・安定性修正を収録します。
-- **v4.5.1 リリースフロー自動化：** Release Please のバージョン同期、四言語リリースノート草稿、マルチプラットフォームパッケージング派発を全面自動化し、リリースは人手の補修に依存しません。
-- **v4.5.1 ライセンス透明化：** 墨寒キャラクター資産ライセンス（ASSETS-LICENSE）と PySide6 LGPL コンプライアンス一式を追加し、MIT ライセンスのコードとキャラクター資産の境界を明確にします。
-- **四言語・四プラットフォームの統治：** ソフトウェアと主要文書は繁体字中国語、簡体字中国語、英語、日本語に対応します。Windows は正式対応、macOS Apple Silicon／Intel と Linux は同時提供する機能限定 Preview です。
-- **マルチセンサーのキャラクター体験：** 明示的に許可・撤回できるローカル視覚知覚、21 点手部データ、468／478 点 Face Mesh、音声活動、安全なノンブロッキング融合を導入しました。モデル、デバイス、ネットワーク、利用枠が不足しても、影響を受ける経路だけを停止します。
-- **PoseAtlas と Live 2.5D：** 四プラットフォームのパッケージには、PoseAtlas v4 の 24 視角、landmarks／hands sidecar、資産監査を同梱します。キャラクター、衣装、表情、動作はテスト可能な Live 2.5D 体験を維持します。
-- **コントロールセンターと拡張性：** コンソールはチャット、音声、視覚、衣装、プライバシー、システム設定を統合するキャラクター主導の旗艦コントロールセンターとなり、炎劍公式と利用者が自らコンパイルしたテーマパックに検証可能な導入経路を提供します。
-- **「本物の女の子感」五大システムと魂のピース：** 性格ミラーリング（会話文脈を読む）、衣装直感（天気連携）、軍糧満腹度、主上専属寵溺（`companion_affection` テーブル + `devotion_bonus` 表情優先度フック）、虹彩の恥じらい視線、赤焔剣意の感情共鳴、時間主権ステートマシン、空中ピンチ手つなぎ、寝言システム、剣魂覚醒、感覚共感、共同創作録を追加し、墨寒を連続感のあるデジタル生命らしくします。
-- **監査可能な工学ベースライン：** v4.4.2 時点の基線は 645 コードファイル、163,136 行です。製品本体 79,519 行、監査ツール 5,673 行、開発ツール 11,480 行、テスト 66,464 行です。詳細は [v4.4.2 リリースノート](docs/releases/v4.4.2.md) をご覧ください。
+- **実機操作をリリース前の必須科目に。** 前版は八十六項目の静的点検と自動テスト一式に合格したうえで、一晩の実操作から重大な欠陥が四件現れました。以降のリリースでは、利用者と同じように実際に操作することを必須としています。テストはコードに誤りがないことを示すだけで、製品が使えることを示すのは実機操作だけです。
+- **対話とウィンドウの安定性。** 「考え中」で永久に固まる不具合は、タイムアウト例外の逸脱、保護圏外での無言の停止、終了処理の例外によるキューのロックという三層構造でしたが、いずれも根治しました。応答経路は `finally` による確実な解放とし、回帰テストで守っています。最大化から復元した際に擬似全画面へ陥る最前面表示の競合も解消し、将来のリファクタリングで保護が失われないよう AST 契約を設けました。
+- **テーマのカラーリマッピング。** テーマエンジンは旗艦スタイルシート全体に対して色の再写像を行います。青紫帯はテーマ主色へ収束し、明暗の階調は保たれ、金の差し色と警告色の赤はそのままです。これによりスポンサー向け DLC テーマがアプリ全体に行き渡ります。
+- **Python 3.15 の JIT 方針。** 能力は残しつつ既定で無効とし、ランチャー、パッケージング契約、自前ビルドの CPython、起動時ガード、プローブとスモークの印まで八つの面で整合させました。`MOHAN_ENABLE_JIT=1` は明示的な実験用経路として維持します。
+- **クラウド衣装生成の三段階画質。** 高速・標準・高精細を雲裳閣で直接選べます。従来は中段階が固定で、利用者からは見えも変えられもしませんでした。
+- **階層アーキテクチャの徹底。** ルート直下の互換ファサード百七十五件をすべて退役させ、ルートの項目数は 239 から 64 へ、呼び出し側二百一箇所を正式な階層パスへ移行し、「退役した別名を復活させない」ことを契約に明記しました。
+- **四言語・四プラットフォーム。** ソフトウェアと主要文書は繁体中文・簡体中文・英語・日本語に対応します。Windows が正式対応、macOS Apple Silicon／Intel と Linux は機能限定 Preview です。
+- **多感覚知覚とキャラクター表現。** 明示的な同意といつでも撤回できるローカル視覚、21 点の手指データ、468／478 点フェイスメッシュ、音声区間検出、そして安全な非ブロッキング統合。モデル・機器・ネットワーク・利用枠のいずれかが欠けても、影響を受けた経路のみを停止し、他の機能は損ないません。
+- **ライセンス純度と上流への還元。** パイプラインには MIT／Apache 2.0／CC0／CC BY のみを受け入れます（[ライセンス純度に関する約束](docs/LICENSE-PURITY.md)）。開発期間中には上流の ai-toolkit へ二件の修正を還元しました。
+- **監査可能なエンジニアリング基準値。** Python ファイル 734 件、184,534 行。内訳は製品本体 87,565 行、テスト 74,174 行、開発ツール 22,795 行です。
 
 ### 主な機能
 
