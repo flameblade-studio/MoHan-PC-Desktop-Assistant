@@ -25,7 +25,25 @@ release-artifacts/
 deliverables/
 tmp/
 work/
-/artifacts/
+# artifacts/ 預設不入庫（虛擬環境、可重新下載的模型、隔離 worktree、可重建的
+# 發行封存），但幾何控制的權威產出例外——那是唯一不可重製的部分，且原本只存在
+# 於單一台機器上，沒有異地備援。
+/artifacts/*
+!/artifacts/pose-atlas-rebuild/
+/artifacts/pose-atlas-rebuild/*
+!/artifacts/pose-atlas-rebuild/2026-08-25/
+!/artifacts/pose-atlas-rebuild/2026-08-26/
+/artifacts/pose-atlas-rebuild/2026-08-25/*
+!/artifacts/pose-atlas-rebuild/2026-08-25/candidate3-formal-controls-bundle-agent-a/
+!/artifacts/pose-atlas-rebuild/2026-08-25/allowed-15deg-control-path-audit-agent-a/
+!/artifacts/pose-atlas-rebuild/2026-08-25/ufbx-lod1-extractor-agent-a/
+/artifacts/pose-atlas-rebuild/2026-08-26/*
+!/artifacts/pose-atlas-rebuild/2026-08-26/canonical24-control-bundles-agent-b/
+# 原始 NetPBM（180 MB）不入庫：光柵化器是確定性的，固定正交相機、無隨機性、
+# 輸入頂點與面皆以 SHA256 釘選，可用庫內的執行檔位元重生並比對已記錄的雜湊。
+# 重生指令與預期輸出見 allowed-15deg-control-path-audit-agent-a/audit.json。
+*.ppm
+*.pgm
 /tools/third_party/
 *.spec
 *.zip

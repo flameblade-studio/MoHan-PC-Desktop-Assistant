@@ -1,0 +1,21 @@
+{
+  "coefficients": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\candidate1-coefficients.json",
+  "obj": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\candidate1.obj",
+  "overlay": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\candidate1-wireframe-sections.png",
+  "actual": {
+    "height": 168.0,
+    "bust_candidate": 94.09332967017907,
+    "underbust_candidate": 76.90027712365269,
+    "waist_candidate": 84.0008726929638,
+    "hip_candidate": 98.95468403173072
+  },
+  "errors": {
+    "height": 0.0,
+    "bust_candidate": 8.093329670179074,
+    "underbust_candidate": 5.900277123652685,
+    "waist_candidate": 22.000872692963796,
+    "hip_candidate": 8.954684031730721
+  },
+  "oracle_rms": 1.2469606955601551e-05,
+  "oracle_max": 0.00015632882597533848
+}

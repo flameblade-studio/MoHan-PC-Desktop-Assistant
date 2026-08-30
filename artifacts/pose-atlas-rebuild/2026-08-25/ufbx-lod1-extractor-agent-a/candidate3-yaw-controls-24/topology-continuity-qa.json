@@ -1,0 +1,2415 @@
+{
+  "status": "PASS_INDEPENDENT_TOPOLOGY_CORRESPONDENCE_GATE",
+  "scope": "same-topology 3D rotation continuity; does not replace legacy silhouette IoU gate or final-art continuity",
+  "candidate3": {
+    "vertices": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3-vertices.bin",
+    "sha256": "23C5ECB3E943089954459F9F16E5551F0413571F5BACF85E3C3A6DCF155318A4",
+    "vertex_count": 18439,
+    "manifest_source_matches": true
+  },
+  "camera": {
+    "width": 1024,
+    "height": 1536,
+    "margin": 24.0,
+    "orthographic_scale": 7.251301847932881,
+    "y_center": 83.94300423461144,
+    "radial_max": 67.29826039983614,
+    "rotation_formula": "x'=cos(yaw)*x+sin(yaw)*z; z'=-sin(yaw)*x+cos(yaw)*z"
+  },
+  "projection_artifact": {
+    "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-vertex-projections.npz",
+    "sha256": "396999907509F73D3E74D08ECD6064CA046B821574F7975C5F6EFA8725A84AF0",
+    "format": "NPZ: yaw_degrees[24], vertex_indices[18439], world_xz[24,18439,2], screen_xy[24,18439,2], camera_depth[24,18439]"
+  },
+  "analytic_bounds": {
+    "per_step_screen_displacement_px": 127.39356360677033,
+    "per_step_depth_change_world": 17.568371346048192,
+    "circular_screen_second_difference_px": 33.25639354186934,
+    "circular_depth_second_difference_world": 4.586265230615065
+  },
+  "circular_gates": {
+    "screen_second_difference_bounded": true,
+    "depth_second_difference_bounded": true,
+    "view_ids_exact_order": true,
+    "wrap_is_plus_165_to_minus_180_equivalent_plus_15": true,
+    "no_mirror_transition": true
+  },
+  "transitions": [
+    {
+      "from": "yaw-180-pitch+00",
+      "to": "yaw-165-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000025,
+      "rotation_determinant": 0.9999999999999987,
+      "analytic_recurrence_world_max": 2.0734733982992197e-14,
+      "analytic_recurrence_world_rms": 7.242464730659932e-15,
+      "screen_displacement_px": {
+        "mean": 19.538037776137006,
+        "p95": 51.56386672697581,
+        "max": 60.423356760963316,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 6.319056783380832,
+        "p95": 16.122969374731394,
+        "max": 17.19905961693567,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        51.176630149116875,
+        158.89064477363797,
+        972.8233698508832,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -25.76141449084116,
+        0.0,
+        -52.863858136743715,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        512.0000261383251,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -14.568347309928583,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        51.0,
+        159.0,
+        972.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -26.0,
+        0.0,
+        -53.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        511.5,
+        706.5780651525544
+      ],
+      "silhouette_centroid_first_difference": [
+        -3.507237416632506,
+        5.020975010664301
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.1766301491168747,
+        0.10935522636202677,
+        0.8233698508831822,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw-165-pitch+00",
+      "to": "yaw-150-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 14.999999999999952,
+      "rotation_determinant": 0.9999999999999991,
+      "analytic_recurrence_world_max": 3.552713678800501e-14,
+      "analytic_recurrence_world_rms": 1.2097463938030068e-14,
+      "screen_displacement_px": {
+        "mean": 23.221353902316164,
+        "p95": 77.18574830531563,
+        "max": 86.56836726471579,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 6.005227042171414,
+        "p95": 16.281152286056134,
+        "max": 17.54207260878948,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        25.415215658275713,
+        158.89064477363797,
+        919.9595117141395,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        6.967894915382999,
+        0.0,
+        -77.85102619985219,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        497.4316788283965,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -13.575540297368889,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        25.0,
+        159.0,
+        919.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        8.0,
+        0.0,
+        -78.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        507.9927625833675,
+        711.5990401632187
+      ],
+      "silhouette_centroid_first_difference": [
+        -1.6104522790963074,
+        11.009177933630781
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.41521565827571294,
+        0.10935522636202677,
+        0.9595117141394667,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw-150-pitch+00",
+      "to": "yaw-135-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000046,
+      "rotation_determinant": 1.0,
+      "analytic_recurrence_world_max": 2.5864145986817697e-14,
+      "analytic_recurrence_world_rms": 7.988238543109017e-15,
+      "screen_displacement_px": {
+        "mean": 31.817614923777494,
+        "p95": 96.3555898836514,
+        "max": 106.87073071642965,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 5.356629512265455,
+        "p95": 15.299656315675215,
+        "max": 16.695637512670604,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        32.38311057365871,
+        158.89064477363797,
+        842.1084855142873,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        39.65299332540286,
+        0.0,
+        -94.9600839817424,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        483.8561385310276,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -11.65758264819442,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        33.0,
+        159.0,
+        841.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        39.0,
+        0.0,
+        -95.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        506.3823103042712,
+        722.6082180968494
+      ],
+      "silhouette_centroid_first_difference": [
+        0.779714930619491,
+        14.611517955698446
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.6168894263412881,
+        0.10935522636202677,
+        1.1084855142872811,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw-135-pitch+00",
+      "to": "yaw-120-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 14.99999999999999,
+      "rotation_determinant": 1.0000000000000018,
+      "analytic_recurrence_world_max": 2.5618982671915014e-14,
+      "analytic_recurrence_world_rms": 7.600256471221368e-15,
+      "screen_displacement_px": {
+        "mean": 38.84253675727075,
+        "p95": 110.9424261145937,
+        "max": 121.06510714804585,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 4.387848783405235,
+        "p95": 13.28804012083971,
+        "max": 14.738143985399688,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        72.03610389906157,
+        158.89064477363797,
+        747.1484015325449,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        66.26825499283854,
+        0.0,
+        -81.9193248045799,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        472.1985558828332,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -8.945180006601845,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        72.0,
+        159.0,
+        746.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        66.0,
+        0.0,
+        -82.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        507.1620252348907,
+        737.2197360525479
+      ],
+      "silhouette_centroid_first_difference": [
+        2.516922518186391,
+        15.056519606138181
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.03610389906157252,
+        0.10935522636202677,
+        1.1484015325448809,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw-120-pitch+00",
+      "to": "yaw-105-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 14.999999999999982,
+      "rotation_determinant": 0.9999999999999998,
+      "analytic_recurrence_world_max": 3.449061096984636e-14,
+      "analytic_recurrence_world_rms": 1.0800902320675104e-14,
+      "screen_displacement_px": {
+        "mean": 43.545713611097,
+        "p95": 118.05954965835552,
+        "max": 127.20286352468787,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 3.2023766816105446,
+        "p95": 10.644398747146196,
+        "max": 11.938320742970276,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        138.3043588919001,
+        158.89064477363797,
+        665.229076727965,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        89.81521361334507,
+        0.0,
+        -33.7542562227012,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        463.25337587623136,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -5.623178130173812,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        138.0,
+        159.0,
+        664.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        90.0,
+        0.0,
+        -34.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        509.67894775307707,
+        752.2762556586861
+      ],
+      "silhouette_centroid_first_difference": [
+        0.6922990766701105,
+        6.4762191838239005
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.3043588919001081,
+        0.10935522636202677,
+        1.22907672796498,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw-105-pitch+00",
+      "to": "yaw-090-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000009,
+      "rotation_determinant": 1.0,
+      "analytic_recurrence_world_max": 2.1316282072803006e-14,
+      "analytic_recurrence_world_rms": 6.772477429347986e-15,
+      "screen_displacement_px": {
+        "mean": 45.8213880528472,
+        "p95": 116.91251762115499,
+        "max": 124.71557278299338,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 2.694417137670621,
+        "p95": 7.110980594701766,
+        "max": 8.33275983100718,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        228.11957250524517,
+        158.89064477363797,
+        631.4748205052638,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        103.18657655060224,
+        0.0,
+        -22.129997104604172,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        457.63019774605755,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -1.9179659569138607,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        228.0,
+        159.0,
+        630.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        103.0,
+        0.0,
+        -22.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        510.3712468297472,
+        758.75247484251
+      ],
+      "silhouette_centroid_first_difference": [
+        -0.04517744566999227,
+        -52.74251645175411
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.11957250524517349,
+        0.10935522636202677,
+        1.4748205052637786,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw-090-pitch+00",
+      "to": "yaw-075-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000012,
+      "rotation_determinant": 1.0000000000000004,
+      "analytic_recurrence_world_max": 1.517719948885615e-14,
+      "analytic_recurrence_world_rms": 3.346904434155145e-15,
+      "screen_displacement_px": {
+        "mean": 45.821388130522195,
+        "p95": 116.91251762115492,
+        "max": 124.71557278299332,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 2.6944179384432427,
+        "p95": 7.1109805947017595,
+        "max": 8.33275983100718,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        331.3061490558474,
+        158.89064477363797,
+        609.3448234006596,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -103.18657655060224,
+        0.0,
+        22.129997104604172,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        455.7122317891437,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        1.9179524267206034,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        331.0,
+        159.0,
+        608.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -103.0,
+        0.0,
+        22.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        510.3260693840772,
+        706.0099583907559
+      ],
+      "silhouette_centroid_first_difference": [
+        0.04733914670913464,
+        52.761452942038886
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.30614905584741336,
+        0.10935522636202677,
+        1.3448234006596067,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw-075-pitch+00",
+      "to": "yaw-060-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000014,
+      "rotation_determinant": 1.0000000000000016,
+      "analytic_recurrence_world_max": 2.5618982671915014e-14,
+      "analytic_recurrence_world_rms": 7.403087429880285e-15,
+      "screen_displacement_px": {
+        "mean": 43.54571394815416,
+        "p95": 118.05954965835565,
+        "max": 127.20286352468815,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 3.2023703314648104,
+        "p95": 10.64439874714621,
+        "max": 11.93832074297029,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        228.11957250524517,
+        158.89064477363797,
+        631.4748205052638,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -89.81521361334518,
+        0.0,
+        33.754256222701315,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        457.6301842158643,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        5.623165522043223,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        228.0,
+        159.0,
+        630.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -90.0,
+        0.0,
+        34.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        510.3734085307863,
+        758.7714113327947
+      ],
+      "silhouette_centroid_first_difference": [
+        -0.691514136069145,
+        -6.508558906762346
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.11957250524517349,
+        0.10935522636202677,
+        1.4748205052637786,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw-060-pitch+00",
+      "to": "yaw-045-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 14.99999999999997,
+      "rotation_determinant": 1.000000000000001,
+      "analytic_recurrence_world_max": 2.161031364628563e-14,
+      "analytic_recurrence_world_rms": 5.114856222001314e-15,
+      "screen_displacement_px": {
+        "mean": 38.84253748098227,
+        "p95": 110.94242611459357,
+        "max": 121.06510714804574,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 4.387848636151819,
+        "p95": 13.2880401208397,
+        "max": 14.738143985399677,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        138.3043588919,
+        158.89064477363797,
+        665.2290767279651,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -66.26825499283848,
+        0.0,
+        81.91932480457979,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        463.2533497379075,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        8.945169179752327,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        138.0,
+        159.0,
+        664.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -66.0,
+        0.0,
+        82.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        509.6818943947172,
+        752.2628524260324
+      ],
+      "silhouette_centroid_first_difference": [
+        -2.516901764774616,
+        -15.055979344059665
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.30435889189999443,
+        0.10935522636202677,
+        1.2290767279650936,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw-045-pitch+00",
+      "to": "yaw-030-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000043,
+      "rotation_determinant": 0.9999999999999993,
+      "analytic_recurrence_world_max": 2.3092638912203256e-14,
+      "analytic_recurrence_world_rms": 5.999144221236283e-15,
+      "screen_displacement_px": {
+        "mean": 31.817615991556433,
+        "p95": 96.3555898836513,
+        "max": 106.87073071642965,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 5.356629412461093,
+        "p95": 15.299656315675213,
+        "max": 16.695637512670597,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        72.03610389906152,
+        158.89064477363797,
+        747.1484015325449,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -39.652993325402804,
+        0.0,
+        94.9600839817424,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        472.19851891765984,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        11.657574340460997,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        72.0,
+        159.0,
+        746.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -39.0,
+        0.0,
+        95.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        507.16499262994256,
+        737.2068730819727
+      ],
+      "silhouette_centroid_first_difference": [
+        -0.781071280442518,
+        -14.613946469047391
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.036103899061515676,
+        0.10935522636202677,
+        1.1484015325448809,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw-030-pitch+00",
+      "to": "yaw-015-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000002,
+      "rotation_determinant": 0.9999999999999997,
+      "analytic_recurrence_world_max": 1.5888218580782548e-14,
+      "analytic_recurrence_world_rms": 3.9461197795467406e-15,
+      "screen_displacement_px": {
+        "mean": 23.22139994913972,
+        "p95": 77.18574830531574,
+        "max": 86.56836726471579,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 6.005226995689135,
+        "p95": 16.281152286056155,
+        "max": 17.5420726087895,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        32.38311057365871,
+        158.89064477363797,
+        842.1084855142873,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -6.967894915382999,
+        0.0,
+        77.8510261998523,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        483.85609325812084,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        13.57553507490519,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        33.0,
+        159.0,
+        841.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -8.0,
+        0.0,
+        78.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        506.38392134950004,
+        722.5929266129253
+      ],
+      "silhouette_centroid_first_difference": [
+        1.6109818932586109,
+        -10.999021082615286
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.6168894263412881,
+        0.10935522636202677,
+        1.1084855142872811,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw-015-pitch+00",
+      "to": "yaw+000-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000043,
+      "rotation_determinant": 0.999999999999999,
+      "analytic_recurrence_world_max": 1.5888218580782548e-14,
+      "analytic_recurrence_world_rms": 3.182309638829216e-15,
+      "screen_displacement_px": {
+        "mean": 19.53803196949299,
+        "p95": 51.5638667269757,
+        "max": 60.423356760963316,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 6.319056772668953,
+        "p95": 16.122969374731387,
+        "max": 17.199059616935656,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        25.415215658275713,
+        158.89064477363797,
+        919.9595117141396,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        25.76141449084116,
+        0.0,
+        52.8638581367436,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        497.431628333026,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        14.568345528647228,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        25.0,
+        159.0,
+        919.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        26.0,
+        0.0,
+        53.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        507.99490324275865,
+        711.59390553031
+      ],
+      "silhouette_centroid_first_difference": [
+        3.505096757241347,
+        -5.015840377755694
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.41521565827571294,
+        0.10935522636202677,
+        0.9595117141395804,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+000-pitch+00",
+      "to": "yaw+015-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000014,
+      "rotation_determinant": 0.9999999999999987,
+      "analytic_recurrence_world_max": 1.432144669219779e-14,
+      "analytic_recurrence_world_rms": 1.511511506795528e-15,
+      "screen_displacement_px": {
+        "mean": 19.53803777613699,
+        "p95": 51.56386672697569,
+        "max": 60.4233567609632,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 6.319056783380828,
+        "p95": 16.122969374731387,
+        "max": 17.199059616935656,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        51.176630149116875,
+        158.89064477363797,
+        972.8233698508832,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        52.863858136743545,
+        0.0,
+        25.76141449084116,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        511.99997386167325,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        14.568347309928924,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        51.0,
+        159.0,
+        972.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        53.0,
+        0.0,
+        26.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        511.5,
+        706.5780651525544
+      ],
+      "silhouette_centroid_first_difference": [
+        3.507237416632506,
+        5.020975010664301
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.1766301491168747,
+        0.10935522636202677,
+        0.8233698508831822,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+015-pitch+00",
+      "to": "yaw+030-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 14.999999999999966,
+      "rotation_determinant": 0.9999999999999987,
+      "analytic_recurrence_world_max": 2.864289338439558e-14,
+      "analytic_recurrence_world_rms": 3.959378453083587e-15,
+      "screen_displacement_px": {
+        "mean": 23.221353902316185,
+        "p95": 77.18574830531574,
+        "max": 86.56836726471579,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 6.005227042171421,
+        "p95": 16.281152286056155,
+        "max": 17.5420726087895,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        104.04048828586042,
+        158.89064477363797,
+        998.5847843417243,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        77.8510261998523,
+        0.0,
+        -6.967894915383113,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        526.5683211716022,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        13.575540297371958,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        104.0,
+        159.0,
+        998.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        78.0,
+        0.0,
+        -8.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        515.0072374166325,
+        711.5990401632187
+      ],
+      "silhouette_centroid_first_difference": [
+        1.6104522790963074,
+        11.009177933630781
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.04048828586041964,
+        0.10935522636202677,
+        0.5847843417243439,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+030-pitch+00",
+      "to": "yaw+045-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000037,
+      "rotation_determinant": 1.0000000000000002,
+      "analytic_recurrence_world_max": 2.1316282072803006e-14,
+      "analytic_recurrence_world_rms": 5.639096307602399e-15,
+      "screen_displacement_px": {
+        "mean": 31.817614923777477,
+        "p95": 96.35558988365125,
+        "max": 106.8707307164297,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 5.356629512265456,
+        "p95": 15.299656315675213,
+        "max": 16.695637512670597,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        181.89151448571272,
+        158.89064477363797,
+        991.6168894263412,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        94.9600839817424,
+        0.0,
+        -39.652993325402804,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        540.1438614689741,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        11.65758264819533,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        182.0,
+        159.0,
+        990.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        95.0,
+        0.0,
+        -39.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        516.6176896957288,
+        722.6082180968494
+      ],
+      "silhouette_centroid_first_difference": [
+        -0.7797149306195479,
+        14.611517955698446
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.10848551428728115,
+        0.10935522636202677,
+        1.6168894263412312,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+045-pitch+00",
+      "to": "yaw+060-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 14.99999999999998,
+      "rotation_determinant": 1.0000000000000022,
+      "analytic_recurrence_world_max": 2.8916994303251375e-14,
+      "analytic_recurrence_world_rms": 5.678111790064257e-15,
+      "screen_displacement_px": {
+        "mean": 38.842536757270715,
+        "p95": 110.94242611459357,
+        "max": 121.06510714804574,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 4.387848783405233,
+        "p95": 13.2880401208397,
+        "max": 14.738143985399677,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        276.8515984674551,
+        158.89064477363797,
+        951.9638961009384,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        81.91932480457979,
+        0.0,
+        -66.26825499283837,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        551.8014441171695,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        8.945180006598434,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        277.0,
+        159.0,
+        951.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        82.0,
+        0.0,
+        -66.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        515.8379747651093,
+        737.2197360525479
+      ],
+      "silhouette_centroid_first_difference": [
+        -2.516922518186334,
+        15.056519606138181
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.14840153254488087,
+        0.10935522636202677,
+        0.9638961009384275,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+060-pitch+00",
+      "to": "yaw+075-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000012,
+      "rotation_determinant": 0.9999999999999998,
+      "analytic_recurrence_world_max": 2.5618982671915014e-14,
+      "analytic_recurrence_world_rms": 7.415829894232264e-15,
+      "screen_displacement_px": {
+        "mean": 43.545713611097085,
+        "p95": 118.0595496583557,
+        "max": 127.20286352468815,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 3.2023766816105494,
+        "p95": 10.64439874714621,
+        "max": 11.93832074297029,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        358.7709232720349,
+        158.89064477363797,
+        885.6956411081001,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        33.754256222701315,
+        0.0,
+        -89.81521361334524,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        560.7466241237679,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        5.623178130174324,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        359.0,
+        159.0,
+        885.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        34.0,
+        0.0,
+        -90.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        513.3210522469229,
+        752.2762556586861
+      ],
+      "silhouette_centroid_first_difference": [
+        -0.6922990766701105,
+        6.4762191838239005
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.2290767279650936,
+        0.10935522636202677,
+        0.6956411081000624,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+075-pitch+00",
+      "to": "yaw+090-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 14.999999999999993,
+      "rotation_determinant": 0.9999999999999997,
+      "analytic_recurrence_world_max": 1.5888218580782548e-14,
+      "analytic_recurrence_world_rms": 3.6587027343321886e-15,
+      "screen_displacement_px": {
+        "mean": 45.82138805284716,
+        "p95": 116.91251762115492,
+        "max": 124.71557278299326,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 2.6944171376706203,
+        "p95": 7.1109805947017595,
+        "max": 8.33275983100718,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        392.5251794947362,
+        158.89064477363797,
+        795.8804274947548,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        22.129997104604172,
+        0.0,
+        -103.18657655060224,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        566.3698022539422,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        1.917965956912326,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        393.0,
+        159.0,
+        795.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        22.0,
+        0.0,
+        -103.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        512.6287531702528,
+        758.75247484251
+      ],
+      "silhouette_centroid_first_difference": [
+        0.04517744566999227,
+        -52.74251645175411
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.4748205052637786,
+        0.10935522636202677,
+        0.8804274947548265,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+090-pitch+00",
+      "to": "yaw+105-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000021,
+      "rotation_determinant": 1.0000000000000009,
+      "analytic_recurrence_world_max": 1.888293221827313e-14,
+      "analytic_recurrence_world_rms": 6.426307639649455e-15,
+      "screen_displacement_px": {
+        "mean": 45.82138813052224,
+        "p95": 116.91251762115503,
+        "max": 124.71557278299338,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 2.6944179384432436,
+        "p95": 7.110980594701766,
+        "max": 8.33275983100718,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        414.6551765993404,
+        158.89064477363797,
+        692.6938509441526,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -22.129997104604172,
+        0.0,
+        103.18657655060224,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        568.2877682108546,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -1.9179524267177612,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        415.0,
+        159.0,
+        692.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -22.0,
+        0.0,
+        103.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        512.6739306159228,
+        706.0099583907559
+      ],
+      "silhouette_centroid_first_difference": [
+        -0.047339146709077795,
+        52.761452942038886
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.3448234006596067,
+        0.10935522636202677,
+        0.6938509441525866,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+105-pitch+00",
+      "to": "yaw+120-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 14.999999999999973,
+      "rotation_determinant": 1.0000000000000002,
+      "analytic_recurrence_world_max": 3.552713678800501e-14,
+      "analytic_recurrence_world_rms": 1.1234201594772049e-14,
+      "screen_displacement_px": {
+        "mean": 43.54571394815408,
+        "p95": 118.05954965835552,
+        "max": 127.20286352468798,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 3.202370331464806,
+        "p95": 10.644398747146196,
+        "max": 11.938320742970276,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        392.5251794947362,
+        158.89064477363797,
+        795.8804274947548,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -33.7542562227012,
+        0.0,
+        89.81521361334501,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        566.3698157841368,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -5.623165522045042,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        393.0,
+        159.0,
+        795.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -34.0,
+        0.0,
+        90.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        512.6265914692137,
+        758.7714113327947
+      ],
+      "silhouette_centroid_first_difference": [
+        0.691514136069145,
+        -6.508558906762346
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.4748205052637786,
+        0.10935522636202677,
+        0.8804274947548265,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+120-pitch+00",
+      "to": "yaw+135-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 14.99999999999999,
+      "rotation_determinant": 1.0000000000000013,
+      "analytic_recurrence_world_max": 2.774758085844075e-14,
+      "analytic_recurrence_world_rms": 7.25836671163135e-15,
+      "screen_displacement_px": {
+        "mean": 38.84253748098231,
+        "p95": 110.94242611459366,
+        "max": 121.06510714804585,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 4.387848636151821,
+        "p95": 13.28804012083971,
+        "max": 14.738143985399688,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        358.770923272035,
+        158.89064477363797,
+        885.6956411080998,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -81.9193248045799,
+        0.0,
+        66.26825499283859,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        560.7466502620917,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -8.945169179751588,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        359.0,
+        159.0,
+        885.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -82.0,
+        0.0,
+        66.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        513.3181056052829,
+        752.2628524260324
+      ],
+      "silhouette_centroid_first_difference": [
+        2.5169017647745022,
+        -15.055979344059665
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.2290767279649799,
+        0.10935522636202677,
+        0.695641108099835,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+135-pitch+00",
+      "to": "yaw+150-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000034,
+      "rotation_determinant": 0.9999999999999984,
+      "analytic_recurrence_world_max": 2.5618982671915014e-14,
+      "analytic_recurrence_world_rms": 7.815611902837704e-15,
+      "screen_displacement_px": {
+        "mean": 31.817615991556448,
+        "p95": 96.35558988365135,
+        "max": 106.8707307164297,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 5.356629412461093,
+        "p95": 15.299656315675215,
+        "max": 16.695637512670604,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        276.8515984674551,
+        158.89064477363797,
+        951.9638961009384,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -94.9600839817424,
+        0.0,
+        39.652993325402804,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        551.8014810823402,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -11.657574340462247,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        277.0,
+        159.0,
+        951.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -95.0,
+        0.0,
+        39.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        515.8350073700574,
+        737.2068730819727
+      ],
+      "silhouette_centroid_first_difference": [
+        0.7810712804425748,
+        -14.613946469047391
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.14840153254488087,
+        0.10935522636202677,
+        0.9638961009384275,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+150-pitch+00",
+      "to": "yaw+165-pitch+00",
+      "wrap": false,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 14.999999999999986,
+      "rotation_determinant": 0.9999999999999994,
+      "analytic_recurrence_world_max": 3.776586443654626e-14,
+      "analytic_recurrence_world_rms": 1.2250870950855948e-14,
+      "screen_displacement_px": {
+        "mean": 23.221399949139695,
+        "p95": 77.18574830531563,
+        "max": 86.56836726471568,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 6.005226995689129,
+        "p95": 16.281152286056134,
+        "max": 17.54207260878948,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        181.89151448571272,
+        158.89064477363797,
+        991.6168894263412,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -77.85102619985219,
+        0.0,
+        6.967894915383113,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        540.1439067418779,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -13.575535074903541,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        182.0,
+        159.0,
+        990.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -78.0,
+        0.0,
+        8.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        516.6160786505,
+        722.5929266129253
+      ],
+      "silhouette_centroid_first_difference": [
+        -1.6109818932586677,
+        -10.999021082615286
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.10848551428728115,
+        0.10935522636202677,
+        1.6168894263412312,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    },
+    {
+      "from": "yaw+165-pitch+00",
+      "to": "yaw-180-pitch+00",
+      "wrap": true,
+      "yaw_step_degrees": 15,
+      "inferred_step_degrees": 15.000000000000066,
+      "rotation_determinant": 0.9999999999999987,
+      "analytic_recurrence_world_max": 3.552713678800501e-14,
+      "analytic_recurrence_world_rms": 1.4686345384372445e-14,
+      "screen_displacement_px": {
+        "mean": 19.538031969493016,
+        "p95": 51.563866726975796,
+        "max": 60.423356760963316,
+        "analytic_global_bound": 127.39356360677033
+      },
+      "absolute_depth_change_world": {
+        "mean": 6.319056772668963,
+        "p95": 16.122969374731408,
+        "max": 17.199059616935685,
+        "analytic_global_bound": 17.568371346048192
+      },
+      "topology_bbox_xyxy": [
+        104.04048828586053,
+        158.89064477363797,
+        998.5847843417243,
+        1377.109355226362
+      ],
+      "topology_bbox_first_difference": [
+        -52.86385813674366,
+        0.0,
+        -25.76141449084116,
+        0.0
+      ],
+      "topology_centroid_xy": [
+        526.5683716669744,
+        623.556214295405
+      ],
+      "topology_centroid_first_difference": [
+        -14.568345528649274,
+        0.0
+      ],
+      "silhouette_bbox_xyxy": [
+        104.0,
+        159.0,
+        998.0,
+        1376.0
+      ],
+      "silhouette_bbox_first_difference": [
+        -53.0,
+        0.0,
+        -26.0,
+        0.0
+      ],
+      "silhouette_centroid_xy": [
+        515.0050967572413,
+        711.59390553031
+      ],
+      "silhouette_centroid_first_difference": [
+        -3.50509675724129,
+        -5.015840377755694
+      ],
+      "raster_vs_topology_bbox_abs_error": [
+        0.040488285860533324,
+        0.10935522636202677,
+        0.5847843417243439,
+        1.109355226361913
+      ],
+      "gates": {
+        "analytic_recurrence_max_le_1e_10": true,
+        "rotation_determinant_positive_unit": true,
+        "inferred_step_is_positive_15": true,
+        "screen_displacement_within_analytic_bound": true,
+        "depth_change_within_analytic_bound": true,
+        "topology_bbox_first_difference_bounded": true,
+        "topology_centroid_first_difference_bounded": true,
+        "vertical_projection_invariant": true
+      }
+    }
+  ],
+  "wrap_transition": {
+    "from": "yaw+165-pitch+00",
+    "to": "yaw-180-pitch+00",
+    "wrap": true,
+    "yaw_step_degrees": 15,
+    "inferred_step_degrees": 15.000000000000066,
+    "rotation_determinant": 0.9999999999999987,
+    "analytic_recurrence_world_max": 3.552713678800501e-14,
+    "analytic_recurrence_world_rms": 1.4686345384372445e-14,
+    "screen_displacement_px": {
+      "mean": 19.538031969493016,
+      "p95": 51.563866726975796,
+      "max": 60.423356760963316,
+      "analytic_global_bound": 127.39356360677033
+    },
+    "absolute_depth_change_world": {
+      "mean": 6.319056772668963,
+      "p95": 16.122969374731408,
+      "max": 17.199059616935685,
+      "analytic_global_bound": 17.568371346048192
+    },
+    "topology_bbox_xyxy": [
+      104.04048828586053,
+      158.89064477363797,
+      998.5847843417243,
+      1377.109355226362
+    ],
+    "topology_bbox_first_difference": [
+      -52.86385813674366,
+      0.0,
+      -25.76141449084116,
+      0.0
+    ],
+    "topology_centroid_xy": [
+      526.5683716669744,
+      623.556214295405
+    ],
+    "topology_centroid_first_difference": [
+      -14.568345528649274,
+      0.0
+    ],
+    "silhouette_bbox_xyxy": [
+      104.0,
+      159.0,
+      998.0,
+      1376.0
+    ],
+    "silhouette_bbox_first_difference": [
+      -53.0,
+      0.0,
+      -26.0,
+      0.0
+    ],
+    "silhouette_centroid_xy": [
+      515.0050967572413,
+      711.59390553031
+    ],
+    "silhouette_centroid_first_difference": [
+      -3.50509675724129,
+      -5.015840377755694
+    ],
+    "raster_vs_topology_bbox_abs_error": [
+      0.040488285860533324,
+      0.10935522636202677,
+      0.5847843417243439,
+      1.109355226361913
+    ],
+    "gates": {
+      "analytic_recurrence_max_le_1e_10": true,
+      "rotation_determinant_positive_unit": true,
+      "inferred_step_is_positive_15": true,
+      "screen_displacement_within_analytic_bound": true,
+      "depth_change_within_analytic_bound": true,
+      "topology_bbox_first_difference_bounded": true,
+      "topology_centroid_first_difference_bounded": true,
+      "vertical_projection_invariant": true
+    }
+  },
+  "observed": {
+    "analytic_recurrence_world_max": 3.776586443654626e-14,
+    "rotation_determinant_range": [
+      0.9999999999999984,
+      1.0000000000000022
+    ],
+    "inferred_step_range_degrees": [
+      14.999999999999952,
+      15.000000000000066
+    ],
+    "screen_displacement_max_range_px": [
+      60.4233567609632,
+      127.20286352468815
+    ],
+    "depth_change_max_range_world": [
+      8.33275983100718,
+      17.5420726087895
+    ],
+    "topology_bbox_first_difference_abs_max_px": 103.18657655060224,
+    "topology_centroid_first_difference_norm_max_px": 14.568347309928924,
+    "screen_second_difference_max_px": 33.159948933512396,
+    "depth_second_difference_max_world": 4.572964914288512
+  },
+  "legacy_iou_gate": {
+    "retained": true,
+    "status": "FAIL",
+    "report": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\qa-report-attempt1-strict-fail.json",
+    "sha256": "4281DC99551692818C8B034B6D5AC45A946185D8E98FB181D510354D71885C37",
+    "failed_transition_count": 16,
+    "iou_range": [
+      0.668131525635032,
+      0.8622602596991973
+    ],
+    "centroid_shift_px_range": [
+      6.119179517937662,
+      52.76147417908066
+    ],
+    "explanation": "T-pose arm and hand visibility changes rapidly near side views; raster silhouette overlap remains failed/informational and is not overwritten by the topology gate."
+  },
+  "silhouettes": [
+    {
+      "view_id": "yaw-180-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-180-pitch+00_silhouette.png",
+      "sha256": "13AAD48D5B6061E118D76DBDAD844BD5154E09BD8BD1324861B9F4BDFFBBB84A",
+      "bbox": [
+        51.0,
+        159.0,
+        972.0,
+        1376.0
+      ],
+      "centroid": [
+        511.5,
+        706.5780651525544
+      ],
+      "foreground_pixels": 259514
+    },
+    {
+      "view_id": "yaw-165-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-165-pitch+00_silhouette.png",
+      "sha256": "01DA02161500DA93FABAC0DEF6383974B3FF6B70D4DCFF3B9DBD146521E9AC6E",
+      "bbox": [
+        25.0,
+        159.0,
+        919.0,
+        1376.0
+      ],
+      "centroid": [
+        507.9927625833675,
+        711.5990401632187
+      ],
+      "foreground_pixels": 258794
+    },
+    {
+      "view_id": "yaw-150-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-150-pitch+00_silhouette.png",
+      "sha256": "9CBCF35DA26586746656C32319389C13792356788D5D5A41C45EA85FA55273A0",
+      "bbox": [
+        33.0,
+        159.0,
+        841.0,
+        1376.0
+      ],
+      "centroid": [
+        506.3823103042712,
+        722.6082180968494
+      ],
+      "foreground_pixels": 255923
+    },
+    {
+      "view_id": "yaw-135-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-135-pitch+00_silhouette.png",
+      "sha256": "DCEBFED31C18104C27A4D76341468644ED666E19451FAB1CCE7C4722FB94116D",
+      "bbox": [
+        72.0,
+        159.0,
+        746.0,
+        1376.0
+      ],
+      "centroid": [
+        507.1620252348907,
+        737.2197360525479
+      ],
+      "foreground_pixels": 248307
+    },
+    {
+      "view_id": "yaw-120-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-120-pitch+00_silhouette.png",
+      "sha256": "33B4CBF562EA28692E05E4DD0FB7714962D59AB98D2C907C0003ACB396A5A87B",
+      "bbox": [
+        138.0,
+        159.0,
+        664.0,
+        1376.0
+      ],
+      "centroid": [
+        509.67894775307707,
+        752.2762556586861
+      ],
+      "foreground_pixels": 232607
+    },
+    {
+      "view_id": "yaw-105-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-105-pitch+00_silhouette.png",
+      "sha256": "B11CC27F6750085BD9E3A46F27E44FDE36EF5CDD1D0E28E3F10BE3DF80163B22",
+      "bbox": [
+        228.0,
+        159.0,
+        630.0,
+        1376.0
+      ],
+      "centroid": [
+        510.3712468297472,
+        758.75247484251
+      ],
+      "foreground_pixels": 195568
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-090-pitch+00_silhouette.png",
+      "sha256": "6661ADEACCC33E99C867017B6DF106D65A68F11F297122C5B986DBF9D692C5DC",
+      "bbox": [
+        331.0,
+        159.0,
+        608.0,
+        1376.0
+      ],
+      "centroid": [
+        510.3260693840772,
+        706.0099583907559
+      ],
+      "foreground_pixels": 150928
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-075-pitch+00_silhouette.png",
+      "sha256": "C98C15B882345479B25B7D4947422673906756718A44C797DABCE61DA04580BA",
+      "bbox": [
+        228.0,
+        159.0,
+        630.0,
+        1376.0
+      ],
+      "centroid": [
+        510.3734085307863,
+        758.7714113327947
+      ],
+      "foreground_pixels": 195574
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-060-pitch+00_silhouette.png",
+      "sha256": "67D4E1AE37A65A8F6FDD76C2CEF5CD968C023714FAA7A756B2A9C3B3AF13D24C",
+      "bbox": [
+        138.0,
+        159.0,
+        664.0,
+        1376.0
+      ],
+      "centroid": [
+        509.6818943947172,
+        752.2628524260324
+      ],
+      "foreground_pixels": 232602
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-045-pitch+00_silhouette.png",
+      "sha256": "E32D072BF5DD41E4CBC7EC0B8BF96B98EF52873AC142060935BEB3DF23E448E1",
+      "bbox": [
+        72.0,
+        159.0,
+        746.0,
+        1376.0
+      ],
+      "centroid": [
+        507.16499262994256,
+        737.2068730819727
+      ],
+      "foreground_pixels": 248302
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-030-pitch+00_silhouette.png",
+      "sha256": "223199D8A9DC5086538A9F80D83943600518F32AF74E5EE9AFA415BD1A6816D3",
+      "bbox": [
+        33.0,
+        159.0,
+        841.0,
+        1376.0
+      ],
+      "centroid": [
+        506.38392134950004,
+        722.5929266129253
+      ],
+      "foreground_pixels": 255917
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-015-pitch+00_silhouette.png",
+      "sha256": "5F0FC25CA94AEA490809972CBC2A358EE5F3DB1E56621CB1FFC530B638217210",
+      "bbox": [
+        25.0,
+        159.0,
+        919.0,
+        1376.0
+      ],
+      "centroid": [
+        507.99490324275865,
+        711.59390553031
+      ],
+      "foreground_pixels": 258792
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+000-pitch+00_silhouette.png",
+      "sha256": "13AAD48D5B6061E118D76DBDAD844BD5154E09BD8BD1324861B9F4BDFFBBB84A",
+      "bbox": [
+        51.0,
+        159.0,
+        972.0,
+        1376.0
+      ],
+      "centroid": [
+        511.5,
+        706.5780651525544
+      ],
+      "foreground_pixels": 259514
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+015-pitch+00_silhouette.png",
+      "sha256": "F602058BF772E0D9E59F726EF4CA8C2D742A4327A6A0B5C09949693E36CC3BCA",
+      "bbox": [
+        104.0,
+        159.0,
+        998.0,
+        1376.0
+      ],
+      "centroid": [
+        515.0072374166325,
+        711.5990401632187
+      ],
+      "foreground_pixels": 258794
+    },
+    {
+      "view_id": "yaw+030-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+030-pitch+00_silhouette.png",
+      "sha256": "E8576C6F887373AA84E0ACB447EF17F7B859536EEB893C644EF8E7B6FA12D4CC",
+      "bbox": [
+        182.0,
+        159.0,
+        990.0,
+        1376.0
+      ],
+      "centroid": [
+        516.6176896957288,
+        722.6082180968494
+      ],
+      "foreground_pixels": 255923
+    },
+    {
+      "view_id": "yaw+045-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+045-pitch+00_silhouette.png",
+      "sha256": "2FE40A4966C8C2D42338D0F6D9CC9E673AFF49189080F628C8BA3ED95EAED05A",
+      "bbox": [
+        277.0,
+        159.0,
+        951.0,
+        1376.0
+      ],
+      "centroid": [
+        515.8379747651093,
+        737.2197360525479
+      ],
+      "foreground_pixels": 248307
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+060-pitch+00_silhouette.png",
+      "sha256": "EAE5EEAD40C5635DE72FCEFE37486FB1E3F9680E2C309BD37BB890F52C935F00",
+      "bbox": [
+        359.0,
+        159.0,
+        885.0,
+        1376.0
+      ],
+      "centroid": [
+        513.3210522469229,
+        752.2762556586861
+      ],
+      "foreground_pixels": 232607
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+075-pitch+00_silhouette.png",
+      "sha256": "4EB7899035142DDCCFBBE7593B3883C8BA075FFAA8E85A4C0F0B7B81714F2596",
+      "bbox": [
+        393.0,
+        159.0,
+        795.0,
+        1376.0
+      ],
+      "centroid": [
+        512.6287531702528,
+        758.75247484251
+      ],
+      "foreground_pixels": 195568
+    },
+    {
+      "view_id": "yaw+090-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+090-pitch+00_silhouette.png",
+      "sha256": "189B0F33764A09767F04CD38276000E84B26EE52DA64CAF918CCA4C0CA34045F",
+      "bbox": [
+        415.0,
+        159.0,
+        692.0,
+        1376.0
+      ],
+      "centroid": [
+        512.6739306159228,
+        706.0099583907559
+      ],
+      "foreground_pixels": 150928
+    },
+    {
+      "view_id": "yaw+105-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+105-pitch+00_silhouette.png",
+      "sha256": "67BC4E565605BCDE9D8CE4362E07A9BFEF0014C986985C0352761268EA227C8B",
+      "bbox": [
+        393.0,
+        159.0,
+        795.0,
+        1376.0
+      ],
+      "centroid": [
+        512.6265914692137,
+        758.7714113327947
+      ],
+      "foreground_pixels": 195574
+    },
+    {
+      "view_id": "yaw+120-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+120-pitch+00_silhouette.png",
+      "sha256": "06CF0715B619D1ACDBF13E40A5C74DA53F3E2286BC7978D69DD9F999002BC79D",
+      "bbox": [
+        359.0,
+        159.0,
+        885.0,
+        1376.0
+      ],
+      "centroid": [
+        513.3181056052829,
+        752.2628524260324
+      ],
+      "foreground_pixels": 232602
+    },
+    {
+      "view_id": "yaw+135-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+135-pitch+00_silhouette.png",
+      "sha256": "A28F077E60C8898D926891930C3704FCE9C079C83A6937E8B4CC219D555A11E6",
+      "bbox": [
+        277.0,
+        159.0,
+        951.0,
+        1376.0
+      ],
+      "centroid": [
+        515.8350073700574,
+        737.2068730819727
+      ],
+      "foreground_pixels": 248302
+    },
+    {
+      "view_id": "yaw+150-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+150-pitch+00_silhouette.png",
+      "sha256": "B766C7F4F7A9587B64251450390C1C2058B50B67F23F6E4E7C36331F3959F79A",
+      "bbox": [
+        182.0,
+        159.0,
+        990.0,
+        1376.0
+      ],
+      "centroid": [
+        516.6160786505,
+        722.5929266129253
+      ],
+      "foreground_pixels": 255917
+    },
+    {
+      "view_id": "yaw+165-pitch+00",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+165-pitch+00_silhouette.png",
+      "sha256": "D3F57CB3EC84FBC009DFD09E49CB370A3A847518F002207E19B71BB9AB969FD7",
+      "bbox": [
+        104.0,
+        159.0,
+        998.0,
+        1376.0
+      ],
+      "centroid": [
+        515.0050967572413,
+        711.59390553031
+      ],
+      "foreground_pixels": 258792
+    }
+  ],
+  "errors": []
+}

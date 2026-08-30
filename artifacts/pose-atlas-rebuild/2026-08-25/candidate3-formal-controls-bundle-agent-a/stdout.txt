@@ -1,0 +1,8 @@
+status=PASS_GEOMETRY_CONTROLS_ONLY
+views=24
+controls_per_view=3
+exact_png_count=72
+dimensions=1024x1536
+copy_hashes_equal_sources=true
+manifest=D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\artifacts\pose-atlas-rebuild\2026-08-25\candidate3-formal-controls-bundle-agent-a\formal-controls-manifest.json
+contact=D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\artifacts\pose-atlas-rebuild\2026-08-25\candidate3-formal-controls-bundle-agent-a\formal-controls-normal-contact-sheet.png

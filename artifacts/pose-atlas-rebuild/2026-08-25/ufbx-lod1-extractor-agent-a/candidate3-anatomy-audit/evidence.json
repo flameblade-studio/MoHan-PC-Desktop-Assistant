@@ -1,0 +1,328 @@
+{
+  "status": "CANDIDATE3_BONE_BOUNDED_PLAUSIBILITY_AND_MESH_INTEGRITY_PASS",
+  "generated_at": "2026-08-25T02:59:15.6140982+08:00",
+  "scope": "MHR/ufbx only; forbidden components not read, used, or downloaded",
+  "commands": [
+    {
+      "command": "cmd.exe /d /c \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-extract-mhr-skeleton.cmd\"",
+      "exit_code": 0
+    },
+    {
+      "command": "cmd.exe /d /c \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate2-anatomy-audit.cmd\"",
+      "exit_code": 1,
+      "expected": "FAIL due front/back proportion drift"
+    },
+    {
+      "command": "cmd.exe /d /c \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-body-morph-candidate3.cmd\"",
+      "exit_code": 0
+    },
+    {
+      "command": "cmd.exe /d /c \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate3-verify.cmd\"",
+      "exit_code": 0
+    },
+    {
+      "command": "cmd.exe /d /c \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate3-anatomy-audit.cmd\"",
+      "exit_code": 0
+    }
+  ],
+  "candidate2_rejection": {
+    "report": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate2-anatomy-audit\\candidate2-anatomy-audit.json",
+    "reason": "front/back ratio change exceeded 0.25",
+    "waist_ratio_change": 2.657445909803008,
+    "underbust_ratio_change": 2.682963041198705
+  },
+  "candidate3_measurements": {
+    "height": 168.0,
+    "targets": {
+      "bust_candidate": 86.0,
+      "underbust_candidate": 71.0,
+      "waist_candidate": 62.0,
+      "hip_candidate": 90.0
+    },
+    "actual": {
+      "height": 168.0,
+      "hip_candidate": 90.06925217482814,
+      "waist_candidate": 62.21390939635582,
+      "underbust_candidate": 70.97000216616335,
+      "bust_candidate": 86.3105211705737
+    },
+    "signed_errors": {
+      "bust_candidate": 0.31052117057369344,
+      "underbust_candidate": -0.029997833836645782,
+      "waist_candidate": 0.21390939635581674,
+      "hip_candidate": 0.0692521748281365
+    },
+    "all_le_0_5_cm": true
+  },
+  "candidate3_audit": {
+    "gates": {
+      "official_skeleton_127": true,
+      "section_bone_zones_plausible": true,
+      "no_degenerate_triangles": true,
+      "no_triangle_flips": true,
+      "no_normal_flips": true,
+      "positive_local_jacobian": true,
+      "no_strict_new_local_self_intersections": true,
+      "outside_vertical_support_unchanged": true,
+      "section_measurements_preserved": true,
+      "front_back_ratio_change_le_0_25": true
+    },
+    "triangle_quality": {
+      "changed_triangle_count": 3618,
+      "degenerate_triangle_count": 0,
+      "normal_flip_count": 0,
+      "normal_dot_min": 0.6243022152212571,
+      "normal_dot_p01": 0.7916561273093331,
+      "area_ratio_min": 0.5730845926235022,
+      "area_ratio_max": 1.5749202921713528,
+      "jacobian_det_min": 0.5730845926235023,
+      "jacobian_det_max": 1.574920292171353,
+      "singular_value_min": 0.613362658911628,
+      "singular_value_max": 1.5973557679794668,
+      "triangle_flip_count": 0
+    },
+    "self_intersections": {
+      "method": "4cm spatial hash broad phase; strict non-coplanar segment-triangle narrow phase; adjacent triangles excluded",
+      "changed_triangles": 3618,
+      "broadphase_unique_pairs": 77301,
+      "narrowphase_pairs_tested": 1336,
+      "strict_intersection_count": 0,
+      "first_intersection_pairs": [],
+      "limitation": "coplanar overlap and exact touching are not counted"
+    },
+    "transition": {
+      "support_low_y": 73.86300423461144,
+      "support_high_y": 132.66300423461144,
+      "below_support_max_displacement": 0.0,
+      "above_support_max_displacement": 0.0,
+      "max_displacement": 7.249333213934736,
+      "changed_vertices": 1731
+    },
+    "front_back": {
+      "hip_candidate": {
+        "skeleton_center_z": 0.5181338497808546,
+        "base": {
+          "front_depth": 11.52239659487641,
+          "back_depth": 10.88738919530195,
+          "front_to_back_ratio": 1.0583250390138046
+        },
+        "candidate": {
+          "front_depth": 9.783514859261818,
+          "back_depth": 9.250984508391422,
+          "front_to_back_ratio": 1.0575647219371458
+        },
+        "ratio_change": -0.0007603170766588008
+      },
+      "waist_candidate": {
+        "skeleton_center_z": -2.4474864722752807,
+        "base": {
+          "front_depth": 19.38871899195099,
+          "back_depth": 7.9984409457281584,
+          "front_to_back_ratio": 2.4240622795753968
+        },
+        "candidate": {
+          "front_depth": 12.242880097788465,
+          "back_depth": 5.043235073031011,
+          "front_to_back_ratio": 2.427584659548782
+        },
+        "ratio_change": 0.0035223799733854477
+      },
+      "underbust_candidate": {
+        "skeleton_center_z": -4.375666496690136,
+        "base": {
+          "front_depth": 19.804562103224765,
+          "back_depth": 5.825966870711851,
+          "front_to_back_ratio": 3.3993605770032342
+        },
+        "candidate": {
+          "front_depth": 15.38211057693842,
+          "back_depth": 4.546922963699013,
+          "front_to_back_ratio": 3.3829714511865765
+        },
+        "ratio_change": -0.016389125816657746
+      },
+      "bust_candidate": {
+        "skeleton_center_z": -3.9994199644615236,
+        "base": {
+          "front_depth": 19.36452786266667,
+          "back_depth": 7.617785474383307,
+          "front_to_back_ratio": 2.5420153833137853
+        },
+        "candidate": {
+          "front_depth": 15.84987240852792,
+          "back_depth": 6.293203680148151,
+          "front_to_back_ratio": 2.518569748270851
+        },
+        "ratio_change": -0.0234456350429344
+      }
+    },
+    "limitations": [
+      "MHR's 127-joint skeleton does not encode breast apex, inframammary fold, rib margin, iliac crest, or greater trochanter skin landmarks.",
+      "Self-intersection narrow phase counts strict non-coplanar crossings; coplanar overlaps and exact touching are outside this gate.",
+      "Passing this audit establishes bounded plausibility and mesh integrity, not clinical or tailoring-grade anatomical landmark validation."
+    ]
+  },
+  "binary_verification": {
+    "status": "PASS",
+    "magic": "MHRVTX2\\0",
+    "vertex_count": 18439,
+    "components": 3,
+    "obj_vertex_count": 18439,
+    "obj_face_count": 36874,
+    "topology_exact": true,
+    "bin_obj_rms_coordinate": 0.0,
+    "bin_obj_max_vertex": 0.0,
+    "bin_obj_exact": true,
+    "height_168": true,
+    "section_targets_pass": true,
+    "protected_vertices_exact": true
+  },
+  "visual": {
+    "wireframe": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3-wireframe-sections.png",
+      "width": 1800,
+      "height": 1350,
+      "mode": "RGB",
+      "inspection": "front and side wireframe continuous; section loops closed; no hard shoulder or pelvis cut visible"
+    },
+    "skeleton_overlay": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-anatomy-audit\\candidate3-anatomy-skeleton-overlay.png",
+      "width": 1800,
+      "height": 1350,
+      "mode": "RGB",
+      "inspection": "official central skeleton and four planes overlay correctly; changed torso region remains bounded below neck/shoulder and above legs"
+    }
+  },
+  "files": [
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\extract_mhr_skeleton.c",
+      "bytes": 2025,
+      "sha256": "62C7B158D81D6B6268466F6683DFB37F935E08D4F9362D5EF41C3BDE66C3D9F3"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-extract-mhr-skeleton.cmd",
+      "bytes": 1292,
+      "sha256": "31E1F1117818228C96B79C0BECE448E6259C293C9A2AFF4069DB854C6CD3CCD1"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\audit_candidate2_anatomy.py",
+      "bytes": 21620,
+      "sha256": "689BF6BED75A9E451A5BB159ADAD1C01A251E2004AFCF02C61AFA222228F566D"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate2-anatomy-audit.cmd",
+      "bytes": 870,
+      "sha256": "CEC111B2A4F3D98BBBDD73645C43013B881755ED15EA509FEBB92BF40C5791A0"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\morph_body_candidate3.py",
+      "bytes": 6937,
+      "sha256": "DB00484BF970C130AEAEBE04475A330396B7F04D62A685CA0E48954F7AF1EA54"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-body-morph-candidate3.cmd",
+      "bytes": 741,
+      "sha256": "F5A83E189DDD990486BBE33924A41E6F065DDEA47BF3BF5C865AF60AC97938EA"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate3-anatomy-audit.cmd",
+      "bytes": 931,
+      "sha256": "FEBB0BB0853219BADB21916800CC6C5EFC42DFFA508E7EC74D5C501FC36206D1"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate3-verify.cmd",
+      "bytes": 691,
+      "sha256": "5FFE77F562238FC736392C1D60AF188B0FCC7DB02F1B831F6ED41CC68F0B4A17"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate2-anatomy-audit\\mhr-official-127-skeleton.tsv",
+      "bytes": 10976,
+      "sha256": "7B9836F65F10C07F36177F678EC907B34095F92EA299D2077EBA400C4F89343B"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate2-anatomy-audit\\candidate2-anatomy-audit.json",
+      "bytes": 6826,
+      "sha256": "5027E4D69065AA7B74CAAC5663FC6711C56E011745543EAB7E5D0D934E7BC137"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3-report.json",
+      "bytes": 3419,
+      "sha256": "F1D4024BB9E19ADDA533B1E8D11DA2C6B9E84B210D772BC03E293B6062C3231F"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3.obj",
+      "bytes": 1765038,
+      "sha256": "709A9589D686D0E26C16943B5FB52DCC988A2F6675164CFEB9673C161602051B"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3-vertices.bin",
+      "bytes": 442552,
+      "sha256": "23C5ECB3E943089954459F9F16E5551F0413571F5BACF85E3C3A6DCF155318A4"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3-wireframe-sections.png",
+      "bytes": 152456,
+      "sha256": "35879C2F64FCF42F2A6A73A532534DF76D69F183389821F92237D0CF9A1648D8"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\BODY-MORPH-CANDIDATE3-RESULT.md",
+      "bytes": 1705,
+      "sha256": "7ABFEA21401E2652F95B2F8EC1F0108CD410E17BD85BB937B7751779A2E86B2B"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\stdout.json",
+      "bytes": 1289,
+      "sha256": "86AA065193F40084062211BF88DA5E5AD5F2DA5BCBCA49C67FA39A5604E17663"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\stderr.txt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\verify-stdout.json",
+      "bytes": 366,
+      "sha256": "4DC8537DFC252AD1C510E0020D91327CB6C2982400A748DC1AA6E89685F72A5D"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\verify-stderr.txt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\verify-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-anatomy-audit\\candidate3-anatomy-audit.json",
+      "bytes": 6798,
+      "sha256": "2D04C807087F534E51705FEC544ACA9CC0092B5D81F4F32E51A3AC3CFEB5C50B"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-anatomy-audit\\candidate3-anatomy-skeleton-overlay.png",
+      "bytes": 186055,
+      "sha256": "07093BCC94B945BE7B5487588A2139AF295C750792C4E79FD9541A76C5114A18"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-anatomy-audit\\audit-stdout.json",
+      "bytes": 997,
+      "sha256": "F81A6F747479ECD2B499EB6365747D687B1A0D573E78722BF247D88105121481"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-anatomy-audit\\audit-stderr.txt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-anatomy-audit\\audit-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    }
+  ]
+}

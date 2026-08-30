@@ -12,16 +12,26 @@
 
 ## 一、已建成的能力（不要重做）
 
-> ### ⚠️ `artifacts/` 與 `work/` 不在 git 裡
+> ### `artifacts/` 大部分不入庫，幾何控制的權威產出例外
 >
-> `.gitignore` 明文排除 `/artifacts/` 與 `work/`。下表凡是以 `artifacts/` 開頭的路徑
-> **只存在於擁有者的本機**，clone 這個 repo 不會取得它們。
+> `.gitignore` 預設排除 `/artifacts/`（該目錄本機約 20 GB，多為虛擬環境、可重新
+> 下載的模型、隔離 worktree 與可重建的發行封存），但**幾何控制的權威產出已納入
+> 版本控制**，共 725 檔／54.2 MB——那是唯一不可重製的部分。
 >
-> **這代表兩件事**：①遠端代理或 CI 無法直接使用這些資產，需要擁有者提供
-> ②**四天份、經 SHA256 釘選的幾何控制產出目前只有單一副本，沒有異地備援**。
-> 若該磁碟失效即永久消失。建議另行備份到 D 槽以外的位置或私有 vault。
+> **未入庫的是原始 NetPBM（`.ppm` / `.pgm`，180 MB）**：光柵化器是確定性的
+> （固定正交相機、無隨機性、輸入頂點與面皆 SHA256 釘選），可用庫內的執行檔位元
+> 重生並比對已記錄的雜湊。重生指令與預期輸出見
+> `allowed-15deg-control-path-audit-agent-a/audit.json` 的 `fresh_regeneration_next_step`。
 >
-> 產線腳本（`lora_loader.py` 等）同樣只在本機 scratchpad，未入庫。
+> **`.gitattributes` 對 `artifacts/pose-atlas-rebuild/**` 停用文字轉換**——換行正規化
+> 會改動位元組並使 `sha256-sums.txt` 與 `audit.json` 記錄的雜湊全部失效。**改動這條
+> 規則等於毀掉整條證據鏈。**
+>
+> `artifacts/` 不在打包白名單內（`build.ps1` 以 `--add-data` 逐項指定，Inno Setup 的
+> `SourceDir` 指向 PyInstaller 產出目錄），**入庫不會讓安裝檔變大**。注意 `assets/`
+> 是整個目錄照收——放進 `assets/` 的東西會被打包進安裝檔。
+>
+> 產線腳本（`lora_loader.py`、`chroma_mass_produce_v9.py` 等）仍只在本機 scratchpad，未入庫。
 
 | 能力 | 位置 | 實況 |
 |---|---|---|

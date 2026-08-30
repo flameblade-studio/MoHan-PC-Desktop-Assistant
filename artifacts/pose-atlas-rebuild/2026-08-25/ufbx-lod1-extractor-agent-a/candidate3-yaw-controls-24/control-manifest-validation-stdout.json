@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "manifest_sha256": "96930F0D0CD3DBAB67D14C906E956ECD948FF665291BA5E74525B04B06718F32",
+  "schema_sha256": "292C7E2E8C085086B4F0CB690820678C7C1FA4325592957DD26ECEAE34383B4B",
+  "check_count": 484,
+  "views": 24,
+  "controls": 72,
+  "candidate3_only": true,
+  "candidate2_rejected": true
+}

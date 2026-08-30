@@ -1,0 +1,401 @@
+{
+  "status": "CANDIDATE_1_NOT_ANATOMICALLY_VALIDATED",
+  "coefficient_contract": {
+    "optimized_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "remaining_indices_20_44": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bounds": [
+      -3.0,
+      3.0
+    ]
+  },
+  "coefficients_0_19": [
+    -0.6756025308097585,
+    0.23779235177171368,
+    0.513479525247541,
+    0.6152528400169852,
+    -2.9969902658474465,
+    -1.944518345797713,
+    0.4625799616266699,
+    -1.1888382564340652,
+    -2.9944863116914098,
+    -2.8460022127101197,
+    2.9902410554234566,
+    -2.9920656597607316,
+    -2.9896031029724908,
+    2.9973004501365743,
+    2.9896828760047316,
+    0.16447455814434903,
+    -2.9955920882861107,
+    -2.0782268851325294,
+    -2.9939262477128468,
+    -2.9898857327461283
+  ],
+  "near_bound_abs_ge_2_95_count": 10,
+  "uniform_scale": 0.9722920898400692,
+  "unscaled_height": 172.7875828215717,
+  "targets": {
+    "height": 168.0,
+    "bust_candidate": 86.0,
+    "underbust_candidate": 71.0,
+    "waist_candidate": 62.0,
+    "hip_candidate": 90.0
+  },
+  "actual": {
+    "height": 168.0,
+    "bust_candidate": 94.09332967017907,
+    "underbust_candidate": 76.90027712365269,
+    "waist_candidate": 84.0008726929638,
+    "hip_candidate": 98.95468403173072
+  },
+  "signed_errors": {
+    "height": 0.0,
+    "bust_candidate": 8.093329670179074,
+    "underbust_candidate": 5.900277123652685,
+    "waist_candidate": 22.000872692963796,
+    "hip_candidate": 8.954684031730721
+  },
+  "objective": {
+    "optimizer": "PyTorch Adam warm start plus SciPy bounded least_squares refinement",
+    "adam_iterations": 1600,
+    "scipy_nfev": 31,
+    "scipy_status": 3,
+    "scipy_message": "`xtol` termination condition is satisfied.",
+    "height_policy": "identity coefficients fit shape only; each evaluation is uniformly scaled to height 168 before circumference measurement",
+    "l2_prior_weight": 0.05,
+    "symmetry_weight": 0.02,
+    "measurement_scales": [
+      0.75,
+      0.75,
+      0.75,
+      0.75
+    ]
+  },
+  "history": [
+    {
+      "iteration": 0,
+      "loss": 1057.0312247323473,
+      "uniform_scale": 0.9728896029306688,
+      "scaled_height": 168.0,
+      "scaled_circumferences": [
+        105.21118859181843,
+        91.41703219211429,
+        98.56416501161407,
+        105.98302605913514
+      ],
+      "max_abs_coefficient": 0.0
+    },
+    {
+      "iteration": 100,
+      "loss": 447.0049442352015,
+      "uniform_scale": 0.9724104061301436,
+      "scaled_height": 168.0,
+      "scaled_circumferences": [
+        94.39699072425438,
+        87.80103300640744,
+        85.82123729100216,
+        99.22416270644723
+      ],
+      "max_abs_coefficient": 2.828473669282441
+    },
+    {
+      "iteration": 200,
+      "loss": 425.69067274804485,
+      "uniform_scale": 0.9723519066625637,
+      "scaled_height": 168.00000000000003,
+      "scaled_circumferences": [
+        94.24201823886199,
+        87.24018104658393,
+        85.09859055258691,
+        99.59515926833123
+      ],
+      "max_abs_coefficient": 2.932018930369376
+    },
+    {
+      "iteration": 300,
+      "loss": 401.2369955113905,
+      "uniform_scale": 0.9723388111401929,
+      "scaled_height": 168.0,
+      "scaled_circumferences": [
+        94.48255676474771,
+        87.41118758973512,
+        84.05432968586666,
+        98.6346831479718
+      ],
+      "max_abs_coefficient": 2.9621412740709068
+    },
+    {
+      "iteration": 400,
+      "loss": 400.8210280680871,
+      "uniform_scale": 0.9723264727462357,
+      "scaled_height": 167.99999999999997,
+      "scaled_circumferences": [
+        94.4465092289043,
+        87.3012480270273,
+        84.03984588206256,
+        98.85723947986136
+      ],
+      "max_abs_coefficient": 2.975239924603061
+    },
+    {
+      "iteration": 500,
+      "loss": 405.2823697633756,
+      "uniform_scale": 0.9723088746481467,
+      "scaled_height": 168.0,
+      "scaled_circumferences": [
+        94.25815201052221,
+        86.69299113187796,
+        84.53870207897386,
+        99.42575428234724
+      ],
+      "max_abs_coefficient": 2.9823475012233382
+    },
+    {
+      "iteration": 600,
+      "loss": 400.2271421689886,
+      "uniform_scale": 0.9723036967232461,
+      "scaled_height": 168.0,
+      "scaled_circumferences": [
+        94.80686513337474,
+        86.67612241623006,
+        84.20877311864297,
+        99.13194550455349
+      ],
+      "max_abs_coefficient": 2.9866012749507087
+    },
+    {
+      "iteration": 700,
+      "loss": 396.88193120529064,
+      "uniform_scale": 0.9723074588894699,
+      "scaled_height": 168.0,
+      "scaled_circumferences": [
+        94.47999526347752,
+        87.44119894641511,
+        83.77596434297536,
+        98.71637118383588
+      ],
+      "max_abs_coefficient": 2.989467664653448
+    },
+    {
+      "iteration": 800,
+      "loss": 399.1445169237221,
+      "uniform_scale": 0.972308555092437,
+      "scaled_height": 168.0,
+      "scaled_circumferences": [
+        94.29431351566586,
+        87.21801378301218,
+        84.12823844850631,
+        98.71778673315137
+      ],
+      "max_abs_coefficient": 2.9914672397135473
+    },
+    {
+      "iteration": 900,
+      "loss": 398.39495678459053,
+      "uniform_scale": 0.9723008915461377,
+      "scaled_height": 168.00000000000003,
+      "scaled_circumferences": [
+        94.36202444343942,
+        87.28345629973056,
+        84.05976935464717,
+        98.60689514911442
+      ],
+      "max_abs_coefficient": 2.992937682418427
+    },
+    {
+      "iteration": 1000,
+      "loss": 399.7492195300507,
+      "uniform_scale": 0.9722989046940587,
+      "scaled_height": 168.00000000000003,
+      "scaled_circumferences": [
+        94.05318020453146,
+        86.64578137021093,
+        84.37236029876917,
+        99.41626493331792
+      ],
+      "max_abs_coefficient": 2.9940392992509723
+    },
+    {
+      "iteration": 1100,
+      "loss": 399.67751342087786,
+      "uniform_scale": 0.9722985263282928,
+      "scaled_height": 167.99999999999997,
+      "scaled_circumferences": [
+        94.69909358623332,
+        87.2769687638293,
+        83.9174334662319,
+        98.81381261751903
+      ],
+      "max_abs_coefficient": 2.9948880375602274
+    },
+    {
+      "iteration": 1200,
+      "loss": 403.936723385561,
+      "uniform_scale": 0.9722972811122107,
+      "scaled_height": 168.0,
+      "scaled_circumferences": [
+        93.98089345823664,
+        87.51592553624927,
+        84.20170665590275,
+        98.88065804896172
+      ],
+      "max_abs_coefficient": 2.9955726800884577
+    },
+    {
+      "iteration": 1300,
+      "loss": 404.50063227216936,
+      "uniform_scale": 0.9722990794378482,
+      "scaled_height": 168.00000000000003,
+      "scaled_circumferences": [
+        95.12554054655737,
+        87.29764867487624,
+        83.98577434134933,
+        98.78942789249646
+      ],
+      "max_abs_coefficient": 2.9961308932110766
+    },
+    {
+      "iteration": 1400,
+      "loss": 398.0990021785201,
+      "uniform_scale": 0.9722963446634605,
+      "scaled_height": 168.00000000000003,
+      "scaled_circumferences": [
+        94.24256516018109,
+        85.97030375044862,
+        84.48311930366155,
+        99.87790632241432
+      ],
+      "max_abs_coefficient": 2.9965909708759404
+    },
+    {
+      "iteration": 1500,
+      "loss": 395.25838303630366,
+      "uniform_scale": 0.9722978521212177,
+      "scaled_height": 167.99999999999997,
+      "scaled_circumferences": [
+        94.2826129557676,
+        87.231062124286,
+        83.8036205787251,
+        99.01524571821874
+      ],
+      "max_abs_coefficient": 2.9969710133257017
+    },
+    {
+      "iteration": 1599,
+      "loss": 401.84014575148535,
+      "uniform_scale": 0.9722962360577814,
+      "scaled_height": 168.00000000000003,
+      "scaled_circumferences": [
+        94.40158694577165,
+        87.08652515939944,
+        84.22288984560531,
+        98.9615290298579
+      ],
+      "max_abs_coefficient": 2.9972936609959895
+    }
+  ],
+  "topology": {
+    "vertices": 18439,
+    "triangles": 36874,
+    "unchanged": true,
+    "secondary_loops_excluded_from_objective": true
+  },
+  "exact_sections": {
+    "bust_candidate": {
+      "plane_y": 124.159859804655,
+      "closed_loop_count": 3,
+      "open_component_count": 0,
+      "coplanar_edge_count": 0,
+      "ambiguous_triangle_count": 0,
+      "largest_torso_loop_perimeter": 94.09332967017907
+    },
+    "underbust_candidate": {
+      "plane_y": 117.439859804655,
+      "closed_loop_count": 3,
+      "open_component_count": 0,
+      "coplanar_edge_count": 0,
+      "ambiguous_triangle_count": 0,
+      "largest_torso_loop_perimeter": 76.90027712365269
+    },
+    "waist_candidate": {
+      "plane_y": 103.999859804655,
+      "closed_loop_count": 5,
+      "open_component_count": 0,
+      "coplanar_edge_count": 0,
+      "ambiguous_triangle_count": 0,
+      "largest_torso_loop_perimeter": 84.0008726929638
+    },
+    "hip_candidate": {
+      "plane_y": 83.839859804655,
+      "closed_loop_count": 1,
+      "open_component_count": 0,
+      "coplanar_edge_count": 0,
+      "ambiguous_triangle_count": 0,
+      "largest_torso_loop_perimeter": 98.95468403173072
+    }
+  },
+  "torchscript_oracle_only_equivalence": {
+    "torch": "2.12.1+cu130",
+    "device": "cpu",
+    "rms_coordinate": 1.2469606955601551e-05,
+    "max_vertex": 0.00015632882597533848
+  },
+  "reconstruction": {
+    "method": "ufbx base vertices plus first-20 blend-shape offsets times coefficients, followed by separate origin-centered uniform scale",
+    "coefficients_tsv": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\candidate1-coefficients.tsv",
+    "uniform_scale": 0.9722920898400692
+  },
+  "inputs_sha256": {
+    "vertices": "4C1C4828E4E8672B5B1AC9FF1E179FDAE1A7758A9595F934D6F254D404136C34",
+    "faces": "9680016AECE8D43BA4FF621F57D045870FDD1E7DC78541173B1AB44A449465F0",
+    "offsets": "9B3A9D620D0A808518CC7C6FC692F005A981C4E18FC2B04823451625D96764E3",
+    "archive": "E4F4F205CD87C0FA106577BA1DE4FC763E4EB197C924461D2EF7E6944E9D6B94",
+    "equivalence": "8BCDBBED24F7309511617196907864597971284F65A1EE00DA4B96D9AC043A30"
+  }
+}

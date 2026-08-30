@@ -1,0 +1,18 @@
+{
+  "schema": "mohan.full_canvas_registration_anchor.v1",
+  "view_id": "yaw-105-pitch+00",
+  "canvas": [
+    1024,
+    1536
+  ],
+  "body_center": [
+    512,
+    1292
+  ],
+  "offset": [
+    0,
+    0
+  ],
+  "full_canvas_registered": true,
+  "mirror": false
+}

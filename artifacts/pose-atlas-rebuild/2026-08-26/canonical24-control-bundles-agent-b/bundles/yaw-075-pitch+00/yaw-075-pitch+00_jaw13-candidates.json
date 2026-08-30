@@ -1,0 +1,199 @@
+{
+  "schema": "mohan.jaw13_mesh_candidates.canonical_view.v1",
+  "status": "PASS_MESH_CANDIDATE_STAGING_ONLY",
+  "formal_view_id": "yaw-075-pitch+00",
+  "formal_yaw": -75,
+  "renderer_native_yaw": 75,
+  "projection_row": 17,
+  "mirror": false,
+  "sign_contract": "formal yaw uses renderer-native negative yaw; no pixel mirroring",
+  "candidate_count": 13,
+  "method": "actual c_jaw FBX skin-weight share >=0.55; per-view projected lower envelope; 13 unique real vertices nearest equal cumulative arc-length targets",
+  "truth_boundary": "MESH_CANDIDATE only; not MediaPipe/FLAME/formal anatomical landmarks",
+  "inputs": {
+    "projection_npz": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-vertex-projections.npz",
+      "sha256": "396999907509F73D3E74D08ECD6064CA046B821574F7975C5F6EFA8725A84AF0"
+    },
+    "skin_weights": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\skin-weight-parts-agent-a\\vertex-skin-weights.tsv",
+      "sha256": "E836F1D11A2EAB66159C610704F55A262CBA7125973EA5969B2898F035ABC5C2"
+    },
+    "normal": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+075-pitch+00_normal.png",
+      "sha256": "E9E444E39A3CB3DFD3A1909C7F78EB507E903D45E770F3BF2B2CD59E1964E49A"
+    },
+    "depth": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+075-pitch+00_depth.png",
+      "sha256": "4A7F12061090D0B39FF30E8FF85A5782C1493244E7AA3C0A5B586734A5886177"
+    },
+    "silhouette": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+075-pitch+00_silhouette.png",
+      "sha256": "4EB7899035142DDCCFBBE7593B3883C8BA075FFAA8E85A4C0F0B7B81714F2596"
+    }
+  },
+  "c_jaw_vertex_count": 653,
+  "lower_envelope_real_vertex_count": 55,
+  "candidates": [
+    {
+      "candidate_number": 1,
+      "vertex_id": 3916,
+      "screen_xy": [
+        556.3083280039585,
+        294.56120310999944
+      ],
+      "camera_depth": 7.226293165449178,
+      "normalized_envelope_arclength": 0.0,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 2,
+      "vertex_id": 4764,
+      "screen_xy": [
+        559.2934544573774,
+        306.5182451728858
+      ],
+      "camera_depth": 5.8732616470322645,
+      "normalized_envelope_arclength": 0.08377305911430118,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 3,
+      "vertex_id": 3705,
+      "screen_xy": [
+        561.7102771189893,
+        309.4231916254284
+      ],
+      "camera_depth": 5.457610363324386,
+      "normalized_envelope_arclength": 0.16156774554069395,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 4,
+      "vertex_id": 3596,
+      "screen_xy": [
+        564.6766980509083,
+        311.939642126469
+      ],
+      "camera_depth": 5.019457503393873,
+      "normalized_envelope_arclength": 0.23311594237152997,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 5,
+      "vertex_id": 3496,
+      "screen_xy": [
+        567.7186336798169,
+        314.21517992607977
+      ],
+      "camera_depth": 4.550103598167614,
+      "normalized_envelope_arclength": 0.3287103698415132,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 6,
+      "vertex_id": 3495,
+      "screen_xy": [
+        570.0768019536939,
+        313.23096865299016
+      ],
+      "camera_depth": 4.702402669406396,
+      "normalized_envelope_arclength": 0.4346432642526643,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 7,
+      "vertex_id": 3810,
+      "screen_xy": [
+        571.9129175674876,
+        299.7563272760912
+      ],
+      "camera_depth": 6.740067038434839,
+      "normalized_envelope_arclength": 0.5124265936710142,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 8,
+      "vertex_id": 3332,
+      "screen_xy": [
+        573.3089966857026,
+        317.60184413505607
+      ],
+      "camera_depth": 3.5000944674441072,
+      "normalized_envelope_arclength": 0.5841719335841267,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 9,
+      "vertex_id": 4535,
+      "screen_xy": [
+        575.0899945313975,
+        318.4413786115764
+      ],
+      "camera_depth": 2.942661604361032,
+      "normalized_envelope_arclength": 0.6766638202431479,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 10,
+      "vertex_id": 3273,
+      "screen_xy": [
+        586.714929308258,
+        311.5609419997349
+      ],
+      "camera_depth": 4.765515614009235,
+      "normalized_envelope_arclength": 0.7436292623085488,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 11,
+      "vertex_id": 3247,
+      "screen_xy": [
+        595.5632561611765,
+        307.25120968764776
+      ],
+      "camera_depth": 5.0088331995685405,
+      "normalized_envelope_arclength": 0.8381808007271431,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 12,
+      "vertex_id": 371,
+      "screen_xy": [
+        606.0622185632633,
+        303.9739142475063
+      ],
+      "camera_depth": 2.343803852168765,
+      "normalized_envelope_arclength": 0.9157387374977106,
+      "status": "MESH_CANDIDATE"
+    },
+    {
+      "candidate_number": 13,
+      "vertex_id": 2144,
+      "screen_xy": [
+        609.5194393043141,
+        283.58944878446283
+      ],
+      "camera_depth": 2.846780376356221,
+      "normalized_envelope_arclength": 1.0,
+      "status": "MESH_CANDIDATE"
+    }
+  ],
+  "smoothed_curve": {
+    "method": "Catmull-Rom through 13 real mesh candidates",
+    "point_count": 385,
+    "formal_landmarks": false
+  },
+  "outputs": {
+    "numbered_overlay": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\jaw13-canonical24-agent-b\\views\\yaw-075-pitch+00_jaw13-mesh-candidates-overlay.png",
+      "sha256": "5B2A59031B44F2E774B928C9CD7B803475D547BD00D45D83D3BE9CBEF4F71613"
+    },
+    "smoothed_conditioning": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\jaw13-canonical24-agent-b\\views\\yaw-075-pitch+00_jaw13-smoothed-conditioning.png",
+      "sha256": "41619B0C5C6239A5C815E04925424D957A4FD96CDBE6027D396F8D0F55F1A5B6"
+    }
+  },
+  "flux_started": false,
+  "formal_asset_promotion": false
+}
