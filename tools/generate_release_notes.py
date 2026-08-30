@@ -58,6 +58,31 @@ PLATFORM_NOTES = (
         "macOS と Linux は機能限定 Preview を継続します。"
     ),
 )
+DOWNLOAD_GUIDANCE = (
+    (
+        "> **一般使用者下載檔名結尾為 `Windows-x64-Setup.exe` 的安裝檔即可。**"
+        "其餘資產為可攜 ZIP／MSI、macOS 與 Linux Preview，以及 SBOM、雜湊與"
+        "效能證據等供應鏈驗證檔案，日常使用不需要下載。"
+    ),
+    (
+        "> **一般用户下载文件名结尾为 `Windows-x64-Setup.exe` 的安装包即可。**"
+        "其余资产为便携 ZIP／MSI、macOS 与 Linux Preview，以及 SBOM、哈希与"
+        "性能证据等供应链验证文件，日常使用不需要下载。"
+    ),
+    (
+        "> **Most people want the installer whose name ends in "
+        "`Windows-x64-Setup.exe`.** The remaining assets are the portable ZIP "
+        "and MSI, the macOS and Linux Previews, and supply-chain evidence such "
+        "as SBOMs, checksums and performance records, none of which everyday "
+        "use requires."
+    ),
+    (
+        "> **通常のご利用では、ファイル名が `Windows-x64-Setup.exe` で終わる"
+        "インストーラのみで十分です。** 残りの資産はポータブル ZIP と MSI、"
+        "macOS と Linux の Preview、そして SBOM・ハッシュ・性能証跡といった"
+        "サプライチェーン検証用のファイルであり、日常利用では不要です。"
+    ),
+)
 DRAFT_NOTES = (
     "本檔案由 CHANGELOG 自動產生，作為四語發行說明初稿；正式發布前請人工潤飾。",
     "本文件由 CHANGELOG 自动生成，作为四语发布说明初稿；正式发布前请人工润饰。",
@@ -197,6 +222,8 @@ def compose(version: str, section: str) -> str:
                 f"## {language}",
                 "",
                 PLATFORM_NOTES[index],
+                "",
+                DOWNLOAD_GUIDANCE[index],
                 "",
                 DRAFT_NOTES[index],
                 "",
