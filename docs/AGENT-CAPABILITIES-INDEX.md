@@ -262,6 +262,29 @@ v9 每個視角都帶方位措辭，那是已驗證有效的部分（v9 的 yaw+
 **做法**：閘門寫完後，先拿既有的正例與反例各跑一遍，確認判讀方向正確再出跑。
 反例要包含真正踩過的那張失敗圖。
 
+再補兩個實際踩到的閘門缺陷，兩者都不是「判讀錯」而是「根本沒在看」：
+
+| 缺陷 | 症狀 |
+|---|---|
+| **守備範圍有空洞** | 只檢查 \|yaw\|≤22 與 ≥150，23–149 度無人看守。yaw+030 產出背面、眼距比 0.034（比任何背面樣本都低）卻被判通過 |
+| **只在第一張判定** | 角度相依的失敗必然出現在後面。第一張過了就一路放行到底 |
+| **失敗的圖留在正式檔名下** | 續跑時被當成已完成而略過，缺陷靜默留在成品裡。失敗必須改名歸檔 |
+
+**閘門的守備範圍要涵蓋所有會出錯的情況，不只是當下想得到的那幾種。**
+寫閘門時列出參數的完整值域，逐段問「這一段出錯會長什麼樣、我查得到嗎」。
+
+### 方位措辭必須明白斷言正面
+
+`"turned to a three-quarter angle with one shoulder toward the camera,
+her face still visible"` 讀起來像正面四分之三，**但背面四分之三也完全滿足它**
+——一邊肩膀確實朝向鏡頭，側臉確實可見。實測 yaw+030 就這樣被模型的背面先驗
+奪走；而 0°／15° 因為措辭裡有「her chest and navel toward the camera」這句
+明確斷言而守住。
+
+改成每個非背面段落都明寫「the front of her chest and her navel are visible,
+her back is away from the camera」，並在 |yaw| < 113 時於負向詞加上
+`seen from behind, back view, rear view`，眼距比從 0.034 回到 0.337。
+
 `ChromaImg2ImgPipeline.__call__` 的預設是 `height = height or self.default_sample_size * self.vae_scale_factor`。
 **不傳就退回 1024×1024 方形，初始圖自己的尺寸完全不算數。**
 2:3 的初始圖被壓成正方形後，方形畫布誘導模型畫成「正面＋側面」的角色設定表，
