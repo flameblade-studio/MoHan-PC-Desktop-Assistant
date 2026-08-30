@@ -7,7 +7,7 @@ lazy from application.gesture_controller import GestureController
 lazy from application.presentation_ports import PresentationDatabasePort
 lazy from application.theme_pack_service import ThemePackService
 lazy from domain.theme_retint import retint_stylesheet
-lazy from domain.theme_pack import ThemePack, build_stylesheet
+lazy from domain.theme_pack import ThemePack
 lazy from domain.theme_session import ThemeResolution, ThemeSession
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_conversation import DashboardConversationMixin
@@ -129,9 +129,13 @@ class Dashboard(
         # appended low-specificity selectors alone lose every cascade fight
         # against the flagship's attribute selectors, which left installed
         # themes as a few stray tinted frames (v4.5.1 report, 2026-08-29).
-        stylesheet = retint_stylesheet(
-            self.styleSheet(), theme.tokens
-        ) + build_stylesheet(theme)
+        # Retint alone recolors the whole flagship shell; the old
+        # build_stylesheet overlay painted every unstyled QFrame with the
+        # pack's dark card color plus a universal border — the black bands
+        # and stray rectangles reported live on v4.6.0 (2026-08-30).  Only
+        # the pack's font choice survives as a non-structural rule.
+        stylesheet = retint_stylesheet(self.styleSheet(), theme.tokens)
+        stylesheet += f"QWidget {{ font-family:'{theme.font_family}'; }}"
         background = self.theme_pack_service.background_path(theme.theme_id)
         if background is not None:
             normalized = background.as_posix().replace("'", "\\'")
