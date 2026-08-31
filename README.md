@@ -9,7 +9,7 @@
 墨寒是一套重視安全、隱私與角色連續感的 Windows 語音互動桌面助理，結合透明桌面角色、自然語音、由使用者控制的長期記憶、工作管理、權限控管工具，以及可擴充的雲端與智慧家庭連接器。她的角色背景是來自北宋、附生於赤焰劍中的千年女劍魂。
 
 <div align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ 下載 Windows 版</strong></a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/latest"><strong>⬇ 下載 Windows 版</strong></a> ·
   <a href="QUICKSTART.md">快速開始</a> ·
   <a href="docs/LICENSE-PURITY.md">授權純淨承諾</a> ·
   <a href="ROADMAP.md">路線圖</a> ·
@@ -59,6 +59,8 @@
 > ### ❤️⚔️ 支持墨寒：Ko-fi 贊助＆裝飾 DLC 下載
 >
 > 墨寒完整功能永遠免費、原始碼 MIT 授權。喜歡她的話，歡迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 單次或每月贊助——贊助者可下載「赤焰劍光」主題等服裝與佈景純裝飾 DLC 作為謝禮；贊助不換取任何功能特權。
+>
+> **DLC 主題安裝三步**：在 Ko-fi 完成贊助後，依謝禮指引下載 `.mohan-theme` 單一檔案；開啟控制台「雲裳閣」分頁，點「上傳單一檔案」選取該檔；預覽滿意後按右下「保存設定」正式套用，按取消即還原原主題。主題檔不含程式碼、不需解壓，升級改版後仍可沿用。
 
 ### 實際展示
 
@@ -269,7 +271,7 @@ Azure Speech 是預設關閉、由使用者自行啟用的預覽供應器，需�
 一般使用者不需要安裝 Python：
 
 1. 前往 [GitHub Releases](../../releases)。
-2. 下載最新的 `Windows-x64.zip`、EXE 或 MSI，以及對應的 `SHA256.txt`。
+2. 下載檔名結尾為 `Windows-x64-Setup.exe` 的安裝檔與對應的 `SHA256.txt`；進階使用者可改用可攜 `Windows-x64.zip` 或 `Windows-x64.msi`。
 3. 核對 SHA-256，並完整解壓 ZIP 或啟動安裝程式。
 4. 執行 `MoHan-Desktop-Assistant-*.exe`。
 5. 在首次設定精靈選擇需要的介面語言。
@@ -438,7 +440,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 墨寒是一款重视安全、隐私与角色连续感的 Windows 语音互动桌面助手，结合透明桌面角色、自然语音、由用户控制的长期记忆、工作管理、权限控制工具，以及可扩展的云端与智能家居连接器。她的角色背景是来自北宋、寄宿于赤焰剑中的千年女剑魂。
 
 <div align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ 下载 Windows 版</strong></a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/latest"><strong>⬇ 下载 Windows 版</strong></a> ·
   <a href="QUICKSTART.md">快速开始</a> ·
   <a href="docs/LICENSE-PURITY.md">授权纯净承诺</a> ·
   <a href="ROADMAP.md">路线图</a> ·
@@ -488,6 +490,8 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 > ### ❤️⚔️ 支持墨寒：Ko-fi 赞助＆装饰 DLC 下载
 >
 > 墨寒完整功能永远免费、源代码 MIT 许可。喜欢她的话，欢迎到 [Ko-fi](https://ko-fi.com/flamebladestudio) 单次或每月赞助——赞助者可下载“赤焰剑光”主题等服装与布景纯装饰 DLC 作为谢礼；赞助不换取任何功能特权。
+>
+> **DLC 主题安装三步**：在 Ko-fi 完成赞助后，依谢礼指引下载 `.mohan-theme` 单一文件；打开控制台“云裳阁”标签页，点“上传单个文件”选取该文件；预览满意后按右下“保存设置”正式应用，按取消即还原原主题。主题文件不含代码、无需解压，升级改版后仍可沿用。
 
 ### 实际展示
 
@@ -698,7 +702,7 @@ Azure Speech 是默认关闭、由用户自行启用的预览供应器，需要�
 一般用户不需要安装 Python：
 
 1. 前往 [GitHub Releases](../../releases)。
-2. 下载最新的 `Windows-x64.zip`、EXE 或 MSI，以及对应的 `SHA256.txt`。
+2. 下载文件名结尾为 `Windows-x64-Setup.exe` 的安装包与对应的 `SHA256.txt`；进阶用户可改用便携 `Windows-x64.zip` 或 `Windows-x64.msi`。
 3. 核对 SHA-256，并完整解压 ZIP 或启动安装程序。
 4. 运行 `MoHan-Desktop-Assistant-*.exe`。
 5. 在首次设置向导选择需要的界面语言。
@@ -867,7 +871,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 MoHan is a safety- and privacy-first, voice-interactive Windows desktop companion that combines a transparent character, natural speech, user-controlled long-term memory, productivity management, permission-gated tools, and extensible cloud and smart-home connectors. Her character is a thousand-year-old female sword spirit from the Northern Song dynasty who resides within the Crimson Flame Sword.
 
 <div align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ Download for Windows</strong></a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/latest"><strong>⬇ Download for Windows</strong></a> ·
   <a href="QUICKSTART.md">Quick start</a> ·
   <a href="docs/LICENSE-PURITY.md">License purity</a> ·
   <a href="ROADMAP.md">Roadmap</a> ·
@@ -917,6 +921,8 @@ MoHan is a safety- and privacy-first, voice-interactive Windows desktop companio
 > ### ❤️⚔️ Support MoHan: Ko-fi sponsorship & cosmetic DLC downloads
 >
 > MoHan stays fully free with MIT-licensed source. If you enjoy her, a one-time or monthly contribution on [Ko-fi](https://ko-fi.com/flamebladestudio) unlocks thank-you downloads of purely cosmetic outfit and dashboard-theme DLC, such as the "Crimson Flame Sword-Light" theme; sponsorship never buys functional privileges.
+>
+> **Installing a DLC theme takes three steps**: after sponsoring on Ko-fi, follow the thank-you instructions to download the single `.mohan-theme` file; open the control panel's "Wardrobe Pavilion" tab and pick that file via "Upload one file"; preview it, then press "Save settings" at the lower right to apply, or cancel to restore the previous theme. The file carries no code, needs no unpacking, and keeps working across upgrades.
 
 ### Live demonstration
 
@@ -1127,7 +1133,7 @@ On August 11, 2026, a real Azure Speech Free F0 resource in East Asia completed 
 General users do not need to install Python:
 
 1. Open [GitHub Releases](../../releases).
-2. Download the latest `Windows-x64.zip`, EXE, or MSI and the matching `SHA256.txt`.
+2. Download the installer whose name ends in `Windows-x64-Setup.exe` together with the matching `SHA256.txt`; advanced users may prefer the portable `Windows-x64.zip` or the `Windows-x64.msi`.
 3. Verify SHA-256, then fully extract the ZIP or start the installer.
 4. Run `MoHan-Desktop-Assistant-*.exe`.
 5. Select the required interface language in the first-run wizard.
@@ -1296,7 +1302,7 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 墨寒（MoHan）は、安全性、プライバシー、人格の連続性を大切にする音声対話型 Windows デスクトップアシスタントです。透明なデスクトップキャラクター、自然な音声、利用者が管理する長期記憶、仕事管理、権限付きツール、拡張可能なクラウドおよびスマートホーム接続を統合します。人物設定は、中国・北宋から来て赤焰剣に宿る千年の女性剣魂です。
 
 <div align="center">
-  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases"><strong>⬇ Windows 版をダウンロード</strong></a> ·
+  <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/latest"><strong>⬇ Windows 版をダウンロード</strong></a> ·
   <a href="QUICKSTART.md">クイックスタート</a> ·
   <a href="docs/LICENSE-PURITY.md">ライセンス純度</a> ·
   <a href="ROADMAP.md">ロードマップ</a> ·
@@ -1346,6 +1352,8 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 > ### ❤️⚔️ 墨寒を支援：Ko-fi スポンサー＆装飾 DLC ダウンロード
 >
 > 墨寒の全機能は今後も無料で、ソースコードは MIT ライセンスです。気に入っていただけたら、[Ko-fi](https://ko-fi.com/flamebladestudio) で単発または毎月の支援をどうぞ——スポンサーには「赤焰剣光」テーマなど衣装・ダッシュボードの純装飾 DLC を謝礼としてダウンロードいただけます。支援によって機能上の特権が得られることはありません。
+>
+> **DLC テーマの導入は三手順**：Ko-fi で支援後、謝礼の案内に従って `.mohan-theme` ファイルを一つダウンロードします。コントロールパネルの「雲裳閣」タブで「ファイルを1つアップロード」からそのファイルを選び、プレビューで確認したら右下の「保存設定」で正式に適用します。キャンセルすれば元のテーマに戻ります。テーマファイルはコードを含まず、解凍も不要で、アップグレード後もそのまま使えます。
 
 ### 実機デモ
 
@@ -1556,7 +1564,7 @@ Azure Speech は初期状態で無効な Preview 供給元で、利用者が明�
 一般利用者は Python をインストールする必要がありません。
 
 1. [GitHub Releases](../../releases) を開きます。
-2. 最新の `Windows-x64.zip`、EXE、または MSI と、対応する `SHA256.txt` を取得します。
+2. ファイル名が `Windows-x64-Setup.exe` で終わるインストーラーと、対応する `SHA256.txt` を取得します。上級者はポータブル `Windows-x64.zip` や `Windows-x64.msi` も選べます。
 3. SHA-256 を照合し、ZIP を完全展開するかインストーラーを起動します。
 4. `MoHan-Desktop-Assistant-*.exe` を実行します。
 5. 初回セットアップで必要な表示言語を選びます。
