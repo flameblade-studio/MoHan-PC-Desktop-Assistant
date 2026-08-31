@@ -55,6 +55,11 @@ max-locals = 20
 "presentation/companion_core.py" = ["PLR0915"]
 "presentation/companion_visual_dynamics.py" = ["PLR0915"]
 "presentation/dashboard_shell.py" = ["PLR0915"]
+# 姿勢引擎的 main／validate 是線性的量測腳本主流程，拆函式只會把
+# 讀取順序打散；比照上方先例只豁免複雜度，魔術數規則不豁免。
+"tools/second_gen_body/repose_arms_candidate5.py" = ["PLR0914", "PLR0915"]
+"tools/second_gen_body/repose_arms_candidate6_dqs.py" = ["PLR0914", "PLR0915"]
+"tools/second_gen_body/test_pose_engine.py" = ["PLR0914", "PLR0915"]
 "tests/test_release_automation.py" = ["PLR0914"]
 "tools/analyze_layered_assets.py" = ["PLR0912", "PLR0914", "PLR0915"]
 "tools/build_pose_atlas_release_assets.py" = ["PLR0914"]
