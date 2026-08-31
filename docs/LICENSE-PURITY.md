@@ -34,6 +34,7 @@
 - **ComfyUI（GPL-3.0）** — 生態系最主流的工具，完全出局，不留備援副本。
 - **FLUX.1-dev／FLUX.2-dev／FLUX.2-klein-9B 全系** — 非商用條款會傳染整棵衍生樹。改用 Apache 2.0 的 FLUX.2-klein-4B 與 Chroma1-HD 作為安全基底。
 - **CC BY-SA 素材** — share-alike 的傳染性與盡調成本不可接受，已徹底移除。
+- **Chroma-DC-2K** — 只存在於 `lodestones/chroma-debug-development-only`，該 repo 的授權是 CC BY-NC-SA 4.0，同時踩到非商用與 share-alike 兩條線；repo 自述「純供研究」，Apache 2.0 版本尚未存在。轉載站上的重新上傳不改變上游授權。同門的 **Chroma1-Radiance 是 Apache 2.0，不在排除之列**，未採用的原因是技術面而非授權面。
 - **OpenPose 官方實作** — 商用年費 US$25,000，改用 Apache 授權的 DWPose／RTMPose／MediaPipe。
 - **nvdiffrast、Illustrious-XL、SD3／3.5、Hunyuan 影像系** — 逐一查證、逐一排除。
 
@@ -89,6 +90,7 @@
 - **ComfyUI（GPL-3.0）** — 生态里最主流的工具，完全出局，不保留备用副本。
 - **FLUX.1-dev／FLUX.2-dev／FLUX.2-klein-9B 全系** — 非商用条款会传染整棵衍生树。改用 Apache 2.0 的 FLUX.2-klein-4B 与 Chroma1-HD 作为安全底座。
 - **CC BY-SA 素材** — share-alike 的传染性与尽调成本不可接受，已彻底移除。
+- **Chroma-DC-2K** — 只存在于 `lodestones/chroma-debug-development-only`，该 repo 的许可是 CC BY-NC-SA 4.0，同时触及非商用与 share-alike 两条线；repo 自述「纯供研究」，Apache 2.0 版本尚未存在。转载站上的重新上传不改变上游许可。同门的 **Chroma1-Radiance 是 Apache 2.0，不在排除之列**，未采用的原因是技术面而非许可面。
 - **OpenPose 官方实现** — 商用年费 US$25,000，改用 Apache 授权的 DWPose／RTMPose／MediaPipe。
 - **nvdiffrast、Illustrious-XL、SD3／3.5、混元图像系** — 逐项核查、逐项排除。
 
@@ -144,6 +146,7 @@ A record of refusals persuades more than a claim of purity. The full list lives 
 - **ComfyUI (GPL-3.0)** — the ecosystem's dominant tool, excluded outright, with no fallback copy retained.
 - **The entire FLUX.1-dev / FLUX.2-dev / FLUX.2-klein-9B family** — non-commercial terms infect the whole derivative tree. Apache 2.0 alternatives FLUX.2-klein-4B and Chroma1-HD are used instead.
 - **CC BY-SA material** — the share-alike reach and diligence burden were judged unacceptable, so it was removed entirely.
+- **Chroma-DC-2K** — it exists only inside `lodestones/chroma-debug-development-only`, a repository licensed CC BY-NC-SA 4.0, which trips both the non-commercial and the share-alike wires; the repository calls its contents research-only and the Apache 2.0 release does not exist yet. A mirror on a model-sharing site does not change the upstream licence. Its sibling **Chroma1-Radiance is Apache 2.0 and is not excluded** — it is unused for technical reasons, not licensing ones.
 - **The official OpenPose implementation** — US$25,000 annual commercial fee; replaced by Apache-licensed DWPose, RTMPose and MediaPipe.
 - **nvdiffrast, Illustrious-XL, SD3 / 3.5, the Hunyuan image family** — each investigated, each excluded.
 
@@ -199,6 +202,7 @@ To audit it yourself, the evidence is in the repository: [`ASSETS-LICENSE.md`](.
 - **ComfyUI（GPL-3.0）** — エコシステム最大の主流ツールですが完全に除外し、予備の複製も残していません。
 - **FLUX.1-dev／FLUX.2-dev／FLUX.2-klein-9B 系列すべて** — 非商用条項が派生ツリー全体に伝播します。Apache 2.0 の FLUX.2-klein-4B と Chroma1-HD を土台に採用しました。
 - **CC BY-SA 素材** — share-alike の波及とデューデリジェンス費用が許容できず、完全に撤去しました。
+- **Chroma-DC-2K** — `lodestones/chroma-debug-development-only` にのみ存在し、同リポジトリのライセンスは CC BY-NC-SA 4.0 で、非商用と share-alike の両方に抵触します。リポジトリ自身が「研究目的のみ」と明記しており、Apache 2.0 版はまだ存在しません。転載サイトでの再アップロードは上流のライセンスを変えません。姉妹モデルの **Chroma1-Radiance は Apache 2.0 であり除外対象ではありません**——採用していない理由はライセンスではなく技術面です。
 - **OpenPose 公式実装** — 商用は年額 US$25,000。Apache ライセンスの DWPose／RTMPose／MediaPipe に置き換えました。
 - **nvdiffrast、Illustrious-XL、SD3／3.5、Hunyuan 画像系** — 一件ずつ調査し、一件ずつ除外しました。
 
