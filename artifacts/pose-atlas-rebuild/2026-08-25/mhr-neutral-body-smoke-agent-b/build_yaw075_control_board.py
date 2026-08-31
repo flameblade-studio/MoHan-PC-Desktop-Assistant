@@ -51,7 +51,7 @@ SOURCES = [
     {
         "id": "exec82b_ornament_physical_side_authority",
         "role": "user-confirmed ornament physical-side authority; do not mirror",
-        "path": Path(r"C:\Users\hitos\.codex\generated_images\01a009be-0db2-7811-a647-3b7ac37528a9\exec-82b460bc-acca-4611-8a56-71194beded59.png"),
+        "path": Path.home() / r".codex\generated_images\01a009be-0db2-7811-a647-3b7ac37528a9\exec-82b460bc-acca-4611-8a56-71194beded59.png",
     },
     {
         "id": "yaw060_v8_angle_mother",

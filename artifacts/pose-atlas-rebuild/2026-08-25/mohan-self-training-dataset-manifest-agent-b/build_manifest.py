@@ -11,8 +11,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 HERE = Path(__file__).resolve().parent
 PROJECT = HERE.parents[3]
-ITHOME = Path(r"C:\Users\hitos\OneDrive\桌面\墨寒桌面語音互動虛擬女友2026.07.28開始開發\2026iThome鐵人賽參賽插圖")
-PROFILE_062 = Path(r"C:\Users\hitos\OneDrive\桌面\墨寒桌面語音互動虛擬女友2026.07.28開始開發\062.png")
+ITHOME = Path.home() / r"OneDrive\桌面\墨寒桌面語音互動虛擬女友2026.07.28開始開發\2026iThome鐵人賽參賽插圖"
+PROFILE_062 = Path.home() / r"OneDrive\桌面\墨寒桌面語音互動虛擬女友2026.07.28開始開發\062.png"
 AUTHORITIES = (
     ("idle_front", PROJECT / "assets/expressions/idle_front.png"),
     ("idle_lean", PROJECT / "assets/expressions/idle_lean.png"),

@@ -219,7 +219,7 @@ def main() -> int:
             )
         )
 
-    profile_path = r"C:\Users\hitos\OneDrive\桌面\墨寒桌面語音互動虛擬女友2026.07.28開始開發\062.png"
+    profile_path = str(Path.home() / r"OneDrive\桌面\墨寒桌面語音互動虛擬女友2026.07.28開始開發\062.png")
     records.append(
         make_record(
             source=provenance_record(provenance, profile_path),

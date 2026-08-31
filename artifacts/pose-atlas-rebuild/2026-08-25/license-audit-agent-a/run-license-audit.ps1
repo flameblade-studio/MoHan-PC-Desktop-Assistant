@@ -2,8 +2,8 @@ $ErrorActionPreference = "Stop"
 $project = "D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision"
 $instantMesh = "$project\tools\third_party\InstantMesh"
 $mhr = "$project\artifacts\third-party-downloads\MHR-e412e12c"
-$biRef = "C:\Users\hitos\.cache\huggingface\hub\models--ZhengPeng7--BiRefNet_HR-matting\snapshots\5d6b6f8adcb5b417c871b1d84ceaae9871355b7f"
-$imModel = "C:\Users\hitos\.cache\huggingface\hub\models--TencentARC--InstantMesh\snapshots\b785b4ecfb6636ef34a08c748f96f6a5686244d0"
+$biRef = "$env:USERPROFILE\.cache\huggingface\hub\models--ZhengPeng7--BiRefNet_HR-matting\snapshots\5d6b6f8adcb5b417c871b1d84ceaae9871355b7f"
+$imModel = "$env:USERPROFILE\.cache\huggingface\hub\models--TencentARC--InstantMesh\snapshots\b785b4ecfb6636ef34a08c748f96f6a5686244d0"
 $nvdLicense = "$instantMesh\.conda\Lib\site-packages\nvdiffrast-0.3.3.dist-info\licenses\LICENSE.txt"
 
 function Evidence([string]$Path) {

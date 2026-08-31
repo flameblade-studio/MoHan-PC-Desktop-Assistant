@@ -12,8 +12,8 @@ $residuePaths = @(
     (Join-Path $projectRoot 'tools\third_party\InstantMesh\.conda\Lib\site-packages\nvdiffrast'),
     (Join-Path $projectRoot 'tools\third_party\InstantMesh\.conda\Lib\site-packages\nvdiffrast-0.3.3.dist-info'),
     (Join-Path $projectRoot 'tools\third_party\InstantMesh\.torch_extensions'),
-    'C:\Users\hitos\AppData\Local\torch_extensions\torch_extensions\Cache\py310_cu121\nvdiffrast_plugin',
-    'C:\Users\hitos\.cache\huggingface\hub\models--sudo-ai--zero123plus-v1.2'
+    "$env:USERPROFILE\AppData\Local\torch_extensions\torch_extensions\Cache\py310_cu121\nvdiffrast_plugin",
+    "$env:USERPROFILE\.cache\huggingface\hub\models--sudo-ai--zero123plus-v1.2"
 )
 
 $absenceStdout = Join-Path $PSScriptRoot 'local-absence.stdout.txt'

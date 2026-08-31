@@ -26,7 +26,7 @@ CANDIDATE_PROVENANCE = BASE / "image-input-production-admission/candidate-image-
 OPENAI_RIGHTS = BASE / "image-input-production-admission/official-openai-output-rights-evidence.json"
 ASSETS_LICENSE = PROJECT / "ASSETS-LICENSE.md"
 REPO_LICENSE = PROJECT / "LICENSE"
-GENERATED_POOL = Path(r"C:\Users\hitos\.codex\generated_images")
+GENERATED_POOL = Path.home() / r".codex\generated_images"
 
 
 def sha256(path: Path) -> str:

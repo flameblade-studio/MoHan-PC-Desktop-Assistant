@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 REPO = Path(r"D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision")
-REFS = Path(r"C:\Users\hitos\OneDrive\桌面\墨寒桌面語音互動虛擬女友2026.07.28開始開發\2026iThome鐵人賽參賽插圖")
+REFS = Path.home() / r"OneDrive\桌面\墨寒桌面語音互動虛擬女友2026.07.28開始開發\2026iThome鐵人賽參賽插圖"
 OUT = Path(__file__).resolve().parent
 
 

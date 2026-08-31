@@ -13,7 +13,7 @@ import pdfplumber
 
 
 HERE = Path(__file__).resolve().parent
-ZIP_PATH = Path(r"C:\Users\hitos\OneDrive\桌面\墨寒桌面語音互動虛擬女友2026.07.28開始開發\FLAME2023Open.zip")
+ZIP_PATH = Path.home() / r"OneDrive\桌面\墨寒桌面語音互動虛擬女友2026.07.28開始開發\FLAME2023Open.zip"
 README_NAME = "FLAME2023_Open Readme.pdf"
 ALLOWED = ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "CC0", "CC BY"]
 
