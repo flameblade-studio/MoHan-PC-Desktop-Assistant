@@ -24,6 +24,7 @@
 | Pony Diffusion 系 | 附加商用限制 | 禁用 |
 | SD3／SD3.5 | Stability Community License | 非白名單，禁用 |
 | Hunyuan 影像系 | Tencent Community License | 非白名單，禁用 |
+| Chroma-DC-2K | CC BY-NC-SA 4.0 | 2026-08-31 查證：只存在於 `chroma-debug-development-only`，同時觸及非商用與 share-alike；repo 自述純供研究，Apache 2.0 版尚未存在。轉載站的重新上傳不改變上游授權。**同門 Chroma1-Radiance 為 Apache 2.0，不在此名單** |
 
 ### 素材類（禁入資產鏈）
 
@@ -65,6 +66,7 @@
 | Pony Diffusion 系 | 附加商用限制 | 禁用 |
 | SD3／SD3.5 | Stability Community License | 非白名单，禁用 |
 | Hunyuan 图像系 | Tencent Community License | 非白名单，禁用 |
+| Chroma-DC-2K | CC BY-NC-SA 4.0 | 2026-08-31 查证：只存在于 `chroma-debug-development-only`，同时触及非商用与 share-alike；repo 自述纯供研究，Apache 2.0 版尚未存在。转载站的重新上传不改变上游许可。**同门 Chroma1-Radiance 为 Apache 2.0，不在此名单** |
 
 ### 素材类（禁入资产链）
 
@@ -106,6 +108,7 @@ Owner ruling, 2026-08-28: any production tool with a questionable license must n
 | Pony Diffusion family | Additional commercial restrictions | Banned |
 | SD3 / SD3.5 | Stability Community License | Not whitelisted; banned |
 | Hunyuan image family | Tencent Community License | Not whitelisted; banned |
+| Chroma-DC-2K | CC BY-NC-SA 4.0 | Verified 2026-08-31: it exists only inside `chroma-debug-development-only`, tripping both the non-commercial and share-alike wires; the repository calls its contents research-only and the Apache 2.0 release does not exist yet. A mirror on a sharing site does not change the upstream licence. **Its sibling Chroma1-Radiance is Apache 2.0 and is not on this list** |
 
 ### Materials (banned from the asset chain)
 
@@ -147,6 +150,7 @@ Owner ruling, 2026-08-28: any production tool with a questionable license must n
 | Pony Diffusion 系 | 追加の商用制限 | 禁止 |
 | SD3／SD3.5 | Stability Community License | ホワイトリスト外のため禁止 |
 | Hunyuan 画像系 | Tencent Community License | ホワイトリスト外のため禁止 |
+| Chroma-DC-2K | CC BY-NC-SA 4.0 | 2026-08-31 確認：`chroma-debug-development-only` にのみ存在し、非商用と share-alike の双方に抵触。リポジトリ自身が研究目的のみと明記し、Apache 2.0 版は未公開。転載サイトでの再アップロードは上流ライセンスを変えません。**姉妹モデルの Chroma1-Radiance は Apache 2.0 であり本リストの対象外** |
 
 ### 素材類（資産チェーンへの持ち込み禁止）
 
