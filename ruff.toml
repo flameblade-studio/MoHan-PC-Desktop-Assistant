@@ -2,6 +2,10 @@ required-version = "==0.16.0"
 target-version = "py315"
 preview = true
 exclude = [
+    # artifacts/ 是不可變的證據樹，不是維護中的原始碼。44 份 evidence JSON
+    # 記錄了其中 .py 腳本的 SHA256（已逐位元比對相符），任何格式化或重構都會
+    # 讓那些記錄失效——那正是入庫要保存的東西。因此一律原樣保存、排除檢查。
+    "artifacts",
     ".venv",
     ".venv315",
     "build",
