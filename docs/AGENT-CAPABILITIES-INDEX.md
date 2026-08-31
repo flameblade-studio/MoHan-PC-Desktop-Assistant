@@ -273,6 +273,19 @@ v9 每個視角都帶方位措辭，那是已驗證有效的部分（v9 的 yaw+
 **閘門的守備範圍要涵蓋所有會出錯的情況，不只是當下想得到的那幾種。**
 寫閘門時列出參數的完整值域，逐段問「這一段出錯會長什麼樣、我查得到嗎」。
 
+### 絕對不要同時跑兩個量產程序
+
+2026-08-31 實際發生：修完閘門後直接啟動新的量產，**沒有先停掉前一個**。
+兩個程序同時佔用 GPU（15.2 GB＋18.8 GB）並交錯寫入同一個輸出目錄，
+結果新程序判定通過的 `body2-yaw+120.png` 被舊程序的重試邏輯改名成
+`_rejected-try2`——**一個程序的重試摧毀了另一個程序的合格產出**。
+
+症狀是時間戳錯序：`_rejected-yaw+120-try2.png` 的時間晚於 `body2-yaw+135.png`。
+單看日誌看不出來，日誌只顯示「通過」而檔案不存在。
+
+**工程上的修法不是加一條紀律，是讓腳本自己拒絕**：量產前檢查鎖檔，
+偵測到另一個實例就直接退出。人記不住的事要交給程式擋。
+
 ### 方位措辭必須明白斷言正面
 
 `"turned to a three-quarter angle with one shoulder toward the camera,
@@ -305,6 +318,37 @@ strength 0.90，產出美術品質良好但識別度漂移（其 depth 變體已
 **變因分離的教訓**：本輪一度誤判「normal map 優於灰模，因為它不帶體型訊號」。
 把灰模也拉到 0.95 當對照組才發現**主導變因是 strength 而非初始圖種類**，
 兩者在 0.95 下體型同樣纖細。差別只在腳部誤讀。
+
+## 一之三、評估過但未採用的模型（2026-08-31）
+
+**Chroma-DC-2K —— 授權擋死。** 只存在於 `lodestones/chroma-debug-development-only`，
+該 repo 的 README 前置欄位是 `license: cc-by-nc-sa-4.0`，同時觸及非商用與
+share-alike 兩條紅線，且自述「purely for research purpose」。repo 明說
+「once it's ready it will be uploaded to a separate repo under apache 2.0 license」
+——**Apache 2.0 版本尚未存在**。轉載站上的重新上傳不改變上游授權。
+技術上 DC 是 DC-AE（深度壓縮自編碼器），換掉的是 VAE，所以現有的 identity LoRA
+與今晚整套門檻都要重新校準，不是無痛替換。已列入 `docs/LICENSE-BLACKLIST.md`。
+
+**Chroma1-Radiance —— 授權沒問題（Apache 2.0），但現階段不能用。**
+三個理由由重到輕：
+
+1. **diffusers 沒有像素空間的 Chroma 管線**。只有 `ChromaPipeline` 與
+   `ChromaImg2ImgPipeline`（潛在空間）。Radiance 目前需要 ComfyUI 的功能分支，
+   而 ComfyUI 已由擁有者裁決完全出局。這是硬阻斷，不是效能問題。
+2. **checkpoint 每小時更新**，作者自述「expect some squiggles on the details part
+   of the image」。本專案的產線建立在 SHA256 釘選的證據鏈上，
+   **一個每小時變動的基底與那套治理根本上不相容**。
+3. 早期實測回報比 Chroma1-HD 慢 30%+、提示詞遵循度較差（2025-09，可能已改善）。
+
+**它的方向仍值得追蹤**：像素空間、無 VAE，消除的正是壓縮失真，而全身圖裡臉只有
+約 106 px，那正是壓縮失真最傷的地方。等它出穩定版且 diffusers 支援後重評。
+
+**Chroma1-HD 為何是目前的正解**：同時滿足三個彼此拉扯的條件——Apache 2.0 乾淨、
+diffusers 原生支援 img2img（今晚整條幾何條件化的前提）、8.9B 經 GGUF Q4_K_M
+量化後峰值約 8.5 GB，16 GB 顯存跑得動且留得下 LoRA 與兩段式的空間。
+
+**篩選前沿模型的兩道關**：授權白名單，以及「可否釘選」。DC-2K 兩關皆不過，
+Radiance 過第一關、不過第二關。
 
 ## 二、已驗證失敗的路（不要重試）
 
