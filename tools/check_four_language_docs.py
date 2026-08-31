@@ -35,6 +35,9 @@ NON_DOCUMENT_BASENAMES = frozenset({
     "LAYERED_ASSET_ALIGNMENT_REPORT.md",
     # Internal AI-to-AI response brief; not user-facing prose.
     "CODEX_RESPONSE_BODY_CENTER.md",
+    # Internal AI-to-AI pipeline runbook for the second-generation body;
+    # the user-facing rationale lives in docs/AGENT-CAPABILITIES-INDEX.md.
+    "SECOND_GEN_BODY_PIPELINE.md",
 })
 LANGUAGE_HEADING_PATTERN = re.compile(
     r"(?m)^## (繁體中文|简体中文|English|日本語)\s*$"
