@@ -223,8 +223,89 @@ def check(path: Path, yaw: int, control: np.ndarray) -> tuple[str, bool]:
             not problems)
 
 
+class RunLock:
+    """拒絕第二個實例同時寫入同一個輸出目錄。
+
+    2026-08-31 實際事故：修完閘門後直接啟動新的量產卻沒停掉前一個，兩個程序
+    交錯寫入同一目錄，新程序判定通過的 body2-yaw+120.png 被舊程序的重試邏輯
+    改名成 _rejected-try2——一個程序的重試摧毀了另一個程序的合格產出。
+    症狀只有時間戳錯序看得出來（被改名的檔案時間晚於後續視角的成品），
+    日誌照樣顯示「通過」，單看日誌抓不到。
+
+    這件事寫成紀律沒有用——「不要同時跑兩個」本來就是已知的坑，卻仍然發生。
+    所以改由程式擋：偵測到活著的另一個實例就直接退出。
+    """
+
+    def __init__(self, directory: Path) -> None:
+        self.path = directory / ".produce.lock"
+
+    def __enter__(self) -> "RunLock":
+        if self.path.exists():
+            holder = self.path.read_text(encoding="utf-8").strip()
+            if self._alive(holder):
+                raise SystemExit(
+                    f"另一個量產實例仍在執行（{holder}）。同時寫入同一個輸出目錄會讓\n"
+                    f"其中一方的重試邏輯刪掉另一方的合格產出。請先停止它，或刪除\n"
+                    f"{self.path} 若確定該程序已不存在。")
+            print(f"清除已失效的鎖檔（{holder}）", flush=True)
+        self.path.write_text(str(os.getpid()), encoding="utf-8")
+        return self
+
+    def __exit__(self, *_exc: object) -> None:
+        self.path.unlink(missing_ok=True)
+
+    @staticmethod
+    def _alive(pid_text: str) -> bool:
+        """程序是否仍在執行。
+
+        **不要用 os.kill(pid, 0)。** 第一版這樣寫，兩個缺陷同時存在：
+        在 Windows 上它對活著的程序拋出 OSError，於是守衛在唯一該生效的情境
+        （另一個實例正在跑）失效；更糟的是 Windows 的 os.kill 對非 CTRL 訊號
+        會呼叫 TerminateProcess——一支用來「偵測」的函式有可能直接殺掉
+        它想偵測的程序。實測時 PID 是正在跑的量產，僥倖只拋例外沒被終止。
+
+        改為：Windows 走 OpenProcess + GetExitCodeProcess，POSIX 才用
+        os.kill(pid, 0)（該平台上這是標準且無副作用的存在探測，
+        PermissionError 代表程序存在但無權限，仍算活著）。
+        """
+        try:
+            pid = int(pid_text)
+        except ValueError:
+            return False
+        if pid <= 0 or pid == os.getpid():
+            return False
+        if sys.platform == "win32":
+            import ctypes
+            PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
+            STILL_ACTIVE = 259
+            kernel32 = ctypes.windll.kernel32
+            handle = kernel32.OpenProcess(
+                PROCESS_QUERY_LIMITED_INFORMATION, False, pid)
+            if not handle:
+                return False
+            try:
+                code = ctypes.c_ulong()
+                if not kernel32.GetExitCodeProcess(handle, ctypes.byref(code)):
+                    return False
+                return code.value == STILL_ACTIVE
+            finally:
+                kernel32.CloseHandle(handle)
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            return False
+        except PermissionError:
+            return True
+        return True
+
+
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
+    with RunLock(OUT):
+        _run()
+
+
+def _run() -> None:
     from diffusers import (
         ChromaImg2ImgPipeline, ChromaTransformer2DModel, GGUFQuantizationConfig,
     )
