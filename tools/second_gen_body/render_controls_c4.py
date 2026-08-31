@@ -32,7 +32,7 @@ ROOT = Path(os.environ.get(
 EXTRACT = ROOT / "artifacts/pose-atlas-rebuild/2026-08-25/ufbx-lod1-extractor-agent-a"
 OFFICIAL = EXTRACT / "candidate3-yaw-controls-24/controls"
 LIMB = ROOT / "work/second-gen-body/limb-morph"
-OUT = ROOT / "work/second-gen-body/candidate4-controls"
+OUT = ROOT / "work/second-gen-body/candidate6-controls"
 
 WIDTH, HEIGHT = 1024, 1536
 SCALE = 7.251301847932881
@@ -167,9 +167,13 @@ def validate() -> bool:
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--source", type=Path, default=LIMB / "candidate4-p25.obj")
+    parser.add_argument("--source", type=Path, default=LIMB / "candidate6-p25-armsdown-dqs.obj")
+    parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--skip-validation", action="store_true")
     args = parser.parse_args()
+    global OUT
+    if args.out is not None:
+        OUT = args.out
 
     if not args.skip_validation and not validate():
         raise SystemExit(1)

@@ -55,7 +55,10 @@ ROOT = Path(os.environ.get(
     "MOHAN_VISION_ROOT",
     r"D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision",
 ))
-CONTROLS = ROOT / "work/second-gen-body/candidate4-controls"
+# candidate6 = candidate4 的四肢圍度 + DQS 放下的手臂（取代 candidate5 的 LBS 版）。
+# 不可退回 candidate4：出貨中的 assets/pose-atlas/v4 是實機全身展示資產，
+# A-pose 會直接出現在使用者眼前，且 DLC 服裝是疊在素體上，張臂對不上垂袖。
+CONTROLS = ROOT / "work/second-gen-body/candidate6-controls"
 OUT = ROOT / "work/second-gen-body/chroma-views-v12-c4"
 OUT.mkdir(parents=True, exist_ok=True)
 WIDTH, HEIGHT = 832, 1248
@@ -314,7 +317,7 @@ def _run() -> None:
                if not (CONTROLS / f"yaw{v:+04d}-pitch+00_shaded-render.png").exists()]
     if missing:
         raise SystemExit(f"缺控制圖：{missing}")
-    print(f"控制圖 {len(VIEWS)} 組齊備（candidate4-P25）", flush=True)
+    print(f"控制圖 {len(VIEWS)} 組齊備（candidate6-P25-DQS）", flush=True)
 
     transformer = ChromaTransformer2DModel.from_single_file(
         str(GGUF),
