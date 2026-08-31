@@ -591,6 +591,7 @@ _JAPANESE: Mapping[str, str] = deep_freeze({
      'theme_preview': 'テーマプレビュー',
      'theme_section_title': '<b>コントロールセンターのテーマ</b>',
      'theme_restore': 'テーマを元に戻す',
+     'save_settings': '設定を保存',
      'theme_source_official': '炎剣公式',
      'theme_source_user': 'ユーザー制作',
      'package_rejected_unsafe_or_missing': '危険な内容または不足ファイルがあるため、パッケージ全体を拒否しました',
