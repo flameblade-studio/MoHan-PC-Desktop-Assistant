@@ -16,3 +16,7 @@ date	item	decision	decided_by	rationale	evidence
 2026-08-31	img2img 輸出尺寸	一律顯式傳 height/width	agent-assessed	不傳則退回 1024x1024 方形；方形畫布誘導模型畫成正面+側面的角色設定表，一張圖出現兩人，負向詞壓不住	work/second-gen-body/chroma-views-v10-geo/_rejected-uncropped-init-2figures-yaw+000.png
 2026-08-31	157 項待裁決佇列	依判準是否仍成立分流，126 項判為已被架構決策取代	agent-assessed	identity 已由 LoRA v2 承擔、24 視角改為從控制圖確定性產生，這兩個決策讓多數項目當初等待的判準失效；剩 31 項仍需擁有者過目。待擁有者確認	docs/evidence/2026-08-31-decision-queue-triage.tsv
 2026-08-31	v9 那 17 張可用素體的角度有效性	判定實際只有 2 個角度，不足以支撐 24 視角轉盤	agent-assessed	逐張量鼻眼偏移：yaw+000 為 -0.04，+015 到 +105 全落在 +0.50~+0.62，全距的 82% 集中在 0 度到 15 度那一跳；並排對照確認身體亦未轉動。待擁有者確認	work/second-gen-body/chroma-views-v9/angle-progression-check.png
+2026-08-31	v9 那 17 張素體	不再使用，但保留不刪除以維持歷史完整紀錄	owner	逐張量測顯示實際只有 2 個角度（+015 到 +105 的鼻眼偏移全擠在 0.50~0.62），撐不起 24 視角轉盤；保留是為了讓「試過什麼、為什麼不用」有跡可循	work/second-gen-body/chroma-views-v9/angle-progression-check.png
+2026-08-31	yaw+105 頭轉回鏡頭	重產	owner	角度、服裝、人數全部合格且單看好看，但做成轉盤只有該格視線朝前，明顯突兀；六道自動檢查沒有一道管得到一致性	work/second-gen-body/chroma-views-v12-c4/_superseded-head-turned-back-yaw+105.png
+2026-08-31	Chroma-DC-2K	不採用	agent-assessed	只存在於 chroma-debug-development-only，授權 CC BY-NC-SA 4.0 同時觸及非商用與 share-alike，Apache 2.0 版尚未存在；技術上 DC-AE 換掉 VAE，現有 LoRA 與全部門檻都要重新校準	docs/LICENSE-BLACKLIST.md
+2026-08-31	Chroma1-Radiance	授權合格但現階段不採用	agent-assessed	Apache 2.0 在白名單內；但 diffusers 無像素空間的 Chroma 管線、只能走已裁決出局的 ComfyUI 分支，且 checkpoint 每小時更新與 SHA256 釘選的證據鏈不相容	docs/AGENT-CAPABILITIES-INDEX.md 一之三
