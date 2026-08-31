@@ -40,6 +40,9 @@ NON_DOCUMENT_BASENAMES = frozenset({
     # handover between coding agents, not for users; keeping four synchronised
     # translations of a fast-moving index would guarantee they rot apart.
     "AGENT-CAPABILITIES-INDEX.md",
+    # Internal AI-to-AI pipeline runbook for the second-generation body;
+    # the user-facing rationale lives in docs/AGENT-CAPABILITIES-INDEX.md.
+    "SECOND_GEN_BODY_PIPELINE.md",
 })
 # Machine-generated evidence trees.  Every document under these prefixes is an
 # agent-produced run report bound to a SHA256 provenance chain; translating them

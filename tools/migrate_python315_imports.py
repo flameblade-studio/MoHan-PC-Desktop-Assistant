@@ -22,6 +22,12 @@ EXCLUDED_PARTS = frozenset({
     "build-temp",
     "dist",
     "release-artifacts",
+    # 二代素體產線必須在 CUDA 堆疊的 Python 3.12 上執行（torch/diffusers/GGUF
+    # 尚無 3.15 版），而 PEP 810 的 lazy import 在 3.12 是語法錯誤。遷移這些
+    # 檔案會讓它們通過 CI 卻在產線上再也跑不起來，等於把可重生的工具降級成
+    # 純文件。同一份名單裡的 .chroma-pipeline 就是同一個理由。
+    # 這些檔案仍受 ruff 完整檢查，只是不套一條執行環境無法滿足的規則。
+    "second_gen_body",
     "third_party",
     "tmp",
 })
