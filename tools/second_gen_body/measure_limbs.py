@@ -18,6 +18,7 @@ from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
+from thresholds import SECTION_SELF_CHECK_TOLERANCE_CM, SEGMENT_ENDPOINTS, SHOULDER_BAND_CM
 
 ROOT = Path(os.environ.get(
     "MOHAN_VISION_ROOT",
@@ -40,6 +41,10 @@ SEGMENTS = {
     "右小腿": (13, "r_lowleg", "r_foot"),
 }
 AMBIGUOUS = 255
+# part_id 常數（見 skin-weight-parts-agent-a/REPORT.md）
+TORSO_PART = 2
+LEFT_UPPER_ARM_PART = 3
+RIGHT_UPPER_ARM_PART = 6
 
 
 def load_obj(path: Path) -> tuple[np.ndarray, np.ndarray]:
@@ -89,7 +94,7 @@ def plane_perimeter(
                 points.append(vertices[a])
             if (da > 0) != (db > 0) and da != db:
                 points.append(vertices[a] + (vertices[b] - vertices[a]) * (da / (da - db)))
-        if len(points) >= 2:
+        if len(points) >= SEGMENT_ENDPOINTS:
             segments.append((points[0], points[1]))
     if not segments:
         return None
@@ -119,7 +124,8 @@ def plane_perimeter(
         length = total / 2.0                 # 每條邊被兩端各數一次
         # 封閉環的每個節點度數都是 2。度數 1 代表鏈是斷的——那是手臂與軀幹
         # 交界被分區切開所致，開放鏈的長度不是圍度，回報時必須標示出來。
-        closed = all(len(adjacency[node]) == 2 for node in nodes)
+        closed = all(
+            len(adjacency[node]) == SEGMENT_ENDPOINTS for node in nodes)
         if length > best:
             best, best_closed = length, closed
     return (best, best_closed) if best > 0 else None
@@ -148,13 +154,30 @@ def self_check(vertices: np.ndarray, faces: np.ndarray) -> bool:
         found = plane_perimeter(vertices, faces, origin, up)
         measured = found[0] if found else None
         delta = abs(measured - official) if measured else float("inf")
-        ok = delta <= 0.05
+        ok = delta <= SECTION_SELF_CHECK_TOLERANCE_CM
         passed &= ok
         print(f"  {name:10s} 官方 {official:7.2f}  本工具 "
               f"{measured:7.2f}  差 {delta:5.3f} cm  {'OK' if ok else '← 不符'}"
               if measured else f"  {name:10s} 量不到")
     print("  → 工具可信\n" if passed else "  → 工具不可信，以下四肢數字一律不採信\n")
     return passed
+
+
+def _measure_shoulder(vertices, part_ids, joints, results) -> None:
+    """肩關節高度上的軀幹＋上臂最大左右跨距。
+
+    這個量測有已知限制：A-pose 下手臂在該高度已略微外展，量到的不是
+    純粹的肩寬（biacromial），而是含三角肌的跨距，僅供版本間比較。
+    """
+    shoulder_y = float(joints["l_uparm"][1])
+    band = np.abs(vertices[:, 1] - shoulder_y) < SHOULDER_BAND_CM
+    limb = np.isin(part_ids, [TORSO_PART, LEFT_UPPER_ARM_PART,
+                              RIGHT_UPPER_ARM_PART, AMBIGUOUS])
+    if not (band & limb).any():
+        return
+    span = float(np.ptp(vertices[band & limb, 0]))
+    results["肩寬"] = {"cm": span, "measured_at_y": shoulder_y}
+    print(f"\n  肩寬（肩關節高 {shoulder_y:.1f} cm 處的最大左右跨距）：{span:.1f} cm")
 
 
 def main() -> None:
@@ -205,14 +228,7 @@ def main() -> None:
         print(f"  {name:8s}{length:7.1f}{cells}"
               + (f"{row['max']:8.1f}" if row["max"] else f"{'—':>8s}"))
 
-    # 肩寬另外量：取肩關節高度上的軀幹＋上臂最大 x 跨距
-    shoulder_y = float(joints["l_uparm"][1])
-    band = np.abs(vertices[:, 1] - shoulder_y) < 1.5
-    limb = np.isin(part_ids, [2, 3, 6, 255])
-    if (band & limb).any():
-        span = float(np.ptp(vertices[band & limb, 0]))
-        results["肩寬"] = {"cm": span, "measured_at_y": shoulder_y}
-        print(f"\n  肩寬（肩關節高 {shoulder_y:.1f} cm 處的最大左右跨距）：{span:.1f} cm")
+    _measure_shoulder(vertices, part_ids, joints, results)
 
     (OUT / "candidate3-limb-measurements.json").write_text(
         json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")

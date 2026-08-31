@@ -54,11 +54,13 @@ max-locals = 20
 "tests/test_release_automation.py" = ["PLR0914"]
 "tools/analyze_layered_assets.py" = ["PLR0912", "PLR0914", "PLR0915"]
 "tools/build_pose_atlas_release_assets.py" = ["PLR0914"]
-# 二代素體的研究工具鏈（tools/second_gen_body/）。這批檔案是 2026-08-31 一整晚
-# 幾何條件化實驗的產物，入庫目的是保存「怎麼做到的」而非長期維護的產品程式碼。
-# 其中的數值比較全部是量測門檻，而每一個門檻在原地註解裡都寫明了校準範圍、
-# 樣本數與已知盲點（例如胸前布料 0.09 的正樣本 4 個、負樣本 2 個，且標明是
-# 絆線而非證明）。把它們抽成裸常數名會丟失這些資訊，因此豁免 PLR2004 與
-# 複雜度規則；Pyflakes 的正確性規則（F）仍然全數強制且已通過。
-"tools/second_gen_body/*.py" = ["PLR2004", "PLR0912", "PLR0914", "PLR0915", "PLR0913"]
-"tools/second_gen_body/probes/*.py" = ["PLR2004", "PLR0912", "PLR0914", "PLR0915", "PLR0913"]
+# 二代素體產線的兩支 CPU 光柵化器、四肢形變主程式與臉部細修入口。
+# 光柵化的內層迴圈需要同時持有螢幕座標、重心座標、深度與法線緩衝，
+# 拆成小函式只會讓每格像素多一次呼叫、也更難對照公式；形變主程式是
+# 「載入→形變→逐項驗證→寫出報告」的線性流程，拆開反而看不出驗證順序。
+# 這裡豁免的只有 ruff.toml 自述為 non-blocking 的複雜度規則；
+# PLR2004（裸數值比較）在這個目錄零豁免，全部門檻都已具名並記錄校準範圍。
+"tools/second_gen_body/render_controls_c4.py" = ["PLR0914"]
+"tools/second_gen_body/probes/render_candidates.py" = ["PLR0914"]
+"tools/second_gen_body/morph_limbs_candidate4.py" = ["PLR0912", "PLR0914", "PLR0915"]
+"tools/second_gen_body/face_detailer.py" = ["PLR0913"]

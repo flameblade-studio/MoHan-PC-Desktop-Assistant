@@ -23,6 +23,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from thresholds import SEGMENT_ENDPOINTS, TORSO_PRESERVE_TOLERANCE_CM
 
 ROOT = Path(os.environ.get(
     "MOHAN_VISION_ROOT",
@@ -127,7 +128,7 @@ def plane_loop(vertices, faces, origin, normal):
                 points.append(vertices[a])
             if (da > 0) != (db > 0) and da != db:
                 points.append(vertices[a] + (vertices[b] - vertices[a]) * (da / (da - db)))
-        if len(points) >= 2:
+        if len(points) >= SEGMENT_ENDPOINTS:
             segments.append((points[0], points[1]))
     if not segments:
         return None
@@ -153,7 +154,8 @@ def plane_loop(vertices, faces, origin, normal):
                     stack.append(neighbour)
         if total / 2.0 > best:
             best = total / 2.0
-            closed_best = all(len(adjacency[n]) == 2 for n in nodes)
+            closed_best = all(
+                len(adjacency[n]) == SEGMENT_ENDPOINTS for n in nodes)
     return (best, closed_best) if best > 0 else None
 
 
@@ -297,8 +299,8 @@ def main() -> None:
         measured = found[0] if found else None
         delta = abs(measured - official) if measured else float("inf")
         sections[name] = {"official": official, "after": measured, "delta_cm": delta}
-        flag = "OK" if delta <= 0.01 else "← 已改變"
-        if delta > 0.01:
+        flag = "OK" if delta <= TORSO_PRESERVE_TOLERANCE_CM else "← 已改變"
+        if delta > TORSO_PRESERVE_TOLERANCE_CM:
             problems.append(f"軀幹斷面 {name} 改變 {delta:.3f} cm")
         print(f"  {name:10s} {official:7.2f} → {measured:7.2f}  差 {delta:.4f} cm  {flag}")
 

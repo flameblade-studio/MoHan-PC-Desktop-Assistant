@@ -24,6 +24,7 @@ import torch
 #   匯入路徑取自本檔所在目錄；資料根目錄可用 MOHAN_VISION_ROOT 覆寫，
 #   預設保留原機器路徑，讓既有紀錄可重現。
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from thresholds import EYE_SPAN_FRONT_MIN
 from lora_loader import load_aitoolkit_chroma_lora
 from chroma_mass_produce_v9 import BODY, HAIR, LORA, TAIL, GGUF
 from produce_v10_geo import BUNDLES, NEG
@@ -86,7 +87,7 @@ def main() -> None:
         image.save(target)
         _area, eye = face_metrics(target)
         geometry = below_head_iou(target, control)
-        note = "正面" if eye >= 0.35 else "仍是背面"
+        note = "正面" if eye >= EYE_SPAN_FRONT_MIN else "仍是背面"
         print(f"{label:14s}  {strength:.2f}    {seed:<10d} {eye:6.3f}  "
               f"{geometry:7.3f}  {note}", flush=True)
 

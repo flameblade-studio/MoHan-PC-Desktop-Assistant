@@ -28,6 +28,7 @@ from PIL import Image
 #   匯入路徑取自本檔所在目錄；資料根目錄可用 MOHAN_VISION_ROOT 覆寫，
 #   預設保留原機器路徑，讓既有紀錄可重現。
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from thresholds import PLATE_DISTANCE
 from lora_loader import load_aitoolkit_chroma_lora
 from chroma_mass_produce_v9 import BODY, HAIR, LORA, TAIL, GGUF
 from produce_v10_geo import make_init, NEG, PLATE
@@ -49,7 +50,7 @@ STRENGTHS = (0.55, 0.65, 0.75, 0.85, 0.95)
 def foreground(image: Image.Image) -> np.ndarray:
     """以與淺灰底板的色差切出人物；底板是我們自己填的，顏色已知，不必猜。"""
     array = np.asarray(image.convert("RGB")).astype(np.int16)
-    return np.abs(array - np.array(PLATE)).sum(axis=2) > 45
+    return np.abs(array - np.array(PLATE)).sum(axis=2) > PLATE_DISTANCE
 
 
 def iou(a: np.ndarray, b: np.ndarray) -> float:

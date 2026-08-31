@@ -12,6 +12,7 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
+from thresholds import DEGENERATE_AREA, DEGENERATE_AREA_LOOSE
 
 ROOT = Path(os.environ.get(
     "MOHAN_VISION_ROOT",
@@ -54,7 +55,7 @@ def render(vertices: np.ndarray, faces: np.ndarray, yaw_degrees: float) -> Image
     a, b, c = rotated[faces[:, 0]], rotated[faces[:, 1]], rotated[faces[:, 2]]
     normals = np.cross(b - a, c - a)
     lengths = np.linalg.norm(normals, axis=1)
-    keep = lengths > 1e-12
+    keep = lengths > DEGENERATE_AREA
     normals[keep] /= lengths[keep][:, None]
     shade = np.clip(np.abs(normals @ LIGHT), 0.0, 1.0) * 0.72 + 0.22
 
@@ -78,7 +79,7 @@ def render(vertices: np.ndarray, faces: np.ndarray, yaw_degrees: float) -> Image
         bx, by = px[index, 1], py[index, 1]
         cx, cy = px[index, 2], py[index, 2]
         area = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay)
-        if abs(area) < 1e-9:
+        if abs(area) < DEGENERATE_AREA_LOOSE:
             continue
         w0 = ((bx - gx) * (cy - gy) - (cx - gx) * (by - gy)) / area
         w1 = ((cx - gx) * (ay - gy) - (ax - gx) * (cy - gy)) / area

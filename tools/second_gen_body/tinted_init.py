@@ -18,6 +18,7 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
+from thresholds import BACKGROUND_DISTANCE, SILHOUETTE_ON
 
 ROOT = Path(os.environ.get(
     "MOHAN_VISION_ROOT",
@@ -107,7 +108,7 @@ def tinted_from_paths(
     mask = Image.open(silhouette_path).convert("L")
 
     luma = np.asarray(shaded).astype(np.float32)
-    inside = np.asarray(mask) > 24
+    inside = np.asarray(mask) > SILHOUETTE_ON
     if inside.any():
         low = np.percentile(luma[inside], 3)
         high = np.percentile(luma[inside], 97)
@@ -128,9 +129,19 @@ def tinted_from_paths(
     if hair_hint:
         canvas = _hair_hint(canvas, inside)
         inside = inside | (np.abs(canvas - np.array(PLATE, dtype=np.float32))
-                           .sum(axis=2) > 40)
+                           .sum(axis=2) > BACKGROUND_DISTANCE)
     merged = Image.fromarray(canvas.clip(0, 255).astype(np.uint8), "RGB")
+    return _crop_to_figure(merged, inside, size)
 
+
+def _crop_to_figure(
+    merged: Image.Image, inside: np.ndarray, size: tuple[int, int]
+) -> Image.Image:
+    """裁到人物身上並補到目標長寬比。
+
+    不裁切的話，網格人物在畫面裡只佔窄窄一條，左右大片留白被淺灰底讀成
+    可填滿的攝影棚空間，模型會補上第二個人。負向詞治不了構圖。
+    """
     box = Image.fromarray((inside * 255).astype(np.uint8)).getbbox()
     if box:
         left, top, right, bottom = box
@@ -163,7 +174,7 @@ def main() -> None:
         array = np.asarray(image).astype(np.float32)
         high, low = array.max(axis=2), array.min(axis=2)
         sat = np.where(high > 0, (high - low) / np.maximum(high, 1.0), 0.0)
-        body = np.abs(array - np.array(PLATE)).sum(axis=2) > 40
+        body = np.abs(array - np.array(PLATE)).sum(axis=2) > BACKGROUND_DISTANCE
         print(f"{target.name}  前景 {body.mean()*100:.1f}%  "
               f"前景彩度 {sat[body].mean():.3f}")
 

@@ -18,6 +18,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+from thresholds import LARGEST_GAP_MAX, MIN_TRACKING_SAMPLES, MONOTONIC_MIN, PROFILE_YAW
 
 ROOT = Path(os.environ.get(
     "MOHAN_VISION_ROOT",
@@ -65,8 +66,9 @@ def sweep(folder: Path, label: str) -> list[tuple[int, float | None]]:
 
 
 def verdict(rows: list[tuple[int, float | None]], label: str) -> None:
-    pairs = [(y, v) for y, v in rows if v is not None and 0 <= y <= 90]
-    if len(pairs) < 4:
+    pairs = [(y, v) for y, v in rows
+             if v is not None and 0 <= y <= PROFILE_YAW]
+    if len(pairs) < MIN_TRACKING_SAMPLES:
         print(f"{label}：正面到側面的可測樣本不足（{len(pairs)} 張），不下判定")
         return
     values = [v for _, v in pairs]
@@ -81,7 +83,7 @@ def verdict(rows: list[tuple[int, float | None]], label: str) -> None:
     biggest = max(gaps) / spread if spread > 0 else 1.0
     print(f"\n{label} 判定（yaw 0–90，{len(pairs)} 張）")
     print(f"  全距 {spread:.3f}   單調比例 {monotonic:.0%}   最大間隙佔全距 {biggest:.0%}")
-    if monotonic >= 0.75 and biggest <= 0.35:
+    if monotonic >= MONOTONIC_MIN and biggest <= LARGEST_GAP_MAX:
         print("  → 角度隨 yaw 連續變化，未見階梯狀分群")
     else:
         print("  → 仍有分群或非單調跡象")

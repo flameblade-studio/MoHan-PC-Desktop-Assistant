@@ -29,6 +29,14 @@ from PIL import Image
 #   匯入路徑取自本檔所在目錄；資料根目錄可用 MOHAN_VISION_ROOT 覆寫，
 #   預設保留原機器路徑，讓既有紀錄可重現。
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from thresholds import (
+    BACK_YAW,
+    FACE_AREA_MIN,
+    FRONT_FACE_REQUIRED,
+    GRAY_FIGURE_DISTANCE,
+    REAR_FACE_FORBIDDEN,
+    SILHOUETTE_ON,
+)
 from lora_loader import load_aitoolkit_chroma_lora
 from chroma_mass_produce_v9 import BODY, HAIR, LORA, TAIL, GGUF, YUNET
 
@@ -67,7 +75,7 @@ def formal_yaw(bundle_name: str) -> int:
     raw = int(bundle_name.split("yaw")[1].split("-pitch")[0])
     value = -raw
     # 稽核的正規形式是 -180，但既有 v9 的 17 張用 +180；統一成 +180 免得兩套對不上
-    return 180 if abs(value) == 180 else value
+    return BACK_YAW if abs(value) == BACK_YAW else value
 
 
 def make_init(folder: Path) -> Image.Image:
@@ -84,7 +92,8 @@ def make_init(folder: Path) -> Image.Image:
     plate = Image.new("RGB", shaded.size, PLATE)
     merged = Image.composite(shaded, plate, mask)
 
-    box = mask.point(lambda v: 255 if v > 24 else 0).getbbox()
+    box = mask.point(
+        lambda v: 255 if v > SILHOUETTE_ON else 0).getbbox()
     if box:
         left, top, right, bottom = box
         pad_x = int((right - left) * 0.16)
@@ -115,7 +124,8 @@ def person_count(path: Path) -> int:
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
     corners = np.concatenate([gray[:30, :30].ravel(), gray[:30, -30:].ravel()])
     background = float(np.median(corners))
-    mask = (np.abs(gray.astype(np.int16) - background) > 18).astype(np.uint8)
+    mask = (np.abs(gray.astype(np.int16) - background)
+            > GRAY_FIGURE_DISTANCE).astype(np.uint8)
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((15, 15), np.uint8))
     number, _labels, stats, _ = cv2.connectedComponentsWithStats(mask, 8)
     area = gray.shape[0] * gray.shape[1]
@@ -137,9 +147,9 @@ def verify_view(path: Path, yaw: int) -> str:
     parts = [f"people={people}"]
     if people != 1:
         parts.append("FAIL multiple figures")
-    if abs(yaw) >= 135 and has_face:
+    if abs(yaw) >= REAR_FACE_FORBIDDEN and has_face:
         parts.append(f"FAIL back-view shows a face ({area:.4f})")
-    elif abs(yaw) <= 30 and area < 0.004:
+    elif abs(yaw) <= FRONT_FACE_REQUIRED and area < FACE_AREA_MIN:
         parts.append(f"FAIL frontal face too small ({area:.4f})")
     else:
         parts.append(f"ok face-area={area:.4f}")

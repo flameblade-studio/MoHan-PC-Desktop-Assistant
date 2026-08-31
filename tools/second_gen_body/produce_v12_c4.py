@@ -26,6 +26,22 @@ import torch
 #   匯入路徑取自本檔所在目錄；資料根目錄可用 MOHAN_VISION_ROOT 覆寫，
 #   預設保留原機器路徑，讓既有紀錄可重現。
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from thresholds import (
+    BACKGROUND_DISTANCE,
+    BACK_MIN,
+    BINARY_MIDPOINT,
+    CHEST_BAND,
+    CHEST_GARMENT_MIN,
+    EYE_SPAN_FRONT_MIN,
+    EYE_SPAN_TURNED_MIN,
+    FRONT_MAX,
+    GARMENT_CHECK_MAX_YAW,
+    MAX_FAILED_VIEWS,
+    SILHOUETTE_ON,
+    SKIN_WARM_MARGIN,
+    THREE_QUARTER_MAX,
+    THREE_QUARTER_MIN,
+)
 from lora_loader import load_aitoolkit_chroma_lora
 from chroma_mass_produce_v9 import BODY, HAIR, LORA, TAIL, GGUF
 from produce_v10_geo import NEG
@@ -63,7 +79,7 @@ def control_mask(formal: int) -> np.ndarray:
     """控制剪影套用與初始圖完全相同的裁切幾何。"""
     from PIL import Image
     mask = Image.open(CONTROLS / f"yaw{formal:+04d}-pitch+00_silhouette.png").convert("L")
-    inside = np.asarray(mask) > 24
+    inside = np.asarray(mask) > SILHOUETTE_ON
     solid = Image.fromarray((inside * 255).astype(np.uint8))
     left, top, right, bottom = solid.getbbox()
     pad_x, pad_y = int((right - left) * 0.16), int((bottom - top) * 0.05)
@@ -79,7 +95,7 @@ def control_mask(formal: int) -> np.ndarray:
         board = Image.new("L", (int(cropped.height * ratio), cropped.height), 0)
         board.paste(cropped, ((board.width - cropped.width) // 2, 0))
         cropped = board
-    return np.asarray(cropped.resize((WIDTH, HEIGHT), Image.NEAREST)) > 127
+    return np.asarray(cropped.resize((WIDTH, HEIGHT), Image.NEAREST)) > BINARY_MIDPOINT
 
 
 _CONTROL_CACHE: dict[int, np.ndarray] = {}
@@ -99,7 +115,7 @@ def figure_mask(path: Path) -> np.ndarray:
         array[:40, :40].reshape(-1, 3), array[:40, -40:].reshape(-1, 3),
         array[-40:, :40].reshape(-1, 3), array[-40:, -40:].reshape(-1, 3),
     ])
-    return np.abs(array - np.median(corners, axis=0)).sum(axis=2) > 40
+    return np.abs(array - np.median(corners, axis=0)).sum(axis=2) > BACKGROUND_DISTANCE
 
 
 def lower_body(mask: np.ndarray) -> np.ndarray:
@@ -135,7 +151,7 @@ def garment_fraction(path: Path, low: float, high: float) -> float:
     if not selected.any():
         return 0.0
     difference = (array[..., 0] - array[..., 2])[selected]
-    return float((difference <= 4).mean())
+    return float((difference <= SKIN_WARM_MARGIN).mean())
 
 
 def angle_match(path: Path, yaw: int) -> tuple[int, float, bool]:
@@ -178,8 +194,9 @@ def check(path: Path, yaw: int, control: np.ndarray) -> tuple[str, bool]:
     # 因為胸前已大半轉離鏡頭。**本輪已三次把某範圍內校準的門檻套到範圍外**
     # （單一視角的強度曲線當通則、眼距比套到側面帶、服裝門檻套到後四分之三），
     # 所以每個門檻都必須帶著它的有效範圍，範圍外一律回報「不適用」而非硬判。
-    chest = garment_fraction(path, 0.26, 0.40) if abs(yaw) <= 90 else None
-    if chest is not None and chest < 0.09:
+    chest = (garment_fraction(path, *CHEST_BAND)
+             if abs(yaw) <= GARMENT_CHECK_MAX_YAW else None)
+    if chest is not None and chest < CHEST_GARMENT_MIN:
         problems.append(f"胸前布料佔比 {chest:.3f} 過低（疑似上衣消失）")
     # 眼距比只在「臉大致朝向鏡頭」的角度帶有意義。
     #
@@ -192,11 +209,11 @@ def check(path: Path, yaw: int, control: np.ndarray) -> tuple[str, bool]:
     # 側面帶的方位正確性改由角度指標（下半身剪影峰值）負責，那個指標在
     # yaw+090 給出 0.721，是全部視角裡最高的幾個之一。
     angle = abs(yaw)
-    if angle <= 22 and eye < 0.35:
+    if angle <= FRONT_MAX and eye < EYE_SPAN_FRONT_MIN:
         problems.append(f"正面眼距比 {eye:.3f} 過低（疑似正反顛倒）")
-    elif 23 <= angle <= 67 and eye < 0.20:
+    elif THREE_QUARTER_MIN <= angle <= THREE_QUARTER_MAX and eye < EYE_SPAN_TURNED_MIN:
         problems.append(f"{angle} 度視角的眼距比 {eye:.3f} 過低（疑似轉成背面）")
-    elif angle >= 150 and eye >= 0.35:
+    elif angle >= BACK_MIN and eye >= EYE_SPAN_FRONT_MIN:
         problems.append(f"背面卻量到正面眼距比 {eye:.3f}")
     summary = (f"人數 {people}  最像 yaw{peak:+04d}({peak_score:.3f})"
                f"  眼距比 {eye:.3f}  胸前布料 "
@@ -294,7 +311,7 @@ def main() -> None:
                   f"（累計 {len(failures)}）", flush=True)
             # 閘門只看第一張是不夠的：yaw+030 的轉背失敗出現在第三張。
             # 每個視角都已重試過，仍失敗兩個視角代表是系統性問題，停下來。
-            if len(failures) >= 2:
+            if len(failures) >= MAX_FAILED_VIEWS:
                 print(f"GATE_FAILED 累計 {len(failures)} 個視角未通過：{failures}，停止量產",
                       flush=True)
                 return

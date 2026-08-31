@@ -24,6 +24,7 @@ from PIL import Image
 #   匯入路徑取自本檔所在目錄；資料根目錄可用 MOHAN_VISION_ROOT 覆寫，
 #   預設保留原機器路徑，讓既有紀錄可重現。
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from thresholds import BACKGROUND_DISTANCE
 from lora_loader import load_aitoolkit_chroma_lora
 from chroma_mass_produce_v9 import BODY, HAIR, LORA, TAIL, GGUF
 from produce_v10_geo import make_init, NEG
@@ -50,7 +51,7 @@ def masks(image: Image.Image) -> tuple[np.ndarray, float]:
         array[-40:, :40].reshape(-1, 3), array[-40:, -40:].reshape(-1, 3),
     ])
     background = np.median(corners, axis=0)
-    mask = np.abs(array - background).sum(axis=2) > 40
+    mask = np.abs(array - background).sum(axis=2) > BACKGROUND_DISTANCE
     high, low = array.max(axis=2), array.min(axis=2)
     sat = np.where(high > 0, (high - low) / np.maximum(high, 1), 0.0)
     return mask, float(sat[mask].mean()) if mask.any() else 0.0

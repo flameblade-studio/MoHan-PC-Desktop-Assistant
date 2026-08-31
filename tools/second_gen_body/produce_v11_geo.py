@@ -32,6 +32,20 @@ from PIL import Image
 #   匯入路徑取自本檔所在目錄；資料根目錄可用 MOHAN_VISION_ROOT 覆寫，
 #   預設保留原機器路徑，讓既有紀錄可重現。
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from thresholds import (
+    BACKGROUND_DISTANCE,
+    BACK_MIN,
+    BINARY_MIDPOINT,
+    EYE_SPAN_FRONT_MIN,
+    FIGURE_DISTANCE,
+    FRONT_MAX,
+    GEOMETRY_IOU_MIN,
+    PROFILE_MAX,
+    REAR_NEGATIVE_MAX,
+    REAR_QUARTER_MAX,
+    SILHOUETTE_ON,
+    THREE_QUARTER_MAX,
+)
 from lora_loader import load_aitoolkit_chroma_lora
 from chroma_mass_produce_v9 import BODY, HAIR, LORA, TAIL, GGUF, YUNET
 from produce_v10_geo import BUNDLES, NEG, formal_yaw
@@ -64,20 +78,20 @@ def orientation(yaw: int) -> str:
     剪影 IoU 還給了 0.573「通過」。兩者要一起用，缺一不可。
     """
     angle = abs(yaw)
-    if angle <= 22:
+    if angle <= FRONT_MAX:
         return ("she faces the camera directly, her whole face clearly visible, "
                 "her chest and navel toward the camera")
-    if angle <= 67:
+    if angle <= THREE_QUARTER_MAX:
         # 「一邊肩膀朝向鏡頭、臉仍可見」對背面四分之三也成立——實測 yaw+030
         # 就這樣被種子的背面先驗奪走。每個非背面的段落都要明白斷言正面。
         return ("seen from the front at a three-quarter angle, her face and the "
                 "front of her chest and her navel are visible to the camera, "
                 "her back is away from the camera")
-    if angle <= 112:
+    if angle <= PROFILE_MAX:
         return ("a pure side profile seen from her side, her body turned ninety "
                 "degrees, the front of her chest and her face in profile against "
                 "the background")
-    if angle <= 157:
+    if angle <= REAR_QUARTER_MAX:
         return ("seen from behind at an angle, her back toward the camera, "
                 "her face turned away")
     return ("seen directly from behind, her back to the camera, "
@@ -86,7 +100,7 @@ def orientation(yaw: int) -> str:
 
 def orientation_negative(yaw: int) -> str:
     """非背面視角要明確排除背面，否則模型的先驗會把人轉過去。"""
-    return "" if abs(yaw) >= 113 else (
+    return "" if abs(yaw) >= REAR_NEGATIVE_MAX else (
         "seen from behind, back view, rear view, facing away from camera, "
         "back turned to the viewer, ")
 
@@ -94,7 +108,7 @@ def orientation_negative(yaw: int) -> str:
 def control_mask(folder: Path) -> np.ndarray:
     """控制剪影取自 bundle，且套用與初始圖完全相同的裁切幾何。"""
     mask = Image.open(folder / f"{folder.name}_silhouette.png").convert("L")
-    inside = np.asarray(mask) > 24
+    inside = np.asarray(mask) > SILHOUETTE_ON
     solid = Image.fromarray((inside * 255).astype(np.uint8))
     left, top, right, bottom = solid.getbbox()
     pad_x, pad_y = int((right - left) * 0.16), int((bottom - top) * 0.05)
@@ -110,7 +124,7 @@ def control_mask(folder: Path) -> np.ndarray:
         board = Image.new("L", (int(cropped.height * ratio), cropped.height), 0)
         board.paste(cropped, ((board.width - cropped.width) // 2, 0))
         cropped = board
-    return np.asarray(cropped.resize((WIDTH, HEIGHT), Image.NEAREST)) > 127
+    return np.asarray(cropped.resize((WIDTH, HEIGHT), Image.NEAREST)) > BINARY_MIDPOINT
 
 
 def below_head_iou(path: Path, control: np.ndarray) -> float:
@@ -124,7 +138,7 @@ def below_head_iou(path: Path, control: np.ndarray) -> float:
         array[:40, :40].reshape(-1, 3), array[:40, -40:].reshape(-1, 3),
         array[-40:, :40].reshape(-1, 3), array[-40:, -40:].reshape(-1, 3),
     ])
-    mask = np.abs(array - np.median(corners, axis=0)).sum(axis=2) > 40
+    mask = np.abs(array - np.median(corners, axis=0)).sum(axis=2) > BACKGROUND_DISTANCE
     rows = np.where(control.any(axis=1))[0]
     neck = int(rows[0] + (rows[-1] - rows[0]) * 0.13)
     union = np.logical_or(mask[neck:], control[neck:]).sum()
@@ -168,7 +182,8 @@ def figure_count(path: Path) -> int:
         rgb[-30:, :30].reshape(-1, 3), rgb[-30:, -30:].reshape(-1, 3),
     ])
     background = np.median(corners, axis=0)
-    mask = (np.abs(rgb - background).sum(axis=2) > 26).astype(np.uint8)
+    mask = (np.abs(rgb - background).sum(axis=2)
+            > FIGURE_DISTANCE).astype(np.uint8)
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((25, 25), np.uint8))
     number, _labels, stats, _ = cv2.connectedComponentsWithStats(mask, 8)
     area = rgb.shape[0] * rgb.shape[1]
@@ -197,14 +212,14 @@ def check(path: Path, yaw: int, control: np.ndarray) -> tuple[str, bool]:
     problems = []
     if people != 1:
         problems.append(f"人數 {people}")
-    if geometry < 0.50:
+    if geometry < GEOMETRY_IOU_MIN:
         problems.append(f"頸下 IoU {geometry:.3f} 過低（純 t2i 基準 0.364）")
     # 剪影 IoU 分不出正反——A-pose 的正反剪影幾乎相同，v11 初版就是正面控制圖
     # 產出背面而 IoU 仍給 0.573「通過」。臉部「有沒有偵測到」也分不出，
     # YuNet 會在背面的髮髻上偵測出臉。只有眼距佔臉寬有乾淨間隔。
-    if abs(yaw) <= 22 and eye_ratio < 0.35:
+    if abs(yaw) <= FRONT_MAX and eye_ratio < EYE_SPAN_FRONT_MIN:
         problems.append(f"正面視角的眼距比 {eye_ratio:.3f} 過低（疑似正反顛倒）")
-    if abs(yaw) >= 150 and eye_ratio >= 0.35:
+    if abs(yaw) >= BACK_MIN and eye_ratio >= EYE_SPAN_FRONT_MIN:
         problems.append(f"背面視角卻量到正面的眼距比 {eye_ratio:.3f}")
     summary = (f"人數 {people}  頸下IoU {geometry:.3f}  "
                f"臉部 {area:.4f}  眼距比 {eye_ratio:.3f}")

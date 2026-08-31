@@ -20,6 +20,7 @@ import torch
 #   匯入路徑取自本檔所在目錄；資料根目錄可用 MOHAN_VISION_ROOT 覆寫，
 #   預設保留原機器路徑，讓既有紀錄可重現。
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from thresholds import BACK_PROMPT_MIN, FACE_AREA_MIN
 from lora_loader import load_aitoolkit_chroma_lora
 
 ROOT = Path(os.environ.get(
@@ -149,7 +150,7 @@ def verify_view(path: Path, yaw: int) -> str:
         area = float(box[2] * box[3]) / (width * height)
     if abs(yaw) >= NO_FACE_FROM and has_face:
         return f"FAIL back-view shows a face (area={area:.4f})"
-    if abs(yaw) <= FULL_FACE_TO and area < 0.004:
+    if abs(yaw) <= FULL_FACE_TO and area < FACE_AREA_MIN:
         return f"FAIL frontal face too small (area={area:.4f})"
     return f"ok (face-area={area:.4f})"
 
@@ -181,7 +182,7 @@ def main() -> None:
         if out.exists():
             print("skip", out.name, flush=True)
             continue
-        negative = NEG_BACK if abs(yaw) >= 120 else NEG_BASE
+        negative = NEG_BACK if abs(yaw) >= BACK_PROMPT_MIN else NEG_BASE
         image = pipe(
             prompt=prompt_for(VIEWS[yaw]),
             negative_prompt=negative,

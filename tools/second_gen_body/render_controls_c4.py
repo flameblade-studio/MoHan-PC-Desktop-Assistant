@@ -23,6 +23,7 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
+from thresholds import DEGENERATE_AREA, RENDER_IOU_MIN, RENDER_NORMAL_COSINE_MIN
 
 ROOT = Path(os.environ.get(
     "MOHAN_VISION_ROOT",
@@ -67,7 +68,7 @@ def render(vertices: np.ndarray, faces: np.ndarray, native_yaw: float):
     a, b, c = view[faces[:, 0]], view[faces[:, 1]], view[faces[:, 2]]
     normals = np.cross(b - a, c - a)
     lengths = np.linalg.norm(normals, axis=1)
-    good = lengths > 1e-12
+    good = lengths > DEGENERATE_AREA
     normals[good] /= lengths[good][:, None]
 
     px = np.stack([sx[faces[:, 0]], sx[faces[:, 1]], sx[faces[:, 2]]], 1)
@@ -92,7 +93,7 @@ def render(vertices: np.ndarray, faces: np.ndarray, native_yaw: float):
         bx, by = px[index, 1], py[index, 1]
         cx, cy = px[index, 2], py[index, 2]
         area = (bx - ax) * (cy - ay) - (cx - ax) * (by - ay)
-        if abs(area) < 1e-12:
+        if abs(area) < DEGENERATE_AREA:
             continue
         w0 = ((bx - gx) * (cy - gy) - (cx - gx) * (by - gy)) / area
         w1 = ((cx - gx) * (ay - gy) - (ax - gx) * (cy - gy)) / area
@@ -155,7 +156,7 @@ def validate() -> bool:
         both = mine & theirs
         cosine = float(np.mean(np.sum(their_normal[both] * normal_buffer[both], axis=1))) \
             if both.any() else 0.0
-        good = iou >= 0.995 and cosine >= 0.98
+        good = iou >= RENDER_IOU_MIN and cosine >= RENDER_NORMAL_COSINE_MIN
         ok &= good
         print(f"  {name}  剪影 IoU {iou:.4f}   法線平均餘弦 {cosine:+.4f}   "
               f"{'OK' if good else '← 不符'}")

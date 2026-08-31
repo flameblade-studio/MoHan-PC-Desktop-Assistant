@@ -15,6 +15,15 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
+from thresholds import (
+    BACKGROUND_DISTANCE,
+    BINARY_MIDPOINT,
+    CHROMA_GAIN,
+    FOREGROUND_FRAC_MAX,
+    FOREGROUND_FRAC_MIN,
+    IOU_GAIN_MIN,
+    SILHOUETTE_ON,
+)
 
 ROOT = Path(os.environ.get(
     "MOHAN_VISION_ROOT",
@@ -31,7 +40,7 @@ def foreground(path: Path) -> tuple[np.ndarray, tuple[int, int, int], float]:
     ])
     background = np.median(corners, axis=0)
     distance = np.abs(array - background).sum(axis=2)
-    mask = distance > 40
+    mask = distance > BACKGROUND_DISTANCE
     return mask, tuple(int(v) for v in background), float(mask.mean())
 
 
@@ -67,7 +76,7 @@ def true_control() -> np.ndarray:
 
     folder = BUNDLES / "yaw+090-pitch+00"
     mask = Image.open(folder / f"{folder.name}_silhouette.png").convert("L")
-    inside = np.asarray(mask) > 24
+    inside = np.asarray(mask) > SILHOUETTE_ON
     box = Image.fromarray((inside * 255).astype(np.uint8)).getbbox()
     left, top, right, bottom = box
     pad_x, pad_y = int((right - left) * 0.16), int((bottom - top) * 0.05)
@@ -85,7 +94,7 @@ def true_control() -> np.ndarray:
         board = Image.new("L", (int(cropped.height * ratio), cropped.height), 0)
         board.paste(cropped, ((board.width - cropped.width) // 2, 0))
         cropped = board
-    return np.asarray(cropped.resize((832, 1248), Image.NEAREST)) > 127
+    return np.asarray(cropped.resize((832, 1248), Image.NEAREST)) > BINARY_MIDPOINT
 
 
 def main() -> None:
@@ -103,7 +112,7 @@ def main() -> None:
     print(f"控制遮罩對自己的 IoU = {iou(control, control):.3f}（必須是 1.000，否則切法有誤）")
     inverted = np.logical_not(control)
     print(f"控制圖對其補集的 IoU = {iou(control, inverted):.3f}（必須是 0.000）")
-    if not (0.05 < frac < 0.35):
+    if not (FOREGROUND_FRAC_MIN < frac < FOREGROUND_FRAC_MAX):
         print("！前景佔比不在合理區間，切法可能把背景算進去了，以下數字不採信")
         return
 
@@ -125,7 +134,7 @@ def main() -> None:
     for label, value, colour, frac in sorted(rows, key=lambda r: r[0]):
         if colour <= mesh_chroma * 1.35:
             note = "仍是灰模，沒上色"
-        elif base is not None and value - base < 0.05:
+        elif base is not None and value - base < IOU_GAIN_MIN:
             note = "幾何沒進去，等同純 t2i"
         else:
             note = "兩者兼具"
@@ -135,7 +144,8 @@ def main() -> None:
         return
     usable = [
         (lab, v, c) for lab, v, c, _ in rows
-        if "基準" not in lab and c > mesh_chroma * 1.35 and v - base >= 0.05
+        if "基準" not in lab and c > mesh_chroma * CHROMA_GAIN
+        and v - base >= IOU_GAIN_MIN
     ]
     print()
     if usable:

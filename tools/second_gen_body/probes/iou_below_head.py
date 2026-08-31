@@ -17,6 +17,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
+from thresholds import GEOMETRY_IOU_MIN, LOWER_BODY_GOOD
 from recompute_iou import foreground, iou, true_control  # noqa: E402
 
 ROOT = Path(os.environ.get(
@@ -55,8 +56,8 @@ def main() -> None:
         mask, _bg, _frac = foreground(path)
         whole = iou(mask, control)
         below = iou(mask[neck:], control[neck:])
-        note = "幾何守住" if below >= 0.70 else (
-            "姿勢明顯偏移" if below >= 0.50 else "幾何沒進去")
+        note = "幾何守住" if below >= LOWER_BODY_GOOD else (
+            "姿勢明顯偏移" if below >= GEOMETRY_IOU_MIN else "幾何沒進去")
         print(f"  {label:14s} {whole:9.3f} {below:9.3f}   {note}")
 
 
