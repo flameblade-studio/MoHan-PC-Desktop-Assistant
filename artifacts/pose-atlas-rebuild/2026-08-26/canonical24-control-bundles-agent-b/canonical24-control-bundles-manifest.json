@@ -1,0 +1,252 @@
+{
+  "schema": "mohan.canonical_control_bundles.24.v2",
+  "status": "PASS_24_CANONICAL_CONTROL_BUNDLES_STAGING_ONLY",
+  "bundle_count": 24,
+  "required_files_per_bundle": 16,
+  "exact_bundle_file_count": 384,
+  "mirror_used": false,
+  "records": [
+    {
+      "view_id": "yaw-180-pitch+00",
+      "renderer_native_yaw": -180,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-180-pitch+00\\control-bundle.json",
+        "sha256": "027491D355E67D121E19DA153D7BBEED083BEE0B65C9E11D0C70086A2F46E19B"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw-165-pitch+00",
+      "renderer_native_yaw": 165,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-165-pitch+00\\control-bundle.json",
+        "sha256": "3CA88312E924EBA904D2F2B71A2D37BBC293C433751D146190AD7CD1B812461C"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw-150-pitch+00",
+      "renderer_native_yaw": 150,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-150-pitch+00\\control-bundle.json",
+        "sha256": "AC5BE2E5DE0CCA7B6F77333456E8D57D95AA7B4F141EB61F55BDA92225618326"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw-135-pitch+00",
+      "renderer_native_yaw": 135,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-135-pitch+00\\control-bundle.json",
+        "sha256": "EFA408B85B65C8A2158784ADD04614722A88036B95175942A0C174BC81DBECDB"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw-120-pitch+00",
+      "renderer_native_yaw": 120,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-120-pitch+00\\control-bundle.json",
+        "sha256": "0D91CE164275A1AECBF31A1A1AF1EEC189C5D419F841FDA9F1A27FECE9B2197D"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw-105-pitch+00",
+      "renderer_native_yaw": 105,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-105-pitch+00\\control-bundle.json",
+        "sha256": "0FE50E312B9BEE7E82F1AEFE2BB74D778843F279250BC9F2B8BF6D64CC76FEF3"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "renderer_native_yaw": 90,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-090-pitch+00\\control-bundle.json",
+        "sha256": "8351F1776EA4D69F1F649E4F468F3FB081DFC4A63E872EE24EE56276B16A61E1"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "renderer_native_yaw": 75,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-075-pitch+00\\control-bundle.json",
+        "sha256": "F84CE3239A8B62912B8C7EB2AAD4B480004E40A1CB3E1F9A0A2D58938F089804"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "renderer_native_yaw": 60,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-060-pitch+00\\control-bundle.json",
+        "sha256": "6C0CDCC4A4D94B08907F9444FCF080802068D4711385EBB3A932AB5B16500ED5"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "renderer_native_yaw": 45,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-045-pitch+00\\control-bundle.json",
+        "sha256": "EBFCDBA2FCAECF5FF64F05D2424DED2545B2C2DBF03A526D87CFBF8A7E2D5F90"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "renderer_native_yaw": 30,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-030-pitch+00\\control-bundle.json",
+        "sha256": "08BCC2120F6BA957DAE1F8CA11F15E5B92C97EB459EA07356C3C1F795646E37B"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "renderer_native_yaw": 15,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw-015-pitch+00\\control-bundle.json",
+        "sha256": "2F69548832B9DD1C0D397DF790074F17D45F315C9239270E1EFCE9908F2C6B94"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "renderer_native_yaw": 0,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\control-bundle.json",
+        "sha256": "7F835D983083E24DC15E98A844C031BAAEA8B815E88902D9D0F8E0ADAB1A8B1A"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "renderer_native_yaw": -15,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+015-pitch+00\\control-bundle.json",
+        "sha256": "11D9E63621CD32CB44E5C774DB378908BA6746F514E146BBA0FF0D77454E8215"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+030-pitch+00",
+      "renderer_native_yaw": -30,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+030-pitch+00\\control-bundle.json",
+        "sha256": "D8553001690041252DF3600ACB3F7C438732033D85EC06AE97A96A1494E61D60"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+045-pitch+00",
+      "renderer_native_yaw": -45,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+045-pitch+00\\control-bundle.json",
+        "sha256": "B24063DA35A3169A424F3F6D5B6F9A6F0D18244D6FED39967DE16189692A3A6D"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "renderer_native_yaw": -60,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+060-pitch+00\\control-bundle.json",
+        "sha256": "D1895705F0B7FDE9C864378264A113052F0E04A5B84A0A816F52C399F0697678"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "renderer_native_yaw": -75,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+075-pitch+00\\control-bundle.json",
+        "sha256": "3D41348E62EB684B8405D632063A16E189F5F596DF31B67FC6434DD627308D8C"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+090-pitch+00",
+      "renderer_native_yaw": -90,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+090-pitch+00\\control-bundle.json",
+        "sha256": "4E8AF7BB1065C4BBE3AB8D23AF5ED24AE76EDD300B625241742DCBD85EC3F792"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+105-pitch+00",
+      "renderer_native_yaw": -105,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+105-pitch+00\\control-bundle.json",
+        "sha256": "930C857E2B4DEE735396728372A52C648B589FB91109EE7F29D1324FF9CFE50C"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+120-pitch+00",
+      "renderer_native_yaw": -120,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+120-pitch+00\\control-bundle.json",
+        "sha256": "2D34A37A2CBF67A18D72042CBAE4AAA1E6DE7FBA2193E9C05CB44659B2DC7737"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+135-pitch+00",
+      "renderer_native_yaw": -135,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+135-pitch+00\\control-bundle.json",
+        "sha256": "70205CAA0C15D6E7076F6324ECA5CA732EAC4B74C10D820EF30E45499109C1D2"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+150-pitch+00",
+      "renderer_native_yaw": -150,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+150-pitch+00\\control-bundle.json",
+        "sha256": "0C44DC9A7FB288F0E032B09D1B0CC38D9DAAB72DF4B16BC3C2FE25CC2C392571"
+      },
+      "physical_file_count": 16
+    },
+    {
+      "view_id": "yaw+165-pitch+00",
+      "renderer_native_yaw": -165,
+      "mirror": false,
+      "bundle_index": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+165-pitch+00\\control-bundle.json",
+        "sha256": "B6D398F5468CA016D49A8958C580AF02AD68305A6A4A6625CA077298CE919A8D"
+      },
+      "physical_file_count": 16
+    }
+  ],
+  "flux_started": false,
+  "formal_asset_promotion": false
+}

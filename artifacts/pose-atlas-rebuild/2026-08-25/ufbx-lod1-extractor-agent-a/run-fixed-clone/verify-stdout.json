@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "fbx_version": 7700,
+  "vertices_shape": [
+    18439,
+    3
+  ],
+  "faces_shape": [
+    36874,
+    3
+  ],
+  "vertex_ids_exact": true,
+  "face_ids_exact": true,
+  "vertices_exact_roundtrip": true,
+  "faces_exact_order": true,
+  "vertex_min": [
+    -65.32131958007812,
+    -0.058584000915288925,
+    -13.894096374511719
+  ],
+  "vertex_max": [
+    65.32131958007812,
+    172.6228790283203,
+    25.61319923400879
+  ],
+  "face_index_min": 0,
+  "face_index_max": 18438,
+  "degenerate_faces": 0,
+  "input_fbx_sha256": "D66FBCA815BCDE6532F728F1F63071003C5D43FF44F56E263A0807BAEC1AE055",
+  "vertices_tsv_sha256": "4C1C4828E4E8672B5B1AC9FF1E179FDAE1A7758A9595F934D6F254D404136C34",
+  "faces_tsv_sha256": "9680016AECE8D43BA4FF621F57D045870FDD1E7DC78541173B1AB44A449465F0"
+}

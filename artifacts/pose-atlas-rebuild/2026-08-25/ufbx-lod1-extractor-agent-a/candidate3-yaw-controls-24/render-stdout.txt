@@ -1,0 +1,1 @@
+views=24 controls=72 width=1024 height=1536 vertices=18439 faces=36874 y_up=1 orthographic=1

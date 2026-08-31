@@ -1,0 +1,182 @@
+{
+  "status": "RENDER_AND_PACKAGE_PASS_STRICT_ADJACENT_CONTINUITY_GATE_FAIL",
+  "generated_at": "2026-08-25T03:06:11.2122182+08:00",
+  "notice": "CANDIDATE3 GEOMETRY CONTROL ONLY - NOT FINAL ART",
+  "forbidden_components_used": false,
+  "command": "cmd.exe /d /c \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate3-yaw-controls.cmd\"",
+  "stage_exit_codes": {
+    "adapt": 0,
+    "compile": 0,
+    "render": 0,
+    "package": 0,
+    "qa": 1,
+    "overall": 1
+  },
+  "stderr_bytes": {
+    "adapt": 0,
+    "compile": 0,
+    "render": 0,
+    "package": 0,
+    "qa": 0
+  },
+  "outputs": {
+    "views": 24,
+    "png_count": 72,
+    "per_kind_counts": {
+      "silhouette": 24,
+      "depth": 24,
+      "normal": 24
+    },
+    "canvas": [
+      1024,
+      1536
+    ],
+    "modes": {
+      "silhouette": "L",
+      "depth": "L",
+      "normal": "RGB"
+    },
+    "depth_quantization": "8-bit grayscale; 0 background, visible range normalized to 1..255 using fixed radial range",
+    "candidate3_source_sha256": "23C5ECB3E943089954459F9F16E5551F0413571F5BACF85E3C3A6DCF155318A4",
+    "candidate3_source_matches": true
+  },
+  "continuity": {
+    "strict_thresholds": {
+      "minimum_iou": 0.8,
+      "maximum_centroid_shift_px": 24.0
+    },
+    "iou_range": [
+      0.668131525635032,
+      0.8622602596991973
+    ],
+    "centroid_shift_px_range": [
+      6.119179517937662,
+      52.76147417908066
+    ],
+    "mean_lr_contour_mae_px_range": [
+      9.200738916256157,
+      26.901477832512317
+    ],
+    "wrap_transition": {
+      "from": "yaw+165-pitch+00",
+      "to": "yaw-180-pitch+00",
+      "wrap": true,
+      "iou": 0.8622463827998404,
+      "xor_over_union": 0.13775361720015952,
+      "centroid_shift_px": 6.119179517937662,
+      "common_rows": 1218,
+      "left_contour_mae_px": 9.665024630541872,
+      "right_contour_mae_px": 8.736453201970443,
+      "mean_lr_contour_mae_px": 9.200738916256157,
+      "continuity_gate": true
+    },
+    "failed_transition_count": 16,
+    "interpretation": "wrap passes; 16 sideward T-pose transitions fail the strict overlap/centroid gate; no final-art continuity claim"
+  },
+  "visual": {
+    "contact_sheet": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-controls-contact-sheet.png",
+    "inspection": "all 24 true mesh rotations visible in order; head, hands and feet remain inside canvas; silhouette/depth insets and normal controls present; geometry only"
+  },
+  "files": [
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\adapt_candidate3_renderer_vertices.py",
+      "bytes": 1481,
+      "sha256": "83C59D1AEC6F9EBD4195B70BD8A3BD94DCA826C0B53812A3B067D482F0EC8F12"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\qa_candidate3_yaw_controls.py",
+      "bytes": 9179,
+      "sha256": "7665F971AA8E88057CC757C95A0C22CE70414AE491893CD96A8A889F36468220"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate3-yaw-controls.cmd",
+      "bytes": 3129,
+      "sha256": "DD05300273816BEB295F8545881221BA41A9B5E97F9D3767AE16B272361D9B12"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-renderer-vertices.bin",
+      "bytes": 442548,
+      "sha256": "74AC96821A440414F580479C68268A20FA88708B7E694EFAB25E140AD9BAB5C4"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-cpu-yaw-renderer.exe",
+      "bytes": 543232,
+      "sha256": "0FEF357D8DF12479D55ADC4D7CB32F6E79C842AA75186004C7A0AD6E223D3046"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\manifest.json",
+      "bytes": 44947,
+      "sha256": "180372382DF7B8E3CA0E7343A70104280F82A12D5FE7A8510335149F6DF260F6"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\qa-report.json",
+      "bytes": 68216,
+      "sha256": "4281DC99551692818C8B034B6D5AC45A946185D8E98FB181D510354D71885C37"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\qa-report-attempt1-strict-fail.json",
+      "bytes": 68216,
+      "sha256": "4281DC99551692818C8B034B6D5AC45A946185D8E98FB181D510354D71885C37"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-controls-contact-sheet.png",
+      "bytes": 870410,
+      "sha256": "7ABF950BBB3DC6440A6F60F6044BCF0C37FEE706082CE169EC3CD9A3BFDB2FCF"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\normal-contact-sheet.png",
+      "bytes": 453397,
+      "sha256": "1F4FDBD8284E336A0A634E36200435C934B234E7B2122CA389628C8F002DB0F8"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\adapt-stdout.json",
+      "bytes": 742,
+      "sha256": "74ED15F6BB710D54DB694FECCA9AAD673194340DB6F7D799E90808FA19BFE8D1"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\render-stdout.txt",
+      "bytes": 94,
+      "sha256": "1DEC016D105A81387CF50B7A8A9AD827B5236524E60EFE89DB607C1E13A5EE12"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\package-stdout.json",
+      "bytes": 119,
+      "sha256": "71AF9B357414FD70F1A8DF3DAB8DF7C07236140E2B24946B9C2D9F9F80E25FC3"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\qa-stdout.json",
+      "bytes": 1111,
+      "sha256": "66C496B5060982C86A48403BABCC19FECC14BF03C8A6CF03EFE4E6FFC18A7810"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\adapt-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\compile-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\render-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\package-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\qa-exit-code.txt",
+      "bytes": 3,
+      "sha256": "F1B2F662800122BED0FF255693DF89C4487FBDCF453D3524A42D4EC20C3D9C04"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\overall-exit-code.txt",
+      "bytes": 3,
+      "sha256": "F1B2F662800122BED0FF255693DF89C4487FBDCF453D3524A42D4EC20C3D9C04"
+    }
+  ]
+}

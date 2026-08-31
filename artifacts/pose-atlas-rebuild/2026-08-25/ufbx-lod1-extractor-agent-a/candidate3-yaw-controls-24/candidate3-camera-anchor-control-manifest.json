@@ -1,0 +1,3142 @@
+{
+  "schema": "flameblade.mohan.geometry-camera-anchor-controls",
+  "version": 1,
+  "schema_file": {
+    "path": "../candidate3-camera-anchor-control-manifest.schema.json",
+    "sha256": "292C7E2E8C085086B4F0CB690820678C7C1FA4325592957DD26ECEAE34383B4B"
+  },
+  "status": "candidate3_only_geometry_control_authority",
+  "notice": "GEOMETRY CONTROL ONLY - NOT FINAL ART",
+  "formal_art_acceptance": false,
+  "authority": {
+    "id": "mhr-candidate3",
+    "mesh_vertices": 18439,
+    "mesh_triangles": 36874,
+    "candidate3_vertices": {
+      "path": "../body-morph-candidate3/candidate3-vertices.bin",
+      "sha256": "23C5ECB3E943089954459F9F16E5551F0413571F5BACF85E3C3A6DCF155318A4",
+      "format": "MHRVTX2 little-endian float64 XYZ in exact ufbx order"
+    },
+    "candidate3_obj": {
+      "path": "../body-morph-candidate3/candidate3.obj",
+      "sha256": "709A9589D686D0E26C16943B5FB52DCC988A2F6675164CFEB9673C161602051B"
+    },
+    "candidate3_report": {
+      "path": "../body-morph-candidate3/candidate3-report.json",
+      "sha256": "F1D4024BB9E19ADDA533B1E8D11DA2C6B9E84B210D772BC03E293B6062C3231F"
+    },
+    "candidate3_anatomy_audit": {
+      "path": "../candidate3-anatomy-audit/candidate3-anatomy-audit.json",
+      "sha256": "2D04C807087F534E51705FEC544ACA9CC0092B5D81F4F32E51A3AC3CFEB5C50B",
+      "status": "PASS_BONE_BOUNDED_PLAUSIBILITY_NOT_SURFACE_LANDMARK_VALIDATION"
+    },
+    "clothing_baked_into_body_mesh": false,
+    "clothing_statement": "Candidate3 is the MHR body topology plus deterministic local torso X/Z morph only; no outfit or clothing geometry was introduced.",
+    "unique_geometry_control_parent": true
+  },
+  "canvas": {
+    "width": 1024,
+    "height": 1536,
+    "coordinate_origin": "top-left",
+    "pixel_center": "integer+0.5"
+  },
+  "camera_contract": {
+    "type": "orthographic",
+    "world_axes": "X-right, Y-up, Z-depth",
+    "yaw_axis": "Y",
+    "pitch_degrees": 0,
+    "margin_pixels": 24.0,
+    "orthographic_scale_pixels_per_world_unit": 7.251301847932881,
+    "radial_max_world": 67.29826039983614,
+    "y_min_world": -0.056995765388565385,
+    "y_max_world": 167.94300423461144,
+    "y_center_world": 83.94300423461144,
+    "rotation_formula": "x'=cos(yaw)*x+sin(yaw)*z; y'=y; z'=-sin(yaw)*x+cos(yaw)*z",
+    "orthographic_bounds_world": {
+      "left": -70.60801091130348,
+      "right": 70.60801091130348,
+      "bottom": -105.91201636695523,
+      "top": 105.91201636695523,
+      "near": -67.29826039983614,
+      "far": 67.29826039983614
+    },
+    "fixed_rotation_pivot_world": [
+      0.0,
+      83.94300423461144,
+      0.0
+    ],
+    "control_raster_projection_center_px": [
+      512.0,
+      768.0
+    ]
+  },
+  "anchor_contract": {
+    "BODY_CENTER_CONSTANT": [
+      512,
+      1292
+    ],
+    "meaning": "downstream 1024x1536 final-art registration metadata",
+    "applied_to_geometry_control_rasters": false,
+    "geometry_control_offsets": {
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    "runtime_translation_policy": "do not translate registered full-canvas final-art layers again; geometry controls remain camera-space references",
+    "warning": "BODY_CENTER_CONSTANT is metadata here and must not be confused with the control raster projection center [512,768]."
+  },
+  "transition_contract": {
+    "yaw_step_degrees": 15,
+    "order": "ascending yaw from -180 through +165",
+    "wrap": {
+      "from": "yaw+165-pitch+00",
+      "to": "yaw-180-pitch+00",
+      "equivalent_step_degrees": 15
+    },
+    "interpolation_tick_hz": 50,
+    "topology_correspondence": "same vertex index and triangle topology across every view",
+    "raster_iou_gate": "retained failure; not replaced by topology gate"
+  },
+  "view_ids": [
+    "yaw-180-pitch+00",
+    "yaw-165-pitch+00",
+    "yaw-150-pitch+00",
+    "yaw-135-pitch+00",
+    "yaw-120-pitch+00",
+    "yaw-105-pitch+00",
+    "yaw-090-pitch+00",
+    "yaw-075-pitch+00",
+    "yaw-060-pitch+00",
+    "yaw-045-pitch+00",
+    "yaw-030-pitch+00",
+    "yaw-015-pitch+00",
+    "yaw+000-pitch+00",
+    "yaw+015-pitch+00",
+    "yaw+030-pitch+00",
+    "yaw+045-pitch+00",
+    "yaw+060-pitch+00",
+    "yaw+075-pitch+00",
+    "yaw+090-pitch+00",
+    "yaw+105-pitch+00",
+    "yaw+120-pitch+00",
+    "yaw+135-pitch+00",
+    "yaw+150-pitch+00",
+    "yaw+165-pitch+00"
+  ],
+  "control_kinds": [
+    "silhouette",
+    "depth",
+    "normal"
+  ],
+  "encodings": {
+    "silhouette": "L 8-bit; 0 background, 255 foreground",
+    "depth": "L 8-bit quantized; 0 background, visible normalized to 1..255 using fixed radial range",
+    "normal": "RGB 8-bit camera-facing geometric face normal encoded n*0.5+0.5"
+  },
+  "views": [
+    {
+      "view_id": "yaw-180-pitch+00",
+      "yaw_degrees": -180,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          -1.0,
+          0.0,
+          -1.2246467991473532e-16,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          1.2246467991473532e-16,
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          -0.014162698921743908,
+          0.0,
+          -1.7344303901801347e-18,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          1.8197302454348954e-18,
+          0.0,
+          -0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        51,
+        159,
+        972,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        511.5,
+        706.5780651525544
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-180-pitch+00_silhouette.png",
+          "sha256": "13AAD48D5B6061E118D76DBDAD844BD5154E09BD8BD1324861B9F4BDFFBBB84A",
+          "bytes": 5808,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-180-pitch+00_depth.png",
+          "sha256": "897EDAEB4828BBD57DC34166B7302754BB5401A5BF4BF26EF223FD97DC855D3A",
+          "bytes": 32965,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-180-pitch+00_normal.png",
+          "sha256": "40141A2496CF3AFAAC027345EBC34134FC9D7EC60F3AADFDC1ED6978A115A2A1",
+          "bytes": 127646,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw-165-pitch+00",
+      "yaw_degrees": -165,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          -0.9659258262890682,
+          0.0,
+          -0.258819045102521,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          0.258819045102521,
+          0.0,
+          -0.9659258262890682,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          -0.01368011665846878,
+          0.0,
+          -0.0036655762110002622,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.003845850450885521,
+          0.0,
+          -0.014352909281016424,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        25,
+        159,
+        919,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        507.9927625833675,
+        711.5990401632187
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-165-pitch+00_silhouette.png",
+          "sha256": "01DA02161500DA93FABAC0DEF6383974B3FF6B70D4DCFF3B9DBD146521E9AC6E",
+          "bytes": 6269,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-165-pitch+00_depth.png",
+          "sha256": "5825171C74B7448544835F955A5AE2AA3D10762AD1341DF812534A516B1A22FF",
+          "bytes": 33725,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-165-pitch+00_normal.png",
+          "sha256": "021F4AFDFB9560CFB9FA53B60A5878B6B6ABEEBDE32763E223262EBE9E733B62",
+          "bytes": 128867,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw-150-pitch+00",
+      "yaw_degrees": -150,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          -0.8660254037844387,
+          0.0,
+          -0.49999999999999994,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          0.49999999999999994,
+          0.0,
+          -0.8660254037844387,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          -0.012265257052380702,
+          0.0,
+          -0.007081349460871953,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.007429612549111557,
+          0.0,
+          -0.01286846641561254,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        33,
+        159,
+        841,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        506.3823103042712,
+        722.6082180968494
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-150-pitch+00_silhouette.png",
+          "sha256": "9CBCF35DA26586746656C32319389C13792356788D5D5A41C45EA85FA55273A0",
+          "bytes": 6342,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-150-pitch+00_depth.png",
+          "sha256": "968C554083CD35C71CB99AE754951B275EA7620FCB37C20685AF367BC40CDF85",
+          "bytes": 34989,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-150-pitch+00_normal.png",
+          "sha256": "8E37353F341F362145A02AF1A12675371D94D386D7F58D5CC7B3D2D0D8F3A75D",
+          "bytes": 132196,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw-135-pitch+00",
+      "yaw_degrees": -135,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          -0.7071067811865475,
+          0.0,
+          -0.7071067811865476,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          0.7071067811865476,
+          0.0,
+          -0.7071067811865475,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          -0.010014540447468521,
+          0.0,
+          -0.010014540447468523,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.010507058830130908,
+          0.0,
+          -0.010507058830130906,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        72,
+        159,
+        746,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        507.1620252348907,
+        737.2197360525479
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-135-pitch+00_silhouette.png",
+          "sha256": "DCEBFED31C18104C27A4D76341468644ED666E19451FAB1CCE7C4722FB94116D",
+          "bytes": 6254,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-135-pitch+00_depth.png",
+          "sha256": "A940D7989871126E4C6EE66F0FA33D227DBA4C4E802F9D55EEF8DAB117246BBA",
+          "bytes": 35737,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-135-pitch+00_normal.png",
+          "sha256": "3CA7EE46EFFCB5AAEB92AFD6FB5CCBB852DA5239798166365F48BE1B53B1A14E",
+          "bytes": 135576,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw-120-pitch+00",
+      "yaw_degrees": -120,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          -0.4999999999999998,
+          0.0,
+          -0.8660254037844387,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          0.8660254037844387,
+          0.0,
+          -0.4999999999999998,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          -0.007081349460871951,
+          0.0,
+          -0.012265257052380702,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.01286846641561254,
+          0.0,
+          -0.007429612549111554,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        138,
+        159,
+        664,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        509.67894775307707,
+        752.2762556586861
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-120-pitch+00_silhouette.png",
+          "sha256": "33B4CBF562EA28692E05E4DD0FB7714962D59AB98D2C907C0003ACB396A5A87B",
+          "bytes": 5643,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-120-pitch+00_depth.png",
+          "sha256": "1E96B506F134ED6D6803B65DE6A8F56EAABA4D63C04AFCB1350FA8D9A4EB7012",
+          "bytes": 35538,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-120-pitch+00_normal.png",
+          "sha256": "E6004DCD081AAC52FBD1AEE7876207920B4431385A340F66BCCC2672637AD77F",
+          "bytes": 133823,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw-105-pitch+00",
+      "yaw_degrees": -105,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          -0.25881904510252085,
+          0.0,
+          -0.9659258262890683,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          0.9659258262890683,
+          0.0,
+          -0.25881904510252085,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          -0.00366557621100026,
+          0.0,
+          -0.013680116658468782,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.014352909281016426,
+          0.0,
+          -0.003845850450885518,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        228,
+        159,
+        630,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        510.3712468297472,
+        758.75247484251
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-105-pitch+00_silhouette.png",
+          "sha256": "B11CC27F6750085BD9E3A46F27E44FDE36EF5CDD1D0E28E3F10BE3DF80163B22",
+          "bytes": 4773,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-105-pitch+00_depth.png",
+          "sha256": "886C6D8B634A77E4C85690A9B8A0F0DF92FC5B2C6E9411627C320A71B9DBDE12",
+          "bytes": 30259,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-105-pitch+00_normal.png",
+          "sha256": "67DE025052FE211AEACB5E62C9067E38A2CC3EDE8CF2C06BDA61B54BF5632C3C",
+          "bytes": 117950,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "yaw_degrees": -90,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          6.123233995736766e-17,
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          1.0,
+          0.0,
+          6.123233995736766e-17,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          8.672151950900674e-19,
+          0.0,
+          -0.014162698921743908,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.014859225098223116,
+          0.0,
+          9.098651227174477e-19,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        331,
+        159,
+        608,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        510.3260693840772,
+        706.0099583907559
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-090-pitch+00_silhouette.png",
+          "sha256": "6661ADEACCC33E99C867017B6DF106D65A68F11F297122C5B986DBF9D692C5DC",
+          "bytes": 4548,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-090-pitch+00_depth.png",
+          "sha256": "155B9664FF39D28A9D60B21D82AADF296C32061FA62628821706FAD054ED0E10",
+          "bytes": 24584,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-090-pitch+00_normal.png",
+          "sha256": "2AEFD2DD94EADA171AF9284F833323507C4CC6F31547CE1BE5C3EA8E273C9154",
+          "bytes": 101243,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "yaw_degrees": -75,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          0.25881904510252074,
+          0.0,
+          -0.9659258262890683,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          0.9659258262890683,
+          0.0,
+          0.25881904510252074,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          0.0036655762110002583,
+          0.0,
+          -0.013680116658468782,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.014352909281016426,
+          0.0,
+          0.003845850450885517,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        228,
+        159,
+        630,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        510.3734085307863,
+        758.7714113327947
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-075-pitch+00_silhouette.png",
+          "sha256": "C98C15B882345479B25B7D4947422673906756718A44C797DABCE61DA04580BA",
+          "bytes": 4773,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-075-pitch+00_depth.png",
+          "sha256": "F03166B7C7AFC733C5CF7B8C2606AEE5838EB2B6585FB86C7F439A4AC2B30260",
+          "bytes": 31315,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-075-pitch+00_normal.png",
+          "sha256": "70B3B8773468877978FB6EBBF49C124FED2AB6B1487AF7D28F66F4E6D88389EC",
+          "bytes": 132852,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "yaw_degrees": -60,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          0.5000000000000001,
+          0.0,
+          -0.8660254037844386,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          0.8660254037844386,
+          0.0,
+          0.5000000000000001,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          0.007081349460871956,
+          0.0,
+          -0.012265257052380702,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.012868466415612538,
+          0.0,
+          0.0074296125491115595,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        138,
+        159,
+        664,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        509.6818943947172,
+        752.2628524260324
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-060-pitch+00_silhouette.png",
+          "sha256": "67D4E1AE37A65A8F6FDD76C2CEF5CD968C023714FAA7A756B2A9C3B3AF13D24C",
+          "bytes": 5643,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-060-pitch+00_depth.png",
+          "sha256": "9D14379CD6F5E82906D25C9464FAEB531B50BFDA761692ED391F45E760CA8638",
+          "bytes": 36023,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-060-pitch+00_normal.png",
+          "sha256": "9E3A304AEA0AA01C2A54620A84C9E7F69DB75077EE14A3324882790ABACE5855",
+          "bytes": 149907,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "yaw_degrees": -45,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          0.7071067811865476,
+          0.0,
+          -0.7071067811865476,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          0.7071067811865476,
+          0.0,
+          0.7071067811865476,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          0.010014540447468523,
+          0.0,
+          -0.010014540447468523,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.010507058830130908,
+          0.0,
+          0.010507058830130908,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        72,
+        159,
+        746,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        507.16499262994256,
+        737.2068730819727
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-045-pitch+00_silhouette.png",
+          "sha256": "E32D072BF5DD41E4CBC7EC0B8BF96B98EF52873AC142060935BEB3DF23E448E1",
+          "bytes": 6256,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-045-pitch+00_depth.png",
+          "sha256": "0EC54A9B35C0C049BC883EBD0DFFFA8F0FF8AA4F6C0A9CCB6F7C5158BF0904FD",
+          "bytes": 37396,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-045-pitch+00_normal.png",
+          "sha256": "885011EA5317D0478B4EBAD39D4E829647EBD2A626E7E89FB925022CCAB2BCDF",
+          "bytes": 157000,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "yaw_degrees": -30,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          0.8660254037844387,
+          0.0,
+          -0.49999999999999994,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          0.49999999999999994,
+          0.0,
+          0.8660254037844387,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          0.012265257052380702,
+          0.0,
+          -0.007081349460871953,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.007429612549111557,
+          0.0,
+          0.01286846641561254,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        33,
+        159,
+        841,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        506.38392134950004,
+        722.5929266129253
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-030-pitch+00_silhouette.png",
+          "sha256": "223199D8A9DC5086538A9F80D83943600518F32AF74E5EE9AFA415BD1A6816D3",
+          "bytes": 6340,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-030-pitch+00_depth.png",
+          "sha256": "3C59F31B80A853F52610F4203A79CD66D9F7327EF97D470DC68F6B94A3A9B7DA",
+          "bytes": 37448,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-030-pitch+00_normal.png",
+          "sha256": "AE7D2BAA8D065116510DF3546314DC75BDB6CC9FB65709429522B3A493CAF6F7",
+          "bytes": 161242,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "yaw_degrees": -15,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          0.9659258262890683,
+          0.0,
+          -0.25881904510252074,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          0.25881904510252074,
+          0.0,
+          0.9659258262890683,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          0.013680116658468782,
+          0.0,
+          -0.0036655762110002583,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.003845850450885517,
+          0.0,
+          0.014352909281016426,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        25,
+        159,
+        919,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        507.99490324275865,
+        711.59390553031
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw-015-pitch+00_silhouette.png",
+          "sha256": "5F0FC25CA94AEA490809972CBC2A358EE5F3DB1E56621CB1FFC530B638217210",
+          "bytes": 6269,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw-015-pitch+00_depth.png",
+          "sha256": "10D90F2DD119E25610F2FFD62DDD20288E94ED5BC77C8CAC54FCBC15AB1614C9",
+          "bytes": 37567,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw-015-pitch+00_normal.png",
+          "sha256": "827234482ED250FBDBC2F7D715EB49D02DECBEE72971A22410DA1B8AE1D3B866",
+          "bytes": 162752,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "yaw_degrees": 0,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        51,
+        159,
+        972,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        511.5,
+        706.5780651525544
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+000-pitch+00_silhouette.png",
+          "sha256": "13AAD48D5B6061E118D76DBDAD844BD5154E09BD8BD1324861B9F4BDFFBBB84A",
+          "bytes": 5808,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+000-pitch+00_depth.png",
+          "sha256": "278DD0109A9880EE5E57A450C47FE934C047D56FDB55C8EE15C65F3A07D9AAAC",
+          "bytes": 35964,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+000-pitch+00_normal.png",
+          "sha256": "62435F1F1F26A74F051A83AA12E546A21F1900DD6A81566F1E15865F3EB07D98",
+          "bytes": 164157,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "yaw_degrees": 15,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          0.9659258262890683,
+          0.0,
+          0.25881904510252074,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -0.25881904510252074,
+          0.0,
+          0.9659258262890683,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          0.013680116658468782,
+          0.0,
+          0.0036655762110002583,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          -0.003845850450885517,
+          0.0,
+          0.014352909281016426,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        104,
+        159,
+        998,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        515.0072374166325,
+        711.5990401632187
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+015-pitch+00_silhouette.png",
+          "sha256": "F602058BF772E0D9E59F726EF4CA8C2D742A4327A6A0B5C09949693E36CC3BCA",
+          "bytes": 6251,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+015-pitch+00_depth.png",
+          "sha256": "F8EDFE8B04D2B8D29E419892062537610DA445F70E95F120EA54FFF3A6F04282",
+          "bytes": 37398,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+015-pitch+00_normal.png",
+          "sha256": "AF17BDB8D48B8F0CB108FD250158A3C77C32B4D34493CD3FBF29409F5A7F9039",
+          "bytes": 162960,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+030-pitch+00",
+      "yaw_degrees": 30,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          0.8660254037844387,
+          0.0,
+          0.49999999999999994,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -0.49999999999999994,
+          0.0,
+          0.8660254037844387,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          0.012265257052380702,
+          0.0,
+          0.007081349460871953,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          -0.007429612549111557,
+          0.0,
+          0.01286846641561254,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        182,
+        159,
+        990,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        516.6176896957288,
+        722.6082180968494
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+030-pitch+00_silhouette.png",
+          "sha256": "E8576C6F887373AA84E0ACB447EF17F7B859536EEB893C644EF8E7B6FA12D4CC",
+          "bytes": 6315,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+030-pitch+00_depth.png",
+          "sha256": "1BD2A9863BA26592C1222134DD99C8CF66B8610527793E80C8147DADBD9DEDCD",
+          "bytes": 37440,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+030-pitch+00_normal.png",
+          "sha256": "474D7DAA047903EE47C5363613380EB4E80577B60A52902EF8B82F196435EFCD",
+          "bytes": 161310,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+045-pitch+00",
+      "yaw_degrees": 45,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          0.7071067811865476,
+          0.0,
+          0.7071067811865476,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -0.7071067811865476,
+          0.0,
+          0.7071067811865476,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          0.010014540447468523,
+          0.0,
+          0.010014540447468523,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          -0.010507058830130908,
+          0.0,
+          0.010507058830130908,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        277,
+        159,
+        951,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        515.8379747651093,
+        737.2197360525479
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+045-pitch+00_silhouette.png",
+          "sha256": "2FE40A4966C8C2D42338D0F6D9CC9E673AFF49189080F628C8BA3ED95EAED05A",
+          "bytes": 6167,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+045-pitch+00_depth.png",
+          "sha256": "9F9AF4DD3081B35EADB65AF254E7E8C2EB16788BEF495FC47F5A9B695686D206",
+          "bytes": 37365,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+045-pitch+00_normal.png",
+          "sha256": "8C0B9A60D50823EDADCDB13F15816C84B1C6C5E8D018F8F5DCBF56BA8038F632",
+          "bytes": 156813,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "yaw_degrees": 60,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          0.5000000000000001,
+          0.0,
+          0.8660254037844386,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -0.8660254037844386,
+          0.0,
+          0.5000000000000001,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          0.007081349460871956,
+          0.0,
+          0.012265257052380702,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          -0.012868466415612538,
+          0.0,
+          0.0074296125491115595,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        359,
+        159,
+        885,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        513.3210522469229,
+        752.2762556586861
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+060-pitch+00_silhouette.png",
+          "sha256": "EAE5EEAD40C5635DE72FCEFE37486FB1E3F9680E2C309BD37BB890F52C935F00",
+          "bytes": 5585,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+060-pitch+00_depth.png",
+          "sha256": "34BE194E528AB94E492B83786A7C419F45F076226DF560FBB96B79DA5EF1AF6D",
+          "bytes": 35869,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+060-pitch+00_normal.png",
+          "sha256": "144C8E9B3552841969870C202C65569FE895C17CE2079A92DABC1E561E6D1C9F",
+          "bytes": 149263,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "yaw_degrees": 75,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          0.25881904510252074,
+          0.0,
+          0.9659258262890683,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -0.9659258262890683,
+          0.0,
+          0.25881904510252074,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          0.0036655762110002583,
+          0.0,
+          0.013680116658468782,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          -0.014352909281016426,
+          0.0,
+          0.003845850450885517,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        393,
+        159,
+        795,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        512.6287531702528,
+        758.75247484251
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+075-pitch+00_silhouette.png",
+          "sha256": "4EB7899035142DDCCFBBE7593B3883C8BA075FFAA8E85A4C0F0B7B81714F2596",
+          "bytes": 4792,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+075-pitch+00_depth.png",
+          "sha256": "4A7F12061090D0B39FF30E8FF85A5782C1493244E7AA3C0A5B586734A5886177",
+          "bytes": 31311,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+075-pitch+00_normal.png",
+          "sha256": "E9E444E39A3CB3DFD3A1909C7F78EB507E903D45E770F3BF2B2CD59E1964E49A",
+          "bytes": 132235,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+090-pitch+00",
+      "yaw_degrees": 90,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          6.123233995736766e-17,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -1.0,
+          0.0,
+          6.123233995736766e-17,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          8.672151950900674e-19,
+          0.0,
+          0.014162698921743908,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          -0.014859225098223116,
+          0.0,
+          9.098651227174477e-19,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        415,
+        159,
+        692,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        512.6739306159228,
+        706.0099583907559
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+090-pitch+00_silhouette.png",
+          "sha256": "189B0F33764A09767F04CD38276000E84B26EE52DA64CAF918CCA4C0CA34045F",
+          "bytes": 4529,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+090-pitch+00_depth.png",
+          "sha256": "DA3E175566B513D7F5BEA4695578D4D98F0F1ECF13E2EA0EE0DB618297414DB0",
+          "bytes": 24674,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+090-pitch+00_normal.png",
+          "sha256": "0DD256F4CBE14BAD05B18054F580A88B071975167F1E18EABA21718E03843253",
+          "bytes": 100836,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+105-pitch+00",
+      "yaw_degrees": 105,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          -0.25881904510252085,
+          0.0,
+          0.9659258262890683,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -0.9659258262890683,
+          0.0,
+          -0.25881904510252085,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          -0.00366557621100026,
+          0.0,
+          0.013680116658468782,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          -0.014352909281016426,
+          0.0,
+          -0.003845850450885518,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        393,
+        159,
+        795,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        512.6265914692137,
+        758.7714113327947
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+105-pitch+00_silhouette.png",
+          "sha256": "67BC4E565605BCDE9D8CE4362E07A9BFEF0014C986985C0352761268EA227C8B",
+          "bytes": 4792,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+105-pitch+00_depth.png",
+          "sha256": "993A072E066D2C3135A4697701C17EE62A0047A1D2D957CB545E2E30821C1B2A",
+          "bytes": 30324,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+105-pitch+00_normal.png",
+          "sha256": "E3214A8ED6623953A67487035C2BFA2A5B2E8F921B5B9BC6650C06D1C25DFE09",
+          "bytes": 118018,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+120-pitch+00",
+      "yaw_degrees": 120,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          -0.4999999999999998,
+          0.0,
+          0.8660254037844387,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -0.8660254037844387,
+          0.0,
+          -0.4999999999999998,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          -0.007081349460871951,
+          0.0,
+          0.012265257052380702,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          -0.01286846641561254,
+          0.0,
+          -0.007429612549111554,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        359,
+        159,
+        885,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        513.3181056052829,
+        752.2628524260324
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+120-pitch+00_silhouette.png",
+          "sha256": "06CF0715B619D1ACDBF13E40A5C74DA53F3E2286BC7978D69DD9F999002BC79D",
+          "bytes": 5585,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+120-pitch+00_depth.png",
+          "sha256": "4B94620711B6D19CA672D9F2902DA1CFAA235E8104233357109379C066D21F04",
+          "bytes": 35508,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+120-pitch+00_normal.png",
+          "sha256": "960DA0113516EAC503483D104E9889610DA9BDA1EF2CAED37354DA9F3240BC17",
+          "bytes": 133562,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+135-pitch+00",
+      "yaw_degrees": 135,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          -0.7071067811865475,
+          0.0,
+          0.7071067811865476,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -0.7071067811865476,
+          0.0,
+          -0.7071067811865475,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          -0.010014540447468521,
+          0.0,
+          0.010014540447468523,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          -0.010507058830130908,
+          0.0,
+          -0.010507058830130906,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        277,
+        159,
+        951,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        515.8350073700574,
+        737.2068730819727
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+135-pitch+00_silhouette.png",
+          "sha256": "A28F077E60C8898D926891930C3704FCE9C079C83A6937E8B4CC219D555A11E6",
+          "bytes": 6167,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+135-pitch+00_depth.png",
+          "sha256": "19477FD59E2D6EECA796F78B37BBAA44BDC16F60814705C3EA90E0724AAB4546",
+          "bytes": 35739,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+135-pitch+00_normal.png",
+          "sha256": "69C3B7AD529F6A0CA16076CCDFC8E149095DDCC9B6B0EBB42F2C0B33D78E2A64",
+          "bytes": 135365,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+150-pitch+00",
+      "yaw_degrees": 150,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          -0.8660254037844387,
+          0.0,
+          0.49999999999999994,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -0.49999999999999994,
+          0.0,
+          -0.8660254037844387,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          -0.012265257052380702,
+          0.0,
+          0.007081349460871953,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          -0.007429612549111557,
+          0.0,
+          -0.01286846641561254,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        182,
+        159,
+        990,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        516.6160786505,
+        722.5929266129253
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+150-pitch+00_silhouette.png",
+          "sha256": "B766C7F4F7A9587B64251450390C1C2058B50B67F23F6E4E7C36331F3959F79A",
+          "bytes": 6315,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+150-pitch+00_depth.png",
+          "sha256": "DB0E46356E8D3CB8E71E444A74DF4045B286E88527EF190D31878169F347D60A",
+          "bytes": 34935,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+150-pitch+00_normal.png",
+          "sha256": "C554C72366DEBD348D550ED8AD41A45B83A160821209F270864CCA337EB1021E",
+          "bytes": 132012,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    },
+    {
+      "view_id": "yaw+165-pitch+00",
+      "yaw_degrees": 165,
+      "pitch_degrees": 0,
+      "view_matrix_row_major": [
+        [
+          -0.9659258262890682,
+          0.0,
+          0.258819045102521,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -83.94300423461144
+        ],
+        [
+          -0.258819045102521,
+          0.0,
+          -0.9659258262890682,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "orthographic_projection_matrix_row_major": [
+        [
+          0.014162698921743908,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.014859225098223116,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "world_to_ndc_matrix_row_major": [
+        [
+          -0.01368011665846878,
+          0.0,
+          0.0036655762110002622,
+          0.0
+        ],
+        [
+          0.0,
+          0.009441799281162606,
+          0.0,
+          -0.7925729970409838
+        ],
+        [
+          -0.003845850450885521,
+          0.0,
+          -0.014352909281016424,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "pixel_mapping": {
+        "x": "pixel_x=(ndc_x+1)*width/2",
+        "y": "pixel_y=(1-ndc_y)*height/2",
+        "depth": "camera_z=view_z; visible byte=round(1+254*((camera_z+radial_max)/(2*radial_max))); background=0"
+      },
+      "silhouette_bbox_xyxy_inclusive": [
+        104,
+        159,
+        998,
+        1376
+      ],
+      "silhouette_centroid_xy": [
+        515.0050967572413,
+        711.59390553031
+      ],
+      "controls": {
+        "silhouette": {
+          "path": "controls/yaw+165-pitch+00_silhouette.png",
+          "sha256": "D3F57CB3EC84FBC009DFD09E49CB370A3A847518F002207E19B71BB9AB969FD7",
+          "bytes": 6251,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "depth": {
+          "path": "controls/yaw+165-pitch+00_depth.png",
+          "sha256": "D542B9F878EC147E7F8D08A4DC59AA130CD33AE9A430F61EB1BE28200D3E6EBE",
+          "bytes": 33758,
+          "width": 1024,
+          "height": 1536,
+          "mode": "L"
+        },
+        "normal": {
+          "path": "controls/yaw+165-pitch+00_normal.png",
+          "sha256": "98C708850FC327742BB9107FFD2CDB08DF142450B93ADA8C1CFE30AE7E6309A8",
+          "bytes": 128802,
+          "width": 1024,
+          "height": 1536,
+          "mode": "RGB"
+        }
+      }
+    }
+  ],
+  "rejected_predecessor": {
+    "id": "mhr-candidate2",
+    "status": "rejected",
+    "must_not_be_used_as_geometry_control_parent": true,
+    "report": {
+      "path": "../candidate2-anatomy-audit/candidate2-anatomy-audit.json",
+      "sha256": "5027E4D69065AA7B74CAAC5663FC6711C56E011745543EAB7E5D0D934E7BC137"
+    },
+    "reason": "front/back depth ratio drift relative to the official skeleton axis",
+    "legacy_iou_failed_transition_count": 16
+  },
+  "qa_references": {
+    "candidate3_topology_continuity": {
+      "path": "topology-continuity-qa.json",
+      "sha256": "7D78AC04F4EBFBDB9C47FC3D5BBB94B3C353BA2BE0D28B64A45746A98D4F3F0D",
+      "status": "PASS_INDEPENDENT_TOPOLOGY_CORRESPONDENCE_GATE"
+    },
+    "legacy_raster_iou": {
+      "path": "qa-report-attempt1-strict-fail.json",
+      "sha256": "4281DC99551692818C8B034B6D5AC45A946185D8E98FB181D510354D71885C37",
+      "status": "FAIL",
+      "retained": true
+    },
+    "limitations": [
+      "Geometry controls are not final MoHan art.",
+      "Legacy silhouette IoU remains failed near side-view T-pose self-occlusion.",
+      "BODY_CENTER_CONSTANT has not been applied as a raster translation."
+    ]
+  }
+}

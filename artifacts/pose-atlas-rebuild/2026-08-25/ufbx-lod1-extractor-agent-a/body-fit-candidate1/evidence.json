@@ -1,0 +1,174 @@
+{
+  "status": "PIPELINE_PASS_TARGET_FIT_FAIL",
+  "generated_at": "2026-08-25T02:26:53.8357661+08:00",
+  "commands": [
+    {
+      "command": "cmd.exe /d /c \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-body-fit-candidate1.cmd\"",
+      "exit_code": 0
+    },
+    {
+      "command": "cmd.exe /d /c \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate1-ufbx-verify.cmd\"",
+      "reconstruct_exit_code": 0,
+      "verify_exit_code": 0
+    }
+  ],
+  "optimizer": {
+    "optimizer": "PyTorch Adam warm start plus SciPy bounded least_squares refinement",
+    "adam_iterations": 1600,
+    "scipy_nfev": 31,
+    "scipy_status": 3,
+    "scipy_message": "`xtol` termination condition is satisfied.",
+    "height_policy": "identity coefficients fit shape only; each evaluation is uniformly scaled to height 168 before circumference measurement",
+    "l2_prior_weight": 0.05,
+    "symmetry_weight": 0.02,
+    "measurement_scales": [
+      0.75,
+      0.75,
+      0.75,
+      0.75
+    ]
+  },
+  "measurements": {
+    "targets": {
+      "height": 168.0,
+      "bust_candidate": 86.0,
+      "underbust_candidate": 71.0,
+      "waist_candidate": 62.0,
+      "hip_candidate": 90.0
+    },
+    "actual": {
+      "height": 168.0,
+      "bust_candidate": 94.09332967017907,
+      "underbust_candidate": 76.90027712365269,
+      "waist_candidate": 84.0008726929638,
+      "hip_candidate": 98.95468403173072
+    },
+    "signed_errors": {
+      "height": 0.0,
+      "bust_candidate": 8.093329670179074,
+      "underbust_candidate": 5.900277123652685,
+      "waist_candidate": 22.000872692963796,
+      "hip_candidate": 8.954684031730721
+    },
+    "uniform_scale": 0.9722920898400692,
+    "unscaled_height": 172.7875828215717
+  },
+  "gates": {
+    "all_circumference_errors_le_0_5": false,
+    "near_bound_abs_ge_2_95_count": 10,
+    "topology_unchanged": true,
+    "ufbx_reconstruction_allclose_1e_12": true,
+    "fit_stderr_bytes": 0,
+    "reconstruct_stderr_bytes": 0,
+    "verify_stderr_bytes": 0
+  },
+  "visual": {
+    "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\candidate1-wireframe-sections.png",
+    "width": 1800,
+    "height": 1350,
+    "mode": "RGB",
+    "inspection": "front and side wireframes complete; four maximum torso loops visible; marked NOT ANATOMICALLY VALIDATED"
+  },
+  "files": [
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\fit_body_candidate1.py",
+      "bytes": 17924,
+      "sha256": "E54A7D57FAEACEE17CDC8B6D9168CBC24F396EF30ECC68C3F958298CDE0E68E2"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-body-fit-candidate1.cmd",
+      "bytes": 1068,
+      "sha256": "F08BD78E3E7BC2F59F6EA481AA958B4F65049468AF3CCF5E610C9AF7BD684077"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\verify_candidate1_ufbx.py",
+      "bytes": 2433,
+      "sha256": "684E5A9F40E5C09FA0E931FE75098DCCB61DA4ABAE9FC610B37036B3F2C021A7"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate1-ufbx-verify.cmd",
+      "bytes": 1254,
+      "sha256": "16359BF4F3B37FAA4835F4DE78C577D6AF078D5DAEFD91B559F898C2E3CF939C"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\THIRD-PARTY-NOTICE-CANDIDATE1.md",
+      "bytes": 767,
+      "sha256": "D2E36BAA62364B0AE6A7DE7CC03010860BF3548A703D7AB9FDC39B010E7DCBCA"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\candidate1-coefficients.json",
+      "bytes": 10568,
+      "sha256": "3D017EF5EF2344BF1B6DE45D2C77C8888CEB49D9832E364E5608E01A0FECFB54"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\candidate1-coefficients.tsv",
+      "bytes": 409,
+      "sha256": "FF13DB2BF68C56FEDDCF5189EE0486E2292755D70580C6EB74909982FF5661F8"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\candidate1.obj",
+      "bytes": 1767570,
+      "sha256": "81E4DB1984B01A170C88896A81F66918645CBF229DED3E3AAC36DEDE1BBA077F"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\candidate1-wireframe-sections.png",
+      "bytes": 151760,
+      "sha256": "E7EFD908C73A2776DCA1FC7EC189AEB1966F57064DBD7468BD306808A75821C0"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\candidate1-ufbx-reconstruction.bin",
+      "bytes": 442616,
+      "sha256": "20B3383D95E59D7AC65FE643ED0BFCBD2C4380B34632F64F176F2BE49A001CAA"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\stdout.json",
+      "bytes": 1152,
+      "sha256": "6858004F588DFB04ADF24FC2921327FA6257ADC5BE5316EC9EE6A24DBE5377F8"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\stderr.txt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\ufbx-reconstruct-stdout.txt",
+      "bytes": 45,
+      "sha256": "B1694F71F8A8B3E2A1E518C97506EA673867F0E09F5C2DC744BEEE214ACC0D51"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\ufbx-reconstruct-stderr.txt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\ufbx-reconstruct-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\ufbx-verify-stdout.json",
+      "bytes": 317,
+      "sha256": "08C4894CE3A8479996347FBF7B46A0818119903833924CB5B5BB677D2CCCF489"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\ufbx-verify-stderr.txt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\ufbx-verify-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-fit-candidate1\\BODY-FIT-CANDIDATE1-RESULT.md",
+      "bytes": 3459,
+      "sha256": "0E22DBECD5FF30D93A75530B80D2123C59482F3C69D72F1B6BCB7BB0824D9B23"
+    }
+  ]
+}

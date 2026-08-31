@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://flameblade.studio/schemas/mohan/candidate3-camera-anchor-control-manifest.v1.json",
+  "title": "MoHan Candidate3 Camera Anchor Geometry Control Manifest",
+  "type": "object",
+  "required": [
+    "schema",
+    "version",
+    "status",
+    "notice",
+    "authority",
+    "canvas",
+    "camera_contract",
+    "anchor_contract",
+    "transition_contract",
+    "view_ids",
+    "control_kinds",
+    "views",
+    "rejected_predecessor",
+    "qa_references"
+  ],
+  "properties": {
+    "schema": {"const": "flameblade.mohan.geometry-camera-anchor-controls"},
+    "version": {"const": 1},
+    "status": {"const": "candidate3_only_geometry_control_authority"},
+    "notice": {"const": "GEOMETRY CONTROL ONLY - NOT FINAL ART"},
+    "canvas": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {
+        "width": {"const": 1024},
+        "height": {"const": 1536}
+      }
+    },
+    "view_ids": {
+      "type": "array",
+      "minItems": 24,
+      "maxItems": 24,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^yaw[+-][0-9]{3}-pitch[+]00$"}
+    },
+    "control_kinds": {
+      "const": ["silhouette", "depth", "normal"]
+    },
+    "views": {
+      "type": "array",
+      "minItems": 24,
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "required": ["view_id", "yaw_degrees", "pitch_degrees", "view_matrix_row_major", "orthographic_projection_matrix_row_major", "world_to_ndc_matrix_row_major", "silhouette_bbox_xyxy_inclusive", "silhouette_centroid_xy", "controls"]
+      }
+    }
+  }
+}

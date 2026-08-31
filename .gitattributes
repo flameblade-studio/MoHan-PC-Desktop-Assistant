@@ -7,3 +7,7 @@
 *.ps1 text eol=crlf
 *.png binary
 *.ico binary
+
+# 幾何控制的權威產出是以 SHA256 釘選的證據，任何換行正規化都會改動位元組並
+# 使記錄在 audit.json / sha256-sums.txt 裡的雜湊失效。整棵樹一律停用文字轉換。
+artifacts/pose-atlas-rebuild/** -text

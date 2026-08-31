@@ -1,0 +1,10 @@
+{
+  "status": "PASS_LOSSLESS_HEADER_ADAPTER",
+  "source": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3-vertices.bin",
+  "source_sha256": "23C5ECB3E943089954459F9F16E5551F0413571F5BACF85E3C3A6DCF155318A4",
+  "output": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-renderer-vertices.bin",
+  "output_sha256": "74AC96821A440414F580479C68268A20FA88708B7E694EFAB25E140AD9BAB5C4",
+  "vertex_count": 18439,
+  "payload_bytes": 442536,
+  "payload_exact": true
+}

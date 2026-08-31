@@ -1,0 +1,82 @@
+{
+  "schema": "mohan.poseatlas.allowed-15deg-control-path-audit/v1",
+  "date": "2026-08-25",
+  "decision": "USE_EXISTING_CANDIDATE3_CPU_FORMAL_CONTROLS",
+  "scope": "geometry controls only; not final art and not body_skin RGBA",
+  "fastest_ready_input": {
+    "root": "D:/FlamebladeStudio/CodexProjects/2026-08-13/mohan-multisensory-vision/artifacts/pose-atlas-rebuild/2026-08-25/candidate3-formal-controls-bundle-agent-a/formal-controls",
+    "manifest": "D:/FlamebladeStudio/CodexProjects/2026-08-13/mohan-multisensory-vision/artifacts/pose-atlas-rebuild/2026-08-25/candidate3-formal-controls-bundle-agent-a/formal-controls-manifest.json",
+    "validation_exit": 0,
+    "views": 24,
+    "yaw_step_degrees": 15,
+    "png_count": 72,
+    "kinds": ["silhouette", "depth", "normal"],
+    "dimensions": [1024, 1536],
+    "mapping_rule": "source_renderer_yaw=-formal_yaw; +180 canonicalized to -180",
+    "hash_copy_validation": true
+  },
+  "geometry_authority": {
+    "name": "MHR candidate3 deterministic body mesh",
+    "vertices": 18439,
+    "triangles": 36874,
+    "candidate3_vertices_path": "D:/FlamebladeStudio/CodexProjects/2026-08-13/mohan-multisensory-vision/artifacts/pose-atlas-rebuild/2026-08-25/ufbx-lod1-extractor-agent-a/body-morph-candidate3/candidate3-vertices.bin",
+    "candidate3_vertices_sha256": "23C5ECB3E943089954459F9F16E5551F0413571F5BACF85E3C3A6DCF155318A4",
+    "renderer_vertices_sha256": "74AC96821A440414F580479C68268A20FA88708B7E694EFAB25E140AD9BAB5C4",
+    "clothing_baked_into_body_mesh": false,
+    "anatomy_limit": "PASS_BONE_BOUNDED_PLAUSIBILITY_NOT_SURFACE_LANDMARK_VALIDATION"
+  },
+  "renderer": {
+    "type": "CPU software rasterizer, fixed orthographic camera, Y-up",
+    "source_path": "D:/FlamebladeStudio/CodexProjects/2026-08-13/mohan-multisensory-vision/artifacts/pose-atlas-rebuild/2026-08-25/mhr-neutral-body-smoke-agent-b/cpu_yaw_control_renderer.c",
+    "source_sha256": "59C009A8B84F81FB3CEC52FE931FAA492EA2ECCDC13CFBE9C8DC44E70D079C52",
+    "executable_path": "D:/FlamebladeStudio/CodexProjects/2026-08-13/mohan-multisensory-vision/artifacts/pose-atlas-rebuild/2026-08-25/ufbx-lod1-extractor-agent-a/candidate3-yaw-controls-24/candidate3-cpu-yaw-renderer.exe",
+    "executable_sha256": "0FEF357D8DF12479D55ADC4D7CB32F6E79C842AA75186004C7A0AD6E223D3046",
+    "yaw_values": [-180,-165,-150,-135,-120,-105,-90,-75,-60,-45,-30,-15,0,15,30,45,60,75,90,105,120,135,150,165],
+    "outputs_raw": ["PGM silhouette", "PGM depth", "PPM normal"],
+    "prohibited_components_used": []
+  },
+  "licensed_dependencies": [
+    {
+      "name": "MHR v1.0.1 assets",
+      "license": "Apache-2.0",
+      "decision": "ALLOW",
+      "revision": "v1.0.1",
+      "lod1_fbx_sha256": "D66FBCA815BCDE6532F728F1F63071003C5D43FF44F56E263A0807BAEC1AE055",
+      "license_sha256": "CFC7749B96F63BD31C3C42B5C471BF756814053E847C10F3EB003417BC523D30"
+    },
+    {
+      "name": "ufbx",
+      "license": "MIT Alternative A",
+      "decision": "ALLOW",
+      "revision": "v0.23.0 / fcc5d6ba444cfd3eb80677dba5e37e493941abe5",
+      "license_sha256": "E52669716973273FB77033552CF6D8DBB88D3DAD8600FA4D78088A5F92B3FD65",
+      "ufbx_c_sha256": "2DA567C05A4AB29D8591167F9B78FC6AD31DAEBFA172CBA125010D1D71E624E3",
+      "ufbx_h_sha256": "7A68978424165CFB0BCE57F75B003570A688978510F85F36941FE70C73DD79C6"
+    }
+  ],
+  "fresh_regeneration_next_step": {
+    "command_template": "\"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-cpu-yaw-renderer.exe\" \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-renderer-vertices.bin\" \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\third-party-downloads\\MHR-v1.0.1-assets\\extracted\\assets\\lod1.fbx\" \"<NEW_ISOLATED_RAW_DIR>\"",
+    "expected_stdout": "views=24 controls=72 width=1024 height=1536 vertices=18439 faces=36874 y_up=1 orthographic=1",
+    "required_exit": 0,
+    "png_packager_path": "D:/FlamebladeStudio/CodexProjects/2026-08-13/mohan-multisensory-vision/artifacts/pose-atlas-rebuild/2026-08-25/mhr-neutral-body-smoke-agent-b/package_cpu_yaw_controls.py",
+    "png_packager_sha256": "4C9548806D02D34A5B3365C443079259DA1F3FA716FA6D1E219F9F76ABB35861",
+    "png_packager_third_party_imports": [],
+    "warning": "Write only to a new isolated directory. Preserve the formal sign mapping."
+  },
+  "verified_gates": {
+    "formal_bundle_validation_exit": 0,
+    "formal_bundle_exact_count": 72,
+    "formal_bundle_dimensions_modes_valid": true,
+    "formal_bundle_hashes_equal_sources": true,
+    "topology_continuity_exit": 0,
+    "old_raster_iou_qa_exit": 1,
+    "old_raster_iou_interpretation": "Retained informational failure under T-pose self-occlusion; not a topology ordering or mirror failure."
+  },
+  "blocks_and_limits": [
+    "Geometry controls only; not final MoHan art or realistic body_skin.",
+    "MHR package has no licensed skin material or texture.",
+    "BODY_CENTER_CONSTANT [512,1292] is final-art metadata and is not applied to control projection center [512,768].",
+    "Do not use InstantMesh, Zero123++, nvdiffrast, ComfyUI GPL runtime, or unknown-license assets.",
+    "Raw renderer yaw has the opposite sign from formal art yaw."
+  ]
+}

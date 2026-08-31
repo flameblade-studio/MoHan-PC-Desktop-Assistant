@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "magic": "MHRVTX2\\0",
+  "vertex_count": 18439,
+  "components": 3,
+  "obj_vertex_count": 18439,
+  "obj_face_count": 36874,
+  "topology_exact": true,
+  "bin_obj_rms_coordinate": 0.0,
+  "bin_obj_max_vertex": 0.0,
+  "bin_obj_exact": true,
+  "height_168": true,
+  "section_targets_pass": true,
+  "protected_vertices_exact": true
+}

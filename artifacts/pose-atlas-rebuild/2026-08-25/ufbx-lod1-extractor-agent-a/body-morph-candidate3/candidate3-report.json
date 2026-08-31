@@ -1,0 +1,114 @@
+{
+  "status": "CANDIDATE_3_SECTION_TARGETS_PASS_PENDING_ANATOMY_AUDIT",
+  "reason": "candidate2 front/back depth ratio drifted because its surface-centroid scale center did not follow the official central skeleton axis",
+  "base_uniform_scale_to_168": 0.9728896029306688,
+  "height": 168.0,
+  "fractions": {
+    "hip_candidate": 0.5,
+    "waist_candidate": 0.62,
+    "underbust_candidate": 0.7,
+    "bust_candidate": 0.74
+  },
+  "targets": {
+    "bust_candidate": 86.0,
+    "underbust_candidate": 71.0,
+    "waist_candidate": 62.0,
+    "hip_candidate": 90.0
+  },
+  "actual": {
+    "height": 168.0,
+    "hip_candidate": 90.06925217482814,
+    "waist_candidate": 62.21390939635582,
+    "underbust_candidate": 70.97000216616335,
+    "bust_candidate": 86.3105211705737
+  },
+  "signed_errors": {
+    "bust_candidate": 0.31052117057369344,
+    "underbust_candidate": -0.029997833836645782,
+    "waist_candidate": 0.21390939635581674,
+    "hip_candidate": 0.0692521748281365
+  },
+  "all_section_errors_le_0_5_cm": true,
+  "iterations": 1,
+  "history": [
+    {
+      "iteration": 0,
+      "anchor_scale": [
+        0.8491925862711532,
+        0.6290318595271859,
+        0.776660522634255,
+        0.8174035589850532
+      ],
+      "actual": {
+        "hip_candidate": 90.06925217482814,
+        "waist_candidate": 62.21390939635582,
+        "underbust_candidate": 70.97000216616335,
+        "bust_candidate": 86.3105211705737
+      },
+      "signed_errors": {
+        "hip_candidate": 0.0692521748281365,
+        "waist_candidate": 0.21390939635581674,
+        "underbust_candidate": -0.029997833836645782,
+        "bust_candidate": 0.31052117057369344
+      },
+      "max_abs_error": 0.31052117057369344
+    }
+  ],
+  "local_scale_anchor_order": [
+    "hip_candidate",
+    "waist_candidate",
+    "underbust_candidate",
+    "bust_candidate"
+  ],
+  "local_scale_anchor_values": [
+    0.8491925862711532,
+    0.6290318595271859,
+    0.776660522634255,
+    0.8174035589850532
+  ],
+  "scale_center": {
+    "x": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "z": [
+      0.5181338497808546,
+      -2.4474864722752807,
+      -4.375666496690136,
+      -3.9994199644615236
+    ],
+    "source": "interpolation from official FBX l/r_upleg mean through c_spine0..c_spine3"
+  },
+  "spline": {
+    "type": "SciPy CubicSpline C2 with dense linear knots",
+    "support_low_y": 73.86300423461144,
+    "support_high_y": 132.66300423461144,
+    "sampled_min_scale": 0.6287612104092158,
+    "sampled_max_scale": 1.0
+  },
+  "central_torso_component": {
+    "eligible_vertices": 1731,
+    "connected_components": 1,
+    "selected_component_vertices": 1731,
+    "nonzero_weight_vertices": 1731,
+    "full_weight_vertices": 1415,
+    "support_low_y": 73.86300423461144,
+    "support_high_y": 132.66300423461144,
+    "radial_full_until": 1.05,
+    "radial_zero_at": 1.3
+  },
+  "protected_zero_weight_vertices": 16708,
+  "protected_vertices_max_displacement": 0.0,
+  "topology": {
+    "vertices": 18439,
+    "triangles": 36874,
+    "unchanged": true
+  },
+  "inputs_sha256": {
+    "vertices": "4C1C4828E4E8672B5B1AC9FF1E179FDAE1A7758A9595F934D6F254D404136C34",
+    "faces": "9680016AECE8D43BA4FF621F57D045870FDD1E7DC78541173B1AB44A449465F0",
+    "skeleton": "7B9836F65F10C07F36177F678EC907B34095F92EA299D2077EBA400C4F89343B"
+  }
+}
