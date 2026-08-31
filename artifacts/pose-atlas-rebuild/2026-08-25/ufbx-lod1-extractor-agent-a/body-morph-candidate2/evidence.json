@@ -1,0 +1,171 @@
+{
+  "status": "CANDIDATE_2_SECTION_TARGETS_PASS_NOT_ANATOMICALLY_VALIDATED",
+  "generated_at": "2026-08-25T02:43:21.0956061+08:00",
+  "scope": "MHR/ufbx only; nvdiffrast and InstantMesh/Zero123++ not read, used, or downloaded",
+  "commands": [
+    {
+      "command": "cmd.exe /d /c \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-body-morph-candidate2.cmd\"",
+      "exit_code": 0
+    },
+    {
+      "command": "cmd.exe /d /c \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate2-verify.cmd\"",
+      "exit_code": 0
+    }
+  ],
+  "stderr_bytes": {
+    "morph": 0,
+    "verify": 0
+  },
+  "measurements": {
+    "height": 168.0,
+    "targets": {
+      "bust_candidate": 86.0,
+      "underbust_candidate": 71.0,
+      "waist_candidate": 62.0,
+      "hip_candidate": 90.0
+    },
+    "actual": {
+      "height": 168.0,
+      "hip_candidate": 90.08610364889935,
+      "waist_candidate": 62.19878795015636,
+      "underbust_candidate": 70.99631516498413,
+      "bust_candidate": 86.36663666998963
+    },
+    "signed_errors": {
+      "bust_candidate": 0.3666366699896315,
+      "underbust_candidate": -0.00368483501587491,
+      "waist_candidate": 0.1987879501563583,
+      "hip_candidate": 0.0861036488993534
+    },
+    "all_errors_le_0_5_cm": true
+  },
+  "geometry": {
+    "topology": {
+      "vertices": 18439,
+      "triangles": 36874,
+      "unchanged": true
+    },
+    "central_torso_component": {
+      "eligible_vertices": 1731,
+      "connected_components": 1,
+      "selected_component_vertices": 1731,
+      "nonzero_weight_vertices": 1731,
+      "full_weight_vertices": 1415,
+      "support_low_y": 73.86300423461144,
+      "support_high_y": 132.66300423461144,
+      "radial_full_until": 1.05,
+      "radial_zero_at": 1.3
+    },
+    "protected_zero_weight_vertices": 16708,
+    "protected_max_displacement": 0.0,
+    "spline": {
+      "type": "SciPy CubicSpline C2",
+      "boundary_condition": "first derivative zero at support endpoints",
+      "support_low_y": 73.86300423461144,
+      "support_high_y": 132.66300423461144,
+      "sampled_min_scale": 0.6287612104092158,
+      "sampled_max_scale": 1.0,
+      "integral_first_derivative_squared": 0.011023588418890598,
+      "integral_second_derivative_squared": 0.001527153243921657
+    }
+  },
+  "verification": {
+    "status": "PASS",
+    "magic": "MHRVTX2\\0",
+    "vertex_count": 18439,
+    "components": 3,
+    "obj_vertex_count": 18439,
+    "obj_face_count": 36874,
+    "topology_exact": true,
+    "bin_obj_rms_coordinate": 0.0,
+    "bin_obj_max_vertex": 0.0,
+    "bin_obj_exact": true,
+    "height_168": true,
+    "section_targets_pass": true,
+    "protected_vertices_exact": true
+  },
+  "visual": {
+    "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\candidate2-wireframe-sections.png",
+    "width": 1800,
+    "height": 1350,
+    "mode": "RGB",
+    "inspection": "front and side wireframes continuous; four closed maximum torso loops visible; no hard y cut visible; candidate planes remain non-anatomical"
+  },
+  "files": [
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\morph_body_candidate2.py",
+      "bytes": 17736,
+      "sha256": "136A76BDEBB3C20BC58DB5BFBCE9D137F065A841510023BE7404366876BEF114"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-body-morph-candidate2.cmd",
+      "bytes": 668,
+      "sha256": "76F7A36C89D10D1B86595736DD4C3D047C5237F234640D37D3F9CF00203EE02F"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\verify_candidate2.py",
+      "bytes": 2775,
+      "sha256": "A98B70E3D12B5825E0F0472BD9B271D25ABD9B07E931C1CC3F3FEBB51FA7E180"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate2-verify.cmd",
+      "bytes": 691,
+      "sha256": "1C840EE7A1E8DE7D8F90A0DA2D8462D6CA501CAE9BD276AC1E06572A8BD23E08"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\candidate2-report.json",
+      "bytes": 5309,
+      "sha256": "0F435609CD768F07D4013B43A6F24DF66A8791B69B917CA239283F643D0B0BE7"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\candidate2.obj",
+      "bytes": 1766556,
+      "sha256": "23502A9F45064F51971ABC8B5D9D405967ABD1A12A333538AA0FB7455F220AE9"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\candidate2-vertices.bin",
+      "bytes": 442552,
+      "sha256": "7032462EF48B9FEA066F98391563EB9CCFEB6751CFDB6FBC84C070817A8FCDF1"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\candidate2-wireframe-sections.png",
+      "bytes": 152193,
+      "sha256": "D0E3622100DA66EC4504BFACB8BC0C9DC9CCC5EFE1C8D15B4E8C9CB44AFEC567"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\BODY-MORPH-CANDIDATE2-RESULT.md",
+      "bytes": 1634,
+      "sha256": "B0EDF94E0AA20FBE1E3294CD1E8C53A51C3A523D9989B8C79D4E81DEB5806120"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\stdout.json",
+      "bytes": 1287,
+      "sha256": "DCDAAFC8EF12E396D332205B9534C3F8E5DFC354A47882C6F858FE71C18F661C"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\stderr.txt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\verify-stdout.json",
+      "bytes": 366,
+      "sha256": "4DC8537DFC252AD1C510E0020D91327CB6C2982400A748DC1AA6E89685F72A5D"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\verify-stderr.txt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate2\\verify-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    }
+  ]
+}

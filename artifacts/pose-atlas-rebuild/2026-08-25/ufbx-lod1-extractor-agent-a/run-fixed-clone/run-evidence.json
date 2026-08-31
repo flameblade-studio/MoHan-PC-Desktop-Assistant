@@ -1,0 +1,144 @@
+{
+  "status": "PASS",
+  "generated_utc": "2026-08-24T18:00:52.5617608Z",
+  "ufbx_head": "fcc5d6ba444cfd3eb80677dba5e37e493941abe5",
+  "ufbx_git_status": null,
+  "compiler": "MSVC 19.51.36252.0 x64",
+  "input_fbx_sha256": "D66FBCA815BCDE6532F728F1F63071003C5D43FF44F56E263A0807BAEC1AE055",
+  "vertex_rows": 18439,
+  "face_rows": 36874,
+  "steps": [
+    {
+      "name": "vcvars",
+      "exit_code": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "name": "compile-ufbx",
+      "exit_code": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "name": "compile-extractor",
+      "exit_code": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "name": "link",
+      "exit_code": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "name": "extract",
+      "exit_code": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "name": "verify",
+      "exit_code": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "name": "compiler-version",
+      "exit_code": 0,
+      "stderr_bytes": 1093
+    }
+  ],
+  "extract": {
+    "mesh_element_id": 205,
+    "vertices": 18439,
+    "faces": 36874,
+    "indices": 110622,
+    "reversed_winding": false,
+    "ufbx_version": "0.23.0"
+  },
+  "verify": {
+    "status": "PASS",
+    "fbx_version": 7700,
+    "vertices_shape": [
+      18439,
+      3
+    ],
+    "faces_shape": [
+      36874,
+      3
+    ],
+    "vertex_ids_exact": true,
+    "face_ids_exact": true,
+    "vertices_exact_roundtrip": true,
+    "faces_exact_order": true,
+    "vertex_min": [
+      -65.32131958007812,
+      -0.058584000915288925,
+      -13.894096374511719
+    ],
+    "vertex_max": [
+      65.32131958007812,
+      172.6228790283203,
+      25.61319923400879
+    ],
+    "face_index_min": 0,
+    "face_index_max": 18438,
+    "degenerate_faces": 0,
+    "input_fbx_sha256": "D66FBCA815BCDE6532F728F1F63071003C5D43FF44F56E263A0807BAEC1AE055",
+    "vertices_tsv_sha256": "4C1C4828E4E8672B5B1AC9FF1E179FDAE1A7758A9595F934D6F254D404136C34",
+    "faces_tsv_sha256": "9680016AECE8D43BA4FF621F57D045870FDD1E7DC78541173B1AB44A449465F0"
+  },
+  "files": [
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\third-party-downloads\\ufbx-v0.23.0\\ufbx.c",
+      "bytes": 1214366,
+      "sha256": "2DA567C05A4AB29D8591167F9B78FC6AD31DAEBFA172CBA125010D1D71E624E3"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\third-party-downloads\\ufbx-v0.23.0\\ufbx.h",
+      "bytes": 229971,
+      "sha256": "7A68978424165CFB0BCE57F75B003570A688978510F85F36941FE70C73DD79C6"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\third-party-downloads\\ufbx-v0.23.0\\LICENSE",
+      "bytes": 2670,
+      "sha256": "E52669716973273FB77033552CF6D8DBB88D3DAD8600FA4D78088A5F92B3FD65"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\extract_lod1.c",
+      "bytes": 5961,
+      "sha256": "508667BE39E9199C76551EA6CC049246709E074E2F6C2F007EF35C9D48906372"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-fixed-clone.cmd",
+      "bytes": 2124,
+      "sha256": "42134F1F8B998ACEBB498BA25C6A5A177205ADFA45B32EDAF21568B71BD24B94"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\verify_extract.py",
+      "bytes": 4874,
+      "sha256": "926C5FD053F78EBC23696D79A34781261BC902FCE6CC33F20D3697028D3884B4"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-fixed-clone\\extract_lod1.exe",
+      "bytes": 561152,
+      "sha256": "A26AF31C6306F6C6A6A6D6872BDC040791AFE8C6326043FFF1CF6F3662BC51F3"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-fixed-clone\\mhr-lod1.vertices.tsv",
+      "bytes": 1154972,
+      "sha256": "4C1C4828E4E8672B5B1AC9FF1E179FDAE1A7758A9595F934D6F254D404136C34"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-fixed-clone\\mhr-lod1.faces.tsv",
+      "bytes": 807149,
+      "sha256": "9680016AECE8D43BA4FF621F57D045870FDD1E7DC78541173B1AB44A449465F0"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-fixed-clone\\extract-stdout.json",
+      "bytes": 122,
+      "sha256": "B6E5DFB44184B5EB4D858C19DE90D6C82CD3FB28FE7677232E96AF2355FE722D"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-fixed-clone\\verify-stdout.json",
+      "bytes": 819,
+      "sha256": "E7B977AA68EAA9BE7EB2E33C5074629234D204C775DA6AC054212A668469027F"
+    }
+  ]
+}

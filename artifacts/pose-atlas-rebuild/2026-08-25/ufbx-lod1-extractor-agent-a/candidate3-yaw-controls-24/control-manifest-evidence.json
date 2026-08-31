@@ -1,0 +1,166 @@
+{
+  "status": "PASS_CANDIDATE3_ONLY_CAMERA_ANCHOR_CONTROL_MANIFEST",
+  "generated_at": "2026-08-25T03:22:00.8224417+08:00",
+  "command": "cmd.exe /d /c \"D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate3-control-manifest.cmd\"",
+  "exit_codes": {
+    "build": 0,
+    "validate": 0,
+    "overall": 0
+  },
+  "stderr_bytes": {
+    "build": 0,
+    "validate": 0
+  },
+  "validation": {
+    "status": "PASS",
+    "check_count": 484,
+    "views": 24,
+    "controls": 72,
+    "candidate3_only": true,
+    "candidate2_rejected": true,
+    "manifest_sha256": "96930F0D0CD3DBAB67D14C906E956ECD948FF665291BA5E74525B04B06718F32",
+    "schema_sha256": "292C7E2E8C085086B4F0CB690820678C7C1FA4325592957DD26ECEAE34383B4B"
+  },
+  "contracts": {
+    "camera": {
+      "type": "orthographic",
+      "world_axes": "X-right, Y-up, Z-depth",
+      "yaw_axis": "Y",
+      "pitch_degrees": 0,
+      "margin_pixels": 24.0,
+      "orthographic_scale_pixels_per_world_unit": 7.251301847932881,
+      "radial_max_world": 67.29826039983614,
+      "y_min_world": -0.056995765388565385,
+      "y_max_world": 167.94300423461144,
+      "y_center_world": 83.94300423461144,
+      "rotation_formula": "x'=cos(yaw)*x+sin(yaw)*z; y'=y; z'=-sin(yaw)*x+cos(yaw)*z",
+      "orthographic_bounds_world": {
+        "left": -70.60801091130348,
+        "right": 70.60801091130348,
+        "bottom": -105.91201636695523,
+        "top": 105.91201636695523,
+        "near": -67.29826039983614,
+        "far": 67.29826039983614
+      },
+      "fixed_rotation_pivot_world": [
+        0.0,
+        83.94300423461144,
+        0.0
+      ],
+      "control_raster_projection_center_px": [
+        512.0,
+        768.0
+      ]
+    },
+    "anchor": {
+      "BODY_CENTER_CONSTANT": [
+        512,
+        1292
+      ],
+      "meaning": "downstream 1024x1536 final-art registration metadata",
+      "applied_to_geometry_control_rasters": false,
+      "geometry_control_offsets": {
+        "offset_x": 0,
+        "offset_y": 0
+      },
+      "runtime_translation_policy": "do not translate registered full-canvas final-art layers again; geometry controls remain camera-space references",
+      "warning": "BODY_CENTER_CONSTANT is metadata here and must not be confused with the control raster projection center [512,768]."
+    },
+    "transition": {
+      "yaw_step_degrees": 15,
+      "order": "ascending yaw from -180 through +165",
+      "wrap": {
+        "from": "yaw+165-pitch+00",
+        "to": "yaw-180-pitch+00",
+        "equivalent_step_degrees": 15
+      },
+      "interpolation_tick_hz": 50,
+      "topology_correspondence": "same vertex index and triangle topology across every view",
+      "raster_iou_gate": "retained failure; not replaced by topology gate"
+    },
+    "clothing_baked_into_body_mesh": false
+  },
+  "candidate2_rejection": {
+    "id": "mhr-candidate2",
+    "status": "rejected",
+    "must_not_be_used_as_geometry_control_parent": true,
+    "report": {
+      "path": "../candidate2-anatomy-audit/candidate2-anatomy-audit.json",
+      "sha256": "5027E4D69065AA7B74CAAC5663FC6711C56E011745543EAB7E5D0D934E7BC137"
+    },
+    "reason": "front/back depth ratio drift relative to the official skeleton axis",
+    "legacy_iou_failed_transition_count": 16
+  },
+  "limitations": [
+    "Geometry controls are not final MoHan art.",
+    "Legacy silhouette IoU remains failed near side-view T-pose self-occlusion.",
+    "BODY_CENTER_CONSTANT has not been applied as a raster translation."
+  ],
+  "files": [
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-camera-anchor-control-manifest.schema.json",
+      "bytes": 1639,
+      "sha256": "292C7E2E8C085086B4F0CB690820678C7C1FA4325592957DD26ECEAE34383B4B"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\build_candidate3_control_manifest.py",
+      "bytes": 11761,
+      "sha256": "5E3C55D3450F4D8F7D9C4581AEDBF8AECCB053710FBC59B4DF9935DB403D03FE"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\validate_candidate3_control_manifest.py",
+      "bytes": 9150,
+      "sha256": "2212AE5FF219B9352AFDE797EAEC2988316EFAF48EE4610DF6EEEEE9B3144F70"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-candidate3-control-manifest.cmd",
+      "bytes": 1709,
+      "sha256": "6271A3AD66B6AABD272EAACCEA0E9A38B68594EF0A65E1B9CE70302454505589"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-camera-anchor-control-manifest.json",
+      "bytes": 74497,
+      "sha256": "96930F0D0CD3DBAB67D14C906E956ECD948FF665291BA5E74525B04B06718F32"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\control-manifest-validation.json",
+      "bytes": 26758,
+      "sha256": "0F566269DFF7048AE6670B752A7C48E1C47BE8D1D39CC860C193C7A916940A9B"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\control-manifest-build-stdout.json",
+      "bytes": 466,
+      "sha256": "AA1D37C57BE1321DF73AE7629EF6C6827C69E68EAF56F040EC44E90E042E49F1"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\control-manifest-build-stderr.txt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\control-manifest-build-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\control-manifest-validation-stdout.json",
+      "bytes": 322,
+      "sha256": "980A74BF84029699413C7A3D629BC5DC782906FF0B8B7457574EB920114DB17A"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\control-manifest-validation-stderr.txt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\control-manifest-validation-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\control-manifest-overall-exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    }
+  ]
+}

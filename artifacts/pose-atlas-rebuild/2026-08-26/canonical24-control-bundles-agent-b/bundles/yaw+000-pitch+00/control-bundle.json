@@ -1,0 +1,211 @@
+{
+  "schema": "mohan.canonical_control_bundle.v2",
+  "status": "PASS_STAGING_ONLY",
+  "formal_view_id": "yaw+000-pitch+00",
+  "formal_yaw": 0,
+  "renderer_native_yaw": 0,
+  "mirror": false,
+  "sign_contract": "formal yaw uses renderer-native negative yaw; no pixel mirroring",
+  "files": {
+    "depth": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_depth.png",
+      "sha256": "278DD0109A9880EE5E57A450C47FE934C047D56FDB55C8EE15C65F3A07D9AAAC",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+000-pitch+00_depth.png",
+      "source_sha256": "278DD0109A9880EE5E57A450C47FE934C047D56FDB55C8EE15C65F3A07D9AAAC",
+      "mode": "L",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": false
+    },
+    "normal": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_normal.png",
+      "sha256": "62435F1F1F26A74F051A83AA12E546A21F1900DD6A81566F1E15865F3EB07D98",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+000-pitch+00_normal.png",
+      "source_sha256": "62435F1F1F26A74F051A83AA12E546A21F1900DD6A81566F1E15865F3EB07D98",
+      "mode": "RGB",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": false
+    },
+    "silhouette": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_silhouette.png",
+      "sha256": "13AAD48D5B6061E118D76DBDAD844BD5154E09BD8BD1324861B9F4BDFFBBB84A",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+000-pitch+00_silhouette.png",
+      "source_sha256": "13AAD48D5B6061E118D76DBDAD844BD5154E09BD8BD1324861B9F4BDFFBBB84A",
+      "mode": "L",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": false
+    },
+    "part_id": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_part-id.png",
+      "sha256": "6E8161C03126E2F89010A713CA4B9201ADC4F4B779753F00340109ECB99045C7",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\skin-weight-parts-agent-a\\masks\\yaw+000-pitch+00_part-id.png",
+      "source_sha256": "6E8161C03126E2F89010A713CA4B9201ADC4F4B779753F00340109ECB99045C7",
+      "mode": "L",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": false
+    },
+    "jaw13_overlay": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_jaw13-overlay.png",
+      "sha256": "7E7E906A1D5C9ABAC5630B68AF4D1C56161E0D859D39A89F1D18A52CF8057C20",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\jaw13-canonical24-agent-b\\views\\yaw+000-pitch+00_jaw13-mesh-candidates-overlay.png",
+      "source_sha256": "7E7E906A1D5C9ABAC5630B68AF4D1C56161E0D859D39A89F1D18A52CF8057C20",
+      "mode": "RGB",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": false
+    },
+    "jaw13_conditioning": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_jaw13-conditioning.png",
+      "sha256": "17B08E3124EE8F5D141C9A91CFD7BF4E5CC2035ED5044302D338B2F726F04D46",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\jaw13-canonical24-agent-b\\views\\yaw+000-pitch+00_jaw13-smoothed-conditioning.png",
+      "source_sha256": "17B08E3124EE8F5D141C9A91CFD7BF4E5CC2035ED5044302D338B2F726F04D46",
+      "mode": "RGB",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": false
+    },
+    "ownership_anatomy": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_ownership-anatomy.png",
+      "sha256": "9AB149DC7A6142182CF7C665DF6EF22CD020BBCADF2A1A29AEF56EDD0A42FA97",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\yaw000-geometry-controls-agent-d\\controls\\yaw+000-pitch+00_ownership-anatomy.png",
+      "source_sha256": "9AB149DC7A6142182CF7C665DF6EF22CD020BBCADF2A1A29AEF56EDD0A42FA97",
+      "mode": "L",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": false
+    },
+    "ownership_outfit": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_ownership-outfit.png",
+      "sha256": "0492F9B63D5DD6BEC2C9A3EECE8BAFA5A6D31043BE8F0D33F425A5D6312ED747",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-ownership-templates-agent-c\\masks\\yaw+000-pitch+00_default_outfit_mask.png",
+      "source_sha256": "0492F9B63D5DD6BEC2C9A3EECE8BAFA5A6D31043BE8F0D33F425A5D6312ED747",
+      "mode": "L",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": false
+    },
+    "ownership_hair": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_ownership-hair.png",
+      "sha256": "0807909BD58A9F929118935C505DDE213E4D14CA6A4F9460B3CD408C6D1A6517",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\yaw000-geometry-controls-agent-d\\controls\\yaw+000-pitch+00_ownership-hair.png",
+      "source_sha256": "0807909BD58A9F929118935C505DDE213E4D14CA6A4F9460B3CD408C6D1A6517",
+      "mode": "L",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": false
+    },
+    "ownership_ornament": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_ownership-ornament.png",
+      "sha256": "6D8A11951419BFD8F4E09C2B00C972A5E4FE7F1B3ACA61184A7381D83C35B075",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-ornament-visibility-controls-agent-b\\controls\\yaw+000-pitch+00_ornament-fixed-side-mask.png",
+      "source_sha256": "6D8A11951419BFD8F4E09C2B00C972A5E4FE7F1B3ACA61184A7381D83C35B075",
+      "mode": "L",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": false
+    },
+    "ornament_mask": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_ornament_mask.png",
+      "sha256": "6D8A11951419BFD8F4E09C2B00C972A5E4FE7F1B3ACA61184A7381D83C35B075",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-ornament-visibility-controls-agent-b\\controls\\yaw+000-pitch+00_ornament-fixed-side-mask.png",
+      "source_sha256": "6D8A11951419BFD8F4E09C2B00C972A5E4FE7F1B3ACA61184A7381D83C35B075",
+      "mode": "L",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": false
+    },
+    "jaw13_candidates": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_jaw13-candidates.json",
+      "sha256": "D80EBFAC3A0784E1A81EC7B1CB0098BFB61CE0C5F4755CFB04BEEF71EBBE5C7A",
+      "source_path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\jaw13-canonical24-agent-b\\views\\yaw+000-pitch+00_jaw13-mesh-candidates.json",
+      "source_sha256": "D80EBFAC3A0784E1A81EC7B1CB0098BFB61CE0C5F4755CFB04BEEF71EBBE5C7A",
+      "physical_file": true,
+      "derived": false
+    },
+    "base_render": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_base-render.png",
+      "sha256": "F3E5D66D3672571FC4D084C25315E77E093B5094980B2D1F8552D5BE65FD8CC5",
+      "mode": "RGB",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": true,
+      "derivation": "deterministic geometry shading from same renderer-native normal+silhouette; not generated art"
+    },
+    "shaded_render": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_shaded-render.png",
+      "sha256": "9BD3F16F07DA6ECC785B8DB6D463F8C9AD2D1CE685C3AAD5C78978B3EC26535F",
+      "mode": "RGB",
+      "size": [
+        1024,
+        1536
+      ],
+      "physical_file": true,
+      "derived": true,
+      "derivation": "deterministic geometry shading from same renderer-native normal+silhouette; not generated art"
+    },
+    "registration_anchor": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-26\\canonical24-control-bundles-agent-b\\bundles\\yaw+000-pitch+00\\yaw+000-pitch+00_registration-anchor.json",
+      "sha256": "2D03940F68EF3305B0075781C4385010F9CF11E93F3B8E1617D21F93E0F2392C",
+      "physical_file": true,
+      "derived": false
+    }
+  },
+  "required_controls": [
+    "depth",
+    "normal",
+    "silhouette",
+    "part_id",
+    "base_render",
+    "shaded_render",
+    "jaw13_overlay",
+    "jaw13_conditioning",
+    "jaw13_candidates",
+    "ownership_anatomy",
+    "ownership_outfit",
+    "ownership_hair",
+    "ownership_ornament",
+    "ornament_mask",
+    "registration_anchor"
+  ],
+  "flux_started": false,
+  "formal_asset_promotion": false
+}

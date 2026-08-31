@@ -1,0 +1,18 @@
+{
+  "status": "FAIL",
+  "report": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate2-anatomy-audit\\candidate2-anatomy-audit.json",
+  "overlay": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate2-anatomy-audit\\candidate2-anatomy-skeleton-overlay.png",
+  "gates": {
+    "official_skeleton_127": true,
+    "section_bone_zones_plausible": true,
+    "no_degenerate_triangles": true,
+    "no_triangle_flips": true,
+    "no_normal_flips": true,
+    "positive_local_jacobian": true,
+    "no_strict_new_local_self_intersections": true,
+    "outside_vertical_support_unchanged": true,
+    "section_measurements_preserved": true,
+    "front_back_ratio_change_le_0_25": false
+  },
+  "candidate3_required": true
+}

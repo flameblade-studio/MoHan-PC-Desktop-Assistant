@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "exact_count": 72,
+  "expected_count": 72,
+  "missing": [],
+  "extra": [],
+  "all_dimensions_and_modes_valid": true,
+  "all_copy_hashes_equal_sources": true,
+  "manifest": {
+    "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\candidate3-formal-controls-bundle-agent-a\\formal-controls-manifest.json",
+    "sha256": "60aa27cbbf188c9ddcd5550827f628853689c61e01b9273ff61629dc94324833"
+  },
+  "contact_sheet": {
+    "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\candidate3-formal-controls-bundle-agent-a\\formal-controls-normal-contact-sheet.png",
+    "sha256": "6d74efb69b0537933dadc1e6cd751d795dedd70534005d1443b47273f0dab6d3"
+  }
+}

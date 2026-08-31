@@ -1,0 +1,31 @@
+{
+  "status": "PLAN_ONLY_NOT_COMPILED",
+  "validation_exit": 0,
+  "fixed_tag": "v0.23.0",
+  "fixed_commit": "fcc5d6ba444cfd3eb80677dba5e37e493941abe5",
+  "upstream_downloaded": false,
+  "input_fbx": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\third-party-downloads\\MHR-v1.0.1-assets\\extracted\\assets\\lod1.fbx",
+  "input_bytes": 7884560,
+  "input_sha256": "D66FBCA815BCDE6532F728F1F63071003C5D43FF44F56E263A0807BAEC1AE055",
+  "expected_vertices": 18439,
+  "expected_faces": 36874,
+  "expected_indices": 110622,
+  "files": [
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\UFBX-LOD1-EXTRACTOR-PLAN.md",
+      "sha256": "DA9C7209A387D0424C157DC2066CF950D418C9EAE22B0D1B0B576B6C3CFADB49"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\extract_lod1.c",
+      "sha256": "508667BE39E9199C76551EA6CC049246709E074E2F6C2F007EF35C9D48906372"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\build-and-run.cmd.template",
+      "sha256": "88989EA94E8002F6C07659ECD74B85E682FDE5BE0B50897368997753712DE3E3"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\EVIDENCE.md",
+      "sha256": "272B3009D965769068BD5F47FFF068154B60CA60876316EC22A654C9C81B0847"
+    }
+  ]
+}

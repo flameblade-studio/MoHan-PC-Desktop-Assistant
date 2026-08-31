@@ -1,0 +1,10 @@
+{
+  "status": "PASS_WITH_FLOAT_TOLERANCE",
+  "case_name": "candidate1",
+  "uniform_scale": 0.9722920898400692,
+  "vertex_count": 18439,
+  "rms_coordinate": 8.593152182606011e-15,
+  "max_vertex_error": 1.145853433319398e-13,
+  "allclose_at_1e_12": true,
+  "topology_source": "unchanged verified faces TSV"
+}

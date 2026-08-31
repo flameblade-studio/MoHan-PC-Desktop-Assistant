@@ -1,0 +1,1213 @@
+{
+  "status": "formal_canvas_geometry_control_candidate",
+  "views": 24,
+  "controls_per_view": 3,
+  "exact_control_png_count": 72,
+  "width": 1024,
+  "height": 1536,
+  "camera": "orthographic",
+  "rotation_axis": "Y-up",
+  "yaw_step_degrees": 15,
+  "face_count": 36874,
+  "part_id_status": "not_emitted_no_authoritative_semantic_mapping",
+  "all_controls_clear_canvas_edges": true,
+  "source": {
+    "vertices": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3-vertices.bin",
+      "sha256": "23c5ecb3e943089954459f9f16e5551f0413571f5bacf85e3c3a6dcf155318a4",
+      "format": "MHRVTX2\\0 + uint32 vertex_count + uint32 components + float64 XYZ"
+    },
+    "renderer_vertices": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-renderer-vertices.bin",
+      "sha256": "74ac96821a440414f580479c68268a20fa88708b7e694efab25e140ad9bab5c4",
+      "format": "MHRVRTX1 + uint32 vertex_count + float64 XYZ",
+      "adapter": "lossless payload copy from source MHRVTX2"
+    },
+    "topology": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\third-party-downloads\\MHR-v1.0.1-assets\\extracted\\assets\\lod1.fbx",
+      "sha256": "d66fbca815bcde6532f728f1f63071003c5d43ff44f56e263a0807baec1ae055"
+    }
+  },
+  "records": [
+    {
+      "view": "yaw-180-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-180-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "13aad48d5b6061e118d76dbdad844bd5154e09bd8bd1324861b9f4bdffbbb84a",
+      "nonzero_pixels": 259514,
+      "bbox": [
+        51,
+        159,
+        972,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-180-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-180-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "897edaeb4828bbd57dc34166b7302754bb5401a5bf4bf26ef223fd97dc855d3a",
+      "nonzero_pixels": 259514,
+      "bbox": [
+        51,
+        159,
+        972,
+        1376
+      ],
+      "visible_value_min": 84,
+      "visible_value_max": 153
+    },
+    {
+      "view": "yaw-180-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-180-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "40141a2496cf3afaac027345ebc34134fc9d7ec60f3aadfdc1ed6978a115a2a1",
+      "nonzero_pixels": 259514,
+      "bbox": [
+        51,
+        159,
+        972,
+        1376
+      ]
+    },
+    {
+      "view": "yaw-165-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-165-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "01da02161500da93fabac0def6383974b3ff6b70d4dcff3b9dbd146521e9ac6e",
+      "nonzero_pixels": 258794,
+      "bbox": [
+        25,
+        159,
+        919,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-165-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-165-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "5825171c74b7448544835f955a5ae2aa3d10762ad1341df812534a516b1a22ff",
+      "nonzero_pixels": 258794,
+      "bbox": [
+        25,
+        159,
+        919,
+        1376
+      ],
+      "visible_value_min": 56,
+      "visible_value_max": 159
+    },
+    {
+      "view": "yaw-165-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-165-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "021f4afdfb9560cfb9fa53b60a5878b6b6abeebde32763e223262ebe9e733b62",
+      "nonzero_pixels": 258794,
+      "bbox": [
+        25,
+        159,
+        919,
+        1376
+      ]
+    },
+    {
+      "view": "yaw-150-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-150-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "9cbcf35da26586746656c32319389c13792356788d5d5a41c45ea85fa55273a0",
+      "nonzero_pixels": 255923,
+      "bbox": [
+        33,
+        159,
+        841,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-150-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-150-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "968c554083cd35c71cb99ae754951b275ea7620fcb37c20685af367bc40cdf85",
+      "nonzero_pixels": 255923,
+      "bbox": [
+        33,
+        159,
+        841,
+        1376
+      ],
+      "visible_value_min": 32,
+      "visible_value_max": 168
+    },
+    {
+      "view": "yaw-150-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-150-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "8e37353f341f362145a02af1a12675371d94d386d7f58d5cc7b3d2d0d8f3a75d",
+      "nonzero_pixels": 255923,
+      "bbox": [
+        33,
+        159,
+        841,
+        1376
+      ]
+    },
+    {
+      "view": "yaw-135-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-135-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "dcebfed31c18104c27a4d76341468644ed666e19451fab1cce7c4722fb94116d",
+      "nonzero_pixels": 248307,
+      "bbox": [
+        72,
+        159,
+        746,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-135-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-135-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "a940d7989871126e4c6ee66f0fa33d227dba4c4e802f9d55eef8dab117246bba",
+      "nonzero_pixels": 248307,
+      "bbox": [
+        72,
+        159,
+        746,
+        1376
+      ],
+      "visible_value_min": 15,
+      "visible_value_max": 189
+    },
+    {
+      "view": "yaw-135-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-135-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "3ca7ee46effcb5aaeb92afd6fb5ccbb852da5239798166365f48be1b53b1a14e",
+      "nonzero_pixels": 248307,
+      "bbox": [
+        72,
+        159,
+        746,
+        1376
+      ]
+    },
+    {
+      "view": "yaw-120-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-120-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "33b4cbf562ea28692e05e4dd0fb7714962d59ab98d2c907c0003acb396a5a87b",
+      "nonzero_pixels": 232607,
+      "bbox": [
+        138,
+        159,
+        664,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-120-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-120-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "1e96b506f134ed6d6803b65de6a8f56eaaba4d63c04afcb1350fa8d9a4eb7012",
+      "nonzero_pixels": 232607,
+      "bbox": [
+        138,
+        159,
+        664,
+        1376
+      ],
+      "visible_value_min": 5,
+      "visible_value_max": 214
+    },
+    {
+      "view": "yaw-120-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-120-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "e6004dcd081aac52fbd1aee7876207920b4431385a340f66bccc2672637ad77f",
+      "nonzero_pixels": 232607,
+      "bbox": [
+        138,
+        159,
+        664,
+        1376
+      ]
+    },
+    {
+      "view": "yaw-105-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-105-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "b11cc27f6750085bd9e3a46f27e44fde36ef5cdd1d0e28e3f10be3df80163b22",
+      "nonzero_pixels": 195568,
+      "bbox": [
+        228,
+        159,
+        630,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-105-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-105-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "886c6d8b634a77e4c85690a9b8a0f0df92fc5b2c6e9411627c320a71b9dbde12",
+      "nonzero_pixels": 195568,
+      "bbox": [
+        228,
+        159,
+        630,
+        1376
+      ],
+      "visible_value_min": 23,
+      "visible_value_max": 234
+    },
+    {
+      "view": "yaw-105-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-105-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "67de025052fe211aeacb5e62c9067e38a2cc3ede8cf2c06bda61b54bf5632c3c",
+      "nonzero_pixels": 195568,
+      "bbox": [
+        228,
+        159,
+        630,
+        1376
+      ]
+    },
+    {
+      "view": "yaw-090-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-090-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "6661adeaccc33e99c867017b6df106d65a68f11f297122c5b986dbf9d692c5dc",
+      "nonzero_pixels": 150928,
+      "bbox": [
+        331,
+        159,
+        608,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-090-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-090-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "155b9664ff39d28a9d60b21d82aadf296c32061fa62628821706fad054ed0e10",
+      "nonzero_pixels": 150928,
+      "bbox": [
+        331,
+        159,
+        608,
+        1376
+      ],
+      "visible_value_min": 93,
+      "visible_value_max": 248
+    },
+    {
+      "view": "yaw-090-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-090-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "2aefd2dd94eada171af9284f833323507c4cc6f31547ce1be5c3ea8e273c9154",
+      "nonzero_pixels": 150928,
+      "bbox": [
+        331,
+        159,
+        608,
+        1376
+      ]
+    },
+    {
+      "view": "yaw-075-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-075-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "c98c15b882345479b25b7d4947422673906756718a44c797dabce61da04580ba",
+      "nonzero_pixels": 195574,
+      "bbox": [
+        228,
+        159,
+        630,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-075-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-075-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "f03166b7c7afc733c5cf7b8c2606aee5838eb2b6585fb86c7f439a4ac2b30260",
+      "nonzero_pixels": 195574,
+      "bbox": [
+        228,
+        159,
+        630,
+        1376
+      ],
+      "visible_value_min": 23,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-075-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-075-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "70b3b8773468877978fb6ebbf49c124fed2ab6b1487af7d28f66f4e6d88389ec",
+      "nonzero_pixels": 195574,
+      "bbox": [
+        228,
+        159,
+        630,
+        1376
+      ]
+    },
+    {
+      "view": "yaw-060-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-060-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "67d4e1ae37a65a8f6fdd76c2cef5cd968c023714faa7a756b2a9c3b3af13d24c",
+      "nonzero_pixels": 232602,
+      "bbox": [
+        138,
+        159,
+        664,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-060-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-060-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "9d14379cd6f5e82906d25c9464faeb531b50bfda761692ed391f45e760ca8638",
+      "nonzero_pixels": 232602,
+      "bbox": [
+        138,
+        159,
+        664,
+        1376
+      ],
+      "visible_value_min": 43,
+      "visible_value_max": 253
+    },
+    {
+      "view": "yaw-060-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-060-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "9e3a304aea0aa01c2a54620a84c9e7f69db75077ee14a3324882790abace5855",
+      "nonzero_pixels": 232602,
+      "bbox": [
+        138,
+        159,
+        664,
+        1376
+      ]
+    },
+    {
+      "view": "yaw-045-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-045-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "e32d072bf5dd41e4cbc7ec0b8bf96b98ef52873ac142060935beb3df23e448e1",
+      "nonzero_pixels": 248302,
+      "bbox": [
+        72,
+        159,
+        746,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-045-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-045-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "0ec54a9b35c0c049bc883ebd0dfffa8f0ff8aa4f6c0a9ccb6f7c5158bf0904fd",
+      "nonzero_pixels": 248302,
+      "bbox": [
+        72,
+        159,
+        746,
+        1376
+      ],
+      "visible_value_min": 68,
+      "visible_value_max": 242
+    },
+    {
+      "view": "yaw-045-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-045-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "885011ea5317d0478b4ebad39d4e829647ebd2a626e7e89fb925022ccab2bcdf",
+      "nonzero_pixels": 248302,
+      "bbox": [
+        72,
+        159,
+        746,
+        1376
+      ]
+    },
+    {
+      "view": "yaw-030-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-030-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "223199d8a9dc5086538a9f80d83943600518f32af74e5ee9afa415bd1a6816d3",
+      "nonzero_pixels": 255917,
+      "bbox": [
+        33,
+        159,
+        841,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-030-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-030-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "3c59f31b80a853f52610f4203a79cd66d9f7327ef97d470dc68f6b94a3a9b7da",
+      "nonzero_pixels": 255917,
+      "bbox": [
+        33,
+        159,
+        841,
+        1376
+      ],
+      "visible_value_min": 95,
+      "visible_value_max": 225
+    },
+    {
+      "view": "yaw-030-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-030-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "ae7d2baa8d065116510df3546314dc75bdb6cc9fb65709429522b3a493caf6f7",
+      "nonzero_pixels": 255917,
+      "bbox": [
+        33,
+        159,
+        841,
+        1376
+      ]
+    },
+    {
+      "view": "yaw-015-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-015-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "5f0fc25ca94aea490809972cbc2a358ee5f3db1e56621cb1ffc530b638217210",
+      "nonzero_pixels": 258792,
+      "bbox": [
+        25,
+        159,
+        919,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw-015-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-015-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "10d90f2dd119e25610f2ffd62ddd20288e94ed5bc77c8cac54fcbc15ab1614c9",
+      "nonzero_pixels": 258792,
+      "bbox": [
+        25,
+        159,
+        919,
+        1376
+      ],
+      "visible_value_min": 103,
+      "visible_value_max": 202
+    },
+    {
+      "view": "yaw-015-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw-015-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "827234482ed250fbdbc2f7d715eb49d02decbee72971a22410da1b8ae1d3b866",
+      "nonzero_pixels": 258792,
+      "bbox": [
+        25,
+        159,
+        919,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+000-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+000-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "13aad48d5b6061e118d76dbdad844bd5154e09bd8bd1324861b9f4bdffbbb84a",
+      "nonzero_pixels": 259514,
+      "bbox": [
+        51,
+        159,
+        972,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+000-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+000-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "278dd0109a9880ee5e57a450c47fe934c047d56fdb55c8ee15c65f3a07d9aaac",
+      "nonzero_pixels": 259514,
+      "bbox": [
+        51,
+        159,
+        972,
+        1376
+      ],
+      "visible_value_min": 114,
+      "visible_value_max": 175
+    },
+    {
+      "view": "yaw+000-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+000-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "62435f1f1f26a74f051a83aa12e546a21f1900dd6a81566f1e15865f3eb07d98",
+      "nonzero_pixels": 259514,
+      "bbox": [
+        51,
+        159,
+        972,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+015-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+015-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "f602058bf772e0d9e59f726ef4ca8c2d742a4327a6a0b5c09949693e36cc3bca",
+      "nonzero_pixels": 258794,
+      "bbox": [
+        104,
+        159,
+        998,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+015-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+015-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "f8edfe8b04d2b8d29e419892062537610da445f70e95f120ea54fff3a6f04282",
+      "nonzero_pixels": 258794,
+      "bbox": [
+        104,
+        159,
+        998,
+        1376
+      ],
+      "visible_value_min": 103,
+      "visible_value_max": 202
+    },
+    {
+      "view": "yaw+015-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+015-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "af17bdb8d48b8f0cb108fd250158a3c77c32b4d34493cd3fbf29409f5a7f9039",
+      "nonzero_pixels": 258794,
+      "bbox": [
+        104,
+        159,
+        998,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+030-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+030-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "e8576c6f887373aa84e0acb447ef17f7b859536eeb893c644ef8e7b6fa12d4cc",
+      "nonzero_pixels": 255923,
+      "bbox": [
+        182,
+        159,
+        990,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+030-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+030-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "1bd2a9863ba26592c1222134dd99c8cf66b8610527793e80c8147dadbd9dedcd",
+      "nonzero_pixels": 255923,
+      "bbox": [
+        182,
+        159,
+        990,
+        1376
+      ],
+      "visible_value_min": 95,
+      "visible_value_max": 225
+    },
+    {
+      "view": "yaw+030-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+030-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "474d7daa047903ee47c5363613380eb4e80577b60a52902ef8b82f196435efcd",
+      "nonzero_pixels": 255923,
+      "bbox": [
+        182,
+        159,
+        990,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+045-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+045-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "2fe40a4966c8c2d42338d0f6d9cc9e673aff49189080f628c8ba3ed95eaed05a",
+      "nonzero_pixels": 248307,
+      "bbox": [
+        277,
+        159,
+        951,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+045-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+045-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "9f9af4dd3081b35eadb65af254e7e8c2eb16788bef495fc47f5a9b695686d206",
+      "nonzero_pixels": 248307,
+      "bbox": [
+        277,
+        159,
+        951,
+        1376
+      ],
+      "visible_value_min": 68,
+      "visible_value_max": 242
+    },
+    {
+      "view": "yaw+045-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+045-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "8c0b9a60d50823edadcdb13f15816c84b1c6c5e8d018f8f5dcbf56ba8038f632",
+      "nonzero_pixels": 248307,
+      "bbox": [
+        277,
+        159,
+        951,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+060-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+060-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "eae5eead40c5635de72fcefe37486fb1e3f9680e2c309bd37bb890f52c935f00",
+      "nonzero_pixels": 232607,
+      "bbox": [
+        359,
+        159,
+        885,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+060-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+060-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "34be194e528ab94e492b83786a7c419f45f076226df560fbb96b79da5ef1af6d",
+      "nonzero_pixels": 232607,
+      "bbox": [
+        359,
+        159,
+        885,
+        1376
+      ],
+      "visible_value_min": 43,
+      "visible_value_max": 253
+    },
+    {
+      "view": "yaw+060-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+060-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "144c8e9b3552841969870c202c65569fe895c17ce2079a92dabc1e561e6d1c9f",
+      "nonzero_pixels": 232607,
+      "bbox": [
+        359,
+        159,
+        885,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+075-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+075-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "4eb7899035142ddccfbbe7593b3883c8ba075ffaa8e85a4c0f0b7b81714f2596",
+      "nonzero_pixels": 195568,
+      "bbox": [
+        393,
+        159,
+        795,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+075-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+075-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "4a7f12061090d0b39ff30e8ff85a5782c1493244e7aa3c0a5b586734a5886177",
+      "nonzero_pixels": 195568,
+      "bbox": [
+        393,
+        159,
+        795,
+        1376
+      ],
+      "visible_value_min": 23,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+075-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+075-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "e9e444e39a3cb3dfd3a1909c7f78eb507e903d45e770f3bf2b2cd59e1964e49a",
+      "nonzero_pixels": 195568,
+      "bbox": [
+        393,
+        159,
+        795,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+090-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+090-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "189b0f33764a09767f04cd38276000e84b26ee52da64caf918cca4c0ca34045f",
+      "nonzero_pixels": 150928,
+      "bbox": [
+        415,
+        159,
+        692,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+090-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+090-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "da3e175566b513d7f5bea4695578d4d98f0f1ecf13e2ea0ee0db618297414db0",
+      "nonzero_pixels": 150928,
+      "bbox": [
+        415,
+        159,
+        692,
+        1376
+      ],
+      "visible_value_min": 91,
+      "visible_value_max": 248
+    },
+    {
+      "view": "yaw+090-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+090-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "0dd256f4cbe14bad05b18054f580a88b071975167f1e18eaba21718e03843253",
+      "nonzero_pixels": 150928,
+      "bbox": [
+        415,
+        159,
+        692,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+105-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+105-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "67bc4e565605bcde9d8ce4362e07a9bfef0014c986985c0352761268ea227c8b",
+      "nonzero_pixels": 195574,
+      "bbox": [
+        393,
+        159,
+        795,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+105-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+105-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "993a072e066d2c3135a4697701c17ee62a0047a1d2d957cb545e2e30821c1b2a",
+      "nonzero_pixels": 195574,
+      "bbox": [
+        393,
+        159,
+        795,
+        1376
+      ],
+      "visible_value_min": 23,
+      "visible_value_max": 234
+    },
+    {
+      "view": "yaw+105-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+105-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "e3214a8ed6623953a67487035c2bfa2a5b2e8f921b5b9bc6650c06d1c25dfe09",
+      "nonzero_pixels": 195574,
+      "bbox": [
+        393,
+        159,
+        795,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+120-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+120-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "06cf0715b619d1acdbf13e40a5c74da53f3e2286bc7978d69dd9f999002bc79d",
+      "nonzero_pixels": 232602,
+      "bbox": [
+        359,
+        159,
+        885,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+120-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+120-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "4b94620711b6d19ca672d9f2902da1cfaa235e8104233357109379c066d21f04",
+      "nonzero_pixels": 232602,
+      "bbox": [
+        359,
+        159,
+        885,
+        1376
+      ],
+      "visible_value_min": 5,
+      "visible_value_max": 214
+    },
+    {
+      "view": "yaw+120-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+120-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "960da0113516eac503483d104e9889610da9bda1ef2caed37354da9f3240bc17",
+      "nonzero_pixels": 232602,
+      "bbox": [
+        359,
+        159,
+        885,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+135-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+135-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "a28f077e60c8898d926891930c3704fce9c079c83a6937e8b4cc219d555a11e6",
+      "nonzero_pixels": 248302,
+      "bbox": [
+        277,
+        159,
+        951,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+135-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+135-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "19477fd59e2d6eeca796f78b37bbaa44bdc16f60814705c3ea90e0724aab4546",
+      "nonzero_pixels": 248302,
+      "bbox": [
+        277,
+        159,
+        951,
+        1376
+      ],
+      "visible_value_min": 15,
+      "visible_value_max": 189
+    },
+    {
+      "view": "yaw+135-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+135-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "69c3b7ad529f6a0ca16076ccdfc8e149095ddcc9b6b0ebb42f2c0b33d78e2a64",
+      "nonzero_pixels": 248302,
+      "bbox": [
+        277,
+        159,
+        951,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+150-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+150-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "b766c7f4f7a9587b64251450390c1c2058b50b67f23f6e4e7c36331f3959f79a",
+      "nonzero_pixels": 255917,
+      "bbox": [
+        182,
+        159,
+        990,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+150-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+150-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "db0e46356e8d3cb8e71e444a74df4045b286e88527ef190d31878169f347d60a",
+      "nonzero_pixels": 255917,
+      "bbox": [
+        182,
+        159,
+        990,
+        1376
+      ],
+      "visible_value_min": 32,
+      "visible_value_max": 168
+    },
+    {
+      "view": "yaw+150-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+150-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "c554c72366debd348d550ed8ad41a45b83a160821209f270864cca337eb1021e",
+      "nonzero_pixels": 255917,
+      "bbox": [
+        182,
+        159,
+        990,
+        1376
+      ]
+    },
+    {
+      "view": "yaw+165-pitch+00",
+      "kind": "silhouette",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+165-pitch+00_silhouette.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "d3f57cb3ec84fbc009dfd09e49cb370a3a847518f002207e19b71bb9ab969fd7",
+      "nonzero_pixels": 258792,
+      "bbox": [
+        104,
+        159,
+        998,
+        1376
+      ],
+      "visible_value_min": 255,
+      "visible_value_max": 255
+    },
+    {
+      "view": "yaw+165-pitch+00",
+      "kind": "depth",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+165-pitch+00_depth.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "d542b9f878ec147e7f8d08a4dc59aa130cd33ae9a430f61eb1be28200d3e6ebe",
+      "nonzero_pixels": 258792,
+      "bbox": [
+        104,
+        159,
+        998,
+        1376
+      ],
+      "visible_value_min": 56,
+      "visible_value_max": 159
+    },
+    {
+      "view": "yaw+165-pitch+00",
+      "kind": "normal",
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\controls\\yaw+165-pitch+00_normal.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "98c708850fc327742bb9107ffd2cdb08df142450b93ada8c1cfe30ae7e6309a8",
+      "nonzero_pixels": 258792,
+      "bbox": [
+        104,
+        159,
+        998,
+        1376
+      ]
+    }
+  ],
+  "contact_sheet": {
+    "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\normal-contact-sheet.png",
+    "sha256": "1f4fdbd8284e336a0a634e36200435c934b234e7b2122ca389628c8f002db0f8"
+  }
+}

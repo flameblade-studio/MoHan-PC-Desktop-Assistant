@@ -1,0 +1,8 @@
+{
+  "status": "candidate3_only_geometry_control_authority",
+  "output": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-camera-anchor-control-manifest.json",
+  "views": 24,
+  "controls": 72,
+  "candidate3_sha256": "23C5ECB3E943089954459F9F16E5551F0413571F5BACF85E3C3A6DCF155318A4",
+  "candidate2_status": "rejected"
+}

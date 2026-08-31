@@ -1,0 +1,60 @@
+{
+  "status": "PASS_INDEPENDENT_TOPOLOGY_CORRESPONDENCE_GATE",
+  "projection_sha256": "396999907509F73D3E74D08ECD6064CA046B821574F7975C5F6EFA8725A84AF0",
+  "observed": {
+    "analytic_recurrence_world_max": 3.776586443654626e-14,
+    "rotation_determinant_range": [
+      0.9999999999999984,
+      1.0000000000000022
+    ],
+    "inferred_step_range_degrees": [
+      14.999999999999952,
+      15.000000000000066
+    ],
+    "screen_displacement_max_range_px": [
+      60.4233567609632,
+      127.20286352468815
+    ],
+    "depth_change_max_range_world": [
+      8.33275983100718,
+      17.5420726087895
+    ],
+    "topology_bbox_first_difference_abs_max_px": 103.18657655060224,
+    "topology_centroid_first_difference_norm_max_px": 14.568347309928924,
+    "screen_second_difference_max_px": 33.159948933512396,
+    "depth_second_difference_max_world": 4.572964914288512
+  },
+  "wrap": {
+    "from": "yaw+165-pitch+00",
+    "to": "yaw-180-pitch+00",
+    "inferred_step": 15.000000000000066,
+    "determinant": 0.9999999999999987,
+    "recurrence_max": 3.552713678800501e-14,
+    "gates": {
+      "analytic_recurrence_max_le_1e_10": true,
+      "rotation_determinant_positive_unit": true,
+      "inferred_step_is_positive_15": true,
+      "screen_displacement_within_analytic_bound": true,
+      "depth_change_within_analytic_bound": true,
+      "topology_bbox_first_difference_bounded": true,
+      "topology_centroid_first_difference_bounded": true,
+      "vertical_projection_invariant": true
+    }
+  },
+  "legacy_iou_gate": {
+    "retained": true,
+    "status": "FAIL",
+    "report": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\qa-report-attempt1-strict-fail.json",
+    "sha256": "4281DC99551692818C8B034B6D5AC45A946185D8E98FB181D510354D71885C37",
+    "failed_transition_count": 16,
+    "iou_range": [
+      0.668131525635032,
+      0.8622602596991973
+    ],
+    "centroid_shift_px_range": [
+      6.119179517937662,
+      52.76147417908066
+    ],
+    "explanation": "T-pose arm and hand visibility changes rapidly near side views; raster silhouette overlap remains failed/informational and is not overwritten by the topology gate."
+  }
+}

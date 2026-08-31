@@ -1,0 +1,172 @@
+{
+  "status": "PASS_BONE_BOUNDED_PLAUSIBILITY_NOT_SURFACE_LANDMARK_VALIDATION",
+  "gates": {
+    "official_skeleton_127": true,
+    "section_bone_zones_plausible": true,
+    "no_degenerate_triangles": true,
+    "no_triangle_flips": true,
+    "no_normal_flips": true,
+    "positive_local_jacobian": true,
+    "no_strict_new_local_self_intersections": true,
+    "outside_vertical_support_unchanged": true,
+    "section_measurements_preserved": true,
+    "front_back_ratio_change_le_0_25": true
+  },
+  "skeleton": {
+    "count": 127,
+    "source": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate2-anatomy-audit\\mhr-official-127-skeleton.tsv",
+    "sha256": "7B9836F65F10C07F36177F678EC907B34095F92EA299D2077EBA400C4F89343B",
+    "positions_scaled_by": 0.9728896029306688
+  },
+  "bone_zone_audit": {
+    "required_joint_y": {
+      "l_upleg": 88.1030500575513,
+      "r_upleg": 88.1030500575513,
+      "c_spine0": 91.86091044404367,
+      "c_spine1": 102.60276526558731,
+      "c_spine2": 113.24302739627537,
+      "c_spine3": 131.17636270621804,
+      "l_clavicle": 136.74060666985133,
+      "r_clavicle": 136.74060620631028
+    },
+    "zones": {
+      "hip_candidate": {
+        "rule": "within 8cm below to 3cm above mean upper-leg joint",
+        "lower": 80.1030500575513,
+        "upper": 91.1030500575513,
+        "plane_y": 83.94300423461144,
+        "within_bone_bounded_zone": true,
+        "normalized_position": 0.3490867433691033
+      },
+      "waist_candidate": {
+        "rule": "between c_spine1 and c_spine2",
+        "lower": 102.60276526558731,
+        "upper": 113.24302739627537,
+        "plane_y": 104.10300423461143,
+        "within_bone_bounded_zone": true,
+        "normalized_position": 0.14099642946739235
+      },
+      "underbust_candidate": {
+        "rule": "lower half of c_spine2 to c_spine3 interval",
+        "lower": 113.24302739627537,
+        "upper": 122.20969505124671,
+        "plane_y": 117.54300423461143,
+        "within_bone_bounded_zone": true,
+        "normalized_position": 0.4795512674044576
+      },
+      "bust_candidate": {
+        "rule": "middle c_spine2 to c_spine3 interval, below clavicles",
+        "lower": 119.5196947547553,
+        "upper": 128.48636240972664,
+        "plane_y": 124.26300423461143,
+        "within_bone_bounded_zone": true,
+        "normalized_position": 0.5289935639831951
+      }
+    },
+    "all_within_bone_bounded_zones": true,
+    "scope_limit": "127-joint skeleton bounds plausible vertical regions; it does not provide breast apex, rib margin, iliac crest, or greater-trochanter surface landmarks"
+  },
+  "triangle_quality": {
+    "changed_triangle_count": 3618,
+    "degenerate_triangle_count": 0,
+    "normal_flip_count": 0,
+    "normal_dot_min": 0.6243022152212571,
+    "normal_dot_p01": 0.7916561273093331,
+    "area_ratio_min": 0.5730845926235022,
+    "area_ratio_max": 1.5749202921713528,
+    "jacobian_det_min": 0.5730845926235023,
+    "jacobian_det_max": 1.574920292171353,
+    "singular_value_min": 0.613362658911628,
+    "singular_value_max": 1.5973557679794668,
+    "triangle_flip_count": 0
+  },
+  "local_self_intersection_audit": {
+    "method": "4cm spatial hash broad phase; strict non-coplanar segment-triangle narrow phase; adjacent triangles excluded",
+    "changed_triangles": 3618,
+    "broadphase_unique_pairs": 77301,
+    "narrowphase_pairs_tested": 1336,
+    "strict_intersection_count": 0,
+    "first_intersection_pairs": [],
+    "limitation": "coplanar overlap and exact touching are not counted"
+  },
+  "transition_audit": {
+    "support_low_y": 73.86300423461144,
+    "support_high_y": 132.66300423461144,
+    "below_support_max_displacement": 0.0,
+    "above_support_max_displacement": 0.0,
+    "max_displacement": 7.249333213934736,
+    "changed_vertices": 1731
+  },
+  "front_back_proportions": {
+    "hip_candidate": {
+      "skeleton_center_z": 0.5181338497808546,
+      "base": {
+        "front_depth": 11.52239659487641,
+        "back_depth": 10.88738919530195,
+        "front_to_back_ratio": 1.0583250390138046
+      },
+      "candidate": {
+        "front_depth": 9.783514859261818,
+        "back_depth": 9.250984508391422,
+        "front_to_back_ratio": 1.0575647219371458
+      },
+      "ratio_change": -0.0007603170766588008
+    },
+    "waist_candidate": {
+      "skeleton_center_z": -2.4474864722752807,
+      "base": {
+        "front_depth": 19.38871899195099,
+        "back_depth": 7.9984409457281584,
+        "front_to_back_ratio": 2.4240622795753968
+      },
+      "candidate": {
+        "front_depth": 12.242880097788465,
+        "back_depth": 5.043235073031011,
+        "front_to_back_ratio": 2.427584659548782
+      },
+      "ratio_change": 0.0035223799733854477
+    },
+    "underbust_candidate": {
+      "skeleton_center_z": -4.375666496690136,
+      "base": {
+        "front_depth": 19.804562103224765,
+        "back_depth": 5.825966870711851,
+        "front_to_back_ratio": 3.3993605770032342
+      },
+      "candidate": {
+        "front_depth": 15.38211057693842,
+        "back_depth": 4.546922963699013,
+        "front_to_back_ratio": 3.3829714511865765
+      },
+      "ratio_change": -0.016389125816657746
+    },
+    "bust_candidate": {
+      "skeleton_center_z": -3.9994199644615236,
+      "base": {
+        "front_depth": 19.36452786266667,
+        "back_depth": 7.617785474383307,
+        "front_to_back_ratio": 2.5420153833137853
+      },
+      "candidate": {
+        "front_depth": 15.84987240852792,
+        "back_depth": 6.293203680148151,
+        "front_to_back_ratio": 2.518569748270851
+      },
+      "ratio_change": -0.0234456350429344
+    }
+  },
+  "candidate3_required": false,
+  "candidate3_created": true,
+  "candidate3_decision": "not required",
+  "limitations": [
+    "MHR's 127-joint skeleton does not encode breast apex, inframammary fold, rib margin, iliac crest, or greater trochanter skin landmarks.",
+    "Self-intersection narrow phase counts strict non-coplanar crossings; coplanar overlaps and exact touching are outside this gate.",
+    "Passing this audit establishes bounded plausibility and mesh integrity, not clinical or tailoring-grade anatomical landmark validation."
+  ],
+  "inputs_sha256": {
+    "base_vertices": "4C1C4828E4E8672B5B1AC9FF1E179FDAE1A7758A9595F934D6F254D404136C34",
+    "faces": "9680016AECE8D43BA4FF621F57D045870FDD1E7DC78541173B1AB44A449465F0",
+    "candidate_bin": "23C5ECB3E943089954459F9F16E5551F0413571F5BACF85E3C3A6DCF155318A4",
+    "candidate_report": "F1D4024BB9E19ADDA533B1E8D11DA2C6B9E84B210D772BC03E293B6062C3231F"
+  }
+}

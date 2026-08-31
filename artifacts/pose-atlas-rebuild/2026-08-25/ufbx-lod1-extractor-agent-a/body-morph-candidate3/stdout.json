@@ -1,0 +1,20 @@
+{
+  "report": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3-report.json",
+  "obj": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3.obj",
+  "vertices_bin": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3-vertices.bin",
+  "overlay": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\body-morph-candidate3\\candidate3-wireframe-sections.png",
+  "actual": {
+    "height": 168.0,
+    "hip_candidate": 90.06925217482814,
+    "waist_candidate": 62.21390939635582,
+    "underbust_candidate": 70.97000216616335,
+    "bust_candidate": 86.3105211705737
+  },
+  "errors": {
+    "bust_candidate": 0.31052117057369344,
+    "underbust_candidate": -0.029997833836645782,
+    "waist_candidate": 0.21390939635581674,
+    "hip_candidate": 0.0692521748281365
+  },
+  "iterations": 1
+}

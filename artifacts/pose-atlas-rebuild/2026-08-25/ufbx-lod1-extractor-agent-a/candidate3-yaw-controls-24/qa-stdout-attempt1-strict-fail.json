@@ -1,0 +1,38 @@
+{
+  "status": "FAIL",
+  "png_count": 72,
+  "iou_range": [
+    0.668131525635032,
+    0.8622602596991973
+  ],
+  "centroid_shift_range": [
+    6.119179517937662,
+    52.76147417908066
+  ],
+  "contour_mae_range": [
+    9.200738916256157,
+    26.901477832512317
+  ],
+  "wrap": {
+    "from": "yaw+165-pitch+00",
+    "to": "yaw-180-pitch+00",
+    "wrap": true,
+    "iou": 0.8622463827998404,
+    "xor_over_union": 0.13775361720015952,
+    "centroid_shift_px": 6.119179517937662,
+    "common_rows": 1218,
+    "left_contour_mae_px": 9.665024630541872,
+    "right_contour_mae_px": 8.736453201970443,
+    "mean_lr_contour_mae_px": 9.200738916256157,
+    "continuity_gate": true
+  },
+  "contact_sheet": {
+    "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\candidate3-yaw-controls-24\\candidate3-controls-contact-sheet.png",
+    "sha256": "7ABF950BBB3DC6440A6F60F6044BCF0C37FEE706082CE169EC3CD9A3BFDB2FCF",
+    "size": [
+      1536,
+      1588
+    ],
+    "mode": "RGB"
+  }
+}

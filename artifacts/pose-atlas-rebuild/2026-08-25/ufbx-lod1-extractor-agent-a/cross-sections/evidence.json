@@ -1,0 +1,183 @@
+{
+  "status": "PASS_CANDIDATE_GEOMETRY_ONLY",
+  "outer_exit_code": 0,
+  "tool_exit_code": 0,
+  "stderr_bytes": 0,
+  "image": {
+    "size": [
+      1800,
+      1350
+    ],
+    "mode": "RGB",
+    "format": "PNG"
+  },
+  "bands": [
+    {
+      "name": "bust_candidate",
+      "source_fraction_above_y_min": 0.74,
+      "plane_y": 127.72569492489099,
+      "segment_count": 204,
+      "closed_loop_count": 3,
+      "open_component_count": 0,
+      "graph_degree_histogram": {
+        "2": 204
+      },
+      "coplanar_edge_count": 0,
+      "ambiguous_triangle_count": 0,
+      "largest_torso_loop_perimeter": 108.1429832399899,
+      "largest_torso_loop_centroid_xz": [
+        -8.203215421964671E-06,
+        2.872171219677655
+      ],
+      "largest_torso_loop_bbox_xz": [
+        -18.06489736473962,
+        -11.940947294614773,
+        18.064884541273344,
+        15.793254567807777
+      ],
+      "secondary_loop_count": 2,
+      "limb_like_secondary_loop_count": 2,
+      "limb_or_hand_intersection_risk": true,
+      "clothing_geometry_present": false,
+      "clothing_note": "Source is the neutral MHR body geometry; no garment mesh was supplied.",
+      "anatomical_accuracy": "NOT_VALIDATED"
+    },
+    {
+      "name": "underbust_candidate",
+      "source_fraction_above_y_min": 0.7,
+      "plane_y": 120.81843662410974,
+      "segment_count": 254,
+      "closed_loop_count": 3,
+      "open_component_count": 0,
+      "graph_degree_histogram": {
+        "2": 254
+      },
+      "coplanar_edge_count": 0,
+      "ambiguous_triangle_count": 0,
+      "largest_torso_loop_perimeter": 93.96444493284464,
+      "largest_torso_loop_centroid_xz": [
+        -1.1087570661690812E-05,
+        3.654832002721502
+      ],
+      "largest_torso_loop_bbox_xz": [
+        -15.984293527109594,
+        -10.485927993007486,
+        15.984272260951673,
+        15.85882145842855
+      ],
+      "secondary_loop_count": 2,
+      "limb_like_secondary_loop_count": 2,
+      "limb_or_hand_intersection_risk": true,
+      "clothing_geometry_present": false,
+      "clothing_note": "Source is the neutral MHR body geometry; no garment mesh was supplied.",
+      "anatomical_accuracy": "NOT_VALIDATED"
+    },
+    {
+      "name": "waist_candidate",
+      "source_fraction_above_y_min": 0.62,
+      "plane_y": 107.00392002254725,
+      "segment_count": 508,
+      "closed_loop_count": 5,
+      "open_component_count": 0,
+      "graph_degree_histogram": {
+        "2": 508
+      },
+      "coplanar_edge_count": 0,
+      "ambiguous_triangle_count": 0,
+      "largest_torso_loop_perimeter": 101.31075550030192,
+      "largest_torso_loop_centroid_xz": [
+        -8.251956452924444E-06,
+        3.639025782933463
+      ],
+      "largest_torso_loop_bbox_xz": [
+        -17.639229950570282,
+        -10.737029857942668,
+        17.639215648074362,
+        17.413300869441752
+      ],
+      "secondary_loop_count": 4,
+      "limb_like_secondary_loop_count": 4,
+      "limb_or_hand_intersection_risk": true,
+      "clothing_geometry_present": false,
+      "clothing_note": "Source is the neutral MHR body geometry; no garment mesh was supplied.",
+      "anatomical_accuracy": "NOT_VALIDATED"
+    },
+    {
+      "name": "hip_candidate",
+      "source_fraction_above_y_min": 0.5,
+      "plane_y": 86.2821451202035,
+      "segment_count": 126,
+      "closed_loop_count": 1,
+      "open_component_count": 0,
+      "graph_degree_histogram": {
+        "2": 126
+      },
+      "coplanar_edge_count": 0,
+      "ambiguous_triangle_count": 0,
+      "largest_torso_loop_perimeter": 108.93626584784394,
+      "largest_torso_loop_centroid_xz": [
+        -3.652630137540404E-06,
+        1.0758461838833844
+      ],
+      "largest_torso_loop_bbox_xz": [
+        -20.48063344156633,
+        -10.658203300065999,
+        20.48062394156633,
+        12.376054682184053
+      ],
+      "secondary_loop_count": 0,
+      "limb_like_secondary_loop_count": 0,
+      "limb_or_hand_intersection_risk": false,
+      "clothing_geometry_present": false,
+      "clothing_note": "Source is the neutral MHR body geometry; no garment mesh was supplied.",
+      "anatomical_accuracy": "NOT_VALIDATED"
+    }
+  ],
+  "files": [
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\slice_candidate_loops.py",
+      "bytes": 14837,
+      "sha256": "5BDF4D650811AB3D938B2ABA8803FF83FCD0BD2D39950E5AB96010D4B618793A"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\run-slice-candidates.cmd",
+      "bytes": 1100,
+      "sha256": "63E45023DE8BC39C58BE9EA26A9CAEC867E2A57A66001CFAABDCB32DB789EF7F"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\CROSS-SECTION-RESULT.md",
+      "bytes": 2731,
+      "sha256": "85456B7DE91A6DEC02F93D8939EA035124091875DABF1B26DCE6B43AF1D5BB2C"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\cross-sections\\section-report.json",
+      "bytes": 5956,
+      "sha256": "3751B846743E0D8A48F71F76B67BC38E6E401E9C853CE921DE821830703C9340"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\cross-sections\\section-loops.json",
+      "bytes": 96535,
+      "sha256": "2F1EA8CF1CBA4D935E9D0A463C5DB877218E6D05776377F5EF86F5065A9C3F83"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\cross-sections\\mhr-horizontal-section-candidates.png",
+      "bytes": 80291,
+      "sha256": "C9A7227CFA83AFC061E0E4E84903D13E311E4CFEA84F17FF4C2486C1AA571350"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\cross-sections\\stdout.json",
+      "bytes": 4473,
+      "sha256": "C30EC58568A833BC097B5950FB163740B03703FEA9528CB51DB763DF3051BE7B"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\cross-sections\\stderr.txt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\artifacts\\pose-atlas-rebuild\\2026-08-25\\ufbx-lod1-extractor-agent-a\\cross-sections\\exit-code.txt",
+      "bytes": 3,
+      "sha256": "13BF7B3039C63BF5A50491FA3CFD8EB4E699D1BA1436315AEF9CBE5711530354"
+    }
+  ]
+}

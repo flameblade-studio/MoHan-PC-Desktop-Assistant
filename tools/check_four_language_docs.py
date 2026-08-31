@@ -35,10 +35,21 @@ NON_DOCUMENT_BASENAMES = frozenset({
     "LAYERED_ASSET_ALIGNMENT_REPORT.md",
     # Internal AI-to-AI response brief; not user-facing prose.
     "CODEX_RESPONSE_BODY_CENTER.md",
+    # Internal AI-to-AI rework-prevention index: which capabilities already
+    # exist and which approaches were already proven to fail.  Written for
+    # handover between coding agents, not for users; keeping four synchronised
+    # translations of a fast-moving index would guarantee they rot apart.
+    "AGENT-CAPABILITIES-INDEX.md",
     # Internal AI-to-AI pipeline runbook for the second-generation body;
     # the user-facing rationale lives in docs/AGENT-CAPABILITIES-INDEX.md.
     "SECOND_GEN_BODY_PIPELINE.md",
 })
+# Machine-generated evidence trees.  Every document under these prefixes is an
+# agent-produced run report bound to a SHA256 provenance chain; translating them
+# would alter bytes and invalidate the recorded hashes, and they are never read
+# by users.  Excluded by path rather than by basename because the file names are
+# generated per run and cannot be enumerated in advance.
+NON_DOCUMENT_PREFIXES = ("artifacts/",)
 LANGUAGE_HEADING_PATTERN = re.compile(
     r"(?m)^## (繁體中文|简体中文|English|日本語)\s*$"
 )
@@ -83,6 +94,11 @@ def _tracked_documents(root: Path) -> tuple[Path, ...]:
     for relative_path in relative_paths:
         path = root / relative_path
         if path.name in NON_DOCUMENT_BASENAMES:
+            continue
+        if any(
+            relative_path.replace("\\", "/").startswith(prefix)
+            for prefix in NON_DOCUMENT_PREFIXES
+        ):
             continue
         if path.is_file():
             documents.append(path)
