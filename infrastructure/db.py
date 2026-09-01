@@ -14,6 +14,7 @@ lazy from domain.time_utils import local_wall_time
 lazy from infrastructure.db_affection import StudioDBAffectionMethods
 lazy from infrastructure.db_memory import StudioDBMemoryMethods
 lazy from infrastructure.memory_index import MemoryVectorIndex
+lazy from infrastructure.sqlite_safety import classify_db_file, table_column_names
 
 MAX_MEMORY_TITLE_LENGTH = 36
 
@@ -264,10 +265,7 @@ class StudioDB:
     def __init__(self, path: Path):
         path.parent.mkdir(parents=True, exist_ok=True)
         self.path = path
-        # 零位元組是損毀不是全新安裝，連線前就要分辨（見測試的說明）。
-        size = path.stat().st_size if path.exists() else -1
-        self.corrupt_empty_database = size == 0
-        self.existing_install = size > 0
+        self.corrupt_empty_database, self.existing_install = classify_db_file(path)
         self.conn = sqlite3.connect(path)
         self.conn.row_factory = sqlite3.Row
         self._memory_index = MemoryVectorIndex()
@@ -402,11 +400,6 @@ class StudioDB:
         self._migrate_existing_profile()
         self.conn.commit()
 
-    def _table_columns(self, table: str) -> set[str]:
-        return {
-            str(row["name"]) for row in self.conn.execute(f"PRAGMA table_info({table})")
-        }
-
     def _ensure_columns(
         self,
         table: str,
@@ -420,7 +413,7 @@ class StudioDB:
                 )
 
     def _migrate_ideas(self) -> None:
-        columns = self._table_columns("ideas")
+        columns = table_column_names(self.conn, "ideas")
         legacy_source = (
             "text" if "text" in columns else "body" if "body" in columns else None
         )
@@ -435,7 +428,7 @@ class StudioDB:
         )
 
     def _migrate_memories(self) -> None:
-        columns = self._table_columns("memories")
+        columns = table_column_names(self.conn, "memories")
         self._ensure_columns("memories", MEMORY_COLUMN_DEFINITIONS, columns)
         self.conn.execute(
             "UPDATE memories SET updated_at=created_at WHERE COALESCE(updated_at,'')=''"
@@ -458,7 +451,7 @@ class StudioDB:
             )
 
     def _migrate_platform_progress(self) -> None:
-        columns = self._table_columns("platform_progress")
+        columns = table_column_names(self.conn, "platform_progress")
         self._ensure_columns(
             "platform_progress",
             PLATFORM_COLUMN_DEFINITIONS,

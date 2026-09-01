@@ -10,8 +10,8 @@
 """
 from __future__ import annotations
 
-import sqlite3
-from pathlib import Path
+lazy import sqlite3
+lazy from pathlib import Path
 
 
 MARKER = "SENSITIVE-CLIPBOARD-PAYLOAD-a1b2c3d4e5f6"
@@ -70,15 +70,22 @@ def test_secure_delete_and_vacuum_remove_the_payload() -> None:
 
 
 def test_profile_export_applies_secure_delete_and_vacuum() -> None:
-    """匯出路徑本身必須做這兩件事，不是只有測試裡做。"""
+    """匯出路徑本身必須做這兩件事，不是只有測試裡做。
+
+    2026-09-02 起 secure_delete 由 infrastructure/sqlite_safety.py 提供。
+    兩邊都要查：只查匯出有沒有呼叫，共用函式被改壞時沒人會發現；只查共用
+    函式，匯出漏掉那一行時同樣沒人會發現。
+    """
     import inspect
 
-    from infrastructure import profile_transfer
+    from infrastructure import profile_transfer, sqlite_safety
 
     body = inspect.getsource(profile_transfer)
     sanitise = body.split("_sanitize_snapshot", 1)[1]
-    assert "secure_delete=ON" in sanitise, "匯出未啟用 secure_delete"
+    assert "enable_secure_delete(" in sanitise, "匯出未呼叫 enable_secure_delete"
     assert "VACUUM" in sanitise, "匯出未執行 VACUUM"
+    helper = inspect.getsource(sqlite_safety.enable_secure_delete)
+    assert "secure_delete=ON" in helper, "共用函式未下 secure_delete 的 PRAGMA"
 
 
 def test_zero_byte_database_is_flagged_as_corrupt(tmp_path: Path) -> None:

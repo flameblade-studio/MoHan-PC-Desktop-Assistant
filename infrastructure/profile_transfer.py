@@ -61,6 +61,7 @@ lazy from infrastructure.special_occasion_store import (
 lazy from infrastructure.wellbeing_reminder_store import (
     PORTABLE_SETTING_KEYS as WELLBEING_PORTABLE_SETTING_KEYS,
 )
+lazy from infrastructure.sqlite_safety import enable_secure_delete, table_columns
 
 PROFILE_EXTENSION = ".mohan-profile"
 PROFILE_FORMAT_VERSION = 1
@@ -257,13 +258,6 @@ class PortableProfileManager:
         self.backup_dir = backup_dir
 
     @staticmethod
-    def _table_columns(
-        connection: sqlite3.Connection,
-        table: str,
-    ) -> list[sqlite3.Row]:
-        return list(connection.execute(f'PRAGMA table_info("{table}")'))
-
-    @staticmethod
     def _table_names(connection: sqlite3.Connection) -> set[str]:
         return {
             str(row[0])
@@ -403,8 +397,7 @@ class PortableProfileManager:
         snapshot.row_factory = sqlite3.Row
         try:
             snapshot.execute("PRAGMA trusted_schema=OFF")
-            # DELETE 只標記頁面可重用，內容仍在檔案裡（見測試的說明）。
-            snapshot.execute("PRAGMA secure_delete=ON")
+            enable_secure_delete(snapshot)
             self._delete_nonportable_settings(snapshot)
             self._clear_machine_bound_tables(snapshot)
             snapshot.commit()
@@ -822,10 +815,10 @@ class PortableProfileManager:
         incoming: sqlite3.Connection,
         table: str,
     ) -> PortableTablePayload:
-        target_info = self._table_columns(self.db.conn, table)
+        target_info = table_columns(self.db.conn, table)
         source_names = {
             str(row["name"])
-            for row in self._table_columns(incoming, table)
+            for row in table_columns(incoming, table)
         }
         columns = tuple(
             str(row["name"])
