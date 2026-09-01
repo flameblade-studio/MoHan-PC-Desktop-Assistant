@@ -13,6 +13,8 @@ lazy from domain.safe_error import sanitize_error
 
 HIGH_RISK_DOMAINS = frozenset({"lock", "alarm_control_panel"})
 HEAT_DOMAINS = frozenset({"climate", "water_heater"})
+# 內容不可見的網域：用戶端無從得知它們會觸發什麼。
+OPAQUE_DOMAINS = frozenset({"script", "scene"})
 IPV4_OCTET_COUNT = 4
 PRIVATE_CLASS_A_FIRST_OCTET = 10
 PRIVATE_CLASS_B_FIRST_OCTET = 172
@@ -227,6 +229,12 @@ def classify_home_capability(domain: str, service: str) -> str:
         return "home_lock" if domain == "lock" else "home_alarm"
     if domain in HEAT_DOMAINS and service != "turn_off":
         return "home_heat"
+    if domain in OPAQUE_DOMAINS:
+        # script.turn_on 原本落在 home_control（BLUE，零確認），但腳本內容
+        # 在伺服器上、用戶端看不見。一個名為「夜間模式」的腳本可以同時
+        # lock.unlock 與 alarm_control_panel.alarm_disarm，而那兩件事直接
+        # 表達時是 RED、需要兩次確認。scene 同理：情境可以把門鎖設成解鎖。
+        return "home_routine"
     return "home_control"
 
 

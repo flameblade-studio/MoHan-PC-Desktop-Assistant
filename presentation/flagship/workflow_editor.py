@@ -126,6 +126,7 @@ class WorkflowEditor(QDialog):
             "home_lock",
             "home_alarm",
             "home_heat",
+            "home_routine",
         }:
             return self._home_arguments(capability, raw_argument)
         try:

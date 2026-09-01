@@ -106,11 +106,16 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
         "控制一般智能设备", "Control standard smart devices", "一般スマート機器を操作"
     ),
     "控制門鎖": translations("控制门锁", "Control door locks", "ドアロックを操作"),
-    "控制警報": translations("控制警报", "Control alarms", "ĵ報を操作"),
+    "控制警報": translations("控制警报", "Control alarms", "警報を操作"),
     "控制加熱與高溫設備": translations(
         "控制加热与高温设备",
         "Control heating and high-temperature devices",
         "暖房・高温機器を操作",
+    ),
+    "執行智慧家庭腳本或情境": translations(
+        "执行智能家庭脚本或情境",
+        "Run a smart-home script or scene",
+        "スマートホームのスクリプトまたはシーンを実行",
     ),
     "使用攝影機": translations("使用摄像头", "Use the camera", "カメラを使用"),
     "遠端查看本程式畫面": translations(
