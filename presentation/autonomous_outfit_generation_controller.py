@@ -43,6 +43,8 @@ lazy from integrations.openai_outfit_generator import (
     OutfitImageGenerationError,
 )
 lazy from application.presentation_ports import DEFAULT_TEXT_MODEL
+lazy import threading
+lazy from domain.outfit_generation import OutfitGenerationCancelled
 
 LAST_GENERATED_KEY = "wardrobe_last_generated_at"
 LAST_ATTEMPT_KEY = "wardrobe_generation_last_attempt_at"
@@ -61,6 +63,7 @@ class _NoTrendScout:
 class _GenerationSignals(QObject):
     completed = Signal(object)
     failed = Signal(str)
+    cancelled = Signal()
 
 
 class _GenerationWorker(QRunnable):
@@ -68,15 +71,25 @@ class _GenerationWorker(QRunnable):
         self,
         wardrobe: SelfGeneratingWardrobe,
         request: OutfitCreationRequest,
+        cancel_event: threading.Event,
     ) -> None:
         super().__init__()
         self.wardrobe = wardrobe
         self.request = request
+        self.cancel_event = cancel_event
         self.signals = _GenerationSignals()
 
     def run(self) -> None:
         try:
-            result = self.wardrobe.create(self.request)
+            result = self.wardrobe.create(
+                self.request,
+                cancelled=self.cancel_event.is_set,
+            )
+        except OutfitGenerationCancelled:
+            # 使用者停手不是失敗。混在一起回報會讓退避計時器把「使用者按了
+            # 緊急停止」記成一次失敗嘗試，接著封鎖他下一次真正想生成的請求。
+            self.signals.cancelled.emit()
+            return
         except Exception as error:
             # Do not expose API keys, request payloads, or provider response text.
             status = (
@@ -112,6 +125,9 @@ class AutonomousOutfitGenerationController(QObject):
         self._data_root = Path(db.path).parent
         self._pool = QThreadPool.globalInstance()
         self._active_worker: _GenerationWorker | None = None
+        # 緊急停止必須觸達這個 worker。它跑在另一個 QThreadPool 裡，stop()
+        # 只停 timer 與清參照，對已經在飛的付費呼叫沒有作用。
+        self._cancel = threading.Event()
         self._running = False
         self._shutdown = False
         self._wardrobe_service = WardrobeService(self._data_root / "outfits")
@@ -136,6 +152,7 @@ class AutonomousOutfitGenerationController(QObject):
             return
         self._running = True
         self._shutdown = False
+        self._cancel.clear()
         self._timer.start()
         self._initial_timer.start()
 
@@ -151,6 +168,21 @@ class AutonomousOutfitGenerationController(QObject):
         self._timer.stop()
         self._initial_timer.stop()
         self._active_worker = None
+
+    def abort(self) -> None:
+        """緊急停止：讓正在執行的生成在下一個視角之前停手。
+
+        stop() 是生命週期收尾，刻意保留 _active_worker；abort() 是使用者
+        主動喊停，必須讓 worker 自己察覺。兩者不可混用：abort 之後控制器
+        仍然活著，使用者可以再按一次生成。
+        """
+        self._cancel.set()
+
+    def _cancelled(self) -> None:
+        self._active_worker = None
+        # 使用者停手不寫入 LAST_ATTEMPT_KEY：那個欄位驅動失敗退避，
+        # 把主動停手記成失敗會讓他接下來一小時按不動生成。
+        self.status_changed.emit("cancelled-by-user")
 
     def evaluate_automatic(self) -> None:
         """Generate unattended only when both explicit wardrobe switches allow it."""
@@ -259,9 +291,12 @@ class AutonomousOutfitGenerationController(QObject):
             ),
             user_initiated=explicit,
         )
-        worker = _GenerationWorker(self._create_wardrobe(api_key), request)
+        worker = _GenerationWorker(
+            self._create_wardrobe(api_key), request, self._cancel
+        )
         worker.signals.completed.connect(self._completed)
         worker.signals.failed.connect(self._failed)
+        worker.signals.cancelled.connect(self._cancelled)
         self._active_worker = worker
         self._db.set_setting(PENDING_JOB_KEY, job_id)
         self._db.set_setting(LAST_ATTEMPT_KEY, now.isoformat())

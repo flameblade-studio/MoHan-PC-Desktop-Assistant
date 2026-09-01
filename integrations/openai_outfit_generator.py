@@ -17,7 +17,7 @@ lazy from urllib import error as urllib_error
 lazy from urllib import request as urllib_request
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
-lazy from typing import Protocol
+lazy from typing import Callable, Protocol
 
 lazy import cv2
 lazy import numpy as np
@@ -28,6 +28,7 @@ lazy from application.self_generating_wardrobe import (
     OutfitCreationRequest,
 )
 lazy from domain.outfit_pack import POSE_ATLAS_SILHOUETTES
+lazy from domain.outfit_generation import OutfitGenerationCancelled
 
 OPENAI_IMAGE_EDITS_URL = "https://api.openai.com/v1/images/edits"
 OPENAI_IMAGE_MODEL = "gpt-image-2"
@@ -408,6 +409,8 @@ class OpenAIOutfitDraftGenerator:
         request: OutfitCreationRequest,
         trends: tuple[FashionTrendSignal, ...],
         required_views: tuple[str, ...],
+        *,
+        cancelled: Callable[[], bool] = lambda: False,
     ) -> GeneratedOutfitDraft:
         unsupported = request.requested_categories - {"garment", "handheld"}
         if unsupported:
@@ -421,6 +424,13 @@ class OpenAIOutfitDraftGenerator:
         hair_poses: dict[str, list[dict[str, object]]] = {}
         reference_hashes: dict[str, str] = {}
         for view_id in required_views:
+            # 每個視角都是一次付費呼叫，所以取消要檢查在呼叫之前而不是之後。
+            # 沒有這一行時，使用者按下緊急停止之後剩餘視角仍會逐張扣款——
+            # 介面卻已經宣告「所有工具均已中止」。
+            if cancelled():
+                raise OutfitGenerationCancelled(
+                    "使用者在生成途中要求停手；已完成的視角保留在暫存區。"
+                )
             reference_path = _reference_path(self._root, view_id)
             if not reference_path.is_file():
                 raise OutfitImageGenerationError(

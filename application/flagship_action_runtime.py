@@ -44,12 +44,18 @@ class CancellationRegistry:
             return event
 
     def cancel(self, plan_id: str | None = None) -> None:
+        """取消一個計畫；只有不給 plan_id 才是全部取消（緊急停止）。
+
+        原本「給了 plan_id 但它不在 registry 裡」會落到全部取消的分支：
+        使用者從延遲通知按下取消一個**已完成**的計畫，正在執行的另一個
+        計畫會被一起中止。找不到目標時，正確的行為是什麼都不做。
+        """
         with self._lock:
-            targets = (
-                [self._events[plan_id]]
-                if plan_id and plan_id in self._events
-                else list(self._events.values())
-            )
+            if plan_id is None:
+                targets = list(self._events.values())
+            else:
+                event = self._events.get(plan_id)
+                targets = [event] if event is not None else []
             for event in targets:
                 event.set()
 
