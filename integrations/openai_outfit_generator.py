@@ -10,7 +10,7 @@ from __future__ import annotations
 lazy import base64
 lazy import hashlib
 lazy import json
-import socket
+lazy import socket
 lazy import secrets
 lazy import time
 lazy from urllib import error as urllib_error

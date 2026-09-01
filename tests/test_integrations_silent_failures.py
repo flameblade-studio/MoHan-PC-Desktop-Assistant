@@ -9,12 +9,12 @@
 """
 from __future__ import annotations
 
-import html
-import json
+lazy import html
+lazy import json
 
-import pytest
+lazy import pytest
 
-from integrations.cloud_connectors import (
+lazy from integrations.cloud_connectors import (
     OAuthError,
     _require_collection,
     _require_identified,

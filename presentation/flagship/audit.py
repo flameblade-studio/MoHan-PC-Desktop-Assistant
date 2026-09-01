@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 lazy import html
-import json
+lazy import json
 
 lazy from PySide6.QtWidgets import (
     QHBoxLayout,
