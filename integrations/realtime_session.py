@@ -285,6 +285,16 @@ class RealtimeSessionMethods:
             try:
                 event = json.loads(message)
             except (TypeError, json.JSONDecodeError):
+                # 無聲丟棄會讓使用者一直看到「正在聆聽」，而 session 其實
+                # 已經在收無法解讀的內容。二進位、截斷或非 JSON frame 代表
+                # 協定層出了問題，不是一個可以忽略的事件。
+                self.signals.failed.emit(
+                    "Realtime 連線收到無法解讀的資料，已中止本次語音工作階段。"
+                )
+                try:
+                    _ws.close()
+                except Exception:
+                    pass
                 return
             self._handle_server_event(event)
 

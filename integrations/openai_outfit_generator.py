@@ -10,6 +10,7 @@ from __future__ import annotations
 lazy import base64
 lazy import hashlib
 lazy import json
+lazy import socket
 lazy import secrets
 lazy import time
 lazy from urllib import error as urllib_error
@@ -162,7 +163,20 @@ class OpenAIImageEditTransport:
                     return response.read(MAX_RESPONSE_BYTES + 1)
             except urllib_error.HTTPError as error:
                 failure = self._http_failure(error)
-            except (OSError, TimeoutError, urllib_error.URLError):
+            except (TimeoutError, socket.timeout) as error:
+                # Timeout 的語意是「不知道對方做了沒」，不是「沒做」。這是
+                # 付費且非冪等的請求：若服務已經處理完、只是回應沒回來，
+                # 重試就是再付一次錢，而且會產生重複的服裝。31 視角的工作
+                # 最壞可送出 93 次。在沒有冪等鍵可用之前，timeout 一律不重試。
+                failure = OutfitImageGenerationError(
+                    "GPT Image request timed out; not retried because the "
+                    "provider may already have processed and billed it.",
+                    code="timeout-ambiguous",
+                    retryable=False,
+                )
+                del error
+            except (OSError, urllib_error.URLError):
+                # 連線根本沒建立起來，可以安全重試。
                 failure = OutfitImageGenerationError(
                     "GPT Image request could not reach the provider.",
                     code="network-unavailable",

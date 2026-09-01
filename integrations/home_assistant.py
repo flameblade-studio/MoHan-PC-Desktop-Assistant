@@ -207,7 +207,19 @@ class HomeAssistantClient:
         current = self.state(entity_id)
         service = str(request.arguments.get("service", ""))
         expected = {"turn_on": "on", "turn_off": "off"}.get(service)
-        return expected is None or current.get("state") == expected
+        if expected is None:
+            # `expected is None or ...` 讓 toggle、set_percentage、open_cover、
+            # scene.turn_on、script.turn_on 全部無條件通過——裝置完全沒照做
+            # 也會被標記為「已驗證」。狀態明明讀出來了，卻沒有參與判斷。
+            #
+            # 沒有可比對的預期狀態時，正確的答案是「無法驗證」，不是「通過」。
+            # 回傳 False 會讓執行器把結果標為未通過驗證，使用者因此看得到
+            # 「工具回報完成，但結果驗證未通過」——那是誠實的描述。
+            #
+            # toggle 可以驗：它的預期狀態是「與呼叫前相反」，但呼叫前的狀態
+            # 沒有被保留下來，補那個要改 action_control 的資料流，另案處理。
+            return False
+        return current.get("state") == expected
 
 
 def classify_home_capability(domain: str, service: str) -> str:
