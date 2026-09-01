@@ -264,7 +264,16 @@ class StudioDB:
     def __init__(self, path: Path):
         path.parent.mkdir(parents=True, exist_ok=True)
         self.path = path
-        self.existing_install = path.exists() and path.stat().st_size > 0
+        # 零位元組資料庫是損毀，不是全新安裝。斷電、雲端同步中斷或複製失敗
+        # 都會留下 0-byte 檔；SQLite 會把它當成空資料庫，於是下次啟動成功
+        # 建立新 schema，使用者看到一份預設 profile，接著正常操作開始往上
+        # 寫——原本的資料還在備份裡，但使用者沒有理由知道要去還原。
+        #
+        # 空檔與真正首次安裝完全不可區分，所以必須在建立連線之前就分辨：
+        # 檔案存在但長度為零 → 明確標記，讓上層能提示還原而不是靜靜重來。
+        existing_file = path.exists()
+        self.corrupt_empty_database = existing_file and path.stat().st_size == 0
+        self.existing_install = existing_file and path.stat().st_size > 0
         self.conn = sqlite3.connect(path)
         self.conn.row_factory = sqlite3.Row
         self._memory_index = MemoryVectorIndex()

@@ -52,7 +52,17 @@ class SecretStore:
         try:
             encrypted = ctypes.string_at(output.pbData, output.cbData)
             self.path.parent.mkdir(parents=True, exist_ok=True)
-            self.path.write_bytes(encrypted)
+            # 原子寫入。先前直接覆寫正式檔案，斷電或磁碟寫入失敗會留下
+            # 截斷的 DPAPI blob；下一次 load() 解密失敗回傳空字串，而空字串
+            # 與「尚未設定」無法區分——臉部 identity 會被當成零個 profile、
+            # 手勢模板被當成空字典，接著新增一筆就把殘骸覆寫成新的真相。
+            # 憑證、生物特徵與模板就這樣靜靜消失。
+            temporary = self.path.with_suffix(self.path.suffix + ".tmp")
+            with open(temporary, "wb") as handle:
+                handle.write(encrypted)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, self.path)
         finally:
             ctypes.windll.kernel32.LocalFree(output.pbData)
 

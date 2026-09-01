@@ -3,7 +3,7 @@ from __future__ import annotations
 lazy import json
 lazy import re
 lazy import sqlite3
-lazy from datetime import datetime
+lazy from datetime import datetime, timedelta
 
 lazy from domain.text_normalizer import to_taiwan_traditional
 lazy from domain.time_utils import local_wall_time
@@ -15,6 +15,10 @@ MAX_TITLE_LENGTH = 36
 MAX_MEMORIES = 500
 LOW_IMPORTANCE_THRESHOLD = 2
 MEMORY_AGE_DAYS = 90
+
+
+# 稽核與已完成待辦的保留天數。optimize_database() 只刪除比這更舊的列。
+RETENTION_DAYS = 90
 
 
 class StudioDBMemoryMethods:
@@ -428,25 +432,41 @@ class StudioDBMemoryMethods:
         database small and responsive.  This is safe to call from a background
         worker because it only touches rows that are safe to remove.
         """
-        now = local_wall_time().isoformat(timespec="seconds")
+        # cutoff 原本是「現在」，於是這個宣稱「bounded cleanup of old rows」的
+        # 函式實際上會刪掉**每一筆**已完成待辦與**整個**稽核紀錄。目前沒有
+        # 呼叫者，但任何人接一個「最佳化資料庫」按鈕上去，就會清空使用者的
+        # 全部歷史，而且回報看起來一切正常。
+        cutoff = (
+            local_wall_time() - timedelta(days=RETENTION_DAYS)
+        ).isoformat(timespec="seconds")
         pruned_todos = 0
         pruned_audit = 0
         try:
             cursor = self.conn.execute(
                 "DELETE FROM todos WHERE status='完成' AND completed_at IS NOT NULL "
                 "AND completed_at < ?",
-                (now,),
+                (cutoff,),
             )
             pruned_todos = max(0, int(cursor.rowcount))
             cursor = self.conn.execute(
                 "DELETE FROM action_audit WHERE created_at < ?",
-                (now,),
+                (cutoff,),
             )
             pruned_audit = max(0, int(cursor.rowcount))
             self.conn.commit()
+        except sqlite3.Error:
+            self.conn.rollback()
+            return {"pruned_todos": 0, "pruned_audit": 0, "vacuumed": False}
+        try:
             self.conn.execute("VACUUM")
         except sqlite3.Error:
-            return {"pruned_todos": 0, "pruned_audit": 0, "vacuumed": False}
+            # 刪除已經 commit 了。先前在這裡回報 pruned=0，等於謊報——
+            # 呼叫端會以為什麼都沒發生，實際上資料已經永久消失。
+            return {
+                "pruned_todos": pruned_todos,
+                "pruned_audit": pruned_audit,
+                "vacuumed": False,
+            }
         return {
             "pruned_todos": pruned_todos,
             "pruned_audit": pruned_audit,
