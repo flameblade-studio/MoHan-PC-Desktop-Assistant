@@ -94,7 +94,14 @@ def apply_wav_volume(
             target.setcomptype(params.comptype, params.compname)
             target.writeframes(adjusted)
         return output.getvalue()
-    except OSError, EOFError, wave.Error, PcmAudioError:
+    except (OSError, EOFError, wave.Error, PcmAudioError):
+        # 回傳原始音訊等於「處理失敗就以原音量播放」。降低音量時那只是不如
+        # 預期；**使用者按下靜音時那是把聲音放出來**，而且沒有任何跡象。
+        # 靜音是明確的意圖，失敗必須是靜音而不是出聲。
+        if muted or gain < 1.0:
+            raise PcmAudioError(
+                "音量處理失敗，為避免以非預期音量播放而中止本次播放"
+            ) from None
         return audio
 
 

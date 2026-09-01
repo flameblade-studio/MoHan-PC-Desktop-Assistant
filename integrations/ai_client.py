@@ -135,6 +135,15 @@ def _traditional_chinese_offline_reply(text: str, mode: str) -> str:
     return reply
 
 
+# 離線回覆的前綴。沒有這個，缺金鑰與正常回話在畫面上完全一樣。
+OFFLINE_NOTICE = {
+    "zh-TW": "〔離線模式：未設定 OpenAI 金鑰，以下為內建回覆〕\n",
+    "zh-CN": "〔离线模式：未设置 OpenAI 密钥，以下为内建回复〕\n",
+    "en": "[Offline mode: no OpenAI key configured; built-in reply follows]\n",
+    "ja": "〔オフラインモード：OpenAI キー未設定のため組み込み応答です〕\n",
+}
+
+
 def offline_reply(text: str, mode: str, response_language: str = "zh-TW") -> str:
     if is_english(response_language):
         reply = _english_offline_reply(text, mode)
@@ -408,8 +417,15 @@ class AIWorker(QRunnable):
             request_data.api_key or os.getenv("OPENAI_API_KEY", "")
         ).strip()
         if not key:
+            # 缺少金鑰時走離線罐頭回覆，先前用的是與模型成功回覆**完全相同**
+            # 的 done 訊號，於是「金鑰遺失／解密後為空／尚未設定」看起來就像
+            # 墨寒正常回話。使用者不會知道自己其實沒有連上模型。
+            notice = OFFLINE_NOTICE.get(
+                request_data.response_language, OFFLINE_NOTICE["zh-TW"]
+            )
             self.signals.done.emit(
-                self._personalize(
+                notice
+                + self._personalize(
                     offline_reply(
                         request_data.user_text,
                         request_data.mode,

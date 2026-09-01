@@ -116,6 +116,14 @@ class DashboardVoiceRuntimeMethods:
         voices = tuple(getattr(catalog, "voices", ()))
         if not voices:
             return
+        # AzureVoiceCatalog 帶著 source 欄位，fallback 代表金鑰錯誤、region 不符、
+        # timeout 或 SDK 缺失——查詢根本沒成功，這裡列出的是靜態內建清單。
+        # 先前只讀 voices、把 source 丟掉，於是認證失敗與查詢成功在畫面上
+        # 完全一樣，使用者會以為金鑰是好的。這是「算出來卻沒用」的典型。
+        if str(getattr(catalog, "source", "")) == "fallback":
+            self._azure_catalog_is_fallback = True
+        else:
+            self._azure_catalog_is_fallback = False
         combo = self.azure_hd_voice if hd_only else self.azure_voice
         setting_key = "azure_hd_speech_voice" if hd_only else "azure_speech_voice"
         current_voice = combo.currentText().strip()

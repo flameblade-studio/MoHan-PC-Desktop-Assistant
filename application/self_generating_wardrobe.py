@@ -296,11 +296,18 @@ class SelfGeneratingWardrobe:
                 "Generated appearance identity is already installed; "
                 "existing content was preserved."
             )
-        trends = (
-            self.trend_scout.discover(request)
-            if self.policy.trend_search_enabled
-            else ()
-        )
+        # 趨勢搜尋失敗時 discover() 會把 last_status 設成 "failed" 並回傳空
+        # tuple，而那個狀態沒有任何消費者——付費影像生成照樣往下跑，使用者
+        # 看到的仍是「使用趨勢搜尋生成成功」。空結果與失敗必須分開。
+        trends: tuple = ()
+        if self.policy.trend_search_enabled:
+            trends = self.trend_scout.discover(request)
+            status = getattr(self.trend_scout, "last_status", "")
+            if status == "failed":
+                raise OutfitPackError(
+                    "趨勢搜尋失敗，已停止本次生成——避免在缺少趨勢輸入的情況下"
+                    "呼叫付費影像生成並宣稱使用了趨勢。"
+                )
         draft = _generated_draft(
             request,
             self.generator.create(

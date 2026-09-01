@@ -92,11 +92,16 @@ def _registry_voice(
     return WindowsVoiceInfo(full_name, culture, gender)
 
 
+class WindowsVoiceCatalogError(RuntimeError):
+    """Windows 語音登錄檔查詢失敗。與「沒有安裝語音」是兩回事。"""
+
+
 def _registry_voices(
     registry_path: str,
     prefix: str,
 ) -> list[WindowsVoiceInfo]:
     voices: list[WindowsVoiceInfo] = []
+    _registry_voices.last_skipped = 0
     try:
         with winreg.OpenKey(
             winreg.HKEY_LOCAL_MACHINE,
@@ -107,11 +112,23 @@ def _registry_voices(
                 try:
                     voice = _registry_voice(root, token, prefix)
                 except OSError:
+                    # 單一項目讀不到就跳過是合理的；但要記下來，否則
+                    # 「部分語音讀不到」與「這些語音不存在」無法區分。
+                    _registry_voices.last_skipped += 1
                     continue
                 if voice is not None:
                     voices.append(voice)
-    except OSError:
+    except FileNotFoundError:
+        # 這個 key 本來就可能不存在——舊版 Windows 沒有 Speech_OneCore。
+        # 那是「這個位置沒有語音」，是正常狀況，不是查詢失敗。
         return []
+    except OSError as error:
+        # 其餘的 OSError（ACL 拒絕、登錄檔損毀、暫時性 I/O）代表**查詢本身
+        # 失敗**，與「系統沒有安裝任何語音」是兩件事。先前一律回傳空清單，
+        # 使用者只會看到「找不到相符語音」，無從得知查詢根本沒跑成功。
+        raise WindowsVoiceCatalogError(
+            f"無法讀取 Windows 語音登錄檔：{registry_path}"
+        ) from error
     return voices
 
 

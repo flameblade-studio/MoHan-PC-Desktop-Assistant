@@ -138,6 +138,51 @@ class OAuthError(RuntimeError):
     pass
 
 
+def _require_identified(result: object, action: str, *keys: str) -> dict[str, Any]:
+    """確認寫入類回應帶著可識別的結果，而不只是「回了一個 dict」。
+
+    先前只檢查 isinstance(result, dict)：一個 2xx 的空物件 {} 會被當成
+    「已寄出／已建立／已上傳」。HTTP 可能真的執行了，也可能是代理層或
+    中間設備偽造的回應——分不出來的時候不該向使用者宣告成功。
+
+    要求至少一個識別欄位（通常是 id）。缺了就當失敗，因為我們無法指出
+    「被建立的到底是哪一個東西」。
+    """
+    if not isinstance(result, dict):
+        raise OAuthError(f"{action}失敗：回應格式不符")
+    if keys and not any(str(result.get(key, "")).strip() for key in keys):
+        raise OAuthError(
+            f"{action}的回應缺少識別欄位（{'、'.join(keys)}），無法確認確實完成"
+        )
+    return result
+
+
+def _require_collection(
+    result: object,
+    action: str,
+    key: str,
+) -> list[dict[str, Any]]:
+    """從清單類回應取出集合，並把「合約不符」與「真的是空的」分開。
+
+    先前寫成 `list(result.get(key, [])) if isinstance(result, dict) else []`。
+    那讓三種完全不同的情況得到同一個答案：真的沒有結果、回應不是物件、
+    回應是物件但缺少預期的欄位。使用者看到的都是「找到 0 筆」。
+
+    API schema 漂移、代理伺服器改寫、或被破壞的 provider 回應，都會落在
+    後兩種——那是失敗，不是空集合。缺少欄位一律報錯；欄位存在但為空陣列
+    才是真正的「沒有結果」。
+    """
+    if not isinstance(result, dict):
+        raise OAuthError(f"{action}的回應格式不符，無法判讀")
+    if key not in result:
+        raise OAuthError(f"{action}的回應缺少「{key}」欄位，無法區分空結果與失敗")
+    rows = result[key]
+    if not isinstance(rows, list):
+        raise OAuthError(f"{action}的「{key}」欄位不是清單")
+    return [row for row in rows if isinstance(row, dict)]
+
+
+
 def _sanitized_external_error(
     error: BaseException | str,
     *,
@@ -503,7 +548,7 @@ class GmailConnector(JsonApiClient):
             "/messages",
             query={"q": query, "maxResults": max(1, min(100, max_results))},
         )
-        return list(result.get("messages", [])) if isinstance(result, dict) else []
+        return _require_collection(result, "Gmail 搜尋", "messages")
 
     def message(self, message_id: str) -> dict[str, Any]:
         result = self.request(
@@ -527,13 +572,13 @@ class GmailConnector(JsonApiClient):
         )
         if not isinstance(result, dict):
             raise OAuthError("Gmail 草稿建立失敗")
-        return result
+        return _require_identified(result, "Gmail 草稿建立", "id")
 
     def send_draft(self, draft_id: str) -> dict[str, Any]:
         result = self.request("POST", "/drafts/send", {"id": draft_id})
         if not isinstance(result, dict):
             raise OAuthError("Gmail 寄送失敗")
-        return result
+        return _require_identified(result, "Gmail 寄送", "id", "threadId")
 
 
 class GoogleCalendarConnector(JsonApiClient):
@@ -557,7 +602,7 @@ class GoogleCalendarConnector(JsonApiClient):
                 "orderBy": "startTime",
             },
         )
-        return list(result.get("items", [])) if isinstance(result, dict) else []
+        return _require_collection(result, "Google Calendar 查詢", "items")
 
     def create_event(
         self,
@@ -571,7 +616,7 @@ class GoogleCalendarConnector(JsonApiClient):
         )
         if not isinstance(result, dict):
             raise OAuthError("Google Calendar 建立事件失敗")
-        return result
+        return _require_identified(result, "Google Calendar 建立事件", "id", "htmlLink")
 
 
 class GoogleDriveConnector(JsonApiClient):
@@ -589,7 +634,7 @@ class GoogleDriveConnector(JsonApiClient):
                 "fields": "files(id,name,mimeType,modifiedTime,webViewLink,size)",
             },
         )
-        return list(result.get("files", [])) if isinstance(result, dict) else []
+        return _require_collection(result, "Google Drive 查詢", "files")
 
     def recent(self, page_size: int = 20) -> list[dict[str, Any]]:
         result = self.request(
@@ -602,7 +647,7 @@ class GoogleDriveConnector(JsonApiClient):
                 "fields": "files(id,name,mimeType,modifiedTime,webViewLink,size)",
             },
         )
-        return list(result.get("files", [])) if isinstance(result, dict) else []
+        return _require_collection(result, "Google Drive 查詢", "files")
 
     def upload_small(
         self,
@@ -648,7 +693,7 @@ class GoogleDriveConnector(JsonApiClient):
 
         if not isinstance(result, dict):
             raise OAuthError("Google Drive 上傳回應格式錯誤")
-        return result
+        return _require_identified(result, "Google Drive 上傳", "id")
 
 
 class MicrosoftGraphConnector(JsonApiClient):
@@ -661,7 +706,7 @@ class MicrosoftGraphConnector(JsonApiClient):
             "/me/messages",
             query={"$top": max(1, min(100, top)), "$select": "id,subject,from,receivedDateTime,bodyPreview"},
         )
-        rows = list(result.get("value", [])) if isinstance(result, dict) else []
+        rows = _require_collection(result, "Microsoft 查詢", "value")
         for row in rows:
             if isinstance(row.get("bodyPreview"), str):
                 row["bodyPreview"] = sanitize_external_content(row["bodyPreview"])
@@ -671,7 +716,7 @@ class MicrosoftGraphConnector(JsonApiClient):
         result = self.request("POST", "/me/messages", message)
         if not isinstance(result, dict):
             raise OAuthError("Outlook 草稿建立失敗")
-        return result
+        return _require_identified(result, "Outlook 草稿建立", "id")
 
     def send_message(self, message: dict[str, Any]) -> None:
         self.request("POST", "/me/sendMail", {"message": message, "saveToSentItems": True})
@@ -682,13 +727,13 @@ class MicrosoftGraphConnector(JsonApiClient):
             "/me/calendarView",
             query={"startDateTime": start, "endDateTime": end},
         )
-        return list(result.get("value", [])) if isinstance(result, dict) else []
+        return _require_collection(result, "Microsoft 查詢", "value")
 
     def create_event(self, event: dict[str, Any]) -> dict[str, Any]:
         result = self.request("POST", "/me/events", event)
         if not isinstance(result, dict):
             raise OAuthError("Outlook Calendar 建立事件失敗")
-        return result
+        return _require_identified(result, "Outlook Calendar 建立事件", "id", "webLink")
 
     def search_drive(self, name: str) -> list[dict[str, Any]]:
         encoded = quote(name.replace("'", "''"), safe="")
@@ -696,7 +741,7 @@ class MicrosoftGraphConnector(JsonApiClient):
             "GET",
             f"/me/drive/root/search(q='{encoded}')",
         )
-        return list(result.get("value", [])) if isinstance(result, dict) else []
+        return _require_collection(result, "Microsoft 查詢", "value")
 
     def upload_small(
         self,
@@ -715,7 +760,7 @@ class MicrosoftGraphConnector(JsonApiClient):
         )
         if not isinstance(result, dict):
             raise OAuthError("OneDrive 上傳回應格式錯誤")
-        return result
+        return _require_identified(result, "OneDrive 上傳", "id")
 
 
 class GitHubConnector(JsonApiClient):
