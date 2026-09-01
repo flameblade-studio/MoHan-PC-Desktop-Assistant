@@ -21,7 +21,7 @@
 
 八個模型，全部是 MIT 或 Apache 2.0。**每一顆都用 SHA256 與上游 commit 雙重釘選**，出處記錄在 [`VISION-MODEL-PROVENANCE.json`](VISION-MODEL-PROVENANCE.json)、[`MULTIMODAL-MODEL-PROVENANCE.json`](MULTIMODAL-MODEL-PROVENANCE.json)、[`HAND-MODEL-PROVENANCE.json`](HAND-MODEL-PROVENANCE.json)，可逐一驗證。
 
-上表是**隨產品出貨、在你電腦上執行**的模型。另有一條本機素材生產鏈（FLUX.2-klein-4B 與 Chroma1-HD，皆為 Apache 2.0）負責製作角色圖與佈景素材，它們不隨發行產物散布，但同樣受本白名單約束——這正是 FLUX dev 全系被排除的原因。
+上表是**隨產品出貨、在你電腦上執行**的模型。另有一條本機素材生產鏈（FLUX.2-klein-4B 與 Chroma1-HD，皆為 Apache 2.0）不隨發行產物散布，但同樣受本白名單約束——這正是 FLUX dev 全系被排除的原因。角色圖目前另借助託管生圖服務繪製：本機模型在角色一致性上尚未達到要求，待其迭代到位即轉回本機生產。這不動搖上述承諾——白名單約束的是工具與權重，而角色美術本身是擁有者的專有財產（見 [ASSETS-LICENSE](../ASSETS-LICENSE.md)），不受任何開源條款約束。
 
 ### 白名單
 
@@ -77,7 +77,7 @@
 
 八个模型，全部是 MIT 或 Apache 2.0。**每一颗都用 SHA256 与上游 commit 双重锁定**，来源记录在 [`VISION-MODEL-PROVENANCE.json`](VISION-MODEL-PROVENANCE.json)、[`MULTIMODAL-MODEL-PROVENANCE.json`](MULTIMODAL-MODEL-PROVENANCE.json)、[`HAND-MODEL-PROVENANCE.json`](HAND-MODEL-PROVENANCE.json)，可逐一验证。
 
-上表是**随产品出货、在你电脑上运行**的模型。另有一条本机素材生产链（FLUX.2-klein-4B 与 Chroma1-HD，均为 Apache 2.0）负责制作角色图与主题素材，它们不随发行产物分发，但同样受本白名单约束——这正是 FLUX dev 全系被排除的原因。
+上表是**随产品出货、在你电脑上运行**的模型。另有一条本机素材生产链（FLUX.2-klein-4B 与 Chroma1-HD，均为 Apache 2.0）不随发行产物分发，但同样受本白名单约束——这正是 FLUX dev 全系被排除的原因。角色图目前另借助托管生图服务绘制：本机模型在角色一致性上尚未达到要求，待其迭代到位即转回本机生产。这不动摇上述承诺——白名单约束的是工具与权重，而角色美术本身是所有者的专有财产（见 [ASSETS-LICENSE](../ASSETS-LICENSE.md)），不受任何开源条款约束。
 
 ### 白名单
 
@@ -133,7 +133,7 @@ Most AI projects cannot say this. Their models arrive carrying research-only, no
 
 Eight models, every one MIT or Apache 2.0. **Each is pinned twice — by SHA256 and by upstream commit** — with provenance recorded in [`VISION-MODEL-PROVENANCE.json`](VISION-MODEL-PROVENANCE.json), [`MULTIMODAL-MODEL-PROVENANCE.json`](MULTIMODAL-MODEL-PROVENANCE.json) and [`HAND-MODEL-PROVENANCE.json`](HAND-MODEL-PROVENANCE.json), so any claim here can be checked independently.
 
-The table above lists models **shipped with the product and executed on your own machine**. A separate local asset-production chain — FLUX.2-klein-4B and Chroma1-HD, both Apache 2.0 — generates character art and theme material; those never travel inside a release artifact, yet the same allowlist governs them, which is precisely why the entire FLUX dev family was excluded.
+The table above lists models **shipped with the product and executed on your own machine**. A separate local asset-production chain — FLUX.2-klein-4B and Chroma1-HD, both Apache 2.0 — never travels inside a release artifact, yet the same allowlist governs it, which is precisely why the entire FLUX dev family was excluded. Character art is currently drawn with help from a hosted image service as well: the local models do not yet meet the bar for character consistency, and production returns to them once they do. That does not weaken the promise above — the allowlist governs tools and weights, while the character artwork itself is the owner's proprietary property (see [ASSETS-LICENSE](../ASSETS-LICENSE.md)) and carries no open-source terms.
 
 ### The allowlist
 
@@ -189,7 +189,7 @@ To audit it yourself, the evidence is in the repository: [`ASSETS-LICENSE.md`](.
 
 八つのモデルはすべて MIT または Apache 2.0 です。**いずれも SHA256 と上流コミットの二重で固定**しており、出所は [`VISION-MODEL-PROVENANCE.json`](VISION-MODEL-PROVENANCE.json)、[`MULTIMODAL-MODEL-PROVENANCE.json`](MULTIMODAL-MODEL-PROVENANCE.json)、[`HAND-MODEL-PROVENANCE.json`](HAND-MODEL-PROVENANCE.json) に記録され、第三者が個別に検証できます。
 
-上の表は**製品に同梱され、利用者の PC 上で実行される**モデルです。これとは別に、キャラクター画像やテーマ素材を制作するローカル素材生成チェーン（FLUX.2-klein-4B と Chroma1-HD、いずれも Apache 2.0）がありますが、リリース成果物には同梱されません。それでも同じホワイトリストの適用対象であり、FLUX dev 系列を全面的に除外したのはそのためです。
+上の表は**製品に同梱され、利用者の PC 上で実行される**モデルです。これとは別にローカル素材生成チェーン（FLUX.2-klein-4B と Chroma1-HD、いずれも Apache 2.0）がありますが、リリース成果物には同梱されません。それでも同じホワイトリストの適用対象であり、FLUX dev 系列を全面的に除外したのはそのためです。キャラクター画像は現在、ホスト型の画像生成サービスの助けも借りて制作しています。ローカルモデルはキャラクターの同一性について要求水準にまだ届いておらず、届いた時点でローカル生産に戻します。これは上記の約束を揺るがしません。ホワイトリストが縛るのは道具と重みであり、キャラクター美術そのものは所有者の専有財産（[ASSETS-LICENSE](../ASSETS-LICENSE.md) を参照）でオープンソース条項の対象外です。
 
 ### ホワイトリスト
 
