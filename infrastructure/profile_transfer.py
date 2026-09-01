@@ -403,15 +403,7 @@ class PortableProfileManager:
         snapshot.row_factory = sqlite3.Row
         try:
             snapshot.execute("PRAGMA trusted_schema=OFF")
-            # SQLite 的 DELETE 只把頁面標記為可重用，內容仍留在檔案裡。
-            # 這個功能存在的唯一目的就是把 action_audit（含剪貼簿與檔案內容）、
-            # connector_profiles、allowed_targets、paired_devices 與非可攜設定
-            # 排除在匯出檔之外——但先前只做 DELETE 就直接打包原始 SQLite 檔，
-            # 那些位元組原封不動地跟著走。使用者以為分享的是乾淨的設定檔。
-            #
-            # secure_delete=ON 讓刪除當下就把頁面內容歸零；VACUUM 再把整個
-            # 資料庫重寫一次，丟掉所有空閒頁面。兩者都要：secure_delete 管
-            # 這一次刪除，VACUUM 管快照複製過來時就已經存在的舊空閒頁。
+            # DELETE 只標記頁面可重用，內容仍在檔案裡（見測試的說明）。
             snapshot.execute("PRAGMA secure_delete=ON")
             self._delete_nonportable_settings(snapshot)
             self._clear_machine_bound_tables(snapshot)
