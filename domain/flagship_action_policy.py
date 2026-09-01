@@ -15,6 +15,9 @@ lazy from domain.flagship_action_models import (
 __all__ = ("PolicyEngine",)
 
 
+# 合法的權限模式。不在此集合內的值一律視為損壞，退回風險預設。
+PERMISSION_MODES = frozenset({"允許", "每次詢問", "禁止"})
+
 class PolicyEngine:
     """Evaluate local, cloud, and remote actions without performing I/O."""
 
@@ -32,6 +35,7 @@ class PolicyEngine:
         ]
 
     def permission_mode(self, capability: str) -> str:
+        """該能力的權限模式。未知值一律退回風險預設，不得 fail-open。"""
         risk = CAPABILITY_RISK.get(capability, RiskLevel.RED)
         fallback = {
             RiskLevel.GREEN: "允許",
@@ -39,7 +43,15 @@ class PolicyEngine:
             RiskLevel.YELLOW: "每次詢問",
             RiskLevel.RED: "禁止",
         }[risk]
-        return str(self.permissions.get(capability, fallback))
+        mode = str(self.permissions.get(capability, fallback))
+        # 未知字串必須 fail-closed，退回依風險等級決定的預設值。
+        # 先前直接原樣回傳，而 evaluate() 只封鎖精確字串「禁止」——於是
+        # 任何損壞值（設定匯入、版本遷移、手動編輯、DB 損壞）都會得到
+        # allowed=True 且 confirmations=0。GREEN 與 BLUE 能力因此免確認執行；
+        # YELLOW/RED 靠風險等級的保底才沒事，那是巧合不是設計。
+        if mode not in PERMISSION_MODES:
+            return fallback
+        return mode
 
     def evaluate(self, request: ActionRequest) -> PolicyDecision:
         capability = request.capability

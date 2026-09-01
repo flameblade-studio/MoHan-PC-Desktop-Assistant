@@ -27,6 +27,7 @@ class WindowsToolbox:
         self,
         *,
         allowed_folders: list[str] | None = None,
+        writable_folders: list[str] | None = None,
         allowed_apps: dict[str, str] | None = None,
         allowed_websites: list[str] | None = None,
         platform_services: PlatformServicePort | None = None,
@@ -35,6 +36,19 @@ class WindowsToolbox:
         self.allowed_folders = [
             Path(value).expanduser().resolve()
             for value in (allowed_folders or [])
+            if str(value).strip()
+        ]
+        # 可寫入的資料夾是 allowed_folders 的子集合，而且**預設為空**。
+        # 安全設定把每個資料夾存成「唯讀」或「可寫入」，但先前只有
+        # target_value 被讀出來，access_mode 整個被丟掉——使用者在介面上
+        # 選的「唯讀」因此完全沒有作用，create_file／move_file／rename_file
+        # 照樣能寫進去。介面告訴使用者的權限邊界是假的。
+        #
+        # 這裡刻意 fail-closed：沒有明確指定就一律不可寫。呼叫端必須把
+        # access_mode 傳進來，忘了傳的後果是「不能寫」而不是「什麼都能寫」。
+        self.writable_folders = [
+            Path(value).expanduser().resolve()
+            for value in (writable_folders or [])
             if str(value).strip()
         ]
         self.allowed_apps = {
@@ -57,7 +71,13 @@ class WindowsToolbox:
         executor.register("rename_file", self.rename_file, self.verify_destination)
         executor.register("move_file", self.move_file, self.verify_destination)
 
-    def _allowed_path(self, raw: str, *, must_exist: bool = False) -> Path:
+    def _allowed_path(
+        self,
+        raw: str,
+        *,
+        must_exist: bool = False,
+        write: bool = False,
+    ) -> Path:
         if not self.allowed_folders:
             raise PermissionError("尚未設定允許操作的資料夾")
         target = Path(raw).expanduser().resolve()
@@ -66,6 +86,11 @@ class WindowsToolbox:
             for root in self.allowed_folders
         ):
             raise PermissionError("路徑不在允許清單內")
+        if write and not any(
+            root == target or root in target.parents
+            for root in self.writable_folders
+        ):
+            raise PermissionError("此資料夾設定為唯讀，不允許寫入")
         if must_exist and not target.exists():
             raise FileNotFoundError(target)
         return target
@@ -110,7 +135,8 @@ class WindowsToolbox:
         return ActionResult(request.request_id, True, f"已啟動：{name}")
 
     def create_file(self, request: ActionRequest) -> ActionResult:
-        target = self._allowed_path(str(request.arguments.get("path", "")))
+        target = self._allowed_path(
+            str(request.arguments.get("path", "")), write=True)
         if target.exists():
             raise FileExistsError("預設禁止覆寫既有檔案")
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -162,12 +188,16 @@ class WindowsToolbox:
         return self._relocate(request)
 
     def _relocate(self, request: ActionRequest) -> ActionResult:
+        # 兩邊都要 write 權限。搬移會讓來源消失、重新命名會改掉來源，
+        # 只檢查目的地等於允許把唯讀資料夾裡的東西搬走。
         source = self._allowed_path(
             str(request.arguments.get("source", "")),
             must_exist=True,
+            write=True,
         )
         destination = self._allowed_path(
-            str(request.arguments.get("destination", ""))
+            str(request.arguments.get("destination", "")),
+            write=True,
         )
         if destination.exists():
             raise FileExistsError("目的地已存在，預設禁止覆寫")
