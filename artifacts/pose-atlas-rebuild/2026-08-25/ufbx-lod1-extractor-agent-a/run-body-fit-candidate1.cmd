@@ -2,7 +2,7 @@
 setlocal EnableExtensions DisableDelayedExpansion
 set "AGENT_DIR=%~dp0"
 set "PROJECT_ROOT=D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision"
-set "PYTHON=C:\Users\hitos\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI\.venv\Scripts\python.exe"
+set "PYTHON=%USERPROFILE%\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI\.venv\Scripts\python.exe"
 set "B_DIR=%PROJECT_ROOT%\artifacts\pose-atlas-rebuild\2026-08-25\mhr-neutral-body-smoke-agent-b"
 set "OUT=%AGENT_DIR%body-fit-candidate1"
 if not exist "%OUT%" mkdir "%OUT%"

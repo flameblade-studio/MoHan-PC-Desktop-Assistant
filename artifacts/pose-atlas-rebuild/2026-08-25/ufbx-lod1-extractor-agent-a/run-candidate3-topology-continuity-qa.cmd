@@ -2,7 +2,7 @@
 setlocal
 set "ROOT=D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\artifacts\pose-atlas-rebuild\2026-08-25\ufbx-lod1-extractor-agent-a"
 set "OUT=%ROOT%\candidate3-yaw-controls-24"
-set "PYTHON=C:\Users\hitos\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI\.venv\Scripts\python.exe"
+set "PYTHON=%USERPROFILE%\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI\.venv\Scripts\python.exe"
 "%PYTHON%" "%ROOT%\qa_candidate3_topology_continuity.py" ^
   --vertices "%ROOT%\body-morph-candidate3\candidate3-vertices.bin" ^
   --controls "%OUT%\controls" ^

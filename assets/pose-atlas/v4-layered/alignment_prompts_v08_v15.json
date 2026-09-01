@@ -1,8 +1,7 @@
 {
   "schema_version": 1,
   "status": "staged_for_deepseek_integration",
-  "source_report": "C:\\Users\\hitos\\.codex\\attachments\\923495a7-dbd2-4cd6-bc30-2ab7e971f000\\pasted-text.txt",
-  "asset_dir": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered",
+  "asset_dir": "assets/pose-atlas/v4-layered",
   "canvas": {
     "width": 1024,
     "height": 1536
