@@ -29,6 +29,7 @@ lazy from domain.prompt_cache import (
 )
 lazy from domain.safe_error import sanitize_error
 lazy from domain.service_status_localization import ServiceStatus, service_status
+lazy from types import MappingProxyType
 
 DEFAULT_TEXT_MODEL = "gpt-5.6-luna"
 STABLE_PROMPT_CACHE_BREAKPOINT = (
@@ -136,12 +137,14 @@ def _traditional_chinese_offline_reply(text: str, mode: str) -> str:
 
 
 # 離線回覆的前綴。沒有這個，缺金鑰與正常回話在畫面上完全一樣。
-OFFLINE_NOTICE = {
-    "zh-TW": "〔離線模式：未設定 OpenAI 金鑰，以下為內建回覆〕\n",
-    "zh-CN": "〔离线模式：未设置 OpenAI 密钥，以下为内建回复〕\n",
-    "en": "[Offline mode: no OpenAI key configured; built-in reply follows]\n",
-    "ja": "〔オフラインモード：OpenAI キー未設定のため組み込み応答です〕\n",
-}
+OFFLINE_NOTICE = MappingProxyType(
+    {
+        "zh-TW": "〔離線模式：未設定 OpenAI 金鑰，以下為內建回覆〕\n",
+        "zh-CN": "〔离线模式：未设置 OpenAI 密钥，以下为内建回复〕\n",
+        "en": "[Offline mode: no OpenAI key configured; built-in reply follows]\n",
+        "ja": "〔オフラインモード：OpenAI キー未設定のため組み込み応答です〕\n",
+    }
+)
 
 
 def offline_reply(text: str, mode: str, response_language: str = "zh-TW") -> str:
