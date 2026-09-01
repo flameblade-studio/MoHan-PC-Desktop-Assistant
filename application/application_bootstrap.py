@@ -40,12 +40,37 @@ def _argument_value(prefix: str) -> str:
     return argument.split("=", 1)[1] if argument else ""
 
 
+def _harness_output_path(flag: str) -> Path | None:
+    """只有測試工具啟動時才接受輸出路徑。
+
+    這兩個旗標的值原本直接進 `Path(...).write_text()`，而它會截斷目標。
+    `_write_jit_status()` 更在 `--self-test` 判斷**之前**無條件執行，於是
+    任何一次一般啟動只要帶著這個旗標，指定的檔案就被清成一行字串。
+
+    刻意不加「不得覆寫既有檔」那條：tools/profile_mohan_tachyon.py 會用
+    同一個路徑重複執行，那條規則會讓它從第二輪起靜默不寫。
+
+    殘留風險誠實標明：能決定啟動命令列的人仍可自己加上 `--self-test`。
+    但那種人通常已經能直接執行任意程式，這個原語沒讓他多拿到什麼。
+    被關掉的是「一般啟動也會寫」，那才是真正不該存在的。
+    """
+    value = _argument_value(flag)
+    if not value:
+        return None
+    if not ("--self-test" in sys.argv or "--smoke-auto-exit" in sys.argv):
+        return None
+    target = Path(value)
+    if not target.parent.is_dir():
+        return None
+    return target
+
+
 def _write_jit_status() -> None:
-    output_path = _argument_value("--jit-status-output=")
-    if not output_path:
+    target = _harness_output_path("--jit-status-output=")
+    if target is None:
         return
     expected_jit = os.environ.get("MOHAN_ENABLE_JIT") == "1"
-    Path(output_path).write_text(
+    target.write_text(
         "PACKAGED_JIT_DEFAULT_OK"
         if jit_is_enabled() == expected_jit
         else "PACKAGED_JIT_DEFAULT_FAILED",
@@ -82,9 +107,9 @@ def _run_smoke_event_loop(
     QTimer.singleShot(2_500, window.close)
     QTimer.singleShot(2_700, app.quit)
     exit_code = app.exec()
-    output_path = _argument_value("--smoke-output=")
-    if output_path:
-        Path(output_path).write_text(
+    target = _harness_output_path("--smoke-output=")
+    if target is not None:
+        target.write_text(
             "PACKAGED_EVENT_LOOP_OK"
             if exit_code == 0
             else "PACKAGED_EVENT_LOOP_FAILED",

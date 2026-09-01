@@ -5,7 +5,7 @@ from __future__ import annotations
 lazy import webbrowser
 lazy from pathlib import Path
 lazy from typing import Protocol
-lazy from urllib.parse import urlparse
+lazy from urllib.parse import ParseResult, urlparse
 
 lazy from domain.flagship_action_models import ActionRequest, ActionResult
 lazy from infrastructure.platform_contracts import PlatformServicePort
@@ -18,6 +18,42 @@ MAX_SEARCH_RESULTS = 200
 
 class ActionRegistrar(Protocol):
     def register(self, capability: str, handler, verifier=None) -> None: ...
+
+
+def _origin(parsed: ParseResult) -> tuple[str, str, int] | None:
+    """(scheme, host, port)；port 補上該 scheme 的預設值。
+
+    原本只比 `hostname`，於是 `https://portal.example/app` 這一條同時放行了
+    `http://portal.example:8080/...`：scheme 沒被要求相符（那一行檢查的是
+    白名單項目自己的 scheme），而 `hostname` 不含 port。
+    """
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+        return None
+    default_port = 443 if parsed.scheme == "https" else 80
+    try:
+        port = parsed.port or default_port
+    except ValueError:
+        return None
+    return parsed.scheme, parsed.hostname.lower(), port
+
+
+def _same_origin(request: ParseResult, allowed: ParseResult) -> bool:
+    request_origin = _origin(request)
+    return request_origin is not None and request_origin == _origin(allowed)
+
+
+def _path_within(request_path: str, allowed_path: str) -> bool:
+    """路徑必須落在允許的**路徑段**之下，不是字首相符。
+
+    字首比對讓 `/app` 涵蓋 `/app-delete`——相鄰但無關的路徑，對帶有 GET
+    副作用的管理介面尤其危險。
+    """
+    request_path = request_path or "/"
+    allowed_path = allowed_path or "/"
+    if allowed_path == "/":
+        return True
+    allowed_path = allowed_path.rstrip("/")
+    return request_path == allowed_path or request_path.startswith(allowed_path + "/")
 
 
 class WindowsToolbox:
@@ -103,9 +139,8 @@ class WindowsToolbox:
         if not self.allowed_websites:
             raise PermissionError("尚未設定允許開啟的網站")
         allowed = any(
-            allowed_parsed.scheme in {"http", "https"}
-            and parsed.hostname == allowed_parsed.hostname
-            and (parsed.path or "/").startswith(allowed_parsed.path or "/")
+            _same_origin(parsed, allowed_parsed)
+            and _path_within(parsed.path, allowed_parsed.path)
             for entry in self.allowed_websites
             if (allowed_parsed := urlparse(entry))
         )
