@@ -3,7 +3,7 @@ setlocal
 set "ROOT=D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\artifacts\pose-atlas-rebuild\2026-08-25\ufbx-lod1-extractor-agent-a"
 set "OUT=%ROOT%\candidate3-anatomy-audit"
 set "C3=%ROOT%\body-morph-candidate3"
-set "PYTHON=C:\Users\hitos\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI\.venv\Scripts\python.exe"
+set "PYTHON=%USERPROFILE%\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI\.venv\Scripts\python.exe"
 if not exist "%OUT%" mkdir "%OUT%"
 "%PYTHON%" "%ROOT%\audit_candidate2_anatomy.py" ^
   --base-vertices "%ROOT%\run-fixed-clone\mhr-lod1.vertices.tsv" ^

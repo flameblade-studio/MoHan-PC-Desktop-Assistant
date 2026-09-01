@@ -163,7 +163,10 @@ def create_tool_executor(
         is None,
         audit=lambda event, payload: audit.append((event, payload)),
     )
-    toolbox = WindowsToolbox(allowed_folders=[str(root)])
+    toolbox = WindowsToolbox(
+        allowed_folders=[str(root)],
+        writable_folders=[str(root)],
+    )
     toolbox.register_with(executor)
     return executor, toolbox, audit
 
@@ -333,3 +336,57 @@ def run() -> None:
 
 if __name__ == "__main__":
     run()
+
+
+def test_read_only_folder_rejects_writes(tmp_path: Path) -> None:
+    """唯讀資料夾必須擋下建檔、搬移與重新命名。
+
+    迴歸測試：安全設定會把每個資料夾存成「唯讀」或「可寫入」，但
+    runtime 先前只讀取 target_value，access_mode 整個被丟掉——使用者在
+    介面上選的唯讀完全沒有作用。介面對使用者宣告的權限邊界必須為真。
+    """
+    root = tmp_path / "readonly"
+    root.mkdir()
+    existing = root / "existing.txt"
+    existing.write_text("x", encoding="utf-8")
+    # 只給讀取權限，不給寫入
+    toolbox = WindowsToolbox(allowed_folders=[str(root)])
+
+    # 讀取路徑照樣可用
+    assert toolbox._allowed_path(str(existing), must_exist=True) == existing.resolve()
+
+    for label, kwargs in (
+        ("建檔", {"write": True}),
+        ("搬移來源", {"must_exist": True, "write": True}),
+    ):
+        try:
+            toolbox._allowed_path(str(existing), **kwargs)
+        except PermissionError:
+            continue
+        raise AssertionError(f"唯讀資料夾的{label}必須被擋下")
+
+
+def test_writable_folder_allows_writes(tmp_path: Path) -> None:
+    """可寫入資料夾不得被誤擋——修正不能只是把功能關掉。"""
+    root = tmp_path / "writable"
+    root.mkdir()
+    toolbox = WindowsToolbox(
+        allowed_folders=[str(root)],
+        writable_folders=[str(root)],
+    )
+    target = root / "new.txt"
+    assert toolbox._allowed_path(str(target), write=True) == target.resolve()
+
+
+def test_unknown_permission_string_fails_closed() -> None:
+    """損壞的權限字串必須退回風險預設，不得變成「允許且免確認」。
+
+    迴歸測試：evaluate() 只封鎖精確字串「禁止」，所以任何損壞值都會得到
+    allowed=True 且 confirmations=0。GREEN 與 BLUE 能力因此免確認執行。
+    """
+    from domain.flagship_action_policy import PolicyEngine
+
+    engine = PolicyEngine({"create_file": "bogus", "read_status": "bogus"})
+    for capability in ("create_file", "read_status"):
+        mode = engine.permission_mode(capability)
+        assert mode in {"允許", "每次詢問", "禁止"}, f"{capability} 回傳了損壞值 {mode}"

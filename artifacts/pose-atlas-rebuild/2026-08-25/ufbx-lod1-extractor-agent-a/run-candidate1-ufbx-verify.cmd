@@ -6,7 +6,7 @@ set "OUT=%AGENT_DIR%body-fit-candidate1"
 set "B_DIR=%PROJECT_ROOT%\artifacts\pose-atlas-rebuild\2026-08-25\mhr-neutral-body-smoke-agent-b"
 set "CALCULATOR=%B_DIR%\ufbx_body_identity_calculator.exe"
 set "FBX=%PROJECT_ROOT%\artifacts\third-party-downloads\MHR-v1.0.1-assets\extracted\assets\lod1.fbx"
-set "PYTHON=C:\Users\hitos\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI\.venv\Scripts\python.exe"
+set "PYTHON=%USERPROFILE%\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI\.venv\Scripts\python.exe"
 "%CALCULATOR%" "%FBX%" "%OUT%\candidate1-coefficients.tsv" "%OUT%\candidate1-ufbx-reconstruction.bin" 1>"%OUT%\ufbx-reconstruct-stdout.txt" 2>"%OUT%\ufbx-reconstruct-stderr.txt"
 set "STEP_EXIT=%ERRORLEVEL%"
 >"%OUT%\ufbx-reconstruct-exit-code.txt" echo %STEP_EXIT%

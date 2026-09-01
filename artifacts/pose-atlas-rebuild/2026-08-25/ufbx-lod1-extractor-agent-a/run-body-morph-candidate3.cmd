@@ -1,7 +1,7 @@
 @echo off
 setlocal
 set "ROOT=D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\artifacts\pose-atlas-rebuild\2026-08-25\ufbx-lod1-extractor-agent-a"
-set "PYTHON=C:\Users\hitos\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI\.venv\Scripts\python.exe"
+set "PYTHON=%USERPROFILE%\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI\.venv\Scripts\python.exe"
 set "OUT=%ROOT%\body-morph-candidate3"
 if not exist "%OUT%" mkdir "%OUT%"
 "%PYTHON%" "%ROOT%\morph_body_candidate3.py" ^

@@ -109,6 +109,23 @@ def _yaw_degrees(view_id: str) -> int:
     return int(view_id[len(marker):end])
 
 
+def _repo_relative(path: Path) -> str:
+    """回傳相對於 repo 根的路徑。
+
+    先前寫的是絕對路徑，於是 assets/pose-atlas/v4-layered/ 底下兩個會被打包
+    進安裝檔的 JSON，帶著作者機器的磁碟機代號、專案目錄與 Windows 使用者
+    名稱一起發給每一位下載者。那不是憑證外洩，但既無意義又不可攜——換一台
+    機器重建就對不上。
+    """
+    root = Path(__file__).resolve().parent.parent
+    resolved = Path(path).resolve()
+    try:
+        return resolved.relative_to(root).as_posix()
+    except ValueError:
+        # 不在 repo 內就只留最後兩層，仍然不外洩完整路徑
+        return "/".join(resolved.parts[-2:])
+
+
 def analyze(asset_dir: Path) -> dict:
     """Analyze all layered assets and return a JSON-serializable report."""
     # Ensure a QApplication exists so QImage can decode pixels offscreen.
@@ -214,7 +231,7 @@ def analyze(asset_dir: Path) -> dict:
         }
 
     return {
-        "asset_dir": str(asset_dir),
+        "asset_dir": _repo_relative(asset_dir),
         "reference_layer": REFERENCE_LAYER,
         "outlier_threshold_pixels": OUTLIER_THRESHOLD_PIXELS,
         "total_views": len(VIEW_IDS),

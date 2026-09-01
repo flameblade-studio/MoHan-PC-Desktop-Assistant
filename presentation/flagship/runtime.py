@@ -270,8 +270,15 @@ class FlagshipRuntimeMixin:
             confirm=self._confirm_action,
             audit=self.db.audit_event,
         )
-        allowed_folders = [
-            str(row["target_value"]) for row in self.db.allowed_targets("folder")
+        # access_mode 必須一路傳到 toolbox。先前這裡只取 target_value，
+        # 使用者在安全設定裡選的「唯讀」因此完全沒有作用——那是介面對使用者
+        # 撒謊。資料一直都在 allowed_targets 的 row 裡，只是沒有被讀出來。
+        folder_rows = list(self.db.allowed_targets("folder"))
+        allowed_folders = [str(row["target_value"]) for row in folder_rows]
+        writable_folders = [
+            str(row["target_value"])
+            for row in folder_rows
+            if str(row["access_mode"]).casefold() == "write"
         ]
         allowed_apps = {
             str(row["display_name"]): str(row["target_value"])
@@ -282,6 +289,7 @@ class FlagshipRuntimeMixin:
         ]
         self.toolbox = WindowsToolbox(
             allowed_folders=allowed_folders,
+            writable_folders=writable_folders,
             allowed_apps=allowed_apps,
             allowed_websites=allowed_websites,
             platform_services=self.platform_services,
