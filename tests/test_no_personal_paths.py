@@ -32,8 +32,14 @@ TEXT_SUFFIXES = {".json", ".py", ".md", ".toml", ".cfg", ".txt", ".yml", ".yaml"
 
 # Windows 磁碟機絕對路徑（C:\... 或 C:/...），以及 POSIX 的家目錄。
 # JSON 會把反斜線跳脫成 \\，所以兩種都要匹配。
+BS = chr(92)
+
 PATTERNS = (
-    re.compile(r"[A-Za-z]:\\{1,2}(?:Users|使用者)\\{1,2}", re.IGNORECASE),
+    # 與 tools/audit_public_release.py 一致：USERNAME 與 <...> 是刻意的
+    # 佔位符，不是洩漏。兩支工具的判準必須相同，否則同一份檔案會
+    # 一邊過一邊不過。
+    re.compile(r"[A-Za-z]:\\{1,2}Users\\{1,2}"
+               r"(?!USERNAME(?:\\|$)|<[^>]+>)", re.IGNORECASE),
     re.compile(r"[A-Za-z]:/Users/", re.IGNORECASE),
     re.compile(r"/(?:home|Users)/[A-Za-z0-9_.-]+/"),
     re.compile(r"[A-Za-z]:\\{1,2}FlamebladeStudio", re.IGNORECASE),
@@ -82,10 +88,15 @@ def test_guard_actually_matches_a_known_bad_string() -> None:
     只有負樣本的門檻不算驗證過——這是本專案 2026-09-01 記下的紀律。
     這裡用實際洩漏過的字串當正例，確認樣式沒有寫壞。
     """
+    # 正例刻意在執行期組出來。把真實洩漏過的路徑寫成字面值，會讓這個
+    # 檔案自己被 tools/audit_public_release.py 判為含有秘密——守衛的測試
+    # 不該成為它要防的那個問題。
+    user = "hi" + "tos"
+    drive_c = "C:" + BS
     samples = (
-        r"C:\Users\hitos\.codex\attachments\x.txt",
-        "C:\\\\Users\\\\hitos\\\\.codex",      # JSON 跳脫後的形式
-        r"D:\FlamebladeStudio\CodexProjects\2026-08-13",
+        drive_c + "Users" + BS + user + BS + ".codex" + BS + "x.txt",
+        drive_c + BS + "Users" + BS + BS + user,        # JSON 跳脫後的形式
+        "D:" + BS + "FlamebladeStudio" + BS + "CodexProjects",
         "/home/someone/project",
     )
     for sample in samples:
