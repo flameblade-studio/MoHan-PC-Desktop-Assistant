@@ -58,6 +58,38 @@ GESTURE_SPEECH_EXPRESSIONS = frozenset(
     }
 )
 EXPRESSION_SPEECH_EXPRESSIONS = frozenset(EXPRESSION_POSES)
+# Appearance-pack silhouette rendered under each half-body pose, and the four
+# gesture silhouettes whose body differs from the neutral pose: the official
+# pack ships garment/hair/headwear layers cut on those gesture portraits, so
+# the runtime must both draw the gesture portrait and dress it with its own
+# layers.  Speech (``_speech_*``) and blink (``_speech_blink``) frames of a
+# gesture inherit its silhouette.
+POSE_OUTFIT_SILHOUETTES = frozendict({
+    "cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed",
+})
+GESTURE_OUTFIT_SILHOUETTES = frozendict({
+    "mock_scold": "front-mock-scold",
+    "mock_hit_front": "front-mock-hit",
+    "eureka_front": "front-eureka",
+    "exasperated_front": "front-exasperated",
+})
+SPEECH_FRAME_MARKER = "_speech_"
+
+
+def gesture_portrait_expression(expression: str) -> str | None:
+    """The gesture portrait an expression (or one of its speech/blink frames) is drawn on."""
+    base = str(expression).split(SPEECH_FRAME_MARKER, 1)[0]
+    return base if base in GESTURE_OUTFIT_SILHOUETTES else None
+
+
+def outfit_silhouette(expression: str, pose: str) -> str:
+    """Silhouette whose appearance layers dress ``expression`` shown in ``pose``."""
+    gesture = gesture_portrait_expression(expression)
+    if gesture is not None:
+        return GESTURE_OUTFIT_SILHOUETTES[gesture]
+    return POSE_OUTFIT_SILHOUETTES.get(str(pose), POSE_OUTFIT_SILHOUETTES["front"])
+
+
 EXPRESSION_SPEECH_FRAMES = frozendict({
     expression: frozendict({
         frame: f"{expression}_speech_{frame}"

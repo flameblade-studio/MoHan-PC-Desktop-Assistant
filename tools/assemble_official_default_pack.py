@@ -12,8 +12,11 @@ bare base, then subtracted step by step) leaves one directory per silhouette::
 
 This tool never invents art.  It maps the layers onto the v2 pack format,
 crops exactly the pixels the runtime would reject (a garment pixel on the
-protected face, hair or headwear on the eyes and lips, makeup outside its safe
-region), records every cropped pixel in a JSON report, seals both archives with
+protected face, hair on the feature core -- the eye and mouth rig cut-outs
+dilated by the runtime's margin, never the whole face box, so strands keep
+falling over the brow and cheeks -- headwear on the eyes and lips, makeup
+outside its safe region), records every cropped pixel in a JSON report, seals
+both archives with
 ``application.outfit_pack_builder`` and proves they parse.  Missing input is an
 error, not a transparent placeholder.
 
@@ -57,7 +60,12 @@ lazy from domain.outfit_pack import (
     inspect_outfit_pack,
     official_pose_template,
 )
-lazy from domain.outfit_pack_makeup import HALF_BODY_RIGS, load_makeup_safe_regions
+lazy from domain.outfit_pack_makeup import (
+    FEATURE_CORE_LAYERS,
+    HAIRSTYLE_FEATURE_CORE_DILATION_PX,
+    HALF_BODY_RIGS,
+    load_makeup_safe_regions,
+)
 lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_ENSEMBLE_ID, OFFICIAL_OUTFIT_PACK_ID
 
 # Character art is studio property; see ASSETS-LICENSE.md (the manifest field only
@@ -87,14 +95,12 @@ LIGHT_VARIANT, CLASSIC_VARIANT = "light", "classic"
 OPAQUE = 255
 # A pipeline registration shift above this many pixels is reported as flagged.
 REGISTRATION_FLAG_PX = 3.0
-# Mirrors ActiveOutfitOverlay._forbidden_face_region: the slice of the protected face each
-# hair rule (and the crown mask) may touch, as (numerator, denominator) of the bbox.
-HAIRLINE_HEIGHT = (1, 4)
-BANGS_HEIGHT = (48, 100)
-SIDE_LOCK_WIDTH = (28, 100)
+# Mirrors ActiveOutfitOverlay._forbidden_face_region: the slice of the protected face the
+# crown mask may touch, as (numerator, denominator) of the bbox.
 CROWN_HEIGHT = (1, 5)
-HAIR_RULES = ("none", "side-locks-safe", "bangs-safe", "hairline-safe")
-FEATURE_LAYERS = ("iris_left", "iris_right", "eyelid_left", "eyelid_right", "oral_cavity", "lip_upper", "lip_lower")
+# Hair declares no face rule: the runtime clips it out of the feature core only (and
+# feathers that edge), so the assembler crops exactly that dilated core and nothing else.
+HAIR_FACE_MASK = "none"
 # Mirrors domain.outfit_pack_makeup.EXCLUSION_RIG_LAYERS: (painted, covering) pairs whose difference never receives makeup.
 MAKEUP_EXCLUSIONS = ((("iris_left", "iris_right"), ("eyelid_left", "eyelid_right")), (("oral_cavity", "teeth_tongue"), ("lip_upper", "lip_lower")))
 MAKEUP_SLOTS = ("eyes", "cheeks", "lips")
@@ -117,7 +123,7 @@ class Forbidden:
     """Per-silhouette pixel masks a layer of each category may not paint (True = forbidden)."""
 
     garment: np.ndarray
-    hair_by_rule: dict[str, np.ndarray]
+    hair: np.ndarray
     headwear: np.ndarray
     makeup_excluded: np.ndarray
     face_bbox: tuple[int, int, int, int]
@@ -176,6 +182,19 @@ def rect_mask(shape: tuple[int, int], rect: QRect) -> np.ndarray:
     return region_mask(QRegion(rect), shape)
 
 
+def dilate(mask: np.ndarray, radius: int) -> np.ndarray:
+    """Chebyshev dilation by ``radius`` pixels: 8-neighbour steps, exactly like the runtime."""
+    grown = mask.copy()
+    height, width = mask.shape
+    for _step in range(radius):
+        padded = np.pad(grown, 1)
+        grown = np.zeros_like(grown)
+        for dy in (0, 1, 2):
+            for dx in (0, 1, 2):
+                grown |= padded[dy : dy + height, dx : dx + width]
+    return grown
+
+
 def _scaled(value: int, fraction: tuple[int, int]) -> int:
     return max(1, value * fraction[0] // fraction[1])
 
@@ -187,7 +206,7 @@ def forbidden_regions(silhouette: str, shape: tuple[int, int]) -> Forbidden:
     prefix = silhouette if full_body else HALF_BODY_RIGS[silhouette]
     face = rig_region(rig_root, prefix, "base")
     features = QRegion()
-    for layer in FEATURE_LAYERS:
+    for layer in FEATURE_CORE_LAYERS:
         features = features.united(rig_region(rig_root, prefix, layer))
     face_mask, feature_mask = region_mask(face, shape), region_mask(features, shape)
     excluded = QRegion()
@@ -199,19 +218,12 @@ def forbidden_regions(silhouette: str, shape: tuple[int, int]) -> Forbidden:
             covering = covering.united(rig_region(rig_root, prefix, layer))
         excluded = excluded.united(painted.subtracted(covering))
     bounds = face.boundingRect()
-    allowed = {rule: np.zeros(shape, dtype=bool) for rule in HAIR_RULES}
     crown = np.zeros(shape, dtype=bool)
     if not face.isEmpty():
-        allowed["hairline-safe"] = rect_mask(shape, QRect(bounds.x(), bounds.y(), bounds.width(), _scaled(bounds.height(), HAIRLINE_HEIGHT)))
-        allowed["bangs-safe"] = rect_mask(shape, QRect(bounds.x(), bounds.y(), bounds.width(), _scaled(bounds.height(), BANGS_HEIGHT)))
-        width = _scaled(bounds.width(), SIDE_LOCK_WIDTH)
-        allowed["side-locks-safe"] = rect_mask(shape, QRect(bounds.x(), bounds.y(), width, bounds.height())) | rect_mask(
-            shape, QRect(bounds.right() - width + 1, bounds.y(), width, bounds.height())
-        )
         crown = rect_mask(shape, QRect(bounds.x(), bounds.y(), bounds.width(), _scaled(bounds.height(), CROWN_HEIGHT)))
     return Forbidden(
         garment=face_mask,
-        hair_by_rule={rule: (face_mask & ~mask) | feature_mask for rule, mask in allowed.items()},
+        hair=dilate(feature_mask, HAIRSTYLE_FEATURE_CORE_DILATION_PX),
         headwear=(face_mask & ~crown) | feature_mask,
         makeup_excluded=region_mask(excluded, shape),
         face_bbox=(bounds.x(), bounds.y(), bounds.width(), bounds.height()),
@@ -304,9 +316,8 @@ def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeu
     forbidden = forbidden_regions(silhouette, shape)
     result.face_bbox = forbidden.face_bbox
     layers["garment"], result.cropped_pixels["garment"] = crop(layers["garment"], forbidden.garment)
-    remaining = {rule: int(((layers["hair"][:, :, 3] > 0) & mask).sum()) for rule, mask in forbidden.hair_by_rule.items()}
-    result.hair_face_mask = min(HAIR_RULES, key=lambda rule: remaining[rule])
-    layers["hair"], result.cropped_pixels["hair"] = crop(layers["hair"], forbidden.hair_by_rule[result.hair_face_mask])
+    result.hair_face_mask = HAIR_FACE_MASK
+    layers["hair"], result.cropped_pixels["hair"] = crop(layers["hair"], forbidden.hair)
     layers["headwear"], result.cropped_pixels["headwear"] = crop(layers["headwear"], forbidden.headwear)
     result.headwear_bbox = alpha_bbox(layers["headwear"])
     safe = load_makeup_safe_regions()[silhouette]

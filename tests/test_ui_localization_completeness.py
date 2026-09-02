@@ -45,6 +45,7 @@ DYNAMIC_KEY_ALLOWLIST = frozenset({
     ("presentation/dashboard_shell.py", "key"),
     ("presentation/dashboard_shell.py", "translation_key"),
     ("presentation/dashboard_today_memory.py", "key"),
+    ("presentation/dashboard_wardrobe_preview.py", "key"),
     ("presentation/dashboard_voice_runtime.py", "policy.error_key"),
     ("presentation/dashboard_voice_runtime.py", "policy.saved_key"),
     ("presentation/dashboard_voice_runtime.py", "policy.title_key"),

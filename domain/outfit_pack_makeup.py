@@ -70,6 +70,17 @@ HALF_BODY_RIGS = frozendict({
     "front-exasperated": "front",
 })
 HALF_BODY_RIG_ROOT = "assets/expressions/layered"
+# Rig cut-outs that form the feature core: the only face pixels hair may never
+# cover.  Hair naturally falls over the brow, temples and cheeks, so hairstyle
+# layers are clipped out of this core (dilated by HAIRSTYLE_FEATURE_CORE_DILATION_PX,
+# faded over HAIRSTYLE_FEATURE_CORE_FEATHER_PX) instead of the whole protected
+# face; garments, headwear and accessories keep the full protected-face rule.
+FEATURE_CORE_LAYERS = (
+    "iris_left", "iris_right", "eyelid_left", "eyelid_right",
+    "oral_cavity", "lip_upper", "lip_lower",
+)
+HAIRSTYLE_FEATURE_CORE_DILATION_PX = 8
+HAIRSTYLE_FEATURE_CORE_FEATHER_PX = 6
 FULL_BODY_RIG_ROOT = "assets/pose-atlas"
 
 Rect = tuple[int, int, int, int]

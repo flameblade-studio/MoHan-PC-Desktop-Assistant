@@ -8,8 +8,8 @@ lazy import zipfile
 lazy from collections.abc import Callable
 lazy from pathlib import Path
 
-lazy from PySide6.QtCore import QRect
-lazy from PySide6.QtGui import QImage, QPainter, QPixmap, QRegion
+lazy from PySide6.QtCore import QRect, Qt
+lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
 
 lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.outfit_pack import (
@@ -26,6 +26,10 @@ lazy from domain.outfit_pack import (
 )
 lazy from domain.outfit_pack_makeup import (
     EXCLUSION_RIG_LAYERS,
+    FEATURE_CORE_LAYERS,
+    HAIRSTYLE_FEATURE_CORE_DILATION_PX,
+    HAIRSTYLE_FEATURE_CORE_FEATHER_PX,
+    HALF_BODY_RIGS,
     MAKEUP_STATE_FILE,
     SAFE_REGION_FILE,
     load_makeup_safe_regions,
@@ -36,11 +40,11 @@ lazy from domain.version_info import APP_VERSION
 
 SEMVER_COMPONENT_COUNT = 3
 _RANGE = re.compile(r">=(\d+)\.(\d+)\.(\d+),<(\d+)\.(\d+)\.(\d+)\Z")
-_HALF_POSE = {
-    "cheek-rest": "cheek",
-    "left-neutral": "lean",
-    "front-crossed": "front",
-}
+HALF_BODY_CANVAS = (1254, 1254)
+FULL_BODY_CANVAS = (1024, 1536)
+# One-pixel Chebyshev dilation step (the same 8-neighbour rule the assembler uses).
+_DILATION_OFFSETS = tuple((dx, dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1) if dx or dy)
+_OPAQUE = 255
 # Makeup always composites below every other category (skin < makeup < hair <
 # headwear < garment/accessories); its declared z-order only orders the three
 # makeup slots among themselves.
@@ -77,6 +81,8 @@ class ActiveOutfitOverlay:
         self._parsed_packs: dict[tuple[Path, tuple[int, int]], object] = {}
         self._layers_by_view: dict[str, tuple[Layer, ...]] = {}
         self._protected_by_view: dict[str, QRegion] = {}
+        self._feature_by_view: dict[str, QRegion] = {}
+        self._hair_mask_by_view: dict[str, tuple[QImage, QRect] | None] = {}
         self._makeup_exclusion_by_view: dict[str, QRegion] = {}
         self._safe_regions = None
 
@@ -108,6 +114,10 @@ class ActiveOutfitOverlay:
             painter.drawPixmap(anchor_x, anchor_y, pixmap)
         painter.end()
         return result
+
+    def layer_count(self, view_id: str) -> int:
+        """Layers the last ``apply`` composited for ``view_id``; 0 when bare or failed closed."""
+        return len(self._layers_by_view.get(view_id) or ())
 
     def _reject_stale_active_pack(self) -> None:
         """Issue #140, option 3: a generation-1 pack is never rendered on the generation-2 body.
@@ -244,7 +254,11 @@ class ActiveOutfitOverlay:
         canvas_size: tuple[int, int],
     ) -> list[tuple[int, Layer]]:
         forbidden = self._forbidden_face_region(category, item, variant, view_id)
-        allowed = QRegion(QRect(0, 0, canvas_size[0], canvas_size[1])).subtracted(forbidden)
+        allowed = QRegion(QRect(0, 0, canvas_size[0], canvas_size[1]))
+        # Hair falls over the face naturally: it is faded out of the feature core
+        # below instead of being cut by the protected-face rectangle.
+        if category != "hairstyle":
+            allowed = allowed.subtracted(forbidden)
         layers: list[tuple[int, Layer]] = []
         for declaration in declarations:
             _encoded, image = self._decoded_layer(archive, declaration)
@@ -265,11 +279,83 @@ class ActiveOutfitOverlay:
             )
             if not has_content:
                 continue
+            if category == "hairstyle":
+                pixmap = self._feathered_hair_layer(pixmap, declaration.anchor_x, declaration.anchor_y, view_id)
             layers.append((
                 declaration.z_order,
                 (pixmap, declaration.anchor_x, declaration.anchor_y, allowed, 1.0),
             ))
         return layers
+
+    def _feathered_hair_layer(self, pixmap: QPixmap, anchor_x: int, anchor_y: int, view_id: str) -> QPixmap:
+        """Multiply the hair alpha by the feathered feature-core mask (0 inside, 1 beyond the feather)."""
+        mask = self._hair_core_mask(view_id)
+        if mask is None:
+            return pixmap
+        alpha, bounds = mask
+        image = pixmap.toImage().convertToFormat(QImage.Format_ARGB32_Premultiplied)
+        painter = QPainter(image)
+        painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+        painter.drawImage(bounds.x() - anchor_x, bounds.y() - anchor_y, alpha)
+        painter.end()
+        return QPixmap.fromImage(image)
+
+    def _hair_core_mask(self, view_id: str) -> tuple[QImage, QRect] | None:
+        """Alpha multiplier around the feature core, cached per view.
+
+        Inside the core dilated by HAIRSTYLE_FEATURE_CORE_DILATION_PX the multiplier
+        is 0; it ramps linearly to 1 over the next HAIRSTYLE_FEATURE_CORE_FEATHER_PX
+        pixels, so the clip edge is never a hard line.  The image covers only the
+        core's neighbourhood (``bounds``); everything outside keeps its alpha.
+        """
+        if view_id in self._hair_mask_by_view:
+            return self._hair_mask_by_view[view_id]
+        core = self._feature_region(view_id)
+        result = None
+        if not core.isEmpty():
+            dilation, feather = HAIRSTYLE_FEATURE_CORE_DILATION_PX, HAIRSTYLE_FEATURE_CORE_FEATHER_PX
+            margin = dilation + feather + 1
+            canvas = QRect(0, 0, *self._canvas_size(view_id))
+            bounds = core.boundingRect().adjusted(-margin, -margin, margin, margin).intersected(canvas)
+            ring = QImage(bounds.size(), QImage.Format_ARGB32)
+            ring.fill(QColor(0, 0, 0, _OPAQUE))
+            painter = QPainter(ring)
+            painter.setClipRegion(core.translated(-bounds.x(), -bounds.y()))
+            painter.fillRect(ring.rect(), Qt.white)
+            painter.end()
+            for _step in range(dilation):
+                ring = self._dilated(ring)
+            rings = [ring]
+            for _step in range(feather):
+                rings.append(self._dilated(rings[-1]))
+            multiplier = QImage(bounds.size(), QImage.Format_ARGB32)
+            multiplier.fill(QColor(_OPAQUE, _OPAQUE, _OPAQUE, _OPAQUE))
+            painter = QPainter(multiplier)
+            # Outermost ring first; each inner ring overrides with a lower value.
+            for step in range(feather - 1, -1, -1):
+                value = round(_OPAQUE * step / feather)
+                coat = QImage(bounds.size(), QImage.Format_ARGB32)
+                coat.fill(QColor(value, value, value, _OPAQUE))
+                coat.setAlphaChannel(rings[step].convertToFormat(QImage.Format_Grayscale8))
+                painter.drawImage(0, 0, coat)
+            painter.end()
+            alpha = QImage(bounds.size(), QImage.Format_ARGB32)
+            alpha.fill(QColor(0, 0, 0, _OPAQUE))
+            alpha.setAlphaChannel(multiplier.convertToFormat(QImage.Format_Grayscale8))
+            result = (alpha, bounds)
+        self._hair_mask_by_view[view_id] = result
+        return result
+
+    @staticmethod
+    def _dilated(binary: QImage) -> QImage:
+        """Grow the white pixels of an opaque black/white image by one pixel (8-neighbour)."""
+        grown = QImage(binary)
+        painter = QPainter(grown)
+        painter.setCompositionMode(QPainter.CompositionMode_Lighten)
+        for dx, dy in _DILATION_OFFSETS:
+            painter.drawImage(dx, dy, binary)
+        painter.end()
+        return grown
 
     def _makeup_layers(
         self,
@@ -363,20 +449,14 @@ class ActiveOutfitOverlay:
         variant,
         view_id: str,
     ) -> QRegion:
+        # Hair may lie anywhere on the face except the feature core (eyes and
+        # mouth); its authored face_masks rule no longer widens the clip.
+        if category == "hairstyle":
+            return self._feature_region(view_id)
         face = self._protected_face_region(view_id, self._canvas_size(view_id))
         bounds = face.boundingRect()
         allowed = QRegion()
-        if category == "hairstyle":
-            rule = "none" if variant.face_masks is None else variant.face_masks[view_id]
-            if rule == "hairline-safe":
-                allowed = QRegion(QRect(bounds.x(), bounds.y(), bounds.width(), max(1, bounds.height() // 4)))
-            elif rule == "bangs-safe":
-                allowed = QRegion(QRect(bounds.x(), bounds.y(), bounds.width(), max(1, bounds.height() * 48 // 100)))
-            elif rule == "side-locks-safe":
-                width = max(1, bounds.width() * 28 // 100)
-                allowed = QRegion(QRect(bounds.x(), bounds.y(), width, bounds.height()))
-                allowed = allowed.united(QRegion(QRect(bounds.right() - width + 1, bounds.y(), width, bounds.height())))
-        elif category == "headwear":
+        if category == "headwear":
             safe_mask = str(item.safe_mask or "")
             if safe_mask == "crown-safe":
                 allowed = QRegion(QRect(bounds.x(), bounds.y(), bounds.width(), max(1, bounds.height() // 5)))
@@ -385,30 +465,27 @@ class ActiveOutfitOverlay:
                 allowed = QRegion(QRect(bounds.x(), bounds.y(), width, bounds.height()))
                 allowed = allowed.united(QRegion(QRect(bounds.right() - width + 1, bounds.y(), width, bounds.height())))
         forbidden = face.subtracted(allowed)
-        if category in {"hairstyle", "headwear"}:
+        if category == "headwear":
             forbidden = forbidden.united(self._feature_region(view_id))
         return forbidden
 
     def _feature_region(self, view_id: str) -> QRegion:
+        """Union of the feature-core rig cut-outs (iris, eyelids, oral cavity, lips)."""
+        cached = self._feature_by_view.get(view_id)
+        if cached is not None:
+            return cached
         root = (
             self._asset_root / "assets" / "expressions" / "layered"
-            if view_id in _HALF_POSE
+            if view_id in HALF_BODY_RIGS
             else self._asset_root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
         )
-        prefix = _HALF_POSE.get(view_id, view_id)
+        prefix = HALF_BODY_RIGS.get(view_id, view_id)
         region = QRegion()
-        for layer in (
-            "iris_left",
-            "iris_right",
-            "eyelid_left",
-            "eyelid_right",
-            "oral_cavity",
-            "lip_upper",
-            "lip_lower",
-        ):
+        for layer in FEATURE_CORE_LAYERS:
             source = QPixmap(str(root / f"{prefix}_{layer}.png"))
             if not source.isNull():
                 region = region.united(QRegion(source.mask()))
+        self._feature_by_view[view_id] = region
         return region
 
     def _protected_face_region(
@@ -428,14 +505,14 @@ class ActiveOutfitOverlay:
         return region
 
     def _protected_face_path(self, view_id: str) -> Path:
-        pose = _HALF_POSE.get(view_id)
-        if pose is not None:
-            return self._asset_root / "assets" / "expressions" / "layered" / f"{pose}_base.png"
+        rig = HALF_BODY_RIGS.get(view_id)
+        if rig is not None:
+            return self._asset_root / "assets" / "expressions" / "layered" / f"{rig}_base.png"
         return self._asset_root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME / f"{view_id}_base.png"
 
     @staticmethod
     def _canvas_size(view_id: str) -> tuple[int, int]:
-        return (1254, 1254) if view_id in _HALF_POSE else (1024, 1536)
+        return HALF_BODY_CANVAS if view_id in HALF_BODY_RIGS else FULL_BODY_CANVAS
 
     @staticmethod
     def _compatible(app_range: str) -> bool:

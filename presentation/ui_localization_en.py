@@ -120,6 +120,8 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_view_left": "Left",
     "wardrobe_view_right": "Right",
     "wardrobe_view_back": "Back",
+    "wardrobe_preview_composing": "Composing the appearance preview through the runtime…",
+    "wardrobe_preview_fallback": "The appearance preview could not be composed and shows the bare base for now; the desktop companion is unaffected.",
     "wardrobe_upload_single_file": "Upload one file",
     "wardrobe_installed_inactive": "Installed, not active",
     "wardrobe_outfit_preview": "Outfit preview",

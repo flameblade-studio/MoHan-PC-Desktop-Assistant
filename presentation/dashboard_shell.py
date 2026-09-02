@@ -6,7 +6,7 @@ lazy from functools import partial
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QEvent, Qt, QThreadPool, QTimer
-lazy from PySide6.QtGui import QKeySequence, QMouseEvent, QPixmap, QShortcut
+lazy from PySide6.QtGui import QKeySequence, QMouseEvent, QShortcut
 lazy from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QFileDialog, QFrame, QHBoxLayout, QLabel,
     QLineEdit, QListWidget, QListWidgetItem, QPushButton, QSizePolicy,
@@ -20,7 +20,6 @@ lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
 lazy from domain.app_profile import (
     personalize_text, profile_setting, profile_window_title,
 )
-lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
 lazy from domain.feature_registry import DashboardFeatureRegistry
 lazy from domain.language_support import (
     is_english, is_japanese, is_simplified_chinese,
@@ -42,11 +41,7 @@ lazy from presentation.flagship_theme import (
     create_flagship_ornament,
     mark_flagship_card,
 )
-lazy from presentation.presentation_resources import (
-    STYLE,
-    application_icon,
-    resource_path,
-)
+lazy from presentation.presentation_resources import STYLE, application_icon
 lazy from presentation.settings_ui_localization import SettingsText, settings_text
 lazy from presentation.ui_localization import (
     MODE_LABELS,
@@ -662,94 +657,6 @@ class DashboardShellMixin:
         hero_row.addLayout(hero_text, 1)
         hero_row.addWidget(create_flagship_ornament(hero, size=110))
         return hero
-
-    def _wardrobe_preview_card(self) -> QFrame:
-        preview_card = QFrame()
-        preview_card.setProperty("mohanRole", "portraitCard")
-        preview = QVBoxLayout(preview_card)
-        preview.setContentsMargins(14, 14, 14, 14)
-        preview.setSpacing(8)
-        preview_title = QLabel(
-            self._t("wardrobe_character_preview", "墨寒造型預覽")
-        )
-        preview_title.setAlignment(Qt.AlignCenter)
-        preview_title.setProperty("mohanRole", "cardTitle")
-        self.wardrobe_character_preview = QLabel()
-        self.wardrobe_character_preview.setObjectName("wardrobeCharacterPreview")
-        self.wardrobe_character_preview.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
-        self.wardrobe_character_preview.setMinimumSize(300, 410)
-        self.wardrobe_character_preview.setAccessibleName(
-            self._t("wardrobe_character_preview", "墨寒造型預覽")
-        )
-        pose_root = resource_path(POSE_ATLAS_RELATIVE_ROOT)
-        # Side labels follow MoHan's OWN left/right (owner ruling 2026-08-28):
-        # yaw+090 presents her LEFT side to the camera, yaw-090 her right —
-        # the previous mapping used the viewer's left/right instead.
-        pose_choices = (
-            ("wardrobe_view_front", "正面", pose_root / "yaw+000-pitch+00.png"),
-            ("wardrobe_view_left", "左側", pose_root / "yaw+090-pitch+00.png"),
-            ("wardrobe_view_right", "右側", pose_root / "yaw-090-pitch+00.png"),
-            ("wardrobe_view_back", "背面", pose_root / "yaw-180-pitch+00.png"),
-        )
-        self._wardrobe_outfit_overlay = self.presentation_ports.outfit_overlay_factory(on_stale_body_profile=lambda: self.set_outfit_generation_status("body-profile-outdated"))
-        self._wardrobe_pose_source = QPixmap()
-        self._wardrobe_pose_path = pose_choices[0][2]
-        self.wardrobe_pose_buttons: list[QPushButton] = []
-        pose_actions = QHBoxLayout()
-        pose_actions.setSpacing(5)
-        for key, fallback, path in pose_choices:
-            button = QPushButton(self._t(key, fallback))
-            button.setCheckable(True)
-            button.setProperty("mohanAction", "pose")
-            button.clicked.connect(
-                partial(self._show_wardrobe_pose, path, button)
-            )
-            self.wardrobe_pose_buttons.append(button)
-            pose_actions.addWidget(button)
-        self._show_wardrobe_pose(
-            pose_choices[0][2],
-            self.wardrobe_pose_buttons[0],
-        )
-        self.wardrobe_preview_name = QLabel(
-            self._t("wardrobe_default_outfit", "內建預設服裝")
-        )
-        self.wardrobe_preview_name.setAlignment(Qt.AlignCenter)
-        self.wardrobe_preview_name.setWordWrap(True)
-        self.wardrobe_preview_name.setProperty("mohanRole", "statusPill")
-        preview.addWidget(preview_title)
-        preview.addWidget(self.wardrobe_character_preview, 1)
-        preview.addLayout(pose_actions)
-        preview.addWidget(self.wardrobe_preview_name)
-        return preview_card
-
-    def _update_wardrobe_preview_name(
-        self,
-        current: QListWidgetItem | None,
-        _previous: QListWidgetItem | None,
-    ) -> None:
-        if current is None:
-            return
-        self.wardrobe_preview_name.setText(current.text())
-
-    def _show_wardrobe_pose(self, path: Path, active: QPushButton) -> None:
-        pose = QPixmap(str(path))
-        if pose.isNull():
-            return
-        self._wardrobe_pose_path = Path(path)
-        overlay = getattr(self, "_wardrobe_outfit_overlay", None)
-        if overlay is not None:
-            pose = overlay.apply(pose, Path(path).stem)
-        self._wardrobe_pose_source = pose
-        self.wardrobe_character_preview.setPixmap(
-            pose.scaled(
-                300,
-                400,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation,
-            )
-        )
-        for button in self.wardrobe_pose_buttons:
-            button.setChecked(button is active)
 
     def _import_outfit_package(self) -> None:
         source, _filter = QFileDialog.getOpenFileName(

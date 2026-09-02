@@ -19,6 +19,10 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion, QTransform
 
+lazy from domain.companion_animation_contract import (
+    gesture_portrait_expression,
+    outfit_silhouette,
+)
 lazy from domain.face_rig import FaceMotionFrame, Viseme
 lazy from infrastructure.layered_face_assets import (
     LayeredFaceManifest,
@@ -168,11 +172,18 @@ class LayeredParametricFaceRenderer:
         # exactly once below.  Deforming the neutral lip/cavity cut-outs first
         # and painting the viseme a second time was the source of the doubled,
         # fragmented mouth seen in packaged builds.
-        composed = self.render_pose(
-            self._pose(motion),
-            motion,
-            animate_mouth=False,
-        )
+        # The four gesture expressions (and their speech/blink frames) are the
+        # exception: their body differs from the neutral pose, so the authored
+        # gesture portrait is the frame and the appearance pack dresses it with
+        # the layers cut on that very portrait (its gesture silhouette).
+        gesture = gesture_portrait_expression(motion.expression)
+        composed = self._gesture_portrait(gesture) if gesture is not None else QPixmap()
+        if composed.isNull():
+            composed = self.render_pose(
+                self._pose(motion),
+                motion,
+                animate_mouth=False,
+            )
         if composed.isNull() or base.isNull():
             return composed
         # Apply the outfit overlay on the FULL authored canvas, before any
@@ -182,12 +193,10 @@ class LayeredParametricFaceRenderer:
         # anchor check fail (or draw ~2.7x off), so installed outfits never
         # appeared on the half-body poses at all.
         if self._outfit_overlay is not None:
-            silhouette = {
-                "cheek": "cheek-rest",
-                "lean": "left-neutral",
-                "front": "front-crossed",
-            }[motion.pose.value]
-            composed = self._outfit_overlay.apply(composed, silhouette)
+            composed = self._outfit_overlay.apply(
+                composed,
+                outfit_silhouette(motion.expression, motion.pose.value),
+            )
         result = (
             composed
             if composed.size() == base.size()
@@ -210,6 +219,10 @@ class LayeredParametricFaceRenderer:
                 max(0.0, min(1.0, actual_aperture / 0.18)),
             )
         return result
+
+    def _gesture_portrait(self, expression: str) -> QPixmap:
+        """The authored full-canvas portrait of one gesture expression (null when absent)."""
+        return QPixmap(self._cached_pixmap(self._authority_dir / f"{expression}.png"))
 
     def render_overlay(
         self,

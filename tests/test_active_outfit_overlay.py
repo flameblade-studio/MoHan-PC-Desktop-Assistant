@@ -212,9 +212,14 @@ def test_missing_optional_category_in_active_state_is_transparent_builtin(
     assert resolve_active_selection(store, "jewelry").status == "builtin"
 
 
-def test_bangs_mask_allows_only_upper_face_and_still_protects_eye_features(
+def test_hair_is_clipped_only_out_of_the_feature_core_not_the_face_box(
     tmp_path: Path,
 ) -> None:
+    """Hair falls over the brow and cheeks; only the eye/mouth core is off limits.
+
+    Garments keep the full protected-face rule, so the same cheek pixel stays
+    forbidden for them.
+    """
     _app()
     _authority(tmp_path)
     adapter = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
@@ -230,7 +235,10 @@ def test_bangs_mask_allows_only_upper_face_and_still_protects_eye_features(
     )
     assert not forbidden.contains(QPoint(600, 120))
     assert forbidden.contains(QPoint(600, 250))
-    assert forbidden.contains(QPoint(600, 400))
+    assert not forbidden.contains(QPoint(600, 400))
+    garment_forbidden = adapter._forbidden_face_region("garment", item, variant, "front-crossed")
+    assert garment_forbidden.contains(QPoint(600, 250))
+    assert garment_forbidden.contains(QPoint(600, 400))
 
 
 def test_compositor_uses_each_layers_own_face_clip(tmp_path: Path) -> None:
@@ -254,7 +262,8 @@ def test_compositor_uses_each_layers_own_face_clip(tmp_path: Path) -> None:
     result = adapter.apply(frame, "front-crossed").toImage()
     assert result.pixelColor(600, 120) == QColor(40, 30, 20, 255)
     assert result.pixelColor(600, 250) == QColor(240, 240, 240, 255)
-    assert result.pixelColor(600, 400) == QColor(240, 240, 240, 255)
+    # The cheek is no longer part of the hair clip.
+    assert result.pixelColor(600, 400) == QColor(40, 30, 20, 255)
 
 
 def test_garment_and_accessory_coexist_in_global_z_order(

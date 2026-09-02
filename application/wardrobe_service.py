@@ -12,6 +12,7 @@ lazy from domain.outfit_pack import (
     InstalledSelection,
     OutfitPack,
     OutfitPackError,
+    SELECTION_CATEGORIES,
     apply_appearance_selection,
     apply_ensemble,
     clear_appearance_selection,
@@ -23,6 +24,8 @@ lazy from domain.outfit_pack import (
     restore_builtin_outfit,
 )
 lazy from domain.outfit_pack_makeup import (
+    ACTIVE_STATE_FILE,
+    MAKEUP_STATE_FILE,
     read_makeup_intensity,
     select_builtin_makeup,
     verify_makeup_layers,
@@ -312,6 +315,28 @@ class WardrobeService:
 
     def makeup_intensity(self) -> float:
         return read_makeup_intensity(self.install_root)
+
+    def appearance_active(self) -> bool:
+        """True when any slot resolves to an installed pack, so a bare preview would be wrong."""
+        try:
+            return any(
+                resolve_active_selection(self.install_root, category).status == "installed"
+                for category in SELECTION_CATEGORIES
+            )
+        except (IncompatibleBodyProfileError, OutfitPackError, OSError, ValueError):
+            return False
+
+    def appearance_signature(self) -> tuple[tuple[int, int] | None, ...]:
+        """Change token of the active look: the selection and makeup state file stamps."""
+        tokens: list[tuple[int, int] | None] = []
+        for name in (ACTIVE_STATE_FILE, MAKEUP_STATE_FILE):
+            try:
+                stat = (self.install_root / name).stat()
+            except OSError:
+                tokens.append(None)
+            else:
+                tokens.append((stat.st_mtime_ns, stat.st_size))
+        return tuple(tokens)
 
     def set_makeup_intensity(self, value: float) -> float:
         return write_makeup_intensity(self.install_root, value)

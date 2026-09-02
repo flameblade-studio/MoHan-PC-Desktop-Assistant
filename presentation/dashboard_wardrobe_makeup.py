@@ -164,10 +164,3 @@ class DashboardWardrobeMakeupMixin:
         self.wardrobe_makeup_intensity_value.setText(f"{int(value)}%")
         self.wardrobe_service.set_makeup_intensity(int(value) / INTENSITY_PERCENT)
         self._refresh_wardrobe_preview()
-
-    def _refresh_wardrobe_preview(self) -> None:
-        buttons = getattr(self, "wardrobe_pose_buttons", None)
-        if not buttons:
-            return
-        checked = next((button for button in buttons if button.isChecked()), buttons[0])
-        self._show_wardrobe_pose(self._wardrobe_pose_path, checked)

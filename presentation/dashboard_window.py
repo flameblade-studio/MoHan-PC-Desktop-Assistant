@@ -20,6 +20,7 @@ lazy from presentation.dashboard_wardrobe_makeup import DashboardWardrobeMakeupM
 lazy from presentation.dashboard_wardrobe_preferences import (
     DashboardWardrobePreferencesMixin,
 )
+lazy from presentation.dashboard_wardrobe_preview import DashboardWardrobePreviewMixin
 lazy from presentation.flagship_theme import apply_flagship_theme
 
 __all__ = ("Dashboard",)
@@ -28,6 +29,7 @@ __all__ = ("Dashboard",)
 class Dashboard(
     DashboardWardrobePreferencesMixin,
     DashboardWardrobeMakeupMixin,
+    DashboardWardrobePreviewMixin,
     DashboardShellMixin,
     DashboardSettingsMixin,
     DashboardVoiceMixin,
