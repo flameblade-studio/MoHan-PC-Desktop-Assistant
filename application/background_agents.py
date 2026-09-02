@@ -115,8 +115,26 @@ class ManagerWorkerScheduler:
                 self._futures.pop(worker_id, None)
                 try:
                     candidates.extend(future.result())
-                except (OSError, RuntimeError, ValueError):
-                    continue
+                except (OSError, RuntimeError, ValueError) as error:
+                    # 原本 continue：worker 讀報告時 PermissionError，drain() 回傳
+                    # []，呼叫端把「診斷報告無法讀取」顯示成「沒有診斷問題」，
+                    # 且每次輪詢都靜默重演。失敗必須以觀察結果的形式浮上來，
+                    # 走同一條去重與冷卻，而不是消失。
+                    candidates.append(
+                        AgentObservation(
+                            worker_id=worker_id,
+                            event_key="worker-failed",
+                            message=(
+                                f"{worker_id} 無法完成檢查：{type(error).__name__}"
+                            ),
+                            expression="worried_front",
+                            priority=1,
+                            metadata={
+                                "status": "failed",
+                                "error": type(error).__name__,
+                            },
+                        )
+                    )
             candidates.sort(key=lambda item: (-item.priority, item.event_key))
             delivered: list[AgentObservation] = []
             for observation in candidates:

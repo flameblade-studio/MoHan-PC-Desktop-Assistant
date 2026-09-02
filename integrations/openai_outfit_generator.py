@@ -720,51 +720,70 @@ class GeneratedOutfitImageAuditor:
     ) -> tuple[str, ...]:
         issues: list[str] = []
         for view_id, entries in poses.items():
-            issue_id = f"{category}:{view_id}"
             if not isinstance(entries, list) or not entries:
-                issues.append(f"{issue_id}:missing-layer")
+                issues.append(f"{category}:{view_id}:missing-layer")
                 continue
-            path = entries[0].get("path") if isinstance(entries[0], dict) else None
-            if not isinstance(path, str):
-                issues.append(f"{issue_id}:invalid-path")
-                continue
-            image = cv2.imread(str(source / Path(*path.split("/"))), cv2.IMREAD_UNCHANGED)
-            expected = FULL_SIZE if view_id in POSE_ATLAS_SILHOUETTES else HALF_SIZE
+            # 原本只驗 entries[0]。manifest 契約允許多層，第二層可以尺寸與
+            # SHA-256 都正確、Alpha 卻 100% 不透明並蓋住臉，稽核照樣放行，
+            # install_after_audit=True 直接安裝。每一層都要過同一套檢查。
+            for layer_index, entry in enumerate(entries):
+                issue_id = (
+                    f"{category}:{view_id}"
+                    if len(entries) == 1
+                    else f"{category}:{view_id}:layer{layer_index}"
+                )
+                issues.extend(self._audit_layer(source, view_id, issue_id, entry))
+        return tuple(issues)
+
+    def _audit_layer(
+        self,
+        source: Path,
+        view_id: str,
+        issue_id: str,
+        entry: object,
+    ) -> tuple[str, ...]:
+        issues: list[str] = []
+        path = entry.get("path") if isinstance(entry, dict) else None
+        if not isinstance(path, str):
+            issues.append(f"{issue_id}:invalid-path")
+            return tuple(issues)
+        image = cv2.imread(str(source / Path(*path.split("/"))), cv2.IMREAD_UNCHANGED)
+        expected = FULL_SIZE if view_id in POSE_ATLAS_SILHOUETTES else HALF_SIZE
+        if (
+            image is None
+            or image.ndim != IMAGE_DIMENSIONS
+            or image.shape[2] != RGBA_CHANNELS
+        ):
+            issues.append(f"{issue_id}:not-rgba")
+            return tuple(issues)
+        if (image.shape[1], image.shape[0]) != expected:
+            issues.append(f"{issue_id}:wrong-size")
+            return tuple(issues)
+        nonzero = int(np.count_nonzero(image[:, :, 3]))
+        pixels = expected[0] * expected[1]
+        if nonzero < max(64, pixels // 5000):
+            issues.append(f"{issue_id}:empty")
+        elif nonzero > pixels * 0.72:
+            issues.append(f"{issue_id}:overbroad-alpha")
+        if self._root is not None:
+            protected_path = _protected_face_path(self._root, view_id)
+            protected = cv2.imread(str(protected_path), cv2.IMREAD_UNCHANGED)
             if (
-                image is None
-                or image.ndim != IMAGE_DIMENSIONS
-                or image.shape[2] != RGBA_CHANNELS
+                protected is None
+                or protected.ndim != IMAGE_DIMENSIONS
+                or protected.shape[2] != RGBA_CHANNELS
+                or protected.shape[:2] != image.shape[:2]
             ):
-                issues.append(f"{issue_id}:not-rgba")
-                continue
-            if (image.shape[1], image.shape[0]) != expected:
-                issues.append(f"{issue_id}:wrong-size")
-                continue
-            nonzero = int(np.count_nonzero(image[:, :, 3]))
-            pixels = expected[0] * expected[1]
-            if nonzero < max(64, pixels // 5000):
-                issues.append(f"{issue_id}:empty")
-            elif nonzero > pixels * 0.72:
-                issues.append(f"{issue_id}:overbroad-alpha")
-            if self._root is not None:
-                protected_path = _protected_face_path(self._root, view_id)
-                protected = cv2.imread(str(protected_path), cv2.IMREAD_UNCHANGED)
-                if (
-                    protected is None
-                    or protected.ndim != IMAGE_DIMENSIONS
-                    or protected.shape[2] != RGBA_CHANNELS
-                    or protected.shape[:2] != image.shape[:2]
-                ):
-                    issues.append(f"{issue_id}:protected-mask-unavailable")
-                    continue
-                face_alpha = (
-                    protected[:, :, RGBA_CHANNELS - 1] > ALPHA_CONTENT_THRESHOLD
-                )
-                face_pixels = int(np.count_nonzero(face_alpha))
-                outfit_alpha = (
-                    image[:, :, RGBA_CHANNELS - 1] > ALPHA_CONTENT_THRESHOLD
-                )
-                overlap = int(np.count_nonzero(outfit_alpha & face_alpha))
-                if face_pixels and overlap / face_pixels > MAX_FACE_OVERLAP_RATIO:
-                    issues.append(f"{issue_id}:face-overlap")
+                issues.append(f"{issue_id}:protected-mask-unavailable")
+                return tuple(issues)
+            face_alpha = (
+                protected[:, :, RGBA_CHANNELS - 1] > ALPHA_CONTENT_THRESHOLD
+            )
+            face_pixels = int(np.count_nonzero(face_alpha))
+            outfit_alpha = (
+                image[:, :, RGBA_CHANNELS - 1] > ALPHA_CONTENT_THRESHOLD
+            )
+            overlap = int(np.count_nonzero(outfit_alpha & face_alpha))
+            if face_pixels and overlap / face_pixels > MAX_FACE_OVERLAP_RATIO:
+                issues.append(f"{issue_id}:face-overlap")
         return tuple(issues)
