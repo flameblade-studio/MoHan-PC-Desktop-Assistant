@@ -32,7 +32,14 @@ class WardrobeStorageStatus:
     total_bytes: int
 
 
-def _directory_bytes(root: Path) -> int:
+def _directory_bytes(root: Path) -> int | None:
+    """回傳目錄總位元組；量不完整時回傳 None，而不是部分總量。
+
+    原本任一 stat() 拋 OSError 就 return 目前累計值。quarantine 實際 6.4 GiB、
+    掃到 800 MiB 時一個檔案因 ACL 變更或同步程式搬走而失敗，函式回傳 800 MiB，
+    低於 6 GiB 上限，生成器繼續寫 draft——這是 fail-open，可能把磁碟寫滿。
+    「量測失敗」與「量到很少」必須是兩個不同的回傳值。
+    """
     if not root.is_dir():
         return 0
     total = 0
@@ -41,7 +48,7 @@ def _directory_bytes(root: Path) -> int:
             try:
                 total += path.stat().st_size
             except OSError:
-                return total
+                return None
     return total
 
 
@@ -92,9 +99,13 @@ class WardrobeStorageGuard:
             for path in packages.glob("generated-*.mohan-outfit")
             if path.is_file()
         ) if packages.is_dir() else 0
-        total = generated_bytes + _directory_bytes(self.quarantine_root)
+        quarantine_bytes = _directory_bytes(self.quarantine_root)
+        total = generated_bytes + (quarantine_bytes or 0)
         reason = "ready"
-        if installed >= self.policy.max_installed_packages:
+        if quarantine_bytes is None:
+            # 量不準就不放行：上限檢查的前提是總量可信。
+            reason = "storage-unmeasurable"
+        elif installed >= self.policy.max_installed_packages:
             reason = "package-limit"
         elif jobs >= self.policy.max_quarantine_jobs:
             reason = "quarantine-limit"

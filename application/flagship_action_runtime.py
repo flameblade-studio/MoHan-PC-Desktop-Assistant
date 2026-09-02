@@ -32,6 +32,34 @@ Confirm = Callable[[ActionRequest, PolicyDecision, int], bool]
 Audit = Callable[[str, dict[str, Any]], None]
 
 
+# 稽核紀錄裡不該原樣保存的欄位。UI 只顯示摘要 500 字，資料庫卻存到
+# 100,000 字；clipboard_read 把整段剪貼簿放進 result.data["text"]，
+# clipboard_write 把要寫入的文字放進 request.arguments["text"]，兩者都以
+# 未加密 JSON 進 SQLite，而 clear_audit_before() 沒有正式呼叫者，不是短期
+# 環形紀錄。金鑰、密碼、私訊都可能在剪貼簿裡。
+REDACTED_AUDIT_KEYS = frozenset(
+    {"text", "content", "body", "password", "token", "secret"}
+)
+AUDIT_PREVIEW_CHARS = 64
+
+
+def redact_audit_payload(value: object) -> object:
+    """遞迴遮罩敏感欄位，只留長度與短預覽：稽核仍可讀，但不再是資料倉。"""
+    if isinstance(value, dict):
+        redacted: dict[str, object] = {}
+        for key, item in value.items():
+            if key in REDACTED_AUDIT_KEYS and isinstance(item, str):
+                preview = item[:AUDIT_PREVIEW_CHARS]
+                more = "..." if len(item) > AUDIT_PREVIEW_CHARS else ""
+                redacted[key] = f"<redacted {len(item)} chars: {preview}{more}>"
+            else:
+                redacted[key] = redact_audit_payload(item)
+        return redacted
+    if isinstance(value, list):
+        return [redact_audit_payload(item) for item in value]
+    return value
+
+
 class CancellationRegistry:
     def __init__(self) -> None:
         self._events: dict[str, threading.Event] = {}
@@ -100,7 +128,7 @@ class ActionExecutor:
 
     def execute(self, plan: ActionPlan) -> list[ActionResult]:
         cancel_event = self.cancellations.begin(plan.plan_id)
-        self.audit("plan_started", plan.to_dict())
+        self.audit("plan_started", redact_audit_payload(plan.to_dict()))
         results: list[ActionResult] = []
         try:
             for request in plan.steps:
@@ -214,8 +242,8 @@ class ActionExecutor:
             "action_result",
             {
                 "plan_id": plan.plan_id,
-                "request": asdict(request),
-                "result": asdict(result),
+                "request": redact_audit_payload(asdict(request)),
+                "result": redact_audit_payload(asdict(result)),
             },
         )
 
