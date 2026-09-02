@@ -91,7 +91,21 @@ class BuildError(RuntimeError):
     pass
 
 
-def build(source_root: Path, output_root: Path) -> dict[str, object]:
+def build(
+    source_root: Path,
+    output_root: Path,
+    *,
+    skin_background: bool = False,
+) -> dict[str, object]:
+    """Build the working atlas.
+
+    ``skin_background`` declares a bare-limbed body: the hand ROIs legitimately
+    contain forearm and thigh skin, so the hand audit's extra-digit skin
+    heuristic (calibrated on the long-sleeved v4) is not applicable.  The
+    declaration is written into every hands sidecar; the audit reports the
+    skipped check instead of silently passing or falsely failing.
+    """
+
     source = source_root.resolve()
     output = output_root.resolve()
     if source == output:
@@ -136,6 +150,7 @@ def build(source_root: Path, output_root: Path) -> dict[str, object]:
             runner,
             palm_net,
             hand_net,
+            skin_background=skin_background,
         )
         (normalized / f"{item.view_id}.hands.json").write_text(
             json.dumps(hands, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
@@ -407,6 +422,8 @@ def _hand_sidecar(
     runner: OpenCVZooHandRunner,
     palm_net: object,
     hand_net: object,
+    *,
+    skin_background: bool = False,
 ) -> tuple[dict[str, object], dict[str, object]]:
     mapped = []
     for augmentation in _augmentations(rgb):
@@ -488,6 +505,7 @@ def _hand_sidecar(
         "occluded_hands": occluded,
         "protected_regions": protected,
         "occluders": occluders,
+        "skin_background": skin_background,
         "inference": {
             "pipeline": "OpenCV Zoo MediaPipe PalmDet + HandPose FP32 ONNX",
             "palm_threshold": HAND_PALM_THRESHOLD,
@@ -903,9 +921,18 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument(
+        "--skin-background",
+        action="store_true",
+        help="素體裸臂裸腿：手部 ROI 內合法有皮膚，宣告後 extra-digit 皮膚啟發式不跑並列為 skipped",
+    )
     args = parser.parse_args(argv)
     try:
-        report = build(args.source_root, args.output_root)
+        report = build(
+            args.source_root,
+            args.output_root,
+            skin_background=args.skin_background,
+        )
     except (BuildError, OSError, ValueError, RuntimeError) as error:
         print(json.dumps({"status": "blocked", "error": str(error)}, ensure_ascii=False, sort_keys=True))
         return 1

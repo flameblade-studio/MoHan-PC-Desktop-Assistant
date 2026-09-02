@@ -131,6 +131,12 @@ class HandAuditReport:
     passed: bool
     issues: tuple[AuditIssue, ...]
     fingers: tuple[FingerEvidence, ...]
+    # Checks that were deliberately not run for this asset, with the reason.
+    # A skipped check is reported, never silently counted as a pass.
+    skipped_checks: tuple[str, ...] = ()
+
+
+EXTRA_DIGIT_SKIPPED_SKIN_BACKGROUND = "extra-digit:skin-background"
 
 
 @dataclass(frozen=True, slots=True)
@@ -291,7 +297,19 @@ def audit_hand_asset(
     projections: tuple[HandProjection, ...],
     occluders: tuple[Occluder, ...] = (),
     allow_occluded_sides: frozenset[str] = frozenset(),
+    skin_background: bool = False,
 ) -> HandAuditReport:
+    """Audit one hand canvas.
+
+    ``skin_background`` declares that the pixels around the hand are
+    legitimately skin (bare forearm, bare thigh behind a hanging hand).  The
+    extra-digit heuristic counts skin inside the hand ROI that no skeleton
+    bone explains; it was calibrated on a long-sleeved body where that skin
+    could only be a sixth finger.  Against a bare body it flags the forearm
+    and thigh on most views, so under the declaration it is not run and the
+    skip is reported in ``skipped_checks`` for a human to cover.
+    """
+
     try:
         image = _png(png)
     except HandAuditError:
@@ -311,10 +329,13 @@ def audit_hand_asset(
             continue
         valid_point_sets.append(projection.landmarks)
         fingers.extend(_audit_projection(image, projection, allowlist, issues))
-    if valid_point_sets and _unexpected_skin_pixels(image, valid_point_sets) > MAX_UNEXPECTED_SKIN_PIXELS:
+    skipped: tuple[str, ...] = ()
+    if skin_background:
+        skipped = (EXTRA_DIGIT_SKIPPED_SKIN_BACKGROUND,)
+    elif valid_point_sets and _unexpected_skin_pixels(image, valid_point_sets) > MAX_UNEXPECTED_SKIN_PIXELS:
         issues.append(AuditIssue(IssueCode.EXTRA_DIGIT, None, None, None))
     unique = tuple(dict.fromkeys(issues))
-    return HandAuditReport(not unique, unique, tuple(fingers))
+    return HandAuditReport(not unique, unique, tuple(fingers), skipped)
 
 
 def _audit_hand_counts(

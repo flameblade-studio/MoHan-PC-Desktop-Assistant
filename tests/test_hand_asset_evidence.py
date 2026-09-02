@@ -116,6 +116,7 @@ def chunk(kind: bytes, payload: bytes) -> bytes:
 def sidecar(
     *,
     hands: list[dict[str, object]] | None = None,
+    skin_background: object = None,
     occluded_hands: list[dict[str, object]] | None = None,
 ) -> bytes:
     configured = [
@@ -142,6 +143,7 @@ def sidecar(
             {"label": "face", "rect": [62, 2, 8, 14]},
             {"label": "body", "rect": [62, 20, 8, 47]},
         ],
+        **({} if skin_background is None else {"skin_background": skin_background}),
     }, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
@@ -322,8 +324,45 @@ def assert_missing_or_unsafe_roi_fails_closed() -> None:
         assert build_hand_asset_evidence(root, manifest).problems == ("sidecar_invalid",)
 
 
+def assert_skin_background_declaration_skips_extra_digit_and_reports_it() -> None:
+    # 裸臂裸腿的素體：手部 ROI 內合法有皮膚。extra-digit 的皮膚啟發式是在長袖 v4 上
+    # 校準的，對裸體 24 視角誤報 19 個。宣告後不跑該檢查，但必須列在 skipped_checks，
+    # 其他檢查照跑，非布林宣告 fail closed，沒有宣告時行為與以前完全相同。
+    with TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        manifest = write_fixture(
+            root,
+            png_data=png(inside_extra_finger=True),
+            sidecar_data=sidecar(skin_background=True),
+        )
+        result = build_hand_asset_evidence(root, manifest)
+        assert result.passed
+        assert "hand_extra_digit" not in result.problems
+        assert result.skipped_checks == ("extra-digit:skin-background",)
+        assert b'"skipped_checks":["extra-digit:skin-background"]' in result.to_json_bytes()
+    with TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        manifest = write_fixture(
+            root, png_data=png(fused=True), sidecar_data=sidecar(skin_background=True)
+        )
+        result = build_hand_asset_evidence(root, manifest)
+        assert not result.passed
+        assert "hand_fused_digits" in result.problems
+    with TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        manifest = write_fixture(root, sidecar_data=sidecar(skin_background="yes"))
+        assert build_hand_asset_evidence(root, manifest).problems == ("sidecar_invalid",)
+    with TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        manifest = write_fixture(root, png_data=png(inside_extra_finger=True))
+        result = build_hand_asset_evidence(root, manifest)
+        assert result.skipped_checks == ()
+        assert "hand_extra_digit" in result.problems
+
+
 def run() -> None:
     assert_valid_evidence_is_release_compatible_and_deterministic()
+    assert_skin_background_declaration_skips_extra_digit_and_reports_it()
     assert_missing_digit_wrong_thumb_and_fusion_fail()
     assert_body_occlusion_is_explicit_without_inventing_hidden_landmarks()
     assert_fully_occluded_hands_are_explicit_and_safe()

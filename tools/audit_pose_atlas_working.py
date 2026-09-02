@@ -65,6 +65,7 @@ def audit(root: Path) -> dict[str, object]:
                 ],
                 "visible_sides": sorted(result.visible_sides),
                 "occluded_sides": sorted(result.occluded_sides),
+                "skipped_checks": list(result.skipped_checks),
             }
         )
     failed = [item for item in views if not item["passed"]]
