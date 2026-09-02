@@ -74,6 +74,7 @@ class HandAssetEvidenceResult:
     issues: tuple[HandAssetEvidenceIssue, ...]
     visible_sides: frozenset[str] = frozenset()
     occluded_sides: frozenset[str] = frozenset()
+    skipped_checks: tuple[str, ...] = ()
 
     @property
     def problems(self) -> tuple[str, ...]:
@@ -97,6 +98,7 @@ class HandAssetEvidenceResult:
             ],
             "visible_sides": sorted(self.visible_sides),
             "occluded_sides": sorted(self.occluded_sides),
+            "skipped_checks": list(self.skipped_checks),
         }
         return json.dumps(
             payload,
@@ -143,6 +145,7 @@ def build_hand_asset_evidence(
             height,
         )
         occluders = _occluders(payload)
+        skin_background = _skin_background(payload)
     except (UnicodeError, json.JSONDecodeError, TypeError, ValueError, zlib.error):
         return _failure("sidecar_invalid", manifest.view_id, files.png_sha256, files.sidecar_sha256)
     report = audit_hand_asset(
@@ -150,6 +153,7 @@ def build_hand_asset_evidence(
         projections,
         occluders,
         allow_occluded_sides=occluded_sides,
+        skin_background=skin_background,
     )
     issues = tuple(
         HandAssetEvidenceIssue(
@@ -170,7 +174,16 @@ def build_hand_asset_evidence(
         tuple(dict.fromkeys(issues)),
         visible_sides,
         occluded_sides,
+        report.skipped_checks,
     )
+
+
+def _skin_background(payload: dict[str, object]) -> bool:
+    # 素體裸臂裸腿時由建置器宣告；沒有宣告就是 False，不從像素推斷。
+    value = payload.get("skin_background", False)
+    if type(value) is not bool:
+        raise TypeError("invalid_skin_background")
+    return value
 
 
 class _EvidenceFailure(RuntimeError):
