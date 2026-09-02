@@ -55,6 +55,12 @@ NOTICE_KEY = "wardrobe_body_profile_outdated"
 NOTICE_ZH_TW = "這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成"
 
 
+@pytest.fixture(autouse=True)
+def _pending_official_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """These contracts describe a store on its own; the shipped official packs are covered elsewhere."""
+    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
+
+
 def _generation_one_pack(root: Path) -> Path:
     manifest, assets = _manifest(_png())
     stale = copy.deepcopy(manifest)

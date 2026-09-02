@@ -66,9 +66,16 @@ BUILTIN_SCAFFOLD_ARGS = (
     "--item-name", "墨寒妝容|墨寒妆容|MoHan face makeup|墨寒メイク",
     "--variant", "classic:原妝|原妆|Classic|基本メイク",
     "--variant", "light:淡雅|淡雅|Light|淡めメイク",
+    "--license", "All Rights Reserved - see ASSETS-LICENSE.md",
 )
 
 Block = tuple[int, int, int, int]
+
+
+@pytest.fixture(autouse=True)
+def _pending_official_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Start every test before the official packs ship; ``official_builtin_pack`` opts back in."""
+    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
 
 
 def canvas_for(silhouette: str) -> tuple[int, int]:

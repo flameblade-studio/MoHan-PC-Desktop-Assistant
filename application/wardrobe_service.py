@@ -28,8 +28,13 @@ lazy from domain.outfit_pack_makeup import (
     verify_makeup_layers,
     write_makeup_intensity,
 )
+lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID, official_outfit_ensemble
 
+# Opaque sentinel persisted in the ``active_outfit_id`` setting since v2; it
+# means "the built-in look" (today the official Blue-and-White Hanfu pack plus
+# the built-in classic makeup) and is kept stable so saved profiles keep working.
 BUILTIN_OUTFIT_ID = "mohan.default.blue-silver"
+BUILTIN_OUTFIT_FALLBACK_NAME = "墨寒藍白漢服"
 BARE_MAKEUP_ID = "none"
 BUILTIN_MAKEUP_PREFIX = "builtin/"
 SELECTION_ID_PARTS = 3
@@ -87,7 +92,14 @@ def _localized_name(selection: InstalledSelection, language: str) -> str:
 
 
 def _ensemble_id(ensemble: InstalledEnsemble) -> str:
+    if ensemble.pack_id == OFFICIAL_OUTFIT_PACK_ID:
+        return BUILTIN_OUTFIT_ID
     return "/".join((ensemble.pack_id, ensemble.ensemble_id))
+
+
+def _localized_pack_name(ensemble: InstalledEnsemble, language: str) -> str:
+    language = language if language in ensemble.pack_display_names else "zh-TW"
+    return ensemble.pack_display_names[language]
 
 
 def _localized_ensemble_name(
@@ -122,11 +134,19 @@ class WardrobeService:
         self.install_root = Path(install_root)
 
     def outfits(self, language: str = "zh-TW") -> tuple[InstalledOutfit, ...]:
+        # The official default pack is the built-in entry itself; it is never
+        # listed a second time as a removable ensemble or loose variant.
+        every_ensemble = list_installed_ensembles(self.install_root)
+        official = official_outfit_ensemble(every_ensemble)
+        installed_ensembles = tuple(
+            ensemble for ensemble in every_ensemble if ensemble.pack_id != OFFICIAL_OUTFIT_PACK_ID
+        )
         built_in = InstalledOutfit(
             BUILTIN_OUTFIT_ID,
-            "墨寒藍銀劍裝",
+            BUILTIN_OUTFIT_FALLBACK_NAME if official is None else _localized_pack_name(official, language),
             True,
             True,
+            ensemble=official,
         )
         ensembles = tuple(
             InstalledOutfit(
@@ -135,7 +155,7 @@ class WardrobeService:
                 True,
                 ensemble=ensemble,
             )
-            for ensemble in list_installed_ensembles(self.install_root)
+            for ensemble in installed_ensembles
         )
         ensemble_garments = {
             *(
@@ -145,7 +165,7 @@ class WardrobeService:
                 and selection.item_id is not None
                 and selection.variant_id is not None
             )
-            for ensemble in list_installed_ensembles(self.install_root)
+            for ensemble in (*installed_ensembles, *(() if official is None else (official,)))
         }
         separate_variants = tuple(
             InstalledOutfit(

@@ -72,6 +72,9 @@ class ActiveOutfitOverlay:
         # fresh store matches this initial value and keeps pre-seeded layers.
         self._state_token: tuple[tuple[int, int] | None, ...] = (None, None)
         self._package_tokens: dict[Path, tuple[int, int]] = {}
+        # Parsing an archive hashes every member (the official default pack is
+        # 26 MB); one parse per (path, mtime, size) instead of one per view.
+        self._parsed_packs: dict[tuple[Path, tuple[int, int]], object] = {}
         self._layers_by_view: dict[str, tuple[Layer, ...]] = {}
         self._protected_by_view: dict[str, QRegion] = {}
         self._makeup_exclusion_by_view: dict[str, QRegion] = {}
@@ -153,16 +156,18 @@ class ActiveOutfitOverlay:
             {} if active_changed else current_package_tokens
         )
         self._layers_by_view.clear()
+        self._parsed_packs.clear()
 
     def _selected_variant(self, category: str, selected) -> tuple[Path, object, object]:
         """Locate and validate the active pack, item and variant for one category."""
         archive_path = installed_pack_path(self._store, selected.effective_pack_id)
         archive_stat = archive_path.stat()
-        self._package_tokens[archive_path] = (
-            archive_stat.st_mtime_ns,
-            archive_stat.st_size,
-        )
-        pack = inspect_outfit_pack(archive_path)
+        token = (archive_stat.st_mtime_ns, archive_stat.st_size)
+        self._package_tokens[archive_path] = token
+        pack = self._parsed_packs.get((archive_path, token))
+        if pack is None:
+            pack = inspect_outfit_pack(archive_path)
+            self._parsed_packs[(archive_path, token)] = pack
         if pack.compatible_body_profile != BODY_PROFILE_ID:
             raise IncompatibleBodyProfileError(
                 f"Active pack {pack.pack_id!r} targets {pack.compatible_body_profile!r}, not {BODY_PROFILE_ID!r}."

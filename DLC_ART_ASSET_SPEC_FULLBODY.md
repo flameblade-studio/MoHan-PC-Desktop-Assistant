@@ -218,7 +218,7 @@ assets/makeup/builtin/assets/mohan-signature-{variant}-{view_id}-{slot}.png
 24 視角 × 3 slot × 2 variant = 144 張；連同半身 42 張（`DLC_ART_ASSET_SPEC.md` 第九節）共 186 張，全部放齊後執行：
 
 ```
-py -3.15 tools/build_outfit_pack.py assets/makeup/builtin/manifest.json assets/makeup/builtin assets/makeup/mohan.makeup.builtin.mohan-outfit
+py -3.15 tools/build_outfit_pack.py assets/makeup/builtin/manifest.json assets/makeup/builtin assets/official-packs/mohan.makeup.builtin.mohan-outfit
 ```
 
 封裝即驗證 sha256、尺寸與安全區；任何一張越界或缺漏都整包拒絕。

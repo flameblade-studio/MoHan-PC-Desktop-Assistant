@@ -189,12 +189,13 @@ def _pyinstaller(
         f"{ROOT / 'THIRD_PARTY_NOTICES.md'}{data_separator}.",
         "--add-data",
         f"{build_info}{data_separator}.",
-        # Makeup safe regions and the official built-in makeup pack root travel
-        # with the runtime, exactly like the layered rigs they were derived from.
+        # Makeup safe regions and the official pack root (the default outfit and
+        # the built-in makeup, both sealed .mohan-outfit archives) travel with the
+        # runtime, exactly like the layered rigs they were derived from.
         "--add-data",
         f"{ROOT / 'assets' / 'makeup-safe-regions.json'}{data_separator}assets",
         "--add-data",
-        f"{ROOT / 'assets' / 'makeup'}{data_separator}assets/makeup",
+        f"{ROOT / 'assets' / 'official-packs'}{data_separator}assets/official-packs",
     ]
     if pose_atlas_root is not None:
         command.extend(

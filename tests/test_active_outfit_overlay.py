@@ -12,6 +12,7 @@ lazy from PySide6.QtGui import QColor, QImage, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from infrastructure import active_outfit_overlay as adapter_module
+lazy from domain import outfit_pack
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
     AppearanceAsset,
@@ -189,7 +190,10 @@ def test_dev_app_version_tolerates_range_comparison(
 
 def test_missing_optional_category_in_active_state_is_transparent_builtin(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    # Without the official packs (a stripped build) an unlisted slot stays the bare base.
+    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
     store = tmp_path / "store"
     store.mkdir()
     (store / "active.json").write_text(

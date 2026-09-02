@@ -167,7 +167,7 @@ assets/makeup/builtin/assets/mohan-signature-{variant}-{silhouette}-{slot}.png
 半身 7 輪廓 × 3 slot × 2 variant = 42 張（全身另 144 張，見 `DLC_ART_ASSET_SPEC_FULLBODY.md` 第十節）。素材放齊後執行：
 
 ```
-py -3.15 tools/build_outfit_pack.py assets/makeup/builtin/manifest.json assets/makeup/builtin assets/makeup/mohan.makeup.builtin.mohan-outfit
+py -3.15 tools/build_outfit_pack.py assets/makeup/builtin/manifest.json assets/makeup/builtin assets/official-packs/mohan.makeup.builtin.mohan-outfit
 ```
 
-封裝成功即代表 sha256／尺寸／安全區全部通過；產出的 `.mohan-outfit` 由 `assets/makeup/` 直接供應執行期，使用者不可移除。第三方純妝容 DLC 同樣以 `tools/scaffold_makeup_pack_manifest.py` 產生範本、補齊 PNG、以 `tools/build_outfit_pack.py` 封裝，然後從雲裳閣「匯入服裝套件」按鈕安裝。
+封裝成功即代表 sha256／尺寸／安全區全部通過；產出的 `.mohan-outfit` 由官方套件目錄 `assets/official-packs/` 直接供應執行期，使用者不可移除。第三方純妝容 DLC 同樣以 `tools/scaffold_makeup_pack_manifest.py` 產生範本、補齊 PNG、以 `tools/build_outfit_pack.py` 封裝，然後從雲裳閣「匯入服裝套件」按鈕安裝。

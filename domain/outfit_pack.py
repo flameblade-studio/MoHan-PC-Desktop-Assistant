@@ -11,6 +11,8 @@ lazy from pathlib import Path
 lazy from tempfile import NamedTemporaryFile
 
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
+lazy from domain import outfit_pack_official
+lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel
 # Eager on purpose: these names are re-exported (``from domain.outfit_pack import
 # OutfitPackError`` is used across the layers) and a lazy import of a lazily
 # imported name hands the caller the unresolved proxy instead of the class.
@@ -62,10 +64,11 @@ ACCESSORY_ASSET_SLOTS = frozendict({
 # (assets/makeup-safe-regions.json) and scaled by the user's intensity.
 MAKEUP_SLOTS = frozenset({"eyes", "cheeks", "lips"})
 MAKEUP_CANVASES = frozendict({"full-body": (1024, 1536), "half-body": (1254, 1254)})
-BUILTIN_MAKEUP_PACK_ID = "mohan.makeup.builtin"
-BUILTIN_MAKEUP_ITEM_ID = "mohan-signature"
-BUILTIN_MAKEUP_VARIANTS = ("classic", "light")
-OFFICIAL_PACK_ROOT = Path(__file__).resolve().parents[1] / "assets" / "makeup"
+# Official pack identities live in domain.outfit_pack_official; re-bound here for the importers of this module.
+BUILTIN_MAKEUP_PACK_ID = outfit_pack_official.BUILTIN_MAKEUP_PACK_ID
+BUILTIN_MAKEUP_ITEM_ID = outfit_pack_official.BUILTIN_MAKEUP_ITEM_ID
+BUILTIN_MAKEUP_VARIANTS = outfit_pack_official.BUILTIN_MAKEUP_VARIANTS
+OFFICIAL_PACK_ROOT = Path(__file__).resolve().parents[1] / "assets" / "official-packs"
 OPTIONAL_ENSEMBLE_CATEGORIES = frozenset({"makeup"})
 OPTIONAL_MANIFEST_KEYS = frozenset({"makeup"})
 WEAPON_PLACEMENTS = frozenset({"back", "waist-left", "waist-right", "hand-left", "hand-right"})
@@ -173,9 +176,6 @@ class InstalledSelection:
     pack_display_names: frozendict[str, str]
     item_display_names: frozendict[str, str]
     variant_display_names: frozendict[str, str]
-
-
-InstalledVariant = InstalledSelection
 
 
 @dataclass(frozen=True, slots=True)
@@ -715,12 +715,25 @@ def _atomic_json(path: Path, payload: object) -> None:
         temporary_path.unlink(missing_ok=True)
 
 
+# Parsed archives by path -> ((mtime_ns, size), pack); ``None`` marks another body-profile generation.
+_PARSED: dict[Path, tuple[tuple[int, int], OutfitPack | None]] = {}
+
+
 def _inspect_installed(path: Path) -> OutfitPack | None:
-    """Parse an installed archive; ``None`` marks a pack authored for another body-profile generation."""
+    """Parse an installed archive once per (mtime, size); a rewritten or replaced file is read again."""
     try:
-        return inspect_outfit_pack(path)
-    except IncompatibleBodyProfileError:
-        return None
+        stat = path.stat()
+    except OSError:
+        raise OutfitPackError("Archive size is invalid.") from None
+    token = (stat.st_mtime_ns, stat.st_size)
+    cached = _PARSED.get(path)
+    if cached is None or cached[0] != token:
+        try:
+            cached = (token, inspect_outfit_pack(path))
+        except IncompatibleBodyProfileError:
+            cached = (token, None)
+        _PARSED[path] = cached
+    return cached[1]
 
 
 def _installed_pack_paths(store: Path) -> tuple[Path, ...]:
@@ -765,14 +778,10 @@ def list_installed_ensembles(store: Path) -> tuple[InstalledEnsemble, ...]:
     )
 
 
-def list_installed_variants(store: Path) -> tuple[InstalledSelection, ...]:
-    return list_installed_selections(store, "garment")
-
-
 def install_outfit_pack(source: Path, store: Path) -> OutfitPack:
     pack = inspect_outfit_pack(source)
-    if pack.pack_id == BUILTIN_MAKEUP_PACK_ID:
-        raise OutfitPackError("The built-in makeup pack id is reserved for the official asset.")
+    if pack.pack_id in OFFICIAL_PACK_IDS:
+        raise OutfitPackError("Official pack ids are reserved for the archives shipped with the app.")
     packages = Path(store) / "packages"
     packages.mkdir(parents=True, exist_ok=True)
     destination = packages / f"{pack.pack_id}.mohan-outfit"
@@ -833,24 +842,9 @@ def apply_ensemble(store: Path, pack_id: str, ensemble_id: str) -> None:
     _atomic_json(active_path, active)
 
 
-def apply_outfit_variant(store: Path, pack_id: str, look_id: str, colorway_id: str) -> None:
-    match = next((item for item in list_installed_selections(store, "garment") if (item.pack_id, item.item_id, item.variant_id) == (pack_id, look_id, colorway_id)), None)
-    if match is None:
-        raise OutfitPackError("The selected outfit variant is not installed.")
-    apply_appearance_selection(store, match)
-
-
 def restore_builtin_outfit(store: Path) -> None:
     builtin = {category: {"pack_id": "builtin", "item_id": "builtin", "variant_id": "builtin"} for category in SELECTION_CATEGORIES}
     _atomic_json(Path(store) / "active.json", builtin)
-
-
-def _builtin_makeup_resolution(store: Path, requested: tuple[str, str, str]) -> tuple[str, tuple[str, str, str]]:
-    """``builtin`` makeup means the official built-in variant while its pack ships; a bare face until then."""
-    variant = requested[2] if requested[2] in BUILTIN_MAKEUP_VARIANTS else BUILTIN_MAKEUP_VARIANTS[0]
-    official = (BUILTIN_MAKEUP_PACK_ID, BUILTIN_MAKEUP_ITEM_ID, variant)
-    installed = {(item.pack_id, item.item_id, item.variant_id) for item in list_installed_selections(store, "makeup")}
-    return ("installed", official) if official in installed else ("builtin", ("builtin", "none", "none"))
 
 
 def _state_references_pack(path: Path, pack_id: str) -> bool:
@@ -870,7 +864,7 @@ def _state_references_pack(path: Path, pack_id: str) -> bool:
 
 def remove_outfit_pack(store: Path, pack_id: str) -> RemovalResult:
     validated_id = _identifier(pack_id, "pack")
-    if validated_id == "builtin":
+    if validated_id == "builtin" or validated_id in OFFICIAL_PACK_IDS:
         raise OutfitPackError("The built-in appearance cannot be removed.")
     packages = Path(store) / "packages"
     target = packages / f"{validated_id}.mohan-outfit"
@@ -915,9 +909,12 @@ def resolve_active_selection(store: Path, category: str) -> SelectionResolution:
         else:
             requested = (value["pack_id"], value["item_id"], value["variant_id"])
     if requested[0] == "builtin":
-        status, effective = "builtin", requested
-        if category == "makeup" and requested[1] != "none":
-            status, effective = _builtin_makeup_resolution(store, requested)
+        # The sentinel keeps its built-in semantics; the official packs decide what it renders.
+        status, effective = resolve_builtin_sentinel(
+            store, category, requested,
+            installed_makeup=lambda root: list_installed_selections(root, "makeup"),
+            installed_ensembles=list_installed_ensembles,
+        )
     else:
         installed = {(selection.pack_id, selection.item_id, selection.variant_id) for selection in list_installed_selections(store, category)}
         if requested not in installed and requested[0] in list_stale_body_profile_packs(store):
@@ -925,7 +922,7 @@ def resolve_active_selection(store: Path, category: str) -> SelectionResolution:
         if requested not in installed and category == "makeup":
             # A removed makeup pack falls back to the built-in default; ``requested`` keeps
             # the vanished identity so the wardrobe can show the notice once.
-            status, effective = _builtin_makeup_resolution(store, ("builtin", "builtin", "builtin"))
+            status, effective = builtin_makeup_resolution(("builtin", "builtin", "builtin"), list_installed_selections(store, "makeup"))
         elif requested not in installed:
             raise OutfitPackError("The selected appearance is unavailable; it was not replaced.")
         else:
