@@ -18,6 +18,10 @@ def _blob(data: bytes) -> tuple[DATA_BLOB, object]:
     return DATA_BLOB(len(data), ctypes.cast(buffer, ctypes.POINTER(ctypes.c_byte))), buffer
 
 
+class SecretDecryptError(OSError):
+    """The protected blob exists but cannot be decrypted in this context."""
+
+
 class SecretStore:
     """Store secrets encrypted for the current Windows user with DPAPI."""
 
@@ -67,10 +71,15 @@ class SecretStore:
             ctypes.windll.kernel32.LocalFree(output.pbData)
 
     def load(self) -> str:
+        # 只有「檔案不存在」才是空字串。blob 在但解不開（換了 Windows 帳號或
+        # 機器、非 Windows 平台）必須出錯：回空字串會讓上層把它當成尚未設定，
+        # 例如臉部身份回報零個 profile，接著重新註冊就直接覆蓋掉舊資料。
         if not self.path.exists():
             return ""
         if os.name != "nt":
-            return ""
+            raise SecretDecryptError(
+                f"{self.path.name} 只能在保存它的 Windows 帳號下解密。"
+            )
         source, source_buffer = _blob(self.path.read_bytes())
         output = DATA_BLOB()
         ok = ctypes.windll.crypt32.CryptUnprotectData(
@@ -84,7 +93,11 @@ class SecretStore:
         )
         _ = source_buffer
         if not ok:
-            return ""
+            code = ctypes.GetLastError()
+            raise SecretDecryptError(
+                f"{self.path.name} 無法解密（Win32 錯誤 {code}）；"
+                "保存它的 Windows 帳號或機器可能不同。"
+            )
         try:
             return ctypes.string_at(output.pbData, output.cbData).decode("utf-8")
         finally:

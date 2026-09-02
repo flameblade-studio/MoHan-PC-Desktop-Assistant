@@ -43,6 +43,10 @@ lazy from infrastructure.openai_vision_preferences_store import (
     STORE_SCHEMA_KEY as OPENAI_VISION_STORE_SCHEMA_KEY,
 )
 lazy from infrastructure.performance_preferences_store import STORE_SCHEMA_KEY
+lazy from infrastructure.portable_import_checks import (
+    read_portable_settings,
+    validate_portable_rows,
+)
 lazy from infrastructure.portable_secrets import (
     PortableSecretsError,
     PortableSecretsPayload,
@@ -367,10 +371,12 @@ class PortableProfileManager:
         self,
         snapshot: sqlite3.Connection,
     ) -> None:
-        available_tables = self._table_names(snapshot)
-        for table in MACHINE_BOUND_TABLES:
-            if table in available_tables:
-                snapshot.execute(f'DELETE FROM "{table}"')
+        # 白名單：PORTABLE_TABLES 與 settings（另有鍵過濾）以外的表一律不出這台電腦。
+        portable = set(PORTABLE_TABLES) | {"settings"}
+        for table in sorted(self._table_names(snapshot)):
+            if table in portable or table.startswith("sqlite_"):
+                continue
+            snapshot.execute(f'DELETE FROM "{table}"')
 
     @staticmethod
     def _profile_identity(
@@ -843,19 +849,8 @@ class PortableProfileManager:
                 f'SELECT {quoted} FROM "{table}"'
             )
         )
+        validate_portable_rows(table, columns, rows, error=ProfileTransferError)
         return PortableTablePayload(columns=columns, rows=rows)
-
-    @staticmethod
-    def _read_portable_settings(
-        incoming: sqlite3.Connection,
-    ) -> tuple[tuple[str, str], ...]:
-        return tuple(
-            (str(row["key"]), str(row["value"]))
-            for row in incoming.execute(
-                "SELECT key,value FROM settings"
-            )
-            if is_portable_setting(str(row["key"]))
-        )
 
     def _load_profile_payload(
         self,
@@ -871,7 +866,11 @@ class PortableProfileManager:
                 for table in PORTABLE_TABLES
             )
             return PortableProfilePayload(
-                settings=self._read_portable_settings(incoming),
+                settings=read_portable_settings(
+                    incoming,
+                    is_portable=is_portable_setting,
+                    error=ProfileTransferError,
+                ),
                 tables=tables,
             )
         finally:

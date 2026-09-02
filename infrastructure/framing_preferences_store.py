@@ -86,7 +86,10 @@ class FramingPreferencesStore[SnapshotT]:
         try:
             raw = self._settings.read(_ALL_READ_KEYS)
         except _BOUNDARY_ERRORS:
-            return FramingPreferences()
+            # 後端讀不到不是「從未保存」，比照其他偏好 store 拋型別化錯誤。
+            raise FramingPreferencesStoreError(
+                "Framing preferences could not be read."
+            ) from None
         if not isinstance(raw, Mapping):
             return FramingPreferences()
         version = raw.get(STORE_SCHEMA_KEY)

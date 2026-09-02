@@ -98,7 +98,12 @@ class GestureConfigurationStore[SnapshotT]:
         try:
             raw = self._settings.read(PORTABLE_GESTURE_SETTING_KEYS)
         except Exception:
-            return GestureConfiguration()
+        # 後端讀不到不是「從未保存」：回預設值會讓排程端把已送達的提醒再送一次，
+        # 偏好編輯器也會拿預設值開啟、一存就覆蓋掉原有設定。寫入路徑早就拋
+        # 型別化錯誤，讀取路徑比照。
+            raise GestureConfigurationStoreError(
+                "Gesture configuration could not be read."
+            ) from None
         if not isinstance(raw, Mapping):
             return GestureConfiguration()
         configuration = import_gesture_configuration(
