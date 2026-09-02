@@ -30,12 +30,15 @@ def visible_windows() -> list[dict[str, Any]]:
         if length <= 0:
             return True
         buffer = ctypes.create_unicode_buffer(length + 1)
-        user32.GetWindowTextW(hwnd, buffer, length + 1)
+        if user32.GetWindowTextW(hwnd, buffer, length + 1) <= 0:
+            return True
         title = buffer.value.strip()
         if not title:
             return True
         rect = wintypes.RECT()
-        user32.GetWindowRect(hwnd, ctypes.byref(rect))
+        # 視窗可能在取標題與取矩形之間關閉；失敗就略過，不記一個 [0,0,0,0]。
+        if not user32.GetWindowRect(hwnd, ctypes.byref(rect)):
+            return True
         rows.append(
             {
                 "hwnd": int(hwnd),
@@ -50,7 +53,10 @@ def visible_windows() -> list[dict[str, Any]]:
         )
         return True
 
-    user32.EnumWindows(callback_type(callback), 0)
+    if not user32.EnumWindows(callback_type(callback), 0):
+        raise OSError(
+            f"Windows 視窗列舉失敗（Win32 錯誤 {ctypes.GetLastError()}）"
+        )
     return rows
 
 

@@ -44,7 +44,7 @@ LAYER_MODULE_LINE_BASELINE = {
     "application.presentation_ports": 1_063,
     "domain.outfit_pack": 974,
     "infrastructure.db": 1_195,
-    "infrastructure.profile_transfer": 1_071,
+    "infrastructure.profile_transfer": 1_070,
     "integrations.azure_speech": 864,
     "integrations.realtime_voice": 878,
     "integrations.speech": 1_195,

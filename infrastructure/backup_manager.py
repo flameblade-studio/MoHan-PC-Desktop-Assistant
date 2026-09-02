@@ -57,13 +57,27 @@ class BackupManager:
         finally:
             connection.close()
 
+    def _verified_backups(self) -> list[Path]:
+        """Backups that pass verify(), newest first.
+
+        A .db without its manifest (power loss between the two writes), with a
+        mismatched hash or failing integrity_check is not a backup: it must not
+        satisfy "recent backup exists" and must not outrank a real one in prune.
+        Such files are left alone rather than deleted.
+        """
+        return sorted(
+            (
+                path
+                for path in self.backup_dir.glob("mohan-*.db")
+                if self.verify(path)
+            ),
+            key=lambda path: path.stat().st_mtime,
+            reverse=True,
+        )
+
     def automatic_if_due(self, hours: int = 24) -> Path | None:
         self.backup_dir.mkdir(parents=True, exist_ok=True)
-        newest = max(
-            self.backup_dir.glob("mohan-*.db"),
-            key=lambda path: path.stat().st_mtime,
-            default=None,
-        )
+        newest = next(iter(self._verified_backups()), None)
         if newest is not None:
             age = local_wall_time() - local_wall_time_from_timestamp(
                 newest.stat().st_mtime
@@ -75,11 +89,7 @@ class BackupManager:
         return created
 
     def prune(self, keep_daily: int = 14, keep_monthly: int = 6) -> None:
-        backups = sorted(
-            self.backup_dir.glob("mohan-*.db"),
-            key=lambda path: path.stat().st_mtime,
-            reverse=True,
-        )
+        backups = self._verified_backups()
         keep: set[Path] = set(backups[: max(1, keep_daily)])
         months: set[str] = set()
         for backup in backups:
