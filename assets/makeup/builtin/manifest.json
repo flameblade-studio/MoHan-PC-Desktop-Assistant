@@ -1,0 +1,2425 @@
+{
+  "format": "mohan-outfit-pack",
+  "version": 2,
+  "id": "mohan.makeup.builtin",
+  "pack_version": "1.0.0",
+  "app_range": ">=4.0.0,<5.0.0",
+  "display_names": {
+    "zh-TW": "墨寒內建妝容",
+    "zh-CN": "墨寒内置妆容",
+    "en": "MoHan built-in makeup",
+    "ja-JP": "墨寒内蔵メイク"
+  },
+  "compatible_body_profile": {
+    "id": "mohan-body-v2",
+    "version": 2
+  },
+  "source": {
+    "kind": "original",
+    "author": "Flameblade Studio",
+    "license": "CC BY 4.0",
+    "reference_included": false
+  },
+  "authoring": {
+    "template": "mohan-official-poses",
+    "version": 2
+  },
+  "looks": [],
+  "hairstyles": [],
+  "headwear": [],
+  "makeup": [
+    {
+      "id": "mohan-signature",
+      "display_names": {
+        "zh-TW": "墨寒妝容",
+        "zh-CN": "墨寒妆容",
+        "en": "MoHan face makeup",
+        "ja-JP": "墨寒メイク"
+      },
+      "variants": [
+        {
+          "id": "classic",
+          "display_names": {
+            "zh-TW": "原妝",
+            "zh-CN": "原妆",
+            "en": "Classic",
+            "ja-JP": "基本メイク"
+          },
+          "intensity": 1.0,
+          "poses": {
+            "cheek-rest": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-cheek-rest-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-cheek-rest-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-cheek-rest-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "left-neutral": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-left-neutral-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-left-neutral-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-left-neutral-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "front-crossed": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-front-crossed-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-front-crossed-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-front-crossed-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "front-mock-scold": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-front-mock-scold-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-front-mock-scold-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-front-mock-scold-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "front-mock-hit": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-front-mock-hit-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-front-mock-hit-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-front-mock-hit-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "front-eureka": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-front-eureka-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-front-eureka-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-front-eureka-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "front-exasperated": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-front-exasperated-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-front-exasperated-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-front-exasperated-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-180-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-180-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-180-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-180-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-165-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-165-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-165-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-165-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-150-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-150-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-150-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-150-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-135-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-135-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-135-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-135-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-120-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-120-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-120-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-120-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-105-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-105-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-105-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-105-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-090-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-090-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-090-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-090-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-075-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-075-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-075-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-075-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-060-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-060-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-060-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-060-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-045-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-045-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-045-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-045-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-030-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-030-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-030-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-030-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-015-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw-015-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw-015-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw-015-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+000-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+000-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+000-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+000-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+015-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+015-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+015-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+015-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+030-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+030-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+030-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+030-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+045-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+045-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+045-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+045-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+060-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+060-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+060-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+060-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+075-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+075-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+075-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+075-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+090-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+090-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+090-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+090-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+105-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+105-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+105-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+105-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+120-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+120-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+120-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+120-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+135-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+135-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+135-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+135-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+150-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+150-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+150-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+150-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+165-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-classic-yaw+165-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-classic-yaw+165-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-classic-yaw+165-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ]
+          }
+        },
+        {
+          "id": "light",
+          "display_names": {
+            "zh-TW": "淡雅",
+            "zh-CN": "淡雅",
+            "en": "Light",
+            "ja-JP": "淡めメイク"
+          },
+          "intensity": 1.0,
+          "poses": {
+            "cheek-rest": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-cheek-rest-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-cheek-rest-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-cheek-rest-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "left-neutral": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-left-neutral-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-left-neutral-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-left-neutral-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "front-crossed": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-front-crossed-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-front-crossed-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-front-crossed-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "front-mock-scold": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-front-mock-scold-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-front-mock-scold-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-front-mock-scold-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "front-mock-hit": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-front-mock-hit-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-front-mock-hit-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-front-mock-hit-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "front-eureka": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-front-eureka-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-front-eureka-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-front-eureka-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "front-exasperated": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-front-exasperated-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-front-exasperated-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-front-exasperated-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-180-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-180-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-180-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-180-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-165-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-165-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-165-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-165-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-150-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-150-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-150-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-150-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-135-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-135-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-135-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-135-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-120-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-120-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-120-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-120-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-105-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-105-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-105-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-105-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-090-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-090-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-090-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-090-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-075-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-075-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-075-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-075-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-060-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-060-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-060-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-060-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-045-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-045-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-045-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-045-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-030-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-030-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-030-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-030-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw-015-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw-015-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw-015-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw-015-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+000-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+000-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+000-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+000-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+015-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+015-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+015-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+015-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+030-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+030-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+030-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+030-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+045-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+045-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+045-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+045-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+060-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+060-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+060-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+060-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+075-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+075-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+075-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+075-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+090-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+090-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+090-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+090-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+105-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+105-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+105-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+105-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+120-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+120-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+120-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+120-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+135-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+135-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+135-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+135-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+150-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+150-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+150-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+150-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ],
+            "yaw+165-pitch+00": [
+              {
+                "slot": "cheeks",
+                "path": "assets/mohan-signature-light-yaw+165-pitch+00-cheeks.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 0
+              },
+              {
+                "slot": "eyes",
+                "path": "assets/mohan-signature-light-yaw+165-pitch+00-eyes.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 1
+              },
+              {
+                "slot": "lips",
+                "path": "assets/mohan-signature-light-yaw+165-pitch+00-lips.png",
+                "sha256": "",
+                "width": 0,
+                "height": 0,
+                "anchor": [
+                  0,
+                  0
+                ],
+                "z_order": 2
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "accessories": [],
+  "ensembles": []
+}

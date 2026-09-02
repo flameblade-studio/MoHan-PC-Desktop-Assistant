@@ -523,11 +523,7 @@ class DashboardShellMixin:
         )
         self.wardrobe_status.setWordWrap(True)
         self.wardrobe_status.setProperty("mohanRole", "statusPill")
-        wardrobe_compatibility = QLabel(
-            self._t("wardrobe_compatibility_status", "相容狀態")
-            + "："
-            + self._t("wardrobe_compatible", "相容")
-        )
+        wardrobe_compatibility = QLabel(self._t("wardrobe_compatibility_status", "相容狀態") + "：" + self._t("wardrobe_compatible", "相容"))
         wardrobe_compatibility.setProperty("mohanRole", "muted")
         source_policy = QLabel(
             self._t(
@@ -568,6 +564,7 @@ class DashboardShellMixin:
         controls = QVBoxLayout()
         controls.setSpacing(12)
         controls.addWidget(library_card, 5)
+        controls.addWidget(self._wardrobe_makeup_card(), 3)
         controls.addWidget(preferences_card, 4)
         columns.addWidget(preview_card, 6)
         columns.addLayout(controls, 4)
@@ -643,6 +640,7 @@ class DashboardShellMixin:
             self.wardrobe_packages.addItem(item)
             if outfit.outfit_id == selected_id:
                 self.wardrobe_packages.setCurrentItem(item)
+        self._reload_wardrobe_makeup_options()
 
     def _wardrobe_hero(self) -> QFrame:
         hero = QFrame()
@@ -795,11 +793,8 @@ class DashboardShellMixin:
         self.wardrobe_status.setText(
             self._t("wardrobe_outfit_applied", "已套用所選完整服裝。")
         )
-        checked = next(
-            (button for button in self.wardrobe_pose_buttons if button.isChecked()),
-            self.wardrobe_pose_buttons[0],
-        )
-        self._show_wardrobe_pose(self._wardrobe_pose_path, checked)
+        self._reload_wardrobe_makeup_options()
+        self._refresh_wardrobe_preview()
 
     def _restore_builtin_outfit(self) -> None:
         self.wardrobe_service.apply(BUILTIN_OUTFIT_ID)
@@ -813,11 +808,8 @@ class DashboardShellMixin:
         self.wardrobe_status.setText(
             self._t("wardrobe_builtin_applied", "已套用內建預設服裝。")
         )
-        checked = next(
-            (button for button in self.wardrobe_pose_buttons if button.isChecked()),
-            self.wardrobe_pose_buttons[0],
-        )
-        self._show_wardrobe_pose(self._wardrobe_pose_path, checked)
+        self._reload_wardrobe_makeup_options()
+        self._refresh_wardrobe_preview()
 
     def _connect_dashboard_signals(
         self,

@@ -41,6 +41,25 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
     "application/background_agents.py": frozenset({
         ("from", "domain.python315_concurrency", ("Future", "ThreadPoolExecutor")),
     }),
+    # ``domain.outfit_pack`` re-exports the archive/format primitives and the
+    # error classes it moved into ``domain.outfit_pack_assets``; a lazy import
+    # of a lazily imported name hands other modules the unresolved proxy, so
+    # this single re-export stays eager on purpose.
+    "domain/outfit_pack.py": frozenset({
+        (
+            "from",
+            "domain.outfit_pack_assets",
+            (
+                "ASSET_PATH",
+                "MANIFEST",
+                "MAX_IMAGE_DIMENSION",
+                "IncompatibleBodyProfileError",
+                "OutfitPackError",
+                "_dimensions",
+                "_safe_member",
+            ),
+        ),
+    }),
     "domain/python315_concurrency.py": frozenset({
         ("import", "", ("concurrent.futures",)),
         ("from", "concurrent.futures", ("Future", "as_completed")),
