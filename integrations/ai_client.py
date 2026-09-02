@@ -253,6 +253,7 @@ class ActionPlannerWorker(QRunnable):
                                     "home_lock",
                                     "home_alarm",
                                     "home_heat",
+                                    "home_routine",
                                 ],
                             },
                             "description": {"type": "string"},

@@ -103,6 +103,7 @@ CORE_PERMISSION_LABELS = frozendict({
     "home_lock": "控制門鎖",
     "home_alarm": "控制警報",
     "home_heat": "控制加熱與高溫設備",
+    "home_routine": "執行智慧家庭腳本或情境",
     "camera_view": "使用攝影機",
     "microphone_access": "使用麥克風",
     "realtime_session": "啟動 Realtime 雲端對話",

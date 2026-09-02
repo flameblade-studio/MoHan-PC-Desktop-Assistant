@@ -31,6 +31,7 @@ HOME_CAPABILITIES = (
     "home_lock",
     "home_alarm",
     "home_heat",
+    "home_routine",
 )
 
 
@@ -198,6 +199,7 @@ class FlagshipHomeMixin:
             "home_lock",
             "home_alarm",
             "home_heat",
+            "home_routine",
         ):
             self.executor.register(
                 capability,

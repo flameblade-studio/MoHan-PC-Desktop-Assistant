@@ -68,6 +68,10 @@ CAPABILITY_RISK: Final[frozendict[str, RiskLevel]] = frozendict({
     "home_lock": RiskLevel.RED,
     "home_alarm": RiskLevel.RED,
     "home_heat": RiskLevel.RED,
+    # 伺服器端的腳本與情境，內容對用戶端不可見：它能做的事等於那個
+    # Home Assistant 帳號能做的一切，包含解鎖門與解除警報。無法分級的
+    # 東西只能按上限分級。
+    "home_routine": RiskLevel.RED,
     "camera_view": RiskLevel.YELLOW,
     "microphone_access": RiskLevel.BLUE,
     "realtime_session": RiskLevel.YELLOW,
