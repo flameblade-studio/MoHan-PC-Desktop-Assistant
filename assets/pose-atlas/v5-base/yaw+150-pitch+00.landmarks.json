@@ -1,0 +1,75 @@
+{
+  "height": 1536,
+  "landmarks": {
+    "crown": [
+      535,
+      91
+    ],
+    "left_ankle": [
+      482,
+      1406
+    ],
+    "left_heel": [
+      481,
+      1490
+    ],
+    "left_hip": [
+      601,
+      878
+    ],
+    "left_knee": [
+      518,
+      1187
+    ],
+    "left_sole": [
+      482,
+      1496
+    ],
+    "left_toe": [
+      483,
+      1490
+    ]
+  },
+  "measurement": {
+    "method": "normalized-alpha-silhouette-registration",
+    "occlusion_policy": "no_coordinates_are invented for an occluded side",
+    "source_sha256": "79784311f1e071819a4216db1cd0c2131d8fb0d613bcde310fbd9e107873e779",
+    "target_subject_height": 1406
+  },
+  "occluded_landmarks": [
+    {
+      "name": "right_hip",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "right_knee",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "right_ankle",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "right_heel",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "right_toe",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "right_sole",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    }
+  ],
+  "schema_version": 2,
+  "view_id": "yaw+150-pitch+00",
+  "width": 1024,
+  "yaw_degrees": 150
+}

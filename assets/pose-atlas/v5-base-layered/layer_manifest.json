@@ -1,0 +1,219 @@
+{
+  "schema": "mohan.full-body-layer-rebuild-manifest.v1",
+  "fail_closed": true,
+  "promotable": true,
+  "asset_root": "assets/pose-atlas/v5-base-layered",
+  "authority_contract": "Only user-approved 24 master views may source class-B re-segmentation.",
+  "classes": {
+    "A": {
+      "meaning": "deterministic repair from existing approved pixels/masks",
+      "actions": []
+    },
+    "B": {
+      "meaning": "must re-segment/repaint from an approved 24-view master; never mirror or hallucinate",
+      "actions": []
+    },
+    "C": {
+      "meaning": "audit exception confirmed intentional; retain pixels unchanged",
+      "actions": [
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+000-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+000-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+015-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+015-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+030-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+030-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+045-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+045-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+060-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+075-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+075-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+090-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+090-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+105-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+105-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+120-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+120-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+135-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+135-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+150-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+150-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw+165-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw+165-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-015-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-015-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-030-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-030-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-045-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-045-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-060-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-075-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-090-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-105-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-105-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-120-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-120-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-135-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-135-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-150-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-150-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-165-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-165-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        },
+        {
+          "classification": "C",
+          "code": "neutral_teeth_empty",
+          "view_id": "yaw-180-pitch+00",
+          "layer": "teeth_tongue",
+          "path": "assets/pose-atlas/v5-base-layered/yaw-180-pitch+00_teeth_tongue.png",
+          "metrics": {}
+        }
+      ]
+    }
+  },
+  "promotion_gate": [
+    "run tools/audit_layered_full_body_semantics.py and require exit 0 after C exceptions are applied",
+    "run tools/audit_full_body_layer_pack.py and require exit 0",
+    "do not promote generated layers while any class A or B action remains"
+  ]
+}

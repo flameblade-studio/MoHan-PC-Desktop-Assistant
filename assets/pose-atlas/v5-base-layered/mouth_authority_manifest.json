@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "views": {
+    "yaw-180-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-165-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-150-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-135-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-120-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-105-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw-090-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 568.2014,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw-075-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 547.5912,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw-060-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 553.7909,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw-045-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 504.2656,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw-030-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 492.3796,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw-015-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 486.4762,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw+000-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 518.0557,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw+015-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 491.211,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw+030-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 490.3854,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw+045-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 480.9756,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw+060-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 484.718,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw+075-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 474.0033,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw+090-pitch+00": {
+      "trusted": true,
+      "mouth_center_x": 462.5233,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+    },
+    "yaw+105-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw+120-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw+135-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw+150-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    },
+    "yaw+165-pitch+00": {
+      "trusted": false,
+      "mouth_center_x": null,
+      "reason": "rear view: lip layers are empty, no visible mouth"
+    }
+  },
+  "notes": {
+    "recalibration_2026_08_28": "Face-detail layers rebuilt from the half-body front source via a five-point YuNet landmark affine; the previous calibration was measured from mirrored-defect lip layers and swept in the OPPOSITE direction to the photographs. All visible views recalibrated, including yaw+000 (its old contract value inherited the same offset defect)."
+  }
+}

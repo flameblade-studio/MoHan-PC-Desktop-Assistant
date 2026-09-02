@@ -1,0 +1,70 @@
+{
+  "height": 1536,
+  "landmarks": {
+    "crown": [
+      451,
+      91
+    ],
+    "left_ankle": [
+      545,
+      1430
+    ],
+    "left_heel": [
+      564,
+      1490
+    ],
+    "left_hip": [
+      558,
+      878
+    ],
+    "left_sole": [
+      568,
+      1496
+    ],
+    "left_toe": [
+      573,
+      1490
+    ],
+    "right_ankle": [
+      530,
+      1422
+    ],
+    "right_heel": [
+      540,
+      1490
+    ],
+    "right_hip": [
+      464,
+      878
+    ],
+    "right_knee": [
+      505,
+      1187
+    ],
+    "right_sole": [
+      546,
+      1496
+    ],
+    "right_toe": [
+      552,
+      1490
+    ]
+  },
+  "measurement": {
+    "method": "normalized-alpha-silhouette-registration",
+    "occlusion_policy": "no_coordinates_are invented for an occluded side",
+    "source_sha256": "63b9729aeb845ca2a99545625b81f9f7cb67b92d31b4c083051c832043bb8468",
+    "target_subject_height": 1406
+  },
+  "occluded_landmarks": [
+    {
+      "name": "left_knee",
+      "occluder_id": "knee-target-unreachable",
+      "reason": "No alpha within the search radius of either knee target (hip-to-foot midpoint, or directly above the foot run)."
+    }
+  ],
+  "schema_version": 2,
+  "view_id": "yaw-090-pitch+00",
+  "width": 1024,
+  "yaw_degrees": -90
+}
