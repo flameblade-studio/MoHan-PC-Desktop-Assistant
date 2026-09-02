@@ -1,0 +1,123 @@
+{
+  "schema": "mohan.pose-atlas-identity-baseline.v1",
+  "ruling": "Owner-accepted baseline, 2026-09-02. The 24 static PoseAtlas v5-base views (bare-headed second-generation body, Codex-drawn against the matching v4 view as identity reference) passed the owner's visual acceptance on 2026-09-02 (owner: same person as v4). The static identity audit heuristics were calibrated on v4, whose hair frames the forehead; its three pre-existing finding classes on these exact files — adjacent_face_registration_jump (non-monotonic head turn, accepted by the owner on the contact sheet), forehead_outward_bulge / forehead_curvature_discontinuity (bare forehead and exposed high bun, not a modelling defect), mirror_face_aspect_drift (asymmetric turn at +/-060) — are therefore waived, pinned by SHA-256. Any byte change to a view voids its entry and re-exposes it to every rule.",
+  "views": {
+    "yaw+000-pitch+00": {
+      "sha256": "42474a7f425b7f61ad9afd37963638ca3116880a204a6e97d7abf86be2a0bef7",
+      "waived_issue_codes": [
+        "adjacent_face_registration_jump"
+      ]
+    },
+    "yaw+015-pitch+00": {
+      "sha256": "1ba28fa3d123fd3e28d4f5933bb03b812d5d29ac68dd6f5344867893e085bcc9",
+      "waived_issue_codes": [
+        "adjacent_face_registration_jump"
+      ]
+    },
+    "yaw+030-pitch+00": {
+      "sha256": "2226afbab0406c310e3cb422598396cd97ab29f15f6be88105756591210e6f62",
+      "waived_issue_codes": []
+    },
+    "yaw+045-pitch+00": {
+      "sha256": "800b4bf758465c07fe692c5fa5aa66bae96c9fce9b43a6e14a3ca7b57986ba07",
+      "waived_issue_codes": []
+    },
+    "yaw+060-pitch+00": {
+      "sha256": "6c5f49d96c195c67c339bf797b8a4a2f17bb3047cedc14c3f628c14c37fd17ed",
+      "waived_issue_codes": [
+        "forehead_outward_bulge",
+        "mirror_face_aspect_drift"
+      ]
+    },
+    "yaw+075-pitch+00": {
+      "sha256": "8cecb3a67a8701f48ef08c4a5af5b971c37f7658e9c8e04ee15e51f00da5f474",
+      "waived_issue_codes": [
+        "forehead_outward_bulge"
+      ]
+    },
+    "yaw+090-pitch+00": {
+      "sha256": "2ee7418fc067e4bccb22b6cf53c39e48cd36a43012f4b70f91c8e59ed5207816",
+      "waived_issue_codes": [
+        "forehead_outward_bulge"
+      ]
+    },
+    "yaw+105-pitch+00": {
+      "sha256": "9595c2e70f12a2f7561fece0b8c78a63ddaab367b98d3b03d8529f5ca3754831",
+      "waived_issue_codes": []
+    },
+    "yaw+120-pitch+00": {
+      "sha256": "ad065194523a04fd9d383730c4bcd4809b29968d524459f7767d22e096072000",
+      "waived_issue_codes": []
+    },
+    "yaw+135-pitch+00": {
+      "sha256": "e8be41298fa3c13ff4014e018be48cbaf9bef811a9898832b71430a6c585f31c",
+      "waived_issue_codes": []
+    },
+    "yaw+150-pitch+00": {
+      "sha256": "e763d57088f7e0e4782e90b7527bae0b0fb040f545bae44978c3edaf5cd73446",
+      "waived_issue_codes": []
+    },
+    "yaw+165-pitch+00": {
+      "sha256": "1eba815ee87179532c2e997397ca99c3450b7cbd59f21b235e13d9e4f981bcc9",
+      "waived_issue_codes": []
+    },
+    "yaw-015-pitch+00": {
+      "sha256": "38fea3649c0ae1475f77b08c00915653d349f6cb8924793ac2b74fb7aa7d8f3a",
+      "waived_issue_codes": [
+        "adjacent_face_registration_jump"
+      ]
+    },
+    "yaw-030-pitch+00": {
+      "sha256": "7f42b6fded374ef81f35c54fb5835653a654a4c4f6146d4d646955444c94d1ea",
+      "waived_issue_codes": []
+    },
+    "yaw-045-pitch+00": {
+      "sha256": "fa1d4eae4b6d9ee2e471c8e4e544e5e454753d70fc1e6e74ff3f37850d44ddbd",
+      "waived_issue_codes": [
+        "adjacent_face_registration_jump"
+      ]
+    },
+    "yaw-060-pitch+00": {
+      "sha256": "ed8655fe41dd7712eb0dcecc8d44abfe9c6b373b5be03675eaef8b01eb70e6ff",
+      "waived_issue_codes": [
+        "adjacent_face_registration_jump",
+        "mirror_face_aspect_drift"
+      ]
+    },
+    "yaw-075-pitch+00": {
+      "sha256": "1d90c25ec7bbb74d8ad62c6f664d960142632ef749ed68164e9f99f8707d7750",
+      "waived_issue_codes": []
+    },
+    "yaw-090-pitch+00": {
+      "sha256": "59aafd7ee3164c011f2b94a0230ab937a5cc0cf0fbaa78bc37ed20b2d3b78a3d",
+      "waived_issue_codes": [
+        "forehead_curvature_discontinuity",
+        "forehead_outward_bulge"
+      ]
+    },
+    "yaw-105-pitch+00": {
+      "sha256": "367f23bc3696731680b5c7e2b2be6958dbf85f8e5ac1f1c7ecef5d88f0656178",
+      "waived_issue_codes": []
+    },
+    "yaw-120-pitch+00": {
+      "sha256": "575bceb765034ce5d691d207f51d06f06ac2c6f932531712a226144a0c067867",
+      "waived_issue_codes": []
+    },
+    "yaw-135-pitch+00": {
+      "sha256": "95b577a031d562c05cda1386ba6d0e49c3ace6557230f0d614872f13950d57bb",
+      "waived_issue_codes": []
+    },
+    "yaw-150-pitch+00": {
+      "sha256": "c5e782f9fbaee1e8f5d0897842a7101d5e8872df9b355595d366e0bd010aded1",
+      "waived_issue_codes": []
+    },
+    "yaw-165-pitch+00": {
+      "sha256": "d4976fd485abe10e22e9a971de4df492300c926e6a880bb5c0f9c553d80d92be",
+      "waived_issue_codes": []
+    },
+    "yaw-180-pitch+00": {
+      "sha256": "7de7ff4fc8458f9a5eb9defb53bfcc62aa3675abe535f8096d066ca482c4285b",
+      "waived_issue_codes": []
+    }
+  }
+}
