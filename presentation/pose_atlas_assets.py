@@ -17,6 +17,7 @@ lazy from application.full_body_render_adapter import (
     NormalizedCrop,
 )
 lazy from domain.character_body_profile import MOHAN_BODY_PROFILE
+lazy from domain.constants import POSE_ATLAS_GENERATION
 lazy from domain.character_full_body_rig import FULL_BODY_RIG_SCHEMA_VERSION
 lazy from domain.character_pose import normalize_view_id
 lazy from domain.face_rig import FaceMotionFrame
@@ -41,7 +42,7 @@ class PoseAtlasAssets:
 
     @property
     def generation(self) -> int:
-        return 1
+        return POSE_ATLAS_GENERATION
 
     @property
     def enabled(self) -> bool:

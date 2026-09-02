@@ -10,6 +10,7 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import QRect
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap, QRegion
 
+lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
     SELECTION_CATEGORIES,
@@ -267,7 +268,7 @@ class ActiveOutfitOverlay:
         root = (
             self._asset_root / "assets" / "expressions" / "layered"
             if view_id in _HALF_POSE
-            else self._asset_root / "assets" / "pose-atlas" / "v4-layered"
+            else self._asset_root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
         )
         prefix = _HALF_POSE.get(view_id, view_id)
         region = QRegion()
@@ -305,7 +306,7 @@ class ActiveOutfitOverlay:
         pose = _HALF_POSE.get(view_id)
         if pose is not None:
             return self._asset_root / "assets" / "expressions" / "layered" / f"{pose}_base.png"
-        return self._asset_root / "assets" / "pose-atlas" / "v4-layered" / f"{view_id}_base.png"
+        return self._asset_root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME / f"{view_id}_base.png"
 
     @staticmethod
     def _canvas_size(view_id: str) -> tuple[int, int]:

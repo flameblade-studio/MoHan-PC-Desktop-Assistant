@@ -7,7 +7,7 @@
 
 ## 一、分析方法
 
-1. 遍歷 `assets/pose-atlas/v4-layered/` 下全部 600 張 PNG。
+1. 遍歷 `assets/pose-atlas/v4-layered/` 下全部 600 張 PNG。（2026-09-02 註：本報告分析的是一代 `v4-layered`；執行期自該日起改用 `assets/pose-atlas/v5-base-layered/`，`tools/analyze_layered_assets.py` 的預設路徑已同步指向現行世代。）
 2. 計算每張圖的 **Alpha-trimmed bounding box**（透明像素邊界）。
 3. 以 `body`（身體軀幹層）為基準，計算其餘 24 層的**相對座標中心**。
 4. 對每個圖層，按 yaw 角度排序 24 視角，偵測**相鄰視角間的「突跳」**：

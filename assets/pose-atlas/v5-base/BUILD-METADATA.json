@@ -1,5 +1,5 @@
 {
-  "formal_promotion": "blocked_until_visual_review_and_release_audits",
+  "formal_promotion": "approved",
   "hand_evidence": {
     "augmentations": [
       "native",
@@ -22,11 +22,12 @@
     "target_sole_baseline": 1496,
     "target_subject_height": 1406
   },
-  "redistribution": "authorized_under_project_license_pending_visual_review_and_release_gates",
+  "promotion_note": "formal_promotion re-stamped to approved on 2026-09-02: the owner completed the visual review (static identity audit 24 files, 0 unwaived findings under the SHA-256-pinned identity-audit-baseline.json; hand audit 21/24 passed with the remaining 3 accepted by eye on the hand contact sheet). Runtime, packaging and packaged self-test switched from v4 to v5-base in the same change. source_root v5-source is not in the repository (working files only); no gate walks it.",
+  "redistribution": "authorized_under_project_license",
   "schema": "mohan.pose-atlas.working-build.v1",
   "source_authorization": "confirmed_by_rights_holder_2026-08-16",
   "source_root": "v5-source",
-  "status": "working-evidence-only",
+  "status": "release-assets",
   "views": [
     {
       "hand_inference": {

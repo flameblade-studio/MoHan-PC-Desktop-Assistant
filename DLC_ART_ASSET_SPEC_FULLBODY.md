@@ -11,7 +11,7 @@
 墨寒目前有兩套身體渲染體系：
 
 1. **半身**（`assets/expressions/*.png`）：3 姿態（front / lean / cheek），用於日常對話。
-2. **全身**（`assets/pose-atlas/v4/*.png`）：24 個 yaw 視角，用於手勢、換裝、主人到來等全身鏡頭。
+2. **全身**（`assets/pose-atlas/v5-base/*.png`）：24 個 yaw 視角，用於手勢、換裝、主人到來等全身鏡頭。
 
 全身目前是「單一靜態全身照 + 程序化嘴巴（暗色橢圓）」。本次要將全身也升級為
 「**參數化分層**」：把全身照拆成可獨立控制、可連續變形的透明圖層，讓全身的
@@ -82,8 +82,8 @@ yaw+120-pitch+00, yaw+135-pitch+00, yaw+150-pitch+00, yaw+165-pitch+00
 ## 三、素材規格（嚴格遵守）
 
 1. **格式**：PNG，**RGBA 透明背景**（alpha 通道必須正確，非透明區域 alpha=255）。
-2. **尺寸**：**1024 × 1536 像素**（與現有 `assets/pose-atlas/v4/*.png` 完全一致）。
-3. **座標系**：所有圖層共用**同一座標系、同一錨點**，以現有 `assets/pose-atlas/v4/{view_id}.png` 為對齊基準。
+2. **尺寸**：**1024 × 1536 像素**（與現有 `assets/pose-atlas/v5-base/*.png` 完全一致）。
+3. **座標系**：所有圖層共用**同一座標系、同一錨點**，以現有 `assets/pose-atlas/v5-base/{view_id}.png` 為對齊基準。
 4. **對齊**：每個圖層疊加後，必須能精確還原出「完整全身照」的原始位置，不得偏移、縮放或變形。
 5. **臉部區域**：`body` 圖層的**臉部區域必須留空（透明）**，因為臉部由 `base` 圖層負責。
 6. **角色身分**：五官、臉型、髮飾、服裝、身體比例必須與現有權威素材完全一致，不得自行改動角色外觀。
@@ -109,18 +109,18 @@ yaw+120-pitch+00, yaw+135-pitch+00, yaw+150-pitch+00, yaw+165-pitch+00
 請將所有產出的 PNG 素材，放到以下目錄：
 
 ```
-D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v4-layered\
+D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v5-base-layered\
 ```
 
 即完整路徑範例：
 ```
-D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v4-layered\yaw+000-pitch+00_base.png
-D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v4-layered\yaw+000-pitch+00_body.png
-D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v4-layered\yaw+000-pitch+00_lip_upper.png
+D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v5-base-layered\yaw+000-pitch+00_base.png
+D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v5-base-layered\yaw+000-pitch+00_body.png
+D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v5-base-layered\yaw+000-pitch+00_lip_upper.png
 ...（以此類推，共 600 張）
 ```
 
-> 若 `v4-layered` 子目錄不存在，請自行建立。
+> 若 `v5-base-layered` 子目錄不存在，請自行建立。
 
 ---
 
@@ -129,8 +129,8 @@ D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\po
 製作時請以現有權威素材為對齊與身分基準：
 
 ```
-D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v4\yaw+000-pitch+00.png
-D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v4\yaw-090-pitch+00.png
+D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v5-base\yaw+000-pitch+00.png
+D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\pose-atlas\v5-base\yaw-090-pitch+00.png
 ...（24 個視角的靜態全身照）
 ```
 
@@ -151,15 +151,15 @@ D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\ex
 - [ ] 疊加後能精確還原完整全身照（身體+頭髮+服裝+臉部五官）
 - [ ] 邊緣羽化、無硬邊、無殘影
 - [ ] 檔案命名符合 `{view_id}_{layer}.png`（`+` 號保留）
-- [ ] 全部放入 `assets\pose-atlas\v4-layered\` 目錄
+- [ ] 全部放入 `assets\pose-atlas\v5-base-layered\` 目錄
 
 ---
 
 ## 八、注意事項
 
-1. **不得更動任何 `.py` 原始碼**、`.json` 設定、或現有 `assets/pose-atlas/v4/*.png` 素材。
+1. **不得更動任何 `.py` 原始碼**、`.json` 設定、或現有 `assets/pose-atlas/v5-base/*.png` 素材。
 2. **不得更動半身分層素材**（`assets/expressions/layered/` 下的既有素材）。
-3. 只新增 `assets\pose-atlas\v4-layered\` 目錄下的 600 張新素材。
+3. 只新增 `assets\pose-atlas\v5-base-layered\` 目錄下的 600 張新素材。
 4. 若對某個圖層的「拆分方式」有疑問（例如全身的頭髮要拆成幾片、袖子是否要與手臂分開），請先詢問，不要自行決定。
 5. 完成後回報：產出了哪些檔案、總張數、以及任何你認為需要 DeepSeek 端注意的對齊細節。
 

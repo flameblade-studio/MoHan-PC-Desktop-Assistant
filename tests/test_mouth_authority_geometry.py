@@ -7,6 +7,7 @@ lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QColor, QImage, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from infrastructure.layered_full_body_assets import (
     _load_authority_mouth_centers,
 )
@@ -16,7 +17,10 @@ lazy from infrastructure.mouth_geometry import inward_lerped_u_layer
 # from the half-body source via the five-point landmark affine.  The old
 # contract value (510.898681640625) was measured from the offset-defect lip
 # layers (mirrored on side views, ~30px low on the front).
-EXPECTED_YAW000_CENTER_X = 516.8029
+# 2026-09-02: the runtime switched to the generation-2 pack
+# (v5-base-layered); its trusted yaw+000 centre, measured by the same
+# alpha-weighted lip centroid method, is 518.0557 (v4-layered was 516.8029).
+EXPECTED_YAW000_CENTER_X = 518.0557
 OPAQUE_ALPHA = 255
 _APP = QApplication.instance() or QApplication([])
 
@@ -90,7 +94,7 @@ def test_renderers_do_not_apply_u_to_whole_registered_mouths() -> None:
 
 def test_dev_and_packaged_paths_include_trusted_authority_manifest() -> None:
     root = Path(__file__).resolve().parents[1]
-    manifest = root / "assets" / "pose-atlas" / "v4-layered" / (
+    manifest = root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME / (
         "mouth_authority_manifest.json"
     )
     payload = json.loads(manifest.read_text(encoding="utf-8"))
@@ -107,4 +111,4 @@ def test_dev_and_packaged_paths_include_trusted_authority_manifest() -> None:
     )
     assert "load_layered_full_body_assets" in renderer
     assert "LAYERED_POSE_ATLAS_ROOT" in packaging
-    assert "assets/pose-atlas/v4-layered" in packaging
+    assert "POSE_ATLAS_LAYERED_RELATIVE_ROOT" in packaging

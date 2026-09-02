@@ -20,6 +20,7 @@ lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
 lazy from domain.app_profile import (
     personalize_text, profile_setting, profile_window_title,
 )
+lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
 lazy from domain.feature_registry import DashboardFeatureRegistry
 lazy from domain.language_support import (
     is_english, is_japanese, is_simplified_chinese,
@@ -681,7 +682,7 @@ class DashboardShellMixin:
         self.wardrobe_character_preview.setAccessibleName(
             self._t("wardrobe_character_preview", "墨寒造型預覽")
         )
-        pose_root = resource_path("assets/pose-atlas/v4")
+        pose_root = resource_path(POSE_ATLAS_RELATIVE_ROOT)
         # Side labels follow MoHan's OWN left/right (owner ruling 2026-08-28):
         # yaw+090 presents her LEFT side to the camera, yaw-090 her right —
         # the previous mapping used the viewer's left/right instead.
@@ -691,9 +692,7 @@ class DashboardShellMixin:
             ("wardrobe_view_right", "右側", pose_root / "yaw-090-pitch+00.png"),
             ("wardrobe_view_back", "背面", pose_root / "yaw-180-pitch+00.png"),
         )
-        self._wardrobe_outfit_overlay = (
-            self.presentation_ports.outfit_overlay_factory()
-        )
+        self._wardrobe_outfit_overlay = self.presentation_ports.outfit_overlay_factory()
         self._wardrobe_pose_source = QPixmap()
         self._wardrobe_pose_path = pose_choices[0][2]
         self.wardrobe_pose_buttons: list[QPushButton] = []

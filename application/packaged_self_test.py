@@ -12,7 +12,10 @@ lazy from application.speech_performance import (
     SpeechPerformancePhase,
     SpeechPerformanceTimeline,
 )
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.constants import (
+    FLOAT_COMPARISON_EPSILON,
+    POSE_ATLAS_RELATIVE_ROOT,
+)
 lazy from domain.face_motion import FaceMotionController
 lazy from domain.face_rig import (
     ExpressionShape,
@@ -110,7 +113,7 @@ def _neutral_face_motion() -> FaceMotionFrame:
 
 
 def _pose_atlas_checks() -> tuple[_SelfTestCheck, ...]:
-    root = resource_path("assets/pose-atlas/v4")
+    root = resource_path(POSE_ATLAS_RELATIVE_ROOT)
     try:
         assets = PoseAtlasAssets(root, image_size=465)
         view_ids = assets.view_ids

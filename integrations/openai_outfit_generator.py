@@ -27,6 +27,7 @@ lazy from application.self_generating_wardrobe import (
     GeneratedOutfitDraft,
     OutfitCreationRequest,
 )
+lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME, POSE_ATLAS_ROOT_NAME
 lazy from domain.outfit_pack import POSE_ATLAS_SILHOUETTES
 lazy from domain.outfit_generation import OutfitGenerationCancelled
 
@@ -282,7 +283,7 @@ def _reference_path(root: Path, view_id: str) -> Path:
     }
     if view_id in half:
         return half[view_id]
-    return root / "assets" / "pose-atlas" / "v4" / f"{view_id}.png"
+    return root / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME / f"{view_id}.png"
 
 
 def _decode_registered_png(
@@ -671,7 +672,7 @@ class OpenAIOutfitDraftGenerator:
 
 def _protected_face_path(root: Path, view_id: str) -> Path:
     if view_id in POSE_ATLAS_SILHOUETTES:
-        return root / "assets" / "pose-atlas" / "v4-layered" / f"{view_id}_base.png"
+        return root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME / f"{view_id}_base.png"
     pose = {
         "cheek-rest": "cheek",
         "left-neutral": "lean",

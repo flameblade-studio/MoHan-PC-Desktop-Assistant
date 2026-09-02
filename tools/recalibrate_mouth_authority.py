@@ -12,6 +12,7 @@ from __future__ import annotations
 
 lazy import argparse
 lazy import json
+lazy import sys
 lazy from datetime import date
 lazy from pathlib import Path
 
@@ -19,7 +20,12 @@ lazy import numpy as np
 lazy from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_LAYER_DIR = ROOT / "assets/pose-atlas/v4-layered"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
+
+DEFAULT_LAYER_DIR = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
 DEFAULT_MANIFEST = DEFAULT_LAYER_DIR / "mouth_authority_manifest.json"
 VISIBLE_MAX_ABS_YAW = 90
 ALL_YAWS = tuple(range(-180, 180, 15))

@@ -15,6 +15,16 @@ lazy import time
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+lazy from domain.constants import (
+    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
+    POSE_ATLAS_LAYERED_ROOT_NAME,
+    POSE_ATLAS_RELATIVE_ROOT,
+    POSE_ATLAS_ROOT_NAME,
+)
+
 VERSION_PATTERN = re.compile(
     r"^[0-9]+\.[0-9]+\.[0-9]+(?:-rc\.(?:0|[1-9][0-9]*))?$"
 )
@@ -27,8 +37,12 @@ APPIMAGETOOL_URL = (
     "https://github.com/AppImage/appimagetool/releases/download/continuous/"
     "appimagetool-x86_64.AppImage"
 )
-POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
-LAYERED_POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4-layered"
+# Source directories and the PyInstaller ``--add-data`` destinations below
+# both derive from domain.constants so the packaged runtime, which resolves
+# ``resource_path(POSE_ATLAS_RELATIVE_ROOT)``, always finds the generation
+# that was actually bundled.
+POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
+LAYERED_POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
 EXPRESSION_ROOT = ROOT / "assets" / "expressions"
 LAYERED_EXPRESSION_ROOT = EXPRESSION_ROOT / "layered"
 VIEW_RING_COUNT = 24
@@ -76,14 +90,16 @@ def _release_pose_atlas_root(required: bool) -> Path | None:
     views = tuple(POSE_ATLAS_ROOT.glob("yaw*-pitch+00.png"))
     if len(views) != VIEW_RING_COUNT:
         raise FileNotFoundError(
-            "The Preview release requires 24 PoseAtlas v4 view assets: "
+            f"The Preview release requires 24 PoseAtlas {POSE_ATLAS_ROOT_NAME} view assets: "
             f"{POSE_ATLAS_ROOT}"
         )
     for view in views:
         base = view.stem
         for suffix in (".landmarks.json", ".hands.json"):
             if not (POSE_ATLAS_ROOT / f"{base}{suffix}").is_file():
-                raise FileNotFoundError(f"PoseAtlas v4 sidecar missing: {base}{suffix}")
+                raise FileNotFoundError(
+                    f"PoseAtlas {POSE_ATLAS_ROOT_NAME} sidecar missing: {base}{suffix}"
+                )
     full_body_layers = tuple(LAYERED_POSE_ATLAS_ROOT.glob("yaw*-pitch+00_*.png"))
     expected_full_body_layers = VIEW_RING_COUNT * FULL_BODY_LAYER_COUNT
     if len(full_body_layers) != expected_full_body_layers:
@@ -178,9 +194,9 @@ def _pyinstaller(
         command.extend(
             [
                 "--add-data",
-                f"{pose_atlas_root}{data_separator}assets/pose-atlas/v4",
+                f"{pose_atlas_root}{data_separator}{POSE_ATLAS_RELATIVE_ROOT}",
                 "--add-data",
-                f"{LAYERED_POSE_ATLAS_ROOT}{data_separator}assets/pose-atlas/v4-layered",
+                f"{LAYERED_POSE_ATLAS_ROOT}{data_separator}{POSE_ATLAS_LAYERED_RELATIVE_ROOT}",
                 "--add-data",
                 f"{EXPRESSION_ROOT}{data_separator}assets/expressions",
             ]

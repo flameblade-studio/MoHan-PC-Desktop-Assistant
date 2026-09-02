@@ -37,6 +37,7 @@ lazy from domain.affective_state import AffectiveState
 lazy from domain.affinity_state import AffinityState
 lazy from domain.chronicle import Chronicle, Milestone, MilestoneKind
 lazy from domain.companion_animation_contract import EXPRESSION_POSES
+lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
 lazy from domain.emotional_resonance import EmotionalResonanceState
 lazy from domain.favor_exclusive import FavorExclusiveState
 lazy from domain.personality_state import PersonalityMirrorState
@@ -165,8 +166,7 @@ class CompanionCoreMixin:
                     image_size=CHARACTER_IMAGE_SIZE,
                     framing_style=str(self.db.setting("framing_style", "steady")),
                     assets=PoseAtlasAssets(
-                        resource_path("assets/pose-atlas/v4"),
-                        image_size=CHARACTER_IMAGE_SIZE,
+                        resource_path(POSE_ATLAS_RELATIVE_ROOT), image_size=CHARACTER_IMAGE_SIZE,
                         outfit_overlay=self.presentation_ports.outfit_overlay_factory(),
                     ),
                 )
