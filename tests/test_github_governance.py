@@ -68,8 +68,8 @@ def test_funding_configuration() -> None:
 
 def test_security_workflows() -> None:
     codeql = read(".github/workflows/codeql.yml")
-    assert "github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3" in codeql
-    assert "github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3" in codeql
+    assert "github/codeql-action/init@cdf488f595d80d6e07e03d4674febd5ab45fa938" in codeql
+    assert "github/codeql-action/analyze@cdf488f595d80d6e07e03d4674febd5ab45fa938" in codeql
     assert "security-events: write" in codeql
     assert "pull_request_target" not in codeql
 
