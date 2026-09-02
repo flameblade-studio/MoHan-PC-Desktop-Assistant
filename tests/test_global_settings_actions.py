@@ -10,7 +10,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from PySide6.QtCore import QObject, Qt, QTimer, Signal
+lazy from PySide6.QtCore import QObject, QPoint, QRect, Qt, QTimer, Signal
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication, QPushButton, QWidget
 
@@ -163,6 +163,10 @@ def close_dashboard(dashboard: Dashboard, db: StudioDB) -> None:
     db.close()
 
 
+def _rect_in(widget, ancestor) -> QRect:
+    return QRect(widget.mapTo(ancestor, QPoint(0, 0)), widget.size())
+
+
 def test_global_actions_are_grouped_bottom_right_and_keyboard_usable() -> None:
     application = QApplication.instance() or QApplication([])
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
@@ -174,11 +178,15 @@ def test_global_actions_are_grouped_bottom_right_and_keyboard_usable() -> None:
 
             assert cancel.isVisible() and cancel.isEnabled()
             assert save.isVisible() and save.isEnabled()
-            assert cancel.geometry().center().x() < save.geometry().center().x()
-            assert save.geometry().left() - cancel.geometry().right() <= MAX_BUTTON_GAP
-            assert save.geometry().right() >= tabs.geometry().right() - 24
-            assert cancel.geometry().top() >= tabs.geometry().bottom()
-            assert save.geometry().top() >= tabs.geometry().bottom()
+            # 三個元件的父容器不同，先映射到儀表板座標再比。
+            cancel_rect = _rect_in(cancel, dashboard)
+            save_rect = _rect_in(save, dashboard)
+            tabs_rect = _rect_in(tabs, dashboard)
+            assert cancel_rect.center().x() < save_rect.center().x()
+            assert save_rect.left() - cancel_rect.right() <= MAX_BUTTON_GAP
+            assert save_rect.right() >= tabs_rect.right() - 24
+            assert cancel_rect.top() >= tabs_rect.bottom()
+            assert save_rect.top() >= tabs_rect.bottom()
             assert cancel.focusPolicy() is not Qt.NoFocus
             assert save.focusPolicy() is not Qt.NoFocus
             assert save.property("mohanPrimaryAction") is True

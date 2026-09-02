@@ -37,6 +37,14 @@ lazy from presentation.desktop_companion_status import (
     update_desktop_companion_status,
     visual_status_message,
 )
+lazy from presentation.lingxiao_shell import (
+    build_draft_bar,
+    build_navigation,
+    build_ribbon,
+    install_lobby_motion,
+    set_ribbon_state,
+    update_draft_bar,
+)
 lazy from presentation.flagship_theme import (
     create_flagship_ornament,
     mark_flagship_card,
@@ -64,32 +72,7 @@ class DashboardShellMixin:
     """Dashboard window shell and cross-tab coordination behavior."""
 
     def _mount_global_settings_actions(self, root: QVBoxLayout) -> None:
-        actions = QHBoxLayout()
-        actions.setContentsMargins(0, 8, 14, 4)
-        actions.setSpacing(10)
-        self.cancel_settings_button = QPushButton(
-            self._t("cancel_without_saving", "取消（不要保存）")
-        )
-        self.cancel_settings_button.setObjectName("globalCancelSettingsButton")
-        self.cancel_settings_button.setProperty("mohanAction", "secondary")
-        self.save_settings_button = QPushButton(
-            self._t("save_settings", "保存設定")
-        )
-        self.save_settings_button.setObjectName("globalSaveSettingsButton")
-        self.save_settings_button.setProperty("mohanPrimaryAction", True)
-        self.save_settings_button.setProperty("mohanAction", "primary")
-        self.save_settings_button.setStyleSheet(
-            "/* background is supplied by the active contrast-safe theme; "
-            "font-weight:700; padding:10px 24px */"
-        )
-        actions.addStretch(1)
-        actions.addWidget(self.cancel_settings_button)
-        actions.addWidget(self.save_settings_button)
-        root.addLayout(actions)
-        self.cancel_settings_button.clicked.connect(
-            self.cancel_settings_changes
-        )
-        self.save_settings_button.clicked.connect(self.save_all_settings)
+        build_draft_bar(self, root)
 
     def cancel_settings_changes(self) -> None:
         center = getattr(self, "flagship_center", None)
@@ -250,52 +233,7 @@ class DashboardShellMixin:
         self,
         root: QVBoxLayout,
     ) -> tuple[QPushButton, QPushButton]:
-        command_deck = QFrame()
-        command_deck.setProperty("mohanRole", "commandDeck")
-        header = QHBoxLayout(command_deck)
-        header.setContentsMargins(16, 10, 16, 10)
-        header.setSpacing(10)
-        self.mode_combo = self._build_mode_combo()
-        self.work_label = QLabel()
-        self.work_label.setProperty("mohanRole", "headerStatus")
-        start_btn = QPushButton(self._t("start_work", "開始工作"))
-        stop_btn = QPushButton(self._t("stop_work", "結束工作"))
-        self.restore_window_button = QPushButton(
-            self._t("restore_dashboard_window", "還原視窗")
-        )
-        self.restore_window_button.setProperty("mohanAction", "secondary")
-        self.restore_window_button.setToolTip(
-            self._t(
-                "restore_dashboard_window_tooltip",
-                "將控制中心還原為可移動、可調整大小的視窗",
-            )
-        )
-        self.restore_window_button.clicked.connect(self.showNormal)
-        self.restore_window_button.hide()
-        start_btn.setProperty("mohanAction", "primary")
-        stop_btn.setProperty("mohanAction", "secondary")
-        brand = QVBoxLayout()
-        self.header_title = QLabel(
-            f"<b>{html.escape(profile_window_title(self.db))}</b>"
-        )
-        self.header_title.setProperty("mohanRole", "brand")
-        brand_line = QLabel(
-            self._t("dashboard_brand_line", "墨色為骨・寒光為心")
-        )
-        brand_line.setProperty("mohanRole", "muted")
-        brand.addWidget(self.header_title)
-        brand.addWidget(brand_line)
-        header.addWidget(create_flagship_ornament(self, size=72))
-        header.addLayout(brand)
-        header.addStretch()
-        header.addWidget(QLabel(self._t("mode", "模式")))
-        header.addWidget(self.mode_combo)
-        header.addWidget(self.work_label)
-        header.addWidget(self.restore_window_button)
-        header.addWidget(start_btn)
-        header.addWidget(stop_btn)
-        root.addWidget(command_deck)
-        return start_btn, stop_btn
+        return build_ribbon(self, root)
 
     def _mount_dashboard_tabs(self, root: QVBoxLayout) -> None:
         self.tabs = QTabWidget()
@@ -369,42 +307,16 @@ class DashboardShellMixin:
         lobby_layout.setContentsMargins(0, 0, 0, 0)
         lobby_layout.setSpacing(12)
 
-        navigation = QFrame()
-        navigation.setProperty("mohanRole", "gameNavigation")
-        navigation.setFixedWidth(148)
-        navigation_layout = QVBoxLayout(navigation)
-        navigation_layout.setContentsMargins(10, 14, 10, 14)
-        navigation_layout.setSpacing(8)
-        navigation_title = QLabel("✦ MoHan ✦")
-        navigation_title.setAlignment(Qt.AlignCenter)
-        navigation_title.setProperty("mohanRole", "navigationTitle")
-        navigation_layout.addWidget(navigation_title)
-        navigation_layout.addWidget(
-            create_flagship_ornament(navigation, size=66),
-            0,
-            Qt.AlignCenter,
+        navigation, self.game_navigation_buttons = build_navigation(
+            self, self.feature_registry.features
         )
-
-        self.game_navigation_buttons: list[QPushButton] = []
-        for index, feature in enumerate(self.feature_registry.features):
-            button = QPushButton(feature.title)
-            button.setFixedHeight(54)
-            button.setCheckable(True)
-            button.setAutoExclusive(True)
-            button.setProperty("mohanAction", "navigation")
-            button.setAccessibleName(feature.title)
-            button.clicked.connect(
-                partial(self._select_game_lobby_page, index)
-            )
-            navigation_layout.addWidget(button)
-            self.game_navigation_buttons.append(button)
-        navigation_layout.addStretch(1)
 
         lobby_layout.addWidget(navigation)
         lobby_layout.addWidget(self.tabs, 1)
         root.addWidget(lobby, 1)
         self.tabs.currentChanged.connect(self._sync_game_lobby_navigation)
         self._sync_game_lobby_navigation(self.tabs.currentIndex())
+        install_lobby_motion(self, lobby, self.tabs)
 
     def _select_game_lobby_page(self, index: int) -> None:
         """Open one real feature page from the game-style navigation."""
@@ -858,6 +770,7 @@ class DashboardShellMixin:
     def _start_dashboard_timer(self) -> None:
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.refresh_work_time)
+        self.timer.timeout.connect(lambda: update_draft_bar(self))
         self.timer.start(1000)
 
     def _disable_implicit_default_buttons(self, root: QWidget | None = None) -> None:
@@ -1070,6 +983,7 @@ class DashboardShellMixin:
                 state=state,
             )
         )
+        set_ribbon_state(self, active=active)
 
     def start_work(self) -> None:
         if self.db.start_work():

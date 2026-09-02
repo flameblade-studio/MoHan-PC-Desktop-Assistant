@@ -12,6 +12,7 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
     "儲存": translations("保存", "Save", "保存"),
     "取消": translations("取消", "Cancel", "キャンセル"),
     "確定": translations("确定", "OK", "OK"),
+    "停手": translations("停手", "STOP", "停止"),
     "緊急停止所有工具與遠端操作（Esc）": translations(
         "紧急停止所有工具与远程操作（Esc）",
         "Emergency stop for all tools and remote operations (Esc)",

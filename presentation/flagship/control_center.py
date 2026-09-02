@@ -6,10 +6,10 @@ lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from typing import Any
 
-lazy from PySide6.QtCore import Signal
+lazy from PySide6.QtCore import Qt, Signal
 lazy from PySide6.QtWidgets import (
+    QLabel,
     QHBoxLayout,
-    QPushButton,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -57,6 +57,7 @@ lazy from presentation.flagship.shared import (
 lazy from presentation.flagship.ui_helpers import FlagshipUiHelpersMixin
 lazy from presentation.flagship.vision import FlagshipVisionMixin
 lazy from presentation.flagship.workflows import FlagshipWorkflowMixin
+lazy from presentation.lingxiao_widgets import SealButton
 lazy from presentation.flagship_theme import (
     apply_flagship_theme,
     create_flagship_ornament,
@@ -181,17 +182,19 @@ class FlagshipControlCenter(
 
     def _build_control_center_ui(self) -> None:
         root = QVBoxLayout(self)
-        ornament_row = QHBoxLayout()
-        ornament_row.addStretch(1)
-        ornament_row.addWidget(create_flagship_ornament(self, size=72))
-        root.addLayout(ornament_row)
-        emergency = QPushButton(self._t("緊急停止所有工具與遠端操作（Esc）"))
-        emergency.setStyleSheet(
-            "QPushButton{background:#772f3a;color:white;font-weight:bold;"
-            "padding:10px;border-radius:8px;}"
-        )
+        seal_row = QHBoxLayout()
+        seal_row.setSpacing(14)
+        emergency = SealButton(self._t("停手"), self._t("緊急停止"))
+        emergency.setToolTip(self._t("緊急停止所有工具與遠端操作（Esc）"))
+        emergency.setAccessibleName(self._t("緊急停止所有工具與遠端操作（Esc）"))
         emergency.clicked.connect(self.emergency_stop)
-        root.addWidget(emergency)
+        seal_caption = QLabel(self._t("緊急停止所有工具與遠端操作（Esc）"))
+        seal_caption.setProperty("mohanRole", "muted")
+        seal_caption.setWordWrap(True)
+        seal_row.addWidget(emergency, 0, Qt.AlignVCenter)
+        seal_row.addWidget(seal_caption, 1)
+        seal_row.addWidget(create_flagship_ornament(self, size=72), 0, Qt.AlignTop)
+        root.addLayout(seal_row)
         self.tabs = QTabWidget()
         for page, label in (
             (self._overview_tab(), "任務中心"),
