@@ -270,7 +270,29 @@ def _body_sidecar(
         hip_target = body_center - hip_offset if side == "right" else body_center + hip_offset
         knee_target = (hip_target + run.center) / 2.0
         landmarks[f"{side}_hip"] = _alpha_point(mask, hip_target, hip_y, left, top, right, bottom)
-        landmarks[f"{side}_knee"] = _alpha_point(mask, knee_target, knee_y, left, top, right, bottom)
+        # 膝的第一目標是髖與腳掌中心的中點。這個幾何假設穿長袍：v4 的側面把腿包住，
+        # 中點永遠打得到 alpha。露腿的權威在純側面（|yaw|=90）時腳掌很長，中點落在
+        # 小腿前方的空氣裡（2026-09-02 實測 ±090 最近 alpha 56–58 px，超過搜尋半徑 48）。
+        # 退回第二目標：腳掌中心正上方——側面時小腿就在腳的正上方。兩者都找不到才
+        # 記為不可達，而不是讓整組 24 視角的建置中止。
+        try:
+            landmarks[f"{side}_knee"] = _alpha_point(
+                mask, knee_target, knee_y, left, top, right, bottom
+            )
+        except BuildError:
+            try:
+                landmarks[f"{side}_knee"] = _alpha_point(
+                    mask, run.center, knee_y, left, top, right, bottom
+                )
+            except BuildError:
+                occluded_landmarks.append(
+                    {
+                        "name": f"{side}_knee",
+                        "reason": "No alpha within the search radius of either knee target "
+                        "(hip-to-foot midpoint, or directly above the foot run).",
+                        "occluder_id": "knee-target-unreachable",
+                    }
+                )
         landmarks[f"{side}_ankle"] = _alpha_point(mask, run.center, ankle_y, left, top, right, bottom)
         landmarks[f"{side}_heel"] = _alpha_point(
             mask,
@@ -371,7 +393,11 @@ def _alpha_point(
             distances = (xs + x0 - target_x) ** 2 + (ys + y0 - target_y) ** 2
             index = int(numpy.argmin(distances))
             return [int(xs[index] + x0), int(ys[index] + y0)]
-    raise BuildError("alpha_registration_point_missing")
+    # 帶上目標座標：原本只有一個代碼，24 視角的整組建置失敗時連是哪一張、哪個點
+    # 都看不出來（2026-09-02 為此逐視角重現才定位到 ±090 的膝）。
+    raise BuildError(
+        f"alpha_registration_point_missing:target=({round(target_x)},{round(target_y)})"
+    )
 
 
 def _hand_sidecar(
