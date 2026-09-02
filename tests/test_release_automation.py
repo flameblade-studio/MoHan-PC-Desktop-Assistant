@@ -163,15 +163,44 @@ def test_version_runtime_and_evidence_policy() -> None:
     )
 
 
-# SHA-256 of the canonical half-body source that the installer artwork and
-# the taskbar icon are derived from.  Re-pinned on 2026-09-02 when the
-# generation-2 bare-faced base replaced the generation-1 idle_front.png;
-# installer/artwork/* and assets/mohan-taskbar-icon.png / mohan-halfbody.ico
-# below are still the generation-1 renders and keep their own pins until the
-# owner decides how the bare base is presented in installer and taskbar art.
+# SHA-256 of the canonical bare half-body sprite (generation-2 base, pinned
+# 2026-09-02).  Marketing art is no longer drawn from it directly: the composed
+# portrait below is rendered over it by tools/render_marketing_portraits.py.
 CANONICAL_HALF_BODY_SHA256 = (
     "e99cc462979d963247db30e73efcceffe408c5b4046db69611325a6920647825"
 )
+# docs/media/portraits/idle_front.png: generation-2 composite (official pack +
+# classic makeup) that installer artwork and the taskbar icon derive from, 2026-09-03.
+MARKETING_IDLE_PORTRAIT_SHA256 = (
+    "3f970a7b96156badcbacd5d6bd1f76ed312db8eeb66a9152f6bc633385e8f869"
+)
+# installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-03.
+WIZARD_HERO_SHA256 = (
+    "ef39c7708e4d9782a3b02f5fc4e0d27db23b6675f7656a1e5012761f66962248"
+)
+# installer/artwork/wizard-small.png: built from the generation-2 composite, 2026-09-03.
+WIZARD_SMALL_SHA256 = (
+    "2733f8ee842867ddb7fb38ed07f7260f20db33093159f7f1fd678fbdfa884a33"
+)
+# assets/mohan-taskbar-icon.png: built from the generation-2 composite, 2026-09-03.
+TASKBAR_ICON_PNG_SHA256 = (
+    "fc32f79654ce68918a838f2382484a0dc2e3e0fcc636aac82b56272fef06eecd"
+)
+# assets/mohan-halfbody.ico: built from the generation-2 composite, 2026-09-03.
+WINDOWS_ICON_SHA256 = (
+    "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
+)
+# The README expression cards and the canonical idle portrait, rendered composed.
+MARKETING_PORTRAITS = (
+    "proud_front.png",
+    "thinking_front.png",
+    "shy_cute_front.png",
+    "mock_hit_front.png",
+    "gentle_smile_front.png",
+    "worried_front.png",
+    "idle_front.png",
+)
+PORTRAIT_SIZE = (1254, 1254)
 
 
 def test_inno_setup_and_artwork_contract() -> None:
@@ -215,15 +244,26 @@ def test_inno_setup_and_artwork_contract() -> None:
         assert required in installer_test
 
     canonical = ROOT / "assets/expressions/idle_front.png"
-    assert_image(canonical, (1254, 1254))
+    assert_image(canonical, PORTRAIT_SIZE)
     assert hashlib.sha256(canonical.read_bytes()).hexdigest() == CANONICAL_HALF_BODY_SHA256
+    portrait = ROOT / "docs/media/portraits/idle_front.png"
+    assert_image(portrait, PORTRAIT_SIZE)
+    assert hashlib.sha256(portrait.read_bytes()).hexdigest() == MARKETING_IDLE_PORTRAIT_SHA256
     for consumer in ("infrastructure/face_assets.py", "tools/build_installer_artwork.py"):
         content = read(consumer)
         assert "idle_front.png" in content
         assert "mohan-hero-rain-canonical.webp" not in content
+    artwork_builder = read("tools/build_installer_artwork.py")
+    assert '"--source"' in artwork_builder
+    assert "docs/media/portraits/idle_front.png" in artwork_builder
+    portrait_renderer = read("tools/render_marketing_portraits.py")
+    assert "ActiveOutfitOverlay(" in portrait_renderer
+    assert "TemporaryDirectory(" in portrait_renderer
     artwork = ROOT / "installer/artwork"
     assert_image(artwork / "wizard-hero.png", (656, 1256))
+    assert hashlib.sha256((artwork / "wizard-hero.png").read_bytes()).hexdigest() == WIZARD_HERO_SHA256
     assert_image(artwork / "wizard-small.png", (512, 512))
+    assert hashlib.sha256((artwork / "wizard-small.png").read_bytes()).hexdigest() == WIZARD_SMALL_SHA256
     checkmark = ROOT / "assets/ui/checkmark.svg"
     assert checkmark.is_file()
     assert 'stroke="#ffffff"' in checkmark.read_text(encoding="utf-8")
@@ -234,13 +274,11 @@ def test_windows_taskbar_icon_contract() -> None:
     png_icon = ROOT / "assets/mohan-taskbar-icon.png"
     windows_icon = ROOT / "assets/mohan-halfbody.ico"
     assert hashlib.sha256(canonical.read_bytes()).hexdigest() == CANONICAL_HALF_BODY_SHA256
+    portrait = ROOT / "docs/media/portraits/idle_front.png"
+    assert hashlib.sha256(portrait.read_bytes()).hexdigest() == MARKETING_IDLE_PORTRAIT_SHA256
     assert_image(png_icon, (1024, 1024))
-    assert hashlib.sha256(png_icon.read_bytes()).hexdigest() == (
-        "496462ac4a1bbca5661505ba42ee33667bef8fa0d95292255b0697b9ef24ad37"
-    )
-    assert hashlib.sha256(windows_icon.read_bytes()).hexdigest() == (
-        "ec8c2cd78786f50c9dbb627c54f846aee4298cab33fe436b82ab54178e986495"
-    )
+    assert hashlib.sha256(png_icon.read_bytes()).hexdigest() == TASKBAR_ICON_PNG_SHA256
+    assert hashlib.sha256(windows_icon.read_bytes()).hexdigest() == WINDOWS_ICON_SHA256
 
     content = windows_icon.read_bytes()
     reserved, image_type, count = struct.unpack_from("<HHH", content)
@@ -274,6 +312,8 @@ def test_windows_taskbar_icon_contract() -> None:
 
     icon_builder = read("tools/build_app_icon.ps1")
     assert "assets\\expressions\\idle_front.png" in icon_builder
+    assert "[string]$Source" in icon_builder
+    assert "docs\\media\\portraits\\idle_front.png" in icon_builder
     assert "assets\\mohan.png" not in icon_builder
     assert "icon:auto-resize=256,128,96,64,48,40,32,24,20,16" in icon_builder
     assert not (ROOT / "assets/mohan.png").exists()
@@ -412,15 +452,11 @@ def test_packaging_tools_and_public_media() -> None:
         assert "GH_TOKEN: ${{ github.token }}" in toolchain_step
         assert "choco install wixtoolset" not in workflow
     assert 'GITHUB_ACTIONS -eq "true" -and -not $env:GH_TOKEN' in packaging_tools
-    for expression in (
-        "proud_front.png",
-        "thinking_front.png",
-        "shy_cute_front.png",
-        "mock_hit_front.png",
-        "gentle_smile_front.png",
-        "worried_front.png",
-    ):
+    for expression in MARKETING_PORTRAITS:
+        # The bare runtime sprite the portrait is composed over, and the
+        # composed portrait the README cards embed.
         assert (ROOT / "assets/expressions" / expression).is_file(), expression
+        assert_image(ROOT / "docs/media/portraits" / expression, PORTRAIT_SIZE)
     for media in (
         "mohan-hero.png",
         "first-run-wizard.png",
@@ -441,8 +477,9 @@ def test_readme_language_and_contribution_contract() -> None:
     assert "Azure Speech（プレビュー）" in readme
     assert "墨寒的傲嬌工程小劇場 / MoHan's Tsundere Developer Theatre" in readme
     expression_cards = readme.count(
-        'width="33%" align="center"><img src="assets/expressions/'
+        'width="33%" align="center"><img src="docs/media/portraits/'
     )
+    assert 'src="assets/expressions/' not in readme
     support_cards = readme.count(
         'width="33%" align="center" valign="top"><img src="docs/media/support-'
     )
