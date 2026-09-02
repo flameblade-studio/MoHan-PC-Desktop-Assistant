@@ -16,6 +16,7 @@ lazy from presentation.dashboard_settings import DashboardSettingsMixin
 lazy from presentation.dashboard_shell import DashboardShellMixin
 lazy from presentation.dashboard_today_memory import DashboardTodayMemoryMixin
 lazy from presentation.dashboard_voice import DashboardVoiceMixin
+lazy from presentation.dashboard_wardrobe_makeup import DashboardWardrobeMakeupMixin
 lazy from presentation.dashboard_wardrobe_preferences import (
     DashboardWardrobePreferencesMixin,
 )
@@ -26,6 +27,7 @@ __all__ = ("Dashboard",)
 
 class Dashboard(
     DashboardWardrobePreferencesMixin,
+    DashboardWardrobeMakeupMixin,
     DashboardShellMixin,
     DashboardSettingsMixin,
     DashboardVoiceMixin,

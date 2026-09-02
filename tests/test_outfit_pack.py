@@ -313,10 +313,13 @@ def _assert_ensemble_contract(store: Path) -> None:
     assert "_ensemble" not in saved
     restore_builtin_outfit(store)
     restored = json.loads((store / "active.json").read_text(encoding="utf-8"))
+    # Restoring the built-in look resets every slot, makeup included: the
+    # ``builtin`` sentinel for makeup resolves to the built-in classic variant.
     assert set(restored) == {
         "garment",
         "hairstyle",
         "headwear",
+        "makeup",
         "weapon",
         "handheld",
         "jewelry",

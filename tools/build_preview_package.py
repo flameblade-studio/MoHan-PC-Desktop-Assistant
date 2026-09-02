@@ -189,6 +189,12 @@ def _pyinstaller(
         f"{ROOT / 'THIRD_PARTY_NOTICES.md'}{data_separator}.",
         "--add-data",
         f"{build_info}{data_separator}.",
+        # Makeup safe regions and the official built-in makeup pack root travel
+        # with the runtime, exactly like the layered rigs they were derived from.
+        "--add-data",
+        f"{ROOT / 'assets' / 'makeup-safe-regions.json'}{data_separator}assets",
+        "--add-data",
+        f"{ROOT / 'assets' / 'makeup'}{data_separator}assets/makeup",
     ]
     if pose_atlas_root is not None:
         command.extend(

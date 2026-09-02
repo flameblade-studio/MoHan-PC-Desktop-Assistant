@@ -186,3 +186,39 @@ D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\ex
 15. `hair_left` / `hair_right`（前髮）
 16. `sleeve_left` / `sleeve_right`（袖子）
 17. `ornament`（髮飾）
+
+---
+
+## 十、妝容圖層（makeup slot，2026-09-02 新增）
+
+擁有者裁決：全身素體 `assets/pose-atlas/v5-base` 保持**素顏**、髮髻收攏；外袍、散髮、銀髮飾與**妝容**全部是可開關、可替換的獨立圖層，與半身同一標準。妝容以「妝容套件」提供，格式與衣裝套件相同（權威文件：`docs/OUTFIT-PACKS.md` 的 `makeup` 一節）。
+
+### 全身要製作的圖層
+
+24 個 yaw 視角 × 每個 variant 各三張透明 RGBA PNG，畫布 **1024 × 1536**、與 `{view_id}_base.png` 同座標系、anchor 固定 0,0：
+
+| slot | 內容 | 禁畫 |
+|------|------|------|
+| `eyes` | 眼線、眼影、睫毛、眉（合成一張） | 可見虹膜 |
+| `cheeks` | 腮紅 | — |
+| `lips` | 唇色／唇彩 | 牙齒、口腔 |
+
+### 安全區與背面視角
+
+所有不透明像素都必須落在 `assets/makeup-safe-regions.json` 為該 view_id／slot 定義的矩形內（由 `assets/pose-atlas/v5-base-layered/{view_id}_eyelid_*`／`_eyeliner_*`／`_brow_*`、`_blush_*`、`_lip_*`／`_corner_*` 的 alpha 外框各自外擴 24／48／20 px 而得）。看不到臉的視角（`yaw-180` 至 `yaw-105` 與 `yaw+105` 至 `yaw+165`）安全區為空，對應圖層必須是**完全透明**的 1024 × 1536 PNG，但檔案仍要交付（格式要求 31 個 silhouette 齊全）。側面視角只看得到一隻眼、一邊腮紅時，只畫看得到的那一側。
+
+### 交付物與封裝
+
+item `mohan-signature`，variant `classic`（原妝，對齊 `assets/pose-atlas/v4` 的臉部外觀）與 `light`（淡雅）。檔名由範本寫死：
+
+```
+assets/makeup/builtin/assets/mohan-signature-{variant}-{view_id}-{slot}.png
+```
+
+24 視角 × 3 slot × 2 variant = 144 張；連同半身 42 張（`DLC_ART_ASSET_SPEC.md` 第九節）共 186 張，全部放齊後執行：
+
+```
+py -3.15 tools/build_outfit_pack.py assets/makeup/builtin/manifest.json assets/makeup/builtin assets/makeup/mohan.makeup.builtin.mohan-outfit
+```
+
+封裝即驗證 sha256、尺寸與安全區；任何一張越界或缺漏都整包拒絕。

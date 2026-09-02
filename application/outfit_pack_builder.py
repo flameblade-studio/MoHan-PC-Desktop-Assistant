@@ -10,8 +10,9 @@ lazy from domain.outfit_pack import (
     MANIFEST,
     OutfitPackError,
     inspect_outfit_pack,
-    validated_asset_dimensions,
 )
+lazy from domain.outfit_pack_assets import validated_asset_dimensions
+lazy from domain.outfit_pack_makeup import verify_makeup_layers
 
 
 def _asset_entries(value: object) -> tuple[dict[str, object], ...]:
@@ -94,6 +95,8 @@ def _write_deterministic_archive(
                 info.external_attr = 0o100644 << 16
                 archive.writestr(info, members[name])
         inspect_outfit_pack(temporary)
+        # A sealed pack must already pass the makeup pixel gate the importer applies.
+        verify_makeup_layers(temporary)
         os.replace(temporary, output)
     except BaseException:
         if temporary.is_file():

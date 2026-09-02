@@ -7,8 +7,8 @@ lazy from pathlib import Path
 lazy from types import SimpleNamespace
 
 lazy import pytest
-lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice, QPoint
-lazy from PySide6.QtGui import QColor, QImage, QPixmap
+lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice, QPoint, QRect
+lazy from PySide6.QtGui import QColor, QImage, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from infrastructure import active_outfit_overlay as adapter_module
@@ -243,7 +243,8 @@ def test_compositor_uses_each_layers_own_face_clip(tmp_path: Path) -> None:
         ),
         "front-crossed",
     )
-    adapter._layers_by_view["front-crossed"] = ((layer, 0, 0, forbidden),)
+    allowed = QRegion(QRect(0, 0, CANVAS, CANVAS)).subtracted(forbidden)
+    adapter._layers_by_view["front-crossed"] = ((layer, 0, 0, allowed, 1.0),)
     frame = QPixmap(CANVAS, CANVAS)
     frame.fill(QColor(240, 240, 240, 255))
     result = adapter.apply(frame, "front-crossed").toImage()
