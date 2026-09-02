@@ -33,8 +33,19 @@ lazy from infrastructure.layered_face_renderer import (
     LayeredParametricFaceRenderer,
 )
 
-LAYERED_DIR = ROOT / "assets" / "expressions" / "layered"
-AUTHORITY_DIR = ROOT / "assets" / "expressions"
+# Staging override: validate a candidate rig without replacing assets/.
+# MOHAN_LAYERED_FACE_DIR holds the 75 ``{pose}_{layer}.png`` layers and
+# MOHAN_LAYERED_FACE_PORTRAIT_DIR the three idle portraits they were cut from
+# (e.g. work/half-body-v2/layered and work/half-body-v2/authority).  Unset,
+# both resolve to the shipped assets; thresholds below are never relaxed.
+LAYERED_DIR = Path(
+    os.environ.get("MOHAN_LAYERED_FACE_DIR")
+    or ROOT / "assets" / "expressions" / "layered"
+)
+AUTHORITY_DIR = Path(
+    os.environ.get("MOHAN_LAYERED_FACE_PORTRAIT_DIR")
+    or ROOT / "assets" / "expressions"
+)
 MAX_MEAN_CHANNEL_ERROR = 6.0
 MAX_TRANSPARENT_SAMPLE_RATIO = 0.01
 IDENTITY_SAMPLE_STEP = 4
@@ -151,7 +162,7 @@ def _sampled_identity_error(
 def test_neutral_renderer_reconstructs_authority_portraits() -> None:
     _app()
     manifest = load_layered_face_assets(LAYERED_DIR)
-    renderer = LayeredParametricFaceRenderer(manifest)
+    renderer = LayeredParametricFaceRenderer(manifest, authority_dir=AUTHORITY_DIR)
     authorities = {
         FacePose.CHEEK: "idle.png",
         FacePose.LEAN: "idle_lean.png",

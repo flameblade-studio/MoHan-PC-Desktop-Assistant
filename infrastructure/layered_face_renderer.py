@@ -73,9 +73,19 @@ class LayeredParametricFaceRenderer:
         self,
         manifest: LayeredFaceManifest | None = None,
         outfit_overlay=None,
+        authority_dir: Path | None = None,
     ) -> None:
         self._manifest = manifest
         self._outfit_overlay = outfit_overlay
+        # The idle authority portraits (seam healing, face restoration) and
+        # the speaking/viseme patches are read from this directory.  Tests
+        # pass a staging directory to validate a candidate rig against its
+        # own authorities without replacing assets/expressions.
+        self._authority_dir = (
+            Path(authority_dir)
+            if authority_dir is not None
+            else PROJECT_ROOT / "assets" / "expressions"
+        )
         # One 25-layer pose plus a transition margin is sufficient. The former
         # unbounded cache retained every full-canvas pose layer for the entire
         # process lifetime after pose changes.
@@ -307,9 +317,7 @@ class LayeredParametricFaceRenderer:
         authority_name = FACE_AUTHORITY_FILES.get(key)
         if not authority_name or region.isEmpty():
             return
-        authority = self._cached_pixmap(
-            PROJECT_ROOT / "assets" / "expressions" / authority_name
-        )
+        authority = self._cached_pixmap(self._authority_dir / authority_name)
         if authority.isNull():
             return
         painter = QPainter(target)
@@ -351,7 +359,7 @@ class LayeredParametricFaceRenderer:
         )
         source = QPixmap()
         for name in candidates:
-            path = PROJECT_ROOT / "assets" / "expressions" / f"{name}.png"
+            path = self._authority_dir / f"{name}.png"
             if path.is_file():
                 source = self._cached_pixmap(path)
                 if not source.isNull():
@@ -483,9 +491,7 @@ class LayeredParametricFaceRenderer:
         authority_name = FACE_AUTHORITY_FILES.get(key)
         if not authority_name or region.isEmpty():
             return
-        authority = self._cached_pixmap(
-            PROJECT_ROOT / "assets" / "expressions" / authority_name
-        )
+        authority = self._cached_pixmap(self._authority_dir / authority_name)
         if authority.isNull():
             return
         painter = QPainter(target)
