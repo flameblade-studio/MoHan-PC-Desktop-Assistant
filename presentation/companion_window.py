@@ -88,6 +88,15 @@ class CompanionWindow(
         self._autonomous_outfit_generation.status_changed.connect(
             self.dashboard.set_outfit_generation_status
         )
+        # 緊急停止原本只發訊號、沒有任何接收者：換裝批次跑在另一個執行緒池，
+        # 使用者按下停手之後剩餘視角仍會逐張呼叫付費 API，而介面已經宣告
+        # 「所有工具與遠端連線均已中止」。這條接線是那句話成立的前提。
+        # flagship_center 由 dashboard 的設定分頁建立，未必存在，故防禦性取用。
+        flagship_center = getattr(self.dashboard, "flagship_center", None)
+        if flagship_center is not None:
+            flagship_center.emergency_stop_requested.connect(
+                self._autonomous_outfit_generation.abort
+            )
         self._autonomous_outfit_generation.start()
         self._connect_dashboard_signals()
         self._connect_speech_service_signals()

@@ -20,6 +20,7 @@ lazy from application.self_generating_wardrobe import (
 lazy from application.wardrobe_storage import WardrobeStorageGuard
 lazy from domain.outfit_pack import REQUIRED_SILHOUETTES, OutfitPackError
 lazy from tests.test_outfit_pack import _manifest, _png
+lazy from typing import Callable
 
 
 class Scout:
@@ -43,8 +44,13 @@ class Generator:
         request: OutfitCreationRequest,
         trends: tuple[FashionTrendSignal, ...],
         required_views: tuple[str, ...],
+        *,
+        cancelled: Callable[[], bool] = lambda: False,
     ) -> GeneratedOutfitDraft:
         assert required_views == REQUIRED_SILHOUETTES
+        # 替身也要收下取消查詢：正式產線每個視角都會呼叫它，替身若不接受
+        # 這個參數，等於讓測試在一個不存在的介面上通過。
+        self.cancelled = cancelled
         self.requests.append(request)
         manifest, assets = _manifest(_png())
         return GeneratedOutfitDraft(

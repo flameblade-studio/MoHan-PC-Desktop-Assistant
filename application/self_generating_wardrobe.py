@@ -20,6 +20,16 @@ lazy from domain.outfit_pack import (
     validated_asset_dimensions,
 )
 
+
+def _never_cancelled() -> bool:
+    """預設的取消查詢：永不取消。
+
+    預設必須是「不取消」而不是「取消」——忘了接線的後果是照舊執行，
+    不是所有生成都被靜默中止。
+    """
+    return False
+
+
 JOB_ID = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,46}[a-z0-9])?\Z")
 GENERATED_PACK_PREFIX = "generated-"
 GENERATABLE_APPEARANCE_CATEGORIES = frozenset(
@@ -106,6 +116,8 @@ class OutfitDraftGenerator(Protocol):
         request: OutfitCreationRequest,
         trends: tuple[FashionTrendSignal, ...],
         required_views: tuple[str, ...],
+        *,
+        cancelled: Callable[[], bool] = _never_cancelled,
     ) -> GeneratedOutfitDraft:
         raise NotImplementedError
 
@@ -258,7 +270,12 @@ class SelfGeneratingWardrobe:
         self.policy = policy
         self.storage_guard = storage_guard
 
-    def create(self, request: OutfitCreationRequest) -> GeneratedOutfitResult:
+    def create(
+        self,
+        request: OutfitCreationRequest,
+        *,
+        cancelled: Callable[[], bool] = _never_cancelled,
+    ) -> GeneratedOutfitResult:
         if not self.policy.enabled:
             raise OutfitPackError("Self-generated outfits are not enabled.")
         if not JOB_ID.fullmatch(request.job_id):
@@ -314,6 +331,7 @@ class SelfGeneratingWardrobe:
                 request,
                 trends,
                 REQUIRED_SILHOUETTES,
+                cancelled=cancelled,
             ),
         )
         _require_requested_categories(request, draft.manifest)

@@ -11,6 +11,7 @@ lazy from enum import IntEnum
 lazy from typing import Any, Final
 
 lazy from domain.time_utils import local_wall_time
+lazy import uuid
 
 __all__ = (
     "CAPABILITY_RISK",
@@ -144,8 +145,10 @@ class ActionPlan:
 
     def __post_init__(self) -> None:
         if not self.plan_id:
-            seed = f"{self.created_at}:{self.title}:{len(self.steps)}"
-            self.plan_id = hashlib.sha256(seed.encode("utf-8")).hexdigest()[:20]
+            # 識別碼要的是唯一性，不是可重現性。原本用 created_at（僅到秒）
+            # 加標題加步驟「數量」做雜湊，同一秒建立的兩個同名同步數計畫會
+            # 拿到同一個 ID；取消是以此 ID 索引的，於是取消 A 實際取消了 B。
+            self.plan_id = uuid.uuid4().hex[:20]
 
     def to_dict(self) -> dict[str, Any]:
         return {
