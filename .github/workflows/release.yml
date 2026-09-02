@@ -674,6 +674,11 @@ jobs:
           path: release-artifacts
           merge-multiple: true
 
+      - name: Refuse to release a client with no pinned update-manifest public key
+        shell: bash
+        run: |
+          "${{ steps.runtime-python.outputs.python-path }}" -c "import sys; sys.path.insert(0, '.'); from infrastructure.update_manifest_signature import require_pinned_keys; print(len(require_pinned_keys()), 'pinned update-manifest public key(s)')"
+
       - name: Create, finalize, and validate CycloneDX 1.7 SBOMs
         run: |
           sbom_python="${{ steps.sbom-python.outputs.python-path }}"

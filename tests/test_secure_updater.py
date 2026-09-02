@@ -12,11 +12,17 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+lazy from infrastructure.update_manifest_signature import signature_asset_name
 lazy from infrastructure.updater import (
     InstallerAsset,
     UpdateError,
     UpdateManager,
     is_newer_version,
+)
+lazy from tools.sign_update_manifest import (
+    generate_private_key,
+    load_private_key,
+    sign_manifest_bytes,
 )
 
 
@@ -51,7 +57,12 @@ def _assert_version_ordering() -> None:
     assert not is_newer_version("2.0.13", "2.0.14-rc.2")
 
 
-def _release_responses() -> tuple[str, bytes, dict[str, bytes]]:
+def _release_responses() -> tuple[str, bytes, dict[str, bytes], str]:
+    # 2026-09-02 起更新清單必須帶擁有者的 Ed25519 分離簽章；這裡用臨時金鑰
+    # 扮演擁有者，公鑰注入 UpdateManager 取代內嵌公鑰。
+    key_path = Path(tempfile.mkdtemp()) / "owner.pem"
+    public_key = generate_private_key(key_path)
+    private_key = load_private_key(key_path)
     installer_bytes = b"verified installer payload"
     digest = hashlib.sha256(installer_bytes).hexdigest()
     repo = "flameblade-studio/MoHan-PC-Desktop-Assistant"
@@ -83,15 +94,23 @@ def _release_responses() -> tuple[str, bytes, dict[str, bytes]]:
         "body": "Release notes",
         "published_at": "2026-08-01T00:00:00Z",
         "assets": [
-            {"name": manifest_name, "browser_download_url": manifest_url}
+            {"name": manifest_name, "browser_download_url": manifest_url},
+            {
+                "name": signature_asset_name(manifest_name),
+                "browser_download_url": manifest_url + ".sig",
+            },
         ],
     }
+    manifest_bytes = json.dumps(manifest).encode()
     responses = {
         f"https://api.github.com/repos/{repo}/releases/latest": json.dumps(release).encode(),
-        manifest_url: json.dumps(manifest).encode(),
+        manifest_url: manifest_bytes,
+        manifest_url + ".sig": sign_manifest_bytes(
+            manifest_bytes, private_key, pinned=(public_key,)
+        ).encode(),
         installer_url: installer_bytes,
     }
-    return repo, installer_bytes, responses
+    return repo, installer_bytes, responses, public_key
 
 
 def _response_opener(responses: dict[str, bytes]):
@@ -128,6 +147,7 @@ def _assert_verified_download(
     repo: str,
     installer_bytes: bytes,
     responses: dict[str, bytes],
+    public_key: str,
 ) -> None:
     with tempfile.TemporaryDirectory() as temp:
         manager = UpdateManager(
@@ -135,6 +155,7 @@ def _assert_verified_download(
             "2.0.14-rc.2",
             Path(temp),
             _response_opener(responses),
+            public_keys=(public_key,),
         )
         update = manager.check("stable")
         assert update is not None and update.version == "2.0.15"
@@ -160,8 +181,8 @@ def _assert_unsafe_urls_rejected() -> None:
 
 def main() -> None:
     _assert_version_ordering()
-    repo, installer_bytes, responses = _release_responses()
-    _assert_verified_download(repo, installer_bytes, responses)
+    repo, installer_bytes, responses, public_key = _release_responses()
+    _assert_verified_download(repo, installer_bytes, responses, public_key)
     _assert_unsafe_urls_rejected()
     print("SECURE_AUTO_UPDATE_OK")
 

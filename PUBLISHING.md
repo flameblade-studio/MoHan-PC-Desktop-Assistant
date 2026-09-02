@@ -125,7 +125,8 @@ GitHub 自動化必須使用一條可預測的憑證路徑。Pull Request 的讀
 12. 在最小權限發布工作中重新檢查精確產物集合及每個已列入清單的 SHA-256 值；
 13. 在發布前立即重新解析標籤，若標籤已移動或遭替換便拒絕發布；
 14. 為每個發布檔案建立 GitHub 產物來源證明；
-15. 要求並發布人工整理的四語 Release 說明。
+15. 要求並發布人工整理的四語 Release 說明；
+16. 發布後由擁有者在自己的電腦上以 `tools/sign_update_manifest.py release-sign` 對更新資訊清單做 Ed25519 分離簽章並上傳 `.sig` 資產。私鑰不進儲存庫、也不進 CI Secret；用戶端只接受能以內嵌公鑰驗證的清單，中繼資料工作在沒有內嵌公鑰時拒絕發布。
 
 `vN.N.N-rc.N` 必須發布為 Pre-release，純 `vN.N.N` 必須發布為 Stable Release；工作流程會阻擋標籤與成熟度不一致。不得重複使用或移動任何已發布標籤。
 
@@ -299,7 +300,8 @@ GitHub 自动化必须使用一条可预测的凭证路径。Pull Request 的读
 12. 在最小权限发布任务中重新检查精确产物集合及每个已列入清单的 SHA-256 值；
 13. 在发布前立即重新解析标签，若标签已移动或被替换便拒绝发布；
 14. 为每个发布文件建立 GitHub 产物来源证明；
-15. 要求并发布人工整理的四语 Release 说明。
+15. 要求并发布人工整理的四语 Release 说明；
+16. 发布后由所有者在自己的电脑上以 `tools/sign_update_manifest.py release-sign` 对更新清单做 Ed25519 分离签名并上传 `.sig` 资产。私钥不进仓库、也不进 CI Secret；客户端只接受能以内嵌公钥验证的清单，元数据任务在没有内嵌公钥时拒绝发布。
 
 `vN.N.N-rc.N` 必须发布为预发布版，纯 `vN.N.N` 必须发布为正式稳定版；工作流会阻止标签与成熟度不一致。不得重复使用或移动任何已发布标签。
 
@@ -473,7 +475,8 @@ Before any platform package starts, the fast gate must confirm that the tag, ver
 12. rechecks the exact artifact set and every cataloged SHA-256 value inside a minimal publication job;
 13. re-resolves the tag immediately before publication and refuses a moved or replaced tag;
 14. creates GitHub artifact provenance attestations for every published file;
-15. requires and publishes the curated four-language Release description.
+15. requires and publishes the curated four-language Release description;
+16. after publication, the owner signs the update manifest on their own machine with `tools/sign_update_manifest.py release-sign`, producing an Ed25519 detached signature uploaded as the `.sig` asset. The private key is neither in the repository nor a CI secret; the client accepts only a manifest that verifies under a pinned public key, and the metadata job refuses to publish when no public key is pinned.
 
 Every `vN.N.N-rc.N` tag must publish as a pre-release, while a plain `vN.N.N` tag must publish as a stable release. The workflow rejects a tag/maturity mismatch. Never reuse or move any published tag.
 
@@ -648,6 +651,7 @@ GitHub 自動化では、予測可能な認証経路を一つだけ使用しま�
 13. 公開直前にタグを再解決し、移動または置換されたタグを拒否します。
 14. 公開する全ファイルに GitHub 成果物由来証明を作成します。
 15. 人手で整備した四言語 Release 説明を必須とし、その説明を公開します。
+16. 公開後、所有者が自分の端末で `tools/sign_update_manifest.py release-sign` により更新マニフェストへ Ed25519 の分離署名を付け、`.sig` 成果物としてアップロードします。秘密鍵はリポジトリにも CI Secret にも置かず、クライアントは埋め込み公開鍵で検証できるマニフェストだけを受け入れ、メタデータジョブは公開鍵が埋め込まれていなければ公開を拒否します。
 
 `vN.N.N-rc.N` は Pre-release、純粋な `vN.N.N` は Stable Release として公開し、タグと成熟度が一致しなければワークフローが拒否します。公開済みタグは再利用も移動もしません。
 
