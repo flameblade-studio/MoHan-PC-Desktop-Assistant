@@ -105,6 +105,8 @@ FACE_REMAP_LAYERS = (
     "eyelid_left", "eyelid_right", "eyeliner_left", "eyeliner_right",
     "brow_left", "brow_right",
 )
+# |yaw| 超過此值即為背面視角，臉部細節層依契約留空（與語意稽核的背面裁決一致）。
+REAR_VIEW_MIN_ABS_YAW = 90
 
 
 def _face_evidence(image_path: Path):
@@ -179,6 +181,7 @@ def _remap_face_candidates(
     layer_dir: Path,
     view: str,
     foreground: np.ndarray,
+    authority_path: Path | None = None,
 ) -> None:
     """Replace mirrored face-detail candidates with front-anchored warps."""
 
@@ -188,8 +191,28 @@ def _remap_face_candidates(
     # the offset defect on EVERY view, including the front.
     source_dir = repo / "assets/expressions/layered"
     front = _face_evidence(repo / "assets/expressions/idle_front.png")
+    # 目標臉框必須解在「像素要被切出來的那張圖」上。原本寫死讀 v4 canonical：
+    # 權威若是另一代素體，臉的位置不同（2026-09-02 實測 yaw+045 兩代 y 差 36 px、
+    # 眼睛 landmark 差約 20 px），仿射會對著 v4 的臉解、再貼到新權威上——虹膜與
+    # 嘴唇遮罩落在新臉之外，或被臉部區域裁成空。沒給權威時維持 v4 路徑，
+    # v4 的重建結果位元不變。
+    target_source = (
+        authority_path
+        if authority_path is not None
+        else repo / "assets/pose-atlas/v4" / f"{view}.png"
+    )
+    # 背面視角（|yaw| > 90）的臉部層依契約留空，不賭偵測器抓不到臉：語意稽核的
+    # BACK_VIEW_EMPTY_MOUTH_LAYERS 與背面裁決都以 |yaw| 為準。v4 的背面剛好偵測不到
+    # 臉所以走到 except 分支；二代素體 yaw+120 的耳朵／下顎一小片被 YuNet 以 0.75 以上
+    # 的信心判成臉，前面的半身正面遮罩就被貼上去（虹膜 24 px、上唇 107 px）。
+    yaw_match = re.prefixmatch(r"yaw([+-]\d{3})-pitch", view)
+    if yaw_match is not None and abs(int(yaw_match.group(1))) > REAR_VIEW_MIN_ABS_YAW:
+        h, w = foreground.shape
+        for layer in FACE_REMAP_LAYERS:
+            candidates[layer] = np.zeros((h, w), bool)
+        return
     try:
-        target = _face_evidence(repo / "assets/pose-atlas/v4" / f"{view}.png")
+        target = _face_evidence(target_source)
     except ValueError:
         # Rear views have no detectable face; their face-detail layers are
         # licensed empty (speech-mouth and back-view rulings).
@@ -396,6 +419,7 @@ def build(
     output: Path,
     view: str = VIEW,
     authority_path: Path | None = None,
+    empty_layers: tuple[str, ...] = (),
 ) -> dict:
     canonical_path = repo / "assets/pose-atlas/v4" / f"{view}.png"
     if authority_path is None:
@@ -417,7 +441,16 @@ def build(
     # Every view is remapped — the legacy full-body feature masks carried
     # the offset defect on the front view too (iris on the cheekbones, lip
     # on the neck; only the x-symmetry hid it from centroid checks).
-    _remap_face_candidates(candidates, repo, layer_dir, view, foreground)
+    _remap_face_candidates(
+        candidates, repo, layer_dir, view, foreground, authority_path=authority_path
+    )
+    # 權威若沒有某些實體層（二代素體無袖），把那些候選歸零：_exclusive_ownership
+    # 會把無主的前景像素交還 body。否則 v4 的袖遮罩會把手臂皮膚切進 sleeve_*，
+    # 而渲染器的 _sleeve_lift 會隨手勢把袖層獨立平移——皮膚跟著離開身體。
+    for layer in empty_layers:
+        if layer not in candidates:
+            raise ValueError(f"unknown layer in empty_layers: {layer}")
+        candidates[layer] = np.zeros_like(candidates[layer])
 
     # Legacy eye masks overlap exactly.  Assign every authority pixel once so
     # blink and gaze layers remain independently addressable at runtime.
@@ -502,13 +535,21 @@ def main() -> int:
     parser.add_argument("--output", type=Path)
     parser.add_argument("--view", default=VIEW)
     parser.add_argument("--authority", type=Path)
+    parser.add_argument(
+        "--empty-layers",
+        default="",
+        help="逗號分隔；權威沒有的實體層（例如無袖素體的 sleeve_left,sleeve_right），"
+        "其候選歸零並把像素交還 body",
+    )
     args = parser.parse_args()
     output = args.output or args.repo / "work/full-body-yaw000-golden/layers"
+    empty_layers = tuple(name.strip() for name in args.empty_layers.split(",") if name.strip())
     manifest = build(
         args.repo.resolve(),
         output.resolve(),
         view=args.view,
         authority_path=args.authority,
+        empty_layers=empty_layers,
     )
     print(json.dumps({"output": manifest["output"], "layers": len(manifest["records"])}, ensure_ascii=False))
     return 0
