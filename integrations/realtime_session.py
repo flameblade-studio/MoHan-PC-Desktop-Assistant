@@ -284,17 +284,23 @@ class RealtimeSessionMethods:
                 return
             try:
                 event = json.loads(message)
-            except (TypeError, json.JSONDecodeError):
+            except (TypeError, ValueError):
+                # ValueError 涵蓋 JSONDecodeError 與 UnicodeDecodeError：截斷的
+                # 二進位 frame 會讓 json.loads 在解碼階段就丟 UnicodeDecodeError，
+                # 只接 JSONDecodeError 時 callback 直接崩潰、連線不會被關掉。
                 # 無聲丟棄會讓使用者一直看到「正在聆聽」，而 session 其實
                 # 已經在收無法解讀的內容。二進位、截斷或非 JSON frame 代表
                 # 協定層出了問題，不是一個可以忽略的事件。
-                self.signals.failed.emit(
-                    "Realtime 連線收到無法解讀的資料，已中止本次語音工作階段。"
-                )
+                # RealtimeVoiceClient 直接定義 failed Signal，沒有 self.signals；
+                # 原本這裡會先拋 AttributeError，後面的 close() 永遠跑不到。
                 try:
-                    _ws.close()
-                except Exception:
-                    pass
+                    self.failed.emit(
+                        "Realtime 連線收到無法解讀的資料，已中止本次語音工作階段。"
+                    )
+                finally:
+                    # 不論通知是否成功，連線都必須真的關掉。
+                    with suppress(Exception):
+                        _ws.close()
                 return
             self._handle_server_event(event)
 

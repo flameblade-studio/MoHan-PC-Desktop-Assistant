@@ -144,9 +144,18 @@ def windows_voice_catalog() -> list[WindowsVoiceInfo]:
         ),
         (r"SOFTWARE\Microsoft\Speech\Voices\Tokens", ""),
     )
-    return [
-        *_registry_voices(registry_path, prefix) for registry_path, prefix in locations
-    ]
+    voices: list[WindowsVoiceInfo] = []
+    skipped = 0
+    for registry_path, prefix in locations:
+        voices.extend(_registry_voices(registry_path, prefix))
+        skipped += int(getattr(_registry_voices, "last_skipped", 0))
+    if not voices and skipped:
+        # last_skipped 原本只被寫入、從未被讀取：唯一的語音 token 因 ACL 讀不到
+        # 時，函式回傳 []，上層判成「未安裝語音」而不是「查詢部分失敗」。
+        raise WindowsVoiceCatalogError(
+            f"Windows 語音登錄檔有 {skipped} 個項目無法讀取，且沒有任何可用語音"
+        )
+    return voices
 
 
 def windows_voices() -> list[tuple[str, str]]:

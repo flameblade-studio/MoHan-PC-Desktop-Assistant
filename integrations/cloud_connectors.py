@@ -150,11 +150,20 @@ def _require_identified(result: object, action: str, *keys: str) -> dict[str, An
     """
     if not isinstance(result, dict):
         raise OAuthError(f"{action}失敗：回應格式不符")
-    if keys and not any(str(result.get(key, "")).strip() for key in keys):
+    if keys and not any(_is_identifier(result.get(key)) for key in keys):
         raise OAuthError(
             f"{action}的回應缺少識別欄位（{'、'.join(keys)}），無法確認確實完成"
         )
     return result
+
+
+def _is_identifier(value: object) -> bool:
+    """只有非空字串或整數算識別值；str(value).strip() 會放行 None／False／{}／[]。"""
+    if isinstance(value, bool):
+        return False
+    if isinstance(value, int):
+        return True
+    return isinstance(value, str) and bool(value.strip())
 
 
 def _require_collection(
@@ -179,7 +188,10 @@ def _require_collection(
     rows = result[key]
     if not isinstance(rows, list):
         raise OAuthError(f"{action}的「{key}」欄位不是清單")
-    return [row for row in rows if isinstance(row, dict)]
+    if any(not isinstance(row, dict) for row in rows):
+        # 無聲濾掉非物件元素會讓「schema 改了」再次偽裝成「找到 0 筆」。
+        raise OAuthError(f"{action}的「{key}」清單含有非物件元素，回應合約已改變")
+    return rows
 
 
 
