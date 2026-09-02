@@ -8,6 +8,10 @@
 
 * 素體升為二代：`BODY_PROFILE_ID` 由 `mohan-body-v1` 升為 `mohan-body-v2`（版本 2），並以測試釘住 `domain/constants.py` 的 `POSE_ATLAS_GENERATION`，三處常數不得再各自漂移。官方與 DLC 服裝套件由工作室在二代素體上重製；使用者自製的一代套件於匯入與執行期一律拒絕，不設寬限。已安裝的一代套件會在雲裳閣清單標示「不相容」，匯入或套用時顯示「這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成」；若它正是啟用中的服裝，執行期會自動還原內建服裝並提示一次，不再無聲回退。任何在儲存庫之外散布的 `.mohan-outfit` 都必須以 `tools/build_outfit_pack.py` 對二代範本重建；雲端一鍵製衣直接產出二代套件。
 
+### 未發布 — 半身素體二代（2026-09-02）
+
+* 半身素體重製為二代素顏版：`assets/expressions/` 下 113 張表情、75 張分層與 21 張 `v120_*` 物理切層全部由工作室自有產線自 `assets/pose-atlas/v5-base/` 重新生成，不再含一代外部授權美術；外袍、髮型、髮飾與妝容改為執行期圖層。`v120_*` 的頭髮、袖子與髮飾切層依契約為全透明（`tests/test_v120_asset_integrity.py` 的 `LICENSED_EMPTY`），臉部偏移表改為實測值；無程式載入的 `physics_*` 與 `skeptical_front.png` 共 22 張已移除。
+
 ## [4.6.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.5.1...v4.6.0) (2026-08-29)
 
 
@@ -300,6 +304,10 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 * 素体升为二代：`BODY_PROFILE_ID` 由 `mohan-body-v1` 升为 `mohan-body-v2`（版本 2），并以测试钉住 `domain/constants.py` 的 `POSE_ATLAS_GENERATION`，三处常量不得再各自漂移。官方与 DLC 服装套件由工作室在二代素体上重制；用户自制的一代套件在导入与运行时一律拒绝，不设宽限。已安装的一代套件会在云裳阁列表标示「不兼容」，导入或应用时显示「这套服装是为一代素体制作的，穿在二代素体上会对不准；请用一键制衣重新生成」；若它正是启用中的服装，运行时会自动恢复内置服装并提示一次，不再无声回退。任何在仓库之外分发的 `.mohan-outfit` 都必须以 `tools/build_outfit_pack.py` 针对二代模板重建；云端一键制衣直接产出二代套件。
 
+### 未发布 — 半身素体二代（2026-09-02）
+
+* 半身素体重制为二代素颜版：`assets/expressions/` 下 113 张表情、75 张分层与 21 张 `v120_*` 物理切层全部由工作室自有产线自 `assets/pose-atlas/v5-base/` 重新生成，不再包含一代外部授权美术；外袍、发型、发饰与妆容改为运行时图层。`v120_*` 的头发、袖子与发饰切层按契约为全透明（`tests/test_v120_asset_integrity.py` 的 `LICENSED_EMPTY`），脸部偏移表改为实测值；无程序加载的 `physics_*` 与 `skeptical_front.png` 共 22 张已移除。
+
 ### v4.3.0 — 2026-08-19
 
 - 新增「真人女孩感」五大系统与灵魂拼图：性格镜像、穿搭直觉、军粮饱食度、主上专属宠溺、虹膜羞涩视线，以及赤焰剑意情绪共鸣、时间主权状态机、空中捏合牵手、梦呓系统、剑魂觉醒、感官共感、共同创作录等领域模块。
@@ -505,6 +513,10 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 ### Unreleased — migration note (issue #140, option 3)
 
 * Body profile moved to generation 2: `BODY_PROFILE_ID` goes from `mohan-body-v1` to `mohan-body-v2` (version 2) and is pinned by test to `POSE_ATLAS_GENERATION` in `domain/constants.py`, so the three constants can no longer drift apart. Official and DLC outfit packs are remade on the generation-2 body by the studio; user-made generation-1 packs are rejected at import and at runtime with no grace period. An already-installed generation-1 pack is listed as "Incompatible" in the Wardrobe Pavilion, and importing or applying it shows "This outfit was made for the generation-1 body and will not line up on the generation-2 body; regenerate it with one-click outfit creation."; if it is the active outfit, the runtime restores the built-in outfit and notifies once instead of falling back silently. Any `.mohan-outfit` distributed outside the repository must be rebuilt with `tools/build_outfit_pack.py` against the generation-2 template; one-click cloud outfit creation produces generation-2 packs directly.
+
+### Unreleased — generation-2 half-body base (2026-09-02)
+
+* The half-body base is regenerated bare-faced on generation 2: the 113 expressions, 75 layers and 21 `v120_*` physics cutouts under `assets/expressions/` are all rebuilt by the studio's own pipeline from `assets/pose-atlas/v5-base/` and no longer contain generation-1 externally licensed artwork; robe, hairstyle, hairpiece and makeup are now runtime layers. The `v120_*` hair, sleeve and ornament cutouts are fully transparent by contract (`LICENSED_EMPTY` in `tests/test_v120_asset_integrity.py`), the face-offset tables now hold measured values, and the 22 `physics_*` and `skeptical_front.png` files that no code loaded are removed.
 
 ### v4.3.0 — 2026-08-19
 
@@ -751,6 +763,10 @@ speech, gaze, and physics stress test passed before this release candidate.
 ### 未リリース — 移行メモ（issue #140、選択肢 3）
 
 * 素体を第二世代へ更新：`BODY_PROFILE_ID` を `mohan-body-v1` から `mohan-body-v2`（バージョン 2）へ引き上げ、`domain/constants.py` の `POSE_ATLAS_GENERATION` とテストで固定したため、三つの定数が個別にずれることはなくなりました。公式および DLC の衣装パックはスタジオが第二世代素体で作り直します。ユーザー自作の第一世代パックはインポート時と実行時に必ず拒否され、猶予はありません。インストール済みの第一世代パックは雲裳閣の一覧で「非互換」と表示され、インポートまたは適用時に「この衣装は第一世代素体向けに作られたもので、第二世代素体では位置が合いません。ワンクリック衣装生成で作り直してください」と表示されます。それが使用中の衣装だった場合、実行時は内蔵衣装へ自動的に戻し、一度だけ通知します（無言のフォールバックはしません）。リポジトリ外で配布されるあらゆる `.mohan-outfit` は `tools/build_outfit_pack.py` で第二世代テンプレートに対して再構築する必要があります。クラウドのワンクリック衣装生成は第二世代パックを直接生成します。
+
+### 未リリース — 半身素体の第二世代化（2026-09-02）
+
+* 半身素体を第二世代の素顔版として作り直しました。`assets/expressions/` 配下の表情 113 枚、レイヤー 75 枚、`v120_*` 物理切り出し 21 枚はすべてスタジオ自前のパイプラインが `assets/pose-atlas/v5-base/` から再生成したもので、第一世代の外部ライセンス美術は含みません。外衣、髪型、髪飾り、化粧は実行時レイヤーになりました。`v120_*` の髪・袖・髪飾りの切り出しは契約上完全に透明で（`tests/test_v120_asset_integrity.py` の `LICENSED_EMPTY`）、顔オフセット表は実測値に更新し、どのコードも読み込まない `physics_*` と `skeptical_front.png` の計 22 枚を削除しました。
 
 ### v4.3.0 — 2026-08-19
 

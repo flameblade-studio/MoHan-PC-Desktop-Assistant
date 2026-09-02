@@ -163,6 +163,17 @@ def test_version_runtime_and_evidence_policy() -> None:
     )
 
 
+# SHA-256 of the canonical half-body source that the installer artwork and
+# the taskbar icon are derived from.  Re-pinned on 2026-09-02 when the
+# generation-2 bare-faced base replaced the generation-1 idle_front.png;
+# installer/artwork/* and assets/mohan-taskbar-icon.png / mohan-halfbody.ico
+# below are still the generation-1 renders and keep their own pins until the
+# owner decides how the bare base is presented in installer and taskbar art.
+CANONICAL_HALF_BODY_SHA256 = (
+    "e99cc462979d963247db30e73efcceffe408c5b4046db69611325a6920647825"
+)
+
+
 def test_inno_setup_and_artwork_contract() -> None:
     inno_script = read("installer/mohan.iss")
     for language in ("ChineseTraditional", "ChineseSimplified"):
@@ -205,9 +216,7 @@ def test_inno_setup_and_artwork_contract() -> None:
 
     canonical = ROOT / "assets/expressions/idle_front.png"
     assert_image(canonical, (1254, 1254))
-    assert hashlib.sha256(canonical.read_bytes()).hexdigest() == (
-        "5a5970c1e91b3a89a8cc4efd8e3bb72b417f4b644c73a6074cd073d577eab373"
-    )
+    assert hashlib.sha256(canonical.read_bytes()).hexdigest() == CANONICAL_HALF_BODY_SHA256
     for consumer in ("infrastructure/face_assets.py", "tools/build_installer_artwork.py"):
         content = read(consumer)
         assert "idle_front.png" in content
@@ -224,9 +233,7 @@ def test_windows_taskbar_icon_contract() -> None:
     canonical = ROOT / "assets/expressions/idle_front.png"
     png_icon = ROOT / "assets/mohan-taskbar-icon.png"
     windows_icon = ROOT / "assets/mohan-halfbody.ico"
-    assert hashlib.sha256(canonical.read_bytes()).hexdigest() == (
-        "5a5970c1e91b3a89a8cc4efd8e3bb72b417f4b644c73a6074cd073d577eab373"
-    )
+    assert hashlib.sha256(canonical.read_bytes()).hexdigest() == CANONICAL_HALF_BODY_SHA256
     assert_image(png_icon, (1024, 1024))
     assert hashlib.sha256(png_icon.read_bytes()).hexdigest() == (
         "496462ac4a1bbca5661505ba42ee33667bef8fa0d95292255b0697b9ef24ad37"

@@ -131,27 +131,17 @@ GESTURE_SPEECH_MOUTH_RECTS = frozendict({
 CHEEK_SPEECH_CLOSED_EXPRESSION = "idle_speech_neutral"
 HAPPY_SPEECH_CLOSED_EXPRESSION = "happy_speech_neutral"
 EXPRESSION_FACE_OFFSETS = frozendict({
-    "glance": (0, 0), "caught": (0, 1), "happy": (0, 0),
-    "worried": (0, 0), "reminder": (0, 0), "thinking_front": (3, 0),
-    "gentle_smile_front": (0, 0), "worried_front": (0, 0),
-    "shy_front": (1, 0), "mock_scold": (5, 3), "surprised_front": (0, 0),
-    "relieved_front": (0, 0), "tired_front": (0, 0), "proud_front": (0, -1),
-    "shy_cute_front": (0, 0), "mock_hit_front": (1, -1),
-    "attentive_front": (1, 3), "determined_front": (0, 0),
-    "restrained_amused_front": (0, 0), "exasperated_front": (-1, 6),
-    "eureka_front": (-1, -1), "protective_front": (0, -4),
+    "glance": (0, 0), "caught": (0, 0), "happy": (0, 0),
+    "worried": (0, 0), "reminder": (0, 0), "thinking_front": (0, 0),
+    "gentle_smile_front": (0, 0), "worried_front": (0, 0), "shy_front": (0, 0),
+    "mock_scold": (0, 0), "surprised_front": (0, 0), "relieved_front": (0, 0),
+    "tired_front": (0, 0), "proud_front": (0, 0), "shy_cute_front": (0, 0),
+    "mock_hit_front": (0, 2), "attentive_front": (0, 0), "determined_front": (0, 1),
+    "restrained_amused_front": (0, 0), "exasperated_front": (-1, 1), "eureka_front": (0, 0),
+    "protective_front": (0, 0),
 })
-EXPRESSION_EYE_OFFSETS = frozendict({
-    **EXPRESSION_FACE_OFFSETS, "caught": (0, 3), "reminder": (0, 1),
-    "thinking_front": (4, -3), "surprised_front": (0, -1),
-    "attentive_front": (1, 2), "determined_front": (0, 1),
-    "restrained_amused_front": (0, 1), "protective_front": (0, -3),
-})
-EXPRESSION_MOUTH_OFFSETS = frozendict({
-    **EXPRESSION_FACE_OFFSETS, "caught": (0, 0), "mock_scold": (4, 4),
-    "proud_front": (0, 0), "mock_hit_front": (1, -2),
-    "eureka_front": (0, 0), "protective_front": (0, -3),
-})
+EXPRESSION_EYE_OFFSETS = frozendict({**EXPRESSION_FACE_OFFSETS})
+EXPRESSION_MOUTH_OFFSETS = frozendict({**EXPRESSION_FACE_OFFSETS})
 CHARACTER_CANVAS_WIDTH = 470
 CHARACTER_IMAGE_SIZE = 465
 CHARACTER_BASE_Y = 215
