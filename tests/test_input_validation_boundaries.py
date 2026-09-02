@@ -22,9 +22,19 @@ def _toolbox(allowed: tuple[str, ...]):
     return WindowsToolbox(allowed_websites=list(allowed))
 
 
-def _open(toolbox, url: str) -> bool:
+def _open(toolbox, url: str, monkeypatch) -> bool:
+    """回傳白名單是否放行；絕不真的開瀏覽器。
+
+    第一版沒有換掉 webbrowser.open，正例在 CI runner 上真的啟動了 Edge，
+    它佔住 component_crx_cache 的檔案，臨時目錄清理時 PermissionError
+    [WinError 32]。測白名單的測試不該有任何副作用。
+    """
+    import webbrowser
+
     from domain.flagship_action_models import ActionRequest
 
+    launched: list[str] = []
+    monkeypatch.setattr(webbrowser, "open", lambda url, **_: launched.append(url) or True)
     request = ActionRequest(
         capability="open_web",
         description="test",
@@ -34,45 +44,47 @@ def _open(toolbox, url: str) -> bool:
     try:
         toolbox.open_web(request)
     except PermissionError:
+        assert not launched, "被擋下的網址不得觸發任何開啟"
         return False
+    assert launched == [url], "放行的網址必須恰好開啟一次"
     return True
 
 
-def test_allowed_site_still_opens() -> None:
+def test_allowed_site_still_opens(monkeypatch) -> None:
     """正例：修正不得把正常授權的網址一起擋掉。"""
     toolbox = _toolbox(("https://portal.example/app",))
-    assert _open(toolbox, "https://portal.example/app/report")
-    assert _open(toolbox, "https://portal.example/app")
+    assert _open(toolbox, monkeypatch=monkeypatch, url="https://portal.example/app/report")
+    assert _open(toolbox, monkeypatch=monkeypatch, url="https://portal.example/app")
 
 
-def test_scheme_must_match_the_allowed_entry() -> None:
+def test_scheme_must_match_the_allowed_entry(monkeypatch) -> None:
     """允許 HTTPS 不等於允許明文 HTTP。"""
     toolbox = _toolbox(("https://portal.example/app",))
-    assert not _open(toolbox, "http://portal.example/app"), (
+    assert not _open(toolbox, monkeypatch=monkeypatch, url="http://portal.example/app"), (
         "允許 HTTPS 的項目放行了明文 HTTP"
     )
 
 
-def test_port_must_match_the_allowed_entry() -> None:
+def test_port_must_match_the_allowed_entry(monkeypatch) -> None:
     """`hostname` 不含 port，只比 hostname 會放行任意服務埠。"""
     toolbox = _toolbox(("https://portal.example/app",))
-    assert not _open(toolbox, "https://portal.example:8443/app"), (
+    assert not _open(toolbox, monkeypatch=monkeypatch, url="https://portal.example:8443/app"), (
         "不同服務埠被當成同一個來源"
     )
 
 
-def test_path_must_stop_at_a_segment_boundary() -> None:
+def test_path_must_stop_at_a_segment_boundary(monkeypatch) -> None:
     """`/app` 不得涵蓋 `/app-delete`——相鄰但無關的路徑。"""
     toolbox = _toolbox(("https://portal.example/app",))
-    assert not _open(toolbox, "https://portal.example/app-delete"), (
+    assert not _open(toolbox, monkeypatch=monkeypatch, url="https://portal.example/app-delete"), (
         "字首比對讓相鄰路徑通過；對帶有 GET 副作用的管理介面尤其危險"
     )
 
 
-def test_root_path_entry_allows_the_whole_host() -> None:
+def test_root_path_entry_allows_the_whole_host(monkeypatch) -> None:
     """明確授權整個網站時仍應放行整站。"""
     toolbox = _toolbox(("https://portal.example/",))
-    assert _open(toolbox, "https://portal.example/anything/at/all")
+    assert _open(toolbox, monkeypatch=monkeypatch, url="https://portal.example/anything/at/all")
 
 
 def test_harness_output_is_ignored_on_a_normal_launch(monkeypatch, tmp_path) -> None:
