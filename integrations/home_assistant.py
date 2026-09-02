@@ -147,6 +147,10 @@ class HomeAssistantClient:
         response = self._request("GET", f"/api/states/{entity_id}")
         if not isinstance(response, dict):
             raise HomeAssistantError("找不到裝置狀態")
+        # 代理或損壞的 API 回 200 + {} 時，原本會被包成 success=True、
+        # 訊息「light.office：unknown」，與真的讀到 unknown 狀態無法區分。
+        if "entity_id" not in response or "state" not in response:
+            raise HomeAssistantError("裝置狀態回應不完整，無法判讀")
         return response
 
     @staticmethod
