@@ -160,16 +160,12 @@ class CompanionCoreMixin:
             return
         composition_factory = factory
         if composition_factory is None:
-            composition_factory = lambda stage_frame: (
-                create_adaptive_character_composition(
-                    stage_frame,
-                    image_size=CHARACTER_IMAGE_SIZE,
-                    framing_style=str(self.db.setting("framing_style", "steady")),
-                    assets=PoseAtlasAssets(
-                        resource_path(POSE_ATLAS_RELATIVE_ROOT), image_size=CHARACTER_IMAGE_SIZE,
-                        outfit_overlay=self.presentation_ports.outfit_overlay_factory(),
-                    ),
-                )
+            composition_factory = lambda stage_frame: create_adaptive_character_composition(
+                stage_frame, image_size=CHARACTER_IMAGE_SIZE, framing_style=str(self.db.setting("framing_style", "steady")),
+                assets=PoseAtlasAssets(
+                    resource_path(POSE_ATLAS_RELATIVE_ROOT), image_size=CHARACTER_IMAGE_SIZE,
+                    outfit_overlay=self.presentation_ports.outfit_overlay_factory(on_stale_body_profile=self._on_stale_outfit_pack),
+                ),
             )
         try:
             composition = composition_factory(self._stage_adaptive_character_frame)
@@ -180,13 +176,16 @@ class CompanionCoreMixin:
         self._adaptive_character_composition = composition
         self._adaptive_character_generation = generation
         self._performance_app_bridge = create_performance_app_bridge(
-            lambda frame_generation: _current_legacy_character_frame(
-                self,
-                frame_generation,
-            ),
+            lambda frame_generation: _current_legacy_character_frame(self, frame_generation),
             self._dispatch_adaptive_character_frame,
         )
         self._publish_adaptive_idle_frame()
+
+    def _on_stale_outfit_pack(self) -> None:
+        """The overlay restored the built-in outfit over a generation-1 pack; tell the wardrobe tab once."""
+        dashboard = getattr(self, "dashboard", None)
+        if dashboard is not None:
+            dashboard.set_outfit_generation_status("body-profile-outdated")
 
     def _publish_adaptive_idle_frame(self) -> None:
         """Publish a complete PoseAtlas body before the first spoken reply."""

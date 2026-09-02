@@ -26,8 +26,8 @@ class CharacterBodyProfile:
 
 
 MOHAN_BODY_PROFILE = CharacterBodyProfile(
-    profile_id="mohan-body-v1",
-    version=1,
+    profile_id="mohan-body-v2",
+    version=2,
     measurements=BodyMeasurements(
         height_cm=168,
         weight_kg=54,

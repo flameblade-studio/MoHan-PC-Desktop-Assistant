@@ -49,8 +49,8 @@ def _manifest(data: bytes) -> tuple[dict, dict[str, bytes]]:
         "contract": "full-body-v4",
         "rig_id": "mohan-full-body-v1",
         "rig_version_range": ">=1,<2",
-        "body_profile_id": "mohan-body-v1",
-        "body_profile_version_range": ">=1,<2",
+        "body_profile_id": "mohan-body-v2",
+        "body_profile_version_range": ">=2,<3",
     }
     views, assets = [], {}
     for yaw in CANONICAL_YAWS:
@@ -85,7 +85,7 @@ def _manifest(data: bytes) -> tuple[dict, dict[str, bytes]]:
             "pack_version": "1.0.0",
             "app_range": ">=4.0.0,<5.0.0",
             "display_names": _names("閱讀姿態環景"),
-            "compatible_body_profile": {"id": "mohan-body-v1", "version": 1},
+            "compatible_body_profile": {"id": "mohan-body-v2", "version": 2},
             "full_body_rig": rig,
             "pitch_bands": ["level"],
             "pose_ids": ["reading"],
@@ -100,7 +100,7 @@ def _manifest(data: bytes) -> tuple[dict, dict[str, bytes]]:
                 "kind": "original",
                 "author": "Example Artist",
                 "license": "MIT",
-                "provenance": "Created from the official mohan-body-v1 authoring rig.",
+                "provenance": "Created from the official mohan-body-v2 authoring rig.",
                 "reference_included": False,
             },
             "views": views,
@@ -254,7 +254,7 @@ def _assert_manifest_rejections(fixture: _Fixture) -> None:
     _reject(_pack(fixture.root / "mismatched-rig.zip", candidate, fixture.assets))
 
     candidate = copy.deepcopy(fixture.manifest)
-    candidate["full_body_rig"]["body_profile_version_range"] = ">=2,<3"
+    candidate["full_body_rig"]["body_profile_version_range"] = ">=3,<4"
     _reject(_pack(fixture.root / "profile-range.zip", candidate, fixture.assets))
 
     candidate = copy.deepcopy(fixture.manifest)

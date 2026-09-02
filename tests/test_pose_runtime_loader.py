@@ -59,7 +59,7 @@ def manifest(
                 HEIGHT,
                 "identity-lock-v1",
                 "source-proof-v1",
-                "mohan-body-v1",
+                "mohan-body-v2",
                 "mohan-full-body-v1",
                 (1, 2),
                 frozenset({
@@ -80,8 +80,8 @@ def manifest(
         tuple(views),
         "full-body-v4",
         2,
-        "mohan-body-v1",
-        (1, 2),
+        "mohan-body-v2",
+        (2, 3),
         "mohan-full-body-v1",
         (1, 2),
     )
@@ -163,7 +163,7 @@ def legacy_atlas() -> PoseRuntimeAtlas:
             for yaw in (-30, 0, 30)
         ),
         "legacy-v3",
-        "mohan-body-v1",
+        "mohan-body-v2",
         None,
     )
 
@@ -217,7 +217,7 @@ def assert_v4_full_body_evidence_fails_closed() -> None:
         replace(base, rig_id="unknown-rig"),
         replace(base, rig_version_range=(2, 3)),
         replace(base, body_profile_id="another-body"),
-        replace(base, body_profile_version_range=(2, 3)),
+        replace(base, body_profile_version_range=(3, 4)),
         replace(
             base,
             views=(
@@ -259,8 +259,8 @@ def assert_legacy_v3_loads_only_as_explicit_fallback() -> None:
         views,
         contract="legacy-v3",
         schema_version=1,
-        body_profile_id="mohan-body-v1",
-        body_profile_version_range=(1, 2),
+        body_profile_id="mohan-body-v2",
+        body_profile_version_range=(2, 3),
         rig_id=None,
         rig_version_range=None,
     )

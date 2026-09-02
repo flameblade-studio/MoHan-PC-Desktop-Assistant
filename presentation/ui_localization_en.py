@@ -66,6 +66,9 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_assets_pending": (
         "This outfit does not include complete assets for every view and cannot be applied."
     ),
+    "wardrobe_body_profile_outdated": (
+        "This outfit was made for the generation-1 body and will not line up on the generation-2 body; regenerate it with one-click outfit creation."
+    ),
     "wardrobe_builtin_applied": "Built-in default outfit applied.",
     "wardrobe_outfit_applied": "Selected complete outfit applied.",
     "wardrobe_autonomous_enabled": "Allow MoHan to choose outfits autonomously",

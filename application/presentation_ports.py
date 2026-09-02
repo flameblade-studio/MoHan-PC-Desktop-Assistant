@@ -848,10 +848,10 @@ class _NoOutfitOverlay:
         return frame
 
 
-OutfitOverlayFactory = Callable[[], OutfitOverlayPort]
+OutfitOverlayFactory = Callable[..., OutfitOverlayPort]
 
 
-def no_outfit_overlay_factory() -> OutfitOverlayPort:
+def no_outfit_overlay_factory(**_options: object) -> OutfitOverlayPort:
     return _NoOutfitOverlay()
 
 

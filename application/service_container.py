@@ -218,10 +218,11 @@ def _create_ai_worker(
 def create_presentation_ports() -> PresentationPorts:
     """Build every presentation adapter once at the composition boundary."""
 
-    def outfit_overlay_factory():
+    def outfit_overlay_factory(on_stale_body_profile=None):
         return ActiveOutfitOverlay(
             presentation_contracts.default_data_dir() / "outfits",
             resource_path("."),
+            on_stale_body_profile=on_stale_body_profile,
         )
 
     return PresentationPorts(

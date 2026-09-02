@@ -16,8 +16,8 @@ lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 FORMAT = "mohan-outfit-pack"
 VERSION = 2
 MANIFEST = "manifest.json"
-BODY_PROFILE_ID = "mohan-body-v1"
-BODY_PROFILE_VERSION = 1
+BODY_PROFILE_ID = "mohan-body-v2"
+BODY_PROFILE_VERSION = 2
 AUTHORING_TEMPLATE = "mohan-official-poses"
 AUTHORING_VERSION = 2
 BASE_SILHOUETTES = ("cheek-rest", "left-neutral", "front-crossed")
@@ -111,6 +111,10 @@ MANIFEST_KEYS = frozenset({
 
 class OutfitPackError(RuntimeError):
     pass
+
+
+class IncompatibleBodyProfileError(OutfitPackError):
+    """The pack was authored for another body-profile generation and is never grandfathered."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -661,9 +665,10 @@ def _manifest_payload(archive: zipfile.ZipFile) -> dict:
     if manifest["format"] != FORMAT or manifest["version"] != VERSION:
         raise OutfitPackError("Unsupported appearance manifest.")
     expected_profile = {"id": BODY_PROFILE_ID, "version": BODY_PROFILE_VERSION}
-    expected_authoring = {"template": AUTHORING_TEMPLATE, "version": AUTHORING_VERSION}
-    if manifest["compatible_body_profile"] != expected_profile or manifest["authoring"] != expected_authoring:
-        raise OutfitPackError("Unsupported body profile or authoring template.")
+    if manifest["compatible_body_profile"] != expected_profile:
+        raise IncompatibleBodyProfileError(f"Pack body profile {manifest['compatible_body_profile']!r} is not the current {expected_profile!r}.")
+    if manifest["authoring"] != {"template": AUTHORING_TEMPLATE, "version": AUTHORING_VERSION}:
+        raise OutfitPackError("Unsupported authoring template.")
     return manifest
 
 
@@ -745,16 +750,8 @@ def _parse_outfit_pack(
     pack_id = _identifier(manifest["id"], "pack")
     pack_version, app_range = _pack_version(manifest)
     return OutfitPack(
-        pack_id,
-        pack_version,
-        app_range,
-        _names(manifest["display_names"]),
-        source_kind,
-        author,
-        license_name,
-        BODY_PROFILE_ID,
-        tuple(items),
-        ensembles,
+        pack_id, pack_version, app_range, _names(manifest["display_names"]), source_kind, author, license_name,
+        BODY_PROFILE_ID, tuple(items), ensembles,
     )
 
 
@@ -783,9 +780,26 @@ def _atomic_json(path: Path, payload: object) -> None:
         temporary_path.unlink(missing_ok=True)
 
 
-def list_installed_outfits(store: Path) -> tuple[OutfitPack, ...]:
+def _inspect_installed(path: Path) -> OutfitPack | None:
+    """Parse an installed archive; ``None`` marks a pack authored for another body-profile generation."""
+    try:
+        return inspect_outfit_pack(path)
+    except IncompatibleBodyProfileError:
+        return None
+
+
+def _installed_pack_paths(store: Path) -> tuple[Path, ...]:
     packages = Path(store) / "packages"
-    return () if not packages.is_dir() else tuple(inspect_outfit_pack(path) for path in sorted(packages.glob("*.mohan-outfit")))
+    return tuple(sorted(packages.glob("*.mohan-outfit"))) if packages.is_dir() else ()
+
+
+def list_installed_outfits(store: Path) -> tuple[OutfitPack, ...]:
+    return tuple(pack for pack in map(_inspect_installed, _installed_pack_paths(store)) if pack is not None)
+
+
+def list_stale_body_profile_packs(store: Path) -> tuple[str, ...]:
+    """Ids of installed packs made for another body-profile generation; they are listed, never rendered."""
+    return tuple(path.stem for path in _installed_pack_paths(store) if _inspect_installed(path) is None)
 
 
 def list_installed_selections(store: Path, category: str | None = None) -> tuple[InstalledSelection, ...]:
@@ -800,16 +814,8 @@ def list_installed_selections(store: Path, category: str | None = None) -> tuple
 
 def list_installed_ensembles(store: Path) -> tuple[InstalledEnsemble, ...]:
     return tuple(
-        InstalledEnsemble(
-            pack.pack_id,
-            ensemble.ensemble_id,
-            pack.display_names,
-            ensemble.display_names,
-            ensemble.selections,
-            ensemble.autonomous_profile,
-        )
-        for pack in list_installed_outfits(store)
-        for ensemble in pack.ensembles
+        InstalledEnsemble(pack.pack_id, ensemble.ensemble_id, pack.display_names, ensemble.display_names, ensemble.selections, ensemble.autonomous_profile)
+        for pack in list_installed_outfits(store) for ensemble in pack.ensembles
     )
 
 
@@ -859,14 +865,7 @@ def clear_appearance_selection(store: Path, category: str) -> None:
 
 
 def apply_ensemble(store: Path, pack_id: str, ensemble_id: str) -> None:
-    ensemble = next(
-        (
-            item
-            for item in list_installed_ensembles(store)
-            if (item.pack_id, item.ensemble_id) == (pack_id, ensemble_id)
-        ),
-        None,
-    )
+    ensemble = next((item for item in list_installed_ensembles(store) if (item.pack_id, item.ensemble_id) == (pack_id, ensemble_id)), None)
     if ensemble is None:
         raise OutfitPackError("The selected ensemble is not installed.")
     active_path = Path(store) / "active.json"
@@ -921,8 +920,8 @@ def remove_outfit_pack(store: Path, pack_id: str) -> RemovalResult:
     target = packages / f"{validated_id}.mohan-outfit"
     if not target.is_file():
         raise OutfitPackError("The appearance pack is not installed.")
-    installed = inspect_outfit_pack(target)
-    if installed.pack_id != validated_id:
+    installed = _inspect_installed(target)
+    if installed is not None and installed.pack_id != validated_id:
         raise OutfitPackError("Installed archive identity does not match its filename.")
     for state_name in ("active.json", "preview.json"):
         if _state_references_pack(Path(store) / state_name, validated_id):
@@ -962,13 +961,10 @@ def resolve_active_selection(store: Path, category: str) -> SelectionResolution:
     if requested[0] == "builtin":
         status, effective = "builtin", requested
     else:
-        installed = {
-            (selection.pack_id, selection.item_id, selection.variant_id)
-            for selection in list_installed_selections(store, category)
-        }
+        installed = {(selection.pack_id, selection.item_id, selection.variant_id) for selection in list_installed_selections(store, category)}
+        if requested not in installed and requested[0] in list_stale_body_profile_packs(store):
+            raise IncompatibleBodyProfileError(f"Active pack {requested[0]!r} was authored for another body-profile generation.")
         if requested not in installed:
-            raise OutfitPackError(
-                "The selected appearance is unavailable; it was not replaced."
-            )
+            raise OutfitPackError("The selected appearance is unavailable; it was not replaced.")
         status, effective = "installed", requested
     return SelectionResolution(category, status, *requested, *effective)

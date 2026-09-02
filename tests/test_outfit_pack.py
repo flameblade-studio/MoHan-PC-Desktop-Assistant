@@ -108,7 +108,7 @@ def _manifest(data: bytes) -> tuple[dict, dict[str, bytes]]:
         "format": "mohan-outfit-pack", "version": 2, "id": "modern-collection",
         "pack_version": "1.0.0", "app_range": ">=4.0.0,<5.0.0",
         "display_names": _names("現代合輯"),
-        "compatible_body_profile": {"id": "mohan-body-v1", "version": 1},
+        "compatible_body_profile": {"id": "mohan-body-v2", "version": 2},
         "source": {"kind": "original", "author": "Example Artist", "license": "MIT", "reference_included": False},
         "authoring": {"template": "mohan-official-poses", "version": 2},
         "looks": [{

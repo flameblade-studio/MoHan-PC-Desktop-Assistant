@@ -16,8 +16,8 @@ def test_mohan_body_profile_is_the_fixed_adult_art_contract() -> None:
     measurements = profile.measurements
 
     assert body_profile_reference() == {
-        "id": "mohan-body-v1",
-        "version": 1,
+        "id": "mohan-body-v2",
+        "version": 2,
     }
     assert (
         measurements.height_cm,

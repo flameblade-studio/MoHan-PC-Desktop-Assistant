@@ -6,6 +6,7 @@ lazy from pathlib import Path
 lazy from domain.autonomous_wardrobe import WardrobeCandidate
 lazy from domain.outfit_pack import (
     InstalledEnsemble,
+    IncompatibleBodyProfileError,
     InstalledSelection,
     OutfitPack,
     OutfitPackError,
@@ -14,6 +15,7 @@ lazy from domain.outfit_pack import (
     install_outfit_pack,
     list_installed_ensembles,
     list_installed_selections,
+    list_stale_body_profile_packs,
     restore_builtin_outfit,
 )
 
@@ -115,7 +117,13 @@ class WardrobeService:
                 selection.variant_id,
             ) not in ensemble_garments
         )
-        return (built_in, *ensembles, *separate_variants)
+        # Generation-1 packs stay visible so the owner can see why they are
+        # greyed out and remove them; they are never resolvable or applied.
+        stale = tuple(
+            InstalledOutfit(pack_id, pack_id, False)
+            for pack_id in list_stale_body_profile_packs(self.install_root)
+        )
+        return (built_in, *ensembles, *separate_variants, *stale)
 
     def install(self, source: Path) -> OutfitPack:
         return install_outfit_pack(Path(source), self.install_root)
@@ -135,6 +143,10 @@ class WardrobeService:
         if match is None:
             raise OutfitPackError(
                 "The selected complete outfit is not installed."
+            )
+        if not match.compatible:
+            raise IncompatibleBodyProfileError(
+                f"Outfit pack {match.outfit_id!r} was authored for another body-profile generation."
             )
         if match.ensemble is not None:
             apply_ensemble(

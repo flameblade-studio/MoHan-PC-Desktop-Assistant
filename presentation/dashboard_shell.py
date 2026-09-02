@@ -25,7 +25,7 @@ lazy from domain.feature_registry import DashboardFeatureRegistry
 lazy from domain.language_support import (
     is_english, is_japanese, is_simplified_chinese,
 )
-lazy from domain.outfit_pack import OutfitPackError
+lazy from domain.outfit_pack import IncompatibleBodyProfileError, OutfitPackError
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_control_style import enforce_readable_combo_popups
@@ -609,10 +609,11 @@ class DashboardShellMixin:
             return
         self.wardrobe_status.setText(wardrobe_generation_message(status, self._t))
         if hasattr(self, "wardrobe_generate_button"):
-            self.wardrobe_generate_button.setEnabled(
-                status not in {"generating", "generating-with-trend-search"}
-            )
-        if status in {"installed", "installed-manual-lock", "outfit-selected"}:
+            self.wardrobe_generate_button.setEnabled(status not in {"generating", "generating-with-trend-search"})
+        if status == "body-profile-outdated":
+            # The runtime already restored the built-in outfit; keep the saved choice in step so nothing re-applies the stale pack.
+            self.db.set_setting("active_outfit_id", BUILTIN_OUTFIT_ID)
+        if status in {"installed", "installed-manual-lock", "outfit-selected", "body-profile-outdated"}:
             self._reload_wardrobe_packages()
 
     def _reload_wardrobe_packages(self) -> None:
@@ -692,7 +693,7 @@ class DashboardShellMixin:
             ("wardrobe_view_right", "右側", pose_root / "yaw-090-pitch+00.png"),
             ("wardrobe_view_back", "背面", pose_root / "yaw-180-pitch+00.png"),
         )
-        self._wardrobe_outfit_overlay = self.presentation_ports.outfit_overlay_factory()
+        self._wardrobe_outfit_overlay = self.presentation_ports.outfit_overlay_factory(on_stale_body_profile=lambda: self.set_outfit_generation_status("body-profile-outdated"))
         self._wardrobe_pose_source = QPixmap()
         self._wardrobe_pose_path = pose_choices[0][2]
         self.wardrobe_pose_buttons: list[QPushButton] = []
@@ -763,17 +764,13 @@ class DashboardShellMixin:
             return
         try:
             self.wardrobe_service.install(Path(source))
-        except OutfitPackError:
-            self.wardrobe_status.setText(
-                self._t(
-                    "wardrobe_validator_pending",
-                    "套件未通過完整全視角與安全驗證，因此未安裝。",
-                )
-            )
+        except IncompatibleBodyProfileError:
+            self.wardrobe_status.setText(self._t("wardrobe_body_profile_outdated", "這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成"))
             return
-        self.wardrobe_status.setText(
-            self._t("wardrobe_installed_inactive", "已安裝，尚未套用")
-        )
+        except OutfitPackError:
+            self.wardrobe_status.setText(self._t("wardrobe_validator_pending", "套件未通過完整全視角與安全驗證，因此未安裝。"))
+            return
+        self.wardrobe_status.setText(self._t("wardrobe_installed_inactive", "已安裝，尚未套用"))
         self._reload_wardrobe_packages()
 
     def _preview_selected_outfit(self) -> None:
@@ -783,13 +780,11 @@ class DashboardShellMixin:
         outfit_id = str(selected.data(Qt.UserRole))
         try:
             self.wardrobe_service.apply(outfit_id)
+        except IncompatibleBodyProfileError:
+            self.wardrobe_status.setText(self._t("wardrobe_body_profile_outdated", "這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成"))
+            return
         except OutfitPackError:
-            self.wardrobe_status.setText(
-                self._t(
-                    "wardrobe_assets_pending",
-                    "這套服裝未具備完整全視角素材，不能套用。",
-                )
-            )
+            self.wardrobe_status.setText(self._t("wardrobe_assets_pending", "這套服裝未具備完整全視角素材，不能套用。"))
             return
         self._record_manual_outfit_selection(outfit_id)
         if outfit_id != BUILTIN_OUTFIT_ID:

@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy import hashlib
 lazy import re
 lazy import zipfile
+lazy from collections.abc import Callable
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QRect
@@ -14,10 +15,12 @@ lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
     SELECTION_CATEGORIES,
+    IncompatibleBodyProfileError,
     OutfitPackError,
     inspect_outfit_pack,
     resolve_active_selection,
     resolve_variant_for_view,
+    restore_builtin_outfit,
 )
 lazy from domain.version_info import APP_VERSION
 
@@ -38,9 +41,16 @@ class ActiveOutfitOverlay:
     never bypasses a gate.
     """
 
-    def __init__(self, store: Path, asset_root: Path) -> None:
+    def __init__(
+        self,
+        store: Path,
+        asset_root: Path,
+        on_stale_body_profile: Callable[[], None] | None = None,
+    ) -> None:
         self._store = Path(store)
         self._asset_root = Path(asset_root)
+        self._on_stale_body_profile = on_stale_body_profile
+        self._stale_pack_handled = False
         self._state_token: tuple[int, int] | None = None
         self._package_tokens: dict[Path, tuple[int, int]] = {}
         self._layers_by_view: dict[
@@ -61,6 +71,9 @@ class ActiveOutfitOverlay:
                     frame.size().toTuple(),
                 )
                 self._layers_by_view[view_id] = layers
+        except IncompatibleBodyProfileError:
+            self._reject_stale_active_pack()
+            return frame
         except (OSError, ValueError, OutfitPackError, zipfile.BadZipFile):
             return frame
         if not layers:
@@ -73,6 +86,22 @@ class ActiveOutfitOverlay:
             painter.drawPixmap(anchor_x, anchor_y, pixmap)
         painter.end()
         return result
+
+    def _reject_stale_active_pack(self) -> None:
+        """Issue #140, option 3: a generation-1 pack is never rendered on the generation-2 body.
+
+        The built-in outfit is restored once and the owner of this overlay is told once;
+        later frames read the rewritten ``active.json`` and render the built-in look quietly.
+        """
+        if self._stale_pack_handled:
+            return
+        self._stale_pack_handled = True
+        try:
+            restore_builtin_outfit(self._store)
+        except OSError:
+            pass  # every later frame still falls back to the built-in look above
+        if self._on_stale_body_profile is not None:
+            self._on_stale_body_profile()
 
     def _refresh_state(self) -> None:
         path = self._store / "active.json"
@@ -125,9 +154,11 @@ class ActiveOutfitOverlay:
                 archive_stat.st_size,
             )
             pack = inspect_outfit_pack(archive_path)
-            if pack.compatible_body_profile != BODY_PROFILE_ID or not self._compatible(
-                pack.app_range
-            ):
+            if pack.compatible_body_profile != BODY_PROFILE_ID:
+                raise IncompatibleBodyProfileError(
+                    f"Active pack {pack.pack_id!r} targets {pack.compatible_body_profile!r}, not {BODY_PROFILE_ID!r}."
+                )
+            if not self._compatible(pack.app_range):
                 raise OutfitPackError("The active outfit is not runtime compatible.")
             item = next(
                 (

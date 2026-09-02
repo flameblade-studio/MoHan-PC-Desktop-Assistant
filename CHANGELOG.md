@@ -4,6 +4,10 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### 未發布 — 遷移說明（issue #140，選項 3）
+
+* 素體升為二代：`BODY_PROFILE_ID` 由 `mohan-body-v1` 升為 `mohan-body-v2`（版本 2），並以測試釘住 `domain/constants.py` 的 `POSE_ATLAS_GENERATION`，三處常數不得再各自漂移。官方與 DLC 服裝套件由工作室在二代素體上重製；使用者自製的一代套件於匯入與執行期一律拒絕，不設寬限。已安裝的一代套件會在雲裳閣清單標示「不相容」，匯入或套用時顯示「這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成」；若它正是啟用中的服裝，執行期會自動還原內建服裝並提示一次，不再無聲回退。任何在儲存庫之外散布的 `.mohan-outfit` 都必須以 `tools/build_outfit_pack.py` 對二代範本重建；雲端一鍵製衣直接產出二代套件。
+
 ## [4.6.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.5.1...v4.6.0) (2026-08-29)
 
 
@@ -292,6 +296,10 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
+### 未发布 — 迁移说明（issue #140，选项 3）
+
+* 素体升为二代：`BODY_PROFILE_ID` 由 `mohan-body-v1` 升为 `mohan-body-v2`（版本 2），并以测试钉住 `domain/constants.py` 的 `POSE_ATLAS_GENERATION`，三处常量不得再各自漂移。官方与 DLC 服装套件由工作室在二代素体上重制；用户自制的一代套件在导入与运行时一律拒绝，不设宽限。已安装的一代套件会在云裳阁列表标示「不兼容」，导入或应用时显示「这套服装是为一代素体制作的，穿在二代素体上会对不准；请用一键制衣重新生成」；若它正是启用中的服装，运行时会自动恢复内置服装并提示一次，不再无声回退。任何在仓库之外分发的 `.mohan-outfit` 都必须以 `tools/build_outfit_pack.py` 针对二代模板重建；云端一键制衣直接产出二代套件。
+
 ### v4.3.0 — 2026-08-19
 
 - 新增「真人女孩感」五大系统与灵魂拼图：性格镜像、穿搭直觉、军粮饱食度、主上专属宠溺、虹膜羞涩视线，以及赤焰剑意情绪共鸣、时间主权状态机、空中捏合牵手、梦呓系统、剑魂觉醒、感官共感、共同创作录等领域模块。
@@ -493,6 +501,10 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 ## English
 
 All notable public changes to MoHan Desktop Assistant are documented here.
+
+### Unreleased — migration note (issue #140, option 3)
+
+* Body profile moved to generation 2: `BODY_PROFILE_ID` goes from `mohan-body-v1` to `mohan-body-v2` (version 2) and is pinned by test to `POSE_ATLAS_GENERATION` in `domain/constants.py`, so the three constants can no longer drift apart. Official and DLC outfit packs are remade on the generation-2 body by the studio; user-made generation-1 packs are rejected at import and at runtime with no grace period. An already-installed generation-1 pack is listed as "Incompatible" in the Wardrobe Pavilion, and importing or applying it shows "This outfit was made for the generation-1 body and will not line up on the generation-2 body; regenerate it with one-click outfit creation."; if it is the active outfit, the runtime restores the built-in outfit and notifies once instead of falling back silently. Any `.mohan-outfit` distributed outside the repository must be rebuilt with `tools/build_outfit_pack.py` against the generation-2 template; one-click cloud outfit creation produces generation-2 packs directly.
 
 ### v4.3.0 — 2026-08-19
 
@@ -735,6 +747,10 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### 未リリース — 移行メモ（issue #140、選択肢 3）
+
+* 素体を第二世代へ更新：`BODY_PROFILE_ID` を `mohan-body-v1` から `mohan-body-v2`（バージョン 2）へ引き上げ、`domain/constants.py` の `POSE_ATLAS_GENERATION` とテストで固定したため、三つの定数が個別にずれることはなくなりました。公式および DLC の衣装パックはスタジオが第二世代素体で作り直します。ユーザー自作の第一世代パックはインポート時と実行時に必ず拒否され、猶予はありません。インストール済みの第一世代パックは雲裳閣の一覧で「非互換」と表示され、インポートまたは適用時に「この衣装は第一世代素体向けに作られたもので、第二世代素体では位置が合いません。ワンクリック衣装生成で作り直してください」と表示されます。それが使用中の衣装だった場合、実行時は内蔵衣装へ自動的に戻し、一度だけ通知します（無言のフォールバックはしません）。リポジトリ外で配布されるあらゆる `.mohan-outfit` は `tools/build_outfit_pack.py` で第二世代テンプレートに対して再構築する必要があります。クラウドのワンクリック衣装生成は第二世代パックを直接生成します。
 
 ### v4.3.0 — 2026-08-19
 
