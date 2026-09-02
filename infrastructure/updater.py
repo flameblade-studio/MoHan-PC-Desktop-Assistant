@@ -13,6 +13,13 @@ lazy from urllib.error import HTTPError, URLError
 lazy from urllib.parse import urlparse
 lazy from urllib.request import Request, urlopen
 
+lazy from infrastructure.update_manifest_signature import (
+    MAX_SIGNATURE_BYTES,
+    UpdateManifestSignatureError,
+    signature_asset_name,
+    verify_manifest_signature,
+)
+
 MAX_MANIFEST_BYTES = 256 * 1024
 MAX_INSTALLER_BYTES = 750 * 1024 * 1024
 HTTP_NOT_FOUND = 404
@@ -96,6 +103,7 @@ class UpdateManager:
         current_version: str,
         download_dir: Path,
         opener: Callable[..., Any] | None = None,
+        public_keys: tuple[str, ...] | None = None,
     ):
         if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository):
             raise ValueError("GitHub repository 格式錯誤。")
@@ -105,6 +113,8 @@ class UpdateManager:
         self.download_dir = Path(download_dir)
         self._opener = opener or urlopen
         self._ssl_context = ssl.create_default_context()
+        # None 代表用內嵌公鑰；測試才會注入臨時公鑰。
+        self._public_keys = public_keys
 
     @staticmethod
     def _validate_url(url: str) -> None:
@@ -169,15 +179,57 @@ class UpdateManager:
         return data
 
     def _request_json(self, url: str, limit: int = MAX_MANIFEST_BYTES) -> Any:
+        return self._decode_json(self._request_bytes(url, limit))
+
+    @staticmethod
+    def _decode_json(data: bytes) -> Any:
         invalid_json = False
         result: Any = None
         try:
-            result = json.loads(self._request_bytes(url, limit).decode("utf-8"))
+            result = json.loads(data.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError, RecursionError):
             invalid_json = True
         if invalid_json:
             raise UpdateError("GitHub 更新資料格式不正確。")
         return result
+
+    def _verified_manifest(
+        self,
+        manifest_asset: dict[str, Any],
+        release: dict[str, Any],
+    ) -> Any:
+        # SHA-256 只證明安裝程式與清單一致；清單與安裝程式同在一個 Release，
+        # 能改 Release 的人兩者一起換。簽章證明清單是持有擁有者私鑰的人發的。
+        # 沒有簽章、簽章驗不過、沒有內嵌公鑰，一律拒絕，不退回「只看雜湊」。
+        manifest_name = str(manifest_asset.get("name", ""))
+        expected = signature_asset_name(manifest_name)
+        signature_asset = next(
+            (
+                asset
+                for asset in release.get("assets", [])
+                if isinstance(asset, dict) and asset.get("name") == expected
+            ),
+            None,
+        )
+        if not signature_asset:
+            raise UpdateError("此版本的更新清單尚未簽章，已拒絕更新。")
+        manifest_bytes = self._request_bytes(
+            str(manifest_asset.get("browser_download_url", "")),
+            MAX_MANIFEST_BYTES,
+        )
+        signature_text = self._request_bytes(
+            str(signature_asset.get("browser_download_url", "")),
+            MAX_SIGNATURE_BYTES,
+        )
+        try:
+            verify_manifest_signature(
+                manifest_bytes,
+                signature_text,
+                self._public_keys,
+            )
+        except UpdateManifestSignatureError:
+            raise UpdateError("更新清單簽章驗證失敗，已拒絕更新。") from None
+        return self._decode_json(manifest_bytes)
 
     def _release_candidates(self, channel: str) -> list[dict[str, Any]]:
         endpoint = f"https://api.github.com/repos/{self.repository}/releases"
@@ -227,9 +279,7 @@ class UpdateManager:
             )
             if not manifest_asset:
                 continue
-            manifest = self._request_json(
-                str(manifest_asset.get("browser_download_url", ""))
-            )
+            manifest = self._verified_manifest(manifest_asset, release)
             return self._parse_manifest(manifest, release)
         return None
 
