@@ -1,0 +1,74 @@
+{
+  "schema": "mohan.composite-performance-budget.v1",
+  "measurement_basis": {
+    "command": "py -3.15 tools/bench_composite.py --iterations 5 --rounds 5",
+    "ci_command": "py -3.15 tools/bench_composite.py --iterations 5 --rounds 1",
+    "qt_qpa_platform": "offscreen",
+    "iterations_per_round": 5,
+    "rounds": 5,
+    "percentile": "linear interpolation over sorted samples",
+    "round_noise_policy": "Use the maximum observed per-round p95 as the measured p95 used for a budget, so a gate cannot be stricter than the measured round-to-round noise.",
+    "workload": "Production LayeredFullBodyRenderer and LayeredParametricFaceRenderer with the shipped official blue-white Hanfu outfit and classic makeup. Full-body cold starts a fresh renderer and clears QPixmapCache; hot switches warm both endpoints before timing; half-body switches cheek-rest to front-crossed after both are warm.",
+    "scope": "Offscreen compositor calls only; excludes the UI event loop, adapter publication, and unrelated window layout work.",
+    "asset_root": "assets/pose-atlas/v5-base-layered",
+    "baseline_platform": "Windows 11, Python 3.15.0rc1, PySide6 6.11.1"
+  },
+  "owner_targets_ms": {
+    "cold_full_body": 300.0,
+    "hot_full_body_view_switch": 100.0,
+    "hot_half_body_silhouette_switch": 100.0
+  },
+  "budgets": {
+    "cold_full_body": {
+      "metric": "measurements.cold_full_body.summary.p95_ms",
+      "owner_target_ms": 300.0,
+      "aggregate_median_ms": 1389.922,
+      "aggregate_p95_ms": 1468.653,
+      "measured_p95_ms": 1482.498,
+      "round_p95_min_ms": 1326.069,
+      "round_p95_max_ms": 1482.498,
+      "round_p95_spread_ms": 156.429,
+      "p95_times_owner_target": 4.942,
+      "budget_ms": 1482.498,
+      "over_target": true,
+      "formula": "over_target: budget_ms = measured_p95_ms; measured_p95_ms is the maximum p95 across the five baseline rounds so the budget is not tighter than observed round noise.",
+      "reason": "The measured p95 is already above the owner's 300 ms target. Keep the current measured value as a visible blocking baseline; do not multiply it by 1.5 or claim that the target is met."
+    },
+    "hot_full_body_view_switch": {
+      "metric": "measurements.hot_full_body_view_switch.summary.p95_ms",
+      "owner_target_ms": 100.0,
+      "aggregate_median_ms": 2.485,
+      "aggregate_p95_ms": 3.157,
+      "measured_p95_ms": 4.29,
+      "round_p95_min_ms": 2.557,
+      "round_p95_max_ms": 4.29,
+      "round_p95_spread_ms": 1.733,
+      "p95_times_1_5": 4.736,
+      "budget_ms": 100.0,
+      "over_target": false,
+      "formula": "budget_ms = max(aggregate_p95_ms * 1.5, owner_target_ms) = max(4.736, 100.0) = 100.0 ms.",
+      "reason": "The warmed view switch is below the owner's 100 ms target; the target is the looser side of the required p95-times-1.5 comparison."
+    },
+    "hot_half_body_silhouette_switch": {
+      "metric": "measurements.hot_half_body_silhouette_switch.summary.p95_ms",
+      "owner_target_ms": 100.0,
+      "aggregate_median_ms": 5.043,
+      "aggregate_p95_ms": 5.6,
+      "measured_p95_ms": 5.761,
+      "round_p95_min_ms": 4.842,
+      "round_p95_max_ms": 5.761,
+      "round_p95_spread_ms": 0.919,
+      "p95_times_1_5": 8.4,
+      "budget_ms": 100.0,
+      "over_target": false,
+      "formula": "budget_ms = max(aggregate_p95_ms * 1.5, owner_target_ms) = max(8.4, 100.0) = 100.0 ms.",
+      "reason": "The warmed half-body silhouette switch is below the analogous 100 ms owner transition target; the target is the looser side of the required p95-times-1.5 comparison."
+    }
+  },
+  "ci_gate": {
+    "comparison": "observed measurements.*.summary.p95_ms must be less than or equal to the corresponding budget_ms",
+    "reduced_iterations_per_round": 5,
+    "reduced_rounds": 1,
+    "cold_over_target_is_not_a_pass": "cold_full_body remains over_target=true and is only a regression ceiling until the compositor is improved on a separate authorized change."
+  }
+}
