@@ -27,6 +27,7 @@ lazy from presentation.flagship.localization_remote_vision import (
 lazy from presentation.flagship.localization_security_audit import (
     SECURITY_AUDIT_TRANSLATIONS,
 )
+lazy from presentation.flagship.localization_themes import THEME_TRANSLATIONS
 lazy from presentation.flagship.localization_workflows import (
     WORKFLOW_TRANSLATIONS,
 )
@@ -40,6 +41,7 @@ CATALOGS = (
     CLOUD_HOME_TRANSLATIONS,
     REMOTE_VISION_TRANSLATIONS,
     SECURITY_AUDIT_TRANSLATIONS,
+    THEME_TRANSLATIONS,
 )
 
 

@@ -37,6 +37,7 @@ lazy from infrastructure.profile_transfer import (
 lazy from domain.openai_vision_preferences import SETTING_KEYS as VISION_SETTING_KEYS
 lazy from domain.performance_preferences import SETTING_KEYS as PERFORMANCE_SETTING_KEYS
 lazy from domain.theme_session import ACTIVE_THEME_SETTING_KEY
+lazy from presentation.lingxiao_themes import THEME_SETTING_KEY
 
 VOICE_SETTING_KEYS = frozenset(
     {
@@ -71,6 +72,7 @@ V4_APPEARANCE_SETTING_KEYS = frozenset(
     {
         "flagship_high_contrast",
         "flagship_ui_scale",
+        THEME_SETTING_KEY,
         ACTIVE_THEME_SETTING_KEY,
         ACTIVE_OUTFIT_SETTING_KEY,
     }
