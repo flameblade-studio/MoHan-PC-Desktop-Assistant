@@ -679,26 +679,11 @@ class CompanionFaceAssetMethods:
                 face_alpha,
             )
             self.expression_physics_sources[expression] = {
-                "ornament": self._masked_region(
-                    expression_source,
-                    self.physics_sources[pose],
-                ),
-                "hair_left": self._masked_region(
-                    expression_source,
-                    self.hair_sources[pose]["left"],
-                ),
-                "hair_right": self._masked_region(
-                    expression_source,
-                    self.hair_sources[pose]["right"],
-                ),
-                "sleeve_left": self._masked_region(
-                    expression_source,
-                    self.sleeve_sources[pose]["left"],
-                ),
-                "sleeve_right": self._masked_region(
-                    expression_source,
-                    self.sleeve_sources[pose]["right"],
-                ),
+                "ornament": QPixmap(self.physics_sources[pose]),
+                "hair_left": QPixmap(self.hair_sources[pose]["left"]),
+                "hair_right": QPixmap(self.hair_sources[pose]["right"]),
+                "sleeve_left": QPixmap(self.sleeve_sources[pose]["left"]),
+                "sleeve_right": QPixmap(self.sleeve_sources[pose]["right"]),
             }
 
     @staticmethod

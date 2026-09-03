@@ -2,7 +2,7 @@ from __future__ import annotations
 
 """Makeup category card of the Wardrobe Pavilion: item/variant menu plus the intensity slider."""
 
-lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtCore import QTimer, Qt
 lazy from PySide6.QtWidgets import (
     QComboBox,
     QFormLayout,
@@ -22,6 +22,7 @@ __all__ = ("DashboardWardrobeMakeupMixin",)
 INTENSITY_PERCENT = 100
 INTENSITY_SINGLE_STEP = 5
 INTENSITY_PAGE_STEP = 10
+MAKEUP_COMMIT_DELAY_MS = 150
 BARE_OPTION = "none"
 CLASSIC_OPTION = "builtin/classic"
 LIGHT_OPTION = "builtin/light"
@@ -81,6 +82,15 @@ class DashboardWardrobeMakeupMixin:
         )
         self.wardrobe_makeup_intensity.valueChanged.connect(
             self._wardrobe_makeup_intensity_changed
+        )
+        self._wardrobe_makeup_commit_timer = QTimer(card)
+        self._wardrobe_makeup_commit_timer.setSingleShot(True)
+        self._wardrobe_makeup_commit_timer.setInterval(MAKEUP_COMMIT_DELAY_MS)
+        self._wardrobe_makeup_commit_timer.timeout.connect(
+            self._commit_wardrobe_makeup_intensity
+        )
+        self.wardrobe_makeup_intensity.sliderReleased.connect(
+            self._commit_wardrobe_makeup_intensity
         )
         return card
 
@@ -162,5 +172,10 @@ class DashboardWardrobeMakeupMixin:
 
     def _wardrobe_makeup_intensity_changed(self, value: int) -> None:
         self.wardrobe_makeup_intensity_value.setText(f"{int(value)}%")
-        self.wardrobe_service.set_makeup_intensity(int(value) / INTENSITY_PERCENT)
+        self._wardrobe_makeup_commit_timer.start()
+
+    def _commit_wardrobe_makeup_intensity(self) -> None:
+        self._wardrobe_makeup_commit_timer.stop()
+        value = self.wardrobe_makeup_intensity.value()
+        self.wardrobe_service.set_makeup_intensity(value / INTENSITY_PERCENT)
         self._refresh_wardrobe_preview()

@@ -13,9 +13,7 @@ lazy from tempfile import NamedTemporaryFile
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain import outfit_pack_official
 lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel
-# Eager on purpose: these names are re-exported (``from domain.outfit_pack import
-# OutfitPackError`` is used across the layers) and a lazy import of a lazily
-# imported name hands the caller the unresolved proxy instead of the class.
+# Eager because re-exporting a lazy imported name would expose its unresolved proxy.
 from domain.outfit_pack_assets import (
     ASSET_PATH,
     MANIFEST,
@@ -58,13 +56,10 @@ ACCESSORY_ASSET_SLOTS = frozendict({
     "weapon": frozenset({"weapon", "sheath"}), "handheld": frozenset({"handheld"}),
     "jewelry": frozenset({"jewelry"}), "foreground-effect": frozenset({"foreground-effect"}),
 })
-# Makeup is the one category that legitimately paints the face: three full-canvas
-# RGBA layers per silhouette, composited above the bare skin and below hair,
-# headwear and garments, clipped to the per-silhouette safe region
-# (assets/makeup-safe-regions.json) and scaled by the user's intensity.
+# Makeup paints three full-canvas RGBA layers per silhouette, clipped to the
+# per-silhouette safe region and scaled by the user's intensity.
 MAKEUP_SLOTS = frozenset({"eyes", "cheeks", "lips"})
 MAKEUP_CANVASES = frozendict({"full-body": (1024, 1536), "half-body": (1254, 1254)})
-# Official pack identities live in domain.outfit_pack_official; re-bound here for the importers of this module.
 BUILTIN_MAKEUP_PACK_ID = outfit_pack_official.BUILTIN_MAKEUP_PACK_ID
 BUILTIN_MAKEUP_ITEM_ID = outfit_pack_official.BUILTIN_MAKEUP_ITEM_ID
 BUILTIN_MAKEUP_VARIANTS = outfit_pack_official.BUILTIN_MAKEUP_VARIANTS
@@ -737,11 +732,11 @@ def _inspect_installed(path: Path) -> OutfitPack | None:
 
 
 def _installed_pack_paths(store: Path) -> tuple[Path, ...]:
-    """User-installed packs first, then the official packs shipped with the app (never removable)."""
-    paths = []
-    for root in (Path(store) / "packages", OFFICIAL_PACK_ROOT):
-        paths.extend(sorted(root.glob("*.mohan-outfit")) if root.is_dir() else ())
-    return tuple(paths)
+    """User packs plus authoritative reserved-id archives from the official root."""
+    user_root = Path(store) / "packages"
+    user_paths = sorted(path for path in user_root.glob("*.mohan-outfit") if path.stem not in OFFICIAL_PACK_IDS) if user_root.is_dir() else ()
+    official_paths = sorted(OFFICIAL_PACK_ROOT.glob("*.mohan-outfit")) if OFFICIAL_PACK_ROOT.is_dir() else ()
+    return (*user_paths, *official_paths)
 
 
 def installed_pack_path(store: Path, pack_id: str) -> Path:
@@ -753,7 +748,12 @@ def installed_pack_path(store: Path, pack_id: str) -> Path:
 
 
 def list_installed_outfits(store: Path) -> tuple[OutfitPack, ...]:
-    return tuple(pack for pack in map(_inspect_installed, _installed_pack_paths(store)) if pack is not None)
+    return tuple(
+        pack
+        for path in _installed_pack_paths(store)
+        if (pack := _inspect_installed(path)) is not None
+        and (pack.pack_id not in OFFICIAL_PACK_IDS or path.parent == OFFICIAL_PACK_ROOT)
+    )
 
 
 def list_stale_body_profile_packs(store: Path) -> tuple[str, ...]:

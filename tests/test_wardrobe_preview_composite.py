@@ -13,6 +13,7 @@ lazy import os
 lazy import sys
 lazy from dataclasses import replace
 lazy from pathlib import Path
+lazy from time import sleep
 lazy from tempfile import TemporaryDirectory
 lazy from unittest.mock import patch
 
@@ -31,7 +32,11 @@ lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
 lazy from presentation.dashboard_composition import DashboardDependencies
-lazy from presentation.dashboard_wardrobe_preview import STATE_COMPOSITED, STATE_FALLBACK
+lazy from presentation.dashboard_wardrobe_preview import (
+    PREVIEW_COMPOSE_DELAY_MS,
+    STATE_COMPOSITED,
+    STATE_FALLBACK,
+)
 lazy from presentation.dashboard_window import Dashboard
 lazy from test_gesture_app_wiring import offline_presentation_ports
 lazy from test_global_settings_actions import (
@@ -60,6 +65,7 @@ COMPOSE_TIMEOUT_MS = 60_000
 POLL_MS = 50
 CLASSIC_MAKEUP = "builtin/classic"
 BARE_MAKEUP = "none"
+MIN_PREHEATED_CATEGORIES = 4
 
 
 def _dependencies(root: Path) -> DashboardDependencies:
@@ -196,3 +202,51 @@ def test_offline_dashboard_without_compositor_flags_the_bare_preview() -> None:
             assert shown is not None and not shown.isNull()
         finally:
             close_dashboard(dashboard, db)
+
+
+def test_slow_preview_composition_does_not_block_the_gui_timer() -> None:
+    """Category preheating yields to the event loop during an uncached preview."""
+
+    application = QApplication.instance() or QApplication([])
+    with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
+        root = Path(temp)
+        db, dashboard = _build(root, _dependencies(root))
+        ticks: list[None] = []
+        observed_ticks: list[int] = []
+        overlay = dashboard._wardrobe_outfit_overlay
+        original_category_composite = overlay.category_composite
+
+        def measured_category_composite(*args, **kwargs):
+            observed_ticks.append(len(ticks))
+            sleep(0.03)
+            return original_category_composite(*args, **kwargs)
+
+        overlay.category_composite = measured_category_composite
+        heartbeat = QTimer()
+        heartbeat.setInterval(5)
+        heartbeat.timeout.connect(lambda: ticks.append(None))
+        try:
+            heartbeat.start()
+            _open_wardrobe(dashboard)
+            _wait_composited(dashboard)
+            assert len(observed_ticks) >= MIN_PREHEATED_CATEGORIES
+            assert max(observed_ticks) > min(observed_ticks)
+            application.processEvents()
+        finally:
+            heartbeat.stop()
+            close_dashboard(dashboard, db)
+
+
+def test_pending_preview_is_cancelled_when_its_widget_is_destroyed() -> None:
+    application = QApplication.instance() or QApplication([])
+    with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
+        root = Path(temp)
+        db, dashboard = _build(root, _dependencies(root))
+        _open_wardrobe(dashboard)
+        assert dashboard._wardrobe_preview_pending
+        dashboard.wardrobe_character_preview.deleteLater()
+        QTest.qWait(PREVIEW_COMPOSE_DELAY_MS + POLL_MS)
+        assert dashboard._wardrobe_preview_alive is False
+        assert dashboard._wardrobe_preview_work is None
+        close_dashboard(dashboard, db)
+        application.processEvents()

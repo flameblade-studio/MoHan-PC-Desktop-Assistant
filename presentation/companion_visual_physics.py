@@ -24,6 +24,10 @@ SLEEVE_ANGLE_EPSILON = 0.012
 BREATH_LIFT_EPSILON = 0.08
 HAIR_ANGLE_EPSILON = 0.025
 ORNAMENT_ANGLE_EPSILON = 0.04
+PHYSICS_SOURCE_REFRESH_TICKS = 25
+PHYSICS_OUTFIT_VIEWS = frozendict({
+    "cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed",
+})
 
 
 class CompanionVisualPhysicsMethods:
@@ -163,25 +167,46 @@ class CompanionVisualPhysicsMethods:
         })
 
     def _load_physics_sources(self) -> None:
+        outfit_overlay = getattr(self, "_physics_outfit_overlay", None)
+        if outfit_overlay is None:
+            outfit_overlay = self.presentation_ports.outfit_overlay_factory(
+                on_stale_body_profile=self._on_stale_outfit_pack
+            )
+            self._physics_outfit_overlay = outfit_overlay
+        category_layer = getattr(outfit_overlay, "category_composite", None)
         for pose, suffix in (
             ("cheek", ""),
             ("lean", "_lean"),
             ("front", "_front"),
         ):
-            self.physics_sources[pose] = self._scaled_expression_asset(
-                f"v120_ornament{suffix}.png"
+            view_id = PHYSICS_OUTFIT_VIEWS[pose]
+            ornament = category_layer(view_id, "headwear") if category_layer else QPixmap()
+            garment = category_layer(view_id, "garment") if category_layer else QPixmap()
+            hairstyle = category_layer(view_id, "hairstyle") if category_layer else QPixmap()
+            self.physics_sources[pose] = (
+                ornament.scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                if not ornament.isNull()
+                else self._scaled_expression_asset(f"v120_ornament{suffix}.png")
             )
             self.hair_sources[pose] = {}
             self.sleeve_sources[pose] = {}
             for side in ("left", "right"):
-                hair = self._scaled_expression_asset(f"v120_hair_{side}{suffix}.png")
+                hair = (
+                    hairstyle.scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                    if not hairstyle.isNull()
+                    else self._scaled_expression_asset(f"v120_hair_{side}{suffix}.png")
+                )
                 self.hair_sources[pose][side] = self._hair_texture_only(hair)
-                sleeve = self._scaled_expression_asset(
-                    f"v120_sleeve_{side}{suffix}.png"
+                sleeve = (
+                    garment.scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                    if not garment.isNull()
+                    else self._scaled_expression_asset(f"v120_sleeve_{side}{suffix}.png")
                 )
                 self.sleeve_sources[pose][side] = self._sleeve_texture_only(
                     sleeve, side
                 )
+        signature = getattr(outfit_overlay, "state_signature", None)
+        self._physics_outfit_signature = signature() if signature else None
 
     @staticmethod
     def _scaled_expression_asset(filename: str) -> QPixmap:
@@ -315,6 +340,15 @@ class CompanionVisualPhysicsMethods:
         ):
             return
         self.physics_phase = (self.physics_phase + 1) % 3600
+        if self.physics_phase % PHYSICS_SOURCE_REFRESH_TICKS == 0:
+            overlay = getattr(self, "_physics_outfit_overlay", None)
+            signature = getattr(overlay, "state_signature", None)
+            if signature is not None and signature() != self._physics_outfit_signature:
+                self._load_physics_sources()
+                self._build_expression_eye_layers()
+                self.last_rendered_ornament_angle = 99.0
+                self.last_rendered_hair_angles = (99.0, 99.0)
+                self.last_rendered_sleeves = (99.0, 99.0, 99.0)
         ambient = math.sin(self.physics_phase * math.tau / 190.0) * 0.38
         voice_motion = (
             (self.viseme_dynamics.smoothed_level - 0.18) * 0.75

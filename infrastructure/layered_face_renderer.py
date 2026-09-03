@@ -110,6 +110,7 @@ class LayeredParametricFaceRenderer:
         self._seam_region_cache: dict[str, QRegion] = {}
         self._face_region_cache: dict[str, QRegion] = {}
         self._mouth_mask_cache: dict[str, QPixmap] = {}
+        self._active_outfit_view: str | None = None
 
     def _manifest_or_load(self) -> LayeredFaceManifest:
         """Return the injected manifest, or lazily load the authored assets."""
@@ -192,10 +193,14 @@ class LayeredParametricFaceRenderer:
         # Applying after the scale-down to the caller's canvas made every
         # anchor check fail (or draw ~2.7x off), so installed outfits never
         # appeared on the half-body poses at all.
+        self._active_outfit_view = outfit_silhouette(
+            motion.expression,
+            motion.pose.value,
+        )
         if self._outfit_overlay is not None:
             composed = self._outfit_overlay.apply(
                 composed,
-                outfit_silhouette(motion.expression, motion.pose.value),
+                self._active_outfit_view,
             )
         result = (
             composed
@@ -218,6 +223,12 @@ class LayeredParametricFaceRenderer:
                 mouth_mask,
                 max(0.0, min(1.0, actual_aperture / 0.18)),
             )
+            region = (
+                QRegion(mouth_mask.mask())
+                if mouth_mask is not None and not mouth_mask.isNull()
+                else None
+            )
+            result = self._reapply_makeup(result, region)
         return result
 
     def _gesture_portrait(self, expression: str) -> QPixmap:
@@ -241,9 +252,25 @@ class LayeredParametricFaceRenderer:
                 painter.setOpacity(max(0.0, min(1.0, float(opacity))))
                 painter.drawPixmap(0, 0, source)
                 painter.end()
-            return result
+            return self._reapply_makeup(result, QRegion(source.mask()))
         self._paint_masked(result, source, mask, opacity)
-        return result
+        return self._reapply_makeup(result, QRegion(mask.mask()))
+
+    def _reapply_makeup(
+        self,
+        frame: QPixmap,
+        clip: QRegion | None,
+    ) -> QPixmap:
+        """Keep selected face paint above a later speech or blink authority patch."""
+        apply_category = getattr(self._outfit_overlay, "apply_category", None)
+        if apply_category is None or self._active_outfit_view is None:
+            return frame
+        return apply_category(frame, self._active_outfit_view, "makeup", clip)
+
+    def outfit_category_layer(self, view_id: str, category: str) -> QPixmap:
+        """Expose one active appearance category to the companion physics owner."""
+        category_composite = getattr(self._outfit_overlay, "category_composite", None)
+        return QPixmap() if category_composite is None else category_composite(view_id, category)
 
     # -- core layered composition -------------------------------------------
 

@@ -1,17 +1,16 @@
 """Wardrobe Pavilion character preview: the composed look through the runtime path.
 
-The preview no longer shows the raw pose-atlas PNG.  It composes the four
-preview views (front, MoHan's left, her right, back) through the same
-full-body renderer and active-outfit overlay the desktop companion uses, so
-what the owner sees in the pavilion is what walks on the desktop: the
-selected garment, hairstyle, headwear and makeup at the chosen intensity.
+The preview composes the four neutral authority views (front, MoHan's left,
+her right, back) through the same active-outfit overlay the desktop companion
+uses, so what the owner sees in the pavilion is what walks on the desktop:
+the selected garment, hairstyle, headwear and makeup at the chosen intensity.
 
 Composites are cached per (appearance signature, view) and rebuilt only when
-the selection or makeup state changes.  A first composite takes a moment, so
-it runs on a short timer once the preview is on screen instead of blocking
-the UI thread; the bare base is shown meanwhile with an explicit "composing"
-line.  A failed composite falls back to the bare base and, when a pack is
-active, says so in the wardrobe status instead of staying silent.
+the selection or makeup state changes. A first composite takes a moment, so
+each active appearance category is preheated on a separate event-loop turn;
+the bare base is shown meanwhile with an explicit "composing" line. A failed
+composite falls back to the bare base and, when a pack is active, says so in
+the wardrobe status instead of staying silent.
 """
 
 from __future__ import annotations
@@ -28,15 +27,10 @@ lazy from PySide6.QtWidgets import (
     QPushButton,
     QVBoxLayout,
 )
+lazy from shiboken6 import isValid
 
 lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
-lazy from domain.face_rig import (
-    ExpressionShape,
-    FaceMotionFrame,
-    FacePose,
-    MouthShape,
-    Viseme,
-)
+lazy from domain.outfit_pack import SELECTION_CATEGORIES
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = (
@@ -63,12 +57,6 @@ STATE_IDLE = "idle"
 STATE_COMPOSING = "composing"
 STATE_COMPOSITED = "composited"
 STATE_FALLBACK = "fallback"
-# Neutral closed-mouth frame; breath 0.5 is zero lift in the full-body renderer.
-PREVIEW_MOTION = FaceMotionFrame(
-    FacePose.FRONT, "idle", Viseme.CLOSED, MouthShape(), ExpressionShape(), breath=0.5,
-)
-
-
 class WardrobePreviewLabel(QLabel):
     """Preview surface that announces when it becomes visible (its tab was shown)."""
 
@@ -98,6 +86,10 @@ class DashboardWardrobePreviewMixin:
         self.wardrobe_character_preview.setAccessibleName(
             self._t("wardrobe_character_preview", "墨寒造型預覽")
         )
+        self._wardrobe_preview_alive = True
+        self.wardrobe_character_preview.destroyed.connect(
+            self._cancel_wardrobe_preview_work
+        )
         ports = self.presentation_ports
         self._wardrobe_outfit_overlay = ports.outfit_overlay_factory(
             on_stale_body_profile=lambda: self.set_outfit_generation_status("body-profile-outdated")
@@ -107,6 +99,7 @@ class DashboardWardrobePreviewMixin:
         )
         self._wardrobe_preview_cache: dict[tuple[object, ...], QPixmap] = {}
         self._wardrobe_preview_pending = False
+        self._wardrobe_preview_work: tuple[tuple[object, ...], str, int] | None = None
         self._wardrobe_preview_state = STATE_IDLE
         self._wardrobe_pose_source = QPixmap()
         self._wardrobe_pose_view = WARDROBE_PREVIEW_VIEWS[0][2]
@@ -180,6 +173,7 @@ class DashboardWardrobePreviewMixin:
             self._wardrobe_preview_pending
             or self._wardrobe_preview_state != STATE_COMPOSING
             or self._wardrobe_full_body_renderer is None
+            or not self._wardrobe_preview_available()
             or not self.wardrobe_character_preview.isVisible()
         ):
             return
@@ -189,21 +183,78 @@ class DashboardWardrobePreviewMixin:
         QTimer.singleShot(PREVIEW_COMPOSE_DELAY_MS, self._compose_wardrobe_preview)
 
     def _compose_wardrobe_preview(self) -> None:
-        self._wardrobe_preview_pending = False
+        if not self._wardrobe_preview_available():
+            self._cancel_wardrobe_preview_work()
+            return
         view_id = self._wardrobe_pose_view
         key = self._wardrobe_preview_key(view_id)
         pixmap = self._wardrobe_preview_cache.get(key)
-        state = STATE_COMPOSITED
-        if pixmap is None:
+        if pixmap is not None:
+            self._finish_wardrobe_preview(key, pixmap, STATE_COMPOSITED)
+            return
+        if self._wardrobe_full_body_renderer is None:
             pixmap, state = self._composited_wardrobe_view(view_id)
-            if pixmap.isNull():
-                self._set_wardrobe_preview_state(STATE_FALLBACK)
-                return
-            if state == STATE_COMPOSITED:
-                # One signature at a time: a selection change never keeps stale looks around.
-                for stale in [entry for entry in self._wardrobe_preview_cache if entry[1:] != key[1:]]:
-                    del self._wardrobe_preview_cache[stale]
-                self._wardrobe_preview_cache[key] = pixmap
+            self._finish_wardrobe_preview(key, pixmap, state)
+            return
+        self._wardrobe_preview_work = (key, view_id, 0)
+        self._preheat_wardrobe_preview_category()
+
+    def _preheat_wardrobe_preview_category(self) -> None:
+        if not self._wardrobe_preview_available():
+            self._cancel_wardrobe_preview_work()
+            return
+        work = self._wardrobe_preview_work
+        if work is None:
+            return
+        key, view_id, category_index = work
+        if key != self._wardrobe_preview_key(self._wardrobe_pose_view):
+            self._wardrobe_preview_work = None
+            self._wardrobe_preview_pending = False
+            self._schedule_wardrobe_preview_compose()
+            return
+        if category_index < len(SELECTION_CATEGORIES):
+            self._wardrobe_outfit_overlay.category_composite(
+                view_id,
+                SELECTION_CATEGORIES[category_index],
+            )
+            self._wardrobe_preview_work = (key, view_id, category_index + 1)
+            QTimer.singleShot(0, self._preheat_wardrobe_preview_category)
+            return
+        self._wardrobe_preview_work = None
+        pixmap, state = self._composited_wardrobe_view(view_id)
+        self._finish_wardrobe_preview(key, pixmap, state)
+
+    def _cancel_wardrobe_preview_work(self) -> None:
+        self._wardrobe_preview_alive = False
+        self._wardrobe_preview_work = None
+        self._wardrobe_preview_pending = False
+
+    def _wardrobe_preview_available(self) -> bool:
+        preview = getattr(self, "wardrobe_character_preview", None)
+        return bool(self._wardrobe_preview_alive and preview is not None and isValid(preview))
+
+    def _finish_wardrobe_preview(
+        self,
+        key: tuple[object, ...],
+        pixmap: QPixmap,
+        state: str,
+    ) -> None:
+        if not self._wardrobe_preview_available():
+            self._cancel_wardrobe_preview_work()
+            return
+        self._wardrobe_preview_pending = False
+        current_key = self._wardrobe_preview_key(self._wardrobe_pose_view)
+        if key != current_key:
+            self._schedule_wardrobe_preview_compose()
+            return
+        if pixmap.isNull():
+            self._set_wardrobe_preview_state(STATE_FALLBACK)
+            return
+        if state == STATE_COMPOSITED:
+            # One signature at a time: a selection change never keeps stale looks around.
+            for stale in [entry for entry in self._wardrobe_preview_cache if entry[1:] != key[1:]]:
+                del self._wardrobe_preview_cache[stale]
+            self._wardrobe_preview_cache[key] = pixmap
         self._present_wardrobe_preview(pixmap)
         self._set_wardrobe_preview_state(state)
 
@@ -213,7 +264,8 @@ class DashboardWardrobePreviewMixin:
         composed = QPixmap()
         if renderer is not None:
             try:
-                composed = QPixmap(renderer.render_view(view_id, PREVIEW_MOTION))
+                base = self._wardrobe_base_pixmap(view_id)
+                composed = self._wardrobe_outfit_overlay.apply(base, view_id)
             except (KeyError, OSError, RuntimeError, TypeError, ValueError):
                 composed = QPixmap()
         if composed.isNull():

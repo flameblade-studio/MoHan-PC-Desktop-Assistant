@@ -1,12 +1,9 @@
-"""The generation-2 bare base ships empty hair/sleeve/ornament cutouts.
+"""Active appearance art, not bare placeholders, drives runtime physics.
 
-``presentation/companion_visual_physics.py`` loads the 15 ``LICENSED_EMPTY``
-cutouts unconditionally, derives per-expression local layers from them and
-rotates the result on every physics tick.  This test constructs the physics
-layers on the shipped assets and drives one pose change plus one tick per
-pose, proving an all-transparent cutout is tolerated end to end: nothing
-raises, every pixmap is non-null at the runtime canvas size, and the rendered
-overlays stay fully transparent (no invented pixels).
+The generation-2 bare body intentionally has no clothing, loose hair or
+hairpiece.  The default appearance pack supplies those visuals, so this test
+requires every enabled physical source and its rotated result to contain the
+active pack's pixels.
 """
 
 from __future__ import annotations
@@ -24,7 +21,6 @@ lazy from PySide6.QtGui import QImage, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from presentation.companion_window import CompanionWindow
-lazy from test_v120_asset_integrity import LICENSED_EMPTY
 
 RUNTIME_LAYER_SIZE = 465
 POSE_IDLE_FRAMES = (
@@ -32,7 +28,7 @@ POSE_IDLE_FRAMES = (
     ("lean", "idle_lean"),
     ("front", "idle_front"),
 )
-EMPTY_PARTS = ("ornament", "hair_left", "hair_right", "sleeve_left", "sleeve_right")
+PHYSICAL_PARTS = ("ornament", "hair_left", "hair_right", "sleeve_left", "sleeve_right")
 ALPHA_OFFSET = 3
 RGBA_STRIDE = 4
 POSE_CHANGE_KICK = 0.4
@@ -58,8 +54,7 @@ def physics_sources_for(window: CompanionWindow, pose: str) -> dict[str, QPixmap
     }
 
 
-def assert_empty_sources_loaded(window: CompanionWindow) -> None:
-    assert set(EMPTY_PARTS) == set(LICENSED_EMPTY)
+def assert_active_appearance_sources_loaded(window: CompanionWindow) -> None:
     for pose, _idle in POSE_IDLE_FRAMES:
         for part, pixmap in physics_sources_for(window, pose).items():
             assert not pixmap.isNull(), (pose, part)
@@ -67,10 +62,10 @@ def assert_empty_sources_loaded(window: CompanionWindow) -> None:
                 pose,
                 part,
             )
-            assert is_fully_transparent(pixmap), (pose, part)
+            assert not is_fully_transparent(pixmap), (pose, part)
 
 
-def assert_rotation_tolerates_empty_layers(window: CompanionWindow) -> None:
+def assert_rotation_preserves_active_appearance(window: CompanionWindow) -> None:
     overlays = (
         window.physics_overlay,
         window.hair_left_overlay,
@@ -93,10 +88,10 @@ def assert_rotation_tolerates_empty_layers(window: CompanionWindow) -> None:
         for overlay in overlays:
             rendered = overlay.pixmap()
             assert not rendered.isNull(), (pose, overlay)
-            assert is_fully_transparent(rendered), (pose, overlay)
+            assert not is_fully_transparent(rendered), (pose, overlay)
         local_layers = window.expression_physics_sources[idle]
-        assert set(local_layers) == set(EMPTY_PARTS), pose
-        assert all(is_fully_transparent(layer) for layer in local_layers.values()), pose
+        assert set(local_layers) == set(PHYSICAL_PARTS), pose
+        assert all(not is_fully_transparent(layer) for layer in local_layers.values()), pose
 
 
 def run() -> None:
@@ -107,11 +102,11 @@ def run() -> None:
         window.show()
         app.processEvents()
         stop_automatic_timers(window)
-        assert_empty_sources_loaded(window)
-        assert_rotation_tolerates_empty_layers(window)
+        assert_active_appearance_sources_loaded(window)
+        assert_rotation_preserves_active_appearance(window)
         window.close()
         app.processEvents()
-    print("V120_EMPTY_LAYERS_PHYSICS_OK")
+    print("V120_ACTIVE_APPEARANCE_PHYSICS_OK")
 
 
 if __name__ == "__main__":

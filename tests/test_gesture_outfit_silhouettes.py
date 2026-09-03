@@ -52,6 +52,9 @@ MIN_DRESSED_PIXELS = 400
 DRESSED_DISTANCE = 40
 # Runtime layers dressing a gesture: robe, hair front (back is transparent), hairpiece, 3 makeup slots.
 MIN_DRESSED_LAYERS = 5
+FRONT_MOUTH = QRect(206, 199, 54, 35)
+FRONT_EYES = QRect(180, 153, 96, 34)
+MIN_MAKEUP_RETENTION = 0.7
 
 
 def _app() -> object:
@@ -124,6 +127,24 @@ def _changed_pixels(before: QImage, after: QImage, allowed: QRect) -> tuple[int,
     return inside, outside
 
 
+def _retained_appearance_ratio(
+    bare_closed: QImage,
+    dressed_closed: QImage,
+    bare_dynamic: QImage,
+    dressed_dynamic: QImage,
+    region: QRect,
+) -> float:
+    appearance = dynamic = 0
+    for y in range(region.top(), region.bottom() + 1):
+        for x in range(region.left(), region.right() + 1):
+            if bare_closed.pixel(x, y) == dressed_closed.pixel(x, y):
+                continue
+            appearance += 1
+            dynamic += bare_dynamic.pixel(x, y) != dressed_dynamic.pixel(x, y)
+    assert appearance > 0
+    return dynamic / appearance
+
+
 def _rect_mask(rect: QRect) -> QPixmap:
     mask = QPixmap(CANVAS, CANVAS)
     mask.fill(Qt.transparent)
@@ -192,3 +213,48 @@ def test_mock_scold_speech_open_keeps_the_robe_and_opens_the_mouth(tmp_path: Pat
     assert outside == 0
     for label, frame in (("shut", shut), ("opened", opened)):
         _assert_dressed(closed, frame, label)
+
+
+def test_speech_mouth_and_blink_keep_builtin_makeup(tmp_path: Path) -> None:
+    """Dynamic authority patches must not replace the already-selected lips or eyes."""
+
+    _app()
+    bare_renderer = LayeredParametricFaceRenderer()
+    overlay = ActiveOutfitOverlay(tmp_path / "store", ROOT)
+    dressed_renderer = LayeredParametricFaceRenderer(outfit_overlay=overlay)
+    closed = _portrait("idle_front")
+    motion = _motion("idle_front")
+    bare_closed = bare_renderer.render(closed, motion, None)
+    dressed_closed = dressed_renderer.render(closed, motion, None)
+    makeup_closed = overlay.apply_category(bare_closed, "front-crossed", "makeup")
+
+    speech_layers = FaceRenderLayers(
+        mouth_source=_portrait("speaking_front"),
+        mouth_mask=_rect_mask(FRONT_MOUTH),
+        mouth_rect=FRONT_MOUTH,
+    )
+    bare_open = bare_renderer.render(closed, motion, speech_layers, aperture=1.0)
+    dressed_open = dressed_renderer.render(closed, motion, speech_layers, aperture=1.0)
+    assert _retained_appearance_ratio(
+        bare_closed.toImage(),
+        makeup_closed.toImage(),
+        bare_open.toImage(),
+        dressed_open.toImage(),
+        FRONT_MOUTH,
+    ) >= MIN_MAKEUP_RETENTION
+
+    blink_source = _portrait("blink_front")
+    blink_mask = _rect_mask(FRONT_EYES)
+    bare_blink = bare_renderer.render_overlay(bare_closed, blink_source, mask=blink_mask)
+    dressed_blink = dressed_renderer.render_overlay(
+        dressed_closed,
+        blink_source,
+        mask=blink_mask,
+    )
+    assert _retained_appearance_ratio(
+        bare_closed.toImage(),
+        makeup_closed.toImage(),
+        bare_blink.toImage(),
+        dressed_blink.toImage(),
+        FRONT_EYES,
+    ) >= MIN_MAKEUP_RETENTION

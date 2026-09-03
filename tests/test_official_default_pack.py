@@ -28,6 +28,7 @@ lazy from domain.outfit_pack import (
     apply_ensemble,
     inspect_outfit_pack,
     install_outfit_pack,
+    installed_pack_path,
     remove_outfit_pack,
     resolve_active_selection,
     restore_builtin_outfit,
@@ -237,3 +238,34 @@ def test_official_packs_cannot_be_removed_or_shadowed(tmp_path: Path) -> None:
         with pytest.raises(OutfitPackError, match="reserved"):
             WardrobeService(store).install(archive)
     assert not (store / "packages").exists() or not any((store / "packages").iterdir())
+
+
+def test_preexisting_reserved_id_archive_cannot_shadow_the_official_pack(tmp_path: Path) -> None:
+    """An upgrade may encounter a reserved-id file written before imports rejected it."""
+
+    store = tmp_path / "store"
+    packages = store / "packages"
+    packages.mkdir(parents=True)
+    manifest, assets = _manifest(_png())
+    manifest["id"] = OFFICIAL_OUTFIT_PACK_ID
+    manifest["ensembles"][0]["id"] = OFFICIAL_OUTFIT_ENSEMBLE_ID
+    conflict = _pack(
+        packages / "legacy-reserved-id-conflict.mohan-outfit",
+        manifest,
+        assets,
+    )
+
+    assert conflict.is_file()
+    assert installed_pack_path(store, OFFICIAL_OUTFIT_PACK_ID) == OUTFIT_PACK_PATH
+    resolution = resolve_active_selection(store, "garment")
+    outfit = inspect_outfit_pack(OUTFIT_PACK_PATH)
+    expected = next(
+        selection
+        for selection in outfit.ensembles[0].selections
+        if selection.category == "garment"
+    )
+    assert _identity(resolution) == (
+        OFFICIAL_OUTFIT_PACK_ID,
+        expected.item_id,
+        expected.variant_id,
+    )

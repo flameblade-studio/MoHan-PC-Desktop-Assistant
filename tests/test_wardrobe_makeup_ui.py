@@ -6,7 +6,7 @@ lazy import json
 lazy import os
 lazy import sys
 lazy from pathlib import Path
-lazy from unittest.mock import patch
+lazy from unittest.mock import call, patch
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(TESTS))
 
 lazy import pytest
+lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication, QFileDialog
 
 lazy from domain.outfit_pack import BUILTIN_MAKEUP_ITEM_ID, BUILTIN_MAKEUP_PACK_ID
@@ -25,6 +26,7 @@ lazy from test_wardrobe_ui import build_language_dashboard
 FESTIVAL_OPTION = "festival-makeup/festival/classic"
 HALF_PERCENT = 50
 HALF = 0.5
+DEBOUNCE_WAIT_MS = 200
 
 
 def _menu_ids(dashboard) -> list[str]:
@@ -58,12 +60,11 @@ def test_makeup_pack_imports_through_the_shared_button_persists_and_falls_back(
         assert active["makeup"] == {"pack_id": "festival-makeup", "item_id": "festival", "variant_id": "classic"}
         assert dashboard.wardrobe_status.text() == "已套用所選妝容。"
         dashboard.wardrobe_makeup_intensity.setValue(HALF_PERCENT)
-        application.processEvents()
+        QTest.qWait(DEBOUNCE_WAIT_MS)
         assert json.loads((store / "makeup.json").read_text(encoding="utf-8")) == {"intensity": HALF}
         assert dashboard.wardrobe_makeup_intensity_value.text() == f"{HALF_PERCENT}%"
     finally:
         close_dashboard(dashboard, db)
-
     # Restart: both the selection and the intensity come back from the store.
     db, dashboard = build_language_dashboard(profile, "zh-TW")
     try:
@@ -89,5 +90,31 @@ def test_makeup_pack_imports_through_the_shared_button_persists_and_falls_back(
         assert FESTIVAL_OPTION not in _menu_ids(dashboard)
         assert BUILTIN_MAKEUP_PACK_ID not in _menu_ids(dashboard)
         assert dashboard.wardrobe_service.makeup_options()[1].selection.item_id == BUILTIN_MAKEUP_ITEM_ID
+    finally:
+        close_dashboard(dashboard, db)
+
+
+def test_makeup_intensity_drag_persists_only_the_settled_value(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    application = QApplication.instance() or QApplication([])
+    official_builtin_pack(tmp_path, monkeypatch)
+    profile = tmp_path / "profile"
+    profile.mkdir()
+    db, dashboard = build_language_dashboard(profile, "zh-TW")
+    try:
+        service = dashboard.wardrobe_service
+        with patch.object(
+            service,
+            "set_makeup_intensity",
+            wraps=service.set_makeup_intensity,
+        ) as persist:
+            for value in (10, 20, 30, 40):
+                dashboard.wardrobe_makeup_intensity.setValue(value)
+            application.processEvents()
+            assert persist.call_count == 0
+            QTest.qWait(DEBOUNCE_WAIT_MS)
+            assert persist.call_args_list == [call(0.4)]
     finally:
         close_dashboard(dashboard, db)

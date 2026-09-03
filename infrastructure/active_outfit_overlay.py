@@ -80,6 +80,8 @@ class ActiveOutfitOverlay:
         # 26 MB); one parse per (path, mtime, size) instead of one per view.
         self._parsed_packs: dict[tuple[Path, tuple[int, int]], object] = {}
         self._layers_by_view: dict[str, tuple[Layer, ...]] = {}
+        self._category_layers_by_view: dict[tuple[str, str], tuple[tuple[int, Layer], ...]] = {}
+        self._category_composites: dict[tuple[str, str], QPixmap] = {}
         self._protected_by_view: dict[str, QRegion] = {}
         self._feature_by_view: dict[str, QRegion] = {}
         self._hair_mask_by_view: dict[str, tuple[QImage, QRect] | None] = {}
@@ -118,6 +120,65 @@ class ActiveOutfitOverlay:
     def layer_count(self, view_id: str) -> int:
         """Layers the last ``apply`` composited for ``view_id``; 0 when bare or failed closed."""
         return len(self._layers_by_view.get(view_id) or ())
+
+    def state_signature(self) -> tuple[object, ...]:
+        """Cheap identity used by physical layers to notice an appearance change."""
+        self._refresh_state()
+        packages = tuple(sorted((str(path), token) for path, token in self._package_tokens.items()))
+        return (*self._state_token, packages)
+
+    def category_composite(self, view_id: str, category: str) -> QPixmap:
+        """Return one active appearance category on its transparent authored canvas."""
+        key = (view_id, category)
+        try:
+            self._refresh_state()
+        except OSError:
+            return QPixmap()
+        cached = self._category_composites.get(key)
+        if cached is not None:
+            return QPixmap(cached)
+        try:
+            canvas_size = self._canvas_size(view_id)
+            layers = self._active_category_layers(view_id, canvas_size, category)
+        except IncompatibleBodyProfileError:
+            self._reject_stale_active_pack()
+            return QPixmap()
+        except (KeyError, OSError, RuntimeError, ValueError, OutfitPackError, zipfile.BadZipFile):
+            return QPixmap()
+        if not layers:
+            return QPixmap()
+        result = QPixmap(*canvas_size)
+        result.fill(Qt.transparent)
+        painter = QPainter(result)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+        for _z_order, (pixmap, anchor_x, anchor_y, clip, opacity) in layers:
+            painter.setClipRegion(clip)
+            painter.setOpacity(opacity)
+            painter.drawPixmap(anchor_x, anchor_y, pixmap)
+        painter.end()
+        self._category_composites[key] = result
+        return QPixmap(result)
+
+    def apply_category(
+        self,
+        frame: QPixmap,
+        view_id: str,
+        category: str,
+        clip: QRegion | None = None,
+    ) -> QPixmap:
+        """Repaint one active category over a dynamic frame at either runtime scale."""
+        layer = self.category_composite(view_id, category)
+        if frame.isNull() or layer.isNull():
+            return QPixmap(frame)
+        if layer.size() != frame.size():
+            layer = layer.scaled(frame.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        result = QPixmap(frame)
+        painter = QPainter(result)
+        if clip is not None:
+            painter.setClipRegion(clip)
+        painter.drawPixmap(0, 0, layer)
+        painter.end()
+        return result
 
     def _reject_stale_active_pack(self) -> None:
         """Issue #140, option 3: a generation-1 pack is never rendered on the generation-2 body.
@@ -166,6 +227,8 @@ class ActiveOutfitOverlay:
             {} if active_changed else current_package_tokens
         )
         self._layers_by_view.clear()
+        self._category_layers_by_view.clear()
+        self._category_composites.clear()
         self._parsed_packs.clear()
 
     def _selected_variant(self, category: str, selected) -> tuple[Path, object, object]:
@@ -214,21 +277,39 @@ class ActiveOutfitOverlay:
     ) -> tuple[Layer, ...]:
         result: list[tuple[int, int, Layer]] = []
         for category_index, category in enumerate(SELECTION_CATEGORIES):
-            selected = resolve_active_selection(self._store, category)
-            if selected.status == "builtin":
-                continue
-            archive_path, item, variant = self._selected_variant(category, selected)
-            resolution = resolve_variant_for_view(variant, view_id)
-            with zipfile.ZipFile(archive_path) as archive:
-                if category == "makeup":
-                    layers = self._makeup_layers(archive, resolution.assets, variant, view_id)
-                else:
-                    layers = self._garment_layers(
-                        archive, resolution.assets, category, item, variant, view_id, canvas_size
-                    )
+            layers = self._active_category_layers(view_id, canvas_size, category)
             result.extend((z_order, category_index, layer) for z_order, layer in layers)
         result.sort(key=lambda value: (value[0], value[1]))
         return tuple(layer for _z_order, _index, layer in result)
+
+    def _active_category_layers(
+        self,
+        view_id: str,
+        canvas_size: tuple[int, int],
+        category: str,
+    ) -> tuple[tuple[int, Layer], ...]:
+        if category not in SELECTION_CATEGORIES:
+            raise OutfitPackError("Unknown appearance category.")
+        key = (view_id, category)
+        cached = self._category_layers_by_view.get(key)
+        if cached is not None:
+            return cached
+        selected = resolve_active_selection(self._store, category)
+        if selected.status == "builtin":
+            self._category_layers_by_view[key] = ()
+            return ()
+        archive_path, item, variant = self._selected_variant(category, selected)
+        resolution = resolve_variant_for_view(variant, view_id)
+        with zipfile.ZipFile(archive_path) as archive:
+            if category == "makeup":
+                layers = self._makeup_layers(archive, resolution.assets, variant, view_id)
+            else:
+                layers = self._garment_layers(
+                    archive, resolution.assets, category, item, variant, view_id, canvas_size
+                )
+        result = tuple(layers)
+        self._category_layers_by_view[key] = result
+        return result
 
     def _decoded_layer(self, archive: zipfile.ZipFile, declaration) -> tuple[bytes, QImage]:
         if Path(declaration.path).suffix.lower() != ".png":
