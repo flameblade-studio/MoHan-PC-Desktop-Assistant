@@ -11,6 +11,7 @@ lazy from domain.companion_animation_contract import (
     EXPRESSION_DERIVED_VISEME_FRAMES,
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_FRAMES,
+    GESTURE_OUTFIT_SILHOUETTES,
     PHYSICS_FRAME_INTERVAL_MS,
     PHYSICS_POSE_SUFFIXES,
     PHYSICS_SPEECH_FRAME_PREFIXES,
@@ -104,6 +105,7 @@ class CompanionVisualPhysicsMethods:
         self.physics_sources: dict[str, QPixmap] = {}
         self.hair_sources: dict[str, dict[str, QPixmap]] = {}
         self.sleeve_sources: dict[str, dict[str, QPixmap]] = {}
+        self.physics_sources_by_silhouette: dict[str, dict[str, QPixmap]] = {}
         self._load_physics_sources()
         self.physics_expression_poses = self._physics_expression_pose_map()
 
@@ -174,39 +176,76 @@ class CompanionVisualPhysicsMethods:
             )
             self._physics_outfit_overlay = outfit_overlay
         category_layer = getattr(outfit_overlay, "category_composite", None)
-        for pose, suffix in (
-            ("cheek", ""),
-            ("lean", "_lean"),
-            ("front", "_front"),
-        ):
-            view_id = PHYSICS_OUTFIT_VIEWS[pose]
-            ornament = category_layer(view_id, "headwear") if category_layer else QPixmap()
-            garment = category_layer(view_id, "garment") if category_layer else QPixmap()
-            hairstyle = category_layer(view_id, "hairstyle") if category_layer else QPixmap()
-            self.physics_sources[pose] = (
-                ornament.scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                if not ornament.isNull()
-                else self._scaled_expression_asset(f"v120_ornament{suffix}.png")
-            )
-            self.hair_sources[pose] = {}
-            self.sleeve_sources[pose] = {}
-            for side in ("left", "right"):
-                hair = (
-                    hairstyle.scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                    if not hairstyle.isNull()
-                    else self._scaled_expression_asset(f"v120_hair_{side}{suffix}.png")
-                )
-                self.hair_sources[pose][side] = self._hair_texture_only(hair)
-                sleeve = (
-                    garment.scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                    if not garment.isNull()
-                    else self._scaled_expression_asset(f"v120_sleeve_{side}{suffix}.png")
-                )
-                self.sleeve_sources[pose][side] = self._sleeve_texture_only(
-                    sleeve, side
-                )
+        specs = tuple(
+            (pose, PHYSICS_OUTFIT_VIEWS[pose], suffix)
+            for pose, suffix in (("cheek", ""), ("lean", "_lean"), ("front", "_front"))
+        )
+        specs += tuple((None, silhouette, "_front") for silhouette in GESTURE_OUTFIT_SILHOUETTES.values())
+        source_sets: dict[str, dict[str, QPixmap]] = {}
+        physics_sources: dict[str, QPixmap] = {}
+        hair_sources: dict[str, dict[str, QPixmap]] = {}
+        sleeve_sources: dict[str, dict[str, QPixmap]] = {}
+        for pose, silhouette, suffix in specs:
+            source_set = self._physics_source_bundle(category_layer, silhouette, suffix)
+            source_sets[silhouette] = source_set
+            if pose is not None:
+                physics_sources[pose] = source_set["ornament"]
+                hair_sources[pose] = {
+                    side: source_set[f"hair_{side}"] for side in ("left", "right")
+                }
+                sleeve_sources[pose] = {
+                    side: source_set[f"sleeve_{side}"] for side in ("left", "right")
+                }
         signature = getattr(outfit_overlay, "state_signature", None)
-        self._physics_outfit_signature = signature() if signature else None
+        try:
+            new_signature = signature() if signature else None
+        except OSError:
+            if self.physics_sources_by_silhouette:
+                return
+            new_signature = None
+        self.physics_sources_by_silhouette = source_sets
+        self.physics_sources = physics_sources
+        self.hair_sources = hair_sources
+        self.sleeve_sources = sleeve_sources
+        self._physics_outfit_signature = new_signature
+
+    def _physics_source_bundle(
+        self,
+        category_layer,
+        silhouette: str,
+        suffix: str,
+    ) -> dict[str, QPixmap]:
+        def category(name: str) -> QPixmap:
+            return category_layer(silhouette, name) if category_layer else QPixmap()
+
+        ornament = category("headwear")
+        garment = category("garment")
+        hairstyle = category("hairstyle")
+        ornament = (
+            ornament.scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            if not ornament.isNull()
+            else self._scaled_expression_asset(f"v120_ornament{suffix}.png")
+        )
+        hairstyle = (
+            hairstyle.scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            if not hairstyle.isNull()
+            else QPixmap()
+        )
+        result = {"ornament": ornament}
+        for side in ("left", "right"):
+            hair = (
+                hairstyle
+                if not hairstyle.isNull()
+                else self._scaled_expression_asset(f"v120_hair_{side}{suffix}.png")
+            )
+            sleeve = (
+                garment.scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                if not garment.isNull()
+                else self._scaled_expression_asset(f"v120_sleeve_{side}{suffix}.png")
+            )
+            result[f"hair_{side}"] = self._hair_texture_only(hair, side)
+            result[f"sleeve_{side}"] = self._sleeve_texture_only(sleeve, side)
+        return result
 
     @staticmethod
     def _scaled_expression_asset(filename: str) -> QPixmap:
@@ -249,7 +288,14 @@ class CompanionVisualPhysicsMethods:
             pose_map[blink_frame] = pose
 
     @staticmethod
-    def _hair_texture_only(source: QPixmap) -> QPixmap:
+    def _hair_side_rect(width: int, height: int, side: str) -> QRect:
+        if side not in {"left", "right"}:
+            raise ValueError("Unknown hair side.")
+        center = width // 2
+        return QRect(0, 0, center, height) if side == "left" else QRect(center, 0, width - center, height)
+
+    @staticmethod
+    def _hair_texture_only(source: QPixmap, side: str) -> QPixmap:
         """Remove skin and clothing accidentally carried by a hair cutout.
 
         Rotating a complete cutout that contains cheek, neck or sleeve pixels
@@ -262,9 +308,12 @@ class CompanionVisualPhysicsMethods:
         gradient = QLinearGradient(0, 278, 0, 318)
         gradient.setColorAt(0.0, QColor(255, 255, 255, 0))
         gradient.setColorAt(1.0, QColor(255, 255, 255, 255))
+        side_rect = CompanionVisualPhysicsMethods._hair_side_rect(
+            source.width(), source.height(), side
+        )
         painter = QPainter(mask)
         painter.fillRect(
-            QRect(0, 278, source.width(), source.height() - 278),
+            QRect(side_rect.x(), 278, side_rect.width(), max(0, source.height() - 278)),
             gradient,
         )
         painter.end()
@@ -273,6 +322,25 @@ class CompanionVisualPhysicsMethods:
         painter.drawPixmap(0, 0, mask)
         painter.end()
         return safe
+
+    @staticmethod
+    def _clip_hair_side(source: QPixmap, side: str) -> QPixmap:
+        mask = QPixmap(source.size())
+        mask.fill(Qt.transparent)
+        painter = QPainter(mask)
+        painter.fillRect(
+            CompanionVisualPhysicsMethods._hair_side_rect(
+                source.width(), source.height(), side
+            ),
+            QColor(255, 255, 255, 255),
+        )
+        painter.end()
+        clipped = QPixmap(source)
+        painter = QPainter(clipped)
+        painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+        painter.drawPixmap(0, 0, mask)
+        painter.end()
+        return clipped
 
     @staticmethod
     def _sleeve_texture_only(source: QPixmap, side: str) -> QPixmap:
@@ -343,7 +411,11 @@ class CompanionVisualPhysicsMethods:
         if self.physics_phase % PHYSICS_SOURCE_REFRESH_TICKS == 0:
             overlay = getattr(self, "_physics_outfit_overlay", None)
             signature = getattr(overlay, "state_signature", None)
-            if signature is not None and signature() != self._physics_outfit_signature:
+            try:
+                current_signature = signature() if signature is not None else None
+            except OSError:
+                current_signature = self._physics_outfit_signature
+            if current_signature != self._physics_outfit_signature:
                 self._load_physics_sources()
                 self._build_expression_eye_layers()
                 self.last_rendered_ornament_angle = 99.0
@@ -455,6 +527,7 @@ class CompanionVisualPhysicsMethods:
             painter.translate(-anchor)
             painter.drawPixmap(0, 0, source)
             painter.end()
+            rendered = self._clip_hair_side(rendered, side)
             overlay.setPixmap(rendered)
             overlay.raise_()
         self.hair_left_overlay.raise_()

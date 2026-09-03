@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(TESTS))
 
 lazy import pytest
+lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication, QFileDialog
 
@@ -116,5 +117,28 @@ def test_makeup_intensity_drag_persists_only_the_settled_value(
             assert persist.call_count == 0
             QTest.qWait(DEBOUNCE_WAIT_MS)
             assert persist.call_args_list == [call(0.4)]
+    finally:
+        close_dashboard(dashboard, db)
+
+
+def test_makeup_intensity_keyboard_change_flushes_when_dashboard_closes(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    application = QApplication.instance() or QApplication([])
+    official_builtin_pack(tmp_path, monkeypatch)
+    db, dashboard = build_language_dashboard(tmp_path / "profile", "zh-TW")
+    try:
+        slider = dashboard.wardrobe_makeup_intensity
+        slider.setValue(HALF_PERCENT)
+        slider.setFocus()
+        QTest.keyClick(slider, Qt.Key_Right)
+        assert slider.value() == HALF_PERCENT + slider.singleStep()
+        assert dashboard._wardrobe_makeup_commit_timer.isActive()
+        dashboard.close()
+        application.processEvents()
+        assert json.loads(
+            (tmp_path / "profile" / "outfits" / "makeup.json").read_text(encoding="utf-8")
+        ) == {"intensity": 0.55}
     finally:
         close_dashboard(dashboard, db)

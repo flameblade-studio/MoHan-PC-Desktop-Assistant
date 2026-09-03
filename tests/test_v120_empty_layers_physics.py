@@ -23,6 +23,13 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from presentation.companion_window import CompanionWindow
 
 RUNTIME_LAYER_SIZE = 465
+HAIR_CENTER_X = RUNTIME_LAYER_SIZE // 2
+GESTURE_HAIR_SILHOUETTES = (
+    ("mock_scold", "front-mock-scold"),
+    ("mock_hit_front", "front-mock-hit"),
+    ("eureka_front", "front-eureka"),
+    ("exasperated_front", "front-exasperated"),
+)
 POSE_IDLE_FRAMES = (
     ("cheek", "idle"),
     ("lean", "idle_lean"),
@@ -94,6 +101,62 @@ def assert_rotation_preserves_active_appearance(window: CompanionWindow) -> None
         assert all(not is_fully_transparent(layer) for layer in local_layers.values()), pose
 
 
+def alpha_columns(pixmap: QPixmap) -> set[int]:
+    image = pixmap.toImage().convertToFormat(QImage.Format_RGBA8888)
+    columns: set[int] = set()
+    for y in range(image.height()):
+        for x in range(image.width()):
+            if image.pixelColor(x, y).alpha():
+                columns.add(x)
+    return columns
+
+
+def assert_hair_sides_and_gesture_silhouettes(window: CompanionWindow) -> None:
+    for pose in ("cheek", "lean", "front"):
+        left = window.hair_sources[pose]["left"]
+        right = window.hair_sources[pose]["right"]
+        assert left.toImage() != right.toImage(), pose
+        assert max(alpha_columns(left)) < HAIR_CENTER_X
+        assert min(alpha_columns(right)) >= HAIR_CENTER_X
+    front = window.physics_sources_by_silhouette["front-crossed"]
+    for expression, silhouette in GESTURE_HAIR_SILHOUETTES:
+        source_set = window.physics_sources_by_silhouette[silhouette]
+        local = window.expression_physics_sources[expression]
+        assert source_set["hair_left"].toImage() != source_set["hair_right"].toImage()
+        for part in PHYSICAL_PARTS:
+            assert source_set[part].toImage() != front[part].toImage(), (expression, part)
+        assert local["hair_left"].toImage() == source_set["hair_left"].toImage()
+        assert local["hair_right"].toImage() == source_set["hair_right"].toImage()
+        assert local["hair_left"].toImage() != front["hair_left"].toImage()
+        assert local["hair_right"].toImage() != front["hair_right"].toImage()
+
+        window.state = "speaking"
+        window.current_expression = expression
+        window.speech_gesture_expression = expression
+        window.active_physics_pose = "front"
+        window.hair_left_angle = -0.34
+        window.hair_right_angle = 0.32
+        window.ornament_angle = 0.4
+        window.sleeve_left_angle = -0.16
+        window.sleeve_right_angle = 0.15
+        window._render_hair_layers(force=True)
+        window._render_sleeve_layers(force=True)
+        window._render_physics_layer(force=True)
+        for side, overlay in (
+            ("left", window.hair_left_overlay),
+            ("right", window.hair_right_overlay),
+        ):
+            columns = alpha_columns(overlay.pixmap())
+            assert columns
+            if side == "left":
+                assert max(columns) < HAIR_CENTER_X
+            else:
+                assert min(columns) >= HAIR_CENTER_X
+        assert not is_fully_transparent(window.physics_overlay.pixmap())
+        assert not is_fully_transparent(window.sleeve_left_overlay.pixmap())
+        assert not is_fully_transparent(window.sleeve_right_overlay.pixmap())
+
+
 def run() -> None:
     with TemporaryDirectory() as temp_dir:
         os.environ["LOCALAPPDATA"] = temp_dir
@@ -103,6 +166,7 @@ def run() -> None:
         app.processEvents()
         stop_automatic_timers(window)
         assert_active_appearance_sources_loaded(window)
+        assert_hair_sides_and_gesture_silhouettes(window)
         assert_rotation_preserves_active_appearance(window)
         window.close()
         app.processEvents()

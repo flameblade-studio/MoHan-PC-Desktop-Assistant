@@ -83,6 +83,15 @@ def test_renderer_produces_non_null_frame() -> None:
     assert out.height() == FULL_BODY_DIMENSION_HEIGHT
 
 
+def test_renderer_static_preview_uses_the_runtime_compositor() -> None:
+    _app()
+    manifest = load_layered_full_body_assets(FULL_BODY_DIR)
+    renderer = LayeredFullBodyRenderer(manifest)
+    out = renderer.render_static_preview("yaw+000-pitch+00")
+    assert not out.isNull()
+    assert out.size().toTuple() == (FULL_BODY_DIMENSION_WIDTH, FULL_BODY_DIMENSION_HEIGHT)
+
+
 def test_renderer_applies_active_outfit_to_the_exact_yaw_view() -> None:
     _app()
 

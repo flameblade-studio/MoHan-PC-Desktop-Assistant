@@ -29,6 +29,7 @@ lazy from domain.outfit_pack import (
     inspect_outfit_pack,
     install_outfit_pack,
     installed_pack_path,
+    list_installed_outfits,
     remove_outfit_pack,
     resolve_active_selection,
     restore_builtin_outfit,
@@ -250,13 +251,20 @@ def test_preexisting_reserved_id_archive_cannot_shadow_the_official_pack(tmp_pat
     manifest["id"] = OFFICIAL_OUTFIT_PACK_ID
     manifest["ensembles"][0]["id"] = OFFICIAL_OUTFIT_ENSEMBLE_ID
     conflict = _pack(
-        packages / "legacy-reserved-id-conflict.mohan-outfit",
+        packages / f"{OFFICIAL_OUTFIT_PACK_ID}.mohan-outfit",
         manifest,
         assets,
     )
 
     assert conflict.is_file()
-    assert installed_pack_path(store, OFFICIAL_OUTFIT_PACK_ID) == OUTFIT_PACK_PATH
+    resolved_path = installed_pack_path(store, OFFICIAL_OUTFIT_PACK_ID)
+    assert resolved_path.resolve() == OUTFIT_PACK_PATH.resolve()
+    listed_official = [
+        pack for pack in list_installed_outfits(store)
+        if pack.pack_id == OFFICIAL_OUTFIT_PACK_ID
+    ]
+    assert len(listed_official) == 1
+    assert inspect_outfit_pack(resolved_path).pack_id == OFFICIAL_OUTFIT_PACK_ID
     resolution = resolve_active_selection(store, "garment")
     outfit = inspect_outfit_pack(OUTFIT_PACK_PATH)
     expected = next(

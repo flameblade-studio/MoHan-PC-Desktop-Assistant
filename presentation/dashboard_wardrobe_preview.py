@@ -6,18 +6,19 @@ uses, so what the owner sees in the pavilion is what walks on the desktop:
 the selected garment, hairstyle, headwear and makeup at the chosen intensity.
 
 Composites are cached per (appearance signature, view) and rebuilt only when
-the selection or makeup state changes. A first composite takes a moment, so
-each active appearance category is preheated on a separate event-loop turn;
-the bare base is shown meanwhile with an explicit "composing" line. A failed
-composite falls back to the bare base and, when a pack is active, says so in
-the wardrobe status instead of staying silent.
+the selection or makeup state changes. ZIP validation and QImage decoding are
+preheated by a worker; the renderer creates QPixmaps and paints on the GUI
+thread. The bare base is shown meanwhile with an explicit "composing" line.
+A failed composite falls back to the bare base and, when a pack is active,
+says so in the wardrobe status instead of staying silent.
 """
 
 from __future__ import annotations
 
 lazy from functools import partial
+lazy import zipfile
 
-lazy from PySide6.QtCore import QTimer, Qt, Signal
+lazy from PySide6.QtCore import QCoreApplication, QObject, QRunnable, QThreadPool, QTimer, Qt, Signal
 lazy from PySide6.QtGui import QPixmap, QShowEvent
 lazy from PySide6.QtWidgets import (
     QFrame,
@@ -30,7 +31,11 @@ lazy from PySide6.QtWidgets import (
 lazy from shiboken6 import isValid
 
 lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
-lazy from domain.outfit_pack import SELECTION_CATEGORIES
+lazy from domain.outfit_pack import (
+    IncompatibleBodyProfileError,
+    OutfitPackError,
+    SELECTION_CATEGORIES,
+)
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = (
@@ -57,6 +62,61 @@ STATE_IDLE = "idle"
 STATE_COMPOSING = "composing"
 STATE_COMPOSITED = "composited"
 STATE_FALLBACK = "fallback"
+_LIVE_WARDROBE_PREVIEW_WORKERS = set()
+
+
+class _WardrobePreviewDecodeSignals(QObject):
+    finished = Signal(object, object)
+    failed = Signal(object, object, object)
+
+
+class _WardrobePreviewDecodeWorker(QRunnable):
+    """Preheat archive bytes, hashes, and QImages without touching QPixmap."""
+
+    def __init__(self, overlay, key: tuple[object, ...], view_id: str) -> None:
+        super().__init__()
+        self.setAutoDelete(False)
+        self.cancelled = False
+        self.overlay = overlay
+        self.key = key
+        self.view_id = view_id
+        self.signals = _WardrobePreviewDecodeSignals()
+        _LIVE_WARDROBE_PREVIEW_WORKERS.add(self)
+
+    def cancel(self) -> None:
+        self.cancelled = True
+
+    def release(self) -> None:
+        _LIVE_WARDROBE_PREVIEW_WORKERS.discard(self)
+
+    def run(self) -> None:
+        notified = False
+        try:
+            try:
+                for category in SELECTION_CATEGORIES:
+                    if self.cancelled or QCoreApplication.closingDown():
+                        return
+                    self.overlay.prepare_category_decode(self.view_id, category)
+            except (
+                IncompatibleBodyProfileError,
+                KeyError,
+                OSError,
+                OutfitPackError,
+                ValueError,
+                zipfile.BadZipFile,
+            ) as error:
+                if not self.cancelled:
+                    self.signals.failed.emit(self.key, self.view_id, error)
+                    notified = True
+                return
+            if not self.cancelled and not QCoreApplication.closingDown():
+                self.signals.finished.emit(self.key, self.view_id)
+                notified = True
+        finally:
+            if self.cancelled or not notified:
+                self.release()
+
+
 class WardrobePreviewLabel(QLabel):
     """Preview surface that announces when it becomes visible (its tab was shown)."""
 
@@ -99,7 +159,8 @@ class DashboardWardrobePreviewMixin:
         )
         self._wardrobe_preview_cache: dict[tuple[object, ...], QPixmap] = {}
         self._wardrobe_preview_pending = False
-        self._wardrobe_preview_work: tuple[tuple[object, ...], str, int] | None = None
+        self._wardrobe_preview_work: tuple[tuple[object, ...], str] | None = None
+        self._wardrobe_preview_worker: _WardrobePreviewDecodeWorker | None = None
         self._wardrobe_preview_state = STATE_IDLE
         self._wardrobe_pose_source = QPixmap()
         self._wardrobe_pose_view = WARDROBE_PREVIEW_VIEWS[0][2]
@@ -196,38 +257,57 @@ class DashboardWardrobePreviewMixin:
             pixmap, state = self._composited_wardrobe_view(view_id)
             self._finish_wardrobe_preview(key, pixmap, state)
             return
-        self._wardrobe_preview_work = (key, view_id, 0)
-        self._preheat_wardrobe_preview_category()
+        self._wardrobe_preview_work = (key, view_id)
+        worker = _WardrobePreviewDecodeWorker(
+            self._wardrobe_outfit_overlay,
+            key,
+            view_id,
+        )
+        self._wardrobe_preview_worker = worker
+        worker.signals.finished.connect(self._finish_wardrobe_preview_preheat)
+        worker.signals.failed.connect(self._fail_wardrobe_preview_preheat)
+        QThreadPool.globalInstance().start(worker)
 
-    def _preheat_wardrobe_preview_category(self) -> None:
+    def _finish_wardrobe_preview_preheat(
+        self,
+        key: tuple[object, ...],
+        view_id: str,
+    ) -> None:
+        worker = self._wardrobe_preview_worker
+        if worker is not None and worker.key == key and worker.view_id == view_id:
+            worker.release()
+            self._wardrobe_preview_worker = None
         if not self._wardrobe_preview_available():
             self._cancel_wardrobe_preview_work()
             return
         work = self._wardrobe_preview_work
-        if work is None:
+        if work != (key, view_id):
             return
-        key, view_id, category_index = work
         if key != self._wardrobe_preview_key(self._wardrobe_pose_view):
             self._wardrobe_preview_work = None
             self._wardrobe_preview_pending = False
             self._schedule_wardrobe_preview_compose()
             return
-        if category_index < len(SELECTION_CATEGORIES):
-            self._wardrobe_outfit_overlay.category_composite(
-                view_id,
-                SELECTION_CATEGORIES[category_index],
-            )
-            self._wardrobe_preview_work = (key, view_id, category_index + 1)
-            QTimer.singleShot(0, self._preheat_wardrobe_preview_category)
-            return
         self._wardrobe_preview_work = None
         pixmap, state = self._composited_wardrobe_view(view_id)
         self._finish_wardrobe_preview(key, pixmap, state)
+
+    def _fail_wardrobe_preview_preheat(
+        self,
+        key: tuple[object, ...],
+        view_id: str,
+        error: object,
+    ) -> None:
+        del error
+        self._finish_wardrobe_preview_preheat(key, view_id)
 
     def _cancel_wardrobe_preview_work(self) -> None:
         self._wardrobe_preview_alive = False
         self._wardrobe_preview_work = None
         self._wardrobe_preview_pending = False
+        worker = self._wardrobe_preview_worker
+        if worker is not None:
+            worker.cancel()
 
     def _wardrobe_preview_available(self) -> bool:
         preview = getattr(self, "wardrobe_character_preview", None)
@@ -259,16 +339,16 @@ class DashboardWardrobePreviewMixin:
         self._set_wardrobe_preview_state(state)
 
     def _composited_wardrobe_view(self, view_id: str) -> tuple[QPixmap, str]:
-        """Compose one view through the runtime path; fall back to the bare base fail-closed."""
+        """Compose one view through the renderer; keep raw fallback offline only."""
         renderer = self._wardrobe_full_body_renderer
-        composed = QPixmap()
         if renderer is not None:
             try:
-                base = self._wardrobe_base_pixmap(view_id)
-                composed = self._wardrobe_outfit_overlay.apply(base, view_id)
+                composed = renderer.render_static_preview(view_id)
             except (KeyError, OSError, RuntimeError, TypeError, ValueError):
-                composed = QPixmap()
-        if composed.isNull():
+                return QPixmap(), STATE_FALLBACK
+            if composed.isNull():
+                return composed, STATE_FALLBACK
+        else:
             base = self._wardrobe_base_pixmap(view_id)
             if base.isNull():
                 return base, STATE_FALLBACK

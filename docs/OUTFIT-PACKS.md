@@ -2,6 +2,8 @@
 
 ## 繁體中文
 
+`assets/expressions/layered/` 的 `hair_left`／`hair_right` 權威層目前是空層，官方包也只提供 `back`／`front`；因此物理髮絲以 465×465 畫布中線 x=232 切分，左側為 [0,232)、右側為 [232,465)，旋轉後再套同一邊界，兩側移動不得越界。
+
 角色外觀包是單一、自含、可直接上傳與下載的 ZIP 相容 `.mohan-outfit` 容器。使用者只需下載並選取一個檔案；不得有旁附資料夾、外部相依套件、網路下載、外部 URL 或跨包必需引用。每項 PNG、WebP 或安全 SVG 都必須在同一 archive，由 manifest 以 SHA-256、尺寸、anchor、z-order 與穩定 slot 完整引用。未引用、重複、缺漏、越權或危險成員一律拒絕。匯入先完整驗證，再於同一目的目錄原子安裝；失敗不留下半套，也不破壞既有版本。安裝只加入內容，不等於預覽或啟用；套用與保存由 UI 的全域 Save/Cancel 流程控制。
 
 一包可同時包含多件衣裝及色系、髮型、頭飾、妝容和配件，也可只含純衣裝、純髮型、純頭飾或純妝容。穩定選擇槽為 `garment`、`hairstyle`、`headwear`、`makeup`、`weapon`、`handheld`、`jewelry`、`foreground-effect`；各槽以 `category/pack_id/item_id/variant_id` 分開列舉、保存、解析與移除保護，所以長劍／短劍與劍鞘、手持物、珠寶及前景效果可以同時存在並跨包混搭。Manifest 的單一 `accessories` 集合中，每個 item 必須宣告明確 `accessory_kind`。Typed `ensemble` 必須涵蓋衣裝、髮型、頭飾與四個配件槽；衣裝與髮型必須指定同包項目，頭飾及四個配件槽可明確為 `none`；`makeup` 可省略（沿用使用者目前的妝容）或明確為 `none`（素顏）。一鍵套用後仍可逐槽改選。Ensemble 只改外觀，不可改臉型、五官、身份或核心提示詞。
@@ -27,6 +29,8 @@ Manifest 的 `source` 必須記錄 `kind`（`original`、`concept`、`reference-
 刪除使用 typed remove API。內建預設永不可刪；任何正在 active 或 preview 的單項或 ensemble，都必須先切換或還原內建才能刪除。刪除前會再次驗證安全 pack ID、檔名與 archive manifest ID 完全一致，然後只移除該自含單檔，不碰其他包、核心本體或個人資料。刪除後不再出現在清單。不存在 ID、路徑穿越、識別不符與損壞狀態都會 fail closed。若保存設定稍後指向已遺失的包，解析 API 明確回報 `missing` 並維持目前有效外觀；不會崩潰、默默改選、退回舊格式或套用另一個同名外觀。四語刪除確認由 UI 主線負責。
 
 ## 简体中文
+
+`assets/expressions/layered/` 的 `hair_left`／`hair_right` 权威层目前是空层，官方包也只提供 `back`／`front`；因此物理发丝以 465×465 画布中线 x=232 切分，左侧为 [0,232)、右侧为 [232,465)，旋转后再次套用同一边界，两侧移动不得越界。
 
 角色外观包是单一、自包含、可直接上传与下载的 ZIP 兼容 `.mohan-outfit` 容器。用户只需下载并选择一个文件；不得有附带文件夹、外部依赖包、网络下载、外部 URL 或跨包必需引用。每项 PNG、WebP 或安全 SVG 都必须位于同一 archive，并由 manifest 以 SHA-256、尺寸、anchor、z-order 与稳定 slot 完整引用。未引用、重复、缺漏、越权或危险成员一律拒绝。导入先完整验证，再在同一目标目录原子安装；失败不留下半套，也不破坏现有版本。安装只添加内容，不等于预览或启用；应用与保存由 UI 的全局 Save/Cancel 流程控制。
 
@@ -54,6 +58,8 @@ Manifest 的 `source` 必须记录 `kind`（`original`、`concept`、`reference-
 
 ## English
 
+The authoritative `hair_left` and `hair_right` layers under `assets/expressions/layered/` are currently empty, and the official pack supplies only `back` and `front`; physics therefore splits the 465x465 canvas at x=232, assigning [0,232) to the left and [232,465) to the right, then reapplies the same boundary after rotation so neither side can cross it.
+
 A character appearance pack is one self-contained, directly uploadable and downloadable ZIP-compatible `.mohan-outfit` container. A user downloads and selects one file. Sidecar folders, external packages, network downloads, external URLs, and required cross-pack references are forbidden. Every PNG, WebP, or safe SVG is inside the same archive and fully referenced by the manifest with SHA-256, dimensions, anchor, z-order, and a stable slot. Unreferenced, duplicate, missing, privileged, or dangerous members are rejected. Import validates the complete archive before atomically installing it in the destination directory. Failure leaves neither a partial pack nor damage to the installed version. Installation only adds content; preview and activation remain controlled by the UI and global Save/Cancel flow.
 
 A package may contain multiple outfits and colorways, hairstyles, headwear, makeup, and accessories, or it may be a garment-only, hairstyle-only, headwear-only, or makeup-only file. Stable selection slots are `garment`, `hairstyle`, `headwear`, `makeup`, `weapon`, `handheld`, `jewelry`, and `foreground-effect`. Each is independently listed, saved, resolved, and protected during removal by `category/pack_id/item_id/variant_id`, so long or short swords and sheaths, handheld props, jewelry, and foreground effects can coexist and mix across packages. Each item in the single manifest `accessories` collection declares an explicit `accessory_kind`. A typed `ensemble` covers the garment, hairstyle, headwear, and four accessory slots: garment and hairstyle reference same-pack items, while headwear and all four accessory slots may explicitly be `none`; `makeup` may be omitted (the user's current makeup stays) or explicitly `none` (bare face). Every slot remains independently replaceable after one-click application. An ensemble changes appearance only, never face shape, features, identity, or core prompts.
@@ -79,6 +85,8 @@ Manifest `source` records `kind` (`original`, `concept`, or `reference-derived`)
 Removal uses a typed API. Built-in defaults can never be removed. Any item or ensemble referenced by active or preview state must first be switched or restored to built-in. Before deletion, the core revalidates the safe pack ID and requires the filename and archive manifest ID to match exactly. It then removes only that self-contained file, never another package, core assets, or personal data. The package disappears from listings afterward. Missing IDs, traversal, identity mismatch, and corrupt state fail closed. If saved settings later reference a missing package, resolution explicitly reports `missing` and preserves the current valid look; it never crashes, silently changes identity, falls back to a legacy format, or applies a same-named item from another package. Four-language confirmation UI belongs to the main application.
 
 ## 日本語
+
+`assets/expressions/layered/` の権威 `hair_left`／`hair_right` 層は現在空で、公式パックも `back`／`front` だけを提供します。そのため物理髪を 465×465 キャンバスの x=232 で分割し、左を [0,232)、右を [232,465) として、回転後にも同じ境界を再適用し、左右が越境しないようにします。
 
 キャラクター外観パックは、単一で自己完結し、そのままアップロード／ダウンロードできる ZIP 互換 `.mohan-outfit` コンテナです。利用者がダウンロードして選ぶのは一つのファイルだけです。付属フォルダー、外部依存パッケージ、ネットワークダウンロード、外部 URL、必須の別パック参照は禁止です。すべての PNG、WebP、安全な SVG は同一 archive 内に置き、manifest が SHA-256、寸法、anchor、z-order、安定 slot で完全に参照します。未参照、重複、不足、権限外、危険なメンバーは拒否します。インポートは全体検証後に同一配置先でアトミックにインストールします。失敗時は半端なパックを残さず、既存版も壊しません。インストールは内容の追加だけで、プレビューと有効化は UI と全体 Save/Cancel が管理します。
 

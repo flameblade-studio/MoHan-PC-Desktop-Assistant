@@ -20,6 +20,7 @@ lazy from domain.companion_animation_contract import (
     EYES_CLOSED_EXPRESSIONS,
     HAPPY_SPEECH_CLOSED_EXPRESSION,
     SPEAKING_BLINK_PREFIXES,
+    outfit_silhouette,
 )
 lazy from domain.expression_system import FaceAnchorProfile
 lazy from domain.face_rig import EyeState, eye_state_for_blink
@@ -658,6 +659,9 @@ class CompanionFaceAssetMethods:
             expression_source = self.expression_pixmaps.get(expression)
             if expression_source is None:
                 continue
+            source_set = self.physics_sources_by_silhouette.get(outfit_silhouette(expression, pose))
+            if source_set is None:
+                continue
             offset_x, offset_y = self._expression_eye_offset(expression)
             eye_alpha = self._translated_pixmap(
                 self.eye_sources[pose],
@@ -679,11 +683,7 @@ class CompanionFaceAssetMethods:
                 face_alpha,
             )
             self.expression_physics_sources[expression] = {
-                "ornament": QPixmap(self.physics_sources[pose]),
-                "hair_left": QPixmap(self.hair_sources[pose]["left"]),
-                "hair_right": QPixmap(self.hair_sources[pose]["right"]),
-                "sleeve_left": QPixmap(self.sleeve_sources[pose]["left"]),
-                "sleeve_right": QPixmap(self.sleeve_sources[pose]["right"]),
+                part: QPixmap(layer) for part, layer in source_set.items()
             }
 
     @staticmethod

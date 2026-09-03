@@ -839,7 +839,7 @@ class FullBodyRendererPort(Protocol):
     """Compose one authored 24-view-ring full-body frame from a face-motion frame."""
 
     def render_view(self, view_id: str, motion: Any, **options: Any) -> Any: ...
-
+    def render_static_preview(self, view_id: str) -> Any: ...
 
 # ``None`` means no full-body compositor was injected (offline dashboards).
 FullBodyRendererFactory = Callable[..., FullBodyRendererPort | None]

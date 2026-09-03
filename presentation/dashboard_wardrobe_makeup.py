@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy from PySide6.QtCore import QTimer, Qt
 lazy from PySide6.QtWidgets import (
     QComboBox,
+    QApplication,
     QFormLayout,
     QFrame,
     QHBoxLayout,
@@ -92,6 +93,9 @@ class DashboardWardrobeMakeupMixin:
         self.wardrobe_makeup_intensity.sliderReleased.connect(
             self._commit_wardrobe_makeup_intensity
         )
+        application = QApplication.instance()
+        if application is not None:
+            application.aboutToQuit.connect(self._flush_wardrobe_makeup_intensity)
         return card
 
     def _makeup_option_label(self, option) -> str:
@@ -174,8 +178,14 @@ class DashboardWardrobeMakeupMixin:
         self.wardrobe_makeup_intensity_value.setText(f"{int(value)}%")
         self._wardrobe_makeup_commit_timer.start()
 
-    def _commit_wardrobe_makeup_intensity(self) -> None:
+    def _commit_wardrobe_makeup_intensity(self, *, refresh_preview: bool = True) -> None:
         self._wardrobe_makeup_commit_timer.stop()
         value = self.wardrobe_makeup_intensity.value()
         self.wardrobe_service.set_makeup_intensity(value / INTENSITY_PERCENT)
-        self._refresh_wardrobe_preview()
+        if refresh_preview:
+            self._refresh_wardrobe_preview()
+
+    def _flush_wardrobe_makeup_intensity(self) -> None:
+        timer = getattr(self, "_wardrobe_makeup_commit_timer", None)
+        if timer is not None and timer.isActive():
+            self._commit_wardrobe_makeup_intensity(refresh_preview=False)

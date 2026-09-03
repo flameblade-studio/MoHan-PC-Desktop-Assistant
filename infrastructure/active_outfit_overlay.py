@@ -7,6 +7,7 @@ lazy import re
 lazy import zipfile
 lazy from collections.abc import Callable
 lazy from pathlib import Path
+lazy from threading import RLock
 
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
@@ -82,6 +83,8 @@ class ActiveOutfitOverlay:
         self._layers_by_view: dict[str, tuple[Layer, ...]] = {}
         self._category_layers_by_view: dict[tuple[str, str], tuple[tuple[int, Layer], ...]] = {}
         self._category_composites: dict[tuple[str, str], QPixmap] = {}
+        self._decoded_layer_cache: dict[tuple[Path, str, str], tuple[bytes, QImage]] = {}
+        self._decode_lock = RLock()
         self._protected_by_view: dict[str, QRegion] = {}
         self._feature_by_view: dict[str, QRegion] = {}
         self._hair_mask_by_view: dict[str, tuple[QImage, QRect] | None] = {}
@@ -126,6 +129,26 @@ class ActiveOutfitOverlay:
         self._refresh_state()
         packages = tuple(sorted((str(path), token) for path, token in self._package_tokens.items()))
         return (*self._state_token, packages)
+
+    def prepare_category_decode(self, view_id: str, category: str) -> None:
+        """Read, authenticate, and decode a category without creating QPixmaps.
+
+        This is the worker-side half of preview preheating. The decoded QImages
+        stay in the shared cache; layer regions, QPixmaps, and painting remain
+        on the GUI thread when ``apply`` or ``category_composite`` runs.
+        """
+        with self._decode_lock:
+            self._refresh_state()
+            if category not in SELECTION_CATEGORIES:
+                raise OutfitPackError("Unknown appearance category.")
+            selected = resolve_active_selection(self._store, category)
+            if selected.status == "builtin":
+                return
+            archive_path, _item, variant = self._selected_variant(category, selected)
+            resolution = resolve_variant_for_view(variant, view_id)
+            with zipfile.ZipFile(archive_path) as archive:
+                for declaration in resolution.assets:
+                    self._decoded_layer(archive, declaration)
 
     def category_composite(self, view_id: str, category: str) -> QPixmap:
         """Return one active appearance category on its transparent authored canvas."""
@@ -229,6 +252,7 @@ class ActiveOutfitOverlay:
         self._layers_by_view.clear()
         self._category_layers_by_view.clear()
         self._category_composites.clear()
+        self._decoded_layer_cache.clear()
         self._parsed_packs.clear()
 
     def _selected_variant(self, category: str, selected) -> tuple[Path, object, object]:
@@ -314,6 +338,10 @@ class ActiveOutfitOverlay:
     def _decoded_layer(self, archive: zipfile.ZipFile, declaration) -> tuple[bytes, QImage]:
         if Path(declaration.path).suffix.lower() != ".png":
             raise OutfitPackError("Runtime appearance layers must be RGBA PNG.")
+        cache_key = (Path(archive.filename), declaration.path, declaration.sha256)
+        cached = self._decoded_layer_cache.get(cache_key)
+        if cached is not None:
+            return cached[0], QImage(cached[1])
         encoded = archive.read(declaration.path)
         if hashlib.sha256(encoded).hexdigest() != declaration.sha256:
             raise OutfitPackError("Runtime appearance hash mismatch.")
@@ -322,7 +350,9 @@ class ActiveOutfitOverlay:
             raise OutfitPackError("Runtime appearance must have alpha.")
         if (image.width(), image.height()) != (declaration.width, declaration.height):
             raise OutfitPackError("Runtime appearance dimensions disagree.")
-        return encoded, image.convertToFormat(QImage.Format_RGBA8888)
+        decoded = image.convertToFormat(QImage.Format_RGBA8888)
+        self._decoded_layer_cache[cache_key] = (encoded, decoded)
+        return encoded, QImage(decoded)
 
     def _garment_layers(
         self,

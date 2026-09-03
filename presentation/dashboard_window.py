@@ -180,6 +180,12 @@ class Dashboard(
     def closeEvent(self, event) -> None:
         """Stop dashboard-owned callbacks before its database can be closed."""
 
+        cancel_preview = getattr(self, "_cancel_wardrobe_preview_work", None)
+        if cancel_preview is not None:
+            cancel_preview()
+        flush_makeup = getattr(self, "_flush_wardrobe_makeup_intensity", None)
+        if flush_makeup is not None:
+            flush_makeup()
         timer = getattr(self, "timer", None)
         if timer is not None and timer.isActive():
             timer.stop()

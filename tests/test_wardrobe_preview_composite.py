@@ -13,7 +13,7 @@ lazy import os
 lazy import sys
 lazy from dataclasses import replace
 lazy from pathlib import Path
-lazy from time import sleep
+lazy from time import monotonic, sleep
 lazy from tempfile import TemporaryDirectory
 lazy from unittest.mock import patch
 
@@ -23,8 +23,8 @@ TESTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(TESTS))
 
-lazy from PySide6.QtCore import QTimer
-lazy from PySide6.QtGui import QColor, QImage
+lazy from PySide6.QtCore import QThread, QTimer
+lazy from PySide6.QtGui import QColor, QImage, QPixmap
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
@@ -66,6 +66,7 @@ POLL_MS = 50
 CLASSIC_MAKEUP = "builtin/classic"
 BARE_MAKEUP = "none"
 MIN_PREHEATED_CATEGORIES = 4
+MAX_HEARTBEAT_GAP_MS = 80
 
 
 def _dependencies(root: Path) -> DashboardDependencies:
@@ -111,7 +112,8 @@ def _open_wardrobe(dashboard: Dashboard) -> None:
 def _wait_composited(dashboard: Dashboard) -> None:
     waited = 0
     while dashboard._wardrobe_preview_state != STATE_COMPOSITED and waited < COMPOSE_TIMEOUT_MS:
-        QTest.qWait(POLL_MS)
+        sleep(POLL_MS / 1000)
+        QApplication.processEvents()
         waited += POLL_MS
     assert dashboard._wardrobe_preview_state == STATE_COMPOSITED, dashboard._wardrobe_preview_state
 
@@ -204,33 +206,81 @@ def test_offline_dashboard_without_compositor_flags_the_bare_preview() -> None:
             close_dashboard(dashboard, db)
 
 
+def test_preview_uses_the_renderer_static_preview_api() -> None:
+    """A renderer result must reach the preview; raw overlay compositing is not equivalent."""
+
+    QApplication.instance() or QApplication([])
+    with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
+        root = Path(temp)
+        db, dashboard = _build(root, _dependencies(root))
+        sentinel = QPixmap(*FULL_BODY_SIZE)
+        sentinel.fill(QColor(17, 29, 41))
+        calls: list[str] = []
+
+        class RendererProbe:
+            def render_static_preview(self, view_id: str) -> QPixmap:
+                calls.append(view_id)
+                return QPixmap(sentinel)
+
+        dashboard._wardrobe_full_body_renderer = RendererProbe()
+        overlay = dashboard._wardrobe_outfit_overlay
+        overlay.prepare_category_decode = lambda *_args: None
+        overlay.category_composite = lambda *_args: QPixmap()
+        overlay.apply = lambda frame, _view_id: QPixmap(frame)
+        overlay.layer_count = lambda _view_id: 1
+        try:
+            _open_wardrobe(dashboard)
+            _wait_composited(dashboard)
+            assert calls == ["yaw+000-pitch+00"]
+            assert dashboard._wardrobe_pose_source.toImage() == sentinel.toImage()
+        finally:
+            close_dashboard(dashboard, db)
+
+
 def test_slow_preview_composition_does_not_block_the_gui_timer() -> None:
-    """Category preheating yields to the event loop during an uncached preview."""
+    """Worker preheating keeps the maximum GUI heartbeat gap bounded."""
 
     application = QApplication.instance() or QApplication([])
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
         root = Path(temp)
         db, dashboard = _build(root, _dependencies(root))
-        ticks: list[None] = []
-        observed_ticks: list[int] = []
+        heartbeat_times: list[float] = []
+        worker_threads: list[bool] = []
         overlay = dashboard._wardrobe_outfit_overlay
-        original_category_composite = overlay.category_composite
+        renderer = dashboard._wardrobe_full_body_renderer
+        original_prepare = overlay.prepare_category_decode
+        legacy_gui_calls: list[bool] = []
 
-        def measured_category_composite(*args, **kwargs):
-            observed_ticks.append(len(ticks))
-            sleep(0.03)
-            return original_category_composite(*args, **kwargs)
+        def measured_prepare(view_id: str, category: str) -> None:
+            worker_threads.append(QThread.currentThread() != application.thread())
+            sleep(0.12)
+            original_prepare(view_id, category)
 
-        overlay.category_composite = measured_category_composite
+        def measured_legacy_category(view_id: str, category: str) -> QPixmap:
+            legacy_gui_calls.append(QThread.currentThread() == application.thread())
+            sleep(0.12)
+            return overlay.category_composite_original(view_id, category)
+
+        overlay.prepare_category_decode = measured_prepare
+        overlay.category_composite_original = overlay.category_composite
+        overlay.category_composite = measured_legacy_category
+        renderer.render_static_preview = lambda _view_id: QPixmap(FULL_BODY_SIZE[0], FULL_BODY_SIZE[1])
+        overlay.layer_count = lambda _view_id: 1
         heartbeat = QTimer()
         heartbeat.setInterval(5)
-        heartbeat.timeout.connect(lambda: ticks.append(None))
+        heartbeat.timeout.connect(lambda: heartbeat_times.append(monotonic()))
         try:
             heartbeat.start()
             _open_wardrobe(dashboard)
             _wait_composited(dashboard)
-            assert len(observed_ticks) >= MIN_PREHEATED_CATEGORIES
-            assert max(observed_ticks) > min(observed_ticks)
+            gaps = tuple(
+                (later - earlier) * 1000
+                for earlier, later in zip(heartbeat_times[:-1], heartbeat_times[1:], strict=True)
+            )
+            assert len(worker_threads) >= MIN_PREHEATED_CATEGORIES
+            assert all(worker_threads)
+            assert not legacy_gui_calls
+            assert gaps and max(gaps) <= MAX_HEARTBEAT_GAP_MS
             application.processEvents()
         finally:
             heartbeat.stop()

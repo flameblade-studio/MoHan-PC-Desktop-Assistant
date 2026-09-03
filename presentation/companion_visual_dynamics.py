@@ -53,7 +53,6 @@ MAX_BUBBLE_LENGTH = 230
 GAZE_DISTANCE_THRESHOLD = 1050
 MOTION_ZERO_THRESHOLD = 0.015
 
-
 class CompanionVisualDynamicsMixin:
     """Own the companion window's visual construction and motion dynamics."""
 
@@ -72,6 +71,7 @@ class CompanionVisualDynamicsMixin:
     _hair_anchors = staticmethod(CompanionVisualPhysicsMethods._hair_anchors)
     _sleeve_anchors = staticmethod(CompanionVisualPhysicsMethods._sleeve_anchors)
     _load_physics_sources = CompanionVisualPhysicsMethods._load_physics_sources
+    _physics_source_bundle = CompanionVisualPhysicsMethods._physics_source_bundle
     _scaled_expression_asset = staticmethod(
         CompanionVisualPhysicsMethods._scaled_expression_asset
     )
@@ -82,6 +82,7 @@ class CompanionVisualDynamicsMixin:
         CompanionVisualPhysicsMethods._register_expression_pose_frames
     )
     _hair_texture_only = staticmethod(CompanionVisualPhysicsMethods._hair_texture_only)
+    _clip_hair_side = staticmethod(CompanionVisualPhysicsMethods._clip_hair_side)
     _sleeve_texture_only = staticmethod(
         CompanionVisualPhysicsMethods._sleeve_texture_only
     )
@@ -90,7 +91,6 @@ class CompanionVisualDynamicsMixin:
     _render_sleeve_layers = CompanionVisualPhysicsMethods._render_sleeve_layers
     _render_hair_layers = CompanionVisualPhysicsMethods._render_hair_layers
     _render_physics_layer = CompanionVisualPhysicsMethods._render_physics_layer
-
     def _configure_character_window(self) -> None:
         self.setWindowTitle(profile_window_title(self.db))
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)

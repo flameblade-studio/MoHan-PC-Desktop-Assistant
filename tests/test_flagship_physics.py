@@ -75,6 +75,30 @@ def assert_default_physics_contract(window: CompanionWindow) -> None:
             )
 
 
+def assert_state_signature_failure_preserves_sources(window: CompanionWindow) -> None:
+    overlay = window._physics_outfit_overlay
+    before = {
+        pose: window.physics_sources[pose].toImage()
+        for pose in window.physics_sources
+    }
+
+    def failing_signature():
+        raise PermissionError("test-only stat failure")
+
+    original = overlay.state_signature
+    overlay.state_signature = failing_signature
+    try:
+        window._load_physics_sources()
+        assert {
+            pose: window.physics_sources[pose].toImage()
+            for pose in before
+        } == before
+        window.physics_phase = 24
+        window._physics_tick()
+    finally:
+        overlay.state_signature = original
+
+
 def assert_pose_layers(
     window: CompanionWindow,
     pose: str,
@@ -309,6 +333,7 @@ def run() -> None:
         app.processEvents()
         stop_automatic_timers(window)
         assert_default_physics_contract(window)
+        assert_state_signature_failure_preserves_sources(window)
         assert_all_pose_layers(window)
         assert_expression_eye_cache(window)
         assert_viseme_hysteresis(app, window)

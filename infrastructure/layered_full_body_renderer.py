@@ -22,7 +22,13 @@ lazy from domain.constants import (
     POSE_ATLAS_LAYERED_ROOT_NAME,
     POSE_ATLAS_ROOT_NAME,
 )
-lazy from domain.face_rig import FaceMotionFrame, Viseme
+lazy from domain.face_rig import (
+    ExpressionShape,
+    FaceMotionFrame,
+    FacePose,
+    MouthShape,
+    Viseme,
+)
 lazy from infrastructure.layered_full_body_assets import (
     LayeredFullBodyManifest,
     LayeredFullBodyView,
@@ -184,6 +190,18 @@ class LayeredFullBodyRenderer:
             gesture_beat,
         )
         return self._translated_frame(result, breath_dy, gesture_dx)
+
+    def render_static_preview(self, view_id: str) -> QPixmap:
+        """Render the dashboard preview through the same runtime compositor."""
+        motion = FaceMotionFrame(
+            FacePose.FRONT,
+            "idle_front",
+            Viseme.CLOSED,
+            MouthShape(),
+            ExpressionShape(),
+            breath=0.5,
+        )
+        return self.render_view(view_id, motion)
 
     @staticmethod
     def _sleeve_lift(
