@@ -20,6 +20,10 @@ lazy from presentation.dashboard_wardrobe_preferences import (
     DashboardWardrobePreferencesMixin,
 )
 lazy from presentation.flagship_theme import apply_flagship_theme
+lazy from presentation.lingxiao_themes import (
+    DEFAULT_THEME_ID,
+    THEME_SETTING_KEY,
+)
 
 __all__ = ("Dashboard",)
 
@@ -88,6 +92,7 @@ class Dashboard(
                 self.db.setting("flagship_high_contrast", False)
             ),
             scale=float(self.db.setting("flagship_ui_scale", 1.0)),
+            theme=str(self.db.setting(THEME_SETTING_KEY, DEFAULT_THEME_ID)),
         )
         self._apply_theme_resolution(self.theme_session.last_resolution)
         self._enforce_readable_combo_popups()
@@ -116,6 +121,7 @@ class Dashboard(
                 self.db.setting("flagship_high_contrast", False)
             ),
             scale=float(self.db.setting("flagship_ui_scale", 1.0)),
+            theme=str(self.db.setting(THEME_SETTING_KEY, DEFAULT_THEME_ID)),
         )
         if resolution.resolved_id == "builtin":
             self._enforce_readable_combo_popups()

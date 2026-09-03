@@ -30,7 +30,7 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from presentation.flagship_theme import create_flagship_ornament
-lazy from presentation.lingxiao_tokens import palette_for
+lazy from presentation.lingxiao_themes import palette_for_theme
 lazy from presentation.lingxiao_widgets import (
     MotesLayer,
     PageTransition,
@@ -49,6 +49,13 @@ __all__ = (
     "realm_layout_order",
     "update_draft_bar",
 )
+
+
+def _shell_palette(shell):
+    return palette_for_theme(
+        shell.db.setting("flagship_theme", "ink-gold"),
+        high_contrast=bool(shell.db.setting("flagship_high_contrast", False)),
+    )
 
 # (領域鍵, 繁中預設組名, 這一組收哪些功能 id)。功能 id 對應 DashboardFeatureRegistry。
 REALMS = (
@@ -168,7 +175,7 @@ def build_ribbon(shell, root: QVBoxLayout) -> tuple[QPushButton, QPushButton]:
     brand.addWidget(shell.header_title)
     brand.addWidget(brand_line)
 
-    palette = palette_for(high_contrast=bool(shell.db.setting("flagship_high_contrast", False)))
+    palette = _shell_palette(shell)
     shell.ribbon_pulse = PulseDot(palette.jade, deck)
     header.addWidget(create_flagship_ornament(shell, size=44))
     header.addLayout(brand)
@@ -206,7 +213,7 @@ def build_draft_bar(shell, root: QVBoxLayout) -> None:
     shell.save_settings_button.setObjectName("globalSaveSettingsButton")
     shell.save_settings_button.setProperty("mohanPrimaryAction", True)
     shell.save_settings_button.setProperty("mohanAction", "primary")
-    palette = palette_for(high_contrast=bool(shell.db.setting("flagship_high_contrast", False)))
+    palette = _shell_palette(shell)
     shell.save_settings_button.setStyleSheet(
         "QPushButton#globalSaveSettingsButton{"
         f"background:{palette.gold};color:{palette.on_gold};border:1px solid {palette.gold_2};"
@@ -260,7 +267,7 @@ def set_ribbon_state(shell, *, active: bool) -> None:
     pulse = getattr(shell, "ribbon_pulse", None)
     if pulse is None:
         return
-    palette = palette_for(high_contrast=bool(shell.db.setting("flagship_high_contrast", False)))
+    palette = _shell_palette(shell)
     pulse.set_color(palette.jade if active else palette.dim)
 
 
@@ -268,7 +275,7 @@ def install_lobby_motion(shell, lobby: QFrame, tabs) -> None:
     """大廳底層金塵與切頁過場。重複呼叫是安全的。"""
 
     if getattr(shell, "lobby_motes", None) is None:
-        palette = palette_for(high_contrast=bool(shell.db.setting("flagship_high_contrast", False)))
+        palette = _shell_palette(shell)
         shell.lobby_motes = MotesLayer(lobby, QPixmap(str(_LOBBY_BACKDROP)), palette)
         shell.lobby_motes.show()
     if getattr(shell, "page_transition", None) is None:
