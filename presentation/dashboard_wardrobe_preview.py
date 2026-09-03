@@ -66,8 +66,8 @@ _LIVE_WARDROBE_PREVIEW_WORKERS = set()
 
 
 class _WardrobePreviewDecodeSignals(QObject):
-    finished = Signal(object, object)
-    failed = Signal(object, object, object)
+    finished = Signal(object, object, object)
+    failed = Signal(object, object, object, object)
 
 
 class _WardrobePreviewDecodeWorker(QRunnable):
@@ -106,11 +106,11 @@ class _WardrobePreviewDecodeWorker(QRunnable):
                 zipfile.BadZipFile,
             ) as error:
                 if not self.cancelled:
-                    self.signals.failed.emit(self.key, self.view_id, error)
+                    self.signals.failed.emit(self, self.key, self.view_id, error)
                     notified = True
                 return
             if not self.cancelled and not QCoreApplication.closingDown():
-                self.signals.finished.emit(self.key, self.view_id)
+                self.signals.finished.emit(self, self.key, self.view_id)
                 notified = True
         finally:
             if self.cancelled or not notified:
@@ -148,7 +148,7 @@ class DashboardWardrobePreviewMixin:
         )
         self._wardrobe_preview_alive = True
         self.wardrobe_character_preview.destroyed.connect(
-            self._cancel_wardrobe_preview_work
+            self._wardrobe_preview_widget_destroyed
         )
         ports = self.presentation_ports
         self._wardrobe_outfit_overlay = ports.outfit_overlay_factory(
@@ -244,6 +244,14 @@ class DashboardWardrobePreviewMixin:
         QTimer.singleShot(PREVIEW_COMPOSE_DELAY_MS, self._compose_wardrobe_preview)
 
     def _compose_wardrobe_preview(self) -> None:
+        if (
+            self._wardrobe_full_body_renderer is not None
+            and (
+                not self._wardrobe_preview_pending
+                or self._wardrobe_preview_worker is not None
+            )
+        ):
+            return
         if not self._wardrobe_preview_available():
             self._cancel_wardrobe_preview_work()
             return
@@ -270,13 +278,15 @@ class DashboardWardrobePreviewMixin:
 
     def _finish_wardrobe_preview_preheat(
         self,
+        worker: _WardrobePreviewDecodeWorker,
         key: tuple[object, ...],
         view_id: str,
     ) -> None:
-        worker = self._wardrobe_preview_worker
-        if worker is not None and worker.key == key and worker.view_id == view_id:
+        if worker is not self._wardrobe_preview_worker:
             worker.release()
-            self._wardrobe_preview_worker = None
+            return
+        worker.release()
+        self._wardrobe_preview_worker = None
         if not self._wardrobe_preview_available():
             self._cancel_wardrobe_preview_work()
             return
@@ -294,20 +304,29 @@ class DashboardWardrobePreviewMixin:
 
     def _fail_wardrobe_preview_preheat(
         self,
+        worker: _WardrobePreviewDecodeWorker,
         key: tuple[object, ...],
         view_id: str,
         error: object,
     ) -> None:
         del error
-        self._finish_wardrobe_preview_preheat(key, view_id)
+        self._finish_wardrobe_preview_preheat(worker, key, view_id)
+
+    def _wardrobe_preview_widget_destroyed(self, *_args: object) -> None:
+        self._wardrobe_preview_alive = False
+        self._cancel_wardrobe_preview_work()
 
     def _cancel_wardrobe_preview_work(self) -> None:
-        self._wardrobe_preview_alive = False
         self._wardrobe_preview_work = None
         self._wardrobe_preview_pending = False
         worker = self._wardrobe_preview_worker
+        self._wardrobe_preview_worker = None
         if worker is not None:
             worker.cancel()
+            worker.release()
+        self._wardrobe_preview_state = STATE_IDLE
+        if self._wardrobe_preview_alive:
+            self._set_wardrobe_preview_state(STATE_IDLE)
 
     def _wardrobe_preview_available(self) -> bool:
         preview = getattr(self, "wardrobe_character_preview", None)
@@ -378,7 +397,7 @@ class DashboardWardrobePreviewMixin:
             "造型預覽暫時無法合成，目前顯示素體；桌面伴侶不受影響。",
         )
         label = getattr(self, "wardrobe_preview_state_label", None)
-        if label is not None:
+        if label is not None and isValid(label):
             if state == STATE_COMPOSING:
                 label.setText(self._t("wardrobe_preview_composing", "正在以執行期合成造型預覽……"))
             elif state == STATE_FALLBACK:
@@ -389,5 +408,10 @@ class DashboardWardrobePreviewMixin:
         # feedback of an action the owner just took (apply, import, makeup).
         status = getattr(self, "wardrobe_status", None)
         ready = self._t("wardrobe_status_ready", "雲裳系統已就緒")
-        if state == STATE_FALLBACK and status is not None and status.text() in {ready, fallback}:
+        if (
+            state == STATE_FALLBACK
+            and status is not None
+            and isValid(status)
+            and status.text() in {ready, fallback}
+        ):
             status.setText(fallback)

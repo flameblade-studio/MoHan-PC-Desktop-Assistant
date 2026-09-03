@@ -36,6 +36,8 @@ lazy from presentation.dashboard_wardrobe_preview import (
     PREVIEW_COMPOSE_DELAY_MS,
     STATE_COMPOSITED,
     STATE_FALLBACK,
+    STATE_COMPOSING,
+    STATE_IDLE,
 )
 lazy from presentation.dashboard_window import Dashboard
 lazy from test_gesture_app_wiring import offline_presentation_ports
@@ -298,5 +300,40 @@ def test_pending_preview_is_cancelled_when_its_widget_is_destroyed() -> None:
         QTest.qWait(PREVIEW_COMPOSE_DELAY_MS + POLL_MS)
         assert dashboard._wardrobe_preview_alive is False
         assert dashboard._wardrobe_preview_work is None
+        assert dashboard._wardrobe_preview_worker is None
+        assert dashboard._wardrobe_preview_state != STATE_COMPOSING
         close_dashboard(dashboard, db)
         application.processEvents()
+
+
+def test_cancelled_preview_releases_worker_and_can_compose_again() -> None:
+    """Explicit cancellation returns to idle and leaves the next compose usable."""
+
+    application = QApplication.instance() or QApplication([])
+    with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
+        root = Path(temp)
+        db, dashboard = _build(root, _dependencies(root))
+        try:
+            _open_wardrobe(dashboard)
+            assert dashboard._wardrobe_preview_state == STATE_COMPOSING
+            dashboard._compose_wardrobe_preview()
+            assert dashboard._wardrobe_preview_worker is not None
+
+            dashboard._cancel_wardrobe_preview_work()
+            assert dashboard._wardrobe_preview_state == STATE_IDLE
+            assert dashboard._wardrobe_preview_state != STATE_COMPOSING
+            assert dashboard._wardrobe_preview_worker is None
+            assert dashboard._wardrobe_preview_work is None
+            assert not dashboard._wardrobe_preview_pending
+            assert dashboard._wardrobe_preview_alive
+
+            dashboard._show_wardrobe_pose(
+                dashboard._wardrobe_pose_view,
+                dashboard.wardrobe_pose_buttons[FRONT_BUTTON],
+            )
+            _wait_composited(dashboard)
+            assert dashboard._wardrobe_preview_worker is None
+            assert dashboard._wardrobe_preview_state == STATE_COMPOSITED
+            application.processEvents()
+        finally:
+            close_dashboard(dashboard, db)

@@ -2,7 +2,7 @@
 
 ## 繁體中文
 
-`assets/expressions/layered/` 的 `hair_left`／`hair_right` 權威層目前是空層，官方包也只提供 `back`／`front`；因此物理髮絲以 465×465 畫布中線 x=232 切分，左側為 [0,232)、右側為 [232,465)，旋轉後再套同一邊界，兩側移動不得越界。
+`assets/expressions/layered/` 的 `hair_left`／`hair_right` 權威層目前是空層，官方包也只提供 `back`／`front`；因此物理髮絲不使用固定 x=232，而是逐 silhouette 讀取 `assets/makeup-safe-regions.json` 的唯一 `lips` 安全矩形水平中心。該文件由分層 rig 的唇部切層外框對稱外擴生成，中心不會被外擴移動，且不需執行期模型推論；換算到來源畫布後，先依此軸形成左右不同的輸入來源，真正限制物理越界的裁切在旋轉後才套用該 silhouette 的臉部中軸，旋轉後左右跨界必須為 0。
 
 角色外觀包是單一、自含、可直接上傳與下載的 ZIP 相容 `.mohan-outfit` 容器。使用者只需下載並選取一個檔案；不得有旁附資料夾、外部相依套件、網路下載、外部 URL 或跨包必需引用。每項 PNG、WebP 或安全 SVG 都必須在同一 archive，由 manifest 以 SHA-256、尺寸、anchor、z-order 與穩定 slot 完整引用。未引用、重複、缺漏、越權或危險成員一律拒絕。匯入先完整驗證，再於同一目的目錄原子安裝；失敗不留下半套，也不破壞既有版本。安裝只加入內容，不等於預覽或啟用；套用與保存由 UI 的全域 Save/Cancel 流程控制。
 
@@ -30,7 +30,7 @@ Manifest 的 `source` 必須記錄 `kind`（`original`、`concept`、`reference-
 
 ## 简体中文
 
-`assets/expressions/layered/` 的 `hair_left`／`hair_right` 权威层目前是空层，官方包也只提供 `back`／`front`；因此物理发丝以 465×465 画布中线 x=232 切分，左侧为 [0,232)、右侧为 [232,465)，旋转后再次套用同一边界，两侧移动不得越界。
+`assets/expressions/layered/` 的 `hair_left`／`hair_right` 权威层目前是空层，官方包也只提供 `back`／`front`；因此物理发丝不使用固定 x=232，而是逐 silhouette 读取 `assets/makeup-safe-regions.json` 的唯一 `lips` 安全矩形水平中心。该文件由分层 rig 的唇部切层外框对称扩张生成，中心不会被扩张移动，也不需要运行时模型推理；换算到来源画布后，先按此轴形成左右不同的输入来源，真正限制物理越界的裁切在旋转后才套用该 silhouette 的脸部中轴，旋转后左右越界必须为 0。
 
 角色外观包是单一、自包含、可直接上传与下载的 ZIP 兼容 `.mohan-outfit` 容器。用户只需下载并选择一个文件；不得有附带文件夹、外部依赖包、网络下载、外部 URL 或跨包必需引用。每项 PNG、WebP 或安全 SVG 都必须位于同一 archive，并由 manifest 以 SHA-256、尺寸、anchor、z-order 与稳定 slot 完整引用。未引用、重复、缺漏、越权或危险成员一律拒绝。导入先完整验证，再在同一目标目录原子安装；失败不留下半套，也不破坏现有版本。安装只添加内容，不等于预览或启用；应用与保存由 UI 的全局 Save/Cancel 流程控制。
 
@@ -58,7 +58,7 @@ Manifest 的 `source` 必须记录 `kind`（`original`、`concept`、`reference-
 
 ## English
 
-The authoritative `hair_left` and `hair_right` layers under `assets/expressions/layered/` are currently empty, and the official pack supplies only `back` and `front`; physics therefore splits the 465x465 canvas at x=232, assigning [0,232) to the left and [232,465) to the right, then reapplies the same boundary after rotation so neither side can cross it.
+The authoritative `hair_left` and `hair_right` layers under `assets/expressions/layered/` are currently empty, and the official pack supplies only `back` and `front`; physics therefore does not hard-code x=232. For each silhouette it reads the horizontal centre of the single `lips` safe rectangle in `assets/makeup-safe-regions.json`. That document is generated from layered-rig lip cut-outs with symmetric dilation, so the centre is preserved and no runtime model inference is needed; the centre is mapped to the source canvas to make genuinely different left/right inputs, then the actual ownership clip is applied at that silhouette-specific facial midline after rotation, with zero post-rotation crossing required.
 
 A character appearance pack is one self-contained, directly uploadable and downloadable ZIP-compatible `.mohan-outfit` container. A user downloads and selects one file. Sidecar folders, external packages, network downloads, external URLs, and required cross-pack references are forbidden. Every PNG, WebP, or safe SVG is inside the same archive and fully referenced by the manifest with SHA-256, dimensions, anchor, z-order, and a stable slot. Unreferenced, duplicate, missing, privileged, or dangerous members are rejected. Import validates the complete archive before atomically installing it in the destination directory. Failure leaves neither a partial pack nor damage to the installed version. Installation only adds content; preview and activation remain controlled by the UI and global Save/Cancel flow.
 
@@ -86,7 +86,7 @@ Removal uses a typed API. Built-in defaults can never be removed. Any item or en
 
 ## 日本語
 
-`assets/expressions/layered/` の権威 `hair_left`／`hair_right` 層は現在空で、公式パックも `back`／`front` だけを提供します。そのため物理髪を 465×465 キャンバスの x=232 で分割し、左を [0,232)、右を [232,465) として、回転後にも同じ境界を再適用し、左右が越境しないようにします。
+`assets/expressions/layered/` の権威 `hair_left`／`hair_right` 層は現在空で、公式パックも `back`／`front` だけを提供します。そのため物理髪は固定 x=232 を使わず、各 silhouette について `assets/makeup-safe-regions.json` の唯一の `lips` 安全矩形の水平中心を読み取ります。この文書はレイヤー rig の唇切り出し外枠を対称に拡張して生成するため中心は移動せず、実行時モデル推論も不要です。中心を元画像のキャンバスへ換算して左右で異なる入力を作り、実際の越境裁切は髪を回転した後に silhouette 固有の顔の中軸で行い、回転後の越境を 0 にします。
 
 キャラクター外観パックは、単一で自己完結し、そのままアップロード／ダウンロードできる ZIP 互換 `.mohan-outfit` コンテナです。利用者がダウンロードして選ぶのは一つのファイルだけです。付属フォルダー、外部依存パッケージ、ネットワークダウンロード、外部 URL、必須の別パック参照は禁止です。すべての PNG、WebP、安全な SVG は同一 archive 内に置き、manifest が SHA-256、寸法、anchor、z-order、安定 slot で完全に参照します。未参照、重複、不足、権限外、危険なメンバーは拒否します。インポートは全体検証後に同一配置先でアトミックにインストールします。失敗時は半端なパックを残さず、既存版も壊しません。インストールは内容の追加だけで、プレビューと有効化は UI と全体 Save/Cancel が管理します。
 

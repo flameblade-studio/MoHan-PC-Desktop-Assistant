@@ -15,7 +15,9 @@ lazy from domain.companion_animation_contract import (
     PHYSICS_FRAME_INTERVAL_MS,
     PHYSICS_POSE_SUFFIXES,
     PHYSICS_SPEECH_FRAME_PREFIXES,
+    outfit_silhouette,
 )
+lazy from domain.outfit_pack_makeup import HALF_BODY_RIGS, load_makeup_safe_regions
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = ("CompanionVisualPhysicsMethods",)
@@ -102,6 +104,9 @@ class CompanionVisualPhysicsMethods:
         self.physics_anchors = self._ornament_anchors()
         self.hair_anchors = self._hair_anchors()
         self.sleeve_anchors = self._sleeve_anchors()
+        self.hair_midline_ratios_by_silhouette = (
+            CompanionVisualPhysicsMethods._load_hair_midline_ratios()
+        )
         self.physics_sources: dict[str, QPixmap] = {}
         self.hair_sources: dict[str, dict[str, QPixmap]] = {}
         self.sleeve_sources: dict[str, dict[str, QPixmap]] = {}
@@ -243,7 +248,15 @@ class CompanionVisualPhysicsMethods:
                 if not garment.isNull()
                 else self._scaled_expression_asset(f"v120_sleeve_{side}{suffix}.png")
             )
-            result[f"hair_{side}"] = self._hair_texture_only(hair, side)
+            result[f"hair_{side}"] = self._hair_texture_only(
+                hair,
+                side,
+                CompanionVisualPhysicsMethods._hair_center_x(
+                    self,
+                    silhouette,
+                    hair.width(),
+                ),
+            )
             result[f"sleeve_{side}"] = self._sleeve_texture_only(sleeve, side)
         return result
 
@@ -288,19 +301,63 @@ class CompanionVisualPhysicsMethods:
             pose_map[blink_frame] = pose
 
     @staticmethod
-    def _hair_side_rect(width: int, height: int, side: str) -> QRect:
-        if side not in {"left", "right"}:
-            raise ValueError("Unknown hair side.")
-        center = width // 2
-        return QRect(0, 0, center, height) if side == "left" else QRect(center, 0, width - center, height)
+    def _load_hair_midline_ratios() -> frozendict[str, float]:
+        """Return each half-body face midline from the authoritative rig regions.
+
+        ``makeup-safe-regions.json`` is generated from the layered rig's lip
+        cut-outs.  The single ``lips`` rectangle is symmetrically dilated, so
+        its horizontal centre remains the rig's facial centre while avoiding a
+        model-dependent landmark pass at runtime.  Gesture silhouettes retain
+        their own entries even when they intentionally reuse the front rig.
+        """
+        regions = load_makeup_safe_regions()
+        ratios: dict[str, float] = {}
+        for silhouette in HALF_BODY_RIGS:
+            region = regions.get(silhouette)
+            if region is None:
+                raise ValueError(f"Missing half-body safe region for {silhouette!r}.")
+            lips = region.rects("lips")
+            if len(lips) != 1:
+                raise ValueError(
+                    f"Expected one authoritative lip region for {silhouette!r}."
+                )
+            x, _y, width, _height = lips[0]
+            canvas_width = region.canvas[0]
+            ratios[silhouette] = (x + width / 2) / canvas_width
+        return frozendict(ratios)
+
+    def _hair_center_x(self, silhouette: str, width: int) -> int:
+        ratio = self.hair_midline_ratios_by_silhouette.get(silhouette)
+        if ratio is None or width <= 0:
+            raise ValueError(f"Unknown hair silhouette or canvas: {silhouette!r}.")
+        center = round(ratio * width)
+        if not 0 < center < width:
+            raise ValueError(f"Hair midline is outside the canvas for {silhouette!r}.")
+        return center
 
     @staticmethod
-    def _hair_texture_only(source: QPixmap, side: str) -> QPixmap:
+    def _hair_side_rect(width: int, height: int, side: str, center_x: int) -> QRect:
+        if side not in {"left", "right"}:
+            raise ValueError("Unknown hair side.")
+        if not 0 < center_x < width:
+            raise ValueError("Hair center must be inside the canvas.")
+        return (
+            QRect(0, 0, center_x, height)
+            if side == "left"
+            else QRect(center_x, 0, width - center_x, height)
+        )
+
+    @staticmethod
+    def _hair_texture_only(source: QPixmap, side: str, center_x: int) -> QPixmap:
         """Remove skin and clothing accidentally carried by a hair cutout.
 
         Rotating a complete cutout that contains cheek, neck or sleeve pixels
         produces dark seams across the face. Hair physics only needs the dark,
         low-chroma strands; all other opaque pixels are made transparent.
+        The side mask here makes the two source pixmaps genuinely distinct
+        when a pack provides one shared hairstyle layer; the final ownership
+        boundary is reapplied after the physics rotation in
+        ``_render_hair_layers``.
         """
         safe = QPixmap(source)
         mask = QPixmap(source.size())
@@ -309,7 +366,7 @@ class CompanionVisualPhysicsMethods:
         gradient.setColorAt(0.0, QColor(255, 255, 255, 0))
         gradient.setColorAt(1.0, QColor(255, 255, 255, 255))
         side_rect = CompanionVisualPhysicsMethods._hair_side_rect(
-            source.width(), source.height(), side
+            source.width(), source.height(), side, center_x
         )
         painter = QPainter(mask)
         painter.fillRect(
@@ -324,13 +381,13 @@ class CompanionVisualPhysicsMethods:
         return safe
 
     @staticmethod
-    def _clip_hair_side(source: QPixmap, side: str) -> QPixmap:
+    def _clip_hair_side(source: QPixmap, side: str, center_x: int) -> QPixmap:
         mask = QPixmap(source.size())
         mask.fill(Qt.transparent)
         painter = QPainter(mask)
         painter.fillRect(
             CompanionVisualPhysicsMethods._hair_side_rect(
-                source.width(), source.height(), side
+                source.width(), source.height(), side, center_x
             ),
             QColor(255, 255, 255, 255),
         )
@@ -527,7 +584,6 @@ class CompanionVisualPhysicsMethods:
             painter.translate(-anchor)
             painter.drawPixmap(0, 0, source)
             painter.end()
-            rendered = self._clip_hair_side(rendered, side)
             overlay.setPixmap(rendered)
             overlay.raise_()
         self.hair_left_overlay.raise_()
@@ -550,6 +606,7 @@ class CompanionVisualPhysicsMethods:
         ):
             return
         pose = getattr(self, "active_physics_pose", "front")
+        silhouette = outfit_silhouette(self._render_base_expression(), pose)
         for side, angle, overlay in (
             ("left", self.hair_left_angle, self.hair_left_overlay),
             ("right", self.hair_right_angle, self.hair_right_overlay),
@@ -568,6 +625,18 @@ class CompanionVisualPhysicsMethods:
             painter.translate(-anchor)
             painter.drawPixmap(0, 0, source)
             painter.end()
+            # The source masks keep left/right inputs distinct.  This second,
+            # authoritative ownership fence must happen after rotation because
+            # the transform can move opaque strand pixels across the midline.
+            rendered = self._clip_hair_side(
+                rendered,
+                side,
+                CompanionVisualPhysicsMethods._hair_center_x(
+                    self,
+                    silhouette,
+                    rendered.width(),
+                ),
+            )
             overlay.setPixmap(rendered)
             overlay.raise_()
         self.physics_overlay.raise_()
