@@ -7,22 +7,26 @@
 - `tests/run_all.py` 動態發現完整的 `test_*.py` 測試套件、依檔名排序，並將每個測試檔隔離在獨立 Python 子程序中執行。這可避免 `QCoreApplication` 與 `QApplication` 在同一程序內反覆建立及原生清理時互相干擾。
 - 隔離程序不是忽略失敗：任何測試檔回傳非零狀態時，總測試立即失敗並保留該檔名與狀態碼。
 - 自動化測試、Windows EXE 真機驗收、封裝與發布是不同門檻；通過其中一項不代表其他門檻已完成。
+- 測試閘門分三層，仍由同一個 `tests/run_all.py` 執行：開發中每次改動用 `fast`（`python tests/run_all.py fast`），依 `tests/impact_map.json` 選取受影響測試並保留契約測試；提交前用 `gate`（`python tests/run_all.py gate`，也是預設完整套）；排程或隔夜，以及需要集中檢查封裝／跨平台／長時間資產、語音、UI 項目時用 `nightly`（`python tests/run_all.py nightly`）。
+- `fast --changed-from <git-ref>`（例如 `python tests/run_all.py fast --changed-from main`）會納入指定 ref 之後的提交及目前工作樹、暫存區、未追蹤檔案。
+- 若 `fast` 找不到檔案對照、Git ref 或 impact map 無法使用，會安全退回完整套並印出 `FAST_FALLBACK_TO_GATE`；`gate` 保留結尾 `ALL_..._TESTS_OK`，不帶參數仍等同 `gate`。
 
 ### 完整回歸暫時狀態
 
-- 最近一次從頭執行的完整回歸在第 66 支測試首次遇到四語契約失敗，因此該次總測試未通過。
-- 該四語缺失已修正並通過針對性檢查，但完整回歸尚未從第一支重新執行；目前不得記錄為完整回歸通過，必須等待從頭重跑全部測試的結果。
+- 2026-09-04 的 gate 已從第一個模組重新執行 365 個測試模組，退出碼為 0，結尾為 `ALL_365_TESTS_OK`，總耗時 1329.981 秒（22 分 09.981 秒）。
+- 本次完整 gate 沒有模組重試；分層前的 364 模組基線、分層後的 gate 與最慢十項實測，均記錄於 `docs/release-evidence/test-tier-baseline-2026-09-03.md`。
+- 歷史註記：更早一次未完成的完整回歸曾在第 66 支測試遇到四語契約失敗；該歷史結果不代表本次已通過的 gate。
 - `app.py` 現已縮減為 13 個實體行，只保留薄型 composition root；這項架構門檻完成不代表完整回歸、封裝或發布已完成。
 
 ### 目前發布阻擋
 
 - Python 3.15／Qt 仍阻擋正式發布：目前固定的 PySide6 6.11.1 官方 metadata 排除 Python 3.15。必須等待 Qt 官方提供完整且一致的 Python 3.15 相容套件，並在乾淨環境以標準 resolver 驗證後才能解除。
 - PoseAtlas 仍阻擋正式發布：具可驗證來源與再散布權的 24 個完整全身旋轉視角、landmarks、hands 與真實 `release-audits.json` 尚未齊備。
-- 完整回歸仍須從第一支測試重新執行並全部通過。上述任一阻擋未解除前，不得宣稱 v4 可發布或已發布。
+- 完整回歸 gate 已通過；上述其他阻擋未解除前，仍不得宣稱 v4 可發布或已發布。
 
 ### 已自動通過
 
-以下只表示已有對應自動化證據，不代表 v4 完整回歸或發布門檻全部通過：
+以下只表示已有對應自動化證據，不代表 v4 所有發布門檻全部通過：
 
 - OpenCV 真模型載入契約、模型檔完整性，以及空白影格、缺少模型或分析失敗時的安全回退。
 - Windows、OpenAI、Realtime、Azure 與 Dragon HD 共用的語音生命週期、供應器中立路由、完成／中斷與回退契約；這不等同每一項外部服務都已完成即時帳號與裝置驗收。
@@ -51,22 +55,26 @@
 - `tests/run_all.py` 动态发现完整的 `test_*.py` 测试套件、按文件名排序，并将每个测试文件隔离在独立 Python 子进程中执行。这样可避免 `QCoreApplication` 与 `QApplication` 在同一进程内反复创建及原生清理时互相干扰。
 - 进程隔离并非忽略失败：任何测试文件返回非零状态时，总测试立即失败，并保留该文件名与状态码。
 - 自动化测试、Windows EXE 真机验收、打包与发布是不同关卡；通过其中一项不代表其他关卡已经完成。
+- 测试关卡分三层，仍由同一个 `tests/run_all.py` 执行：开发中每次改动用 `fast`（`python tests/run_all.py fast`），依据 `tests/impact_map.json` 选择受影响测试并保留契约测试；提交前用 `gate`（`python tests/run_all.py gate`，也是默认完整套）；排程或隔夜，以及需要集中检查打包／跨平台／长时间资产、语音、UI 项目时用 `nightly`（`python tests/run_all.py nightly`）。
+- `fast --changed-from <git-ref>`（例如 `python tests/run_all.py fast --changed-from main`）会纳入指定 ref 之后的提交以及当前工作树、暂存区、未跟踪文件。
+- 如果 `fast` 找不到文件对应关系、Git ref 或 impact map 无法使用，会安全退回完整套并打印 `FAST_FALLBACK_TO_GATE`；`gate` 保留结尾 `ALL_..._TESTS_OK`，不带参数仍等同 `gate`。
 
 ### 完整回归暂时状态
 
-- 最近一次从头执行的完整回归在第 66 个测试首次遇到四语契约失败，因此该次总测试未通过。
-- 该四语缺失已修正并通过针对性检查，但完整回归尚未从第一个测试重新执行；目前不得记录为完整回归通过，必须等待从头重跑全部测试的结果。
+- 2026-09-04 的 gate 已从第一个模块重新执行 365 个测试模块，退出码为 0，结尾为 `ALL_365_TESTS_OK`，总耗时 1329.981 秒（22 分 09.981 秒）。
+- 本次完整 gate 没有模块重试；分层前的 364 模块基线、分层后的 gate 与最慢十项实测，均记录于 `docs/release-evidence/test-tier-baseline-2026-09-03.md`。
+- 历史注记：更早一次未完成的完整回归曾在第 66 个测试遇到四语契约失败；该历史结果不代表本次已经通过的 gate。
 - `app.py` 现已缩减为 13 个物理行，只保留轻量 composition root；这项架构关卡完成并不代表完整回归、打包或发布已经完成。
 
 ### 当前发布阻挡
 
 - Python 3.15／Qt 仍阻挡正式发布：当前固定的 PySide6 6.11.1 官方 metadata 排除 Python 3.15。必须等待 Qt 官方提供完整且一致的 Python 3.15 兼容软件包，并在干净环境中使用标准 resolver 验证后才能解除。
 - PoseAtlas 仍阻挡正式发布：具有可验证来源与再分发权的 24 个完整全身旋转视角、landmarks、hands 与真实 `release-audits.json` 尚未齐备。
-- 完整回归仍须从第一个测试重新执行并全部通过。上述任一阻挡未解除前，不得声称 v4 可以发布或已经发布。
+- 完整回归 gate 已通过；上述其他阻挡未解除前，仍不得声称 v4 可以发布或已经发布。
 
 ### 已自动通过
 
-以下只表示已有对应自动化证据，不代表 v4 完整回归或发布关卡全部通过：
+以下只表示已有对应自动化证据，不代表 v4 所有发布关卡全部通过：
 
 - OpenCV 真模型加载契约、模型文件完整性，以及空白帧、缺少模型或分析失败时的安全回退。
 - Windows、OpenAI、Realtime、Azure 与 Dragon HD 共用的语音生命周期、供应商中立路由、完成／中断与回退契约；这不等同每一项外部服务都已完成实时账号与设备验收。
@@ -95,22 +103,26 @@
 - `tests/run_all.py` dynamically discovers the complete `test_*.py` test suite, sorts it by file name, and runs each test file in an isolated Python child process. This prevents native teardown interference when `QCoreApplication` and `QApplication` would otherwise be created and destroyed repeatedly in one process.
 - Process isolation does not hide failures: a non-zero result from any test file immediately fails the aggregate run and preserves the file name and exit code.
 - Automated tests, real-device acceptance in the Windows EXE, packaging, and release are separate gates. Passing one does not complete the others.
+- The test runner has three tiers and remains the single `tests/run_all.py` entry point: use `fast` (`python tests/run_all.py fast`) for each development change, selecting affected tests through `tests/impact_map.json` while retaining contract tests; use `gate` (`python tests/run_all.py gate`, also the default) before submission for the complete suite; use `nightly` (`python tests/run_all.py nightly`) on a schedule or overnight for packaging smoke, cross-platform, and long-running asset/speech/UI checks.
+- `fast --changed-from <git-ref>` (for example, `python tests/run_all.py fast --changed-from main`) includes commits after the selected ref plus current worktree, index, and untracked files.
+- If `fast` cannot map a changed file or cannot use the Git ref or impact map, it safely falls back to the complete suite and prints `FAST_FALLBACK_TO_GATE`; `gate` retains the ending `ALL_..._TESTS_OK`, and no arguments still mean `gate`.
 
 ### Temporary complete-regression status
 
-- The latest complete regression run from the beginning first encountered a four-language contract failure at test file 66, so that aggregate run did not pass.
-- The four-language defect has been corrected and its targeted check passes, but the complete regression has not yet been restarted from test one. Complete regression must not currently be recorded as passed; that status requires a new full run from the beginning.
+- On 2026-09-04, the gate reran all 365 test modules from the first module, exited 0, ended with `ALL_365_TESTS_OK`, and took 1329.981 seconds (22 minutes 09.981 seconds).
+- No module was retried in this complete gate; the pre-tier 364-module baseline, post-tier gate, and measured slowest ten are recorded in `docs/release-evidence/test-tier-baseline-2026-09-03.md`.
+- Historical note: an earlier incomplete full run encountered the four-language contract failure at test file 66; that historical result is not the outcome of the now-passing gate.
 - `app.py` is now reduced to 13 physical lines and retains only the thin composition root. Completing this architecture gate does not complete full regression, packaging, or release.
 
 ### Current release blockers
 
 - Python 3.15／Qt still blocks formal release: the currently pinned official PySide6 6.11.1 metadata excludes Python 3.15. This can be cleared only after Qt publishes a complete, consistent Python 3.15-compatible set and the standard resolver verifies it in clean environments.
 - PoseAtlas still blocks formal release: the 24 complete full-body rotational views with verifiable provenance and redistribution rights, their landmarks and hands, and genuine `release-audits.json` are not yet complete.
-- The complete regression must still restart at test one and pass in full. v4 must not be described as releasable or released while any of these blockers remains.
+- The complete regression gate now passes; v4 must not be described as releasable or released while the other blockers remain.
 
 ### Automated evidence currently passed
 
-The following means that corresponding automated evidence exists; it does not mean that the complete v4 regression or every release gate has passed:
+The following means that corresponding automated evidence exists; it does not mean that every v4 release gate has passed:
 
 - Real OpenCV model-loading contracts, model-file integrity, and safe fallback for blank frames, missing models, or analysis failures.
 - Provider-neutral speech lifecycle, routing, completion/interruption, and fallback contracts shared by Windows, OpenAI, Realtime, Azure, and Dragon HD. This is not live account and device acceptance for every external service.
@@ -139,22 +151,26 @@ The following means that corresponding automated evidence exists; it does not me
 - `tests/run_all.py` は完全な `test_*.py` テストスイートを動的に検出してファイル名順に並べ、各テストファイルを独立した Python 子プロセスで隔離実行します。これにより、同一プロセス内で `QCoreApplication` と `QApplication` を繰り返し生成、ネイティブ終了処理する際の干渉を防ぎます。
 - プロセス分離は失敗を隠しません。いずれかのテストファイルがゼロ以外を返した時点で全体を失敗とし、ファイル名と終了コードを保持します。
 - 自動テスト、Windows EXE での実機受入試験、パッケージ化、公開は別々のゲートです。一つの通過が他の完了を意味することはありません。
+- テストランナーには三つの階層があり、入口は引き続き単一の `tests/run_all.py` です。開発中の各変更には `fast`（`python tests/run_all.py fast`）を使い、`tests/impact_map.json` から影響テストを選び、契約テストを残します。提出前には `gate`（`python tests/run_all.py gate`、既定値でもあります）で完全スイートを実行し、スケジュールまたは夜間には `nightly`（`python tests/run_all.py nightly`）でパッケージ化スモーク、クロスプラットフォーム、長時間の資産／音声／UI テストを集約します。
+- `fast --changed-from <git-ref>`（例：`python tests/run_all.py fast --changed-from main`）は指定 ref より後のコミットと、現在のワークツリー、インデックス、未追跡ファイルを含めます。
+- `fast` が変更ファイルを対応付けられない場合、Git ref または impact map を利用できない場合は、安全に完全スイートへ戻り `FAST_FALLBACK_TO_GATE` を表示します。`gate` の末尾 `ALL_..._TESTS_OK` は維持され、引数なしも `gate` と同じです。
 
 ### 完全回帰の暫定状況
 
-- 直近に先頭から実行した完全回帰は、66 番目のテストファイルで初めて四言語契約の失敗に遭遇したため、その全体実行は合格していません。
-- 四言語の不足は修正され、対象を絞った検査には合格しましたが、完全回帰は一番目からまだ再実行していません。現時点で完全回帰合格と記録してはならず、先頭から全テストを再実行した結果を待つ必要があります。
+- 2026-09-04 の gate は先頭から 365 テストモジュールを再実行し、終了コード 0、末尾 `ALL_365_TESTS_OK`、所要 1329.981 秒（22 分 09.981 秒）でした。
+- 今回の完全 gate ではモジュールの再試行はありません。階層化前の 364 モジュール基線、階層化後の gate、実測した遅い上位十件は `docs/release-evidence/test-tier-baseline-2026-09-03.md` に記録しています。
+- 履歴注記：以前の未完了な完全回帰では 66 番目のテストファイルで四言語契約が失敗しました。この過去の結果は、現在合格している gate の結果ではありません。
 - `app.py` は現在 13 物理行まで縮小され、薄い composition root だけを保持しています。このアーキテクチャゲートの完了は、完全回帰、パッケージ化、公開の完了を意味しません。
 
 ### 現在の公開阻害事項
 
 - Python 3.15／Qt は引き続き正式公開を阻害しています。現在固定している公式 PySide6 6.11.1 metadata は Python 3.15 を除外しています。Qt が完全で整合した Python 3.15 対応一式を公開し、新規環境の標準 resolver で検証を終えるまで解除できません。
 - PoseAtlas は引き続き正式公開を阻害しています。出典と再配布権を検証できる完全全身回転 24 視角、landmarks、hands、真正な `release-audits.json` はまだ揃っていません。
-- 完全回帰は一番目から再実行し、すべて合格する必要があります。いずれかの阻害事項が残る間、v4 を公開可能または公開済みと表現してはいけません。
+- 完全回帰 gate は合格しました。その他の阻害事項が残る間、v4 を公開可能または公開済みと表現してはいけません。
 
 ### 通過済みの自動化証拠
 
-以下は対応する自動化証拠があることだけを示し、v4 の完全回帰やすべての公開ゲート通過を意味しません。
+以下は対応する自動化証拠があることだけを示し、v4 のすべての公開ゲート通過を意味しません。
 
 - OpenCV 実モデルの読み込み契約、モデルファイルの完全性、空白フレーム、モデル欠落、解析失敗時の安全なフォールバック。
 - Windows、OpenAI、Realtime、Azure、Dragon HD で共有する、プロバイダー非依存の音声ライフサイクル、経路選択、完了／中断、フォールバック契約。各外部サービスの実アカウントと実機による受入試験を意味しません。

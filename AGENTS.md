@@ -25,6 +25,7 @@
 
 - 回報一律使用台灣繁體中文，遵循「打到哪裡就報到哪裡」格式：【完成】（命令、退出碼、路徑、雜湊、目視結論）、【目前阻塞】、【下一步】。
 - 遵循上層 `D:\FlamebladeStudio\CodexProjects\AGENTS.md` 與 `CODEX_PROJECT_HANDOFF.md` 的全域原則。
+- 測試分層：開發過程用 `fast`，提交前跑一次 `gate`；若影響對照表找不到改動檔案，必須接受 fast 的完整套 fallback。
 
 ## 简体中文
 
@@ -51,6 +52,7 @@
 
 - 汇报一律使用台湾正体中文，遵循「打到哪里就报到哪里」格式：【完成】（命令、退出码、路径、哈希、目视结论）、【目前阻塞】、【下一步】。
 - 遵循上层 `D:\FlamebladeStudio\CodexProjects\AGENTS.md` 与 `CODEX_PROJECT_HANDOFF.md` 的全局原则。
+- 测试分层：开发过程中用 `fast`，提交前跑一次 `gate`；如果影响对照表找不到改动文件，必须接受 fast 的完整套 fallback。
 
 ## English
 
@@ -77,6 +79,7 @@ Background lesson: the PoseAtlas 24 master views and 600 layered assets were sub
 
 - Reports use Taiwanese Traditional Chinese in the "report exactly as far as you fought" format: [Done] (commands, exit codes, paths, hashes, visual conclusions), [Blocked], [Next].
 - Follow the global principles in `D:\FlamebladeStudio\CodexProjects\AGENTS.md` and `CODEX_PROJECT_HANDOFF.md`.
+- Test tiers: use `fast` during development and run `gate` once before submission; if the impact map cannot find a changed file, accept fast's complete-suite fallback.
 
 ## 日本語
 
@@ -103,3 +106,4 @@ Background lesson: the PoseAtlas 24 master views and 600 layered assets were sub
 
 - 報告は台湾繁体字中国語を使用し、「戦った所まで正確に報告する」形式に従う：【完了】（コマンド、終了コード、パス、ハッシュ、目視結論）、【現在の障害】、【次の一手】。
 - 上位の `D:\FlamebladeStudio\CodexProjects\AGENTS.md` と `CODEX_PROJECT_HANDOFF.md` の全体原則に従う。
+- テスト階層：開発中は `fast` を使い、提出前に一度 `gate` を実行します。影響対応表に変更ファイルがない場合は、fast が完全スイートへフォールバックすることを受け入れます。
