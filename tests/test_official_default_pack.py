@@ -14,6 +14,7 @@ TESTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(TESTS))
 
+lazy import numpy as np
 lazy import pytest
 lazy from PySide6.QtGui import QColor, QImage, QPixmap
 lazy from PySide6.QtWidgets import QApplication
@@ -48,6 +49,8 @@ EXPECTED_SILHOUETTES = 31
 EXPECTED_MAKEUP_VARIANTS = 2
 MAKEUP_SLOTS_PER_SILHOUETTE = 3
 OPAQUE = 255
+DARK_CHANNEL_SUM_MAX = 300
+DARK_EYE_PIXEL_MARGIN = 100
 # A robe pixel counts as blue when its blue channel leads red by at least this much.
 BLUE_MARGIN = 40
 # A base pixel counts as grey when its channels agree within this tolerance.
@@ -90,11 +93,21 @@ def _layer_pixel(archive_path: Path, member: str, point: tuple[int, int]) -> QCo
     return image.pixelColor(*point)
 
 
-def _member(archive_path: Path, category: str, silhouette: str, slot: str) -> str:
+def _member(archive_path: Path, category: str, silhouette: str, slot: str, variant_id: str | None = None) -> str:
     """The archive member the official pack declares for one category/silhouette/slot."""
     pack = inspect_outfit_pack(archive_path)
     item = next(item for item in pack.items if item.category == category)
-    return next(asset.path for asset in item.variants[0].poses[silhouette] if asset.slot == slot)
+    variant = item.variants[0] if variant_id is None else next(entry for entry in item.variants if entry.variant_id == variant_id)
+    return next(asset.path for asset in variant.poses[silhouette] if asset.slot == slot)
+
+
+def _layer_rgba(archive_path: Path, member: str) -> np.ndarray:
+    with zipfile.ZipFile(archive_path) as archive:
+        source = QImage.fromData(archive.read(member), "PNG")
+    assert not source.isNull(), member
+    image = source.convertToFormat(QImage.Format_RGBA8888)
+    rows = np.frombuffer(bytes(image.constBits()), np.uint8).reshape(image.height(), image.bytesPerLine())
+    return rows[:, : image.width() * 4].reshape(image.height(), image.width(), 4).copy()
 
 
 def test_official_packs_ship_sealed_and_valid() -> None:
@@ -125,6 +138,24 @@ def test_official_packs_ship_sealed_and_valid() -> None:
         for assets in variant.poses.values()
     )
     verify_makeup_layers(builtin_makeup_pack_path())
+
+
+def test_light_makeup_is_independently_painted_and_visibly_lighter() -> None:
+    archive = builtin_makeup_pack_path()
+    silhouette = "front-crossed"
+    classic_lips = _layer_rgba(archive, _member(archive, "makeup", silhouette, "lips", "classic"))
+    light_lips = _layer_rgba(archive, _member(archive, "makeup", silhouette, "lips", "light"))
+    assert np.any((light_lips[:, :, 3] > 0) & (classic_lips[:, :, 3] == 0))
+
+    classic_eyes = _layer_rgba(archive, _member(archive, "makeup", silhouette, "eyes", "classic"))
+    light_eyes = _layer_rgba(archive, _member(archive, "makeup", silhouette, "eyes", "light"))
+    classic_dark = int(
+        ((classic_eyes[:, :, 3] > 0) & (classic_eyes[:, :, :3].sum(axis=2) < DARK_CHANNEL_SUM_MAX)).sum()
+    )
+    light_dark = int(
+        ((light_eyes[:, :, 3] > 0) & (light_eyes[:, :, :3].sum(axis=2) < DARK_CHANNEL_SUM_MAX)).sum()
+    )
+    assert light_dark <= classic_dark - DARK_EYE_PIXEL_MARGIN
 
 
 def test_fresh_profile_resolves_to_the_official_default(tmp_path: Path) -> None:

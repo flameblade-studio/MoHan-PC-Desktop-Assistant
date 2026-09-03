@@ -25,6 +25,8 @@ release-artifacts/
 deliverables/
 tmp/
 work/
+output/imagegen/
+scratchpad/
 # artifacts/ 預設不入庫（虛擬環境、可重新下載的模型、隔離 worktree、可重建的
 # 發行封存），但幾何控制的權威產出例外——那是唯一不可重製的部分，且原本只存在
 # 於單一台機器上，沒有異地備援。

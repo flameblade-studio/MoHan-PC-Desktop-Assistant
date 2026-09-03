@@ -9,8 +9,10 @@ bare base, then subtracted step by step) leaves one directory per silhouette::
     <layers>/<silhouette>/L1_makeup.{eyes,cheeks,lips}.png
     <layers>/<silhouette>/report.json           pixel counts and registration shifts
     <layers>/<silhouette>/base.png              the bare base the layers were cut from (probes only)
+    <light-layers>/<silhouette>/L1light_makeup.{eyes,cheeks,lips}.png
 
-This tool never invents art.  It maps the layers onto the v2 pack format,
+This tool never invents art.  It maps the independently painted classic and
+light makeup layers onto the v2 pack format,
 crops exactly the pixels the runtime would reject (a garment pixel on the
 protected face, hair on the feature core -- the eye and mouth rig cut-outs
 dilated by the runtime's margin, never the whole face box, so strands keep
@@ -23,6 +25,7 @@ error, not a transparent placeholder.
 Example::
 
     py -3.15 tools/assemble_official_default_pack.py --layers work/default-pack-layers \\
+        --light-layers work/light-makeup-layers \\
         --outfit-authoring work/blue-white-hanfu --makeup-authoring assets/makeup/builtin \\
         --official-root assets/official-packs --report work/default-pack-report.json
 """
@@ -65,6 +68,7 @@ lazy from domain.outfit_pack_makeup import (
     HAIRSTYLE_FEATURE_CORE_DILATION_PX,
     HALF_BODY_RIGS,
     load_makeup_safe_regions,
+    verify_makeup_layers,
 )
 lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_ENSEMBLE_ID, OFFICIAL_OUTFIT_PACK_ID
 
@@ -89,9 +93,7 @@ HEADWEAR_VARIANT_NAMES = ("銀", "银", "Silver", "銀")
 GARMENT_Z, HAIR_BACK_Z, HAIR_FRONT_Z, HEADWEAR_Z = 10, 0, 20, 30
 # The robe leaves the neck bare; every other official skin region is covered.
 VISIBLE_REGIONS = frozenset({"neck"})
-# The ``light`` makeup variant is the classic layer set with its alpha scaled by this factor.
-LIGHT_ALPHA_FACTOR = 0.55
-LIGHT_VARIANT, CLASSIC_VARIANT = "light", "classic"
+CLASSIC_VARIANT, LIGHT_VARIANT = "classic", "light"
 OPAQUE = 255
 # A pipeline registration shift above this many pixels is reported as flagged.
 REGISTRATION_FLAG_PX = 3.0
@@ -112,6 +114,7 @@ LAYER_FILES = {
     "cheeks": "L1_makeup.cheeks.png",
     "lips": "L1_makeup.lips.png",
 }
+LIGHT_LAYER_FILES = {slot: f"L1light_makeup.{slot}.png" for slot in MAKEUP_SLOTS}
 GREY_TOLERANCE = 10
 GREY_MIN, GREY_MAX = 70, 200
 NO_CANDIDATE = -1_000_000
@@ -133,8 +136,11 @@ class Forbidden:
 class SilhouetteResult:
     silhouette: str
     source_sha256: dict[str, str] = field(default_factory=dict)
+    light_source_sha256: dict[str, str] = field(default_factory=dict)
     opaque_pixels: dict[str, int] = field(default_factory=dict)
+    light_opaque_pixels: dict[str, int] = field(default_factory=dict)
     cropped_pixels: dict[str, int] = field(default_factory=dict)
+    light_cropped_pixels: dict[str, int] = field(default_factory=dict)
     hair_face_mask: str = "none"
     face_bbox: tuple[int, int, int, int] = (0, 0, 0, 0)
     headwear_bbox: tuple[int, int, int, int] | None = None
@@ -245,13 +251,6 @@ def alpha_bbox(layer: np.ndarray) -> tuple[int, int, int, int] | None:
     return (int(xs.min()), int(ys.min()), int(xs.max() - xs.min() + 1), int(ys.max() - ys.min() + 1))
 
 
-def scale_alpha(layer: np.ndarray, factor: float) -> np.ndarray:
-    scaled = layer.copy()
-    scaled[:, :, 3] = np.rint(layer[:, :, 3].astype(np.float64) * factor).astype(np.uint8)
-    scaled[scaled[:, :, 3] == 0] = 0
-    return scaled
-
-
 def _probe(candidates: np.ndarray, score: np.ndarray) -> tuple[int, int] | None:
     scored = np.where(candidates, score, NO_CANDIDATE)
     if scored.max() == NO_CANDIDATE:
@@ -302,7 +301,14 @@ def registration_flags(report_path: Path) -> dict[str, list[float]]:
     return flags
 
 
-def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeup_root: Path, makeup_paths: dict) -> SilhouetteResult:
+def process_silhouette(
+    source: Path,
+    light_source: Path,
+    silhouette: str,
+    outfit_assets: Path,
+    makeup_root: Path,
+    makeup_paths: dict,
+) -> SilhouetteResult:
     """Crop, split and write every layer of one silhouette; returns what was done."""
     result = SilhouetteResult(silhouette)
     layers = {}
@@ -322,12 +328,21 @@ def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeu
     result.headwear_bbox = alpha_bbox(layers["headwear"])
     safe = load_makeup_safe_regions()[silhouette]
     for slot in MAKEUP_SLOTS:
+        light_path = light_source / LIGHT_LAYER_FILES[slot]
+        if not light_path.is_file():
+            raise SystemExit(f"Missing independently painted light makeup for {silhouette}: {light_path}")
+        result.light_source_sha256[LIGHT_LAYER_FILES[slot]] = hashlib.sha256(light_path.read_bytes()).hexdigest()
+        light_layer = read_rgba(light_path)
+        if light_layer.shape != layers[slot].shape:
+            raise SystemExit(f"Light makeup canvas mismatch for {silhouette}/{slot}.")
         allowed = np.zeros(shape, dtype=bool)
         for x, y, width, height in safe.rects(slot):
             allowed[y : y + height, x : x + width] = True
         layers[slot], result.cropped_pixels[slot] = crop(layers[slot], ~allowed)
+        light_layer, result.light_cropped_pixels[slot] = crop(light_layer, ~allowed)
         write_png(makeup_root / makeup_paths[(CLASSIC_VARIANT, silhouette, slot)], layers[slot])
-        write_png(makeup_root / makeup_paths[(LIGHT_VARIANT, silhouette, slot)], scale_alpha(layers[slot], LIGHT_ALPHA_FACTOR))
+        write_png(makeup_root / makeup_paths[(LIGHT_VARIANT, silhouette, slot)], light_layer)
+        result.light_opaque_pixels[slot] = int((light_layer[:, :, 3] > 0).sum())
     write_png(outfit_assets / f"{GARMENT_ITEM}-{GARMENT_VARIANT}-{silhouette}-outerwear.png", layers["garment"])
     write_png(outfit_assets / f"{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-front.png", layers["hair"])
     write_png(outfit_assets / f"{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-back.png", np.zeros_like(layers["hair"]))
@@ -447,6 +462,12 @@ def seal(manifest_path: Path, asset_root: Path, output: Path, replace: bool) -> 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--layers", type=Path, required=True, help="directory with one <silhouette>/ folder per required silhouette")
+    parser.add_argument(
+        "--light-layers",
+        type=Path,
+        required=True,
+        help="directory with independently painted light makeup for every required silhouette",
+    )
     parser.add_argument("--outfit-authoring", type=Path, required=True, help="where manifest.json + assets/ of the outfit pack are written")
     parser.add_argument("--makeup-authoring", type=Path, default=ROOT / "assets" / "makeup" / "builtin", help="scaffolded makeup template root")
     parser.add_argument("--official-root", type=Path, default=None, help="sealed archives go here (default: domain OFFICIAL_PACK_ROOT)")
@@ -461,21 +482,36 @@ def main(argv: list[str] | None = None) -> int:
     results = {}
     for silhouette in template["required_silhouettes"]:
         source = arguments.layers / silhouette
+        light_source = arguments.light_layers / silhouette
         if not source.is_dir():
             raise SystemExit(f"Missing silhouette directory: {source}")
+        if not light_source.is_dir():
+            raise SystemExit(f"Missing light makeup silhouette directory: {light_source}")
         results[silhouette] = process_silhouette(
-            source, silhouette, arguments.outfit_authoring / "assets", arguments.makeup_authoring, makeup_paths
+            source,
+            light_source,
+            silhouette,
+            arguments.outfit_authoring / "assets",
+            arguments.makeup_authoring,
+            makeup_paths,
         )
-        print(f"{silhouette}: cropped {results[silhouette].cropped_pixels} hair mask {results[silhouette].hair_face_mask}")
+        print(
+            f"{silhouette}: cropped {results[silhouette].cropped_pixels}; "
+            f"light makeup cropped {results[silhouette].light_cropped_pixels}; "
+            f"hair mask {results[silhouette].hair_face_mask}"
+        )
     manifest_path = arguments.outfit_authoring / MANIFEST
     manifest_path.write_text(json.dumps(outfit_manifest(results), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     official_root = OFFICIAL_PACK_ROOT if arguments.official_root is None else arguments.official_root
     outfit_name = f"{OFFICIAL_OUTFIT_PACK_ID}.mohan-outfit"
     outfit_sha = seal(manifest_path, arguments.outfit_authoring, official_root / outfit_name, arguments.replace)
     makeup_id = json.loads((arguments.makeup_authoring / MANIFEST).read_text(encoding="utf-8"))["id"]
-    makeup_sha = seal(arguments.makeup_authoring / MANIFEST, arguments.makeup_authoring, official_root / f"{makeup_id}.mohan-outfit", arguments.replace)
+    makeup_output = official_root / f"{makeup_id}.mohan-outfit"
+    makeup_sha = seal(arguments.makeup_authoring / MANIFEST, arguments.makeup_authoring, makeup_output, arguments.replace)
+    verify_makeup_layers(makeup_output)
+    print(f"verified makeup safe regions: {makeup_output}")
     report = {
-        "light_alpha_factor": LIGHT_ALPHA_FACTOR,
+        "makeup_variant_sources": {"classic": "pipeline layers", "light": "independently painted layers"},
         "sealed": {outfit_name: outfit_sha, f"{makeup_id}.mohan-outfit": makeup_sha},
         "silhouettes": {silhouette: asdict(result) for silhouette, result in results.items()},
     }
