@@ -91,8 +91,8 @@ def main() -> int:
             row_label,
         )
         base = load_image(source / base_name)
-        face = load_image(source / f"physics_face{suffix}.png")
-        eyes = load_image(source / f"physics_eyes{suffix}.png")
+        face = load_image(source / f"v120_face{suffix}.png")
+        eyes = load_image(source / f"v120_eyes{suffix}.png")
         for column_index, gaze in enumerate(gazes):
             frame = attention_frame(base, face, eyes, *gaze)
             painter.drawImage(

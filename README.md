@@ -102,14 +102,14 @@
 
 <table>
   <tr>
-    <td width="33%" align="center"><img src="assets/expressions/proud_front.png" width="220" alt="墨寒傲嬌"><br><strong>「妾才沒有等你的 Star，只是在確認軍心是否可用。」</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/thinking_front.png" width="220" alt="墨寒思考"><br><strong>「這段邏輯尚可。若再補上測試，妾便勉強准它入主分支。」</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/shy_cute_front.png" width="220" alt="墨寒嬌羞"><br><strong>「你願意送來 PR？妾、妾只是替主上記下功勞。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="墨寒傲嬌"><br><strong>「妾才沒有等你的 Star，只是在確認軍心是否可用。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/thinking_front.png" width="220" alt="墨寒思考"><br><strong>「這段邏輯尚可。若再補上測試，妾便勉強准它入主分支。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/shy_cute_front.png" width="220" alt="墨寒嬌羞"><br><strong>「你願意送來 PR？妾、妾只是替主上記下功勞。」</strong></td>
   </tr>
   <tr>
-    <td width="33%" align="center"><img src="assets/expressions/mock_hit_front.png" width="220" alt="墨寒佯怒"><br><strong>「未經測試便想合併？手伸出來。妾只敲一下。」</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/gentle_smile_front.png" width="220" alt="墨寒開心"><br><strong>「全數綠燈……做得好。別誤會，妾只是尊重好工程。」</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/worried_front.png" width="220" alt="墨寒關心"><br><strong>「Bug 可以明日再查。你若累倒，誰來陪妾守著赤焰劍？」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/mock_hit_front.png" width="220" alt="墨寒佯怒"><br><strong>「未經測試便想合併？手伸出來。妾只敲一下。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/gentle_smile_front.png" width="220" alt="墨寒開心"><br><strong>「全數綠燈……做得好。別誤會，妾只是尊重好工程。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/worried_front.png" width="220" alt="墨寒關心"><br><strong>「Bug 可以明日再查。你若累倒，誰來陪妾守著赤焰劍？」</strong></td>
   </tr>
 </table>
 
@@ -533,14 +533,14 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <table>
   <tr>
-    <td width="33%" align="center"><img src="assets/expressions/proud_front.png" width="220" alt="墨寒傲娇"><br><strong>“妾才没有等你的 Star，只是在确认军心是否可用。”</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/thinking_front.png" width="220" alt="墨寒思考"><br><strong>“这段逻辑尚可。若再补上测试，妾便勉强准它进入主分支。”</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/shy_cute_front.png" width="220" alt="墨寒娇羞"><br><strong>“你愿意送来 PR？妾、妾只是替主上记下功劳。”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="墨寒傲娇"><br><strong>“妾才没有等你的 Star，只是在确认军心是否可用。”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/thinking_front.png" width="220" alt="墨寒思考"><br><strong>“这段逻辑尚可。若再补上测试，妾便勉强准它进入主分支。”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/shy_cute_front.png" width="220" alt="墨寒娇羞"><br><strong>“你愿意送来 PR？妾、妾只是替主上记下功劳。”</strong></td>
   </tr>
   <tr>
-    <td width="33%" align="center"><img src="assets/expressions/mock_hit_front.png" width="220" alt="墨寒佯怒"><br><strong>“未经测试便想合并？手伸出来。妾只敲一下。”</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/gentle_smile_front.png" width="220" alt="墨寒开心"><br><strong>“全部绿灯……做得好。别误会，妾只是尊重好工程。”</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/worried_front.png" width="220" alt="墨寒关心"><br><strong>“Bug 可以明日再查。你若累倒，谁来陪妾守着赤焰剑？”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/mock_hit_front.png" width="220" alt="墨寒佯怒"><br><strong>“未经测试便想合并？手伸出来。妾只敲一下。”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/gentle_smile_front.png" width="220" alt="墨寒开心"><br><strong>“全部绿灯……做得好。别误会，妾只是尊重好工程。”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/worried_front.png" width="220" alt="墨寒关心"><br><strong>“Bug 可以明日再查。你若累倒，谁来陪妾守着赤焰剑？”</strong></td>
   </tr>
 </table>
 
@@ -964,14 +964,14 @@ The video and screenshots were captured from the real Windows application with a
 
 <table>
   <tr>
-    <td width="33%" align="center"><img src="assets/expressions/proud_front.png" width="220" alt="Proud MoHan"><br><strong>“I am not waiting for your Star. I am merely assessing morale.”</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/thinking_front.png" width="220" alt="Thinking MoHan"><br><strong>“The logic is acceptable. Add tests, and I may permit it onto main.”</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/shy_cute_front.png" width="220" alt="Shy MoHan"><br><strong>“A PR? I-I am only recording your service for my lord.”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="Proud MoHan"><br><strong>“I am not waiting for your Star. I am merely assessing morale.”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/thinking_front.png" width="220" alt="Thinking MoHan"><br><strong>“The logic is acceptable. Add tests, and I may permit it onto main.”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/shy_cute_front.png" width="220" alt="Shy MoHan"><br><strong>“A PR? I-I am only recording your service for my lord.”</strong></td>
   </tr>
   <tr>
-    <td width="33%" align="center"><img src="assets/expressions/mock_hit_front.png" width="220" alt="Mock-angry MoHan"><br><strong>“Merge without tests? Your hand, please. Just one tap.”</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/gentle_smile_front.png" width="220" alt="Happy MoHan"><br><strong>“All checks green... well done. Do not misunderstand; I merely respect good engineering.”</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/worried_front.png" width="220" alt="Concerned MoHan"><br><strong>“The bug can wait until tomorrow. If you collapse, who will guard the Crimson Flame Sword with me?”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/mock_hit_front.png" width="220" alt="Mock-angry MoHan"><br><strong>“Merge without tests? Your hand, please. Just one tap.”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/gentle_smile_front.png" width="220" alt="Happy MoHan"><br><strong>“All checks green... well done. Do not misunderstand; I merely respect good engineering.”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/worried_front.png" width="220" alt="Concerned MoHan"><br><strong>“The bug can wait until tomorrow. If you collapse, who will guard the Crimson Flame Sword with me?”</strong></td>
   </tr>
 </table>
 
@@ -1395,14 +1395,14 @@ Copyright © 2026 **CHOU MING HUA** and MoHan Desktop Assistant contributors.
 
 <table>
   <tr>
-    <td width="33%" align="center"><img src="assets/expressions/proud_front.png" width="220" alt="誇らしげな墨寒"><br><strong>「Star を待っているのではありません。軍心が使えるか見ているだけです。」</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/thinking_front.png" width="220" alt="考える墨寒"><br><strong>「このロジックはまずまずです。テストを足せば、main に入ることを許してもよいでしょう。」</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/shy_cute_front.png" width="220" alt="照れる墨寒"><br><strong>「PR を送るのですか？妾、妾は主上のために功績を記すだけです。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="誇らしげな墨寒"><br><strong>「Star を待っているのではありません。軍心が使えるか見ているだけです。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/thinking_front.png" width="220" alt="考える墨寒"><br><strong>「このロジックはまずまずです。テストを足せば、main に入ることを許してもよいでしょう。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/shy_cute_front.png" width="220" alt="照れる墨寒"><br><strong>「PR を送るのですか？妾、妾は主上のために功績を記すだけです。」</strong></td>
   </tr>
   <tr>
-    <td width="33%" align="center"><img src="assets/expressions/mock_hit_front.png" width="220" alt="怒ったふりをする墨寒"><br><strong>「テストなしで merge しますか？手を出してください。一度だけ叩きます。」</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/gentle_smile_front.png" width="220" alt="嬉しそうな墨寒"><br><strong>「すべて green……よくできました。誤解しないでください、良い工程を尊重しただけです。」</strong></td>
-    <td width="33%" align="center"><img src="assets/expressions/worried_front.png" width="220" alt="心配する墨寒"><br><strong>「Bug は明日でも調べられます。倒れたら、誰が妾と赤焰剣を守るのですか？」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/mock_hit_front.png" width="220" alt="怒ったふりをする墨寒"><br><strong>「テストなしで merge しますか？手を出してください。一度だけ叩きます。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/gentle_smile_front.png" width="220" alt="嬉しそうな墨寒"><br><strong>「すべて green……よくできました。誤解しないでください、良い工程を尊重しただけです。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/worried_front.png" width="220" alt="心配する墨寒"><br><strong>「Bug は明日でも調べられます。倒れたら、誰が妾と赤焰剣を守るのですか？」</strong></td>
   </tr>
 </table>
 

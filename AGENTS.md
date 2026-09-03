@@ -19,6 +19,7 @@
 - `assets/pose-atlas/v4-layered/`：600 層（24 視角 × 25 層），全部通過檔案閘門；Z-order 重組與母圖 RGB 零差；層邊界接縫 Alpha 已修復（證據見 docs/release-evidence/pose-atlas-v4-layered-seam-qa/）。
 - 身份權威：使用者 2026-08-26 三批「真墨寒」展示確認；授權：v4-source/PROVENANCE.json（權利人 2026-08-16 確認）。
 - 修改任何上述素材前必須備份並記錄修改前 SHA-256。
+- 2026-09-02 執行期切換：`assets/pose-atlas/v5-base/`（24 主視角）與 `assets/pose-atlas/v5-base-layered/`（600 層）成為執行期、封裝與 packaged self-test 實際載入的二代素體；目前世代的目錄名只在 `domain/constants.py`（`POSE_ATLAS_ROOT_NAME`／`POSE_ATLAS_LAYERED_ROOT_NAME`）定義一次。`v4`／`v4-layered` 保留為封存與 golden 建置器的一代校準參考，不刪除；`BODY_PROFILE_ID` 已於同日升為 `mohan-body-v2`（issue #140 選項 3：一代服裝套件於匯入與執行期一律拒絕，不設寬限）。
 
 ### 通用要求
 
@@ -44,6 +45,7 @@
 - `assets/pose-atlas/v4-layered/`：600 层（24 视角 × 25 层），全部通过文件闸门；Z-order 重组与母图 RGB 零差；层边界接缝 Alpha 已修复（证据见 docs/release-evidence/pose-atlas-v4-layered-seam-qa/）。
 - 身份权威：用户 2026-08-26 三批「真墨寒」展示确认；授权：v4-source/PROVENANCE.json（权利人 2026-08-16 确认）。
 - 修改任何上述素材前必须备份并记录修改前 SHA-256。
+- 2026-09-02 运行时切换：`assets/pose-atlas/v5-base/`（24 主视角）与 `assets/pose-atlas/v5-base-layered/`（600 层）成为运行时、封装与 packaged self-test 实际加载的二代素体；当前世代的目录名只在 `domain/constants.py`（`POSE_ATLAS_ROOT_NAME`／`POSE_ATLAS_LAYERED_ROOT_NAME`）定义一次。`v4`／`v4-layered` 保留为封存与 golden 构建器的一代校准参考，不删除；`BODY_PROFILE_ID` 已于同日升为 `mohan-body-v2`（issue #140 选项 3：一代服装套件在导入与运行时一律拒绝，不设宽限）。
 
 ### 通用要求
 
@@ -69,6 +71,7 @@ Background lesson: the PoseAtlas 24 master views and 600 layered assets were sub
 - `assets/pose-atlas/v4-layered/`: 600 layers (24 views × 25 layers), all passing the file gate; Z-order recomposition matches the master views with zero RGB difference; layer-boundary seam alpha repaired (evidence in docs/release-evidence/pose-atlas-v4-layered-seam-qa/).
 - Identity authority: the owner's three "true MoHan" batches confirmed on 2026-08-26; licensing: v4-source/PROVENANCE.json (rights holder confirmed 2026-08-16).
 - Any modification to these assets requires a prior backup and a recorded pre-modification SHA-256.
+- Runtime switch on 2026-09-02: `assets/pose-atlas/v5-base/` (24 master views) and `assets/pose-atlas/v5-base-layered/` (600 layers) are the second-generation body that the runtime, packaging, and the packaged self-test actually load; the current generation's directory names are defined once, in `domain/constants.py` (`POSE_ATLAS_ROOT_NAME` / `POSE_ATLAS_LAYERED_ROOT_NAME`). `v4` / `v4-layered` stay as the archive and as the generation-1 calibration reference of the golden builder and are not deleted; `BODY_PROFILE_ID` was bumped to `mohan-body-v2` the same day (issue #140, option 3: generation-1 outfit packs are rejected at import and at runtime with no grace period).
 
 ### General requirements
 
@@ -94,6 +97,7 @@ Background lesson: the PoseAtlas 24 master views and 600 layered assets were sub
 - `assets/pose-atlas/v4-layered/`：600 レイヤー（24 視点 × 25 層）、全ファイルゲート合格。Z-order 再合成は母画像と RGB 差ゼロ。レイヤー境界の継ぎ目アルファは修復済み（証拠は docs/release-evidence/pose-atlas-v4-layered-seam-qa/）。
 - 身元権威：オーナーが 2026-08-26 に三批の「真の墨寒」提示で確認。ライセンス：v4-source/PROVENANCE.json（権利者 2026-08-16 確認）。
 - 上記素材の変更前には必ずバックアップと変更前 SHA-256 の記録を行うこと。
+- 2026-09-02 の実行時切替：`assets/pose-atlas/v5-base/`（24 主視点）と `assets/pose-atlas/v5-base-layered/`（600 層）が、実行時・パッケージング・packaged self-test が実際に読み込む第二世代素体となった。現行世代のディレクトリ名は `domain/constants.py`（`POSE_ATLAS_ROOT_NAME`／`POSE_ATLAS_LAYERED_ROOT_NAME`）で一度だけ定義する。`v4`／`v4-layered` はアーカイブおよび golden ビルダーの第一世代校正参照として残し、削除しない。`BODY_PROFILE_ID` は同日に `mohan-body-v2` へ更新した（issue #140 選択肢 3：第一世代の衣装パックはインポート時と実行時に必ず拒否し、猶予は設けない）。
 
 ### 一般要件
 

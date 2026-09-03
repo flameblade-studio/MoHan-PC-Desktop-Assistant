@@ -27,7 +27,8 @@ lazy from application.self_generating_wardrobe import (
     GeneratedOutfitDraft,
     OutfitCreationRequest,
 )
-lazy from domain.outfit_pack import POSE_ATLAS_SILHOUETTES
+lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME, POSE_ATLAS_ROOT_NAME
+lazy from domain.outfit_pack import AUTHORING_TEMPLATE, AUTHORING_VERSION, BODY_PROFILE_ID, BODY_PROFILE_VERSION, POSE_ATLAS_SILHOUETTES
 lazy from domain.outfit_generation import (
     OutfitGenerationCancelled,
     OutfitImageGenerationError,
@@ -275,7 +276,7 @@ def _reference_path(root: Path, view_id: str) -> Path:
     }
     if view_id in half:
         return half[view_id]
-    return root / "assets" / "pose-atlas" / "v4" / f"{view_id}.png"
+    return root / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME / f"{view_id}.png"
 
 
 def _decode_registered_png(
@@ -593,14 +594,14 @@ class OpenAIOutfitDraftGenerator:
             "pack_version": "1.0.0",
             "app_range": ">=4.0.0,<5.0.0",
             "display_names": _localized("墨寒自主設計服裝"),
-            "compatible_body_profile": {"id": "mohan-body-v1", "version": 1},
+            "compatible_body_profile": {"id": BODY_PROFILE_ID, "version": BODY_PROFILE_VERSION},
             "source": {
                 "kind": "original",
                 "author": "MoHan autonomous wardrobe with OpenAI GPT Image 2",
                 "license": "Project License",
                 "reference_included": False,
             },
-            "authoring": {"template": "mohan-official-poses", "version": 2},
+            "authoring": {"template": AUTHORING_TEMPLATE, "version": AUTHORING_VERSION},
             "looks": [{
                 "id": "contextual-outfit",
                 "display_names": _localized("情境衣裝"),
@@ -661,7 +662,7 @@ class OpenAIOutfitDraftGenerator:
 
 def _protected_face_path(root: Path, view_id: str) -> Path:
     if view_id in POSE_ATLAS_SILHOUETTES:
-        return root / "assets" / "pose-atlas" / "v4-layered" / f"{view_id}_base.png"
+        return root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME / f"{view_id}_base.png"
     pose = {
         "cheek-rest": "cheek",
         "left-neutral": "lean",

@@ -8,6 +8,7 @@ lazy import numpy as np
 
 lazy import hashlib
 
+lazy from domain.constants import POSE_ATLAS_ROOT_NAME
 lazy from tools.audit_pose_atlas_identity import (
     AUDIT_SCHEMA,
     BASELINE_SCHEMA,
@@ -154,22 +155,29 @@ def test_current_evidence_passes_via_owner_accepted_baseline() -> None:
     assert evidence["passed"] is True
     assert evidence["issue_count"] == 0
     assert evidence["waived_issue_count"] > 0
+    # Generation 2 (v5-base, owner-accepted 2026-09-02): the waived classes are
+    # the bare-forehead profile bulge and the non-monotonic head-turn pairs.
+    # v4's green/cyan mouth pixels do not exist in v5-base, so nothing waives
+    # them; every waived code must still be one the pinned baseline names.
     assert evidence["waived_issues_by_code"]["forehead_outward_bulge"] > 0
-    assert evidence["waived_issues_by_code"]["mouth_green_cyan_pixels"] > 0
-    baseline = load_identity_baseline(
-        ROOT / "assets/pose-atlas/v4/identity-audit-baseline.json"
-    )
+    assert evidence["waived_issues_by_code"]["adjacent_face_registration_jump"] > 0
+    atlas_root = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
+    baseline = load_identity_baseline(atlas_root / "identity-audit-baseline.json")
     assert baseline
+    baseline_codes: set[str] = set()
     for view_id, (sha256, codes) in baseline.items():
-        path = ROOT / "assets/pose-atlas/v4" / f"{view_id}.png"
+        path = atlas_root / f"{view_id}.png"
         assert hashlib.sha256(path.read_bytes()).hexdigest() == sha256
-        assert codes
+        baseline_codes |= codes
+    assert set(evidence["waived_issues_by_code"]) <= baseline_codes
+    assert evidence["waived_issue_count"] == sum(
+        evidence["waived_issues_by_code"].values()
+    )
     raw = json.loads(
-        (ROOT / "assets/pose-atlas/v4/identity-audit-baseline.json").read_text(
-            encoding="utf-8"
-        )
+        (atlas_root / "identity-audit-baseline.json").read_text(encoding="utf-8")
     )
     assert raw["schema"] == BASELINE_SCHEMA
+    assert POSE_ATLAS_ROOT_NAME in evidence["atlas_root"]
 
 
 def test_windows_build_places_static_identity_gate_before_packaging() -> None:

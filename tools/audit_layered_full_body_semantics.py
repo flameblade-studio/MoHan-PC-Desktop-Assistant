@@ -26,12 +26,16 @@ lazy from typing import Any
 lazy import cv2
 lazy import numpy as np
 
+lazy from domain.constants import (
+    POSE_ATLAS_LAYERED_ROOT_NAME,
+    POSE_ATLAS_ROOT_NAME,
+)
 lazy from infrastructure.layered_full_body_assets import VIEW_IDS
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_ASSET_ROOT = ROOT / "assets" / "pose-atlas" / "v4-layered"
-DEFAULT_AUTHORITY_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
+DEFAULT_ASSET_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
+DEFAULT_AUTHORITY_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
 DEFAULT_DETECTOR_MODEL = (
     ROOT / "assets" / "vision-models" / "face_detection_yunet_2023mar.onnx"
 )

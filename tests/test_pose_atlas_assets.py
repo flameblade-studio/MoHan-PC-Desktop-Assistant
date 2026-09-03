@@ -17,7 +17,18 @@ lazy from domain.face_rig import (
     Viseme,
 )
 lazy from application.full_body_render_adapter import AUTHORED_FULL_BODY_SLOT
+lazy from domain.constants import (
+    POSE_ATLAS_GENERATION,
+    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
+    POSE_ATLAS_LAYERED_ROOT_NAME,
+    POSE_ATLAS_RELATIVE_ROOT,
+    POSE_ATLAS_ROOT_NAME,
+)
 lazy from presentation.pose_atlas_assets import PoseAtlasAssets
+
+EXPECTED_GENERATION = 2
+VIEW_RING_COUNT = 24
+FULL_BODY_LAYER_COUNT = 25
 
 
 def _neutral() -> FaceMotionFrame:
@@ -32,10 +43,25 @@ def _neutral() -> FaceMotionFrame:
 
 def run() -> None:
     application = QApplication.instance() or QApplication([])
-    root = Path(__file__).resolve().parents[1] / "assets" / "pose-atlas" / "v4"
+    repo = Path(__file__).resolve().parents[1]
+    # One source of truth for the current generation: the relative roots must
+    # be spelled from the root names, and both directories must be complete.
+    assert POSE_ATLAS_RELATIVE_ROOT == f"assets/pose-atlas/{POSE_ATLAS_ROOT_NAME}"
+    assert POSE_ATLAS_LAYERED_RELATIVE_ROOT == (
+        f"assets/pose-atlas/{POSE_ATLAS_LAYERED_ROOT_NAME}"
+    )
+    assert POSE_ATLAS_ROOT_NAME == "v5-base"
+    assert POSE_ATLAS_GENERATION == EXPECTED_GENERATION
+    root = repo / POSE_ATLAS_RELATIVE_ROOT
+    assert len(tuple(root.glob("yaw*-pitch+00.png"))) == VIEW_RING_COUNT
+    layered = repo / POSE_ATLAS_LAYERED_RELATIVE_ROOT
+    assert len(tuple(layered.glob("yaw*-pitch+00_*.png"))) == (
+        VIEW_RING_COUNT * FULL_BODY_LAYER_COUNT
+    )
     assets = PoseAtlasAssets(root, image_size=465)
     assert assets.enabled
     assert assets.release_eligible
+    assert assets.generation == EXPECTED_GENERATION
     front = assets.resolve_static("front-crossed", "front-000", _neutral())
     back = assets.resolve_static("back-full", "back-180", _neutral())
     assert front is not None and back is not None

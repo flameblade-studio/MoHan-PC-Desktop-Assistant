@@ -3,8 +3,8 @@
 ## 繁體中文
 
 本目錄保存 `tools/audit_layered_full_body_semantics.py` 對
-`assets/pose-atlas/v4-layered/`（24 視角 × 25 層）的語義稽核輸出
-`layered-full-body-semantic-audit.json`。
+`assets/pose-atlas/v5-base-layered/`（24 視角 × 25 層）的語義稽核輸出
+`layered-full-body-semantic-audit.json`（2026-09-02 起為二代素體；一代 `v4-layered` 的證據已被取代，目錄保留為封存）。
 
 - 報告 schema：`mohan.layered-full-body-semantic-audit.v1`
 - 退出碼契約：
@@ -18,8 +18,8 @@
 ## 简体中文
 
 本目录保存 `tools/audit_layered_full_body_semantics.py` 对
-`assets/pose-atlas/v4-layered/`（24 视角 × 25 层）的语义稽核输出
-`layered-full-body-semantic-audit.json`。
+`assets/pose-atlas/v5-base-layered/`（24 视角 × 25 层）的语义稽核输出
+`layered-full-body-semantic-audit.json`（2026-09-02 起为二代素体；一代 `v4-layered` 的证据已被取代，目录保留为封存）。
 
 - 报告 schema：`mohan.layered-full-body-semantic-audit.v1`
 - 退出码契约：
@@ -34,7 +34,7 @@
 
 This directory stores `layered-full-body-semantic-audit.json`, the output of
 `tools/audit_layered_full_body_semantics.py` over
-`assets/pose-atlas/v4-layered/` (24 views × 25 layers).
+`assets/pose-atlas/v5-base-layered/` (24 views × 25 layers; the second-generation body since 2026-09-02 — the generation-1 `v4-layered` evidence is superseded and that directory is kept as an archive).
 
 - Report schema: `mohan.layered-full-body-semantic-audit.v1`
 - Exit-code contract:
@@ -48,8 +48,8 @@ PyInstaller; any non-`0` exit aborts packaging.
 ## 日本語
 
 本ディレクトリは `tools/audit_layered_full_body_semantics.py` による
-`assets/pose-atlas/v4-layered/`（24 視点 × 25 層）のセマンティック監査出力
-`layered-full-body-semantic-audit.json` を保存する。
+`assets/pose-atlas/v5-base-layered/`（24 視点 × 25 層）のセマンティック監査出力
+`layered-full-body-semantic-audit.json` を保存する（2026-09-02 以降は第二世代素体。第一世代 `v4-layered` の証拠は置き換えられ、ディレクトリはアーカイブとして残る）。
 
 - レポート schema：`mohan.layered-full-body-semantic-audit.v1`
 - 終了コード契約：

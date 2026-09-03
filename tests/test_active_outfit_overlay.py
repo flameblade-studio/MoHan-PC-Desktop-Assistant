@@ -7,12 +7,14 @@ lazy from pathlib import Path
 lazy from types import SimpleNamespace
 
 lazy import pytest
-lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice, QPoint
-lazy from PySide6.QtGui import QColor, QImage, QPixmap
+lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice, QPoint, QRect
+lazy from PySide6.QtGui import QColor, QImage, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from infrastructure import active_outfit_overlay as adapter_module
+lazy from domain import outfit_pack
 lazy from domain.outfit_pack import (
+    BODY_PROFILE_ID,
     AppearanceAsset,
     AppearanceItem,
     AppearanceVariant,
@@ -75,6 +77,7 @@ def _configure(
     encoded: bytes,
     *,
     anchor: tuple[int, int] = (20, 500),
+    body_profile: str = BODY_PROFILE_ID,
 ) -> None:
     store = root / "store"
     packages = store / "packages"
@@ -106,7 +109,7 @@ def _configure(
         "original",
         "artist",
         "MIT",
-        "mohan-body-v1",
+        body_profile,
         (item,),
         (),
     )
@@ -187,7 +190,10 @@ def test_dev_app_version_tolerates_range_comparison(
 
 def test_missing_optional_category_in_active_state_is_transparent_builtin(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    # Without the official packs (a stripped build) an unlisted slot stays the bare base.
+    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
     store = tmp_path / "store"
     store.mkdir()
     (store / "active.json").write_text(
@@ -206,9 +212,14 @@ def test_missing_optional_category_in_active_state_is_transparent_builtin(
     assert resolve_active_selection(store, "jewelry").status == "builtin"
 
 
-def test_bangs_mask_allows_only_upper_face_and_still_protects_eye_features(
+def test_hair_is_clipped_only_out_of_the_feature_core_not_the_face_box(
     tmp_path: Path,
 ) -> None:
+    """Hair falls over the brow and cheeks; only the eye/mouth core is off limits.
+
+    Garments keep the full protected-face rule, so the same cheek pixel stays
+    forbidden for them.
+    """
     _app()
     _authority(tmp_path)
     adapter = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
@@ -224,7 +235,10 @@ def test_bangs_mask_allows_only_upper_face_and_still_protects_eye_features(
     )
     assert not forbidden.contains(QPoint(600, 120))
     assert forbidden.contains(QPoint(600, 250))
-    assert forbidden.contains(QPoint(600, 400))
+    assert not forbidden.contains(QPoint(600, 400))
+    garment_forbidden = adapter._forbidden_face_region("garment", item, variant, "front-crossed")
+    assert garment_forbidden.contains(QPoint(600, 250))
+    assert garment_forbidden.contains(QPoint(600, 400))
 
 
 def test_compositor_uses_each_layers_own_face_clip(tmp_path: Path) -> None:
@@ -241,13 +255,15 @@ def test_compositor_uses_each_layers_own_face_clip(tmp_path: Path) -> None:
         ),
         "front-crossed",
     )
-    adapter._layers_by_view["front-crossed"] = ((layer, 0, 0, forbidden),)
+    allowed = QRegion(QRect(0, 0, CANVAS, CANVAS)).subtracted(forbidden)
+    adapter._layers_by_view["front-crossed"] = ((layer, 0, 0, allowed, 1.0),)
     frame = QPixmap(CANVAS, CANVAS)
     frame.fill(QColor(240, 240, 240, 255))
     result = adapter.apply(frame, "front-crossed").toImage()
     assert result.pixelColor(600, 120) == QColor(40, 30, 20, 255)
     assert result.pixelColor(600, 250) == QColor(240, 240, 240, 255)
-    assert result.pixelColor(600, 400) == QColor(240, 240, 240, 255)
+    # The cheek is no longer part of the hair clip.
+    assert result.pixelColor(600, 400) == QColor(40, 30, 20, 255)
 
 
 def test_garment_and_accessory_coexist_in_global_z_order(
@@ -303,7 +319,7 @@ def test_garment_and_accessory_coexist_in_global_z_order(
         "original",
         "artist",
         "MIT",
-        "mohan-body-v1",
+        "mohan-body-v2",
         (
             AppearanceItem("garment", "robe", frozendict(), (garment_variant,)),
             AppearanceItem("jewelry", "jewel", frozendict(), (jewelry_variant,)),
@@ -393,7 +409,7 @@ def test_transparent_compatibility_hair_does_not_hide_generated_garment(
         "original",
         "provider",
         "Project License",
-        "mohan-body-v1",
+        "mohan-body-v2",
         (
             AppearanceItem("garment", "look", frozendict(), (garment_variant,)),
             AppearanceItem("hairstyle", "hair", frozendict(), (hair_variant,)),
@@ -424,3 +440,28 @@ def test_transparent_compatibility_hair_does_not_hide_generated_garment(
         "front-crossed",
     )
     assert result.toImage().pixelColor(40, 520).blue() == OUTFIT_BLUE
+
+
+def test_stale_active_pack_restores_builtin_and_notifies_once(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Issue #140 option 3: a generation-1 pack never renders and never fails silently."""
+    _app()
+    _authority(tmp_path)
+    _configure(monkeypatch, tmp_path, _encoded_layer(), body_profile="mohan-body-v1")
+    notices: list[str] = []
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store",
+        tmp_path,
+        on_stale_body_profile=lambda: notices.append("body-profile-outdated"),
+    )
+    frame = QPixmap(CANVAS, CANVAS)
+    frame.fill(QColor(240, 240, 240, 255))
+    first = overlay.apply(frame, "front-crossed")
+    second = overlay.apply(frame, "front-crossed")
+    assert first.toImage() == frame.toImage()
+    assert second.toImage() == frame.toImage()
+    assert notices == ["body-profile-outdated"]
+    active = json.loads((tmp_path / "store" / "active.json").read_text(encoding="utf-8"))
+    assert {value["pack_id"] for value in active.values()} == {"builtin"}

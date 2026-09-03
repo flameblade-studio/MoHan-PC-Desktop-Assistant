@@ -58,6 +58,38 @@ GESTURE_SPEECH_EXPRESSIONS = frozenset(
     }
 )
 EXPRESSION_SPEECH_EXPRESSIONS = frozenset(EXPRESSION_POSES)
+# Appearance-pack silhouette rendered under each half-body pose, and the four
+# gesture silhouettes whose body differs from the neutral pose: the official
+# pack ships garment/hair/headwear layers cut on those gesture portraits, so
+# the runtime must both draw the gesture portrait and dress it with its own
+# layers.  Speech (``_speech_*``) and blink (``_speech_blink``) frames of a
+# gesture inherit its silhouette.
+POSE_OUTFIT_SILHOUETTES = frozendict({
+    "cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed",
+})
+GESTURE_OUTFIT_SILHOUETTES = frozendict({
+    "mock_scold": "front-mock-scold",
+    "mock_hit_front": "front-mock-hit",
+    "eureka_front": "front-eureka",
+    "exasperated_front": "front-exasperated",
+})
+SPEECH_FRAME_MARKER = "_speech_"
+
+
+def gesture_portrait_expression(expression: str) -> str | None:
+    """The gesture portrait an expression (or one of its speech/blink frames) is drawn on."""
+    base = str(expression).split(SPEECH_FRAME_MARKER, 1)[0]
+    return base if base in GESTURE_OUTFIT_SILHOUETTES else None
+
+
+def outfit_silhouette(expression: str, pose: str) -> str:
+    """Silhouette whose appearance layers dress ``expression`` shown in ``pose``."""
+    gesture = gesture_portrait_expression(expression)
+    if gesture is not None:
+        return GESTURE_OUTFIT_SILHOUETTES[gesture]
+    return POSE_OUTFIT_SILHOUETTES.get(str(pose), POSE_OUTFIT_SILHOUETTES["front"])
+
+
 EXPRESSION_SPEECH_FRAMES = frozendict({
     expression: frozendict({
         frame: f"{expression}_speech_{frame}"
@@ -131,27 +163,17 @@ GESTURE_SPEECH_MOUTH_RECTS = frozendict({
 CHEEK_SPEECH_CLOSED_EXPRESSION = "idle_speech_neutral"
 HAPPY_SPEECH_CLOSED_EXPRESSION = "happy_speech_neutral"
 EXPRESSION_FACE_OFFSETS = frozendict({
-    "glance": (0, 0), "caught": (0, 1), "happy": (0, 0),
-    "worried": (0, 0), "reminder": (0, 0), "thinking_front": (3, 0),
-    "gentle_smile_front": (0, 0), "worried_front": (0, 0),
-    "shy_front": (1, 0), "mock_scold": (5, 3), "surprised_front": (0, 0),
-    "relieved_front": (0, 0), "tired_front": (0, 0), "proud_front": (0, -1),
-    "shy_cute_front": (0, 0), "mock_hit_front": (1, -1),
-    "attentive_front": (1, 3), "determined_front": (0, 0),
-    "restrained_amused_front": (0, 0), "exasperated_front": (-1, 6),
-    "eureka_front": (-1, -1), "protective_front": (0, -4),
+    "glance": (0, 0), "caught": (0, 0), "happy": (0, 0),
+    "worried": (0, 0), "reminder": (0, 0), "thinking_front": (0, 0),
+    "gentle_smile_front": (0, 0), "worried_front": (0, 0), "shy_front": (0, 0),
+    "mock_scold": (0, 0), "surprised_front": (0, 0), "relieved_front": (0, 0),
+    "tired_front": (0, 0), "proud_front": (0, 0), "shy_cute_front": (0, 0),
+    "mock_hit_front": (0, 2), "attentive_front": (0, 0), "determined_front": (0, 1),
+    "restrained_amused_front": (0, 0), "exasperated_front": (-1, 1), "eureka_front": (0, 0),
+    "protective_front": (0, 0),
 })
-EXPRESSION_EYE_OFFSETS = frozendict({
-    **EXPRESSION_FACE_OFFSETS, "caught": (0, 3), "reminder": (0, 1),
-    "thinking_front": (4, -3), "surprised_front": (0, -1),
-    "attentive_front": (1, 2), "determined_front": (0, 1),
-    "restrained_amused_front": (0, 1), "protective_front": (0, -3),
-})
-EXPRESSION_MOUTH_OFFSETS = frozendict({
-    **EXPRESSION_FACE_OFFSETS, "caught": (0, 0), "mock_scold": (4, 4),
-    "proud_front": (0, 0), "mock_hit_front": (1, -2),
-    "eureka_front": (0, 0), "protective_front": (0, -3),
-})
+EXPRESSION_EYE_OFFSETS = frozendict({**EXPRESSION_FACE_OFFSETS})
+EXPRESSION_MOUTH_OFFSETS = frozendict({**EXPRESSION_FACE_OFFSETS})
 CHARACTER_CANVAS_WIDTH = 470
 CHARACTER_IMAGE_SIZE = 465
 CHARACTER_BASE_Y = 215
