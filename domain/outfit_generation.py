@@ -16,3 +16,28 @@ class OutfitGenerationCancelled(RuntimeError):
     分辨「這次沒做成」與「使用者按了緊急停止」。混在一起的後果是退避計時器
     把停手記成一次失敗嘗試，接著封鎖使用者下一次真正想要的生成。
     """
+
+
+class OutfitImageGenerationError(RuntimeError):
+    """A sanitized, user-displayable image-provider failure."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        code: str = "provider-error",
+        http_status: int = 0,
+        request_id: str = "",
+        retryable: bool = False,
+    ) -> None:
+        super().__init__(message)
+        self.code = str(code or "provider-error")
+        self.http_status = int(http_status or 0)
+        self.request_id = str(request_id or "")
+        self.retryable = bool(retryable)
+
+    @property
+    def public_status(self) -> str:
+        """Return a stable, secret-free status suitable for UI and audit."""
+
+        return f"failed:{self.code}"

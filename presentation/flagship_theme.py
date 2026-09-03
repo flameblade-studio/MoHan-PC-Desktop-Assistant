@@ -1,3 +1,13 @@
+"""墨寒・凌霄：控制中心的視覺層。
+
+樣式表的每一個顏色都來自 lingxiao_tokens；這裡只決定「哪個角色用哪個材質」。
+apply_flagship_theme() 仍是唯一入口，介面與 2026-09-02 之前完全相同——
+組合層、主題包重染、測試都不需要改呼叫方式。新增的三件事：
+
+- 面板飾角：帶 mohanRole 的面板在四角掛上金線（lingxiao_widgets.attach_corner_ornaments）。
+- 主鈕光暈：滑鼠移上主動作按鈕時金色外光暈淡入（lingxiao_widgets.GlowOnHover）。
+- 全部動效尊重 Windows「顯示動畫」設定；關掉時樣式不變、動效靜止。
+"""
 from __future__ import annotations
 
 lazy from dataclasses import dataclass
@@ -10,6 +20,7 @@ lazy from PySide6.QtWidgets import (
     QFrame,
     QLabel,
     QLineEdit,
+    QPushButton,
     QScrollArea,
     QSpinBox,
     QTabWidget,
@@ -17,6 +28,16 @@ lazy from PySide6.QtWidgets import (
     QWidget,
 )
 
+lazy from presentation.lingxiao_tokens import (
+    TYPE_SCALE,
+    LingxiaoPalette,
+    font_stack,
+    palette_for,
+)
+lazy from presentation.lingxiao_widgets import (
+    GlowOnHover,
+    attach_corner_ornaments,
+)
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = (
@@ -43,594 +64,481 @@ _MAXIMUM_SCALE = 2.0
 _LONG_LABEL_THRESHOLD = 34
 _LONG_LABEL_PIXEL_WIDTH = 320
 _THEME_ASSET = resource_path("assets/ui/mohan-cloud.svg")
-_LOBBY_BACKDROP = resource_path("assets/ui/mohan-strategist-lobby-v1.png")
+# 面板角落要掛金線飾角的角色。gameLobby 與 featurePage 是容器，不掛。
+_ORNAMENTED_ROLES = frozenset(
+    {
+        "card",
+        "portraitCard",
+        "featureDock",
+        "pageBody",
+        "hero",
+        "desktopCompanionStatusCard",
+        "commandFooter",
+    }
+)
 
 
 def _scaled(value: int, scale: float) -> int:
     return max(1, round(value * scale))
 
 
+def _rgba(hex_color: str, alpha: int) -> str:
+    red, green, blue = (int(hex_color[index:index + 2], 16) for index in (1, 3, 5))
+    return f"rgba({red}, {green}, {blue}, {alpha})"
+
+
 def _theme_stylesheet(scale: float, *, high_contrast: bool) -> str:
-    if high_contrast:
-        colors = {
-            "ink": "#071b2d",
-            "muted": "#29485f",
-            "surface": "#ffffff",
-            "wash": "#e8f3fb",
-            "line": "#315f7d",
-            "silver": "#d8e8f2",
-            "glow": "#0078b8",
-            # White selected text on this needs >=4.5:1 (WCAG 1.4.3); the
-            # glow itself stays for decorative uses (scrollbars, splitters).
-            "selection": "#005a85",
-            "focus": "#0078b8",
-            "disabled": "#687985",
-            "action": "#a63d00",
-        }
-    else:
-        colors = {
-            "ink": "#273047",
-            "muted": "#596781",
-            "surface": "#fffaf7",
-            "wash": "#edf2ff",
-            "line": "#9aaed0",
-            "silver": "#dce6f5",
-            "glow": "#7189c7",
-            # 5.47:1 against white selected text (glow alone is only 3.44:1).
-            "selection": "#56679f",
-            "focus": "#f0d58b",
-            "disabled": "#667085",
-            "action": "#6d67b7",
-        }
-    radius = _scaled(12, scale)
-    padding_y = _scaled(8, scale)
-    padding_x = _scaled(13, scale)
-    tab_padding_y = _scaled(9, scale)
-    tab_padding_x = _scaled(15, scale)
-    scroll_width = _scaled(14, scale)
-    focus_width = _scaled(2, scale)
-    lobby_backdrop = _LOBBY_BACKDROP.as_posix()
+    p: LingxiaoPalette = palette_for(high_contrast=high_contrast)
+    s = lambda value: _scaled(value, scale)  # noqa: E731 - 樣式表裡到處要用
+    fs = {name: s(size) for name, size in TYPE_SCALE.items()}
+    display, caps, body = font_stack("display"), font_stack("caps"), font_stack("body")
+    R = 'QWidget[mohanFlagshipTheme="true"]'  # noqa: N806 - 選擇器前綴
+    glass = f"qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 {_rgba(p.lacquer_2, 214)}, stop:1 {_rgba(p.lacquer, 206)})"
+    gold_fill = f"qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 {p.gold_2}, stop:1 {p.gold})"
+    gold_fill_hover = f"qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #ffe9b8, stop:1 {p.gold_2})"
+    gold_wash = f"qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 {_rgba(p.gold_2, 34)}, stop:1 {_rgba(p.gold, 8)})"
+    arrow = f"border-left: {s(5)}px solid transparent; border-right: {s(5)}px solid transparent;"
     return f"""
-QWidget[mohanFlagshipTheme="true"] {{
-    color: #24375f;
-    background: qradialgradient(
-        cx:0.52, cy:0.35, radius:0.92,
-        fx:0.52, fy:0.35,
-        stop:0 #fff7fb, stop:0.30 #edf3ff,
-        stop:0.68 #d8ddfa, stop:1 #aeb8e7
-    );
+{R} {{
+    color: {p.moon};
+    font-family: {body};
+    font-size: {fs['body']}px;
+    background: qradialgradient(cx:0.68, cy:0.0, radius:1.2, fx:0.68, fy:0.0,
+        stop:0 {p.lacquer_2}, stop:0.45 {p.lacquer}, stop:1 {p.ink});
 }}
-QWidget[mohanFlagshipTheme="true"] QLabel {{
-    color: {colors['ink']};
+{R} QLabel {{ color: {p.moon}; background: transparent; }}
+{R} QLabel[mohanRole="muted"] {{ color: {p.mist}; }}
+{R} QLabel[mohanRole="ornament"] {{ background: transparent; padding: 0; }}
+
+/* ---- 頂部狀態緞帶 ---- */
+{R} QFrame[mohanRole="commandDeck"] {{
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 {_rgba(p.lacquer_2, 236)}, stop:1 {_rgba(p.ink_deep, 230)});
+    border: 1px solid {p.line};
+    border-bottom: 1px solid {p.gold_dim};
+    border-radius: {s(12)}px;
+}}
+{R} QFrame[mohanRole="commandDeck"] QLabel {{ color: {p.moon}; }}
+{R} QFrame[mohanRole="commandDeck"] QLabel[mohanRole="muted"] {{
+    color: {p.dim};
+    font-family: {caps};
+    font-size: {fs['label']}px;
+    letter-spacing: {s(2)}px;
+}}
+{R} QFrame[mohanRole="commandDeck"] QLabel[mohanRole="headerStatus"] {{
+    color: {p.gold_2};
+    font-family: {caps};
+    font-size: {fs['numeral']}px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}}
+{R} QLabel[mohanRole="brand"] {{
+    color: {p.gold_2};
+    font-family: {display};
+    font-size: {fs['brand']}px;
+    font-weight: 700;
+    letter-spacing: {s(3)}px;
+}}
+
+/* ---- 草稿動作列（原全域取消／保存）---- */
+{R} QFrame[mohanRole="commandFooter"] {{
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 {_rgba(p.lacquer_2, 244)}, stop:1 {_rgba(p.ink_deep, 244)});
+    border: 1px solid {p.gold_dim};
+    border-radius: {s(10)}px;
+}}
+{R} QFrame[mohanRole="commandFooter"] QLabel {{ color: {p.mist}; }}
+
+/* ---- 大廳、導覽軌、舞台 ---- */
+{R} QWidget[mohanRole="featurePage"] {{ background: transparent; }}
+{R} QFrame[mohanRole="gameLobby"] {{
     background: transparent;
+    border: 1px solid {p.line};
+    border-radius: {s(16)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="commandDeck"] {{
-    background: qlineargradient(
-        x1:0, y1:0, x2:1, y2:0,
-        stop:0 rgba(53, 67, 133, 248),
-        stop:0.50 rgba(91, 94, 172, 246),
-        stop:1 rgba(142, 91, 150, 246)
-    );
-    border: 1px solid #d8c4f2;
-    border-radius: {_scaled(16, scale)}px;
+{R} QFrame[mohanRole="gameNavigation"] {{
+    background: {_rgba(p.ink_deep, 196)};
+    border: none;
+    border-right: 1px solid {p.line};
+    border-top-left-radius: {s(16)}px;
+    border-bottom-left-radius: {s(16)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="commandDeck"] QLabel {{
-    color: #fff7fb;
+{R} QLabel[mohanRole="navigationTitle"] {{
+    color: {p.gold_2};
+    font-family: {display};
+    font-size: {fs['card_title']}px;
+    font-weight: 700;
+    letter-spacing: {s(2)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="commandDeck"] QLabel[mohanRole="muted"] {{
-    color: #ead8e2;
+{R} QLabel[mohanRole="navRealm"] {{
+    color: {p.dim};
+    font-family: {caps};
+    font-size: {s(10)}px;
+    font-weight: 600;
+    letter-spacing: {s(3)}px;
+    padding: 0 0 0 {s(6)}px;
+    background: transparent;
+    border: none;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="commandDeck"] QLabel[mohanRole="headerStatus"] {{
-    color: #f7dce9;
-    font-size: {_scaled(16, scale)}px;
+{R} QPushButton[mohanAction="navigation"] {{
+    color: {p.moon};
+    text-align: left;
+    background: {_rgba(p.lacquer, 235)};
+    border: 1px solid {p.line};
+    border-left: {s(3)}px solid {p.line};
+    border-radius: {s(10)}px;
+    padding: {s(7)}px {s(10)}px;
+    min-height: {s(32)}px;
+    font-size: {fs['body']}px;
     font-weight: 600;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="commandFooter"] {{
-    background: rgba(61, 72, 137, 236);
-    border: 1px solid #d2c4ed;
-    border-radius: {_scaled(14, scale)}px;
+{R} QPushButton[mohanAction="navigation"]:hover {{
+    color: {p.gold_2};
+    background: {p.lacquer_2};
+    border-color: {p.gold_dim};
 }}
-QWidget[mohanFlagshipTheme="true"] QWidget[mohanRole="featurePage"] {{
-    background: transparent;
-}}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="gameLobby"] {{
-    background: transparent;
-    border-image: url("{lobby_backdrop}") 0 0 0 0 stretch stretch;
-    border: 1px solid #c9bee8;
-    border-radius: {_scaled(20, scale)}px;
-    padding: {_scaled(7, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="gameNavigation"] {{
-    background: qlineargradient(
-        x1:0, y1:0, x2:0, y2:1,
-        stop:0 rgba(70, 81, 157, 246),
-        stop:0.52 rgba(98, 93, 172, 244),
-        stop:1 rgba(125, 91, 154, 244)
-    );
-    border: 1px solid #d7cdf4;
-    border-radius: {_scaled(20, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="navigationTitle"] {{
-    color: #fff9ff;
-    font-family: "DFKai-SB", "KaiTi", "Microsoft JhengHei UI";
-    font-size: {_scaled(18, scale)}px;
+{R} QPushButton[mohanAction="navigation"]:checked {{
+    color: {p.gold_2};
+    background: {gold_wash};
+    border: 1px solid {p.gold_dim};
+    border-left: {s(3)}px solid {p.gold};
     font-weight: 700;
 }}
-QWidget[mohanFlagshipTheme="true"] QPushButton[mohanAction="navigation"] {{
-    color: #f8f5ff;
-    text-align: left;
-    background: rgba(239, 242, 255, 36);
-    border: 1px solid rgba(231, 225, 255, 104);
-    border-radius: {_scaled(18, scale)}px;
-    padding: {_scaled(9, scale)}px {_scaled(10, scale)}px;
-    min-height: {_scaled(29, scale)}px;
-    font-weight: 650;
+{R} QTabWidget[mohanRole="gameStage"]::pane {{ background: transparent; border: none; }}
+{R} QFrame[mohanRole="characterStage"], {R} QFrame[mohanRole="desktopCompanionStage"] {{
+    background: transparent; border: none;
 }}
-QWidget[mohanFlagshipTheme="true"] QPushButton[mohanAction="navigation"]:hover {{
-    color: #ffffff;
-    background: rgba(230, 220, 255, 72);
-    border-color: #fff2c3;
+{R} QFrame[mohanRole="desktopCompanionStatusCard"] {{
+    background: {glass};
+    border: 1px solid {p.line};
+    border-radius: {s(16)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QPushButton[mohanAction="navigation"]:checked {{
-    color: #56385d;
-    background: qlineargradient(
-        x1:0, y1:0, x2:1, y2:0,
-        stop:0 #fffdf7, stop:0.55 #f5e7fa, stop:1 #dceaff
-    );
-    border: 2px solid #f0d58b;
-    font-weight: 750;
+{R} QLabel[mohanRole="desktopCompanionStatusTitle"] {{
+    color: {p.gold_2};
+    font-family: {display};
+    font-size: {fs['card_title']}px;
+    font-weight: 700;
 }}
-QWidget[mohanFlagshipTheme="true"] QTabWidget[mohanRole="gameStage"]::pane {{
-    background: transparent;
-    border: 1px solid rgba(222, 211, 244, 118);
-    border-radius: {_scaled(20, scale)}px;
+{R} QLabel[mohanRole="desktopCompanionStatusNote"] {{ color: {p.mist}; font-size: {fs['label']}px; }}
+{R} QFrame[mohanRole="desktopCompanionStatusRow"] {{
+    background: {_rgba(p.ink_deep, 150)};
+    border: 1px solid {p.line};
+    border-radius: {s(10)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="characterStage"] {{
-    background: transparent;
+{R} QLabel[mohanRole="desktopCompanionStatusName"] {{ color: {p.mist}; font-size: {fs['label']}px; }}
+{R} QLabel[mohanRole="desktopCompanionStatusValue"] {{ color: {p.moon}; font-size: {fs['body']}px; font-weight: 600; }}
+{R} QLabel#dashboardCharacterStagePortrait, {R} QLabel#wardrobeCharacterPreview {{
+    background: qradialgradient(cx:0.5, cy:0.66, radius:0.62, fx:0.5, fy:0.66,
+        stop:0 {_rgba(p.gold, 46)}, stop:0.55 {_rgba(p.gold, 12)}, stop:1 {_rgba(p.ink, 0)});
     border: none;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="desktopCompanionStage"] {{
-    background: transparent;
-    border: none;
+{R} QFrame[mohanRole="stageCaption"] {{
+    background: {_rgba(p.lacquer, 210)};
+    border: 1px solid {p.gold_dim};
+    border-radius: {s(12)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="desktopCompanionStatusCard"] {{
-    background: qlineargradient(
-        x1:0, y1:0, x2:0, y2:1,
-        stop:0 rgba(45, 50, 112, 224), stop:1 rgba(72, 61, 129, 212)
-    );
-    border: 1px solid rgba(237, 221, 255, 184);
-    border-radius: {_scaled(20, scale)}px;
+{R} QLabel[mohanRole="stageTitle"] {{
+    color: {p.gold_2}; font-family: {display}; font-size: {fs['card_title']}px; font-weight: 700;
 }}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="desktopCompanionStatusTitle"] {{
-    color: #fff8ff;
-    font-family: "DFKai-SB", "KaiTi", "Microsoft JhengHei UI";
-    font-size: {_scaled(20, scale)}px;
-    font-weight: 750;
+{R} QLabel[mohanRole="stageSubtitle"] {{ color: {p.mist}; font-size: {fs['label']}px; }}
+
+/* ---- 功能區與頁面 ---- */
+{R} QFrame[mohanRole="featureDock"] {{
+    background: {_rgba(p.lacquer, 196)};
+    border: 1px solid {p.line};
+    border-radius: {s(16)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="desktopCompanionStatusNote"] {{
-    color: #e9e5ff;
-    font-size: {_scaled(13, scale)}px;
+{R} QWidget[mohanRole="featureContent"] {{ background: transparent; }}
+{R} QFrame[mohanRole="pageBanner"] {{
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 {_rgba(p.lacquer_2, 236)}, stop:1 {_rgba(p.lacquer, 120)});
+    border: 1px solid {p.line};
+    border-left: {s(3)}px solid {p.gold};
+    border-radius: {s(12)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="desktopCompanionStatusRow"] {{
-    background: rgba(255, 255, 255, 26);
-    border: 1px solid rgba(236, 228, 255, 72);
-    border-radius: {_scaled(11, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="desktopCompanionStatusName"] {{
-    color: #ddd6fa;
-    font-size: {_scaled(12, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="desktopCompanionStatusValue"] {{
-    color: #fffaf5;
-    font-size: {_scaled(13, scale)}px;
-    font-weight: 650;
-}}
-QWidget[mohanFlagshipTheme="true"] QLabel#dashboardCharacterStagePortrait {{
-    background: qradialgradient(
-        cx:0.50, cy:0.64, radius:0.60,
-        fx:0.50, fy:0.64,
-        stop:0 rgba(229, 221, 255, 72),
-        stop:0.72 rgba(164, 156, 224, 24),
-        stop:1 rgba(63, 69, 137, 0)
-    );
-    border: none;
-}}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="stageCaption"] {{
-    background: rgba(31, 40, 89, 154);
-    border: 1px solid rgba(240, 220, 255, 164);
-    border-radius: {_scaled(15, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="stageTitle"] {{
-    color: #fff8ff;
-    font-family: "DFKai-SB", "KaiTi", "Microsoft JhengHei UI";
-    font-size: {_scaled(20, scale)}px;
-    font-weight: 750;
-}}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="stageSubtitle"] {{
-    color: #f1ddeb;
-    font-size: {_scaled(12, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="featureDock"] {{
-    background: rgba(244, 247, 255, 224);
-    border: 1px solid rgba(211, 218, 241, 236);
-    border-radius: {_scaled(20, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QWidget[mohanRole="featureContent"] {{
-    background: transparent;
-}}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="pageBanner"] {{
-    background: qlineargradient(
-        x1:0, y1:0, x2:1, y2:0,
-        stop:0 rgba(58, 67, 137, 238),
-        stop:0.55 rgba(94, 88, 165, 232),
-        stop:1 rgba(135, 91, 151, 224)
-    );
-    border: 1px solid #ead9a2;
-    border-radius: {_scaled(18, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="pageTitle"] {{
-    color: #fff9f0;
-    font-family: "DFKai-SB", "KaiTi", "Microsoft JhengHei UI";
-    font-size: {_scaled(22, scale)}px;
+{R} QLabel[mohanRole="pageTitle"] {{
+    color: {p.gold_2};
+    font-family: {display};
+    font-size: {fs['page_title']}px;
     font-weight: 700;
+    letter-spacing: {s(2)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="pageSubtitle"] {{
-    color: #eadff2;
-    font-size: {_scaled(12, scale)}px;
+{R} QLabel[mohanRole="pageSubtitle"] {{ color: {p.mist}; font-size: {fs['label']}px; }}
+{R} QFrame[mohanRole="pageBody"] {{
+    background: {_rgba(p.ink_deep, 150)};
+    border: 1px solid {p.line};
+    border-radius: {s(12)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="pageBody"] {{
-    background: qlineargradient(
-        x1:0, y1:0, x2:0, y2:1,
-        stop:0 rgba(255, 253, 250, 188), stop:1 rgba(234, 240, 252, 172)
-    );
-    border: 1px solid #a9b9d6;
-    border-radius: {_scaled(15, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="muted"] {{
-    color: {colors['muted']};
-}}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="ornament"] {{
-    background: transparent;
-    padding: 0;
-}}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="brand"] {{
-    color: #fff8fb;
-    font-family: "DFKai-SB", "KaiTi", "Microsoft JhengHei UI";
-    font-size: {_scaled(19, scale)}px;
+{R} QLabel[mohanRole="sectionTitle"] {{
+    color: {p.gold_2};
+    font-family: {display};
+    font-size: {fs['section_title']}px;
     font-weight: 700;
+    letter-spacing: {s(3)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="sectionTitle"] {{
-    color: #56334b;
-    font-family: "DFKai-SB", "KaiTi", "Microsoft JhengHei UI";
-    font-size: {_scaled(28, scale)}px;
+{R} QLabel[mohanRole="cardTitle"] {{
+    color: {p.moon};
+    font-family: {display};
+    font-size: {fs['card_title']}px;
     font-weight: 700;
+    letter-spacing: 1px;
 }}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="cardTitle"] {{
-    color: #4e3852;
-    font-family: "DFKai-SB", "KaiTi", "Microsoft JhengHei UI";
-    font-size: {_scaled(18, scale)}px;
+{R} QLabel[mohanRole="formHeading"] {{
+    color: {p.gold};
+    background: {_rgba(p.gold, 18)};
+    border-left: {s(3)}px solid {p.gold_dim};
+    border-radius: {s(6)}px;
+    font-family: {display};
+    font-size: {fs['body_strong']}px;
     font-weight: 700;
+    padding: {s(7)}px {s(12)}px;
+    margin-top: {s(6)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="formHeading"] {{
-    color: #56384d;
-    background: qlineargradient(
-        x1:0, y1:0, x2:1, y2:0,
-        stop:0 rgba(221, 229, 249, 238), stop:0.58 rgba(238, 241, 250, 180),
-        stop:1 rgba(225, 234, 244, 80)
-    );
-    border-left: {_scaled(4, scale)}px solid #7189c7;
-    border-radius: {_scaled(7, scale)}px;
-    font-family: "DFKai-SB", "KaiTi", "Microsoft JhengHei UI";
-    font-size: {_scaled(17, scale)}px;
-    font-weight: 700;
-    padding: {_scaled(8, scale)}px {_scaled(12, scale)}px;
-    margin-top: {_scaled(5, scale)}px;
+{R} QLabel[mohanRole="statusPill"] {{
+    color: {p.moon};
+    background: {p.lacquer_2};
+    border: 1px solid {p.line};
+    border-radius: {s(9)}px;
+    padding: {s(7)}px {s(11)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QLabel[mohanRole="statusPill"] {{
-    color: {colors['ink']};
-    background: {colors['wash']};
-    border: 1px solid {colors['line']};
-    border-radius: {_scaled(9, scale)}px;
-    padding: {_scaled(8, scale)}px {_scaled(11, scale)}px;
+{R} QLabel[mohanRole="stateChip"] {{
+    color: {p.mist};
+    background: {_rgba(p.ink_deep, 170)};
+    border: 1px solid {p.line};
+    border-radius: {s(11)}px;
+    padding: {s(2)}px {s(10)}px;
+    font-size: {fs['label']}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="hero"] {{
-    background: qradialgradient(
-        cx:0.50, cy:0.24, radius:0.92,
-        fx:0.50, fy:0.24,
-        stop:0 rgba(255, 254, 248, 218), stop:0.38 rgba(245, 233, 250, 202),
-        stop:0.72 rgba(230, 237, 255, 194), stop:1 rgba(212, 217, 244, 184)
-    );
-    border: 1px solid #c5b5e3;
-    border-radius: {_scaled(18, scale)}px;
+{R} QLabel[mohanRole="stateChip"][mohanState="ok"] {{ color: {p.jade}; border-color: {_rgba(p.jade, 140)}; }}
+{R} QLabel[mohanRole="stateChip"][mohanState="warn"] {{ color: {p.amber}; border-color: {_rgba(p.amber, 140)}; }}
+{R} QLabel[mohanRole="stateChip"][mohanState="bad"] {{ color: {p.cinnabar_text}; border-color: {_rgba(p.cinnabar, 170)}; background: {_rgba(p.cinnabar, 30)}; }}
+{R} QLabel[mohanRole="stateChip"][mohanState="gold"] {{ color: {p.gold_2}; border-color: {p.gold_dim}; }}
+{R} QLabel[mohanRole="stateChip"][mohanState="info"] {{ color: {p.sky}; border-color: {_rgba(p.sky, 140)}; }}
+{R} QFrame[mohanRole="hero"] {{
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 {_rgba(p.lacquer_2, 220)}, stop:1 {_rgba(p.gold, 14)});
+    border: 1px solid {p.gold_dim};
+    border-radius: {s(16)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="portraitCard"] {{
-    background: rgba(42, 51, 105, 72);
-    border: 1px solid rgba(229, 215, 246, 164);
-    border-radius: {_scaled(16, scale)}px;
+{R} QFrame[mohanRole="portraitCard"] {{
+    background: {_rgba(p.lacquer, 176)};
+    border: 1px solid {p.line};
+    border-radius: {s(16)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QLabel#wardrobeCharacterPreview {{
-    background: qlineargradient(
-        x1:0, y1:0, x2:0, y2:1,
-        stop:0 rgba(255, 255, 255, 80),
-        stop:1 rgba(118, 158, 184, 54)
-    );
-    border: 1px solid rgba(126, 157, 178, 130);
-    border-radius: {_scaled(14, scale)}px;
-    padding: {_scaled(5, scale)}px;
+{R} QFrame[mohanRole="card"] {{
+    background: {glass};
+    border: 1px solid {p.line};
+    border-radius: {s(12)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QTabWidget::pane {{
-    background: rgba(246, 247, 255, 184);
-    border: 1px solid #c3b9e4;
-    border-radius: {radius}px;
+
+/* ---- 內頁分頁、捲軸、分割線 ---- */
+{R} QTabWidget::pane {{
+    background: {_rgba(p.ink_deep, 120)};
+    border: 1px solid {p.line};
+    border-radius: {s(12)}px;
     top: -1px;
 }}
-QWidget[mohanFlagshipTheme="true"] QTabBar::tab {{
-    color: #f5eaf0;
-    background: rgba(34, 53, 78, 244);
-    border: 1px solid #856b82;
-    border-bottom-color: #856b82;
-    border-radius: {_scaled(9, scale)}px;
-    margin: {_scaled(2, scale)}px;
-    padding: {tab_padding_y}px {tab_padding_x}px;
-    min-height: {_scaled(20, scale)}px;
+{R} QTabBar::tab {{
+    color: {p.mist};
+    background: {p.lacquer};
+    border: 1px solid {p.line};
+    border-radius: {s(8)}px;
+    margin: {s(2)}px;
+    padding: {s(8)}px {s(14)}px;
+    min-height: {s(18)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QTabBar::tab:selected {{
-    color: #4b3045;
-    background: qlineargradient(
-        x1:0, y1:0, x2:0, y2:1,
-        stop:0 #fffaf8, stop:0.48 #f6e2eb, stop:1 #dfc2d2
-    );
-    border: 2px solid #b66d91;
-    font-weight: 650;
+{R} QTabBar::tab:selected {{
+    color: {p.gold_2};
+    background: {p.lacquer_2};
+    border: 1px solid {p.gold_dim};
+    font-weight: 700;
 }}
-QWidget[mohanFlagshipTheme="true"] QTabBar::tab:hover:!selected {{
-    color: #ffffff;
-    background: #694b68;
+{R} QTabBar::tab:hover:!selected {{ color: {p.moon}; background: {p.lacquer_2}; }}
+{R} QScrollArea {{ background: transparent; border: none; }}
+{R} QScrollArea > QWidget, {R} QScrollArea > QWidget > QWidget {{ background: transparent; }}
+{R} QScrollBar:vertical {{ background: transparent; width: {s(10)}px; margin: 0; }}
+{R} QScrollBar::handle:vertical {{
+    background: {p.line};
+    min-height: {s(30)}px;
+    border-radius: {s(5)}px;
+    margin: {s(2)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QScrollArea {{
-    background: transparent;
-    border: none;
-}}
-QWidget[mohanFlagshipTheme="true"] QScrollArea QWidget#qt_scrollarea_viewport {{
-    background: transparent;
-}}
-QWidget[mohanFlagshipTheme="true"] QScrollBar:vertical {{
-    background: {colors['wash']};
-    width: {scroll_width}px;
-    margin: 0;
-}}
-QWidget[mohanFlagshipTheme="true"] QScrollBar::handle:vertical {{
-    background: {colors['line']};
-    min-height: {_scaled(30, scale)}px;
-    border-radius: {_scaled(6, scale)}px;
-    margin: {_scaled(2, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QScrollBar::handle:vertical:hover {{
-    background: {colors['glow']};
-}}
-QWidget[mohanFlagshipTheme="true"] QScrollBar::add-line:vertical,
-QWidget[mohanFlagshipTheme="true"] QScrollBar::sub-line:vertical {{
-    height: 0;
-}}
-QWidget[mohanFlagshipTheme="true"] QSplitter::handle {{
-    background: transparent;
-    image: none;
-    border: none;
-}}
-QWidget[mohanFlagshipTheme="true"] QSplitter::handle:hover {{
-    background: {colors['line']};
-}}
-QWidget[mohanFlagshipTheme="true"] QSplitter::handle:pressed {{
-    background: {colors['glow']};
-}}
-QWidget[mohanFlagshipTheme="true"] QFrame[mohanRole="card"] {{
-    background: qlineargradient(
-        x1:0, y1:0, x2:0, y2:1,
-        stop:0 rgba(255, 253, 249, 198), stop:0.58 rgba(239, 243, 253, 188),
-        stop:1 rgba(224, 234, 250, 180)
-    );
-    border: 1px solid #9eafd0;
-    border-radius: {radius}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QLineEdit,
-QWidget[mohanFlagshipTheme="true"] QTextEdit,
-QWidget[mohanFlagshipTheme="true"] QComboBox,
-QWidget[mohanFlagshipTheme="true"] QSpinBox {{
-    color: {colors['ink']};
-    background: rgba(255, 250, 247, 204);
-    border: 1px solid {colors['line']};
-    border-radius: {_scaled(8, scale)}px;
-    padding: {padding_y}px {padding_x}px;
-    selection-background-color: {colors['selection']};
+{R} QScrollBar::handle:vertical:hover {{ background: {p.gold_dim}; }}
+{R} QScrollBar::add-line:vertical, {R} QScrollBar::sub-line:vertical {{ height: 0; }}
+{R} QScrollBar:horizontal {{ background: transparent; height: {s(10)}px; margin: 0; }}
+{R} QScrollBar::handle:horizontal {{ background: {p.line}; min-width: {s(30)}px; border-radius: {s(5)}px; margin: {s(2)}px; }}
+{R} QScrollBar::add-line:horizontal, {R} QScrollBar::sub-line:horizontal {{ width: 0; }}
+{R} QSplitter::handle {{ background: transparent; image: none; border: none; }}
+{R} QSplitter::handle:hover {{ background: {p.line}; }}
+{R} QSplitter::handle:pressed {{ background: {p.gold_dim}; }}
+
+/* ---- 輸入控制項：把 Windows 原生箭頭全部換掉 ---- */
+{R} QLineEdit, {R} QTextEdit, {R} QComboBox, {R} QSpinBox {{
+    color: {p.moon};
+    background: {p.ink_deep};
+    border: 1px solid {p.line};
+    border-radius: {s(6)}px;
+    padding: {s(7)}px {s(11)}px;
+    selection-background-color: {p.selection};
     selection-color: #ffffff;
 }}
-QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView {{
-    color: {colors['ink']};
-    background: rgba(255, 250, 247, 255);
-    border: 1px solid {colors['line']};
-    border-radius: {_scaled(8, scale)}px;
-    selection-background-color: {colors['selection']};
+{R} QLineEdit:focus, {R} QTextEdit:focus, {R} QComboBox:focus, {R} QSpinBox:focus {{
+    border: {s(2)}px solid {p.gold_2};
+}}
+{R} QLineEdit:hover, {R} QComboBox:hover, {R} QSpinBox:hover {{ border-color: {p.gold_dim}; }}
+{R} QComboBox::drop-down {{
+    subcontrol-origin: padding;
+    subcontrol-position: center right;
+    width: {s(26)}px;
+    border: none;
+    border-left: 1px solid {p.line};
+}}
+{R} QComboBox::down-arrow {{
+    width: 0; height: 0;
+    {arrow}
+    border-top: {s(6)}px solid {p.gold};
+    margin-right: {s(2)}px;
+}}
+{R} QComboBox::down-arrow:on {{ border-top: none; border-bottom: {s(6)}px solid {p.gold_2}; }}
+{R} QComboBox QAbstractItemView {{
+    color: {p.moon};
+    background: {p.lacquer_2};
+    border: 1px solid {p.gold_dim};
+    border-radius: {s(8)}px;
+    selection-background-color: {p.selection};
     selection-color: #ffffff;
     outline: 0;
 }}
-QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView::item {{
-    min-height: {_scaled(30, scale)}px;
-    padding: {_scaled(5, scale)}px {_scaled(10, scale)}px;
+{R} QComboBox QAbstractItemView::item {{ min-height: {s(30)}px; padding: {s(5)}px {s(10)}px; }}
+{R} QComboBox QAbstractItemView::item:hover {{ color: {p.moon}; background: {p.lacquer}; }}
+{R} QComboBox QAbstractItemView::item:selected {{ color: {p.on_gold}; background: {p.gold_2}; }}
+{R} QSpinBox::up-button, {R} QSpinBox::down-button {{
+    subcontrol-origin: border;
+    width: {s(20)}px;
+    border-left: 1px solid {p.line};
+    background: {p.lacquer};
 }}
-QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView::item:hover {{
-    background: rgba(235, 244, 249, 255);
-    color: {colors['ink']};
-}}
-QWidget[mohanFlagshipTheme="true"] QComboBox QAbstractItemView::item:selected {{
-    background: {colors['selection']};
-    color: #ffffff;
-}}
-QWidget[mohanFlagshipTheme="true"] QListWidget {{
-    color: {colors['ink']};
-    background: rgba(255, 255, 255, 184);
-    border: 1px solid {colors['line']};
-    border-radius: {_scaled(11, scale)}px;
-    padding: {_scaled(7, scale)}px;
+{R} QSpinBox::up-button {{ subcontrol-position: top right; border-top-right-radius: {s(6)}px; }}
+{R} QSpinBox::down-button {{ subcontrol-position: bottom right; border-bottom-right-radius: {s(6)}px; }}
+{R} QSpinBox::up-button:hover, {R} QSpinBox::down-button:hover {{ background: {p.lacquer_2}; }}
+{R} QSpinBox::up-arrow {{ width: 0; height: 0; {arrow} border-bottom: {s(5)}px solid {p.gold}; }}
+{R} QSpinBox::down-arrow {{ width: 0; height: 0; {arrow} border-top: {s(5)}px solid {p.gold}; }}
+{R} QListWidget {{
+    color: {p.moon};
+    background: {p.ink_deep};
+    border: 1px solid {p.line};
+    border-radius: {s(12)}px;
+    padding: {s(6)}px;
     outline: none;
 }}
-QWidget[mohanFlagshipTheme="true"] QListWidget::item {{
-    background: rgba(235, 244, 249, 218);
+{R} QListWidget::item {{
+    background: {_rgba(p.lacquer, 200)};
     border: 1px solid transparent;
-    border-radius: {_scaled(8, scale)}px;
-    margin: {_scaled(3, scale)}px;
-    padding: {_scaled(10, scale)}px;
+    border-radius: {s(10)}px;
+    margin: {s(3)}px;
+    padding: {s(10)}px {s(12)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QListWidget::item:selected {{
-    color: #ffffff;
-    background: qlineargradient(
-        x1:0, y1:0, x2:1, y2:0,
-        stop:0 #245d7b, stop:1 #438ba9
-    );
-    border-color: #8fc5dc;
+{R} QListWidget::item:hover {{ background: {_rgba(p.lacquer_2, 230)}; border-color: {p.line}; }}
+{R} QListWidget::item:selected {{
+    color: {p.gold_2};
+    background: {gold_wash};
+    border-color: {p.gold_dim};
 }}
-QWidget[mohanFlagshipTheme="true"] QCheckBox {{
-    spacing: {_scaled(9, scale)}px;
-    padding: {_scaled(6, scale)}px {_scaled(3, scale)}px;
+{R} QCheckBox {{ color: {p.moon}; spacing: {s(9)}px; padding: {s(5)}px {s(3)}px; }}
+{R} QCheckBox::indicator {{
+    width: {s(18)}px; height: {s(18)}px;
+    border: 1px solid {p.line};
+    border-radius: {s(4)}px;
+    background: {p.ink_deep};
 }}
-QWidget[mohanFlagshipTheme="true"] QCheckBox::indicator {{
-    width: {_scaled(18, scale)}px;
-    height: {_scaled(18, scale)}px;
-    border: 1px solid {colors['line']};
-    border-radius: {_scaled(5, scale)}px;
-    background: {colors['surface']};
-}}
-QWidget[mohanFlagshipTheme="true"] QCheckBox::indicator:checked {{
-    background: #347fa5;
-    border: 4px solid #dcecf4;
-}}
-QWidget[mohanFlagshipTheme="true"] QGroupBox {{
-    color: #4f3850;
-    background: rgba(255, 251, 248, 224);
-    border: 1px solid #9eafd0;
-    border-radius: {_scaled(12, scale)}px;
-    margin-top: {_scaled(18, scale)}px;
-    padding-top: {_scaled(10, scale)}px;
-    font-weight: 650;
-}}
-QWidget[mohanFlagshipTheme="true"] QGroupBox::title {{
-    subcontrol-origin: margin;
-    left: {_scaled(13, scale)}px;
-    padding: 0 {_scaled(7, scale)}px;
-    color: #4e5d7e;
-    background: #edf2ff;
-}}
-QWidget[mohanFlagshipTheme="true"] QLineEdit:focus,
-QWidget[mohanFlagshipTheme="true"] QTextEdit:focus,
-QWidget[mohanFlagshipTheme="true"] QComboBox:focus,
-QWidget[mohanFlagshipTheme="true"] QSpinBox:focus {{
-    border: {focus_width}px solid {colors['focus']};
-}}
-QWidget[mohanFlagshipTheme="true"] QPushButton {{
-    color: {colors['ink']};
-    background: qlineargradient(
-        x1:0, y1:0, x2:0, y2:1,
-        stop:0 #fffafc, stop:0.48 #f3e2eb, stop:1 #dbc4d2
-    );
-    border: 1px solid {colors['line']};
-    border-radius: {_scaled(14, scale)}px;
-    padding: {padding_y}px {padding_x}px;
-    min-height: {_scaled(20, scale)}px;
+{R} QCheckBox::indicator:hover {{ border-color: {p.gold_dim}; }}
+{R} QCheckBox::indicator:checked {{ background: {p.gold}; border: {s(4)}px solid {p.lacquer_2}; }}
+{R} QGroupBox {{
+    color: {p.mist};
+    background: {_rgba(p.lacquer, 150)};
+    border: 1px solid {p.line};
+    border-radius: {s(12)}px;
+    margin-top: {s(18)}px;
+    padding-top: {s(10)}px;
     font-weight: 600;
 }}
-QWidget[mohanFlagshipTheme="true"] QPushButton[mohanAction="primary"] {{
-    color: #fffafb;
-    background: qlineargradient(
-        x1:0, y1:0, x2:1, y2:1,
-        stop:0 #74415f, stop:0.46 {colors['action']}, stop:1 #456f8b
-    );
-    border: 1px solid #e2b8cd;
+{R} QGroupBox::title {{
+    subcontrol-origin: margin;
+    left: {s(13)}px;
+    padding: 0 {s(7)}px;
+    color: {p.gold_2};
+    background: {p.lacquer};
+    font-family: {display};
+}}
+
+/* ---- 按鈕 ---- */
+{R} QPushButton {{
+    color: {p.moon};
+    background: {p.lacquer_2};
+    border: 1px solid {p.line};
+    border-radius: {s(8)}px;
+    padding: {s(7)}px {s(14)}px;
+    min-height: {s(20)}px;
+    font-weight: 600;
+}}
+{R} QPushButton:hover {{ border-color: {p.gold}; background: {p.lacquer_2}; color: {p.gold_2}; }}
+{R} QPushButton:pressed {{ background: {p.ink_deep}; color: {p.moon}; }}
+{R} QPushButton:focus {{ border: {s(2)}px solid {p.gold_2}; }}
+{R} QPushButton:disabled {{ color: {p.dim}; background: {p.lacquer}; border-color: {p.line}; }}
+{R} QPushButton[mohanAction="primary"], {R} QPushButton#globalSaveSettingsButton {{
+    color: {p.on_gold};
+    background: {gold_fill};
+    border: 1px solid {p.gold_dim};
     font-weight: 700;
-    padding: {_scaled(10, scale)}px {_scaled(22, scale)}px;
+    padding: {s(8)}px {s(20)}px;
 }}
-QWidget[mohanFlagshipTheme="true"] QPushButton[mohanAction="secondary"] {{
-    color: #f8eef3;
-    background: rgba(255, 255, 255, 28);
-    border: 1px solid #c7a8b7;
+{R} QPushButton[mohanAction="primary"]:hover, {R} QPushButton#globalSaveSettingsButton:hover {{
+    color: {p.on_gold};
+    background: {gold_fill_hover};
+    border-color: {p.gold_2};
 }}
-QWidget[mohanFlagshipTheme="true"] QPushButton#globalCancelSettingsButton {{
-    color: #273047;
-    background: qlineargradient(
-        x1:0, y1:0, x2:0, y2:1,
-        stop:0 #fffdf9, stop:1 #e8edf8
-    );
-    border: 1px solid #7c8eae;
-    font-weight: 650;
-    padding: {_scaled(10, scale)}px {_scaled(22, scale)}px;
+{R} QPushButton[mohanAction="primary"]:pressed, {R} QPushButton#globalSaveSettingsButton:pressed {{
+    color: {p.on_gold};
+    background: {p.gold};
 }}
-QWidget[mohanFlagshipTheme="true"] QPushButton#globalSaveSettingsButton {{
-    color: #ffffff;
-    background: qlineargradient(
-        x1:0, y1:0, x2:1, y2:1,
-        stop:0 #5a4f9f, stop:0.52 #6658ad, stop:1 #3f6288
-    );
-    border: 1px solid #f0d58b;
-    font-weight: 750;
-    padding: {_scaled(10, scale)}px {_scaled(24, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QPushButton[mohanAction="pose"] {{
-    color: #5c4053;
-    background: rgba(255, 250, 248, 226);
-    border: 1px solid #caa8b8;
-    min-width: {_scaled(42, scale)}px;
-    padding: {_scaled(7, scale)}px {_scaled(9, scale)}px;
-}}
-QWidget[mohanFlagshipTheme="true"] QPushButton[mohanAction="pose"]:checked {{
-    color: #fffafb;
-    background: qlineargradient(
-        x1:0, y1:0, x2:1, y2:0,
-        stop:0 #86506d, stop:1 #4f7890
-    );
-    border: 1px solid #e5c5d5;
-}}
-QWidget[mohanFlagshipTheme="true"] QPushButton:hover {{
-    border-color: {colors['glow']};
-    background: {colors['wash']};
-}}
-QWidget[mohanFlagshipTheme="true"] QPushButton:focus {{
-    border: {focus_width}px solid {colors['focus']};
-}}
-QWidget[mohanFlagshipTheme="true"] QPushButton:pressed {{
-    background: {colors['silver']};
-}}
-QWidget[mohanFlagshipTheme="true"] QPushButton:disabled {{
-    color: {colors['disabled']};
-    background: {colors['wash']};
-}}
-QMenu {{
-    background: #ffffff;
-    color: #24364a;
-    border: 1px solid #9eb5c7;
-    border-radius: {_scaled(8, scale)}px;
-    padding: {_scaled(5, scale)}px;
-}}
-QMenu::item {{
-    color: #24364a;
+{R} QPushButton[mohanAction="secondary"], {R} QPushButton#globalCancelSettingsButton {{
+    color: {p.moon};
     background: transparent;
-    padding: {_scaled(7, scale)}px {_scaled(18, scale)}px;
-    border-radius: {_scaled(6, scale)}px;
+    border: 1px solid {p.line};
 }}
-QMenu::item:selected {{
-    color: #17344f;
-    background: #dce8ef;
+{R} QPushButton[mohanAction="danger"] {{
+    color: {p.cinnabar_text};
+    background: {_rgba(p.cinnabar, 44)};
+    border: 1px solid {p.cinnabar};
+    font-weight: 700;
 }}
-QMenu::item:disabled {{
-    color: #8997a3;
+{R} QPushButton[mohanRole="sealButton"] {{
+    min-width: 132px; max-width: 132px; min-height: 132px; max-height: 132px;
+    padding: 0; border: none; background: transparent;
 }}
-QMenu::separator {{
-    height: 1px;
-    background: #c9ced3;
-    margin: {_scaled(4, scale)}px {_scaled(8, scale)}px;
+{R} QPushButton[mohanAction="danger"]:hover {{ color: {p.cinnabar_text}; background: {_rgba(p.cinnabar, 90)}; border-color: {p.cinnabar}; }}
+{R} QPushButton[mohanAction="pose"] {{
+    color: {p.mist};
+    background: {p.lacquer};
+    border: 1px solid {p.line};
+    min-width: {s(42)}px;
+    padding: {s(6)}px {s(10)}px;
 }}
+{R} QPushButton[mohanAction="pose"]:checked {{ color: {p.on_gold}; background: {p.gold}; border-color: {p.gold_2}; }}
+
+/* ---- 選單與提示 ---- */
+QMenu {{
+    background: {p.lacquer_2};
+    color: {p.moon};
+    border: 1px solid {p.gold_dim};
+    border-radius: {s(8)}px;
+    padding: {s(5)}px;
+}}
+QMenu::item {{ color: {p.moon}; background: transparent; padding: {s(7)}px {s(18)}px; border-radius: {s(6)}px; }}
+QMenu::item:selected {{ color: {p.on_gold}; background: {p.gold_2}; }}
+QMenu::item:disabled {{ color: {p.dim}; }}
+QMenu::separator {{ height: 1px; background: {p.line}; margin: {s(4)}px {s(8)}px; }}
 QToolTip {{
-    background: #ffffff;
-    color: #24364a;
-    border: 1px solid #9eb5c7;
-    padding: {_scaled(5, scale)}px;
+    background: {p.lacquer_2};
+    color: {p.moon};
+    border: 1px solid {p.gold_dim};
+    padding: {s(5)}px {s(8)}px;
 }}
 """
 
@@ -641,7 +549,7 @@ def apply_flagship_theme(
     high_contrast: bool = False,
     scale: float = 1.0,
 ) -> FlagshipThemeResult:
-    """Apply MoHan's blue-silver flagship theme without changing UI content.
+    """Apply the Lingxiao theme without changing UI content.
 
     The operation is idempotent. It does not read or persist settings, change
     translated strings, or replace widget ownership. The composition layer can
@@ -698,6 +606,16 @@ def apply_flagship_theme(
         for control in root.findChildren(control_type):
             if control.focusPolicy() == Qt.NoFocus:
                 control.setFocusPolicy(Qt.StrongFocus)
+
+    palette = palette_for(high_contrast=high_contrast)
+    for frame in root.findChildren(QFrame):
+        if frame.property("mohanRole") in _ORNAMENTED_ROLES:
+            attach_corner_ornaments(frame, palette.gold, scale=normalized_scale)
+    for button in root.findChildren(QPushButton):
+        if button.property("mohanAction") in {"primary", "danger"} or (
+            button.objectName() == "globalSaveSettingsButton"
+        ):
+            GlowOnHover.install(button, palette)
 
     root.style().unpolish(root)
     root.style().polish(root)

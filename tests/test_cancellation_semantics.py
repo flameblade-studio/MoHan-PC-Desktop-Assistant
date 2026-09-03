@@ -77,15 +77,30 @@ def test_default_cancellation_query_never_cancels() -> None:
 
 def test_generation_checks_cancellation_before_each_paid_view() -> None:
     """取消必須檢查在付費呼叫之前，否則停手也已經扣過款。"""
-    from integrations import openai_outfit_generator
+    # 2026-09-02 第 2 發重驗後改成行為測試：數實際的付費呼叫次數，
+    # 而不是搜尋原始碼字串。一開始就已取消 → 零次付費呼叫。
+    import types
 
-    source = inspect.getsource(openai_outfit_generator)
-    loop = source.split("for view_id in required_views:", 1)[1]
-    before_reference = loop.split("_reference_path(", 1)[0]
-    assert "cancelled()" in before_reference, (
-        "取消檢查沒有排在讀取參考圖與發出付費請求之前"
-    )
-    assert "OutfitGenerationCancelled" in before_reference
+    import pytest
+
+    from integrations import openai_outfit_generator as gen
+
+    generator = object.__new__(gen.OpenAIOutfitDraftGenerator)
+    generator._root = None
+    paid = {"n": 0}
+
+    def fake_edit(self, *_edit_arguments):
+        paid["n"] += 1
+        return b"image"
+
+    generator._checkpointed_edit = types.MethodType(fake_edit, generator)
+    generator._design_prompt = lambda request, trends: "design"
+    generator._view_prompt = lambda design, view_id, target: "view"
+    generator._handheld_prompt = lambda request, view_id, target: "handheld"
+    request = types.SimpleNamespace(requested_categories=frozenset({"garment"}))
+    with pytest.raises(gen.OutfitGenerationCancelled):
+        generator.create(request, (), ("yaw+000-pitch+00",), cancelled=lambda: True)
+    assert paid["n"] == 0, "已取消仍送出了付費呼叫"
 
 
 def test_emergency_stop_is_connected_to_the_generation_controller() -> None:

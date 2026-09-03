@@ -71,12 +71,16 @@ def test_missing_collection_key_is_an_error_not_zero_results() -> None:
 def test_present_but_empty_collection_is_genuinely_zero_results() -> None:
     """欄位存在而為空陣列，才是真正的「找到 0 筆」。"""
     assert _require_collection({"messages": []}, "Gmail 搜尋", "messages") == []
-    rows = _require_collection(
-        {"messages": [{"id": "1"}, "junk", {"id": "2"}]},
-        "Gmail 搜尋",
-        "messages",
-    )
-    assert rows == [{"id": "1"}, {"id": "2"}]
+    assert _require_collection(
+        {"messages": [{"id": "1"}, {"id": "2"}]}, "Gmail 搜尋", "messages"
+    ) == [{"id": "1"}, {"id": "2"}]
+    # 2026-09-02 第 2 發重驗：非物件元素代表合約已變，不能無聲丟掉再回報 0 筆。
+    with pytest.raises(OAuthError):
+        _require_collection(
+            {"messages": [{"id": "1"}, "junk", {"id": "2"}]},
+            "Gmail 搜尋",
+            "messages",
+        )
 
 
 def test_home_assistant_without_expected_state_is_not_verified() -> None:

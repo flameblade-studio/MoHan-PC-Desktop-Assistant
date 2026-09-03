@@ -57,13 +57,14 @@ def _contrast_ratio(foreground: str, background: str) -> float:
 
 def assert_control_text_contrast() -> None:
     pairs = (
-        ("#273047", "#fffdf9"),
-        ("#273047", "#e8edf8"),
-        ("#ffffff", "#5a4f9f"),
-        ("#ffffff", "#6658ad"),
-        ("#ffffff", "#3f6288"),
-        ("#fff9f0", "#3a4389"),
-        ("#f8f5ff", "#46519d"),
+        # 凌霄 token（2026-09-02）：月白／薄霧／金 對 墨底／漆面；金底上的墨字。
+        ("#f1ebdd", "#0b1220"),
+        ("#f1ebdd", "#1a2540"),
+        ("#a7b3c6", "#131c2e"),
+        ("#f0d194", "#0b1220"),
+        ("#0b1220", "#f0d194"),
+        ("#0b1220", "#d9b26f"),
+        ("#ffd9cf", "#0b1220"),
     )
     for foreground, background in pairs:
         assert _contrast_ratio(foreground, background) >= MIN_CONTRAST_RATIO
@@ -116,7 +117,7 @@ def assert_theme_contract(app: QApplication) -> None:
     assert scroll.frameShape() == QFrame.NoFrame
     assert long_label.wordWrap()
     assert editor.focusPolicy() == Qt.StrongFocus
-    assert "#347fa5" in root.styleSheet().lower()
+    assert "#d9b26f" in root.styleSheet().lower()  # 凌霄金：勾選框、飾角、主鈕
 
     repeated = apply_flagship_theme(root, scale=9.0)
     assert repeated.scale == MAX_SCALE
@@ -130,8 +131,8 @@ def assert_high_contrast_and_ornament(app: QApplication) -> None:
     assert result.high_contrast
     assert result.scale == MIN_SCALE
     stylesheet = root.styleSheet().lower()
-    assert "#071b2d" in stylesheet
-    assert "#a63d00" in stylesheet
+    assert "#000000" in stylesheet  # 高對比：純黑地
+    assert "#ffe2a3" in stylesheet  # 高對比：更亮的金
 
     card = QFrame(root)
     mark_flagship_card(card)

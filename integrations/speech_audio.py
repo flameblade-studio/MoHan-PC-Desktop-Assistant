@@ -76,6 +76,13 @@ def apply_wav_volume(
         with wave.open(io.BytesIO(audio), "rb") as source:
             params = source.getparams()
             if params.sampwidth != PCM16_SAMPLE_WIDTH:
+                # 非 16-bit PCM 無法套用增益。原本直接原音回傳，等於繞過下面
+                # 「靜音／降音量失敗必須中止」的契約：使用者按了靜音，8-bit
+                # 的回應仍以原音量播出。無法套用就是失敗，不是例外。
+                if muted or gain < 1.0:
+                    raise PcmAudioError(
+                        "音訊不是 16-bit PCM，無法套用靜音或降音量，為避免以非預期音量播放而中止本次播放"
+                    )
                 return audio
             frame_chunks = []
             while chunk := source.readframes(4096):

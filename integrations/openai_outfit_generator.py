@@ -29,7 +29,10 @@ lazy from application.self_generating_wardrobe import (
 )
 lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME, POSE_ATLAS_ROOT_NAME
 lazy from domain.outfit_pack import AUTHORING_TEMPLATE, AUTHORING_VERSION, BODY_PROFILE_ID, BODY_PROFILE_VERSION, POSE_ATLAS_SILHOUETTES
-lazy from domain.outfit_generation import OutfitGenerationCancelled
+lazy from domain.outfit_generation import (
+    OutfitGenerationCancelled,
+    OutfitImageGenerationError,
+)
 
 OPENAI_IMAGE_EDITS_URL = "https://api.openai.com/v1/images/edits"
 OPENAI_IMAGE_MODEL = "gpt-image-2"
@@ -53,31 +56,6 @@ HTTP_TOO_MANY_REQUESTS = 429
 HTTP_SERVER_ERROR_MINIMUM = 500
 
 
-class OutfitImageGenerationError(RuntimeError):
-    """A sanitized, user-displayable image-provider failure."""
-
-    def __init__(
-        self,
-        message: str,
-        *,
-        code: str = "provider-error",
-        http_status: int = 0,
-        request_id: str = "",
-        retryable: bool = False,
-    ) -> None:
-        super().__init__(message)
-        self.code = str(code or "provider-error")
-        self.http_status = int(http_status or 0)
-        self.request_id = str(request_id or "")
-        self.retryable = bool(retryable)
-
-    @property
-    def public_status(self) -> str:
-        """Return a stable, secret-free status suitable for UI and audit."""
-
-        return f"failed:{self.code}"
-
-
 class OutfitImageEditTransport(Protocol):
     def edit(
         self,
@@ -93,6 +71,26 @@ class OpenAIImageEditOptions:
     timeout_seconds: float = 180.0
     quality: str = "medium"
     endpoint: str = OPENAI_IMAGE_EDITS_URL
+
+
+def _timeout_failure() -> "OutfitImageGenerationError":
+    return OutfitImageGenerationError(
+        "GPT Image request timed out; not retried because the "
+        "provider may already have processed and billed it.",
+        code="timeout-ambiguous",
+        retryable=False,
+    )
+
+
+def _is_wrapped_timeout(error: BaseException) -> bool:
+    return isinstance(getattr(error, "reason", None), (TimeoutError, socket.timeout))
+
+
+def _raise_if_cancelled(cancelled: "Callable[[], bool]") -> None:
+    if cancelled():
+        raise OutfitGenerationCancelled(
+            "使用者在生成途中要求停手；已完成的視角保留在暫存區。"
+        )
 
 
 class OpenAIImageEditTransport:
@@ -165,25 +163,20 @@ class OpenAIImageEditTransport:
                     return response.read(MAX_RESPONSE_BYTES + 1)
             except urllib_error.HTTPError as error:
                 failure = self._http_failure(error)
-            except (TimeoutError, socket.timeout) as error:
-                # Timeout 的語意是「不知道對方做了沒」，不是「沒做」。這是
-                # 付費且非冪等的請求：若服務已經處理完、只是回應沒回來，
-                # 重試就是再付一次錢，而且會產生重複的服裝。31 視角的工作
-                # 最壞可送出 93 次。在沒有冪等鍵可用之前，timeout 一律不重試。
-                failure = OutfitImageGenerationError(
-                    "GPT Image request timed out; not retried because the "
-                    "provider may already have processed and billed it.",
-                    code="timeout-ambiguous",
-                    retryable=False,
-                )
-                del error
-            except (OSError, urllib_error.URLError):
-                # 連線根本沒建立起來，可以安全重試。
-                failure = OutfitImageGenerationError(
-                    "GPT Image request could not reach the provider.",
-                    code="network-unavailable",
-                    retryable=True,
-                )
+            except (TimeoutError, socket.timeout):
+                # 不知道對方做了沒：付費且非冪等，重試等於再付一次。一律不重試。
+                failure = _timeout_failure()
+            except (OSError, urllib_error.URLError) as error:
+                if _is_wrapped_timeout(error):
+                    # urllib 把讀取逾時包成 URLError(reason=TimeoutError)，語意同上。
+                    failure = _timeout_failure()
+                else:
+                    # 連線根本沒建立起來，可以安全重試。
+                    failure = OutfitImageGenerationError(
+                        "GPT Image request could not reach the provider.",
+                        code="network-unavailable",
+                        retryable=True,
+                    )
             last_error = failure
             if not failure.retryable or attempt >= MAX_TRANSIENT_ATTEMPTS - 1:
                 raise failure from None
@@ -425,13 +418,8 @@ class OpenAIOutfitDraftGenerator:
         hair_poses: dict[str, list[dict[str, object]]] = {}
         reference_hashes: dict[str, str] = {}
         for view_id in required_views:
-            # 每個視角都是一次付費呼叫，所以取消要檢查在呼叫之前而不是之後。
-            # 沒有這一行時，使用者按下緊急停止之後剩餘視角仍會逐張扣款——
-            # 介面卻已經宣告「所有工具均已中止」。
-            if cancelled():
-                raise OutfitGenerationCancelled(
-                    "使用者在生成途中要求停手；已完成的視角保留在暫存區。"
-                )
+            # 每個視角都是一次付費呼叫：取消要檢查在呼叫之前，不是之後。
+            _raise_if_cancelled(cancelled)
             reference_path = _reference_path(self._root, view_id)
             if not reference_path.is_file():
                 raise OutfitImageGenerationError(
@@ -455,6 +443,8 @@ class OpenAIOutfitDraftGenerator:
             garment_poses[view_id] = [_asset(garment_path, "outerwear", 10)]
 
             if "handheld" in request.requested_categories:
+                # 同一視角的第二次付費呼叫，停手後不得再扣一次款。
+                _raise_if_cancelled(cancelled)
                 normalized_handheld = self._checkpointed_edit(
                     request,
                     view_id,

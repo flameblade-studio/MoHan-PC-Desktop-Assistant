@@ -40,6 +40,15 @@ Audit = Callable[[str, dict[str, Any]], None]
 REDACTED_AUDIT_KEYS = frozenset(
     {"text", "content", "body", "password", "token", "secret"}
 )
+# 2026-09-02 第 2 發重驗：郵件預覽、主旨、寄件者與 Home Assistant 的
+# state.attributes（GPS、friendly_name）原樣進了稽核 payload。這些是個資，
+# 連 64 字預覽都不留，只記長度或筆數。
+PII_AUDIT_KEYS = frozenset(
+    {
+        "bodyPreview", "snippet", "subject", "from", "sender", "toRecipients",
+        "attributes", "latitude", "longitude", "friendly_name",
+    }
+)
 AUDIT_PREVIEW_CHARS = 64
 
 
@@ -48,7 +57,10 @@ def redact_audit_payload(value: object) -> object:
     if isinstance(value, dict):
         redacted: dict[str, object] = {}
         for key, item in value.items():
-            if key in REDACTED_AUDIT_KEYS and isinstance(item, str):
+            if key in PII_AUDIT_KEYS and not isinstance(item, bool) and isinstance(item, (str, int, float, dict, list)):
+                size = len(item) if isinstance(item, (str, dict, list)) else 1
+                redacted[key] = f"<redacted {type(item).__name__} ({size})>"
+            elif key in REDACTED_AUDIT_KEYS and isinstance(item, str):
                 preview = item[:AUDIT_PREVIEW_CHARS]
                 more = "..." if len(item) > AUDIT_PREVIEW_CHARS else ""
                 redacted[key] = f"<redacted {len(item)} chars: {preview}{more}>"
