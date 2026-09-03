@@ -4,6 +4,10 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### 未發布 — README 四語重編與 DLC 教學（2026-09-03）
+
+* README 依「這是什麼、畫面與功能、安裝更新、首次使用、隱私、DLC、贊助授權、疑難排解、開發者入口」重編四語同構內容，刪除重複與過時段落；新增 `.mohan-outfit` 外觀／妝容包與 `.mohan-theme` 主題檔的安裝、選用、還原、容量數量上限、二代素體相容性及 Ko-fi 單次／每月贊助雙軌教學。
+
 ### 未發布 — 凌霄主題包 B／C（2026-09-03）
 
 * 新增凌霄 B「霧靄青瓷」與 C「赤焰劍光」主題包，設定頁可切換且預設仍為 A「墨金・凌霄」／新增凌霄 B「雾霭青瓷」与 C「赤焰剑光」主题包，设置页可切换且默认仍为 A「墨金・凌霄」／add the Lingxiao B “Misty Celadon” and C “Crimson Swordlight” theme packs with a settings-page switch while keeping A “Ink-Gold” as default／凌霄 B「霧靄青磁」と C「赤焔剣光」のテーマパックを追加し、設定画面で切り替え可能にしつつ A「墨金・凌霄」を既定値として維持
@@ -311,6 +315,10 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
+### 未发布 — README 四语重编与 DLC 教程（2026-09-03）
+
+* README 按“这是什么、界面与功能、安装更新、首次使用、隐私、DLC、赞助许可、疑难解答、开发者入口”重编四语同构内容，删除重复和过时段落；新增 `.mohan-outfit` 外观／妆容包与 `.mohan-theme` 主题文件的安装、选用、恢复、容量数量上限、二代素体兼容性及 Ko-fi 单次／每月赞助双轨教程。
+
 ### 未发布 — 迁移说明（issue #140，选项 3）
 
 * 官方默认外观包「蓝白汉服」与内置妆容素材入库：`assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit`（衣袍、散发、银发饰，31 个 silhouette 齐全）与 `assets/official-packs/mohan.makeup.builtin.mohan-outfit`（`classic`／`light`，淡雅为原妆 alpha × 0.55）由 `tools/assemble_official_default_pack.py` 自产线分层映射、裁切、封装而成；官方套件目录由 `assets/makeup/` 改为 `assets/official-packs/`（`assets/makeup/builtin/` 仍是妆容模板与素材来源）。全新配置文件与「还原内置默认」的 `builtin` 哨兵改由 `domain/outfit_pack_official.py` 解析：服装／发型／头饰指向官方包 ensemble、妆容指向内置原妆，官方文件不在场时仍退回素体；官方 id 不可导入覆盖、不可移除。云裳阁的「内置默认服装」即官方包，不再重复列出；`assets/makeup-safe-regions.json` 按二代半身 rig 重新生成。
@@ -526,6 +534,10 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 ## English
 
 All notable public changes to MoHan Desktop Assistant are documented here.
+
+### Unreleased — four-language README restructure and DLC guide (2026-09-03)
+
+* Rebuilt the README into matching “what it is, screens and capabilities, install and update, first use, privacy, DLC, support and licensing, troubleshooting, and developer entry” sections in all four languages, removing duplicate and obsolete material; added installation, selection, restoration, capacity and count limits, generation-2 body compatibility, and Ko-fi one-time/monthly dual-track guidance for `.mohan-outfit` appearance or makeup packs and `.mohan-theme` files.
 
 ### Unreleased — migration note (issue #140, option 3)
 
@@ -782,6 +794,10 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### 未リリース — README 四言語再編と DLC ガイド（2026-09-03）
+
+* README を「概要、画面と機能、導入と更新、初回利用、プライバシー、DLC、支援とライセンス、トラブルシューティング、開発者向け入口」の四言語同一構造へ再編し、重複・旧情報を削除しました。`.mohan-outfit` 外観／メイクパックと `.mohan-theme` ファイルについて、導入、選択、復元、容量・数量上限、第二世代素体互換性、Ko-fi の単発／毎月支援という二本立てを追記しました。
 
 ### 未リリース — 移行メモ（issue #140、選択肢 3）
 
