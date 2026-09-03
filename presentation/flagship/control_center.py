@@ -62,6 +62,10 @@ lazy from presentation.flagship_theme import (
     apply_flagship_theme,
     create_flagship_ornament,
 )
+lazy from presentation.lingxiao_themes import (
+    DEFAULT_THEME_ID,
+    THEME_SETTING_KEY,
+)
 lazy from presentation.flagship_ui_localization import FlagshipTranslator
 
 __all__ = ("FlagshipControlCenter", "ControlCenterDependencies")
@@ -214,6 +218,7 @@ class FlagshipControlCenter(
                 self.db.setting("flagship_high_contrast", False)
             ),
             scale=float(self.db.setting("flagship_ui_scale", 1.0)),
+            theme=str(self.db.setting(THEME_SETTING_KEY, DEFAULT_THEME_ID)),
         )
 
 

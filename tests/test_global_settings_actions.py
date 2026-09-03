@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+lazy import json
 lazy import os
 lazy import sys
+lazy import zipfile
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 lazy from unittest.mock import patch
@@ -15,9 +17,17 @@ lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication, QPushButton, QWidget
 
 lazy from application.presentation_ports import PresentationPorts
-lazy from presentation.dashboard_composition import DashboardDependencies
-lazy from presentation.dashboard_window import Dashboard
+lazy from domain.theme_pack import install_theme_pack
+lazy from domain.theme_retint import retint_stylesheet
 lazy from infrastructure.db import StudioDB
+lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.flagship_theme import _theme_stylesheet
+lazy from presentation.lingxiao_themes import (
+    DEFAULT_THEME_ID,
+    THEME_IDS,
+    palette_for_theme,
+)
+lazy from presentation.dashboard_window import Dashboard
 lazy from infrastructure.gesture_configuration_store import (
     GestureConfigurationStoreError,
 )
@@ -139,9 +149,46 @@ def dependencies(root: Path) -> DashboardDependencies:
     )
 
 
-def build_dashboard(root: Path) -> tuple[StudioDB, Dashboard]:
+def _write_external_theme_pack(path: Path) -> Path:
+    manifest = {
+        "format": "mohan-theme-pack",
+        "version": 2,
+        "id": "external-crimson",
+        "display_names": {
+            "zh-TW": "外部赤焰",
+            "zh-CN": "外部赤焰",
+            "en": "External Crimson",
+            "ja-JP": "外部の赤焔",
+        },
+        "colors": {"primary": "#d9481c"},
+        "font": "Microsoft JhengHei UI",
+        "radius": 10,
+        "background": None,
+        "source": {
+            "channel": "user-authored",
+            "kind": "original",
+            "author": "Theme Test",
+            "license": "MIT",
+            "reference_included": False,
+        },
+    }
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(
+            "manifest.json",
+            json.dumps(manifest, ensure_ascii=False),
+        )
+    return path
+
+
+def build_dashboard(
+    root: Path,
+    *,
+    settings: dict[str, object] | None = None,
+) -> tuple[StudioDB, Dashboard]:
     db = StudioDB(root / "mohan.db")
     db.set_setting("onboarding_complete", True)
+    for key, value in (settings or {}).items():
+        db.set_setting(key, value)
     with (
         patch.object(QTimer, "start", return_value=None),
         patch("presentation.dashboard_settings.PortableProfilePanel", OfflinePanel),
@@ -339,10 +386,81 @@ def test_center_failure_rolls_back_dashboard_settings() -> None:
             close_dashboard(dashboard, db)
 
 
+def test_external_theme_has_precedence_over_each_builtin_palette() -> None:
+    application = QApplication.instance() or QApplication([])
+    with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
+        root = Path(temp)
+        package = _write_external_theme_pack(root / "external.mohan-theme")
+        for builtin_theme_id in THEME_IDS:
+            case_root = root / builtin_theme_id
+            case_root.mkdir()
+            install_theme_pack(package, case_root / "themes")
+            db, dashboard = build_dashboard(
+                case_root,
+                settings={
+                    "flagship_theme": builtin_theme_id,
+                    "active_theme_id": "external-crimson",
+                },
+            )
+            try:
+                resolution = dashboard.theme_session.last_resolution
+                external = resolution.payload
+                expected = retint_stylesheet(
+                    _theme_stylesheet(
+                        1.0,
+                        high_contrast=False,
+                        theme=DEFAULT_THEME_ID,
+                    ),
+                    external.tokens,
+                )
+                assert resolution.resolved_id == "external-crimson"
+                assert dashboard.styleSheet().startswith(expected)
+                if builtin_theme_id != DEFAULT_THEME_ID:
+                    builtin_palette = palette_for_theme(
+                        builtin_theme_id,
+                        high_contrast=False,
+                    )
+                    assert builtin_palette.gold not in dashboard.styleSheet()
+                default_palette = palette_for_theme(
+                    DEFAULT_THEME_ID,
+                    high_contrast=False,
+                )
+                assert dashboard.ribbon_pulse._color == default_palette.dim
+                assert default_palette.gold in dashboard.save_settings_button.styleSheet()
+            finally:
+                close_dashboard(dashboard, db)
+        application.processEvents()
+
+
+def test_saved_builtin_theme_waits_for_dashboard_restart() -> None:
+    application = QApplication.instance() or QApplication([])
+    with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
+        db, dashboard = build_dashboard(Path(temp))
+        try:
+            before_color = dashboard.ribbon_pulse._color
+            before_sheet = dashboard.styleSheet()
+            theme_index = dashboard.flagship_center.flagship_theme.findData("crimson")
+            dashboard.flagship_center.flagship_theme.setCurrentIndex(theme_index)
+            assert dashboard.flagship_center.save_draft_settings() is True
+            assert db.setting("flagship_theme") == "crimson"
+            dashboard.refresh_work_time()
+            assert dashboard.ribbon_pulse._color == before_color
+            assert dashboard.styleSheet() == before_sheet
+            assert before_color != palette_for_theme(
+                "crimson",
+                high_contrast=False,
+            ).dim
+        finally:
+            close_dashboard(dashboard, db)
+        application.processEvents()
+
+
 if __name__ == "__main__":
     test_global_actions_are_grouped_bottom_right_and_keyboard_usable()
     test_subpages_do_not_expose_general_save_buttons()
     test_cancel_restores_database_settings_snapshot_from_keyboard()
     test_save_updates_database_settings_snapshot()
     test_center_failure_rolls_back_dashboard_settings()
+    test_external_theme_has_precedence_over_each_builtin_palette()
+    test_saved_builtin_theme_waits_for_dashboard_restart()
     print("GLOBAL_SETTINGS_ACTIONS_OK")
