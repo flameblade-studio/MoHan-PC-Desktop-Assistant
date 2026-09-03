@@ -9,6 +9,7 @@ and restores them before returning.
 from __future__ import annotations
 
 lazy import argparse
+lazy import base64
 lazy import hashlib
 lazy import json
 lazy import os
@@ -28,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtCore import Qt, qVersion
 lazy from PySide6.QtGui import QImage as REAL_QIMAGE
 lazy from PySide6.QtGui import QPixmap as REAL_QPIXMAP
 lazy from PySide6.QtGui import QPixmapCache
@@ -52,6 +53,7 @@ lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 SCHEMA = "mohan.composite-performance.v1"
 DEFAULT_ITERATIONS = 5
 DEFAULT_ROUNDS = 5
+CALIBRATION_MIN_ROUNDS = 5
 PERCENTILE_P95 = 0.95
 MILLISECONDS_PER_SECOND = 1_000.0
 NANOSECONDS_PER_SECOND = 1_000_000_000
@@ -61,6 +63,11 @@ FULL_BODY_TARGET_VIEW = "yaw+015-pitch+00"
 HALF_BODY_SOURCE_SILHOUETTE = "cheek-rest"
 HALF_BODY_TARGET_SILHOUETTE = "front-crossed"
 DECODE_AUDIT_CACHE_LIMIT = 0
+CALIBRATION_PNG = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+)
+CALIBRATION_PNG_SHA256 = hashlib.sha256(CALIBRATION_PNG).hexdigest()
+CALIBRATION_DECODE_REPETITIONS = 100_000
 ONE_ARGUMENT = 1
 PATH_ARGUMENT_INDEX = 0
 DATA_ARGUMENT_INDEX = 0
@@ -122,6 +129,29 @@ def _timed(operation: Callable[[], object]) -> float:
     elapsed_ns = time.perf_counter_ns() - started
     _require_frame(frame)
     return elapsed_ns / (NANOSECONDS_PER_SECOND / MILLISECONDS_PER_SECOND)
+
+
+def _calibration_sample() -> float:
+    """Decode one fixed in-memory PNG a fixed number of times."""
+
+    decoded = 0
+    started = time.perf_counter_ns()
+    for _ in range(CALIBRATION_DECODE_REPETITIONS):
+        image = REAL_QIMAGE.fromData(CALIBRATION_PNG)
+        if image.isNull():
+            raise RuntimeError("The fixed calibration PNG could not be decoded.")
+        decoded += 1
+    elapsed_ns = time.perf_counter_ns() - started
+    if decoded != CALIBRATION_DECODE_REPETITIONS:
+        raise RuntimeError("The calibration workload did not complete.")
+    return elapsed_ns / (NANOSECONDS_PER_SECOND / MILLISECONDS_PER_SECOND)
+
+
+def _calibration_round() -> Callable[[], float]:
+    warmup = REAL_QIMAGE.fromData(CALIBRATION_PNG)
+    if warmup.isNull():
+        raise RuntimeError("The fixed calibration PNG could not be decoded.")
+    return _calibration_sample
 
 
 def _clear_pixmap_cache() -> None:
@@ -474,8 +504,14 @@ def _result(iterations: int, rounds: int) -> dict[str, object]:
     del app
     full_motion = _full_body_motion()
     half_source, half_target = _half_body_motions()
+    calibration_rounds = max(rounds, CALIBRATION_MIN_ROUNDS)
     with TemporaryDirectory(prefix="mohan-composite-bench-") as raw_store:
         store = Path(raw_store) / "store"
+        calibration = _measure_rounds(
+            _calibration_round,
+            iterations=iterations,
+            rounds=calibration_rounds,
+        )
         measurements = {
             "cold_full_body": _measure_rounds(
                 lambda: _cold_full_body_round(store, full_motion),
@@ -503,14 +539,24 @@ def _result(iterations: int, rounds: int) -> dict[str, object]:
         "environment": {
             "python": sys.version.split()[0],
             "platform": platform.platform(),
+            "machine": platform.machine(),
+            "processor": platform.processor(),
+            "qt_version": qVersion(),
             "qt_qpa_platform": os.environ.get("QT_QPA_PLATFORM"),
             "qt_offscreen": os.environ.get("QT_QPA_PLATFORM") == "offscreen",
         },
         "configuration": {
             "iterations_per_round": iterations,
             "rounds": rounds,
+            "calibration_rounds": calibration_rounds,
             "percentile": "linear interpolation over sorted samples",
             "asset_root": "assets/pose-atlas/v5-base-layered",
+            "calibration": {
+                "name": "fixed_in_memory_png_decode",
+                "payload_sha256": CALIBRATION_PNG_SHA256,
+                "payload_bytes": len(CALIBRATION_PNG),
+                "decode_repetitions_per_sample": CALIBRATION_DECODE_REPETITIONS,
+            },
             "official_appearance": (
                 "built-in official blue-white Hanfu outfit with classic makeup; "
                 "accessory slots remain builtin/none"
@@ -526,6 +572,7 @@ def _result(iterations: int, rounds: int) -> dict[str, object]:
                 HALF_BODY_TARGET_SILHOUETTE,
             ],
         },
+        "calibration": calibration,
         "measurements": measurements,
         "decode_audit": decode_audit,
     }

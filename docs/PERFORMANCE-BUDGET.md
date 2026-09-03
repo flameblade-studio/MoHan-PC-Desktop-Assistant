@@ -4,122 +4,130 @@
 
 ### 量測範圍與方法
 
-`tools/bench_composite.py` 在 `QT_QPA_PLATFORM=offscreen` 下直接量測 `LayeredFullBodyRenderer` 與 `LayeredParametricFaceRenderer`。正式基準為每輪 5 次、共 5 輪；每個場景回報中位數與以排序樣本線性插值計算的 p95，並回報輪間散布。量測使用 v5 二代 24×25 全身分層、7 個半身剪影，以及內建藍白漢服與原妝；不包含 UI event loop、adapter 發布或視窗排版。
+`tools/bench_composite.py` 在 `QT_QPA_PLATFORM=offscreen` 下直接量測 `LayeredFullBodyRenderer` 與 `LayeredParametricFaceRenderer`，載入 `v5-base-layered`。正式開發機基準為每輪 5 次、共 5 輪；同一次執行也以固定的 68-byte 記憶體 PNG 執行 100000 次 `QImage.fromData` 解碼，校準指標為 `calibration.summary.p95_ms`。本次校準全樣本 p95 為 1014.439 ms，各輪 p95 為 967.026–1011.737 ms；縮減閘門驗證曾觀測到 833.677 ms 的校準下界。p95 使用排序樣本的線性插值；範圍只含 offscreen 合成，不含 UI event loop、adapter 發布與視窗配置。
 
 ### 實測基準表
 
-| 場景 | 全部樣本中位數 | 全部樣本 p95 | 輪間中位數範圍／散布 | 輪間 p95 範圍／散布 |
-| --- | ---: | ---: | --- | --- |
-| `cold_full_body` | 1389.922 ms | 1468.653 ms | 1251.438–1409.878 ms／158.440 ms（11.399%） | 1326.069–1482.498 ms／156.429 ms（10.743%） |
-| `hot_full_body_view_switch` | 2.485 ms | 3.157 ms | 2.416–2.599 ms／0.183 ms（7.400%） | 2.557–4.290 ms／1.733 ms（58.885%） |
-| `hot_half_body_silhouette_switch` | 5.043 ms | 5.600 ms | 4.594–5.440 ms／0.846 ms（16.469%） | 4.842–5.761 ms／0.919 ms（17.107%） |
+| 指標 | 全樣本中位數 | 全樣本 p95 | 各輪 p95 範圍 | 各輪 p95 雜訊幅度 |
+| --- | ---: | ---: | --- | ---: |
+| `cold_full_body` | 1269.993 ms | 1337.497 ms | 1288.591–1406.008 ms | 117.417 ms |
+| `hot_full_body_view_switch` | 2.690 ms | 4.861 ms | 2.624–5.015 ms | 2.391 ms |
+| `hot_half_body_silhouette_switch` | 4.473 ms | 5.731 ms | 4.496–6.062 ms | 1.566 ms |
 
 ### 門檻取值
 
-- `cold_full_body` 的擁有者目標是 300 ms；實測 aggregate p95 為 1468.653 ms，五輪最大輪 p95 為 1482.498 ms，因此 `tools/perf_budget.json` 設為 1482.498 ms 並標記 `over_target=true`。這是目前實測回歸上限，不代表達標，也不套用 1.5 倍放寬。
-- 兩個熱切換的擁有者目標是 100 ms；依「實測 p95 × 1.5 與目標取較寬鬆者」分別得到 `max(3.157 × 1.5, 100)` 與 `max(5.600 × 1.5, 100)`，所以兩者門檻都是 100 ms，`over_target=false`。
+- `developer_known_hardware` 使用精確匹配的已知開發機環境；`absolute_budget_ms` 為 cold 1482.498 ms、兩個 hot 指標各 100.0 ms，保留既有已接受的絕對趨勢天花板。
+- `ratio_budget` 以同輪合成 p95／校準 p95 的最大值為基礎；cold 的歷史 1482.498 ms 天花板再以已觀測的縮減閘門校準下界 833.677 ms 正規化，三個 CI 比值門檻依序為 1.778264、0.005186、0.006269。
+- `ci_runner` 只把目前唯一的 1722.333 ms cold CI 觀測列為趨勢資料；獨立執行數為 1，未達 3 次，因此不建立絕對 CI 門檻。
+- `cold_full_body` 保留 `over_target=true`；實測仍高於 300 ms 擁有者目標，這不是通過目標的宣告。
 
 ### PNG 解碼稽核
 
-`tools/bench_composite.py` 以 `QPixmap(path)` 與 `QImage.fromData` 的呼叫計數稽核，並只在稽核期間將 `QPixmapCache` 設為 0。第一次全身目標視角切換（`yaw+000-pitch+00` → `yaw+015-pitch+00`）發現 40 次 `QPixmap(path)` 呼叫、26 個唯一 PNG 路徑，其中 8 個路徑重複 2–3 次；另有 10 次 `QImage.fromData`、6 個唯一 payload，其中 3 個 payload 重複。半身第一次 `cheek-rest` → `front-crossed` 也發現 42／26、9 個重複路徑，以及 10／7、3 個重複 payload。兩端都完成載入後的熱切換新增解碼呼叫為 0。結論是第一次切換確實存在同一 PNG 的重複解碼呼叫，應列為後續優化待辦；本任務不改合成演算法。
+既有稽核顯示首次 full-body 與 half-body 切換仍會對相同 PNG 或 payload 重複解碼，兩端預熱後的 hot 切換則不再增加解碼呼叫。本次只新增固定記憶體 PNG 的 CPU／解碼校準尺，未改動合成器演算法；校準 payload 的 SHA-256 及每樣本 100000 次解碼規格記錄於 JSON。
 
 ### CI 閘門
 
-`tests/test_perf_budget.py` 讀取 `tools/perf_budget.json`，在 CI 執行 `tools/bench_composite.py` 的 5 次×1 輪縮減版，並要求三個場景的實測 p95 小於或等於各自 `budget_ms`。冷啟仍以 `over_target=true` 如實呈現；閘門只阻擋相對目前基準的回歸。
+`tests/test_perf_budget.py` 在 `ci_runner`（由 `GITHUB_ACTIONS=true` 或 `CI=true` 識別）讓合成執行 5 samples × 1 round，並在同次執行固定校準 5 rounds；將每個 `measurements.*.summary.p95_ms` 除以同一次執行的 `calibration.summary.p95_ms`，再與 `ratio_budget` 比較。`absolute_budget_ms` 在 CI 僅供記錄趨勢；校準或合成樣本少於 5、校準 p95 非正或非有限、或環境無法辨識時一律 fail-closed，並印出實測值與門檻。
 
 ### 結論與待辦
 
-熱切換與半身切換目前低於 100 ms 目標；冷啟全身中位數與 p95 均遠超 300 ms，必須在另行授權的效能分支處理。重複 `QPixmap(path)`／`QImage.fromData` 已有量測證據，暫不在本分支修改 `infrastructure/active_outfit_overlay.py` 或 `presentation/companion_*.py`。
+hot full-body 與 half-body 切換仍低於 100 ms 目標；cold full-body 仍遠高於 300 ms，需另案授權改善。CI 現在以同機校準比值主動擋回歸，同時保留絕對毫秒趨勢；後續累積至少 3 次獨立 CI 執行後，再評估是否能建立有統計依據的絕對 CI 趨勢線。
 
 ## 简体中文
 
-### 测量范围与方法
+### 量测范围与方法
 
-`tools/bench_composite.py` 在 `QT_QPA_PLATFORM=offscreen` 下直接测量 `LayeredFullBodyRenderer` 与 `LayeredParametricFaceRenderer`。正式基准为每轮 5 次、共 5 轮；每个场景报告中位数与按排序样本线性插值计算的 p95，并报告轮间散布。测量使用 v5 二代 24×25 全身分层、7 个半身剪影，以及内置蓝白汉服与原妆；不包含 UI event loop、adapter 发布或窗口排版。
+`tools/bench_composite.py` 在 `QT_QPA_PLATFORM=offscreen` 下直接测量 `LayeredFullBodyRenderer` 与 `LayeredParametricFaceRenderer`，加载 `v5-base-layered`。正式开发机基准为每轮 5 次、共 5 轮；同一次执行也用固定的 68-byte 内存 PNG 执行 100000 次 `QImage.fromData` 解码，校准指标为 `calibration.summary.p95_ms`。本次校准全样本 p95 为 1014.439 ms，各轮 p95 为 967.026–1011.737 ms；缩减闸门验证曾观测到 833.677 ms 的校准下界。p95 使用排序样本的线性插值；范围只含 offscreen 合成，不含 UI event loop、adapter 发布与窗口布局。
 
 ### 实测基准表
 
-| 场景 | 全部样本中位数 | 全部样本 p95 | 轮间中位数范围／散布 | 轮间 p95 范围／散布 |
-| --- | ---: | ---: | --- | --- |
-| `cold_full_body` | 1389.922 ms | 1468.653 ms | 1251.438–1409.878 ms／158.440 ms（11.399%） | 1326.069–1482.498 ms／156.429 ms（10.743%） |
-| `hot_full_body_view_switch` | 2.485 ms | 3.157 ms | 2.416–2.599 ms／0.183 ms（7.400%） | 2.557–4.290 ms／1.733 ms（58.885%） |
-| `hot_half_body_silhouette_switch` | 5.043 ms | 5.600 ms | 4.594–5.440 ms／0.846 ms（16.469%） | 4.842–5.761 ms／0.919 ms（17.107%） |
+| 指标 | 全样本中位数 | 全样本 p95 | 各轮 p95 范围 | 各轮 p95 噪声幅度 |
+| --- | ---: | ---: | --- | ---: |
+| `cold_full_body` | 1269.993 ms | 1337.497 ms | 1288.591–1406.008 ms | 117.417 ms |
+| `hot_full_body_view_switch` | 2.690 ms | 4.861 ms | 2.624–5.015 ms | 2.391 ms |
+| `hot_half_body_silhouette_switch` | 4.473 ms | 5.731 ms | 4.496–6.062 ms | 1.566 ms |
 
 ### 门槛取值
 
-- `cold_full_body` 的所有者目标是 300 ms；实测 aggregate p95 为 1468.653 ms，五轮最大轮 p95 为 1482.498 ms，因此 `tools/perf_budget.json` 设为 1482.498 ms 并标记 `over_target=true`。这是当前实测回归上限，不代表达标，也不套用 1.5 倍放宽。
-- 两个热切换的所有者目标是 100 ms；按「实测 p95 × 1.5 与目标取较宽松者」分别得到 `max(3.157 × 1.5, 100)` 与 `max(5.600 × 1.5, 100)`，所以两者门槛都是 100 ms，`over_target=false`。
+- `developer_known_hardware` 使用精确匹配的已知开发机环境；`absolute_budget_ms` 为 cold 1482.498 ms、两个 hot 指标各 100.0 ms，保留既有已接受的绝对趋势上限。
+- `ratio_budget` 以同轮合成 p95／校准 p95 的最大值为基础；cold 的历史 1482.498 ms 上限再用已观测的缩减闸门校准下界 833.677 ms 归一化，三个 CI 比值门槛依次为 1.778264、0.005186、0.006269。
+- `ci_runner` 只把目前唯一的 1722.333 ms cold CI 观测列为趋势数据；独立执行数为 1，未达到 3 次，因此不建立绝对 CI 门槛。
+- `cold_full_body` 保留 `over_target=true`；实测仍高于 300 ms 所有者目标，这不是达到目标的声明。
 
 ### PNG 解码稽核
 
-`tools/bench_composite.py` 以 `QPixmap(path)` 与 `QImage.fromData` 的调用计数稽核，并只在稽核期间将 `QPixmapCache` 设为 0。第一次全身目标视角切换（`yaw+000-pitch+00` → `yaw+015-pitch+00`）发现 40 次 `QPixmap(path)` 调用、26 个唯一 PNG 路径，其中 8 个路径重复 2–3 次；另有 10 次 `QImage.fromData`、6 个唯一 payload，其中 3 个 payload 重复。半身第一次 `cheek-rest` → `front-crossed` 也发现 42／26、9 个重复路径，以及 10／7、3 个重复 payload。两端都完成加载后的热切换新增解码调用为 0。结论是第一次切换确实存在同一 PNG 的重复解码调用，应列为后续优化待办；本任务不改合成算法。
+既有稽核显示首次 full-body 与 half-body 切换仍会对相同 PNG 或 payload 重复解码，两端预热后的 hot 切换则不再增加解码调用。本次只新增固定内存 PNG 的 CPU／解码校准尺，未改动合成器算法；校准 payload 的 SHA-256 及每样本 100000 次解码规格记录在 JSON 中。
 
 ### CI 闸门
 
-`tests/test_perf_budget.py` 读取 `tools/perf_budget.json`，在 CI 执行 `tools/bench_composite.py` 的 5 次×1 轮缩减版，并要求三个场景的实测 p95 小于或等于各自 `budget_ms`。冷启仍以 `over_target=true` 如实呈现；闸门只阻挡相对当前基准的回归。
+`tests/test_perf_budget.py` 在 `ci_runner`（由 `GITHUB_ACTIONS=true` 或 `CI=true` 识别）让合成执行 5 samples × 1 round，并在同次执行固定校准 5 rounds；将每个 `measurements.*.summary.p95_ms` 除以同一次执行的 `calibration.summary.p95_ms`，再与 `ratio_budget` 比较。`absolute_budget_ms` 在 CI 仅用于记录趋势；校准或合成样本少于 5、校准 p95 非正或非有限、或环境无法识别时一律 fail-closed，并打印实测值与门槛。
 
 ### 结论与待办
 
-热切换与半身切换目前低于 100 ms 目标；冷启全身中位数与 p95 均远超 300 ms，必须在另行授权的性能分支处理。重复 `QPixmap(path)`／`QImage.fromData` 已有测量证据，暂不在本分支修改 `infrastructure/active_outfit_overlay.py` 或 `presentation/companion_*.py`。
+hot full-body 与 half-body 切换仍低于 100 ms 目标；cold full-body 仍远高于 300 ms，需要另案授权改进。CI 现在以同机校准比值主动阻挡回归，同时保留绝对毫秒趋势；后续累积至少 3 次独立 CI 执行后，再评估是否能建立有统计依据的绝对 CI 趋势线。
 
 ## English
 
 ### Scope and method
 
-`tools/bench_composite.py` measures `LayeredFullBodyRenderer` and `LayeredParametricFaceRenderer` directly with `QT_QPA_PLATFORM=offscreen`. The formal baseline runs 5 samples per round for 5 rounds; each scenario reports the median, a linearly interpolated p95 over sorted samples, and round-to-round scatter. The workload uses the v5 second-generation 24×25 full-body layers, 7 half-body silhouettes, and the shipped blue-white Hanfu with classic makeup; it excludes the UI event loop, adapter publication, and window layout.
+`tools/bench_composite.py` measures `LayeredFullBodyRenderer` and `LayeredParametricFaceRenderer` directly under `QT_QPA_PLATFORM=offscreen`, loading `v5-base-layered`. The formal developer baseline uses 5 samples per round for 5 rounds; the same execution also decodes a fixed 68-byte in-memory PNG 100000 times per sample with `QImage.fromData`, using `calibration.summary.p95_ms` as the calibration metric. This calibration capture has an all-sample p95 of 1014.439 ms and per-round p95 values from 967.026 to 1011.737 ms; reduced gate validation observed a calibration floor of 833.677 ms. p95 uses linear interpolation over sorted samples; the scope is offscreen compositing only and excludes the UI event loop, adapter publication, and window layout.
 
 ### Measured baseline table
 
-| Scenario | All-sample median | All-sample p95 | Round median range／scatter | Round p95 range／scatter |
-| --- | ---: | ---: | --- | --- |
-| `cold_full_body` | 1389.922 ms | 1468.653 ms | 1251.438–1409.878 ms／158.440 ms (11.399%) | 1326.069–1482.498 ms／156.429 ms (10.743%) |
-| `hot_full_body_view_switch` | 2.485 ms | 3.157 ms | 2.416–2.599 ms／0.183 ms (7.400%) | 2.557–4.290 ms／1.733 ms (58.885%) |
-| `hot_half_body_silhouette_switch` | 5.043 ms | 5.600 ms | 4.594–5.440 ms／0.846 ms (16.469%) | 4.842–5.761 ms／0.919 ms (17.107%) |
+| Metric | All-sample median | All-sample p95 | Per-round p95 range | Per-round p95 scatter |
+| --- | ---: | ---: | --- | ---: |
+| `cold_full_body` | 1269.993 ms | 1337.497 ms | 1288.591–1406.008 ms | 117.417 ms |
+| `hot_full_body_view_switch` | 2.690 ms | 4.861 ms | 2.624–5.015 ms | 2.391 ms |
+| `hot_half_body_silhouette_switch` | 4.473 ms | 5.731 ms | 4.496–6.062 ms | 1.566 ms |
 
 ### Budget selection
 
-- The `cold_full_body` owner target is 300 ms; the measured aggregate p95 is 1468.653 ms and the maximum per-round p95 is 1482.498 ms, so `tools/perf_budget.json` uses 1482.498 ms and marks `over_target=true`. This is a measured regression ceiling, not a claim of target compliance, and it does not apply a 1.5 multiplier.
-- The two hot switches have a 100 ms owner target; the required comparison gives `max(3.157 × 1.5, 100)` and `max(5.600 × 1.5, 100)`, so both budgets are 100 ms and `over_target=false`.
+- `developer_known_hardware` uses an exact match for the recorded developer workstation; `absolute_budget_ms` is 1482.498 ms for cold and 100.0 ms for each hot metric, preserving the accepted absolute trend ceilings.
+- `ratio_budget` starts with the maximum paired composition-p95/calibration-p95 ratio; the cold historical ceiling is normalized by the observed reduced-gate calibration floor of 833.677 ms, giving CI ratio thresholds of 1.778264, 0.005186, and 0.006269.
+- `ci_runner` records the sole captured 1722.333 ms cold CI observation as trend data; independent_runs is 1, below 3, so no absolute CI threshold is established.
+- `cold_full_body` retains `over_target=true`; the measured value remains above the 300 ms owner target, which is not a target-compliance claim.
 
 ### PNG decode audit
 
-`tools/bench_composite.py` audits `QPixmap(path)` and `QImage.fromData` call counts, setting `QPixmapCache` to 0 only during the audit. The first full-body target-view switch (`yaw+000-pitch+00` → `yaw+015-pitch+00`) made 40 `QPixmap(path)` calls across 26 unique PNG paths; 8 paths repeated 2–3 times. It also made 10 `QImage.fromData` calls across 6 unique payloads; 3 payloads repeated. The first half-body `cheek-rest` → `front-crossed` switch likewise made 42／26 calls／unique paths with 9 repeated paths, and 10／7 calls／unique payloads with 3 repeated payloads. After both endpoints were loaded, hot switches added 0 decode calls. The conclusion is that the first switch does make repeated decode calls for the same PNG, which is a follow-up optimization item; this task does not change the compositor algorithm.
+The existing audit shows that the first full-body and half-body switches still repeat decode calls for the same PNG or payload, while warmed hot switches add no further decode calls. This change adds only a fixed in-memory PNG CPU/decode calibration ruler and does not change the compositor algorithm; the calibration payload SHA-256 and 100000 decodes per sample are recorded in JSON.
 
 ### CI gate
 
-`tests/test_perf_budget.py` reads `tools/perf_budget.json`, runs the reduced 5-sample×1-round `tools/bench_composite.py` measurement in CI, and requires every scenario's measured p95 to be at or below its `budget_ms`. The cold start remains honestly marked `over_target=true`; the gate only blocks regressions against the current baseline.
+`tests/test_perf_budget.py` selects `ci_runner` when `GITHUB_ACTIONS=true` or `CI=true`, runs compositor measurements for 5 samples × 1 round, and fixes calibration at 5 rounds in that same execution. It divides each `measurements.*.summary.p95_ms` by the same execution's `calibration.summary.p95_ms` before comparing it with `ratio_budget`. `absolute_budget_ms` is record-only trend data in CI; fewer than 5 calibration or compositor samples, a non-positive or non-finite calibration p95, or an unidentifiable environment fails closed with the measured value and threshold.
 
 ### Conclusion and follow-up
 
-Hot full-body switching and half-body switching are currently below the 100 ms target; cold full-body median and p95 are far above 300 ms and require a separately authorized performance change. The repeated `QPixmap(path)`／`QImage.fromData` calls have measured evidence; this branch does not modify `infrastructure/active_outfit_overlay.py` or `presentation/companion_*.py`.
+Hot full-body and half-body switching remain below the 100 ms target; cold full-body remains far above 300 ms and requires a separately authorized improvement. CI now actively gates regressions with a same-machine calibration ratio while retaining absolute millisecond trends; after at least 3 independent CI runs, the project can reassess whether an evidence-based absolute CI trend line is justified.
 
 ## 日本語
 
 ### 測定範囲と方法
 
-`tools/bench_composite.py` は `QT_QPA_PLATFORM=offscreen` で `LayeredFullBodyRenderer` と `LayeredParametricFaceRenderer` を直接測定します。正式ベースラインは各ラウンド 5 回、合計 5 ラウンドです。各シナリオは中央値、ソート済みサンプルの線形補間 p95、ラウンド間のばらつきを報告します。v5 第二世代の全身 24×25 レイヤー、半身 7 シルエット、同梱の青白漢服と標準メイクを使用し、UI event loop、adapter 公開、ウィンドウ配置は含めません。
+`tools/bench_composite.py` は `QT_QPA_PLATFORM=offscreen` 上で `LayeredFullBodyRenderer` と `LayeredParametricFaceRenderer` を直接測定し、`v5-base-layered` を読み込む。正式な開発機ベースラインは 1 ラウンド 5 サンプルを 5 ラウンド実行する。同じ実行内で固定 68-byte のメモリ内 PNG を `QImage.fromData` で各サンプル 100000 回デコードし、校正指標に `calibration.summary.p95_ms` を使う。今回の校正全サンプル p95 は 1014.439 ms、ラウンド別 p95 は 967.026–1011.737 ms であり、縮減ゲート検証では 833.677 ms の校正下限が観測された。p95 はソート済みサンプルの線形補間で求め、範囲は offscreen 合成だけとし、UI event loop、adapter 公開、ウィンドウ配置を除外する。
 
 ### 実測ベースライン表
 
-| シナリオ | 全サンプル中央値 | 全サンプル p95 | ラウンド中央値の範囲／ばらつき | ラウンド p95 の範囲／ばらつき |
-| --- | ---: | ---: | --- | --- |
-| `cold_full_body` | 1389.922 ms | 1468.653 ms | 1251.438–1409.878 ms／158.440 ms（11.399%） | 1326.069–1482.498 ms／156.429 ms（10.743%） |
-| `hot_full_body_view_switch` | 2.485 ms | 3.157 ms | 2.416–2.599 ms／0.183 ms（7.400%） | 2.557–4.290 ms／1.733 ms（58.885%） |
-| `hot_half_body_silhouette_switch` | 5.043 ms | 5.600 ms | 4.594–5.440 ms／0.846 ms（16.469%） | 4.842–5.761 ms／0.919 ms（17.107%） |
+| 指標 | 全サンプル中央値 | 全サンプル p95 | ラウンド別 p95 範囲 | ラウンド別 p95 ばらつき |
+| --- | ---: | ---: | --- | ---: |
+| `cold_full_body` | 1269.993 ms | 1337.497 ms | 1288.591–1406.008 ms | 117.417 ms |
+| `hot_full_body_view_switch` | 2.690 ms | 4.861 ms | 2.624–5.015 ms | 2.391 ms |
+| `hot_half_body_silhouette_switch` | 4.473 ms | 5.731 ms | 4.496–6.062 ms | 1.566 ms |
 
 ### 閾値の選定
 
-- `cold_full_body` の所有者目標は 300 ms です。実測 aggregate p95 は 1468.653 ms、5 ラウンド中の最大 p95 は 1482.498 ms なので、`tools/perf_budget.json` は 1482.498 ms とし、`over_target=true` を付けます。これは実測された回帰上限であり、目標達成の主張ではなく、1.5 倍の緩和も適用しません。
-- 2 つのホット切替の所有者目標は 100 ms です。必要な比較は `max(3.157 × 1.5, 100)` と `max(5.600 × 1.5, 100)` となるため、どちらも 100 ms、`over_target=false` です。
+- `developer_known_hardware` は記録済み開発機との完全一致を使う。`absolute_budget_ms` は cold が 1482.498 ms、各 hot 指標が 100.0 ms で、承認済みの絶対トレンド上限を保持する。
+- `ratio_budget` は同一ラウンドの合成 p95／校正 p95 比の最大値を起点とし、cold の過去の 1482.498 ms 上限を観測済み縮減ゲート校正下限 833.677 ms で正規化する。3 つの CI 比率閾値は 1.778264、0.005186、0.006269 である。
+- `ci_runner` は取得できた唯一の 1722.333 ms cold CI 観測をトレンドとして記録する。独立実行数は 1 で 3 未満のため、絶対 CI 閾値は設定しない。
+- `cold_full_body` は `over_target=true` を維持する。実測値は 300 ms の所有者目標を上回っており、目標達成を意味しない。
 
 ### PNG デコード監査
 
-`tools/bench_composite.py` は `QPixmap(path)` と `QImage.fromData` の呼び出し数を監査し、監査中だけ `QPixmapCache` を 0 に設定します。最初の全身ターゲット視点切替（`yaw+000-pitch+00` → `yaw+015-pitch+00`）では、26 個の一意な PNG パスに対して `QPixmap(path)` が 40 回呼ばれ、8 パスが 2–3 回重複しました。また `QImage.fromData` は 6 個の一意 payload に対して 10 回呼ばれ、3 payload が重複しました。半身の最初の `cheek-rest` → `front-crossed` 切替でも 42／26 回／一意パス、9 重複パス、10／7 回／一意 payload、3 重複 payload でした。両端を読み込み済みにしたホット切替の追加デコード呼び出しは 0 です。結論として、最初の切替では同じ PNG の重複デコード呼び出しが実際に発生しており、後続最適化の課題です。本タスクでは合成アルゴリズムを変更しません。
+既存監査では、full-body と half-body の初回切替で同じ PNG または payload のデコード呼び出しが繰り返され、両端をウォームアップした hot 切替では追加のデコードが発生しない。本変更は固定メモリ内 PNG の CPU／デコード校正尺だけを追加し、合成器アルゴリズムは変更しない。校正 payload の SHA-256 とサンプルごとの 100000 回デコード仕様は JSON に記録する。
 
 ### CI ゲート
 
-`tests/test_perf_budget.py` は `tools/perf_budget.json` を読み、CI で 5 回×1 ラウンドに縮小した `tools/bench_composite.py` を実行し、各シナリオの実測 p95 が対応する `budget_ms` 以下であることを要求します。冷起動は `over_target=true` として正直に残し、ゲートは現行ベースラインからの回帰だけを阻止します。
+`tests/test_perf_budget.py` は `GITHUB_ACTIONS=true` または `CI=true` のとき `ci_runner` を選び、合成測定を 5 samples × 1 round、同じ実行の校正を固定 5 rounds で行う。各 `measurements.*.summary.p95_ms` を同じ実行の `calibration.summary.p95_ms` で割り、`ratio_budget` と比較する。`absolute_budget_ms` は CI ではトレンド記録だけに使い、校正または合成サンプルが 5 未満、校正 p95 が正でないか有限でない、または環境を識別できない場合は実測値と閾値を示して fail-closed とする。
 
 ### 結論とフォローアップ
 
-全身ホット切替と半身切替は現在 100 ms 目標以下です。全身冷起動の中央値と p95 は 300 ms を大きく超えており、別途承認された性能変更で対応する必要があります。重複 `QPixmap(path)`／`QImage.fromData` には実測証拠があり、本ブランチでは `infrastructure/active_outfit_overlay.py` と `presentation/companion_*.py` を変更しません。
+hot の full-body と half-body 切替は 100 ms 目標以内だが、cold full-body は 300 ms を大きく上回り、別途承認された改善が必要である。CI は同一マシン校正比で回帰を能動的にゲートしつつ絶対ミリ秒のトレンドを保持する。独立した CI 実行を少なくとも 3 回蓄積した後、根拠のある絶対 CI トレンド線を設定できるか再評価する。
