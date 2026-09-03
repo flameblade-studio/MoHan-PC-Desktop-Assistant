@@ -4,6 +4,10 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### 未發布 — 凌霄主題包 B／C（2026-09-03）
+
+* 新增凌霄 B「霧靄青瓷」與 C「赤焰劍光」主題包，設定頁可切換且預設仍為 A「墨金・凌霄」／新增凌霄 B「雾霭青瓷」与 C「赤焰剑光」主题包，设置页可切换且默认仍为 A「墨金・凌霄」／add the Lingxiao B “Misty Celadon” and C “Crimson Swordlight” theme packs with a settings-page switch while keeping A “Ink-Gold” as default／凌霄 B「霧靄青磁」と C「赤焔剣光」のテーマパックを追加し、設定画面で切り替え可能にしつつ A「墨金・凌霄」を既定値として維持
+
 ### 未發布 — 遷移說明（issue #140，選項 3）
 
 * 官方預設外觀包「藍白漢服」與內建妝容素材入庫：`assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit`（衣袍、散髮、銀髮飾，31 個 silhouette 齊全）與 `assets/official-packs/mohan.makeup.builtin.mohan-outfit`（`classic`／`light`，淡雅為原妝 alpha × 0.55）由 `tools/assemble_official_default_pack.py` 自產線分層對映、裁切、封裝而成；官方套件目錄由 `assets/makeup/` 改為 `assets/official-packs/`（`assets/makeup/builtin/` 仍是妝容範本與素材來源）。全新設定檔與「還原內建預設」的 `builtin` 哨兵改由 `domain/outfit_pack_official.py` 解析：衣裝／髮型／頭飾指向官方包 ensemble、妝容指向內建原妝，官方檔案不在場時仍退回素體；官方 id 不可匯入覆蓋、不可移除。雲裳閣的「內建預設服裝」即官方包，不再重複列出；`assets/makeup-safe-regions.json` 依二代半身 rig 重生。
