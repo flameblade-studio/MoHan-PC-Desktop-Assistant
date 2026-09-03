@@ -1,11 +1,9 @@
 """產出可留存、可比較的 GitHub 流量月報／生成可留存、可比较的 GitHub 流量月报／
 Produce archivable, comparable GitHub traffic reports／保存可能比較できる GitHub トラフィック月報。
-
 The GitHub traffic API keeps only a rolling fourteen-day window.  This tool
 validates every required response before writing the current snapshot and the
 four-language Markdown report, so a failed or incomplete API call cannot leave
 an apparently valid empty report behind.
-
 用法：
     py -3.15 tools/traffic_report.py --month 2026-09
     py -3.15 tools/traffic_report.py --month 2026-09 --overwrite
@@ -14,52 +12,32 @@ from __future__ import annotations
 
 lazy import argparse
 lazy import json
+lazy import os
 lazy import subprocess
 lazy import sys
 lazy from collections.abc import Callable
 lazy from datetime import date, datetime, timedelta, timezone
 lazy from pathlib import Path
-
+lazy from tempfile import TemporaryDirectory
 
 REPOSITORY = "flameblade-studio/MoHan-PC-Desktop-Assistant"
 ISSUE_NUMBER = 129
 TRAFFIC_WINDOW_DAYS = 14
+GH_API_TIMEOUT_SECONDS = 30
 P0_BASELINE_DATE = "2026-08-30"
 P0_BASELINE = {
-    "views": 478,
-    "unique_visitors": 21,
-    "clones": 3934,
-    "unique_cloners": 186,
-    "release_downloads": 5,
-    "stars": 2,
-    "forks": 0,
-    "watchers": 1,
-    "google_uniques": 2,
-    "ironman_uniques": 2,
+    "views": 478, "unique_visitors": 21, "clones": 3934, "unique_cloners": 186,
+    "release_downloads": 5, "stars": 2, "forks": 0, "watchers": 1,
+    "google_uniques": 2, "ironman_uniques": 2,
 }
 METRIC_KEYS = (
-    "views",
-    "unique_visitors",
-    "clones",
-    "unique_cloners",
-    "release_downloads",
-    "stars",
-    "forks",
-    "watchers",
-    "google_uniques",
-    "ironman_uniques",
+    "views", "unique_visitors", "clones", "unique_cloners",
+    "release_downloads", "stars", "forks", "watchers",
+    "google_uniques", "ironman_uniques",
 )
 LANGUAGE_HEADINGS = ("繁體中文", "简体中文", "English", "日本語")
-REPORT_H1 = (
-    "# 墨寒每月流量月報／墨寒每月流量月报／"
-    "MoHan monthly traffic report／墨寒月次トラフィックレポート"
-)
-MANUAL_KEYS = (
-    "bot_share_estimate",
-    "kofi_page_views",
-    "kofi_members",
-    "impact_notes",
-)
+REPORT_H1 = "# 墨寒每月流量月報／墨寒每月流量月报／MoHan monthly traffic report／墨寒月次トラフィックレポート"
+MANUAL_KEYS = ("bot_share_estimate", "kofi_page_views", "kofi_members", "impact_notes")
 
 
 REPORT_TEXT = {
@@ -306,7 +284,11 @@ def gh_api(endpoint: str, *, paginate: bool = False) -> object:
             capture_output=True,
             text=True,
             encoding="utf-8",
+            timeout=GH_API_TIMEOUT_SECONDS,
         )
+    except subprocess.TimeoutExpired as exc:
+        message = f"GitHub API 逾時（{endpoint}，{GH_API_TIMEOUT_SECONDS} 秒）；未產生報表。"
+        raise TrafficReportError(message) from exc
     except OSError as exc:
         raise TrafficReportError(
             "無法執行 gh api：請確認 gh CLI 已安裝、網路可用，且已完成登入。"
@@ -441,7 +423,8 @@ def _saved_release_rows(
 
 def _validate_saved_snapshot(snapshot: object) -> dict[str, object]:
     record = _mapping(snapshot, "snapshot")
-    _required_text(record, "month", "snapshot")
+    _normalise_month(_required_text(record, "month", "snapshot"))
+    _required_text(record, "repository", "snapshot")
     metrics = _mapping(_required(record, "metrics", "snapshot"), "metrics")
     summary = _mapping(_required(metrics, "summary", "metrics"), "metrics.summary")
     for key in METRIC_KEYS:
@@ -457,6 +440,17 @@ def _validate_saved_snapshot(snapshot: object) -> dict[str, object]:
     _saved_release_rows(metrics, "metrics.releases")
     _required_count(metrics, "release_downloads_total", "metrics")
     return record
+
+
+def _ensure_outputs_available(
+    report_path: Path,
+    raw_path: Path,
+    overwrite: bool,
+) -> None:
+    if not overwrite and (report_path.exists() or raw_path.exists()):
+        raise TrafficReportError(
+            f"輸出已存在：{report_path} 或 {raw_path}；如要重跑同月份，請明確使用 --overwrite。"
+        )
 
 
 def load_snapshot(path: Path) -> dict[str, object]:
@@ -668,6 +662,15 @@ def render_report(
         if previous_snapshot is not None
         else None
     )
+    if previous is not None:
+        if _required_text(previous, "repository", "previous snapshot") != (
+            _required_text(current, "repository", "snapshot")
+        ):
+            raise TrafficReportError("比較快照 repository 不一致。")
+        if _required_text(previous, "month", "previous snapshot") != previous_month(
+            _required_text(current, "month", "snapshot")
+        ):
+            raise TrafficReportError("比較快照月份不符，必須是目前月份的上月。")
     month = _required_text(current, "month", "snapshot")
     report_name = report_filename or f"traffic-{month}.md"
     raw_name = raw_filename or f"traffic-{month}.json"
@@ -693,10 +696,7 @@ def write_outputs(
     month = _required_text(current, "month", "snapshot")
     report_path = output_dir / f"traffic-{month}.md"
     raw_path = output_dir / f"traffic-{month}.json"
-    if not overwrite and (report_path.exists() or raw_path.exists()):
-        raise TrafficReportError(
-            f"輸出已存在：{report_path} 或 {raw_path}；如要重跑同月份，請明確使用 --overwrite。"
-        )
+    _ensure_outputs_available(report_path, raw_path, overwrite)
     report = render_report(
         current,
         previous_snapshot,
@@ -706,8 +706,39 @@ def write_outputs(
     raw = json.dumps(current, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     output_dir.mkdir(parents=True, exist_ok=True)
     try:
-        raw_path.write_text(raw, encoding="utf-8")
-        report_path.write_text(report, encoding="utf-8")
+        with TemporaryDirectory(prefix=".traffic-report-", dir=output_dir) as stage_name:
+            stage = Path(stage_name)
+            raw_stage = stage / raw_path.name
+            report_stage = stage / report_path.name
+            backups: dict[Path, Path] = {}
+            raw_published = False
+            try:
+                raw_stage.write_text(raw, encoding="utf-8")
+                report_stage.write_text(report, encoding="utf-8")
+                _ensure_outputs_available(report_path, raw_path, overwrite)
+                for index, target in enumerate((raw_path, report_path)):
+                    if target.exists():
+                        backup = stage / f"backup-{index}"
+                        backup.write_bytes(target.read_bytes())
+                        backups[target] = backup
+                os.replace(raw_stage, raw_path)
+                raw_published = True
+                os.replace(report_stage, report_path)
+            except OSError as exc:
+                if raw_published:
+                    backup = backups.get(raw_path)
+                    try:
+                        if backup is None:
+                            raw_path.unlink(missing_ok=True)
+                        else:
+                            os.replace(backup, raw_path)
+                    except OSError as rollback_exc:
+                        raise TrafficReportError(
+                            f"無法寫入月報輸出：{output_dir}；回復原有輸出失敗。"
+                        ) from rollback_exc
+                raise TrafficReportError(
+                    f"無法寫入月報輸出：{output_dir}；原有輸出已保留。"
+                ) from exc
     except OSError as exc:
         raise TrafficReportError(
             f"無法寫入月報輸出：{output_dir}；未完成本次保存。"
@@ -740,6 +771,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         month = _normalise_month(args.month or date.today().strftime("%Y-%m"))
+        _ensure_outputs_available(
+            args.output_dir / f"traffic-{month}.md",
+            args.output_dir / f"traffic-{month}.json",
+            args.overwrite,
+        )
         snapshot = collect_snapshot(gh_api, month=month)
         default_previous = args.output_dir / f"traffic-{previous_month(month)}.json"
         previous_path = args.previous_json or default_previous

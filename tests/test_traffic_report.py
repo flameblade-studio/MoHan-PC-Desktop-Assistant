@@ -13,6 +13,7 @@ DATA_DIR = Path(__file__).parent / "data"
 EXPECTED_API_CALLS = 6
 EXPECTED_RELEASE_DOWNLOADS = 9
 EXPECTED_VIEW_COUNT = 120
+SECOND_WRITE_CALL = 2
 
 
 def _load_fixture(name: str) -> dict[str, object]:
@@ -95,6 +96,23 @@ def test_render_has_four_languages_correct_comparison_and_release_rows() -> None
     assert "Issue #129" in report
 
 
+def test_render_rejects_previous_snapshot_from_wrong_month() -> None:
+    current = _snapshot("traffic_report-current.json", "2026-09")
+    previous = _snapshot("traffic_report-previous.json", "2025-01")
+
+    with pytest.raises(traffic_report.TrafficReportError, match="月份"):
+        traffic_report.render_report(current, previous)
+
+
+def test_render_rejects_previous_snapshot_from_wrong_repository() -> None:
+    current = _snapshot("traffic_report-current.json", "2026-09")
+    previous = _snapshot("traffic_report-previous.json", "2026-08")
+    previous["repository"] = "example/other-repository"
+
+    with pytest.raises(traffic_report.TrafficReportError, match="repository"):
+        traffic_report.render_report(current, previous)
+
+
 def test_writes_markdown_and_raw_json_together() -> None:
     current = _snapshot("traffic_report-current.json", "2026-09")
     previous = _snapshot("traffic_report-previous.json", "2026-08")
@@ -110,6 +128,57 @@ def test_writes_markdown_and_raw_json_together() -> None:
         saved = json.loads(raw_path.read_text(encoding="utf-8"))
         assert saved["raw"]["views"]["count"] == EXPECTED_VIEW_COUNT
         assert "traffic-2026-09.json" in report_path.read_text(encoding="utf-8")
+
+
+def test_write_outputs_leaves_no_targets_when_second_staged_write_fails(
+    monkeypatch,
+) -> None:
+    current = _snapshot("traffic_report-current.json", "2026-09")
+    calls = 0
+    real_write_text = Path.write_text
+
+    def fail_second_write(path, data, *args, **kwargs):
+        nonlocal calls
+        calls += 1
+        if calls == SECOND_WRITE_CALL:
+            raise OSError("forced second staged write failure")
+        return real_write_text(path, data, *args, **kwargs)
+
+    monkeypatch.setattr(traffic_report.Path, "write_text", fail_second_write)
+    with TemporaryDirectory(prefix="mohan-traffic-report-stage-fail-") as raw_dir:
+        output_dir = Path(raw_dir)
+        with pytest.raises(traffic_report.TrafficReportError, match="無法寫入"):
+            traffic_report.write_outputs(current, None, output_dir)
+        assert list(output_dir.iterdir()) == []
+
+
+def test_write_outputs_restores_existing_targets_when_publish_fails(monkeypatch) -> None:
+    current = _snapshot("traffic_report-current.json", "2026-09")
+    with TemporaryDirectory(prefix="mohan-traffic-report-publish-fail-") as raw_dir:
+        output_dir = Path(raw_dir)
+        report_path = output_dir / "traffic-2026-09.md"
+        raw_path = output_dir / "traffic-2026-09.json"
+        report_path.write_text("old report\n", encoding="utf-8")
+        raw_path.write_text("old raw\n", encoding="utf-8")
+
+        real_replace = traffic_report.os.replace
+
+        def fail_report_publish(source, destination):
+            if Path(destination) == report_path:
+                raise OSError("forced report publish failure")
+            return real_replace(source, destination)
+
+        monkeypatch.setattr(traffic_report.os, "replace", fail_report_publish)
+        with pytest.raises(traffic_report.TrafficReportError, match="無法寫入"):
+            traffic_report.write_outputs(
+                current,
+                None,
+                output_dir,
+                overwrite=True,
+            )
+        assert report_path.read_text(encoding="utf-8") == "old report\n"
+        assert raw_path.read_text(encoding="utf-8") == "old raw\n"
+        assert list(output_dir.glob(".traffic-report-*")) == []
 
 
 def test_missing_required_api_data_fails_closed() -> None:
@@ -139,6 +208,16 @@ def test_gh_api_failure_is_explicit_and_does_not_call_the_network(
         traffic_report.gh_api("repos/example/project/traffic/views")
 
 
+def test_gh_api_timeout_is_explicit(monkeypatch) -> None:
+    def timeout(*args, **kwargs):
+        assert kwargs["timeout"] == traffic_report.GH_API_TIMEOUT_SECONDS
+        raise subprocess.TimeoutExpired(args[0], kwargs["timeout"])
+
+    monkeypatch.setattr(traffic_report.subprocess, "run", timeout)
+    with pytest.raises(traffic_report.TrafficReportError, match="逾時"):
+        traffic_report.gh_api("repos/example/project/traffic/views")
+
+
 def test_main_does_not_create_outputs_when_collection_fails(
     monkeypatch,
     capsys,
@@ -154,3 +233,28 @@ def test_main_does_not_create_outputs_when_collection_fails(
         ) == 1
         assert not output_dir.exists()
     assert "測試用 API 失敗" in capsys.readouterr().err
+
+
+def test_main_rejects_existing_output_before_collecting_snapshot(
+    monkeypatch,
+    capsys,
+) -> None:
+    calls = 0
+
+    def fail_if_called(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        raise traffic_report.TrafficReportError("不應在輸出衝突時呼叫 API")
+
+    monkeypatch.setattr(traffic_report, "gh_api", fail_if_called)
+    with TemporaryDirectory(prefix="mohan-traffic-report-conflict-") as raw_dir:
+        output_dir = Path(raw_dir)
+        (output_dir / "traffic-2026-09.md").write_text(
+            "existing report\n",
+            encoding="utf-8",
+        )
+        assert traffic_report.main(
+            ["--month", "2026-09", "--output-dir", str(output_dir)]
+        ) == 1
+    assert calls == 0
+    assert "輸出已存在" in capsys.readouterr().err
