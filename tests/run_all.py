@@ -778,6 +778,31 @@ def _print_retried_modules(retried_modules: Sequence[str]) -> None:
         )
 
 
+def _announce_tier(
+    tier: str,
+    *,
+    changed_from: str | None,
+    changed_files: Sequence[str],
+    selected_count: int,
+    tier_notice: str | None,
+) -> None:
+    """Say which tests a fast or nightly run selected, or why it fell back."""
+    if tier not in (FAST_TIER, NIGHTLY_TIER):
+        return
+    if tier == FAST_TIER:
+        print(f"FAST_CHANGED_FROM={changed_from or 'working-tree'}", flush=True)
+        print(
+            "FAST_CHANGED_FILES="
+            + (", ".join(changed_files) if changed_files else "<none>"),
+            flush=True,
+        )
+    prefix = "FAST" if tier == FAST_TIER else "NIGHTLY"
+    if tier_notice:
+        print(f"{prefix}_FALLBACK_TO_GATE: {tier_notice}", flush=True)
+    else:
+        print(f"{prefix}_SELECTED_TESTS={selected_count}", flush=True)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = _arguments(argv)
     all_tests = tuple(sorted(TESTS_DIR.glob("test_*.py")))
@@ -794,23 +819,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         tier=arguments.tier,
         changed_from=arguments.changed_from,
     )
-    if arguments.tier == FAST_TIER:
-        source = arguments.changed_from or "working-tree"
-        print(f"FAST_CHANGED_FROM={source}", flush=True)
-        print(
-            "FAST_CHANGED_FILES="
-            + (", ".join(changed_files) if changed_files else "<none>"),
-            flush=True,
-        )
-        if tier_notice:
-            print(f"FAST_FALLBACK_TO_GATE: {tier_notice}", flush=True)
-        else:
-            print(f"FAST_SELECTED_TESTS={len(selected_tests)}", flush=True)
-    elif arguments.tier == NIGHTLY_TIER:
-        if tier_notice:
-            print(f"NIGHTLY_FALLBACK_TO_GATE: {tier_notice}", flush=True)
-        else:
-            print(f"NIGHTLY_SELECTED_TESTS={len(selected_tests)}", flush=True)
+    _announce_tier(
+        arguments.tier,
+        changed_from=arguments.changed_from,
+        changed_files=changed_files,
+        selected_count=len(selected_tests),
+        tier_notice=tier_notice,
+    )
     tests = _select_shard(
         selected_tests,
         shard_index=arguments.shard_index,
