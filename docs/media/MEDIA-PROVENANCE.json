@@ -1,0 +1,138 @@
+{
+    "schema_version": 1,
+    "readme_reference_pattern": "docs/media/<filename>",
+    "generation_source": "domain/constants.py:POSE_ATLAS_GENERATION",
+    "entries": {
+        "docs/media/expressions.png": {
+            "generator": "tools/capture_readme_media.py --screenshots-only --tab all",
+            "generation": 2,
+            "sha256": "c0d8b96c47f1516444f46519a55fe69fd1063f2cf027540e8ff8422620fd04a2",
+            "auto_regenerable": true
+        },
+        "docs/media/first-run-wizard.png": {
+            "generator": "tools/capture_readme_media.py --screenshots-only --tab first-run",
+            "generation": 2,
+            "sha256": "8d4f5c1912a4947d6d315fa0bf617d1ce6cdb8ca73aa8e0ccea7d4c2e0bcf927",
+            "auto_regenerable": true
+        },
+        "docs/media/long-term-memory.png": {
+            "generator": "tools/capture_readme_media.py --screenshots-only --tab memory",
+            "generation": 2,
+            "sha256": "31d8f213dc76c0fa8b9888aaf284b63ba7ef3022a4b3fc4cebb5a04091ca2073",
+            "auto_regenerable": true
+        },
+        "docs/media/mohan-chibi-code-review.png": {
+            "generator": "owner-provided hand-authored Q版 illustration",
+            "generation": 1,
+            "sha256": "0092175b696e8cfaa64b15de9b6365eb23c9443cbf0680938f3f9e5a1f88cc04",
+            "auto_regenerable": false,
+            "reason": "保留、不算不一致：非執行期合成的 Q 版插畫；目視確認藍白漢服、銀白髮飾與藍色垂飾符合二代官方外觀，差異僅是畫風。"
+        },
+        "docs/media/mohan-chibi-dangerous-action.png": {
+            "generator": "owner-provided hand-authored Q版 illustration",
+            "generation": 1,
+            "sha256": "5bfa226987bde25fc2a6f7e381a47a2681faf2ec41560a2731903c2c8fa87189",
+            "auto_regenerable": false,
+            "reason": "保留、不算不一致：非執行期合成的 Q 版插畫；目視確認藍白漢服、銀白髮飾與藍色垂飾符合二代官方外觀，差異僅是畫風。"
+        },
+        "docs/media/mohan-chibi-praised.png": {
+            "generator": "owner-provided hand-authored Q版 illustration",
+            "generation": 1,
+            "sha256": "32866fa98ba0c34f498a60ecb2922047e3d10e24dd635bf16a01464f5edb363f",
+            "auto_regenerable": false,
+            "reason": "保留、不算不一致：非執行期合成的 Q 版插畫；目視確認藍白漢服、銀白髮飾與藍色垂飾符合二代官方外觀，差異僅是畫風。"
+        },
+        "docs/media/mohan-chibi-provisions.png": {
+            "generator": "owner-provided hand-authored Q版 illustration",
+            "generation": 1,
+            "sha256": "1a5c32217edd28f3cb1cda002cbd845b475533f444d01eb3e12b5a8e8c3e22dc",
+            "auto_regenerable": false,
+            "reason": "保留、不算不一致：非執行期合成的 Q 版插畫；目視確認藍白漢服、銀白髮飾與藍色垂飾符合二代官方外觀，差異僅是畫風。"
+        },
+        "docs/media/mohan-demo.mp4": {
+            "generator": "owner-recorded 36-second live demonstration",
+            "generation": 1,
+            "sha256": "966c2b2662bbb5f0e75e17fa6cf069865546872e0cc3cb35dc7a3eb7fa72f887",
+            "auto_regenerable": false,
+            "reason": "36 秒實錄含人工操作與錄音，無法由圖片擷取工具自動重錄；目前列為一代錄製物，需擁有者決定，重錄須使用二代執行期合成角色、最新 UI 與新音訊。"
+        },
+        "docs/media/mohan-hero.png": {
+            "generator": "tools/capture_readme_media.py --screenshots-only --tab all",
+            "generation": 2,
+            "sha256": "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb",
+            "auto_regenerable": true
+        },
+        "docs/media/portraits/gentle_smile_front.png": {
+            "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
+            "generation": 2,
+            "sha256": "92c85c914e60f5acea002368f12ee2759665a53dbdb26784c80b703c71bda5c2",
+            "auto_regenerable": true
+        },
+        "docs/media/portraits/mock_hit_front.png": {
+            "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
+            "generation": 2,
+            "sha256": "e38163e1fce62ee4e21215f5c32c36787b3e1099ed52256503f6693294e38f5f",
+            "auto_regenerable": true
+        },
+        "docs/media/portraits/proud_front.png": {
+            "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
+            "generation": 2,
+            "sha256": "5c5c0454d783f22c4ea0e7bd5b3e4b9787679d74cb490d0451b522dd621c340a",
+            "auto_regenerable": true
+        },
+        "docs/media/portraits/shy_cute_front.png": {
+            "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
+            "generation": 2,
+            "sha256": "76cbd9ae93c41fdc64a0d6b7c094e751daa72262249a223816c5c56449c0efe1",
+            "auto_regenerable": true
+        },
+        "docs/media/portraits/thinking_front.png": {
+            "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
+            "generation": 2,
+            "sha256": "0d36ddca24d571e905c439ebaaa789993cdc6f1968e2c2ff6bc7cafd328837bd",
+            "auto_regenerable": true
+        },
+        "docs/media/portraits/worried_front.png": {
+            "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
+            "generation": 2,
+            "sha256": "cff573b6b4071ac70efb7a2ce44b848938615011140f22cfaf5737904c6379c5",
+            "auto_regenerable": true
+        },
+        "docs/media/security-permissions.png": {
+            "generator": "tools/capture_readme_media.py --screenshots-only --tab security",
+            "generation": 2,
+            "sha256": "37c6f232c6257387370c6581fb98025f1324a8c675cfaa7a1ebf68556fc7f5a2",
+            "auto_regenerable": true
+        },
+        "docs/media/support-mock-hit.png": {
+            "generator": "tools/render_marketing_portraits.py proud_front shy_cute_front mock_hit_front --output docs/media --size 640x640 --output-name support-mock-hit.png --crop-alpha --content-size 600x590 --content-offset 0,20",
+            "generation": 2,
+            "sha256": "809490a94b627b100ec127ec352b3a7f073345bc051374685a349e0bc16cec64",
+            "auto_regenerable": true
+        },
+        "docs/media/support-proud.png": {
+            "generator": "tools/render_marketing_portraits.py proud_front shy_cute_front mock_hit_front --output docs/media --size 640x640 --output-name support-proud.png --crop-alpha --content-size 600x590 --content-offset 0,20",
+            "generation": 2,
+            "sha256": "63303ac49ab5a42fced7d1b9b54939f0b5bd2c098442439514f741c9cb252115",
+            "auto_regenerable": true
+        },
+        "docs/media/support-shy-aligned.png": {
+            "generator": "tools/render_marketing_portraits.py proud_front shy_cute_front mock_hit_front --output docs/media --size 640x640 --output-name support-shy-aligned.png --crop-alpha --content-size 600x590 --content-offset 0,20",
+            "generation": 2,
+            "sha256": "8910511e5586f9a936a6a175da9199e8586222efe2278ca94089d77dd7665996",
+            "auto_regenerable": true
+        },
+        "docs/media/tasks-and-ideas.png": {
+            "generator": "tools/capture_readme_media.py --screenshots-only --tab tasks",
+            "generation": 2,
+            "sha256": "042402392dfdce1725b100d4ec34ef75d717658d769200353070d913d79ee482",
+            "auto_regenerable": true
+        },
+        "docs/media/voice-modes.png": {
+            "generator": "tools/capture_readme_media.py --screenshots-only --tab voice",
+            "generation": 2,
+            "sha256": "5b563792cf056d2a99692cd5d58bf3bb5550b834c39fdde30bad9164d1def571",
+            "auto_regenerable": true
+        }
+    }
+}

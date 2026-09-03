@@ -188,7 +188,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 ### 開發者入口
 
-先讀 [架構](ARCHITECTURE.md)、[測試說明](docs/TESTING.md)、[貢獻指南](CONTRIBUTING.md)、[外觀包規格](docs/OUTFIT-PACKS.md) 與 [發布政策](PUBLISHING.md)。Windows 安裝封裝版使用工作室維護的 Python 3.15 執行環境；原始碼與 CI 採 PEP 810 惰性匯入，文件維持四語同構。
+先讀 [架構](ARCHITECTURE.md)、[測試說明](docs/TESTING.md)、[貢獻指南](CONTRIBUTING.md)、[外觀包規格](docs/OUTFIT-PACKS.md) 與 [發布政策](PUBLISHING.md)。Windows 安裝封裝版使用工作室維護的 Python 3.15 執行環境；原始碼與 CI 採 PEP 810 惰性匯入，文件維持四語同構。README 媒體請依 [世代來源清單](docs/MEDIA-PROVENANCE.md) 維護。
 
 ```powershell
 py -3.15 -m ruff check .
@@ -388,7 +388,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 ### 开发者入口
 
-请先阅读 [架构](ARCHITECTURE.md)、[测试说明](docs/TESTING.md)、[贡献指南](CONTRIBUTING.md)、[外观包规范](docs/OUTFIT-PACKS.md) 与 [发布政策](PUBLISHING.md)。Windows 安装包使用工作室维护的 Python 3.15 运行环境；源代码与 CI 采用 PEP 810 延迟导入，文档保持四语同构。
+请先阅读 [架构](ARCHITECTURE.md)、[测试说明](docs/TESTING.md)、[贡献指南](CONTRIBUTING.md)、[外观包规范](docs/OUTFIT-PACKS.md) 与 [发布政策](PUBLISHING.md)。Windows 安装包使用工作室维护的 Python 3.15 运行环境；源代码与 CI 采用 PEP 810 延迟导入，文档保持四语同构。README 媒体请按[世代来源清单](docs/MEDIA-PROVENANCE.md)维护。
 
 ```powershell
 py -3.15 -m ruff check .
@@ -588,7 +588,7 @@ Use [Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/iss
 
 ### Developer entry points
 
-Start with [Architecture](ARCHITECTURE.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md), the [outfit-pack specification](docs/OUTFIT-PACKS.md), and [Publishing policy](PUBLISHING.md). The Windows installer uses the studio-maintained Python 3.15 runtime; source and CI use PEP 810 lazy imports, and documentation stays structurally complete in all four languages.
+Start with [Architecture](ARCHITECTURE.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md), the [outfit-pack specification](docs/OUTFIT-PACKS.md), and [Publishing policy](PUBLISHING.md). The Windows installer uses the studio-maintained Python 3.15 runtime; source and CI use PEP 810 lazy imports, and documentation stays structurally complete in all four languages. Maintain README media through the [generation provenance ledger](docs/MEDIA-PROVENANCE.md).
 
 ```powershell
 py -3.15 -m ruff check .
@@ -788,7 +788,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 ### 開発者向け入口
 
-最初に [アーキテクチャ](ARCHITECTURE.md)、[テスト説明](docs/TESTING.md)、[貢献ガイド](CONTRIBUTING.md)、[外観パック仕様](docs/OUTFIT-PACKS.md)、[公開方針](PUBLISHING.md) をお読みください。Windows インストーラーは、スタジオ管理の Python 3.15 実行環境を使用します。ソースと CI は PEP 810 遅延インポートを採用し、文書は四言語で同じ構造を維持します。
+最初に [アーキテクチャ](ARCHITECTURE.md)、[テスト説明](docs/TESTING.md)、[貢献ガイド](CONTRIBUTING.md)、[外観パック仕様](docs/OUTFIT-PACKS.md)、[公開方針](PUBLISHING.md) をお読みください。Windows インストーラーは、スタジオ管理の Python 3.15 実行環境を使用します。ソースと CI は PEP 810 遅延インポートを採用し、文書は四言語で同じ構造を維持します。README のメディアは[世代プロヴェナンス台帳](docs/MEDIA-PROVENANCE.md)で管理してください。
 
 ```powershell
 py -3.15 -m ruff check .

@@ -4,6 +4,10 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### 未發布 — README 媒體世代清單與重產閘門（2026-09-04）
+
+* 新增 `docs/media/MEDIA-PROVENANCE.json`，登錄 README 21 個媒體檔的產生工具、素體世代、SHA-256 與可否自動重產；測試會列出落後當前 `POSE_ATLAS_GENERATION` 的自動素材。
+
 ### 未發布 — README 四語重編與 DLC 教學（2026-09-03）
 
 * README 依「這是什麼、畫面與功能、安裝更新、首次使用、隱私、DLC、贊助授權、疑難排解、開發者入口」重編四語同構內容，刪除重複與過時段落；新增 `.mohan-outfit` 外觀／妝容包與 `.mohan-theme` 主題檔的安裝、選用、還原、容量數量上限、二代素體相容性及 Ko-fi 單次／每月贊助雙軌教學。
@@ -315,6 +319,10 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
+### 未发布 — README 媒体世代清单与重生成闸门（2026-09-04）
+
+* 新增 `docs/media/MEDIA-PROVENANCE.json`，登记 README 21 个媒体文件的生成工具、素体世代、SHA-256 与是否可自动重生成；测试会列出落后当前 `POSE_ATLAS_GENERATION` 的自动素材。
+
 ### 未发布 — README 四语重编与 DLC 教程（2026-09-03）
 
 * README 按“这是什么、界面与功能、安装更新、首次使用、隐私、DLC、赞助许可、疑难解答、开发者入口”重编四语同构内容，删除重复和过时段落；新增 `.mohan-outfit` 外观／妆容包与 `.mohan-theme` 主题文件的安装、选用、恢复、容量数量上限、二代素体兼容性及 Ko-fi 单次／每月赞助双轨教程。
@@ -534,6 +542,10 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 ## English
 
 All notable public changes to MoHan Desktop Assistant are documented here.
+
+### Unreleased — README media generation ledger and regeneration gate (2026-09-04)
+
+* Adds `docs/media/MEDIA-PROVENANCE.json`, recording the generator, body generation, SHA-256, and regeneration capability for all 21 README media files; tests list any auto-regenerable media left behind the current `POSE_ATLAS_GENERATION`.
 
 ### Unreleased — four-language README restructure and DLC guide (2026-09-03)
 
@@ -794,6 +806,10 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### 未リリース — README メディア世代台帳と再生成ゲート（2026-09-04）
+
+* `docs/media/MEDIA-PROVENANCE.json` を追加し、README の 21 メディアについて生成ツール、素体世代、SHA-256、自動再生成可否を記録しました。テストは現在の `POSE_ATLAS_GENERATION` より遅れた自動再生成対象を一覧化します。
 
 ### 未リリース — README 四言語再編と DLC ガイド（2026-09-03）
 

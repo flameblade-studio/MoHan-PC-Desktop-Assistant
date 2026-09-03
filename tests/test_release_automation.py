@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import hashlib
 lazy import json
+lazy import re
 lazy import struct
 lazy import subprocess
 lazy import sys
@@ -16,6 +17,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 lazy from domain.version_info import FALLBACK_VERSION
+lazy from domain.constants import POSE_ATLAS_GENERATION
 lazy from tools.sync_wordpress_download_page import (
     END_MARKER,
     START_MARKER,
@@ -201,6 +203,160 @@ MARKETING_PORTRAITS = (
     "idle_front.png",
 )
 PORTRAIT_SIZE = (1254, 1254)
+MEDIA_PROVENANCE_PATH = ROOT / "docs/media/MEDIA-PROVENANCE.json"
+README_MEDIA_PATTERN = re.compile(
+    r"docs/media/[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*"
+)
+README_AUTO_MEDIA_SHA256 = {
+    "docs/media/expressions.png": (
+        "c0d8b96c47f1516444f46519a55fe69fd1063f2cf027540e8ff8422620fd04a2"
+    ),
+    "docs/media/first-run-wizard.png": (
+        "8d4f5c1912a4947d6d315fa0bf617d1ce6cdb8ca73aa8e0ccea7d4c2e0bcf927"
+    ),
+    "docs/media/long-term-memory.png": (
+        "31d8f213dc76c0fa8b9888aaf284b63ba7ef3022a4b3fc4cebb5a04091ca2073"
+    ),
+    "docs/media/mohan-hero.png": (
+        "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb"
+    ),
+    "docs/media/portraits/gentle_smile_front.png": (
+        "92c85c914e60f5acea002368f12ee2759665a53dbdb26784c80b703c71bda5c2"
+    ),
+    "docs/media/portraits/mock_hit_front.png": (
+        "e38163e1fce62ee4e21215f5c32c36787b3e1099ed52256503f6693294e38f5f"
+    ),
+    "docs/media/portraits/proud_front.png": (
+        "5c5c0454d783f22c4ea0e7bd5b3e4b9787679d74cb490d0451b522dd621c340a"
+    ),
+    "docs/media/portraits/shy_cute_front.png": (
+        "76cbd9ae93c41fdc64a0d6b7c094e751daa72262249a223816c5c56449c0efe1"
+    ),
+    "docs/media/portraits/thinking_front.png": (
+        "0d36ddca24d571e905c439ebaaa789993cdc6f1968e2c2ff6bc7cafd328837bd"
+    ),
+    "docs/media/portraits/worried_front.png": (
+        "cff573b6b4071ac70efb7a2ce44b848938615011140f22cfaf5737904c6379c5"
+    ),
+    "docs/media/security-permissions.png": (
+        "37c6f232c6257387370c6581fb98025f1324a8c675cfaa7a1ebf68556fc7f5a2"
+    ),
+    "docs/media/support-mock-hit.png": (
+        "809490a94b627b100ec127ec352b3a7f073345bc051374685a349e0bc16cec64"
+    ),
+    "docs/media/support-proud.png": (
+        "63303ac49ab5a42fced7d1b9b54939f0b5bd2c098442439514f741c9cb252115"
+    ),
+    "docs/media/support-shy-aligned.png": (
+        "8910511e5586f9a936a6a175da9199e8586222efe2278ca94089d77dd7665996"
+    ),
+    "docs/media/tasks-and-ideas.png": (
+        "042402392dfdce1725b100d4ec34ef75d717658d769200353070d913d79ee482"
+    ),
+    "docs/media/voice-modes.png": (
+        "5b563792cf056d2a99692cd5d58bf3bb5550b834c39fdde30bad9164d1def571"
+    ),
+}
+
+
+def _readme_media_references() -> set[str]:
+    return set(README_MEDIA_PATTERN.findall(read("README.md")))
+
+
+def _assert_media_provenance(manifest: dict[str, object]) -> None:
+    assert manifest.get("schema_version") == 1
+    assert manifest.get(
+        "generation_source"
+    ) == "domain/constants.py:POSE_ATLAS_GENERATION"
+    entries = manifest.get("entries")
+    assert isinstance(entries, dict)
+    references = _readme_media_references()
+    assert set(entries) == references, (
+        "README media provenance mismatch: "
+        f"missing={sorted(references - set(entries))}, "
+        f"unexpected={sorted(set(entries) - references)}"
+    )
+
+    stale: list[str] = []
+    auto_entries: set[str] = set()
+    for relative, metadata in sorted(entries.items()):
+        assert isinstance(relative, str)
+        assert isinstance(metadata, dict), relative
+        path = ROOT / relative
+        assert path.is_file(), f"missing README media file: {relative}"
+        generator = metadata.get("generator")
+        assert isinstance(generator, str) and generator.strip(), relative
+        generation = metadata.get("generation")
+        assert isinstance(generation, int) and not isinstance(generation, bool), relative
+        digest = metadata.get("sha256")
+        assert isinstance(digest, str) and re.fullmatch(r"[0-9a-f]{64}", digest), relative
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, relative
+        auto_regenerable = metadata.get("auto_regenerable")
+        assert isinstance(auto_regenerable, bool), relative
+        if auto_regenerable:
+            auto_entries.add(relative)
+            if generation != POSE_ATLAS_GENERATION:
+                stale.append(relative)
+        else:
+            reason = metadata.get("reason")
+            assert isinstance(reason, str) and reason.strip(), relative
+
+    assert auto_entries == set(README_AUTO_MEDIA_SHA256)
+    for relative, expected in README_AUTO_MEDIA_SHA256.items():
+        assert entries[relative]["sha256"] == expected, relative
+    if stale:
+        raise AssertionError(
+            "README media entries behind "
+            f"POSE_ATLAS_GENERATION={POSE_ATLAS_GENERATION}: "
+            + ", ".join(stale)
+        )
+
+
+def test_readme_media_provenance() -> None:
+    manifest = json.loads(MEDIA_PROVENANCE_PATH.read_text(encoding="utf-8"))
+    _assert_media_provenance(manifest)
+
+
+def test_readme_media_provenance_rejects_stale_auto_generation() -> None:
+    manifest = json.loads(MEDIA_PROVENANCE_PATH.read_text(encoding="utf-8"))
+    entries = manifest["entries"]
+    target = "docs/media/mohan-hero.png"
+    original_generation = entries[target]["generation"]
+    entries[target]["generation"] = 1
+    try:
+        _assert_media_provenance(manifest)
+    except AssertionError as error:
+        message = str(error)
+        assert target in message
+        assert f"POSE_ATLAS_GENERATION={POSE_ATLAS_GENERATION}" in message
+    else:
+        raise AssertionError("stale auto-regenerable media was accepted")
+    finally:
+        entries[target]["generation"] = original_generation
+
+
+def test_readme_media_generation_tools_use_runtime_composition() -> None:
+    renderer = read("tools/render_marketing_portraits.py")
+    capture = read("tools/capture_readme_media.py")
+    assert_contains(
+        renderer,
+        (
+            "ActiveOutfitOverlay(",
+            "--crop-alpha",
+            "--content-size",
+            "--content-offset",
+        ),
+    )
+    assert_contains(
+        capture,
+        (
+            "ActiveOutfitOverlay",
+            'render_portrait(overlay, "idle_front")',
+            'render_portrait(overlay, "attentive_front")',
+            'compose_expression_showcase(output_dir / "expressions.png", overlay)',
+            "render_all(",
+        ),
+    )
 
 
 def test_inno_setup_and_artwork_contract() -> None:
@@ -671,6 +827,9 @@ def main() -> None:
     test_windows_taskbar_icon_contract()
     test_wix_source_and_localization_contract()
     test_packaging_tools_and_public_media()
+    test_readme_media_provenance()
+    test_readme_media_provenance_rejects_stale_auto_generation()
+    test_readme_media_generation_tools_use_runtime_composition()
     test_readme_language_and_contribution_contract()
     test_portable_website_block()
     test_release_metadata_and_website_automation()

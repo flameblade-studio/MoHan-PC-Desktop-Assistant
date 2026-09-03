@@ -35,6 +35,7 @@ lazy from PySide6.QtGui import (
     QLinearGradient,
     QPainter,
     QPen,
+    QPixmap,
 )
 lazy from PySide6.QtWidgets import QApplication
 
@@ -51,6 +52,8 @@ lazy from tools.capture_media_contract import (
     resolve_dashboard_tab,
     select_dashboard_tab,
 )
+lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from tools.render_marketing_portraits import render_all, render_portrait
 
 WIDTH = 1280
 HEIGHT = 720
@@ -394,7 +397,10 @@ def compose_github_social_preview(
         raise RuntimeError(f"Could not save {output}")
 
 
-def compose_expression_showcase(output: Path) -> None:
+def compose_expression_showcase(
+    output: Path,
+    overlay: ActiveOutfitOverlay,
+) -> None:
     cards = (
         ("attentive_front.png", "專注"),
         ("thinking_front.png", "思考"),
@@ -434,7 +440,7 @@ def compose_expression_showcase(output: Path) -> None:
             QColor("#b6c8d6"),
             18,
         )
-        source = QImage(str(ROOT / "assets" / "expressions" / filename))
+        source = render_portrait(overlay, filename.removesuffix(".png"))
         picture = scaled_inside(source, QSize(300, 268))
         painter.drawImage(
             QPoint(x + (card_width - picture.width()) // 2, y + 8),
@@ -448,51 +454,21 @@ def compose_expression_showcase(output: Path) -> None:
         raise RuntimeError(f"Could not save {output}")
 
 
-def _alpha_bounds(image: QImage) -> QRect:
-    rgba = image.convertToFormat(QImage.Format.Format_RGBA8888)
-    data = bytes(rgba.constBits())
-    stride = rgba.bytesPerLine()
-    left, top = rgba.width(), rgba.height()
-    right = bottom = -1
-    for y in range(rgba.height()):
-        row = y * stride
-        for x in range(rgba.width()):
-            if data[row + x * 4 + 3]:
-                left = min(left, x)
-                top = min(top, y)
-                right = max(right, x)
-                bottom = max(bottom, y)
-    if right < left or bottom < top:
-        raise RuntimeError("Expression artwork has no visible pixels")
-    return QRect(left, top, right - left + 1, bottom - top + 1)
-
-
 def compose_support_portraits(output_dir: Path) -> None:
-    """Build aligned README portraits without changing in-app expression assets."""
-    output_dir.mkdir(parents=True, exist_ok=True)
-    portraits = {
-        "support-proud.png": "proud_front.png",
-        "support-shy-aligned.png": "shy_cute_front.png",
-        "support-mock-hit.png": "mock_hit_front.png",
-    }
-    for output_name, source_name in portraits.items():
-        source = QImage(str(ASSET_DIR / "expressions" / source_name))
-        if source.isNull():
-            raise RuntimeError(f"Could not load expression artwork: {source_name}")
-        content = source.copy(_alpha_bounds(source))
-        scaled = content.scaled(
-            QSize(600, 590),
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation,
-        )
-        canvas = QImage(640, 640, QImage.Format.Format_ARGB32)
-        canvas.fill(Qt.GlobalColor.transparent)
-        painter = QPainter(canvas)
-        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-        painter.drawImage((640 - scaled.width()) // 2, 20, scaled)
-        painter.end()
-        if not canvas.save(str(output_dir / output_name)):
-            raise RuntimeError(f"Could not save {output_dir / output_name}")
+    """Build fixed-size README portraits through the runtime overlay renderer."""
+    render_all(
+        ("proud_front", "shy_cute_front", "mock_hit_front"),
+        output_dir,
+        output_size=(640, 640),
+        output_names=(
+            "support-proud.png",
+            "support-shy-aligned.png",
+            "support-mock-hit.png",
+        ),
+        crop_alpha=True,
+        content_size=(600, 590),
+        content_offset=(0, 20),
+    )
 
 
 def synthesize_demo_audio(output: Path) -> float:
@@ -773,9 +749,11 @@ def capture_first_run_wizard(
     app: QApplication,
     temp_dir: str,
     output_dir: Path,
+    overlay: ActiveOutfitOverlay,
 ) -> None:
     wizard_db = StudioDB(Path(temp_dir) / "first-run.db")
-    wizard = FirstRunWizard(wizard_db)
+    composed_hero = QPixmap.fromImage(render_portrait(overlay, "idle_front"))
+    wizard = FirstRunWizard(wizard_db, appearance_pixmap=composed_hero)
     wizard.show()
     app.processEvents()
     save_widget(wizard, output_dir / "first-run-wizard.png")
@@ -803,6 +781,7 @@ def capture_conversation_assets(
     app: QApplication,
     dashboard: Dashboard,
     output_dir: Path,
+    overlay: ActiveOutfitOverlay,
 ) -> QImage:
     conversation = capture_dashboard_tab(
         app,
@@ -810,23 +789,21 @@ def capture_conversation_assets(
         0,
         output_dir / "conversation.png",
     )
-    character = representative_character()
+    character = representative_character(overlay)
     if not character.save(str(output_dir / "desktop-character.png")):
         raise RuntimeError("Could not save the desktop character preview")
     return conversation
 
 
-def representative_character() -> QImage:
-    character = QImage(str(ASSET_DIR / "expressions" / "attentive_front.png"))
-    if character.isNull():
-        raise RuntimeError("Could not load representative character artwork")
-    return character
+def representative_character(overlay: ActiveOutfitOverlay) -> QImage:
+    return render_portrait(overlay, "attentive_front")
 
 
 def capture_task_assets(
     app: QApplication,
     dashboard: Dashboard,
     output_dir: Path,
+    overlay: ActiveOutfitOverlay,
 ) -> QImage:
     tasks = capture_dashboard_tab(
         app,
@@ -834,7 +811,7 @@ def capture_task_assets(
         1,
         output_dir / "tasks-and-ideas.png",
     )
-    character = representative_character()
+    character = representative_character(overlay)
     compose_hero(tasks, character, output_dir / "mohan-hero.png")
     compose_github_social_preview(
         tasks,
@@ -881,6 +858,7 @@ def capture_static_media(
     app: QApplication,
     dashboard: Dashboard,
     output_dir: Path,
+    overlay: ActiveOutfitOverlay,
     selected_tab: str | None = None,
 ) -> dict[str, QImage]:
     if selected_tab is not None:
@@ -897,8 +875,8 @@ def capture_static_media(
         )
         return {str(index): image}
 
-    conversation = capture_conversation_assets(app, dashboard, output_dir)
-    tasks = capture_task_assets(app, dashboard, output_dir)
+    conversation = capture_conversation_assets(app, dashboard, output_dir, overlay)
+    tasks = capture_task_assets(app, dashboard, output_dir, overlay)
     memory = capture_dashboard_tab(
         app,
         dashboard,
@@ -912,7 +890,7 @@ def capture_static_media(
         output_dir / "voice-modes.png",
     )
     security = capture_security_assets(app, dashboard, output_dir)
-    compose_expression_showcase(output_dir / "expressions.png")
+    compose_expression_showcase(output_dir / "expressions.png", overlay)
     compose_support_portraits(output_dir)
     return {
         "hero": conversation,
@@ -943,18 +921,20 @@ def capture_media(
         os.environ["MOHAN_DATA_DIR"] = temp_dir
         prepare_demo_profile(temp_dir)
         app = create_capture_app()
+        overlay = ActiveOutfitOverlay(Path(temp_dir) / "marketing-store", ROOT)
         if selected_tab == "first-run":
-            capture_first_run_wizard(app, temp_dir, output_dir)
+            capture_first_run_wizard(app, temp_dir, output_dir, overlay)
             app.processEvents()
             return None
         if selected_tab == "all":
-            capture_first_run_wizard(app, temp_dir, output_dir)
+            capture_first_run_wizard(app, temp_dir, output_dir, overlay)
         db, dashboard = create_capture_dashboard(app, temp_dir)
         try:
             media = capture_static_media(
                 app,
                 dashboard,
                 output_dir,
+                overlay,
                 None if selected_tab == "all" else selected_tab,
             )
             duration = maybe_write_demo_video(media, output_dir, ffmpeg)
