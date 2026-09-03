@@ -6,12 +6,14 @@ lazy import json
 lazy import struct
 lazy import sys
 lazy import zipfile
+lazy from contextlib import contextmanager
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from application.outfit_pack_builder import build_outfit_pack
+lazy from domain import outfit_pack
 lazy from domain.outfit_pack import (
     EXPRESSION_SILHOUETTE_ALIASES,
     GESTURE_SILHOUETTES,
@@ -33,6 +35,17 @@ lazy from domain.outfit_pack import (
 )
 
 EXPECTED_INSTALLED_SELECTIONS = 7
+
+
+@contextmanager
+def pending_official_root(root: Path):
+    """Point OFFICIAL_PACK_ROOT at an empty directory: these contracts describe one store on its own."""
+    previous = outfit_pack.OFFICIAL_PACK_ROOT
+    outfit_pack.OFFICIAL_PACK_ROOT = root / "official"
+    try:
+        yield
+    finally:
+        outfit_pack.OFFICIAL_PACK_ROOT = previous
 
 
 def _png() -> bytes:
@@ -108,7 +121,7 @@ def _manifest(data: bytes) -> tuple[dict, dict[str, bytes]]:
         "format": "mohan-outfit-pack", "version": 2, "id": "modern-collection",
         "pack_version": "1.0.0", "app_range": ">=4.0.0,<5.0.0",
         "display_names": _names("現代合輯"),
-        "compatible_body_profile": {"id": "mohan-body-v1", "version": 1},
+        "compatible_body_profile": {"id": "mohan-body-v2", "version": 2},
         "source": {"kind": "original", "author": "Example Artist", "license": "MIT", "reference_included": False},
         "authoring": {"template": "mohan-official-poses", "version": 2},
         "looks": [{
@@ -313,10 +326,13 @@ def _assert_ensemble_contract(store: Path) -> None:
     assert "_ensemble" not in saved
     restore_builtin_outfit(store)
     restored = json.loads((store / "active.json").read_text(encoding="utf-8"))
+    # Restoring the built-in look resets every slot, makeup included: the
+    # ``builtin`` sentinel for makeup resolves to the built-in classic variant.
     assert set(restored) == {
         "garment",
         "hairstyle",
         "headwear",
+        "makeup",
         "weapon",
         "handheld",
         "jewelry",
@@ -526,20 +542,21 @@ def _assert_invalid_update_is_atomic(
 def run() -> None:
     with TemporaryDirectory() as temporary:
         root, data = Path(temporary), _png()
-        manifest, assets = _manifest(data)
-        _assert_authoring_builder(root, manifest, assets)
-        valid = _pack(root / "valid.mohan-appearance", manifest, assets)
-        _assert_pack_contract(valid)
-        store = _prepare_store(root, valid)
-        _assert_ensemble_contract(store)
-        _assert_removal_guards(root, store, manifest, assets)
-        _assert_removal_fails_closed(store, valid)
-        _assert_single_category_packs(root, manifest, assets)
-        _assert_pose_rejections(root, manifest, assets)
-        _assert_visual_contract_rejections(root, manifest, assets)
-        _assert_accessory_rejections(root, manifest, assets)
-        _assert_asset_rejections(root, data, manifest, assets)
-        _assert_invalid_update_is_atomic(root, store, manifest, assets)
+        with pending_official_root(root):
+            manifest, assets = _manifest(data)
+            _assert_authoring_builder(root, manifest, assets)
+            valid = _pack(root / "valid.mohan-appearance", manifest, assets)
+            _assert_pack_contract(valid)
+            store = _prepare_store(root, valid)
+            _assert_ensemble_contract(store)
+            _assert_removal_guards(root, store, manifest, assets)
+            _assert_removal_fails_closed(store, valid)
+            _assert_single_category_packs(root, manifest, assets)
+            _assert_pose_rejections(root, manifest, assets)
+            _assert_visual_contract_rejections(root, manifest, assets)
+            _assert_accessory_rejections(root, manifest, assets)
+            _assert_asset_rejections(root, data, manifest, assets)
+            _assert_invalid_update_is_atomic(root, store, manifest, assets)
     print("OUTFIT_PACK_OK")
 
 

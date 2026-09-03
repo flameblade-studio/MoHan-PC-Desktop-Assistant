@@ -421,6 +421,11 @@ def build(
     authority_path: Path | None = None,
     empty_layers: tuple[str, ...] = (),
 ) -> dict:
+    # Generation-1 paths are structural here, not a stale default: the builder
+    # warps the v4-layered ownership masks from the v4 canonical onto whatever
+    # ``authority_path`` names.  v5-base-layered was cut by passing
+    # ``--authority assets/pose-atlas/v5-base/{view}.png``; the runtime root
+    # lives in domain.constants and is not consulted by this tool.
     canonical_path = repo / "assets/pose-atlas/v4" / f"{view}.png"
     if authority_path is None:
         authority_path = repo / "assets/pose-atlas/v4-working" / (

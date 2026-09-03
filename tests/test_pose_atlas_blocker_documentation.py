@@ -21,6 +21,9 @@ def run() -> None:
     assert "historical blocker record (superseded)" in text
     assert "24／24" in text
     assert "assets/pose-atlas/v4/" in text
+    # 2026-09-02 closure note: the runtime moved to generation 2.
+    assert text.count("assets/pose-atlas/v5-base/") >= len(LANGUAGE_HEADINGS)
+    assert text.count("2026-09-02") >= len(LANGUAGE_HEADINGS)
     assert "release-audits.json" in text
     assert "no longer blocks publication" in text
     print("POSE_ATLAS_RELEASE_DOCUMENTATION_OK")

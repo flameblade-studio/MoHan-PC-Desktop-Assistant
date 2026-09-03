@@ -162,25 +162,27 @@ function Invoke-PackagedSelfTest {
 function Assert-PackagedPoseAtlas {
     param([Parameter(Mandatory = $true)][string]$PackageRoot)
     if (-not $RequirePoseAtlas) { return }
-    $AtlasRoot = Join-Path $PackageRoot "_internal\assets\pose-atlas\v4"
+    # Generation root names mirror domain/constants.py (POSE_ATLAS_ROOT_NAME /
+    # POSE_ATLAS_LAYERED_ROOT_NAME); tests/test_native_packaging_contract.py pins them.
+    $AtlasRoot = Join-Path $PackageRoot "_internal\assets\pose-atlas\v5-base"
     if (-not (Test-Path -LiteralPath $AtlasRoot)) {
-        throw "Installer omitted PoseAtlas v4 assets"
+        throw "Installer omitted PoseAtlas v5-base assets"
     }
     $Views = Get-ChildItem -LiteralPath $AtlasRoot -Filter "yaw*-pitch+00.png"
     if ($Views.Count -ne 24) {
-        throw "Installer PoseAtlas v4 view count is incomplete: $($Views.Count)"
+        throw "Installer PoseAtlas view count is incomplete: $($Views.Count)"
     }
     foreach ($View in $Views) {
         $Base = [IO.Path]::GetFileNameWithoutExtension($View.Name)
         foreach ($Suffix in @(".landmarks.json", ".hands.json")) {
             if (-not (Test-Path -LiteralPath (Join-Path $AtlasRoot ($Base + $Suffix)))) {
-                throw "Installer PoseAtlas v4 sidecar is missing: $Base$Suffix"
+                throw "Installer PoseAtlas sidecar is missing: $Base$Suffix"
             }
         }
     }
-    $LayeredAtlasRoot = Join-Path $PackageRoot "_internal\assets\pose-atlas\v4-layered"
+    $LayeredAtlasRoot = Join-Path $PackageRoot "_internal\assets\pose-atlas\v5-base-layered"
     if (-not (Test-Path -LiteralPath $LayeredAtlasRoot)) {
-        throw "Installer omitted layered PoseAtlas v4 assets"
+        throw "Installer omitted layered PoseAtlas v5-base assets"
     }
     $LayeredViews = Get-ChildItem -LiteralPath $LayeredAtlasRoot -Filter "yaw*-pitch+00_*.png"
     if ($LayeredViews.Count -ne 600) {

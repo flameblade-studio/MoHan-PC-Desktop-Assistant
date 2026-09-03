@@ -28,13 +28,19 @@ lazy from domain.face_rig import (
     MouthShape,
     Viseme,
 )
+lazy from domain.constants import (
+    POSE_ATLAS_LAYERED_ROOT_NAME,
+    POSE_ATLAS_ROOT_NAME,
+)
 lazy from infrastructure.layered_full_body_assets import load_layered_full_body_assets
 lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_ASSET_ROOT = ROOT / "assets" / "pose-atlas" / "v4-layered"
-DEFAULT_AUTHORITY = ROOT / "assets" / "pose-atlas" / "v4" / "yaw+000-pitch+00.png"
+DEFAULT_ASSET_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
+DEFAULT_AUTHORITY = (
+    ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME / "yaw+000-pitch+00.png"
+)
 VIEW_ID = "yaw+000-pitch+00"
 SCHEMA = "mohan.yaw000-layer-runtime-audit.v1"
 EXPECTED_LAYERS = 25

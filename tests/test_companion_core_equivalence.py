@@ -14,6 +14,7 @@ CONTRACT_PATH = Path(__file__).resolve()
 
 EXPECTED_METHODS = frozenset({
     "_initialize_adaptive_character_composition",
+    "_on_stale_outfit_pack",
     "_publish_adaptive_idle_frame",
     "_stage_adaptive_character_frame",
     "_dispatch_adaptive_character_frame",

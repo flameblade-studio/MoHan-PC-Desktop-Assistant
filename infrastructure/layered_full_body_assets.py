@@ -1,7 +1,8 @@
 """Load and validate the 24-view × 25-layer full-body parametric assets.
 
-Codex authored 600 transparent PNG layers (24 yaw views × 25 layers) under
-``assets/pose-atlas/v4-layered/``. This module loads them into an immutable,
+Each PoseAtlas generation ships 600 transparent PNG layers (24 yaw views × 25
+layers) under ``assets/pose-atlas/<generation>-layered/`` (the current root is
+``domain.constants.POSE_ATLAS_LAYERED_ROOT_NAME``). This module loads them into an immutable,
 Qt-independent manifest so the full-body renderer can compose a continuously
 controlled full-body portrait and replace the legacy PoseAtlas static photo +
 procedural mouth.

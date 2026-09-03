@@ -153,6 +153,8 @@ def audit(
     view: str = VIEW,
     authority_path: Path | None = None,
 ) -> dict:
+    # The default authority is the generation-1 owner-approved master; audit a
+    # v5-base view by passing its ``assets/pose-atlas/v5-base/{view}.png``.
     if authority_path is None:
         authority_path = repo / "assets/pose-atlas/v4-working" / (
             f"{VIEW}.user-approved-generated-alpha-clean-v3-20260823.png"

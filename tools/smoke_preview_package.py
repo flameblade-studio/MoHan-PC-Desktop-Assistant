@@ -5,7 +5,14 @@ lazy import os
 lazy import stat
 lazy import subprocess
 lazy import tempfile
+lazy import sys
 lazy from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+lazy from domain.constants import POSE_ATLAS_ROOT_NAME
 
 EXPECTED = "PREVIEW_PACKAGE_SMOKE_OK"
 VIEW_RING_COUNT = 24
@@ -19,17 +26,21 @@ def _require_license(path: Path) -> None:
 
 
 def _require_pose_atlas(root: Path) -> None:
-    atlas_roots = tuple(path for path in root.rglob("v4") if path.is_dir() and path.parent.name == "pose-atlas")
+    atlas_roots = tuple(
+        path
+        for path in root.rglob(POSE_ATLAS_ROOT_NAME)
+        if path.is_dir() and path.parent.name == "pose-atlas"
+    )
     if not atlas_roots:
-        raise RuntimeError("Preview package omitted PoseAtlas v4 assets")
+        raise RuntimeError(f"Preview package omitted PoseAtlas {POSE_ATLAS_ROOT_NAME} assets")
     for atlas_root in atlas_roots:
         views = tuple(atlas_root.glob("yaw*-pitch+00.png"))
         if len(views) != VIEW_RING_COUNT:
-            raise RuntimeError("Preview package PoseAtlas v4 view count is incomplete")
+            raise RuntimeError("Preview package PoseAtlas view count is incomplete")
         for view in views:
             for suffix in (".landmarks.json", ".hands.json"):
                 if not (atlas_root / f"{view.stem}{suffix}").is_file():
-                    raise RuntimeError(f"Preview package PoseAtlas v4 sidecar missing: {view.stem}{suffix}")
+                    raise RuntimeError(f"Preview package PoseAtlas sidecar missing: {view.stem}{suffix}")
 
 
 def _run(

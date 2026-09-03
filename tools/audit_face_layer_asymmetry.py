@@ -10,6 +10,7 @@ lazy from pathlib import Path
 lazy import cv2
 lazy import numpy as np
 
+lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.face_motion import interpolate_frame
 lazy from domain.face_rig import (
     EYE_STATE_BLINK,
@@ -243,7 +244,7 @@ def main() -> int:
     parser.add_argument(
         "--full-root",
         type=Path,
-        default=ROOT / "assets" / "pose-atlas" / "v4-layered",
+        default=ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME,
     )
     parser.add_argument("--json", type=Path)
     args = parser.parse_args()
