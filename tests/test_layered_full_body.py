@@ -13,6 +13,10 @@ lazy from PySide6.QtCore import QPoint
 lazy from PySide6.QtWidgets import QApplication
 lazy from PySide6.QtGui import QPixmap, QRegion
 
+lazy from domain.constants import (
+    POSE_ATLAS_LAYERED_ROOT_NAME,
+    POSE_ATLAS_ROOT_NAME,
+)
 lazy from domain.face_rig import (
     ExpressionShape,
     FaceMotionFrame,
@@ -31,8 +35,8 @@ lazy from infrastructure.layered_full_body_renderer import (
     LayeredFullBodyRenderer,
 )
 
-FULL_BODY_DIR = ROOT / "assets" / "pose-atlas" / "v4-layered"
-FULL_BODY_AUTHORITY_DIR = ROOT / "assets" / "pose-atlas" / "v4"
+FULL_BODY_DIR = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
+FULL_BODY_AUTHORITY_DIR = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
 IDENTITY_SAMPLE_STEP = 6
 MAX_MEAN_CHANNEL_ERROR = 2.0
 MAX_TRANSPARENT_SAMPLE_RATIO = 0.015

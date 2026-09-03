@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 lazy import hashlib
+lazy import logging
 lazy import os
 lazy import re
 lazy import sys
 lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
+lazy from unittest.mock import patch
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +18,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 lazy from PySide6.QtGui import QFontDatabase
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from presentation import lingxiao_fonts as fonts_module
 lazy from presentation.lingxiao_fonts import register_bundled_fonts
 lazy from presentation.lingxiao_tokens import font_stack
 
@@ -33,6 +37,13 @@ FONT_SPECS = {
     },
 }
 SHA_PATTERN = re.compile(r"[0-9a-f]{64}")
+CINZEL_SOURCE_COMMIT = "45071f07c63e863a539442ef3562b71ab1f147a6"
+CINZEL_SOURCE_URL_COUNT = 2
+
+
+def _reset_font_registration_state() -> None:
+    fonts_module._registered = False
+    fonts_module._registered_paths = ()
 
 
 def _sha256(path: Path) -> str:
@@ -86,10 +97,84 @@ def test_qt_loads_bundled_fonts_and_exposes_families() -> None:
     assert application is not None
 
 
+def test_missing_font_directory_logs_and_falls_back() -> None:
+    logger = logging.getLogger("presentation.lingxiao_fonts")
+    messages: list[str] = []
+
+    class CaptureHandler(logging.Handler):
+        def emit(self, record: logging.LogRecord) -> None:
+            messages.append(record.getMessage())
+
+    handler = CaptureHandler()
+    logger.addHandler(handler)
+    previous_level = logger.level
+    logger.setLevel(logging.WARNING)
+    try:
+        with TemporaryDirectory() as raw:
+            missing = Path(raw) / "missing-fonts"
+            _reset_font_registration_state()
+            with patch.object(fonts_module, "resource_path", return_value=missing):
+                assert register_bundled_fonts() == ()
+        assert any("missing" in message.casefold() for message in messages)
+    finally:
+        _reset_font_registration_state()
+        logger.setLevel(previous_level)
+        logger.removeHandler(handler)
+
+
+def test_failed_font_file_is_skipped_and_logged() -> None:
+    logger = logging.getLogger("presentation.lingxiao_fonts")
+    messages: list[str] = []
+
+    class CaptureHandler(logging.Handler):
+        def emit(self, record: logging.LogRecord) -> None:
+            messages.append(record.getMessage())
+
+    class FakeFontDatabase:
+        @staticmethod
+        def addApplicationFont(path: str) -> int:
+            return -1 if path.endswith("broken.ttf") else 1
+
+    handler = CaptureHandler()
+    logger.addHandler(handler)
+    previous_level = logger.level
+    logger.setLevel(logging.WARNING)
+    try:
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            good = root / "good.ttf"
+            broken = root / "broken.ttf"
+            good.write_bytes(b"valid fixture")
+            broken.write_bytes(b"broken fixture")
+            _reset_font_registration_state()
+            with (
+                patch.object(fonts_module, "resource_path", return_value=root),
+                patch.object(fonts_module, "QFontDatabase", FakeFontDatabase),
+            ):
+                assert register_bundled_fonts() == (good,)
+        assert any("broken.ttf" in message for message in messages)
+    finally:
+        _reset_font_registration_state()
+        logger.setLevel(previous_level)
+        logger.removeHandler(handler)
+
+
 def test_font_stacks_prioritize_bundled_families() -> None:
     assert font_stack("display").split(", ", 1)[0] == '"LXGW WenKai TC"'
     assert font_stack("body").split(", ", 1)[0] == '"LXGW WenKai TC"'
     assert font_stack("caps").split(", ", 1)[0] == '"Cinzel"'
+
+
+def test_font_sources_use_immutable_revisions() -> None:
+    document = (PROJECT_ROOT / "third_party_licenses" / "FONTS.md").read_text(
+        encoding="utf-8"
+    )
+    rows = tuple(line for line in document.splitlines() if "| Cinzel |" in line)
+    assert len(rows) == LANGUAGE_COUNT
+    for row in rows:
+        assert "google/fonts/main" not in row
+        assert row.count(f"google/fonts/{CINZEL_SOURCE_COMMIT}/") == CINZEL_SOURCE_URL_COUNT
+        assert f"`{CINZEL_SOURCE_COMMIT}`" in row
 
 
 def test_font_manifest_is_four_language_and_packaging_is_explicit() -> None:
@@ -115,8 +200,11 @@ def test_font_manifest_is_four_language_and_packaging_is_explicit() -> None:
 def run() -> None:
     test_bundled_font_files_and_licenses_exist()
     test_bundled_font_hashes_match_license_manifest()
+    test_missing_font_directory_logs_and_falls_back()
+    test_failed_font_file_is_skipped_and_logged()
     test_qt_loads_bundled_fonts_and_exposes_families()
     test_font_stacks_prioritize_bundled_families()
+    test_font_sources_use_immutable_revisions()
     test_font_manifest_is_four_language_and_packaging_is_explicit()
     print("BUNDLED_FONTS_TESTS_OK")
 

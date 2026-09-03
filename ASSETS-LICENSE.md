@@ -8,6 +8,10 @@
 
 上述角色資產**不適用**本儲存庫 `LICENSE` 之 MIT License。`assets/vision-models/` 下的第三方模型依其原授權條款提供，詳見 `THIRD_PARTY_NOTICES.md`。
 
+### 半身素材來源
+
+`assets/expressions/` 下的半身表情、分層素材與 `v120_*` 物理切層，自 2026-09-02 起全部由工作室自有產線自二代素體 `assets/pose-atlas/v5-base/` 生成（`tools/build_half_body_layered_rig.py`、`tools/build_half_body_v120.py`），不再含任何外部授權之美術；素顏、髮髻、灰色無袖上衣為素體本體，外袍、髮型、髮飾與妝容為執行期另行疊加之圖層。上述版權聲明與下列授權條款對這批素材同樣適用。
+
 ### 明示授權
 
 取得本軟體副本者，得為**執行、開發、測試與除錯本軟體**之目的，使用並原樣重製上述角色資產（包含隨本軟體發行包之散布）。
@@ -31,6 +35,10 @@
 「墨寒」角色的全部美术资产——包括但不限于 `assets/expressions/`、`assets/pose-atlas/`、`assets/onboarding/`、`assets/ui/` 下的角色图像与分层素材、应用程序图标中的角色形象，以及角色人设、故事设定与「墨寒／MoHan」名称与形象——为 Copyright © 2026 CHOU MING HUA，**保留一切权利（All Rights Reserved）**。
 
 上述角色资产**不适用**本仓库 `LICENSE` 的 MIT License。`assets/vision-models/` 下的第三方模型依其原授权条款提供，详见 `THIRD_PARTY_NOTICES.md`。
+
+### 半身素材来源
+
+`assets/expressions/` 下的半身表情、分层素材与 `v120_*` 物理切层，自 2026-09-02 起全部由工作室自有产线自二代素体 `assets/pose-atlas/v5-base/` 生成（`tools/build_half_body_layered_rig.py`、`tools/build_half_body_v120.py`），不再包含任何外部授权的美术；素颜、发髻、灰色无袖上衣为素体本体，外袍、发型、发饰与妆容为运行时另行叠加的图层。上述版权声明与下列授权条款对这批素材同样适用。
 
 ### 明示授权
 
@@ -56,6 +64,10 @@ All artwork of the character "MoHan" — including but not limited to the charac
 
 These character assets are **not** covered by the MIT License in this repository's `LICENSE` file. Third-party models under `assets/vision-models/` are provided under their own license terms; see `THIRD_PARTY_NOTICES.md`.
 
+### Provenance of the half-body assets
+
+Since 2026-09-02 the half-body portraits, layered rig and `v120_*` physics cutouts under `assets/expressions/` are generated entirely by the studio's own pipeline from the generation-2 body `assets/pose-atlas/v5-base/` (`tools/build_half_body_layered_rig.py`, `tools/build_half_body_v120.py`) and contain no externally licensed artwork; the bare face, hair bun and grey sleeveless top are the body itself, while robe, hairstyle, hairpiece and makeup are separate layers composited at runtime. The copyright notice above and the terms below apply to these assets unchanged.
+
 ### Express grant
 
 Anyone who obtains a copy of this software may use and reproduce these character assets verbatim for the purpose of **running, developing, testing, and debugging this software**, including their redistribution as part of this software's release packages.
@@ -79,6 +91,10 @@ The "MoHan" name and character likeness are distinctive; the author reserves all
 キャラクター「墨寒」のすべての美術資産——`assets/expressions/`、`assets/pose-atlas/`、`assets/onboarding/`、`assets/ui/` 配下のキャラクター画像とレイヤー素材、アプリケーションアイコン内のキャラクター肖像、ならびにキャラクターの人物設定、物語設定、「墨寒／MoHan」の名称と肖像を含みますがこれらに限定されません——は Copyright © 2026 CHOU MING HUA であり、**すべての権利を留保します（All Rights Reserved）**。
 
 上記のキャラクター資産には、本リポジトリの `LICENSE` に記載された MIT License は**適用されません**。`assets/vision-models/` 配下の第三者モデルは各自のライセンス条件で提供されます。詳細は `THIRD_PARTY_NOTICES.md` を参照してください。
+
+### 半身素材の出典
+
+`assets/expressions/` 配下の半身表情、レイヤー素材、`v120_*` 物理切り出しは、2026-09-02 以降すべてスタジオ自前のパイプラインが第二世代素体 `assets/pose-atlas/v5-base/` から生成したものであり（`tools/build_half_body_layered_rig.py`、`tools/build_half_body_v120.py`）、外部ライセンスの美術は一切含みません。素顔、お団子髪、灰色のノースリーブトップは素体そのものであり、外衣、髪型、髪飾り、化粧は実行時に別途重ねるレイヤーです。上記の著作権表示と以下のライセンス条項は、これらの素材にもそのまま適用されます。
 
 ### 明示的許諾
 

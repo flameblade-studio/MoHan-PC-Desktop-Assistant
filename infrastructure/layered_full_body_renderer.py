@@ -17,7 +17,11 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import QRectF, Qt
 lazy from PySide6.QtGui import QPainter, QPixmap, QRegion
 
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.constants import (
+    FLOAT_COMPARISON_EPSILON,
+    POSE_ATLAS_LAYERED_ROOT_NAME,
+    POSE_ATLAS_ROOT_NAME,
+)
 lazy from domain.face_rig import FaceMotionFrame, Viseme
 lazy from infrastructure.layered_full_body_assets import (
     LayeredFullBodyManifest,
@@ -46,7 +50,12 @@ MAX_SLEEVE_LIFT = 4.0
 MAX_GESTURE_SWAY = 3.0
 GESTURE_ENERGY_THRESHOLD = 0.45
 
-FULL_BODY_ASSET_DIR = Path("assets") / "pose-atlas" / "v4-layered"
+# The layered pack and the static authority it was cut from MUST move
+# together: the seam-heal and face-restore passes below repaint authority
+# pixels over the composed layers, so a mismatched pair paints one
+# generation's face over the other's body.
+FULL_BODY_ASSET_DIR = Path("assets") / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
+FULL_BODY_AUTHORITY_DIR = Path("assets") / "pose-atlas" / POSE_ATLAS_ROOT_NAME
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 50
 # One static base composite (body..authority face) per recently used view;
@@ -320,7 +329,7 @@ class LayeredFullBodyRenderer:
         if region.isEmpty():
             return
         authority = self._cached_pixmap(
-            PROJECT_ROOT / "assets" / "pose-atlas" / "v4" / f"{view.view_id}.png"
+            PROJECT_ROOT / FULL_BODY_AUTHORITY_DIR / f"{view.view_id}.png"
         )
         if authority.isNull():
             return
@@ -350,7 +359,7 @@ class LayeredFullBodyRenderer:
         if region.isEmpty():
             return
         authority = self._cached_pixmap(
-            PROJECT_ROOT / "assets" / "pose-atlas" / "v4" / f"{view.view_id}.png"
+            PROJECT_ROOT / FULL_BODY_AUTHORITY_DIR / f"{view.view_id}.png"
         )
         if authority.isNull():
             return

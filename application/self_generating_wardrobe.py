@@ -17,8 +17,8 @@ lazy from domain.outfit_pack import (
     OutfitPack,
     OutfitPackError,
     install_outfit_pack,
-    validated_asset_dimensions,
 )
+lazy from domain.outfit_pack_assets import validated_asset_dimensions
 
 
 def _never_cancelled() -> bool:

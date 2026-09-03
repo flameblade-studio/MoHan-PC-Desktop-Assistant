@@ -6,11 +6,14 @@
     "2": "audit configuration or execution failed closed"
   },
   "passed": true,
-  "asset_root": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4-layered",
-  "authority_root": "D:\\FlamebladeStudio\\CodexProjects\\2026-08-13\\mohan-multisensory-vision\\assets\\pose-atlas\\v4",
+  "asset_root": "assets\\pose-atlas\\v5-base-layered",
+  "authority_root": "assets\\pose-atlas\\v5-base",
   "views_checked": 24,
   "files_checked": 600,
   "issue_count": 0,
   "issues_by_code": {},
-  "issues": []
+  "issues": [],
+  "advisory_count": 0,
+  "advisories_by_code": {},
+  "advisories": []
 }

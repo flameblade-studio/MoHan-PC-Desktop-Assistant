@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+lazy import logging
 lazy from pathlib import Path
 
 lazy from PySide6.QtGui import QFontDatabase
@@ -11,6 +12,7 @@ lazy from presentation.presentation_resources import resource_path
 __all__ = ("register_bundled_fonts",)
 
 _FONT_ROOT = "assets/fonts"
+_LOGGER = logging.getLogger(__name__)
 _registered = False
 _registered_paths: tuple[Path, ...] = ()
 
@@ -24,16 +26,22 @@ def register_bundled_fonts() -> tuple[Path, ...]:
 
     root = resource_path(_FONT_ROOT)
     if not root.is_dir():
-        raise RuntimeError(f"Bundled font directory is missing: {root}")
+        _LOGGER.warning("Bundled font directory is missing: %s", root)
+        _registered_paths = ()
+        _registered = True
+        return _registered_paths
     paths = tuple(sorted(root.rglob("*.ttf")))
-    failures = tuple(
-        path
-        for path in paths
-        if QFontDatabase.addApplicationFont(str(path)) == -1
-    )
-    if failures:
-        names = ", ".join(path.name for path in failures)
-        raise RuntimeError(f"Bundled font registration failed: {names}")
-    _registered_paths = paths
+    registered_paths: list[Path] = []
+    for path in paths:
+        try:
+            font_id = QFontDatabase.addApplicationFont(str(path))
+        except (OSError, RuntimeError) as error:
+            _LOGGER.warning("Bundled font registration failed for %s: %s", path, error)
+            continue
+        if font_id < 0:
+            _LOGGER.warning("Bundled font registration failed for %s", path)
+            continue
+        registered_paths.append(path)
+    _registered_paths = tuple(registered_paths)
     _registered = True
     return _registered_paths

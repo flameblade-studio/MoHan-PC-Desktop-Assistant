@@ -152,6 +152,23 @@ FULL_BODY_LAYER_Z_ORDER: Final = (
 )
 
 # ---------------------------------------------------------------------------
+# Full-body PoseAtlas generation (runtime switch ratified 2026-09-02).
+#
+# The 24 static authority views (``{view}.png`` + landmarks/hands sidecars)
+# and the 600 layered PNGs live under ``assets/pose-atlas/<root>``.  Every
+# runtime consumer, the packaged self-test, the preview packager and the
+# audit-tool defaults resolve the CURRENT generation through these names, so a
+# generation switch is one edit here instead of twenty scattered literals.
+# Generation 1 (``v4`` / ``v4-layered``) stays in the repository as an archive
+# and as the calibration reference of the v4-specific golden/rebuild tools.
+# ---------------------------------------------------------------------------
+POSE_ATLAS_GENERATION: Final = 2
+POSE_ATLAS_ROOT_NAME: Final = "v5-base"
+POSE_ATLAS_LAYERED_ROOT_NAME: Final = "v5-base-layered"
+POSE_ATLAS_RELATIVE_ROOT: Final = "assets/pose-atlas/v5-base"
+POSE_ATLAS_LAYERED_RELATIVE_ROOT: Final = "assets/pose-atlas/v5-base-layered"
+
+# ---------------------------------------------------------------------------
 # Weather defaults (裁決 2026-08-28): before the wardrobe runtime has written
 # ``weather_temperature_c``/``weather_condition``, every reader must assume the
 # same comfortable indoor scene.  24 °C sits in the "warm" thermal band and
