@@ -107,6 +107,10 @@ GitHub 自動化必須使用一條可預測的憑證路徑。Pull Request 的讀
 
 ### 自動化後續發行
 
+#### CHANGELOG 片段組裝順序
+
+`release-please.yml` 先在 release PR 產生 `CHANGELOG.md` 的版本標題，並保留既有已發布歷史；其後 `tools/assemble_changelog.py --version <version>` 依檔名排序組裝 `changelog.d/<name>.md`。遷移用的四小節 legacy 檔只在輸出時重排為斜線標題／條列，文字不改。成功寫入後才刪除片段，`--dry-run` 只預覽，不會改檔。
+
 只有符合 `vN.N.N` 或 `vN.N.N-rc.N` 的標籤能觸發 `.github/workflows/release.yml`。工作流程會驗證精確標籤、簽出該不可變的來源修訂，然後依序：
 
 任何平台封裝開始前，快速閘門必須先確認標籤、版本與 `main` 歷史一致，檢查本次模式所要求的 Release 存在或不存在，並以 Python 3.15 驗證人工整理的四語 Release 說明。這些便宜且具決定性的檢查不得延後到長時間建置之後；發布前仍須再次驗證標籤、產物與 Release 狀態，以防執行期間發生漂移。
@@ -281,6 +285,10 @@ python tools\capture_readme_media.py --screenshots-only
 GitHub 自动化必须使用一条可预测的凭证路径。Pull Request 的读取与更新优先使用已连接的 GitHub 接口；本地 push 使用 Git 自身的凭证管理；`gh` 仅保留用于已连接接口尚未提供的 GitHub Actions 检查与日志。若 `gh auth status` 一次确认凭证失效，在外部状态未变化前不得反复重试、登出或重新登录；应直接改用已连接接口或已登录浏览器。只有必要操作没有等效途径且确实受阻时，才请所有者重新验证一次。任何流程都不得显示、复制、写入文件或提交 Token。
 
 ### 自动化后续发布
+
+#### CHANGELOG 片段组装顺序
+
+`release-please.yml` 先在 release PR 产生 `CHANGELOG.md` 的版本标题并保留既有已发布历史；随后 `tools/assemble_changelog.py --version <version>` 按文件名排序组装 `changelog.d/<name>.md`。迁移用的四小节 legacy 文件只在输出时重排为斜线标题／列表项，文字不改。成功写入后才删除片段，`--dry-run` 只预览，不会改文件。
 
 只有符合 `vN.N.N` 或 `vN.N.N-rc.N` 的标签能触发 `.github/workflows/release.yml`。工作流会验证精确标签、检出该不可变的源修订，然后依次：
 
@@ -457,6 +465,10 @@ GitHub automation must use one predictable credential path. Prefer the connected
 
 ### Automated future releases
 
+#### CHANGELOG fragment assembly order
+
+`release-please.yml` first creates the `CHANGELOG.md` version heading on the release PR while preserving released history; then `tools/assemble_changelog.py --version <version>` sorts and assembles `changelog.d/<name>.md`. Migrated four-section legacy files are only rearranged into slash-separated titles and bullets in the output; their wording is unchanged. Fragments are deleted only after a successful write, while `--dry-run` previews without changing files.
+
 Only `vN.N.N` or `vN.N.N-rc.N` tags trigger `.github/workflows/release.yml`. The workflow validates the exact tag, checks out that immutable source revision, and then:
 
 Before any platform package starts, the fast gate must confirm that the tag, version, and `main` history agree, require the Release to exist or not exist as dictated by the selected mode, and validate the curated four-language Release notes with Python 3.15. These cheap, decisive checks must not be deferred until after long builds. The tag, artifacts, and Release state are still revalidated immediately before publication to detect in-flight drift.
@@ -631,6 +643,10 @@ python tools\capture_readme_media.py --screenshots-only
 GitHub 自動化では、予測可能な認証経路を一つだけ使用します。Pull Request の読み取りと更新には接続済み GitHub 連携を優先し、ローカルからの push には Git 自身の認証情報管理を使用し、`gh` は接続済み連携が提供しない GitHub Actions の検査とログにだけ使用します。`gh auth status` で認証情報の無効を一度確認した後は、外部状態が変わらない限り、再試行、ログアウト、再ログインを繰り返してはなりません。接続済み連携またはログイン済みブラウザーへ直ちに切り替えます。不可欠な操作に同等の経路がなく、実際に処理が停止した場合に限り、所有者へ一度だけ再認証を依頼します。どの処理でも Token を表示、複製、ファイル保存、commit してはなりません。
 
 ### 今後の自動リリース
+
+#### CHANGELOG フラグメントの組み立て順
+
+`release-please.yml` が先に release PR 上で `CHANGELOG.md` のバージョン見出しを作成して既存の公開済み履歴を保持し、その後 `tools/assemble_changelog.py --version <version>` が `changelog.d/<name>.md` をファイル名順に組み立てます。移行用の四小節 legacy ファイルは出力時だけスラッシュ区切りの見出し／箇条書きへ並べ替え、文言は変更しません。正常に書き込んだ後だけフラグメントを削除し、`--dry-run` はファイルを変更せずプレビューします。
 
 `.github/workflows/release.yml` を起動できるのは `vN.N.N` または `vN.N.N-rc.N` タグだけです。ワークフローは正確なタグを検証し、その不変のソースリビジョンを checkout してから、次を順に実行します。
 

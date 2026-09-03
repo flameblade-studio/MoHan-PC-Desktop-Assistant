@@ -56,6 +56,23 @@ jobs:
           python-version: "3.15.0-rc.1"
           allow-prereleases: true
 
+      - name: Assemble changelog fragments after Release Please
+        if: ${{ steps.release.outputs.pr }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(python -c 'import json; print(json.load(open(".release-please-manifest.json"))["."])')"
+          python tools/assemble_changelog.py --version "$version"
+          if [[ -z "$(git status --porcelain -- CHANGELOG.md changelog.d)" ]]; then
+            echo "Changelog assembly made no changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md changelog.d
+          git commit -m "chore: 組裝變更片段／组装变更片段／Assemble changelog fragments／変更フラグメントを組み立て"
+          git push origin "HEAD:${{ fromJSON(steps.release.outputs.pr || '{}').headBranchName || '' }}"
+
       - name: Ensure a four-language release notes draft exists
         if: ${{ steps.release.outputs.pr }}
         shell: bash
