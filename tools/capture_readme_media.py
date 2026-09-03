@@ -10,12 +10,15 @@ lazy import tempfile
 lazy import wave
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
+lazy from unittest.mock import patch
 
-os.environ.setdefault("QT_QPA_PLATFORM", "windows")
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIR = ROOT / "assets"
+TESTS = ROOT / "tests"
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(TESTS))
 
 HERO_SCENE_END = 0.18
 VOICE_SCENE_END = 0.40
@@ -35,9 +38,19 @@ lazy from PySide6.QtGui import (
 )
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from presentation.companion_window import CompanionWindow
+lazy from infrastructure.app_resources import STYLE
+lazy from presentation.dashboard_window import Dashboard
 lazy from presentation.first_run_wizard import FirstRunWizard
 lazy from infrastructure.db import StudioDB
+lazy from domain.time_utils import local_wall_time
+lazy from test_global_settings_actions import close_dashboard, dependencies
+lazy from presentation.lingxiao_widgets import set_motion_override
+lazy from tools.capture_media_contract import (
+    DASHBOARD_TAB_ALIASES,
+    preview_font_family,
+    resolve_dashboard_tab,
+    select_dashboard_tab,
+)
 
 WIDTH = 1280
 HEIGHT = 720
@@ -54,11 +67,6 @@ DEMO_TEXT = (
 class VideoTiming:
     duration: float
     audio_duration: float
-
-
-def stop_timers(window: CompanionWindow) -> None:
-    for timer in window.findChildren(QTimer):
-        timer.stop()
 
 
 def seed_demo_database(db: StudioDB) -> None:
@@ -92,33 +100,52 @@ def seed_demo_database(db: StudioDB) -> None:
         "桌面陪伴的微小動作",
         "以眨眼、呼吸、眼神與衣袖擺動呈現安靜而不打擾的陪伴感。",
     )
-    db.add_memory(
-        "林小姐是主上的主要出版窗口，固定於週一聯絡。",
-        "人物",
-        "manual",
-        5,
-        "主要出版窗口",
-    )
-    db.add_memory(
-        "主上偏好先完成創作，再集中處理行政事項。",
-        "偏好",
-        "manual",
-        4,
-        "工作順序偏好",
-    )
-    db.add_memory(
-        "完成墨寒桌面助理的穩定公開版本。",
-        "目標",
-        "manual",
-        5,
-        "公開版本目標",
-    )
+    seed_demo_memories(db)
     db.log_chat("user", "墨寒，幫我安排今天的工作。")
     db.log_chat(
         "assistant",
         "主上，妾已依優先順序整理妥當。先完成漫畫分鏡，再校對文章與處理上架資料。",
     )
     db.start_work()
+
+
+def seed_demo_memories(db: StudioDB) -> None:
+    """Insert the screenshot fixture without requiring the optional text normalizer."""
+
+    now = local_wall_time().isoformat(timespec="seconds")
+    rows = (
+        (
+            "人物",
+            "主要出版窗口",
+            "林小姐是主上的主要出版窗口，固定於週一聯絡。",
+            "manual",
+            5,
+        ),
+        (
+            "偏好",
+            "工作順序偏好",
+            "主上偏好先完成創作，再集中處理行政事項。",
+            "manual",
+            4,
+        ),
+        (
+            "目標",
+            "公開版本目標",
+            "完成墨寒桌面助理的穩定公開版本。",
+            "manual",
+            5,
+        ),
+    )
+    db.conn.executemany(
+        "INSERT INTO memories(category,title,content,source,importance,created_at,updated_at) "
+        "VALUES(?,?,?,?,?,?,?) "
+        "ON CONFLICT(content) DO UPDATE SET "
+        "category=excluded.category,title=excluded.title,source=excluded.source,"
+        "importance=MAX(memories.importance,excluded.importance),"
+        "updated_at=excluded.updated_at",
+        tuple((*row, now, now) for row in rows),
+    )
+    db.conn.commit()
 
 
 def save_widget(widget, path: Path) -> QImage:
@@ -730,14 +757,15 @@ def write_demo_video(
 
 
 def prepare_demo_profile(temp_dir: str) -> None:
-    database = StudioDB(Path(temp_dir) / "mohan.db")
+    database = StudioDB(Path(temp_dir) / "mohan-zh-TW.db")
     seed_demo_database(database)
     database.close()
 
 
 def create_capture_app() -> QApplication:
     app = QApplication.instance() or QApplication([])
-    app.setStyleSheet(__import__("app").STYLE)
+    app.setFont(QFont(preview_font_family(), 10))
+    app.setStyleSheet(STYLE)
     return app
 
 
@@ -755,33 +783,37 @@ def capture_first_run_wizard(
     wizard_db.close()
 
 
-def create_capture_window(app: QApplication) -> CompanionWindow:
-    window = CompanionWindow(startup_speech=False)
-    window.show()
-    window.dashboard.show()
-    window.dashboard.resize(1400, 900)
-    window.dashboard.move(40, 40)
-    window.idle_pose = "front"
-    window._set_expression("attentive_front", fade=False)
-    window.dashboard.mode_combo.setCurrentText("工作")
-    # Dashboard construction already loads the seeded profile. Rebuilding
-    # the card lists again in the same event turn leaves deleteLater()
-    # widgets visible behind their replacements in screenshots.
+def create_capture_dashboard(
+    app: QApplication,
+    temp_dir: str,
+) -> tuple[StudioDB, Dashboard]:
+    """Build a dashboard over the prepared demo database without resetting it."""
+
+    set_motion_override(False)
+    db = StudioDB(Path(temp_dir) / "mohan-zh-TW.db")
+    with patch.object(QTimer, "start", return_value=None):
+        dashboard = Dashboard(db, dependencies(Path(temp_dir)))
+    dashboard.resize(1400, 900)
+    dashboard.show()
     app.processEvents()
-    stop_timers(window)
-    return window
+    return db, dashboard
 
 
 def capture_conversation_assets(
     app: QApplication,
-    window: CompanionWindow,
+    dashboard: Dashboard,
     output_dir: Path,
 ) -> QImage:
-    window.dashboard.tabs.setCurrentIndex(0)
-    app.processEvents()
-    dashboard = save_widget(window.dashboard, output_dir / "conversation.png")
-    save_widget(window, output_dir / "desktop-character.png")
-    return dashboard
+    conversation = capture_dashboard_tab(
+        app,
+        dashboard,
+        0,
+        output_dir / "conversation.png",
+    )
+    character = representative_character()
+    if not character.save(str(output_dir / "desktop-character.png")):
+        raise RuntimeError("Could not save the desktop character preview")
+    return conversation
 
 
 def representative_character() -> QImage:
@@ -793,12 +825,15 @@ def representative_character() -> QImage:
 
 def capture_task_assets(
     app: QApplication,
-    window: CompanionWindow,
+    dashboard: Dashboard,
     output_dir: Path,
 ) -> QImage:
-    window.dashboard.tabs.setCurrentIndex(1)
-    app.processEvents()
-    tasks = save_widget(window.dashboard, output_dir / "tasks-and-ideas.png")
+    tasks = capture_dashboard_tab(
+        app,
+        dashboard,
+        1,
+        output_dir / "tasks-and-ideas.png",
+    )
     character = representative_character()
     compose_hero(tasks, character, output_dir / "mohan-hero.png")
     compose_github_social_preview(
@@ -811,50 +846,76 @@ def capture_task_assets(
 
 def capture_dashboard_tab(
     app: QApplication,
-    window: CompanionWindow,
+    dashboard: Dashboard,
     index: int,
     output: Path,
 ) -> QImage:
-    window.dashboard.tabs.setCurrentIndex(index)
+    dashboard.tabs.setCurrentIndex(index)
     app.processEvents()
-    return save_widget(window.dashboard, output)
+    return save_widget(dashboard, output)
 
 
 def capture_security_assets(
     app: QApplication,
-    window: CompanionWindow,
+    dashboard: Dashboard,
     output_dir: Path,
 ) -> QImage:
-    window.dashboard.tabs.setCurrentIndex(5)
-    window.dashboard.flagship_center.tabs.setCurrentIndex(5)
+    select_dashboard_tab(dashboard, "security")
     app.processEvents()
-    return save_widget(window.dashboard, output_dir / "security-permissions.png")
+    return save_widget(dashboard, output_dir / "security-permissions.png")
+
+
+DASHBOARD_TAB_OUTPUTS = {
+    0: "conversation.png",
+    1: "tasks-and-ideas.png",
+    2: "work-platforms.png",
+    3: "long-term-memory.png",
+    4: "voice-modes.png",
+    5: "security-permissions.png",
+    6: "wardrobe.png",
+    7: "settings.png",
+}
 
 
 def capture_static_media(
     app: QApplication,
-    window: CompanionWindow,
+    dashboard: Dashboard,
     output_dir: Path,
+    selected_tab: str | None = None,
 ) -> dict[str, QImage]:
-    dashboard = capture_conversation_assets(app, window, output_dir)
-    tasks = capture_task_assets(app, window, output_dir)
+    if selected_tab is not None:
+        index = resolve_dashboard_tab(dashboard, selected_tab)
+        image = (
+            capture_security_assets(app, dashboard, output_dir)
+            if index == DASHBOARD_TAB_ALIASES["security"]
+            else capture_dashboard_tab(
+                app,
+                dashboard,
+                index,
+                output_dir / DASHBOARD_TAB_OUTPUTS[index],
+            )
+        )
+        return {str(index): image}
+
+    conversation = capture_conversation_assets(app, dashboard, output_dir)
+    tasks = capture_task_assets(app, dashboard, output_dir)
     memory = capture_dashboard_tab(
         app,
-        window,
+        dashboard,
         3,
         output_dir / "long-term-memory.png",
     )
     voice = capture_dashboard_tab(
         app,
-        window,
+        dashboard,
         4,
         output_dir / "voice-modes.png",
     )
-    security = capture_security_assets(app, window, output_dir)
+    security = capture_security_assets(app, dashboard, output_dir)
     compose_expression_showcase(output_dir / "expressions.png")
     compose_support_portraits(output_dir)
     return {
-        "hero": dashboard,
+        "hero": conversation,
         "voice": voice,
         "tasks": tasks,
         "memory": memory,
@@ -872,19 +933,34 @@ def maybe_write_demo_video(
     return write_demo_video(media, output_dir / "mohan-demo.mp4", ffmpeg)
 
 
-def capture_media(output_dir: Path, ffmpeg: str | None) -> float | None:
+def capture_media(
+    output_dir: Path,
+    ffmpeg: str | None,
+    selected_tab: str = "all",
+) -> float | None:
     output_dir.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="mohan-readme-profile-") as temp_dir:
         os.environ["MOHAN_DATA_DIR"] = temp_dir
         prepare_demo_profile(temp_dir)
         app = create_capture_app()
-        capture_first_run_wizard(app, temp_dir, output_dir)
-        window = create_capture_window(app)
-        media = capture_static_media(app, window, output_dir)
-        duration = maybe_write_demo_video(media, output_dir, ffmpeg)
-        window.dashboard.flagship_center.close_services()
-        window.close()
-        app.processEvents()
+        if selected_tab == "first-run":
+            capture_first_run_wizard(app, temp_dir, output_dir)
+            app.processEvents()
+            return None
+        if selected_tab == "all":
+            capture_first_run_wizard(app, temp_dir, output_dir)
+        db, dashboard = create_capture_dashboard(app, temp_dir)
+        try:
+            media = capture_static_media(
+                app,
+                dashboard,
+                output_dir,
+                None if selected_tab == "all" else selected_tab,
+            )
+            duration = maybe_write_demo_video(media, output_dir, ffmpeg)
+        finally:
+            close_dashboard(dashboard, db)
+            app.processEvents()
         return duration
 
 
@@ -897,13 +973,26 @@ def main() -> int:
     )
     parser.add_argument("--ffmpeg", default="")
     parser.add_argument(
+        "--tab",
+        default="all",
+        help=(
+            "Capture one dashboard tab by stable name, visible label, or "
+            "index; use 'all' for the complete README media set."
+        ),
+    )
+    parser.add_argument(
         "--screenshots-only",
         action="store_true",
         help="Capture current UI images without rebuilding the demo video.",
     )
     args = parser.parse_args()
-    ffmpeg = None if args.screenshots_only else ffmpeg_binary(args.ffmpeg)
-    duration = capture_media(args.output, ffmpeg)
+    selected_tab = args.tab.strip().casefold()
+    ffmpeg = (
+        None
+        if args.screenshots_only or selected_tab != "all"
+        else ffmpeg_binary(args.ffmpeg)
+    )
+    duration = capture_media(args.output, ffmpeg, selected_tab)
     if duration is None:
         print(f"README_SCREENSHOTS_OK output={args.output}")
     else:

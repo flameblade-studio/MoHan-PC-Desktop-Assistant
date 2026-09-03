@@ -12,6 +12,8 @@
 
 Manifest 必須含完整繁中、簡中、英文、日文名稱。色彩使用 `#RRGGBB` 或 `#RRGGBBAA`。封裝上限為 16 MiB、單一成員 12 MiB、解壓總量 16 MiB、壓縮比 100:1、背景 4096×4096。重複或額外成員、絕對路徑、反斜線、`..`、SVG 腳本、事件、`foreignObject`、外部 URL、CSS `url()`、`data:`、DTD 與 entity 均會被拒絕。
 
+凌霄內建主題包提供預設 `ink-gold`「墨金・凌霄」、可選的 `celadon`「霧靄青瓷」與 `crimson`「赤焰劍光」。它們共用 `apply_flagship_theme` 的結構化 QSS，並各自提供一般與高對比完整色板；`TEXT_ON_SURFACE_PAIRS` 每一組都維持至少 4.5:1。C 主題把 `cinnabar` 調成暗赤紫，讓危險狀態不會與赤金主色混在一起；預設仍是 `ink-gold`。
+
 ## 简体中文
 
 主题包是版本化、纯声明式 ZIP，只能包含 `manifest.json` 与一个可选的 PNG 或安全 SVG 背景。它不执行 Python、JavaScript、插件或脚本。核心提供检查、原子安装、列出与恢复内置主题；控制台 UI 结构由应用程序本体掌握。第 2 版会记录套件声明为炎剑官方、用户自制或未来的墨寒自创草稿，并保存来源类型、作者、许可，以及参考素材未被直接打包的声明。目前公开版只显示炎剑官方与用户自制套件。
@@ -23,6 +25,8 @@ Manifest 必須含完整繁中、簡中、英文、日文名稱。色彩使用 `
 主题只能设置稳定的语义设计 token：`window`、`background`、`card`、`surface`、`text`、`title`、`muted`、`border`、`primary`、`danger`、`focus`，以及字体、圆角和固定角色的背景资产。不得声明分页索引、页数、页面名称、widget `objectName`、布局坐标、功能子页清单或结构 selector。缺少的 token 使用内置默认值；未知且格式合法的 token 会被忽略，使旧主题可直接应用于增删功能后的控制台。非法类型或危险资产一律拒绝。
 
 Manifest 必须包含完整繁中、简中、英文、日文名称。颜色使用 `#RRGGBB` 或 `#RRGGBBAA`。封装上限为 16 MiB、单个成员 12 MiB、解压总量 16 MiB、压缩比 100:1、背景 4096×4096。重复或额外成员、绝对路径、反斜线、`..`、SVG 脚本、事件、`foreignObject`、外部 URL、CSS `url()`、`data:`、DTD 与 entity 均会被拒绝。
+
+凌霄内置主题包提供默认 `ink-gold`“墨金・凌霄”、可选的 `celadon`“雾霭青瓷”与 `crimson`“赤焰剑光”。它们共用 `apply_flagship_theme` 的结构化 QSS，并各自提供普通与高对比完整色板；`TEXT_ON_SURFACE_PAIRS` 每一组都保持至少 4.5:1。C 主题将 `cinnabar` 调为暗赤紫，让危险状态不会与赤金主色混在一起；默认仍为 `ink-gold`。
 
 ## English
 
@@ -36,6 +40,8 @@ Themes may set only stable semantic design tokens: `window`, `background`, `card
 
 The manifest requires complete Traditional Chinese, Simplified Chinese, English, and Japanese names. Colors use `#RRGGBB` or `#RRGGBBAA`. Limits are 16 MiB per archive, 12 MiB per member, 16 MiB expanded, 100:1 compression, and a 4096×4096 background. Duplicate or extra members, absolute paths, backslashes, `..`, SVG scripts, events, `foreignObject`, external URLs, CSS `url()`, `data:`, DTDs, and entities are rejected.
 
+The built-in Lingxiao theme packs provide the default `ink-gold` “Ink-Gold · Lingxiao” plus optional `celadon` “Misty Celadon” and `crimson` “Crimson Swordlight”. They share the structured QSS in `apply_flagship_theme`, while each supplies complete normal and high-contrast palettes; every `TEXT_ON_SURFACE_PAIRS` entry remains at least 4.5:1. The C theme changes `cinnabar` to a dark crimson-purple so danger state remains distinct from its red-gold primary color; `ink-gold` remains the default.
+
 ## 日本語
 
 テーマパックは、バージョン管理された宣言専用 ZIP です。`manifest.json` と、任意の PNG または安全な SVG 背景を一つだけ含められます。Python、JavaScript、プラグイン、スクリプトは実行しません。コアは検証、アトミックなインストール、一覧表示、内蔵テーマへの復元を提供し、設定画面の構造はアプリ本体が所有します。バージョン 2 は、炎剣公式、ユーザー制作、将来の墨寒生成ドラフトという申告元に加え、素材の由来、作者、ライセンス、参照素材を直接同梱していない旨を記録します。現在の公開版が表示するのは炎剣公式とユーザー制作だけです。
@@ -47,3 +53,5 @@ The manifest requires complete Traditional Chinese, Simplified Chinese, English,
 テーマが設定できるのは、`window`、`background`、`card`、`surface`、`text`、`title`、`muted`、`border`、`primary`、`danger`、`focus` という安定した意味的デザイントークンと、フォント、角丸、固定役割の背景素材だけです。タブ番号、ページ数や名前、widget の `objectName`、配置座標、機能ページ一覧、構造 selector は宣言できません。不足トークンは内蔵既定値へフォールバックし、値が正しい未知トークンは無視されます。そのためページの追加・削除後も旧テーマをそのまま利用できます。不正な型や危険な素材は拒否します。
 
 Manifest には繁体字中国語、簡体字中国語、英語、日本語の完全な名称が必要です。色は `#RRGGBB` または `#RRGGBBAA` です。上限はアーカイブ 16 MiB、メンバー 12 MiB、展開合計 16 MiB、圧縮率 100:1、背景 4096×4096 です。重複・余分なメンバー、絶対パス、バックスラッシュ、`..`、SVG のスクリプト、イベント、`foreignObject`、外部 URL、CSS `url()`、`data:`、DTD、entity は拒否します。
+
+内蔵の凌霄テーマパックは既定の `ink-gold`「墨金・凌霄」と、選択可能な `celadon`「霧靄青磁」および `crimson`「赤焔剣光」を提供します。構造化された QSS は `apply_flagship_theme` で共有し、各テーマが通常・高コントラストの完全な色板を持ちます。`TEXT_ON_SURFACE_PAIRS` の全項目は 4.5:1 以上です。C テーマでは `cinnabar` を暗い赤紫へ変更し、危険状態が赤金の主色と混同されないようにしています。既定値は `ink-gold` のままです。
