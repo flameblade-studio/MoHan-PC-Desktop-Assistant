@@ -202,7 +202,7 @@ Codex 協助我把想法轉譯成程式架構與程式碼；而我始終負責�
 - **架構分層落實：** 一百七十五個根目錄相容殼檔全數退役，根目錄由 239 項瘦身至 64 項，二百零一個呼叫端改用正式分層路徑，「退役別名不得復活」已入契約。
 - **四語、四平台治理：** 軟體與主要文件同步支援繁體中文、簡體中文、英文與日文；Windows 為正式支援，macOS Apple Silicon／Intel 與 Linux 同步提供功能受限 Preview。
 - **多感知與角色表現：** 可明確授權與隨時撤銷的本機視覺感知、21 點手部資料、468／478 點 Face Mesh、語音活動偵測與安全的非阻塞融合；缺少模型、裝置、網路或額度時只停用受影響路徑，不損及既有功能。
-- **授權純淨與開源回饋：** 產線的工具與權重只採用 MIT／Apache 2.0／CC0／CC BY 授權（見[授權純淨承諾](docs/LICENSE-PURITY.md)）；開發期間並向上游 ai-toolkit 回饋兩顆缺陷修復，完整清單見[上游貢獻紀錄](docs/UPSTREAM-CONTRIBUTIONS.md)。
+- **授權純淨與開源回饋：** 產線的工具與權重只採用 MIT／Apache 2.0／CC0／CC BY 授權（見[授權純淨承諾](docs/LICENSE-PURITY.md)）；字型例外僅限 SIL OFL 1.1，條件同見該政策；開發期間並向上游 ai-toolkit 回饋兩顆缺陷修復，完整清單見[上游貢獻紀錄](docs/UPSTREAM-CONTRIBUTIONS.md)。
 - **可稽核的工程基線：** 734 個 Python 檔、184,534 行，其中產品本體 87,565 行、測試 74,174 行、開發工具 22,795 行。
 
 ### 專案特色
@@ -633,7 +633,7 @@ Codex 协助我把想法转译成程序架构与代码；而我始终负责决�
 - **架构分层落实：** 一百七十五个根目录兼容壳文件全数退役，根目录由 239 项瘦身至 64 项，二百零一个调用端改用正式分层路径，「退役别名不得复活」已入契约。
 - **四语、四平台治理：** 软件与主要文档同步支持繁体中文、简体中文、英文与日文；Windows 为正式支持，macOS Apple Silicon／Intel 与 Linux 同步提供功能受限 Preview。
 - **多感知与角色表现：** 可明确授权与随时撤销的本机视觉感知、21 点手部数据、468／478 点 Face Mesh、语音活动检测与安全的非阻塞融合；缺少模型、设备、网络或额度时只停用受影响路径，不损及既有功能。
-- **授权纯净与开源回馈：** 产线的工具与权重只采用 MIT／Apache 2.0／CC0／CC BY 授权（见[授权纯净承诺](docs/LICENSE-PURITY.md)）；开发期间并向上游 ai-toolkit 回馈两颗缺陷修复，完整清单见[上游贡献记录](docs/UPSTREAM-CONTRIBUTIONS.md)。
+- **授权纯净与开源回馈：** 产线的工具与权重只采用 MIT／Apache 2.0／CC0／CC BY 授权（见[授权纯净承诺](docs/LICENSE-PURITY.md)）；字体例外仅限 SIL OFL 1.1，条件同见该政策；开发期间并向上游 ai-toolkit 回馈两颗缺陷修复，完整清单见[上游贡献记录](docs/UPSTREAM-CONTRIBUTIONS.md)。
 - **可稽核的工程基线：** 734 个 Python 文件、184,534 行，其中产品本体 87,565 行、测试 74,174 行、开发工具 22,795 行。
 
 ### 主要功能
@@ -1064,7 +1064,7 @@ The current release is `v4.6.0`; see [Releases](https://github.com/flameblade-st
 - **Layered architecture enforced.** All one hundred and seventy-five root compatibility facades are retired, the root directory falls from 239 entries to 64, two hundred and one call sites now use formal layered paths, and "retired aliases must not return" is written into a contract.
 - **Four languages, four platforms.** The software and its principal documents carry Traditional Chinese, Simplified Chinese, English and Japanese. Windows is formally supported, while macOS Apple Silicon and Intel, plus Linux, ship as limited Previews.
 - **Multi-sensory perception and character expression.** Explicitly consented and revocable local vision, 21-point hand data, a 468/478-point face mesh, voice activity detection and a safe non-blocking fusion path. A missing model, device, network or quota disables only the affected route and leaves everything else intact.
-- **License purity and upstream contribution.** The pipeline's tools and weights admit only MIT, Apache 2.0, CC0 and CC BY material — see the [License Purity Commitment](docs/LICENSE-PURITY.md) — and two defect fixes went upstream to ai-toolkit during development; the full list is in the [upstream contributions record](docs/UPSTREAM-CONTRIBUTIONS.md).
+- **License purity and upstream contribution.** The pipeline's tools and weights admit only MIT, Apache 2.0, CC0 and CC BY material — see the [License Purity Commitment](docs/LICENSE-PURITY.md); the font exception is limited to SIL OFL 1.1 under that policy — and two defect fixes went upstream to ai-toolkit during development; the full list is in the [upstream contributions record](docs/UPSTREAM-CONTRIBUTIONS.md).
 - **An auditable engineering baseline.** 734 Python files and 184,534 lines: 87,565 in the product itself, 74,174 in tests, and 22,795 in development tooling.
 
 ### Key capabilities
@@ -1495,7 +1495,7 @@ Codex は私の思いをアーキテクチャとコードへ翻訳する手助�
 - **階層アーキテクチャの徹底。** ルート直下の互換ファサード百七十五件をすべて退役させ、ルートの項目数は 239 から 64 へ、呼び出し側二百一箇所を正式な階層パスへ移行し、「退役した別名を復活させない」ことを契約に明記しました。
 - **四言語・四プラットフォーム。** ソフトウェアと主要文書は繁体中文・簡体中文・英語・日本語に対応します。Windows が正式対応、macOS Apple Silicon／Intel と Linux は機能限定 Preview です。
 - **多感覚知覚とキャラクター表現。** 明示的な同意といつでも撤回できるローカル視覚、21 点の手指データ、468／478 点フェイスメッシュ、音声区間検出、そして安全な非ブロッキング統合。モデル・機器・ネットワーク・利用枠のいずれかが欠けても、影響を受けた経路のみを停止し、他の機能は損ないません。
-- **ライセンス純度と上流への還元。** パイプラインの道具と重みには MIT／Apache 2.0／CC0／CC BY のみを受け入れます（[ライセンス純度に関する約束](docs/LICENSE-PURITY.md)）。開発期間中には上流の ai-toolkit へ二件の修正を還元しました。一覧は[上流への貢献記録](docs/UPSTREAM-CONTRIBUTIONS.md)を参照してください。
+- **ライセンス純度と上流への還元。** パイプラインの道具と重みには MIT／Apache 2.0／CC0／CC BY のみを受け入れます（[ライセンス純度に関する約束](docs/LICENSE-PURITY.md)）。フォントの例外は同ポリシーに従う SIL OFL 1.1 に限ります。開発期間中には上流の ai-toolkit へ二件の修正を還元しました。一覧は[上流への貢献記録](docs/UPSTREAM-CONTRIBUTIONS.md)を参照してください。
 - **監査可能なエンジニアリング基準値。** Python ファイル 734 件、184,534 行。内訳は製品本体 87,565 行、テスト 74,174 行、開発ツール 22,795 行です。
 
 ### 主な機能

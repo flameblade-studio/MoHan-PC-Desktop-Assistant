@@ -30,6 +30,7 @@ APPIMAGETOOL_URL = (
 POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
 LAYERED_POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4-layered"
 EXPRESSION_ROOT = ROOT / "assets" / "expressions"
+FONT_ROOT = ROOT / "assets" / "fonts"
 LAYERED_EXPRESSION_ROOT = EXPRESSION_ROOT / "layered"
 VIEW_RING_COUNT = 24
 FULL_BODY_LAYER_COUNT = 25
@@ -173,6 +174,8 @@ def _pyinstaller(
         f"{ROOT / 'THIRD_PARTY_NOTICES.md'}{data_separator}.",
         "--add-data",
         f"{build_info}{data_separator}.",
+        "--add-data",
+        f"{FONT_ROOT}{data_separator}assets/fonts",
     ]
     if pose_atlas_root is not None:
         command.extend(
