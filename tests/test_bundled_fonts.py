@@ -23,7 +23,7 @@ lazy from presentation import lingxiao_fonts as fonts_module
 lazy from presentation.lingxiao_fonts import register_bundled_fonts
 lazy from presentation.lingxiao_tokens import font_stack
 lazy from tools.verify_packaged_fonts import (
-    PACKAGED_FONT_ROOT,
+    PACKAGED_FONT_ROOTS,
     REQUIRED_FONT_FILES,
     verify_packaged_fonts,
 )
@@ -54,6 +54,11 @@ def _reset_font_registration_state() -> None:
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _normalized_relative_path(path: Path, package_root: Path) -> str:
+    relative = path.resolve().relative_to(package_root.resolve())
+    return os.path.normcase(os.path.normpath(str(relative)))
 
 
 def _documented_hash(family: str, filename: str) -> str:
@@ -92,23 +97,50 @@ def test_bundled_font_hashes_match_license_manifest() -> None:
         assert license_hash in document
 
 
-def test_post_package_font_verifier_checks_pyinstaller_contents() -> None:
-    with TemporaryDirectory() as raw:
-        package_root = Path(raw) / "MoHan-Desktop-Assistant-4.0.0-rc.1"
-        packaged_root = package_root / PACKAGED_FONT_ROOT
+def test_post_package_font_verifier_checks_both_pyinstaller_layouts(
+    tmp_path: Path,
+) -> None:
+    for index, packaged_layout in enumerate(PACKAGED_FONT_ROOTS):
+        package_root = (
+            tmp_path / f"MoHan-Desktop-Assistant-4.0.0-rc.1-{index}"
+        )
+        packaged_root = package_root / packaged_layout
         for relative in REQUIRED_FONT_FILES:
             destination = packaged_root / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(FONT_ROOT / relative, destination)
 
-        assert verify_packaged_fonts(package_root) == tuple(
-            packaged_root / relative for relative in REQUIRED_FONT_FILES
+        verified = verify_packaged_fonts(package_root)
+        actual_relative = tuple(
+            sorted(
+                _normalized_relative_path(path, package_root)
+                for path in verified
+            )
         )
+        expected_relative = tuple(
+            sorted(
+                _normalized_relative_path(
+                    package_root / packaged_layout / relative,
+                    package_root,
+                )
+                for relative in REQUIRED_FONT_FILES
+            )
+        )
+        assert len(verified) == len(REQUIRED_FONT_FILES)
+        assert len(set(actual_relative)) == len(REQUIRED_FONT_FILES)
+        assert actual_relative == expected_relative
+        assert all(path.is_file() for path in verified)
+
         (packaged_root / REQUIRED_FONT_FILES[0]).unlink()
         try:
             verify_packaged_fonts(package_root)
         except RuntimeError as error:
-            assert "missing" in str(error).casefold()
+            message = str(error).casefold()
+            assert "missing" in message
+            assert (
+                (packaged_root / REQUIRED_FONT_FILES[0]).name.casefold()
+                in message
+            )
         else:
             raise AssertionError("packaged font verifier must reject a missing font")
 
@@ -231,7 +263,6 @@ def test_font_manifest_is_four_language_and_packaging_is_explicit() -> None:
 def run() -> None:
     test_bundled_font_files_and_licenses_exist()
     test_bundled_font_hashes_match_license_manifest()
-    test_post_package_font_verifier_checks_pyinstaller_contents()
     test_missing_font_directory_logs_and_falls_back()
     test_failed_font_file_is_skipped_and_logged()
     test_qt_loads_bundled_fonts_and_exposes_families()
