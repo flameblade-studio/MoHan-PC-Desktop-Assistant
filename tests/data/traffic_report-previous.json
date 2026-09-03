@@ -1,0 +1,55 @@
+{
+  "repository": {
+    "full_name": "flameblade-studio/MoHan-PC-Desktop-Assistant",
+    "stargazers_count": 5,
+    "forks_count": 2,
+    "subscribers_count": 3
+  },
+  "views": {
+    "count": 90,
+    "uniques": 18,
+    "views": [
+      {"timestamp": "2026-08-01T00:00:00Z", "count": 40, "uniques": 9},
+      {"timestamp": "2026-08-02T00:00:00Z", "count": 50, "uniques": 10}
+    ]
+  },
+  "clones": {
+    "count": 70,
+    "uniques": 10,
+    "clones": [
+      {"timestamp": "2026-08-01T00:00:00Z", "count": 30, "uniques": 5},
+      {"timestamp": "2026-08-02T00:00:00Z", "count": 40, "uniques": 6}
+    ]
+  },
+  "popular_paths": [
+    {"path": "/", "title": "MoHan Desktop Assistant", "count": 60, "uniques": 15},
+    {"path": "/releases", "title": "Releases", "count": 30, "uniques": 8}
+  ],
+  "popular_referrers": [
+    {"referrer": "Google", "count": 10, "uniques": 4},
+    {"referrer": "ithelp.ithome.com.tw", "count": 5, "uniques": 2},
+    {"referrer": "Direct", "count": 5, "uniques": 3}
+  ],
+  "releases": [
+    {
+      "tag_name": "v1.2.0",
+      "published_at": "2026-09-01T12:00:00Z",
+      "assets": [
+        {"name": "mohan-win.exe", "download_count": 2},
+        {"name": "mohan-linux.AppImage", "download_count": 4}
+      ]
+    },
+    {
+      "tag_name": "v1.1.0",
+      "published_at": "2026-08-15T12:00:00Z",
+      "assets": [
+        {"name": "mohan-win.exe", "download_count": 1}
+      ]
+    },
+    {
+      "tag_name": "v1.0.0",
+      "published_at": "2026-07-15T12:00:00Z",
+      "assets": []
+    }
+  ]
+}

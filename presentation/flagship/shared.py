@@ -172,6 +172,7 @@ class FlagshipDraftValues:
     security: tuple[tuple[str, str], ...]
     high_contrast: bool
     ui_scale: float
+    theme: str
 ASSIST_INTENT_MARKERS = ("幫我", "請", "替我", "執行")
 GMAIL_MARKERS = ("gmail", "郵件", "電子郵件", "信件", "信箱")
 GMAIL_SEND_MARKERS = ("寄信", "寄出", "發信", "傳送郵件")

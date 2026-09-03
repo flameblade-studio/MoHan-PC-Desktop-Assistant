@@ -22,6 +22,11 @@ lazy from presentation.dashboard_wardrobe_preferences import (
 )
 lazy from presentation.dashboard_wardrobe_preview import DashboardWardrobePreviewMixin
 lazy from presentation.flagship_theme import apply_flagship_theme
+lazy from presentation.lingxiao_shell import refresh_runtime_palette
+lazy from presentation.lingxiao_themes import (
+    DEFAULT_THEME_ID,
+    THEME_SETTING_KEY,
+)
 
 __all__ = ("Dashboard",)
 
@@ -71,6 +76,13 @@ class Dashboard(
         self.gesture_controller = gesture_controller
         self._initialize_dashboard_state(db, dependencies)
         self._initialize_theme_support()
+        self._configured_lingxiao_theme_id = str(
+            self.db.setting(THEME_SETTING_KEY, DEFAULT_THEME_ID)
+        )
+        self._runtime_lingxiao_high_contrast = bool(
+            self.db.setting("flagship_high_contrast", False)
+        )
+        self._set_runtime_lingxiao_theme(self.theme_session.last_resolution)
         self._settings_draft_snapshot = self.db.settings_snapshot()
         self._configure_dashboard_window()
         root = QVBoxLayout(self)
@@ -88,10 +100,9 @@ class Dashboard(
         self._apply_profile_texts()
         apply_flagship_theme(
             self,
-            high_contrast=bool(
-                self.db.setting("flagship_high_contrast", False)
-            ),
+            high_contrast=self._runtime_lingxiao_high_contrast,
             scale=float(self.db.setting("flagship_ui_scale", 1.0)),
+            theme=self._runtime_lingxiao_theme_id,
         )
         self._apply_theme_resolution(self.theme_session.last_resolution)
         self._enforce_readable_combo_popups()
@@ -113,15 +124,26 @@ class Dashboard(
         self.theme_pack_service.activate(theme_id)
         self.db.set_setting("active_theme_id", theme_id)
 
+    def _set_runtime_lingxiao_theme(self, resolution: ThemeResolution) -> None:
+        self._runtime_lingxiao_theme_id = (
+            self._configured_lingxiao_theme_id
+            if resolution.resolved_id == "builtin"
+            else DEFAULT_THEME_ID
+        )
+
     def _apply_theme_resolution(self, resolution: ThemeResolution) -> None:
+        self._set_runtime_lingxiao_theme(resolution)
         apply_flagship_theme(
             self,
-            high_contrast=bool(
-                self.db.setting("flagship_high_contrast", False)
-            ),
+            high_contrast=self._runtime_lingxiao_high_contrast,
             scale=float(self.db.setting("flagship_ui_scale", 1.0)),
+            theme=self._runtime_lingxiao_theme_id,
         )
         if resolution.resolved_id == "builtin":
+            refresh_runtime_palette(
+                self,
+                active=self.db.active_session() is not None,
+            )
             self._enforce_readable_combo_popups()
             if hasattr(self, "chat"):
                 self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
@@ -149,6 +171,10 @@ class Dashboard(
                 "}"
             )
         self.setStyleSheet(stylesheet)
+        refresh_runtime_palette(
+            self,
+            active=self.db.active_session() is not None,
+        )
         self._enforce_readable_combo_popups()
         if hasattr(self, "chat"):
             self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
