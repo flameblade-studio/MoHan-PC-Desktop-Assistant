@@ -44,8 +44,8 @@ def specification(view_id: str = "yaw+000-pitch+00") -> FullBodyRenderSpec:
         view_id,
         WIDTH,
         HEIGHT,
-        "mohan-body-v1",
-        (1, 2),
+        "mohan-body-v2",
+        (2, 3),
         "mohan-full-body-v1",
         (1, 2),
         (0.5, 0.485, 0.37, 0.215, 0.11, 0.005),
@@ -88,7 +88,7 @@ def assert_v4_frame_is_complete_and_atomic() -> None:
     adapter = FullBodyRenderAdapter(WIDTH, HEIGHT, publisher)
     frame = adapter.render_full_body(adapter.begin_transition(), specification())
     assert frame.contract == "full-body-v4"
-    assert frame.body_profile_id == "mohan-body-v1"
+    assert frame.body_profile_id == "mohan-body-v2"
     assert frame.rig_id == "mohan-full-body-v1"
     assert set(frame.layer_order) == V4_STATIC_LAYER_SLOTS
     assert frame.crop == (0.1, 0.0, 0.8, 1.0)

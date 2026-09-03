@@ -16,11 +16,12 @@ lazy from typing import Any
 lazy import cv2
 lazy import numpy as np
 
+lazy from domain.constants import POSE_ATLAS_ROOT_NAME
 lazy from infrastructure.layered_full_body_assets import VIEW_IDS
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
+DEFAULT_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
 DEFAULT_DETECTOR_MODEL = (
     ROOT / "assets" / "vision-models" / "face_detection_yunet_2023mar.onnx"
 )
@@ -403,7 +404,7 @@ def preflight_exit_code(report: IdentityReport) -> int:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Fail-closed visual identity audit for static PoseAtlas v4."
+        description="Fail-closed visual identity audit for the static PoseAtlas views."
     )
     parser.add_argument("--atlas-root", type=Path, default=DEFAULT_ATLAS_ROOT)
     parser.add_argument("--detector-model", type=Path, default=DEFAULT_DETECTOR_MODEL)

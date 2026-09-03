@@ -17,7 +17,13 @@ lazy from infrastructure.layered_face_calibration import (
     calibrate_layered_face_assets,
 )
 
-LAYERED_DIR = ROOT / "assets" / "expressions" / "layered"
+# Staging override shared with tests/test_layered_face_assets.py: point
+# MOHAN_LAYERED_FACE_DIR at a candidate 75-layer directory to calibrate it
+# without replacing assets/expressions/layered.
+LAYERED_DIR = Path(
+    os.environ.get("MOHAN_LAYERED_FACE_DIR")
+    or ROOT / "assets" / "expressions" / "layered"
+)
 
 
 def _app() -> object:

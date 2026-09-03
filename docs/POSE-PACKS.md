@@ -4,7 +4,7 @@
 
 姿態包是版本化、資料驅動、單一自包含 ZIP。使用者只需下載並選取一個檔案；所有 PNG/WebP 資產、manifest、hash、來源與授權都在同一 archive。禁止旁附資料夾、外部套件、網路下載、跨包必需引用、Python、JavaScript、EXE、DLL 或腳本。匯入會先完整驗證，再於目的目錄原子安裝；失敗不留下半套，也不覆寫有效舊包。安裝不會自動啟用或改變目前三姿態。
 
-格式 v1 固定相容 `mohan-body-v1`。Canonical yaw 每 15 度一格，由 `-180` 完整背面開始，依序到 `165`，共 24 個不重複方向；不另外接受與 `-180` 重複的 `180`。每個包可宣告一個或多個 pitch band，並可在未來版本增量增加。每個 `pose_id × pitch_band` 必須完整涵蓋全部 24 個 yaw；未知、重複或缺漏方向均 fail closed。
+格式 v1 固定相容目前的素體世代 `mohan-body-v2`（2026-09-02 起；一代 `mohan-body-v1` 的姿態包一律拒絕）。Canonical yaw 每 15 度一格，由 `-180` 完整背面開始，依序到 `165`，共 24 個不重複方向；不另外接受與 `-180` 重複的 `180`。每個包可宣告一個或多個 pitch band，並可在未來版本增量增加。每個 `pose_id × pitch_band` 必須完整涵蓋全部 24 個 yaw；未知、重複或缺漏方向均 fail closed。
 
 每個 view 都是透明分層資料，至少包含 `body`、左右臂校正與左右手校正。每層必須宣告 SHA-256、PNG/WebP 路徑、尺寸、anchor、唯一 depth、遮擋規則及 `transparent: true`。可另加臉、髮型、衣裝、頭飾與武器對齊層，但臉仍為核心掌握。Manifest 必須明確宣告 face、hair、garment、headwear、weapon 的相容責任，避免外觀槽誤套或穿模。資產缺少、hash／尺寸不符、深度衝突、非法遮擋或未引用／重複檔案都會拒絕。
 
@@ -16,7 +16,7 @@
 
 姿态包是版本化、数据驱动、单一自包含 ZIP。用户只需下载并选择一个文件；所有 PNG/WebP 资产、manifest、hash、来源与许可都位于同一 archive。禁止附带文件夹、外部包、网络下载、跨包必需引用、Python、JavaScript、EXE、DLL 或脚本。导入会先完整验证，再在目标目录原子安装；失败不留下半套，也不覆盖有效旧包。安装不会自动启用或改变现有三姿态。
 
-格式 v1 固定兼容 `mohan-body-v1`。Canonical yaw 每 15 度一格，从 `-180` 完整背面开始，依次到 `165`，共 24 个不重复方向；不另接受与 `-180` 重复的 `180`。每个包可声明一个或多个 pitch band，并可在未来版本增量增加。每个 `pose_id × pitch_band` 必须完整覆盖全部 24 个 yaw；未知、重复或缺漏方向均 fail closed。
+格式 v1 固定兼容当前的素体世代 `mohan-body-v2`（2026-09-02 起；一代 `mohan-body-v1` 的姿态包一律拒绝）。Canonical yaw 每 15 度一格，从 `-180` 完整背面开始，依次到 `165`，共 24 个不重复方向；不另接受与 `-180` 重复的 `180`。每个包可声明一个或多个 pitch band，并可在未来版本增量增加。每个 `pose_id × pitch_band` 必须完整覆盖全部 24 个 yaw；未知、重复或缺漏方向均 fail closed。
 
 每个 view 都是透明分层数据，至少包含 `body`、左右臂校正与左右手校正。每层必须声明 SHA-256、PNG/WebP 路径、尺寸、anchor、唯一 depth、遮挡规则及 `transparent: true`。可另加脸、发型、服装、头饰与武器对齐层，但脸仍由核心掌握。Manifest 必须明确声明 face、hair、garment、headwear、weapon 的兼容责任，避免外观槽误用或穿模。资产缺少、hash／尺寸不符、深度冲突、非法遮挡或未引用／重复文件都会被拒绝。
 
@@ -28,7 +28,7 @@
 
 A pose pack is a versioned, data-driven, single self-contained ZIP. A user downloads and selects one file. Every PNG/WebP asset, manifest, hash, source record, and license is inside the same archive. Sidecar folders, external packages, network downloads, required cross-pack references, Python, JavaScript, EXE, DLL, and scripts are forbidden. Import fully validates before atomically installing in the destination directory. Failure leaves no partial package and does not overwrite a valid installed version. Installation never activates a pack or changes the existing three poses.
 
-Format v1 targets `mohan-body-v1`. Canonical yaw advances in 15-degree steps, beginning at the complete rear view `-180` and ending at `165`, for 24 unique directions. The duplicate `180`, equivalent to `-180`, is not accepted. A package declares one or more pitch bands, with future versions able to add bands incrementally. Every `pose_id × pitch_band` must cover all 24 yaw values. Unknown, duplicate, or missing directions fail closed.
+Format v1 targets the current body generation `mohan-body-v2` (since 2026-09-02; generation-1 `mohan-body-v1` pose packs are rejected). Canonical yaw advances in 15-degree steps, beginning at the complete rear view `-180` and ending at `165`, for 24 unique directions. The duplicate `180`, equivalent to `-180`, is not accepted. A package declares one or more pitch bands, with future versions able to add bands incrementally. Every `pose_id × pitch_band` must cover all 24 yaw values. Unknown, duplicate, or missing directions fail closed.
 
 Every view is transparent layered data containing at least `body`, left/right arm corrections, and left/right hand corrections. Each layer declares SHA-256, a PNG/WebP path, dimensions, anchor, unique depth, occlusion rule, and `transparent: true`. Optional alignment layers may describe face, hair, garment, headwear, and weapon placement, while the face remains core-owned. The manifest explicitly assigns compatibility responsibility for face, hair, garment, headwear, and weapon, preventing wrong-slot rendering and clipping. Missing assets, hash or dimension mismatch, ambiguous depth, invalid occlusion, and unreferenced or duplicate files are rejected.
 
@@ -40,7 +40,7 @@ Installation adds only the validated self-contained file and writes no active st
 
 姿勢パックは、バージョン管理されたデータ駆動の単一自己完結 ZIP です。利用者がダウンロードして選ぶのは一つのファイルだけです。すべての PNG/WebP 素材、manifest、hash、出典、ライセンスは同じ archive 内にあります。付属フォルダー、外部パッケージ、ネットワークダウンロード、必須の別パック参照、Python、JavaScript、EXE、DLL、スクリプトは禁止です。インポートは全体検証後に配置先へアトミックにインストールします。失敗時は半端なパックを残さず、有効な旧パックも上書きしません。インストールだけで有効化したり、既存三姿勢を変更したりしません。
 
-形式 v1 は `mohan-body-v1` に固定対応します。Canonical yaw は 15 度刻みで、完全な背面 `-180` から `165` までの重複しない 24 方向です。`-180` と同じ `180` は受け付けません。各パックは一つ以上の pitch band を宣言し、将来の版で段階的に追加できます。すべての `pose_id × pitch_band` が 24 yaw 全部を備える必要があり、未知、重複、不足方向は fail closed です。
+形式 v1 は現行の素体世代 `mohan-body-v2` に固定対応します（2026-09-02 以降。第一世代 `mohan-body-v1` の姿勢パックは拒否されます）。Canonical yaw は 15 度刻みで、完全な背面 `-180` から `165` までの重複しない 24 方向です。`-180` と同じ `180` は受け付けません。各パックは一つ以上の pitch band を宣言し、将来の版で段階的に追加できます。すべての `pose_id × pitch_band` が 24 yaw 全部を備える必要があり、未知、重複、不足方向は fail closed です。
 
 各 view は透明な分層データで、最低限 `body`、左右の腕補正、左右の手補正を含みます。各層は SHA-256、PNG/WebP パス、寸法、anchor、一意の depth、遮蔽規則、`transparent: true` を宣言します。顔、髪、衣装、頭飾り、武器の位置合わせ層も追加できますが、顔はコア所有のままです。Manifest は face、hair、garment、headwear、weapon の互換責任を明記し、誤った外観 slot や貫通を防ぎます。素材不足、hash／寸法不一致、depth 競合、不正な遮蔽、未参照／重複ファイルは拒否します。
 

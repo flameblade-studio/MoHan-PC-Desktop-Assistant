@@ -138,12 +138,14 @@ def test_window_mro_is_explicit_and_stable() -> None:
         ("presentation.companion_platform", "CompanionPlatformMixin"),
         ("PySide6.QtWidgets", "QMainWindow"),
     )
-    assert _mro_identity(Dashboard, 9) == (
+    assert _mro_identity(Dashboard, 11) == (
         ("presentation.dashboard_window", "Dashboard"),
         (
             "presentation.dashboard_wardrobe_preferences",
             "DashboardWardrobePreferencesMixin",
         ),
+        ("presentation.dashboard_wardrobe_makeup", "DashboardWardrobeMakeupMixin"),
+        ("presentation.dashboard_wardrobe_preview", "DashboardWardrobePreviewMixin"),
         ("presentation.dashboard_shell", "DashboardShellMixin"),
         ("presentation.dashboard_settings", "DashboardSettingsMixin"),
         ("presentation.dashboard_voice", "DashboardVoiceMixin"),

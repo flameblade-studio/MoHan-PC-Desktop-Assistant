@@ -85,6 +85,10 @@ def save_layer(source: Image.Image, mask: Image.Image, output: Path) -> None:
     Image.fromarray(source_array, "RGBA").save(output, optimize=True)
 
 
+# Generation-1 entry point.  It reads the ``physics_*`` cutouts as mask hints;
+# those files left the repository with the generation-2 bare base
+# (2026-09-02), so ``tools/build_half_body_v120.py`` is the live producer.
+# The helpers above stay because that builder imports them.
 def main() -> int:
     assets = Path(sys.argv[1])
     for suffix, source_name in POSES.items():

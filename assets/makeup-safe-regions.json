@@ -1,0 +1,1067 @@
+{
+  "generated_by": "tools/build_makeup_safe_regions.py",
+  "margins_px": {
+    "cheeks": 48,
+    "eyes": 24,
+    "lips": 20
+  },
+  "rig_layers": {
+    "cheeks": [
+      [
+        "blush_left"
+      ],
+      [
+        "blush_right"
+      ]
+    ],
+    "eyes": [
+      [
+        "eyelid_left",
+        "eyeliner_left",
+        "brow_left"
+      ],
+      [
+        "eyelid_right",
+        "eyeliner_right",
+        "brow_right"
+      ]
+    ],
+    "lips": [
+      [
+        "lip_upper",
+        "lip_lower",
+        "corner_left",
+        "corner_right"
+      ]
+    ]
+  },
+  "schema": "mohan.makeup-safe-regions.v1",
+  "silhouettes": {
+    "cheek-rest": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/expressions/layered/cheek",
+      "slots": {
+        "cheeks": [
+          [
+            415,
+            441,
+            153,
+            151
+          ],
+          [
+            495,
+            451,
+            179,
+            151
+          ]
+        ],
+        "eyes": [
+          [
+            442,
+            375,
+            110,
+            116
+          ],
+          [
+            519,
+            392,
+            145,
+            123
+          ]
+        ],
+        "lips": [
+          [
+            452,
+            547,
+            118,
+            76
+          ]
+        ]
+      }
+    },
+    "front-crossed": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/expressions/layered/front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      }
+    },
+    "front-eureka": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/expressions/layered/front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      }
+    },
+    "front-exasperated": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/expressions/layered/front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      }
+    },
+    "front-mock-hit": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/expressions/layered/front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      }
+    },
+    "front-mock-scold": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/expressions/layered/front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      }
+    },
+    "left-neutral": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/expressions/layered/lean",
+      "slots": {
+        "cheeks": [
+          [
+            405,
+            440,
+            155,
+            147
+          ],
+          [
+            491,
+            448,
+            178,
+            148
+          ]
+        ],
+        "eyes": [
+          [
+            432,
+            379,
+            111,
+            112
+          ],
+          [
+            512,
+            394,
+            145,
+            117
+          ]
+        ],
+        "lips": [
+          [
+            445,
+            544,
+            121,
+            73
+          ]
+        ]
+      }
+    },
+    "yaw+000-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+000-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            421,
+            209,
+            121,
+            119
+          ],
+          [
+            481,
+            213,
+            133,
+            118
+          ]
+        ],
+        "eyes": [
+          [
+            447,
+            197,
+            79,
+            80
+          ],
+          [
+            494,
+            199,
+            90,
+            80
+          ]
+        ],
+        "lips": [
+          [
+            478,
+            270,
+            80,
+            55
+          ]
+        ]
+      }
+    },
+    "yaw+015-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+015-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            409,
+            205,
+            112,
+            119
+          ],
+          [
+            447,
+            202,
+            119,
+            119
+          ]
+        ],
+        "eyes": [
+          [
+            433,
+            190,
+            65,
+            82
+          ],
+          [
+            460,
+            188,
+            74,
+            82
+          ]
+        ],
+        "lips": [
+          [
+            459,
+            263,
+            65,
+            56
+          ]
+        ]
+      }
+    },
+    "yaw+030-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+030-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            409,
+            207,
+            112,
+            117
+          ],
+          [
+            446,
+            205,
+            118,
+            117
+          ]
+        ],
+        "eyes": [
+          [
+            432,
+            195,
+            65,
+            79
+          ],
+          [
+            460,
+            193,
+            73,
+            79
+          ]
+        ],
+        "lips": [
+          [
+            458,
+            263,
+            65,
+            55
+          ]
+        ]
+      }
+    },
+    "yaw+045-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+045-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            400,
+            201,
+            111,
+            119
+          ],
+          [
+            437,
+            200,
+            118,
+            118
+          ]
+        ],
+        "eyes": [
+          [
+            423,
+            187,
+            65,
+            81
+          ],
+          [
+            451,
+            186,
+            73,
+            81
+          ]
+        ],
+        "lips": [
+          [
+            449,
+            260,
+            64,
+            55
+          ]
+        ]
+      }
+    },
+    "yaw+060-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            407,
+            212,
+            100,
+            108
+          ],
+          [
+            446,
+            209,
+            131,
+            117
+          ]
+        ],
+        "eyes": [
+          [
+            429,
+            197,
+            60,
+            77
+          ],
+          [
+            457,
+            196,
+            88,
+            79
+          ]
+        ],
+        "lips": [
+          [
+            445,
+            267,
+            79,
+            54
+          ]
+        ]
+      }
+    },
+    "yaw+075-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+075-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            395,
+            193,
+            100,
+            108
+          ],
+          [
+            437,
+            187,
+            135,
+            120
+          ]
+        ],
+        "eyes": [
+          [
+            419,
+            174,
+            58,
+            76
+          ],
+          [
+            447,
+            171,
+            92,
+            83
+          ]
+        ],
+        "lips": [
+          [
+            433,
+            248,
+            83,
+            56
+          ]
+        ]
+      }
+    },
+    "yaw+090-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+090-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            385,
+            197,
+            100,
+            106
+          ],
+          [
+            425,
+            189,
+            132,
+            119
+          ]
+        ],
+        "eyes": [
+          [
+            436,
+            175,
+            89,
+            81
+          ]
+        ],
+        "lips": [
+          [
+            423,
+            249,
+            80,
+            54
+          ]
+        ]
+      }
+    },
+    "yaw+105-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+105-pitch+00",
+      "slots": {
+        "cheeks": [],
+        "eyes": [],
+        "lips": []
+      }
+    },
+    "yaw+120-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+120-pitch+00",
+      "slots": {
+        "cheeks": [],
+        "eyes": [],
+        "lips": []
+      }
+    },
+    "yaw+135-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+135-pitch+00",
+      "slots": {
+        "cheeks": [],
+        "eyes": [],
+        "lips": []
+      }
+    },
+    "yaw+150-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+150-pitch+00",
+      "slots": {
+        "cheeks": [],
+        "eyes": [],
+        "lips": []
+      }
+    },
+    "yaw+165-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw+165-pitch+00",
+      "slots": {
+        "cheeks": [],
+        "eyes": [],
+        "lips": []
+      }
+    },
+    "yaw-015-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-015-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            406,
+            198,
+            110,
+            119
+          ],
+          [
+            444,
+            197,
+            120,
+            118
+          ]
+        ],
+        "eyes": [
+          [
+            429,
+            184,
+            65,
+            81
+          ],
+          [
+            457,
+            183,
+            76,
+            81
+          ]
+        ],
+        "lips": [
+          [
+            454,
+            256,
+            66,
+            56
+          ]
+        ]
+      }
+    },
+    "yaw-030-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-030-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            409,
+            196,
+            112,
+            118
+          ],
+          [
+            448,
+            194,
+            121,
+            119
+          ]
+        ],
+        "eyes": [
+          [
+            432,
+            181,
+            67,
+            81
+          ],
+          [
+            462,
+            179,
+            75,
+            82
+          ]
+        ],
+        "lips": [
+          [
+            459,
+            254,
+            67,
+            56
+          ]
+        ]
+      }
+    },
+    "yaw-045-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-045-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            417,
+            207,
+            114,
+            118
+          ],
+          [
+            460,
+            204,
+            121,
+            118
+          ]
+        ],
+        "eyes": [
+          [
+            440,
+            195,
+            68,
+            80
+          ],
+          [
+            472,
+            193,
+            77,
+            79
+          ]
+        ],
+        "lips": [
+          [
+            470,
+            263,
+            68,
+            55
+          ]
+        ]
+      }
+    },
+    "yaw-060-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            470,
+            201,
+            115,
+            119
+          ],
+          [
+            515,
+            201,
+            112,
+            119
+          ]
+        ],
+        "eyes": [
+          [
+            495,
+            186,
+            71,
+            81
+          ],
+          [
+            531,
+            186,
+            73,
+            82
+          ]
+        ],
+        "lips": [
+          [
+            519,
+            261,
+            70,
+            56
+          ]
+        ]
+      }
+    },
+    "yaw-075-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            464,
+            192,
+            114,
+            117
+          ],
+          [
+            508,
+            192,
+            112,
+            117
+          ]
+        ],
+        "eyes": [
+          [
+            488,
+            180,
+            71,
+            79
+          ],
+          [
+            523,
+            180,
+            74,
+            79
+          ]
+        ],
+        "lips": [
+          [
+            513,
+            250,
+            70,
+            54
+          ]
+        ]
+      }
+    },
+    "yaw-090-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            475,
+            205,
+            121,
+            119
+          ],
+          [
+            537,
+            208,
+            105,
+            111
+          ]
+        ],
+        "eyes": [
+          [
+            499,
+            190,
+            79,
+            81
+          ],
+          [
+            547,
+            192,
+            63,
+            79
+          ]
+        ],
+        "lips": [
+          [
+            534,
+            265,
+            71,
+            55
+          ]
+        ]
+      }
+    },
+    "yaw-105-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-105-pitch+00",
+      "slots": {
+        "cheeks": [],
+        "eyes": [],
+        "lips": []
+      }
+    },
+    "yaw-120-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-120-pitch+00",
+      "slots": {
+        "cheeks": [],
+        "eyes": [],
+        "lips": []
+      }
+    },
+    "yaw-135-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-135-pitch+00",
+      "slots": {
+        "cheeks": [],
+        "eyes": [],
+        "lips": []
+      }
+    },
+    "yaw-150-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-150-pitch+00",
+      "slots": {
+        "cheeks": [],
+        "eyes": [],
+        "lips": []
+      }
+    },
+    "yaw-165-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-165-pitch+00",
+      "slots": {
+        "cheeks": [],
+        "eyes": [],
+        "lips": []
+      }
+    },
+    "yaw-180-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-180-pitch+00",
+      "slots": {
+        "cheeks": [],
+        "eyes": [],
+        "lips": []
+      }
+    }
+  }
+}
