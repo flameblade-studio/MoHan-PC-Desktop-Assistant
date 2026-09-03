@@ -39,6 +39,7 @@ lazy from tools.build_preview_package import (
     _validate_version,
 )
 lazy from tools.check_layered_imports import inspect_layered_imports
+lazy from domain.constants import POSE_ATLAS_ROOT_NAME
 lazy from tools.smoke_preview_package import _require_pose_atlas
 
 
@@ -216,7 +217,9 @@ def test_build_tool_is_pinned() -> None:
     assert "POSE_ATLAS_ROOT" in build_source
     assert "LAYERED_POSE_ATLAS_ROOT" in build_source
     assert "LAYERED_EXPRESSION_ROOT" in build_source
-    assert "assets/pose-atlas/v4-layered" in build_source
+    assert "POSE_ATLAS_RELATIVE_ROOT" in build_source
+    assert "POSE_ATLAS_LAYERED_RELATIVE_ROOT" in build_source
+    assert "assets/pose-atlas/v4" not in build_source
     assert "assets/expressions" in build_source
     assert "expected_full_body_layers = VIEW_RING_COUNT * FULL_BODY_LAYER_COUNT" in build_source
     assert "expected_half_body_layers = HALF_BODY_POSE_COUNT * FULL_BODY_LAYER_COUNT" in build_source
@@ -285,7 +288,7 @@ def test_release_gate_is_pinned() -> None:
     assert "--expected-version 2.3.0-rc.0" in preview
     assert "--preview-expected-version" in read("application/preview_app.py")
     assert release.count("--require-pose-atlas") == POSE_ATLAS_FLAG_COUNT
-    assert "Preview package omitted PoseAtlas v4 assets" in read(
+    assert "Preview package omitted PoseAtlas {POSE_ATLAS_ROOT_NAME} assets" in read(
         "tools/smoke_preview_package.py"
     )
 
@@ -346,7 +349,7 @@ def test_four_language_release_notes_and_boundaries() -> None:
 
 def test_pose_atlas_smoke_accepts_complete_duplicate_bundle_roots(tmp_path: Path) -> None:
     for duplicate in ("Contents/Resources", "Contents/Frameworks"):
-        atlas = tmp_path / duplicate / "assets" / "pose-atlas" / "v4"
+        atlas = tmp_path / duplicate / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
         atlas.mkdir(parents=True)
         for index in range(24):
             stem = f"yaw{index:03}-pitch+00"

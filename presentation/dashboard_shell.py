@@ -6,7 +6,7 @@ lazy from functools import partial
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QEvent, Qt, QThreadPool, QTimer
-lazy from PySide6.QtGui import QKeySequence, QMouseEvent, QPixmap, QShortcut
+lazy from PySide6.QtGui import QKeySequence, QMouseEvent, QShortcut
 lazy from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QFileDialog, QFrame, QHBoxLayout, QLabel,
     QLineEdit, QListWidget, QListWidgetItem, QPushButton, QSizePolicy,
@@ -24,7 +24,7 @@ lazy from domain.feature_registry import DashboardFeatureRegistry
 lazy from domain.language_support import (
     is_english, is_japanese, is_simplified_chinese,
 )
-lazy from domain.outfit_pack import OutfitPackError
+lazy from domain.outfit_pack import IncompatibleBodyProfileError, OutfitPackError
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_control_style import enforce_readable_combo_popups
@@ -49,11 +49,7 @@ lazy from presentation.flagship_theme import (
     create_flagship_ornament,
     mark_flagship_card,
 )
-lazy from presentation.presentation_resources import (
-    STYLE,
-    application_icon,
-    resource_path,
-)
+lazy from presentation.presentation_resources import STYLE, application_icon
 lazy from presentation.settings_ui_localization import SettingsText, settings_text
 lazy from presentation.ui_localization import (
     MODE_LABELS,
@@ -434,11 +430,7 @@ class DashboardShellMixin:
         )
         self.wardrobe_status.setWordWrap(True)
         self.wardrobe_status.setProperty("mohanRole", "statusPill")
-        wardrobe_compatibility = QLabel(
-            self._t("wardrobe_compatibility_status", "相容狀態")
-            + "："
-            + self._t("wardrobe_compatible", "相容")
-        )
+        wardrobe_compatibility = QLabel(self._t("wardrobe_compatibility_status", "相容狀態") + "：" + self._t("wardrobe_compatible", "相容"))
         wardrobe_compatibility.setProperty("mohanRole", "muted")
         source_policy = QLabel(
             self._t(
@@ -479,6 +471,7 @@ class DashboardShellMixin:
         controls = QVBoxLayout()
         controls.setSpacing(12)
         controls.addWidget(library_card, 5)
+        controls.addWidget(self._wardrobe_makeup_card(), 3)
         controls.addWidget(preferences_card, 4)
         columns.addWidget(preview_card, 6)
         columns.addLayout(controls, 4)
@@ -520,10 +513,11 @@ class DashboardShellMixin:
             return
         self.wardrobe_status.setText(wardrobe_generation_message(status, self._t))
         if hasattr(self, "wardrobe_generate_button"):
-            self.wardrobe_generate_button.setEnabled(
-                status not in {"generating", "generating-with-trend-search"}
-            )
-        if status in {"installed", "installed-manual-lock", "outfit-selected"}:
+            self.wardrobe_generate_button.setEnabled(status not in {"generating", "generating-with-trend-search"})
+        if status == "body-profile-outdated":
+            # The runtime already restored the built-in outfit; keep the saved choice in step so nothing re-applies the stale pack.
+            self.db.set_setting("active_outfit_id", BUILTIN_OUTFIT_ID)
+        if status in {"installed", "installed-manual-lock", "outfit-selected", "body-profile-outdated"}:
             self._reload_wardrobe_packages()
 
     def _reload_wardrobe_packages(self) -> None:
@@ -553,6 +547,7 @@ class DashboardShellMixin:
             self.wardrobe_packages.addItem(item)
             if outfit.outfit_id == selected_id:
                 self.wardrobe_packages.setCurrentItem(item)
+        self._reload_wardrobe_makeup_options()
 
     def _wardrobe_hero(self) -> QFrame:
         hero = QFrame()
@@ -575,96 +570,6 @@ class DashboardShellMixin:
         hero_row.addWidget(create_flagship_ornament(hero, size=110))
         return hero
 
-    def _wardrobe_preview_card(self) -> QFrame:
-        preview_card = QFrame()
-        preview_card.setProperty("mohanRole", "portraitCard")
-        preview = QVBoxLayout(preview_card)
-        preview.setContentsMargins(14, 14, 14, 14)
-        preview.setSpacing(8)
-        preview_title = QLabel(
-            self._t("wardrobe_character_preview", "墨寒造型預覽")
-        )
-        preview_title.setAlignment(Qt.AlignCenter)
-        preview_title.setProperty("mohanRole", "cardTitle")
-        self.wardrobe_character_preview = QLabel()
-        self.wardrobe_character_preview.setObjectName("wardrobeCharacterPreview")
-        self.wardrobe_character_preview.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
-        self.wardrobe_character_preview.setMinimumSize(300, 410)
-        self.wardrobe_character_preview.setAccessibleName(
-            self._t("wardrobe_character_preview", "墨寒造型預覽")
-        )
-        pose_root = resource_path("assets/pose-atlas/v4")
-        # Side labels follow MoHan's OWN left/right (owner ruling 2026-08-28):
-        # yaw+090 presents her LEFT side to the camera, yaw-090 her right —
-        # the previous mapping used the viewer's left/right instead.
-        pose_choices = (
-            ("wardrobe_view_front", "正面", pose_root / "yaw+000-pitch+00.png"),
-            ("wardrobe_view_left", "左側", pose_root / "yaw+090-pitch+00.png"),
-            ("wardrobe_view_right", "右側", pose_root / "yaw-090-pitch+00.png"),
-            ("wardrobe_view_back", "背面", pose_root / "yaw-180-pitch+00.png"),
-        )
-        self._wardrobe_outfit_overlay = (
-            self.presentation_ports.outfit_overlay_factory()
-        )
-        self._wardrobe_pose_source = QPixmap()
-        self._wardrobe_pose_path = pose_choices[0][2]
-        self.wardrobe_pose_buttons: list[QPushButton] = []
-        pose_actions = QHBoxLayout()
-        pose_actions.setSpacing(5)
-        for key, fallback, path in pose_choices:
-            button = QPushButton(self._t(key, fallback))
-            button.setCheckable(True)
-            button.setProperty("mohanAction", "pose")
-            button.clicked.connect(
-                partial(self._show_wardrobe_pose, path, button)
-            )
-            self.wardrobe_pose_buttons.append(button)
-            pose_actions.addWidget(button)
-        self._show_wardrobe_pose(
-            pose_choices[0][2],
-            self.wardrobe_pose_buttons[0],
-        )
-        self.wardrobe_preview_name = QLabel(
-            self._t("wardrobe_default_outfit", "內建預設服裝")
-        )
-        self.wardrobe_preview_name.setAlignment(Qt.AlignCenter)
-        self.wardrobe_preview_name.setWordWrap(True)
-        self.wardrobe_preview_name.setProperty("mohanRole", "statusPill")
-        preview.addWidget(preview_title)
-        preview.addWidget(self.wardrobe_character_preview, 1)
-        preview.addLayout(pose_actions)
-        preview.addWidget(self.wardrobe_preview_name)
-        return preview_card
-
-    def _update_wardrobe_preview_name(
-        self,
-        current: QListWidgetItem | None,
-        _previous: QListWidgetItem | None,
-    ) -> None:
-        if current is None:
-            return
-        self.wardrobe_preview_name.setText(current.text())
-
-    def _show_wardrobe_pose(self, path: Path, active: QPushButton) -> None:
-        pose = QPixmap(str(path))
-        if pose.isNull():
-            return
-        self._wardrobe_pose_path = Path(path)
-        overlay = getattr(self, "_wardrobe_outfit_overlay", None)
-        if overlay is not None:
-            pose = overlay.apply(pose, Path(path).stem)
-        self._wardrobe_pose_source = pose
-        self.wardrobe_character_preview.setPixmap(
-            pose.scaled(
-                300,
-                400,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation,
-            )
-        )
-        for button in self.wardrobe_pose_buttons:
-            button.setChecked(button is active)
-
     def _import_outfit_package(self) -> None:
         source, _filter = QFileDialog.getOpenFileName(
             self,
@@ -676,17 +581,13 @@ class DashboardShellMixin:
             return
         try:
             self.wardrobe_service.install(Path(source))
-        except OutfitPackError:
-            self.wardrobe_status.setText(
-                self._t(
-                    "wardrobe_validator_pending",
-                    "套件未通過完整全視角與安全驗證，因此未安裝。",
-                )
-            )
+        except IncompatibleBodyProfileError:
+            self.wardrobe_status.setText(self._t("wardrobe_body_profile_outdated", "這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成"))
             return
-        self.wardrobe_status.setText(
-            self._t("wardrobe_installed_inactive", "已安裝，尚未套用")
-        )
+        except OutfitPackError:
+            self.wardrobe_status.setText(self._t("wardrobe_validator_pending", "套件未通過完整全視角與安全驗證，因此未安裝。"))
+            return
+        self.wardrobe_status.setText(self._t("wardrobe_installed_inactive", "已安裝，尚未套用"))
         self._reload_wardrobe_packages()
 
     def _preview_selected_outfit(self) -> None:
@@ -696,13 +597,11 @@ class DashboardShellMixin:
         outfit_id = str(selected.data(Qt.UserRole))
         try:
             self.wardrobe_service.apply(outfit_id)
+        except IncompatibleBodyProfileError:
+            self.wardrobe_status.setText(self._t("wardrobe_body_profile_outdated", "這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成"))
+            return
         except OutfitPackError:
-            self.wardrobe_status.setText(
-                self._t(
-                    "wardrobe_assets_pending",
-                    "這套服裝未具備完整全視角素材，不能套用。",
-                )
-            )
+            self.wardrobe_status.setText(self._t("wardrobe_assets_pending", "這套服裝未具備完整全視角素材，不能套用。"))
             return
         self._record_manual_outfit_selection(outfit_id)
         if outfit_id != BUILTIN_OUTFIT_ID:
@@ -713,11 +612,8 @@ class DashboardShellMixin:
         self.wardrobe_status.setText(
             self._t("wardrobe_outfit_applied", "已套用所選完整服裝。")
         )
-        checked = next(
-            (button for button in self.wardrobe_pose_buttons if button.isChecked()),
-            self.wardrobe_pose_buttons[0],
-        )
-        self._show_wardrobe_pose(self._wardrobe_pose_path, checked)
+        self._reload_wardrobe_makeup_options()
+        self._refresh_wardrobe_preview()
 
     def _restore_builtin_outfit(self) -> None:
         self.wardrobe_service.apply(BUILTIN_OUTFIT_ID)
@@ -731,11 +627,8 @@ class DashboardShellMixin:
         self.wardrobe_status.setText(
             self._t("wardrobe_builtin_applied", "已套用內建預設服裝。")
         )
-        checked = next(
-            (button for button in self.wardrobe_pose_buttons if button.isChecked()),
-            self.wardrobe_pose_buttons[0],
-        )
-        self._show_wardrobe_pose(self._wardrobe_pose_path, checked)
+        self._reload_wardrobe_makeup_options()
+        self._refresh_wardrobe_preview()
 
     def _connect_dashboard_signals(
         self,

@@ -352,15 +352,10 @@ class RealtimeSpeechOutputPort(Protocol):
     def cancel(self, *args: Any, **kwargs: Any) -> None: ...
 
 
-RealtimeSpeechOutputConfigFactory = Callable[
-    [RealtimeSpeechOutputConfigRequest],
-    RealtimeSpeechOutputConfig,
-]
+RealtimeSpeechOutputConfigFactory = Callable[[RealtimeSpeechOutputConfigRequest], RealtimeSpeechOutputConfig]
 
 
-def create_realtime_output_config(
-    request: RealtimeSpeechOutputConfigRequest,
-) -> RealtimeSpeechOutputConfig:
+def create_realtime_output_config(request: RealtimeSpeechOutputConfigRequest) -> RealtimeSpeechOutputConfig:
     """Build the provider-neutral Realtime output configuration."""
 
     return RealtimeSpeechOutputConfig(
@@ -685,14 +680,7 @@ class VoiceCatalogPort(Protocol):
 
 
 class FaceRendererPort(Protocol):
-    def render(
-        self,
-        base: Any,
-        motion: Any,
-        layers: Any,
-        *,
-        aperture: float | None = None,
-    ) -> Any: ...
+    def render(self, base: Any, motion: Any, layers: Any, *, aperture: float | None = None) -> Any: ...
 
     def render_overlay(
         self,
@@ -730,21 +718,13 @@ class PortableProfileManagerPort(Protocol):
     def restore_import(self, result: Any) -> None: ...
 
 
-PortableProfileManagerFactory = Callable[
-    [PresentationDatabasePort, Path],
-    PortableProfileManagerPort,
-]
+PortableProfileManagerFactory = Callable[[PresentationDatabasePort, Path], PortableProfileManagerPort]
 
 
 class ProfileTransferError(RuntimeError):
     """Safe failure shared by every portable-profile boundary."""
 
-    def __init__(
-        self,
-        message: str,
-        *,
-        safe_error: SafeError | None = None,
-    ) -> None:
+    def __init__(self, message: str, *, safe_error: SafeError | None = None) -> None:
         self.safe_error = safe_error
         super().__init__(str(safe_error) if safe_error is not None else message)
 
@@ -763,10 +743,7 @@ class _UnavailableProfileManager:
     restore_import = _unavailable
 
 
-def unavailable_profile_manager_factory(
-    database: PresentationDatabasePort,
-    backup_dir: Path,
-) -> PortableProfileManagerPort:
+def unavailable_profile_manager_factory(database: PresentationDatabasePort, backup_dir: Path) -> PortableProfileManagerPort:
     del database, backup_dir
     return _UnavailableProfileManager()
 
@@ -815,11 +792,7 @@ class _UnavailableUpdateManager:
         raise RuntimeError("Update manager was not injected.")
 
 
-def unavailable_update_manager_factory(
-    repository: str,
-    current_version: str,
-    download_dir: Path,
-) -> UpdateManagerPort:
+def unavailable_update_manager_factory(repository: str, current_version: str, download_dir: Path) -> UpdateManagerPort:
     del repository, current_version, download_dir
     return _UnavailableUpdateManager()
 
@@ -840,6 +813,8 @@ class OutfitOverlayPort(Protocol):
 
     def apply(self, frame: Any, view_id: str) -> Any: ...
 
+    def layer_count(self, view_id: str) -> int: ...
+
 
 class _NoOutfitOverlay:
     @staticmethod
@@ -847,12 +822,31 @@ class _NoOutfitOverlay:
         del view_id
         return frame
 
+    @staticmethod
+    def layer_count(view_id: str) -> int:
+        del view_id
+        return 0
 
-OutfitOverlayFactory = Callable[[], OutfitOverlayPort]
+
+OutfitOverlayFactory = Callable[..., OutfitOverlayPort]
 
 
-def no_outfit_overlay_factory() -> OutfitOverlayPort:
+def no_outfit_overlay_factory(**_options: object) -> OutfitOverlayPort:
     return _NoOutfitOverlay()
+
+
+class FullBodyRendererPort(Protocol):
+    """Compose one authored 24-view-ring full-body frame from a face-motion frame."""
+
+    def render_view(self, view_id: str, motion: Any, **options: Any) -> Any: ...
+
+
+# ``None`` means no full-body compositor was injected (offline dashboards).
+FullBodyRendererFactory = Callable[..., FullBodyRendererPort | None]
+
+
+def no_full_body_renderer_factory(**_options: object) -> None:
+    return None
 
 
 @dataclass(frozen=True, slots=True)
@@ -872,6 +866,7 @@ class PresentationPorts:
         create_realtime_output_config
     )
     outfit_overlay_factory: OutfitOverlayFactory = no_outfit_overlay_factory
+    full_body_renderer_factory: FullBodyRendererFactory = no_full_body_renderer_factory
 
 
 _PORTABLE_SECRET_IDS = frozenset(
@@ -1030,6 +1025,7 @@ __all__ = (
     "AzureRealtimeVoice",
     "DashboardServices",
     "FaceRendererPort",
+    "FullBodyRendererPort",
     "LocalRealtimeVoice",
     "PlatformCapabilities",
     "PlatformPaths",

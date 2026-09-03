@@ -128,14 +128,14 @@ def _pose_specs() -> tuple[PosePreviewSpec, ...]:
 def _load_pose_layers(source: Path, spec: PosePreviewSpec) -> PoseLayers:
     return PoseLayers(
         base=load_image(source / spec.base_name),
-        ornament=load_image(source / f"physics_ornament{spec.suffix}.png"),
+        ornament=load_image(source / f"v120_ornament{spec.suffix}.png"),
         hair=(
-            load_image(source / f"physics_hair_left{spec.suffix}.png"),
-            load_image(source / f"physics_hair_right{spec.suffix}.png"),
+            load_image(source / f"v120_hair_left{spec.suffix}.png"),
+            load_image(source / f"v120_hair_right{spec.suffix}.png"),
         ),
         sleeves=(
-            load_image(source / f"physics_sleeve_left{spec.suffix}.png"),
-            load_image(source / f"physics_sleeve_right{spec.suffix}.png"),
+            load_image(source / f"v120_sleeve_left{spec.suffix}.png"),
+            load_image(source / f"v120_sleeve_right{spec.suffix}.png"),
         ),
     )
 

@@ -19,6 +19,10 @@ def wardrobe_generation_message(status: str, translate: Translate) -> str:
             "wardrobe_generation_installed_manual_lock",
             "新衣已通過稽核並安裝；目前手動衣裝仍在鎖定期，因此保持不變。",
         ),
+        "body-profile-outdated": translate(
+            "wardrobe_body_profile_outdated",
+            "這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成",
+        ),
         "activation-failed": translate(
             "wardrobe_generation_activation_failed",
             "新衣已通過稽核並安裝，但未能安全套用；目前衣裝保持不變。",

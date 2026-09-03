@@ -1,12 +1,23 @@
+# Builds assets\mohan-taskbar-icon.png and assets\mohan-halfbody.ico from one
+# half-body portrait.  The shipped icon is built from the generation-2 composed
+# portrait (official default pack + built-in classic makeup, rendered by
+# tools\render_marketing_portraits.py):
+#
+#     pwsh tools\build_app_icon.ps1 -Source docs\media\portraits\idle_front.png
+#
+# Without -Source the bare runtime sprite assets\expressions\idle_front.png is used.
 param(
-    [string]$Magick = ""
+    [string]$Magick = "",
+    [string]$Source = ""
 )
 
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
-$Source = Join-Path $ProjectRoot "assets\expressions\idle_front.png"
+if (-not $Source) {
+    $Source = Join-Path $ProjectRoot "assets\expressions\idle_front.png"
+}
 $PngOutput = Join-Path $ProjectRoot "assets\mohan-taskbar-icon.png"
 $IcoOutput = Join-Path $ProjectRoot "assets\mohan-halfbody.ico"
 

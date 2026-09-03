@@ -133,6 +133,9 @@ def extract_sleeve(source: Path, output: Path, box) -> None:
         raise RuntimeError(f"Failed to save sleeve layer: {output}")
 
 
+# Generation-1 entry point: writes ``physics_*`` cutouts that nothing loads
+# since the generation-2 bare base (2026-09-02).  The colour gates above stay
+# because ``tools/build_half_body_layered_rig.py`` imports them.
 def main() -> int:
     assets = Path(sys.argv[1])
     for suffix, (source_name, box, free_edge) in SPECS.items():

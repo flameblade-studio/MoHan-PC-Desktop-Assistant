@@ -7,58 +7,70 @@ lazy import re
 lazy import struct
 lazy import zipfile
 lazy from dataclasses import dataclass
-lazy from pathlib import Path, PurePosixPath
+lazy from pathlib import Path
 lazy from tempfile import NamedTemporaryFile
-lazy from xml.etree import ElementTree
 
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
+lazy from domain import outfit_pack_official
+lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel
+# Eager on purpose: these names are re-exported (``from domain.outfit_pack import
+# OutfitPackError`` is used across the layers) and a lazy import of a lazily
+# imported name hands the caller the unresolved proxy instead of the class.
+from domain.outfit_pack_assets import (
+    ASSET_PATH,
+    MANIFEST,
+    MAX_IMAGE_DIMENSION,
+    IncompatibleBodyProfileError,
+    OutfitPackError,
+    _dimensions,
+    _safe_member,
+)
 
 FORMAT = "mohan-outfit-pack"
 VERSION = 2
-MANIFEST = "manifest.json"
-BODY_PROFILE_ID = "mohan-body-v1"
-BODY_PROFILE_VERSION = 1
+BODY_PROFILE_ID = "mohan-body-v2"
+BODY_PROFILE_VERSION = 2
 AUTHORING_TEMPLATE = "mohan-official-poses"
 AUTHORING_VERSION = 2
 BASE_SILHOUETTES = ("cheek-rest", "left-neutral", "front-crossed")
-GESTURE_SILHOUETTES = (
-    "front-mock-scold", "front-mock-hit", "front-eureka", "front-exasperated"
-)
+GESTURE_SILHOUETTES = ("front-mock-scold", "front-mock-hit", "front-eureka", "front-exasperated")
 POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)
-REQUIRED_SILHOUETTES = (
-    BASE_SILHOUETTES + GESTURE_SILHOUETTES + POSE_ATLAS_SILHOUETTES
-)
+REQUIRED_SILHOUETTES = BASE_SILHOUETTES + GESTURE_SILHOUETTES + POSE_ATLAS_SILHOUETTES
 SUPPORTED_SILHOUETTES = REQUIRED_SILHOUETTES
 EXPRESSION_SILHOUETTE_ALIASES = frozendict({
-    "cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed",
-    "protective_front": "front-crossed",
+    "cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed", "protective_front": "front-crossed",
 })
 OFFICIAL_BODY_SPEC = frozendict({
-    "adult": True, "height_cm": 168, "weight_kg": 54, "bust_cm": 86,
-    "underbust_cm": 71, "waist_cm": 62, "hips_cm": 90,
+    "adult": True, "height_cm": 168, "weight_kg": 54, "bust_cm": 86, "underbust_cm": 71, "waist_cm": 62, "hips_cm": 90,
 })
-BODY_REGIONS = (
-    "neck", "shoulder-left", "shoulder-right", "arm-left", "arm-right",
-    "torso", "leg-left", "leg-right",
-)
+BODY_REGIONS = ("neck", "shoulder-left", "shoulder-right", "arm-left", "arm-right", "torso", "leg-left", "leg-right")
 VISIBILITY = frozenset({"visible", "covered"})
 FABRIC_BEHAVIORS = frozenset({"structured", "draped", "stretch", "loose"})
 GARMENT_SLOTS = frozenset({
     "bodice", "outerwear", "sleeve-left", "sleeve-right", "skirt", "trousers",
     "legwear-left", "legwear-right", "swimwear", "garment-occluder",
 })
-HAIR_SLOTS = frozenset({
-    "back", "front", "side-left", "side-right", "bangs", "bun", "ponytail",
-})
+HAIR_SLOTS = frozenset({"back", "front", "side-left", "side-right", "bangs", "bun", "ponytail"})
 REQUIRED_HAIR_SLOTS = frozenset({"back", "front"})
 HEAD_ATTACHMENTS = frozenset({"crown", "temple-left", "temple-right", "ear-left", "ear-right", "back-head"})
 ACCESSORY_KINDS = ("weapon", "handheld", "jewelry", "foreground-effect")
 ACCESSORY_ASSET_SLOTS = frozendict({
-    "weapon": frozenset({"weapon", "sheath"}),
-    "handheld": frozenset({"handheld"}),
-    "jewelry": frozenset({"jewelry"}),
-    "foreground-effect": frozenset({"foreground-effect"}),
+    "weapon": frozenset({"weapon", "sheath"}), "handheld": frozenset({"handheld"}),
+    "jewelry": frozenset({"jewelry"}), "foreground-effect": frozenset({"foreground-effect"}),
 })
+# Makeup is the one category that legitimately paints the face: three full-canvas
+# RGBA layers per silhouette, composited above the bare skin and below hair,
+# headwear and garments, clipped to the per-silhouette safe region
+# (assets/makeup-safe-regions.json) and scaled by the user's intensity.
+MAKEUP_SLOTS = frozenset({"eyes", "cheeks", "lips"})
+MAKEUP_CANVASES = frozendict({"full-body": (1024, 1536), "half-body": (1254, 1254)})
+# Official pack identities live in domain.outfit_pack_official; re-bound here for the importers of this module.
+BUILTIN_MAKEUP_PACK_ID = outfit_pack_official.BUILTIN_MAKEUP_PACK_ID
+BUILTIN_MAKEUP_ITEM_ID = outfit_pack_official.BUILTIN_MAKEUP_ITEM_ID
+BUILTIN_MAKEUP_VARIANTS = outfit_pack_official.BUILTIN_MAKEUP_VARIANTS
+OFFICIAL_PACK_ROOT = Path(__file__).resolve().parents[1] / "assets" / "official-packs"
+OPTIONAL_ENSEMBLE_CATEGORIES = frozenset({"makeup"})
+OPTIONAL_MANIFEST_KEYS = frozenset({"makeup"})
 WEAPON_PLACEMENTS = frozenset({"back", "waist-left", "waist-right", "hand-left", "hand-right"})
 HANDHELD_PLACEMENTS = frozenset({"hand-left", "hand-right"})
 WEAPON_ATTACHMENTS = frozenset({"back-harness", "waist-sheath", "left-grip", "right-grip"})
@@ -67,50 +79,36 @@ HAND_RULES = frozenset({"behind-hands", "front-of-hands"})
 GARMENT_RULES = frozenset({"behind-collar", "front-of-collar"})
 HEADWEAR_MASKS = frozenset({"crown-safe", "temple-safe", "ear-safe", "back-head-safe"})
 LANGUAGES = frozenset({"zh-TW", "zh-CN", "en", "ja-JP"})
-SELECTION_CATEGORIES = ("garment", "hairstyle", "headwear", *ACCESSORY_KINDS)
+SELECTION_CATEGORIES = ("garment", "hairstyle", "headwear", "makeup", *ACCESSORY_KINDS)
 THERMAL_BANDS = frozenset({"hot", "warm", "mild", "cool", "cold"})
 WEATHER_TAGS = frozenset({"clear", "cloudy", "rain", "storm", "snow", "windy", "indoor"})
 MOOD_TAGS = frozenset({"calm", "cheerful", "affectionate", "reserved", "upset", "focused"})
 OCCASION_TAGS = frozenset({"everyday", "work", "formal", "holiday", "birthday", "christmas", "valentines"})
 MAX_ARCHIVE_BYTES = 1024 * 1024 * 1024
-MAX_MEMBER_BYTES = 128 * 1024 * 1024
 MAX_TOTAL_BYTES = 2 * 1024 * 1024 * 1024
 MAX_MEMBERS = 2048
-MAX_COMPRESSION_RATIO = 100
-MAX_IMAGE_DIMENSION = 4096
 MIN_ANCHOR_COORDINATE = -4096
 MAX_ANCHOR_COORDINATE = 4096
 MIN_Z_ORDER = -100
 MAX_Z_ORDER = 100
 MAX_NAME_LENGTH = 80
 MAX_AUTHOR_LENGTH = 120
-MIN_PNG_HEADER_LENGTH = 24
-MIN_WEBP_HEADER_LENGTH = 30
-SYMLINK_FILE_TYPE = 0o120000
 ANCHOR_DIMENSIONS = 2
 IDENTIFIER = re.compile(r"[a-z0-9](?:[a-z0-9.-]{0,62}[a-z0-9])?\Z")
 SEMVER = re.compile(r"\d+\.\d+\.\d+\Z")
 APP_RANGE = re.compile(r">=\d+\.\d+\.\d+,<\d+\.\d+\.\d+\Z")
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
-ASSET_PATH = re.compile(r"assets/[a-z0-9][a-z0-9_.+-]{0,127}\.(?:png|webp|svg)\Z")
 LICENSE = re.compile(r"[A-Za-z0-9 .()+-]{1,120}\Z")
 PROTECTED_TERMS = frozenset({
     "face", "eye", "eyes", "mouth", "lip", "skin", "identity", "skull",
     "body-skin", "core-body", "body-contour", "bust-geometry", "torso-geometry",
 })
-SVG_ELEMENTS = frozenset({
-    "svg", "g", "defs", "linearGradient", "radialGradient", "stop", "path",
-    "rect", "circle", "ellipse", "line", "polyline", "polygon",
-})
+# Makeup legitimately names eyes and lips; every other identity term stays banned.
+MAKEUP_PATH_TERMS = PROTECTED_TERMS - frozenset({"eye", "eyes", "lip"})
 MANIFEST_KEYS = frozenset({
-    "format", "version", "id", "pack_version", "app_range", "display_names",
-    "compatible_body_profile", "source", "authoring", "looks", "hairstyles",
-    "headwear", "accessories", "ensembles",
+    "format", "version", "id", "pack_version", "app_range", "display_names", "compatible_body_profile",
+    "source", "authoring", "looks", "hairstyles", "headwear", "accessories", "ensembles",
 })
-
-
-class OutfitPackError(RuntimeError):
-    pass
 
 
 @dataclass(frozen=True, slots=True)
@@ -138,6 +136,7 @@ class AppearanceVariant:
     placements: frozendict[str, str] | None = None
     hair_rules: frozendict[str, str] | None = None
     attachment_contracts: frozendict[str, str] | None = None
+    intensity: float = 1.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -177,9 +176,6 @@ class InstalledSelection:
     pack_display_names: frozendict[str, str]
     item_display_names: frozendict[str, str]
     variant_display_names: frozendict[str, str]
-
-
-InstalledVariant = InstalledSelection
 
 
 @dataclass(frozen=True, slots=True)
@@ -273,83 +269,6 @@ def resolve_variant_for_view(
     )
 
 
-def _safe_member(info: zipfile.ZipInfo) -> None:
-    path = PurePosixPath(info.filename)
-    if info.is_dir() or path.is_absolute() or ".." in path.parts or "\\" in info.filename:
-        raise OutfitPackError("Unsafe archive path.")
-    if info.flag_bits & 1 or info.file_size > MAX_MEMBER_BYTES:
-        raise OutfitPackError("Unsafe archive member.")
-    if (info.external_attr >> 16) & 0o170000 == SYMLINK_FILE_TYPE:
-        raise OutfitPackError("Symbolic links are forbidden.")
-    if info.filename != MANIFEST and not ASSET_PATH.fullmatch(info.filename):
-        raise OutfitPackError("Executable or unsupported member.")
-    if info.file_size / max(1, info.compress_size) > MAX_COMPRESSION_RATIO:
-        raise OutfitPackError("Suspicious compression ratio.")
-
-
-def _png_dimensions(data: bytes) -> tuple[int, int]:
-    if len(data) < MIN_PNG_HEADER_LENGTH or data[:8] != b"\x89PNG\r\n\x1a\n" or data[12:16] != b"IHDR":
-        raise OutfitPackError("Invalid PNG asset.")
-    return struct.unpack(">II", data[16:24])
-
-
-def _webp_dimensions(data: bytes) -> tuple[int, int]:
-    if len(data) < MIN_WEBP_HEADER_LENGTH or data[:4] != b"RIFF" or data[8:12] != b"WEBP":
-        raise OutfitPackError("Invalid WebP asset.")
-    if data[12:16] != b"VP8X":
-        raise OutfitPackError("Unsupported WebP header.")
-    return (
-        int.from_bytes(data[24:27], "little") + 1,
-        int.from_bytes(data[27:30], "little") + 1,
-    )
-
-
-def _validate_svg_tree(root: ElementTree.Element) -> None:
-    unsafe_markers = ("url(", "javascript:", "data:")
-    for element in root.iter():
-        if element.tag.rsplit("}", 1)[-1] not in SVG_ELEMENTS:
-            raise OutfitPackError("Forbidden SVG element.")
-        for name, value in element.attrib.items():
-            local = name.rsplit("}", 1)[-1].lower()
-            unsafe_name = local.startswith("on") or local in {"href", "src"}
-            if unsafe_name or any(marker in value.lower() for marker in unsafe_markers):
-                raise OutfitPackError("Unsafe SVG content.")
-
-
-def _svg_dimensions(data: bytes) -> tuple[int, int]:
-    lowered = data.lower()
-    if b"<!doctype" in lowered or b"<!entity" in lowered:
-        raise OutfitPackError("DTD is forbidden in SVG.")
-    try:
-        root = ElementTree.fromstring(data)
-    except ElementTree.ParseError:
-        raise OutfitPackError("Invalid SVG asset.") from None
-    _validate_svg_tree(root)
-    try:
-        return int(float(root.attrib["width"])), int(float(root.attrib["height"]))
-    except (KeyError, ValueError):
-        raise OutfitPackError("SVG requires numeric dimensions.") from None
-
-
-def _dimensions(data: bytes, suffix: str) -> tuple[int, int]:
-    if suffix == ".png":
-        return _png_dimensions(data)
-    if suffix == ".webp":
-        return _webp_dimensions(data)
-    return _svg_dimensions(data)
-
-
-def validated_asset_dimensions(path: str, data: bytes) -> tuple[int, int]:
-    """Return dimensions using the same parser enforced during installation."""
-
-    if not ASSET_PATH.fullmatch(path):
-        raise OutfitPackError("Unsupported outfit asset path.")
-    dimensions = _dimensions(data, Path(path).suffix)
-    if any(not 1 <= value <= MAX_IMAGE_DIMENSION for value in dimensions):
-        raise OutfitPackError("Asset dimensions exceed the supported range.")
-    return dimensions
-
-
 def _names(value: object) -> frozendict[str, str]:
     if not isinstance(value, dict) or set(value) != LANGUAGES or any(not isinstance(text, str) for text in value.values()):
         raise OutfitPackError("All four localized names are required.")
@@ -378,7 +297,8 @@ def _asset(entry: object, allowed_slots: frozenset[str], archive: zipfile.ZipFil
     slot, path = entry["slot"], entry["path"]
     if not isinstance(slot, str) or slot not in allowed_slots or not isinstance(path, str) or not ASSET_PATH.fullmatch(path) or path not in names:
         raise OutfitPackError("Unknown slot or asset path.")
-    if any(term in f"{slot}/{path}".lower() for term in PROTECTED_TERMS):
+    screened, terms = (path, MAKEUP_PATH_TERMS) if slot in MAKEUP_SLOTS else (f"{slot}/{path}", PROTECTED_TERMS)
+    if any(term in screened.lower() for term in terms):
         raise OutfitPackError("Core identity, skin and geometry cannot be replaced.")
     anchor = entry["anchor"]
     values = (entry["width"], entry["height"], entry["z_order"])
@@ -523,6 +443,22 @@ def _handheld_variant(value: object, archive: zipfile.ZipFile, names: set[str]) 
     )
 
 
+def _makeup_variant(value: object, archive: zipfile.ZipFile, names: set[str]) -> AppearanceVariant:
+    """Three full-canvas registered layers per silhouette plus an optional authored intensity."""
+    variant_id, display = _variant_base(value, {"intensity"} if "intensity" in value else set())
+    intensity = value.get("intensity", 1.0)
+    if isinstance(intensity, bool) or not isinstance(intensity, (int, float)) or not 0.0 <= intensity <= 1.0:
+        raise OutfitPackError("Makeup intensity must be a number between 0 and 1.")
+    poses = _pose_assets(value["poses"], MAKEUP_SLOTS, archive, names)
+    for silhouette, assets in poses.items():
+        canvas = MAKEUP_CANVASES["full-body" if silhouette in POSE_ATLAS_SILHOUETTES else "half-body"]
+        if {asset.slot for asset in assets} != MAKEUP_SLOTS:
+            raise OutfitPackError(f"Makeup silhouette {silhouette!r} requires exactly the eyes, cheeks and lips layers.")
+        if any((asset.width, asset.height, asset.anchor_x, asset.anchor_y) != (*canvas, 0, 0) for asset in assets):
+            raise OutfitPackError(f"Makeup layers for {silhouette!r} must cover the full {canvas[0]}x{canvas[1]} canvas at anchor 0,0.")
+    return AppearanceVariant(variant_id, display, poses, intensity=float(intensity))
+
+
 def _item(value: object, category: str, archive: zipfile.ZipFile, names: set[str]) -> AppearanceItem:
     extras = {"attachment_point", "safe_mask"} if category == "headwear" else set()
     if category == "accessory":
@@ -539,6 +475,7 @@ def _item(value: object, category: str, archive: zipfile.ZipFile, names: set[str
         "garment": _garment_variant,
         "hairstyle": _hair_variant,
         "headwear": lambda item, arc, member_names: _simple_variant(item, frozenset({"headwear"}), arc, member_names),
+        "makeup": _makeup_variant,
         "weapon": _weapon_variant,
         "handheld": _handheld_variant,
         "jewelry": lambda item, arc, member_names: _simple_variant(item, ACCESSORY_ASSET_SLOTS["jewelry"], arc, member_names),
@@ -567,7 +504,7 @@ def _ensemble_selection(
     available: set[tuple[str, str, str]],
 ) -> EnsembleSelection:
     if selection is None:
-        if category not in {"headwear", *ACCESSORY_KINDS}:
+        if category not in {"headwear", "makeup", *ACCESSORY_KINDS}:
             raise OutfitPackError("Garment and hairstyle cannot be none.")
         return EnsembleSelection(category, None, None)
     if not isinstance(selection, dict) or set(selection) != {"item_id", "variant_id"}:
@@ -589,11 +526,15 @@ def _ensemble(
     if not isinstance(entry, dict) or set(entry) != {"id", "display_names", "selections", "autonomous_profile"}:
         raise OutfitPackError("Invalid ensemble declaration.")
     selections = entry["selections"]
-    if not isinstance(selections, dict) or set(selections) != set(SELECTION_CATEGORIES):
+    required = set(SELECTION_CATEGORIES) - OPTIONAL_ENSEMBLE_CATEGORIES
+    # An ensemble that stays silent about makeup leaves the user's makeup alone;
+    # an explicit ``null`` means a bare face.
+    if not isinstance(selections, dict) or not required <= set(selections) <= set(SELECTION_CATEGORIES):
         raise OutfitPackError("Ensemble must declare every appearance category.")
     typed = tuple(
         _ensemble_selection(category, selections[category], available)
         for category in SELECTION_CATEGORIES
+        if category in selections
     )
     profile = _autonomous_profile(entry["autonomous_profile"])
     return AppearanceEnsemble(
@@ -656,14 +597,15 @@ def _archive_member_names(archive: zipfile.ZipFile) -> set[str]:
 
 def _manifest_payload(archive: zipfile.ZipFile) -> dict:
     manifest = json.loads(archive.read(MANIFEST).decode("utf-8"))
-    if not isinstance(manifest, dict) or set(manifest) != MANIFEST_KEYS:
+    if not isinstance(manifest, dict) or not MANIFEST_KEYS <= set(manifest) <= MANIFEST_KEYS | OPTIONAL_MANIFEST_KEYS:
         raise OutfitPackError("Unsupported appearance manifest.")
     if manifest["format"] != FORMAT or manifest["version"] != VERSION:
         raise OutfitPackError("Unsupported appearance manifest.")
     expected_profile = {"id": BODY_PROFILE_ID, "version": BODY_PROFILE_VERSION}
-    expected_authoring = {"template": AUTHORING_TEMPLATE, "version": AUTHORING_VERSION}
-    if manifest["compatible_body_profile"] != expected_profile or manifest["authoring"] != expected_authoring:
-        raise OutfitPackError("Unsupported body profile or authoring template.")
+    if manifest["compatible_body_profile"] != expected_profile:
+        raise IncompatibleBodyProfileError(f"Pack body profile {manifest['compatible_body_profile']!r} is not the current {expected_profile!r}.")
+    if manifest["authoring"] != {"template": AUTHORING_TEMPLATE, "version": AUTHORING_VERSION}:
+        raise OutfitPackError("Unsupported authoring template.")
     return manifest
 
 
@@ -686,14 +628,12 @@ def _appearance_items(
     names: set[str],
 ) -> list[AppearanceItem]:
     groups = (
-        ("looks", "garment"),
-        ("hairstyles", "hairstyle"),
-        ("headwear", "headwear"),
-        ("accessories", "accessory"),
+        ("looks", "garment"), ("hairstyles", "hairstyle"), ("headwear", "headwear"),
+        ("makeup", "makeup"), ("accessories", "accessory"),
     )
     items: list[AppearanceItem] = []
     for key, category in groups:
-        entries = manifest[key]
+        entries = manifest.get(key, []) if key in OPTIONAL_MANIFEST_KEYS else manifest[key]
         if not isinstance(entries, list):
             raise OutfitPackError("Appearance collections must be lists.")
         parsed = [_item(entry, category, archive, names) for entry in entries]
@@ -745,16 +685,8 @@ def _parse_outfit_pack(
     pack_id = _identifier(manifest["id"], "pack")
     pack_version, app_range = _pack_version(manifest)
     return OutfitPack(
-        pack_id,
-        pack_version,
-        app_range,
-        _names(manifest["display_names"]),
-        source_kind,
-        author,
-        license_name,
-        BODY_PROFILE_ID,
-        tuple(items),
-        ensembles,
+        pack_id, pack_version, app_range, _names(manifest["display_names"]), source_kind, author, license_name,
+        BODY_PROFILE_ID, tuple(items), ensembles,
     )
 
 
@@ -783,9 +715,50 @@ def _atomic_json(path: Path, payload: object) -> None:
         temporary_path.unlink(missing_ok=True)
 
 
+# Parsed archives by path -> ((mtime_ns, size), pack); ``None`` marks another body-profile generation.
+_PARSED: dict[Path, tuple[tuple[int, int], OutfitPack | None]] = {}
+
+
+def _inspect_installed(path: Path) -> OutfitPack | None:
+    """Parse an installed archive once per (mtime, size); a rewritten or replaced file is read again."""
+    try:
+        stat = path.stat()
+    except OSError:
+        raise OutfitPackError("Archive size is invalid.") from None
+    token = (stat.st_mtime_ns, stat.st_size)
+    cached = _PARSED.get(path)
+    if cached is None or cached[0] != token:
+        try:
+            cached = (token, inspect_outfit_pack(path))
+        except IncompatibleBodyProfileError:
+            cached = (token, None)
+        _PARSED[path] = cached
+    return cached[1]
+
+
+def _installed_pack_paths(store: Path) -> tuple[Path, ...]:
+    """User-installed packs first, then the official packs shipped with the app (never removable)."""
+    paths = []
+    for root in (Path(store) / "packages", OFFICIAL_PACK_ROOT):
+        paths.extend(sorted(root.glob("*.mohan-outfit")) if root.is_dir() else ())
+    return tuple(paths)
+
+
+def installed_pack_path(store: Path, pack_id: str) -> Path:
+    """Locate one installed or official pack archive by id; fails closed on an unknown id."""
+    path = next((path for path in _installed_pack_paths(store) if path.stem == pack_id), None)
+    if path is None:
+        raise OutfitPackError("The selected appearance pack is not installed.")
+    return path
+
+
 def list_installed_outfits(store: Path) -> tuple[OutfitPack, ...]:
-    packages = Path(store) / "packages"
-    return () if not packages.is_dir() else tuple(inspect_outfit_pack(path) for path in sorted(packages.glob("*.mohan-outfit")))
+    return tuple(pack for pack in map(_inspect_installed, _installed_pack_paths(store)) if pack is not None)
+
+
+def list_stale_body_profile_packs(store: Path) -> tuple[str, ...]:
+    """Ids of installed packs made for another body-profile generation; they are listed, never rendered."""
+    return tuple(path.stem for path in _installed_pack_paths(store) if _inspect_installed(path) is None)
 
 
 def list_installed_selections(store: Path, category: str | None = None) -> tuple[InstalledSelection, ...]:
@@ -800,25 +773,15 @@ def list_installed_selections(store: Path, category: str | None = None) -> tuple
 
 def list_installed_ensembles(store: Path) -> tuple[InstalledEnsemble, ...]:
     return tuple(
-        InstalledEnsemble(
-            pack.pack_id,
-            ensemble.ensemble_id,
-            pack.display_names,
-            ensemble.display_names,
-            ensemble.selections,
-            ensemble.autonomous_profile,
-        )
-        for pack in list_installed_outfits(store)
-        for ensemble in pack.ensembles
+        InstalledEnsemble(pack.pack_id, ensemble.ensemble_id, pack.display_names, ensemble.display_names, ensemble.selections, ensemble.autonomous_profile)
+        for pack in list_installed_outfits(store) for ensemble in pack.ensembles
     )
-
-
-def list_installed_variants(store: Path) -> tuple[InstalledSelection, ...]:
-    return list_installed_selections(store, "garment")
 
 
 def install_outfit_pack(source: Path, store: Path) -> OutfitPack:
     pack = inspect_outfit_pack(source)
+    if pack.pack_id in OFFICIAL_PACK_IDS:
+        raise OutfitPackError("Official pack ids are reserved for the archives shipped with the app.")
     packages = Path(store) / "packages"
     packages.mkdir(parents=True, exist_ok=True)
     destination = packages / f"{pack.pack_id}.mohan-outfit"
@@ -847,7 +810,7 @@ def apply_appearance_selection(store: Path, selection: InstalledSelection) -> No
 
 
 def clear_appearance_selection(store: Path, category: str) -> None:
-    if category not in {"headwear", *ACCESSORY_KINDS}:
+    if category not in {"headwear", "makeup", *ACCESSORY_KINDS}:
         raise OutfitPackError("Only optional appearance slots can be cleared.")
     active_path = Path(store) / "active.json"
     active = json.loads(active_path.read_text(encoding="utf-8")) if active_path.is_file() else {}
@@ -859,14 +822,7 @@ def clear_appearance_selection(store: Path, category: str) -> None:
 
 
 def apply_ensemble(store: Path, pack_id: str, ensemble_id: str) -> None:
-    ensemble = next(
-        (
-            item
-            for item in list_installed_ensembles(store)
-            if (item.pack_id, item.ensemble_id) == (pack_id, ensemble_id)
-        ),
-        None,
-    )
+    ensemble = next((item for item in list_installed_ensembles(store) if (item.pack_id, item.ensemble_id) == (pack_id, ensemble_id)), None)
     if ensemble is None:
         raise OutfitPackError("The selected ensemble is not installed.")
     active_path = Path(store) / "active.json"
@@ -884,13 +840,6 @@ def apply_ensemble(store: Path, pack_id: str, ensemble_id: str) -> None:
             }
     active["_ensemble"] = {"pack_id": pack_id, "ensemble_id": ensemble_id}
     _atomic_json(active_path, active)
-
-
-def apply_outfit_variant(store: Path, pack_id: str, look_id: str, colorway_id: str) -> None:
-    match = next((item for item in list_installed_selections(store, "garment") if (item.pack_id, item.item_id, item.variant_id) == (pack_id, look_id, colorway_id)), None)
-    if match is None:
-        raise OutfitPackError("The selected outfit variant is not installed.")
-    apply_appearance_selection(store, match)
 
 
 def restore_builtin_outfit(store: Path) -> None:
@@ -915,14 +864,14 @@ def _state_references_pack(path: Path, pack_id: str) -> bool:
 
 def remove_outfit_pack(store: Path, pack_id: str) -> RemovalResult:
     validated_id = _identifier(pack_id, "pack")
-    if validated_id == "builtin":
+    if validated_id == "builtin" or validated_id in OFFICIAL_PACK_IDS:
         raise OutfitPackError("The built-in appearance cannot be removed.")
     packages = Path(store) / "packages"
     target = packages / f"{validated_id}.mohan-outfit"
     if not target.is_file():
         raise OutfitPackError("The appearance pack is not installed.")
-    installed = inspect_outfit_pack(target)
-    if installed.pack_id != validated_id:
+    installed = _inspect_installed(target)
+    if installed is not None and installed.pack_id != validated_id:
         raise OutfitPackError("Installed archive identity does not match its filename.")
     for state_name in ("active.json", "preview.json"):
         if _state_references_pack(Path(store) / state_name, validated_id):
@@ -960,15 +909,22 @@ def resolve_active_selection(store: Path, category: str) -> SelectionResolution:
         else:
             requested = (value["pack_id"], value["item_id"], value["variant_id"])
     if requested[0] == "builtin":
-        status, effective = "builtin", requested
+        # The sentinel keeps its built-in semantics; the official packs decide what it renders.
+        status, effective = resolve_builtin_sentinel(
+            store, category, requested,
+            installed_makeup=lambda root: list_installed_selections(root, "makeup"),
+            installed_ensembles=list_installed_ensembles,
+        )
     else:
-        installed = {
-            (selection.pack_id, selection.item_id, selection.variant_id)
-            for selection in list_installed_selections(store, category)
-        }
-        if requested not in installed:
-            raise OutfitPackError(
-                "The selected appearance is unavailable; it was not replaced."
-            )
-        status, effective = "installed", requested
+        installed = {(selection.pack_id, selection.item_id, selection.variant_id) for selection in list_installed_selections(store, category)}
+        if requested not in installed and requested[0] in list_stale_body_profile_packs(store):
+            raise IncompatibleBodyProfileError(f"Active pack {requested[0]!r} was authored for another body-profile generation.")
+        if requested not in installed and category == "makeup":
+            # A removed makeup pack falls back to the built-in default; ``requested`` keeps
+            # the vanished identity so the wardrobe can show the notice once.
+            status, effective = builtin_makeup_resolution(("builtin", "builtin", "builtin"), list_installed_selections(store, "makeup"))
+        elif requested not in installed:
+            raise OutfitPackError("The selected appearance is unavailable; it was not replaced.")
+        else:
+            status, effective = "installed", requested
     return SelectionResolution(category, status, *requested, *effective)

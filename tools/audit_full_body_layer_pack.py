@@ -24,12 +24,16 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+lazy from domain.constants import (
+    POSE_ATLAS_LAYERED_ROOT_NAME,
+    POSE_ATLAS_ROOT_NAME,
+)
 lazy from infrastructure.layered_full_body_assets import VIEW_IDS
 lazy from tools.audit_layered_full_body_semantics import LAYER_NAMES
 
 
-DEFAULT_ASSET_ROOT = ROOT / "assets" / "pose-atlas" / "v4-layered"
-DEFAULT_AUTHORITY_ROOT = ROOT / "assets" / "pose-atlas" / "v4"
+DEFAULT_ASSET_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
+DEFAULT_AUTHORITY_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
 DEFAULT_SEMANTIC_REPORT = ROOT / "work" / "full_body_semantic_audit.json"
 DEFAULT_AUDIT_OUTPUT = ROOT / "work" / "full_body_layer_pack_audit.json"
 DEFAULT_MANIFEST_OUTPUT = ROOT / "work" / "full_body_layer_rebuild_manifest.json"

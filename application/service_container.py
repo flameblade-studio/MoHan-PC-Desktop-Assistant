@@ -65,6 +65,7 @@ lazy from infrastructure.backup_manager import BackupManager
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
 lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.multimodal_model_provider import (
     MultimodalModelPaths,
@@ -218,10 +219,11 @@ def _create_ai_worker(
 def create_presentation_ports() -> PresentationPorts:
     """Build every presentation adapter once at the composition boundary."""
 
-    def outfit_overlay_factory():
+    def outfit_overlay_factory(on_stale_body_profile=None):
         return ActiveOutfitOverlay(
             presentation_contracts.default_data_dir() / "outfits",
             resource_path("."),
+            on_stale_body_profile=on_stale_body_profile,
         )
 
     return PresentationPorts(
@@ -237,6 +239,9 @@ def create_presentation_ports() -> PresentationPorts:
         ),
         visible_windows=visible_windows,
         outfit_overlay_factory=outfit_overlay_factory,
+        full_body_renderer_factory=lambda outfit_overlay=None: LayeredFullBodyRenderer(
+            outfit_overlay=outfit_overlay
+        ),
     )
 
 

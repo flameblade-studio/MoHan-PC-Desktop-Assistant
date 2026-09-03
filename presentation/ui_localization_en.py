@@ -76,6 +76,9 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_assets_pending": (
         "This outfit does not include complete assets for every view and cannot be applied."
     ),
+    "wardrobe_body_profile_outdated": (
+        "This outfit was made for the generation-1 body and will not line up on the generation-2 body; regenerate it with one-click outfit creation."
+    ),
     "wardrobe_builtin_applied": "Built-in default outfit applied.",
     "wardrobe_outfit_applied": "Selected complete outfit applied.",
     "wardrobe_autonomous_enabled": "Allow MoHan to choose outfits autonomously",
@@ -127,6 +130,8 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_view_left": "Left",
     "wardrobe_view_right": "Right",
     "wardrobe_view_back": "Back",
+    "wardrobe_preview_composing": "Composing the appearance preview through the runtime…",
+    "wardrobe_preview_fallback": "The appearance preview could not be composed and shows the bare base for now; the desktop companion is unaffected.",
     "wardrobe_upload_single_file": "Upload one file",
     "wardrobe_installed_inactive": "Installed, not active",
     "wardrobe_outfit_preview": "Outfit preview",
@@ -151,6 +156,26 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "appearance_category_headwear": "Headwear",
     "appearance_category_accessory": "Accessory",
     "appearance_no_headwear": "No headwear",
+    "appearance_category_makeup": "Makeup",
+    "wardrobe_makeup_title": "Makeup",
+    "wardrobe_makeup_item": "Makeup selection",
+    "wardrobe_makeup_none": "Bare face (no makeup)",
+    "wardrobe_makeup_variant_classic": "Classic",
+    "wardrobe_makeup_variant_light": "Light",
+    "wardrobe_makeup_intensity": "Makeup intensity",
+    "wardrobe_makeup_applied": "Selected makeup applied.",
+    "wardrobe_makeup_cleared": "Makeup removed; back to a bare face.",
+    "wardrobe_makeup_pack_missing": (
+        "The selected makeup pack is gone; switched back to the built-in classic makeup."
+    ),
+    "wardrobe_makeup_unavailable": (
+        "This makeup cannot be applied right now; the current makeup was kept."
+    ),
+    "wardrobe_makeup_assets_pending": "built-in makeup art pending",
+    "wardrobe_makeup_hint": (
+        "The base body is bare-faced; makeup is a switchable layer like garments, hairstyles and headwear. "
+        "Add new makeup with \"Import outfit package\"."
+    ),
     "today_input_placeholder": (
         "Enter a task, for example: Finish the storyboard for chapter 3"
     ),

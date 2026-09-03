@@ -16,9 +16,11 @@ lazy from presentation.dashboard_settings import DashboardSettingsMixin
 lazy from presentation.dashboard_shell import DashboardShellMixin
 lazy from presentation.dashboard_today_memory import DashboardTodayMemoryMixin
 lazy from presentation.dashboard_voice import DashboardVoiceMixin
+lazy from presentation.dashboard_wardrobe_makeup import DashboardWardrobeMakeupMixin
 lazy from presentation.dashboard_wardrobe_preferences import (
     DashboardWardrobePreferencesMixin,
 )
+lazy from presentation.dashboard_wardrobe_preview import DashboardWardrobePreviewMixin
 lazy from presentation.flagship_theme import apply_flagship_theme
 lazy from presentation.lingxiao_shell import refresh_runtime_palette
 lazy from presentation.lingxiao_themes import (
@@ -31,6 +33,8 @@ __all__ = ("Dashboard",)
 
 class Dashboard(
     DashboardWardrobePreferencesMixin,
+    DashboardWardrobeMakeupMixin,
+    DashboardWardrobePreviewMixin,
     DashboardShellMixin,
     DashboardSettingsMixin,
     DashboardVoiceMixin,

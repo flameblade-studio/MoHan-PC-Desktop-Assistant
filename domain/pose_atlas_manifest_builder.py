@@ -6,6 +6,7 @@ lazy import struct
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath
 
+lazy from domain.character_body_profile import MOHAN_BODY_PROFILE
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain.full_body_asset_evidence import (
     FullBodyAssetEvidenceResult,
@@ -41,8 +42,8 @@ class PoseAtlasBuildConfig:
     pack_id: str
     source_evidence: str
     identity_evidence: str
-    body_profile_id: str = "mohan-body-v1"
-    body_profile_version_range: tuple[int, int] = (1, 2)
+    body_profile_id: str = MOHAN_BODY_PROFILE.profile_id
+    body_profile_version_range: tuple[int, int] = (MOHAN_BODY_PROFILE.version, MOHAN_BODY_PROFILE.version + 1)
     rig_id: str = "mohan-full-body-v1"
     rig_version_range: tuple[int, int] = (1, 2)
 

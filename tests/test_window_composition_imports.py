@@ -19,6 +19,8 @@ WINDOW_BASES = {
     ),
     "presentation.dashboard_window": (
         "DashboardWardrobePreferencesMixin",
+        "DashboardWardrobeMakeupMixin",
+        "DashboardWardrobePreviewMixin",
         "DashboardShellMixin",
         "DashboardSettingsMixin",
         "DashboardVoiceMixin",
@@ -44,6 +46,8 @@ MIXIN_OWNERS = {
     "DashboardWardrobePreferencesMixin": (
         "presentation.dashboard_wardrobe_preferences"
     ),
+    "DashboardWardrobeMakeupMixin": "presentation.dashboard_wardrobe_makeup",
+    "DashboardWardrobePreviewMixin": "presentation.dashboard_wardrobe_preview",
 }
 
 

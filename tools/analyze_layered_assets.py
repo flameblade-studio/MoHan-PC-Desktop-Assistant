@@ -1,6 +1,6 @@
 """Analyze the 600 full-body layered assets for alignment outliers.
 
-Walks ``assets/pose-atlas/v4-layered/`` (24 views × 25 layers), computes each
+Walks the current layered PoseAtlas root (24 views × 25 layers), computes each
 PNG's alpha-trimmed bounding box, and reports:
 
 * missing layers per view,
@@ -31,6 +31,8 @@ sys.path.insert(0, str(ROOT))
 lazy from PySide6.QtGui import QImage
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
+
 # The 24 authored views, in yaw order.
 VIEW_IDS = (
     "yaw-180-pitch+00", "yaw-165-pitch+00", "yaw-150-pitch+00", "yaw-135-pitch+00",
@@ -60,7 +62,7 @@ OUTLIER_THRESHOLD_PIXELS = 2
 # A layer needs at least this many present views to run continuity detection.
 MIN_VIEWS_FOR_CONTINUITY = 3
 
-DEFAULT_ASSET_DIR = ROOT / "assets" / "pose-atlas" / "v4-layered"
+DEFAULT_ASSET_DIR = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
 DEFAULT_OUTPUT = ROOT / "layered_asset_analysis.json"
 
 

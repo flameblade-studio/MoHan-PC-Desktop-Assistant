@@ -18,6 +18,9 @@ lazy import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
+# Deliberately pinned to generation 1: MOUTH_BOUNDS below were measured on the
+# v4 authority portraits, so this rebuild is only valid against v4 / v4-layered.
+# The v5-base mouth layers come from the golden builder, not from this tool.
 AUTHORITY_DIR = ROOT / "assets" / "pose-atlas" / "v4"
 LAYER_DIR = ROOT / "assets" / "pose-atlas" / "v4-layered"
 CANVAS_WIDTH = 1024

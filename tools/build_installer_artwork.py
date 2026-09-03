@@ -1,5 +1,19 @@
+"""Build the Inno Setup wizard artwork from one MoHan half-body portrait.
+
+The shipped ``installer/artwork/*`` is built from the generation-2 composed
+portrait ``docs/media/portraits/idle_front.png`` (official default pack plus
+built-in classic makeup, rendered by ``tools/render_marketing_portraits.py``)::
+
+    py -3.15 tools/build_installer_artwork.py --source docs/media/portraits/idle_front.png
+
+Without ``--source`` the bare runtime sprite ``assets/expressions/idle_front.png``
+is used, which is what the artwork looked like before the composed portraits.
+"""
+
 from __future__ import annotations
 
+lazy import argparse
+lazy from collections.abc import Sequence
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QPointF, QRectF, Qt
@@ -48,10 +62,10 @@ def _background(width: int, height: int) -> QImage:
     return image
 
 
-def build() -> tuple[Path, Path]:
-    source = QImage(str(SOURCE))
+def build(source_path: Path = SOURCE) -> tuple[Path, Path]:
+    source = QImage(str(source_path))
     if source.isNull():
-        raise RuntimeError(f"MoHan artwork could not be loaded: {SOURCE}")
+        raise RuntimeError(f"MoHan artwork could not be loaded: {source_path}")
     OUTPUT.mkdir(parents=True, exist_ok=True)
 
     large_path = OUTPUT / "wizard-hero.png"
@@ -102,6 +116,22 @@ def build() -> tuple[Path, Path]:
     return large_path, small_path
 
 
-if __name__ == "__main__":
-    large, small = build()
+def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Build the Inno Setup wizard artwork.")
+    parser.add_argument(
+        "--source",
+        type=Path,
+        default=SOURCE,
+        help="Half-body portrait to draw (default: the bare runtime idle_front.png).",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    large, small = build(_arguments(argv).source)
     print(f"INSTALLER_ARTWORK_OK {large.name} {small.name}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

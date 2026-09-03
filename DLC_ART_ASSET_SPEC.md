@@ -19,8 +19,13 @@
 
 ## 二、需要製作的素材（核心缺口）
 
-目前 `assets/expressions/` 只有「整張表情圖」和「physics_* 物理圖層（頭髮/袖子/飾品）」，
-**缺少「臉部五官分層透明圖層」**。請為以下三種姿態，各製作一整套分層素材：
+目前 `assets/expressions/` 只有「整張表情圖」和「`v120_*` 物理切層（頭髮/袖子/飾品）」，
+**缺少「臉部五官分層透明圖層」**。
+
+> 來源註記（2026-09-02）：本文件描述的權威半身素材已由工作室自有產線自二代素體
+> `assets/pose-atlas/v5-base/` 重新生成為素顏版（髮髻、灰色無袖上衣），不再含一代外部授權美術；
+> 外袍、髮型、髮飾與妝容改為執行期圖層，因此 `v120_*` 的頭髮／袖子／髮飾切層依契約為全透明，
+> 舊的 `physics_*` 圖層已移除。請為以下三種姿態，各製作一整套分層素材：
 
 ### 三種姿態（pose）
 | 姿態代號 | 說明 |
@@ -128,3 +133,41 @@ D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\ex
 2. 只新增 `assets\expressions\layered\` 目錄下的新素材。
 3. 若對某個圖層的「拆分方式」有疑問（例如眼皮與眼線是否要分開），請先詢問，不要自行決定。
 4. 完成後回報：產出了哪些檔案、總張數、以及任何你認為需要 DeepSeek 端注意的對齊細節。
+
+---
+
+## 九、妝容圖層（makeup slot，2026-09-02 新增）
+
+擁有者裁決：素體（`*_base.png`）保持**素顏**、頭髮收成髮髻；外袍、散髮（含鬢髮）、銀髮飾與**妝容**全部是可開關、可替換的獨立圖層，半身與全身同一標準。妝容**不再畫進 base**，而是以「妝容套件」的形式提供，格式與衣裝套件完全相同（`docs/OUTFIT-PACKS.md` 的 `makeup` 一節是權威）。
+
+### 半身要製作的圖層
+
+每個半身輪廓（silhouette）× 每個 variant 各三張透明 RGBA PNG，畫布 **1254 × 1254**、與 `{pose}_base.png` 同座標系、anchor 固定 0,0：
+
+| slot | 內容 | 禁畫 |
+|------|------|------|
+| `eyes` | 眼線、眼影、睫毛、眉（合成一張） | 可見虹膜（眼皮遮住的部分可畫） |
+| `cheeks` | 腮紅 | — |
+| `lips` | 唇色／唇彩 | 牙齒、口腔 |
+
+半身輪廓與 rig 的對應：`cheek-rest`→`cheek`、`left-neutral`→`lean`、`front-crossed`／`front-mock-scold`／`front-mock-hit`／`front-eureka`／`front-exasperated`→`front`（四個手勢輪廓沿用 front 的頭部 rig，圖層可直接複製 front 的成品）。
+
+### 安全區（不可越界）
+
+每張圖層的**所有不透明像素**都必須落在 `assets/makeup-safe-regions.json` 為該 silhouette／slot 定義的矩形內（由 `{pose}_eyelid_*`／`_eyeliner_*`／`_brow_*`、`_blush_*`、`_lip_*`／`_corner_*` 的 alpha 外框各自外擴 24／48／20 px 而得；`py -3.15 tools/build_makeup_safe_regions.py --check` 可驗證檔案未過期）。越界一個像素，`tools/build_outfit_pack.py` 封裝與雲裳閣匯入都會整包拒絕。除安全區外，其餘像素 alpha 必須為 0；不得畫皮膚、不得重繪五官。
+
+### 內建妝容（工作室交付物）
+
+item `mohan-signature` 兩個 variant：`classic`（原妝，對齊四代 `assets/pose-atlas/v4` 的臉部外觀）與 `light`（淡雅，較淡的同套妝）。檔名已由範本寫死：
+
+```
+assets/makeup/builtin/assets/mohan-signature-{variant}-{silhouette}-{slot}.png
+```
+
+半身 7 輪廓 × 3 slot × 2 variant = 42 張（全身另 144 張，見 `DLC_ART_ASSET_SPEC_FULLBODY.md` 第十節）。素材放齊後執行：
+
+```
+py -3.15 tools/build_outfit_pack.py assets/makeup/builtin/manifest.json assets/makeup/builtin assets/official-packs/mohan.makeup.builtin.mohan-outfit
+```
+
+封裝成功即代表 sha256／尺寸／安全區全部通過；產出的 `.mohan-outfit` 由官方套件目錄 `assets/official-packs/` 直接供應執行期，使用者不可移除。第三方純妝容 DLC 同樣以 `tools/scaffold_makeup_pack_manifest.py` 產生範本、補齊 PNG、以 `tools/build_outfit_pack.py` 封裝，然後從雲裳閣「匯入服裝套件」按鈕安裝。

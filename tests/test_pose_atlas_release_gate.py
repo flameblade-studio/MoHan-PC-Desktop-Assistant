@@ -53,7 +53,7 @@ def manifest() -> PoseAtlasManifest:
         PoseViewSpec(
             canonical_view_id(yaw), yaw, f"assets/{canonical_view_id(yaw)}.png",
             digest(f"rgba:{yaw}"), 1000, 1000, "identity-proof", "source-proof",
-            "mohan-body-v1", "mohan-full-body-v1", (1, 2),
+            "mohan-body-v2", "mohan-full-body-v1", (1, 2),
             frozenset({
                 "left-leg-correction", "right-leg-correction",
                 "left-foot-correction", "right-foot-correction",
@@ -64,7 +64,7 @@ def manifest() -> PoseAtlasManifest:
     )
     return PoseAtlasManifest(
         "atlas-v4", "source-proof", views, "full-body-v4", 2,
-        "mohan-body-v1", (1, 2), "mohan-full-body-v1", (1, 2),
+        "mohan-body-v2", (2, 3), "mohan-full-body-v1", (1, 2),
     )
 
 
