@@ -71,6 +71,8 @@ def test_windows_package_builds_installs_and_collects_native_module() -> None:
         '--collect-all "opencc"',
         '$env:PYTHON_JIT = "0"',
         "tools/build_pyinstaller_jit_bootloader.py",
+        '$FontRoot = Join-Path $ProjectRoot "assets\\fonts"',
+        '--add-data "$FontRoot;assets/fonts"',
         '.qt315-compat-full\\Lib\\site-packages',
         "6.11.1+mohan.py315.",
         'Move-Item -LiteralPath $PublicExecutable',
@@ -79,6 +81,8 @@ def test_windows_package_builds_installs_and_collects_native_module() -> None:
         '$RuntimeExecutable',
         "mohan-native-build-evidence.json",
         "tools/verify_packaged_native_acceleration.py",
+        "tools/verify_packaged_fonts.py",
+        "packaged font verification failed",
     ):
         assert required in script
     assert script.index(build_call) < script.index(pyinstaller_call)

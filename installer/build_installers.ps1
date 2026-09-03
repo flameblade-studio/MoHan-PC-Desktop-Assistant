@@ -11,7 +11,8 @@ $ResolvedAppDir = (Resolve-Path $AppDir).Path
 $ResolvedOutput = [IO.Path]::GetFullPath($OutputDir)
 $IconPath = Join-Path $ProjectRoot "assets\mohan-halfbody.ico"
 $ExecutableName = "MoHan-Desktop-Assistant-$Version.exe"
-$BundledFonts = Join-Path $ResolvedAppDir "assets\fonts"
+# PyInstaller 6.21 places onedir support files under _internal.
+$BundledFonts = Join-Path $ResolvedAppDir "_internal\assets\fonts"
 $RequiredFontFiles = @(
     (Join-Path $BundledFonts "LXGW-WenKai-TC\LXGWWenKaiTC-Regular.ttf"),
     (Join-Path $BundledFonts "LXGW-WenKai-TC\OFL.txt"),

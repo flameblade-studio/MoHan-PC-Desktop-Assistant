@@ -6,6 +6,7 @@ lazy import hashlib
 lazy import logging
 lazy import os
 lazy import re
+lazy import shutil
 lazy import sys
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
@@ -21,6 +22,11 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from presentation import lingxiao_fonts as fonts_module
 lazy from presentation.lingxiao_fonts import register_bundled_fonts
 lazy from presentation.lingxiao_tokens import font_stack
+lazy from tools.verify_packaged_fonts import (
+    PACKAGED_FONT_ROOT,
+    REQUIRED_FONT_FILES,
+    verify_packaged_fonts,
+)
 
 FONT_ROOT = PROJECT_ROOT / "assets" / "fonts"
 LANGUAGE_COUNT = 4
@@ -84,6 +90,27 @@ def test_bundled_font_hashes_match_license_manifest() -> None:
         license_hash = _sha256(FONT_ROOT / directory / "OFL.txt")
         assert license_hash == spec["license_sha256"]
         assert license_hash in document
+
+
+def test_post_package_font_verifier_checks_pyinstaller_contents() -> None:
+    with TemporaryDirectory() as raw:
+        package_root = Path(raw) / "MoHan-Desktop-Assistant-4.0.0-rc.1"
+        packaged_root = package_root / PACKAGED_FONT_ROOT
+        for relative in REQUIRED_FONT_FILES:
+            destination = packaged_root / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(FONT_ROOT / relative, destination)
+
+        assert verify_packaged_fonts(package_root) == tuple(
+            packaged_root / relative for relative in REQUIRED_FONT_FILES
+        )
+        (packaged_root / REQUIRED_FONT_FILES[0]).unlink()
+        try:
+            verify_packaged_fonts(package_root)
+        except RuntimeError as error:
+            assert "missing" in str(error).casefold()
+        else:
+            raise AssertionError("packaged font verifier must reject a missing font")
 
 
 def test_qt_loads_bundled_fonts_and_exposes_families() -> None:
@@ -190,9 +217,13 @@ def test_font_manifest_is_four_language_and_packaging_is_explicit() -> None:
         encoding="utf-8"
     )
     assert 'f"{FONT_ROOT}{data_separator}assets/fonts"' in preview
+    build = (PROJECT_ROOT / "build.ps1").read_text(encoding="utf-8")
+    assert '--add-data "$FontRoot;assets/fonts"' in build
+    assert "tools/verify_packaged_fonts.py" in build
     installer = (PROJECT_ROOT / "installer" / "build_installers.ps1").read_text(
         encoding="utf-8"
     )
+    assert '_internal\\assets\\fonts' in installer
     for filename in ("LXGWWenKaiTC-Regular.ttf", "Cinzel[wght].ttf", "OFL.txt"):
         assert filename in installer
 
@@ -200,6 +231,7 @@ def test_font_manifest_is_four_language_and_packaging_is_explicit() -> None:
 def run() -> None:
     test_bundled_font_files_and_licenses_exist()
     test_bundled_font_hashes_match_license_manifest()
+    test_post_package_font_verifier_checks_pyinstaller_contents()
     test_missing_font_directory_logs_and_falls_back()
     test_failed_font_file_is_skipped_and_logged()
     test_qt_loads_bundled_fonts_and_exposes_families()
