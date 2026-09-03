@@ -84,6 +84,39 @@ macOS／Linux Preview 尚未等同 Windows 完整版，且可能沒有平台商�
 2. 先試 Windows 本機女聲；需要雲端 AI 時，再到設定輸入自己持有的 OpenAI API 金鑰。ChatGPT 訂閱不包含 API 額度。
 3. 檢查麥克風、通知與工具權限，只開啟真正需要的連接器；先記住緊急停止鍵 Esc 與「墨寒，停手」。
 
+### 雲端連接器設定
+
+#### Google OAuth
+
+使用 Gmail、Google Calendar 與 Google Drive 前，請先完成：
+
+1. 在自己的 Google Cloud 專案啟用 Gmail API、Google Calendar API 與 Google Drive API。
+2. 設定 OAuth 同意畫面；若應用程式仍在測試模式，將自己的 Google 帳號加入測試使用者。
+3. 建立「桌面應用程式」OAuth Client ID。
+4. 開啟墨寒「設定」頁的「旗艦控制中心」→「雲端連接器」，選擇 Google（Gmail／Calendar／Drive），填入「OAuth Client ID」；只有供應商提供「OAuth Client Secret」時才填入。
+5. 在「授權範圍」保留以下預設 scopes，按「開啟瀏覽器安全連線」完成瀏覽器授權，再按「測試選取服務」。
+
+程式預設請求以下 Google scopes：
+
+```text
+openid
+email
+https://www.googleapis.com/auth/gmail.modify
+https://www.googleapis.com/auth/calendar
+https://www.googleapis.com/auth/drive.file
+https://www.googleapis.com/auth/drive.metadata.readonly
+```
+
+公開 OAuth 應用程式若使用敏感 scopes，可能需要 Google 額外驗證；每位使用者也可建立自己的 Desktop OAuth 應用程式。
+
+#### Microsoft、GitHub 與 Home Assistant
+
+- Microsoft 預設 scopes：`openid`、`offline_access`、`User.Read`、`Mail.ReadWrite`、`Mail.Send`、`Calendars.ReadWrite`、`Files.ReadWrite`。
+- GitHub 預設 scopes：`read:user`、`repo`。
+- Home Assistant：先在自己的 Home Assistant 個人檔案建立 Long-Lived Access Token；在墨寒「設定」頁的「旗艦控制中心」→「智慧家庭」勾選「啟用 Home Assistant 整合」，填入「Home Assistant 位址」與「長期存取權杖」，確認「驗證 HTTPS 憑證」後按「保存設定」，再用「測試連線」或「讀取裝置」確認。
+
+這三項仍是尚未完成真實環境端到端驗證的實驗性 Preview 整合，請先使用可承受失敗的測試帳號與設備；不要將 Home Assistant 或墨寒遠端連線埠直接暴露於公網，請使用 Home Assistant Cloud、Tailscale 或其他具身分驗證的加密私人網路。
+
 ### 隱私與本機優先
 
 - Windows 的對話、記憶、待辦、設定、工作紀錄、權限與稽核預設存於 `%LOCALAPPDATA%\YanJianStudio\MoHan`；備份位於其 backups 子目錄，可攜資料使用單一 `.mohan-profile`。
@@ -107,7 +140,7 @@ macOS／Linux Preview 尚未等同 Windows 完整版，且可能沒有平台商�
 #### 安裝與還原主題
 
 1. 下載 `.mohan-theme`，不要解壓縮。
-2. 在「雲裳閣」的主題區按「上傳單一檔案」，選取主題後從清單預覽。
+2. 在「設定」→「控制台佈景主題」按「上傳單一檔案」，選取主題後從清單預覽。
 3. 按右下「保存設定」才正式套用；取消會回到原主題。「還原主題」可預覽內建主題，再保存完成還原。
 
 #### 容量、數量與相容性
@@ -251,6 +284,39 @@ macOS／Linux Preview 尚不等同于 Windows 完整版，且可能没有平台�
 2. 先试听 Windows 本地女声；需要云端 AI 时，再到设置中输入自己持有的 OpenAI API 密钥。ChatGPT 订阅不包含 API 配额。
 3. 检查麦克风、通知与工具权限，只开启真正需要的连接器；先记住紧急停止键 Esc 与“墨寒，停手”。
 
+### 云端连接器设置
+
+#### Google OAuth
+
+使用 Gmail、Google Calendar 与 Google Drive 前，请先完成：
+
+1. 在自己的 Google Cloud 项目启用 Gmail API、Google Calendar API 与 Google Drive API。
+2. 设置 OAuth 同意屏幕；若应用程序仍处于测试模式，将自己的 Google 账号加入测试用户。
+3. 创建“桌面应用程序”OAuth Client ID。
+4. 打开墨寒“设置”页的“旗舰控制中心”→“云端连接器”，选择 Google（Gmail／Calendar／Drive），填写“OAuth Client ID”；仅在供应商提供“OAuth Client Secret”时填写。
+5. 在“授权范围”保留以下默认 scopes，点击“打开浏览器安全连接”完成浏览器授权，再点击“测试选中服务”。
+
+程序默认请求以下 Google scopes：
+
+```text
+openid
+email
+https://www.googleapis.com/auth/gmail.modify
+https://www.googleapis.com/auth/calendar
+https://www.googleapis.com/auth/drive.file
+https://www.googleapis.com/auth/drive.metadata.readonly
+```
+
+公开 OAuth 应用程序若使用敏感 scopes，可能需要 Google 额外验证；每位用户也可以创建自己的 Desktop OAuth 应用程序。
+
+#### Microsoft、GitHub 与 Home Assistant
+
+- Microsoft 默认 scopes：`openid`、`offline_access`、`User.Read`、`Mail.ReadWrite`、`Mail.Send`、`Calendars.ReadWrite`、`Files.ReadWrite`。
+- GitHub 默认 scopes：`read:user`、`repo`。
+- Home Assistant：先在自己的 Home Assistant 个人资料中创建 Long-Lived Access Token；在墨寒“设置”页的“旗舰控制中心”→“智能家居”勾选“启用 Home Assistant 集成”，填写“Home Assistant 地址”和“长期访问令牌”，确认“验证 HTTPS 证书”后点击“保存设置”，再用“测试连接”或“读取设备”确认。
+
+这三项仍是尚未完成真实环境端到端验证的实验性 Preview 集成，请先使用可承受失败的测试账号与设备；不要将 Home Assistant 或墨寒远程端口直接暴露于公网，请使用 Home Assistant Cloud、Tailscale 或其他具有身份验证的加密私人网络。
+
 ### 隐私与本地优先
 
 - Windows 的对话、记忆、待办事项、设置、工作记录、权限与审计默认存储在 `%LOCALAPPDATA%\YanJianStudio\MoHan`；备份位于其 backups 子目录，便携数据使用单一 `.mohan-profile`。
@@ -274,7 +340,7 @@ macOS／Linux Preview 尚不等同于 Windows 完整版，且可能没有平台�
 #### 安装与恢复主题
 
 1. 下载 `.mohan-theme`，不要解压。
-2. 在“云裳阁”的主题区域点击“上传单个文件”，选取主题后从列表预览。
+2. 在“设置”→“控制台主题”点击“上传单个文件”，选取主题后从列表预览。
 3. 点击右下角“保存设置”才正式应用；取消会恢复原主题。“恢复主题”可预览内置主题，再保存以完成恢复。
 
 #### 容量、数量与兼容性
@@ -418,6 +484,39 @@ The macOS/Linux Preview is not equivalent to the complete Windows build and may 
 2. Try a Windows local female voice first. When cloud AI is needed, enter a user-owned OpenAI API key in Settings. A ChatGPT subscription does not include API quota.
 3. Review microphone, notification, and tool permissions and enable only the connectors you need. First learn the Esc emergency stop and the phrase “mohan stop.”
 
+### Cloud connector setup
+
+#### Google OAuth
+
+Before using Gmail, Google Calendar, and Google Drive, complete these steps:
+
+1. In a user-owned Google Cloud project, enable the Gmail API, Google Calendar API, and Google Drive API.
+2. Configure the OAuth consent screen; while the application is in testing, add the user's Google account as a test user.
+3. Create an OAuth Client ID for a Desktop application.
+4. Open MoHan Settings → Flagship control center → Cloud Connectors, select Google（Gmail／Calendar／Drive）, and enter the OAuth Client ID; enter the OAuth Client Secret only if the provider supplies one.
+5. Keep the default scopes below in OAuth scopes, press Open secure browser connection, complete browser authorization, and then press Test selected service.
+
+The application requests these Google scopes by default:
+
+```text
+openid
+email
+https://www.googleapis.com/auth/gmail.modify
+https://www.googleapis.com/auth/calendar
+https://www.googleapis.com/auth/drive.file
+https://www.googleapis.com/auth/drive.metadata.readonly
+```
+
+A public OAuth application using sensitive scopes may require additional Google verification; each user may instead create a personal Desktop OAuth application.
+
+#### Microsoft, GitHub, and Home Assistant
+
+- Microsoft defaults: `openid`, `offline_access`, `User.Read`, `Mail.ReadWrite`, `Mail.Send`, `Calendars.ReadWrite`, and `Files.ReadWrite`.
+- GitHub defaults: `read:user` and `repo`.
+- Home Assistant: first create a Long-Lived Access Token in the user's own Home Assistant profile; in MoHan Settings → Flagship control center → Smart Home, check Enable Home Assistant integration, enter the Home Assistant address and Long-lived access token, confirm Verify HTTPS certificate, press Save settings, then use Test connection or Load devices to confirm.
+
+These three remain experimental Preview integrations without completed real-environment end-to-end validation. Begin with failure-tolerant test accounts and devices; never expose the Home Assistant or MoHan remote port directly to the public internet, and use Home Assistant Cloud, Tailscale, or another authenticated encrypted private network.
+
 ### Privacy and local-first behavior
 
 - On Windows, conversations, memories, tasks, settings, work records, permissions, and audits stay by default in `%LOCALAPPDATA%\YanJianStudio\MoHan`; backups are in its backups subfolder, and portable data uses one `.mohan-profile`.
@@ -441,7 +540,7 @@ Multisensory vision is off by default. After the user explicitly enables it and 
 #### Install and restore themes
 
 1. Download the `.mohan-theme`; do not unpack it.
-2. In the Wardrobe Pavilion's theme area, press “Upload one file,” choose the theme, and preview it from the list.
+2. In Settings → Dashboard theme, press “Upload one file,” choose the theme, and preview it from the list.
 3. It takes effect only after “Save settings” at the lower right; cancel restores the previous theme. “Restore theme” previews the built-in theme, which is restored after saving.
 
 #### Capacity, count, and compatibility
@@ -585,6 +684,39 @@ macOS／Linux Preview は Windows 完全版と同等ではなく、プラット�
 2. まず Windows 本機女性音声を試します。クラウド AI が必要な場合だけ、利用者自身の OpenAI API キーを設定に入力します。ChatGPT の契約に API 割り当ては含まれません。
 3. マイク、通知、ツール権限を確認し、必要な連携だけを有効にします。先に Esc の緊急停止と「墨寒、止まって」を覚えてください。
 
+### クラウド連携の設定
+
+#### Google OAuth
+
+Gmail、Google Calendar、Google Drive を利用する前に、次を完了してください。
+
+1. 利用者自身の Google Cloud プロジェクトで Gmail API、Google Calendar API、Google Drive API を有効にします。
+2. OAuth 同意画面を設定します。アプリケーションがテスト中の間は、自分の Google アカウントをテストユーザーに追加します。
+3. Desktop アプリケーション用の OAuth Client ID を作成します。
+4. 墨寒の「設定」→「フラッグシップ操作センター」→「クラウド接続」を開き、Google（Gmail／Calendar／Drive）を選んで OAuth Client ID を入力します。OAuth Client Secret は、サービスから発行された場合だけ入力します。
+5. 「認可スコープ」に以下の既定値を残し、「ブラウザーで安全に接続」を押してブラウザー認可を完了し、「選択したサービスをテスト」を押します。
+
+アプリケーションが既定で要求する Google scopes：
+
+```text
+openid
+email
+https://www.googleapis.com/auth/gmail.modify
+https://www.googleapis.com/auth/calendar
+https://www.googleapis.com/auth/drive.file
+https://www.googleapis.com/auth/drive.metadata.readonly
+```
+
+機密 scopes を使う公開 OAuth アプリケーションは、Google の追加検証が必要になる場合があります。各利用者が個人用 Desktop OAuth アプリケーションを作ることもできます。
+
+#### Microsoft、GitHub、Home Assistant
+
+- Microsoft の既定 scopes：`openid`、`offline_access`、`User.Read`、`Mail.ReadWrite`、`Mail.Send`、`Calendars.ReadWrite`、`Files.ReadWrite`。
+- GitHub の既定 scopes：`read:user`、`repo`。
+- Home Assistant：まず自分の Home Assistant プロフィールで Long-Lived Access Token を作成します。墨寒の「設定」→「フラッグシップ操作センター」→「スマートホーム」で「Home Assistant 連携を有効化」をチェックし、「Home Assistant アドレス」と「長期アクセストークン」を入力します。「HTTPS 証明書を検証」を確認して「設定を保存」を押し、「接続をテスト」または「機器を読み取る」で確認します。
+
+この三つは実環境での完全なエンドツーエンド検証が未完了の実験的 Preview 連携です。失敗を許容できるテスト用アカウントと機器から始め、Home Assistant や墨寒のリモートポートを公衆インターネットへ直接公開しないでください。Home Assistant Cloud、Tailscale、または認証付き暗号化プライベートネットワークを利用してください。
+
 ### プライバシーとローカル優先
 
 - Windows では、会話、記憶、タスク、設定、作業記録、権限、監査を既定で `%LOCALAPPDATA%\YanJianStudio\MoHan` に保存します。バックアップは backups サブフォルダーにあり、可搬データには単一の `.mohan-profile` を使います。
@@ -608,7 +740,7 @@ macOS／Linux Preview は Windows 完全版と同等ではなく、プラット�
 #### テーマの導入と復元
 
 1. `.mohan-theme` をダウンロードし、解凍しないでください。
-2. 「雲裳閣」のテーマ欄で「ファイルを1つアップロード」を押し、テーマを選んで一覧からプレビューします。
+2. 「設定」→「コントロールセンターのテーマ」で「ファイルを1つアップロード」を押し、テーマを選んで一覧からプレビューします。
 3. 右下の「設定を保存」を押した時だけ反映され、取り消すと元のテーマへ戻ります。「テーマを元に戻す」で内蔵テーマをプレビューし、保存すると復元が完了します。
 
 #### 容量・数量・互換性
