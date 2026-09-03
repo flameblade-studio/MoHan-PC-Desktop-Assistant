@@ -26,9 +26,14 @@ lazy from presentation.flagship_ui_localization import FlagshipTranslator
 
 MINIMUM_CONTRAST_RATIO = 4.5
 MINIMUM_DANGER_DISTANCE = 80.0
-MINIMUM_TRANSLATED_VARIANTS = 2
 EXPECTED_THEME_IDS = ("ink-gold", "celadon", "crimson")
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
+EXPECTED_THEME_LABELS = {
+    "凌霄主題": ("凌霄主題", "凌霄主题", "Lingxiao theme", "凌霄テーマ"),
+    "墨金・凌霄": ("墨金・凌霄", "墨金・凌霄", "Ink-Gold · Lingxiao", "墨金・凌霄"),
+    "霧靄青瓷": ("霧靄青瓷", "雾霭青瓷", "Misty Celadon", "霧靄青磁"),
+    "赤焰劍光": ("赤焰劍光", "赤焰剑光", "Crimson Swordlight", "赤焔剣光"),
+}
 
 
 def _rgb_distance(first: str, second: str) -> float:
@@ -78,10 +83,10 @@ def test_danger_color_is_distinct_from_primary_color() -> None:
 
 
 def test_theme_selector_labels_are_translated_in_all_languages() -> None:
-    for source in ("凌霄主題", "墨金・凌霄", "霧靄青瓷", "赤焰劍光"):
+    for source, expected in EXPECTED_THEME_LABELS.items():
         labels = tuple(FlagshipTranslator(language).text(source) for language in LANGUAGES)
+        assert labels == expected
         assert all(label.strip() for label in labels)
-        assert len(set(labels)) >= MINIMUM_TRANSLATED_VARIANTS
 
 
 def test_switching_theme_changes_the_flagship_stylesheet() -> None:

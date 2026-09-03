@@ -46,15 +46,22 @@ __all__ = (
     "build_navigation",
     "build_ribbon",
     "install_lobby_motion",
+    "refresh_runtime_palette",
     "realm_layout_order",
     "update_draft_bar",
 )
 
 
 def _shell_palette(shell):
+    theme_id = getattr(shell, "_runtime_lingxiao_theme_id", None)
+    if theme_id is None:
+        theme_id = shell.db.setting("flagship_theme", "ink-gold")
+    high_contrast = getattr(shell, "_runtime_lingxiao_high_contrast", None)
+    if high_contrast is None:
+        high_contrast = shell.db.setting("flagship_high_contrast", False)
     return palette_for_theme(
-        shell.db.setting("flagship_theme", "ink-gold"),
-        high_contrast=bool(shell.db.setting("flagship_high_contrast", False)),
+        theme_id,
+        high_contrast=bool(high_contrast),
     )
 
 # (領域鍵, 繁中預設組名, 這一組收哪些功能 id)。功能 id 對應 DashboardFeatureRegistry。
@@ -214,13 +221,8 @@ def build_draft_bar(shell, root: QVBoxLayout) -> None:
     shell.save_settings_button.setProperty("mohanPrimaryAction", True)
     shell.save_settings_button.setProperty("mohanAction", "primary")
     palette = _shell_palette(shell)
-    shell.save_settings_button.setStyleSheet(
-        "QPushButton#globalSaveSettingsButton{"
-        f"background:{palette.gold};color:{palette.on_gold};border:1px solid {palette.gold_2};"
-        "border-radius:10px;font-weight:700;padding:10px 24px;}"
-        "QPushButton#globalSaveSettingsButton:hover{"
-        f"background:{palette.gold_2};color:{palette.on_gold};}}"
-    )
+    _style_save_settings_button(shell.save_settings_button, palette)
+
     row.addWidget(shell.draft_chip)
     row.addWidget(shell.draft_message, 1)
     row.addWidget(shell.cancel_settings_button)
@@ -228,6 +230,31 @@ def build_draft_bar(shell, root: QVBoxLayout) -> None:
     root.addWidget(bar)
     shell.cancel_settings_button.clicked.connect(shell.cancel_settings_changes)
     shell.save_settings_button.clicked.connect(shell.save_all_settings)
+
+
+def _style_save_settings_button(button: QPushButton, palette) -> None:
+    button.setStyleSheet(
+        "QPushButton#globalSaveSettingsButton{"
+        f"background:{palette.gold};color:{palette.on_gold};border:1px solid {palette.gold_2};"
+        "border-radius:10px;font-weight:700;padding:10px 24px;}"
+        "QPushButton#globalSaveSettingsButton:hover{"
+        f"background:{palette.gold_2};color:{palette.on_gold};}}"
+    )
+
+
+def refresh_runtime_palette(shell, *, active: bool) -> None:
+    """Refresh custom shell widgets from the dashboard's cached palette."""
+
+    palette = _shell_palette(shell)
+    pulse = getattr(shell, "ribbon_pulse", None)
+    if pulse is not None:
+        pulse.set_color(palette.jade if active else palette.dim)
+    save_button = getattr(shell, "save_settings_button", None)
+    if save_button is not None:
+        _style_save_settings_button(save_button, palette)
+    motes = getattr(shell, "lobby_motes", None)
+    if motes is not None:
+        motes.set_palette(palette)
 
 
 def update_draft_bar(shell) -> int:
