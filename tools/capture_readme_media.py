@@ -10,6 +10,7 @@ lazy import tempfile
 lazy import wave
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
+lazy from unittest.mock import patch
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -26,11 +27,10 @@ TASKS_SCENE_END = 0.72
 MEMORY_SCENE_END = 0.86
 SPEAKING_START_SECOND = 5.0
 
-lazy from PySide6.QtCore import QPoint, QRect, QSize, Qt
+lazy from PySide6.QtCore import QPoint, QRect, QSize, Qt, QTimer
 lazy from PySide6.QtGui import (
     QColor,
     QFont,
-    QFontDatabase,
     QImage,
     QLinearGradient,
     QPainter,
@@ -43,9 +43,14 @@ lazy from presentation.dashboard_window import Dashboard
 lazy from presentation.first_run_wizard import FirstRunWizard
 lazy from infrastructure.db import StudioDB
 lazy from domain.time_utils import local_wall_time
-lazy from test_global_settings_actions import close_dashboard
-lazy from test_wardrobe_ui import build_language_dashboard
+lazy from test_global_settings_actions import close_dashboard, dependencies
 lazy from presentation.lingxiao_widgets import set_motion_override
+lazy from tools.capture_media_contract import (
+    DASHBOARD_TAB_ALIASES,
+    preview_font_family,
+    resolve_dashboard_tab,
+    select_dashboard_tab,
+)
 
 WIDTH = 1280
 HEIGHT = 720
@@ -757,33 +762,9 @@ def prepare_demo_profile(temp_dir: str) -> None:
     database.close()
 
 
-def _preview_font_family() -> str:
-    """Load a real CJK font when the isolated Qt runtime has no font database."""
-
-    candidates = (
-        Path(r"C:\Windows\Fonts\msjh.ttc"),
-        Path(r"C:\Windows\Fonts\msjhbd.ttc"),
-        Path(r"C:\Windows\Fonts\seguisym.ttf"),
-        Path(r"C:\Windows\Fonts\seguiemj.ttf"),
-        Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"),
-        Path("/System/Library/Fonts/PingFang.ttc"),
-    )
-    preferred_family = ""
-    for candidate in candidates:
-        if not candidate.is_file():
-            continue
-        font_id = QFontDatabase.addApplicationFont(str(candidate))
-        if font_id < 0:
-            continue
-        families = QFontDatabase.applicationFontFamilies(font_id)
-        if families and not preferred_family:
-            preferred_family = families[0]
-    return preferred_family or "sans-serif"
-
-
 def create_capture_app() -> QApplication:
     app = QApplication.instance() or QApplication([])
-    app.setFont(QFont(_preview_font_family(), 10))
+    app.setFont(QFont(preview_font_family(), 10))
     app.setStyleSheet(STYLE)
     return app
 
@@ -806,10 +787,12 @@ def create_capture_dashboard(
     app: QApplication,
     temp_dir: str,
 ) -> tuple[StudioDB, Dashboard]:
-    """Build the same isolated dashboard used by the UI contract tests."""
+    """Build a dashboard over the prepared demo database without resetting it."""
 
     set_motion_override(False)
-    db, dashboard = build_language_dashboard(Path(temp_dir), "zh-TW")
+    db = StudioDB(Path(temp_dir) / "mohan-zh-TW.db")
+    with patch.object(QTimer, "start", return_value=None):
+        dashboard = Dashboard(db, dependencies(Path(temp_dir)))
     dashboard.resize(1400, 900)
     dashboard.show()
     app.processEvents()
@@ -877,30 +860,10 @@ def capture_security_assets(
     dashboard: Dashboard,
     output_dir: Path,
 ) -> QImage:
-    dashboard.tabs.setCurrentIndex(5)
-    dashboard.flagship_center.tabs.setCurrentIndex(6)
+    select_dashboard_tab(dashboard, "security")
     app.processEvents()
     return save_widget(dashboard, output_dir / "security-permissions.png")
 
-
-DASHBOARD_TAB_ALIASES = {
-    "conversation": 0,
-    "chat": 0,
-    "today": 1,
-    "tasks": 1,
-    "tasks-and-ideas": 1,
-    "platforms": 2,
-    "work-platforms": 2,
-    "memory": 3,
-    "long-term-memory": 3,
-    "voice": 4,
-    "voice-modes": 4,
-    "permissions": 5,
-    "security": 5,
-    "security-permissions": 5,
-    "wardrobe": 6,
-    "settings": 7,
-}
 
 DASHBOARD_TAB_OUTPUTS = {
     0: "conversation.png",
@@ -912,26 +875,6 @@ DASHBOARD_TAB_OUTPUTS = {
     6: "wardrobe.png",
     7: "settings.png",
 }
-
-
-def resolve_dashboard_tab(dashboard: Dashboard, requested: str) -> int:
-    normalized = requested.strip().casefold()
-    if normalized in DASHBOARD_TAB_ALIASES:
-        return DASHBOARD_TAB_ALIASES[normalized]
-    if normalized.isdecimal():
-        index = int(normalized)
-        if index in range(dashboard.tabs.count()):
-            return index
-    for index in range(dashboard.tabs.count()):
-        if dashboard.tabs.tabText(index).strip().casefold() == normalized:
-            return index
-    visible = tuple(
-        dashboard.tabs.tabText(index) for index in range(dashboard.tabs.count())
-    )
-    raise ValueError(
-        f"Unknown dashboard tab {requested!r}; use a stable name, index, "
-        f"or one of {visible!r}."
-    )
 
 
 def capture_static_media(
