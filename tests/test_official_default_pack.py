@@ -57,11 +57,12 @@ GREY_TOLERANCE = 12
 PROBES = {
     "yaw+000-pitch+00": {
         "base": "assets/pose-atlas/v5-base/yaw+000-pitch+00.png",
-        "garment": (488, 585), "lips": (552, 292), "hair": (455, 350), "headwear": (482, 134),
+        # 2026-09-05 依 v4 原圖重抽後由 assemble_official_default_pack.py 重新記錄的探針。
+        "garment": (488, 585), "lips": (553, 291), "hair": (507, 92), "headwear": (546, 97),
     },
     "front-crossed": {
         "base": "assets/expressions/idle_front.png",
-        "garment": (610, 853), "lips": (588, 564), "hair": (733, 291), "headwear": (553, 194),
+        "garment": (610, 853), "lips": (583, 525), "hair": (596, 111), "headwear": (669, 134),
     },
 }
 

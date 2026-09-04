@@ -93,6 +93,7 @@ lazy from .image_ops import (
     transparent_rgb_zero,
     warp_rgba,
 )
+lazy from .reference_layers import extract_reference_layers
 lazy from .speck_cleanup import (
     remove_owner_specks,
     remove_unlinked_small_components,
@@ -674,6 +675,60 @@ def _safe_prefix(prefix: str) -> Path:
     return candidate
 
 
+NEUTRAL_HALF_BODY_PREFIX = "halfprod_front_A"
+
+
+def _resolve_reference_layers(
+    base: np.ndarray,
+    reference_path: Path | None,
+    model_path: Path,
+    report: dict[str, object],
+    source_directory: Path,
+    prefix: str,
+) -> tuple[np.ndarray, np.ndarray, dict[str, object]] | None:
+    """擁有者 2026-09-05 裁決：頭髮與髮飾以 v4 原圖為準。
+
+    有參考圖且對齊成功時回傳（前髮層, 髮飾層, 報告）；沒有參考圖回傳 None，
+    對齊失敗也回傳 None 並在報告寫明，讓呼叫端回退到差分抽層。半身姿勢另傳
+    本姿勢與正面中性姿勢的髮層渲染，讓舉起的手掌、手臂遮住 v4 頭髮。
+    """
+    if reference_path is None:
+        return None
+    neutral = None
+    if prefix.startswith("halfprod_"):
+        neutral = source_directory / f"{NEUTRAL_HALF_BODY_PREFIX}.L3_hair.png"
+    reference_layers = extract_reference_layers(
+        base,
+        reference_path,
+        model_path,
+        pose_render_path=source_directory / f"{prefix}.L3_hair.png",
+        neutral_render_path=neutral,
+    )
+    report["reference"] = (
+        reference_layers[2] if reference_layers is not None else "alignment failed"
+    )
+    return reference_layers
+
+
+def _reference_layer_for_step(
+    step: str,
+    reference_layers: tuple[np.ndarray, np.ndarray, dict[str, object]],
+    layer_report: dict[str, object],
+) -> np.ndarray:
+    """L3 前髮與 L4 髮飾整層改取參考圖像素。
+
+    後髮槽維持差分抽出的內側低 Z 髮量（封裝契約要求正面姿勢的後髮層非空），
+    它整個藏在前髮之下，不影響外觀。
+    """
+    if step == "L3_hair":
+        hair_entry = layer_report[step]
+        if isinstance(hair_entry, dict):
+            hair_entry["source"] = "reference"
+        return reference_layers[0]
+    layer_report[step] = {"source": "reference"}
+    return reference_layers[1]
+
+
 def _extract_steps(
     base: np.ndarray,
     prefix: str,
@@ -681,18 +736,21 @@ def _extract_steps(
     output: Path,
     model_path: Path,
     safe_regions_path: Path | None,
+    reference_path: Path | None = None,
 ) -> tuple[list[np.ndarray], np.ndarray, np.ndarray | None, dict[str, object]]:
     previous = base
     layers: list[np.ndarray] = []
     layer_report: dict[str, object] = {}
     report: dict[str, object] = {"layers": layer_report}
     hair_back: np.ndarray | None = None
+    reference_layers = _resolve_reference_layers(
+        base, reference_path, model_path, report, source_directory, prefix
+    )
     for step in STEPS:
-        source_path = source_directory / f"{prefix}.{step}.png"
-        if not source_path.is_file():
+        if not (source_directory / f"{prefix}.{step}.png").is_file():
             layer_report[step] = "missing"
             continue
-        current = key_and_despill(source_path)
+        current = key_and_despill(source_directory / f"{prefix}.{step}.png")
         save_png(output / f"{step}.keyed.png", current)
         if current.shape != base.shape:
             current = resize_rgba(current, (base.shape[1], base.shape[0]))
@@ -732,7 +790,9 @@ def _extract_steps(
             layer_alpha = np.maximum(layer_alpha, mask)
         layer[:, :, 3] = layer_alpha.astype(np.uint8)
         layer[layer[:, :, 3] == 0] = 0
-        if step == "L3_hair":
+        if reference_layers is not None and step in ("L3_hair", "L4_headwear"):
+            layer = _reference_layer_for_step(step, reference_layers, layer_report)
+        elif step == "L3_hair":
             layer, corrected = _remove_hair_underlayer_spill(layer)
             layer, front_speck_cleanup = _clean_small_components(layer)
             hair_entry = layer_report[step]
@@ -935,7 +995,7 @@ def _write_final_outputs(
     save_png(output / "sheet.png", sheet)
 
 
-def extract(
+def extract(  # noqa: PLR0913 - 參考圖與其他輸入路徑一樣由呼叫端提供，屬同一層級的 I/O 參數
     base_magenta: Path,
     prefix: str,
     *,
@@ -944,6 +1004,7 @@ def extract(
     model_path: Path,
     safe_regions_path: Path | None = None,
     output_name: str | None = None,
+    reference_path: Path | None = None,
 ) -> dict[str, object]:
     """執行一批抽層並寫出報告；所有 I/O 根目錄由呼叫端提供。"""
 
@@ -954,7 +1015,13 @@ def extract(
     base = key_and_despill(base_magenta)
     save_png(output / "base.png", base)
     layers, final, hair_back, report = _extract_steps(
-        base, prefix, source_directory, output, model_path, safe_regions_path
+        base,
+        prefix,
+        source_directory,
+        output,
+        model_path,
+        safe_regions_path,
+        reference_path,
     )
     layers, final, shoe_report = _merge_shoes(
         base, final, layers, _find_shoe_source(source_directory, prefix), output

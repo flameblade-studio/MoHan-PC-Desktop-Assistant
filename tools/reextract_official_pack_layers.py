@@ -34,6 +34,26 @@ def _source_prefix(silhouette: str) -> str:
     return HALF_SOURCES.get(silhouette, f"full_{silhouette}")
 
 
+FRONT_REFERENCE_PREFIX: Final = "full_yaw+000-pitch+00"
+# 參考圖抽層的顏色規則以正面五點為座標（臉核心、額頭、右側流蘇欄），只對正面到
+# 45 度以內的 yaw 成立；更側面與背面仍用差分抽層（2026-09-05 量測：yaw+075 的五點
+# 殘差已達 12.9 px，yaw-105 的比例失真到 0.586）。
+REFERENCE_MAX_ABS_YAW: Final = 45
+
+
+def _reference_prefix(source_prefix: str) -> str:
+    """全身 yaw 姿勢用同角度的 v4 對齊參考圖；半身表情姿勢共用正面參考圖。"""
+    if source_prefix.startswith("full_"):
+        return source_prefix
+    return FRONT_REFERENCE_PREFIX
+
+
+def _reference_eligible(silhouette: str) -> bool:
+    if not silhouette.startswith("yaw"):
+        return True
+    return abs(int(silhouette[3:7])) <= REFERENCE_MAX_ABS_YAW
+
+
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -70,6 +90,12 @@ def reextract(
             if shoe.is_file():
                 inputs.append(shoe)
                 break
+        # 擁有者 2026-09-05 裁決：頭髮與髮飾以 v4 原圖為準。全身 yaw 姿勢用同角度的
+        # 對齊參考圖；半身表情姿勢都是正面，共用 yaw+000 的參考圖。
+        reference: Path | None = None
+        if _reference_eligible(silhouette):
+            reference = source_root / "layers" / f"{_reference_prefix(prefix)}.ref.aligned.png"
+            inputs.append(reference)
         missing = [str(path) for path in inputs if not path.is_file()]
         if missing:
             raise FileNotFoundError(f"Missing immutable inputs for {silhouette}: {missing}")
@@ -81,9 +107,11 @@ def reextract(
             model_path=model_path,
             safe_regions_path=safe_regions_path,
             output_name=silhouette,
+            reference_path=reference,
         )
         entries[silhouette] = {
             "source_prefix": prefix,
+            "reference_prefix": _reference_prefix(prefix) if reference else None,
             "source_sha256": {path.name: _sha256(path) for path in inputs},
             "result": result,
         }
