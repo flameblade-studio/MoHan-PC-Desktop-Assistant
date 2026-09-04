@@ -1,0 +1,1 @@
+四語標題／四语标题／Four-language title／四言語タイトル: feat: 更新清單改用擁有者 Ed25519 分離簽章，用戶端只接受能以內嵌公鑰驗證的清單／更新清单改用所有者 Ed25519 分离签名，客户端只接受能以内嵌公钥验证的清单／Owner-signed update manifests: Ed25519 detached signature, client accepts only manifests verified by a pinned key／更新マニフェストを所有者の Ed25519 分離署名に切り替え、クライアントは埋め込み公開鍵で検証できるものだけを受け入れる
