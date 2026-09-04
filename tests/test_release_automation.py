@@ -217,6 +217,9 @@ README_AUTO_MEDIA_SHA256 = {
     "docs/media/long-term-memory.png": (
         "31d8f213dc76c0fa8b9888aaf284b63ba7ef3022a4b3fc4cebb5a04091ca2073"
     ),
+    "docs/media/mohan-demo.mp4": (
+        "d828acd5e343bc309c18ca89091874e080ff0a91db34cd7aa41c199c10863cad"
+    ),
     "docs/media/mohan-hero.png": (
         "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb"
     ),
@@ -338,6 +341,7 @@ def test_readme_media_provenance_rejects_stale_auto_generation() -> None:
 def test_readme_media_generation_tools_use_runtime_composition() -> None:
     renderer = read("tools/render_marketing_portraits.py")
     capture = read("tools/capture_readme_media.py")
+    recorder = read("tools/record_demo_video.py")
     assert_contains(
         renderer,
         (
@@ -351,10 +355,25 @@ def test_readme_media_generation_tools_use_runtime_composition() -> None:
         capture,
         (
             "ActiveOutfitOverlay",
+            "grab_widget_image",
             'render_portrait(overlay, "idle_front")',
             'render_portrait(overlay, "attentive_front")',
             'compose_expression_showcase(output_dir / "expressions.png", overlay)',
             "render_all(",
+        ),
+    )
+    assert_contains(
+        recorder,
+        (
+            'os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")',
+            '"Microsoft Yating"',
+            "synthesize_windows_speech_to_wave",
+            "grab_widget_image",
+            'f"frame-{frame_index:06d}.png"',
+            '"-framerate"',
+            '"libx264"',
+            '"-ac"',
+            '"-ar"',
         ),
     )
 

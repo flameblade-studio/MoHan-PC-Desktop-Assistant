@@ -4,6 +4,7 @@ lazy import base64
 lazy import os
 lazy import subprocess
 lazy import tempfile
+lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
 lazy from domain.safe_error import sanitize_error
@@ -14,7 +15,127 @@ lazy from integrations.speech_audio import (
 
 CREATE_NO_WINDOW = 0x08000000
 
-__all__ = ("WindowsSpeechSynthesisMethods",)
+__all__ = (
+    "OneCoreVoiceSelection",
+    "WindowsSpeechSynthesisMethods",
+    "synthesize_windows_speech_to_wave",
+)
+
+
+@dataclass(frozen=True, slots=True)
+class OneCoreVoiceSelection:
+    """The actual OneCore voice selected by Windows for one synthesis."""
+
+    display_name: str
+    voice_id: str
+
+
+def _onecore_command(
+    text: str,
+    voice_name: str,
+    output: Path,
+    missing_voice_message: str,
+) -> str:
+    text_encoded = base64.b64encode(text.encode("utf-8")).decode("ascii")
+    voice_encoded = base64.b64encode(voice_name.encode("utf-8")).decode("ascii")
+    path_encoded = base64.b64encode(str(output).encode("utf-8")).decode("ascii")
+    missing_voice_encoded = base64.b64encode(
+        missing_voice_message.encode("utf-8")
+    ).decode("ascii")
+    script = (
+        "$ErrorActionPreference='Stop';"
+        "Add-Type -AssemblyName System.Runtime.WindowsRuntime;"
+        "$null=[Windows.Media.SpeechSynthesis.SpeechSynthesizer,"
+        "Windows.Media.SpeechSynthesis,ContentType=WindowsRuntime];"
+        "$null=[Windows.Storage.Streams.DataReader,"
+        "Windows.Storage.Streams,ContentType=WindowsRuntime];"
+        "function Await($Operation,$ResultType){"
+        "$method=[System.WindowsRuntimeSystemExtensions].GetMethods()|"
+        "Where-Object{$_.Name -eq 'AsTask' -and $_.IsGenericMethod -and "
+        "$_.GetGenericArguments().Count -eq 1 -and "
+        "$_.GetParameters().Count -eq 1}|Select-Object -First 1;"
+        "$task=$method.MakeGenericMethod($ResultType).Invoke($null,@($Operation));"
+        "$task.Wait();$task.Result};"
+        f"$text=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{text_encoded}'));"
+        f"$voiceName=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{voice_encoded}'));"
+        f"$path=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{path_encoded}'));"
+        f"$missingVoice=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{missing_voice_encoded}'));"
+        "$synth=[Windows.Media.SpeechSynthesis.SpeechSynthesizer]::new();"
+        "$voice=[Windows.Media.SpeechSynthesis.SpeechSynthesizer]::AllVoices|"
+        "Where-Object{$_.DisplayName -eq $voiceName -or $_.Id -eq $voiceName}|"
+        "Select-Object -First 1;"
+        "if(-not $voice){throw $missingVoice};"
+        "$synth.Voice=$voice;"
+        "$stream=Await ($synth.SynthesizeTextToStreamAsync($text)) "
+        "([Windows.Media.SpeechSynthesis.SpeechSynthesisStream]);"
+        "$reader=[Windows.Storage.Streams.DataReader]::new($stream);"
+        "$null=Await ($reader.LoadAsync([uint32]$stream.Size)) ([uint32]);"
+        "$bytes=New-Object byte[] ([int]$stream.Size);"
+        "$reader.ReadBytes($bytes);"
+        "[IO.File]::WriteAllBytes($path,$bytes);"
+        '$metadata=("{0}`n{1}" -f $voice.DisplayName,$voice.Id);'
+        "$metadataBytes=[Text.Encoding]::UTF8.GetBytes($metadata);"
+        "$metadataEncoded=[Convert]::ToBase64String($metadataBytes);"
+        "$reader.Dispose();$stream.Dispose();$synth.Dispose();"
+        "[Console]::Out.Write($metadataEncoded);"
+    )
+    return base64.b64encode(script.encode("utf-16le")).decode("ascii")
+
+
+def synthesize_windows_speech_to_wave(
+    text: str,
+    output: Path,
+    *,
+    voice_name: str = "Microsoft Yating",
+) -> OneCoreVoiceSelection:
+    """Write one WAV through the same OneCore path used by ``_run_onecore``.
+
+    This file-producing seam is for offline tools.  It never contacts a
+    provider, reads an API key, invokes SAPI, or applies a speech-rate change;
+    an unavailable requested OneCore voice is a hard failure.
+    """
+
+    if not text.strip():
+        raise ValueError("Windows speech text must not be empty.")
+    if not voice_name.strip():
+        raise ValueError("A concrete OneCore voice name is required.")
+    output = Path(output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.unlink(missing_ok=True)
+    command = _onecore_command(
+        text,
+        voice_name,
+        output,
+        f"OneCore voice was not found: {voice_name}",
+    )
+    try:
+        result = subprocess.run(
+            ["powershell.exe", "-NoProfile", "-EncodedCommand", command],
+            capture_output=True,
+            timeout=120,
+            check=False,
+            creationflags=CREATE_NO_WINDOW,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        output.unlink(missing_ok=True)
+        raise RuntimeError(f"Windows local speech could not start: {exc}") from exc
+    if result.returncode or not output.is_file():
+        output.unlink(missing_ok=True)
+        detail = result.stderr.decode("utf-8", errors="replace").strip()
+        raise RuntimeError(
+            detail[:400]
+            or "OneCore speech did not produce a WAV file."
+        )
+    metadata = result.stdout.decode("utf-8", errors="replace").strip()
+    try:
+        decoded = base64.b64decode(metadata, validate=True).decode("utf-8")
+        display_name, separator, voice_id = decoded.partition("\n")
+    except (ValueError, UnicodeDecodeError):
+        display_name, separator, voice_id = "", "", ""
+    if not separator or not display_name.strip() or not voice_id.strip():
+        output.unlink(missing_ok=True)
+        raise RuntimeError("OneCore speech did not report the selected voice metadata.")
+    return OneCoreVoiceSelection(display_name.strip(), voice_id.strip())
 
 
 class WindowsSpeechSynthesisMethods:
@@ -73,49 +194,16 @@ class WindowsSpeechSynthesisMethods:
         os.close(fd)
         audio_path = Path(name)
         audio_path.unlink(missing_ok=True)
-        text_encoded = base64.b64encode(text.encode("utf-8")).decode("ascii")
-        voice_encoded = base64.b64encode(voice_name.encode("utf-8")).decode("ascii")
-        path_encoded = base64.b64encode(str(audio_path).encode("utf-8")).decode("ascii")
-        missing_voice_encoded = base64.b64encode(
+        command = _onecore_command(
+            text,
+            voice_name,
+            audio_path,
             service_status(
                 self.language,
                 ServiceStatus.SPEECH_ONECORE_VOICE_MISSING,
                 voice=voice_name,
-            ).encode("utf-8")
-        ).decode("ascii")
-        script = (
-            "Add-Type -AssemblyName System.Runtime.WindowsRuntime;"
-            "$null=[Windows.Media.SpeechSynthesis.SpeechSynthesizer,"
-            "Windows.Media.SpeechSynthesis,ContentType=WindowsRuntime];"
-            "$null=[Windows.Storage.Streams.DataReader,"
-            "Windows.Storage.Streams,ContentType=WindowsRuntime];"
-            "function Await($Operation,$ResultType){"
-            "$method=[System.WindowsRuntimeSystemExtensions].GetMethods()|"
-            "Where-Object{$_.Name -eq 'AsTask' -and $_.IsGenericMethod -and "
-            "$_.GetGenericArguments().Count -eq 1 -and "
-            "$_.GetParameters().Count -eq 1}|Select-Object -First 1;"
-            "$task=$method.MakeGenericMethod($ResultType).Invoke($null,@($Operation));"
-            "$task.Wait();$task.Result};"
-            f"$text=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{text_encoded}'));"
-            f"$voiceName=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{voice_encoded}'));"
-            f"$path=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{path_encoded}'));"
-            f"$missingVoice=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{missing_voice_encoded}'));"
-            "$synth=[Windows.Media.SpeechSynthesis.SpeechSynthesizer]::new();"
-            "$voice=[Windows.Media.SpeechSynthesis.SpeechSynthesizer]::AllVoices|"
-            "Where-Object{$_.DisplayName -eq $voiceName -or $_.Id -like ('*'+$voiceName+'*')}|"
-            "Select-Object -First 1;"
-            "if(-not $voice){throw $missingVoice};"
-            "$synth.Voice=$voice;"
-            "$stream=Await ($synth.SynthesizeTextToStreamAsync($text)) "
-            "([Windows.Media.SpeechSynthesis.SpeechSynthesisStream]);"
-            "$reader=[Windows.Storage.Streams.DataReader]::new($stream);"
-            "$null=Await ($reader.LoadAsync([uint32]$stream.Size)) ([uint32]);"
-            "$bytes=New-Object byte[] ([int]$stream.Size);"
-            "$reader.ReadBytes($bytes);"
-            "[IO.File]::WriteAllBytes($path,$bytes);"
-            "$reader.Dispose();$stream.Dispose();$synth.Dispose();"
+            ),
         )
-        command = base64.b64encode(script.encode("utf-16le")).decode("ascii")
         try:
             self._synthesize_with_powershell(
                 command,

@@ -1,14 +1,10 @@
 from __future__ import annotations
 
 lazy import argparse
-lazy import base64
 lazy import os
 lazy import shutil
-lazy import subprocess
 lazy import sys
 lazy import tempfile
-lazy import wave
-lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from unittest.mock import patch
 
@@ -19,13 +15,6 @@ ASSET_DIR = ROOT / "assets"
 TESTS = ROOT / "tests"
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(TESTS))
-
-HERO_SCENE_END = 0.18
-VOICE_SCENE_END = 0.40
-REALTIME_SCENE_END = 0.58
-TASKS_SCENE_END = 0.72
-MEMORY_SCENE_END = 0.86
-SPEAKING_START_SECOND = 5.0
 
 lazy from PySide6.QtCore import QPoint, QRect, QSize, Qt, QTimer
 lazy from PySide6.QtGui import (
@@ -54,23 +43,6 @@ lazy from tools.capture_media_contract import (
 )
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from tools.render_marketing_portraits import render_all, render_portrait
-
-WIDTH = 1280
-HEIGHT = 720
-FPS = 10
-DEMO_TEXT = (
-    "墨寒會在工作列上方陪伴你，自然眨眼，並依語音節奏切換嘴型。"
-    "一般語音適合按鍵對談，Realtime 模式適合連續自然對話。"
-    "工作模式能整理待辦與靈感；長期記憶可逐項檢視、修改或刪除。"
-    "所有電腦工具都必須通過本機權限、確認與稽核，模型不能自行取得權限。"
-)
-
-
-@dataclass(frozen=True, slots=True)
-class VideoTiming:
-    duration: float
-    audio_duration: float
-
 
 def seed_demo_database(db: StudioDB) -> None:
     settings = {
@@ -151,10 +123,17 @@ def seed_demo_memories(db: StudioDB) -> None:
     db.conn.commit()
 
 
+def grab_widget_image(widget) -> QImage:
+    image = widget.grab().toImage().convertToFormat(QImage.Format_ARGB32)
+    if image.isNull():
+        raise RuntimeError("Could not grab widget image")
+    return image
+
+
 def save_widget(widget, path: Path) -> QImage:
     path.parent.mkdir(parents=True, exist_ok=True)
-    image = widget.grab().toImage().convertToFormat(QImage.Format_ARGB32)
-    if image.isNull() or not image.save(str(path)):
+    image = grab_widget_image(widget)
+    if not image.save(str(path)):
         raise RuntimeError(f"Could not save {path}")
     return image
 
@@ -471,34 +450,6 @@ def compose_support_portraits(output_dir: Path) -> None:
     )
 
 
-def synthesize_demo_audio(output: Path) -> float:
-    text_encoded = base64.b64encode(DEMO_TEXT.encode("utf-8")).decode("ascii")
-    path_encoded = base64.b64encode(str(output).encode("utf-8")).decode("ascii")
-    script = (
-        "Add-Type -AssemblyName System.Speech;"
-        "$s=New-Object System.Speech.Synthesis.SpeechSynthesizer;"
-        "$v=$s.GetInstalledVoices()|?{$_.VoiceInfo.Culture.Name -eq 'zh-TW'}|select -First 1;"
-        "if(-not $v){$v=$s.GetInstalledVoices()|?{$_.VoiceInfo.Culture.Name -like 'zh-*'}|select -First 1};"
-        "if($v){$s.SelectVoice($v.VoiceInfo.Name)};"
-        "$s.Rate=-1;"
-        f"$t=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{text_encoded}'));"
-        f"$p=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{path_encoded}'));"
-        "$s.SetOutputToWaveFile($p);$s.Speak($t);$s.Dispose()"
-    )
-    encoded = base64.b64encode(script.encode("utf-16le")).decode("ascii")
-    result = subprocess.run(
-        ["powershell.exe", "-NoProfile", "-EncodedCommand", encoded],
-        capture_output=True,
-        timeout=120,
-        check=False,
-    )
-    if result.returncode or not output.exists():
-        detail = result.stderr.decode("utf-8", errors="replace")[:400]
-        raise RuntimeError(detail or "Could not synthesize demo narration")
-    with wave.open(str(output), "rb") as audio:
-        return audio.getnframes() / audio.getframerate()
-
-
 def ffmpeg_binary(explicit: str = "") -> str:
     candidates = [
         explicit,
@@ -509,227 +460,6 @@ def ffmpeg_binary(explicit: str = "") -> str:
         if candidate and Path(candidate).exists():
             return str(Path(candidate))
     raise RuntimeError("FFmpeg not found. Set FFMPEG_BINARY to ffmpeg.exe.")
-
-
-def video_scene(second: float, duration: float) -> tuple[str, str, str]:
-    progress = second / duration
-    if progress < HERO_SCENE_END:
-        return "hero", "桌面陪伴", "自然眨眼、呼吸與視線反應"
-    if progress < VOICE_SCENE_END:
-        return "voice", "一般語音模式", "按下麥克風後轉錄、回答並朗讀"
-    if progress < REALTIME_SCENE_END:
-        return "voice", "Realtime 自然語音", "連續收音、最終確認轉錄與回音抑制"
-    if progress < TASKS_SCENE_END:
-        return "tasks", "工作模式", "待辦、靈感、工作計時與休息提醒"
-    if progress < MEMORY_SCENE_END:
-        return "memory", "可控長期記憶", "逐項分類、編輯、儲存或刪除"
-    return "security", "安全權限", "工具執行前經過權限、確認與稽核"
-
-
-def speech_character_filename(second: float) -> str:
-    blink_phase = int(second * 10) % 43
-    if blink_phase in {0, 1}:
-        filename = "blink_front.png"
-    else:
-        sequence = (
-            "attentive_front_speech_mid.png",
-            "attentive_front_speech_open.png",
-            "attentive_front_speech_mid.png",
-            "attentive_front_speech_round.png",
-        )
-        filename = sequence[int(second * 6.2) % len(sequence)]
-    return filename
-
-
-def demo_video_command(
-    ffmpeg: str,
-    narration: Path,
-    output: Path,
-) -> list[str]:
-    return [
-        ffmpeg,
-        "-hide_banner",
-        "-loglevel",
-        "error",
-        "-y",
-        "-f",
-        "rawvideo",
-        "-pixel_format",
-        "bgra",
-        "-video_size",
-        f"{WIDTH}x{HEIGHT}",
-        "-framerate",
-        str(FPS),
-        "-i",
-        "pipe:0",
-        "-i",
-        str(narration),
-        "-c:v",
-        "libx264",
-        "-preset",
-        "veryfast",
-        "-crf",
-        "25",
-        "-pix_fmt",
-        "yuv420p",
-        "-c:a",
-        "aac",
-        "-b:a",
-        "128k",
-        "-movflags",
-        "+faststart",
-        str(output),
-    ]
-
-
-def video_character_cache() -> dict[str, QImage]:
-    character_names = {
-        "attentive_front.png",
-        "blink_front.png",
-        "attentive_front_speech_mid.png",
-        "attentive_front_speech_open.png",
-        "attentive_front_speech_round.png",
-    }
-    return {
-        name: scaled_inside(
-            QImage(str(ROOT / "assets" / "expressions" / name)),
-            QSize(390, 510),
-        )
-        for name in character_names
-    }
-
-
-def render_video_scene_base(
-    media: dict[str, QImage],
-    scene: str,
-    heading: str,
-    caption: str,
-) -> QImage:
-    base = QImage(WIDTH, HEIGHT, QImage.Format_ARGB32)
-    painter = QPainter(base)
-    painter.setRenderHint(QPainter.Antialiasing)
-    gradient = QLinearGradient(0, 0, WIDTH, HEIGHT)
-    gradient.setColorAt(0.0, QColor("#07131e"))
-    gradient.setColorAt(1.0, QColor("#16354b"))
-    painter.fillRect(base.rect(), gradient)
-    painter.setPen(QColor("#f2fbff"))
-    painter.setFont(QFont("Microsoft JhengHei UI", 27, QFont.Bold))
-    painter.drawText(QRect(46, 26, 1180, 50), "墨寒桌面語音互動虛擬助理")
-    painter.setPen(QColor("#f0afd8"))
-    painter.setFont(QFont("Microsoft JhengHei UI", 21, QFont.Bold))
-    painter.drawText(QRect(48, 83, 740, 42), heading)
-    painter.setPen(QColor("#a9dff2"))
-    painter.setFont(QFont("Microsoft JhengHei UI", 14))
-    painter.drawText(QRect(49, 126, 760, 32), caption)
-    panel = QRect(40, 172, 830, 492)
-    draw_rounded_panel(painter, panel, QColor(9, 25, 38, 235))
-    page = scaled_inside(media[scene], QSize(794, 456))
-    painter.drawImage(
-        QPoint(
-            panel.x() + (panel.width() - page.width()) // 2,
-            panel.y() + (panel.height() - page.height()) // 2,
-        ),
-        page,
-    )
-    painter.setPen(QColor("#d7edf6"))
-    painter.setFont(QFont("Microsoft JhengHei UI", 12))
-    painter.drawText(
-        QRect(883, 642, 350, 30),
-        Qt.AlignCenter,
-        "安全展示資料・不含 API 金鑰與私人內容",
-    )
-    painter.end()
-    return base
-
-
-def render_video_frame(
-    media: dict[str, QImage],
-    base_cache: dict[tuple[str, str, str], QImage],
-    character_cache: dict[str, QImage],
-    second: float,
-    timing: VideoTiming,
-) -> QImage:
-    scene, heading, caption = video_scene(second, timing.duration)
-    base_key = (scene, heading, caption)
-    if base_key not in base_cache:
-        base_cache[base_key] = render_video_scene_base(
-            media,
-            scene,
-            heading,
-            caption,
-        )
-    frame = base_cache[base_key].copy()
-    painter = QPainter(frame)
-    painter.setRenderHint(QPainter.Antialiasing)
-    speaking = (
-        SPEAKING_START_SECOND
-        < second
-        < min(
-            timing.audio_duration + 0.4,
-            timing.duration - 0.8,
-        )
-    )
-    character_name = (
-        speech_character_filename(second) if speaking else "attentive_front.png"
-    )
-    painter.drawImage(QPoint(870, 165), character_cache[character_name])
-    painter.end()
-    return frame
-
-
-def write_video_frames(
-    process: subprocess.Popen[bytes],
-    media: dict[str, QImage],
-    audio_duration: float,
-    duration: float,
-) -> None:
-    assert process.stdin is not None
-    base_cache: dict[tuple[str, str, str], QImage] = {}
-    character_cache = video_character_cache()
-    timing = VideoTiming(duration=duration, audio_duration=audio_duration)
-    frame_count = round(duration * FPS)
-    for frame_index in range(frame_count):
-        frame = render_video_frame(
-            media,
-            base_cache,
-            character_cache,
-            frame_index / FPS,
-            timing,
-        )
-        # Keep the converted QImage alive while copying its backing store.
-        # Calling bits() on a temporary QImage can release the native image
-        # before PySide finishes copying and crash with an access violation.
-        converted = frame.convertToFormat(QImage.Format_ARGB32)
-        process.stdin.write(converted.bits().tobytes())
-
-
-def finish_video_process(process: subprocess.Popen[bytes]) -> None:
-    assert process.stdin is not None
-    process.stdin.close()
-    stderr = process.stderr.read() if process.stderr else b""
-    return_code = process.wait(timeout=120)
-    if return_code:
-        raise RuntimeError(stderr.decode("utf-8", errors="replace")[-1200:])
-
-
-def write_demo_video(
-    media: dict[str, QImage],
-    output: Path,
-    ffmpeg: str,
-) -> float:
-    with tempfile.TemporaryDirectory(prefix="mohan-readme-video-") as temp_dir:
-        narration = Path(temp_dir) / "narration.wav"
-        audio_duration = synthesize_demo_audio(narration)
-        duration = 36.0
-        process = subprocess.Popen(
-            demo_video_command(ffmpeg, narration, output),
-            stdin=subprocess.PIPE,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.PIPE,
-        )
-        write_video_frames(process, media, audio_duration, duration)
-        finish_video_process(process)
-        return duration
 
 
 def prepare_demo_profile(temp_dir: str) -> None:
@@ -764,13 +494,15 @@ def capture_first_run_wizard(
 def create_capture_dashboard(
     app: QApplication,
     temp_dir: str,
+    *,
+    dependencies_factory=dependencies,
 ) -> tuple[StudioDB, Dashboard]:
     """Build a dashboard over the prepared demo database without resetting it."""
 
     set_motion_override(False)
     db = StudioDB(Path(temp_dir) / "mohan-zh-TW.db")
     with patch.object(QTimer, "start", return_value=None):
-        dashboard = Dashboard(db, dependencies(Path(temp_dir)))
+        dashboard = Dashboard(db, dependencies_factory(Path(temp_dir)))
     dashboard.resize(1400, 900)
     dashboard.show()
     app.processEvents()
@@ -902,13 +634,18 @@ def capture_static_media(
 
 
 def maybe_write_demo_video(
-    media: dict[str, QImage],
     output_dir: Path,
     ffmpeg: str | None,
 ) -> float | None:
     if not ffmpeg:
         return None
-    return write_demo_video(media, output_dir / "mohan-demo.mp4", ffmpeg)
+    from tools.record_demo_video import record_demo_video
+
+    narration, _frame_count = record_demo_video(
+        output_dir / "mohan-demo.mp4",
+        ffmpeg,
+    )
+    return narration.duration
 
 
 def capture_media(
@@ -930,17 +667,17 @@ def capture_media(
             capture_first_run_wizard(app, temp_dir, output_dir, overlay)
         db, dashboard = create_capture_dashboard(app, temp_dir)
         try:
-            media = capture_static_media(
+            capture_static_media(
                 app,
                 dashboard,
                 output_dir,
                 overlay,
                 None if selected_tab == "all" else selected_tab,
             )
-            duration = maybe_write_demo_video(media, output_dir, ffmpeg)
         finally:
             close_dashboard(dashboard, db)
             app.processEvents()
+        duration = maybe_write_demo_video(output_dir, ffmpeg)
         return duration
 
 

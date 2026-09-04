@@ -50,11 +50,10 @@
             "reason": "保留、不算不一致：非執行期合成的 Q 版插畫；目視確認藍白漢服、銀白髮飾與藍色垂飾符合二代官方外觀，差異僅是畫風。"
         },
         "docs/media/mohan-demo.mp4": {
-            "generator": "owner-recorded 36-second live demonstration",
-            "generation": 1,
-            "sha256": "966c2b2662bbb5f0e75e17fa6cf069865546872e0cc3cb35dc7a3eb7fa72f887",
-            "auto_regenerable": false,
-            "reason": "36 秒實錄含人工操作與錄音，無法由圖片擷取工具自動重錄；目前列為一代錄製物，需擁有者決定，重錄須使用二代執行期合成角色、最新 UI 與新音訊。"
+            "generator": "tools/record_demo_video.py",
+            "generation": 2,
+            "sha256": "d828acd5e343bc309c18ca89091874e080ff0a91db34cd7aa41c199c10863cad",
+            "auto_regenerable": true
         },
         "docs/media/mohan-hero.png": {
             "generator": "tools/capture_readme_media.py --screenshots-only --tab all",

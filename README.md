@@ -30,7 +30,7 @@ Windows 是完整支援平台；macOS Apple Silicon／Intel 與 Linux 提供功�
 
 ### 畫面與功能一覽
 
-[觀看 36 秒實際展示](docs/media/mohan-demo.mp4)。設定與主要畫面：[首次設定](docs/media/first-run-wizard.png)、[語音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待辦與靈感](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全權限](docs/media/security-permissions.png)。
+[觀看實際展示](docs/media/mohan-demo.mp4)。設定與主要畫面：[首次設定](docs/media/first-run-wizard.png)、[語音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待辦與靈感](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全權限](docs/media/security-permissions.png)。
 
 - 透明桌面角色、眨眼、表情、動作與 50 Hz 嘴型同步。
 - 文字、Realtime、Windows 本機女聲、OpenAI TTS 與 Azure Speech 選用路徑。
@@ -230,7 +230,7 @@ Windows 是完整支持平台；macOS Apple Silicon／Intel 与 Linux 提供功�
 
 ### 界面与功能一览
 
-[观看 36 秒实际演示](docs/media/mohan-demo.mp4)。设置与主要界面：[首次设置](docs/media/first-run-wizard.png)、[语音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待办与灵感](docs/media/tasks-and-ideas.png)、[长期记忆](docs/media/long-term-memory.png)、[安全权限](docs/media/security-permissions.png)。
+[观看实际演示](docs/media/mohan-demo.mp4)。设置与主要界面：[首次设置](docs/media/first-run-wizard.png)、[语音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待办与灵感](docs/media/tasks-and-ideas.png)、[长期记忆](docs/media/long-term-memory.png)、[安全权限](docs/media/security-permissions.png)。
 
 - 透明桌面角色、眨眼、表情、动作与 50 Hz 口型同步。
 - 文本、Realtime、Windows 本地女声、OpenAI TTS 与 Azure Speech 可选路径。
@@ -430,7 +430,7 @@ Windows is the fully supported platform; limited Preview builds are available fo
 
 ### Screens and capabilities
 
-[Watch the 36-second live demonstration](docs/media/mohan-demo.mp4). Setup and main screens: [first run](docs/media/first-run-wizard.png), [voice modes](docs/media/voice-modes.png), [expressions](docs/media/expressions.png), [tasks and ideas](docs/media/tasks-and-ideas.png), [long-term memory](docs/media/long-term-memory.png), and [security permissions](docs/media/security-permissions.png).
+[Watch the live demonstration](docs/media/mohan-demo.mp4). Setup and main screens: [first run](docs/media/first-run-wizard.png), [voice modes](docs/media/voice-modes.png), [expressions](docs/media/expressions.png), [tasks and ideas](docs/media/tasks-and-ideas.png), [long-term memory](docs/media/long-term-memory.png), and [security permissions](docs/media/security-permissions.png).
 
 - Transparent desktop character, blinking, expressions, motion, and 50 Hz lip sync.
 - Text, Realtime, Windows local female speech, OpenAI TTS, and optional Azure Speech paths.
@@ -630,7 +630,7 @@ Windows は完全対応プラットフォームです。macOS Apple Silicon／In
 
 ### 画面と機能の一覧
 
-[36 秒の実機デモを見る](docs/media/mohan-demo.mp4)。設定と主な画面：[初回設定](docs/media/first-run-wizard.png)、[音声モード](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[タスクとアイデア](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全権限](docs/media/security-permissions.png)。
+[実機デモを見る](docs/media/mohan-demo.mp4)。設定と主な画面：[初回設定](docs/media/first-run-wizard.png)、[音声モード](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[タスクとアイデア](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全権限](docs/media/security-permissions.png)。
 
 - 透明デスクトップキャラクター、まばたき、表情、動作、50 Hz リップシンク。
 - テキスト、Realtime、Windows 本機女性音声、OpenAI TTS、任意の Azure Speech 経路。
