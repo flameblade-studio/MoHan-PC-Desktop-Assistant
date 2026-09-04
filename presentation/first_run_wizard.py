@@ -70,9 +70,11 @@ class FirstRunWizard(QDialog):
         parent=None,
         *,
         platform_services: PlatformServicePort | None = None,
+        appearance_pixmap: QPixmap | None = None,
     ):
         super().__init__(parent)
         self.db = db
+        self.appearance_pixmap = appearance_pixmap
         self.platform_services = (
             platform_services or fallback_platform_services()
         )
@@ -121,7 +123,7 @@ class FirstRunWizard(QDialog):
         self.hero_tagline.setWordWrap(True)
         self.hero_image = QLabel()
         self.hero_image.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
-        hero_pixmap = QPixmap(
+        hero_pixmap = self.appearance_pixmap or QPixmap(
             str(resource_path("assets/expressions/idle_front.png"))
         )
         portrait_width = round(hero_pixmap.width() * 0.62)

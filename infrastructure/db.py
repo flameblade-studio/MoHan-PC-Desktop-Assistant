@@ -12,7 +12,9 @@ lazy from domain.language_support import (
 )
 lazy from domain.time_utils import local_wall_time
 lazy from infrastructure.db_affection import StudioDBAffectionMethods
+lazy from infrastructure.db_corrupt_data import StudioDBCorruptDataMethods
 lazy from infrastructure.db_memory import StudioDBMemoryMethods
+lazy from infrastructure.corrupt_data import CorruptStoredJSON
 lazy from infrastructure.memory_index import MemoryVectorIndex
 lazy from infrastructure.sqlite_safety import classify_db_file, table_column_names
 
@@ -190,7 +192,14 @@ class StudioDBSettingsPort:
             try:
                 decoded[key] = json.loads(str(row["value"]))
             except json.JSONDecodeError, TypeError, ValueError:
-                decoded[key] = None
+                raw = str(row["value"])
+                self._db._record_corrupt_value(
+                    "settings",
+                    key,
+                    raw,
+                    "invalid-json",
+                )
+                decoded[key] = CorruptStoredJSON("settings", key, raw)
         return frozendict(decoded)
 
     def snapshot(self, keys: tuple[str, ...]) -> SettingsRowsSnapshot:
@@ -241,6 +250,11 @@ class StudioDBSettingsPort:
 class StudioDB:
     affection_row = StudioDBAffectionMethods.affection_row
     upsert_affection = StudioDBAffectionMethods.upsert_affection
+    _ensure_corrupt_data_table = StudioDBCorruptDataMethods._ensure_corrupt_data_table
+    _record_corrupt_value = StudioDBCorruptDataMethods._record_corrupt_value
+    consume_corrupt_data_notifications = StudioDBCorruptDataMethods.consume_corrupt_data_notifications
+    _decoded_setting = StudioDBCorruptDataMethods._decoded_setting
+    setting = StudioDBCorruptDataMethods.setting
     add_memory = StudioDBMemoryMethods.add_memory
     list_memories = StudioDBMemoryMethods.list_memories
     memory = StudioDBMemoryMethods.memory
@@ -254,7 +268,9 @@ class StudioDB:
     _archive_memory_ids = StudioDBMemoryMethods._archive_memory_ids
     list_archived_memories = StudioDBMemoryMethods.list_archived_memories
     restore_archived_memory = StudioDBMemoryMethods.restore_archived_memory
+    _decode_archived_snapshot = StudioDBMemoryMethods._decode_archived_snapshot
     _memory_age_days = staticmethod(StudioDBMemoryMethods._memory_age_days)
+    _memory_timestamp_raw = staticmethod(StudioDBMemoryMethods._memory_timestamp_raw)
     _consolidate_auto_duplicates = StudioDBMemoryMethods._consolidate_auto_duplicates
     _merge_memory_contents = staticmethod(StudioDBMemoryMethods._merge_memory_contents)
     optimize_memories = StudioDBMemoryMethods.optimize_memories
@@ -392,6 +408,7 @@ class StudioDB:
             );
             """
         )
+        self._ensure_corrupt_data_table()
         self._migrate_ideas()
         self._migrate_memories()
         self._migrate_platform_progress()
@@ -484,18 +501,6 @@ class StudioDB:
             "VALUES('traditional_chat_v1215_migrated','true')"
         )
 
-    def _decoded_setting(self, key: str) -> object | None:
-        row = self.conn.execute(
-            "SELECT value FROM settings WHERE key=?",
-            (key,),
-        ).fetchone()
-        if row is None:
-            return None
-        try:
-            return json.loads(row["value"])
-        except json.JSONDecodeError:
-            return None
-
     def _migrate_model_default(
         self,
         marker: str,
@@ -508,7 +513,8 @@ class StudioDB:
         ).fetchone()
         if marker_row is not None:
             return
-        if self._decoded_setting("ai_model") in prior_values:
+        decoded = self._decoded_setting("ai_model")
+        if not isinstance(decoded, CorruptStoredJSON) and decoded in prior_values:
             self.conn.execute(
                 "INSERT INTO settings(key,value) VALUES('ai_model',?) "
                 "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
@@ -536,9 +542,12 @@ class StudioDB:
         current_prompt = self._decoded_setting("transcription_prompt")
         if current_prompt != LEGACY_TRANSCRIPTION_PROMPT:
             return
-        profile = {
-            key: self._decoded_setting(key) or "" for key in TRANSCRIPTION_PROFILE_KEYS
-        }
+        profile: dict[str, object] = {}
+        for key in TRANSCRIPTION_PROFILE_KEYS:
+            value = self._decoded_setting(key)
+            if isinstance(value, CorruptStoredJSON):
+                return
+            profile[key] = value or ""
         organization_name = str(profile["organization_name"])
         migrated_prompt = localized_transcription_prompt(
             str(profile["ui_language"] or "zh-TW"),
@@ -609,15 +618,6 @@ class StudioDB:
                 "INSERT INTO settings(key,value) VALUES(?,?)",
                 tuple(restored.items()),
             )
-
-    def setting(self, key: str, default: object = None) -> object:
-        raw = self.get_setting(key)
-        if not raw:
-            return default
-        try:
-            return json.loads(raw)
-        except json.JSONDecodeError:
-            return default
 
     def add_todo(self, title: str, category: str = "其他") -> int:
         title = title.strip()

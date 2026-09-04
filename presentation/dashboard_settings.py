@@ -79,7 +79,6 @@ def _configure_form(form: QFormLayout) -> None:
     form.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
     form.setRowWrapPolicy(QFormLayout.WrapLongRows)
 
-
 class DashboardSettingsMixin:
     """General settings, permissions, profile, and save transactions."""
 
@@ -232,6 +231,7 @@ class DashboardSettingsMixin:
                 cloud_vision_service_factory=self.cloud_vision_service_factory,
                 dense_face_provider_factory=self.dense_face_provider_factory,
                 gesture_controller=self.gesture_controller,
+                backup_manager=self.backup_manager,
             ),
             language=self.ui_language,
         )

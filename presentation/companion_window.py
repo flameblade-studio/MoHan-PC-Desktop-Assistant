@@ -25,6 +25,7 @@ lazy from presentation.companion_proactive import (
 )
 lazy from presentation.companion_speech_runtime import CompanionSpeechRuntimeMixin
 lazy from presentation.companion_visual_dynamics import CompanionVisualDynamicsMixin
+lazy from presentation.lingxiao_fonts import register_bundled_fonts
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = ("CompanionWindow",)
@@ -55,6 +56,7 @@ class CompanionWindow(
         fashion_trend_scout_factory: FashionTrendScoutFactory | None = None,
     ):
         super().__init__()
+        register_bundled_fonts()
         runtime_services = services or create_default_services(
             default_data_dir(),
             resource_path("voice_listener.ps1"),

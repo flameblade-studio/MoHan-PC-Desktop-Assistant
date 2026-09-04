@@ -14,6 +14,8 @@ lazy import json
 lazy import os
 lazy import zipfile
 lazy from dataclasses import dataclass
+lazy from collections.abc import Callable
+lazy from math import isfinite
 lazy from pathlib import Path
 lazy from tempfile import NamedTemporaryFile
 
@@ -36,6 +38,7 @@ SAFE_REGION_PATH = Path(__file__).resolve().parents[1] / "assets" / SAFE_REGION_
 MAKEUP_STATE_FILE = "makeup.json"
 ACTIVE_STATE_FILE = "active.json"
 DEFAULT_MAKEUP_INTENSITY = 1.0
+MAKEUP_READ_FAILURE_MESSAGE = "妝容設定無法讀取，已保留上一個有效值。"
 INTENSITY_DECIMALS = 2
 RECT_FIELDS = 4
 CANVAS_FIELDS = 2
@@ -215,16 +218,68 @@ def clamp_makeup_intensity(value: object) -> float:
     return round(min(1.0, max(0.0, number)), INTENSITY_DECIMALS)
 
 
-def read_makeup_intensity(store: Path) -> float:
+_LAST_VALID_MAKEUP_INTENSITIES: dict[Path, float] = {}
+_MAKEUP_READ_WARNED: set[Path] = set()
+
+
+def _makeup_store_key(store: Path) -> Path:
+    return Path(store)
+
+
+def _notify_makeup_read_failure(
+    store: Path,
+    notify: Callable[[str], None] | None,
+) -> None:
+    if store in _MAKEUP_READ_WARNED:
+        return
+    _MAKEUP_READ_WARNED.add(store)
+    if notify is not None:
+        notify(MAKEUP_READ_FAILURE_MESSAGE)
+
+
+def _last_valid_makeup_intensity(store: Path) -> float:
+    return _LAST_VALID_MAKEUP_INTENSITIES.get(store, DEFAULT_MAKEUP_INTENSITY)
+
+
+def read_makeup_intensity(
+    store: Path,
+    notify: Callable[[str], None] | None = None,
+) -> float:
     """The user's makeup intensity (0 = bare face, 1 = authored layer); defaults to 1."""
-    path = Path(store) / MAKEUP_STATE_FILE
+    store = _makeup_store_key(store)
+    path = store / MAKEUP_STATE_FILE
+    try:
+        if not path.exists():
+            intensity = _last_valid_makeup_intensity(store)
+            _LAST_VALID_MAKEUP_INTENSITIES[store] = intensity
+            return intensity
+    except OSError:
+        _notify_makeup_read_failure(store, notify)
+        return _last_valid_makeup_intensity(store)
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError):
-        return DEFAULT_MAKEUP_INTENSITY
-    if not isinstance(payload, dict) or isinstance(payload.get("intensity"), bool):
-        return DEFAULT_MAKEUP_INTENSITY
-    return clamp_makeup_intensity(payload.get("intensity", DEFAULT_MAKEUP_INTENSITY))
+        _notify_makeup_read_failure(store, notify)
+        return _last_valid_makeup_intensity(store)
+    if not isinstance(payload, dict) or "intensity" not in payload:
+        _notify_makeup_read_failure(store, notify)
+        return _last_valid_makeup_intensity(store)
+    value = payload["intensity"]
+    if isinstance(value, bool):
+        _notify_makeup_read_failure(store, notify)
+        return _last_valid_makeup_intensity(store)
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        _notify_makeup_read_failure(store, notify)
+        return _last_valid_makeup_intensity(store)
+    if not isfinite(number):
+        _notify_makeup_read_failure(store, notify)
+        return _last_valid_makeup_intensity(store)
+    intensity = clamp_makeup_intensity(value)
+    _LAST_VALID_MAKEUP_INTENSITIES[store] = intensity
+    _MAKEUP_READ_WARNED.discard(store)
+    return intensity
 
 
 def _atomic_json(path: Path, payload: object) -> None:
@@ -243,7 +298,10 @@ def _atomic_json(path: Path, payload: object) -> None:
 def write_makeup_intensity(store: Path, value: object) -> float:
     """Persist the intensity atomically next to active.json; returns the clamped value."""
     intensity = clamp_makeup_intensity(value)
-    _atomic_json(Path(store) / MAKEUP_STATE_FILE, {"intensity": intensity})
+    store = _makeup_store_key(store)
+    _atomic_json(store / MAKEUP_STATE_FILE, {"intensity": intensity})
+    _LAST_VALID_MAKEUP_INTENSITIES[store] = intensity
+    _MAKEUP_READ_WARNED.discard(store)
     return intensity
 
 

@@ -8,6 +8,7 @@ PROJECT_REPOSITORY = "flameblade-studio/MoHan-PC-Desktop-Assistant"
 # x-release-please-start-version
 FALLBACK_VERSION = "4.6.0"
 # x-release-please-end
+UNKNOWN_VERSION = "未知版本"
 
 
 def _build_info_path() -> Path:
@@ -23,20 +24,34 @@ def _build_info_path() -> Path:
 
 def build_info() -> dict[str, str]:
     path = _build_info_path()
-    if not path.is_file():
+    try:
+        exists = path.is_file()
+    except OSError:
+        exists = True
+    if not exists:
         return {
             "version": FALLBACK_VERSION,
             "repository": PROJECT_REPOSITORY,
         }
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+    except (OSError, UnicodeError, json.JSONDecodeError):
         return {
-            "version": FALLBACK_VERSION,
+            "version": UNKNOWN_VERSION,
             "repository": PROJECT_REPOSITORY,
         }
+    if not isinstance(payload, dict):
+        return {
+            "version": UNKNOWN_VERSION,
+            "repository": PROJECT_REPOSITORY,
+        }
+    version = payload.get("version")
     return {
-        "version": str(payload.get("version") or FALLBACK_VERSION),
+        "version": (
+            version.strip()
+            if isinstance(version, str) and version.strip()
+            else UNKNOWN_VERSION
+        ),
         "repository": str(
             payload.get("repository") or PROJECT_REPOSITORY
         ),
