@@ -392,6 +392,26 @@ def _realtime_speech_output(
     )
 
 
+def _initialize_backup_manager(
+    db: StudioDB,
+    data_path: Path,
+) -> BackupManager | None:
+    manager: BackupManager | None = None
+    try:
+        manager = BackupManager(db, data_path / "backups")
+        manager.automatic_if_due()
+    except (OSError, RuntimeError, sqlite3.Error) as error:
+        if manager is not None and not getattr(
+            manager,
+            "automatic_backup_failed",
+            False,
+        ):
+            record_failure = getattr(manager, "record_automatic_failure", None)
+            if callable(record_failure):
+                record_failure(error)
+    return manager
+
+
 def create_default_services(
     data_path: Path,
     listener_script: Path,
@@ -413,14 +433,7 @@ def create_default_services(
     # Migrate at the composition boundary so headless and UI startup paths
     # share the same canonical provider setting.
     migrate_speech_provider_setting(db)
-    try:
-        backup_manager: BackupManager | None = BackupManager(
-            db,
-            data_path / "backups",
-        )
-        backup_manager.automatic_if_due()
-    except OSError, RuntimeError, sqlite3.Error:
-        backup_manager = None
+    backup_manager = _initialize_backup_manager(db, data_path)
     secret_factory = platform_secret_store_factory(runtime_platform)
     secret_store = secret_factory(
         data_path / "openai-key.dpapi",

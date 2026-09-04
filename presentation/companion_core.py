@@ -514,6 +514,7 @@ class CompanionCoreMixin:
                 cloud_vision_service_factory=(self.cloud_vision_service_factory),
                 dense_face_provider_factory=self.dense_face_provider_factory,
                 presentation_ports=self.presentation_ports,
+                backup_manager=self.backup_manager,
             ),
             gesture_controller=gesture_controller,
         )

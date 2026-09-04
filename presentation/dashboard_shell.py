@@ -164,6 +164,7 @@ class DashboardShellMixin:
             dependencies.cloud_vision_service_factory
         )
         self.dense_face_provider_factory = dependencies.dense_face_provider_factory
+        self.backup_manager = dependencies.backup_manager
         if dependencies.platform_services is None:
             raise ValueError("Dashboard requires an injected platform service.")
         if dependencies.presentation_ports is None:

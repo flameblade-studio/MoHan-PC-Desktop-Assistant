@@ -92,6 +92,7 @@ class ControlCenterDependencies:
     openai_vision_key_available: Callable[[], bool] | None = None
     cloud_vision_service_factory: CloudVisionServiceFactoryPort | None = None
     dense_face_provider_factory: Callable[[], object] | None = None
+    backup_manager: object | None = None
 
 
 class FlagshipControlCenter(
@@ -144,6 +145,7 @@ class FlagshipControlCenter(
             deps.platform_services,
             deps.secret_store_factory,
         )
+        self.backup_manager = deps.backup_manager
         self.proactivity_store = deps.proactivity_store or (
             CompanionProactivityPreferencesStore(StudioDBSettingsPort(db))
         )

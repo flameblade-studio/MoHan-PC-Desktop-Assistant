@@ -32,6 +32,11 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
         "Schedule settings could not be read",
         "スケジュール設定を読み取れません",
     ),
+    "自動備份失敗": translations(
+        "自动备份失败",
+        "Automatic backup failed",
+        "自動バックアップに失敗",
+    ),
     "每行一個步驟，格式：能力｜說明｜參數。\n範例：open_web｜開啟工作網站｜https://example.com\n範例：home_control｜開啟書房燈｜light.study,turn_on": translations(
         "每行一个步骤，格式：能力｜说明｜参数。\n"
         "示例：open_web｜打开工作网站｜https://example.com\n"
