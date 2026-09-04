@@ -4,6 +4,10 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### 未發布 — 原生 RGBA 契約拒絕不再停用快路徑（2026-09-04）
+
+* 修正原生 RGBA 將 `ValueError` 契約拒絕誤判為後端故障的問題：越界、非二值遮罩與尺寸不符會原樣拋回且不計數、不停用；模組載入失敗會由 `available=False` 表示並使用 Python，單次運算的真正故障才會停用並記錄一次警告，`accelerator.status()` 可查 `available`、`disabled_operations` 與 `operation_failures`。呼叫端在 PyO3 邊界前把 `bytearray`／`memoryview` 轉成 `bytes`；512×512、5 輪中位數為原生 3.007 ms、Python 回退 397.365 ms，約 132 倍差距。
+
 ### 未發布 — README 展示影片改為可自動重產（2026-09-04）
 
 * 重錄 `docs/media/mohan-demo.mp4`：新增 `tools/record_demo_video.py`，以二代執行期合成外觀、OneCore `Microsoft Yating` 正常語速、50 Hz 嘴型 cues 與離屏 PNG 逐幀編碼；媒體 provenance、音訊／畫面規格與 SHA-256 測試閘門同步更新。
@@ -341,6 +345,10 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 * 新增 `docs/media/MEDIA-PROVENANCE.json`，登记 README 21 个媒体文件的生成工具、素体世代、SHA-256 与是否可自动重生成；测试会列出落后当前 `POSE_ATLAS_GENERATION` 的自动素材。
 
+### 未发布 — 原生 RGBA 契约拒绝不再停用快路径（2026-09-04）
+
+* 修复原生 RGBA 将 `ValueError` 契约拒绝误判为后端故障的问题：越界、非二值遮罩与尺寸不符会原样抛回且不计数、不停用；模块加载失败会由 `available=False` 表示并使用 Python，单次运算的真正故障才会停用并记录一次警告，`accelerator.status()` 可查 `available`、`disabled_operations` 与 `operation_failures`。调用方在 PyO3 边界前把 `bytearray`／`memoryview` 转成 `bytes`；512×512、5 轮中位数为原生 3.007 ms、Python 回退 397.365 ms，约 132 倍差距。
+
 ### 未发布 — README 四语重编与 DLC 教程（2026-09-03）
 
 * README 按“这是什么、界面与功能、安装更新、首次使用、隐私、DLC、赞助许可、疑难解答、开发者入口”重编四语同构内容，删除重复和过时段落；新增 `.mohan-outfit` 外观／妆容包与 `.mohan-theme` 主题文件的安装、选用、恢复、容量数量上限、二代素体兼容性及 Ko-fi 单次／每月赞助双轨教程。
@@ -568,6 +576,10 @@ All notable public changes to MoHan Desktop Assistant are documented here.
 ### Unreleased — README demonstration video is now regenerable (2026-09-04)
 
 * Re-records `docs/media/mohan-demo.mp4` with the new `tools/record_demo_video.py`: generation-2 runtime composition, normal-speed OneCore `Microsoft Yating`, 50 Hz viseme cues, and offscreen PNG frame encoding; media provenance, A/V specification, and SHA-256 test gates are updated together.
+
+### Unreleased — native RGBA contract rejections no longer disable the fast path (2026-09-04)
+
+* Fix native RGBA treating `ValueError` contract rejections as backend faults: out-of-bounds, non-binary masks, and size mismatches are re-raised without counting or disabling; module-load failure is exposed as `available=False` with Python fallback, while real faults during an operation disable it and emit one warning. `accelerator.status()` exposes `available`, `disabled_operations`, and `operation_failures`. Callers snapshot `bytearray`／`memoryview` as `bytes` before PyO3; the 512×512 five-round median was 3.007 ms native versus 397.365 ms Python fallback, a roughly 132× gap.
 
 ### Unreleased — README media generation ledger and regeneration gate (2026-09-04)
 
@@ -836,6 +848,10 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### 未リリース — ネイティブ RGBA の契約拒否で高速経路を無効化しない（2026-09-04）
+
+* ネイティブ RGBA が `ValueError` の契約拒否をバックエンド障害として扱う問題を修正：キャンバス外、二値でないマスク、サイズ不一致はそのまま再送出し、計数も無効化もしません。モジュール読み込み失敗は `available=False` で示して Python を使用し、1 回の処理中に起きた本当の障害だけを無効化して警告を一度だけ出します。`accelerator.status()` で `available`、`disabled_operations`、`operation_failures` を確認できます。呼び出し側は PyO3 境界前に `bytearray`／`memoryview` を `bytes` にスナップショットします。512×512、5 回の中央値はネイティブ 3.007 ms 対 Python フォールバック 397.365 ms、約 132 倍です。
 
 ### 未リリース — README デモ動画を自動再生成可能に変更（2026-09-04）
 
