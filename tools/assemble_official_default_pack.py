@@ -68,6 +68,14 @@ lazy from domain.outfit_pack_makeup import (
 )
 lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_ENSEMBLE_ID, OFFICIAL_OUTFIT_PACK_ID
 lazy from tools.art_pipeline.extract_layers import remove_unlinked_headwear_fragments
+lazy from tools.art_pipeline.constants import (
+    SMALL_COMPONENT_SUPPRESSED_ALPHA,
+    SMALL_COMPONENT_SUPPRESSED_RGB,
+)
+lazy from tools.art_pipeline.speck_cleanup import (
+    remove_unlinked_small_components,
+    speck_roi_for_shape,
+)
 
 # Character art is studio property; see ASSETS-LICENSE.md (the manifest field only
 # admits letters, digits, spaces and ``.()+-``).
@@ -147,6 +155,7 @@ class SilhouetteResult:
     face_bbox: tuple[int, int, int, int] = (0, 0, 0, 0)
     headwear_bbox: tuple[int, int, int, int] | None = None
     headwear_unlinked_pixels_removed: int = 0
+    small_component_cleanup: dict[str, dict[str, int]] = field(default_factory=dict)
     registration_flags: dict[str, list[float]] = field(default_factory=dict)
     probes: dict[str, object] = field(default_factory=dict)
 
@@ -245,6 +254,35 @@ def crop(layer: np.ndarray, forbidden: np.ndarray) -> tuple[np.ndarray, int]:
     cleared = layer.copy()
     cleared[hit] = 0
     return cleared, int(hit.sum())
+
+
+def clean_small_components(
+    layer: np.ndarray,
+    *,
+    preserve_nonzero_alpha_count: bool = False,
+    suppressed_alpha: int | None = None,
+) -> tuple[np.ndarray, dict[str, int]]:
+    """Apply the owner small-component rule to one RGBA layer's alpha mask."""
+
+    source_alpha = layer[:, :, 3]
+    cleaned_alpha, metrics = remove_unlinked_small_components(
+        source_alpha,
+        roi=speck_roi_for_shape(layer.shape[:2]),
+        preserve_nonzero_alpha_count=preserve_nonzero_alpha_count,
+    )
+    demoted = (source_alpha != cleaned_alpha) & (source_alpha > 0)
+    if suppressed_alpha is not None:
+        cleaned_alpha[demoted] = suppressed_alpha
+    output = layer.copy()
+    output[:, :, 3] = cleaned_alpha
+    output[cleaned_alpha == 0] = 0
+    if demoted.any():
+        output[demoted, :3] = (
+            SMALL_COMPONENT_SUPPRESSED_RGB
+            if suppressed_alpha is not None
+            else (0, 0, 0)
+        )
+    return output, metrics
 
 
 def _trim_edge_runs(
@@ -396,8 +434,19 @@ def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeu
     layers["hair"], result.hair_straight_edge_pixels_removed = (
         trim_straight_hair_edges(layers["hair"], result.face_bbox)
     )
+    layers["hair"], result.small_component_cleanup["hair_front"] = (
+        clean_small_components(
+            layers["hair"], suppressed_alpha=SMALL_COMPONENT_SUPPRESSED_ALPHA
+        )
+    )
     hair_back, result.cropped_pixels["hair_back"] = crop(hair_back, forbidden.hair)
+    hair_back, result.small_component_cleanup["hair_back"] = clean_small_components(
+        hair_back, preserve_nonzero_alpha_count=True
+    )
     layers["headwear"], result.cropped_pixels["headwear"] = crop(layers["headwear"], forbidden.headwear)
+    layers["headwear"], result.small_component_cleanup["headwear"] = (
+        clean_small_components(layers["headwear"])
+    )
     headwear_alpha = layers["headwear"][:, :, 3]
     cleaned_alpha = remove_unlinked_headwear_fragments(headwear_alpha)
     result.headwear_unlinked_pixels_removed = int(

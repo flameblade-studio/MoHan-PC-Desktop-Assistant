@@ -21,6 +21,7 @@ lazy from tools.art_pipeline.references import GitReference
 
 
 EXPECTED_CHAIN_PIXELS = 4
+OPAQUE_ALPHA = 255
 
 
 def test_premultiplied_alignment_zeroes_transparent_rgb() -> None:
@@ -170,6 +171,26 @@ def test_headwear_cleanup_keeps_linked_four_pixel_chain_and_rejects_warm_drift()
     assert np.count_nonzero(cleaned[21:25, 12]) == EXPECTED_CHAIN_PIXELS
     assert not cleaned[:, 26:28].any()
     assert not cleaned[:, 35:38].any()
+
+
+def test_owner_small_component_cleanup_keeps_transitive_chain_and_removes_island() -> None:
+    alpha = np.zeros((96, 96), dtype=np.uint8)
+    alpha[10:30, 10:30] = 255  # area>60 anchor
+    alpha[38:42, 38:40] = 255  # first <=12 px chain link, within N=9
+    alpha[48:52, 48:50] = 255  # second transitive <=12 px chain link
+    alpha[80:83, 80:83] = 255  # nine-pixel isolated island
+
+    cleaned, measured = extract_module.remove_unlinked_small_components(alpha)
+
+    assert not cleaned[80:83, 80:83].any()
+    assert np.all(cleaned[38:42, 38:40] == OPAQUE_ALPHA)
+    assert np.all(cleaned[48:52, 48:50] == OPAQUE_ALPHA)
+    assert measured == {
+        "small_components": 3,
+        "linked_small_components": 2,
+        "removed_small_components": 1,
+        "removed_pixels": 9,
+    }
 
 
 def test_reference_is_materialized_from_git_commit(tmp_path: Path) -> None:

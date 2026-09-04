@@ -24,10 +24,14 @@ lazy import numpy as np
 lazy from tools.art_pipeline.constants import (
     HEADWEAR_CHAIN_LINK_RADIUS,
     HEADWEAR_COMPONENT_ALPHA_THRESHOLD,
-    HEADWEAR_COMPONENT_LINK_DISTANCE,
     HEADWEAR_DETACHED_DISTANCE,
-    HEADWEAR_CHAIN_ANCHOR_MIN_AREA,
+    SMALL_COMPONENT_ALPHA_THRESHOLD,
+    SMALL_COMPONENT_ANCHOR_MIN_AREA,
+    SMALL_COMPONENT_DIRECT_DISTANCE,
+    SMALL_COMPONENT_LINK_DISTANCE,
+    SMALL_COMPONENT_MAX_AREA,
 )
+lazy from tools.art_pipeline.speck_cleanup import speck_roi_for_shape
 
 DEFAULT_PACK: Final = (
     ROOT / "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit"
@@ -38,10 +42,13 @@ FRONT_SILHOUETTE: Final = "front-crossed"
 HEAD_ROI: Final = (360, 150, 900, 470)
 SPECK_HEAD_ROI: Final = (300, 100, 1000, 520)
 SPECK_FULL_BODY_ROI: Final = (250, 30, 800, 420)
-SPECK_ALPHA_THRESHOLD: Final = 30
-SPECK_SMALL_COMPONENT_MAX_AREA: Final = 12
-SPECK_LARGE_COMPONENT_MIN_AREA: Final = 60
-SPECK_DIRECT_DISTANCE_PX: Final = 3
+SPECK_ALPHA_THRESHOLD: Final = SMALL_COMPONENT_ALPHA_THRESHOLD
+SPECK_SMALL_COMPONENT_MAX_AREA: Final = SMALL_COMPONENT_MAX_AREA
+SPECK_LARGE_COMPONENT_MIN_AREA: Final = SMALL_COMPONENT_ANCHOR_MIN_AREA
+SPECK_DIRECT_DISTANCE_PX: Final = SMALL_COMPONENT_DIRECT_DISTANCE
+FINE_CHAIN_ROI: Final = (735, 280, 800, 430)
+FINE_CHAIN_MIN_COMPONENT_AREA: Final = 10
+FINE_CHAIN_ENDPOINT_AREAS: Final = (386, 89)
 BROWN_BRIGHTNESS_MIN: Final = 70
 BROWN_BRIGHTNESS_MAX: Final = 150
 BROWN_RED_BLUE_MARGIN: Final = 18
@@ -240,10 +247,10 @@ def _promote_linked_components(
     labels: np.ndarray, stats: np.ndarray, anchor_area: int
 ) -> np.ndarray:
     linked = np.zeros(len(stats), dtype=bool)
-    linked[1:] = stats[1:, cv2.CC_STAT_AREA] >= anchor_area
+    linked[1:] = stats[1:, cv2.CC_STAT_AREA] > anchor_area
     while True:
         minimum_distance = _minimum_distance_to_components(labels, linked)
-        promoted = (minimum_distance <= HEADWEAR_COMPONENT_LINK_DISTANCE) & ~linked
+        promoted = (minimum_distance <= SMALL_COMPONENT_LINK_DISTANCE) & ~linked
         if not promoted.any():
             return linked
         linked |= promoted
@@ -277,12 +284,9 @@ def _linked_mask_for_crop(
     _link_count, link_labels, link_stats, _ = cv2.connectedComponentsWithStats(
         link_visible, connectivity=8
     )
-    anchor_area = (
-        HEADWEAR_CHAIN_ANCHOR_MIN_AREA
-        if source_crop is not None
-        else SPECK_LARGE_COMPONENT_MIN_AREA
+    return link_labels, _promote_linked_components(
+        link_labels, link_stats, SMALL_COMPONENT_ANCHOR_MIN_AREA
     )
-    return link_labels, _promote_linked_components(link_labels, link_stats, anchor_area)
 
 
 def _empty_speck_metrics(roi: tuple[int, int, int, int]) -> dict[str, object]:
@@ -294,6 +298,11 @@ def _empty_speck_metrics(roi: tuple[int, int, int, int]) -> dict[str, object]:
         "small_component_count": 0,
         "direct_definition_count": 0,
         "isolated_count": 0,
+        "alpha_threshold": SPECK_ALPHA_THRESHOLD,
+        "small_component_max_area": SPECK_SMALL_COMPONENT_MAX_AREA,
+        "large_component_min_area": SPECK_LARGE_COMPONENT_MIN_AREA,
+        "direct_distance_px": SPECK_DIRECT_DISTANCE_PX,
+        "link_distance_px": SMALL_COMPONENT_LINK_DISTANCE,
     }
 
 
@@ -339,8 +348,77 @@ def isolated_speck_metrics(
         "large_component_count": large_count,
         "small_component_count": int(small.sum()),
         "direct_definition_count": int(direct.sum()),
-        "isolated_count": int((small & ~small_linked).sum()),
-        "link_distance_px": HEADWEAR_COMPONENT_LINK_DISTANCE,
+        "isolated_count": int((direct & ~small_linked).sum()),
+        "alpha_threshold": SPECK_ALPHA_THRESHOLD,
+        "small_component_max_area": SPECK_SMALL_COMPONENT_MAX_AREA,
+        "large_component_min_area": SPECK_LARGE_COMPONENT_MIN_AREA,
+        "direct_distance_px": SPECK_DIRECT_DISTANCE_PX,
+        "link_distance_px": SMALL_COMPONENT_LINK_DISTANCE,
+    }
+
+
+def _alpha_component_stats(
+    alpha: np.ndarray,
+    roi: tuple[int, int, int, int],
+) -> tuple[np.ndarray, np.ndarray]:
+    x0, y0, x1, y1 = roi
+    _count, labels, stats, _centroids = cv2.connectedComponentsWithStats(
+        (alpha[y0:y1, x0:x1] > HEADWEAR_COMPONENT_ALPHA_THRESHOLD).astype(
+            np.uint8
+        ),
+        connectivity=8,
+    )
+    return labels, stats
+
+
+def _maximum_link_distance(labels: np.ndarray, stats: np.ndarray) -> float:
+    linked = np.zeros(len(stats), dtype=bool)
+    linked[1:] = stats[1:, cv2.CC_STAT_AREA] > SMALL_COMPONENT_ANCHOR_MIN_AREA
+    maximum_link_distance = 0.0
+    while True:
+        source = np.ones(labels.shape, dtype=np.uint8)
+        source[linked[labels]] = 0
+        distance = cv2.distanceTransform(source, cv2.DIST_C, 3)
+        minimum_distance = np.full(len(stats), np.inf, dtype=np.float32)
+        component_pixels = labels > 0
+        np.minimum.at(
+            minimum_distance,
+            labels[component_pixels],
+            distance[component_pixels],
+        )
+        promoted = (minimum_distance <= SMALL_COMPONENT_LINK_DISTANCE) & ~linked
+        if not promoted.any():
+            break
+        maximum_link_distance = max(
+            maximum_link_distance, float(minimum_distance[promoted].max())
+        )
+        linked |= promoted
+    return maximum_link_distance
+
+
+def fine_chain_metrics(image: np.ndarray) -> dict[str, object]:
+    """Measure the preserved front-crossed silver chain contract."""
+
+    labels, stats = _alpha_component_stats(image[:, :, 3], FINE_CHAIN_ROI)
+    maximum_link_distance = _maximum_link_distance(labels, stats)
+
+    _head_labels, head_stats = _alpha_component_stats(
+        image[:, :, 3], SPECK_HEAD_ROI
+    )
+    head_areas = set(head_stats[1:, cv2.CC_STAT_AREA].tolist())
+    endpoint_areas = tuple(
+        area for area in FINE_CHAIN_ENDPOINT_AREAS if area in head_areas
+    )
+    return {
+        "roi_xyxy": list(FINE_CHAIN_ROI),
+        "link_count": int(
+            (stats[1:, cv2.CC_STAT_AREA] >= FINE_CHAIN_MIN_COMPONENT_AREA).sum()
+        ),
+        "endpoint_areas": list(endpoint_areas),
+        "maximum_link_distance_px": round(maximum_link_distance, 3),
+        "alpha_threshold": HEADWEAR_COMPONENT_ALPHA_THRESHOLD,
+        "minimum_link_area": FINE_CHAIN_MIN_COMPONENT_AREA,
+        "link_distance_px": SMALL_COMPONENT_LINK_DISTANCE,
     }
 
 
@@ -353,14 +431,42 @@ def audit(pack_path: Path, portrait_path: Path, base_hair_path: Path) -> dict[st
         back_hair = _decode_png(archive.read(back_path), back_path)
 
         headwear_by_silhouette = {}
+        small_component_specks = {}
+        front_crossed_headwear = None
         headwear_poses = manifest["headwear"][0]["variants"][0]["poses"]
+        hair_poses = manifest["hairstyles"][0]["variants"][0]["poses"]
         for silhouette, declarations in sorted(headwear_poses.items()):
             path = declarations[0]["path"]
-            headwear_by_silhouette[silhouette] = component_metrics(
-                _decode_png(archive.read(path), path)
+            headwear = _decode_png(archive.read(path), path)
+            headwear_by_silhouette[silhouette] = component_metrics(headwear)
+            if silhouette == FRONT_SILHOUETTE:
+                front_crossed_headwear = headwear
+            roi = speck_roi_for_shape(headwear.shape[:2])
+            hair_declarations = hair_poses[silhouette]
+            front_declaration = next(
+                item for item in hair_declarations if item["slot"] == "front"
             )
+            back_declaration = next(
+                item for item in hair_declarations if item["slot"] == "back"
+            )
+            small_component_specks[silhouette] = {
+                "front": isolated_speck_metrics(
+                    _decode_png(
+                        archive.read(front_declaration["path"]),
+                        front_declaration["path"],
+                    ),
+                    roi=roi,
+                ),
+                "back": isolated_speck_metrics(
+                    _decode_png(
+                        archive.read(back_declaration["path"]),
+                        back_declaration["path"],
+                    ),
+                    roi=roi,
+                ),
+                "headwear": isolated_speck_metrics(headwear, roi=roi),
+            }
 
-        hair_poses = manifest["hairstyles"][0]["variants"][0]["poses"]
         empty_back = 0
         nonempty_back = 0
         for declarations in hair_poses.values():
@@ -374,6 +480,8 @@ def audit(pack_path: Path, portrait_path: Path, base_hair_path: Path) -> dict[st
     detached = sum(
         item["unlinked_over_100px"] for item in headwear_by_silhouette.values()
     )
+    if front_crossed_headwear is None:
+        raise ValueError("Official pack is missing the front-crossed headwear layer.")
     return {
         "contract": {
             "head_roi_xyxy": list(HEAD_ROI),
@@ -396,11 +504,13 @@ def audit(pack_path: Path, portrait_path: Path, base_hair_path: Path) -> dict[st
             "nonempty": nonempty_back,
         },
         "composite_specks": isolated_speck_metrics(_read_png(portrait_path)),
+        "fine_chain": fine_chain_metrics(front_crossed_headwear),
         "headwear": {
             "detached_over_100px_total": detached,
             "front_crossed": headwear_by_silhouette[FRONT_SILHOUETTE],
             "by_silhouette": headwear_by_silhouette,
         },
+        "small_component_specks": small_component_specks,
     }
 
 

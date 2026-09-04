@@ -71,6 +71,8 @@ lazy from .constants import (
     SHEET_TILE_GAP,
     SHEET_TILE_HEIGHT,
     SHEET_TILE_WIDTH,
+    SMALL_COMPONENT_SUPPRESSED_ALPHA,
+    SMALL_COMPONENT_SUPPRESSED_RGB,
     STEP_PARAMETERS,
     STEPS,
     DiffParameters,
@@ -83,6 +85,7 @@ lazy from .image_ops import (
     transparent_rgb_zero,
     warp_rgba,
 )
+lazy from .speck_cleanup import remove_unlinked_small_components, speck_roi_for_shape
 lazy from .vision import face_box, face_landmarks
 
 
@@ -398,21 +401,19 @@ def remove_unlinked_headwear_fragments(mask: np.ndarray) -> np.ndarray:
     keep_visible[1:] = (
         visible_stats[1:, cv2.CC_STAT_AREA] >= HEADWEAR_CHAIN_ANCHOR_MIN_AREA
     )
+    kernel_size = (2 * HEADWEAR_COMPONENT_LINK_DISTANCE + 1, ) * 2
+    kernel = np.ones(kernel_size, dtype=np.uint8)
     while True:
-        source = np.ones(mask.shape, dtype=np.uint8)
-        source[keep_visible[visible_labels]] = 0
-        distance = cv2.distanceTransform(source, cv2.DIST_C, 3)
-        minimum_distance = np.full(visible_count, np.inf, dtype=np.float32)
-        component_pixels = visible_labels > 0
-        np.minimum.at(
-            minimum_distance,
-            visible_labels[component_pixels],
-            distance[component_pixels],
+        expanded = cv2.dilate(
+            keep_visible[visible_labels].astype(np.uint8), kernel
         )
-        promoted = (minimum_distance <= HEADWEAR_COMPONENT_LINK_DISTANCE) & ~keep_visible
-        if not promoted.any():
+        candidate_labels = np.unique(
+            visible_labels[(expanded > 0) & (visible_labels > 0)]
+        )
+        promoted = candidate_labels[~keep_visible[candidate_labels]]
+        if not promoted.size:
             break
-        keep_visible |= promoted
+        keep_visible[promoted] = True
 
     # Retain the anti-aliased fringe attached to a kept visible component, but
     # remove a whole low-alpha island that has no visible retained component.
@@ -424,6 +425,33 @@ def remove_unlinked_headwear_fragments(mask: np.ndarray) -> np.ndarray:
     if overlap.size:
         keep_alpha[np.unique(overlap)] = True
     return np.where(keep_alpha[alpha_labels], mask, 0).astype(mask.dtype)
+
+
+def _clean_small_components(
+    layer: np.ndarray,
+    *,
+    preserve_nonzero_alpha_count: bool = False,
+    suppressed_alpha: int | None = None,
+) -> tuple[np.ndarray, dict[str, int]]:
+    source_alpha = layer[:, :, 3]
+    cleaned_alpha, metrics = remove_unlinked_small_components(
+        source_alpha,
+        roi=speck_roi_for_shape(layer.shape[:2]),
+        preserve_nonzero_alpha_count=preserve_nonzero_alpha_count,
+    )
+    demoted = (source_alpha != cleaned_alpha) & (source_alpha > 0)
+    if suppressed_alpha is not None:
+        cleaned_alpha[demoted] = suppressed_alpha
+    output = layer.copy()
+    output[:, :, 3] = cleaned_alpha
+    output[cleaned_alpha == 0] = 0
+    if demoted.any():
+        output[demoted, :3] = (
+            SMALL_COMPONENT_SUPPRESSED_RGB
+            if suppressed_alpha is not None
+            else (0, 0, 0)
+        )
+    return output, metrics
 
 
 def _remove_hair_underlayer_spill(layer: np.ndarray) -> tuple[np.ndarray, int]:
@@ -530,11 +558,15 @@ def _extract_steps(
             ).astype(np.uint8)
             hair_back[hair_back[:, :, 3] == 0] = 0
             hair_back, back_corrected = _remove_hair_underlayer_spill(hair_back)
+            hair_back, back_speck_cleanup = _clean_small_components(
+                hair_back, preserve_nonzero_alpha_count=True
+            )
             save_png(output / "L3_hair.back.png", hair_back)
             mask = front_mask
             layer_report[step] = {
                 "back_opaque_pixels": int((hair_back[:, :, 3] > 0).sum()),
                 "back_warm_underlayer_pixels_corrected": back_corrected,
+                "back_small_component_cleanup": back_speck_cleanup,
             }
         elif step == "L4_headwear":
             mask = (mask * head_region(base, model_path)).astype(np.uint8)
@@ -546,9 +578,18 @@ def _extract_steps(
         layer[layer[:, :, 3] == 0] = 0
         if step == "L3_hair":
             layer, corrected = _remove_hair_underlayer_spill(layer)
+            layer, front_speck_cleanup = _clean_small_components(
+                layer, suppressed_alpha=SMALL_COMPONENT_SUPPRESSED_ALPHA
+            )
             hair_entry = layer_report[step]
             if isinstance(hair_entry, dict):
                 hair_entry["warm_underlayer_pixels_corrected"] = corrected
+                hair_entry["front_small_component_cleanup"] = front_speck_cleanup
+        elif step == "L4_headwear":
+            layer, headwear_speck_cleanup = _clean_small_components(layer)
+            layer_report[step] = {
+                "small_component_cleanup": headwear_speck_cleanup,
+            }
         save_png(output / f"{step}.png", layer)
         if step == "L1_makeup":
             report["makeup_slots"] = write_makeup_slots(

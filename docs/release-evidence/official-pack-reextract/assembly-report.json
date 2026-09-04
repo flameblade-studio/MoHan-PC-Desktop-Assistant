@@ -1,7 +1,7 @@
 {
  "light_alpha_factor": 0.55,
  "sealed": {
-  "mohan.official.blue-white-hanfu.mohan-outfit": "1fd57e68f8e96af21e175b06758f759f3668d120795ca56ee4f7adbd687f1866",
+  "mohan.official.blue-white-hanfu.mohan-outfit": "b6370c1b9446e427fd293ed430519628917027e2b93ecb8049736f28d6fc5ec8",
   "mohan.makeup.builtin.mohan-outfit": "403e4c83f1712af807ccef4d3f27ec6251ab7b941d1577c03ca1c534f6964560"
  },
  "silhouettes": {
@@ -19,7 +19,7 @@
    "opaque_pixels": {
     "garment": 457416,
     "hair": 90453,
-    "headwear": 11260,
+    "headwear": 11002,
     "eyes": 11956,
     "cheeks": 4333,
     "lips": 3865,
@@ -43,12 +43,32 @@
     437
    ],
    "headwear_bbox": [
-    411,
+    616,
     134,
-    490,
+    285,
     524
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 162,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 21,
+     "linked_small_components": 15,
+     "removed_small_components": 6,
+     "removed_pixels": 32
+    },
+    "hair_back": {
+     "small_components": 163,
+     "linked_small_components": 116,
+     "removed_small_components": 47,
+     "removed_pixels": 166
+    },
+    "headwear": {
+     "small_components": 31,
+     "linked_small_components": 14,
+     "removed_small_components": 17,
+     "removed_pixels": 96
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -115,7 +135,7 @@
    "opaque_pixels": {
     "garment": 474030,
     "hair": 132627,
-    "headwear": 11970,
+    "headwear": 11606,
     "eyes": 10440,
     "cheeks": 3337,
     "lips": 3395,
@@ -139,12 +159,32 @@
     435
    ],
    "headwear_bbox": [
-    419,
+    427,
     108,
-    422,
+    414,
     550
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 218,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 16,
+     "linked_small_components": 16,
+     "removed_small_components": 0,
+     "removed_pixels": 0
+    },
+    "hair_back": {
+     "small_components": 146,
+     "linked_small_components": 117,
+     "removed_small_components": 29,
+     "removed_pixels": 109
+    },
+    "headwear": {
+     "small_components": 37,
+     "linked_small_components": 19,
+     "removed_small_components": 18,
+     "removed_pixels": 146
+    }
+   },
    "registration_flags": {
     "L4_headwear": [
      19.36,
@@ -178,13 +218,13 @@
     },
     "headwear": {
      "xy": [
-      690,
-      122
+      707,
+      152
      ],
      "layer_rgba": [
-      79,
-      79,
-      80,
+      107,
+      111,
+      113,
       255
      ]
     },
@@ -216,7 +256,7 @@
    "opaque_pixels": {
     "garment": 382664,
     "hair": 126087,
-    "headwear": 9910,
+    "headwear": 9707,
     "eyes": 11047,
     "cheeks": 4700,
     "lips": 5682,
@@ -240,12 +280,32 @@
     347
    ],
    "headwear_bbox": [
-    461,
+    475,
     114,
-    339,
-    377
+    325,
+    313
    ],
-   "headwear_unlinked_pixels_removed": 22,
+   "headwear_unlinked_pixels_removed": 178,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 25,
+     "linked_small_components": 17,
+     "removed_small_components": 8,
+     "removed_pixels": 44
+    },
+    "hair_back": {
+     "small_components": 87,
+     "linked_small_components": 72,
+     "removed_small_components": 15,
+     "removed_pixels": 31
+    },
+    "headwear": {
+     "small_components": 73,
+     "linked_small_components": 65,
+     "removed_small_components": 8,
+     "removed_pixels": 47
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -312,7 +372,7 @@
    "opaque_pixels": {
     "garment": 422003,
     "hair": 119587,
-    "headwear": 8852,
+    "headwear": 8710,
     "eyes": 10963,
     "cheeks": 7374,
     "lips": 6231,
@@ -336,12 +396,32 @@
     347
    ],
    "headwear_bbox": [
-    456,
+    458,
     120,
-    315,
-    310
+    313,
+    523
    ],
-   "headwear_unlinked_pixels_removed": 84,
+   "headwear_unlinked_pixels_removed": 124,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 15,
+     "linked_small_components": 3,
+     "removed_small_components": 12,
+     "removed_pixels": 79
+    },
+    "hair_back": {
+     "small_components": 77,
+     "linked_small_components": 47,
+     "removed_small_components": 30,
+     "removed_pixels": 84
+    },
+    "headwear": {
+     "small_components": 45,
+     "linked_small_components": 32,
+     "removed_small_components": 13,
+     "removed_pixels": 102
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -408,7 +488,7 @@
    "opaque_pixels": {
     "garment": 457278,
     "hair": 129724,
-    "headwear": 9495,
+    "headwear": 9295,
     "eyes": 11873,
     "cheeks": 4994,
     "lips": 6145,
@@ -432,12 +512,32 @@
     347
    ],
    "headwear_bbox": [
-    301,
+    461,
     114,
-    465,
-    532
+    305,
+    309
    ],
-   "headwear_unlinked_pixels_removed": 5,
+   "headwear_unlinked_pixels_removed": 189,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 10,
+     "linked_small_components": 4,
+     "removed_small_components": 6,
+     "removed_pixels": 26
+    },
+    "hair_back": {
+     "small_components": 102,
+     "linked_small_components": 85,
+     "removed_small_components": 17,
+     "removed_pixels": 64
+    },
+    "headwear": {
+     "small_components": 32,
+     "linked_small_components": 28,
+     "removed_small_components": 4,
+     "removed_pixels": 16
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -504,7 +604,7 @@
    "opaque_pixels": {
     "garment": 474838,
     "hair": 123576,
-    "headwear": 10602,
+    "headwear": 10357,
     "eyes": 12131,
     "cheeks": 4775,
     "lips": 6171,
@@ -528,12 +628,32 @@
     347
    ],
    "headwear_bbox": [
-    325,
+    468,
     118,
-    477,
-    532
+    334,
+    533
    ],
-   "headwear_unlinked_pixels_removed": 324,
+   "headwear_unlinked_pixels_removed": 398,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 21,
+     "linked_small_components": 15,
+     "removed_small_components": 6,
+     "removed_pixels": 44
+    },
+    "hair_back": {
+     "small_components": 117,
+     "linked_small_components": 81,
+     "removed_small_components": 36,
+     "removed_pixels": 75
+    },
+    "headwear": {
+     "small_components": 94,
+     "linked_small_components": 65,
+     "removed_small_components": 29,
+     "removed_pixels": 171
+    }
+   },
    "registration_flags": {
     "L1_makeup": [
      -1.36,
@@ -617,7 +737,7 @@
    "opaque_pixels": {
     "garment": 408764,
     "hair": 88126,
-    "headwear": 8674,
+    "headwear": 8368,
     "eyes": 8790,
     "cheeks": 1369,
     "lips": 3042,
@@ -641,12 +761,32 @@
     347
    ],
    "headwear_bbox": [
-    406,
-    111,
-    366,
-    499
+    460,
+    151,
+    312,
+    247
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 134,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 13,
+     "linked_small_components": 2,
+     "removed_small_components": 11,
+     "removed_pixels": 64
+    },
+    "hair_back": {
+     "small_components": 216,
+     "linked_small_components": 157,
+     "removed_small_components": 59,
+     "removed_pixels": 158
+    },
+    "headwear": {
+     "small_components": 39,
+     "linked_small_components": 15,
+     "removed_small_components": 24,
+     "removed_pixels": 172
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -713,7 +853,7 @@
    "opaque_pixels": {
     "garment": 525296,
     "hair": 65644,
-    "headwear": 11962,
+    "headwear": 11898,
     "eyes": 0,
     "cheeks": 0,
     "lips": 0,
@@ -738,11 +878,31 @@
    ],
    "headwear_bbox": [
     351,
-    93,
+    109,
     331,
-    367
+    351
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 53,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 34,
+     "linked_small_components": 22,
+     "removed_small_components": 12,
+     "removed_pixels": 72
+    },
+    "hair_back": {
+     "small_components": 70,
+     "linked_small_components": 50,
+     "removed_small_components": 20,
+     "removed_pixels": 128
+    },
+    "headwear": {
+     "small_components": 21,
+     "linked_small_components": 19,
+     "removed_small_components": 2,
+     "removed_pixels": 11
+    }
+   },
    "registration_flags": {
     "L3_hair": [
      -1.24,
@@ -807,7 +967,7 @@
    "opaque_pixels": {
     "garment": 447688,
     "hair": 59676,
-    "headwear": 2898,
+    "headwear": 2691,
     "eyes": 0,
     "cheeks": 0,
     "lips": 0,
@@ -833,10 +993,30 @@
    "headwear_bbox": [
     429,
     107,
-    172,
-    224
+    125,
+    190
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 131,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 20,
+     "linked_small_components": 10,
+     "removed_small_components": 10,
+     "removed_pixels": 74
+    },
+    "hair_back": {
+     "small_components": 73,
+     "linked_small_components": 58,
+     "removed_small_components": 15,
+     "removed_pixels": 58
+    },
+    "headwear": {
+     "small_components": 15,
+     "linked_small_components": 2,
+     "removed_small_components": 13,
+     "removed_pixels": 76
+    }
+   },
    "registration_flags": {
     "L2_garment": [
      0.21,
@@ -905,7 +1085,7 @@
    "opaque_pixels": {
     "garment": 427048,
     "hair": 47581,
-    "headwear": 1412,
+    "headwear": 1328,
     "eyes": 0,
     "cheeks": 0,
     "lips": 0,
@@ -929,12 +1109,32 @@
     1
    ],
    "headwear_bbox": [
-    436,
+    512,
     117,
-    176,
+    73,
     212
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 13,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 36,
+     "linked_small_components": 32,
+     "removed_small_components": 4,
+     "removed_pixels": 31
+    },
+    "hair_back": {
+     "small_components": 72,
+     "linked_small_components": 22,
+     "removed_small_components": 50,
+     "removed_pixels": 141
+    },
+    "headwear": {
+     "small_components": 17,
+     "linked_small_components": 5,
+     "removed_small_components": 12,
+     "removed_pixels": 71
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -990,7 +1190,7 @@
    "opaque_pixels": {
     "garment": 404439,
     "hair": 63907,
-    "headwear": 2294,
+    "headwear": 2244,
     "eyes": 0,
     "cheeks": 0,
     "lips": 0,
@@ -1014,12 +1214,32 @@
     0
    ],
    "headwear_bbox": [
-    416,
+    431,
     95,
-    161,
-    237
+    107,
+    141
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 16,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 30,
+     "linked_small_components": 28,
+     "removed_small_components": 2,
+     "removed_pixels": 14
+    },
+    "hair_back": {
+     "small_components": 47,
+     "linked_small_components": 42,
+     "removed_small_components": 5,
+     "removed_pixels": 32
+    },
+    "headwear": {
+     "small_components": 10,
+     "linked_small_components": 5,
+     "removed_small_components": 5,
+     "removed_pixels": 34
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -1075,7 +1295,7 @@
    "opaque_pixels": {
     "garment": 415040,
     "hair": 51518,
-    "headwear": 641,
+    "headwear": 470,
     "eyes": 0,
     "cheeks": 0,
     "lips": 0,
@@ -1099,12 +1319,32 @@
     0
    ],
    "headwear_bbox": [
-    438,
-    98,
-    122,
-    61
+    505,
+    114,
+    55,
+    45
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 128,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 35,
+     "linked_small_components": 29,
+     "removed_small_components": 6,
+     "removed_pixels": 35
+    },
+    "hair_back": {
+     "small_components": 16,
+     "linked_small_components": 16,
+     "removed_small_components": 0,
+     "removed_pixels": 0
+    },
+    "headwear": {
+     "small_components": 9,
+     "linked_small_components": 4,
+     "removed_small_components": 5,
+     "removed_pixels": 43
+    }
+   },
    "registration_flags": {
     "L2_garment": [
      0.47,
@@ -1146,13 +1386,13 @@
     },
     "headwear": {
      "xy": [
-      504,
-      107
+      533,
+      133
      ],
      "layer_rgba": [
-      81,
-      77,
-      80,
+      203,
+      197,
+      195,
       255
      ]
     },
@@ -1173,7 +1413,7 @@
    "opaque_pixels": {
     "garment": 445557,
     "hair": 52960,
-    "headwear": 307,
+    "headwear": 169,
     "eyes": 0,
     "cheeks": 0,
     "lips": 0,
@@ -1199,10 +1439,30 @@
    "headwear_bbox": [
     518,
     119,
-    100,
-    50
+    34,
+    23
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 131,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 29,
+     "linked_small_components": 10,
+     "removed_small_components": 19,
+     "removed_pixels": 117
+    },
+    "hair_back": {
+     "small_components": 13,
+     "linked_small_components": 5,
+     "removed_small_components": 8,
+     "removed_pixels": 27
+    },
+    "headwear": {
+     "small_components": 4,
+     "linked_small_components": 3,
+     "removed_small_components": 1,
+     "removed_pixels": 7
+    }
+   },
    "registration_flags": {
     "L3_hair": [
      1.2,
@@ -1267,7 +1527,7 @@
    "opaque_pixels": {
     "garment": 270376,
     "hair": 33832,
-    "headwear": 2700,
+    "headwear": 2433,
     "eyes": 413,
     "cheeks": 0,
     "lips": 111,
@@ -1291,12 +1551,32 @@
     201
    ],
    "headwear_bbox": [
-    418,
-    92,
-    172,
-    237
+    432,
+    102,
+    68,
+    202
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 150,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 22,
+     "linked_small_components": 17,
+     "removed_small_components": 5,
+     "removed_pixels": 28
+    },
+    "hair_back": {
+     "small_components": 38,
+     "linked_small_components": 31,
+     "removed_small_components": 7,
+     "removed_pixels": 27
+    },
+    "headwear": {
+     "small_components": 24,
+     "linked_small_components": 1,
+     "removed_small_components": 23,
+     "removed_pixels": 117
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -1313,25 +1593,25 @@
     },
     "hair": {
      "xy": [
-      436,
-      103
+      437,
+      102
      ],
      "layer_rgba": [
-      78,
-      78,
-      71,
+      84,
+      79,
+      75,
       255
      ]
     },
     "headwear": {
      "xy": [
-      445,
-      96
+      480,
+      121
      ],
      "layer_rgba": [
-      84,
-      83,
-      94,
+      214,
+      208,
+      196,
       255
      ]
     },
@@ -1363,7 +1643,7 @@
    "opaque_pixels": {
     "garment": 412821,
     "hair": 27403,
-    "headwear": 3059,
+    "headwear": 3005,
     "eyes": 1810,
     "cheeks": 24,
     "lips": 558,
@@ -1392,7 +1672,27 @@
     172,
     219
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 35,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 10,
+     "linked_small_components": 5,
+     "removed_small_components": 5,
+     "removed_pixels": 37
+    },
+    "hair_back": {
+     "small_components": 52,
+     "linked_small_components": 35,
+     "removed_small_components": 17,
+     "removed_pixels": 62
+    },
+    "headwear": {
+     "small_components": 20,
+     "linked_small_components": 15,
+     "removed_small_components": 5,
+     "removed_pixels": 19
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -1459,7 +1759,7 @@
    "opaque_pixels": {
     "garment": 402007,
     "hair": 25639,
-    "headwear": 2693,
+    "headwear": 2475,
     "eyes": 2199,
     "cheeks": 33,
     "lips": 793,
@@ -1485,10 +1785,30 @@
    "headwear_bbox": [
     407,
     93,
-    170,
-    208
+    156,
+    103
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 160,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 38,
+     "linked_small_components": 12,
+     "removed_small_components": 26,
+     "removed_pixels": 156
+    },
+    "hair_back": {
+     "small_components": 50,
+     "linked_small_components": 44,
+     "removed_small_components": 6,
+     "removed_pixels": 31
+    },
+    "headwear": {
+     "small_components": 18,
+     "linked_small_components": 8,
+     "removed_small_components": 10,
+     "removed_pixels": 58
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -1555,7 +1875,7 @@
    "opaque_pixels": {
     "garment": 409169,
     "hair": 34305,
-    "headwear": 3421,
+    "headwear": 3285,
     "eyes": 1928,
     "cheeks": 0,
     "lips": 618,
@@ -1579,12 +1899,32 @@
     188
    ],
    "headwear_bbox": [
-    459,
+    473,
     91,
-    167,
-    230
+    152,
+    206
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 30,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 14,
+     "linked_small_components": 11,
+     "removed_small_components": 3,
+     "removed_pixels": 20
+    },
+    "hair_back": {
+     "small_components": 38,
+     "linked_small_components": 31,
+     "removed_small_components": 7,
+     "removed_pixels": 19
+    },
+    "headwear": {
+     "small_components": 28,
+     "linked_small_components": 11,
+     "removed_small_components": 17,
+     "removed_pixels": 106
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -1651,7 +1991,7 @@
    "opaque_pixels": {
     "garment": 413664,
     "hair": 20950,
-    "headwear": 1752,
+    "headwear": 1468,
     "eyes": 1413,
     "cheeks": 0,
     "lips": 483,
@@ -1675,12 +2015,32 @@
     201
    ],
    "headwear_bbox": [
-    460,
+    518,
     98,
-    156,
-    214
+    98,
+    130
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 167,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 14,
+     "linked_small_components": 7,
+     "removed_small_components": 7,
+     "removed_pixels": 36
+    },
+    "hair_back": {
+     "small_components": 60,
+     "linked_small_components": 2,
+     "removed_small_components": 58,
+     "removed_pixels": 229
+    },
+    "headwear": {
+     "small_components": 22,
+     "linked_small_components": 4,
+     "removed_small_components": 18,
+     "removed_pixels": 117
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -1747,7 +2107,7 @@
    "opaque_pixels": {
     "garment": 381752,
     "hair": 20386,
-    "headwear": 2569,
+    "headwear": 2359,
     "eyes": 1942,
     "cheeks": 0,
     "lips": 603,
@@ -1771,12 +2131,32 @@
     193
    ],
    "headwear_bbox": [
-    455,
-    90,
-    162,
-    177
+    466,
+    105,
+    151,
+    132
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 109,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 17,
+     "linked_small_components": 7,
+     "removed_small_components": 10,
+     "removed_pixels": 63
+    },
+    "hair_back": {
+     "small_components": 52,
+     "linked_small_components": 16,
+     "removed_small_components": 36,
+     "removed_pixels": 184
+    },
+    "headwear": {
+     "small_components": 18,
+     "linked_small_components": 4,
+     "removed_small_components": 14,
+     "removed_pixels": 101
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -1805,13 +2185,13 @@
     },
     "headwear": {
      "xy": [
-      553,
-      93
+      526,
+      129
      ],
      "layer_rgba": [
-      88,
-      92,
-      103,
+      189,
+      184,
+      177,
       255
      ]
     },
@@ -1843,7 +2223,7 @@
    "opaque_pixels": {
     "garment": 471654,
     "hair": 28550,
-    "headwear": 3197,
+    "headwear": 2977,
     "eyes": 3282,
     "cheeks": 185,
     "lips": 1771,
@@ -1867,12 +2247,32 @@
     188
    ],
    "headwear_bbox": [
-    445,
-    96,
-    145,
-    236
+    449,
+    110,
+    141,
+    176
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 183,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 25,
+     "linked_small_components": 14,
+     "removed_small_components": 11,
+     "removed_pixels": 67
+    },
+    "hair_back": {
+     "small_components": 51,
+     "linked_small_components": 30,
+     "removed_small_components": 21,
+     "removed_pixels": 97
+    },
+    "headwear": {
+     "small_components": 12,
+     "linked_small_components": 6,
+     "removed_small_components": 6,
+     "removed_pixels": 37
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -1939,7 +2339,7 @@
    "opaque_pixels": {
     "garment": 400180,
     "hair": 29863,
-    "headwear": 2835,
+    "headwear": 2532,
     "eyes": 1622,
     "cheeks": 0,
     "lips": 540,
@@ -1968,7 +2368,27 @@
     170,
     234
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 199,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 21,
+     "linked_small_components": 17,
+     "removed_small_components": 4,
+     "removed_pixels": 28
+    },
+    "hair_back": {
+     "small_components": 53,
+     "linked_small_components": 21,
+     "removed_small_components": 32,
+     "removed_pixels": 140
+    },
+    "headwear": {
+     "small_components": 23,
+     "linked_small_components": 8,
+     "removed_small_components": 15,
+     "removed_pixels": 104
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -2035,7 +2455,7 @@
    "opaque_pixels": {
     "garment": 415148,
     "hair": 24623,
-    "headwear": 2554,
+    "headwear": 2378,
     "eyes": 1527,
     "cheeks": 0,
     "lips": 535,
@@ -2059,12 +2479,32 @@
     189
    ],
    "headwear_bbox": [
-    458,
+    504,
     89,
-    177,
-    187
+    131,
+    170
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 95,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 32,
+     "linked_small_components": 19,
+     "removed_small_components": 13,
+     "removed_pixels": 103
+    },
+    "hair_back": {
+     "small_components": 79,
+     "linked_small_components": 16,
+     "removed_small_components": 63,
+     "removed_pixels": 230
+    },
+    "headwear": {
+     "small_components": 20,
+     "linked_small_components": 6,
+     "removed_small_components": 14,
+     "removed_pixels": 81
+    }
+   },
    "registration_flags": {
     "L4_headwear": [
      -0.71,
@@ -2136,7 +2576,7 @@
    "opaque_pixels": {
     "garment": 408598,
     "hair": 29970,
-    "headwear": 2303,
+    "headwear": 1977,
     "eyes": 1397,
     "cheeks": 0,
     "lips": 443,
@@ -2160,12 +2600,32 @@
     200
    ],
    "headwear_bbox": [
-    450,
+    456,
     93,
-    177,
-    188
+    171,
+    97
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 208,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 12,
+     "linked_small_components": 7,
+     "removed_small_components": 5,
+     "removed_pixels": 38
+    },
+    "hair_back": {
+     "small_components": 68,
+     "linked_small_components": 56,
+     "removed_small_components": 12,
+     "removed_pixels": 34
+    },
+    "headwear": {
+     "small_components": 21,
+     "linked_small_components": 8,
+     "removed_small_components": 13,
+     "removed_pixels": 118
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -2232,7 +2692,7 @@
    "opaque_pixels": {
     "garment": 415287,
     "hair": 27958,
-    "headwear": 2638,
+    "headwear": 2500,
     "eyes": 664,
     "cheeks": 0,
     "lips": 217,
@@ -2256,12 +2716,32 @@
     190
    ],
    "headwear_bbox": [
-    449,
+    516,
     83,
-    180,
-    223
+    113,
+    140
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 44,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 19,
+     "linked_small_components": 14,
+     "removed_small_components": 5,
+     "removed_pixels": 31
+    },
+    "hair_back": {
+     "small_components": 52,
+     "linked_small_components": 15,
+     "removed_small_components": 37,
+     "removed_pixels": 245
+    },
+    "headwear": {
+     "small_components": 15,
+     "linked_small_components": 1,
+     "removed_small_components": 14,
+     "removed_pixels": 94
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -2328,7 +2808,7 @@
    "opaque_pixels": {
     "garment": 363860,
     "hair": 28801,
-    "headwear": 2861,
+    "headwear": 2753,
     "eyes": 1026,
     "cheeks": 0,
     "lips": 358,
@@ -2352,12 +2832,32 @@
     214
    ],
    "headwear_bbox": [
-    450,
+    538,
     100,
-    191,
+    103,
     203
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 86,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 20,
+     "linked_small_components": 5,
+     "removed_small_components": 15,
+     "removed_pixels": 107
+    },
+    "hair_back": {
+     "small_components": 51,
+     "linked_small_components": 48,
+     "removed_small_components": 3,
+     "removed_pixels": 12
+    },
+    "headwear": {
+     "small_components": 13,
+     "linked_small_components": 10,
+     "removed_small_components": 3,
+     "removed_pixels": 22
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -2424,7 +2924,7 @@
    "opaque_pixels": {
     "garment": 274107,
     "hair": 41672,
-    "headwear": 2657,
+    "headwear": 2522,
     "eyes": 286,
     "cheeks": 0,
     "lips": 72,
@@ -2448,12 +2948,32 @@
     203
    ],
    "headwear_bbox": [
-    435,
-    97,
-    166,
-    183
+    526,
+    103,
+    75,
+    177
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 96,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 25,
+     "linked_small_components": 7,
+     "removed_small_components": 18,
+     "removed_pixels": 135
+    },
+    "hair_back": {
+     "small_components": 41,
+     "linked_small_components": 4,
+     "removed_small_components": 37,
+     "removed_pixels": 190
+    },
+    "headwear": {
+     "small_components": 8,
+     "linked_small_components": 0,
+     "removed_small_components": 8,
+     "removed_pixels": 39
+    }
+   },
    "registration_flags": {
     "L4_headwear": [
      2.36,
@@ -2525,7 +3045,7 @@
    "opaque_pixels": {
     "garment": 391546,
     "hair": 52965,
-    "headwear": 2930,
+    "headwear": 2862,
     "eyes": 0,
     "cheeks": 0,
     "lips": 0,
@@ -2549,12 +3069,32 @@
     0
    ],
    "headwear_bbox": [
-    449,
+    453,
     96,
-    142,
-    141
+    133,
+    135
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 54,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 22,
+     "linked_small_components": 15,
+     "removed_small_components": 7,
+     "removed_pixels": 54
+    },
+    "hair_back": {
+     "small_components": 46,
+     "linked_small_components": 41,
+     "removed_small_components": 5,
+     "removed_pixels": 20
+    },
+    "headwear": {
+     "small_components": 5,
+     "linked_small_components": 3,
+     "removed_small_components": 2,
+     "removed_pixels": 14
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -2610,7 +3150,7 @@
    "opaque_pixels": {
     "garment": 423897,
     "hair": 48252,
-    "headwear": 1138,
+    "headwear": 1129,
     "eyes": 0,
     "cheeks": 0,
     "lips": 0,
@@ -2635,11 +3175,31 @@
    ],
    "headwear_bbox": [
     473,
-    94,
+    122,
     140,
-    73
+    45
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 9,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 22,
+     "linked_small_components": 17,
+     "removed_small_components": 5,
+     "removed_pixels": 21
+    },
+    "hair_back": {
+     "small_components": 24,
+     "linked_small_components": 0,
+     "removed_small_components": 24,
+     "removed_pixels": 123
+    },
+    "headwear": {
+     "small_components": 2,
+     "linked_small_components": 2,
+     "removed_small_components": 0,
+     "removed_pixels": 0
+    }
+   },
    "registration_flags": {
     "L2_garment": [
      3.95,
@@ -2708,7 +3268,7 @@
    "opaque_pixels": {
     "garment": 399024,
     "hair": 62667,
-    "headwear": 2051,
+    "headwear": 2018,
     "eyes": 0,
     "cheeks": 0,
     "lips": 0,
@@ -2732,12 +3292,32 @@
     0
    ],
    "headwear_bbox": [
-    443,
+    451,
     95,
-    148,
-    174
+    140,
+    130
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 1,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 26,
+     "linked_small_components": 14,
+     "removed_small_components": 12,
+     "removed_pixels": 100
+    },
+    "hair_back": {
+     "small_components": 29,
+     "linked_small_components": 10,
+     "removed_small_components": 19,
+     "removed_pixels": 86
+    },
+    "headwear": {
+     "small_components": 17,
+     "linked_small_components": 11,
+     "removed_small_components": 6,
+     "removed_pixels": 32
+    }
+   },
    "registration_flags": {
     "L2_garment": [
      2.59,
@@ -2806,7 +3386,7 @@
    "opaque_pixels": {
     "garment": 432205,
     "hair": 55878,
-    "headwear": 9387,
+    "headwear": 9182,
     "eyes": 0,
     "cheeks": 0,
     "lips": 0,
@@ -2830,12 +3410,32 @@
     0
    ],
    "headwear_bbox": [
-    400,
-    90,
-    274,
-    370
+    401,
+    116,
+    273,
+    344
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 105,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 35,
+     "linked_small_components": 14,
+     "removed_small_components": 21,
+     "removed_pixels": 163
+    },
+    "hair_back": {
+     "small_components": 83,
+     "linked_small_components": 26,
+     "removed_small_components": 57,
+     "removed_pixels": 223
+    },
+    "headwear": {
+     "small_components": 25,
+     "linked_small_components": 10,
+     "removed_small_components": 15,
+     "removed_pixels": 100
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {
@@ -2864,13 +3464,13 @@
     },
     "headwear": {
      "xy": [
-      536,
-      94
+      570,
+      123
      ],
      "layer_rgba": [
-      86,
-      77,
-      79,
+      136,
+      132,
+      125,
       255
      ]
     },
@@ -2891,7 +3491,7 @@
    "opaque_pixels": {
     "garment": 426667,
     "hair": 55779,
-    "headwear": 2489,
+    "headwear": 2395,
     "eyes": 0,
     "cheeks": 0,
     "lips": 0,
@@ -2915,12 +3515,32 @@
     0
    ],
    "headwear_bbox": [
-    443,
+    447,
     89,
-    149,
-    175
+    139,
+    145
    ],
-   "headwear_unlinked_pixels_removed": 0,
+   "headwear_unlinked_pixels_removed": 54,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 11,
+     "linked_small_components": 5,
+     "removed_small_components": 6,
+     "removed_pixels": 27
+    },
+    "hair_back": {
+     "small_components": 48,
+     "linked_small_components": 26,
+     "removed_small_components": 22,
+     "removed_pixels": 47
+    },
+    "headwear": {
+     "small_components": 8,
+     "linked_small_components": 2,
+     "removed_small_components": 6,
+     "removed_pixels": 40
+    }
+   },
    "registration_flags": {},
    "probes": {
     "garment_blue_on_grey": {

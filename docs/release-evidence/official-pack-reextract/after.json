@@ -41,10 +41,31 @@
     "small_component_count": 50,
     "direct_definition_count": 46,
     "isolated_count": 0,
+    "alpha_threshold": 30,
+    "small_component_max_area": 12,
+    "large_component_min_area": 60,
+    "direct_distance_px": 3,
+    "link_distance_px": 9
+  },
+  "fine_chain": {
+    "roi_xyxy": [
+      735,
+      280,
+      800,
+      430
+    ],
+    "link_count": 15,
+    "endpoint_areas": [
+      386,
+      89
+    ],
+    "maximum_link_distance_px": 9.0,
+    "alpha_threshold": 16,
+    "minimum_link_area": 10,
     "link_distance_px": 9
   },
   "headwear": {
-    "detached_over_100px_total": 0,
+    "detached_over_100px_total": 2,
     "front_crossed": {
       "component_count": 71,
       "main_component_area": 5071,
@@ -747,10 +768,10 @@
         ]
       },
       "front-eureka": {
-        "component_count": 87,
+        "component_count": 88,
         "main_component_area": 5691,
-        "detached_over_100px": 59,
-        "unlinked_over_100px": 0,
+        "detached_over_100px": 60,
+        "unlinked_over_100px": 1,
         "components": [
           {
             "area": 5691,
@@ -771,6 +792,10 @@
           {
             "area": 384,
             "distance_from_main_px": 215.873
+          },
+          {
+            "area": 319,
+            "distance_from_main_px": 391.772
           },
           {
             "area": 189,
@@ -1447,10 +1472,10 @@
         ]
       },
       "front-mock-scold": {
-        "component_count": 58,
+        "component_count": 59,
         "main_component_area": 5225,
-        "detached_over_100px": 13,
-        "unlinked_over_100px": 0,
+        "detached_over_100px": 14,
+        "unlinked_over_100px": 1,
         "components": [
           {
             "area": 5225,
@@ -1483,6 +1508,10 @@
           {
             "area": 93,
             "distance_from_main_px": 15.556
+          },
+          {
+            "area": 84,
+            "distance_from_main_px": 407.604
           },
           {
             "area": 76,
@@ -1945,7 +1974,7 @@
             "distance_from_main_px": 22.136
           },
           {
-            "area": 216,
+            "area": 211,
             "distance_from_main_px": 10.198
           },
           {
@@ -2025,7 +2054,7 @@
             "distance_from_main_px": 109.659
           },
           {
-            "area": 131,
+            "area": 127,
             "distance_from_main_px": 9.22
           },
           {
@@ -3409,6 +3438,1744 @@
             "distance_from_main_px": 109.659
           }
         ]
+      }
+    }
+  },
+  "small_component_specks": {
+    "cheek-rest": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 24,
+        "large_component_count": 6,
+        "small_component_count": 15,
+        "direct_definition_count": 14,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 155,
+        "large_component_count": 14,
+        "small_component_count": 116,
+        "direct_definition_count": 97,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 31,
+        "large_component_count": 9,
+        "small_component_count": 14,
+        "direct_definition_count": 9,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "front-crossed": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 38,
+        "large_component_count": 13,
+        "small_component_count": 17,
+        "direct_definition_count": 13,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 124,
+        "large_component_count": 30,
+        "small_component_count": 72,
+        "direct_definition_count": 40,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 95,
+        "large_component_count": 12,
+        "small_component_count": 65,
+        "direct_definition_count": 56,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "front-eureka": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 36,
+        "large_component_count": 5,
+        "small_component_count": 15,
+        "direct_definition_count": 11,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 130,
+        "large_component_count": 32,
+        "small_component_count": 81,
+        "direct_definition_count": 50,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 91,
+        "large_component_count": 8,
+        "small_component_count": 65,
+        "direct_definition_count": 59,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "front-exasperated": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 19,
+        "large_component_count": 7,
+        "small_component_count": 2,
+        "direct_definition_count": 2,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 212,
+        "large_component_count": 30,
+        "small_component_count": 157,
+        "direct_definition_count": 128,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 28,
+        "large_component_count": 3,
+        "small_component_count": 15,
+        "direct_definition_count": 12,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "front-mock-hit": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 13,
+        "large_component_count": 4,
+        "small_component_count": 4,
+        "direct_definition_count": 2,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 143,
+        "large_component_count": 35,
+        "small_component_count": 85,
+        "direct_definition_count": 64,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 57,
+        "large_component_count": 12,
+        "small_component_count": 28,
+        "direct_definition_count": 21,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "front-mock-scold": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 9,
+        "large_component_count": 2,
+        "small_component_count": 3,
+        "direct_definition_count": 0,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 88,
+        "large_component_count": 24,
+        "small_component_count": 47,
+        "direct_definition_count": 34,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 61,
+        "large_component_count": 9,
+        "small_component_count": 32,
+        "direct_definition_count": 28,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "left-neutral": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 33,
+        "large_component_count": 8,
+        "small_component_count": 16,
+        "direct_definition_count": 12,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 178,
+        "large_component_count": 27,
+        "small_component_count": 117,
+        "direct_definition_count": 85,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 47,
+        "large_component_count": 13,
+        "small_component_count": 19,
+        "direct_definition_count": 8,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+000-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 32,
+        "large_component_count": 7,
+        "small_component_count": 14,
+        "direct_definition_count": 10,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 46,
+        "large_component_count": 2,
+        "small_component_count": 30,
+        "direct_definition_count": 28,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 16,
+        "large_component_count": 7,
+        "small_component_count": 6,
+        "direct_definition_count": 3,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+015-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 40,
+        "large_component_count": 8,
+        "small_component_count": 17,
+        "direct_definition_count": 14,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 35,
+        "large_component_count": 5,
+        "small_component_count": 21,
+        "direct_definition_count": 15,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 16,
+        "large_component_count": 7,
+        "small_component_count": 8,
+        "direct_definition_count": 5,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+030-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 37,
+        "large_component_count": 6,
+        "small_component_count": 19,
+        "direct_definition_count": 17,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 31,
+        "large_component_count": 3,
+        "small_component_count": 16,
+        "direct_definition_count": 13,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 18,
+        "large_component_count": 8,
+        "small_component_count": 6,
+        "direct_definition_count": 4,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+045-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 19,
+        "large_component_count": 7,
+        "small_component_count": 7,
+        "direct_definition_count": 5,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 72,
+        "large_component_count": 4,
+        "small_component_count": 56,
+        "direct_definition_count": 52,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 19,
+        "large_component_count": 9,
+        "small_component_count": 8,
+        "direct_definition_count": 4,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+060-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 34,
+        "large_component_count": 12,
+        "small_component_count": 14,
+        "direct_definition_count": 9,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 27,
+        "large_component_count": 2,
+        "small_component_count": 15,
+        "direct_definition_count": 12,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 10,
+        "large_component_count": 6,
+        "small_component_count": 1,
+        "direct_definition_count": 1,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+075-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 19,
+        "large_component_count": 5,
+        "small_component_count": 5,
+        "direct_definition_count": 5,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 58,
+        "large_component_count": 3,
+        "small_component_count": 48,
+        "direct_definition_count": 45,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 19,
+        "large_component_count": 7,
+        "small_component_count": 10,
+        "direct_definition_count": 8,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+090-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 14,
+        "large_component_count": 4,
+        "small_component_count": 7,
+        "direct_definition_count": 5,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 16,
+        "large_component_count": 3,
+        "small_component_count": 4,
+        "direct_definition_count": 1,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 4,
+        "large_component_count": 4,
+        "small_component_count": 0,
+        "direct_definition_count": 0,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+105-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 22,
+        "large_component_count": 2,
+        "small_component_count": 15,
+        "direct_definition_count": 11,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 46,
+        "large_component_count": 3,
+        "small_component_count": 41,
+        "direct_definition_count": 37,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 13,
+        "large_component_count": 5,
+        "small_component_count": 3,
+        "direct_definition_count": 0,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+120-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 34,
+        "large_component_count": 9,
+        "small_component_count": 17,
+        "direct_definition_count": 12,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 3,
+        "large_component_count": 0,
+        "small_component_count": 0,
+        "direct_definition_count": 0,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 7,
+        "large_component_count": 3,
+        "small_component_count": 2,
+        "direct_definition_count": 1,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+135-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 27,
+        "large_component_count": 7,
+        "small_component_count": 14,
+        "direct_definition_count": 12,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 21,
+        "large_component_count": 1,
+        "small_component_count": 10,
+        "direct_definition_count": 9,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 25,
+        "large_component_count": 9,
+        "small_component_count": 11,
+        "direct_definition_count": 7,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+150-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 32,
+        "large_component_count": 6,
+        "small_component_count": 14,
+        "direct_definition_count": 6,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 48,
+        "large_component_count": 11,
+        "small_component_count": 26,
+        "direct_definition_count": 15,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 25,
+        "large_component_count": 9,
+        "small_component_count": 10,
+        "direct_definition_count": 8,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw+165-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 17,
+        "large_component_count": 7,
+        "small_component_count": 5,
+        "direct_definition_count": 3,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 40,
+        "large_component_count": 5,
+        "small_component_count": 26,
+        "direct_definition_count": 25,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 12,
+        "large_component_count": 7,
+        "small_component_count": 2,
+        "direct_definition_count": 2,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-015-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 22,
+        "large_component_count": 6,
+        "small_component_count": 7,
+        "direct_definition_count": 6,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 27,
+        "large_component_count": 2,
+        "small_component_count": 16,
+        "direct_definition_count": 12,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 17,
+        "large_component_count": 8,
+        "small_component_count": 4,
+        "direct_definition_count": 4,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-030-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 15,
+        "large_component_count": 5,
+        "small_component_count": 7,
+        "direct_definition_count": 7,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 15,
+        "large_component_count": 1,
+        "small_component_count": 2,
+        "direct_definition_count": 1,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 13,
+        "large_component_count": 5,
+        "small_component_count": 4,
+        "direct_definition_count": 2,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-045-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 30,
+        "large_component_count": 9,
+        "small_component_count": 11,
+        "direct_definition_count": 9,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 46,
+        "large_component_count": 6,
+        "small_component_count": 31,
+        "direct_definition_count": 22,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 32,
+        "large_component_count": 10,
+        "small_component_count": 11,
+        "direct_definition_count": 5,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-060-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 27,
+        "large_component_count": 9,
+        "small_component_count": 12,
+        "direct_definition_count": 9,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 62,
+        "large_component_count": 4,
+        "small_component_count": 44,
+        "direct_definition_count": 39,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 17,
+        "large_component_count": 7,
+        "small_component_count": 8,
+        "direct_definition_count": 4,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-075-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 20,
+        "large_component_count": 9,
+        "small_component_count": 5,
+        "direct_definition_count": 2,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 48,
+        "large_component_count": 3,
+        "small_component_count": 35,
+        "direct_definition_count": 30,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 27,
+        "large_component_count": 7,
+        "small_component_count": 15,
+        "direct_definition_count": 11,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-090-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 33,
+        "large_component_count": 6,
+        "small_component_count": 17,
+        "direct_definition_count": 12,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 55,
+        "large_component_count": 10,
+        "small_component_count": 31,
+        "direct_definition_count": 20,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 4,
+        "large_component_count": 3,
+        "small_component_count": 1,
+        "direct_definition_count": 0,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-105-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 36,
+        "large_component_count": 5,
+        "small_component_count": 10,
+        "direct_definition_count": 10,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 8,
+        "large_component_count": 1,
+        "small_component_count": 5,
+        "direct_definition_count": 4,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 5,
+        "large_component_count": 1,
+        "small_component_count": 3,
+        "direct_definition_count": 2,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-120-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 46,
+        "large_component_count": 6,
+        "small_component_count": 29,
+        "direct_definition_count": 26,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 22,
+        "large_component_count": 3,
+        "small_component_count": 16,
+        "direct_definition_count": 12,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 6,
+        "large_component_count": 1,
+        "small_component_count": 4,
+        "direct_definition_count": 4,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-135-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 41,
+        "large_component_count": 7,
+        "small_component_count": 28,
+        "direct_definition_count": 22,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 62,
+        "large_component_count": 9,
+        "small_component_count": 42,
+        "direct_definition_count": 32,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 18,
+        "large_component_count": 6,
+        "small_component_count": 5,
+        "direct_definition_count": 2,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-150-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 54,
+        "large_component_count": 10,
+        "small_component_count": 32,
+        "direct_definition_count": 30,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 35,
+        "large_component_count": 6,
+        "small_component_count": 22,
+        "direct_definition_count": 19,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 8,
+        "large_component_count": 3,
+        "small_component_count": 5,
+        "direct_definition_count": 4,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-165-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 32,
+        "large_component_count": 10,
+        "small_component_count": 10,
+        "direct_definition_count": 10,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 79,
+        "large_component_count": 8,
+        "small_component_count": 58,
+        "direct_definition_count": 50,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 4,
+        "large_component_count": 1,
+        "small_component_count": 2,
+        "direct_definition_count": 0,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      }
+    },
+    "yaw-180-pitch+00": {
+      "front": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 32,
+        "large_component_count": 3,
+        "small_component_count": 22,
+        "direct_definition_count": 21,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "back": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 73,
+        "large_component_count": 12,
+        "small_component_count": 50,
+        "direct_definition_count": 32,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "headwear": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 33,
+        "large_component_count": 8,
+        "small_component_count": 19,
+        "direct_definition_count": 9,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
       }
     }
   }

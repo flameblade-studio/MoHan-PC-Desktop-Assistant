@@ -163,6 +163,20 @@ HEADWEAR_COMPONENT_LINK_DISTANCE: Final = 9
 HEADWEAR_CHAIN_LINK_RADIUS: Final = 20
 HEADWEAR_DETACHED_DISTANCE: Final = 100
 
+# Owner-approved small-component gate shared by hair front, hair back and
+# headwear.  Classification follows the exact release criterion (alpha>30,
+# area<=12, distance>3 from every area>60 component); the retention graph uses
+# the measured alpha>16 chain visibility and N=9 transitive spacing so the
+# existing fine chain is not mistaken for noise.
+SMALL_COMPONENT_ALPHA_THRESHOLD: Final = 30
+SMALL_COMPONENT_MAX_AREA: Final = 12
+SMALL_COMPONENT_ANCHOR_MIN_AREA: Final = 60
+SMALL_COMPONENT_DIRECT_DISTANCE: Final = 3
+SMALL_COMPONENT_LINK_ALPHA_THRESHOLD: Final = HEADWEAR_COMPONENT_ALPHA_THRESHOLD
+SMALL_COMPONENT_LINK_DISTANCE: Final = HEADWEAR_COMPONENT_LINK_DISTANCE
+SMALL_COMPONENT_SUPPRESSED_ALPHA: Final = 30
+SMALL_COMPONENT_SUPPRESSED_RGB: Final = (2, 0, 60)
+
 # The release portrait baseline contains 7,457 warm forehead pixels under this
 # exact owner-supplied criterion; 3,923 are fully opaque outfit-hair pixels.
 # Their luminance is preserved while chroma is neutralized in extraction, so
