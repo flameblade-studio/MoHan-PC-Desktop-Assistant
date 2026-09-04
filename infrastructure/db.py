@@ -12,11 +12,9 @@ lazy from domain.language_support import (
 )
 lazy from domain.time_utils import local_wall_time
 lazy from infrastructure.db_affection import StudioDBAffectionMethods
+lazy from infrastructure.db_corrupt_data import StudioDBCorruptDataMethods
 lazy from infrastructure.db_memory import StudioDBMemoryMethods
-lazy from infrastructure.corrupt_data import (
-    CORRUPT_DATA_MESSAGE,
-    CorruptStoredJSON,
-)
+lazy from infrastructure.corrupt_data import CorruptStoredJSON
 lazy from infrastructure.memory_index import MemoryVectorIndex
 lazy from infrastructure.sqlite_safety import classify_db_file, table_column_names
 
@@ -252,6 +250,11 @@ class StudioDBSettingsPort:
 class StudioDB:
     affection_row = StudioDBAffectionMethods.affection_row
     upsert_affection = StudioDBAffectionMethods.upsert_affection
+    _ensure_corrupt_data_table = StudioDBCorruptDataMethods._ensure_corrupt_data_table
+    _record_corrupt_value = StudioDBCorruptDataMethods._record_corrupt_value
+    consume_corrupt_data_notifications = StudioDBCorruptDataMethods.consume_corrupt_data_notifications
+    _decoded_setting = StudioDBCorruptDataMethods._decoded_setting
+    setting = StudioDBCorruptDataMethods.setting
     add_memory = StudioDBMemoryMethods.add_memory
     list_memories = StudioDBMemoryMethods.list_memories
     memory = StudioDBMemoryMethods.memory
@@ -275,43 +278,6 @@ class StudioDB:
     purge_expired_memories = StudioDBMemoryMethods.purge_expired_memories
     export_memories = StudioDBMemoryMethods.export_memories
 
-    def _record_corrupt_value(
-        self,
-        source: str,
-        key: str,
-        raw: str,
-        reason: str,
-    ) -> None:
-        with self.conn:
-            self.conn.execute(
-                "INSERT OR IGNORE INTO corrupt_data("
-                "source,item_key,raw_value,reason,detected_at"
-                ") VALUES(?,?,?,?,?)",
-                (
-                    str(source),
-                    str(key),
-                    str(raw),
-                    str(reason),
-                    local_wall_time().isoformat(timespec="seconds"),
-                ),
-            )
-
-    def consume_corrupt_data_notifications(self) -> tuple[str, ...]:
-        rows = self.conn.execute(
-            "SELECT id FROM corrupt_data WHERE notified_at IS NULL"
-        ).fetchall()
-        if not rows:
-            return ()
-        with self.conn:
-            self.conn.executemany(
-                "UPDATE corrupt_data SET notified_at=? WHERE id=?",
-                [
-                    (local_wall_time().isoformat(timespec="seconds"), int(row["id"]))
-                    for row in rows
-                ],
-            )
-        return (CORRUPT_DATA_MESSAGE,)
-
     def __init__(self, path: Path):
         path.parent.mkdir(parents=True, exist_ok=True)
         self.path = path
@@ -333,16 +299,6 @@ class StudioDB:
             CREATE TABLE IF NOT EXISTS settings (
                 key TEXT PRIMARY KEY,
                 value TEXT NOT NULL
-            );
-            CREATE TABLE IF NOT EXISTS corrupt_data (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                source TEXT NOT NULL,
-                item_key TEXT NOT NULL,
-                raw_value TEXT NOT NULL,
-                reason TEXT NOT NULL,
-                detected_at TEXT NOT NULL,
-                notified_at TEXT,
-                UNIQUE(source,item_key,raw_value,reason)
             );
             CREATE TABLE IF NOT EXISTS todos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -452,6 +408,7 @@ class StudioDB:
             );
             """
         )
+        self._ensure_corrupt_data_table()
         self._migrate_ideas()
         self._migrate_memories()
         self._migrate_platform_progress()
@@ -543,20 +500,6 @@ class StudioDB:
             "INSERT OR IGNORE INTO settings(key,value) "
             "VALUES('traditional_chat_v1215_migrated','true')"
         )
-
-    def _decoded_setting(self, key: str) -> object:
-        row = self.conn.execute(
-            "SELECT value FROM settings WHERE key=?",
-            (key,),
-        ).fetchone()
-        if row is None:
-            return None
-        raw = str(row["value"])
-        try:
-            return json.loads(raw)
-        except json.JSONDecodeError, TypeError, ValueError:
-            self._record_corrupt_value("settings", key, raw, "invalid-json")
-            return CorruptStoredJSON("settings", key, raw)
 
     def _migrate_model_default(
         self,
@@ -675,20 +618,6 @@ class StudioDB:
                 "INSERT INTO settings(key,value) VALUES(?,?)",
                 tuple(restored.items()),
             )
-
-    def setting(self, key: str, default: object = None) -> object:
-        row = self.conn.execute(
-            "SELECT value FROM settings WHERE key=?",
-            (key,),
-        ).fetchone()
-        if row is None:
-            return default
-        raw = str(row["value"])
-        try:
-            return json.loads(raw)
-        except json.JSONDecodeError, TypeError, ValueError:
-            self._record_corrupt_value("settings", key, raw, "invalid-json")
-            return CorruptStoredJSON("settings", key, raw)
 
     def add_todo(self, title: str, category: str = "其他") -> int:
         title = title.strip()
