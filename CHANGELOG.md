@@ -4,45 +4,6 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
-
-
-### 未發布 — README 展示影片改為可自動重產（2026-09-04）
-
-* 重錄 `docs/media/mohan-demo.mp4`：新增 `tools/record_demo_video.py`，以二代執行期合成外觀、OneCore `Microsoft Yating` 正常語速、50 Hz 嘴型 cues 與離屏 PNG 逐幀編碼；媒體 provenance、音訊／畫面規格與 SHA-256 測試閘門同步更新。
-
-### 未發布 — README 媒體世代清單與重產閘門（2026-09-04）
-
-* 新增 `docs/media/MEDIA-PROVENANCE.json`，登錄 README 21 個媒體檔的產生工具、素體世代、SHA-256 與可否自動重產；測試會列出落後當前 `POSE_ATLAS_GENERATION` 的自動素材。
-
-### 未發布 — README 首屏重排（2026-09-04）
-
-* README 四語首屏改為主視覺、價值主張、下載／快速開始／跨平台能力矩陣、作者與版本資訊；Windows CI、MIT 授權與最新公開版本徽章保留在外層，其餘徽章移入四語折疊區／README 四语首屏改为主视觉、价值主张、下载／快速开始／跨平台能力矩阵、作者与版本信息；Windows CI、MIT 许可与最新公开版本徽章保留在外层，其余徽章移入四语折叠区／The four-language README first screen now leads with the hero, value proposition, download／Quick Start／cross-platform capability matrix, and author／release information; Windows CI, MIT License, and latest public release badges remain visible while the other badges move into four-language collapsible sections／README の四言語ファーストビューをメインビジュアル、価値提案、ダウンロード／クイックスタート／クロスプラットフォーム機能表、作者／リリース情報の順に変更し、Windows CI、MIT ライセンス、最新公開版バッジを表示したまま、その他のバッジを四言語の折りたたみセクションへ移動
-
-### 未發布 — README 四語重編與 DLC 教學（2026-09-03）
-
-* README 依「這是什麼、畫面與功能、安裝更新、首次使用、隱私、DLC、贊助授權、疑難排解、開發者入口」重編四語同構內容，刪除重複與過時段落；新增 `.mohan-outfit` 外觀／妝容包與 `.mohan-theme` 主題檔的安裝、選用、還原、容量數量上限、二代素體相容性及 Ko-fi 單次／每月贊助雙軌教學。
-
-### 未發布 — 凌霄主題包 B／C（2026-09-03）
-
-* 新增凌霄 B「霧靄青瓷」與 C「赤焰劍光」主題包，設定頁可切換且預設仍為 A「墨金・凌霄」／新增凌霄 B「雾霭青瓷」与 C「赤焰剑光」主题包，设置页可切换且默认仍为 A「墨金・凌霄」／add the Lingxiao B “Misty Celadon” and C “Crimson Swordlight” theme packs with a settings-page switch while keeping A “Ink-Gold” as default／凌霄 B「霧靄青磁」と C「赤焔剣光」のテーマパックを追加し、設定画面で切り替え可能にしつつ A「墨金・凌霄」を既定値として維持
-
-### 未發布 — 遷移說明（issue #140，選項 3）
-
-* 官方預設外觀包「藍白漢服」與內建妝容素材入庫：`assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit`（衣袍、散髮、銀髮飾，31 個 silhouette 齊全）與 `assets/official-packs/mohan.makeup.builtin.mohan-outfit`（`classic`／`light`，淡雅為原妝 alpha × 0.55）由 `tools/assemble_official_default_pack.py` 自產線分層對映、裁切、封裝而成；官方套件目錄由 `assets/makeup/` 改為 `assets/official-packs/`（`assets/makeup/builtin/` 仍是妝容範本與素材來源）。全新設定檔與「還原內建預設」的 `builtin` 哨兵改由 `domain/outfit_pack_official.py` 解析：衣裝／髮型／頭飾指向官方包 ensemble、妝容指向內建原妝，官方檔案不在場時仍退回素體；官方 id 不可匯入覆蓋、不可移除。雲裳閣的「內建預設服裝」即官方包，不再重複列出；`assets/makeup-safe-regions.json` 依二代半身 rig 重生。
-* 妝容成為可拆卸圖層（`makeup` 選擇槽）：素體維持素顏＋髮髻，外袍、散髮、銀髮飾與妝容全是可開關的圖層，全身 24 視角與半身 7 輪廓同一標準。外觀包 manifest 新增選用的 `makeup` 集合（item → 多個 variant → 每個 silhouette 三張全畫布 RGBA 圖層 `eyes`／`cheeks`／`lips`，可選 `intensity`）；沒有 `makeup` 的既有套件與雲端一鍵製衣產物維持有效。妝容於執行期固定疊在膚色之上、髮型／頭飾／衣裝之下，不受保護臉部遮罩阻擋，但被 `assets/makeup-safe-regions.json`（`tools/build_makeup_safe_regions.py` 由分層 rig 產生）的安全區裁切，且永不覆蓋可見虹膜與口腔；跑出安全區的圖層於匯入（`WardrobeService.install`、`tools/build_outfit_pack.py`）與執行期一律拒絕。雲裳閣新增妝容選單（素顏／內建「原妝」「淡雅」／已安裝套件）與 0–100% 濃淡滑桿，濃淡以 `makeup.json` 持久保存並同時作用於全身與半身路徑；純妝容 DLC 走既有「匯入服裝套件」按鈕與同一驗證、清單、移除流程。內建妝容素材由工作室依 `assets/makeup/builtin/manifest.json` 範本補產後放入 `assets/makeup/`；素材到位前，選擇原妝／淡雅會顯示「內建妝容素材待補」並以素顏呈現。
-* 素體升為二代：`BODY_PROFILE_ID` 由 `mohan-body-v1` 升為 `mohan-body-v2`（版本 2），並以測試釘住 `domain/constants.py` 的 `POSE_ATLAS_GENERATION`，三處常數不得再各自漂移。官方與 DLC 服裝套件由工作室在二代素體上重製；使用者自製的一代套件於匯入與執行期一律拒絕，不設寬限。已安裝的一代套件會在雲裳閣清單標示「不相容」，匯入或套用時顯示「這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成」；若它正是啟用中的服裝，執行期會自動還原內建服裝並提示一次，不再無聲回退。任何在儲存庫之外散布的 `.mohan-outfit` 都必須以 `tools/build_outfit_pack.py` 對二代範本重建；雲端一鍵製衣直接產出二代套件。
-
-### 未發布 — 執行期合成效能預算（2026-09-03）
-
-* 新增離屏執行期合成基準 `tools/bench_composite.py`、預算與量測依據 `tools/perf_budget.json`、以及 CI 閘門 `tests/test_perf_budget.py`。五輪、每輪五次的基準中，冷啟全身視角為中位數 1389.922 ms／p95 1468.653 ms，熱切全身視角為 2.485／3.157 ms，半身剪影切換為 5.043／5.600 ms；冷啟超過擁有者 300 ms 目標，預算如實標記 `over_target: true`，暫不改動合成演算法。重複解碼稽核證實首次全身與半身切換會重複解碼部分 PNG，熱切換則無新增解碼。
-
-### 未發布 — 行銷肖像改為二代合成外觀（2026-09-03）
-
-* README 六張表情卡、安裝精靈圖（`installer/artwork/*`）、工作列圖示（`assets/mohan-taskbar-icon.png`）與 `assets/mohan-halfbody.ico` 全部改為二代「合成後」外觀：`tools/render_marketing_portraits.py` 以全新空白儲存區驅動執行期同一條 `ActiveOutfitOverlay`（官方「藍白漢服」＋內建原妝 100%），輸出可重現的 `docs/media/portraits/*.png`（1254×1254 RGBA）；README 四語表情卡改引用該目錄，安裝精靈圖與圖示由 `tools/build_installer_artwork.py --source` 與 `tools/build_app_icon.ps1 -Source` 自合成後的 `idle_front.png` 重建，`tests/test_release_automation.py` 重新釘住各檔 SHA-256。執行期素顏 sprite 與官方套件皆未更動。
-
-### 未發布 — 半身素體二代（2026-09-02）
-
-* 半身素體重製為二代素顏版：`assets/expressions/` 下 113 張表情、75 張分層與 21 張 `v120_*` 物理切層全部由工作室自有產線自 `assets/pose-atlas/v5-base/` 重新生成，不再含一代外部授權美術；外袍、髮型、髮飾與妝容改為執行期圖層。`v120_*` 的頭髮、袖子與髮飾切層依契約為全透明（`tests/test_v120_asset_integrity.py` 的 `LICENSED_EMPTY`），臉部偏移表改為實測值；無程式載入的 `physics_*` 與 `skeptical_front.png` 共 22 張已移除。
 ## [4.6.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.5.1...v4.6.0) (2026-08-29)
 
 
@@ -334,36 +295,6 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
-### 未发布 — README 演示视频改为可自动重生成（2026-09-04）
-
-* 重录 `docs/media/mohan-demo.mp4`：新增 `tools/record_demo_video.py`，使用二代运行时合成外观、OneCore `Microsoft Yating` 正常语速、50 Hz 嘴型 cues 与离屏 PNG 逐帧编码；同步更新媒体 provenance、音视频规格与 SHA-256 测试闸门。
-
-### 未发布 — README 媒体世代清单与重生成闸门（2026-09-04）
-
-* 新增 `docs/media/MEDIA-PROVENANCE.json`，登记 README 21 个媒体文件的生成工具、素体世代、SHA-256 与是否可自动重生成；测试会列出落后当前 `POSE_ATLAS_GENERATION` 的自动素材。
-
-### 未发布 — README 四语重编与 DLC 教程（2026-09-03）
-
-* README 按“这是什么、界面与功能、安装更新、首次使用、隐私、DLC、赞助许可、疑难解答、开发者入口”重编四语同构内容，删除重复和过时段落；新增 `.mohan-outfit` 外观／妆容包与 `.mohan-theme` 主题文件的安装、选用、恢复、容量数量上限、二代素体兼容性及 Ko-fi 单次／每月赞助双轨教程。
-
-### 未发布 — 迁移说明（issue #140，选项 3）
-
-* 官方默认外观包「蓝白汉服」与内置妆容素材入库：`assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit`（衣袍、散发、银发饰，31 个 silhouette 齐全）与 `assets/official-packs/mohan.makeup.builtin.mohan-outfit`（`classic`／`light`，淡雅为原妆 alpha × 0.55）由 `tools/assemble_official_default_pack.py` 自产线分层映射、裁切、封装而成；官方套件目录由 `assets/makeup/` 改为 `assets/official-packs/`（`assets/makeup/builtin/` 仍是妆容模板与素材来源）。全新配置文件与「还原内置默认」的 `builtin` 哨兵改由 `domain/outfit_pack_official.py` 解析：服装／发型／头饰指向官方包 ensemble、妆容指向内置原妆，官方文件不在场时仍退回素体；官方 id 不可导入覆盖、不可移除。云裳阁的「内置默认服装」即官方包，不再重复列出；`assets/makeup-safe-regions.json` 按二代半身 rig 重新生成。
-* 妆容成为可拆卸图层（`makeup` 选择槽）：素体维持素颜＋发髻，外袍、散发、银发饰与妆容全是可开关的图层，全身 24 视角与半身 7 轮廓同一标准。外观包 manifest 新增可选的 `makeup` 集合（item → 多个 variant → 每个 silhouette 三张全画布 RGBA 图层 `eyes`／`cheeks`／`lips`，可选 `intensity`）；没有 `makeup` 的既有套件与云端一键制衣产物保持有效。妆容在运行时固定叠在肤色之上、发型／头饰／服装之下，不受保护脸部遮罩阻挡，但被 `assets/makeup-safe-regions.json`（`tools/build_makeup_safe_regions.py` 由分层 rig 生成）的安全区裁切，且永不覆盖可见虹膜与口腔；跑出安全区的图层在导入（`WardrobeService.install`、`tools/build_outfit_pack.py`）与运行时一律拒绝。云裳阁新增妆容菜单（素颜／内置「原妆」「淡雅」／已安装套件）与 0–100% 浓淡滑块，浓淡以 `makeup.json` 持久保存并同时作用于全身与半身路径；纯妆容 DLC 走既有「导入服装套件」按钮与同一验证、列表、删除流程。内置妆容素材由工作室按 `assets/makeup/builtin/manifest.json` 模板补产后放入 `assets/makeup/`；素材到位前，选择原妆／淡雅会显示「内置妆容素材待补」并以素颜呈现。
-* 素体升为二代：`BODY_PROFILE_ID` 由 `mohan-body-v1` 升为 `mohan-body-v2`（版本 2），并以测试钉住 `domain/constants.py` 的 `POSE_ATLAS_GENERATION`，三处常量不得再各自漂移。官方与 DLC 服装套件由工作室在二代素体上重制；用户自制的一代套件在导入与运行时一律拒绝，不设宽限。已安装的一代套件会在云裳阁列表标示「不兼容」，导入或应用时显示「这套服装是为一代素体制作的，穿在二代素体上会对不准；请用一键制衣重新生成」；若它正是启用中的服装，运行时会自动恢复内置服装并提示一次，不再无声回退。任何在仓库之外分发的 `.mohan-outfit` 都必须以 `tools/build_outfit_pack.py` 针对二代模板重建；云端一键制衣直接产出二代套件。
-
-### 未发布 — 运行时合成性能预算（2026-09-03）
-
-* 新增离屏运行时合成基准 `tools/bench_composite.py`、预算与测量依据 `tools/perf_budget.json`，以及 CI 闸门 `tests/test_perf_budget.py`。五轮、每轮五次的基准中，冷启动全身视角为中位数 1389.922 ms／p95 1468.653 ms，热切全身视角为 2.485／3.157 ms，半身剪影切换为 5.043／5.600 ms；冷启动超过所有者 300 ms 目标，预算如实标记 `over_target: true`，暂不改动合成算法。重复解码审计证实首次全身与半身切换会重复解码部分 PNG，热切换则无新增解码。
-
-### 未发布 — 营销肖像改为二代合成外观（2026-09-03）
-
-* README 六张表情卡、安装向导图（`installer/artwork/*`）、任务栏图标（`assets/mohan-taskbar-icon.png`）与 `assets/mohan-halfbody.ico` 全部改为二代「合成后」外观：`tools/render_marketing_portraits.py` 以全新空白存储区驱动运行时同一条 `ActiveOutfitOverlay`（官方「蓝白汉服」＋内置原妆 100%），输出可复现的 `docs/media/portraits/*.png`（1254×1254 RGBA）；README 四语表情卡改引用该目录，安装向导图与图标由 `tools/build_installer_artwork.py --source` 与 `tools/build_app_icon.ps1 -Source` 从合成后的 `idle_front.png` 重建，`tests/test_release_automation.py` 重新钉住各文件 SHA-256。运行时素颜 sprite 与官方套件均未改动。
-
-### 未发布 — 半身素体二代（2026-09-02）
-
-* 半身素体重制为二代素颜版：`assets/expressions/` 下 113 张表情、75 张分层与 21 张 `v120_*` 物理切层全部由工作室自有产线自 `assets/pose-atlas/v5-base/` 重新生成，不再包含一代外部授权美术；外袍、发型、发饰与妆容改为运行时图层。`v120_*` 的头发、袖子与发饰切层按契约为全透明（`tests/test_v120_asset_integrity.py` 的 `LICENSED_EMPTY`），脸部偏移表改为实测值；无程序加载的 `physics_*` 与 `skeptical_front.png` 共 22 张已移除。
-
 ### v4.3.0 — 2026-08-19
 
 - 新增「真人女孩感」五大系统与灵魂拼图：性格镜像、穿搭直觉、军粮饱食度、主上专属宠溺、虹膜羞涩视线，以及赤焰剑意情绪共鸣、时间主权状态机、空中捏合牵手、梦呓系统、剑魂觉醒、感官共感、共同创作录等领域模块。
@@ -565,36 +496,6 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 ## English
 
 All notable public changes to MoHan Desktop Assistant are documented here.
-
-### Unreleased — README demonstration video is now regenerable (2026-09-04)
-
-* Re-records `docs/media/mohan-demo.mp4` with the new `tools/record_demo_video.py`: generation-2 runtime composition, normal-speed OneCore `Microsoft Yating`, 50 Hz viseme cues, and offscreen PNG frame encoding; media provenance, A/V specification, and SHA-256 test gates are updated together.
-
-### Unreleased — README media generation ledger and regeneration gate (2026-09-04)
-
-* Adds `docs/media/MEDIA-PROVENANCE.json`, recording the generator, body generation, SHA-256, and regeneration capability for all 21 README media files; tests list any auto-regenerable media left behind the current `POSE_ATLAS_GENERATION`.
-
-### Unreleased — four-language README restructure and DLC guide (2026-09-03)
-
-* Rebuilt the README into matching “what it is, screens and capabilities, install and update, first use, privacy, DLC, support and licensing, troubleshooting, and developer entry” sections in all four languages, removing duplicate and obsolete material; added installation, selection, restoration, capacity and count limits, generation-2 body compatibility, and Ko-fi one-time/monthly dual-track guidance for `.mohan-outfit` appearance or makeup packs and `.mohan-theme` files.
-
-### Unreleased — migration note (issue #140, option 3)
-
-* The official default appearance pack "Blue-and-White Hanfu" and the built-in makeup art land in the repository: `assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit` (robe, loose hair, silver hairpiece, all 31 silhouettes) and `assets/official-packs/mohan.makeup.builtin.mohan-outfit` (`classic`/`light`, light being classic with alpha × 0.55), mapped, cropped and sealed from the pipeline layers by `tools/assemble_official_default_pack.py`; the official pack directory moves from `assets/makeup/` to `assets/official-packs/` (`assets/makeup/builtin/` stays the makeup template and asset source). The `builtin` sentinel of a fresh profile and of "restore built-in" is now resolved by `domain/outfit_pack_official.py`: garment/hairstyle/headwear point at the official ensemble and makeup at the built-in classic look, still falling back to the bare base when an official archive is absent; official ids cannot be shadowed by an import or removed. The Wardrobe Pavilion's "built-in default outfit" is the official pack itself and is no longer listed twice; `assets/makeup-safe-regions.json` is regenerated from the generation-2 half-body rigs.
-* Makeup becomes a detachable layer (the `makeup` selection slot): the base body stays bare-faced with a bun, and the robe, loose hair, silver hairpiece, and makeup are all switchable layers under one standard for the 24 full-body views and the 7 half-body silhouettes. The appearance-pack manifest gains an optional `makeup` collection (item → several variants → three full-canvas RGBA layers `eyes`/`cheeks`/`lips` per silhouette, optional `intensity`); existing packs and one-click cloud outfits without `makeup` stay valid. At runtime makeup always sits above the skin and below hairstyles/headwear/garments, exempt from the protected-face mask but clipped to the safe region in `assets/makeup-safe-regions.json` (derived from the layered rig by `tools/build_makeup_safe_regions.py`) and never over the visible iris or oral cavity; a layer that leaves its safe region is rejected at import (`WardrobeService.install`, `tools/build_outfit_pack.py`) and at runtime. The Wardrobe Pavilion gains a makeup menu (bare face / built-in "classic" and "light" / installed packs) and a 0–100% intensity slider persisted in `makeup.json` that applies to both the full-body and the half-body path; makeup-only DLC uses the existing "Import outfit package" button and the same validation, listing, and removal pipeline. The built-in makeup art is produced by the studio from the `assets/makeup/builtin/manifest.json` template and dropped into `assets/makeup/`; until it lands, choosing classic/light shows "built-in makeup art pending" and renders a bare face.
-* Body profile moved to generation 2: `BODY_PROFILE_ID` goes from `mohan-body-v1` to `mohan-body-v2` (version 2) and is pinned by test to `POSE_ATLAS_GENERATION` in `domain/constants.py`, so the three constants can no longer drift apart. Official and DLC outfit packs are remade on the generation-2 body by the studio; user-made generation-1 packs are rejected at import and at runtime with no grace period. An already-installed generation-1 pack is listed as "Incompatible" in the Wardrobe Pavilion, and importing or applying it shows "This outfit was made for the generation-1 body and will not line up on the generation-2 body; regenerate it with one-click outfit creation."; if it is the active outfit, the runtime restores the built-in outfit and notifies once instead of falling back silently. Any `.mohan-outfit` distributed outside the repository must be rebuilt with `tools/build_outfit_pack.py` against the generation-2 template; one-click cloud outfit creation produces generation-2 packs directly.
-
-### Unreleased — runtime composition performance budget (2026-09-03)
-
-* Adds the offscreen runtime composition benchmark `tools/bench_composite.py`, the budget and measurement basis `tools/perf_budget.json`, and the CI gate `tests/test_perf_budget.py`. In the five-round, five-sample baseline, cold full-body view composition is median 1389.922 ms / p95 1468.653 ms, hot full-body view switching is 2.485 / 3.157 ms, and half-body silhouette switching is 5.043 / 5.600 ms; cold start exceeds the owner target of 300 ms, so the budget truthfully records `over_target: true` without changing the composition algorithm. Decode auditing confirms that the first full-body and half-body switches redundantly decode some PNGs, while hot switches add no decode calls.
-
-### Unreleased — marketing portraits in the generation-2 composed look (2026-09-03)
-
-* The six README expression cards, the installer wizard artwork (`installer/artwork/*`), the taskbar icon (`assets/mohan-taskbar-icon.png`) and `assets/mohan-halfbody.ico` now show the generation-2 *composed* look: `tools/render_marketing_portraits.py` drives the very same runtime `ActiveOutfitOverlay` with a fresh empty store (official Blue-and-White Hanfu pack plus built-in classic makeup at 100 %) and writes reproducible `docs/media/portraits/*.png` (1254×1254 RGBA); the README cards in all four languages reference that directory, the wizard art and the icon are rebuilt from the composed `idle_front.png` via `tools/build_installer_artwork.py --source` and `tools/build_app_icon.ps1 -Source`, and `tests/test_release_automation.py` re-pins every SHA-256. The bare runtime sprites and the official packs are untouched.
-
-### Unreleased — generation-2 half-body base (2026-09-02)
-
-* The half-body base is regenerated bare-faced on generation 2: the 113 expressions, 75 layers and 21 `v120_*` physics cutouts under `assets/expressions/` are all rebuilt by the studio's own pipeline from `assets/pose-atlas/v5-base/` and no longer contain generation-1 externally licensed artwork; robe, hairstyle, hairpiece and makeup are now runtime layers. The `v120_*` hair, sleeve and ornament cutouts are fully transparent by contract (`LICENSED_EMPTY` in `tests/test_v120_asset_integrity.py`), the face-offset tables now hold measured values, and the 22 `physics_*` and `skeptical_front.png` files that no code loaded are removed.
 
 ### v4.3.0 — 2026-08-19
 
@@ -837,36 +738,6 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
-
-### 未リリース — README デモ動画を自動再生成可能に変更（2026-09-04）
-
-* `docs/media/mohan-demo.mp4` を再録し、新しい `tools/record_demo_video.py` で第二世代の実行時合成、通常速度の OneCore `Microsoft Yating`、50 Hz の viseme cues、オフスクリーン PNG 逐フレームエンコードを使用。メディア provenance、音声・映像仕様、SHA-256 のテストゲートも同時に更新しました。
-
-### 未リリース — README メディア世代台帳と再生成ゲート（2026-09-04）
-
-* `docs/media/MEDIA-PROVENANCE.json` を追加し、README の 21 メディアについて生成ツール、素体世代、SHA-256、自動再生成可否を記録しました。テストは現在の `POSE_ATLAS_GENERATION` より遅れた自動再生成対象を一覧化します。
-
-### 未リリース — README 四言語再編と DLC ガイド（2026-09-03）
-
-* README を「概要、画面と機能、導入と更新、初回利用、プライバシー、DLC、支援とライセンス、トラブルシューティング、開発者向け入口」の四言語同一構造へ再編し、重複・旧情報を削除しました。`.mohan-outfit` 外観／メイクパックと `.mohan-theme` ファイルについて、導入、選択、復元、容量・数量上限、第二世代素体互換性、Ko-fi の単発／毎月支援という二本立てを追記しました。
-
-### 未リリース — 移行メモ（issue #140、選択肢 3）
-
-* 公式の既定外観パック「藍白漢服」と内蔵メイク素材をリポジトリに収録：`assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit`（袍、下ろした髪、銀の髪飾り、31 silhouette 完備）と `assets/official-packs/mohan.makeup.builtin.mohan-outfit`（`classic`／`light`、淡めは基本メイクの alpha × 0.55）を `tools/assemble_official_default_pack.py` がパイプラインのレイヤーから対応付け・切り落とし・封止して生成。公式パックのディレクトリは `assets/makeup/` から `assets/official-packs/` へ移動（`assets/makeup/builtin/` はメイクのテンプレートと素材元のまま）。新規プロファイルと「内蔵の既定へ戻す」の `builtin` センチネルは `domain/outfit_pack_official.py` が解決し、衣装／髪型／頭飾りは公式 ensemble、メイクは内蔵の基本メイクを指し、公式ファイルがなければ従来どおり素体へ戻る。公式 id はインポートで上書きも削除もできない。雲裳閣の「内蔵の既定衣装」は公式パックそのもので、二重には表示しない。`assets/makeup-safe-regions.json` は第二世代の半身 rig から再生成。
-* メイクを着脱可能なレイヤー（`makeup` 選択 slot）に：素体はすっぴん＋お団子のまま、上衣、下ろした髪、銀の髪飾り、メイクはすべて切り替え可能なレイヤーで、全身 24 視点と半身 7 輪郭は同一基準です。外観パックの manifest に任意の `makeup` 集合（item → 複数の variant → silhouette ごとに全キャンバス RGBA 三層 `eyes`／`cheeks`／`lips`、任意の `intensity`）を追加。`makeup` を持たない既存パックとクラウドのワンクリック衣装はそのまま有効です。実行時のメイクは常に肌の上、髪型／頭飾り／衣装の下に重なり、保護顔マスクの対象外ですが、`assets/makeup-safe-regions.json`（`tools/build_makeup_safe_regions.py` がレイヤー rig から生成）の安全領域でクリップされ、見えている虹彩と口腔は決して覆いません。安全領域を外れるレイヤーはインポート時（`WardrobeService.install`、`tools/build_outfit_pack.py`）も実行時も拒否します。雲裳閣にメイクメニュー（すっぴん／内蔵「基本メイク」「淡めメイク」／インストール済みパック）と 0–100% の濃さスライダーを追加。濃さは `makeup.json` に永続保存され、全身と半身の両経路に効きます。メイク専用 DLC は既存の「衣装パッケージをインポート」ボタンと同じ検証・一覧・削除の流れを通ります。内蔵メイク素材はスタジオが `assets/makeup/builtin/manifest.json` テンプレートに従って制作し `assets/makeup/` に配置します。素材が届くまで、基本メイク／淡めメイクを選ぶと「内蔵メイク素材は準備中」と表示され、すっぴんで描画されます。
-* 素体を第二世代へ更新：`BODY_PROFILE_ID` を `mohan-body-v1` から `mohan-body-v2`（バージョン 2）へ引き上げ、`domain/constants.py` の `POSE_ATLAS_GENERATION` とテストで固定したため、三つの定数が個別にずれることはなくなりました。公式および DLC の衣装パックはスタジオが第二世代素体で作り直します。ユーザー自作の第一世代パックはインポート時と実行時に必ず拒否され、猶予はありません。インストール済みの第一世代パックは雲裳閣の一覧で「非互換」と表示され、インポートまたは適用時に「この衣装は第一世代素体向けに作られたもので、第二世代素体では位置が合いません。ワンクリック衣装生成で作り直してください」と表示されます。それが使用中の衣装だった場合、実行時は内蔵衣装へ自動的に戻し、一度だけ通知します（無言のフォールバックはしません）。リポジトリ外で配布されるあらゆる `.mohan-outfit` は `tools/build_outfit_pack.py` で第二世代テンプレートに対して再構築する必要があります。クラウドのワンクリック衣装生成は第二世代パックを直接生成します。
-
-### 未リリース — 実行時合成の性能予算（2026-09-03）
-
-* 離屏の実行時合成ベンチマーク `tools/bench_composite.py`、予算と測定根拠 `tools/perf_budget.json`、CI ゲート `tests/test_perf_budget.py` を追加しました。5 ラウンド・各 5 回の基準測定では、全身視点のコールド合成は中央値 1389.922 ms／p95 1468.653 ms、全身視点のホット切替は 2.485／3.157 ms、半身シルエット切替は 5.043／5.600 ms でした。コールド起動は所有者目標 300 ms を超えるため、予算には `over_target: true` を正直に記録し、合成アルゴリズムは変更していません。デコード監査により、初回の全身・半身切替では一部 PNG が重複デコードされ、ホット切替では新たなデコード呼び出しがないことを確認しました。
-
-### 未リリース — マーケティング肖像を第二世代の合成後の姿へ（2026-09-03）
-
-* README の表情カード 6 枚、インストーラーのウィザード画像（`installer/artwork/*`）、タスクバーアイコン（`assets/mohan-taskbar-icon.png`）と `assets/mohan-halfbody.ico` をすべて第二世代の「合成後」の姿に更新しました。`tools/render_marketing_portraits.py` が空の新規ストアで実行時と同じ `ActiveOutfitOverlay`（公式「藍白漢服」＋内蔵基本メイク 100%）を駆動し、再現可能な `docs/media/portraits/*.png`（1254×1254 RGBA）を出力します。四言語の README カードはこのディレクトリを参照し、ウィザード画像とアイコンは合成後の `idle_front.png` から `tools/build_installer_artwork.py --source` と `tools/build_app_icon.ps1 -Source` で再構築、`tests/test_release_automation.py` は各ファイルの SHA-256 を釘付けし直しました。実行時の素顔スプライトと公式パックは変更していません。
-
-### 未リリース — 半身素体の第二世代化（2026-09-02）
-
-* 半身素体を第二世代の素顔版として作り直しました。`assets/expressions/` 配下の表情 113 枚、レイヤー 75 枚、`v120_*` 物理切り出し 21 枚はすべてスタジオ自前のパイプラインが `assets/pose-atlas/v5-base/` から再生成したもので、第一世代の外部ライセンス美術は含みません。外衣、髪型、髪飾り、化粧は実行時レイヤーになりました。`v120_*` の髪・袖・髪飾りの切り出しは契約上完全に透明で（`tests/test_v120_asset_integrity.py` の `LICENSED_EMPTY`）、顔オフセット表は実測値に更新し、どのコードも読み込まない `physics_*` と `skeptical_front.png` の計 22 枚を削除しました。
 
 ### v4.3.0 — 2026-08-19
 
