@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+lazy import json
+lazy import os
 lazy import re
 lazy import struct
+lazy import subprocess
+lazy import sys
 lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 ROOT = Path(__file__).resolve().parents[1]
 MIN_PREVIEW_BYTES = 100_000
@@ -38,6 +43,128 @@ def assert_external_actions_pinned(workflow: str) -> None:
     assert not unpinned, (
         "external GitHub Actions must be pinned to complete 40-character "
         f"commit SHAs: {unpinned}"
+    )
+
+
+def _run_pr_checker(payload: dict[str, object]) -> subprocess.CompletedProcess[str]:
+    with TemporaryDirectory() as temporary_directory:
+        event_path = Path(temporary_directory) / "event.json"
+        event_path.write_text(
+            json.dumps(payload, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        environment = os.environ.copy()
+        environment["GITHUB_EVENT_PATH"] = str(event_path)
+        return subprocess.run(
+            [sys.executable, str(ROOT / "tools/check_four_language_pr.py")],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+            env=environment,
+        )
+
+
+def _run_dependabot_normalizer(title: str) -> str:
+    environment = os.environ.copy()
+    environment["PR_TITLE"] = title
+    completed = subprocess.run(
+        [sys.executable, str(ROOT / "tools/normalize_dependabot_title.py")],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+        env=environment,
+    )
+    assert completed.returncode == 0, completed.stderr
+    return completed.stdout.rstrip("\r\n")
+
+
+def test_pr_language_governance_and_dependabot_normalization() -> None:
+    language_guard = read(".github/workflows/pr-language-governance.yml")
+    normalizer_workflow = read(
+        ".github/workflows/dependabot-title-normalization.yml"
+    )
+    checker = read("tools/check_four_language_pr.py")
+
+    assert "RELEASE_PLEASE_PR_EXEMPT" not in language_guard
+    assert "RELEASE_PLEASE_BODY_EXEMPT" in language_guard
+    assert "RELEASE_PLEASE_PR_EXEMPT" not in checker
+    assert language_guard.index("title=$(jq") < language_guard.index(
+        "RELEASE_PLEASE_BODY_EXEMPT"
+    )
+    assert "pull_request_target:" in normalizer_workflow
+    assert (
+        "if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}"
+        in normalizer_workflow
+    )
+    assert "contents: read\n      pull-requests: write" in normalizer_workflow
+    assert "tools/normalize_dependabot_title.py" in normalizer_workflow
+    assert 'gh pr edit "$PR_NUMBER"' in normalizer_workflow
+    assert '--repo "$GITHUB_REPOSITORY"' in normalizer_workflow
+    assert '--title "$normalized_title"' in normalizer_workflow
+    assert "bash -c" not in normalizer_workflow
+    assert_action_pinned(normalizer_workflow, "actions/checkout")
+
+    release_payload = {
+        "pull_request": {
+            "title": "發版 4.5.1／发版 4.5.1／Release 4.5.1／リリース 4.5.1",
+            "body": "",
+            "head": {"ref": "release-please--branches--main"},
+            "user": {"login": "github-actions[bot]"},
+        }
+    }
+    release_result = _run_pr_checker(release_payload)
+    assert release_result.returncode == 0, release_result.stderr
+    assert "RELEASE_PLEASE_BODY_EXEMPT" in release_result.stdout
+
+    release_with_invalid_title = {
+        **release_payload,
+        "pull_request": {
+            **release_payload["pull_request"],
+            "title": "chore(main): release 4.5.1",
+        },
+    }
+    invalid_release_result = _run_pr_checker(release_with_invalid_title)
+    assert invalid_release_result.returncode == 1
+    assert "pull-request title" in invalid_release_result.stderr
+
+    dependabot_payload = {
+        "pull_request": {
+            "title": "更新／更新／Update／更新",
+            "body": "",
+            "head": {"ref": "dependabot/pip/example-1.2.3"},
+            "user": {"login": "dependabot[bot]"},
+        }
+    }
+    dependabot_result = _run_pr_checker(dependabot_payload)
+    assert dependabot_result.returncode == 1
+    assert "pull-request body" in dependabot_result.stderr
+
+    normalization_cases = (
+        (
+            "build(deps): bump actions/checkout from 4 to 5",
+            "相依套件更新：actions/checkout 4 → 5／"
+            "依赖项更新：actions/checkout 4 → 5／"
+            "Dependency update: actions/checkout 4 → 5／"
+            "依存関係の更新：actions/checkout 4 → 5",
+        ),
+        (
+            "build(deps): bump github/codeql-action/analyze from 4.37.6 to 4.37.9",
+            "相依套件更新：github/codeql-action/analyze 4.37.6 → 4.37.9／"
+            "依赖项更新：github/codeql-action/analyze 4.37.6 → 4.37.9／"
+            "Dependency update: github/codeql-action/analyze 4.37.6 → 4.37.9／"
+            "依存関係の更新：github/codeql-action/analyze 4.37.6 → 4.37.9",
+        ),
+    )
+    for source_title, expected_title in normalization_cases:
+        normalized_title = _run_dependabot_normalizer(source_title)
+        assert normalized_title == expected_title
+        assert _run_dependabot_normalizer(normalized_title) == normalized_title
+
+    assert (
+        _run_dependabot_normalizer("build(deps): bump actions/checkout four to five")
+        == ""
     )
 
 
@@ -433,6 +560,7 @@ def test_secret_defense_and_community_files() -> None:
 
 def main() -> None:
     test_workspace_workflow_policy()
+    test_pr_language_governance_and_dependabot_normalization()
     test_funding_configuration()
     test_security_workflows()
     test_release_workflow()

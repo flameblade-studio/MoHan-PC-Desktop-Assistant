@@ -86,7 +86,7 @@ def _run_main_with_payload(payload: dict) -> int:
                 os.environ["GITHUB_EVENT_PATH"] = previous
 
 
-def test_release_please_exemption_requires_bot_author() -> None:
+def test_release_please_body_exemption_requires_bot_author_and_four_language_title() -> None:
     payload = {
         "pull_request": {
             "title": "single-language title",
@@ -99,6 +99,11 @@ def test_release_please_exemption_requires_bot_author() -> None:
     assert _run_main_with_payload(payload) == 1
 
     payload["pull_request"]["user"]["login"] = "github-actions[bot]"
+    # The release bot may skip the machine-generated body, but its title still
+    # has to satisfy the four-language contract.
+    assert _run_main_with_payload(payload) == 1
+
+    payload["pull_request"]["title"] = "發版 4.5.1／发版 4.5.1／Release 4.5.1／リリース 4.5.1"
     assert _run_main_with_payload(payload) == 0
 
     payload["pull_request"]["head"]["ref"] = "feature/normal-branch"
@@ -109,7 +114,7 @@ def main() -> None:
     test_valid_pull_request_metadata()
     test_title_requires_exactly_four_nonempty_segments()
     test_body_requires_fixed_order_and_structural_parity()
-    test_release_please_exemption_requires_bot_author()
+    test_release_please_body_exemption_requires_bot_author_and_four_language_title()
     print("FOUR_LANGUAGE_PR_TESTS_OK")
 
 
