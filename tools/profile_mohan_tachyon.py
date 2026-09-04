@@ -8,6 +8,7 @@ lazy import platform
 lazy import re
 lazy import subprocess
 lazy import sys
+lazy import shutil
 lazy import tempfile
 lazy import time
 lazy from collections.abc import Callable, Iterator, Mapping
@@ -1251,7 +1252,8 @@ def _publish_profile_outputs(
         strict=True,
     ):
         destination_path.parent.mkdir(parents=True, exist_ok=True)
-        source_path.replace(destination_path)
+        # shutil.move 可跨磁碟機；Path.replace 在 CI runner 的 Temp（C:）搬到工作區（D:）會失敗。
+        shutil.move(str(source_path), str(destination_path))
 
 
 def _profile_target(
@@ -1266,7 +1268,8 @@ def _profile_target(
     artifacts.summary.parent.mkdir(parents=True, exist_ok=True)
     accepted: tuple[dict[str, object], tuple[str, ...]] | None = None
     with tempfile.TemporaryDirectory(
-        prefix=f"mohan-tachyon-{target}-"
+        prefix=f"mohan-tachyon-{target}-",
+        dir=artifacts.summary.parent,
     ) as raw_temp_dir:
         temp_dir = Path(raw_temp_dir)
         attempt_contexts: dict[int, tuple[Path, Mapping[str, str]]] = {}
