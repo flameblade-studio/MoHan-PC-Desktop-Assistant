@@ -13,6 +13,7 @@ sys.path.insert(0, str(TOOLS))
 lazy import capture_control_center_reference
 lazy import capture_readme_media
 lazy from PySide6.QtCore import QTimer
+lazy from PySide6.QtGui import QImage
 lazy from PySide6.QtWidgets import QApplication
 
 
@@ -180,3 +181,45 @@ def test_control_center_capture_accepts_tasks_and_ideas_alias(
 
     assert output.is_file()
     assert observed == {"outer_index": 1}
+
+
+def test_control_center_wardrobe_capture_uses_the_runtime_composite(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    observed: dict[str, object] = {}
+    torso = (488, 585)
+    grey_tolerance = 12
+    blue_margin = 40
+    bare_path = ROOT / "assets" / "pose-atlas" / "v5-base" / "yaw+000-pitch+00.png"
+
+    def close_and_record(dashboard, db) -> None:
+        source = dashboard._wardrobe_pose_source.toImage()
+        bare = QImage(str(bare_path))
+        before, after = bare.pixelColor(*torso), source.pixelColor(*torso)
+        observed.update(
+            state=dashboard._wardrobe_preview_state,
+            layer_count=dashboard._wardrobe_outfit_overlay.layer_count("yaw+000-pitch+00"),
+            size=source.size().toTuple(),
+            blue_margin=after.blue() - after.red(),
+            bare_is_grey=abs(before.red() - before.green()) <= grey_tolerance
+            and abs(before.green() - before.blue()) <= grey_tolerance,
+        )
+        close_dashboard_for_test(dashboard, db)
+
+    monkeypatch.setattr(
+        capture_control_center_reference,
+        "close_dashboard",
+        close_and_record,
+    )
+    output = capture_control_center_reference.capture(
+        tmp_path / "control-center",
+        "wardrobe",
+    )
+
+    assert output.is_file()
+    assert observed["state"] == "composited"
+    assert observed["layer_count"] > 0
+    assert observed["size"] == (1024, 1536)
+    assert observed["bare_is_grey"] is True
+    assert observed["blue_margin"] >= blue_margin
