@@ -292,6 +292,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "thinking_status": "{assistant}が考えています…",
     "answering_status": "回答中…",
     "api_connection_failed": "OpenAI API：接続失敗（{error}）",
+    "voice_vad_degraded": "音声検出が低下したため、RMSに切り替えました。",
     "voice_ready_short": "準備完了",
     "voice_muted_short": "ミュート中",
     "sleep_mode_status": (

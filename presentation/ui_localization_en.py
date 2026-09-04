@@ -459,6 +459,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "thinking_status": "{assistant} is thinking…",
     "answering_status": "Answering…",
     "api_connection_failed": "OpenAI API: connection failed ({error})",
+    "voice_vad_degraded": "Voice detection degraded; using RMS instead.",
     "voice_ready_short": "Ready",
     "voice_muted_short": "Muted",
     "sleep_mode_status": (

@@ -344,6 +344,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'thinking_status': '{assistant}思考中……',
  'answering_status': '回答中……',
  'api_connection_failed': 'OpenAI API：连接失败（{error}）',
+ 'voice_vad_degraded': '语音检测已降级，改用 RMS。',
  'voice_ready_short': '准备就绪',
  'voice_muted_short': '已静音',
  'sleep_mode_status': '休眠模式已启动；墨寒会保持安静，提醒与紧急警报仍会按规则处理。',

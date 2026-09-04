@@ -8,11 +8,16 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from application.multimodal_fusion_hub import MultimodalFusionHub, VoiceActivityState
+lazy from application.multimodal_fusion_hub import (
+    MultimodalFusionHub,
+    VoiceActivityResult,
+    VoiceActivityState,
+)
 lazy from infrastructure.multimodal_model_provider import (
     MultimodalModelPaths,
     OpenCVMultiModalModelProvider,
 )
+lazy from presentation.companion_core import CompanionCoreMixin
 
 MODEL_EXPECTATIONS = {
     "face_landmark_468.tflite": (
@@ -72,6 +77,68 @@ def assert_face_and_voice_paths_fail_safe() -> None:
     provider.reset_voice()
 
 
+def assert_runtime_vad_fault_is_marked_and_notified_once() -> None:
+    provider = OpenCVMultiModalModelProvider(
+        MultimodalModelPaths.from_directory(
+            ROOT / "assets" / "vision-models"
+        )
+    )
+    samples = (0.10, -0.10) * 256
+
+    healthy = provider.analyze_voice(samples)
+    healthy_legacy_shape = VoiceActivityResult(
+        healthy.state,
+        healthy.rms,
+        healthy.confidence,
+    )
+    assert healthy == healthy_legacy_shape
+    assert healthy.degraded is False
+
+    def fail_silero(_chunk) -> float:
+        raise RuntimeError("simulated silero runtime fault")
+
+    provider._silero_infer = fail_silero
+    degraded = provider.analyze_voice(samples)
+    assert degraded.degraded is True
+    assert degraded.rms > 0.0
+    assert degraded.state is VoiceActivityState.ACTIVE
+
+    class StatusDashboard:
+        def __init__(self) -> None:
+            self.messages: list[str] = []
+
+        def _t(self, _key: str, fallback: str) -> str:
+            return fallback
+
+        def set_voice_phase(self, message: str) -> None:
+            self.messages.append(message)
+
+    core = object.__new__(CompanionCoreMixin)
+    dashboard = StatusDashboard()
+    core.dashboard = dashboard
+    degraded_result = VoiceActivityResult(
+        VoiceActivityState.ACTIVE,
+        degraded.rms,
+        degraded.confidence,
+        True,
+    )
+    core._notify_vad_degradation(degraded_result)
+    core._notify_vad_degradation(degraded_result)
+    assert dashboard.messages == ["語音偵測已降級，改用 RMS。"]
+    core._notify_vad_degradation(
+        VoiceActivityResult(
+            VoiceActivityState.ACTIVE,
+            healthy.rms,
+            healthy.confidence,
+        )
+    )
+    core._notify_vad_degradation(degraded_result)
+    assert dashboard.messages == [
+        "語音偵測已降級，改用 RMS。",
+        "語音偵測已降級，改用 RMS。",
+    ]
+
+
 def assert_provider_can_drive_the_canonical_hub() -> None:
     provider = OpenCVMultiModalModelProvider(
         MultimodalModelPaths.from_directory(
@@ -107,6 +174,7 @@ def run() -> None:
     assert_bundled_model_files_are_intact()
     assert_all_bundled_models_load_and_warm_up()
     assert_face_and_voice_paths_fail_safe()
+    assert_runtime_vad_fault_is_marked_and_notified_once()
     assert_provider_can_drive_the_canonical_hub()
     assert_missing_model_paths_are_rejected()
     print("MULTIMODAL_MODEL_PROVIDER_OK")
