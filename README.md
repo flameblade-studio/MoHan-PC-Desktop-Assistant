@@ -178,7 +178,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 - 作者：**CHOU MING HUA**。
 - 原始碼採 [MIT License](LICENSE)；「墨寒」角色美術、人設、名稱與肖像保留一切權利，不在 MIT 授權範圍。
-- 素材生產工具與權重只接受 MIT、Apache 2.0、CC0、CC BY（及同級 BSD）白名單；角色美術仍是權利人的專有財產，詳見 [授權純淨承諾](docs/LICENSE-PURITY.md)。
+- 素材生產工具與權重只接受 MIT、Apache 2.0、CC0、CC BY（及同級 BSD）白名單；字型是唯一例外：自 2026-09-02 起允許 SIL OFL 1.1，但僅限字型，不延伸至其他素材；角色美術仍是權利人的專有財產，詳見 [授權純淨承諾](docs/LICENSE-PURITY.md)。
 - 素材與第三方條款分別見 [ASSETS-LICENSE](ASSETS-LICENSE.md) 與 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 
 本專案遵循[炎劍開源軟體家族品質標準](PUBLISHING.md)。
@@ -385,7 +385,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 - 作者：**CHOU MING HUA**。
 - 源代码采用 [MIT License](LICENSE)；“墨寒”角色美术、人设、名称与肖像保留所有权利，不在 MIT 许可证范围内。
-- 素材生产工具与权重只接受 MIT、Apache 2.0、CC0、CC BY（及同等级 BSD）白名单；角色美术仍是权利人的专有财产，详见 [许可证纯净承诺](docs/LICENSE-PURITY.md)。
+- 素材生产工具与权重只接受 MIT、Apache 2.0、CC0、CC BY（及同等级 BSD）白名单；字体是唯一例外：自 2026-09-02 起允许 SIL OFL 1.1，但仅限字体，不延伸至其他素材；角色美术仍是权利人的专有财产，详见 [许可证纯净承诺](docs/LICENSE-PURITY.md)。
 - 素材与第三方条款分别见 [ASSETS-LICENSE](ASSETS-LICENSE.md) 与 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 
 本项目遵循[炎剑开源软件家族质量标准](PUBLISHING.md)。
@@ -592,7 +592,7 @@ Use the Sponsor button displayed by GitHub above this repository, or visit [Ko-f
 
 - Author: **CHOU MING HUA**.
 - Source code uses the [MIT License](LICENSE); the MoHan character artwork, persona, name, and likeness are All Rights Reserved and outside the MIT grant.
-- Asset-production tools and weights admit only the MIT, Apache 2.0, CC0, CC BY (and equivalent BSD-class) allowlist. Character art remains the rights holder's proprietary property; see the [License Purity Commitment](docs/LICENSE-PURITY.md).
+- Asset-production tools and weights admit only the MIT, Apache 2.0, CC0, CC BY (and equivalent BSD-class) allowlist. Fonts are the sole exception: since 2026-09-02, SIL OFL 1.1 is allowed for fonts only and does not extend to other materials. Character art remains the rights holder's proprietary property; see the [License Purity Commitment](docs/LICENSE-PURITY.md).
 - Asset and third-party terms are in [ASSETS-LICENSE](ASSETS-LICENSE.md) and [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md).
 
 This project follows the [Flameblade Open Source Software Family Quality Standard](PUBLISHING.md).
@@ -799,7 +799,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 - 作者：**CHOU MING HUA**。
 - ソースコードは [MIT License](LICENSE) です。「墨寒」のキャラクター美術、人物設定、名称、肖像はすべての権利を留保し、MIT の許諾範囲外です。
-- 素材生成の道具と重みは MIT、Apache 2.0、CC0、CC BY（および同等の BSD 系）ホワイトリストだけを受理します。キャラクター美術は権利者の専有財産です。詳しくは [ライセンス純浄性の約束](docs/LICENSE-PURITY.md) を参照してください。
+- 素材生成の道具と重みは MIT、Apache 2.0、CC0、CC BY（および同等の BSD 系）ホワイトリストだけを受理します。フォントが唯一の例外で、2026-09-02 以降は SIL OFL 1.1 をフォントに限って認め、他の素材には拡張しません。キャラクター美術は権利者の専有財産です。詳しくは [ライセンス純浄性の約束](docs/LICENSE-PURITY.md) を参照してください。
 - 素材と第三者条項は [ASSETS-LICENSE](ASSETS-LICENSE.md) と [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md) に記載しています。
 
 本プロジェクトは [炎剣オープンソース・ソフトウェア・ファミリー品質基準](PUBLISHING.md) に従います。

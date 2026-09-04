@@ -66,6 +66,8 @@
 
 ### 📚 文件 / 文档 / Documentation / ドキュメント
 
+* 入庫 LXGW WenKai TC 與 Cinzel 字型並附 SIL OFL 1.1 授權文件／入库 LXGW WenKai TC 与 Cinzel 字体并附 SIL OFL 1.1 许可文件／Bundle LXGW WenKai TC and Cinzel with SIL OFL 1.1 license notices／LXGW WenKai TC と Cinzel を SIL OFL 1.1 のライセンス文書付きで同梱
+
 * 新增每月流量月報與原始 JSON 留存，讓成效可由數字驗證／新增每月流量月报与原始 JSON 留存，让成效可由数字验证／Add an archivable monthly traffic report and raw JSON snapshots so impact can be verified by numbers／毎月のトラフィック月報と生 JSON 保存を追加し、効果を数字で検証可能に ([#129](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/129))
 * v4.5.1 發行說明新增【純淨之路】四語段落／v4.5.1 发布说明新增【纯净之路】四语段落／add the four-language "road of purity" section to the v4.5.1 release notes／v4.5.1 リリースノートに四言語の【純浄への道】セクションを追加 ([#104](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/104)) ([0cc93d5](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/0cc93d5f9846d141fc1c94f3d8662b384f8672b3))
 * 梳理四語 README——v4.5.1 最新摘要、版號段落精簡與 Ko-fi DLC 專區／梳理四语 README——v4.5.1 最新摘要、版本号段落精简与 Ko-fi DLC 专区／Streamline the four-language README with v4.5.1 highlights, leaner version banners and a Ko-fi DLC spotlight／四言語 README を整理——v4.5.1 ハイライト・バージョン欄の簡素化・Ko-fi DLC コーナー ([#101](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/101)) ([c5d86d4](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/c5d86d434415fd2d63aa05c6db61bbf198de3689))
