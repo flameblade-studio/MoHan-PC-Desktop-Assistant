@@ -54,6 +54,8 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "draft_bar_clean_message": "設定は現在の動作状態と一致しています",
     "draft_bar_dirty": "下書き",
     "draft_bar_dirty_message": "未適用の変更が {count} 件あります",
+    "draft_bar_error": "読み取り失敗",
+    "draft_bar_error_message": "設定を読み取れません。しばらくしてから再試行してください",
     "today_input_placeholder": "予定を入力（例：漫画第3話の絵コンテを完成）",
     "todo_category_comic": "漫画",
     "todo_category_article": "文章",
