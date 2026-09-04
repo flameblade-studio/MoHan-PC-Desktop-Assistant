@@ -89,6 +89,7 @@ lazy from domain.speech_configuration import (
 lazy from domain.speech_providers import create_builtin_speech_registry
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_window import Dashboard
+lazy from presentation.companion_vad_status import notify_vad_degradation
 lazy from presentation.first_run_wizard import FirstRunWizard
 lazy from presentation.performance_composition import create_performance_app_bridge
 lazy from presentation.pose_atlas_assets import PoseAtlasAssets
@@ -99,7 +100,6 @@ __all__ = ("CompanionCoreMixin",)
 # Framing modes that publish the v4 full-body photograph.  HALF/CLOSE keep the
 # legacy half-body poses (cheek-rest, left-neutral, front-crossed) instead.
 _FULL_BODY_MODES = PUBLISHABLE_BODY_MODES
-
 
 def _current_legacy_character_frame(window: object, generation: int) -> BodyPoseFrame:
     """Snapshot the proven renderer for the adaptive fallback boundary."""
@@ -133,34 +133,8 @@ def _current_legacy_character_frame(window: object, generation: int) -> BodyPose
         False,
     )
 
-
-def _notify_vad_degradation(core: object, voice: object) -> None:
-    degraded = bool(getattr(voice, "degraded", False))
-    if not degraded:
-        core._vad_degradation_notified = False
-        return
-    if getattr(core, "_vad_degradation_notified", False):
-        return
-    core._vad_degradation_notified = True
-    dashboard = getattr(core, "dashboard", None)
-    set_voice_phase = getattr(dashboard, "set_voice_phase", None)
-    if not callable(set_voice_phase):
-        return
-    translate = getattr(dashboard, "_t", None)
-    message = (
-        translate(
-            "voice_vad_degraded",
-            "語音偵測已降級，改用 RMS。",
-        )
-        if callable(translate)
-        else "語音偵測已降級，改用 RMS。"
-    )
-    set_voice_phase(message)
-
-
 class CompanionCoreMixin:
     """Compose the companion's core services, state, and application bridges."""
-
     def _initialize_adaptive_character_composition(
         self,
         factory: AdaptiveCharacterFactory | None,
@@ -881,7 +855,7 @@ class CompanionCoreMixin:
     def _apply_multimodal_result(self, result: object) -> None:
         if not isinstance(result, MultimodalFusionResult):
             return
-        _notify_vad_degradation(self, result.voice)
+        notify_vad_degradation(self, result.voice)
         now = time.monotonic()
         face = result.face
         if face is not None and face.gaze_confidence >= GAZE_CONFIDENCE_THRESHOLD:
