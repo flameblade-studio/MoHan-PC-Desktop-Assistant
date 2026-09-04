@@ -78,6 +78,10 @@ SCENE_OUTRO = 5
 BLINK_START_SECONDS = 1.35
 BLINK_END_SECONDS = 1.55
 ONECORE_YATING_DISPLAY_NAME = "Microsoft Yating"
+# The speaking scene uses a head-and-shoulders crop so the existing viseme
+# assets remain visible at 1280x720.  This rect is in the 1254x1254 composed
+# portrait coordinate space shared by all of the generated character assets.
+SPEAKING_CHARACTER_CROP = QRect(402, 100, 450, 600)
 
 # Owner-approved narration.  Keep the six strings unchanged unless the owner
 # explicitly approves a new recording script.
@@ -556,7 +560,7 @@ def _compose_frame(
     painter.setFont(QFont("Microsoft JhengHei UI", 13))
     painter.drawText(
         QRect(40, 61, 940, 28),
-        f"離屏逐幀展示  ·  二代執行期合成  ·  {SCENE_LABELS[scene_index]}",
+        f"本機互動展示  ·  {SCENE_LABELS[scene_index]}",
     )
 
     if dashboard is None:
@@ -575,20 +579,23 @@ def _compose_frame(
 
     character_panel = QRect(874, 103, 378, 503)
     _draw_panel(painter, character_panel, QColor(255, 255, 255, 238))
-    portrait = _scaled_inside(character, QSize(350, 466))
+    portrait_source = character
+    if scene_index == SCENE_SPEAKING:
+        if (
+            SPEAKING_CHARACTER_CROP.right() >= character.width()
+            or SPEAKING_CHARACTER_CROP.bottom() >= character.height()
+        ):
+            raise RuntimeError(
+                "Speaking character crop does not fit the composed portrait."
+            )
+        portrait_source = character.copy(SPEAKING_CHARACTER_CROP)
+    portrait = _scaled_inside(portrait_source, QSize(350, 466))
     painter.drawImage(
         QPoint(
             character_panel.x() + (character_panel.width() - portrait.width()) // 2,
             character_panel.y() + (character_panel.height() - portrait.height()) // 2,
         ),
         portrait,
-    )
-    painter.setPen(QColor("#365b71"))
-    painter.setFont(QFont("Segoe UI", 11))
-    painter.drawText(
-        QRect(895, 578, 336, 23),
-        Qt.AlignCenter,
-        "ActiveOutfitOverlay · body generation 2",
     )
 
     subtitle_bar = QRect(28, 632, 1224, 64)

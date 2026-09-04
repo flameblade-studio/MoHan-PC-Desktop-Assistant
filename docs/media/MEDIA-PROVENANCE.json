@@ -52,7 +52,7 @@
         "docs/media/mohan-demo.mp4": {
             "generator": "tools/record_demo_video.py",
             "generation": 2,
-            "sha256": "d828acd5e343bc309c18ca89091874e080ff0a91db34cd7aa41c199c10863cad",
+            "sha256": "f3a3614447e7f743111845c0e33de118a659070c738fea5704c31041002cb9bd",
             "auto_regenerable": true
         },
         "docs/media/mohan-hero.png": {
