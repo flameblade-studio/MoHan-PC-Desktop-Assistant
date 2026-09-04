@@ -166,10 +166,38 @@ class FlagshipWorkflowMixin:
         self._due_workflows_running = True
         try:
             now = local_wall_time()
+            notified_schedule_errors = getattr(
+                self,
+                "_notified_schedule_errors",
+                set(),
+            )
+            self._notified_schedule_errors = notified_schedule_errors
             for row in self.db.workflows(enabled_only=True):
                 workflow = Workflow.from_row(row)
-                if schedule_due(workflow, now, row["last_run_at"]):
+                workflow_id = workflow.workflow_id
+                error_seen = False
+
+                def notify_schedule_error(message: str) -> None:
+                    nonlocal error_seen
+                    error_seen = True
+                    if workflow_id in notified_schedule_errors:
+                        return
+                    notified_schedule_errors.add(workflow_id)
+                    QMessageBox.warning(
+                        self,
+                        self._t("工作流程"),
+                        self._t(message),
+                    )
+
+                if schedule_due(
+                    workflow,
+                    now,
+                    row["last_run_at"],
+                    notify=notify_schedule_error,
+                ):
                     self.run_workflow(workflow)
+                if not error_seen:
+                    notified_schedule_errors.discard(workflow_id)
         finally:
             self._due_workflows_running = False
 

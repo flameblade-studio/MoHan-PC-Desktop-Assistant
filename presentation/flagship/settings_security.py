@@ -331,6 +331,8 @@ class FlagshipSettingsSecurityMixin:
         self._refresh_performance_controls()
         self._refresh_proactive_interaction_controls()
         self._refresh_accessibility_controls()
+        if getattr(self, "_control_center_ui_ready", False):
+            self._notify_pending_proactivity_store_error()
     def _refresh_gesture_controls(self) -> None:
         self.gesture_enabled.setChecked(self._gesture_draft.value.enabled)
         self._refresh_gesture_list()

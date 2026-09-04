@@ -43,6 +43,23 @@ EXPECTED_BUNDLED_MODEL_REVISIONS = {
     "assets/vision-models/silero_vad_v4.0.onnx": "v4.0",
 }
 
+EXPECTED_FONT_ASSETS = {
+    "assets/fonts/LXGW-WenKai-TC/LXGWWenKaiTC-Regular.ttf": {
+        "version": "1.522",
+        "size_bytes": 15_267_616,
+        "sha256": "b1a0795862c1415bf3f393ea50b2a4ea6275012cf5bad3f94feeb1222f555731",
+        "source_revision": "v1.522",
+        "license": "SIL OFL 1.1",
+    },
+    "assets/fonts/Cinzel/Cinzel[wght].ttf": {
+        "version": "2.000",
+        "size_bytes": 125_468,
+        "sha256": "f4d83d34d1f6c741193e4acf4b3dff9531e5a67b6aa65228d00a7db72a4e0f34",
+        "source_revision": "45071f07c63e863a539442ef3562b71ab1f147a6",
+        "license": "SIL OFL 1.1",
+    },
+}
+
 
 def assert_runtime_dependencies_are_governed() -> None:
     policies = load_policies(ROOT / "sbom" / "components.toml")
@@ -59,7 +76,11 @@ def assert_runtime_dependencies_are_governed() -> None:
 
 def assert_models_are_machine_verifiable() -> None:
     assets = load_asset_policies(ROOT / "sbom" / "components.toml")
-    windows = _profile_assets(assets, "windows")
+    windows = tuple(
+        asset
+        for asset in _profile_assets(assets, "windows")
+        if asset.component_type == "machine-learning-model"
+    )
     by_path = {asset.path.as_posix(): asset for asset in windows}
     expected_revisions = {
         **EXPECTED_MODEL_REVISIONS,
@@ -91,6 +112,33 @@ def assert_models_are_machine_verifiable() -> None:
     build_script = (ROOT / "build.ps1").read_text(encoding="utf-8")
     assert '--add-data "assets;assets"' in build_script
     assert '--add-data "THIRD_PARTY_NOTICES.md;."' in build_script
+
+
+def test_bundled_fonts_are_governed_in_windows_and_preview_sboms() -> None:
+    assets = load_asset_policies(ROOT / "sbom" / "components.toml")
+    expected_paths = set(EXPECTED_FONT_ASSETS)
+    for profile in ("windows", "preview"):
+        selected = _profile_assets(assets, profile)
+        by_path = {asset.path.as_posix(): asset for asset in selected}
+        assert expected_paths <= set(by_path)
+        font_assets = tuple(by_path[path] for path in sorted(expected_paths))
+        for asset in font_assets:
+            expected = EXPECTED_FONT_ASSETS[asset.path.as_posix()]
+            local = ROOT / asset.path
+            assert asset.component_type == "file"
+            assert asset.version == expected["version"]
+            assert asset.size_bytes == expected["size_bytes"]
+            assert asset.sha256 == expected["sha256"]
+            assert asset.source_revision == expected["source_revision"]
+            assert asset.license_expression == expected["license"]
+            assert local.stat().st_size == asset.size_bytes
+            assert asset.source_revision in asset.source
+        bom: dict[str, object] = {"components": [], "dependencies": []}
+        references = _add_and_validate_assets(bom, font_assets)
+        assert len(references) == len(expected_paths)
+        components = bom["components"]
+        assert isinstance(components, list)
+        assert components == [_asset_component(asset) for asset in font_assets]
 
 
 def assert_hash_drift_fails_closed() -> None:
@@ -254,6 +302,7 @@ def assert_outfit_pack_identity_and_reference_boundaries() -> None:
 def run() -> None:
     assert_runtime_dependencies_are_governed()
     assert_models_are_machine_verifiable()
+    test_bundled_fonts_are_governed_in_windows_and_preview_sboms()
     assert_hash_drift_fails_closed()
     assert_pack_manifest_contract_rejects_unknown_provenance()
     assert_outfit_pack_identity_and_reference_boundaries()

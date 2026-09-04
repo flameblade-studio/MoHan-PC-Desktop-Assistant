@@ -26,6 +26,27 @@ def _title_errors(title: object) -> list[str]:
     return []
 
 
+def _is_release_please_pull_request(pull_request: dict[str, object]) -> bool:
+    head = pull_request.get("head")
+    user = pull_request.get("user")
+    head_ref = head.get("ref") if isinstance(head, dict) else None
+    author = user.get("login") if isinstance(user, dict) else None
+    return (
+        isinstance(head_ref, str)
+        and head_ref.startswith("release-please--branches--")
+        and author == "github-actions[bot]"
+    )
+
+
+def _is_release_please_payload(payload: object) -> bool:
+    if not isinstance(payload, dict):
+        return False
+    pull_request = payload.get("pull_request")
+    return isinstance(pull_request, dict) and _is_release_please_pull_request(
+        pull_request
+    )
+
+
 def audit_pull_request(payload: object) -> list[str]:
     if not isinstance(payload, dict):
         return ["GitHub event payload must be a JSON object"]
@@ -34,6 +55,8 @@ def audit_pull_request(payload: object) -> list[str]:
         return ["GitHub event payload is missing pull_request metadata"]
 
     errors = _title_errors(pull_request.get("title"))
+    if _is_release_please_pull_request(pull_request):
+        return errors
     body = pull_request.get("body")
     if not isinstance(body, str):
         errors.append("pull-request body must be a string")
@@ -55,24 +78,15 @@ def main() -> int:
         print(f"FAIL: cannot read GitHub event payload: {error}", file=sys.stderr)
         return 2
 
-    pull_request = payload.get("pull_request", {})
-    head_ref = (pull_request.get("head") or {}).get("ref", "")
-    pr_author = (pull_request.get("user") or {}).get("login", "")
-    # The branch name alone must not bypass governance: the exemption only
-    # applies to release PRs actually authored by the GitHub Actions bot.
-    if (
-        head_ref.startswith("release-please--branches--")
-        and pr_author == "github-actions[bot]"
-    ):
-        print("RELEASE_PLEASE_PR_EXEMPT")
-        return 0
-
     errors = audit_pull_request(payload)
     if errors:
         for error in errors:
             print(f"FAIL: {error}", file=sys.stderr)
         return 1
-    print("FOUR_LANGUAGE_PR_METADATA_OK")
+    if _is_release_please_payload(payload):
+        print("RELEASE_PLEASE_BODY_EXEMPT")
+    else:
+        print("FOUR_LANGUAGE_PR_METADATA_OK")
     return 0
 
 

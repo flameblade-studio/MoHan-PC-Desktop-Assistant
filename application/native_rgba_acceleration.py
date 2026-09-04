@@ -287,6 +287,8 @@ class NativeRgbaAcceleration:
         if not self._operation_is_verified(operation):
             try:
                 expected = fallback()
+            except RgbaAccelerationError:
+                raise
             except Exception:
                 self._disable_operation(
                     operation,
@@ -311,8 +313,18 @@ class NativeRgbaAcceleration:
         native_error: Exception,
         fallback: Callable[[], bytes],
     ) -> bytes:
+        try:
+            expected = fallback()
+        except RgbaAccelerationError:
+            # A native ValueError can be the backend's translation of the
+            # public renderer contract.  Contract rejection is not backend
+            # failure and must not disable the valid-input fast path.
+            raise
+        except Exception:
+            self._disable_operation(operation, native_error)
+            raise
         self._disable_operation(operation, native_error)
-        return fallback()
+        return expected
 
     def _load_module(self) -> ModuleType | None:
         if self._load_attempted:

@@ -165,14 +165,19 @@ class FlagshipOverviewMixin:
         remote_text = self._t(
             "運作中" if self.remote_server and self.remote_server.running else "未啟用"
         )
-        self.health_summary.setText(
-            self._t(
-                "Home Assistant：{home}\n遠端服務：{remote}\n"
-                "已啟用工作流程：{workflows}\n有效配對裝置：{devices}\n"
-                "安全狀態：高風險操作不允許免確認；任意命令列與付款永久禁止。",
-                home=ha_text,
-                remote=remote_text,
-                workflows=workflow_count,
-                devices=paired_count,
-            )
+        summary = self._t(
+            "Home Assistant：{home}\n遠端服務：{remote}\n"
+            "已啟用工作流程：{workflows}\n有效配對裝置：{devices}\n"
+            "安全狀態：高風險操作不允許免確認；任意命令列與付款永久禁止。",
+            home=ha_text,
+            remote=remote_text,
+            workflows=workflow_count,
+            devices=paired_count,
         )
+        if getattr(
+            getattr(self, "backup_manager", None),
+            "automatic_backup_failed",
+            False,
+        ):
+            summary += "\n" + self._t("自動備份失敗")
+        self.health_summary.setText(summary)

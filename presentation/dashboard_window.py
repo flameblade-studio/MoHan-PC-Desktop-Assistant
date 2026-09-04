@@ -14,6 +14,7 @@ lazy from presentation.dashboard_conversation import DashboardConversationMixin
 lazy from presentation.dashboard_platforms import DashboardPlatformMixin
 lazy from presentation.dashboard_settings import DashboardSettingsMixin
 lazy from presentation.dashboard_shell import DashboardShellMixin
+lazy from presentation.corrupt_data_ui import notify_pending_corrupt_data
 lazy from presentation.dashboard_today_memory import DashboardTodayMemoryMixin
 lazy from presentation.dashboard_voice import DashboardVoiceMixin
 lazy from presentation.dashboard_wardrobe_makeup import DashboardWardrobeMakeupMixin
@@ -107,6 +108,7 @@ class Dashboard(
         self._apply_theme_resolution(self.theme_session.last_resolution)
         self._enforce_readable_combo_popups()
         self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
+        notify_pending_corrupt_data(self, self.db, self._t)
 
     def _initialize_theme_support(self) -> None:
         self.theme_pack_service = ThemePackService(

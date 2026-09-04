@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
@@ -313,8 +314,11 @@ class WardrobeService:
             raise OutfitPackError("The selected makeup is not installed.")
         apply_appearance_selection(self.install_root, match)
 
-    def makeup_intensity(self) -> float:
-        return read_makeup_intensity(self.install_root)
+    def makeup_intensity(
+        self,
+        notify: Callable[[str], None] | None = None,
+    ) -> float:
+        return read_makeup_intensity(self.install_root, notify=notify)
 
     def appearance_active(self) -> bool:
         """True when any slot resolves to an installed pack, so a bare preview would be wrong."""

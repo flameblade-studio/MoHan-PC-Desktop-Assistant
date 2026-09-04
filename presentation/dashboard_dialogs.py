@@ -482,8 +482,34 @@ class ArchivedMemoryDialog(QDialog):
 
     def refresh_archives(self) -> None:
         self.archive_list.clear()
+        consume = getattr(self.db, "consume_corrupt_data_notifications", None)
+        if callable(consume):
+            messages = consume()
+            if messages:
+                QMessageBox.warning(
+                    self,
+                    ui_text(self.language, "corrupt_data_title", "資料讀取警告"),
+                    "\n".join(
+                        ui_text(self.language, "corrupt_data_message", message)
+                        for message in messages
+                    ),
+                )
         rows = self.db.list_archived_memories(1000)
         for row in rows:
+            if str(row.get("status", "ok")) == "corrupt":
+                item = QListWidgetItem(
+                    ui_text(
+                        self.language,
+                        "archived_memory_corrupt",
+                        "【無法讀取】這筆封存記憶的原檔已保留。"
+                        "\n封存原因：{reason}\u3000時間：{archived}",
+                        reason=str(row["reason"]),
+                        archived=str(row["archived_at"])[:16],
+                    )
+                )
+                item.setFlags(Qt.NoItemFlags)
+                self.archive_list.addItem(item)
+                continue
             item = QListWidgetItem(
                 ui_text(
                     self.language,
@@ -534,20 +560,29 @@ class ArchivedMemoryDialog(QDialog):
                 ),
             )
             return
-        restored = sum(
-            1 for archive_id in selected
-            if self.db.restore_archived_memory(archive_id) > 0
-        )
+        restored = 0
+        corrupt = 0
+        for archive_id in selected:
+            result = self.db.restore_archived_memory(archive_id)
+            if isinstance(result, int) and result > 0:
+                restored += 1
+            elif str(getattr(result, "status", "")) == "corrupt":
+                corrupt += 1
         self.changed = self.changed or restored > 0
         self.refresh_archives()
-        self.archive_status.setText(
-            ui_text(
-                self.language,
-                "archived_memory_restored",
-                "已還原 {count} 則記憶。",
-                count=restored,
-            )
+        status = ui_text(
+            self.language,
+            "archived_memory_restored",
+            "已還原 {count} 則記憶。",
+            count=restored,
         )
+        if corrupt:
+            status += "\n" + ui_text(
+                self.language,
+                "corrupt_data_message",
+                "某項設定／記憶無法讀取，已保留原檔",
+            )
+        self.archive_status.setText(status)
 
 
 class ChatHistoryDialog(QDialog):

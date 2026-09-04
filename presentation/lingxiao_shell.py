@@ -48,8 +48,11 @@ __all__ = (
     "install_lobby_motion",
     "refresh_runtime_palette",
     "realm_layout_order",
+    "DRAFT_BAR_READ_ERROR",
     "update_draft_bar",
 )
+
+DRAFT_BAR_READ_ERROR = "error"
 
 
 def _shell_palette(shell):
@@ -257,7 +260,7 @@ def refresh_runtime_palette(shell, *, active: bool) -> None:
         motes.set_palette(palette)
 
 
-def update_draft_bar(shell) -> int:
+def update_draft_bar(shell) -> int | str:
     """比對設定快照，回傳未套用的變更數並更新晶片與訊息。"""
 
     chip = getattr(shell, "draft_chip", None)
@@ -266,8 +269,16 @@ def update_draft_bar(shell) -> int:
     try:
         baseline = shell._settings_draft_snapshot
         current = shell.db.settings_snapshot()
-    except Exception:  # 資料庫暫時讀不到：不猜，維持上一個狀態
-        return -1
+    except Exception:  # 資料庫暫時讀不到：讓晶片明確顯示錯誤
+        chip.setText(shell._t("draft_bar_error", "讀取失敗"))
+        chip.set_state("bad")
+        shell.draft_message.setText(
+            shell._t(
+                "draft_bar_error_message",
+                "設定無法讀取，請稍後再試",
+            )
+        )
+        return DRAFT_BAR_READ_ERROR
     changed = 0
     keys = set(baseline) | set(current)
     for key in keys:

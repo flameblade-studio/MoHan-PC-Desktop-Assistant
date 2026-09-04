@@ -11,6 +11,19 @@ $ResolvedAppDir = (Resolve-Path $AppDir).Path
 $ResolvedOutput = [IO.Path]::GetFullPath($OutputDir)
 $IconPath = Join-Path $ProjectRoot "assets\mohan-halfbody.ico"
 $ExecutableName = "MoHan-Desktop-Assistant-$Version.exe"
+# PyInstaller 6.21 places onedir support files under _internal.
+$BundledFonts = Join-Path $ResolvedAppDir "_internal\assets\fonts"
+$RequiredFontFiles = @(
+    (Join-Path $BundledFonts "LXGW-WenKai-TC\LXGWWenKaiTC-Regular.ttf"),
+    (Join-Path $BundledFonts "LXGW-WenKai-TC\OFL.txt"),
+    (Join-Path $BundledFonts "Cinzel\Cinzel[wght].ttf"),
+    (Join-Path $BundledFonts "Cinzel\OFL.txt")
+)
+foreach ($RequiredFontFile in $RequiredFontFiles) {
+    if (-not (Test-Path -LiteralPath $RequiredFontFile -PathType Leaf)) {
+        throw "Bundled font file is missing from the installer source: $RequiredFontFile"
+    }
+}
 if (-not (Test-Path (Join-Path $ResolvedAppDir $ExecutableName))) {
     throw "Packaged executable was not found in $ResolvedAppDir"
 }

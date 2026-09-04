@@ -54,6 +54,8 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "draft_bar_clean_message": "設定は現在の動作状態と一致しています",
     "draft_bar_dirty": "下書き",
     "draft_bar_dirty_message": "未適用の変更が {count} 件あります",
+    "draft_bar_error": "読み取り失敗",
+    "draft_bar_error_message": "設定を読み取れません。しばらくしてから再試行してください",
     "today_input_placeholder": "予定を入力（例：漫画第3話の絵コンテを完成）",
     "todo_category_comic": "漫画",
     "todo_category_article": "文章",
@@ -192,6 +194,8 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "memory_source_manual_short": "手動",
     "memory_source_conversation_short": "会話",
     "memory_untitled": "無題の記憶",
+    "corrupt_data_title": "データ読み取り警告",
+    "corrupt_data_message": "設定または記憶を読み取れないため、元のファイルを保持しました。",
     "memory_item": (
         "【{category}】{title}　重要度 {importance}／5\n{content}\n"
         "出典：{source}　更新：{updated}"
@@ -238,6 +242,10 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "close": "閉じる",
     "archived_memory_item": (
         "【{category}】{title}\n{content}\n保管理由：{reason}　保管日時：{archived}"
+    ),
+    "archived_memory_corrupt": (
+        "【読み取り不可】保管された記憶の元ファイルを保持しました。\n"
+        "保管理由：{reason}　保管日時：{archived}"
     ),
     "archived_memory_count": "復元可能な記憶：{count} 件",
     "archived_memory_select_title": "記憶がチェックされていません",
@@ -292,6 +300,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "thinking_status": "{assistant}が考えています…",
     "answering_status": "回答中…",
     "api_connection_failed": "OpenAI API：接続失敗（{error}）",
+    "voice_vad_degraded": "音声検出が低下したため、RMSに切り替えました。",
     "voice_ready_short": "準備完了",
     "voice_muted_short": "ミュート中",
     "sleep_mode_status": (

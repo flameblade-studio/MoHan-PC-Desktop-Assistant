@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "release-type": "python",
   "include-v-in-tag": true,
+  "pull-request-title-pattern": "${version} 發版／发版／Release／リリース",
   "changelog-sections": [
     { "type": "feat", "section": "✨ 新功能 / 新功能 / New features / 新機能", "hidden": false },
     { "type": "fix", "section": "🐛 修正 / 修复 / Fixes / 修正", "hidden": false },

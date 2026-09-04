@@ -27,6 +27,8 @@
 
 只有這四種授權能進產線：**MIT、Apache 2.0、CC0、CC BY**（BSD 等同級視為等同）。不在名單上的一律先查證，查不過就進黑名單。
 
+**SIL Open Font License, Version 1.1（SIL OFL 1.1）**依擁有者 2026-09-02 裁定加入白名單，但僅限字型：必須隨附 `OFL.txt` 與版權聲明，不得單獨販售。若日後子集化或修改，便成為 `Modified Version`，必須依保留字型名改名並續用 OFL；OFL 只約束字型檔本身，不影響使用它的文件與軟體授權。已入庫字型的版本、來源與 SHA-256 見 [`FONTS.md`](../third_party_licenses/FONTS.md)；檔案皆原樣散布，未改名。
+
 ### 我們拒絕過什麼
 
 拒絕的紀錄比宣稱更有說服力。完整清單見 [`LICENSE-BLACKLIST.md`](LICENSE-BLACKLIST.md)，以下是代價最高的幾項：
@@ -82,6 +84,8 @@
 ### 白名单
 
 只有这四种授权能进产线：**MIT、Apache 2.0、CC0、CC BY**（BSD 等同级视为等同）。不在名单上的一律先核查，核查不过就进黑名单。
+
+**SIL Open Font License, Version 1.1（SIL OFL 1.1）**依据所有者 2026-09-02 的裁定加入白名单，但仅限字体：必须随附 `OFL.txt` 与版权声明，不得单独销售。若日后子集化或修改，便成为 `Modified Version`，必须依保留字体名改名并继续使用 OFL；OFL 只约束字体文件本身，不影响使用它的文档与软件许可。已入库字体的版本、来源与 SHA-256 见 [`FONTS.md`](../third_party_licenses/FONTS.md)；文件均原样分发，未改名。
 
 ### 我们拒绝过什么
 
@@ -139,6 +143,8 @@ The table above lists models **shipped with the product and executed on your own
 
 Four licenses may enter the pipeline: **MIT, Apache 2.0, CC0, CC BY** (BSD-class treated as equivalent). Anything else is investigated first and blacklisted if it does not clear.
 
+By the owner's 2026-09-02 ruling, **SIL Open Font License, Version 1.1 (SIL OFL 1.1)** is allowlisted for fonts only: each font must ship with `OFL.txt` and its copyright notice, and may not be sold by itself. If it is later subsetted or modified, it becomes a `Modified Version`; rename it according to the Reserved Font Name rule and keep using the OFL. The OFL governs the font file itself, not the license of documents or software that use it. Versions, sources, and SHA-256 values for the bundled fonts are in [`FONTS.md`](../third_party_licenses/FONTS.md); the files are redistributed unchanged and keep their original names.
+
 ### What was turned down
 
 A record of refusals persuades more than a claim of purity. The full list lives in [`LICENSE-BLACKLIST.md`](LICENSE-BLACKLIST.md); these cost the most to give up:
@@ -194,6 +200,8 @@ To audit it yourself, the evidence is in the repository: [`ASSETS-LICENSE.md`](.
 ### ホワイトリスト
 
 パイプラインに入れるのは四種類だけです。**MIT、Apache 2.0、CC0、CC BY**（BSD 系は同等とみなす）。それ以外は必ず調査し、通らなければ黒名単に入ります。
+
+所有者による 2026-09-02 の裁定に基づき、**SIL Open Font License, Version 1.1（SIL OFL 1.1）**はフォントに限ってホワイトリストへ追加します。各フォントには `OFL.txt` と著作権表示を添付し、単独で販売してはなりません。後日サブセット化または改変した場合は `Modified Version` となるため、Reserved Font Name の規則に従って改名し、OFL を継続して使用します。OFL が拘束するのはフォントファイル自体であり、それを使用する文書やソフトウェアのライセンスには影響しません。同梱フォントのバージョン、出所、SHA-256 は [`FONTS.md`](../third_party_licenses/FONTS.md) に記録しています。ファイルは変更せず、元の名前のまま再配布します。
 
 ### 見送ったもの
 
