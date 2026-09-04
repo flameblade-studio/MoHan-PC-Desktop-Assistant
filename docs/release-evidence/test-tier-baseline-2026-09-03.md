@@ -21,7 +21,7 @@
 - 這次 gate 以模組內所有 runner 子命令的 wall-clock 合計排序，最慢十項為：`test_multisensory_speech_regression.py` 129.103 秒、`test_state_fuzz.py` 60.032 秒、`test_layered_face_calibration.py` 59.653 秒、`test_expression_pipeline.py` 29.592 秒、`test_build_half_body_layered_rig.py` 28.466 秒、`test_full_ui_localization.py` 25.603 秒、`test_layered_full_body.py` 25.335 秒、`test_post_speech_motion_performance.py` 19.897 秒、`test_realtime_mouth_completion.py` 18.162 秒、`test_flagship_physics.py` 16.887 秒。
 - 本輪工作樹以 `python tests/run_all.py fast --changed-from main` 實測選出 26 個模組，退出碼 0、結尾為 `ALL_26_TESTS_OK`，耗時 78.004 秒。
 - 同輪開工盤點確認 `assets/pose-atlas/v5-base/` 有 76 個檔案（24 個 PNG），`assets/pose-atlas/v5-base-layered/` 有 603 個檔案（600 個 PNG）；PNG 實測均為 1024×1536 RGBA，並逐檔量測 SHA-256。
-- 以各目錄內相對路徑排序後串接「路徑|檔案 SHA-256」所得的全檔案盤點聚合 SHA-256 為：`v5-base=9c0421262083ed6a2473ede4cf05f4762fb749bd4b8670d6fefb3ad399521b5f`；`v5-base-layered=2d5c6bf79fe18ae2d44f651e6cc192a651b8bb142710bfd61f297b1d980f934a`。
+- 以各目錄內相對路徑排序後串接「路徑|檔案 SHA-256」所得的全檔案盤點聚合 SHA-256 為：`v5-base=9c042126…521b5f`；`v5-base-layered=2d5c6bf7…0f934a`。
 - 盤點依據包含 `assets/pose-atlas/v5-base/BUILD-METADATA.json`、`assets/pose-atlas/v5-base-layered/layer_manifest.json` 與實際檔案；本報告只記錄計數與基線，不改動正式素材。
 
 ## 简体中文
@@ -45,7 +45,7 @@
 - 本次 gate 按每个模块全部 runner 子命令的 wall-clock 合计排序，最慢十项为：`test_multisensory_speech_regression.py` 129.103 秒、`test_state_fuzz.py` 60.032 秒、`test_layered_face_calibration.py` 59.653 秒、`test_expression_pipeline.py` 29.592 秒、`test_build_half_body_layered_rig.py` 28.466 秒、`test_full_ui_localization.py` 25.603 秒、`test_layered_full_body.py` 25.335 秒、`test_post_speech_motion_performance.py` 19.897 秒、`test_realtime_mouth_completion.py` 18.162 秒、`test_flagship_physics.py` 16.887 秒。
 - 本轮工作树以 `python tests/run_all.py fast --changed-from main` 实测选出 26 个模块，退出码 0、结尾为 `ALL_26_TESTS_OK`，耗时 78.004 秒。
 - 同轮开工盘点确认 `assets/pose-atlas/v5-base/` 有 76 个文件（24 个 PNG），`assets/pose-atlas/v5-base-layered/` 有 603 个文件（600 个 PNG）；PNG 实测均为 1024×1536 RGBA，并逐文件测量 SHA-256。
-- 按各目录内相对路径排序后串接“路径|文件 SHA-256”所得的全文件盘点聚合 SHA-256 为：`v5-base=9c0421262083ed6a2473ede4cf05f4762fb749bd4b8670d6fefb3ad399521b5f`；`v5-base-layered=2d5c6bf79fe18ae2d44f651e6cc192a651b8bb142710bfd61f297b1d980f934a`。
+- 按各目录内相对路径排序后串接“路径|文件 SHA-256”所得的全文件盘点聚合 SHA-256 为：`v5-base=9c042126…521b5f`；`v5-base-layered=2d5c6bf7…0f934a`。
 - 盘点依据包含 `assets/pose-atlas/v5-base/BUILD-METADATA.json`、`assets/pose-atlas/v5-base-layered/layer_manifest.json` 与实际文件；本报告只记录计数与基线，不改动正式素材。
 
 ## English
@@ -69,7 +69,7 @@
 - This gate's slowest-ten ranking sums the wall-clock time of all runner subcommands belonging to each module: `test_multisensory_speech_regression.py` 129.103 seconds, `test_state_fuzz.py` 60.032 seconds, `test_layered_face_calibration.py` 59.653 seconds, `test_expression_pipeline.py` 29.592 seconds, `test_build_half_body_layered_rig.py` 28.466 seconds, `test_full_ui_localization.py` 25.603 seconds, `test_layered_full_body.py` 25.335 seconds, `test_post_speech_motion_performance.py` 19.897 seconds, `test_realtime_mouth_completion.py` 18.162 seconds, and `test_flagship_physics.py` 16.887 seconds.
 - In this worktree, `python tests/run_all.py fast --changed-from main` selected 26 modules, exited 0, ended with `ALL_26_TESTS_OK`, and took 78.004 seconds.
 - The same session's opening inventory found 76 files (24 PNGs) in `assets/pose-atlas/v5-base/` and 603 files (600 PNGs) in `assets/pose-atlas/v5-base-layered/`; every PNG measured 1024×1536 RGBA and each file received a SHA-256 measurement.
-- The all-file inventory SHA-256, formed within each directory by sorting relative paths and joining `path|file SHA-256`, was `v5-base=9c0421262083ed6a2473ede4cf05f4762fb749bd4b8670d6fefb3ad399521b5f` and `v5-base-layered=2d5c6bf79fe18ae2d44f651e6cc192a651b8bb142710bfd61f297b1d980f934a`.
+- The all-file inventory SHA-256, formed within each directory by sorting relative paths and joining `path|file SHA-256`, was `v5-base=9c042126…521b5f` and `v5-base-layered=2d5c6bf7…0f934a`.
 - The inventory evidence includes `assets/pose-atlas/v5-base/BUILD-METADATA.json`, `assets/pose-atlas/v5-base-layered/layer_manifest.json`, and the physical files; this report records counts and baseline only and does not modify formal assets.
 
 ## 日本語
@@ -93,5 +93,5 @@
 - 今回の gate の遅い上位十件は、各モジュールに属する runner サブコマンドの wall-clock を合計した順位です：`test_multisensory_speech_regression.py` 129.103 秒、`test_state_fuzz.py` 60.032 秒、`test_layered_face_calibration.py` 59.653 秒、`test_expression_pipeline.py` 29.592 秒、`test_build_half_body_layered_rig.py` 28.466 秒、`test_full_ui_localization.py` 25.603 秒、`test_layered_full_body.py` 25.335 秒、`test_post_speech_motion_performance.py` 19.897 秒、`test_realtime_mouth_completion.py` 18.162 秒、`test_flagship_physics.py` 16.887 秒です。
 - このワークツリーでは `python tests/run_all.py fast --changed-from main` が 26 モジュールを選択し、終了コード 0、末尾 `ALL_26_TESTS_OK`、所要 78.004 秒でした。
 - 同じセッションの開始時棚卸しでは `assets/pose-atlas/v5-base/` が 76 ファイル（PNG 24 個）、`assets/pose-atlas/v5-base-layered/` が 603 ファイル（PNG 600 個）でした。全 PNG は実測で 1024×1536 RGBA、各ファイルの SHA-256 も計測しました。
-- 各ディレクトリ内の相対パス順に並べて `パス|ファイル SHA-256` を連結した全ファイル棚卸し SHA-256 は、`v5-base=9c0421262083ed6a2473ede4cf05f4762fb749bd4b8670d6fefb3ad399521b5f`、`v5-base-layered=2d5c6bf79fe18ae2d44f651e6cc192a651b8bb142710bfd61f297b1d980f934a` です。
+- 各ディレクトリ内の相対パス順に並べて `パス|ファイル SHA-256` を連結した全ファイル棚卸し SHA-256 は、`v5-base=9c042126…521b5f`、`v5-base-layered=2d5c6bf7…0f934a` です。
 - 棚卸しの根拠は `assets/pose-atlas/v5-base/BUILD-METADATA.json`、`assets/pose-atlas/v5-base-layered/layer_manifest.json`、実ファイルです。本報告は個数と基線のみを記録し、正式素材は変更していません。
