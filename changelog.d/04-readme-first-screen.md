@@ -1,0 +1,3 @@
+### 未發布 — README 首屏重排（2026-09-04）
+
+* README 四語首屏改為主視覺、價值主張、下載／快速開始／跨平台能力矩陣、作者與版本資訊；Windows CI、MIT 授權與最新公開版本徽章保留在外層，其餘徽章移入四語折疊區／README 四语首屏改为主视觉、价值主张、下载／快速开始／跨平台能力矩阵、作者与版本信息；Windows CI、MIT 许可与最新公开版本徽章保留在外层，其余徽章移入四语折叠区／The four-language README first screen now leads with the hero, value proposition, download／Quick Start／cross-platform capability matrix, and author／release information; Windows CI, MIT License, and latest public release badges remain visible while the other badges move into four-language collapsible sections／README の四言語ファーストビューをメインビジュアル、価値提案、ダウンロード／クイックスタート／クロスプラットフォーム機能表、作者／リリース情報の順に変更し、Windows CI、MIT ライセンス、最新公開版バッジを表示したまま、その他のバッジを四言語の折りたたみセクションへ移動

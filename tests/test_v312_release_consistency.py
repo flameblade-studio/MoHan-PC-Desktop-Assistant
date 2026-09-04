@@ -74,7 +74,15 @@ def test_readme_uses_one_dynamic_release_badge_per_language() -> None:
         release_gate_descriptions,
         strict=True,
     ):
-        badge_block = section.split("</p>", maxsplit=1)[0]
+        badge_blocks = tuple(
+            block
+            for block in re.findall(
+                r'<p align="center">\s*(.*?)\s*</p>', section, re.DOTALL
+            )
+            if "img.shields.io/github/v/release/" in block
+        )
+        assert len(badge_blocks) == 1
+        badge_block = badge_blocks[0]
         assert badge_block.count("img.shields.io/github/v/release/") == 1
         assert "label=published" in badge_block
         assert VERSION not in badge_block, (
@@ -82,13 +90,13 @@ def test_readme_uses_one_dynamic_release_badge_per_language() -> None:
             "the prepared source version"
         )
 
-        creator_start = section.index("<strong>")
-        creator_end = section.index("</p>", creator_start)
-        creator_block = section[creator_start:creator_end]
-        assert VERSION not in creator_block, (
-            "the creator summary must link to Releases without repeating a "
-            "version that may later be Stable or RC"
+        notice = next(
+            block
+            for block in section.split("\n\n")
+            if block.startswith("> **") and "CHOU MING HUA" in block
         )
+        assert re.search(r"`v\d+\.\d+\.\d+`", notice)
+        assert "Windows 10/11" in notice
 
         assert release_gate_description in section
 
