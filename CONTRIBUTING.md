@@ -19,6 +19,10 @@
 9. 解決所有審查對話，並等待全部必要的 GitHub 檢查通過。
 10. 絕不繞過受保護的 `main`、對其強制推送，或重複使用已發布的標籤。
 
+### CHANGELOG 片段
+
+每個 Pull Request 的使用者可見變更都必須新增 `changelog.d/<name>.md`，不要直接編輯 `CHANGELOG.md` 的未發布段落。新片段以一個變更一檔，標題與每條列依繁中／簡中／English／日本語以全形斜線 `／` 分隔；既有未發布內容的遷移片段可保留原文，並由 `tools/assemble_changelog.py` 在 Release Please 產生版本標題後組裝。
+
 ### 翻譯與持久資料
 
 翻譯必須保留所有 placeholder，且不得僅為翻譯顯示文字而變更已持久化的資料庫值。
@@ -45,6 +49,10 @@
 8. 在 Pull Request 说明用户可见变更及隐私／安全影响。
 9. 解决所有审查对话，并等待全部必要的 GitHub 检查通过。
 10. 绝不绕过受保护的 `main`、对其强制推送，或重复使用已发布的标签。
+
+### CHANGELOG 片段
+
+每个 Pull Request 的用户可见变更都必须新增 `changelog.d/<name>.md`，不要直接编辑 `CHANGELOG.md` 的未发布段落。新片段按一个变更一个文件，标题与每个列表项按繁中／简中／English／日本語以全角斜线 `／` 分隔；既有未发布内容的迁移片段可保留原文，并由 `tools/assemble_changelog.py` 在 Release Please 产生版本标题后组装。
 
 ### 翻译与持久数据
 
@@ -73,6 +81,10 @@ Thank you for improving MoHan. Before starting a substantial change, read the [r
 9. Resolve every review conversation and wait for all required GitHub checks to pass.
 10. Never bypass protected `main`, force-push it, or reuse a published tag.
 
+### CHANGELOG fragments
+
+Every user-visible change in a Pull Request must add `changelog.d/<name>.md`; do not edit the unreleased part of `CHANGELOG.md` directly. Use one file per change, with each new title and bullet providing Traditional Chinese／Simplified Chinese／English／Japanese separated by the full-width slash `／`; migrated unreleased content may retain its original wording and is assembled by `tools/assemble_changelog.py` after Release Please creates the version heading.
+
 ### Translation and persisted data
 
 Translations must preserve every placeholder and must not change persisted database values merely to translate display text.
@@ -99,6 +111,10 @@ Do not disclose keys, tokens, private conversations, recordings, personal databa
 8. Pull Request に、ユーザーから見える変更とプライバシーまたはセキュリティへの影響を記載してください。
 9. すべてのレビュー会話を解決し、必須の GitHub チェックがすべて成功するまで待ってください。
 10. 保護された `main` を迂回したり、そこへ force-push したり、公開済みのタグを再利用したりしないでください。
+
+### CHANGELOG フラグメント
+
+Pull Request の利用者向け変更ごとに `changelog.d/<name>.md` を追加し、`CHANGELOG.md` の未公開部分を直接編集してはいけません。新しい見出しと各箇条書きは、繁体字中国語／簡体字中国語／English／日本語を全角スラッシュ `／` で区切って揃えます。既存の未公開内容を移行したフラグメントは元の文言を保持し、Release Please がバージョン見出しを作成した後に `tools/assemble_changelog.py` で組み立てます。
 
 ### 翻訳と永続化データ
 
