@@ -20,6 +20,12 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
     ),
     "任務中心": translations("任务中心", "Task Center", "タスクセンター"),
     "工作流程": translations("工作流", "Workflows", "ワークフロー"),
+    "設定讀取": translations("设置读取", "Settings read", "設定の読み取り"),
+    "主動提醒設定無法讀取，已保留上一組有效值。": translations(
+        "主动提醒设置无法读取，已保留上一组有效值。",
+        "Proactive-care settings could not be read; the last valid values were kept.",
+        "自発的な気遣い設定を読み取れないため、最後に有効だった値を保持しました。",
+    ),
     "雲端連接器": translations("云端连接器", "Cloud Connectors", "クラウド接続"),
     "智慧家庭": translations("智能家居", "Smart Home", "スマートホーム"),
     "遠端與隱私": translations(

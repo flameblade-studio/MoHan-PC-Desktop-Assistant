@@ -10,6 +10,7 @@ lazy from PySide6.QtCore import Qt, Signal
 lazy from PySide6.QtWidgets import (
     QLabel,
     QHBoxLayout,
+    QMessageBox,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -174,6 +175,8 @@ class FlagshipControlCenter(
         )
         self._initialize_runtime_state()
         self._build_control_center_ui()
+        self._control_center_ui_ready = True
+        self._notify_pending_proactivity_store_error()
         self._initialize_cloud_vision_service()
         self._start_control_center_timers()
         self.camera_restore_timer.start(0)
@@ -183,6 +186,18 @@ class FlagshipControlCenter(
 
     def _system_text(self, message: str) -> str:
         return self._translator.system_message(message)
+
+    def _notify_pending_proactivity_store_error(self) -> None:
+        consume = getattr(self.proactivity_store, "consume_load_error_message", None)
+        if not callable(consume):
+            return
+        message = consume()
+        if message:
+            QMessageBox.warning(
+                self,
+                self._t("設定讀取"),
+                self._t(message),
+            )
 
     def _build_control_center_ui(self) -> None:
         root = QVBoxLayout(self)
