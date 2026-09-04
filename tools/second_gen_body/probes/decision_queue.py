@@ -10,6 +10,7 @@ APPROVED／manual exit 非 0），一律排除，不論 JSON 怎麼寫。
 import os
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(os.environ.get("MOHAN_VISION_ROOT",
@@ -40,6 +41,10 @@ STATUS_KEYS = {
 VIEWABLE = {".png", ".jpg", ".jpeg", ".webp"}
 
 
+class DecisionQueueError(RuntimeError):
+    """A decision-queue evidence file cannot be safely inspected."""
+
+
 def decided_in_folder(folder: Path) -> str:
     """回傳該目錄已有的正式裁決字串；沒有則回空字串。"""
     for report in list(folder.glob("REPORT.md")) + list(folder.glob("*.md")):
@@ -60,9 +65,15 @@ def decided_in_folder(folder: Path) -> str:
 
 def pending_hits(path: Path) -> list[str]:
     try:
-        data = json.loads(path.read_text(encoding="utf-8", errors="replace"))
-    except Exception:
-        return []
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError as error:
+        raise DecisionQueueError(f"cannot read JSON {path}: {error}") from error
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError as error:
+        raise DecisionQueueError(
+            f"malformed JSON {path} at line {error.lineno}, column {error.colno}"
+        ) from error
     hits: list[str] = []
 
     def walk(node) -> None:
@@ -132,4 +143,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except DecisionQueueError as error:
+        print(f"ERROR: {error}", file=sys.stderr)
+        raise SystemExit(1)
