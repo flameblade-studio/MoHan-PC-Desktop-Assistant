@@ -7,6 +7,12 @@ lazy from tools.audit_official_pack_quality import (
     component_metrics,
     isolated_speck_metrics,
 )
+lazy from tools.art_pipeline.speck_cleanup import (
+    OWNER_DILATION_KERNEL_SIZE,
+    OWNER_LARGE_COMPONENT_MIN_AREA,
+    OWNER_SMALL_COMPONENT_MAX_AREA,
+    owner_judge_metrics,
+)
 
 
 EXPECTED_BROWN_PIXELS = 2
@@ -82,3 +88,18 @@ def test_isolated_speck_metrics_counts_a_low_alpha_residual() -> None:
     assert measured["alpha_threshold"] == 0
     assert measured["direct_definition_count"] == 1
     assert measured["isolated_count"] == 1
+
+
+def test_owner_judge_metrics_uses_single_pass_alpha30_rule() -> None:
+    alpha = np.zeros((180, 180), dtype=np.uint8)
+    alpha[20:40, 20:40] = 255
+    alpha[130:133, 130:133] = 255
+    alpha[150:153, 150:153] = 1
+
+    measured = owner_judge_metrics(alpha, roi=(0, 0, 180, 180))
+
+    assert measured["alpha_1_30"] == 3 * 3
+    assert measured["isolated_count"] == 1
+    assert measured["small_component_max_area"] == OWNER_SMALL_COMPONENT_MAX_AREA
+    assert measured["large_component_min_area"] == OWNER_LARGE_COMPONENT_MIN_AREA
+    assert measured["dilation_kernel_size"] == OWNER_DILATION_KERNEL_SIZE

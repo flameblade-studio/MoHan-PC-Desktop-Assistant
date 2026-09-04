@@ -14,9 +14,17 @@ lazy from .constants import (
 
 HEAD_SPECK_ROI: Final = (300, 100, 1000, 520)
 FULL_BODY_SPECK_ROI: Final = (250, 30, 800, 420)
+OWNER_JUDGE_CANVAS_SHAPE: Final = (1254, 1254)
 MIN_PROCESSING_WIDTH: Final = 800
 MIN_PROCESSING_HEIGHT: Final = 420
 ALPHA_MASK_DIMENSIONS: Final = 2
+# This is the owner-provided sealed-pack criterion.  Keep it separate from the
+# older transitive-chain cleanup below: the latter is useful diagnostics, but
+# it is not allowed to decide the release gate.
+OWNER_ALPHA_THRESHOLD: Final = 30
+OWNER_SMALL_COMPONENT_MAX_AREA: Final = 12
+OWNER_LARGE_COMPONENT_MIN_AREA: Final = 60
+OWNER_DILATION_KERNEL_SIZE: Final = 7
 
 
 def speck_roi_for_shape(shape: tuple[int, int]) -> tuple[int, int, int, int]:
@@ -39,6 +47,160 @@ def _bounded_roi(
     y0 = max(0, min(mask.shape[0], y0))
     y1 = max(y0, min(mask.shape[0], y1))
     return x0, y0, x1, y1, mask[y0:y1, x0:x1]
+
+
+def owner_judge_metrics(
+    alpha: np.ndarray,
+    *,
+    roi: tuple[int, int, int, int] | None = None,
+) -> dict[str, int | list[int]]:
+    """Apply the supplied sealed-pack speck rule to one alpha mask.
+
+    The owner rule intentionally has no transitive chain promotion.  It counts
+    all alpha 1--30 pixels over the complete stored asset, then measures small
+    alpha>30 components inside the selected ROI after one 7x7 dilation of
+    components larger than 60 pixels.
+    """
+
+    if alpha.ndim != ALPHA_MASK_DIMENSIONS:
+        raise ValueError("owner speck metrics expects a two-dimensional alpha mask")
+    selected_roi = speck_roi_for_shape(alpha.shape) if roi is None else roi
+    x0, y0, x1, y1, crop = _bounded_roi(alpha, selected_roi)
+    visible = (crop > OWNER_ALPHA_THRESHOLD).astype(np.uint8)
+    isolated_count = 0
+    if crop.size and visible.any():
+        count, labels, stats, _centroids = cv2.connectedComponentsWithStats(
+            visible, connectivity=8
+        )
+        large = np.zeros_like(visible)
+        for label in range(1, count):
+            if stats[label, cv2.CC_STAT_AREA] > OWNER_LARGE_COMPONENT_MIN_AREA:
+                large[labels == label] = 1
+        far = (
+            cv2.dilate(
+                large,
+                np.ones(
+                    (OWNER_DILATION_KERNEL_SIZE, OWNER_DILATION_KERNEL_SIZE),
+                    dtype=np.uint8,
+                ),
+            )
+            == 0
+        )
+        for label in range(1, count):
+            if stats[label, cv2.CC_STAT_AREA] > OWNER_SMALL_COMPONENT_MAX_AREA:
+                continue
+            ys, xs = np.nonzero(labels == label)
+            if far[ys, xs].all():
+                isolated_count += 1
+    return {
+        "roi_xyxy": [x0, y0, x1, y1],
+        "alpha_1_30": int(
+            ((alpha > 0) & (alpha <= OWNER_ALPHA_THRESHOLD)).sum()
+        ),
+        "isolated_count": isolated_count,
+        "nontransparent": int((alpha > 0).sum()),
+        "alpha_threshold": OWNER_ALPHA_THRESHOLD,
+        "small_component_max_area": OWNER_SMALL_COMPONENT_MAX_AREA,
+        "large_component_min_area": OWNER_LARGE_COMPONENT_MIN_AREA,
+        "dilation_kernel_size": OWNER_DILATION_KERNEL_SIZE,
+    }
+
+
+def remove_owner_specks(  # noqa: PLR0914 - mirrors the supplied judge step by step
+    alpha: np.ndarray,
+    *,
+    roi: tuple[int, int, int, int] | None = None,
+) -> tuple[np.ndarray, dict[str, int]]:
+    """Clear the owner rule's low-alpha residue and isolated components."""
+
+    before = owner_judge_metrics(alpha, roi=roi)
+    cleaned = alpha.copy()
+    low_alpha = (cleaned > 0) & (cleaned <= OWNER_ALPHA_THRESHOLD)
+    low_alpha_removed = int(low_alpha.sum())
+    cleaned[low_alpha] = 0
+
+    selected_roi = speck_roi_for_shape(cleaned.shape) if roi is None else roi
+    x0, y0, x1, y1, crop = _bounded_roi(cleaned, selected_roi)
+    visible = (crop > OWNER_ALPHA_THRESHOLD).astype(np.uint8)
+    isolated_components_removed = 0
+    isolated_pixels_removed = 0
+    if crop.size and visible.any():
+        count, labels, stats, _centroids = cv2.connectedComponentsWithStats(
+            visible, connectivity=8
+        )
+        large = np.zeros_like(visible)
+        for label in range(1, count):
+            if stats[label, cv2.CC_STAT_AREA] > OWNER_LARGE_COMPONENT_MIN_AREA:
+                large[labels == label] = 1
+        far = (
+            cv2.dilate(
+                large,
+                np.ones(
+                    (OWNER_DILATION_KERNEL_SIZE, OWNER_DILATION_KERNEL_SIZE),
+                    dtype=np.uint8,
+                ),
+            )
+            == 0
+        )
+        for label in range(1, count):
+            if stats[label, cv2.CC_STAT_AREA] > OWNER_SMALL_COMPONENT_MAX_AREA:
+                continue
+            ys, xs = np.nonzero(labels == label)
+            if not far[ys, xs].all():
+                continue
+            cleaned[y0 + ys, x0 + xs] = 0
+            isolated_components_removed += 1
+            isolated_pixels_removed += len(xs)
+
+    after = owner_judge_metrics(cleaned, roi=roi)
+    return cleaned, {
+        "owner_alpha_1_30_removed": low_alpha_removed,
+        "owner_isolated_components_removed": isolated_components_removed,
+        "owner_isolated_pixels_removed": isolated_pixels_removed,
+        "owner_isolated_count_before": int(before["isolated_count"]),
+        "owner_isolated_count_after": int(after["isolated_count"]),
+    }
+
+
+def owner_judge_metrics_for_stored_layer(
+    alpha: np.ndarray,
+) -> dict[str, int | list[int]]:
+    """Measure a layer using the sealed-pack judge's stored-image geometry."""
+
+    height, width = alpha.shape
+    if (height, width) == OWNER_JUDGE_CANVAS_SHAPE:
+        judge_alpha = alpha
+        roi = HEAD_SPECK_ROI
+    elif (
+        height <= OWNER_JUDGE_CANVAS_SHAPE[0]
+        and width <= OWNER_JUDGE_CANVAS_SHAPE[1]
+    ):
+        judge_alpha = np.zeros(OWNER_JUDGE_CANVAS_SHAPE, dtype=alpha.dtype)
+        judge_alpha[:height, :width] = alpha
+        roi = HEAD_SPECK_ROI
+    else:
+        judge_alpha = alpha
+        roi = speck_roi_for_shape(alpha.shape)
+    return owner_judge_metrics(judge_alpha, roi=roi)
+
+
+def remove_owner_specks_for_stored_layer(
+    alpha: np.ndarray,
+) -> tuple[np.ndarray, dict[str, int]]:
+    """Clean a layer with the same canvas padding used by the sealed judge."""
+
+    height, width = alpha.shape
+    cropped = (
+        (height, width) != OWNER_JUDGE_CANVAS_SHAPE
+        and height <= OWNER_JUDGE_CANVAS_SHAPE[0]
+        and width <= OWNER_JUDGE_CANVAS_SHAPE[1]
+    )
+    if cropped:
+        judge_alpha = np.zeros(OWNER_JUDGE_CANVAS_SHAPE, dtype=alpha.dtype)
+        judge_alpha[:height, :width] = alpha
+        cleaned, metrics = remove_owner_specks(judge_alpha, roi=HEAD_SPECK_ROI)
+        return cleaned[:height, :width], metrics
+    return remove_owner_specks(alpha, roi=speck_roi_for_shape(alpha.shape))
 
 
 def _promote_linked_components(
@@ -111,7 +273,7 @@ def remove_unlinked_small_components(
     *,
     roi: tuple[int, int, int, int] | None = None,
 ) -> tuple[np.ndarray, dict[str, int]]:
-    """Remove owner-defined isolated small components from one alpha mask.
+    """Remove legacy chain-unlinked small components from one alpha mask.
 
     Every nonzero-alpha component participates in the cleanup.  A component at
     or below 12 pixels is retained only when its pixels belong to the

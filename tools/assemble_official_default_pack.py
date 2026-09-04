@@ -70,6 +70,8 @@ lazy from domain.outfit_pack_makeup import (
 lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_ENSEMBLE_ID, OFFICIAL_OUTFIT_PACK_ID
 lazy from tools.art_pipeline.extract_layers import remove_unlinked_headwear_fragments
 lazy from tools.art_pipeline.speck_cleanup import (
+    remove_owner_specks,
+    remove_owner_specks_for_stored_layer,
     remove_unlinked_small_components,
     speck_roi_for_shape,
 )
@@ -265,10 +267,14 @@ def clean_small_components(
         source_alpha,
         roi=speck_roi_for_shape(layer.shape[:2]),
     )
+    cleaned_alpha, owner_metrics = remove_owner_specks(
+        cleaned_alpha,
+        roi=speck_roi_for_shape(layer.shape[:2]),
+    )
     output = layer.copy()
     output[:, :, 3] = cleaned_alpha
     output[cleaned_alpha == 0] = 0
-    return output, metrics
+    return output, {**metrics, **owner_metrics}
 
 
 def _trim_edge_runs(
@@ -412,7 +418,7 @@ def registration_flags(report_path: Path) -> dict[str, list[float]]:
     return flags
 
 
-def process_silhouette(
+def process_silhouette(  # noqa: PLR0915 - one report records the complete silhouette pipeline
     source: Path,
     silhouette: str,
     outfit_assets: Path,
@@ -459,10 +465,26 @@ def process_silhouette(
         raise SystemExit(
             f"Required hair-back layer is empty after cleanup for {silhouette}."
         )
-    result.hair_back_bbox = alpha_bbox(hair_back)
-    if result.hair_back_bbox is None:
+    initial_hair_back_bbox = alpha_bbox(hair_back)
+    if initial_hair_back_bbox is None:
         raise SystemExit(f"Required hair-back layer has no alpha for {silhouette}.")
-    hair_back = crop_to_alpha_bbox(hair_back, result.hair_back_bbox)
+    hair_back = crop_to_alpha_bbox(hair_back, initial_hair_back_bbox)
+    hair_back_alpha, stored_owner_cleanup = remove_owner_specks_for_stored_layer(
+        hair_back[:, :, 3]
+    )
+    hair_back[:, :, 3] = hair_back_alpha
+    hair_back[hair_back_alpha == 0] = 0
+    result.small_component_cleanup["hair_back_stored"] = stored_owner_cleanup
+    stored_hair_back_bbox = alpha_bbox(hair_back)
+    if stored_hair_back_bbox is None:
+        raise SystemExit(f"Required hair-back layer has no alpha after stored cleanup for {silhouette}.")
+    result.hair_back_bbox = (
+        initial_hair_back_bbox[0] + stored_hair_back_bbox[0],
+        initial_hair_back_bbox[1] + stored_hair_back_bbox[1],
+        stored_hair_back_bbox[2],
+        stored_hair_back_bbox[3],
+    )
+    hair_back = crop_to_alpha_bbox(hair_back, stored_hair_back_bbox)
     layers["headwear"], result.cropped_pixels["headwear"] = crop(layers["headwear"], forbidden.headwear)
     layers["headwear"], result.small_component_cleanup["headwear"] = (
         clean_small_components(layers["headwear"])

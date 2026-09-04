@@ -163,11 +163,10 @@ HEADWEAR_COMPONENT_LINK_DISTANCE: Final = 9
 HEADWEAR_CHAIN_LINK_RADIUS: Final = 20
 HEADWEAR_DETACHED_DISTANCE: Final = 100
 
-# Owner-approved small-component gate shared by hair front, hair back and
-# headwear.  The alpha>30 value remains the owner's diagnostic threshold, while
-# cleanup classifies every alpha>0 pixel so a removed component cannot survive
-# as a hidden low-alpha residual.  The retention graph uses N=9 transitive
-# spacing so the existing fine chain is not mistaken for noise.
+# Shared thresholds for the legacy chain-aware extraction diagnostic and the
+# formal owner gate.  The formal sealed-member gate is a single pass over
+# alpha>30 components with one 7x7 dilation; it has no transitive N=9 rescue.
+# The separate legacy graph remains available for diagnostics and reports.
 SMALL_COMPONENT_ALPHA_THRESHOLD: Final = 30
 SMALL_COMPONENT_MAX_AREA: Final = 12
 SMALL_COMPONENT_ANCHOR_MIN_AREA: Final = 60

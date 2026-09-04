@@ -83,7 +83,11 @@ lazy from .image_ops import (
     transparent_rgb_zero,
     warp_rgba,
 )
-lazy from .speck_cleanup import remove_unlinked_small_components, speck_roi_for_shape
+lazy from .speck_cleanup import (
+    remove_owner_specks,
+    remove_unlinked_small_components,
+    speck_roi_for_shape,
+)
 lazy from .vision import face_box, face_landmarks
 
 
@@ -433,10 +437,14 @@ def _clean_small_components(
         source_alpha,
         roi=speck_roi_for_shape(layer.shape[:2]),
     )
+    cleaned_alpha, owner_metrics = remove_owner_specks(
+        cleaned_alpha,
+        roi=speck_roi_for_shape(layer.shape[:2]),
+    )
     output = layer.copy()
     output[:, :, 3] = cleaned_alpha
     output[cleaned_alpha == 0] = 0
-    return output, metrics
+    return output, {**metrics, **owner_metrics}
 
 
 def _remove_hair_underlayer_spill(layer: np.ndarray) -> tuple[np.ndarray, int]:

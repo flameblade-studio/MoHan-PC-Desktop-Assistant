@@ -23,11 +23,11 @@ lazy from infrastructure.active_outfit_overlay import (
 )
 lazy from tools.audit_official_pack_quality import (
     SPECK_HEAD_ROI,
-    fine_chain_metrics,
     isolated_speck_metrics,
 )
 lazy from tools.art_pipeline.speck_cleanup import (
     FULL_BODY_SPECK_ROI,
+    owner_judge_metrics_for_stored_layer,
     speck_roi_for_shape,
 )
 
@@ -52,9 +52,7 @@ HALF_BASE_RIGS = {
     "front-exasperated": "front",
 }
 # 2026-09-04 實測值：移除 31 個 alpha=1 假像素與 5 個孤立殘留後的基線。
-EXPECTED_FRONT_CROSSED_BACK_PIXELS = 13_506
-EXPECTED_FINE_CHAIN_LINKS = 15
-EXPECTED_FINE_CHAIN_MAX_GAP = 9
+EXPECTED_FRONT_CROSSED_BACK_PIXELS = 13_328
 
 
 def _app() -> object:
@@ -106,7 +104,7 @@ def _headwear_alpha(silhouette: str) -> np.ndarray:
     return _expand_declared_layer(_rgba(image), declaration, silhouette)[:, :, 3]
 
 
-def _layer_image(silhouette: str, slot: str) -> np.ndarray:
+def _stored_layer_image(silhouette: str, slot: str) -> np.ndarray:
     category = "headwear" if slot == "headwear" else "hairstyles"
     with zipfile.ZipFile(OUTFIT_PACK) as archive:
         manifest = json.loads(archive.read("manifest.json"))
@@ -118,7 +116,7 @@ def _layer_image(silhouette: str, slot: str) -> np.ndarray:
         )
         image = QImage.fromData(archive.read(declaration["path"]), "PNG")
     assert not image.isNull(), silhouette
-    return _expand_declared_layer(_rgba(image), declaration, silhouette)
+    return _rgba(image)
 
 
 def _native_base_path(silhouette: str) -> Path:
@@ -128,16 +126,17 @@ def _native_base_path(silhouette: str) -> Path:
     return ROOT / "assets/expressions/layered" / f"{rig}_base.png"
 
 
-def test_front_crossed_fine_chain_contract() -> None:
-    measured = fine_chain_metrics(_layer_image("front-crossed", "headwear"))
+def test_front_crossed_owner_speck_contract() -> None:
+    measured = owner_judge_metrics_for_stored_layer(
+        _stored_layer_image("front-crossed", "headwear")[:, :, 3]
+    )
 
-    assert measured["link_count"] >= EXPECTED_FINE_CHAIN_LINKS, measured
-    assert set(measured["endpoint_areas"]) >= {386, 89}, measured
-    assert measured["maximum_link_distance_px"] <= EXPECTED_FINE_CHAIN_MAX_GAP, measured
+    assert measured["alpha_1_30"] == 0, measured
+    assert measured["isolated_count"] == 0, measured
 
 
 def test_front_crossed_back_pixel_budget_does_not_regress() -> None:
-    alpha = _layer_image("front-crossed", "back")[:, :, 3]
+    alpha = _stored_layer_image("front-crossed", "back")[:, :, 3]
 
     assert int((alpha > 0).sum()) >= EXPECTED_FRONT_CROSSED_BACK_PIXELS
 
@@ -152,11 +151,10 @@ def test_official_speck_roi_keeps_half_and_full_body_regions() -> None:
 def test_every_official_layer_has_zero_owner_isolated_small_points(
     silhouette: str, slot: str
 ) -> None:
-    image = _layer_image(silhouette, slot)
-    measured = isolated_speck_metrics(
-        image, roi=speck_roi_for_shape(image.shape[:2])
-    )
+    image = _stored_layer_image(silhouette, slot)
+    measured = owner_judge_metrics_for_stored_layer(image[:, :, 3])
 
+    assert measured["alpha_1_30"] == 0, f"{silhouette}/{slot}: {measured}"
     assert measured["isolated_count"] == 0, f"{silhouette}/{slot}: {measured}"
 
 

@@ -8,6 +8,7 @@ or runtime composition instead of trusting an intermediate layer report.
 from __future__ import annotations
 
 lazy import argparse
+lazy import hashlib
 lazy import json
 lazy import sys
 lazy import zipfile
@@ -31,7 +32,10 @@ lazy from tools.art_pipeline.constants import (
     SMALL_COMPONENT_LINK_DISTANCE,
     SMALL_COMPONENT_MAX_AREA,
 )
-lazy from tools.art_pipeline.speck_cleanup import speck_roi_for_shape
+lazy from tools.art_pipeline.speck_cleanup import (
+    owner_judge_metrics_for_stored_layer,
+    speck_roi_for_shape,
+)
 lazy from domain.outfit_pack import REQUIRED_SILHOUETTES
 
 DEFAULT_PACK: Final = (
@@ -61,6 +65,8 @@ IMAGE_DIMENSIONS: Final = 3
 RGBA_CHANNELS: Final = 4
 OPAQUE: Final = 255
 ANCHOR_COORDINATE_COUNT: Final = 2
+OWNER_JUDGE_CANVAS: Final = (1254, 1254)
+MAX_COMPOSITE_ISOLATED_COUNT: Final = 9
 # These two detached blue bead assemblies are intentional: the design hangs
 # them from the right side of the hairpiece rather than touching the crown.
 # The whitelist is keyed by measured source-pixel area so an unexpected change
@@ -88,6 +94,25 @@ def _decode_png(encoded: bytes, label: str) -> np.ndarray:
 
 def _read_png(path: Path) -> np.ndarray:
     return _decode_png(path.read_bytes(), str(path))
+
+
+def _owner_judge_layer_metrics(image: np.ndarray) -> dict[str, object]:
+    """Measure the sealed member with the supplied judge's exact geometry."""
+
+    alpha = image[:, :, 3]
+    height, width = alpha.shape
+    measured = owner_judge_metrics_for_stored_layer(alpha)
+    if (height, width) == OWNER_JUDGE_CANVAS:
+        judge_shape = [height, width]
+    elif height <= OWNER_JUDGE_CANVAS[0] and width <= OWNER_JUDGE_CANVAS[1]:
+        judge_shape = list(OWNER_JUDGE_CANVAS)
+    else:
+        judge_shape = [height, width]
+    return {
+        **measured,
+        "source_shape": [height, width],
+        "judge_canvas_shape": judge_shape,
+    }
 
 
 def _asset_path(manifest: dict[str, object], category: str, slot: str) -> str:
@@ -506,34 +531,41 @@ def fine_chain_metrics(image: np.ndarray) -> dict[str, object]:
 def audit(  # noqa: PLR0914 - the report intentionally keeps all gate sections together
     pack_path: Path, portrait_path: Path, base_hair_path: Path
 ) -> dict[str, object]:
+    pack_path = pack_path.resolve(strict=True)
+    portrait_path = portrait_path.resolve(strict=True)
+    base_hair_path = base_hair_path.resolve(strict=True)
     portrait = _read_png(portrait_path)
+    sealed_pack_sha256 = hashlib.sha256(pack_path.read_bytes()).hexdigest()
     with zipfile.ZipFile(pack_path) as archive:
+        sealed_member_count = len(archive.namelist())
         manifest = json.loads(archive.read("manifest.json"))
         hair_poses = manifest["hairstyles"][0]["variants"][0]["poses"]
-        front_declaration = next(
+        front_crossed_front_declaration = next(
             item
             for item in hair_poses[FRONT_SILHOUETTE]
             if item["slot"] == "front"
         )
-        back_declaration = next(
+        front_crossed_back_declaration = next(
             item
             for item in hair_poses[FRONT_SILHOUETTE]
             if item["slot"] == "back"
         )
+        front_crossed_front_raw = _decode_png(
+            archive.read(front_crossed_front_declaration["path"]),
+            front_crossed_front_declaration["path"],
+        )
+        front_crossed_back_raw = _decode_png(
+            archive.read(front_crossed_back_declaration["path"]),
+            front_crossed_back_declaration["path"],
+        )
         front_hair = _expand_declared_layer(
-            _decode_png(
-                archive.read(front_declaration["path"]),
-                front_declaration["path"],
-            ),
-            front_declaration,
+            front_crossed_front_raw,
+            front_crossed_front_declaration,
             portrait.shape[:2],
         )
         back_hair = _expand_declared_layer(
-            _decode_png(
-                archive.read(back_declaration["path"]),
-                back_declaration["path"],
-            ),
-            back_declaration,
+            front_crossed_back_raw,
+            front_crossed_back_declaration,
             portrait.shape[:2],
         )
 
@@ -557,35 +589,25 @@ def audit(  # noqa: PLR0914 - the report intentionally keeps all gate sections t
             headwear_by_silhouette[silhouette] = component_metrics(headwear)
             if silhouette == FRONT_SILHOUETTE:
                 front_crossed_headwear = headwear
-            canvas_shape = headwear.shape[:2]
-            roi = speck_roi_for_shape(canvas_shape)
             hair_declarations = hair_poses[silhouette]
-            front_declaration = next(
+            silhouette_front_declaration = next(
                 item for item in hair_declarations if item["slot"] == "front"
             )
-            back_declaration = next(
+            silhouette_back_declaration = next(
                 item for item in hair_declarations if item["slot"] == "back"
             )
-            front = _expand_declared_layer(
-                _decode_png(
-                    archive.read(front_declaration["path"]),
-                    front_declaration["path"],
-                ),
-                front_declaration,
-                canvas_shape,
+            front_raw = _decode_png(
+                archive.read(silhouette_front_declaration["path"]),
+                silhouette_front_declaration["path"],
             )
-            back = _expand_declared_layer(
-                _decode_png(
-                    archive.read(back_declaration["path"]),
-                    back_declaration["path"],
-                ),
-                back_declaration,
-                canvas_shape,
+            back_raw = _decode_png(
+                archive.read(silhouette_back_declaration["path"]),
+                silhouette_back_declaration["path"],
             )
             small_component_specks[silhouette] = {
-                "front": isolated_speck_metrics(front, roi=roi),
-                "back": isolated_speck_metrics(back, roi=roi),
-                "headwear": isolated_speck_metrics(headwear, roi=roi),
+                "front": _owner_judge_layer_metrics(front_raw),
+                "back": _owner_judge_layer_metrics(back_raw),
+                "headwear": _owner_judge_layer_metrics(headwear),
             }
 
         empty_back = 0
@@ -628,9 +650,21 @@ def audit(  # noqa: PLR0914 - the report intentionally keeps all gate sections t
         for silhouette_metrics in small_component_specks.values()
         for metrics in silhouette_metrics.values()
     )
+    alpha_1_30_residuals = sum(
+        int(metrics["alpha_1_30"])
+        for silhouette_metrics in small_component_specks.values()
+        for metrics in silhouette_metrics.values()
+    )
     if front_crossed_headwear is None:
         raise ValueError("Official pack is missing the front-crossed headwear layer.")
+    composite_specks = _owner_judge_layer_metrics(portrait)
     return {
+        "sealed_source": {
+            "path": str(pack_path),
+            "sha256": sealed_pack_sha256,
+            "member_count": sealed_member_count,
+            "layer_source": "zip members",
+        },
         "contract": {
             "head_roi_xyxy": list(HEAD_ROI),
             "brown_brightness_strict_range": [
@@ -651,7 +685,7 @@ def audit(  # noqa: PLR0914 - the report intentionally keeps all gate sections t
             "empty": empty_back,
             "nonempty": nonempty_back,
         },
-        "composite_specks": isolated_speck_metrics(_read_png(portrait_path)),
+        "composite_specks": composite_specks,
         "fine_chain": fine_chain_metrics(front_crossed_headwear),
         "headwear": {
             "detached_over_100px_total": detached,
@@ -666,10 +700,15 @@ def audit(  # noqa: PLR0914 - the report intentionally keeps all gate sections t
             "empty_back": empty_back,
             "non_whitelisted_detached_over_100px": len(detached_unexpected),
             "isolated_small_points": isolated_small_points,
+            "alpha_1_30_residuals": alpha_1_30_residuals,
+            "composite_isolated_count": int(composite_specks["isolated_count"]),
             "passed": (
                 not empty_back
                 and not detached_unexpected
                 and isolated_small_points == 0
+                and alpha_1_30_residuals == 0
+                and int(composite_specks["isolated_count"])
+                <= MAX_COMPOSITE_ISOLATED_COUNT
             ),
         },
     }
