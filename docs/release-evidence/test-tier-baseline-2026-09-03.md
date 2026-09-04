@@ -3,7 +3,7 @@
 ## 繁體中文
 
 - 量測日期為 `2026-09-03`，基線提交為 `d58b11e`；以下數字是本工作樹在分層改動前的實測結果。
-- 完整套使用 `C:\Users\hitos\AppData\Local\Programs\Python\Python315\python.exe tests/run_all.py`，退出碼為 0，結尾為 `ALL_364_TESTS_OK`，共 364 個測試模組，總耗時 1355.850 秒（22 分 35.850 秒）。
+- 完整套使用 `py -3.15 tests/run_all.py`，退出碼為 0，結尾為 `ALL_364_TESTS_OK`，共 364 個測試模組，總耗時 1355.850 秒（22 分 35.850 秒）。
 - 慢速模組沿用 `tests/run_all.py` 的 `_test_commands`、`_isolated_environment` 與 `_run_with_retry`，逐一在獨立子程序量測 wall-clock；沒有修改測試內容，也沒有啟用重試。
 - 下列是同一批 68 個慢速候選模組的實測排序；數字是每個隔離子程序的實際耗時，不是 pytest 內部單一測試函式耗時。
 - `tests/test_multisensory_speech_regression.py`：153.434 秒。
@@ -27,7 +27,7 @@
 ## 简体中文
 
 - 测量日期为 `2026-09-03`，基线提交为 `d58b11e`；以下数字是本工作树在分层改动前的实测结果。
-- 完整套使用 `C:\Users\hitos\AppData\Local\Programs\Python\Python315\python.exe tests/run_all.py`，退出码为 0，结尾为 `ALL_364_TESTS_OK`，共 364 个测试模块，总耗时 1355.850 秒（22 分 35.850 秒）。
+- 完整套使用 `py -3.15 tests/run_all.py`，退出码为 0，结尾为 `ALL_364_TESTS_OK`，共 364 个测试模块，总耗时 1355.850 秒（22 分 35.850 秒）。
 - 慢速模块沿用 `tests/run_all.py` 的 `_test_commands`、`_isolated_environment` 与 `_run_with_retry`，逐一在独立子进程测量 wall-clock；没有修改测试内容，也没有启用重试。
 - 下列是同一批 68 个慢速候选模块的实测排序；数字是每个隔离子进程的实际耗时，不是 pytest 内部单个测试函数耗时。
 - `tests/test_multisensory_speech_regression.py`：153.434 秒。
@@ -51,7 +51,7 @@
 ## English
 
 - The measurement date is `2026-09-03` and the baseline commit is `d58b11e`; the figures below were measured in this worktree before tiering changes.
-- The complete suite used `C:\Users\hitos\AppData\Local\Programs\Python\Python315\python.exe tests/run_all.py`, exited 0, ended with `ALL_364_TESTS_OK`, covered 364 test modules, and took 1355.850 seconds (22 minutes 35.850 seconds).
+- The complete suite used `py -3.15 tests/run_all.py`, exited 0, ended with `ALL_364_TESTS_OK`, covered 364 test modules, and took 1355.850 seconds (22 minutes 35.850 seconds).
 - Slow-module timing reused `tests/run_all.py` through `_test_commands`, `_isolated_environment`, and `_run_with_retry`, measuring each module in an isolated child process with wall-clock timing; test contents were unchanged and retries were disabled.
 - The following is the measured order for the same 68 slow-candidate modules; each value is the isolated child-process elapsed time, rather than an individual pytest function time.
 - `tests/test_multisensory_speech_regression.py`: 153.434 seconds.
@@ -75,7 +75,7 @@
 ## 日本語
 
 - 測定日は `2026-09-03`、ベースラインコミットは `d58b11e` です。以下は階層化変更前にこのワークツリーで実測した数値です。
-- 完全スイートは `C:\Users\hitos\AppData\Local\Programs\Python\Python315\python.exe tests/run_all.py` で実行し、終了コード 0、末尾 `ALL_364_TESTS_OK`、364 テストモジュール、所要 1355.850 秒（22 分 35.850 秒）でした。
+- 完全スイートは `py -3.15 tests/run_all.py` で実行し、終了コード 0、末尾 `ALL_364_TESTS_OK`、364 テストモジュール、所要 1355.850 秒（22 分 35.850 秒）でした。
 - 遅いモジュールの計測は `tests/run_all.py` の `_test_commands`、`_isolated_environment`、`_run_with_retry` を再利用し、各モジュールを独立した子プロセスで wall-clock 計測しました。テスト内容は変更せず、再試行は無効にしました。
 - 以下は同じ 68 個の遅い候補モジュールの実測順です。数値は独立子プロセスの経過時間であり、pytest 内部の個別テスト関数の時間ではありません。
 - `tests/test_multisensory_speech_regression.py`：153.434 秒。
