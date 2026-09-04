@@ -8,9 +8,9 @@ lazy from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy import application.workflow_engine as workflow_engine
-lazy import domain.outfit_pack_makeup as makeup_module
-lazy import domain.version_info as version_info
+lazy from application import workflow_engine
+lazy from domain import outfit_pack_makeup as makeup_module
+lazy from domain import version_info
 lazy from application.workflow_engine import Workflow, schedule_due
 lazy from domain.outfit_pack_makeup import (
     read_makeup_intensity,
