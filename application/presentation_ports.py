@@ -994,7 +994,6 @@ class DashboardServices:
     presentation_ports: PresentationPorts | None = None
     backup_manager: object | None = None
 
-
 def safe_error_from_exception(error: BaseException) -> SafeError | None:
     value = getattr(error, "safe_error", None)
     return value if isinstance(value, SafeError) else None
