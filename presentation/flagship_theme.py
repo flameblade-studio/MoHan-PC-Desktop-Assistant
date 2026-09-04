@@ -32,10 +32,16 @@ lazy from presentation.lingxiao_tokens import (
     TYPE_SCALE,
     LingxiaoPalette,
     font_stack,
-    palette_for,
+)
+lazy from presentation.lingxiao_themes import (
+    DEFAULT_THEME_ID,
+    canonical_theme_id,
+    palette_for_theme,
 )
 lazy from presentation.lingxiao_widgets import (
     GlowOnHover,
+    MotesLayer,
+    SealButton,
     attach_corner_ornaments,
 )
 lazy from presentation.presentation_resources import resource_path
@@ -57,6 +63,7 @@ class FlagshipThemeResult:
     themed_tabs: int
     themed_scroll_areas: int
     wrapped_labels: int
+    theme: str = DEFAULT_THEME_ID
 
 
 _MINIMUM_SCALE = 0.85
@@ -87,8 +94,13 @@ def _rgba(hex_color: str, alpha: int) -> str:
     return f"rgba({red}, {green}, {blue}, {alpha})"
 
 
-def _theme_stylesheet(scale: float, *, high_contrast: bool) -> str:
-    p: LingxiaoPalette = palette_for(high_contrast=high_contrast)
+def _theme_stylesheet(
+    scale: float,
+    *,
+    high_contrast: bool,
+    theme: str = DEFAULT_THEME_ID,
+) -> str:
+    p: LingxiaoPalette = palette_for_theme(theme, high_contrast=high_contrast)
     s = lambda value: _scaled(value, scale)  # noqa: E731 - 樣式表裡到處要用
     fs = {name: s(size) for name, size in TYPE_SCALE.items()}
     display, caps, body = font_stack("display"), font_stack("caps"), font_stack("body")
@@ -548,6 +560,7 @@ def apply_flagship_theme(
     *,
     high_contrast: bool = False,
     scale: float = 1.0,
+    theme: str = DEFAULT_THEME_ID,
 ) -> FlagshipThemeResult:
     """Apply the Lingxiao theme without changing UI content.
 
@@ -557,9 +570,14 @@ def apply_flagship_theme(
     """
 
     normalized_scale = min(_MAXIMUM_SCALE, max(_MINIMUM_SCALE, float(scale)))
+    normalized_theme = canonical_theme_id(theme)
     root.setProperty("mohanFlagshipTheme", True)
     root.setStyleSheet(
-        _theme_stylesheet(normalized_scale, high_contrast=high_contrast)
+        _theme_stylesheet(
+            normalized_scale,
+            high_contrast=high_contrast,
+            theme=normalized_theme,
+        )
     )
 
     tabs = root.findChildren(QTabWidget)
@@ -607,7 +625,11 @@ def apply_flagship_theme(
             if control.focusPolicy() == Qt.NoFocus:
                 control.setFocusPolicy(Qt.StrongFocus)
 
-    palette = palette_for(high_contrast=high_contrast)
+    palette = palette_for_theme(normalized_theme, high_contrast=high_contrast)
+    for seal in root.findChildren(SealButton):
+        seal.set_palette(palette)
+    for motes in root.findChildren(MotesLayer):
+        motes.set_palette(palette)
     for frame in root.findChildren(QFrame):
         if frame.property("mohanRole") in _ORNAMENTED_ROLES:
             attach_corner_ornaments(frame, palette.gold, scale=normalized_scale)
@@ -626,6 +648,7 @@ def apply_flagship_theme(
         themed_tabs=len(tabs),
         themed_scroll_areas=len(scroll_areas),
         wrapped_labels=wrapped_labels,
+        theme=normalized_theme,
     )
 
 
