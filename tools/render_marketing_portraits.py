@@ -41,6 +41,7 @@ lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 SPRITE_ROOT = ROOT / "assets" / "expressions"
 OUTPUT_ROOT = ROOT / "docs" / "media" / "portraits"
 PORTRAIT_SIZE = (1254, 1254)
+CLOSED_EYE_MAKEUP_SLOTS = frozenset({"eyes"})
 # The six README expression cards plus the canonical idle portrait that the
 # installer artwork and the taskbar icon are derived from.
 DEFAULT_EXPRESSIONS = (
@@ -68,8 +69,20 @@ def render_portrait(overlay: ActiveOutfitOverlay, expression: str) -> QImage:
     if sprite.size().toTuple() != PORTRAIT_SIZE:
         raise RuntimeError(f"Half-body sprite is not {PORTRAIT_SIZE}: {source}")
     silhouette = silhouette_for(expression)
-    composed = overlay.apply(sprite, silhouette)
-    if overlay.layer_count(silhouette) == 0:
+    suppressed_makeup_slots = (
+        CLOSED_EYE_MAKEUP_SLOTS
+        if expression.startswith("blink") or expression.endswith("_speech_blink")
+        else frozenset()
+    )
+    composed = overlay.apply(
+        sprite,
+        silhouette,
+        suppress_makeup_slots=suppressed_makeup_slots,
+    )
+    if overlay.layer_count(
+        silhouette,
+        suppress_makeup_slots=suppressed_makeup_slots,
+    ) == 0:
         raise RuntimeError(
             f"No appearance layers were composited for {expression} ({silhouette}); "
             "the official default pack or the built-in makeup is missing."
