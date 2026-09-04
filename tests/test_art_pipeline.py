@@ -153,16 +153,23 @@ def test_hair_underlayer_spill_is_neutralized_without_alpha_or_luma_loss() -> No
     assert corrected[0, 1].tolist() == layer[0, 1].tolist()
 
 
-def test_headwear_cleanup_keeps_four_pixel_silver_chain_and_rejects_warm_drift() -> None:
-    image = np.zeros((12, 12, 4), dtype=np.uint8)
-    image[1:5, 1] = (210, 210, 210, 255)
-    image[1:6, 8:10] = (40, 80, 100, 255)
+def test_headwear_cleanup_keeps_linked_four_pixel_chain_and_rejects_warm_drift() -> None:
+    image = np.zeros((48, 48, 4), dtype=np.uint8)
+    image[1:11, 8:18] = (210, 210, 210, 255)  # retained >60-pixel anchor
+    image[1:5, 1] = (210, 210, 210, 255)  # four-pixel chain segment
+    image[14:18, 12] = (210, 210, 210, 255)  # second linked segment
+    image[21:25, 12] = (210, 210, 210, 255)  # third linked segment
+    image[1:6, 26:28] = (40, 80, 100, 255)  # warm under-layer drift
+    image[1:3, 35:38] = (210, 210, 210, 255)  # isolated six-pixel speck
     mask = (image[:, :, 3] > 0).astype(np.uint8) * 255
 
     cleaned = extract_module._headwear_cleanup(mask, image)
 
     assert np.count_nonzero(cleaned[:, 1]) == EXPECTED_CHAIN_PIXELS
-    assert not cleaned[:, 8:10].any()
+    assert np.count_nonzero(cleaned[14:18, 12]) == EXPECTED_CHAIN_PIXELS
+    assert np.count_nonzero(cleaned[21:25, 12]) == EXPECTED_CHAIN_PIXELS
+    assert not cleaned[:, 26:28].any()
+    assert not cleaned[:, 35:38].any()
 
 
 def test_reference_is_materialized_from_git_commit(tmp_path: Path) -> None:

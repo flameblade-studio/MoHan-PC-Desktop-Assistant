@@ -23,7 +23,10 @@ lazy import numpy as np
 
 lazy from tools.art_pipeline.constants import (
     HEADWEAR_CHAIN_LINK_RADIUS,
+    HEADWEAR_COMPONENT_ALPHA_THRESHOLD,
+    HEADWEAR_COMPONENT_LINK_DISTANCE,
     HEADWEAR_DETACHED_DISTANCE,
+    HEADWEAR_CHAIN_ANCHOR_MIN_AREA,
 )
 
 DEFAULT_PACK: Final = (
@@ -33,6 +36,12 @@ DEFAULT_PORTRAIT: Final = ROOT / "docs/media/portraits/idle_front.png"
 DEFAULT_BASE_HAIR: Final = ROOT / "assets/expressions/layered/front_hair_back.png"
 FRONT_SILHOUETTE: Final = "front-crossed"
 HEAD_ROI: Final = (360, 150, 900, 470)
+SPECK_HEAD_ROI: Final = (300, 100, 1000, 520)
+SPECK_FULL_BODY_ROI: Final = (250, 30, 800, 420)
+SPECK_ALPHA_THRESHOLD: Final = 30
+SPECK_SMALL_COMPONENT_MAX_AREA: Final = 12
+SPECK_LARGE_COMPONENT_MIN_AREA: Final = 60
+SPECK_DIRECT_DISTANCE_PX: Final = 3
 BROWN_BRIGHTNESS_MIN: Final = 70
 BROWN_BRIGHTNESS_MAX: Final = 150
 BROWN_RED_BLUE_MARGIN: Final = 18
@@ -176,6 +185,165 @@ def component_metrics(image: np.ndarray) -> dict[str, object]:
     }
 
 
+def _bounded_roi(
+    image: np.ndarray, roi: tuple[int, int, int, int]
+) -> tuple[int, int, int, int, np.ndarray]:
+    x0, y0, x1, y1 = roi
+    x0 = max(0, min(image.shape[1], x0))
+    x1 = max(x0, min(image.shape[1], x1))
+    y0 = max(0, min(image.shape[0], y0))
+    y1 = max(y0, min(image.shape[0], y1))
+    return x0, y0, x1, y1, image[y0:y1, x0:x1]
+
+
+def _source_alpha_roi(
+    source_alpha: np.ndarray | None,
+    crop: np.ndarray,
+    x0: int,
+    y0: int,
+    x1: int,
+    y1: int,
+) -> np.ndarray | None:
+    if source_alpha is None:
+        return None
+    source_crop = source_alpha[y0:y1, x0:x1]
+    if source_crop.ndim == IMAGE_DIMENSIONS:
+        source_crop = source_crop[:, :, 3]
+    if source_crop.shape != crop.shape[:2]:
+        raise ValueError("source_alpha must share the composite canvas shape")
+    return source_crop
+
+
+def _restrict_to_source(
+    small: np.ndarray, labels: np.ndarray, source_crop: np.ndarray
+) -> np.ndarray:
+    source_pixels = source_crop > 0
+    source_small = np.zeros(small.size, dtype=bool)
+    for label in np.flatnonzero(small):
+        source_small[label] = bool(np.any(source_pixels[labels == label]))
+    return small & source_small
+
+
+def _minimum_distance_to_components(
+    labels: np.ndarray, retained: np.ndarray
+) -> np.ndarray:
+    minimum_distance = np.full(retained.size, np.inf, dtype=np.float32)
+    source = np.ones(labels.shape, dtype=np.uint8)
+    source[retained[labels]] = 0
+    distance = cv2.distanceTransform(source, cv2.DIST_C, 3)
+    pixels = labels > 0
+    np.minimum.at(minimum_distance, labels[pixels], distance[pixels])
+    return minimum_distance
+
+
+def _promote_linked_components(
+    labels: np.ndarray, stats: np.ndarray, anchor_area: int
+) -> np.ndarray:
+    linked = np.zeros(len(stats), dtype=bool)
+    linked[1:] = stats[1:, cv2.CC_STAT_AREA] >= anchor_area
+    while True:
+        minimum_distance = _minimum_distance_to_components(labels, linked)
+        promoted = (minimum_distance <= HEADWEAR_COMPONENT_LINK_DISTANCE) & ~linked
+        if not promoted.any():
+            return linked
+        linked |= promoted
+
+
+def _direct_speck_masks(
+    labels: np.ndarray,
+    stats: np.ndarray,
+    source_crop: np.ndarray | None,
+) -> tuple[np.ndarray, np.ndarray, int]:
+    large = stats[:, cv2.CC_STAT_AREA] > SPECK_LARGE_COMPONENT_MIN_AREA
+    large[0] = False
+    small = (
+        (stats[:, cv2.CC_STAT_AREA] > 0)
+        & (stats[:, cv2.CC_STAT_AREA] <= SPECK_SMALL_COMPONENT_MAX_AREA)
+    )
+    small[0] = False
+    if source_crop is not None:
+        small = _restrict_to_source(small, labels, source_crop)
+    distance = _minimum_distance_to_components(labels, large)
+    direct = small & (distance > SPECK_DIRECT_DISTANCE_PX)
+    return small, direct, int(large.sum())
+
+
+def _linked_mask_for_crop(
+    crop: np.ndarray, source_crop: np.ndarray | None
+) -> tuple[np.ndarray, np.ndarray]:
+    link_visible = (
+        crop[:, :, 3] > HEADWEAR_COMPONENT_ALPHA_THRESHOLD
+    ).astype(np.uint8)
+    _link_count, link_labels, link_stats, _ = cv2.connectedComponentsWithStats(
+        link_visible, connectivity=8
+    )
+    anchor_area = (
+        HEADWEAR_CHAIN_ANCHOR_MIN_AREA
+        if source_crop is not None
+        else SPECK_LARGE_COMPONENT_MIN_AREA
+    )
+    return link_labels, _promote_linked_components(link_labels, link_stats, anchor_area)
+
+
+def _empty_speck_metrics(roi: tuple[int, int, int, int]) -> dict[str, object]:
+    x0, y0, x1, y1 = roi
+    return {
+        "roi_xyxy": [x0, y0, x1, y1],
+        "component_count": 0,
+        "large_component_count": 0,
+        "small_component_count": 0,
+        "direct_definition_count": 0,
+        "isolated_count": 0,
+    }
+
+
+def isolated_speck_metrics(
+    image: np.ndarray,
+    *,
+    roi: tuple[int, int, int, int] = SPECK_HEAD_ROI,
+    source_alpha: np.ndarray | None = None,
+) -> dict[str, object]:
+    """Measure small composite specks and the N-linked chain-aware remainder.
+
+    ``direct_definition_count`` is the owner's original diagnostic: alpha>30,
+    area<=12, and Chebyshev distance>3 from every area>60 component.  The
+    release gate's ``isolated_count`` additionally treats a fine-chain section
+    as non-isolated when it reaches an area>60 anchor through the measured
+    transitive N-neighbour rule.  This keeps the gate aligned with the cleanup
+    rule rather than mistaking a chain's individual links for specks.  When
+    ``source_alpha`` is supplied, only pixels painted by that source layer are
+    attributed to this gate; this prevents an unrelated base-hair fragment from
+    being blamed on headwear.
+    """
+
+    x0, y0, x1, y1, crop = _bounded_roi(image, roi)
+    source_crop = _source_alpha_roi(source_alpha, crop, x0, y0, x1, y1)
+    visible = (crop[:, :, 3] > SPECK_ALPHA_THRESHOLD).astype(np.uint8)
+    count, labels, stats, _centroids = cv2.connectedComponentsWithStats(
+        visible, connectivity=8
+    )
+    if count <= 1:
+        return _empty_speck_metrics((x0, y0, x1, y1))
+
+    small, direct, large_count = _direct_speck_masks(labels, stats, source_crop)
+
+    link_labels, linked = _linked_mask_for_crop(crop, source_crop)
+
+    small_linked = np.zeros(count, dtype=bool)
+    for label in np.flatnonzero(small):
+        small_linked[label] = bool(np.any(linked[link_labels[labels == label]]))
+
+    return {
+        "roi_xyxy": [x0, y0, x1, y1],
+        "component_count": int(count - 1),
+        "large_component_count": large_count,
+        "small_component_count": int(small.sum()),
+        "direct_definition_count": int(direct.sum()),
+        "isolated_count": int((small & ~small_linked).sum()),
+        "link_distance_px": HEADWEAR_COMPONENT_LINK_DISTANCE,
+    }
+
+
 def audit(pack_path: Path, portrait_path: Path, base_hair_path: Path) -> dict[str, object]:
     with zipfile.ZipFile(pack_path) as archive:
         manifest = json.loads(archive.read("manifest.json"))
@@ -227,6 +395,7 @@ def audit(pack_path: Path, portrait_path: Path, base_hair_path: Path) -> dict[st
             "empty": empty_back,
             "nonempty": nonempty_back,
         },
+        "composite_specks": isolated_speck_metrics(_read_png(portrait_path)),
         "headwear": {
             "detached_over_100px_total": detached,
             "front_crossed": headwear_by_silhouette[FRONT_SILHOUETTE],

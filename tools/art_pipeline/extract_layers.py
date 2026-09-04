@@ -30,9 +30,9 @@ lazy from .constants import (
     HEAD_REGION_LEFT_FACE_FACTOR,
     HEAD_REGION_RIGHT_FACE_FACTOR,
     HEADWEAR_DARK_PIXEL_MAX,
-    HEADWEAR_CHAIN_LINK_RADIUS,
-    HEADWEAR_DETACHED_DISTANCE,
-    HEADWEAR_MIN_COMPONENT_AREA,
+    HEADWEAR_COMPONENT_ALPHA_THRESHOLD,
+    HEADWEAR_COMPONENT_LINK_DISTANCE,
+    HEADWEAR_CHAIN_ANCHOR_MIN_AREA,
     HEADWEAR_SKIN_GREEN_BLUE_MARGIN,
     HEADWEAR_SKIN_RED_GREEN_MARGIN,
     HEADWEAR_SKIN_RED_MIN,
@@ -373,40 +373,57 @@ def _headwear_cleanup(mask: np.ndarray, cur: np.ndarray) -> np.ndarray:
     # The silver/blue ornament has no warm material.  The same measured brown
     # criterion therefore identifies hairline/skin drift, not ornament pixels.
     mask[warm_underlayer] = 0
-    labels_count, labels, stats, _centroids = cv2.connectedComponentsWithStats(
-        (mask > 0).astype(np.uint8), connectivity=8
-    )
-    keep = np.zeros(labels_count, dtype=bool)
-    keep[1:] = stats[1:, cv2.CC_STAT_AREA] >= HEADWEAR_MIN_COMPONENT_AREA
-    mask[~keep[labels]] = 0
     return remove_unlinked_headwear_fragments(mask)
 
 
 def remove_unlinked_headwear_fragments(mask: np.ndarray) -> np.ndarray:
-    """Drop distant extraction specks while treating close chain runs as linked."""
+    """Keep small headwear components only in a measured transitive chain.
 
-    mask = mask.copy()
-    binary = (mask > 0).astype(np.uint8)
-    radius = HEADWEAR_CHAIN_LINK_RADIUS
-    kernel = cv2.getStructuringElement(
-        cv2.MORPH_ELLIPSE, (radius * 2 + 1, radius * 2 + 1)
+    Component discovery uses alpha>16, matching the release audit's visible
+    headwear scan. Components larger than the small-noise ceiling are anchors;
+    a smaller component is promoted only when it is within N Chebyshev pixels of
+    an already retained component. Repeating the promotion preserves each fine
+    chain link without allowing an isolated edge speck to survive. Soft alpha
+    pixels belonging to a retained component are kept with it.
+    """
+
+    visible = (mask > HEADWEAR_COMPONENT_ALPHA_THRESHOLD).astype(np.uint8)
+    visible_count, visible_labels, visible_stats, _ = cv2.connectedComponentsWithStats(
+        visible, connectivity=8
     )
-    linked = cv2.dilate(binary, kernel)
-    linked_count, linked_labels, linked_stats, _ = cv2.connectedComponentsWithStats(
-        linked, connectivity=8
+    if visible_count <= 1:
+        return np.zeros_like(mask)
+
+    keep_visible = np.zeros(visible_count, dtype=bool)
+    keep_visible[1:] = (
+        visible_stats[1:, cv2.CC_STAT_AREA] >= HEADWEAR_CHAIN_ANCHOR_MIN_AREA
     )
-    if linked_count > 1:
-        main = 1 + int(np.argmax(linked_stats[1:, cv2.CC_STAT_AREA]))
-        main_x, main_y, main_width, main_height = linked_stats[main, :4]
-        for label in range(1, linked_count):
-            if label == main:
-                continue
-            x, y, width, height = linked_stats[label, :4]
-            dx = max(main_x - (x + width), x - (main_x + main_width), 0)
-            dy = max(main_y - (y + height), y - (main_y + main_height), 0)
-            if float(np.hypot(dx, dy)) > HEADWEAR_DETACHED_DISTANCE:
-                mask[(linked_labels == label) & (binary > 0)] = 0
-    return mask
+    while True:
+        source = np.ones(mask.shape, dtype=np.uint8)
+        source[keep_visible[visible_labels]] = 0
+        distance = cv2.distanceTransform(source, cv2.DIST_C, 3)
+        minimum_distance = np.full(visible_count, np.inf, dtype=np.float32)
+        component_pixels = visible_labels > 0
+        np.minimum.at(
+            minimum_distance,
+            visible_labels[component_pixels],
+            distance[component_pixels],
+        )
+        promoted = (minimum_distance <= HEADWEAR_COMPONENT_LINK_DISTANCE) & ~keep_visible
+        if not promoted.any():
+            break
+        keep_visible |= promoted
+
+    # Retain the anti-aliased fringe attached to a kept visible component, but
+    # remove a whole low-alpha island that has no visible retained component.
+    alpha_count, alpha_labels, _alpha_stats, _ = cv2.connectedComponentsWithStats(
+        (mask > 0).astype(np.uint8), connectivity=8
+    )
+    keep_alpha = np.zeros(alpha_count, dtype=bool)
+    overlap = alpha_labels[keep_visible[visible_labels] & (alpha_labels > 0)]
+    if overlap.size:
+        keep_alpha[np.unique(overlap)] = True
+    return np.where(keep_alpha[alpha_labels], mask, 0).astype(mask.dtype)
 
 
 def _remove_hair_underlayer_spill(layer: np.ndarray) -> tuple[np.ndarray, int]:

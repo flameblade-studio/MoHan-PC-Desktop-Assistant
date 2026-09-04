@@ -145,14 +145,21 @@ HEADWEAR_SKIN_RED_MIN: Final = 140
 HEADWEAR_SKIN_RED_GREEN_MARGIN: Final = 10
 HEADWEAR_SKIN_GREEN_BLUE_MARGIN: Final = 5
 HEADWEAR_DARK_PIXEL_MAX: Final = 80
-# The smallest visible silver-chain segment in halfprod_front_A is 4 px; the
-# 1--3 px components in the same scan are isolated keying noise.  The old 40
-# px threshold removed the chain while retaining its 76--341 px beads.
-HEADWEAR_MIN_COMPONENT_AREA: Final = 4
-# In the re-extracted front-crossed mask, a 20 px radius links the visible
-# anti-aliased chain segments (maximum measured inter-segment gap <= 40 px),
-# while the remaining cluster >100 px away is the measured y=632 extraction
-# speck.  Apply that same geometric rule to every silhouette.
+# The release scan has 71 alpha>16 headwear components with area <=10 in the
+# front-crossed layer; the owner gate treats <=12 px as the small-noise ceiling.
+# Start propagation only from the measured large body/bead anchors (>60 px).
+# This is deliberately not the retired 40 px cutoff, which erased the fine
+# chain; the 13--60 px range may be retained only after it links to an anchor.
+HEADWEAR_COMPONENT_ALPHA_THRESHOLD: Final = 16
+HEADWEAR_SMALL_COMPONENT_MAX_AREA: Final = 12
+HEADWEAR_CHAIN_ANCHOR_MIN_AREA: Final = 61
+# At alpha>16, the measured front-crossed chain has a maximum consecutive
+# component gap of 9 Chebyshev pixels (8-neighbour geometry). N=9 is therefore
+# the smallest measured radius that keeps every chain segment connected from a
+# bead/body anchor; it is not a broad morphological bridge.
+HEADWEAR_COMPONENT_LINK_DISTANCE: Final = 9
+# Retained for the legacy detached-over-100 px audit, which intentionally uses
+# its historical 20 px radius and is separate from the extraction rule above.
 HEADWEAR_CHAIN_LINK_RADIUS: Final = 20
 HEADWEAR_DETACHED_DISTANCE: Final = 100
 

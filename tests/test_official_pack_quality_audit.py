@@ -2,12 +2,18 @@ from __future__ import annotations
 
 lazy import numpy as np
 
-lazy from tools.audit_official_pack_quality import brown_hair_metrics, component_metrics
+lazy from tools.audit_official_pack_quality import (
+    brown_hair_metrics,
+    component_metrics,
+    isolated_speck_metrics,
+)
 
 
 EXPECTED_BROWN_PIXELS = 2
 EXPECTED_COMPONENTS = 3
 EXPECTED_MAIN_AREA = 400
+EXPECTED_DIRECT_SPECKS = 3
+EXPECTED_ISOLATED_SPECKS = 1
 
 
 def test_brown_hair_metrics_attributes_solid_pollution_and_holes() -> None:
@@ -51,3 +57,16 @@ def test_component_metrics_treats_short_chain_gaps_as_linked() -> None:
 
     assert measured["component_count"] == EXPECTED_COMPONENTS
     assert measured["unlinked_over_100px"] == 0
+
+
+def test_isolated_speck_metrics_promotes_a_chain_but_rejects_a_far_speck() -> None:
+    image = np.zeros((180, 180, 4), dtype=np.uint8)
+    image[20:40, 20:40, 3] = 255  # the area>60 anchor
+    image[48:52, 48:50, 3] = 255  # a small chain link, within N of the anchor
+    image[58:62, 58:60, 3] = 255  # a second transitive chain link
+    image[130:133, 130:133, 3] = 255  # isolated nine-pixel speck
+
+    measured = isolated_speck_metrics(image, roi=(0, 0, 180, 180))
+
+    assert measured["direct_definition_count"] == EXPECTED_DIRECT_SPECKS
+    assert measured["isolated_count"] == EXPECTED_ISOLATED_SPECKS
