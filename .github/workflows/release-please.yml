@@ -22,6 +22,9 @@ jobs:
       # ignores ``config-file``/``manifest-file`` whenever ``release-type`` is
       # set, which silently disables extra-files version bumps and the
       # four-language changelog sections.
+      # The v5-bundled 17.6.0 title builder replaces each placeholder once;
+      # keep the one version token as a title-wide prefix so all four language
+      # segments are generated without an empty component.
       - name: Run release-please
         id: release
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0

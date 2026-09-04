@@ -56,6 +56,7 @@ _SETTING_FIELDS: Final = {
     FULLSCREEN_PROTECTION_KEY: "fullscreen_protection_enabled",
     DAILY_LIMIT_KEY: "daily_limit",
 }
+LOAD_FAILURE_MESSAGE: Final = "主動提醒設定無法讀取，已保留上一組有效值。"
 
 SnapshotT = TypeVar("SnapshotT")
 
@@ -103,12 +104,17 @@ class CompanionProactivityPreferencesDraft[SnapshotT]:
 class CompanionProactivityPreferencesStore[SnapshotT]:
     def __init__(self, settings: SettingsPort[SnapshotT]) -> None:
         self._settings = settings
+        self._last_valid = CompanionProactivityPreferences()
+        self._has_valid_value = False
+        self._load_failed = False
+        self._load_failure_notified = False
 
     def load(self) -> CompanionProactivityPreferences:
         try:
             raw = self._settings.read(_ALL_READ_KEYS)
         except _BOUNDARY_ERRORS:
-            return CompanionProactivityPreferences()
+            self._load_failed = True
+            return self._last_valid
         if not isinstance(raw, Mapping):
             return CompanionProactivityPreferences()
         version = raw.get(STORE_SCHEMA_KEY)
@@ -120,7 +126,20 @@ class CompanionProactivityPreferencesStore[SnapshotT]:
             field: _first(raw, key)
             for key, field in _SETTING_FIELDS.items()
         }
-        return preferences_from_mapping(values)
+        preferences = preferences_from_mapping(values)
+        self._last_valid = preferences
+        self._has_valid_value = True
+        self._load_failed = False
+        self._load_failure_notified = False
+        return preferences
+
+    def consume_load_error_message(self) -> str | None:
+        """Return the pending backend warning once for the existing UI path."""
+
+        if not self._load_failed or self._load_failure_notified:
+            return None
+        self._load_failure_notified = True
+        return LOAD_FAILURE_MESSAGE
 
     def begin_edit(self) -> CompanionProactivityPreferencesDraft[SnapshotT]:
         current = self.load()
@@ -131,9 +150,17 @@ class CompanionProactivityPreferencesStore[SnapshotT]:
             raise CompanionProactivityPreferencesStoreError(
                 "Companion proactivity preferences are invalid."
             )
+        if self._load_failed and not self._has_valid_value:
+            raise CompanionProactivityPreferencesStoreError(
+                "Companion proactivity preferences could not be read; save was refused."
+            )
         values = settings_payload(preferences)
         values[STORE_SCHEMA_KEY] = STORE_SCHEMA_VERSION
         self._atomic_write(values)
+        self._last_valid = preferences
+        self._has_valid_value = True
+        self._load_failed = False
+        self._load_failure_notified = False
 
     def migrate(self) -> CompanionProactivityPreferences:
         preferences = self.load()

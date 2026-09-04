@@ -4,6 +4,45 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+
+
+### 未發布 — README 展示影片改為可自動重產（2026-09-04）
+
+* 重錄 `docs/media/mohan-demo.mp4`：新增 `tools/record_demo_video.py`，以二代執行期合成外觀、OneCore `Microsoft Yating` 正常語速、50 Hz 嘴型 cues 與離屏 PNG 逐幀編碼；媒體 provenance、音訊／畫面規格與 SHA-256 測試閘門同步更新。
+
+### 未發布 — README 媒體世代清單與重產閘門（2026-09-04）
+
+* 新增 `docs/media/MEDIA-PROVENANCE.json`，登錄 README 21 個媒體檔的產生工具、素體世代、SHA-256 與可否自動重產；測試會列出落後當前 `POSE_ATLAS_GENERATION` 的自動素材。
+
+### 未發布 — README 首屏重排（2026-09-04）
+
+* README 四語首屏改為主視覺、價值主張、下載／快速開始／跨平台能力矩陣、作者與版本資訊；Windows CI、MIT 授權與最新公開版本徽章保留在外層，其餘徽章移入四語折疊區／README 四语首屏改为主视觉、价值主张、下载／快速开始／跨平台能力矩阵、作者与版本信息；Windows CI、MIT 许可与最新公开版本徽章保留在外层，其余徽章移入四语折叠区／The four-language README first screen now leads with the hero, value proposition, download／Quick Start／cross-platform capability matrix, and author／release information; Windows CI, MIT License, and latest public release badges remain visible while the other badges move into four-language collapsible sections／README の四言語ファーストビューをメインビジュアル、価値提案、ダウンロード／クイックスタート／クロスプラットフォーム機能表、作者／リリース情報の順に変更し、Windows CI、MIT ライセンス、最新公開版バッジを表示したまま、その他のバッジを四言語の折りたたみセクションへ移動
+
+### 未發布 — README 四語重編與 DLC 教學（2026-09-03）
+
+* README 依「這是什麼、畫面與功能、安裝更新、首次使用、隱私、DLC、贊助授權、疑難排解、開發者入口」重編四語同構內容，刪除重複與過時段落；新增 `.mohan-outfit` 外觀／妝容包與 `.mohan-theme` 主題檔的安裝、選用、還原、容量數量上限、二代素體相容性及 Ko-fi 單次／每月贊助雙軌教學。
+
+### 未發布 — 凌霄主題包 B／C（2026-09-03）
+
+* 新增凌霄 B「霧靄青瓷」與 C「赤焰劍光」主題包，設定頁可切換且預設仍為 A「墨金・凌霄」／新增凌霄 B「雾霭青瓷」与 C「赤焰剑光」主题包，设置页可切换且默认仍为 A「墨金・凌霄」／add the Lingxiao B “Misty Celadon” and C “Crimson Swordlight” theme packs with a settings-page switch while keeping A “Ink-Gold” as default／凌霄 B「霧靄青磁」と C「赤焔剣光」のテーマパックを追加し、設定画面で切り替え可能にしつつ A「墨金・凌霄」を既定値として維持
+
+### 未發布 — 遷移說明（issue #140，選項 3）
+
+* 官方預設外觀包「藍白漢服」與內建妝容素材入庫：`assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit`（衣袍、散髮、銀髮飾，31 個 silhouette 齊全）與 `assets/official-packs/mohan.makeup.builtin.mohan-outfit`（`classic`／`light`，淡雅為原妝 alpha × 0.55）由 `tools/assemble_official_default_pack.py` 自產線分層對映、裁切、封裝而成；官方套件目錄由 `assets/makeup/` 改為 `assets/official-packs/`（`assets/makeup/builtin/` 仍是妝容範本與素材來源）。全新設定檔與「還原內建預設」的 `builtin` 哨兵改由 `domain/outfit_pack_official.py` 解析：衣裝／髮型／頭飾指向官方包 ensemble、妝容指向內建原妝，官方檔案不在場時仍退回素體；官方 id 不可匯入覆蓋、不可移除。雲裳閣的「內建預設服裝」即官方包，不再重複列出；`assets/makeup-safe-regions.json` 依二代半身 rig 重生。
+* 妝容成為可拆卸圖層（`makeup` 選擇槽）：素體維持素顏＋髮髻，外袍、散髮、銀髮飾與妝容全是可開關的圖層，全身 24 視角與半身 7 輪廓同一標準。外觀包 manifest 新增選用的 `makeup` 集合（item → 多個 variant → 每個 silhouette 三張全畫布 RGBA 圖層 `eyes`／`cheeks`／`lips`，可選 `intensity`）；沒有 `makeup` 的既有套件與雲端一鍵製衣產物維持有效。妝容於執行期固定疊在膚色之上、髮型／頭飾／衣裝之下，不受保護臉部遮罩阻擋，但被 `assets/makeup-safe-regions.json`（`tools/build_makeup_safe_regions.py` 由分層 rig 產生）的安全區裁切，且永不覆蓋可見虹膜與口腔；跑出安全區的圖層於匯入（`WardrobeService.install`、`tools/build_outfit_pack.py`）與執行期一律拒絕。雲裳閣新增妝容選單（素顏／內建「原妝」「淡雅」／已安裝套件）與 0–100% 濃淡滑桿，濃淡以 `makeup.json` 持久保存並同時作用於全身與半身路徑；純妝容 DLC 走既有「匯入服裝套件」按鈕與同一驗證、清單、移除流程。內建妝容素材由工作室依 `assets/makeup/builtin/manifest.json` 範本補產後放入 `assets/makeup/`；素材到位前，選擇原妝／淡雅會顯示「內建妝容素材待補」並以素顏呈現。
+* 素體升為二代：`BODY_PROFILE_ID` 由 `mohan-body-v1` 升為 `mohan-body-v2`（版本 2），並以測試釘住 `domain/constants.py` 的 `POSE_ATLAS_GENERATION`，三處常數不得再各自漂移。官方與 DLC 服裝套件由工作室在二代素體上重製；使用者自製的一代套件於匯入與執行期一律拒絕，不設寬限。已安裝的一代套件會在雲裳閣清單標示「不相容」，匯入或套用時顯示「這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成」；若它正是啟用中的服裝，執行期會自動還原內建服裝並提示一次，不再無聲回退。任何在儲存庫之外散布的 `.mohan-outfit` 都必須以 `tools/build_outfit_pack.py` 對二代範本重建；雲端一鍵製衣直接產出二代套件。
+
+### 未發布 — 執行期合成效能預算（2026-09-03）
+
+* 新增離屏執行期合成基準 `tools/bench_composite.py`、預算與量測依據 `tools/perf_budget.json`、以及 CI 閘門 `tests/test_perf_budget.py`。五輪、每輪五次的基準中，冷啟全身視角為中位數 1389.922 ms／p95 1468.653 ms，熱切全身視角為 2.485／3.157 ms，半身剪影切換為 5.043／5.600 ms；冷啟超過擁有者 300 ms 目標，預算如實標記 `over_target: true`，暫不改動合成演算法。重複解碼稽核證實首次全身與半身切換會重複解碼部分 PNG，熱切換則無新增解碼。
+
+### 未發布 — 行銷肖像改為二代合成外觀（2026-09-03）
+
+* README 六張表情卡、安裝精靈圖（`installer/artwork/*`）、工作列圖示（`assets/mohan-taskbar-icon.png`）與 `assets/mohan-halfbody.ico` 全部改為二代「合成後」外觀：`tools/render_marketing_portraits.py` 以全新空白儲存區驅動執行期同一條 `ActiveOutfitOverlay`（官方「藍白漢服」＋內建原妝 100%），輸出可重現的 `docs/media/portraits/*.png`（1254×1254 RGBA）；README 四語表情卡改引用該目錄，安裝精靈圖與圖示由 `tools/build_installer_artwork.py --source` 與 `tools/build_app_icon.ps1 -Source` 自合成後的 `idle_front.png` 重建，`tests/test_release_automation.py` 重新釘住各檔 SHA-256。執行期素顏 sprite 與官方套件皆未更動。
+
+### 未發布 — 半身素體二代（2026-09-02）
+
+* 半身素體重製為二代素顏版：`assets/expressions/` 下 113 張表情、75 張分層與 21 張 `v120_*` 物理切層全部由工作室自有產線自 `assets/pose-atlas/v5-base/` 重新生成，不再含一代外部授權美術；外袍、髮型、髮飾與妝容改為執行期圖層。`v120_*` 的頭髮、袖子與髮飾切層依契約為全透明（`tests/test_v120_asset_integrity.py` 的 `LICENSED_EMPTY`），臉部偏移表改為實測值；無程式載入的 `physics_*` 與 `skeptical_front.png` 共 22 張已移除。
 ## [4.6.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.5.1...v4.6.0) (2026-08-29)
 
 
@@ -27,6 +66,8 @@
 
 
 ### 📚 文件 / 文档 / Documentation / ドキュメント
+
+* 入庫 LXGW WenKai TC 與 Cinzel 字型並附 SIL OFL 1.1 授權文件／入库 LXGW WenKai TC 与 Cinzel 字体并附 SIL OFL 1.1 许可文件／Bundle LXGW WenKai TC and Cinzel with SIL OFL 1.1 license notices／LXGW WenKai TC と Cinzel を SIL OFL 1.1 のライセンス文書付きで同梱
 
 * 新增每月流量月報與原始 JSON 留存，讓成效可由數字驗證／新增每月流量月报与原始 JSON 留存，让成效可由数字验证／Add an archivable monthly traffic report and raw JSON snapshots so impact can be verified by numbers／毎月のトラフィック月報と生 JSON 保存を追加し、効果を数字で検証可能に ([#129](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/129))
 * v4.5.1 發行說明新增【純淨之路】四語段落／v4.5.1 发布说明新增【纯净之路】四语段落／add the four-language "road of purity" section to the v4.5.1 release notes／v4.5.1 リリースノートに四言語の【純浄への道】セクションを追加 ([#104](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/104)) ([0cc93d5](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/0cc93d5f9846d141fc1c94f3d8662b384f8672b3))
@@ -293,6 +334,14 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
+### 未发布 — README 演示视频改为可自动重生成（2026-09-04）
+
+* 重录 `docs/media/mohan-demo.mp4`：新增 `tools/record_demo_video.py`，使用二代运行时合成外观、OneCore `Microsoft Yating` 正常语速、50 Hz 嘴型 cues 与离屏 PNG 逐帧编码；同步更新媒体 provenance、音视频规格与 SHA-256 测试闸门。
+
+### 未发布 — README 媒体世代清单与重生成闸门（2026-09-04）
+
+* 新增 `docs/media/MEDIA-PROVENANCE.json`，登记 README 21 个媒体文件的生成工具、素体世代、SHA-256 与是否可自动重生成；测试会列出落后当前 `POSE_ATLAS_GENERATION` 的自动素材。
+
 ### 未发布 — README 四语重编与 DLC 教程（2026-09-03）
 
 * README 按“这是什么、界面与功能、安装更新、首次使用、隐私、DLC、赞助许可、疑难解答、开发者入口”重编四语同构内容，删除重复和过时段落；新增 `.mohan-outfit` 外观／妆容包与 `.mohan-theme` 主题文件的安装、选用、恢复、容量数量上限、二代素体兼容性及 Ko-fi 单次／每月赞助双轨教程。
@@ -516,6 +565,14 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 ## English
 
 All notable public changes to MoHan Desktop Assistant are documented here.
+
+### Unreleased — README demonstration video is now regenerable (2026-09-04)
+
+* Re-records `docs/media/mohan-demo.mp4` with the new `tools/record_demo_video.py`: generation-2 runtime composition, normal-speed OneCore `Microsoft Yating`, 50 Hz viseme cues, and offscreen PNG frame encoding; media provenance, A/V specification, and SHA-256 test gates are updated together.
+
+### Unreleased — README media generation ledger and regeneration gate (2026-09-04)
+
+* Adds `docs/media/MEDIA-PROVENANCE.json`, recording the generator, body generation, SHA-256, and regeneration capability for all 21 README media files; tests list any auto-regenerable media left behind the current `POSE_ATLAS_GENERATION`.
 
 ### Unreleased — four-language README restructure and DLC guide (2026-09-03)
 
@@ -780,6 +837,14 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### 未リリース — README デモ動画を自動再生成可能に変更（2026-09-04）
+
+* `docs/media/mohan-demo.mp4` を再録し、新しい `tools/record_demo_video.py` で第二世代の実行時合成、通常速度の OneCore `Microsoft Yating`、50 Hz の viseme cues、オフスクリーン PNG 逐フレームエンコードを使用。メディア provenance、音声・映像仕様、SHA-256 のテストゲートも同時に更新しました。
+
+### 未リリース — README メディア世代台帳と再生成ゲート（2026-09-04）
+
+* `docs/media/MEDIA-PROVENANCE.json` を追加し、README の 21 メディアについて生成ツール、素体世代、SHA-256、自動再生成可否を記録しました。テストは現在の `POSE_ATLAS_GENERATION` より遅れた自動再生成対象を一覧化します。
 
 ### 未リリース — README 四言語再編と DLC ガイド（2026-09-03）
 

@@ -265,6 +265,78 @@ def test_native_fault_disables_only_that_operation_and_falls_back(
     assert accelerator.status().disabled_operations == ("crossfade_rgba",)
 
 
+def test_native_contract_rejection_does_not_disable_region_operation() -> None:
+    native_calls = 0
+
+    def reject_then_render(*arguments: object) -> bytes:
+        nonlocal native_calls
+        native_calls += 1
+        if native_calls == 1:
+            raise ValueError("Visible source pixel leaves the target canvas")
+        return composite_region_rgba_python(*arguments)
+
+    accelerator = NativeRgbaAcceleration(
+        module_loader=lambda _name: _module(
+            composite_region_rgba=reject_then_render
+        )
+    )
+    target = _rgba((0, 0, 0, 0))
+    source = _rgba((10, 20, 30, 255))
+    invalid = (
+        target,
+        1,
+        1,
+        source,
+        1,
+        1,
+        -1,
+        0,
+        b"\x01",
+        b"\x00",
+        (),
+    )
+    with pytest.raises(RgbaAccelerationError, match="leaves the target canvas"):
+        accelerator.composite_region_rgba(*invalid)
+    status = accelerator.status()
+    assert status.disabled_operations == ()
+    assert status.operation_failures == ()
+
+    valid = (*invalid[:6], 0, 0, *invalid[8:])
+    assert accelerator.composite_region_rgba(*valid) == composite_region_rgba_python(
+        *valid
+    )
+    assert native_calls == CALL_COUNT
+    assert accelerator.status().verified_operations == ("composite_region_rgba",)
+
+
+def test_contract_rejection_during_native_verification_does_not_disable_operation() -> None:
+    def falsely_accepts(*_arguments: object) -> bytes:
+        return b"\x00" * 4
+
+    accelerator = NativeRgbaAcceleration(
+        module_loader=lambda _name: _module(
+            composite_region_rgba=falsely_accepts
+        )
+    )
+    with pytest.raises(RgbaAccelerationError, match="leaves the target canvas"):
+        accelerator.composite_region_rgba(
+            _rgba((0, 0, 0, 0)),
+            1,
+            1,
+            _rgba((10, 20, 30, 255)),
+            1,
+            1,
+            -1,
+            0,
+            b"\x01",
+            b"\x00",
+            (),
+        )
+    status = accelerator.status()
+    assert status.disabled_operations == ()
+    assert status.operation_failures == ()
+
+
 def test_python_validation_cannot_be_bypassed_by_native_backend() -> None:
     called = False
 

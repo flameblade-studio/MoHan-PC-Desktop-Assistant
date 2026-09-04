@@ -97,6 +97,11 @@ class DashboardWardrobeMakeupMixin:
             label += "（" + self._t("wardrobe_makeup_assets_pending", "內建妝容素材待補") + "）"
         return label
 
+    def _wardrobe_makeup_read_warning(self, message: str) -> None:
+        self.wardrobe_status.setText(
+            self._t("wardrobe_makeup_read_failed", message)
+        )
+
     def _reload_wardrobe_makeup_options(self) -> None:
         selector = getattr(self, "wardrobe_makeup_selector", None)
         if selector is None:
@@ -132,7 +137,14 @@ class DashboardWardrobeMakeupMixin:
             )
         slider = self.wardrobe_makeup_intensity
         slider.blockSignals(True)
-        slider.setValue(round(self.wardrobe_service.makeup_intensity() * INTENSITY_PERCENT))
+        slider.setValue(
+            round(
+                self.wardrobe_service.makeup_intensity(
+                    notify=self._wardrobe_makeup_read_warning
+                )
+                * INTENSITY_PERCENT
+            )
+        )
         slider.blockSignals(False)
         self.wardrobe_makeup_intensity_value.setText(f"{slider.value()}%")
 

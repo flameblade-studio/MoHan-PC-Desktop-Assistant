@@ -57,6 +57,8 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "draft_bar_clean_message": "Settings match what is running now",
     "draft_bar_dirty": "Draft",
     "draft_bar_dirty_message": "You have {count} unapplied change(s)",
+    "draft_bar_error": "Read failed",
+    "draft_bar_error_message": "Settings could not be read; please try again later",
     "tab_wardrobe": "Wardrobe Pavilion",
     "cancel_without_saving": "Cancel without saving",
     "wardrobe_import": "Import outfit package",
@@ -163,6 +165,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_makeup_variant_classic": "Classic",
     "wardrobe_makeup_variant_light": "Light",
     "wardrobe_makeup_intensity": "Makeup intensity",
+    "wardrobe_makeup_read_failed": "Makeup settings could not be read; the last valid value was kept.",
     "wardrobe_makeup_applied": "Selected makeup applied.",
     "wardrobe_makeup_cleared": "Makeup removed; back to a bare face.",
     "wardrobe_makeup_pack_missing": (
@@ -333,6 +336,8 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "memory_source_manual_short": "Manual",
     "memory_source_conversation_short": "Conversation",
     "memory_untitled": "Untitled memory",
+    "corrupt_data_title": "Data read warning",
+    "corrupt_data_message": "A setting or memory could not be read; the original file was kept.",
     "memory_item": (
         "[{category}] {title}  Importance {importance}/5\n{content}\n"
         "Source: {source}  Updated: {updated}"
@@ -390,6 +395,10 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "archived_memory_item": (
         "[{category}] {title}\n{content}\nArchive reason: {reason}  "
         "Archived: {archived}"
+    ),
+    "archived_memory_corrupt": (
+        "[Unreadable] The original archived memory was kept.\n"
+        "Archive reason: {reason}  Archived: {archived}"
     ),
     "archived_memory_count": "{count} memories can be restored",
     "archived_memory_select_title": "No memories checked",
@@ -459,6 +468,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "thinking_status": "{assistant} is thinking…",
     "answering_status": "Answering…",
     "api_connection_failed": "OpenAI API: connection failed ({error})",
+    "voice_vad_degraded": "Voice detection degraded; using RMS instead.",
     "voice_ready_short": "Ready",
     "voice_muted_short": "Muted",
     "sleep_mode_status": (

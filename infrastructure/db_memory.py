@@ -3,11 +3,13 @@ from __future__ import annotations
 lazy import json
 lazy import re
 lazy import sqlite3
+lazy from collections.abc import Mapping
 lazy from datetime import datetime, timedelta
 
 lazy from domain.text_normalizer import to_taiwan_traditional
 lazy from domain.time_utils import local_wall_time
 lazy from infrastructure.memory_index import cosine_similarity, hashed_text_vector
+lazy from infrastructure.corrupt_data import CorruptStoredJSON
 
 __all__ = ("StudioDBMemoryMethods",)
 
@@ -225,10 +227,18 @@ class StudioDBMemoryMethods:
         )
         archived: list[dict] = []
         for row in rows:
-            try:
-                snapshot = json.loads(str(row["snapshot"]))
-            except TypeError, ValueError, json.JSONDecodeError:
-                snapshot = {}
+            snapshot = self._decode_archived_snapshot(row)
+            if isinstance(snapshot, CorruptStoredJSON):
+                archived.append({
+                    "id": int(row["id"]),
+                    "original_id": int(row["original_id"]),
+                    "reason": str(row["reason"]),
+                    "archived_at": str(row["archived_at"]),
+                    "status": snapshot.status,
+                    "raw_snapshot": snapshot.raw,
+                    "error": snapshot.reason,
+                })
+                continue
             archived.append({
                 "id": int(row["id"]),
                 "original_id": int(row["original_id"]),
@@ -242,14 +252,19 @@ class StudioDBMemoryMethods:
             })
         return archived
 
-    def restore_archived_memory(self, archive_id: int) -> int:
+    def restore_archived_memory(
+        self,
+        archive_id: int,
+    ) -> int | CorruptStoredJSON:
         row = self.conn.execute(
             "SELECT * FROM memory_archive WHERE id=? AND restored_at IS NULL",
             (int(archive_id),),
         ).fetchone()
         if row is None:
             return 0
-        snapshot = json.loads(str(row["snapshot"]))
+        snapshot = self._decode_archived_snapshot(row)
+        if isinstance(snapshot, CorruptStoredJSON):
+            return snapshot
         restored_at = local_wall_time().isoformat(timespec="seconds")
         with self.conn:
             self.conn.execute(
@@ -283,13 +298,53 @@ class StudioDBMemoryMethods:
         self._memory_index.clear()
         return int(restored["id"]) if restored else 0
 
+    def _decode_archived_snapshot(
+        self,
+        row: sqlite3.Row,
+    ) -> dict[str, object] | CorruptStoredJSON:
+        raw = str(row["snapshot"])
+        try:
+            snapshot = json.loads(raw)
+        except TypeError, ValueError, json.JSONDecodeError:
+            reason = "invalid-json"
+        else:
+            required = (
+                "category",
+                "title",
+                "content",
+                "source",
+                "importance",
+                "created_at",
+                "updated_at",
+            )
+            valid = (
+                isinstance(snapshot, Mapping)
+                and all(key in snapshot for key in required)
+                and all(isinstance(snapshot[key], str) for key in required if key != "importance")
+                and type(snapshot["importance"]) is int
+            )
+            if valid:
+                return dict(snapshot)
+            reason = "invalid-json-shape"
+        self._record_corrupt_value(
+            "memory_archive",
+            str(row["id"]),
+            raw,
+            reason,
+        )
+        return CorruptStoredJSON("memory_archive", str(row["id"]), raw, reason)
+
     @staticmethod
-    def _memory_age_days(row: sqlite3.Row, now: datetime) -> float:
-        raw = str(row["last_used_at"] or row["updated_at"] or row["created_at"])
+    def _memory_timestamp_raw(row: sqlite3.Row) -> str:
+        return str(row["last_used_at"] or row["updated_at"] or row["created_at"])
+
+    @classmethod
+    def _memory_age_days(cls, row: sqlite3.Row, now: datetime) -> float | None:
+        raw = cls._memory_timestamp_raw(row)
         try:
             return max(0.0, (now - datetime.fromisoformat(raw)).total_seconds() / 86400)
-        except ValueError:
-            return 3650.0
+        except TypeError, ValueError:
+            return None
 
     def _consolidate_auto_duplicates(
         self,
@@ -373,14 +428,26 @@ class StudioDBMemoryMethods:
         deduplicated = self._consolidate_auto_duplicates(rows)
         rows = self.list_memories(10000)
         excess = max(0, len(rows) - target_active) if len(rows) > max_active else 0
+        eligible_rows: list[sqlite3.Row] = []
+        for row in rows:
+            if (
+                str(row["source"]) != "conversation"
+                or int(row["importance"]) > LOW_IMPORTANCE_THRESHOLD
+            ):
+                continue
+            age_days = self._memory_age_days(row, reference)
+            if age_days is None:
+                self._record_corrupt_value(
+                    "memories",
+                    str(row["id"]),
+                    self._memory_timestamp_raw(row),
+                    "invalid-timestamp",
+                )
+                continue
+            if age_days >= MEMORY_AGE_DAYS:
+                eligible_rows.append(row)
         eligible = sorted(
-            (
-                row
-                for row in rows
-                if str(row["source"]) == "conversation"
-                and int(row["importance"]) <= LOW_IMPORTANCE_THRESHOLD
-                and self._memory_age_days(row, reference) >= MEMORY_AGE_DAYS
-            ),
+            eligible_rows,
             key=lambda row: (
                 int(row["importance"]),
                 str(row["last_used_at"] or row["updated_at"] or row["created_at"]),

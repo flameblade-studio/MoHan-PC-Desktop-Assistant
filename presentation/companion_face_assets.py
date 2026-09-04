@@ -23,6 +23,7 @@ lazy from domain.companion_animation_contract import (
 )
 lazy from domain.expression_system import FaceAnchorProfile
 lazy from domain.face_rig import EyeState, eye_state_for_blink
+lazy from presentation.companion_speech_mask import recover_speech_mask_edges
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = ("CompanionFaceAssetMethods",)
@@ -139,21 +140,20 @@ class CompanionFaceAssetMethods:
         painter.end()
         return mask
 
-    def _build_speech_mouth_masks(
-        self,
-        mouth_clips: frozendict[str, QRect],
-    ) -> None:
-        alpha_steps = (
-            (0, 52),
-            (1, 82),
-            (2, 128),
-            (3, 255),
-        )
+    def _build_speech_mouth_masks(self, mouth_clips: frozendict[str, QRect]) -> None:
+        alpha_steps = ((0, 52), (1, 82), (2, 128), (3, 255))
+        # Recover only authored source-backed corner pixels at the mask edge.
+        # The normal feather remains unchanged everywhere else.
         self.mouth_masks = {
-            suffix: self._soft_rounded_mask(
-                (mouth_clip,),
-                alpha_steps,
-                9,
+            suffix: recover_speech_mask_edges(
+                self.expression_pixmaps,
+                self._soft_rounded_mask(
+                    (mouth_clip,),
+                    alpha_steps,
+                    9,
+                ),
+                suffix,
+                mouth_clip,
             )
             for suffix, mouth_clip in mouth_clips.items()
         }

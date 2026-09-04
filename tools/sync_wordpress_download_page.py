@@ -221,7 +221,7 @@ body.page-id-11163 .wp-block-post-title{{display:none}}
 <figure><img loading="eager" decoding="async" src="{MEDIA_ROOT}/tasks-and-ideas.png" alt="墨寒待辦與創作靈感"><figcaption>待辦與靈感 / Tasks &amp; ideas</figcaption></figure>
 <figure><img loading="eager" decoding="async" src="{MEDIA_ROOT}/long-term-memory.png" alt="墨寒長期記憶"><figcaption>可編輯記憶 / Editable memory</figcaption></figure>
 <figure><img loading="eager" decoding="async" src="{MEDIA_ROOT}/security-permissions.png" alt="墨寒安全權限頁"><figcaption>權限與安全 / Permissions &amp; safety</figcaption></figure>
-</div><div class="mohan-actions" style="justify-content:center"><a class="mohan-button mohan-button-soft" target="_blank" rel="noopener noreferrer" href="{REPOSITORY_URL}/blob/main/docs/media/mohan-demo.mp4">觀看 36 秒展示影片<span>Watch the 36-second demo</span></a></div></section>
+</div><div class="mohan-actions" style="justify-content:center"><a class="mohan-button mohan-button-soft" target="_blank" rel="noopener noreferrer" href="{REPOSITORY_URL}/blob/main/docs/media/mohan-demo.mp4">觀看展示影片<span>Watch the live demo</span></a></div></section>
 
 <section class="mohan-section mohan-download"><h2>安全地從 GitHub 取得墨寒</h2>
 <p class="mohan-sub"><strong>最新版本 / Latest version: {version}</strong> ({tag})<br>本站不儲存安裝檔；所有下載、更新與驗證資料皆由 GitHub Releases 提供。<br>Installers are never hosted on this WordPress site; downloads, updates, and verification data come from GitHub Releases.</p>
