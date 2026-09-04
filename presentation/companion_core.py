@@ -134,6 +134,30 @@ def _current_legacy_character_frame(window: object, generation: int) -> BodyPose
     )
 
 
+def _notify_vad_degradation(core: object, voice: object) -> None:
+    degraded = bool(getattr(voice, "degraded", False))
+    if not degraded:
+        core._vad_degradation_notified = False
+        return
+    if getattr(core, "_vad_degradation_notified", False):
+        return
+    core._vad_degradation_notified = True
+    dashboard = getattr(core, "dashboard", None)
+    set_voice_phase = getattr(dashboard, "set_voice_phase", None)
+    if not callable(set_voice_phase):
+        return
+    translate = getattr(dashboard, "_t", None)
+    message = (
+        translate(
+            "voice_vad_degraded",
+            "語音偵測已降級，改用 RMS。",
+        )
+        if callable(translate)
+        else "語音偵測已降級，改用 RMS。"
+    )
+    set_voice_phase(message)
+
+
 class CompanionCoreMixin:
     """Compose the companion's core services, state, and application bridges."""
 
@@ -854,33 +878,10 @@ class CompanionCoreMixin:
             last_interaction_ts=local_wall_time().isoformat(timespec="seconds"),
         )
 
-    def _notify_vad_degradation(self, voice: object) -> None:
-        degraded = bool(getattr(voice, "degraded", False))
-        if not degraded:
-            self._vad_degradation_notified = False
-            return
-        if getattr(self, "_vad_degradation_notified", False):
-            return
-        self._vad_degradation_notified = True
-        dashboard = getattr(self, "dashboard", None)
-        set_voice_phase = getattr(dashboard, "set_voice_phase", None)
-        if not callable(set_voice_phase):
-            return
-        translate = getattr(dashboard, "_t", None)
-        message = (
-            translate(
-                "voice_vad_degraded",
-                "語音偵測已降級，改用 RMS。",
-            )
-            if callable(translate)
-            else "語音偵測已降級，改用 RMS。"
-        )
-        set_voice_phase(message)
-
     def _apply_multimodal_result(self, result: object) -> None:
         if not isinstance(result, MultimodalFusionResult):
             return
-        self._notify_vad_degradation(result.voice)
+        _notify_vad_degradation(self, result.voice)
         now = time.monotonic()
         face = result.face
         if face is not None and face.gaze_confidence >= GAZE_CONFIDENCE_THRESHOLD:

@@ -17,7 +17,10 @@ lazy from infrastructure.multimodal_model_provider import (
     MultimodalModelPaths,
     OpenCVMultiModalModelProvider,
 )
-lazy from presentation.companion_core import CompanionCoreMixin
+lazy from presentation.companion_core import (
+    CompanionCoreMixin,
+    _notify_vad_degradation,
+)
 
 MODEL_EXPECTATIONS = {
     "face_landmark_468.tflite": (
@@ -122,17 +125,18 @@ def assert_runtime_vad_fault_is_marked_and_notified_once() -> None:
         degraded.confidence,
         True,
     )
-    core._notify_vad_degradation(degraded_result)
-    core._notify_vad_degradation(degraded_result)
+    _notify_vad_degradation(core, degraded_result)
+    _notify_vad_degradation(core, degraded_result)
     assert dashboard.messages == ["語音偵測已降級，改用 RMS。"]
-    core._notify_vad_degradation(
+    _notify_vad_degradation(
+        core,
         VoiceActivityResult(
             VoiceActivityState.ACTIVE,
             healthy.rms,
             healthy.confidence,
         )
     )
-    core._notify_vad_degradation(degraded_result)
+    _notify_vad_degradation(core, degraded_result)
     assert dashboard.messages == [
         "語音偵測已降級，改用 RMS。",
         "語音偵測已降級，改用 RMS。",
