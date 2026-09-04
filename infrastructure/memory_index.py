@@ -58,6 +58,7 @@ class RankedMemory:
     memory_id: int
     score: float
     semantic_score: float
+    status: str = "ok"
 
 
 class MemoryVectorIndex:
@@ -122,16 +123,26 @@ class MemoryVectorIndex:
                 )
                 importance = max(1, min(5, int(row.get("importance") or 3))) / 5
                 updated_raw = str(row.get("updated_at") or "")
+                status = "ok"
                 try:
                     age_days = max(
                         0.0,
                         (reference - datetime.fromisoformat(updated_raw)).total_seconds()
                         / 86400,
                     )
-                except ValueError:
-                    age_days = 3650.0
-                freshness = 1.0 / (1.0 + age_days / 180.0)
+                except TypeError, ValueError:
+                    age_days = 0.0
+                    status = "corrupt-timestamp"
+                freshness = (
+                    0.0
+                    if status != "ok"
+                    else 1.0 / (1.0 + age_days / 180.0)
+                )
                 score = semantic * 0.72 + importance * 0.20 + freshness * 0.08
-                ranked.append(RankedMemory(memory_id, score, semantic))
+                ranked.append(
+                    RankedMemory(memory_id, score, semantic)
+                    if status == "ok"
+                    else RankedMemory(memory_id, score, semantic, status)
+                )
         ranked.sort(key=lambda item: (-item.score, item.memory_id))
         return ranked[:limit]

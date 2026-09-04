@@ -4,6 +4,7 @@ lazy import json
 lazy from dataclasses import dataclass
 lazy from datetime import datetime
 lazy from typing import Any
+lazy from collections.abc import Callable
 
 lazy from domain.flagship_action_models import (
     CAPABILITY_RISK,
@@ -13,6 +14,9 @@ lazy from domain.flagship_action_models import (
 
 MAX_WORKFLOW_STEPS = 25
 SCHEDULE_TIME_LENGTH = 5
+MAX_HOUR = 23
+MAX_MINUTE = 59
+MAX_WEEKDAY = 6
 
 
 @dataclass(slots=True)
@@ -88,15 +92,27 @@ def _parse_schedule_time(value: object) -> tuple[int, int] | None:
         hour, minute = (int(part) for part in at.split(":"))
     except ValueError:
         return None
+    if not (0 <= hour <= MAX_HOUR and 0 <= minute <= MAX_MINUTE):
+        return None
     return hour, minute
 
 
-def _ran_at_current_minute(last_run_at: str | None, now: datetime) -> bool:
+def _notify_schedule_error(notify: Callable[[str], None] | None) -> None:
+    if notify is not None:
+        notify("排程設定無法讀取")
+
+
+def _ran_at_current_minute(
+    last_run_at: str | None,
+    now: datetime,
+    notify: Callable[[str], None] | None = None,
+) -> bool:
     if last_run_at is None:
         return False
     try:
         last = datetime.fromisoformat(last_run_at)
-    except ValueError:
+    except (TypeError, ValueError, OverflowError):
+        _notify_schedule_error(notify)
         return False
     return (
         last.date(),
@@ -109,18 +125,30 @@ def schedule_due(
     workflow: Workflow,
     now: datetime,
     last_run_at: str | None,
+    notify: Callable[[str], None] | None = None,
 ) -> bool:
-    scheduled_time = _parse_schedule_time(workflow.trigger.get("time", ""))
-    is_scheduled = (
-        workflow.enabled
-        and workflow.trigger.get("type") == "schedule"
-        and scheduled_time is not None
-    )
+    is_scheduled = workflow.enabled and workflow.trigger.get("type") == "schedule"
     if not is_scheduled:
         return False
+    scheduled_time = _parse_schedule_time(workflow.trigger.get("time", ""))
+    if scheduled_time is None:
+        _notify_schedule_error(notify)
+        return False
     weekdays = workflow.trigger.get("weekdays", tuple(range(7)))
+    try:
+        valid_weekdays = all(
+            isinstance(day, int)
+            and not isinstance(day, bool)
+            and 0 <= day <= MAX_WEEKDAY
+            for day in weekdays
+        )
+    except TypeError:
+        valid_weekdays = False
+    if not valid_weekdays:
+        _notify_schedule_error(notify)
+        return False
     due_now = (
         (now.hour, now.minute) == scheduled_time
         and now.weekday() in weekdays
     )
-    return due_now and not _ran_at_current_minute(last_run_at, now)
+    return due_now and not _ran_at_current_minute(last_run_at, now, notify=notify)
