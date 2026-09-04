@@ -10,8 +10,10 @@ from __future__ import annotations
 
 lazy import argparse
 lazy import hashlib
+lazy import json
 lazy import math
 lazy import os
+lazy import shutil
 lazy import subprocess
 lazy import sys
 lazy import tempfile
@@ -27,6 +29,10 @@ if str(ROOT) not in sys.path:
 TESTS = ROOT / "tests"
 if str(TESTS) not in sys.path:
     sys.path.insert(0, str(TESTS))
+
+MEDIA_PROVENANCE_PATH = ROOT / "docs" / "media" / "MEDIA-PROVENANCE.json"
+MEDIA_VIDEO_PATH = ROOT / "docs" / "media" / "mohan-demo.mp4"
+MEDIA_VIDEO_ENTRY = "docs/media/mohan-demo.mp4"
 
 lazy from PySide6.QtCore import QPoint, QRect, QSize, Qt
 lazy from PySide6.QtGui import QColor, QFont, QImage, QLinearGradient, QPainter, QPen
@@ -190,6 +196,121 @@ def _run_ffmpeg(command: list[str]) -> None:
     if result.returncode:
         detail = result.stderr.decode("utf-8", errors="replace").strip()
         raise RuntimeError(detail[-2000:] or "FFmpeg failed.")
+
+
+def _ffprobe_binary(ffmpeg: str) -> str:
+    ffmpeg_path = Path(ffmpeg)
+    sibling_name = (
+        f"ffprobe{ffmpeg_path.suffix}" if ffmpeg_path.suffix else "ffprobe"
+    )
+    candidates = (
+        os.getenv("FFPROBE_BINARY", ""),
+        str(ffmpeg_path.with_name(sibling_name)),
+        shutil.which("ffprobe") or "",
+    )
+    for candidate in candidates:
+        if candidate and Path(candidate).is_file():
+            return str(Path(candidate))
+    raise RuntimeError("FFprobe not found. Set FFPROBE_BINARY to ffprobe.exe.")
+
+
+def _probe_video_specs(
+    video: Path,
+    ffprobe: str,
+) -> dict[str, int | float | str]:
+    result = subprocess.run(
+        [
+            ffprobe,
+            "-v",
+            "error",
+            "-print_format",
+            "json",
+            "-show_streams",
+            "-show_format",
+            str(video),
+        ],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=30,
+        check=False,
+    )
+    if result.returncode:
+        raise RuntimeError(result.stderr.strip() or "FFprobe failed.")
+    try:
+        metadata = json.loads(result.stdout)
+    except json.JSONDecodeError as error:
+        raise RuntimeError("FFprobe returned invalid JSON.") from error
+    if not isinstance(metadata, dict):
+        raise RuntimeError("FFprobe returned an invalid metadata object.")
+    streams = metadata.get("streams")
+    if not isinstance(streams, list):
+        raise RuntimeError("FFprobe returned no stream list.")
+    video_stream = next(
+        (
+            stream
+            for stream in streams
+            if isinstance(stream, dict) and stream.get("codec_type") == "video"
+        ),
+        None,
+    )
+    audio_stream = next(
+        (
+            stream
+            for stream in streams
+            if isinstance(stream, dict) and stream.get("codec_type") == "audio"
+        ),
+        None,
+    )
+    format_info = metadata.get("format")
+    if (
+        not isinstance(video_stream, dict)
+        or not isinstance(audio_stream, dict)
+        or not isinstance(format_info, dict)
+    ):
+        raise RuntimeError("FFprobe did not return video, audio, and format data.")
+    try:
+        return {
+            "width": int(video_stream["width"]),
+            "height": int(video_stream["height"]),
+            "fps": str(video_stream["r_frame_rate"]),
+            "duration_seconds": float(format_info["duration"]),
+            "audio_sample_rate": int(audio_stream["sample_rate"]),
+            "audio_channels": int(audio_stream["channels"]),
+        }
+    except (KeyError, TypeError, ValueError) as error:
+        raise RuntimeError("FFprobe metadata is missing required video specs.") from error
+
+
+def _write_video_provenance(
+    provenance_path: Path,
+    digest: str,
+    specs: dict[str, int | float | str],
+) -> None:
+    manifest = json.loads(provenance_path.read_text(encoding="utf-8"))
+    entries = manifest.get("entries")
+    entry = entries.get(MEDIA_VIDEO_ENTRY) if isinstance(entries, dict) else None
+    if not isinstance(entry, dict):
+        raise RuntimeError("Media provenance is missing the demonstration video entry.")
+    entry["sha256"] = digest
+    entry.update(specs)
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=provenance_path.parent,
+            prefix=".MEDIA-PROVENANCE-",
+            suffix=".tmp",
+            delete=False,
+        ) as handle:
+            temporary = Path(handle.name)
+            json.dump(manifest, handle, ensure_ascii=False, indent=4)
+            handle.write("\n")
+        temporary.replace(provenance_path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 def _normalize_narration_wave(
@@ -714,6 +835,7 @@ def record_demo_video(output: Path, ffmpeg: str) -> tuple[Narration, int]:
     """Record the video atomically and return measured narration/frame data."""
 
     output = Path(output)
+    ffprobe = _ffprobe_binary(ffmpeg)
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(
         prefix=".mohan-demo-record-",
@@ -742,7 +864,11 @@ def record_demo_video(output: Path, ffmpeg: str) -> tuple[Narration, int]:
         )
         if not encoded.is_file() or encoded.stat().st_size <= 0:
             raise RuntimeError("FFmpeg did not produce the demonstration video.")
+        specs = _probe_video_specs(encoded, ffprobe)
         encoded.replace(output)
+        if output.resolve() == MEDIA_VIDEO_PATH.resolve():
+            digest = hashlib.sha256(output.read_bytes()).hexdigest()
+            _write_video_provenance(MEDIA_PROVENANCE_PATH, digest, specs)
         return narration, frame_count
 
 

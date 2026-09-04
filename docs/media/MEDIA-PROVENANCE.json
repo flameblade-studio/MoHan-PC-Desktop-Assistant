@@ -53,6 +53,12 @@
             "generator": "tools/record_demo_video.py",
             "generation": 2,
             "sha256": "f3a3614447e7f743111845c0e33de118a659070c738fea5704c31041002cb9bd",
+            "width": 1280,
+            "height": 720,
+            "fps": "10/1",
+            "duration_seconds": 35.2,
+            "audio_sample_rate": 22050,
+            "audio_channels": 1,
             "auto_regenerable": true
         },
         "docs/media/mohan-hero.png": {

@@ -6,6 +6,7 @@ lazy import json
 lazy import shutil
 lazy import struct
 lazy import subprocess
+lazy import tempfile
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,13 +20,22 @@ VIDEO_HEIGHT = 720
 VIDEO_FPS = "10/1"
 VIDEO_MIN_DURATION_SECONDS = 30.0
 VIDEO_MAX_DURATION_SECONDS = 60.0
-VIDEO_AUDIO_SAMPLE_RATE = "22050"
+VIDEO_AUDIO_SAMPLE_RATE = 22050
 VIDEO_AUDIO_CHANNELS = 1
 VIDEO_AUDIO_CODEC = "aac"
 VIDEO_CODEC = "h264"
 VIDEO_GENERATION = 2
 VIDEO_GENERATOR = "tools/record_demo_video.py"
 VIDEO_STREAM_DURATION_TOLERANCE_SECONDS = 0.1
+VIDEO_PROVENANCE_KEY = "docs/media/mohan-demo.mp4"
+VIDEO_PROVENANCE_FIELDS = (
+    "width",
+    "height",
+    "fps",
+    "duration_seconds",
+    "audio_sample_rate",
+    "audio_channels",
+)
 SUPPORT_COLUMN_COUNT = 3
 STRATEGIST_CARD_COUNT = 4
 PNG_FILES = {
@@ -198,19 +208,44 @@ def _assert_timeless_creator_narrative(readme: str) -> None:
         )
 
 
-def _assert_demo_video(readme: str) -> None:
-    video = MEDIA / "mohan-demo.mp4"
-    assert video.is_file(), "missing 30–60 second demonstration video"
-    size = video.stat().st_size
-    assert MIN_VIDEO_SIZE_BYTES <= size <= 20 * 1024 * 1024, (
-        f"unexpected demonstration video size: {size} bytes"
-    )
-    header = video.read_bytes()[:32]
-    assert b"ftyp" in header, "demonstration video is not an MP4 container"
-    assert "docs/media/mohan-demo.mp4" in readme
+def _assert_demo_video_provenance(
+    video: Path,
+    provenance_path: Path,
+) -> dict[str, object]:
+    manifest = json.loads(provenance_path.read_text(encoding="utf-8"))
+    entries = manifest.get("entries")
+    assert isinstance(entries, dict)
+    entry = entries.get(VIDEO_PROVENANCE_KEY)
+    assert isinstance(entry, dict), "missing demonstration video provenance entry"
+    assert entry.get("generator") == VIDEO_GENERATOR
+    assert entry.get("generation") == VIDEO_GENERATION
+    assert entry.get("auto_regenerable") is True
+    digest = entry.get("sha256")
+    assert isinstance(digest, str) and digest == hashlib.sha256(
+        video.read_bytes()
+    ).hexdigest(), "demonstration video SHA-256 differs from provenance"
 
-    ffprobe = shutil.which("ffprobe")
-    assert ffprobe, "ffprobe is required to inspect the demonstration video"
+    for field in VIDEO_PROVENANCE_FIELDS:
+        assert field in entry, f"missing demonstration video provenance field: {field}"
+    assert entry["width"] == VIDEO_WIDTH
+    assert entry["height"] == VIDEO_HEIGHT
+    assert entry["fps"] == VIDEO_FPS
+    duration = entry["duration_seconds"]
+    assert isinstance(duration, (int, float)) and not isinstance(duration, bool)
+    assert VIDEO_MIN_DURATION_SECONDS <= duration <= VIDEO_MAX_DURATION_SECONDS, (
+        "provenance duration_seconds must be between 30 and 60 seconds"
+    )
+    assert entry["audio_sample_rate"] == VIDEO_AUDIO_SAMPLE_RATE
+    assert entry["audio_channels"] == VIDEO_AUDIO_CHANNELS
+    assert entry["audio_channels"] > 0, "demonstration video provenance has no audio"
+    return entry
+
+
+def _assert_demo_video_live_probe(
+    video: Path,
+    entry: dict[str, object],
+    ffprobe: str,
+) -> None:
     probe = subprocess.run(
         [
             ffprobe,
@@ -232,11 +267,19 @@ def _assert_demo_video(readme: str) -> None:
     streams = metadata.get("streams")
     assert isinstance(streams, list)
     video_stream = next(
-        (stream for stream in streams if stream.get("codec_type") == "video"),
+        (
+            stream
+            for stream in streams
+            if isinstance(stream, dict) and stream.get("codec_type") == "video"
+        ),
         None,
     )
     audio_stream = next(
-        (stream for stream in streams if stream.get("codec_type") == "audio"),
+        (
+            stream
+            for stream in streams
+            if isinstance(stream, dict) and stream.get("codec_type") == "audio"
+        ),
         None,
     )
     assert isinstance(video_stream, dict), "demonstration video has no video stream"
@@ -249,7 +292,7 @@ def _assert_demo_video(readme: str) -> None:
         float(video_stream["duration"]) * int(VIDEO_FPS.split("/", 1)[0])
     )
     assert audio_stream.get("codec_name") == VIDEO_AUDIO_CODEC
-    assert audio_stream.get("sample_rate") == VIDEO_AUDIO_SAMPLE_RATE
+    assert int(audio_stream["sample_rate"]) == VIDEO_AUDIO_SAMPLE_RATE
     assert audio_stream.get("channels") == VIDEO_AUDIO_CHANNELS
     assert audio_stream.get("channel_layout") == "mono"
     assert abs(
@@ -258,16 +301,58 @@ def _assert_demo_video(readme: str) -> None:
     format_info = metadata.get("format")
     assert isinstance(format_info, dict)
     assert "mp4" in str(format_info.get("format_name", ""))
-    duration = float(format_info["duration"])
-    assert VIDEO_MIN_DURATION_SECONDS <= duration <= VIDEO_MAX_DURATION_SECONDS
+    live_specs = {
+        "width": video_stream.get("width"),
+        "height": video_stream.get("height"),
+        "fps": video_stream.get("r_frame_rate"),
+        "duration_seconds": float(format_info["duration"]),
+        "audio_sample_rate": int(audio_stream["sample_rate"]),
+        "audio_channels": audio_stream.get("channels"),
+    }
+    for field, actual in live_specs.items():
+        assert actual == entry[field], (
+            f"live probe differs from provenance for {field}: "
+            f"{actual!r} != {entry[field]!r}"
+        )
+
+
+def _assert_demo_video(readme: str) -> None:
+    video = MEDIA / "mohan-demo.mp4"
+    assert video.is_file(), "missing 30–60 second demonstration video"
+    size = video.stat().st_size
+    assert MIN_VIDEO_SIZE_BYTES <= size <= 20 * 1024 * 1024, (
+        f"unexpected demonstration video size: {size} bytes"
+    )
+    header = video.read_bytes()[:32]
+    assert b"ftyp" in header, "demonstration video is not an MP4 container"
+    assert "docs/media/mohan-demo.mp4" in readme
 
     provenance_path = ROOT / "docs/media/MEDIA-PROVENANCE.json"
-    manifest = json.loads(provenance_path.read_text(encoding="utf-8"))
-    entry = manifest["entries"]["docs/media/mohan-demo.mp4"]
-    assert entry["generator"] == VIDEO_GENERATOR
-    assert entry["generation"] == VIDEO_GENERATION
-    assert entry["auto_regenerable"] is True
-    assert entry["sha256"] == hashlib.sha256(video.read_bytes()).hexdigest()
+    entry = _assert_demo_video_provenance(video, provenance_path)
+    ffprobe = shutil.which("ffprobe")
+    if ffprobe is None:
+        print("live probe skipped: ffprobe not available", flush=True)
+    else:
+        _assert_demo_video_live_probe(video, entry, ffprobe)
+
+
+def test_demo_video_provenance_rejects_out_of_range_duration() -> None:
+    video = MEDIA / "mohan-demo.mp4"
+    source = ROOT / "docs/media/MEDIA-PROVENANCE.json"
+    manifest = json.loads(source.read_text(encoding="utf-8"))
+    manifest["entries"][VIDEO_PROVENANCE_KEY]["duration_seconds"] = 70
+    with tempfile.TemporaryDirectory(prefix="mohan-media-provenance-") as directory:
+        candidate = Path(directory) / "MEDIA-PROVENANCE.json"
+        candidate.write_text(
+            json.dumps(manifest, ensure_ascii=False, indent=4) + "\n",
+            encoding="utf-8",
+        )
+        try:
+            _assert_demo_video_provenance(video, candidate)
+        except AssertionError as error:
+            assert "duration_seconds" in str(error)
+        else:
+            raise AssertionError("out-of-range provenance duration was accepted")
 
 
 def _assert_support_section(readme: str) -> None:
@@ -347,6 +432,7 @@ def main() -> int:
     _assert_certification_badges(readme)
     _assert_quality_standard(readme)
     _assert_timeless_creator_narrative(readme)
+    test_demo_video_provenance_rejects_out_of_range_duration()
     _assert_demo_video(readme)
     _assert_support_section(readme)
     _assert_github_links(readme)
