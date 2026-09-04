@@ -4,6 +4,14 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+### 未發布 — README 展示影片改為可自動重產（2026-09-04）
+
+* 重錄 `docs/media/mohan-demo.mp4`：新增 `tools/record_demo_video.py`，以二代執行期合成外觀、OneCore `Microsoft Yating` 正常語速、50 Hz 嘴型 cues 與離屏 PNG 逐幀編碼；媒體 provenance、音訊／畫面規格與 SHA-256 測試閘門同步更新。
+
+### 未發布 — README 媒體世代清單與重產閘門（2026-09-04）
+
+* 新增 `docs/media/MEDIA-PROVENANCE.json`，登錄 README 21 個媒體檔的產生工具、素體世代、SHA-256 與可否自動重產；測試會列出落後當前 `POSE_ATLAS_GENERATION` 的自動素材。
+
 ### 未發布 — README 首屏重排（2026-09-04）
 
 * README 四語首屏改為主視覺、價值主張、下載／快速開始／跨平台能力矩陣、作者與版本資訊；Windows CI、MIT 授權與最新公開版本徽章保留在外層，其餘徽章移入四語折疊區／README 四语首屏改为主视觉、价值主张、下载／快速开始／跨平台能力矩阵、作者与版本信息；Windows CI、MIT 许可与最新公开版本徽章保留在外层，其余徽章移入四语折叠区／The four-language README first screen now leads with the hero, value proposition, download／Quick Start／cross-platform capability matrix, and author／release information; Windows CI, MIT License, and latest public release badges remain visible while the other badges move into four-language collapsible sections／README の四言語ファーストビューをメインビジュアル、価値提案、ダウンロード／クイックスタート／クロスプラットフォーム機能表、作者／リリース情報の順に変更し、Windows CI、MIT ライセンス、最新公開版バッジを表示したまま、その他のバッジを四言語の折りたたみセクションへ移動
@@ -323,6 +331,14 @@ smoke test、EXE／MSI 靜默安裝與解除安裝驗證、checksum 產生、SBO
 
 本文档记录墨寒桌面助手所有值得注意的公开变更。
 
+### 未发布 — README 演示视频改为可自动重生成（2026-09-04）
+
+* 重录 `docs/media/mohan-demo.mp4`：新增 `tools/record_demo_video.py`，使用二代运行时合成外观、OneCore `Microsoft Yating` 正常语速、50 Hz 嘴型 cues 与离屏 PNG 逐帧编码；同步更新媒体 provenance、音视频规格与 SHA-256 测试闸门。
+
+### 未发布 — README 媒体世代清单与重生成闸门（2026-09-04）
+
+* 新增 `docs/media/MEDIA-PROVENANCE.json`，登记 README 21 个媒体文件的生成工具、素体世代、SHA-256 与是否可自动重生成；测试会列出落后当前 `POSE_ATLAS_GENERATION` 的自动素材。
+
 ### 未发布 — README 四语重编与 DLC 教程（2026-09-03）
 
 * README 按“这是什么、界面与功能、安装更新、首次使用、隐私、DLC、赞助许可、疑难解答、开发者入口”重编四语同构内容，删除重复和过时段落；新增 `.mohan-outfit` 外观／妆容包与 `.mohan-theme` 主题文件的安装、选用、恢复、容量数量上限、二代素体兼容性及 Ko-fi 单次／每月赞助双轨教程。
@@ -546,6 +562,14 @@ EXE／MSI 静默安装与卸载验证、checksum 生成、SBOM 生成及产物�
 ## English
 
 All notable public changes to MoHan Desktop Assistant are documented here.
+
+### Unreleased — README demonstration video is now regenerable (2026-09-04)
+
+* Re-records `docs/media/mohan-demo.mp4` with the new `tools/record_demo_video.py`: generation-2 runtime composition, normal-speed OneCore `Microsoft Yating`, 50 Hz viseme cues, and offscreen PNG frame encoding; media provenance, A/V specification, and SHA-256 test gates are updated together.
+
+### Unreleased — README media generation ledger and regeneration gate (2026-09-04)
+
+* Adds `docs/media/MEDIA-PROVENANCE.json`, recording the generator, body generation, SHA-256, and regeneration capability for all 21 README media files; tests list any auto-regenerable media left behind the current `POSE_ATLAS_GENERATION`.
 
 ### Unreleased — four-language README restructure and DLC guide (2026-09-03)
 
@@ -810,6 +834,14 @@ speech, gaze, and physics stress test passed before this release candidate.
 ## 日本語
 
 本書には、墨寒デスクトップアシスタントの主な公開変更をすべて記録します。
+
+### 未リリース — README デモ動画を自動再生成可能に変更（2026-09-04）
+
+* `docs/media/mohan-demo.mp4` を再録し、新しい `tools/record_demo_video.py` で第二世代の実行時合成、通常速度の OneCore `Microsoft Yating`、50 Hz の viseme cues、オフスクリーン PNG 逐フレームエンコードを使用。メディア provenance、音声・映像仕様、SHA-256 のテストゲートも同時に更新しました。
+
+### 未リリース — README メディア世代台帳と再生成ゲート（2026-09-04）
+
+* `docs/media/MEDIA-PROVENANCE.json` を追加し、README の 21 メディアについて生成ツール、素体世代、SHA-256、自動再生成可否を記録しました。テストは現在の `POSE_ATLAS_GENERATION` より遅れた自動再生成対象を一覧化します。
 
 ### 未リリース — README 四言語再編と DLC ガイド（2026-09-03）
 

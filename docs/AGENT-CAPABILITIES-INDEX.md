@@ -39,7 +39,7 @@
 | **更完整的控制套件** | `artifacts/pose-atlas-rebuild/2026-08-26/canonical24-control-bundles-agent-b/bundles/yaw*/` | 另含 `base-render`、`shaded-render`、`part-id`、`ownership-{anatomy,hair,ornament,outfit}` 四層遮罩、`jaw13-conditioning`、`ornament_mask`、`registration-anchor.json` |
 | **確定性軀幹形變器** | `artifacts/pose-atlas-rebuild/2026-08-25/ufbx-lod1-extractor-agent-a/body-morph-candidate3/` | 168 cm 身高下命中 bust 86／underbust 71／waist 62／hip 90，**全部誤差 ≤ 0.5 cm**。SciPy CubicSpline C2＋以骨架為中心的局部徑向縮放 |
 | **控制路徑授權稽核** | `artifacts/pose-atlas-rebuild/2026-08-25/allowed-15deg-control-path-audit-agent-a/audit.json` | 裁決 `USE_EXISTING_CANDIDATE3_CPU_FORMAL_CONTROLS`，含相依套件授權判定與 `blocks_and_limits` |
-| **README 媒體資產** | `docs/media/` | `mohan-hero.png`（1600×900）、六張功能截圖（含 `security-permissions.png`）、`mohan-demo.mp4`（36 秒）、`mohan-demo.gif`（1.45 MB）、三張支持者立繪（640×640）。**全部由 `tests/test_readme_media.py` 以 CI 強制** |
+| **README 媒體資產** | `docs/media/` | `mohan-hero.png`（1600×900）、六張功能截圖（含 `security-permissions.png`）、`mohan-demo.mp4`（正常語速隨音訊，二代 OneCore/Yating）、`mohan-demo.gif`（1.45 MB）、三張支持者立繪（640×640）。**全部由 `tests/test_readme_media.py` 以 CI 強制** |
 | **授權出處證據鏈** | `docs/LICENSE-PURITY.md`（對外總覽）、`docs/LICENSE-BLACKLIST.md`、`ASSETS-LICENSE.md`、`THIRD_PARTY_NOTICES.md`、`THIRD_PARTY_DENYLIST.json`、`docs/{VISION,MULTIMODAL,HAND}-MODEL-PROVENANCE.json`、`docs/UI-ASSET-PROVENANCE.md`、`third_party_licenses/` | 隨產品出貨的八個模型全部 MIT 或 Apache-2.0，**每顆以 SHA256 與上游 commit 雙重釘選** |
 | **能見度量測** | `tools/measure_visibility.py` | 一鍵產出月報指標並對照 2026-08-30 基準；自動標記 0 資產的 release。需已登入的 `gh` |
 | **臉部偵測／視角驗證** | `assets/vision-models/face_detection_yunet_2023mar.onnx`（YuNet, MIT） | 用於臉譜稽核、視角自動驗證、臉部細修裁切、訓練集視角分布量化 |

@@ -37,7 +37,7 @@
 
 ### 畫面與功能一覽
 
-[觀看 36 秒實際展示](docs/media/mohan-demo.mp4)。設定與主要畫面：[首次設定](docs/media/first-run-wizard.png)、[語音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待辦與靈感](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全權限](docs/media/security-permissions.png)。
+[觀看實際展示](docs/media/mohan-demo.mp4)。設定與主要畫面：[首次設定](docs/media/first-run-wizard.png)、[語音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待辦與靈感](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全權限](docs/media/security-permissions.png)。
 
 - 透明桌面角色、眨眼、表情、動作與 50 Hz 嘴型同步。
 - 文字、Realtime、Windows 本機女聲、OpenAI TTS 與 Azure Speech 選用路徑。
@@ -195,7 +195,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 ### 開發者入口
 
-先讀 [架構](ARCHITECTURE.md)、[測試說明](docs/TESTING.md)、[貢獻指南](CONTRIBUTING.md)、[外觀包規格](docs/OUTFIT-PACKS.md) 與 [發布政策](PUBLISHING.md)。Windows 安裝封裝版使用工作室維護的 Python 3.15 執行環境；原始碼與 CI 採 PEP 810 惰性匯入，文件維持四語同構。
+先讀 [架構](ARCHITECTURE.md)、[測試說明](docs/TESTING.md)、[貢獻指南](CONTRIBUTING.md)、[外觀包規格](docs/OUTFIT-PACKS.md) 與 [發布政策](PUBLISHING.md)。Windows 安裝封裝版使用工作室維護的 Python 3.15 執行環境；原始碼與 CI 採 PEP 810 惰性匯入，文件維持四語同構。README 媒體請依 [世代來源清單](docs/MEDIA-PROVENANCE.md) 維護。
 
 ```powershell
 py -3.15 -m ruff check .
@@ -244,7 +244,7 @@ Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建�
 
 ### 界面与功能一览
 
-[观看 36 秒实际演示](docs/media/mohan-demo.mp4)。设置与主要界面：[首次设置](docs/media/first-run-wizard.png)、[语音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待办与灵感](docs/media/tasks-and-ideas.png)、[长期记忆](docs/media/long-term-memory.png)、[安全权限](docs/media/security-permissions.png)。
+[观看实际演示](docs/media/mohan-demo.mp4)。设置与主要界面：[首次设置](docs/media/first-run-wizard.png)、[语音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待办与灵感](docs/media/tasks-and-ideas.png)、[长期记忆](docs/media/long-term-memory.png)、[安全权限](docs/media/security-permissions.png)。
 
 - 透明桌面角色、眨眼、表情、动作与 50 Hz 口型同步。
 - 文本、Realtime、Windows 本地女声、OpenAI TTS 与 Azure Speech 可选路径。
@@ -402,7 +402,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 ### 开发者入口
 
-请先阅读 [架构](ARCHITECTURE.md)、[测试说明](docs/TESTING.md)、[贡献指南](CONTRIBUTING.md)、[外观包规范](docs/OUTFIT-PACKS.md) 与 [发布政策](PUBLISHING.md)。Windows 安装包使用工作室维护的 Python 3.15 运行环境；源代码与 CI 采用 PEP 810 延迟导入，文档保持四语同构。
+请先阅读 [架构](ARCHITECTURE.md)、[测试说明](docs/TESTING.md)、[贡献指南](CONTRIBUTING.md)、[外观包规范](docs/OUTFIT-PACKS.md) 与 [发布政策](PUBLISHING.md)。Windows 安装包使用工作室维护的 Python 3.15 运行环境；源代码与 CI 采用 PEP 810 延迟导入，文档保持四语同构。README 媒体请按[世代来源清单](docs/MEDIA-PROVENANCE.md)维护。
 
 ```powershell
 py -3.15 -m ruff check .
@@ -451,7 +451,7 @@ MoHan is a Windows voice-interactive desktop assistant built around safety, priv
 
 ### Screens and capabilities
 
-[Watch the 36-second live demonstration](docs/media/mohan-demo.mp4). Setup and main screens: [first run](docs/media/first-run-wizard.png), [voice modes](docs/media/voice-modes.png), [expressions](docs/media/expressions.png), [tasks and ideas](docs/media/tasks-and-ideas.png), [long-term memory](docs/media/long-term-memory.png), and [security permissions](docs/media/security-permissions.png).
+[Watch the live demonstration](docs/media/mohan-demo.mp4). Setup and main screens: [first run](docs/media/first-run-wizard.png), [voice modes](docs/media/voice-modes.png), [expressions](docs/media/expressions.png), [tasks and ideas](docs/media/tasks-and-ideas.png), [long-term memory](docs/media/long-term-memory.png), and [security permissions](docs/media/security-permissions.png).
 
 - Transparent desktop character, blinking, expressions, motion, and 50 Hz lip sync.
 - Text, Realtime, Windows local female speech, OpenAI TTS, and optional Azure Speech paths.
@@ -609,7 +609,7 @@ Use [Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/iss
 
 ### Developer entry points
 
-Start with [Architecture](ARCHITECTURE.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md), the [outfit-pack specification](docs/OUTFIT-PACKS.md), and [Publishing policy](PUBLISHING.md). The Windows installer uses the studio-maintained Python 3.15 runtime; source and CI use PEP 810 lazy imports, and documentation stays structurally complete in all four languages.
+Start with [Architecture](ARCHITECTURE.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md), the [outfit-pack specification](docs/OUTFIT-PACKS.md), and [Publishing policy](PUBLISHING.md). The Windows installer uses the studio-maintained Python 3.15 runtime; source and CI use PEP 810 lazy imports, and documentation stays structurally complete in all four languages. Maintain README media through the [generation provenance ledger](docs/MEDIA-PROVENANCE.md).
 
 ```powershell
 py -3.15 -m ruff check .
@@ -658,7 +658,7 @@ The formal Windows packaging contract builds its first-party native module with 
 
 ### 画面と機能の一覧
 
-[36 秒の実機デモを見る](docs/media/mohan-demo.mp4)。設定と主な画面：[初回設定](docs/media/first-run-wizard.png)、[音声モード](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[タスクとアイデア](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全権限](docs/media/security-permissions.png)。
+[実機デモを見る](docs/media/mohan-demo.mp4)。設定と主な画面：[初回設定](docs/media/first-run-wizard.png)、[音声モード](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[タスクとアイデア](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全権限](docs/media/security-permissions.png)。
 
 - 透明デスクトップキャラクター、まばたき、表情、動作、50 Hz リップシンク。
 - テキスト、Realtime、Windows 本機女性音声、OpenAI TTS、任意の Azure Speech 経路。
@@ -816,7 +816,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 ### 開発者向け入口
 
-最初に [アーキテクチャ](ARCHITECTURE.md)、[テスト説明](docs/TESTING.md)、[貢献ガイド](CONTRIBUTING.md)、[外観パック仕様](docs/OUTFIT-PACKS.md)、[公開方針](PUBLISHING.md) をお読みください。Windows インストーラーは、スタジオ管理の Python 3.15 実行環境を使用します。ソースと CI は PEP 810 遅延インポートを採用し、文書は四言語で同じ構造を維持します。
+最初に [アーキテクチャ](ARCHITECTURE.md)、[テスト説明](docs/TESTING.md)、[貢献ガイド](CONTRIBUTING.md)、[外観パック仕様](docs/OUTFIT-PACKS.md)、[公開方針](PUBLISHING.md) をお読みください。Windows インストーラーは、スタジオ管理の Python 3.15 実行環境を使用します。ソースと CI は PEP 810 遅延インポートを採用し、文書は四言語で同じ構造を維持します。README のメディアは[世代プロヴェナンス台帳](docs/MEDIA-PROVENANCE.md)で管理してください。
 
 ```powershell
 py -3.15 -m ruff check .
