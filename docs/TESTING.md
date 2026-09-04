@@ -10,6 +10,7 @@
 - 測試閘門分三層，仍由同一個 `tests/run_all.py` 執行：開發中每次改動用 `fast`（`python tests/run_all.py fast`），依 `tests/impact_map.json` 選取受影響測試並保留契約測試；提交前用 `gate`（`python tests/run_all.py gate`，也是預設完整套）；排程或隔夜，以及需要集中檢查封裝／跨平台／長時間資產、語音、UI 項目時用 `nightly`（`python tests/run_all.py nightly`）。
 - `fast --changed-from <git-ref>`（例如 `python tests/run_all.py fast --changed-from main`）會納入指定 ref 之後的提交及目前工作樹、暫存區、未追蹤檔案。
 - 若 `fast` 找不到檔案對照、Git ref 或 impact map 無法使用，會安全退回完整套並印出 `FAST_FALLBACK_TO_GATE`；`gate` 保留結尾 `ALL_..._TESTS_OK`，不帶參數仍等同 `gate`。
+- 消費端截圖基線只在素材、官方包或合成路徑經核准變更後重產：以 `QT_QPA_PLATFORM=offscreen py -3.15 tools/render_visual_baseline.py --write` 執行，並在 `#185` 併入後重跑；平時用 `--check`，它會把 `work/visual-baseline/<scene>.diff.png` 寫成「基線｜現況｜差異熱圖」。差異像素是 RGBA 任一通道嚴格大於 `8`，占比 `>0.05%` 或單一差異區塊超過 `64` 像素即失敗；看圖時先比對前兩欄，再用熱圖定位差異集中處。
 
 ### 完整回歸暫時狀態
 
@@ -58,6 +59,7 @@
 - 测试关卡分三层，仍由同一个 `tests/run_all.py` 执行：开发中每次改动用 `fast`（`python tests/run_all.py fast`），依据 `tests/impact_map.json` 选择受影响测试并保留契约测试；提交前用 `gate`（`python tests/run_all.py gate`，也是默认完整套）；排程或隔夜，以及需要集中检查打包／跨平台／长时间资产、语音、UI 项目时用 `nightly`（`python tests/run_all.py nightly`）。
 - `fast --changed-from <git-ref>`（例如 `python tests/run_all.py fast --changed-from main`）会纳入指定 ref 之后的提交以及当前工作树、暂存区、未跟踪文件。
 - 如果 `fast` 找不到文件对应关系、Git ref 或 impact map 无法使用，会安全退回完整套并打印 `FAST_FALLBACK_TO_GATE`；`gate` 保留结尾 `ALL_..._TESTS_OK`，不带参数仍等同 `gate`。
+- 消费端截图基线只在素材、官方包或合成路径经批准变更后重产：执行 `QT_QPA_PLATFORM=offscreen py -3.15 tools/render_visual_baseline.py --write`，并在 `#185` 合入后重跑；平时使用 `--check`，它会把 `work/visual-baseline/<scene>.diff.png` 写成“基线｜现况｜差异热图”。差异像素是 RGBA 任一通道严格大于 `8`，占比 `>0.05%` 或单一差异区块超过 `64` 像素即失败；看图时先比对前两栏，再用热图定位差异集中处。
 
 ### 完整回归暂时状态
 
@@ -106,6 +108,7 @@
 - The test runner has three tiers and remains the single `tests/run_all.py` entry point: use `fast` (`python tests/run_all.py fast`) for each development change, selecting affected tests through `tests/impact_map.json` while retaining contract tests; use `gate` (`python tests/run_all.py gate`, also the default) before submission for the complete suite; use `nightly` (`python tests/run_all.py nightly`) on a schedule or overnight for packaging smoke, cross-platform, and long-running asset/speech/UI checks.
 - `fast --changed-from <git-ref>` (for example, `python tests/run_all.py fast --changed-from main`) includes commits after the selected ref plus current worktree, index, and untracked files.
 - If `fast` cannot map a changed file or cannot use the Git ref or impact map, it safely falls back to the complete suite and prints `FAST_FALLBACK_TO_GATE`; `gate` retains the ending `ALL_..._TESTS_OK`, and no arguments still mean `gate`.
+- Regenerate the consumer screenshot baseline only after an approved asset, official-pack or compositor change: run `QT_QPA_PLATFORM=offscreen py -3.15 tools/render_visual_baseline.py --write`, and rerun it after `#185` is merged; use `--check` for normal review, which writes `work/visual-baseline/<scene>.diff.png` as “baseline｜current｜difference heatmap”. A changed pixel means any RGBA channel is strictly greater than `8`; a ratio `>0.05%` or one difference block over `64` pixels fails. Read the first two panels first, then use the heatmap to locate the concentrated drift.
 
 ### Temporary complete-regression status
 
@@ -154,6 +157,7 @@ The following means that corresponding automated evidence exists; it does not me
 - テストランナーには三つの階層があり、入口は引き続き単一の `tests/run_all.py` です。開発中の各変更には `fast`（`python tests/run_all.py fast`）を使い、`tests/impact_map.json` から影響テストを選び、契約テストを残します。提出前には `gate`（`python tests/run_all.py gate`、既定値でもあります）で完全スイートを実行し、スケジュールまたは夜間には `nightly`（`python tests/run_all.py nightly`）でパッケージ化スモーク、クロスプラットフォーム、長時間の資産／音声／UI テストを集約します。
 - `fast --changed-from <git-ref>`（例：`python tests/run_all.py fast --changed-from main`）は指定 ref より後のコミットと、現在のワークツリー、インデックス、未追跡ファイルを含めます。
 - `fast` が変更ファイルを対応付けられない場合、Git ref または impact map を利用できない場合は、安全に完全スイートへ戻り `FAST_FALLBACK_TO_GATE` を表示します。`gate` の末尾 `ALL_..._TESTS_OK` は維持され、引数なしも `gate` と同じです。
+- 消費者向けスクリーンショットのベースラインは、承認済みの素材・公式パック・合成経路を変更した時だけ再生成します。`QT_QPA_PLATFORM=offscreen py -3.15 tools/render_visual_baseline.py --write` を実行し、`#185` の取り込み後にも再実行します。通常のレビューは `--check` を使い、`work/visual-baseline/<scene>.diff.png` に「ベースライン｜現況｜差分ヒートマップ」を出力します。RGBA のいずれかのチャンネルが厳密に `8` を超えた画素を差分とし、割合が `>0.05%` または単一差分ブロックが `64` ピクセルを超えると失敗です。まず前二欄を見比べ、次にヒートマップで差分の集中箇所を確認します。
 
 ### 完全回帰の暫定状況
 
