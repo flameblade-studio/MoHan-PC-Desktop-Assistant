@@ -4,29 +4,36 @@
 
 [繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
-<p align="center">
-  <img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg">
-  <img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg">
-  <img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg">
-  <img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg">
-  <img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg">
-  <img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published">
-  <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg">
-  <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
-  <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
-</p>
-
 <p align="center"><img src="docs/media/mohan-hero.png" alt="墨寒桌面助理主視覺" width="100%"></p>
 
-<p align="center"><strong>軟體作者：CHOU MING HUA</strong><br>Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">Releases</a></p>
+<p align="center"><strong>墨寒是重視安全、隱私與角色連續感的 Windows 語音互動桌面助理。</strong></p>
 
-> **最新正式版本：** `v4.6.0`（2026-08-29）。實際產物仍須通過本版最終發布門檻；最新公開版本以動態徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。<!-- x-release-please-version-date -->
+<p align="center">[下載 Windows 安裝程式](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [快速開始](QUICKSTART.md) · [跨平台能力矩陣](docs/CROSS-PLATFORM.md)</p>
+
+> **軟體作者：CHOU MING HUA** · Windows 10/11 完整版 · macOS／Linux 功能受限 Preview<br>**最新正式版本：** `v4.6.0`（2026-08-29）。實際產物仍須通過本版最終發布門檻；最新公開版本以動態徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。<!-- x-release-please-version-date -->
 
 ### 這是什麼
 
 墨寒是重視安全、隱私與角色連續感的 Windows 語音互動桌面助理。她以透明 2.5D 角色、自然語音、由使用者控制的本機長期記憶、待辦與工作工具陪伴日常；角色設定是來自北宋、附生於赤焰劍中的千年女劍魂。
 
-Windows 是完整支援平台；macOS Apple Silicon／Intel 與 Linux 提供功能受限 Preview。請先讀 [快速開始](QUICKSTART.md) 與 [跨平台能力矩陣](docs/CROSS-PLATFORM.md)。
+<p align="center">
+  <img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg">
+  <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg">
+  <img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published">
+</p>
+
+<details>
+<summary>其他 CI、資安、Python 與四語徽章</summary>
+
+<p align="center">
+  <img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg">
+  <img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg">
+  <img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg">
+  <img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg">
+  <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
+  <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
+</p>
+</details>
 
 ### 畫面與功能一覽
 
@@ -204,29 +211,36 @@ Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建�
 
 [繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
-<p align="center">
-  <img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg">
-  <img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg">
-  <img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg">
-  <img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg">
-  <img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg">
-  <img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published">
-  <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg">
-  <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
-  <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
-</p>
-
 <p align="center"><img src="docs/media/mohan-hero.png" alt="墨寒桌面助手主视觉" width="100%"></p>
 
-<p align="center"><strong>软件作者：CHOU MING HUA</strong><br>Windows 10/11 完整版 · macOS／Linux 功能受限 Preview · <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">Releases</a></p>
+<p align="center"><strong>墨寒是一款重视安全、隐私与角色连续感的 Windows 语音交互桌面助手。</strong></p>
 
-> **最新正式版本：** `v4.6.0`（2026-08-29）。实际产物仍须通过本版本最终发布关卡；最新公开版本以动态徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。<!-- x-release-please-version-date -->
+<p align="center">[下载 Windows 安装程序](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [快速开始](QUICKSTART.md) · [跨平台能力矩阵](docs/CROSS-PLATFORM.md)</p>
+
+> **软件作者：CHOU MING HUA** · Windows 10/11 完整版 · macOS／Linux 功能受限 Preview<br>**最新正式版本：** `v4.6.0`（2026-08-29）。实际产物仍须通过本版本最终发布关卡；最新公开版本以动态徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。<!-- x-release-please-version-date -->
 
 ### 这是什么
 
 墨寒是一款重视安全、隐私与角色连续感的 Windows 语音交互桌面助手。她通过透明 2.5D 角色、自然语音、由用户控制的本地长期记忆、待办事项与工作工具陪伴日常；角色设定是来自北宋、寄居在赤焰剑中的千年女剑魂。
 
-Windows 是完整支持平台；macOS Apple Silicon／Intel 与 Linux 提供功能受限 Preview。请先阅读 [快速开始](QUICKSTART.md) 与 [跨平台能力矩阵](docs/CROSS-PLATFORM.md)。
+<p align="center">
+  <img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg">
+  <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg">
+  <img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published">
+</p>
+
+<details>
+<summary>其他 CI、安全、Python 与四语徽章</summary>
+
+<p align="center">
+  <img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg">
+  <img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg">
+  <img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg">
+  <img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg">
+  <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
+  <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
+</p>
+</details>
 
 ### 界面与功能一览
 
@@ -404,29 +418,36 @@ Windows 正式打包规范使用 Rust 1.97.1、Maturin 1.14.1 与 PyO3 0.29.2 �
 
 [繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
-<p align="center">
-  <img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg">
-  <img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg">
-  <img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg">
-  <img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg">
-  <img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg">
-  <img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published">
-  <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg">
-  <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
-  <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
-</p>
-
 <p align="center"><img src="docs/media/mohan-hero.png" alt="MoHan Desktop Assistant hero image" width="100%"></p>
 
-<p align="center"><strong>Author: CHOU MING HUA</strong><br>Windows 10/11 complete build · macOS/Linux limited Preview · <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">Releases</a></p>
+<p align="center"><strong>MoHan is a Windows voice-interactive desktop assistant built around safety, privacy, and character continuity.</strong></p>
 
-> **Latest formal release:** `v4.6.0` (August 29, 2026). The actual artifacts must still pass this release's final publication gates; the dynamic badge and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative.<!-- x-release-please-version-date -->
+<p align="center">[Download Windows installer](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [Quick Start](QUICKSTART.md) · [Cross-platform capability matrix](docs/CROSS-PLATFORM.md)</p>
+
+> **Author: CHOU MING HUA** · Windows 10/11 complete build · macOS/Linux limited Preview<br>**Latest formal release:** `v4.6.0` (August 29, 2026). The actual artifacts must still pass this release's final publication gates; the dynamic badge and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative.<!-- x-release-please-version-date -->
 
 ### What this is
 
 MoHan is a Windows voice-interactive desktop assistant built around safety, privacy, and character continuity. She combines a transparent 2.5D character, natural speech, user-controlled local long-term memory, tasks, and work tools; in her story, she is a thousand-year-old sword spirit from the Northern Song dynasty who dwells within the Crimson Flame Sword.
 
-Windows is the fully supported platform; limited Preview builds are available for macOS Apple Silicon/Intel and Linux. Begin with [Quick Start](QUICKSTART.md) and the [cross-platform capability matrix](docs/CROSS-PLATFORM.md).
+<p align="center">
+  <img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg">
+  <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg">
+  <img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published">
+</p>
+
+<details>
+<summary>Other CI, security, Python, and four-language badges</summary>
+
+<p align="center">
+  <img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg">
+  <img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg">
+  <img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg">
+  <img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg">
+  <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
+  <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
+</p>
+</details>
 
 ### Screens and capabilities
 
@@ -604,29 +625,36 @@ The formal Windows packaging contract builds its first-party native module with 
 
 [繁體中文](#繁體中文) · [簡體中文](#简体中文) · [English](#english) · [日本語](#日本語)
 
-<p align="center">
-  <img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg">
-  <img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg">
-  <img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg">
-  <img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg">
-  <img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg">
-  <img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published">
-  <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg">
-  <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
-  <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
-</p>
-
 <p align="center"><img src="docs/media/mohan-hero.png" alt="墨寒デスクトップアシスタントのメインビジュアル" width="100%"></p>
 
-<p align="center"><strong>作者：CHOU MING HUA</strong><br>Windows 10/11 完全版 · macOS／Linux 機能限定 Preview · <a href="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases">Releases</a></p>
+<p align="center"><strong>墨寒は、安全性、プライバシー、キャラクターの連続性を重視する Windows 音声対話型デスクトップアシスタントです。</strong></p>
 
-> **最新正式リリース：** `v4.6.0`（2026 年 8 月 29 日）。実際の成果物は本版の最終公開ゲートに合格する必要があります。最新の公開版は動的バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を基準とします。<!-- x-release-please-version-date -->
+<p align="center">[Windows インストーラーをダウンロード](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [クイックスタート](QUICKSTART.md) · [クロスプラットフォーム機能表](docs/CROSS-PLATFORM.md)</p>
+
+> **作者：CHOU MING HUA** · Windows 10/11 完全版 · macOS／Linux 機能限定 Preview<br>**最新正式リリース：** `v4.6.0`（2026 年 8 月 29 日）。実際の成果物は本版の最終公開ゲートに合格する必要があります。最新の公開版は動的バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を基準とします。<!-- x-release-please-version-date -->
 
 ### これは何か
 
 墨寒は、安全性、プライバシー、キャラクターの連続性を重視する Windows 音声対話型デスクトップアシスタントです。透明な 2.5D キャラクター、自然な音声、利用者が管理するローカル長期記憶、タスク、作業ツールを統合しています。物語上は北宋から来た、赤焰剣に宿る千年の女剣魂です。
 
-Windows は完全対応プラットフォームです。macOS Apple Silicon／Intel と Linux には機能限定 Preview を提供します。まず [クイックスタート](QUICKSTART.md) と [クロスプラットフォーム機能表](docs/CROSS-PLATFORM.md) をお読みください。
+<p align="center">
+  <img alt="Windows CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/windows-ci.yml/badge.svg">
+  <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg">
+  <img alt="Latest Published Release" src="https://img.shields.io/github/v/release/flameblade-studio/MoHan-PC-Desktop-Assistant?include_prereleases&label=published">
+</p>
+
+<details>
+<summary>その他の CI・セキュリティ・Python・4言語バッジ</summary>
+
+<p align="center">
+  <img alt="Cross-platform core CI" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/cross-platform-core.yml/badge.svg">
+  <img alt="CodeQL" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/codeql.yml/badge.svg">
+  <img alt="Python Security Audit" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/security-audit.yml/badge.svg">
+  <img alt="Extended Secret Defense / Gitleaks" src="https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/workflows/secret-defense.yml/badge.svg">
+  <img alt="Python 3.15" src="https://img.shields.io/badge/Python-3.15-3776AB.svg?logo=python&logoColor=white">
+  <img alt="4 interface languages" src="https://img.shields.io/badge/interface_languages-4-79648d.svg">
+</p>
+</details>
 
 ### 画面と機能の一覧
 

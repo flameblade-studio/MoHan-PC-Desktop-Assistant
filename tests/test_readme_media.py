@@ -93,6 +93,21 @@ README_BADGES = (
         "https://img.shields.io/badge/interface_languages-4-79648d.svg",
     ),
 )
+VISIBLE_README_BADGES = (
+    README_BADGES[0],
+    README_BADGES[6],
+    README_BADGES[5],
+)
+COLLAPSED_README_BADGES = (
+    *README_BADGES[1:5],
+    *README_BADGES[7:9],
+)
+README_BADGE_SUMMARIES = (
+    "其他 CI、資安、Python 與四語徽章",
+    "其他 CI、安全、Python 与四语徽章",
+    "Other CI, security, Python, and four-language badges",
+    "その他の CI・セキュリティ・Python・4言語バッジ",
+)
 BADGE_WORKFLOWS = (
     "windows-ci.yml",
     "cross-platform-core.yml",
@@ -153,15 +168,46 @@ def _assert_single_readme_entry_point(readme: str) -> None:
 
 
 def _assert_certification_badges(readme: str) -> None:
-    badge_match = re.search(
-        r'<p align="center">\s*(.*?)\s*</p>', readme, re.DOTALL
-    )
-    assert badge_match, "README.md is missing its certification badge block"
     actual_badges = tuple(
-        re.findall(r'<img alt="([^"]+)" src="([^"]+)">', badge_match.group(1))
+        re.findall(r'<img alt="([^"]+)" src="([^"]+)">', readme)
     )
-    assert actual_badges == README_BADGES, (
-        "README.md certification badges are incomplete, out of order, or stale"
+    assert len(actual_badges) == len(README_BADGES) * LANGUAGE_NAV_COUNT, (
+        "README.md must keep all nine badges in each language section"
+    )
+    for badge in README_BADGES:
+        assert actual_badges.count(badge) == LANGUAGE_NAV_COUNT, (
+            f"README.md badge count changed: {badge[0]}"
+        )
+
+    badge_blocks = tuple(
+        block
+        for block in re.findall(
+            r'<p align="center">\s*(.*?)\s*</p>', readme, re.DOTALL
+        )
+        if any(alt in block for alt, _ in README_BADGES)
+    )
+    assert len(badge_blocks) == LANGUAGE_NAV_COUNT * 2, (
+        "README.md must have one visible and one collapsed badge block per language"
+    )
+    visible_blocks = tuple(
+        block for block in badge_blocks if 'alt="Windows CI"' in block
+    )
+    assert len(visible_blocks) == LANGUAGE_NAV_COUNT
+    assert all(
+        tuple(re.findall(r'<img alt="([^"]+)" src="([^"]+)">', block))
+        == VISIBLE_README_BADGES
+        for block in visible_blocks
+    )
+
+    details = tuple(re.findall(r"<details>(.*?)</details>", readme, re.DOTALL))
+    assert len(details) == LANGUAGE_NAV_COUNT
+    assert tuple(
+        re.findall(r"<summary>(.*?)</summary>", readme, re.DOTALL)
+    ) == README_BADGE_SUMMARIES
+    assert all(
+        tuple(re.findall(r'<img alt="([^"]+)" src="([^"]+)">', block))
+        == COLLAPSED_README_BADGES
+        for block in details
     )
     for filename in PNG_FILES:
         if filename.startswith("support-"):
