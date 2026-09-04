@@ -13,6 +13,10 @@ lazy from domain.language_support import (
 lazy from domain.time_utils import local_wall_time
 lazy from infrastructure.db_affection import StudioDBAffectionMethods
 lazy from infrastructure.db_memory import StudioDBMemoryMethods
+lazy from infrastructure.corrupt_data import (
+    CORRUPT_DATA_MESSAGE,
+    CorruptStoredJSON,
+)
 lazy from infrastructure.memory_index import MemoryVectorIndex
 lazy from infrastructure.sqlite_safety import classify_db_file, table_column_names
 
@@ -190,7 +194,14 @@ class StudioDBSettingsPort:
             try:
                 decoded[key] = json.loads(str(row["value"]))
             except json.JSONDecodeError, TypeError, ValueError:
-                decoded[key] = None
+                raw = str(row["value"])
+                self._db._record_corrupt_value(
+                    "settings",
+                    key,
+                    raw,
+                    "invalid-json",
+                )
+                decoded[key] = CorruptStoredJSON("settings", key, raw)
         return frozendict(decoded)
 
     def snapshot(self, keys: tuple[str, ...]) -> SettingsRowsSnapshot:
@@ -254,13 +265,52 @@ class StudioDB:
     _archive_memory_ids = StudioDBMemoryMethods._archive_memory_ids
     list_archived_memories = StudioDBMemoryMethods.list_archived_memories
     restore_archived_memory = StudioDBMemoryMethods.restore_archived_memory
+    _decode_archived_snapshot = StudioDBMemoryMethods._decode_archived_snapshot
     _memory_age_days = staticmethod(StudioDBMemoryMethods._memory_age_days)
+    _memory_timestamp_raw = staticmethod(StudioDBMemoryMethods._memory_timestamp_raw)
     _consolidate_auto_duplicates = StudioDBMemoryMethods._consolidate_auto_duplicates
     _merge_memory_contents = staticmethod(StudioDBMemoryMethods._merge_memory_contents)
     optimize_memories = StudioDBMemoryMethods.optimize_memories
     update_memory_policy = StudioDBMemoryMethods.update_memory_policy
     purge_expired_memories = StudioDBMemoryMethods.purge_expired_memories
     export_memories = StudioDBMemoryMethods.export_memories
+
+    def _record_corrupt_value(
+        self,
+        source: str,
+        key: str,
+        raw: str,
+        reason: str,
+    ) -> None:
+        with self.conn:
+            self.conn.execute(
+                "INSERT OR IGNORE INTO corrupt_data("
+                "source,item_key,raw_value,reason,detected_at"
+                ") VALUES(?,?,?,?,?)",
+                (
+                    str(source),
+                    str(key),
+                    str(raw),
+                    str(reason),
+                    local_wall_time().isoformat(timespec="seconds"),
+                ),
+            )
+
+    def consume_corrupt_data_notifications(self) -> tuple[str, ...]:
+        rows = self.conn.execute(
+            "SELECT id FROM corrupt_data WHERE notified_at IS NULL"
+        ).fetchall()
+        if not rows:
+            return ()
+        with self.conn:
+            self.conn.executemany(
+                "UPDATE corrupt_data SET notified_at=? WHERE id=?",
+                [
+                    (local_wall_time().isoformat(timespec="seconds"), int(row["id"]))
+                    for row in rows
+                ],
+            )
+        return (CORRUPT_DATA_MESSAGE,)
 
     def __init__(self, path: Path):
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -283,6 +333,16 @@ class StudioDB:
             CREATE TABLE IF NOT EXISTS settings (
                 key TEXT PRIMARY KEY,
                 value TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS corrupt_data (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                source TEXT NOT NULL,
+                item_key TEXT NOT NULL,
+                raw_value TEXT NOT NULL,
+                reason TEXT NOT NULL,
+                detected_at TEXT NOT NULL,
+                notified_at TEXT,
+                UNIQUE(source,item_key,raw_value,reason)
             );
             CREATE TABLE IF NOT EXISTS todos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -484,17 +544,19 @@ class StudioDB:
             "VALUES('traditional_chat_v1215_migrated','true')"
         )
 
-    def _decoded_setting(self, key: str) -> object | None:
+    def _decoded_setting(self, key: str) -> object:
         row = self.conn.execute(
             "SELECT value FROM settings WHERE key=?",
             (key,),
         ).fetchone()
         if row is None:
             return None
+        raw = str(row["value"])
         try:
-            return json.loads(row["value"])
-        except json.JSONDecodeError:
-            return None
+            return json.loads(raw)
+        except json.JSONDecodeError, TypeError, ValueError:
+            self._record_corrupt_value("settings", key, raw, "invalid-json")
+            return CorruptStoredJSON("settings", key, raw)
 
     def _migrate_model_default(
         self,
@@ -508,7 +570,8 @@ class StudioDB:
         ).fetchone()
         if marker_row is not None:
             return
-        if self._decoded_setting("ai_model") in prior_values:
+        decoded = self._decoded_setting("ai_model")
+        if not isinstance(decoded, CorruptStoredJSON) and decoded in prior_values:
             self.conn.execute(
                 "INSERT INTO settings(key,value) VALUES('ai_model',?) "
                 "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
@@ -536,9 +599,12 @@ class StudioDB:
         current_prompt = self._decoded_setting("transcription_prompt")
         if current_prompt != LEGACY_TRANSCRIPTION_PROMPT:
             return
-        profile = {
-            key: self._decoded_setting(key) or "" for key in TRANSCRIPTION_PROFILE_KEYS
-        }
+        profile: dict[str, object] = {}
+        for key in TRANSCRIPTION_PROFILE_KEYS:
+            value = self._decoded_setting(key)
+            if isinstance(value, CorruptStoredJSON):
+                return
+            profile[key] = value or ""
         organization_name = str(profile["organization_name"])
         migrated_prompt = localized_transcription_prompt(
             str(profile["ui_language"] or "zh-TW"),
@@ -611,13 +677,18 @@ class StudioDB:
             )
 
     def setting(self, key: str, default: object = None) -> object:
-        raw = self.get_setting(key)
-        if not raw:
+        row = self.conn.execute(
+            "SELECT value FROM settings WHERE key=?",
+            (key,),
+        ).fetchone()
+        if row is None:
             return default
+        raw = str(row["value"])
         try:
             return json.loads(raw)
-        except json.JSONDecodeError:
-            return default
+        except json.JSONDecodeError, TypeError, ValueError:
+            self._record_corrupt_value("settings", key, raw, "invalid-json")
+            return CorruptStoredJSON("settings", key, raw)
 
     def add_todo(self, title: str, category: str = "其他") -> int:
         title = title.strip()

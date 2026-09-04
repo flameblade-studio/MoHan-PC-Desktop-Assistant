@@ -107,6 +107,7 @@ class Dashboard(
         self._apply_theme_resolution(self.theme_session.last_resolution)
         self._enforce_readable_combo_popups()
         self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
+        self._notify_pending_corrupt_data()
 
     def _initialize_theme_support(self) -> None:
         self.theme_pack_service = ThemePackService(

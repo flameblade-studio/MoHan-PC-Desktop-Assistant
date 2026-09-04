@@ -333,6 +333,8 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "memory_source_manual_short": "Manual",
     "memory_source_conversation_short": "Conversation",
     "memory_untitled": "Untitled memory",
+    "corrupt_data_title": "Data read warning",
+    "corrupt_data_message": "A setting or memory could not be read; the original file was kept.",
     "memory_item": (
         "[{category}] {title}  Importance {importance}/5\n{content}\n"
         "Source: {source}  Updated: {updated}"
@@ -390,6 +392,10 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "archived_memory_item": (
         "[{category}] {title}\n{content}\nArchive reason: {reason}  "
         "Archived: {archived}"
+    ),
+    "archived_memory_corrupt": (
+        "[Unreadable] The original archived memory was kept.\n"
+        "Archive reason: {reason}  Archived: {archived}"
     ),
     "archived_memory_count": "{count} memories can be restored",
     "archived_memory_select_title": "No memories checked",

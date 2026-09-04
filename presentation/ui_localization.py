@@ -261,6 +261,8 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'memory_source_manual_short': '手动',
  'memory_source_conversation_short': '对话',
  'memory_untitled': '未命名记忆',
+ 'corrupt_data_title': '资料读取警告',
+ 'corrupt_data_message': '某项设置／记忆无法读取，已保留原文件',
  'memory_item': '【{category}】{title}\u3000重要度 {importance}／5\n'
                 '{content}\n'
                 '来源：{source}\u3000更新：{updated}',
@@ -300,6 +302,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'restore_checked_memories': '恢复勾选记忆',
  'close': '关闭',
  'archived_memory_item': '【{category}】{title}\n{content}\n封存原因：{reason}\u3000时间：{archived}',
+ 'archived_memory_corrupt': '【无法读取】这笔封存记忆的原文件已保留。\n封存原因：{reason}\u3000时间：{archived}',
  'archived_memory_count': '目前共有 {count} 则可恢复记忆',
  'archived_memory_select_title': '尚未选中',
  'archived_memory_select': '请先勾选要恢复的记忆。',

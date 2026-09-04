@@ -9,7 +9,7 @@ lazy from PySide6.QtCore import QEvent, Qt, QThreadPool, QTimer
 lazy from PySide6.QtGui import QKeySequence, QMouseEvent, QShortcut
 lazy from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QFileDialog, QFrame, QHBoxLayout, QLabel,
-    QLineEdit, QListWidget, QListWidgetItem, QPushButton, QSizePolicy,
+    QLineEdit, QListWidget, QListWidgetItem, QMessageBox, QPushButton, QSizePolicy,
     QSplitter, QTabWidget, QVBoxLayout, QWidget,
 )
 
@@ -66,6 +66,21 @@ MIN_SPLITTER_HEIGHT = 20
 
 class DashboardShellMixin:
     """Dashboard window shell and cross-tab coordination behavior."""
+
+    def _notify_pending_corrupt_data(self) -> None:
+        consume = getattr(self.db, "consume_corrupt_data_notifications", None)
+        if not callable(consume):
+            return
+        messages = consume()
+        if messages:
+            QMessageBox.warning(
+                self,
+                self._t("corrupt_data_title", "資料讀取警告"),
+                "\n".join(
+                    self._t("corrupt_data_message", message)
+                    for message in messages
+                ),
+            )
 
     def _mount_global_settings_actions(self, root: QVBoxLayout) -> None:
         build_draft_bar(self, root)
