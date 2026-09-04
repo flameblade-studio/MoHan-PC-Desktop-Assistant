@@ -77,8 +77,14 @@ DIFF_FEATHER_PIXELS: Final = 3
 STEP_PARAMETERS: Final = {
     "L1_makeup": DiffParameters(8, 0, 5, 40),
     "L2_garment": DiffParameters(22, 5, 9, 0),
-    "L3_hair": DiffParameters(22, 5, 9, 0),
-    "L4_headwear": DiffParameters(16, 3, 7, 0),
+    # On halfprod_front_A, open=5 left 2,807 measured forehead holes; open=3
+    # left 1,463, while open=0 with the unchanged close=9 left 630 (79.1%
+    # below the 3,013 packaged baseline).  Zero preserves one-pixel strands.
+    "L3_hair": DiffParameters(22, 0, 9, 0),
+    # The old 3-pixel opening erased the measured 4--39 px chain segments.
+    # No opening preserves all four vertical chains; close=7 already bridges
+    # anti-aliased gaps without merging neighbouring beads in the source scan.
+    "L4_headwear": DiffParameters(16, 0, 7, 0),
 }
 STEPS: Final = tuple(STEP_PARAMETERS)
 
@@ -139,7 +145,35 @@ HEADWEAR_SKIN_RED_MIN: Final = 140
 HEADWEAR_SKIN_RED_GREEN_MARGIN: Final = 10
 HEADWEAR_SKIN_GREEN_BLUE_MARGIN: Final = 5
 HEADWEAR_DARK_PIXEL_MAX: Final = 80
-HEADWEAR_MIN_COMPONENT_AREA: Final = 40
+# The smallest visible silver-chain segment in halfprod_front_A is 4 px; the
+# 1--3 px components in the same scan are isolated keying noise.  The old 40
+# px threshold removed the chain while retaining its 76--341 px beads.
+HEADWEAR_MIN_COMPONENT_AREA: Final = 4
+# In the re-extracted front-crossed mask, a 20 px radius links the visible
+# anti-aliased chain segments (maximum measured inter-segment gap <= 40 px),
+# while the remaining cluster >100 px away is the measured y=632 extraction
+# speck.  Apply that same geometric rule to every silhouette.
+HEADWEAR_CHAIN_LINK_RADIUS: Final = 20
+HEADWEAR_DETACHED_DISTANCE: Final = 100
+
+# The release portrait baseline contains 7,457 warm forehead pixels under this
+# exact owner-supplied criterion; 3,923 are fully opaque outfit-hair pixels.
+# Their luminance is preserved while chroma is neutralized in extraction, so
+# the correction removes under-layer skin colour without inventing highlights.
+HAIR_SPILL_BRIGHTNESS_MIN: Final = 70
+HAIR_SPILL_BRIGHTNESS_MAX: Final = 150
+HAIR_SPILL_RED_BLUE_MARGIN: Final = 18
+# The permissive open=0 mask above recovers the missing forehead mass for the
+# back slot.  A measured 5/3/0 opening scan left 2,807/1,463/630 candidate holes;
+# 3 recovers fine strands while still rejecting the garment/facial drift seen at 0.
+HAIR_FRONT_OPEN_KERNEL: Final = 3
+# Keep the measured legacy 5 px opening below the fine-strand band: using 3
+# globally painted hair onto the sealed front-crossed garment probe (610,853).
+HAIR_BODY_OPEN_KERNEL: Final = 5
+# The owner's measured forehead ROI ends at y=470 on a 1,254 px canvas
+# (37.48%).  Rounding the fine-strand band to 38% includes that whole ROI while
+# leaving the y=853 garment probe under the legacy 5 px opening.
+HAIR_FINE_REGION_BOTTOM_RATIO: Final = 0.38
 
 # 來源：scratchpad/layers/extract_layers.py；量測：既有對照表尺寸與暗底
 # 顏色，僅影響證據圖，不影響產出層像素。

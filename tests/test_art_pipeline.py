@@ -20,6 +20,9 @@ lazy from tools.art_pipeline.image_ops import chroma_key, load_rgba, save_png, w
 lazy from tools.art_pipeline.references import GitReference
 
 
+EXPECTED_CHAIN_PIXELS = 4
+
+
 def test_premultiplied_alignment_zeroes_transparent_rgb() -> None:
     source = np.zeros((32, 32, 4), dtype=np.uint8)
     source[:, :, :3] = (255, 0, 255)
@@ -138,6 +141,30 @@ def test_makeup_slots_are_mutually_exclusive() -> None:
     assert masks["cheeks"][31, 31]
 
 
+def test_hair_underlayer_spill_is_neutralized_without_alpha_or_luma_loss() -> None:
+    layer = np.zeros((2, 2, 4), dtype=np.uint8)
+    layer[0, 0] = (40, 80, 100, 255)  # BGR: warm, mean luminance 73.3.
+    layer[0, 1] = (40, 50, 55, 255)  # Below the measured brightness range.
+
+    corrected, count = extract_module._remove_hair_underlayer_spill(layer)
+
+    assert count == 1
+    assert corrected[0, 0].tolist() == [73, 73, 73, 255]
+    assert corrected[0, 1].tolist() == layer[0, 1].tolist()
+
+
+def test_headwear_cleanup_keeps_four_pixel_silver_chain_and_rejects_warm_drift() -> None:
+    image = np.zeros((12, 12, 4), dtype=np.uint8)
+    image[1:5, 1] = (210, 210, 210, 255)
+    image[1:6, 8:10] = (40, 80, 100, 255)
+    mask = (image[:, :, 3] > 0).astype(np.uint8) * 255
+
+    cleaned = extract_module._headwear_cleanup(mask, image)
+
+    assert np.count_nonzero(cleaned[:, 1]) == EXPECTED_CHAIN_PIXELS
+    assert not cleaned[:, 8:10].any()
+
+
 def test_reference_is_materialized_from_git_commit(tmp_path: Path) -> None:
     repository = tmp_path / "repo"
     repository.mkdir()
@@ -214,6 +241,7 @@ def test_extract_writes_keyed_layers_and_reconstruction(
         "final.png",
         "sheet.png",
         "report.json",
+        "L3_hair.back.png",
         *(f"{step}.keyed.png" for step in extract_module.STEPS),
         *(f"{step}.png" for step in extract_module.STEPS),
     }

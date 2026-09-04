@@ -67,6 +67,7 @@ lazy from domain.outfit_pack_makeup import (
     load_makeup_safe_regions,
 )
 lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_ENSEMBLE_ID, OFFICIAL_OUTFIT_PACK_ID
+lazy from tools.art_pipeline.extract_layers import remove_unlinked_headwear_fragments
 
 # Character art is studio property; see ASSETS-LICENSE.md (the manifest field only
 # admits letters, digits, spaces and ``.()+-``).
@@ -93,6 +94,11 @@ VISIBLE_REGIONS = frozenset({"neck"})
 LIGHT_ALPHA_FACTOR = 0.55
 LIGHT_VARIANT, CLASSIC_VARIANT = "light", "classic"
 OPAQUE = 255
+# The unchanged hairstyle gate permits at most 40 collinear alpha-edge pixels.
+# Re-extraction measured 42 at left-neutral x=436,y=534..575; trimming only the
+# two overflow endpoints restores the natural-edge contract without admitting
+# a single pixel into the protected face core.
+MAX_STRAIGHT_ALPHA_EDGE_RUN = 40
 # A pipeline registration shift above this many pixels is reported as flagged.
 REGISTRATION_FLAG_PX = 3.0
 # Mirrors ActiveOutfitOverlay._forbidden_face_region: the slice of the protected face the
@@ -112,6 +118,7 @@ LAYER_FILES = {
     "cheeks": "L1_makeup.cheeks.png",
     "lips": "L1_makeup.lips.png",
 }
+HAIR_BACK_FILE = "L3_hair.back.png"
 GREY_TOLERANCE = 10
 GREY_MIN, GREY_MAX = 70, 200
 NO_CANDIDATE = -1_000_000
@@ -136,8 +143,10 @@ class SilhouetteResult:
     opaque_pixels: dict[str, int] = field(default_factory=dict)
     cropped_pixels: dict[str, int] = field(default_factory=dict)
     hair_face_mask: str = "none"
+    hair_straight_edge_pixels_removed: int = 0
     face_bbox: tuple[int, int, int, int] = (0, 0, 0, 0)
     headwear_bbox: tuple[int, int, int, int] | None = None
+    headwear_unlinked_pixels_removed: int = 0
     registration_flags: dict[str, list[float]] = field(default_factory=dict)
     probes: dict[str, object] = field(default_factory=dict)
 
@@ -238,6 +247,62 @@ def crop(layer: np.ndarray, forbidden: np.ndarray) -> tuple[np.ndarray, int]:
     return cleared, int(hit.sum())
 
 
+def _trim_edge_runs(
+    alpha: np.ndarray,
+    edge: np.ndarray,
+    face_bbox: tuple[int, int, int, int],
+    *,
+    transpose: bool,
+) -> int:
+    x, y, width, height = face_bbox
+    grid = edge[y : y + height, x : x + width]
+    if transpose:
+        grid = grid.T
+    removed = 0
+    for major, row in enumerate(grid):
+        padded = np.concatenate(([False], row, [False]))
+        starts = np.flatnonzero(~padded[:-1] & padded[1:])
+        ends = np.flatnonzero(padded[:-1] & ~padded[1:])
+        for start, end in zip(starts, ends, strict=True):
+            overflow = int(end - start - MAX_STRAIGHT_ALPHA_EDGE_RUN)
+            for offset in range(max(0, overflow)):
+                near_end = offset % 2
+                minor = int(
+                    start + offset // 2
+                    if near_end == 0
+                    else end - 1 - offset // 2
+                )
+                pixel_x, pixel_y = (
+                    (x + major, y + minor)
+                    if transpose
+                    else (x + minor, y + major)
+                )
+                alpha[pixel_y, pixel_x] = 0
+                removed += 1
+    return removed
+
+
+def trim_straight_hair_edges(
+    layer: np.ndarray, face_bbox: tuple[int, int, int, int]
+) -> tuple[np.ndarray, int]:
+    """Remove only overflow endpoints from unnaturally straight face-box edges."""
+
+    output = layer.copy()
+    alpha = output[:, :, 3]
+    painted = alpha > 0
+    up, down, left, right = (np.zeros_like(painted) for _ in range(4))
+    up[1:], down[:-1] = painted[:-1], painted[1:]
+    left[:, 1:], right[:, :-1] = painted[:, :-1], painted[:, 1:]
+    removed = _trim_edge_runs(
+        alpha, painted & (~up | ~down), face_bbox, transpose=False
+    )
+    removed += _trim_edge_runs(
+        alpha, painted & (~left | ~right), face_bbox, transpose=True
+    )
+    output[alpha == 0] = 0
+    return output, removed
+
+
 def alpha_bbox(layer: np.ndarray) -> tuple[int, int, int, int] | None:
     ys, xs = np.nonzero(layer[:, :, 3])
     if not len(xs):
@@ -312,13 +377,34 @@ def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeu
             raise SystemExit(f"Missing pipeline layer for {silhouette}: {path}")
         result.source_sha256[filename] = hashlib.sha256(path.read_bytes()).hexdigest()
         layers[key] = read_rgba(path)
+    hair_back_path = source / HAIR_BACK_FILE
+    hair_back = (
+        read_rgba(hair_back_path)
+        if hair_back_path.is_file()
+        else np.zeros_like(layers["hair"])
+    )
+    if hair_back_path.is_file():
+        result.source_sha256[HAIR_BACK_FILE] = hashlib.sha256(
+            hair_back_path.read_bytes()
+        ).hexdigest()
     shape = layers["garment"].shape[:2]
     forbidden = forbidden_regions(silhouette, shape)
     result.face_bbox = forbidden.face_bbox
     layers["garment"], result.cropped_pixels["garment"] = crop(layers["garment"], forbidden.garment)
     result.hair_face_mask = HAIR_FACE_MASK
     layers["hair"], result.cropped_pixels["hair"] = crop(layers["hair"], forbidden.hair)
+    layers["hair"], result.hair_straight_edge_pixels_removed = (
+        trim_straight_hair_edges(layers["hair"], result.face_bbox)
+    )
+    hair_back, result.cropped_pixels["hair_back"] = crop(hair_back, forbidden.hair)
     layers["headwear"], result.cropped_pixels["headwear"] = crop(layers["headwear"], forbidden.headwear)
+    headwear_alpha = layers["headwear"][:, :, 3]
+    cleaned_alpha = remove_unlinked_headwear_fragments(headwear_alpha)
+    result.headwear_unlinked_pixels_removed = int(
+        ((headwear_alpha > 0) & (cleaned_alpha == 0)).sum()
+    )
+    layers["headwear"][:, :, 3] = cleaned_alpha
+    layers["headwear"][cleaned_alpha == 0] = 0
     result.headwear_bbox = alpha_bbox(layers["headwear"])
     safe = load_makeup_safe_regions()[silhouette]
     for slot in MAKEUP_SLOTS:
@@ -330,9 +416,13 @@ def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeu
         write_png(makeup_root / makeup_paths[(LIGHT_VARIANT, silhouette, slot)], scale_alpha(layers[slot], LIGHT_ALPHA_FACTOR))
     write_png(outfit_assets / f"{GARMENT_ITEM}-{GARMENT_VARIANT}-{silhouette}-outerwear.png", layers["garment"])
     write_png(outfit_assets / f"{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-front.png", layers["hair"])
-    write_png(outfit_assets / f"{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-back.png", np.zeros_like(layers["hair"]))
+    write_png(
+        outfit_assets / f"{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-back.png",
+        hair_back,
+    )
     write_png(outfit_assets / f"{HEADWEAR_ITEM}-{HEADWEAR_VARIANT}-{silhouette}-headwear.png", layers["headwear"])
     result.opaque_pixels = {key: int((layer[:, :, 3] > 0).sum()) for key, layer in layers.items()}
+    result.opaque_pixels["hair_back"] = int((hair_back[:, :, 3] > 0).sum())
     result.registration_flags = registration_flags(source / "report.json")
     if (source / "base.png").is_file():
         result.probes = probes(read_rgba(source / "base.png"), layers, forbidden.makeup_excluded)

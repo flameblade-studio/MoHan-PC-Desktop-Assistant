@@ -30,10 +30,18 @@ lazy from .constants import (
     HEAD_REGION_LEFT_FACE_FACTOR,
     HEAD_REGION_RIGHT_FACE_FACTOR,
     HEADWEAR_DARK_PIXEL_MAX,
+    HEADWEAR_CHAIN_LINK_RADIUS,
+    HEADWEAR_DETACHED_DISTANCE,
     HEADWEAR_MIN_COMPONENT_AREA,
     HEADWEAR_SKIN_GREEN_BLUE_MARGIN,
     HEADWEAR_SKIN_RED_GREEN_MARGIN,
     HEADWEAR_SKIN_RED_MIN,
+    HAIR_BODY_OPEN_KERNEL,
+    HAIR_FINE_REGION_BOTTOM_RATIO,
+    HAIR_FRONT_OPEN_KERNEL,
+    HAIR_SPILL_BRIGHTNESS_MAX,
+    HAIR_SPILL_BRIGHTNESS_MIN,
+    HAIR_SPILL_RED_BLUE_MARGIN,
     HALF_SILHOUETTES,
     MAKEUP_CHEEK_CENTER_X_FACTOR,
     MAKEUP_CHEEK_CENTER_Y_FACTOR,
@@ -65,6 +73,7 @@ lazy from .constants import (
     SHEET_TILE_WIDTH,
     STEP_PARAMETERS,
     STEPS,
+    DiffParameters,
 )
 lazy from .image_ops import (
     composite_over,
@@ -109,13 +118,11 @@ def key_and_despill(path: Path) -> np.ndarray:
     return despill(key_file(path))
 
 
-def diff_mask(prev: np.ndarray, cur: np.ndarray, step: str) -> np.ndarray:
-    """產生一個步驟的軟 alpha 差異遮罩。"""
-
-    try:
-        parameters = STEP_PARAMETERS[step]
-    except KeyError as error:
-        raise ValueError(f"未知抽層步驟：{step}") from error
+def _diff_mask_with_parameters(
+    prev: np.ndarray,
+    cur: np.ndarray,
+    parameters: DiffParameters,
+) -> np.ndarray:
     rgb = np.abs(prev[:, :, :3].astype(np.int16) - cur[:, :, :3].astype(np.int16)).max(
         axis=2
     )
@@ -152,6 +159,16 @@ def diff_mask(prev: np.ndarray, cur: np.ndarray, step: str) -> np.ndarray:
         return (np.clip(graded, 0.0, 1.0) * 255).astype(np.uint8)
     distance = cv2.distanceTransform(cleaned, cv2.DIST_L2, 3)
     return (np.clip(distance / DIFF_FEATHER_PIXELS, 0.0, 1.0) * 255).astype(np.uint8)
+
+
+def diff_mask(prev: np.ndarray, cur: np.ndarray, step: str) -> np.ndarray:
+    """產生一個步驟的軟 alpha 差異遮罩。"""
+
+    try:
+        parameters = STEP_PARAMETERS[step]
+    except KeyError as error:
+        raise ValueError(f"未知抽層步驟：{step}") from error
+    return _diff_mask_with_parameters(prev, cur, parameters)
 
 
 def makeup_region(image: np.ndarray, model_path: Path) -> np.ndarray:
@@ -347,13 +364,107 @@ def _headwear_cleanup(mask: np.ndarray, cur: np.ndarray) -> np.ndarray:
     mask[skin] = 0
     dark = np.maximum(np.maximum(red, green), blue) < HEADWEAR_DARK_PIXEL_MAX
     mask[dark] = 0
+    brightness = (red + green + blue) / 3.0
+    warm_underlayer = (
+        (brightness > HAIR_SPILL_BRIGHTNESS_MIN)
+        & (brightness < HAIR_SPILL_BRIGHTNESS_MAX)
+        & ((red - blue) > HAIR_SPILL_RED_BLUE_MARGIN)
+    )
+    # The silver/blue ornament has no warm material.  The same measured brown
+    # criterion therefore identifies hairline/skin drift, not ornament pixels.
+    mask[warm_underlayer] = 0
     labels_count, labels, stats, _centroids = cv2.connectedComponentsWithStats(
         (mask > 0).astype(np.uint8), connectivity=8
     )
     keep = np.zeros(labels_count, dtype=bool)
     keep[1:] = stats[1:, cv2.CC_STAT_AREA] >= HEADWEAR_MIN_COMPONENT_AREA
     mask[~keep[labels]] = 0
+    return remove_unlinked_headwear_fragments(mask)
+
+
+def remove_unlinked_headwear_fragments(mask: np.ndarray) -> np.ndarray:
+    """Drop distant extraction specks while treating close chain runs as linked."""
+
+    mask = mask.copy()
+    binary = (mask > 0).astype(np.uint8)
+    radius = HEADWEAR_CHAIN_LINK_RADIUS
+    kernel = cv2.getStructuringElement(
+        cv2.MORPH_ELLIPSE, (radius * 2 + 1, radius * 2 + 1)
+    )
+    linked = cv2.dilate(binary, kernel)
+    linked_count, linked_labels, linked_stats, _ = cv2.connectedComponentsWithStats(
+        linked, connectivity=8
+    )
+    if linked_count > 1:
+        main = 1 + int(np.argmax(linked_stats[1:, cv2.CC_STAT_AREA]))
+        main_x, main_y, main_width, main_height = linked_stats[main, :4]
+        for label in range(1, linked_count):
+            if label == main:
+                continue
+            x, y, width, height = linked_stats[label, :4]
+            dx = max(main_x - (x + width), x - (main_x + main_width), 0)
+            dy = max(main_y - (y + height), y - (main_y + main_height), 0)
+            if float(np.hypot(dx, dy)) > HEADWEAR_DETACHED_DISTANCE:
+                mask[(linked_labels == label) & (binary > 0)] = 0
     return mask
+
+
+def _remove_hair_underlayer_spill(layer: np.ndarray) -> tuple[np.ndarray, int]:
+    """Neutralize measured warm skin colour carried into an opaque hair layer.
+
+    The incremental source is a fully composited portrait, so a differenced
+    hair mask can retain the previous skin/hairline RGB.  Only pixels matching
+    the release audit's fixed brown criterion are touched.  Replacing their hue
+    with the same per-pixel mean luminance preserves texture and alpha while
+    removing the under-layer colour cast.
+    """
+
+    output = layer.copy()
+    blue = output[:, :, 0].astype(np.int16)
+    green = output[:, :, 1].astype(np.int16)
+    red = output[:, :, 2].astype(np.int16)
+    brightness = (red + green + blue) / 3.0
+    spill = (
+        (output[:, :, 3] > 0)
+        & (brightness > HAIR_SPILL_BRIGHTNESS_MIN)
+        & (brightness < HAIR_SPILL_BRIGHTNESS_MAX)
+        & ((red - blue) > HAIR_SPILL_RED_BLUE_MARGIN)
+    )
+    neutral = np.rint(brightness[spill]).astype(np.uint8)
+    output[spill, 0] = neutral
+    output[spill, 1] = neutral
+    output[spill, 2] = neutral
+    return output, int(spill.sum())
+
+
+def _hair_masks(
+    previous: np.ndarray,
+    current: np.ndarray,
+    base: np.ndarray,
+    model_path: Path,
+) -> tuple[np.ndarray, np.ndarray]:
+    parameters = STEP_PARAMETERS["L3_hair"]
+    fine_parameters = DiffParameters(
+        parameters.rgb_threshold,
+        HAIR_FRONT_OPEN_KERNEL,
+        parameters.close_kernel,
+        parameters.soft_alpha_span,
+    )
+    body_parameters = DiffParameters(
+        parameters.rgb_threshold,
+        HAIR_BODY_OPEN_KERNEL,
+        parameters.close_kernel,
+        parameters.soft_alpha_span,
+    )
+    fine_mask = _diff_mask_with_parameters(previous, current, fine_parameters)
+    front_mask = _diff_mask_with_parameters(previous, current, body_parameters)
+    fine_bottom = int(current.shape[0] * HAIR_FINE_REGION_BOTTOM_RATIO)
+    front_mask[:fine_bottom] = fine_mask[:fine_bottom]
+    permissive_mask = diff_mask(previous, current, "L3_hair")
+    back_mask = permissive_mask.copy()
+    back_mask[front_mask > 0] = 0
+    back_mask = (back_mask * head_region(base, model_path)).astype(np.uint8)
+    return front_mask, back_mask
 
 
 def _safe_prefix(prefix: str) -> Path:
@@ -370,11 +481,12 @@ def _extract_steps(
     output: Path,
     model_path: Path,
     safe_regions_path: Path | None,
-) -> tuple[list[np.ndarray], np.ndarray, dict[str, object]]:
+) -> tuple[list[np.ndarray], np.ndarray, np.ndarray | None, dict[str, object]]:
     previous = base
     layers: list[np.ndarray] = []
     layer_report: dict[str, object] = {}
     report: dict[str, object] = {"layers": layer_report}
+    hair_back: np.ndarray | None = None
     for step in STEPS:
         source_path = source_directory / f"{prefix}.{step}.png"
         if not source_path.is_file():
@@ -388,6 +500,25 @@ def _extract_steps(
         mask = diff_mask(previous, current, step)
         if step == "L1_makeup":
             mask = (mask * makeup_region(base, model_path)).astype(np.uint8)
+        elif step == "L3_hair":
+            front_mask, back_mask = _hair_masks(
+                previous, current, base, model_path
+            )
+            # The permissive mask is only an inner, low-Z backing mass.  This
+            # anatomical head region excludes the face core and all garment
+            # pixels that a direct open=0 foreground mask admitted in QA.
+            hair_back = current.copy()
+            hair_back[:, :, 3] = (
+                current[:, :, 3].astype(np.uint16) * back_mask // 255
+            ).astype(np.uint8)
+            hair_back[hair_back[:, :, 3] == 0] = 0
+            hair_back, back_corrected = _remove_hair_underlayer_spill(hair_back)
+            save_png(output / "L3_hair.back.png", hair_back)
+            mask = front_mask
+            layer_report[step] = {
+                "back_opaque_pixels": int((hair_back[:, :, 3] > 0).sum()),
+                "back_warm_underlayer_pixels_corrected": back_corrected,
+            }
         elif step == "L4_headwear":
             mask = (mask * head_region(base, model_path)).astype(np.uint8)
             mask = _headwear_cleanup(mask, current)
@@ -396,6 +527,11 @@ def _extract_steps(
             np.uint8
         )
         layer[layer[:, :, 3] == 0] = 0
+        if step == "L3_hair":
+            layer, corrected = _remove_hair_underlayer_spill(layer)
+            hair_entry = layer_report[step]
+            if isinstance(hair_entry, dict):
+                hair_entry["warm_underlayer_pixels_corrected"] = corrected
         save_png(output / f"{step}.png", layer)
         if step == "L1_makeup":
             report["makeup_slots"] = write_makeup_slots(
@@ -403,12 +539,17 @@ def _extract_steps(
             )
         layers.append(layer)
         layer_report[step] = {
+            **(
+                layer_report.get(step, {})
+                if isinstance(layer_report.get(step), dict)
+                else {}
+            ),
             "opaque_pixels": int((layer[:, :, 3] > 0).sum()),
             "share_of_canvas": round(float((layer[:, :, 3] > 0).mean()), 4),
             "registration_shift_px": [round(shift[0], 2), round(shift[1], 2)],
         }
         previous = current
-    return layers, previous, report
+    return layers, previous, hair_back, report
 
 
 def _find_shoe_source(source_directory: Path, prefix: str) -> Path | None:
@@ -522,12 +663,15 @@ def _merge_shoes(
 def _write_final_outputs(
     base: np.ndarray,
     layers: list[np.ndarray],
+    hair_back: np.ndarray | None,
     final: np.ndarray,
     output: Path,
     report: dict[str, object],
 ) -> None:
     reconstruction = base
-    for layer in layers:
+    for index, layer in enumerate(layers):
+        if index == 1 and hair_back is not None:
+            reconstruction = composite_over(reconstruction, hair_back)
         reconstruction = composite_over(reconstruction, layer)
     save_png(output / "reconstruction.png", reconstruction)
     save_png(output / "final.png", final)
@@ -554,7 +698,15 @@ def _write_final_outputs(
 
     tiles = [
         tile(base),
-        *(tile(layer) for layer in layers),
+        *(
+            tile(item)
+            for index, layer in enumerate(layers)
+            for item in (
+                (hair_back, layer)
+                if index == 1 and hair_back is not None
+                else (layer,)
+            )
+        ),
         tile(reconstruction),
         tile(final),
     ]
@@ -577,22 +729,23 @@ def extract(
     output_root: Path,
     model_path: Path,
     safe_regions_path: Path | None = None,
+    output_name: str | None = None,
 ) -> dict[str, object]:
     """執行一批抽層並寫出報告；所有 I/O 根目錄由呼叫端提供。"""
 
-    relative_prefix = _safe_prefix(prefix)
+    relative_prefix = _safe_prefix(prefix if output_name is None else output_name)
     output = output_root / relative_prefix
     output.mkdir(parents=True, exist_ok=True)
     base = key_and_despill(base_magenta)
     save_png(output / "base.png", base)
-    layers, final, report = _extract_steps(
+    layers, final, hair_back, report = _extract_steps(
         base, prefix, source_directory, output, model_path, safe_regions_path
     )
     layers, final, shoe_report = _merge_shoes(
         base, final, layers, _find_shoe_source(source_directory, prefix), output
     )
     report.update(shoe_report)
-    _write_final_outputs(base, layers, final, output, report)
+    _write_final_outputs(base, layers, hair_back, final, output, report)
     (output / "report.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2),
         encoding="utf-8",
