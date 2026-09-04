@@ -27,6 +27,10 @@
 - 遵循上層 `D:\FlamebladeStudio\CodexProjects\AGENTS.md` 與 `CODEX_PROJECT_HANDOFF.md` 的全域原則。
 - 測試分層：開發過程用 `fast`，提交前跑一次 `gate`；若影響對照表找不到改動檔案，必須接受 fast 的完整套 fallback。
 
+### CHANGELOG 片段規則
+
+每個 Pull Request 的變更都必須新增 `changelog.d/<name>.md`，不要直接編輯 `CHANGELOG.md` 的未發布段落。新片段的標題與條列依繁中／簡中／English／日本語以全形斜線 `／` 分隔並保持平行；既有未發布內容的遷移片段可保留原文。Release Please 先產生版本標題，再由 `tools/assemble_changelog.py` 組裝。
+
 ## 简体中文
 
 本文件对所有在本项目工作的 AI 代理（Codex、Claude 或其他）具有强制力，优先于任何代理自身的工作习惯。
@@ -53,6 +57,10 @@
 - 汇报一律使用台湾正体中文，遵循「打到哪里就报到哪里」格式：【完成】（命令、退出码、路径、哈希、目视结论）、【目前阻塞】、【下一步】。
 - 遵循上层 `D:\FlamebladeStudio\CodexProjects\AGENTS.md` 与 `CODEX_PROJECT_HANDOFF.md` 的全局原则。
 - 测试分层：开发过程中用 `fast`，提交前跑一次 `gate`；如果影响对照表找不到改动文件，必须接受 fast 的完整套 fallback。
+
+### CHANGELOG 片段规则
+
+每个 Pull Request 的变更都必须新增 `changelog.d/<name>.md`，不要直接编辑 `CHANGELOG.md` 的未发布段落。新片段的标题与列表项按繁中／简中／English／日本語以全角斜线 `／` 分隔并保持平行；既有未发布内容的迁移片段可保留原文。Release Please 先产生版本标题，再由 `tools/assemble_changelog.py` 组装。
 
 ## English
 
@@ -81,6 +89,10 @@ Background lesson: the PoseAtlas 24 master views and 600 layered assets were sub
 - Follow the global principles in `D:\FlamebladeStudio\CodexProjects\AGENTS.md` and `CODEX_PROJECT_HANDOFF.md`.
 - Test tiers: use `fast` during development and run `gate` once before submission; if the impact map cannot find a changed file, accept fast's complete-suite fallback.
 
+### CHANGELOG Fragment Rule
+
+Every Pull Request change must add `changelog.d/<name>.md`; do not edit the unreleased part of `CHANGELOG.md` directly. New fragment titles and bullets must provide Traditional Chinese／Simplified Chinese／English／Japanese in parallel, separated by the full-width slash `／`; migrated unreleased content may retain its original wording. Release Please creates the version heading first, then `tools/assemble_changelog.py` assembles it.
+
 ## 日本語
 
 本ファイルは、本プロジェクトで作業するすべての AI エージェント（Codex、Claude、その他）に対して拘束力を持ち、各エージェント自身の作業習慣より優先されます。
@@ -107,3 +119,7 @@ Background lesson: the PoseAtlas 24 master views and 600 layered assets were sub
 - 報告は台湾繁体字中国語を使用し、「戦った所まで正確に報告する」形式に従う：【完了】（コマンド、終了コード、パス、ハッシュ、目視結論）、【現在の障害】、【次の一手】。
 - 上位の `D:\FlamebladeStudio\CodexProjects\AGENTS.md` と `CODEX_PROJECT_HANDOFF.md` の全体原則に従う。
 - テスト階層：開発中は `fast` を使い、提出前に一度 `gate` を実行します。影響対応表に変更ファイルがない場合は、fast が完全スイートへフォールバックすることを受け入れます。
+
+### CHANGELOG フラグメント規則
+
+各 Pull Request の変更には `changelog.d/<name>.md` を追加し、`CHANGELOG.md` の未公開部分を直接編集してはいけません。新しいフラグメントの見出しと箇条書きは、繁体字中国語／簡体字中国語／English／日本語を全角スラッシュ `／` で区切り、内容を揃えます。既存の未公開内容を移行したフラグメントは元の文言を保持できます。Release Please が先にバージョン見出しを作成し、その後 `tools/assemble_changelog.py` が組み立てます。
