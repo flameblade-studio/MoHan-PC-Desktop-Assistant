@@ -28,17 +28,32 @@ def _max_rgb(color: QColor) -> int:
     return max(color.red(), color.green(), color.blue())
 
 
-def _is_recovery_source(closed_max: int, source: QColor) -> bool:
-    source_max = _max_rgb(source)
+def _is_skin_like(color: QColor) -> bool:
     return (
-        source.alpha() >= OPAQUE_ALPHA_THRESHOLD
-        and source_max >= closed_max + MIN_SOURCE_LIFT
-        and source.red() >= MIN_SKIN_RED
-        and source.green() >= MIN_SKIN_GREEN
-        and source.blue() >= MIN_SKIN_BLUE
-        and source.red() - source.green() >= MIN_RED_GREEN_DELTA
-        and source.green() - source.blue() >= MIN_GREEN_BLUE_DELTA
+        color.alpha() >= OPAQUE_ALPHA_THRESHOLD
+        and color.red() >= MIN_SKIN_RED
+        and color.green() >= MIN_SKIN_GREEN
+        and color.blue() >= MIN_SKIN_BLUE
+        and color.red() - color.green() >= MIN_RED_GREEN_DELTA
+        and color.green() - color.blue() >= MIN_GREEN_BLUE_DELTA
     )
+
+
+def _is_recovery_source(closed: QColor, source: QColor) -> bool:
+    source_max = _max_rgb(source)
+    closed_max = _max_rgb(closed)
+    if not _is_skin_like(source) or source_max <= closed_max:
+        return False
+    # The runtime downsamples the authored canvas after the neutral face is
+    # restored. If both source pixels are already skin-like, a small authored
+    # lift can still become the dark corner residual measured on the final
+    # canvas. Keep the same positive-lightening requirement and limit this
+    # branch to a skin-to-skin replacement.
+    if _is_skin_like(closed):
+        return True
+    if closed_max <= DARK_EDGE_MAX_RGB:
+        return source_max >= closed_max + MIN_SOURCE_LIFT
+    return False
 
 
 def recover_speech_mask_edges(
@@ -81,11 +96,8 @@ def recover_speech_mask_edges(
             closed_color = closed_image.pixelColor(x, y)
             if closed_color.alpha() < OPAQUE_ALPHA_THRESHOLD:
                 continue
-            closed_max = _max_rgb(closed_color)
-            if closed_max > DARK_EDGE_MAX_RGB:
-                continue
             if any(
-                _is_recovery_source(closed_max, source_image.pixelColor(x, y))
+                _is_recovery_source(closed_color, source_image.pixelColor(x, y))
                 for source_image in source_images
             ):
                 mask_image.setPixelColor(x, y, QColor(255, 255, 255, 255))

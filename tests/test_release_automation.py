@@ -218,28 +218,28 @@ README_AUTO_MEDIA_SHA256 = {
         "31d8f213dc76c0fa8b9888aaf284b63ba7ef3022a4b3fc4cebb5a04091ca2073"
     ),
     "docs/media/mohan-demo.mp4": (
-        "f3a3614447e7f743111845c0e33de118a659070c738fea5704c31041002cb9bd"
+        "782a1f6c607b8201d79a5ebb1d9d8aceeea94c5351334ce9e65556ec68fe6b30"
     ),
     "docs/media/mohan-hero.png": (
         "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb"
     ),
     "docs/media/portraits/gentle_smile_front.png": (
-        "92c85c914e60f5acea002368f12ee2759665a53dbdb26784c80b703c71bda5c2"
+        "b73aa82a5c33978a791167380165b191dc3a92d33cea3d01acc3c7a4cfa3c228"
     ),
     "docs/media/portraits/mock_hit_front.png": (
-        "e38163e1fce62ee4e21215f5c32c36787b3e1099ed52256503f6693294e38f5f"
+        "2c44a750ce7175b5bb470ac8cb5084e5c2c847aa92564edb16ce8b7b43804708"
     ),
     "docs/media/portraits/proud_front.png": (
-        "5c5c0454d783f22c4ea0e7bd5b3e4b9787679d74cb490d0451b522dd621c340a"
+        "2be1cbb191e0237ac1d6418866ef7199934ecfa0e885b587ed42897da44b4c4e"
     ),
     "docs/media/portraits/shy_cute_front.png": (
-        "76cbd9ae93c41fdc64a0d6b7c094e751daa72262249a223816c5c56449c0efe1"
+        "7897a804f9ac4ecda9ed495640b49cb5e7c4a971452be3e8d11ce0acd5630508"
     ),
     "docs/media/portraits/thinking_front.png": (
-        "0d36ddca24d571e905c439ebaaa789993cdc6f1968e2c2ff6bc7cafd328837bd"
+        "f09ea99198ea3b43fa6a8551d967e6184167d4ecc8574e1964dd8f03f4f953bd"
     ),
     "docs/media/portraits/worried_front.png": (
-        "cff573b6b4071ac70efb7a2ce44b848938615011140f22cfaf5737904c6379c5"
+        "ddc2df76ecc47d3a5d405fc5493f8cbd6e60c9370c2ae965d5b61d58220d429b"
     ),
     "docs/media/security-permissions.png": (
         "37c6f232c6257387370c6581fb98025f1324a8c675cfaa7a1ebf68556fc7f5a2"

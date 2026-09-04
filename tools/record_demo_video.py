@@ -84,10 +84,23 @@ SCENE_OUTRO = 5
 BLINK_START_SECONDS = 1.35
 BLINK_END_SECONDS = 1.55
 ONECORE_YATING_DISPLAY_NAME = "Microsoft Yating"
-# The speaking scene uses a head-and-shoulders crop so the existing viseme
-# assets remain visible at 1280x720.  This rect is in the 1254x1254 composed
-# portrait coordinate space shared by all of the generated character assets.
+# Every scene uses this head-and-shoulders crop so the existing viseme assets
+# remain visible at 1280x720. This rect is in the 1254x1254 composed portrait
+# coordinate space shared by all generated character assets.
 SPEAKING_CHARACTER_CROP = QRect(402, 100, 450, 600)
+
+# The animation contract defines the front-pose mouth in the canonical 465 px
+# presentation space. Video frames use the unscaled 1254 px portrait assets,
+# so keep the conversion explicit for blink and wardrobe speech compositing.
+HALF_BODY_CANVAS_SIZE = 1254
+HALF_BODY_PRESENTATION_SIZE = 465
+SPEECH_MOUTH_RECT_465 = QRect(202, 195, 62, 43)
+SPEECH_MOUTH_RECT = QRect(
+    round(SPEECH_MOUTH_RECT_465.x() * HALF_BODY_CANVAS_SIZE / HALF_BODY_PRESENTATION_SIZE),
+    round(SPEECH_MOUTH_RECT_465.y() * HALF_BODY_CANVAS_SIZE / HALF_BODY_PRESENTATION_SIZE),
+    round(SPEECH_MOUTH_RECT_465.width() * HALF_BODY_CANVAS_SIZE / HALF_BODY_PRESENTATION_SIZE),
+    round(SPEECH_MOUTH_RECT_465.height() * HALF_BODY_CANVAS_SIZE / HALF_BODY_PRESENTATION_SIZE),
+)
 
 # Owner-approved narration.  Keep the six strings unchanged unless the owner
 # explicitly approves a new recording script.
@@ -124,6 +137,12 @@ VISEME_ASSET_BY_NAME = {
     "U": "attentive_front_speech_round.png",
     "E": "attentive_front_speech_mid.png",
     "O": "attentive_front_speech_round.png",
+}
+VISEME_SUFFIX_BY_ASSET = {
+    "attentive_front.png": "",
+    "attentive_front_speech_mid.png": "_speech_mid",
+    "attentive_front_speech_open.png": "_speech_open",
+    "attentive_front_speech_round.png": "_speech_round",
 }
 
 
@@ -435,7 +454,11 @@ def _build_narration(temp_dir: Path, ffmpeg: str) -> Narration:
             f"{narration.duration:.3f}s, below the 30s test boundary; "
             "the recording must follow the approved audio timing and was not padded."
         )
-    viseme_assets = _viseme_track(normalized[1])
+    # The video timeline contains all six lines plus the measured lead,
+    # inter-scene, and tail silence. Drive every rendered scene from that
+    # assembled clock so speech never falls back to a static mouth outside
+    # scene two.
+    viseme_assets = _viseme_track(narration.audio)
     return replace(narration, viseme_assets=viseme_assets)
 
 
@@ -552,27 +575,132 @@ def _capture_scene_widgets(temp_dir: Path) -> SceneCaptures:
         _process_events(app)
 
 
+def _speech_mouth_overlay(base: QImage, speech: QImage) -> QImage:
+    """Put only the official speech-mouth region over another portrait."""
+
+    if speech.size() != base.size():
+        speech = speech.scaled(
+            base.size(),
+            Qt.IgnoreAspectRatio,
+            Qt.SmoothTransformation,
+        )
+    masked = QImage(base.size(), QImage.Format_ARGB32)
+    masked.fill(Qt.transparent)
+    mask_painter = QPainter(masked)
+    mask_painter.setRenderHint(QPainter.Antialiasing)
+    mask_painter.drawImage(0, 0, speech)
+    mask_painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+    mask_painter.setPen(Qt.NoPen)
+    mask_painter.setBrush(QColor(255, 255, 255, 255))
+    mouth_rect = QRect(
+        round(SPEECH_MOUTH_RECT.x() * base.width() / HALF_BODY_CANVAS_SIZE),
+        round(SPEECH_MOUTH_RECT.y() * base.height() / HALF_BODY_CANVAS_SIZE),
+        round(SPEECH_MOUTH_RECT.width() * base.width() / HALF_BODY_CANVAS_SIZE),
+        round(SPEECH_MOUTH_RECT.height() * base.height() / HALF_BODY_CANVAS_SIZE),
+    )
+    radius = round(38 * min(
+        base.width() / HALF_BODY_CANVAS_SIZE,
+        base.height() / HALF_BODY_CANVAS_SIZE,
+    ))
+    mask_painter.drawRoundedRect(mouth_rect, radius, radius)
+    mask_painter.end()
+
+    result = base.copy()
+    painter = QPainter(result)
+    painter.setRenderHint(QPainter.Antialiasing)
+    painter.drawImage(0, 0, masked)
+    painter.end()
+    return result
+
+
 def _render_character_assets(temp_dir: Path) -> dict[str, QImage]:
     overlay = ActiveOutfitOverlay(temp_dir / "marketing-store", ROOT)
     names = {
         "attentive_front.png",
-        "attentive_front_speech_mid.png",
-        "attentive_front_speech_open.png",
-        "attentive_front_speech_round.png",
         "blink_front.png",
         "determined_front.png",
         "gentle_smile_front.png",
     }
-    return {
+    for expression in ("attentive_front", "determined_front", "gentle_smile_front"):
+        names.update(
+            f"{expression}_speech_{frame}.png"
+            for frame in ("mid", "open", "round")
+        )
+    characters = {
         name: render_portrait(overlay, name.removesuffix(".png"))
         for name in sorted(names)
     }
+    for frame in ("mid", "open", "round"):
+        characters[f"blink_front_speech_{frame}.png"] = _speech_mouth_overlay(
+            characters["blink_front.png"],
+            characters[f"gentle_smile_front_speech_{frame}.png"],
+        )
+    return characters
+
+
+def _viseme_asset_at(
+    timeline_seconds: float,
+    viseme_assets: tuple[str, ...],
+) -> str:
+    if not viseme_assets:
+        raise RuntimeError("The video has no full-track viseme schedule.")
+    cue_index = min(
+        len(viseme_assets) - 1,
+        max(0, int(timeline_seconds * VISEME_CUES_PER_SECOND)),
+    )
+    return viseme_assets[cue_index]
+
+
+def _speech_asset_name(expression: str, viseme_asset: str) -> str:
+    try:
+        suffix = VISEME_SUFFIX_BY_ASSET[viseme_asset]
+    except KeyError as error:
+        raise RuntimeError(f"Unknown video viseme asset: {viseme_asset}") from error
+    return f"{expression}{suffix}.png"
+
+
+def _dynamic_character_image(
+    expression: str,
+    timeline_seconds: float,
+    characters: dict[str, QImage],
+    viseme_assets: tuple[str, ...],
+) -> QImage:
+    viseme_asset = _viseme_asset_at(timeline_seconds, viseme_assets)
+    name = _speech_asset_name(expression, viseme_asset)
+    if name not in characters:
+        raise RuntimeError(f"Video character asset is missing: {name}")
+    return characters[name]
+
+
+def _dynamic_wardrobe_preview(
+    preview: QImage,
+    timeline_seconds: float,
+    characters: dict[str, QImage],
+    viseme_assets: tuple[str, ...],
+) -> QImage:
+    viseme_asset = _viseme_asset_at(timeline_seconds, viseme_assets)
+    speech_name = _speech_asset_name("attentive_front", viseme_asset)
+    return _speech_mouth_overlay(preview, characters[speech_name])
 
 
 def _scaled_inside(image: QImage, size: QSize) -> QImage:
     normalized = image.copy()
     normalized.setDevicePixelRatio(1.0)
     return normalized.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+
+
+def _character_panel_crop(image: QImage) -> QImage:
+    """Crop every scene to the same face-visible head-and-shoulders framing."""
+
+    crop = QRect(
+        round(SPEAKING_CHARACTER_CROP.x() * image.width() / HALF_BODY_CANVAS_SIZE),
+        round(SPEAKING_CHARACTER_CROP.y() * image.height() / HALF_BODY_CANVAS_SIZE),
+        round(SPEAKING_CHARACTER_CROP.width() * image.width() / HALF_BODY_CANVAS_SIZE),
+        round(SPEAKING_CHARACTER_CROP.height() * image.height() / HALF_BODY_CANVAS_SIZE),
+    )
+    if crop.right() >= image.width() or crop.bottom() >= image.height():
+        raise RuntimeError("Character panel crop does not fit the portrait canvas.")
+    return image.copy(crop)
 
 
 def _draw_panel(
@@ -613,30 +741,52 @@ def _scene_character_image(
     captures: SceneCaptures,
     characters: dict[str, QImage],
     viseme_assets: tuple[str, ...],
-    segment: SpeechSegment,
+    timeline_seconds: float,
 ) -> QImage:
     if scene_index == SCENE_CONVERSATION:
         blink_phase = local_seconds % 3.2
-        return characters[
-            "blink_front.png"
+        expression = (
+            "blink_front"
             if BLINK_START_SECONDS <= blink_phase < BLINK_END_SECONDS
-            else "gentle_smile_front.png"
-        ]
-    if scene_index == SCENE_SPEAKING:
-        cue_index = min(
-            len(viseme_assets) - 1,
-            max(0, int(local_seconds * VISEME_CUES_PER_SECOND)),
+            else "gentle_smile_front"
         )
-        return characters[viseme_assets[cue_index]]
+        return _dynamic_character_image(
+            expression,
+            timeline_seconds,
+            characters,
+            viseme_assets,
+        )
+    if scene_index == SCENE_SPEAKING:
+        return _dynamic_character_image(
+            "attentive_front",
+            timeline_seconds,
+            characters,
+            viseme_assets,
+        )
     if scene_index == SCENE_WARDROBE:
         preview_index = min(
             len(captures.wardrobe_previews) - 1,
             int(local_progress * len(captures.wardrobe_previews)),
         )
-        return captures.wardrobe_previews[preview_index]
+        return _dynamic_wardrobe_preview(
+            captures.wardrobe_previews[preview_index],
+            timeline_seconds,
+            characters,
+            viseme_assets,
+        )
     if scene_index == SCENE_SECURITY:
-        return characters["determined_front.png"]
-    return characters["gentle_smile_front.png"]
+        return _dynamic_character_image(
+            "determined_front",
+            timeline_seconds,
+            characters,
+            viseme_assets,
+        )
+    return _dynamic_character_image(
+        "gentle_smile_front",
+        timeline_seconds,
+        characters,
+        viseme_assets,
+    )
 
 
 def _compose_end_card(painter: QPainter) -> None:
@@ -700,17 +850,7 @@ def _compose_frame(
 
     character_panel = QRect(874, 103, 378, 503)
     _draw_panel(painter, character_panel, QColor(255, 255, 255, 238))
-    portrait_source = character
-    if scene_index == SCENE_SPEAKING:
-        if (
-            SPEAKING_CHARACTER_CROP.right() >= character.width()
-            or SPEAKING_CHARACTER_CROP.bottom() >= character.height()
-        ):
-            raise RuntimeError(
-                "Speaking character crop does not fit the composed portrait."
-            )
-        portrait_source = character.copy(SPEAKING_CHARACTER_CROP)
-    portrait = _scaled_inside(portrait_source, QSize(350, 466))
+    portrait = _scaled_inside(_character_panel_crop(character), QSize(350, 466))
     painter.drawImage(
         QPoint(
             character_panel.x() + (character_panel.width() - portrait.width()) // 2,
@@ -765,7 +905,7 @@ def _render_frame_sequence(
             captures,
             characters,
             narration.viseme_assets,
-            segment,
+            second,
         )
         frame = _compose_frame(
             scene_index,

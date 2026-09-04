@@ -1,0 +1,260 @@
+{
+  "video_frame_samples": {
+    "mouth_and_ornament": 70,
+    "closed_eye": 24
+  },
+  "mouth_corner_artifact": {
+    "video_frame": {
+      "frame_index": 70,
+      "timestamp_seconds": 7.0,
+      "path": "docs/release-evidence/media-generation-coherence/frame-070-scene2.png",
+      "mouth_roi_xyxy": [
+        990,
+        440,
+        1140,
+        555
+      ]
+    },
+    "contract": {
+      "dark_eye_max_rgb": 100,
+      "cases": 18
+    },
+    "per_pose": {
+      "cheek": {
+        "probe_rects_xywh": {
+          "left": [
+            166,
+            202,
+            26,
+            31
+          ],
+          "right": [
+            192,
+            202,
+            19,
+            27
+          ]
+        },
+        "cases": 6,
+        "mouth_residual_pixels": 0,
+        "eye_residual_pixels": 0
+      },
+      "lean": {
+        "probe_rects_xywh": {
+          "left": [
+            157,
+            193,
+            22,
+            30
+          ],
+          "right": [
+            193,
+            202,
+            18,
+            27
+          ]
+        },
+        "cases": 6,
+        "mouth_residual_pixels": 0,
+        "eye_residual_pixels": 0
+      },
+      "front": {
+        "probe_rects_xywh": {
+          "left": [
+            205,
+            201,
+            14,
+            12
+          ],
+          "right": [
+            237,
+            201,
+            14,
+            12
+          ]
+        },
+        "cases": 6,
+        "mouth_residual_pixels": 0,
+        "eye_residual_pixels": 0
+      }
+    },
+    "total_mouth_residual_pixels": 0,
+    "total_eye_residual_pixels": 0,
+    "failures": []
+  },
+  "closed_eye_makeup": {
+    "video_frame": {
+      "frame_index": 24,
+      "timestamp_seconds": 2.4,
+      "path": "docs/release-evidence/media-generation-coherence/frame-024-blink.png"
+    },
+    "contract": {
+      "minimum_closed_diff_pixels": 18000,
+      "maximum_bright_residual_pixels": 10,
+      "maximum_dark_residual_components": 3,
+      "bright_residual_meaning": "RGB mean >= 180",
+      "dark_pixel_meaning": "max RGB < 140"
+    },
+    "measurements": [
+      {
+        "pose": "cheek",
+        "frame_asset": "assets/expressions/blink.png",
+        "eye_roi_xywh": [
+          466,
+          420,
+          174,
+          71
+        ],
+        "changed_pixels": 20009,
+        "bright_residual_pixels": 5,
+        "dark_residual_components": 3
+      },
+      {
+        "pose": "lean",
+        "frame_asset": "assets/expressions/blink_lean.png",
+        "eye_roi_xywh": [
+          456,
+          423,
+          177,
+          64
+        ],
+        "changed_pixels": 19398,
+        "bright_residual_pixels": 1,
+        "dark_residual_components": 0
+      },
+      {
+        "pose": "front",
+        "frame_asset": "assets/expressions/blink_front.png",
+        "eye_roi_xywh": [
+          509,
+          423,
+          188,
+          44
+        ],
+        "changed_pixels": 20271,
+        "bright_residual_pixels": 0,
+        "dark_residual_components": 0
+      }
+    ]
+  },
+  "hair_and_headwear": {
+    "video_frame": {
+      "frame_index": 70,
+      "timestamp_seconds": 7.0,
+      "path": "docs/release-evidence/media-generation-coherence/frame-070-scene2.png"
+    },
+    "portrait_frame": "docs/media/portraits/gentle_smile_front.png",
+    "solid_black_threshold_max_rgb": 90,
+    "forehead_side_regions": {
+      "left": {
+        "portrait_roi_xyxy": [
+          455,
+          280,
+          530,
+          450
+        ],
+        "video_roi_xyxy": [
+          929,
+          261,
+          988,
+          393
+        ],
+        "opaque_pixels": 11434,
+        "solid_black_pixels": 8742,
+        "solid_black_percent_of_opaque": 76.4562,
+        "darkest_probe": {
+          "xy": [
+            528,
+            287
+          ],
+          "rgb": [
+            3,
+            2,
+            2
+          ]
+        }
+      },
+      "right": {
+        "portrait_roi_xyxy": [
+          725,
+          280,
+          800,
+          450
+        ],
+        "video_roi_xyxy": [
+          1139,
+          261,
+          1198,
+          393
+        ],
+        "opaque_pixels": 5086,
+        "solid_black_pixels": 4258,
+        "solid_black_percent_of_opaque": 83.72,
+        "darkest_probe": {
+          "xy": [
+            727,
+            345
+          ],
+          "rgb": [
+            7,
+            5,
+            1
+          ]
+        }
+      }
+    },
+    "official_quality": {
+      "composite_specks": {
+        "roi_xyxy": [
+          300,
+          100,
+          1000,
+          520
+        ],
+        "component_count": 59,
+        "large_component_count": 3,
+        "small_component_count": 50,
+        "direct_definition_count": 46,
+        "isolated_count": 0,
+        "alpha_threshold": 30,
+        "small_component_max_area": 12,
+        "large_component_min_area": 60,
+        "direct_distance_px": 3,
+        "link_distance_px": 9
+      },
+      "fine_chain": {
+        "roi_xyxy": [
+          735,
+          280,
+          800,
+          430
+        ],
+        "link_count": 15,
+        "endpoint_areas": [
+          386,
+          89
+        ],
+        "maximum_link_distance_px": 9.0,
+        "alpha_threshold": 16,
+        "minimum_link_area": 10,
+        "link_distance_px": 9
+      },
+      "hair_back_slots": {
+        "empty": 0,
+        "nonempty": 31
+      }
+    },
+    "chain_roi_xyxy": [
+      735,
+      280,
+      800,
+      430
+    ],
+    "chain_video_roi_xyxy": [
+      1147,
+      261,
+      1198,
+      377
+    ]
+  }
+}

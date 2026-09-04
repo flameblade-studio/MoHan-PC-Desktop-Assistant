@@ -4,10 +4,15 @@ from __future__ import annotations
 
 lazy import os
 lazy import json
+lazy import sys
 lazy import zipfile
 lazy from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 lazy import numpy as np
 lazy import pytest
@@ -23,7 +28,6 @@ lazy from tools.audit_official_pack_quality import (
     isolated_speck_metrics,
 )
 
-ROOT = Path(__file__).resolve().parents[1]
 OUTFIT_PACK = OFFICIAL_PACK_ROOT / "mohan.official.blue-white-hanfu.mohan-outfit"
 HALF_BASES = {
     "cheek-rest": "idle.png",

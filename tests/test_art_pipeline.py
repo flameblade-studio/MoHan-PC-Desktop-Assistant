@@ -11,6 +11,7 @@ lazy from tools.art_pipeline.constants import (
     CANVAS_SIZE,
     CHROMA_SPILL_THRESHOLD,
     MAGENTA_BGR,
+    STEPS,
 )
 lazy from tools.art_pipeline import align_to_template as align_module
 lazy from tools.art_pipeline.derive_variants import outside_difference, paste_rect
@@ -18,6 +19,14 @@ lazy from tools.art_pipeline import extract_layers as extract_module
 lazy from tools.art_pipeline.extract_layers import diff_mask, makeup_slot_masks
 lazy from tools.art_pipeline.image_ops import chroma_key, load_rgba, save_png, warp_rgba
 lazy from tools.art_pipeline.references import GitReference
+
+
+def _remove_unlinked_small_components(alpha: np.ndarray):
+    from tools.art_pipeline.speck_cleanup import (
+        remove_unlinked_small_components,
+    )
+
+    return remove_unlinked_small_components(alpha)
 
 
 EXPECTED_CHAIN_PIXELS = 4
@@ -180,7 +189,7 @@ def test_owner_small_component_cleanup_keeps_transitive_chain_and_removes_island
     alpha[48:52, 48:50] = 255  # second transitive <=12 px chain link
     alpha[80:83, 80:83] = 255  # nine-pixel isolated island
 
-    cleaned, measured = extract_module.remove_unlinked_small_components(alpha)
+    cleaned, measured = _remove_unlinked_small_components(alpha)
 
     assert not cleaned[80:83, 80:83].any()
     assert np.all(cleaned[38:42, 38:40] == OPAQUE_ALPHA)
@@ -238,7 +247,7 @@ def test_extract_writes_keyed_layers_and_reconstruction(
     save_png(base_path, base)
     source_directory.mkdir()
     colours = ((30, 80, 180), (55, 85, 160), (90, 100, 140), (110, 95, 130))
-    for step, colour in zip(extract_module.STEPS, colours, strict=True):
+    for step, colour in zip(STEPS, colours, strict=True):
         current = base.copy()
         current[20:44, 20:44] = colour
         save_png(source_directory / f"demo.{step}.png", current)
