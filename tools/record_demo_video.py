@@ -18,6 +18,7 @@ lazy import subprocess
 lazy import sys
 lazy import tempfile
 lazy import wave
+lazy from array import array
 lazy from dataclasses import dataclass, replace
 lazy from pathlib import Path
 
@@ -70,6 +71,8 @@ AUDIO_CHANNELS = 1
 AUDIO_SAMPLE_WIDTH = 2
 AUDIO_SAMPLE_RATE = 22050
 AUDIO_SAMPLES_PER_VIDEO_FRAME = AUDIO_SAMPLE_RATE // FPS
+RMS_SILENCE_DBFS = -40.0
+AUDIO_PCM16_SCALE = 32768.0
 LEAD_SILENCE_SECONDS = 1.0
 INTER_SCENE_SILENCE_SECONDS = 0.4
 TAIL_SILENCE_SECONDS = 1.0
@@ -144,6 +147,11 @@ VISEME_SUFFIX_BY_ASSET = {
     "attentive_front_speech_open.png": "_speech_open",
     "attentive_front_speech_round.png": "_speech_round",
 }
+# All silent video frames share the same rest portrait. This keeps the owner's
+# full mouth ROI measurement independent of scene expression/wardrobe changes.
+CANONICAL_REST_CHARACTER = "gentle_smile_front.png"
+CLOSED_VISEME_ASSET = VISEME_ASSET_BY_NAME["CLOSED"]
+VIDEO_FRAME_CUES = VISEME_CUES_PER_SECOND // FPS
 
 
 @dataclass(frozen=True, slots=True)
@@ -483,7 +491,37 @@ def _viseme_track(path: Path) -> tuple[str, ...]:
         track.append(VISEME_ASSET_BY_NAME[frame.selected])
     if len(set(track)) < MIN_VISEME_ASSET_VARIANTS:
         raise RuntimeError("The 50 Hz OneCore viseme track did not move.")
-    return tuple(track)
+    return _apply_video_frame_silence_guard(pcm, track)
+
+
+def _pcm16_rms_dbfs(pcm: bytes) -> float:
+    samples = array("h")
+    samples.frombytes(pcm[: len(pcm) - (len(pcm) % AUDIO_SAMPLE_WIDTH)])
+    if not samples:
+        return float("-inf")
+    rms = math.sqrt(sum(sample * sample for sample in samples) / len(samples))
+    return 20.0 * math.log10(max(1.0e-12, rms / AUDIO_PCM16_SCALE))
+
+
+def _apply_video_frame_silence_guard(
+    pcm: bytes,
+    track: list[str],
+) -> tuple[str, ...]:
+    """Keep every cue in an RMS-silent 100 ms video frame at rest."""
+
+    guarded = list(track)
+    frame_bytes = AUDIO_SAMPLES_PER_VIDEO_FRAME * AUDIO_SAMPLE_WIDTH
+    for offset in range(0, len(pcm), frame_bytes):
+        chunk = pcm[offset : offset + frame_bytes]
+        if _pcm16_rms_dbfs(chunk) > RMS_SILENCE_DBFS:
+            continue
+        frame_index = offset // frame_bytes
+        cue_start = frame_index * VIDEO_FRAME_CUES
+        cue_end = min(len(guarded), cue_start + VIDEO_FRAME_CUES)
+        guarded[cue_start:cue_end] = [CLOSED_VISEME_ASSET] * (
+            cue_end - cue_start
+        )
+    return tuple(guarded)
 
 
 def _demo_dependencies(root: Path):
@@ -644,11 +682,23 @@ def _viseme_asset_at(
 ) -> str:
     if not viseme_assets:
         raise RuntimeError("The video has no full-track viseme schedule.")
+    # A rendered video frame spans five 20 ms cues. Prefer an articulated cue
+    # anywhere in that same 100 ms window so a voiced frame is not flattened
+    # merely because its first sub-cue is a low-energy consonant onset.
+    frame_index = max(0, int(round(timeline_seconds * FPS)))
     cue_index = min(
         len(viseme_assets) - 1,
-        max(0, int(timeline_seconds * VISEME_CUES_PER_SECOND)),
+        frame_index * VIDEO_FRAME_CUES,
     )
-    return viseme_assets[cue_index]
+    window = viseme_assets[cue_index : cue_index + VIDEO_FRAME_CUES]
+    return next(
+        (
+            asset
+            for asset in window
+            if asset != CLOSED_VISEME_ASSET
+        ),
+        window[0],
+    )
 
 
 def _speech_asset_name(expression: str, viseme_asset: str) -> str:
@@ -666,7 +716,11 @@ def _dynamic_character_image(
     viseme_assets: tuple[str, ...],
 ) -> QImage:
     viseme_asset = _viseme_asset_at(timeline_seconds, viseme_assets)
-    name = _speech_asset_name(expression, viseme_asset)
+    name = (
+        CANONICAL_REST_CHARACTER
+        if viseme_asset == CLOSED_VISEME_ASSET
+        else _speech_asset_name(expression, viseme_asset)
+    )
     if name not in characters:
         raise RuntimeError(f"Video character asset is missing: {name}")
     return characters[name]
@@ -679,6 +733,8 @@ def _dynamic_wardrobe_preview(
     viseme_assets: tuple[str, ...],
 ) -> QImage:
     viseme_asset = _viseme_asset_at(timeline_seconds, viseme_assets)
+    if viseme_asset == CLOSED_VISEME_ASSET:
+        return characters[CANONICAL_REST_CHARACTER]
     speech_name = _speech_asset_name("attentive_front", viseme_asset)
     return _speech_mouth_overlay(preview, characters[speech_name])
 

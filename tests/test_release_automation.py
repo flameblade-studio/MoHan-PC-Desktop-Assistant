@@ -218,7 +218,7 @@ README_AUTO_MEDIA_SHA256 = {
         "31d8f213dc76c0fa8b9888aaf284b63ba7ef3022a4b3fc4cebb5a04091ca2073"
     ),
     "docs/media/mohan-demo.mp4": (
-        "782a1f6c607b8201d79a5ebb1d9d8aceeea94c5351334ce9e65556ec68fe6b30"
+        "2d95e3fad093bdd4c7222c75dbec38909552fa94e8f93c562fb27b8125592423"
     ),
     "docs/media/mohan-hero.png": (
         "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb"

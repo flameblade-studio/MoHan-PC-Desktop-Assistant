@@ -29,6 +29,9 @@ VISEME_CONFIRM_FRAMES = frozendict({
     "O": 3,
     "CONSONANT": 1,
 })
+# Retained for compatibility with callers that import the timing contract.
+# Silence itself is an immediate state now; it must not wait for confirmation
+# or a previous viseme's minimum hold window.
 VISEME_SILENCE_CONFIRM_FRAMES = 2
 VISEME_MIN_HOLD_SECONDS = frozendict({
     "CLOSED": 0.040,
@@ -103,19 +106,12 @@ class VisemeDynamics:
         self.current = "CLOSED"
         self.jaw_aperture = 0.0
 
-    def _select_silence(self, held_for: float, minimum_hold: float) -> str:
+    def _select_silence(self) -> str:
         self.silence_frames += 1
         self.candidate = "CLOSED"
         self.candidate_frames = 0
-        confirmed = (
-            self.silence_frames >= VISEME_SILENCE_CONFIRM_FRAMES
-            and held_for >= minimum_hold
-        )
-        return (
-            "CLOSED"
-            if confirmed or self.smoothed_level < SILENCE_SMOOTHED_THRESHOLD
-            else self.current
-        )
+        self.hold_frames = 0
+        return "CLOSED"
 
     def _select_voiced(
         self,
@@ -141,7 +137,8 @@ class VisemeDynamics:
 
     def advance(self, level: float, vowel: str) -> VisemeFrame:
         """Advance one cue while preserving the established timing contract."""
-        self.smoothed_level = self.smoothed_level * 0.38 + float(level) * 0.62
+        raw_level = max(0.0, float(level))
+        self.smoothed_level = self.smoothed_level * 0.38 + raw_level * 0.62
         normalized_vowel = str(vowel).upper()
         if normalized_vowel not in VALID_VISEMES:
             normalized_vowel = "E"
@@ -151,24 +148,26 @@ class VisemeDynamics:
         held_for = self.hold_frames / VISEME_CUES_PER_SECOND
         minimum_hold = VISEME_MIN_HOLD_SECONDS.get(self.current, 0.065)
         is_silence = (
-            self.smoothed_level < SILENCE_LEVEL_THRESHOLD or normalized_vowel == "CLOSED"
+            raw_level < SILENCE_LEVEL_THRESHOLD or normalized_vowel == "CLOSED"
         )
-        selected = (
-            self._select_silence(held_for, minimum_hold)
-            if is_silence
-            else self._select_voiced(
+        if is_silence:
+            # The smoothed level may still contain the preceding voiced cue.
+            # Raw energy is authoritative at this boundary: clear the hold in
+            # the same 20 ms tick so no vowel window crosses silence.
+            self.smoothed_level = 0.0
+            selected = self._select_silence()
+            self.jaw_aperture = 0.0
+        else:
+            selected = self._select_voiced(
                 normalized_vowel,
                 held_for,
                 minimum_hold,
             )
-        )
-
-        target_aperture = _target_aperture(selected, self.smoothed_level)
-        response = 0.48 if target_aperture > self.jaw_aperture else 0.24
-        self.jaw_aperture += (
-            target_aperture - self.jaw_aperture
-        ) * response
-        if selected != "CLOSED":
+            target_aperture = _target_aperture(selected, self.smoothed_level)
+            response = 0.48 if target_aperture > self.jaw_aperture else 0.24
+            self.jaw_aperture += (
+                target_aperture - self.jaw_aperture
+            ) * response
             self.jaw_aperture = max(0.08, self.jaw_aperture)
         if selected != previous:
             self.hold_frames = 0

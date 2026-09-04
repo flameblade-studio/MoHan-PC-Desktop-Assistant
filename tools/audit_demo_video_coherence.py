@@ -31,6 +31,15 @@ MOUTH_CORE_DARK_THRESHOLD = 130
 # The closed-lip reference retains 22 dark antialiased lip pixels after the
 # 1254->450 crop and H.264 encode; open speech frames exceed this count.
 MAX_CLOSED_CORE_DARK_PIXELS = 22
+MOUTH_ROI = (990, 440, 1140, 555)
+MOUTH_BASELINE_FRAME_COUNT = FPS
+MOUTH_BASELINE_CHANNEL_DELTA = 20
+MOUTH_OPEN_PIXEL_THRESHOLD = 50
+MIN_MOUTH_STATE_PERCENT = 95.0
+SILENCE_INTERVAL_ENDPOINT_COUNT = 2
+RMS_SILENCE_DBFS = -40.0
+AUDIO_SAMPLE_WIDTH = 2
+AUDIO_PCM16_SCALE = 32768.0
 CHARACTER_PANEL_XYWH = (874, 103, 378, 503)
 PORTRAIT_CROP_XYWH = (402, 100, 450, 600)
 FRONT_CROSS_FACE_BBOX_XYWH = (456, 279, 307, 347)
@@ -118,6 +127,90 @@ def _silence_intervals(video: Path) -> list[tuple[float, float]]:
     return list(zip(starts, ends))
 
 
+def _load_silence_intervals(path: Path) -> list[tuple[float, float]]:
+    """Load ``[{"start": seconds, "end": seconds}, ...]`` intervals."""
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    raw_intervals = payload
+    if isinstance(payload, dict):
+        raw_intervals = payload.get("intervals")
+        if raw_intervals is None and isinstance(payload.get("mouth_silence"), dict):
+            raw_intervals = payload["mouth_silence"].get("intervals")
+        if raw_intervals is None and isinstance(payload.get("silencedetect"), dict):
+            raw_intervals = payload["silencedetect"].get("intervals")
+    if not isinstance(raw_intervals, list):
+        raise ValueError(f"Silence interval JSON must contain a list: {path}")
+    intervals: list[tuple[float, float]] = []
+    for item in raw_intervals:
+        if isinstance(item, dict):
+            start = float(item["start"])
+            end = float(item["end"])
+        elif (
+            isinstance(item, list)
+            and len(item) == SILENCE_INTERVAL_ENDPOINT_COUNT
+        ):
+            start, end = (float(value) for value in item)
+        else:
+            raise ValueError(f"Invalid silence interval: {item!r}")
+        if start < 0.0 or end < start:
+            raise ValueError(f"Invalid silence interval bounds: {item!r}")
+        intervals.append((start, end))
+    return sorted(intervals)
+
+
+def _rms_silence_intervals(
+    video: Path,
+    sample_rate: int,
+) -> list[tuple[float, float]]:
+    """Build one silence interval per 100 ms video frame from audio RMS."""
+
+    result = subprocess.run(
+        [
+            shutil.which("ffmpeg") or "ffmpeg",
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-i",
+            str(video),
+            "-vn",
+            "-f",
+            "s16le",
+            "-acodec",
+            "pcm_s16le",
+            "-ar",
+            str(sample_rate),
+            "-ac",
+            "1",
+            "-",
+        ],
+        capture_output=True,
+        check=False,
+        timeout=60,
+    )
+    if result.returncode:
+        raise RuntimeError(result.stderr.decode(errors="replace").strip())
+    samples_per_frame = sample_rate // FPS
+    bytes_per_frame = samples_per_frame * AUDIO_SAMPLE_WIDTH
+    intervals: list[tuple[float, float]] = []
+    for index in range(0, len(result.stdout), bytes_per_frame):
+        chunk = result.stdout[index : index + bytes_per_frame]
+        if len(chunk) < AUDIO_SAMPLE_WIDTH:
+            break
+        samples = np.frombuffer(chunk, dtype=np.int16).astype(np.float64)
+        rms = np.sqrt(np.mean(samples * samples)) / AUDIO_PCM16_SCALE
+        dbfs = 20.0 * np.log10(max(1.0e-12, rms))
+        if dbfs > RMS_SILENCE_DBFS:
+            continue
+        frame_index = index // bytes_per_frame
+        start = frame_index / FPS
+        end = (frame_index + 1) / FPS
+        if intervals and intervals[-1][1] == start:
+            intervals[-1] = (intervals[-1][0], end)
+        else:
+            intervals.append((start, end))
+    return intervals
+
+
 def _frames(video: Path) -> list[np.ndarray]:
     capture = cv2.VideoCapture(str(video))
     if not capture.isOpened():
@@ -142,12 +235,86 @@ def _scene_at(second: float) -> int:
 
 
 def _is_silent(second: float, intervals: list[tuple[float, float]]) -> bool:
-    return any(start <= second <= end for start, end in intervals)
+    return any(start <= second < end for start, end in intervals)
 
 
 def _roi(frame: np.ndarray, scene: int) -> np.ndarray:
     x0, y0, x1, y1 = SCENE_ROIS[scene]
     return frame[y0:y1, x0:x1]
+
+
+def _mouth_state_metrics(
+    frames: list[np.ndarray],
+    silence: list[tuple[float, float]],
+) -> dict[str, object]:
+    """Measure the owner's ROI contract from a video and silence timeline."""
+
+    if len(frames) <= MOUTH_BASELINE_FRAME_COUNT:
+        raise RuntimeError("Video does not contain a full one-second baseline.")
+    x0, y0, x1, y1 = MOUTH_ROI
+    baseline = np.median(
+        np.stack(
+            [frame[y0:y1, x0:x1] for frame in frames[:MOUTH_BASELINE_FRAME_COUNT]
+        ]
+    ), axis=0).astype(np.uint8)
+    silent_differences: list[int] = []
+    voiced_differences: list[int] = []
+    silent_open_indices: list[int] = []
+    voiced_closed_indices: list[int] = []
+    for index, frame in enumerate(frames[MOUTH_BASELINE_FRAME_COUNT:], start=MOUTH_BASELINE_FRAME_COUNT):
+        roi = frame[y0:y1, x0:x1]
+        difference = int(
+            np.any(
+                cv2.absdiff(roi, baseline) > MOUTH_BASELINE_CHANNEL_DELTA,
+                axis=2,
+            ).sum()
+        )
+        if _is_silent(index / FPS, silence):
+            silent_differences.append(difference)
+            if difference > MOUTH_OPEN_PIXEL_THRESHOLD:
+                silent_open_indices.append(index)
+        else:
+            voiced_differences.append(difference)
+            if difference <= MOUTH_OPEN_PIXEL_THRESHOLD:
+                voiced_closed_indices.append(index)
+
+    silent_closed = len(silent_differences) - len(silent_open_indices)
+    voiced_open = len(voiced_differences) - len(voiced_closed_indices)
+    silent_closed_percent = round(
+        100.0 * silent_closed / max(1, len(silent_differences)),
+        4,
+    )
+    voiced_open_percent = round(
+        100.0 * voiced_open / max(1, len(voiced_differences)),
+        4,
+    )
+    return {
+        "roi_xyxy": list(MOUTH_ROI),
+        "baseline_frame_count": MOUTH_BASELINE_FRAME_COUNT,
+        "baseline_seconds": MOUTH_BASELINE_FRAME_COUNT / FPS,
+        "baseline_channel_delta": MOUTH_BASELINE_CHANNEL_DELTA,
+        "open_pixel_threshold": MOUTH_OPEN_PIXEL_THRESHOLD,
+        "frames_excluded_for_baseline": MOUTH_BASELINE_FRAME_COUNT,
+        "silent_frames": len(silent_differences),
+        "silent_closed_frames": silent_closed,
+        "silent_closed_percent": silent_closed_percent,
+        "silent_median_pixel_difference": int(
+            np.median(silent_differences) if silent_differences else 0
+        ),
+        "silent_open_frame_indices": silent_open_indices,
+        "voiced_frames": len(voiced_differences),
+        "voiced_open_frames": voiced_open,
+        "voiced_open_percent": voiced_open_percent,
+        "voiced_median_pixel_difference": int(
+            np.median(voiced_differences) if voiced_differences else 0
+        ),
+        "voiced_closed_frame_indices": voiced_closed_indices,
+        "minimum_required_percent": MIN_MOUTH_STATE_PERCENT,
+        "gate_pass": (
+            silent_closed_percent >= MIN_MOUTH_STATE_PERCENT
+            and voiced_open_percent >= MIN_MOUTH_STATE_PERCENT
+        ),
+    }
 
 
 def _changed_pixels(first: np.ndarray, second: np.ndarray) -> int:
@@ -303,13 +470,22 @@ def _motion_metrics(
     }
 
 
-def audit(video: Path) -> dict[str, object]:
+def audit(
+    video: Path,
+    silence_intervals: list[tuple[float, float]] | None = None,
+) -> dict[str, object]:
+    video = video.resolve()
     metadata = _ffprobe(video)
     frames = _frames(video)
-    silence = _silence_intervals(video)
     streams = metadata.get("streams", [])
     video_stream = next(stream for stream in streams if stream["codec_type"] == "video")
     audio_stream = next(stream for stream in streams if stream["codec_type"] == "audio")
+    detected_silence = _silence_intervals(video)
+    mouth_silence = (
+        _rms_silence_intervals(video, int(audio_stream["sample_rate"]))
+        if silence_intervals is None
+        else list(silence_intervals)
+    )
     duration = float(metadata["format"]["duration"])
     return {
         "video": str(video.relative_to(ROOT)),
@@ -326,9 +502,20 @@ def audit(video: Path) -> dict[str, object]:
         },
         "silencedetect": {
             "filter": SILENCE_FILTER,
+            "source": "ffmpeg-silencedetect",
             "intervals": [
                 {"start": round(start, 6), "end": round(end, 6)}
-                for start, end in silence
+                for start, end in detected_silence
+            ],
+        },
+        "mouth_silence": {
+            "source": "rms" if silence_intervals is None else "provided-json",
+            "rms_threshold_dbfs": RMS_SILENCE_DBFS
+            if silence_intervals is None
+            else None,
+            "intervals": [
+                {"start": round(start, 6), "end": round(end, 6)}
+                for start, end in mouth_silence
             ],
         },
         "scene_windows": [
@@ -355,23 +542,43 @@ def audit(video: Path) -> dict[str, object]:
                 >= HEIGHT * MIN_FACE_HEIGHT_RATIO
             ),
         },
-        "motion": _motion_metrics(frames, silence),
+        "motion": _motion_metrics(frames, detected_silence),
+        "mouth_state": _mouth_state_metrics(frames, mouth_silence),
     }
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--video", type=Path, default=VIDEO)
+    parser.add_argument(
+        "--silence-json",
+        type=Path,
+        help="Use silence intervals from JSON instead of running silencedetect.",
+    )
     parser.add_argument("--output", type=Path, default=EVIDENCE / "video-coherence.json")
     arguments = parser.parse_args(argv)
-    result = audit(arguments.video)
+    silence = (
+        _load_silence_intervals(arguments.silence_json)
+        if arguments.silence_json is not None
+        else None
+    )
+    result = audit(arguments.video, silence)
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(
         json.dumps(result, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    mouth = result["mouth_state"]
+    print(
+        "MOUTH_STATE "
+        f"silent_closed={mouth['silent_closed_percent']:.4f}% "
+        f"({mouth['silent_closed_frames']}/{mouth['silent_frames']}) "
+        f"voiced_open={mouth['voiced_open_percent']:.4f}% "
+        f"({mouth['voiced_open_frames']}/{mouth['voiced_frames']}) "
+        f"gate={'PASS' if mouth['gate_pass'] else 'FAIL'}",
+    )
     print(json.dumps(result["motion"], ensure_ascii=False, indent=2))
-    return 0 if result["motion"]["voiced_gate_pass"] else 1
+    return 0 if result["motion"]["voiced_gate_pass"] and mouth["gate_pass"] else 1
 
 
 if __name__ == "__main__":

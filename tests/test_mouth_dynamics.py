@@ -66,7 +66,7 @@ def run() -> None:
         before_release = window.viseme_dynamics.jaw_aperture
         for _ in range(3):
             cue(0.0, "CLOSED")
-            assert window.viseme_dynamics.current == "O"
+            assert window.viseme_dynamics.current == "CLOSED"
         assert window.viseme_dynamics.jaw_aperture < before_release
         cue(0.0, "CLOSED")
         assert window.viseme_dynamics.current == "CLOSED"

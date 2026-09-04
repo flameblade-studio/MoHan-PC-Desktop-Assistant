@@ -117,15 +117,18 @@ def _assert_consonant_and_close(
     window: CompanionWindow,
     cue: CueDriver,
 ) -> None:
-    # A consonant reacts after the current vowel hold; silence closes naturally.
+    # A consonant reacts after the current vowel hold; silence interrupts it
+    # on the first low-energy cue and resets the hold window.
     for _ in range(4):
         cue("O")
     consonant_started = cue.clock[0]
     cue("CONSONANT", 0.35)
     assert window.viseme_dynamics.current == "CONSONANT"
     assert cue.clock[0] - consonant_started <= EXPECTED_CONSONANT_LATENCY
-    cue("CLOSED", 0.0)
-    assert window.viseme_dynamics.current == "CONSONANT"
+    cue("A", 0.0)
+    assert window.viseme_dynamics.current == "CLOSED"
+    assert window.viseme_dynamics.hold_frames == 0
+    assert window.viseme_dynamics.jaw_aperture == 0.0
     cue("CLOSED", 0.0)
     assert window.viseme_dynamics.current == "CLOSED"
     assert window.mouth_transition_duration == VISEME_CLOSE_TRANSITION_SECONDS
