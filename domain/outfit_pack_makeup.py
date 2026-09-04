@@ -19,6 +19,7 @@ lazy from tempfile import NamedTemporaryFile
 
 lazy from PySide6.QtGui import QImage
 
+lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain import outfit_pack
 lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_ITEM_ID,
@@ -39,6 +40,12 @@ DEFAULT_MAKEUP_INTENSITY = 1.0
 INTENSITY_DECIMALS = 2
 RECT_FIELDS = 4
 CANVAS_FIELDS = 2
+
+
+class MakeupExclusionMaskError(OutfitPackError):
+    """A required layered-rig mask for the makeup exclusion contract is unavailable."""
+
+
 # Rig cut-outs whose alpha bounding boxes define each slot, grouped per side so a
 # profile view with one visible eye keeps one tight rectangle instead of a band.
 SLOT_RIG_LAYERS = frozendict({
@@ -97,6 +104,15 @@ class MakeupSafeRegion:
         return self.slots.get(slot, ())
 
 
+def expected_makeup_rig(silhouette: str) -> str:
+    """Return the only layered-rig prefix valid for one required silhouette."""
+    if silhouette in outfit_pack.POSE_ATLAS_SILHOUETTES:
+        return (
+            Path(FULL_BODY_RIG_ROOT) / POSE_ATLAS_LAYERED_ROOT_NAME / silhouette
+        ).as_posix()
+    return (Path(HALF_BODY_RIG_ROOT) / HALF_BODY_RIGS[silhouette]).as_posix()
+
+
 def _rect(value: object) -> Rect:
     if (
         not isinstance(value, list)
@@ -127,6 +143,11 @@ def parse_makeup_safe_regions(payload: object) -> frozendict[str, MakeupSafeRegi
             or not isinstance(slots, dict) or set(slots) != MAKEUP_SLOTS or not isinstance(rig, str)
         ):
             raise OutfitPackError(f"Invalid makeup safe region for {silhouette!r}.")
+        expected_rig = expected_makeup_rig(silhouette)
+        if rig != expected_rig:
+            raise MakeupExclusionMaskError(
+                f"Makeup safe-region rig path for {silhouette!r} must be {expected_rig!r}."
+            )
         parsed[silhouette] = MakeupSafeRegion(
             silhouette,
             (canvas[0], canvas[1]),

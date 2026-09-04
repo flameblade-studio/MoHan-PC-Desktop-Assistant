@@ -19,16 +19,13 @@ sys.path.insert(0, str(ROOT))
 
 lazy from PySide6.QtGui import QImage
 
-lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.outfit_pack import MAKEUP_CANVASES, POSE_ATLAS_SILHOUETTES, REQUIRED_SILHOUETTES
 lazy from domain.outfit_pack_makeup import (
-    FULL_BODY_RIG_ROOT,
-    HALF_BODY_RIG_ROOT,
-    HALF_BODY_RIGS,
     SAFE_REGION_FILE,
     SAFE_REGION_SCHEMA,
     SLOT_MARGINS_PX,
     SLOT_RIG_LAYERS,
+    expected_makeup_rig,
 )
 
 
@@ -73,9 +70,7 @@ def _dilated(rect: tuple[int, int, int, int], margin: int, canvas: tuple[int, in
 
 
 def rig_prefix(silhouette: str) -> str:
-    if silhouette in POSE_ATLAS_SILHOUETTES:
-        return f"{FULL_BODY_RIG_ROOT}/{POSE_ATLAS_LAYERED_ROOT_NAME}/{silhouette}"
-    return f"{HALF_BODY_RIG_ROOT}/{HALF_BODY_RIGS[silhouette]}"
+    return expected_makeup_rig(silhouette)
 
 
 def silhouette_regions(root: Path, silhouette: str) -> dict[str, object]:

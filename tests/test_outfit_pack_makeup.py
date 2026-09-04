@@ -41,6 +41,7 @@ lazy from domain.outfit_pack import (
     restore_builtin_outfit,
 )
 lazy from domain.outfit_pack_makeup import (
+    MakeupExclusionMaskError,
     SAFE_REGION_PATH,
     load_makeup_safe_regions,
     read_makeup_intensity,
@@ -308,6 +309,22 @@ def test_safe_region_document_matches_the_rigs() -> None:
     assert all(not regions["yaw-180-pitch+00"].rects(slot) for slot in ("eyes", "cheeks", "lips"))
     for silhouette in ("front-crossed", "yaw+000-pitch+00"):
         assert silhouette_regions(ROOT, silhouette) == document["silhouettes"][silhouette]
+
+
+def test_safe_region_document_keeps_every_rig_on_the_layered_root(tmp_path: Path) -> None:
+    document = json.loads(SAFE_REGION_PATH.read_text(encoding="utf-8"))
+    regions = load_makeup_safe_regions()
+    for silhouette in POSE_ATLAS_SILHOUETTES:
+        region = regions[silhouette]
+        assert Path(region.rig).parts[-2] == "v5-base-layered"
+        assert (ROOT / f"{region.rig}_iris_left.png").is_file()
+        assert region.rig == document["silhouettes"][silhouette]["rig"]
+    broken = json.loads(json.dumps(document))
+    broken["silhouettes"]["yaw+000-pitch+00"]["rig"] = "assets/pose-atlas/yaw+000-pitch+00"
+    broken_path = tmp_path / "broken-safe-regions.json"
+    broken_path.write_text(json.dumps(broken), encoding="utf-8")
+    with pytest.raises(MakeupExclusionMaskError, match=r"yaw\+000-pitch\+00"):
+        load_makeup_safe_regions(broken_path)
 
 
 def test_fresh_profile_defaults_to_builtin_classic_and_bare_is_selectable(

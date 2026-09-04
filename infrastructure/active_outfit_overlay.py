@@ -31,6 +31,7 @@ lazy from domain.outfit_pack_makeup import (
     HAIRSTYLE_FEATURE_CORE_FEATHER_PX,
     HALF_BODY_RIGS,
     MAKEUP_STATE_FILE,
+    MakeupExclusionMaskError,
     SAFE_REGION_FILE,
     load_makeup_safe_regions,
     makeup_layer_escapes,
@@ -101,6 +102,8 @@ class ActiveOutfitOverlay:
         except IncompatibleBodyProfileError:
             self._reject_stale_active_pack()
             return frame
+        except MakeupExclusionMaskError:
+            raise
         except (OSError, ValueError, OutfitPackError, zipfile.BadZipFile):
             return frame
         if not layers:
@@ -407,19 +410,36 @@ class ActiveOutfitOverlay:
             return cached
         excluded = QRegion()
         for painted_layers, covering_layers in EXCLUSION_RIG_LAYERS:
-            painted = self._rig_union(region.rig, painted_layers)
-            covering = self._rig_union(region.rig, covering_layers)
+            painted = self._rig_union(region.rig, painted_layers, region.canvas)
+            covering = self._rig_union(region.rig, covering_layers, region.canvas)
             excluded = excluded.united(painted.subtracted(covering))
         self._makeup_exclusion_by_view[view_id] = excluded
         return excluded
 
-    def _rig_union(self, rig: str, layers) -> QRegion:
+    def _rig_union(self, rig: str, layers, canvas: tuple[int, int]) -> QRegion:
         union = QRegion()
         for layer in layers:
-            source = QPixmap(str(self._asset_root / f"{rig}_{layer}.png"))
-            if not source.isNull():
-                union = union.united(QRegion(source.mask()))
+            path = self._rig_layer_path(rig, layer)
+            if not path.is_file():
+                raise MakeupExclusionMaskError(
+                    f"Missing makeup exclusion mask: {path}"
+                )
+            source = QPixmap(str(path))
+            if source.isNull() or source.size().toTuple() != canvas:
+                raise MakeupExclusionMaskError(
+                    f"Invalid makeup exclusion mask: {path}"
+                )
+            union = union.united(QRegion(source.mask()))
         return union
+
+    def _rig_layer_path(self, rig: str, layer: str) -> Path:
+        """Resolve a safe-region rig prefix without dropping its layered root."""
+        relative = Path(rig)
+        if relative.is_absolute() or ".." in relative.parts or not relative.name:
+            raise MakeupExclusionMaskError(
+                f"Invalid makeup exclusion rig path: {rig!r}"
+            )
+        return self._asset_root / relative.parent / f"{relative.name}_{layer}.png"
 
     def _validate_alpha(
         self,
