@@ -5,7 +5,7 @@ from __future__ import annotations
 lazy import hashlib
 lazy import re
 lazy import zipfile
-lazy from collections.abc import Callable
+lazy from collections.abc import Callable, Iterable
 lazy from collections import OrderedDict
 lazy from pathlib import Path
 
@@ -87,25 +87,45 @@ class ActiveOutfitOverlay:
         # 26 MB); one parse per (path, mtime, size) instead of one per view.
         self._parsed_packs: dict[tuple[Path, tuple[int, int]], object] = {}
         self._layers_by_view: OrderedDict[str, tuple[Layer, ...]] = OrderedDict()
+        self._layers_by_view_without_makeup_slots: dict[
+            tuple[str, frozenset[str]], tuple[Layer, ...]
+        ] = {}
         self._protected_by_view: dict[str, QRegion] = {}
         self._feature_by_view: dict[str, QRegion] = {}
         self._hair_mask_by_view: dict[str, tuple[QImage, QRect] | None] = {}
         self._makeup_exclusion_by_view: dict[str, QRegion] = {}
         self._safe_regions = None
 
-    def apply(self, frame: QPixmap, view_id: str) -> QPixmap:
+    def apply(
+        self,
+        frame: QPixmap,
+        view_id: str,
+        *,
+        suppress_makeup_slots: Iterable[str] = (),
+    ) -> QPixmap:
         if frame.isNull():
             return frame
+        suppressed = frozenset(suppress_makeup_slots)
+        cache = (
+            self._layers_by_view
+            if not suppressed
+            else self._layers_by_view_without_makeup_slots
+        )
+        cache_key = view_id if not suppressed else (view_id, suppressed)
         try:
             self._refresh_state()
-            layers = self._layers_by_view.get(view_id)
+            layers = cache.get(cache_key)
             if layers is None:
                 layers = self._active_layers(
                     view_id,
                     frame.size().toTuple(),
+                    suppress_makeup_slots=suppressed,
                 )
-                self._cache_layers(view_id, layers)
-            else:
+                if suppressed:
+                    cache[cache_key] = layers
+                else:
+                    self._cache_layers(view_id, layers)
+            elif not suppressed:
                 self._layers_by_view.move_to_end(view_id)
         except IncompatibleBodyProfileError:
             self._reject_stale_active_pack()
@@ -124,9 +144,21 @@ class ActiveOutfitOverlay:
         painter.end()
         return result
 
-    def layer_count(self, view_id: str) -> int:
+    def layer_count(
+        self,
+        view_id: str,
+        *,
+        suppress_makeup_slots: Iterable[str] = (),
+    ) -> int:
         """Layers the last ``apply`` composited for ``view_id``; 0 when bare or failed closed."""
-        return len(self._layers_by_view.get(view_id) or ())
+        suppressed = frozenset(suppress_makeup_slots)
+        cache = (
+            self._layers_by_view
+            if not suppressed
+            else self._layers_by_view_without_makeup_slots
+        )
+        cache_key = view_id if not suppressed else (view_id, suppressed)
+        return len(cache.get(cache_key) or ())
 
     @staticmethod
     def _layer_memory_bytes(layers: tuple[Layer, ...]) -> int:
@@ -198,6 +230,7 @@ class ActiveOutfitOverlay:
             {} if active_changed else current_package_tokens
         )
         self._layers_by_view.clear()
+        self._layers_by_view_without_makeup_slots.clear()
         self._parsed_packs.clear()
 
     def _selected_variant(self, category: str, selected) -> tuple[Path, object, object]:
@@ -243,6 +276,8 @@ class ActiveOutfitOverlay:
         self,
         view_id: str,
         canvas_size: tuple[int, int],
+        *,
+        suppress_makeup_slots: frozenset[str] = frozenset(),
     ) -> tuple[Layer, ...]:
         result: list[tuple[int, int, Layer]] = []
         for category_index, category in enumerate(SELECTION_CATEGORIES):
@@ -253,7 +288,13 @@ class ActiveOutfitOverlay:
             resolution = resolve_variant_for_view(variant, view_id)
             with zipfile.ZipFile(archive_path) as archive:
                 if category == "makeup":
-                    layers = self._makeup_layers(archive, resolution.assets, variant, view_id)
+                    layers = self._makeup_layers(
+                        archive,
+                        resolution.assets,
+                        variant,
+                        view_id,
+                        suppress_makeup_slots=suppress_makeup_slots,
+                    )
                 else:
                     layers = self._garment_layers(
                         archive, resolution.assets, category, item, variant, view_id, canvas_size
@@ -395,6 +436,8 @@ class ActiveOutfitOverlay:
         declarations,
         variant,
         view_id: str,
+        *,
+        suppress_makeup_slots: frozenset[str] = frozenset(),
     ) -> list[tuple[int, Layer]]:
         """Makeup is exempt from the protected-face mask but clipped to its safe region.
 
@@ -412,6 +455,11 @@ class ActiveOutfitOverlay:
             # region fails closed instead of reaching the face.
             if makeup_layer_escapes(encoded, region, declaration.slot):
                 raise OutfitPackError("Makeup layer paints outside its safe region.")
+            # A closed-eye authority must be able to cover open-eye makeup.
+            # Validation above still runs for every declaration, so this is a
+            # state-aware composition choice, not an import/runtime gate bypass.
+            if declaration.slot in suppress_makeup_slots:
+                continue
             if opacity <= 0.0:
                 continue
             clip = self._makeup_clip(view_id, region, declaration.slot)

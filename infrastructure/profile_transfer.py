@@ -119,7 +119,7 @@ PORTABLE_SETTING_KEYS = frozenset(
         "character_scale_percent",
         "chat_zoom_percent",
         "flagship_high_contrast",
-        "flagship_ui_scale",
+        "flagship_theme", "flagship_ui_scale",
         "mode",
         "multisensory_phrasebook_v1",
         "onboarding_complete",

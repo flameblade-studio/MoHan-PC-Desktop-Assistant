@@ -158,6 +158,20 @@ HEADWEAR_CHAIN_ANCHOR_MIN_AREA: Final = 61
 # the smallest measured radius that keeps every chain segment connected from a
 # bead/body anchor; it is not a broad morphological bridge.
 HEADWEAR_COMPONENT_LINK_DISTANCE: Final = 9
+# A retained fine link can still be split from its anchor by one keyed pixel
+# after registration.  Bridge only this measured two-pixel gap, and keep the
+# bridge just above the owner-visible alpha floor.
+HEADWEAR_CHAIN_BRIDGE_DISTANCE: Final = 2
+HEADWEAR_CHAIN_BRIDGE_ALPHA: Final = 31
+# The two confirmed top residues are only valid for the 1,254 px half-body
+# canvas.  Their exact ROI and neutral-dark signature are deliberately
+# narrower than the general headwear cleanup so silver hairpins stay intact.
+HEADWEAR_TOP_RESIDUE_ROI: Final = (600, 90, 740, 150)
+HEADWEAR_TOP_RESIDUE_MIN_AREA: Final = 12
+HEADWEAR_TOP_RESIDUE_MAX_AREA: Final = 400
+HEADWEAR_TOP_RESIDUE_PIXEL_MAX: Final = 120
+HEADWEAR_TOP_RESIDUE_CHANNEL_SPREAD_MAX: Final = 20
+HEADWEAR_TOP_RESIDUE_DILATION_KERNEL: Final = 5
 # Retained for the legacy detached-over-100 px audit, which intentionally uses
 # its historical 20 px radius and is separate from the extraction rule above.
 HEADWEAR_CHAIN_LINK_RADIUS: Final = 20
@@ -191,6 +205,10 @@ HAIR_BODY_OPEN_KERNEL: Final = 5
 # (37.48%).  Rounding the fine-strand band to 38% includes that whole ROI while
 # leaving the y=853 garment probe under the legacy 5 px opening.
 HAIR_FINE_REGION_BOTTOM_RATIO: Final = 0.38
+
+# Compatibility name retained for callers of the production pipeline API;
+# current extraction uses the chain-aware thresholds above instead.
+HEADWEAR_MIN_COMPONENT_AREA: Final = 40
 
 # 來源：scratchpad/layers/extract_layers.py；量測：既有對照表尺寸與暗底
 # 顏色，僅影響證據圖，不影響產出層像素。

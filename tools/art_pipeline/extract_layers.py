@@ -12,6 +12,7 @@ lazy import numpy as np
 lazy from .constants import (
     BARE_SKIN_GREEN_BLUE_MARGIN,
     BARE_SKIN_RED_GREEN_MARGIN,
+    CANVAS_SIZE,
     BARE_SKIN_RED_MIN,
     RECTANGLE_FIELDS,
     DESPILL_DARK_GREEN_MAX,
@@ -33,9 +34,17 @@ lazy from .constants import (
     HEADWEAR_COMPONENT_ALPHA_THRESHOLD,
     HEADWEAR_COMPONENT_LINK_DISTANCE,
     HEADWEAR_CHAIN_ANCHOR_MIN_AREA,
+    HEADWEAR_CHAIN_BRIDGE_ALPHA,
+    HEADWEAR_CHAIN_BRIDGE_DISTANCE,
     HEADWEAR_SKIN_GREEN_BLUE_MARGIN,
     HEADWEAR_SKIN_RED_GREEN_MARGIN,
     HEADWEAR_SKIN_RED_MIN,
+    HEADWEAR_TOP_RESIDUE_CHANNEL_SPREAD_MAX,
+    HEADWEAR_TOP_RESIDUE_DILATION_KERNEL,
+    HEADWEAR_TOP_RESIDUE_MAX_AREA,
+    HEADWEAR_TOP_RESIDUE_MIN_AREA,
+    HEADWEAR_TOP_RESIDUE_PIXEL_MAX,
+    HEADWEAR_TOP_RESIDUE_ROI,
     HAIR_BODY_OPEN_KERNEL,
     HAIR_FINE_REGION_BOTTOM_RATIO,
     HAIR_FRONT_OPEN_KERNEL,
@@ -59,6 +68,7 @@ lazy from .constants import (
     REGISTER_MAX_SHIFT_PIXELS,
     REGISTER_MIN_ALPHA_PIXELS,
     RECONSTRUCTION_ERROR_PIXEL_THRESHOLD,
+    SMALL_COMPONENT_ALPHA_THRESHOLD,
     SHOE_BLUE_GREEN_MARGIN,
     SHOE_BLUE_RED_MARGIN,
     SHOE_BARE_ALPHA_MIN,
@@ -174,8 +184,6 @@ def diff_mask(prev: np.ndarray, cur: np.ndarray, step: str) -> np.ndarray:
     except KeyError as error:
         raise ValueError(f"未知抽層步驟：{step}") from error
     return _diff_mask_with_parameters(prev, cur, parameters)
-
-
 def makeup_region(image: np.ndarray, model_path: Path) -> np.ndarray:
     """由 YuNet 五點建立 eyes/cheeks/lips 共用的妝容安全區。"""
 
@@ -378,9 +386,164 @@ def _headwear_cleanup(mask: np.ndarray, cur: np.ndarray) -> np.ndarray:
     # The silver/blue ornament has no warm material.  The same measured brown
     # criterion therefore identifies hairline/skin drift, not ornament pixels.
     mask[warm_underlayer] = 0
+    mask = _remove_headwear_top_residues(mask, cur)
     return remove_unlinked_headwear_fragments(mask)
 
 
+def _remove_headwear_top_residues(
+    mask: np.ndarray, cur: np.ndarray
+) -> np.ndarray:
+    """Remove only the measured detached neutral-dark top contamination."""
+
+    if mask.shape[:2] != (CANVAS_SIZE, CANVAS_SIZE):
+        return mask.copy()
+    visible = (mask > SMALL_COMPONENT_ALPHA_THRESHOLD).astype(np.uint8)
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(
+        visible, connectivity=8
+    )
+    if count <= 1:
+        return mask.copy()
+    large = np.zeros_like(visible)
+    for label in range(1, count):
+        if stats[label, cv2.CC_STAT_AREA] > HEADWEAR_TOP_RESIDUE_MAX_AREA:
+            large[labels == label] = 1
+    far_from_large = cv2.dilate(
+        large,
+        np.ones(
+            (HEADWEAR_TOP_RESIDUE_DILATION_KERNEL,)
+            * 2,
+            dtype=np.uint8,
+        ),
+    ) == 0
+    x0, y0, x1, y1 = HEADWEAR_TOP_RESIDUE_ROI
+    cleaned = mask.copy()
+    for label in range(1, count):
+        if not _is_headwear_top_residue(
+            label, stats, labels, cur, far_from_large, (x0, y0, x1, y1)
+        ):
+            continue
+        ys, xs = np.nonzero(labels == label)
+        cleaned[ys, xs] = 0
+    return cleaned
+
+
+def _is_headwear_top_residue(
+    label: int,
+    stats: np.ndarray,
+    labels: np.ndarray,
+    cur: np.ndarray,
+    far_from_large: np.ndarray,
+    roi: tuple[int, int, int, int],
+) -> bool:
+    x, y, width, height, area = (int(value) for value in stats[label])
+    x0, y0, x1, y1 = roi
+    if not (
+        HEADWEAR_TOP_RESIDUE_MIN_AREA <= area <= HEADWEAR_TOP_RESIDUE_MAX_AREA
+        and x0 <= x
+        and x + width <= x1
+        and y0 <= y
+        and y + height <= y1
+    ):
+        return False
+    ys, xs = np.nonzero(labels == label)
+    if not far_from_large[ys, xs].all():
+        return False
+    colours = cur[ys, xs, :3].astype(np.int16)
+    maximum = colours.max(axis=1)
+    spread = maximum - colours.min(axis=1)
+    return bool(
+        maximum.max() <= HEADWEAR_TOP_RESIDUE_PIXEL_MAX
+        and spread.max() <= HEADWEAR_TOP_RESIDUE_CHANNEL_SPREAD_MAX
+    )
+
+
+def _closest_component_points(
+    first: np.ndarray, second: np.ndarray
+) -> tuple[int, tuple[int, int], tuple[int, int]]:
+    """Return Chebyshev distance and closest (x, y) points for two components."""
+
+    best: tuple[int, tuple[int, int], tuple[int, int]] | None = None
+    for y, x in first:
+        distances = np.maximum(np.abs(second[:, 0] - y), np.abs(second[:, 1] - x))
+        index = int(distances.argmin())
+        candidate = (
+            int(distances[index]),
+            (int(x), int(y)),
+            (int(second[index, 1]), int(second[index, 0])),
+        )
+        if best is None or candidate[0] < best[0]:
+            best = candidate
+    if best is None:
+        raise ValueError("headwear components must contain pixels")
+    return best
+
+
+def _bridge_headwear_chain(
+    layer: np.ndarray, mask: np.ndarray
+) -> tuple[np.ndarray, int]:
+    """Bridge a retained fine link to an anchor across only a measured short gap."""
+
+    visible = (mask > HEADWEAR_COMPONENT_ALPHA_THRESHOLD).astype(np.uint8)
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(
+        visible, connectivity=8
+    )
+    if count <= 1:
+        return layer.copy(), 0
+    points = {
+        label: np.column_stack(np.nonzero(labels == label))
+        for label in range(1, count)
+    }
+    anchors = [
+        label
+        for label in range(1, count)
+        if stats[label, cv2.CC_STAT_AREA] >= HEADWEAR_CHAIN_ANCHOR_MIN_AREA
+    ]
+    if not anchors:
+        return layer.copy(), 0
+    output = layer.copy()
+    bridged_pixels = 0
+    for label in range(1, count):
+        area = int(stats[label, cv2.CC_STAT_AREA])
+        if area >= HEADWEAR_CHAIN_ANCHOR_MIN_AREA:
+            continue
+        candidate_points = points[label]
+        closest = min(
+            (_closest_component_points(candidate_points, points[anchor]) for anchor in anchors),
+            key=lambda candidate: candidate[0],
+        )
+        if closest[0] > HEADWEAR_CHAIN_BRIDGE_DISTANCE:
+            continue
+        bridged_pixels += _draw_headwear_chain_bridge(
+            output, mask, closest[1], closest[2]
+        )
+    return output, bridged_pixels
+
+
+def _draw_headwear_chain_bridge(
+    output: np.ndarray,
+    mask: np.ndarray,
+    first: tuple[int, int],
+    second: tuple[int, int],
+) -> int:
+    bridge = np.zeros(mask.shape, dtype=np.uint8)
+    cv2.line(bridge, first, second, 1, 1)
+    new_pixels = (bridge > 0) & (output[:, :, 3] == 0)
+    if not new_pixels.any():
+        return 0
+    first_colour = output[first[1], first[0], :3].astype(np.float32)
+    second_colour = output[second[1], second[0], :3].astype(np.float32)
+    steps = max(abs(second[0] - first[0]), abs(second[1] - first[1]))
+    for y, x in zip(*np.nonzero(new_pixels), strict=True):
+        progress = (
+            0.5
+            if not steps
+            else max(abs(int(x) - first[0]), abs(int(y) - first[1])) / steps
+        )
+        output[y, x, :3] = np.rint(
+            first_colour * (1.0 - progress) + second_colour * progress
+        ).clip(0, 255).astype(np.uint8)
+        output[y, x, 3] = HEADWEAR_CHAIN_BRIDGE_ALPHA
+    return int(new_pixels.sum())
 def remove_unlinked_headwear_fragments(mask: np.ndarray) -> np.ndarray:
     """Keep small headwear components only in a measured transitive chain.
 
@@ -427,7 +590,6 @@ def remove_unlinked_headwear_fragments(mask: np.ndarray) -> np.ndarray:
     if overlap.size:
         keep_alpha[np.unique(overlap)] = True
     return np.where(keep_alpha[alpha_labels], mask, 0).astype(mask.dtype)
-
 
 def _clean_small_components(
     layer: np.ndarray,
@@ -563,9 +725,12 @@ def _extract_steps(
             mask = (mask * head_region(base, model_path)).astype(np.uint8)
             mask = _headwear_cleanup(mask, current)
         layer = current.copy()
-        layer[:, :, 3] = (current[:, :, 3].astype(np.uint16) * mask // 255).astype(
-            np.uint8
-        )
+        layer_alpha = current[:, :, 3].astype(np.uint16) * mask // 255
+        if step == "L4_headwear":
+            # Keep the extracted headwear mask's measured visibility when a
+            # subpixel registration would otherwise attenuate a valid chain.
+            layer_alpha = np.maximum(layer_alpha, mask)
+        layer[:, :, 3] = layer_alpha.astype(np.uint8)
         layer[layer[:, :, 3] == 0] = 0
         if step == "L3_hair":
             layer, corrected = _remove_hair_underlayer_spill(layer)
@@ -575,8 +740,10 @@ def _extract_steps(
                 hair_entry["warm_underlayer_pixels_corrected"] = corrected
                 hair_entry["front_small_component_cleanup"] = front_speck_cleanup
         elif step == "L4_headwear":
+            layer, chain_bridged_pixels = _bridge_headwear_chain(layer, mask)
             layer, headwear_speck_cleanup = _clean_small_components(layer)
             layer_report[step] = {
+                "chain_bridged_pixels": chain_bridged_pixels,
                 "small_component_cleanup": headwear_speck_cleanup,
             }
         save_png(output / f"{step}.png", layer)
@@ -781,6 +948,7 @@ def extract(
     """執行一批抽層並寫出報告；所有 I/O 根目錄由呼叫端提供。"""
 
     relative_prefix = _safe_prefix(prefix if output_name is None else output_name)
+
     output = output_root / relative_prefix
     output.mkdir(parents=True, exist_ok=True)
     base = key_and_despill(base_magenta)

@@ -808,7 +808,7 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             self._speech_aligned_motion(motion),
             self._face_render_layers(
                 self.expression_pixmaps.get(
-                    expression,
+                    "viseme_i" if expression == "mouth_mid" else expression,
                     self.expression_pixmaps[self.speech_mid_expression],
                 ),
                 self._active_speech_pose_suffix(),

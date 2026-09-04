@@ -4,7 +4,7 @@ lazy from dataclasses import dataclass
 lazy from typing import Protocol
 
 lazy from PySide6.QtCore import QRect, Qt
-lazy from PySide6.QtGui import QPainter, QPixmap, QTransform
+lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QTransform
 
 lazy from domain.face_rig import (
     FaceMotionFrame,
@@ -13,6 +13,79 @@ lazy from domain.face_rig import (
 )
 
 MOUTH_APERTURE_THRESHOLD = 0.01
+SPEECH_MASK_FULL_ALPHA = 255
+SPEECH_MASK_OPAQUE_ALPHA = 250
+SPEECH_MASK_DARK_EDGE_MAX_RGB = 185
+SPEECH_MASK_MIN_SKIN_RED = 150
+SPEECH_MASK_MIN_SKIN_GREEN = 85
+SPEECH_MASK_MIN_SKIN_BLUE = 65
+SPEECH_MASK_MIN_RED_GREEN_DELTA = 20
+SPEECH_MASK_MIN_GREEN_BLUE_DELTA = 5
+SPEECH_MASK_MIN_SOURCE_LIFT = 16
+SPEECH_MASK_CORNER_EDGE_WIDTH = 14
+
+
+def recover_speech_mask_edge_source(
+    mask: QPixmap | None,
+    closed_reference: QPixmap | None,
+    source: QPixmap | None,
+    mouth_clip: QRect | None,
+) -> QPixmap | None:
+    """Recover source-backed mouth edges against the rendered closed frame."""
+
+    if (
+        mask is None
+        or closed_reference is None
+        or source is None
+        or mouth_clip is None
+        or mask.isNull()
+        or closed_reference.isNull()
+        or source.isNull()
+    ):
+        return mask
+    mask_image = mask.toImage().convertToFormat(QImage.Format_ARGB32)
+    closed_image = closed_reference.toImage().convertToFormat(QImage.Format_ARGB32)
+    source_image = source.toImage().convertToFormat(QImage.Format_ARGB32)
+    for y in range(mouth_clip.top(), mouth_clip.bottom() + 1):
+        for x in range(mouth_clip.left(), mouth_clip.right() + 1):
+            if (
+                mouth_clip.left() + SPEECH_MASK_CORNER_EDGE_WIDTH <= x
+                <= mouth_clip.right() - SPEECH_MASK_CORNER_EDGE_WIDTH
+            ):
+                continue
+            mask_color = mask_image.pixelColor(x, y)
+            if not 0 < mask_color.alpha() < SPEECH_MASK_FULL_ALPHA:
+                continue
+            closed_color = closed_image.pixelColor(x, y)
+            if closed_color.alpha() < SPEECH_MASK_OPAQUE_ALPHA:
+                continue
+            closed_max = max(
+                closed_color.red(),
+                closed_color.green(),
+                closed_color.blue(),
+            )
+            if closed_max > SPEECH_MASK_DARK_EDGE_MAX_RGB:
+                continue
+            source_color = source_image.pixelColor(x, y)
+            source_max = max(
+                source_color.red(),
+                source_color.green(),
+                source_color.blue(),
+            )
+            if not (
+                source_color.alpha() >= SPEECH_MASK_OPAQUE_ALPHA
+                and source_max >= closed_max + SPEECH_MASK_MIN_SOURCE_LIFT
+                and source_color.red() >= SPEECH_MASK_MIN_SKIN_RED
+                and source_color.green() >= SPEECH_MASK_MIN_SKIN_GREEN
+                and source_color.blue() >= SPEECH_MASK_MIN_SKIN_BLUE
+                and source_color.red() - source_color.green()
+                >= SPEECH_MASK_MIN_RED_GREEN_DELTA
+                and source_color.green() - source_color.blue()
+                >= SPEECH_MASK_MIN_GREEN_BLUE_DELTA
+            ):
+                continue
+            mask_image.setPixelColor(x, y, QColor(255, 255, 255, 255))
+    return QPixmap.fromImage(mask_image)
 
 
 @dataclass(frozen=True, slots=True)

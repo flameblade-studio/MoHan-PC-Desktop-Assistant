@@ -59,6 +59,7 @@ lazy from presentation.flagship.shared import (
     FlagshipDraftValues,
 )
 lazy from presentation.flagship_theme import apply_flagship_theme
+lazy from presentation.lingxiao_themes import DEFAULT_THEME_ID, THEME_SETTING_KEY
 
 __all__ = ('FlagshipSettingsSecurityMixin',)
 
@@ -166,6 +167,7 @@ class FlagshipSettingsSecurityMixin:
                 ),
                 high_contrast=self.flagship_high_contrast.isChecked(),
                 ui_scale=float(self.flagship_ui_scale.currentData()),
+                theme=str(self.flagship_theme.currentData()),
             )
         except (GestureConfigurationStoreError, TypeError, ValueError):
             if show_error:
@@ -247,6 +249,7 @@ class FlagshipSettingsSecurityMixin:
                 ("flagship_permissions", dict(validated.security)),
                 ("flagship_high_contrast", validated.high_contrast),
                 ("flagship_ui_scale", validated.ui_scale),
+                (THEME_SETTING_KEY, validated.theme),
             ):
                 self.db.set_setting(key, value)
             self._rebuild_draft_settings()
@@ -278,6 +281,7 @@ class FlagshipSettingsSecurityMixin:
             self,
             high_contrast=bool(self.db.setting("flagship_high_contrast", False)),
             scale=float(self.db.setting("flagship_ui_scale", 1.0)),
+            theme=str(self.db.setting(THEME_SETTING_KEY, DEFAULT_THEME_ID)),
         )
         self._refresh_openai_vision_status(vision)
         if self.cloud_vision_service is not None:
@@ -327,6 +331,8 @@ class FlagshipSettingsSecurityMixin:
         self._refresh_performance_controls()
         self._refresh_proactive_interaction_controls()
         self._refresh_accessibility_controls()
+        if getattr(self, "_control_center_ui_ready", False):
+            self._notify_pending_proactivity_store_error()
     def _refresh_gesture_controls(self) -> None:
         self.gesture_enabled.setChecked(self._gesture_draft.value.enabled)
         self._refresh_gesture_list()

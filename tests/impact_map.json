@@ -1,0 +1,371 @@
+{
+  "schema": "mohan.test-impact-map.v1",
+  "contract_tests": [
+    "test_action_planner_contract.py",
+    "test_app_composition_root.py",
+    "test_app_module_boundaries.py",
+    "test_application_bootstrap_contract.py",
+    "test_architecture_contracts.py",
+    "test_external_boundary_faults.py",
+    "test_flagship_safety.py",
+    "test_four_language_documentation.py",
+    "test_gesture_authorization_contract.py",
+    "test_gesture_controller_dispatch_boundary.py",
+    "test_infrastructure_data_safety.py",
+    "test_input_validation_boundaries.py",
+    "test_layered_architecture.py",
+    "test_lazy_import_owner_contract.py",
+    "test_native_boundary_contract.py",
+    "test_native_product_wiring.py",
+    "test_openai_vision_release_gate.py",
+    "test_portable_secret_wiring.py",
+    "test_presentation_owner_contract.py",
+    "test_remote_tool_error_safety.py",
+    "test_run_all_isolation.py",
+    "test_run_all_tiers.py",
+    "test_speech_boundary.py",
+    "test_speech_completion_timer_contract.py",
+    "test_testing_documentation.py",
+    "test_window_mro_contract.py"
+  ],
+  "nightly_tests": [
+    "test_active_outfit_overlay_makeup.py",
+    "test_affection_stress_20000.py",
+    "test_animation_races.py",
+    "test_build_half_body_layered_rig.py",
+    "test_check_pose_atlas_release.py",
+    "test_cross_platform_core.py",
+    "test_expression_pipeline.py",
+    "test_flagship_physics.py",
+    "test_full_body_asset_audit.py",
+    "test_full_body_asset_evidence.py",
+    "test_full_body_golden_batch.py",
+    "test_full_body_layer_pack_audit.py",
+    "test_full_ui_localization.py",
+    "test_gesture_outfit_silhouettes.py",
+    "test_golden_base_body_contracts.py",
+    "test_golden_face_target_follows_authority.py",
+    "test_hairstyle_face_clip.py",
+    "test_layered_face_assets.py",
+    "test_layered_face_calibration.py",
+    "test_layered_full_body.py",
+    "test_layered_full_body_packaging_gate.py",
+    "test_layered_full_body_semantic_audit.py",
+    "test_multisensory_speech_regression.py",
+    "test_native_build_contract.py",
+    "test_native_packaging_contract.py",
+    "test_native_release_evidence.py",
+    "test_opencv_vision.py",
+    "test_outfit_pack_makeup.py",
+    "test_packaged_migration.py",
+    "test_packaged_native_verifier.py",
+    "test_packaged_self_test_diagnostics.py",
+    "test_pose_atlas_assets.py",
+    "test_pose_atlas_audit.py",
+    "test_pose_atlas_identity_candidate.py",
+    "test_pose_atlas_manifest_builder.py",
+    "test_pose_atlas_release_gate.py",
+    "test_pose_atlas_static_identity_audit.py",
+    "test_post_speech_motion_performance.py",
+    "test_post_speech_motion_provider_matrix.py",
+    "test_preview_packaging.py",
+    "test_python315_qt_release.py",
+    "test_python315_runtime.py",
+    "test_release_automation.py",
+    "test_release_notes_generation.py",
+    "test_realtime_mouth_completion.py",
+    "test_state_fuzz.py",
+    "test_ui_smoke.py",
+    "test_v120_asset_integrity.py",
+    "test_v120_empty_layers_physics.py",
+    "test_v1219_migration.py",
+    "test_wardrobe_body_profile_gate.py",
+    "test_wardrobe_makeup_ui.py",
+    "test_wardrobe_preview_composite.py",
+    "test_yaw000_golden_template.py",
+    "test_yaw000_layer_runtime_audit.py"
+  ],
+  "rules": [
+    {
+      "paths": [
+        "tests/test_*.py"
+      ],
+      "tests": [
+        "$self"
+      ]
+    },
+    {
+      "paths": [
+        "tests/run_all.py",
+        "tests/impact_map.json"
+      ],
+      "tests": [
+        "test_run_all_isolation.py",
+        "test_run_all_tiers.py",
+        "test_testing_documentation.py"
+      ]
+    },
+    {
+      "paths": [
+        "app.py"
+      ],
+      "tests": [
+        "test_adaptive_character_app_wiring.py",
+        "test_app_composition_root.py",
+        "test_app_module_boundaries.py",
+        "test_application_bootstrap_contract.py"
+      ]
+    },
+    {
+      "paths": [
+        "version_info.py"
+      ],
+      "tests": [
+        "test_release_notes_generation.py",
+        "test_v312_release_consistency.py",
+        "test_v4_development_version_consistency.py"
+      ]
+    },
+    {
+      "paths": [
+        "pyproject.toml",
+        "requirements*.txt"
+      ],
+      "tests": [
+        "test_cross_platform_core.py",
+        "test_development_dependency_governance.py",
+        "test_python315_qt_release.py",
+        "test_python315_runtime.py"
+      ]
+    },
+    {
+      "paths": [
+        "application/*.py",
+        "domain/*.py",
+        "infrastructure/*.py",
+        "integrations/*.py",
+        "presentation/*.py",
+        "presentation/flagship/*.py",
+        "tools/*.py"
+      ],
+      "tests": [
+        "$matching_test"
+      ]
+    },
+    {
+      "paths": [
+        "application/adaptive_character_composition.py",
+        "application/application_bootstrap.py",
+        "application/app.py",
+        "application/runtime_bootstrap.py",
+        "application/service_container.py"
+      ],
+      "tests": [
+        "test_adaptive_character_app_wiring.py",
+        "test_app_composition_root.py",
+        "test_app_module_boundaries.py",
+        "test_application_bootstrap_contract.py",
+        "test_dependency_injection.py"
+      ]
+    },
+    {
+      "paths": [
+        "domain/constants.py"
+      ],
+      "tests": [
+        "test_character_body_profile.py",
+        "test_character_full_body_rig.py",
+        "test_full_body_asset_audit.py",
+        "test_pose_atlas_assets.py",
+        "test_pose_runtime_loader.py",
+        "test_wardrobe_body_profile_gate.py"
+      ]
+    },
+    {
+      "paths": [
+        "domain/contracts.py"
+      ],
+      "tests": [
+        "test_app_module_boundaries.py",
+        "test_architecture_contracts.py",
+        "test_domain_application_physical_ownership.py",
+        "test_layered_architecture.py",
+        "test_lazy_import_owner_contract.py"
+      ]
+    },
+    {
+      "paths": [
+        "infrastructure/platform_*.py",
+        "infrastructure/platform_contracts.py"
+      ],
+      "tests": [
+        "test_cross_platform_core.py",
+        "test_window_composition_imports.py",
+        "test_windows_tts_cancellation.py"
+      ]
+    },
+    {
+      "paths": [
+        "native/**"
+      ],
+      "tests": [
+        "test_native_acceleration.py",
+        "test_native_boundary_contract.py",
+        "test_native_build_contract.py",
+        "test_native_concurrency.py",
+        "test_native_equivalence.py",
+        "test_native_packaging_contract.py",
+        "test_native_product_integration.py",
+        "test_native_product_wiring.py",
+        "test_native_release_evidence.py",
+        "test_native_rgba_acceleration.py",
+        "test_native_rgba_equivalence.py",
+        "test_native_rgba_product_wiring.py"
+      ]
+    },
+    {
+      "paths": [
+        "tools/build_preview_package.py",
+        "tools/smoke_preview_package.py",
+        "installer/**",
+        "build.ps1"
+      ],
+      "tests": [
+        "test_packaged_native_verifier.py",
+        "test_packaged_self_test_diagnostics.py",
+        "test_preview_packaging.py",
+        "test_release_automation.py"
+      ]
+    },
+    {
+      "paths": [
+        "tools/build_python315_qt_compat.py",
+        "tools/install_python315_dependencies.py",
+        "tools/build_python315_jit_runtime.py"
+      ],
+      "tests": [
+        "test_cross_platform_core.py",
+        "test_python315_qt_release.py",
+        "test_python315_runtime.py"
+      ]
+    },
+    {
+      "paths": [
+        "assets/pose-atlas/**"
+      ],
+      "tests": [
+        "test_check_pose_atlas_release.py",
+        "test_full_body_asset_audit.py",
+        "test_full_body_asset_evidence.py",
+        "test_golden_base_body_contracts.py",
+        "test_pose_atlas_assets.py",
+        "test_pose_atlas_audit.py",
+        "test_pose_atlas_identity_candidate.py",
+        "test_pose_atlas_manifest_builder.py",
+        "test_pose_atlas_release_gate.py",
+        "test_pose_atlas_static_identity_audit.py",
+        "test_pose_runtime_loader.py",
+        "test_yaw000_golden_template.py",
+        "test_yaw000_layer_runtime_audit.py"
+      ]
+    },
+    {
+      "paths": [
+        "assets/expressions/**"
+      ],
+      "tests": [
+        "test_expression_pipeline.py",
+        "test_expression_speech_runtime.py",
+        "test_face_assets.py",
+        "test_visual_acceptance_regressions.py"
+      ]
+    },
+    {
+      "paths": [
+        "assets/makeup/**",
+        "assets/official-packs/**"
+      ],
+      "tests": [
+        "test_active_outfit_overlay_makeup.py",
+        "test_outfit_pack_makeup.py",
+        "test_wardrobe_makeup_ui.py",
+        "test_wardrobe_preview_composite.py"
+      ]
+    },
+    {
+      "paths": [
+        "assets/ui/**"
+      ],
+      "tests": [
+        "test_full_ui_localization.py",
+        "test_ui_smoke.py",
+        "test_visual_acceptance_regressions.py"
+      ]
+    },
+    {
+      "paths": [
+        "assets/vision-models/**"
+      ],
+      "tests": [
+        "test_opencv_vision.py",
+        "test_vision_fault_isolation.py",
+        "test_vision_model_provenance.py",
+        "test_vision_runtime.py",
+        "test_vision_sbom.py"
+      ]
+    },
+    {
+      "paths": [
+        ".github/**"
+      ],
+      "tests": [
+        "test_cross_platform_core.py",
+        "test_four_language_pr.py",
+        "test_github_governance.py",
+        "test_preview_packaging.py",
+        "test_release_automation.py"
+      ]
+    },
+    {
+      "paths": [
+        "sbom/**",
+        "third_party_licenses/**"
+      ],
+      "tests": [
+        "test_development_dependency_governance.py",
+        "test_sbom_validation.py",
+        "test_vision_sbom.py"
+      ]
+    },
+    {
+      "paths": [
+        "docs/TESTING.md",
+        "docs/release-evidence/test-tier-baseline-2026-09-03.md",
+        "AGENTS.md"
+      ],
+      "tests": [
+        "test_four_language_documentation.py",
+        "test_testing_documentation.py"
+      ]
+    },
+    {
+      "paths": [
+        "README.md",
+        "ARCHITECTURE.md",
+        "docs/releases/v4.0.0-draft.md"
+      ],
+      "tests": [
+        "test_four_language_documentation.py",
+        "test_v4_vision_documentation.py"
+      ]
+    },
+    {
+      "paths": [
+        "docs/CROSS-PLATFORM.md"
+      ],
+      "tests": [
+        "test_four_language_documentation.py"
+      ]
+    }
+  ]
+}

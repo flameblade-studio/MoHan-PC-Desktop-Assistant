@@ -15,6 +15,7 @@ NATIVE_RGBA_MODULE_NAME = "_mohan_accel"
 RGBA_CHANNELS = 4
 ALPHA_MAX = 255
 CROSSFADE_MAX = 65_535
+type RgbaInput = bytes | bytearray | memoryview
 
 
 class RgbaAccelerationError(ValueError):
@@ -169,7 +170,9 @@ class NativeRgbaAcceleration:
                 operation_failures=tuple(sorted(self._operation_failures.items())),
             )
 
-    def alpha_over_rgba(self, target: bytes, source: bytes) -> bytes:
+    def alpha_over_rgba(self, target: RgbaInput, source: RgbaInput) -> bytes:
+        target = _normalize_rgba_input(target)
+        source = _normalize_rgba_input(source)
         _validate_equal_rgba(target, source)
         return self._call_bytes(
             "alpha_over_rgba",
@@ -180,10 +183,12 @@ class NativeRgbaAcceleration:
 
     def crossfade_rgba(
         self,
-        first: bytes,
-        second: bytes,
+        first: RgbaInput,
+        second: RgbaInput,
         second_weight: int,
     ) -> bytes:
+        first = _normalize_rgba_input(first)
+        second = _normalize_rgba_input(second)
         _validate_equal_rgba(first, second)
         _validate_crossfade_weight(second_weight)
         return self._call_bytes(
@@ -195,18 +200,23 @@ class NativeRgbaAcceleration:
 
     def composite_region_rgba(
         self,
-        target: bytes,
+        target: RgbaInput,
         target_width: int,
         target_height: int,
-        source: bytes,
+        source: RgbaInput,
         source_width: int,
         source_height: int,
         anchor_x: int,
         anchor_y: int,
-        approved_region: bytes,
-        immutable_identity: bytes,
-        occlusion_masks: Sequence[bytes] = (),
+        approved_region: RgbaInput,
+        immutable_identity: RgbaInput,
+        occlusion_masks: Sequence[RgbaInput] = (),
     ) -> bytes:
+        target = _normalize_rgba_input(target)
+        source = _normalize_rgba_input(source)
+        approved_region = _normalize_rgba_input(approved_region)
+        immutable_identity = _normalize_rgba_input(immutable_identity)
+        occlusion_masks = tuple(_normalize_rgba_input(mask) for mask in occlusion_masks)
         masks = tuple(occlusion_masks)
         _validate_region_inputs(
             _RegionCompositeInput(
@@ -287,6 +297,8 @@ class NativeRgbaAcceleration:
         if not self._operation_is_verified(operation):
             try:
                 expected = fallback()
+            except RgbaAccelerationError:
+                raise
             except Exception:
                 self._disable_operation(
                     operation,
@@ -311,8 +323,18 @@ class NativeRgbaAcceleration:
         native_error: Exception,
         fallback: Callable[[], bytes],
     ) -> bytes:
+        try:
+            expected = fallback()
+        except RgbaAccelerationError:
+            # A native ValueError can be the backend's translation of the
+            # public renderer contract.  Contract rejection is not backend
+            # failure and must not disable the valid-input fast path.
+            raise
+        except Exception:
+            self._disable_operation(operation, native_error)
+            raise
         self._disable_operation(operation, native_error)
-        return fallback()
+        return expected
 
     def _load_module(self) -> ModuleType | None:
         if self._load_attempted:
@@ -347,6 +369,8 @@ class NativeRgbaAcceleration:
 
     def _disable_operation(self, operation: str, error: Exception) -> None:
         with self._lock:
+            if operation in self._disabled_operations:
+                return
             self._disabled_operations.add(operation)
             self._verified_operations.discard(operation)
             count = self._operation_failures.get(operation, 0) + 1
@@ -430,6 +454,15 @@ def _validate_mask(mask: bytes, pixels: int) -> None:
 def _validate_bytes(data: object) -> None:
     if not isinstance(data, bytes):
         raise RgbaAccelerationError("RGBA buffers must be immutable bytes.")
+
+
+def _normalize_rgba_input(data: RgbaInput) -> bytes:
+    """Snapshot mutable/view-backed caller data before crossing into PyO3."""
+    if isinstance(data, bytes):
+        return data
+    if isinstance(data, (bytearray, memoryview)):
+        return bytes(data)
+    raise RgbaAccelerationError("RGBA buffers must be bytes-like.")
 
 
 def _blend_pixel(

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 lazy import argparse
 lazy import ast
+lazy import fnmatch
+lazy import json
 lazy import os
 lazy import subprocess
 lazy import sys
@@ -37,11 +39,36 @@ TEST_TIMEOUT_SECONDS = 600
 # slow CI runners (event-loop races, transient file locks) without masking a
 # deterministic failure: a test must fail twice in a row to fail the suite.
 TEST_RETRY_ATTEMPTS = 1
+DEFAULT_TIER = "gate"
+FAST_TIER = "fast"
+NIGHTLY_TIER = "nightly"
+TEST_TIERS = (FAST_TIER, DEFAULT_TIER, NIGHTLY_TIER)
+IMPACT_MAP_FILENAME = "impact_map.json"
 
 
 def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run MoHan's Python tests in isolated child processes."
+    )
+    parser.add_argument(
+        "tier",
+        nargs="?",
+        choices=TEST_TIERS,
+        default=None,
+        help="Test tier: fast, gate (default), or nightly.",
+    )
+    parser.add_argument(
+        "--tier",
+        dest="tier_option",
+        choices=TEST_TIERS,
+        default=None,
+        help="Named spelling of the positional test tier.",
+    )
+    parser.add_argument(
+        "--changed-from",
+        metavar="GIT_REF",
+        default=None,
+        help="For fast: include committed changes from this ref plus worktree changes.",
     )
     parser.add_argument(
         "--shard-count",
@@ -60,6 +87,17 @@ def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
         parser.error("--shard-count must be at least 1")
     if not 0 <= arguments.shard_index < arguments.shard_count:
         parser.error("--shard-index must be within the configured shard count")
+    if (
+        arguments.tier is not None
+        and arguments.tier_option is not None
+        and arguments.tier != arguments.tier_option
+    ):
+        parser.error("positional tier and --tier must name the same tier")
+    arguments.tier = (
+        arguments.tier_option or arguments.tier or DEFAULT_TIER
+    )
+    if arguments.changed_from is not None and arguments.tier != FAST_TIER:
+        parser.error("--changed-from is only valid with the fast tier")
     return arguments
 
 
@@ -76,6 +114,279 @@ def _select_shard(
         for index, test in enumerate(tests)
         if index % shard_count == shard_index
     )
+
+
+def _normalise_repo_path(value: str) -> str:
+    path = value.strip().replace("\\", "/")
+    while path.startswith("./"):
+        path = path[2:]
+    return path
+
+
+def _git_names(arguments: Sequence[str]) -> tuple[str, ...]:
+    completed = subprocess.run(
+        ["git", *arguments],
+        cwd=TESTS_DIR.parent,
+        check=False,
+        capture_output=True,
+        encoding="utf-8",
+        errors="replace",
+        text=True,
+    )
+    if completed.returncode:
+        detail = completed.stderr.strip() or f"exit {completed.returncode}"
+        raise RuntimeError(detail)
+    return tuple(
+        path
+        for path in (
+            _normalise_repo_path(item)
+            for item in completed.stdout.split("\x00")
+        )
+        if path
+    )
+
+
+def _git_reference_candidates(changed_from: str) -> tuple[str, ...]:
+    candidates = [changed_from]
+    if not changed_from.startswith(("origin/", "refs/")):
+        candidates.append(f"origin/{changed_from}")
+    return tuple(candidates)
+
+
+def _git_changed_files(
+    changed_from: str | None,
+) -> tuple[tuple[str, ...], str | None]:
+    changed: set[str] = set()
+    if changed_from:
+        references = _git_reference_candidates(changed_from)
+        reference_error = "unknown git reference"
+        for reference in references:
+            try:
+                changed.update(
+                    _git_names(
+                        (
+                            "diff",
+                            "--name-only",
+                            "-z",
+                            "--diff-filter=ACDMRTUXB",
+                            f"{reference}...HEAD",
+                        )
+                    )
+                )
+            except RuntimeError as error:
+                reference_error = str(error)
+                continue
+            break
+        else:
+            return (), (
+                f"could not compare {changed_from!r} with HEAD: "
+                f"{reference_error}"
+            )
+
+    try:
+        changed.update(
+            _git_names(
+                (
+                    "diff",
+                    "--name-only",
+                    "-z",
+                    "--diff-filter=ACDMRTUXB",
+                )
+            )
+        )
+        changed.update(
+            _git_names(
+                (
+                    "diff",
+                    "--cached",
+                    "--name-only",
+                    "-z",
+                    "--diff-filter=ACDMRTUXB",
+                )
+            )
+        )
+        changed.update(
+            _git_names(("ls-files", "--others", "--exclude-standard", "-z"))
+        )
+    except RuntimeError as error:
+        return (), f"could not inspect the worktree: {error}"
+    return tuple(sorted(changed)), None
+
+
+def _configured_test_names(
+    document: dict[str, object],
+    key: str,
+    test_names: frozenset[str],
+) -> tuple[str, ...]:
+    values = document.get(key)
+    if not isinstance(values, list) or not values:
+        raise ValueError(f"{key} must be a non-empty list")
+    if not all(isinstance(value, str) for value in values):
+        raise ValueError(f"{key} must contain only test file names")
+    names = tuple(str(value) for value in values)
+    missing = tuple(sorted(set(names) - test_names))
+    if missing:
+        raise ValueError(f"{key} names missing test files: {', '.join(missing)}")
+    return tuple(sorted(set(names)))
+
+
+def _load_impact_map(
+    test_names: frozenset[str],
+) -> tuple[dict[str, object] | None, str | None]:
+    path = TESTS_DIR / IMPACT_MAP_FILENAME
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        return None, f"could not load {path}: {error}"
+    if not isinstance(document, dict):
+        return None, "impact map root must be an object"
+    if document.get("schema") != "mohan.test-impact-map.v1":
+        return None, "impact map schema is not mohan.test-impact-map.v1"
+    try:
+        contract_tests = _configured_test_names(
+            document,
+            "contract_tests",
+            test_names,
+        )
+        nightly_tests = _configured_test_names(
+            document,
+            "nightly_tests",
+            test_names,
+        )
+        raw_rules = document.get("rules")
+        if not isinstance(raw_rules, list) or not raw_rules:
+            raise ValueError("rules must be a non-empty list")
+        rules: list[tuple[tuple[str, ...], tuple[str, ...]]] = []
+        for index, raw_rule in enumerate(raw_rules):
+            if not isinstance(raw_rule, dict):
+                raise ValueError(f"rule {index} must be an object")
+            raw_paths = raw_rule.get("paths")
+            raw_tests = raw_rule.get("tests")
+            if (
+                not isinstance(raw_paths, list)
+                or not raw_paths
+                or not all(isinstance(value, str) for value in raw_paths)
+            ):
+                raise ValueError(f"rule {index} paths must be a non-empty list")
+            if (
+                not isinstance(raw_tests, list)
+                or not raw_tests
+                or not all(isinstance(value, str) for value in raw_tests)
+            ):
+                raise ValueError(f"rule {index} tests must be a non-empty list")
+            tests = tuple(str(value) for value in raw_tests)
+            invalid = tuple(
+                sorted(
+                    set(tests)
+                    - {"$self", "$matching_test"}
+                    - test_names
+                )
+            )
+            if invalid:
+                raise ValueError(
+                    f"rule {index} names missing test files: {', '.join(invalid)}"
+                )
+            rules.append(
+                (
+                    tuple(
+                        _normalise_repo_path(str(value))
+                        for value in raw_paths
+                    ),
+                    tests,
+                )
+            )
+    except ValueError as error:
+        return None, str(error)
+    return {
+        "contract_tests": contract_tests,
+        "nightly_tests": nightly_tests,
+        "rules": tuple(rules),
+    }, None
+
+
+def _tests_named(
+    all_tests: Sequence[Path],
+    names: Sequence[str],
+) -> tuple[Path, ...]:
+    wanted = frozenset(names)
+    return tuple(test for test in all_tests if test.name in wanted)
+
+
+def _mapped_tests_for_path(
+    changed_path: str,
+    rules: Sequence[tuple[tuple[str, ...], tuple[str, ...]]],
+    test_names: frozenset[str],
+) -> tuple[bool, tuple[str, ...]]:
+    mapped: set[str] = set()
+    matched = False
+    for patterns, test_entries in rules:
+        if not any(
+            fnmatch.fnmatchcase(changed_path, pattern)
+            for pattern in patterns
+        ):
+            continue
+        matched = True
+        for entry in test_entries:
+            if entry == "$self":
+                candidate = Path(changed_path).name
+                if changed_path.startswith("tests/") and candidate in test_names:
+                    mapped.add(candidate)
+            elif entry == "$matching_test":
+                candidate = f"test_{Path(changed_path).stem}.py"
+                if candidate in test_names:
+                    mapped.add(candidate)
+            else:
+                mapped.add(entry)
+    return matched, tuple(sorted(mapped))
+
+
+def _tests_for_tier(
+    all_tests: Sequence[Path],
+    *,
+    tier: str,
+    changed_from: str | None,
+) -> tuple[tuple[Path, ...], str | None, tuple[str, ...]]:
+    if tier == DEFAULT_TIER:
+        return tuple(all_tests), None, ()
+
+    test_names = frozenset(test.name for test in all_tests)
+    impact_map, map_error = _load_impact_map(test_names)
+    if map_error or impact_map is None:
+        return tuple(all_tests), map_error or "impact map unavailable", ()
+
+    if tier == NIGHTLY_TIER:
+        selected = _tests_named(
+            all_tests,
+            impact_map["nightly_tests"],
+        )
+        if not selected:
+            return tuple(all_tests), "nightly test list selected no files", ()
+        return selected, None, ()
+
+    changed_files, git_error = _git_changed_files(changed_from)
+    if git_error:
+        return tuple(all_tests), git_error, changed_files
+    rules = impact_map["rules"]
+    affected = set(impact_map["contract_tests"])
+    unmapped: list[str] = []
+    for changed_path in changed_files:
+        matched, mapped = _mapped_tests_for_path(
+            changed_path,
+            rules,
+            test_names,
+        )
+        if not matched or not mapped:
+            unmapped.append(changed_path)
+            continue
+        affected.update(mapped)
+    if unmapped:
+        return tuple(all_tests), (
+            "unmapped changed paths: " + ", ".join(unmapped)
+        ), changed_files
+    selected = _tests_named(all_tests, tuple(sorted(affected)))
+    if not selected:
+        return tuple(all_tests), "fast selection produced no test files", changed_files
+    return selected, None, changed_files
 
 
 def _run_test_process(
@@ -467,6 +778,31 @@ def _print_retried_modules(retried_modules: Sequence[str]) -> None:
         )
 
 
+def _announce_tier(
+    tier: str,
+    *,
+    changed_from: str | None,
+    changed_files: Sequence[str],
+    selected_count: int,
+    tier_notice: str | None,
+) -> None:
+    """Say which tests a fast or nightly run selected, or why it fell back."""
+    if tier not in (FAST_TIER, NIGHTLY_TIER):
+        return
+    if tier == FAST_TIER:
+        print(f"FAST_CHANGED_FROM={changed_from or 'working-tree'}", flush=True)
+        print(
+            "FAST_CHANGED_FILES="
+            + (", ".join(changed_files) if changed_files else "<none>"),
+            flush=True,
+        )
+    prefix = "FAST" if tier == FAST_TIER else "NIGHTLY"
+    if tier_notice:
+        print(f"{prefix}_FALLBACK_TO_GATE: {tier_notice}", flush=True)
+    else:
+        print(f"{prefix}_SELECTED_TESTS={selected_count}", flush=True)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     arguments = _arguments(argv)
     all_tests = tuple(sorted(TESTS_DIR.glob("test_*.py")))
@@ -478,8 +814,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         for error in audit_errors:
             print(f"COLLECTION_AUDIT: {error}", file=sys.stderr)
         return COLLECTION_AUDIT_EXIT_CODE
-    tests = _select_shard(
+    selected_tests, tier_notice, changed_files = _tests_for_tier(
         all_tests,
+        tier=arguments.tier,
+        changed_from=arguments.changed_from,
+    )
+    _announce_tier(
+        arguments.tier,
+        changed_from=arguments.changed_from,
+        changed_files=changed_files,
+        selected_count=len(selected_tests),
+        tier_notice=tier_notice,
+    )
+    tests = _select_shard(
+        selected_tests,
         shard_index=arguments.shard_index,
         shard_count=arguments.shard_count,
     )

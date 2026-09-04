@@ -992,7 +992,7 @@ class DashboardServices:
     cloud_vision_service_factory: object | None = None
     dense_face_provider_factory: Callable[[], object] | None = None
     presentation_ports: PresentationPorts | None = None
-
+    backup_manager: object | None = None
 
 def safe_error_from_exception(error: BaseException) -> SafeError | None:
     value = getattr(error, "safe_error", None)

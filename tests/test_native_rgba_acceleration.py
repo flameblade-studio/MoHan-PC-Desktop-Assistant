@@ -265,6 +265,78 @@ def test_native_fault_disables_only_that_operation_and_falls_back(
     assert accelerator.status().disabled_operations == ("crossfade_rgba",)
 
 
+def test_native_contract_rejection_does_not_disable_region_operation() -> None:
+    native_calls = 0
+
+    def reject_then_render(*arguments: object) -> bytes:
+        nonlocal native_calls
+        native_calls += 1
+        if native_calls == 1:
+            raise ValueError("Visible source pixel leaves the target canvas")
+        return composite_region_rgba_python(*arguments)
+
+    accelerator = NativeRgbaAcceleration(
+        module_loader=lambda _name: _module(
+            composite_region_rgba=reject_then_render
+        )
+    )
+    target = _rgba((0, 0, 0, 0))
+    source = _rgba((10, 20, 30, 255))
+    invalid = (
+        target,
+        1,
+        1,
+        source,
+        1,
+        1,
+        -1,
+        0,
+        b"\x01",
+        b"\x00",
+        (),
+    )
+    with pytest.raises(RgbaAccelerationError, match="leaves the target canvas"):
+        accelerator.composite_region_rgba(*invalid)
+    status = accelerator.status()
+    assert status.disabled_operations == ()
+    assert status.operation_failures == ()
+
+    valid = (*invalid[:6], 0, 0, *invalid[8:])
+    assert accelerator.composite_region_rgba(*valid) == composite_region_rgba_python(
+        *valid
+    )
+    assert native_calls == CALL_COUNT
+    assert accelerator.status().verified_operations == ("composite_region_rgba",)
+
+
+def test_contract_rejection_during_native_verification_does_not_disable_operation() -> None:
+    def falsely_accepts(*_arguments: object) -> bytes:
+        return b"\x00" * 4
+
+    accelerator = NativeRgbaAcceleration(
+        module_loader=lambda _name: _module(
+            composite_region_rgba=falsely_accepts
+        )
+    )
+    with pytest.raises(RgbaAccelerationError, match="leaves the target canvas"):
+        accelerator.composite_region_rgba(
+            _rgba((0, 0, 0, 0)),
+            1,
+            1,
+            _rgba((10, 20, 30, 255)),
+            1,
+            1,
+            -1,
+            0,
+            b"\x01",
+            b"\x00",
+            (),
+        )
+    status = accelerator.status()
+    assert status.disabled_operations == ()
+    assert status.operation_failures == ()
+
+
 def test_python_validation_cannot_be_bypassed_by_native_backend() -> None:
     called = False
 
@@ -325,3 +397,75 @@ def test_region_native_result_must_be_exact_or_operation_is_disabled() -> None:
     )
     assert calls == 1
     assert accelerator.status().verified_operations == ("composite_region_rgba",)
+
+
+def test_native_failure_fallback_matches_native_output_pixel_for_pixel() -> None:
+    target = _rgba(
+        (10, 20, 30, 40),
+        (40, 50, 60, 70),
+        (70, 80, 90, 100),
+        (100, 110, 120, 130),
+    )
+    source = _rgba(
+        (200, 100, 50, 255),
+        (1, 2, 3, 128),
+        (9, 8, 7, 255),
+        (6, 5, 4, 0),
+    )
+    arguments = (
+        target,
+        2,
+        2,
+        source,
+        2,
+        2,
+        0,
+        0,
+        b"\x01" * 4,
+        b"\x00" * 4,
+        (b"\x00\x00\x01\x00",),
+    )
+    native_result = NativeRgbaAcceleration(
+        module_loader=lambda _name: _module(
+            composite_region_rgba=composite_region_rgba_python
+        )
+    ).composite_region_rgba(*arguments)
+
+    def fail(*_arguments: object) -> bytes:
+        raise OSError("simulated native region fault")
+
+    fallback_accelerator = NativeRgbaAcceleration(
+        module_loader=lambda _name: _module(composite_region_rgba=fail)
+    )
+    fallback_result = fallback_accelerator.composite_region_rgba(*arguments)
+
+    native_pixels = tuple(
+        native_result[index : index + 4] for index in range(0, len(native_result), 4)
+    )
+    fallback_pixels = tuple(
+        fallback_result[index : index + 4]
+        for index in range(0, len(fallback_result), 4)
+    )
+    assert fallback_pixels == native_pixels
+
+
+def test_adapter_snapshots_mutable_and_view_buffers_before_native_call() -> None:
+    observed_types: list[tuple[type[object], ...]] = []
+
+    def native(target: bytes, source: bytes) -> bytes:
+        observed_types.append((type(target), type(source)))
+        return alpha_over_rgba_python(target, source)
+
+    accelerator = NativeRgbaAcceleration(
+        module_loader=lambda _name: _module(alpha_over_rgba=native)
+    )
+    target = _rgba((10, 20, 30, 40))
+    source = _rgba((50, 60, 70, 80))
+    expected = alpha_over_rgba_python(target, source)
+
+    assert accelerator.alpha_over_rgba(bytearray(target), memoryview(source)) == (
+        expected
+    )
+    assert accelerator.alpha_over_rgba(target, source) == expected
+    assert observed_types == [(bytes, bytes), (bytes, bytes)]
+    assert accelerator.status().operation_failures == ()

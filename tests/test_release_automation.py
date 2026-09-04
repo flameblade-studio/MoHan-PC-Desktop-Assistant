@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import hashlib
 lazy import json
+lazy import re
 lazy import struct
 lazy import subprocess
 lazy import sys
@@ -16,6 +17,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 lazy from domain.version_info import FALLBACK_VERSION
+lazy from domain.constants import POSE_ATLAS_GENERATION
 lazy from tools.sync_wordpress_download_page import (
     END_MARKER,
     START_MARKER,
@@ -170,27 +172,33 @@ CANONICAL_HALF_BODY_SHA256 = (
     "e99cc462979d963247db30e73efcceffe408c5b4046db69611325a6920647825"
 )
 # docs/media/portraits/idle_front.png: generation-2 composite (official pack +
-# classic makeup) that installer artwork and the taskbar icon derive from, 2026-09-04.
+# classic makeup) that installer artwork and the taskbar icon derive from, 2026-09-05.
 MARKETING_IDLE_PORTRAIT_SHA256 = (
-    "83b710a15828a5a090140eb3e33ada6674e19bf319c6656cb4e566826f64a63d"
+    "ee2d32f67ecb00e183cc327d026ff677076a501b5fe087c0c9df9691f8f89dd6"
 )
-# installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-04.
+# The attentive dashboard representative is also materialized so every
+# composed half-body portrait consumer has a hash-pinned output, 2026-09-05.
+MARKETING_ATTENTIVE_PORTRAIT_SHA256 = (
+    "407e39ed9b15feb8c59fc890342270d89ae596f21264886a6e64228c1fe0c7f3"
+)
+# installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-05.
 WIZARD_HERO_SHA256 = (
-    "e3933328a3494f4e9c519e53299e2f2d6ac32f1fda4b7f163a1c6eade7aceef2"
+    "8aefb038dfffa308a490b4af1a3b7899aaa51a13876f75eb5a7741adcba1a327"
 )
-# installer/artwork/wizard-small.png: built from the generation-2 composite, 2026-09-04.
+# installer/artwork/wizard-small.png: built from the generation-2 composite, 2026-09-05.
 WIZARD_SMALL_SHA256 = (
-    "3de630264cf73df1f1cf7a53a513405a84644d3007f33bf07bc65da10db18d37"
+    "edec42e51a72de6a3a9a500554b26110274eb2f26b5c191e52a9b3e131c39cc6"
 )
-# assets/mohan-taskbar-icon.png: built from the generation-2 composite, 2026-09-04.
+# assets/mohan-taskbar-icon.png: built from the generation-2 composite, 2026-09-05.
 TASKBAR_ICON_PNG_SHA256 = (
-    "e7b3b15542cd17dc242eb1307a28d471e744475197a54233d8e84ae0cecc687a"
+    "e7e1277a41a1c6ef1cede0385a3545555232f7e4c8725decd7714a53fc694530"
 )
-# assets/mohan-halfbody.ico: built from the generation-2 composite, 2026-09-04.
+# assets/mohan-halfbody.ico: built from the generation-2 composite, 2026-09-05.
 WINDOWS_ICON_SHA256 = (
-    "00bab321a138e6c154d4bd98a95fde955edc7b6e66cb44bede64c3730921a295"
+    "198042516cb45ec4a5b8f33fd01280b3906cce0bd2a43f63d766924adb27d3be"
 )
-# The README expression cards and the canonical idle portrait, rendered composed.
+# The README expression cards, the canonical idle portrait, and the attentive
+# dashboard representative, all rendered composed.
 MARKETING_PORTRAITS = (
     "proud_front.png",
     "thinking_front.png",
@@ -199,8 +207,182 @@ MARKETING_PORTRAITS = (
     "gentle_smile_front.png",
     "worried_front.png",
     "idle_front.png",
+    "attentive_front.png",
 )
 PORTRAIT_SIZE = (1254, 1254)
+MEDIA_PROVENANCE_PATH = ROOT / "docs/media/MEDIA-PROVENANCE.json"
+README_MEDIA_PATTERN = re.compile(
+    r"docs/media/[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*"
+)
+README_AUTO_MEDIA_SHA256 = {
+    "docs/media/expressions.png": (
+        "c0d8b96c47f1516444f46519a55fe69fd1063f2cf027540e8ff8422620fd04a2"
+    ),
+    "docs/media/first-run-wizard.png": (
+        "8d4f5c1912a4947d6d315fa0bf617d1ce6cdb8ca73aa8e0ccea7d4c2e0bcf927"
+    ),
+    "docs/media/long-term-memory.png": (
+        "31d8f213dc76c0fa8b9888aaf284b63ba7ef3022a4b3fc4cebb5a04091ca2073"
+    ),
+    "docs/media/mohan-demo.mp4": (
+        "f3a3614447e7f743111845c0e33de118a659070c738fea5704c31041002cb9bd"
+    ),
+    "docs/media/mohan-hero.png": (
+        "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb"
+    ),
+    "docs/media/portraits/gentle_smile_front.png": (
+        "1b0b5f3032e1aef804879209e790756bebbd10a3f2203d2df39aa338897ec5f1"
+    ),
+    "docs/media/portraits/mock_hit_front.png": (
+        "ec72532ad8bb0aa33a1abaef4697a94b82f244538cbbc6ff523845970bb912af"
+    ),
+    "docs/media/portraits/proud_front.png": (
+        "06f2782f9d52f8eda06b86093724b152ad28f080df877a53ce70699bb40c1a57"
+    ),
+    "docs/media/portraits/shy_cute_front.png": (
+        "fd234b4847677b2ffa56743cc90362e6aea494cdb43179425db68eb24c99e872"
+    ),
+    "docs/media/portraits/thinking_front.png": (
+        "12ca54d6fa4563310f51aa4914824b1574863a876431ef0762c1cd79d10fef19"
+    ),
+    "docs/media/portraits/worried_front.png": (
+        "0fd45d79ee5a61b851232830cea39e97aef4dda7b1047a7d274ad5878acdcf8f"
+    ),
+    "docs/media/security-permissions.png": (
+        "37c6f232c6257387370c6581fb98025f1324a8c675cfaa7a1ebf68556fc7f5a2"
+    ),
+    "docs/media/support-mock-hit.png": (
+        "809490a94b627b100ec127ec352b3a7f073345bc051374685a349e0bc16cec64"
+    ),
+    "docs/media/support-proud.png": (
+        "63303ac49ab5a42fced7d1b9b54939f0b5bd2c098442439514f741c9cb252115"
+    ),
+    "docs/media/support-shy-aligned.png": (
+        "8910511e5586f9a936a6a175da9199e8586222efe2278ca94089d77dd7665996"
+    ),
+    "docs/media/tasks-and-ideas.png": (
+        "042402392dfdce1725b100d4ec34ef75d717658d769200353070d913d79ee482"
+    ),
+    "docs/media/voice-modes.png": (
+        "5b563792cf056d2a99692cd5d58bf3bb5550b834c39fdde30bad9164d1def571"
+    ),
+}
+
+
+def _readme_media_references() -> set[str]:
+    return set(README_MEDIA_PATTERN.findall(read("README.md")))
+
+
+def _assert_media_provenance(manifest: dict[str, object]) -> None:
+    assert manifest.get("schema_version") == 1
+    assert manifest.get(
+        "generation_source"
+    ) == "domain/constants.py:POSE_ATLAS_GENERATION"
+    entries = manifest.get("entries")
+    assert isinstance(entries, dict)
+    references = _readme_media_references()
+    assert set(entries) == references, (
+        "README media provenance mismatch: "
+        f"missing={sorted(references - set(entries))}, "
+        f"unexpected={sorted(set(entries) - references)}"
+    )
+
+    stale: list[str] = []
+    auto_entries: set[str] = set()
+    for relative, metadata in sorted(entries.items()):
+        assert isinstance(relative, str)
+        assert isinstance(metadata, dict), relative
+        path = ROOT / relative
+        assert path.is_file(), f"missing README media file: {relative}"
+        generator = metadata.get("generator")
+        assert isinstance(generator, str) and generator.strip(), relative
+        generation = metadata.get("generation")
+        assert isinstance(generation, int) and not isinstance(generation, bool), relative
+        digest = metadata.get("sha256")
+        assert isinstance(digest, str) and re.fullmatch(r"[0-9a-f]{64}", digest), relative
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, relative
+        auto_regenerable = metadata.get("auto_regenerable")
+        assert isinstance(auto_regenerable, bool), relative
+        if auto_regenerable:
+            auto_entries.add(relative)
+            if generation != POSE_ATLAS_GENERATION:
+                stale.append(relative)
+        else:
+            reason = metadata.get("reason")
+            assert isinstance(reason, str) and reason.strip(), relative
+
+    assert auto_entries == set(README_AUTO_MEDIA_SHA256)
+    for relative, expected in README_AUTO_MEDIA_SHA256.items():
+        assert entries[relative]["sha256"] == expected, relative
+    if stale:
+        raise AssertionError(
+            "README media entries behind "
+            f"POSE_ATLAS_GENERATION={POSE_ATLAS_GENERATION}: "
+            + ", ".join(stale)
+        )
+
+
+def test_readme_media_provenance() -> None:
+    manifest = json.loads(MEDIA_PROVENANCE_PATH.read_text(encoding="utf-8"))
+    _assert_media_provenance(manifest)
+
+
+def test_readme_media_provenance_rejects_stale_auto_generation() -> None:
+    manifest = json.loads(MEDIA_PROVENANCE_PATH.read_text(encoding="utf-8"))
+    entries = manifest["entries"]
+    target = "docs/media/mohan-hero.png"
+    original_generation = entries[target]["generation"]
+    entries[target]["generation"] = 1
+    try:
+        _assert_media_provenance(manifest)
+    except AssertionError as error:
+        message = str(error)
+        assert target in message
+        assert f"POSE_ATLAS_GENERATION={POSE_ATLAS_GENERATION}" in message
+    else:
+        raise AssertionError("stale auto-regenerable media was accepted")
+    finally:
+        entries[target]["generation"] = original_generation
+
+
+def test_readme_media_generation_tools_use_runtime_composition() -> None:
+    renderer = read("tools/render_marketing_portraits.py")
+    capture = read("tools/capture_readme_media.py")
+    recorder = read("tools/record_demo_video.py")
+    assert_contains(
+        renderer,
+        (
+            "ActiveOutfitOverlay(",
+            "--crop-alpha",
+            "--content-size",
+            "--content-offset",
+        ),
+    )
+    assert_contains(
+        capture,
+        (
+            "ActiveOutfitOverlay",
+            "grab_widget_image",
+            'render_portrait(overlay, "idle_front")',
+            'render_portrait(overlay, "attentive_front")',
+            'compose_expression_showcase(output_dir / "expressions.png", overlay)',
+            "render_all(",
+        ),
+    )
+    assert_contains(
+        recorder,
+        (
+            'os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")',
+            '"Microsoft Yating"',
+            "synthesize_windows_speech_to_wave",
+            "grab_widget_image",
+            'f"frame-{frame_index:06d}.png"',
+            '"-framerate"',
+            '"libx264"',
+            '"-ac"',
+            '"-ar"',
+        ),
+    )
 
 
 def test_inno_setup_and_artwork_contract() -> None:
@@ -249,6 +431,9 @@ def test_inno_setup_and_artwork_contract() -> None:
     portrait = ROOT / "docs/media/portraits/idle_front.png"
     assert_image(portrait, PORTRAIT_SIZE)
     assert hashlib.sha256(portrait.read_bytes()).hexdigest() == MARKETING_IDLE_PORTRAIT_SHA256
+    attentive = ROOT / "docs/media/portraits/attentive_front.png"
+    assert_image(attentive, PORTRAIT_SIZE)
+    assert hashlib.sha256(attentive.read_bytes()).hexdigest() == MARKETING_ATTENTIVE_PORTRAIT_SHA256
     for consumer in ("infrastructure/face_assets.py", "tools/build_installer_artwork.py"):
         content = read(consumer)
         assert "idle_front.png" in content
@@ -671,6 +856,9 @@ def main() -> None:
     test_windows_taskbar_icon_contract()
     test_wix_source_and_localization_contract()
     test_packaging_tools_and_public_media()
+    test_readme_media_provenance()
+    test_readme_media_provenance_rejects_stale_auto_generation()
+    test_readme_media_generation_tools_use_runtime_composition()
     test_readme_language_and_contribution_contract()
     test_portable_website_block()
     test_release_metadata_and_website_automation()

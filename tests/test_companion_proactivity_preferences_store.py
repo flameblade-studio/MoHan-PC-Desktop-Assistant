@@ -24,6 +24,8 @@ lazy from infrastructure.companion_proactivity_preferences_store import (
 
 BRIEF_ABSENCE_SECONDS = 1200
 LONG_WAIT_SECONDS = 10800
+EXPECTED_BRIEF_ABSENCE_SECONDS = 600
+EXPECTED_LONG_WAIT_SECONDS = 3600
 
 
 class MemorySettings:
@@ -31,15 +33,19 @@ class MemorySettings:
         self,
         values: Mapping[str, object] | None = None,
         *,
+        fail_read: bool = False,
         fail_write: bool = False,
         fail_restore: bool = False,
     ) -> None:
         self.values = copy.deepcopy(dict(values or {}))
+        self.fail_read = fail_read
         self.fail_write = fail_write
         self.fail_restore = fail_restore
         self.write_calls = 0
 
     def read(self, keys: tuple[str, ...]) -> Mapping[str, object]:
+        if self.fail_read:
+            raise RuntimeError("PRIVATE-READ-CONTENT")
         return {key: self.values[key] for key in keys if key in self.values}
 
     def snapshot(self, keys: tuple[str, ...]) -> dict[str, object]:
@@ -159,11 +165,37 @@ def assert_atomic_failure_rolls_back_and_hides_backend_content() -> None:
         raise AssertionError("failing rollback unexpectedly succeeded")
 
 
+def assert_backend_read_failure_preserves_last_value_and_notifies_once() -> None:
+    settings = MemorySettings(
+        {
+            STORE_SCHEMA_KEY: STORE_SCHEMA_VERSION,
+            MASTER_ENABLED_KEY: False,
+            BRIEF_ABSENCE_SECONDS_KEY: EXPECTED_BRIEF_ABSENCE_SECONDS,
+            LONG_WAIT_SECONDS_KEY: EXPECTED_LONG_WAIT_SECONDS,
+        }
+    )
+    store = CompanionProactivityPreferencesStore(settings)
+    expected = store.load()
+    settings.fail_read = True
+
+    assert store.load() == expected
+    assert store.load() == expected
+    assert store.consume_load_error_message() is not None
+    assert store.consume_load_error_message() is None
+
+    settings.fail_read = False
+    store.save(expected)
+    assert settings.values[MASTER_ENABLED_KEY] is False
+    assert settings.values[BRIEF_ABSENCE_SECONDS_KEY] == EXPECTED_BRIEF_ABSENCE_SECONDS
+    assert settings.values[LONG_WAIT_SECONDS_KEY] == EXPECTED_LONG_WAIT_SECONDS
+
+
 def run() -> None:
     assert_staged_save_cancel_and_round_trip()
     assert_legacy_migration_preserves_source_and_unrelated_values()
     assert_corrupt_database_values_fail_closed()
     assert_atomic_failure_rolls_back_and_hides_backend_content()
+    assert_backend_read_failure_preserves_last_value_and_notifies_once()
     print("COMPANION_PROACTIVITY_PREFERENCES_STORE_OK")
 
 

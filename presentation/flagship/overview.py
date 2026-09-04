@@ -14,6 +14,12 @@ lazy from PySide6.QtWidgets import (
 
 lazy from domain.safe_error_localization import safe_error_message
 lazy from infrastructure.backup_manager import BackupManager
+lazy from presentation.lingxiao_themes import (
+    DEFAULT_THEME_ID,
+    THEME_IDS,
+    THEME_SETTING_KEY,
+    canonical_theme_id,
+)
 
 __all__ = ("FlagshipOverviewMixin",)
 
@@ -65,7 +71,7 @@ class FlagshipOverviewMixin:
         return page
 
     def _accessibility_section(self) -> QWidget:
-        """Visible writers for ``flagship_high_contrast``/``flagship_ui_scale``.
+        """Visible writers for theme and accessibility settings.
 
         Both keys were read by the flagship and dashboard themes but had no
         writer anywhere in the UI, so the accessibility options were dead.
@@ -90,6 +96,15 @@ class FlagshipOverviewMixin:
             self.flagship_ui_scale.addItem(label, value)
         self.flagship_ui_scale.setAccessibleName(self._t("介面縮放"))
         form.addRow(self._t("介面縮放"), self.flagship_ui_scale)
+        self.flagship_theme = QComboBox()
+        for theme_id, label in (
+            (THEME_IDS[0], self._t("墨金・凌霄")),
+            (THEME_IDS[1], self._t("霧靄青瓷")),
+            (THEME_IDS[2], self._t("赤焰劍光")),
+        ):
+            self.flagship_theme.addItem(label, theme_id)
+        self.flagship_theme.setAccessibleName(self._t("凌霄主題"))
+        form.addRow(self._t("凌霄主題"), self.flagship_theme)
         accessibility_note = QLabel(
             self._t("保存設定後立即套用於旗艦中心；主控台重新啟動後套用。")
         )
@@ -110,6 +125,12 @@ class FlagshipOverviewMixin:
             ),
         )
         self.flagship_ui_scale.setCurrentIndex(closest_index)
+        stored_theme = canonical_theme_id(
+            self.db.setting(THEME_SETTING_KEY, DEFAULT_THEME_ID)
+        )
+        self.flagship_theme.setCurrentIndex(
+            max(0, self.flagship_theme.findData(stored_theme))
+        )
 
     def create_backup(self) -> None:
         try:
@@ -144,14 +165,19 @@ class FlagshipOverviewMixin:
         remote_text = self._t(
             "運作中" if self.remote_server and self.remote_server.running else "未啟用"
         )
-        self.health_summary.setText(
-            self._t(
-                "Home Assistant：{home}\n遠端服務：{remote}\n"
-                "已啟用工作流程：{workflows}\n有效配對裝置：{devices}\n"
-                "安全狀態：高風險操作不允許免確認；任意命令列與付款永久禁止。",
-                home=ha_text,
-                remote=remote_text,
-                workflows=workflow_count,
-                devices=paired_count,
-            )
+        summary = self._t(
+            "Home Assistant：{home}\n遠端服務：{remote}\n"
+            "已啟用工作流程：{workflows}\n有效配對裝置：{devices}\n"
+            "安全狀態：高風險操作不允許免確認；任意命令列與付款永久禁止。",
+            home=ha_text,
+            remote=remote_text,
+            workflows=workflow_count,
+            devices=paired_count,
         )
+        if getattr(
+            getattr(self, "backup_manager", None),
+            "automatic_backup_failed",
+            False,
+        ):
+            summary += "\n" + self._t("自動備份失敗")
+        self.health_summary.setText(summary)

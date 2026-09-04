@@ -16,6 +16,11 @@ lazy from infrastructure.db import StudioDB, StudioDBSettingsPort
 lazy from infrastructure.performance_preferences_store import (
     PerformancePreferencesStore,
 )
+lazy from presentation.lingxiao_themes import (
+    DEFAULT_THEME_ID,
+    THEME_SETTING_KEY,
+    palette_for_theme,
+)
 
 TOUCHED_AWAY_MINUTES = 7
 EXTERNAL_WELCOME_SECONDS = 300
@@ -23,6 +28,7 @@ EXTERNAL_SILENCE_SECONDS = 50 * 60
 TOUCHED_SILENCE_MINUTES = 31
 TOUCHED_INTENSITY = 80
 SELECTED_SCALE = 1.3
+SELECTED_THEME = "crimson"
 
 
 @pytest.fixture
@@ -58,6 +64,7 @@ def test_proactive_controls_live_inside_the_control_center(center_env) -> None:
         center.performance_intensity,
         center.flagship_high_contrast,
         center.flagship_ui_scale,
+        center.flagship_theme,
     ):
         assert center.isAncestorOf(control)
     # The dead remote-tab duplicate of the proactivity master switch is gone;
@@ -141,13 +148,20 @@ def test_performance_card_saves_through_the_typed_store(center_env) -> None:
     assert saved.camera_context_enabled is False
 
 
-def test_accessibility_controls_write_contrast_and_scale(center_env) -> None:
+def test_accessibility_controls_write_contrast_scale_and_theme(center_env) -> None:
     db, center = center_env
     assert db.setting("flagship_high_contrast", None) is None
+    assert db.setting(THEME_SETTING_KEY, DEFAULT_THEME_ID) == DEFAULT_THEME_ID
     center.flagship_high_contrast.setChecked(True)
     scale_index = center.flagship_ui_scale.findData(SELECTED_SCALE)
+    theme_index = center.flagship_theme.findData(SELECTED_THEME)
     assert scale_index >= 0
+    assert theme_index >= 0
     center.flagship_ui_scale.setCurrentIndex(scale_index)
+    center.flagship_theme.setCurrentIndex(theme_index)
     assert center.save_draft_settings() is True
     assert db.setting("flagship_high_contrast") is True
     assert float(db.setting("flagship_ui_scale")) == SELECTED_SCALE
+    assert db.setting(THEME_SETTING_KEY) == SELECTED_THEME
+    selected_palette = palette_for_theme(SELECTED_THEME, high_contrast=True)
+    assert selected_palette.gold in center.styleSheet()

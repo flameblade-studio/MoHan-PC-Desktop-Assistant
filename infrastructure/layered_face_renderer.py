@@ -23,12 +23,13 @@ lazy from domain.companion_animation_contract import (
     gesture_portrait_expression,
     outfit_silhouette,
 )
-lazy from domain.face_rig import FaceMotionFrame, Viseme
+lazy from domain.face_rig import EyeState, FaceMotionFrame, Viseme, eye_state_for_blink
 lazy from infrastructure.layered_face_assets import (
     LayeredFaceManifest,
     LayeredFacePose,
     load_layered_face_assets,
 )
+lazy from infrastructure.face_renderer import recover_speech_mask_edge_source
 
 MOUTH_APERTURE_THRESHOLD = 0.01
 SCALE_EPSILON = 1e-4
@@ -110,6 +111,7 @@ class LayeredParametricFaceRenderer:
         self._seam_region_cache: dict[str, QRegion] = {}
         self._face_region_cache: dict[str, QRegion] = {}
         self._mouth_mask_cache: dict[str, QPixmap] = {}
+        self._runtime_mouth_mask_cache: OrderedDict[tuple, QPixmap] = OrderedDict()
 
     def _manifest_or_load(self) -> LayeredFaceManifest:
         """Return the injected manifest, or lazily load the authored assets."""
@@ -193,10 +195,23 @@ class LayeredParametricFaceRenderer:
         # anchor check fail (or draw ~2.7x off), so installed outfits never
         # appeared on the half-body poses at all.
         if self._outfit_overlay is not None:
-            composed = self._outfit_overlay.apply(
-                composed,
-                outfit_silhouette(motion.expression, motion.pose.value),
+            suppress_makeup_slots = (
+                frozenset({"eyes"})
+                if eye_state_for_blink(motion.expression_shape.blink)
+                is EyeState.CLOSED
+                else frozenset()
             )
+            silhouette = outfit_silhouette(motion.expression, motion.pose.value)
+            if suppress_makeup_slots:
+                composed = self._outfit_overlay.apply(
+                    composed,
+                    silhouette,
+                    suppress_makeup_slots=suppress_makeup_slots,
+                )
+            else:
+                # Preserve the legacy port signature for open-eye callers and
+                # lightweight test doubles that implement the original port.
+                composed = self._outfit_overlay.apply(composed, silhouette)
         result = (
             composed
             if composed.size() == base.size()
@@ -212,10 +227,32 @@ class LayeredParametricFaceRenderer:
         mouth_source = getattr(layers, "mouth_source", None)
         mouth_mask = getattr(layers, "mouth_mask", None)
         if actual_aperture > MOUTH_APERTURE_THRESHOLD:
+            runtime_mouth_mask = mouth_mask
+            if gesture is None and mouth_source is not None and mouth_mask is not None:
+                cache_key = (
+                    motion.pose.value,
+                    result.width(),
+                    result.height(),
+                    int(mouth_source.cacheKey()),
+                    int(mouth_mask.cacheKey()),
+                )
+                runtime_mouth_mask = self._runtime_mouth_mask_cache.get(cache_key)
+                if runtime_mouth_mask is None:
+                    runtime_mouth_mask = recover_speech_mask_edge_source(
+                        mouth_mask,
+                        result,
+                        mouth_source,
+                        getattr(layers, "mouth_rect", None),
+                    )
+                    self._runtime_mouth_mask_cache[cache_key] = runtime_mouth_mask
+                    while len(self._runtime_mouth_mask_cache) > MAX_CACHED_MASK_BOUNDS:
+                        self._runtime_mouth_mask_cache.popitem(last=False)
+                else:
+                    self._runtime_mouth_mask_cache.move_to_end(cache_key)
             self._paint_masked(
                 result,
                 mouth_source,
-                mouth_mask,
+                runtime_mouth_mask,
                 max(0.0, min(1.0, actual_aperture / 0.18)),
             )
         return result

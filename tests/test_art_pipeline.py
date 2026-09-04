@@ -179,6 +179,34 @@ def test_headwear_cleanup_keeps_linked_four_pixel_chain_and_rejects_warm_drift()
     assert not cleaned[:, 35:38].any()
 
 
+def test_headwear_top_residue_rule_is_narrow_and_keeps_silver() -> None:
+    image = np.zeros((CANVAS_SIZE, CANVAS_SIZE, 4), dtype=np.uint8)
+    image[400:421, 400:421] = (90, 90, 90, 255)  # unrelated large anchor
+    image[114:118, 633:636] = (90, 90, 90, 255)  # measured neutral residue
+    image[120:124, 670:673] = (90, 90, 90, 255)  # measured neutral residue
+    image[130:135, 650:654] = (180, 180, 180, 255)  # legitimate silver
+    mask = (image[:, :, 3] > 0).astype(np.uint8) * 255
+
+    cleaned = extract_module._remove_headwear_top_residues(mask, image)
+
+    assert not cleaned[114:118, 633:636].any()
+    assert not cleaned[120:124, 670:673].any()
+    assert np.all(cleaned[130:135, 650:654] == OPAQUE_ALPHA)
+
+
+def test_headwear_chain_bridge_fills_only_the_measured_short_gap() -> None:
+    layer = np.zeros((32, 32, 4), dtype=np.uint8)
+    layer[10:18, 14:22] = (180, 180, 180, 255)  # 64-pixel anchor
+    layer[19:23, 14] = (180, 180, 180, 255)  # four-pixel fine link
+    mask = layer[:, :, 3].copy()
+
+    bridged, count = extract_module._bridge_headwear_chain(layer, mask)
+
+    assert count == 1
+    assert bridged[18, 14, 3] == extract_module.HEADWEAR_CHAIN_BRIDGE_ALPHA
+    assert np.all(bridged[19:23, 14, 3] == OPAQUE_ALPHA)
+
+
 def test_owner_small_component_cleanup_keeps_transitive_chain_and_removes_island() -> None:
     alpha = np.zeros((96, 96), dtype=np.uint8)
     alpha[10:30, 10:30] = 255  # area>60 anchor
@@ -202,7 +230,6 @@ def test_owner_small_component_cleanup_keeps_transitive_chain_and_removes_island
 def test_owner_small_component_roi_keeps_half_and_full_body_contracts() -> None:
     assert speck_roi_for_shape((1254, 1254)) == HEAD_SPECK_ROI
     assert speck_roi_for_shape((1536, 1024)) == FULL_BODY_SPECK_ROI
-
 
 def test_reference_is_materialized_from_git_commit(tmp_path: Path) -> None:
     repository = tmp_path / "repo"

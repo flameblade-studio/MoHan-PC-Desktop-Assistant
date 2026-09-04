@@ -77,6 +77,7 @@ class AssetPolicy:
     component_type: str
     path: Path
     sha256: str
+    size_bytes: int
     source: str
     source_revision: str
     license_expression: str
@@ -275,6 +276,13 @@ def _asset_from_row(row: JsonObject, index: int) -> AssetPolicy:
     sha256 = _required_string(row, "sha256", context).casefold()
     if re.fullmatch(r"[0-9a-f]{64}", sha256) is None:
         raise ValueError(f"{context}.sha256 must be a SHA-256 digest.")
+    size_bytes = row.get("size_bytes")
+    if (
+        isinstance(size_bytes, bool)
+        or not isinstance(size_bytes, int)
+        or size_bytes <= 0
+    ):
+        raise ValueError(f"{context}.size_bytes must be a positive integer.")
     source = _required_string(row, "source", context)
     if not source.startswith("https://"):
         raise ValueError(f"{context}.source must use HTTPS.")
@@ -284,6 +292,7 @@ def _asset_from_row(row: JsonObject, index: int) -> AssetPolicy:
         component_type=component_type,
         path=relative_path,
         sha256=sha256,
+        size_bytes=size_bytes,
         source=source,
         source_revision=_required_string(row, "source_revision", context),
         license_expression=_required_string(row, "license", context),
@@ -729,6 +738,10 @@ def _asset_component(asset: AssetPolicy) -> JsonObject:
             "name": "com.flamebladestudio.asset.source-revision",
             "value": source_revision,
         },
+        {
+            "name": "com.flamebladestudio.asset.size-bytes",
+            "value": str(asset.size_bytes),
+        },
     ]
     return {
         "type": asset.component_type,
@@ -767,6 +780,8 @@ def _add_and_validate_assets(
             raise FileNotFoundError(f"SBOM asset is not packaged: {asset.path.as_posix()}")
         if _sha256(path) != asset.sha256:
             raise ValueError(f"SBOM asset hash drifted: {asset.path.as_posix()}")
+        if path.stat().st_size != asset.size_bytes:
+            raise ValueError(f"SBOM asset size drifted: {asset.path.as_posix()}")
         if asset.bom_ref in existing_refs or asset.bom_ref in refs:
             raise ValueError(f"Duplicate CycloneDX asset bom-ref: {asset.bom_ref}.")
         components.append(_asset_component(asset))
@@ -913,6 +928,7 @@ def _asset_report(assets: tuple[AssetPolicy, ...]) -> list[JsonObject]:
             "name": asset.name,
             "package_path": asset.path.as_posix(),
             "sha256": asset.sha256,
+            "size_bytes": asset.size_bytes,
             "source": asset.source,
             "source_revision": asset.source_revision,
             "type": asset.component_type,
