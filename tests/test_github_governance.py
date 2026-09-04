@@ -11,6 +11,7 @@ lazy from tempfile import TemporaryDirectory
 
 ROOT = Path(__file__).resolve().parents[1]
 MIN_PREVIEW_BYTES = 100_000
+LANGUAGE_COUNT = 4
 
 
 def read(relative: str) -> str:
@@ -86,7 +87,15 @@ def test_pr_language_governance_and_dependabot_normalization() -> None:
         ".github/workflows/dependabot-title-normalization.yml"
     )
     checker = read("tools/check_four_language_pr.py")
+    config = json.loads(read("release-please-config.json"))
+    title_pattern = config["pull-request-title-pattern"]
 
+    assert title_pattern == "${version} 發版／发版／Release／リリース"
+    assert len(title_pattern.split("／")) == LANGUAGE_COUNT
+    assert title_pattern.replace("${version}", "4.5.1") == (
+        "4.5.1 發版／发版／Release／リリース"
+    )
+    assert "${component}" not in title_pattern
     assert "RELEASE_PLEASE_PR_EXEMPT" not in language_guard
     assert "RELEASE_PLEASE_BODY_EXEMPT" in language_guard
     assert "RELEASE_PLEASE_PR_EXEMPT" not in checker
@@ -105,10 +114,11 @@ def test_pr_language_governance_and_dependabot_normalization() -> None:
     assert '--title "$normalized_title"' in normalizer_workflow
     assert "bash -c" not in normalizer_workflow
     assert_action_pinned(normalizer_workflow, "actions/checkout")
+    assert_action_pinned(normalizer_workflow, "actions/setup-python")
 
     release_payload = {
         "pull_request": {
-            "title": "發版 4.5.1／发版 4.5.1／Release 4.5.1／リリース 4.5.1",
+            "title": "4.5.1 發版／发版／Release／リリース",
             "body": "",
             "head": {"ref": "release-please--branches--main"},
             "user": {"login": "github-actions[bot]"},

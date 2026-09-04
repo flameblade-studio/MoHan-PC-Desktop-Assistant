@@ -103,7 +103,7 @@ def test_release_please_body_exemption_requires_bot_author_and_four_language_tit
     # has to satisfy the four-language contract.
     assert _run_main_with_payload(payload) == 1
 
-    payload["pull_request"]["title"] = "發版 4.5.1／发版 4.5.1／Release 4.5.1／リリース 4.5.1"
+    payload["pull_request"]["title"] = "4.5.1 發版／发版／Release／リリース"
     assert _run_main_with_payload(payload) == 0
 
     payload["pull_request"]["head"]["ref"] = "feature/normal-branch"
