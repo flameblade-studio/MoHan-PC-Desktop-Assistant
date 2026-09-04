@@ -25,6 +25,13 @@ BUILTIN_MAKEUP_ITEM_ID = "mohan-signature"
 BUILTIN_MAKEUP_VARIANTS = ("classic", "light")
 OFFICIAL_OUTFIT_PACK_ID = "mohan.official.blue-white-hanfu"
 OFFICIAL_OUTFIT_ENSEMBLE_ID = "blue-white-hanfu"
+# Owner-accepted geometry contract: at this rear three-quarter view the head
+# and bun occlude the silver hairpiece, leaving only this small visible tail.
+OFFICIAL_HEADWEAR_NEAR_EMPTY_CONTRACT = (
+    "yaw-105-pitch+00",
+    73,
+    (587, 145, 30, 13),
+)
 # The slots the official default ensemble fills; accessories stay bare by default.
 OFFICIAL_OUTFIT_CATEGORIES = frozenset({"garment", "hairstyle", "headwear"})
 # Ids reserved for archives under the official pack root; a user import may never shadow them.

@@ -26,6 +26,8 @@ Manifest 的 `source` 必須記錄 `kind`（`original`、`concept`、`reference-
 
 刪除使用 typed remove API。內建預設永不可刪；任何正在 active 或 preview 的單項或 ensemble，都必須先切換或還原內建才能刪除。刪除前會再次驗證安全 pack ID、檔名與 archive manifest ID 完全一致，然後只移除該自含單檔，不碰其他包、核心本體或個人資料。刪除後不再出現在清單。不存在 ID、路徑穿越、識別不符與損壞狀態都會 fail closed。若保存設定稍後指向已遺失的包，解析 API 明確回報 `missing` 並維持目前有效外觀；不會崩潰、默默改選、退回舊格式或套用另一個同名外觀。四語刪除確認由 UI 主線負責。
 
+官方包的合法近空幾何例外已登記：`headwear` 的 `silver-hairpiece`／`silver` 在 `yaw-105-pitch+00` 僅有 73 個 alpha>16 像素，緊密 bbox 為 `(587, 145, 30, 13)`；頭／髮髻的遮蔽使其只露出狹窄尾端，這是契約允許的合法近空層，不是錯誤裁切，未經擁有者裁決不得重產。
+
 ## 简体中文
 
 角色外观包是单一、自包含、可直接上传与下载的 ZIP 兼容 `.mohan-outfit` 容器。用户只需下载并选择一个文件；不得有附带文件夹、外部依赖包、网络下载、外部 URL 或跨包必需引用。每项 PNG、WebP 或安全 SVG 都必须位于同一 archive，并由 manifest 以 SHA-256、尺寸、anchor、z-order 与稳定 slot 完整引用。未引用、重复、缺漏、越权或危险成员一律拒绝。导入先完整验证，再在同一目标目录原子安装；失败不留下半套，也不破坏现有版本。安装只添加内容，不等于预览或启用；应用与保存由 UI 的全局 Save/Cancel 流程控制。
@@ -51,6 +53,8 @@ Manifest 的 `source` 必須記錄 `kind`（`original`、`concept`、`reference-
 Manifest 的 `source` 必须记录 `kind`（`original`、`concept`、`reference-derived`）、作者、许可与 `reference_included: false`。参考作品可作为灵感记录，但参考照片或作品素材不得直接打包。封装拒绝 Python、JavaScript、EXE、DLL、脚本、绝对／穿越路径、符号链接、加密成员、解压炸弹、超限尺寸，以及包含 script、事件、`foreignObject`、外部 URL、CSS `url()`、`data:`、DTD 或 entity 的 SVG。
 
 删除使用 typed remove API。内置默认永不可删除；任何正在 active 或 preview 的单项或 ensemble，都必须先切换或恢复内置才能删除。删除前会再次验证安全 pack ID、文件名与 archive manifest ID 完全一致，然后只移除该自包含单文件，不影响其他包、核心本体或个人数据。删除后不再出现在列表。不存在 ID、路径穿越、身份不符与损坏状态都会 fail closed。若保存设置后来指向已丢失的包，解析 API 明确返回 `missing` 并保持当前有效外观；不会崩溃、静默改选、退回旧格式或应用另一个同名外观。四语删除确认由 UI 主线负责。
+
+官方包的合法近空几何例外已登记：`headwear` 的 `silver-hairpiece`／`silver` 在 `yaw-105-pitch+00` 仅有 73 个 alpha>16 像素，紧密 bbox 为 `(587, 145, 30, 13)`；头部／发髻的遮挡使其只露出狭窄尾端，这是契约允许的合法近空层，不是错误裁切，未经所有者裁决不得重产。
 
 ## English
 
@@ -78,6 +82,8 @@ Manifest `source` records `kind` (`original`, `concept`, or `reference-derived`)
 
 Removal uses a typed API. Built-in defaults can never be removed. Any item or ensemble referenced by active or preview state must first be switched or restored to built-in. Before deletion, the core revalidates the safe pack ID and requires the filename and archive manifest ID to match exactly. It then removes only that self-contained file, never another package, core assets, or personal data. The package disappears from listings afterward. Missing IDs, traversal, identity mismatch, and corrupt state fail closed. If saved settings later reference a missing package, resolution explicitly reports `missing` and preserves the current valid look; it never crashes, silently changes identity, falls back to a legacy format, or applies a same-named item from another package. Four-language confirmation UI belongs to the main application.
 
+The official pack records a contract-accepted near-empty geometry exception: `headwear` item `silver-hairpiece`／`silver` at `yaw-105-pitch+00` has only 73 pixels above alpha>16, with tight bbox `(587, 145, 30, 13)`; the head and bun occlude the rest, leaving a narrow tail, so this is a legal near-empty layer rather than an accidental crop and must not be regenerated without owner approval.
+
 ## 日本語
 
 キャラクター外観パックは、単一で自己完結し、そのままアップロード／ダウンロードできる ZIP 互換 `.mohan-outfit` コンテナです。利用者がダウンロードして選ぶのは一つのファイルだけです。付属フォルダー、外部依存パッケージ、ネットワークダウンロード、外部 URL、必須の別パック参照は禁止です。すべての PNG、WebP、安全な SVG は同一 archive 内に置き、manifest が SHA-256、寸法、anchor、z-order、安定 slot で完全に参照します。未参照、重複、不足、権限外、危険なメンバーは拒否します。インポートは全体検証後に同一配置先でアトミックにインストールします。失敗時は半端なパックを残さず、既存版も壊しません。インストールは内容の追加だけで、プレビューと有効化は UI と全体 Save/Cancel が管理します。
@@ -103,3 +109,5 @@ Removal uses a typed API. Built-in defaults can never be removed. Any item or en
 Manifest の `source` は `kind`（`original`、`concept`、`reference-derived`）、作者、ライセンス、`reference_included: false` を記録します。参照作品は着想元として記録できますが、その写真や素材は同梱しません。Python、JavaScript、EXE、DLL、スクリプト、絶対／横断パス、シンボリックリンク、暗号化メンバー、解凍爆弾、過大寸法、および script、イベント、`foreignObject`、外部 URL、CSS `url()`、`data:`、DTD、entity を含む SVG は拒否します。
 
 削除には typed remove API を使用します。内蔵既定は削除できません。active または preview が参照する単項目や ensemble は、先に別の外観へ切り替えるか内蔵へ復元する必要があります。削除前に安全な pack ID を再検証し、ファイル名と archive manifest ID の完全一致を要求します。その後、対象の自己完結ファイルだけを削除し、他パック、コア本体、個人データには触れません。削除後は一覧から消えます。存在しない ID、パストラバーサル、識別不一致、破損状態は fail closed です。保存設定が後に欠落パックを参照した場合、解決 API は `missing` を明示し、現在の有効な外観を維持します。クラッシュ、暗黙の変更、旧形式への退避、同名の別外観適用は行いません。四言語の削除確認 UI は本体側が担当します。
+
+公式パックには契約上認められたほぼ空の形状例外を記録します：`headwear` の `silver-hairpiece`／`silver` は `yaw-105-pitch+00` で alpha>16 の画素が 73 個、密な bbox は `(587, 145, 30, 13)` だけです。頭部と髷が残りを遮り細い尾だけが見えるため、これは誤った切り抜きではなく合法な近空レイヤーであり、所有者の承認なしに再生成しません。

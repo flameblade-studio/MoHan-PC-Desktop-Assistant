@@ -35,6 +35,7 @@ lazy from domain.outfit_pack_makeup import builtin_makeup_pack_path, verify_make
 lazy from domain.outfit_pack_official import (
     BUILTIN_MAKEUP_ITEM_ID,
     BUILTIN_MAKEUP_PACK_ID,
+    OFFICIAL_HEADWEAR_NEAR_EMPTY_CONTRACT,
     OFFICIAL_OUTFIT_ENSEMBLE_ID,
     OFFICIAL_OUTFIT_PACK_ID,
     OFFICIAL_PACK_IDS,
@@ -48,6 +49,7 @@ EXPECTED_SILHOUETTES = 31
 EXPECTED_MAKEUP_VARIANTS = 2
 MAKEUP_SLOTS_PER_SILHOUETTE = 3
 OPAQUE = 255
+ALPHA_THRESHOLD = 16
 # A robe pixel counts as blue when its blue channel leads red by at least this much.
 BLUE_MARGIN = 40
 # A base pixel counts as grey when its channels agree within this tolerance.
@@ -97,6 +99,22 @@ def _member(archive_path: Path, category: str, silhouette: str, slot: str) -> st
     return next(asset.path for asset in item.variants[0].poses[silhouette] if asset.slot == slot)
 
 
+def _alpha_geometry(archive_path: Path, member: str) -> tuple[int, tuple[int, int, int, int]]:
+    with zipfile.ZipFile(archive_path) as archive:
+        image = QImage.fromData(archive.read(member), "PNG").convertToFormat(QImage.Format_RGBA8888)
+    assert not image.isNull(), member
+    width, height, stride = image.width(), image.height(), image.bytesPerLine()
+    raw = bytes(image.constBits())
+    points = []
+    for y in range(height):
+        for x, alpha in enumerate(raw[y * stride + 3 : y * stride + width * 4 : 4]):
+            if alpha > ALPHA_THRESHOLD:
+                points.append((x, y))
+    assert points
+    xs, ys = zip(*points, strict=True)
+    return len(points), (min(xs), min(ys), max(xs) - min(xs) + 1, max(ys) - min(ys) + 1)
+
+
 def test_official_packs_ship_sealed_and_valid() -> None:
     assert OUTFIT_PACK_PATH.is_file() and builtin_makeup_pack_path().is_file()
     outfit = inspect_outfit_pack(OUTFIT_PACK_PATH)
@@ -125,6 +143,12 @@ def test_official_packs_ship_sealed_and_valid() -> None:
         for assets in variant.poses.values()
     )
     verify_makeup_layers(builtin_makeup_pack_path())
+
+
+def test_yaw105_headwear_near_empty_geometry_is_owner_accepted() -> None:
+    silhouette, expected_pixels, expected_bbox = OFFICIAL_HEADWEAR_NEAR_EMPTY_CONTRACT
+    member = _member(OUTFIT_PACK_PATH, "headwear", silhouette, "headwear")
+    assert _alpha_geometry(OUTFIT_PACK_PATH, member) == (expected_pixels, expected_bbox)
 
 
 def test_fresh_profile_resolves_to_the_official_default(tmp_path: Path) -> None:
