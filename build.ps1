@@ -160,6 +160,7 @@ if (-not (Test-Path -LiteralPath $Abi3tCompatibilityDll)) {
 }
 
 $BuildInfo = Join-Path $ProjectRoot "build-info.json"
+$FontRoot = Join-Path $ProjectRoot "assets\fonts"
 @{
     version = $Version
     repository = "flameblade-studio/MoHan-PC-Desktop-Assistant"
@@ -176,6 +177,7 @@ try {
         --name "$AppName-$Version" `
         --icon "assets\mohan-halfbody.ico" `
         --add-data "assets;assets" `
+        --add-data "$FontRoot;assets/fonts" `
         --add-data "voice_listener.ps1;." `
         --add-data "LICENSE;." `
         --add-data "ASSETS-LICENSE.md;." `
@@ -237,6 +239,12 @@ if ($LASTEXITCODE -ne 0) {
 Copy-Item -LiteralPath (Join-Path $LauncherDist "$AppName-$Version.exe") `
     -Destination $PublicExecutable `
     -Force
+
+& $Python tools/verify_packaged_fonts.py `
+    "dist\$AppName-$Version"
+if ($LASTEXITCODE -ne 0) {
+    throw "MoHan $Version packaged font verification failed."
+}
 $env:PYTHON_JIT = "1"
 
 & $Python tools/verify_packaged_native_acceleration.py `

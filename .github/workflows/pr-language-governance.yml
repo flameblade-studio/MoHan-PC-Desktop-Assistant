@@ -15,30 +15,55 @@ jobs:
     name: 四語 PR 說明 / 四语 PR 说明 / Four-language PR body / 四言語 PR 本文
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
-      - name: Require minimum four-language PR metadata
+      - name: Require four-language PR title and body metadata
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          # Release Please auto-generates its release PRs with a single-language
-          # title and a robot body.  Those PRs are machine-authored version bumps,
-          # not human prose, so they are exempt from the four-language metadata
-          # requirement.  This prevents every automated release PR from failing
-          # the governance check and needing a manual title/body rewrite.
-          # The exemption is only for PRs actually authored by the GitHub
-          # Actions bot; a branch name alone must not bypass governance.
+          # Release Please 的標題是可控的版本識別資料，必須通過四語標題檢查，
+          # 才能讓自動發版在 main 歷史中留下四語標題。
+          # Release Please 的說明是機器產生的變更清單，不是人寫的敘述，
+          # 因此只豁免 body 的四語章節檢查，不豁免標題。
+          # 豁免仍須同時符合 release-please 分支與 github-actions[bot] 作者；
+          # 單靠分支名不能繞過治理。
           head_ref=$(jq -r '.pull_request.head.ref // ""' "$GITHUB_EVENT_PATH")
           pr_author=$(jq -r '.pull_request.user.login // ""' "$GITHUB_EVENT_PATH")
-          if [[ "$head_ref" == release-please--branches--* \
-                && "$pr_author" == "github-actions[bot]" ]]; then
-            echo "RELEASE_PLEASE_PR_EXEMPT"
-            exit 0
-          fi
           title=$(jq -r '.pull_request.title // ""' "$GITHUB_EVENT_PATH")
           body=$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")
           # GitHub's web editor stores CRLF. Normalize line endings before
           # applying exact, platform-independent heading checks.
           title=${title//$'\r'/}
           body=${body//$'\r'/}
+          # Dependabot title normalization writes through a separate trusted
+          # workflow.  GITHUB_TOKEN edits do not create an automatic `edited`
+          # workflow run, so read the live title before validating this run.
+          # Human and other bot PRs keep the original event-driven behavior.
+          if [[ "$pr_author" == "dependabot[bot]" && "$title" != *'／'* ]]; then
+            live_title="$title"
+            for attempt in {1..12}; do
+              live_title=$(gh pr view "$PR_NUMBER" \
+                --repo "$GITHUB_REPOSITORY" \
+                --json title \
+                --jq '.title')
+              if [[ "$live_title" != "$title" ]]; then
+                break
+              fi
+              sleep 5
+            done
+            if [[ "$live_title" != "$title" ]]; then
+              title=${live_title//$'\r'/}
+              current_event="$RUNNER_TEMP/pr-event-current.json"
+              jq --arg current_title "$title" \
+                '.pull_request.title = $current_title' \
+                "$GITHUB_EVENT_PATH" > "$current_event"
+              printf 'GITHUB_EVENT_PATH=%s\n' "$current_event" >> "$GITHUB_ENV"
+            fi
+          fi
           IFS='／' read -r -a title_parts <<< "$title"
           if [[ ${#title_parts[@]} -ne 4 ]]; then
             echo "標題必須有四段翻譯 / 标题必须有四段翻译 / Title requires four translations / タイトルには四つの翻訳が必要です" >&2
@@ -50,6 +75,11 @@ jobs:
               exit 1
             fi
           done
+          if [[ "$head_ref" == release-please--branches--* \
+                && "$pr_author" == "github-actions[bot]" ]]; then
+            echo "RELEASE_PLEASE_BODY_EXEMPT"
+            exit 0
+          fi
           headings=(
             "## 繁體中文"
             "## 简体中文"

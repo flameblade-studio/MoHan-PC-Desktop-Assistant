@@ -89,9 +89,14 @@ class VoiceActivityResult:
     state: VoiceActivityState
     rms: float
     confidence: float
+    degraded: bool = False
 
     def __post_init__(self) -> None:
-        if self.rms < 0.0 or not 0.0 <= self.confidence <= 1.0:
+        if (
+            type(self.degraded) is not bool
+            or self.rms < 0.0
+            or not 0.0 <= self.confidence <= 1.0
+        ):
             raise ValueError("voice activity measurements are invalid")
 
 

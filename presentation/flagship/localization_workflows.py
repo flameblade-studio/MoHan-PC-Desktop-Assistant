@@ -27,6 +27,16 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
     "流程名稱": translations("流程名称", "Workflow name", "ワークフロー名"),
     "啟動方式": translations("启动方式", "Trigger", "起動条件"),
     "執行時間": translations("执行时间", "Run time", "実行時刻"),
+    "排程設定無法讀取": translations(
+        "排程设置无法读取",
+        "Schedule settings could not be read",
+        "スケジュール設定を読み取れません",
+    ),
+    "自動備份失敗": translations(
+        "自动备份失败",
+        "Automatic backup failed",
+        "自動バックアップに失敗",
+    ),
     "每行一個步驟，格式：能力｜說明｜參數。\n範例：open_web｜開啟工作網站｜https://example.com\n範例：home_control｜開啟書房燈｜light.study,turn_on": translations(
         "每行一个步骤，格式：能力｜说明｜参数。\n"
         "示例：open_web｜打开工作网站｜https://example.com\n"

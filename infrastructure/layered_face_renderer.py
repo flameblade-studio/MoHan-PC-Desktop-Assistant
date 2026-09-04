@@ -23,7 +23,7 @@ lazy from domain.companion_animation_contract import (
     gesture_portrait_expression,
     outfit_silhouette,
 )
-lazy from domain.face_rig import FaceMotionFrame, Viseme
+lazy from domain.face_rig import EyeState, FaceMotionFrame, Viseme, eye_state_for_blink
 lazy from infrastructure.layered_face_assets import (
     LayeredFaceManifest,
     LayeredFacePose,
@@ -193,10 +193,23 @@ class LayeredParametricFaceRenderer:
         # anchor check fail (or draw ~2.7x off), so installed outfits never
         # appeared on the half-body poses at all.
         if self._outfit_overlay is not None:
-            composed = self._outfit_overlay.apply(
-                composed,
-                outfit_silhouette(motion.expression, motion.pose.value),
+            suppress_makeup_slots = (
+                frozenset({"eyes"})
+                if eye_state_for_blink(motion.expression_shape.blink)
+                is EyeState.CLOSED
+                else frozenset()
             )
+            silhouette = outfit_silhouette(motion.expression, motion.pose.value)
+            if suppress_makeup_slots:
+                composed = self._outfit_overlay.apply(
+                    composed,
+                    silhouette,
+                    suppress_makeup_slots=suppress_makeup_slots,
+                )
+            else:
+                # Preserve the legacy port signature for open-eye callers and
+                # lightweight test doubles that implement the original port.
+                composed = self._outfit_overlay.apply(composed, silhouette)
         result = (
             composed
             if composed.size() == base.size()

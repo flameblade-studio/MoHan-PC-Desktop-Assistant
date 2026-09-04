@@ -156,7 +156,7 @@ def font_stack(role: str) -> str:
         return '"LXGW WenKai TC", "DFKai-SB", "標楷體", "KaiTi", "Microsoft JhengHei UI"'
     if role == "caps":
         return '"Cinzel", "Georgia", "Times New Roman", serif'
-    return '"Microsoft JhengHei UI", "Noto Sans TC", "PingFang TC", sans-serif'
+    return '"LXGW WenKai TC", "Microsoft JhengHei UI", "Noto Sans TC", "PingFang TC", sans-serif'
 
 
 _SRGB_LINEAR_THRESHOLD: Final = 0.04045

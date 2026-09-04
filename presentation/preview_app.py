@@ -34,6 +34,7 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from domain.immutable_config import deep_freeze
+lazy from presentation.lingxiao_fonts import register_bundled_fonts
 
 SUPPORTED_LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 LANGUAGE_NAMES = frozendict({
@@ -392,6 +393,7 @@ def main(argv: list[str] | None = None) -> int:
         os.environ["QT_QPA_PLATFORM"] = "offscreen"
     runtime = PreviewRuntime.current(args.preview_platform)
     app = QApplication([sys.argv[0]])
+    register_bundled_fonts()
     app.setApplicationName("MoHan Desktop Assistant Preview")
     app.setApplicationVersion(runtime.version)
     app.setFont(QFont("Noto Sans", 11))

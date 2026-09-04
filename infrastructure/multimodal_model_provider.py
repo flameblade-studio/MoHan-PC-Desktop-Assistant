@@ -228,7 +228,13 @@ class OpenCVMultiModalModelProvider:
                 probabilities.append(self._silero_infer(chunk))
         except Exception:
             self.reset_voice()
-            return self._fallback.analyze(values)
+            fallback = self._fallback.analyze(values)
+            return VoiceActivityResult(
+                fallback.state,
+                fallback.rms,
+                fallback.confidence,
+                True,
+            )
         confidence = max(probabilities, default=0.0)
         state = (
             VoiceActivityState.ACTIVE
