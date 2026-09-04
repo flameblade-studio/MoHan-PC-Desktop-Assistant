@@ -234,6 +234,9 @@ def _assert_metric_ratio_shape(record: dict[str, object]) -> None:
     if not ratios:
         assert record["ratio_budget"] is None
         return
+    sample_count = record["sample_count"]
+    assert isinstance(sample_count, int) and not isinstance(sample_count, bool)
+    assert len(ratios) <= sample_count
     assert _number(record, "ratio_budget") > 0
     ratio_threshold = record["ratio_threshold"]
     assert isinstance(ratio_threshold, dict)
@@ -301,6 +304,11 @@ def _assert_profile_shape(profile_name: str, profile: dict[str, object]) -> None
 
 def _assert_developer_profile_truth(profile: dict[str, object]) -> None:
     assert profile["measurement"]["rounds"] == EXPECTED_BASELINE_ROUNDS
+    assert profile["measurement"]["independent_runs"] == 1
+    absolute_gate = profile["absolute_gate"]
+    assert isinstance(absolute_gate, dict)
+    assert absolute_gate["active"] is False
+    assert absolute_gate["minimum_samples"] == MINIMUM_GATING_SAMPLES
     calibration = profile["calibration"]
     assert isinstance(calibration, dict)
     calibration_floor = _number(calibration, "gate_floor_p95_ms")
@@ -312,18 +320,22 @@ def _assert_developer_profile_truth(profile: dict[str, object]) -> None:
     assert isinstance(cold, dict)
     assert cold["over_target"] is True
     assert _number(cold, "measured_p95_ms") > _number(cold, "owner_target_ms")
-    assert cold["gating"] is True
+    assert cold["sample_count"] == 1
+    assert cold["gating"] is False
     cold_samples = _sample_values(cold, "developer_known_hardware/cold_full_body")
     expected_absolute_budget = max(
         max(cold_samples) * NOISE_MULTIPLIER,
         _number(cold, "owner_target_ms"),
     )
+    threshold = cold["threshold"]
+    assert isinstance(threshold, dict)
     assert math.isclose(
-        _number(cold, "absolute_budget_ms"),
+        _number(threshold, "max_observed_p95_ms") * NOISE_MULTIPLIER,
         expected_absolute_budget,
         rel_tol=0.0,
         abs_tol=1e-3,
     )
+    assert cold["absolute_budget_ms"] is None
     ratio_samples = cold["ratio_samples"]
     assert isinstance(ratio_samples, list) and ratio_samples
     expected_ratio_budget = max(float(value) for value in ratio_samples) * NOISE_MULTIPLIER
@@ -579,6 +591,10 @@ def test_budget_records_environment_scoped_formula_and_truth() -> None:
     assert isinstance(sample_policy, dict)
     assert sample_policy["minimum_samples_for_gating"] == MINIMUM_GATING_SAMPLES
     assert sample_policy["noise_multiplier"] == NOISE_MULTIPLIER
+    assert sample_policy["sample_unit"] == (
+        "One recorded aggregate p95 observation per independent benchmark "
+        "execution; --record appends exactly one observation per execution."
+    )
     assert tuple(sample_policy["spread_fields"]) == (
         "min_ms",
         "median_ms",

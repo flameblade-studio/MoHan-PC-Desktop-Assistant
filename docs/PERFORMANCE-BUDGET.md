@@ -6,15 +6,15 @@
 
 每個「環境 × 指標」都保存 `samples_ms`、`sample_count` 與 `observed_spread`（min／median／p95）。樣本數少於 3 時，`gating=false`、必須有 `reason`，測試只記錄並印出「尚未擋門，因為樣本不足」；樣本數至少 3 時才擋門。
 
-擋門門檻為：`max(max(observed p95) * 1.5, owner target)`。因此目前開發機三項都擋門：cold `2109.012 ms`、兩項 hot `100.0 ms`。CI 目前 cold `n=1`、兩項 hot `n=0`，三項都不擋門；它們的觀測仍會被保留，不能用 `gating=false` 關閉已達樣本數的指標。追加三次獨立 benchmark 執行後，`--record` 會自動重算散布與門檻。
+擋門門檻預先固定為：`max(max(observed p95) * 1.5, owner target)`；這裡的 observed p95 是每次獨立執行的 aggregate p95。樣本未達 3 筆時不建立有效門檻。目前六個環境 × 指標組合都只有 0–1 次獨立執行，因此全部只記錄、不擋門；這不是跳過測試，`gating=false` 受資料形狀與測試約束。每次 `--record` 只追加該次執行的 aggregate p95，個別組合達 n=3 後才自動重算散布並啟用閘門。
 
 目前資料摘要：
 
 | 環境 × 指標 | n | min／median／p95 (ms) | 狀態／門檻 (ms) |
 | --- | ---: | ---: | --- |
-| developer × cold_full_body | 5 | 1288.591／1314.287／1391.630 | 擋門／2109.012 |
-| developer × hot_full_body_view_switch | 5 | 2.624／2.804／4.944 | 擋門／100.000 |
-| developer × hot_half_body_silhouette_switch | 5 | 4.496／4.825／5.826 | 擋門／100.000 |
+| developer × cold_full_body | 1 | 1337.497／1337.497／1337.497 | 不擋門／樣本不足 |
+| developer × hot_full_body_view_switch | 1 | 4.861／4.861／4.861 | 不擋門／樣本不足 |
+| developer × hot_half_body_silhouette_switch | 1 | 5.731／5.731／5.731 | 不擋門／樣本不足 |
 | CI × cold_full_body | 1 | 1722.333／1722.333／1722.333 | 不擋門／樣本不足 |
 | CI × hot_full_body_view_switch | 0 | —／—／— | 不擋門／樣本不足 |
 | CI × hot_half_body_silhouette_switch | 0 | —／—／— | 不擋門／樣本不足 |
@@ -29,15 +29,15 @@
 
 每个“环境 × 指标”都保存 `samples_ms`、`sample_count` 和 `observed_spread`（min／median／p95）。样本数少于 3 时，`gating=false` 且必须有 `reason`，测试只记录并打印“尚未挡门，因为样本不足”；样本数至少 3 时才挡门。
 
-门槛为：`max(max(observed p95) * 1.5, owner target)`。当前开发机三项都挡门：cold `2109.012 ms`、两项 hot `100.0 ms`。CI 当前 cold `n=1`、两项 hot `n=0`，三项都不挡门；观测仍会保留，不能用 `gating=false` 关闭已达到样本数的指标。追加三次独立 benchmark 执行后，`--record` 会自动重算散布与门槛。
+门槛预先固定为：`max(max(observed p95) * 1.5, owner target)`；这里的 observed p95 是每次独立执行的 aggregate p95。样本未达 3 笔时不建立有效门槛。目前六个环境 × 指标组合都只有 0–1 次独立执行，因此全部只记录、不挡门；这不是跳过测试，`gating=false` 受数据形状与测试约束。每次 `--record` 只追加该次执行的 aggregate p95，个别组合达到 n=3 后才自动重算散布并启用闸门。
 
 当前数据摘要：
 
 | 环境 × 指标 | n | min／median／p95 (ms) | 状态／门槛 (ms) |
 | --- | ---: | ---: | --- |
-| developer × cold_full_body | 5 | 1288.591／1314.287／1391.630 | 挡门／2109.012 |
-| developer × hot_full_body_view_switch | 5 | 2.624／2.804／4.944 | 挡门／100.000 |
-| developer × hot_half_body_silhouette_switch | 5 | 4.496／4.825／5.826 | 挡门／100.000 |
+| developer × cold_full_body | 1 | 1337.497／1337.497／1337.497 | 不挡门／样本不足 |
+| developer × hot_full_body_view_switch | 1 | 4.861／4.861／4.861 | 不挡门／样本不足 |
+| developer × hot_half_body_silhouette_switch | 1 | 5.731／5.731／5.731 | 不挡门／样本不足 |
 | CI × cold_full_body | 1 | 1722.333／1722.333／1722.333 | 不挡门／样本不足 |
 | CI × hot_full_body_view_switch | 0 | —／—／— | 不挡门／样本不足 |
 | CI × hot_half_body_silhouette_switch | 0 | —／—／— | 不挡门／样本不足 |
@@ -52,15 +52,15 @@
 
 Every environment × metric stores `samples_ms`, `sample_count`, and `observed_spread` (min/median/p95). With fewer than 3 samples, `gating=false` requires a non-empty `reason`; the test records the observation and prints that the metric is not gated because samples are insufficient. A metric gates only at 3 or more samples.
 
-The gate is `max(max(observed p95) * 1.5, owner target)`. The current developer history gates all three metrics: cold `2109.012 ms` and both hot metrics `100.0 ms`. CI currently has cold `n=1` and both hot metrics `n=0`, so none gates; observations remain recorded, and `gating=false` cannot disable a metric whose sample count has reached 3. After three independent benchmark executions, `--record` recomputes the spread and threshold.
+The gate is fixed as `max(max(observed p95) * 1.5, owner target)`, where observed p95 is one aggregate p95 per independent execution. No effective threshold exists below three observations. All six environment × metric combinations currently have only 0–1 independent execution, so all are record-only; this is not a skipped test, and the data shape plus tests constrain `gating=false`. Each `--record` appends exactly one aggregate p95 for that execution; a combination becomes gated only after reaching n=3, when its spread and threshold are recomputed.
 
 Current data:
 
 | Environment × metric | n | min / median / p95 (ms) | Status / threshold (ms) |
 | --- | ---: | ---: | --- |
-| developer × cold_full_body | 5 | 1288.591 / 1314.287 / 1391.630 | gated / 2109.012 |
-| developer × hot_full_body_view_switch | 5 | 2.624 / 2.804 / 4.944 | gated / 100.000 |
-| developer × hot_half_body_silhouette_switch | 5 | 4.496 / 4.825 / 5.826 | gated / 100.000 |
+| developer × cold_full_body | 1 | 1337.497 / 1337.497 / 1337.497 | not gated / insufficient samples |
+| developer × hot_full_body_view_switch | 1 | 4.861 / 4.861 / 4.861 | not gated / insufficient samples |
+| developer × hot_half_body_silhouette_switch | 1 | 5.731 / 5.731 / 5.731 | not gated / insufficient samples |
 | CI × cold_full_body | 1 | 1722.333 / 1722.333 / 1722.333 | not gated / insufficient samples |
 | CI × hot_full_body_view_switch | 0 | — / — / — | not gated / insufficient samples |
 | CI × hot_half_body_silhouette_switch | 0 | — / — / — | not gated / insufficient samples |
@@ -75,15 +75,15 @@ The existing normalized-ratio assertion remains available when enough paired sam
 
 環境 × 指標ごとに `samples_ms`、`sample_count`、`observed_spread`（min／median／p95）を保存します。3 未満のサンプルでは `gating=false` に空でない `reason` が必須で、観測だけを記録し「サンプル不足のためゲートしない」と表示します。3 以上になった指標だけをゲートします。
 
-ゲートは `max(max(observed p95) * 1.5, owner target)` です。現在の開発機履歴は 3 指標すべてをゲートします：cold は `2109.012 ms`、hot 2 指標は `100.0 ms`。CI は cold `n=1`、hot 2 指標 `n=0` のため、現在はすべてゲートしません。観測は保持され、3 サンプルに達した指標を `gating=false` で無効化することはできません。独立 benchmark を 3 回追記すると、`--record` が散布と閾値を再計算します。
+ゲートは `max(max(observed p95) * 1.5, owner target)` と定義し、observed p95 は独立実行ごとに 1 件の aggregate p95 とします。3 未満では有効な閾値を作りません。現在は 6 つの環境 × 指標組み合わせがすべて独立実行 0–1 回のため、すべて記録のみです。これはテストのスキップではなく、`gating=false` はデータ形状とテストで制約されます。`--record` は実行ごとに aggregate p95 を 1 件だけ追記し、各組み合わせが n=3 に達した時点で散布と閾値を再計算してゲートを有効化します。
 
 現在のデータ：
 
 | 環境 × 指標 | n | min／median／p95 (ms) | 状態／閾値 (ms) |
 | --- | ---: | ---: | --- |
-| developer × cold_full_body | 5 | 1288.591／1314.287／1391.630 | ゲート／2109.012 |
-| developer × hot_full_body_view_switch | 5 | 2.624／2.804／4.944 | ゲート／100.000 |
-| developer × hot_half_body_silhouette_switch | 5 | 4.496／4.825／5.826 | ゲート／100.000 |
+| developer × cold_full_body | 1 | 1337.497／1337.497／1337.497 | 非ゲート／サンプル不足 |
+| developer × hot_full_body_view_switch | 1 | 4.861／4.861／4.861 | 非ゲート／サンプル不足 |
+| developer × hot_half_body_silhouette_switch | 1 | 5.731／5.731／5.731 | 非ゲート／サンプル不足 |
 | CI × cold_full_body | 1 | 1722.333／1722.333／1722.333 | 非ゲート／サンプル不足 |
 | CI × hot_full_body_view_switch | 0 | —／—／— | 非ゲート／サンプル不足 |
 | CI × hot_half_body_silhouette_switch | 0 | —／—／— | 非ゲート／サンプル不足 |

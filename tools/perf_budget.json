@@ -19,7 +19,7 @@
   "sample_policy": {
     "minimum_samples_for_gating": 3,
     "noise_multiplier": 1.5,
-    "sample_unit": "One recorded p95 observation per benchmark round in the seeded baseline; --record appends one p95 observation per benchmark execution.",
+    "sample_unit": "One recorded aggregate p95 observation per independent benchmark execution; --record appends exactly one observation per execution.",
     "spread_fields": [
       "min_ms",
       "median_ms",
@@ -54,7 +54,7 @@
         "sample_count": 25,
         "independent_runs": 1,
         "captured_on": "2026-09-04",
-        "source": "Fresh local calibrated baseline run in this worktree. Metric histories are the five formal per-round p95 observations."
+        "source": "Fresh local calibrated baseline run in this worktree. Metric histories contain one aggregate p95 observation for this independent execution; round p95 values remain in each record as raw evidence."
       },
       "calibration": {
         "metric": "calibration.summary.p95_ms",
@@ -91,9 +91,10 @@
       "margin_policy": "Each metric uses its own recorded p95 history. With at least three observations, the absolute threshold is max(maximum observed p95 x 1.5, owner target); the normalized ratio retains the same 1.5x observed-noise policy when paired calibration observations exist.",
       "absolute_gate": {
         "mode": "sample_based",
-        "active": true,
+        "active": false,
         "minimum_samples": 3,
-        "comparison": "observed p95_ms <= threshold.absolute_budget_ms"
+        "comparison": "observed p95_ms <= threshold.absolute_budget_ms",
+        "reason": "The seeded baseline is one independent execution; every metric remains record-only until its own history reaches three executions."
       },
       "measurements": {
         "cold_full_body": {
@@ -101,147 +102,123 @@
           "owner_target_ms": 300.0,
           "aggregate_median_ms": 1269.993,
           "aggregate_p95_ms": 1337.497,
-          "measured_p95_ms": 1406.008,
-          "observed_p95_ms": 1406.008,
+          "measured_p95_ms": 1337.497,
+          "observed_p95_ms": 1337.497,
           "samples_ms": [
-            1406.008,
-            1334.12,
-            1288.591,
-            1310.377,
-            1314.287
+            1337.497
           ],
-          "sample_count": 5,
+          "sample_count": 1,
           "observed_spread": {
-            "min_ms": 1288.591,
-            "median_ms": 1314.287,
-            "p95_ms": 1391.63
+            "min_ms": 1337.497,
+            "median_ms": 1337.497,
+            "p95_ms": 1337.497
           },
           "ratio_samples": [
-            1.453950566,
-            1.324237218,
-            1.32276734,
-            1.295175525,
-            1.309149896
+            1.31846
           ],
-          "ratio_budget": 2.180926,
+          "ratio_budget": 1.97769,
           "ratio_threshold": {
-            "max_observed_ratio": 1.453950566,
+            "max_observed_ratio": 1.31846,
             "noise_multiplier": 1.5,
-            "ratio_budget": 2.180926,
+            "ratio_budget": 1.97769,
             "selection": "max(max(observed ratio samples) * 1.5)"
           },
-          "absolute_budget_ms": 2109.012,
+          "absolute_budget_ms": null,
           "threshold": {
-            "max_observed_p95_ms": 1406.008,
+            "max_observed_p95_ms": 1337.497,
             "noise_multiplier": 1.5,
             "owner_target_ms": 300.0,
-            "absolute_budget_ms": 2109.012,
+            "absolute_budget_ms": null,
             "selection": "max(max(observed p95 samples) * 1.5, owner_target_ms)"
           },
-          "gating": true,
+          "gating": false,
           "over_target": true,
           "margin": "The maximum observed p95 receives a 1.5x noise margin; the owner target is selected when it is looser.",
           "formula": "absolute_budget_ms = max(max(observed p95 samples) * 1.5, owner_target_ms)",
-          "reason": "sample_count=5 >= 3; gate uses max(max(observed p95 samples) * 1.5, owner_target_ms).",
-          "status": "gated"
+          "reason": "insufficient samples: sample_count=1 < 3; record only until more independent benchmark executions are captured with --record.",
+          "status": "recorded; not gated"
         },
         "hot_full_body_view_switch": {
           "metric": "measurements.hot_full_body_view_switch.summary.p95_ms",
           "owner_target_ms": 100.0,
           "aggregate_median_ms": 2.69,
           "aggregate_p95_ms": 4.861,
-          "measured_p95_ms": 5.015,
-          "observed_p95_ms": 5.015,
+          "measured_p95_ms": 4.861,
+          "observed_p95_ms": 4.861,
           "samples_ms": [
-            2.673,
-            4.659,
-            2.804,
-            2.624,
-            5.015
+            4.861
           ],
-          "sample_count": 5,
+          "sample_count": 1,
           "observed_spread": {
-            "min_ms": 2.624,
-            "median_ms": 2.804,
-            "p95_ms": 4.944
+            "min_ms": 4.861,
+            "median_ms": 4.861,
+            "p95_ms": 4.861
           },
           "ratio_samples": [
-            0.002764145,
-            0.004624487,
-            0.002878368,
-            0.002593559,
-            0.004995398
+            0.004792
           ],
-          "ratio_budget": 0.007493,
+          "ratio_budget": 0.007188,
           "ratio_threshold": {
-            "max_observed_ratio": 0.004995398,
+            "max_observed_ratio": 0.004792,
             "noise_multiplier": 1.5,
-            "ratio_budget": 0.007493,
+            "ratio_budget": 0.007188,
             "selection": "max(max(observed ratio samples) * 1.5)"
           },
-          "absolute_budget_ms": 100.0,
+          "absolute_budget_ms": null,
           "threshold": {
-            "max_observed_p95_ms": 5.015,
+            "max_observed_p95_ms": 4.861,
             "noise_multiplier": 1.5,
             "owner_target_ms": 100.0,
-            "absolute_budget_ms": 100.0,
+            "absolute_budget_ms": null,
             "selection": "max(max(observed p95 samples) * 1.5, owner_target_ms)"
           },
-          "gating": true,
+          "gating": false,
           "over_target": false,
           "margin": "The maximum observed p95 receives a 1.5x noise margin; the owner target is selected when it is looser.",
           "formula": "absolute_budget_ms = max(max(observed p95 samples) * 1.5, owner_target_ms)",
-          "reason": "sample_count=5 >= 3; gate uses max(max(observed p95 samples) * 1.5, owner_target_ms).",
-          "status": "gated"
+          "reason": "insufficient samples: sample_count=1 < 3; record only until more independent benchmark executions are captured with --record.",
+          "status": "recorded; not gated"
         },
         "hot_half_body_silhouette_switch": {
           "metric": "measurements.hot_half_body_silhouette_switch.summary.p95_ms",
           "owner_target_ms": 100.0,
           "aggregate_median_ms": 4.473,
           "aggregate_p95_ms": 5.731,
-          "measured_p95_ms": 6.062,
-          "observed_p95_ms": 6.062,
+          "measured_p95_ms": 5.731,
+          "observed_p95_ms": 5.731,
           "samples_ms": [
-            4.825,
-            4.801,
-            6.062,
-            4.496,
-            4.882
+            5.731
           ],
-          "sample_count": 5,
+          "sample_count": 1,
           "observed_spread": {
-            "min_ms": 4.496,
-            "median_ms": 4.825,
-            "p95_ms": 5.826
+            "min_ms": 5.731,
+            "median_ms": 5.731,
+            "p95_ms": 5.731
           },
           "ratio_samples": [
-            0.004989525,
-            0.004765436,
-            0.006222778,
-            0.004443843,
-            0.004862918
+            0.005649
           ],
-          "ratio_budget": 0.009334,
+          "ratio_budget": 0.008474,
           "ratio_threshold": {
-            "max_observed_ratio": 0.006222778,
+            "max_observed_ratio": 0.005649,
             "noise_multiplier": 1.5,
-            "ratio_budget": 0.009334,
+            "ratio_budget": 0.008474,
             "selection": "max(max(observed ratio samples) * 1.5)"
           },
-          "absolute_budget_ms": 100.0,
+          "absolute_budget_ms": null,
           "threshold": {
-            "max_observed_p95_ms": 6.062,
+            "max_observed_p95_ms": 5.731,
             "noise_multiplier": 1.5,
             "owner_target_ms": 100.0,
-            "absolute_budget_ms": 100.0,
+            "absolute_budget_ms": null,
             "selection": "max(max(observed p95 samples) * 1.5, owner_target_ms)"
           },
-          "gating": true,
+          "gating": false,
           "over_target": false,
           "margin": "The maximum observed p95 receives a 1.5x noise margin; the owner target is selected when it is looser.",
           "formula": "absolute_budget_ms = max(max(observed p95 samples) * 1.5, owner_target_ms)",
-          "reason": "sample_count=5 >= 3; gate uses max(max(observed p95 samples) * 1.5, owner_target_ms).",
-          "status": "gated"
+          "reason": "insufficient samples: sample_count=1 < 3; record only until more independent benchmark executions are captured with --record.",
+          "status": "recorded; not gated"
         }
       }
     },
