@@ -6,7 +6,7 @@ lazy from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy import presentation.lingxiao_shell as lingxiao_shell
+lazy from presentation import lingxiao_shell
 lazy from presentation.lingxiao_shell import update_draft_bar
 
 
