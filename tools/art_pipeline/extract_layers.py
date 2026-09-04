@@ -1,0 +1,625 @@
+"""以差分、去溢色、配準與安全區抽出半身分層素材。"""
+
+from __future__ import annotations
+
+lazy import argparse
+lazy import json
+lazy from pathlib import Path
+
+lazy import cv2
+lazy import numpy as np
+
+lazy from .constants import (
+    BARE_SKIN_GREEN_BLUE_MARGIN,
+    BARE_SKIN_RED_GREEN_MARGIN,
+    BARE_SKIN_RED_MIN,
+    RECTANGLE_FIELDS,
+    DESPILL_DARK_GREEN_MAX,
+    DESPILL_DARK_SPILL_THRESHOLD,
+    DESPILL_EDGE_SPILL_THRESHOLD,
+    DESPILL_INNER_EROSION_KERNEL,
+    DESPILL_REDUCTION_FACTOR,
+    DIFF_ALPHA_THRESHOLD,
+    DIFF_FEATHER_PIXELS,
+    DIFF_SOFT_BLUR_SIGMA,
+    HEAD_FALLBACK_TOP_RATIO,
+    HEAD_REGION_BOTTOM_FACE_FACTOR,
+    HEAD_REGION_FACE_CUT_BOTTOM_FACTOR,
+    HEAD_REGION_FACE_CUT_LEFT_FACTOR,
+    HEAD_REGION_FACE_CUT_TOP_FACTOR,
+    HEAD_REGION_LEFT_FACE_FACTOR,
+    HEAD_REGION_RIGHT_FACE_FACTOR,
+    HEADWEAR_DARK_PIXEL_MAX,
+    HEADWEAR_MIN_COMPONENT_AREA,
+    HEADWEAR_SKIN_GREEN_BLUE_MARGIN,
+    HEADWEAR_SKIN_RED_GREEN_MARGIN,
+    HEADWEAR_SKIN_RED_MIN,
+    HALF_SILHOUETTES,
+    MAKEUP_CHEEK_CENTER_X_FACTOR,
+    MAKEUP_CHEEK_CENTER_Y_FACTOR,
+    MAKEUP_CHEEK_RADIUS_X_FACTOR,
+    MAKEUP_CHEEK_RADIUS_Y_FACTOR,
+    MAKEUP_EYE_CENTER_Y_FACTOR,
+    MAKEUP_EYE_RADIUS_X_FACTOR,
+    MAKEUP_EYE_RADIUS_Y_FACTOR,
+    MAKEUP_LIP_RADIUS_X_FACTOR,
+    MAKEUP_LIP_RADIUS_Y_FACTOR,
+    MAKEUP_SLOT_PRIORITY,
+    REGISTER_HEAD_ROI_BOTTOM_RATIO,
+    REGISTER_IGNORE_SHIFT_PIXELS,
+    REGISTER_LOWER_ROI_TOP_RATIO,
+    REGISTER_MAX_SHIFT_PIXELS,
+    REGISTER_MIN_ALPHA_PIXELS,
+    RECONSTRUCTION_ERROR_PIXEL_THRESHOLD,
+    SHOE_BLUE_GREEN_MARGIN,
+    SHOE_BLUE_RED_MARGIN,
+    SHOE_BARE_ALPHA_MIN,
+    SHOE_COVERED_ALPHA_MIN,
+    SHOE_FOOT_BAND_TOP_RATIO,
+    SHOE_FOOT_ZONE_TOP_RATIO,
+    SHOE_NEAREST_MAX_DISTANCE,
+    SHOE_UPPER_EXCLUSION_RATIO,
+    SHEET_BACKGROUND_BGR,
+    SHEET_TILE_GAP,
+    SHEET_TILE_HEIGHT,
+    SHEET_TILE_WIDTH,
+    STEP_PARAMETERS,
+    STEPS,
+)
+lazy from .image_ops import (
+    composite_over,
+    key_file,
+    resize_rgba,
+    save_png,
+    transparent_rgb_zero,
+    warp_rgba,
+)
+lazy from .vision import face_box, face_landmarks
+
+
+def despill(image: np.ndarray) -> np.ndarray:
+    """只在剪影邊緣與暗色洋紅滲色處壓低 R/B，並清空透明 RGB。"""
+
+    output = transparent_rgb_zero(image)
+    alpha = output[:, :, 3]
+    solid = (alpha > 0).astype(np.uint8)
+    kernel = cv2.getStructuringElement(
+        cv2.MORPH_ELLIPSE,
+        (DESPILL_INNER_EROSION_KERNEL, DESPILL_INNER_EROSION_KERNEL),
+    )
+    inner = cv2.erode(solid, kernel)
+    edge = (solid == 1) & (inner == 0)
+    blue = output[:, :, 0].astype(np.int16)
+    green = output[:, :, 1].astype(np.int16)
+    red = output[:, :, 2].astype(np.int16)
+    spill = np.minimum(red, blue) - green
+    dark_tint = (green < DESPILL_DARK_GREEN_MAX) & (
+        spill > DESPILL_DARK_SPILL_THRESHOLD
+    )
+    fix = (edge & (spill > DESPILL_EDGE_SPILL_THRESHOLD)) | (dark_tint & (solid == 1))
+    reduction = (spill[fix] * DESPILL_REDUCTION_FACTOR).astype(np.int16)
+    red[fix] -= reduction
+    blue[fix] -= reduction
+    output[:, :, 0] = np.clip(blue, 0, 255).astype(np.uint8)
+    output[:, :, 2] = np.clip(red, 0, 255).astype(np.uint8)
+    return transparent_rgb_zero(output)
+
+
+def key_and_despill(path: Path) -> np.ndarray:
+    return despill(key_file(path))
+
+
+def diff_mask(prev: np.ndarray, cur: np.ndarray, step: str) -> np.ndarray:
+    """產生一個步驟的軟 alpha 差異遮罩。"""
+
+    try:
+        parameters = STEP_PARAMETERS[step]
+    except KeyError as error:
+        raise ValueError(f"未知抽層步驟：{step}") from error
+    rgb = np.abs(prev[:, :, :3].astype(np.int16) - cur[:, :, :3].astype(np.int16)).max(
+        axis=2
+    )
+    alpha = np.abs(prev[:, :, 3].astype(np.int16) - cur[:, :, 3].astype(np.int16))
+    raw = ((rgb > parameters.rgb_threshold) | (alpha > DIFF_ALPHA_THRESHOLD)).astype(
+        np.uint8
+    )
+    cleaned = raw
+    if parameters.open_kernel:
+        cleaned = cv2.morphologyEx(
+            cleaned,
+            cv2.MORPH_OPEN,
+            cv2.getStructuringElement(
+                cv2.MORPH_ELLIPSE,
+                (parameters.open_kernel, parameters.open_kernel),
+            ),
+        )
+    if parameters.close_kernel:
+        cleaned = cv2.morphologyEx(
+            cleaned,
+            cv2.MORPH_CLOSE,
+            cv2.getStructuringElement(
+                cv2.MORPH_ELLIPSE,
+                (parameters.close_kernel, parameters.close_kernel),
+            ),
+        )
+    cleaned &= (cur[:, :, 3] > 0).astype(np.uint8)
+    if parameters.soft_alpha_span:
+        graded = (
+            np.clip(rgb.astype(np.float32) / parameters.soft_alpha_span, 0.0, 1.0)
+            * cleaned
+        )
+        graded = cv2.GaussianBlur(graded, (0, 0), DIFF_SOFT_BLUR_SIGMA)
+        return (np.clip(graded, 0.0, 1.0) * 255).astype(np.uint8)
+    distance = cv2.distanceTransform(cleaned, cv2.DIST_L2, 3)
+    return (np.clip(distance / DIFF_FEATHER_PIXELS, 0.0, 1.0) * 255).astype(np.uint8)
+
+
+def makeup_region(image: np.ndarray, model_path: Path) -> np.ndarray:
+    """由 YuNet 五點建立 eyes/cheeks/lips 共用的妝容安全區。"""
+
+    height, width = image.shape[:2]
+    try:
+        points, _score = face_landmarks(image, model_path)
+    except ValueError:
+        return np.zeros((height, width), np.uint8)
+    eye_left, eye_right, _nose, mouth_left, mouth_right = points
+    distance = float(np.hypot(*(eye_right - eye_left)))
+    region = np.zeros((height, width), np.uint8)
+    for eye in (eye_left, eye_right):
+        cv2.ellipse(
+            region,
+            (int(eye[0]), int(eye[1] + MAKEUP_EYE_CENTER_Y_FACTOR * distance)),
+            (
+                int(MAKEUP_EYE_RADIUS_X_FACTOR * distance),
+                int(MAKEUP_EYE_RADIUS_Y_FACTOR * distance),
+            ),
+            0,
+            0,
+            360,
+            1,
+            -1,
+        )
+    for eye, sign in ((eye_left, -1), (eye_right, 1)):
+        cv2.ellipse(
+            region,
+            (
+                int(eye[0] + sign * MAKEUP_CHEEK_CENTER_X_FACTOR * distance),
+                int(eye[1] + MAKEUP_CHEEK_CENTER_Y_FACTOR * distance),
+            ),
+            (
+                int(MAKEUP_CHEEK_RADIUS_X_FACTOR * distance),
+                int(MAKEUP_CHEEK_RADIUS_Y_FACTOR * distance),
+            ),
+            0,
+            0,
+            360,
+            1,
+            -1,
+        )
+    mouth_center = (mouth_left + mouth_right) / 2.0
+    cv2.ellipse(
+        region,
+        (int(mouth_center[0]), int(mouth_center[1])),
+        (
+            int(MAKEUP_LIP_RADIUS_X_FACTOR * distance),
+            int(MAKEUP_LIP_RADIUS_Y_FACTOR * distance),
+        ),
+        0,
+        0,
+        360,
+        1,
+        -1,
+    )
+    return region
+
+
+def register(
+    prev: np.ndarray, cur: np.ndarray, step: str
+) -> tuple[np.ndarray, tuple[float, float]]:
+    height = prev.shape[0]
+    if step == "L2_garment":
+        rows = slice(0, int(height * REGISTER_HEAD_ROI_BOTTOM_RATIO))
+    elif step in ("L3_hair", "L4_headwear"):
+        rows = slice(int(height * REGISTER_LOWER_ROI_TOP_RATIO), height)
+    else:
+        rows = slice(0, height)
+    previous_alpha = prev[rows, :, 3].astype(np.float32) / 255.0
+    current_alpha = cur[rows, :, 3].astype(np.float32) / 255.0
+    if (
+        previous_alpha.sum() < REGISTER_MIN_ALPHA_PIXELS
+        or current_alpha.sum() < REGISTER_MIN_ALPHA_PIXELS
+    ):
+        return cur, (0.0, 0.0)
+    (dx, dy), _response = cv2.phaseCorrelate(previous_alpha, current_alpha)
+    if (
+        abs(dx) < REGISTER_IGNORE_SHIFT_PIXELS
+        and abs(dy) < REGISTER_IGNORE_SHIFT_PIXELS
+    ):
+        return cur, (0.0, 0.0)
+    if abs(dx) > REGISTER_MAX_SHIFT_PIXELS or abs(dy) > REGISTER_MAX_SHIFT_PIXELS:
+        return cur, (float(dx), float(dy))
+    matrix = np.array([[1, 0, -dx], [0, 1, -dy]], dtype=np.float32)
+    return warp_rgba(cur, matrix, (cur.shape[1], cur.shape[0])), (float(dx), float(dy))
+
+
+def silhouette_id(prefix: str) -> str | None:
+    if prefix.startswith("full_"):
+        return prefix[len("full_") :]
+    for key, silhouette in HALF_SILHOUETTES.items():
+        if prefix.startswith(f"halfprod_{key}_") or prefix.startswith(f"half_{key}"):
+            return silhouette
+    if prefix.startswith("yaw000"):
+        return "yaw+000-pitch+00"
+    return None
+
+
+def makeup_slot_masks(
+    layer: np.ndarray, regions: dict[str, object]
+) -> dict[str, np.ndarray]:
+    """以 eyes > lips > cheeks 優先序切槽，保證槽遮罩互斥。"""
+
+    slots = regions.get("slots")
+    if not isinstance(slots, dict):
+        raise ValueError("safe regions 缺少 slots 物件")
+    taken = np.zeros(layer.shape[:2], dtype=bool)
+    result: dict[str, np.ndarray] = {}
+    for slot in MAKEUP_SLOT_PRIORITY:
+        mask = np.zeros(layer.shape[:2], dtype=bool)
+        rectangles = slots.get(slot, [])
+        if not isinstance(rectangles, list):
+            raise ValueError(f"槽位矩形格式錯誤：{slot}")
+        for rectangle in rectangles:
+            if (
+                not isinstance(rectangle, list | tuple)
+                or len(rectangle) != RECTANGLE_FIELDS
+            ):
+                raise ValueError(f"槽位矩形格式錯誤：{slot}")
+            x, y, width, height = (int(value) for value in rectangle)
+            x0, y0 = max(0, x), max(0, y)
+            x1 = min(layer.shape[1], x + width)
+            y1 = min(layer.shape[0], y + height)
+            if x0 < x1 and y0 < y1:
+                mask[y0:y1, x0:x1] = True
+        mask &= ~taken
+        taken |= mask
+        result[slot] = mask
+    return result
+
+
+def write_makeup_slots(
+    layer: np.ndarray,
+    prefix: str,
+    output: Path,
+    safe_regions_path: Path | None,
+) -> dict[str, int]:
+    if safe_regions_path is None or not safe_regions_path.is_file():
+        return {}
+    silhouette = silhouette_id(prefix)
+    if silhouette is None:
+        return {}
+    document = json.loads(safe_regions_path.read_text(encoding="utf-8"))
+    all_regions = document.get("silhouettes", {})
+    regions = all_regions.get(silhouette) if isinstance(all_regions, dict) else None
+    if not isinstance(regions, dict):
+        return {}
+    counts: dict[str, int] = {}
+    for slot, mask in makeup_slot_masks(layer, regions).items():
+        part = layer.copy()
+        part[:, :, 3] = part[:, :, 3] * mask
+        part[part[:, :, 3] == 0] = 0
+        save_png(output / f"L1_makeup.{slot}.png", part)
+        counts[slot] = int((part[:, :, 3] > 0).sum())
+    return counts
+
+
+def head_region(image: np.ndarray, model_path: Path) -> np.ndarray:
+    height, width = image.shape[:2]
+    box = face_box(image, model_path)
+    region = np.zeros((height, width), np.uint8)
+    if box is None:
+        region[: int(height * HEAD_FALLBACK_TOP_RATIO), :] = 1
+        return region
+    x, y, face_width, face_height = box
+    top = 0
+    bottom = min(height, int(y + face_height * HEAD_REGION_BOTTOM_FACE_FACTOR))
+    left = max(0, int(x - HEAD_REGION_LEFT_FACE_FACTOR * face_width))
+    right = min(width, int(x + HEAD_REGION_RIGHT_FACE_FACTOR * face_width))
+    region[top:bottom, left:right] = 1
+    region[
+        int(y + HEAD_REGION_FACE_CUT_TOP_FACTOR * face_height) : bottom,
+        int(x + HEAD_REGION_FACE_CUT_LEFT_FACTOR * face_width) : int(
+            x + HEAD_REGION_FACE_CUT_BOTTOM_FACTOR * face_width
+        ),
+    ] = 0
+    return region
+
+
+def _headwear_cleanup(mask: np.ndarray, cur: np.ndarray) -> np.ndarray:
+    blue = cur[:, :, 0].astype(np.int16)
+    green = cur[:, :, 1].astype(np.int16)
+    red = cur[:, :, 2].astype(np.int16)
+    skin = (
+        (red > HEADWEAR_SKIN_RED_MIN)
+        & (red > green + HEADWEAR_SKIN_RED_GREEN_MARGIN)
+        & (green > blue + HEADWEAR_SKIN_GREEN_BLUE_MARGIN)
+    )
+    mask = mask.copy()
+    mask[skin] = 0
+    dark = np.maximum(np.maximum(red, green), blue) < HEADWEAR_DARK_PIXEL_MAX
+    mask[dark] = 0
+    labels_count, labels, stats, _centroids = cv2.connectedComponentsWithStats(
+        (mask > 0).astype(np.uint8), connectivity=8
+    )
+    keep = np.zeros(labels_count, dtype=bool)
+    keep[1:] = stats[1:, cv2.CC_STAT_AREA] >= HEADWEAR_MIN_COMPONENT_AREA
+    mask[~keep[labels]] = 0
+    return mask
+
+
+def _safe_prefix(prefix: str) -> Path:
+    candidate = Path(prefix)
+    if candidate.is_absolute() or ".." in candidate.parts:
+        raise ValueError("prefix 必須是相對且不可離開輸出目錄")
+    return candidate
+
+
+def _extract_steps(
+    base: np.ndarray,
+    prefix: str,
+    source_directory: Path,
+    output: Path,
+    model_path: Path,
+    safe_regions_path: Path | None,
+) -> tuple[list[np.ndarray], np.ndarray, dict[str, object]]:
+    previous = base
+    layers: list[np.ndarray] = []
+    layer_report: dict[str, object] = {}
+    report: dict[str, object] = {"layers": layer_report}
+    for step in STEPS:
+        source_path = source_directory / f"{prefix}.{step}.png"
+        if not source_path.is_file():
+            layer_report[step] = "missing"
+            continue
+        current = key_and_despill(source_path)
+        save_png(output / f"{step}.keyed.png", current)
+        if current.shape != base.shape:
+            current = resize_rgba(current, (base.shape[1], base.shape[0]))
+        current, shift = register(previous, current, step)
+        mask = diff_mask(previous, current, step)
+        if step == "L1_makeup":
+            mask = (mask * makeup_region(base, model_path)).astype(np.uint8)
+        elif step == "L4_headwear":
+            mask = (mask * head_region(base, model_path)).astype(np.uint8)
+            mask = _headwear_cleanup(mask, current)
+        layer = current.copy()
+        layer[:, :, 3] = (current[:, :, 3].astype(np.uint16) * mask // 255).astype(
+            np.uint8
+        )
+        layer[layer[:, :, 3] == 0] = 0
+        save_png(output / f"{step}.png", layer)
+        if step == "L1_makeup":
+            report["makeup_slots"] = write_makeup_slots(
+                layer, prefix, output, safe_regions_path
+            )
+        layers.append(layer)
+        layer_report[step] = {
+            "opaque_pixels": int((layer[:, :, 3] > 0).sum()),
+            "share_of_canvas": round(float((layer[:, :, 3] > 0).mean()), 4),
+            "registration_shift_px": [round(shift[0], 2), round(shift[1], 2)],
+        }
+        previous = current
+    return layers, previous, report
+
+
+def _find_shoe_source(source_directory: Path, prefix: str) -> Path | None:
+    for name in ("L5c_shoes", "L5b_shoes", "L5_shoes"):
+        candidate = source_directory / f"{prefix}.{name}.png"
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def _foot_mask(shoes: np.ndarray, mask: np.ndarray) -> np.ndarray:
+    mask = mask.copy()
+    height = shoes.shape[0]
+    mask[: int(height * SHOE_UPPER_EXCLUSION_RATIO), :] = 0
+    foot_zone = np.zeros_like(mask)
+    foot_zone[int(height * SHOE_FOOT_ZONE_TOP_RATIO) :, :] = 255
+    foot_zone = (foot_zone * (shoes[:, :, 3] > 0)).astype(np.uint8)
+    band = slice(
+        int(height * SHOE_FOOT_BAND_TOP_RATIO),
+        int(height * SHOE_FOOT_ZONE_TOP_RATIO),
+    )
+    blue = shoes[band, :, 0].astype(np.int16)
+    green = shoes[band, :, 1].astype(np.int16)
+    red = shoes[band, :, 2].astype(np.int16)
+    not_blue = ~(
+        (blue > red + SHOE_BLUE_RED_MARGIN) & (blue > green + SHOE_BLUE_GREEN_MARGIN)
+    )
+    foot_zone[band, :] = (not_blue & (shoes[band, :, 3] > 0)).astype(np.uint8) * 255
+    return np.maximum(mask, foot_zone)
+
+
+def _patch_bare_feet(base: np.ndarray, shoe_layer: np.ndarray) -> tuple[int, int]:
+    zone_top = int(base.shape[0] * SHOE_FOOT_ZONE_TOP_RATIO)
+    blue = base[zone_top:, :, 0].astype(np.int16)
+    green = base[zone_top:, :, 1].astype(np.int16)
+    red = base[zone_top:, :, 2].astype(np.int16)
+    bare = (
+        (base[zone_top:, :, 3] > SHOE_BARE_ALPHA_MIN)
+        & (red > BARE_SKIN_RED_MIN)
+        & (red > green + BARE_SKIN_RED_GREEN_MARGIN)
+        & (green > blue + BARE_SKIN_GREEN_BLUE_MARGIN)
+    )
+    region = shoe_layer[zone_top:]
+    covered = region[:, :, 3] > SHOE_COVERED_ALPHA_MIN
+    uncovered = bare & ~covered
+    patched = 0
+    for row in np.nonzero(uncovered.any(axis=1))[0]:
+        covered_x = np.nonzero(covered[row])[0]
+        if covered_x.size == 0:
+            continue
+        for column in np.nonzero(uncovered[row])[0]:
+            nearest = covered_x[np.abs(covered_x - column).argmin()]
+            if abs(int(nearest) - int(column)) > SHOE_NEAREST_MAX_DISTANCE:
+                continue
+            region[row, column, :3] = region[row, nearest, :3]
+            region[row, column, 3] = 255
+            patched += 1
+    shoe_layer[zone_top:] = region
+    left = int((bare & ~(shoe_layer[zone_top:, :, 3] > SHOE_COVERED_ALPHA_MIN)).sum())
+    return left, patched
+
+
+def _build_shoe_layer(
+    base: np.ndarray,
+    final: np.ndarray,
+    source_path: Path,
+    output_shape: tuple[int, int, int],
+    keyed_output: Path,
+) -> tuple[np.ndarray, np.ndarray, dict[str, object]]:
+    shoes = key_and_despill(source_path)
+    save_png(keyed_output, shoes)
+    if shoes.shape != output_shape:
+        shoes = resize_rgba(shoes, (output_shape[1], output_shape[0]))
+    shoes, shoe_shift = register(final, shoes, "L2_garment")
+    mask = _foot_mask(shoes, diff_mask(final, shoes, "L2_garment"))
+    shoe_layer = shoes.copy()
+    shoe_layer[:, :, 3] = (shoes[:, :, 3].astype(np.uint16) * mask // 255).astype(
+        np.uint8
+    )
+    shoe_layer[shoe_layer[:, :, 3] == 0] = 0
+    left, patched = _patch_bare_feet(base, shoe_layer)
+    shoe_report = {
+        "bare_foot_uncovered_px": left,
+        "shoes_patched_px": patched,
+        "shoes": {
+            "opaque_pixels": int((shoe_layer[:, :, 3] > 0).sum()),
+            "registration_shift_px": [round(shoe_shift[0], 2), round(shoe_shift[1], 2)],
+        },
+    }
+    return shoe_layer, shoes, shoe_report
+
+
+def _merge_shoes(
+    base: np.ndarray,
+    final: np.ndarray,
+    layers: list[np.ndarray],
+    source_path: Path | None,
+    output: Path,
+) -> tuple[list[np.ndarray], np.ndarray, dict[str, object]]:
+    if source_path is None or len(layers) != len(STEPS):
+        return layers, final, {}
+    shoe_layer, shoes, report = _build_shoe_layer(
+        base, final, source_path, base.shape, output / "L5_shoes.keyed.png"
+    )
+    merged = composite_over(layers[1], shoe_layer)
+    save_png(output / "L2_garment.png", merged)
+    layers[1] = merged
+    return layers, shoes, report
+
+
+def _write_final_outputs(
+    base: np.ndarray,
+    layers: list[np.ndarray],
+    final: np.ndarray,
+    output: Path,
+    report: dict[str, object],
+) -> None:
+    reconstruction = base
+    for layer in layers:
+        reconstruction = composite_over(reconstruction, layer)
+    save_png(output / "reconstruction.png", reconstruction)
+    save_png(output / "final.png", final)
+    both = (final[:, :, 3] > 0) | (reconstruction[:, :, 3] > 0)
+    error = np.abs(
+        final[:, :, :3].astype(np.int16) - reconstruction[:, :, :3].astype(np.int16)
+    )
+    report["reconstruction_mean_channel_error"] = round(
+        float(error[both].mean()) if both.any() else 0.0,
+        3,
+    )
+    report["reconstruction_pixels_over_24"] = int(
+        (error.max(axis=2)[both] > RECONSTRUCTION_ERROR_PIXEL_THRESHOLD).sum()
+    )
+
+    def tile(image: np.ndarray) -> np.ndarray:
+        background = np.empty(image.shape[:2] + (3,), np.uint8)
+        background[:, :] = SHEET_BACKGROUND_BGR
+        alpha = image[:, :, 3:4].astype(np.float32) / 255.0
+        composed = image[:, :, :3] * alpha + background * (1.0 - alpha)
+        return cv2.resize(
+            composed.astype(np.uint8), (SHEET_TILE_WIDTH, SHEET_TILE_HEIGHT)
+        )
+
+    tiles = [
+        tile(base),
+        *(tile(layer) for layer in layers),
+        tile(reconstruction),
+        tile(final),
+    ]
+    sheet = np.zeros(
+        (SHEET_TILE_HEIGHT, (SHEET_TILE_WIDTH + SHEET_TILE_GAP) * len(tiles)),
+        np.uint8,
+    )
+    sheet = np.dstack((sheet, sheet, sheet))
+    for index, item in enumerate(tiles):
+        start = index * (SHEET_TILE_WIDTH + SHEET_TILE_GAP)
+        sheet[:, start : start + SHEET_TILE_WIDTH] = item
+    save_png(output / "sheet.png", sheet)
+
+
+def extract(
+    base_magenta: Path,
+    prefix: str,
+    *,
+    source_directory: Path,
+    output_root: Path,
+    model_path: Path,
+    safe_regions_path: Path | None = None,
+) -> dict[str, object]:
+    """執行一批抽層並寫出報告；所有 I/O 根目錄由呼叫端提供。"""
+
+    relative_prefix = _safe_prefix(prefix)
+    output = output_root / relative_prefix
+    output.mkdir(parents=True, exist_ok=True)
+    base = key_and_despill(base_magenta)
+    save_png(output / "base.png", base)
+    layers, final, report = _extract_steps(
+        base, prefix, source_directory, output, model_path, safe_regions_path
+    )
+    layers, final, shoe_report = _merge_shoes(
+        base, final, layers, _find_shoe_source(source_directory, prefix), output
+    )
+    report.update(shoe_report)
+    _write_final_outputs(base, layers, final, output, report)
+    (output / "report.json").write_text(
+        json.dumps(report, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    return report
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("base_magenta", type=Path)
+    parser.add_argument("prefix")
+    parser.add_argument("--source-dir", type=Path, required=True)
+    parser.add_argument("--output-root", type=Path, required=True)
+    parser.add_argument("--model", type=Path, required=True)
+    parser.add_argument("--safe-regions", type=Path)
+    args = parser.parse_args(argv)
+    report = extract(
+        args.base_magenta,
+        args.prefix,
+        source_directory=args.source_dir,
+        output_root=args.output_root,
+        model_path=args.model,
+        safe_regions_path=args.safe_regions,
+    )
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
