@@ -70,3 +70,15 @@ def test_isolated_speck_metrics_promotes_a_chain_but_rejects_a_far_speck() -> No
 
     assert measured["direct_definition_count"] == EXPECTED_DIRECT_SPECKS
     assert measured["isolated_count"] == EXPECTED_ISOLATED_SPECKS
+
+
+def test_isolated_speck_metrics_counts_a_low_alpha_residual() -> None:
+    image = np.zeros((180, 180, 4), dtype=np.uint8)
+    image[20:40, 20:40, 3] = 255
+    image[130:133, 130:133, 3] = 1
+
+    measured = isolated_speck_metrics(image, roi=(0, 0, 180, 180))
+
+    assert measured["alpha_threshold"] == 0
+    assert measured["direct_definition_count"] == 1
+    assert measured["isolated_count"] == 1

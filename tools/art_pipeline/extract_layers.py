@@ -71,8 +71,6 @@ lazy from .constants import (
     SHEET_TILE_GAP,
     SHEET_TILE_HEIGHT,
     SHEET_TILE_WIDTH,
-    SMALL_COMPONENT_SUPPRESSED_ALPHA,
-    SMALL_COMPONENT_SUPPRESSED_RGB,
     STEP_PARAMETERS,
     STEPS,
     DiffParameters,
@@ -429,28 +427,15 @@ def remove_unlinked_headwear_fragments(mask: np.ndarray) -> np.ndarray:
 
 def _clean_small_components(
     layer: np.ndarray,
-    *,
-    preserve_nonzero_alpha_count: bool = False,
-    suppressed_alpha: int | None = None,
 ) -> tuple[np.ndarray, dict[str, int]]:
     source_alpha = layer[:, :, 3]
     cleaned_alpha, metrics = remove_unlinked_small_components(
         source_alpha,
         roi=speck_roi_for_shape(layer.shape[:2]),
-        preserve_nonzero_alpha_count=preserve_nonzero_alpha_count,
     )
-    demoted = (source_alpha != cleaned_alpha) & (source_alpha > 0)
-    if suppressed_alpha is not None:
-        cleaned_alpha[demoted] = suppressed_alpha
     output = layer.copy()
     output[:, :, 3] = cleaned_alpha
     output[cleaned_alpha == 0] = 0
-    if demoted.any():
-        output[demoted, :3] = (
-            SMALL_COMPONENT_SUPPRESSED_RGB
-            if suppressed_alpha is not None
-            else (0, 0, 0)
-        )
     return output, metrics
 
 
@@ -558,9 +543,7 @@ def _extract_steps(
             ).astype(np.uint8)
             hair_back[hair_back[:, :, 3] == 0] = 0
             hair_back, back_corrected = _remove_hair_underlayer_spill(hair_back)
-            hair_back, back_speck_cleanup = _clean_small_components(
-                hair_back, preserve_nonzero_alpha_count=True
-            )
+            hair_back, back_speck_cleanup = _clean_small_components(hair_back)
             save_png(output / "L3_hair.back.png", hair_back)
             mask = front_mask
             layer_report[step] = {
@@ -578,9 +561,7 @@ def _extract_steps(
         layer[layer[:, :, 3] == 0] = 0
         if step == "L3_hair":
             layer, corrected = _remove_hair_underlayer_spill(layer)
-            layer, front_speck_cleanup = _clean_small_components(
-                layer, suppressed_alpha=SMALL_COMPONENT_SUPPRESSED_ALPHA
-            )
+            layer, front_speck_cleanup = _clean_small_components(layer)
             hair_entry = layer_report[step]
             if isinstance(hair_entry, dict):
                 hair_entry["warm_underlayer_pixels_corrected"] = corrected

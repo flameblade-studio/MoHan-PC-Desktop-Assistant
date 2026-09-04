@@ -172,23 +172,23 @@ CANONICAL_HALF_BODY_SHA256 = (
 # docs/media/portraits/idle_front.png: generation-2 composite (official pack +
 # classic makeup) that installer artwork and the taskbar icon derive from, 2026-09-04.
 MARKETING_IDLE_PORTRAIT_SHA256 = (
-    "c36995554580949a344c026ec4cffceea92fb6abc195b7fdbc54ba33c7c12afd"
+    "099ae984c715e535fc12222ba00a5fbad907c1b9a1ca86f0bdecd0c852951142"
 )
 # installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-04.
 WIZARD_HERO_SHA256 = (
-    "41957e25f03220ee444530d31e783b42632f53fffac39394ebb4eb4ede3d9063"
+    "1b6b651a88437dc07d180d9f80feb2a607f0fabaefe5c5609ab4d95ac6813d61"
 )
 # installer/artwork/wizard-small.png: built from the generation-2 composite, 2026-09-04.
 WIZARD_SMALL_SHA256 = (
-    "94137ee32cde15b6963cc5426a288fb604d0007c563e34c68ce0a7cdf7c282c5"
+    "656205104ab189854edd290ad14b7e960a9bc83497235b992af5df11a3f1ad20"
 )
 # assets/mohan-taskbar-icon.png: built from the generation-2 composite, 2026-09-04.
 TASKBAR_ICON_PNG_SHA256 = (
-    "a979d2ae8af72bd6f174b59a2b8b23b7def8d204b7f006bd9947ef41f3dabcd5"
+    "d763469f96d3a67a508c855d57eccf2574753b275b9479c8cd2b0e2b6668e0ff"
 )
 # assets/mohan-halfbody.ico: built from the generation-2 composite, 2026-09-04.
 WINDOWS_ICON_SHA256 = (
-    "404722fba2b808c83e098746d032b52bf21ae40c355ea88941e516b4ffcad24a"
+    "92147ae219f71ff96ddc18924236761cb04109dd5b1d8b57a7b3f409b717a64c"
 )
 # The README expression cards and the canonical idle portrait, rendered composed.
 MARKETING_PORTRAITS = (

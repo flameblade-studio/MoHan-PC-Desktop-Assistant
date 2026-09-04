@@ -32,6 +32,7 @@ lazy from tools.art_pipeline.constants import (
     SMALL_COMPONENT_MAX_AREA,
 )
 lazy from tools.art_pipeline.speck_cleanup import speck_roi_for_shape
+lazy from domain.outfit_pack import REQUIRED_SILHOUETTES
 
 DEFAULT_PACK: Final = (
     ROOT / "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit"
@@ -42,7 +43,10 @@ FRONT_SILHOUETTE: Final = "front-crossed"
 HEAD_ROI: Final = (360, 150, 900, 470)
 SPECK_HEAD_ROI: Final = (300, 100, 1000, 520)
 SPECK_FULL_BODY_ROI: Final = (250, 30, 800, 420)
-SPECK_ALPHA_THRESHOLD: Final = SMALL_COMPONENT_ALPHA_THRESHOLD
+# The original alpha>30 rule remains part of the report's contract, but a
+# sealed composite must not hide any residual pixel below that threshold.
+SPECK_ALPHA_THRESHOLD: Final = 0
+SPECK_OWNER_ALPHA_THRESHOLD: Final = SMALL_COMPONENT_ALPHA_THRESHOLD
 SPECK_SMALL_COMPONENT_MAX_AREA: Final = SMALL_COMPONENT_MAX_AREA
 SPECK_LARGE_COMPONENT_MIN_AREA: Final = SMALL_COMPONENT_ANCHOR_MIN_AREA
 SPECK_DIRECT_DISTANCE_PX: Final = SMALL_COMPONENT_DIRECT_DISTANCE
@@ -56,6 +60,19 @@ DETACHED_DISTANCE_PX: Final = float(HEADWEAR_DETACHED_DISTANCE)
 IMAGE_DIMENSIONS: Final = 3
 RGBA_CHANNELS: Final = 4
 OPAQUE: Final = 255
+ANCHOR_COORDINATE_COUNT: Final = 2
+# These two detached blue bead assemblies are intentional: the design hangs
+# them from the right side of the hairpiece rather than touching the crown.
+# The whitelist is keyed by measured source-pixel area so an unexpected change
+# in either assembly fails the gate instead of being silently accepted.
+DETACHED_HEADWEAR_WHITELIST: Final = {
+    "front-eureka": frozenset({319}),
+    "front-mock-scold": frozenset({84}),
+}
+DETACHED_HEADWEAR_WHITELIST_REASONS: Final = {
+    ("front-eureka", 319): "右側懸掛藍色珠飾，設計上與冠體分離。",
+    ("front-mock-scold", 84): "右側懸掛藍色珠飾，設計上與冠體分離。",
+}
 
 
 def _decode_png(encoded: bytes, label: str) -> np.ndarray:
@@ -81,6 +98,33 @@ def _asset_path(manifest: dict[str, object], category: str, slot: str) -> str:
     poses = variants[0]["poses"]
     declarations = poses[FRONT_SILHOUETTE]
     return next(item["path"] for item in declarations if item["slot"] == slot)
+
+
+def _expand_declared_layer(
+    image: np.ndarray,
+    declaration: dict[str, object],
+    canvas_shape: tuple[int, int],
+) -> np.ndarray:
+    """Restore a cropped asset to its declared canvas at its declared anchor."""
+
+    canvas_height, canvas_width = canvas_shape
+    anchor = declaration.get("anchor", [0, 0])
+    if not isinstance(anchor, list) or len(anchor) != ANCHOR_COORDINATE_COUNT:
+        raise ValueError("Layer anchor must contain x and y.")
+    x, y = (int(anchor[0]), int(anchor[1]))
+    height, width = image.shape[:2]
+    if (
+        x < 0
+        or y < 0
+        or x + width > canvas_width
+        or y + height > canvas_height
+    ):
+        raise ValueError("Layer anchor escaped the declared canvas.")
+    if (height, width) == canvas_shape and (x, y) == (0, 0):
+        return image
+    expanded = np.zeros((canvas_height, canvas_width, RGBA_CHANNELS), dtype=image.dtype)
+    expanded[y : y + height, x : x + width] = image
+    return expanded
 
 
 def brown_hair_metrics(
@@ -122,35 +166,71 @@ def brown_hair_metrics(
     }
 
 
-def _linked_unattached_count(binary: np.ndarray) -> int:
+def _unlinked_component_entry(
+    binary: np.ndarray,
+    labels: np.ndarray,
+    stats: np.ndarray,
+    main_bounds: tuple[int, int, int, int],
+    label: int,
+) -> dict[str, object] | None:
+    main_x, main_y, main_width, main_height = main_bounds
+    x, y, width, height = (int(value) for value in stats[label, :4])
+    dx = max(main_x - (x + width), x - (main_x + main_width), 0)
+    dy = max(main_y - (y + height), y - (main_y + main_height), 0)
+    distance = float(np.hypot(dx, dy))
+    if distance <= DETACHED_DISTANCE_PX:
+        return None
+    pixels = (labels == label) & (binary > 0)
+    ys, xs = np.nonzero(pixels)
+    if not len(xs):
+        return None
+    return {
+        "area": int(len(xs)),
+        "bbox": [
+            int(xs.min()),
+            int(ys.min()),
+            int(xs.max() - xs.min() + 1),
+            int(ys.max() - ys.min() + 1),
+        ],
+        "distance_from_main_px": round(distance, 3),
+    }
+
+
+def _linked_unattached_components(binary: np.ndarray) -> list[dict[str, object]]:
+    binary = (binary > 0).astype(np.uint8)
     radius = HEADWEAR_CHAIN_LINK_RADIUS
     kernel = cv2.getStructuringElement(
         cv2.MORPH_ELLIPSE, (radius * 2 + 1, radius * 2 + 1)
     )
-    count, _labels, stats, _centroids = cv2.connectedComponentsWithStats(
+    count, labels, stats, _centroids = cv2.connectedComponentsWithStats(
         cv2.dilate(binary, kernel), connectivity=8
     )
     if count <= 1:
-        return 0
+        return []
     main = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
-    main_x, main_y, main_width, main_height = stats[main, :4]
-    unattached = 0
+    main_bounds = tuple(int(value) for value in stats[main, :4])
+    unattached = []
     for label in range(1, count):
         if label == main:
             continue
-        x, y, width, height = stats[label, :4]
-        dx = max(main_x - (x + width), x - (main_x + main_width), 0)
-        dy = max(main_y - (y + height), y - (main_y + main_height), 0)
-        if float(np.hypot(dx, dy)) > DETACHED_DISTANCE_PX:
-            unattached += 1
+        entry = _unlinked_component_entry(
+            binary, labels, stats, main_bounds, label
+        )
+        if entry is not None:
+            unattached.append(entry)
     return unattached
+
+
+def _linked_unattached_count(binary: np.ndarray) -> int:
+    return len(_linked_unattached_components(binary))
 
 
 def component_metrics(image: np.ndarray) -> dict[str, object]:
     """Measure raw components and components linked by visible chain spacing."""
 
+    binary = (image[:, :, 3] > 0).astype(np.uint8)
     count, labels, stats, _centroids = cv2.connectedComponentsWithStats(
-        (image[:, :, 3] > 0).astype(np.uint8), connectivity=8
+        binary, connectivity=8
     )
     if count == 1:
         return {
@@ -158,6 +238,7 @@ def component_metrics(image: np.ndarray) -> dict[str, object]:
             "main_component_area": 0,
             "detached_over_100px": 0,
             "unlinked_over_100px": 0,
+            "unlinked_components": [],
             "components": [],
         }
     main_label = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
@@ -178,6 +259,7 @@ def component_metrics(image: np.ndarray) -> dict[str, object]:
             }
         )
     components.sort(key=lambda item: (-item["area"], item["distance_from_main_px"]))
+    unlinked_components = _linked_unattached_components(binary)
     return {
         "component_count": len(components),
         "main_component_area": int(stats[main_label, cv2.CC_STAT_AREA]),
@@ -185,9 +267,8 @@ def component_metrics(image: np.ndarray) -> dict[str, object]:
             item["distance_from_main_px"] > DETACHED_DISTANCE_PX
             for item in components
         ),
-        "unlinked_over_100px": _linked_unattached_count(
-            (image[:, :, 3] > 0).astype(np.uint8)
-        ),
+        "unlinked_over_100px": len(unlinked_components),
+        "unlinked_components": unlinked_components,
         "components": components,
     }
 
@@ -278,9 +359,9 @@ def _direct_speck_masks(
 def _linked_mask_for_crop(
     crop: np.ndarray, source_crop: np.ndarray | None
 ) -> tuple[np.ndarray, np.ndarray]:
-    link_visible = (
-        crop[:, :, 3] > HEADWEAR_COMPONENT_ALPHA_THRESHOLD
-    ).astype(np.uint8)
+    # The composite gate must see even alpha=1 remnants.  The separate
+    # fine-chain gate intentionally keeps its historical alpha>16 contract.
+    link_visible = (crop[:, :, 3] > 0).astype(np.uint8)
     _link_count, link_labels, link_stats, _ = cv2.connectedComponentsWithStats(
         link_visible, connectivity=8
     )
@@ -299,6 +380,7 @@ def _empty_speck_metrics(roi: tuple[int, int, int, int]) -> dict[str, object]:
         "direct_definition_count": 0,
         "isolated_count": 0,
         "alpha_threshold": SPECK_ALPHA_THRESHOLD,
+        "owner_alpha_threshold": SPECK_OWNER_ALPHA_THRESHOLD,
         "small_component_max_area": SPECK_SMALL_COMPONENT_MAX_AREA,
         "large_component_min_area": SPECK_LARGE_COMPONENT_MIN_AREA,
         "direct_distance_px": SPECK_DIRECT_DISTANCE_PX,
@@ -309,23 +391,21 @@ def _empty_speck_metrics(roi: tuple[int, int, int, int]) -> dict[str, object]:
 def isolated_speck_metrics(
     image: np.ndarray,
     *,
-    roi: tuple[int, int, int, int] = SPECK_HEAD_ROI,
+    roi: tuple[int, int, int, int] | None = None,
     source_alpha: np.ndarray | None = None,
 ) -> dict[str, object]:
     """Measure small composite specks and the N-linked chain-aware remainder.
 
-    ``direct_definition_count`` is the owner's original diagnostic: alpha>30,
-    area<=12, and Chebyshev distance>3 from every area>60 component.  The
-    release gate's ``isolated_count`` additionally treats a fine-chain section
-    as non-isolated when it reaches an area>60 anchor through the measured
-    transitive N-neighbour rule.  This keeps the gate aligned with the cleanup
-    rule rather than mistaking a chain's individual links for specks.  When
-    ``source_alpha`` is supplied, only pixels painted by that source layer are
-    attributed to this gate; this prevents an unrelated base-hair fragment from
-    being blamed on headwear.
+    The release gate counts every alpha>0 component, while retaining the
+    owner's alpha>30 value in ``owner_alpha_threshold`` as a diagnostic.  The
+    isolated definition is area<=12 and Chebyshev distance>3 from every
+    area>60 component; the N=9 chain rule then removes only links that reach an
+    area>60 anchor.  When ``source_alpha`` is supplied, only pixels painted by
+    that source layer are attributed to this gate.
     """
 
-    x0, y0, x1, y1, crop = _bounded_roi(image, roi)
+    selected_roi = speck_roi_for_shape(image.shape[:2]) if roi is None else roi
+    x0, y0, x1, y1, crop = _bounded_roi(image, selected_roi)
     source_crop = _source_alpha_roi(source_alpha, crop, x0, y0, x1, y1)
     visible = (crop[:, :, 3] > SPECK_ALPHA_THRESHOLD).astype(np.uint8)
     count, labels, stats, _centroids = cv2.connectedComponentsWithStats(
@@ -350,6 +430,7 @@ def isolated_speck_metrics(
         "direct_definition_count": int(direct.sum()),
         "isolated_count": int((direct & ~small_linked).sum()),
         "alpha_threshold": SPECK_ALPHA_THRESHOLD,
+        "owner_alpha_threshold": SPECK_OWNER_ALPHA_THRESHOLD,
         "small_component_max_area": SPECK_SMALL_COMPONENT_MAX_AREA,
         "large_component_min_area": SPECK_LARGE_COMPONENT_MIN_AREA,
         "direct_distance_px": SPECK_DIRECT_DISTANCE_PX,
@@ -422,26 +503,62 @@ def fine_chain_metrics(image: np.ndarray) -> dict[str, object]:
     }
 
 
-def audit(pack_path: Path, portrait_path: Path, base_hair_path: Path) -> dict[str, object]:
+def audit(  # noqa: PLR0914 - the report intentionally keeps all gate sections together
+    pack_path: Path, portrait_path: Path, base_hair_path: Path
+) -> dict[str, object]:
+    portrait = _read_png(portrait_path)
     with zipfile.ZipFile(pack_path) as archive:
         manifest = json.loads(archive.read("manifest.json"))
-        front_path = _asset_path(manifest, "hairstyles", "front")
-        back_path = _asset_path(manifest, "hairstyles", "back")
-        front_hair = _decode_png(archive.read(front_path), front_path)
-        back_hair = _decode_png(archive.read(back_path), back_path)
+        hair_poses = manifest["hairstyles"][0]["variants"][0]["poses"]
+        front_declaration = next(
+            item
+            for item in hair_poses[FRONT_SILHOUETTE]
+            if item["slot"] == "front"
+        )
+        back_declaration = next(
+            item
+            for item in hair_poses[FRONT_SILHOUETTE]
+            if item["slot"] == "back"
+        )
+        front_hair = _expand_declared_layer(
+            _decode_png(
+                archive.read(front_declaration["path"]),
+                front_declaration["path"],
+            ),
+            front_declaration,
+            portrait.shape[:2],
+        )
+        back_hair = _expand_declared_layer(
+            _decode_png(
+                archive.read(back_declaration["path"]),
+                back_declaration["path"],
+            ),
+            back_declaration,
+            portrait.shape[:2],
+        )
 
         headwear_by_silhouette = {}
         small_component_specks = {}
         front_crossed_headwear = None
         headwear_poses = manifest["headwear"][0]["variants"][0]["poses"]
-        hair_poses = manifest["hairstyles"][0]["variants"][0]["poses"]
+        missing_hair_back_silhouettes = [
+            silhouette
+            for silhouette in REQUIRED_SILHOUETTES
+            if silhouette not in hair_poses
+        ]
+        if missing_hair_back_silhouettes:
+            raise ValueError(
+                "Official pack is missing hair poses: "
+                + ", ".join(missing_hair_back_silhouettes)
+            )
         for silhouette, declarations in sorted(headwear_poses.items()):
             path = declarations[0]["path"]
             headwear = _decode_png(archive.read(path), path)
             headwear_by_silhouette[silhouette] = component_metrics(headwear)
             if silhouette == FRONT_SILHOUETTE:
                 front_crossed_headwear = headwear
-            roi = speck_roi_for_shape(headwear.shape[:2])
+            canvas_shape = headwear.shape[:2]
+            roi = speck_roi_for_shape(canvas_shape)
             hair_declarations = hair_poses[silhouette]
             front_declaration = next(
                 item for item in hair_declarations if item["slot"] == "front"
@@ -449,27 +566,32 @@ def audit(pack_path: Path, portrait_path: Path, base_hair_path: Path) -> dict[st
             back_declaration = next(
                 item for item in hair_declarations if item["slot"] == "back"
             )
+            front = _expand_declared_layer(
+                _decode_png(
+                    archive.read(front_declaration["path"]),
+                    front_declaration["path"],
+                ),
+                front_declaration,
+                canvas_shape,
+            )
+            back = _expand_declared_layer(
+                _decode_png(
+                    archive.read(back_declaration["path"]),
+                    back_declaration["path"],
+                ),
+                back_declaration,
+                canvas_shape,
+            )
             small_component_specks[silhouette] = {
-                "front": isolated_speck_metrics(
-                    _decode_png(
-                        archive.read(front_declaration["path"]),
-                        front_declaration["path"],
-                    ),
-                    roi=roi,
-                ),
-                "back": isolated_speck_metrics(
-                    _decode_png(
-                        archive.read(back_declaration["path"]),
-                        back_declaration["path"],
-                    ),
-                    roi=roi,
-                ),
+                "front": isolated_speck_metrics(front, roi=roi),
+                "back": isolated_speck_metrics(back, roi=roi),
                 "headwear": isolated_speck_metrics(headwear, roi=roi),
             }
 
         empty_back = 0
         nonempty_back = 0
-        for declarations in hair_poses.values():
+        for silhouette in REQUIRED_SILHOUETTES:
+            declarations = hair_poses[silhouette]
             path = next(item["path"] for item in declarations if item["slot"] == "back")
             alpha = _decode_png(archive.read(path), path)[:, :, 3]
             if np.any(alpha):
@@ -477,8 +599,34 @@ def audit(pack_path: Path, portrait_path: Path, base_hair_path: Path) -> dict[st
             else:
                 empty_back += 1
 
-    detached = sum(
-        item["unlinked_over_100px"] for item in headwear_by_silhouette.values()
+    detached_components = {
+        silhouette: metrics["unlinked_components"]
+        for silhouette, metrics in headwear_by_silhouette.items()
+    }
+    detached = sum(len(components) for components in detached_components.values())
+    detached_whitelist = []
+    detached_unexpected = []
+    for silhouette, components in detached_components.items():
+        allowed_areas = DETACHED_HEADWEAR_WHITELIST.get(silhouette, frozenset())
+        for component in components:
+            area = int(component["area"])
+            entry = {
+                "silhouette": silhouette,
+                "area": area,
+                "bbox": component["bbox"],
+                "distance_from_main_px": component["distance_from_main_px"],
+            }
+            if area in allowed_areas:
+                entry["reason"] = DETACHED_HEADWEAR_WHITELIST_REASONS.get(
+                    (silhouette, area), "明列的設計性分離珠飾。"
+                )
+                detached_whitelist.append(entry)
+            else:
+                detached_unexpected.append(entry)
+    isolated_small_points = sum(
+        int(metrics["isolated_count"])
+        for silhouette_metrics in small_component_specks.values()
+        for metrics in silhouette_metrics.values()
     )
     if front_crossed_headwear is None:
         raise ValueError("Official pack is missing the front-crossed headwear layer.")
@@ -507,10 +655,23 @@ def audit(pack_path: Path, portrait_path: Path, base_hair_path: Path) -> dict[st
         "fine_chain": fine_chain_metrics(front_crossed_headwear),
         "headwear": {
             "detached_over_100px_total": detached,
+            "non_whitelisted_detached_over_100px": len(detached_unexpected),
+            "detached_whitelist": detached_whitelist,
+            "detached_unexpected": detached_unexpected,
             "front_crossed": headwear_by_silhouette[FRONT_SILHOUETTE],
             "by_silhouette": headwear_by_silhouette,
         },
         "small_component_specks": small_component_specks,
+        "quality_gate": {
+            "empty_back": empty_back,
+            "non_whitelisted_detached_over_100px": len(detached_unexpected),
+            "isolated_small_points": isolated_small_points,
+            "passed": (
+                not empty_back
+                and not detached_unexpected
+                and isolated_small_points == 0
+            ),
+        },
     }
 
 
@@ -527,7 +688,7 @@ def main() -> int:
         arguments.output.parent.mkdir(parents=True, exist_ok=True)
         arguments.output.write_text(encoded, encoding="utf-8")
     print(encoded, end="")
-    return 0
+    return 0 if report["quality_gate"]["passed"] else 1
 
 
 if __name__ == "__main__":

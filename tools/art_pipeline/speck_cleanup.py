@@ -7,9 +7,7 @@ lazy import numpy as np
 lazy from typing import Final
 
 lazy from .constants import (
-    SMALL_COMPONENT_ALPHA_THRESHOLD,
     SMALL_COMPONENT_ANCHOR_MIN_AREA,
-    SMALL_COMPONENT_LINK_ALPHA_THRESHOLD,
     SMALL_COMPONENT_LINK_DISTANCE,
     SMALL_COMPONENT_MAX_AREA,
 )
@@ -22,11 +20,13 @@ ALPHA_MASK_DIMENSIONS: Final = 2
 
 
 def speck_roi_for_shape(shape: tuple[int, int]) -> tuple[int, int, int, int]:
-    """Return the fixed head ROI for a half-body or full-body canvas."""
+    """Return the owner speck ROI for a half-body or full-body canvas."""
 
     height, width = shape
     if width < MIN_PROCESSING_WIDTH or height < MIN_PROCESSING_HEIGHT:
         return (0, 0, width, height)
+    if height > width:
+        return FULL_BODY_SPECK_ROI
     return HEAD_SPECK_ROI
 
 
@@ -86,17 +86,14 @@ def _clear_removed_components(
 def _classify_small_components(
     crop: np.ndarray,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray] | None:
-    visible = (crop > SMALL_COMPONENT_ALPHA_THRESHOLD).astype(np.uint8)
+    visible = (crop > 0).astype(np.uint8)
     count, labels, stats, _centroids = cv2.connectedComponentsWithStats(
         visible, connectivity=8
     )
     if count <= 1:
         return None
 
-    link_visible = (crop > SMALL_COMPONENT_LINK_ALPHA_THRESHOLD).astype(np.uint8)
-    _link_count, link_labels, link_stats, _ = cv2.connectedComponentsWithStats(
-        link_visible, connectivity=8
-    )
+    link_labels, link_stats = labels, stats
     linked = _promote_linked_components(link_labels, link_stats)
     small = (
         (stats[:, cv2.CC_STAT_AREA] > 0)
@@ -113,17 +110,15 @@ def remove_unlinked_small_components(
     mask: np.ndarray,
     *,
     roi: tuple[int, int, int, int] | None = None,
-    preserve_nonzero_alpha_count: bool = False,
 ) -> tuple[np.ndarray, dict[str, int]]:
     """Remove owner-defined isolated small components from one alpha mask.
 
-    Components at alpha>30 are classified exactly by the owner rule.  A
-    component at or below 12 pixels is retained only when its pixels overlap a
-    component in the transitive N=9 graph grown from an area>60 anchor at
-    alpha>16.  Components above the small-pixel ceiling are left untouched.
-    The optional alpha-count preservation demotes removed pixels to alpha 1;
-    this is used only by the packaged hair-back layer, whose historical
-    nonzero-pixel count is itself a release invariant.
+    Every nonzero-alpha component participates in the cleanup.  A component at
+    or below 12 pixels is retained only when its pixels belong to the
+    transitive N=9 graph grown from an area>60 anchor.  Components above the
+    small-pixel ceiling are left untouched.  Removing a component always writes
+    alpha zero; no historical pixel-count preservation is allowed to leave a
+    residual pixel behind.
     """
 
     if mask.ndim != ALPHA_MASK_DIMENSIONS:
@@ -143,9 +138,6 @@ def remove_unlinked_small_components(
     cleaned_crop, removed_pixels = _clear_removed_components(
         crop, labels, removed_visible
     )
-    if preserve_nonzero_alpha_count:
-        removed_alpha = (crop > 0) & (cleaned_crop == 0)
-        cleaned_crop[removed_alpha] = 1
     cleaned = mask.copy()
     cleaned[y0:y1, x0:x1] = cleaned_crop
     return cleaned, {

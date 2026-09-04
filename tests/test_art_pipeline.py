@@ -18,6 +18,12 @@ lazy from tools.art_pipeline import extract_layers as extract_module
 lazy from tools.art_pipeline.extract_layers import diff_mask, makeup_slot_masks
 lazy from tools.art_pipeline.image_ops import chroma_key, load_rgba, save_png, warp_rgba
 lazy from tools.art_pipeline.references import GitReference
+lazy from tools.art_pipeline.speck_cleanup import (
+    FULL_BODY_SPECK_ROI,
+    HEAD_SPECK_ROI,
+    remove_unlinked_small_components,
+    speck_roi_for_shape,
+)
 
 
 EXPECTED_CHAIN_PIXELS = 4
@@ -178,9 +184,9 @@ def test_owner_small_component_cleanup_keeps_transitive_chain_and_removes_island
     alpha[10:30, 10:30] = 255  # area>60 anchor
     alpha[38:42, 38:40] = 255  # first <=12 px chain link, within N=9
     alpha[48:52, 48:50] = 255  # second transitive <=12 px chain link
-    alpha[80:83, 80:83] = 255  # nine-pixel isolated island
+    alpha[80:83, 80:83] = 1  # nine-pixel isolated island, including low alpha
 
-    cleaned, measured = extract_module.remove_unlinked_small_components(alpha)
+    cleaned, measured = remove_unlinked_small_components(alpha)
 
     assert not cleaned[80:83, 80:83].any()
     assert np.all(cleaned[38:42, 38:40] == OPAQUE_ALPHA)
@@ -191,6 +197,11 @@ def test_owner_small_component_cleanup_keeps_transitive_chain_and_removes_island
         "removed_small_components": 1,
         "removed_pixels": 9,
     }
+
+
+def test_owner_small_component_roi_keeps_half_and_full_body_contracts() -> None:
+    assert speck_roi_for_shape((1254, 1254)) == HEAD_SPECK_ROI
+    assert speck_roi_for_shape((1536, 1024)) == FULL_BODY_SPECK_ROI
 
 
 def test_reference_is_materialized_from_git_commit(tmp_path: Path) -> None:
