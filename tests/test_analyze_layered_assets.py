@@ -1,5 +1,11 @@
 from __future__ import annotations
 
+lazy import sys
+lazy from pathlib import Path as _BootstrapPath
+lazy from tempfile import TemporaryDirectory
+
+sys.path.insert(0, str(_BootstrapPath(__file__).resolve().parents[1]))
+
 lazy from pathlib import Path
 
 lazy import numpy as np
@@ -149,3 +155,15 @@ def test_invalid_or_missing_files_are_reported_explicitly(tmp_path: Path) -> Non
 
     assert "hair_back" in report["missing_layers"][VIEW_IDS[0]]
     assert invalid_path.name in report["unparsed_files"]
+
+
+def main() -> int:
+    for check in (test_clean_layered_assets_are_reported_as_normal, test_contaminated_layer_causes_detectable_outlier, test_gap_in_layer_coverage_is_flagged_by_continuity, test_invalid_or_missing_files_are_reported_explicitly):
+        with TemporaryDirectory(prefix="mohan-analyze-layered-") as scratch:
+            check(Path(scratch))
+    print("ANALYZE_LAYERED_ASSETS_OK")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
