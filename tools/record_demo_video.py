@@ -41,6 +41,7 @@ lazy from PySide6.QtWidgets import QApplication
 
 lazy from domain.constants import POSE_ATLAS_GENERATION
 lazy from domain.lip_sync import (
+    SILENCE_LEVEL_THRESHOLD,
     VISEME_CUES_PER_SECOND,
     VisemeDynamics,
     infer_vowel_pcm16,
@@ -73,6 +74,7 @@ AUDIO_SAMPLE_RATE = 22050
 AUDIO_SAMPLES_PER_VIDEO_FRAME = AUDIO_SAMPLE_RATE // FPS
 RMS_SILENCE_DBFS = -40.0
 AUDIO_PCM16_SCALE = 32768.0
+MOUTH_SILENCE_MIN_CUES = 13
 LEAD_SILENCE_SECONDS = 1.0
 INTER_SCENE_SILENCE_SECONDS = 0.4
 TAIL_SILENCE_SECONDS = 1.0
@@ -507,16 +509,55 @@ def _apply_video_frame_silence_guard(
     pcm: bytes,
     track: list[str],
 ) -> tuple[str, ...]:
-    """Keep every cue in an RMS-silent 100 ms video frame at rest."""
+    """Keep stable-silence video-frame starts at rest.
+
+    The video renderer samples five 50 Hz cues as one 100 ms frame.  Choosing
+    any open cue from that window is useful for voiced onset, but it also lets
+    the last few voiced samples of a frame reopen a mouth whose first cue is
+    already inside a stable silence interval.  Re-run the cue-level analysis
+    here and close every frame whose *start* cue belongs to a 13-cue silence
+    run.  The existing whole-frame RMS guard remains the conservative fallback
+    for shorter silent frames.
+    """
 
     guarded = list(track)
     frame_bytes = AUDIO_SAMPLES_PER_VIDEO_FRAME * AUDIO_SAMPLE_WIDTH
+    cue_bytes = AUDIO_SAMPLE_RATE // VISEME_CUES_PER_SECOND * AUDIO_SAMPLE_WIDTH
+    cue_levels = [
+        infer_vowel_pcm16(
+            pcm[offset : offset + cue_bytes],
+            AUDIO_SAMPLE_RATE,
+        )[0]
+        for offset in range(0, len(pcm), cue_bytes)
+    ]
+    silent_runs: list[tuple[int, int]] = []
+    run_start: int | None = None
+    for cue_index, level in enumerate(cue_levels):
+        if level < SILENCE_LEVEL_THRESHOLD:
+            if run_start is None:
+                run_start = cue_index
+            continue
+        if (
+            run_start is not None
+            and cue_index - run_start >= MOUTH_SILENCE_MIN_CUES
+        ):
+            silent_runs.append((run_start, cue_index))
+        run_start = None
+    if (
+        run_start is not None
+        and len(cue_levels) - run_start >= MOUTH_SILENCE_MIN_CUES
+    ):
+        silent_runs.append((run_start, len(cue_levels)))
+
     for offset in range(0, len(pcm), frame_bytes):
         chunk = pcm[offset : offset + frame_bytes]
-        if _pcm16_rms_dbfs(chunk) > RMS_SILENCE_DBFS:
-            continue
         frame_index = offset // frame_bytes
         cue_start = frame_index * VIDEO_FRAME_CUES
+        stable_silence = any(
+            start <= cue_start < end for start, end in silent_runs
+        )
+        if not stable_silence and _pcm16_rms_dbfs(chunk) > RMS_SILENCE_DBFS:
+            continue
         cue_end = min(len(guarded), cue_start + VIDEO_FRAME_CUES)
         guarded[cue_start:cue_end] = [CLOSED_VISEME_ASSET] * (
             cue_end - cue_start

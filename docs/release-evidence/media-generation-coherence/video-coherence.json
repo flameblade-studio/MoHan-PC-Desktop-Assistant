@@ -94,83 +94,60 @@
     ]
   },
   "mouth_silence": {
-    "source": "rms",
-    "rms_threshold_dbfs": -40.0,
+    "source": "ffmpeg-silencedetect",
+    "filter": "silencedetect=noise=-35dB:d=0.12",
+    "minimum_duration_seconds": 0.26,
     "intervals": [
       {
         "start": 0.0,
-        "end": 1.1
+        "end": 1.118549
       },
       {
-        "start": 2.2,
-        "end": 2.4
+        "start": 2.126939,
+        "end": 2.454875
       },
       {
-        "start": 4.6,
-        "end": 5.7
+        "start": 4.560181,
+        "end": 5.74771
       },
       {
-        "start": 6.5,
-        "end": 6.7
+        "start": 7.676735,
+        "end": 7.970113
       },
       {
-        "start": 7.7,
-        "end": 7.9
+        "start": 11.234966,
+        "end": 12.449796
       },
       {
-        "start": 8.8,
-        "end": 9.0
+        "start": 13.611156,
+        "end": 13.880454
       },
       {
-        "start": 11.3,
-        "end": 12.4
+        "start": 15.284535,
+        "end": 16.519229
       },
       {
-        "start": 13.6,
-        "end": 13.8
+        "start": 17.438685,
+        "end": 17.727483
       },
       {
-        "start": 15.3,
-        "end": 16.5
+        "start": 22.553333,
+        "end": 23.773651
       },
       {
-        "start": 17.5,
-        "end": 17.7
+        "start": 26.265714,
+        "end": 27.086576
       },
       {
-        "start": 18.9,
-        "end": 19.1
+        "start": 27.894512,
+        "end": 28.168707
       },
       {
-        "start": 20.1,
-        "end": 20.2
+        "start": 30.150884,
+        "end": 31.379365
       },
       {
-        "start": 21.4,
-        "end": 21.6
-      },
-      {
-        "start": 22.6,
-        "end": 23.7
-      },
-      {
-        "start": 26.3,
-        "end": 27.0
-      },
-      {
-        "start": 27.9,
-        "end": 28.1
-      },
-      {
-        "start": 30.2,
-        "end": 31.3
-      },
-      {
-        "start": 32.1,
-        "end": 32.3
-      },
-      {
-        "start": 33.4,
+        "start": 33.392336,
         "end": 35.2
       }
     ]
@@ -282,13 +259,13 @@
       313
     ],
     "voiced_pairs": 225,
-    "voiced_zero_change_pairs": 15,
-    "voiced_zero_change_percent": 6.6667,
+    "voiced_zero_change_pairs": 12,
+    "voiced_zero_change_percent": 5.3333,
     "voiced_zero_change_limit_percent": 15.0,
     "voiced_gate_pass": true,
     "silent_pairs": 121,
-    "silent_zero_change_pairs": 12,
-    "silent_zero_change_percent": 9.9174,
+    "silent_zero_change_pairs": 21,
+    "silent_zero_change_percent": 17.3554,
     "mouth_core_roi_xyxy": [
       1048,
       485,
@@ -312,12 +289,12 @@
         "voiced_pairs": 31,
         "voiced_zero_change_pairs": 0,
         "silent_pairs": 25,
-        "silent_zero_change_pairs": 0,
+        "silent_zero_change_pairs": 3,
         "voiced_zero_change_percent": 0.0,
-        "silent_zero_change_percent": 0.0,
-        "voiced_changed_pixel_min": 469,
-        "voiced_changed_pixel_max": 10021,
-        "silent_changed_pixel_max": 10061,
+        "silent_zero_change_percent": 12.0,
+        "voiced_changed_pixel_min": 157,
+        "voiced_changed_pixel_max": 10245,
+        "silent_changed_pixel_max": 10085,
         "silent_core_dark_pixel_max": 20,
         "silent_core_closed_pairs": 25,
         "silent_core_closed_percent": 100.0
@@ -330,14 +307,14 @@
           555
         ],
         "voiced_pairs": 48,
-        "voiced_zero_change_pairs": 3,
+        "voiced_zero_change_pairs": 1,
         "silent_pairs": 18,
         "silent_zero_change_pairs": 0,
-        "voiced_zero_change_percent": 6.25,
+        "voiced_zero_change_percent": 2.0833,
         "silent_zero_change_percent": 0.0,
         "voiced_changed_pixel_min": 0,
-        "voiced_changed_pixel_max": 13739,
-        "silent_changed_pixel_max": 13909,
+        "voiced_changed_pixel_max": 14012,
+        "silent_changed_pixel_max": 13895,
         "silent_core_dark_pixel_max": 0,
         "silent_core_closed_pairs": 18,
         "silent_core_closed_percent": 100.0
@@ -355,9 +332,9 @@
         "silent_zero_change_pairs": 0,
         "voiced_zero_change_percent": 0.0,
         "silent_zero_change_percent": 0.0,
-        "voiced_changed_pixel_min": 53,
-        "voiced_changed_pixel_max": 9870,
-        "silent_changed_pixel_max": 9462,
+        "voiced_changed_pixel_min": 1,
+        "voiced_changed_pixel_max": 10032,
+        "silent_changed_pixel_max": 8926,
         "silent_core_dark_pixel_max": 0,
         "silent_core_closed_pairs": 13,
         "silent_core_closed_percent": 100.0
@@ -372,12 +349,12 @@
         "voiced_pairs": 50,
         "voiced_zero_change_pairs": 6,
         "silent_pairs": 22,
-        "silent_zero_change_pairs": 0,
+        "silent_zero_change_pairs": 5,
         "voiced_zero_change_percent": 12.0,
-        "silent_zero_change_percent": 0.0,
+        "silent_zero_change_percent": 22.7273,
         "voiced_changed_pixel_min": 0,
-        "voiced_changed_pixel_max": 17209,
-        "silent_changed_pixel_max": 17231,
+        "voiced_changed_pixel_max": 17224,
+        "silent_changed_pixel_max": 17240,
         "silent_core_dark_pixel_max": 0,
         "silent_core_closed_pairs": 22,
         "silent_core_closed_percent": 100.0
@@ -390,14 +367,14 @@
           555
         ],
         "voiced_pairs": 53,
-        "voiced_zero_change_pairs": 5,
+        "voiced_zero_change_pairs": 3,
         "silent_pairs": 22,
-        "silent_zero_change_pairs": 3,
-        "voiced_zero_change_percent": 9.434,
-        "silent_zero_change_percent": 13.6364,
+        "silent_zero_change_pairs": 2,
+        "voiced_zero_change_percent": 5.6604,
+        "silent_zero_change_percent": 9.0909,
         "voiced_changed_pixel_min": 0,
-        "voiced_changed_pixel_max": 14470,
-        "silent_changed_pixel_max": 13783,
+        "voiced_changed_pixel_max": 14131,
+        "silent_changed_pixel_max": 13844,
         "silent_core_dark_pixel_max": 0,
         "silent_core_closed_pairs": 22,
         "silent_core_closed_percent": 100.0
@@ -410,14 +387,14 @@
           555
         ],
         "voiced_pairs": 17,
-        "voiced_zero_change_pairs": 1,
+        "voiced_zero_change_pairs": 2,
         "silent_pairs": 21,
-        "silent_zero_change_pairs": 9,
-        "voiced_zero_change_percent": 5.8824,
-        "silent_zero_change_percent": 42.8571,
+        "silent_zero_change_pairs": 11,
+        "voiced_zero_change_percent": 11.7647,
+        "silent_zero_change_percent": 52.381,
         "voiced_changed_pixel_min": 0,
-        "voiced_changed_pixel_max": 9151,
-        "silent_changed_pixel_max": 9093,
+        "voiced_changed_pixel_max": 9116,
+        "silent_changed_pixel_max": 10056,
         "silent_core_dark_pixel_max": 0,
         "silent_core_closed_pairs": 21,
         "silent_core_closed_percent": 100.0
@@ -435,17 +412,169 @@
     "baseline_seconds": 1.0,
     "baseline_channel_delta": 20,
     "open_pixel_threshold": 50,
+    "video_frame_cue_count": 5,
     "frames_excluded_for_baseline": 10,
-    "silent_frames": 103,
-    "silent_closed_frames": 103,
+    "silence_interval_minimum_seconds": 0.26,
+    "silence_intervals_frame_count": 103,
+    "silence_first_frame_indices": [
+      10,
+      22,
+      46,
+      77,
+      113,
+      137,
+      153,
+      175,
+      226,
+      263,
+      279,
+      302,
+      334
+    ],
+    "silence_boundary_frame_indices": [
+      11,
+      23,
+      47,
+      78,
+      114,
+      138,
+      154,
+      176,
+      227,
+      264,
+      280,
+      303,
+      335
+    ],
+    "silent_frames": 90,
+    "silent_closed_frames": 90,
     "silent_closed_percent": 100.0,
     "silent_median_pixel_difference": 0,
     "silent_open_frame_indices": [],
+    "silent_open_frame_differences": [],
     "voiced_frames": 239,
-    "voiced_open_frames": 239,
-    "voiced_open_percent": 100.0,
-    "voiced_median_pixel_difference": 1620,
-    "voiced_closed_frame_indices": [],
+    "voiced_open_frames": 227,
+    "voiced_open_percent": 95.0,
+    "voiced_median_pixel_difference": 1637,
+    "voiced_closed_frame_indices": [
+      65,
+      66,
+      88,
+      89,
+      136,
+      189,
+      190,
+      201,
+      214,
+      215,
+      321,
+      322
+    ],
+    "voiced_closed_frame_differences": [
+      {
+        "frame_index": 65,
+        "pixel_difference": 2
+      },
+      {
+        "frame_index": 66,
+        "pixel_difference": 2
+      },
+      {
+        "frame_index": 88,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 89,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 136,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 189,
+        "pixel_difference": 9
+      },
+      {
+        "frame_index": 190,
+        "pixel_difference": 9
+      },
+      {
+        "frame_index": 201,
+        "pixel_difference": 46
+      },
+      {
+        "frame_index": 214,
+        "pixel_difference": 3
+      },
+      {
+        "frame_index": 215,
+        "pixel_difference": 3
+      },
+      {
+        "frame_index": 321,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 322,
+        "pixel_difference": 0
+      }
+    ],
+    "silence_boundary_frame_differences": [
+      {
+        "frame_index": 11,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 23,
+        "pixel_difference": 1
+      },
+      {
+        "frame_index": 47,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 78,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 114,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 138,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 154,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 176,
+        "pixel_difference": 1
+      },
+      {
+        "frame_index": 227,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 264,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 280,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 303,
+        "pixel_difference": 0
+      },
+      {
+        "frame_index": 335,
+        "pixel_difference": 0
+      }
+    ],
+    "silence_boundary_closed": true,
     "minimum_required_percent": 95.0,
     "gate_pass": true
   }

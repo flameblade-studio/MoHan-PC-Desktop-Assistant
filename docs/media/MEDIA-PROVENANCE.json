@@ -52,7 +52,7 @@
         "docs/media/mohan-demo.mp4": {
             "generator": "tools/record_demo_video.py",
             "generation": 2,
-            "sha256": "2d95e3fad093bdd4c7222c75dbec38909552fa94e8f93c562fb27b8125592423",
+            "sha256": "fb149e46fee0a869d37882d2e2defbdf31e670f70796f768b9127982bccad6f6",
             "width": 1280,
             "height": 720,
             "fps": "10/1",
