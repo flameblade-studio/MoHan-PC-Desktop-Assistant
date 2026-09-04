@@ -8,12 +8,12 @@ lazy from tempfile import TemporaryDirectory
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtCore import QPoint
-from PySide6.QtGui import QImage, QPixmap, QRegion
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import QPoint
+lazy from PySide6.QtGui import QImage, QPixmap, QRegion
+lazy from PySide6.QtWidgets import QApplication
 
-from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
-from tools.render_marketing_portraits import ROOT
+lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from tools.render_marketing_portraits import ROOT
 
 CANVAS_SIZE = (1254, 1254)
 DARK_PIXEL_MAX = 140
