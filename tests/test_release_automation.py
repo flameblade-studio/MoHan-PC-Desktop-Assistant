@@ -172,25 +172,25 @@ CANONICAL_HALF_BODY_SHA256 = (
     "e99cc462979d963247db30e73efcceffe408c5b4046db69611325a6920647825"
 )
 # docs/media/portraits/idle_front.png: generation-2 composite (official pack +
-# classic makeup) that installer artwork and the taskbar icon derive from, 2026-09-03.
+# classic makeup) that installer artwork and the taskbar icon derive from, 2026-09-04.
 MARKETING_IDLE_PORTRAIT_SHA256 = (
-    "3f970a7b96156badcbacd5d6bd1f76ed312db8eeb66a9152f6bc633385e8f869"
+    "c36995554580949a344c026ec4cffceea92fb6abc195b7fdbc54ba33c7c12afd"
 )
-# installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-03.
+# installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-04.
 WIZARD_HERO_SHA256 = (
-    "ef39c7708e4d9782a3b02f5fc4e0d27db23b6675f7656a1e5012761f66962248"
+    "41957e25f03220ee444530d31e783b42632f53fffac39394ebb4eb4ede3d9063"
 )
-# installer/artwork/wizard-small.png: built from the generation-2 composite, 2026-09-03.
+# installer/artwork/wizard-small.png: built from the generation-2 composite, 2026-09-04.
 WIZARD_SMALL_SHA256 = (
-    "2733f8ee842867ddb7fb38ed07f7260f20db33093159f7f1fd678fbdfa884a33"
+    "94137ee32cde15b6963cc5426a288fb604d0007c563e34c68ce0a7cdf7c282c5"
 )
-# assets/mohan-taskbar-icon.png: built from the generation-2 composite, 2026-09-03.
+# assets/mohan-taskbar-icon.png: built from the generation-2 composite, 2026-09-04.
 TASKBAR_ICON_PNG_SHA256 = (
-    "fc32f79654ce68918a838f2382484a0dc2e3e0fcc636aac82b56272fef06eecd"
+    "a979d2ae8af72bd6f174b59a2b8b23b7def8d204b7f006bd9947ef41f3dabcd5"
 )
-# assets/mohan-halfbody.ico: built from the generation-2 composite, 2026-09-03.
+# assets/mohan-halfbody.ico: built from the generation-2 composite, 2026-09-04.
 WINDOWS_ICON_SHA256 = (
-    "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
+    "404722fba2b808c83e098746d032b52bf21ae40c355ea88941e516b4ffcad24a"
 )
 # The README expression cards and the canonical idle portrait, rendered composed.
 MARKETING_PORTRAITS = (

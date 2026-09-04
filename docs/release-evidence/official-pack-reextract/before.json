@@ -1,0 +1,1473 @@
+{
+  "contract": {
+    "head_roi_xyxy": [
+      360,
+      150,
+      900,
+      470
+    ],
+    "brown_brightness_strict_range": [
+      70,
+      150
+    ],
+    "brown_red_minus_blue_strict_min": 18,
+    "detached_distance_strict_min_px": 100.0,
+    "chain_link_radius_px": 20
+  },
+  "hair": {
+    "roi_pixels": 172800,
+    "brown_pixels": 7457,
+    "brown_share_percent": 4.3154,
+    "brown_outfit_alpha_255": 3923,
+    "brown_outfit_alpha_255_percent": 52.6083,
+    "brown_outfit_alpha_0": 3031,
+    "brown_outfit_alpha_0_percent": 40.6464,
+    "brown_both_outfit_and_base_hair_alpha_0": 3013,
+    "brown_hole_share_percent": 40.405
+  },
+  "hair_back_slots": {
+    "empty": 31,
+    "nonempty": 0
+  },
+  "headwear": {
+    "detached_over_100px_total": 5,
+    "front_crossed": {
+      "component_count": 16,
+      "main_component_area": 5022,
+      "detached_over_100px": 8,
+      "unlinked_over_100px": 1,
+      "components": [
+        {
+          "area": 5022,
+          "distance_from_main_px": 0.0
+        },
+        {
+          "area": 1117,
+          "distance_from_main_px": 42.544
+        },
+        {
+          "area": 647,
+          "distance_from_main_px": 2.236
+        },
+        {
+          "area": 341,
+          "distance_from_main_px": 118.983
+        },
+        {
+          "area": 230,
+          "distance_from_main_px": 227.706
+        },
+        {
+          "area": 163,
+          "distance_from_main_px": 79.906
+        },
+        {
+          "area": 104,
+          "distance_from_main_px": 29.275
+        },
+        {
+          "area": 79,
+          "distance_from_main_px": 41.037
+        },
+        {
+          "area": 76,
+          "distance_from_main_px": 220.291
+        },
+        {
+          "area": 61,
+          "distance_from_main_px": 55.731
+        },
+        {
+          "area": 55,
+          "distance_from_main_px": 23.345
+        },
+        {
+          "area": 14,
+          "distance_from_main_px": 268.576
+        },
+        {
+          "area": 5,
+          "distance_from_main_px": 120.416
+        },
+        {
+          "area": 4,
+          "distance_from_main_px": 233.137
+        },
+        {
+          "area": 2,
+          "distance_from_main_px": 264.698
+        },
+        {
+          "area": 1,
+          "distance_from_main_px": 266.957
+        }
+      ]
+    },
+    "by_silhouette": {
+      "cheek-rest": {
+        "component_count": 7,
+        "main_component_area": 6179,
+        "detached_over_100px": 2,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 6179,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 2957,
+            "distance_from_main_px": 10.817
+          },
+          {
+            "area": 453,
+            "distance_from_main_px": 48.26
+          },
+          {
+            "area": 272,
+            "distance_from_main_px": 167.61
+          },
+          {
+            "area": 135,
+            "distance_from_main_px": 17.692
+          },
+          {
+            "area": 89,
+            "distance_from_main_px": 2.236
+          },
+          {
+            "area": 40,
+            "distance_from_main_px": 115.039
+          }
+        ]
+      },
+      "front-crossed": {
+        "component_count": 16,
+        "main_component_area": 5022,
+        "detached_over_100px": 8,
+        "unlinked_over_100px": 1,
+        "components": [
+          {
+            "area": 5022,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 1117,
+            "distance_from_main_px": 42.544
+          },
+          {
+            "area": 647,
+            "distance_from_main_px": 2.236
+          },
+          {
+            "area": 341,
+            "distance_from_main_px": 118.983
+          },
+          {
+            "area": 230,
+            "distance_from_main_px": 227.706
+          },
+          {
+            "area": 163,
+            "distance_from_main_px": 79.906
+          },
+          {
+            "area": 104,
+            "distance_from_main_px": 29.275
+          },
+          {
+            "area": 79,
+            "distance_from_main_px": 41.037
+          },
+          {
+            "area": 76,
+            "distance_from_main_px": 220.291
+          },
+          {
+            "area": 61,
+            "distance_from_main_px": 55.731
+          },
+          {
+            "area": 55,
+            "distance_from_main_px": 23.345
+          },
+          {
+            "area": 14,
+            "distance_from_main_px": 268.576
+          },
+          {
+            "area": 5,
+            "distance_from_main_px": 120.416
+          },
+          {
+            "area": 4,
+            "distance_from_main_px": 233.137
+          },
+          {
+            "area": 2,
+            "distance_from_main_px": 264.698
+          },
+          {
+            "area": 1,
+            "distance_from_main_px": 266.957
+          }
+        ]
+      },
+      "front-eureka": {
+        "component_count": 18,
+        "main_component_area": 5583,
+        "detached_over_100px": 10,
+        "unlinked_over_100px": 4,
+        "components": [
+          {
+            "area": 5583,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 1244,
+            "distance_from_main_px": 36.235
+          },
+          {
+            "area": 701,
+            "distance_from_main_px": 2.236
+          },
+          {
+            "area": 664,
+            "distance_from_main_px": 74.947
+          },
+          {
+            "area": 367,
+            "distance_from_main_px": 120.37
+          },
+          {
+            "area": 322,
+            "distance_from_main_px": 391.772
+          },
+          {
+            "area": 283,
+            "distance_from_main_px": 229.34
+          },
+          {
+            "area": 175,
+            "distance_from_main_px": 83.439
+          },
+          {
+            "area": 125,
+            "distance_from_main_px": 30.15
+          },
+          {
+            "area": 97,
+            "distance_from_main_px": 49.518
+          },
+          {
+            "area": 50,
+            "distance_from_main_px": 388.681
+          },
+          {
+            "area": 48,
+            "distance_from_main_px": 25.0
+          },
+          {
+            "area": 48,
+            "distance_from_main_px": 114.477
+          },
+          {
+            "area": 48,
+            "distance_from_main_px": 364.166
+          },
+          {
+            "area": 40,
+            "distance_from_main_px": 152.013
+          },
+          {
+            "area": 8,
+            "distance_from_main_px": 290.642
+          },
+          {
+            "area": 5,
+            "distance_from_main_px": 293.466
+          },
+          {
+            "area": 2,
+            "distance_from_main_px": 112.792
+          }
+        ]
+      },
+      "front-exasperated": {
+        "component_count": 6,
+        "main_component_area": 5880,
+        "detached_over_100px": 1,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 5880,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 831,
+            "distance_from_main_px": 55.009
+          },
+          {
+            "area": 276,
+            "distance_from_main_px": 19.0
+          },
+          {
+            "area": 92,
+            "distance_from_main_px": 41.11
+          },
+          {
+            "area": 46,
+            "distance_from_main_px": 2.0
+          },
+          {
+            "area": 41,
+            "distance_from_main_px": 240.435
+          }
+        ]
+      },
+      "front-mock-hit": {
+        "component_count": 7,
+        "main_component_area": 4717,
+        "detached_over_100px": 2,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 4717,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 837,
+            "distance_from_main_px": 133.004
+          },
+          {
+            "area": 811,
+            "distance_from_main_px": 37.577
+          },
+          {
+            "area": 646,
+            "distance_from_main_px": 2.236
+          },
+          {
+            "area": 258,
+            "distance_from_main_px": 105.683
+          },
+          {
+            "area": 156,
+            "distance_from_main_px": 11.705
+          },
+          {
+            "area": 56,
+            "distance_from_main_px": 29.833
+          }
+        ]
+      },
+      "front-mock-scold": {
+        "component_count": 7,
+        "main_component_area": 4890,
+        "detached_over_100px": 2,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 4890,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 754,
+            "distance_from_main_px": 47.76
+          },
+          {
+            "area": 635,
+            "distance_from_main_px": 109.202
+          },
+          {
+            "area": 252,
+            "distance_from_main_px": 79.322
+          },
+          {
+            "area": 250,
+            "distance_from_main_px": 12.649
+          },
+          {
+            "area": 108,
+            "distance_from_main_px": 5.831
+          },
+          {
+            "area": 87,
+            "distance_from_main_px": 143.391
+          }
+        ]
+      },
+      "left-neutral": {
+        "component_count": 23,
+        "main_component_area": 5218,
+        "detached_over_100px": 16,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 5218,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 1359,
+            "distance_from_main_px": 63.246
+          },
+          {
+            "area": 1242,
+            "distance_from_main_px": 180.546
+          },
+          {
+            "area": 916,
+            "distance_from_main_px": 3.0
+          },
+          {
+            "area": 538,
+            "distance_from_main_px": 239.266
+          },
+          {
+            "area": 483,
+            "distance_from_main_px": 89.694
+          },
+          {
+            "area": 470,
+            "distance_from_main_px": 135.429
+          },
+          {
+            "area": 270,
+            "distance_from_main_px": 105.0
+          },
+          {
+            "area": 163,
+            "distance_from_main_px": 118.224
+          },
+          {
+            "area": 137,
+            "distance_from_main_px": 442.366
+          },
+          {
+            "area": 124,
+            "distance_from_main_px": 266.03
+          },
+          {
+            "area": 120,
+            "distance_from_main_px": 101.242
+          },
+          {
+            "area": 92,
+            "distance_from_main_px": 29.682
+          },
+          {
+            "area": 91,
+            "distance_from_main_px": 171.826
+          },
+          {
+            "area": 89,
+            "distance_from_main_px": 226.824
+          },
+          {
+            "area": 81,
+            "distance_from_main_px": 441.29
+          },
+          {
+            "area": 77,
+            "distance_from_main_px": 398.664
+          },
+          {
+            "area": 53,
+            "distance_from_main_px": 42.72
+          },
+          {
+            "area": 45,
+            "distance_from_main_px": 30.887
+          },
+          {
+            "area": 45,
+            "distance_from_main_px": 150.904
+          },
+          {
+            "area": 40,
+            "distance_from_main_px": 375.932
+          },
+          {
+            "area": 32,
+            "distance_from_main_px": 358.314
+          },
+          {
+            "area": 1,
+            "distance_from_main_px": 241.814
+          }
+        ]
+      },
+      "yaw+000-pitch+00": {
+        "component_count": 9,
+        "main_component_area": 1223,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1223,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 920,
+            "distance_from_main_px": 40.311
+          },
+          {
+            "area": 241,
+            "distance_from_main_px": 32.016
+          },
+          {
+            "area": 172,
+            "distance_from_main_px": 22.561
+          },
+          {
+            "area": 136,
+            "distance_from_main_px": 32.573
+          },
+          {
+            "area": 134,
+            "distance_from_main_px": 2.0
+          },
+          {
+            "area": 124,
+            "distance_from_main_px": 26.401
+          },
+          {
+            "area": 123,
+            "distance_from_main_px": 9.434
+          },
+          {
+            "area": 54,
+            "distance_from_main_px": 2.236
+          }
+        ]
+      },
+      "yaw+015-pitch+00": {
+        "component_count": 17,
+        "main_component_area": 1054,
+        "detached_over_100px": 4,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1054,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 303,
+            "distance_from_main_px": 22.561
+          },
+          {
+            "area": 216,
+            "distance_from_main_px": 35.693
+          },
+          {
+            "area": 205,
+            "distance_from_main_px": 32.757
+          },
+          {
+            "area": 174,
+            "distance_from_main_px": 10.198
+          },
+          {
+            "area": 160,
+            "distance_from_main_px": 166.027
+          },
+          {
+            "area": 123,
+            "distance_from_main_px": 7.616
+          },
+          {
+            "area": 100,
+            "distance_from_main_px": 39.051
+          },
+          {
+            "area": 95,
+            "distance_from_main_px": 30.0
+          },
+          {
+            "area": 86,
+            "distance_from_main_px": 87.801
+          },
+          {
+            "area": 73,
+            "distance_from_main_px": 127.012
+          },
+          {
+            "area": 53,
+            "distance_from_main_px": 49.649
+          },
+          {
+            "area": 19,
+            "distance_from_main_px": 127.953
+          },
+          {
+            "area": 15,
+            "distance_from_main_px": 72.0
+          },
+          {
+            "area": 6,
+            "distance_from_main_px": 105.475
+          },
+          {
+            "area": 1,
+            "distance_from_main_px": 98.489
+          },
+          {
+            "area": 1,
+            "distance_from_main_px": 99.126
+          }
+        ]
+      },
+      "yaw+030-pitch+00": {
+        "component_count": 14,
+        "main_component_area": 1059,
+        "detached_over_100px": 2,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1059,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 236,
+            "distance_from_main_px": 24.698
+          },
+          {
+            "area": 165,
+            "distance_from_main_px": 24.739
+          },
+          {
+            "area": 112,
+            "distance_from_main_px": 8.485
+          },
+          {
+            "area": 97,
+            "distance_from_main_px": 9.22
+          },
+          {
+            "area": 96,
+            "distance_from_main_px": 32.202
+          },
+          {
+            "area": 82,
+            "distance_from_main_px": 120.341
+          },
+          {
+            "area": 73,
+            "distance_from_main_px": 49.406
+          },
+          {
+            "area": 62,
+            "distance_from_main_px": 42.953
+          },
+          {
+            "area": 61,
+            "distance_from_main_px": 52.154
+          },
+          {
+            "area": 40,
+            "distance_from_main_px": 42.544
+          },
+          {
+            "area": 25,
+            "distance_from_main_px": 92.396
+          },
+          {
+            "area": 24,
+            "distance_from_main_px": 87.618
+          },
+          {
+            "area": 4,
+            "distance_from_main_px": 110.788
+          }
+        ]
+      },
+      "yaw+045-pitch+00": {
+        "component_count": 10,
+        "main_component_area": 896,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 896,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 201,
+            "distance_from_main_px": 30.806
+          },
+          {
+            "area": 163,
+            "distance_from_main_px": 21.954
+          },
+          {
+            "area": 153,
+            "distance_from_main_px": 40.853
+          },
+          {
+            "area": 127,
+            "distance_from_main_px": 9.487
+          },
+          {
+            "area": 123,
+            "distance_from_main_px": 29.833
+          },
+          {
+            "area": 96,
+            "distance_from_main_px": 35.014
+          },
+          {
+            "area": 79,
+            "distance_from_main_px": 45.0
+          },
+          {
+            "area": 65,
+            "distance_from_main_px": 50.249
+          },
+          {
+            "area": 62,
+            "distance_from_main_px": 49.659
+          }
+        ]
+      },
+      "yaw+060-pitch+00": {
+        "component_count": 8,
+        "main_component_area": 1048,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1048,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 239,
+            "distance_from_main_px": 32.202
+          },
+          {
+            "area": 213,
+            "distance_from_main_px": 27.514
+          },
+          {
+            "area": 200,
+            "distance_from_main_px": 22.825
+          },
+          {
+            "area": 173,
+            "distance_from_main_px": 8.485
+          },
+          {
+            "area": 157,
+            "distance_from_main_px": 9.487
+          },
+          {
+            "area": 51,
+            "distance_from_main_px": 83.774
+          },
+          {
+            "area": 48,
+            "distance_from_main_px": 49.406
+          }
+        ]
+      },
+      "yaw+075-pitch+00": {
+        "component_count": 8,
+        "main_component_area": 1000,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1000,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 607,
+            "distance_from_main_px": 26.907
+          },
+          {
+            "area": 216,
+            "distance_from_main_px": 5.099
+          },
+          {
+            "area": 147,
+            "distance_from_main_px": 32.65
+          },
+          {
+            "area": 145,
+            "distance_from_main_px": 6.0
+          },
+          {
+            "area": 145,
+            "distance_from_main_px": 26.0
+          },
+          {
+            "area": 98,
+            "distance_from_main_px": 26.306
+          },
+          {
+            "area": 71,
+            "distance_from_main_px": 26.077
+          }
+        ]
+      },
+      "yaw+090-pitch+00": {
+        "component_count": 7,
+        "main_component_area": 1144,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1144,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 773,
+            "distance_from_main_px": 32.45
+          },
+          {
+            "area": 312,
+            "distance_from_main_px": 2.0
+          },
+          {
+            "area": 266,
+            "distance_from_main_px": 11.045
+          },
+          {
+            "area": 144,
+            "distance_from_main_px": 98.412
+          },
+          {
+            "area": 87,
+            "distance_from_main_px": 73.171
+          },
+          {
+            "area": 1,
+            "distance_from_main_px": 58.0
+          }
+        ]
+      },
+      "yaw+105-pitch+00": {
+        "component_count": 5,
+        "main_component_area": 1085,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1085,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 545,
+            "distance_from_main_px": 8.062
+          },
+          {
+            "area": 488,
+            "distance_from_main_px": 33.121
+          },
+          {
+            "area": 277,
+            "distance_from_main_px": 7.28
+          },
+          {
+            "area": 267,
+            "distance_from_main_px": 4.123
+          }
+        ]
+      },
+      "yaw+120-pitch+00": {
+        "component_count": 3,
+        "main_component_area": 465,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 465,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 372,
+            "distance_from_main_px": 49.01
+          },
+          {
+            "area": 181,
+            "distance_from_main_px": 28.636
+          }
+        ]
+      },
+      "yaw+135-pitch+00": {
+        "component_count": 6,
+        "main_component_area": 484,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 484,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 426,
+            "distance_from_main_px": 2.0
+          },
+          {
+            "area": 411,
+            "distance_from_main_px": 13.0
+          },
+          {
+            "area": 215,
+            "distance_from_main_px": 20.881
+          },
+          {
+            "area": 164,
+            "distance_from_main_px": 53.235
+          },
+          {
+            "area": 54,
+            "distance_from_main_px": 2.0
+          }
+        ]
+      },
+      "yaw+150-pitch+00": {
+        "component_count": 14,
+        "main_component_area": 1828,
+        "detached_over_100px": 13,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1828,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 1015,
+            "distance_from_main_px": 210.761
+          },
+          {
+            "area": 539,
+            "distance_from_main_px": 142.678
+          },
+          {
+            "area": 267,
+            "distance_from_main_px": 217.789
+          },
+          {
+            "area": 249,
+            "distance_from_main_px": 218.634
+          },
+          {
+            "area": 206,
+            "distance_from_main_px": 274.434
+          },
+          {
+            "area": 169,
+            "distance_from_main_px": 158.013
+          },
+          {
+            "area": 141,
+            "distance_from_main_px": 123.939
+          },
+          {
+            "area": 139,
+            "distance_from_main_px": 154.78
+          },
+          {
+            "area": 112,
+            "distance_from_main_px": 259.856
+          },
+          {
+            "area": 94,
+            "distance_from_main_px": 150.615
+          },
+          {
+            "area": 86,
+            "distance_from_main_px": 117.038
+          },
+          {
+            "area": 54,
+            "distance_from_main_px": 193.507
+          },
+          {
+            "area": 46,
+            "distance_from_main_px": 285.575
+          }
+        ]
+      },
+      "yaw+165-pitch+00": {
+        "component_count": 7,
+        "main_component_area": 1007,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1007,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 628,
+            "distance_from_main_px": 5.0
+          },
+          {
+            "area": 299,
+            "distance_from_main_px": 4.472
+          },
+          {
+            "area": 249,
+            "distance_from_main_px": 72.471
+          },
+          {
+            "area": 77,
+            "distance_from_main_px": 55.462
+          },
+          {
+            "area": 74,
+            "distance_from_main_px": 26.683
+          },
+          {
+            "area": 72,
+            "distance_from_main_px": 3.162
+          }
+        ]
+      },
+      "yaw-015-pitch+00": {
+        "component_count": 9,
+        "main_component_area": 1167,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1167,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 249,
+            "distance_from_main_px": 7.81
+          },
+          {
+            "area": 177,
+            "distance_from_main_px": 90.355
+          },
+          {
+            "area": 114,
+            "distance_from_main_px": 20.248
+          },
+          {
+            "area": 67,
+            "distance_from_main_px": 38.601
+          },
+          {
+            "area": 63,
+            "distance_from_main_px": 45.607
+          },
+          {
+            "area": 56,
+            "distance_from_main_px": 28.636
+          },
+          {
+            "area": 55,
+            "distance_from_main_px": 22.472
+          },
+          {
+            "area": 51,
+            "distance_from_main_px": 5.0
+          }
+        ]
+      },
+      "yaw-030-pitch+00": {
+        "component_count": 8,
+        "main_component_area": 759,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 759,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 168,
+            "distance_from_main_px": 20.881
+          },
+          {
+            "area": 115,
+            "distance_from_main_px": 75.584
+          },
+          {
+            "area": 90,
+            "distance_from_main_px": 18.385
+          },
+          {
+            "area": 69,
+            "distance_from_main_px": 54.406
+          },
+          {
+            "area": 53,
+            "distance_from_main_px": 40.804
+          },
+          {
+            "area": 50,
+            "distance_from_main_px": 36.674
+          },
+          {
+            "area": 48,
+            "distance_from_main_px": 89.961
+          }
+        ]
+      },
+      "yaw-045-pitch+00": {
+        "component_count": 11,
+        "main_component_area": 1193,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1193,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 251,
+            "distance_from_main_px": 89.443
+          },
+          {
+            "area": 244,
+            "distance_from_main_px": 8.485
+          },
+          {
+            "area": 199,
+            "distance_from_main_px": 9.055
+          },
+          {
+            "area": 115,
+            "distance_from_main_px": 36.222
+          },
+          {
+            "area": 113,
+            "distance_from_main_px": 19.698
+          },
+          {
+            "area": 105,
+            "distance_from_main_px": 6.083
+          },
+          {
+            "area": 102,
+            "distance_from_main_px": 25.71
+          },
+          {
+            "area": 98,
+            "distance_from_main_px": 43.417
+          },
+          {
+            "area": 85,
+            "distance_from_main_px": 45.486
+          },
+          {
+            "area": 49,
+            "distance_from_main_px": 21.19
+          }
+        ]
+      },
+      "yaw-060-pitch+00": {
+        "component_count": 8,
+        "main_component_area": 1296,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1296,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 262,
+            "distance_from_main_px": 7.071
+          },
+          {
+            "area": 204,
+            "distance_from_main_px": 2.828
+          },
+          {
+            "area": 131,
+            "distance_from_main_px": 21.213
+          },
+          {
+            "area": 126,
+            "distance_from_main_px": 35.171
+          },
+          {
+            "area": 111,
+            "distance_from_main_px": 44.385
+          },
+          {
+            "area": 82,
+            "distance_from_main_px": 45.343
+          },
+          {
+            "area": 69,
+            "distance_from_main_px": 36.674
+          }
+        ]
+      },
+      "yaw-075-pitch+00": {
+        "component_count": 16,
+        "main_component_area": 947,
+        "detached_over_100px": 5,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 947,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 335,
+            "distance_from_main_px": 19.698
+          },
+          {
+            "area": 316,
+            "distance_from_main_px": 21.095
+          },
+          {
+            "area": 314,
+            "distance_from_main_px": 8.485
+          },
+          {
+            "area": 230,
+            "distance_from_main_px": 91.082
+          },
+          {
+            "area": 186,
+            "distance_from_main_px": 2.0
+          },
+          {
+            "area": 106,
+            "distance_from_main_px": 122.43
+          },
+          {
+            "area": 103,
+            "distance_from_main_px": 42.426
+          },
+          {
+            "area": 77,
+            "distance_from_main_px": 45.122
+          },
+          {
+            "area": 68,
+            "distance_from_main_px": 164.976
+          },
+          {
+            "area": 30,
+            "distance_from_main_px": 86.279
+          },
+          {
+            "area": 11,
+            "distance_from_main_px": 125.399
+          },
+          {
+            "area": 5,
+            "distance_from_main_px": 96.021
+          },
+          {
+            "area": 4,
+            "distance_from_main_px": 106.668
+          },
+          {
+            "area": 3,
+            "distance_from_main_px": 71.568
+          },
+          {
+            "area": 1,
+            "distance_from_main_px": 122.874
+          }
+        ]
+      },
+      "yaw-090-pitch+00": {
+        "component_count": 6,
+        "main_component_area": 1650,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1650,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 579,
+            "distance_from_main_px": 11.314
+          },
+          {
+            "area": 205,
+            "distance_from_main_px": 10.198
+          },
+          {
+            "area": 185,
+            "distance_from_main_px": 68.0
+          },
+          {
+            "area": 85,
+            "distance_from_main_px": 92.0
+          },
+          {
+            "area": 16,
+            "distance_from_main_px": 23.0
+          }
+        ]
+      },
+      "yaw-105-pitch+00": {
+        "component_count": 1,
+        "main_component_area": 74,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 74,
+            "distance_from_main_px": 0.0
+          }
+        ]
+      },
+      "yaw-120-pitch+00": {
+        "component_count": 4,
+        "main_component_area": 419,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 419,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 66,
+            "distance_from_main_px": 54.129
+          },
+          {
+            "area": 52,
+            "distance_from_main_px": 43.681
+          },
+          {
+            "area": 51,
+            "distance_from_main_px": 7.81
+          }
+        ]
+      },
+      "yaw-135-pitch+00": {
+        "component_count": 9,
+        "main_component_area": 908,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 908,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 290,
+            "distance_from_main_px": 7.211
+          },
+          {
+            "area": 242,
+            "distance_from_main_px": 13.0
+          },
+          {
+            "area": 158,
+            "distance_from_main_px": 36.014
+          },
+          {
+            "area": 151,
+            "distance_from_main_px": 23.087
+          },
+          {
+            "area": 94,
+            "distance_from_main_px": 17.263
+          },
+          {
+            "area": 84,
+            "distance_from_main_px": 7.28
+          },
+          {
+            "area": 42,
+            "distance_from_main_px": 77.0
+          },
+          {
+            "area": 40,
+            "distance_from_main_px": 21.024
+          }
+        ]
+      },
+      "yaw-150-pitch+00": {
+        "component_count": 1,
+        "main_component_area": 1243,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 1243,
+            "distance_from_main_px": 0.0
+          }
+        ]
+      },
+      "yaw-165-pitch+00": {
+        "component_count": 1,
+        "main_component_area": 2602,
+        "detached_over_100px": 0,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 2602,
+            "distance_from_main_px": 0.0
+          }
+        ]
+      },
+      "yaw-180-pitch+00": {
+        "component_count": 13,
+        "main_component_area": 2699,
+        "detached_over_100px": 10,
+        "unlinked_over_100px": 0,
+        "components": [
+          {
+            "area": 2699,
+            "distance_from_main_px": 0.0
+          },
+          {
+            "area": 2276,
+            "distance_from_main_px": 156.013
+          },
+          {
+            "area": 1466,
+            "distance_from_main_px": 203.666
+          },
+          {
+            "area": 774,
+            "distance_from_main_px": 100.02
+          },
+          {
+            "area": 746,
+            "distance_from_main_px": 129.321
+          },
+          {
+            "area": 520,
+            "distance_from_main_px": 2.0
+          },
+          {
+            "area": 204,
+            "distance_from_main_px": 208.01
+          },
+          {
+            "area": 185,
+            "distance_from_main_px": 152.453
+          },
+          {
+            "area": 119,
+            "distance_from_main_px": 174.874
+          },
+          {
+            "area": 110,
+            "distance_from_main_px": 113.283
+          },
+          {
+            "area": 94,
+            "distance_from_main_px": 165.218
+          },
+          {
+            "area": 81,
+            "distance_from_main_px": 84.172
+          },
+          {
+            "area": 56,
+            "distance_from_main_px": 247.31
+          }
+        ]
+      }
+    }
+  }
+}
