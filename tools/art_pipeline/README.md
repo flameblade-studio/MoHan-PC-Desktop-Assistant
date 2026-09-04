@@ -38,6 +38,22 @@ python -m pytest -q tests/test_art_pipeline.py
 
 `constants.py` 集中記錄畫布尺寸、鍵色門檻、羽化、形態學、臉部安全區、補鞋比例與連通塊門檻；每組旁邊都有 scratchpad 來源及量測依據。改數值時要同步更新回歸測試與本說明。
 
+### 產後驗收（臉部範圍）
+
+此工具驗證局部生成後 `bodyexpr_{view}_{expr}.png` 與同一 `view` 的基底，允許臉框內變更，控制臉框外變更。
+
+- CLI 可直接指定視角清單、表情清單、`--face-box` 與 `--outside-threshold`。
+- 預設 `--outside-threshold` 為 `1.5`，其依據是「1.5% 是實測 39 張樣本的散布上緣」。
+- 缺檔時（或參數錯誤）會回傳 `2`，不視為合格。
+
+1. 基底請提供含 `{view}` 的路徑，例如 `.../{view}-pitch+00.base.magenta.png`。
+2. 產物請放到輸出目錄，命名 `bodyexpr_{view}_{expr}.png`，逐一對應視角與表情。
+
+```powershell
+python -m tools.art_pipeline.qc_drift "assets/pose-atlas/v4-working/{view}-pitch+00.base.magenta.png" work/halfbody/out
+```
+
+CLI 回傳碼：`0` 全部通過、`1` 不合格、`2` 檔案缺漏或參數錯誤。
 ## 简体中文
 
 这是一套从 scratchpad 纳入 repo 的可复现工具，负责半身精灵对位、说话／眨眼变体、参考图裁切、差分拆层、妆容三槽切分、补鞋合并、去洋红溢色和契约文件名组装。
@@ -76,6 +92,22 @@ python -m pytest -q tests/test_art_pipeline.py
 
 `constants.py` 集中记录画布尺寸、键色阈值、羽化、形态学、脸部安全区、补鞋比例和连通块阈值；每组旁边都有 scratchpad 来源和测量依据。修改数值时要同步更新回归测试与本说明。
 
+### 产后验收（人脸范围）
+
+该工具用于检测局部重绘后 `bodyexpr_{view}_{expr}.png` 与同一 `view` 的基底，允許脸框内部变更并严格控制外部变化。
+
+- CLI 可直接设置视角列表、表情列表、`--face-box` 和 `--outside-threshold`。
+- 默认 `--outside-threshold` 为 `1.5`，其依据是「1.5% 是实测 39 张样本的散布上缘」。
+- 缺檔時（或参数错误）会返回 `2`，不视为合格。
+
+1. 基底图采用 `{view}` 模板，例如 `.../{view}-pitch+00.base.magenta.png`。
+2. 输出必须命名为 `bodyexpr_{view}_{expr}.png` 并放在指定目录。
+
+```powershell
+python -m tools.art_pipeline.qc_drift "assets/pose-atlas/v4-working/{view}-pitch+00.base.magenta.png" work/halfbody/out
+```
+
+返回码：`0` 表示全部通过，`1` 表示超过门槛，`2` 表示文件缺失或参数错误。
 ## English
 
 This is the reproducible repo version of the scratchpad layered-art line. It covers half-body alignment, speech/blink variants, reference alignment and crops, differential layer extraction, mutually exclusive makeup slots, shoe merging, despill, and contractual expression filenames.
@@ -114,6 +146,22 @@ python -m pytest -q tests/test_art_pipeline.py
 
 `constants.py` centralizes canvas dimensions, key-color thresholds, feathering, morphology, face safe regions, shoe-zone ratios, and connected-component thresholds; every group includes scratchpad sources and measurement notes. Update the regression tests and this document whenever a value changes.
 
+### Output drift check（顔編集ゲート）
+
+このツールは `bodyexpr_{view}_{expr}.png` と同一 `view` のベース画像を比較し、顔領域外の差分率を監視します。
+
+- CLI 引数で視点リスト、表情リスト、`--face-box`、`--outside-threshold` を指定できます。
+- デフォルト `--outside-threshold` は `1.5` で、これは 39 件のクリーン検証サンプルから得られた上側散布上限です。
+- 出力ファイルが欠けている場合は、通過扱いせず明確なエラーで `2` を返します。
+
+1. ベースは `{view}` を含むテンプレートパス（例: `.../{view}-pitch+00.base.magenta.png`）を指定します。
+2. 生成結果は `bodyexpr_{view}_{expr}.png` の命名で出力ディレクトリへ置きます。
+
+```powershell
+python -m tools.art_pipeline.qc_drift "assets/pose-atlas/v4-working/{view}-pitch+00.base.magenta.png" work/halfbody/out
+```
+
+戻り値: `0` 合格、`1` 基準超過、`2` ファイル不足/引数エラー。
 ## 日本語
 
 これは scratchpad から repo に取り込んだ再現可能なレイヤー美術工程です。半身スプライトの位置合わせ、発話／まばたき差分、参照画像の位置合わせと切り出し、差分レイヤー抽出、相互排他的なメイク三スロット、靴の統合、マゼンタの色かぶり除去、正式な表情ファイル名を扱います。
@@ -151,3 +199,20 @@ python -m pytest -q tests/test_art_pipeline.py
 ```
 
 `constants.py` にはキャンバスサイズ、キー色のしきい値、フェザー、形態学処理、顔の安全領域、靴領域の比率、連結成分のしきい値を集約し、各項目の横に scratchpad の出典と計測根拠を記載しています。数値を変更する場合は回帰テストと本説明も同時に更新してください。
+
+### 顔編集ゲート（顔以外検査）
+
+このツールは `bodyexpr_{view}_{expr}.png` と同じ `view` のベース画像を比較し、顔領域外の差分率を監視します。
+
+- CLI では視点リスト、表情リスト、`--face-box`、`--outside-threshold` を指定できます。
+- デフォルトの `--outside-threshold` は `1.5` で、これは 39 件のクリーン検証サンプルで確認した上側散布限界です。
+- 参照画像欠落または引数不正は、明確なエラーで `2` を返し合格扱いしません。
+
+1. ベースは `{view}` を含むテンプレートパス（例: `.../{view}-pitch+00.base.magenta.png`）を指定します。
+2. 生成結果は `bodyexpr_{view}_{expr}.png` という命名で出力ディレクトリへ配置します。
+
+```powershell
+python -m tools.art_pipeline.qc_drift "assets/pose-atlas/v4-working/{view}-pitch+00.base.magenta.png" work/halfbody/out
+```
+
+戻り値: `0` 合格、`1` 基準超過、`2` ファイル不足または引数エラーです。
