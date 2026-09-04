@@ -8,7 +8,7 @@ lazy from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy import application.service_container as service_container
+lazy from application import service_container
 lazy from presentation.flagship.overview import FlagshipOverviewMixin
 
 RETRY_ATTEMPTS = 2
