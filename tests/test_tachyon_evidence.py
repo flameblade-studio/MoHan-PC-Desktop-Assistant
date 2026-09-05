@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 lazy import argparse
+lazy from contextlib import redirect_stderr
+lazy from io import StringIO
 lazy import os
 lazy import sys
 lazy import tempfile
@@ -11,7 +13,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 lazy from tools.profile_mohan_tachyon import (
+    CaptureAttempt,
     _artifact_paths,
+    _capture_retry_exhausted_message,
+    _capture_with_retries,
     _capture_statistics,
     _frame_statistics,
     _quality_violations,
@@ -25,6 +30,7 @@ EXPECTED_MISSED_PERCENT = 2.5
 EXPECTED_TOTAL_SAMPLES = 100
 EXPECTED_FRAME_COUNT = 2
 EXPECTED_FAILURE_COUNT = 6
+EXPECTED_RETRY_SAMPLE_READ_ERROR = 0.25
 
 
 def test_capture_statistics_support_current_and_legacy_output() -> None:
@@ -212,11 +218,83 @@ def test_quality_gate_requires_samples_low_error_and_jit() -> None:
     assert any("JIT" in item for item in failing)
 
 
+def test_capture_retry_accepts_a_fresh_low_error_sample() -> None:
+    arguments = argparse.Namespace(max_sample_read_error_percent=1.0)
+    scripted_attempts = (
+        CaptureAttempt(1, 35.12, True),
+        CaptureAttempt(2, EXPECTED_RETRY_SAMPLE_READ_ERROR, True),
+    )
+    seen_attempts: list[int] = []
+
+    def capture(attempt_number: int) -> CaptureAttempt:
+        seen_attempts.append(attempt_number)
+        return scripted_attempts[attempt_number - 1]
+
+    attempts = _capture_with_retries(arguments, "expression", capture)
+
+    assert seen_attempts == [1, 2]
+    assert attempts == scripted_attempts
+    assert (
+        attempts[-1].sample_read_error_percent
+        == EXPECTED_RETRY_SAMPLE_READ_ERROR
+    )
+
+
+def test_capture_retry_recovers_missing_runtime_evidence() -> None:
+    arguments = argparse.Namespace(max_sample_read_error_percent=1.0)
+    scripted_attempts = (
+        CaptureAttempt(1, None, False),
+        CaptureAttempt(2, EXPECTED_RETRY_SAMPLE_READ_ERROR, True),
+    )
+    seen_attempts: list[int] = []
+
+    def capture(attempt_number: int) -> CaptureAttempt:
+        seen_attempts.append(attempt_number)
+        return scripted_attempts[attempt_number - 1]
+
+    attempts = _capture_with_retries(arguments, "startup", capture)
+
+    assert seen_attempts == [1, 2]
+    assert attempts == scripted_attempts
+    assert attempts[0].runtime_evidence_written is False
+    assert attempts[-1].runtime_evidence_written is True
+
+
+def test_capture_retry_limit_reports_every_sample_read_error() -> None:
+    arguments = argparse.Namespace(max_sample_read_error_percent=1.0)
+    scripted_attempts = tuple(
+        CaptureAttempt(number, 35.12, True)
+        for number in range(1, 4)
+    )
+    seen_attempts: list[int] = []
+
+    def capture(attempt_number: int) -> CaptureAttempt:
+        seen_attempts.append(attempt_number)
+        return scripted_attempts[attempt_number - 1]
+
+    stderr = StringIO()
+    with redirect_stderr(stderr):
+        attempts = _capture_with_retries(arguments, "expression", capture)
+
+    message = stderr.getvalue()
+    assert seen_attempts == [1, 2, 3]
+    assert attempts == scripted_attempts
+    assert "target=expression" in message
+    assert "sample-read-error-rates=1=35.12%, 2=35.12%, 3=35.12%" in message
+    assert "exhausted 2 retries" in _capture_retry_exhausted_message(
+        "expression",
+        attempts,
+    )
+
+
 def main() -> None:
     test_capture_statistics_support_current_and_legacy_output()
     test_chunked_tachyon_tables_and_aggregates()
     test_profile_paths_are_private_and_binary_is_temporary()
     test_quality_gate_requires_samples_low_error_and_jit()
+    test_capture_retry_accepts_a_fresh_low_error_sample()
+    test_capture_retry_recovers_missing_runtime_evidence()
+    test_capture_retry_limit_reports_every_sample_read_error()
     print("TACHYON_ENTERPRISE_EVIDENCE_OK")
 
 
