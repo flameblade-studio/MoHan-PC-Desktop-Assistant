@@ -4,6 +4,56 @@
 
 本文件記錄墨寒桌面助理所有值得注意的公開變更。
 
+## [4.7.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.6.0...v4.7.0) (2026-09-05)
+
+
+### ✨ 新功能 / 新功能 / New features / 新機能
+
+* **ui:** 墨寒・凌霄——控制中心重鑄為墨金基底的華麗殼層 ([#163](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/163)) ([97b4ad0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/97b4ad0f6c542ac3f7e7ae1b2c8f6553c2d81c40))
+* 二代素體 v5-base 24 視角與 600 圖層入庫為暫存素材（執行期仍用 v4） ([#160](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/160)) ([d91dc93](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/d91dc93f9e9038bb86a1c38220a5a765e9ea42a7))
+* 二代素體完整換代——v5 素體、可拆卸外觀圖層、半身素顏精靈集／二代素体完整换代——v5 素体、可拆卸外观图层、半身素颜精灵集／Generation-2 body changeover: v5 base, detachable appearance layers, bare half-body sprites／第二世代素体への完全移行——v5 素体・着脱可能な外観レイヤー・素顔の半身スプライト ([#164](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/164)) ([d58b11e](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/d58b11e93d936eebf6bb7c9ef42b9908b4c1f465))
+* 姿勢引擎與 DQS 重擺入庫，產線切至 candidate6／姿势引擎与 DQS 重摆入库，产线切至 candidate6／land the pose engine and DQS repose, switch the pipeline to candidate6／ポーズエンジンと DQS リポーズを収録し、パイプラインを candidate6 へ ([#138](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/138)) ([ce71e60](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/ce71e60a0784360dc1f8e797e3909b8dba8e7817))
+* 更新清單改用擁有者 Ed25519 分離簽章，用戶端只接受能以內嵌公鑰驗證的清單 ([#156](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/156)) ([41e881c](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/41e881c4270f5250a82300ccc1ea5231f6feccbb))
+* 桌面角色構圖風格三檔位／桌面角色构图风格三档位／desktop companion framing styles／デスクトップキャラクター構図スタイル三段階 ([#112](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/112)) ([2cca586](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/2cca586ab5cfd381a1f070919d107d151200a803))
+* 能見度月報一鍵量測腳本／能见度月报一键测量脚本／one-shot visibility report script／可視性月次レポートのワンショット計測 ([#135](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/135)) ([63315c0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/63315c069892ca4afeefd90f0b9fecc01595b81d))
+
+
+### 🐛 修正 / 修复 / Fixes / 修正
+
+* body sidecar 的膝登錄點在露腿側面退回腳掌正上方，不可達才記錄而非中止 ([#154](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/154)) ([d6a627e](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/d6a627e00c84701f7d50e81659a046f188464020))
+* golden 建置器對另一代權威的三個契約——臉部目標跟權威、背面依 |yaw| 留空、可宣告空層 ([#152](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/152)) ([3b63fcf](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/3b63fcf506c9ce11a7730e89945671249699a36e))
+* infrastructure 層第三輪稽核——匯出改白名單、DPAPI 解密失敗要出錯、備份只採計可驗證檔、匯入補驗證、偏好 store 讀取失敗不再回預設 ([#155](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/155)) ([ac54ef8](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/ac54ef83355327dfdbd48534116a25cea7b7635c))
+* integrations 第二輪重驗的九項缺口——包裝逾時不重送、handheld 前再查取消、個資不進稽核、8-bit 靜音中止、null ID 不算識別、Realtime 壞 frame 必關連線、HA 空物件為錯、合約變動不偽裝成 0 筆、語音登錄失敗可見 ([#162](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/162)) ([faa4ce8](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/faa4ce85edc01f0e1e0e3b17fc220247bc2fa341))
+* 主題套用移除結構疊加層根治黑帶與滿屏細框／主题套用移除结构叠加层根治黑带与满屏细框／drop the structural theme overlay to cure the black bands and stray frames／テーマ適用の構造オーバーレイを撤去し黒帯と枠散乱を根治 ([#117](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/117)) ([3f368ae](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/3f368ae251a8419c0539730d7f47ce3f41e7844d))
+* 伺服器端腳本與情境改按風險上限分級 ([#150](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/150)) ([9e9cebd](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/9e9cebd1afc052b21553d401b473f163e10358c6))
+* 可攜匯出不再夾帶已刪除的內容／可携导出不再夹带已删除的内容／Stop the portable export from carrying deleted content／ポータブルエクスポートが削除済みデータを持ち出す問題を修正 ([#145](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/145)) ([2ad9299](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/2ad92998ac8bab1a84e3c99e710a68219a515a9a))
+* 唯讀資料夾與損壞權限值不再 fail-open／只读文件夹与损坏权限值不再 fail-open／Stop read-only folders and corrupt permission values from failing open／読み取り専用フォルダーと壊れた権限値のフェイルオープンを停止 ([#142](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/142)) ([54e109a](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/54e109a3bbde3f2b086845135dd6497e28601580))
+* 失敗不再偽裝成成功，稽核紀錄不再保存剪貼簿全文 ([#151](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/151)) ([f6ca6d0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/f6ca6d03fe697292a3927321c94077b401c6c75c))
+* 手部稽核的 extra-digit 皮膚啟發式改由建置器宣告 skin_background 決定是否適用，跳過必列為 skipped ([#158](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/158)) ([56bfec5](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/56bfec5064ab60344d86575f3f209b5c8a1ad062))
+* 控制中心上下邊緣與四角恢復可調整大小／控制中心上下边缘与四角恢复可调整大小／restore top/bottom-edge and corner resizing on the dashboard／ダッシュボードの上下端と四隅のリサイズを復旧 ([#114](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/114)) ([feb915f](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/feb915f28b729df2dc13fae176353c9f87cfceb1))
+* 整合層不再把失敗說成成功／集成层不再把失败说成成功／Stop the integrations layer from reporting failures as success／統合層が失敗を成功として報告するのを停止 ([#144](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/144)) ([0ffa8ec](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/0ffa8ec57995499610f099f78cdabccb04d0d862))
+* 文字對話兩版懸案終審——委派漏掛根治／文字对话两版悬案终审——委派漏挂根治／close the two-release chat case／二バージョン越しのチャット事件終審 ([#116](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/116)) ([65236ec](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/65236ec41aef7b7e9cb62c854cd8ab0ade8fc22f))
+* 網站白名單比對完整來源，測試旗標不再於一般啟動時寫檔／网站白名单比对完整来源，测试标志不再于一般启动时写文件／Compare the full origin in the website allowlist, and stop harness flags writing on ordinary launches／サイト許可リストで生成元全体を比較し、テスト用の旗が通常起動で書き込まないようにする ([#149](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/149)) ([5e8f6a0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/5e8f6a0d7c04257e23d7ce577c24547847ab9c3c))
+* 緊急停止真的停得下來，取消不再波及別的計畫／紧急停止真的停得下来，取消不再波及别的计划／Make emergency stop actually stop, and stop cancellation from hitting other plans／緊急停止を実際に効かせ、取り消しが他の計画に及ばないようにする ([#148](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/148)) ([1550b58](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/1550b58f1f4ddbd76aade8cf4a7e43ddd6238aec))
+* 選取反白對比達標並立 WCAG 全樣式表治理閘門／选取反白对比达标并立 WCAG 全样式表治理闸门／fix selection contrast and add a WCAG governance gate over every stylesheet／選択ハイライトのコントラスト達成と全スタイルシート WCAG ガバナンスゲート新設 ([#113](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/113)) ([eaca2ba](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/eaca2baac3de8e2d4de230ee433140b7c5515e9f))
+
+
+### 📚 文件 / 文档 / Documentation / ドキュメント
+
+* v4.6.0 發行說明人工定稿／v4.6.0 发布说明人工定稿／hand-polished v4.6.0 release notes／v4.6.0 リリースノート人手推敲版 ([#111](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/111)) ([ce3c43f](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/ce3c43ff9eddb084c47057fb3b22fd61402935ba))
+* 下載路徑收斂與 DLC 安裝教學／下载路径收敛与 DLC 安装教程／converge the download path and add the DLC install tutorial／ダウンロード導線の収束と DLC 導入手順 ([#134](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/134)) ([d6bb79d](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/d6bb79db02a2b1c1b0335e1044812c590ce74b1a))
+* 代理防重工索引／代理防重工索引／Agent rework-prevention index／エージェント向け重複作業防止インデックス ([#131](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/131)) ([d454ddf](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/d454ddf3d787c2288921c30b554dc1b7e4d9ac70))
+* 授權純淨承諾改寫為與現況相符 ([#146](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/146)) ([b503f3c](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/b503f3c7a01987c5bc8f9e91f416ee3cdbc1b788))
+* 新增上游貢獻紀錄頁並自 README 連結（[#125](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/125) 第三閘門） ([#159](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/159)) ([d5abe52](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/d5abe52b024d89b093324af3468309ad1f8ba480))
+* 能見度工程首波——第一屏重排、授權純淨承諾、流量量測／能见度工程首波——首屏重排、授权纯净承诺、流量测量／Visibility engineering wave one: above-the-fold rebuild, license purity page, traffic measurement／可視性エンジニアリング第一波：ファーストビュー再構成・ライセンス純度ページ・トラフィック計測 ([#130](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/130)) ([f12cf15](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/f12cf15b5250194395692339410062c514be1dda))
+* 裁決佇列 157 項全數定案／裁决队列 157 项全数定案／settle all 157 items in the decision queue／裁定キュー全 157 項目を確定 ([#133](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/133)) ([977e20d](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/977e20dd2d0f290fd96066bf2e0cd57050978d18))
+
+
+### 🛠 其他變更 / 其他变更 / Other changes / その他の変更
+
+* codeql-action init 與 analyze 同步升至 4.37.9／codeql-action init 与 analyze 同步升至 4.37.9／Bump codeql-action init and analyze together to 4.37.9／codeql-action の init と analyze を同時に 4.37.9 へ更新 ([#161](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/161)) ([6a54971](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/6a5497132b1f6dd2e2e3de596822608b6aeac675))
+* 保存二代素體產線與 artifacts 內的現行工具／保存二代素体产线与 artifacts 内的现行工具／Preserve the second-generation body pipeline and the live tools under artifacts／二代素体パイプラインと artifacts 配下の現行ツールを保存 ([#132](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues/132)) ([e673c3b](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/commit/e673c3b75da4b6eeff7c07b7b10efb287842690b))
+
 ## [4.6.0](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/compare/v4.5.1...v4.6.0) (2026-08-29)
 
 
