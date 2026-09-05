@@ -22,7 +22,7 @@
 
 <p align="center">[下載 Windows 安裝程式](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [快速開始](QUICKSTART.md) · [跨平台能力矩陣](docs/CROSS-PLATFORM.md)</p>
 
-> **軟體作者：CHOU MING HUA** · Windows 10/11 完整版 · macOS／Linux 功能受限 Preview<br>**最新正式版本：** `v4.6.0`（2026-08-29）。實際產物仍須通過本版最終發布門檻；最新公開版本以動態徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。<!-- x-release-please-version-date -->
+> **軟體作者：CHOU MING HUA** · Windows 10/11 完整版 · macOS／Linux 功能受限 Preview<br>**最新正式版本：** `v4.7.0`（2026-09-05）。實際產物仍須通過本版最終發布門檻；最新公開版本以動態徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。<!-- x-release-please-version-date -->
 
 ### 這是什麼
 
@@ -222,7 +222,7 @@ Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建�
 
 <p align="center">[下载 Windows 安装程序](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [快速开始](QUICKSTART.md) · [跨平台能力矩阵](docs/CROSS-PLATFORM.md)</p>
 
-> **软件作者：CHOU MING HUA** · Windows 10/11 完整版 · macOS／Linux 功能受限 Preview<br>**最新正式版本：** `v4.6.0`（2026-08-29）。实际产物仍须通过本版本最终发布关卡；最新公开版本以动态徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。<!-- x-release-please-version-date -->
+> **软件作者：CHOU MING HUA** · Windows 10/11 完整版 · macOS／Linux 功能受限 Preview<br>**最新正式版本：** `v4.7.0`（2026-09-05）。实际产物仍须通过本版本最终发布关卡；最新公开版本以动态徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。<!-- x-release-please-version-date -->
 
 ### 这是什么
 
@@ -422,7 +422,7 @@ Windows 正式打包规范使用 Rust 1.97.1、Maturin 1.14.1 与 PyO3 0.29.2 �
 
 <p align="center">[Download Windows installer](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [Quick Start](QUICKSTART.md) · [Cross-platform capability matrix](docs/CROSS-PLATFORM.md)</p>
 
-> **Author: CHOU MING HUA** · Windows 10/11 complete build · macOS/Linux limited Preview<br>**Latest formal release:** `v4.6.0` (August 29, 2026). The actual artifacts must still pass this release's final publication gates; the dynamic badge and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative.<!-- x-release-please-version-date -->
+> **Author: CHOU MING HUA** · Windows 10/11 complete build · macOS/Linux limited Preview<br>**Latest formal release:** `v4.7.0` (August 29, 2026). The actual artifacts must still pass this release's final publication gates; the dynamic badge and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative.<!-- x-release-please-version-date -->
 
 ### What this is
 
@@ -622,7 +622,7 @@ The formal Windows packaging contract builds its first-party native module with 
 
 <p align="center">[Windows インストーラーをダウンロード](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [クイックスタート](QUICKSTART.md) · [クロスプラットフォーム機能表](docs/CROSS-PLATFORM.md)</p>
 
-> **作者：CHOU MING HUA** · Windows 10/11 完全版 · macOS／Linux 機能限定 Preview<br>**最新正式リリース：** `v4.6.0`（2026 年 8 月 29 日）。実際の成果物は本版の最終公開ゲートに合格する必要があります。最新の公開版は動的バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を基準とします。<!-- x-release-please-version-date -->
+> **作者：CHOU MING HUA** · Windows 10/11 完全版 · macOS／Linux 機能限定 Preview<br>**最新正式リリース：** `v4.7.0`（2026 年 8 月 29 日）。実際の成果物は本版の最終公開ゲートに合格する必要があります。最新の公開版は動的バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を基準とします。<!-- x-release-please-version-date -->
 
 ### これは何か
 
