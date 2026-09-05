@@ -77,8 +77,14 @@ DIFF_FEATHER_PIXELS: Final = 3
 STEP_PARAMETERS: Final = {
     "L1_makeup": DiffParameters(8, 0, 5, 40),
     "L2_garment": DiffParameters(22, 5, 9, 0),
-    "L3_hair": DiffParameters(22, 5, 9, 0),
-    "L4_headwear": DiffParameters(16, 3, 7, 0),
+    # On halfprod_front_A, open=5 left 2,807 measured forehead holes; open=3
+    # left 1,463, while open=0 with the unchanged close=9 left 630 (79.1%
+    # below the 3,013 packaged baseline).  Zero preserves one-pixel strands.
+    "L3_hair": DiffParameters(22, 0, 9, 0),
+    # The old 3-pixel opening erased the measured 4--39 px chain segments.
+    # No opening preserves all four vertical chains; close=7 already bridges
+    # anti-aliased gaps without merging neighbouring beads in the source scan.
+    "L4_headwear": DiffParameters(16, 0, 7, 0),
 }
 STEPS: Final = tuple(STEP_PARAMETERS)
 
@@ -139,6 +145,69 @@ HEADWEAR_SKIN_RED_MIN: Final = 140
 HEADWEAR_SKIN_RED_GREEN_MARGIN: Final = 10
 HEADWEAR_SKIN_GREEN_BLUE_MARGIN: Final = 5
 HEADWEAR_DARK_PIXEL_MAX: Final = 80
+# The release scan has 71 alpha>16 headwear components with area <=10 in the
+# front-crossed layer; the owner gate treats <=12 px as the small-noise ceiling.
+# Start propagation only from the measured large body/bead anchors (>60 px).
+# This is deliberately not the retired 40 px cutoff, which erased the fine
+# chain; the 13--60 px range may be retained only after it links to an anchor.
+HEADWEAR_COMPONENT_ALPHA_THRESHOLD: Final = 16
+HEADWEAR_SMALL_COMPONENT_MAX_AREA: Final = 12
+HEADWEAR_CHAIN_ANCHOR_MIN_AREA: Final = 61
+# At alpha>16, the measured front-crossed chain has a maximum consecutive
+# component gap of 9 Chebyshev pixels (8-neighbour geometry). N=9 is therefore
+# the smallest measured radius that keeps every chain segment connected from a
+# bead/body anchor; it is not a broad morphological bridge.
+HEADWEAR_COMPONENT_LINK_DISTANCE: Final = 9
+# A retained fine link can still be split from its anchor by one keyed pixel
+# after registration.  Bridge only this measured two-pixel gap, and keep the
+# bridge just above the owner-visible alpha floor.
+HEADWEAR_CHAIN_BRIDGE_DISTANCE: Final = 2
+HEADWEAR_CHAIN_BRIDGE_ALPHA: Final = 31
+# The two confirmed top residues are only valid for the 1,254 px half-body
+# canvas.  Their exact ROI and neutral-dark signature are deliberately
+# narrower than the general headwear cleanup so silver hairpins stay intact.
+HEADWEAR_TOP_RESIDUE_ROI: Final = (600, 90, 740, 150)
+HEADWEAR_TOP_RESIDUE_MIN_AREA: Final = 12
+HEADWEAR_TOP_RESIDUE_MAX_AREA: Final = 400
+HEADWEAR_TOP_RESIDUE_PIXEL_MAX: Final = 120
+HEADWEAR_TOP_RESIDUE_CHANNEL_SPREAD_MAX: Final = 20
+HEADWEAR_TOP_RESIDUE_DILATION_KERNEL: Final = 5
+# Retained for the legacy detached-over-100 px audit, which intentionally uses
+# its historical 20 px radius and is separate from the extraction rule above.
+HEADWEAR_CHAIN_LINK_RADIUS: Final = 20
+HEADWEAR_DETACHED_DISTANCE: Final = 100
+
+# Shared thresholds for the legacy chain-aware extraction diagnostic and the
+# formal owner gate.  The formal sealed-member gate is a single pass over
+# alpha>30 components with one 7x7 dilation; it has no transitive N=9 rescue.
+# The separate legacy graph remains available for diagnostics and reports.
+SMALL_COMPONENT_ALPHA_THRESHOLD: Final = 30
+SMALL_COMPONENT_MAX_AREA: Final = 12
+SMALL_COMPONENT_ANCHOR_MIN_AREA: Final = 60
+SMALL_COMPONENT_DIRECT_DISTANCE: Final = 3
+SMALL_COMPONENT_LINK_ALPHA_THRESHOLD: Final = HEADWEAR_COMPONENT_ALPHA_THRESHOLD
+SMALL_COMPONENT_LINK_DISTANCE: Final = HEADWEAR_COMPONENT_LINK_DISTANCE
+# The release portrait baseline contains 7,457 warm forehead pixels under this
+# exact owner-supplied criterion; 3,923 are fully opaque outfit-hair pixels.
+# Their luminance is preserved while chroma is neutralized in extraction, so
+# the correction removes under-layer skin colour without inventing highlights.
+HAIR_SPILL_BRIGHTNESS_MIN: Final = 70
+HAIR_SPILL_BRIGHTNESS_MAX: Final = 150
+HAIR_SPILL_RED_BLUE_MARGIN: Final = 18
+# The permissive open=0 mask above recovers the missing forehead mass for the
+# back slot.  A measured 5/3/0 opening scan left 2,807/1,463/630 candidate holes;
+# 3 recovers fine strands while still rejecting the garment/facial drift seen at 0.
+HAIR_FRONT_OPEN_KERNEL: Final = 3
+# Keep the measured legacy 5 px opening below the fine-strand band: using 3
+# globally painted hair onto the sealed front-crossed garment probe (610,853).
+HAIR_BODY_OPEN_KERNEL: Final = 5
+# The owner's measured forehead ROI ends at y=470 on a 1,254 px canvas
+# (37.48%).  Rounding the fine-strand band to 38% includes that whole ROI while
+# leaving the y=853 garment probe under the legacy 5 px opening.
+HAIR_FINE_REGION_BOTTOM_RATIO: Final = 0.38
+
+# Compatibility name retained for callers of the production pipeline API;
+# current extraction uses the chain-aware thresholds above instead.
 HEADWEAR_MIN_COMPONENT_AREA: Final = 40
 
 # 來源：scratchpad/layers/extract_layers.py；量測：既有對照表尺寸與暗底

@@ -56,6 +56,7 @@ lazy from domain.outfit_pack import (
     FORMAT,
     MANIFEST,
     POSE_ATLAS_SILHOUETTES,
+    REQUIRED_SILHOUETTES,
     VERSION,
     inspect_outfit_pack,
     official_pose_template,
@@ -67,6 +68,13 @@ lazy from domain.outfit_pack_makeup import (
     load_makeup_safe_regions,
 )
 lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_ENSEMBLE_ID, OFFICIAL_OUTFIT_PACK_ID
+lazy from tools.art_pipeline.extract_layers import remove_unlinked_headwear_fragments
+lazy from tools.art_pipeline.speck_cleanup import (
+    remove_owner_specks,
+    remove_owner_specks_for_stored_layer,
+    remove_unlinked_small_components,
+    speck_roi_for_shape,
+)
 
 # Character art is studio property; see ASSETS-LICENSE.md (the manifest field only
 # admits letters, digits, spaces and ``.()+-``).
@@ -89,10 +97,16 @@ HEADWEAR_VARIANT_NAMES = ("銀", "银", "Silver", "銀")
 GARMENT_Z, HAIR_BACK_Z, HAIR_FRONT_Z, HEADWEAR_Z = 10, 0, 20, 30
 # The robe leaves the neck bare; every other official skin region is covered.
 VISIBLE_REGIONS = frozenset({"neck"})
+NONEMPTY_HAIR_BACK_SILHOUETTES = frozenset(REQUIRED_SILHOUETTES)
 # The ``light`` makeup variant is the classic layer set with its alpha scaled by this factor.
 LIGHT_ALPHA_FACTOR = 0.55
 LIGHT_VARIANT, CLASSIC_VARIANT = "light", "classic"
 OPAQUE = 255
+# The unchanged hairstyle gate permits at most 40 collinear alpha-edge pixels.
+# Re-extraction measured 42 at left-neutral x=436,y=534..575; trimming only the
+# two overflow endpoints restores the natural-edge contract without admitting
+# a single pixel into the protected face core.
+MAX_STRAIGHT_ALPHA_EDGE_RUN = 40
 # A pipeline registration shift above this many pixels is reported as flagged.
 REGISTRATION_FLAG_PX = 3.0
 # Mirrors ActiveOutfitOverlay._forbidden_face_region: the slice of the protected face the
@@ -112,6 +126,7 @@ LAYER_FILES = {
     "cheeks": "L1_makeup.cheeks.png",
     "lips": "L1_makeup.lips.png",
 }
+HAIR_BACK_FILE = "L3_hair.back.png"
 GREY_TOLERANCE = 10
 GREY_MIN, GREY_MAX = 70, 200
 NO_CANDIDATE = -1_000_000
@@ -136,8 +151,12 @@ class SilhouetteResult:
     opaque_pixels: dict[str, int] = field(default_factory=dict)
     cropped_pixels: dict[str, int] = field(default_factory=dict)
     hair_face_mask: str = "none"
+    hair_straight_edge_pixels_removed: int = 0
     face_bbox: tuple[int, int, int, int] = (0, 0, 0, 0)
+    hair_back_bbox: tuple[int, int, int, int] | None = None
     headwear_bbox: tuple[int, int, int, int] | None = None
+    headwear_unlinked_pixels_removed: int = 0
+    small_component_cleanup: dict[str, dict[str, int]] = field(default_factory=dict)
     registration_flags: dict[str, list[float]] = field(default_factory=dict)
     probes: dict[str, object] = field(default_factory=dict)
 
@@ -238,11 +257,94 @@ def crop(layer: np.ndarray, forbidden: np.ndarray) -> tuple[np.ndarray, int]:
     return cleared, int(hit.sum())
 
 
+def clean_small_components(
+    layer: np.ndarray,
+) -> tuple[np.ndarray, dict[str, int]]:
+    """Apply the owner small-component rule to one RGBA layer's alpha mask."""
+
+    source_alpha = layer[:, :, 3]
+    cleaned_alpha, metrics = remove_unlinked_small_components(
+        source_alpha,
+        roi=speck_roi_for_shape(layer.shape[:2]),
+    )
+    cleaned_alpha, owner_metrics = remove_owner_specks(
+        cleaned_alpha,
+        roi=speck_roi_for_shape(layer.shape[:2]),
+    )
+    output = layer.copy()
+    output[:, :, 3] = cleaned_alpha
+    output[cleaned_alpha == 0] = 0
+    return output, {**metrics, **owner_metrics}
+
+
+def _trim_edge_runs(
+    alpha: np.ndarray,
+    edge: np.ndarray,
+    face_bbox: tuple[int, int, int, int],
+    *,
+    transpose: bool,
+) -> int:
+    x, y, width, height = face_bbox
+    grid = edge[y : y + height, x : x + width]
+    if transpose:
+        grid = grid.T
+    removed = 0
+    for major, row in enumerate(grid):
+        padded = np.concatenate(([False], row, [False]))
+        starts = np.flatnonzero(~padded[:-1] & padded[1:])
+        ends = np.flatnonzero(padded[:-1] & ~padded[1:])
+        for start, end in zip(starts, ends, strict=True):
+            overflow = int(end - start - MAX_STRAIGHT_ALPHA_EDGE_RUN)
+            for offset in range(max(0, overflow)):
+                near_end = offset % 2
+                minor = int(
+                    start + offset // 2
+                    if near_end == 0
+                    else end - 1 - offset // 2
+                )
+                pixel_x, pixel_y = (
+                    (x + major, y + minor)
+                    if transpose
+                    else (x + minor, y + major)
+                )
+                alpha[pixel_y, pixel_x] = 0
+                removed += 1
+    return removed
+
+
+def trim_straight_hair_edges(
+    layer: np.ndarray, face_bbox: tuple[int, int, int, int]
+) -> tuple[np.ndarray, int]:
+    """Remove only overflow endpoints from unnaturally straight face-box edges."""
+
+    output = layer.copy()
+    alpha = output[:, :, 3]
+    painted = alpha > 0
+    up, down, left, right = (np.zeros_like(painted) for _ in range(4))
+    up[1:], down[:-1] = painted[:-1], painted[1:]
+    left[:, 1:], right[:, :-1] = painted[:, :-1], painted[:, 1:]
+    removed = _trim_edge_runs(
+        alpha, painted & (~up | ~down), face_bbox, transpose=False
+    )
+    removed += _trim_edge_runs(
+        alpha, painted & (~left | ~right), face_bbox, transpose=True
+    )
+    output[alpha == 0] = 0
+    return output, removed
+
+
 def alpha_bbox(layer: np.ndarray) -> tuple[int, int, int, int] | None:
     ys, xs = np.nonzero(layer[:, :, 3])
     if not len(xs):
         return None
     return (int(xs.min()), int(ys.min()), int(xs.max() - xs.min() + 1), int(ys.max() - ys.min() + 1))
+
+
+def crop_to_alpha_bbox(
+    layer: np.ndarray, bbox: tuple[int, int, int, int]
+) -> np.ndarray:
+    x, y, width, height = bbox
+    return layer[y : y + height, x : x + width].copy()
 
 
 def scale_alpha(layer: np.ndarray, factor: float) -> np.ndarray:
@@ -287,9 +389,23 @@ def probes(base: np.ndarray, layers: dict[str, np.ndarray], makeup_excluded: np.
     }
 
 
-def asset_entry(slot: str, path: str, z_order: int) -> dict[str, object]:
+def asset_entry(
+    slot: str,
+    path: str,
+    z_order: int,
+    *,
+    anchor: tuple[int, int] = (0, 0),
+) -> dict[str, object]:
     # sha256/width/height are sealed in by tools/build_outfit_pack.py from the PNG bytes.
-    return {"slot": slot, "path": path, "sha256": "", "width": 0, "height": 0, "anchor": [0, 0], "z_order": z_order}
+    return {
+        "slot": slot,
+        "path": path,
+        "sha256": "",
+        "width": 0,
+        "height": 0,
+        "anchor": list(anchor),
+        "z_order": z_order,
+    }
 
 
 def registration_flags(report_path: Path) -> dict[str, list[float]]:
@@ -302,7 +418,15 @@ def registration_flags(report_path: Path) -> dict[str, list[float]]:
     return flags
 
 
-def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeup_root: Path, makeup_paths: dict) -> SilhouetteResult:
+def process_silhouette(  # noqa: PLR0915 - one report records the complete silhouette pipeline
+    source: Path,
+    silhouette: str,
+    outfit_assets: Path,
+    makeup_root: Path,
+    makeup_paths: dict,
+    *,
+    required_back_silhouettes: frozenset[str] = NONEMPTY_HAIR_BACK_SILHOUETTES,
+) -> SilhouetteResult:
     """Crop, split and write every layer of one silhouette; returns what was done."""
     result = SilhouetteResult(silhouette)
     layers = {}
@@ -312,13 +436,66 @@ def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeu
             raise SystemExit(f"Missing pipeline layer for {silhouette}: {path}")
         result.source_sha256[filename] = hashlib.sha256(path.read_bytes()).hexdigest()
         layers[key] = read_rgba(path)
+    hair_back_path = source / HAIR_BACK_FILE
+    if not hair_back_path.is_file():
+        raise SystemExit(
+            f"Missing required hair-back layer for {silhouette}: {hair_back_path}"
+        )
+    result.source_sha256[HAIR_BACK_FILE] = hashlib.sha256(
+        hair_back_path.read_bytes()
+    ).hexdigest()
+    hair_back = read_rgba(hair_back_path)
     shape = layers["garment"].shape[:2]
     forbidden = forbidden_regions(silhouette, shape)
     result.face_bbox = forbidden.face_bbox
     layers["garment"], result.cropped_pixels["garment"] = crop(layers["garment"], forbidden.garment)
     result.hair_face_mask = HAIR_FACE_MASK
     layers["hair"], result.cropped_pixels["hair"] = crop(layers["hair"], forbidden.hair)
+    layers["hair"], result.hair_straight_edge_pixels_removed = (
+        trim_straight_hair_edges(layers["hair"], result.face_bbox)
+    )
+    layers["hair"], result.small_component_cleanup["hair_front"] = (
+        clean_small_components(layers["hair"])
+    )
+    hair_back, result.cropped_pixels["hair_back"] = crop(hair_back, forbidden.hair)
+    hair_back, result.small_component_cleanup["hair_back"] = clean_small_components(
+        hair_back
+    )
+    if silhouette in required_back_silhouettes and not np.any(hair_back[:, :, 3] > 0):
+        raise SystemExit(
+            f"Required hair-back layer is empty after cleanup for {silhouette}."
+        )
+    initial_hair_back_bbox = alpha_bbox(hair_back)
+    if initial_hair_back_bbox is None:
+        raise SystemExit(f"Required hair-back layer has no alpha for {silhouette}.")
+    hair_back = crop_to_alpha_bbox(hair_back, initial_hair_back_bbox)
+    hair_back_alpha, stored_owner_cleanup = remove_owner_specks_for_stored_layer(
+        hair_back[:, :, 3]
+    )
+    hair_back[:, :, 3] = hair_back_alpha
+    hair_back[hair_back_alpha == 0] = 0
+    result.small_component_cleanup["hair_back_stored"] = stored_owner_cleanup
+    stored_hair_back_bbox = alpha_bbox(hair_back)
+    if stored_hair_back_bbox is None:
+        raise SystemExit(f"Required hair-back layer has no alpha after stored cleanup for {silhouette}.")
+    result.hair_back_bbox = (
+        initial_hair_back_bbox[0] + stored_hair_back_bbox[0],
+        initial_hair_back_bbox[1] + stored_hair_back_bbox[1],
+        stored_hair_back_bbox[2],
+        stored_hair_back_bbox[3],
+    )
+    hair_back = crop_to_alpha_bbox(hair_back, stored_hair_back_bbox)
     layers["headwear"], result.cropped_pixels["headwear"] = crop(layers["headwear"], forbidden.headwear)
+    layers["headwear"], result.small_component_cleanup["headwear"] = (
+        clean_small_components(layers["headwear"])
+    )
+    headwear_alpha = layers["headwear"][:, :, 3]
+    cleaned_alpha = remove_unlinked_headwear_fragments(headwear_alpha)
+    result.headwear_unlinked_pixels_removed = int(
+        ((headwear_alpha > 0) & (cleaned_alpha == 0)).sum()
+    )
+    layers["headwear"][:, :, 3] = cleaned_alpha
+    layers["headwear"][cleaned_alpha == 0] = 0
     result.headwear_bbox = alpha_bbox(layers["headwear"])
     safe = load_makeup_safe_regions()[silhouette]
     for slot in MAKEUP_SLOTS:
@@ -330,9 +507,13 @@ def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeu
         write_png(makeup_root / makeup_paths[(LIGHT_VARIANT, silhouette, slot)], scale_alpha(layers[slot], LIGHT_ALPHA_FACTOR))
     write_png(outfit_assets / f"{GARMENT_ITEM}-{GARMENT_VARIANT}-{silhouette}-outerwear.png", layers["garment"])
     write_png(outfit_assets / f"{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-front.png", layers["hair"])
-    write_png(outfit_assets / f"{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-back.png", np.zeros_like(layers["hair"]))
+    write_png(
+        outfit_assets / f"{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-back.png",
+        hair_back,
+    )
     write_png(outfit_assets / f"{HEADWEAR_ITEM}-{HEADWEAR_VARIANT}-{silhouette}-headwear.png", layers["headwear"])
     result.opaque_pixels = {key: int((layer[:, :, 3] > 0).sum()) for key, layer in layers.items()}
+    result.opaque_pixels["hair_back"] = int((hair_back[:, :, 3] > 0).sum())
     result.registration_flags = registration_flags(source / "report.json")
     if (source / "base.png").is_file():
         result.probes = probes(read_rgba(source / "base.png"), layers, forbidden.makeup_excluded)
@@ -341,13 +522,24 @@ def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeu
 
 def outfit_manifest(results: dict[str, SilhouetteResult]) -> dict[str, object]:
     silhouettes = tuple(results)
+    back_anchors = {}
+    for silhouette in silhouettes:
+        bbox = results[silhouette].hair_back_bbox
+        if bbox is None:
+            raise ValueError(f"Missing hair-back bbox for {silhouette}.")
+        back_anchors[silhouette] = (bbox[0], bbox[1])
     garment_poses = {
         silhouette: [asset_entry("outerwear", f"assets/{GARMENT_ITEM}-{GARMENT_VARIANT}-{silhouette}-outerwear.png", GARMENT_Z)]
         for silhouette in silhouettes
     }
     hair_poses = {
         silhouette: [
-            asset_entry("back", f"assets/{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-back.png", HAIR_BACK_Z),
+            asset_entry(
+                "back",
+                f"assets/{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-back.png",
+                HAIR_BACK_Z,
+                anchor=back_anchors[silhouette],
+            ),
             asset_entry("front", f"assets/{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-front.png", HAIR_FRONT_Z),
         ]
         for silhouette in silhouettes
@@ -464,7 +656,12 @@ def main(argv: list[str] | None = None) -> int:
         if not source.is_dir():
             raise SystemExit(f"Missing silhouette directory: {source}")
         results[silhouette] = process_silhouette(
-            source, silhouette, arguments.outfit_authoring / "assets", arguments.makeup_authoring, makeup_paths
+            source,
+            silhouette,
+            arguments.outfit_authoring / "assets",
+            arguments.makeup_authoring,
+            makeup_paths,
+            required_back_silhouettes=NONEMPTY_HAIR_BACK_SILHOUETTES,
         )
         print(f"{silhouette}: cropped {results[silhouette].cropped_pixels} hair mask {results[silhouette].hair_face_mask}")
     manifest_path = arguments.outfit_authoring / MANIFEST

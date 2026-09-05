@@ -43,8 +43,8 @@ SPRITE_ROOT = ROOT / "assets" / "expressions"
 OUTPUT_ROOT = ROOT / "docs" / "media" / "portraits"
 PORTRAIT_SIZE = (1254, 1254)
 CLOSED_EYE_MAKEUP_SLOTS = frozenset({"eyes"})
-# The six README expression cards plus the canonical idle portrait that the
-# installer artwork and the taskbar icon are derived from.
+# The six README expression cards, the canonical idle portrait used by the
+# installer/icon builders, and the attentive dashboard representative.
 DEFAULT_EXPRESSIONS = (
     "proud_front",
     "thinking_front",
@@ -53,6 +53,7 @@ DEFAULT_EXPRESSIONS = (
     "gentle_smile_front",
     "worried_front",
     "idle_front",
+    "attentive_front",
 )
 FRONT_POSE = "front"
 

@@ -172,27 +172,33 @@ CANONICAL_HALF_BODY_SHA256 = (
     "e99cc462979d963247db30e73efcceffe408c5b4046db69611325a6920647825"
 )
 # docs/media/portraits/idle_front.png: generation-2 composite (official pack +
-# classic makeup) that installer artwork and the taskbar icon derive from, 2026-09-03.
+# classic makeup) that installer artwork and the taskbar icon derive from, 2026-09-05.
 MARKETING_IDLE_PORTRAIT_SHA256 = (
-    "3f970a7b96156badcbacd5d6bd1f76ed312db8eeb66a9152f6bc633385e8f869"
+    "55a7caf8fc8578c0876eb0250f7fe2b1cf8f930a603bfb2b2660f84bac7bcdef"
 )
-# installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-03.
+# The attentive dashboard representative is also materialized so every
+# composed half-body portrait consumer has a hash-pinned output, 2026-09-05.
+MARKETING_ATTENTIVE_PORTRAIT_SHA256 = (
+    "ddac97d2ffe750bec1044795884ae4fe5dc251186ded3224e3a3f1b459c19120"
+)
+# installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-05.
 WIZARD_HERO_SHA256 = (
-    "ef39c7708e4d9782a3b02f5fc4e0d27db23b6675f7656a1e5012761f66962248"
+    "a2327f0aa9c75afd3fecdcf8bd881323eff9125818bbacbdefd6061b91f350c5"
 )
-# installer/artwork/wizard-small.png: built from the generation-2 composite, 2026-09-03.
+# installer/artwork/wizard-small.png: built from the generation-2 composite, 2026-09-05.
 WIZARD_SMALL_SHA256 = (
-    "2733f8ee842867ddb7fb38ed07f7260f20db33093159f7f1fd678fbdfa884a33"
+    "c67df1c107ae4e44ce835350ca319666b4e5c535459f92377edb9095f97bf1bd"
 )
-# assets/mohan-taskbar-icon.png: built from the generation-2 composite, 2026-09-03.
+# assets/mohan-taskbar-icon.png: built from the generation-2 composite, 2026-09-05.
 TASKBAR_ICON_PNG_SHA256 = (
-    "fc32f79654ce68918a838f2382484a0dc2e3e0fcc636aac82b56272fef06eecd"
+    "cde6e458c734b7d795ec0a2f1b126bf3a149dd31652ceeca276fa9bbf6ab8098"
 )
-# assets/mohan-halfbody.ico: built from the generation-2 composite, 2026-09-03.
+# assets/mohan-halfbody.ico: built from the generation-2 composite, 2026-09-05.
 WINDOWS_ICON_SHA256 = (
-    "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
+    "dff6bc06a7ec7bccf1b4d53ffec2a01e85bbcabafe94118655fd0451fc4a941a"
 )
-# The README expression cards and the canonical idle portrait, rendered composed.
+# The README expression cards, the canonical idle portrait, and the attentive
+# dashboard representative, all rendered composed.
 MARKETING_PORTRAITS = (
     "proud_front.png",
     "thinking_front.png",
@@ -201,6 +207,7 @@ MARKETING_PORTRAITS = (
     "gentle_smile_front.png",
     "worried_front.png",
     "idle_front.png",
+    "attentive_front.png",
 )
 PORTRAIT_SIZE = (1254, 1254)
 MEDIA_PROVENANCE_PATH = ROOT / "docs/media/MEDIA-PROVENANCE.json"
@@ -224,22 +231,22 @@ README_AUTO_MEDIA_SHA256 = {
         "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb"
     ),
     "docs/media/portraits/gentle_smile_front.png": (
-        "92c85c914e60f5acea002368f12ee2759665a53dbdb26784c80b703c71bda5c2"
+        "fe800f146aae82eab71ad982b50c8d5477c82f83dc51811c7d1dae165aaa716e"
     ),
     "docs/media/portraits/mock_hit_front.png": (
-        "e38163e1fce62ee4e21215f5c32c36787b3e1099ed52256503f6693294e38f5f"
+        "49846e9f9842d72d72fc70ea71b863d7606c8b9921aa0e1f8c4bcfb1d8f6b146"
     ),
     "docs/media/portraits/proud_front.png": (
-        "5c5c0454d783f22c4ea0e7bd5b3e4b9787679d74cb490d0451b522dd621c340a"
+        "2a37eee525693c3e386d379d926b58f8099d9803ca5ced27797f6cefd67a4174"
     ),
     "docs/media/portraits/shy_cute_front.png": (
-        "76cbd9ae93c41fdc64a0d6b7c094e751daa72262249a223816c5c56449c0efe1"
+        "cf8db0161d869d4fdff57b59387519e91ea09ca1f348182a5f1c7d6fddb2e08f"
     ),
     "docs/media/portraits/thinking_front.png": (
-        "0d36ddca24d571e905c439ebaaa789993cdc6f1968e2c2ff6bc7cafd328837bd"
+        "6648f4f17e1f2d27f53149b17c541771b0dcbe91f8e33714dadb0e09335dd9c8"
     ),
     "docs/media/portraits/worried_front.png": (
-        "cff573b6b4071ac70efb7a2ce44b848938615011140f22cfaf5737904c6379c5"
+        "8d48474fc8e71374324d16f4fabe208a526920c64e8fb363b22c5ac603989285"
     ),
     "docs/media/security-permissions.png": (
         "37c6f232c6257387370c6581fb98025f1324a8c675cfaa7a1ebf68556fc7f5a2"
@@ -424,6 +431,9 @@ def test_inno_setup_and_artwork_contract() -> None:
     portrait = ROOT / "docs/media/portraits/idle_front.png"
     assert_image(portrait, PORTRAIT_SIZE)
     assert hashlib.sha256(portrait.read_bytes()).hexdigest() == MARKETING_IDLE_PORTRAIT_SHA256
+    attentive = ROOT / "docs/media/portraits/attentive_front.png"
+    assert_image(attentive, PORTRAIT_SIZE)
+    assert hashlib.sha256(attentive.read_bytes()).hexdigest() == MARKETING_ATTENTIVE_PORTRAIT_SHA256
     for consumer in ("infrastructure/face_assets.py", "tools/build_installer_artwork.py"):
         content = read(consumer)
         assert "idle_front.png" in content

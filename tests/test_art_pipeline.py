@@ -18,6 +18,16 @@ lazy from tools.art_pipeline import extract_layers as extract_module
 lazy from tools.art_pipeline.extract_layers import diff_mask, makeup_slot_masks
 lazy from tools.art_pipeline.image_ops import chroma_key, load_rgba, save_png, warp_rgba
 lazy from tools.art_pipeline.references import GitReference
+lazy from tools.art_pipeline.speck_cleanup import (
+    FULL_BODY_SPECK_ROI,
+    HEAD_SPECK_ROI,
+    remove_unlinked_small_components,
+    speck_roi_for_shape,
+)
+
+
+EXPECTED_CHAIN_PIXELS = 4
+OPAQUE_ALPHA = 255
 
 
 def test_premultiplied_alignment_zeroes_transparent_rgb() -> None:
@@ -138,6 +148,89 @@ def test_makeup_slots_are_mutually_exclusive() -> None:
     assert masks["cheeks"][31, 31]
 
 
+def test_hair_underlayer_spill_is_neutralized_without_alpha_or_luma_loss() -> None:
+    layer = np.zeros((2, 2, 4), dtype=np.uint8)
+    layer[0, 0] = (40, 80, 100, 255)  # BGR: warm, mean luminance 73.3.
+    layer[0, 1] = (40, 50, 55, 255)  # Below the measured brightness range.
+
+    corrected, count = extract_module._remove_hair_underlayer_spill(layer)
+
+    assert count == 1
+    assert corrected[0, 0].tolist() == [73, 73, 73, 255]
+    assert corrected[0, 1].tolist() == layer[0, 1].tolist()
+
+
+def test_headwear_cleanup_keeps_linked_four_pixel_chain_and_rejects_warm_drift() -> None:
+    image = np.zeros((48, 48, 4), dtype=np.uint8)
+    image[1:11, 8:18] = (210, 210, 210, 255)  # retained >60-pixel anchor
+    image[1:5, 1] = (210, 210, 210, 255)  # four-pixel chain segment
+    image[14:18, 12] = (210, 210, 210, 255)  # second linked segment
+    image[21:25, 12] = (210, 210, 210, 255)  # third linked segment
+    image[1:6, 26:28] = (40, 80, 100, 255)  # warm under-layer drift
+    image[1:3, 35:38] = (210, 210, 210, 255)  # isolated six-pixel speck
+    mask = (image[:, :, 3] > 0).astype(np.uint8) * 255
+
+    cleaned = extract_module._headwear_cleanup(mask, image)
+
+    assert np.count_nonzero(cleaned[:, 1]) == EXPECTED_CHAIN_PIXELS
+    assert np.count_nonzero(cleaned[14:18, 12]) == EXPECTED_CHAIN_PIXELS
+    assert np.count_nonzero(cleaned[21:25, 12]) == EXPECTED_CHAIN_PIXELS
+    assert not cleaned[:, 26:28].any()
+    assert not cleaned[:, 35:38].any()
+
+
+def test_headwear_top_residue_rule_is_narrow_and_keeps_silver() -> None:
+    image = np.zeros((CANVAS_SIZE, CANVAS_SIZE, 4), dtype=np.uint8)
+    image[400:421, 400:421] = (90, 90, 90, 255)  # unrelated large anchor
+    image[114:118, 633:636] = (90, 90, 90, 255)  # measured neutral residue
+    image[120:124, 670:673] = (90, 90, 90, 255)  # measured neutral residue
+    image[130:135, 650:654] = (180, 180, 180, 255)  # legitimate silver
+    mask = (image[:, :, 3] > 0).astype(np.uint8) * 255
+
+    cleaned = extract_module._remove_headwear_top_residues(mask, image)
+
+    assert not cleaned[114:118, 633:636].any()
+    assert not cleaned[120:124, 670:673].any()
+    assert np.all(cleaned[130:135, 650:654] == OPAQUE_ALPHA)
+
+
+def test_headwear_chain_bridge_fills_only_the_measured_short_gap() -> None:
+    layer = np.zeros((32, 32, 4), dtype=np.uint8)
+    layer[10:18, 14:22] = (180, 180, 180, 255)  # 64-pixel anchor
+    layer[19:23, 14] = (180, 180, 180, 255)  # four-pixel fine link
+    mask = layer[:, :, 3].copy()
+
+    bridged, count = extract_module._bridge_headwear_chain(layer, mask)
+
+    assert count == 1
+    assert bridged[18, 14, 3] == extract_module.HEADWEAR_CHAIN_BRIDGE_ALPHA
+    assert np.all(bridged[19:23, 14, 3] == OPAQUE_ALPHA)
+
+
+def test_owner_small_component_cleanup_keeps_transitive_chain_and_removes_island() -> None:
+    alpha = np.zeros((96, 96), dtype=np.uint8)
+    alpha[10:30, 10:30] = 255  # area>60 anchor
+    alpha[38:42, 38:40] = 255  # first <=12 px chain link, within N=9
+    alpha[48:52, 48:50] = 255  # second transitive <=12 px chain link
+    alpha[80:83, 80:83] = 1  # nine-pixel isolated island, including low alpha
+
+    cleaned, measured = remove_unlinked_small_components(alpha)
+
+    assert not cleaned[80:83, 80:83].any()
+    assert np.all(cleaned[38:42, 38:40] == OPAQUE_ALPHA)
+    assert np.all(cleaned[48:52, 48:50] == OPAQUE_ALPHA)
+    assert measured == {
+        "small_components": 3,
+        "linked_small_components": 2,
+        "removed_small_components": 1,
+        "removed_pixels": 9,
+    }
+
+
+def test_owner_small_component_roi_keeps_half_and_full_body_contracts() -> None:
+    assert speck_roi_for_shape((1254, 1254)) == HEAD_SPECK_ROI
+    assert speck_roi_for_shape((1536, 1024)) == FULL_BODY_SPECK_ROI
+
 def test_reference_is_materialized_from_git_commit(tmp_path: Path) -> None:
     repository = tmp_path / "repo"
     repository.mkdir()
@@ -214,6 +307,7 @@ def test_extract_writes_keyed_layers_and_reconstruction(
         "final.png",
         "sheet.png",
         "report.json",
+        "L3_hair.back.png",
         *(f"{step}.keyed.png" for step in extract_module.STEPS),
         *(f"{step}.png" for step in extract_module.STEPS),
     }

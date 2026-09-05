@@ -6,6 +6,7 @@ lazy import hashlib
 lazy import re
 lazy import zipfile
 lazy from collections.abc import Callable, Iterable
+lazy from collections import OrderedDict
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QRect, Qt
@@ -42,6 +43,12 @@ SEMVER_COMPONENT_COUNT = 3
 _RANGE = re.compile(r">=(\d+)\.(\d+)\.(\d+),<(\d+)\.(\d+)\.(\d+)\Z")
 HALF_BODY_CANVAS = (1254, 1254)
 FULL_BODY_CANVAS = (1024, 1536)
+# The cache budget is based on the post-bbox asset measurements: four rendered
+# views stay warm, and their raw RGBA layer footprint must remain below 192 MiB.
+# A view that exceeds the byte budget is still composited for the current call;
+# it is simply not retained for a later frame.
+MAX_CACHED_VIEWS = 4
+MAX_CACHED_LAYER_BYTES = 192 * 1024 * 1024
 # One-pixel Chebyshev dilation step (the same 8-neighbour rule the assembler uses).
 _DILATION_OFFSETS = tuple((dx, dy) for dx in (-1, 0, 1) for dy in (-1, 0, 1) if dx or dy)
 _OPAQUE = 255
@@ -79,7 +86,7 @@ class ActiveOutfitOverlay:
         # Parsing an archive hashes every member (the official default pack is
         # 26 MB); one parse per (path, mtime, size) instead of one per view.
         self._parsed_packs: dict[tuple[Path, tuple[int, int]], object] = {}
-        self._layers_by_view: dict[str, tuple[Layer, ...]] = {}
+        self._layers_by_view: OrderedDict[str, tuple[Layer, ...]] = OrderedDict()
         self._layers_by_view_without_makeup_slots: dict[
             tuple[str, frozenset[str]], tuple[Layer, ...]
         ] = {}
@@ -114,7 +121,12 @@ class ActiveOutfitOverlay:
                     frame.size().toTuple(),
                     suppress_makeup_slots=suppressed,
                 )
-                cache[cache_key] = layers
+                if suppressed:
+                    cache[cache_key] = layers
+                else:
+                    self._cache_layers(view_id, layers)
+            elif not suppressed:
+                self._layers_by_view.move_to_end(view_id)
         except IncompatibleBodyProfileError:
             self._reject_stale_active_pack()
             return frame
@@ -147,6 +159,29 @@ class ActiveOutfitOverlay:
         )
         cache_key = view_id if not suppressed else (view_id, suppressed)
         return len(cache.get(cache_key) or ())
+
+    @staticmethod
+    def _layer_memory_bytes(layers: tuple[Layer, ...]) -> int:
+        return sum(
+            pixmap.width() * pixmap.height() * 4
+            for pixmap, _anchor_x, _anchor_y, _clip, _opacity in layers
+        )
+
+    def cached_layer_memory_bytes(self) -> int:
+        """Return the measured raw RGBA footprint of the retained layer cache."""
+        return sum(
+            self._layer_memory_bytes(layers)
+            for layers in self._layers_by_view.values()
+        )
+
+    def _cache_layers(self, view_id: str, layers: tuple[Layer, ...]) -> None:
+        self._layers_by_view[view_id] = layers
+        self._layers_by_view.move_to_end(view_id)
+        while (
+            len(self._layers_by_view) > MAX_CACHED_VIEWS
+            or self.cached_layer_memory_bytes() > MAX_CACHED_LAYER_BYTES
+        ):
+            self._layers_by_view.popitem(last=False)
 
     def _reject_stale_active_pack(self) -> None:
         """Issue #140, option 3: a generation-1 pack is never rendered on the generation-2 body.

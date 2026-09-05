@@ -20,6 +20,7 @@
 5. `extract_layers`：逐步差分、形態學清理、alpha 羽化、局部配準、去溢色；L1 另依 safe-regions 輸出互斥的 `eyes`／`lips`／`cheeks`，可選的鞋步併入 `L2_garment`。
 6. `assemble_set`：依既有 `domain.companion_animation_contract` 的檔名與矩形契約組出 idle、blink、speaking、viseme 與表情變體。
 7. `flatten_magenta`：把 BGRA 結果鋪回不透明洋紅 BGR，作為編輯模式輸入。
+8. `reference_layers`：擁有者裁決頭髮與髮飾以 v4 原圖為準。有對齊參考圖且五點對齊成功（殘差、比例都在範圍內）時，`extract_layers` 的 L3 前髮與 L4 髮飾整層改取參考圖像素（深色低飽和為髮、亮而中性為銀飾、流蘇欄的藍為珠飾，臉核心與暖色皮膚一律排除），後髮槽留空；只對正面到 45 度內的 yaw 生效，其餘姿勢與對齊失敗者仍走差分抽層，報告的 `reference` 欄位會寫明。
 
 ### 重跑範例
 
@@ -74,6 +75,7 @@ CLI 回傳碼：`0` 全部通過、`1` 不合格、`2` 檔案缺漏或參數錯�
 5. `extract_layers`：逐步差分、形态学清理、alpha 羽化、局部配准、去溢色；L1 另按 safe-regions 输出互斥的 `eyes`／`lips`／`cheeks`，可选的鞋步合并到 `L2_garment`。
 6. `assemble_set`：按既有 `domain.companion_animation_contract` 的文件名和矩形契约组装 idle、blink、speaking、viseme 及表情变体。
 7. `flatten_magenta`：将 BGRA 结果铺回不透明洋红，作为编辑模式输入。
+8. `reference_layers`：拥有者裁决头发与发饰以 v4 原图为准。有对齐参考图且五点对齐成功（残差、比例都在范围内）时，`extract_layers` 的 L3 前发与 L4 发饰整层改取参考图像素（深色低饱和为发、亮而中性为银饰、流苏栏的蓝为珠饰，脸核心与暖色皮肤一律排除），后发槽留空；只对正面到 45 度内的 yaw 生效，其余姿势与对齐失败者仍走差分拆层，报告的 `reference` 字段会写明。
 
 ### 重跑示例
 
@@ -128,6 +130,7 @@ This is the reproducible repo version of the scratchpad layered-art line. It cov
 5. `extract_layers`: Compute stepwise differences, clean morphologically, feather alpha, locally register, and despill; for L1 also write mutually exclusive `eyes`／`lips`／`cheeks` under safe-regions, with an optional shoe-step merge into `L2_garment`.
 6. `assemble_set`: Assemble idle, blink, speaking, viseme, and expression variants under the existing `domain.companion_animation_contract` filename and rectangle contract.
 7. `flatten_magenta`: Flatten the BGRA result back onto opaque magenta for use as editing-mode input.
+8. `reference_layers`: The owner ruled that hair and headwear follow the v4 source portrait. When an aligned reference exists and the five-point alignment succeeds (residual and scale within range), `extract_layers` takes the whole L3 front-hair and L4 headwear layers from the reference pixels (dark low-saturation is hair, bright neutral is silver ornament, blue inside the tassel column is beads; the face core and warm skin are always excluded) and leaves the back-hair slot empty; this applies only to frontal poses up to 45 degrees of yaw, while every other pose and any failed alignment still uses differencing, as recorded in the report's `reference` field.
 
 ### Rerun example
 
@@ -182,6 +185,7 @@ python -m tools.art_pipeline.qc_drift "assets/pose-atlas/v4-working/{view}-pitch
 5. `extract_layers`：段階的な差分、形態学的なクリーニング、alpha のフェザー、局所的な位置合わせ、色かぶり除去を行います。L1 では safe-regions に基づき、相互排他的な `eyes`／`lips`／`cheeks` も出力し、必要に応じて靴の工程を `L2_garment` に統合します。
 6. `assemble_set`：既存の `domain.companion_animation_contract` にあるファイル名と矩形の契約に従い、idle、blink、speaking、viseme、表情バリエーションを組み立てます。
 7. `flatten_magenta`：BGRA の結果を不透明なマゼンタへ戻し、編集モードの入力にします。
+8. `reference_layers`：所有者の裁定により、髪と髪飾りは v4 原画に準拠します。位置合わせ済みの参照画像があり五点の位置合わせが成功した場合（残差と倍率が範囲内）、`extract_layers` の L3 前髪と L4 髪飾りの層全体を参照画像の画素から取得し（暗く低彩度は髪、明るく中性は銀の飾り、房飾り列の青は珠飾り。顔の中心部と暖色の肌は常に除外）、後ろ髪スロットは空にします。正面から 45 度以内の yaw にのみ適用し、その他の姿勢と位置合わせ失敗時は従来どおり差分抽出を使い、レポートの `reference` 欄に記録します。
 
 ### 再実行例
 

@@ -1,0 +1,4454 @@
+{
+ "light_alpha_factor": 0.55,
+ "sealed": {
+  "mohan.official.blue-white-hanfu.mohan-outfit": "a31f2fd9aa483a23f7c76a373da1ce280c889800845e0e32b74879c18df3e021",
+  "mohan.makeup.builtin.mohan-outfit": "403e4c83f1712af807ccef4d3f27ec6251ab7b941d1577c03ca1c534f6964560"
+ },
+ "silhouettes": {
+  "cheek-rest": {
+   "silhouette": "cheek-rest",
+   "source_sha256": {
+    "L2_garment.png": "4b6bfdbf1e799c14c32b28d06405151cb0ef020ff5c4eaa42c9adfed45b15aa3",
+    "L3_hair.png": "ca005edbdb821d175345d5b5aa4d0d604dd330175d2584443c9fb5eaf2657cfb",
+    "L4_headwear.png": "ee66ad7b7c32e2bd01f86d9ca42b5444611069246efc3a51a5287d10ca54e642",
+    "L1_makeup.eyes.png": "5e0e78b01e8f1e5f90ca2dae8e4682b3cb10f71eeb7562c5e1de4c2a240e01a6",
+    "L1_makeup.cheeks.png": "12b86d852dec1c3e98505cbb25dde6b003aadcb68c1b9f6c07a5e0be9aa87774",
+    "L1_makeup.lips.png": "a25a8a8ee73bed32fabbbb4c404c7c90fa01aa9d0fe1b373d27d0b2eb58f54c6",
+    "L3_hair.back.png": "354dc3673c84d39f19d791fd9eef44f0aa6ef5ce0b376dc878d7fdb38feb3075"
+   },
+   "opaque_pixels": {
+    "garment": 457416,
+    "hair": 89886,
+    "headwear": 10501,
+    "eyes": 11956,
+    "cheeks": 4333,
+    "lips": 3865,
+    "hair_back": 7905
+   },
+   "cropped_pixels": {
+    "garment": 107,
+    "hair": 1069,
+    "hair_back": 338,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    404,
+    236,
+    373,
+    437
+   ],
+   "hair_back_bbox": [
+    406,
+    137,
+    468,
+    524
+   ],
+   "headwear_bbox": [
+    617,
+    142,
+    284,
+    518
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 3,
+     "linked_small_components": 3,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 2,
+     "owner_isolated_pixels_removed": 3,
+     "owner_isolated_count_before": 2,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 19,
+     "linked_small_components": 19,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 4,
+     "owner_isolated_pixels_removed": 26,
+     "owner_isolated_count_before": 4,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 10,
+     "linked_small_components": 10,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      602,
+      891
+     ],
+     "layer_rgba": [
+      16,
+      74,
+      134,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      534,
+      280
+     ],
+     "layer_rgba": [
+      105,
+      103,
+      103,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      719,
+      155
+     ],
+     "layer_rgba": [
+      226,
+      225,
+      227,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      535,
+      579
+     ],
+     "layer_rgba": [
+      225,
+      117,
+      106,
+      144
+     ]
+    }
+   }
+  },
+  "left-neutral": {
+   "silhouette": "left-neutral",
+   "source_sha256": {
+    "L2_garment.png": "f2ca69a2fa960bff5dc0976d26ad547b2b12444e773627c94c4279fb226a64bb",
+    "L3_hair.png": "0da4e7d3de1268d6e18f5728fa4922319e620df778984c5b55f9b39309f50ed6",
+    "L4_headwear.png": "d3a989c0c5d26dba1d3272daaecacca80f76eb7c5e211933e2bc11e477bb66fe",
+    "L1_makeup.eyes.png": "0aa82afab61d1f5dce856c3b58cfffef88ae4506b478a5688bcb4c156b94702d",
+    "L1_makeup.cheeks.png": "4b1e35278c67940f6d8069adaabd5fa08db22e9b7d2fca5595fee0db7563155e",
+    "L1_makeup.lips.png": "2ed23c9e2325f672937cf6247f97e6d5902e94f151e73bcc5d0bbef1ed21e13d",
+    "L3_hair.back.png": "e67c3a55bb963488abcc682c73180c2e626b2eaedf127291ddc265a8a7a6ddca"
+   },
+   "opaque_pixels": {
+    "garment": 474030,
+    "hair": 131455,
+    "headwear": 11086,
+    "eyes": 10440,
+    "cheeks": 3337,
+    "lips": 3395,
+    "hair_back": 9889
+   },
+   "cropped_pixels": {
+    "garment": 1189,
+    "hair": 453,
+    "hair_back": 35,
+    "headwear": 681,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 3,
+   "face_bbox": [
+    433,
+    226,
+    311,
+    435
+   ],
+   "hair_back_bbox": [
+    426,
+    113,
+    348,
+    545
+   ],
+   "headwear_bbox": [
+    427,
+    108,
+    414,
+    550
+   ],
+   "headwear_unlinked_pixels_removed": 85,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 32,
+     "linked_small_components": 32,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 3,
+     "owner_isolated_pixels_removed": 24,
+     "owner_isolated_count_before": 3,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 28,
+     "linked_small_components": 28,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {
+    "L4_headwear": [
+     19.36,
+     3.47
+    ]
+   },
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      861,
+      1057
+     ],
+     "layer_rgba": [
+      28,
+      73,
+      131,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      547,
+      216
+     ],
+     "layer_rgba": [
+      78,
+      75,
+      72,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      707,
+      152
+     ],
+     "layer_rgba": [
+      107,
+      111,
+      113,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      523,
+      581
+     ],
+     "layer_rgba": [
+      219,
+      108,
+      105,
+      168
+     ]
+    }
+   }
+  },
+  "front-crossed": {
+   "silhouette": "front-crossed",
+   "source_sha256": {
+    "L2_garment.png": "d8d09b49be34c924fc59d36096212105131b62196177307416ef25d099f876b9",
+    "L3_hair.png": "79867fcc5a95522fa88e890908b0ea9aa2aeb0faa6a2178fab54842df55d3cb8",
+    "L4_headwear.png": "a2e76afabac799f80df294aea1e72de2e55d529536cf29d07e5ac4472512ec5c",
+    "L1_makeup.eyes.png": "68d9f8d4363c7a50d9ed46961a65ba5070288fa7b84c9e1fa42b477c6712d499",
+    "L1_makeup.cheeks.png": "861dcd61746162f5cba187173f552c0f3d8e47507851438156bd759dad4aca32",
+    "L1_makeup.lips.png": "a450f5f7b63d26e5352a48aa2e3c944c95f1ef31afda8517a0fbc10ae71479f9",
+    "L3_hair.back.png": "d890d9ac89a37ba62d205ab3545c67a3197a1dcc6265511723198bd9b66ed2b3"
+   },
+   "opaque_pixels": {
+    "garment": 382664,
+    "hair": 124615,
+    "headwear": 8532,
+    "eyes": 11047,
+    "cheeks": 4700,
+    "lips": 5682,
+    "hair_back": 13328
+   },
+   "cropped_pixels": {
+    "garment": 249,
+    "hair": 2181,
+    "hair_back": 0,
+    "headwear": 24,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    456,
+    279,
+    307,
+    347
+   ],
+   "hair_back_bbox": [
+    456,
+    116,
+    297,
+    425
+   ],
+   "headwear_bbox": [
+    476,
+    114,
+    323,
+    309
+   ],
+   "headwear_unlinked_pixels_removed": 161,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 32,
+     "linked_small_components": 32,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 15,
+     "linked_small_components": 15,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 2,
+     "owner_isolated_pixels_removed": 4,
+     "owner_isolated_count_before": 2,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      610,
+      853
+     ],
+     "layer_rgba": [
+      27,
+      76,
+      143,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      480,
+      192
+     ],
+     "layer_rgba": [
+      244,
+      241,
+      243,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      553,
+      194
+     ],
+     "layer_rgba": [
+      94,
+      98,
+      103,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      583,
+      525
+     ],
+     "layer_rgba": [
+      216,
+      164,
+      144,
+      142
+     ]
+    }
+   }
+  },
+  "front-mock-scold": {
+   "silhouette": "front-mock-scold",
+   "source_sha256": {
+    "L2_garment.png": "a39e0c904295fded41d30a118f931bd3ecef5bfe6809d120be156b427b3295c0",
+    "L3_hair.png": "3ed8421d8bdf63d40d76f74d0fea55620065fc988956e80ff12f74c3a7d8e3f2",
+    "L4_headwear.png": "27b65c658bc35b7bb015db46177087261a8b314b615eb9ed96c34b55904c038d",
+    "L1_makeup.eyes.png": "4bacc573626471e27554a857affe4b42732c1e9ecfee3ee9309d7bb5379600b0",
+    "L1_makeup.cheeks.png": "1d69d60e009e9f4e301f02190fba164fb0029e326fca738050fb56dd482a8f3a",
+    "L1_makeup.lips.png": "72aad54a9f2f81ffdee5f1c3446e5f80587c1361b31a297230605016af3c888a",
+    "L3_hair.back.png": "27ebf68d1a2ea02efc883e6508a6873b069f8eea63419979bc5bfcfed46d9fa6"
+   },
+   "opaque_pixels": {
+    "garment": 422003,
+    "hair": 118786,
+    "headwear": 7977,
+    "eyes": 10963,
+    "cheeks": 7374,
+    "lips": 6231,
+    "hair_back": 10745
+   },
+   "cropped_pixels": {
+    "garment": 188,
+    "hair": 3200,
+    "hair_back": 0,
+    "headwear": 16,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 16,
+   "face_bbox": [
+    456,
+    279,
+    307,
+    347
+   ],
+   "hair_back_bbox": [
+    297,
+    112,
+    466,
+    530
+   ],
+   "headwear_bbox": [
+    458,
+    120,
+    312,
+    523
+   ],
+   "headwear_unlinked_pixels_removed": 233,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 3,
+     "linked_small_components": 3,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 13,
+     "linked_small_components": 13,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 1,
+     "owner_isolated_pixels_removed": 8,
+     "owner_isolated_count_before": 1,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 10,
+     "linked_small_components": 9,
+     "removed_small_components": 1,
+     "removed_pixels": 10,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      800,
+      953
+     ],
+     "layer_rgba": [
+      23,
+      145,
+      204,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      549,
+      229
+     ],
+     "layer_rgba": [
+      68,
+      68,
+      74,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      648,
+      122
+     ],
+     "layer_rgba": [
+      101,
+      102,
+      115,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      586,
+      561
+     ],
+     "layer_rgba": [
+      164,
+      58,
+      56,
+      254
+     ]
+    }
+   }
+  },
+  "front-mock-hit": {
+   "silhouette": "front-mock-hit",
+   "source_sha256": {
+    "L2_garment.png": "ed4284cd5d06a2ac01bd2fa4f2901d85ecc7dd438c6c2b21b86da9da37efa6ac",
+    "L3_hair.png": "633b7faef25860472986ff3457bc6fd86fd63bc87756206832d2bff44eddec95",
+    "L4_headwear.png": "43e732182c805799a99b1629478d218279f20f89ac3d27ed1db81101cf8603ac",
+    "L1_makeup.eyes.png": "90acbc24fdd320f5b18d8c3c246556d25d086d346ab7b089bdd917ff949e95e7",
+    "L1_makeup.cheeks.png": "588682b32606ca62ebaaa8966716f2e2a9016812fc9163cb278d7afc31050baa",
+    "L1_makeup.lips.png": "5d1284f3ff8e0fdc7e71cfee5c69d9f7b852adc3b709194a4d50dff4db49f6ab",
+    "L3_hair.back.png": "a808a529c5b9eca7d09b32eccc27014bb84760eb2b25982f7d003717f895a7eb"
+   },
+   "opaque_pixels": {
+    "garment": 457278,
+    "hair": 129019,
+    "headwear": 8582,
+    "eyes": 11873,
+    "cheeks": 4994,
+    "lips": 6145,
+    "hair_back": 11482
+   },
+   "cropped_pixels": {
+    "garment": 189,
+    "hair": 411,
+    "hair_back": 5,
+    "headwear": 29,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    456,
+    279,
+    307,
+    347
+   ],
+   "hair_back_bbox": [
+    301,
+    113,
+    460,
+    533
+   ],
+   "headwear_bbox": [
+    461,
+    115,
+    304,
+    296
+   ],
+   "headwear_unlinked_pixels_removed": 208,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 2,
+     "linked_small_components": 2,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 21,
+     "linked_small_components": 21,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 5,
+     "owner_isolated_pixels_removed": 18,
+     "owner_isolated_count_before": 5,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 15,
+     "linked_small_components": 15,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      717,
+      1050
+     ],
+     "layer_rgba": [
+      18,
+      90,
+      146,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      551,
+      219
+     ],
+     "layer_rgba": [
+      60,
+      52,
+      52,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      645,
+      120
+     ],
+     "layer_rgba": [
+      86,
+      88,
+      91,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      582,
+      555
+     ],
+     "layer_rgba": [
+      207,
+      97,
+      94,
+      250
+     ]
+    }
+   }
+  },
+  "front-eureka": {
+   "silhouette": "front-eureka",
+   "source_sha256": {
+    "L2_garment.png": "f42d8c9924e1cfe89dff05c3a621627df8a7e498bdf3a0ae0430d5e319b7f0b5",
+    "L3_hair.png": "2349b60de82a08af3081ecb1d9a6d04fea361c5a7208be2fd9b517cb9bf200b8",
+    "L4_headwear.png": "cd51f1d61e54e9431587396b7dacec0ef397ad24960286ac47057e2df01c0826",
+    "L1_makeup.eyes.png": "6e1d2d603d90d9e1d8286c50fa493cceda86a2a93996decc51325da9ee751962",
+    "L1_makeup.cheeks.png": "84d0fd2e55d5ce3c5c80f08541c96cd9faeae4eb26356a406774f7bb193013af",
+    "L1_makeup.lips.png": "8c525d57012fe25c8a6d08eb64a58445072fb3829c6af2beb1c1b94e1e3dcca1",
+    "L3_hair.back.png": "33066ee1b8cf8ca6a6ba4e283516fcc7cc78355f90b4d038341d0c2ccd8ad466"
+   },
+   "opaque_pixels": {
+    "garment": 474838,
+    "hair": 122582,
+    "headwear": 9322,
+    "eyes": 12131,
+    "cheeks": 4775,
+    "lips": 6171,
+    "hair_back": 14769
+   },
+   "cropped_pixels": {
+    "garment": 303,
+    "hair": 2783,
+    "hair_back": 35,
+    "headwear": 376,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    456,
+    279,
+    307,
+    347
+   ],
+   "hair_back_bbox": [
+    310,
+    110,
+    443,
+    541
+   ],
+   "headwear_bbox": [
+    469,
+    119,
+    333,
+    532
+   ],
+   "headwear_unlinked_pixels_removed": 109,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 31,
+     "linked_small_components": 31,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 1,
+     "owner_isolated_pixels_removed": 5,
+     "owner_isolated_count_before": 1,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 9,
+     "linked_small_components": 7,
+     "removed_small_components": 2,
+     "removed_pixels": 7,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {
+    "L1_makeup": [
+     -1.36,
+     -28.74
+    ],
+    "L2_garment": [
+     -1.75,
+     -28.52
+    ],
+    "L3_hair": [
+     -1.37,
+     -27.05
+    ],
+    "L4_headwear": [
+     1.09,
+     -30.9
+    ]
+   },
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      589,
+      812
+     ],
+     "layer_rgba": [
+      47,
+      80,
+      148,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      470,
+      191
+     ],
+     "layer_rgba": [
+      195,
+      203,
+      201,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      649,
+      122
+     ],
+     "layer_rgba": [
+      67,
+      72,
+      85,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      641,
+      549
+     ],
+     "layer_rgba": [
+      183,
+      117,
+      96,
+      245
+     ]
+    }
+   }
+  },
+  "front-exasperated": {
+   "silhouette": "front-exasperated",
+   "source_sha256": {
+    "L2_garment.png": "ae799f94c711a4e1a4be1f517ecb6ab042fb8cc9a879587e74674f0c30ecd9fa",
+    "L3_hair.png": "da97e8836f6c01d2c7542569bd254706abb80c0f2486de01b8ae16d477485d10",
+    "L4_headwear.png": "690306656536f692bb8bf331c52840bb90b3a7971fcdc58360719d57f4744b36",
+    "L1_makeup.eyes.png": "595eb441824b001d5ec6c7c6df1ecc0670c75af6b62b111382c7cc58427e7709",
+    "L1_makeup.cheeks.png": "cb42e6ec14ea88232e9865751b7278b532f1959a79ef9e8d12c82b0eb052ee3c",
+    "L1_makeup.lips.png": "0840a2737a86c2b742ee9979a89455060ad9ad81fa10b5c147b40adf11bdc085",
+    "L3_hair.back.png": "71069ff4ff375ee3d53df3831583915204a526796d0c938941f4ea0153dd87a6"
+   },
+   "opaque_pixels": {
+    "garment": 408764,
+    "hair": 87839,
+    "headwear": 7760,
+    "eyes": 8790,
+    "cheeks": 1369,
+    "lips": 3042,
+    "hair_back": 7100
+   },
+   "cropped_pixels": {
+    "garment": 138,
+    "hair": 20,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    456,
+    279,
+    307,
+    347
+   ],
+   "hair_back_bbox": [
+    388,
+    115,
+    372,
+    527
+   ],
+   "headwear_bbox": [
+    460,
+    151,
+    310,
+    236
+   ],
+   "headwear_unlinked_pixels_removed": 57,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 0,
+     "linked_small_components": 0,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 29,
+     "linked_small_components": 29,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 2,
+     "owner_isolated_pixels_removed": 13,
+     "owner_isolated_count_before": 2,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      802,
+      1031
+     ],
+     "layer_rgba": [
+      14,
+      68,
+      174,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      632,
+      224
+     ],
+     "layer_rgba": [
+      67,
+      64,
+      61,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      597,
+      185
+     ],
+     "layer_rgba": [
+      206,
+      202,
+      207,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      584,
+      562
+     ],
+     "layer_rgba": [
+      214,
+      78,
+      67,
+      216
+     ]
+    }
+   }
+  },
+  "yaw-180-pitch+00": {
+   "silhouette": "yaw-180-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "da2740cfb9c7d62b7a05bec711096e558397b69abf5aacaf8325072920bd124b",
+    "L3_hair.png": "4759d4e8a25284bc22fab170caf8f09bb2e44f631d246d2c2f1c6ac8a04e1dc4",
+    "L4_headwear.png": "01310fe65a9b108b6d6bb07baa6fa3b27103501682c954ea831e1a39639ba80e",
+    "L1_makeup.eyes.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L3_hair.back.png": "1ac621210c1d4918ffbd1b813cedbe6df0651997a24ce386abc592af1a3cf991"
+   },
+   "opaque_pixels": {
+    "garment": 525296,
+    "hair": 64507,
+    "headwear": 11227,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0,
+    "hair_back": 3764
+   },
+   "cropped_pixels": {
+    "garment": 0,
+    "hair": 0,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "hair_back_bbox": [
+    350,
+    92,
+    330,
+    368
+   ],
+   "headwear_bbox": [
+    352,
+    109,
+    329,
+    351
+   ],
+   "headwear_unlinked_pixels_removed": 25,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 16,
+     "linked_small_components": 16,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 1,
+     "owner_isolated_pixels_removed": 2,
+     "owner_isolated_count_before": 1,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 9,
+     "linked_small_components": 9,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {
+    "L3_hair": [
+     -1.24,
+     3.41
+    ],
+    "L4_headwear": [
+     -2.36,
+     3.33
+    ]
+   },
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      516,
+      806
+     ],
+     "layer_rgba": [
+      8,
+      118,
+      225,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      452,
+      343
+     ],
+     "layer_rgba": [
+      37,
+      31,
+      25,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      546,
+      129
+     ],
+     "layer_rgba": [
+      104,
+      101,
+      99,
+      255
+     ]
+    },
+    "lips": null
+   }
+  },
+  "yaw-165-pitch+00": {
+   "silhouette": "yaw-165-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "b7afd54c93d83190610a00bea0640d9bafb02de4635936362039bf90d77f9cf2",
+    "L3_hair.png": "c5556ad31b3f9000f440278efe981eee039e66cfc6ba7b19926fd4ef6cb90959",
+    "L4_headwear.png": "ace9c3963494258436ab2f71e7e0a61c8ed0b64097ed79c4f31f84eade9c00fc",
+    "L1_makeup.eyes.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L3_hair.back.png": "e8dff4dbd8fcb1a34ff9896569a3df374e6b00399dc70bda0c9dd2a17dae562d"
+   },
+   "opaque_pixels": {
+    "garment": 447688,
+    "hair": 59307,
+    "headwear": 2568,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0,
+    "hair_back": 3153
+   },
+   "cropped_pixels": {
+    "garment": 0,
+    "hair": 0,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "hair_back_bbox": [
+    440,
+    98,
+    158,
+    233
+   ],
+   "headwear_bbox": [
+    429,
+    108,
+    124,
+    189
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 8,
+     "linked_small_components": 8,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {
+    "L2_garment": [
+     0.21,
+     -22.58
+    ],
+    "L3_hair": [
+     -0.1,
+     -22.28
+    ],
+    "L4_headwear": [
+     -1.39,
+     -21.43
+    ]
+   },
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      468,
+      812
+     ],
+     "layer_rgba": [
+      1,
+      108,
+      241,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      427,
+      355
+     ],
+     "layer_rgba": [
+      35,
+      32,
+      33,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      526,
+      110
+     ],
+     "layer_rgba": [
+      181,
+      169,
+      172,
+      255
+     ]
+    },
+    "lips": null
+   }
+  },
+  "yaw-150-pitch+00": {
+   "silhouette": "yaw-150-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "fc47ac4b218183cb825e114207f05db52a3082ed8d83c72b97a725c5903fcf9e",
+    "L3_hair.png": "4aa711cb6c5684ad20a28c4f032710c7459e9e11d806970e9c37a553e5a58499",
+    "L4_headwear.png": "096d6acc4853113d762efca2db156accae56c9d5bb033d94381308b24bdef134",
+    "L1_makeup.eyes.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L3_hair.back.png": "4fa5232313fbf9d1d7d96768a468d9317249e91ef7cfd4ccfc7e8c5ffd39a7c1"
+   },
+   "opaque_pixels": {
+    "garment": 427048,
+    "hair": 46150,
+    "headwear": 1288,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0,
+    "hair_back": 970
+   },
+   "cropped_pixels": {
+    "garment": 0,
+    "hair": 0,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    535,
+    154,
+    1,
+    1
+   ],
+   "hair_back_bbox": [
+    436,
+    91,
+    156,
+    238
+   ],
+   "headwear_bbox": [
+    512,
+    118,
+    72,
+    211
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 5,
+     "linked_small_components": 5,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 3,
+     "linked_small_components": 3,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      584,
+      838
+     ],
+     "layer_rgba": [
+      19,
+      145,
+      247,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      460,
+      202
+     ],
+     "layer_rgba": [
+      71,
+      59,
+      42,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      519,
+      126
+     ],
+     "layer_rgba": [
+      127,
+      138,
+      142,
+      255
+     ]
+    },
+    "lips": null
+   }
+  },
+  "yaw-135-pitch+00": {
+   "silhouette": "yaw-135-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "75141e76578a1c22e3dbdd6777dc7df8b235795802bc48b266f0c07fb6df2acc",
+    "L3_hair.png": "e723d7220ca387b3cd7fba28a9cb821c16f0bdcdd1f63101916040f6fc42ef6a",
+    "L4_headwear.png": "a94cc6eb17e61566e29e84e172a42faa9e367763198313997f4e201049be477a",
+    "L1_makeup.eyes.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L3_hair.back.png": "1630fa972f7b18cef882d6ccccf882692f4b71e8c1816c70d9c1e02c60e455ab"
+   },
+   "opaque_pixels": {
+    "garment": 404439,
+    "hair": 63182,
+    "headwear": 2169,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0,
+    "hair_back": 1374
+   },
+   "cropped_pixels": {
+    "garment": 0,
+    "hair": 0,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "hair_back_bbox": [
+    434,
+    99,
+    139,
+    171
+   ],
+   "headwear_bbox": [
+    431,
+    95,
+    107,
+    141
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 3,
+     "linked_small_components": 3,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 11,
+     "linked_small_components": 11,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 5,
+     "linked_small_components": 5,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      437,
+      824
+     ],
+     "layer_rgba": [
+      8,
+      107,
+      218,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      447,
+      272
+     ],
+     "layer_rgba": [
+      31,
+      29,
+      27,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      461,
+      100
+     ],
+     "layer_rgba": [
+      105,
+      105,
+      103,
+      255
+     ]
+    },
+    "lips": null
+   }
+  },
+  "yaw-120-pitch+00": {
+   "silhouette": "yaw-120-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "a9cb6b0b77401a28b60e9535a9c23c669deefaa6368cd45ab2db4df1d1ccc786",
+    "L3_hair.png": "cf46bc8f10d1e713ac461bb89c77b1b39945168494cd1a9d325e41a101926f58",
+    "L4_headwear.png": "79fe729fcf1b3f8d8e76c343327e52ffbe983e30905cc9d7d81315c7307b2630",
+    "L1_makeup.eyes.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L3_hair.back.png": "4ee4a9d3922e781dcb4a2ab7487cd3bdf31a746db9e62f04c82fc57de6584ef8"
+   },
+   "opaque_pixels": {
+    "garment": 415040,
+    "hair": 50721,
+    "headwear": 394,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0,
+    "hair_back": 839
+   },
+   "cropped_pixels": {
+    "garment": 0,
+    "hair": 0,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "hair_back_bbox": [
+    455,
+    97,
+    125,
+    67
+   ],
+   "headwear_bbox": [
+    505,
+    120,
+    55,
+    38
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 3,
+     "linked_small_components": 3,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 5,
+     "linked_small_components": 5,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {
+    "L2_garment": [
+     0.47,
+     -13.79
+    ],
+    "L3_hair": [
+     1.67,
+     -13.58
+    ],
+    "L4_headwear": [
+     1.28,
+     -13.47
+    ]
+   },
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      456,
+      856
+     ],
+     "layer_rgba": [
+      6,
+      113,
+      235,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      478,
+      101
+     ],
+     "layer_rgba": [
+      78,
+      74,
+      81,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      533,
+      133
+     ],
+     "layer_rgba": [
+      203,
+      197,
+      195,
+      255
+     ]
+    },
+    "lips": null
+   }
+  },
+  "yaw-105-pitch+00": {
+   "silhouette": "yaw-105-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "ce8ac114c871002c1af5328d1b41869156f729cadcd444c3f496bef8e1938de7",
+    "L3_hair.png": "999fdbcba8b8b58af53e3a6206da416b99ff75af4c75b1237769c409301dc58e",
+    "L4_headwear.png": "76e51127b1837622387e8d4bc9db4c284cb4d04c8400a362f904f19ed80d8239",
+    "L1_makeup.eyes.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L3_hair.back.png": "06c8f289db6cc00708c2d009c17d6d13529a8402dc3c4690d80c5b9cecadf18e"
+   },
+   "opaque_pixels": {
+    "garment": 445557,
+    "hair": 52541,
+    "headwear": 136,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0,
+    "hair_back": 413
+   },
+   "cropped_pixels": {
+    "garment": 0,
+    "hair": 0,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    509,
+    126,
+    29,
+    42
+   ],
+   "hair_back_bbox": [
+    498,
+    117,
+    103,
+    51
+   ],
+   "headwear_bbox": [
+    518,
+    119,
+    34,
+    16
+   ],
+   "headwear_unlinked_pixels_removed": 103,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 0,
+     "linked_small_components": 0,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {
+    "L3_hair": [
+     1.2,
+     3.5
+    ],
+    "L4_headwear": [
+     0.81,
+     3.74
+    ]
+   },
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      598,
+      867
+     ],
+     "layer_rgba": [
+      2,
+      127,
+      244,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      475,
+      200
+     ],
+     "layer_rgba": [
+      83,
+      60,
+      47,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      535,
+      124
+     ],
+     "layer_rgba": [
+      196,
+      181,
+      182,
+      255
+     ]
+    },
+    "lips": null
+   }
+  },
+  "yaw-090-pitch+00": {
+   "silhouette": "yaw-090-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "ee96f47acb5414ed8a1e3a418e21e699ac95dada7f2848e07cb9d00991aa70d4",
+    "L3_hair.png": "caac74b40e30b8814f492f539bcda1eef4f3f7617c03829be50f6a694aebc2dc",
+    "L4_headwear.png": "714948f6ef8fdb9291b2906b2fdd602a90e68604ab1feba15dc9b09f6a419bb8",
+    "L1_makeup.eyes.png": "831526372a4e3d564cd1623983cc1ffc6f12067ec3f307866f0e6c0defc30133",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "56bc65cca25294ed516d2dabdee510540bcfd1f000b43233f38ed0f80ebcf72a",
+    "L3_hair.back.png": "b5db58c9c7c2faca11945964384a9ac2285ce4907fef2d1daac3eabbd379fa20"
+   },
+   "opaque_pixels": {
+    "garment": 270376,
+    "hair": 32989,
+    "headwear": 2421,
+    "eyes": 413,
+    "cheeks": 0,
+    "lips": 111,
+    "hair_back": 2724
+   },
+   "cropped_pixels": {
+    "garment": 112,
+    "hair": 434,
+    "hair_back": 24,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    466,
+    172,
+    120,
+    201
+   ],
+   "hair_back_bbox": [
+    420,
+    98,
+    171,
+    183
+   ],
+   "headwear_bbox": [
+    432,
+    103,
+    68,
+    201
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 6,
+     "linked_small_components": 5,
+     "removed_small_components": 1,
+     "removed_pixels": 3,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 12,
+     "linked_small_components": 11,
+     "removed_small_components": 1,
+     "removed_pixels": 4,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 2,
+     "linked_small_components": 2,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      477,
+      807
+     ],
+     "layer_rgba": [
+      38,
+      91,
+      138,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      437,
+      102
+     ],
+     "layer_rgba": [
+      84,
+      79,
+      75,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      480,
+      121
+     ],
+     "layer_rgba": [
+      214,
+      208,
+      196,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      571,
+      291
+     ],
+     "layer_rgba": [
+      228,
+      148,
+      136,
+      121
+     ]
+    }
+   }
+  },
+  "yaw-075-pitch+00": {
+   "silhouette": "yaw-075-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "904b3f2ec31678cd9b9270cdc5744d2a54be849c50e49aee572696159bdfeeaa",
+    "L3_hair.png": "7c2613f37a8dfcf0b8826415327d2d113cbc6521b4b2c80d5a8a3a3d86f260c0",
+    "L4_headwear.png": "7463fe5eb4483275646df5828d538278f0d2a83f2618bc80ab7e6fb009c5c964",
+    "L1_makeup.eyes.png": "d6a1d0c4489d4c10a8226a8386b0e9726295830b8c1a1f0af1fa803b628e4ad7",
+    "L1_makeup.cheeks.png": "002f45e9d7bbd3b7456150215246b4a8cecd2a0acf91761fb80ba8eff7d3b828",
+    "L1_makeup.lips.png": "90c70c0e45581f055945ca2215727f1ae9cdf9d6fdbbe1a3e74fc3b689624df7",
+    "L3_hair.back.png": "1a17224738d4876bbef6bd814f7b6f2dcb990a9255785186cf8a99c4ffb032cd"
+   },
+   "opaque_pixels": {
+    "garment": 412821,
+    "hair": 27061,
+    "headwear": 2568,
+    "eyes": 1810,
+    "cheeks": 24,
+    "lips": 558,
+    "hair_back": 1247
+   },
+   "cropped_pixels": {
+    "garment": 144,
+    "hair": 153,
+    "hair_back": 155,
+    "headwear": 11,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 5,
+   "face_bbox": [
+    444,
+    170,
+    127,
+    203
+   ],
+   "hair_back_bbox": [
+    426,
+    90,
+    141,
+    179
+   ],
+   "headwear_bbox": [
+    398,
+    91,
+    157,
+    219
+   ],
+   "headwear_unlinked_pixels_removed": 49,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 2,
+     "linked_small_components": 2,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 5,
+     "linked_small_components": 5,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 11,
+     "linked_small_components": 10,
+     "removed_small_components": 1,
+     "removed_pixels": 2,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      492,
+      509
+     ],
+     "layer_rgba": [
+      12,
+      75,
+      131,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      459,
+      286
+     ],
+     "layer_rgba": [
+      48,
+      43,
+      37,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      452,
+      93
+     ],
+     "layer_rgba": [
+      94,
+      99,
+      96,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      559,
+      275
+     ],
+     "layer_rgba": [
+      210,
+      120,
+      107,
+      165
+     ]
+    }
+   }
+  },
+  "yaw-060-pitch+00": {
+   "silhouette": "yaw-060-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "dcdb51cbc195e9a6cc20023cf66f6c267ccad77ffe68f47e28479d3c07df57a2",
+    "L3_hair.png": "66bc00d3639af196996d40e95cb8dde07e667d7684014e73ae6f21370e17b8ca",
+    "L4_headwear.png": "8cdbc46b7a8a3e81d65a55991f27a1661ed28186891e0306178db168ba57ffe0",
+    "L1_makeup.eyes.png": "789ca7f0f2fa3b42e9575bdc54651034602fe2d8de5968a2740e085bb61a780b",
+    "L1_makeup.cheeks.png": "c81fd39399c0124103b9225a42639fc7577ea73de28ab4c606301971885b731c",
+    "L1_makeup.lips.png": "5d011a57da9ab516c0d9e143ed790594943e18604dceed9d176f0499babbc7a4",
+    "L3_hair.back.png": "cb71e072742babf3a6a714db935aa1485ff70af5ea0c392f33d438ae334bdeb6"
+   },
+   "opaque_pixels": {
+    "garment": 402007,
+    "hair": 25321,
+    "headwear": 2251,
+    "eyes": 2199,
+    "cheeks": 33,
+    "lips": 793,
+    "hair_back": 1966
+   },
+   "cropped_pixels": {
+    "garment": 108,
+    "hair": 65,
+    "hair_back": 125,
+    "headwear": 8,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    452,
+    177,
+    125,
+    196
+   ],
+   "hair_back_bbox": [
+    435,
+    93,
+    141,
+    201
+   ],
+   "headwear_bbox": [
+    407,
+    94,
+    156,
+    102
+   ],
+   "headwear_unlinked_pixels_removed": 91,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 7,
+     "linked_small_components": 5,
+     "removed_small_components": 2,
+     "removed_pixels": 19,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 9,
+     "linked_small_components": 7,
+     "removed_small_components": 2,
+     "removed_pixels": 12,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      512,
+      702
+     ],
+     "layer_rgba": [
+      15,
+      80,
+      133,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      455,
+      283
+     ],
+     "layer_rgba": [
+      40,
+      37,
+      29,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      460,
+      96
+     ],
+     "layer_rgba": [
+      80,
+      88,
+      98,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      537,
+      285
+     ],
+     "layer_rgba": [
+      202,
+      100,
+      90,
+      189
+     ]
+    }
+   }
+  },
+  "yaw-045-pitch+00": {
+   "silhouette": "yaw-045-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "5e3bd6822a30801974554dfb8121126a4d97613278a9025502893283b7c8370f",
+    "L3_hair.png": "8bbab48f4b0d68c3e69a60f8e7574e74d0e6d6e53f1123fc53ad678e93fde1f0",
+    "L4_headwear.png": "5bb673d576c6d18d998c35bda0a3d966a36cd579a799f5340098de708c3340d7",
+    "L1_makeup.eyes.png": "891b5ecb97205543b9e056621dcec352b97ba57951887edbc894f68434877658",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "4bc5ae020e94a62f8eda7530c042b51bd206dc8e2dca4c7971fc4c30c4585410",
+    "L3_hair.back.png": "3b1396e7bb5a6d5e962b948be453088104f375809fa2e77f9403588284dcf3d3"
+   },
+   "opaque_pixels": {
+    "garment": 409169,
+    "hair": 33617,
+    "headwear": 2934,
+    "eyes": 1928,
+    "cheeks": 0,
+    "lips": 618,
+    "hair_back": 1960
+   },
+   "cropped_pixels": {
+    "garment": 152,
+    "hair": 295,
+    "hair_back": 109,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    468,
+    185,
+    92,
+    188
+   ],
+   "hair_back_bbox": [
+    467,
+    94,
+    142,
+    192
+   ],
+   "headwear_bbox": [
+    473,
+    92,
+    152,
+    205
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 2,
+     "linked_small_components": 2,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 10,
+     "linked_small_components": 10,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 9,
+     "linked_small_components": 9,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      507,
+      756
+     ],
+     "layer_rgba": [
+      20,
+      77,
+      124,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      575,
+      137
+     ],
+     "layer_rgba": [
+      126,
+      126,
+      126,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      560,
+      94
+     ],
+     "layer_rgba": [
+      86,
+      98,
+      100,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      498,
+      284
+     ],
+     "layer_rgba": [
+      172,
+      79,
+      77,
+      168
+     ]
+    }
+   }
+  },
+  "yaw-030-pitch+00": {
+   "silhouette": "yaw-030-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "eca72f961bab0a72124331a2fb16fdaf73dca9f6d5d186c9e1a755a4e10003f9",
+    "L3_hair.png": "36935f2552a7f366a8bcbda4c48ac2e863bc511217e5df2c37bb1eeea6fd20ba",
+    "L4_headwear.png": "18196844b75b9b7f2f3fe52508fc5b2f740b63b10943003a66e6e75e2b0e6d38",
+    "L1_makeup.eyes.png": "a473fe648ef32903cef69719cba72be445918d540753d0893edcefbda749b022",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "54be70090b4b85214ed766a55daf8c733fe68c1fe5e140cb79d8c2e371a43fa6",
+    "L3_hair.back.png": "0e09f2e7d6d1893f58a6b7290dc96abbdf0dca5b74b3c1a7a553a8c6c1670727"
+   },
+   "opaque_pixels": {
+    "garment": 413664,
+    "hair": 20686,
+    "headwear": 1394,
+    "eyes": 1413,
+    "cheeks": 0,
+    "lips": 483,
+    "hair_back": 390
+   },
+   "cropped_pixels": {
+    "garment": 151,
+    "hair": 14,
+    "hair_back": 73,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 2,
+   "face_bbox": [
+    460,
+    172,
+    93,
+    201
+   ],
+   "hair_back_bbox": [
+    460,
+    95,
+    128,
+    186
+   ],
+   "headwear_bbox": [
+    518,
+    98,
+    98,
+    130
+   ],
+   "headwear_unlinked_pixels_removed": 104,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 1,
+     "linked_small_components": 0,
+     "removed_small_components": 1,
+     "removed_pixels": 9,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 5,
+     "linked_small_components": 5,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      411,
+      733
+     ],
+     "layer_rgba": [
+      21,
+      65,
+      122,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      593,
+      352
+     ],
+     "layer_rgba": [
+      54,
+      68,
+      91,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      532,
+      115
+     ],
+     "layer_rgba": [
+      110,
+      106,
+      106,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      490,
+      275
+     ],
+     "layer_rgba": [
+      202,
+      98,
+      80,
+      236
+     ]
+    }
+   }
+  },
+  "yaw-015-pitch+00": {
+   "silhouette": "yaw-015-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "355b3d8b7f45c689c8a9520f233fed3531b5d70ddbf257a89155fd6fe7bcbe07",
+    "L3_hair.png": "41c8956e3cff8dc46396f5c47cc650e19ce7ed627b0c41ba17b58690c5a7166c",
+    "L4_headwear.png": "6dfa68347cf79d8eb765addec216f01a14beb76173e1c04662e51514daeba1fa",
+    "L1_makeup.eyes.png": "d5e635547f4513ebb397f8336639609a7ab95e69f81077cba08b2857f859734d",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "6e01301769b14cf09586ae350100d18991823d98c0790feebc750848aff621aa",
+    "L3_hair.back.png": "be6991f29f002d565fea1bcd19961a639301702c448952da4d765cba2416941b"
+   },
+   "opaque_pixels": {
+    "garment": 381752,
+    "hair": 19998,
+    "headwear": 2221,
+    "eyes": 1942,
+    "cheeks": 0,
+    "lips": 603,
+    "hair_back": 604
+   },
+   "cropped_pixels": {
+    "garment": 53,
+    "hair": 120,
+    "hair_back": 84,
+    "headwear": 14,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    457,
+    180,
+    93,
+    193
+   ],
+   "hair_back_bbox": [
+    452,
+    134,
+    137,
+    177
+   ],
+   "headwear_bbox": [
+    466,
+    105,
+    151,
+    131
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 2,
+     "linked_small_components": 1,
+     "removed_small_components": 1,
+     "removed_pixels": 12,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      497,
+      737
+     ],
+     "layer_rgba": [
+      12,
+      75,
+      117,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      566,
+      282
+     ],
+     "layer_rgba": [
+      30,
+      26,
+      18,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      526,
+      129
+     ],
+     "layer_rgba": [
+      189,
+      184,
+      177,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      471,
+      279
+     ],
+     "layer_rgba": [
+      188,
+      140,
+      123,
+      173
+     ]
+    }
+   }
+  },
+  "yaw+000-pitch+00": {
+   "silhouette": "yaw+000-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "f9aaa3db76ba55a70bf45f647ba29fe8e5481f0e57beb695ade387e1dc5e56bb",
+    "L3_hair.png": "3f5057b0111cf3256543e7f872c14a8e0b995ce6d1d86c8ab331741d60c67032",
+    "L4_headwear.png": "bcefbd829e6e9fd6aa3f2a87e5f102cc4e2f9dc0a5f89136db03927e74229370",
+    "L1_makeup.eyes.png": "bd15eb1fc72e0e9115632c85d474d717e7e65832af2b7c319fc4c30fd1bad070",
+    "L1_makeup.cheeks.png": "b1eda3cd075efddf0bf5fe82c0749e2a4ef0f0815daf71fd2e62eb907754e9a0",
+    "L1_makeup.lips.png": "862b725f78fa89c5f0df93074a4d24472e6eff227f7b033ee3ef33de4903b281",
+    "L3_hair.back.png": "517b7c37d4ce833ae8d5d7c980174859810da9eb49abe6b4d5b14f33854508d5"
+   },
+   "opaque_pixels": {
+    "garment": 471654,
+    "hair": 27935,
+    "headwear": 2865,
+    "eyes": 3282,
+    "cheeks": 185,
+    "lips": 1771,
+    "hair_back": 612
+   },
+   "cropped_pixels": {
+    "garment": 92,
+    "hair": 398,
+    "hair_back": 31,
+    "headwear": 1,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    458,
+    185,
+    117,
+    188
+   ],
+   "hair_back_bbox": [
+    446,
+    129,
+    136,
+    127
+   ],
+   "headwear_bbox": [
+    449,
+    110,
+    140,
+    175
+   ],
+   "headwear_unlinked_pixels_removed": 28,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 3,
+     "linked_small_components": 3,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 2,
+     "linked_small_components": 2,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      488,
+      585
+     ],
+     "layer_rgba": [
+      25,
+      114,
+      179,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      455,
+      350
+     ],
+     "layer_rgba": [
+      19,
+      18,
+      14,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      482,
+      134
+     ],
+     "layer_rgba": [
+      209,
+      214,
+      215,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      553,
+      291
+     ],
+     "layer_rgba": [
+      189,
+      151,
+      139,
+      127
+     ]
+    }
+   }
+  },
+  "yaw+015-pitch+00": {
+   "silhouette": "yaw+015-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "84cc54bdd8d41b3e82fa744400a4bbfc72c177528f0df5b419f98e07ab534095",
+    "L3_hair.png": "64b9d88569369725d63954b764006aa814fc16ca4959e3c122ac41af88da6bdb",
+    "L4_headwear.png": "ffdb2c77a815161043a998774eff10564983a98fc6bb6627db6706961b9bcc9c",
+    "L1_makeup.eyes.png": "8332c637eae6ded216560b81ff5eba4e403baca1bfc70af3e08c6182e1ae7d77",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "5659622d8761acdfcbda005f97651f235e61639428b65aa19f93f1931abeacf8",
+    "L3_hair.back.png": "7f48a2672df2719b69d291c29e96d15c36a83258b09e6843f6b81bc457e1dbc6"
+   },
+   "opaque_pixels": {
+    "garment": 400180,
+    "hair": 29574,
+    "headwear": 2306,
+    "eyes": 1622,
+    "cheeks": 0,
+    "lips": 540,
+    "hair_back": 941
+   },
+   "cropped_pixels": {
+    "garment": 61,
+    "hair": 189,
+    "hair_back": 130,
+    "headwear": 30,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    459,
+    177,
+    104,
+    196
+   ],
+   "hair_back_bbox": [
+    462,
+    91,
+    143,
+    166
+   ],
+   "headwear_bbox": [
+    463,
+    89,
+    169,
+    233
+   ],
+   "headwear_unlinked_pixels_removed": 39,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 2,
+     "linked_small_components": 2,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 7,
+     "linked_small_components": 6,
+     "removed_small_components": 1,
+     "removed_pixels": 5,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 9,
+     "linked_small_components": 9,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 1,
+     "owner_isolated_pixels_removed": 4,
+     "owner_isolated_count_before": 1,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      531,
+      733
+     ],
+     "layer_rgba": [
+      18,
+      77,
+      132,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      578,
+      282
+     ],
+     "layer_rgba": [
+      18,
+      15,
+      10,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      560,
+      106
+     ],
+     "layer_rgba": [
+      239,
+      235,
+      235,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      476,
+      287
+     ],
+     "layer_rgba": [
+      177,
+      87,
+      88,
+      170
+     ]
+    }
+   }
+  },
+  "yaw+030-pitch+00": {
+   "silhouette": "yaw+030-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "47bb0d318c56c134a8ba5fc60302646ca7f20babac40d2503bcd0a385a1212ae",
+    "L3_hair.png": "2d02d1e33f0317805ae49b5cfd9cf4c53b1492ff81bdde140deb62aa70b2c90b",
+    "L4_headwear.png": "e1fb4cb4d9b92cad9c58468b1dd730290335d8f2bb0070fc5a4fb1e3d4d79bb2",
+    "L1_makeup.eyes.png": "599265e888bf607eae745912fe746c9e3bead1d181149a28b9445b49e991dc5b",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "1efe98c009db720868d9e2de8590d6aa513a89467ae8183e8bcce9308a73504b",
+    "L3_hair.back.png": "85171cafaf115ced1c9202d392012f41c30716dafbafe9bba4d751d6d0462542"
+   },
+   "opaque_pixels": {
+    "garment": 415148,
+    "hair": 24102,
+    "headwear": 2164,
+    "eyes": 1527,
+    "cheeks": 0,
+    "lips": 535,
+    "hair_back": 780
+   },
+   "cropped_pixels": {
+    "garment": 46,
+    "hair": 152,
+    "hair_back": 58,
+    "headwear": 23,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    457,
+    184,
+    109,
+    189
+   ],
+   "hair_back_bbox": [
+    461,
+    129,
+    157,
+    150
+   ],
+   "headwear_bbox": [
+    506,
+    89,
+    129,
+    170
+   ],
+   "headwear_unlinked_pixels_removed": 15,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 0,
+     "linked_small_components": 0,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 3,
+     "linked_small_components": 3,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 3,
+     "linked_small_components": 2,
+     "removed_small_components": 1,
+     "removed_pixels": 5,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {
+    "L4_headwear": [
+     -0.71,
+     3.48
+    ]
+   },
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      427,
+      732
+     ],
+     "layer_rgba": [
+      16,
+      70,
+      122,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      460,
+      194
+     ],
+     "layer_rgba": [
+      85,
+      31,
+      35,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      582,
+      133
+     ],
+     "layer_rgba": [
+      130,
+      137,
+      135,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      481,
+      295
+     ],
+     "layer_rgba": [
+      232,
+      124,
+      107,
+      250
+     ]
+    }
+   }
+  },
+  "yaw+045-pitch+00": {
+   "silhouette": "yaw+045-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "056b4323cd012ec8d1f7a3b86d2c7833c12bc0f1ce88c4acd333fe62ec12bb8e",
+    "L3_hair.png": "b8b1b7b8c35352b6787700209844cafd2a38d5dbb7b31bf70a34bc325e5b8b0f",
+    "L4_headwear.png": "5fee9019b4439dd3785a41d64c9b084ceb43d6fe1e021849f160bc816f05df47",
+    "L1_makeup.eyes.png": "caea615cceaf244581374dfc0ea69c05bffde187aa468896629d5a6f3faece7d",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "302829ea271fab20a466a8aaa1c49d162fcd675a413deccb4ecc42133b1293e8",
+    "L3_hair.back.png": "c5f15f4ed28942a8abf2b3d50275b2fe33909afba4b2424ce8689dd7ab7d4b20"
+   },
+   "opaque_pixels": {
+    "garment": 408598,
+    "hair": 29549,
+    "headwear": 1869,
+    "eyes": 1397,
+    "cheeks": 0,
+    "lips": 443,
+    "hair_back": 743
+   },
+   "cropped_pixels": {
+    "garment": 154,
+    "hair": 206,
+    "hair_back": 3,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    453,
+    173,
+    116,
+    200
+   ],
+   "hair_back_bbox": [
+    449,
+    102,
+    168,
+    183
+   ],
+   "headwear_bbox": [
+    458,
+    103,
+    168,
+    87
+   ],
+   "headwear_unlinked_pixels_removed": 55,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 2,
+     "linked_small_components": 2,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 1,
+     "owner_isolated_pixels_removed": 8,
+     "owner_isolated_count_before": 1,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 7,
+     "linked_small_components": 7,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      492,
+      399
+     ],
+     "layer_rgba": [
+      40,
+      120,
+      178,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      489,
+      162
+     ],
+     "layer_rgba": [
+      38,
+      36,
+      30,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      530,
+      121
+     ],
+     "layer_rgba": [
+      181,
+      179,
+      179,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      465,
+      284
+     ],
+     "layer_rgba": [
+      176,
+      78,
+      76,
+      153
+     ]
+    }
+   }
+  },
+  "yaw+060-pitch+00": {
+   "silhouette": "yaw+060-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "370f5a58da4b782f298b2dae3c07b94b5f9e6b203b5553f7a14abe5d5adf4f80",
+    "L3_hair.png": "7059fa56aa39115619a5d9588646df3dd107a5999d48100270ba626cbf2c2d53",
+    "L4_headwear.png": "8fef3890bb93f8fdef8f55e01375e9d075dd20871aa19fc85422e21e61b5431e",
+    "L1_makeup.eyes.png": "a253e69eea84fc7f1586f5292c8be4a030b5cfa4d08e5a78d94b2b43a88d32aa",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "6ad0f6e46bba76bc8f279cd7084e3fba8b77d4330369fcf6a9006efcc7fa2e74",
+    "L3_hair.back.png": "7a3a7b1cc1a74c41fc840975fe7ca66c62d20cd30647b5f11444c398d329b5cc"
+   },
+   "opaque_pixels": {
+    "garment": 415287,
+    "hair": 26998,
+    "headwear": 2247,
+    "eyes": 664,
+    "cheeks": 0,
+    "lips": 217,
+    "hair_back": 949
+   },
+   "cropped_pixels": {
+    "garment": 144,
+    "hair": 304,
+    "hair_back": 119,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    460,
+    183,
+    112,
+    190
+   ],
+   "hair_back_bbox": [
+    445,
+    93,
+    156,
+    175
+   ],
+   "headwear_bbox": [
+    518,
+    84,
+    109,
+    138
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 4,
+     "linked_small_components": 3,
+     "removed_small_components": 1,
+     "removed_pixels": 2,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 0,
+     "linked_small_components": 0,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      428,
+      698
+     ],
+     "layer_rgba": [
+      21,
+      71,
+      119,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      567,
+      278
+     ],
+     "layer_rgba": [
+      1,
+      0,
+      0,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      587,
+      137
+     ],
+     "layer_rgba": [
+      102,
+      100,
+      101,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      487,
+      285
+     ],
+     "layer_rgba": [
+      192,
+      126,
+      113,
+      233
+     ]
+    }
+   }
+  },
+  "yaw+075-pitch+00": {
+   "silhouette": "yaw+075-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "e7e214dd70b0d22247a96a19b884d993c17de0b95af2deabb57f9caab118d380",
+    "L3_hair.png": "6541e58db3aa11b4a464a164b124f1a1bd6326db60b2caf4cf3306c3a0f79029",
+    "L4_headwear.png": "0d81bd5328991ee43f9392a22167be1c8442be7f16e3cc9ac84e4396b0e153c9",
+    "L1_makeup.eyes.png": "e2e81866c2a6afed7f3f58d09fcc23893f1f84f24b2d7a2e89fd78f55a6d469d",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "d21cd1cf176583b57e83e10c76283ebb8ec624b33d6fbdb59ce59bcd02e83c4b",
+    "L3_hair.back.png": "746c7184d0474cfcff6554cae9c17ef6ef173037e34f61bb3a6494b6c2c611a3"
+   },
+   "opaque_pixels": {
+    "garment": 363860,
+    "hair": 28289,
+    "headwear": 2387,
+    "eyes": 1026,
+    "cheeks": 0,
+    "lips": 358,
+    "hair_back": 705
+   },
+   "cropped_pixels": {
+    "garment": 177,
+    "hair": 158,
+    "hair_back": 86,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    447,
+    159,
+    128,
+    214
+   ],
+   "hair_back_bbox": [
+    449,
+    119,
+    150,
+    143
+   ],
+   "headwear_bbox": [
+    538,
+    100,
+    102,
+    203
+   ],
+   "headwear_unlinked_pixels_removed": 75,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 0,
+     "linked_small_components": 0,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 3,
+     "linked_small_components": 3,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 2,
+     "linked_small_components": 2,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      499,
+      394
+     ],
+     "layer_rgba": [
+      25,
+      99,
+      139,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      579,
+      270
+     ],
+     "layer_rgba": [
+      46,
+      45,
+      38,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      550,
+      119
+     ],
+     "layer_rgba": [
+      174,
+      169,
+      164,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      478,
+      273
+     ],
+     "layer_rgba": [
+      181,
+      113,
+      96,
+      188
+     ]
+    }
+   }
+  },
+  "yaw+090-pitch+00": {
+   "silhouette": "yaw+090-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "b68b09e995cbcc5a99da0210cafa569bb1a97ada31bf68f4174bfea6479de58e",
+    "L3_hair.png": "d453ed3de25cb79451d9a6d6bfbc64837390190104f1f0d5d7f2c94e0518374b",
+    "L4_headwear.png": "f57731180ae876964f84adf9ea500a4ae826b1fc38747e45e7650e0ba52796a2",
+    "L1_makeup.eyes.png": "fa600e3ae649028d1b100eb300fbe4eca414418f12b543afad76e3e8ca7846b5",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "a525c2b5caa93f641075a74ee9a2ed8a0229511a09aec3b198df85ff9e476063",
+    "L3_hair.back.png": "a99d683e1f8da3df2a66456c9a83a13ea771127ba0a6082c20d9210dca11f88d"
+   },
+   "opaque_pixels": {
+    "garment": 274107,
+    "hair": 40545,
+    "headwear": 2490,
+    "eyes": 286,
+    "cheeks": 0,
+    "lips": 72,
+    "hair_back": 1334
+   },
+   "cropped_pixels": {
+    "garment": 138,
+    "hair": 656,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    437,
+    170,
+    127,
+    203
+   ],
+   "hair_back_bbox": [
+    437,
+    90,
+    162,
+    191
+   ],
+   "headwear_bbox": [
+    526,
+    103,
+    75,
+    177
+   ],
+   "headwear_unlinked_pixels_removed": 79,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 0,
+     "linked_small_components": 0,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 3,
+     "linked_small_components": 3,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 0,
+     "linked_small_components": 0,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {
+    "L4_headwear": [
+     2.36,
+     6.05
+    ]
+   },
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      506,
+      718
+     ],
+     "layer_rgba": [
+      47,
+      92,
+      143,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      578,
+      348
+     ],
+     "layer_rgba": [
+      28,
+      27,
+      18,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      553,
+      131
+     ],
+     "layer_rgba": [
+      143,
+      146,
+      142,
+      255
+     ]
+    },
+    "lips": {
+     "xy": [
+      466,
+      274
+     ],
+     "layer_rgba": [
+      248,
+      225,
+      208,
+      71
+     ]
+    }
+   }
+  },
+  "yaw+105-pitch+00": {
+   "silhouette": "yaw+105-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "f81f2ad745e3a7cefb26870d0f8d611595f034e4f9de5b0e1fce41300a462b2f",
+    "L3_hair.png": "9eed3ff201cdb0eba3407f482b6fd5bf2dccb38afdcd4080eba51764d6c1e710",
+    "L4_headwear.png": "9605cbab47b3e5ad26749a3a27eceb1b83355cadffca56ad33cf7ea92dd1acf1",
+    "L1_makeup.eyes.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L3_hair.back.png": "96ba15f150563c44ef1b4840a57b69d71abcb5e83ce5bf8d9a97af8debab8b02"
+   },
+   "opaque_pixels": {
+    "garment": 391546,
+    "hair": 52615,
+    "headwear": 2775,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0,
+    "hair_back": 516
+   },
+   "cropped_pixels": {
+    "garment": 0,
+    "hair": 0,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "hair_back_bbox": [
+    452,
+    91,
+    140,
+    136
+   ],
+   "headwear_bbox": [
+    454,
+    96,
+    132,
+    135
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 2,
+     "linked_small_components": 2,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 5,
+     "linked_small_components": 5,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      597,
+      836
+     ],
+     "layer_rgba": [
+      1,
+      129,
+      248,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      465,
+      226
+     ],
+     "layer_rgba": [
+      69,
+      62,
+      64,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      519,
+      99
+     ],
+     "layer_rgba": [
+      97,
+      108,
+      115,
+      255
+     ]
+    },
+    "lips": null
+   }
+  },
+  "yaw+120-pitch+00": {
+   "silhouette": "yaw+120-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "795654153edeeb24b776e38d879c3859a3172c469f9acc4670e949521742cafd",
+    "L3_hair.png": "7baa43742f5d1295264634865e28888167895289083e254a633bd49e41818bb7",
+    "L4_headwear.png": "3ae2235d2c24c0077375861eb5997ffe1762556e60e40e616e9e5978a2020bb5",
+    "L1_makeup.eyes.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L3_hair.back.png": "be04188d19f3172976896cf3c983f64005bfd7066432e76e50cb7fdd0a7172fa"
+   },
+   "opaque_pixels": {
+    "garment": 423897,
+    "hair": 47880,
+    "headwear": 1044,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0,
+    "hair_back": 117
+   },
+   "cropped_pixels": {
+    "garment": 0,
+    "hair": 0,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "hair_back_bbox": [
+    523,
+    90,
+    65,
+    77
+   ],
+   "headwear_bbox": [
+    474,
+    122,
+    138,
+    45
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 6,
+     "linked_small_components": 6,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 0,
+     "linked_small_components": 0,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {
+    "L2_garment": [
+     3.95,
+     -1.5
+    ],
+    "L3_hair": [
+     4.19,
+     -0.51
+    ],
+    "L4_headwear": [
+     3.96,
+     -0.23
+    ]
+   },
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      600,
+      837
+     ],
+     "layer_rgba": [
+      1,
+      148,
+      254,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      576,
+      279
+     ],
+     "layer_rgba": [
+      37,
+      33,
+      31,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      574,
+      137
+     ],
+     "layer_rgba": [
+      157,
+      157,
+      156,
+      255
+     ]
+    },
+    "lips": null
+   }
+  },
+  "yaw+135-pitch+00": {
+   "silhouette": "yaw+135-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "b33413e91dba2cf5932e922dfc5a3df288967fa5caae51b8455f84b583f34ff1",
+    "L3_hair.png": "a6b40181d0777b00356d08824220243349f2473818b3783cf180e6964bbfcc4b",
+    "L4_headwear.png": "76afeb876ce755cb602fc02a55666a0fcb74dd05e024b1c7c61998004e1c0c4c",
+    "L1_makeup.eyes.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L3_hair.back.png": "54479b5f8a12299e0979a8ab8886be3d89141efa0bf7b61a2ebd7248c867f842"
+   },
+   "opaque_pixels": {
+    "garment": 399024,
+    "hair": 61882,
+    "headwear": 1862,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0,
+    "hair_back": 525
+   },
+   "cropped_pixels": {
+    "garment": 0,
+    "hair": 0,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "hair_back_bbox": [
+    449,
+    95,
+    135,
+    123
+   ],
+   "headwear_bbox": [
+    455,
+    96,
+    122,
+    129
+   ],
+   "headwear_unlinked_pixels_removed": 0,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 4,
+     "linked_small_components": 4,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 5,
+     "linked_small_components": 5,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {
+    "L2_garment": [
+     2.59,
+     -24.7
+    ],
+    "L3_hair": [
+     2.38,
+     -24.23
+    ],
+    "L4_headwear": [
+     2.07,
+     -23.82
+    ]
+   },
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      574,
+      849
+     ],
+     "layer_rgba": [
+      7,
+      135,
+      250,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      500,
+      334
+     ],
+     "layer_rgba": [
+      55,
+      51,
+      48,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      559,
+      100
+     ],
+     "layer_rgba": [
+      110,
+      95,
+      102,
+      255
+     ]
+    },
+    "lips": null
+   }
+  },
+  "yaw+150-pitch+00": {
+   "silhouette": "yaw+150-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "17ec3d79feecdb05959d79a28b000efcab914ee1e96d466d613bb3c4094d0af0",
+    "L3_hair.png": "646187a27277767a54da9be08ff3393a59d0c3d14163a15e9df5f5d20f3093ef",
+    "L4_headwear.png": "f39aa9c59574608df5af174474e23d36b6ea41a4f2a825600174cc7cccbaaa57",
+    "L1_makeup.eyes.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L3_hair.back.png": "2aef04e68a4878fa58706e6078791dd3c82cc1fc021cd6f34b6709ecb3849344"
+   },
+   "opaque_pixels": {
+    "garment": 432205,
+    "hair": 54755,
+    "headwear": 8576,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0,
+    "hair_back": 5520
+   },
+   "cropped_pixels": {
+    "garment": 0,
+    "hair": 0,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "hair_back_bbox": [
+    402,
+    91,
+    268,
+    369
+   ],
+   "headwear_bbox": [
+    402,
+    117,
+    270,
+    343
+   ],
+   "headwear_unlinked_pixels_removed": 76,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 5,
+     "linked_small_components": 5,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 7,
+     "linked_small_components": 7,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 5,
+     "linked_small_components": 5,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      589,
+      861
+     ],
+     "layer_rgba": [
+      1,
+      131,
+      246,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      576,
+      278
+     ],
+     "layer_rgba": [
+      72,
+      69,
+      63,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      570,
+      123
+     ],
+     "layer_rgba": [
+      136,
+      132,
+      125,
+      255
+     ]
+    },
+    "lips": null
+   }
+  },
+  "yaw+165-pitch+00": {
+   "silhouette": "yaw+165-pitch+00",
+   "source_sha256": {
+    "L2_garment.png": "dfdf841b30d5fe5a98522b9160e0f0f1dbd5437185a7b13e98e272d3aa4582a9",
+    "L3_hair.png": "3a9460334ee30cea17bb6ad6e367ccb0b885036f42e612ed15c49739f133e810",
+    "L4_headwear.png": "1b1e006a6cddf7b34b0456946fdccd1d0df793de8733d90994912f5dc91fc4e0",
+    "L1_makeup.eyes.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.cheeks.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L1_makeup.lips.png": "aed2c0d217e677156745944edafc5af5f1a3e9f285eb266d5a7dd5bdafdafe58",
+    "L3_hair.back.png": "68d76351d1d6dc3ac411524cf67982fefc1176c0b3de40aa0b999d87fc0a4510"
+   },
+   "opaque_pixels": {
+    "garment": 426667,
+    "hair": 55447,
+    "headwear": 2287,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0,
+    "hair_back": 792
+   },
+   "cropped_pixels": {
+    "garment": 0,
+    "hair": 0,
+    "hair_back": 0,
+    "headwear": 0,
+    "eyes": 0,
+    "cheeks": 0,
+    "lips": 0
+   },
+   "hair_face_mask": "none",
+   "hair_straight_edge_pixels_removed": 0,
+   "face_bbox": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "hair_back_bbox": [
+    451,
+    110,
+    136,
+    142
+   ],
+   "headwear_bbox": [
+    448,
+    89,
+    138,
+    145
+   ],
+   "headwear_unlinked_pixels_removed": 46,
+   "small_component_cleanup": {
+    "hair_front": {
+     "small_components": 2,
+     "linked_small_components": 2,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "hair_back_stored": {
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    },
+    "headwear": {
+     "small_components": 1,
+     "linked_small_components": 1,
+     "removed_small_components": 0,
+     "removed_pixels": 0,
+     "owner_alpha_1_30_removed": 0,
+     "owner_isolated_components_removed": 0,
+     "owner_isolated_pixels_removed": 0,
+     "owner_isolated_count_before": 0,
+     "owner_isolated_count_after": 0
+    }
+   },
+   "registration_flags": {},
+   "probes": {
+    "garment_blue_on_grey": {
+     "xy": [
+      563,
+      858
+     ],
+     "layer_rgba": [
+      2,
+      146,
+      255,
+      255
+     ]
+    },
+    "hair": {
+     "xy": [
+      496,
+      330
+     ],
+     "layer_rgba": [
+      46,
+      46,
+      37,
+      255
+     ]
+    },
+    "headwear": {
+     "xy": [
+      518,
+      129
+     ],
+     "layer_rgba": [
+      132,
+      124,
+      126,
+      255
+     ]
+    },
+    "lips": null
+   }
+  }
+ }
+}

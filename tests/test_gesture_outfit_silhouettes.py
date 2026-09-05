@@ -41,7 +41,10 @@ lazy from presentation.presentation_resources import FaceRenderLayers
 CANVAS = 465
 # Upper chest of the bare portraits on the 465px canvas: grey tank top in every gesture,
 # below the collar and above the hands of mock_hit_front.
-TORSO = QRect(150, 230, 170, 60)
+# 2026-09-05 依 v4 原圖重抽後，垂髮披在胸口兩側，原本 170×60 的胸口窄框只剩中央白色
+# 內襟露出；探測區改成整個上半身（藍袍在肩、袖與腰側都看得到），門檻維持不變。
+# 量測：四個手勢姿勢在此框內 changed 1456–3846、blue 243–576。
+TORSO = QRect(100, 230, 270, 120)
 # A robe pixel counts as blue when its blue channel leads red by at least this much.
 BLUE_MARGIN = 40
 GREY_TOLERANCE = 12
