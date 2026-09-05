@@ -71,13 +71,24 @@ def test_hair_layer_fills_enclosed_hole_with_hair_pixels() -> None:
     assert report["filled_hole_pixels"] >= 0
 
 
-def test_hair_layer_does_not_fill_enclosed_skin() -> None:
+def test_hair_layer_does_not_fill_large_enclosed_skin() -> None:
     image = _canvas()
-    # 髮量中央放一塊暖色皮膚：即使被包住也不能補進髮層。
-    image[100 : 100 + HOLE_SIZE, 150 : 150 + HOLE_SIZE, :3] = SKIN_BGR
+    # 髮量中央放一大塊暖色皮膚（超過耳朵缺口面積上限）：即使被包住也不能補進髮層。
+    image[80:180, 120:220, :3] = SKIN_BGR
     alignment = _alignment()
     layer, _ = reference_hair_layer(image, alignment, ornament_mask(image, alignment))
-    assert layer[105, 155, 3] == 0
+    assert layer[130, 170, 3] == 0
+
+
+def test_hair_layer_covers_small_ear_notch_with_hair() -> None:
+    image = _canvas()
+    # 髮量中央一小塊暖色皮膚（v4 的耳朵）：補成頭髮，顏色取自旁邊髮色。
+    image[100 : 100 + HOLE_SIZE, 150 : 150 + HOLE_SIZE, :3] = SKIN_BGR
+    alignment = _alignment()
+    layer, report = reference_hair_layer(image, alignment, ornament_mask(image, alignment))
+    assert layer[105, 155, 3] == FULL_ALPHA
+    assert int(layer[105, 155, 2]) < HAIR_DARK_FULL
+    assert report["ear_notch_pixels"] >= HOLE_SIZE * HOLE_SIZE
 
 
 def test_ornament_mask_takes_silver_above_brow_and_beads_only_in_tassel_column() -> None:
@@ -151,7 +162,8 @@ def test_extract_reference_layers_returns_none_when_no_face(tmp_path: Path) -> N
 def main() -> int:
     test_hair_layer_keeps_dark_mass_and_rejects_skin()
     test_hair_layer_fills_enclosed_hole_with_hair_pixels()
-    test_hair_layer_does_not_fill_enclosed_skin()
+    test_hair_layer_does_not_fill_large_enclosed_skin()
+    test_hair_layer_covers_small_ear_notch_with_hair()
     test_ornament_mask_takes_silver_above_brow_and_beads_only_in_tassel_column()
     test_ornament_mask_rejects_bright_warm_skin()
     test_headwear_layer_uses_ornament_pixels_only()

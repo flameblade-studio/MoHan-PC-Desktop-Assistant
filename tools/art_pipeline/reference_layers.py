@@ -112,6 +112,20 @@ ORNAMENT_CORE_REACH_PX: int = 9
 # 從髮量邊移到補繪邊（2026-09-05 量測：reach 13 時 exasperated 仍有 63 px 直線邊）。
 HAIR_UNDER_ORNAMENT_REACH_PX: int = 41
 HAIR_EXTENSION_EDGE_ALPHA_MIN: int = 250
+HAIR_EXTENSION_SAMPLE_PX: int = 6
+HAIR_FILL_SAMPLE_INSET_PX: int = 4
+# 2026-09-05 量測：流蘇本體的銀色亮芯每列只有 10–11 px、圓珠 19 px、小墜與珠鏈 2–4 px。
+HAIR_EXTENSION_MIN_CORE_WIDTH_PX: int = 6
+# 耳朵缺口：v4 的耳朵是被垂髮三面包住的一小塊暖色皮膚，位置與素體的耳朵差幾個像素，
+# 留著會在成品露出兩層耳朵與一道灰縫（2026-09-05 擁有者圈出）。面積在此以下、且
+# 大半落在髮量閉運算範圍內的暖色元件，用旁邊髮色補成被頭髮蓋住的耳朵。
+EAR_NOTCH_MAX_AREA: int = 6000
+EAR_NOTCH_INSIDE_RATIO: float = 0.6
+EAR_NOTCH_CLOSE_KERNEL: int = 45
+EAR_NOTCH_VERTICAL_BLUR_PX: int = 15
+ORNAMENT_CORE_INSET_PX: int = 3
+# 髮層對外的邊緣做一點柔化（只降不升），與差分抽層的 1.2 sigma 一致。
+HAIR_EDGE_SOFTEN_SIGMA: float = 1.2
 # 流蘇與垂髮之間在 v4 原圖有 2–3 px 的背景縫，補繪範圍把髮飾再外擴幾像素以蓋住這條縫。
 HAIR_UNDER_ORNAMENT_GAP_PX: int = 17
 # 垂髮邊緣從眼睛上方 1.6 倍眼距開始往下延伸；再往上是蝴蝶飾與小墜，可用整個流蘇欄。
@@ -251,10 +265,14 @@ def ornament_mask(warped: np.ndarray, alignment: ReferenceAlignment) -> np.ndarr
     near_core = cv2.dilate(
         core, np.ones((ORNAMENT_CORE_REACH_PX, ORNAMENT_CORE_REACH_PX), np.uint8)
     ).astype(bool)
+    # 藍黑髮絲高光偏藍；流蘇的陰影面與描邊是中性灰。緊貼流蘇的垂髮不能被當成飾品吃掉
+    # （2026-09-05 量測：右側垂髮在流蘇旁被啃成鋸齒）。
+    hair_tinted = rgb[:, :, 0] > rgb[:, :, 2] + HAIR_HIGHLIGHT_BLUE_MARGIN
     shade = (
         (brightest >= ORNAMENT_TASSEL_SHADE_MIN)
         & (saturation < ORNAMENT_TASSEL_SHADE_SATURATION_MAX)
         & ~warm
+        & ~hair_tinted
         & near_core
     )
     candidate = ((silver & (brow | tassel)) | (bluish & narrow) | shade) & (alpha > 0)
@@ -266,6 +284,7 @@ def ornament_mask(warped: np.ndarray, alignment: ReferenceAlignment) -> np.ndarr
             np.ones((ORNAMENT_OUTLINE_PX, ORNAMENT_OUTLINE_PX), np.uint8),
         ).astype(bool)
         & (brightest < ORNAMENT_OUTLINE_DARK_MAX)
+        & ~hair_tinted
         & near_core
         & (alpha > 0)
     )
@@ -398,20 +417,129 @@ def reference_hair_layer(
         grade[int(alignment.eye_center[1] + HAIR_BOTTOM_EYE_FACTOR * alignment.eye_distance) :, :] = 0.0
     layer = warped.copy()
     layer[:, :, 3] = np.rint(grade * alpha).astype(np.uint8)
+    layer, report = _finish_hair_layer(layer, grade, warped, alignment, ornament, halo, excluded)
+    report["filled_hole_pixels"] = int(holes.sum())
+    return layer, report
+
+
+def _finish_hair_layer(
+    layer: np.ndarray,
+    grade: np.ndarray,
+    warped: np.ndarray,
+    alignment: ReferenceAlignment,
+    ornament: np.ndarray,
+    halo: np.ndarray,
+    excluded: np.ndarray,
+) -> tuple[np.ndarray, dict[str, int]]:
+    """補耳朵缺口、補流蘇後方、柔化邊緣，回傳（髮層, 統計）。"""
+    alpha = warped[:, :, 3]
+    rgb = warped[:, :, :3].astype(np.int16)
+    warm_skin = rgb[:, :, 2] > rgb[:, :, 0] + SKIN_WARM_MARGIN
     solid_hair = grade > HAIR_SOLID_GRADE
+    # 延伸與補洞的取樣起點要取「參考圖本身也完全不透明」的髮緣，否則髮緣抗鋸齒的
+    # 低 alpha 尾巴會夾在髮量與延伸段之間，封裝時被低 alpha 清理挖成一條直線縫。
+    opaque_hair = solid_hair & (alpha >= HAIR_EXTENSION_EDGE_ALPHA_MIN)
+    notch = _ear_notches(solid_hair, warm_skin & (alpha > 0), face_core_of(alignment, warped.shape[:2]))
+    if notch.any():
+        layer = _fill_from_nearest_hair(layer, opaque_hair, notch)
     under = _hair_under_ornament(solid_hair, ornament, halo, excluded, alpha, alignment)
     if under.any():
-        # 延伸起點要取「參考圖本身也完全不透明」的髮緣，否則髮緣抗鋸齒的低 alpha 尾巴
-        # 會夾在髮量與延伸段之間，封裝時被低 alpha 清理挖成一條直線縫。
-        layer = _extend_hair_rightwards(
-            layer, solid_hair & (alpha >= HAIR_EXTENSION_EDGE_ALPHA_MIN), under
+        # 只延伸到銀色／藍色亮芯的右緣：亮芯完全不透明，補髮永遠藏在底下；再往外是
+        # 描邊與珠穗的半透明邊，補髮會在旁邊露出深色。
+        brightest = rgb.max(axis=2)
+        core = ornament.astype(bool) & (
+            (brightest > ORNAMENT_SILVER_MIN)
+            | ((rgb[:, :, 0] > rgb[:, :, 2] + ORNAMENT_BLUE_MARGIN) & (rgb[:, :, 0] > ORNAMENT_BLUE_MIN))
         )
+        # 亮芯再內縮幾像素：流蘇兩端是圓角，補髮不能從圓角旁邊探出來。
+        core = cv2.erode(
+            core.astype(np.uint8),
+            np.ones((ORNAMENT_CORE_INSET_PX, ORNAMENT_CORE_INSET_PX), np.uint8),
+        ).astype(bool)
+        layer = _extend_hair_rightwards(layer, opaque_hair, under, core)
+    softened = cv2.GaussianBlur(layer[:, :, 3], (0, 0), HAIR_EDGE_SOFTEN_SIGMA)
+    layer[:, :, 3] = np.minimum(layer[:, :, 3], softened)
     layer[layer[:, :, 3] == 0] = 0
     return layer, {
         "opaque_pixels": int((layer[:, :, 3] > 0).sum()),
-        "filled_hole_pixels": int(holes.sum()),
         "under_ornament_pixels": int(under.sum()),
+        "ear_notch_pixels": int(notch.sum()),
     }
+
+
+def face_core_of(alignment: ReferenceAlignment, shape: tuple[int, int]) -> np.ndarray:
+    center_x, eye_y = alignment.eye_center
+    eye_distance = alignment.eye_distance
+    return _ellipse(
+        shape,
+        (center_x, eye_y + FACE_CORE_CENTER_Y_FACTOR * eye_distance),
+        (FACE_CORE_RADIUS_X_FACTOR * eye_distance, FACE_CORE_RADIUS_Y_FACTOR * eye_distance),
+    )
+
+
+def _ear_notches(solid: np.ndarray, warm: np.ndarray, face_core: np.ndarray) -> np.ndarray:
+    """被髮量包住的小塊暖色皮膚（v4 的耳朵），要補成頭髮。"""
+    closed = cv2.morphologyEx(
+        solid.astype(np.uint8),
+        cv2.MORPH_CLOSE,
+        cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (EAR_NOTCH_CLOSE_KERNEL, EAR_NOTCH_CLOSE_KERNEL)),
+    ).astype(bool)
+    candidate = (warm & ~face_core).astype(np.uint8)
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(candidate, 8)
+    notch = np.zeros(solid.shape, bool)
+    for index in range(1, count):
+        area = int(stats[index, cv2.CC_STAT_AREA])
+        if area > EAR_NOTCH_MAX_AREA:
+            continue
+        member = labels == index
+        if (member & closed).sum() >= EAR_NOTCH_INSIDE_RATIO * area:
+            notch |= member
+    return notch
+
+
+def _inward_hair_colour(
+    layer: np.ndarray, rows: np.ndarray, source: np.ndarray, inward: np.ndarray
+) -> np.ndarray:
+    """髮緣本身混有皮膚的抗鋸齒色；往髮量內側退幾個像素取一小段的平均色。"""
+    width = layer.shape[1]
+    samples = np.stack(
+        [
+            layer[rows, np.clip(source + inward * offset, 0, width - 1), :3].astype(np.float32)
+            for offset in range(
+                HAIR_FILL_SAMPLE_INSET_PX, HAIR_FILL_SAMPLE_INSET_PX + HAIR_EXTENSION_SAMPLE_PX
+            )
+        ]
+    )
+    return samples.mean(axis=0).astype(np.uint8)
+
+
+def _fill_from_nearest_hair(layer: np.ndarray, solid: np.ndarray, target: np.ndarray) -> np.ndarray:
+    """把 ``target`` 每一列用最近的左側或右側髮色平塗成頭髮。"""
+    height, width = solid.shape
+    columns = np.arange(width)[None, :]
+    left_hair = np.maximum.accumulate(np.where(solid, columns, 0), axis=1)
+    right_hair = np.minimum.accumulate(np.where(solid, columns, width)[:, ::-1], axis=1)[:, ::-1]
+    output = layer.copy()
+    rows, cols = np.nonzero(target)
+    left = left_hair[rows, cols]
+    right = right_hair[rows, cols]
+    use_left = (cols - left) <= (right - cols)
+    source = np.where(use_left, left, np.minimum(right, width - 1))
+    valid = (source > 0) & (source < width) & solid[rows, np.clip(source, 0, width - 1)]
+    rows, cols, source = rows[valid], cols[valid], source[valid]
+    output[rows, cols, :3] = _inward_hair_colour(layer, rows, source, np.where(use_left[valid], -1, 1))
+    output[rows, cols, 3] = 255
+    # 逐列取色會留下橫紋；補丁區域只做垂直方向的平滑，讓它像一片被蓋住的髮面。
+    # 平滑只在「髮量＋補丁」的遮罩內取樣，避免把旁邊的皮膚色混進來變成褐色斑塊。
+    filled = np.zeros(solid.shape, bool)
+    filled[rows, cols] = True
+    inside = (solid | filled).astype(np.float32)
+    rgb = output[:, :, :3].astype(np.float32) * inside[:, :, None]
+    blurred = cv2.GaussianBlur(rgb, (1, EAR_NOTCH_VERTICAL_BLUR_PX), 0)
+    weight = cv2.GaussianBlur(inside, (1, EAR_NOTCH_VERTICAL_BLUR_PX), 0)
+    normalised = blurred / np.maximum(weight, 1e-3)[:, :, None]
+    output[filled, :3] = np.clip(normalised[filled], 0, 255).astype(np.uint8)
+    return output
 
 
 def _hair_under_ornament(
@@ -440,27 +568,33 @@ def _hair_under_ornament(
     return covered & reach & tassel & ~other_exclusions
 
 
-def _extend_hair_rightwards(layer: np.ndarray, solid: np.ndarray, under: np.ndarray) -> np.ndarray:
+def _extend_hair_rightwards(
+    layer: np.ndarray, solid: np.ndarray, under: np.ndarray, ornament_extent: np.ndarray
+) -> np.ndarray:
     """把髮量向右延伸到流蘇遠側，填進 ``under`` 所在的列。
 
-    每一列從最靠右的髮像素起、一路填到該列 ``under`` 的最右欄（連背景縫一起補），
-    像素以髮緣為軸鏡射取樣，保留近乎垂直的髮絲紋理。
+    每一列從最靠右的髮像素起、一路填到該列髮飾（含描邊）的最右欄——連背景縫一起補，
+    但不超出髮飾本身，否則平塗會在流蘇旁露出一塊深色（2026-09-05 量測）。
     """
     height, width = solid.shape
     columns = np.arange(width)[None, :]
     last_hair = np.maximum.accumulate(np.where(solid, columns, 0), axis=1)
     row_has_under = under.any(axis=1)
-    right_limit = np.where(under, columns, -1).max(axis=1)
+    right_limit = np.where(under & ornament_extent, columns, -1).max(axis=1)
+    row_has_under &= right_limit >= 0
+    # 只在亮芯夠寬的列補（流蘇本體與圓珠）；小墜、珠鏈那幾列的亮芯只有幾個像素，
+    # 補髮會從旁邊探出一條深色線。
+    row_has_under &= ornament_extent.sum(axis=1) >= HAIR_EXTENSION_MIN_CORE_WIDTH_PX
     output = layer.copy()
     for row in np.nonzero(row_has_under)[0]:
         edge = int(last_hair[row, right_limit[row]])
         if edge <= 0 or right_limit[row] - edge > HAIR_UNDER_ORNAMENT_REACH_PX:
             continue
-        cols = np.arange(edge + 1, right_limit[row] + 1)
-        source = np.clip(2 * edge - cols, 0, edge)
-        source = np.where(solid[row, source], source, edge)
-        output[row, cols, :3] = layer[row, source, :3]
-        output[row, cols, 3] = 255
+        # 用髮緣往內 HAIR_EXTENSION_SAMPLE_PX 的平均髮色平塗：這段永遠在流蘇底下，
+        # 鏡射紋理反而會在髮飾拿掉時露出重複的弧紋。
+        sample = layer[row, max(0, edge - HAIR_EXTENSION_SAMPLE_PX) : edge + 1, :3]
+        output[row, edge + 1 : right_limit[row] + 1, :3] = sample.mean(axis=0).astype(np.uint8)
+        output[row, edge + 1 : right_limit[row] + 1, 3] = 255
     return output
 
 

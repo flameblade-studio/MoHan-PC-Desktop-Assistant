@@ -70,37 +70,37 @@
     "docs/media/portraits/gentle_smile_front.png": {
       "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
       "generation": 2,
-      "sha256": "43c887b2db64120f21261fa975a797b288b8db77ba89cd62fb2dd951f9741e0a",
+      "sha256": "fe800f146aae82eab71ad982b50c8d5477c82f83dc51811c7d1dae165aaa716e",
       "auto_regenerable": true
     },
     "docs/media/portraits/mock_hit_front.png": {
       "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
       "generation": 2,
-      "sha256": "02e21b6b2d99b770c615849ac8f34f3daacbd536354d8420175d70f459d7513c",
+      "sha256": "49846e9f9842d72d72fc70ea71b863d7606c8b9921aa0e1f8c4bcfb1d8f6b146",
       "auto_regenerable": true
     },
     "docs/media/portraits/proud_front.png": {
       "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
       "generation": 2,
-      "sha256": "ee29f1f16c55af4747c30da3daa9a9b3505d0912335eb4cdf421c12592ba3d86",
+      "sha256": "2a37eee525693c3e386d379d926b58f8099d9803ca5ced27797f6cefd67a4174",
       "auto_regenerable": true
     },
     "docs/media/portraits/shy_cute_front.png": {
       "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
       "generation": 2,
-      "sha256": "c49b6a3da511b2c77cd12a3a91c351bf31ad6440861e5cae16c5cc54ad632ac6",
+      "sha256": "cf8db0161d869d4fdff57b59387519e91ea09ca1f348182a5f1c7d6fddb2e08f",
       "auto_regenerable": true
     },
     "docs/media/portraits/thinking_front.png": {
       "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
       "generation": 2,
-      "sha256": "0cf79c81394f1588d58293795e06c23cc5d7fa1defe7e34d9a1aa3479dc9860e",
+      "sha256": "6648f4f17e1f2d27f53149b17c541771b0dcbe91f8e33714dadb0e09335dd9c8",
       "auto_regenerable": true
     },
     "docs/media/portraits/worried_front.png": {
       "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
       "generation": 2,
-      "sha256": "b5481ec4f24a57b540df07ecfc9b08a98476d25e1edb1aff578c24ad9e4572ac",
+      "sha256": "8d48474fc8e71374324d16f4fabe208a526920c64e8fb363b22c5ac603989285",
       "auto_regenerable": true
     },
     "docs/media/security-permissions.png": {

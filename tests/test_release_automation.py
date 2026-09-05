@@ -174,28 +174,28 @@ CANONICAL_HALF_BODY_SHA256 = (
 # docs/media/portraits/idle_front.png: generation-2 composite (official pack +
 # classic makeup) that installer artwork and the taskbar icon derive from, 2026-09-05.
 MARKETING_IDLE_PORTRAIT_SHA256 = (
-    "3330bcbad4012b815a77b6e25343f9846c93e7569c00fb0c0568f8ea294518e0"
+    "55a7caf8fc8578c0876eb0250f7fe2b1cf8f930a603bfb2b2660f84bac7bcdef"
 )
 # The attentive dashboard representative is also materialized so every
 # composed half-body portrait consumer has a hash-pinned output, 2026-09-05.
 MARKETING_ATTENTIVE_PORTRAIT_SHA256 = (
-    "f3dc10c5cd30ccb1b30a7f7178ec26005ec14acc6a6a1e493dbb54c7ba58795e"
+    "ddac97d2ffe750bec1044795884ae4fe5dc251186ded3224e3a3f1b459c19120"
 )
 # installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-05.
 WIZARD_HERO_SHA256 = (
-    "339161df6b6ad933e2718eac8e07a72b6f612f514576f8b7b95d1d1e8f7b98db"
+    "a2327f0aa9c75afd3fecdcf8bd881323eff9125818bbacbdefd6061b91f350c5"
 )
 # installer/artwork/wizard-small.png: built from the generation-2 composite, 2026-09-05.
 WIZARD_SMALL_SHA256 = (
-    "2a9c242453319cd0735c4a513af52691cd60d5f95aac4dfc88f73884235927f7"
+    "c67df1c107ae4e44ce835350ca319666b4e5c535459f92377edb9095f97bf1bd"
 )
 # assets/mohan-taskbar-icon.png: built from the generation-2 composite, 2026-09-05.
 TASKBAR_ICON_PNG_SHA256 = (
-    "9ab5e2b875645b32966c5d82fea57cd4f82c8df9261f5faba077c77ff2171dc1"
+    "cde6e458c734b7d795ec0a2f1b126bf3a149dd31652ceeca276fa9bbf6ab8098"
 )
 # assets/mohan-halfbody.ico: built from the generation-2 composite, 2026-09-05.
 WINDOWS_ICON_SHA256 = (
-    "5212068e057f967a48dae609307b64276dcd19b60fa4a9bcf31e78a00418cf34"
+    "dff6bc06a7ec7bccf1b4d53ffec2a01e85bbcabafe94118655fd0451fc4a941a"
 )
 # The README expression cards, the canonical idle portrait, and the attentive
 # dashboard representative, all rendered composed.
@@ -231,22 +231,22 @@ README_AUTO_MEDIA_SHA256 = {
         "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb"
     ),
     "docs/media/portraits/gentle_smile_front.png": (
-        "43c887b2db64120f21261fa975a797b288b8db77ba89cd62fb2dd951f9741e0a"
+        "fe800f146aae82eab71ad982b50c8d5477c82f83dc51811c7d1dae165aaa716e"
     ),
     "docs/media/portraits/mock_hit_front.png": (
-        "02e21b6b2d99b770c615849ac8f34f3daacbd536354d8420175d70f459d7513c"
+        "49846e9f9842d72d72fc70ea71b863d7606c8b9921aa0e1f8c4bcfb1d8f6b146"
     ),
     "docs/media/portraits/proud_front.png": (
-        "ee29f1f16c55af4747c30da3daa9a9b3505d0912335eb4cdf421c12592ba3d86"
+        "2a37eee525693c3e386d379d926b58f8099d9803ca5ced27797f6cefd67a4174"
     ),
     "docs/media/portraits/shy_cute_front.png": (
-        "c49b6a3da511b2c77cd12a3a91c351bf31ad6440861e5cae16c5cc54ad632ac6"
+        "cf8db0161d869d4fdff57b59387519e91ea09ca1f348182a5f1c7d6fddb2e08f"
     ),
     "docs/media/portraits/thinking_front.png": (
-        "0cf79c81394f1588d58293795e06c23cc5d7fa1defe7e34d9a1aa3479dc9860e"
+        "6648f4f17e1f2d27f53149b17c541771b0dcbe91f8e33714dadb0e09335dd9c8"
     ),
     "docs/media/portraits/worried_front.png": (
-        "b5481ec4f24a57b540df07ecfc9b08a98476d25e1edb1aff578c24ad9e4572ac"
+        "8d48474fc8e71374324d16f4fabe208a526920c64e8fb363b22c5ac603989285"
     ),
     "docs/media/security-permissions.png": (
         "37c6f232c6257387370c6581fb98025f1324a8c675cfaa7a1ebf68556fc7f5a2"
