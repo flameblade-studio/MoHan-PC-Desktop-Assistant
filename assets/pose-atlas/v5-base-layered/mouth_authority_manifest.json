@@ -34,67 +34,67 @@
     "yaw-090-pitch+00": {
       "trusted": true,
       "mouth_center_x": 568.2014,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw-075-pitch+00": {
       "trusted": true,
       "mouth_center_x": 547.5912,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw-060-pitch+00": {
       "trusted": true,
       "mouth_center_x": 553.7909,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw-045-pitch+00": {
       "trusted": true,
       "mouth_center_x": 504.2656,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw-030-pitch+00": {
       "trusted": true,
       "mouth_center_x": 492.3796,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw-015-pitch+00": {
       "trusted": true,
       "mouth_center_x": 486.4762,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw+000-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 518.0557,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "mouth_center_x": 520.9536,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw+015-pitch+00": {
       "trusted": true,
       "mouth_center_x": 491.211,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw+030-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 490.3854,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "mouth_center_x": 476.8539,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw+045-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 480.9756,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "mouth_center_x": 482.9779,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw+060-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 484.718,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "mouth_center_x": 490.3452,
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw+075-pitch+00": {
       "trusted": true,
       "mouth_center_x": 474.0033,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw+090-pitch+00": {
       "trusted": true,
       "mouth_center_x": 462.5233,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-02)"
+      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
     },
     "yaw+105-pitch+00": {
       "trusted": false,

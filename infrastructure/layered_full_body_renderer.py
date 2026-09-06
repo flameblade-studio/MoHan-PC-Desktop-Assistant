@@ -22,7 +22,7 @@ lazy from domain.constants import (
     POSE_ATLAS_LAYERED_ROOT_NAME,
     POSE_ATLAS_ROOT_NAME,
 )
-lazy from domain.face_rig import FaceMotionFrame, Viseme
+lazy from domain.face_rig import EyeState, FaceMotionFrame, Viseme, eye_state_for_blink
 lazy from infrastructure.layered_full_body_assets import (
     LayeredFullBodyManifest,
     LayeredFullBodyView,
@@ -171,7 +171,16 @@ class LayeredFullBodyRenderer:
         ):
             self._paint_visible_cavity(result, view, motion.mouth)
         if self._outfit_overlay is not None:
-            result = self._outfit_overlay.apply(result, view_id)
+            eye_state = eye_state_for_blink(motion.expression_shape.blink)
+            if eye_state is not EyeState.REST:
+                result = self._outfit_overlay.apply(
+                    result, view_id, suppress_makeup_slots=(
+                        frozenset({"eyes"}) if eye_state is EyeState.CLOSED or eye_state in view.blink_frames else frozenset()
+                    ),
+                    eye_state="half" if eye_state is EyeState.HALF else "closed",
+                )
+            else:
+                result = self._outfit_overlay.apply(result, view_id)
 
         # Breathing moves the atomically composed character. Moving only the
         # body below stationary hair and face layers creates visible seams.
@@ -299,7 +308,6 @@ class LayeredFullBodyRenderer:
         view: LayeredFullBodyView,
     ) -> None:
         """Colour-register only authored cut-out boundaries to the view authority."""
-
         region = self._seam_region_cache.get(view.view_id)
         if region is None:
             region = QRegion()
@@ -335,6 +343,7 @@ class LayeredFullBodyRenderer:
             return
         painter = QPainter(target)
         painter.setClipRegion(region)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Source)
         painter.drawPixmap(0, 0, authority)
         painter.end()
 
@@ -344,7 +353,6 @@ class LayeredFullBodyRenderer:
         view: LayeredFullBodyView,
     ) -> None:
         """Remove broad skin-cutout artefacts without replacing body layers."""
-
         region = self._face_region_cache.get(view.view_id)
         if region is None:
             region = QRegion()
@@ -365,6 +373,7 @@ class LayeredFullBodyRenderer:
             return
         painter = QPainter(target)
         painter.setClipRegion(region)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Source)
         painter.drawPixmap(0, 0, authority)
         painter.end()
 
@@ -423,6 +432,18 @@ class LayeredFullBodyRenderer:
         """Re-apply blink and gaze after authority restoration, mask-confined."""
 
         expression = motion.expression_shape
+        eye_state = eye_state_for_blink(expression.blink)
+        authored_path = view.blink_frames.get(eye_state)
+        if view.blink_frames and eye_state is not EyeState.REST and authored_path is None:
+            raise ValueError(f"Incomplete authored eyelid states: {view.view_id}")
+        if authored_path is not None:
+            authored = self._cached_pixmap(authored_path)
+            if authored.isNull():
+                raise ValueError(f"Unreadable authored eyelid frame: {authored_path.name}")
+            painter = QPainter(target)
+            painter.drawPixmap(0, 0, authored)
+            painter.end()
+            return
         gaze_dx = round(float(motion.gaze_x) * IRIS_GAZE_SCALE_X)
         gaze_dy = round(float(motion.gaze_y) * IRIS_GAZE_SCALE_Y)
         if gaze_dx or gaze_dy:

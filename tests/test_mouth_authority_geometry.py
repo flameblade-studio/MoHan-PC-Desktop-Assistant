@@ -20,7 +20,7 @@ lazy from infrastructure.mouth_geometry import inward_lerped_u_layer
 # 2026-09-02: the runtime switched to the generation-2 pack
 # (v5-base-layered); its trusted yaw+000 centre, measured by the same
 # alpha-weighted lip centroid method, is 518.0557 (v4-layered was 516.8029).
-EXPECTED_YAW000_CENTER_X = 518.0557
+EXPECTED_YAW000_CENTER_X = 520.9536
 OPAQUE_ALPHA = 255
 _APP = QApplication.instance() or QApplication([])
 

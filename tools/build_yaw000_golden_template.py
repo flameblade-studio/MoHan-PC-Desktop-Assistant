@@ -513,7 +513,8 @@ def build(
         "face_visible": face_visible,
         "authority": {
             "path": str(authority_path), "sha256": _sha256(authority_path),
-            "qualification": "user-approved, Pillow RGBA, alpha-clean v3",
+            "qualification": "RGBA source; visual approval must be verified separately",
+            "visual_approval_established_by_tool": False,
         },
         "registration": {"method": "alpha-bbox affine mask transfer", "matrix": matrix.tolist()},
         "actions": {

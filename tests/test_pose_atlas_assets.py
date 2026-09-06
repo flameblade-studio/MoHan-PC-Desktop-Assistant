@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import os
 lazy import sys
+lazy from itertools import product
 lazy from pathlib import Path
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
@@ -18,6 +19,7 @@ lazy from domain.face_rig import (
 )
 lazy from application.full_body_render_adapter import AUTHORED_FULL_BODY_SLOT
 lazy from domain.constants import (
+    FULL_BODY_LAYER_Z_ORDER,
     POSE_ATLAS_GENERATION,
     POSE_ATLAS_LAYERED_RELATIVE_ROOT,
     POSE_ATLAS_LAYERED_ROOT_NAME,
@@ -29,6 +31,13 @@ lazy from presentation.pose_atlas_assets import PoseAtlasAssets
 EXPECTED_GENERATION = 2
 VIEW_RING_COUNT = 24
 FULL_BODY_LAYER_COUNT = 25
+REGISTERED_CONTROL_VIEWS = (
+    "yaw+000-pitch+00", "yaw+030-pitch+00", "yaw+045-pitch+00",
+)
+REGISTERED_CONTROL_LAYERS = (
+    "blink_half", "blink_closed", "body_outline",
+    "visible_hand_left", "visible_hand_right",
+)
 
 
 def _neutral() -> FaceMotionFrame:
@@ -55,9 +64,19 @@ def run() -> None:
     root = repo / POSE_ATLAS_RELATIVE_ROOT
     assert len(tuple(root.glob("yaw*-pitch+00.png"))) == VIEW_RING_COUNT
     layered = repo / POSE_ATLAS_LAYERED_RELATIVE_ROOT
-    assert len(tuple(layered.glob("yaw*-pitch+00_*.png"))) == (
-        VIEW_RING_COUNT * FULL_BODY_LAYER_COUNT
-    )
+    # Keep the complete 600-layer contract; separately enumerate every authored
+    # control sidecar so neither missing layers nor unexpected files can pass.
+    expected_layers = {
+        f"{path.stem}_{name}.png"
+        for path, name in product(root.glob("yaw*-pitch+00.png"), FULL_BODY_LAYER_Z_ORDER)
+    }
+    assert len(expected_layers) == VIEW_RING_COUNT * FULL_BODY_LAYER_COUNT
+    expected_controls = {
+        f"{view}_{name}.png"
+        for view, name in product(REGISTERED_CONTROL_VIEWS, REGISTERED_CONTROL_LAYERS)
+    }
+    actual_layers = {path.name for path in layered.glob("yaw*-pitch+00_*.png")}
+    assert actual_layers == expected_layers | expected_controls
     assets = PoseAtlasAssets(root, image_size=465)
     assert assets.enabled
     assert assets.release_eligible

@@ -198,14 +198,15 @@ def verify_makeup_layers(archive_path: Path, regions: frozendict[str, MakeupSafe
     with zipfile.ZipFile(archive_path) as archive:
         for item in makeup_items:
             for variant in item.variants:
-                for silhouette, assets in variant.poses.items():
-                    region = table[silhouette]
-                    for asset in assets:
-                        if makeup_layer_escapes(archive.read(asset.path), region, asset.slot):
-                            raise OutfitPackError(
-                                f"Makeup layer {asset.path} ({item.item_id}/{variant.variant_id}) paints outside "
-                                f"the {asset.slot} safe region of {silhouette}."
-                            )
+                for poses in (variant.poses, *variant.eye_states.values()):
+                    for silhouette, assets in poses.items():
+                        region = table[silhouette]
+                        for asset in assets:
+                            if makeup_layer_escapes(archive.read(asset.path), region, asset.slot):
+                                raise OutfitPackError(
+                                    f"Makeup layer {asset.path} ({item.item_id}/{variant.variant_id}) paints outside "
+                                    f"the {asset.slot} safe region of {silhouette}."
+                                )
 
 
 def clamp_makeup_intensity(value: object) -> float:
@@ -220,6 +221,9 @@ def clamp_makeup_intensity(value: object) -> float:
 
 _LAST_VALID_MAKEUP_INTENSITIES: dict[Path, float] = {}
 _MAKEUP_READ_WARNED: set[Path] = set()
+_LAST_VALID_SLOT_INTENSITIES: dict[Path, frozendict[str, float]] = {}
+_SLOT_READ_WARNED: set[Path] = set()
+DEFAULT_SLOT_INTENSITIES = frozendict({slot: 1.0 for slot in MAKEUP_SLOTS})
 
 
 def _makeup_store_key(store: Path) -> Path:
@@ -295,11 +299,64 @@ def _atomic_json(path: Path, payload: object) -> None:
         temporary_path.unlink(missing_ok=True)
 
 
+def read_makeup_slot_intensities(
+    store: Path, notify: Callable[[str], None] | None = None,
+) -> frozendict[str, float]:
+    """Read optional per-slot multipliers; legacy profiles retain all defaults."""
+    store = _makeup_store_key(store)
+    previous = _LAST_VALID_SLOT_INTENSITIES.get(store, DEFAULT_SLOT_INTENSITIES)
+    try:
+        path = store / MAKEUP_STATE_FILE
+        if not path.exists():
+            return previous
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(payload, dict):
+            raise ValueError("Makeup state must be an object")
+        slots = payload.get("slot_intensities", {})
+        if not isinstance(slots, dict) or set(slots) - MAKEUP_SLOTS:
+            raise ValueError("Invalid makeup slots")
+        values = dict(DEFAULT_SLOT_INTENSITIES)
+        for slot, value in slots.items():
+            if isinstance(value, bool) or not isfinite(float(value)):
+                raise ValueError("Invalid makeup slot intensity")
+            values[slot] = clamp_makeup_intensity(value)
+    except (OSError, UnicodeError, ValueError, TypeError):
+        if store not in _SLOT_READ_WARNED and notify is not None:
+            notify(MAKEUP_READ_FAILURE_MESSAGE)
+            _SLOT_READ_WARNED.add(store)
+        return previous
+    result = frozendict(values)
+    _LAST_VALID_SLOT_INTENSITIES[store] = result
+    _SLOT_READ_WARNED.discard(store)
+    return result
+
+
+def _makeup_state_payload(intensity: float, slots: frozendict[str, float]) -> dict:
+    payload = {"intensity": intensity}
+    if slots != DEFAULT_SLOT_INTENSITIES:
+        payload["slot_intensities"] = dict(slots)
+    return payload
+
+
+def write_makeup_slot_intensity(store: Path, slot: str, value: object) -> float:
+    """Change one detail without resetting global intensity or another slot."""
+    if slot not in MAKEUP_SLOTS:
+        raise ValueError(f"Unknown makeup slot: {slot}")
+    store = _makeup_store_key(store)
+    slots = dict(read_makeup_slot_intensities(store))
+    slots[slot] = clamp_makeup_intensity(value)
+    selected = frozendict(slots)
+    _atomic_json(store / MAKEUP_STATE_FILE, _makeup_state_payload(read_makeup_intensity(store), selected))
+    _LAST_VALID_SLOT_INTENSITIES[store] = selected
+    _SLOT_READ_WARNED.discard(store)
+    return selected[slot]
+
+
 def write_makeup_intensity(store: Path, value: object) -> float:
     """Persist the intensity atomically next to active.json; returns the clamped value."""
     intensity = clamp_makeup_intensity(value)
     store = _makeup_store_key(store)
-    _atomic_json(store / MAKEUP_STATE_FILE, {"intensity": intensity})
+    _atomic_json(store / MAKEUP_STATE_FILE, _makeup_state_payload(intensity, read_makeup_slot_intensities(store)))
     _LAST_VALID_MAKEUP_INTENSITIES[store] = intensity
     _MAKEUP_READ_WARNED.discard(store)
     return intensity

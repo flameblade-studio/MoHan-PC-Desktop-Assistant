@@ -289,25 +289,37 @@
       "yaw_degrees": -15
     },
     {
-      "hand_inference": {
-        "augmentations_used": [
-          "rotate-clockwise"
-        ],
-        "confidences": [
-          0.904375,
-          0.963728
-        ],
-        "observation_count": 2,
-        "occluded_sides": [],
-        "visible_sides": [
-          "left",
-          "right"
-        ]
-      },
-      "normalized_sha256": "42474a7f425b7f61ad9afd37963638ca3116880a204a6e97d7abf86be2a0bef7",
-      "source_sha256": "4bae782f8db919ec627dfdfde49a9990ec281a6e9ae029f3aa7e45e4d658a8b9",
       "view_id": "yaw+000-pitch+00",
-      "yaw_degrees": 0
+      "yaw_degrees": 0,
+      "source_sha256": "db4a4d3ce160fab608bdfe6a45c5116739e2a1f8e6bceb26b68c38e31cea3af7",
+      "normalized_sha256": "db4a4d3ce160fab608bdfe6a45c5116739e2a1f8e6bceb26b68c38e31cea3af7",
+      "source_stage": "yaw000-installed-blink-makeup-01",
+      "registration": "same_canvas_authority_copy",
+      "visual_acceptance": "owner_approved_current_materials_and_incremental_integration_2026-09-06",
+      "hand_inference": {
+        "status": "not_rerun_for_this_revision"
+      },
+      "previous_revision": {
+        "hand_inference": {
+          "augmentations_used": [
+            "rotate-clockwise"
+          ],
+          "confidences": [
+            0.904375,
+            0.963728
+          ],
+          "observation_count": 2,
+          "occluded_sides": [],
+          "visible_sides": [
+            "left",
+            "right"
+          ]
+        },
+        "normalized_sha256": "42474a7f425b7f61ad9afd37963638ca3116880a204a6e97d7abf86be2a0bef7",
+        "source_sha256": "4bae782f8db919ec627dfdfde49a9990ec281a6e9ae029f3aa7e45e4d658a8b9",
+        "view_id": "yaw+000-pitch+00",
+        "yaw_degrees": 0
+      }
     },
     {
       "hand_inference": {
@@ -332,70 +344,106 @@
       "yaw_degrees": 15
     },
     {
-      "hand_inference": {
-        "augmentations_used": [
-          "rotate-clockwise",
-          "rotate-counterclockwise"
-        ],
-        "confidences": [
-          0.899229,
-          0.982897
-        ],
-        "observation_count": 2,
-        "occluded_sides": [],
-        "visible_sides": [
-          "left",
-          "right"
-        ]
-      },
-      "normalized_sha256": "2226afbab0406c310e3cb422598396cd97ab29f15f6be88105756591210e6f62",
-      "source_sha256": "f060ddb62d8afe38d88777838477ab6e0d8b57974f2e8908a018e80b5339bd0e",
       "view_id": "yaw+030-pitch+00",
-      "yaw_degrees": 30
+      "yaw_degrees": 30,
+      "source_sha256": "29ed979887a1d7eea44b12df54a44511eb5d2fa585f0543173d479645b721138",
+      "normalized_sha256": "29ed979887a1d7eea44b12df54a44511eb5d2fa585f0543173d479645b721138",
+      "source_stage": "yaw030-installed-blink-makeup-17",
+      "registration": "same_canvas_authority_copy",
+      "visual_acceptance": "owner_approved_current_materials_and_incremental_integration_2026-09-06",
+      "hand_inference": {
+        "status": "not_rerun_for_this_revision"
+      },
+      "previous_revision": {
+        "hand_inference": {
+          "augmentations_used": [
+            "rotate-clockwise",
+            "rotate-counterclockwise"
+          ],
+          "confidences": [
+            0.899229,
+            0.982897
+          ],
+          "observation_count": 2,
+          "occluded_sides": [],
+          "visible_sides": [
+            "left",
+            "right"
+          ]
+        },
+        "normalized_sha256": "2226afbab0406c310e3cb422598396cd97ab29f15f6be88105756591210e6f62",
+        "source_sha256": "f060ddb62d8afe38d88777838477ab6e0d8b57974f2e8908a018e80b5339bd0e",
+        "view_id": "yaw+030-pitch+00",
+        "yaw_degrees": 30
+      }
     },
     {
-      "hand_inference": {
-        "augmentations_used": [
-          "native",
-          "rotate-clockwise"
-        ],
-        "confidences": [
-          0.855938,
-          0.984368
-        ],
-        "observation_count": 2,
-        "occluded_sides": [],
-        "visible_sides": [
-          "left",
-          "right"
-        ]
-      },
-      "normalized_sha256": "800b4bf758465c07fe692c5fa5aa66bae96c9fce9b43a6e14a3ca7b57986ba07",
-      "source_sha256": "b63047a761173da035116362e0bcf8bbcb1978e0595cd265fdb1edc241ab10f0",
       "view_id": "yaw+045-pitch+00",
-      "yaw_degrees": 45
+      "yaw_degrees": 45,
+      "source_sha256": "d518bd16dd7b6534867043b291f64e488200d8559e83fbe0634927ee21179128",
+      "normalized_sha256": "d518bd16dd7b6534867043b291f64e488200d8559e83fbe0634927ee21179128",
+      "source_stage": "yaw045-installed-blink-makeup-01",
+      "registration": "same_canvas_authority_copy",
+      "visual_acceptance": "owner_approved_current_materials_and_incremental_integration_2026-09-06",
+      "hand_inference": {
+        "status": "not_rerun_for_this_revision"
+      },
+      "previous_revision": {
+        "hand_inference": {
+          "augmentations_used": [
+            "native",
+            "rotate-clockwise"
+          ],
+          "confidences": [
+            0.855938,
+            0.984368
+          ],
+          "observation_count": 2,
+          "occluded_sides": [],
+          "visible_sides": [
+            "left",
+            "right"
+          ]
+        },
+        "normalized_sha256": "800b4bf758465c07fe692c5fa5aa66bae96c9fce9b43a6e14a3ca7b57986ba07",
+        "source_sha256": "b63047a761173da035116362e0bcf8bbcb1978e0595cd265fdb1edc241ab10f0",
+        "view_id": "yaw+045-pitch+00",
+        "yaw_degrees": 45
+      }
     },
     {
-      "hand_inference": {
-        "augmentations_used": [
-          "flip-horizontal",
-          "rotate-clockwise"
-        ],
-        "confidences": [
-          0.915931,
-          0.989187
-        ],
-        "observation_count": 2,
-        "occluded_sides": [],
-        "visible_sides": [
-          "left",
-          "right"
-        ]
-      },
-      "normalized_sha256": "6c5f49d96c195c67c339bf797b8a4a2f17bb3047cedc14c3f628c14c37fd17ed",
-      "source_sha256": "9cbf35560c3917fa78c2730021354d2294239fa34b3447c1281354f0346800b1",
       "view_id": "yaw+060-pitch+00",
-      "yaw_degrees": 60
+      "yaw_degrees": 60,
+      "source_sha256": "8c8a0a86b5e088b3278fe771a450897bcdd9cbafcf361f7214c9477c861033c1",
+      "normalized_sha256": "8c8a0a86b5e088b3278fe771a450897bcdd9cbafcf361f7214c9477c861033c1",
+      "source_stage": "formal-yaw060-promotion-03",
+      "registration": "same_canvas_authority_copy",
+      "visual_acceptance": "owner_authorized_normal_appearance_incremental_integration_2026-09-06",
+      "hand_inference": {
+        "status": "visual_five_digit_review; natural_occlusion_allowed"
+      },
+      "previous_revision": {
+        "hand_inference": {
+          "augmentations_used": [
+            "flip-horizontal",
+            "rotate-clockwise"
+          ],
+          "confidences": [
+            0.915931,
+            0.989187
+          ],
+          "observation_count": 2,
+          "occluded_sides": [],
+          "visible_sides": [
+            "left",
+            "right"
+          ]
+        },
+        "normalized_sha256": "6c5f49d96c195c67c339bf797b8a4a2f17bb3047cedc14c3f628c14c37fd17ed",
+        "source_sha256": "9cbf35560c3917fa78c2730021354d2294239fa34b3447c1281354f0346800b1",
+        "view_id": "yaw+060-pitch+00",
+        "yaw_degrees": 60
+      }
     },
     {
       "hand_inference": {

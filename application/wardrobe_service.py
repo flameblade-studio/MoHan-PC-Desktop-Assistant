@@ -28,9 +28,11 @@ lazy from domain.outfit_pack_makeup import (
     ACTIVE_STATE_FILE,
     MAKEUP_STATE_FILE,
     read_makeup_intensity,
+    read_makeup_slot_intensities,
     select_builtin_makeup,
     verify_makeup_layers,
     write_makeup_intensity,
+    write_makeup_slot_intensity,
 )
 lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID, official_outfit_ensemble
 
@@ -344,6 +346,14 @@ class WardrobeService:
 
     def set_makeup_intensity(self, value: float) -> float:
         return write_makeup_intensity(self.install_root, value)
+
+    def makeup_slot_intensities(
+        self, notify: Callable[[str], None] | None = None,
+    ) -> frozendict[str, float]:
+        return read_makeup_slot_intensities(self.install_root, notify=notify)
+
+    def set_makeup_slot_intensity(self, slot: str, value: float) -> float:
+        return write_makeup_slot_intensity(self.install_root, slot, value)
 
     def autonomous_candidates(self) -> tuple[WardrobeCandidate, ...]:
         return tuple(

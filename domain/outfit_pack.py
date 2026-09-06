@@ -10,6 +10,7 @@ lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from tempfile import NamedTemporaryFile
 
+lazy from domain.makeup_eye_states import parse_makeup_eye_states, validated_makeup_intensity
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain import outfit_pack_official
 lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel
@@ -137,6 +138,7 @@ class AppearanceVariant:
     hair_rules: frozendict[str, str] | None = None
     attachment_contracts: frozendict[str, str] | None = None
     intensity: float = 1.0
+    eye_states: frozendict[str, frozendict[str, tuple[AppearanceAsset, ...]]] = frozendict()
 
 
 @dataclass(frozen=True, slots=True)
@@ -445,10 +447,8 @@ def _handheld_variant(value: object, archive: zipfile.ZipFile, names: set[str]) 
 
 def _makeup_variant(value: object, archive: zipfile.ZipFile, names: set[str]) -> AppearanceVariant:
     """Three full-canvas registered layers per silhouette plus an optional authored intensity."""
-    variant_id, display = _variant_base(value, {"intensity"} if "intensity" in value else set())
-    intensity = value.get("intensity", 1.0)
-    if isinstance(intensity, bool) or not isinstance(intensity, (int, float)) or not 0.0 <= intensity <= 1.0:
-        raise OutfitPackError("Makeup intensity must be a number between 0 and 1.")
+    variant_id, display = _variant_base(value, {key for key in ("intensity", "eye_states") if key in value})
+    intensity = validated_makeup_intensity(value.get("intensity", 1.0))
     poses = _pose_assets(value["poses"], MAKEUP_SLOTS, archive, names)
     for silhouette, assets in poses.items():
         canvas = MAKEUP_CANVASES["full-body" if silhouette in POSE_ATLAS_SILHOUETTES else "half-body"]
@@ -456,7 +456,8 @@ def _makeup_variant(value: object, archive: zipfile.ZipFile, names: set[str]) ->
             raise OutfitPackError(f"Makeup silhouette {silhouette!r} requires exactly the eyes, cheeks and lips layers.")
         if any((asset.width, asset.height, asset.anchor_x, asset.anchor_y) != (*canvas, 0, 0) for asset in assets):
             raise OutfitPackError(f"Makeup layers for {silhouette!r} must cover the full {canvas[0]}x{canvas[1]} canvas at anchor 0,0.")
-    return AppearanceVariant(variant_id, display, poses, intensity=float(intensity))
+    parsed_states = parse_makeup_eye_states(value.get("eye_states", {}), lambda entries: _pose_assets(entries, frozenset({"eyes"}), archive, names))
+    return AppearanceVariant(variant_id, display, poses, intensity=float(intensity), eye_states=frozendict(parsed_states))
 
 
 def _item(value: object, category: str, archive: zipfile.ZipFile, names: set[str]) -> AppearanceItem:
@@ -646,15 +647,14 @@ def _appearance_items(
 
 
 def _declared_asset_paths(items: list[AppearanceItem]) -> list[str]:
-    return [
-        *(
-            asset.path
-            for item in items
-            for variant in item.variants
-            for assets in variant.poses.values()
-            for asset in assets
-        )
-    ]
+    return [*(
+        asset.path
+        for item in items
+        for variant in item.variants
+        for poses in (variant.poses, *variant.eye_states.values())
+        for assets in poses.values()
+        for asset in assets
+    )]
 
 
 def _validate_declared_assets(items: list[AppearanceItem], names: set[str]) -> None:

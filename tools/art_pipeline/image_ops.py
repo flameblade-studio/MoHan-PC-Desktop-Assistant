@@ -17,6 +17,8 @@ lazy from .constants import (
     RGBA_CHANNELS,
 )
 
+COORDINATE_MAP_DIMENSIONS = 2
+
 
 def ensure_rgba(image: np.ndarray) -> np.ndarray:
     """將 OpenCV 的 BGR/BGRA 陣列轉成連續的 BGRA uint8 陣列。"""
@@ -168,6 +170,26 @@ def _unpremultiply(premultiplied: np.ndarray) -> np.ndarray:
     rgb = np.clip(premultiplied[:, :, :3] * 255.0 / safe_alpha, 0.0, 255.0)
     result = np.dstack((rgb, alpha)).astype(np.uint8)
     return transparent_rgb_zero(result)
+
+
+def remap_rgba(image: np.ndarray, map_x: np.ndarray, map_y: np.ndarray) -> np.ndarray:
+    """Sample an explicit material map in premultiplied alpha, never the base face."""
+    if map_x.shape != map_y.shape or map_x.ndim != COORDINATE_MAP_DIMENSIONS:
+        raise ValueError("Coordinate maps must have identical two-dimensional shapes")
+    if not np.isfinite(map_x).all() or not np.isfinite(map_y).all():
+        raise ValueError("Coordinate maps must contain finite coordinates")
+    source = transparent_rgb_zero(image)
+    alpha = source[:, :, 3:4].astype(np.float32) / 255.0
+    premultiplied = np.dstack((source[:, :, :3] * alpha, alpha * 255.0))
+    mapped = cv2.remap(
+        premultiplied,
+        np.asarray(map_x, dtype=np.float32),
+        np.asarray(map_y, dtype=np.float32),
+        cv2.INTER_LINEAR,
+        borderMode=cv2.BORDER_CONSTANT,
+        borderValue=(0, 0, 0, 0),
+    )
+    return _unpremultiply(mapped)
 
 
 def flatten_on_magenta(image: np.ndarray) -> np.ndarray:
