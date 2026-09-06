@@ -50,6 +50,7 @@ CONTROL_LAYERS_BY_VIEW = frozendict({
         "body_outline", "visible_hand_left", "visible_hand_right",
     ),
     "yaw+165-pitch+00": ("body_outline",),
+    "yaw-105-pitch+00": ("body_outline",),
     "yaw-120-pitch+00": ("body_outline",),
     "yaw-135-pitch+00": ("body_outline",),
     "yaw-150-pitch+00": ("body_outline",),
@@ -98,6 +99,8 @@ def run() -> None:
     assert {path.name for path in hand_overlays.glob("*.png")} == {
         "yaw+165-pitch+00_left.png",
         "yaw+165-pitch+00_right.png",
+        "yaw-105-pitch+00_left.png",
+        "yaw-105-pitch+00_right.png",
         "yaw-120-pitch+00_left.png",
         "yaw-120-pitch+00_right.png",
         "yaw-135-pitch+00_left.png",
@@ -111,6 +114,7 @@ def run() -> None:
     }
     body_overlays = repo / "assets/pose-atlas/v5-body-overlays"
     assert {path.name for path in body_overlays.glob("*.png")} == {
+        "yaw-105-pitch+00.png",
         "yaw-120-pitch+00.png",
         "yaw-135-pitch+00.png",
         "yaw-150-pitch+00.png",
@@ -123,6 +127,7 @@ def run() -> None:
         / "mohan.official.blue-white-hanfu"
     )
     assert {path.name for path in official_silhouettes.glob("*.png")} == {
+        "yaw-105-pitch+00.png",
         "yaw-120-pitch+00.png",
         "yaw-135-pitch+00.png",
         "yaw-150-pitch+00.png",
