@@ -31,13 +31,26 @@ lazy from presentation.pose_atlas_assets import PoseAtlasAssets
 EXPECTED_GENERATION = 2
 VIEW_RING_COUNT = 24
 FULL_BODY_LAYER_COUNT = 25
-REGISTERED_CONTROL_VIEWS = (
-    "yaw+000-pitch+00", "yaw+030-pitch+00", "yaw+045-pitch+00",
-)
-REGISTERED_CONTROL_LAYERS = (
-    "blink_half", "blink_closed", "body_outline",
-    "visible_hand_left", "visible_hand_right",
-)
+CONTROL_LAYERS_BY_VIEW = frozendict({
+    "yaw+000-pitch+00": (
+        "blink_half", "blink_closed", "body_outline",
+        "visible_hand_left", "visible_hand_right",
+    ),
+    "yaw+030-pitch+00": (
+        "blink_half", "blink_closed", "body_outline",
+        "visible_hand_left", "visible_hand_right",
+    ),
+    "yaw+045-pitch+00": (
+        "blink_half", "blink_closed", "body_outline",
+        "visible_hand_left", "visible_hand_right",
+    ),
+    "yaw+060-pitch+00": ("blink_half", "blink_closed", "body_outline"),
+    "yaw+135-pitch+00": ("body_outline",),
+    "yaw+150-pitch+00": (
+        "body_outline", "visible_hand_left", "visible_hand_right",
+    ),
+    "yaw+165-pitch+00": ("body_outline",),
+})
 
 
 def _neutral() -> FaceMotionFrame:
@@ -71,12 +84,16 @@ def run() -> None:
         for path, name in product(root.glob("yaw*-pitch+00.png"), FULL_BODY_LAYER_Z_ORDER)
     }
     assert len(expected_layers) == VIEW_RING_COUNT * FULL_BODY_LAYER_COUNT
-    expected_controls = {
-        f"{view}_{name}.png"
-        for view, name in product(REGISTERED_CONTROL_VIEWS, REGISTERED_CONTROL_LAYERS)
-    }
+    expected_controls: set[str] = set()
+    for view, names in CONTROL_LAYERS_BY_VIEW.items():
+        expected_controls.update(f"{view}_{name}.png" for name in names)
     actual_layers = {path.name for path in layered.glob("yaw*-pitch+00_*.png")}
     assert actual_layers == expected_layers | expected_controls
+    hand_overlays = repo / "assets/pose-atlas/v5-hand-overlays"
+    assert {path.name for path in hand_overlays.glob("*.png")} == {
+        "yaw+165-pitch+00_left.png",
+        "yaw+165-pitch+00_right.png",
+    }
     assets = PoseAtlasAssets(root, image_size=465)
     assert assets.enabled
     assert assets.release_eligible

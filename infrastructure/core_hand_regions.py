@@ -26,7 +26,18 @@ def load_core_hand_regions(asset_root: Path) -> Callable[[str], QRegion] | None:
             Path(asset_root) / "assets/pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
         )
         prefix = HALF_BODY_RIGS.get(view_id, view_id)
-        paths = tuple(directory / f"{prefix}_visible_hand_{side}.png" for side in ("left", "right"))
+        overlay_directory = Path(asset_root) / "assets/pose-atlas/v5-hand-overlays"
+        overlay_paths = tuple(
+            overlay_directory / f"{view_id}_{side}.png" for side in ("left", "right")
+        )
+        paths = (
+            overlay_paths
+            if not half_body and any(path.exists() for path in overlay_paths)
+            else tuple(
+                directory / f"{prefix}_visible_hand_{side}.png"
+                for side in ("left", "right")
+            )
+        )
         if not any(path.exists() for path in paths):
             continue
         dimensions = (1254, 1254) if half_body else (1024, 1536)

@@ -13,6 +13,7 @@ lazy from domain.outfit_pack import OutfitPackError
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
 
 VIEW = "yaw+030-pitch+00"
+OVERLAY_VIEW = "yaw+165-pitch+00"
 
 
 def _pair(root: Path, *, opaque: bool = False) -> tuple[Path, Path]:
@@ -23,6 +24,18 @@ def _pair(root: Path, *, opaque: bool = False) -> tuple[Path, Path]:
         image = QImage(1024, 1536, QImage.Format_RGBA8888)
         image.fill(QColor(255, 255, 255, 255 if opaque else 0))
         image.setPixelColor(300 + index, 800, QColor(255, 255, 255, 255))
+        assert image.save(str(path))
+    return paths
+
+
+def _overlay_pair(root: Path) -> tuple[Path, Path]:
+    directory = root / "assets/pose-atlas/v5-hand-overlays"
+    directory.mkdir(parents=True)
+    paths = tuple(directory / f"{OVERLAY_VIEW}_{side}.png" for side in ("left", "right"))
+    for index, path in enumerate(paths):
+        image = QImage(1024, 1536, QImage.Format_RGBA8888)
+        image.fill(QColor(0, 0, 0, 0))
+        image.setPixelColor(400 + index, 900, QColor("white"))
         assert image.save(str(path))
     return paths
 
@@ -67,6 +80,19 @@ def test_opaque_alpha_mask_is_not_silently_empty(tmp_path):
     provider = load_core_hand_regions(tmp_path)
     assert provider is not None
     assert provider(VIEW).contains(QPoint(1023, 1535))
+    app.processEvents()
+
+
+def test_core_overlay_pair_is_the_full_body_authority(tmp_path):
+    app = QApplication.instance() or QApplication([])
+    _pair(tmp_path)
+    _overlay_pair(tmp_path)
+    provider = load_core_hand_regions(tmp_path)
+    assert provider is not None
+    assert provider(VIEW).contains(QPoint(300, 800))
+    assert provider(OVERLAY_VIEW).contains(QPoint(400, 900))
+    assert provider(OVERLAY_VIEW).contains(QPoint(401, 900))
+    assert not provider(OVERLAY_VIEW).contains(QPoint(300, 800))
     app.processEvents()
 
 

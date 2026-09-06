@@ -5,16 +5,20 @@ lazy import hashlib
 lazy import sys
 lazy import zipfile
 lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy import pytest
+lazy from infrastructure import active_outfit_overlay as active_outfit_overlay_module
+lazy from PySide6.QtCore import QRect
 lazy from PySide6.QtGui import QColor, QImage, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 lazy from domain.outfit_pack import AppearanceAsset, AppearanceItem, AppearanceVariant, OutfitPackError
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 
 VIEW = "front-crossed"
+FULL_VIEW = "yaw+165-pitch+00"
 HAND = (25, 505)
 CLOTH = (35, 505)
 
@@ -71,6 +75,43 @@ def test_invalid_core_mask_rejected_and_legacy_preserved(tmp_path, monkeypatch):
     body = QPixmap(1254, 1254)
     body.fill(QColor("red"))
     assert legacy.apply(body, VIEW).toImage().pixelColor(*HAND) == QColor("blue")
+    app.processEvents()
+
+
+def test_core_hand_overlay_is_painted_before_clipped_garment(tmp_path, monkeypatch):
+    app = QApplication.instance() or QApplication([])
+    directory = tmp_path / "assets/pose-atlas/v5-hand-overlays"
+    directory.mkdir(parents=True)
+    left = QImage(1024, 1536, QImage.Format_RGBA8888)
+    left.fill(QColor(0, 0, 0, 0))
+    left.setPixelColor(300, 800, QColor("green"))
+    assert left.save(str(directory / f"{FULL_VIEW}_left.png"))
+    right = QImage(1024, 1536, QImage.Format_RGBA8888)
+    right.fill(QColor(0, 0, 0, 0))
+    assert right.save(str(directory / f"{FULL_VIEW}_right.png"))
+
+    hand = QRegion(300, 800, 1, 1)
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store",
+        tmp_path,
+        visible_hand_region=lambda view: QRegion(hand),
+    )
+    garment = QPixmap(1024, 1536)
+    garment.fill(QColor("blue"))
+    canvas = QRegion(QRect(0, 0, 1024, 1536))
+    overlay._layers_by_view[FULL_VIEW] = (
+        (garment, 0, 0, canvas.subtracted(hand), 1.0),
+    )
+    monkeypatch.setattr(
+        active_outfit_overlay_module,
+        "resolve_active_selection",
+        lambda _store, _category: SimpleNamespace(status="active"),
+    )
+    body = QPixmap(1024, 1536)
+    body.fill(QColor("red"))
+    result = overlay.apply(body, FULL_VIEW).toImage()
+    assert result.pixelColor(300, 800) == QColor("green")
+    assert result.pixelColor(301, 800) == QColor("blue")
     app.processEvents()
 
 

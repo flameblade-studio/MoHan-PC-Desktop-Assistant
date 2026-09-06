@@ -98,6 +98,7 @@ class ActiveOutfitOverlay:
         self._feature_by_view: dict[str, QRegion] = {}
         self._hair_mask_by_view: dict[str, tuple[QImage, QRect] | None] = {}
         self._makeup_exclusion_by_view: dict[str, QRegion] = {}
+        self._core_hand_overlays_by_view: dict[str, tuple[Layer, ...]] = {}
         self._safe_regions = None
 
     def apply(
@@ -118,7 +119,11 @@ class ActiveOutfitOverlay:
             if not suppressed and eye_state == "rest"
             else self._layers_by_view_without_makeup_slots
         )
-        cache_key = view_id if not suppressed and eye_state == "rest" else (view_id, suppressed, eye_state)
+        cache_key = (
+            view_id
+            if not suppressed and eye_state == "rest"
+            else (view_id, suppressed, eye_state)
+        )
         try:
             self._refresh_state()
             layers = cache.get(cache_key)
@@ -130,6 +135,11 @@ class ActiveOutfitOverlay:
                     eye_state=eye_state,
                 )
                 cache[cache_key] = layers
+            hand_overlays = (
+                self._core_hand_overlay_layers(view_id, frame.size().toTuple())
+                if resolve_active_selection(self._store, "garment").status != "builtin"
+                else ()
+            )
         except IncompatibleBodyProfileError:
             self._reject_stale_active_pack()
             return frame
@@ -140,11 +150,52 @@ class ActiveOutfitOverlay:
         result = QPixmap(frame)
         painter = QPainter(result)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
+        # Core-owned hand pixels are part of the body rig.  Paint them before
+        # the appearance stack; the matching visible-hand region clips cloth
+        # away, while front-of-hand accessories can still paint afterwards.
+        for pixmap, anchor_x, anchor_y, clip, opacity in hand_overlays:
+            painter.setClipRegion(clip)
+            painter.setOpacity(opacity)
+            painter.drawPixmap(anchor_x, anchor_y, pixmap)
         for pixmap, anchor_x, anchor_y, clip, opacity in layers:
             painter.setClipRegion(clip)
             painter.setOpacity(opacity)
             painter.drawPixmap(anchor_x, anchor_y, pixmap)
         painter.end()
+        return result
+
+    def _core_hand_overlay_layers(
+        self,
+        view_id: str,
+        canvas_size: tuple[int, int],
+    ) -> tuple[Layer, ...]:
+        """Load an optional immutable pair of core-owned RGBA hand overlays."""
+        cached = self._core_hand_overlays_by_view.get(view_id)
+        if cached is not None:
+            return cached
+        directory = self._asset_root / "assets/pose-atlas/v5-hand-overlays"
+        paths = tuple(directory / f"{view_id}_{side}.png" for side in ("left", "right"))
+        if not any(path.exists() for path in paths):
+            self._core_hand_overlays_by_view[view_id] = ()
+            return ()
+        if not all(path.exists() for path in paths):
+            raise OutfitPackError("Incomplete core hand-overlay pair.")
+        canvas = QRegion(QRect(0, 0, canvas_size[0], canvas_size[1]))
+        layers: list[Layer] = []
+        for path in paths:
+            image = QImage(str(path))
+            if (
+                image.isNull()
+                or not image.hasAlphaChannel()
+                or image.size().toTuple() != canvas_size
+            ):
+                raise OutfitPackError(f"Invalid core hand overlay: {path.name}")
+            pixmap = QPixmap.fromImage(image.convertToFormat(QImage.Format_RGBA8888))
+            if QRegion(QBitmap.fromImage(image.createAlphaMask())).isEmpty():
+                continue
+            layers.append((pixmap, 0, 0, canvas, 1.0))
+        result = tuple(layers)
+        self._core_hand_overlays_by_view[view_id] = result
         return result
 
     def layer_count(
