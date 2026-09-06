@@ -131,25 +131,37 @@
       }
     },
     {
-      "hand_inference": {
-        "augmentations_used": [
-          "flip-horizontal"
-        ],
-        "confidences": [
-          0.946622
-        ],
-        "observation_count": 1,
-        "occluded_sides": [
-          "right"
-        ],
-        "visible_sides": [
-          "left"
-        ]
-      },
-      "normalized_sha256": "95b577a031d562c05cda1386ba6d0e49c3ace6557230f0d614872f13950d57bb",
-      "source_sha256": "117c82d90c49423bd48045adfe115fb5b1b6418bf2d41a5eb05b14298d75831f",
       "view_id": "yaw-135-pitch+00",
-      "yaw_degrees": -135
+      "yaw_degrees": -135,
+      "source_sha256": "69dfe16d443b5a97f7d018a284ad0894905d5e6b1b925fd5e68311c8a2831f24",
+      "normalized_sha256": "69dfe16d443b5a97f7d018a284ad0894905d5e6b1b925fd5e68311c8a2831f24",
+      "source_stage": "formal-yawminus135-promotion-01",
+      "registration": "same_canvas_authority_copy",
+      "visual_acceptance": "owner_authorized_normal_appearance_incremental_integration_2026-09-06",
+      "hand_inference": {
+        "status": "visual_five_digit_review; natural_occlusion_allowed"
+      },
+      "previous_revision": {
+        "hand_inference": {
+          "augmentations_used": [
+            "flip-horizontal"
+          ],
+          "confidences": [
+            0.946622
+          ],
+          "observation_count": 1,
+          "occluded_sides": [
+            "right"
+          ],
+          "visible_sides": [
+            "left"
+          ]
+        },
+        "normalized_sha256": "95b577a031d562c05cda1386ba6d0e49c3ace6557230f0d614872f13950d57bb",
+        "source_sha256": "117c82d90c49423bd48045adfe115fb5b1b6418bf2d41a5eb05b14298d75831f",
+        "view_id": "yaw-135-pitch+00",
+        "yaw_degrees": -135
+      }
     },
     {
       "hand_inference": {
