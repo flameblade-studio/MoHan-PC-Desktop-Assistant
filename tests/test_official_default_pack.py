@@ -57,7 +57,7 @@ GREY_TOLERANCE = 12
 PROBES = {
     "yaw+000-pitch+00": {
         "base": "assets/pose-atlas/v5-base/yaw+000-pitch+00.png",
-        "garment": (488, 585), "lips": (552, 292), "hair": (455, 350), "headwear": (482, 134),
+        "garment": (569, 500), "lips": (514, 268), "hair": (440, 370), "headwear": (520, 125),
     },
     "front-crossed": {
         "base": "assets/expressions/idle_front.png",

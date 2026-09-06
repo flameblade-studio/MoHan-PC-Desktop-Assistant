@@ -22,6 +22,7 @@ lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
 lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER
+lazy from domain.face_rig import EyeState
 
 FULL_BODY_DIMENSION_WIDTH = 1024
 FULL_BODY_DIMENSION_HEIGHT = 1536
@@ -59,6 +60,7 @@ class LayeredFullBodyView:
     view_id: str
     layers: frozendict[str, Path]
     mouth_center_x: float | None = None
+    blink_frames: frozendict[EyeState, Path] = frozendict()
 
     def path(self, layer: str) -> Path | None:
         return self.layers.get(layer)
@@ -109,8 +111,25 @@ def load_layered_full_body_assets(root: Path) -> LayeredFullBodyManifest:
             view_id,
             frozendict(layers),
             authority_centers.get(view_id),
+            _load_blink_frames(root, view_id),
         )
     return LayeredFullBodyManifest(frozendict(views))
+
+
+def _load_blink_frames(root: Path, view_id: str) -> frozendict[EyeState, Path]:
+    """Optional authored eyelids must form a complete, same-canvas pair."""
+    frames = {
+        state: root / f"{view_id}_blink_{state.value}.png"
+        for state in (EyeState.HALF, EyeState.CLOSED)
+    }
+    if not any(path.exists() for path in frames.values()):
+        return frozendict()
+    for path in frames.values():
+        if not path.is_file():
+            raise FileNotFoundError(f"incomplete full-body blink pair: {path.name}")
+        if _png_dimensions(path) != (FULL_BODY_DIMENSION_WIDTH, FULL_BODY_DIMENSION_HEIGHT):
+            raise ValueError(f"unexpected full-body blink dimensions: {path.name}")
+    return frozendict(frames)
 
 
 def _load_authority_mouth_centers(root: Path) -> dict[str, float]:

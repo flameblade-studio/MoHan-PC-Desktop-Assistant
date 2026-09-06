@@ -25,7 +25,7 @@ lazy import pytest
 lazy from PySide6.QtGui import QImage, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from domain.outfit_pack import OFFICIAL_PACK_ROOT, inspect_outfit_pack
+lazy from domain.outfit_pack import OFFICIAL_PACK_ROOT, OutfitPackError, inspect_outfit_pack
 lazy from domain.outfit_pack_makeup import (
     FEATURE_CORE_LAYERS,
     HAIRSTYLE_FEATURE_CORE_DILATION_PX,
@@ -188,6 +188,31 @@ def test_sealed_hair_stays_out_of_the_dilated_feature_core(silhouette: str) -> N
     core = _region_mask(_rig_region(silhouette, FEATURE_CORE_LAYERS), hair.shape[:2])
     assert core.any()
     assert int(((hair[:, :, 3] > 0) & dilate(core, HAIRSTYLE_FEATURE_CORE_DILATION_PX)).sum()) == 0
+
+
+def test_body_outline_is_optional_but_corruption_fails_closed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    _app()
+    overlay = ActiveOutfitOverlay(tmp_path / "store", ROOT)
+    monkeypatch.setattr(overlay, "_protected_face_path", lambda _view: tmp_path / "front_base.png")
+    assert overlay._body_outline_region(STRAND_SILHOUETTE) is None
+    path = tmp_path / "front_body_outline.png"
+    path.write_bytes(b"invalid")
+    with pytest.raises(OutfitPackError, match="outline"):
+        overlay._body_outline_region(STRAND_SILHOUETTE)
+
+
+def test_hair_feather_does_not_reveal_desktop_outside_body(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    _app()
+    overlay = ActiveOutfitOverlay(tmp_path / "store", ROOT)
+    monkeypatch.setattr(overlay, "_feature_region", lambda _view: QRegion(100, 100, 1, 1))
+    monkeypatch.setattr(overlay, "_body_outline_region", lambda _view: QRegion(100, 0, 1154, 1254))
+    image = QImage(1254, 1254, QImage.Format_ARGB32)
+    image.fill(0xFF101010)
+    result = _rgba(overlay._feathered_hair_layer(QPixmap.fromImage(image), 0, 0, STRAND_SILHOUETTE).toImage())
+    assert result[100, 90, 3] == OPAQUE
+    assert 0 < result[100, 110, 3] < OPAQUE
+    assert result[100, 92:109, 3].max() == 0
+    assert result[100, 80, 3] == OPAQUE
 
 
 def test_runtime_hair_mask_is_zero_in_the_core_and_feathers_outward(tmp_path: Path) -> None:

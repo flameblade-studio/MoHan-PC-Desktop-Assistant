@@ -64,6 +64,7 @@ class DashboardWardrobeMakeupMixin:
             self._t("wardrobe_makeup_intensity", "妝感濃淡"),
             slider_row,
         )
+        self._add_makeup_detail_controls(form)
         layout.addLayout(form)
         hint = QLabel(
             self._t(
@@ -83,6 +84,32 @@ class DashboardWardrobeMakeupMixin:
             self._wardrobe_makeup_intensity_changed
         )
         return card
+
+    def _add_makeup_detail_controls(self, form: QFormLayout) -> None:
+        self.wardrobe_makeup_details = {}
+        self.wardrobe_makeup_detail_values = {}
+        for slot, label in (
+            ("eyes", self._t("wardrobe_makeup_eyes_intensity", "眼妝濃淡")),
+            ("cheeks", self._t("wardrobe_makeup_cheeks_intensity", "腮紅濃淡")),
+            ("lips", self._t("wardrobe_makeup_lips_intensity", "唇妝濃淡")),
+        ):
+            slider = QSlider(Qt.Horizontal)
+            slider.setRange(0, INTENSITY_PERCENT)
+            slider.setSingleStep(INTENSITY_SINGLE_STEP)
+            slider.setPageStep(INTENSITY_PAGE_STEP)
+            slider.setAccessibleName(label)
+            slider.setProperty("makeupSlot", slot)
+            value = QLabel(f"{INTENSITY_PERCENT}%")
+            value.setProperty("mohanRole", "muted")
+            row = QWidget()
+            layout = QHBoxLayout(row)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.addWidget(slider, 1)
+            layout.addWidget(value)
+            self.wardrobe_makeup_details[slot] = slider
+            self.wardrobe_makeup_detail_values[slot] = value
+            form.addRow(label, row)
+            slider.valueChanged.connect(self._wardrobe_makeup_detail_changed)
 
     def _makeup_option_label(self, option) -> str:
         if option.option_id == BARE_OPTION:
@@ -147,6 +174,14 @@ class DashboardWardrobeMakeupMixin:
         )
         slider.blockSignals(False)
         self.wardrobe_makeup_intensity_value.setText(f"{slider.value()}%")
+        details = self.wardrobe_service.makeup_slot_intensities(
+            notify=self._wardrobe_makeup_read_warning
+        )
+        for slot, detail_slider in self.wardrobe_makeup_details.items():
+            detail_slider.blockSignals(True)
+            detail_slider.setValue(round(details[slot] * INTENSITY_PERCENT))
+            detail_slider.blockSignals(False)
+            self.wardrobe_makeup_detail_values[slot].setText(f"{detail_slider.value()}%")
 
     def _wardrobe_makeup_selected(self, index: int) -> None:
         option_id = str(self.wardrobe_makeup_selector.itemData(index) or BARE_OPTION)
@@ -175,4 +210,13 @@ class DashboardWardrobeMakeupMixin:
     def _wardrobe_makeup_intensity_changed(self, value: int) -> None:
         self.wardrobe_makeup_intensity_value.setText(f"{int(value)}%")
         self.wardrobe_service.set_makeup_intensity(int(value) / INTENSITY_PERCENT)
+        self._refresh_wardrobe_preview()
+
+    def _wardrobe_makeup_detail_changed(self, value: int) -> None:
+        slider = self.sender()
+        if not isinstance(slider, QSlider):
+            raise RuntimeError("Makeup detail changes require their slider sender.")
+        slot = str(slider.property("makeupSlot"))
+        self.wardrobe_service.set_makeup_slot_intensity(slot, int(value) / INTENSITY_PERCENT)
+        self.wardrobe_makeup_detail_values[slot].setText(f"{int(value)}%")
         self._refresh_wardrobe_preview()

@@ -49,8 +49,8 @@ FULL_BODY_SIZE = (1024, 1536)
 FRONT_BUTTON, BACK_BUTTON = 0, 3
 # Probe pixels recorded by tools/assemble_official_default_pack.py for yaw+000: a robe
 # pixel over the grey base and the strongest lip pixel of the built-in classic makeup.
-TORSO = (488, 585)
-LIPS = (552, 292)
+TORSO = (569, 500)
+LIPS = (514, 268)
 # Back view: the robe covers the lower back below the loose hair.
 BACK_BAND = (380, 700, 260, 200)
 MIN_BACK_ROBE_PIXELS = 500

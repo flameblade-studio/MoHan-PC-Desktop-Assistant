@@ -9,7 +9,7 @@ lazy from collections.abc import Callable, Iterable
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QRect, Qt
-lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
+lazy from PySide6.QtGui import QBitmap, QColor, QImage, QPainter, QPixmap, QRegion
 
 lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.outfit_pack import (
@@ -35,8 +35,10 @@ lazy from domain.outfit_pack_makeup import (
     load_makeup_safe_regions,
     makeup_layer_escapes,
     read_makeup_intensity,
+    read_makeup_slot_intensities,
 )
 lazy from domain.version_info import APP_VERSION
+lazy from infrastructure.core_hand_regions import load_core_hand_regions
 
 SEMVER_COMPONENT_COUNT = 3
 _RANGE = re.compile(r">=(\d+)\.(\d+)\.(\d+),<(\d+)\.(\d+)\.(\d+)\Z")
@@ -67,10 +69,19 @@ class ActiveOutfitOverlay:
         store: Path,
         asset_root: Path,
         on_stale_body_profile: Callable[[], None] | None = None,
+        *,
+        visible_hand_region: Callable[[str], QRegion] | None = None,
     ) -> None:
         self._store = Path(store)
         self._asset_root = Path(asset_root)
         self._on_stale_body_profile = on_stale_body_profile
+        # Core-owned, pose-specific visible skin only; never supplied by a DLC.
+        # The provider is immutable for this overlay's lifetime, like rig assets.
+        # Absent on legacy rigs until authored hand masks are installed.
+        self._visible_hand_region = (
+            visible_hand_region if visible_hand_region is not None
+            else load_core_hand_regions(self._asset_root)
+        )
         self._stale_pack_handled = False
         # (active.json token, makeup.json token); a missing file is None, so a
         # fresh store matches this initial value and keeps pre-seeded layers.
@@ -81,7 +92,7 @@ class ActiveOutfitOverlay:
         self._parsed_packs: dict[tuple[Path, tuple[int, int]], object] = {}
         self._layers_by_view: dict[str, tuple[Layer, ...]] = {}
         self._layers_by_view_without_makeup_slots: dict[
-            tuple[str, frozenset[str]], tuple[Layer, ...]
+            tuple[str, frozenset[str], str], tuple[Layer, ...]
         ] = {}
         self._protected_by_view: dict[str, QRegion] = {}
         self._feature_by_view: dict[str, QRegion] = {}
@@ -95,16 +106,19 @@ class ActiveOutfitOverlay:
         view_id: str,
         *,
         suppress_makeup_slots: Iterable[str] = (),
+        eye_state: str = "rest",
     ) -> QPixmap:
         if frame.isNull():
             return frame
+        if eye_state not in {"rest", "half", "closed"}:
+            raise ValueError("Unknown makeup eye state")
         suppressed = frozenset(suppress_makeup_slots)
         cache = (
             self._layers_by_view
-            if not suppressed
+            if not suppressed and eye_state == "rest"
             else self._layers_by_view_without_makeup_slots
         )
-        cache_key = view_id if not suppressed else (view_id, suppressed)
+        cache_key = view_id if not suppressed and eye_state == "rest" else (view_id, suppressed, eye_state)
         try:
             self._refresh_state()
             layers = cache.get(cache_key)
@@ -113,6 +127,7 @@ class ActiveOutfitOverlay:
                     view_id,
                     frame.size().toTuple(),
                     suppress_makeup_slots=suppressed,
+                    eye_state=eye_state,
                 )
                 cache[cache_key] = layers
         except IncompatibleBodyProfileError:
@@ -137,15 +152,18 @@ class ActiveOutfitOverlay:
         view_id: str,
         *,
         suppress_makeup_slots: Iterable[str] = (),
+        eye_state: str = "rest",
     ) -> int:
         """Layers the last ``apply`` composited for ``view_id``; 0 when bare or failed closed."""
+        if eye_state not in {"rest", "half", "closed"}:
+            raise ValueError("Unknown makeup eye state")
         suppressed = frozenset(suppress_makeup_slots)
         cache = (
             self._layers_by_view
-            if not suppressed
+            if not suppressed and eye_state == "rest"
             else self._layers_by_view_without_makeup_slots
         )
-        cache_key = view_id if not suppressed else (view_id, suppressed)
+        cache_key = view_id if not suppressed and eye_state == "rest" else (view_id, suppressed, eye_state)
         return len(cache.get(cache_key) or ())
 
     def _reject_stale_active_pack(self) -> None:
@@ -243,6 +261,7 @@ class ActiveOutfitOverlay:
         canvas_size: tuple[int, int],
         *,
         suppress_makeup_slots: frozenset[str] = frozenset(),
+        eye_state: str = "rest",
     ) -> tuple[Layer, ...]:
         result: list[tuple[int, int, Layer]] = []
         for category_index, category in enumerate(SELECTION_CATEGORIES):
@@ -259,6 +278,7 @@ class ActiveOutfitOverlay:
                         variant,
                         view_id,
                         suppress_makeup_slots=suppress_makeup_slots,
+                        eye_state=eye_state,
                     )
                 else:
                     layers = self._garment_layers(
@@ -297,6 +317,7 @@ class ActiveOutfitOverlay:
         # below instead of being cut by the protected-face rectangle.
         if category != "hairstyle":
             allowed = allowed.subtracted(forbidden)
+        allowed = self._hand_allowed_region(allowed, category, variant, view_id)
         layers: list[tuple[int, Layer]] = []
         for declaration in declarations:
             _encoded, image = self._decoded_layer(archive, declaration)
@@ -325,12 +346,69 @@ class ActiveOutfitOverlay:
             ))
         return layers
 
+    def _hand_allowed_region(self, canvas: QRegion, category: str, variant, view_id: str) -> QRegion:
+        """Keep core-visible hands above cloth and declared behind-hand items."""
+        if self._visible_hand_region is None:
+            return canvas
+        rule = None
+        if variant.hand_rules is not None:
+            rule = variant.hand_rules.get(view_id)
+            if rule not in {"behind-hands", "front-of-hands"}:
+                raise OutfitPackError("Missing or invalid hand occlusion for the active view.")
+        if category != "garment" and rule != "behind-hands":
+            return canvas
+        hands = self._visible_hand_region(view_id)
+        full_canvas = QRegion(0, 0, *self._canvas_size(view_id))
+        if not isinstance(hands, QRegion) or not hands.subtracted(full_canvas).isEmpty():
+            raise OutfitPackError("Core hand region escaped the active canvas.")
+        return canvas.subtracted(hands)
+
     def _feathered_hair_layer(self, pixmap: QPixmap, anchor_x: int, anchor_y: int, view_id: str) -> QPixmap:
         """Multiply the hair alpha by the feathered feature-core mask (0 inside, 1 beyond the feather)."""
         mask = self._hair_core_mask(view_id)
         if mask is None:
             return pixmap
         alpha, bounds = mask
+        body = self._body_outline_region(view_id)
+        if body is None:
+            return self._masked_hair(pixmap, anchor_x, anchor_y, alpha, bounds)
+        # Feather against skin, not the desktop behind the character. Keep the
+        # complete dilated feature core forbidden, including outside the body.
+        protected = self._feature_region(view_id)
+        for _step in range(HAIRSTYLE_FEATURE_CORE_DILATION_PX):
+            expanded = protected
+            for dx, dy in _DILATION_OFFSETS:
+                expanded = expanded.united(protected.translated(dx, dy))
+            protected = expanded
+        silhouette = QRegion()
+        # Rig cut-outs leave internal holes; those are not desktop background.
+        for y in range(bounds.top(), bounds.bottom() + 1):
+            row = body.intersected(QRegion(bounds.left(), y, bounds.width(), 1)).boundingRect()
+            if not row.isEmpty():
+                silhouette = silhouette.united(QRegion(row))
+        background = QRegion(bounds).subtracted(silhouette).subtracted(protected)
+        alpha = alpha.copy()
+        painter = QPainter(alpha)
+        painter.setClipRegion(background.translated(-bounds.x(), -bounds.y()))
+        painter.fillRect(alpha.rect(), QColor(0, 0, 0, _OPAQUE))
+        painter.end()
+        return self._masked_hair(pixmap, anchor_x, anchor_y, alpha, bounds)
+
+    def _body_outline_region(self, view_id: str) -> QRegion | None:
+        base = self._protected_face_path(view_id)
+        path = base.with_name(base.name.removesuffix("_base.png") + "_body_outline.png")
+        if not path.exists():
+            return None
+        image = QImage(str(path))
+        if image.isNull() or not image.hasAlphaChannel() or image.size().toTuple() != self._canvas_size(view_id):
+            raise OutfitPackError("Invalid core body outline.")
+        region = QRegion(QBitmap.fromImage(image.createAlphaMask()))
+        if region.isEmpty():
+            raise OutfitPackError("Core body outline is empty.")
+        return region
+
+    @staticmethod
+    def _masked_hair(pixmap: QPixmap, anchor_x: int, anchor_y: int, alpha: QImage, bounds: QRect) -> QPixmap:
         image = pixmap.toImage().convertToFormat(QImage.Format_ARGB32_Premultiplied)
         painter = QPainter(image)
         painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
@@ -403,6 +481,7 @@ class ActiveOutfitOverlay:
         view_id: str,
         *,
         suppress_makeup_slots: frozenset[str] = frozenset(),
+        eye_state: str = "rest",
     ) -> list[tuple[int, Layer]]:
         """Makeup is exempt from the protected-face mask but clipped to its safe region.
 
@@ -410,8 +489,12 @@ class ActiveOutfitOverlay:
         opacity: 0 leaves the bare base untouched, 1 paints the authored layer as-is.
         """
         opacity = float(variant.intensity) * read_makeup_intensity(self._store)
+        slot_intensities = read_makeup_slot_intensities(self._store)
         region = self._makeup_safe_regions()[view_id]
         layers: list[tuple[int, Layer]] = []
+        state_assets = variant.eye_states.get(eye_state)
+        if state_assets is not None:
+            declarations = tuple(asset for asset in declarations if asset.slot != "eyes") + state_assets[view_id]
         for declaration in declarations:
             encoded, image = self._decoded_layer(archive, declaration)
             if (image.width(), image.height()) != region.canvas or (declaration.anchor_x, declaration.anchor_y) != (0, 0):
@@ -423,14 +506,15 @@ class ActiveOutfitOverlay:
             # A closed-eye authority must be able to cover open-eye makeup.
             # Validation above still runs for every declaration, so this is a
             # state-aware composition choice, not an import/runtime gate bypass.
-            if declaration.slot in suppress_makeup_slots:
+            if declaration.slot in suppress_makeup_slots and not (declaration.slot == "eyes" and state_assets is not None):
                 continue
-            if opacity <= 0.0:
+            slot_opacity = opacity * slot_intensities[declaration.slot]
+            if slot_opacity <= 0.0:
                 continue
             clip = self._makeup_clip(view_id, region, declaration.slot)
             layers.append((
                 _MAKEUP_Z_BASE + declaration.z_order,
-                (QPixmap.fromImage(image), 0, 0, clip, min(1.0, opacity)),
+                (QPixmap.fromImage(image), 0, 0, clip, min(1.0, slot_opacity)),
             ))
         return layers
 

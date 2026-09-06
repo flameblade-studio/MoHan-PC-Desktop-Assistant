@@ -1,0 +1,3 @@
+### 核心手部遮擋接點／核心手部遮挡接点／Core hand occlusion boundary／コアの手の遮蔽境界
+
+- 外觀合成器接收核心提供的固定姿勢可見手部遮罩，讓衣料及手後素材避開手部，同時保留手前配件的遮擋；首批正式視角已接入遮罩，未提供遮罩的既有流程保持原樣。／外观合成器接收核心提供的固定姿势可见手部遮罩，让衣料及手后素材避开手部，同时保留手前配件的遮挡；首批正式视角已接入遮罩，未提供遮罩的既有流程保持原样。／The appearance compositor uses core-owned visible-hand masks for fixed poses, keeping garments and behind-hand layers off the hands while preserving front-of-hand accessories. The first production views now include these masks, while existing paths without masks retain their prior behavior.／外観合成器は固定ポーズのコア所有の可視手マスクを使用し、衣服と手の後方の素材が手を覆うことを防ぎ、手の前方のアクセサリーによる遮蔽を維持します。最初の正式視点にはマスクを導入し、マスクのない既存経路は従来の動作を維持します。

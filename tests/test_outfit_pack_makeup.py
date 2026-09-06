@@ -8,6 +8,7 @@ lazy import json
 lazy import os
 lazy import re
 lazy import sys
+lazy from dataclasses import replace
 lazy from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -419,3 +420,52 @@ def test_scaffolded_manifest_seals_into_a_makeup_only_pack(tmp_path: Path) -> No
     assert [variant.variant_id for variant in item.variants] == list(BUILTIN_VARIANTS)
     assert len(item.variants) == EXPECTED_VARIANTS
     assert all(len(variant.poses) == EXPECTED_SILHOUETTES for variant in item.variants)
+
+
+def test_builder_calibration_keeps_pixel_gate_and_import_boundary(tmp_path: Path) -> None:
+    """A staging calibration never silently changes the installed body's gate."""
+    silhouette = "front-crossed"
+    painted = (0, 0, BLOCK, BLOCK)
+    manifest, assets = makeup_manifest(blocks={("classic", silhouette, "eyes"): (painted,)})
+    source = tmp_path / "authoring"
+    source.mkdir()
+    manifest_path = source / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    for name, payload in assets.items():
+        target = source / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(payload)
+    rejected = tmp_path / "rejected.mohan-outfit"
+    with pytest.raises(OutfitPackError, match="safe region"):
+        build_outfit_pack(manifest_path, source, rejected)
+    assert not rejected.exists()
+    assert not rejected.with_name(f".{rejected.name}.building").exists()
+    installed = load_makeup_safe_regions()
+    region = installed[silhouette]
+    staging = frozendict({
+        **installed,
+        silhouette: replace(region, slots=frozendict({**region.slots, "eyes": (painted,)})),
+    })
+    sealed = tmp_path / "staging.mohan-outfit"
+    build_outfit_pack(manifest_path, source, sealed, makeup_regions=staging)
+    verify_makeup_layers(sealed, staging)
+    with pytest.raises(OutfitPackError, match="safe region"):
+        verify_makeup_layers(sealed)
+    escaped = frozendict({
+        **staging,
+        silhouette: replace(region, slots=frozendict({**region.slots, "eyes": ()})),
+    })
+    with pytest.raises(OutfitPackError, match="safe region"):
+        build_outfit_pack(manifest_path, source, rejected, makeup_regions=escaped)
+    assert not rejected.exists()
+
+
+def main() -> int:
+    result = pytest.main([__file__, "-q", *sys.argv[1:]])
+    if result == 0:
+        print("OUTFIT_PACK_MAKEUP_OK")
+    return int(result)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

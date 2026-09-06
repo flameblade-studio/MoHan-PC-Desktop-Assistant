@@ -200,11 +200,13 @@ class LayeredParametricFaceRenderer:
                 else frozenset()
             )
             silhouette = outfit_silhouette(motion.expression, motion.pose.value)
-            if suppress_makeup_slots:
+            eye_state = eye_state_for_blink(motion.expression_shape.blink)
+            if eye_state is not EyeState.REST:
                 composed = self._outfit_overlay.apply(
                     composed,
                     silhouette,
                     suppress_makeup_slots=suppress_makeup_slots,
+                    eye_state="half" if eye_state is EyeState.HALF else "closed",
                 )
             else:
                 # Preserve the legacy port signature for open-eye callers and
