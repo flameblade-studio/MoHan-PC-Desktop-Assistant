@@ -15,6 +15,7 @@ lazy from PySide6.QtCore import QRect
 lazy from PySide6.QtGui import QColor, QImage, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 lazy from domain.outfit_pack import AppearanceAsset, AppearanceItem, AppearanceVariant, OutfitPackError
+lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 
 VIEW = "front-crossed"
@@ -112,6 +113,74 @@ def test_core_hand_overlay_is_painted_before_clipped_garment(tmp_path, monkeypat
     result = overlay.apply(body, FULL_VIEW).toImage()
     assert result.pixelColor(300, 800) == QColor("green")
     assert result.pixelColor(301, 800) == QColor("blue")
+    app.processEvents()
+
+
+def test_core_body_overlay_restores_visible_skin_before_appearance(tmp_path, monkeypatch):
+    app = QApplication.instance() or QApplication([])
+    directory = tmp_path / "assets/pose-atlas/v5-body-overlays"
+    directory.mkdir(parents=True)
+    skin = QImage(1024, 1536, QImage.Format_RGBA8888)
+    skin.fill(QColor(0, 0, 0, 0))
+    skin.setPixelColor(600, 250, QColor("green"))
+    assert skin.save(str(directory / f"{FULL_VIEW}.png"))
+
+    overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
+    garment = QPixmap(1024, 1536)
+    garment.fill(QColor("blue"))
+    canvas = QRegion(QRect(0, 0, 1024, 1536))
+    overlay._layers_by_view[FULL_VIEW] = (
+        (garment, 0, 0, canvas.subtracted(QRegion(600, 250, 1, 1)), 1.0),
+    )
+    monkeypatch.setattr(
+        active_outfit_overlay_module,
+        "resolve_active_selection",
+        lambda _store, _category: SimpleNamespace(
+            status="active",
+            effective_pack_id="custom.pack",
+        ),
+    )
+    body = QPixmap(1024, 1536)
+    body.fill(QColor("red"))
+    result = overlay.apply(body, FULL_VIEW).toImage()
+    assert result.pixelColor(600, 250) == QColor("green")
+    assert result.pixelColor(601, 250) == QColor("blue")
+    app.processEvents()
+
+
+def test_official_appearance_silhouette_clears_protruding_body(tmp_path, monkeypatch):
+    app = QApplication.instance() or QApplication([])
+    directory = (
+        tmp_path
+        / "assets/pose-atlas/v5-appearance-silhouettes"
+        / OFFICIAL_OUTFIT_PACK_ID
+    )
+    directory.mkdir(parents=True)
+    silhouette = QImage(1024, 1536, QImage.Format_RGBA8888)
+    silhouette.fill(QColor(0, 0, 0, 0))
+    silhouette.setPixelColor(300, 800, QColor("white"))
+    assert silhouette.save(str(directory / f"{FULL_VIEW}.png"))
+
+    overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
+    garment = QPixmap(1024, 1536)
+    garment.fill(QColor(0, 0, 0, 0))
+    garment.fill(QColor("blue"))
+    overlay._layers_by_view[FULL_VIEW] = (
+        (garment, 0, 0, QRegion(300, 800, 1, 1), 1.0),
+    )
+    monkeypatch.setattr(
+        active_outfit_overlay_module,
+        "resolve_active_selection",
+        lambda _store, _category: SimpleNamespace(
+            status="active",
+            effective_pack_id=OFFICIAL_OUTFIT_PACK_ID,
+        ),
+    )
+    body = QPixmap(1024, 1536)
+    body.fill(QColor("red"))
+    result = overlay.apply(body, FULL_VIEW).toImage()
+    assert result.pixelColor(0, 0).alpha() == 0
+    assert result.pixelColor(300, 800) == QColor("blue")
     app.processEvents()
 
 

@@ -37,6 +37,10 @@ lazy from domain.outfit_pack_makeup import (
     read_makeup_intensity,
     read_makeup_slot_intensities,
 )
+lazy from domain.outfit_pack_official import (
+    OFFICIAL_OUTFIT_CATEGORIES,
+    OFFICIAL_OUTFIT_PACK_ID,
+)
 lazy from domain.version_info import APP_VERSION
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
 
@@ -99,6 +103,10 @@ class ActiveOutfitOverlay:
         self._hair_mask_by_view: dict[str, tuple[QImage, QRect] | None] = {}
         self._makeup_exclusion_by_view: dict[str, QRegion] = {}
         self._core_hand_overlays_by_view: dict[str, tuple[Layer, ...]] = {}
+        self._core_body_overlays_by_view: dict[str, tuple[Layer, ...]] = {}
+        self._official_silhouettes_by_view: dict[str, QRegion | None] = {}
+        self._garment_active_cache: bool | None = None
+        self._official_outfit_active_cache: bool | None = None
         self._safe_regions = None
 
     def apply(
@@ -135,10 +143,21 @@ class ActiveOutfitOverlay:
                     eye_state=eye_state,
                 )
                 cache[cache_key] = layers
+            garment_is_active = self._garment_is_active()
             hand_overlays = (
                 self._core_hand_overlay_layers(view_id, frame.size().toTuple())
-                if resolve_active_selection(self._store, "garment").status != "builtin"
+                if garment_is_active
                 else ()
+            )
+            body_overlays = (
+                self._core_body_overlay_layers(view_id, frame.size().toTuple())
+                if garment_is_active
+                else ()
+            )
+            official_silhouette = (
+                self._official_silhouette_region(view_id, frame.size().toTuple())
+                if self._official_outfit_is_active()
+                else None
             )
         except IncompatibleBodyProfileError:
             self._reject_stale_active_pack()
@@ -147,13 +166,31 @@ class ActiveOutfitOverlay:
             return frame
         if not layers:
             return frame
-        result = QPixmap(frame)
+        if official_silhouette is None:
+            result = QPixmap(frame)
+        else:
+            # Some fully opaque sources decode as RGB32.  Repaint them onto a
+            # transparent canvas so CompositionMode_Clear can remove body
+            # pixels outside the authored dressed silhouette.
+            result = QPixmap(frame.size())
+            result.fill(Qt.transparent)
+            base_painter = QPainter(result)
+            base_painter.drawPixmap(0, 0, frame)
+            base_painter.end()
         painter = QPainter(result)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
+        if official_silhouette is not None:
+            canvas = QRegion(QRect(0, 0, frame.width(), frame.height()))
+            protruding = canvas.subtracted(official_silhouette)
+            if not protruding.isEmpty():
+                painter.setCompositionMode(QPainter.CompositionMode_Clear)
+                painter.setClipRegion(protruding)
+                painter.fillRect(result.rect(), QColor(0, 0, 0, 0))
+                painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
         # Core-owned hand pixels are part of the body rig.  Paint them before
         # the appearance stack; the matching visible-hand region clips cloth
         # away, while front-of-hand accessories can still paint afterwards.
-        for pixmap, anchor_x, anchor_y, clip, opacity in hand_overlays:
+        for pixmap, anchor_x, anchor_y, clip, opacity in (*body_overlays, *hand_overlays):
             painter.setClipRegion(clip)
             painter.setOpacity(opacity)
             painter.drawPixmap(anchor_x, anchor_y, pixmap)
@@ -163,6 +200,88 @@ class ActiveOutfitOverlay:
             painter.drawPixmap(anchor_x, anchor_y, pixmap)
         painter.end()
         return result
+
+    def _core_body_overlay_layers(
+        self,
+        view_id: str,
+        canvas_size: tuple[int, int],
+    ) -> tuple[Layer, ...]:
+        """Load optional visible non-hand body skin for a dressed full-body view."""
+        cached = self._core_body_overlays_by_view.get(view_id)
+        if cached is not None:
+            return cached
+        path = self._asset_root / "assets/pose-atlas/v5-body-overlays" / f"{view_id}.png"
+        if not path.exists():
+            self._core_body_overlays_by_view[view_id] = ()
+            return ()
+        image = QImage(str(path))
+        if (
+            image.isNull()
+            or not image.hasAlphaChannel()
+            or image.size().toTuple() != canvas_size
+        ):
+            raise OutfitPackError(f"Invalid core body overlay: {path.name}")
+        pixmap = QPixmap.fromImage(image.convertToFormat(QImage.Format_RGBA8888))
+        if QRegion(QBitmap.fromImage(image.createAlphaMask())).isEmpty():
+            raise OutfitPackError(f"Empty core body overlay: {path.name}")
+        canvas = QRegion(QRect(0, 0, canvas_size[0], canvas_size[1]))
+        result = ((pixmap, 0, 0, canvas, 1.0),)
+        self._core_body_overlays_by_view[view_id] = result
+        return result
+
+    def _official_outfit_is_active(self) -> bool:
+        """True only when every detachable official outfit category is selected."""
+        if self._official_outfit_active_cache is not None:
+            return self._official_outfit_active_cache
+        result = all(
+            getattr(
+                resolve_active_selection(self._store, category),
+                "effective_pack_id",
+                None,
+            ) == OFFICIAL_OUTFIT_PACK_ID
+            for category in OFFICIAL_OUTFIT_CATEGORIES
+        )
+        self._official_outfit_active_cache = result
+        return result
+
+    def _garment_is_active(self) -> bool:
+        """Resolve the active garment once per appearance-state token."""
+        if self._garment_active_cache is None:
+            self._garment_active_cache = (
+                resolve_active_selection(self._store, "garment").status != "builtin"
+            )
+        return self._garment_active_cache
+
+    def _official_silhouette_region(
+        self,
+        view_id: str,
+        canvas_size: tuple[int, int],
+    ) -> QRegion | None:
+        """Load the optional whole-appearance silhouette for exact body occlusion."""
+        if view_id in self._official_silhouettes_by_view:
+            cached = self._official_silhouettes_by_view[view_id]
+            return None if cached is None else QRegion(cached)
+        path = (
+            self._asset_root
+            / "assets/pose-atlas/v5-appearance-silhouettes"
+            / OFFICIAL_OUTFIT_PACK_ID
+            / f"{view_id}.png"
+        )
+        if not path.exists():
+            self._official_silhouettes_by_view[view_id] = None
+            return None
+        image = QImage(str(path))
+        if (
+            image.isNull()
+            or not image.hasAlphaChannel()
+            or image.size().toTuple() != canvas_size
+        ):
+            raise OutfitPackError(f"Invalid official appearance silhouette: {path.name}")
+        region = QRegion(QBitmap.fromImage(image.createAlphaMask()))
+        if region.isEmpty():
+            raise OutfitPackError(f"Empty official appearance silhouette: {path.name}")
+        self._official_silhouettes_by_view[view_id] = region
+        return QRegion(region)
 
     def _core_hand_overlay_layers(
         self,
@@ -266,6 +385,9 @@ class ActiveOutfitOverlay:
         self._layers_by_view.clear()
         self._layers_by_view_without_makeup_slots.clear()
         self._parsed_packs.clear()
+        if active_changed:
+            self._garment_active_cache = None
+            self._official_outfit_active_cache = None
 
     def _selected_variant(self, category: str, selected) -> tuple[Path, object, object]:
         """Locate and validate the active pack, item and variant for one category."""

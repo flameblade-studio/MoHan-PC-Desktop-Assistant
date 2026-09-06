@@ -30,26 +30,38 @@
   "status": "release-assets",
   "views": [
     {
-      "hand_inference": {
-        "augmentations_used": [
-          "native",
-          "rotate-counterclockwise"
-        ],
-        "confidences": [
-          0.814288,
-          0.975829
-        ],
-        "observation_count": 2,
-        "occluded_sides": [],
-        "visible_sides": [
-          "left",
-          "right"
-        ]
-      },
-      "normalized_sha256": "7de7ff4fc8458f9a5eb9defb53bfcc62aa3675abe535f8096d066ca482c4285b",
-      "source_sha256": "474152478d191ff3d3ae29062249683c0b1930867237f38e98573ba9bee81141",
       "view_id": "yaw-180-pitch+00",
-      "yaw_degrees": -180
+      "yaw_degrees": -180,
+      "source_sha256": "9fa8e41f5c8245e01325b064f436905d1a26536a1cc7ac3ed58986f0d3d6424b",
+      "normalized_sha256": "9fa8e41f5c8245e01325b064f436905d1a26536a1cc7ac3ed58986f0d3d6424b",
+      "source_stage": "formal-yaw180-promotion-04",
+      "registration": "same_canvas_authority_copy",
+      "visual_acceptance": "owner_authorized_normal_appearance_incremental_integration_2026-09-06",
+      "hand_inference": {
+        "status": "visual_five_digit_review; natural_occlusion_allowed"
+      },
+      "previous_revision": {
+        "hand_inference": {
+          "augmentations_used": [
+            "native",
+            "rotate-counterclockwise"
+          ],
+          "confidences": [
+            0.814288,
+            0.975829
+          ],
+          "observation_count": 2,
+          "occluded_sides": [],
+          "visible_sides": [
+            "left",
+            "right"
+          ]
+        },
+        "normalized_sha256": "7de7ff4fc8458f9a5eb9defb53bfcc62aa3675abe535f8096d066ca482c4285b",
+        "source_sha256": "474152478d191ff3d3ae29062249683c0b1930867237f38e98573ba9bee81141",
+        "view_id": "yaw-180-pitch+00",
+        "yaw_degrees": -180
+      }
     },
     {
       "hand_inference": {
