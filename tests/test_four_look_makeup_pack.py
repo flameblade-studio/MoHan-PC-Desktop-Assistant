@@ -26,7 +26,9 @@ from tools.art_pipeline.four_look_makeup_pack import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_RELATIVE = "assets/official-packs/mohan.makeup.builtin.mohan-outfit"
-APPROVAL_SOURCE = ROOT / "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/owner-approval.json"
+# A copy of the owner approval record used by the sealed four-look stage.  The
+# original lives in the local staging tree; the test only needs its bytes.
+APPROVAL_SOURCE = ROOT / "tests/data/four_look_makeup_pack/owner-approval.json"
 APPROVAL_RELATIVE = "scratchpad/approval/owner-approval.json"
 EXPECTED_STAGE_RECORDS = 3 * 31 * 4 * 3
 EXPECTED_OUTPUT_DECLARATIONS = 744
