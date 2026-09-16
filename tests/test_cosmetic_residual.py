@@ -1,8 +1,8 @@
 """Pigment controls preserve native coverage and reconstruct bounded colors."""
-import numpy as np
-import pytest
+lazy import numpy as np
+lazy import pytest
 
-from tools.art_pipeline.cosmetic_residual import residual_layer, source_atop
+lazy from tools.art_pipeline.cosmetic_residual import residual_layer, source_atop
 
 
 def test_dark_pigment_does_not_carry_the_foundation_when_it_is_removed():

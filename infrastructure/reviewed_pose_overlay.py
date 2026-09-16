@@ -1,20 +1,20 @@
 """Paint approved pose endpoints before their source-matched cosmetics."""
 from __future__ import annotations
 
-import json
-from pathlib import Path
+lazy import json
+lazy from pathlib import Path
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPainter, QPixmap
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QPainter, QPixmap
 
-from domain.outfit_pack import resolve_active_selection
-from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
-from domain.outfit_pack_official import BUILTIN_MAKEUP_PACK_ID
-from infrastructure.reviewed_garment_assets import (
+lazy from domain.outfit_pack import resolve_active_selection
+lazy from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
+lazy from domain.outfit_pack_official import BUILTIN_MAKEUP_PACK_ID
+lazy from infrastructure.reviewed_garment_assets import (
     COMPLETE_EXPRESSION_DYNAMIC_SOURCE,
     ReviewedGarmentPose,
 )
-from infrastructure.reviewed_pose_motion import ReviewedPoseMotion, load_reviewed_pose_motion
+lazy from infrastructure.reviewed_pose_motion import ReviewedPoseMotion, load_reviewed_pose_motion
 
 COSMETIC_SLOTS = frozenset({"eyes", "cheeks", "lips"})
 LIGHT_STRENGTH = 0.55

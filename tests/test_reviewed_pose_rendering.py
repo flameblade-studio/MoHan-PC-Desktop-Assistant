@@ -7,29 +7,29 @@ missing native registration must leave those legacy paths usable.
 
 from __future__ import annotations
 
-import os
-from dataclasses import dataclass, field
-from types import SimpleNamespace
+lazy import os
+lazy from dataclasses import dataclass, field
+lazy from types import SimpleNamespace
 
-import pytest
+lazy import pytest
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 pytest.importorskip("PySide6")
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QColor, QImage, QPixmap
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QColor, QImage, QPixmap
+lazy from PySide6.QtWidgets import QApplication
 
-from domain.companion_animation_contract import CHEEK_SPEECH_CLOSED_EXPRESSION
-from domain.face_rig import (
+lazy from domain.companion_animation_contract import CHEEK_SPEECH_CLOSED_EXPRESSION
+lazy from domain.face_rig import (
     ExpressionShape,
     FaceMotionFrame,
     FacePose,
     MouthShape,
     Viseme,
 )
-from infrastructure import layered_face_renderer as renderer_module
-from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from infrastructure import layered_face_renderer as renderer_module
+lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
 
 
 CANVAS_SIZE = (20, 20)

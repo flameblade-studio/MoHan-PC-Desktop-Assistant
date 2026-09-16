@@ -1,22 +1,22 @@
 """Whole half-body expressions keep mouth continuity across asynchronous blinks."""
 from __future__ import annotations
 
-import hashlib
-import json
-import os
-from dataclasses import replace
-from types import SimpleNamespace
+lazy import hashlib
+lazy import json
+lazy import os
+lazy from dataclasses import replace
+lazy from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-import pytest
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
-from PySide6.QtWidgets import QApplication
+lazy import pytest
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
+lazy from PySide6.QtWidgets import QApplication
 
-from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
-from infrastructure.complete_halfbody_expressions import load_complete_halfbody_frames
-from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
+lazy from infrastructure.complete_halfbody_expressions import load_complete_halfbody_frames
+lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
 
 SIZE = 1254
 MOUTH = (600, 600)

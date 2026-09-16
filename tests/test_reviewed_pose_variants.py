@@ -2,23 +2,23 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
-import os
-from pathlib import Path
-from types import SimpleNamespace
+lazy import hashlib
+lazy import json
+lazy import os
+lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
-import pytest
+lazy import pytest
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PySide6.QtCore import QBuffer, QByteArray, QIODevice, Qt
-from PySide6.QtGui import QColor, QImage, QPixmap
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice, Qt
+lazy from PySide6.QtGui import QColor, QImage, QPixmap
+lazy from PySide6.QtWidgets import QApplication
 
-from domain.outfit_pack_official import BUILTIN_MAKEUP_PACK_ID
-from infrastructure import reviewed_pose_overlay as overlay_module
-from infrastructure.reviewed_pose_motion import (
+lazy from domain.outfit_pack_official import BUILTIN_MAKEUP_PACK_ID
+lazy from infrastructure import reviewed_pose_overlay as overlay_module
+lazy from infrastructure.reviewed_pose_motion import (
     APPROVED_SOURCE_SHA256,
     COSMETIC_SLOTS,
     COSMETIC_STATES,
@@ -31,7 +31,7 @@ from infrastructure.reviewed_pose_motion import (
     VARIANT_SCHEMA,
     load_reviewed_pose_motion,
 )
-from infrastructure.reviewed_pose_overlay import ReviewedPoseOverlayMixin
+lazy from infrastructure.reviewed_pose_overlay import ReviewedPoseOverlayMixin
 
 
 POINT = (19, 19)

@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import json
-from math import isfinite
-from pathlib import Path
+lazy import json
+lazy from math import isfinite
+lazy from pathlib import Path
 
-from domain.outfit_pack import MAKEUP_SLOTS_V2
-from tools.art_pipeline.source_bound_stage import PinnedFile, pinned_file, read_pinned, relative_path
+lazy from domain.outfit_pack import MAKEUP_SLOTS_V2
+lazy from tools.art_pipeline.source_bound_stage import PinnedFile, pinned_file, read_pinned, relative_path
 
 EYE_STATES = {"rest", "half", "closed", "reopened"}
 

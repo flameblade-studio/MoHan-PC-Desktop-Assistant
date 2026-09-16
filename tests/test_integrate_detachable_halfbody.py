@@ -1,28 +1,28 @@
 from __future__ import annotations
 
-import hashlib
-import json
-import os
-from pathlib import Path
-from types import SimpleNamespace
+lazy import hashlib
+lazy import json
+lazy import os
+lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
-import pytest
+lazy import pytest
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QColor, QImage, QPixmap
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QColor, QImage, QPixmap
+lazy from PySide6.QtWidgets import QApplication
 
-from infrastructure.detachable_halfbody_assets import (
+lazy from infrastructure.detachable_halfbody_assets import (
     DIMENSION,
     PART_ORDER,
     POSES,
     load_detachable_halfbody_assets,
 )
-from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
-from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
-from tools.art_pipeline.integrate_detachable_halfbody import integrate_detachable_halfbody
+lazy from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
+lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from tools.art_pipeline.integrate_detachable_halfbody import integrate_detachable_halfbody
 
 
 def _candidate(root: Path) -> str:

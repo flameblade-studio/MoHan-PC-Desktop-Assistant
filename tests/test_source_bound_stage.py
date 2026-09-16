@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import json
-import zipfile
-from io import BytesIO
+lazy import json
+lazy import zipfile
+lazy from io import BytesIO
 
-import pytest
+lazy import pytest
 
-from tools.art_pipeline.source_bound_stage import (
+lazy from tools.art_pipeline.source_bound_stage import (
     SCHEMA, PinnedFile, digest, read_pinned, rebuild_pack, relative_path, stage_preview,
 )
 

@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict
-from io import BytesIO
-from pathlib import Path
+lazy from dataclasses import asdict
+lazy from io import BytesIO
+lazy from pathlib import Path
 
-import numpy as np
-from PIL import Image
+lazy import numpy as np
+lazy from PIL import Image
 
-from tools.art_pipeline.native_identity_guard import (
+lazy from tools.art_pipeline.native_identity_guard import (
     IdentityOverlays, NATIVE_PNG_BIT_DEPTH, PNG_BIT_DEPTH_OFFSET, PNG_COLOR_TYPE_OFFSET,
     PNG_HEADER_LENGTH, PNG_RGBA_COLOR_TYPE, PNG_SIGNATURE,
     load_native_rgba_source, validate_native_identity,

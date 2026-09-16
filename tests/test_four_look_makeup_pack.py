@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 
-import copy
-import json
-import shutil
-import zipfile
-from pathlib import Path
+lazy import copy
+lazy import json
+lazy import shutil
+lazy import zipfile
+lazy from pathlib import Path
 
-import pytest
-from PySide6.QtGui import QColor, QImage
+lazy import pytest
+lazy from PySide6.QtGui import QColor, QImage
 
-from domain.outfit_pack import MAKEUP_CANVASES, REQUIRED_SILHOUETTES
-from domain.outfit_pack_makeup import FoundationSafeMask, MakeupSafeRegion
-from tools.art_pipeline.four_look_makeup_pack import (
+lazy from domain.outfit_pack import MAKEUP_CANVASES, REQUIRED_SILHOUETTES
+lazy from domain.outfit_pack_makeup import FoundationSafeMask, MakeupSafeRegion
+lazy from tools.art_pipeline.four_look_makeup_pack import (
     FourLookStageError,
     LOOKS,
     SLOTS,

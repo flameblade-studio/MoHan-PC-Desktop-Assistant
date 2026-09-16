@@ -1,21 +1,21 @@
 """Reviewed defaults preserve native animation and independent outfit choices."""
 from __future__ import annotations
 
-import os
-from dataclasses import replace
-from types import SimpleNamespace
+lazy import os
+lazy from dataclasses import replace
+lazy from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
-import pytest
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
-from PySide6.QtWidgets import QApplication
+lazy import pytest
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
+lazy from PySide6.QtWidgets import QApplication
 
-from domain.outfit_pack import OutfitPackError
-from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
-from infrastructure.appearance_layer_stack import AppearanceLayerStack
-from infrastructure import reviewed_garment_overlay as module
-from infrastructure.reviewed_garment_assets import (
+lazy from domain.outfit_pack import OutfitPackError
+lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from infrastructure.appearance_layer_stack import AppearanceLayerStack
+lazy from infrastructure import reviewed_garment_overlay as module
+lazy from infrastructure.reviewed_garment_assets import (
     DIMENSION, ReviewedGarmentAssets, ReviewedGarmentPose, ReviewedPng, ReviewedSelection,
 )
 

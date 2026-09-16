@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import copy
+lazy import copy
 
-import pytest
+lazy import pytest
 
-from tools.art_pipeline.source_bound_pack_scope import verify_pack_scope
+lazy from tools.art_pipeline.source_bound_pack_scope import verify_pack_scope
 
 VIEW = "yaw+060-pitch+00"
 MEMBER = "assets/robe.png"

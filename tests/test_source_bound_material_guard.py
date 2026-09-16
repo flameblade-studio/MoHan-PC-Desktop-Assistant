@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from io import BytesIO
+lazy from io import BytesIO
 
-import numpy as np
-import pytest
-from PIL import Image
+lazy import numpy as np
+lazy import pytest
+lazy from PIL import Image
 
-from tools.art_pipeline.source_bound_material_guard import (
+lazy from tools.art_pipeline.source_bound_material_guard import (
     MaterialGuardError,
     verify_material_change,
 )

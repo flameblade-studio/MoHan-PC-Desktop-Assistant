@@ -1,34 +1,34 @@
 from __future__ import annotations
 
-import hashlib
-import json
-import os
-import shutil
-import time
-from pathlib import Path
-from types import SimpleNamespace
+lazy import hashlib
+lazy import json
+lazy import os
+lazy import shutil
+lazy import time
+lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
-import pytest
+lazy import pytest
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PySide6.QtCore import QRect, Qt
-from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import QRect, Qt
+lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
+lazy from PySide6.QtWidgets import QApplication
 
-from application import service_container
-from application.service_container import create_presentation_ports
-from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
-from infrastructure.exasperated_candidate_assets import (
+lazy from application import service_container
+lazy from application.service_container import create_presentation_ports
+lazy from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
+lazy from infrastructure.exasperated_candidate_assets import (
     APPROVED_SOURCE_SHA256,
     FORMAL_ASSET_RELATIVE_DIR,
     PART_ORDER,
     load_exasperated_candidate_assets,
     validate_formal_exasperated_install,
 )
-from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
-from presentation.presentation_resources import FaceRenderLayers
-from presentation.companion_face_animation import CompanionFaceAnimationMixin
+lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from presentation.presentation_resources import FaceRenderLayers
+lazy from presentation.companion_face_animation import CompanionFaceAnimationMixin
 
 PRODUCT_SIZE = 465
 NATIVE_MOUTH_SAMPLE = 550

@@ -1,12 +1,12 @@
 """Cosmetic color edits retain native alpha and all unpainted face pixels."""
-from pathlib import Path
+lazy from pathlib import Path
 
-import numpy as np
-import pytest
-from PIL import Image
+lazy import numpy as np
+lazy import pytest
+lazy from PIL import Image
 
-from tools.art_pipeline.source_bound_identity import verify_reference_faces
-from tools.art_pipeline.source_bound_stage import digest
+lazy from tools.art_pipeline.source_bound_identity import verify_reference_faces
+lazy from tools.art_pipeline.source_bound_stage import digest
 
 
 def _save(root: Path, name: str, pixels: np.ndarray) -> dict[str, str]:

@@ -2,21 +2,21 @@
 
 from __future__ import annotations
 
-import json
-from dataclasses import dataclass, field
-from math import isfinite
-from pathlib import Path
+lazy import json
+lazy from dataclasses import dataclass, field
+lazy from math import isfinite
+lazy from pathlib import Path
 
-from PySide6.QtGui import QPainter, QPixmap
+lazy from PySide6.QtGui import QPainter, QPixmap
 
-from domain.outfit_pack import FOUNDATION_SLOT, resolve_active_selection
-from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
-from domain.outfit_pack_official import (
+lazy from domain.outfit_pack import FOUNDATION_SLOT, resolve_active_selection
+lazy from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
+lazy from domain.outfit_pack_official import (
     BUILTIN_MAKEUP_PACK_ID,
     BUILTIN_MAKEUP_VARIANTS,
     OFFICIAL_OUTFIT_PACK_ID,
 )
-from infrastructure.exasperated_candidate_assets import (
+lazy from infrastructure.exasperated_candidate_assets import (
     APPROVED_SOURCE_SHA256,
     DIMENSION,
     EXPRESSION_VARIANTS,

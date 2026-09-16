@@ -6,12 +6,12 @@ are copied verbatim; only declared appearance members can be replaced.
 
 from __future__ import annotations
 
-import hashlib
-import json
-import re
-import zipfile
-from dataclasses import dataclass
-from pathlib import Path, PurePosixPath
+lazy import hashlib
+lazy import json
+lazy import re
+lazy import zipfile
+lazy from dataclasses import dataclass
+lazy from pathlib import Path, PurePosixPath
 
 SCHEMA = "mohan.source-bound-preview.v1"
 VIEW_PATTERN = re.compile(r"yaw[+-]\d{3}-pitch[+-]\d{2}\Z")

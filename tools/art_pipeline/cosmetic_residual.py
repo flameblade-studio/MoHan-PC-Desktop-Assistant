@@ -7,8 +7,8 @@ registers geometry. Callers provide already aligned native artwork and support.
 """
 from __future__ import annotations
 
-import numpy as np
-from numpy.typing import NDArray
+lazy import numpy as np
+lazy from numpy.typing import NDArray
 
 Rgba = NDArray[np.uint8]
 IMAGE_DIMENSIONS = 3

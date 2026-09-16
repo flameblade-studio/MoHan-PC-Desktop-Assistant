@@ -7,15 +7,15 @@ loading; the frame loop receives only in-memory ``QImage`` values.
 
 from __future__ import annotations
 
-import hashlib
-import json
-import struct
-from dataclasses import dataclass
-from pathlib import Path, PurePosixPath, PureWindowsPath
-from types import MappingProxyType
-from typing import Mapping
+lazy import hashlib
+lazy import json
+lazy import struct
+lazy from dataclasses import dataclass
+lazy from pathlib import Path, PurePosixPath, PureWindowsPath
+lazy from types import MappingProxyType
+lazy from typing import Mapping
 
-from PySide6.QtGui import QImage, QPixmap
+lazy from PySide6.QtGui import QImage, QPixmap
 
 
 SCHEMA = "mohan.reviewed-pose-motion.v1"

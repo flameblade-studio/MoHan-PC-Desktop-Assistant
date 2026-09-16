@@ -1,10 +1,10 @@
 """A stale asset cannot be overwritten and a failed set restores existing work."""
-import json
-from pathlib import Path
+lazy import json
+lazy from pathlib import Path
 
-import pytest
+lazy import pytest
 
-from tools.art_pipeline import approved_asset_install as installer
+lazy from tools.art_pipeline import approved_asset_install as installer
 
 
 def prepare(root: Path):

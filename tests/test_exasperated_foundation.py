@@ -2,22 +2,22 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
-import os
-from pathlib import Path
-from types import SimpleNamespace
+lazy import hashlib
+lazy import json
+lazy import os
+lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
-import pytest
+lazy import pytest
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PySide6.QtCore import QRect, Qt
-from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import QRect, Qt
+lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
+lazy from PySide6.QtWidgets import QApplication
 
-import infrastructure.exasperated_candidate_appearance as appearance_module
-from infrastructure.exasperated_candidate_appearance import (
+lazy import infrastructure.exasperated_candidate_appearance as appearance_module
+lazy from infrastructure.exasperated_candidate_appearance import (
     FOUNDATION_SCHEMA,
     SCHEMA,
     SLOTS,
@@ -25,7 +25,7 @@ from infrastructure.exasperated_candidate_appearance import (
     STATES,
     ExasperatedCandidateAppearance,
 )
-from infrastructure.exasperated_candidate_assets import APPROVED_SOURCE_SHA256, DIMENSION
+lazy from infrastructure.exasperated_candidate_assets import APPROVED_SOURCE_SHA256, DIMENSION
 
 AVAILABLE_STATUS = "available"
 BASE_COLOR = QColor("#293241")

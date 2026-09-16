@@ -65,6 +65,16 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
             ),
         ),
     }),
+    # ``infrastructure.layered_full_body_renderer`` re-exports the speech
+    # aperture threshold that tests import lazily; a lazy re-export would hand
+    # them the unresolved proxy (``lazy_import + float`` fails).
+    "infrastructure/layered_full_body_renderer.py": frozenset({
+        (
+            "from",
+            "infrastructure.layered_full_body_complete_expression",
+            ("MOUTH_APERTURE_THRESHOLD", "CompleteExpressionRendering"),
+        ),
+    }),
     # Public gesture-store re-exports otherwise expose nested lazy proxies
     # after the presentation composition root imports them on Python 3.15rc1.
     "infrastructure/gesture_configuration_store.py": frozenset({
@@ -181,6 +191,22 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
             "from",
             "presentation.ui_localization_ja",
             ("JAPANESE_UI",),
+        ),
+        # The label tables are re-exported through ``__all__``; an eager import
+        # keeps modules that import them lazily from receiving nested proxies.
+        (
+            "from",
+            "presentation.ui_localization_labels",
+            (
+                "MEMORY_CATEGORY_LABELS",
+                "MODE_LABELS",
+                "PLATFORM_STATUS_LABELS",
+                "SIMPLIFIED_MEMORY_CATEGORY_LABELS",
+                "SIMPLIFIED_MODE_LABELS",
+                "SIMPLIFIED_PLATFORM_STATUS_LABELS",
+                "SIMPLIFIED_WORK_TYPE_LABELS",
+                "WORK_TYPE_LABELS",
+            ),
         ),
     }),
     "tests/test_native_concurrency.py": frozenset({

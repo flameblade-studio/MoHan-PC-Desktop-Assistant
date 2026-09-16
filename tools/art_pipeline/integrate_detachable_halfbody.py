@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-import argparse
-import hashlib
-import json
-import os
-import shutil
-import uuid
-from pathlib import Path
+lazy import argparse
+lazy import hashlib
+lazy import json
+lazy import os
+lazy import shutil
+lazy import uuid
+lazy from pathlib import Path
 
-from infrastructure.detachable_halfbody_assets import (
+lazy from infrastructure.detachable_halfbody_assets import (
     PART_ORDER,
     POSES,
     SCHEMA,

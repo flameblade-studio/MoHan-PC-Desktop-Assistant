@@ -2,20 +2,20 @@
 
 from __future__ import annotations
 
-import json
-from io import BytesIO
-from pathlib import Path
+lazy import json
+lazy from io import BytesIO
+lazy from pathlib import Path
 
-import numpy as np
-import pytest
-from PIL import Image
+lazy import numpy as np
+lazy import pytest
+lazy from PIL import Image
 
-from tools.art_pipeline.source_bound_preview import _makeup_state_payload
-from tools.art_pipeline.source_bound_reference import (
+lazy from tools.art_pipeline.source_bound_preview import _makeup_state_payload
+lazy from tools.art_pipeline.source_bound_reference import (
     normalize_makeup_slot_intensities,
     verify_reference_binding,
 )
-from tools.art_pipeline.source_bound_stage import digest
+lazy from tools.art_pipeline.source_bound_stage import digest
 
 VIEW = "yaw+060-pitch+00"
 STATES = ("rest", "half", "closed", "reopened")

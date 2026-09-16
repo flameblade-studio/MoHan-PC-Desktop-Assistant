@@ -2,24 +2,24 @@
 
 from __future__ import annotations
 
-import copy
-import json
-import zipfile
-from io import BytesIO
-from pathlib import Path
-from types import SimpleNamespace
+lazy import copy
+lazy import json
+lazy import zipfile
+lazy from io import BytesIO
+lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
-import numpy as np
-import pytest
-from PIL import Image
+lazy import numpy as np
+lazy import pytest
+lazy from PIL import Image
 
-from tools.art_pipeline.source_bound_makeup import (
+lazy from tools.art_pipeline.source_bound_makeup import (
     BUILTIN_PACK_TARGET,
     apply_makeup_updates,
     resolve_runtime_makeup_members,
 )
-from tools.art_pipeline.source_bound_material_guard import MaterialGuardError
-from tools.art_pipeline.source_bound_stage import digest
+lazy from tools.art_pipeline.source_bound_material_guard import MaterialGuardError
+lazy from tools.art_pipeline.source_bound_stage import digest
 
 VIEW = "yaw-060-pitch+00"
 OTHER_VIEW = "yaw-045-pitch+00"

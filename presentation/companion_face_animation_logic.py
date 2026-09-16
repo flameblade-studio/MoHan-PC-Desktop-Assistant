@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from dataclasses import replace
+lazy from collections.abc import Mapping
+lazy from dataclasses import replace
 
 lazy from domain.face_rig import FaceMotionFrame, FacePose
 

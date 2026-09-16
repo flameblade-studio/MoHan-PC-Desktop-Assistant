@@ -32,24 +32,24 @@ remain unchanged. The output is an isolated candidate, never the official pack.
 
 from __future__ import annotations
 
-import argparse
-import hashlib
-import json
-import zipfile
-from io import BytesIO
-from pathlib import Path
+lazy import argparse
+lazy import hashlib
+lazy import json
+lazy import zipfile
+lazy from io import BytesIO
+lazy from pathlib import Path
 
-from PIL import Image
+lazy from PIL import Image
 
-from application.outfit_pack_builder import build_outfit_pack
-from domain.outfit_pack import (
+lazy from application.outfit_pack_builder import build_outfit_pack
+lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_PACK_ID,
     MAKEUP_CANVASES,
     POSE_ATLAS_SILHOUETTES,
     REQUIRED_SILHOUETTES,
     inspect_outfit_pack,
 )
-from domain.outfit_pack_makeup import load_makeup_safe_regions, verify_makeup_layers
+lazy from domain.outfit_pack_makeup import load_makeup_safe_regions, verify_makeup_layers
 
 
 SCHEMA = "mohan.cross-angle-native-makeup.v1"

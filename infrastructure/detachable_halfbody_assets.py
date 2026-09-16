@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
-from dataclasses import dataclass
-from pathlib import Path
+lazy import hashlib
+lazy import json
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QImage, QPainter, QPixmap
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
 
 SCHEMA = "mohan.detachable-halfbody.v1"

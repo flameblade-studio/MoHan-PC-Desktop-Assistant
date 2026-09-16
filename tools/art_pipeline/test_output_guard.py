@@ -22,15 +22,15 @@ Usage:
 
 from __future__ import annotations
 
-import json
-import sys
-import tempfile
-from pathlib import Path
+lazy import json
+lazy import sys
+lazy import tempfile
+lazy from pathlib import Path
 
 PROJECT_ROOT = Path(r"D:/FlamebladeStudio/CodexProjects/2026-09-02/mohan-front-layer-repair")
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from tools.art_pipeline.output_guard import (  # noqa: E402
+lazy from tools.art_pipeline.output_guard import (  # noqa: E402
     OutputGuard,
     PinRegistryError,
     WriteRefused,

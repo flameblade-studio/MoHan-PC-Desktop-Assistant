@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from io import BytesIO
-from typing import TypedDict
+lazy from io import BytesIO
+lazy from typing import TypedDict
 
-import numpy as np
-from PIL import Image
+lazy import numpy as np
+lazy from PIL import Image
 
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 PNG_HEADER_LENGTH = 26

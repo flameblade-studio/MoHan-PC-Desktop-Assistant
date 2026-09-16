@@ -6,15 +6,15 @@ Outputs remain scratch candidates requiring the owner's visual decision.
 
 from __future__ import annotations
 
-import argparse
-import json
-import os
-from pathlib import Path
-from threading import Lock
-from time import perf_counter
+lazy import argparse
+lazy import json
+lazy import os
+lazy from pathlib import Path
+lazy from threading import Lock
+lazy from time import perf_counter
 
-from tools.art_pipeline.source_bound_stage import digest, pinned_file, read_pinned, stage_preview
-from tools.art_pipeline.source_bound_reference import normalize_makeup_slot_intensities
+lazy from tools.art_pipeline.source_bound_stage import digest, pinned_file, read_pinned, stage_preview
+lazy from tools.art_pipeline.source_bound_reference import normalize_makeup_slot_intensities
 
 STATES = (("rest", 0.0), ("half", 0.5), ("closed", 1.0), ("reopened", 0.0))
 _RENDER_LOCK = Lock()

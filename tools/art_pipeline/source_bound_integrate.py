@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 
-import json
-import os
-import shutil
-import uuid
-from collections.abc import Callable, Mapping
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, TypeAlias
+lazy import json
+lazy import os
+lazy import shutil
+lazy import uuid
+lazy from collections.abc import Callable, Mapping
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
+lazy from typing import Any, TypeAlias
 
-from tools.art_pipeline.source_bound_makeup import BUILTIN_PACK_TARGET, apply_makeup_updates
-from tools.art_pipeline.source_bound_reference import verify_reference_binding
-from tools.art_pipeline.source_bound_stage import (
+lazy from tools.art_pipeline.source_bound_makeup import BUILTIN_PACK_TARGET, apply_makeup_updates
+lazy from tools.art_pipeline.source_bound_reference import verify_reference_binding
+lazy from tools.art_pipeline.source_bound_stage import (
     PACK_SUFFIX,
     PinnedFile,
     apply_pack_updates,

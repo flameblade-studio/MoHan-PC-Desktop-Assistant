@@ -2,16 +2,16 @@
 
 from __future__ import annotations
 
-import json
-import zipfile
-from io import BytesIO
-from pathlib import Path
-from types import SimpleNamespace
+lazy import json
+lazy import zipfile
+lazy from io import BytesIO
+lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
-import pytest
-from PIL import Image
+lazy import pytest
+lazy from PIL import Image
 
-from tools.art_pipeline.source_bound_makeup_pack import (
+lazy from tools.art_pipeline.source_bound_makeup_pack import (
     APPROVAL_SCHEMA,
     SCHEMA,
     SOURCE_PACK_PATH,

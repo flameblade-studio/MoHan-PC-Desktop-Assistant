@@ -1,18 +1,18 @@
 """Render coordinated half-body expressions and preserve displayed mouth state."""
 from __future__ import annotations
 
-from collections import OrderedDict
-from pathlib import Path
+lazy from collections import OrderedDict
+lazy from pathlib import Path
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QPixmap
 
-from domain.face_rig import FaceMotionFrame
-from infrastructure.animated_appearance import AnimatedAppearance
-from infrastructure.complete_halfbody_expressions import (
+lazy from domain.face_rig import FaceMotionFrame
+lazy from infrastructure.animated_appearance import AnimatedAppearance
+lazy from infrastructure.complete_halfbody_expressions import (
     EYES, FAMILIES, CompleteHalfbodyFrames, load_complete_halfbody_frames,
 )
-from infrastructure.detachable_halfbody_assets import POSES
+lazy from infrastructure.detachable_halfbody_assets import POSES
 
 # Keep a full set of current and queued endpoints across all seven poses.
 # These entries hold only cache keys and labels, not image buffers.

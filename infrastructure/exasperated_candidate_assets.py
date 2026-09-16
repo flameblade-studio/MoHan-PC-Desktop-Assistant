@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Protocol
+lazy import hashlib
+lazy import json
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
+lazy from typing import Protocol
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QImage, QPainter, QPixmap
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
 
 SCHEMA = "mohan.exasperated-runtime-candidate.v1"

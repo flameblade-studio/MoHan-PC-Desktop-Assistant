@@ -5,12 +5,12 @@ infer anatomy, synthesize artwork, or select a source from another view.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+lazy from dataclasses import dataclass
 
-import numpy as np
-from numpy.typing import NDArray
+lazy import numpy as np
+lazy from numpy.typing import NDArray
 
-from tools.art_pipeline.cosmetic_residual import Rgba, residual_layer, source_atop
+lazy from tools.art_pipeline.cosmetic_residual import Rgba, residual_layer, source_atop
 
 PIGMENT_SLOTS = ("eyes", "cheeks", "lips")
 SLOTS = ("foundation", *PIGMENT_SLOTS)

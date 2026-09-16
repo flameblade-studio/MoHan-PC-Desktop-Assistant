@@ -16,22 +16,22 @@ pin the minimal contract that fixes that without weakening the gate:
 
 from __future__ import annotations
 
-import hashlib
-import json
-import os
-from pathlib import Path
+lazy import hashlib
+lazy import json
+lazy import os
+lazy from pathlib import Path
 
-import pytest
+lazy import pytest
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QColor, QImage, QPixmap
-from PySide6.QtWidgets import QApplication
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QColor, QImage, QPixmap
+lazy from PySide6.QtWidgets import QApplication
 
-from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
-from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
-from infrastructure.reviewed_garment_assets import load_reviewed_garment_assets
+lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from infrastructure.reviewed_garment_assets import load_reviewed_garment_assets
 
 DIMENSION = 1254
 VIEW = "cheek-rest"

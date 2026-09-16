@@ -2,27 +2,27 @@
 
 from __future__ import annotations
 
-import argparse
-import hashlib
-import json
-import os
-from pathlib import Path
-from types import SimpleNamespace
+lazy import argparse
+lazy import hashlib
+lazy import json
+lazy import os
+lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PIL import Image, ImageDraw
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPainter, QPixmap
-from PySide6.QtWidgets import QApplication
+lazy from PIL import Image, ImageDraw
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QPainter, QPixmap
+lazy from PySide6.QtWidgets import QApplication
 
-from domain.companion_animation_contract import EXPRESSION_SPEECH_MOUTH_RECTS
-from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
-from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
-from infrastructure.detachable_halfbody_assets import POSES, load_detachable_halfbody_assets
-from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
-from presentation.companion_face_assets import CompanionFaceAssetMethods
-from presentation.companion_visual_physics import CompanionVisualPhysicsMethods
+lazy from domain.companion_animation_contract import EXPRESSION_SPEECH_MOUTH_RECTS
+lazy from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
+lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from infrastructure.detachable_halfbody_assets import POSES, load_detachable_halfbody_assets
+lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from presentation.companion_face_assets import CompanionFaceAssetMethods
+lazy from presentation.companion_visual_physics import CompanionVisualPhysicsMethods
 
 
 ROOT = Path(__file__).resolve().parents[2]

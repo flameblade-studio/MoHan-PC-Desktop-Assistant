@@ -1,16 +1,16 @@
 """A reviewed neutral face precedes motion and cannot fall back to the old rig."""
 from __future__ import annotations
 
-import os
-from types import SimpleNamespace
-import pytest
+lazy import os
+lazy from types import SimpleNamespace
+lazy import pytest
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QColor, QPixmap
-from PySide6.QtWidgets import QApplication
-from domain.face_rig import FaceMotionFrame, FacePose, Viseme, MouthShape, ExpressionShape
-from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QColor, QPixmap
+lazy from PySide6.QtWidgets import QApplication
+lazy from domain.face_rig import FaceMotionFrame, FacePose, Viseme, MouthShape, ExpressionShape
+lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
 
 
 def test_reviewed_neutral_bypasses_obsolete_rig_and_preserves_speech(monkeypatch) -> None:

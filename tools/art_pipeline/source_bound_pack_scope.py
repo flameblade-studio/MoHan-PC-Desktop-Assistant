@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from collections import Counter
-from pathlib import Path
+lazy from collections import Counter
+lazy from pathlib import Path
 
 CATEGORY_KEYS = {"garment": "looks", "hairstyle": "hairstyles", "headwear": "headwear"}
 ONE_MATCH = 1

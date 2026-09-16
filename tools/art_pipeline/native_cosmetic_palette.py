@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Literal
+lazy from typing import Literal
 
-import cv2
-import numpy as np
+lazy import cv2
+lazy import numpy as np
 
 Slot = Literal["eyes", "cheeks", "lips"]
 PALETTE_ID = "owner-approved-muted-rose-20260912"

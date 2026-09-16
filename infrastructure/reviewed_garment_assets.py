@@ -10,15 +10,15 @@ never re-reads the asset root.
 
 from __future__ import annotations
 
-import hashlib
-import json
-import struct
-from dataclasses import dataclass
-from pathlib import Path, PurePosixPath
-from types import MappingProxyType
-from typing import Mapping, overload
+lazy import hashlib
+lazy import json
+lazy import struct
+lazy from dataclasses import dataclass
+lazy from pathlib import Path, PurePosixPath
+lazy from types import MappingProxyType
+lazy from typing import Mapping, overload
 
-from PySide6.QtGui import QImage, QPainter, QPixmap
+lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
 
 SCHEMA = "mohan.reviewed-native-garments.v1"

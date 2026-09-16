@@ -1,9 +1,9 @@
 """Local garment registration preserves seams and rejects unsafe control geometry."""
 
-import numpy as np
-import pytest
+lazy import numpy as np
+lazy import pytest
 
-from tools.art_pipeline.material_registration import control_map
+lazy from tools.art_pipeline.material_registration import control_map
 
 
 def test_local_registration_fixes_every_edge_and_retains_wrist_shift() -> None:

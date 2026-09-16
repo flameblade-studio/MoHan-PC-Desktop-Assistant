@@ -1,12 +1,12 @@
 """Protect authored gesture brows when a neutral closed-eye source is reused."""
 from __future__ import annotations
 
-from functools import lru_cache
+lazy from functools import lru_cache
 
-import cv2
-import numpy as np
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QImage, QPainter, QPixmap
+lazy import cv2
+lazy import numpy as np
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
 NATIVE_SIZE = 1254
 BROW_REGIONS = ((490, 370, 605, 434), (605, 370, 725, 434))

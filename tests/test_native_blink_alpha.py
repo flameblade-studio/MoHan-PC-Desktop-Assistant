@@ -1,18 +1,18 @@
 """A blink changes eye colour without increasing the native body matte."""
 from __future__ import annotations
 
-import os
-from types import SimpleNamespace
+lazy import os
+lazy from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-import pytest
-from PySide6.QtGui import QColor, QImage, QPixmap
-from PySide6.QtWidgets import QApplication
+lazy import pytest
+lazy from PySide6.QtGui import QColor, QImage, QPixmap
+lazy from PySide6.QtWidgets import QApplication
 
-from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
-from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
-from domain.face_rig import EyeState
+lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
+lazy from domain.face_rig import EyeState
 
 SOURCE_RED = 200
 QUANTIZATION_TOLERANCE = 1

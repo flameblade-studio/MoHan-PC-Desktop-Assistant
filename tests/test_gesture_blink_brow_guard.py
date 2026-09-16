@@ -1,13 +1,13 @@
 """Regression for neutral blink donors overwriting expressive native brows."""
-from pathlib import Path
+lazy from pathlib import Path
 
-import numpy as np
-import pytest
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPainter, QPixmap
-from PySide6.QtWidgets import QApplication
+lazy import numpy as np
+lazy import pytest
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QPainter, QPixmap
+lazy from PySide6.QtWidgets import QApplication
 
-from presentation.companion_blink_brow_guard import _cached_guard, _rgba, preserve_gesture_brows
+lazy from presentation.companion_blink_brow_guard import _cached_guard, _rgba, preserve_gesture_brows
 
 ROOT = Path(__file__).resolve().parents[1]
 NATIVE_SIZE = 1254

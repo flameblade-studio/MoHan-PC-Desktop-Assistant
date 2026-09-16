@@ -2,25 +2,25 @@
 
 from __future__ import annotations
 
-import json
-import zipfile
-from dataclasses import dataclass
-from io import BytesIO
-from pathlib import Path
+lazy import json
+lazy import zipfile
+lazy from dataclasses import dataclass
+lazy from io import BytesIO
+lazy from pathlib import Path
 
-import pytest
-from PIL import Image
+lazy import pytest
+lazy from PIL import Image
 
-import tools.art_pipeline.source_bound_integrate as subject
-from tools.art_pipeline.source_bound_integrate import (
+lazy import tools.art_pipeline.source_bound_integrate as subject
+lazy from tools.art_pipeline.source_bound_integrate import (
     APPROVAL_DECISION,
     APPROVAL_SCHEMA,
     ConcurrentTargetChangeError,
     integrate_source_bound_pack,
     integrate_source_bound_packs,
 )
-from tools.art_pipeline.source_bound_makeup import BUILTIN_PACK_TARGET, apply_makeup_updates
-from tools.art_pipeline.source_bound_stage import SCHEMA, digest, rebuild_pack
+lazy from tools.art_pipeline.source_bound_makeup import BUILTIN_PACK_TARGET, apply_makeup_updates
+lazy from tools.art_pipeline.source_bound_stage import SCHEMA, digest, rebuild_pack
 
 VIEW = "yaw+060-pitch+00"
 PACK_ID = "example"

@@ -1,14 +1,14 @@
 """Validate complete, source-bound half-body expression families before rendering."""
 from __future__ import annotations
 
-import hashlib
-import json
-from dataclasses import dataclass
-from pathlib import Path, PurePosixPath, PureWindowsPath
+lazy import hashlib
+lazy import json
+lazy from dataclasses import dataclass
+lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 
-from PySide6.QtGui import QImage
+lazy from PySide6.QtGui import QImage
 
-from infrastructure.detachable_halfbody_assets import DIMENSION, POSES
+lazy from infrastructure.detachable_halfbody_assets import DIMENSION, POSES
 
 SCHEMA = "mohan.complete-halfbody-expressions.v1"
 FAMILIES = frozenset({"neutral", "small", "a", "o"})

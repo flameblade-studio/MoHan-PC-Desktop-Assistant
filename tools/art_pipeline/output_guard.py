@@ -40,11 +40,11 @@ restore-on-failure for formal asset installs.
 
 from __future__ import annotations
 
-import json
-import os
-from contextlib import contextmanager
-from pathlib import Path
-from typing import Iterable, Iterator
+lazy import json
+lazy import os
+lazy from contextlib import contextmanager
+lazy from pathlib import Path
+lazy from typing import Iterable, Iterator
 
 HANDOFF_DIR_DEFAULT = Path(
     r"D:/FlamebladeStudio/CodexProjects/shared/agent-handoff/mohan"

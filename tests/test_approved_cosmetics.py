@@ -1,9 +1,9 @@
 """Approved source extraction remains reversible across independent controls."""
-import numpy as np
-import pytest
+lazy import numpy as np
+lazy import pytest
 
-from tools.art_pipeline.approved_cosmetics import MAX_RECONSTRUCTION_ERROR, extract_cosmetics
-from tools.art_pipeline.cosmetic_residual import source_atop
+lazy from tools.art_pipeline.approved_cosmetics import MAX_RECONSTRUCTION_ERROR, extract_cosmetics
+lazy from tools.art_pipeline.cosmetic_residual import source_atop
 
 
 def test_overlapping_pigments_reconstruct_without_double_painting_or_alpha_drift():

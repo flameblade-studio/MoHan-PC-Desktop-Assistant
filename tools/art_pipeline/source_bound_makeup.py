@@ -2,22 +2,22 @@
 
 from __future__ import annotations
 
-import json
-import zipfile
-from io import BytesIO
-from pathlib import Path
+lazy import json
+lazy import zipfile
+lazy from io import BytesIO
+lazy from pathlib import Path
 
-import numpy as np
+lazy import numpy as np
 
-from domain.outfit_pack_official import BUILTIN_MAKEUP_ITEM_ID, BUILTIN_MAKEUP_PACK_ID
-from tools.art_pipeline.source_bound_material_guard import (
+lazy from domain.outfit_pack_official import BUILTIN_MAKEUP_ITEM_ID, BUILTIN_MAKEUP_PACK_ID
+lazy from tools.art_pipeline.source_bound_material_guard import (
     MaterialGuardError,
     _decode_binary_mask_png,
     _decode_rgba_png,
     verify_material_change,
 )
-from tools.art_pipeline.source_bound_pack_scope import path_counts
-from tools.art_pipeline.source_bound_stage import (
+lazy from tools.art_pipeline.source_bound_pack_scope import path_counts
+lazy from tools.art_pipeline.source_bound_stage import (
     SHA_PATTERN,
     digest,
     pinned_file,

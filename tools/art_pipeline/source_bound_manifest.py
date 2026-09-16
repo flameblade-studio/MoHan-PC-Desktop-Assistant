@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import argparse
-import json
-from pathlib import Path
+lazy import argparse
+lazy import json
+lazy from pathlib import Path
 
-from tools.art_pipeline.source_bound_stage import SCHEMA, VIEW_PATTERN, digest
+lazy from tools.art_pipeline.source_bound_stage import SCHEMA, VIEW_PATTERN, digest
 
 SHARED_DIRECTORIES = (
     "assets/official-packs", "assets/pose-atlas/v5-base-layered",

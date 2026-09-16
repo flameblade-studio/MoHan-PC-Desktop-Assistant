@@ -1,11 +1,11 @@
 """Replace an owner-approved local asset set with pinned rollback copies."""
 from __future__ import annotations
 
-import hashlib
-import json
-import os
-import shutil
-from pathlib import Path
+lazy import hashlib
+lazy import json
+lazy import os
+lazy import shutil
+lazy from pathlib import Path
 
 PLAN_SCHEMA = "mohan.approved-asset-replacements.v1"
 APPROVAL_SCHEMA = "mohan.four-look-owner-approved-installation.v1"
