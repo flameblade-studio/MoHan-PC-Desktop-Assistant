@@ -1,3 +1,0 @@
-### 眨眼影格待備時固定素體來源／眨眼帧待备时固定素体来源／Freeze body authorities while authored blink frames are pending／まばたきフレーム準備中の素体参照元を固定
-
-- 指定素體來源目錄時，在眨眼影格仍待提供時，也會在載入清單時固定原圖位元組，確保磁碟檔案更新後修補區域仍使用原先固定的臉；預設素材路徑維持原行為。／指定素体来源目录时，在眨眼帧仍待提供时，也会在加载清单时固定原图字节，确保磁盘文件更新后修补区域仍使用原先固定的脸；默认素材路径维持原行为。／When a body authority directory is specified, snapshot source bytes on manifest load while authored blink frames remain pending, keeping restoration regions bound to the original face across later disk updates; default asset paths retain their existing behavior.／素体の参照元ディレクトリを指定した場合、まばたきフレームが準備中でもマニフェスト読み込み時に元画像のバイト列を固定し、その後のファイル更新時も復元領域を元の顔に固定します。既定の素材パスの動作は維持されます。

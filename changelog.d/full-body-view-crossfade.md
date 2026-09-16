@@ -1,3 +1,0 @@
-### 全身視角輪廓淡出修正／全身视角轮廓淡出修正／Fix full-body silhouette cross-fades／全身ビュー輪郭のクロスフェード修正
-
-- 相鄰視角合成函式 render_blended 採預乘色彩加權合成，使舊輪廓依權重完整淡出，保留重疊區域的不透明度，權重為 1 時精確回傳下一視角。本次修正範圍為函式層級；桌面轉向流程接入仍待完成，角色素材保持原樣。／相邻视角合成函数 render_blended 采用预乘色彩加权合成，使旧轮廓按权重完整淡出，保留重叠区域的不透明度，权重为 1 时精确返回下一视角。本次修正范围为函数级；桌面转向流程接入仍待完成，角色素材保持原样。／The render_blended helper uses weighted premultiplied pixels to fade the old silhouette fully, preserve opaque overlap, and return the exact next view at weight 1. This change covers the helper; desktop-turn integration remains pending, and character assets stay intact.／隣接ビュー合成関数 render_blended は乗算済みカラーの重み付き合成により旧輪郭を完全にフェードし、不透明な重なりを保持して、重み 1 で次のビューをそのまま返します。変更範囲は関数単位です。デスクトップ方向転換への接続は今後の作業として残り、キャラクター素材は保持します。
