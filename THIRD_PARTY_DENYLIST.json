@@ -1,53 +1,203 @@
 {
   "schema": "mohan.third-party-denylist.v1",
-  "updated_at": "2026-08-25",
+  "updated_at": "2026-09-07",
   "policy": {
-    "allowed_licenses": ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "CC0-1.0", "CC-BY"],
-    "forbidden_license_markers": ["AGPL", "GPL", "LGPL", "-NC", "-SA", "-ND", "UNKNOWN", "UNVERIFIED"]
+    "allowed_licenses": [
+      "MIT",
+      "Apache-2.0",
+      "BSD-2-Clause",
+      "BSD-3-Clause",
+      "CC0-1.0",
+      "CC-BY",
+      "MPL-2.0"
+    ],
+    "forbidden_license_markers": [
+      "AGPL",
+      "GPL",
+      "LGPL",
+      "-NC",
+      "-SA",
+      "-ND",
+      "UNKNOWN",
+      "UNVERIFIED"
+    ],
+    "download_gate": "fail_closed_before_download",
+    "license_evidence_required_before_download": true,
+    "owner_ruling_date": "2026-09-07",
+    "owner_ruling": "Only commercially usable, modifiable components with verified licensing may enter. Owner approved MPL-2.0 on 2026-09-07 after compliance remediation; retain file-level source, notices and recipient rights. Existing permanent tool denials and other unapproved copyleft/non-commercial/no-derivatives/share-alike/unknown-license restrictions remain effective.",
+    "conditional_license_requirements": {
+      "MPL-2.0": {
+        "evidence_manifest": "third_party_licenses/mpl/components.json",
+        "verification_command": "python tools/mpl_compliance.py --require-allowlist --site-packages <active-site-packages>",
+        "requirements": [
+          "Preserve full MPL text and original notices",
+          "Retain exact corresponding sources and version/hash evidence",
+          "Provide MPL sources to recipients of distributed covered software without restricting their rights",
+          "Update sources and evidence after modifications or version changes",
+          "Evaluate every term of AND expressions; preserve the chosen terms of OR expressions",
+          "Do not reinterpret this permission as approval for permanently denied tools"
+        ]
+      }
+    }
   },
   "permanent_denials": [
     {
       "id": "nvdiffrast",
-      "aliases": ["nvdiffrast", "NVlabs/nvdiffrast", "https://github.com/NVlabs/nvdiffrast"],
+      "aliases": [
+        "nvdiffrast",
+        "NVlabs/nvdiffrast",
+        "https://github.com/NVlabs/nvdiffrast"
+      ],
       "reason": "The locally inspected license is outside MoHan's production allowlist.",
-      "forbidden_operations": ["download", "install", "build", "import", "use", "package", "release"],
+      "forbidden_operations": [
+        "download",
+        "install",
+        "build",
+        "import",
+        "use",
+        "package",
+        "release"
+      ],
       "exceptions": []
     },
     {
       "id": "zero123plus-weights",
-      "aliases": ["Zero123++", "zero123plus-v1.2", "sudo-ai/zero123plus-v1.2", "https://huggingface.co/sudo-ai/zero123plus-v1.2"],
+      "aliases": [
+        "Zero123++",
+        "zero123plus-v1.2",
+        "sudo-ai/zero123plus-v1.2",
+        "https://huggingface.co/sudo-ai/zero123plus-v1.2"
+      ],
       "reason": "The pinned local model-weight cache had no sufficiently clear license evidence.",
-      "forbidden_operations": ["download", "cache", "load", "use", "package", "release"],
+      "forbidden_operations": [
+        "download",
+        "cache",
+        "load",
+        "use",
+        "package",
+        "release"
+      ],
       "exceptions": []
     },
     {
       "id": "comfyui-runtime",
-      "aliases": ["ComfyUI", "Comfy-Desktop", "https://github.com/comfyanonymous/ComfyUI"],
+      "aliases": [
+        "ComfyUI",
+        "Comfy-Desktop",
+        "https://github.com/comfyanonymous/ComfyUI"
+      ],
       "reason": "GPL-3.0 is outside MoHan's production allowlist and would contaminate the intended permissive distribution boundary.",
-      "forbidden_operations": ["download", "install", "build", "import", "use", "package", "release"],
+      "forbidden_operations": [
+        "download",
+        "install",
+        "build",
+        "import",
+        "use",
+        "package",
+        "release"
+      ],
+      "exceptions": []
+    },
+    {
+      "id": "krita-runtime",
+      "aliases": [
+        "Krita",
+        "krita.exe",
+        "krita-x64",
+        "https://krita.org",
+        "https://invent.kde.org/graphics/krita"
+      ],
+      "reason": "Owner ruling on 2026-09-07: Krita is GPL-3.0 and therefore outside MoHan's production-tool allowlist. Do not download, install, retain, use, or create MoHan pipeline artifacts with it.",
+      "forbidden_operations": [
+        "download",
+        "install",
+        "retain",
+        "build",
+        "import",
+        "use",
+        "package",
+        "release"
+      ],
+      "exceptions": []
+    },
+    {
+      "id": "minipaint-runtime",
+      "aliases": [
+        "miniPaint",
+        "viliusle/miniPaint",
+        "AlertifyJS",
+        "alertifyjs"
+      ],
+      "reason": "Owner license-purity policy: miniPaint is MIT at the top level but its shipped browser bundle includes GPL-3.0 AlertifyJS. The tool was deleted before any MoHan asset was opened or edited.",
+      "forbidden_operations": [
+        "download",
+        "install",
+        "retain",
+        "build",
+        "import",
+        "use",
+        "package",
+        "release"
+      ],
       "exceptions": []
     },
     {
       "id": "kandinsky-2.2-mohan-pose-atlas",
-      "aliases": ["kandinsky-2-2-prior", "kandinsky-2-2-controlnet-depth", "kandinsky-community/kandinsky-2-2-prior", "kandinsky-community/kandinsky-2-2-controlnet-depth"],
+      "aliases": [
+        "kandinsky-2-2-prior",
+        "kandinsky-2-2-controlnet-depth",
+        "kandinsky-community/kandinsky-2-2-prior",
+        "kandinsky-community/kandinsky-2-2-controlnet-depth"
+      ],
       "reason": "Local MoHan tests completed technically but repeatedly failed identity, anatomy, clothing, and yaw art acceptance; this route is permanently unsuitable for the formal 24-view and 600-layer production line.",
-      "forbidden_operations": ["download", "cache", "load", "use", "package", "release"],
+      "forbidden_operations": [
+        "download",
+        "cache",
+        "load",
+        "use",
+        "package",
+        "release"
+      ],
       "exceptions": []
     },
     {
       "id": "qwen-image-comfy-repacks",
-      "aliases": ["qwen-image-edit-2509-comfy", "Comfy-Org/Qwen-Image-Edit_ComfyUI", "Comfy-Org/Qwen-Image-Edit-2509_ComfyUI"],
+      "aliases": [
+        "qwen-image-edit-2509-comfy",
+        "Comfy-Org/Qwen-Image-Edit_ComfyUI",
+        "Comfy-Org/Qwen-Image-Edit-2509_ComfyUI"
+      ],
       "reason": "These repacks require the permanently denied ComfyUI runtime. Separate official Qwen model weights are governed by their own scoped policy entry.",
-      "forbidden_operations": ["download", "cache", "load", "use", "package", "release"],
+      "forbidden_operations": [
+        "download",
+        "cache",
+        "load",
+        "use",
+        "package",
+        "release"
+      ],
       "exceptions": []
     },
     {
       "id": "qwen-image-edit-2509-weights-self-training",
       "scope": "mohan_current_self_training_24_600_pipeline",
-      "aliases": ["Qwen/Qwen-Image-Edit-2509", "models--Qwen--Qwen-Image-Edit-2509", "Qwen-Image-Edit-2509 model weights"],
+      "aliases": [
+        "Qwen/Qwen-Image-Edit-2509",
+        "models--Qwen--Qwen-Image-Edit-2509",
+        "Qwen-Image-Edit-2509 model weights"
+      ],
       "reason": "The official Qwen-Image-Edit-2509 model weights are not required by the approved FLUX.1-schnell self-training path and are permanently excluded from the current MoHan 24-view and 600-layer self-training pipeline.",
-      "forbidden_operations": ["download", "cache", "load", "use", "package", "release"],
-      "exceptions": ["Preserve tools/third_party/qwen2509-standalone/.conda because it is a shared permissive Python runtime used by Diffusers, bitsandbytes, and BiRefNet; the environment is not Qwen model weights and must not be deleted under this denial"]
+      "forbidden_operations": [
+        "download",
+        "cache",
+        "load",
+        "use",
+        "package",
+        "release"
+      ],
+      "exceptions": [
+        "Preserve tools/third_party/qwen2509-standalone/.conda because it is a shared permissive Python runtime used by Diffusers, bitsandbytes, and BiRefNet; the environment is not Qwen model weights and must not be deleted under this denial"
+      ]
     }
   ],
   "pipeline_effect": {

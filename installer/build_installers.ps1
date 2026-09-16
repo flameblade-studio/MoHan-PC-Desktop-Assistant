@@ -21,11 +21,11 @@ $RequiredFontFiles = @(
 )
 foreach ($RequiredFontFile in $RequiredFontFiles) {
     if (-not (Test-Path -LiteralPath $RequiredFontFile -PathType Leaf)) {
-        throw "Bundled font file is missing from the installer source: $RequiredFontFile"
+        throw "Installer source requires this bundled font file: $RequiredFontFile"
     }
 }
 if (-not (Test-Path (Join-Path $ResolvedAppDir $ExecutableName))) {
-    throw "Packaged executable was not found in $ResolvedAppDir"
+    throw "Packaged executable path is required in $ResolvedAppDir"
 }
 New-Item -ItemType Directory -Force $ResolvedOutput | Out-Null
 
@@ -38,16 +38,16 @@ if (-not $Iscc) {
         Sort-Object FullName -Descending |
         Select-Object -First 1
 }
-if (-not $Iscc) { throw "Inno Setup 7.0.2 compiler was not found" }
+if (-not $Iscc) { throw "Install the Inno Setup 7.0.2 compiler to build the installer" }
 $InnoVersionProbe = Join-Path $Iscc.DirectoryName "unins000.exe"
 if (-not (Test-Path -LiteralPath $InnoVersionProbe)) {
-    throw "Inno Setup version probe was not found at $InnoVersionProbe"
+    throw "Inno Setup version probe is required at $InnoVersionProbe"
 }
 $IsccVersion = (
     Get-Item -LiteralPath $InnoVersionProbe
 ).VersionInfo.ProductVersion.Trim()
 if ($IsccVersion -notmatch '^7\.0\.2(?:\.|$)') {
-    throw "MoHan installers require Inno Setup 7.0.2; found $IsccVersion"
+    throw "MoHan installers use Inno Setup 7.0.2; detected $IsccVersion"
 }
 & $Iscc.FullName (Join-Path $ProjectRoot "installer\mohan.iss") `
     "/DMyVersion=$Version" `
@@ -55,7 +55,7 @@ if ($IsccVersion -notmatch '^7\.0\.2(?:\.|$)') {
     "/DExecutableName=$ExecutableName" `
     "/DOutputDir=$ResolvedOutput" `
     "/DIconPath=$IconPath"
-if ($LASTEXITCODE -ne 0) { throw "Inno Setup build failed" }
+if ($LASTEXITCODE -ne 0) { throw "Inno Setup build reported status $LASTEXITCODE" }
 
 $NumericVersion = (($Version -split '-', 2)[0] -split '\.')[0..2] -join '.'
 $WixCommand = $null
@@ -72,13 +72,13 @@ if (-not $WixCommand) {
     }
 }
 if (-not $WixCommand) {
-    throw "WiX Toolset v7.0.0 was not found. Install it with: dotnet tool install --global wix --version 7.0.0"
+    throw "Install WiX Toolset v7.0.0 with: dotnet tool install --global wix --version 7.0.0"
 }
 $Wix = $WixCommand.Source
 if (-not $Wix) { $Wix = $WixCommand.FullName }
 $WixVersion = (& $Wix --version).Trim()
 if ($LASTEXITCODE -ne 0 -or $WixVersion -notmatch '^7\.0\.0(?:\+|$)') {
-    throw "MoHan installers require WiX Toolset v7.0.0; found $WixVersion"
+    throw "MoHan installers use WiX Toolset v7.0.0; detected $WixVersion"
 }
 $WixWork = Join-Path $env:RUNNER_TEMP "mohan-wix-$Version"
 New-Item -ItemType Directory -Force $WixWork | Out-Null
@@ -131,7 +131,7 @@ foreach ($Locale in $Locales) {
         -out $LocaleMsi `
         (Join-Path $ProjectRoot "installer\Product.wxs")
     if ($LASTEXITCODE -ne 0) {
-        throw "WiX v7 $($Locale.Name) build failed"
+        throw "WiX v7 $($Locale.Name) build reported status $LASTEXITCODE"
     }
     & $Wix msi validate `
         -acceptEula wix7 `
@@ -140,7 +140,7 @@ foreach ($Locale in $Locales) {
         -sice ICE91 `
         $LocaleMsi
     if ($LASTEXITCODE -ne 0) {
-        throw "WiX v7 $($Locale.Name) validation failed"
+        throw "WiX v7 $($Locale.Name) validation reported status $LASTEXITCODE"
     }
     $LocalizedMsi[$Locale.Name] = $LocaleMsi
 }
@@ -160,7 +160,7 @@ foreach ($Locale in $Locales | Where-Object { -not $_.Base }) {
         $LocalizedMsi[$Locale.Name] `
         -out $Transform
     if ($LASTEXITCODE -ne 0) {
-        throw "WiX v7 $($Locale.Name) transform generation failed"
+        throw "WiX v7 $($Locale.Name) transform generation reported status $LASTEXITCODE"
     }
     $Transforms += $Transform
 }

@@ -1,3 +1,3 @@
 ### 素材核可證據修正／素材核准证据修正／Artwork approval evidence correction／素材承認記録の修正
 
-- 分層建置工具不再自動宣稱輸入素材已獲使用者核可，保留來源雜湊並明示目視核可須另行查證。／分层构建工具不再自动声称输入素材已获用户核准，保留来源哈希并明确目视核准须另行查证。／The layer builder no longer claims automatic user approval of input artwork; it retains the source hash and explicitly requires separate verification of visual approval.／レイヤー生成ツールは入力素材のユーザー承認を自動的に宣言せず、出所のハッシュを保持し、目視承認の別途確認が必要であることを明示します。
+- 分層建置工具保留輸入素材的來源雜湊，並明示使用者目視核可須以獨立證據查證。／分层构建工具保留输入素材的来源哈希，并明确用户目视核准须以独立证据查证。／The layer builder retains the input artwork source hash and explicitly requires independent evidence of user visual approval.／レイヤー生成ツールは入力素材の出所ハッシュを保持し、ユーザーの目視承認には独立した証拠の確認が必要であることを明示します。

@@ -15,10 +15,10 @@
    - Realtime：`gpt-realtime-2.1-mini`
    - 轉錄：`gpt-4o-mini-transcribe`
    - TTS：`gpt-4o-mini-tts`
-6. 不要把 EXE 單獨移出程式資料夾。
+6. 請讓 EXE 與完整程式資料夾保持在一起。
 
-Microsoft、GitHub 與 Home Assistant 屬於尚未完成真實環境端到端驗證的
-實驗性預覽整合，請勿直接用於重要帳號、正式儲存庫或高風險設備。線上服務的
+Microsoft、GitHub 與 Home Assistant 的架構與安全邊界已完成；下一階段將進行
+真實環境端到端驗證。初次使用請選擇非關鍵帳號、測試儲存庫及低風險設備。線上服務的
 實際可用性取決於使用者所在地、網路環境與服務帳號。
 
 完整設定、OAuth、安全與隱私說明請參閱 [README.md](README.md)。
@@ -26,10 +26,10 @@ Microsoft、GitHub 與 Home Assistant 屬於尚未完成真實環境端到端驗
 ### macOS／Linux 功能受限 Preview
 
 各版本隨附的 macOS Apple Silicon（arm64）與 Intel（x86_64）DMG
-（內含 `.app`），以及 Linux x86_64 AppImage，只用於
-啟動、四語介面、平台路徑及安全停用驗證。請先核對 SHA256SUMS 與 Artifact
-Attestation。這些預覽包沒有 API 金鑰輸入、語音、完整桌面角色、完整聊天／
-工作介面、雲端連接器、系統工具或自動啟動，也尚未由作者以實機驗收。
+（內含 `.app`），以及 Linux x86_64 AppImage 的驗證範圍是
+啟動、四語介面、平台路徑及安全控制。請先核對 SHA256SUMS 與 Artifact
+Attestation。API 金鑰輸入、語音、完整桌面角色、完整聊天／工作介面、雲端連接器、
+系統工具與自動啟動會在原生安全介接完成後納入；作者實機驗收安排在此範圍完成後。
 
 ## 简体中文
 
@@ -46,10 +46,10 @@ Attestation。這些預覽包沒有 API 金鑰輸入、語音、完整桌面角�
    - Realtime：`gpt-realtime-2.1-mini`
    - 转录：`gpt-4o-mini-transcribe`
    - TTS：`gpt-4o-mini-tts`
-6. 请勿将 EXE 单独移出程序文件夹。
+6. 请让 EXE 与完整程序文件夹保持在一起。
 
-Microsoft、GitHub 与 Home Assistant 仍属于尚未完成真实环境端到端验证的
-实验性预览集成，请勿直接用于重要账号、正式仓库或高风险设备。在线服务的
+Microsoft、GitHub 与 Home Assistant 的架构与安全边界已经完成；下一阶段将进行
+真实环境端到端验证。初次使用请选择非关键账号、测试仓库及低风险设备。在线服务的
 实际可用性取决于用户所在地、网络环境与服务账号。
 
 完整设置、OAuth、安全与隐私说明请参阅 [README.md](README.md)。
@@ -57,10 +57,10 @@ Microsoft、GitHub 与 Home Assistant 仍属于尚未完成真实环境端到端
 ### macOS／Linux 功能受限 Preview
 
 各版本随附的 macOS Apple Silicon（arm64）与 Intel（x86_64）DMG
-（内含 `.app`），以及 Linux x86_64 AppImage，只用于
-验证启动、四语界面、平台路径与安全停用。请核对 SHA256SUMS 与 Artifact
-Attestation。预览包不提供 API 密钥输入、语音、完整桌面角色、完整聊天／工作
-界面、云端连接器、系统工具或自动启动，也尚未经过作者真机验收。
+（内含 `.app`），以及 Linux x86_64 AppImage 的验证范围是
+启动、四语界面、平台路径与安全控制。请核对 SHA256SUMS 与 Artifact
+Attestation。API 密钥输入、语音、完整桌面角色、完整聊天／工作界面、云端连接器、
+系统工具与自动启动会在原生安全适配完成后纳入；作者真机验收安排在此范围完成后。
 
 ## English
 
@@ -79,8 +79,8 @@ Attestation。预览包不提供 API 密钥输入、语音、完整桌面角色�
 6. Keep the EXE and its companion folders together.
 
 Microsoft, GitHub, and Home Assistant are experimental preview integrations
-without completed real-environment end-to-end validation. Do not begin with
-critical accounts, production repositories, or high-risk devices. Actual
+whose next validation stage covers real-environment end-to-end flows. Begin with
+non-critical accounts, test repositories, and low-risk devices. Actual
 availability depends on the user's region, network, and service accounts.
 
 See [README.md](README.md) for complete setup, OAuth, safety, and privacy notes.
@@ -89,11 +89,11 @@ See [README.md](README.md) for complete setup, OAuth, safety, and privacy notes.
 
 Each release's macOS Apple Silicon (arm64) and Intel (x86_64) DMGs
 (each containing a `.app`) and Linux x86_64 AppImage
-validate startup, four-language UI, platform paths, and fail-closed boundaries
-only. Verify SHA256SUMS and the Artifact Attestation first. These packages have
-no API-key entry, voice, complete desktop character/chat/productivity UI,
-cloud connectors, system tools, or autostart, and have not yet received the
-maintainer's physical-device signoff.
+cover startup, four-language UI, platform paths, and safety-control validation.
+Verify SHA256SUMS and the Artifact Attestation first. API-key entry, voice, the
+complete desktop character/chat/productivity UI, cloud connectors, system tools,
+and autostart enter scope after native secure adapters are ready; maintainer
+physical-device signoff follows completion of this stated scope.
 
 ## 日本語
 
@@ -124,7 +124,7 @@ Microsoft、GitHub、Home Assistant は、実環境でのエンドツーエン�
 
 各リリースに付属する macOS Apple Silicon（arm64）版と Intel（x86_64）版 DMG
 （各 `.app` 同梱）、および Linux x86_64 AppImage は、
-起動、四言語画面、OS ごとの保存先、安全な無効化だけを確認します。先に
+検証範囲は、起動、四言語画面、OS ごとの保存先、安全制御です。先に
 SHA256SUMS と Artifact Attestation を確認してください。API キー入力、音声、
 完全なデスクトップキャラクター・会話・作業画面、クラウド連携、システム操作、
-自動起動はなく、作者の実機確認もまだ完了していません。
+自動起動は原生安全統合の完了後に対象となり、作者の実機確認は記載された検証範囲の完了後に実施します。

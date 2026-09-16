@@ -4,10 +4,10 @@
 #   pip install pre-commit
 #   pre-commit install
 #
-# After that, every `git commit` runs these checks and blocks the commit if
-# any fail. The ruff hook enforces the same release-blocking gate as CI
-# (Pyflakes + PLR2004 magic-value-comparison), so a new magic number is
-# rejected at commit time instead of accumulating for a later cleanup pass.
+# After that, every `git commit` runs these checks and reports the result
+# before the commit is created. The ruff hook enforces the same release gate
+# as CI (Pyflakes + PLR2004 magic-value-comparison), so each new magic number
+# receives feedback at commit time and stays within the quality policy.
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.16.0

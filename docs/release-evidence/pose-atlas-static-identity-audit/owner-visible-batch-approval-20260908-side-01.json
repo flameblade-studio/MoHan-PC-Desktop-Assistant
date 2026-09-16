@@ -1,0 +1,90 @@
+{
+  "schema": "mohan.owner-source-visual-approval.v1",
+  "recorded_at_utc": "2026-09-08T04:23:21.325128+00:00",
+  "owner_statement": "外觀我全數核定批准",
+  "scope": "All source appearances presented for the pending side-view review: yaw -090, -075, -045, and previously displayed pending -120. Proceed with native alpha, visible partitions and technical integration without repeated appearance approval.",
+  "sources": [
+    {
+      "view_id": "yaw-120-pitch+00",
+      "source": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-root/yaw-120/candidate-01.png",
+      "source_sha256": "4d6604c153144114c8a2efa50beff16d38e8032ca3cc5b151f1efbb081e225ad",
+      "review_board": {
+        "path_relative_to_project": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-luna-b/next-front-rear-appearance-review-01/yaw-120-pitch+00.review-board.png",
+        "sha256": "e62e36d254c8d0c927aaee60fbe7b6a6f6b7b8de8277bb4199f5c55c4e12da8c",
+        "size": [
+          1600,
+          1840
+        ],
+        "display_transform": "source fullbody/crops pasted into review board; nearest-neighbor fit for display only"
+      },
+      "native_rgba_evidence": {
+        "path_relative_to_project": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-luna-a/new-side-back-alpha/yaw-120/candidate-01.birefnet-rgba.png",
+        "exists": true,
+        "sha256": "ffa58ec7c568630aad453da86dc926c7956cab4e75faae96fdf3b1f8c77bf911",
+        "recorded_sha256": "ffa58ec7c568630aad453da86dc926c7956cab4e75faae96fdf3b1f8c77bf911",
+        "integrity_status": "verified"
+      }
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "source": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-luna-b/yaw-090/candidate-yaw-090-body-base-01.png",
+      "source_sha256": "85f7fe28a7aebf9255b7a295293280818cae92bb11f3a263af7dc63f35ca17a2",
+      "review_board": {
+        "path_relative_to_project": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-luna-b/next-front-rear-appearance-review-01/yaw-090-pitch+00.review-board.png",
+        "sha256": "49492e29142be17ef0f49ae2fca1babfeb15d51f5e1c4a8059e81e0cf95f9b3b",
+        "size": [
+          1600,
+          1840
+        ],
+        "display_transform": "source fullbody/crops pasted into review board; nearest-neighbor fit for display only"
+      },
+      "native_rgba_evidence": null
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "source": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-luna-b/yaw-075/candidate-yaw-075-body-base-03.png",
+      "source_sha256": "b6b8f8527c49d1662d1b9ebbd5ed42ed37fbdc613301f56cf3530060a3d3514d",
+      "review_board": {
+        "path_relative_to_project": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-luna-b/next-front-rear-appearance-review-01/yaw-075-pitch+00.review-board.png",
+        "sha256": "1c30ab8e00555adc90507eca7c84713f7b635b2cbb543c69838d51622c07d2d2",
+        "size": [
+          1600,
+          1840
+        ],
+        "display_transform": "source fullbody/crops pasted into review board; nearest-neighbor fit for display only"
+      },
+      "native_rgba_evidence": {
+        "path_relative_to_project": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-luna-b/yaw-075-native-alpha-03/candidate-yaw-075-body-base-03.birefnet-rgba.png",
+        "exists": true,
+        "sha256": "d60ea4a30af06140fdde2c572b30acbe41c8cbfec5fc49d798db3f9e5a280f8f",
+        "recorded_sha256": "d60ea4a30af06140fdde2c572b30acbe41c8cbfec5fc49d798db3f9e5a280f8f",
+        "integrity_status": "verified"
+      }
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "source": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-luna-b/yaw-045/candidate-yaw-045-body-base-05.png",
+      "source_sha256": "3353338de591d913df4fdb5df236843b3367ec59251c28a23ef44157455cf787",
+      "review_board": {
+        "path_relative_to_project": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-luna-b/next-front-rear-appearance-review-01/yaw-045-pitch+00.review-board.png",
+        "sha256": "aad4ef15e2e54e0f2de42c5a3aaa0a8b471b9d0c61393e979c0ade483fd43b31",
+        "size": [
+          1600,
+          1840
+        ],
+        "display_transform": "source fullbody/crops pasted into review board; nearest-neighbor fit for display only"
+      },
+      "native_rgba_evidence": null
+    }
+  ],
+  "appearance_approved": true,
+  "not_established": [
+    "precise geometric yaw calibration",
+    "hidden surface authorship",
+    "600 functional layers",
+    "release or merge authorization"
+  ],
+  "source_review_report_sha256": "99009398d15b383ab3f0d229dcc56a26c0ab9f12e599bd7cb0b3ac903f2fd17a",
+  "original_receipt_sha256": "2d70704e573a7eb78a6190c2bc88476553a4a13f6d099e4f384a5b5756f94c21",
+  "transformation": "machine paths normalized to project-relative paths; approval scope unchanged"
+}

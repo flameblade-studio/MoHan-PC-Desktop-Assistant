@@ -11,7 +11,7 @@
 1. 每項儲存庫變更都必須透過 Pull Request。
 2. 必要的 CI 與安全檢查必須全部通過。
 3. 所有審查對話都必須解決。
-4. 變更不得削弱權限、機密儲存、個人設定檔轉移或回歸測試邊界。
+4. 變更須維持或強化權限、機密儲存、個人設定檔轉移及回歸測試邊界。
 5. 合併前，維護者得要求縮小範圍、增加測試或補上遷移保護。
 
 ### 決策模式
@@ -20,7 +20,7 @@
 
 ### 安全與隱私
 
-不得在公開 Issue 張貼漏洞、憑證、私人對話、錄音、個人資料庫或未遮蔽的截圖。私人通報方式請遵循 [SECURITY.md](SECURITY.md)。
+公開 Issue 只使用已移除漏洞細節、憑證、私人對話、錄音、個人資料庫及未遮蔽截圖的內容；私人通報方式請遵循 [SECURITY.md](SECURITY.md)。
 
 ## 简体中文
 
@@ -33,7 +33,7 @@
 1. 每项仓库变更都必须通过 Pull Request。
 2. 必要的 CI 与安全检查必须全部通过。
 3. 所有审查对话都必须解决。
-4. 变更不得削弱权限、机密存储、个人配置文件转移或回归测试边界。
+4. 变更须维持或强化权限、机密存储、个人配置文件转移及回归测试边界。
 5. 合并前，维护者可以要求缩小范围、增加测试或补上迁移保护。
 
 ### 决策模式
@@ -42,7 +42,7 @@
 
 ### 安全与隐私
 
-不得在公开 Issue 发布漏洞、凭据、私人对话、录音、个人数据库或未遮蔽的截图。私人报告方式请遵循 [SECURITY.md](SECURITY.md)。
+公开 Issue 只使用已移除漏洞细节、凭据、私人对话、录音、个人数据库及未遮蔽截图的内容；私人报告方式请遵循 [SECURITY.md](SECURITY.md)。
 
 ## English
 
@@ -55,7 +55,7 @@ MoHan is currently maintained by **CHOU MING HUA (`@hitoshic1982`)**. Maintainer
 1. Every repository change must use a Pull Request.
 2. All required CI and security checks must pass.
 3. Every review conversation must be resolved.
-4. Changes must not weaken permission, secret-storage, profile-transfer, or regression-test boundaries.
+4. Changes maintain or strengthen permission, secret-storage, profile-transfer, and regression-test boundaries.
 5. Before merging, the maintainer may request narrower scope, additional tests, or migration safeguards.
 
 ### Decision model
@@ -64,7 +64,7 @@ Discussion and evidence are welcome. While the project has one primary maintaine
 
 ### Security and privacy
 
-Do not publish vulnerabilities, credentials, private conversations, recordings, personal databases, or unredacted screenshots in a public Issue. Follow [SECURITY.md](SECURITY.md) for private reporting.
+Public Issues contain material from which vulnerability details, credentials, private conversations, recordings, personal databases, and unredacted screenshots have been removed. Follow [SECURITY.md](SECURITY.md) for private reporting.
 
 ## 日本語
 

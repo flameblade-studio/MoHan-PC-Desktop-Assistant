@@ -2,8 +2,8 @@
   "schema": "mohan.pose-atlas-static-identity-audit.v2",
   "exit_code_contract": {
     "0": "all static identity checks passed",
-    "1": "one or more visual identity checks failed",
-    "2": "audit configuration or execution failed closed"
+    "1": "one or more visual identity checks require correction",
+    "2": "audit stopped with the acceptance gate closed; review configuration and execution"
   },
   "passed": true,
   "atlas_root": "assets\\pose-atlas\\v5-base",
@@ -12,72 +12,19 @@
   "issue_count": 0,
   "issues_by_code": {},
   "issues": [],
-  "waived_issue_count": 13,
+  "waived_issue_count": 3,
   "waived_issues_by_code": {
-    "adjacent_face_registration_jump": 6,
-    "forehead_curvature_discontinuity": 1,
-    "forehead_outward_bulge": 4,
-    "mirror_face_aspect_drift": 2
+    "forehead_outward_bulge": 3
   },
   "waived_issues": [
     {
-      "code": "adjacent_face_registration_jump",
-      "path": "assets\\pose-atlas\\v5-base\\yaw+000-pitch+00.png",
-      "view_id": "yaw+000-pitch+00",
-      "message": "face registration jumps between yaw+000-pitch+00 and yaw+015-pitch+00",
-      "metrics": {
-        "center_delta": 0.004641,
-        "nose_position_delta": 0.439264
-      }
-    },
-    {
-      "code": "adjacent_face_registration_jump",
-      "path": "assets\\pose-atlas\\v5-base\\yaw+000-pitch+00.png",
-      "view_id": "yaw+000-pitch+00",
-      "message": "face registration jumps between yaw-015-pitch+00 and yaw+000-pitch+00",
-      "metrics": {
-        "center_delta": 0.009248,
-        "nose_position_delta": 0.45674
-      }
-    },
-    {
-      "code": "adjacent_face_registration_jump",
-      "path": "assets\\pose-atlas\\v5-base\\yaw+015-pitch+00.png",
-      "view_id": "yaw+015-pitch+00",
-      "message": "face registration jumps between yaw+000-pitch+00 and yaw+015-pitch+00",
-      "metrics": {
-        "center_delta": 0.004641,
-        "nose_position_delta": 0.439264
-      }
-    },
-    {
       "code": "forehead_outward_bulge",
       "path": "assets\\pose-atlas\\v5-base\\yaw+060-pitch+00.png",
       "view_id": "yaw+060-pitch+00",
       "message": "profile forehead protrudes beyond the permitted smooth chord",
       "metrics": {
         "maximum": 0.025,
-        "outward_ratio": 0.030707
-      }
-    },
-    {
-      "code": "mirror_face_aspect_drift",
-      "path": "assets\\pose-atlas\\v5-base\\yaw+060-pitch+00.png",
-      "view_id": "yaw+060-pitch+00",
-      "message": "left/right mirrored face aspect differs excessively",
-      "metrics": {
-        "aspect_drift": 0.160786,
-        "maximum": 0.12
-      }
-    },
-    {
-      "code": "forehead_outward_bulge",
-      "path": "assets\\pose-atlas\\v5-base\\yaw+075-pitch+00.png",
-      "view_id": "yaw+075-pitch+00",
-      "message": "profile forehead protrudes beyond the permitted smooth chord",
-      "metrics": {
-        "maximum": 0.025,
-        "outward_ratio": 0.044305
+        "outward_ratio": 0.043119
       }
     },
     {
@@ -87,57 +34,7 @@
       "message": "profile forehead protrudes beyond the permitted smooth chord",
       "metrics": {
         "maximum": 0.025,
-        "outward_ratio": 0.05446
-      }
-    },
-    {
-      "code": "adjacent_face_registration_jump",
-      "path": "assets\\pose-atlas\\v5-base\\yaw-015-pitch+00.png",
-      "view_id": "yaw-015-pitch+00",
-      "message": "face registration jumps between yaw-015-pitch+00 and yaw+000-pitch+00",
-      "metrics": {
-        "center_delta": 0.009248,
-        "nose_position_delta": 0.45674
-      }
-    },
-    {
-      "code": "adjacent_face_registration_jump",
-      "path": "assets\\pose-atlas\\v5-base\\yaw-045-pitch+00.png",
-      "view_id": "yaw-045-pitch+00",
-      "message": "face registration jumps between yaw-060-pitch+00 and yaw-045-pitch+00",
-      "metrics": {
-        "center_delta": 0.012591,
-        "nose_position_delta": 0.727377
-      }
-    },
-    {
-      "code": "adjacent_face_registration_jump",
-      "path": "assets\\pose-atlas\\v5-base\\yaw-060-pitch+00.png",
-      "view_id": "yaw-060-pitch+00",
-      "message": "face registration jumps between yaw-060-pitch+00 and yaw-045-pitch+00",
-      "metrics": {
-        "center_delta": 0.012591,
-        "nose_position_delta": 0.727377
-      }
-    },
-    {
-      "code": "mirror_face_aspect_drift",
-      "path": "assets\\pose-atlas\\v5-base\\yaw-060-pitch+00.png",
-      "view_id": "yaw-060-pitch+00",
-      "message": "left/right mirrored face aspect differs excessively",
-      "metrics": {
-        "aspect_drift": 0.160786,
-        "maximum": 0.12
-      }
-    },
-    {
-      "code": "forehead_curvature_discontinuity",
-      "path": "assets\\pose-atlas\\v5-base\\yaw-090-pitch+00.png",
-      "view_id": "yaw-090-pitch+00",
-      "message": "profile forehead contains an abrupt curvature step",
-      "metrics": {
-        "curvature_step_ratio": 0.060622,
-        "maximum": 0.04
+        "outward_ratio": 0.04467
       }
     },
     {
@@ -147,7 +44,7 @@
       "message": "profile forehead protrudes beyond the permitted smooth chord",
       "metrics": {
         "maximum": 0.025,
-        "outward_ratio": 0.06459
+        "outward_ratio": 0.037269
       }
     }
   ]

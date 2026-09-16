@@ -23,7 +23,7 @@ for candidate in \
 done
 
 if [ -z "$RUFF" ]; then
-    echo "pre-commit: ruff not found; skipping magic-number gate." >&2
+    echo "pre-commit: magic-number gate skipped; install ruff to enable this check." >&2
     exit 0
 fi
 

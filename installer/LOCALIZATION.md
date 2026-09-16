@@ -19,7 +19,7 @@ EXE 與 MSI 捷徑必須指向安裝完成後的執行檔，並使用該執行�
 
 ### MSI 封裝
 
-MSI 維持為台灣繁體中文基礎封裝（`Language=1028`）。它主要供靜默安裝與受管理部署使用，因此不顯示自訂語言選擇器。維持單一穩定基礎 MSI，也能避免發布多個可能被 Windows Installer 視為不同產品的封裝。
+MSI 維持為台灣繁體中文基礎封裝（`Language=1028`）。它主要供靜默安裝與受管理部署使用，因此採用固定的基礎語言設定。維持單一穩定基礎 MSI，也讓 Windows Installer 維持一致的產品識別。
 
 建置程序會以相同 payload 與產品身分建立三個語言 transform：
 
@@ -34,9 +34,9 @@ msiexec /i MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.msi `
   TRANSFORMS=MoHan-Desktop-Assistant-vX.Y.Z-ja-JP.mst /qn
 ```
 
-MSI 與 transform 使用 WiX Toolset 7.0.0 建置。WiX v7 維護中的 `Files` 元素會遞迴收集已封裝應用程式；已移除的 Heat／Candle／Light／Torch v3 工具鏈不再使用。每一項 WiX 建置、驗證及 transform 命令，都必須提供擁有者已授權的 `-acceptEula wix7` 參數。ICE 驗證保持啟用；ICE38 與 ICE64 保留歷史上的每使用者封裝豁免，而 ICE91 因其警告只針對假設性的每機器用途而排除，本 `Scope="perUser"` 封裝並不支援該用途。
+MSI 與 transform 使用 WiX Toolset 7.0.0 建置。WiX v7 維護中的 `Files` 元素會遞迴收集已封裝應用程式；WiX v7 的 `Files` 流程承接原有 Heat／Candle／Light／Torch v3 工具鏈的收集工作。每一項 WiX 建置、驗證及 transform 命令，都必須提供擁有者已授權的 `-acceptEula wix7` 參數。ICE 驗證保持啟用；ICE38 與 ICE64 保留歷史上的每使用者封裝豁免，ICE91 採用既有排除設定，以對應 `Scope="perUser"` 封裝的每使用者範圍。
 
-Windows CI 會安裝基礎 MSI 與每一個 transform、執行封裝後自我測試，再將其解除安裝。任一變體失敗時，絕不得發布 transform。Transform 只影響 Windows Installer 訊息；墨寒首次啟動精靈仍控制應用程式的繁體中文、簡體中文、英文或日文介面與回覆語言。
+Windows CI 會安裝基礎 MSI 與每一個 transform、執行封裝後自我測試，再將其解除安裝；所有變體完成自我測試後才發布 transform。Transform 負責 Windows Installer 訊息；墨寒首次啟動精靈仍控制應用程式的繁體中文、簡體中文、英文或日文介面與回覆語言。
 
 ## 简体中文
 
@@ -57,7 +57,7 @@ EXE 与 MSI 快捷方式必须指向安装完成后的可执行文件，并使�
 
 ### MSI 封装
 
-MSI 保持为台湾繁体中文基础封装（`Language=1028`）。它主要供静默安装与托管部署使用，因此不显示自定义语言选择器。保持单一稳定基础 MSI，也能避免发布多个可能被 Windows Installer 视为不同产品的封装。
+MSI 保持为台湾繁体中文基础封装（`Language=1028`）。它主要供静默安装与托管部署使用，因此采用固定的基础语言设置。保持单一稳定基础 MSI，也让 Windows Installer 维持一致的产品识别。
 
 构建流程会以相同 payload 与产品身份创建三个语言 transform：
 
@@ -72,9 +72,9 @@ msiexec /i MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.msi `
   TRANSFORMS=MoHan-Desktop-Assistant-vX.Y.Z-ja-JP.mst /qn
 ```
 
-MSI 与 transform 使用 WiX Toolset 7.0.0 构建。WiX v7 维护中的 `Files` 元素会递归收集已封装应用程序；已移除的 Heat／Candle／Light／Torch v3 工具链不再使用。每一项 WiX 构建、验证及 transform 命令，都必须提供所有者已授权的 `-acceptEula wix7` 参数。ICE 验证保持启用；ICE38 与 ICE64 保留历史上的每用户封装豁免，而 ICE91 因其警告只针对假设性的每机器用途而排除，本 `Scope="perUser"` 封装并不支持该用途。
+MSI 与 transform 使用 WiX Toolset 7.0.0 构建。WiX v7 维护中的 `Files` 元素会递归收集已封装应用程序；WiX v7 的 `Files` 流程承接原有 Heat／Candle／Light／Torch v3 工具链的收集工作。每一项 WiX 构建、验证及 transform 命令，都必须提供所有者已授权的 `-acceptEula wix7` 参数。ICE 验证保持启用；ICE38 与 ICE64 保留历史上的每用户封装豁免，ICE91 采用现有排除设置，以对应 `Scope="perUser"` 封装的每用户范围。
 
-Windows CI 会安装基础 MSI 与每一个 transform、执行封装后自检，再将其卸载。任一变体失败时，绝不得发布 transform。Transform 只影响 Windows Installer 消息；墨寒首次运行向导仍控制应用程序的繁体中文、简体中文、英文或日文界面与回复语言。
+Windows CI 会安装基础 MSI 与每一个 transform、执行封装后自检，再将其卸载；所有变体完成自检后才发布 transform。Transform 负责 Windows Installer 消息；墨寒首次运行向导仍控制应用程序的繁体中文、简体中文、英文或日文界面与回复语言。
 
 ## English
 
@@ -95,7 +95,7 @@ EXE and MSI shortcuts must target the installed executable and use the MoHan hal
 
 ### MSI package
 
-The MSI remains a Taiwan Traditional Chinese base package (`Language=1028`). It is intended primarily for silent installation and managed deployment, so it does not display a custom language picker. Keeping one stable base MSI also avoids publishing several packages that Windows Installer could treat as different products.
+The MSI remains a Taiwan Traditional Chinese base package (`Language=1028`). It is intended primarily for silent installation and managed deployment, so it uses a fixed base language setting. Keeping one stable base MSI also keeps one consistent product identity for Windows Installer.
 
 The build creates three language transforms from the same payload and product identity:
 
@@ -110,9 +110,9 @@ msiexec /i MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.msi `
   TRANSFORMS=MoHan-Desktop-Assistant-vX.Y.Z-ja-JP.mst /qn
 ```
 
-The MSI and transforms are built with WiX Toolset 7.0.0. WiX v7's maintained `Files` element recursively harvests the packaged application; the removed Heat/Candle/Light/Torch v3 toolchain is not used. Every WiX build, validation, and transform command supplies the owner-authorized `-acceptEula wix7` argument. ICE validation remains enabled; ICE38 and ICE64 retain the historic per-user package exemptions, while ICE91 is excluded because its warning concerns a hypothetical per-machine use that this `Scope="perUser"` package does not support.
+The MSI and transforms are built with WiX Toolset 7.0.0. WiX v7's maintained `Files` element recursively harvests the packaged application; the WiX v7 `Files` flow carries the file-collection role previously provided by the Heat/Candle/Light/Torch v3 toolchain. Every WiX build, validation, and transform command supplies the owner-authorized `-acceptEula wix7` argument. ICE validation remains enabled; ICE38 and ICE64 retain the historic per-user package exemptions, while ICE91 uses the established exclusion for the `Scope="perUser"` package's per-user boundary.
 
-Windows CI installs the base MSI and every transform, runs the packaged self-test, and uninstalls them. A transform must never be published if any variant fails. The transforms affect Windows Installer messages only; MoHan's first-run wizard still controls the application's Traditional Chinese, Simplified Chinese, English, or Japanese interface and reply language.
+Windows CI installs the base MSI and every transform, runs the packaged self-test, and uninstalls them; transforms are published after every variant completes its self-test. The transforms provide Windows Installer messages; MoHan's first-run wizard still controls the application's Traditional Chinese, Simplified Chinese, English, or Japanese interface and reply language.
 
 ## 日本語
 
@@ -133,7 +133,7 @@ EXE と MSI のショートカットは、インストール済み実行ファ�
 
 ### MSI パッケージ
 
-MSI は台湾繁体字中国語のベースパッケージ（`Language=1028`）を維持します。主な用途はサイレントインストールと管理下の展開であるため、独自の言語選択画面は表示しません。安定した単一のベース MSI を維持することで、Windows Installer が別製品として扱い得る複数パッケージの公開も防ぎます。
+MSI は台湾繁体字中国語のベースパッケージ（`Language=1028`）を維持します。主な用途はサイレントインストールと管理下の展開であるため、固定したベース言語設定を使用します。安定した単一のベース MSI を維持することで、Windows Installer の製品 ID も一つに保ちます。
 
 ビルドでは、同一の payload と製品 identity から三つの言語 transform を作成します。
 
@@ -148,6 +148,6 @@ msiexec /i MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.msi `
   TRANSFORMS=MoHan-Desktop-Assistant-vX.Y.Z-ja-JP.mst /qn
 ```
 
-MSI と transform は WiX Toolset 7.0.0 でビルドします。WiX v7 で保守されている `Files` 要素が、パッケージ対象アプリケーションを再帰的に収集します。削除済みの Heat／Candle／Light／Torch v3 ツールチェーンは使用しません。WiX のすべてのビルド、検証、transform コマンドに、所有者が許可した `-acceptEula wix7` 引数を指定します。ICE 検証は有効なままとし、ICE38 と ICE64 には従来のユーザー単位パッケージ例外を維持します。ICE91 は、この `Scope="perUser"` パッケージが対応しない仮想的なマシン単位用途だけを警告するため除外します。
+MSI と transform は WiX Toolset 7.0.0 でビルドします。WiX v7 で保守されている `Files` 要素が、パッケージ対象アプリケーションを再帰的に収集します。WiX v7 の `Files` フローが、従来の Heat／Candle／Light／Torch v3 ツールチェーンが担ったファイル収集の役割を引き継ぎます。WiX のすべてのビルド、検証、transform コマンドに、所有者が許可した `-acceptEula wix7` 引数を指定します。ICE 検証は有効なままとし、ICE38 と ICE64 には従来のユーザー単位パッケージ例外を維持します。ICE91 は、`Scope="perUser"` パッケージのユーザー単位範囲に合わせた既存の除外設定を使用します。
 
-Windows CI は、ベース MSI と各 transform をインストールし、パッケージ済み自己テストを実行してからアンインストールします。いずれかの変種が失敗した場合、transform を決して公開してはいけません。Transform が影響するのは Windows Installer のメッセージだけです。アプリケーションの繁体字中国語、簡体字中国語、英語、日本語の画面および応答言語は、引き続き墨寒の初回起動ウィザードが制御します。
+Windows CI は、ベース MSI と各 transform をインストールし、パッケージ済み自己テストを実行してからアンインストールします。すべての変種が自己テストを完了した後に transform を公開します。Transform は Windows Installer のメッセージを提供します。アプリケーションの繁体字中国語、簡体字中国語、英語、日本語の画面および応答言語は、引き続き墨寒の初回起動ウィザードが制御します。

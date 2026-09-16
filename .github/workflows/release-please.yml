@@ -18,13 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      # Do NOT pass the ``release-type`` input here: release-please-action
-      # ignores ``config-file``/``manifest-file`` whenever ``release-type`` is
-      # set, which silently disables extra-files version bumps and the
-      # four-language changelog sections.
+      # Leave the ``release-type`` input unset here: release-please-action
+      # uses ``config-file``/``manifest-file`` for extra-files version bumps
+      # and the four-language changelog sections in this configuration.
       # The v5-bundled 17.6.0 title builder replaces each placeholder once;
       # keep the one version token as a title-wide prefix so all four language
-      # segments are generated without an empty component.
+      # segments are generated with each component populated.
       - name: Run release-please
         id: release
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
@@ -33,10 +32,10 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-      # Tags and releases created with GITHUB_TOKEN never fire `push` tag or
-      # `release` events (GitHub's anti-recursion rule), so the Multi-platform
-      # Release packaging workflow must be dispatched explicitly; dispatching
-      # through the API with GITHUB_TOKEN is allowed.
+      # GitHub's anti-recursion rule routes tags and releases created with
+      # GITHUB_TOKEN away from `push` tag and `release` events. The
+      # Multi-platform Release packaging workflow therefore receives an
+      # explicit API dispatch, which GITHUB_TOKEN authorizes.
       - name: Dispatch multi-platform packaging for the published release
         if: ${{ steps.release.outputs.release_created == 'true' }}
         shell: bash
@@ -67,7 +66,7 @@ jobs:
           version="$(python -c 'import json; print(json.load(open(".release-please-manifest.json"))["."])')"
           python tools/assemble_changelog.py --version "$version"
           if [[ -z "$(git status --porcelain -- CHANGELOG.md changelog.d)" ]]; then
-            echo "Changelog assembly made no changes"
+            echo "Changelog assembly confirms that the branch is current"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -84,8 +83,8 @@ jobs:
         run: |
           version="$(python -c 'import json; print(json.load(open(".release-please-manifest.json"))["."])')"
           # Creates docs/releases/v<version>.md from the CHANGELOG section as
-          # a four-language draft; an existing file is never overwritten so
-          # human polish on the release branch is preserved.
+          # a four-language draft; an existing file stays in place so human
+          # polish on the release branch remains available.
           python tools/generate_release_notes.py --version "$version"
           if [[ -z "$(git status --porcelain)" ]]; then
             echo "Release branch already carries the release notes"

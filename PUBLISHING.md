@@ -41,23 +41,23 @@ open-source
 - 標籤：`v3.1.2`
 - 標題：`MoHan Desktop Assistant v3.1.2`
 - 發布條件：只有在所有必要 CI、套件 smoke、安全及發布政策檢查成功後才可發布。
-- 本版完整保留並預設使用 OpenAI Realtime 原生聲音，作為三種回覆聲音中額外延遲最低的路徑；另提供使用者明確選擇的 Realtime 即時理解＋一般 Azure Speech 或 Dragon HD 串流發聲。三種模式完全隔離且不混音，不得改動其他語音供應器；Dragon HD 單句失敗時依序只退回一般 Azure 一次及 Windows 本機女性聲線一次，一般 Azure 單句失敗時只退回 Windows 本機女性聲線一次。回退只能發生在該句尚未播放任何音訊時；播放開始後的串流失敗必須停止該句且不得整句重播，以防重複發聲與計費。
-- 混合模式增加 TTS 網路與合成階段；以安全短句依序合成及首段音訊即播降低等待，但發布說明不得宣稱零延遲或未經驗證的效能數字。
+- 本版完整保留並預設使用 OpenAI Realtime 原生聲音，作為三種回覆聲音中額外延遲最低的路徑；另提供使用者明確選擇的 Realtime 即時理解＋一般 Azure Speech 或 Dragon HD 串流發聲。三種模式完全隔離且保持單一音軌，變更範圍限於使用者選定的語音路徑；Dragon HD 單句失敗時依序只退回一般 Azure 一次及 Windows 本機女性聲線一次，一般 Azure 單句失敗時只退回 Windows 本機女性聲線一次。回退只能發生在該句尚未播放任何音訊時；播放開始後若串流中止，該句立即結束並保持已播放內容的單次性，以防重複發聲與計費。
+- 混合模式增加 TTS 網路與合成階段；以安全短句依序合成及首段音訊即播降低等待，但發布說明的效能聲明限於已驗證數字。
 - 內容包含 Windows x64 可攜式 ZIP、每位使用者安裝的 EXE 與 MSI、英文／簡體中文／日文 MSI 轉換檔、macOS Apple Silicon（arm64）與 Intel（x86_64）功能受限 Preview DMG、Linux x86_64 功能受限 Preview AppImage、SHA-256 清單、可重現的 CycloneDX 1.7 SBOM 與驗證報告、已去識別化的 Tachyon 證據與效能摘要、更新資訊清單及產物證明。
 
 ### 後續發行系列
 
-- 可接受的發行標籤只能是不可變的 `vN.N.N` 正式版或 `vN.N.N-rc.N` 候選版，其中 RC 編號必須是正整數；其他標籤必須在封裝或發布前失敗。
+- 可接受的發行標籤集合是不可變的 `vN.N.N` 正式版或 `vN.N.N-rc.N` 候選版，其中 RC 編號必須是正整數；封裝與發布只在標籤符合此集合時啟動。
 - Windows 維持正式且完整的產品範圍，並保留已驗證的 x64 ZIP、EXE、MSI 及 MSI 語言轉換檔。
 - macOS 分別提供原生 Apple Silicon（arm64）與 Intel（x86_64）`.dmg`，各自包含架構相符的 `.app`；Linux x86_64 提供 `.AppImage`。這些套件都必須明確標示為功能受限的 Preview：只驗證啟動、四語顯示、每位使用者路徑與安全失效關閉的平台邊界，不代表與 Windows 功能相同。
-- Pull Request 只能為套件測試建立短期 CI 產物，不得建立 GitHub Release；只有既存且符合規則的正式版或候選版標籤能進入發布工作流程。
-- Release 說明必須來自人工整理的四語檔案 `docs/releases/<tag>.md`，不能只使用自動產生的說明。
+- Pull Request 的輸出範圍是套件測試用短期 CI 產物；GitHub Release 由既存且符合規則的正式版或候選版標籤工作流程建立。
+- Release 說明必須來自人工整理的四語檔案 `docs/releases/<tag>.md`，自動產生的說明可作輔助，人工整理的四語檔案是權威來源。
 
 ### 歷史首發版本
 
 - 標籤：`v2.0.14-rc.1`
 - 標題：`MoHan Desktop Assistant v2.0.14 RC — First Public Preview`
-- 因 Microsoft、GitHub 與 Home Assistant 尚未完成真實環境端對端驗證，必須標示為預發行版。
+- Microsoft、GitHub 與 Home Assistant 的下一驗證階段涵蓋真實環境端對端流程，因此目前標示為預發行版。
 - 必須附上 Windows x64 ZIP 與相符的 SHA-256 文字檔。
 
 ### 發布前必要檢查
@@ -70,15 +70,15 @@ git diff --check
 
 ### v4.0.0 平台與 Qt 相容層政策
 
-- 官方 PySide6 metadata 是否宣告 Python 3.15，不再是硬閘門；改以固定雜湊的官方 wheel 二進位、`6.11.1+mohan.py315.1` metadata、正常 pip resolver、`pip check` 與 Qt smoke 證據驗證相容層。
+- 官方 PySide6 metadata 是否宣告 Python 3.15，由完整相容層證據取代單一 metadata 宣告作為閘門；改以固定雜湊的官方 wheel 二進位、`6.11.1+mohan.py315.1` metadata、正常 pip resolver、`pip check` 與 Qt smoke 證據驗證相容層。
 - Windows 是正式支援平台。macOS／Linux 為功能受限 Preview；CI runner 的建置與 smoke 不等於開發者本人實機認證，也不宣稱 Windows 功能同等。
-- 安全、秘密隔離、完整回歸、包內內容、SBOM、SHA-256、artifact 完整性、四語說明與可回退行為仍不可取消。PoseAtlas 未具完整授權與 sidecar 時必須排除，不得用候選素材繞過正式稽核。
+- 安全、秘密隔離、完整回歸、包內內容、SBOM、SHA-256、artifact 完整性、四語說明與可回退行為仍是永久適用的必要門檻。PoseAtlas 只在具備完整授權、sidecar 及正式稽核證據時納入。
 
-絕對不得發布 `.env`、API 金鑰、OAuth 認證資料／權杖、Home Assistant 權杖、SQLite 資料庫、`.mohan-profile` 檔案、錄音、本機日誌或個人設定。
+發布內容須完整排除 `.env`、API 金鑰、OAuth 認證資料／權杖、Home Assistant 權杖、SQLite 資料庫、`.mohan-profile` 檔案、錄音、本機日誌與個人設定。
 
 ### 重建 README 媒體
 
-媒體產生器會使用隔離的暫存設定檔啟動真實 Qt 介面、植入僅供示範的內容、擷取文件記載的頁面，並產生 36 秒的 H.264／AAC 示範影片；它絕不讀取維護者平常使用的墨寒設定檔。
+媒體產生器會使用隔離的暫存設定檔啟動真實 Qt 介面、植入僅供示範的內容、擷取文件記載的頁面，並產生 36 秒的 H.264／AAC 示範影片；其輸入範圍限於隔離的示範設定檔。
 
 ```powershell
 $env:QT_QPA_PLATFORM = "windows"
@@ -93,27 +93,27 @@ python tools\capture_readme_media.py --screenshots-only
 
 提交重新產生的媒體前：
 
-1. 以完整尺寸檢查每張 PNG，確認沒有文字遭裁切、字元圖形損壞或意外包含個人資料。
+1. 以完整尺寸檢查每張 PNG，確認文字完整、字元圖形正確且內容已移除個人資料。
 2. 確認 `docs/media/mohan-demo.mp4` 長度為 30–60 秒、解析度為 1280×720，且包含 H.264 視訊串流及非靜音 AAC 音訊串流。
 3. 再次執行公開發行稽核及完整測試套件。
 
 ### 受保護 main 發布流程
 
-儲存庫的所有變更都必須使用 Pull Request。不得將實作提交直接推送至 `main`、不得略過檢查、不得強制推送 `main`，也不得在必要檢查失敗或審查對話尚未解決時合併。必要的 Windows CI 檢查是 `Windows CI / test`；安全工作流程也必須完成，且不得留有尚未處理的高信心發現。
+儲存庫的所有變更都須使用 Pull Request；`main` 只接受一般合併後推送。合併條件是全部必要檢查成功且審查對話已解決。必要的 Windows CI 檢查是 `Windows CI / test`；安全工作流程也必須完成，且所有高信心發現均須處理完成。
 
-本儲存庫的既定合併政策只允許 squash。所有必要檢查成功、Pull Request 的 head SHA 未變且審查對話全部解決後，Codex 應直接使用 squash 合併；不得在每次發布時重新查詢這項已知政策，也不得先嘗試已知不允許的 merge commit 或 rebase。合併後必須讀回實際 merge commit，發布標籤只能建立在該 commit。只有擁有者明確變更設定，或 GitHub 實際拒絕 squash 而顯示政策可能漂移時，才重新查詢。
+本儲存庫的既定合併政策採用 squash 作為唯一合併方式。所有必要檢查成功、Pull Request 的 head SHA 未變且審查對話全部解決後，Codex 應直接使用 squash 合併；後續發布直接沿用這項已保存政策；只有政策變更證據出現時才重新查詢。合併後必須讀回實際 merge commit，發布標籤只能建立在該 commit。只有擁有者明確變更設定，或 GitHub 實際拒絕 squash 而顯示政策可能漂移時，才重新查詢。
 
-GitHub 自動化必須使用一條可預測的憑證路徑。Pull Request 的讀取與更新優先使用已連線的 GitHub 介面；本機 push 使用 Git 自身的憑證管理；`gh` 只保留給已連線介面尚未提供的 GitHub Actions 檢查與記錄。若 `gh auth status` 一次確認憑證失效，在外部狀態未改變前不得反覆重試、登出或重新登入；應直接改用已連線介面或已登入瀏覽器。只有必要操作沒有等價途徑且確實被阻擋時，才請擁有者重新驗證一次。任何流程都不得顯示、複製、寫檔或提交 Token。
+GitHub 自動化必須使用一條可預測的憑證路徑。Pull Request 的讀取與更新優先使用已連線的 GitHub 介面；本機 push 使用 Git 自身的憑證管理；`gh` 只保留給已連線介面尚未提供的 GitHub Actions 檢查與記錄。若 `gh auth status` 一次確認憑證失效，後續直接使用已連線介面或已登入瀏覽器；外部狀態改變後再評估 gh。只有必要操作沒有等價途徑且確實被阻擋時，才請擁有者重新驗證一次。任何流程的輸出與持久化內容均須移除 Token。
 
 ### 自動化後續發行
 
 #### CHANGELOG 片段組裝順序
 
-`release-please.yml` 先在 release PR 產生 `CHANGELOG.md` 的版本標題，並保留既有已發布歷史；其後 `tools/assemble_changelog.py --version <version>` 依檔名排序組裝 `changelog.d/<name>.md`。遷移用的四小節 legacy 檔只在輸出時重排為斜線標題／條列，文字不改。成功寫入後才刪除片段，`--dry-run` 只預覽，不會改檔。
+`release-please.yml` 先在 release PR 產生 `CHANGELOG.md` 的版本標題，並保留既有已發布歷史；其後 `tools/assemble_changelog.py --version <version>` 依檔名排序組裝 `changelog.d/<name>.md`。遷移用的四小節 legacy 檔只在輸出時重排為斜線標題／條列，文字不改。成功寫入後才刪除片段，`--dry-run` 只預覽並完整保留檔案。
 
 只有符合 `vN.N.N` 或 `vN.N.N-rc.N` 的標籤能觸發 `.github/workflows/release.yml`。工作流程會驗證精確標籤、簽出該不可變的來源修訂，然後依序：
 
-任何平台封裝開始前，快速閘門必須先確認標籤、版本與 `main` 歷史一致，檢查本次模式所要求的 Release 存在或不存在，並以 Python 3.15 驗證人工整理的四語 Release 說明。這些便宜且具決定性的檢查不得延後到長時間建置之後；發布前仍須再次驗證標籤、產物與 Release 狀態，以防執行期間發生漂移。
+任何平台封裝開始前，快速閘門必須先確認標籤、版本與 `main` 歷史一致，檢查本次模式要求的 Release 狀態，並以 Python 3.15 驗證人工整理的四語 Release 說明。這些便宜且具決定性的檢查須在長時間建置前完成；發布前仍須再次驗證標籤、產物與 Release 狀態，以防執行期間發生漂移。
 
 1. 安裝已鎖定版本的執行期與發行相依套件；
 2. 編譯並稽核公開原始碼樹；
@@ -127,37 +127,37 @@ GitHub 自動化必須使用一條可預測的憑證路徑。Pull Request 的讀
 10. 在原生 Linux runner 上建置功能受限的 Linux x86_64 Preview，並對封裝後的 `.AppImage` 執行契約 smoke test；
 11. 使用獨立的唯讀中繼資料工作產生權威 `SHA256SUMS`、相容 SHA-256 清單、對應精確 Windows 與 Preview 執行期相依集合的獨立可重現 CycloneDX 1.7 SBOM、機器可讀的結構描述／授權／PURL／相依性／隱私驗證報告，以及 Windows 相容的更新資訊清單；
 12. 在最小權限發布工作中重新檢查精確產物集合及每個已列入清單的 SHA-256 值；
-13. 在發布前立即重新解析標籤，若標籤已移動或遭替換便拒絕發布；
+13. 在發布前立即重新解析標籤，只有標籤仍指向已驗證修訂時才發布；
 14. 為每個發布檔案建立 GitHub 產物來源證明；
 15. 要求並發布人工整理的四語 Release 說明；
-16. 發布後由擁有者在自己的電腦上以 `tools/sign_update_manifest.py release-sign` 對更新資訊清單做 Ed25519 分離簽章並上傳 `.sig` 資產。私鑰不進儲存庫、也不進 CI Secret；用戶端只接受能以內嵌公鑰驗證的清單，中繼資料工作在沒有內嵌公鑰時拒絕發布。
+16. 發布後由擁有者在自己的電腦上以 `tools/sign_update_manifest.py release-sign` 對更新資訊清單做 Ed25519 分離簽章並上傳 `.sig` 資產。私鑰只留在擁有者本機的安全儲存；用戶端只接受能以內嵌公鑰驗證的清單，中繼資料工作只在內嵌公鑰存在時發布。
 
-`vN.N.N-rc.N` 必須發布為 Pre-release，純 `vN.N.N` 必須發布為 Stable Release；工作流程會阻擋標籤與成熟度不一致。不得重複使用或移動任何已發布標籤。
+`vN.N.N-rc.N` 必須發布為 Pre-release，純 `vN.N.N` 必須發布為 Stable Release；工作流程只接受標籤與成熟度一致的組合；每個已發布標籤保持唯一且不可變。
 
-發布中繼資料工作必須以已保存的 Python 3.15 執行路徑執行所有墨寒專案工具。隔離的 Python 3.14 只能用於尚未支援 3.15 的第三方 SBOM 工具鏈，不得透過 `PATH` 改變後續專案工具的執行環境。
+發布中繼資料工作必須以已保存的 Python 3.15 執行路徑執行所有墨寒專案工具。隔離的 Python 3.14 使用範圍限於等待 3.15 支援的第三方 SBOM 工具鏈；後續專案工具固定使用已保存的 Python 3.15 執行路徑。
 
 發行與 PR 套件工作流程會將每個 GitHub Action 鎖定至完整 commit。Linux 封裝還會把官方 `appimagetool` 產物鎖定至來源 commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、產物 ID `324406882` 及 SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`。
 
-Windows 安裝程式建置會鎖定 Inno Setup `7.0.2` 與 WiX `7.0.0`。Inno Setup 編譯器只能從不可變的官方 `jrsoftware/issrc` Release 下載，使用前必須驗證 GitHub Release 證明與 Pyrsys B.V. Authenticode 簽章。WiX 會使用已明確授權的 `-acceptEula wix7` CI 引數，並使用持續維護的 `Files` harvester，而非已移除的 Heat 工具。
+Windows 安裝程式建置會鎖定 Inno Setup `7.0.2` 與 WiX `7.0.0`。Inno Setup 編譯器只能從不可變的官方 `jrsoftware/issrc` Release 下載，使用前必須驗證 GitHub Release 證明與 Pyrsys B.V. Authenticode 簽章。WiX 會使用已明確授權的 `-acceptEula wix7` CI 引數，並使用持續維護的 `Files` harvester。
 
-每份 Pull Request 內文與每份人工整理的 Release 說明都必須依序包含完整且非空白的 `## 繁體中文`、`## 简体中文`、`## English`、`## 日本語` 四個章節。必須翻譯該次變更或標籤當時真正成立的事實，不得把後來新增的功能倒填到歷史 PR 或 Release；自動產生的分類標題也要使用相同四語順序。只提供象徵性的一行翻譯，不能取代變更、原因、使用者影響與驗證資訊。
+每份 Pull Request 內文與每份人工整理的 Release 說明都必須依序包含完整且非空白的 `## 繁體中文`、`## 简体中文`、`## English`、`## 日本語` 四個章節。必須翻譯該次變更或標籤當時真正成立的事實，歷史 PR 與 Release 只陳述當時已成立的事實；自動產生的分類標題也要使用相同四語順序。每個語言章節均完整涵蓋變更、原因、使用者影響與驗證資訊。
 
-每份四語文件若有 H1，H1 必須依繁中、簡中、English、日文順序並以全形斜線 `／` 分隔；四個語言章節前除該 H1 與空白外，不得出現 prose、徽章、連結或警告。四個語言章節的 H3 以上標題數、段落數、條列數、連結與圖片目的地、code fence，以及 inline-code 技術 token 都必須對等；所有文字、段落、條列、連結、警告與程式碼範例均須完整翻譯且不得扭曲技術術語、版本、路徑、命令或安全邊界。
+每份四語文件若有 H1，H1 必須依繁中、簡中、English、日文順序並以全形斜線 `／` 分隔；四個語言章節前除該 H1 與空白外，內容順序以 H1、空白、四個語言章節開始；prose、徽章、連結與警告放入對應語言章節。四個語言章節的 H3 以上標題數、段落數、條列數、連結與圖片目的地、code fence，以及 inline-code 技術 token 都必須對等；所有文字、段落、條列、連結、警告與程式碼範例均須完整翻譯並精確保留技術術語、版本、路徑、命令或安全邊界。
 
 ### 炎劍開源軟體家族品質標準
 
-這是墨寒、FB2Blogger 與 FB2WordPress 共用的長期維護契約；新增炎劍開源軟體時，也必須直接沿用，不得另建降低標準的例外流程。
+這是墨寒、FB2Blogger 與 FB2WordPress 共用的長期維護契約；新增炎劍開源軟體時，也必須直接沿用，全部沿用同一高標準流程。
 
 > **炎劍開源核心宣言：**「劍，我已鍛成；餘下的路，就交給你們了。」
 
 1. 四語一致：重要 README、PR、Release 與使用引導皆維持繁中、簡中、英文、日文事實一致。
 2. 真實驗證：只展示實際執行的 CI 與安全掃描，不以徽章代替測試結果。
-3. 絕無機密：金鑰、權杖、個資、資料庫與私人內容不得進入版本庫或發布產物。
+3. 機密隔離：金鑰、權杖、個資、資料庫與私人內容始終留在版本庫與發布產物之外。
 4. 產物可追溯：發布檔對應明確的標籤與提交，並提供雜湊或同等驗證資料。
-5. 不退步：不得為新功能破壞既有正常功能、資料相容性、安全閘門或確認流程。
+5. 保留既有行為：新功能須完整維持正常功能、資料相容性、安全閘門與確認流程。
 6. 不誇大平台：CI 通過不等於真機驗證；未實測的平台與功能必須清楚標示限制。
 7. 同步對外資訊：程式、文件、Release 與官網的版本、連結及可見行為須保持一致。
-8. 拒絕單次手工例外：優先建立可重複、自動化、可測試的流程，不靠臨時人工補救維護。
+8. 拒絕單次手工例外：優先建立可重複、自動化、可測試的流程，以可重複、自動化、可測試的流程維護。
 9. 擇難而行：炎劍文化工作室出品的軟體，其產製過程永遠選擇最複雜、最困難、風險最大的那條路，不因省事而降低標準。
 
 ### 驗證 Release 產物
@@ -171,13 +171,13 @@ gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo fl
 
 ### 官網同步
 
-GitHub 發行工作刻意禁止寫入 WordPress，也不保存 WordPress Application Password。共用的 Flameblade Product Release Hub 是三個軟體產品的單一權威來源；其 `flameblade-series-gateway/products.json` 設定會識別每項產品的公開 GitHub 儲存庫與官網目的地。WordPress 端 gateway 依每小時排程讀取公開 GitHub Releases，並更新版本、連結及驗證資訊，不會把安裝程式複製到 Bluehost 儲存空間。
+GitHub 發行工作將寫入責任固定在 WordPress 端 gateway，GitHub 發行工作只讀公開狀態；WordPress Application Password 只留在網站端安全儲存。共用的 Flameblade Product Release Hub 是三個軟體產品的單一權威來源；其 `flameblade-series-gateway/products.json` 設定會識別每項產品的公開 GitHub 儲存庫與官網目的地。WordPress 端 gateway 依每小時排程讀取公開 GitHub Releases，並更新版本、連結及驗證資訊，安裝程式由 GitHub Release 直接供應。
 
-此設計讓官網認證資料留在每個產品儲存庫之外，也避免出現三套彼此競爭的「Release 至官網」實作。新發布的 Release 最晚可能要到下一次每小時更新才會出現在官網；若超過該時間仍未更新，應診斷共用 gateway，不得在此儲存庫加入一次性、直接寫入 WordPress 的步驟。
+此設計讓官網認證資料留在每個產品儲存庫之外，並維持單一「Release 至官網」實作。新發布的 Release 最晚可能要到下一次每小時更新才會出現在官網；若超過該時間仍待更新，應診斷共用 gateway，並維持此儲存庫透過單一 gateway 發布。
 
 ### 延伸祕密掃描
 
-儲存庫會持續啟用 GitHub secret scanning 與 push protection，並在 Pull Request、`main` 及每週排程執行完整歷史 Gitleaks 檢查。GitHub 帳號層級的非供應商 pattern 與合作夥伴 validity 開關，需要由組織擁有、採用 GitHub Team／Enterprise 且具備 GitHub Secret Protection 的儲存庫；個人公開儲存庫無法啟用這兩項付費組織控制。GitHub 免費的供應商掃描仍保持啟用。
+儲存庫會持續啟用 GitHub secret scanning 與 push protection，並在 Pull Request、`main` 及每週排程執行完整歷史 Gitleaks 檢查。GitHub 帳號層級的非供應商 pattern 與合作夥伴 validity 開關，需要由組織擁有、採用 GitHub Team／Enterprise 且具備 GitHub Secret Protection 的儲存庫；這兩項付費組織控制的啟用範圍是具 GitHub Secret Protection 的組織儲存庫。GitHub 免費的供應商掃描仍保持啟用。
 
 ## 简体中文
 
@@ -220,23 +220,23 @@ open-source
 - 标签：`v3.1.2`
 - 标题：`MoHan Desktop Assistant v3.1.2`
 - 发布条件：只有在所有必要 CI、软件包 smoke、安全及发布政策检查成功后才可发布。
-- 本版本完整保留并默认使用 OpenAI Realtime 原生声音，作为三种回复声音中额外延迟最低的路径；另提供用户明确选择的 Realtime 即时理解＋一般 Azure Speech 或 Dragon HD 流式发声。三种模式完全隔离且不混音，不得改动其他语音供应器；Dragon HD 单句失败时依次只回退到一般 Azure 一次及 Windows 本地女性声线一次，一般 Azure 单句失败时只回退到 Windows 本地女性声线一次。回退只能发生在该句尚未播放任何音频时；播放开始后的流式失败必须停止该句且不得整句重播，以防重复发声及计费。
-- 混合模式增加 TTS 网络与合成阶段；通过安全短句依次合成及首段音频即播降低等待，但发布说明不得宣称零延迟或未经验证的性能数字。
+- 本版本完整保留并默认使用 OpenAI Realtime 原生声音，作为三种回复声音中额外延迟最低的路径；另提供用户明确选择的 Realtime 即时理解＋一般 Azure Speech 或 Dragon HD 流式发声。三种模式完全隔离且保持单一音轨，变更范围限于用户选定的语音路径；Dragon HD 单句失败时依次只回退到一般 Azure 一次及 Windows 本地女性声线一次，一般 Azure 单句失败时只回退到 Windows 本地女性声线一次。回退只能发生在该句尚未播放任何音频时；播放开始后若流式中止，该句立即结束并保持已播放内容的单次性，以防重复发声及计费。
+- 混合模式增加 TTS 网络与合成阶段；通过安全短句依次合成及首段音频即播降低等待，但发布说明的性能声明限于已验证数字。
 - 内容包括 Windows x64 便携式 ZIP、按用户安装的 EXE 与 MSI、英文／简体中文／日文 MSI 转换文件、macOS Apple Silicon（arm64）与 Intel（x86_64）功能受限 Preview DMG、Linux x86_64 功能受限 Preview AppImage、SHA-256 清单、可重现的 CycloneDX 1.7 SBOM 与验证报告、已去除身份信息的 Tachyon 证据与性能摘要、更新清单及产物证明。
 
 ### 后续发布系列
 
-- 可接受的发布标签只能是不可变的 `vN.N.N` 正式版或 `vN.N.N-rc.N` 候选版，其中 RC 编号必须是正整数；其他标签必须在打包或发布前失败。
+- 可接受的发布标签集合是不可变的 `vN.N.N` 正式版或 `vN.N.N-rc.N` 候选版，其中 RC 编号必须是正整数；打包与发布只在标签符合此集合时启动。
 - Windows 维持正式且完整的产品范围，并保留已验证的 x64 ZIP、EXE、MSI 及 MSI 语言转换文件。
 - macOS 分别提供原生 Apple Silicon（arm64）与 Intel（x86_64）`.dmg`，各自包含架构相符的 `.app`；Linux x86_64 提供 `.AppImage`。这些软件包都必须明确标示为功能受限的 Preview：只验证启动、四语显示、按用户路径与安全失效关闭的平台边界，不代表与 Windows 功能相同。
-- Pull Request 只能为软件包测试建立短期 CI 产物，不得建立 GitHub Release；只有现有且符合规则的正式版或候选版标签能进入发布工作流。
-- Release 说明必须来自人工整理的四语文件 `docs/releases/<tag>.md`，不能只使用自动生成的说明。
+- Pull Request 的输出范围是软件包测试用短期 CI 产物；GitHub Release 由现有且符合规则的正式版或候选版标签工作流建立。
+- Release 说明必须来自人工整理的四语文件 `docs/releases/<tag>.md`，自动生成的说明可作辅助，人工整理的四语文件是权威来源。
 
 ### 历史首发版本
 
 - 标签：`v2.0.14-rc.1`
 - 标题：`MoHan Desktop Assistant v2.0.14 RC — First Public Preview`
-- 因 Microsoft、GitHub 与 Home Assistant 尚未完成真实环境端到端验证，必须标示为预发布版。
+- Microsoft、GitHub 与 Home Assistant 的下一验证阶段涵盖真实环境端到端流程，因此目前标示为预发布版。
 - 必须附上 Windows x64 ZIP 与相符的 SHA-256 文本文件。
 
 ### 发布前必要检查
@@ -249,11 +249,11 @@ git diff --check
 
 ### v4.0.0 平台与 Qt 兼容层政策
 
-- 官方 PySide6 metadata 是否声明 Python 3.15，不再是硬关卡；改用固定哈希的官方 wheel 二进制、`6.11.1+mohan.py315.1` metadata、正常 pip resolver、`pip check` 与 Qt smoke 证据验证兼容层。
+- 官方 PySide6 metadata 是否声明 Python 3.15，由完整兼容层证据取代单一 metadata 声明作为关卡；改用固定哈希的官方 wheel 二进制、`6.11.1+mohan.py315.1` metadata、正常 pip resolver、`pip check` 与 Qt smoke 证据验证兼容层。
 - Windows 是正式支持平台。macOS／Linux 为功能受限 Preview；CI runner 的构建与 smoke 不等于开发者本人实机认证，也不声明 Windows 功能同等。
-- 安全、秘密隔离、完整回归、包内内容、SBOM、SHA-256、artifact 完整性、四语说明与可回退行为仍不可取消。PoseAtlas 没有完整授权与 sidecar 时必须排除，不得用候选素材绕过正式审计。
+- 安全、秘密隔离、完整回归、包内内容、SBOM、SHA-256、artifact 完整性、四语说明与可回退行为仍是永久適用的必要門檻。PoseAtlas 只在具备完整授权、sidecar 与正式审计证据时纳入。
 
-绝对不得发布 `.env`、API 密钥、OAuth 凭据／令牌、Home Assistant 令牌、SQLite 数据库、`.mohan-profile` 文件、录音、本地日志或个人设置。
+发布内容须完整排除 `.env`、API 密钥、OAuth 凭据／令牌、Home Assistant 令牌、SQLite 数据库、`.mohan-profile` 文件、录音、本地日志与个人设置。
 
 ### 重建 README 媒体
 
@@ -278,11 +278,11 @@ python tools\capture_readme_media.py --screenshots-only
 
 ### 受保护 main 发布流程
 
-仓库的所有变更都必须使用 Pull Request。不得将实现提交直接推送至 `main`、不得跳过检查、不得强制推送 `main`，也不得在必要检查失败或评审对话尚未解决时合并。必要的 Windows CI 检查是 `Windows CI / test`；安全工作流也必须完成，且不得留有尚未处理的高可信度发现。
+仓库的所有变更都须使用 Pull Request；`main` 只接受常规合并后推送。合并条件是全部必要检查成功且评审对话已解决。必要的 Windows CI 检查是 `Windows CI / test`；安全工作流也必须完成，且所有高可信度发现均须处理完成。
 
-本仓库的既定合并策略仅允许 squash。所有必要检查成功、Pull Request 的 head SHA 未变化且评审对话全部解决后，Codex 应直接使用 squash 合并；不得在每次发布时重新查询这项已知策略，也不得先尝试已知不允许的 merge commit 或 rebase。合并后必须读回实际 merge commit，发布标签只能建立在该 commit。只有所有者明确更改设置，或 GitHub 实际拒绝 squash 而显示策略可能漂移时，才重新查询。
+本仓库的既定合并策略采用 squash 作为唯一合并方式。所有必要检查成功、Pull Request 的 head SHA 未变化且评审对话全部解决后，Codex 应直接使用 squash 合并；后续发布直接沿用这项已保存策略；只有策略变更证据出现时才重新查询。合并后必须读回实际 merge commit，发布标签只能建立在该 commit。只有所有者明确更改设置，或 GitHub 实际拒绝 squash 而显示策略可能漂移时，才重新查询。
 
-GitHub 自动化必须使用一条可预测的凭证路径。Pull Request 的读取与更新优先使用已连接的 GitHub 接口；本地 push 使用 Git 自身的凭证管理；`gh` 仅保留用于已连接接口尚未提供的 GitHub Actions 检查与日志。若 `gh auth status` 一次确认凭证失效，在外部状态未变化前不得反复重试、登出或重新登录；应直接改用已连接接口或已登录浏览器。只有必要操作没有等效途径且确实受阻时，才请所有者重新验证一次。任何流程都不得显示、复制、写入文件或提交 Token。
+GitHub 自动化必须使用一条可预测的凭证路径。Pull Request 的读取与更新优先使用已连接的 GitHub 接口；本地 push 使用 Git 自身的凭证管理；`gh` 仅保留用于已连接接口尚未提供的 GitHub Actions 检查与日志。若 `gh auth status` 一次确认凭证失效，后续直接使用已连接接口或已登录浏览器；外部状态改变后再评估 gh。只有必要操作没有等效途径且确实受阻时，才请所有者重新验证一次。任何流程的输出与持久化内容均须移除 Token。
 
 ### 自动化后续发布
 
@@ -292,7 +292,7 @@ GitHub 自动化必须使用一条可预测的凭证路径。Pull Request 的读
 
 只有符合 `vN.N.N` 或 `vN.N.N-rc.N` 的标签能触发 `.github/workflows/release.yml`。工作流会验证精确标签、检出该不可变的源修订，然后依次：
 
-任何平台打包开始前，快速关卡必须先确认标签、版本与 `main` 历史一致，检查本次模式所要求的 Release 存在或不存在，并使用 Python 3.15 验证人工整理的四语 Release 说明。这些低成本且具有决定性的检查不得延后到长时间构建之后；发布前仍须再次验证标签、产物与 Release 状态，以防运行期间发生漂移。
+任何平台打包开始前，快速关卡必须先确认标签、版本与 `main` 历史一致，检查本次模式所要求的 Release 存在或不存在，并使用 Python 3.15 验证人工整理的四语 Release 说明。这些低成本且具有决定性的检查须在长时间构建前完成；发布前仍须再次验证标签、产物与 Release 状态，以防运行期间发生漂移。
 
 1. 安装已锁定版本的运行时与发布依赖软件包；
 2. 编译并审计公开源代码树；
@@ -311,29 +311,29 @@ GitHub 自动化必须使用一条可预测的凭证路径。Pull Request 的读
 15. 要求并发布人工整理的四语 Release 说明；
 16. 发布后由所有者在自己的电脑上以 `tools/sign_update_manifest.py release-sign` 对更新清单做 Ed25519 分离签名并上传 `.sig` 资产。私钥不进仓库、也不进 CI Secret；客户端只接受能以内嵌公钥验证的清单，元数据任务在没有内嵌公钥时拒绝发布。
 
-`vN.N.N-rc.N` 必须发布为预发布版，纯 `vN.N.N` 必须发布为正式稳定版；工作流会阻止标签与成熟度不一致。不得重复使用或移动任何已发布标签。
+`vN.N.N-rc.N` 必须发布为预发布版，纯 `vN.N.N` 必须发布为正式稳定版；工作流只接受标签与成熟度一致的组合；每个已发布标签保持唯一且不可变。
 
-发布元数据工作必须使用已保存的 Python 3.15 执行路径运行所有墨寒项目工具。隔离的 Python 3.14 只能用于尚未支持 3.15 的第三方 SBOM 工具链，不得通过 `PATH` 改变后续项目工具的运行环境。
+发布元数据工作必须使用已保存的 Python 3.15 执行路径运行所有墨寒项目工具。隔离的 Python 3.14 使用范围限于等待 3.15 支持的第三方 SBOM 工具链；后续项目工具固定使用已保存的 Python 3.15 执行路径。
 
 发布与 PR 软件包工作流会将每个 GitHub Action 锁定至完整 commit。Linux 打包还会把官方 `appimagetool` 产物锁定至源 commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、产物 ID `324406882` 及 SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`。
 
-Windows 安装程序构建会锁定 Inno Setup `7.0.2` 与 WiX `7.0.0`。Inno Setup 编译器只能从不可变的官方 `jrsoftware/issrc` Release 下载，使用前必须验证 GitHub Release 证明与 Pyrsys B.V. Authenticode 签名。WiX 会使用已明确授权的 `-acceptEula wix7` CI 参数，并使用持续维护的 `Files` harvester，而非已移除的 Heat 工具。
+Windows 安装程序构建会锁定 Inno Setup `7.0.2` 与 WiX `7.0.0`。Inno Setup 编译器只能从不可变的官方 `jrsoftware/issrc` Release 下载，使用前必须验证 GitHub Release 证明与 Pyrsys B.V. Authenticode 签名。WiX 会使用已明确授权的 `-acceptEula wix7` CI 参数，并使用持续维护的 `Files` harvester。
 
-每份 Pull Request 正文与每份人工整理的 Release 说明都必须依次包含完整且非空白的 `## 繁體中文`、`## 简体中文`、`## English`、`## 日本語` 四个章节。必须翻译该次变更或标签当时真正成立的事实，不得把后来新增的功能倒填到历史 PR 或 Release；自动生成的分类标题也要使用相同四语顺序。只提供象征性的一行翻译，不能取代变更、原因、用户影响与验证信息。
+每份 Pull Request 正文与每份人工整理的 Release 说明都必须依次包含完整且非空白的 `## 繁體中文`、`## 简体中文`、`## English`、`## 日本語` 四个章节。必须翻译该次变更或标签当时真正成立的事实，历史 PR 与 Release 只陈述当时已经成立的事实；自动生成的分类标题也要使用相同四语顺序。只提供象征性的一行翻译，每个语言章节均完整涵盖变更、原因、用户影响与验证信息。
 
-每份四语文档若有 H1，H1 必须按繁中、简中、English、日文顺序并以全角斜线 `／` 分隔；四个语言章节前除该 H1 与空白外，不得出现 prose、徽章、链接或警告。四个语言章节的 H3 以上标题数、段落数、列表项数、链接与图片目标、code fence，以及 inline-code 技术 token 都必须对等；所有文字、段落、列表项、链接、警告与代码示例均须完整翻译且不得歪曲技术术语、版本、路径、命令或安全边界。
+每份四语文档若有 H1，H1 必须按繁中、简中、English、日文顺序并以全角斜线 `／` 分隔；四个语言章节前除该 H1 与空白外，内容顺序以 H1、空白、四个语言章节开始；prose、徽章、链接与警告放入对应语言章节。四个语言章节的 H3 以上标题数、段落数、列表项数、链接与图片目标、code fence，以及 inline-code 技术 token 都必须对等；所有文字、段落、列表项、链接、警告与代码示例均须完整翻译并精确保留技术术语、版本、路径、命令或安全边界。
 
 ### 炎剑开源软件家族质量标准
 
-这是墨寒、FB2Blogger 与 FB2WordPress 共用的长期维护契约；新增炎剑开源软件时，也必须直接沿用，不得另建降低标准的例外流程。
+这是墨寒、FB2Blogger 与 FB2WordPress 共用的长期维护契约；新增炎剑开源软件时，也必须直接沿用，全部沿用同一高标准流程。
 
 > **炎剑开源核心宣言：**“剑，我已锻成；余下的路，就交给你们了。”
 
 1. 四语一致：重要 README、PR、Release 与使用指引均维持繁中、简中、英文、日文事实一致。
 2. 真实验证：只展示实际运行的 CI 与安全扫描，不以徽章代替测试结果。
-3. 绝无机密：密钥、令牌、个人资料、数据库与私人内容不得进入版本库或发布产物。
+3. 绝无机密：密钥、令牌、个人资料、数据库与私人内容始终保留在版本库与发布产物之外。
 4. 产物可追溯：发布文件对应明确的标签与提交，并提供哈希值或同等验证资料。
-5. 不退步：不得为新功能破坏已有正常功能、数据兼容性、安全关卡或确认流程。
+5. 不退步：新功能须完整保留已有正常功能、数据兼容性、安全关卡或确认流程。
 6. 不夸大平台：CI 通过不等于真机验证；未实测的平台与功能必须清楚标示限制。
 7. 同步对外信息：程序、文档、Release 与官网的版本、链接及可见行为须保持一致。
 8. 拒绝一次性手工例外：优先建立可重复、自动化、可测试的流程，不靠临时人工补救维护。
@@ -350,9 +350,9 @@ gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo fl
 
 ### 官网同步
 
-GitHub 发布任务刻意禁止写入 WordPress，也不保存 WordPress Application Password。共用的 Flameblade Product Release Hub 是三个软件产品的单一权威来源；其 `flameblade-series-gateway/products.json` 配置会识别每项产品的公开 GitHub 仓库与官网目标。WordPress 端 gateway 按每小时计划读取公开 GitHub Releases，并更新版本、链接及验证信息，不会把安装程序复制到 Bluehost 存储空间。
+GitHub 发布任务将写入责任固定在 WordPress 端 gateway，GitHub 发布任务只读公开状态；WordPress Application Password 只留在网站端安全存储。共用的 Flameblade Product Release Hub 是三个软件产品的单一权威来源；其 `flameblade-series-gateway/products.json` 配置会识别每项产品的公开 GitHub 仓库与官网目标。WordPress 端 gateway 按每小时计划读取公开 GitHub Releases，并更新版本、链接及验证信息，安装程序由 GitHub Release 直接供应。
 
-此设计让官网凭据留在每个产品仓库之外，也避免出现三套彼此竞争的“Release 至官网”实现。新发布的 Release 最晚可能要到下一次每小时更新才会出现在官网；若超过该时间仍未更新，应诊断共用 gateway，不得在此仓库加入一次性、直接写入 WordPress 的步骤。
+此设计让官网凭据留在每个产品仓库之外，并维持单一“Release 至官网”实现。新发布的 Release 最晚可能要到下一次每小时更新才会出现在官网；若超过该时间仍未更新，应诊断共用 gateway，并维持此仓库通过单一 gateway 发布。
 
 ### 扩展秘密扫描
 
@@ -399,23 +399,23 @@ open-source
 - Tag: `v3.1.2`
 - Title: `MoHan Desktop Assistant v3.1.2`
 - Publication condition: publish only after every required CI, package smoke, security, and release-policy check succeeds.
-- This release fully preserves native OpenAI Realtime voice and keeps it as the default, lowest-added-latency route among the three response-voice choices. Users may explicitly select Realtime understanding with standard Azure Speech or Dragon HD streaming output. The three modes remain isolated and unmixed and must not change other speech providers. A failed Dragon HD clause falls back once to standard Azure and then once to a local Windows female voice; standard Azure falls back once to the local Windows female voice. Fallback is permitted only before the clause has played any audio. A stream failure after playback begins must stop the clause without replaying it in full, preventing duplicate speech and charges.
-- Hybrid mode adds a TTS network and synthesis stage. Safe short-clause synthesis in order and first-chunk playback reduce the wait, but publication notes must not claim zero latency or unverified performance figures.
+- This release fully preserves native OpenAI Realtime voice and keeps it as the default, lowest-added-latency route among the three response-voice choices. Users may explicitly select Realtime understanding with standard Azure Speech or Dragon HD streaming output. The three modes remain isolated and unmixed and keeps changes limited to the user-selected speech route. A failed Dragon HD clause falls back once to standard Azure and then once to a local Windows female voice; standard Azure falls back once to the local Windows female voice. Fallback is permitted only before the clause has played any audio. A stream failure after playback begins ends that clause while preserving already played audio as a single playback, preventing duplicate speech and charges.
+- Hybrid mode adds a TTS network and synthesis stage. Safe short-clause synthesis in order and first-chunk playback reduce the wait, but publication performance claims are limited to verified figures.
 - Includes the Windows x64 portable ZIP, per-user EXE and MSI installers, English/Simplified Chinese/Japanese MSI transforms, macOS Apple Silicon (arm64) and Intel (x86_64) limited Preview DMGs, Linux x86_64 limited Preview AppImage, SHA-256 catalog, reproducible CycloneDX 1.7 SBOMs and validation report, sanitized Tachyon evidence and performance summary, update manifest, and artifact attestations.
 
 ### Next release line
 
 - Accepted release tags are immutable stable `vN.N.N` or candidate `vN.N.N-rc.N` tags, with a positive RC number; every other tag must fail before packaging or publication.
 - Windows remains the formal, complete product surface and retains its verified x64 ZIP, EXE, MSI, and MSI language transforms.
-- macOS receives separate native Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`; Linux x86_64 receives an `.AppImage`. All must be explicitly labeled as limited Preview packages: they validate launch, four-language rendering, per-user paths, and fail-closed platform boundaries, not feature parity with Windows.
-- Pull Requests may build short-lived CI artifacts for package testing only and cannot create a GitHub Release; only an existing valid stable or candidate tag can enter the publication workflow.
-- The Release description must come from the curated four-language file `docs/releases/<tag>.md`; generated notes alone are not accepted.
+- macOS receives separate native Apple Silicon (arm64) and Intel (x86_64) `.dmg` files, each containing a matching `.app`; Linux x86_64 receives an `.AppImage`. All must be explicitly labeled as limited Preview packages: they validate launch, four-language rendering, per-user paths, and fail-closed platform boundaries, while Windows feature parity follows its dedicated evidence.
+- Pull Requests may build short-lived CI artifacts for package testing only and produce only short-lived CI artifacts; the valid-tag workflow creates a GitHub Release; only an existing valid stable or candidate tag can enter the publication workflow.
+- The Release description must come from the curated four-language file `docs/releases/<tag>.md`; generated notes may assist, while the curated four-language file remains authoritative.
 
 ### Historical initial release
 
 - Tag: `v2.0.14-rc.1`
 - Title: `MoHan Desktop Assistant v2.0.14 RC — First Public Preview`
-- Mark it as a pre-release because Microsoft, GitHub, and Home Assistant have not completed real-environment end-to-end validation.
+- Mark it as a pre-release because Microsoft, GitHub, and Home Assistant enter real-environment end-to-end validation in the next stage.
 - Attach the Windows x64 ZIP and matching SHA-256 text file.
 
 ### Required pre-publication checks
@@ -429,21 +429,21 @@ git diff --check
 ### v4.0.0 platform and Qt compatibility-layer policy
 
 - Official PySide6 metadata declaring Python 3.15 is no longer a hard gate; the compatibility layer is verified with fixed-digest official wheel binaries, `6.11.1+mohan.py315.1` metadata, the normal pip resolver, `pip check`, and Qt smoke evidence.
-- Windows is formal support. macOS/Linux are limited Previews; CI-runner builds and smoke tests are not the developer's physical-device certification and do not claim Windows feature parity.
-- Security, secret isolation, full regression, packaged contents, SBOM, SHA-256, artifact integrity, four-language notes, and fallback behavior remain mandatory. PoseAtlas must be excluded when complete authorization and sidecars are absent; candidate assets may not bypass the formal audit.
+- Windows is formal support. macOS/Linux are limited Previews; CI-runner builds and smoke tests cover CI-runner validation; developer physical-device certification and Windows feature parity use their dedicated evidence.
+- Security, secret isolation, full regression, packaged contents, SBOM, SHA-256, artifact integrity, four-language notes, and fallback behavior remain mandatory. PoseAtlas enters the release only with complete authorization, sidecars, and formal audit evidence.
 
-Never publish `.env`, API keys, OAuth credentials/tokens, Home Assistant tokens, SQLite databases, `.mohan-profile` files, recordings, local logs, or personal settings.
+Release contents fully exclude `.env`, API keys, OAuth credentials/tokens, Home Assistant tokens, SQLite databases, `.mohan-profile` files, recordings, local logs, and personal settings.
 
 ### Rebuild the README media
 
-The media generator launches the real Qt interface with an isolated temporary profile, seeds sample-only content, captures the documented pages, and produces a 36-second H.264/AAC demonstration. It never reads the maintainer's normal MoHan profile.
+The media generator launches the real Qt interface with an isolated temporary profile, seeds sample-only content, captures the documented pages, and produces a 36-second H.264/AAC demonstration. Its input is limited to the isolated temporary sample profile.
 
 ```powershell
 $env:QT_QPA_PLATFORM = "windows"
 python tools\capture_readme_media.py --ffmpeg "C:\path\to\ffmpeg.exe"
 ```
 
-To refresh only the current UI screenshots without rebuilding the demonstration video, use:
+To refresh only the current UI screenshots while preserving the existing demonstration video, use:
 
 ```powershell
 python tools\capture_readme_media.py --screenshots-only
@@ -457,21 +457,21 @@ Before committing regenerated media:
 
 ### Protected-main release workflow
 
-All repository changes must use a Pull Request. Do not push implementation commits directly to `main`, bypass checks, force-push `main`, or merge while a required check is failing or a review conversation is unresolved. The required Windows CI check is `Windows CI / test`; security workflows must also complete without an unresolved high-confidence finding.
+All repository changes use a Pull Request; `main` accepts only regular post-merge pushes. Merge conditions are every required check passing and every review conversation resolved. The required Windows CI check is `Windows CI / test`; security workflows also complete with every high-confidence finding resolved.
 
-The repository's established merge policy only permits squash merging. Once every required check passes, the Pull Request head SHA is unchanged, and all review conversations are resolved, Codex must merge directly with squash. Do not re-query this known policy for every release, and do not first attempt a known-disallowed merge commit or rebase. After merging, read back the actual merge commit and create the release tag only on that commit. Re-query the policy only when the owner explicitly changes the setting or GitHub actually rejects squash, indicating possible policy drift.
+The repository's established merge policy uses squash as its sole merge method. Once every required check passes, the Pull Request head SHA is unchanged, and all review conversations are resolved, Codex must merge directly with squash. Subsequent releases use this saved policy directly; re-query it only when evidence of policy change appears. After merging, read back the actual merge commit and create the release tag only on that commit. Re-query the policy only when the owner explicitly changes the setting or GitHub actually rejects squash, indicating possible policy drift.
 
-GitHub automation must use one predictable credential path. Prefer the connected GitHub integration for reading and updating Pull Requests; use Git's own credential manager for local pushes; reserve `gh` for GitHub Actions checks and logs that the connected integration does not expose. If `gh auth status` confirms an invalid credential once, do not retry, log out, or log in again while the external state is unchanged; switch directly to the connected integration or a signed-in browser. Ask the owner to reauthenticate once only when an indispensable operation has no equivalent path and is genuinely blocked. Never display, copy, write to disk, or commit a Token.
+GitHub automation must use one predictable credential path. Prefer the connected GitHub integration for reading and updating Pull Requests; use Git's own credential manager for local pushes; reserve `gh` for GitHub Actions checks and logs that the connected integration does not expose. If `gh auth status` confirms an invalid credential once, switch directly to the connected integration or a signed-in browser. Ask the owner to reauthenticate once only when an indispensable operation has no equivalent path and is genuinely blocked. Every process removes Tokens from output and persisted content.
 
 ### Automated future releases
 
 #### CHANGELOG fragment assembly order
 
-`release-please.yml` first creates the `CHANGELOG.md` version heading on the release PR while preserving released history; then `tools/assemble_changelog.py --version <version>` sorts and assembles `changelog.d/<name>.md`. Migrated four-section legacy files are only rearranged into slash-separated titles and bullets in the output; their wording is unchanged. Fragments are deleted only after a successful write, while `--dry-run` previews without changing files.
+`release-please.yml` first creates the `CHANGELOG.md` version heading on the release PR while preserving released history; then `tools/assemble_changelog.py --version <version>` sorts and assembles `changelog.d/<name>.md`. Migrated four-section legacy files are only rearranged into slash-separated titles and bullets in the output; their wording is unchanged. Fragments are deleted only after a successful write, while `--dry-run` previews while preserving every file.
 
 Only `vN.N.N` or `vN.N.N-rc.N` tags trigger `.github/workflows/release.yml`. The workflow validates the exact tag, checks out that immutable source revision, and then:
 
-Before any platform package starts, the fast gate must confirm that the tag, version, and `main` history agree, require the Release to exist or not exist as dictated by the selected mode, and validate the curated four-language Release notes with Python 3.15. These cheap, decisive checks must not be deferred until after long builds. The tag, artifacts, and Release state are still revalidated immediately before publication to detect in-flight drift.
+Before any platform package starts, the fast gate must confirm that the tag, version, and `main` history agree, confirm the Release state required by the selected mode, and validate the curated four-language Release notes with Python 3.15. These cheap, decisive checks complete before long builds begin. The tag, artifacts, and Release state are still revalidated immediately before publication to detect in-flight drift.
 
 1. installs pinned runtime and release dependencies;
 2. compiles and audits the public source tree;
@@ -490,33 +490,33 @@ Before any platform package starts, the fast gate must confirm that the tag, ver
 15. requires and publishes the curated four-language Release description;
 16. after publication, the owner signs the update manifest on their own machine with `tools/sign_update_manifest.py release-sign`, producing an Ed25519 detached signature uploaded as the `.sig` asset. The private key is neither in the repository nor a CI secret; the client accepts only a manifest that verifies under a pinned public key, and the metadata job refuses to publish when no public key is pinned.
 
-Every `vN.N.N-rc.N` tag must publish as a pre-release, while a plain `vN.N.N` tag must publish as a stable release. The workflow rejects a tag/maturity mismatch. Never reuse or move any published tag.
+Every `vN.N.N-rc.N` tag must publish as a pre-release, while a plain `vN.N.N` tag must publish as a stable release. The workflow rejects a tag/maturity mismatch. Every published tag remains unique and immutable.
 
-The release metadata job must run every MoHan-owned tool with the saved Python 3.15 executable. The isolated Python 3.14 runtime is restricted to third-party SBOM tooling that does not yet support 3.15 and must never change later project-tool execution through `PATH`.
+The release metadata job must run every MoHan-owned tool with the saved Python 3.15 executable. The isolated Python 3.14 runtime is restricted to third-party SBOM tooling that awaits 3.15 support; later project tools keep using the saved Python 3.15 executable.
 
 The release and PR package workflows pin every GitHub Action to a full commit. Linux packaging additionally pins the official `appimagetool` asset to source commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`, asset ID `324406882`, and SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`.
 
 Windows installer builds pin Inno Setup `7.0.2` and WiX `7.0.0`. The Inno Setup compiler is downloaded only from the immutable official `jrsoftware/issrc` Release, then checked with GitHub Release attestation and its Pyrsys B.V. Authenticode signature before use. WiX runs with the explicitly authorized `-acceptEula wix7` CI argument and uses its maintained `Files` harvester instead of the removed Heat tool.
 
-Every Pull Request body and every curated Release description must contain complete, non-empty `## 繁體中文`, `## 简体中文`, `## English`, and `## 日本語` sections in that order. Translate the facts that were true for that specific change or tag; never backfill a historical PR or Release with features introduced later. Generated category headings follow the same four-language order. A symbolic one-line translation is not a substitute for the change, reason, user impact, and verification information.
+Every Pull Request body and every curated Release description must contain complete, non-empty `## 繁體中文`, `## 简体中文`, `## English`, and `## 日本語` sections in that order. Translate the facts that were true for that specific change or tag; keep each historical PR and Release limited to facts established at that time. Generated category headings follow the same four-language order. A symbolic one-line translation and each language section fully covers the change, reason, user impact, and verification information.
 
-When a four-language document has an H1, that H1 must present Traditional Chinese, Simplified Chinese, English, and Japanese in order, separated by the fullwidth slash `／`; no prose, badge, link, or warning may precede the four language sections except that H1 and blank lines. The four language sections must have equivalent counts of H3-or-deeper headings, paragraphs, list items, link and image destinations, code fences, and inline-code technical tokens. Every statement, paragraph, list item, link, warning, and code example must be translated completely without distorting technical terms, versions, paths, commands, or safety boundaries.
+When a four-language document has an H1, that H1 must present Traditional Chinese, Simplified Chinese, English, and Japanese in order, separated by the fullwidth slash `／`; the content begins with the four language sections except that H1 and blank lines. The four language sections must have equivalent counts of H3-or-deeper headings, paragraphs, list items, link and image destinations, code fences, and inline-code technical tokens. Every statement, paragraph, list item, link, warning, and code example must be translated completely while preserving technical terms precisely, versions, paths, commands, or safety boundaries.
 
 ### Flameblade Open Source Software Family Quality Standard
 
-This is the shared long-term maintenance contract for MoHan, FB2Blogger, and FB2WordPress. Every new Flameblade open-source product adopts it directly and must not create a lower-standard exception path.
+This is the shared long-term maintenance contract for MoHan, FB2Blogger, and FB2WordPress. Every new Flameblade open-source product adopts it directly and uses the same high-standard path for every product.
 
 > **Flameblade open-source declaration:** “I have forged this sword. What comes next is up to you.”
 
 1. Four-language consistency: material README, PR, Release, and user guidance facts stay aligned in Traditional Chinese, Simplified Chinese, English, and Japanese.
 2. Honest verification: show only CI and security scans that actually run; badges never substitute for test results.
-3. No secrets: keys, tokens, personal data, databases, and private content never enter source control or release artifacts.
+3. No secrets: keys, tokens, personal data, databases, and private content remain outside source control and release artifacts.
 4. Traceable artifacts: every published file maps to a specific tag and commit and includes a checksum or equivalent verification.
-5. No regressions: new work must not break working behavior, data compatibility, safety gates, or confirmations.
-6. No platform overclaiming: passing CI is not real-device validation; untested platforms and features state their limits clearly.
+5. No regressions: new work must fully preserve working behavior, data compatibility, safety gates, or confirmations.
+6. Evidence-based platform claims: passing CI covers CI validation; real-device status follows device evidence; untested platforms and features state their limits clearly.
 7. Synchronized public information: source, documentation, Releases, and website versions, links, and visible behavior stay aligned.
 8. No one-off manual exceptions: prefer repeatable, automated, testable maintenance over temporary manual repairs.
-9. Choose the harder path: for software produced by Flameblade Studio, the production process always takes the most complex, most difficult, and highest-risk path, never lowering standards for convenience.
+9. Choose the harder path: for software produced by Flameblade Studio, the production process always takes the most complex, most difficult, and highest-risk path, while maintaining the full standard in every case.
 
 ### Verify Release artifacts
 
@@ -529,13 +529,13 @@ gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo fl
 
 ### Official website synchronization
 
-The GitHub release job is deliberately not allowed to write to WordPress and stores no WordPress Application Password. The shared Flameblade Product Release Hub is the single authority for all three software products; its `flameblade-series-gateway/products.json` configuration identifies the public GitHub repository and website destination for each product. The WordPress-side gateway reads public GitHub Releases on its hourly schedule and refreshes the version, links, and verification information without copying installers into Bluehost storage.
+The GitHub release job keeps write responsibility in the WordPress-side gateway and reads only public state; the WordPress Application Password remains solely in website-side secure storage. The shared Flameblade Product Release Hub is the single authority for all three software products; its `flameblade-series-gateway/products.json` configuration identifies the public GitHub repository and website destination for each product. The WordPress-side gateway reads public GitHub Releases on its hourly schedule and refreshes the version, links, and verification information while installers remain served directly from GitHub Releases.
 
-This design keeps website credentials outside every product repository and avoids three competing release-to-site implementations. A newly published Release may take until the next hourly refresh to appear on the website. If the website does not update after that interval, diagnose the shared gateway rather than adding a one-off direct WordPress write step to this repository.
+This design keeps website credentials outside every product repository and maintains one release-to-site implementation. A newly published Release may take until the next hourly refresh to appear on the website. If the website does not update after that interval, diagnose the shared gateway and keep this repository on the single gateway publication path.
 
 ### Extended secret scanning
 
-The repository keeps GitHub secret scanning and push protection enabled and also runs a full-history Gitleaks check on Pull Requests, `main`, and a weekly schedule. GitHub's account-level non-provider pattern and partner validity toggles require an organization-owned GitHub Team/Enterprise repository with GitHub Secret Protection; a personal public repository cannot enable those two paid organization controls. GitHub's free provider scanning remains active.
+The repository keeps GitHub secret scanning and push protection enabled and also runs a full-history Gitleaks check on Pull Requests, `main`, and a weekly schedule. GitHub's account-level non-provider pattern and partner validity toggles require an organization-owned GitHub Team/Enterprise repository with GitHub Secret Protection; a personal public repository uses free provider scanning; those two paid controls become available in an organization-owned repository with GitHub Secret Protection. GitHub's free provider scanning remains active.
 
 ## 日本語
 
@@ -578,15 +578,15 @@ open-source
 - タグ：`v3.1.2`
 - タイトル：`MoHan Desktop Assistant v3.1.2`
 - 公開条件：必須の CI、パッケージ smoke、セキュリティ、リリースポリシーの全検査が成功した場合に限り公開します。
-- 本版は OpenAI Realtime のネイティブ音声を完全に維持して既定値とし、三つの応答音声の中で追加遅延が最も少ない経路とします。利用者は Realtime の即時理解と通常 Azure Speech または Dragon HD のストリーミング発話を組み合わせるモードを明示的に選べます。三つのモードは完全に分離して混音せず、他の音声供給元を変更してはなりません。Dragon HD が一つの句で失敗した場合は通常 Azure へ一度、続いて Windows 本機女性音声へ一度だけ代替し、通常 Azure が失敗した場合は Windows 本機女性音声へ一度だけ代替します。代替できるのは、その句の音声がまだ再生されていない場合だけです。再生開始後のストリーム障害では句を停止し、全体を再生し直さず、重複発話と重複課金を防がなければなりません。
+- 本版は OpenAI Realtime のネイティブ音声を完全に維持して既定値とし、三つの応答音声の中で追加遅延が最も少ない経路とします。利用者は Realtime の即時理解と通常 Azure Speech または Dragon HD のストリーミング発話を組み合わせるモードを明示的に選べます。三つのモードは完全に分離して混音せず、変更範囲を利用者が選択した音声経路に限定します。Dragon HD が一つの句で失敗した場合は通常 Azure へ一度、続いて Windows 本機女性音声へ一度だけ代替し、通常 Azure が失敗した場合は Windows 本機女性音声へ一度だけ代替します。代替できるのは、その句の音声がまだ再生されていない場合だけです。再生開始後のストリーム障害では句を停止し、再生済み音声を一回分として保持し、重複発話と重複課金を防がなければなりません。
 - ハイブリッドモードでは TTS の通信と合成工程が増えます。安全な短い句を順番に合成し、最初の音声断片から再生して待ち時間を抑えますが、公開説明でゼロ遅延や未検証の性能値をうたってはなりません。
 - Windows x64 ポータブル ZIP、ユーザー単位の EXE および MSI インストーラー、英語／簡体字中国語／日本語の MSI 変換ファイル、macOS Apple Silicon（arm64）および Intel（x86_64）の機能限定 Preview DMG、Linux x86_64 の機能限定 Preview AppImage、SHA-256 カタログ、再現可能な CycloneDX 1.7 SBOM と検証レポート、匿名化済み Tachyon 証拠と性能要約、更新マニフェスト、成果物証明を含みます。
 
 ### 次のリリース系列
 
-- 受け付けるリリースタグは、不変の正式版 `vN.N.N` または候補版 `vN.N.N-rc.N` だけで、RC 番号は正の整数でなければなりません。それ以外のタグはパッケージ化または公開前に失敗します。
+- 受け付けるリリースタグは、不変の正式版 `vN.N.N` または候補版 `vN.N.N-rc.N` だけで、RC 番号は正の整数でなければなりません。パッケージ化と公開は、この集合に一致するタグだけで開始します。
 - Windows は正式かつ完全な製品範囲を維持し、検証済みの x64 ZIP、EXE、MSI、MSI 言語変換ファイルを保持します。
-- macOS には Apple Silicon（arm64）用と Intel（x86_64）用のネイティブ `.dmg` を個別に提供し、それぞれ対応する `.app` を収録します。Linux x86_64 には `.AppImage` を提供します。いずれも機能限定 Preview と明記し、起動、四言語表示、ユーザー単位パス、安全に失敗停止するプラットフォーム境界だけを検証するもので、Windows との機能同等性を示すものではありません。
+- macOS には Apple Silicon（arm64）用と Intel（x86_64）用のネイティブ `.dmg` を個別に提供し、それぞれ対応する `.app` を収録します。Linux x86_64 には `.AppImage` を提供します。いずれも機能限定 Preview と明記し、起動、四言語表示、ユーザー単位パス、安全に失敗停止するプラットフォーム境界だけを検証するもので、Windows との機能同等性は専用証拠で判定します。
 - Pull Request はパッケージ検査用の短期 CI 成果物だけを作成でき、GitHub Release は作成できません。既存かつ有効な正式版または候補版タグだけが公開ワークフローへ進めます。
 - Release 説明は、人手で整備した四言語ファイル `docs/releases/<tag>.md` を使用しなければならず、自動生成ノートだけでは認められません。
 
@@ -607,9 +607,9 @@ git diff --check
 
 ### v4.0.0 プラットフォームと Qt 互換レイヤーのポリシー
 
-- 公式 PySide6 metadata が Python 3.15 を宣言しているかどうかは硬いゲートではありません。固定ダイジェストの公式 wheel バイナリ、`6.11.1+mohan.py315.1` metadata、通常の pip resolver、`pip check`、Qt smoke 証拠で互換レイヤーを検証します。
-- Windows を正式対応とし、macOS/Linux は機能限定 Preview とします。CI runner の build と smoke は開発者本人の実機認証ではなく、Windows との機能同等性も表明しません。
-- セキュリティ、秘密分離、完全回帰、パッケージ内容、SBOM、SHA-256、artifact 整合性、四言語説明、フォールバック動作は必須です。完全な許諾と sidecar がない PoseAtlas は除外し、候補素材で正式監査を迂回してはいけません。
+- 公式 PySide6 metadata が Python 3.15 を宣言しているかどうかは単一 metadata 宣言に代えて完全な互換性証拠をゲートにします。固定ダイジェストの公式 wheel バイナリ、`6.11.1+mohan.py315.1` metadata、通常の pip resolver、`pip check`、Qt smoke 証拠で互換レイヤーを検証します。
+- Windows を正式対応とし、macOS/Linux は機能限定 Preview とします。CI runner の build と smoke は CI 検証を対象とし、開発者本人の実機認証と Windows 機能同等性は各専用証拠で判定します。
+- セキュリティ、秘密分離、完全回帰、パッケージ内容、SBOM、SHA-256、artifact 整合性、四言語説明、フォールバック動作は必須です。完全な許諾と sidecar がない PoseAtlas は除外し、PoseAtlas は完全な許諾、sidecar、正式監査証拠が揃った場合だけ含めます。
 
 `.env`、API キー、OAuth 認証情報／トークン、Home Assistant トークン、SQLite データベース、`.mohan-profile` ファイル、録音、ローカルログ、個人設定は絶対に公開しません。
 
@@ -636,11 +636,11 @@ python tools\capture_readme_media.py --screenshots-only
 
 ### 保護された main の公開フロー
 
-リポジトリのすべての変更には Pull Request を使用します。実装コミットを `main` へ直接 push すること、検査を迂回すること、`main` を force-push すること、必須検査の失敗中またはレビュー会話の未解決中にマージすることは禁止します。必須の Windows CI 検査は `Windows CI / test` です。セキュリティワークフローも、未解決の高信頼度検出を残さず完了しなければなりません。
+リポジトリのすべての変更には Pull Request を使用します。`main` は通常のマージ後 push だけを受け付け、全必須検査成功と全レビュー会話解決をマージ条件とします。必須の Windows CI 検査は `Windows CI / test` です。セキュリティワークフローも、すべての高信頼度検出を解決して完了します。
 
-このリポジトリの既定のマージポリシーでは squash マージだけを許可します。全必須検査が成功し、Pull Request の head SHA が変わらず、すべてのレビュー会話が解決した後、Codex は squash で直接マージしなければなりません。リリースごとにこの既知のポリシーを再照会したり、許可されないことが既知の merge commit や rebase を先に試したりしてはなりません。マージ後は実際の merge commit を読み戻し、その commit にだけリリースタグを作成します。所有者が設定を明示的に変更した場合、または GitHub が実際に squash を拒否してポリシーの変化が疑われる場合に限り、再照会します。
+このリポジトリの既定のマージポリシーでは squash マージだけを許可します。全必須検査が成功し、Pull Request の head SHA が変わらず、すべてのレビュー会話が解決した後、Codex は squash で直接マージしなければなりません。以後のリリースは保存済みポリシーを直接使用し、ポリシー変更の証拠がある場合だけ再照会します。マージ後は実際の merge commit を読み戻し、その commit にだけリリースタグを作成します。所有者が設定を明示的に変更した場合、または GitHub が実際に squash を拒否してポリシーの変化が疑われる場合に限り、再照会します。
 
-GitHub 自動化では、予測可能な認証経路を一つだけ使用します。Pull Request の読み取りと更新には接続済み GitHub 連携を優先し、ローカルからの push には Git 自身の認証情報管理を使用し、`gh` は接続済み連携が提供しない GitHub Actions の検査とログにだけ使用します。`gh auth status` で認証情報の無効を一度確認した後は、外部状態が変わらない限り、再試行、ログアウト、再ログインを繰り返してはなりません。接続済み連携またはログイン済みブラウザーへ直ちに切り替えます。不可欠な操作に同等の経路がなく、実際に処理が停止した場合に限り、所有者へ一度だけ再認証を依頼します。どの処理でも Token を表示、複製、ファイル保存、commit してはなりません。
+GitHub 自動化では、予測可能な認証経路を一つだけ使用します。Pull Request の読み取りと更新には接続済み GitHub 連携を優先し、ローカルからの push には Git 自身の認証情報管理を使用し、`gh` は接続済み連携が提供しない GitHub Actions の検査とログにだけ使用します。`gh auth status` で認証情報の無効を一度確認した後は、接続済み連携またはログイン済みブラウザーへ直ちに切り替えます。不可欠な操作に同等の経路がなく、実際に処理が停止した場合に限り、所有者へ一度だけ再認証を依頼します。すべての処理は出力と永続化内容から Token を除去します。
 
 ### 今後の自動リリース
 
@@ -664,14 +664,14 @@ GitHub 自動化では、予測可能な認証経路を一つだけ使用しま�
 10. ネイティブ Linux runner で Linux x86_64 の機能限定 Preview をビルドし、パッケージ化した `.AppImage` の契約 smoke test を実行します。
 11. 独立した読み取り専用メタデータジョブで、正規 `SHA256SUMS`、互換 SHA-256 カタログ、正確な Windows および Preview ランタイム依存集合ごとの再現可能な CycloneDX 1.7 SBOM、機械可読なスキーマ／ライセンス／PURL／依存関係／プライバシー検証レポート、Windows 互換更新マニフェストを生成します。
 12. 最小権限の公開ジョブ内で、正確な成果物集合とカタログ記載の各 SHA-256 値を再検査します。
-13. 公開直前にタグを再解決し、移動または置換されたタグを拒否します。
+13. 公開直前にタグを再解決し、タグが検証済みリビジョンを指し続ける場合だけ公開します。
 14. 公開する全ファイルに GitHub 成果物由来証明を作成します。
 15. 人手で整備した四言語 Release 説明を必須とし、その説明を公開します。
-16. 公開後、所有者が自分の端末で `tools/sign_update_manifest.py release-sign` により更新マニフェストへ Ed25519 の分離署名を付け、`.sig` 成果物としてアップロードします。秘密鍵はリポジトリにも CI Secret にも置かず、クライアントは埋め込み公開鍵で検証できるマニフェストだけを受け入れ、メタデータジョブは公開鍵が埋め込まれていなければ公開を拒否します。
+16. 公開後、所有者が自分の端末で `tools/sign_update_manifest.py release-sign` により更新マニフェストへ Ed25519 の分離署名を付け、`.sig` 成果物としてアップロードします。秘密鍵は所有者端末の安全な保管領域だけに置き、クライアントは埋め込み公開鍵で検証できるマニフェストだけを受け入れ、メタデータジョブはメタデータジョブは公開鍵が埋め込まれている場合だけ公開します。
 
-`vN.N.N-rc.N` は Pre-release、純粋な `vN.N.N` は Stable Release として公開し、タグと成熟度が一致しなければワークフローが拒否します。公開済みタグは再利用も移動もしません。
+`vN.N.N-rc.N` は Pre-release、純粋な `vN.N.N` は Stable Release として公開し、タグと成熟度がワークフローは一致する組み合わせだけを受理し、公開済みタグを一意かつ不変に維持します。
 
-リリースメタデータジョブでは、保存済みの Python 3.15 実行パスを使って墨寒所有の全ツールを実行しなければなりません。隔離した Python 3.14 は、まだ 3.15 をサポートしていない第三者 SBOM ツールチェーンだけに限定し、`PATH` を通じて後続のプロジェクトツール実行環境を変更してはなりません。
+リリースメタデータジョブでは、保存済みの Python 3.15 実行パスを使って墨寒所有の全ツールを実行しなければなりません。隔離した Python 3.14 は、まだ 3.15 をサポートしていない第三者 SBOM ツールチェーンだけに限定し、後続のプロジェクトツールは保存済みの Python 3.15 実行パスを固定して使用します。
 
 リリースおよび PR パッケージワークフローは、すべての GitHub Action を完全な commit に固定します。Linux パッケージ化ではさらに、公式 `appimagetool` 成果物をソース commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、成果物 ID `324406882`、SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0` に固定します。
 
@@ -708,7 +708,7 @@ gh attestation verify .\MoHan-Desktop-Assistant-vX.Y.Z-Windows-x64.zip --repo fl
 
 ### 公式サイトとの同期
 
-GitHub リリースジョブは意図的に WordPress への書き込みを禁止され、WordPress Application Password も保存しません。共通の Flameblade Product Release Hub が三つのソフトウェア製品すべての単一の正規情報源であり、その `flameblade-series-gateway/products.json` 設定が各製品の公開 GitHub リポジトリと公式サイトの反映先を特定します。WordPress 側 gateway は一時間ごとのスケジュールで公開 GitHub Releases を読み取り、インストーラーを Bluehost ストレージへコピーせずに、バージョン、リンク、検証情報を更新します。
+GitHub リリースジョブはWordPress への書き込み責任を WordPress 側 gateway に固定し、WordPress Application Password はサイト側の安全な保管領域だけに保持します。共通の Flameblade Product Release Hub が三つのソフトウェア製品すべての単一の正規情報源であり、その `flameblade-series-gateway/products.json` 設定が各製品の公開 GitHub リポジトリと公式サイトの反映先を特定します。WordPress 側 gateway は一時間ごとのスケジュールで公開 GitHub Releases を読み取り、インストーラーを Bluehost ストレージへコピーせずに、バージョン、リンク、検証情報を更新します。
 
 この設計により、公式サイトの認証情報を各製品リポジトリの外に保ち、競合する三つの Release-to-site 実装を避けます。新しい Release が公式サイトに表示されるまで、次の一時間ごとの更新までかかる場合があります。その間隔を過ぎても更新されない場合は、共通 gateway を診断し、このリポジトリへ一度限りの WordPress 直接書き込み手順を追加してはなりません。
 

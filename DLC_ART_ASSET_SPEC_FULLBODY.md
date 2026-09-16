@@ -1,7 +1,7 @@
 # 墨寒 2.5D 參數化分層「全身 PoseAtlas」— 美術素材補產工作要點（給 ChatGPT Codex）
 
 > 本文件是「墨寒（MoHan）2.5D 改善專案」第三階段美術素材補產的完整製作規格。
-> 你（Codex）只負責產出美術素材（PNG 透明圖層），**不得更動任何軟體原始碼**。
+> 你（Codex）的工作範圍是產出美術素材（PNG 透明圖層）；軟體原始碼維持原狀。
 > 素材產出後，由 DeepSeek 端負責程式碼接入。
 
 ---
@@ -17,7 +17,7 @@
 「**參數化分層**」：把全身照拆成可獨立控制、可連續變形的透明圖層，讓全身的
 嘴巴、眼皮、眉毛、虹膜、紅暈等五官也能平滑動起來，徹底取代靜態全身照。
 
-**不改變角色五官、臉型、髮飾、服裝身分**。24 個 yaw 視角必須同時完成，缺一不可。
+**不改變角色五官、臉型、髮飾、服裝身分**。24 個 yaw 視角須以完整集合一次交付。
 
 ---
 
@@ -84,9 +84,9 @@ yaw+120-pitch+00, yaw+135-pitch+00, yaw+150-pitch+00, yaw+165-pitch+00
 1. **格式**：PNG，**RGBA 透明背景**（alpha 通道必須正確，非透明區域 alpha=255）。
 2. **尺寸**：**1024 × 1536 像素**（與現有 `assets/pose-atlas/v5-base/*.png` 完全一致）。
 3. **座標系**：所有圖層共用**同一座標系、同一錨點**，以現有 `assets/pose-atlas/v5-base/{view_id}.png` 為對齊基準。
-4. **對齊**：每個圖層疊加後，必須能精確還原出「完整全身照」的原始位置，不得偏移、縮放或變形。
+4. **對齊**：每個圖層疊加後，必須能精確還原出「完整全身照」的原始位置，須保持原始座標、尺寸與形狀。
 5. **臉部區域**：`body` 圖層的**臉部區域必須留空（透明）**，因為臉部由 `base` 圖層負責。
-6. **角色身分**：五官、臉型、髮飾、服裝、身體比例必須與現有權威素材完全一致，不得自行改動角色外觀。
+6. **角色身分**：五官、臉型、髮飾、服裝、身體比例須完整遵循現有權威素材定義的角色外觀。
 7. **邊緣**：圖層邊緣需有適度羽化（anti-aliasing），避免疊加時出現硬邊或殘影。
 
 ---
@@ -100,7 +100,7 @@ yaw+120-pitch+00, yaw+135-pitch+00, yaw+150-pitch+00, yaw+165-pitch+00
 - `yaw+000-pitch+00_lip_upper.png`、`yaw+000-pitch+00_eyelid_left.png`
 - `yaw-090-pitch+00_hair_left.png`、`yaw+045-pitch+00_sleeve_right.png`
 
-> 注意：view_id 中的 `+` 號必須保留（例如 `yaw+000-pitch+00`），不得省略或改寫。
+> 注意：view_id 須完整保留 `+` 號（例如 `yaw+000-pitch+00`），並逐字沿用指定格式。
 
 ---
 
@@ -157,10 +157,10 @@ D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\ex
 
 ## 八、注意事項
 
-1. **不得更動任何 `.py` 原始碼**、`.json` 設定、或現有 `assets/pose-atlas/v5-base/*.png` 素材。
-2. **不得更動半身分層素材**（`assets/expressions/layered/` 下的既有素材）。
+1. 工作範圍限於指定的新 PNG 透明圖層；現有 `.py`、`.json` 與 `assets/pose-atlas/v5-base/*.png` 素材維持原狀。
+2. 半身分層素材維持原狀（`assets/expressions/layered/` 下的既有素材）。
 3. 只新增 `assets\pose-atlas\v5-base-layered\` 目錄下的 600 張新素材。
-4. 若對某個圖層的「拆分方式」有疑問（例如全身的頭髮要拆成幾片、袖子是否要與手臂分開），請先詢問，不要自行決定。
+4. 若對某個圖層的「拆分方式」有疑問（例如全身的頭髮要拆成幾片、袖子是否要與手臂分開），請先詢問並依擁有者決定執行。
 5. 完成後回報：產出了哪些檔案、總張數、以及任何你認為需要 DeepSeek 端注意的對齊細節。
 
 ---
@@ -221,4 +221,4 @@ assets/makeup/builtin/assets/mohan-signature-{variant}-{view_id}-{slot}.png
 py -3.15 tools/build_outfit_pack.py assets/makeup/builtin/manifest.json assets/makeup/builtin assets/official-packs/mohan.makeup.builtin.mohan-outfit
 ```
 
-封裝即驗證 sha256、尺寸與安全區；任何一張越界或缺漏都整包拒絕。
+封裝即驗證 sha256、尺寸與安全區；套件只在每一張均位於安全區且數量完整時通過。

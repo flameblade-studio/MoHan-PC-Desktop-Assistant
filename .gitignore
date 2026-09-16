@@ -25,9 +25,9 @@ release-artifacts/
 deliverables/
 tmp/
 work/
-# artifacts/ 預設不入庫（虛擬環境、可重新下載的模型、隔離 worktree、可重建的
-# 發行封存），但幾何控制的權威產出例外——那是唯一不可重製的部分，且原本只存在
-# 於單一台機器上，沒有異地備援。
+# artifacts/ 預設保留在本機（虛擬環境、可重新下載的模型、隔離 worktree、
+# 可重建的發行封存）。以下明列的幾何控制權威產出另外入庫，保存原始、
+# 唯一的生成證據，並為原本僅存於單機的內容建立異地備援。
 /artifacts/*
 !/artifacts/pose-atlas-rebuild/
 /artifacts/pose-atlas-rebuild/*
@@ -47,6 +47,7 @@ work/
 /tools/third_party/
 *.spec
 *.zip
+!third_party_licenses/mpl/sources/*.zip
 *.7z
 release-notes-v*.txt
 selftest-*.txt

@@ -22,3 +22,44 @@ source = "https://github.com/TencentARC/InstantMesh/tree/08822c52fdc399b93ea00e4
 license_file = "third_party_licenses/InstantMesh-LICENSE.txt"
 distributed_in_runtime = false
 distributed_in_installer = false
+
+# This entry describes the local-tooling copy. The separately distributed
+# Windows runtime copy is recorded in sbom/components.toml.
+[[component]]
+name = "certifi"
+version = "2026.7.22"
+license = "MPL-2.0"
+scope = "offline-art-production"
+profiles = ["local-art-tooling"]
+license_file = "third_party_licenses/mpl/MPL-2.0.txt"
+source_archive = "third_party_licenses/mpl/sources/certifi-2026.7.22.zip"
+evidence_manifest = "third_party_licenses/mpl/components.json"
+distributed_in_runtime = false
+distributed_in_installer = false
+source_evidence_shipped = true
+
+[[component]]
+name = "tqdm"
+version = "4.70.0"
+license = "MPL-2.0 AND MIT"
+scope = "offline-art-production"
+profiles = ["local-art-tooling"]
+license_file = "third_party_licenses/mpl/MPL-2.0.txt"
+source_archive = "third_party_licenses/mpl/sources/tqdm-4.70.0.zip"
+evidence_manifest = "third_party_licenses/mpl/components.json"
+distributed_in_runtime = false
+distributed_in_installer = false
+source_evidence_shipped = true
+
+[[component]]
+name = "orjson"
+version = "3.12.0"
+license = "MPL-2.0 AND (Apache-2.0 OR MIT)"
+scope = "offline-art-production"
+profiles = ["local-art-tooling"]
+license_file = "third_party_licenses/mpl/MPL-2.0.txt"
+source_archive = "third_party_licenses/mpl/sources/orjson-3.12.0.zip"
+evidence_manifest = "third_party_licenses/mpl/components.json"
+distributed_in_runtime = false
+distributed_in_installer = false
+source_evidence_shipped = true

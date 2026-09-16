@@ -62,6 +62,13 @@ scope = "runtime"
 profiles = ["windows"]
 
 [[component]]
+name = "certifi"
+version = "2026.7.22"
+license = "MPL-2.0"
+scope = "runtime"
+profiles = ["windows"]
+
+[[component]]
 name = "opencc-python-reimplemented"
 version = "0.1.7"
 license = "Apache-2.0"

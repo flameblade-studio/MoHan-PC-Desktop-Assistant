@@ -1,0 +1,35 @@
+## 繁體中文
+
+- 以擁有者提供的墨寒原型作為整套藍白漢服的設計依據，明列左右前襟各一個白色寶劍劍紋。加入原圖雜湊、視角遮擋與推補範圍的審閱規則；既有 V4 衍生衣服依新原型重新審閱。
+- 正面、左右 15° 及左右 30° 衣層改用原型的深藍薄紗、雙劍紋及兩排腰帶白紋，保留原生臉、身體與雙手。袖口依手腕對位並修整遮擋邊界，裙襬保留薄紗軟邊；＋30° 同時清除耳下髮層的膚色殘邊、恢復銀鏈並修正髮飾遮擋順序。其餘視角持續逐一重建與審閱。
+
+- −45° 加入原型衣裝與繡鞋，清除手指間夾帶的腿部皮膚，保留原生手部像素。完整髮片與前髮束的疊放修正衣領截斷；髮飾恢復原圖可見的上段雙銀鏈，保留中段被頭髮遮住的部分。
+
+- −60° 加入原型衣裝與繡鞋，依原生手掌對齊袖口並清除夾帶的短褲與腿部碎片。可拆前髮束銜接原生鬢髮，保留原生臉與髮飾；實際程式的四種眼睛狀態均維持完整衣裝。
+
+## 简体中文
+
+- 以所有者提供的墨寒原型作为整套蓝白汉服的设计依据，明确左右前襟各有一个白色宝剑剑纹。加入原图哈希、视角遮挡与补全范围的审阅规则；现有 V4 衍生衣服按新原型重新审阅。
+- 正面、左右 15° 及左右 30° 衣层改用原型的深蓝薄纱、双剑纹及两排腰带白纹，保留原生脸、身体与双手。袖口按手腕对齐并修整遮挡边界，裙摆保留薄纱软边；＋30° 同时清除耳下发层的肤色残边、恢复银链并修正发饰遮挡顺序。其余视角继续逐一重建与审阅。
+
+- −45° 加入原型衣装与绣鞋，清除手指间夹带的腿部皮肤，保留原生手部像素。完整发片与前发束的叠放修正衣领截断；发饰恢复原图可见的上段双银链，保留中段被头发遮住的部分。
+
+- −60° 加入原型衣装与绣鞋，按原生手掌对齐袖口并清除夹带的短裤与腿部碎片。可拆前发束衔接原生鬓发，保留原生脸与发饰；实际程序的四种眼睛状态均保持完整衣装。
+
+## English
+
+- Establish the owner's original MoHan prototype as the design authority for the complete blue-white hanfu, with one white sword motif on each front panel. Document source hashes, view occlusion and inferred extensions; review existing V4-derived garments against this original.
+- Rebuild the front, both 15° and both 30° garments with the prototype's deep blue gauze, two sword motifs and two sash embroidery rows while retaining the native face, body and hands. Register cuffs to the wrists and refine their occlusion boundaries while preserving the soft gauze hem. The +30° view also removes donor-skin residue below the ear, restores the silver chains and corrects headwear occlusion order. Other views remain under individual reconstruction and review.
+
+- Add the prototype outfit and embroidered shoes at −45°, removing leg pixels between the fingers while preserving native hand pixels. Restore complete hair and place the front locks over the collar. Recover the donor-visible upper twin silver chains while retaining the middle section's natural occlusion by hair.
+
+- Add the prototype outfit and embroidered shoes at −60°, register cuffs to native palms, and remove shorts and leg fragments carried by the hand masks. Join detachable front locks to native temple hair while preserving the native face and headwear. All four runtime eye states retain the complete outfit.
+
+## 日本語
+
+- 所有者が提供した墨寒の原型を青白漢服全体のデザイン基準とし、左右の前身頃に白い宝剣文様を一つずつ配置することを明記しました。原画のハッシュ、視点による遮蔽、補完範囲の確認規則を追加し、既存の V4 由来の衣装を原型に基づいて再確認します。
+- 正面、左右 15°、左右 30° の衣装を原型の濃い青の薄絹、二つの剣文様、二段の帯の白い文様で再構成し、元の顔、身体、両手を保持しました。袖口を手首に合わせて遮蔽境界を調整し、薄絹の裾の柔らかい縁を保持します。＋30° では耳の下の髪レイヤーに残った肌色を除去し、銀の鎖と髪飾りの遮蔽順序も修正しました。他の視点は個別に再構成と確認を続けます。
+- −45° に原型の衣装と刺繍靴を追加し、元の手の画素を保持しながら指の間に残った脚の画素を除去しました。完全な髪レイヤーと前髪束の重なりを修正し、襟による切断を解消しました。髪飾りは原画で見える上部の二本の銀鎖を復元し、中間部分が髪に隠れる状態を保持します。
+- −60° に原型の衣装と刺繍靴を追加し、元の手のひらに袖口を合わせ、手のマスクに残った短パンと脚の断片を除去しました。着脱可能な前髪束を元のこめかみの髪につなぎ、元の顔と髪飾りを保持します。実行時の四つの目の状態で衣装全体が維持されます。
+
+

@@ -1,0 +1,4 @@
+### 仙境介面與獨立造型分類／仙境界面与独立造型分类／Celestial dashboard and independent appearance categories／仙境ダッシュボードと独立した外見カテゴリ
+
+- 套用核可的深藍、白玉與金色介面，保留八個功能頁面；衣櫥提供衣裝、髮型、髮飾、妝容及自主選裝分類。／应用获准的深蓝、白玉与金色界面，保留八个功能页面；衣橱提供衣装、发型、发饰、妆容及自主选装分类。／Apply the approved navy, jade and gold interface while retaining all eight feature pages; separate wardrobe controls into clothing, hair, headwear, makeup and automatic outfit selection.／承認済みの紺・白玉・金の外観を適用し、8 つの機能ページを維持。衣装・髪型・髪飾り・メイク・自動衣装選択をカテゴリ別に配置。
+- 獨立套用髮型與髮飾並更新角色預覽，保留其他外觀選擇；外部主題的色彩、字型與背景繼續套用，切回內建主題時還原。／独立应用发型与发饰并更新角色预览，保留其他外观选择；外部主题的色彩、字体与背景继续应用，切回内置主题时恢复。／Apply hair and headwear independently and refresh the character preview while preserving other appearance selections; retain external theme colors, fonts and backgrounds and restore defaults when returning to built-in themes.／髪型と髪飾りを個別に適用してプレビューを更新し、他の外見設定を維持。外部テーマの色・書体・背景を反映し、内蔵テーマに戻すと既定値に復元。
