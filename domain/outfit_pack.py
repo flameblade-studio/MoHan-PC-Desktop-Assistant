@@ -52,9 +52,7 @@ GESTURE_SILHOUETTES = ("front-mock-scold", "front-mock-hit", "front-eureka", "fr
 POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)
 REQUIRED_SILHOUETTES = BASE_SILHOUETTES + GESTURE_SILHOUETTES + POSE_ATLAS_SILHOUETTES
 SUPPORTED_SILHOUETTES = REQUIRED_SILHOUETTES
-EXPRESSION_SILHOUETTE_ALIASES = frozendict({
-    "cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed", "protective_front": "front-crossed",
-})
+EXPRESSION_SILHOUETTE_ALIASES = frozendict({"cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed", "protective_front": "front-crossed"})
 OFFICIAL_BODY_SPEC = frozendict({
     "adult": True, "height_cm": 168, "weight_kg": 54, "bust_cm": 86, "underbust_cm": 71, "waist_cm": 62, "hips_cm": 90,
 })
@@ -239,9 +237,7 @@ def _pose_assets(poses: object, slots: frozenset[str], archive: zipfile.ZipFile,
             raise OutfitPackError("Every silhouette requires assets.")
         assets = tuple(_asset(entry, slots, archive, names) for entry in entries)
         canvas = MAKEUP_CANVASES["full-body" if silhouette in POSE_ATLAS_SILHOUETTES else "half-body"]
-        validate_pose_assets(
-            assets, archive, canvas, require_visible=slots == GARMENT_SLOTS, full_canvas=full_canvas,
-        )
+        validate_pose_assets(assets, archive, canvas, require_visible=slots == GARMENT_SLOTS, full_canvas=full_canvas)
         if len({asset.slot for asset in assets}) != len(assets):
             raise OutfitPackError("Duplicate slot in silhouette.")
         parsed[silhouette] = assets

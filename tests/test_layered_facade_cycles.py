@@ -48,7 +48,7 @@ MAX_NEW_LAYER_MODULE_LINES = 800
 # (utf-8-sig decode + str.splitlines()).
 LAYER_MODULE_LINE_BASELINE = {
     "application.presentation_ports": 1_034,
-    "domain.outfit_pack": 870,
+    "domain.outfit_pack": 868,
     "infrastructure.db": 1_195,
     "infrastructure.profile_transfer": 1_070,
     "integrations.azure_speech": 864,
@@ -56,7 +56,6 @@ LAYER_MODULE_LINE_BASELINE = {
     "integrations.speech": 1_195,
     "presentation.companion_core": 1_105,
     "presentation.companion_face_animation": 1_152,
-    "presentation.companion_face_assets": 872,
     "presentation.companion_speech_runtime": 1_179,
     "presentation.companion_visual_dynamics": 969,
     "presentation.dashboard_conversation": 915,
