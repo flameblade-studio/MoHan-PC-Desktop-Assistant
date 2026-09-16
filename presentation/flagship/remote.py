@@ -98,7 +98,7 @@ class FlagshipRemoteMixin:
         self.camera_status = QLabel(self._t("攝影機已關閉"))
         self.camera_status.setWordWrap(True)
         self.local_perception_status = QLabel(
-            self._t("本機臉部、虹膜與手勢模型尚未啟動")
+            self._t('本機臉部、虹膜與手勢模型等待啟動')
         )
         self.local_perception_status.setWordWrap(True)
         self.remote_status = QLabel(self._t("遠端功能預設關閉"))
@@ -152,8 +152,7 @@ class FlagshipRemoteMixin:
         form.addRow(self._t("本機感知模型"), self.local_perception_status)
         camera_note = QLabel(
             self._t(
-                "攝影機預設關閉；啟用時必須顯示狀態。畫面不會默默上傳，"
-                "也不會辨識未登錄的陌生人。"
+                '攝影機預設關閉，啟用時持續顯示狀態；影像上傳須明確授權，身分辨識僅適用已登錄人物。'
             )
         )
         camera_note.setWordWrap(True)
@@ -221,7 +220,7 @@ class FlagshipRemoteMixin:
             self.remote_server = None
             self.remote_status.setText(
                 self._t(
-                    "啟動失敗：{error}",
+                    '啟動需要處理：{error}',
                     error=safe_error_message(self.language, exc),
                 )
             )
@@ -246,7 +245,7 @@ class FlagshipRemoteMixin:
             self.remote_server = None
         if hasattr(self, "remote_status") and not silent:
             self.remote_status.setText(
-                self._t("遠端服務已停止，既有權杖未刪除但無法連線。")
+                self._t('遠端服務已停止，既有權杖保持保存；重新啟動服務後才可連線。')
             )
         if hasattr(self, "health_summary"):
             self.refresh_health()
@@ -269,7 +268,7 @@ class FlagshipRemoteMixin:
             self,
             self._t("一次性配對權杖"),
             self._t(
-                "請只在可信任裝置輸入下列權杖。關閉視窗後不會再次顯示：\n\n{token}",
+                '請只在可信任裝置輸入下列權杖；權杖僅在目前視窗顯示一次：\n\n{token}',
                 token=token,
             ),
         )

@@ -78,7 +78,7 @@ class UpdatePanel(QWidget):
         self.release: ReleaseInfoPort | None = None
         self.silent_check = False
         # Completion callbacks carry the generation active at submission;
-        # abandon_workers() advances it so late pool workers cannot touch a
+        # abandon_workers() advances it so late pool workers stay outside the
         # panel whose dashboard has already closed (planner.py guard pattern).
         self._worker_generation = 0
 

@@ -51,7 +51,7 @@ lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS
 __all__ = ("FirstRunWizard",)
 
 class FirstRunWizard(QDialog):
-    """Collect identity and workflow choices without assuming one profession."""
+    """Collect identity and workflow choices while supporting every profession."""
 
     WORK_TYPES = (
         "一般辦公／行政",
@@ -299,8 +299,7 @@ class FirstRunWizard(QDialog):
         self.note_label.setText(
             self._t(
                 "first_run_note",
-                "工作平台頁一開始保持空白，由你自行新增公司系統、"
-                "協作工具、客戶後台或網站。程式不會替你建立特定商業平台。",
+                '工作平台頁由你新增公司系統、協作工具、客戶後台或網站。',
             )
         )
         self.save_button.setText(
@@ -325,8 +324,7 @@ class FirstRunWizard(QDialog):
         self.intro_label.setText(
             self._t(
                 "first_run_intro",
-                "先建立你的使用者設定。以下內容日後都能在「設定」頁修改，"
-                "不會綁定特定公司、職業或工作平台。",
+                '先建立你的使用者設定，依自己的公司、職業與工作平台自由調整；日後也能在「設定」頁修改。',
             )
         )
 

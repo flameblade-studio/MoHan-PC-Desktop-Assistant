@@ -35,7 +35,7 @@ class FlagshipPlannerMixin:
             QMessageBox.information(
                 self,
                 self._t("工具任務"),
-                self._t("這句話沒有明確要求執行操作，因此不會產生工具計畫。"),
+                self._t('請明確指定要執行的操作，再建立工具計畫。'),
             )
             return
         self.planner_busy = True
@@ -92,7 +92,7 @@ class FlagshipPlannerMixin:
                 self._planner_failed_if_current(error, request_generation)
             )
         )
-        # 保留工作物件，直到完成或失敗回呼結束，避免 Python 包裝物件過早回收。
+        # 保留工作物件直到結果回呼結束，使 Python 包裝物件涵蓋完整作業生命週期。
         worker.setAutoDelete(False)
         self._planner_worker = worker
         self.thread_pool.start(worker)
@@ -119,7 +119,7 @@ class FlagshipPlannerMixin:
                 f"- home：{self.ha_entities.item(index).text()}"
                 for index in range(min(200, self.ha_entities.count()))
             )
-        return "\n".join(lines) or self._t("（目前沒有白名單目標）")
+        return "\n".join(lines) or self._t('（請先加入白名單目標）')
     def _planner_done_if_current(
         self,
         payload: dict[str, Any],
@@ -141,7 +141,7 @@ class FlagshipPlannerMixin:
                 self,
                 self._t("工具計畫"),
                 self._t(
-                    "計畫驗證失敗：{error}",
+                    '計畫驗證需要處理：{error}',
                     error=safe_error_message(self.language, exc),
                 ),
             )
@@ -157,7 +157,7 @@ class FlagshipPlannerMixin:
             QMessageBox.information(
                 self,
                 self._t("工具計畫"),
-                self._t("資料不足或並非明確操作要求，因此沒有產生任何步驟。"),
+                self._t('請補齊操作資訊並明確提出執行要求，再建立步驟。'),
             )
             return
         preview = "\n".join(
@@ -197,7 +197,7 @@ class FlagshipPlannerMixin:
             self,
             self._t("工具計畫"),
             self._t(
-                "無法產生計畫：{error}",
+                '產生計畫需要處理：{error}',
                 error=safe_error_message(self.language, error),
             ),
         )

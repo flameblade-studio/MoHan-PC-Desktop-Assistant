@@ -52,7 +52,7 @@ lazy from test_outfit_pack import _manifest, _pack, _png
 
 GENERATION_ONE = {"id": "mohan-body-v1", "version": 1}
 NOTICE_KEY = "wardrobe_body_profile_outdated"
-NOTICE_ZH_TW = "這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成"
+NOTICE_ZH_TW = '這套服裝需要二代素體素材；請用一鍵製衣重新生成'
 
 
 @pytest.fixture(autouse=True)
@@ -110,7 +110,7 @@ def test_generation_one_pack_is_rejected_with_the_dedicated_error() -> None:
         with pytest.raises(IncompatibleBodyProfileError):
             install_outfit_pack(stale, store)
         assert not (store / "packages").exists()
-        # The generic authoring-template branch is no longer merged with the body-profile branch.
+        # The generic authoring-template and body-profile branches remain separate.
         manifest, assets = _manifest(_png())
         manifest["authoring"] = {"template": "mohan-official-poses", "version": 1}
         with pytest.raises(OutfitPackError) as generic:
@@ -184,7 +184,7 @@ def test_dashboard_import_and_apply_show_the_body_profile_notice() -> None:
                 for index in range(dashboard.wardrobe_packages.count())
             ]
             stale_item = next(item for item in items if item.data(Qt.UserRole) == "stale-v1")
-            assert "不相容" in stale_item.toolTip()
+            assert '相容性待更新' in stale_item.toolTip()
             dashboard.wardrobe_packages.setCurrentItem(stale_item)
             dashboard.wardrobe_status.setText("")
             dashboard._preview_selected_outfit()

@@ -583,7 +583,7 @@ class DashboardTodayMemoryMixin:
             self.todo_feedback.setText(
                 self._t(
                     "idea_not_found",
-                    "找不到這則靈感，請重新整理後再試。",
+                    '請重新整理靈感清單並選擇現有項目。',
                 )
             )
             return
@@ -696,7 +696,7 @@ class DashboardTodayMemoryMixin:
         if row is None:
             QMessageBox.information(
                 self,
-                self._t("memory_not_found_title", "找不到記憶"),
+                self._t("memory_not_found_title", '請重新整理記憶清單'),
                 self._t(
                     "memory_not_found",
                     "這則記憶已不存在，清單將重新整理。",
@@ -719,11 +719,11 @@ class DashboardTodayMemoryMixin:
                 self,
                 self._t(
                     "memory_save_failed_title",
-                    "無法保存記憶",
+                    '儲存記憶需要處理',
                 ),
                 self._t(
                     "memory_save_failed",
-                    "可能已有內容完全相同的記憶。原有資料未被變更。",
+                    '相同的記憶可能已存在；既有資料保持完整。',
                 ),
             )
             return
@@ -786,7 +786,7 @@ class DashboardTodayMemoryMixin:
             self._t("memory_clear_title", "清除長期記憶"),
             self._t(
                 "memory_clear_confirm",
-                "確定要刪除墨寒保存的全部長期記憶嗎？此動作無法復原。",
+                '確定永久刪除墨寒保存的全部長期記憶嗎？',
             ),
         )
         if answer == QMessageBox.Yes:

@@ -107,7 +107,7 @@ _ZH_TW: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.CHECKING: "正在安全地檢查 GitHub Release……",
     AuxiliaryText.UP_TO_DATE: "目前已是此更新頻道的最新版本。",
     AuxiliaryText.NEW_VERSION: "發現新版本 {version}；安裝前會驗證 SHA256。",
-    AuxiliaryText.NO_RELEASE_NOTES: "此版本未提供說明。",
+    AuxiliaryText.NO_RELEASE_NOTES: '此版本的版本說明項目數為 0。',
     AuxiliaryText.NEW_VERSION_TITLE: "發現墨寒新版本",
     AuxiliaryText.NEW_VERSION_AVAILABLE: "新版本 {version} 已可下載。",
     AuxiliaryText.DOWNLOAD_TITLE: "下載官方更新",
@@ -123,19 +123,19 @@ _ZH_TW: Mapping[AuxiliaryText, str] = frozendict({
         "是否立即升級？"
     ),
     AuxiliaryText.SAFE_DOWNLOADED: "已安全下載：{path}",
-    AuxiliaryText.INSTALLER_LAUNCH_FAILED: "無法啟動安裝程式。",
+    AuxiliaryText.INSTALLER_LAUNCH_FAILED: '安裝程式啟動需要檢查。',
     AuxiliaryText.UPDATE_DIALOG_TITLE: "墨寒更新",
-    AuxiliaryText.UPDATE_ERROR_NO_RELEASE: "目前沒有此頻道可用的相容更新。",
+    AuxiliaryText.UPDATE_ERROR_NO_RELEASE: '目前此頻道的相容已發布更新數為 0。',
     AuxiliaryText.UPDATE_ERROR_CONNECTION: (
-        "無法連線至 GitHub 更新服務，請檢查網路後再試。"
+        'GitHub 更新服務連線需要檢查，請確認網路後再試。'
     ),
     AuxiliaryText.UPDATE_ERROR_SECURITY: (
-        "更新因來源、清單、大小或 SHA256 驗證未通過而被安全阻擋。"
+        '更新目前安全暫停，來源、清單、大小與 SHA256 驗證仍待完成。'
     ),
-    AuxiliaryText.UPDATE_ERROR_DATA: "GitHub Release 的更新資料無法安全讀取。",
-    AuxiliaryText.UPDATE_ERROR_VERSION: "更新版本或頻道資料無效。",
-    AuxiliaryText.UPDATE_ERROR_DOWNLOAD: "安裝程式未能完整且安全地下載。",
-    AuxiliaryText.UPDATE_ERROR_GENERIC: "更新作業未能安全完成，請稍後再試。",
+    AuxiliaryText.UPDATE_ERROR_DATA: 'GitHub Release 更新資料需要安全讀取，請稍後再試。',
+    AuxiliaryText.UPDATE_ERROR_VERSION: '更新版本或頻道資料需要符合支援格式。',
+    AuxiliaryText.UPDATE_ERROR_DOWNLOAD: '安裝程式下載需要完整且安全，請稍後再試。',
+    AuxiliaryText.UPDATE_ERROR_GENERIC: '更新作業需要進一步處理，請稍後再試。',
     AuxiliaryText.PROFILE_HEADING: "<b>攜帶、換機與進度接續</b>",
     AuxiliaryText.PROFILE_NOTE: (
         "匯出後只需攜帶一個檔案，即可在另一台電腦接續對話、記憶、待辦、"
@@ -150,7 +150,7 @@ _ZH_TW: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.SENSITIVE_DATA_WARNING: (
         "敏感資料只會以密碼加密後寫入攜帶檔。請妥善保管密碼；此選項不會攜帶這台電腦的權限或本機路徑。"
     ),
-    AuxiliaryText.PASSWORD_MISMATCH: "兩次輸入的密碼不一致。",
+    AuxiliaryText.PASSWORD_MISMATCH: '請輸入兩次相同的密碼。',
     AuxiliaryText.EXPORT_COMPLETE_WITH_SENSITIVE: (
         "墨寒攜帶檔已建立，並包含加密的敏感資料。\n\n位置：{path}\n收錄資料與設定共 {count} 筆。"
     ),
@@ -161,7 +161,7 @@ _ZH_TW: Mapping[AuxiliaryText, str] = frozendict({
         "偵測到加密的敏感內容。請輸入建立這份攜帶檔時使用的密碼。"
     ),
     AuxiliaryText.ENCRYPTED_CONTENT_AUTH_FAILED: (
-        "密碼錯誤或攜帶檔可能已遭修改；敏感資料未匯入。"
+        '敏感資料匯入需要驗證密碼或檔案完整性；敏感資料維持未匯入。'
     ),
     AuxiliaryText.IMPORT_VISION_REMAINS_OFF: (
         "匯入完成後，攝影機與人臉辨識仍保持關閉，必須由您自行啟用。"
@@ -174,7 +174,7 @@ _ZH_TW: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.EXPORT_DIALOG_TITLE: "匯出墨寒攜帶檔",
     AuxiliaryText.PROFILE_FILTER: "墨寒攜帶檔 (*{extension})",
     AuxiliaryText.EXPORT_FAILED_TITLE: "匯出墨寒攜帶檔",
-    AuxiliaryText.EXPORT_FAILED: "匯出失敗：{reason}",
+    AuxiliaryText.EXPORT_FAILED: '匯出需要檢查：{reason}',
     AuxiliaryText.EXPORT_COMPLETE_TITLE: "匯出完成",
     AuxiliaryText.EXPORT_COMPLETE: (
         "墨寒攜帶檔已建立。\n\n位置：{path}\n收錄資料與設定共 {count} 筆。\n\n"
@@ -182,7 +182,7 @@ _ZH_TW: Mapping[AuxiliaryText, str] = frozendict({
     ),
     AuxiliaryText.IMPORT_DIALOG_TITLE: "匯入墨寒攜帶檔",
     AuxiliaryText.IMPORT_READ_FAILED_TITLE: "匯入墨寒攜帶檔",
-    AuxiliaryText.IMPORT_READ_FAILED: "無法讀取攜帶檔：{reason}",
+    AuxiliaryText.IMPORT_READ_FAILED: '攜帶檔讀取需要檢查：{reason}',
     AuxiliaryText.LEGACY_SOURCE: "舊版攜帶檔",
     AuxiliaryText.UNKNOWN: "未知",
     AuxiliaryText.UNNAMED: "未命名",
@@ -199,20 +199,20 @@ _ZH_TW: Mapping[AuxiliaryText, str] = frozendict({
         "\n\n確定匯入嗎？"
     ),
     AuxiliaryText.IMPORT_FAILED_TITLE: "匯入墨寒攜帶檔",
-    AuxiliaryText.IMPORT_FAILED: "匯入失敗，原資料未變更：{reason}",
+    AuxiliaryText.IMPORT_FAILED: '匯入需要檢查；原資料未變更：{reason}',
     AuxiliaryText.IMPORT_COMPLETE_TITLE: "進度接續完成",
     AuxiliaryText.IMPORT_COMPLETE: (
         "墨寒的共同進度已匯入完成。\n\n原資料備份：{path}\n\n"
         "程式現在會安全關閉；請重新開啟墨寒，即可從匯入後的進度繼續使用。"
     ),
-    AuxiliaryText.PROFILE_ERROR_NOT_FOUND: "找不到指定的墨寒攜帶檔。",
-    AuxiliaryText.PROFILE_ERROR_FORMAT: "攜帶檔格式、版本或資料內容無法安全讀取。",
-    AuxiliaryText.PROFILE_ERROR_SECURITY: "攜帶檔未通過安全或完整性驗證。",
+    AuxiliaryText.PROFILE_ERROR_NOT_FOUND: '請確認指定的墨寒攜帶檔後再繼續。',
+    AuxiliaryText.PROFILE_ERROR_FORMAT: '請確認攜帶檔格式、版本與資料內容符合安全讀取規格。',
+    AuxiliaryText.PROFILE_ERROR_SECURITY: '請完成攜帶檔的安全性與完整性檢查。',
     AuxiliaryText.PROFILE_ERROR_DUPLICATE: (
-        "這份攜帶檔已匯入過；為避免覆蓋較新的進度，本次未重複匯入。"
+        '這份攜帶檔已在本機匯入；為保護較新的進度，系統略過重複匯入。'
     ),
-    AuxiliaryText.PROFILE_ERROR_DATABASE: "資料庫匯入失敗；原資料未變更。",
-    AuxiliaryText.PROFILE_ERROR_GENERIC: "攜帶檔作業未能安全完成。",
+    AuxiliaryText.PROFILE_ERROR_DATABASE: '資料庫匯入需要檢查；原資料未變更。',
+    AuxiliaryText.PROFILE_ERROR_GENERIC: '攜帶檔作業需要進一步處理，請稍後再試。',
 })
 
 _ZH_CN: Mapping[AuxiliaryText, str] = frozendict({
@@ -229,7 +229,7 @@ _ZH_CN: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.CHECKING: "正在安全地检查 GitHub Release……",
     AuxiliaryText.UP_TO_DATE: "当前已是此更新频道的最新版本。",
     AuxiliaryText.NEW_VERSION: "发现新版本 {version}；安装前会验证 SHA256。",
-    AuxiliaryText.NO_RELEASE_NOTES: "此版本未提供说明。",
+    AuxiliaryText.NO_RELEASE_NOTES: '此版本的版本说明项目数为 0。',
     AuxiliaryText.NEW_VERSION_TITLE: "发现墨寒新版本",
     AuxiliaryText.NEW_VERSION_AVAILABLE: "新版本 {version} 已可下载。",
     AuxiliaryText.DOWNLOAD_TITLE: "下载官方更新",
@@ -245,19 +245,19 @@ _ZH_CN: Mapping[AuxiliaryText, str] = frozendict({
         "是否立即升级？"
     ),
     AuxiliaryText.SAFE_DOWNLOADED: "已安全下载：{path}",
-    AuxiliaryText.INSTALLER_LAUNCH_FAILED: "无法启动安装程序。",
+    AuxiliaryText.INSTALLER_LAUNCH_FAILED: '安装程序启动需要检查。',
     AuxiliaryText.UPDATE_DIALOG_TITLE: "墨寒更新",
-    AuxiliaryText.UPDATE_ERROR_NO_RELEASE: "当前没有此频道可用的兼容更新。",
+    AuxiliaryText.UPDATE_ERROR_NO_RELEASE: '当前此频道的兼容已发布更新数为 0。',
     AuxiliaryText.UPDATE_ERROR_CONNECTION: (
-        "无法连接 GitHub 更新服务，请检查网络后重试。"
+        'GitHub 更新服务连接需要检查，请确认网络后重试。'
     ),
     AuxiliaryText.UPDATE_ERROR_SECURITY: (
-        "更新因来源、清单、大小或 SHA256 验证未通过而被安全阻止。"
+        '更新目前安全暂停，来源、清单、大小与 SHA256 验证仍待完成。'
     ),
-    AuxiliaryText.UPDATE_ERROR_DATA: "无法安全读取 GitHub Release 更新数据。",
-    AuxiliaryText.UPDATE_ERROR_VERSION: "更新版本或频道数据无效。",
-    AuxiliaryText.UPDATE_ERROR_DOWNLOAD: "安装程序未能完整且安全地下载。",
-    AuxiliaryText.UPDATE_ERROR_GENERIC: "更新操作未能安全完成，请稍后重试。",
+    AuxiliaryText.UPDATE_ERROR_DATA: 'GitHub Release 更新数据需要安全读取，请稍后重试。',
+    AuxiliaryText.UPDATE_ERROR_VERSION: '更新版本或频道数据需要符合支持格式。',
+    AuxiliaryText.UPDATE_ERROR_DOWNLOAD: '安装程序下载需要完整且安全，请稍后重试。',
+    AuxiliaryText.UPDATE_ERROR_GENERIC: '更新操作需要进一步处理，请稍后重试。',
     AuxiliaryText.PROFILE_HEADING: "<b>携带、换机与进度接续</b>",
     AuxiliaryText.PROFILE_NOTE: (
         "导出后只需携带一个文件，即可在另一台电脑接续对话、记忆、待办、"
@@ -272,7 +272,7 @@ _ZH_CN: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.SENSITIVE_DATA_WARNING: (
         "敏感数据只会使用密码加密后写入携带文件。请妥善保管密码；此选项不会携带这台电脑的权限或本地路径。"
     ),
-    AuxiliaryText.PASSWORD_MISMATCH: "两次输入的密码不一致。",
+    AuxiliaryText.PASSWORD_MISMATCH: '请输入两次相同的密码。',
     AuxiliaryText.EXPORT_COMPLETE_WITH_SENSITIVE: (
         "墨寒携带文件已建立，并包含加密的敏感数据。\n\n位置：{path}\n共收录 {count} 项数据与设置。"
     ),
@@ -283,7 +283,7 @@ _ZH_CN: Mapping[AuxiliaryText, str] = frozendict({
         "检测到加密的敏感内容。请输入建立这份携带文件时使用的密码。"
     ),
     AuxiliaryText.ENCRYPTED_CONTENT_AUTH_FAILED: (
-        "密码错误或携带文件可能已被修改；敏感数据未导入。"
+        '敏感数据导入需要验证密码或文件完整性；敏感数据保持未导入。'
     ),
     AuxiliaryText.IMPORT_VISION_REMAINS_OFF: (
         "导入完成后，摄像头与人脸识别仍保持关闭，必须由您自行启用。"
@@ -296,7 +296,7 @@ _ZH_CN: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.EXPORT_DIALOG_TITLE: "导出墨寒携带文件",
     AuxiliaryText.PROFILE_FILTER: "墨寒携带文件 (*{extension})",
     AuxiliaryText.EXPORT_FAILED_TITLE: "导出墨寒携带文件",
-    AuxiliaryText.EXPORT_FAILED: "导出失败：{reason}",
+    AuxiliaryText.EXPORT_FAILED: '导出需要检查：{reason}',
     AuxiliaryText.EXPORT_COMPLETE_TITLE: "导出完成",
     AuxiliaryText.EXPORT_COMPLETE: (
         "墨寒携带文件已建立。\n\n位置：{path}\n共收录 {count} 项数据与设置。\n\n"
@@ -304,7 +304,7 @@ _ZH_CN: Mapping[AuxiliaryText, str] = frozendict({
     ),
     AuxiliaryText.IMPORT_DIALOG_TITLE: "导入墨寒携带文件",
     AuxiliaryText.IMPORT_READ_FAILED_TITLE: "导入墨寒携带文件",
-    AuxiliaryText.IMPORT_READ_FAILED: "无法读取携带文件：{reason}",
+    AuxiliaryText.IMPORT_READ_FAILED: '携带文件读取需要检查：{reason}',
     AuxiliaryText.LEGACY_SOURCE: "旧版携带文件",
     AuxiliaryText.UNKNOWN: "未知",
     AuxiliaryText.UNNAMED: "未命名",
@@ -321,20 +321,20 @@ _ZH_CN: Mapping[AuxiliaryText, str] = frozendict({
         "\n\n确定导入吗？"
     ),
     AuxiliaryText.IMPORT_FAILED_TITLE: "导入墨寒携带文件",
-    AuxiliaryText.IMPORT_FAILED: "导入失败，原数据未更改：{reason}",
+    AuxiliaryText.IMPORT_FAILED: '导入需要检查；原数据未更改：{reason}',
     AuxiliaryText.IMPORT_COMPLETE_TITLE: "进度接续完成",
     AuxiliaryText.IMPORT_COMPLETE: (
         "墨寒的共同进度已导入完成。\n\n原数据备份：{path}\n\n"
         "程序现在会安全关闭；请重新打开墨寒，即可从导入后的进度继续使用。"
     ),
-    AuxiliaryText.PROFILE_ERROR_NOT_FOUND: "找不到指定的墨寒携带文件。",
-    AuxiliaryText.PROFILE_ERROR_FORMAT: "无法安全读取携带文件的格式、版本或数据内容。",
-    AuxiliaryText.PROFILE_ERROR_SECURITY: "携带文件未通过安全或完整性验证。",
+    AuxiliaryText.PROFILE_ERROR_NOT_FOUND: '请确认指定的墨寒携带文件后再继续。',
+    AuxiliaryText.PROFILE_ERROR_FORMAT: '请确认携带文件的格式、版本与数据内容符合安全读取规格。',
+    AuxiliaryText.PROFILE_ERROR_SECURITY: '请完成携带文件的安全性与完整性验证。',
     AuxiliaryText.PROFILE_ERROR_DUPLICATE: (
-        "这份携带文件已经导入；为避免覆盖较新的进度，本次未重复导入。"
+        '这份携带文件已在本机导入；为保护较新的进度，系统跳过重复导入。'
     ),
-    AuxiliaryText.PROFILE_ERROR_DATABASE: "数据库导入失败；原数据未更改。",
-    AuxiliaryText.PROFILE_ERROR_GENERIC: "携带文件操作未能安全完成。",
+    AuxiliaryText.PROFILE_ERROR_DATABASE: '数据库导入需要检查；原数据未更改。',
+    AuxiliaryText.PROFILE_ERROR_GENERIC: '携带文件操作需要进一步处理，请稍后重试。',
 })
 
 _EN: Mapping[AuxiliaryText, str] = frozendict({
@@ -353,7 +353,7 @@ _EN: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.NEW_VERSION: (
         "Version {version} is available. Its SHA256 will be verified before installation."
     ),
-    AuxiliaryText.NO_RELEASE_NOTES: "No release notes were provided for this version.",
+    AuxiliaryText.NO_RELEASE_NOTES: 'This version has zero release-note entries.',
     AuxiliaryText.NEW_VERSION_TITLE: "A new MoHan version is available",
     AuxiliaryText.NEW_VERSION_AVAILABLE: "Version {version} is ready to download.",
     AuxiliaryText.DOWNLOAD_TITLE: "Download the official update",
@@ -369,25 +369,24 @@ _EN: Mapping[AuxiliaryText, str] = frozendict({
         "Upgrade now?"
     ),
     AuxiliaryText.SAFE_DOWNLOADED: "Safely downloaded: {path}",
-    AuxiliaryText.INSTALLER_LAUNCH_FAILED: "The installer could not be started.",
+    AuxiliaryText.INSTALLER_LAUNCH_FAILED: 'The installer start needs attention.',
     AuxiliaryText.UPDATE_DIALOG_TITLE: "MoHan update",
     AuxiliaryText.UPDATE_ERROR_NO_RELEASE: (
-        "No compatible published update is currently available in this channel."
+        'This channel currently has zero compatible published updates.'
     ),
     AuxiliaryText.UPDATE_ERROR_CONNECTION: (
-        "GitHub's update service could not be reached. Check your connection and try again."
+        "GitHub's update service needs a connection check. Check your connection and try again."
     ),
     AuxiliaryText.UPDATE_ERROR_SECURITY: (
-        "The update was safely blocked because its source, manifest, size, or SHA256 "
-        "verification did not pass."
+        'The update remains safely paused while its source, manifest, size, and SHA256 verification did not pass.'
     ),
-    AuxiliaryText.UPDATE_ERROR_DATA: "The GitHub Release data could not be read safely.",
-    AuxiliaryText.UPDATE_ERROR_VERSION: "The update version or channel data is invalid.",
+    AuxiliaryText.UPDATE_ERROR_DATA: 'Check the GitHub Release data before continuing safely.',
+    AuxiliaryText.UPDATE_ERROR_VERSION: 'The update version or channel data needs a supported value.',
     AuxiliaryText.UPDATE_ERROR_DOWNLOAD: (
-        "The installer could not be downloaded completely and safely."
+        'Check the installer download for a complete, safe file.'
     ),
     AuxiliaryText.UPDATE_ERROR_GENERIC: (
-        "The update operation could not be completed safely. Please try again later."
+        'The update operation needs attention. Please try again later.'
     ),
     AuxiliaryText.PROFILE_HEADING: "<b>Move devices and continue your progress</b>",
     AuxiliaryText.PROFILE_NOTE: (
@@ -406,7 +405,7 @@ _EN: Mapping[AuxiliaryText, str] = frozendict({
         "Keep the password safe. This option does not transfer this computer's permissions "
         "or local paths."
     ),
-    AuxiliaryText.PASSWORD_MISMATCH: "The two passwords do not match.",
+    AuxiliaryText.PASSWORD_MISMATCH: 'Enter the same password twice.',
     AuxiliaryText.EXPORT_COMPLETE_WITH_SENSITIVE: (
         "The portable MoHan profile was created with encrypted sensitive data.\n\n"
         "Location: {path}\nIt contains {count} data and setting records."
@@ -421,8 +420,7 @@ _EN: Mapping[AuxiliaryText, str] = frozendict({
         "portable profile."
     ),
     AuxiliaryText.ENCRYPTED_CONTENT_AUTH_FAILED: (
-        "The password is incorrect or the portable profile may have been modified. "
-        "Sensitive data was not imported."
+        'Check the password or portable profile integrity before importing sensitive data; the sensitive data remains outside this import.'
     ),
     AuxiliaryText.IMPORT_VISION_REMAINS_OFF: (
         "After import, the camera and face recognition remain off until you enable them."
@@ -435,7 +433,7 @@ _EN: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.EXPORT_DIALOG_TITLE: "Export portable MoHan profile",
     AuxiliaryText.PROFILE_FILTER: "MoHan portable profile (*{extension})",
     AuxiliaryText.EXPORT_FAILED_TITLE: "Portable profile export",
-    AuxiliaryText.EXPORT_FAILED: "Export failed: {reason}",
+    AuxiliaryText.EXPORT_FAILED: 'Export requires attention: {reason}',
     AuxiliaryText.EXPORT_COMPLETE_TITLE: "Export complete",
     AuxiliaryText.EXPORT_COMPLETE: (
         "The portable MoHan profile was created.\n\nLocation: {path}\n"
@@ -444,7 +442,7 @@ _EN: Mapping[AuxiliaryText, str] = frozendict({
     ),
     AuxiliaryText.IMPORT_DIALOG_TITLE: "Import portable MoHan profile",
     AuxiliaryText.IMPORT_READ_FAILED_TITLE: "Portable profile import",
-    AuxiliaryText.IMPORT_READ_FAILED: "The portable profile could not be read: {reason}",
+    AuxiliaryText.IMPORT_READ_FAILED: 'Check the portable profile read: {reason}',
     AuxiliaryText.LEGACY_SOURCE: "Legacy portable profile",
     AuxiliaryText.UNKNOWN: "Unknown",
     AuxiliaryText.UNNAMED: "Unnamed",
@@ -462,29 +460,28 @@ _EN: Mapping[AuxiliaryText, str] = frozendict({
         "will remain unchanged.{older_warning}\n\nImport this profile?"
     ),
     AuxiliaryText.IMPORT_FAILED_TITLE: "Portable profile import",
-    AuxiliaryText.IMPORT_FAILED: "Import failed; existing data was not changed: {reason}",
+    AuxiliaryText.IMPORT_FAILED: 'Import requires attention; existing data was not changed: {reason}',
     AuxiliaryText.IMPORT_COMPLETE_TITLE: "Progress import complete",
     AuxiliaryText.IMPORT_COMPLETE: (
         "MoHan's shared progress was imported.\n\nExisting data backup: {path}\n\n"
         "The application will now close safely. Reopen MoHan to continue from the imported "
         "progress."
     ),
-    AuxiliaryText.PROFILE_ERROR_NOT_FOUND: "The selected portable MoHan profile was not found.",
+    AuxiliaryText.PROFILE_ERROR_NOT_FOUND: 'Check the selected portable MoHan profile before continuing.',
     AuxiliaryText.PROFILE_ERROR_FORMAT: (
-        "The portable profile's format, version, or data could not be read safely."
+        'Check that the portable profile has a supported, safely readable format, version, and data structure.'
     ),
     AuxiliaryText.PROFILE_ERROR_SECURITY: (
-        "The portable profile did not pass its security or integrity checks."
+        "Complete the portable profile's security and integrity checks before importing."
     ),
     AuxiliaryText.PROFILE_ERROR_DUPLICATE: (
-        "This portable profile was already imported. It was not imported again, protecting "
-        "newer progress from being overwritten."
+        'This portable profile is already imported. Newer progress remains protected, so the duplicate import is skipped.'
     ),
     AuxiliaryText.PROFILE_ERROR_DATABASE: (
-        "The database import failed; existing data was not changed."
+        'The database import requires attention; existing data was not changed.'
     ),
     AuxiliaryText.PROFILE_ERROR_GENERIC: (
-        "The portable profile operation could not be completed safely."
+        'The portable profile operation needs attention.'
     ),
 })
 
@@ -504,7 +501,7 @@ _JA: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.NEW_VERSION: (
         "新しいバージョン {version} があります。インストール前に SHA256 を検証します。"
     ),
-    AuxiliaryText.NO_RELEASE_NOTES: "このバージョンには説明がありません。",
+    AuxiliaryText.NO_RELEASE_NOTES: 'このバージョンのリリースノート項目数は 0 件です。',
     AuxiliaryText.NEW_VERSION_TITLE: "墨寒の新しいバージョンがあります",
     AuxiliaryText.NEW_VERSION_AVAILABLE: "バージョン {version} をダウンロードできます。",
     AuxiliaryText.DOWNLOAD_TITLE: "公式アップデートをダウンロード",
@@ -520,23 +517,22 @@ _JA: Mapping[AuxiliaryText, str] = frozendict({
         "今すぐアップグレードしますか？"
     ),
     AuxiliaryText.SAFE_DOWNLOADED: "安全にダウンロードしました：{path}",
-    AuxiliaryText.INSTALLER_LAUNCH_FAILED: "インストーラーを起動できませんでした。",
+    AuxiliaryText.INSTALLER_LAUNCH_FAILED: 'インストーラーの起動に確認が必要です。',
     AuxiliaryText.UPDATE_DIALOG_TITLE: "墨寒の更新",
-    AuxiliaryText.UPDATE_ERROR_NO_RELEASE: "このチャンネルで利用できる互換更新はありません。",
+    AuxiliaryText.UPDATE_ERROR_NO_RELEASE: 'このチャンネルの互換性のある公開更新は 0 件です。',
     AuxiliaryText.UPDATE_ERROR_CONNECTION: (
-        "GitHub の更新サービスに接続できません。ネットワークを確認して再試行してください。"
+        'GitHub の更新サービスの接続に確認が必要です。ネットワークを確認して再試行してください。'
     ),
     AuxiliaryText.UPDATE_ERROR_SECURITY: (
-        "配布元、マニフェスト、サイズ、または SHA256 の検証に合格しなかったため、"
-        "更新を安全に停止しました。"
+        '更新は安全に保留中です。配布元、マニフェスト、サイズ、SHA256 の検証を完了してください。'
     ),
-    AuxiliaryText.UPDATE_ERROR_DATA: "GitHub Release の更新データを安全に読み取れません。",
-    AuxiliaryText.UPDATE_ERROR_VERSION: "更新バージョンまたはチャンネルのデータが無効です。",
+    AuxiliaryText.UPDATE_ERROR_DATA: 'GitHub Release の更新データの安全な読み取りを確認してください。',
+    AuxiliaryText.UPDATE_ERROR_VERSION: '更新バージョンまたはチャンネルデータに対応する値を設定してください。',
     AuxiliaryText.UPDATE_ERROR_DOWNLOAD: (
-        "インストーラーを完全かつ安全にダウンロードできませんでした。"
+        'インストーラーの完全かつ安全なダウンロードを確認してください。'
     ),
     AuxiliaryText.UPDATE_ERROR_GENERIC: (
-        "更新処理を安全に完了できませんでした。後でもう一度お試しください。"
+        '更新処理の確認が必要です。後でもう一度お試しください。'
     ),
     AuxiliaryText.PROFILE_HEADING: "<b>持ち運び、端末移行、進捗の継続</b>",
     AuxiliaryText.PROFILE_NOTE: (
@@ -553,7 +549,7 @@ _JA: Mapping[AuxiliaryText, str] = frozendict({
         "機密データはパスワードで暗号化した後にのみポータブルプロファイルへ保存されます。"
         "パスワードを安全に保管してください。この設定では、この端末の権限やローカルパスは移行されません。"
     ),
-    AuxiliaryText.PASSWORD_MISMATCH: "2回入力したパスワードが一致しません。",
+    AuxiliaryText.PASSWORD_MISMATCH: '同じパスワードを 2 回入力してください。',
     AuxiliaryText.EXPORT_COMPLETE_WITH_SENSITIVE: (
         "暗号化された機密データを含む墨寒ポータブルプロファイルを作成しました。\n\n"
         "保存場所：{path}\nデータと設定を合計 {count} 件収録しました。"
@@ -566,7 +562,7 @@ _JA: Mapping[AuxiliaryText, str] = frozendict({
         "暗号化された機密内容を検出しました。このポータブルプロファイルの作成時に使用したパスワードを入力してください。"
     ),
     AuxiliaryText.ENCRYPTED_CONTENT_AUTH_FAILED: (
-        "パスワードが正しくないか、ポータブルプロファイルが変更された可能性があります。機密データは読み込まれませんでした。"
+        '機密データの読み込みにはパスワードまたはプロファイル整合性の確認が必要です。機密データは読み込み対象に含めませんでした。'
     ),
     AuxiliaryText.IMPORT_VISION_REMAINS_OFF: (
         "読み込み完了後も、カメラと顔認識はオフのままです。使用するにはご自身で有効にしてください。"
@@ -579,7 +575,7 @@ _JA: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.EXPORT_DIALOG_TITLE: "墨寒ポータブルプロファイルを書き出す",
     AuxiliaryText.PROFILE_FILTER: "墨寒ポータブルプロファイル (*{extension})",
     AuxiliaryText.EXPORT_FAILED_TITLE: "ポータブルプロファイルの書き出し",
-    AuxiliaryText.EXPORT_FAILED: "書き出しに失敗しました：{reason}",
+    AuxiliaryText.EXPORT_FAILED: '書き出しに確認が必要です：{reason}',
     AuxiliaryText.EXPORT_COMPLETE_TITLE: "書き出し完了",
     AuxiliaryText.EXPORT_COMPLETE: (
         "墨寒ポータブルプロファイルを作成しました。\n\n保存先：{path}\n"
@@ -588,7 +584,7 @@ _JA: Mapping[AuxiliaryText, str] = frozendict({
     ),
     AuxiliaryText.IMPORT_DIALOG_TITLE: "墨寒ポータブルプロファイルを読み込む",
     AuxiliaryText.IMPORT_READ_FAILED_TITLE: "ポータブルプロファイルの読み込み",
-    AuxiliaryText.IMPORT_READ_FAILED: "ポータブルプロファイルを読み取れません：{reason}",
+    AuxiliaryText.IMPORT_READ_FAILED: 'ポータブルプロファイルの読み取りに確認が必要です：{reason}',
     AuxiliaryText.LEGACY_SOURCE: "旧形式のポータブルプロファイル",
     AuxiliaryText.UNKNOWN: "不明",
     AuxiliaryText.UNNAMED: "名称なし",
@@ -606,28 +602,27 @@ _JA: Mapping[AuxiliaryText, str] = frozendict({
         "{older_warning}\n\nこのプロファイルを読み込みますか？"
     ),
     AuxiliaryText.IMPORT_FAILED_TITLE: "ポータブルプロファイルの読み込み",
-    AuxiliaryText.IMPORT_FAILED: "読み込みに失敗しました。元のデータは変更されていません：{reason}",
+    AuxiliaryText.IMPORT_FAILED: '読み込みに確認が必要です。元のデータは変更していません：{reason}',
     AuxiliaryText.IMPORT_COMPLETE_TITLE: "進捗の読み込み完了",
     AuxiliaryText.IMPORT_COMPLETE: (
         "墨寒の共有進捗を読み込みました。\n\n元データのバックアップ：{path}\n\n"
         "アプリを安全に終了します。墨寒を再度開くと、読み込んだ進捗から利用を続けられます。"
     ),
-    AuxiliaryText.PROFILE_ERROR_NOT_FOUND: "選択した墨寒ポータブルプロファイルが見つかりません。",
+    AuxiliaryText.PROFILE_ERROR_NOT_FOUND: '指定した墨寒ポータブルプロファイルを確認してから続行してください。',
     AuxiliaryText.PROFILE_ERROR_FORMAT: (
-        "ポータブルプロファイルの形式、バージョン、またはデータを安全に読み取れません。"
+        'ポータブルプロファイルの形式、バージョン、データ構造に対応した安全な読み取りを確認してください。'
     ),
     AuxiliaryText.PROFILE_ERROR_SECURITY: (
-        "ポータブルプロファイルは安全性または整合性の検証に合格しませんでした。"
+        'ポータブルプロファイルの安全性と整合性の検証を完了してください。'
     ),
     AuxiliaryText.PROFILE_ERROR_DUPLICATE: (
-        "このポータブルプロファイルは読み込み済みです。新しい進捗を上書きしないよう、"
-        "再読み込みは行いませんでした。"
+        'このポータブルプロファイルは読み込み済みです。新しい進捗を保護するため、重複読み込みを省略しました。'
     ),
     AuxiliaryText.PROFILE_ERROR_DATABASE: (
-        "データベースの読み込みに失敗しました。元のデータは変更されていません。"
+        'データベースの読み込みに確認が必要です。元のデータは変更していません。'
     ),
     AuxiliaryText.PROFILE_ERROR_GENERIC: (
-        "ポータブルプロファイルの処理を安全に完了できませんでした。"
+        'ポータブルプロファイルの処理に確認が必要です。'
     ),
 })
 
@@ -739,7 +734,7 @@ def localized_operation_error(
     *,
     operation: AuxiliaryOperation,
 ) -> str:
-    """Localize backend failures without leaking source-language UI text."""
+    """Localize backend attention details while keeping source-language UI text private."""
 
     normalized_language = canonical_ui_language(language)
     if isinstance(message, SafeError):

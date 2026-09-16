@@ -16,20 +16,23 @@ dashboard_shell.py 只保留行為與訊號接線；這裡負責「長什麼樣�
 from __future__ import annotations
 
 lazy import html
+lazy import math
 lazy from functools import partial
 
-lazy from PySide6.QtCore import Qt
-lazy from PySide6.QtGui import QPixmap
+lazy from PySide6.QtCore import QEvent, QSize, Qt
+lazy from PySide6.QtGui import QFont, QFontMetrics, QPixmap
 lazy from PySide6.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
     QPushButton,
+    QStyle,
+    QStyleOptionButton,
     QSizePolicy,
     QVBoxLayout,
 )
 
-lazy from presentation.flagship_theme import create_flagship_ornament
+lazy from presentation.dashboard_artwork import CelestialFrame
 lazy from presentation.lingxiao_themes import palette_for_theme
 lazy from presentation.lingxiao_widgets import (
     MotesLayer,
@@ -39,6 +42,9 @@ lazy from presentation.lingxiao_widgets import (
 )
 lazy from presentation.presentation_resources import resource_path
 lazy from domain.app_profile import profile_window_title
+lazy from domain.theme_pack import ThemePack
+lazy from presentation.dashboard_theme_materials import MaterialPalette, resolve_material_palette
+lazy from presentation.lingxiao_fonts import register_bundled_fonts
 
 __all__ = (
     "REALMS",
@@ -75,7 +81,352 @@ REALMS = (
     ("machine", "系統", ("permissions", "settings")),
 )
 NAVIGATION_WIDTH = 124
+_NAVIGATION_LAYOUT_MARGIN = 8
+_NAVIGATION_BUTTON_PADDING = 10
+_NAVIGATION_ACTIVE_EDGE = 3
+_NAVIGATION_BUTTON_BORDER_BUFFER = 2
+_NAVIGATION_CAPTION_PADDING = 6
+_NAVIGATION_CAPTION_BORDER_BUFFER = 4
+_NAVIGATION_WIDTH_BUFFER = 4
+_NAVIGATION_COMPACT_BUTTON_PADDING = 7
 _LOBBY_BACKDROP = resource_path("assets/ui/mohan-strategist-lobby-v1.png")
+
+
+def _navigation_scale(shell) -> float:
+    """Read the persisted UI scale with the same safe bounds as the theme."""
+
+    try:
+        scale = float(shell.db.setting("flagship_ui_scale", 1.0))
+    except (TypeError, ValueError):
+        return 1.0
+    if not math.isfinite(scale):
+        return 1.0
+    return min(2.0, max(0.85, scale))
+
+
+def _navigation_preferred_width(
+    shell,
+    feature_titles: tuple[str, ...],
+    realm_captions: tuple[str, ...],
+) -> int:
+    """Reserve enough rail width for complete words at enlarged UI scales.
+
+    The navigation QScrollArea takes the rail width immediately after this
+    function returns, so this calculation must happen before the widgets are
+    mounted.  The values mirror the navigation QSS: 10 px horizontal button
+    padding, a 3 px active edge, and the two 8 px layout margins.  At the
+    default scale the established 124 px rail remains unchanged for compact
+    windows.
+    """
+
+    scale = _navigation_scale(shell)
+    if scale <= 1.0:
+        return NAVIGATION_WIDTH
+
+    # The bundled font registration is normally reached when the dashboard
+    # theme is applied after this builder.  Register it here as well so the
+    # pre-layout estimate uses the same font fallback as the final buttons.
+    register_bundled_fonts()
+    body_font = QFont("Sans Serif")
+    body_font.setPixelSize(max(1, round(14 * scale)))
+    body_font.setWeight(QFont.Weight.DemiBold)
+    body_metrics = QFontMetrics(body_font)
+    words = tuple(
+        word
+        for title in feature_titles
+        for word in title.split()
+        if word
+    )
+    widest_word = max(
+        (body_metrics.horizontalAdvance(word) for word in words),
+        default=0,
+    )
+    button_decoration = (
+        2 * round(_NAVIGATION_BUTTON_PADDING * scale)
+        + round(_NAVIGATION_ACTIVE_EDGE * scale)
+        + _NAVIGATION_BUTTON_BORDER_BUFFER
+    )
+
+    caption_font = QFont("Cinzel")
+    caption_font.setPixelSize(max(1, round(10 * scale)))
+    caption_font.setWeight(QFont.Weight.DemiBold)
+    caption_font.setLetterSpacing(
+        QFont.SpacingType.AbsoluteSpacing,
+        round(3 * scale),
+    )
+    caption_metrics = QFontMetrics(caption_font)
+    widest_caption = max(
+        (caption_metrics.horizontalAdvance(caption) for caption in realm_captions),
+        default=0,
+    )
+    caption_decoration = (
+        round(_NAVIGATION_CAPTION_PADDING * scale)
+        + _NAVIGATION_CAPTION_BORDER_BUFFER
+    )
+    content_width = max(
+        widest_word + button_decoration,
+        widest_caption + caption_decoration,
+    )
+    # Two layout margins plus a small rasterisation buffer keep the measured
+    # last glyph away from the border at fractional display scales.
+    return max(
+        NAVIGATION_WIDTH,
+        2 * _NAVIGATION_LAYOUT_MARGIN + content_width + _NAVIGATION_WIDTH_BUFFER,
+    )
+
+
+def _wrap_text_line(
+    line: str,
+    metrics,
+    width: int,
+    *,
+    break_long_words: bool = False,
+) -> list[str]:
+    """Wrap at spaces while keeping long words intact by default."""
+
+    if metrics.horizontalAdvance(line) <= width:
+        return [line]
+    words = line.split(" ")
+    if len(words) > 1 and all(metrics.horizontalAdvance(word) <= width for word in words):
+        lines: list[str] = []
+        current = words[0]
+        for word in words[1:]:
+            candidate = f"{current} {word}"
+            if metrics.horizontalAdvance(candidate) > width:
+                lines.append(current)
+                current = word
+            else:
+                current = candidate
+        lines.append(current)
+        return lines
+
+    if not break_long_words:
+        return [line]
+
+    lines = []
+    current = ""
+    for character in line:
+        candidate = current + character
+        if current and metrics.horizontalAdvance(candidate) > width:
+            lines.append(current)
+            current = character
+        else:
+            current = candidate
+    if current:
+        lines.append(current)
+    return lines
+
+
+def _wrapped_text(
+    text: str,
+    metrics,
+    width: int,
+    *,
+    break_long_words: bool = False,
+) -> str:
+    """Wrap each source line once, preserving explicit line breaks."""
+
+    return "\n".join(
+        wrapped
+        for source_line in text.split("\n")
+        for wrapped in _wrap_text_line(
+            source_line,
+            metrics,
+            width,
+            break_long_words=break_long_words,
+        )
+    )
+
+
+def _navigation_text_width(navigation: QFrame, button: QPushButton, title: str) -> int:
+    """Estimate the button's actual text area from its themed size hint."""
+
+    if button.width() > 0:
+        option = QStyleOptionButton()
+        button.initStyleOption(option)
+        contents = button.style().subElementRect(
+            QStyle.SubElement.SE_PushButtonContents,
+            option,
+            button,
+        )
+        if contents.width() > 0:
+            return contents.width()
+    margins = navigation.layout().contentsMargins()
+    metrics = button.fontMetrics()
+    decoration_width = max(
+        0,
+        button.sizeHint().width() - metrics.horizontalAdvance(title),
+    )
+    return max(
+        1,
+        navigation.width() - margins.left() - margins.right() - decoration_width,
+    )
+
+
+def _navigation_button_text(
+    navigation: QFrame,
+    button: QPushButton,
+    title: str,
+) -> str:
+    """Wrap long labels to the fixed navigation rail, preserving full text."""
+
+    width = _navigation_text_width(navigation, button, title)
+    metrics = button.fontMetrics()
+    if metrics.horizontalAdvance(title) <= width:
+        return title
+
+    # The local selector has the same navigation specificity as the flagship
+    # stylesheet, so wrapped labels recover a few pixels while preserving the
+    # rail width or its colors.
+    button.setStyleSheet(
+        'QPushButton[mohanAction="navigation"] '
+        "{ padding-left: "
+        f"{_NAVIGATION_COMPACT_BUTTON_PADDING}px; "
+        "padding-right: "
+        f"{_NAVIGATION_COMPACT_BUTTON_PADDING}px; }}"
+    )
+    width = _navigation_text_width(navigation, button, title)
+    return _wrapped_text(title, metrics, width)
+
+
+def _refresh_navigation_layout(navigation: QFrame) -> None:
+    """Let the scroll area expose every line added by responsive labels."""
+
+    layout = navigation.layout()
+    if layout is None:
+        return
+    layout.invalidate()
+    layout.activate()
+    navigation.setMinimumHeight(layout.sizeHint().height())
+    navigation.updateGeometry()
+
+
+class _ResponsiveNavigationButton(QPushButton):
+    """Keep the full translated label visible after a theme changes its font."""
+
+    def __init__(self, title: str, parent: QFrame) -> None:
+        self._navigation_title = title
+        self._refreshing_navigation_text = False
+        super().__init__(title, parent)
+
+    def refresh_navigation_text(self) -> None:
+        """Reflow the label against the current rail width and font metrics."""
+
+        navigation = self.parentWidget()
+        if not isinstance(navigation, QFrame) or self._refreshing_navigation_text:
+            return
+        self._refreshing_navigation_text = True
+        try:
+            displayed = _navigation_button_text(
+                navigation,
+                self,
+                self._navigation_title,
+            )
+            if self.text() != displayed:
+                QPushButton.setText(self, displayed)
+            self.setMinimumHeight(self.sizeHint().height() if "\n" in displayed else 0)
+            self.updateGeometry()
+            _refresh_navigation_layout(navigation)
+        finally:
+            self._refreshing_navigation_text = False
+
+    def changeEvent(self, event) -> None:  # noqa: N802 - Qt API
+        super().changeEvent(event)
+        if event.type() in (QEvent.FontChange, QEvent.StyleChange):
+            self.refresh_navigation_text()
+
+    def resizeEvent(self, event) -> None:  # noqa: N802 - Qt API
+        super().resizeEvent(event)
+        self.refresh_navigation_text()
+
+    def showEvent(self, event) -> None:  # noqa: N802 - Qt API
+        super().showEvent(event)
+        self.refresh_navigation_text()
+
+
+class _ResponsiveNavigationLabel(QLabel):
+    """Keep realm captions readable when display scaling enlarges letter spacing."""
+
+    def __init__(self, title: str, parent: QFrame) -> None:
+        self._navigation_title = title
+        self._refreshing_navigation_text = False
+        super().__init__(title, parent)
+
+    def refresh_navigation_text(self) -> None:
+        """Reflow the caption against the current rail width and font metrics."""
+
+        navigation = self.parentWidget()
+        if not isinstance(navigation, QFrame) or self._refreshing_navigation_text:
+            return
+        self._refreshing_navigation_text = True
+        try:
+            margins = navigation.layout().contentsMargins()
+            width = self.width() or navigation.width() - margins.left() - margins.right()
+            # navRealm has themed left padding; leave room before measuring text.
+            width = max(1, width - max(6, self.fontMetrics().height() // 2))
+            metrics = self.fontMetrics()
+            displayed = _wrapped_text(self._navigation_title, metrics, width)
+            if QLabel.text(self) != displayed:
+                QLabel.setText(self, displayed)
+            self.setMinimumHeight(self.sizeHint().height() if "\n" in displayed else 0)
+            self.updateGeometry()
+            _refresh_navigation_layout(navigation)
+        finally:
+            self._refreshing_navigation_text = False
+
+    def changeEvent(self, event) -> None:  # noqa: N802 - Qt API
+        super().changeEvent(event)
+        if event.type() in (QEvent.FontChange, QEvent.StyleChange):
+            self.refresh_navigation_text()
+
+    def resizeEvent(self, event) -> None:  # noqa: N802 - Qt API
+        super().resizeEvent(event)
+        self.refresh_navigation_text()
+
+    def showEvent(self, event) -> None:  # noqa: N802 - Qt API
+        super().showEvent(event)
+        self.refresh_navigation_text()
+
+
+class _ResponsiveStatusLabel(QLabel):
+    """Show the timer status on one line, then wrap it when the header narrows."""
+
+    def __init__(self, parent=None) -> None:
+        self._source_text = ""
+        super().__init__(parent)
+        self.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+    def setText(self, text: str) -> None:  # noqa: N802 - Qt API
+        self._source_text = str(text)
+        self._refresh_text()
+
+    def resizeEvent(self, event) -> None:  # noqa: N802 - Qt API
+        super().resizeEvent(event)
+        self._refresh_text()
+
+    def sizeHint(self) -> QSize:  # noqa: N802 - Qt API
+        hint = super().sizeHint()
+        if not self._source_text:
+            return hint
+        full_width = self.fontMetrics().horizontalAdvance(self._source_text)
+        return QSize(max(hint.width(), full_width), hint.height())
+
+    def _refresh_text(self) -> None:
+        text = self._source_text
+        if not text or self.width() <= 0:
+            displayed = text
+        else:
+            self.ensurePolished()
+            metrics = self.fontMetrics()
+            width = max(1, self.width() + 1)
+            displayed = _wrapped_text(
+                text,
+                metrics,
+                width,
+                break_long_words=True,
+            )
+        if QLabel.text(self) != displayed:
+            QLabel.setText(self, displayed)
 
 
 def realm_layout_order(feature_ids: tuple[str, ...]) -> tuple[tuple[str, tuple[int, ...]], ...]:
@@ -116,22 +467,34 @@ def _realm_caption(shell, realm_key: str) -> str:
 def build_navigation(shell, features) -> tuple[QFrame, list[QPushButton]]:
     """建導覽軌。回傳 (框, 依分頁索引排序的按鈕清單)。"""
 
-    navigation = QFrame()
+    navigation = CelestialFrame(kind="navigation")
     navigation.setProperty("mohanRole", "gameNavigation")
-    navigation.setFixedWidth(NAVIGATION_WIDTH)
     layout = QVBoxLayout(navigation)
     layout.setContentsMargins(8, 14, 8, 14)
     layout.setSpacing(6)
+
+    feature_ids = tuple(feature.feature_id for feature in features)
+    groups = realm_layout_order(feature_ids)
+    realm_captions = tuple(
+        _realm_caption(shell, realm_key)
+        for realm_key, _indexes in groups
+    )
+    navigation.setFixedWidth(
+        _navigation_preferred_width(
+            shell,
+            tuple(feature.title for feature in features),
+            realm_captions,
+        )
+    )
+
     title = QLabel(shell._t("navigation_brand", "墨寒"))
     title.setAlignment(Qt.AlignCenter)
     title.setProperty("mohanRole", "navigationTitle")
     layout.addWidget(title)
-    layout.addWidget(create_flagship_ornament(navigation, size=52), 0, Qt.AlignCenter)
 
     buttons: list[QPushButton | None] = [None] * len(features)
-    feature_ids = tuple(feature.feature_id for feature in features)
-    for group_number, (realm_key, indexes) in enumerate(realm_layout_order(feature_ids)):
-        caption = QLabel(_realm_caption(shell, realm_key))
+    for group_number, (realm_key, indexes) in enumerate(groups):
+        caption = _ResponsiveNavigationLabel(_realm_caption(shell, realm_key), navigation)
         caption.setProperty("mohanRole", "navRealm")
         caption.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         caption.setFocusPolicy(Qt.NoFocus)
@@ -139,14 +502,16 @@ def build_navigation(shell, features) -> tuple[QFrame, list[QPushButton]]:
         layout.addWidget(caption)
         for index in indexes:
             feature = features[index]
-            button = QPushButton(feature.title)
+            button = _ResponsiveNavigationButton(feature.title, navigation)
             button.setCheckable(True)
             button.setAutoExclusive(True)
             button.setProperty("mohanAction", "navigation")
             button.setAccessibleName(feature.title)
             button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-            button.clicked.connect(partial(shell._select_game_lobby_page, index))
             layout.addWidget(button)
+            button.ensurePolished()
+            button.refresh_navigation_text()
+            button.clicked.connect(partial(shell._select_game_lobby_page, index))
             buttons[index] = button
     layout.addStretch(1)
     ordered = [button for button in buttons if button is not None]
@@ -156,14 +521,15 @@ def build_navigation(shell, features) -> tuple[QFrame, list[QPushButton]]:
 def build_ribbon(shell, root: QVBoxLayout) -> tuple[QPushButton, QPushButton]:
     """頂部狀態緞帶：品牌、模式、狀態燈＋計時、開始／結束。"""
 
-    deck = QFrame()
+    deck = CelestialFrame(kind="ribbon")
     deck.setProperty("mohanRole", "commandDeck")
     header = QHBoxLayout(deck)
-    header.setContentsMargins(16, 8, 14, 8)
+    header.setContentsMargins(48, 10, 32, 10)
     header.setSpacing(12)
     shell.mode_combo = shell._build_mode_combo()
-    shell.work_label = QLabel()
+    shell.work_label = _ResponsiveStatusLabel()
     shell.work_label.setProperty("mohanRole", "headerStatus")
+    shell.work_label.ensurePolished()
     start_button = QPushButton(shell._t("start_work", "開始工作"))
     stop_button = QPushButton(shell._t("stop_work", "結束工作"))
     shell.restore_window_button = QPushButton(shell._t("restore_dashboard_window", "還原視窗"))
@@ -187,7 +553,6 @@ def build_ribbon(shell, root: QVBoxLayout) -> tuple[QPushButton, QPushButton]:
 
     palette = _shell_palette(shell)
     shell.ribbon_pulse = PulseDot(palette.jade, deck)
-    header.addWidget(create_flagship_ornament(shell, size=44))
     header.addLayout(brand)
     header.addStretch()
     header.addWidget(QLabel(shell._t("mode", "模式")))
@@ -208,10 +573,10 @@ def build_draft_bar(shell, root: QVBoxLayout) -> None:
     文字鍵都與以前相同，行為層零改動。
     """
 
-    bar = QFrame()
+    bar = CelestialFrame(kind="ribbon")
     bar.setProperty("mohanRole", "commandFooter")
     row = QHBoxLayout(bar)
-    row.setContentsMargins(14, 8, 12, 8)
+    row.setContentsMargins(38, 10, 24, 10)
     row.setSpacing(12)
     shell.draft_chip = StateChip(shell._t("draft_bar_clean", "已套用"), "ok")
     shell.draft_message = QLabel(shell._t("draft_bar_clean_message", "設定與目前執行中的狀態一致"))
@@ -235,26 +600,31 @@ def build_draft_bar(shell, root: QVBoxLayout) -> None:
     shell.save_settings_button.clicked.connect(shell.save_all_settings)
 
 
-def _style_save_settings_button(button: QPushButton, palette) -> None:
+def _style_save_settings_button(button: QPushButton, palette, materials: MaterialPalette | None = None) -> None:
+    primary = materials.primary if materials is not None else palette.gold
+    title = materials.title if materials is not None else palette.gold_2
+    foreground = materials.on_primary if materials is not None else palette.on_gold
+    hover = primary if materials is not None else palette.gold_2
     button.setStyleSheet(
         "QPushButton#globalSaveSettingsButton{"
-        f"background:{palette.gold};color:{palette.on_gold};border:1px solid {palette.gold_2};"
+        f"background:{primary};color:{foreground};border:1px solid {title};"
         "border-radius:10px;font-weight:700;padding:10px 24px;}"
         "QPushButton#globalSaveSettingsButton:hover{"
-        f"background:{palette.gold_2};color:{palette.on_gold};}}"
+        f"background:{hover};color:{foreground};border-color:{title};}}"
     )
 
 
-def refresh_runtime_palette(shell, *, active: bool) -> None:
+def refresh_runtime_palette(shell, *, active: bool, theme: ThemePack | None = None) -> None:
     """Refresh custom shell widgets from the dashboard's cached palette."""
 
     palette = _shell_palette(shell)
+    materials = resolve_material_palette(palette, theme)
     pulse = getattr(shell, "ribbon_pulse", None)
     if pulse is not None:
-        pulse.set_color(palette.jade if active else palette.dim)
+        pulse.set_color((materials.primary if active else materials.muted) if theme is not None else (palette.jade if active else palette.dim))
     save_button = getattr(shell, "save_settings_button", None)
     if save_button is not None:
-        _style_save_settings_button(save_button, palette)
+        _style_save_settings_button(save_button, palette, materials if theme is not None else None)
     motes = getattr(shell, "lobby_motes", None)
     if motes is not None:
         motes.set_palette(palette)
@@ -275,7 +645,7 @@ def update_draft_bar(shell) -> int | str:
         shell.draft_message.setText(
             shell._t(
                 "draft_bar_error_message",
-                "設定無法讀取，請稍後再試",
+                '讀取設定需要處理，請重新嘗試。',
             )
         )
         return DRAFT_BAR_READ_ERROR

@@ -138,7 +138,7 @@ class FlagshipWorkflowMixin:
         QMessageBox.information(
             self,
             self._t("任務結果"),
-            message or self._t("沒有可執行步驟"),
+            message or self._t('請建立可執行步驟'),
         )
         self.refresh_audit()
 

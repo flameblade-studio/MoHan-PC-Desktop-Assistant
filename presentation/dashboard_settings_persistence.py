@@ -63,7 +63,7 @@ class DashboardSettingsPersistenceMixin:
                 self._t("permission_blocked", "權限已阻擋"),
                 self._t(
                     "permission_blocked_message",
-                    "墨寒目前無權{action}。",
+                    '繼續前請確認墨寒執行「{action}」所需的權限。',
                     action=action,
                 ),
             )
@@ -396,6 +396,6 @@ class DashboardSettingsPersistenceMixin:
             self.api_status.setText(
                 self._t(
                     "api_status_offline",
-                    "OpenAI API：未設定，使用離線人設",
+                    'OpenAI API：設定金鑰後即可連線，目前使用離線人格',
                 )
             )

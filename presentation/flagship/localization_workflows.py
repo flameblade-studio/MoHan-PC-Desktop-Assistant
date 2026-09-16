@@ -27,15 +27,15 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
     "流程名稱": translations("流程名称", "Workflow name", "ワークフロー名"),
     "啟動方式": translations("启动方式", "Trigger", "起動条件"),
     "執行時間": translations("执行时间", "Run time", "実行時刻"),
-    "排程設定無法讀取": translations(
-        "排程设置无法读取",
-        "Schedule settings could not be read",
-        "スケジュール設定を読み取れません",
+    '讀取排程設定需要處理': translations(
+        '读取计划设置需要处理',
+        'Reading schedule settings requires attention',
+        'スケジュール設定の読み取りへの対応が必要です',
     ),
-    "自動備份失敗": translations(
-        "自动备份失败",
-        "Automatic backup failed",
-        "自動バックアップに失敗",
+    '自動備份需要處理': translations(
+        '自动备份需要处理',
+        'Automatic backup requires attention',
+        '自動バックアップへの対応が必要です',
     ),
     "每行一個步驟，格式：能力｜說明｜參數。\n範例：open_web｜開啟工作網站｜https://example.com\n範例：home_control｜開啟書房燈｜light.study,turn_on": translations(
         "每行一个步骤，格式：能力｜说明｜参数。\n"
@@ -65,7 +65,7 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
     ),
     "步驟格式不正確：{line}": translations(
         "步骤格式不正确：{line}",
-        "Invalid step format: {line}",
+        "Provide a supported step format: {line}",
         "ステップの形式が正しくありません：{line}",
     ),
     # Capability labels.
@@ -148,7 +148,7 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
     "一般變更": translations("一般变更", "Standard change", "通常の変更"),
     "外部影響": translations("外部影响", "External impact", "外部への影響"),
     "高風險": translations("高风险", "High risk", "高リスク"),
-    "禁止": translations("禁止", "Blocked", "禁止"),
+    '封鎖': translations('封锁', 'Block', 'ブロック'),
     "每次詢問": translations("每次询问", "Ask every time", "毎回確認"),
     "允許": translations("允许", "Allow", "許可"),
     "手動": translations("手动", "Manual", "手動"),
@@ -199,10 +199,10 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
         "先生成安全计划", "Create a safety plan first", "安全計画を先に作成"
     ),
     "資料備份": translations("数据备份", "Data Backup", "データバックアップ"),
-    "備份失敗：{error}": translations(
-        "备份失败：{error}",
-        "Backup failed: {error}",
-        "バックアップに失敗しました：{error}",
+    '備份需要處理：{error}': translations(
+        '备份需要处理：{error}',
+        'Backup requires attention: {error}',
+        'バックアップへの対応が必要です：{error}',
     ),
     "備份與完整性雜湊已建立：\n{target}": translations(
         "备份与完整性哈希已创建：\n{target}",
@@ -210,10 +210,10 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
         "バックアップと整合性ハッシュを作成しました：\n{target}",
     ),
     "工具任務": translations("工具任务", "Tool Task", "ツールタスク"),
-    "這句話沒有明確要求執行操作，因此不會產生工具計畫。": translations(
-        "这句话没有明确要求执行操作，因此不会生成工具计划。",
-        "This message does not clearly request an action, so no tool plan will be created.",
-        "操作の実行を明確に求めていないため、ツール計画は作成しません。",
+    '請明確指定要執行的操作，再建立工具計畫。': translations(
+        '请明确指定要执行的操作，再创建工具计划。',
+        'Specify the requested action explicitly before creating a tool plan.',
+        '実行する操作を明示してからツール計画を作成してください。',
     ),
     "規劃中…": translations("规划中…", "Planning…", "計画中…"),
     "讀取 Gmail 郵件": translations(
@@ -245,21 +245,21 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
         "List recently modified Google Drive files",
         "Google Drive で最近変更されたファイルを一覧表示",
     ),
-    "（目前沒有白名單目標）": translations(
-        "（目前没有白名单目标）",
-        "(No allowlisted targets are configured)",
-        "（許可済み対象はまだありません）",
+    '（請先加入白名單目標）': translations(
+        '（请先加入白名单目标）',
+        '(Add an allowlisted target first)',
+        '（先に許可リストへ対象を追加してください）',
     ),
     "工具計畫": translations("工具计划", "Tool Plan", "ツール計画"),
-    "計畫驗證失敗：{error}": translations(
-        "计划验证失败：{error}",
-        "Plan validation failed: {error}",
-        "計画の検証に失敗しました：{error}",
+    '計畫驗證需要處理：{error}': translations(
+        '计划验证需要处理：{error}',
+        'Plan validation requires attention: {error}',
+        '計画検証への対応が必要です：{error}',
     ),
-    "資料不足或並非明確操作要求，因此沒有產生任何步驟。": translations(
-        "信息不足或并非明确的操作要求，因此没有生成任何步骤。",
-        "There was not enough information or no explicit action request, so no steps were created.",
-        "情報が不足しているか操作要求が明確でないため、ステップは作成されませんでした。",
+    '請補齊操作資訊並明確提出執行要求，再建立步驟。': translations(
+        '请补齐操作信息并明确提出执行要求，再创建步骤。',
+        'Provide the required action details and an explicit execution request before creating steps.',
+        '必要な操作情報と明示的な実行依頼を揃えてから、手順を作成してください。',
     ),
     "執行前計畫預覽": translations(
         "执行前计划预览", "Pre-execution Plan Preview", "実行前の計画確認"
@@ -270,10 +270,10 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
         "{title}\n\n{preview}\n\n各ステップは個別の権限とリスクに基づいて再判定されます。続行しますか？",
     ),
     "任務結果": translations("任务结果", "Task Results", "タスク結果"),
-    "無法產生計畫：{error}": translations(
-        "无法生成计划：{error}",
-        "Could not create a plan: {error}",
-        "計画を作成できませんでした：{error}",
+    '產生計畫需要處理：{error}': translations(
+        '生成计划需要处理：{error}',
+        'Plan generation requires attention: {error}',
+        '計画生成への対応が必要です：{error}',
     ),
     "工具計畫逾時": translations(
         "工具计划超时", "Tool Plan Timed Out", "ツール計画がタイムアウトしました"
@@ -287,18 +287,10 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
         "OpenAI の安全計画を 50 秒以上待機したため、自動的に待機を停止しました。"
         "ネットワーク、API キー、テキストモデルを確認して再試行してください。",
     ),
-    "Home Assistant：{home}\n遠端服務：{remote}\n已啟用工作流程：{workflows}\n"
-    "有效配對裝置：{devices}\n安全狀態：高風險操作不允許免確認；"
-    "任意命令列與付款永久禁止。": translations(
-        "Home Assistant：{home}\n远程服务：{remote}\n已启用工作流：{workflows}\n"
-        "有效配对设备：{devices}\n安全状态：高风险操作不允许免确认；"
-        "任意命令行与付款永久禁止。",
-        "Home Assistant: {home}\nRemote service: {remote}\nEnabled workflows: {workflows}\n"
-        "Active paired devices: {devices}\nSecurity: high-risk actions always require confirmation; "
-        "arbitrary command lines and payments are permanently blocked.",
-        "Home Assistant：{home}\nリモートサービス：{remote}\n有効なワークフロー：{workflows}\n"
-        "有効なペアリング済み端末：{devices}\nセキュリティ：高リスク操作は必ず確認し、"
-        "任意のコマンドラインと支払いは常に禁止されます。",
+    'Home Assistant：{home}\n遠端服務：{remote}\n已啟用工作流程：{workflows}\n有效配對裝置：{devices}\n安全狀態：高風險操作須確認；任意命令列與付款永久排除於執行範圍。': translations(
+        'Home Assistant：{home}\n远程服务：{remote}\n已启用工作流：{workflows}\n有效配对设备：{devices}\n安全状态：高风险操作须确认；任意命令行与付款永久排除于执行范围。',
+        'Home Assistant: {home}\nRemote service: {remote}\nEnabled workflows: {workflows}\nValid paired devices: {devices}\nSecurity: high-risk actions require confirmation; arbitrary command lines and payments remain permanently outside execution.',
+        'Home Assistant：{home}\nリモートサービス：{remote}\n有効なワークフロー：{workflows}\n有効なペアリング端末：{devices}\n安全状態：高リスク操作には確認を必須とし、任意のコマンドラインと支払いは実行対象から永久に除外します。',
     ),
     "已啟用": translations("已启用", "Enabled", "有効"),
     "未啟用": translations("未启用", "Disabled", "無効"),
@@ -323,8 +315,8 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
         "{title}\n\n{preview}\n\nRun this workflow?",
         "{title}\n\n{preview}\n\nこのワークフローを実行しますか？",
     ),
-    "沒有可執行步驟": translations(
-        "没有可执行步骤", "No executable steps", "実行できるステップはありません"
+    '請建立可執行步驟': translations(
+        '请创建可执行步骤', 'Create executable steps', '実行可能な手順を作成してください'
     ),
     "刪除工作流程": translations(
         "删除工作流", "Delete Workflow", "ワークフローを削除"

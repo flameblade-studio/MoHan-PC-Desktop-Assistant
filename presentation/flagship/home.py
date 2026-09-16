@@ -94,7 +94,7 @@ class FlagshipHomeMixin:
         load = QPushButton(self._t("讀取裝置"))
         buttons_layout.addWidget(test)
         buttons_layout.addWidget(load)
-        self.ha_status = QLabel(self._t("尚未測試"))
+        self.ha_status = QLabel(self._t('等待測試'))
         self.ha_entities = QListWidget()
         self.ha_entities.setMinimumHeight(260)
         form.addRow(self.ha_enabled)
@@ -106,8 +106,7 @@ class FlagshipHomeMixin:
         form.addRow(self._t("裝置狀態"), self.ha_entities)
         warning = QLabel(
             self._t(
-                "門鎖、警報與加熱設備永遠套用高風險政策。"
-                "墨寒不能因對話內容自行降低安全等級。"
+                '門鎖、警報與加熱設備永遠套用高風險政策，安全等級持續以明確授權為準。'
             )
         )
         warning.setWordWrap(True)
@@ -117,8 +116,7 @@ class FlagshipHomeMixin:
         load.clicked.connect(self.load_home_entities)
         if not self.platform_services.capabilities.secure_secret_storage:
             unavailable = self._t(
-                "{platform} 的安全金鑰保存尚未完成實機驗證；"
-                "Home Assistant 連線暫停，且不會儲存明文權杖。",
+                '{platform} 的安全金鑰保存等待實機驗證；Home Assistant 連線保持暫停，權杖僅採已驗證的加密保存。',
                 platform=self.platform_services.capabilities.display_name,
             )
             self.ha_enabled.setChecked(False)
@@ -143,12 +141,12 @@ class FlagshipHomeMixin:
             except OSError as exc:
                 safe_message = safe_error_message(self.language, exc)
                 self.ha_status.setText(
-                    self._t("無法安全保存權杖：{error}", error=safe_message)
+                    self._t("請檢查設定後安全保存權杖：{error}", error=safe_message)
                 )
                 QMessageBox.warning(
                     self,
                     "Home Assistant",
-                    self._t("無法安全保存權杖：{error}", error=safe_message),
+                    self._t("請檢查設定後安全保存權杖：{error}", error=safe_message),
                 )
                 return
             self.ha_token.clear()
@@ -171,9 +169,9 @@ class FlagshipHomeMixin:
         row = self.db.connector("home_assistant")
         token = self.ha_secret.load()
         if row is None or not bool(row["enabled"]):
-            raise PermissionError(self._t("Home Assistant 尚未啟用"))
+            raise PermissionError(self._t('請啟用 Home Assistant'))
         if not token:
-            raise PermissionError(self._t("尚未保存 Home Assistant 權杖"))
+            raise PermissionError(self._t('請儲存 Home Assistant 權杖'))
         config = json.loads(row["configuration"])
         return HomeAssistantClient(
             HomeAssistantConfig(
@@ -207,7 +205,7 @@ class FlagshipHomeMixin:
                 client.verify_control,
             )
     def _start_home_probe(self, operation: str) -> bool:
-        """Launch health()/states() in a worker so HTTP can never block the UI."""
+        """Launch health()/states() in a worker so the UI stays responsive during HTTP calls."""
 
         if getattr(self, "_home_probe_worker", None) is not None:
             return False
@@ -216,7 +214,7 @@ class FlagshipHomeMixin:
         except Exception as exc:
             self.ha_status.setText(
                 self._t(
-                    "連線失敗：{error}" if operation == "health" else "讀取失敗：{error}",
+                    '連線需要處理：{error}' if operation == "health" else '讀取需要處理：{error}',
                     error=safe_error_message(self.language, exc),
                 )
             )
@@ -247,7 +245,7 @@ class FlagshipHomeMixin:
         self._home_probe_worker = None
         self.ha_status.setText(
             self._t(
-                "連線失敗：{error}" if operation == "health" else "讀取失敗：{error}",
+                '連線需要處理：{error}' if operation == "health" else '讀取需要處理：{error}',
                 error=message,
             )
         )

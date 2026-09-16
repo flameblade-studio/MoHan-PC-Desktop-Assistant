@@ -45,6 +45,7 @@ lazy from presentation.lingxiao_widgets import (
     attach_corner_ornaments,
 )
 lazy from presentation.presentation_resources import resource_path
+lazy from presentation.lingxiao_fonts import register_bundled_fonts
 
 __all__ = (
     "FlagshipThemeResult",
@@ -74,11 +75,7 @@ _THEME_ASSET = resource_path("assets/ui/mohan-cloud.svg")
 # 面板角落要掛金線飾角的角色。gameLobby 與 featurePage 是容器，不掛。
 _ORNAMENTED_ROLES = frozenset(
     {
-        "card",
-        "portraitCard",
         "featureDock",
-        "pageBody",
-        "hero",
         "desktopCompanionStatusCard",
         "commandFooter",
     }
@@ -99,11 +96,14 @@ def _theme_stylesheet(
     *,
     high_contrast: bool,
     theme: str = DEFAULT_THEME_ID,
+    font_family: str | None = None,
 ) -> str:
     p: LingxiaoPalette = palette_for_theme(theme, high_contrast=high_contrast)
     s = lambda value: _scaled(value, scale)  # noqa: E731 - 樣式表裡到處要用
     fs = {name: s(size) for name, size in TYPE_SCALE.items()}
     display, caps, body = font_stack("display"), font_stack("caps"), font_stack("body")
+    if font_family is not None:
+        display = caps = body = f'"{font_family}"'
     R = 'QWidget[mohanFlagshipTheme="true"]'  # noqa: N806 - 選擇器前綴
     glass = f"qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 {_rgba(p.lacquer_2, 214)}, stop:1 {_rgba(p.lacquer, 206)})"
     gold_fill = f"qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 {p.gold_2}, stop:1 {p.gold})"
@@ -552,6 +552,43 @@ QToolTip {{
     border: 1px solid {p.gold_dim};
     padding: {s(5)}px {s(8)}px;
 }}
+
+/* Celestial controls: quiet surfaces, jade selection, gold primary action. */
+{R} QFrame[celestialArtwork="true"] {{ border: none; background: transparent; }}
+{R} QFrame[mohanRole="hero"] {{ background: transparent; border: none; }}
+{R} QFrame[mohanRole="wardrobeControls"] QLabel {{ font-size: {s(16)}px; }}
+{R} QFrame[mohanRole="wardrobeControls"] QLabel[mohanRole="cardTitle"] {{ font-size: {s(26)}px; }}
+{R} QFrame[mohanRole="wardrobeControls"] QLabel[mohanRole="muted"] {{ font-size: {s(14)}px; }}
+{R} QFrame[mohanRole="wardrobeControls"] QComboBox {{ min-height: {s(30)}px; font-size: {s(16)}px; }}
+{R} QTabWidget#wardrobeCategoryTabs::pane {{ background: transparent; border: none; }}
+{R} QTabWidget#wardrobeCategoryTabs QFrame[mohanRole="card"] {{
+    background: transparent; border: none; padding: {s(8)}px;
+}}
+{R} QTabWidget#wardrobeCategoryTabs QTabBar::tab {{
+    border-radius: {s(3)}px; padding: {s(10)}px {s(12)}px;
+}}
+{R} QTabWidget#wardrobeCategoryTabs QTabBar::tab:selected,
+{R} QPushButton[mohanAction="navigation"]:checked {{
+    color: {p.on_gold}; background: {p.jade}; border: 1px solid {p.gold};
+}}
+{R} QLabel#wardrobeCharacterPreview {{ background: transparent; }}
+{R} QLabel[mohanRole="rotationHint"] {{
+    color: {p.moon}; background: {_rgba(p.ink_deep, 218)};
+    border: 1px solid {p.gold_dim}; border-radius: {s(5)}px; padding: {s(4)}px;
+}}
+{R} QSlider::groove:horizontal {{
+    height: {s(5)}px; background: {p.line}; border-radius: {s(2)}px;
+}}
+{R} QSlider::sub-page:horizontal {{
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,stop:0 {p.jade},stop:1 {p.gold_2});
+    border-radius: {s(2)}px;
+}}
+{R} QSlider::handle:horizontal {{
+    width: {s(16)}px; margin: -{s(7)}px 0; background: {p.gold_2};
+    border: 2px solid {p.gold_dim}; border-radius: {s(8)}px;
+}}
+{R} QSlider::handle:horizontal:focus {{ border-color: {p.moon}; }}
+{R} QSlider::handle:horizontal:hover {{ background: {p.moon}; }}
 """
 
 
@@ -561,8 +598,9 @@ def apply_flagship_theme(
     high_contrast: bool = False,
     scale: float = 1.0,
     theme: str = DEFAULT_THEME_ID,
+    font_family: str | None = None,
 ) -> FlagshipThemeResult:
-    """Apply the Lingxiao theme without changing UI content.
+    """Apply the Lingxiao theme while preserving UI content.
 
     The operation is idempotent. It does not read or persist settings, change
     translated strings, or replace widget ownership. The composition layer can
@@ -570,13 +608,16 @@ def apply_flagship_theme(
     """
 
     normalized_scale = min(_MAXIMUM_SCALE, max(_MINIMUM_SCALE, float(scale)))
+    register_bundled_fonts()
     normalized_theme = canonical_theme_id(theme)
     root.setProperty("mohanFlagshipTheme", True)
+    root.setProperty("celestialScale", normalized_scale)
     root.setStyleSheet(
         _theme_stylesheet(
             normalized_scale,
             high_contrast=high_contrast,
             theme=normalized_theme,
+            font_family=font_family,
         )
     )
 
@@ -631,7 +672,7 @@ def apply_flagship_theme(
     for motes in root.findChildren(MotesLayer):
         motes.set_palette(palette)
     for frame in root.findChildren(QFrame):
-        if frame.property("mohanRole") in _ORNAMENTED_ROLES:
+        if frame.property("mohanRole") in _ORNAMENTED_ROLES and not frame.property("celestialArtwork"):
             attach_corner_ornaments(frame, palette.gold, scale=normalized_scale)
     for button in root.findChildren(QPushButton):
         if button.property("mohanAction") in {"primary", "danger"} or (

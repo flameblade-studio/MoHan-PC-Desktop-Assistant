@@ -1,11 +1,11 @@
 """凌霄殼層與元件的行為契約。
 
-守住的不是「長得像不像」，而是會壞掉的地方：
-- 四領域版面不能吞掉任何分頁（未知功能落到「其他」）；
-- 印章鈕在主題 QSS 的 min-height 下仍是 132×132 的圓；
-- 切頁過場反覆觸發不得碰到已刪除的 C++ 效果物件；
-- 動效關閉時過場什麼都不做；
-- 所有文字／底色配對兩種調色盤都 ≥ 4.5:1。
+驗證下列可觀察行為：
+- 四領域版面保留每個分頁，新增功能歸入「其他」；
+- 印章鈕在主題 QSS 的 min-height 下仍保持 132×132 圓形；
+- 切頁過場只操作存活的 C++ 效果物件；
+- 動效關閉時保持靜態畫面；
+- 所有文字／底色配對在兩種調色盤皆達到 ≥ 4.5:1。
 """
 from __future__ import annotations
 
@@ -64,7 +64,7 @@ def assert_realm_layout_keeps_every_feature() -> None:
     assert sorted(flattened) == list(range(len(feature_ids))), layout
     assert layout[-1][0] == "other" and layout[-1][1] == (2,), layout
     assert layout[0][0] == "companion" and layout[0][1] == (1,), layout
-    assert len(set(known)) == len(known), "一個功能不得同時屬於兩個領域"
+    assert len(set(known)) == len(known), '每個功能恰好歸屬一個領域'
 
 
 def assert_contrast_pairs(palette) -> None:

@@ -23,6 +23,7 @@ lazy from presentation.ui_localization import (
     display_label,
 )
 lazy from presentation.ui_localization_ja import JAPANESE_MODE_LABELS
+lazy from presentation.dashboard_artwork import CelestialFrame
 
 __all__ = (
     "build_desktop_companion_stage",
@@ -68,10 +69,10 @@ def build_desktop_companion_stage(
     can keep updating them across dashboard rebuilds.
     """
 
-    stage = QFrame()
+    stage = CelestialFrame(kind="scene")
     stage.setObjectName("desktopCompanionStage")
     stage.setProperty("mohanRole", "desktopCompanionStage")
-    # Keep the live stage present on compact dashboards without forcing it
+    # Keep the live stage present on compact dashboards while keeping it
     # underneath the conversation dock.  The old 400 px hard minimum combined
     # with the dock's 500 px minimum exceeded the space left beside navigation.
     stage.setMinimumWidth(220)
@@ -175,7 +176,7 @@ def visual_status_message(
 
 
 def gesture_status_message(gesture: str) -> tuple[str, str]:
-    """Pick the gesture status translation key without leaking internal labels."""
+    """Pick the gesture status translation key while keeping internal labels localized."""
 
     return {
         "wave": ("desktop_status_gesture_wave", "已辨識揮手"),

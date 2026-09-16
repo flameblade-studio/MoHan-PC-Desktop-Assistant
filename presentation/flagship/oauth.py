@@ -39,7 +39,7 @@ class OAuthWorker(QRunnable):
         self._abandoned = False
 
     def abandon(self) -> None:
-        """Ask the flow to stop waiting so application exit is not blocked.
+        """Ask the flow to stop waiting so application exit remains responsive.
 
         Called from the UI thread during shutdown while ``run`` may be inside
         ``authorize`` on a pool thread; closing the loopback listener there
@@ -83,7 +83,7 @@ def configure_oauth_flow_factory(factory: OAuthFlowFactory) -> None:
 
 
 def _active_oauth_flow_factory() -> OAuthFlowFactory:
-    """Honor the legacy module's patch point without importing it."""
+    """Honor the legacy module's patch point while keeping its import boundary independent."""
     configured = OAuthWorker.flow_factory
     if configured is not OAuthPKCEFlow:
         return configured

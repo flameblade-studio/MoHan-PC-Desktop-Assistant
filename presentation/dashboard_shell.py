@@ -9,14 +9,14 @@ lazy from PySide6.QtCore import QEvent, Qt, QThreadPool, QTimer
 lazy from PySide6.QtGui import QKeySequence, QMouseEvent, QShortcut
 lazy from PySide6.QtWidgets import (
     QCheckBox, QComboBox, QFileDialog, QFrame, QHBoxLayout, QLabel,
-    QLineEdit, QListWidget, QListWidgetItem, QPushButton, QSizePolicy,
-    QSplitter, QTabWidget, QVBoxLayout, QWidget,
+    QLineEdit, QPushButton, QSizePolicy,
+    QScrollArea, QSplitter, QTabWidget, QVBoxLayout, QWidget,
 )
 
 lazy from application.presentation_ports import (
     PlatformServicePort, PresentationDatabasePort, format_duration,
 )
-lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
+lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID
 lazy from domain.app_profile import (
     personalize_text, profile_setting, profile_window_title,
 )
@@ -28,7 +28,11 @@ lazy from domain.outfit_pack import IncompatibleBodyProfileError, OutfitPackErro
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_control_style import enforce_readable_combo_popups
+lazy from presentation.dashboard_wardrobe_packages import reload_wardrobe_packages
+lazy from presentation.dashboard_wardrobe_categories import reload_appearance_controls
+lazy from presentation.dashboard_artwork import CelestialFrame
 lazy from presentation.dashboard_wardrobe_status import wardrobe_generation_message
+lazy from presentation._dashboard_wardrobe_tab import build_wardrobe_tab
 lazy from presentation.desktop_companion_status import (
     build_desktop_companion_stage,
     desktop_companion_initial_status,
@@ -45,10 +49,7 @@ lazy from presentation.lingxiao_shell import (
     set_ribbon_state,
     update_draft_bar,
 )
-lazy from presentation.flagship_theme import (
-    create_flagship_ornament,
-    mark_flagship_card,
-)
+lazy from presentation.flagship_theme import create_flagship_ornament
 lazy from presentation.presentation_resources import STYLE, application_icon
 lazy from presentation.settings_ui_localization import SettingsText, settings_text
 lazy from presentation.ui_localization import (
@@ -185,7 +186,7 @@ class DashboardShellMixin:
     def _configure_dashboard_window(self) -> None:
         db = self.db
         self.setWindowTitle(profile_window_title(db))
-        self.resize(900, 660)
+        self.resize(1320, 860)
         self.setMinimumSize(720, 480)
         self.setStyleSheet(STYLE)
         self.setWindowFlags(
@@ -307,7 +308,13 @@ class DashboardShellMixin:
             self, self.feature_registry.features
         )
 
-        lobby_layout.addWidget(navigation)
+        navigation_scroll = QScrollArea()
+        navigation_scroll.setObjectName("dashboardNavigationScroll")
+        navigation_scroll.setWidgetResizable(True)
+        navigation_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        navigation_scroll.setFixedWidth(navigation.width() + 12)
+        navigation_scroll.setWidget(navigation)
+        lobby_layout.addWidget(navigation_scroll)
         lobby_layout.addWidget(self.tabs, 1)
         root.addWidget(lobby, 1)
         self.tabs.currentChanged.connect(self._sync_game_lobby_navigation)
@@ -341,13 +348,13 @@ class DashboardShellMixin:
         )
         self._desktop_companion_status_labels.append(labels)
 
-        dock = QFrame()
+        dock = CelestialFrame()
         dock.setObjectName("featureDock")
         dock.setProperty("mohanRole", "featureDock")
         dock.setMinimumWidth(360)
         dock.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         dock_layout = QVBoxLayout(dock)
-        dock_layout.setContentsMargins(12, 12, 12, 12)
+        dock_layout.setContentsMargins(26, 48, 26, 26)
         dock_layout.setSpacing(10)
         banner = QFrame()
         banner.setProperty("mohanRole", "pageBanner")
@@ -374,7 +381,7 @@ class DashboardShellMixin:
         return page
 
     def set_desktop_companion_status(self, key: str, value: str) -> None:
-        """Reflect the one desktop companion without rendering a duplicate."""
+        """Reflect the one desktop companion while keeping one rendered instance."""
 
         if key not in self._desktop_companion_status_values:
             return
@@ -397,101 +404,13 @@ class DashboardShellMixin:
         self.set_desktop_companion_status("vision", self._t(translation_key, fallback))
 
     def set_desktop_companion_gesture_status(self, gesture: str) -> None:
-        """Show recognized gestures without leaking untranslated internal labels."""
+        """Show recognized gestures while keeping internal labels localized."""
 
         translation_key, fallback = gesture_status_message(gesture)
         self.set_desktop_companion_status("gesture", self._t(translation_key, fallback))
 
     def _wardrobe_tab(self) -> QWidget:
-        tab = QWidget()
-        root = QVBoxLayout(tab)
-        root.setContentsMargins(18, 18, 18, 18)
-        root.setSpacing(14)
-        root.addWidget(self._wardrobe_hero())
-
-        columns = QHBoxLayout()
-        columns.setSpacing(14)
-        library_card = QFrame()
-        mark_flagship_card(library_card)
-        library = QVBoxLayout(library_card)
-        library_title = QLabel(
-            self._t("wardrobe_package_list", "套件清單")
-        )
-        library_title.setProperty("mohanRole", "cardTitle")
-        library.addWidget(library_title)
-        self.wardrobe_service = WardrobeService(
-            self.db.path.parent / "outfits"
-        )
-        self.wardrobe_packages = QListWidget()
-        self.wardrobe_packages.setMinimumHeight(260)
-        self._reload_wardrobe_packages()
-        self.wardrobe_status = QLabel(
-            self._t("wardrobe_status_ready", "雲裳系統已就緒")
-        )
-        self.wardrobe_status.setWordWrap(True)
-        self.wardrobe_status.setProperty("mohanRole", "statusPill")
-        wardrobe_compatibility = QLabel(self._t("wardrobe_compatibility_status", "相容狀態") + "：" + self._t("wardrobe_compatible", "相容"))
-        wardrobe_compatibility.setProperty("mohanRole", "muted")
-        source_policy = QLabel(
-            self._t(
-                "wardrobe_source_policy",
-                "來源分流：炎劍官方・使用者匯入・墨寒自創",
-            )
-        )
-        source_policy.setWordWrap(True)
-        source_policy.setProperty("mohanRole", "muted")
-
-        preview_card = self._wardrobe_preview_card()
-
-        preferences_card = self._wardrobe_preferences_card()
-        actions = QWidget()
-        row = QHBoxLayout(actions)
-        row.setContentsMargins(0, 0, 0, 0)
-        self.wardrobe_import_button = QPushButton(
-            self._t("wardrobe_import", "匯入服裝套件")
-        )
-        self.wardrobe_apply_button = QPushButton(
-            self._t("wardrobe_apply", "套用選取服裝")
-        )
-        self.wardrobe_restore_button = QPushButton(
-            self._t("wardrobe_restore_builtin", "還原內建服裝")
-        )
-        self.wardrobe_generate_button = QPushButton(
-            self._t("wardrobe_generate_now", "立即生成新衣（將使用圖片 API）")
-        )
-        row.addWidget(self.wardrobe_import_button)
-        row.addWidget(self.wardrobe_apply_button)
-        row.addWidget(self.wardrobe_restore_button)
-        row.addWidget(self.wardrobe_generate_button)
-        library.addWidget(self.wardrobe_packages, 1)
-        library.addWidget(self.wardrobe_status)
-        library.addWidget(wardrobe_compatibility)
-        library.addWidget(source_policy)
-        library.addWidget(actions)
-        controls = QVBoxLayout()
-        controls.setSpacing(12)
-        controls.addWidget(library_card, 5)
-        controls.addWidget(self._wardrobe_makeup_card(), 3)
-        controls.addWidget(preferences_card, 4)
-        columns.addWidget(preview_card, 6)
-        columns.addLayout(controls, 4)
-        root.addLayout(columns, 1)
-        self.wardrobe_packages.currentItemChanged.connect(
-            self._update_wardrobe_preview_name
-        )
-        self.wardrobe_import_button.clicked.connect(
-            self._import_outfit_package
-        )
-        self.wardrobe_apply_button.clicked.connect(
-            self._preview_selected_outfit
-        )
-        self.wardrobe_restore_button.clicked.connect(
-            self._restore_builtin_outfit
-        )
-        self.wardrobe_generate_button.clicked.connect(
-            self._request_outfit_generation
-        )
-        return tab
+        return build_wardrobe_tab(self)
 
     def _request_outfit_generation(self) -> None:
         """Persist explicit consent immediately before the chargeable request."""
@@ -515,46 +434,21 @@ class DashboardShellMixin:
         if hasattr(self, "wardrobe_generate_button"):
             self.wardrobe_generate_button.setEnabled(status not in {"generating", "generating-with-trend-search"})
         if status == "body-profile-outdated":
-            # The runtime already restored the built-in outfit; keep the saved choice in step so nothing re-applies the stale pack.
+            # The runtime already restored the built-in outfit; keep the saved choice in step so the saved choice keeps the current pack selection.
             self.db.set_setting("active_outfit_id", BUILTIN_OUTFIT_ID)
         if status in {"installed", "installed-manual-lock", "outfit-selected", "body-profile-outdated"}:
             self._reload_wardrobe_packages()
 
     def _reload_wardrobe_packages(self) -> None:
-        if not hasattr(self, "wardrobe_packages"):
-            return
-        self.wardrobe_packages.clear()
-        selected_id = WardrobeService.selected_outfit(
-            self.db.setting("active_outfit_id", BUILTIN_OUTFIT_ID)
-        )
-        for outfit in self.wardrobe_service.outfits(self.ui_language):
-            label = (
-                self._t("wardrobe_default_outfit", "內建預設服裝")
-                if outfit.built_in
-                else outfit.display_name
-            )
-            item = QListWidgetItem(label)
-            item.setData(Qt.UserRole, outfit.outfit_id)
-            item.setToolTip(
-                self._t("wardrobe_compatibility_status", "相容狀態")
-                + "："
-                + (
-                    self._t("wardrobe_compatible", "相容")
-                    if outfit.compatible
-                    else self._t("wardrobe_incompatible", "不相容")
-                )
-            )
-            self.wardrobe_packages.addItem(item)
-            if outfit.outfit_id == selected_id:
-                self.wardrobe_packages.setCurrentItem(item)
-        self._reload_wardrobe_makeup_options()
+        reload_wardrobe_packages(self)
+        reload_appearance_controls(self)
 
     def _wardrobe_hero(self) -> QFrame:
         hero = QFrame()
         hero.setProperty("mohanRole", "hero")
         hero_row = QHBoxLayout(hero)
         hero_text = QVBoxLayout()
-        hero_title = QLabel("✦ " + self._t("tab_wardrobe", "雲裳閣") + " ✦")
+        hero_title = QLabel(self._t("tab_wardrobe", "雲裳閣"))
         hero_title.setProperty("mohanRole", "sectionTitle")
         hero_subtitle = QLabel(
             self._t(
@@ -567,7 +461,6 @@ class DashboardShellMixin:
         hero_text.addWidget(hero_title)
         hero_text.addWidget(hero_subtitle)
         hero_row.addLayout(hero_text, 1)
-        hero_row.addWidget(create_flagship_ornament(hero, size=110))
         return hero
 
     def _import_outfit_package(self) -> None:
@@ -582,12 +475,12 @@ class DashboardShellMixin:
         try:
             self.wardrobe_service.install(Path(source))
         except IncompatibleBodyProfileError:
-            self.wardrobe_status.setText(self._t("wardrobe_body_profile_outdated", "這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成"))
+            self.wardrobe_status.setText(self._t("wardrobe_body_profile_outdated", "這套服裝需要二代素體素材；請用一鍵製衣重新生成"))
             return
         except OutfitPackError:
-            self.wardrobe_status.setText(self._t("wardrobe_validator_pending", "套件未通過完整全視角與安全驗證，因此未安裝。"))
+            self.wardrobe_status.setText(self._t("wardrobe_validator_pending", '套件通過完整視角與安全驗證後，即可安裝。'))
             return
-        self.wardrobe_status.setText(self._t("wardrobe_installed_inactive", "已安裝，尚未套用"))
+        self.wardrobe_status.setText(self._t("wardrobe_installed_inactive", "已安裝；準備套用"))
         self._reload_wardrobe_packages()
 
     def _preview_selected_outfit(self) -> None:
@@ -598,10 +491,10 @@ class DashboardShellMixin:
         try:
             self.wardrobe_service.apply(outfit_id)
         except IncompatibleBodyProfileError:
-            self.wardrobe_status.setText(self._t("wardrobe_body_profile_outdated", "這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成"))
+            self.wardrobe_status.setText(self._t("wardrobe_body_profile_outdated", "這套服裝需要二代素體素材；請用一鍵製衣重新生成"))
             return
         except OutfitPackError:
-            self.wardrobe_status.setText(self._t("wardrobe_assets_pending", "這套服裝未具備完整全視角素材，不能套用。"))
+            self.wardrobe_status.setText(self._t("wardrobe_assets_pending", '請補齊每個視角的完整素材後套用此服裝。'))
             return
         self._record_manual_outfit_selection(outfit_id)
         if outfit_id != BUILTIN_OUTFIT_ID:
@@ -613,6 +506,7 @@ class DashboardShellMixin:
             self._t("wardrobe_outfit_applied", "已套用所選完整服裝。")
         )
         self._reload_wardrobe_makeup_options()
+        reload_appearance_controls(self)
         self._refresh_wardrobe_preview()
 
     def _restore_builtin_outfit(self) -> None:
@@ -628,6 +522,7 @@ class DashboardShellMixin:
             self._t("wardrobe_builtin_applied", "已套用內建預設服裝。")
         )
         self._reload_wardrobe_makeup_options()
+        reload_appearance_controls(self)
         self._refresh_wardrobe_preview()
 
     def _connect_dashboard_signals(
@@ -668,7 +563,7 @@ class DashboardShellMixin:
 
     def _disable_implicit_default_buttons(self, root: QWidget | None = None) -> None:
         # QDialog otherwise makes the first push button ("開始工作") the
-        # implicit Enter key target. Chat submission must never click an
+        # implicit Enter key target. Chat submission keeps the
         # unrelated action button; dynamically rebuilt widgets pass ``root``.
         for button in (self if root is None else root).findChildren(QPushButton):
             button.setAutoDefault(False)
@@ -764,7 +659,7 @@ class DashboardShellMixin:
         if event.type() == QEvent.WindowStateChange:
             self._sync_restore_window_action()
             if self.windowState() & Qt.WindowFullScreen:
-                # The control centre has no fullscreen workflow.  Refuse an
+                # The control centre uses its compact workflow.  Keep an
                 # accidental transition that removes the native Windows
                 # caption buttons and strands mouse-only users.
                 QTimer.singleShot(0, self.showNormal)
@@ -908,7 +803,7 @@ class DashboardShellMixin:
             self.speak_requested.emit(
                 self._t(
                     "work_timer_not_started",
-                    "今日尚未開始計時。",
+                    '準備好後即可啟動今天的工作計時。',
                 ),
                 "worried",
             )

@@ -91,7 +91,7 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
     ),
     "安靜（不主動寒暄）": translations(
         "安静（不主动寒暄）",
-        "Quiet (no proactive greetings)",
+        "Quiet (proactive greetings off)",
         "静か（自発的に挨拶しない）",
     ),
     "適度（推薦）": translations(
@@ -172,7 +172,7 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
     ),
     "短暫離席不問候（分鐘）": translations(
         "短暂离席不问候（分钟）",
-        "No greeting after a brief absence (minutes)",
+        "Greeting threshold after a brief absence (minutes)",
         "短時間の離席後は挨拶しない（分）",
     ),
     "安靜多久後主動關心（分鐘）": translations(
@@ -181,14 +181,10 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
         "この時間静かだった場合に声をかける（分）",
     ),
     "攝影機狀態": translations("摄像头状态", "Camera status", "カメラの状態"),
-    "攝影機預設關閉；啟用時必須顯示狀態。畫面不會默默上傳，"
-    "也不會辨識未登錄的陌生人。": translations(
-        "摄像头默认关闭；启用时必须显示状态。画面不会静默上传，"
-        "也不会识别未登记的陌生人。",
-        "The camera is off by default and its status must remain visible when enabled. "
-        "Images are never silently uploaded, and unregistered people are not identified.",
-        "カメラは既定でオフです。有効時は状態を常に表示します。映像を無断でアップロードせず、"
-        "未登録の人物を識別しません。",
+    '攝影機預設關閉，啟用時持續顯示狀態；影像上傳須明確授權，身分辨識僅適用已登錄人物。': translations(
+        '摄像头默认关闭，启用时持续显示状态；图像上传须明确授权，身份识别仅适用已登记人物。',
+        'The camera starts off and displays its status while active. Image uploads require explicit authorization; identity recognition applies only to enrolled people.',
+        'カメラは既定でオフとし、有効時は状態を継続表示します。画像送信には明示的な許可を必須とし、本人識別は登録済み人物に限定します。',
     ),
     "「啟動／套用」只會啟動遠端服務；攝影機與臉部辨識須按"
     "「套用靈視設定」並完成同意後才會生效。": translations(
@@ -206,41 +202,36 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
     "本機感知模型": translations(
         "本机感知模型", "Local perception models", "ローカル認識モデル"
     ),
-    "本機臉部、虹膜與手勢模型尚未啟動": translations(
-        "本机面部、虹膜与手势模型尚未启动",
-        "Local face, iris, and hand models have not started",
-        "ローカルの顔・虹彩・手モデルはまだ起動していません",
+    '本機臉部、虹膜與手勢模型等待啟動': translations(
+        '本机脸部、虹膜与手势模型等待启动',
+        'Local face, iris, and gesture models await startup',
+        'ローカルの顔・虹彩・ジェスチャーモデルは起動待ちです',
     ),
     "本機臉部、虹膜與手勢模型已就緒": translations(
         "本机面部、虹膜与手势模型已就绪",
         "Local face, iris, and hand models are ready",
         "ローカルの顔・虹彩・手モデルは準備完了です",
     ),
-    "本機細緻臉部與虹膜模型無法使用；其餘功能維持運作": translations(
-        "本机精细面部与虹膜模型无法使用；其余功能保持运行",
-        "Local detailed face and iris models are unavailable; other features remain active",
-        "ローカルの詳細な顔・虹彩モデルは利用できません。その他の機能は継続します",
+    '本機細緻臉部與虹膜模型需要處理；其餘功能維持運作': translations(
+        '本机精细脸部与虹膜模型需要处理；其余功能保持运行',
+        'Local detailed face and iris models require attention; other features keep running',
+        'ローカルの詳細な顔・虹彩モデルへの対応が必要です。他の機能は動作を継続します',
     ),
     "安全政策已阻擋：{reason}": translations(
         "安全策略已阻止：{reason}",
-        "Blocked by security policy: {reason}",
+        "Security policy requires attention: {reason}",
         "セキュリティ方針によりブロックされました：{reason}",
     ),
     "啟用攝影機": translations("启用摄像头", "Enable Camera", "カメラを有効化"),
-    "墨寒會在本機分析在場狀態、臉部與眼神特徵、手勢及場景線索；不保存原始影像、不傳送雲端，未登錄的人物不會建立身分。是否啟用？": translations(
-        "墨寒会在本机分析在场状态、面部与视线特征、手势及场景线索；"
-        "不保存原始图像、不传送云端，未登记的人物不会建立身份。是否启用？",
-        "MoHan will locally analyze presence, facial and gaze features, gestures, and scene cues. "
-        "Original images are not saved or sent to the cloud, and unregistered people are not "
-        "assigned an identity. Enable the camera?",
-        "墨寒は端末内で在席状態、顔と視線の特徴、ジェスチャー、場面の手掛かりを分析します。"
-        "元の映像は保存もクラウド送信もされず、未登録の人物に身元情報は作成されません。"
-        "カメラを有効にしますか？",
+    '墨寒會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？': translations(
+        '墨寒会仅在本机实时分析在场状态、脸部与眼神特征、手势及场景线索；原始图像限于实时处理，身份建立仅适用已登记人物。是否启用？',
+        'MoHan will analyze presence, face and gaze features, gestures, and scene cues only on this device in real time. Raw images are limited to live processing; identity records apply only to enrolled people. Enable?',
+        '墨寒は在席、顔と視線の特徴、ジェスチャー、場面の手掛かりをこの端末内だけでリアルタイム解析します。元画像はリアルタイム処理に限定し、身元記録は登録済み人物に限定します。有効にしますか？',
     ),
-    "攝影機啟動失敗：{error}": translations(
-        "摄像头启动失败：{error}",
-        "Could not start the camera: {error}",
-        "カメラを起動できませんでした：{error}",
+    '攝影機啟動需要處理：{error}': translations(
+        '摄像头启动需要处理：{error}',
+        'Camera startup requires attention: {error}',
+        'カメラ起動への対応が必要です：{error}',
     ),
     "臉部身分登錄": translations(
         "人脸身份登记",
@@ -257,15 +248,15 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
         "Name MoHan should use when she recognizes you",
         "墨寒があなたを認識したときに使う呼び名",
     ),
-    "無法開始臉部登錄：{error}": translations(
-        "无法开始人脸登记：{error}",
-        "Could not start face enrollment: {error}",
-        "顔の登録を開始できませんでした：{error}",
+    "臉部登錄需要注意：{error}，請檢查設定後重試": translations(
+        "人脸登记需要注意：{error}，请检查设置后重试",
+        "Face enrollment requires attention: {error}. Check Settings and try again.",
+        "顔の登録に注意が必要です：{error}。設定を確認して再試行してください",
     ),
-    "這會刪除本機加密的臉部特徵，且無法復原。是否繼續？": translations(
-        "这会删除本机加密的人脸特征，且无法恢复。是否继续？",
-        "This will delete the locally encrypted facial features and cannot be undone. Continue?",
-        "端末内で暗号化された顔特徴を削除します。この操作は取り消せません。続行しますか？",
+    '這會永久刪除本機加密的臉部特徵。是否繼續？': translations(
+        '这会永久删除本机加密的脸部特征。是否继续？',
+        'This permanently deletes the encrypted face features on this device. Continue?',
+        'この端末の暗号化された顔特徴を完全に削除します。続行しますか？',
     ),
     "這會刪除選取的本機加密臉部特徵。是否繼續？": translations(
         "这会删除选中的本机加密人脸特征。是否继续？",
@@ -394,7 +385,7 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
         "圣诞节・小声埋怨", "Christmas・Quiet grumble", "クリスマス・小さな不満"
     ),
     "攝影機錯誤：{error}": translations(
-        "摄像头错误：{error}", "Camera error: {error}", "カメラエラー：{error}"
+        "摄像头错误：{error}", "Camera requires attention: {error}", "カメラ確認が必要です：{error}"
     ),
     "攝影機使用中：{device}（本機多感知分析）": translations(
         "摄像头使用中：{device}（本机多感知分析）",
@@ -406,24 +397,24 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
     ),
     "{base}｜暫未偵測到在場": translations(
         "{base}｜暂未检测到在场",
-        "{base} | No presence detected",
+        "{base} | Presence is currently quiet",
         "{base}｜現在は在席を検知していません",
     ),
     "遠端服務未啟用": translations(
         "远程服务未启用", "Remote service is not enabled", "リモートサービスは無効です"
     ),
-    "啟動失敗：{error}": translations(
-        "启动失败：{error}", "Start failed: {error}", "起動に失敗しました：{error}"
+    '啟動需要處理：{error}': translations(
+        '启动需要处理：{error}', 'Startup requires attention: {error}', '起動への対応が必要です：{error}'
     ),
     "已啟動：http://{host}:{port}\n只有已配對且具備相應權限的裝置可以存取。": translations(
         "已启动：http://{host}:{port}\n只有已配对且具备相应权限的设备可以访问。",
         "Started: http://{host}:{port}\nOnly paired devices with the required permissions can connect.",
         "起動しました：http://{host}:{port}\n必要な権限を持つペアリング済み端末のみ接続できます。",
     ),
-    "遠端服務已停止，既有權杖未刪除但無法連線。": translations(
-        "远程服务已停止，现有令牌未删除但无法连接。",
-        "Remote service stopped. Existing tokens were not deleted, but cannot connect.",
-        "リモートサービスを停止しました。既存トークンは削除されていませんが、接続できません。",
+    '遠端服務已停止，既有權杖保持保存；重新啟動服務後才可連線。': translations(
+        '远程服务已停止，现有令牌保持保存；重新启动服务后才可连接。',
+        'The remote service is stopped and existing tokens remain stored. Restart the service before connecting.',
+        'リモートサービスは停止中で、既存トークンは保存を維持します。接続にはサービスの再起動が必要です。',
     ),
     "配對新裝置": translations(
         "配对新设备", "Pair New Device", "新しい端末をペアリング"
@@ -432,10 +423,10 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
     "一次性配對權杖": translations(
         "一次性配对令牌", "One-time Pairing Token", "一回限りのペアリングトークン"
     ),
-    "請只在可信任裝置輸入下列權杖。關閉視窗後不會再次顯示：\n\n{token}": translations(
-        "请只在可信任设备输入下列令牌。关闭窗口后不会再次显示：\n\n{token}",
-        "Enter the following token only on a trusted device. It will not be shown again after this window closes:\n\n{token}",
-        "次のトークンは信頼できる端末にのみ入力してください。この画面を閉じると再表示できません：\n\n{token}",
+    '請只在可信任裝置輸入下列權杖；權杖僅在目前視窗顯示一次：\n\n{token}': translations(
+        '请仅在可信设备输入下列令牌；令牌仅在当前窗口显示一次：\n\n{token}',
+        'Enter this token only on a trusted device. It is displayed once in this window:\n\n{token}',
+        'このトークンは信頼できる端末にだけ入力してください。このウィンドウで一度だけ表示します：\n\n{token}',
     ),
     "有效": translations("有效", "Active", "有効"),
     "從未": translations("从未", "Never", "なし"),
@@ -461,7 +452,7 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
     ),
     "尚無可用的程式視窗畫面": translations(
         "尚无可用的程序窗口画面",
-        "No app-window image is available",
+        "An app-window image is required",
         "利用可能なアプリ画面がありません",
     ),
 })

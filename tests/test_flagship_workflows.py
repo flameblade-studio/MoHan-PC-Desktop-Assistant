@@ -530,7 +530,7 @@ def test_closed_due_poll_is_inert_before_clock_or_storage_access() -> None:
     repository = FakeRepository()
 
     def forbidden_clock() -> datetime:
-        raise AssertionError("closed polling must not read the clock")
+        raise AssertionError('closed polling must preserve the clock state')
 
     service = make_service(repository, ServiceOverrides(clock=forbidden_clock))
     assert service.run_due_workflows(closed=True) == ()

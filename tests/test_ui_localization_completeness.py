@@ -1,12 +1,9 @@
-"""Structural gate: every literal ui_text key must exist in all languages.
+"""Every literal ui_text key must exist in every supported language.
 
-The dashboard/presentation layer looks strings up with ``_t(key, fallback)``,
-``translate(key, fallback)`` or ``ui_text(language, key, fallback)``; the
-Traditional Chinese fallback silently masks a missing table entry, so English,
-Simplified Chinese, and Japanese users would see untranslated text without any
-test failing.  This module AST-scans ``presentation/**/*.py`` for those call
-shapes and asserts that the collected key set is a subset of every language
-table, closing the regression class instead of chasing single keys.
+Presentation looks up _t(key, fallback), translate(key, fallback), and
+ui_text(language, key, fallback). A Traditional Chinese fallback can conceal
+an absent translation. This gate AST-scans presentation/**/*.py and verifies
+that each collected key appears in every language table.
 """
 
 from __future__ import annotations
@@ -45,7 +42,6 @@ DYNAMIC_KEY_ALLOWLIST = frozenset({
     ("presentation/dashboard_shell.py", "key"),
     ("presentation/dashboard_shell.py", "translation_key"),
     ("presentation/dashboard_today_memory.py", "key"),
-    ("presentation/dashboard_wardrobe_preview.py", "key"),
     ("presentation/dashboard_voice_runtime.py", "policy.error_key"),
     ("presentation/dashboard_voice_runtime.py", "policy.saved_key"),
     ("presentation/dashboard_voice_runtime.py", "policy.title_key"),
@@ -102,7 +98,7 @@ def _collect_used_keys() -> tuple[frozenset[str], frozenset[tuple[str, str]]]:
 
 def test_every_used_key_is_translated_in_all_languages() -> None:
     used_keys, _dynamic = _collect_used_keys()
-    assert used_keys, "AST scan found no ui_text keys; the scanner is broken"
+    assert used_keys, 'AST scan requires UI text keys; inspect the scanner configuration'
     for name, table in (
         ("en", _ENGLISH),
         ("zh-CN", _SIMPLIFIED_CHINESE),
@@ -110,9 +106,7 @@ def test_every_used_key_is_translated_in_all_languages() -> None:
     ):
         missing = sorted(used_keys - frozenset(table))
         assert not missing, (
-            f"ui_text keys missing from the {name} table (users of that "
-            f"language would silently see the Traditional Chinese fallback): "
-            f"{missing}"
+            f'provide ui_text keys in the {name} table (users of that language would silently see the Traditional Chinese fallback): {missing}'
         )
 
 
@@ -125,5 +119,5 @@ def test_dynamic_key_call_sites_are_reviewed() -> None:
     )
     stale = sorted(DYNAMIC_KEY_ALLOWLIST - dynamic)
     assert not stale, (
-        f"DYNAMIC_KEY_ALLOWLIST entries no longer exist in the code: {stale}"
+        f'Align DYNAMIC_KEY_ALLOWLIST with existing code entries: {stale}'
     )

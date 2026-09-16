@@ -231,7 +231,7 @@ class FlagshipRuntimeMixin:
         except (OSError, RuntimeError, TypeError, ValueError):
             self.cloud_vision_service = None
             self.openai_vision_status.setText(
-                self._t("● 雲端視覺服務目前無法使用")
+                self._t('● 雲端視覺服務需要處理')
             )
 
     def _start_control_center_timers(self) -> None:

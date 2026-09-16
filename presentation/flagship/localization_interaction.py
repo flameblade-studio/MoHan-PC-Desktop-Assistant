@@ -21,10 +21,10 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
     "任務中心": translations("任务中心", "Task Center", "タスクセンター"),
     "工作流程": translations("工作流", "Workflows", "ワークフロー"),
     "設定讀取": translations("设置读取", "Settings read", "設定の読み取り"),
-    "主動提醒設定無法讀取，已保留上一組有效值。": translations(
-        "主动提醒设置无法读取，已保留上一组有效值。",
-        "Proactive-care settings could not be read; the last valid values were kept.",
-        "自発的な気遣い設定を読み取れないため、最後に有効だった値を保持しました。",
+    '讀取主動提醒設定需要處理，上一組有效值持續使用。': translations(
+        '读取主动提醒设置需要处理，上一组有效值持续使用。',
+        'Reading proactive reminder settings requires attention; the last valid values remain active.',
+        '自発的リマインダー設定の読み取りへの対応が必要です。直前の有効な値を維持します。',
     ),
     "雲端連接器": translations("云端连接器", "Cloud Connectors", "クラウド接続"),
     "智慧家庭": translations("智能家居", "Smart Home", "スマートホーム"),
@@ -162,83 +162,83 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
     "已停用": translations("已停用", "Disabled", "無効"),
     "內建手勢使用已稽核的偵測器，不需錄製。": translations(
         "内置手势使用已审核的检测器，无需录制。",
-        "Built-in gestures use the audited detector and need no recording.",
+        "Built-in gestures use the audited detector and use the audited detector directly.",
         "内蔵ジェスチャーは監査済み検出器を使用するため、記録は不要です。",
     ),
-    "可錄製手部特徵；不保存照片或影像。": translations(
-        "可录制手部特征；不保存照片或图像。",
-        "Hand features can be recorded; photos and images are never saved.",
-        "手の特徴を記録できます。写真や画像は保存しません。",
+    '錄製僅保存手部特徵資料。': translations(
+        '录制仅保存手部特征数据。',
+        'Recording stores only hand-feature data.',
+        '記録する内容は手の特徴データのみです。',
     ),
-    "目前沒有可用的手部 landmark 訊號，無法安全錄製。": translations(
-        "目前没有可用的手部 landmark 信号，无法安全录制。",
-        "No hand-landmark signal is currently available, so recording is safely unavailable.",
-        "現在は利用可能な手のランドマーク信号がないため、安全に記録できません。",
+    '請先取得穩定的手部 landmark 訊號，再開始安全錄製。': translations(
+        '请先取得稳定的手部 landmark 信号，再开始安全录制。',
+        'Obtain a stable hand landmark signal before starting a safe recording.',
+        '安定した手の landmark 信号を取得してから、安全な記録を開始してください。',
     ),
-    "錄製已取消，沒有保存任何資料。": translations(
-        "录制已取消，没有保存任何数据。",
-        "Recording was cancelled; no data was saved.",
-        "記録を取り消しました。データは保存されていません。",
+    '錄製已取消，既有保存資料維持原樣。': translations(
+        '录制已取消，现有保存数据保持原样。',
+        'Recording cancelled; saved data remains intact.',
+        '記録を取り消しました。既存の保存データを維持します。',
     ),
     "已暫存手部特徵；全域保存後才會生效。": translations(
         "已暂存手部特征；全局保存后才会生效。",
         "Hand features are staged and take effect only after global Save Settings.",
         "手の特徴を一時保存しました。全体設定を保存した後に反映されます。",
     ),
-    "手勢辨識已就緒；不保存照片或影像。": translations(
-        "手势识别已就绪；不保存照片或图像。",
-        "Gesture recognition is ready; photos and images are never saved.",
-        "ジェスチャー認識の準備ができました。写真や画像は保存しません。",
+    '手勢辨識已就緒，保存內容僅限手部特徵資料。': translations(
+        '手势识别已就绪，保存内容仅限手部特征数据。',
+        'Gesture recognition is ready; stored content is limited to hand-feature data.',
+        'ジェスチャー認識の準備ができました。保存内容は手の特徴データに限定します。',
     ),
-    "攝影機尚未就緒，手勢互動保持停用。": translations(
-        "摄像头尚未就绪，手势互动保持停用。",
-        "The camera is not ready, so gesture interaction remains disabled.",
-        "カメラの準備ができていないため、ジェスチャー操作は無効のままです。",
+    '攝影機就緒後即可啟用手勢互動。': translations(
+        '摄像头就绪后即可启用手势交互。',
+        'Gesture interaction can start once the camera is ready.',
+        'カメラの準備が整うとジェスチャー操作を開始できます。',
     ),
     "手部模型缺失，手勢互動保持停用。": translations(
         "手部模型缺失，手势互动保持停用。",
-        "Hand models are missing, so gesture interaction remains disabled.",
+        "Install the hand models before gesture interaction can begin.",
         "手モデルがないため、ジェスチャー操作は無効のままです。",
     ),
-    "手部模型無法載入，手勢互動保持停用。": translations(
-        "手部模型无法加载，手势互动保持停用。",
-        "Hand models could not be loaded, so gesture interaction remains disabled.",
-        "手モデルを読み込めないため、ジェスチャー操作は無効のままです。",
+    '請檢查手部模型載入狀態；手勢互動保持暫停。': translations(
+        '请检查手部模型加载状态；手势交互保持暂停。',
+        'Check hand-model loading; gesture interaction remains paused.',
+        '手モデルの読み込み状態を確認してください。ジェスチャー操作を一時停止します。',
     ),
-    "手勢辨識連續失敗，已安全停用。": translations(
-        "手势识别连续失败，已安全停用。",
-        "Gesture recognition failed repeatedly and was safely disabled.",
-        "ジェスチャー認識が連続して失敗したため、安全に無効化しました。",
+    '手勢辨識連續出現錯誤，已安全暫停，請檢查模型後再試。': translations(
+        '手势识别连续出现错误，已安全暂停，请检查模型后重试。',
+        'Repeated gesture-recognition errors triggered a safe pause. Check the model and retry.',
+        'ジェスチャー認識でエラーが続いたため、安全に一時停止しました。モデルを確認して再試行してください。',
     ),
     "手勢互動目前未啟用。": translations(
         "手势互动目前未启用。",
         "Gesture interaction is currently disabled.",
         "ジェスチャー操作は現在無効です。",
     ),
-    "此手勢需要既有權限確認，尚未執行。": translations(
-        "此手势需要现有权限确认，尚未执行。",
-        "This gesture requires the existing permission confirmation and was not executed.",
-        "このジェスチャーには既存の権限確認が必要なため、まだ実行していません。",
+    '完成既有權限確認後，才可執行此手勢。': translations(
+        '完成现有权限确认后，才可执行此手势。',
+        'Complete the existing permission confirmation before executing this gesture.',
+        '既存の権限確認を完了してから、このジェスチャーを実行できます。',
     ),
     "此手勢已由安全權限阻擋。": translations(
         "此手势已被安全权限阻止。",
-        "Security permissions blocked this gesture.",
+        "Security permissions require an update for this gesture.",
         "セキュリティ権限により、このジェスチャーはブロックされました。",
     ),
-    "手勢動作執行失敗，未變更其他功能。": translations(
-        "手势动作执行失败，未更改其他功能。",
-        "The gesture action failed without changing other features.",
-        "ジェスチャー動作は失敗しましたが、他の機能は変更していません。",
+    '手勢動作執行需要處理；其他功能維持運作。': translations(
+        '手势动作执行需要处理；其他功能保持运行。',
+        'Gesture execution requires attention; other features keep running.',
+        'ジェスチャー実行への対応が必要です。他の機能は動作を継続します。',
     ),
     "手勢未觸發任何動作。": translations(
         "手势未触发任何动作。",
         "The gesture did not trigger an action.",
         "ジェスチャーによる動作はありませんでした。",
     ),
-    "手勢設定尚未完成": translations(
-        "手势设置尚未完成",
-        "Gesture setup is incomplete",
-        "ジェスチャー設定が未完了です",
+    '請完成手勢設定': translations(
+        '请完成手势设置',
+        'Complete gesture settings',
+        'ジェスチャー設定を完了してください',
     ),
     "選擇自訂文字指令時，必須輸入一行指令後才能保存。": translations(
         "选择自定义文字指令时，必须输入一行指令后才能保存。",
@@ -267,10 +267,10 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
         "<b>OpenAI Cloud Vision Understanding</b>",
         "<b>OpenAI クラウド視覚理解</b>",
     ),
-    "公開版預設關閉。明確啟用並全域保存後即持續授權，直到你主動關閉；系統不會逐幀詢問，狀態始終可見，並可設定配額與成本上限或立即撤銷。本機 OpenCV 不受此設定影響。": translations(
-        "公开版默认关闭。明确启用并全局保存后即持续授权，直到你主动关闭；系统不会逐帧询问，状态始终可见，并可设置配额与成本上限或立即撤销。本机 OpenCV 不受此设置影响。",
-        "Disabled by default in public builds. Explicitly enabling and globally saving it grants continuous authorization until you turn it off. The system does not ask frame by frame; status remains visible, with quota and cost limits and immediate revocation. Local OpenCV remains independent.",
-        "公開版では既定で無効です。明示的に有効化して全体設定を保存すると、自ら無効にするまで継続的な許可となります。フレームごとに許可を求めることはなく、状態は常に表示され、利用枠と費用の上限を設定して直ちに取り消せます。ローカル OpenCV には影響しません。",
+    '公開版預設關閉。明確啟用並全域保存後，系統沿用持續授權處理所選事件，直到你主動關閉；狀態始終可見，並可設定配額與成本上限或立即撤銷。本機 OpenCV 獨立運作。': translations(
+        '公开版默认关闭。明确启用并全局保存后，系统沿用持续授权处理所选事件，直到你主动关闭；状态始终可见，并可设置额度与成本上限或立即撤销。本机 OpenCV 独立运行。',
+        'Public builds start with this feature off. Explicitly enabling and globally saving it grants continuous authorization for selected events until you turn it off. Status stays visible, with quota and cost limits and immediate revocation. Local OpenCV operates independently.',
+        '公開版では既定でオフです。明示的に有効化して全体設定を保存すると、自らオフにするまで選択イベントを継続許可の範囲で処理します。状態は常に表示され、利用枠・費用上限の設定と即時取消が可能です。ローカル OpenCV は独立して動作します。',
     ),
     "啟用視覺理解偏好": translations(
         "启用视觉理解偏好",
@@ -284,7 +284,7 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
     ),
     "允許提出網路查詢建議（絕不自動上網）": translations(
         "允许提出网络查询建议（绝不自动联网）",
-        "Allow web-search suggestions (never browse automatically)",
+        "Allow web-search suggestions (browse only after explicit consent)",
         "ウェブ検索の提案を許可（自動アクセスはしない）",
     ),
     "視覺模型": translations("视觉模型", "Vision model", "視覚モデル"),
@@ -306,10 +306,10 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
     "每分鐘分析上限": translations(
         "每分钟分析上限", "Per-minute analysis limit", "1分あたりの解析上限"
     ),
-    "✓ 原始影像不保存；設定檔不包含 API Key。": translations(
-        "✓ 不保存原始图像；设置文件不包含 API Key。",
-        "✓ Raw images are not saved; profiles never include API keys.",
-        "✓ 元画像は保存されず、設定ファイルに API Key は含まれません。",
+    '✓ 原始影像僅供即時處理；API Key 由獨立安全儲存管理。': translations(
+        '✓ 原始图像仅供实时处理；API Key 由独立安全存储管理。',
+        '✓ Raw images are used only for live processing; API keys are managed in separate secure storage.',
+        '✓ 元画像はリアルタイム処理に限定し、API Key は独立した安全な保存先で管理します。',
     ),
     "雲端視覺隱私保護": translations(
         "云端视觉隐私保护",
@@ -321,10 +321,10 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
         "Allow continuous cloud vision",
         "クラウド視覚の継続動作を許可",
     ),
-    "明確啟用並全域保存後，雲端視覺會依所選事件與用量限制持續運作，直到你主動關閉；系統不會逐幀詢問，狀態始終可見，並可設定配額與成本上限或立即撤銷。原始影像不保存，也不會自動上網。": translations(
-        "明确启用并全局保存后，云端视觉会依所选事件与用量限制持续运行，直到你主动关闭；系统不会逐帧询问，状态始终可见，并可设置配额与成本上限或立即撤销。不保存原始图像，也不会自动联网。",
-        "After you explicitly enable and globally save it, cloud vision continues for selected events within usage limits until you turn it off. The system does not ask frame by frame; status remains visible, with quota and cost limits and immediate revocation. Raw images are not saved, and it never browses automatically.",
-        "明示的に有効化して全体設定を保存すると、クラウド視覚は選択したイベントと利用上限の範囲で、自ら無効にするまで継続動作します。フレームごとに許可を求めることはなく、状態は常に表示され、利用枠と費用の上限を設定して直ちに取り消せます。元画像は保存せず、自動でウェブにアクセスしません。",
+    '明確啟用並全域保存後，雲端視覺依所選事件與用量限制沿用持續授權，直到你主動關閉；狀態始終可見，並可設定配額與成本上限或立即撤銷。原始影像僅供即時處理，網路查詢由你明確決定。': translations(
+        '明确启用并全局保存后，云端视觉按所选事件与用量限制沿用持续授权，直到你主动关闭；状态始终可见，并可设置额度与成本上限或立即撤销。原始图像仅供实时处理，网络查询由你明确决定。',
+        'After explicit activation and global save, cloud vision uses continuous authorization for selected events within usage limits until you turn it off. Status stays visible, with quota and cost limits and immediate revocation. Raw images are used only for live processing; web searches require your explicit decision.',
+        '明示的な有効化と全体保存後、クラウド視覚は自らオフにするまで選択イベントと利用上限の範囲で継続許可を使用します。状態は常に表示され、利用枠・費用上限の設定と即時取消が可能です。元画像はリアルタイム処理に限定し、ウェブ検索はユーザーの明示的な判断に従います。',
     ),
     "雲端視覺狀態": translations(
         "云端视觉状态", "Cloud vision status", "クラウド視覚の状態"
@@ -339,7 +339,7 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
     ),
     "● 已啟用，但尚無可用的 OpenAI 金鑰": translations(
         "● 已启用，但尚无可用的 OpenAI 密钥",
-        "● Enabled, but no usable OpenAI key is available",
+        "● Enabled; set a usable OpenAI key to continue",
         "● 有効ですが、利用可能な OpenAI キーがありません",
     ),
     "○ 雲端視覺已關閉": translations(
@@ -362,10 +362,10 @@ INTERACTION_TRANSLATIONS: TranslationCatalog = frozendict({
         "● Cloud vision could not complete the analysis",
         "● クラウド視覚で解析を完了できませんでした",
     ),
-    "● 雲端視覺服務目前無法使用": translations(
-        "● 云端视觉服务目前无法使用",
-        "● Cloud vision is currently unavailable",
-        "● クラウド視覚は現在利用できません",
+    '● 雲端視覺服務需要處理': translations(
+        '● 云端视觉服务需要处理',
+        '● Cloud vision service requires attention',
+        '● クラウド視覚サービスへの対応が必要です',
     ),
 })
 
