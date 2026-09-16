@@ -57,7 +57,7 @@ def _face_box_coordinates(
     x0 = int(width * left_ratio)
     x1 = int(width * right_ratio)
     if y0 >= y1 or x0 >= x1:
-        raise ValueError("face_box range is invalid for image shape")
+        raise ValueError("face_box range must fit within the image dimensions")
     if y1 > height:
         y1 = height
     if x1 > width:

@@ -19,13 +19,16 @@ lazy from domain.outfit_pack import (
     AppearanceItem,
     AppearanceVariant,
     OutfitPack,
+    SelectionResolution,
     resolve_active_selection,
 )
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from infrastructure.appearance_layer_stack import AppearanceLayerStack
 
 CANVAS = 1254
 OUTFIT_BLUE = 180
 ACCESSORY_RED = 210
+OPAQUE_ALPHA = 255
 
 
 def _app() -> object:
@@ -78,6 +81,7 @@ def _configure(
     *,
     anchor: tuple[int, int] = (20, 500),
     body_profile: str = BODY_PROFILE_ID,
+    occludes_makeup: bool = False,
 ) -> None:
     store = root / "store"
     packages = store / "packages"
@@ -94,6 +98,7 @@ def _configure(
         anchor[0],
         anchor[1],
         10,
+        occludes_makeup=occludes_makeup,
     )
     variant = AppearanceVariant(
         "navy",
@@ -124,7 +129,126 @@ def _configure(
         )
 
     monkeypatch.setattr(adapter_module, "resolve_active_selection", selection)
-    monkeypatch.setattr(adapter_module, "inspect_outfit_pack", lambda _: pack)
+    monkeypatch.setattr(adapter_module, "inspect_installed_outfit_pack", lambda _: pack)
+
+
+def _selection_resolution(
+    category: str,
+    status: str,
+    requested: tuple[str, str, str],
+    effective: tuple[str, str, str],
+) -> SelectionResolution:
+    return SelectionResolution(category, status, *requested, *effective)
+
+
+def _transparent_runtime_stack() -> AppearanceLayerStack:
+    layer = QPixmap(1, 1)
+    layer.fill(QColor(0, 0, 0, 0))
+    return AppearanceLayerStack(
+        (),
+        ((layer, 0, 0, QRegion(QRect(0, 0, 1, 1)), 1.0),),
+    )
+
+
+def _official_base_selections(
+    headwear: SelectionResolution,
+) -> dict[str, SelectionResolution]:
+    official = adapter_module.OFFICIAL_OUTFIT_PACK_ID
+    default_requested = ("builtin", "builtin", "builtin")
+    return {
+        "garment": _selection_resolution(
+            "garment", "installed", default_requested, (official, "robe", "blue-white"),
+        ),
+        "hairstyle": _selection_resolution(
+            "hairstyle", "installed", default_requested, (official, "loose-hair", "ink-black"),
+        ),
+        "headwear": headwear,
+    }
+
+
+def test_explicit_headwear_none_keeps_official_silhouette_base_clear(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    store = tmp_path / "store"
+    store.mkdir()
+    headwear = _selection_resolution(
+        "headwear", "builtin", ("builtin", "none", "none"), ("builtin", "none", "none"),
+    )
+    selections = _official_base_selections(headwear)
+    monkeypatch.setattr(
+        adapter_module,
+        "resolve_active_selection",
+        lambda _store, category: selections[category],
+    )
+    overlay = ActiveOutfitOverlay(store, tmp_path, visible_hand_region=None)
+    silhouette = QRegion(QRect(400, 400, 400, 400))
+    monkeypatch.setattr(overlay, "_official_silhouette_region", lambda *_args: silhouette)
+    monkeypatch.setattr(overlay, "_active_layers", lambda *_args, **_kwargs: _transparent_runtime_stack())
+    frame = QPixmap(CANVAS, CANVAS)
+    frame.fill(QColor(240, 240, 240, 255))
+
+    result = overlay.apply(frame, "none-headwear")
+
+    assert overlay._official_outfit_is_active()
+    assert result.toImage().pixelColor(50, 300).alpha() == 0
+    assert result.toImage().pixelColor(600, 600) == frame.toImage().pixelColor(600, 600)
+
+
+def test_bare_default_fallback_does_not_use_headwear_none_exception(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    store = tmp_path / "store"
+    store.mkdir()
+    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "missing-official")
+    monkeypatch.setattr(adapter_module, "resolve_active_selection", outfit_pack.resolve_active_selection)
+    overlay = ActiveOutfitOverlay(store, tmp_path, visible_hand_region=None)
+    silhouette = QRegion(QRect(400, 400, 400, 400))
+    monkeypatch.setattr(overlay, "_official_silhouette_region", lambda *_args: silhouette)
+    monkeypatch.setattr(overlay, "_active_layers", lambda *_args, **_kwargs: _transparent_runtime_stack())
+    frame = QPixmap(CANVAS, CANVAS)
+    frame.fill(QColor(240, 240, 240, 255))
+
+    result = overlay.apply(frame, "bare-fallback")
+
+    assert not overlay._official_outfit_is_active()
+    assert result.toImage().pixelColor(50, 300) == frame.toImage().pixelColor(50, 300)
+
+
+def test_custom_headwear_does_not_use_explicit_none_silhouette(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    store = tmp_path / "store"
+    store.mkdir()
+    headwear = _selection_resolution(
+        "headwear", "installed", ("custom-pack", "hairpiece", "silver"),
+        ("custom-pack", "hairpiece", "silver"),
+    )
+    selections = _official_base_selections(headwear)
+    monkeypatch.setattr(
+        adapter_module,
+        "resolve_active_selection",
+        lambda _store, category: selections[category],
+    )
+    overlay = ActiveOutfitOverlay(store, tmp_path, visible_hand_region=None)
+    silhouette = QRegion(QRect(400, 400, 400, 400))
+    head = QRegion(QRect(400, 100, 400, 100))
+    monkeypatch.setattr(overlay, "_official_silhouette_region", lambda *_args: silhouette)
+    monkeypatch.setattr(overlay, "_protected_face_region", lambda *_args: head)
+    monkeypatch.setattr(overlay, "_active_layers", lambda *_args, **_kwargs: _transparent_runtime_stack())
+    frame = QPixmap(CANVAS, CANVAS)
+    frame.fill(QColor(240, 240, 240, 255))
+
+    result = overlay.apply(frame, "custom-headwear")
+
+    assert not overlay._official_outfit_is_active()
+    assert result.toImage().pixelColor(50, 300).alpha() == 0
+    assert result.toImage().pixelColor(500, 150).alpha() == OPAQUE_ALPHA
 
 
 def test_active_garment_is_composited_without_touching_identity(
@@ -143,6 +267,37 @@ def test_active_garment_is_composited_without_touching_identity(
     )
     assert result.toImage().pixelColor(40, 520).blue() == OUTFIT_BLUE
     assert result.toImage().pixelColor(600, 200) == frame.toImage().pixelColor(600, 200)
+
+
+def test_declared_garment_depth_reaches_runtime_stack(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    _authority(tmp_path)
+    _configure(monkeypatch, tmp_path, _encoded_layer(), occludes_makeup=True)
+    overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path, visible_hand_region=None)
+
+    layers = overlay._active_layers("front-crossed", (CANVAS, CANVAS))
+
+    assert layers.makeup_occluder_indices == frozenset({0})
+    assert len(layers.foreground) == 1
+
+
+def test_declared_garment_depth_cannot_bypass_identity_guard(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    _authority(tmp_path)
+    _configure(monkeypatch, tmp_path, _encoded_layer(), anchor=(500, 200), occludes_makeup=True)
+    frame = QPixmap(CANVAS, CANVAS)
+    frame.fill(QColor(240, 240, 240, 255))
+    overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path, visible_hand_region=None)
+
+    with pytest.raises(outfit_pack.OutfitPackError, match="overlaps protected identity"):
+        overlay._active_layers("front-crossed", (CANVAS, CANVAS))
+    assert overlay.apply(frame, "front-crossed").toImage() == frame.toImage()
 
 
 def test_invalid_anchor_fails_closed_to_original_frame(
@@ -171,12 +326,11 @@ def test_incompatible_runtime_range_is_rejected() -> None:
 def test_dev_app_version_tolerates_range_comparison(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """A non-semver local build must not silently disable every outfit.
+    """A local development version must preserve available outfit rendering.
 
-    ``int()`` used to run before any guard, so a dev version raised ValueError
-    into ``apply()``'s broad handler and every layer vanished without a trace.
-    A malformed pack range still fails closed; only our own dev version is
-    tolerated.
+    The old int() conversion preceded the guard; a development version raised
+    ValueError into apply() and cleared every layer. Own development versions
+    are tolerated; malformed pack ranges still close the acceptance gate.
     """
 
     monkeypatch.setattr(adapter_module, "APP_VERSION", "4.6.dev0")
@@ -192,7 +346,7 @@ def test_missing_optional_category_in_active_state_is_transparent_builtin(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    # Without the official packs (a stripped build) an unlisted slot stays the bare base.
+    # In a stripped build with the official packs absent, an unlisted slot uses the bare base.
     monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
     store = tmp_path / "store"
     store.mkdir()
@@ -241,6 +395,59 @@ def test_hair_is_clipped_only_out_of_the_feature_core_not_the_face_box(
     assert garment_forbidden.contains(QPoint(600, 400))
 
 
+def test_back_hair_keeps_authored_alpha_outside_exact_feature_core(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Back hair retains its own clipping boundary around the mouth."""
+    _app()
+    _authority(tmp_path)
+    encoded = _encoded_layer(QColor(20, 20, 20, 255))
+    archive_path = tmp_path / "hair.mohan-outfit"
+    with zipfile.ZipFile(archive_path, "w") as archive:
+        archive.writestr("assets/back.png", encoded)
+        archive.writestr("assets/front.png", encoded)
+
+    def declaration(path: str, slot: str, z_order: int) -> AppearanceAsset:
+        return AppearanceAsset(
+            slot,
+            path,
+            hashlib.sha256(encoded).hexdigest(),
+            96,
+            96,
+            20,
+            500,
+            z_order,
+        )
+
+    adapter = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
+    feathered_slots: list[str] = []
+
+    def record_feather(pixmap, anchor_x, anchor_y, view_id):
+        feathered_slots.append(view_id)
+        return pixmap
+
+    monkeypatch.setattr(adapter, "_feathered_hair_layer", record_feather)
+    item = SimpleNamespace(safe_mask=None)
+    variant = SimpleNamespace(face_masks=None, hand_rules=None)
+    with zipfile.ZipFile(archive_path) as archive:
+        layers = adapter._garment_layers(
+            archive,
+            (
+                declaration("assets/back.png", "back", 0),
+                declaration("assets/front.png", "front", 20),
+            ),
+            "hairstyle",
+            item,
+            variant,
+            "front-crossed",
+            (CANVAS, CANVAS),
+        )
+
+    assert len(layers) == len(("back", "front"))
+    assert feathered_slots == ["front-crossed"]
+
+
 def test_compositor_uses_each_layers_own_face_clip(tmp_path: Path) -> None:
     _app()
     _authority(tmp_path)
@@ -262,7 +469,7 @@ def test_compositor_uses_each_layers_own_face_clip(tmp_path: Path) -> None:
     result = adapter.apply(frame, "front-crossed").toImage()
     assert result.pixelColor(600, 120) == QColor(40, 30, 20, 255)
     assert result.pixelColor(600, 250) == QColor(240, 240, 240, 255)
-    # The cheek is no longer part of the hair clip.
+    # The cheek remains outside the hair clip.
     assert result.pixelColor(600, 400) == QColor(40, 30, 20, 255)
 
 
@@ -343,7 +550,7 @@ def test_garment_and_accessory_coexist_in_global_z_order(
         )
 
     monkeypatch.setattr(adapter_module, "resolve_active_selection", selection)
-    monkeypatch.setattr(adapter_module, "inspect_outfit_pack", lambda _: pack)
+    monkeypatch.setattr(adapter_module, "inspect_installed_outfit_pack", lambda _: pack)
     frame = QPixmap(CANVAS, CANVAS)
     frame.fill(QColor(240, 240, 240, 255))
     result = ActiveOutfitOverlay(tmp_path / "store", tmp_path).apply(
@@ -432,7 +639,7 @@ def test_transparent_compatibility_hair_does_not_hide_generated_garment(
         )
 
     monkeypatch.setattr(adapter_module, "resolve_active_selection", selection)
-    monkeypatch.setattr(adapter_module, "inspect_outfit_pack", lambda _: pack)
+    monkeypatch.setattr(adapter_module, "inspect_installed_outfit_pack", lambda _: pack)
     frame = QPixmap(CANVAS, CANVAS)
     frame.fill(QColor(240, 240, 240, 255))
     result = ActiveOutfitOverlay(tmp_path / "store", tmp_path).apply(
@@ -446,7 +653,7 @@ def test_stale_active_pack_restores_builtin_and_notifies_once(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Issue #140 option 3: a generation-1 pack never renders and never fails silently."""
+    """Issue #140 option 3: generation-1 packs are rejected with a visible reason."""
     _app()
     _authority(tmp_path)
     _configure(monkeypatch, tmp_path, _encoded_layer(), body_profile="mohan-body-v1")

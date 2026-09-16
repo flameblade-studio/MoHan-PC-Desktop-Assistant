@@ -173,7 +173,7 @@ def _unpremultiply(premultiplied: np.ndarray) -> np.ndarray:
 
 
 def remap_rgba(image: np.ndarray, map_x: np.ndarray, map_y: np.ndarray) -> np.ndarray:
-    """Sample an explicit material map in premultiplied alpha, never the base face."""
+    """Sample only the explicit material map in premultiplied alpha; retain the base face."""
     if map_x.shape != map_y.shape or map_x.ndim != COORDINATE_MAP_DIMENSIONS:
         raise ValueError("Coordinate maps must have identical two-dimensional shapes")
     if not np.isfinite(map_x).all() or not np.isfinite(map_y).all():

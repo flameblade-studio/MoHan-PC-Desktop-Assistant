@@ -1,16 +1,12 @@
-"""golden 建置器對「另一代素體」必須守住的兩個契約。
+"""golden 建置器跨素體世代保持背面與空實體層契約。
 
-2026-09-02 用二代素體重切圖層時發現：
+2026-09-02 二代素體驗證：
+1. yaw+120 的耳朵／下顎曾被 YuNet 判成臉（信心 ≥ 0.75），造成背面
+   貼入虹膜 24 px、上唇 107 px。背面空臉層由 |yaw| 契約明確決定。
+2. 無袖素體的手臂皮膚曾進入 sleeve_* 並隨 _sleeve_lift 移動。
+   empty_layers 明確宣告空實體層，讓對應原始像素回到固定 body。
 
-1. 背面視角的臉部層依賴「YuNet 偵測不到臉」才留空。v4 的背面剛好偵測不到；
-   二代素體 yaw+120 的耳朵／下顎一小片被判成臉（信心 ≥ 0.75），半身正面遮罩
-   就被貼上去（虹膜 24 px、上唇 107 px）。契約應以 |yaw| 為準，與語意稽核的
-   背面裁決一致。
-2. 遮罩轉貼不知道權威沒有袖子。無袖素體的手臂皮膚被切進 sleeve_*，而渲染器的
-   _sleeve_lift 會隨手勢把袖層獨立平移——皮膚跟著離開身體。`empty_layers`
-   讓呼叫端宣告權威沒有的實體層，像素交還 body。
-
-兩個測試都只用 v4 的既有資產，不依賴任何新素體檔案。
+兩項測試皆使用既有 v4 資產。
 """
 from __future__ import annotations
 
@@ -83,10 +79,9 @@ def test_empty_layers_return_pixels_to_body_losslessly(builder, tmp_path: Path) 
         )
 
     body_gain, hair_back_gain = gain("body"), gain("hair_back")
-    # 無主像素依 _exclusive_ownership 的規則：HAIR_BODY_SPLIT_Y 以上交 hair_back、
-    # 以下交 body。實測 v4 yaw+000 的袖層有 61 px 落在肩頸交界的分割線之上。
-    # 兩者都是不會隨手勢平移的層，所以這個分配是可接受的；不可接受的是像素
-    # 消失、或流進會動的層／臉部層。
+    # 依 _exclusive_ownership，待分配像素在 HAIR_BODY_SPLIT_Y 以上交 hair_back、
+    # 以下交 body。v4 yaw+000 袖層有 61 px 位於肩頸分割線上方。
+    # 兩個接收層皆保持固定位置；每個像素須完整保留在固定承載層。
     assert body_gain + hair_back_gain == baseline_sleeves, (
         f"袖層釋出 {baseline_sleeves} px，但 body +{body_gain}、hair_back +{hair_back_gain}"
         "——有像素流向別處或消失"
@@ -98,7 +93,7 @@ def test_empty_layers_return_pixels_to_body_losslessly(builder, tmp_path: Path) 
     ]
     assert not untouched, f"袖層歸零不該影響這些層：{untouched}"
 
-    # 無損重組：25 層 alpha 的聯集必須等於權威的 alpha（一個像素都不能掉、不能重複）。
+    # 無損重組：25 層 alpha 聯集等於權威 alpha，每個來源像素恰好歸屬一次。
     authority = _alpha(ROOT / "assets/pose-atlas/v4-working" / f"{FRONT}.user-approved-generated-alpha-clean-v3-20260823.png") > 0
     union = np.zeros_like(authority)
     total = 0

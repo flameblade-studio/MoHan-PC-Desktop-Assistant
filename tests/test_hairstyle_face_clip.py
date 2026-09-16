@@ -94,11 +94,11 @@ def _rig_region(silhouette: str, layers: tuple[str, ...]) -> QRegion:
 
 
 def _longest_edge_runs(alpha: np.ndarray, box: tuple[int, int, int, int]) -> tuple[int, int]:
-    """Longest horizontal / vertical run of alpha-edge pixels inside ``box``.
+    """Measure the longest horizontal/vertical alpha-edge run inside box.
 
-    An edge pixel is a painted pixel with a transparent neighbour above/below
-    (horizontal edge) or left/right (vertical edge).  Straight cuts produce long
-    runs; natural strands do not.
+    Painted pixels adjacent to transparency form horizontal or vertical
+    edges. Straight cuts produce long runs; natural strands produce shorter,
+    irregular runs.
     """
     painted = alpha > 0
     up, down, left, right = (np.zeros_like(painted) for _ in range(4))
@@ -237,5 +237,5 @@ def test_runtime_hair_mask_is_zero_in_the_core_and_feathers_outward(tmp_path: Pa
         expected = round(OPAQUE * step / feather)
         assert np.abs(multiplier[band].astype(int) - expected).max() <= ALPHA_TOLERANCE, step
     assert multiplier[~rings[feather][local]].min() == OPAQUE
-    # Feathered means no hard step: every value of the ramp occurs at least once.
+    # Feathering includes every ramp value at least once for a smooth step.
     assert len({int(value) for value in np.unique(multiplier)}) >= feather + 1

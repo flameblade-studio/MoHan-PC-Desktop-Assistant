@@ -1,8 +1,8 @@
-"""Register material-only layers with explicit control pairs; never warp the body.
+"""Register material-only layers with explicit control pairs while retaining body geometry.
 
 The inverse thin-plate map interpolates authored source/target landmarks.
 Corner and fixed-body anchors keep distant hair tips and clothing stable.
-Invalid controls, a singular solution, or a folded map are hard failures.
+Registration proceeds with valid controls, a solvable system, and a fold-free map; validation errors remain explicit.
 """
 
 from __future__ import annotations
@@ -34,16 +34,52 @@ def _validate_controls(source: np.ndarray, target: np.ndarray) -> None:
         raise ValueError("Target controls must be unique.")
 
 
-def control_map(
-    source: np.ndarray, target: np.ndarray, shape: tuple[int, int]
+def _validate_boundary(
+    source: np.ndarray, target: np.ndarray, shape: tuple[int, int], boundary_width: int
+) -> None:
+    if isinstance(boundary_width, bool) or not isinstance(boundary_width, int) or boundary_width < 0:
+        raise ValueError("Boundary width must be a nonnegative integer.")
+    if boundary_width:
+        height, width = shape
+        moving = np.any(source != target, axis=1)
+        distances = np.minimum.reduce([
+            target[:, 0], target[:, 1], width - 1 - target[:, 0], height - 1 - target[:, 1],
+        ])
+        if np.any(distances[moving] < boundary_width):
+            raise ValueError("Moving controls must lie beyond the fixed boundary transition.")
+
+
+def _fix_patch_boundary(
+    map_x: np.ndarray, map_y: np.ndarray, boundary_width: int
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Return inverse maps for the explicit target canvas (height, width)."""
+    height, width = map_x.shape
+    yy, xx = np.indices(map_x.shape, dtype=np.float32)
+    distance = np.minimum.reduce([xx, yy, width - 1 - xx, height - 1 - yy])
+    weight = np.clip(distance / boundary_width, 0, 1)
+    weight = weight * weight * (3 - 2 * weight)
+    return xx + (map_x - xx) * weight, yy + (map_y - yy) * weight
+
+
+def control_map(
+    source: np.ndarray,
+    target: np.ndarray,
+    shape: tuple[int, int],
+    *,
+    boundary_width: int = 0,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return inverse maps, optionally fixing the entire local patch boundary.
+
+    A positive boundary width smoothly reduces displacement to zero at every
+    edge pixel. Moving controls belong beyond that transition band so their
+    authored positions remain authoritative. The final map must stay fold-free.
+    """
     source = np.asarray(source, dtype=np.float64)
     target = np.asarray(target, dtype=np.float64)
     _validate_controls(source, target)
     height, width = shape
     if min(height, width) < COORDINATE_DIMENSIONS:
         raise ValueError("Canvas must be at least two pixels in each dimension.")
+    _validate_boundary(source, target, shape, boundary_width)
     scale = float(max(shape))
     normalized_source, normalized_target = source / scale, target / scale
     affine = np.column_stack((np.ones(len(target)), normalized_target))
@@ -64,6 +100,8 @@ def control_map(
         basis = np.column_stack((_kernel(query, normalized_target), np.ones(len(query)), query))
         maps[start:stop] = (basis @ coefficients * scale).reshape(stop - start, width, COORDINATE_DIMENSIONS)
     map_x, map_y = maps[:, :, 0], maps[:, :, 1]
+    if boundary_width:
+        map_x, map_y = _fix_patch_boundary(map_x, map_y, boundary_width)
     if not np.isfinite(maps).all():
         raise ValueError("Registration produced non-finite coordinates.")
     jacobian = (

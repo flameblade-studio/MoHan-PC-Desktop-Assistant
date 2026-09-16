@@ -10,15 +10,19 @@ bare base, then subtracted step by step) leaves one directory per silhouette::
     <layers>/<silhouette>/report.json           pixel counts and registration shifts
     <layers>/<silhouette>/base.png              the bare base the layers were cut from (probes only)
 
-This tool never invents art.  It maps the layers onto the v2 pack format,
+This tool uses authored art exclusively. It maps the layers onto the v2 pack format,
 crops exactly the pixels the runtime would reject (a garment pixel on the
 protected face, hair on the feature core -- the eye and mouth rig cut-outs
-dilated by the runtime's margin, never the whole face box, so strands keep
+dilated only by the runtime's margin, preserving the rest of the face area so strands keep
 falling over the brow and cheeks -- headwear on the eyes and lips, makeup
 outside its safe region), records every cropped pixel in a JSON report, seals
 both archives with
-``application.outfit_pack_builder`` and proves they parse.  Missing input is an
-error, not a transparent placeholder.
+``application.outfit_pack_builder`` and proves they parse.  Every input is required; each outstanding input produces an explicit error.
+
+The legacy makeup authoring tree contains three ``poses`` slots and is rebuilt
+from the pipeline's makeup layers.  A canonical foundation-bearing tree is
+sealed exactly as declared, including its ``foundation`` and ``eye_states``
+members; this layer assembler never rewrites those canonical sources.
 
 Example::
 
@@ -98,12 +102,13 @@ REGISTRATION_FLAG_PX = 3.0
 # Mirrors ActiveOutfitOverlay._forbidden_face_region: the slice of the protected face the
 # crown mask may touch, as (numerator, denominator) of the bbox.
 CROWN_HEIGHT = (1, 5)
-# Hair declares no face rule: the runtime clips it out of the feature core only (and
+# Hair uses the runtime feature-core clipping rule only (and
 # feathers that edge), so the assembler crops exactly that dilated core and nothing else.
 HAIR_FACE_MASK = "none"
-# Mirrors domain.outfit_pack_makeup.EXCLUSION_RIG_LAYERS: (painted, covering) pairs whose difference never receives makeup.
+# Mirrors domain.outfit_pack_makeup.EXCLUSION_RIG_LAYERS: (painted, covering) pairs whose difference remains protected from makeup.
 MAKEUP_EXCLUSIONS = ((("iris_left", "iris_right"), ("eyelid_left", "eyelid_right")), (("oral_cavity", "teeth_tongue"), ("lip_upper", "lip_lower")))
 MAKEUP_SLOTS = ("eyes", "cheeks", "lips")
+CANONICAL_MAKEUP_MARKERS = frozenset({"eye_states", "foundation_silhouettes"})
 LAYER_FILES = {
     "garment": "L2_garment.png",
     "hair": "L3_hair.png",
@@ -120,7 +125,7 @@ GREY_PREFERENCE = 1000
 
 @dataclass(frozen=True, slots=True)
 class Forbidden:
-    """Per-silhouette pixel masks a layer of each category may not paint (True = forbidden)."""
+    """Per-silhouette protected-pixel masks for each layer category (True = protected)."""
 
     garment: np.ndarray
     hair: np.ndarray
@@ -302,7 +307,15 @@ def registration_flags(report_path: Path) -> dict[str, list[float]]:
     return flags
 
 
-def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeup_root: Path, makeup_paths: dict) -> SilhouetteResult:
+def process_silhouette(
+    source: Path,
+    silhouette: str,
+    outfit_assets: Path,
+    makeup_root: Path,
+    makeup_paths: dict,
+    *,
+    write_makeup: bool = True,
+) -> SilhouetteResult:
     """Crop, split and write every layer of one silhouette; returns what was done."""
     result = SilhouetteResult(silhouette)
     layers = {}
@@ -326,8 +339,12 @@ def process_silhouette(source: Path, silhouette: str, outfit_assets: Path, makeu
         for x, y, width, height in safe.rects(slot):
             allowed[y : y + height, x : x + width] = True
         layers[slot], result.cropped_pixels[slot] = crop(layers[slot], ~allowed)
-        write_png(makeup_root / makeup_paths[(CLASSIC_VARIANT, silhouette, slot)], layers[slot])
-        write_png(makeup_root / makeup_paths[(LIGHT_VARIANT, silhouette, slot)], scale_alpha(layers[slot], LIGHT_ALPHA_FACTOR))
+        if write_makeup:
+            write_png(makeup_root / makeup_paths[(CLASSIC_VARIANT, silhouette, slot)], layers[slot])
+            write_png(
+                makeup_root / makeup_paths[(LIGHT_VARIANT, silhouette, slot)],
+                scale_alpha(layers[slot], LIGHT_ALPHA_FACTOR),
+            )
     write_png(outfit_assets / f"{GARMENT_ITEM}-{GARMENT_VARIANT}-{silhouette}-outerwear.png", layers["garment"])
     write_png(outfit_assets / f"{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-front.png", layers["hair"])
     write_png(outfit_assets / f"{HAIR_ITEM}-{HAIR_VARIANT}-{silhouette}-back.png", np.zeros_like(layers["hair"]))
@@ -421,8 +438,40 @@ def outfit_manifest(results: dict[str, SilhouetteResult]) -> dict[str, object]:
     }
 
 
+def makeup_authoring_mode(template: Path) -> str:
+    """Classify authoring without silently dropping canonical makeup members."""
+    manifest = json.loads(template.read_text(encoding="utf-8"))
+    makeup = manifest.get("makeup") if isinstance(manifest, dict) else None
+    if not isinstance(makeup, list) or not makeup:
+        raise SystemExit("Makeup authoring must declare one or more items.")
+    for item in makeup:
+        variants = item.get("variants") if isinstance(item, dict) else None
+        if not isinstance(variants, list):
+            raise SystemExit("Makeup authoring must declare a variants list.")
+        for variant in variants:
+            if not isinstance(variant, dict):
+                raise SystemExit("Makeup authoring variants must be objects.")
+            if CANONICAL_MAKEUP_MARKERS & set(variant):
+                return "canonical"
+            poses = variant.get("poses")
+            if not isinstance(poses, dict):
+                raise SystemExit("Makeup authoring variants must declare poses.")
+            if any(
+                isinstance(entry, dict) and entry.get("slot") == "foundation"
+                for entries in poses.values()
+                if isinstance(entries, list)
+                for entry in entries
+            ):
+                return "canonical"
+    return "legacy"
+
+
 def makeup_layer_paths(template: Path) -> dict[tuple[str, str, str], str]:
     """(variant, silhouette, slot) -> relative PNG path declared by the scaffolded template."""
+    if makeup_authoring_mode(template) != "legacy":
+        raise SystemExit(
+            "Canonical foundation and eye-state authoring must be sealed without legacy layer rewriting."
+        )
     manifest = json.loads(template.read_text(encoding="utf-8"))
     paths = {}
     for item in manifest["makeup"]:
@@ -456,15 +505,22 @@ def main(argv: list[str] | None = None) -> int:
     QGuiApplication.instance() or QGuiApplication([])
     template = official_pose_template()
     if not APP_RANGE.fullmatch(APP_VERSION_RANGE):
-        raise SystemExit("Invalid app range.")
-    makeup_paths = makeup_layer_paths(arguments.makeup_authoring / MANIFEST)
+        raise SystemExit("A valid app version range is required.")
+    makeup_manifest_path = arguments.makeup_authoring / MANIFEST
+    makeup_mode = makeup_authoring_mode(makeup_manifest_path)
+    makeup_paths = makeup_layer_paths(makeup_manifest_path) if makeup_mode == "legacy" else {}
     results = {}
     for silhouette in template["required_silhouettes"]:
         source = arguments.layers / silhouette
         if not source.is_dir():
             raise SystemExit(f"Missing silhouette directory: {source}")
         results[silhouette] = process_silhouette(
-            source, silhouette, arguments.outfit_authoring / "assets", arguments.makeup_authoring, makeup_paths
+            source,
+            silhouette,
+            arguments.outfit_authoring / "assets",
+            arguments.makeup_authoring,
+            makeup_paths,
+            write_makeup=makeup_mode == "legacy",
         )
         print(f"{silhouette}: cropped {results[silhouette].cropped_pixels} hair mask {results[silhouette].hair_face_mask}")
     manifest_path = arguments.outfit_authoring / MANIFEST
@@ -472,11 +528,13 @@ def main(argv: list[str] | None = None) -> int:
     official_root = OFFICIAL_PACK_ROOT if arguments.official_root is None else arguments.official_root
     outfit_name = f"{OFFICIAL_OUTFIT_PACK_ID}.mohan-outfit"
     outfit_sha = seal(manifest_path, arguments.outfit_authoring, official_root / outfit_name, arguments.replace)
-    makeup_id = json.loads((arguments.makeup_authoring / MANIFEST).read_text(encoding="utf-8"))["id"]
-    makeup_sha = seal(arguments.makeup_authoring / MANIFEST, arguments.makeup_authoring, official_root / f"{makeup_id}.mohan-outfit", arguments.replace)
+    makeup_id = json.loads(makeup_manifest_path.read_text(encoding="utf-8"))["id"]
+    makeup_name = f"{makeup_id}.mohan-outfit"
+    makeup_sha = seal(makeup_manifest_path, arguments.makeup_authoring, official_root / makeup_name, arguments.replace)
     report = {
         "light_alpha_factor": LIGHT_ALPHA_FACTOR,
-        "sealed": {outfit_name: outfit_sha, f"{makeup_id}.mohan-outfit": makeup_sha},
+        "makeup_authoring_mode": makeup_mode,
+        "sealed": {outfit_name: outfit_sha, makeup_name: makeup_sha},
         "silhouettes": {silhouette: asdict(result) for silhouette, result in results.items()},
     }
     arguments.report.parent.mkdir(parents=True, exist_ok=True)

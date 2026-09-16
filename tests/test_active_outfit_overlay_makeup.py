@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy import hashlib
 lazy import json
 lazy import os
+lazy import shutil
 lazy import sys
 lazy import zipfile
 lazy from pathlib import Path
@@ -116,7 +117,16 @@ def _authority(root: Path) -> None:
     assert iris.save(str(layered / "front_iris_left.png"), "PNG")
     document = json.loads(SAFE_REGION_PATH.read_text(encoding="utf-8"))
     document["silhouettes"]["front-crossed"]["slots"] = FRONT_SLOTS
-    (root / "assets" / "makeup-safe-regions.json").write_text(json.dumps(document), encoding="utf-8")
+    document_path = root / "assets" / "makeup-safe-regions.json"
+    document_path.write_text(json.dumps(document), encoding="utf-8")
+    for entry in document["silhouettes"].values():
+        for field in ("foundation_masks", "eye_aperture_masks"):
+            for descriptor in entry.get(field, {}).values():
+                relative = Path(*descriptor["path"].split("/"))
+                source = ROOT / relative
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, target)
 
 
 def _asset(path: str, payload: bytes, slot: str, z_order: int, size: int = CANVAS, anchor=(0, 0)) -> AppearanceAsset:
@@ -177,7 +187,7 @@ def _configure(
         return SimpleNamespace(status="builtin")
 
     monkeypatch.setattr(adapter_module, "resolve_active_selection", selection)
-    monkeypatch.setattr(adapter_module, "inspect_outfit_pack", lambda _: pack)
+    monkeypatch.setattr(adapter_module, "inspect_installed_outfit_pack", lambda _: pack)
     return store
 
 
@@ -321,11 +331,11 @@ def _half_body_frames(renderer: LayeredParametricFaceRenderer) -> tuple[QImage, 
 def test_half_body_makeup_stays_registered_across_mouth_and_blink_swaps(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Makeup is composited on the 1254 canvas before the speech/blink rect swaps.
+    """Makeup is composited on the 1254 canvas before speech/blink rectangle swaps.
 
-    Outside the swapped rectangles every frame keeps the identical makeup pixels;
-    inside them the swap lands exactly where it lands without makeup, so the
-    authority mouth/eye patches still line up.
+    Makeup pixels outside the swapped rectangles remain identical. Within
+    each rectangle, the swap preserves the baseline coordinates so the
+    authority mouth and eye patches remain aligned.
     """
     _app()
     cheek_center = _cheek_center()

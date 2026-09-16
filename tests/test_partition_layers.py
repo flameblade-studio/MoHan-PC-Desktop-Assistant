@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+lazy import hashlib
 lazy import json
 lazy import sys
 lazy from pathlib import Path
@@ -15,9 +16,11 @@ lazy import numpy as np
 lazy import pytest
 
 lazy from tools.art_pipeline.image_ops import key_file, load_rgba, save_png
+lazy from tools.art_pipeline import partition_layers
 lazy from tools.art_pipeline.partition_layers import (
     OWNER_PALETTE,
     export_review,
+    load_review_source,
     ownership_map,
     partition_rgba,
     reconstruct,
@@ -116,6 +119,84 @@ def test_export_records_source_and_refuses_existing_output(tmp_path: Path) -> No
     with pytest.raises(FileExistsError):
         export_review(tmp_path / "missing.png", semantic_path, output)
     assert before == {path.name: path.read_bytes() for path in output.iterdir()}
+
+
+def test_native_alpha_export_preserves_colored_hair_and_soft_edges(tmp_path: Path) -> None:
+    source = _canvas()
+    source[4:20, 4:20] = (220, 20, 210, HALF_ALPHA)
+    semantic = _canvas()
+    semantic[4:20, 4:20, :3] = OWNER_PALETTE[HAIR]
+    source_path, semantic_path = tmp_path / "native.png", tmp_path / "semantic.png"
+    save_png(source_path, source)
+    save_png(semantic_path, semantic)
+    # This deliberately magenta foreground would disappear in the legacy keyer.
+    assert not key_file(source_path)[:, :, 3].any()
+    output = tmp_path / "native-review"
+    source_digest = hashlib.sha256(source_path.read_bytes()).hexdigest()
+    report = export_review(source_path, semantic_path, output, source_mode="native-alpha",
+                           expected_source_sha256=source_digest)
+    assert np.array_equal(load_rgba(output / "reconstruction.png"), source)
+    assert np.array_equal(load_rgba(output / "hair.png"), source)
+    assert report["chroma_key_applied"] is False
+    assert report["expected_source_sha256"] == source_digest
+
+
+def test_source_replaced_after_review_is_rejected_before_output(tmp_path: Path) -> None:
+    source_path = tmp_path / "candidate.png"
+    source_path.write_bytes(b"reviewed candidate")
+    reviewed_digest = hashlib.sha256(source_path.read_bytes()).hexdigest()
+    source_path.write_bytes(b"replacement candidate")
+    output = tmp_path / "rejected"
+    with pytest.raises(ValueError, match="differs from the reviewed candidate"):
+        export_review(source_path, tmp_path / "unused.png", output,
+                      expected_source_sha256=reviewed_digest)
+    assert not output.exists()
+
+
+@pytest.mark.parametrize("changed_input", ["source", "semantic"])
+def test_input_changed_during_partition_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, changed_input: str,
+) -> None:
+    source = _canvas()
+    source[4:20, 4:20] = (32, 62, 94, OPAQUE)
+    semantic = _canvas()
+    semantic[4:20, 4:20, :3] = OWNER_PALETTE[GARMENT]
+    paths = {"source": tmp_path / "source.png", "semantic": tmp_path / "semantic.png"}
+    save_png(paths["source"], source)
+    save_png(paths["semantic"], semantic)
+    original_reconstruct = partition_layers.reconstruct
+
+    def replace_input_after_decode(layers: dict[str, np.ndarray]) -> np.ndarray:
+        result = original_reconstruct(layers)
+        paths[changed_input].write_bytes(b"concurrently replaced")
+        return result
+
+    monkeypatch.setattr(partition_layers, "reconstruct", replace_input_after_decode)
+    output = tmp_path / "rejected"
+    with pytest.raises(ValueError, match="changed during processing"):
+        export_review(paths["source"], paths["semantic"], output, source_mode="native-alpha")
+    assert not output.exists()
+
+
+def test_native_alpha_rejects_rgb_checkerboard_before_writing(tmp_path: Path) -> None:
+    checker = np.indices((SIZE, SIZE)).sum(axis=0) % 2 * 80 + 160
+    source = np.repeat(checker[:, :, None], 3, axis=2).astype(np.uint8)
+    path = tmp_path / "checkerboard.png"
+    save_png(path, source)
+    output = tmp_path / "rejected"
+    with pytest.raises(ValueError, match="requires 8-bit BGRA with explicit transparency"):
+        export_review(path, tmp_path / "unused.png", output, source_mode="native-alpha")
+    assert not output.exists()
+
+
+@pytest.mark.parametrize("alpha", [0, OPAQUE])
+def test_native_alpha_rejects_missing_foreground_or_background(tmp_path: Path, alpha: int) -> None:
+    source = _canvas()
+    source[:, :, 3] = alpha
+    path = tmp_path / "invalid.png"
+    save_png(path, source)
+    with pytest.raises(ValueError, match="visible foreground and transparent background"):
+        load_review_source(path, "native-alpha")
 
 
 def main() -> int:

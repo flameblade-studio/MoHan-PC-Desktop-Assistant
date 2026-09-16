@@ -1,6 +1,6 @@
-"""Partition one approved image for visual review without mixing redraw stages.
+"""Partition one approved image for visual review in a dedicated stage.
 
-These are visible-surface layers, not independently swappable outfit assets.
+These are visible-surface layers; independently swappable outfit assets require further authoring.
 Hidden surfaces and compatibility with the runtime body need separate review.
 The source owns RGBA; a same-sized semantic map owns only layer membership.
 """
@@ -11,17 +11,18 @@ lazy import argparse
 lazy import hashlib
 lazy import json
 lazy from pathlib import Path
+lazy from typing import Literal
 
 lazy import cv2
 lazy import numpy as np
 
-lazy from .image_ops import key_file, load_rgba, save_png, transparent_rgb_zero
+lazy from .image_ops import key_file, load_image, load_rgba, save_png, transparent_rgb_zero
 lazy from .constants import IMAGE_DIMENSIONS, RGBA_CHANNELS
 
 # BGR palette: background, hair, headwear, exposed skin, garment.
 OWNER_PALETTE = ((0, 0, 0), (0, 0, 255), (0, 255, 0), (255, 0, 0), (0, 255, 255))
 LAYER_NAMES = ("hair", "headwear", "exposed_skin", "garment")
-# Permit only rasterization-scale omissions, never a missing semantic region.
+# Allow rasterization-scale omissions while requiring every semantic region.
 MAX_EDGE_DISTANCE = 3.0
 PALETTE_SEED_TOLERANCE = 24
 REVIEW_BACKGROUNDS = {"gray": 140, "white": 255, "black": 0}
@@ -33,13 +34,13 @@ def ownership_map(source: np.ndarray, semantic: np.ndarray) -> tuple[np.ndarray,
         raise ValueError("Source and semantic map must have identical RGBA dimensions.")
     palette = np.asarray(OWNER_PALETTE, dtype=np.int32)
     # Decode only pure class colors. Antialiased red/green edges can look yellow;
-    # assign those mixed pixels spatially from pure seeds, not by color guessing.
+    # assign those mixed pixels spatially using the pure seeds as authority.
     differences = semantic[:, :, None, :3].astype(np.int32) - palette
     color_distance = np.abs(differences).max(axis=3)
     owners = color_distance.argmin(axis=2).astype(np.uint8)
     uncertain = color_distance.min(axis=2) > PALETTE_SEED_TOLERANCE
     if uncertain.all():
-        raise ValueError("Semantic map contains no recognizable palette seeds.")
+        raise ValueError("Semantic map requires recognizable palette seeds.")
     if uncertain.any():
         _, nearest_seed = cv2.distanceTransformWithLabels(
             uncertain.astype(np.uint8), cv2.DIST_L2, cv2.DIST_MASK_5,
@@ -52,7 +53,7 @@ def ownership_map(source: np.ndarray, semantic: np.ndarray) -> tuple[np.ndarray,
     missing = visible & (owners == 0)
     if missing.any():
         if not (owners > 0).any():
-            raise ValueError("Semantic map contains no foreground owners.")
+            raise ValueError("Semantic map requires foreground owners.")
         distance, nearest = cv2.distanceTransformWithLabels(
             (owners == 0).astype(np.uint8),
             cv2.DIST_L2,
@@ -69,7 +70,7 @@ def ownership_map(source: np.ndarray, semantic: np.ndarray) -> tuple[np.ndarray,
 
 
 def partition_rgba(source: np.ndarray, owners: np.ndarray) -> dict[str, np.ndarray]:
-    """Copy each visible pixel to exactly one layer without color or alpha blending."""
+    """Copy each visible pixel unchanged to exactly one layer, preserving its color and alpha."""
     if source.dtype != np.uint8 or source.ndim != IMAGE_DIMENSIONS or source.shape[2] != RGBA_CHANNELS:
         raise ValueError("Source must be uint8 BGRA.")
     if owners.shape != source.shape[:2]:
@@ -97,7 +98,7 @@ def reconstruct(layers: dict[str, np.ndarray]) -> np.ndarray:
             raise ValueError("Layer dimensions differ.")
         selected = layer[:, :, 3] > 0
         if (occupied & selected).any():
-            raise ValueError("Visible-surface layers must not overlap.")
+            raise ValueError("Assign each overlapping pixel to exactly one visible-surface layer.")
         result[selected] = layer[selected]
         occupied |= selected
     return result
@@ -109,17 +110,43 @@ def review_background(source: np.ndarray, brightness: int) -> np.ndarray:
     return np.rint(source[:, :, :3] * alpha + brightness * (1 - alpha)).astype(np.uint8)
 
 
-def export_review(source_path: Path, semantic_path: Path, output: Path) -> dict[str, object]:
-    """Write a new, isolated review directory; never replace production assets."""
+def load_review_source(path: Path, source_mode: Literal["magenta", "native-alpha"]) -> np.ndarray:
+    """Keep native matting alpha and colors intact instead of keying them again."""
+    if source_mode == "magenta":
+        return transparent_rgb_zero(key_file(path))
+    if source_mode != "native-alpha":
+        raise ValueError(f"Unknown source background mode: {source_mode}")
+    source = load_image(path)
+    if source.dtype != np.uint8 or source.ndim != IMAGE_DIMENSIONS or source.shape[2] != RGBA_CHANNELS:
+        raise ValueError("Native-alpha source requires 8-bit BGRA with explicit transparency.")
+    alpha = source[:, :, 3]
+    if not np.any(alpha > 0) or not np.any(alpha == 0):
+        raise ValueError("Native-alpha cutout requires both visible foreground and transparent background.")
+    return transparent_rgb_zero(source)
+
+
+def export_review(
+    source_path: Path, semantic_path: Path, output: Path,
+    *, source_mode: Literal["magenta", "native-alpha"] = "magenta",
+    expected_source_sha256: str | None = None,
+) -> dict[str, object]:
+    """Write exclusively to a fresh isolated review directory and preserve production assets."""
     if output.exists():
         raise FileExistsError(f"Review output already exists: {output}")
-    source = transparent_rgb_zero(key_file(source_path))
+    source_sha256 = hashlib.sha256(source_path.read_bytes()).hexdigest()
+    if expected_source_sha256 is not None and source_sha256 != expected_source_sha256:
+        raise ValueError("Source SHA-256 differs from the reviewed candidate.")
+    source = load_review_source(source_path, source_mode)
+    semantic_sha256 = hashlib.sha256(semantic_path.read_bytes()).hexdigest()
     semantic = load_rgba(semantic_path)
     owners, extended_pixels = ownership_map(source, semantic)
     layers = partition_rgba(source, owners)
     result = reconstruct(layers)
     if not np.array_equal(result, source):
-        raise ValueError("Reassembled layers differ from the keyed approved source.")
+        raise ValueError("Reassembled layers differ from the prepared approved source.")
+    for path, expected_digest in ((source_path, source_sha256), (semantic_path, semantic_sha256)):
+        if hashlib.sha256(path.read_bytes()).hexdigest() != expected_digest:
+            raise ValueError(f"Review input changed during processing: {path}")
     output.mkdir(parents=True, exist_ok=False)
     for name, layer in layers.items():
         save_png(output / f"{name}.png", layer)
@@ -129,9 +156,12 @@ def export_review(source_path: Path, semantic_path: Path, output: Path) -> dict[
         save_png(output / f"preview-{name}.png", review_background(result, brightness))
     report: dict[str, object] = {
         "schema_version": 1,
-        "purpose": "visible-surface review; not a runtime outfit pack",
-        "source_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
-        "semantic_sha256": hashlib.sha256(semantic_path.read_bytes()).hexdigest(),
+        "purpose": "visible-surface review; runtime outfit authoring is a separate stage",
+        "source_mode": source_mode,
+        "chroma_key_applied": source_mode == "magenta",
+        "source_sha256": source_sha256,
+        "semantic_sha256": semantic_sha256,
+        "expected_source_sha256": expected_source_sha256,
         "width": int(source.shape[1]),
         "height": int(source.shape[0]),
         "source_edge_pixels_assigned": extended_pixels,
@@ -140,9 +170,11 @@ def export_review(source_path: Path, semantic_path: Path, output: Path) -> dict[
             name: int((layer[:, :, 3] > 0).sum()) for name, layer in layers.items()
         },
         "limits": [
-            "Original magenta keying changes only chroma-key-affected pixels.",
+            ("Original magenta keying changes only chroma-key-affected pixels."
+             if source_mode == "magenta" else
+             "Native visible RGBA is preserved; only fully transparent RGB is cleared."),
             "Semantic ownership still needs visual review at internal boundaries.",
-            "Occluded surfaces are not reconstructed or invented.",
+            "The export contains observed visible surfaces only; occluded surfaces await dedicated authoring.",
             "Existing runtime body, animations, and outfit packs are unchanged.",
         ],
     }
@@ -161,8 +193,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("source", type=Path)
     parser.add_argument("semantic", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--source-mode", choices=("magenta", "native-alpha"), default="magenta")
+    parser.add_argument("--expected-source-sha256", help="Exact SHA-256 from the candidate review record")
     arguments = parser.parse_args(argv)
-    report = export_review(arguments.source, arguments.semantic, arguments.output)
+    report = export_review(arguments.source, arguments.semantic, arguments.output,
+                           source_mode=arguments.source_mode,
+                           expected_source_sha256=arguments.expected_source_sha256)
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0
 

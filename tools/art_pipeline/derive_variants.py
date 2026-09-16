@@ -37,7 +37,7 @@ def rect_1254(x: int, y: int, width: int, height: int) -> tuple[int, int, int, i
 
 
 def inner_feather_mask(height: int, width: int) -> np.ndarray:
-    """矩形內側羽化權重，權重永遠不會寫到矩形外。"""
+    """將羽化權重限定於矩形內側。"""
 
     yy = np.arange(height, dtype=np.float32)
     xx = np.arange(width, dtype=np.float32)

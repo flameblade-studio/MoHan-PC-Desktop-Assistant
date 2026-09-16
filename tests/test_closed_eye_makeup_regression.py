@@ -19,14 +19,14 @@ CANVAS_SIZE = (1254, 1254)
 DARK_PIXEL_MAX = 140
 SMALL_COMPONENT_MAX_AREA = 25
 BRIGHT_RESIDUAL_MIN = 180
-# The repaired run leaves at most five antialiased edge pixels in the cheek
-# eye region; ten leaves a small deterministic margin without allowing a
-# visible background crescent.
+# The repaired run leaves at most five antialiased cheek-eye edge pixels.
+# A limit of ten preserves a small margin while keeping background
+# crescents below visible extent.
 MAX_BRIGHT_RESIDUAL_PIXELS = 10
 MAX_RESIDUAL_DARK_COMPONENTS = 3
 # Fixed from the repaired three-pose run: 19,451, 21,578 and 20,796 changed
 # pixels.  18,000 keeps a conservative margin while remaining well above the
-# 2,546-pixel failure signature that exposed the too-small eye replacement.
+# 2,546-pixel regression signature from the undersized eye replacement.
 MIN_CLOSED_DIFF_PIXELS = 18_000
 EYE_LAYERS = (
     "iris_left",
@@ -98,7 +98,7 @@ def _small_dark_residual_components(
         ):
             points.add((x, y))
     # The contract counts only isolated dark components of at most 25 pixels;
-    # the continuous authored eyelash line is intentionally not a speckle.
+    # the continuous authored eyelash line remains a valid feature.
     small = 0
     while points:
         before = len(points)

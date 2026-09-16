@@ -1,10 +1,9 @@
-"""The four gesture expressions dress in their own silhouette layers through the runtime path.
+"""Each of the four gesture expressions uses its own runtime silhouette layers.
 
-``mock_scold``, ``mock_hit_front``, ``eureka_front`` and ``exasperated_front`` have
-a body that differs from the neutral front pose, so the official pack ships
-garment/hair/headwear layers cut on each gesture portrait.  The layered face
-renderer must draw that portrait, dress it with the matching gesture silhouette
-(never ``front-crossed``) and still paint the speech mouth patch afterwards.
+mock_scold, mock_hit_front, eureka_front, and exasperated_front each have an
+authored body pose with matching garment, hair, and headwear layers. The
+layered face renderer draws that portrait, composes its matching gesture
+silhouette, and then paints the speech mouth patch.
 """
 
 from __future__ import annotations
@@ -93,7 +92,7 @@ def _is_grey(color: QColor) -> bool:
 
 
 def _robe_over_grey_pixels(bare: QImage, dressed: QImage, area: QRect) -> tuple[int, int]:
-    """(pixels no longer grey, robe-blue pixels) where the bare portrait shows the grey tank top."""
+    """Robe-blue pixels replace the grey tank-top region of the bare portrait."""
     changed = blue = 0
     for y in range(area.top(), area.bottom() + 1):
         for x in range(area.left(), area.right() + 1):
@@ -162,8 +161,8 @@ def test_gesture_expression_composites_its_own_portrait_and_silhouette(tmp_path:
     assert overlay.layer_count("front-crossed") == 0
     # A robe over the chest where the bare gesture portrait is grey.
     _assert_dressed(bare, rendered, expression)
-    # The frame is the gesture portrait, not the neutral front body dressed in
-    # front-crossed: the two composites must differ.
+    # The gesture portrait and the neutral front-crossed body retain distinct
+    # composites, proving that the matching gesture silhouette is used.
     neutral = renderer.render(_portrait("idle_front"), _motion("idle_front"), None)
     assert overlay.views == [silhouette, "front-crossed"]
     assert neutral.toImage() != rendered.toImage()

@@ -8,6 +8,7 @@ lazy import json
 lazy import os
 lazy import re
 lazy import sys
+lazy import zipfile
 lazy from dataclasses import replace
 lazy from pathlib import Path
 
@@ -51,6 +52,7 @@ lazy from domain.outfit_pack_makeup import (
 )
 lazy from test_outfit_pack import _manifest, _names, _pack, _png
 lazy from tools.build_makeup_safe_regions import silhouette_regions
+lazy from tools.assemble_official_default_pack import makeup_authoring_mode, makeup_layer_paths
 lazy from tools.scaffold_makeup_pack_manifest import main as scaffold_main
 
 SLOT_Z = {"cheeks": 0, "eyes": 1, "lips": 2}
@@ -81,6 +83,40 @@ def _pending_official_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> N
 
 def canvas_for(silhouette: str) -> tuple[int, int]:
     return MAKEUP_CANVASES["full-body" if silhouette in POSE_ATLAS_SILHOUETTES else "half-body"]
+
+
+def _declared_makeup_assets(manifest: dict) -> tuple[tuple[str, dict], ...]:
+    entries: list[tuple[str, dict]] = []
+    for item in manifest["makeup"]:
+        for variant in item["variants"]:
+            for silhouette, assets in variant.get("poses", {}).items():
+                entries.extend((silhouette, asset) for asset in assets)
+            for state_poses in variant.get("eye_states", {}).values():
+                for silhouette, assets in state_poses.items():
+                    entries.extend((silhouette, asset) for asset in assets)
+    return tuple(entries)
+
+
+def _write_blank_makeup_assets(manifest: dict, root: Path) -> None:
+    blank = {size: layer_png(size) for size in MAKEUP_CANVASES.values()}
+    for silhouette, entry in _declared_makeup_assets(manifest):
+        target = root / Path(*entry["path"].split("/"))
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(blank[canvas_for(silhouette)])
+
+
+def _copy_committed_makeup_manifest(root: Path) -> tuple[Path, dict]:
+    source = ROOT / "assets" / "makeup" / "builtin" / "manifest.json"
+    manifest = json.loads(source.read_text(encoding="utf-8"))
+    target_root = root / "committed-authoring"
+    target_root.mkdir(parents=True, exist_ok=True)
+    _write_blank_makeup_assets(manifest, target_root)
+    manifest_path = target_root / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return manifest_path, manifest
 
 
 def layer_png(size: tuple[int, int], blocks: tuple[Block, ...] = (), color: QColor = RED) -> bytes:
@@ -190,6 +226,35 @@ def test_makeup_pack_parses_two_variants_and_lists_them(tmp_path: Path) -> None:
     assert {(item.item_id, item.variant_id) for item in installed} == {("festival", "classic"), ("festival", "light")}
 
 
+def test_candidate_makeup_pack_accepts_glamorous_variant(tmp_path: Path) -> None:
+    """A candidate archive may carry the fourth look without formal built-in art."""
+    pack_path = makeup_pack(
+        tmp_path / "four-look-candidate.mohan-outfit",
+        pack_id="four-look-candidate",
+        item_id="mohan-look",
+        variants=("classic", "light", "glamorous"),
+    )
+    pack = inspect_outfit_pack(pack_path)
+    item = next(item for item in pack.items if item.category == "makeup")
+    assert [variant.variant_id for variant in item.variants] == [
+        "classic", "light", "glamorous",
+    ]
+
+    store = tmp_path / "store"
+    service = WardrobeService(store)
+    service.install(pack_path)
+    assert {
+        (selection.item_id, selection.variant_id)
+        for selection in list_installed_selections(store, "makeup")
+    } == {
+        ("mohan-look", "classic"),
+        ("mohan-look", "light"),
+        ("mohan-look", "glamorous"),
+    }
+    service.apply_makeup("four-look-candidate/mohan-look/glamorous")
+    assert service.active_makeup().option_id == "four-look-candidate/mohan-look/glamorous"
+
+
 def test_packs_without_makeup_stay_valid_and_ensembles_may_omit_or_null_makeup(tmp_path: Path) -> None:
     manifest, assets = _manifest(_png())
     assert "makeup" not in manifest
@@ -248,7 +313,7 @@ def _mutations() -> dict[str, tuple]:
 
     def unknown_slot(manifest, assets):
         manifest["makeup"][0]["variants"][0]["poses"]["cheek-rest"][0]["slot"] = "brows"
-        return "Unknown slot"
+        return "recognized slot or asset path"
 
     return {
         function.__name__: (function,)
@@ -308,7 +373,12 @@ def test_safe_region_document_matches_the_rigs() -> None:
         assert regions[gesture].slots == front.slots
     assert all(not regions["yaw-180-pitch+00"].rects(slot) for slot in ("eyes", "cheeks", "lips"))
     for silhouette in ("front-crossed", "yaw+000-pitch+00"):
-        assert silhouette_regions(ROOT, silhouette) == document["silhouettes"][silhouette]
+        # The rig generator owns geometry; load_makeup_safe_regions above also
+        # validates authored v2 foundation/aperture declarations and their files.
+        derived = silhouette_regions(ROOT, silhouette)
+        authored = document["silhouettes"][silhouette]
+        assert derived == {key: authored[key] for key in derived}
+        assert set(authored) - set(derived) <= {"foundation_masks", "eye_aperture_masks"}
 
 
 def test_fresh_profile_defaults_to_builtin_classic_and_bare_is_selectable(
@@ -376,17 +446,22 @@ def test_wardrobe_service_menu_lists_bare_builtin_and_installed(tmp_path: Path, 
     store = tmp_path / "store"
     service = WardrobeService(store)
     pending = service.makeup_options("en")
-    assert [option.option_id for option in pending] == ["none", "builtin/classic", "builtin/light"]
+    assert [option.option_id for option in pending] == [
+        "none", "builtin/light", "builtin/classic",
+    ]
     assert [option.available for option in pending] == [True, False, False]
+    with pytest.raises(OutfitPackError):
+        service.apply_makeup("builtin/glamorous")
     assert service.active_makeup().option_id == "builtin/classic"
     official_builtin_pack(tmp_path, monkeypatch)
     service.install(makeup_pack(tmp_path / "festival-makeup.mohan-outfit"))
     options = service.makeup_options("en")
     assert [option.option_id for option in options] == [
-        "none", "builtin/classic", "builtin/light", "festival-makeup/festival/classic",
+        "none", "builtin/light", "builtin/classic",
+        "festival-makeup/festival/classic",
     ]
-    assert all(option.available for option in options)
-    assert options[1].display_name.endswith("classic")
+    assert [option.available for option in options] == [True, True, True, True]
+    assert options[2].display_name.endswith("classic")
     assert options[3].display_name == "festival-makeup · festival · classic"
     service.apply_makeup("festival-makeup/festival/classic")
     assert service.active_makeup().option_id == "festival-makeup/festival/classic"
@@ -400,18 +475,40 @@ def test_wardrobe_service_menu_lists_bare_builtin_and_installed(tmp_path: Path, 
     assert service.makeup_intensity() == pytest.approx(0.25)
 
 
-def test_scaffolded_manifest_seals_into_a_makeup_only_pack(tmp_path: Path) -> None:
+def test_official_glamorous_variant_adds_the_fourth_builtin_look(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    official = tmp_path / "official"
+    makeup_pack(
+        official / f"{BUILTIN_MAKEUP_PACK_ID}.mohan-outfit",
+        pack_id=BUILTIN_MAKEUP_PACK_ID,
+        item_id=BUILTIN_MAKEUP_ITEM_ID,
+        variants=("classic", "light", "glamorous"),
+    )
+    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", official)
+
+    options = WardrobeService(tmp_path / "store").makeup_options("en")
+    assert [option.option_id for option in options] == [
+        "none", "builtin/light", "builtin/classic", "builtin/glamorous",
+    ]
+    assert [option.available for option in options] == [True, True, True, True]
+
+
+def test_generic_scaffold_contract_seals_into_a_makeup_only_pack(tmp_path: Path) -> None:
     manifest_path = tmp_path / "builtin" / "manifest.json"
     assert scaffold_main([str(manifest_path), *BUILTIN_SCAFFOLD_ARGS]) == 0
-    committed = json.loads((ROOT / "assets" / "makeup" / "builtin" / "manifest.json").read_text(encoding="utf-8"))
-    assert json.loads(manifest_path.read_text(encoding="utf-8")) == committed
-    blank = {size: layer_png(size) for size in MAKEUP_CANVASES.values()}
-    for variant in committed["makeup"][0]["variants"]:
-        for silhouette, entries in variant["poses"].items():
-            for entry in entries:
-                target = manifest_path.parent / Path(*entry["path"].split("/"))
-                target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_bytes(blank[canvas_for(silhouette)])
+    scaffolded = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert makeup_authoring_mode(manifest_path) == "legacy"
+    variants = scaffolded["makeup"][0]["variants"]
+    assert [variant["id"] for variant in variants] == list(BUILTIN_VARIANTS)
+    assert all("eye_states" not in variant for variant in variants)
+    assert all("foundation_silhouettes" not in variant for variant in variants)
+    assert all(
+        {entry["slot"] for entries in variant["poses"].values() for entry in entries}
+        == set(SLOT_Z)
+        for variant in variants
+    )
+    _write_blank_makeup_assets(scaffolded, manifest_path.parent)
     output = tmp_path / f"{BUILTIN_MAKEUP_PACK_ID}.mohan-outfit"
     build_outfit_pack(manifest_path, manifest_path.parent, output)
     pack = inspect_outfit_pack(output)
@@ -422,8 +519,47 @@ def test_scaffolded_manifest_seals_into_a_makeup_only_pack(tmp_path: Path) -> No
     assert all(len(variant.poses) == EXPECTED_SILHOUETTES for variant in item.variants)
 
 
+def test_committed_authoring_rebuild_includes_all_declared_makeup_members(tmp_path: Path) -> None:
+    manifest_path, committed = _copy_committed_makeup_manifest(tmp_path)
+    output = tmp_path / "committed.mohan-outfit"
+    build_outfit_pack(manifest_path, manifest_path.parent, output)
+    pack = inspect_outfit_pack(output)
+    item = next(item for item in pack.items if item.category == "makeup")
+    declared_paths = [entry["path"] for _silhouette, entry in _declared_makeup_assets(committed)]
+    parsed_paths = [
+        asset.path
+        for variant in item.variants
+        for assets in variant.poses.values()
+        for asset in assets
+    ]
+    parsed_paths.extend(
+        asset.path
+        for variant in item.variants
+        for state_poses in variant.eye_states.values()
+        for assets in state_poses.values()
+        for asset in assets
+    )
+    assert len(parsed_paths) == len(declared_paths)
+    assert sorted(parsed_paths) == sorted(declared_paths)
+    with zipfile.ZipFile(output) as archive:
+        assert set(declared_paths) <= set(archive.namelist())
+
+
+def test_scaffold_and_canonical_authoring_modes_remain_distinct(tmp_path: Path) -> None:
+    manifest_path = tmp_path / "legacy.json"
+    assert scaffold_main([str(manifest_path), *BUILTIN_SCAFFOLD_ARGS]) == 0
+    canonical = json.loads(manifest_path.read_text(encoding="utf-8"))
+    canonical["makeup"][0]["variants"][0]["eye_states"] = {"half": {}, "closed": {}}
+    canonical_path = tmp_path / "canonical.json"
+    canonical_path.write_text(json.dumps(canonical), encoding="utf-8")
+    assert makeup_authoring_mode(manifest_path) == "legacy"
+    assert makeup_authoring_mode(canonical_path) == "canonical"
+    with pytest.raises(SystemExit, match="Canonical foundation"):
+        makeup_layer_paths(canonical_path)
+
+
 def test_builder_calibration_keeps_pixel_gate_and_import_boundary(tmp_path: Path) -> None:
-    """A staging calibration never silently changes the installed body's gate."""
+    """Staging calibration preserves the installed body's existing acceptance gate."""
     silhouette = "front-crossed"
     painted = (0, 0, BLOCK, BLOCK)
     manifest, assets = makeup_manifest(blocks={("classic", silhouette, "eyes"): (painted,)})
