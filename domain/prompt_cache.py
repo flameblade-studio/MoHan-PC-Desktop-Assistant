@@ -47,7 +47,7 @@ class PromptTokenCounterPort(Protocol):
 
 
 class InMemoryPromptTokenEvidence:
-    """Count each stable-prefix fingerprint once without retaining content."""
+    """Count each stable-prefix fingerprint once while keeping content private."""
 
     def __init__(self, counter: PromptTokenCounterPort) -> None:
         self._counter = counter
@@ -129,7 +129,7 @@ def _attested_token_evidence(
 
 
 def explicit_prompt_cache_key(stable_prefix: str) -> str:
-    """Return a stable routing key without retaining prompt or user content."""
+    """Return a stable routing key while keeping prompt and user content outside the key."""
 
     digest = hashlib.sha256(stable_prefix.encode("utf-8")).hexdigest()[:24]
     return f"{PROMPT_CACHE_SCHEMA}:{digest}"
@@ -172,7 +172,7 @@ def exact_input_token_count_request(
     if not supports_explicit_prompt_cache(model):
         raise ValueError("Exact explicit-cache counting requires GPT-5.6.")
     if not stable_instructions.strip() or not stable_breakpoint_text.strip():
-        raise ValueError("Stable developer content must not be empty.")
+        raise ValueError("Stable developer content requires content.")
     return {
         "model": model,
         "instructions": stable_instructions,
@@ -190,7 +190,7 @@ def explicit_prompt_cache_request(
     if not supports_explicit_prompt_cache(model):
         raise ValueError("Explicit prompt caching requires a GPT-5.6 model.")
     if not stable_prefix.strip() or not stable_breakpoint_text.strip():
-        raise ValueError("Stable developer content must not be empty.")
+        raise ValueError("Stable developer content requires content.")
     return {
         "prompt_cache_key": explicit_prompt_cache_key(
             stable_prefix + "\n" + stable_breakpoint_text

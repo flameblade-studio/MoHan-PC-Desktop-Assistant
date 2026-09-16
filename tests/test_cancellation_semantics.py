@@ -1,16 +1,12 @@
-"""取消必須停下正在花錢的事，而且只停該停的那一個。
+"""取消操作精確停止指定計畫，緊急停止涵蓋所有執行中的付費工作。
 
-2026-09-02 的稽核在取消路徑上找到三個互相獨立的破口，這個子系統當時零測試
-覆蓋——而它管的是緊急停止：
+2026-09-02 稽核發現三項需驗證的行為：
+1. 同秒、同名、同步數的計畫，各自使用唯一 plan_id。
+2. 取消已完成或查無資料的 plan_id，保留其他執行中的計畫。
+3. emergency_stop_requested 連接到換裝批次的取消接收者，讓剩餘
+   視角呼叫及實際付費操作一起停止。
 
-1. plan_id 只由 created_at（僅到秒）、標題與步驟「數量」構成，同一秒的兩個
-   同名同步數計畫拿到同一個 ID；取消 A 實際取消了 B。
-2. cancel() 收到不存在的 plan_id 時落到「取消全部」的分支，於是從延遲通知
-   取消一個已完成的計畫，會把正在執行的另一個一起中止。
-3. 緊急停止只發訊號、沒有接收者；換裝批次跑在另一個執行緒池，使用者按下
-   停手之後剩餘視角仍逐張呼叫付費 API，介面卻宣告一切已中止。
-
-這裡的測試先證明每個缺陷為真的條件，再驗證修正後的行為。
+各測試重現原始觸發條件，再驗證修正後的行為。
 """
 from __future__ import annotations
 
@@ -19,9 +15,9 @@ lazy import threading
 
 
 def test_plan_ids_are_unique_within_the_same_second() -> None:
-    """同一秒、同標題、同步數的兩個計畫不得共用識別碼。
+    """同秒、同標題、同步數的兩個計畫，各自使用唯一識別碼。
 
-    這正是舊 seed（created_at + title + len(steps)）會碰撞的情形。
+    舊 seed（created_at + title + len(steps)）在此情形會碰撞。
     """
     from domain.flagship_action_models import ActionPlan
 
@@ -35,7 +31,7 @@ def test_plan_ids_are_unique_within_the_same_second() -> None:
 
 
 def test_cancelling_an_unknown_plan_leaves_running_plans_alone() -> None:
-    """取消一個已完成或不存在的計畫，不得波及正在執行的計畫。"""
+    """取消已完成或查無資料的計畫時，保持正在執行的計畫。"""
     from application.flagship_action_runtime import CancellationRegistry
 
     registry = CancellationRegistry()
@@ -59,7 +55,7 @@ def test_cancelling_a_known_plan_cancels_only_that_plan() -> None:
 
 
 def test_cancel_without_an_identifier_still_stops_everything() -> None:
-    """緊急停止仍必須停下全部——修正不能把這個能力一起關掉。"""
+    """緊急停止仍須完整停止全部計畫。"""
     from application.flagship_action_runtime import CancellationRegistry
 
     registry = CancellationRegistry()
@@ -104,10 +100,9 @@ def test_generation_checks_cancellation_before_each_paid_view() -> None:
 
 
 def test_emergency_stop_is_connected_to_the_generation_controller() -> None:
-    """訊號必須有接收者。
+    """emergency_stop_requested 須連接實際取消接收者。
 
-    修正前 emergency_stop_requested 只被 emit，全庫沒有任何 connect——
-    介面宣告「所有工具均已中止」，實際上沒有人在聽。
+    舊流程僅 emit 訊號就顯示中止，此測試驗證接收端確實連接。
     """
     from presentation import companion_window
 
@@ -120,7 +115,7 @@ def test_emergency_stop_is_connected_to_the_generation_controller() -> None:
 
 
 def test_worker_reports_user_cancellation_apart_from_failure() -> None:
-    """使用者停手不得被記成失敗嘗試，否則退避會封鎖他下一次生成。"""
+    """使用者主動取消保留取消狀態，並維持下一次生成的可用性。"""
     from presentation import autonomous_outfit_generation_controller as module
 
     source = inspect.getsource(module)
@@ -128,14 +123,13 @@ def test_worker_reports_user_cancellation_apart_from_failure() -> None:
     run_body = source.split("def run(self)", 1)[1].split("def ", 1)[0]
     assert "OutfitGenerationCancelled" in run_body
     cancelled_handler = source.split("def _cancelled(self)", 1)[1].split("def ", 1)[0]
-    # 剝掉註解再比對：這個斷言的第一版抓到了說明「不寫入 LAST_ATTEMPT_KEY」
-    # 的那行註解本身，於是對正確的程式碼判定失敗。守衛比對程式碼就不能連
-    # 註解一起看。
+    # 先移除註解再比對實作：初版斷言曾把 LAST_ATTEMPT_KEY 的說明文字
+    # 一起納入，造成誤判。此處只檢查實際程式碼。
     code_only = " ".join(
         line.split("#", 1)[0] for line in cancelled_handler.splitlines()
     )
     assert "LAST_ATTEMPT_KEY" not in code_only, (
-        "使用者主動停手被寫進失敗退避欄位"
+        '使用者主動取消須保持取消狀態及可用的下一次生成'
     )
 
 
@@ -151,7 +145,7 @@ def test_cancellation_event_is_cleared_when_generation_restarts() -> None:
 
 
 def test_registry_is_thread_safe_under_concurrent_begin_and_cancel() -> None:
-    """begin 與 cancel 會來自不同執行緒；修正不得引入競態。"""
+    """begin 與 cancel 的跨執行緒呼叫維持同步與一致狀態。"""
     from application.flagship_action_runtime import CancellationRegistry
 
     registry = CancellationRegistry()

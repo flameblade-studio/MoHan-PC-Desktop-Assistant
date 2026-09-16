@@ -34,13 +34,13 @@ _MESSAGES: Mapping[SafeDiagnostic, Mapping[str, str]] = frozendict({
     SafeDiagnostic.AUTHENTICATION_REQUIRED: _text(
         "驗證資料無效或已失效，請重新檢查設定。",
         "验证资料无效或已失效，请重新检查设置。",
-        "Authentication is missing or no longer valid. Check the settings and try again.",
+        "Authentication requires an update. Check the settings and try again.",
         "認証情報が無効、または期限切れです。設定を確認して再試行してください。",
     ),
     SafeDiagnostic.ACCESS_DENIED: _text(
         "服務拒絕這項操作，請檢查帳號或權限。",
         "服务拒绝此操作，请检查账号或权限。",
-        "The service denied this operation. Check the account and permissions.",
+        "The account permissions require an update for this operation. Check the account and permissions.",
         "サービスがこの操作を拒否しました。アカウントと権限を確認してください。",
     ),
     SafeDiagnostic.RATE_LIMITED: _text(
@@ -64,7 +64,7 @@ _MESSAGES: Mapping[SafeDiagnostic, Mapping[str, str]] = frozendict({
     SafeDiagnostic.RESOURCE_NOT_FOUND: _text(
         "找不到指定資源，或目前帳號無權使用。",
         "找不到指定资源，或当前账号无权使用。",
-        "The requested resource was not found or is unavailable to this account.",
+        "The requested resource is outside this account's available set. Check the account and try again.",
         "指定したリソースが見つからないか、このアカウントでは使用できません。",
     ),
     SafeDiagnostic.CONFLICT: _text(
@@ -76,7 +76,7 @@ _MESSAGES: Mapping[SafeDiagnostic, Mapping[str, str]] = frozendict({
     SafeDiagnostic.INVALID_INPUT: _text(
         "輸入或設定不完整，請檢查後重試。",
         "输入或设置不完整，请检查后重试。",
-        "The input or settings are incomplete. Check them and try again.",
+        "Complete the input or settings, then try again.",
         "入力または設定が不完全です。確認して再試行してください。",
     ),
     SafeDiagnostic.INVALID_RESPONSE: _text(
@@ -94,7 +94,7 @@ _MESSAGES: Mapping[SafeDiagnostic, Mapping[str, str]] = frozendict({
     SafeDiagnostic.LOCAL_IO_FAILURE: _text(
         "本機檔案或裝置操作失敗，請檢查權限與可用空間。",
         "本地文件或设备操作失败，请检查权限与可用空间。",
-        "A local file or device operation failed. Check permissions and available space.",
+        "A local file or device operation requires attention. Check permissions and available space, then retry.",
         "ローカルのファイルまたはデバイス操作に失敗しました。権限と空き容量を確認してください。",
     ),
     SafeDiagnostic.REMOTE_SERVICE_FAILURE: _text(
@@ -112,7 +112,7 @@ _MESSAGES: Mapping[SafeDiagnostic, Mapping[str, str]] = frozendict({
     SafeDiagnostic.INTERNAL_FAILURE: _text(
         "墨寒執行此操作時發生內部錯誤，請重試。",
         "墨寒执行此操作时发生内部错误，请重试。",
-        "MoHan encountered an internal error while performing this operation. Try again.",
+        "MoHan needs attention while performing this operation. Try again.",
         "墨寒がこの操作を実行中に内部エラーが発生しました。再試行してください。",
     ),
     SafeDiagnostic.UNKNOWN_FAILURE: _text(
@@ -130,7 +130,7 @@ def safe_error_message(
     *,
     http_status: int | None = None,
 ) -> str:
-    """Return a four-language message without retaining provider detail."""
+    """Return a four-language message while keeping provider detail private."""
 
     safe = error if isinstance(error, SafeError) else _safe_error(error, http_status)
     locale = canonical_ui_language(language)

@@ -138,7 +138,7 @@ def _source_expression(window: CompanionWindow, roots: tuple[str, ...], suffix: 
         source = window.expression_pixmaps.get(name)
         if source is not None and not source.isNull():
             return source
-    raise AssertionError(f"missing source expression for {roots!r}{suffix}")
+    raise AssertionError(f'provide the source expression for {roots!r}{suffix}')
 
 
 def run() -> None:

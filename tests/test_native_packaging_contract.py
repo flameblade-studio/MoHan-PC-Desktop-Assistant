@@ -157,11 +157,11 @@ def test_windows_release_verifies_every_distributed_package_form() -> None:
         '"--output"',
         "& $Python @Arguments",
         "Invoke-NativeVerification",
-        "Installer omitted layered PoseAtlas v5-base assets",
+        "Installer requires layered PoseAtlas v5-base assets",
         '_internal\\assets\\pose-atlas\\v5-base"',
         '_internal\\assets\\pose-atlas\\v5-base-layered"',
         'if ($LayeredViews.Count -ne 600)',
-        "Installer omitted layered half-body expression assets",
+        "Installer requires layered half-body expression assets",
         'if ($HalfBodyLayers.Count -ne 75)',
         'foreach ($Authority in @("idle.png", "idle_lean.png", "idle_front.png"))',
     ):
@@ -259,11 +259,9 @@ def test_governance_does_not_claim_unimplemented_simd_or_zero_copy() -> None:
 
 
 def test_four_language_docs_state_the_precise_rgba_contract() -> None:
-    # Audit ruling (2026-08-27): docs/releases/v4.0.0-draft.md is a frozen
-    # historical artifact of the shipped v4.0.0 release, no longer a living
-    # document.  Requiring it to track the current RGBA contract wording was
-    # a fossil assertion, so it was removed from this list; the living docs
-    # below still carry the full four-language contract.
+    # Audit ruling (2026-08-27): docs/releases/v4.0.0-draft.md is the frozen
+    # record of a shipped release. The current docs below own and validate the
+    # complete four-language RGBA contract.
     for relative in (
         "README.md",
         "THIRD_PARTY_NOTICES.md",

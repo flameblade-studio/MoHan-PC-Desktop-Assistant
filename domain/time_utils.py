@@ -9,7 +9,7 @@ def local_aware_time() -> datetime:
 
 
 def local_wall_time() -> datetime:
-    """Return legacy-compatible local wall time without timezone metadata.
+    """Return legacy-compatible local wall time with the established local-time representation.
 
     MoHan's existing SQLite rows use local ISO timestamps without offsets.
     Keeping that representation avoids mixing aware and naive values while

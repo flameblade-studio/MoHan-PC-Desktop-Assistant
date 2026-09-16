@@ -135,7 +135,7 @@ def assert_invalid_history_is_rejected() -> None:
     except ValueError:
         pass
     else:
-        raise AssertionError("An occasion must never grumble before its hint.")
+        raise AssertionError('An occasion must deliver its hint before a grumble.')
 
 
 def run() -> None:

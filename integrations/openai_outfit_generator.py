@@ -1,8 +1,8 @@
 """OpenAI GPT Image 2 provider for quarantine-first outfit generation.
 
 The provider produces full-canvas, registered transparent garment overlays.
-It never installs output itself; :mod:`application.self_generating_wardrobe`
-owns quarantine, audit, packaging, and installation.
+The application module :mod:`application.self_generating_wardrobe` owns
+quarantine, audit, packaging, and installation.
 """
 
 from __future__ import annotations
@@ -75,8 +75,8 @@ class OpenAIImageEditOptions:
 
 def _timeout_failure() -> "OutfitImageGenerationError":
     return OutfitImageGenerationError(
-        "GPT Image request timed out; not retried because the "
-        "provider may already have processed and billed it.",
+        "GPT Image request timed out; billing status is ambiguous, so this "
+        "request remains a single attempt.",
         code="timeout-ambiguous",
         retryable=False,
     )
@@ -94,14 +94,14 @@ def _raise_if_cancelled(cancelled: "Callable[[], bool]") -> None:
 
 
 class OpenAIImageEditTransport:
-    """Small stdlib HTTP adapter; API keys and image payloads are never logged."""
+    """Small stdlib HTTP adapter; API keys and image payloads stay out of logs."""
 
     def __init__(self, options: OpenAIImageEditOptions) -> None:
         key = options.api_key.strip()
         if not key:
-            raise OutfitImageGenerationError("OpenAI API key is unavailable.")
+            raise OutfitImageGenerationError("Provide an OpenAI API key.")
         if options.quality not in {"low", "medium", "high"}:
-            raise ValueError("Unsupported GPT Image quality.")
+            raise ValueError("Choose GPT Image quality: low, medium, or high.")
         self._options = options
         self._api_key = key
 
@@ -112,7 +112,7 @@ class OpenAIImageEditTransport:
         size: tuple[int, int],
     ) -> bytes:
         if not reference_png.startswith(b"\x89PNG\r\n\x1a\n"):
-            raise OutfitImageGenerationError("Outfit reference is not a PNG image.")
+            raise OutfitImageGenerationError("Provide the outfit reference as a PNG image.")
         boundary = f"mohan-{secrets.token_hex(16)}"
         body = self._multipart(
             boundary,
@@ -139,14 +139,16 @@ class OpenAIImageEditTransport:
         )
         payload = self._open_with_retry(request)
         if len(payload) > MAX_RESPONSE_BYTES:
-            raise OutfitImageGenerationError("GPT Image response was too large.")
+            raise OutfitImageGenerationError(
+                "GPT Image response exceeds 128 MB; retry with a smaller response."
+            )
         try:
             value = json.loads(payload.decode("utf-8"))
             encoded = value["data"][0]["b64_json"]
             image = base64.b64decode(encoded, validate=True)
         except (KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError):
             raise OutfitImageGenerationError(
-                "GPT Image returned an invalid image response."
+                "GPT Image response needs a valid image payload."
             ) from None
         return image
 
@@ -164,16 +166,16 @@ class OpenAIImageEditTransport:
             except urllib_error.HTTPError as error:
                 failure = self._http_failure(error)
             except (TimeoutError, socket.timeout):
-                # 不知道對方做了沒：付費且非冪等，重試等於再付一次。一律不重試。
+                # 付費要求的處理結果與計費狀態可能仍在確認，維持單次要求。
                 failure = _timeout_failure()
             except (OSError, urllib_error.URLError) as error:
                 if _is_wrapped_timeout(error):
-                    # urllib 把讀取逾時包成 URLError(reason=TimeoutError)，語意同上。
+                    # urllib 將讀取逾時包成 URLError(reason=TimeoutError)，處理方式相同。
                     failure = _timeout_failure()
                 else:
-                    # 連線根本沒建立起來，可以安全重試。
+                    # 連線仍在建立，這類要求可安全重試。
                     failure = OutfitImageGenerationError(
-                        "GPT Image request could not reach the provider.",
+                        "GPT Image request has no provider connection; retry is available.",
                         code="network-unavailable",
                         retryable=True,
                     )
@@ -212,7 +214,7 @@ class OpenAIImageEditTransport:
         if provider_code == "moderation_blocked":
             safe_code = "moderation-blocked"
         return OutfitImageGenerationError(
-            f"GPT Image request failed with HTTP {status}.",
+            f"GPT Image provider reported HTTP {status}.",
             code=safe_code,
             http_status=status,
             request_id=request_id,
@@ -290,12 +292,14 @@ def _decode_registered_png(
         or matrix.shape[2] != RGBA_CHANNELS
     ):
         raise OutfitImageGenerationError(
-            "Generated outfit must be an RGBA image with transparency."
+            "Provide the generated outfit as an RGBA image with transparency."
         )
     target_width, target_height = target
     height, width = matrix.shape[:2]
     if width < target_width or height < target_height:
-        raise OutfitImageGenerationError("Generated outfit canvas is too small.")
+        raise OutfitImageGenerationError(
+            "Generated outfit canvas must meet the target dimensions."
+        )
     if (width, height) != target:
         left = (width - target_width) // 2
         top = (height - target_height) // 2
@@ -303,14 +307,14 @@ def _decode_registered_png(
     alpha = matrix[:, :, 3]
     opaque_pixels = int(np.count_nonzero(alpha))
     if opaque_pixels < max(64, target_width * target_height // 5000):
-        raise OutfitImageGenerationError("Generated outfit layer is empty.")
+        raise OutfitImageGenerationError("Generated outfit layer contains no visible pixels.")
     if opaque_pixels > target_width * target_height * 0.72:
         raise OutfitImageGenerationError(
-            "Generated outfit replaced too much of the character canvas."
+            "Generated outfit layer covers more than the allowed character area."
         )
     ok, encoded = cv2.imencode(".png", matrix)
     if not ok:
-        raise OutfitImageGenerationError("Generated outfit could not be encoded.")
+        raise OutfitImageGenerationError("Generated outfit layer encoding produced no PNG.")
     return bytes(encoded), matrix
 
 
@@ -319,7 +323,9 @@ def _transparent_png(size: tuple[int, int]) -> bytes:
     image = np.zeros((height, width, 4), dtype=np.uint8)
     ok, encoded = cv2.imencode(".png", image)
     if not ok:
-        raise OutfitImageGenerationError("Transparent compatibility layer failed.")
+        raise OutfitImageGenerationError(
+            "Transparent compatibility layer encoding produced no PNG."
+        )
     return bytes(encoded)
 
 
@@ -352,7 +358,7 @@ class OpenAIOutfitDraftGenerator:
         requested: tuple[int, int],
         target: tuple[int, int],
     ) -> bytes:
-        """Resume a paid multi-view job without regenerating finished views."""
+        """Resume a paid multi-view job and reuse finished views."""
 
         checkpoint = None
         if self._checkpoint_root is not None:
@@ -360,7 +366,7 @@ class OpenAIOutfitDraftGenerator:
                 separator in request.job_id for separator in ("/", "\\", ":")
             ):
                 raise OutfitImageGenerationError(
-                    "Outfit generation checkpoint identifier is invalid.",
+                    "Provide a simple checkpoint identifier made of one path name.",
                     code="invalid-checkpoint-id",
                 )
             checkpoint = (
@@ -374,10 +380,9 @@ class OpenAIOutfitDraftGenerator:
                         checkpoint.read_bytes(), target
                     )
                 except (OSError, OutfitImageGenerationError):
-                    # A torn write or externally damaged checkpoint must not
-                    # permanently brick every explicit retry.  Remove only the
-                    # exact registered view and regenerate it; all other paid
-                    # views remain resumable.
+                    # A torn or externally damaged checkpoint is limited to its
+                    # registered view. Remove that view and regenerate it while
+                    # every other paid view remains resumable.
                     checkpoint.unlink(missing_ok=True)
                 else:
                     return cached
@@ -392,7 +397,7 @@ class OpenAIOutfitDraftGenerator:
             except OSError as error:
                 temporary.unlink(missing_ok=True)
                 raise OutfitImageGenerationError(
-                    "Outfit checkpoint could not be saved.",
+                    "Outfit checkpoint save needs another attempt.",
                     code="checkpoint-write-failed",
                     retryable=True,
                 ) from error
@@ -409,7 +414,7 @@ class OpenAIOutfitDraftGenerator:
         unsupported = request.requested_categories - {"garment", "handheld"}
         if unsupported:
             raise OutfitImageGenerationError(
-                "This provider supports garments and contextual handheld items only."
+                "Use garments and contextual handheld items with this provider."
             )
         design = self._design_prompt(request, trends)
         assets: dict[str, bytes] = {}
@@ -418,12 +423,12 @@ class OpenAIOutfitDraftGenerator:
         hair_poses: dict[str, list[dict[str, object]]] = {}
         reference_hashes: dict[str, str] = {}
         for view_id in required_views:
-            # 每個視角都是一次付費呼叫：取消要檢查在呼叫之前，不是之後。
+            # 每個視角都是一次付費呼叫：在呼叫前先檢查取消狀態。
             _raise_if_cancelled(cancelled)
             reference_path = _reference_path(self._root, view_id)
             if not reference_path.is_file():
                 raise OutfitImageGenerationError(
-                    f"Authoritative outfit reference is missing: {view_id}."
+                    f"Provide the authoritative outfit reference for {view_id}."
                 )
             reference = reference_path.read_bytes()
             target = FULL_SIZE if view_id in POSE_ATLAS_SILHOUETTES else HALF_SIZE
@@ -443,7 +448,8 @@ class OpenAIOutfitDraftGenerator:
             garment_poses[view_id] = [_asset(garment_path, "outerwear", 10)]
 
             if "handheld" in request.requested_categories:
-                # 同一視角的第二次付費呼叫，停手後不得再扣一次款。
+                # 同一視角的第二次付費呼叫，在呼叫前先檢查取消狀態，
+                # 讓已停止的工作保留既有計費邊界。
                 _raise_if_cancelled(cancelled)
                 normalized_handheld = self._checkpointed_edit(
                     request,
@@ -462,8 +468,8 @@ class OpenAIOutfitDraftGenerator:
 
             # The base portrait already contains the canonical hairstyle. A
             # selected, transparent compatibility hairstyle preserves it while
-            # satisfying the complete-ensemble contract without regenerating
-            # or altering identity-bearing hair.
+            # satisfying the complete-ensemble contract and keeping
+            # identity-bearing hair unchanged.
             blank = _transparent_png(target)
             back_path = f"assets/hair-back-{safe}.png"
             front_path = f"assets/hair-front-{safe}.png"
@@ -530,12 +536,12 @@ class OpenAIOutfitDraftGenerator:
     ) -> str:
         return (
             "Create a production-ready transparent PNG clothing overlay for the "
-            "exact MoHan reference image supplied. OUTPUT ONLY the new garment pixels; "
-            "every other pixel must be fully transparent. Preserve the exact canvas, "
-            "character pose, body proportions and pixel registration. Never draw or "
-            "alter face, skin, hands, hair, hair ornament, eyes, mouth, background or "
-            "body geometry. The overlay must cover the existing garment cleanly, obey "
-            "natural sleeve and body occlusion, and contain no detached fragments. "
+            "exact MoHan reference image supplied. Output the new garment pixels with "
+            "every other pixel fully transparent. Preserve the exact canvas, character "
+            "pose, body proportions and pixel registration. Keep the face, skin, hands, "
+            "hair, hair ornament, eyes, mouth, background and body geometry unchanged. "
+            "Cover the existing garment cleanly, preserve natural sleeve and body "
+            "occlusion, and keep all garment shapes connected. "
             f"Target registered canvas after normalization: {target[0]}x{target[1]}; "
             f"view identifier: {view_id}. {design}"
         )
@@ -548,11 +554,11 @@ class OpenAIOutfitDraftGenerator:
     ) -> str:
         return (
             "Create a production-ready transparent PNG handheld accessory overlay "
-            "for the exact MoHan reference image supplied. OUTPUT ONLY the accessory "
-            "pixels; every other pixel must be fully transparent. Keep the canvas and "
-            "pixel registration exact. Place the handle at her right-hand grip and "
-            "respect the visible hand occlusion. Never draw or alter face, skin, body, "
-            "hands, clothing, hair, ornament or background; do not cover her face. "
+            "for the exact MoHan reference image supplied. Output the accessory pixels "
+            "with every other pixel fully transparent. Keep the canvas and pixel "
+            "registration exact. Place the handle at her right-hand grip and preserve "
+            "the visible hand occlusion. Keep the face, skin, body, hands, clothing, "
+            "hair, ornament and background unchanged and outside the accessory layer. "
             "Keep one identical accessory design across all views. "
             f"Target registered canvas after normalization: {target[0]}x{target[1]}; "
             f"view identifier: {view_id}. {request.accessory_direction}"
@@ -671,7 +677,7 @@ def _protected_face_path(root: Path, view_id: str) -> Path:
 
 
 class GeneratedOutfitImageAuditor:
-    """Fail closed on malformed, opaque, empty, or overbroad generated layers."""
+    """Audit generated layers and return issue identifiers for any contract gap."""
 
     def __init__(self, project_root: Path | None = None) -> None:
         self._root = Path(project_root) if project_root is not None else None
@@ -724,9 +730,8 @@ class GeneratedOutfitImageAuditor:
             if not isinstance(entries, list) or not entries:
                 issues.append(f"{category}:{view_id}:missing-layer")
                 continue
-            # 原本只驗 entries[0]。manifest 契約允許多層，第二層可以尺寸與
-            # SHA-256 都正確、Alpha 卻 100% 不透明並蓋住臉，稽核照樣放行，
-            # install_after_audit=True 直接安裝。每一層都要過同一套檢查。
+            # Manifest 契約允許多層；每一層都要通過同一套尺寸、SHA-256、
+            # Alpha 與臉部保護檢查，確保 install_after_audit=True 的邊界一致。
             for layer_index, entry in enumerate(entries):
                 issue_id = (
                     f"{category}:{view_id}"

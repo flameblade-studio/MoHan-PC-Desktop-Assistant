@@ -28,7 +28,7 @@ lazy from domain.constants import (
 
 
 class SafeErrorType(StrEnum):
-    """Approved, language-independent error types exposed outside services."""
+    """Approved, language-independent boundary result types exposed outside services."""
 
     HTTP_ERROR = "http_error"
     TIMEOUT_ERROR = "timeout_error"
@@ -67,7 +67,7 @@ class SafeDiagnostic(StrEnum):
 
 @dataclass(frozen=True, slots=True)
 class SafeError:
-    """A sanitized error value that never retains the original error text."""
+    """A sanitized diagnostic value that keeps original error text outside the value."""
 
     error_type: SafeErrorType
     diagnostic: SafeDiagnostic
@@ -323,10 +323,7 @@ def sanitize_error(
     *,
     http_status: int | None = None,
 ) -> SafeError:
-    """Return only approved metadata; discard all untrusted error detail.
-
-    The returned value never stores or echoes the original exception, message,
-    response body, URL, headers, credentials, email address, or local path.
+    """Return only approved metadata; keep untrusted error detail outside the value. The returned value stores approved fields while the original exception, message, response body, URL, headers, credentials, email address, and local path remain private.
     User-facing layers should localize ``error_type`` and ``diagnostic`` rather
     than display provider text.
     """

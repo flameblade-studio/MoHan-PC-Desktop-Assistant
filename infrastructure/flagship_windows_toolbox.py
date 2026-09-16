@@ -57,7 +57,7 @@ def _path_within(request_path: str, allowed_path: str) -> bool:
 
 
 class WindowsToolbox:
-    """Small, explicit Windows tool surface; never executes arbitrary shell."""
+    """Small, explicit Windows tool surface; executes only approved commands."""
 
     def __init__(
         self,
@@ -80,7 +80,7 @@ class WindowsToolbox:
         # 選的「唯讀」因此完全沒有作用，create_file／move_file／rename_file
         # 照樣能寫進去。介面告訴使用者的權限邊界是假的。
         #
-        # 這裡刻意 fail-closed：沒有明確指定就一律不可寫。呼叫端必須把
+        # 這裡刻意 protective：沒有明確指定就一律不可寫。呼叫端必須把
         # access_mode 傳進來，忘了傳的後果是「不能寫」而不是「什麼都能寫」。
         self.writable_folders = [
             Path(value).expanduser().resolve()

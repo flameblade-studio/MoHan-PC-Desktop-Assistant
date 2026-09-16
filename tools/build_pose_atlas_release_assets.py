@@ -101,9 +101,9 @@ def build(
 
     ``skin_background`` declares a bare-limbed body: the hand ROIs legitimately
     contain forearm and thigh skin, so the hand audit's extra-digit skin
-    heuristic (calibrated on the long-sleeved v4) is not applicable.  The
-    declaration is written into every hands sidecar; the audit reports the
-    skipped check instead of silently passing or falsely failing.
+    heuristic is reserved for its calibrated long-sleeved v4 context. The
+    declaration is written into every hands sidecar; the audit explicitly
+    reports this check's applicability for the current body.
     """
 
     source = source_root.resolve()
@@ -289,7 +289,7 @@ def _body_sidecar(
         # 中點永遠打得到 alpha。露腿的權威在純側面（|yaw|=90）時腳掌很長，中點落在
         # 小腿前方的空氣裡（2026-09-02 實測 ±090 最近 alpha 56–58 px，超過搜尋半徑 48）。
         # 退回第二目標：腳掌中心正上方——側面時小腿就在腳的正上方。兩者都找不到才
-        # 記為不可達，而不是讓整組 24 視角的建置中止。
+        # 明確記錄該點的可達性狀態，讓整組 24 視角繼續建置。
         try:
             landmarks[f"{side}_knee"] = _alpha_point(
                 mask, knee_target, knee_y, left, top, right, bottom
@@ -303,7 +303,7 @@ def _body_sidecar(
                 occluded_landmarks.append(
                     {
                         "name": f"{side}_knee",
-                        "reason": "No alpha within the search radius of either knee target "
+                        "reason": "Both knee targets have fully transparent search areas "
                         "(hip-to-foot midpoint, or directly above the foot run).",
                         "occluder_id": "knee-target-unreachable",
                     }
@@ -408,8 +408,8 @@ def _alpha_point(
             distances = (xs + x0 - target_x) ** 2 + (ys + y0 - target_y) ** 2
             index = int(numpy.argmin(distances))
             return [int(xs[index] + x0), int(ys[index] + y0)]
-    # 帶上目標座標：原本只有一個代碼，24 視角的整組建置失敗時連是哪一張、哪個點
-    # 都看不出來（2026-09-02 為此逐視角重現才定位到 ±090 的膝）。
+    # 在診斷中帶上目標座標，讓整組 24 視角建置可直接定位圖像及特徵點。
+    # 2026-09-02 的逐視角重現將需處理的位置定位到 ±090 的膝。
     raise BuildError(
         f"alpha_registration_point_missing:target=({round(target_x)},{round(target_y)})"
     )
@@ -476,7 +476,7 @@ def _hand_sidecar(
     occluded = [{
                     "side": side,
                     "status": "occluded",
-                    "reason": "No reliable 21-point hand observation was visible after the approved fixed augmentations.",
+                    "reason": "The approved fixed augmentations require a reliable 21-point hand observation to proceed.",
                     "occluder_id": "robe-or-view-occlusion",
                     "region": [0, source.top, rgba.shape[1], max(1, source.bottom - source.top + 1)],
                 } for side in ("left", "right") if side not in sides]
@@ -906,11 +906,11 @@ def _working_provenance(
 def _write_working_readme(output_root: Path, provenance: dict[str, object]) -> None:
     text = (
         "# PoseAtlas v4 working evidence\n\n"
-        "This directory is a reproducible local working build. It is not a formal release asset directory.\n\n"
+        "This directory contains a reproducible local working build. Formal release assets require the separate release process.\n\n"
         "The PNG files are normalized native RGBA assets. Body sidecars use alpha-silhouette registration.\n"
         "Hand sidecars contain only observations produced by the project ONNX hand model after the\n"
         "fixed augmentations recorded in `BUILD-METADATA.json`. Natural occlusion is represented by\n"
-        "explicit declarations and never by invented landmark coordinates.\n\n"
+        "explicit declarations grounded in observed landmark coordinates.\n\n"
         "Source authorization and redistribution were confirmed by the rights holder on 2026-08-16.\n"
         "Formal promotion still requires visual review and every release audit to pass.\n"
     )

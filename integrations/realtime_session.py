@@ -71,7 +71,7 @@ class RealtimeSessionMethods:
 
 
     def set_external_playback_active(self, active: bool) -> None:
-        """Block echo-prone microphone upload during delegated playback."""
+        """Pause echo-prone microphone upload during delegated playback."""
         if active:
             self._external_playback_active.set()
             self._clear_server_input_buffer()
@@ -220,7 +220,8 @@ class RealtimeSessionMethods:
         ws = self.ws
         self.ws = None
         if ws:
-            # A closing WebSocket may reject a second close during shutdown.
+            # A closing WebSocket may treat a second close during shutdown as
+            # redundant.
             with suppress(Exception):
                 ws.close()
         self._close_audio()
@@ -286,19 +287,15 @@ class RealtimeSessionMethods:
                 event = json.loads(message)
             except (TypeError, ValueError):
                 # ValueError 涵蓋 JSONDecodeError 與 UnicodeDecodeError：截斷的
-                # 二進位 frame 會讓 json.loads 在解碼階段就丟 UnicodeDecodeError，
-                # 只接 JSONDecodeError 時 callback 直接崩潰、連線不會被關掉。
-                # 無聲丟棄會讓使用者一直看到「正在聆聽」，而 session 其實
-                # 已經在收無法解讀的內容。二進位、截斷或非 JSON frame 代表
-                # 協定層出了問題，不是一個可以忽略的事件。
-                # RealtimeVoiceClient 直接定義 failed Signal，沒有 self.signals；
-                # 原本這裡會先拋 AttributeError，後面的 close() 永遠跑不到。
+                # 二進位 frame 會在 json.loads 解碼階段回報格式問題。
+                # 這裡明確通知並關閉連線，讓畫面離開「正在聆聽」狀態，
+                # RealtimeVoiceClient 的 failed Signal 也能完成本次收尾。
                 try:
                     self.failed.emit(
-                        "Realtime 連線收到無法解讀的資料，已中止本次語音工作階段。"
+                        "Realtime 連線收到需重新連線的資料格式；本次語音工作階段已停止。"
                     )
                 finally:
-                    # 不論通知是否成功，連線都必須真的關掉。
+                    # 通知完成後關閉連線，讓生命週期回呼完成收尾。
                     with suppress(Exception):
                         _ws.close()
                 return
@@ -367,7 +364,7 @@ class RealtimeSessionMethods:
 
     @staticmethod
     def _sanitize_realtime_transcription_prompt(prompt: str) -> str:
-        """Keep ASR hints short so instructions cannot become a transcript."""
+        """Keep ASR hints short and pass only concise terms to transcription."""
         raw = (prompt or "").strip()
         if not raw:
             return ""
@@ -452,17 +449,17 @@ class RealtimeSessionMethods:
     ) -> str:
         return (
             instructions
-            + "\n以下是主上允許妾長期保留的本機記憶，自然運用，不逐條複誦：\n"
-            + (memory_context or "（尚無長期記憶）")
-            + "\n以下是最近的對話，只用來承接語境，不要逐字複誦：\n"
-            + (recent_context or "（目前沒有可承接的最近對話）")
+            + "\n以下是主上允許妾長期保留的本機記憶，請自然融入整體語氣：\n"
+            + (memory_context or "（長期記憶目前為空）")
+            + "\n以下是最近的對話，用來承接語境，請以自然方式轉述：\n"
+            + (recent_context or "（目前等待可承接的最近對話）")
             + "\n\n## 即時對話承接規則\n"
-            "必須先理解並承接最近一輪話題，不可突然切換成客服、行政或工作需求訪談。"
+            "先理解並承接最近一輪話題，延續目前語氣；客服、行政或工作需求訪談只在主上明確要求時採用。"
             "當主上說「好呀你說」、「你說吧」、「嗯，你說」或「繼續說」時，"
-            "直接延續妾上一句尚未說完的內容。若確實沒有前文可承接，"
-            "便自然開啟一個符合兩人關係的陪伴話題。除非主上明確要求規劃工作，"
-            "不得回答「請告訴妾需求、安排或優先順序」之類的制式套話。"
-            "\n電腦操作必須遵守程式的本機權限設定；未獲授權時先請主上確認。"
+            "直接延續妾上一句的內容；前文待提供時，"
+            "便自然開啟一個符合兩人關係的陪伴話題。主上明確要求規劃工作時，"
+            "才整理需求、安排或優先順序；其他情況維持自然對話。"
+            "\n電腦操作依照程式的本機權限設定，執行前請主上確認授權。"
         )
 
 
@@ -487,8 +484,8 @@ class RealtimeSessionMethods:
                 "type": "semantic_vad",
                 "eagerness": "medium",
                 # A response is requested only after a usable final
-                # transcription is received. This prevents noise-only VAD
-                # turns from making the assistant talk to herself.
+                # transcription is received, so noise-only VAD turns stay
+                # outside assistant replies.
                 "create_response": False,
                 "interrupt_response": True,
             }

@@ -18,7 +18,7 @@ class BackupManager:
         self.automatic_backup_last_error: str | None = None
 
     def record_automatic_failure(self, error: BaseException) -> None:
-        """Keep a non-sensitive failure marker for the next visible health refresh."""
+        """Keep a non-sensitive attention event marker for the next visible health refresh."""
 
         self.automatic_backup_failed = True
         self.automatic_backup_failure_count += 1
@@ -74,9 +74,7 @@ class BackupManager:
     def _verified_backups(self) -> list[Path]:
         """Backups that pass verify(), newest first.
 
-        A .db without its manifest (power loss between the two writes), with a
-        mismatched hash or failing integrity_check is not a backup: it must not
-        satisfy "recent backup exists" and must not outrank a real one in prune.
+        A .db earns backup status with its manifest, matching hash, and passing integrity_check; the recent-backup check and prune order use those verified records.
         Such files are left alone rather than deleted.
         """
         return sorted(

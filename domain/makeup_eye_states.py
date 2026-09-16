@@ -20,8 +20,14 @@ def parse_makeup_eye_states[T: EyeAsset](
     if not isinstance(value, dict) or (value and set(value) != {"half", "closed"}):
         raise OutfitPackError("Makeup eye states require both half and closed.")
     parsed = {}
+    silhouettes: set[str] | None = None
     for state, entries in value.items():
         poses = parse_poses(entries)
+        current_silhouettes = set(poses)
+        if silhouettes is None:
+            silhouettes = current_silhouettes
+        elif current_silhouettes != silhouettes:
+            raise OutfitPackError("Makeup eye states must cover the same silhouettes.")
         for silhouette, assets in poses.items():
             canvas = (1024, 1536) if silhouette.startswith("yaw") else (1254, 1254)
             if any((asset.width, asset.height, asset.anchor_x, asset.anchor_y) != (*canvas, 0, 0) for asset in assets):

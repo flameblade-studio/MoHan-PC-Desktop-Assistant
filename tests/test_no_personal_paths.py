@@ -1,15 +1,10 @@
-"""出貨檔案不得含作者機器的絕對路徑或使用者名稱。
+"""出貨檔案使用可攜路徑，並保護作者機器與使用者資訊。
 
-2026-09-01 的安全稽核發現 assets/pose-atlas/v4-layered/ 底下兩個 JSON
-帶著磁碟機代號、專案目錄與 Windows 使用者名稱，而那個目錄會被打包進
-安裝檔——每一位下載者都拿得到。不是憑證外洩，但既無意義又不可攜：
-換一台機器重建就對不上。
+2026-09-01 稽核發現 v4-layered 的兩個 JSON 含磁碟代號、專案目錄及
+Windows 使用者名稱；該目錄會進入安裝檔。此類紀錄應改用可攜來源資訊。
 
-寫成測試而不是一次性清理，是因為產生器會重新寫出這些檔案。清了不擋，
-下次重建又回來；擋住了，CI 會在合併前就攔下，不必等下一次稽核。
-
-範圍刻意只涵蓋**會出貨的路徑**。artifacts/ 是工作證據與一次性腳本，
-不隨產品散布，用同一把尺去量它只會製造噪音。
+持續測試產生器輸出，讓 CI 在合併前檢出個人路徑重新出現的情形。
+範圍限於實際出貨路徑；artifacts/ 保持本地工作證據的獨立範圍。
 """
 from __future__ import annotations
 
@@ -27,7 +22,7 @@ SHIPPED = (
     "integrations",
     "presentation",
 )
-# 這些副檔名才檢查——二進位資產不必掃，也掃不出有意義的結果。
+# 掃描下列文字副檔名；二進位資產由素材驗證程序負責。
 TEXT_SUFFIXES = {".json", ".py", ".md", ".toml", ".cfg", ".txt", ".yml", ".yaml"}
 
 # Windows 磁碟機絕對路徑（C:\... 或 C:/...），以及 POSIX 的家目錄。
@@ -36,8 +31,8 @@ BS = chr(92)
 
 PATTERNS = (
     # 與 tools/audit_public_release.py 一致：USERNAME 與 <...> 是刻意的
-    # 佔位符，不是洩漏。兩支工具的判準必須相同，否則同一份檔案會
-    # 一邊過一邊不過。
+    # 佔位符，屬於允收內容。兩支工具共用判準，讓同一份檔案
+    # 取得一致的檢查結果。
     re.compile(r"[A-Za-z]:\\{1,2}Users\\{1,2}"
                r"(?!USERNAME(?:\\|$)|<[^>]+>)", re.IGNORECASE),
     re.compile(r"[A-Za-z]:/Users/", re.IGNORECASE),
@@ -78,19 +73,19 @@ def test_shipped_files_have_no_personal_absolute_paths() -> None:
                 )
                 break
     assert not offenders, (
-        "出貨檔案不得含作者機器的絕對路徑：\n  " + "\n  ".join(offenders)
+        '出貨檔案須採用可攜路徑；請修正以下位置：\n  ' + "\n  ".join(offenders)
     )
 
 
 def test_guard_actually_matches_a_known_bad_string() -> None:
-    """守衛自己要先被驗證：正例必須真的被抓到。
+    """守衛正例驗證已知個人路徑能被辨識。
 
-    只有負樣本的門檻不算驗證過——這是本專案 2026-09-01 記下的紀律。
-    這裡用實際洩漏過的字串當正例，確認樣式沒有寫壞。
+    依 2026-09-01 的測試紀律，同時提供已知命中與正常資料。
+    此處重用曾出現的路徑樣本，驗證樣式的實際辨識能力。
     """
     # 正例刻意在執行期組出來。把真實洩漏過的路徑寫成字面值，會讓這個
     # 檔案自己被 tools/audit_public_release.py 判為含有秘密——守衛的測試
-    # 不該成為它要防的那個問題。
+    # 本身也遵守出貨內容的路徑規範。
     user = "hi" + "tos"
     drive_c = "C:" + BS
     samples = (
@@ -100,11 +95,11 @@ def test_guard_actually_matches_a_known_bad_string() -> None:
         "/home/someone/project",
     )
     for sample in samples:
-        assert any(p.search(sample) for p in PATTERNS), f"守衛漏掉了 {sample!r}"
+        assert any(p.search(sample) for p in PATTERNS), f"守衛須辨識此已知個人路徑：{sample!r}"
 
 
 def test_guard_does_not_match_legitimate_text() -> None:
-    """反例：正常內容不得被誤判，否則守衛會變成噪音。"""
+    """正例：正常內容通過路徑守衛，維持原有可用性。"""
     samples = (
         "assets/pose-atlas/v4-layered",
         "使用者可以在設定裡選擇唯讀或可寫入",
@@ -113,4 +108,4 @@ def test_guard_does_not_match_legitimate_text() -> None:
         "https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant",
     )
     for sample in samples:
-        assert not any(p.search(sample) for p in PATTERNS), f"守衛誤判了 {sample!r}"
+        assert not any(p.search(sample) for p in PATTERNS), f"守衛須允收此正常內容：{sample!r}"

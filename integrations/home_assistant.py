@@ -13,7 +13,7 @@ lazy from domain.safe_error import sanitize_error
 
 HIGH_RISK_DOMAINS = frozenset({"lock", "alarm_control_panel"})
 HEAT_DOMAINS = frozenset({"climate", "water_heater"})
-# 內容不可見的網域：用戶端無從得知它們會觸發什麼。
+# 內容由服務端執行的網域：用戶端以例行作業能力處理它們。
 OPAQUE_DOMAINS = frozenset({"script", "scene"})
 IPV4_OCTET_COUNT = 4
 PRIVATE_CLASS_A_FIRST_OCTET = 10
@@ -57,7 +57,7 @@ def _sanitized_external_error(
     *,
     http_status: int | None = None,
 ) -> str:
-    """Discard remote detail before an error crosses the service boundary."""
+    """Keep remote detail inside the service boundary after sanitization."""
     safe_input = UnicodeError() if isinstance(error, json.JSONDecodeError) else error
     return str(sanitize_error(safe_input, http_status=http_status))
 
@@ -66,14 +66,14 @@ class HomeAssistantClient:
     def __init__(self, config: HomeAssistantConfig):
         parsed = urlparse(config.base_url.rstrip("/"))
         if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-            raise ValueError("Home Assistant 位址必須是完整 HTTP(S) 網址")
+            raise ValueError("請輸入完整的 Home Assistant HTTP(S) 網址")
         if parsed.scheme == "http" and parsed.hostname not in {
             "localhost",
             "127.0.0.1",
             "::1",
             "homeassistant.local",
         } and not self._is_private_host(parsed.hostname or ""):
-            raise ValueError("非區域網路的 Home Assistant 必須使用 HTTPS")
+            raise ValueError("遠端 Home Assistant 請使用 HTTPS；區域網路可使用 HTTP")
         self.config = config
         self.base_url = config.base_url.rstrip("/")
 
@@ -139,28 +139,28 @@ class HomeAssistantClient:
     def states(self) -> list[dict[str, Any]]:
         response = self._request("GET", "/api/states")
         if not isinstance(response, list):
-            raise HomeAssistantError("Home Assistant 狀態格式錯誤")
+            raise HomeAssistantError("Home Assistant 狀態回應需要清單格式")
         return [row for row in response if isinstance(row, dict)]
 
     def state(self, entity_id: str) -> dict[str, Any]:
         self.validate_entity(entity_id)
         response = self._request("GET", f"/api/states/{entity_id}")
         if not isinstance(response, dict):
-            raise HomeAssistantError("找不到裝置狀態")
-        # 代理或損壞的 API 回 200 + {} 時，原本會被包成 success=True、
-        # 訊息「light.office：unknown」，與真的讀到 unknown 狀態無法區分。
+            raise HomeAssistantError("裝置狀態回應需要物件格式")
+        # 代理或 API 回 200 + {} 時，完整欄位要求能讓畫面清楚區分
+        # 真正讀到的 unknown 狀態與狀態資料待補的回應。
         if "entity_id" not in response or "state" not in response:
-            raise HomeAssistantError("裝置狀態回應不完整，無法判讀")
+            raise HomeAssistantError("裝置狀態回應需要 entity_id 與 state 欄位")
         return response
 
     @staticmethod
     def validate_entity(entity_id: str) -> tuple[str, str]:
         if "." not in entity_id:
-            raise ValueError("裝置必須使用 domain.entity 格式")
+            raise ValueError("裝置請使用 domain.entity 格式")
         domain, name = entity_id.split(".", 1)
         allowed = set("abcdefghijklmnopqrstuvwxyz0123456789_")
         if not domain or not name or any(ch not in allowed for ch in domain + name):
-            raise ValueError("裝置識別碼格式不安全")
+            raise ValueError("裝置識別碼請使用小寫英數與底線")
         return domain, name
 
     def call_service(
@@ -171,11 +171,13 @@ class HomeAssistantClient:
     ) -> Any:
         allowed = ALLOWED_SERVICES.get(domain, set())
         if service not in allowed:
-            raise PermissionError(f"不允許的 Home Assistant 服務：{domain}.{service}")
+            raise PermissionError(
+                f"請選擇允許清單中的 Home Assistant 服務：{domain}.{service}"
+            )
         entity_id = str(data.get("entity_id", ""))
         actual_domain, _name = self.validate_entity(entity_id)
         if actual_domain != domain:
-            raise ValueError("服務領域與裝置不一致")
+            raise ValueError("服務領域與裝置領域需要一致")
         return self._request("POST", f"/api/services/{domain}/{service}", data)
 
     def action_read(self, request: ActionRequest) -> ActionResult:
@@ -214,16 +216,10 @@ class HomeAssistantClient:
         service = str(request.arguments.get("service", ""))
         expected = {"turn_on": "on", "turn_off": "off"}.get(service)
         if expected is None:
-            # `expected is None or ...` 讓 toggle、set_percentage、open_cover、
-            # scene.turn_on、script.turn_on 全部無條件通過——裝置完全沒照做
-            # 也會被標記為「已驗證」。狀態明明讀出來了，卻沒有參與判斷。
-            #
-            # 沒有可比對的預期狀態時，正確的答案是「無法驗證」，不是「通過」。
-            # 回傳 False 會讓執行器把結果標為未通過驗證，使用者因此看得到
-            # 「工具回報完成，但結果驗證未通過」——那是誠實的描述。
-            #
-            # toggle 可以驗：它的預期狀態是「與呼叫前相反」，但呼叫前的狀態
-            # 沒有被保留下來，補那個要改 action_control 的資料流，另案處理。
+            # toggle、set_percentage、open_cover、scene.turn_on、script.turn_on
+            # 需要各自的預期狀態才能完成比對。此處回傳 False，讓執行器
+            # 清楚標示目前的結果尚待驗證；toggle 需要保留呼叫前狀態，
+            # 相關資料流可在 action_control 擴充時補上。
             return False
         return current.get("state") == expected
 
@@ -234,10 +230,9 @@ def classify_home_capability(domain: str, service: str) -> str:
     if domain in HEAT_DOMAINS and service != "turn_off":
         return "home_heat"
     if domain in OPAQUE_DOMAINS:
-        # script.turn_on 原本落在 home_control（BLUE，零確認），但腳本內容
-        # 在伺服器上、用戶端看不見。一個名為「夜間模式」的腳本可以同時
-        # lock.unlock 與 alarm_control_panel.alarm_disarm，而那兩件事直接
-        # 表達時是 RED、需要兩次確認。scene 同理：情境可以把門鎖設成解鎖。
+        # script.turn_on 與 scene.turn_on 的內容在伺服器上執行，
+        # 用戶端以 home_routine 分類，讓可能包含 lock 或 alarm 動作的
+        # 例行作業沿用高風險確認流程。
         return "home_routine"
     return "home_control"
 

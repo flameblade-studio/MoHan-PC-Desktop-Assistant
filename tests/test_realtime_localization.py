@@ -20,81 +20,71 @@ lazy from integrations.realtime_voice import (
 EXPECTED_MESSAGES = frozendict({
     "zh-TW": frozendict({
         "connecting": "正在連線…",
-        "disconnected": "未連線",
+        "disconnected": '目前等待連線，請重新啟動 Realtime',
         "listening": "已連線，妾在聽",
         "missing_key": "請先儲存 OpenAI API 金鑰",
         "response_too_long": (
-            "Realtime 回應超過 32,768 字元安全上限，已停止本輪回應。"
+            'Realtime 回應達到 32,768 字元安全上限，本輪回應已停止。'
         ),
         "invalid_key": (
-            "目前儲存的 OpenAI API 金鑰無效或已撤銷。"
-            "請到「設定」頁重新貼上同一 Project 新建立的 API Key。"
+            '目前儲存的 OpenAI API 金鑰需要更新。請到「設定」頁貼上同一 Project 新建立的 API Key。'
         ),
         "quota": (
-            "OpenAI API 額度不足或專案預算已達上限。請檢查該 Project 的 "
-            "Billing、Budget 與 Realtime 模型用量限制。"
+            'OpenAI API 額度需要補充，或專案預算已達上限。請檢查該 Project 的 Billing、Budget 與 Realtime 模型用量限制。'
         ),
-        "audio_failed": "音訊裝置無法啟動：backend offline",
-        "microphone_prefix": "Windows 無法開啟麥克風。",
+        "audio_failed": "音訊裝置尚待啟動：backend offline",
+        "microphone_prefix": "Windows 麥克風存取需要處理。",
     }),
     "zh-CN": frozendict({
         "connecting": "正在连接…",
-        "disconnected": "未连接",
+        "disconnected": '当前等待连接，请重新启动 Realtime',
         "listening": "已连接，妾在听",
         "missing_key": "请先保存 OpenAI API 密钥",
         "response_too_long": (
-            "Realtime 回复超过 32,768 字符安全上限，已停止本轮回复。"
+            'Realtime 回复达到 32,768 字符安全上限，本轮回复已停止。'
         ),
         "invalid_key": (
-            "当前保存的 OpenAI API 密钥无效或已撤销。"
-            "请到“设置”页重新粘贴同一 Project 新建立的 API Key。"
+            '当前保存的 OpenAI API 密钥需要更新。请到“设置”页粘贴同一 Project 新建立的 API Key。'
         ),
         "quota": (
-            "OpenAI API 额度不足或项目预算已达上限。请检查该 Project 的 "
-            "Billing、Budget 与 Realtime 模型用量限制。"
+            'OpenAI API 额度需要补充，或项目预算已达上限。请检查该 Project 的 Billing、Budget 与 Realtime 模型用量限制。'
         ),
-        "audio_failed": "音频设备无法启动：backend offline",
-        "microphone_prefix": "Windows 无法打开麦克风。",
+        "audio_failed": "音频设备尚待启动：backend offline",
+        "microphone_prefix": "Windows 麦克风访问需要处理。",
     }),
     "en": frozendict({
         "connecting": "Connecting…",
-        "disconnected": "Disconnected",
+        "disconnected": 'Waiting for a connection; restart Realtime',
         "listening": "Connected and listening",
         "missing_key": "Save an OpenAI API key first",
         "response_too_long": (
-            "The Realtime response exceeded the 32,768-character safety limit; "
-            "this response was stopped."
+            'The Realtime response reached the 32,768-character safety limit; this response is stopped.'
         ),
         "invalid_key": (
-            "The saved OpenAI API key is invalid or revoked. Save a new key from "
-            "the same Project in Settings."
+            'The saved OpenAI API key needs an update. Save a new key from the same Project in Settings.'
         ),
         "quota": (
-            "The OpenAI API quota is insufficient or the project budget limit "
-            "was reached. Check Billing, Budget, and Realtime model usage limits."
+            'The OpenAI API quota needs replenishment or the project budget limit was reached. Check Billing, Budget, and Realtime model usage limits.'
         ),
-        "audio_failed": "The audio device could not start: backend offline",
-        "microphone_prefix": "Windows could not open the microphone.",
+        "audio_failed": "The audio device is waiting to start: backend offline",
+        "microphone_prefix": "Microphone access requires attention.",
     }),
     "ja-JP": frozendict({
         "connecting": "接続中…",
-        "disconnected": "未接続",
+        "disconnected": '接続待機中です。Realtime を再起動してください',
         "listening": "接続済み、聞いています",
         "missing_key": "先に OpenAI API キーを保存してください",
         "response_too_long": (
-            "Realtime の応答が 32,768 文字の安全上限を超えたため、"
-            "この応答を停止しました。"
+            'Realtime の応答が 32,768 文字の安全上限に達したため、この応答を停止します。'
         ),
         "invalid_key": (
-            "保存された OpenAI API キーは無効か、取り消されています。"
-            "同じ Project で新しいキーを作成し、設定で保存し直してください。"
+            '保存された OpenAI API キーの更新が必要です。同じ Project で新しいキーを作成し、設定で保存してください。'
         ),
         "quota": (
-            "OpenAI API の利用枠が不足しているか、プロジェクトの予算上限に"
-            "達しました。Billing、Budget、Realtime モデルの利用上限を確認してください。"
+            'OpenAI API の利用枠の補充が必要か、プロジェクトの予算上限に達しました。Billing、Budget、Realtime モデルの利用上限を確認してください。'
         ),
-        "audio_failed": "音声デバイスを開始できませんでした：backend offline",
-        "microphone_prefix": "Windows でマイクを開けませんでした。",
+        "audio_failed": "音声デバイスは開始待ちです：backend offline",
+        "microphone_prefix": "Windows のマイクアクセスには対応が必要です。",
     }),
 })
 

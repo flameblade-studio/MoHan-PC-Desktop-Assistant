@@ -67,12 +67,12 @@ def audit_motion_series(values: tuple[float, ...]) -> tuple[str, ...]:
 def audit_discrete_blink_series(values: tuple[float, ...]) -> tuple[str, ...]:
     """Check blink samples against the discrete authority-state contract.
 
-    Ruling 2026-08-27: blink never lerps. ``interpolate_frame`` holds the
-    start authority state for every sub-frame sample and may switch only on
-    the final 20 ms frame boundary, so open and closed eyes are never
-    alpha-blended into one frame. Smoothness limits therefore do not apply;
-    what must hold instead is that every sample is a licensed authority
-    value and that no transition happens before the boundary.
+    Ruling 2026-08-27: blink uses discrete states. ``interpolate_frame`` holds
+    the start authority state for every sub-frame sample and switches only
+    on the final 20 ms frame boundary. Each frame contains one complete
+    open or closed authority state. Validation therefore requires every
+    sample to be a licensed authority value and every transition to occur
+    at the prescribed boundary.
     """
 
     licensed = frozenset(EYE_STATE_BLINK.values())
@@ -162,7 +162,7 @@ def audit_pair(
     right = _content(_load(right_path))
     code = ""
     # At profile/back views one or both authored features may be genuinely
-    # occluded. That is natural asymmetry, not evidence of mirroring.
+    # occluded. This records natural asymmetry; mirroring requires separate evidence.
     if left.size == 0 or right.size == 0:
         return ()
     if left.shape == right.shape and np.array_equal(left, right):

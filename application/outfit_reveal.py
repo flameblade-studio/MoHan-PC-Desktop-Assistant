@@ -43,7 +43,7 @@ class OutfitRevealCue:
 
 
 class OutfitRevealStateStore:
-    """Persist only reveal lifecycle identifiers, never generated imagery."""
+    """Persist only reveal lifecycle identifiers, generated imagery remains private."""
 
     def __init__(self, settings: OutfitRevealSettingsPort) -> None:
         self._settings = settings
@@ -64,7 +64,7 @@ class OutfitRevealStateStore:
     def record_reveal(self, outfit_id: str, *, succeeded: bool) -> bool:
         normalized = str(outfit_id).strip()
         if not normalized or type(succeeded) is not bool:
-            raise ValueError("Outfit reveal result is invalid.")
+            raise ValueError("Outfit reveal result needs a supported value.")
         if self.pending_outfit_id() != normalized:
             return False
         if not succeeded:

@@ -62,7 +62,7 @@ class ThemeGenerationRequest:
 
 
 class ThemeGenerationPort(Protocol):
-    """Optional provider boundary; current public builds inject no provider."""
+    """Optional provider boundary; current public builds use provider-independent behavior."""
 
     def generate_draft(
         self,
@@ -97,7 +97,7 @@ class ThemePackService:
         request: ThemeGenerationRequest,
         destination: Path,
     ) -> ThemePack:
-        """Generate but never install or activate a future provider draft."""
+        """Generate a future provider draft for review; installation and activation stay explicit."""
 
         if self._generation_provider is None:
             raise ThemeGenerationUnavailable(
@@ -110,7 +110,7 @@ class ThemePackService:
         theme = inspect_theme_pack(generated)
         if theme.source_channel != "mohan-generated":
             raise ThemeGenerationUnavailable(
-                "Generated theme provenance is invalid."
+                "Generated theme provenance needs a supported value."
             )
         return theme
 

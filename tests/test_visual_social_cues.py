@@ -70,7 +70,7 @@ def assert_invalid_measurements_are_rejected() -> None:
         except ValueError:
             pass
         else:
-            raise AssertionError("Invalid visual evidence must not be accepted.")
+            raise AssertionError('Visual evidence must satisfy the acceptance contract.')
 
 
 def run() -> None:

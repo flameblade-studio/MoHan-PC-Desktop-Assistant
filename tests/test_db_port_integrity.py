@@ -1,11 +1,9 @@
 """Presentation-layer database calls must exist on the real StudioDB.
 
-Born from the #88 regression (diagnosed 2026-08-30): the dashboard called
-``self.db.recent_chat_context()`` but the StudioDB delegation list never
-exposed that method, so every text chat died with AttributeError while the
-UI showed nothing — and every test passed, because mocked databases answer
-any method name.  This gate scans real presentation sources for ``self.db``
-attribute access and points each name at the real class.
+The #88 regression (2026-08-30) exposed a delegation gap for
+self.db.recent_chat_context(): text chat raised AttributeError while the UI
+stayed silent, and permissive mocks hid the gap. This gate maps each
+presentation self.db attribute access to the real class.
 """
 
 from __future__ import annotations
@@ -54,8 +52,7 @@ def test_every_presentation_db_call_exists_on_studiodb() -> None:
         if not hasattr(StudioDB, name):
             missing.append(f"{name} (used at {', '.join(sites[:3])})")
     assert not missing, (
-        "self.db.<name> used in presentation/application but absent from the "
-        "real StudioDB — mocked tests cannot catch this, this gate does: "
+        'presentation/application database calls require matching real StudioDB methods: '
         + "; ".join(missing)
     )
 

@@ -46,7 +46,7 @@ def _assert_region_normalization() -> None:
         except ValueError:
             pass
         else:
-            raise AssertionError(f"Invalid region accepted: {invalid!r}")
+            raise AssertionError(f'region requires validation: {invalid!r}')
 
 
 def _assert_region_catalog() -> None:
@@ -132,7 +132,7 @@ def _assert_localized_errors_and_ui() -> None:
     assert "金鑰" in azure_speech_error_message(401, "secret")
     assert "額度" in azure_speech_error_message(429, "secret")
     assert "secret" not in azure_speech_error_message(500, "secret")
-    assert "invalid" in azure_speech_error_message(
+    assert "needs an update" in azure_speech_error_message(
         401,
         "secret",
         "en-US",
@@ -196,7 +196,7 @@ def _assert_missing_credentials_do_not_request(
         "",
         "zh-TW-HsiaoChenNeural",
     )
-    assert "尚未設定" in failures[-1]
+    assert "請先設定" in failures[-1]
 
 
 def _assert_invalid_region_fails_locally(
@@ -209,7 +209,7 @@ def _assert_invalid_region_fails_locally(
         "https://invalid-region",
         "en-US-AvaMultilingualNeural",
     )
-    assert failures[-1] == "The Azure Speech region is invalid."
+    assert failures[-1] == 'Enter an Azure Speech region using 2–32 lowercase letters, digits, or hyphens.'
     failures.clear()
 
 

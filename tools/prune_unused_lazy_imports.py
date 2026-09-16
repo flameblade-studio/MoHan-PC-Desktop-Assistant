@@ -51,7 +51,7 @@ def _public_exports(tree: ast.Module) -> frozenset[str]:
 
 
 def prune_unused_lazy_imports(path: Path) -> int:
-    """Remove unused generated lazy imports without touching eager side effects."""
+    """Remove unused generated lazy imports while preserving eager side effects."""
 
     source_bytes = path.read_bytes()
     source = source_bytes.decode("utf-8")

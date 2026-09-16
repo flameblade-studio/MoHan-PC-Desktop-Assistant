@@ -1,14 +1,12 @@
-"""失敗不得偽裝成成功；稽核紀錄不得變成資料倉。
+"""準確回報操作結果，並將稽核內容限制於必要資料。
 
-2026-09-02 稽核第 4 批，四項成因各異但後果同型——呼叫端拿到的值分不出
-「沒事」與「壞了」：
+2026-09-02 第 4 批稽核發現四項問題：
+1. _directory_bytes() 在 stat() 異常時回報部分總量，容量檢查因此放行。
+2. drain() 將 worker 例外轉成空事件清單，混淆錯誤與合法空結果。
+3. 服裝稽核只檢查每個 pose 的 entries[0]，後層仍需完整驗證。
+4. 剪貼簿稽核曾保存全文 100,000 字，即使 UI 只顯示 500 字。
 
-1. `_directory_bytes()` 遇到 stat() 失敗就回傳部分總量，容量檢查以此放行。
-2. `drain()` 吞掉 worker 例外後回傳 []，與「沒有事件」無法區分。
-3. 服裝稽核只檢查每個 pose 的 entries[0]，後層任何缺陷都能出貨。
-4. 稽核紀錄原樣保存剪貼簿全文（UI 顯示 500 字，資料庫存到 100,000 字）。
-
-每組都同時驗證「該擋的擋住」與「該放行的仍然放行」。
+每組同時驗證正確放行與正確阻擋，並保留可辨識的結果狀態。
 """
 from __future__ import annotations
 
@@ -36,13 +34,13 @@ def test_directory_bytes_reports_measurement_failure_as_none(tmp_path, monkeypat
 
     monkeypatch.setattr(Path, "stat", flaky_stat)
     assert wardrobe_storage._directory_bytes(tmp_path) is None, (
-        "stat() 失敗後仍回傳了部分總量——這會讓容量檢查以錯誤的小數字放行"
+        'stat() 異常時須回報量測錯誤，容量檢查須取得完整總量才能放行'
     )
     del calls
 
 
 def test_directory_bytes_still_measures_a_healthy_tree(tmp_path) -> None:
-    """正例：沒有失敗時要量到完整總量。"""
+    """正例：正常量測須取得完整總量。"""
     from application import wardrobe_storage
 
     top_level_bytes = 1000
@@ -56,7 +54,7 @@ def test_directory_bytes_still_measures_a_healthy_tree(tmp_path) -> None:
 def test_storage_guard_refuses_generation_when_usage_is_unmeasurable(
     tmp_path, monkeypatch
 ) -> None:
-    """量測失敗 → 不放行，且理由要能被辨認。"""
+    """量測異常時關閉放行閘門，並提供可辨識的原因。"""
     from datetime import UTC, datetime
 
     from application import wardrobe_storage
@@ -91,7 +89,7 @@ def test_storage_guard_still_allows_when_measurement_succeeds(tmp_path) -> None:
     assert status.reason == "ready"
 
 
-# ── 2) 背景 worker 失敗要浮上來 ───────────────────────────────────────────
+# ── 2) 背景 worker 錯誤須明確回報 ──────────────────────────────────────
 
 class _BrokenWorker:
     worker_id = "diagnostic-report"
@@ -123,10 +121,10 @@ def _scheduler_with_done_future(worker, exc: BaseException | None):
 
 
 def test_worker_failure_surfaces_as_an_observation() -> None:
-    """worker 拋錯時 drain() 不得回傳空清單。"""
+    """worker 拋錯時 drain() 須明確傳遞錯誤。"""
     scheduler = _scheduler_with_done_future(_BrokenWorker(), PermissionError("locked"))
     delivered = scheduler.drain()
-    assert delivered, "worker 失敗被吞掉，drain() 回傳 []，與『沒有事件』無法區分"
+    assert delivered, 'worker 錯誤須透過 drain() 明確傳遞，與空事件結果各自回報'
     observation = delivered[0]
     assert observation.worker_id == "diagnostic-report"
     assert observation.event_key == "worker-failed"
@@ -135,19 +133,19 @@ def test_worker_failure_surfaces_as_an_observation() -> None:
 
 
 def test_quiet_worker_still_yields_nothing() -> None:
-    """正例：真的沒有事件時仍要回傳空清單，不得憑空製造觀察。"""
+    """正例：事件數為零時回傳空清單，準確反映實際觀察。"""
     scheduler = _scheduler_with_done_future(_QuietWorker(), None)
     assert scheduler.drain() == []
 
 
 def test_worker_failure_is_deduplicated_like_any_other_event() -> None:
-    """失敗走同一條去重與冷卻：連續兩次 drain 不會重複打擾使用者。"""
+    """錯誤通知沿用去重與冷卻：連續兩次 drain 只通知一次。"""
     scheduler = _scheduler_with_done_future(_BrokenWorker(), PermissionError("locked"))
     assert scheduler.drain()
     scheduler._futures["diagnostic-report"] = _scheduler_with_done_future(
         _BrokenWorker(), PermissionError("locked")
     )._futures["diagnostic-report"]
-    assert scheduler.drain() == [], "同一個失敗在冷卻期內被重複送出"
+    assert scheduler.drain() == [], '同一錯誤在冷卻期間須維持單次通知'
 
 
 # ── 3) 服裝稽核檢查每一層 ─────────────────────────────────────────────────

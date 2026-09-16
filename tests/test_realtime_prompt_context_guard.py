@@ -72,8 +72,8 @@ def run() -> None:
     client._emit_completed_user_transcript(safe, "leak-safe")
     assert transcripts == []
     assert statuses == [
-        "已略過疑似轉錄提示詞回灌",
-        "已略過疑似轉錄提示詞回灌",
+        '已過濾疑似轉錄提示詞回灌內容，等待實際語音輸入',
+        '已過濾疑似轉錄提示詞回灌內容，等待實際語音輸入',
     ]
 
     client._emit_completed_user_transcript("好呀，你說。", "real-turn")
@@ -87,7 +87,7 @@ def run() -> None:
     assert "最近的對話" in composed
     assert "妾方才想說一件事" in composed
     assert "好呀你說" in composed
-    assert "不得回答" in composed
+    assert "客服、行政或工作需求訪談只在主上明確要求時採用" in composed
     assert "需求、安排或優先順序" in composed
 
     fake_window = type("_Window", (), {"db": _FakeDB()})()

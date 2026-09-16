@@ -39,7 +39,7 @@ MOHAN_BODY_PROFILE = CharacterBodyProfile(
     art_direction=(
         "Adult East Asian woman with a tall, slender frame and a natural, "
         "centered, supported C70-equivalent bust contour. Garments may alter "
-        "drape and support, but never the core skeleton or body geometry."
+        "drape and support while the core skeleton and body geometry stay authoritative."
     ),
 )
 

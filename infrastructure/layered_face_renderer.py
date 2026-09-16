@@ -1,13 +1,9 @@
-"""Parametric 18-layer 2.5D face renderer.
+"""Half-body face renderer with complete and layered source routes.
 
-Composes the 54 authored transparent layers (three poses × 18 facial layers)
-into a continuously controlled face from a single :class:`FaceMotionFrame`.
-This replaces whole-expression image switching with independent, sub-frame
-deformation of eyelids, brows, irises, blush, lips, mouth corners, oral cavity,
-teeth/tongue, and jaw.
-
-The legacy :class:`~infrastructure.face_renderer.ParametricFaceRenderer` remains
-the rollback path; this renderer is the new default once every gate passes.
+Installed complete-expression sources select coordinated mouth and blink
+frames through explicit expression bindings. Other expressions retain the
+existing native or parametric layer routes. Appearance remains separately
+composed; source approval and formal installation are independent gates.
 """
 
 from __future__ import annotations
@@ -16,14 +12,23 @@ lazy from collections import OrderedDict
 lazy from dataclasses import replace
 lazy from pathlib import Path
 
+
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion, QTransform
 
 lazy from domain.companion_animation_contract import (
+    CHEEK_SPEECH_CLOSED_EXPRESSION,
     gesture_portrait_expression,
     outfit_silhouette,
 )
-lazy from domain.face_rig import EyeState, FaceMotionFrame, Viseme, eye_state_for_blink
+lazy from domain.face_rig import FaceMotionFrame, Viseme
+lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
+lazy from infrastructure.complete_halfbody_renderer import CompleteHalfbodyRenderer
+lazy from infrastructure.detachable_halfbody_assets import load_detachable_halfbody_assets
+lazy from infrastructure.exasperated_candidate_assets import (
+    ExasperatedAppearanceOverlay,
+    ExasperatedCandidateAssets,
+)
 lazy from infrastructure.layered_face_assets import (
     LayeredFaceManifest,
     LayeredFacePose,
@@ -37,6 +42,7 @@ SCALE_EPSILON = 1e-4
 # ``RESOURCE_BASE`` resolution used by the presentation layer. The renderer
 # resolves it itself so the composition boundary stays a no-arg factory.
 LAYERED_FACE_ASSET_DIR = Path("assets") / "expressions" / "layered"
+DETACHABLE_HALFBODY_ASSET_DIR = Path("assets") / "expressions" / "detachable"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 30
 MAX_CACHED_NEUTRAL_POSES = 3
@@ -63,14 +69,16 @@ FACE_AUTHORITY_REGION_LAYERS = (
 )
 
 
-class LayeredParametricFaceRenderer:
-    """Compose the 18 authored layers from continuous face parameters.
+lazy from infrastructure.exasperated_face_rendering import ExasperatedFaceRenderingMixin
+
+
+class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
+    """Select complete expressions or compose existing authored face layers.
 
     This renderer satisfies :class:`FaceRendererPort` so it can replace
     :class:`~infrastructure.face_renderer.ParametricFaceRenderer` at the
-    composition boundary. The ``render(base, motion, layers, *, aperture)``
-    entry point ignores ``base``/``layers`` (whole-expression inputs) and
-    composes from the 18 authored layers instead, keyed by ``motion.pose``.
+    composition boundary. Complete sources use explicit expression bindings;
+    existing native and parametric routes handle expressions without them.
     """
 
     def __init__(
@@ -78,18 +86,43 @@ class LayeredParametricFaceRenderer:
         manifest: LayeredFaceManifest | None = None,
         outfit_overlay=None,
         authority_dir: Path | None = None,
+        detachable_dir: Path | None = None,
+        use_detachable: bool = True,
+        exasperated_candidate_dir: Path | None = None,
+        candidate_appearance_overlay: ExasperatedAppearanceOverlay | None = None,
     ) -> None:
         self._manifest = manifest
         self._outfit_overlay = outfit_overlay
         # The idle authority portraits (seam healing, face restoration) and
         # the speaking/viseme patches are read from this directory.  Tests
         # pass a staging directory to validate a candidate rig against its
-        # own authorities without replacing assets/expressions.
+        # own authorities while preserving assets/expressions.
         self._authority_dir = (
-            Path(authority_dir)
+            Path(authority_dir).resolve()
             if authority_dir is not None
             else PROJECT_ROOT / "assets" / "expressions"
         )
+        self._detachable_dir = (
+            Path(detachable_dir).resolve()
+            if detachable_dir is not None
+            else PROJECT_ROOT / DETACHABLE_HALFBODY_ASSET_DIR
+        )
+        self._use_detachable = use_detachable
+        self._exasperated_candidate_dir = (
+            Path(exasperated_candidate_dir).resolve()
+            if exasperated_candidate_dir is not None
+            else None
+        )
+        self._candidate_appearance_overlay = candidate_appearance_overlay
+        self._complete_halfbody = CompleteHalfbodyRenderer(
+            self._authority_dir / "complete-expressions", outfit_overlay,
+        )
+        self._exasperated_candidate_assets: ExasperatedCandidateAssets | None = None
+        self._exasperated_candidate_rest: QPixmap | None = None
+        self._exasperated_candidate_patches: dict[str, QPixmap] = {}
+        self._detachable_assets = None
+        self._detachable_loaded = False
+        self._detachable_cache: OrderedDict[str, QPixmap] = OrderedDict()
         # One 25-layer pose plus a transition margin is sufficient. The former
         # unbounded cache retained every full-canvas pose layer for the entire
         # process lifetime after pose changes.
@@ -99,7 +132,7 @@ class LayeredParametricFaceRenderer:
         # rebuilding the same 1254px body, hair, clothing and neutral face for
         # both endpoints of every phoneme transition wastes most of the 20ms
         # frame budget.  Keep at most the three authored poses; returned
-        # QPixmaps detach on first paint and cannot mutate these authorities.
+        # QPixmaps detach on first paint and preserve these authorities.
         self._neutral_pose_cache: OrderedDict[str, QPixmap] = OrderedDict()
         self._top_pose_cache: OrderedDict[str, QPixmap] = OrderedDict()
         self._layer_center_cache: dict[str, tuple[float, float]] = {}
@@ -146,17 +179,7 @@ class LayeredParametricFaceRenderer:
         *,
         aperture: float | None = None,
     ) -> QPixmap:
-        """Compose the 25 authored layers for ``motion.pose``.
-
-        ``base`` and ``layers`` are accepted for interface compatibility with
-        :class:`FaceRendererPort` but are ignored: the layered renderer draws
-        from its own authored assets instead of a whole-expression image. The
-        mouth opening is driven by ``motion.mouth.aperture`` (already smoothed
-        by the face-motion controller), unless the caller supplies an explicit
-        ``aperture`` override (the legacy speech path passes a discrete 0.0/1.0
-        target during mouth transitions). The composed frame is scaled to
-        ``base``'s size so the caller's canvas dimensions are preserved.
-        """
+        """Render a source-bound expression when installed, otherwise the legacy rig."""
 
         if aperture is not None:
             motion = replace(
@@ -177,7 +200,26 @@ class LayeredParametricFaceRenderer:
         # gesture portrait is the frame and the appearance pack dresses it with
         # the layers cut on that very portrait (its gesture silhouette).
         gesture = gesture_portrait_expression(motion.expression)
-        composed = self._gesture_portrait(gesture) if gesture is not None else QPixmap()
+        silhouette = outfit_silhouette(motion.expression, motion.pose.value)
+        if gesture == "exasperated_front" and self._exasperated_candidate_dir is not None:
+            return self._render_exasperated_candidate(base, motion, layers, aperture)
+        complete = self._complete_halfbody.render(base, motion, layers)
+        if complete is not None:
+            return complete
+        native_state = getattr(self._outfit_overlay, "render_native_state", None)
+        if callable(native_state):
+            amount = motion.mouth.aperture if aperture is None else float(aperture)
+            native = native_state(silhouette, speaking=amount > MOUTH_APERTURE_THRESHOLD)
+            if native is not None:
+                return native if base.isNull() or native.size() == base.size() else native.scaled(
+                    base.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation,
+                )
+        native_neutral = getattr(self._outfit_overlay, "native_neutral", None)
+        composed = native_neutral(silhouette) if callable(native_neutral) else None
+        if composed is None:
+            composed = self._detachable_portrait(silhouette)
+        if composed.isNull() and gesture is not None:
+            composed = self._gesture_portrait(gesture)
         if composed.isNull():
             composed = self.render_pose(
                 self._pose(motion),
@@ -190,28 +232,13 @@ class LayeredParametricFaceRenderer:
         # scaling: the outfit assets and their anchor bounds live in the
         # authority canvas coordinates (1254px for the half-body poses).
         # Applying after the scale-down to the caller's canvas made every
-        # anchor check fail (or draw ~2.7x off), so installed outfits never
+        # anchor check requiring attention (or draw ~2.7x off), so installed outfits stay outside
         # appeared on the half-body poses at all.
         if self._outfit_overlay is not None:
-            suppress_makeup_slots = (
-                frozenset({"eyes"})
-                if eye_state_for_blink(motion.expression_shape.blink)
-                is EyeState.CLOSED
-                else frozenset()
-            )
-            silhouette = outfit_silhouette(motion.expression, motion.pose.value)
-            eye_state = eye_state_for_blink(motion.expression_shape.blink)
-            if eye_state is not EyeState.REST:
-                composed = self._outfit_overlay.apply(
-                    composed,
-                    silhouette,
-                    suppress_makeup_slots=suppress_makeup_slots,
-                    eye_state="half" if eye_state is EyeState.HALF else "closed",
-                )
-            else:
-                # Preserve the legacy port signature for open-eye callers and
-                # lightweight test doubles that implement the original port.
-                composed = self._outfit_overlay.apply(composed, silhouette)
+            # This frame still contains REST eyes. Select state pigment only
+            # after a registered eyelid patch is available in render_overlay;
+            # HALF source selection stays separate from makeup on the REST fallback.
+            composed = self._outfit_overlay.apply(composed, silhouette)
         result = (
             composed
             if composed.size() == base.size()
@@ -228,9 +255,7 @@ class LayeredParametricFaceRenderer:
         mouth_mask = getattr(layers, "mouth_mask", None)
         if actual_aperture > MOUTH_APERTURE_THRESHOLD:
             self._paint_masked(
-                result,
-                mouth_source,
-                mouth_mask,
+                result, mouth_source, mouth_mask,
                 max(0.0, min(1.0, actual_aperture / 0.18)),
             )
         return result
@@ -239,6 +264,38 @@ class LayeredParametricFaceRenderer:
         """The authored full-canvas portrait of one gesture expression (null when absent)."""
         return QPixmap(self._cached_pixmap(self._authority_dir / f"{expression}.png"))
 
+    def supports_discrete_speech(self, expression: str) -> bool:
+        """Tell the presentation timer when complete mouth endpoints are authoritative."""
+        if self._complete_halfbody.supports(expression):
+            return True
+        if expression == CHEEK_SPEECH_CLOSED_EXPRESSION:
+            capability = getattr(self._outfit_overlay, "has_native_motion", None)
+            return callable(capability) and capability("cheek-rest")
+        return (
+            self._exasperated_candidate_dir is not None
+            and gesture_portrait_expression(expression) == "exasperated_front"
+        )
+
+    def _detachable_portrait(self, silhouette: str) -> QPixmap:
+        """Use the installed seven-part rig; missing installation uses legacy assets."""
+        if not self._use_detachable:
+            return QPixmap()
+        if not self._detachable_loaded:
+            self._detachable_assets = load_detachable_halfbody_assets(self._detachable_dir)
+            self._detachable_loaded = True
+        if self._detachable_assets is None:
+            return QPixmap()
+        cached = self._detachable_cache.get(silhouette)
+        if cached is None:
+            cached = self._detachable_assets.compose(silhouette)
+            self._detachable_cache[silhouette] = cached
+            self._detachable_cache.move_to_end(silhouette)
+            while len(self._detachable_cache) > MAX_CACHED_NEUTRAL_POSES:
+                self._detachable_cache.popitem(last=False)
+        else:
+            self._detachable_cache.move_to_end(silhouette)
+        return QPixmap(cached)
+
     def render_overlay(
         self,
         base: QPixmap,
@@ -246,16 +303,35 @@ class LayeredParametricFaceRenderer:
         *,
         mask: QPixmap | None = None,
         opacity: float = 1.0,
+        eye_state: str = "rest",
+        view_id: str | None = None,
+        makeup_view_id: str | None = None,
     ) -> QPixmap:
         """Compose one registered expression layer without owning its policy."""
-
+        if eye_state != "rest":
+            complete = self._complete_halfbody.blink(base, eye_state)
+            if complete is not None:
+                return complete
+        native_blink = getattr(self._outfit_overlay, "render_native_blink", None)
+        if view_id is not None and eye_state != "rest" and callable(native_blink):
+            native = native_blink(base, view_id, eye_state=eye_state)
+            if native is not None:
+                return native
         result = QPixmap(base)
         if mask is None:
             if not source.isNull():
                 painter = QPainter(result)
+                if eye_state != "rest":
+                    # A registered eyelid replaces face colour while the
+                    # existing body retains its matte, including fine alpha
+                    # around extracted highlights and hair-edge pixels.
+                    painter.setCompositionMode(QPainter.CompositionMode_SourceAtop)
                 painter.setOpacity(max(0.0, min(1.0, float(opacity))))
                 painter.drawPixmap(0, 0, source)
                 painter.end()
+                makeup_context = makeup_view_id if makeup_view_id is not None else view_id
+                if makeup_context is not None and eye_state != "rest" and self._outfit_overlay is not None:
+                    paint_blink_makeup(result, source, self._outfit_overlay, makeup_context, eye_state)
             return result
         self._paint_masked(result, source, mask, opacity)
         return result
@@ -312,7 +388,7 @@ class LayeredParametricFaceRenderer:
         # The first-generation face cut-outs contain broad skin-coloured
         # interiors, not merely antialiased feature pixels.  Restore the exact
         # authority face inside the union of those registered face layers so
-        # their rectangles/circles cannot become visible.  This is a facial
+        # their rectangles/circles remain outside visible output.  This is a facial
         # identity sanitation pass only: body, hair, sleeves, ornaments and
         # their physics remain the 25-layer composition above.
         self._restore_authority_face(result, pose)
@@ -701,7 +777,7 @@ class LayeredParametricFaceRenderer:
         painter.end()
 
     def _layer_center(self, path, source: QPixmap) -> tuple[float, float]:
-        """Return one alpha-bounds pivot without rescanning it at 50 Hz."""
+        """Return one alpha-bounds pivot using one construction-time scan."""
         key = str(path)
         cached = self._layer_center_cache.get(key)
         if cached is not None:

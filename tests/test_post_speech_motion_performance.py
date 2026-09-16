@@ -34,7 +34,7 @@ RELEASE_CYCLE_P99_BUDGET_MS = float(MOTION_FRAME_INTERVAL_MS)
 
 
 class RecordingTimer:
-    """Record requested deadlines without sleeping or pumping Qt events."""
+    """Record requested deadlines using a synchronous, isolated scheduler fixture."""
 
     def __init__(self) -> None:
         self.intervals_ms: list[int] = []
@@ -221,7 +221,7 @@ def _release_cycle(
         )
         if pending:
             assert window.speech_motion_y == motion_before_wait, (
-                "finish wait must not advance the independently timed motion"
+                'finish wait must preserve the independently timed motion'
             )
             assert window.ambient_motion_y == ambient_before_wait
         else:
@@ -229,7 +229,7 @@ def _release_cycle(
             assert (
                 window.ambient_motion_y + window.speech_motion_y
                 == composed_before_wait
-            ), "completion must transfer ownership without moving a pixel"
+            ), 'completion must transfer ownership with every pixel preserved'
         max_attempts = max(
             max_attempts,
             int(getattr(window, attempts_attribute, 0)),
@@ -277,7 +277,7 @@ def _assert_hard_release_limit(
                 assert (
                     window.ambient_motion_y + window.speech_motion_y
                     == composed_before_wait
-                ), "hard-limit transfer must not move a pixel"
+                ), 'hard-limit transfer must preserve every pixel'
                 break
             assert window.speech_motion_y == motion_before_wait, (
                 "finish wait must remain a pure observer before the hard limit"
@@ -356,8 +356,7 @@ def _worker(expected_jit: bool) -> dict[str, object]:
         raise RuntimeError("this audit requires a JIT-capable Python 3.15 build")
     if jit.is_enabled() is not expected_jit:
         raise RuntimeError(
-            f"PYTHON_JIT was not applied: expected {expected_jit}, "
-            f"observed {jit.is_enabled()}"
+            f'PYTHON_JIT requires the expected setting: {expected_jit}, observed {jit.is_enabled()}'
         )
 
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
@@ -409,9 +408,7 @@ def _run_mode(mode: str) -> dict[str, object]:
     )
     if completed.returncode:
         raise RuntimeError(
-            f"PYTHON_JIT={mode} audit failed\n"
-            f"stdout:\n{completed.stdout}\n"
-            f"stderr:\n{completed.stderr}"
+            f'PYTHON_JIT={mode} audit requires attention\nstdout:\n{completed.stdout}\nstderr:\n{completed.stderr}'
         )
     return json.loads(completed.stdout.strip().splitlines()[-1])
 

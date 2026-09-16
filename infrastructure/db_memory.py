@@ -399,7 +399,7 @@ class StudioDBMemoryMethods:
 
     @staticmethod
     def _merge_memory_contents(contents: list[str], limit: int = 500) -> str:
-        """Merge near-duplicate facts without inventing or discarding details."""
+        """Merge near-duplicate facts while preserving every detail."""
         fragments: list[str] = []
         seen: set[str] = set()
         for content in contents:
@@ -422,7 +422,7 @@ class StudioDBMemoryMethods:
         now: datetime | None = None,
     ) -> dict[str, int]:
         if target_active <= 0 or max_active < target_active:
-            raise ValueError("memory limits are invalid")
+            raise ValueError("memory limits need supported values")
         reference = now or local_wall_time()
         rows = self.list_memories(10000)
         deduplicated = self._consolidate_auto_duplicates(rows)
@@ -459,9 +459,9 @@ class StudioDBMemoryMethods:
             "capacity-pruning",
         )
         # A profile made entirely of recent/manual/high-importance memories has
-        # no rows eligible for the conservative age policy above.  Letting that
-        # case grow without bound eventually surfaces as a misleading
-        # "memory full" failure.  Preserve the oldest, least-important excess
+        # zero rows eligible for the conservative age policy above.  Letting that
+        # case grow beyond the configured bound eventually surfaces as a misleading
+        # "memory full" attention event.  Preserve the oldest, least-important excess
         # in the recoverable archive rather than deleting it or rejecting the
         # newly saved memory.
         active_rows = self.list_memories(10000)
@@ -492,7 +492,7 @@ class StudioDBMemoryMethods:
         }
 
     def optimize_database(self) -> dict[str, int]:
-        """Reclaim space and prune stale rows without blocking the UI.
+        """Reclaim space and prune rows outside the retention window while keeping the UI responsive.
 
         SQLite WAL files grow over time; a periodic VACUUM plus a bounded
         cleanup of old completed todos and audit rows keeps the profile

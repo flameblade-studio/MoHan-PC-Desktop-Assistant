@@ -18,7 +18,7 @@ LUNAR_YEAR_MAX = 2100
 LUNAR_MONTHS_PER_YEAR = 12
 
 # Bits 4..16: big (30-day) month flags for months 1..13 (bit 16 = month 1);
-# bits 0..3: leap-month number (0 = none); bit 16+ of 0xF0000 area unused
+# bits 0..3: leap-month number (0 = ordinary year); bit 16+ of 0xF0000 area is reserved
 # in this packed form. This is the widely published PMO dataset.
 _LUNAR_INFO = (
     0x04BD8, 0x04AE0, 0x0A570, 0x054D5, 0x0D260, 0x0D950, 0x16554, 0x056A0,
@@ -84,7 +84,7 @@ def lunar_to_gregorian(
     """Convert one lunar calendar date to its Gregorian date.
 
     ``leap=True`` addresses the intercalary repetition of ``lunar_month``
-    and is rejected when that year has no such leap month.
+    and requires the year to define the matching leap month.
     """
     if not LUNAR_YEAR_MIN <= lunar_year <= LUNAR_YEAR_MAX:
         raise ValueError(
@@ -120,8 +120,7 @@ def qixi_gregorian(gregorian_year: int) -> date | None:
     """Return the Gregorian date of Qixi (lunar 7/7) in one Gregorian year.
 
     Lunar 7/7 always lands in the same Gregorian year, so a single-year
-    conversion is sufficient. Returns None outside the dataset instead of
-    guessing.
+    conversion is sufficient. Returns the sentinel outside the dataset, preserving the dataset boundary.
     """
     if not LUNAR_YEAR_MIN <= gregorian_year <= LUNAR_YEAR_MAX:
         return None

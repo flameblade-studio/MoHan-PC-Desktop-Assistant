@@ -186,7 +186,7 @@ class CompatibilityAudit(ast.NodeVisitor):
             "write_text",
         }:
             # Distribution.read_text() reads installed
-            # metadata and has no encoding parameter; it is not pathlib I/O.
+            # metadata uses the importlib API, with its own parameter contract.
             if (
                 name != "distribution.read_text"
                 and not keyword_present(node, "encoding")

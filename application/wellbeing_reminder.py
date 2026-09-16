@@ -70,11 +70,11 @@ class WellbeingRule:
 
     def __post_init__(self) -> None:
         if self.reinforcement_delay_seconds < 5.0 * 60.0:
-            raise ValueError("A wellbeing reinforcement must never be immediate.")
+            raise ValueError("A wellbeing reinforcement follows its configured delay.")
         if self.same_kind_cooldown_seconds < self.reinforcement_delay_seconds:
-            raise ValueError("A wellbeing cooldown cannot be shorter than its delay.")
+            raise ValueError("A wellbeing cooldown matches or exceeds its delay.")
         if not 1 <= self.maximum_daily_reinforcements <= MAX_DAILY_REINFORCEMENTS:
-            raise ValueError("Daily wellbeing reinforcement budget is invalid.")
+            raise ValueError("Daily wellbeing reinforcement budget needs a supported value.")
         if not 1 <= self.eligibility_percent <= MAX_ELIGIBILITY_PERCENT:
             raise ValueError("A reinforcement must remain occasional.")
 
@@ -141,7 +141,7 @@ class ReminderOccurrence:
         if not self.event_id.strip():
             raise ValueError("A reminder occurrence requires a stable event identifier.")
         if self.reinforcement_delivered_at is not None and self.initial_delivered_at is None:
-            raise ValueError("A reminder cannot be reinforced before its first delivery.")
+            raise ValueError("Deliver the reminder once before reinforcement.")
         if (
             self.initial_delivered_at is not None
             and self.reinforcement_delivered_at is not None
@@ -166,7 +166,7 @@ class WellbeingContext:
 
     def __post_init__(self) -> None:
         if self.daily_reinforcement_count < 0:
-            raise ValueError("Daily reinforcement count cannot be negative.")
+            raise ValueError("Daily reinforcement count accepts zero or greater.")
 
 
 @dataclass(frozen=True, slots=True)

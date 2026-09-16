@@ -43,7 +43,7 @@ def _run_tool(
     stderr = io.StringIO()
     old_policy = DENYLIST_TOOL.POLICY_PATH
     old_load_policy = DENYLIST_TOOL.load_policy
-    old_argv = list(DENYLIST_TOOL.sys.argv)
+    old_argv = list(sys.argv)
 
     args = ["validate_third_party_denylist.py"]
     for candidate in candidate_paths:
@@ -52,7 +52,7 @@ def _run_tool(
         args.append("--verify-local-absence")
 
     DENYLIST_TOOL.POLICY_PATH = policy_path
-    DENYLIST_TOOL.sys.argv = args
+    sys.argv = args
     DENYLIST_TOOL.load_policy = lambda path=policy_path: old_load_policy(path)
 
     try:
@@ -62,7 +62,7 @@ def _run_tool(
     finally:
         DENYLIST_TOOL.POLICY_PATH = old_policy
         DENYLIST_TOOL.load_policy = old_load_policy
-        DENYLIST_TOOL.sys.argv = old_argv
+        sys.argv = old_argv
 
 
 def _create_candidate(path: Path, text: str) -> Path:
@@ -187,6 +187,51 @@ def test_ofl_denied_for_non_font_entry_but_allowed_for_font_entry() -> None:
 def test_bad_or_missing_policy_is_a_clear_error() -> None:
     with TemporaryDirectory(prefix="mohan-denylist-policy-") as raw:
         _scenario_bad_or_missing_policy(Path(raw))
+
+
+def test_project_policy_permanently_denies_krita() -> None:
+    policy = json.loads((ROOT / "THIRD_PARTY_DENYLIST.json").read_text(encoding="utf-8"))
+    entries = {entry["id"]: entry for entry in policy["permanent_denials"]}
+    krita = entries["krita-runtime"]
+
+    assert policy["policy"]["download_gate"] == "fail_closed_before_download"
+    assert policy["policy"]["license_evidence_required_before_download"] is True
+    assert "Krita" in krita["aliases"]
+    assert set(krita["forbidden_operations"]) == {
+        "download",
+        "install",
+        "retain",
+        "build",
+        "import",
+        "use",
+        "package",
+        "release",
+    }
+    assert krita["exceptions"] == []
+
+
+def test_project_policy_denies_mit_shell_with_gpl_runtime_dependency() -> None:
+    policy = json.loads((ROOT / "THIRD_PARTY_DENYLIST.json").read_text(encoding="utf-8"))
+    entries = {entry["id"]: entry for entry in policy["permanent_denials"]}
+    minipaint = entries["minipaint-runtime"]
+
+    assert "miniPaint" in minipaint["aliases"]
+    assert "AlertifyJS" in minipaint["aliases"]
+    assert set(minipaint["forbidden_operations"]) == {
+        "download",
+        "install",
+        "retain",
+        "build",
+        "import",
+        "use",
+        "package",
+        "release",
+    }
+    assert minipaint["exceptions"] == []
+
+
+def test_project_has_no_forbidden_local_tool_residue() -> None:
+    assert DENYLIST_TOOL.find_local_residue() == []
 
 
 def main() -> int:

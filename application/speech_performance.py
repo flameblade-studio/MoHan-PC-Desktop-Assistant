@@ -34,7 +34,7 @@ class SpeechEventKind(StrEnum):
 
 @dataclass(frozen=True, slots=True)
 class SpeechEvent:
-    """Provider-neutral event; spoken text and secrets are never retained."""
+    """Provider-neutral event; spoken text and secrets stay outside event state."""
 
     generation: int
     provider_id: str
@@ -82,7 +82,7 @@ class SpeechPerformanceTimeline:
 
     Providers may expose rich boundaries or only audio-derived visemes. The
     latter use restrained, rate-limited estimated segment beats so body motion
-    remains synchronized without pretending exact word timing is available.
+    remains synchronized while representing timing at the precision supplied by the provider.
     """
 
     def __init__(
@@ -111,7 +111,7 @@ class SpeechPerformanceTimeline:
     def prepare(self, provider_id: str) -> tuple[SpeechEvent, SpeechPerformanceDirective]:
         provider = str(provider_id).strip()
         if not provider:
-            raise ValueError("Speech provider identifier must not be empty.")
+            raise ValueError("Speech provider identifier requires content.")
         now = self._now()
         self._generation += 1
         self._last_gesture_at = now - self.minimum_gesture_gap_seconds
@@ -218,7 +218,7 @@ class SpeechPerformanceTimeline:
             # The close event already settled this generation.  Provider
             # volume cues arrive through queued signals and can land after
             # it; letting one through flipped the timeline back to SPEAKING
-            # with the mouth open and no second close ever came.
+            # with the mouth open and only the first close event recorded.
             return None
         self._ensure_audio_started()
         now = self._now()

@@ -1,8 +1,8 @@
 """Measure the offscreen runtime cost of MoHan's layered compositors.
 
 The benchmark deliberately exercises the production renderers with the shipped
-official appearance packs.  It does not alter the compositor implementation:
-the decode audit observes the Qt constructor boundaries from a temporary probe
+official appearance packs.  It preserves the compositor implementation:
+the decode audit observes the Qt constructor boundaries through a temporary probe
 and restores them before returning.
 """
 
@@ -94,7 +94,7 @@ IMAGE_FORMAT_NAMES = (
 
 
 class DecodeProbe:
-    """Collect Qt image-load calls without changing the returned Qt objects."""
+    """Collect Qt image-load calls while preserving the returned Qt objects."""
 
     def __init__(self) -> None:
         self.pixmap_paths: list[str] = []
@@ -124,7 +124,7 @@ def _half_body_motions() -> tuple[FaceMotionFrame, FaceMotionFrame]:
 
 
 def _new_overlay(store: Path) -> ActiveOutfitOverlay:
-    """Use a fresh overlay so a cold sample cannot inherit runtime state."""
+    """Use a fresh overlay to give each cold sample an independent runtime state."""
 
     return ActiveOutfitOverlay(store, ROOT)
 
@@ -151,18 +151,18 @@ def _calibration_sample() -> float:
     for _ in range(CALIBRATION_DECODE_REPETITIONS):
         image = REAL_QIMAGE.fromData(CALIBRATION_PNG)
         if image.isNull():
-            raise RuntimeError("The fixed calibration PNG could not be decoded.")
+            raise RuntimeError("Provide a decodable fixed calibration PNG.")
         decoded += 1
     elapsed_ns = time.perf_counter_ns() - started
     if decoded != CALIBRATION_DECODE_REPETITIONS:
-        raise RuntimeError("The calibration workload did not complete.")
+        raise RuntimeError("The calibration workload requires completion before measurement.")
     return elapsed_ns / (NANOSECONDS_PER_SECOND / MILLISECONDS_PER_SECOND)
 
 
 def _calibration_round() -> Callable[[], float]:
     warmup = REAL_QIMAGE.fromData(CALIBRATION_PNG)
     if warmup.isNull():
-        raise RuntimeError("The fixed calibration PNG could not be decoded.")
+        raise RuntimeError("Provide a decodable fixed calibration PNG.")
     return _calibration_sample
 
 
@@ -236,7 +236,7 @@ def _hot_half_body_round(
 
 def _percentile(values: Sequence[float], ratio: float) -> float:
     if not values:
-        raise ValueError("Cannot calculate a percentile from no samples.")
+        raise ValueError("Percentile calculation requires at least one sample.")
     ordered = sorted(values)
     position = (len(ordered) - 1) * ratio
     lower = int(position)
@@ -542,7 +542,7 @@ def _record_profile_name(
 
     profiles = budget.get("profiles")
     if not isinstance(profiles, dict):
-        raise RuntimeError("The performance budget has no profiles object.")
+        raise RuntimeError("The performance budget requires a profiles object.")
     developer = profiles.get(DEVELOPER_PROFILE)
     if not isinstance(developer, dict):
         raise RuntimeError(f"The performance budget has no {DEVELOPER_PROFILE} profile.")
@@ -627,7 +627,7 @@ def _refresh_record(
             f"{PERF_BUDGET_MINIMUM_SAMPLES}; record only until more "
             "independent benchmark executions are captured with --record."
         )
-        record["status"] = "recorded; not gated"
+        record["status"] = "recorded for observation; gate evaluation awaits sufficient samples"
 
     record["formula"] = f"absolute_budget_ms = {formula}"
     record["margin"] = (
@@ -652,7 +652,7 @@ def _refresh_record(
             "max_observed_ratio": None,
             "noise_multiplier": PERF_BUDGET_NOISE_MULTIPLIER,
             "ratio_budget": None,
-            "selection": "not established until paired calibration samples exist",
+            "selection": "awaiting paired calibration samples",
         }
 
 
@@ -663,10 +663,10 @@ def _record_calibration(
 ) -> float:
     result_calibration = result.get("calibration")
     if not isinstance(result_calibration, dict):
-        raise RuntimeError("The benchmark result has no calibration object.")
+        raise RuntimeError("The benchmark result requires a calibration object.")
     calibration_summary = result_calibration.get("summary")
     if not isinstance(calibration_summary, dict):
-        raise RuntimeError("The benchmark result has no calibration summary.")
+        raise RuntimeError("The benchmark result requires a calibration summary.")
     calibration_p95 = _record_number(
         calibration_summary.get("p95_ms"),
         "calibration.summary.p95_ms",
@@ -722,7 +722,7 @@ def _record_measurements(
 ) -> dict[str, int]:
     result_measurements = result.get("measurements")
     if not isinstance(result_measurements, dict):
-        raise RuntimeError("The benchmark result has no measurements object.")
+        raise RuntimeError("The benchmark result requires a measurements object.")
     records = profile.get("measurements")
     if not isinstance(records, dict):
         raise RuntimeError(f"The {profile_name} profile has no measurements object.")
@@ -779,11 +779,11 @@ def _record_budget(
         )
     result_environment = result.get("environment")
     if not isinstance(result_environment, dict):
-        raise RuntimeError("The benchmark result has no environment object.")
+        raise RuntimeError("The benchmark result requires an environment object.")
     profile_name = _record_profile_name(result_environment, budget)
     profiles = budget.get("profiles")
     if not isinstance(profiles, dict):
-        raise RuntimeError("The performance budget profiles object is invalid.")
+        raise RuntimeError("The performance budget requires a valid profiles object.")
     profile = profiles.get(profile_name)
     if not isinstance(profile, dict):
         raise RuntimeError(f"The performance budget has no {profile_name} profile.")

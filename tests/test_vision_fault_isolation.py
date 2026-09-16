@@ -167,7 +167,7 @@ def assert_no_camera_reports_without_crashing() -> None:
         except RuntimeError as exc:
             assert str(exc).strip()
         else:
-            raise AssertionError("missing camera must report an explicit error")
+            raise AssertionError('camera availability errors must be reported explicitly')
     assert presence.camera is None
     assert statuses.count() == 0
     presence.stop()

@@ -13,7 +13,7 @@ MoHan can do the same:
   ignores the companion for a long stretch.  It fades quickly so it reads as a
   playful, restrained sulk rather than possessiveness.
 
-Both are pure domain logic with no Qt or speech-provider dependency.
+Both are pure domain logic with Qt and speech providers stay outside the domain boundary.
 """
 
 lazy import math
@@ -72,7 +72,7 @@ class AffinityState:
         if not 0.0 <= jealousy <= 1.0:
             raise ValueError("Jealousy must be within 0..1.")
         if interaction_count < 0:
-            raise ValueError("Interaction count must not be negative.")
+            raise ValueError("Interaction count accepts zero or greater.")
         self._clock = clock or time.monotonic
         self._affinity = float(affinity)
         self._jealousy = float(jealousy)
@@ -148,7 +148,7 @@ class AffinityState:
         self._affinity *= math.exp(
             -math.log(2.0) * elapsed / AFFINITY_DECAY_HALF_LIFE_SECONDS
         )
-        # Advance the anchor after applying decay.  Without this, every
+        # Advance the anchor after applying decay. This keeps every
         # snapshot() re-applies the full since-last-interaction factor and the
         # decay compounds with each read (a per-frame policy read emptied a
         # one-week half-life in minutes).  Mirrors satiety._decay.

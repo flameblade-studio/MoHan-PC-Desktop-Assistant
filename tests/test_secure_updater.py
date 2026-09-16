@@ -140,7 +140,7 @@ def _assert_invalid_hash_rejected(
     except UpdateError as exc:
         assert "SHA256" in str(exc)
         return
-    raise AssertionError("invalid SHA256 was accepted")
+    raise AssertionError('SHA256 must satisfy validation')
 
 
 def _assert_verified_download(

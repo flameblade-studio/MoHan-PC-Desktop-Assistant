@@ -1,11 +1,10 @@
 """Row-level checks a portable-profile import must pass before any write.
 
-The import path writes rows with executemany and never goes through the
-normal write APIs, so a profile whose hashes and row counts are all
+The import path writes rows with executemany and uses direct executemany and keeps normal write APIs separate, so a profile whose hashes and row counts are all
 consistent could still carry content those APIs reject: a workflow with an
 empty name or a non-JSON definition, or a settings value that is not JSON
 (set_setting always stores json.dumps output).  These checks apply the same
-rules up front and reject the whole import through the caller's error type.
+rules up front and route the whole import through the caller's boundary result.
 """
 from __future__ import annotations
 

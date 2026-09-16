@@ -194,9 +194,9 @@ def run() -> None:
         _assert_complex_wait_and_completion(window, dashboard)
         # A repeated slow request must respect the expression cooldown.
         _assert_cooldown_prevents_repeat(window, dashboard)
-        # API failure must invalidate pending expression timers.
+        # An API error must invalidate pending expression timers.
         _assert_failure_invalidates_timers(window, dashboard)
-        # Non-Realtime transcription uses the queue without selecting a pose.
+        # Non-Realtime transcription uses the queue and preserves the current pose.
         _assert_transcription_queues_without_pose(window, dashboard)
         # Realtime speech owns its visemes and cancels standard wait poses.
         _assert_realtime_owns_speech_pose(window, dashboard)

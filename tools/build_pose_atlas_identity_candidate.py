@@ -73,7 +73,7 @@ def _validate_output_path(
         _normalized_path(authority_path),
         _normalized_path(target_path),
     }:
-        raise ValueError("output must not overwrite authority or target")
+        raise ValueError("output must use a path distinct from the authority and target")
 
 
 def _validate_target_pose(target_path: Path, max_abs_target_yaw: int) -> None:
@@ -98,7 +98,7 @@ def _validate_affine(
     target_shape: tuple[int, int],
 ) -> None:
     if matrix.shape != (2, 3) or not np.isfinite(matrix).all():
-        raise ValueError("identity alignment produced an invalid affine matrix")
+        raise ValueError("identity alignment requires a valid affine matrix")
     scale = math.hypot(float(matrix[0, 0]), float(matrix[1, 0]))
     rotation = abs(
         math.degrees(math.atan2(float(matrix[1, 0]), float(matrix[0, 0])))
@@ -173,7 +173,7 @@ def build_candidate(
         method=cv2.LMEDS,
     )
     if matrix is None:
-        raise ValueError("could not estimate identity alignment")
+        raise ValueError("identity alignment requires valid matching landmarks")
     _validate_affine(
         matrix,
         source_landmarks,

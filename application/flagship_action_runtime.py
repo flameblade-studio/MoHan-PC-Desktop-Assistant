@@ -130,11 +130,7 @@ class ActionExecutor:
         self.handlers[capability] = (handler, verifier)
 
     def unregister(self, capability: str) -> None:
-        """Remove a capability so a disabled integration cannot linger.
-
-        Later plans that still request the capability receive the regular
-        "尚未安裝此工具的執行器" failure instead of reaching a stale handler.
-        """
+        """Remove a capability so a disabled integration leaves the active registry. Later plans that request the capability receive the regular "尚未安裝此工具的執行器" attention event through the supported boundary. """
 
         self.handlers.pop(capability, None)
 
@@ -261,7 +257,7 @@ class ActionExecutor:
 
 
 def parse_plan_json(value: str, *, source: str = "local") -> ActionPlan:
-    """Parse model output without granting capabilities or trusting prose."""
+    """Parse model output while keeping capabilities outside the parser and treating prose as untrusted input."""
 
     payload = json.loads(value)
     if not isinstance(payload, dict):

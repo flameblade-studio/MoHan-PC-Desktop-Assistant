@@ -25,7 +25,7 @@ SnapshotT = TypeVar("SnapshotT")
 
 
 class OpenAIVisionPreferencesStoreError(RuntimeError):
-    """A fixed-detail persistence error without backend content."""
+    """A fixed-detail persistence boundary result with backend content kept private."""
 
 
 @dataclass(slots=True)
@@ -41,7 +41,7 @@ class OpenAIVisionPreferencesDraft[SnapshotT]:
             self.value = replace(self.value, **changes)
         except (TypeError, ValueError):
             raise OpenAIVisionPreferencesStoreError(
-                "OpenAI vision draft is invalid."
+                "OpenAI vision draft needs a supported value."
             ) from None
         return self
 
@@ -107,7 +107,7 @@ class OpenAIVisionPreferencesStore[SnapshotT]:
     def save(self, preferences: OpenAIVisionPreferences) -> None:
         if not isinstance(preferences, OpenAIVisionPreferences):
             raise OpenAIVisionPreferencesStoreError(
-                "OpenAI vision preferences are invalid."
+                "OpenAI vision preferences need supported values."
             )
         values = settings_payload(preferences)
         values[STORE_SCHEMA_KEY] = STORE_SCHEMA_VERSION
@@ -124,10 +124,10 @@ class OpenAIVisionPreferencesStore[SnapshotT]:
                 self._settings.restore(before)
             except _BOUNDARY_ERRORS:
                 raise OpenAIVisionPreferencesStoreError(
-                    "OpenAI vision save failed and rollback was incomplete."
+                    "OpenAI vision save requires attention and rollback requires attention."
                 ) from None
             raise OpenAIVisionPreferencesStoreError(
-                "OpenAI vision save failed; previous values were restored."
+                "OpenAI vision save requires attention; previous values were restored."
             ) from None
 
     def export_portable(self) -> dict[str, object]:

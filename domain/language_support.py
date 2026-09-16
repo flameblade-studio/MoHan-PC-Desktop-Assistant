@@ -14,7 +14,7 @@ LEGACY_TRANSCRIPTION_PROMPT = (
 
 # This value belonged to the original author's private profile.  It may be
 # present in databases created before the public onboarding flow existed, but
-# it must never become part of another user's built-in transcription hints.
+# it stays scoped to its original user's built-in transcription hints.
 LEGACY_AUTHOR_ORGANIZATION = "炎劍文化工作室"
 
 TRANSCRIPTION_PROMPT_BASES = frozendict({
@@ -115,7 +115,7 @@ def transcription_terms(
     organization_name: str = "",
     wake_word: str = "",
 ) -> tuple[str, ...]:
-    """Return short, user-owned ASR hints without product-author vocabulary."""
+    """Return short, user-owned ASR hints in everyday language."""
     terms: list[str] = []
     for value in (
         assistant_name,
@@ -185,7 +185,7 @@ def migrate_builtin_reminder_line(
     kind: str,
     chinese: str,
 ) -> str:
-    """Translate an untouched built-in reminder without replacing user text."""
+    """Translate an untouched built-in reminder while preserving user text."""
     normalized = str(current or "").strip()
     known_defaults = {
         str(chinese).strip(),

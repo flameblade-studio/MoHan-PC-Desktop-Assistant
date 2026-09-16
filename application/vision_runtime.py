@@ -57,7 +57,7 @@ def _load_opencv() -> object:
 
 
 class VisionEnvironmentProbe:
-    """Fail-closed vision preflight that never affects non-vision features."""
+    """Protective vision preflight that keeps non-vision features available."""
 
     def __init__(
         self,

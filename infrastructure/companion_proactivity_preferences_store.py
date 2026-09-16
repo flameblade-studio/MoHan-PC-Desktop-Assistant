@@ -62,7 +62,7 @@ SnapshotT = TypeVar("SnapshotT")
 
 
 class CompanionProactivityPreferencesStoreError(RuntimeError):
-    """A fixed-detail persistence error without backend content."""
+    """A fixed-detail persistence boundary result with backend content kept private."""
 
 
 @dataclass(slots=True)
@@ -78,7 +78,7 @@ class CompanionProactivityPreferencesDraft[SnapshotT]:
             self.value = replace(self.value, **changes)
         except (TypeError, ValueError):
             raise CompanionProactivityPreferencesStoreError(
-                "Companion proactivity draft is invalid."
+                "Companion proactivity draft needs a supported value."
             ) from None
         return self
 
@@ -148,7 +148,7 @@ class CompanionProactivityPreferencesStore[SnapshotT]:
     def save(self, preferences: CompanionProactivityPreferences) -> None:
         if not isinstance(preferences, CompanionProactivityPreferences):
             raise CompanionProactivityPreferencesStoreError(
-                "Companion proactivity preferences are invalid."
+                "Companion proactivity preferences need supported values."
             )
         if self._load_failed and not self._has_valid_value:
             raise CompanionProactivityPreferencesStoreError(
@@ -197,10 +197,10 @@ class CompanionProactivityPreferencesStore[SnapshotT]:
                 self._settings.restore(before)
             except _BOUNDARY_ERRORS:
                 raise CompanionProactivityPreferencesStoreError(
-                    "Companion proactivity save failed and rollback was incomplete."
+                    "Companion proactivity save requires attention and rollback requires attention."
                 ) from None
             raise CompanionProactivityPreferencesStoreError(
-                "Companion proactivity save failed; previous values were restored."
+                "Companion proactivity save requires attention; previous values were restored."
             ) from None
 
 

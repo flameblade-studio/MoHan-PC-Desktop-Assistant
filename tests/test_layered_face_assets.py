@@ -33,11 +33,11 @@ lazy from infrastructure.layered_face_renderer import (
     LayeredParametricFaceRenderer,
 )
 
-# Staging override: validate a candidate rig without replacing assets/.
+# Staging override: validate the candidate rig while preserving assets/.
 # MOHAN_LAYERED_FACE_DIR holds the 75 ``{pose}_{layer}.png`` layers and
 # MOHAN_LAYERED_FACE_PORTRAIT_DIR the three idle portraits they were cut from
 # (e.g. work/half-body-v2/layered and work/half-body-v2/authority).  Unset,
-# both resolve to the shipped assets; thresholds below are never relaxed.
+# both resolve to shipped assets and retain every threshold below.
 LAYERED_DIR = Path(
     os.environ.get("MOHAN_LAYERED_FACE_DIR")
     or ROOT / "assets" / "expressions" / "layered"
@@ -97,7 +97,7 @@ def test_renderer_handles_open_mouth_and_blink() -> None:
 
 
 def test_registered_control_cutouts_are_not_double_painted() -> None:
-    """Control values must not expose the authored extraction boundaries."""
+    """Control values preserve seamless authored extraction boundaries."""
 
     _app()
     manifest = load_layered_face_assets(LAYERED_DIR)
@@ -229,11 +229,9 @@ def test_renderer_applies_active_outfit_to_the_matching_half_body_pose() -> None
     assert not out.isNull()
     assert out.size() == base.size()
     assert overlay.calls == ["front-crossed"]
-    # Ruling 2026-08-27: the overlay must receive the FULL authored canvas,
-    # before any scale-down.  Outfit assets and their anchor bounds live in
-    # authority-canvas coordinates; applying after the scale to the caller's
-    # 465px canvas made every anchor check fail and installed outfits never
-    # appeared on the half-body poses.
+    # Ruling 2026-08-27: apply the overlay on the full authored canvas before
+    # scaling. Outfit anchors use authority coordinates; the earlier 465 px
+    # application caused anchor rejection and hid installed outfits.
     composed = renderer.render_pose(
         renderer._manifest_or_load().pose(FacePose.FRONT),
         frame,

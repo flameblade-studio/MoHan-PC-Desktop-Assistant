@@ -77,7 +77,7 @@ class BehaviorInput:
         if self.conversation_turn < 0 or self.away_seconds < 0:
             raise ValueError("Conversation turn and away time must be non-negative.")
         if not self.current_pose.strip():
-            raise ValueError("Current pose must not be empty.")
+            raise ValueError("Current pose requires content.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -94,7 +94,7 @@ class BodyPerformancePlan:
 
     def __post_init__(self) -> None:
         if self.hold_ms < 0:
-            raise ValueError("A performance hold must not be negative.")
+            raise ValueError("A performance hold accepts zero or greater.")
         if not all(
             value.strip()
             for value in (
@@ -107,7 +107,7 @@ class BodyPerformancePlan:
         ):
             raise ValueError("Every atomic performance layer must be explicit.")
         if self.pose == "back-full" and self.gaze is not GazeTarget.AWAY:
-            raise ValueError("A full back view cannot gaze at the user.")
+            raise ValueError("A full back view keeps its gaze forward.")
         if self.pose.startswith("back-") and (
             self.left_hand != "relaxed" or self.right_hand != "relaxed"
         ):
@@ -180,7 +180,7 @@ class BehaviorDirector:
         if rng is not None and seed is not None:
             raise ValueError("Inject either rng or seed, not both.")
         if cooldown_ms < 0:
-            raise ValueError("Cooldown must not be negative.")
+            raise ValueError("Cooldown accepts zero or greater.")
         self._clock = clock or time.monotonic
         self._rng = rng or random.Random(seed)
         self._cooldown_ms = cooldown_ms
@@ -247,12 +247,12 @@ class BehaviorDirector:
             # rear pose on screen through speech.  Keep the recovery debt so
             # the post-speech gradient still runs; zeroing it here left the
             # coordinator stranded in back-full with every later candidate
-            # rejected as an unsafe jump.
+            # outside the supported transition range.
             pass
         else:
             self._back_depth = 0
         if plan.pose.endswith("-right") or plan.pose == "right-neutral":
-            # "right-neutral" does not end with "-right"; without its own
+            # "right-neutral" uses a distinct name; its own
             # case the side memory stayed "left" and an anger escalation
             # that began on her right side swept across the front to the
             # left rear mid-sequence.
@@ -482,9 +482,7 @@ class BehaviorDirector:
     def _safe_intermediate(self, context: BehaviorInput) -> _Candidate:
         """One recovery-gradient step toward the front from the active depth.
 
-        The previous fixed side-neutral (depth 1) fallback was itself an
-        unsafe jump when the active pose was back-full (depth 3), and the
-        speech branch jumped straight to front (depth 0).  Stepping exactly
+        The previous fixed side-neutral (depth 1) fallback skipped a depth when the active pose was back-full (depth 3), and the speech branch jumped straight to front (depth 0).  Stepping exactly
         one depth level keeps every emitted transition within the safety
         contract this method exists to uphold, and the recover- action keeps
         the back-depth bookkeeping truthful.
@@ -528,7 +526,7 @@ class BehaviorDirector:
     def _disabled_plan(context: BehaviorInput) -> BodyPerformancePlan:
         pose = context.current_pose
         default_view = "right-030" if "right" in pose else "left-030"
-        # Rear poses must not gaze at the user (BodyPerformancePlan raises
+        # Rear poses keep their gaze forward (BodyPerformancePlan raises
         # on that combination).  The previous USER/DOWN gaze made direct()
         # throw on every frame while she was turned away with performances
         # disabled, freezing the screen on her back permanently.

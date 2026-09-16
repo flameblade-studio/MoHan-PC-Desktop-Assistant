@@ -237,7 +237,7 @@ def _voice_checks(window, voices: tuple[str, ...]) -> tuple[_SelfTestCheck, ...]
 
 
 def _speech_runtime_checks() -> tuple[_SelfTestCheck, ...]:
-    """Exercise packaged speech lifecycle and mouth controls without sound."""
+    """Exercise packaged speech lifecycle and mouth controls with sound outside this boundary."""
 
     portaudio = Path(str(getattr(sounddevice, "_libname", "")))
     timeline = SpeechPerformanceTimeline()

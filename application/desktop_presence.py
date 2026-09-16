@@ -10,7 +10,7 @@ class _LastInputInfo(ctypes.Structure):
 
 
 def seconds_since_local_input() -> float | None:
-    """Return local desktop idle time without recording keys or pointer data."""
+    """Return local desktop idle time while keeping keys and pointer data private."""
 
     if sys.platform != "win32":
         return None

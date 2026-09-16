@@ -2,12 +2,14 @@ from __future__ import annotations
 
 lazy import sqlite3
 lazy import threading
+lazy import os
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, field
 lazy from pathlib import Path
 lazy from typing import Protocol
 
 lazy from PySide6.QtCore import QObject
+lazy from PySide6.QtGui import QRegion
 
 lazy from integrations.speech import (
     OpenAITTS,
@@ -64,9 +66,15 @@ lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
+lazy from infrastructure.core_hand_regions import load_core_hand_regions
 lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
 lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from infrastructure.exasperated_candidate_appearance import ExasperatedCandidateAppearance
+lazy from infrastructure.exasperated_candidate_assets import (
+    FORMAL_ASSET_RELATIVE_DIR,
+    validate_formal_exasperated_install,
+)
 lazy from infrastructure.multimodal_model_provider import (
     MultimodalModelPaths,
     OpenCVMultiModalModelProvider,
@@ -219,11 +227,46 @@ def _create_ai_worker(
 def create_presentation_ports() -> PresentationPorts:
     """Build every presentation adapter once at the composition boundary."""
 
+    asset_root = resource_path(".")
+    shared_hand_region_provider: Callable[[str], QRegion] | None = None
+    hand_region_loaded = False
+
+    def shared_hand_regions() -> Callable[[str], QRegion] | None:
+        nonlocal hand_region_loaded, shared_hand_region_provider
+        if not hand_region_loaded:
+            shared_hand_region_provider = load_core_hand_regions(asset_root)
+            hand_region_loaded = True
+        return shared_hand_region_provider
+
     def outfit_overlay_factory(on_stale_body_profile=None):
         return ActiveOutfitOverlay(
             presentation_contracts.default_data_dir() / "outfits",
-            resource_path("."),
+            asset_root,
             on_stale_body_profile=on_stale_body_profile,
+            visible_hand_region=shared_hand_regions(),
+        )
+
+    def face_renderer_factory() -> LayeredParametricFaceRenderer:
+        configured = os.environ.get("MOHAN_EXASPERATED_CANDIDATE_DIR")
+        if configured is None:
+            candidate_dir = resource_path(FORMAL_ASSET_RELATIVE_DIR).resolve()
+            validate_formal_exasperated_install(candidate_dir)
+        else:
+            candidate_dir = Path(configured)
+            if not candidate_dir.is_absolute():
+                raise ValueError("Exasperated candidate directory must be absolute.")
+            candidate_dir = candidate_dir.resolve()
+        appearance_dir = candidate_dir / "appearance"
+        candidate_appearance = None
+        if appearance_dir.exists():
+            candidate_appearance = ExasperatedCandidateAppearance.load(appearance_dir)
+            candidate_appearance.store = presentation_contracts.default_data_dir() / "outfits"
+        elif configured is None:
+            raise FileNotFoundError(f"Default exasperated appearance is missing: {appearance_dir}")
+        return LayeredParametricFaceRenderer(
+            outfit_overlay=outfit_overlay_factory(),
+            exasperated_candidate_dir=candidate_dir,
+            candidate_appearance_overlay=candidate_appearance,
         )
 
     return PresentationPorts(
@@ -234,9 +277,7 @@ def create_presentation_ports() -> PresentationPorts:
         portable_secret_binder=bind_dashboard_portable_secrets,
         autostart_configurator=set_autostart,
         validate_face_assets=validate_face_assets,
-        face_renderer_factory=lambda: LayeredParametricFaceRenderer(
-            outfit_overlay=outfit_overlay_factory()
-        ),
+        face_renderer_factory=face_renderer_factory,
         visible_windows=visible_windows,
         outfit_overlay_factory=outfit_overlay_factory,
         full_body_renderer_factory=lambda outfit_overlay=None: LayeredFullBodyRenderer(
@@ -316,7 +357,7 @@ def _default_vision_provider_factory(
     api_key: str,
     model_selector: Callable[[], str],
 ) -> _VisionProviderPort:
-    """Resolve the stdlib HTTP factory lazily; never fall back to the SDK."""
+    """Resolve the stdlib HTTP factory lazily; the SDK remains outside this path."""
 
     try:
         from integrations import openai_vision_provider
@@ -335,7 +376,7 @@ def _default_vision_provider_factory(
 def create_cloud_vision_service_factory(
     provider_factory: VisionProviderFactory = _default_vision_provider_factory,
 ) -> CloudVisionServiceFactoryPort:
-    """Build the optional cloud path without creating a client or request."""
+    """Build the optional cloud path while preserving the client and request boundary."""
 
     def create(
         secret_store: SecretStorePort,

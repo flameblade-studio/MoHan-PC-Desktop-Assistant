@@ -149,9 +149,9 @@ class PoseRuntimeLoader:
         else:
             raise TypeError("Pose runtime requires an auditor and activator.")
         if not callable(getattr(auditor, "audit", None)):
-            raise TypeError("Pose runtime auditor is invalid.")
+            raise TypeError("Pose runtime auditor needs a supported value.")
         if not callable(getattr(activator, "activate", None)):
-            raise TypeError("Pose runtime activator is invalid.")
+            raise TypeError("Pose runtime activator needs a supported value.")
         self._active = fallback_atlas
         self._source = source
         self._decoder = decoder

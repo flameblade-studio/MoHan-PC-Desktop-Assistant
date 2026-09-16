@@ -93,7 +93,7 @@ def test_provenance_rejects_loaded_binary_drift(tmp_path: Path) -> None:
     package, extension = _native_modules(tmp_path, b"loaded binary")
     wheel = _validation_wheel(tmp_path, b"wheel binary")
 
-    with pytest.raises(RuntimeError, match="does not match the validation wheel"):
+    with pytest.raises(RuntimeError, match="must match the validation wheel"):
         _native_provenance(
             package,
             validation_wheel=wheel,

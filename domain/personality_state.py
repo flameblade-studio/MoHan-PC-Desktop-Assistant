@@ -2,15 +2,15 @@ from __future__ import annotations
 
 """Personality mirroring (性格鏡像), inspired by "A・I ga Tomaranai!".
 
-A real girl is shaped by the people around her.  If the user has been serious
+A real girl grows through the people around her.  If the user has been serious
 and work-focused lately, MoHan grows quieter and more reserved; if the user
 jokes around, her tsundere tone turns lighter.  This module analyzes recent
 conversation sentiment and word style, then produces a bounded "temperature"
 nudge and a word-style preference so the system prompt can resonate with the
 user's soul.
 
-This is pure domain logic with no Qt dependency.  It only consumes cheap scalar
-summaries (sentiment polarity and a style score), so it never blocks the UI.
+This is pure domain logic with Qt outside the domain boundary.  It only consumes cheap scalar
+summaries (sentiment polarity and a style score), so it keeps the UI responsive.
 """
 
 lazy import re
@@ -24,7 +24,7 @@ PLAYFUL_TEMPERATURE_THRESHOLD = 0.1
 # Word markers used to derive a cheap sentiment/style signal from raw
 # conversation text.  These are deliberately lightweight so the mirror can
 # consume a large conversation window (up to the full 1M-token context) without
-# blocking the UI thread — it only counts substring hits, never runs a model.
+# blocking the UI thread — it only counts substring hits, runs local substring counting only.
 _WARM_MARKERS = (
     "謝謝", "感謝", "喜歡", "開心", "太好了", "愛", "抱", "笑",
     "thank", "love", "great", "nice", "happy", "ありがとう", "好き",
@@ -101,8 +101,7 @@ class PersonalityMirrorState:
 
         This is the conversation-context entry point: it accepts an arbitrary
         window of dialogue (up to the full 1M-token context) and reduces it to
-        two cheap scalar signals via substring counting, so it never blocks the
-        UI thread and never depends on an external model.
+        two cheap scalar signals via substring counting, while keeping the UI thread responsive and the analysis local.
         """
         sentiment_polarity, style_score = derive_signals(text)
         return self.update(

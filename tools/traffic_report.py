@@ -2,8 +2,8 @@
 Produce archivable, comparable GitHub traffic reports／保存可能比較できる GitHub トラフィック月報。
 The GitHub traffic API keeps only a rolling fourteen-day window.  This tool
 validates every required response before writing the current snapshot and the
-four-language Markdown report, so a failed or incomplete API call cannot leave
-an apparently valid empty report behind.
+four-language Markdown report. Report publication requires complete, valid
+API responses, with collection errors explicitly reported.
 用法：
     py -3.15 tools/traffic_report.py --month 2026-09
     py -3.15 tools/traffic_report.py --month 2026-09 --overwrite
@@ -42,46 +42,46 @@ MANUAL_KEYS = ("bot_share_estimate", "kofi_page_views", "kofi_members", "impact_
 
 REPORT_TEXT = {
     "繁體中文": {
-        "title": "墨寒每月流量月報", "window_note": "GitHub 流量端點只提供最近 14 天；本月欄位代表本次擷取視窗，不宣稱完整曆月總量。", "collected": "擷取時間", "raw": "原始 JSON",
+        "title": "墨寒每月流量月報", "window_note": "GitHub 流量端點提供最近 14 天；本月欄位僅代表本次擷取視窗內的總量。", "collected": "擷取時間", "raw": "原始 JSON",
         "comparison": "本月與上月對比", "metric": "指標", "current": "本月", "previous": "上月", "change": "變化", "p0": "P0 基準",
-        "pages": "最受歡迎的頁面", "page": "頁面", "page_title": "標題", "views": "瀏覽", "uniques": "不重複", "referrers": "最受歡迎的來源", "referrer": "來源",
+        "pages": "最受歡迎的頁面", "page": "頁面", "page_title": "標題", "views": "瀏覽", "uniques": "獨立", "referrers": "最受歡迎的來源", "referrer": "來源",
         "releases": "Release 資產下載", "release": "Release", "assets": "資產數", "downloads": "累計下載", "manual": "這個月做了什麼可能影響數字的事",
-        "manual_prompt": "請由擁有者在發布月報前補上以下欄位；沒有證據的數字請保留待填，不要猜測。", "bot_share": "機器人佔比推估", "kofi_views": "Ko-fi 頁面瀏覽", "kofi_members": "Ko-fi 會員數", "impact": "可能影響數字的工作", "placeholder": "待人工填寫", "no_data": "無資料",
-        "clone_note": "clone 可能包含機器人與鏡像；這裡保留數字供追蹤，但不得直接當成成效。", "release_note": "Release API 的下載數是資產發布後累計值；變化欄是兩次快照的差額。", "issue_status": "Issue #129：可請擁有者結案；本工具不會自動關閉 issue。",
-        "metrics": {"views": "瀏覽數", "unique_visitors": "不重複訪客", "clones": "clone 數（可能含機器人）", "unique_cloners": "不重複 clone", "release_downloads": "Release 資產下載（累計）", "stars": "星數", "forks": "Fork", "watchers": "Watchers／訂閱", "google_uniques": "Google 來源不重複訪客", "ironman_uniques": "鐵人賽來源不重複訪客"},
+        "manual_prompt": "請由擁有者在發布月報前依證據補上以下欄位；證據待提供的數字保留待填。", "bot_share": "機器人佔比推估", "kofi_views": "Ko-fi 頁面瀏覽", "kofi_members": "Ko-fi 會員數", "impact": "可能影響數字的工作", "placeholder": "待人工填寫", "no_data": "資料待確認",
+        "clone_note": "clone 可能包含機器人與鏡像，僅供活動追蹤；成效以經驗證的使用者互動衡量。", "release_note": "Release API 的下載數是資產發布後累計值；變化欄是兩次快照的差額。", "issue_status": "Issue #129：結案由擁有者執行，本工具提供月報證據。",
+        "metrics": {"views": "瀏覽數", "unique_visitors": "獨立訪客", "clones": "clone 數（可能含機器人）", "unique_cloners": "獨立 clone", "release_downloads": "Release 資產下載（累計）", "stars": "星數", "forks": "Fork", "watchers": "Watchers／訂閱", "google_uniques": "Google 來源獨立訪客", "ironman_uniques": "鐵人賽來源獨立訪客"},
     },
     "简体中文": {
-        "title": "墨寒每月流量月报", "window_note": "GitHub 流量接口只提供最近 14 天；本月栏位代表本次采集窗口，不宣称完整自然月总量。", "collected": "采集时间", "raw": "原始 JSON",
+        "title": "墨寒每月流量月报", "window_note": "GitHub 流量接口提供最近 14 天；本月栏位仅代表本次采集窗口内的总量。", "collected": "采集时间", "raw": "原始 JSON",
         "comparison": "本月与上月对比", "metric": "指标", "current": "本月", "previous": "上月", "change": "变化", "p0": "P0 基线",
-        "pages": "最受欢迎的页面", "page": "页面", "page_title": "标题", "views": "浏览", "uniques": "不重复", "referrers": "最受欢迎的来源", "referrer": "来源",
+        "pages": "最受欢迎的页面", "page": "页面", "page_title": "标题", "views": "浏览", "uniques": "独立", "referrers": "最受欢迎的来源", "referrer": "来源",
         "releases": "Release 资产下载", "release": "Release", "assets": "资产数", "downloads": "累计下载", "manual": "这个月做了什么可能影响数字的事",
-        "manual_prompt": "请由拥有者在发布月报前补充以下字段；没有证据的数字请保留待填写，不要猜测。", "bot_share": "机器人占比估计", "kofi_views": "Ko-fi 页面浏览", "kofi_members": "Ko-fi 会员数", "impact": "可能影响数字的工作", "placeholder": "待人工填写", "no_data": "无数据",
-        "clone_note": "clone 可能包含机器人和镜像；这里保留数字供追踪，但不得直接当作成效。", "release_note": "Release API 的下载数是资产发布后的累计值；变化栏是两次快照的差额。", "issue_status": "Issue #129：可请拥有者结案；本工具不会自动关闭 issue。",
-        "metrics": {"views": "浏览数", "unique_visitors": "不重复访客", "clones": "clone 数（可能含机器人）", "unique_cloners": "不重复 clone", "release_downloads": "Release 资产下载（累计）", "stars": "星数", "forks": "Fork", "watchers": "Watchers／订阅", "google_uniques": "Google 来源不重复访客", "ironman_uniques": "铁人赛来源不重复访客"},
+        "manual_prompt": "请由拥有者在发布月报前依据证据补充以下字段；证据待提供的数字保留待填写。", "bot_share": "机器人占比估计", "kofi_views": "Ko-fi 页面浏览", "kofi_members": "Ko-fi 会员数", "impact": "可能影响数字的工作", "placeholder": "待人工填写", "no_data": "数据待确认",
+        "clone_note": "clone 可能包含机器人和镜像，仅供活动追踪；成效以经过验证的用户互动衡量。", "release_note": "Release API 的下载数是资产发布后的累计值；变化栏是两次快照的差额。", "issue_status": "Issue #129：结案由拥有者执行，本工具提供月报证据。",
+        "metrics": {"views": "浏览数", "unique_visitors": "独立访客", "clones": "clone 数（可能含机器人）", "unique_cloners": "独立 clone", "release_downloads": "Release 资产下载（累计）", "stars": "星数", "forks": "Fork", "watchers": "Watchers／订阅", "google_uniques": "Google 来源独立访客", "ironman_uniques": "铁人赛来源独立访客"},
     },
     "English": {
-        "title": "MoHan monthly traffic report", "window_note": "The GitHub traffic API exposes only a rolling 14-day window; this month means the captured window, not a complete calendar month.", "collected": "Collected", "raw": "Raw JSON",
+        "title": "MoHan monthly traffic report", "window_note": "The GitHub traffic API exposes a rolling 14-day window; this month's totals refer exclusively to the captured window.", "collected": "Collected", "raw": "Raw JSON",
         "comparison": "This month versus last month", "metric": "Metric", "current": "This month", "previous": "Last month", "change": "Change", "p0": "P0 baseline",
         "pages": "Most popular pages", "page": "Page", "page_title": "Title", "views": "Views", "uniques": "Uniques", "referrers": "Most popular referrers", "referrer": "Referrer",
         "releases": "Release asset downloads", "release": "Release", "assets": "Assets", "downloads": "Cumulative downloads", "manual": "What we did this month that may affect the numbers",
-        "manual_prompt": "The owner should fill in these fields before posting the report; leave unsupported numbers blank instead of guessing.", "bot_share": "Estimated bot share", "kofi_views": "Ko-fi page views", "kofi_members": "Ko-fi members", "impact": "Work that may affect the numbers", "placeholder": "Owner input required", "no_data": "No data",
-        "clone_note": "Clones may include bots and mirrors; keep them for tracking, but never report them directly as impact.", "release_note": "Release API downloads are cumulative after publication; Change is the difference between snapshots.", "issue_status": "Issue #129: the owner may close it; this tool never closes the issue automatically.",
+        "manual_prompt": "The owner should fill in these fields from evidence before posting the report; values awaiting evidence remain blank.", "bot_share": "Estimated bot share", "kofi_views": "Ko-fi page views", "kofi_members": "Ko-fi members", "impact": "Work that may affect the numbers", "placeholder": "Owner input required", "no_data": "Data awaiting confirmation",
+        "clone_note": "Clones may include bots and mirrors and serve as activity tracking only; measure impact through verified user engagement.", "release_note": "Release API downloads are cumulative after publication; Change is the difference between snapshots.", "issue_status": "Issue #129: closure is performed by the owner; this tool provides report evidence.",
         "metrics": {"views": "Views", "unique_visitors": "Unique visitors", "clones": "Clones (may include bots)", "unique_cloners": "Unique cloners", "release_downloads": "Release asset downloads (cumulative)", "stars": "Stars", "forks": "Forks", "watchers": "Watchers", "google_uniques": "Unique visitors from Google", "ironman_uniques": "Unique visitors from Ironman"},
     },
     "日本語": {
-        "title": "墨寒 月次トラフィック月報", "window_note": "GitHub トラフィック API が提供するのは直近 14 日の移動ウィンドウだけです。本月は取得ウィンドウを示し、完全な暦月の合計とは主張しません。", "collected": "取得時刻", "raw": "生 JSON",
+        "title": "墨寒 月次トラフィック月報", "window_note": "GitHub トラフィック API は直近 14 日の移動ウィンドウを提供します。今月の合計は今回の取得範囲だけを示します。", "collected": "取得時刻", "raw": "生 JSON",
         "comparison": "今月と先月の比較", "metric": "指標", "current": "今月", "previous": "先月", "change": "変化", "p0": "P0 基準",
         "pages": "人気のページ", "page": "ページ", "page_title": "タイトル", "views": "閲覧", "uniques": "ユニーク", "referrers": "人気の参照元", "referrer": "参照元",
         "releases": "Release アセットのダウンロード", "release": "Release", "assets": "アセット数", "downloads": "累計ダウンロード", "manual": "今月行った、数字に影響する可能性のあること",
-        "manual_prompt": "月報を公開する前に所有者が次の欄を補完してください。根拠のない数字は推測せず、未記入のままにします。", "bot_share": "ボット比率の推定", "kofi_views": "Ko-fi ページ閲覧数", "kofi_members": "Ko-fi メンバー数", "impact": "数字に影響する可能性のある作業", "placeholder": "所有者の入力待ち", "no_data": "データなし",
-        "clone_note": "clone にはボットやミラーが含まれる可能性があります。追跡用に残しますが、効果として直接報告しません。", "release_note": "Release API のダウンロード数は公開後の累計です。変化は二つのスナップショットの差分です。", "issue_status": "Issue #129：所有者がクローズできます。このツールは issue を自動でクローズしません。",
+        "manual_prompt": "公開前に所有者が証拠に基づいて次の欄を記入してください。証拠を確認中の数値は入力待ちとして扱います。", "bot_share": "ボット比率の推定", "kofi_views": "Ko-fi ページ閲覧数", "kofi_members": "Ko-fi メンバー数", "impact": "数字に影響する可能性のある作業", "placeholder": "所有者の入力待ち", "no_data": "データ確認待ち",
+        "clone_note": "clone にはボットやミラーが含まれる可能性があり、活動の追跡専用です。効果は検証済みの利用者との交流で評価します。", "release_note": "Release API のダウンロード数は公開後の累計です。変化は二つのスナップショットの差分です。", "issue_status": "Issue #129：クローズは所有者が行い、このツールは月報の証拠を提供します。",
         "metrics": {"views": "閲覧数", "unique_visitors": "ユニーク訪問者", "clones": "clone 数（ボットを含む可能性）", "unique_cloners": "ユニーク clone", "release_downloads": "Release アセットのダウンロード（累計）", "stars": "スター", "forks": "Fork", "watchers": "Watchers", "google_uniques": "Google 経由のユニーク訪問者", "ironman_uniques": "Ironman 経由のユニーク訪問者"},
     },
 }
 
 
 class TrafficReportError(RuntimeError):
-    """Raised when a trustworthy report cannot be collected or written."""
+    """Signals that collection or writing requires attention before a report can be trusted."""
 
 
 def _mapping(value: object, context: str) -> dict[str, object]:
@@ -254,7 +254,7 @@ def _source_uniques(
         if any(token in name.lower() for token in tokens):
             uniques = row["uniques"]
             if not isinstance(uniques, int):
-                raise TrafficReportError("資料格式錯誤：來源不重複數必須是整數。")
+                raise TrafficReportError("資料格式錯誤：來源獨立數必須是整數。")
             total += uniques
     return total
 
@@ -291,7 +291,7 @@ def gh_api(endpoint: str, *, paginate: bool = False) -> object:
         raise TrafficReportError(message) from exc
     except OSError as exc:
         raise TrafficReportError(
-            "無法執行 gh api：請確認 gh CLI 已安裝、網路可用，且已完成登入。"
+            "執行 gh api 需要已安裝並登入的 gh CLI 與可用網路，請確認這些條件。"
         ) from exc
     if result.returncode:
         detail = " ".join(result.stderr.split())[:500]

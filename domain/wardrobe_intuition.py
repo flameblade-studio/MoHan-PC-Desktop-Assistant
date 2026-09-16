@@ -7,9 +7,9 @@ hot she suggests lighter clothes; if the user forces her into summer wear during
 a cold snap, her affection dips a little and she complains — a playful extension
 of the jealousy logic.
 
-This is pure domain logic with no Qt dependency.  It maps a temperature to a
+This is pure domain logic with Qt outside the domain boundary.  It maps a temperature to a
 comfort verdict and a suggested outfit weight, so the presentation layer can
-surface a suggestion or a complaint without blocking the UI.
+surface a suggestion or a complaint while keeping the UI responsive.
 """
 
 lazy from enum import StrEnum

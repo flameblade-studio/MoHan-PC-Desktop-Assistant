@@ -1,12 +1,9 @@
-"""The generation-2 bare base ships empty hair/sleeve/ornament cutouts.
+"""Generation-2 hair/sleeve/ornament cutouts remain transparent in physics.
 
-``presentation/companion_visual_physics.py`` loads the 15 ``LICENSED_EMPTY``
-cutouts unconditionally, derives per-expression local layers from them and
-rotates the result on every physics tick.  This test constructs the physics
-layers on the shipped assets and drives one pose change plus one tick per
-pose, proving an all-transparent cutout is tolerated end to end: nothing
-raises, every pixmap is non-null at the runtime canvas size, and the rendered
-overlays stay fully transparent (no invented pixels).
+companion_visual_physics loads all 15 LICENSED_EMPTY cutouts, derives local
+layers, and rotates them each tick. This test drives one pose change and one
+tick per pose using shipped assets. Every operation completes, each pixmap
+is valid at runtime canvas size, and every overlay remains transparent.
 """
 
 from __future__ import annotations

@@ -9,7 +9,7 @@ from concurrent.futures.thread import ThreadPoolExecutor
 # CPython 3.15rc1 exposes ThreadPoolExecutor lazily from
 # concurrent.futures, while asyncio calls the module attribute directly.
 # Resolve that public export once at the shared compatibility boundary so
-# import order cannot leave asyncio with a non-callable lazy proxy.
+# the shared import order keeps asyncio on a callable public export.
 concurrent.futures.ThreadPoolExecutor = ThreadPoolExecutor
 
 __all__ = ("Future", "ThreadPoolExecutor", "as_completed")

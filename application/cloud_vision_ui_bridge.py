@@ -179,12 +179,12 @@ class _AnalyzeWorker(QRunnable):
         # provider outside its own try block, so a half-closed runtime can
         # raise here. An unhandled exception in QRunnable.run would only add
         # interpreter noise and skip the busy bookkeeping; log it and report
-        # the analysis as unavailable instead.
+        # the analysis as unavailable.
         try:
             result: object = self._runtime.analyze(self._frame)
         except Exception:
             _LOGGER.exception(
-                "Cloud vision analysis failed outside the provider boundary."
+                "Cloud vision analysis requires attention outside the provider boundary."
             )
             result = None
         self.signals.done.emit(result, self._generation)

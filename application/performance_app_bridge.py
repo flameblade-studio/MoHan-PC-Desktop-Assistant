@@ -45,7 +45,7 @@ class PerformanceBridgeInput:
 
     def __post_init__(self) -> None:
         if self.behavior_generation < 0:
-            raise ValueError("Behavior generation must not be negative.")
+            raise ValueError("Behavior generation accepts zero or greater.")
 
 
 FrameCallback = Callable[[AtomicPerformanceFrame], None]
@@ -134,7 +134,7 @@ _UNTHROTTLED = frozenset({
 
 
 class PerformanceAppBridge:
-    """Narrow fail-closed boundary between the app and atomic performance runtime."""
+    """Narrow protective boundary between the app and atomic performance runtime."""
 
     def __init__(
         self,
@@ -147,7 +147,7 @@ class PerformanceAppBridge:
         options = PerformanceBridgeOptions(**legacy_options)
         minimum_render_interval_seconds = options.minimum_render_interval_seconds
         if minimum_render_interval_seconds < 0.0:
-            raise ValueError("Render interval must not be negative.")
+            raise ValueError("Render interval accepts zero or greater.")
         self._clock = options.clock or time.monotonic
         self._publish = publish
         self._minimum_interval = float(minimum_render_interval_seconds)

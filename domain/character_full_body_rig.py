@@ -196,7 +196,7 @@ class FullBodyRigReport:
 
     def require_valid(self) -> None:
         if not self.valid:
-            raise ValueError("Invalid full-body rig: " + ", ".join(self.problems))
+            raise ValueError("Provide a supported full-body rig: " + ", ".join(self.problems))
 
 
 @dataclass(frozen=True, slots=True)
@@ -244,7 +244,7 @@ class CharacterFullBodyRig:
 
 
 def audit_full_body_rig(rig: CharacterFullBodyRig) -> FullBodyRigReport:
-    """Fail-closed structural audit independent of rendering and providers."""
+    """protective structural audit independent of rendering and providers."""
 
     checks = (
         (
@@ -362,7 +362,7 @@ def adapt_character_pose(
 def adapt_legacy_pose_registry(
     registry: PoseRegistry | None = None,
 ) -> frozendict[str, CharacterFullBodyRig]:
-    """Adapt all three original views without mutating their pose registry."""
+    """Adapt all three original views while preserving their pose registry."""
 
     source = default_pose_registry() if registry is None else registry
     rigs: dict[str, CharacterFullBodyRig] = {}

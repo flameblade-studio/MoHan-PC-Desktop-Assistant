@@ -66,7 +66,7 @@ class VisualContextFusionRequest:
 
     def __post_init__(self) -> None:
         if type(self.generation) is not int or self.generation < 0:
-            raise ValueError("Fusion generation must not be negative.")
+            raise ValueError("Fusion generation accepts zero or greater.")
         if not isinstance(self.local, LocalVisualIntelligenceResult):
             raise TypeError("Fusion requires a typed local visual result.")
         if not isinstance(self.cloud, CloudSceneInterpretation):
@@ -90,7 +90,7 @@ class FusedVisualContext:
 
 
 class VisualContextFusion:
-    """Fuse local and safe cloud semantics without speech or action authority."""
+    """Fuse local and safe cloud semantics with speech and action authority outside this boundary."""
 
     def __init__(self) -> None:
         self._lock = threading.Lock()

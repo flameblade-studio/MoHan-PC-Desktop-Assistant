@@ -91,7 +91,7 @@ def _require_headers(sbom: JsonObject, evidence: JsonObject) -> None:
         evidence.get("schema") != "mohan.native-release-evidence.v1"
         or evidence.get("status") != "pass"
     ):
-        raise ValueError("Native release evidence is not a passing v1 record.")
+        raise ValueError("Native release evidence requires a passing v1 record.")
 
 
 def _require_evidence_binding(
@@ -104,12 +104,12 @@ def _require_evidence_binding(
         raise RuntimeError("Native SBOM root must be mohan-accel.")
     properties = _properties(root.get("properties"), "root properties")
     if properties.get("com.flamebladestudio.native-evidence-name") != evidence_name:
-        raise RuntimeError("Native SBOM evidence filename is not bound.")
+        raise RuntimeError("Bind the native SBOM evidence filename.")
     if (
         properties.get("com.flamebladestudio.native-evidence-sha256")
         != evidence_sha256
     ):
-        raise RuntimeError("Native SBOM evidence hash is not bound.")
+        raise RuntimeError("Bind the native SBOM evidence hash.")
 
 
 def _component_index(sbom: JsonObject) -> dict[str, JsonObject]:

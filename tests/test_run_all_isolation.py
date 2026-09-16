@@ -112,7 +112,7 @@ def test_each_child_receives_an_independent_sanitized_environment() -> None:
 def test_first_failure_stops_the_sorted_run_and_preserves_exit_code() -> None:
     called: list[str] = []
     # test_alpha passes (0); test_bravo fails twice in a row (23, 23) so the
-    # single retry cannot rescue it and the suite stops with its exit code.
+    # both attempts report the issue and the suite preserves its exit code.
     return_codes = iter((0, 23, 23))
 
     def fail_second(command, **_kwargs):
@@ -200,7 +200,7 @@ def test_orphan_assert_file_fails_the_collection_audit() -> None:
     lines = stderr.getvalue().splitlines()
     assert len(lines) == 1
     assert lines[0].startswith(
-        "COLLECTION_AUDIT: orphan checker is never collected: check_orphan.py"
+        "COLLECTION_AUDIT: collect this orphan checker: check_orphan.py"
     )
 
 
@@ -572,8 +572,7 @@ def test_repository_never_runs_the_same_whole_test_file_twice() -> None:
                 if argument.startswith(f"{test}::")
             ]
             assert pytest_targets, (
-                f"{test.name} repeats a whole-file command instead of selecting "
-                "only the missing pytest nodes"
+                f'{test.name} must select only the outstanding pytest nodes for follow-up execution'
             )
 
 

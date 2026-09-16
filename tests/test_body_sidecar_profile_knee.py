@@ -1,14 +1,12 @@
-"""露腿權威在純側面時，膝登錄點不得讓整組 24 視角的建置中止。
+"""純側面露腿權威的膝登錄點，應讓整組 24 視角建置完成。
 
-2026-09-02 以二代素體跑 build_pose_atlas_release_assets.build()：24 張只有 ±090
-兩個純側面失敗，錯誤是 alpha_registration_point_missing，落在膝（高度比例 0.78）。
-成因：膝的目標是「髖與腳掌中心的中點」，這個幾何假設穿長袍——v4 的側面把腿包住，
-中點永遠打得到 alpha；露腿的側面姿勢裡髖在腿前方一段距離、腳掌在腿正下方，
-中點落在小腿前方的空氣裡，最近 alpha 56–58 px，超過搜尋半徑 48。
+2026-09-02 二代素體的 ±090 視角在膝高度 0.78 回報
+alpha_registration_point_missing。髖與腳掌中心的中點位於小腿前方，
+最近 alpha 距離 56–58 px，超過搜尋半徑 48；v4 長袍原本覆蓋該中點。
 
-修正：中點找不到就退回「腳掌中心正上方」（側面時小腿在腳的正上方）；兩者都找不到
-才記為不可達的 occluded landmark，而不是中止。這裡用合成剪影，不依賴任何素材；
-剪影是兩條腿，讓 _foot_side_map 兩側都找得到腳，不會觸發既有的整側遮擋路徑。
+修正以中點為第一目標、腳掌中心正上方為第二目標；兩者皆落於透明區域時，
+記錄 occluded landmark 並完成整組建置。測試專用雙腿合成剪影讓
+_foot_side_map 能辨識左右腳，集中驗證膝目標的遮擋處理。
 """
 from __future__ import annotations
 
@@ -76,7 +74,7 @@ def _unreachable_knees(sidecar):
 
 
 def test_forward_hip_knee_falls_back_to_above_the_foot(module, tmp_path: Path) -> None:
-    """髖前移：中點在空氣裡，膝必須退回腳掌正上方的小腿，而非中止或記為不可達。"""
+    """髖前移且中點落於透明區域時，膝登錄改用腳掌正上方的小腿。"""
     rgba = _silhouette(hip_forward=260)
     source = _source(module, rgba, "yaw+090-pitch+00", 90, tmp_path)
     sidecar = module._body_sidecar(source, rgba, source.height, source.source_sha256)
@@ -99,7 +97,7 @@ def test_upright_hip_keeps_the_original_midpoint_target(module, tmp_path: Path) 
 
 
 def test_unreachable_knee_is_recorded_not_raised(module, tmp_path: Path) -> None:
-    """兩個目標都打不到時記為不可達，整組建置不得因此中止。"""
+    """兩個目標都落於透明區域時記錄 occluded，並完成整組建置。"""
     rgba = _silhouette(hip_forward=260)
     knee_y = round(TOP + (BOTTOM - TOP) * 0.78)
     rgba[knee_y - 80: knee_y + 80, :, :] = 0      # 把膝高度一帶整列挖空
@@ -111,7 +109,7 @@ def test_unreachable_knee_is_recorded_not_raised(module, tmp_path: Path) -> None
 
 
 def test_registration_error_names_the_target(module) -> None:
-    """錯誤訊息必須帶座標：整組失敗時才知道是哪一張、哪個點。"""
+    """錯誤訊息必須帶座標，讓建置問題能定位到來源圖與登錄點。"""
     mask = np.zeros((H, W), bool)
     mask[100:200, 100:200] = True
     with pytest.raises(

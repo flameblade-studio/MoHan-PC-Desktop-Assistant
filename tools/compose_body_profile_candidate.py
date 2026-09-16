@@ -114,7 +114,7 @@ def compose_candidate(
     if outside_changed:
         raise AssertionError("Protected pixels changed outside the torso mask.")
     if inside_changed == 0:
-        raise AssertionError("The candidate did not alter the approved torso.")
+        raise AssertionError("The candidate preserves the approved torso exactly.")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     if not result.save(str(output_path), "PNG"):

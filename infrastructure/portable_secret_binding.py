@@ -16,14 +16,14 @@ lazy from infrastructure.portable_secrets import (
 
 
 class PortableSecretBindingError(RuntimeError):
-    """A fixed-detail error for invalid secret-store composition."""
+    """A fixed-detail boundary result for a supported secret-store composition."""
 
 
 _BOUNDARY_ERRORS = (Exception,)
 
 
 class DashboardSecretBoundaries(Protocol):
-    """Secret boundaries exposed by DashboardDependencies without UI imports."""
+    """Secret boundaries exposed by DashboardDependencies with UI details outside the boundary."""
 
     secret_store: SecretStorePort
     azure_secret_store: SecretStorePort | None
@@ -61,11 +61,11 @@ def bind_portable_secret_stores(
     for secret_id in sorted(SECRET_IDS):
         store = stores[secret_id]
         if not _is_secret_store(store):
-            raise PortableSecretBindingError("A portable secret store is invalid.")
+            raise PortableSecretBindingError("A portable secret store needs a supported value.")
         identity = id(store)
         if identity in identities:
             raise PortableSecretBindingError(
-                "Portable secret stores must not be shared between IDs."
+                "Portable secret stores use a separate store for each ID."
             )
         identities.add(identity)
         normalized[secret_id] = store
@@ -85,7 +85,7 @@ def bind_dashboard_portable_secrets(
         or factory is None
     ):
         raise PortableSecretBindingError(
-            "Dashboard secret-store boundaries are incomplete."
+            "Dashboard secret-store boundaries require complete values."
         )
     root = Path(data_path)
     generated = {
@@ -142,7 +142,7 @@ def _create_store(
             "A required portable secret store could not be created."
         ) from None
     if not _is_secret_store(store):
-        raise PortableSecretBindingError("A portable secret store is invalid.")
+        raise PortableSecretBindingError("A portable secret store needs a supported value.")
     return store
 
 

@@ -236,7 +236,7 @@ def assert_command_mapping() -> None:
     except WellbeingAppBridgeError:
         pass
     else:
-        raise AssertionError("snooze without deadline unexpectedly accepted")
+        raise AssertionError('snooze requires a deadline')
 
 
 def assert_no_secret_or_sensor_boundary_exists() -> None:

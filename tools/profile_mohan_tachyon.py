@@ -19,9 +19,9 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_TARGETS = ("startup", "lipsync", "expression")
 MAX_PERCENT = 100.0
-# A failed stack-read stream is not evidence about target performance.  Keep
+# Performance evidence requires valid stack reads. Keep
 # the quality threshold strict, but allow two fresh captures to outlast a
-# transient runner or unwinder failure.
+# transient runner or unwinder interruption.
 MAX_CAPTURE_RETRIES = 2
 MAX_CAPTURE_ATTEMPTS = MAX_CAPTURE_RETRIES + 1
 TARGET_SCRIPTS = frozendict(
@@ -552,7 +552,7 @@ def _write_pstats(
     )
     if completed.returncode:
         raise RuntimeError(
-            _strip_ansi(completed.stderr) or "Tachyon pstats replay failed."
+            _strip_ansi(completed.stderr) or "Tachyon pstats replay requires attention; review the replay output."
         )
     output.write_text(
         _strip_ansi(completed.stdout),
@@ -823,7 +823,7 @@ def _frame_statistics(
         and record.get("scope") == "final"
     )
     if not aggregates:
-        raise ValueError("Tachyon has no final frame aggregate.")
+        raise ValueError("Tachyon requires a final frame aggregate.")
     aggregate_totals = {
         int(record["samples_total"]) for record in aggregates
     }
@@ -981,14 +981,14 @@ def _capture_retry_reason(
     attempt: CaptureAttempt,
 ) -> str:
     if not attempt.runtime_evidence_written:
-        return "runtime evidence missing"
+        return "runtime evidence required"
     error = attempt.sample_read_error_percent
     if error is not None and error > args.max_sample_read_error_percent:
         return (
             f"sample-read error {error:.2f}% above "
             f"{args.max_sample_read_error_percent:.2f}%"
         )
-    return "capture did not satisfy the retryable evidence contract"
+    return "capture requires the retryable evidence contract"
 
 
 def _sample_read_error_history(
@@ -1103,7 +1103,7 @@ def _quality_violations(
         )
     sample_read_error_percent = capture.get("sample_read_error_percent")
     if sample_read_error_percent is None:
-        violations.append("profiler did not report a sample-read error rate")
+        violations.append("profiler output requires a sample-read error rate")
     if (
         isinstance(sample_read_error_percent, int | float)
         and sample_read_error_percent > args.max_sample_read_error_percent
@@ -1126,7 +1126,7 @@ def _quality_violations(
             f"target exit code was {runtime.get('exit_code')!r}"
         )
     if runtime.get("jit_available") is not True:
-        violations.append("target runtime did not expose the CPython JIT")
+        violations.append("target runtime requires an exposed CPython JIT")
     # Evidence must match the shipped JIT policy (off by default since the
     # 2026-08-29 0xC0000409 crash; MOHAN_ENABLE_JIT=1 profiles the experiment).
     expect_jit = os.environ.get("MOHAN_ENABLE_JIT") == "1"
@@ -1252,7 +1252,7 @@ def _publish_profile_outputs(
         strict=True,
     ):
         destination_path.parent.mkdir(parents=True, exist_ok=True)
-        # shutil.move 可跨磁碟機；Path.replace 在 CI runner 的 Temp（C:）搬到工作區（D:）會失敗。
+        # shutil.move 支援跨磁碟機，適用於 CI runner 的 Temp（C:）與工作區（D:）搬移。
         shutil.move(str(source_path), str(destination_path))
 
 

@@ -35,10 +35,10 @@ def test_resonance_rises_with_brow_tension_and_typing() -> None:
 
 def test_resonance_eases_smoothly_without_snapping() -> None:
     state = EmotionalResonanceState()
-    # A single agitated sample must not snap the resonance to full.
+    # A single agitated sample changes resonance gradually.
     first = state.update(brow_tension=0.9, typing_rate_kps=8.0, now=0.0)
-    assert first < RESONANCE_HALF_THRESHOLD, "resonance must ease in, not snap"
-    # Over many samples it approaches but never exceeds 1.0.
+    assert first < RESONANCE_HALF_THRESHOLD, 'resonance must increase gradually'
+    # Repeated samples approach 1.0 while staying at or below it.
     for step in range(100):
         level = state.update(brow_tension=0.9, typing_rate_kps=8.0, now=float(step))
     assert 0.0 <= level <= 1.0

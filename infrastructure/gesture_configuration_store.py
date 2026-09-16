@@ -4,7 +4,9 @@ lazy from collections.abc import Mapping
 lazy from dataclasses import dataclass, replace
 lazy from typing import Final, Self, TypeVar
 
-lazy from domain.gesture_configuration import (
+# Keep these public re-exports concrete after the composition root loads them
+# first; Python 3.15rc1 can otherwise expose nested lazy-import proxies.
+from domain.gesture_configuration import (
     GestureConfiguration,
     GestureDefinition,
     export_gesture_configuration,
@@ -23,7 +25,7 @@ SnapshotT = TypeVar("SnapshotT")
 
 
 class GestureConfigurationStoreError(RuntimeError):
-    """Fixed-detail storage error that never exposes backend content."""
+    """fixed-detail storage boundary result that keeps backend content private."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -44,7 +46,7 @@ class GestureConfigurationDraft[SnapshotT]:
     def replace(self, configuration: GestureConfiguration) -> Self:
         self._assert_open()
         if not isinstance(configuration, GestureConfiguration):
-            raise GestureConfigurationStoreError("Gesture draft is invalid.")
+            raise GestureConfigurationStoreError("Gesture draft needs a supported value.")
         self.value = configuration
         return self
 
@@ -53,13 +55,13 @@ class GestureConfigurationDraft[SnapshotT]:
         try:
             self.value = self.value.replace_definition(definition)
         except (KeyError, TypeError, ValueError):
-            raise GestureConfigurationStoreError("Gesture draft edit is invalid.") from None
+            raise GestureConfigurationStoreError("Gesture draft edit needs a supported value.") from None
         return self
 
     def set_enabled(self, enabled: bool) -> Self:
         self._assert_open()
         if type(enabled) is not bool:
-            raise GestureConfigurationStoreError("Gesture enabled state is invalid.")
+            raise GestureConfigurationStoreError("Gesture enabled state needs a supported value.")
         self.value = replace(self.value, enabled=enabled)
         return self
 
@@ -125,7 +127,7 @@ class GestureConfigurationStore[SnapshotT]:
 
     def save(self, configuration: GestureConfiguration) -> None:
         if not isinstance(configuration, GestureConfiguration):
-            raise GestureConfigurationStoreError("Gesture configuration is invalid.")
+            raise GestureConfigurationStoreError("Gesture configuration needs a supported value.")
         if self._template_store is None and any(
             definition.samples for definition in configuration.definitions
         ):
@@ -146,7 +148,7 @@ class GestureConfigurationStore[SnapshotT]:
         return configuration
 
     def snapshot(self) -> GestureConfigurationStoreSnapshot[SnapshotT]:
-        """Capture both storage layers without exposing protected content."""
+        """Capture both storage layers while keeping protected content private."""
 
         try:
             settings = self._settings.snapshot(PORTABLE_GESTURE_SETTING_KEYS)
@@ -168,11 +170,11 @@ class GestureConfigurationStore[SnapshotT]:
         self,
         snapshot: GestureConfigurationStoreSnapshot[SnapshotT],
     ) -> None:
-        """Restore an exact cross-layer snapshot or report incomplete rollback."""
+        """Restore an exact cross-layer snapshot or report rollback requiring attention."""
 
         if not isinstance(snapshot, GestureConfigurationStoreSnapshot):
             raise GestureConfigurationStoreError(
-                "Gesture configuration snapshot is invalid."
+                "Gesture configuration snapshot needs a supported value."
             )
         restored = True
         try:
@@ -192,7 +194,7 @@ class GestureConfigurationStore[SnapshotT]:
             restored = False
         if not restored:
             raise GestureConfigurationStoreError(
-                "Gesture configuration rollback was incomplete."
+                "Gesture configuration rollback requires attention."
             )
 
     def _atomic_write(self, configuration: GestureConfiguration) -> None:
@@ -209,8 +211,8 @@ class GestureConfigurationStore[SnapshotT]:
                 self.restore(before)
             except GestureConfigurationStoreError:
                 raise GestureConfigurationStoreError(
-                    "Gesture configuration save failed and rollback was incomplete."
+                    "Gesture configuration save requires attention and rollback requires attention."
                 ) from None
             raise GestureConfigurationStoreError(
-                "Gesture configuration save failed; previous values were restored."
+                "Gesture configuration save requires attention; previous values were restored."
             ) from None

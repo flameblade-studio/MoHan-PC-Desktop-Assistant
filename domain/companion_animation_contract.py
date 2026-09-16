@@ -107,6 +107,10 @@ EXPRESSION_DERIVED_VISEME_FRAMES = frozendict({
     })
     for expression in EXPRESSION_SPEECH_EXPRESSIONS
 })
+HALF_BLINK_NEUTRAL_FRAME_PREFIXES = tuple(
+    prefix for prefix in PHYSICS_SPEECH_FRAME_PREFIXES
+    if not prefix.startswith("blink")
+)
 EXPRESSION_VISEME_FRAMES = frozendict({
     expression: frozendict({
         "A": EXPRESSION_SPEECH_FRAMES[expression]["open"],
@@ -126,6 +130,39 @@ EXPRESSION_BLINK_FRAMES = frozendict({
     "worried": "worried_speech_blink", "reminder": "reminder_speech_blink",
 })
 EXPRESSION_BLINK_ASSETS = tuple(EXPRESSION_BLINK_FRAMES.values())
+EXPRESSION_HALF_BLINK_FRAMES = frozendict({
+    "idle_front": "idle_front_half",
+    "idle_lean": "idle_lean_half",
+    "eureka_front": "eureka_front_half",
+    "mock_hit_front": "mock_hit_front_half",
+    "mock_scold": "mock_scold_half",
+})
+EXPRESSION_HALF_BLINK_FRAME_SOURCES = frozendict(
+    {
+        f"{prefix}{suffix}": EXPRESSION_HALF_BLINK_FRAMES[f"idle{suffix}"]
+        for prefix in HALF_BLINK_NEUTRAL_FRAME_PREFIXES
+        for suffix, _pose in PHYSICS_POSE_SUFFIXES
+        if f"idle{suffix}" in EXPRESSION_HALF_BLINK_FRAMES
+    }
+    | {
+        frame: EXPRESSION_HALF_BLINK_FRAMES[expression]
+        for expression in EXPRESSION_HALF_BLINK_FRAMES
+        if expression in EXPRESSION_SPEECH_FRAMES
+        for frame in (
+            expression,
+            *EXPRESSION_SPEECH_FRAMES[expression].values(),
+            *EXPRESSION_DERIVED_VISEME_FRAMES[expression].values(),
+        )
+    }
+)
+EXPRESSION_HALF_BLINK_ASSETS = tuple(EXPRESSION_HALF_BLINK_FRAMES.values())
+EXPRESSION_NATIVE_CLOSED_BLINK_FRAME_SOURCES = frozendict({
+    expression: source.removesuffix("_half") + "_closed"
+    for expression, source in EXPRESSION_HALF_BLINK_FRAME_SOURCES.items()
+})
+EXPRESSION_NATIVE_CLOSED_BLINK_ASSETS = tuple(dict.fromkeys(
+    EXPRESSION_NATIVE_CLOSED_BLINK_FRAME_SOURCES.values(),
+))
 BLUSH_PRESERVING_BLINK_EXPRESSIONS = frozenset({"shy_front", "shy_cute_front"})
 EXPRESSION_IMAGE_ASSETS = (
     "idle", "idle_lean", "idle_front", "blink", "blink_lean", "blink_front",
@@ -133,7 +170,9 @@ EXPRESSION_IMAGE_ASSETS = (
     "happy", "worried", "reminder", "thinking_front", "gentle_smile_front",
     "worried_front", "shy_front", "mock_scold", "surprised_front",
     "relieved_front", "tired_front", "proud_front", *NEW_EXPRESSION_ASSETS,
-    *EXPRESSION_SPEECH_ASSETS, *EXPRESSION_BLINK_ASSETS, "viseme_mid_front",
+    *EXPRESSION_SPEECH_ASSETS, *EXPRESSION_BLINK_ASSETS,
+    *EXPRESSION_HALF_BLINK_ASSETS, *EXPRESSION_NATIVE_CLOSED_BLINK_ASSETS,
+    "viseme_mid_front",
     "viseme_wide_front", "viseme_round", "viseme_round_lean",
     "viseme_round_front", "viseme_i", "viseme_i_lean", "viseme_i_front",
     "viseme_o", "viseme_o_lean", "viseme_o_front",
@@ -186,7 +225,7 @@ MOUTH_CLOSE_DEADLINE_MS = max(
 MOTION_FRAME_INTERVAL_MS = 16
 SPEECH_MOTION_RELEASE_LIMIT = 12
 # Attention (gaze/blink) and physics (breath/sleeve) timers run on their own
-# cadence so the pointer tracking and fabric motion never fight the 60 Hz
+# cadence so pointer tracking and fabric motion share the 60 Hz
 # motion clock.  These are named so a future cadence change stays in one place.
 ATTENTION_FRAME_INTERVAL_MS = 40
 PHYSICS_FRAME_INTERVAL_MS = 33

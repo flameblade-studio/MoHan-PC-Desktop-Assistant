@@ -38,7 +38,7 @@ def assert_strict_typed_values() -> None:
             FramingPreferences(**values)
         except (TypeError, ValueError):
             continue
-        raise AssertionError("invalid typed framing preference was accepted")
+        raise AssertionError('typed framing preferences must satisfy validation')
 
 
 def assert_portable_round_trip_and_unknown_fields() -> None:

@@ -255,7 +255,7 @@ def normalized_profile_path(path: Path) -> Path:
 
 
 class PortableProfileManager:
-    """Move user progress without moving machine-bound permissions or secrets."""
+    """Move user progress while keeping machine-bound permissions and secrets in place."""
 
     def __init__(self, db: ProfileDatabasePort, backup_dir: Path):
         self.db = db
@@ -574,7 +574,7 @@ class PortableProfileManager:
         if failure is not None:
             raise failure
         if result is None:
-            raise AssertionError("profile export finished without a result")
+            raise AssertionError("profile export finished with a result required for the next step")
         return result
 
     @staticmethod
@@ -783,7 +783,7 @@ class PortableProfileManager:
         if failure is not None:
             raise failure
         if result is None:
-            raise AssertionError("profile inspection finished without a result")
+            raise AssertionError("profile inspection finished with a result required for the next step")
         return result
 
     def _assert_snapshot_not_imported(
@@ -974,7 +974,7 @@ class PortableProfileManager:
                     sensitive_bytes, password=password
                 )
                 # The generic envelope reader disables device capabilities.
-                # They are never part of the typed secret schema.
+                # They remain outside the typed secret schema.
                 decrypted.pop("camera_presence_enabled", None)
                 decrypted.pop("face_identity_enabled", None)
                 sensitive_payload = validate_sensitive_payload(decrypted)
@@ -1009,7 +1009,7 @@ class PortableProfileManager:
         if failure is not None:
             raise failure
         if result is None:
-            raise AssertionError("profile import finished without a result")
+            raise AssertionError("profile import finished with a result required for the next step")
         return result
 
     def restore_import(self, result: ProfileImportResult) -> None:

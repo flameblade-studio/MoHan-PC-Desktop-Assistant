@@ -45,10 +45,9 @@ def test_random_somniloquy_stays_in_library() -> None:
 
 
 def test_murmur_probability_is_very_low() -> None:
-    # The trigger probability must stay tiny so the companion never chatters
-    # constantly during idle.
+    # Keep the trigger probability tiny so idle remains mostly quiet.
     assert SOMNILOQUY_TRIGGER_PROBABILITY < MAX_TRIGGER_PROBABILITY
-    # A deterministic RNG below the threshold always murmurs; above never does.
+    # A deterministic RNG below the threshold murmurs; above it stays quiet.
     import random as _random
     always = _random.Random(0)
     always.random = lambda: 0.0  # type: ignore[method-assign]

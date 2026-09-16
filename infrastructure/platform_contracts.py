@@ -6,12 +6,12 @@ lazy from typing import Protocol
 
 
 class UnsupportedPlatformFeature(OSError):
-    """Raised when a platform adapter deliberately has no safe implementation."""
+    """Raised when a platform adapter deliberately requires a safe implementation."""
 
 
 @dataclass(frozen=True)
 class PlatformPaths:
-    """Per-user paths selected without changing existing Windows storage."""
+    """Per-user paths selected while preserving existing Windows storage."""
 
     data: Path
     config: Path

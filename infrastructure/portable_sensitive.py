@@ -37,7 +37,7 @@ _REQUIRED_ENVELOPE_KEYS = frozenset({
 
 
 class SensitiveProfileError(RuntimeError):
-    """A fail-closed sensitive-profile boundary error."""
+    """A protective sensitive-profile boundary error."""
 
 
 def sensitive_export_enabled() -> bool:
@@ -113,15 +113,15 @@ def _encode(value: bytes) -> str:
 
 def _decode(value: object, *, expected_size: int | None = None) -> bytes:
     if not isinstance(value, str):
-        raise SensitiveProfileError("The encrypted profile is invalid.")
+        raise SensitiveProfileError("The encrypted profile needs a supported value.")
     try:
         decoded = base64.b64decode(value, validate=True)
     except binascii.Error, ValueError:
-        raise SensitiveProfileError("The encrypted profile is invalid.") from None
+        raise SensitiveProfileError("The encrypted profile needs a supported value.") from None
     if _encode(decoded) != value:
-        raise SensitiveProfileError("The encrypted profile is invalid.")
+        raise SensitiveProfileError("The encrypted profile needs a supported value.")
     if expected_size is not None and len(decoded) != expected_size:
-        raise SensitiveProfileError("The encrypted profile is invalid.")
+        raise SensitiveProfileError("The encrypted profile needs a supported value.")
     return decoded
 
 
@@ -144,16 +144,16 @@ def _serialize_payload(payload: Mapping[str, object]) -> bytearray:
 
 def _validated_envelope(envelope: bytes) -> dict[str, Any]:
     if not envelope or len(envelope) > MAX_SENSITIVE_ENVELOPE_BYTES:
-        raise SensitiveProfileError("The encrypted profile size is invalid.")
+        raise SensitiveProfileError("The encrypted profile size needs a supported value.")
     try:
         decoded = json.loads(envelope.decode("utf-8"))
     except UnicodeError, json.JSONDecodeError:
-        raise SensitiveProfileError("The encrypted profile is invalid.") from None
+        raise SensitiveProfileError("The encrypted profile needs a supported value.") from None
     if not isinstance(decoded, dict) or set(decoded) != _REQUIRED_ENVELOPE_KEYS:
-        raise SensitiveProfileError("The encrypted profile is invalid.")
+        raise SensitiveProfileError("The encrypted profile needs a supported value.")
     metadata = _metadata()
     if any(decoded.get(key) != value for key, value in metadata.items()):
-        raise SensitiveProfileError("The encrypted profile version is unsupported.")
+        raise SensitiveProfileError("The encrypted profile version needs a supported value.")
     return decoded
 
 
@@ -174,7 +174,7 @@ def build_sensitive_envelope(
                 _wipe(password)
             return None
         if not isinstance(payload, Mapping):
-            raise SensitiveProfileError("The sensitive profile content is invalid.")
+            raise SensitiveProfileError("The sensitive profile content needs a supported value.")
         password_bytes = _password_buffer(password)
         plaintext = _serialize_payload(payload)
         metadata = _metadata()
@@ -212,7 +212,7 @@ def open_sensitive_envelope(
     *,
     password: str | bytes | bytearray | None,
 ) -> dict[str, object]:
-    """Authenticate and decrypt a sensitive envelope without enabling devices."""
+    """Authenticate and decrypt a sensitive envelope while device enabling stays with its owning workflow."""
 
     password_bytes: bytearray | None = None
     plaintext: bytearray | None = None
@@ -244,10 +244,10 @@ def open_sensitive_envelope(
             payload = json.loads(plaintext.decode("utf-8"))
         except UnicodeError, json.JSONDecodeError:
             raise SensitiveProfileError(
-                "The decrypted profile content is invalid."
+                "The decrypted profile content needs a supported value."
             ) from None
         if not isinstance(payload, dict):
-            raise SensitiveProfileError("The decrypted profile content is invalid.")
+            raise SensitiveProfileError("The decrypted profile content needs a supported value.")
         result = dict(payload)
         result["camera_presence_enabled"] = False
         result["face_identity_enabled"] = False
@@ -255,7 +255,7 @@ def open_sensitive_envelope(
     except SensitiveProfileError:
         raise
     except MemoryError, OverflowError, TypeError, ValueError:
-        raise SensitiveProfileError("The encrypted profile is invalid.") from None
+        raise SensitiveProfileError("The encrypted profile needs a supported value.") from None
     finally:
         _wipe(key)
         _wipe(plaintext)

@@ -364,12 +364,12 @@ def verify_wheelhouse(wheelhouse: Path) -> dict[str, object]:
     found: set[str] = set()
     for entry in entries:
         if not isinstance(entry, dict):
-            raise RuntimeError("Invalid Qt compatibility manifest entry")
+            raise RuntimeError("Qt compatibility manifest entry requires the supported format")
         distribution = entry.get("distribution")
         filename = entry.get("compatibility_filename")
         digest = entry.get("compatibility_sha256")
         if not isinstance(distribution, str) or not isinstance(filename, str):
-            raise RuntimeError("Invalid Qt compatibility manifest identity")
+            raise RuntimeError("Qt compatibility manifest requires the expected identity")
         path = wheelhouse / filename
         if not path.is_file() or not isinstance(digest, str):
             raise RuntimeError(f"Missing Qt compatibility wheel: {filename}")

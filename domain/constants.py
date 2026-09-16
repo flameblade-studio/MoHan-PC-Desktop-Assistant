@@ -1,12 +1,4 @@
-"""Centralized, cross-module constants for MoHan.
-
-This single module is the project's "constant island": every shared,
-domain-agnostic value lives here with a single source of truth. It contains
-only pure literals (numbers, strings, booleans) and never imports any project
-module, which physically prevents circular imports.
-
-Every constant is declared with :data:`typing.Final` so any accidental
-reassignment is rejected by the type checker.
+"""Centralized, cross-module constants for MoHan. This single module is the project's "constant island": every shared, domain-agnostic value lives here with a single source of truth. It contains only pure literals (numbers, strings, booleans) and imports project modules through the established one-way boundary, which keeps circular imports out of the dependency graph. Every constant is declared with :data:`typing.Final` so the type checker accepts assignments that follow the contract.
 
 Import style::
 
@@ -110,7 +102,7 @@ INTERPOLATION_EPSILON: Final = 1e-4
 # Absolute tolerance for zero/boundary float comparisons.  Values produced by
 # ``clamped()`` are exact, but computed values (gaze confidence, normalized
 # vectors, cosine similarity) can drift by a few ULPs; this tolerance makes
-# ``== 0.0`` / ``== 1.0`` checks robust without treating a near-zero value as
+# ``== 0.0`` / ``== 1.0`` checks robust while a near-zero value keeps its
 # exactly zero.
 FLOAT_COMPARISON_EPSILON: Final = 1e-9
 
@@ -120,7 +112,7 @@ FLOAT_COMPARISON_EPSILON: Final = 1e-9
 # The full-body parametric renderer composes 25 authored layers per view. This
 # tuple is the single source of truth for paint order so that, when the
 # character turns, back hair stays behind the body, front hair stays in front of
-# the face, and sleeves stay in front of the torso — no clothing clipping.
+# the face, and sleeves stay in front of the torso — clothing clipping stays outside the visible result.
 # ---------------------------------------------------------------------------
 FULL_BODY_LAYER_COUNT: Final = 25
 FULL_BODY_LAYER_Z_ORDER: Final = (
@@ -173,7 +165,7 @@ POSE_ATLAS_LAYERED_RELATIVE_ROOT: Final = "assets/pose-atlas/v5-base-layered"
 # ``weather_temperature_c``/``weather_condition``, every reader must assume the
 # same comfortable indoor scene.  24 °C sits in the "warm" thermal band and
 # "indoor" fits every outfit profile, so nothing complains or changes clothes
-# based on weather that was never observed.
+# based on observed weather data.
 # ---------------------------------------------------------------------------
 DEFAULT_WEATHER_TEMPERATURE_C: Final = 24.0
 DEFAULT_WEATHER_CONDITION: Final = "indoor"

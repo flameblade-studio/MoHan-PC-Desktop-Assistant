@@ -119,7 +119,7 @@ def assert_partial_write_rolls_back_without_harming_old_settings() -> None:
     message = expect_store_error(
         lambda: PerformancePreferencesStore(incomplete).save(PerformancePreferences())
     )
-    assert "rollback was incomplete" in message
+    assert "rollback requires attention" in message
 
 
 def assert_corruption_and_versions_fail_closed() -> None:

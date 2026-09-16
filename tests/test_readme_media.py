@@ -116,14 +116,14 @@ TIME_SENSITIVE_CREATOR_AGE_PATTERNS = (
 
 def png_size(path: Path) -> tuple[int, int]:
     data = path.read_bytes()[:24]
-    assert data[:8] == b"\x89PNG\r\n\x1a\n", f"invalid PNG: {path.name}"
+    assert data[:8] == b"\x89PNG\r\n\x1a\n", f'PNG requires validation: {path.name}'
     return struct.unpack(">II", data[16:24])
 
 
 def _assert_readme_images(readme: str) -> None:
     for filename, expected_size in PNG_FILES.items():
         path = MEDIA / filename
-        assert path.is_file(), f"missing README image: {filename}"
+        assert path.is_file(), f'provide the README image: {filename}'
         width, height = png_size(path)
         assert width >= MIN_IMAGE_WIDTH and height >= MIN_IMAGE_HEIGHT, (
             f"README image is too small: {filename} ({width}x{height})"
@@ -133,7 +133,7 @@ def _assert_readme_images(readme: str) -> None:
                 f"unexpected {filename} size: {width}x{height}"
             )
         assert f"docs/media/{filename}" in readme, (
-            f"README does not reference {filename}"
+            f'README must reference {filename}'
         )
 
 
@@ -180,12 +180,12 @@ def _assert_certification_badges(readme: str) -> None:
         == README_BADGES
         for block in badge_blocks
     ), "each language badge block must list all nine badges in order"
-    assert "<details>" not in readme, "README.md badges must not be collapsed"
+    assert "<details>" not in readme, 'README.md badges must remain expanded'
     for filename in PNG_FILES:
         if filename.startswith("support-"):
             continue
         assert f"docs/media/{filename}" in readme, (
-            f"README.md does not reference shared current media: {filename}"
+            f'README.md must reference shared current media: {filename}'
         )
 
 
@@ -198,7 +198,7 @@ def _assert_quality_standard(readme: str) -> None:
         "炎剣オープンソース・ソフトウェア・ファミリー品質基準",
     ):
         assert heading in quality_standard, (
-            f"missing shared quality-standard heading: {heading}"
+            f'provide the shared quality-standard heading: {heading}'
         )
     for declaration in (
         "劍，我已鍛成；餘下的路，就交給你們了。",
@@ -207,14 +207,14 @@ def _assert_quality_standard(readme: str) -> None:
         "この剣は、私が鍛え上げました。あとは皆さんに託します。",
     ):
         assert declaration in quality_standard, (
-            f"missing open-source declaration: {declaration}"
+            f'provide the open-source declaration: {declaration}'
         )
     assert "(PUBLISHING.md)" in readme, (
-        "README.md does not link to the shared Flameblade quality standard"
+        'README.md must link to the shared Flameblade quality standard'
     )
     for workflow in BADGE_WORKFLOWS:
         assert (ROOT / ".github" / "workflows" / workflow).is_file(), (
-            f"README badge points to missing workflow: {workflow}"
+            f'README badge requires an existing workflow: {workflow}'
         )
 
 
@@ -234,7 +234,7 @@ def _assert_demo_video_provenance(
     entries = manifest.get("entries")
     assert isinstance(entries, dict)
     entry = entries.get(VIDEO_PROVENANCE_KEY)
-    assert isinstance(entry, dict), "missing demonstration video provenance entry"
+    assert isinstance(entry, dict), 'provide the demonstration video provenance entry'
     assert entry.get("generator") == VIDEO_GENERATOR
     assert entry.get("generation") == VIDEO_GENERATION
     assert entry.get("auto_regenerable") is True
@@ -244,7 +244,7 @@ def _assert_demo_video_provenance(
     ).hexdigest(), "demonstration video SHA-256 differs from provenance"
 
     for field in VIDEO_PROVENANCE_FIELDS:
-        assert field in entry, f"missing demonstration video provenance field: {field}"
+        assert field in entry, f'provide the demonstration video provenance field: {field}'
     assert entry["width"] == VIDEO_WIDTH
     assert entry["height"] == VIDEO_HEIGHT
     assert entry["fps"] == VIDEO_FPS
@@ -255,7 +255,7 @@ def _assert_demo_video_provenance(
     )
     assert entry["audio_sample_rate"] == VIDEO_AUDIO_SAMPLE_RATE
     assert entry["audio_channels"] == VIDEO_AUDIO_CHANNELS
-    assert entry["audio_channels"] > 0, "demonstration video provenance has no audio"
+    assert entry["audio_channels"] > 0, 'demonstration video provenance requires audio evidence'
     return entry
 
 
@@ -300,8 +300,8 @@ def _assert_demo_video_live_probe(
         ),
         None,
     )
-    assert isinstance(video_stream, dict), "demonstration video has no video stream"
-    assert isinstance(audio_stream, dict), "demonstration video has no audio stream"
+    assert isinstance(video_stream, dict), 'demonstration video requires a video stream'
+    assert isinstance(audio_stream, dict), 'demonstration video requires an audio stream'
     assert video_stream.get("codec_name") == VIDEO_CODEC
     assert video_stream.get("width") == VIDEO_WIDTH
     assert video_stream.get("height") == VIDEO_HEIGHT
@@ -336,13 +336,13 @@ def _assert_demo_video_live_probe(
 
 def _assert_demo_video(readme: str) -> None:
     video = MEDIA / "mohan-demo.mp4"
-    assert video.is_file(), "missing 30–60 second demonstration video"
+    assert video.is_file(), 'provide a 30–60 second demonstration video'
     size = video.stat().st_size
     assert MIN_VIDEO_SIZE_BYTES <= size <= 20 * 1024 * 1024, (
         f"unexpected demonstration video size: {size} bytes"
     )
     header = video.read_bytes()[:32]
-    assert b"ftyp" in header, "demonstration video is not an MP4 container"
+    assert b"ftyp" in header, 'demonstration video requires an MP4 container'
     assert "docs/media/mohan-demo.mp4" in readme
 
     provenance_path = ROOT / "docs/media/MEDIA-PROVENANCE.json"
@@ -390,7 +390,7 @@ def _assert_support_section(readme: str) -> None:
         "https://ko-fi.com/flamebladestudio",
     )
     for requirement in support_requirements:
-        assert requirement in readme, f"missing project support content: {requirement}"
+        assert requirement in readme, f'provide the project support content: {requirement}'
     for retired_support in (
         "buymeacoffee.com",
         "paypal.com/paypalme",
@@ -407,12 +407,10 @@ def _assert_support_section(readme: str) -> None:
             f"support portrait lacks fixed aligned dimensions: {filename}"
         )
     assert readme.count('width="33%" align="center" valign="top"') == SUPPORT_COLUMN_COUNT, (
-        "support columns must be top-aligned so shorter captions cannot push "
-        "the complete image-and-text column downward on GitHub"
+        'support columns must be top-aligned to preserve image-and-text alignment across caption lengths on GitHub'
     )
     assert readme.count('width="25%" align="center" valign="top"') == STRATEGIST_CARD_COUNT, (
-        "all four strategist-theatre cards must be top-aligned so shorter "
-        "captions cannot push the first images and text downward on GitHub"
+        'all four strategist-theatre cards must be top-aligned to preserve image-and-text alignment on GitHub'
     )
 
 
@@ -424,14 +422,14 @@ def _assert_github_links(readme: str) -> None:
         "/discussions",
     )
     for requirement in github_requirements:
-        assert requirement in readme, f"missing GitHub project link: {requirement}"
+        assert requirement in readme, f'provide the GitHub project link: {requirement}'
 
 
 def _assert_security_and_community_files() -> None:
     security = (ROOT / "SECURITY.md").read_text(encoding="utf-8").lower()
     assert "private vulnerability reporting" in security
     assert "api key" in security and "oauth" in security
-    assert "請勿" in security and "公開" in security
+    assert "保留於提交者端" in security and "暫緩公開揭露" in security
 
     required_community_files = (
         ROOT / "CODE_OF_CONDUCT.md",
@@ -440,7 +438,7 @@ def _assert_security_and_community_files() -> None:
         ROOT / ".github" / "ISSUE_TEMPLATE" / "config.yml",
     )
     for path in required_community_files:
-        assert path.is_file(), f"missing community file: {path.relative_to(ROOT)}"
+        assert path.is_file(), f'provide the community file: {path.relative_to(ROOT)}'
 
 
 def main() -> int:

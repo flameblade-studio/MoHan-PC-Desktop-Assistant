@@ -71,11 +71,11 @@ def _aware_utc(value: datetime) -> datetime:
 def _validate_context(context: WardrobeContext) -> None:
     _aware_utc(context.observed_at)
     if context.weather not in WEATHER_TAGS:
-        raise ValueError("Unknown weather category.")
+        raise ValueError("Use a recognized weather category.")
     if context.mood not in MOOD_TAGS:
-        raise ValueError("Unknown companion mood.")
+        raise ValueError("Use a recognized companion mood.")
     if context.occasion not in OCCASION_TAGS:
-        raise ValueError("Unknown wardrobe occasion.")
+        raise ValueError("Use a recognized wardrobe occasion.")
     if not MIN_TEMPERATURE <= context.temperature_c <= MAX_TEMPERATURE:
         raise ValueError("Temperature is outside the supported range.")
     for value in (context.last_changed_at, context.manual_lock_until):
@@ -103,14 +103,14 @@ def _score(
 
 
 class AutonomousWardrobeDirector:
-    """Choose a validated complete outfit without hidden fallback behavior."""
+    """Choose a validated complete outfit with every fallback explicitly described."""
 
     def __init__(
         self,
         change_cooldown: timedelta = DEFAULT_CHANGE_COOLDOWN,
     ) -> None:
         if change_cooldown < timedelta(0):
-            raise ValueError("Wardrobe cooldown cannot be negative.")
+            raise ValueError("Wardrobe cooldown accepts zero or greater.")
         self.change_cooldown = change_cooldown
 
     def decide(

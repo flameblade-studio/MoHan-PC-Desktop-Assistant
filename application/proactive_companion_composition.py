@@ -126,4 +126,4 @@ def _speech_state(performance: ApprovedPerformanceCue) -> str:
             OccasionExpression.QUIETLY_HOPEFUL: "shy_front",
             OccasionExpression.RESTRAINED_SULK: "worried_front",
         }[performance.expression]
-    raise TypeError("Unsupported proactive performance cue.")
+    raise TypeError("Provide a supported proactive performance cue.")

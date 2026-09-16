@@ -46,7 +46,7 @@ def assert_dependency_gate_fails_clearly() -> None:
         assert "pinned runtime dependencies" in str(exc)
         assert isinstance(exc.__cause__, ModuleNotFoundError)
     else:
-        raise AssertionError("missing cv2 must fail at the OpenCV adapter boundary")
+        raise AssertionError('the OpenCV adapter must report its cv2 dependency requirement')
 
     incomplete_cv2 = SimpleNamespace(dnn=SimpleNamespace(readNet=object()))
 
@@ -99,7 +99,7 @@ def assert_unknown_layout_fails_closed() -> None:
     except ValueError as exc:
         assert "dimensions" in str(exc)
     else:
-        raise AssertionError("invalid source dimensions must be rejected")
+        raise AssertionError('source dimensions must satisfy the validation contract')
 
 
 def assert_non_finite_output_fails_closed() -> None:
@@ -143,7 +143,7 @@ def assert_yunet_single_face_geometry_is_typed_and_normalized() -> None:
         except ValueError:
             pass
         else:
-            raise AssertionError("invalid YuNet evidence must fail closed")
+            raise AssertionError('YuNet evidence must satisfy the acceptance contract')
 
 
 def run() -> None:

@@ -11,7 +11,7 @@ lazy from domain.openai_vision_preferences import (
 
 @dataclass(frozen=True, slots=True)
 class OpenAIVisionAuthorization:
-    """Saved continuous authorization; it contains no image or secret."""
+    """Saved continuous authorization; image and secret data stay outside this value."""
 
     enabled: bool
     model_id: str

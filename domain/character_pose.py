@@ -117,7 +117,7 @@ class ViewAnchor:
 
     def __post_init__(self) -> None:
         if not self.view_id.strip() or not self.silhouette.strip():
-            raise ValueError("View identifiers must not be empty.")
+            raise ValueError("View identifiers require content.")
         if self.yaw_degrees not in CANONICAL_YAWS:
             raise ValueError("View yaw must use the canonical 15-degree grid.")
         if not MIN_PITCH_DEGREES <= self.pitch_degrees <= MAX_PITCH_DEGREES:
@@ -145,7 +145,7 @@ class ViewBlend:
 
 
 class ViewAtlas:
-    """Resolve continuous yaw without pretending missing raster views exist."""
+    """Resolve continuous yaw while requiring authored raster views."""
 
     def __init__(
         self,
@@ -215,7 +215,7 @@ class ViewAtlas:
                     start,
                     end,
                 )
-        raise RuntimeError("Circular view resolution failed.")
+        raise RuntimeError("Circular view resolution requires attention; retry the operation.")
 
     def _blend_or_nearest(
         self,
@@ -311,7 +311,7 @@ class HandPose:
         if set(self.landmarks) != set(HAND_LANDMARK_NAMES):
             raise ValueError("Hand pose must define all 21 canonical landmarks.")
         if not self.pose_id.strip():
-            raise ValueError("Hand pose identifier must not be empty.")
+            raise ValueError("Hand pose identifier requires content.")
         if any(
             not math.isfinite(value)
             for point in self.landmarks.values()
@@ -346,7 +346,7 @@ class HandAnatomyReport:
 
     def require_valid(self) -> None:
         if not self.valid:
-            raise ValueError("Invalid hand anatomy: " + ", ".join(self.problems))
+            raise ValueError("Provide a supported hand anatomy: " + ", ".join(self.problems))
 
 
 def audit_hand_anatomy(hand: HandPose, side: BodySide) -> HandAnatomyReport:
@@ -420,17 +420,17 @@ class CharacterPose:
 
     def __post_init__(self) -> None:
         if self.left_arm.side is not BodySide.LEFT:
-            raise ValueError("Left arm rig has the wrong side.")
+            raise ValueError("Left arm rig requires the left side.")
         if self.right_arm.side is not BodySide.RIGHT:
-            raise ValueError("Right arm rig has the wrong side.")
+            raise ValueError("Right arm rig requires the right side.")
         if not self.required_corrections:
             raise ValueError("Photoreal poses require authored correction layers.")
         if not self.pose_id.strip() or not self.view_id.strip():
-            raise ValueError("Pose identifiers must not be empty.")
+            raise ValueError("Pose identifiers require content.")
 
 
 class PoseRegistry:
-    """Immutable pose registry so installed packs cannot mutate live state."""
+    """Immutable pose registry keeps installed packs outside live state."""
 
     def __init__(self, poses: Iterable[CharacterPose]) -> None:
         materialized = tuple(poses)
@@ -438,7 +438,7 @@ class PoseRegistry:
         if len(keyed) != len(materialized):
             raise ValueError("Pose registry contains duplicate identifiers.")
         if not keyed:
-            raise ValueError("Pose registry must not be empty.")
+            raise ValueError("Pose registry requires content.")
         self._poses = frozendict(keyed)
 
     @property
@@ -643,7 +643,7 @@ def normalize_view_id(value: str, pitch_degrees: int = 0) -> str:
         canonical_view_id(yaw, pitch_degrees) for yaw in CANONICAL_YAWS
     }:
         return text
-    raise ValueError("Unknown or non-canonical view identifier.")
+    raise ValueError("Use a recognized or non-canonical view identifier.")
 
 
 def _positive_yaw(value: float) -> float:

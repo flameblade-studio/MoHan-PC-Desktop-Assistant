@@ -131,11 +131,9 @@ def test_u_inward_lerp_is_u_only_and_non_cumulative() -> None:
     )
     assert abs(FULL_U_SCALE - 0.95) < FLOAT_EPSILON
     assert viseme_u_inward_scale(0.0) == 1.0
-    # 2026-08-27 audit fix: the previous assertion compared
-    # viseme_u_inward_scale(1.0) with itself and could never fail.  Full
-    # weight must land exactly on FULL_U_SCALE (asserted above to be 0.95),
-    # and out-of-range weights are clamped so repeated frames can never
-    # accumulate more than the authored five-percent shrink.
+    # 2026-08-27 audit fix: replace the prior self-comparison with an independent
+    # expected FULL_U_SCALE of 0.95. Clamp weights to keep repeated frames
+    # within the authored five-percent shrink.
     assert viseme_u_inward_scale(1.0) == FULL_U_SCALE
     assert viseme_u_inward_scale(2.0) == FULL_U_SCALE
     assert viseme_u_inward_scale(-1.0) == 1.0
@@ -220,7 +218,7 @@ def test_full_body_z_order_has_twenty_five_layers() -> None:
 
 def test_full_body_z_order_prevents_clothing_clipping() -> None:
     # Back hair must stay behind the face; front hair and sleeves must stay in
-    # front of the torso so turning never clips clothing through the body.
+    # front of the torso so clothing retains clearance during turns.
     order = FULL_BODY_LAYER_Z_ORDER
     assert order.index("hair_back") < order.index("base")
     assert order.index("base") < order.index("hair_left")

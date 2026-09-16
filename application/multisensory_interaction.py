@@ -71,11 +71,11 @@ class InteractionTextContext:
 
     def __post_init__(self) -> None:
         if not self.user_title.strip():
-            raise ValueError("Interaction user title must not be empty.")
+            raise ValueError("Interaction user title requires content.")
         if self.wall_time is not None and self.wall_time.tzinfo is None:
             raise ValueError("Interaction wall time must be timezone-aware.")
         if self.variation_index < 0:
-            raise ValueError("Interaction variation index must not be negative.")
+            raise ValueError("Interaction variation index accepts zero or greater.")
 
     @property
     def local_time(self) -> datetime:
@@ -328,7 +328,7 @@ def _interaction_text_context(
 ) -> InteractionTextContext:
     if context is not None:
         if legacy:
-            raise TypeError("Interaction context cannot be mixed with legacy options.")
+            raise TypeError("Choose either interaction context or legacy options.")
         return context
     allowed = {
         "user_title",

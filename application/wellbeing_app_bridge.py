@@ -84,9 +84,9 @@ class SpeakRequest:
 
     def __post_init__(self) -> None:
         if not self.text.strip():
-            raise ValueError("Speak request text cannot be empty.")
+            raise ValueError("Speak request text requires content.")
         if not self.source or not self.cue_token:
-            raise ValueError("Speak request identifiers cannot be empty.")
+            raise ValueError("Speak request identifiers require content.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -98,7 +98,7 @@ class _PendingDelivery:
 
 
 class WellbeingAppBridgeError(RuntimeError):
-    """A safe app-boundary error without phrase or persistence content."""
+    """A safe app-boundary result while keeping phrase and persistence content private."""
 
 
 class WellbeingAppBridge:
@@ -152,7 +152,7 @@ class WellbeingAppBridge:
 
     def report_spoken(self, cue_token: str, *, succeeded: bool) -> bool:
         if not isinstance(cue_token, str) or not cue_token:
-            raise WellbeingAppBridgeError("Cue token is invalid.")
+            raise WellbeingAppBridgeError("Cue token needs a supported value.")
         if type(succeeded) is not bool:
             raise WellbeingAppBridgeError("Spoken result must be boolean.")
         with self._lock:
@@ -205,7 +205,7 @@ class WellbeingAppBridge:
                 raise WellbeingAppBridgeError("Snooze requires a deadline.")
             self._runtime.snooze_wellbeing(kind, snooze_until)
         else:
-            raise WellbeingAppBridgeError("Reminder command is invalid.")
+            raise WellbeingAppBridgeError("Reminder command needs a supported value.")
 
     def _discard_stale(self, now: datetime) -> None:
         stale = tuple(
@@ -221,7 +221,7 @@ class WellbeingAppBridge:
         try:
             now = self._clock()
         except _CALLBACK_ERRORS:
-            raise WellbeingAppBridgeError("Reminder bridge clock failed.") from None
+            raise WellbeingAppBridgeError("Reminder bridge clock requires attention; retry the operation.") from None
         if not isinstance(now, datetime) or now.tzinfo is None:
             raise WellbeingAppBridgeError(
                 "Reminder bridge clock must be timezone-aware."
@@ -246,11 +246,11 @@ def _trigger(value: ReminderTrigger | str) -> ReminderTrigger:
     try:
         return value if isinstance(value, ReminderTrigger) else ReminderTrigger(value)
     except TypeError, ValueError:
-        raise WellbeingAppBridgeError("Reminder trigger is invalid.") from None
+        raise WellbeingAppBridgeError("Reminder trigger needs a supported value.") from None
 
 
 def _command(value: ReminderCommand | str) -> ReminderCommand:
     try:
         return value if isinstance(value, ReminderCommand) else ReminderCommand(value)
     except TypeError, ValueError:
-        raise WellbeingAppBridgeError("Reminder command is invalid.") from None
+        raise WellbeingAppBridgeError("Reminder command needs a supported value.") from None

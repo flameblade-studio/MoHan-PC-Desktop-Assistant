@@ -48,7 +48,7 @@ def _sealed_manifest(
     try:
         manifest = json.loads(source_manifest.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError):
-        raise OutfitPackError("Invalid UTF-8 outfit authoring manifest.") from None
+        raise OutfitPackError("Provide a supported UTF-8 outfit authoring manifest.") from None
     if not isinstance(manifest, dict):
         raise OutfitPackError("Outfit authoring manifest must be an object.")
     assets: dict[str, bytes] = {}

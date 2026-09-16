@@ -146,7 +146,7 @@ def run() -> None:
         except OutfitPackError:
             pass
         else:
-            raise AssertionError("generated content must not replace an existing pack")
+            raise AssertionError('generated content must preserve an existing pack')
         assert protected.read_bytes() == b"user-owned-content"
         blocked = SelfGeneratingWardrobe(
             drafts,

@@ -2,13 +2,12 @@ from __future__ import annotations
 
 """Emotional continuity: a decaying affective residue between expressions.
 
-A real person does not snap from one feeling to a neutral face the instant a
-sentence ends.  A compliment leaves a lingering shyness, a worry leaves a
+A real person eases from one feeling to a neutral face after a sentence ends.  A compliment leaves a lingering shyness, a worry leaves a
 softened gaze, and joy fades gradually instead of vanishing.  This module
 tracks the most recent expressive state and exposes an exponentially decaying
 residue so the companion can ease back toward idle instead of jumping there.
 
-The module is pure domain logic with no Qt or speech-provider dependency, so
+The module is pure domain logic with Qt and speech-provider details outside the domain boundary, so
 it can be unit-tested deterministically and reused by any presentation owner.
 """
 
@@ -18,7 +17,7 @@ lazy from dataclasses import dataclass
 
 # Each expressive state maps to the "softer" expression that should linger
 # after the primary expression ends.  The residue is always a gentler variant
-# so the companion never looks stuck on a strong emotion.
+# so the companion stays expressive through a strong emotion.
 RESIDUAL_EXPRESSION = frozendict({
     "happy": "gentle_smile_front",
     "proud": "gentle_smile_front",
@@ -112,7 +111,7 @@ class AffectiveState:
         )
 
     def residual_expression(self, now: float | None = None) -> str | None:
-        """Return the lingering expression, or None once it has fully faded."""
+        """Return the lingering expression, or the sentinel once it has fully faded."""
         residue = self._residue
         if residue is None:
             return None

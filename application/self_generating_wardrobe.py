@@ -71,7 +71,7 @@ class OutfitCreationRequest:
     def __post_init__(self) -> None:
         unknown = self.requested_categories - GENERATABLE_APPEARANCE_CATEGORIES
         if unknown:
-            raise ValueError("Unknown generated appearance category.")
+            raise ValueError("Use a recognized generated appearance category.")
         if not self.requested_categories:
             raise ValueError("At least one appearance category is required.")
 
@@ -163,10 +163,10 @@ def _require_requested_categories(
     }
     ensembles = manifest.get("ensembles")
     if not isinstance(ensembles, list) or not ensembles:
-        raise OutfitPackError("Generated appearance has no complete ensemble.")
+        raise OutfitPackError("Generated appearance requires a complete ensemble.")
     selections = ensembles[0].get("selections")
     if not isinstance(selections, dict):
-        raise OutfitPackError("Generated appearance selections are missing.")
+        raise OutfitPackError("Provide generated appearance selections.")
     accessories = manifest.get("accessories")
     accessory_kinds = {
         item.get("accessory_kind")
@@ -279,7 +279,7 @@ class SelfGeneratingWardrobe:
         if not self.policy.enabled:
             raise OutfitPackError("Self-generated outfits are not enabled.")
         if not JOB_ID.fullmatch(request.job_id):
-            raise OutfitPackError("Invalid outfit generation job identifier.")
+            raise OutfitPackError("Provide a supported outfit generation job identifier.")
         request = _contextualized_request(request)
         storage = self.storage_guard.inspect(
             request.requested_at,
@@ -313,7 +313,7 @@ class SelfGeneratingWardrobe:
                 "Generated appearance identity is already installed; "
                 "existing content was preserved."
             )
-        # 趨勢搜尋失敗時 discover() 會把 last_status 設成 "failed" 並回傳空
+        # 趨勢搜尋失敗時 discover() 會把 last_status 設成 "requires attention" 並回傳空
         # tuple，而那個狀態沒有任何消費者——付費影像生成照樣往下跑，使用者
         # 看到的仍是「使用趨勢搜尋生成成功」。空結果與失敗必須分開。
         trends: tuple = ()
@@ -352,7 +352,7 @@ class SelfGeneratingWardrobe:
         pack_id = draft.manifest.get("id")
         pack_version = draft.manifest.get("pack_version")
         if not isinstance(pack_id, str) or not isinstance(pack_version, str):
-            raise OutfitPackError("Generated outfit identity is missing.")
+            raise OutfitPackError("Provide generated outfit identity.")
         package_path = job_directory / f"{pack_id}-{pack_version}.mohan-outfit"
         build_outfit_pack(
             manifest_path,
@@ -369,7 +369,7 @@ class SelfGeneratingWardrobe:
                 / f"{installed.pack_id}.mohan-outfit"
             )
             if not result_path.is_file():
-                raise OutfitPackError("Installed generated outfit is missing.")
+                raise OutfitPackError("Provide installed generated outfit.")
             shutil.rmtree(job_directory / "source")
             package_path.unlink()
             (job_directory / "validated.json").write_text(

@@ -145,7 +145,7 @@ def run_application() -> int:
             else app.exec()
         )
     # Keep app.py a pure composition root while still cutting off the one
-    # unsafe frozen-JIT interpreter-finalization tail after Qt has shut down.
+    # frozen-JIT interpreter-finalization tail after Qt has shut down remains isolated.
     return finalize_process_exit(exit_code)
 
 

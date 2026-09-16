@@ -19,7 +19,7 @@ class OutfitGenerationCancelled(RuntimeError):
 
 
 class OutfitImageGenerationError(RuntimeError):
-    """A sanitized, user-displayable image-provider failure."""
+    """A sanitized, user-displayable image-provider attention event."""
 
     def __init__(
         self,

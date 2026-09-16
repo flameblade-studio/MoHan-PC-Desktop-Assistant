@@ -24,7 +24,7 @@ def db(tmp_path):
 
 
 def test_restore_keeps_runtime_state_written_after_the_snapshot(db) -> None:
-    """Cancelling a settings draft must not roll back live runtime progress."""
+    """Cancelling a settings draft preserves live runtime progress."""
 
     db.set_setting("break_minutes", SNAPSHOT_BREAK_MINUTES)
     db.set_setting("affinity_value", 0.30)
@@ -42,7 +42,7 @@ def test_restore_keeps_runtime_state_written_after_the_snapshot(db) -> None:
 
     # Ordinary settings roll back to the snapshot.
     assert db.setting("break_minutes") == SNAPSHOT_BREAK_MINUTES
-    # Runtime keys keep their live values, including keys that did not exist
+    # Runtime keys keep live values, including keys created after the draft
     # when the snapshot was taken.
     assert db.setting("affinity_value") == GROWN_AFFINITY
     assert db.setting("weather_temperature_c") == LIVE_TEMPERATURE_C
@@ -58,7 +58,7 @@ def test_restore_drops_non_runtime_keys_created_after_the_snapshot(db) -> None:
 
 
 def test_preserved_key_absent_at_restore_time_stays_absent(db) -> None:
-    """A runtime key deleted from the live table must not resurrect."""
+    """A runtime key deleted from the live table remains deleted."""
 
     db.set_setting("affinity_value", 0.4)
     snapshot = db.settings_snapshot()

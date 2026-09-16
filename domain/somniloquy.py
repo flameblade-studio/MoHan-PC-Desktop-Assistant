@@ -4,11 +4,10 @@ from __future__ import annotations
 
 When the companion idles for a long stretch or enters a drowsy late-night state,
 she may murmur a faint, half-remembered line from her Northern Song past.  These
-lines must stay firmly inside her era: no modern vocabulary, no "hello", no
-"master" in the casual sense — only the imagery of 汴京, 赤焰劍, 蘇軾's verse,
-and the quiet loneliness of a sword spirit who has waited a thousand years.
+lines must stay firmly inside her era: Era-appropriate vocabulary, era-appropriate greetings and titles instead of casual "hello" or "master" — only the imagery of 汴京, 赤焰劍, 蘇軾's verse,
+and the quiet loneliness of a sword spirit shaped by a thousand years of waiting.
 
-This module is pure domain logic with no Qt or speech-provider dependency, so it
+This module is pure domain logic with Qt and speech-provider details outside the domain boundary, so it
 can be unit-tested and reused by the proactive runtime and the visual dynamics.
 """
 
@@ -16,9 +15,9 @@ lazy import random
 lazy import re
 
 # A modern-vocabulary blocklist used to guard against anachronistic lines.  If a
-# candidate line ever contains one of these, it is rejected as out-of-era.
-# CJK markers are matched as substrings (CJK has no word boundaries); Latin
-# markers are matched as whole words so "hi" never flags "this" or "within".
+# candidate line contains one of these, it receives an out-of-era status.
+# CJK markers are matched as substrings (CJK uses continuous text); Latin
+# markers are matched as whole words so "hi" stays separate from "this" and "within".
 _MODERN_MARKERS_CJK = frozenset({
     "哈囉",
     "哈啰",
@@ -45,7 +44,7 @@ _MODERN_MARKERS_LATIN = frozenset({
 })
 
 # The canonical dream-fragment library.  Each line is a faint, grey murmur that
-# evokes the Northern Song without ever breaking character.  They are written in
+# evokes the Northern Song while preserving the character voice. They are written in
 # Traditional Chinese first; the other three languages are provided below.
 _SOMNILOQUY_ZH_TW = (
     "汴京的煙雨……好像也是這般黏人……主上，赤焰劍冷……",
@@ -78,7 +77,7 @@ _SOMNILOQUY_EN = (
     "I still recall half a verse of Su Shi… ten years, life and death, boundless…",
     "In the dimming lamplight… I have waited a thousand years, and for whom…",
     "The tassel of the Crimson Flame Sword has scattered in the wind… did you ever pick it up…",
-    "The painted boats on the Bian River carried whose parting sorrow… I no longer remember…",
+    "The painted boats on the Bian River carried a parting sorrow… its echo remains…",
     "The night deepens… my sword, too, should rest in its sheath…",
     "That Lantern Festival, the whole city ablaze with light… yet I remember only your back…",
     "A traveler returning through wind and snow… I have listened to a thousand years of snow within the sword…",
@@ -132,14 +131,14 @@ def is_anachronistic(line: str) -> bool:
 
 
 def validate_library(language: str) -> tuple[str, ...]:
-    """Return any anachronistic lines in a language's library (empty if clean)."""
+    """Return anachronistic lines in a language's library; a zero-line result confirms a clean library."""
     return tuple(
         line for line in somniloquy_lines(language) if is_anachronistic(line)
     )
 
 
 # The dream murmur must be rare: a faint, half-remembered line that surfaces
-# only occasionally during idle or sleep, never a constant chatter that would
+# occasionally during idle or sleep, keeping conversation measured rather than constant so
 # interrupt the user's work.  This is the per-check probability.
 SOMNILOQUY_TRIGGER_PROBABILITY = 0.005  # 0.5%
 

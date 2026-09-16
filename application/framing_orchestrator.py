@@ -51,7 +51,7 @@ class SpecialOccasionCandidate:
 
     def __post_init__(self) -> None:
         if not self.event_id.strip() or not self.reason_code.strip():
-            raise ValueError("Special-occasion audit fields must not be empty.")
+            raise ValueError("Special-occasion audit fields require content.")
         if not 0.0 <= self.score <= 1.0:
             raise ValueError("Special-occasion score must be within 0..1.")
         if not 0.0 <= self.confidence <= 1.0:
@@ -281,7 +281,7 @@ def _from_wellbeing_cue(cue: ApprovedWellbeingPerformance) -> _Candidate:
     stage = _enum_value(cue.stage)
     framing = _enum_value(cue.framing)
     if not event_id or not reason or not kind or not stage:
-        raise ValueError("Approved wellbeing cue audit fields must not be empty.")
+        raise ValueError("Approved wellbeing cue audit fields require content.")
     modes = {
         "half": FramingMode.HALF,
         "close_candidate": FramingMode.CLOSE,
@@ -290,9 +290,9 @@ def _from_wellbeing_cue(cue: ApprovedWellbeingPerformance) -> _Candidate:
     try:
         mode = modes[framing]
     except KeyError as error:
-        raise ValueError("Approved wellbeing cue framing is unsupported.") from error
+        raise ValueError("Approved wellbeing cue framing needs a supported value.") from error
     if stage == "initial" and mode is FramingMode.CLOSE:
-        raise ValueError("An initial wellbeing cue must never request close framing.")
+        raise ValueError("An initial wellbeing cue uses a standard framing distance.")
     return _Candidate(
         mode,
         0.90 if stage == "initial" else 0.98,

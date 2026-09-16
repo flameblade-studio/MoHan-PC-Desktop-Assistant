@@ -299,7 +299,7 @@ class VisionController(QObject):
             raise RuntimeError("vision is not ready")
         name = display_name.strip()
         if not name:
-            raise ValueError("display name must not be empty")
+            raise ValueError("display name requires content")
         self._enrollment_name = name
         self._enrollment_samples.clear()
         self.enrollment_progress.emit(0, self._required_enrollment_samples)

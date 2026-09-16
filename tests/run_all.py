@@ -30,14 +30,14 @@ SENSITIVE_ENVIRONMENT_MARKERS = (
 MALFORMED_TEST_EXIT_CODE = 2
 COLLECTION_AUDIT_EXIT_CODE = 3
 TEST_TIMEOUT_EXIT_CODE = 124
-# Non-test .py files that legitimately live in tests/ without being collected.
+# Supporting .py files in tests/ are intentionally outside collection.
 # Anything else that carries assert statements is an orphan checker (like the
 # former check_packaged_migration.py) and fails the collection audit.
 ORPHAN_EXEMPT_FILES = frozenset({"run_all.py", "__init__.py", "conftest.py"})
 TEST_TIMEOUT_SECONDS = 600
 # A single retry absorbs the timing-sensitive Qt flakiness that surfaces on
-# slow CI runners (event-loop races, transient file locks) without masking a
-# deterministic failure: a test must fail twice in a row to fail the suite.
+# slow CI runners (event-loop races, transient file locks) while surfacing a
+# deterministic issue: two consecutive failing attempts fail the suite.
 TEST_RETRY_ATTEMPTS = 1
 DEFAULT_TIER = "gate"
 FAST_TIER = "fast"
@@ -107,7 +107,7 @@ def _select_shard(
     shard_index: int,
     shard_count: int,
 ) -> tuple[Path, ...]:
-    """Select one stable round-robin shard without overlap."""
+    """Select one stable, disjoint round-robin shard."""
 
     return tuple(
         test
@@ -179,7 +179,7 @@ def _git_changed_files(
             break
         else:
             return (), (
-                f"could not compare {changed_from!r} with HEAD: "
+                f"comparison of {changed_from!r} with HEAD requires attention: "
                 f"{reference_error}"
             )
 
@@ -209,7 +209,7 @@ def _git_changed_files(
             _git_names(("ls-files", "--others", "--exclude-standard", "-z"))
         )
     except RuntimeError as error:
-        return (), f"could not inspect the worktree: {error}"
+        return (), f"worktree inspection requires attention: {error}"
     return tuple(sorted(changed)), None
 
 
@@ -226,7 +226,7 @@ def _configured_test_names(
     names = tuple(str(value) for value in values)
     missing = tuple(sorted(set(names) - test_names))
     if missing:
-        raise ValueError(f"{key} names missing test files: {', '.join(missing)}")
+        raise ValueError(f"{key} requires these test files: {', '.join(missing)}")
     return tuple(sorted(set(names)))
 
 
@@ -237,11 +237,11 @@ def _load_impact_map(
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
-        return None, f"could not load {path}: {error}"
+        return None, f"loading {path} requires attention: {error}"
     if not isinstance(document, dict):
         return None, "impact map root must be an object"
     if document.get("schema") != "mohan.test-impact-map.v1":
-        return None, "impact map schema is not mohan.test-impact-map.v1"
+        return None, "impact map requires schema mohan.test-impact-map.v1"
     try:
         contract_tests = _configured_test_names(
             document,
@@ -284,7 +284,7 @@ def _load_impact_map(
             )
             if invalid:
                 raise ValueError(
-                    f"rule {index} names missing test files: {', '.join(invalid)}"
+                    f"rule {index} requires these test files: {', '.join(invalid)}"
                 )
             rules.append(
                 (
@@ -583,7 +583,7 @@ def _pytest_nodes_missing_from_main(
     tree: ast.Module,
     main_guards: tuple[ast.If, ...],
 ) -> tuple[str, ...]:
-    """Find pytest nodes not exercised by the file's direct entry point."""
+    """Find pytest nodes requiring coverage beyond the file's direct entry point."""
 
     functions = {
         node.name: node
@@ -706,7 +706,7 @@ def _isolated_environment(test_root: Path) -> dict[str, str]:
     environment.pop("MOHAN_DATA_DIR", None)
     # GitHub Actions injects GIT_CONFIG_COUNT/KEY_n/VALUE_n as one atomic
     # protocol.  The generic secret filter removes KEY_n; retaining COUNT (or
-    # VALUE_n) leaves git itself malformed.  Tests must receive none of it.
+    # VALUE_n) leaves git itself malformed. Tests receive a clean Git environment.
     environment.pop("GIT_CONFIG_COUNT", None)
     for name in tuple(environment):
         if name.startswith("GIT_CONFIG_VALUE_"):
@@ -729,7 +729,7 @@ def _contains_assertions(path: Path) -> bool:
     try:
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     except OSError, SyntaxError, UnicodeError:
-        # An unreadable checker still counts as an orphan: fail closed.
+        # A checker requiring read or parse repair still counts as an orphan.
         return True
     return any(isinstance(node, ast.Assert) for node in ast.walk(tree))
 
@@ -737,10 +737,9 @@ def _contains_assertions(path: Path) -> bool:
 def _collection_audit_errors(collected: Sequence[Path]) -> tuple[str, ...]:
     """Reconcile the tests/ directory manifest with the collected set.
 
-    Two guarantees keep orphan checkers from silently losing coverage again:
-    the number of ``test_*.py`` files on disk must equal the number the
-    runner collected, and no other ``.py`` file in tests/ may contain assert
-    statements unless it is a known non-test file (``ORPHAN_EXEMPT_FILES``).
+    Every test_*.py file on disk must appear in collection. Every other .py
+    file containing assertions must either be collected or belong to the
+    explicit ORPHAN_EXEMPT_FILES supporting-file list.
     """
 
     errors: list[str] = []
@@ -762,7 +761,7 @@ def _collection_audit_errors(collected: Sequence[Path]) -> tuple[str, ...]:
             continue
         if _contains_assertions(path):
             errors.append(
-                f"orphan checker is never collected: {path.name} "
+                f"collect this orphan checker: {path.name} "
                 "(rename it to test_*.py or add it to ORPHAN_EXEMPT_FILES)"
             )
     return tuple(errors)
@@ -807,7 +806,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     arguments = _arguments(argv)
     all_tests = tuple(sorted(TESTS_DIR.glob("test_*.py")))
     if not all_tests:
-        print("No tests found.", file=sys.stderr)
+        print("Provide test_*.py files for collection.", file=sys.stderr)
         return 2
     audit_errors = _collection_audit_errors(all_tests)
     if audit_errors:
@@ -832,7 +831,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         shard_count=arguments.shard_count,
     )
     if not tests:
-        print("No tests selected for this shard.", file=sys.stderr)
+        print("Select at least one test for this shard.", file=sys.stderr)
         return 2
     retried_modules: list[str] = []
     with TemporaryDirectory(prefix="mohan-test-suite-") as suite_temp:
@@ -872,7 +871,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     _print_retried_modules(retried_modules)
                     return returncode
     # A module that only passed after a retry still exits 0, but the summary
-    # must name it so intermittent failures never stay invisible.
+    # must name it so every intermittent issue remains visible.
     _print_retried_modules(retried_modules)
     print(f"ALL_{len(tests)}_TESTS_OK")
     return 0
@@ -906,9 +905,8 @@ def _run_with_retry(
                 ),
             )
         except subprocess.TimeoutExpired:
-            # The caller prints the single, stable timeout line; a timeout is
-            # never retried because it signals a genuinely hung test, not a
-            # timing race.
+            # The caller prints one stable timeout line. A timeout signals a hung test
+            # and immediately returns its exit code; timing-race retries apply separately.
             return TEST_TIMEOUT_EXIT_CODE
         if returncode == 0:
             return 0

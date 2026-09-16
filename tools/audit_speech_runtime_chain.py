@@ -1,6 +1,6 @@
 """Deterministic pre-package audit of the local speech-to-mouth chain.
 
-The audit never opens a real audio device.  It drives the production PCM
+The audit uses a recording audio sink exclusively. It drives the production PCM
 streaming, viseme dynamics, speech lifecycle, and face-motion code through a
 recording PortAudio-compatible sink.  This makes it safe in CI while still
 proving that a non-empty TTS payload starts playback and produces a non-zero
@@ -300,7 +300,7 @@ def run_audit() -> SpeechRuntimeAudit:
     microtiming_issues = audit_runtime_microtiming()
     # Microtiming issue names are "blink:...", "blink-duration:...",
     # "attention-gaze:..." and "saccade-gaze:...": every blink-family issue
-    # starts with "blink", not only the bare "blink:" interval label.
+    # starts with "blink", covering both the interval label and its variants.
     blink_issues = tuple(
         issue for issue in microtiming_issues if issue.startswith("blink")
     )

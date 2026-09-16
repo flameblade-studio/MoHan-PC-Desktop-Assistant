@@ -37,7 +37,7 @@ def _wave(*, channels: int = 1, frames: int = 480) -> bytes:
 
 
 class _RecordingAcceleration:
-    """Record operation names and lengths without retaining user audio."""
+    """Record operation names and lengths while keeping user audio transient."""
 
     def __init__(
         self,
@@ -261,7 +261,7 @@ def test_stream_playback_closes_after_an_injected_pcm_fault() -> None:
         except RuntimeError as error:
             assert str(error) == "infer_vowel_pcm16 fault"
         else:
-            raise AssertionError("the injected PCM fault was not surfaced")
+            raise AssertionError('the injected PCM fault must surface')
 
     assert accelerator.calls["infer_vowel_pcm16"] == 1
     assert cues == [(0.0, "CLOSED")]

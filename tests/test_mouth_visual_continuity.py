@@ -192,7 +192,7 @@ def _assert_speech_expression_layers(
             reference.mouth_rect,
         ) == 0, f"{expression} changed pixels outside the cheek mouth clip"
     assert len(mouth_signatures) >= MIN_MOUTH_SIGNATURES, (
-        "complete moving corners must not flatten the A/I/U/E/O shapes"
+        'Moving corners must preserve distinct A/I/U/E/O shapes'
     )
 
 
@@ -205,7 +205,7 @@ def _capture_transition_frames(window: CompanionWindow) -> list[QImage]:
     with patch("time.perf_counter", side_effect=lambda: clock[0]):
         for index, vowel in enumerate(vowels):
             if index == VOWEL_REPEAT_COUNT:
-                # A delayed callback must not redirect a live mouth to a new face.
+                # A delayed callback preserves the face currently owning live speech.
                 window.idle_pose = "front"
             window._audio_viseme_cue(0.62 if vowel != "CLOSED" else 0.0, vowel)
             if index == 0:
@@ -226,10 +226,9 @@ def _assert_transition_integrity(
     frames: list[QImage],
     reference: MouthReference,
 ) -> None:
-    # The layered renderer composes the whole half-body portrait continuously,
-    # so the mouth region must still vary across transitions. The eye and
-    # outside-mouth "frozen region" contracts no longer apply because the whole
-    # frame is recomposed from 25 layers each tick.
+    # The renderer recomposes all 25 half-body layers each tick. The mouth
+    # region varies through transitions; eye and surrounding regions follow
+    # the current complete composition contract.
     assert len(
         {region_signature(frame, reference.mouth_rect) for frame in frames}
     ) >= MIN_TRANSITION_SIGNATURES
@@ -245,11 +244,9 @@ def _assert_transition_smoothness(
     frames: list[QImage],
     mouth_rect: QRect,
 ) -> None:
-    # The layered renderer drives the mouth continuously from motion.mouth
-    # (aperture/width/rounding/jaw), so the mouth region must vary across the
-    # transition frames. The legacy "adjacent-frame difference below a fixed
-    # ratio" contract no longer applies because the whole half-body is
-    # recomposed from 25 layers each tick.
+    # motion.mouth drives aperture, width, rounding, and jaw continuously.
+    # The 25-layer composition must vary through transition frames, with
+    # continuity assessed under the current renderer contract.
     mouth_signatures = {
         region_signature(frame, mouth_rect) for frame in frames
     }

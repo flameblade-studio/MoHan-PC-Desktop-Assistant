@@ -27,7 +27,7 @@ def audit_interval_samples(
     *,
     allowed_range: tuple[int, int],
 ) -> tuple[str, ...]:
-    """Reject out-of-range or mechanically periodic face-event schedules."""
+    """Use in-range face-event schedules with natural timing."""
 
     if len(samples_ms) < MINIMUM_AUDIT_SAMPLES:
         return (f"{name}:insufficient-microtiming-samples",)

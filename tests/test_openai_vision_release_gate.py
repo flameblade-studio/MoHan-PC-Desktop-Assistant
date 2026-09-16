@@ -23,10 +23,10 @@ LANGUAGE_HEADINGS = (
     "## 日本語",
 )
 POLICY_MARKERS = (
-    "`openai` Python SDK 執行期相依",
-    "`openai` Python SDK 运行时依赖",
-    "`openai` Python SDK runtime dependency",
-    "`openai` Python SDK の実行時依存",
+    ("`openai` Python SDK 執行期相依", "標準函式庫 HTTPS"),
+    ("`openai` Python SDK 运行时依赖", "标准库 HTTPS"),
+    ("`openai` Python SDK runtime dependency", "standard-library HTTPS"),
+    ("`openai` Python SDK の実行時依存", "標準ライブラリ HTTPS"),
 )
 POLICY_DOCUMENTS = (
     "README.md",
@@ -149,8 +149,10 @@ def test_four_language_docs_record_the_no_sdk_runtime_policy() -> None:
         content = (ROOT / relative_path).read_text(encoding="utf-8")
         heading_positions = [content.index(heading) for heading in LANGUAGE_HEADINGS]
         assert heading_positions == sorted(heading_positions), relative_path
-        for marker in POLICY_MARKERS:
-            assert marker in content, f"{relative_path}: missing {marker}"
+        for markers in POLICY_MARKERS:
+            assert any(marker in content for marker in markers), (
+                f'{relative_path}: state the SDK boundary or standard-library transport: {markers}'
+            )
         for forbidden in FORBIDDEN_SDK_REQUIREMENTS:
             assert forbidden not in content, f"{relative_path}: stale {forbidden}"
 

@@ -47,7 +47,7 @@ SPEECH_LAYER_SLOTS = frozenset({"face", "mouth"})
 
 @dataclass(frozen=True, slots=True)
 class NormalizedCrop:
-    """Crop-only framing; it cannot prescribe a stretched output size."""
+    """Crop-only framing sets the crop and leaves output sizing to the caller."""
 
     x: float
     y: float
@@ -265,8 +265,8 @@ class FullBodyRenderAdapter:
         validated = self._validate_layers(layers, SPEECH_LAYER_SLOTS, exact=False)
         if validated is None:
             return self._current_frame
-        # An empty layer set means the mouth has closed: restore the authored
-        # static photograph so a previously overlaid mouth never lingers.
+        # A zero layer set means the mouth has closed: restore the authored
+        # static photograph so a previously overlaid mouth clears with the authored frame.
         frame = self._static_rgba
         for item in validated:
             frame = self._rgba.alpha_over_rgba(frame, item.layer.rgba)

@@ -194,7 +194,7 @@ def _require_matching_build(
 def _require_binary_bindings(verification: PackageVerification) -> None:
     module = _object(verification.native_files["module"], "native module")
     if module["sha256"] != verification.build.get("wheel_module_sha256"):
-        raise RuntimeError("Packaged native module does not match the wheel evidence.")
+        raise RuntimeError("The packaged native module must match the wheel evidence.")
     dll = _object(
         verification.native_files["abi3t_compatibility_dll"],
         "abi3t compatibility DLL",
@@ -204,7 +204,7 @@ def _require_binary_bindings(verification: PackageVerification) -> None:
         "build abi3t compatibility DLL",
     )
     if dll["sha256"] != build_dll.get("sha256"):
-        raise RuntimeError("Packaged python3t.dll does not match build evidence.")
+        raise RuntimeError("Packaged python3t.dll must match the build evidence.")
 
 
 def finalize_evidence(

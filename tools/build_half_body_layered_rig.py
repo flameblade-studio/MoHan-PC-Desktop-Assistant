@@ -1,6 +1,6 @@
 """Build the half-body 25-layer parametric rig from new authority portraits.
 
-The builder never synthesises pixels.  For each of the three half-body poses
+The builder uses authority pixels exclusively.  For each of the three half-body poses
 it solves a five-point YuNet affine from the OLD authority portrait (the one
 the current ``assets/expressions/layered`` masks were cut from) to the NEW
 authority, warps the 25 old alpha masks by that affine, rebuilds the eye and
@@ -8,10 +8,10 @@ mouth partitions deterministically, assigns every authority-opaque pixel to
 exactly one layer and re-cuts the new authority pixels into those layers.
 Recomposition of the 25 cutouts is therefore lossless.
 
-Layers the new body does not have (a sleeveless top has no sleeves, a bun has
-no hanging hairpin) are declared empty on the command line; ``hair_left`` and
+Layers absent from the new body (such as sleeves on a sleeveless top or a
+hanging hairpin on a plain bun) are explicitly declared empty on the command line; ``hair_left`` and
 ``hair_right`` are auto-detected from where their warped masks land on the new
-portrait and the decision is reported, never guessed silently.
+portrait, with the decision explicitly recorded in the report.
 
 Usage::
 
@@ -75,11 +75,11 @@ DEFAULT_MASK_AUTHORITY_DIR = REPO_ROOT / "assets" / "expressions"
 DEFAULT_EMPTY_LAYERS = ("sleeve_left", "sleeve_right", "ornament")
 # Layers whose presence on the new body is decided per pose from evidence.
 AUTO_EMPTY_LAYERS = ("hair_left", "hair_right")
-# A warped strand mask whose area lands mostly on transparent background no
-# longer has a strand under it.
+# A warped strand mask mostly covering transparent background indicates
+# an empty strand region.
 MOSTLY_TRANSPARENT_RATIO = 0.5
 # ...and one that lands on opaque skin/cloth instead of hair-coloured pixels
-# has no strand either (the old strands hung over the robe; the new body is
+# also indicates an empty strand region (the old strands hung over the robe; the new body is
 # bare there).  Both criteria are reported.
 MIN_HAIR_COLOUR_RATIO = 0.25
 # ``extract_physics_layers`` keeps the blue/red ratio of its dark-hair gate
@@ -89,9 +89,9 @@ DARK_HAIR_BLUE_TO_RED_MIN = 0.82
 # collapses it takes the central part of the oral seam.
 TEETH_TONGUE_CENTRAL_SPAN = 0.5
 # Skin inside the YuNet face box padded by these fractions (sideways and
-# upward; the same padding the full-body remap uses) that no warped mask
-# claims is face skin — forehead above the old hairline, ears, cheek edges —
-# and belongs to ``base``, not to the hair/body fallback.
+# upward; the same padding the full-body remap uses) outside all warped
+# masks is face skin — forehead above the old hairline, ears, cheek edges —
+# and belongs exclusively to ``base``.
 FACE_ZONE_PAD_X = 0.25
 FACE_ZONE_PAD_UP = 0.25
 EYE_LAYERS = (
@@ -169,7 +169,7 @@ def _warped_masks(
     matrix: np.ndarray,
     size: tuple[int, int],
 ) -> dict[str, np.ndarray]:
-    """Warp the 25 old alpha masks; NOT yet clipped to the new foreground."""
+    """Warp the 25 old alpha masks before the separate foreground-clipping stage."""
     warped: dict[str, np.ndarray] = {}
     for layer in LAYERS:
         source = _rgba(mask_source / f"{pose}_{layer}.png")
@@ -194,7 +194,7 @@ def _hair_split_y(
     head = (dark_hair & (yy < face_bottom)).astype(np.uint8)
     count, labels, stats, _ = cv2.connectedComponentsWithStats(head, connectivity=8)
     if count <= 1:
-        raise ValueError("no dark-hair component found above the face box")
+        raise ValueError("a dark-hair component above the face box is required")
     largest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
     bun = _bbox(labels == largest)
     return bun[3], bun
@@ -231,7 +231,7 @@ def _partition_teeth_tongue(
     candidates: dict[str, np.ndarray],
     warped_teeth_tongue: np.ndarray,
 ) -> str:
-    """Keep ``teeth_tongue`` non-empty without inventing pixels.
+    """Fill ``teeth_tongue`` exclusively with existing source pixels.
 
     Preferred: the warped old mask, minus the corners and the oral seam.
     Fallback: the central half of the oral seam (or its median row) when the
@@ -245,7 +245,7 @@ def _partition_teeth_tongue(
     if not teeth.any():
         oral = candidates["oral_cavity"]
         if not oral.any():
-            raise RuntimeError("oral cavity is empty; cannot seat teeth_tongue")
+            raise RuntimeError("teeth_tongue placement requires a visible oral cavity")
         x0, _y0, x1, _y1 = _bbox(oral)
         xx = np.indices(oral.shape)[1]
         half_span = (x1 - x0) * TEETH_TONGUE_CENTRAL_SPAN / 2.0
@@ -258,7 +258,7 @@ def _partition_teeth_tongue(
             teeth = oral & (np.indices(oral.shape)[0] == median_row)
             mode = "oral-seam-median-row"
         if not teeth.any() or not (oral & ~teeth).any():
-            raise RuntimeError("cannot split a non-empty teeth_tongue from the oral seam")
+            raise RuntimeError("a visible teeth_tongue layer requires a separable oral seam")
     for layer in ("lip_upper", "lip_lower", "oral_cavity"):
         candidates[layer] &= ~teeth
         if not candidates[layer].any():

@@ -7,7 +7,7 @@ exceeds a hot threshold, her idle motion gains a "wipe sweat" or "brush hair"
 frequency and she may complain; when it rains, a faint raindrop alpha layer
 overlays her sleeves and her gaze turns a little wistful.
 
-This is pure domain logic with no Qt dependency.  It maps a temperature and a
+This is pure domain logic with Qt outside the domain boundary.  It maps a temperature and a
 weather string to a physiological-response profile.
 """
 
@@ -37,14 +37,14 @@ def weather_mood(temperature_c: float, weather: str) -> WeatherMood:
 
 
 def sweat_frequency(mood: WeatherMood) -> float:
-    """The wipe-sweat/brush-hair frequency (0 = none, 1 = frequent)."""
+    """The wipe-sweat/brush-hair frequency (0 = baseline, 1 = frequent)."""
     if mood is WeatherMood.HOT:
         return 1.0
     return 0.0
 
 
 def rain_alpha(mood: WeatherMood) -> float:
-    """The raindrop overlay alpha (0 = none, 1 = full)."""
+    """The raindrop overlay alpha (0 = baseline, 1 = full)."""
     if mood is WeatherMood.RAINY:
         return 0.35
     return 0.0

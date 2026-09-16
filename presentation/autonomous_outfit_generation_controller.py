@@ -140,7 +140,7 @@ class AutonomousOutfitGenerationController(QObject):
         self._timer.setInterval(AUTONOMOUS_CHECK_INTERVAL_MS)
         self._timer.timeout.connect(self.evaluate_automatic)
         # A controller-owned single-shot timer (instead of QTimer.singleShot)
-        # so stop() can cancel the initial delayed evaluation outright and no
+        # so stop() can cancel the initial delayed evaluation outright and zero
         # orphaned callback survives this controller's lifetime.
         self._initial_timer = QTimer(self)
         self._initial_timer.setSingleShot(True)
@@ -200,7 +200,7 @@ class AutonomousOutfitGenerationController(QObject):
         self.request_generation()
 
     def _evaluate_installed_outfits(self) -> None:
-        """Select among official, user-authored, and cloud packs without mutation."""
+        """Select among official, user-authored, and cloud packs while preserving stored state."""
 
         now = datetime.now(UTC)
         weather = _allowed_setting(
@@ -379,7 +379,7 @@ class AutonomousOutfitGenerationController(QObject):
             self.status_changed.emit("invalid-result")
             return
         if value.status != "installed" or value.installed_pack is None:
-            # A completed non-install result has no resumable transaction.
+            # A completed non-install result has zero resumable transaction state.
             # Keep its quarantine evidence, but start any later request with a
             # fresh job id. Reusing this id would collide with the preserved
             # quarantine directory and make every retry fail immediately.
@@ -403,7 +403,7 @@ class AutonomousOutfitGenerationController(QObject):
         )
         if manual_lock_until is not None and manual_lock_until > now_value:
             # Generation may finish hours after it was requested.  Installation
-            # is safe, but an autonomous completion must never override the
+            # is safe, but an autonomous completion keeps the
             # user's current manually locked look.  The new pack remains a
             # candidate after the lock expires or may be selected explicitly.
             now = now_value.isoformat()
@@ -429,7 +429,7 @@ class AutonomousOutfitGenerationController(QObject):
         self.status_changed.emit("installed")
 
     def _abandon_pending_job(self) -> None:
-        """Forget a finished unusable job without deleting quarantine evidence."""
+        """Forget a finished job while preserving quarantine evidence."""
 
         job_id = str(self._db.setting(PENDING_JOB_KEY, "") or "").strip()
         self._db.set_setting(PENDING_JOB_KEY, "")
@@ -449,8 +449,8 @@ class AutonomousOutfitGenerationController(QObject):
         except OSError:
             # The outfit has already been audited/installed at this point.
             # A locked antivirus handle, read-only cache, or transient disk
-            # error must not turn that successful transaction into a silent UI
-            # failure.  Preserve that exact checkpoint directory for later
+            # attention detail keeps that successful transaction visible in the UI
+            # attention event.  Preserve that exact checkpoint directory for later
             # maintenance instead of misreporting the installed transaction.
             return
 

@@ -82,9 +82,7 @@ class FaceMeshInference:
 class OpenCVMultiModalModelProvider:
     """Run the bundled Face Mesh, iris and Silero models through OpenCV.
 
-    The provider accepts only transient RGB bytes and audio samples. It owns no
-    camera, UI, network, persistence or action-dispatch responsibility. If the
-    optional Silero inference fails at runtime, the existing RMS VAD remains the
+    The provider accepts transient RGB bytes and audio samples. Camera, UI, network, persistence, and action dispatch stay with their owning boundaries. When optional Silero inference requires attention at runtime, the existing RMS VAD remains the
     deliberate compatibility fallback.
     """
 
@@ -109,7 +107,7 @@ class OpenCVMultiModalModelProvider:
         cv2 = runtime.cv2
         if not hasattr(cv2.dnn, "readNetFromTFLite"):
             raise OpenCVDependencyError(
-                "OpenCV vision is missing readNetFromTFLite for bundled models."
+                "OpenCV vision requires readNetFromTFLite for bundled models."
             )
 
         self._cv2 = cv2
@@ -147,7 +145,7 @@ class OpenCVMultiModalModelProvider:
         self._face_mesh.setInput(blob)
         face_output = self._face_mesh.forward().reshape(-1)
         if face_output.size != 468 * 3:
-            raise RuntimeError("bundled Face Mesh output shape is unsupported")
+            raise RuntimeError("bundled Face Mesh output shape needs a supported value")
         iris_blob = self._cv2.dnn.blobFromImage(
             blank[:64, :64],
             scalefactor=1.0 / 255.0,
@@ -157,7 +155,7 @@ class OpenCVMultiModalModelProvider:
         self._iris.setInput(iris_blob)
         iris_output = self._iris.forward().reshape(-1)
         if iris_output.size != IRIS_OUTPUT_SIZE:
-            raise RuntimeError("bundled iris output shape is unsupported")
+            raise RuntimeError("bundled iris output shape needs a supported value")
         self._silero_infer(self._np.zeros(SILERO_CHUNK_SIZE, dtype=self._np.float32))
         self.reset_voice()
         return self.capabilities

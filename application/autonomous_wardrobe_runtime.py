@@ -100,12 +100,7 @@ class AutonomousWardrobeRuntime:
         outfit_id: str,
         candidates: tuple[WardrobeCandidate, ...],
     ) -> None:
-        """Record the worn outfit's weight for the comfort-complaint intuition.
-
-        ``wardrobe_current_weight`` previously had no writer, so the
-        too-hot/too-cold complaint could never trigger for autonomous outfits.
-        The weight is derived from the outfit's own thermal-band profile.
-        """
+        """Record the worn outfit's weight for the comfort-complaint intuition. ``wardrobe_current_weight`` now receives a writer, so the too-hot/too-cold complaint can trigger for autonomous outfits. The weight is derived from the outfit's own thermal-band profile. """
         profile = next(
             (
                 candidate.profile
@@ -131,7 +126,7 @@ def _optional_datetime(value: object) -> datetime | None:
     try:
         parsed = datetime.fromisoformat(str(value))
     except ValueError:
-        raise ValueError("Saved wardrobe timestamp is invalid.") from None
+        raise ValueError("Saved wardrobe timestamp needs a supported value.") from None
     if parsed.tzinfo is None or parsed.utcoffset() is None:
         raise ValueError("Saved wardrobe timestamp must include a timezone.")
     return parsed

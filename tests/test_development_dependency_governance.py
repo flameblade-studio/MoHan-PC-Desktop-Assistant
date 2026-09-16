@@ -52,7 +52,7 @@ def _project_dependency_names() -> set[str]:
             r"(?P<name>[A-Za-z0-9][A-Za-z0-9._-]*).*",
             requirement,
         )
-        assert match is not None, f"invalid project dependency: {requirement!r}"
+        assert match is not None, f'project dependency requires correction: {requirement!r}'
         names.add(_normalized_name(match.group("name")))
     return names
 

@@ -135,7 +135,7 @@ class AppearanceRenderer:
         dynamics_input: DynamicsInput | None = None,
     ) -> CompositingResult:
         if silhouette not in self._core.silhouettes:
-            raise AppearanceRenderError("Unknown or missing silhouette.")
+            raise AppearanceRenderError("Provide a recognized silhouette.")
         ordered = tuple(sorted(layers, key=lambda layer: layer.z_order))
         if len({layer.z_order for layer in ordered}) != len(ordered):
             raise AppearanceRenderError("Layer z-order must be unique.")
@@ -195,7 +195,7 @@ class AppearanceRenderer:
             raise AppearanceRenderError("Occlusion mask is not allowlisted.")
         asset = self._resolver.resolve(layer.path)
         if asset is None or asset.path != layer.path:
-            raise AppearanceRenderError("Layer asset is missing.")
+            raise AppearanceRenderError("Provide the layer asset.")
         if (
             asset.width != layer.width
             or asset.height != layer.height
@@ -205,11 +205,11 @@ class AppearanceRenderer:
             or asset.height > self._core.height
             or len(asset.rgba) != asset.width * asset.height * 4
         ):
-            raise AppearanceRenderError("Layer dimensions are invalid.")
+            raise AppearanceRenderError("Layer dimensions need supported values.")
         if hashlib.sha256(asset.rgba).hexdigest() != layer.sha256:
             raise AppearanceRenderError("Layer hash does not match.")
         if not self._alpha_edges_are_safe(asset):
-            raise AppearanceRenderError("Layer alpha edge is unsafe.")
+            raise AppearanceRenderError("Layer alpha edge requires supported input.")
         return asset
 
     def _composite(
@@ -267,13 +267,13 @@ class AppearanceRenderer:
     @staticmethod
     def _validate_core(core: CoreAppearanceManifest) -> None:
         if core.width <= 0 or core.height <= 0 or not core.silhouettes:
-            raise AppearanceRenderError("Core canvas is invalid.")
+            raise AppearanceRenderError("Core canvas needs a supported value.")
         if len(core.core_rgba) != core.width * core.height * 4:
-            raise AppearanceRenderError("Core frame size is invalid.")
+            raise AppearanceRenderError("Core frame size needs a supported value.")
         masks = (
             core.immutable_identity,
             *core.approved_regions.values(),
             *core.occlusion_masks.values(),
         )
         if any(mask.width != core.width or mask.height != core.height for mask in masks):
-            raise AppearanceRenderError("Core mask size is invalid.")
+            raise AppearanceRenderError("Core mask size needs a supported value.")

@@ -1,7 +1,7 @@
 """Render the composed half-body portraits used by README, installer and icon art.
 
 The runtime sprites under ``assets/expressions/`` are the bare generation-2
-base (bun, grey top, no makeup); the official default outfit pack and the
+base (bun, grey top, unpainted face); the official default outfit pack and the
 built-in ``classic`` makeup are composited over them at runtime by
 ``infrastructure.active_outfit_overlay.ActiveOutfitOverlay``.  Marketing
 surfaces (README expression cards, installer wizard art, taskbar icon) must
@@ -11,7 +11,7 @@ makeup at 100 % intensity -- and writes the results to
 ``docs/media/portraits/{expression}.png``.
 
 Output is deterministic: the overlay paints fixed layers with fixed opacities
-and Qt's PNG encoder writes no timestamp or software chunk, so re-running the
+and Qt's PNG encoder omits timestamp and software chunks, so re-running the
 tool over unchanged sprites and packs reproduces the same bytes.  The
 installer-art and app-icon builders consume ``idle_front.png`` from here.
 """
@@ -86,7 +86,7 @@ def render_portrait(overlay: ActiveOutfitOverlay, expression: str) -> QImage:
     ) == 0:
         raise RuntimeError(
             f"No appearance layers were composited for {expression} ({silhouette}); "
-            "the official default pack or the built-in makeup is missing."
+            "provide both the official default pack and the built-in makeup."
         )
     return composed.toImage().convertToFormat(QImage.Format_ARGB32)
 
@@ -106,7 +106,7 @@ def _alpha_bounds(image: QImage):
                 right = max(right, x)
                 bottom = max(bottom, y)
     if right < left or bottom < top:
-        raise RuntimeError("Composed portrait has no visible pixels")
+        raise RuntimeError("Composed portrait requires visible pixels")
     return (left, top, right - left + 1, bottom - top + 1)
 
 
@@ -166,7 +166,7 @@ def render_all(
         raise ValueError("output names must match the expression count")
     written: list[tuple[Path, str]] = []
     with TemporaryDirectory(prefix="mohan-marketing-portraits-") as temporary:
-        # A fresh store: no active.json / makeup.json, so the selection resolves
+        # A fresh store with empty active.json / makeup.json selections resolves
         # to the official pack and the built-in classic makeup at intensity 1.
         overlay = ActiveOutfitOverlay(Path(temporary) / "store", ROOT)
         for expression, name in zip(expressions, names):

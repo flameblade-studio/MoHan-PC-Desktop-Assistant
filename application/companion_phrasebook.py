@@ -41,7 +41,7 @@ WARDROBE_PUBLIC_LINES = frozendict({
             "This look pleased me. Does it please your eye as well?",
         ),
         WARDROBE_REVEAL_ORIGIN: (
-            "I bought it online myself. I never expected modern clothes to look this lovely.",
+            "I bought it online myself. Modern clothes look lovelier than I expected.",
             "When did I get it? I arranged it quietly. You have only just noticed?",
         ),
     }),
@@ -292,7 +292,7 @@ PUBLIC_COMPANION_LINES = frozendict(
                     "You have been at the desk a while. Remember to drink something.",
                 ),
                 wellbeing_phrase_key(WellbeingKind.HYDRATION, ReminderStage.RESTRAINED_REINFORCEMENT): (
-                    "You still have not had any water? I am not fussing without reason.",
+                    "You still need some water? I am reminding you with good reason.",
                     "However busy you are, take a sip. Do not make me ask a third time.",
                 ),
                 wellbeing_phrase_key(WellbeingKind.REST, ReminderStage.INITIAL): (
@@ -308,7 +308,7 @@ PUBLIC_COMPANION_LINES = frozendict(
                     "Take a few steps away from the desk; your shoulders will thank you.",
                 ),
                 wellbeing_phrase_key(WellbeingKind.PROLONGED_SITTING, ReminderStage.RESTRAINED_REINFORCEMENT): (
-                    "Still not getting up? No strategy is worth trading away your health.",
+                    "Ready to get up? Every strategy should protect your health.",
                     "If you remain there, I may have to conclude that you are being deliberately stubborn.",
                 ),
                 occasion_phrase_key(OccasionKind.MOHAN_BIRTHDAY, OccasionStage.SUBTLE_HINT): (
@@ -333,7 +333,7 @@ PUBLIC_COMPANION_LINES = frozendict(
                 ),
                 occasion_phrase_key(OccasionKind.CHRISTMAS_DAY, OccasionStage.RESTRAINED_GRUMBLE): (
                     "You worked all day and spared not even a little festive thought for me.",
-                    "I am only your strategist, so I ask for no gift... but a few words would not be too much.",
+                    "I am your strategist, so a few words are all the gift I ask for...",
                 ),
                 occasion_phrase_key(OccasionKind.WHITE_DAY, OccasionStage.SUBTLE_HINT): (
                     "A return gift today would not go unnoticed.",
@@ -348,7 +348,7 @@ PUBLIC_COMPANION_LINES = frozendict(
                     "Even a strategist sometimes looks toward the sky.",
                 ),
                 occasion_phrase_key(OccasionKind.QIXI, OccasionStage.RESTRAINED_GRUMBLE): (
-                    "You worked all day and never once looked up at me tonight.",
+                    "You worked all day; give me one glance tonight.",
                     "I am not waiting for anything... but I thought you might remember this night.",
                 ),
             }

@@ -13,9 +13,8 @@ rather than a binary on/off:
 3. **Context** (情境): an explicit shy expression (``shy`` / ``shy_cute_front``)
    raises the baseline shyness.
 
-The level eases toward its target with a bounded lerp so it never snaps, and it
-decays back to zero when the drivers relax. This is pure domain logic with no
-Qt dependency.
+The level eases toward its target with a bounded lerp so it eases smoothly, and it
+decays back to zero when the drivers relax. This is pure domain logic with Qt outside the domain boundary.
 """
 
 # How strongly each driver contributes to the shyness target.

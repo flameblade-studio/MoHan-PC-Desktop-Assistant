@@ -42,7 +42,7 @@ THREE_DIMENSIONAL = 3
 
 
 class OpenCVDependencyError(RuntimeError):
-    """The installed OpenCV runtime cannot satisfy the vision adapter contract."""
+    """The installed OpenCV runtime requires supported APIs for the vision adapter contract."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -84,7 +84,7 @@ def load_opencv_runtime(
     )
     if missing:
         raise OpenCVDependencyError(
-            "OpenCV vision is incompatible; missing APIs: " + ", ".join(missing)
+            "OpenCV vision requires compatible APIs: " + ", ".join(missing)
         )
     return OpenCVRuntime(cv2=cv2, numpy=np)
 
@@ -106,7 +106,7 @@ class VisionModelPaths:
 
 @dataclass(frozen=True, slots=True)
 class OpenCVFrameEvidence:
-    """Typed local evidence from one frame; no camera or pipeline state."""
+    """Typed local evidence from one frame; camera and pipeline state outside the value."""
 
     scene: SceneUnderstanding
     face_box: BoundingBox | None
@@ -208,7 +208,7 @@ class OpenCVVisionProvider:
         blob = self._cv2.dnn.blobFromImage(normalized)
         self._object_net.setInput(blob)
         # NanoDet post-processing is intentionally isolated and validated separately;
-        # an unknown output shape fails closed instead of inventing detections.
+        # an Use a recognized output shape fails closed instead of inventing detections.
         outputs = self._object_net.forward(self._object_net.getUnconnectedOutLayersNames())
         return self._nanodet.decode(outputs, image.shape[1], image.shape[0])
 
@@ -224,10 +224,10 @@ def yunet_single_face_geometry(
         raise ValueError("source dimensions must be positive")
     values = tuple(float(value) for value in face)
     if len(values) < YUNET_MIN_VALUES or not all(math.isfinite(value) for value in values):
-        raise ValueError("invalid YuNet face evidence")
+        raise ValueError("Provide a supported YuNet face evidence")
     left, top, box_width, box_height = values[:4]
     if box_width <= 0.0 or box_height <= 0.0:
-        raise ValueError("invalid YuNet face bounds")
+        raise ValueError("Provide a supported YuNet face bounds")
     box = BoundingBox(
         max(0.0, min(float(width), left)),
         max(0.0, min(float(height), top)),
@@ -253,7 +253,7 @@ def yunet_lip_region(
     """Derive a conservative touch target from YuNet's two mouth corners."""
 
     if len(landmarks) != YUNET_POINT_COUNT or width <= 0 or height <= 0:
-        raise ValueError("invalid YuNet lip evidence")
+        raise ValueError("Provide a supported YuNet lip evidence")
     left, right = landmarks[3:5]
     mouth_width = left.distance_to(right)
     normalized_face_height = max(
@@ -261,7 +261,7 @@ def yunet_lip_region(
         (face_box.bottom - face_box.top) / height,
     )
     if mouth_width <= 0.0:
-        raise ValueError("invalid YuNet mouth width")
+        raise ValueError("Provide a supported YuNet mouth width")
     center = NormalizedPoint(
         (left.x + right.x) / 2.0,
         (left.y + right.y) / 2.0,
@@ -274,7 +274,7 @@ def yunet_lip_region(
 
 
 class NanoDetDecoder:
-    """Decode OpenCV Zoo NanoDet output without owning model or camera state."""
+    """Decode OpenCV Zoo NanoDet output with model and camera state outside the decoder."""
 
     def __init__(self, cv2: Any, np: Any) -> None:
         self._cv2 = cv2
@@ -329,7 +329,7 @@ class NanoDetDecoder:
             or class_score.shape[0] != anchors.shape[0]
             or box_prediction.shape != (anchors.shape[0], 4 * (self._reg_max + 1))
         ):
-            raise ValueError("unsupported NanoDet output shape")
+            raise ValueError("Provide a supported NanoDet output shape")
         if not (
             self._np.isfinite(class_score).all()
             and self._np.isfinite(box_prediction).all()
@@ -417,7 +417,7 @@ class NanoDetDecoder:
             or len(class_scores) != expected_layers
             or len(box_predictions) != expected_layers
         ):
-            raise ValueError("unsupported NanoDet output layout")
+            raise ValueError("Provide a supported NanoDet output layout")
         return (
             tuple(sorted(class_scores, key=lambda value: value.shape[-2], reverse=True)),
             tuple(sorted(box_predictions, key=lambda value: value.shape[-2], reverse=True)),

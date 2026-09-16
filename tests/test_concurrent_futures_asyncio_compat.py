@@ -69,7 +69,7 @@ def test_affected_module_import_preserves_asyncio_to_thread(
     module = importlib.import_module(module_name)
     # Reload is the subject of this test, but class redefinition is observable
     # process-wide.  Restore published owner identities afterwards so this
-    # probe cannot invalidate compatibility aliases collected by other tests.
+    # probe preserves compatibility aliases collected by other tests.
     public_exports = {
         name: getattr(module, name)
         for name in getattr(module, "__all__", ())

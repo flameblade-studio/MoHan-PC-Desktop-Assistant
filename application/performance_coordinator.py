@@ -63,17 +63,17 @@ class PerformanceFrame:
 
     def __post_init__(self) -> None:
         if self.speech_generation < 0 or self.behavior_generation < 0:
-            raise ValueError("Performance generations must not be negative.")
+            raise ValueError("Performance generations accepts zero or greater.")
         if not 0.0 <= self.body_energy <= 1.0:
             raise ValueError("Body energy must be within 0..1.")
         if self.hold_ms < 0:
-            raise ValueError("Frame hold must not be negative.")
+            raise ValueError("Frame hold accepts zero or greater.")
         if self.mouth_closed and self.viseme != "CLOSED":
             raise ValueError("A closed mouth requires the CLOSED viseme.")
         if self.pose.startswith("back-") and (
             self.face is not None or self.gaze is not GazeTarget.AWAY
         ):
-            raise ValueError("Back-facing frames cannot render face or user gaze.")
+            raise ValueError("Back-facing frames keep face and user gaze fields clear.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -104,7 +104,7 @@ _BACK_DEPTH = frozendict({
 
 
 class PerformanceCoordinator:
-    """Join speech, behaviour and authored pose availability without providers."""
+    """Join speech, behaviour and authored pose availability with provider-independent behavior."""
 
     def __init__(self, registry: PoseRegistryPort) -> None:
         self._registry = registry
@@ -163,7 +163,7 @@ class PerformanceCoordinator:
         request: CoordinationInput | None = None,
         **legacy: object,
     ) -> PerformanceFrame | None:
-        """Return None for stale input; otherwise return one complete safe frame."""
+        """Return the sentinel for expired input; otherwise return one complete safe frame."""
 
         value = self._coordination_input(request, legacy)
         event = value.event

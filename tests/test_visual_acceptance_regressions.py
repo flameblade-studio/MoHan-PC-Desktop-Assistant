@@ -93,7 +93,7 @@ def _assert_blink_uses_discrete_authority_frames(
         region_signature(partial, region)
         == region_signature(base_image, region)
         for region in eye_regions
-    ), "missing half authority must preserve rest instead of faking a blend"
+    ), 'an absent half authority must preserve the rest frame'
     assert any(
         region_signature(partial, region)
         != region_signature(closed, region)
@@ -102,7 +102,7 @@ def _assert_blink_uses_discrete_authority_frames(
 
     # The runtime consumes a distinct registered HALF authority when present;
     # inject the already registered closed pixmap under the HALF key only to
-    # prove routing (not to assert that the two authored states look alike).
+    # prove routing while leaving each authored appearance to visual review.
     window.expression_pixmaps["blink_half_front"] = window.expression_pixmaps[
         "blink_front"
     ]
@@ -146,7 +146,7 @@ def _assert_chin_rest_smile_uses_neutral_speech_mouth(
         mean_region_difference(speech_closed, neutral, region)
         < mean_region_difference(happy, neutral, region) * 0.72
         for region in corner_regions
-    ), "speech corners did not move sufficiently toward the neutral mouth"
+    ), 'speech corners must move sufficiently toward the neutral mouth'
 
 
 def _assert_left_facing_mouth_replaces_right_corner(

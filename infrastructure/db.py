@@ -231,7 +231,7 @@ class StudioDBSettingsPort:
 
     def restore(self, snapshot: SettingsRowsSnapshot) -> None:
         if not isinstance(snapshot, SettingsRowsSnapshot):
-            raise TypeError("settings snapshot type is invalid")
+            raise TypeError("settings snapshot type needs a supported value")
         keys = snapshot.keys
         with self._db.conn:
             if keys:
@@ -288,7 +288,7 @@ class StudioDB:
         try:
             self._migrate()
         except Exception:
-            # A failed migration must never leave the profile database locked.
+            # A migration keeps the profile database available throughout its transaction.
             self.conn.close()
             raise
 
@@ -486,7 +486,7 @@ class StudioDB:
         ).fetchone()
         if marker is None:
             # Existing profiles retain their rows; new profiles intentionally
-            # start empty instead of assuming a publishing workflow.
+            # start from a fresh store and add publishing workflow entries explicitly.
             self.conn.execute(
                 "INSERT INTO settings(key,value) "
                 "VALUES('custom_platforms_v1207_seeded','true')"
@@ -533,7 +533,7 @@ class StudioDB:
         if not self.existing_install:
             return
         # Existing users retain identity and workflow choices; only fields
-        # unavailable in older releases are supplied.
+        # needed by older releases are supplied.
         for key, value in LEGACY_PROFILE_DEFAULTS.items():
             self.conn.execute(
                 "INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)",

@@ -47,7 +47,7 @@ def _case(
     expected = python_operation()
     actual = native_operation()
     if actual != expected:
-        raise RuntimeError("Native RGBA benchmark failed bit-exact validation.")
+        raise RuntimeError("Native RGBA benchmark requires correction to achieve bit-exact equality.")
     for _ in range(3):
         native_operation()
         python_operation()
@@ -75,7 +75,7 @@ def run(width: int, height: int, iterations: int) -> dict[str, object]:
     missing = tuple(name for name in required if not hasattr(native, name))
     if missing:
         raise RuntimeError(
-            "Built native module is missing RGBA operations: " + ", ".join(missing)
+            "Built native module requires these RGBA operations: " + ", ".join(missing)
         )
     pixels = width * height
     target = bytes((17, 37, 59, 211)) * pixels

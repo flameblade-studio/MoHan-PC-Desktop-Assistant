@@ -66,7 +66,7 @@ def _sbom_assets(root: Path) -> dict[str, dict[str, object]]:
     result: dict[str, dict[str, object]] = {}
     for record in records:
         if not isinstance(record, dict):
-            raise ValueError("sbom/components.toml contains an invalid asset record")
+            raise ValueError("sbom/components.toml requires valid asset records")
         path = record.get("path")
         if isinstance(path, str):
             result[path] = record
@@ -111,7 +111,7 @@ def verify(root: Path = ROOT) -> None:
             )
 
     if failures:
-        raise SystemExit("Multimodal model asset verification failed:\n" + "\n".join(failures))
+        raise SystemExit("Multimodal model asset verification requires correction:\n" + "\n".join(failures))
 
     print(f"Verified {len(EXPECTED_MODELS)} bundled multimodal model assets.")
 

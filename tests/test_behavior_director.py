@@ -224,7 +224,7 @@ def assert_speech_preempts_unsafe_back_without_twitch() -> None:
             break
         clock.advance(5)
     else:
-        raise AssertionError(f"speech never reached a visible pose: {poses}")
+        raise AssertionError(f'speech requires a visible pose: {poses}')
     depths = {"back-full": 3}
     depths.update({f"back-two-thirds-{s}": 2 for s in ("left", "right")})
     depths.update({f"{s}-neutral": 1 for s in ("left", "right")})
@@ -244,12 +244,11 @@ def assert_disabled_and_absent_fallbacks() -> None:
 
 
 def assert_disabled_while_turned_away_never_freezes() -> None:
-    """Ruling 2026-08-28: disabling performances mid-back-turn must not throw.
+    """Ruling 2026-08-28: disabling performances mid-back-turn completes safely.
 
-    The old plan gazed at the user from a rear pose, violating the
-    BodyPerformancePlan contract on every frame; the runtime swallowed the
-    error and froze the screen on her back permanently.  Side poses also
-    rendered from the opposite camera (right-neutral shown as left-030).
+    The old rear-pose gaze violated BodyPerformancePlan on each frame,
+    causing a swallowed exception and a frozen rear image. Side poses also
+    used the opposite camera. This test preserves valid gaze and pose mapping.
     """
     for pose, view in (
         ("back-full", "back-180"),

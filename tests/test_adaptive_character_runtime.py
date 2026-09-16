@@ -111,10 +111,10 @@ class Assets:
     enabled = True
 
     def resolve_static(self, *_args):
-        raise AssertionError("Runtime must not read assets directly")
+        raise AssertionError('Runtime asset access must use its injected port')
 
     def resolve_speech(self, *_args):
-        raise AssertionError("Runtime must not read assets directly")
+        raise AssertionError('Runtime asset access must use its injected port')
 
 
 class FramingPort:
@@ -213,11 +213,10 @@ def request(
 
 
 def assert_half_framing_skips_full_body_composition() -> None:
-    """CLOSE/HALF framing must not render the full body at all.
+    """CLOSE/HALF framing skips full-body composition.
 
-    The composed photograph is only published for THREE_QUARTER/FULL_BODY
-    framing, so producing it for half framing would burn a full render,
-    format conversion, and hash per speech event just to discard the frame.
+    Full-body rendering, conversion, and hashing are reserved for
+    THREE_QUARTER/FULL_BODY, where the composed photograph is published.
     """
     engine, framing, full_body = runtime()
     framing.command = AtomicFramingCommand(
@@ -262,10 +261,8 @@ def assert_continuous_face_motion_is_never_deduplicated() -> None:
     base = request(operation)
     first = replace(base, face_motion=face_motion(blink=0.0))
     assert engine.dispatch(first).should_publish
-    # A blink-only change must reach the renderer (the fake port renders
-    # identical bytes for it, so output-level dedupe may still withhold the
-    # publish — that part is correct economy; the input gate must not stop
-    # the render itself).
+    # Blink-only changes reach the renderer. Identical resulting bytes may then
+    # be deduplicated at the output boundary, preserving rendering semantics.
     blink_only = replace(base, face_motion=face_motion(blink=1.0))
     engine.dispatch(blink_only)
     assert full_body.calls == RENDERS_AFTER_BLINK_CHANGE

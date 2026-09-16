@@ -54,11 +54,11 @@ class _AffectionStore(StudioDBAffectionMethods):
 
 
 def test_upsert_updates_in_place_and_read_returns_latest() -> None:
-    """Ruling 2026-08-27: persisted affection must actually take effect.
+    """Ruling 2026-08-27: persisted affection must take effect.
 
-    The historical write INSERTed one row per interaction while the read
-    returned the OLDEST row, so the visible affection froze at its first
-    value and the table grew without bound.
+    The previous INSERT-per-interaction path grew the table on each write
+    while reading the oldest row, leaving displayed affection at its initial
+    value. This regression verifies the current persisted value.
     """
     store = _AffectionStore()
     assert store.affection_row() is None

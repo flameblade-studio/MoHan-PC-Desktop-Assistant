@@ -24,11 +24,11 @@ class FaceProfile:
 
 
 class FaceIdentityDataError(ValueError):
-    """Report unusable protected identity data without exposing its contents."""
+    """Report protected identity data requiring attention while keeping its contents private."""
 
 
 class FaceIdentityStore:
-    """Persist encrypted face embeddings; raw enrollment images never leave memory."""
+    """Persist encrypted face embeddings; raw enrollment images stay within the memory boundary."""
 
     def __init__(self, secret_store: SecretStorePort) -> None:
         self._secret_store = secret_store
@@ -49,7 +49,7 @@ class FaceIdentityStore:
             raise
         except (KeyError, TypeError, ValueError, OverflowError, json.JSONDecodeError):
             raise FaceIdentityDataError(
-                "protected face identity data is invalid"
+                "protected face identity data needs a supported value"
             ) from None
 
     def enroll(
@@ -59,7 +59,7 @@ class FaceIdentityStore:
     ) -> FaceProfile:
         name = display_name.strip()
         if not name:
-            raise ValueError("display name must not be empty")
+            raise ValueError("display name requires content")
         validated = self._validate_embeddings(embeddings)
         profile = FaceProfile(uuid4().hex, name, validated)
         self._write((*self.profiles(), profile))
@@ -113,33 +113,33 @@ class FaceIdentityStore:
     @classmethod
     def _parse_profiles(cls, payload: object) -> tuple[FaceProfile, ...]:
         if not isinstance(payload, dict):
-            raise FaceIdentityDataError("protected face identity data is invalid")
+            raise FaceIdentityDataError("protected face identity data needs a supported value")
         version = payload.get("version", 1)
         items = payload.get("profiles", ())
         if version != 1 or not isinstance(items, (list, tuple)):
-            raise FaceIdentityDataError("protected face identity data is invalid")
+            raise FaceIdentityDataError("protected face identity data needs a supported value")
         profiles: list[FaceProfile] = []
         dimensions: set[int] = set()
         for item in items:
             if not isinstance(item, dict):
-                raise FaceIdentityDataError("protected face identity data is invalid")
+                raise FaceIdentityDataError("protected face identity data needs a supported value")
             profile_id = item.get("profile_id")
             display_name = item.get("display_name")
             if not isinstance(profile_id, str) or not profile_id.strip():
-                raise FaceIdentityDataError("protected face identity data is invalid")
+                raise FaceIdentityDataError("protected face identity data needs a supported value")
             if not isinstance(display_name, str) or not display_name.strip():
-                raise FaceIdentityDataError("protected face identity data is invalid")
+                raise FaceIdentityDataError("protected face identity data needs a supported value")
             embeddings = cls._validate_embeddings(item.get("embeddings"))
             dimensions.add(len(embeddings[0]))
             profiles.append(FaceProfile(profile_id, display_name, embeddings))
         if len(dimensions) > 1:
-            raise FaceIdentityDataError("protected face identity data is invalid")
+            raise FaceIdentityDataError("protected face identity data needs a supported value")
         return tuple(profiles)
 
     @classmethod
     def _validate_embeddings(cls, value: object) -> tuple[tuple[float, ...], ...]:
         if not isinstance(value, (list, tuple)) or len(value) < MIN_FACE_SAMPLES:
-            raise ValueError("at least three non-empty face samples are required")
+            raise ValueError("provide three or more face samples with content")
         embeddings: list[tuple[float, ...]] = []
         for sample in value:
             if not isinstance(sample, (list, tuple)):

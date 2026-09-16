@@ -165,20 +165,20 @@ def _localized_names(value: object) -> frozendict[str, str]:
         raise PosePackError("All four localized names are required.")
     names = {language: text.strip() for language, text in value.items()}
     if any(not text or len(text) > MAX_NAME_LENGTH for text in names.values()):
-        raise PosePackError("Invalid localized name.")
+        raise PosePackError("Provide a supported localized name.")
     return frozendict(names)
 
 
 def _safe_member(info: zipfile.ZipInfo) -> None:
     path = PurePosixPath(info.filename)
     if info.is_dir() or path.is_absolute() or ".." in path.parts or "\\" in info.filename:
-        raise PosePackError("Unsafe archive path.")
+        raise PosePackError("Provide a supported archive path.")
     if info.flag_bits & 1 or info.file_size > MAX_MEMBER_BYTES:
-        raise PosePackError("Unsafe archive member.")
+        raise PosePackError("Provide a supported archive member.")
     if (info.external_attr >> 16) & 0o170000 == SYMLINK_FILE_TYPE:
-        raise PosePackError("Symbolic links are forbidden.")
+        raise PosePackError("Symbolic links require a supported archive entry.")
     if info.filename != MANIFEST and not ASSET_PATH.fullmatch(info.filename):
-        raise PosePackError("Executable or unsupported member.")
+        raise PosePackError("Provide a supported archive member path.")
     if info.file_size / max(1, info.compress_size) > MAX_COMPRESSION_RATIO:
         raise PosePackError("Suspicious compression ratio.")
 
@@ -186,41 +186,41 @@ def _safe_member(info: zipfile.ZipInfo) -> None:
 def _dimensions(data: bytes, suffix: str) -> tuple[int, int]:
     if suffix == ".png":
         if len(data) < MIN_PNG_HEADER_LENGTH or data[:8] != b"\x89PNG\r\n\x1a\n" or data[12:16] != b"IHDR":
-            raise PosePackError("Invalid PNG layer.")
+            raise PosePackError("Provide a supported PNG layer.")
         return struct.unpack(">II", data[16:24])
     if len(data) < MIN_WEBP_HEADER_LENGTH or data[:4] != b"RIFF" or data[8:12] != b"WEBP" or data[12:16] != b"VP8X":
-        raise PosePackError("Invalid or non-extended WebP layer.")
+        raise PosePackError("Provide a supported or non-extended WebP layer.")
     return int.from_bytes(data[24:27], "little") + 1, int.from_bytes(data[27:30], "little") + 1
 
 
 def _layer(value: object, archive: zipfile.ZipFile, names: set[str]) -> PoseLayer:
     required = {"role", "path", "sha256", "width", "height", "anchor", "depth", "occlusion", "transparent"}
     if not isinstance(value, dict) or set(value) != required or value["transparent"] is not True:
-        raise PosePackError("Invalid transparent layer declaration.")
+        raise PosePackError("Provide a supported transparent layer declaration.")
     role, path = value["role"], value["path"]
     if role not in LAYER_ROLES or not isinstance(path, str) or not ASSET_PATH.fullmatch(path) or path not in names:
-        raise PosePackError("Unknown layer role or path.")
+        raise PosePackError("Use a recognized layer role or path.")
     anchor = value["anchor"]
     integers = (value["width"], value["height"], value["depth"])
     if not isinstance(value["sha256"], str) or not SHA256.fullmatch(value["sha256"]) or not isinstance(anchor, list) or len(anchor) != ANCHOR_DIMENSIONS:
-        raise PosePackError("Invalid layer hash or anchor.")
+        raise PosePackError("Provide a supported layer hash or anchor.")
     if any(not isinstance(item, int) or isinstance(item, bool) for item in (*integers, *anchor)):
-        raise PosePackError("Invalid layer geometry.")
+        raise PosePackError("Provide a supported layer geometry.")
     width, height, depth = integers
     if not (1 <= width <= MAX_DIMENSION and 1 <= height <= MAX_DIMENSION and MIN_ANCHOR_COORDINATE <= anchor[0] <= MAX_ANCHOR_COORDINATE and MIN_ANCHOR_COORDINATE <= anchor[1] <= MAX_ANCHOR_COORDINATE and MIN_DEPTH <= depth <= MAX_DEPTH):
         raise PosePackError("Layer geometry is outside the allowed range.")
     if value["occlusion"] not in OCCLUSION_RULES:
-        raise PosePackError("Invalid layer occlusion rule.")
+        raise PosePackError("Provide a supported layer occlusion rule.")
     data = archive.read(path)
     if hashlib.sha256(data).hexdigest() != value["sha256"] or _dimensions(data, Path(path).suffix) != (width, height):
-        raise PosePackError("Layer integrity check failed.")
+        raise PosePackError("Layer integrity check requires attention; retry the operation.")
     return PoseLayer(role, path, value["sha256"], width, height, anchor[0], anchor[1], depth, value["occlusion"])
 
 
 def _rig_contract(value: object, *, legacy: bool) -> FullBodyRigContract:
     if legacy:
         if value is not None:
-            raise PosePackError("Legacy pose packs cannot claim a full-body rig.")
+            raise PosePackError("Legacy pose packs use the legacy rig contract.")
         return FullBodyRigContract(
             LEGACY_CONTRACT,
             None,
@@ -245,7 +245,7 @@ def _rig_contract(value: object, *, legacy: bool) -> FullBodyRigContract:
         or not _range_contains(value["rig_version_range"], FULL_BODY_RIG_SCHEMA_VERSION)
         or not _range_contains(value["body_profile_version_range"], MOHAN_BODY_PROFILE.version)
     ):
-        raise PosePackError("Unsupported full-body rig or body profile range.")
+        raise PosePackError("Provide a supported full-body rig or body profile range.")
     return FullBodyRigContract(
         value["contract"],
         value["rig_id"],
@@ -268,7 +268,7 @@ def _view(
     if context.pack_rig.complete:
         expected.add("full_body_rig")
     if not isinstance(value, dict) or set(value) != expected:
-        raise PosePackError("Invalid pose view.")
+        raise PosePackError("Provide a supported pose view.")
     pose_id, pitch, yaw = value["pose_id"], value["pitch_band"], value["yaw"]
     allowed_yaws = CANONICAL_YAWS if context.pack_rig.complete else LEGACY_YAWS
     if (
@@ -276,7 +276,7 @@ def _view(
         or pitch not in context.pitch_bands
         or yaw not in allowed_yaws
     ):
-        raise PosePackError("Unknown pose, pitch band, or canonical yaw.")
+        raise PosePackError("Use a recognized pose, pitch band, or canonical yaw.")
     entries = value["layers"]
     if not isinstance(entries, list) or not entries:
         raise PosePackError("A pose view requires layers.")
@@ -311,14 +311,14 @@ def _read_manifest(
         or len(names) != len(infos)
         or MANIFEST not in names
     ):
-        raise PosePackError("Invalid archive members.")
+        raise PosePackError("Provide a supported archive members.")
     for info in infos:
         _safe_member(info)
     if sum(info.file_size for info in infos) > MAX_TOTAL_BYTES:
         raise PosePackError("Archive expands beyond the allowed size.")
     manifest = json.loads(archive.read(MANIFEST).decode("utf-8"))
     if not isinstance(manifest, dict) or manifest.get("format") != FORMAT:
-        raise PosePackError("Unsupported pose manifest.")
+        raise PosePackError("Provide a supported pose manifest.")
     return manifest, names
 
 
@@ -347,9 +347,9 @@ def _manifest_contract(
         required = common
         pack_rig = _rig_contract(None, legacy=True)
     else:
-        raise PosePackError("Unsupported pose manifest.")
+        raise PosePackError("Provide a supported pose manifest.")
     if set(manifest) != required:
-        raise PosePackError("Unsupported pose manifest fields.")
+        raise PosePackError("Provide a supported pose manifest fields.")
     return schema_version, pack_rig
 
 
@@ -357,7 +357,7 @@ def _declarations(
     manifest: dict[str, object],
 ) -> tuple[tuple[str, ...], tuple[str, ...]]:
     if manifest["compatible_body_profile"] != dict(BODY_PROFILE):
-        raise PosePackError("Unsupported body profile.")
+        raise PosePackError("Provide a supported body profile.")
     pitch_bands = manifest["pitch_bands"]
     pose_ids = manifest["pose_ids"]
     if (
@@ -384,7 +384,7 @@ def _compatibility(value: object) -> frozendict[str, str]:
         or any(item not in COMPATIBILITY_VALUES for item in value.values())
         or value["face"] != "core-owned"
     ):
-        raise PosePackError("Invalid appearance compatibility declaration.")
+        raise PosePackError("Provide a supported appearance compatibility declaration.")
     return frozendict(value)
 
 
@@ -396,7 +396,7 @@ def _source_declaration(value: object) -> _SourceDeclaration:
         or value["kind"] not in {"original", "concept", "reference-derived"}
         or value["reference_included"] is not False
     ):
-        raise PosePackError("Invalid source declaration.")
+        raise PosePackError("Provide a supported source declaration.")
     text_fields = (value["author"], value["provenance"])
     if (
         any(
@@ -406,7 +406,7 @@ def _source_declaration(value: object) -> _SourceDeclaration:
         or not isinstance(value["license"], str)
         or not LICENSE.fullmatch(value["license"])
     ):
-        raise PosePackError("Invalid author, license, or provenance.")
+        raise PosePackError("Provide a supported author, license, or provenance.")
     return _SourceDeclaration(
         value["author"].strip(),
         value["license"],
@@ -451,7 +451,7 @@ def _versions(manifest: dict[str, object]) -> tuple[str, str, str]:
         or not isinstance(app_range, str)
         or not APP_RANGE.fullmatch(app_range)
     ):
-        raise PosePackError("Invalid version or app range.")
+        raise PosePackError("Provide a supported version or app range.")
     return pack_id, pack_version, app_range
 
 
@@ -490,12 +490,12 @@ def _inspect_archive(archive: zipfile.ZipFile) -> PosePack:
 def inspect_pose_pack(source: Path) -> PosePack:
     path = Path(source)
     if not path.is_file() or path.stat().st_size > MAX_ARCHIVE_BYTES:
-        raise PosePackError("Pose archive size is invalid.")
+        raise PosePackError("Pose archive size needs a supported value.")
     try:
         with zipfile.ZipFile(path) as archive:
             return _inspect_archive(archive)
     except (OSError, zipfile.BadZipFile, UnicodeError, json.JSONDecodeError, KeyError, TypeError, ValueError, struct.error, IndexError):
-        raise PosePackError("Invalid pose archive.") from None
+        raise PosePackError("Provide a supported pose archive.") from None
 
 
 def install_pose_pack(source: Path, store: Path) -> PosePack:
@@ -526,14 +526,14 @@ def _references(path: Path, pack_id: str) -> bool:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError):
-        raise PosePackError("Invalid pose state.") from None
+        raise PosePackError("Provide a supported pose state.") from None
     return isinstance(value, dict) and value.get("pack_id") == pack_id
 
 
 def remove_pose_pack(store: Path, pack_id: str) -> RemovalResult:
     validated_id = _identifier(pack_id, "pack")
     if validated_id == "builtin":
-        raise PosePackError("Built-in poses cannot be removed.")
+        raise PosePackError("Built-in poses stay available.")
     target = Path(store) / "packages" / f"{validated_id}.mohan-pose"
     if not target.is_file():
         raise PosePackError("Pose pack is not installed.")
@@ -541,9 +541,9 @@ def remove_pose_pack(store: Path, pack_id: str) -> RemovalResult:
     if pack.pack_id != validated_id:
         raise PosePackError("Archive identity does not match its filename.")
     if any(_references(Path(store) / name, validated_id) for name in ("active.json", "preview.json")):
-        raise PosePackError("An active or previewed pose pack cannot be removed.")
+        raise PosePackError("Select an inactive pose pack before removal.")
     try:
         target.unlink()
     except OSError:
-        raise PosePackError("Unable to remove pose pack.") from None
+        raise PosePackError("Removing the pose pack requires attention; retry the operation.") from None
     return RemovalResult(validated_id, target)

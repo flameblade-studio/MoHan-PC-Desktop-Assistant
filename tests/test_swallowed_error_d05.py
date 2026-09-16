@@ -79,7 +79,7 @@ def assert_overview_exposes_automatic_backup_failure() -> None:
         _t=lambda source, **values: source.format(**values),
     )
     FlagshipOverviewMixin.refresh_health(probe)
-    assert "自動備份失敗" in summary.value
+    assert '自動備份需要處理' in summary.value
 
 
 def run() -> None:

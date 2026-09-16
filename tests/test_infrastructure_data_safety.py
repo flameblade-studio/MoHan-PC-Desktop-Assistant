@@ -1,12 +1,11 @@
-"""持久化層不得靜默遺失或洩漏使用者資料。
+"""持久化層完整保存使用者資料，匯出範圍遵循授權。
 
-2026-09-01 的獨立稽核在 infrastructure/ 找到十一項缺陷，最嚴重的一項是：
-可攜設定檔匯出會 DELETE 掉稽核紀錄與連線設定，然後直接打包原始 SQLite
-檔案——而 SQLite 的 DELETE 只把頁面標記為可重用，內容仍留在檔案裡。
-那個功能存在的唯一目的就是排除那些資料，而它沒有做到。
+2026-09-01 稽核找到十一項缺陷。可攜設定檔曾先 DELETE 稽核紀錄與
+連線設定，再封裝原始 SQLite；DELETE 只標記頁面可重用，原始位元組
+仍留在檔案中，因此私人內容仍會進入匯出檔。
 
-這裡的測試刻意驗證**位元組層級**的結果，不是驗證資料列數。原本的測試只
-數刪除後還剩幾列，那種測試對這個缺陷完全無感。
+測試直接檢查匯出位元組，確保封裝內容只包含核准資料；資料列數檢查
+另保留其資料結構用途。
 """
 from __future__ import annotations
 
@@ -31,10 +30,10 @@ def _build_database(path: Path) -> None:
 
 
 def test_plain_delete_leaves_payload_in_the_file() -> None:
-    """先證明這個缺陷是真的，否則下面那個測試證明不了任何事。
+    """確認 SQLite DELETE 後仍保留原始位元組的測試前提。
 
-    這是「守衛的正例」：如果 SQLite 其實會自己清乾淨，那修正就沒有意義，
-    而這個測試會失敗並告訴我們前提錯了。
+    此守衛正例先證明資料殘留現象；若 SQLite 行為改變，測試會明確
+    回報前提需重新檢視。
     """
     import tempfile
 
@@ -70,11 +69,10 @@ def test_secure_delete_and_vacuum_remove_the_payload() -> None:
 
 
 def test_profile_export_applies_secure_delete_and_vacuum() -> None:
-    """匯出路徑本身必須做這兩件事，不是只有測試裡做。
+    """匯出入口與共用 secure_delete 都須通過驗證。
 
-    2026-09-02 起 secure_delete 由 infrastructure/sqlite_safety.py 提供。
-    兩邊都要查：只查匯出有沒有呼叫，共用函式被改壞時沒人會發現；只查共用
-    函式，匯出漏掉那一行時同樣沒人會發現。
+    自 2026-09-02 起，共用函式由 infrastructure/sqlite_safety.py 提供。
+    同時核對函式行為及匯出呼叫點，完整涵蓋資料清理與流程接線。
     """
     import inspect
 
@@ -89,11 +87,11 @@ def test_profile_export_applies_secure_delete_and_vacuum() -> None:
 
 
 def test_zero_byte_database_is_flagged_as_corrupt(tmp_path: Path) -> None:
-    """零位元組資料庫是損毀，不是全新安裝。
+    """現存零位元組資料庫須標示損毀，並引導還原。
 
-    斷電、雲端同步中斷或複製失敗都會留下 0-byte 檔。SQLite 會把它當成空
-    資料庫，於是應用成功建立新 schema、使用者看到預設 profile，接著正常
-    操作開始往上寫。原本的資料還在備份裡，但使用者沒有理由知道要去還原。
+    斷電、同步或複製中斷可能留下 0-byte 檔。SQLite 會將其視為空資料庫，
+    建立 schema 並顯示預設 profile。此測試要求揭露損毀狀態，讓使用者
+    能從備份還原原有資料。
     """
     from infrastructure.db import StudioDB
 
@@ -110,18 +108,18 @@ def test_zero_byte_database_is_flagged_as_corrupt(tmp_path: Path) -> None:
     database = StudioDB(fresh)
     try:
         assert database.corrupt_empty_database is False, (
-            "真正的首次安裝不得被誤判為損毀"
+            '首次安裝須正確辨識為新資料庫'
         )
     finally:
         database.conn.close()
 
 
 def test_secret_store_write_is_atomic() -> None:
-    """DPAPI 秘密必須原子寫入。
+    """DPAPI 秘密使用原子寫入，保留可還原的完整內容。
 
-    先前直接覆寫正式檔案。斷電或磁碟寫入失敗會留下截斷的 blob，下一次
-    load() 解密失敗回傳空字串——而空字串與「尚未設定」無法區分，臉部
-    identity 因此被當成零個 profile，接著新增一筆就把殘骸覆寫成新的真相。
+    直接覆寫遇到斷電或寫入中斷會留下截斷 blob。舊 load() 將解密錯誤
+    表示為空字串，使 identity 被當作空 profile 集合，後續新增便覆寫
+    殘存資料。此測試驗證完整寫入與明確錯誤狀態。
     """
     import inspect
 
@@ -133,11 +131,11 @@ def test_secret_store_write_is_atomic() -> None:
 
 
 def test_optimize_database_is_bounded_and_reports_honestly() -> None:
-    """optimize_database 不得刪光全部，也不得在刪除後回報 0。
+    """optimize_database 保留期限內資料，並回報實際刪除數。
 
-    原本 cutoff 是「現在」，於是這個宣稱 bounded cleanup 的函式會刪掉每一筆
-    已完成待辦與整個稽核紀錄；而 VACUUM 失敗時回報 pruned=0，但刪除早已
-    commit——呼叫端會以為什麼都沒發生。
+    舊 cutoff 使用現在時間，會清掉所有已完成待辦與稽核紀錄；VACUUM
+    異常時還會在刪除已 commit 後回報 pruned=0。此測試驗證保留期限
+    及提交後計數的準確性。
     """
     import inspect
 
@@ -146,15 +144,15 @@ def test_optimize_database_is_bounded_and_reports_honestly() -> None:
     body = inspect.getsource(db_memory.StudioDBMemoryMethods.optimize_database)
     assert "RETENTION_DAYS" in body, "cutoff 仍未設界"
     assert "timedelta" in body, "cutoff 未往回推算"
-    # VACUUM 失敗的分支必須回報實際刪除數，不得歸零。
+    # VACUUM 異常分支仍須回報已提交的實際刪除數。
     # 要切在真正的 VACUUM **呼叫**，不是 docstring 裡的那個字——DELETE 本身
-    # 失敗時 rollback 後回傳 0 是正確的，不能一起算進來。
+    # 已 rollback 的分支正確回報 0，依其實際提交狀態計數。
     marker = 'self.conn.execute("VACUUM")'
     assert marker in body
     tail = body.split(marker, 1)[1]
     assert '"pruned_todos": 0' not in tail, (
-        "VACUUM 失敗時仍回報刪除 0 筆——刪除已經 commit，那是謊報"
+        'VACUUM 異常後須回報已提交的實際刪除數'
     )
     assert '"pruned_todos": pruned_todos' in tail, (
-        "VACUUM 失敗時必須回報實際刪除數"
+        'VACUUM 異常時須回報實際刪除數'
     )

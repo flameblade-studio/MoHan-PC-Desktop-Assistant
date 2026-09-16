@@ -66,6 +66,21 @@ def find_local_residue() -> list[str]:
             residue.append(str(path))
     if _importlib_util.find_spec("nvdiffrast") is not None:
         residue.append("importable:nvdiffrast")
+    workspace_root = PROJECT_ROOT.parents[1]
+    tools_root = workspace_root / "_tools"
+    if tools_root.exists():
+        residue.extend(
+            str(candidate)
+            for candidate in tools_root.rglob("*")
+            if any(
+                marker in candidate.name.casefold()
+                for marker in ("krita", "minipaint", "alertify")
+            )
+        )
+    scratchpad = PROJECT_ROOT / "scratchpad"
+    if scratchpad.exists():
+        for pattern in ("*krita*", "*.ora"):
+            residue.extend(str(candidate) for candidate in scratchpad.rglob(pattern))
     return sorted(set(residue))
 
 
