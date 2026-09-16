@@ -41,7 +41,7 @@ def assert_safe_error(store: FaceIdentityStore) -> None:
         message = str(exc)
         assert message in {
             "protected face identity data is unavailable",
-            "protected face identity data is invalid",
+            'protected face identity data needs a supported value',
         }
         assert "PRIVATE" not in message
         assert exc.__cause__ is None
@@ -91,7 +91,7 @@ def assert_invalid_enrollment_is_rejected() -> None:
         except ValueError:
             pass
         else:
-            raise AssertionError("invalid enrollment vector must be rejected")
+            raise AssertionError('enrollment vectors must satisfy the validation contract')
 
 
 def assert_invalid_probe_is_unknown() -> None:

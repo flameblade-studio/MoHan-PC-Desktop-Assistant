@@ -13,9 +13,9 @@ the rig produced by ``tools/build_half_body_layered_rig.py`` instead:
 Every mask is feathered exactly like ``build_v120_physics_layers.save_layer``
 and RGB is taken from the authority portrait, so the integrity contract
 (original colours only, transparent RGB zeroed) holds by construction.  A rig
-layer that is empty (a sleeveless top has no sleeves) yields a fully
-transparent cutout: no pixels are invented, and the report lists which files
-would fail the ``visible_count`` clause of ``tests/test_v120_asset_integrity.py``
+layer that is empty (such as a sleeve layer for a sleeveless top) yields a fully
+transparent cutout with source-only pixels. The report lists which files
+require a contract review for the ``visible_count`` clause of ``tests/test_v120_asset_integrity.py``
 so that contract can be changed deliberately.
 """
 
@@ -153,7 +153,7 @@ def build(authority_dir: Path, rig_dir: Path, output: Path) -> dict:
             "files_failing_visible_or_feather_clause": failing,
             "required_change": (
                 "These cutouts are genuinely empty on the bun / sleeveless base and "
-                "no pixels were invented.  Installing them requires a deliberate "
+                "all pixels retain source provenance.  Installing them requires a deliberate "
                 f"contract change in {INTEGRITY_TEST}: either declare the empty "
                 "files as licensed-empty (assert visible_count == 0 for them and keep "
                 "the > MIN_VISIBLE_PIXELS / > MIN_FEATHER_PIXELS clauses for the rest) "

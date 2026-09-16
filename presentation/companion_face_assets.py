@@ -6,24 +6,21 @@ lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
 
 lazy from domain.companion_animation_contract import (
-    BLUSH_PRESERVING_BLINK_EXPRESSIONS,
     CHEEK_SPEECH_CLOSED_EXPRESSION,
-    EXPRESSION_BLINK_FRAMES,
     EXPRESSION_DERIVED_VISEME_FRAMES,
     EXPRESSION_EYE_OFFSETS,
     EXPRESSION_FACE_OFFSETS,
     EXPRESSION_MOUTH_OFFSETS,
-    EXPRESSION_POSES,
     EXPRESSION_SPEECH_EXPRESSIONS,
     EXPRESSION_SPEECH_FRAMES,
     EXPRESSION_SPEECH_MOUTH_RECTS,
-    EYES_CLOSED_EXPRESSIONS,
     HAPPY_SPEECH_CLOSED_EXPRESSION,
     SPEAKING_BLINK_PREFIXES,
 )
 lazy from domain.expression_system import FaceAnchorProfile
-lazy from domain.face_rig import EyeState, eye_state_for_blink
 lazy from presentation.companion_speech_mask import recover_speech_mask_edges
+# Eager on purpose: a base class must be the real class, not a lazy proxy.
+lazy from presentation.companion_blink_composite import CompanionBlinkCompositeMethods
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = ("CompanionFaceAssetMethods",)
@@ -32,36 +29,7 @@ IMPROVEMENT_THRESHOLD = 0.018
 MIN_OPAQUE_ALPHA = 180
 
 
-class CompanionFaceAssetMethods:
-    def _render_masked_blink_frame(self, opacity: float) -> QPixmap:
-        """Stamp exactly one eyelid authority inside its identity mask."""
-
-        # While speaking, compose over the archived clean speech frame — the
-        # exact mouth currently on screen — not a recomposition at the
-        # target aperture.  The old recomposition made the mouth jump to
-        # its target the instant a blink stamped, then snap back on the
-        # next transition tick.
-        archived = (
-            getattr(self, "speech_visual_pixmap", None)
-            if self.state == "speaking"
-            else None
-        )
-        frame = (
-            QPixmap(archived)
-            if archived is not None and not archived.isNull()
-            else self._render_half_body_frame()
-        )
-        if eye_state_for_blink(opacity) is EyeState.REST:
-            return frame
-        expression = self.current_expression
-        if self.state == "speaking":
-            expression = (
-                self.speech_gesture_expression
-                or getattr(self, "speech_current_expression", None)
-                or expression
-            )
-        return self._blink_composite(frame, str(expression), opacity)
-
+class CompanionFaceAssetMethods(CompanionBlinkCompositeMethods):
     def _idle_expression(self) -> str:
         if self.idle_pose == "lean":
             return "idle_lean"
@@ -761,138 +729,17 @@ class CompanionFaceAssetMethods:
     def _pose_suffix(pose: str) -> str:
         return "_lean" if pose == "lean" else "_front" if pose == "front" else ""
 
-    def _blink_composite(
-        self,
-        base_pixmap: QPixmap,
-        base_expression: str,
-        opacity: float = 1.0,
-    ) -> QPixmap:
-        eye_state = eye_state_for_blink(opacity)
-        if eye_state is EyeState.REST:
-            return QPixmap(base_pixmap)
-        # Emotional portraits are complete, identity-locked illustrations.
-        # A neutral eye patch changes their eyelids, brows and face contour,
-        # so they stay intact until a dedicated matching blink asset exists.
-        if base_expression in EYES_CLOSED_EXPRESSIONS:
-            return QPixmap(base_pixmap)
-        is_expression_speech = (
-            self.state == "speaking"
-            and base_expression in EXPRESSION_SPEECH_EXPRESSIONS
-        )
-        if base_expression in EXPRESSION_POSES and not is_expression_speech:
-            return QPixmap(base_pixmap)
-        pose = self.physics_expression_poses.get(
-            base_expression,
-            getattr(self, "active_physics_pose", "front"),
-        )
-        suffix = self._pose_suffix(pose)
-        offset_x, offset_y = self._expression_eye_offset(base_expression)
-        dedicated_blink = EXPRESSION_BLINK_FRAMES.get(base_expression)
-        if eye_state is EyeState.HALF:
-            # A semantic HALF state is not permission to blend REST and CLOSED
-            # authority portraits. Use a dedicated registered half-eye source
-            # when one is authored. If it is absent, keep the REST authority
-            # untouched: the visual acceptance contract forbids substituting
-            # CLOSED for a partial value, which reads as a premature blink.
-            half_key = (
-                f"{dedicated_blink}_half"
-                if dedicated_blink is not None
-                else f"blink_half{suffix}"
-            )
-            half_source = self.expression_pixmaps.get(half_key)
-            if half_source is None or half_source.isNull():
-                return QPixmap(base_pixmap)
-            if half_source is not None and not half_source.isNull():
-                eye_mask = self.blink_masks[pose]
-                if offset_x or offset_y:
-                    eye_mask = self._translated_pixmap(
-                        eye_mask,
-                        offset_x,
-                        offset_y,
-                    )
-                half_patch = self._masked_region(half_source, eye_mask)
-                return self.face_renderer.render_overlay(
-                    base_pixmap,
-                    half_patch,
-                    opacity=1.0,
-                )
-        if dedicated_blink is not None:
-            blink_source = self.expression_pixmaps[dedicated_blink]
-            eye_mask = self.blink_masks[pose]
-            if offset_x or offset_y:
-                eye_mask = self._translated_pixmap(
-                    eye_mask,
-                    offset_x,
-                    offset_y,
-                )
-            blink_patch = self._masked_region(blink_source, eye_mask)
-        else:
-            blink_source = self.expression_pixmaps[f"blink{suffix}"]
-            blink_patch = self._masked_region(
-                blink_source,
-                self.blush_blink_masks[pose]
-                if base_expression in BLUSH_PRESERVING_BLINK_EXPRESSIONS
-                else self.blink_masks[pose],
-            )
-        if dedicated_blink is None and (offset_x or offset_y):
-            blink_patch = self._translated_pixmap(
-                blink_patch,
-                offset_x,
-                offset_y,
-            )
-        return self.face_renderer.render_overlay(
-            base_pixmap,
-            blink_patch,
-            # Never alpha-crossfade two eye authorities.
-            opacity=1.0,
-        )
-
-    def _wink_composite(
-        self,
-        base_pixmap: QPixmap,
-        base_expression: str,
-        opacity: float = 1.0,
-    ) -> QPixmap:
-        """Close one eye without replacing the surrounding expression."""
-        if eye_state_for_blink(opacity) is EyeState.REST:
-            return QPixmap(base_pixmap)
-        pose = self.physics_expression_poses.get(
-            base_expression,
-            getattr(self, "active_physics_pose", "front"),
-        )
-        suffix = self._pose_suffix(pose)
-        offset_x, offset_y = self._expression_eye_offset(base_expression)
-        mask = self.wink_masks[pose]
-        if offset_x or offset_y:
-            mask = self._translated_pixmap(mask, offset_x, offset_y)
-        patch = self._masked_region(
-            self.expression_pixmaps[f"blink{suffix}"],
-            mask,
-        )
-        if offset_x or offset_y:
-            patch = self._translated_pixmap(patch, offset_x, offset_y)
-        return self.face_renderer.render_overlay(
-            base_pixmap,
-            patch,
-            opacity=1.0,
-        )
-
     def _masked_eye_patch(self, source: QPixmap, pose: str) -> QPixmap:
         return self._masked_region(source, self.blink_masks[pose])
 
     def _active_speech_pose_suffix(self) -> str:
-        if self.state == "speaking":
-            if self.speech_closed_expression.endswith("_lean"):
-                return "_lean"
-            if self.speech_closed_expression.endswith("_front"):
-                return "_front"
-            if self.speech_closed_expression == "idle":
-                return ""
-            return self.speech_pose_suffix
-        return (
-            "_lean"
-            if self.idle_pose == "lean"
-            else "_front"
-            if self.idle_pose == "front"
-            else ""
-        )
+        if self.state != "speaking":
+            return self._pose_suffix(self.idle_pose)
+        expression = self.speech_closed_expression
+        if expression.endswith("_lean"):
+            return "_lean"
+        if expression.endswith("_front"):
+            return "_front"
+        if expression == "idle":
+            return ""
+        return self.speech_pose_suffix

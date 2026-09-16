@@ -52,7 +52,7 @@ class AdaptiveCharacterRequest:
 
     def __post_init__(self) -> None:
         if self.operation_generation < 0:
-            raise ValueError("Adaptive operation generation must not be negative.")
+            raise ValueError("Adaptive operation generation accepts zero or greater.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -122,7 +122,7 @@ class AdaptiveCharacterRuntime:
         if terminal is not None:
             return terminal
         if framing is None:
-            raise AssertionError("Prepared adaptive framing is missing.")
+            raise AssertionError("Provide prepared adaptive framing.")
         if framing.mode not in PUBLISHABLE_BODY_MODES:
             # CLOSE/HALF keep the legacy half-body poses on the canvas, so the
             # full-body composition (render + convert + hash) is skipped
@@ -334,7 +334,7 @@ def _input_signature(request: AdaptiveCharacterRequest) -> tuple[object, ...]:
         performance.viseme,
         performance.mouth_closed,
         # The continuous controls (blink, breath, gaze, mouth smoothing)
-        # advance on their own timers without bumping any generation.  A
+        # advance on their own timers while preserving generation values.  A
         # discrete-only signature deduplicated those frames and froze the
         # full-body blink/breath animation between discrete events — the
         # downstream bridge's contract explicitly forbids that.

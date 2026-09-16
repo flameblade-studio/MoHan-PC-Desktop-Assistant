@@ -17,9 +17,9 @@ if (
     $env:MOHAN_ALLOW_INSTALLER_MUTATION -ne "1"
 ) {
     throw (
-        "Installer integration tests modify per-user installation state. " +
-        "Run them on GitHub Actions or set MOHAN_ALLOW_INSTALLER_MUTATION=1 " +
-        "only inside a disposable Windows account or virtual machine."
+        "Installer integration tests exercise per-user installation state. " +
+        "Run them on GitHub Actions, or set MOHAN_ALLOW_INSTALLER_MUTATION=1 " +
+        "inside a disposable Windows account or virtual machine."
     )
 }
 $ResolvedArtifacts = (Resolve-Path $ArtifactsDir).Path
@@ -57,7 +57,7 @@ $HasPreviousUpgrade = @($PreviousUpgradeArguments | Where-Object {
 if ($HasPreviousUpgrade -and @($PreviousUpgradeArguments | Where-Object {
     [string]::IsNullOrWhiteSpace($_)
 }).Count -gt 0) {
-    throw "Previous-version upgrade verification requires every version, URL, and SHA-256 argument"
+    throw "Previous-version upgrade verification needs every version, URL, and SHA-256 argument"
 }
 
 function Get-VerifiedPreviousInstaller {
@@ -69,7 +69,7 @@ function Get-VerifiedPreviousInstaller {
     Invoke-WebRequest -Uri $Url -OutFile $Destination
     $Actual = (Get-FileHash -LiteralPath $Destination -Algorithm SHA256).Hash
     if (-not [string]::Equals($Actual, $Sha256, [StringComparison]::OrdinalIgnoreCase)) {
-        throw "Previous installer SHA-256 mismatch: $Destination"
+        throw "Previous installer SHA-256 verification returned a different value: $Destination"
     }
     return $Destination
 }
@@ -102,7 +102,7 @@ function Invoke-NativeVerification {
         [Parameter(Mandatory = $true)][array]$Artifacts
     )
     if ($Label -notin $ExpectedNativeLabels) {
-        throw "Unexpected native installer verification label: $Label"
+        throw "Native installer verification requires a known label: $Label"
     }
     $Arguments = @(
         $NativeVerifier,
@@ -115,7 +115,7 @@ function Invoke-NativeVerification {
     }
     & $Python @Arguments
     if ($LASTEXITCODE -ne 0) {
-        throw "$Label strict native acceleration verification failed"
+        throw "$Label strict native acceleration verification reported status $LASTEXITCODE"
     }
 }
 
@@ -131,10 +131,10 @@ function Invoke-PackagedSelfTest {
         "--self-test", "--self-test-output=$OutputPath"
     ) -PassThru
     if (-not $Process.WaitForExit($TimeoutSeconds * 1000)) {
-        # Python 3.15rc1 JIT/Qt interpreter finalization can deadlock AFTER
-        # the self-test finishes and writes its marker file.  Without this
-        # timeout the -Wait call blocks until the job's 120-minute ceiling.
-        # Kill the stuck process and judge the run by the marker it produced.
+        # Python 3.15rc1 JIT/Qt interpreter finalization can hold the process
+        # after the self-test finishes and writes its marker file.  This
+        # timeout keeps the -Wait call within the job's 120-minute ceiling.
+        # Stop the process and judge the run by the marker it produced.
         try { $Process.Kill() } catch {}
         $Process.WaitForExit() | Out-Null
         if (
@@ -142,20 +142,20 @@ function Invoke-PackagedSelfTest {
             (Get-Content -Raw $OutputPath) -eq "PACKAGED_SELFTEST_OK"
         ) {
             Write-Warning (
-                "$Label application self-test completed but the process " +
-                "hung at exit (known 3.15rc1 JIT/Qt finalization issue); " +
-                "terminated after $TimeoutSeconds seconds."
+                "$Label application self-test completed; the process " +
+                "remained active during exit (known 3.15rc1 JIT/Qt finalization issue), " +
+                "so it was stopped after $TimeoutSeconds seconds."
             )
             return
         }
-        throw "$Label application self-test timed out without completing"
+        throw "$Label application self-test requires a completion marker within $TimeoutSeconds seconds"
     }
     if (
         $Process.ExitCode -ne 0 -or
         -not (Test-Path -LiteralPath $OutputPath) -or
         (Get-Content -Raw $OutputPath) -ne "PACKAGED_SELFTEST_OK"
     ) {
-        throw "$Label application self-test failed"
+        throw "$Label application self-test reported an unexpected status or marker"
     }
 }
 
@@ -166,51 +166,51 @@ function Assert-PackagedPoseAtlas {
     # POSE_ATLAS_LAYERED_ROOT_NAME); tests/test_native_packaging_contract.py pins them.
     $AtlasRoot = Join-Path $PackageRoot "_internal\assets\pose-atlas\v5-base"
     if (-not (Test-Path -LiteralPath $AtlasRoot)) {
-        throw "Installer omitted PoseAtlas v5-base assets"
+        throw "Installer requires PoseAtlas v5-base assets"
     }
     $Views = Get-ChildItem -LiteralPath $AtlasRoot -Filter "yaw*-pitch+00.png"
     if ($Views.Count -ne 24) {
-        throw "Installer PoseAtlas view count is incomplete: $($Views.Count)"
+        throw "Installer PoseAtlas view count is $($Views.Count); 24 views are required"
     }
     foreach ($View in $Views) {
         $Base = [IO.Path]::GetFileNameWithoutExtension($View.Name)
         foreach ($Suffix in @(".landmarks.json", ".hands.json")) {
             if (-not (Test-Path -LiteralPath (Join-Path $AtlasRoot ($Base + $Suffix)))) {
-                throw "Installer PoseAtlas sidecar is missing: $Base$Suffix"
+                throw "Installer PoseAtlas sidecar is required: $Base$Suffix"
             }
         }
     }
     $LayeredAtlasRoot = Join-Path $PackageRoot "_internal\assets\pose-atlas\v5-base-layered"
     if (-not (Test-Path -LiteralPath $LayeredAtlasRoot)) {
-        throw "Installer omitted layered PoseAtlas v5-base assets"
+        throw "Installer requires layered PoseAtlas v5-base assets"
     }
     $LayeredViews = Get-ChildItem -LiteralPath $LayeredAtlasRoot -Filter "yaw*-pitch+00_*.png"
     if ($LayeredViews.Count -ne 600) {
-        throw "Installer layered PoseAtlas view count is incomplete: $($LayeredViews.Count)"
+        throw "Installer layered PoseAtlas view count is $($LayeredViews.Count); 600 views are required"
     }
     $LayeredExpressions = Join-Path $PackageRoot "_internal\assets\expressions\layered"
     if (-not (Test-Path -LiteralPath $LayeredExpressions)) {
-        throw "Installer omitted layered half-body expression assets"
+        throw "Installer requires layered half-body expression assets"
     }
     $HalfBodyLayers = Get-ChildItem -LiteralPath $LayeredExpressions -Filter "*.png"
     if ($HalfBodyLayers.Count -ne 75) {
-        throw "Installer layered half-body count is incomplete: $($HalfBodyLayers.Count)"
+        throw "Installer layered half-body count is $($HalfBodyLayers.Count); 75 layers are required"
     }
     foreach ($Authority in @("idle.png", "idle_lean.png", "idle_front.png")) {
         $AuthorityPath = Join-Path $PackageRoot "_internal\assets\expressions\$Authority"
         if (-not (Test-Path -LiteralPath $AuthorityPath)) {
-            throw "Installer omitted half-body identity authority: $Authority"
+            throw "Installer requires half-body identity authority: $Authority"
         }
     }
 }
 
 foreach ($Locale in $ExpectedTransformLocales) {
     if (-not ($MsiTransforms.Name -match "-$Locale\.mst$")) {
-        throw "Missing MSI language transform: $Locale"
+        throw "MSI language transform required for locale: $Locale"
     }
 }
 if ($MsiTransforms.Count -ne $ExpectedTransformLocales.Count) {
-    throw "Unexpected MSI language-transform count: $($MsiTransforms.Count)"
+    throw "MSI language-transform count is $($MsiTransforms.Count); $($ExpectedTransformLocales.Count) transforms are required"
 }
 $ExeInstallDir = Join-Path $env:RUNNER_TEMP "mohan-exe-install"
 $env:MOHAN_DATA_DIR = Join-Path $env:RUNNER_TEMP "mohan-installer-profile"
@@ -222,32 +222,32 @@ if ($HasPreviousUpgrade) {
         "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART",
         "/MERGETASKS=!desktopicon", "/DIR=$ExeInstallDir"
     ) -Wait -PassThru
-    if ($Process.ExitCode -ne 0) { throw "Previous EXE installer failed" }
+    if ($Process.ExitCode -ne 0) { throw "Previous EXE installer reported status $($Process.ExitCode)" }
     $PreviousExePath = Join-Path $ExeInstallDir (
         "MoHan-Desktop-Assistant-$PreviousVersion.exe"
     )
     if (-not (Test-Path -LiteralPath $PreviousExePath)) {
-        throw "Previous EXE installer did not install the expected application"
+        throw "Previous EXE installer expected the application at $PreviousExePath"
     }
 }
 $Process = Start-Process $ExeInstaller.FullName -ArgumentList @(
     "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART",
     "/MERGETASKS=!desktopicon", "/DIR=$ExeInstallDir"
 ) -Wait -PassThru
-if ($Process.ExitCode -ne 0) { throw "EXE installer failed" }
+if ($Process.ExitCode -ne 0) { throw "EXE installer reported status $($Process.ExitCode)" }
 $InstalledExe = Join-Path $ExeInstallDir "MoHan-Desktop-Assistant-$Version.exe"
 if ($HasPreviousUpgrade) {
     if (-not (Test-Path -LiteralPath $InstalledExe)) {
-        throw "EXE in-place upgrade did not install the target application"
+        throw "EXE in-place upgrade expected the target application at $InstalledExe"
     }
     if (Test-Path -LiteralPath $PreviousExePath) {
-        throw "EXE in-place upgrade left the previous application executable behind"
+        throw "EXE in-place upgrade retained the previous application executable: $PreviousExePath"
     }
     $UpgradeEvidence.exe = $true
 }
 foreach ($Notice in @("LICENSE", "THIRD_PARTY_NOTICES.md")) {
     if (-not (Test-Path (Join-Path $ExeInstallDir "_internal\$Notice"))) {
-        throw "EXE installer omitted required distribution notice: $Notice"
+        throw "EXE installer requires distribution notice: $Notice"
     }
 }
 $SelfTest = Join-Path $env:RUNNER_TEMP "mohan-exe-installer-selftest.txt"
@@ -260,7 +260,7 @@ Invoke-NativeVerification `
     -Artifacts @($ExeInstaller.FullName)
 $ExeShortcutPath = Join-Path $ProgramsFolder "MoHan Desktop Assistant.lnk"
 if (-not (Test-Path -LiteralPath $ExeShortcutPath)) {
-    throw "EXE installer did not create the Start menu shortcut"
+    throw "EXE installer requires the Start menu shortcut: $ExeShortcutPath"
 }
 $ExeShortcut = (New-Object -ComObject WScript.Shell).CreateShortcut(
     $ExeShortcutPath
@@ -271,22 +271,22 @@ if (-not [string]::Equals(
     $InstalledExe,
     [StringComparison]::OrdinalIgnoreCase
 )) {
-    throw "EXE shortcut target escaped the installed application directory"
+    throw "EXE shortcut target must match the installed application path"
 }
 if (-not [string]::Equals(
     $ExeShortcut.IconLocation,
     $ExpectedIconLocation,
     [StringComparison]::OrdinalIgnoreCase
 )) {
-    throw "EXE shortcut icon does not use the installed MoHan half-body icon"
+    throw "EXE shortcut icon must use the installed MoHan half-body icon"
 }
 $Uninstaller = Join-Path $ExeInstallDir "unins000.exe"
 $Process = Start-Process $Uninstaller -ArgumentList @(
     "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART"
 ) -Wait -PassThru
-if ($Process.ExitCode -ne 0) { throw "EXE uninstall verification failed" }
+if ($Process.ExitCode -ne 0) { throw "EXE uninstall verification reported status $($Process.ExitCode)" }
 if (Test-Path -LiteralPath $ExeShortcutPath) {
-    throw "EXE uninstaller left the Start menu shortcut behind"
+    throw "EXE uninstaller retained the Start menu shortcut: $ExeShortcutPath"
 }
 
 $MsiVariants = @($null) + @($MsiTransforms)
@@ -299,7 +299,7 @@ foreach ($Transform in $MsiVariants) {
             Where-Object { $Transform.Name -match "-$_\.mst$" } |
             Select-Object -First 1
     }
-    if (-not $Variant) { throw "Could not identify MSI transform locale" }
+    if (-not $Variant) { throw "MSI transform locale identification requires a known variant" }
     $MsiInstallDir = Join-Path $env:RUNNER_TEMP "mohan-msi-install-$Variant"
     $PreviousMsiPath = $null
     if ($HasPreviousUpgrade -and $Variant -eq "zh-TW") {
@@ -310,13 +310,13 @@ foreach ($Transform in $MsiVariants) {
         $Process = Start-Process msiexec.exe -ArgumentList $PreviousMsiArguments `
             -Wait -PassThru
         if ($Process.ExitCode -ne 0) {
-            throw "Previous MSI installer failed: $($Process.ExitCode)"
+            throw "Previous MSI installer reported status $($Process.ExitCode)"
         }
         $PreviousMsiPath = Join-Path $MsiInstallDir (
             "MoHan-Desktop-Assistant-$PreviousVersion.exe"
         )
         if (-not (Test-Path -LiteralPath $PreviousMsiPath)) {
-            throw "Previous MSI installer did not install the expected application"
+            throw "Previous MSI installer expected the application at $PreviousMsiPath"
         }
     }
     $InstallArguments = @(
@@ -329,23 +329,23 @@ foreach ($Transform in $MsiVariants) {
     $Process = Start-Process msiexec.exe -ArgumentList $InstallArguments `
         -Wait -PassThru
     if ($Process.ExitCode -ne 0) {
-        throw "MSI $Variant installer failed: $($Process.ExitCode)"
+        throw "MSI $Variant installer reported status $($Process.ExitCode)"
     }
     $InstalledMsiExe = Join-Path $MsiInstallDir (
         "MoHan-Desktop-Assistant-$Version.exe"
     )
     if (-not (Test-Path $InstalledMsiExe)) {
-        throw "MSI $Variant did not install the application"
+        throw "MSI $Variant installer expected the application at $InstalledMsiExe"
     }
     if ($HasPreviousUpgrade -and $Variant -eq "zh-TW") {
         if (Test-Path -LiteralPath $PreviousMsiPath) {
-            throw "MSI in-place upgrade left the previous application executable behind"
+            throw "MSI in-place upgrade retained the previous application executable: $PreviousMsiPath"
         }
         $UpgradeEvidence.msi = $true
     }
     foreach ($Notice in @("LICENSE", "THIRD_PARTY_NOTICES.md")) {
         if (-not (Test-Path (Join-Path $MsiInstallDir "_internal\$Notice"))) {
-            throw "MSI $Variant omitted required distribution notice: $Notice"
+            throw "MSI $Variant installer requires distribution notice: $Notice"
         }
     }
     $SelfTest = Join-Path $env:RUNNER_TEMP "mohan-msi-$Variant-selftest.txt"
@@ -364,7 +364,7 @@ foreach ($Transform in $MsiVariants) {
         "MoHan Desktop Assistant\MoHan Desktop Assistant.lnk"
     )
     if (-not (Test-Path -LiteralPath $MsiShortcutPath)) {
-        throw "MSI $Variant did not create the Start menu shortcut"
+        throw "MSI $Variant installer requires the Start menu shortcut: $MsiShortcutPath"
     }
     $MsiShortcut = (New-Object -ComObject WScript.Shell).CreateShortcut(
         $MsiShortcutPath
@@ -375,7 +375,7 @@ foreach ($Transform in $MsiVariants) {
         $InstalledMsiExe,
         [StringComparison]::OrdinalIgnoreCase
     )) {
-        throw "MSI $Variant shortcut target escaped the install directory"
+        throw "MSI $Variant shortcut target must match the installed application path"
     }
     $ShortcutBytes = [IO.File]::ReadAllBytes($MsiShortcutPath)
     [uint32]$ShellLinkHeaderSize = 0x0000004C
@@ -383,12 +383,12 @@ foreach ($Transform in $MsiVariants) {
         $ShortcutBytes.Length -lt $ShellLinkHeaderSize -or
         [BitConverter]::ToUInt32($ShortcutBytes, 0) -ne $ShellLinkHeaderSize
     ) {
-        throw "MSI $Variant shortcut has an invalid Shell Link header"
+        throw "MSI $Variant shortcut has a Shell Link header value different from the required value"
     }
     [uint32]$LinkFlags = [BitConverter]::ToUInt32($ShortcutBytes, 20)
     [uint32]$HasIconLocationFlag = 0x00000040
     if (($LinkFlags -band $HasIconLocationFlag) -ne 0) {
-        throw "MSI $Variant shortcut contains an independent icon location"
+        throw "MSI $Variant shortcut uses an independent icon location"
     }
     $ReportedIconLocation = ([string]$MsiShortcut.IconLocation).Trim()
     $IconLocationIsAllowed = (
@@ -405,7 +405,7 @@ foreach ($Transform in $MsiVariants) {
         )
     )
     if (-not $IconLocationIsAllowed) {
-        throw "MSI $Variant shortcut icon escaped the installed MoHan executable"
+        throw "MSI $Variant shortcut icon path must use the installed MoHan executable"
     }
     $UninstallArguments = @(
         "/x", $MsiInstaller.FullName, "/qn", "/norestart"
@@ -416,16 +416,16 @@ foreach ($Transform in $MsiVariants) {
     $Process = Start-Process msiexec.exe -ArgumentList $UninstallArguments `
         -Wait -PassThru
     if ($Process.ExitCode -ne 0) {
-        throw "MSI $Variant uninstall verification failed"
+        throw "MSI $Variant uninstall verification reported status $($Process.ExitCode)"
     }
     if (Test-Path -LiteralPath $MsiShortcutPath) {
-        throw "MSI $Variant uninstaller left the Start menu shortcut behind"
+        throw "MSI $Variant uninstaller retained the Start menu shortcut: $MsiShortcutPath"
     }
 }
 
 if ($HasPreviousUpgrade) {
     if (-not ($UpgradeEvidence.exe -and $UpgradeEvidence.msi)) {
-        throw "Installer upgrade evidence is incomplete"
+        throw "Installer upgrade evidence requires both EXE and MSI results"
     }
     $UpgradeEvidence.passed = $true
     $UpgradeEvidence | ConvertTo-Json | Set-Content `

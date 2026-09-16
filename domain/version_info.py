@@ -14,8 +14,8 @@ UNKNOWN_VERSION = "未知版本"
 def _build_info_path() -> Path:
     # Frozen builds bundle build-info.json at the _MEIPASS root; source
     # checkouts have build.ps1 write it at the PROJECT root.  Resolving to
-    # this file's own directory (domain/) meant source runs never found it
-    # and always fell back to FALLBACK_VERSION.
+    # this file's own directory (domain/) meant source runs could locate the project root
+    # and could then read the declared version before using FALLBACK_VERSION.
     base = Path(
         getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[1])
     )

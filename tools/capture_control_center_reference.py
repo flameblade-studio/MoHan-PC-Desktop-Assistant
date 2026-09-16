@@ -41,7 +41,7 @@ def capture(output: Path, tab_name: str) -> Path:
             destination = output_path(output)
             destination.parent.mkdir(parents=True, exist_ok=True)
             if not dashboard.grab().save(str(destination)):
-                raise RuntimeError("Could not save the control-center preview.")
+                raise RuntimeError("Saving the control-center preview requires attention; check the output path and image encoder.")
         finally:
             close_dashboard(dashboard, db)
     return destination

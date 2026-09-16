@@ -49,7 +49,7 @@ def apply_voice_volume(runtime, volume_percent: int, muted: bool) -> None:
 
 
 def release_failed_local_voice(runtime, message: str) -> None:
-    """Expose a local-provider failure and release its queued speech line."""
+    """Expose a local-provider attention event and release its queued speech line."""
 
     try:
         runtime.speech_providers.record_failure(VOICE_ENGINE_SYSTEM)
@@ -61,6 +61,6 @@ def release_failed_local_voice(runtime, message: str) -> None:
         f"{platform_name} 本機語音失敗："
         f"{safe_error_message(language, message)}"
     )
-    # A failed engine cannot emit the normal finished signal. Reuse the
+    # A requires attention engine emits its boundary result instead of the normal finished signal. Reuse the
     # terminal release path so the mouth closes and later lines remain usable.
     runtime._speech_audio_finished()

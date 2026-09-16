@@ -99,7 +99,7 @@ def audit_full_body_assets(
     views: tuple[FullBodyViewEvidence, ...],
     policy: FullBodyAuditPolicy = DEFAULT_FULL_BODY_AUDIT_POLICY,
 ) -> FullBodyAssetAuditReport:
-    """Audit a complete 24-view body ring without retaining source assets."""
+    """Audit a complete 24-view body ring while keeping source assets private."""
 
     issues: list[FullBodyAuditIssue] = []
     counts = Counter(view.yaw_degrees for view in views)

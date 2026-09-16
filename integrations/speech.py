@@ -93,16 +93,15 @@ if os.name == "nt":
     lazy import winsound
 else:
     # Keep the module importable on macOS/Linux. A later platform audio
-    # adapter will provide verified playback there; silently pretending that
-    # Windows playback exists would turn a compatibility gate into a false
-    # claim.
+    # adapter will provide verified playback there; the compatibility gate
+    # reports the platform route explicitly until then.
     winsound = None
 
 
 CREATE_NO_WINDOW = 0x08000000
 DEFAULT_TRANSCRIPTION_MODEL = "gpt-4o-mini-transcribe"
 DEFAULT_TRANSCRIPTION_PROMPT = (
-    "請依使用者選擇的語言精確轉錄，保留原意，不要改寫。"
+    "請依使用者選擇的語言精確轉錄，保留原意並依原話呈現。"
     "人名、公司名、產品名與工作術語請優先依提示中的常用詞判斷。"
 )
 
@@ -369,7 +368,7 @@ class WindowsTTS(QObject):
             process.terminate()
         except OSError:
             # The worker still has the generation gate, so a process that
-            # exited during this race cannot publish obsolete results.
+            # exits during this race stays outside result publication.
             return
 
     @staticmethod
@@ -550,7 +549,7 @@ class OpenAITTS(QObject):
         ).start()
 
     def stop(self) -> None:
-        """Invalidate the current request and abort playback without waiting."""
+        """Advance the request generation and stop playback promptly."""
 
         self._begin_generation()
 
@@ -822,9 +821,9 @@ class SpeechListener(QObject):
                         )
                     )
                 return
-            # Freeze every SQLite-backed provider on the Qt/main thread.
-            # Accessing StudioDB from the recording worker raises SQLite's
-            # cross-thread ProgrammingError before the API request is sent.
+            # Resolve every SQLite-backed provider on the Qt/main thread.
+            # This keeps StudioDB access within its thread boundary before the
+            # API request is sent.
             model = (
                 self.transcription_model_provider().strip() or self.TRANSCRIPTION_MODEL
             )
@@ -1094,7 +1093,7 @@ class SpeechListener(QObject):
                     model=model,
                 )
             )
-            # 比照 Windows 路徑（_finished）：空白轉寫改走 failed，不進對話流程。
+            # 與 Windows 路徑（_finished）一致：空白轉寫交給 failed，對話流程等待有效內容。
             if text.strip():
                 self.recognized.emit(text)
             else:
@@ -1111,7 +1110,8 @@ class SpeechListener(QObject):
             self.diagnostic_changed.emit(reason)
             if audio_path and audio_path.exists():
                 if fallback_enabled:
-                    # 雲端不可用時，將同一段錄音交給 Windows，不要求使用者重說。
+                    # 雲端狀態需要本機接手時，將同一段錄音交給 Windows，
+                    # 使用者可直接等待本機結果。
                     self._fallback_requested.emit(str(audio_path), reason)
                 else:
                     audio_path.unlink(missing_ok=True)
@@ -1149,7 +1149,7 @@ class SpeechListener(QObject):
         self.audio_path = None
         if self.process is not None:
             # The finished QProcess stays parented to this listener; release
-            # the native object so repeated recognitions cannot accumulate.
+            # the native object so repeated recognitions keep one live object.
             self.process.deleteLater()
         self.process = None
         if text == "__ERROR__:NO_RECOGNIZER":

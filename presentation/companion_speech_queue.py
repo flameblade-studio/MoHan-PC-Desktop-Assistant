@@ -14,7 +14,7 @@ def enqueue_bounded_speech(
     *,
     proactive_completions: MutableMapping[str, Callable[[bool], None]] | None = None,
 ) -> bool:
-    """Add speech without allowing a stalled provider to grow memory forever."""
+    """Add speech with bounded provider memory use."""
 
     if len(queue) < MAX_PENDING_SPEECH:
         queue.append(queued)

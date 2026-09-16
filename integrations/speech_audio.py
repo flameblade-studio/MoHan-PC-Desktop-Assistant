@@ -34,15 +34,15 @@ def preferred_output_device(
     channels: int,
     dtype: str = "int16",
 ) -> int | None:
-    """Return a format-compatible WASAPI output, or use the system default.
+    """Return a format-compatible WASAPI output, or delegate to the system default.
 
     On Windows the platform default can resolve to a virtual or MME/DirectSound
-    device that produces no audible output. Prefer the WASAPI host API's default
+    device with a different audio route. Prefer the WASAPI host API's default
     output device so every speech path (OpenAI, Azure, Windows local, Realtime)
-    plays through the same real output device.  A WASAPI endpoint can still
-    reject a provider's native sample rate (notably 24 kHz).  Validate the
-    exact stream format before selecting it; ``None`` lets PortAudio use its
-    already-working platform default when the WASAPI candidate is incompatible.
+    plays through the same real output device. A WASAPI endpoint can report that
+    a provider's native sample rate (notably 24 kHz) needs conversion. Validate
+    the exact stream format before selecting it; ``None`` delegates to PortAudio's
+    already-working platform default when the WASAPI candidate needs another format.
     """
     if not sys.platform.startswith("win"):
         return None
@@ -68,7 +68,7 @@ def apply_wav_volume(
     *,
     pcm_acceleration: PcmAccelerationPort = PYTHON_PCM_ACCELERATION,
 ) -> bytes:
-    """Apply application-local gain without changing the Windows mixer."""
+    """Apply application-local gain while keeping the Windows mixer unchanged."""
     gain = 0.0 if muted else max(0, min(160, int(volume_percent))) / 100.0
     if abs(gain - 1.0) < FLOAT_COMPARISON_EPSILON:
         return audio
@@ -76,12 +76,11 @@ def apply_wav_volume(
         with wave.open(io.BytesIO(audio), "rb") as source:
             params = source.getparams()
             if params.sampwidth != PCM16_SAMPLE_WIDTH:
-                # 非 16-bit PCM 無法套用增益。原本直接原音回傳，等於繞過下面
-                # 「靜音／降音量失敗必須中止」的契約：使用者按了靜音，8-bit
-                # 的回應仍以原音量播出。無法套用就是失敗，不是例外。
+                # 16-bit PCM 是增益處理的支援格式。若要求靜音或降音量，
+                # 讓呼叫端收到明確結果，避免以原音量播放。
                 if muted or gain < 1.0:
                     raise PcmAudioError(
-                        "音訊不是 16-bit PCM，無法套用靜音或降音量，為避免以非預期音量播放而中止本次播放"
+                        "音訊需要 16-bit PCM 才能套用靜音或降音量；本次播放已停止"
                     )
                 return audio
             frame_chunks = []
@@ -91,8 +90,8 @@ def apply_wav_volume(
         output = io.BytesIO()
         with wave.open(output, "wb") as target:
             # Streaming WAV responses may use 0xFFFFFFFF as a temporary data
-            # length. Never copy that placeholder through setparams(), because
-            # Python's wave writer then overflows while closing the file.
+            # length. Write the format fields separately so Python's wave
+            # writer derives the final frame count from the received bytes.
             # Writing the format fields separately lets wave derive the real
             # frame count from the bytes that were actually received.
             target.setnchannels(params.nchannels)
@@ -102,12 +101,11 @@ def apply_wav_volume(
             target.writeframes(adjusted)
         return output.getvalue()
     except (OSError, EOFError, wave.Error, PcmAudioError):
-        # 回傳原始音訊等於「處理失敗就以原音量播放」。降低音量時那只是不如
-        # 預期；**使用者按下靜音時那是把聲音放出來**，而且沒有任何跡象。
-        # 靜音是明確的意圖，失敗必須是靜音而不是出聲。
+        # 原始音訊會維持原音量。當使用者要求降音量或靜音時，
+        # 回傳明確的處理結果，讓靜音意圖獲得優先保護。
         if muted or gain < 1.0:
             raise PcmAudioError(
-                "音量處理失敗，為避免以非預期音量播放而中止本次播放"
+                "音量處理需要重新嘗試；本次播放已停止以維持指定音量"
             ) from None
         return audio
 
@@ -188,7 +186,7 @@ def emit_wave_viseme_cues(
 
 
 class _SpeechPlaybackUnavailable(OSError):
-    """The current platform has no verified audio playback adapter."""
+    """Represent a platform without a verified audio playback adapter."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -242,7 +240,7 @@ def play_wave_with_visemes_impl(
     timeline_ready.wait(timeout=2.0)
     # Release the first pre-analyzed 20 ms cue immediately before the blocking
     # playback call. The worker stays one cue ahead after playback begins, so
-    # long replies do not pay an up-front full-file analysis delay.
+    # long replies start without a full-file analysis delay.
     playback_start.set()
     try:
         if audio_path is not None and volume_percent == FULL_VOLUME_PERCENT and not muted:
@@ -256,9 +254,8 @@ def play_wave_with_visemes_impl(
                 boundary.winsound_adapter.SND_MEMORY,
             )
     finally:
-        # A delayed analyzer must never reopen the mouth after the blocking
-        # playback call has returned. Only the final closed cue may cross the
-        # end-of-audio boundary.
+        # A delayed analyzer stays closed after the blocking playback call
+        # returns. Only the final closed cue crosses the end-of-audio boundary.
         playback_finished.set()
         cue_thread.join(timeout=0.35)
         emit_cue(0.0, "CLOSED")
@@ -323,7 +320,7 @@ def play_pcm16_stream_with_visemes_impl(
 
 
 class _SpeechCancelled(Exception):
-    """End one obsolete local-speech generation without user-facing errors."""
+    """End one superseded local-speech generation with quiet completion."""
 
 
 def abort_raw_output_stream(
@@ -386,10 +383,9 @@ def _play_cancellable_wave_bytes(
             sample_rate // VISEME_CUES_PER_SECOND,
         )
         if source.getnframes() == 0:
-            # A syntactically valid but empty provider WAV is not successful
-            # speech.  Treat it as a playback failure so the caller can report
-            # it and select the verified local fallback instead of silently
-            # completing a text reply with no sound and no mouth motion.
+            # A syntactically valid but empty provider WAV provides no speech.
+            # Treat it as a playback issue so the caller can report it and
+            # select the verified local fallback before completing the reply.
             raise playback.unsupported_error()
         device = preferred_output_device(
             playback.sounddevice,

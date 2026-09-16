@@ -76,7 +76,7 @@ _SAFE_CAPABILITIES: Final = frozenset({
 
 
 class SafeIntentTranslator(Protocol):
-    """Translate one canonical source string without owning localization data."""
+    """Translate one canonical source string with localization data owned by the presentation layer."""
 
     def __call__(self, source: str, /, **values: object) -> str: ...
 
@@ -99,7 +99,7 @@ class SafeIntentStep:
         if self.capability not in _SAFE_CAPABILITIES:
             raise ValueError("Safe intent capability must be read-only.")
         if not self.description.strip():
-            raise ValueError("Safe intent description must not be empty.")
+            raise ValueError("Safe intent description requires content.")
         if not isinstance(self.arguments, frozendict):
             raise TypeError("Safe intent arguments must be immutable.")
 
@@ -122,7 +122,7 @@ class SafeIntentPlan:
 
     def __post_init__(self) -> None:
         if not self.title.strip():
-            raise ValueError("Safe intent title must not be empty.")
+            raise ValueError("Safe intent title requires content.")
         if len(self.steps) != 1:
             raise ValueError("A known safe intent must contain exactly one step.")
 
@@ -145,7 +145,7 @@ def _local_aware_time() -> datetime:
 
 @dataclass(frozen=True, slots=True)
 class FlagshipSafeIntentService:
-    """Build deterministic read-only Google plans without UI or I/O dependencies."""
+    """Build deterministic Google inspection plans with UI and I/O outside the domain boundary."""
 
     translate: SafeIntentTranslator = _source_text
     clock: LocalAwareClock = _local_aware_time

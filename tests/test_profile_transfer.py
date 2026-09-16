@@ -503,7 +503,7 @@ def _assert_sensitive_failure_restores_general_import(root: Path) -> None:
             assert "new-azure" not in str(exc)
             assert "已自動回復" in str(exc)
         else:
-            raise AssertionError("敏感 store 失敗時必須回復一般設定")
+            raise AssertionError('敏感 store 異常時須回復一般設定')
         assert stores["openai"].value == "old-openai"
         assert stores["azure_speech"].value == "old-azure"
         assert target_db.setting("assistant_name") == "匯入前墨寒"
@@ -602,7 +602,7 @@ def _assert_atomic_rollback(fixture: TransferFixture) -> None:
         assert exc.__cause__ is None
         assert exc.__context__ is None
     else:
-        raise AssertionError("forced import failure must be reported")
+        raise AssertionError('forced import errors must be reported')
     assert second_manifest.snapshot_id != previous_snapshot
     assert fixture.target_db.setting("assistant_name") == previous_name
     assert fixture.target_db.setting("portable_last_import_snapshot_id") == (
@@ -660,7 +660,7 @@ def _assert_export_error_discards_private_detail(
         except ProfileTransferError as exc:
             _assert_external_failure_is_safe(exc)
         else:
-            raise AssertionError("mocked export failure must be reported")
+            raise AssertionError('mocked export errors must be reported')
 
 
 def _assert_inspection_error_discards_private_detail(
@@ -673,7 +673,7 @@ def _assert_inspection_error_discards_private_detail(
     except ProfileTransferError as exc:
         _assert_external_failure_is_safe(exc)
     else:
-        raise AssertionError("invalid profile must be rejected")
+        raise AssertionError('profile data must satisfy the validation contract')
 
 
 def _assert_sqlite_error_discards_private_detail(
@@ -695,7 +695,7 @@ def _assert_sqlite_error_discards_private_detail(
     except ProfileTransferError as exc:
         _assert_external_failure_is_safe(exc)
     else:
-        raise AssertionError("mocked SQLite failure must be reported")
+        raise AssertionError('mocked SQLite errors must be reported')
     fixture.target_db.conn.execute("DROP TRIGGER reject_private_profile_delete")
     fixture.target_db.conn.commit()
 

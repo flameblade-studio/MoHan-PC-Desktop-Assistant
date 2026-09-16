@@ -2,8 +2,7 @@ from __future__ import annotations
 
 """Presentation-facing contracts and immutable request data.
 
-This module is the inward-facing seam used by Qt presentation code.  It owns
-no GUI objects and imports no adapter implementation; infrastructure and
+This module is the inward-facing seam used by Qt presentation code.  It keeps GUI objects and adapter implementations outside this boundary; infrastructure and
 integration implementations are supplied only by the composition root.
 """
 
@@ -16,6 +15,7 @@ lazy from dataclasses import dataclass, field
 lazy from difflib import SequenceMatcher
 lazy from pathlib import Path
 lazy from typing import Any, Protocol
+lazy from application.appearance_ports import OutfitOverlayFactory, OutfitOverlayPort as OutfitOverlayPort, no_outfit_overlay_factory
 
 lazy from domain.contracts import (
     AzureSpeechEnginePort,
@@ -179,7 +179,7 @@ def fallback_platform_services() -> PlatformServicePort:
 
 
 def default_data_dir(platform: PlatformServicePort | None = None) -> Path:
-    """Resolve the historical profile location without an outer-layer import."""
+    """Resolve the historical profile location with imports contained within this layer."""
 
     override = str(os.environ.get("MOHAN_DATA_DIR", "")).strip()
     root = Path(override).expanduser() if override else (
@@ -368,7 +368,7 @@ def create_realtime_output_config(request: RealtimeSpeechOutputConfigRequest) ->
 
 
 def sanitize_realtime_transcription_prompt(prompt: str) -> str:
-    """Keep ASR hints short so instructions cannot become a transcript."""
+    """Keep ASR hints short so instructions stay within transcript-safe bounds."""
 
     raw = (prompt or "").strip()
     if not raw:
@@ -689,6 +689,8 @@ class FaceRendererPort(Protocol):
         *,
         mask: Any | None = None,
         opacity: float = 1.0,
+        eye_state: str = "rest",
+        view_id: str | None = None,
     ) -> Any: ...
 
 
@@ -722,7 +724,7 @@ PortableProfileManagerFactory = Callable[[PresentationDatabasePort, Path], Porta
 
 
 class ProfileTransferError(RuntimeError):
-    """Safe failure shared by every portable-profile boundary."""
+    """Safe boundary result shared by every portable-profile boundary."""
 
     def __init__(self, message: str, *, safe_error: SafeError | None = None) -> None:
         self.safe_error = safe_error
@@ -730,7 +732,7 @@ class ProfileTransferError(RuntimeError):
 
 
 class _UnavailableProfileManager:
-    """Patchable fail-closed fallback for directly constructed UI tests."""
+    """Patchable protective fallback for directly constructed UI tests."""
 
     @staticmethod
     def _unavailable(*args: Any, **kwargs: Any) -> Any:
@@ -808,40 +810,13 @@ FaceRendererFactory = Callable[[], FaceRendererPort]
 VisibleWindowsProvider = Callable[[], list[dict[str, Any]]]
 
 
-class OutfitOverlayPort(Protocol):
-    """Apply the currently selected, validated appearance to one authored view."""
-
-    def apply(self, frame: Any, view_id: str) -> Any: ...
-
-    def layer_count(self, view_id: str) -> int: ...
-
-
-class _NoOutfitOverlay:
-    @staticmethod
-    def apply(frame: Any, view_id: str) -> Any:
-        del view_id
-        return frame
-
-    @staticmethod
-    def layer_count(view_id: str) -> int:
-        del view_id
-        return 0
-
-
-OutfitOverlayFactory = Callable[..., OutfitOverlayPort]
-
-
-def no_outfit_overlay_factory(**_options: object) -> OutfitOverlayPort:
-    return _NoOutfitOverlay()
-
-
 class FullBodyRendererPort(Protocol):
     """Compose one authored 24-view-ring full-body frame from a face-motion frame."""
 
     def render_view(self, view_id: str, motion: Any, **options: Any) -> Any: ...
 
 
-# ``None`` means no full-body compositor was injected (offline dashboards).
+# The sentinel identifies the offline dashboard compositor slot.
 FullBodyRendererFactory = Callable[..., FullBodyRendererPort | None]
 
 
@@ -893,7 +868,7 @@ class PortableSecretBinding:
         for secret_id in sorted(self.stores):
             value = self.stores[secret_id].load()
             if not isinstance(value, str):
-                raise TypeError("A protected secret has an invalid type.")
+                raise TypeError("A protected secret requires a supported type.")
             if value:
                 secrets[secret_id] = value
         return {
@@ -909,17 +884,17 @@ class PortableSecretBinding:
             or payload.get("version") != 1
             or not isinstance(payload.get("secrets"), Mapping)
         ):
-            raise RuntimeError("The protected-secret payload is invalid.")
+            raise RuntimeError("The protected-secret payload requires the supported format, version, and secret mapping.")
         secrets = payload["secrets"]
         assert isinstance(secrets, Mapping)
         if not set(secrets) <= set(self.stores):
-            raise RuntimeError("A protected-secret store is unavailable.")
+            raise RuntimeError("The protected-secret payload requires recognized store identifiers.")
         previous = {secret_id: self.stores[secret_id].load() for secret_id in secrets}
         attempted: list[str] = []
         try:
             for secret_id, value in secrets.items():
                 if not isinstance(secret_id, str) or not isinstance(value, str) or not value:
-                    raise RuntimeError("A protected-secret value is invalid.")
+                    raise RuntimeError("A protected-secret value requires non-empty supported content.")
                 attempted.append(secret_id)
                 self.stores[secret_id].save(value)
         except (OSError, RuntimeError, TypeError, ValueError):
@@ -934,9 +909,9 @@ class PortableSecretBinding:
                 except (OSError, RuntimeError, TypeError, ValueError):
                     rollback_complete = False
             message = (
-                "Protected-secret import failed; previous values were restored."
+                "Protected-secret import requires attention; previous values were restored."
                 if rollback_complete
-                else "Protected-secret import failed and rollback was incomplete."
+                else "Protected-secret import and rollback require attention; retry the operation."
             )
             raise RuntimeError(message) from None
 
@@ -945,7 +920,7 @@ def bind_dashboard_portable_secrets(
     dependencies: DashboardServices,
     data_path: Path,
 ) -> PortableSecretBinding:
-    """Create isolated protected stores without exposing adapter types to UI."""
+    """Create isolated protected stores while keeping adapter types inside the infrastructure boundary."""
 
     factory = dependencies.secret_store_factory
     if (
@@ -953,7 +928,7 @@ def bind_dashboard_portable_secrets(
         or dependencies.azure_hd_secret_store is None
         or factory is None
     ):
-        raise RuntimeError("Dashboard secret boundaries are incomplete.")
+        raise RuntimeError("Dashboard secret boundaries require complete stores.")
     root = Path(data_path)
     generated = {
         secret_id: factory(root / filename, description)
@@ -973,7 +948,7 @@ def bind_dashboard_portable_secrets(
         **generated,
     }
     if set(stores) != _PORTABLE_SECRET_IDS or len({id(store) for store in stores.values()}) != len(stores):
-        raise RuntimeError("Dashboard secret boundaries are invalid.")
+        raise RuntimeError("Dashboard secret boundaries require complete, distinct stores.")
     return PortableSecretBinding(stores)
 
 

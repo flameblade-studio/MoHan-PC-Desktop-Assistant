@@ -53,8 +53,22 @@
   "measurement": {
     "method": "normalized-alpha-silhouette-registration",
     "occlusion_policy": "no_coordinates_are invented for an occluded side",
-    "source_sha256": "63b9729aeb845ca2a99545625b81f9f7cb67b92d31b4c083051c832043bb8468",
+    "source_sha256": "59aafd7ee3164c011f2b94a0230ab937a5cc0cf0fbaa78bc37ed20b2d3b78a3d",
     "target_subject_height": 1406
+  },
+  "native_face_landmarks": {
+    "coordinates": null,
+    "landmark_count": 0,
+    "reason": "The origin/main yaw-090 source was restored on 2026-09-16 by owner decision; the bundled native 478-point provider was not re-run for it. The reworked yaw-090 body returns in its own pull request.",
+    "size": [
+      1024,
+      1536
+    ],
+    "source": {
+      "path": "assets/pose-atlas/v5-base/yaw-090-pitch+00.png",
+      "sha256": "59aafd7ee3164c011f2b94a0230ab937a5cc0cf0fbaa78bc37ed20b2d3b78a3d"
+    },
+    "status": "missing_not_measured"
   },
   "occluded_landmarks": [
     {

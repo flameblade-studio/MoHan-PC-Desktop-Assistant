@@ -173,19 +173,7 @@ def _approach(current: float, target: float, response: float) -> float:
 
 
 def shyness_expression(shyness_level: float) -> ExpressionShape:
-    """Map a shyness level onto a cascading micro-expression.
-
-    The cascade layers the subtle cues of a blush:
-
-    1. blush rises (``SHYNESS_BLUSH_WEIGHT``),
-    2. the eyes soften into a shy squint (``SHYNESS_GAZE_WEIGHT``
-       drives ``eye_smile``; the owner-accepted look keeps the gaze
-       itself steady — an earlier draft of this docstring promised a
-       lowered gaze that was never implemented),
-    3. the lips purse (``SHYNESS_LIP_WEIGHT``, via ``shyness_mouth``).
-
-    ``shyness_level`` is clamped to ``[0, 1]``.
-    """
+    """Map a shyness level onto a cascading micro-expression. The cascade layers the subtle cues of a blush: 1. blush rises (``SHYNESS_BLUSH_WEIGHT``), 2. the eyes soften into a shy squint (``SHYNESS_GAZE_WEIGHT`` drives ``eye_smile``; the owner-accepted look keeps the gaze itself steady), 3. the lips purse (``SHYNESS_LIP_WEIGHT``, via ``shyness_mouth``). ``shyness_level`` is clamped to ``[0, 1]``. """
 
     level = max(0.0, min(1.0, float(shyness_level)))
     return ExpressionShape(
@@ -215,14 +203,7 @@ def blend_shyness(
     frame: FaceMotionFrame,
     shyness_level: float,
 ) -> FaceMotionFrame:
-    """Blend the shyness cascade into an existing face frame.
-
-    The shyness micro-expression (blush → lowered gaze → pursed lips) is mixed
-    with the frame's existing expression by ``shyness_level`` so the companion's
-    current emotion never vanishes — she grows shy *on top of* whatever she was
-    already feeling. At ``shyness_level == 0`` the frame is returned unchanged;
-    at ``1`` the shyness cascade fully dominates the blush/gaze/lip controls.
-    """
+    """Blend the shyness cascade into an existing face frame. The shyness micro-expression (blush → lowered gaze → pursed lips) is mixed with the frame's existing expression by ``shyness_level`` so the companion's current emotion remains visible while shyness is layered over it. At ``shyness_level == 0`` the frame is returned unchanged; at ``1`` the shyness cascade fully dominates the blush/gaze/lip controls. """
 
     level = max(0.0, min(1.0, float(shyness_level)))
     if level < FLOAT_COMPARISON_EPSILON:

@@ -1,0 +1,79 @@
+{
+  "schema": "mohan.bcc8-source-install.v1",
+  "installed_pose": "cheek-rest",
+  "formal_asset_install": true,
+  "source_art_owner_approved": true,
+  "runtime_verification": "passed_24_product_renderer_frames",
+  "source_sha256": "bcc8def1ed4dd4cad179951a3733b31addaca97f81bd5211bebce5ea6ca368fe",
+  "native_body_sha256": "21bbff8f3f506276e6140b9966e4a35bbf36bffcda0289e4320524186cc5cb2b",
+  "manifest_sha256": "4d222967aca22fff58cbfb24fd3521c46410fd3cb2c453ff39587e3f6371f96b",
+  "motion_manifest_sha256": "f9d0e6f5df186215d6133f3ddc86a7e1e1186ab3e68947fe97d89d308f1c0236",
+  "gray_or_checker_composite_installed": false,
+  "old_materials_preserved": true,
+  "backup": "scratchpad/cheek-approved-formal-integration-20260912-01/before-bcc8-install",
+  "user_profile_changed": false,
+  "other_pose_assets_installed": false,
+  "composition_plan": {
+    "body": {
+      "path": "scratchpad/cheek-approved-source-body-candidate-20260912-01/native-body-v4/outputs/body-final-edge-clean.rgba.png",
+      "sha256": "21bbff8f3f506276e6140b9966e4a35bbf36bffcda0289e4320524186cc5cb2b"
+    },
+    "visibility": {
+      "path": "scratchpad/cheek-approved-source-body-candidate-20260912-01/native-body-v4/outputs/wear-visibility.png",
+      "sha256": "4c91cae792638863b3f2c2f0119e3fa9e1e99c0ffd74d0ab96d6fc225b8be52d"
+    },
+    "ordered_layers": [
+      {
+        "path": "scratchpad/cheek-approved-source-body-candidate-20260912-01/native-body-v4/parts/garment-source.rgba.png",
+        "sha256": "0b102914f558dc2c547e41183bc859188db6b340401c609145d902713ec6a8c8"
+      },
+      {
+        "path": "scratchpad/cheek-approved-source-body-candidate-20260912-01/native-body-v4/parts/native-hands-foreground.rgba.png",
+        "sha256": "59f5fc7c7efc9ddb533aa660e2be016a71c7bedc699f56ffb7ceaf2e6e76f27a"
+      }
+    ],
+    "root_visual_review": {
+      "neck_wrists": "old collar fragment removed; continuous donor neck and wrists reviewed",
+      "evidence": {
+        "path": "scratchpad/cheek-approved-source-body-candidate-20260912-01/native-body-v4/review/root-final-neck-wrists.png",
+        "sha256": "ceba044d93c3c0090c69c9f0c53413b54ab7b8fc4033771092f40c78230b8b06"
+      },
+      "hair_tail_checker_cleanup": "two limited alpha regions, RGB unchanged; before/after reviewed",
+      "hair_tail_evidence": "scratchpad/cheek-approved-source-body-candidate-20260912-01/native-body-v4/review/hair-tail-edge-before-after.png"
+    },
+    "source_art_owner_statement": "三項都採用"
+  },
+  "generated_by": "built-in image_gen; approved source extensions only",
+  "matting": "existing local BiRefNet output reused",
+  "limits": [
+    "one approved micro-open cheek mouth plus closed mouth",
+    "full CompanionWindow interaction and physics not checked",
+    "other pose art acceptance not included",
+    "native hair is part of this pose base; independent hairstyle exchange not added in this change"
+  ],
+  "runtime_receipt": "scratchpad/cheek-approved-formal-integration-20260912-01/bcc8-runtime-preview/receipt.json",
+  "runtime_receipt_sha256": "58bad73dc2f340d2ef9e1d568aa0c65aed70885f6f85298a149b01115683cdc9",
+  "validation_receipt": "scratchpad/cheek-approved-formal-integration-20260912-01/bcc8-validation.json",
+  "source_body_filename": "assets/expressions/cheek_native_bcc8.png",
+  "root_visual_review": "native face, closed/speech endpoints, three cosmetic looks, neck and wrist joining, clothing on/off reviewed",
+  "final_combination_owner_review": "not separately requested; approved sources integrated within authorized scope",
+  "generation_prompts": [
+    "scratchpad/cheek-approved-source-motion-candidate-20260912-01/generation-prompts.json",
+    "scratchpad/cheek-approved-source-body-candidate-20260912-01/generation-prompt.txt"
+  ],
+  "approved_generated_sources": {
+    "closed": {
+      "path": "./scratchpad/cheek-approved-source-motion-candidate-20260912-01/generated-closed.png",
+      "sha256": "773076d21ed3e57f0d413a4f87bf95e46edf16ae690aae0ff0640e78a1e27ffc"
+    },
+    "speech": {
+      "path": "./scratchpad/cheek-approved-source-motion-candidate-20260912-01/generated-speech.png",
+      "sha256": "9fdd299cd8fb228213fd555bbacc44a9dfb3fec0faed1a97908e703ff38cbcd3"
+    },
+    "black_tank_body": {
+      "path": "./scratchpad/cheek-approved-source-body-candidate-20260912-01/generated-native-body.png",
+      "sha256": "3883d7974eed8f2299d667c6d98d15a52608df3eda8c4ea3e0234a5f1e4bb088"
+    }
+  },
+  "cosmetic_strength_revision": "scratchpad\\halfbody-makeup-consistency-20260913-01\\cheek-final-evidence.json"
+}

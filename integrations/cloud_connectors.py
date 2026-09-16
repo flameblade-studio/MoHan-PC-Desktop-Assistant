@@ -71,10 +71,10 @@ _CLOUD_PROVIDER_ALIASES: dict[str, str] = {}
 
 
 def register_cloud_provider_alias(provider: str, *aliases: str) -> None:
-    """Allow future service adapters to join a provider without UI rewrites."""
+    """Allow future service adapters to join a provider while keeping the UI stable."""
     provider_id = provider.casefold().strip()
     if provider_id not in PROVIDERS:
-        raise ValueError(f"未知的雲端供應商：{provider}")
+        raise ValueError(f"請先註冊支援的雲端供應商：{provider}")
     for alias in (provider_id, *aliases):
         compact = re.sub(r"[\s_.\-/]+", "", alias.casefold().strip())
         if compact:
@@ -116,7 +116,7 @@ def normalize_cloud_provider(value: str, description: str = "") -> str:
         return provider
 
     # Future adapters commonly name services "google_xxx" or describe them as
-    # Google services. Accept the provider family without enumerating every API.
+    # Google services. Accept the provider family across its APIs.
     if compact.startswith("google"):
         return "google"
     if compact.startswith("microsoft"):
@@ -139,26 +139,23 @@ class OAuthError(RuntimeError):
 
 
 def _require_identified(result: object, action: str, *keys: str) -> dict[str, Any]:
-    """確認寫入類回應帶著可識別的結果，而不只是「回了一個 dict」。
+    """Require a write response to identify the resource it produced.
 
-    先前只檢查 isinstance(result, dict)：一個 2xx 的空物件 {} 會被當成
-    「已寄出／已建立／已上傳」。HTTP 可能真的執行了，也可能是代理層或
-    中間設備偽造的回應——分不出來的時候不該向使用者宣告成功。
-
-    要求至少一個識別欄位（通常是 id）。缺了就當失敗，因為我們無法指出
-    「被建立的到底是哪一個東西」。
+    A successful HTTP status with an empty object carries no resource
+    identifier for the created, sent, or uploaded resource. Require at least one identifier,
+    usually ``id``, so the UI can report a concrete result.
     """
     if not isinstance(result, dict):
-        raise OAuthError(f"{action}失敗：回應格式不符")
+        raise OAuthError(f"{action}回應需要物件格式，才能確認結果")
     if keys and not any(_is_identifier(result.get(key)) for key in keys):
         raise OAuthError(
-            f"{action}的回應缺少識別欄位（{'、'.join(keys)}），無法確認確實完成"
+            f"{action}回應需要識別欄位（{'、'.join(keys)}），才能確認完成"
         )
     return result
 
 
 def _is_identifier(value: object) -> bool:
-    """只有非空字串或整數算識別值；str(value).strip() 會放行 None／False／{}／[]。"""
+    """Treat non-empty strings and integers as resource identifiers."""
     if isinstance(value, bool):
         return False
     if isinstance(value, int):
@@ -171,26 +168,22 @@ def _require_collection(
     action: str,
     key: str,
 ) -> list[dict[str, Any]]:
-    """從清單類回應取出集合，並把「合約不符」與「真的是空的」分開。
+    """Read a collection response while preserving its contract semantics.
 
-    先前寫成 `list(result.get(key, [])) if isinstance(result, dict) else []`。
-    那讓三種完全不同的情況得到同一個答案：真的沒有結果、回應不是物件、
-    回應是物件但缺少預期的欄位。使用者看到的都是「找到 0 筆」。
-
-    API schema 漂移、代理伺服器改寫、或被破壞的 provider 回應，都會落在
-    後兩種——那是失敗，不是空集合。缺少欄位一律報錯；欄位存在但為空陣列
-    才是真正的「沒有結果」。
+    A valid empty list means that the provider found no results. An object
+    response with the expected list field lets callers distinguish that state
+    from an updated schema or another response shape that needs attention.
     """
     if not isinstance(result, dict):
-        raise OAuthError(f"{action}的回應格式不符，無法判讀")
+        raise OAuthError(f"{action}回應需要物件格式，才能判讀")
     if key not in result:
-        raise OAuthError(f"{action}的回應缺少「{key}」欄位，無法區分空結果與失敗")
+        raise OAuthError(f"{action}回應需要「{key}」欄位，才能判讀結果")
     rows = result[key]
     if not isinstance(rows, list):
-        raise OAuthError(f"{action}的「{key}」欄位不是清單")
+        raise OAuthError(f"{action}的「{key}」欄位需要清單格式")
     if any(not isinstance(row, dict) for row in rows):
-        # 無聲濾掉非物件元素會讓「schema 改了」再次偽裝成「找到 0 筆」。
-        raise OAuthError(f"{action}的「{key}」清單含有非物件元素，回應合約已改變")
+        # 保留非物件元素的合約訊號，讓 schema 更新能被明確處理。
+        raise OAuthError(f"{action}的「{key}」清單需要由物件組成，回應合約已更新")
     return rows
 
 
@@ -200,7 +193,7 @@ def _sanitized_external_error(
     *,
     http_status: int | None = None,
 ) -> str:
-    """Discard provider detail before an error crosses the cloud boundary."""
+    """Keep provider detail inside the cloud boundary after sanitization."""
     safe_input = UnicodeError() if isinstance(error, json.JSONDecodeError) else error
     return str(sanitize_error(safe_input, http_status=http_status))
 
@@ -221,7 +214,7 @@ def _callback_handler(
             body = (
                 "墨寒已收到授權結果，可以關閉此頁。"
                 if "code" in received
-                else "授權未完成，可以關閉此頁。"
+                else "授權結果尚在處理，可以關閉此頁並回到應用程式。"
             ).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/plain; charset=utf-8")
@@ -250,7 +243,7 @@ def _wait_for_callback(
                 server.handle_request()
             except (OSError, ValueError):
                 # abandon() closed the listener socket from another thread;
-                # leave the wait loop immediately instead of erroring out.
+                # return immediately so cancellation completes cleanly.
                 break
     finally:
         try:
@@ -261,13 +254,13 @@ def _wait_for_callback(
 
 def _authorization_code(received: dict[str, str], expected_state: str) -> str:
     if received.get("state") != expected_state:
-        raise OAuthError("OAuth state 驗證失敗")
+        raise OAuthError("OAuth state 與本次要求不同，請重新連線")
     if received.get("error"):
         detail = received.get("error_description") or received["error"]
         raise OAuthError(_sanitized_external_error(detail))
     code = received.get("code")
     if not code:
-        raise OAuthError("授權服務未傳回授權碼")
+        raise OAuthError("授權服務需要授權碼，請重新連線")
     return code
 
 
@@ -289,10 +282,10 @@ class OAuthPKCEFlow:
         self._abandoned = threading.Event()
         self._server: HTTPServer | None = None
         if not self.client_id:
-            raise ValueError("OAuth Client ID 不可留空")
+            raise ValueError("請提供 OAuth Client ID")
 
     def abandon(self) -> None:
-        """Cancel the loopback wait so the worker thread can exit immediately.
+        """Stop the loopback wait so the worker thread can exit immediately.
 
         Safe to call from any thread: it marks the flow abandoned and closes
         the listener socket, which wakes ``handle_request`` at once instead of
@@ -322,12 +315,12 @@ class OAuthPKCEFlow:
         server.timeout = 0.5
         self._server = server
         if self._abandoned.is_set():
-            # abandon() may have raced construction; never start waiting.
+            # abandon() may have raced construction; keep the listener closed.
             try:
                 server.server_close()
             except OSError:
                 pass
-            raise OAuthError("授權流程已取消")
+            raise OAuthError("授權流程已停止")
         redirect_uri = f"http://127.0.0.1:{server.server_port}/oauth/callback"
         parameters = self._authorization_parameters(
             redirect_uri,
@@ -350,9 +343,9 @@ class OAuthPKCEFlow:
         finally:
             self._server = None
         if self._abandoned.is_set():
-            raise OAuthError("授權流程已取消")
+            raise OAuthError("授權流程已停止")
         if not ready.is_set():
-            raise OAuthError("等待瀏覽器授權逾時")
+            raise OAuthError("瀏覽器授權仍在等待中，請重新連線")
         code = _authorization_code(received, state)
         return self._exchange(code, verifier, redirect_uri)
 
@@ -420,7 +413,7 @@ class OAuthPKCEFlow:
             raise OAuthError(exchange_failure)
 
         if not isinstance(token, dict) or not token.get("access_token"):
-            raise OAuthError("授權服務未傳回存取權杖")
+            raise OAuthError("授權服務需要存取權杖，請重新連線")
         token["obtained_at"] = int(time.time())
         token["provider"] = self.provider.provider_id
         token["client_id"] = self.client_id
@@ -434,7 +427,7 @@ def refresh_oauth_token(
     refresh_token = str(token.get("refresh_token", ""))
     client_id = str(token.get("client_id", ""))
     if not refresh_token or not client_id:
-        raise OAuthError("此授權沒有可用的更新權杖，請重新連線")
+        raise OAuthError("此授權需要更新權杖，請重新連線")
     payload = {
         "client_id": client_id,
         "refresh_token": refresh_token,
@@ -462,7 +455,7 @@ def refresh_oauth_token(
         raise OAuthError(refresh_failure)
 
     if not isinstance(updated, dict) or not updated.get("access_token"):
-        raise OAuthError("服務商未傳回新的存取權杖")
+        raise OAuthError("服務商需要提供新的存取權杖，請重新連線")
     merged = dict(token)
     merged.update(updated)
     merged["obtained_at"] = int(time.time())
@@ -569,7 +562,7 @@ class GmailConnector(JsonApiClient):
             query={"format": "full"},
         )
         if not isinstance(result, dict):
-            raise OAuthError("Gmail 郵件格式錯誤")
+            raise OAuthError("Gmail 郵件回應需要物件格式")
         snippet = result.get("snippet")
         if isinstance(snippet, str):
             result["snippet"] = sanitize_external_content(snippet)
@@ -583,13 +576,13 @@ class GmailConnector(JsonApiClient):
             {"message": {"raw": encoded}},
         )
         if not isinstance(result, dict):
-            raise OAuthError("Gmail 草稿建立失敗")
+            raise OAuthError("Gmail 草稿建立回應需要物件格式")
         return _require_identified(result, "Gmail 草稿建立", "id")
 
     def send_draft(self, draft_id: str) -> dict[str, Any]:
         result = self.request("POST", "/drafts/send", {"id": draft_id})
         if not isinstance(result, dict):
-            raise OAuthError("Gmail 寄送失敗")
+            raise OAuthError("Gmail 寄送回應需要物件格式")
         return _require_identified(result, "Gmail 寄送", "id", "threadId")
 
 
@@ -627,7 +620,7 @@ class GoogleCalendarConnector(JsonApiClient):
             event,
         )
         if not isinstance(result, dict):
-            raise OAuthError("Google Calendar 建立事件失敗")
+            raise OAuthError("Google Calendar 建立事件回應需要物件格式")
         return _require_identified(result, "Google Calendar 建立事件", "id", "htmlLink")
 
 
@@ -704,7 +697,7 @@ class GoogleDriveConnector(JsonApiClient):
             raise OAuthError(upload_failure)
 
         if not isinstance(result, dict):
-            raise OAuthError("Google Drive 上傳回應格式錯誤")
+            raise OAuthError("Google Drive 上傳回應需要物件格式")
         return _require_identified(result, "Google Drive 上傳", "id")
 
 
@@ -727,7 +720,7 @@ class MicrosoftGraphConnector(JsonApiClient):
     def create_message_draft(self, message: dict[str, Any]) -> dict[str, Any]:
         result = self.request("POST", "/me/messages", message)
         if not isinstance(result, dict):
-            raise OAuthError("Outlook 草稿建立失敗")
+            raise OAuthError("Outlook 草稿建立回應需要物件格式")
         return _require_identified(result, "Outlook 草稿建立", "id")
 
     def send_message(self, message: dict[str, Any]) -> None:
@@ -744,7 +737,7 @@ class MicrosoftGraphConnector(JsonApiClient):
     def create_event(self, event: dict[str, Any]) -> dict[str, Any]:
         result = self.request("POST", "/me/events", event)
         if not isinstance(result, dict):
-            raise OAuthError("Outlook Calendar 建立事件失敗")
+            raise OAuthError("Outlook Calendar 建立事件回應需要物件格式")
         return _require_identified(result, "Outlook Calendar 建立事件", "id", "webLink")
 
     def search_drive(self, name: str) -> list[dict[str, Any]]:
@@ -771,7 +764,7 @@ class MicrosoftGraphConnector(JsonApiClient):
             mime_type,
         )
         if not isinstance(result, dict):
-            raise OAuthError("OneDrive 上傳回應格式錯誤")
+            raise OAuthError("OneDrive 上傳回應需要物件格式")
         return _require_identified(result, "OneDrive 上傳", "id")
 
 
@@ -782,7 +775,7 @@ class GitHubConnector(JsonApiClient):
     def viewer(self) -> dict[str, Any]:
         result = self.request("GET", "/user")
         if not isinstance(result, dict):
-            raise OAuthError("GitHub 使用者資料格式錯誤")
+            raise OAuthError("GitHub 使用者資料回應需要物件格式")
         return result
 
     def repositories(self, per_page: int = 30) -> list[dict[str, Any]]:

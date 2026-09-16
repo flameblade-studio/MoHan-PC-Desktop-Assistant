@@ -21,7 +21,7 @@ LANGUAGE_COUNT = 4
 
 def read(relative: str) -> str:
     path = ROOT / relative
-    assert path.is_file(), f"missing v3.1.2 release input: {relative}"
+    assert path.is_file(), f'provide the v3.1.2 release input: {relative}'
     return path.read_text(encoding="utf-8")
 
 

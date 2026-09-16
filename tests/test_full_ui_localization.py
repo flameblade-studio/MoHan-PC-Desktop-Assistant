@@ -60,8 +60,8 @@ LANGUAGE_SELECTOR_NAMES = (
     "日本語",
 )
 
-# These are deliberately user-authored, mixed-script values. They are not
-# translations and must survive every storage and rendering path byte for byte.
+# These user-authored mixed-script values retain their exact bytes through
+# every storage and rendering path under the content-preservation contract.
 USER_SEEDS = {
     "todo_title": "Todo seed｜繁體原句｜简体原句｜English｜日本語",
     "idea_title": "Idea seed｜繁體標題｜简体标题｜English｜日本語",
@@ -98,32 +98,32 @@ EXPECTED_RUNTIME_PHRASES = {
         "管理／清除對話",
     ),
     "zh-CN": (
-        "今日待办尚空",
-        "尚未建立工作平台",
-        "这个分类目前没有记忆",
+        "今天已准备好记录第一项任务。",
+        "你的工作平台清单已准备好。",
+        "这个分类已准备好保存记忆。",
         "编辑长期记忆",
         "已封存的长期记忆",
         "管理／清除对话",
     ),
     "en": (
-        "No tasks yet today",
-        "No work platforms yet",
-        "There are no memories in this category",
+        "Today is ready for its first task.",
+        "Your work platforms list is ready.",
+        "This category is ready for memories.",
         "Edit long-term memory",
         "Archived long-term memories",
         "Manage / clear chats",
     ),
     "ja-JP": (
-        "今日の予定はまだありません",
-        "仕事プラットフォームはまだありません",
-        "この分類には記憶がありません",
+        "今日の予定を最初のタスクに使える状態です。",
+        "仕事プラットフォーム一覧を用意しました。",
+        "この分類は記憶を追加できる状態です。",
         "長期記憶を編集",
         "保管済みの長期記憶",
         "会話の管理／消去",
     ),
 }
 
-# Phrase-level rules avoid the invalid shortcut of banning all Han characters.
+# Phrase-level rules validate language while preserving legitimate Han text.
 # Shared spellings such as ``新增`` are valid Simplified Chinese too; only
 # orthographically or idiomatically Traditional residues belong in zh-CN.
 FORBIDDEN_PHRASES = {
@@ -209,9 +209,8 @@ REQUIRED_CANONICAL_COMBOS = (
     "platform_status",
 )
 
-# Voice catalogs are intentionally language- and region-dependent. Their
-# current display catalogs are tested elsewhere, so they are not cross-language
-# itemData invariants in this gate.
+# Voice catalogs vary by language and region; dedicated tests validate
+# their display contents. This gate checks shared itemData invariants.
 DYNAMIC_VOICE_COMBOS = frozenset(
     {
         "windows_voice",
@@ -438,7 +437,7 @@ def widget_editor_records(
 ) -> set[CapturedText]:
     records: set[CapturedText] = set()
     if isinstance(widget, QLineEdit):
-        # Secret fields are intentionally never copied into diagnostics.
+        # Diagnostic copies include public fields exclusively.
         if widget.echoMode() == QLineEdit.Normal:
             add_record(records, source, "text", widget.text())
         add_record(records, source, "placeholder", widget.placeholderText())
@@ -650,8 +649,8 @@ def collect_runtime_text(
             application.processEvents()
 
     visit(root)
-    # Menus may not be open during a traversal, but already-created menu titles
-    # and actions are runtime UI and must still pass the release gate.
+    # Already-created menu titles and actions are runtime UI and remain within
+    # the release gate scope, including while their menus are closed.
     for menu in root.findChildren(QMenu):
         records.update(widget_records(root, menu, scope, aliases))
     for action in root.findChildren(QAction):
@@ -826,8 +825,8 @@ def build_language_evidence(
 
 def scrub_approved_content(record: CapturedText) -> str:
     value = record.value
-    # User content is an explicit data exception, never a system-translation
-    # exception. A changed seed no longer matches and is therefore reported.
+    # User-content exceptions apply only to the exact data seeds. System
+    # translations retain full validation, and changed seeds are reported.
     for seed in USER_SEEDS.values():
         value = value.replace(seed, "")
     # MoHan's source-language character name is an intentional brand spelling.

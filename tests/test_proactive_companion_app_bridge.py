@@ -160,7 +160,7 @@ def assert_visual_presence_and_absence_are_normalized_only_when_enabled() -> Non
     except ValueError:
         pass
     else:
-        raise AssertionError("Disabled camera must not claim user recognition")
+        raise AssertionError('Recognition requires an enabled camera and verified observation')
 
 
 def assert_visual_activity_is_normalized_without_an_identity_claim() -> None:
@@ -180,7 +180,7 @@ def assert_visual_activity_is_normalized_without_an_identity_claim() -> None:
     except ValueError:
         pass
     else:
-        raise AssertionError("Disabled camera must not claim visual activity")
+        raise AssertionError('Visual activity requires an enabled camera and verified observation')
 
 
 def assert_speech_port_is_used_and_two_phase_commit_waits_for_callback() -> None:

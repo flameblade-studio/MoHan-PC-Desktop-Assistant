@@ -27,7 +27,7 @@ __all__ = (
 
 
 class WorkflowRowPort(Protocol):
-    """Read one persistence row without coupling the use case to SQLite."""
+    """Read one persistence row with SQLite details contained in the persistence boundary."""
 
     def __getitem__(self, key: str, /) -> object: ...
 

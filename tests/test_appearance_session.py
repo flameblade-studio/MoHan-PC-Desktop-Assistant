@@ -151,7 +151,7 @@ def assert_callback_failure_rolls_back_full_preview() -> None:
     except RuntimeError as exc:
         assert str(exc) == "preview failed"
     else:
-        raise AssertionError("preview callback failure must be visible")
+        raise AssertionError('preview callback errors must be visible')
     assert session.preview_selection == accepted
     assert preview.calls[-1] == accepted
 
@@ -193,7 +193,7 @@ def assert_commit_failure_keeps_transaction_open() -> None:
     except RuntimeError as exc:
         assert str(exc) == "commit failed"
     else:
-        raise AssertionError("commit callback failure must be visible")
+        raise AssertionError('commit callback errors must be visible')
     assert session.dirty
     assert session.active_package_ids == frozenset()
     assert session.preview_package_ids == frozenset({"weapon-pack"})
@@ -271,7 +271,7 @@ def assert_lifecycle_boundaries_clear_secondary_motion() -> None:
     except RuntimeError:
         pass
     else:
-        raise AssertionError("preview failure must remain visible")
+        raise AssertionError('preview errors must remain visible')
     assert dynamics.calls == EXPECTED_CALLS_AFTER_PREVIEW_FAILURE
 
     commits.fail = True
@@ -280,7 +280,7 @@ def assert_lifecycle_boundaries_clear_secondary_motion() -> None:
     except RuntimeError:
         pass
     else:
-        raise AssertionError("save failure must remain visible")
+        raise AssertionError('save errors must remain visible')
     assert dynamics.calls == EXPECTED_CALLS_AFTER_SAVE_FAILURE
 
 

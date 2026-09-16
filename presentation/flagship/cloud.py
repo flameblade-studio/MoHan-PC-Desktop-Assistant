@@ -87,8 +87,7 @@ class FlagshipCloudMixin:
             secret_note = self._t("權杖由作業系統安全加密保存，不寫入資料庫或設定檔。")
         else:
             secret_note = self._t(
-                "{platform} 的原生安全金鑰保存尚未完成實機驗證，因此 OAuth 連線暫停；"
-                "墨寒不會改用明文保存。",
+                '{platform} 的原生安全金鑰保存等待實機驗證；OAuth 連線保持暫停，權杖僅採已驗證的加密保存。',
                 platform=self.platform_services.capabilities.display_name,
             )
         intro = QLabel(
@@ -232,7 +231,7 @@ class FlagshipCloudMixin:
         except OSError as exc:
             self.cloud_status.setText(
                 self._t(
-                    "無法安全保存 OAuth 權杖：{error}",
+                    "請檢查設定後安全保存 OAuth 權杖：{error}",
                     error=safe_error_message(self.language, exc),
                 )
             )
@@ -270,7 +269,7 @@ class FlagshipCloudMixin:
         self._finish_cloud_connect_attempt()
         self.cloud_status.setText(
             self._t(
-                "{provider} 連線失敗：{error}",
+                "{provider} 連線需要注意：{error}，請檢查設定後重試",
                 provider=PROVIDERS[provider_id].display_name,
                 error=safe_error_message(self.language, error),
             )
@@ -278,7 +277,7 @@ class FlagshipCloudMixin:
     def _cloud_token(self, provider_id: str) -> str:
         raw = self._oauth_store(provider_id).load()
         if not raw:
-            raise PermissionError(self._t("尚未完成 OAuth 連線"))
+            raise PermissionError(self._t('請完成 OAuth 連線'))
         payload = json.loads(raw)
         expires_in = int(payload.get("expires_in", 0) or 0)
         obtained_at = int(payload.get("obtained_at", 0) or 0)
@@ -291,7 +290,7 @@ class FlagshipCloudMixin:
             except OSError as exc:
                 raise PermissionError(
                     self._t(
-                        "無法安全更新 OAuth 權杖：{error}",
+                        "請檢查設定後安全更新 OAuth 權杖：{error}",
                         error=safe_error_message(self.language, exc),
                     )
                 ) from exc
@@ -345,7 +344,7 @@ class FlagshipCloudMixin:
                 )
             else:
                 raise ValueError(
-                    self._t("尚未連線 Google 或 Microsoft，或工具計畫未指定供應商")
+                    self._t('請連線 Google 或 Microsoft，並在工具計畫指定供應商')
                 )
         if provider not in {"google", "microsoft"}:
             raise ValueError(self._t("此工具目前只支援 google 或 microsoft"))
@@ -606,7 +605,7 @@ class FlagshipCloudMixin:
         self.cloud_test_button.setEnabled(True)
         self.cloud_test_button.setText(self._t("測試選取服務"))
         self.cloud_status.setText(
-            self._t("測試失敗：{error}", error=message)
+            self._t('測試需要處理：{error}', error=message)
         )
     def _cloud_test_done(
         self,
@@ -624,7 +623,7 @@ class FlagshipCloudMixin:
             self._t(
                 "{name}：{status}（{detail}）",
                 name=name,
-                status=self._t("正常" if value.get("ok") else "失敗"),
+                status=self._t("正常" if value.get("ok") else "需要處理"),
                 detail=value.get("detail", ""),
             )
             for name, value in results.items()
@@ -673,8 +672,8 @@ class FlagshipCloudMixin:
                 "\n".join(lines)
                 + "\n\n"
                 + self._t(
-                    "失敗項目通常代表該 API 尚未啟用、OAuth 範圍不足，"
-                    "或網路暫時無法連線。"
+                    "需要處理的項目通常與 API 啟用狀態、OAuth 授權範圍"
+                    "或網路連線有關；請檢查後重試。"
                 ),
             )
     def _cloud_test_timed_out(self) -> None:
@@ -730,7 +729,7 @@ class FlagshipCloudMixin:
 
         value = str(record or "")
         if not value:
-            return self._t("尚未測試")
+            return self._t('等待測試')
         try:
             payload = json.loads(value)
         except ValueError:
@@ -741,7 +740,7 @@ class FlagshipCloudMixin:
             self._t(
                 "{name}：{status}（{detail}）",
                 name=str(service.get("name", "")),
-                status=self._t("正常" if service.get("ok") else "失敗"),
+                status=self._t("正常" if service.get("ok") else "需要處理"),
                 detail=str(service.get("detail", "")),
             )
             for service in payload["services"]

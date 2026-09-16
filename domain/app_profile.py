@@ -90,7 +90,7 @@ def profile_window_title(db: ProfileDatabasePort) -> str:
 
 
 def persona_for_profile(db: ProfileDatabasePort) -> str:
-    """Apply editable identity fields without changing stored user prompts."""
+    """Apply editable identity fields while preserving stored user prompts."""
     language = profile_setting(db, "ui_language")
     default_persona = default_persona_for_language(language)
     persona = (

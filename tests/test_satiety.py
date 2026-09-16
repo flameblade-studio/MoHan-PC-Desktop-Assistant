@@ -38,7 +38,7 @@ def test_satiety_is_bounded_at_one() -> None:
 
 def test_satiety_decays_over_time() -> None:
     state = SatietyState(clock=lambda: 0.0, satiety=1.0)
-    # One day later, satiety has decayed but not to zero.
+    # One day later, the decayed satiety remains positive.
     later = state.snapshot(now=24.0 * 60.0 * 60.0)
     assert 0.0 < later < 1.0
 

@@ -217,7 +217,7 @@ def assert_boundaries_reject_invalid_context() -> None:
         except ValueError:
             pass
         else:
-            raise AssertionError(f"Invalid context accepted: {changes}")
+            raise AssertionError(f'context requires validation: {changes}')
 
 
 def reminder(**changes: object) -> WellbeingReminderSnapshot:

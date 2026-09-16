@@ -60,8 +60,8 @@ def _assert_runtime_source_contract() -> None:
 
 
 def _assert_pcm_inference_contract() -> None:
-    # A high zero-crossing unvoiced segment is a consonant transition, not a
-    # fabricated vowel. Silence must remain an explicit closed-mouth state.
+    # High zero-crossing unvoiced audio represents a consonant transition.
+    # Silence retains an explicit closed-mouth state.
     noisy = b"".join(
         struct.pack("<h", 12000 if index % 2 else -12000)
         for index in range(960)
@@ -98,7 +98,7 @@ def _assert_sustain_and_vowel_change(
     window: CompanionWindow,
     cue: CueDriver,
 ) -> None:
-    # Sustaining A must not restart the interpolation every 20 ms.
+    # Sustaining A continues the existing interpolation across 20 ms frames.
     started_at = window.mouth_transition_started
     for _ in range(4):
         cue("A")

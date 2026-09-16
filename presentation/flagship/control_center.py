@@ -240,6 +240,6 @@ class FlagshipControlCenter(
 
 
 def _active_translator_factory() -> Callable[[str], object]:
-    """Honor the legacy module's patch point without depending on that module."""
+    """Honor the legacy module's patch point while keeping this module independent."""
     compatibility = sys.modules.get("flagship_ui")
     return getattr(compatibility, "FlagshipTranslator", FlagshipTranslator)

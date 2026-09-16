@@ -303,7 +303,7 @@ def test_checkpoint_disk_failure_is_diagnostic_and_leaves_no_partial(
         assert error.public_status == "failed:checkpoint-write-failed"
         assert "private path" not in error.public_status
     else:
-        raise AssertionError("Checkpoint write failure was reported as success.")
+        raise AssertionError('Checkpoint write errors must be reported accurately.')
     assert not tuple(tmp_path.rglob("*.tmp"))
 
 
@@ -327,7 +327,7 @@ def run() -> None:
     )
     assert draft.generation_record["model"] == "gpt-image-2"
     assert any(size == FULL_SIZE for _prompt, size in transport.calls)
-    assert all("OUTPUT ONLY" in prompt for prompt, _size in transport.calls)
+    assert all("every other pixel fully transparent" in prompt for prompt, _size in transport.calls)
 
     # One coherent outfit must cover all three runtime compositions. HALF has
     # seven authored portrait/gesture silhouettes; FULL_BODY and THREE_QUARTER

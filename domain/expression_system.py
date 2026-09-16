@@ -115,7 +115,7 @@ _DEEP_THINKING_MARKERS = (
 
 
 def plan_wait_expressions(prompt: str) -> tuple[WaitExpressionCue, ...]:
-    """Plan restrained reactions without treating network wait as emotion.
+    """Plan restrained reactions while keeping network wait separate from emotion.
 
     Routine prompts keep the current pose during a normal response window.
     Analytical prompts may show thinking only after a noticeable delay, while
@@ -234,7 +234,7 @@ BASE_EXPRESSIONS = frozenset({"idle", "speaking"})
 # The exclusive-favor (主上專屬寵溺) devotion bonus.  When the companion is
 # "devoted" (favor >= FAVOR_DEVOTED_THRESHOLD), every user-facing expression
 # gains this priority bonus so her fondness for the user outranks competing
-# states such as jealousy or drowsiness.  It is a small, bounded nudge — never
+# states such as jealousy or drowsiness.  It is a small, bounded nudge that
 # enough to override a safety or reminder cue, but enough to let a devoted
 # companion smile at the user even while she is tired or a little jealous.
 DEVOTION_PRIORITY_BONUS = 6

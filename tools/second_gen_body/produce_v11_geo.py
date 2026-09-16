@@ -1,23 +1,15 @@
-"""v11：真正接上幾何條件化的 24 視角量產。
+"""v11：以幾何條件化產生 24 視角。
 
-與 v10 的差別，每一項都對應今晚實測到的一個錯：
+沿用實測修正：
+- 明確傳入 height/width，保留直式畫布；v10 的 1024×1024 預設曾誘導雙人設定表。
+- strength 使用 0.85。v10 的 0.95 只有 IoU 0.325，低於純文生圖 0.396；
+  0.85 在該次量測同時達成幾何與上色條件。
+- 使用染色初始圖；灰模在 0.55～0.85 的彩度維持約 0.120，需要色彩先驗。
+- 頭頂加入低頻暗色髮罩，提供髮量先驗，再由提示詞與 LoRA 決定髮型。
+- 明確描述手臂姿勢，維持 24 視角的一致性。
 
-  顯式傳 height/width   v10 沒傳，管線退回 1024x1024 方形，方形畫布誘導模型
-                        畫成正面+側面的角色設定表，一張圖兩個人
-  strength 0.85         v10 用 0.95，而 s0.95 的剪影 IoU 只有 0.325，低於純
-                        文生圖基準 0.396——幾何完全脫鉤。0.85 是量測中唯一
-                        同時守住幾何與完成上色的一檔
-  染色初始圖            灰模在 0.55~0.85 全程輸出灰皮膚（彩度貼著灰模自身的
-                        0.120 不動）。顏色是低頻訊號，提高強度治不了，
-                        只能換掉初始圖的顏色先驗
-  頭頂髮量提示          同理，網格光頭，低頻就一路說「沒有頭髮」。實測補上
-                        低頻暗色髮罩後，輸出的髮髻與後頸規格全中
-  明確的手臂措辭        提示詞原本完全沒指定手臂，姿勢全靠模型先驗；
-                        24 視角轉盤需要各角度一致
-
-自我閘門沿用 v10 的設計並加嚴：第一張要同時通過人數、臉部、以及頸下剪影
-IoU 三關才放行後續 23 張。IoU 必須量頸部以下——控制剪影是光頭的，
-輸出長出頭髮會讓全身 IoU 無條件下降，那是指標的混淆項不是幾何退步。
+首張須通過人數、臉部及頸下剪影 IoU 三關，才放行其餘 23 張。
+IoU 採頸下區域，將新增頭髮的像素差異與身體幾何分開量測。
 """
 import os
 import sys
@@ -61,21 +53,19 @@ WIDTH, HEIGHT = 832, 1248
 STRENGTH = 0.85
 LORA_WEIGHT = 0.85
 ARMS = ("her arms hang relaxed straight down at her sides with her hands beside "
-        "her thighs, arms not crossed, hands not touching each other")
+        "her thighs, each arm relaxed along its own side and each hand resting separately")
 NEG_ARMS = ("crossed arms, folded arms, hands clasped, hands together, "
             "arms raised, hands on hips, ")
 
 
 def orientation(yaw: int) -> str:
-    """粗方位交給提示詞，細角度交給幾何條件化。
+    """提示詞描述粗方位，幾何條件化固定細角度。
 
-    v9 已量測到提示詞做不到 15/30/45 這種細分（+015 到 +105 全擠在同一個
-    鼻眼偏移值），但它做得到正面／四分之三／側面／背面這種粗分——v9 的
-    yaw+000 就是正面。而幾何條件化恰好相反：它守得住細角度，卻分不出正反，
-    因為 A-pose 的正反剪影幾乎一樣。
-
-    第一次跑 v11 時我把方位措辭整個拿掉，結果 yaw+000 的正面控制圖產出背面，
-    剪影 IoU 還給了 0.573「通過」。兩者要一起用，缺一不可。
+    v9 的 +015 至 +105 鼻眼偏移集中在同一群，顯示細角度需由幾何補足；
+    其 yaw+000 正面結果則支持保留正面與側背面的明確方位措辭。
+    A-pose 的正反剪影相近，因此兩種控制方式共同使用。
+    首輪 v11 在方位措辭省略後產出背面，當時 IoU 為 0.573；
+    此實測說明完整驗證需同時包含幾何與可見部位朝向。
     """
     angle = abs(yaw)
     if angle <= FRONT_MAX:
@@ -95,7 +85,7 @@ def orientation(yaw: int) -> str:
         return ("seen from behind at an angle, her back toward the camera, "
                 "her face turned away")
     return ("seen directly from behind, her back to the camera, "
-            "the nape of her neck visible, her face not visible at all")
+            "the nape of her neck visible, her face fully turned away behind the head")
 
 
 def orientation_negative(yaw: int) -> str:
@@ -129,7 +119,7 @@ def control_mask(folder: Path) -> np.ndarray:
 
 def below_head_iou(path: Path, control: np.ndarray) -> float:
     # 尺寸不一致會讓廣播直接拋例外，把整批量產在中途炸掉。閘門是拿來擋問題的，
-    # 自己不該是新的失敗點——尺寸不符就先縮到控制遮罩的尺寸再比。
+    # 比較前先將輸入對齊控制遮罩尺寸，讓指標使用一致的畫布。
     opened = Image.open(path).convert("RGB")
     if opened.size != (control.shape[1], control.shape[0]):
         opened = opened.resize((control.shape[1], control.shape[0]), Image.LANCZOS)
@@ -170,11 +160,11 @@ def face_metrics(path: Path) -> tuple[float, float]:
 
 
 def figure_count(path: Path) -> int:
-    """數畫面裡有幾個人。不要用灰階——淺膚色與淺灰背景的亮度只差約 10。
+    """以 RGB 色距與連通分量計算人物數量。
 
-    v10 的版本用灰階、門檻 18，結果把一個人切成頭與身體兩塊、數成兩人：
-    頸部膚色亮度約 205，背景 194，差 11 落在門檻內被判成背景。
-    改用 RGB 色距，並把水平範圍重疊的分量視為同一個人（頭與軀幹必然重疊）。
+    淺膚色與淺灰背景亮度接近：頸部約 205、背景 194，差值 11。
+    v10 的灰階門檻 18 曾將同一人物分為頭與身體兩塊。
+    此版採 RGB 色距，並將水平範圍重疊的分量歸為同一人物。
     """
     rgb = cv2.cvtColor(cv2.imread(str(path)), cv2.COLOR_BGR2RGB).astype(np.int16)
     corners = np.concatenate([
@@ -215,7 +205,7 @@ def check(path: Path, yaw: int, control: np.ndarray) -> tuple[str, bool]:
     if geometry < GEOMETRY_IOU_MIN:
         problems.append(f"頸下 IoU {geometry:.3f} 過低（純 t2i 基準 0.364）")
     # 剪影 IoU 分不出正反——A-pose 的正反剪影幾乎相同，v11 初版就是正面控制圖
-    # 產出背面而 IoU 仍給 0.573「通過」。臉部「有沒有偵測到」也分不出，
+    # 背面輸出仍得到 IoU 0.573；臉部偵測結果也需要補充朝向證據，
     # YuNet 會在背面的髮髻上偵測出臉。只有眼距佔臉寬有乾淨間隔。
     if abs(yaw) <= FRONT_MAX and eye_ratio < EYE_SPAN_FRONT_MIN:
         problems.append(f"正面視角的眼距比 {eye_ratio:.3f} 過低（疑似正反顛倒）")
@@ -234,7 +224,7 @@ def main() -> None:
     )
 
     # 排序刻意把原生視角（yaw <= 0 與 180）排在前面。那 13 張在「直接生成 24 張」
-    # 與「生 13 張再水平鏡像出 +yaw」兩種方案下都需要，先跑完就不會做白工，
+    # 與「生 13 張再水平鏡像出 +yaw」兩種方案共用，先完成可供兩者沿用，
     # 也不必在出跑前先要到鏡像與否的裁決。
     folders = sorted(
         (f for f in BUNDLES.iterdir() if f.is_dir()),

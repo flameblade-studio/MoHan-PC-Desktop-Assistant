@@ -1,6 +1,6 @@
 """Fail-closed package audit and rebuild manifest for the 24x25 PoseAtlas.
 
-This command never edits artwork.  It inventories the registered full-canvas
+This command reads artwork and writes audit evidence. It inventories the registered full-canvas
 RGBA layers, applies pixel-safety checks, consumes the semantic audit, and
 emits an actionable A/B/C rebuild manifest.  Class A is mechanically repairable
 from existing pixels/masks, B requires re-segmentation from an approved master
@@ -44,7 +44,7 @@ ALPHA_VISIBLE = 16
 SCHEMA = "mohan.full-body-layer-pack-audit.v1"
 MANIFEST_SCHEMA = "mohan.full-body-layer-rebuild-manifest.v1"
 
-# Neutral static authorities legitimately have no exposed teeth.  Teeth are
+# Neutral static authorities keep their teeth covered.  Teeth are
 # synthesized only after aperture opens; inventing pixels here would be wrong.
 EXPECTED_NEUTRAL_EMPTY = frozenset({"teeth_tongue"})
 LIP_LAYERS = frozenset({"lip_upper", "lip_lower"})
@@ -146,13 +146,13 @@ def audit_pack(asset_root: Path, semantic_report: Path) -> tuple[dict[str, Any],
             if hidden:
                 findings.append(Finding("A", "transparent_rgb_nonzero", view_id, layer, str(path), {
                     "pixel_count": hidden,
-                    "repair": "set RGB=0 wherever alpha=0 without changing alpha",
+                    "repair": "set RGB=0 wherever alpha=0 and preserve alpha",
                 }))
 
             edges = _edge_counts(image)
             if any(edges.values()):
                 edge_metrics[f"{view_id}_{layer}"] = edges
-                # A touched canvas boundary cannot be reconstructed by padding;
+                # A touched canvas boundary requires reconstruction from source art;
                 # it needs a master view with safe margin and re-segmentation.
                 findings.append(Finding("B", "visible_pixels_touch_canvas_edge", view_id, layer, str(path), edges))
 
@@ -200,7 +200,7 @@ def audit_pack(asset_root: Path, semantic_report: Path) -> tuple[dict[str, Any],
                 "actions": [asdict(f) for f in findings if f.classification == "A"],
             },
             "B": {
-                "meaning": "must re-segment/repaint from an approved 24-view master; never mirror or hallucinate",
+                "meaning": "re-segment/repaint exclusively from an approved 24-view master and its observed anatomy",
                 "actions": [asdict(f) for f in findings if f.classification == "B"],
             },
             "C": {
@@ -211,7 +211,7 @@ def audit_pack(asset_root: Path, semantic_report: Path) -> tuple[dict[str, Any],
         "promotion_gate": [
             "run tools/audit_layered_full_body_semantics.py and require exit 0 after C exceptions are applied",
             "run tools/audit_full_body_layer_pack.py and require exit 0",
-            "do not promote generated layers while any class A or B action remains",
+            "promote generated layers only after every class A and B action is complete",
         ],
     }
     return audit, manifest

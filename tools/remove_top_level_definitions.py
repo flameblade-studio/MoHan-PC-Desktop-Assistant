@@ -52,7 +52,7 @@ def remove_definitions(
     *,
     class_name: str | None = None,
 ) -> None:
-    """Remove complete definitions without reformatting unaffected lines."""
+    """Remove complete definitions while preserving formatting of surrounding lines."""
 
     source_bytes = path.read_bytes()
     source = source_bytes.decode("utf-8")

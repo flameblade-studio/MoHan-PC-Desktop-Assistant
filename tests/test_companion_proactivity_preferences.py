@@ -51,7 +51,7 @@ def assert_threshold_and_type_invariants() -> None:
         except (TypeError, ValueError):
             pass
         else:
-            raise AssertionError(f"invalid preferences accepted: {changes!r}")
+            raise AssertionError(f'preferences require validation: {changes!r}')
 
 
 def assert_portable_round_trip_and_unknown_field_compatibility() -> None:

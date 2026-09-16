@@ -28,7 +28,7 @@ class BoundedAudioQueue[T](queue.Queue[T]):
         self._peak_depth = 0
 
     def offer(self, item: T, *, keep_latest: bool) -> bool:
-        """Insert without blocking, with a caller-selected overflow policy."""
+        """Insert with a caller-selected overflow policy and nonblocking semantics."""
         try:
             super().put_nowait(item)
         except queue.Full:
@@ -47,7 +47,7 @@ class BoundedAudioQueue[T](queue.Queue[T]):
             except queue.Full:
                 # A concurrent producer can win the freed slot between our
                 # get_nowait and this put.  A non-blocking API with an
-                # explicit overflow policy must never leak queue.Full into
+                # explicit overflow policy keeps queue.Full inside
                 # the audio callback thread — retry the whole policy instead.
                 return self.offer(item, keep_latest=keep_latest)
         depth = self.qsize()
@@ -57,7 +57,7 @@ class BoundedAudioQueue[T](queue.Queue[T]):
         return True
 
     def force_stop(self, sentinel: T) -> None:
-        """Guarantee that a blocked consumer can observe shutdown."""
+        """Guarantee that a waiting consumer can observe shutdown."""
         while True:
             try:
                 super().put_nowait(sentinel)
@@ -94,7 +94,7 @@ class PcmPacketizer:
 
     def feed(self, data: bytes) -> list[bytes]:
         if len(data) % self.frame_bytes:
-            raise ValueError("PCM network delta contains an incomplete frame")
+            raise ValueError("PCM network delta requires a complete frame")
         with self._lock:
             self._pending.extend(data)
             chunks: list[bytes] = []

@@ -1,9 +1,8 @@
 """Build the deterministic yaw+000 25-layer golden template.
 
-The builder never synthesizes pixels.  It transfers the existing layer masks
+The builder uses authority pixels exclusively.  It transfers the existing layer masks
 to the user-approved RGBA authority and re-cuts authority pixels into mutually
-exclusive layers, so recomposition is lossless and checkerboard pixels can
-never enter RGB.
+exclusive layers, giving exact recomposition and RGB from the authority alone.
 """
 
 from __future__ import annotations
@@ -214,7 +213,7 @@ def _remap_face_candidates(
     try:
         target = _face_evidence(target_source)
     except ValueError:
-        # Rear views have no detectable face; their face-detail layers are
+        # Rear views face away from the camera; their face-detail layers are
         # licensed empty (speech-mouth and back-view rulings).
         h, w = foreground.shape
         for layer in FACE_REMAP_LAYERS:
@@ -252,11 +251,11 @@ def _warped_layer_candidates(
         source = _rgba(layer_dir / f"{view}_{layer}.png")
         candidates[layer] = _warp_mask(source[:, :, 3] > 0, matrix, (w, h)) & foreground
 
-    # The neutral frame intentionally has no visible teeth/tongue.
+    # The neutral frame keeps teeth/tongue covered.
     candidates["teeth_tongue"][:] = False
 
     # Ornament is rigid jewellery only.  Explicitly subtract the facial skin
-    # support and a two-pixel guard band so it can never carry face pixels.
+    # support and a two-pixel guard band that preserves exclusive facial ownership.
     face_support = candidates["base"] | candidates["jaw"]
     face_guard = cv2.dilate(face_support.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
     candidates["ornament"] &= ~face_guard
@@ -305,7 +304,7 @@ def _rebuild_mouth_partitions(
     # Rebuild the closed neutral mouth deterministically from authority pixels.
     # The current upper/lower masks are identical; split the shared support at
     # its vertical median, then reserve the darkest central strip as the oral
-    # cavity.  This yields distinct upper/lower layers without invented pixels.
+    # cavity.  This yields distinct upper/lower layers using only source pixels.
     mouth = (candidates["lip_upper"] | candidates["lip_lower"] |
              candidates["corner_left"] | candidates["corner_right"])
     x0, y0, x1, y1 = _bbox(mouth)
@@ -333,7 +332,7 @@ def _rebuild_mouth_partitions(
             lower = inner & (yy >= y_mid)
     kept_oral, upper, lower = _clamp_oral_to_lips(oral, upper, lower, xx, yy, y_mid)
     if not upper.any() or not lower.any() or not corner_left.any() or not corner_right.any():
-        raise RuntimeError("failed to partition mouth support")
+        raise RuntimeError("mouth support partition requires correction")
     candidates["oral_cavity"] = kept_oral
     candidates["lip_upper"] = upper
     candidates["lip_lower"] = lower
@@ -347,8 +346,8 @@ def _exclusive_ownership(
 ) -> dict[str, np.ndarray]:
     h, w = foreground.shape
     # Exclusive ownership is required for lossless alpha recomposition.
-    # Fine features win over skin/hair/body.  Missing one-pixel authority edge
-    # samples caused by registration are assigned to a deterministic substrate.
+    # Fine features win over skin/hair/body.  Unclaimed one-pixel authority edge
+    # samples after registration are assigned to a deterministic substrate.
     # Facial features and skin claim their pixels before the ornament: the
     # hairpin may overlap the face in profile views, and letting it win there
     # packages face skin inside the rigid-adornment layer.  The ornament still
@@ -421,11 +420,11 @@ def build(
     authority_path: Path | None = None,
     empty_layers: tuple[str, ...] = (),
 ) -> dict:
-    # Generation-1 paths are structural here, not a stale default: the builder
+    # Generation-1 paths provide the explicit structural reference: the builder
     # warps the v4-layered ownership masks from the v4 canonical onto whatever
     # ``authority_path`` names.  v5-base-layered was cut by passing
     # ``--authority assets/pose-atlas/v5-base/{view}.png``; the runtime root
-    # lives in domain.constants and is not consulted by this tool.
+    # lives in domain.constants, while this tool uses the explicit reference paths.
     canonical_path = repo / "assets/pose-atlas/v4" / f"{view}.png"
     if authority_path is None:
         authority_path = repo / "assets/pose-atlas/v4-working" / (
@@ -449,7 +448,7 @@ def build(
     _remap_face_candidates(
         candidates, repo, layer_dir, view, foreground, authority_path=authority_path
     )
-    # 權威若沒有某些實體層（二代素體無袖），把那些候選歸零：_exclusive_ownership
+    # 權威宣告空實體層時（二代素體無袖），對應候選歸零：_exclusive_ownership
     # 會把無主的前景像素交還 body。否則 v4 的袖遮罩會把手臂皮膚切進 sleeve_*，
     # 而渲染器的 _sleeve_lift 會隨手勢把袖層獨立平移——皮膚跟著離開身體。
     for layer in empty_layers:
@@ -473,8 +472,8 @@ def build(
             candidates["oral_cavity"] = np.zeros_like(candidates["oral_cavity"])
 
     # The legacy ornament mask also contains fragments of the facial feature
-    # masks.  Ornament owns only rigid jewellery: it must never pre-empt eyes,
-    # brows, blush or mouth pixels.  Subtract the deterministic feature union
+    # masks. Ornament owns only rigid jewellery; eyes, brows, blush and mouth
+    # retain their dedicated ownership. Subtract the deterministic feature union
     # after the eye/mouth partitions have been rebuilt so every removed pixel
     # is retained by its semantic facial layer during exclusive ownership.
     facial_features = np.logical_or.reduce([
@@ -513,7 +512,8 @@ def build(
         "face_visible": face_visible,
         "authority": {
             "path": str(authority_path), "sha256": _sha256(authority_path),
-            "qualification": "user-approved, Pillow RGBA, alpha-clean v3",
+            "qualification": "RGBA source; visual approval must be verified separately",
+            "visual_approval_established_by_tool": False,
         },
         "registration": {"method": "alpha-bbox affine mask transfer", "matrix": matrix.tolist()},
         "actions": {

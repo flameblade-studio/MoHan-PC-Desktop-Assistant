@@ -20,8 +20,9 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      # This target workflow checks out only the trusted base branch.  It never
-      # executes files supplied by the pull request while holding write access.
+      # This target workflow checks out only the trusted base branch.  Its
+      # write-capable step executes the trusted base tools and keeps pull
+      # request files outside that execution boundary.
       - name: Check out trusted base tools
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:

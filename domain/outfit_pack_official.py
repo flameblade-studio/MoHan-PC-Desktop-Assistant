@@ -1,12 +1,11 @@
 """Official appearance packs shipped with the app and the ``builtin`` sentinel they answer.
 
-A fresh profile (no ``active.json``) and ``restore_builtin_outfit`` both record
+A fresh profile with the ``active.json`` sentinel and ``restore_builtin_outfit`` both record
 ``builtin/builtin/builtin`` for every selection slot.  That sentinel keeps its
-built-in semantics — never removable, always restorable — but what it renders
+built-in semantics — always restorable — but what it renders
 is decided here: while the official default outfit pack ships from the
 official pack root, the garment, hairstyle and headwear slots resolve to its
-default ensemble and the makeup slot resolves to the built-in makeup pack.  When
-an official archive is absent (a stripped build) the slot falls back to the
+default ensemble and the makeup slot resolves to the built-in makeup pack.  When the official archive is outside a stripped build the slot falls back to the
 bare second-generation base.
 
 This module is a leaf: ``domain.outfit_pack`` imports it and hands it the
@@ -22,12 +21,19 @@ lazy from typing import Protocol
 
 BUILTIN_MAKEUP_PACK_ID = "mohan.makeup.builtin"
 BUILTIN_MAKEUP_ITEM_ID = "mohan-signature"
-BUILTIN_MAKEUP_VARIANTS = ("classic", "light")
+BUILTIN_MAKEUP_VARIANTS = ("classic", "light", "glamorous")
+# Keep the persisted/default variant order stable while presenting the menu from
+# the lightest look to the strongest look.
+BUILTIN_MAKEUP_MENU_VARIANTS = ("light", "classic", "glamorous")
+# Classic and light remain visible for profiles that predate the optional
+# glamorous material.  Optional variants enter the menu only when the official
+# archive actually declares them.
+BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS = ("light", "classic")
 OFFICIAL_OUTFIT_PACK_ID = "mohan.official.blue-white-hanfu"
 OFFICIAL_OUTFIT_ENSEMBLE_ID = "blue-white-hanfu"
 # The slots the official default ensemble fills; accessories stay bare by default.
 OFFICIAL_OUTFIT_CATEGORIES = frozenset({"garment", "hairstyle", "headwear"})
-# Ids reserved for archives under the official pack root; a user import may never shadow them.
+# Ids reserved for archives under the official pack root; user imports remain separate from them.
 OFFICIAL_PACK_IDS = frozenset({OFFICIAL_OUTFIT_PACK_ID, BUILTIN_MAKEUP_PACK_ID})
 BARE_SELECTION = ("builtin", "none", "none")
 
@@ -54,7 +60,7 @@ class EnsembleLike(Protocol):
 
 
 def official_outfit_ensemble(ensembles: Iterable[EnsembleLike]) -> EnsembleLike | None:
-    """The official default ensemble among the installed ones; ``None`` on a stripped build."""
+    """The official default ensemble among the installed ones; the sentinel identifies a stripped build."""
     return next(
         (
             ensemble

@@ -6,7 +6,7 @@ built-in classic makeup, rendered by ``tools/render_marketing_portraits.py``)::
 
     py -3.15 tools/build_installer_artwork.py --source docs/media/portraits/idle_front.png
 
-Without ``--source`` the bare runtime sprite ``assets/expressions/idle_front.png``
+With the default source setting the bare runtime sprite ``assets/expressions/idle_front.png``
 is used, which is what the artwork looked like before the composed portraits.
 """
 

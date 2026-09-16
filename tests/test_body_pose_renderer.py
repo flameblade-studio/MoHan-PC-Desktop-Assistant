@@ -277,7 +277,7 @@ def assert_publish_failure_preserves_complete_previous_frame() -> None:
     except RuntimeError as exc:
         assert str(exc) == "publish failed"
     else:
-        raise AssertionError("publisher failure must remain visible")
+        raise AssertionError('publisher errors must remain visible')
     assert engine.current_frame == good
     assert publisher.frames[-1] == good
 

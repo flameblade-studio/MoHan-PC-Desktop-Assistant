@@ -12,7 +12,7 @@ lazy from domain.outfit_pack import (
     inspect_outfit_pack,
 )
 lazy from domain.outfit_pack_assets import validated_asset_dimensions
-lazy from domain.outfit_pack_makeup import verify_makeup_layers
+lazy from domain.outfit_pack_makeup import MakeupSafeRegion, verify_makeup_layers
 
 
 def _asset_entries(value: object) -> tuple[dict[str, object], ...]:
@@ -48,7 +48,7 @@ def _sealed_manifest(
     try:
         manifest = json.loads(source_manifest.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError):
-        raise OutfitPackError("Invalid UTF-8 outfit authoring manifest.") from None
+        raise OutfitPackError("Provide a supported UTF-8 outfit authoring manifest.") from None
     if not isinstance(manifest, dict):
         raise OutfitPackError("Outfit authoring manifest must be an object.")
     assets: dict[str, bytes] = {}
@@ -68,6 +68,7 @@ def _write_deterministic_archive(
     output: Path,
     manifest: dict[str, object],
     assets: dict[str, bytes],
+    makeup_regions: frozendict[str, MakeupSafeRegion] | None = None,
 ) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_name(f".{output.name}.building")
@@ -96,7 +97,7 @@ def _write_deterministic_archive(
                 archive.writestr(info, members[name])
         inspect_outfit_pack(temporary)
         # A sealed pack must already pass the makeup pixel gate the importer applies.
-        verify_makeup_layers(temporary)
+        verify_makeup_layers(temporary, makeup_regions)
         os.replace(temporary, output)
     except BaseException:
         if temporary.is_file():
@@ -108,8 +109,15 @@ def build_outfit_pack(
     source_manifest: Path,
     asset_root: Path,
     output: Path,
+    *,
+    makeup_regions: frozendict[str, MakeupSafeRegion] | None = None,
 ) -> Path:
-    """Seal, validate and atomically create one complete v2 outfit pack."""
+    """Seal and validate a v2 pack against the supplied body's calibration.
+
+    Normal authoring uses the installed calibration. An isolated body rebuild
+    may supply its own rig-derived regions; the same pixel gate still runs,
+    and import/runtime independently validate against their installed body.
+    """
 
     output = Path(output)
     if output.suffix != ".mohan-outfit":
@@ -117,5 +125,5 @@ def build_outfit_pack(
     if output.exists():
         raise OutfitPackError("Refusing to overwrite an existing outfit pack.")
     manifest, assets = _sealed_manifest(Path(source_manifest), Path(asset_root))
-    _write_deterministic_archive(output, manifest, assets)
+    _write_deterministic_archive(output, manifest, assets, makeup_regions)
     return output

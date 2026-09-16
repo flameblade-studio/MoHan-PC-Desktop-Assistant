@@ -1,15 +1,15 @@
-"""能見度月報：一鍵抓齊 GitHub 流量並與 P0 基準對照（issue #129）。
+"""能見度月報：擷取 GitHub 流量並與 P0 基準對照（issue #129）。
 
-為什麼存在：GitHub 流量數據只保留 14 天，不主動記錄就永久消失；而
-clone 數已被證實幾乎全是機器人（基準：3,934 次 clone 對 21 個真人訪客），
-所以每一項數字都必須標明可信度，不能直接當成效。
+GitHub 流量資料保留 14 天，定期記錄可建立長期對照。
+基準為 3,934 次 clone 與 21 個真人訪客；clone 主要反映機器人活動，
+各指標須標示可信度，成效另以經驗證的使用者互動衡量。
 
 用法：
     py -3.15 tools/visibility_monthly_report.py            # 印出月報 markdown
-    py -3.15 tools/visibility_monthly_report.py --post     # 直接留言到 issue #129
+    py -3.15 tools/visibility_monthly_report.py --post     # 留言至 issue #129
 
-需要 gh CLI 已登入且對 repo 有 push 權限（traffic API 的最低要求）。
-Ko-fi 無公開 API，該兩欄固定輸出待填佔位，由擁有者手動補。
+使用已登入且具 repo push 權限的 gh CLI，以符合 traffic API 條件。
+Ko-fi 兩欄保留人工填寫位置，由擁有者依頁面資料補齊。
 """
 from __future__ import annotations
 

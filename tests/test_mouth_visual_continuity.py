@@ -26,6 +26,12 @@ MIN_DIRECT_DIFFERENCE = 0.5
 ADJACENT_RATIO = 0.82
 MIN_ADJACENT_DIFFERENCE = 0.05
 MIN_ADJACENT_CHANGED = 8
+# A reviewed pose with native complete mouth photographs switches endpoints
+# discretely at DISCRETE_SPEECH_SWITCH_PROGRESS: the sweep shows the rest
+# endpoint, the one open endpoint shared by A/O/I, then rest again, and a
+# blended frame would expose both lip contours at once.
+DISCRETE_ENDPOINT_COUNT = 2
+DISCRETE_ENDPOINT_RUNS = 3
 
 
 def region_signature(image: QImage, rect: QRect) -> tuple[int, ...]:
@@ -107,6 +113,31 @@ def _configure_window(window: CompanionWindow, app: QApplication) -> None:
     window._set_expression("idle", fade=False)
     window.eye_overlay.show()
     assert not window.eye_overlay.isHidden()
+
+
+def _discrete_speech_active(window: CompanionWindow) -> bool:
+    capability = getattr(window.face_renderer, "supports_discrete_speech", None)
+    base = window.speech_gesture_expression or window.speech_closed_expression
+    return callable(capability) and bool(capability(base))
+
+
+def _signature_runs(signatures: list[tuple[int, ...]]) -> list[tuple[int, ...]]:
+    runs: list[tuple[int, ...]] = []
+    for signature in signatures:
+        if not runs or runs[-1] != signature:
+            runs.append(signature)
+    return runs
+
+
+def _assert_discrete_endpoints(signatures: list[tuple[int, ...]], label: str) -> None:
+    runs = _signature_runs(signatures)
+    assert len(set(signatures)) == DISCRETE_ENDPOINT_COUNT, (
+        f"{label} shows exactly the rest and the open reviewed endpoint"
+    )
+    assert len(runs) == DISCRETE_ENDPOINT_RUNS, (
+        f"{label} switches endpoints once in each direction with no blended frame"
+    )
+    assert runs[0] == runs[-1], f"{label} returns to the rest endpoint after CLOSED"
 
 
 def _corner_regions(mouth_rect: QRect) -> dict[str, QRect]:
@@ -192,7 +223,7 @@ def _assert_speech_expression_layers(
             reference.mouth_rect,
         ) == 0, f"{expression} changed pixels outside the cheek mouth clip"
     assert len(mouth_signatures) >= MIN_MOUTH_SIGNATURES, (
-        "complete moving corners must not flatten the A/I/U/E/O shapes"
+        'Moving corners must preserve distinct A/I/U/E/O shapes'
     )
 
 
@@ -205,7 +236,7 @@ def _capture_transition_frames(window: CompanionWindow) -> list[QImage]:
     with patch("time.perf_counter", side_effect=lambda: clock[0]):
         for index, vowel in enumerate(vowels):
             if index == VOWEL_REPEAT_COUNT:
-                # A delayed callback must not redirect a live mouth to a new face.
+                # A delayed callback preserves the face currently owning live speech.
                 window.idle_pose = "front"
             window._audio_viseme_cue(0.62 if vowel != "CLOSED" else 0.0, vowel)
             if index == 0:
@@ -226,17 +257,25 @@ def _assert_transition_integrity(
     frames: list[QImage],
     reference: MouthReference,
 ) -> None:
-    # The layered renderer composes the whole half-body portrait continuously,
-    # so the mouth region must still vary across transitions. The eye and
-    # outside-mouth "frozen region" contracts no longer apply because the whole
-    # frame is recomposed from 25 layers each tick.
-    assert len(
-        {region_signature(frame, reference.mouth_rect) for frame in frames}
-    ) >= MIN_TRANSITION_SIGNATURES
-    for side, region in reference.corner_regions.items():
-        assert len({region_signature(frame, region) for frame in frames}) >= MIN_CORNER_SIGNATURES, (
-            f"the {side} speech corner remained fixed during transitions"
-        )
+    mouth_signatures = [region_signature(frame, reference.mouth_rect) for frame in frames]
+    if _discrete_speech_active(window):
+        # Native complete mouth endpoints own the chin-rest pose: the whole
+        # mouth, corners included, steps between the reviewed photographs.
+        _assert_discrete_endpoints(mouth_signatures, "the mouth")
+        for side, region in reference.corner_regions.items():
+            corner_signatures = [region_signature(frame, region) for frame in frames]
+            assert len(_signature_runs(corner_signatures)) == DISCRETE_ENDPOINT_RUNS, (
+                f"the {side} speech corner follows the reviewed endpoints"
+            )
+    else:
+        # The renderer recomposes all 25 half-body layers each tick. The mouth
+        # region varies through transitions; eye and surrounding regions follow
+        # the current complete composition contract.
+        assert len(set(mouth_signatures)) >= MIN_TRANSITION_SIGNATURES
+        for side, region in reference.corner_regions.items():
+            assert len({region_signature(frame, region) for frame in frames}) >= MIN_CORNER_SIGNATURES, (
+                f"the {side} speech corner remained fixed during transitions"
+            )
     assert window._active_speech_pose_suffix() == ""
 
 
@@ -245,15 +284,14 @@ def _assert_transition_smoothness(
     frames: list[QImage],
     mouth_rect: QRect,
 ) -> None:
-    # The layered renderer drives the mouth continuously from motion.mouth
-    # (aperture/width/rounding/jaw), so the mouth region must vary across the
-    # transition frames. The legacy "adjacent-frame difference below a fixed
-    # ratio" contract no longer applies because the whole half-body is
-    # recomposed from 25 layers each tick.
-    mouth_signatures = {
-        region_signature(frame, mouth_rect) for frame in frames
-    }
-    assert len(mouth_signatures) >= MIN_TRANSITION_SIGNATURES
+    # motion.mouth drives aperture, width, rounding, and jaw continuously.
+    # The 25-layer composition must vary through transition frames, with
+    # continuity assessed under the current renderer contract.
+    mouth_signatures = [region_signature(frame, mouth_rect) for frame in frames]
+    if _discrete_speech_active(window):
+        _assert_discrete_endpoints(mouth_signatures, "the mouth")
+    else:
+        assert len(set(mouth_signatures)) >= MIN_TRANSITION_SIGNATURES
     assert window.eye_overlay.isHidden()
 
 

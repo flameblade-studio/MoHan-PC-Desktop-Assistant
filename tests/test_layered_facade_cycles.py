@@ -14,6 +14,12 @@ lazy from tools.check_layered_imports import (
     discover_modules,
     legacy_root_ownership,
 )
+lazy from tools.local_artifact_roots import (
+    LOCAL_ARTIFACT_ROOTS,
+    is_local_artifact_path,
+    local_artifact_import_root,
+)
+lazy from tools.migrate_python315_imports import python_files
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 LAYER_NAMES = (
@@ -29,7 +35,7 @@ LAYER_NAMES = (
 #   MAX_NEW_LAYER_MODULE_LINES.
 # * Modules absent from LAYER_MODULE_LINE_BASELINE are new and must stay
 #   within MAX_NEW_LAYER_MODULE_LINES.
-# * Baselined modules may never exceed min(baseline, MAX_LAYER_MODULE_LINES),
+# * Baselined modules stay at or below min(baseline, MAX_LAYER_MODULE_LINES),
 #   and the baseline only moves down: whoever slims a module must lower its
 #   entry to the new measured count in the same PR (and say so in the PR
 #   body); entries at or below MAX_NEW_LAYER_MODULE_LINES must be removed so
@@ -41,35 +47,37 @@ MAX_NEW_LAYER_MODULE_LINES = 800
 # the gate's own counting rule
 # (utf-8-sig decode + str.splitlines()).
 LAYER_MODULE_LINE_BASELINE = {
-    "application.presentation_ports": 1_059,
-    "domain.outfit_pack": 930,
+    "application.presentation_ports": 1_034,
+    "domain.outfit_pack": 868,
     "infrastructure.db": 1_195,
     "infrastructure.profile_transfer": 1_070,
     "integrations.azure_speech": 864,
     "integrations.realtime_voice": 878,
     "integrations.speech": 1_195,
-    "presentation.companion_core": 1_130,
-    "presentation.companion_face_animation": 1_154,
-    "presentation.companion_face_assets": 898,
+    "presentation.companion_core": 1_105,
+    "presentation.companion_face_animation": 1_152,
     "presentation.companion_speech_runtime": 1_179,
     "presentation.companion_visual_dynamics": 969,
     "presentation.dashboard_conversation": 915,
-    "presentation.dashboard_settings": 912,
-    "presentation.dashboard_shell": 998,
+    "presentation.dashboard_settings": 911,
+    "presentation.dashboard_shell": 893,
     "presentation.dashboard_today_memory": 822,
-    "presentation.dashboard_voice": 1_085,
+    "presentation.dashboard_voice": 1_067,
 }
 MAX_ROOT_APP_LINES = 50
-NON_PRODUCT_PYTHON_DIRECTORIES = frozenset({
-    "artifacts",  # ignored local generation, training, and validation evidence
-    "build-temp",  # generated packaging/build output
-    "constants",  # shared, dependency-free constant library (not a product layer)
-    "dist",  # generated release/package output
-    "native",  # Rust workspace; any Python files below it are generated bindings
-    "tests",
-    "tmp",  # local recovery and audit evidence, never product code
-    "tools",
-})
+NON_PRODUCT_PYTHON_DIRECTORIES = (
+    frozenset({
+        "artifacts",  # ignored local generation, training, and validation evidence
+        "build-temp",  # generated packaging/build output
+        "constants",  # shared, dependency-free constant library outside product layers
+        "dist",  # generated release/package output
+        "native",  # Rust workspace; any Python files below it are generated bindings
+        "tests",
+        "tmp",  # local recovery and audit evidence, outside product source scope
+        "tools",
+    })
+    | LOCAL_ARTIFACT_ROOTS
+)
 COMPOSITION_ROOT_MODULES = frozenset({"app"})
 APP_IMPLEMENTATION_NODES = (
     ast.AsyncFor,
@@ -278,7 +286,7 @@ def assert_app_top_level_is_composition_only(tree: ast.Module) -> None:
     ), "Root app.py may define only one synchronous main() wrapper"
     assert len(functions) <= 1, "Root app.py may define at most one main() wrapper"
     assert not any(isinstance(node, ast.ClassDef) for node in tree.body), (
-        "Root app.py must not own implementation classes"
+        'Root app.py must delegate implementation classes to their owners'
     )
     unexpected = tuple(
         type(node).__name__
@@ -291,7 +299,7 @@ def assert_app_top_level_is_composition_only(tree: ast.Module) -> None:
     )
     for function in functions:
         assert not function.decorator_list, (
-            "Root app.py main() must not use decorators"
+            'Root app.py main() must remain an undecorated function'
         )
         assert not (
             function.args.posonlyargs
@@ -299,15 +307,14 @@ def assert_app_top_level_is_composition_only(tree: ast.Module) -> None:
             or function.args.vararg
             or function.args.kwonlyargs
             or function.args.kwarg
-        ), "Root app.py main() must not accept arguments"
+        ), 'Root app.py main() must use an empty parameter list'
         nested_implementation = tuple(
             node
             for node in ast.walk(function)
             if node is not function and isinstance(node, APP_IMPLEMENTATION_NODES)
         )
         assert not nested_implementation, (
-            "Root app.py main() must remain a flat composition wrapper without "
-            "business control flow"
+            'Root app.py main() must remain a flat composition wrapper that delegates business flow'
         )
 
 
@@ -360,7 +367,7 @@ def assert_app_delegates_from_main_guard(tree: ast.Module) -> None:
     assert_main_wrapper_delegates_once(tree, aliases)
     guard = guards[0]
     assert not guard.orelse and len(guard.body) == 1, (
-        "Root app.py __main__ guard must contain one launch statement and no else"
+        'Root app.py __main__ guard must contain exactly one launch statement'
     )
     assert statement_call(guard.body[0]) is not None, (
         "Root app.py __main__ guard may only invoke the launch entrypoint"
@@ -656,6 +663,31 @@ def declared_imports(
     return tuple(dict.fromkeys(targets))
 
 
+def local_artifact_import_violations(
+    modules: dict[str, tuple[Path, str]],
+) -> tuple[tuple[str, int, str], ...]:
+    violations: set[tuple[str, int, str]] = set()
+    for module, (path, source) in sorted(modules.items()):
+        for target, line in declared_imports(module, path, source):
+            if root := local_artifact_import_root(target):
+                violations.add((module, line, root))
+    return tuple(sorted(violations))
+
+
+def unclassified_python_roots(root: Path) -> tuple[str, ...]:
+    return tuple(
+        sorted(
+            path.name
+            for path in root.iterdir()
+            if path.is_dir()
+            and not path.name.startswith(".")
+            and path.name not in LAYER_NAMES
+            and path.name not in NON_PRODUCT_PYTHON_DIRECTORIES
+            and any(path.rglob("*.py"))
+        )
+    )
+
+
 def local_import_targets(
     target: str,
     known_modules: frozenset[str],
@@ -787,20 +819,17 @@ def test_five_layer_gate_scans_every_python_module_not_only_package_markers() ->
         for layer, paths in inventory.items()
     }
     assert scanned_paths == expected_paths, (
-        "Five-layer architecture scan does not cover every Python module: "
-        f"expected={len(expected_paths)}, scanned={len(scanned_paths)}, "
-        f"per_layer={per_layer}, "
-        f"missing={tuple(sorted(str(path) for path in expected_paths - scanned_paths))}, "
-        f"unexpected={tuple(sorted(str(path) for path in scanned_paths - expected_paths))}"
+        f'Five-layer architecture scan requires full Python-module coverage: expected={len(expected_paths)}, scanned='
+        f'{len(scanned_paths)}, per_layer={per_layer}, outstanding='
+        f'{tuple(sorted((str(path) for path in expected_paths - scanned_paths)))}, unexpected='
+        f'{tuple(sorted((str(path) for path in scanned_paths - expected_paths)))}'
     )
     assert checker_paths == expected_paths, (
-        "The production five-layer checker does not cover every Python module: "
-        f"expected={len(expected_paths)}, checked={len(checker_paths)}, "
-        f"per_layer={per_layer}, parse_issues={checker_parse_issues}"
+        f'The production five-layer checker requires full Python-module coverage: expected={len(expected_paths)}'
+        f', checked={len(checker_paths)}, per_layer={per_layer}, parse_issues={checker_parse_issues}'
     )
     assert len(scanned_paths) > len(LAYER_NAMES), (
-        "A five-layer gate must report full module coverage, not merely "
-        f"'{len(LAYER_NAMES)} modules checked': per_layer={per_layer}"
+        f"A five-layer gate must report full module coverage beyond '{len(LAYER_NAMES)} modules checked': per_layer={per_layer}"
     )
     assert all(per_layer.values()), (
         f"Every canonical layer must contain Python modules: {per_layer}"
@@ -810,8 +839,7 @@ def test_five_layer_gate_scans_every_python_module_not_only_package_markers() ->
 def test_root_app_is_required_thin_composition_entrypoint() -> None:
     path = PROJECT_ROOT / "app.py"
     assert path.is_file(), (
-        "Required root app.py composition entrypoint is missing; "
-        "application/app.py is not a substitute"
+        'Provide the required root app.py composition entrypoint alongside layered modules'
     )
 
     source = path.read_text(encoding="utf-8-sig")
@@ -912,7 +940,7 @@ def test_named_compatibility_exports_are_static_and_exact() -> None:
         issue = named_compatibility_export_issue(facade, tree, owner)
         if issue is not None:
             violations.append(issue)
-    assert not violations, "Invalid compatibility exports:\n" + "\n".join(violations)
+    assert not violations, 'Compatibility exports require correction:\n' + "\n".join(violations)
 
 
 def test_product_dynamic_import_targets_are_static() -> None:
@@ -1058,7 +1086,7 @@ def test_layer_module_line_baseline_only_ratchets_down() -> None:
     counts = layer_module_line_counts()
     orphaned = tuple(sorted(frozenset(LAYER_MODULE_LINE_BASELINE) - frozenset(counts)))
     assert not orphaned, (
-        "Line-count baseline lists modules that no longer exist; remove them: "
+        'Remove obsolete module entries from the line-count baseline: '
         + ", ".join(orphaned)
     )
     stale = tuple(
@@ -1086,20 +1114,57 @@ def test_layer_module_line_baseline_only_ratchets_down() -> None:
 
 
 def test_no_unclassified_product_package_can_bypass_layer_rules() -> None:
-    unexpected = tuple(
-        sorted(
-            path.relative_to(PROJECT_ROOT).as_posix()
-            for path in PROJECT_ROOT.iterdir()
-            if path.is_dir()
-            and not path.name.startswith(".")
-            and path.name not in LAYER_NAMES
-            and path.name not in NON_PRODUCT_PYTHON_DIRECTORIES
-            and any(path.rglob("*.py"))
-        )
-    )
+    unexpected = unclassified_python_roots(PROJECT_ROOT)
     assert not unexpected, (
         "Python product packages must declare one of the five architecture layers: "
         + ", ".join(unexpected)
+    )
+
+
+def test_local_artifact_roots_are_exact_and_unknown_roots_remain_classified(
+    tmp_path: Path,
+) -> None:
+    for root in LOCAL_ARTIFACT_ROOTS:
+        assert is_local_artifact_path((root, "probe.py"))
+        local_file = tmp_path / root / "probe.py"
+        local_file.parent.mkdir()
+        local_file.write_text("import json\n", encoding="utf-8")
+
+    assert not is_local_artifact_path(("nested", "scratchpad", "probe.py"))
+    assert not is_local_artifact_path(("scratchpad-copy", "probe.py"))
+    unknown = tmp_path / "unknown-artifact-root" / "probe.py"
+    unknown.parent.mkdir()
+    unknown.write_text("import json\n", encoding="utf-8")
+    product = tmp_path / "product.py"
+    product.write_text("import json\n", encoding="utf-8")
+    assert unclassified_python_roots(tmp_path) == ("unknown-artifact-root",)
+    assert python_files(tmp_path) == sorted((product, unknown))
+
+
+def test_product_static_and_dynamic_local_artifact_imports_are_rejected() -> None:
+    modules = {
+        "application.static_probe": (
+            PROJECT_ROOT / "application" / "static_probe.py",
+            "lazy import scratchpad.private_generator\n",
+        ),
+        "presentation.dynamic_probe": (
+            PROJECT_ROOT / "presentation" / "dynamic_probe.py",
+            (
+                "lazy from importlib import import_module\n"
+                'ART = import_module("angle-expansion-luna-c.review")\n'
+            ),
+        ),
+    }
+    assert local_artifact_import_violations(modules) == (
+        ("application.static_probe", 1, "scratchpad"),
+        ("presentation.dynamic_probe", 2, "angle-expansion-luna-c"),
+    )
+
+
+def test_product_modules_do_not_import_local_artifact_roots() -> None:
+    violations = local_artifact_import_violations(discover_local_modules())
+    assert not violations, "Product modules import local art evidence:\n" + "\n".join(
+        f"{module}:{line} -> {root}" for module, line, root in violations
     )
 
 
@@ -1119,8 +1184,7 @@ def test_complete_local_product_import_graph_has_no_cycles() -> None:
 def test_product_modules_do_not_depend_on_app_composition_entrypoint() -> None:
     graph = complete_import_graph(discover_local_modules())
     assert "app" in graph, (
-        "Required root app.py composition entrypoint is missing; "
-        "a layered application.app module cannot replace it"
+        'Provide the required root app.py composition entrypoint alongside application.app'
     )
     violations = modules_reaching(graph, "app")
     assert not violations, (

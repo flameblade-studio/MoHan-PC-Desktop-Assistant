@@ -103,7 +103,7 @@ def _detect_all(image: np.ndarray, detector_model: Path) -> np.ndarray:
     )
     _status, faces = detector.detect(image[:, :, :3])
     if faces is None:
-        raise ValueError("no face detected")
+        raise ValueError("face detection requires a detectable face")
     return faces
 
 
@@ -215,7 +215,7 @@ def audit_profile_source_candidate(  # noqa: PLR0912, PLR0914, PLR0915
     if channels != RGBA_CHANNELS:
         _issue(
             issues, "source_has_no_alpha", candidate_path,
-            "candidate is opaque RGB and cannot be directly registered as a layer",
+            "opaque RGB candidate requires an explicit alpha layer before registration",
             channels=channels,
         )
     checker_ratio = _checkerboard_ratio(candidate)
@@ -229,7 +229,7 @@ def audit_profile_source_candidate(  # noqa: PLR0912, PLR0914, PLR0915
     if len(candidate_faces) != 1:
         _issue(
             issues, "ambiguous_face_detection", candidate_path,
-            "candidate does not produce exactly one unambiguous face detection",
+            "candidate requires exactly one unambiguous face detection",
             detected_faces=len(candidate_faces),
         )
     candidate_face = _primary(candidate_faces)
@@ -253,7 +253,7 @@ def audit_profile_source_candidate(  # noqa: PLR0912, PLR0914, PLR0915
     if identity_median < IDENTITY_SIMILARITY_MIN:
         _issue(
             issues, "identity_similarity_low", candidate_path,
-            "candidate does not match the three half-body identity authorities",
+            "candidate identity requires alignment with the three half-body authorities",
             median_similarity=round(identity_median, 6),
             minimum=IDENTITY_SIMILARITY_MIN,
         )

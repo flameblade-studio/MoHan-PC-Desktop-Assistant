@@ -55,7 +55,7 @@ def _reject(spec: Path, output: Path, background: Path | None = None) -> None:
         assert not output.exists()
         assert not list(output.parent.glob(f".{output.name}.*.tmp"))
         return
-    raise AssertionError("invalid theme build must fail closed")
+    raise AssertionError('theme builds must satisfy the acceptance contract')
 
 
 def run() -> None:

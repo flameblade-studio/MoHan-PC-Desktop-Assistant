@@ -140,7 +140,7 @@ def assert_camera_read_gap_preserves_state_and_reset_is_explicit() -> None:
     debouncer = PresenceDebouncer(dropout_grace_seconds=5.0)
     present = debouncer.stabilize(observation(PresenceState.PRESENT, 1.0))
     assert present.presence is PresenceState.PRESENT
-    # A failed read does not call stabilize, so no state transition can occur.
+    # A read error preserves state by skipping stabilize.
     recovered = debouncer.stabilize(observation(PresenceState.PRESENT, 30.0))
     assert recovered.presence is PresenceState.PRESENT
     debouncer.reset()

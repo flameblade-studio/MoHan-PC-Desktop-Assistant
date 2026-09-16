@@ -35,7 +35,7 @@
       ]
     ]
   },
-  "schema": "mohan.makeup-safe-regions.v1",
+  "schema": "mohan.makeup-safe-regions.v2",
   "silhouettes": {
     "cheek-rest": {
       "canvas": [
@@ -68,7 +68,7 @@
           [
             519,
             392,
-            145,
+            146,
             123
           ]
         ],
@@ -80,7 +80,9 @@
             76
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "front-crossed": {
       "canvas": [
@@ -125,7 +127,9 @@
             72
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "front-eureka": {
       "canvas": [
@@ -170,7 +174,9 @@
             72
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "front-exasperated": {
       "canvas": [
@@ -215,7 +221,9 @@
             72
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "front-mock-hit": {
       "canvas": [
@@ -260,7 +268,9 @@
             72
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "front-mock-scold": {
       "canvas": [
@@ -305,7 +315,9 @@
             72
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "left-neutral": {
       "canvas": [
@@ -350,7 +362,9 @@
             73
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw+000-pitch+00": {
       "canvas": [
@@ -359,42 +373,106 @@
       ],
       "rig": "assets/pose-atlas/v5-base-layered/yaw+000-pitch+00",
       "slots": {
-        "cheeks": [
-          [
-            421,
-            209,
-            121,
-            119
-          ],
-          [
-            481,
-            213,
-            133,
-            118
-          ]
-        ],
         "eyes": [
           [
-            447,
-            197,
-            79,
-            80
+            441,
+            210,
+            84,
+            72
           ],
           [
-            494,
-            199,
-            90,
-            80
+            497,
+            211,
+            87,
+            72
+          ]
+        ],
+        "cheeks": [
+          [
+            413,
+            228,
+            119,
+            113
+          ],
+          [
+            491,
+            229,
+            121,
+            114
           ]
         ],
         "lips": [
           [
-            478,
-            270,
-            80,
+            470,
+            285,
+            81,
             55
           ]
         ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+000-pitch+00-rest.png",
+          "sha256": "ac2af7e77e2e1709452689dd3535f9c59497f9d609f2976dcf7cfbb4abda48c9",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+000-pitch+00-half.png",
+          "sha256": "716a0ce61e0642c6e205fd2e62648d3cba1f0ccaf585598155cd6fa9b5ae284a",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+000-pitch+00-closed.png",
+          "sha256": "1f2802d0e0408bf2fb7c37938dfb4ab7de7b68723b6090c1fb28be2df10c5933",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw+000-pitch+00-rest.png",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ],
+          "sha256": "10a6d2c5b370d1c8db143dfefb8228dbbb97e8a986a31abb94653a43c1b9fd3e"
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw+000-pitch+00-half.png",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ],
+          "sha256": "2416d97c1ae855fb9a9df911015da3d6e5a5838307911c63385d17530f6060ff"
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw+000-pitch+00-closed.png",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ],
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
       }
     },
     "yaw+015-pitch+00": {
@@ -406,41 +484,43 @@
       "slots": {
         "cheeks": [
           [
-            409,
-            205,
+            390,
+            206,
             112,
             119
           ],
           [
-            447,
-            202,
+            460,
+            206,
             119,
             119
           ]
         ],
         "eyes": [
           [
-            433,
-            190,
+            420,
+            187,
             65,
             82
           ],
           [
-            460,
-            188,
+            468,
+            185,
             74,
             82
           ]
         ],
         "lips": [
           [
-            459,
-            263,
+            449,
+            265,
             65,
             56
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw+030-pitch+00": {
       "canvas": [
@@ -449,43 +529,45 @@
       ],
       "rig": "assets/pose-atlas/v5-base-layered/yaw+030-pitch+00",
       "slots": {
-        "cheeks": [
-          [
-            409,
-            207,
-            112,
-            117
-          ],
-          [
-            446,
-            205,
-            118,
-            117
-          ]
-        ],
         "eyes": [
           [
-            432,
-            195,
-            65,
-            79
+            446,
+            172,
+            75,
+            71
           ],
           [
-            460,
-            193,
-            73,
-            79
+            490,
+            172,
+            92,
+            72
+          ]
+        ],
+        "cheeks": [
+          [
+            420,
+            187,
+            111,
+            113
+          ],
+          [
+            486,
+            189,
+            126,
+            115
           ]
         ],
         "lips": [
           [
-            458,
-            263,
-            65,
-            55
+            470,
+            243,
+            77,
+            56
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw+045-pitch+00": {
       "canvas": [
@@ -494,43 +576,45 @@
       ],
       "rig": "assets/pose-atlas/v5-base-layered/yaw+045-pitch+00",
       "slots": {
-        "cheeks": [
-          [
-            400,
-            201,
-            111,
-            119
-          ],
-          [
-            437,
-            200,
-            118,
-            118
-          ]
-        ],
         "eyes": [
           [
-            423,
-            187,
-            65,
-            81
+            438,
+            178,
+            68,
+            70
           ],
           [
-            451,
-            186,
-            73,
-            81
+            469,
+            174,
+            90,
+            73
+          ]
+        ],
+        "cheeks": [
+          [
+            416,
+            191,
+            104,
+            112
+          ],
+          [
+            465,
+            191,
+            127,
+            114
           ]
         ],
         "lips": [
           [
-            449,
-            260,
-            64,
-            55
+            458,
+            246,
+            74,
+            56
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw+060-pitch+00": {
       "canvas": [
@@ -539,43 +623,45 @@
       ],
       "rig": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00",
       "slots": {
-        "cheeks": [
-          [
-            407,
-            212,
-            100,
-            108
-          ],
-          [
-            446,
-            209,
-            131,
-            117
-          ]
-        ],
         "eyes": [
           [
-            429,
-            197,
+            414,
+            158,
             60,
             77
           ],
           [
-            457,
-            196,
+            436,
+            157,
             88,
             79
           ]
         ],
         "lips": [
           [
-            445,
-            267,
+            421,
+            232,
             79,
             54
           ]
+        ],
+        "cheeks": [
+          [
+            390,
+            177,
+            100,
+            108
+          ],
+          [
+            429,
+            176,
+            131,
+            117
+          ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw+075-pitch+00": {
       "canvas": [
@@ -620,7 +706,9 @@
             56
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw+090-pitch+00": {
       "canvas": [
@@ -631,35 +719,37 @@
       "slots": {
         "cheeks": [
           [
-            385,
-            197,
+            373,
+            220,
             100,
             106
           ],
           [
-            425,
-            189,
+            402,
+            214,
             132,
             119
           ]
         ],
         "eyes": [
           [
-            436,
-            175,
+            406,
+            198,
             89,
             81
           ]
         ],
         "lips": [
           [
-            423,
-            249,
+            400,
+            273,
             80,
             54
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw+105-pitch+00": {
       "canvas": [
@@ -671,7 +761,9 @@
         "cheeks": [],
         "eyes": [],
         "lips": []
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw+120-pitch+00": {
       "canvas": [
@@ -683,7 +775,9 @@
         "cheeks": [],
         "eyes": [],
         "lips": []
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw+135-pitch+00": {
       "canvas": [
@@ -695,7 +789,9 @@
         "cheeks": [],
         "eyes": [],
         "lips": []
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw+150-pitch+00": {
       "canvas": [
@@ -707,7 +803,9 @@
         "cheeks": [],
         "eyes": [],
         "lips": []
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw+165-pitch+00": {
       "canvas": [
@@ -719,7 +817,9 @@
         "cheeks": [],
         "eyes": [],
         "lips": []
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw-015-pitch+00": {
       "canvas": [
@@ -728,43 +828,45 @@
       ],
       "rig": "assets/pose-atlas/v5-base-layered/yaw-015-pitch+00",
       "slots": {
-        "cheeks": [
-          [
-            406,
-            198,
-            110,
-            119
-          ],
-          [
-            444,
-            197,
-            120,
-            118
-          ]
-        ],
         "eyes": [
           [
-            429,
-            184,
-            65,
-            81
+            463,
+            210,
+            89,
+            72
           ],
           [
-            457,
-            183,
+            521,
+            211,
             76,
-            81
+            71
+          ]
+        ],
+        "cheeks": [
+          [
+            433,
+            227,
+            123,
+            114
+          ],
+          [
+            510,
+            226,
+            113,
+            114
           ]
         ],
         "lips": [
           [
-            454,
-            256,
-            66,
-            56
+            494,
+            282,
+            77,
+            54
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw-030-pitch+00": {
       "canvas": [
@@ -773,43 +875,45 @@
       ],
       "rig": "assets/pose-atlas/v5-base-layered/yaw-030-pitch+00",
       "slots": {
-        "cheeks": [
-          [
-            409,
-            196,
-            112,
-            118
-          ],
-          [
-            448,
-            194,
-            121,
-            119
-          ]
-        ],
         "eyes": [
           [
-            432,
-            181,
-            67,
-            81
+            486,
+            206,
+            90,
+            72
           ],
           [
-            462,
-            179,
-            75,
-            82
+            540,
+            210,
+            68,
+            70
+          ]
+        ],
+        "cheeks": [
+          [
+            452,
+            223,
+            127,
+            114
+          ],
+          [
+            526,
+            224,
+            105,
+            113
           ]
         ],
         "lips": [
           [
-            459,
-            254,
-            67,
-            56
+            515,
+            278,
+            72,
+            55
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw-045-pitch+00": {
       "canvas": [
@@ -818,43 +922,45 @@
       ],
       "rig": "assets/pose-atlas/v5-base-layered/yaw-045-pitch+00",
       "slots": {
-        "cheeks": [
-          [
-            417,
-            207,
-            114,
-            118
-          ],
-          [
-            460,
-            204,
-            121,
-            118
-          ]
-        ],
         "eyes": [
           [
-            440,
-            195,
-            68,
-            80
+            491,
+            196,
+            90,
+            72
           ],
           [
-            472,
-            193,
-            77,
-            79
+            542,
+            200,
+            65,
+            69
+          ]
+        ],
+        "cheeks": [
+          [
+            457,
+            213,
+            128,
+            115
+          ],
+          [
+            529,
+            213,
+            101,
+            112
           ]
         ],
         "lips": [
           [
-            470,
-            263,
-            68,
-            55
+            520,
+            267,
+            72,
+            56
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw-060-pitch+00": {
       "canvas": [
@@ -865,41 +971,43 @@
       "slots": {
         "cheeks": [
           [
-            470,
-            201,
+            473,
+            190,
             115,
             119
           ],
           [
-            515,
-            201,
+            524,
+            188,
             112,
             119
           ]
         ],
         "eyes": [
           [
-            495,
-            186,
+            508,
+            169,
             71,
             81
           ],
           [
-            531,
-            186,
+            539,
+            171,
             73,
             82
           ]
         ],
         "lips": [
           [
-            519,
-            261,
+            528,
+            244,
             70,
             56
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw-075-pitch+00": {
       "canvas": [
@@ -944,7 +1052,9 @@
             54
           ]
         ]
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw-090-pitch+00": {
       "canvas": [
@@ -989,6 +1099,102 @@
             55
           ]
         ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-rest.png",
+          "sha256": "1af0f7e3ffc60bc3e339d72c5ea768a35c2cba586f971ca7c6c160fde914b72c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-half.png",
+          "sha256": "40fccc724a4fa79a78aceab2154093a6c97296500c85a7bcf9d134203fa0b720",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-closed.png",
+          "sha256": "d23bb705e881c88dd0a9c296ac912c54728fbf21e606f4f3ab980627abf636eb",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-rest.png",
+          "sha256": "081a5c5549d8414d498e80bc95567bd988aac0654663e2531f711b9613798ab2",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-half.png",
+          "sha256": "c96e5d71ad926e11817c607a6237253d0d582e946bf5a9742d5a37440dd329eb",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-closed.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/rest/foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/rest/eye_aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/half/foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/half/eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/closed/foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/closed/eye_aperture"
+          }
+        }
       }
     },
     "yaw-105-pitch+00": {
@@ -1001,7 +1207,9 @@
         "cheeks": [],
         "eyes": [],
         "lips": []
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw-120-pitch+00": {
       "canvas": [
@@ -1013,7 +1221,9 @@
         "cheeks": [],
         "eyes": [],
         "lips": []
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw-135-pitch+00": {
       "canvas": [
@@ -1025,7 +1235,9 @@
         "cheeks": [],
         "eyes": [],
         "lips": []
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw-150-pitch+00": {
       "canvas": [
@@ -1037,7 +1249,9 @@
         "cheeks": [],
         "eyes": [],
         "lips": []
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw-165-pitch+00": {
       "canvas": [
@@ -1049,7 +1263,9 @@
         "cheeks": [],
         "eyes": [],
         "lips": []
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     },
     "yaw-180-pitch+00": {
       "canvas": [
@@ -1061,7 +1277,9 @@
         "cheeks": [],
         "eyes": [],
         "lips": []
-      }
+      },
+      "foundation_masks": {},
+      "eye_aperture_masks": {}
     }
   }
 }

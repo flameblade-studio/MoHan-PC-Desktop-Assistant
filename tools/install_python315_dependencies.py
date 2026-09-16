@@ -58,7 +58,7 @@ def verify_qt_stable_abi() -> None:
             )
     qt_core = importlib.import_module("PySide6.QtCore")
     if not qt_core.qVersion():
-        raise RuntimeError("PySide6 Qt runtime did not initialize")
+        raise RuntimeError("PySide6 Qt runtime initialization requires attention")
 
 
 def verify_qt_compatibility_install() -> None:
@@ -129,10 +129,10 @@ def main() -> int:
             if not report.releasable:
                 details = "\n".join(f"- {issue}" for issue in report.issues)
                 raise SystemExit(
-                    "Official Qt for Python metadata blocks this clean install:\n"
+                    "This clean install requires compatible official Qt for Python metadata:\n"
                     f"{details}\n"
-                    "Use the verified MoHan Qt compatibility wheelhouse; do not "
-                    "bypass the resolver's Python-version metadata check."
+                    "Use the verified MoHan Qt compatibility wheelhouse and preserve "
+                    "the resolver's Python-version metadata check."
                 )
             pip_install(requirements)
     verify_qt_stable_abi()

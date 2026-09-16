@@ -122,15 +122,14 @@ class FlagshipSettingsSecurityMixin:
     def _security_footer(self, form: QFormLayout) -> None:
         note = QLabel(
             self._t(
-                "付款、購買、密碼匯出、停用安全防護、任意 PowerShell／管理員命令"
-                "永遠禁止自動執行，無法由此頁解除。"
+                '付款、購買、密碼匯出、停用安全防護及任意 PowerShell／管理員命令，永久排除於自動執行範圍；本頁持續遵守此界線。'
             )
         )
         note.setWordWrap(True)
         note.setStyleSheet("color:#8a5a13;")
         form.addRow(note)
     def validate_draft_settings(self, *, show_error: bool = True) -> FlagshipDraftValues | None:
-        """Build every typed value without touching persistence or external services."""
+        """Build every typed value while preserving persistence or external services."""
 
         touched = self._proactive_interaction_touched
         try:
@@ -174,7 +173,7 @@ class FlagshipSettingsSecurityMixin:
                 self.gesture_command.setFocus(Qt.OtherFocusReason)
                 QMessageBox.warning(
                     self,
-                    self._t("手勢設定尚未完成"),
+                    self._t('請完成手勢設定'),
                     self._t("選擇自訂文字指令時，必須輸入一行指令後才能保存。"),
                 )
             return None
@@ -230,8 +229,8 @@ class FlagshipSettingsSecurityMixin:
             self.gesture_store.save(validated.gesture)
             self.proactivity_store.save(validated.proactivity)
             self.performance_store.save(validated.performance)
-            # ``None`` marks a control the user never touched: skip the write so
-            # this page cannot clobber values owned by another settings page
+            # The sentinel marks a control at its untouched state: keep the write scoped so
+            # this page preserves values owned by another settings page
             # (the dashboard also writes ``proactive_interaction_mode``).
             for key, value in (
                 ("proactive_interaction_mode", validated.proactive_mode),

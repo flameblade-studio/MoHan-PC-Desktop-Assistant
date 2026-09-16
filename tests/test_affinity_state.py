@@ -45,12 +45,12 @@ def test_jealousy_spikes_and_fades() -> None:
 
 
 def test_jealousy_lingers_for_minutes() -> None:
-    # A tsundere's pout must hold for several minutes, not vanish in a second.
+    # A tsundere's pout must hold for several minutes.
     state = AffinityState()
     state.note_jealousy(now=0.0)
     # After two minutes the jealousy is still clearly present.
     assert state.snapshot(now=120.0).jealousy > JEALOUSY_THRESHOLD
-    # After ten minutes (one half-life) it has decayed but not to zero.
+    # After ten minutes (one half-life), the decayed value remains positive.
     later = state.snapshot(now=600.0).jealousy
     assert JEALOUSY_DECAY_LOWER < later < JEALOUSY_THRESHOLD
 
@@ -68,17 +68,17 @@ def test_affinity_decays_slowly_over_time() -> None:
     for _ in range(10):
         state.note_interaction(now=0.0)
     before = state.affinity
-    # One week later, affinity has decayed but not to zero.
+    # One week later, the decayed affinity remains positive.
     later = state.snapshot(now=7.0 * 24.0 * 60.0 * 60.0).affinity
     assert 0.0 < later < before
 
 
 def test_repeated_snapshots_do_not_compound_decay() -> None:
-    """Ruling 2026-08-27: reading state must never accelerate decay.
+    """Ruling 2026-08-27: reading state preserves the intended decay rate.
 
-    The decay anchor previously never advanced, so every snapshot() applied
-    the full since-last-interaction factor again and per-frame policy reads
-    emptied a one-week half-life in minutes.
+    The previous stationary decay anchor repeatedly applied the full elapsed
+    factor on snapshot(), reducing a one-week half-life to minutes under
+    frame-by-frame reads. Each read must advance the anchor correctly.
     """
     half_life = 7.0 * 24.0 * 60.0 * 60.0
     sampled = AffinityState(clock=lambda: 0.0)

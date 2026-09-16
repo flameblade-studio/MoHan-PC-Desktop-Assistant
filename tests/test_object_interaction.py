@@ -85,7 +85,7 @@ def assert_invalid_detection_is_not_silently_accepted() -> None:
         except ValueError:
             pass
         else:
-            raise AssertionError("Invalid detection confidence must be rejected.")
+            raise AssertionError('Detection confidence must satisfy the validation contract.')
 
 
 def run() -> None:

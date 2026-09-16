@@ -70,11 +70,10 @@ def assert_speech_holds_and_settles_before_reframing() -> None:
 
 
 def assert_speech_is_fixed_at_half_body() -> None:
-    """Speech must stay at the half-body shot, never full-body then half-body.
+    """Speech starts and remains in the half-body shot.
 
-    A lingering FULL_BODY from an idle full-body view must not be held across
-    the start of speech.  The director should settle on HALF immediately so the
-    companion does not speak a few words in full-body before snapping back.
+    At speech start the director immediately selects HALF, including when
+    the preceding idle state used FULL_BODY, preserving consistent framing.
     """
     clock = Clock()
     framing = CharacterFramingDirector(clock, style="lively")
@@ -84,14 +83,14 @@ def assert_speech_is_fixed_at_half_body() -> None:
     framing.decide(context(owner_arrived=True))
     clock.advance()
     assert framing.mode is FramingMode.FULL_BODY
-    # Speech begins: the director must not hold FULL_BODY.
+    # Speech begins: the director immediately selects HALF.
     speaking = framing.decide(
         context(speech_active=True, mouth_closed=False)
     )
     assert speaking.mode is FramingMode.HALF, (
-        "speech must settle on HALF, not hold a lingering FULL_BODY"
+        'speech must immediately select HALF'
     )
-    # High emotion during speech must still stay HALF, not CLOSE.
+    # High emotion during speech still retains HALF framing.
     clock.advance()
     emotional = framing.decide(
         context(speech_active=True, mouth_closed=False, emotion_intensity=0.95)
@@ -131,9 +130,8 @@ def assert_disabled_mode_is_stable() -> None:
 
 
 def assert_steady_style_holds_half_body_between_turns() -> None:
-    # Owner ruling 2026-08-29: in the default "steady" style the whole
-    # conversation session stays at the half-body shot — the frame must not
-    # bounce back to full body the moment the mouth closes between turns.
+    # Owner ruling 2026-08-29: default steady style retains HALF throughout
+    # the conversation, including mouth closure between turns.
     clock = Clock()
     framing = CharacterFramingDirector(clock, style="steady")
     framing.decide(

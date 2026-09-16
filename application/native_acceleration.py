@@ -25,7 +25,7 @@ _Result = TypeVar("_Result")
 
 @dataclass(frozen=True, slots=True)
 class NativeAccelerationStatus:
-    """Current optional-accelerator state without exposing audio data."""
+    """Current optional-accelerator state while keeping audio data private."""
 
     available: bool
     module_name: str
@@ -203,7 +203,7 @@ class NativeAcceleration:
                 self._disable_operation(
                     operation,
                     RuntimeError(
-                        "native PCM operation accepted input rejected by "
+                        "native PCM operation must enforce the same input validation as "
                         "the Python contract"
                     ),
                 )
@@ -211,7 +211,7 @@ class NativeAcceleration:
             if not _results_are_equivalent(operation, native_result, expected):
                 self._disable_operation(
                     operation,
-                    RuntimeError("native PCM result failed reference verification"),
+                    RuntimeError("native PCM result requires reference verification"),
                 )
                 return expected
             self._mark_verified(operation)
@@ -245,7 +245,7 @@ class NativeAcceleration:
             count = self._operation_failures.get(operation, 0) + 1
             self._operation_failures[operation] = count
         LOGGER.warning(
-            "MoHan native operation %s failed; using Python fallback (failure %d): %s",
+            "MoHan native operation %s requires attention; using Python fallback (attention event %d): %s",
             operation,
             count,
             type(error).__name__,
@@ -312,7 +312,7 @@ def _float_pair_is_close(left: object, right: object) -> bool:
 
 def _normalize_analysis_result(result: object) -> tuple[float, float]:
     if not isinstance(result, tuple) or len(result) != PAIR_LENGTH:
-        raise TypeError("native analysis returned an invalid result")
+        raise TypeError("native analysis returned a value outside the supported result contract")
     loudness, articulation = result
     if not isinstance(loudness, float) or not isinstance(articulation, float):
         raise TypeError("native analysis returned non-floating-point values")
@@ -325,16 +325,16 @@ def _normalize_analysis_result(result: object) -> tuple[float, float]:
 
 def _normalize_vowel_result(result: object) -> tuple[float, str]:
     if not isinstance(result, tuple) or len(result) != PAIR_LENGTH:
-        raise TypeError("native vowel inference returned an invalid result")
+        raise TypeError("native vowel inference returned a value outside the supported result contract")
     level, vowel = result
     if not isinstance(level, float) or not math.isfinite(level):
-        raise TypeError("native vowel inference returned an invalid level")
+        raise TypeError("native vowel inference returned a value outside the supported level contract")
     if not 0.0 <= level <= 1.0:
         raise ValueError(
             "native vowel inference returned a level outside the normalized range"
         )
     if not isinstance(vowel, str) or vowel not in python_lip_sync.VALID_VISEMES:
-        raise ValueError("native vowel inference returned an invalid viseme")
+        raise ValueError("native vowel inference returned a value outside the supported viseme set")
     return level, vowel
 
 
@@ -350,19 +350,19 @@ def _normalize_rate_result(
     channels: int,
 ) -> tuple[bytes, python_pcm_audio.Pcm16RateState | None]:
     if not isinstance(result, tuple) or len(result) != PAIR_LENGTH:
-        raise TypeError("native rate conversion returned an invalid result")
+        raise TypeError("native rate conversion returned a value outside the supported result contract")
     converted, native_state = result
     if not isinstance(converted, bytes):
         raise TypeError("native rate conversion did not return bytes")
     if native_state is None:
         return converted, None
     if not isinstance(native_state, tuple) or len(native_state) != PAIR_LENGTH:
-        raise TypeError("native rate conversion returned an invalid state")
+        raise TypeError("native rate conversion returned a value outside the supported state contract")
     tail_frame, phase = native_state
     if not isinstance(tail_frame, (list, tuple)) or not isinstance(phase, int):
-        raise TypeError("native rate conversion returned an invalid state")
+        raise TypeError("native rate conversion returned a value outside the supported state contract")
     if any(not isinstance(sample, int) for sample in tail_frame):
-        raise TypeError("native rate conversion returned invalid PCM16 samples")
+        raise TypeError("native rate conversion returned values outside the supported PCM16 sample contract")
     if len(tail_frame) != channels:
         raise ValueError("native rate conversion returned a mismatched channel state")
     if any(not MIN_PCM16_SAMPLE <= sample <= MAX_PCM16_SAMPLE for sample in tail_frame):

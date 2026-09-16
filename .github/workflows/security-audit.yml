@@ -35,8 +35,8 @@ jobs:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      # pip-audit 2.10.1 still imports sre_constants through pip-api and cannot
-      # start on 3.15. This runtime is isolated audit tooling; MoHan itself,
+      # pip-audit 2.10.1 imports sre_constants through pip-api; Python 3.14
+      # supplies its compatible isolated audit tooling runtime. MoHan itself,
       # its tests, and every release package remain locked to Python 3.15.
       - name: Set up isolated audit-tool runtime
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7

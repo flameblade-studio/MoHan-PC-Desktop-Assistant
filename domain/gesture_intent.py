@@ -75,7 +75,7 @@ class GestureFrame:
         if not math.isfinite(self.observed_at):
             raise ValueError("Gesture frame time must be finite.")
         if len({hand.side for hand in self.hands}) != len(self.hands):
-            raise ValueError("A frame cannot contain duplicate hand sides.")
+            raise ValueError("A frame carries one hand per side.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -100,7 +100,7 @@ class SilenceGestureDetector:
         if minimum_frames < MIN_FRAMES:
             raise ValueError("minimum_frames must be at least two.")
         if minimum_duration <= 0.0 or cooldown < 0.0 or lip_distance <= 0.0:
-            raise ValueError("Gesture timing and distance settings are invalid.")
+            raise ValueError("Gesture timing and distance settings need supported values.")
         self._minimum_frames = minimum_frames
         self._minimum_duration = minimum_duration
         self._cooldown = cooldown

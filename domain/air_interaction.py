@@ -45,9 +45,9 @@ class AirInteractionConfig:
         if self.minimum_stable_frames < 1:
             raise ValueError("air interaction stable frames must be positive")
         if not 0.0 < self.minimum_confidence <= 1.0:
-            raise ValueError("air interaction confidence is invalid")
+            raise ValueError("air interaction confidence needs a supported value")
         if not 0.0 < self.pinch_start_ratio < self.pinch_release_ratio:
-            raise ValueError("pinch hysteresis thresholds are invalid")
+            raise ValueError("pinch hysteresis thresholds need supported values")
         if not self.minimum_palm_span > 0.0:
             raise ValueError("minimum palm span must be positive")
         if not self.swipe_distance > 0.0:
@@ -59,7 +59,7 @@ class AirInteractionConfig:
         if not self.high_five_palm_span >= self.minimum_palm_span:
             raise ValueError("high-five palm span must cover the minimum span")
         if self.cooldown_seconds < 0.0:
-            raise ValueError("air interaction cooldown cannot be negative")
+            raise ValueError("air interaction cooldown accepts zero or greater")
 
 
 @dataclass(frozen=True, slots=True)
@@ -85,9 +85,9 @@ class AirHandSample:
         if not isinstance(self.side, HandSide):
             raise TypeError("air hand side must be canonical")
         if not math.isfinite(self.confidence) or not 0.0 <= self.confidence <= 1.0:
-            raise ValueError("air hand confidence is invalid")
+            raise ValueError("air hand confidence needs a supported value")
         if len(self.landmarks) != LANDMARKS_PER_HAND:
-            raise ValueError("air hand landmark count is invalid")
+            raise ValueError("air hand landmark count needs a supported value")
 
 
 @dataclass(frozen=True, slots=True)
@@ -104,9 +104,9 @@ class AirInteractionEvent:
         if not math.isfinite(self.observed_at):
             raise ValueError("air interaction time must be finite")
         if not 0.0 <= self.confidence <= 1.0:
-            raise ValueError("air interaction confidence is invalid")
+            raise ValueError("air interaction confidence needs a supported value")
         if self.palm_scale < 0.0 or self.pinch_ratio < 0.0:
-            raise ValueError("air interaction measurements cannot be negative")
+            raise ValueError("air interaction measurements accepts zero or greater")
         if not math.isfinite(self.displacement_x):
             raise ValueError("air interaction displacement must be finite")
 
@@ -120,7 +120,7 @@ class AirHandParameters:
 
     def __post_init__(self) -> None:
         if self.palm_scale < 0.0 or self.pinch_ratio < 0.0:
-            raise ValueError("air hand parameters cannot be negative")
+            raise ValueError("air hand parameters accepts zero or greater")
         if not 0.0 <= self.index_extension <= 1.0:
             raise ValueError("index extension must be normalized")
         if not 0.0 <= self.middle_extension <= 1.0:
@@ -201,7 +201,7 @@ class AirInteractionDetector:
         self._last_event_at.clear()
 
     def cancel(self) -> None:
-        """Forget in-progress gestures while retaining no camera evidence."""
+        """Forget in-progress gestures while keeping camera evidence outside state."""
 
         self._previous_wrist.clear()
         self._pinch_candidates.clear()
@@ -374,7 +374,7 @@ def _measure(hand: AirHandSample) -> _HandMetrics:
 
 
 def measure_hand_parameters(hand: AirHandSample) -> AirHandParameters:
-    """Expose stable hand controls without exposing detector state."""
+    """Expose stable hand controls while keeping detector state private."""
 
     points = hand.landmarks
     metrics = _measure(hand)

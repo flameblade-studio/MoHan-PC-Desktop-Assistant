@@ -24,7 +24,7 @@ class RgbaAccelerationError(ValueError):
 
 @dataclass(frozen=True, slots=True)
 class NativeRgbaAccelerationStatus:
-    """Observable native state that never contains image data."""
+    """Observable native state while keeping image data private."""
 
     available: bool
     module_name: str
@@ -37,7 +37,7 @@ class NativeRgbaAccelerationStatus:
 
 @dataclass(frozen=True, slots=True)
 class _RegionCompositeInput:
-    """One anchored layer composite request, grouped to avoid an 11-arg call."""
+    """One anchored layer composite request, grouped for a compact call boundary."""
 
     target: bytes
     target_width: int
@@ -154,7 +154,7 @@ class NativeRgbaAcceleration:
         self._lock = threading.Lock()
 
     def status(self) -> NativeRgbaAccelerationStatus:
-        """Return deterministic diagnostics without exposing pixel buffers."""
+        """Return deterministic diagnostics while keeping pixel buffers private."""
         module = self._load_module()
         version = (
             None if module is None else str(getattr(module, "__version__", "unknown"))
@@ -291,7 +291,7 @@ class NativeRgbaAcceleration:
             expected = fallback()
             self._disable_operation(
                 operation,
-                TypeError("native RGBA operation returned an invalid buffer"),
+                TypeError("native RGBA operation returned a value outside the supported buffer contract"),
             )
             return expected
         if not self._operation_is_verified(operation):
@@ -303,7 +303,7 @@ class NativeRgbaAcceleration:
                 self._disable_operation(
                     operation,
                     RuntimeError(
-                        "native RGBA operation accepted input rejected by "
+                        "native RGBA operation must enforce the same input validation as "
                         "the Python contract"
                     ),
                 )
@@ -311,7 +311,7 @@ class NativeRgbaAcceleration:
             if native_result != expected:
                 self._disable_operation(
                     operation,
-                    RuntimeError("native RGBA result failed bit-exact verification"),
+                    RuntimeError("native RGBA result requires bit-exact verification"),
                 )
                 return expected
             self._mark_verified(operation)
@@ -328,7 +328,7 @@ class NativeRgbaAcceleration:
         except RgbaAccelerationError:
             # A native ValueError can be the backend's translation of the
             # public renderer contract.  Contract rejection is not backend
-            # failure and must not disable the valid-input fast path.
+            # attention event while the valid-input fast path stays available.
             raise
         except Exception:
             self._disable_operation(operation, native_error)
@@ -376,8 +376,8 @@ class NativeRgbaAcceleration:
             count = self._operation_failures.get(operation, 0) + 1
             self._operation_failures[operation] = count
         LOGGER.warning(
-            "MoHan native RGBA operation %s failed; using Python fallback "
-            "(failure %d): %s",
+            "MoHan native RGBA operation %s requires attention; using Python fallback "
+            "(attention event %d): %s",
             operation,
             count,
             type(error).__name__,

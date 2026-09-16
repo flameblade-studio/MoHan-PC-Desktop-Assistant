@@ -214,8 +214,7 @@ class DashboardSettingsMixin:
         warning = QLabel(
             self._t(
                 "permissions_warning",
-                "安全原則：墨寒不會因聊天內容自動取得更高權限；"
-                "API 模型只能提出工具請求，真正執行仍由本機權限層決定。",
+                '安全原則：權限提升須明確授權；API 模型僅提出工具請求，實際執行由本機權限層決定。',
             )
         )
         warning.setWordWrap(True)
@@ -260,7 +259,7 @@ class DashboardSettingsMixin:
         editor: QAbstractSpinBox,
         object_prefix: str,
     ) -> tuple[QWidget, QPushButton, QPushButton]:
-        """Use explicit buttons so Windows/QSS cannot steal the up hit area."""
+        """Use explicit buttons so Windows/QSS keeps the up hit area."""
         editor.setButtonSymbols(QAbstractSpinBox.NoButtons)
         container = QWidget()
         layout = QHBoxLayout(container)
@@ -804,7 +803,7 @@ class DashboardSettingsMixin:
             )
         return self._t(
             "api_status_offline",
-            "OpenAI API：未設定，使用離線人設",
+            'OpenAI API：設定金鑰後即可連線，目前使用離線人格',
         )
 
     def _persona_prompt_input(self) -> QTextEdit:

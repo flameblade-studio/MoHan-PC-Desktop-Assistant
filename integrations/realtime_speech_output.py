@@ -25,45 +25,45 @@ _MESSAGES = deep_freeze({
     "zh-TW": {
         "preparing": "Realtime 已理解，Azure 正在準備發聲",
         "speaking": "Azure 串流發聲中",
-        "missing": "所選 Realtime Azure 聲線尚未完成金鑰、區域與聲音設定。",
-        "hd_fallback": "Dragon HD 無法發聲，本輪改用一般 Azure Speech",
-        "local_fallback": "Azure 無法發聲，本輪改用 Windows 本機女性聲線",
+        "missing": "請完成所選 Realtime Azure 聲線的金鑰、區域與聲音設定。",
+        "hd_fallback": "Dragon HD 合成需要處理，本輪改用一般 Azure Speech",
+        "local_fallback": "Azure 合成需要處理，本輪改用 Windows 本機女性聲線",
         "local_speaking": "Windows 本機女性聲線發聲中",
-        "failed": "Realtime 語音輸出失敗：{error}",
-        "queue_full": "Realtime 回應過長，已安全停止本輪語音。",
+        "failed": "Realtime 語音輸出需要重試：{error}",
+        "queue_full": "Realtime 回應達到長度上限，本輪語音已安全停止。",
         "ready": "已連線，妾在聽",
     },
     "zh-CN": {
         "preparing": "Realtime 已理解，Azure 正在准备发声",
         "speaking": "Azure 串流发声中",
-        "missing": "所选 Realtime Azure 声线尚未完成密钥、区域与声音设置。",
-        "hd_fallback": "Dragon HD 无法发声，本轮改用一般 Azure Speech",
-        "local_fallback": "Azure 无法发声，本轮改用 Windows 本机女性声线",
+        "missing": "请完成所选 Realtime Azure 声线的密钥、区域与声音设置。",
+        "hd_fallback": "Dragon HD 合成需要处理，本轮改用一般 Azure Speech",
+        "local_fallback": "Azure 合成需要处理，本轮改用 Windows 本机女性声线",
         "local_speaking": "Windows 本机女性声线发声中",
-        "failed": "Realtime 语音输出失败：{error}",
-        "queue_full": "Realtime 回应过长，已安全停止本轮语音。",
+        "failed": "Realtime 语音输出需要重试：{error}",
+        "queue_full": "Realtime 回复达到长度上限，本轮语音已安全停止。",
         "ready": "已连接，妾在听",
     },
     "en-US": {
         "preparing": "Realtime understood; Azure is preparing speech",
         "speaking": "Azure streaming speech",
-        "missing": "The selected Realtime Azure voice needs a key, region, and voice.",
-        "hd_fallback": "Dragon HD failed; using standard Azure Speech for this response",
-        "local_fallback": "Azure failed; using a local Windows female voice for this response",
+        "missing": "Complete the key, region, and voice settings for the selected Realtime Azure voice.",
+        "hd_fallback": "Dragon HD synthesis requires attention; using standard Azure Speech for this response",
+        "local_fallback": "Azure synthesis requires attention; using a local Windows female voice for this response",
         "local_speaking": "Local Windows female voice is speaking",
-        "failed": "Realtime speech output failed: {error}",
-        "queue_full": "The Realtime response was too long, so this speech response was stopped safely.",
+        "failed": "Realtime speech output needs a retry: {error}",
+        "queue_full": "The Realtime response reached its length limit, so this speech response is stopped safely.",
         "ready": "Connected and listening",
     },
     "ja-JP": {
         "preparing": "Realtime が理解し、Azure が音声を準備しています",
         "speaking": "Azure ストリーミング音声を再生中",
-        "missing": "選択した Realtime Azure 音声にはキー、リージョン、音声設定が必要です。",
-        "hd_fallback": "Dragon HD が失敗したため、この返答は通常の Azure Speech を使用します",
-        "local_fallback": "Azure が失敗したため、この返答は Windows 本機女性音声を使用します",
+        "missing": "選択した Realtime Azure 音声のキー、リージョン、音声設定を完了してください。",
+        "hd_fallback": "Dragon HD 合成への対応が必要なため、この返答は通常の Azure Speech を使用します",
+        "local_fallback": "Azure 合成への対応が必要なため、この返答は Windows 本機女性音声を使用します",
         "local_speaking": "Windows 本機女性音声を再生中",
-        "failed": "Realtime 音声出力に失敗しました：{error}",
-        "queue_full": "Realtime の応答が長すぎるため、この音声応答を安全に停止しました。",
+        "failed": "Realtime 音声出力の再試行が必要です：{error}",
+        "queue_full": "Realtime の応答が長さの上限に達したため、この音声応答を安全に停止します。",
         "ready": "接続済み、聞いています",
     },
 })
@@ -173,7 +173,7 @@ class RealtimeTextSegmenter:
 
 
 class RealtimeSpeechOutput(QObject):
-    """Own the optional Azure playback route without touching native audio."""
+    """Own the optional Azure playback route while leaving native audio unchanged."""
 
     speaking_changed = Signal(bool)
     playback_guard_changed = Signal(bool)
@@ -220,7 +220,9 @@ class RealtimeSpeechOutput(QObject):
 
     def configure(self, config: RealtimeSpeechOutputConfig) -> None:
         if config.mode not in REALTIME_OUTPUT_MODES:
-            raise ValueError(f"Unsupported Realtime output mode: {config.mode}")
+            raise ValueError(
+                f"Choose a supported Realtime output mode: {config.mode}"
+            )
         previous = self._config
         self.cancel(self._response_generation)
         self._config = RealtimeSpeechOutputConfig(
@@ -599,7 +601,7 @@ class RealtimeSpeechOutput(QObject):
 
     def _queue_segments(self, segments: tuple[str, ...]) -> None:
         if len(self._queue) + len(segments) > _MAX_PLAYBACK_SEGMENTS:
-            raise OverflowError("Realtime playback queue limit exceeded")
+            raise OverflowError("Realtime playback queue reached its limit")
         self._queue.extend(segments)
 
     def _fail_queue_limit(self) -> None:

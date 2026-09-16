@@ -42,7 +42,7 @@ def test_drowsiness_rises_during_late_night() -> None:
 def test_drowsiness_eases_smoothly_without_snapping() -> None:
     state = TimeSovereigntyState()
     first = state.update(hour=3, now=0.0)
-    assert first < DROWSINESS_THRESHOLD, "drowsiness must ease in, not snap"
+    assert first < DROWSINESS_THRESHOLD, 'drowsiness must increase gradually'
 
 
 def test_drowsiness_decays_outside_late_night() -> None:

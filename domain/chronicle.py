@@ -8,7 +8,7 @@ shared achievements.  On anniversaries (e.g. the project's first month) she
 surfaces a tender recollection of those moments — the strongest weapon for
 building emotional bonds.
 
-This is pure domain logic with no Qt dependency.  It stores a small, bounded
+This is pure domain logic with Qt outside the domain boundary.  It stores a small, bounded
 list of milestone records and produces a four-language recollection line.
 """
 
@@ -29,7 +29,7 @@ class Milestone:
 
     def __post_init__(self) -> None:
         if self.day < 0:
-            raise ValueError("Milestone day must not be negative.")
+            raise ValueError("Milestone day accepts zero or greater.")
 
 
 class Chronicle:

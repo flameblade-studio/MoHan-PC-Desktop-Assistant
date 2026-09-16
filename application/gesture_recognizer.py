@@ -100,7 +100,7 @@ class GestureRecognition:
         if not math.isfinite(self.confidence) or not 0.0 <= self.confidence <= 1.0:
             raise ValueError("Gesture confidence must be normalized.")
         if self.gesture_id is GestureId.UNKNOWN and abs(self.confidence) >= FLOAT_COMPARISON_EPSILON:
-            raise ValueError("Unknown gestures cannot claim confidence.")
+            raise ValueError("A recognized gesture requires confidence.")
 
     @property
     def triggered(self) -> bool:
@@ -140,7 +140,7 @@ DEFAULT_GESTURE_TIMING = GestureTiming()
 
 
 class GestureRecognizer:
-    """Classify ephemeral hand skeletons without executing bound actions."""
+    """Classify ephemeral hand skeletons with bound-action execution delegated to the caller."""
 
     def __init__(
         self,
@@ -151,7 +151,7 @@ class GestureRecognizer:
         timing: GestureTiming = DEFAULT_GESTURE_TIMING,
     ) -> None:
         if not MIN_CONFIDENCE_LOWER_BOUND <= minimum_confidence <= 1.0:
-            raise ValueError("Minimum gesture confidence is invalid.")
+            raise ValueError("Minimum gesture confidence needs a supported value.")
         if custom_max_distance <= 0.0:
             raise ValueError("Gesture distance must be valid.")
         if not isinstance(timing, GestureTiming):
@@ -316,7 +316,7 @@ class GestureRecognizer:
             for previous, current in pairwise(ordered)
         )
         # Webcam sampling is deliberately throttled; accept a natural wave
-        # across four stable frames without requiring exaggerated arm swings.
+        # across four stable frames with natural arm movement.
         # Thresholds are kept forgiving so a casual side-to-side wave in front
         # of the camera reliably registers as a greeting.
         significant = tuple(value for value in movements if abs(value) >= SIGNIFICANT_WAVE_MOVEMENT)
@@ -445,7 +445,7 @@ def _prepare_templates(
         identifier = gesture_id.strip()
         if not identifier.startswith("custom:") or not samples:
             raise ValueError("Custom templates require a custom identifier and samples.")
-        # Recorded samples carry no handedness, so prepare each sample in
+        # Recorded samples use the preparation path that supplies hand side information in
         # BOTH normalizations and let matching take the nearer one.  The
         # right-only normalization made left-handed recordings unmatchable
         # by either hand; this also makes every custom gesture usable with

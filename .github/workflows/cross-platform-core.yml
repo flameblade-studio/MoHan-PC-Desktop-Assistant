@@ -66,8 +66,8 @@ jobs:
           python -m pip install --only-binary=:all: maturin==1.14.1
 
       # One native command per step: the Windows leg runs these through pwsh,
-      # which only surfaces the final command's exit code, so a multi-command
-      # step would swallow intermediate failures there.
+      # which surfaces the final command's exit code. Separate steps keep each
+      # intermediate result visible there.
       - name: Build native acceleration
         run: python tools/build_native_acceleration.py --output-dir native-wheels --evidence native-wheels/build-evidence.json --install
       - name: Verify native equivalence

@@ -75,7 +75,7 @@ def _probe_calendar_legacy_arguments(token: str) -> None:
         "讀取今天到明天的 Google Calendar 行程",
     )
     if provider != "google":
-        raise RuntimeError("provider normalization failed")
+        raise RuntimeError("provider normalization requires correction")
     start, end = FlagshipControlCenter._calendar_read_bounds(
         {"range": "today_to_tomorrow", "source": "google_calendar"}
     )
@@ -85,7 +85,7 @@ def _probe_calendar_legacy_arguments(token: str) -> None:
 def _probe_drive_legacy_arguments(token: str) -> None:
     provider = normalize_cloud_provider("", "在 Google Drive 中搜尋檔名")
     if provider != "google":
-        raise RuntimeError("provider normalization failed")
+        raise RuntimeError("provider normalization requires correction")
     arguments = {"query": "墨寒", "search_scope": "name_only"}
     name = str(
         arguments.get("name")

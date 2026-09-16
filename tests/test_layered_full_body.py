@@ -3,6 +3,8 @@ from __future__ import annotations
 lazy import os
 lazy import sys
 lazy from pathlib import Path
+lazy from dataclasses import replace
+lazy from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -11,7 +13,7 @@ sys.path.insert(0, str(ROOT))
 
 lazy from PySide6.QtCore import QPoint
 lazy from PySide6.QtWidgets import QApplication
-lazy from PySide6.QtGui import QPixmap, QRegion
+lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion
 
 lazy from domain.constants import (
     POSE_ATLAS_LAYERED_ROOT_NAME,
@@ -42,6 +44,10 @@ MAX_MEAN_CHANNEL_ERROR = 2.0
 MAX_TRANSPARENT_SAMPLE_RATIO = 0.015
 MIN_SPEAKING_MOUTH_CHANGED_PIXELS = 20
 VISIBLE_SPEECH_MOUTH_VIEWS = {
+    # The +90 native profile retains visible lips; the yaw-090 profile is the
+    # main-branch source again (2026-09-16) and paints no oral cavity.
+    # Source/rest/A/U comparisons cover all twelve calibrated mouth views.
+    "yaw-075-pitch+00",
     "yaw-060-pitch+00",
     "yaw-045-pitch+00",
     "yaw-030-pitch+00",
@@ -51,6 +57,8 @@ VISIBLE_SPEECH_MOUTH_VIEWS = {
     "yaw+030-pitch+00",
     "yaw+045-pitch+00",
     "yaw+060-pitch+00",
+    "yaw+075-pitch+00",
+    "yaw+090-pitch+00",
 }
 
 
@@ -89,15 +97,22 @@ def test_renderer_applies_active_outfit_to_the_exact_yaw_view() -> None:
     class Overlay:
         calls: list[str] = []
 
-        def apply(self, frame: QPixmap, view_id: str) -> QPixmap:
-            self.calls.append(view_id)
+        def apply_appearance(self, frame: QPixmap, view_id: str) -> QPixmap:
+            self.calls.append(f"appearance:{view_id}")
+            return frame
+
+        def apply_makeup(self, frame: QPixmap, view_id: str, **_kwargs) -> QPixmap:
+            self.calls.append(f"makeup:{view_id}")
             return frame
 
     overlay = Overlay()
     manifest = load_layered_full_body_assets(FULL_BODY_DIR)
     renderer = LayeredFullBodyRenderer(manifest, outfit_overlay=overlay)
     assert not renderer.render_view("yaw+000-pitch+00", _frame()).isNull()
-    assert overlay.calls == ["yaw+000-pitch+00"]
+    assert overlay.calls == [
+        "appearance:yaw+000-pitch+00",
+        "makeup:yaw+000-pitch+00",
+    ]
 
 
 def test_renderer_blends_adjacent_views() -> None:
@@ -106,6 +121,46 @@ def test_renderer_blends_adjacent_views() -> None:
     renderer = LayeredFullBodyRenderer(manifest)
     out = renderer.render_blended("yaw+000-pitch+00", _frame(), blend=0.5)
     assert not out.isNull()
+
+
+def test_closed_eyes_suppress_only_eye_makeup_and_restore_on_reopening() -> None:
+    _app()
+    eye_point, cheek_point, lip_point = (500, 210), (500, 260), (500, 285)
+    colors = {"eyes": QColor("red"), "cheeks": QColor("green"), "lips": QColor("blue")}
+
+    class Overlay:
+        def apply_appearance(self, frame, view_id):
+            return frame
+
+        def apply_makeup(
+            self,
+            frame,
+            view_id,
+            *,
+            suppress_makeup_slots=(),
+            eye_state="rest",
+        ):
+            result = QPixmap(frame)
+            painter = QPainter(result)
+            for slot, point in zip(colors, (eye_point, cheek_point, lip_point), strict=True):
+                if slot not in suppress_makeup_slots:
+                    painter.fillRect(*point, 1, 1, colors[slot])
+            painter.end()
+            return result
+
+    manifest = load_layered_full_body_assets(FULL_BODY_DIR)
+    bare = LayeredFullBodyRenderer(manifest)
+    renderer = LayeredFullBodyRenderer(manifest, outfit_overlay=Overlay())
+    for blink in (0.0, 1.0, 0.0):
+        motion = replace(_frame(), breath=0.5, expression_shape=ExpressionShape(blink=blink))
+        actual = renderer.render_view("yaw+000-pitch+00", motion).toImage()
+        expected_eye = (
+            bare.render_view("yaw+000-pitch+00", motion).toImage().pixelColor(*eye_point)
+            if blink else colors["eyes"]
+        )
+        assert actual.pixelColor(*eye_point) == expected_eye
+        assert actual.pixelColor(*cheek_point) == colors["cheeks"]
+        assert actual.pixelColor(*lip_point) == colors["lips"]
 
 
 def test_renderer_wraps_view_ring() -> None:
@@ -188,7 +243,9 @@ def test_speaking_moves_the_mouth_without_detaching_the_chin() -> None:
             ExpressionShape(),
         ),
     ).toImage()
-    face_bounds = QRegion(QPixmap(str(view.path("base"))).mask()).boundingRect()
+    face_bounds = QRegion(QPixmap(str(view.path("base"))).mask()).united(
+        QRegion(QPixmap(str(view.path("jaw"))).mask())
+    ).boundingRect()
     # The first regression test inferred the mouth from a fixed percentage of
     # the face bounds and accidentally sampled the nose on this asset set.
     # The rebuilt cavity layer is the authoritative per-yaw mouth location;
@@ -207,7 +264,7 @@ def test_speaking_moves_the_mouth_without_detaching_the_chin() -> None:
     assert mouth_changes > MIN_SPEAKING_MOUTH_CHANGED_PIXELS
 
     # A moving jaw replacement used to be drawn as a second skin patch below
-    # the face. Speaking must not alter this lower-chin region at all.
+    # the face. Speaking preserves this lower-chin region exactly.
     chin_changes = 0
     for y in range(
         round(face_bounds.y() + face_bounds.height() * 0.76),
@@ -219,7 +276,7 @@ def test_speaking_moves_the_mouth_without_detaching_the_chin() -> None:
 
 
 def test_registered_full_body_control_cutouts_are_not_double_painted() -> None:
-    """Speech/mood controls must not reveal circles or face-edge seams."""
+    """Speech/mood controls retain seamless face edges and natural feature shapes."""
 
     _app()
     manifest = load_layered_full_body_assets(FULL_BODY_DIR)
@@ -267,6 +324,10 @@ def test_registered_full_body_control_cutouts_are_not_double_painted() -> None:
         allowed_eye_region = allowed_eye_region.united(
             QRegion(QPixmap(str(view.path(layer_name))).mask())
         )
+    # Authored blink frames own their registered eye footprint, which can
+    # extend beyond the neutral eyelid cutouts (for example lower lashes).
+    for path in view.blink_frames.values():
+        allowed_eye_region = allowed_eye_region.united(QRegion(QPixmap(str(path)).mask()))
     changed_pixels = 0
     for y in range(active_image.height()):
         for x in range(active_image.width()):
@@ -290,10 +351,17 @@ def test_full_body_speech_assets_never_paint_fake_teeth_or_back_view_dots() -> N
         assert oral_region.isEmpty() == (view_id not in VISIBLE_SPEECH_MOUTH_VIEWS), (
             f"{view_id} has the wrong speech-mouth visibility"
         )
+        if view_id in VISIBLE_SPEECH_MOUTH_VIEWS:
+            lip_region = QRegion(QPixmap(str(view.path("lip_upper"))).mask()).united(
+                QRegion(QPixmap(str(view.path("lip_lower"))).mask())
+            )
+            assert lip_region.boundingRect().adjusted(-1, -1, 1, 1).contains(
+                oral_region.boundingRect()
+            ), f"{view_id} has speech pixels outside the authored lip bounds"
 
 
 def test_decoded_layer_cache_stays_bounded_across_the_view_ring() -> None:
-    """Rotating through all 600 layers must not retain ~3.5 GiB of RGBA."""
+    """Rotating all 600 layers releases RGBA buffers within the cache budget."""
 
     _app()
     manifest = load_layered_full_body_assets(FULL_BODY_DIR)
@@ -329,7 +397,30 @@ def test_behavior_performance_changes_the_full_body_frame() -> None:
     assert neutral != active
 
 
+
+def test_authority_restoration_preserves_fractional_alpha() -> None:
+    app = QApplication.instance() or QApplication([])
+    authority = QPixmap(2, 1)
+    edge_alpha = 64
+    authority.fill(QColor(180, 120, 100, edge_alpha))
+    target = QPixmap(authority)
+    expected = authority.toImage()
+    renderer = LayeredFullBodyRenderer()
+    renderer._face_region_cache = {"edge": QRegion(0, 0, 1, 1)}
+    renderer._seam_region_cache = {"edge": QRegion(0, 0, 1, 1)}
+    renderer._cached_pixmap = lambda path, *, required=True: authority
+    view = SimpleNamespace(view_id="edge")
+    for _ in range(3):
+        renderer._heal_registered_seams(target, view)
+        renderer._restore_authority_face(target, view)
+    assert target.toImage() == expected
+    assert target.toImage().pixelColor(0, 0).alpha() == edge_alpha
+    app.processEvents()
+
 def run() -> None:
+    test_authority_restoration_preserves_fractional_alpha()
+    test_closed_eyes_suppress_only_eye_makeup_and_restore_on_reopening()
+    test_renderer_applies_active_outfit_to_the_exact_yaw_view()
     test_manifest_loads_all_twenty_four_views()
     test_renderer_produces_non_null_frame()
     test_renderer_blends_adjacent_views()

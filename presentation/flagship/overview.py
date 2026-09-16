@@ -73,8 +73,7 @@ class FlagshipOverviewMixin:
     def _accessibility_section(self) -> QWidget:
         """Visible writers for theme and accessibility settings.
 
-        Both keys were read by the flagship and dashboard themes but had no
-        writer anywhere in the UI, so the accessibility options were dead.
+        Both keys were read by the flagship and dashboard themes but lacked a writer in the UI, so the accessibility options stayed inactive.
         """
 
         section = QWidget()
@@ -143,7 +142,7 @@ class FlagshipOverviewMixin:
                 self,
                 self._t("資料備份"),
                 self._t(
-                    "備份失敗：{error}",
+                    '備份需要處理：{error}',
                     error=safe_error_message(self.language, exc),
                 ),
             )
@@ -166,9 +165,7 @@ class FlagshipOverviewMixin:
             "運作中" if self.remote_server and self.remote_server.running else "未啟用"
         )
         summary = self._t(
-            "Home Assistant：{home}\n遠端服務：{remote}\n"
-            "已啟用工作流程：{workflows}\n有效配對裝置：{devices}\n"
-            "安全狀態：高風險操作不允許免確認；任意命令列與付款永久禁止。",
+            'Home Assistant：{home}\n遠端服務：{remote}\n已啟用工作流程：{workflows}\n有效配對裝置：{devices}\n安全狀態：高風險操作須確認；任意命令列與付款永久排除於執行範圍。',
             home=ha_text,
             remote=remote_text,
             workflows=workflow_count,
@@ -179,5 +176,5 @@ class FlagshipOverviewMixin:
             "automatic_backup_failed",
             False,
         ):
-            summary += "\n" + self._t("自動備份失敗")
+            summary += "\n" + self._t('自動備份需要處理')
         self.health_summary.setText(summary)

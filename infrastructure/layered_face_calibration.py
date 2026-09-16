@@ -24,7 +24,7 @@ lazy from infrastructure.layered_face_assets import (
 )
 
 # A layer whose opaque bounding box drifts more than this many pixels from the
-# pose's base layer is rejected. One pixel is the hard ceiling: any larger jump
+# pose's base layer receives an audit result. One pixel is the hard ceiling: any larger jump
 # is visible as a seam in continuous-gradient mode.
 MAX_ANCHOR_DRIFT_PIXELS = 1
 
@@ -75,7 +75,7 @@ class LayerAnchor:
 
 
 def _opaque_bounds(path: Path) -> LayerAnchor | None:
-    """Return the opaque bounding box of a PNG, or ``None`` if fully transparent."""
+    """Return the opaque bounding box of a PNG, or the sentinel if fully transparent."""
     image = QImage(str(path))
     if image.isNull():
         raise ValueError(f"cannot decode layered face PNG: {path.name}")
@@ -115,8 +115,7 @@ def _center_escape(reference: LayerAnchor, candidate: LayerAnchor) -> float:
     A local layer (iris, blush, jaw, corner) legitimately occupies only a small
     region of the face, so its box is expected to sit *somewhere inside* the
     base layer's box rather than match it. The anchor check therefore verifies
-    that each layer's center still lands inside the base's opaque region; a
-    center that escapes the base region means the layer was authored on a
+    that each layer's center still lands inside the base's opaque region; A center outside the base region indicates the layer was authored on a
     shifted canvas and would produce a visible seam.
     """
 
@@ -135,15 +134,13 @@ def _center_escape(reference: LayerAnchor, candidate: LayerAnchor) -> float:
 
 
 def calibrate_layered_face_assets(manifest: LayeredFaceManifest) -> None:
-    """Fail closed if any layer's center escapes the base layer's region.
+    """Apply a protective result when any layer's center leaves the base layer's region.
 
     The ``base`` layer of each pose is the alignment reference. Every other
     layer's opaque bounding-box center must land inside the base layer's opaque
-    region (within ``MAX_ANCHOR_DRIFT_PIXELS`` of tolerance). A center that
-    escapes the base region means the layer was authored on a shifted canvas and
+    region (within ``MAX_ANCHOR_DRIFT_PIXELS`` of tolerance). A center outside the base region indicates the layer was authored on a shifted canvas and
     would produce a visible seam in continuous-gradient mode. A fully
-    transparent layer is also rejected, since it would silently erase that
-    facial feature.
+    transparent layer receives an audit result because it could erase that facial feature.
     """
 
     for pose, layered_pose in manifest.poses.items():

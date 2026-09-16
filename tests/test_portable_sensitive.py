@@ -22,10 +22,7 @@ def _installed_aead_packages() -> tuple[str, ...]:
 def _require_audited_aead_dependency() -> None:
     installed = _installed_aead_packages()
     assert installed, (
-        "SECURITY_BLOCKED: Python 3.15 必須安裝經稽核的 authenticated-encryption "
-        "相依套件；不得以 hashlib.scrypt 搭配自製串流加密與 MAC 取代 AEAD。"
-        "請在正式環境安裝支援 Python 3.15 的 cryptography、PyNaCl 或"
-        " PyCryptodome，再執行 portable_sensitive.py。"
+        'SECURITY_BLOCKED: Python 3.15 必須使用經稽核的 authenticated-encryption 相依套件及 AEAD。請在正式環境安裝支援 Python 3.15 的 cryptography、PyNaCl 或 PyCryptodome，再執行 portable_sensitive.py。'
     )
 
 

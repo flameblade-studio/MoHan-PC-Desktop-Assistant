@@ -95,7 +95,7 @@ def test_release_please_body_exemption_requires_bot_author_and_four_language_tit
             "user": {"login": "impostor"},
         }
     }
-    # A human-authored PR must not bypass governance via the branch name.
+    # Every human-authored PR follows governance regardless of branch name.
     assert _run_main_with_payload(payload) == 1
 
     payload["pull_request"]["user"]["login"] = "github-actions[bot]"

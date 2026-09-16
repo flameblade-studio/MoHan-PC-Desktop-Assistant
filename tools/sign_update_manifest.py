@@ -1,7 +1,7 @@
 """Generate the owner's Ed25519 key, sign an update manifest, and verify it.
 
-The private key is created and kept on the owner's machine.  It is never
-committed, never a CI secret, and CI never signs: after the release workflow
+The private key stays exclusively on the owner's machine, outside the
+repository and CI. Signing is performed by the owner after the workflow
 publishes ``MoHan-Desktop-Assistant-<tag>-update.json`` the owner runs
 ``release-sign``, which downloads that exact asset, signs its bytes, uploads
 ``<manifest>.sig`` and downloads it again to verify against the pinned keys.
@@ -78,7 +78,7 @@ def sign_manifest_bytes(
     *,
     pinned: tuple[str, ...] = PINNED_UPDATE_MANIFEST_PUBLIC_KEYS,
 ) -> str:
-    """Return the hex signature; refuse a key whose public half is not pinned."""
+    """Return the hex signature using only a key whose public half is pinned."""
 
     signature = private_key.sign(manifest_bytes).hex()
     if pinned:
@@ -174,7 +174,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    # 只在當腳本跑時改主控台編碼；被測試匯入時不能動 pytest 接管的 stdout。
+    # 腳本直接執行時設定主控台編碼；測試匯入時保留 pytest 管理的 stdout。
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     raise SystemExit(main())

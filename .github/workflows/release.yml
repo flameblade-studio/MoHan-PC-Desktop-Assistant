@@ -125,9 +125,9 @@ jobs:
               exit 7
             }
           elif [[ "$EVENT_NAME" == "release" || "$EVENT_NAME" == "workflow_dispatch" ]]; then
-            # release-please 透過 API 建立 tag/release（不觸發 push 事件）。
-            # release 事件或明確的 workflow_dispatch 都允許在 release 已存在時
-            # 上傳資產（而非重建），以補齊 release-please 建立的空 release。
+            # release-please 透過 API 建立 tag/release；release 事件或明確的
+            # workflow_dispatch 接續處理既有 release，直接上傳資產，完成
+            # release-please 建立的資產清單。
             if [[ -n "$release_id" ]]; then
               release_mode_matches="$(
                 gh api "$releases_api/$release_id" \
@@ -188,9 +188,9 @@ jobs:
         env:
           PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}
         run: |
-          # Release Please only rewrites pyproject.toml reliably; propagate the
-          # authoritative version to every other reference so the packaged
-          # artifacts and the consistency checks always agree.
+          # Release Please reliably rewrites pyproject.toml; propagate the
+          # authoritative version to every other reference so packaged
+          # artifacts and consistency checks share one version.
           "$PREFLIGHT_PYTHON" tools/sync_version.py
 
   windows:
@@ -300,7 +300,8 @@ jobs:
             --output-dir $evidenceDir `
             --min-samples 100 `
             --max-sample-read-error-percent 15 `
-            --max-missed-samples-percent 10
+            --max-missed-samples-percent 10 `
+            --duration 40
           if ($LASTEXITCODE -ne 0) {
             throw "Tachyon release evidence failed with exit code $LASTEXITCODE"
           }
@@ -876,7 +877,8 @@ jobs:
           mapfile -d '' assets < <(find release-artifacts -maxdepth 1 -type f -print0 | sort -z)
           existing_id="$(gh api --paginate "repos/${{ github.repository }}/releases?per_page=100" --jq ".[] | select(.tag_name == \"$tag\") | .id" | head -n 1)"
           if [[ -n "$existing_id" ]]; then
-            # release-please 已建立 release（可能無資產）：直接上傳資產，不重建。
+            # release-please 已建立 release；資產清單直接上傳到既有 release，
+            # 讓發行內容完成一致的驗證集合。
             echo "Release $tag already exists; uploading verified assets instead of rebuilding."
             release_id="$existing_id"
             for asset in "${assets[@]}"; do

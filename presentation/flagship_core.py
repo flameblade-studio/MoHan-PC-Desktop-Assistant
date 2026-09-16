@@ -1,7 +1,4 @@
-"""Canonical presentation API for flagship action contracts.
-
-Every public name is imported directly from its physical owner.  Python 3.15
-keeps these imports lazy without exposing a dotted-module proxy to callers.
+"""Canonical presentation API for flagship action contracts. Every public name is imported directly from its physical owner. Python 3.15 keeps these imports lazy while callers receive the physical module API.
 """
 
 from __future__ import annotations

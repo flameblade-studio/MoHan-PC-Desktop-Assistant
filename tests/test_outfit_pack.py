@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+lazy import binascii
 lazy import copy
 lazy import hashlib
 lazy import json
 lazy import struct
 lazy import sys
 lazy import zipfile
+lazy import zlib
 lazy from contextlib import contextmanager
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
@@ -49,7 +51,23 @@ def pending_official_root(root: Path):
 
 
 def _png() -> bytes:
-    return b"\x89PNG\r\n\x1a\n" + b"\0\0\0\rIHDR" + struct.pack(">II", 512, 768)
+    width, height = 512, 768
+    transparent = b"\0" * (width * 4 - 4)
+    first_row = b"\0\x10\x20\x30\xff" + transparent
+    other_row = b"\0" + b"\0" * (width * 4)
+    raw = first_row + other_row * (height - 1)
+
+    def chunk(kind: bytes, payload: bytes) -> bytes:
+        crc = binascii.crc32(kind + payload) & 0xFFFFFFFF
+        return struct.pack(">I", len(payload)) + kind + payload + struct.pack(">I", crc)
+
+    header = struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0)
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", header)
+        + chunk(b"IDAT", zlib.compress(raw, 9))
+        + chunk(b"IEND", b"")
+    )
 
 
 def _names(name: str) -> dict[str, str]:
@@ -232,7 +250,7 @@ def _assert_authoring_builder(
     except OutfitPackError:
         pass
     else:
-        raise AssertionError("the builder must not overwrite an existing package")
+        raise AssertionError('the builder must preserve an existing package')
 
 
 def _reject(path: Path) -> None:
@@ -240,7 +258,7 @@ def _reject(path: Path) -> None:
         inspect_outfit_pack(path)
     except OutfitPackError:
         return
-    raise AssertionError("invalid appearance pack must fail closed")
+    raise AssertionError('appearance packs must satisfy the acceptance contract')
 
 
 def _expect_remove_error(store: Path, pack_id: str, message: str) -> None:
@@ -401,7 +419,7 @@ def _assert_removal_fails_closed(store: Path, valid: Path) -> None:
     except OutfitPackError:
         pass
     else:
-        raise AssertionError("a missing selected outfit must never be replaced")
+        raise AssertionError('a selected outfit awaiting recovery must preserve its selection')
     install_outfit_pack(valid, store)
 
 

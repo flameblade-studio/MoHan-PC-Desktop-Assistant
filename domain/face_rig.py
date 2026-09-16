@@ -59,7 +59,7 @@ def viseme_u_inward_scale(weight: float) -> float:
 
     ``weight`` is the 50 Hz transition weight stored on ``MouthShape``. The
     source authority is always transformed from its original pixels, so
-    repeated frames can never accumulate another five-percent shrink.
+    repeated frames preserve the same five-percent scale.
     """
 
     return 1.0 - VISEME_U_INWARD_LERP * _unit(weight)

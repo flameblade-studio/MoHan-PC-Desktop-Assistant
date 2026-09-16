@@ -166,7 +166,7 @@ def test_version_runtime_and_evidence_policy() -> None:
 
 
 # SHA-256 of the canonical bare half-body sprite (generation-2 base, pinned
-# 2026-09-02).  Marketing art is no longer drawn from it directly: the composed
+# 2026-09-02). Marketing art uses the composed
 # portrait below is rendered over it by tools/render_marketing_portraits.py.
 CANONICAL_HALF_BODY_SHA256 = (
     "e99cc462979d963247db30e73efcceffe408c5b4046db69611325a6920647825"
@@ -275,9 +275,8 @@ def _assert_media_provenance(manifest: dict[str, object]) -> None:
     assert isinstance(entries, dict)
     references = _readme_media_references()
     assert set(entries) == references, (
-        "README media provenance mismatch: "
-        f"missing={sorted(references - set(entries))}, "
-        f"unexpected={sorted(set(entries) - references)}"
+        f'README media provenance requires alignment: outstanding={sorted(references - set(entries))}, unexpected='
+        f'{sorted(set(entries) - references)}'
     )
 
     stale: list[str] = []
@@ -286,7 +285,7 @@ def _assert_media_provenance(manifest: dict[str, object]) -> None:
         assert isinstance(relative, str)
         assert isinstance(metadata, dict), relative
         path = ROOT / relative
-        assert path.is_file(), f"missing README media file: {relative}"
+        assert path.is_file(), f'provide the README media file: {relative}'
         generator = metadata.get("generator")
         assert isinstance(generator, str) and generator.strip(), relative
         generation = metadata.get("generation")
@@ -410,11 +409,11 @@ def test_inno_setup_and_artwork_contract() -> None:
     assert 'MOHAN_ALLOW_INSTALLER_MUTATION -ne "1"' in installer_test
     assert '"/MERGETASKS=!desktopicon"' in installer_test
     for required in (
-        "MSI $Variant shortcut target escaped the install directory",
-        "MSI $Variant shortcut has an invalid Shell Link header",
-        "MSI $Variant shortcut contains an independent icon location",
-        "MSI $Variant shortcut icon escaped the installed MoHan executable",
-        "MSI $Variant uninstaller left the Start menu shortcut behind",
+        "MSI $Variant shortcut target must match the installed application path",
+        "MSI $Variant shortcut has a Shell Link header value different from the required value",
+        "MSI $Variant shortcut uses an independent icon location",
+        "MSI $Variant shortcut icon path must use the installed MoHan executable",
+        "MSI $Variant uninstaller retained the Start menu shortcut",
     ):
         assert required in installer_test
 
@@ -542,10 +541,10 @@ def test_wix_source_and_localization_contract() -> None:
     installer_test = read("installer/test_installers.ps1")
     policy = read("installer/LOCALIZATION.md")
     assert '"LICENSE", "THIRD_PARTY_NOTICES.md"' in installer_test
-    assert "EXE shortcut target escaped the installed application directory" in (
+    assert "EXE shortcut target must match the installed application path" in (
         installer_test
     )
-    assert "EXE shortcut icon does not use the installed MoHan half-body icon" in (
+    assert "EXE shortcut icon must use the installed MoHan half-body icon" in (
         installer_test
     )
     for locale, lcid in (("en-US", "1033"), ("zh-CN", "2052"), ("ja-JP", "1041")):
@@ -664,12 +663,12 @@ def test_readme_language_and_contribution_contract() -> None:
     assert_contains(
         readme,
         (
-            "妾才沒有等你的 Star",
-            "若再補上測試",
-            "你願意送來 PR",
-            "未經測試便想合併",
-            "全數綠燈",
-            "Bug 可以明日再查",
+            "妾在等你的 Star，也順道確認軍心。",
+            "若再補上測試，妾便勉強准它入主分支。",
+            "你願意送來 PR？妾、妾只是替主上記下功勞。",
+            "未經測試便想合併？手伸出來。妾只敲一下。",
+            "全數綠燈……做得好。別誤會，妾只是尊重好工程。",
+            "Bug 可以明日再查。你若累倒，誰來陪妾守著赤焰劍？",
         ),
     )
 

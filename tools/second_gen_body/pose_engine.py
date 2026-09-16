@@ -1,26 +1,17 @@
-"""墨寒二代素體的通用姿勢引擎：127 根骨骼的前向運動學 + DQS 蒙皮 + 驗收。
+"""墨寒二代素體通用姿勢引擎：127 根骨骼的前向運動學、DQS 蒙皮與驗收。
 
-為什麼要在二代素體上線前做：素體上線後才發現蒙皮撐不住大動作，姿勢圖集、
-DLC 服裝對位、擁有權遮罩全部要重做。現在做，成本只是幾小時。
+在素體接入前驗證大幅動作，讓姿勢圖集、DLC 服裝對位與擁有權遮罩
+共用經過驗證的蒙皮基礎。
 
-三個必須講清楚的設計判斷：
-
-1. 驅動的是 twist 骨，不是 uparm/lowarm 本身。
-   MHR 綁定裡 l_uparm 與 l_lowarm 的 weight_count 都是 0——上下臂的變形權重
-   全部掛在 uparm_twist0-4、lowarm_twist1-4 與 wrist 上。綁定師放這 5 根
-   twist 骨就是為了把軸向扭轉沿骨段分攤，每小段只轉五分之一，這才是
-   candy-wrapper 的正解；DQS 只是保險。只轉父骨會得到一支不會動的手臂。
-
-2. 不需要 bind pose 逆矩陣。
-   骨架表只給關節世界座標、沒給朝向。所以旋轉一律以「繞世界空間中某一點、
-   某一軸」表達，沿階層複合：D[b] = D[parent] ∘ L[b]。這個式子與標準蒙皮
-   等價（L[b] 繞的是靜止位置，父變換再把它整段帶走），且完全避開缺少
-   rest orientation 的問題。
-
-3. 驗收不看「有沒有跑完」，看四項幾何量。
-   邊長拉伸與三角形面積塌陷抓撕裂與 candy-wrapper，帶號體積抓塌陷與外翻，
-   軀幹四斷面抓擁有者核可的圍度是否被動到。任一超標就是不合格的姿勢，
-   不是「看起來還好」。
+三項設計依據：
+1. 驅動 twist 骨。MHR 的 l_uparm、l_lowarm weight_count 都為 0；
+   上下臂權重位於 uparm_twist0-4、lowarm_twist1-4 與 wrist。
+   將軸向扭轉沿這些骨段分攤，每段承擔相應角度，DQS 提供體積保護。
+2. 依關節世界座標表達繞點、繞軸旋轉，並沿階層複合：
+   D[b] = D[parent] ∘ L[b]。L[b] 繞靜止位置，父變換再帶動整段，
+   與標準蒙皮等價，適用於僅提供關節座標的骨架表。
+3. 驗收使用四項幾何量：邊長拉伸、三角形面積、帶號體積與軀幹四斷面。
+   每項均須符合既定門檻後，姿勢才可採用；超標時回報具體量測結果。
 """
 import csv
 import sys
@@ -150,14 +141,12 @@ class Rig:
 
 def relax_weights(rig: Rig, vertices: np.ndarray, faces: np.ndarray,
                   centre: np.ndarray, radius: float, *, rounds: int = 12) -> int:
-    """對指定球域內的蒙皮權重做拉普拉斯平滑，回傳被調整的頂點數。
+    """在指定球域內平滑蒙皮權重，回傳調整的頂點數。
 
-    為什麼需要：MHR 的權重是為中等幅度動作繪的，腋窩處 clavicle 與 uparm
-    的過渡太陡。舉臂過頭時，交界兩側相鄰頂點跟著不同骨骼走，邊長被拉到
-    6.8 倍。實測受影響的只有 39 個頂點（0.2%），全在 y 125~144 的三角肌帶。
-
-    只平滑局部、且權重和維持為 1，所以不會動到身體其他部位；平滑後仍是
-    合法的蒙皮權重，不是事後修補頂點位置那種掩蓋手法。
+    MHR 權重針對中等動作幅度繪製；舉臂過頭的實測顯示腋窩 clavicle 與
+    uparm 交界邊長達 6.8 倍，涉及 y 125~144 三角肌帶的 39 個頂點（0.2%）。
+    此處僅平滑該局部並維持權重和為 1，保留其他部位及合法蒙皮權重，
+    直接在蒙皮來源處改善連續性。
     """
     adjacency = defaultdict(set)
     for a, b, c in faces:
@@ -201,10 +190,10 @@ def quat_to_matrix(q: np.ndarray) -> np.ndarray:
 
 
 def forward_kinematics(rig: Rig, spec: dict[str, tuple]) -> np.ndarray:
-    """把 {骨骼: (軸, 角度)} 展開成每根骨骼的世界剛體變換（對偶四元數）。
+    """將 {骨骼: (軸, 角度)} 展開為世界剛體變換（對偶四元數）。
 
-    D[b] = D[parent] ∘ L[b]，L[b] 是繞該骨靜止位置、指定軸的旋轉。
-    沒有指定旋轉的骨骼 L 為恆等，但仍必須繼承父變換——否則手指會留在原地。
+    D[b] = D[parent] ∘ L[b]；L[b] 是繞靜止位置及指定軸的旋轉。
+    省略旋轉的骨骼使用恆等 L，並繼承父變換，讓手指跟隨手部運動。
     """
     identity = dual_quat(np.eye(3), np.zeros(3))
     deltas = {}
@@ -230,11 +219,11 @@ def forward_kinematics(rig: Rig, spec: dict[str, tuple]) -> np.ndarray:
 
 
 def distribute_twist(rig: Rig, segment: str, degrees: float) -> dict[str, tuple]:
-    """把一段骨的軸向扭轉沿它的 twist 骨線性分攤。
+    """將軸向扭轉沿 twist 骨線性分攤。
 
-    綁定裡 uparm/lowarm 自身沒有權重，扭轉必須交給 twist 骨；而且要分攤，
-    不能全給最遠端那一根——全給一根就是教科書上 candy-wrapper 的成因。
-    近端 0、遠端全額，中間線性。軸取「該骨指向其子骨」的方向。
+    綁定中的 uparm/lowarm 自身權重為 0，因此由 twist 骨承擔扭轉。
+    近端角度為 0、遠端為全額，中間線性分攤，以維持各骨段的平滑變形。
+    旋轉軸使用該骨指向子骨的方向。
     """
     twists = sorted(c for c in rig.children[segment] if c.endswith("_proc"))
     if not twists:
@@ -279,11 +268,11 @@ def repose(rig: Rig, vertices: np.ndarray,
 
 
 def section_heights(reference: np.ndarray) -> dict[str, float]:
-    """把四斷面換算成參考姿勢下的絕對世界高度。
+    """將四個斷面換算為參考姿勢下的絕對世界高度。
 
-    不能沿用「身高的某個比例」：手舉過頭時包圍盒變高，0.74 的位置就不再是
-    胸線，量出來的 40 cm 漂移是量錯了位置，不是圍度真的變。斷面是身體上的
-    固定解剖位置，必須用絕對高度鎖住。
+    斷面使用固定解剖位置的絕對高度。舉臂會增加包圍盒高度，比例 0.74
+    因此會移往其他位置；先前量得的 40 cm 偏移來自取樣位置變化。
+    固定世界高度可讓各姿勢對照同一解剖斷面。
     """
     floor, height = float(reference[:, 1].min()), float(np.ptp(reference[:, 1]))
     return {name: floor + fraction * height
@@ -364,11 +353,10 @@ def validate(rest: np.ndarray, posed: np.ndarray, faces: np.ndarray,
 
 def self_intersections(vertices: np.ndarray, faces: np.ndarray,
                        *, cell: float = 2.0, cap: int = 4_000_000) -> int:
-    """用均勻網格找互相貫穿的三角形對，只計非相鄰的。
+    """以均勻網格尋找相互貫穿的非相鄰三角形對。
 
-    大動作真正會出事的不是蒙皮而是姿勢本身——手掌打到臉、上臂壓進胸。
-    這個檢查抓的是那個，不是撕裂。cap 是候選對數上限，超過就放棄並回報 -1，
-    寧可說「沒檢查」也不要靜靜漏檢。
+    此檢查辨識手掌與臉、上臂與胸等部位的姿勢碰撞；網格連續性由其他
+    幾何檢查負責。cap 限定候選對數，超過時明確回報 -1，標記檢查待完成。
     """
     centroid = vertices[faces].mean(axis=1)
     keys = np.floor(centroid / cell).astype(np.int64)

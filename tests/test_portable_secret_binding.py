@@ -84,7 +84,7 @@ def expect_binding_error(operation) -> str:
         message = str(exc)
         assert "PRIVATE" not in message
         return message
-    raise AssertionError("invalid binding unexpectedly succeeded")
+    raise AssertionError('binding must satisfy the validation contract')
 
 
 def assert_complete_dashboard_mapping() -> None:
@@ -143,7 +143,7 @@ def assert_apply_rollback_is_preserved() -> None:
     except PortableSecretsError as exc:
         assert "PRIVATE" not in str(exc)
     else:
-        raise AssertionError("failed apply must be reported")
+        raise AssertionError('apply errors must be reported')
     assert stores["openai"].value == "old-openai"
     assert stores["azure_speech"].value == "old-azure"
 

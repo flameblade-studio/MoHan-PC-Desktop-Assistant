@@ -146,15 +146,14 @@ class FlagshipVisionMixin:
         form.addRow(self.openai_vision_object_semantics)
         form.addRow(self.openai_vision_web_suggestions)
         privacy = QLabel(
-            self._t("✓ 原始影像不保存；設定檔不包含 API Key。")
+            self._t('✓ 原始影像僅供即時處理；API Key 由獨立安全儲存管理。')
         )
         privacy.setWordWrap(True)
         privacy.setAccessibleName(self._t("雲端視覺隱私保護"))
         form.addRow(privacy)
         authorization_note = QLabel(
             self._t(
-                "啟用並保存後會依所選事件與用量限制持續運作，直到你關閉；"
-                "可能產生成本，原始影像不保存，也不會自動上網。"
+                '明確啟用並全域保存後，雲端視覺依所選事件與用量限制沿用持續授權，直到你主動關閉；狀態始終可見，並可設定配額與成本上限或立即撤銷。原始影像僅供即時處理，網路查詢由你明確決定。'
             )
         )
         authorization_note.setWordWrap(True)
@@ -223,7 +222,7 @@ class FlagshipVisionMixin:
     def _cloud_vision_result(self, result: object) -> None:
         if not isinstance(result, CloudVisionUIResult):
             self.openai_vision_status.setText(
-                self._t("● 雲端視覺服務目前無法使用")
+                self._t('● 雲端視覺服務需要處理')
             )
             return
         if result.status.value == "success":
@@ -293,7 +292,7 @@ class FlagshipVisionMixin:
             self.camera_presence.configure_gesture_sampling(False)
             self.face_identity.setEnabled(False)
             self.local_perception_status.setText(
-                self._t("本機臉部、虹膜與手勢模型尚未啟動")
+                self._t('本機臉部、虹膜與手勢模型等待啟動')
             )
             self.db.set_setting("camera_presence_enabled", False)
             self.db.set_setting("face_identity_enabled", False)
@@ -320,9 +319,7 @@ class FlagshipVisionMixin:
                 self,
                 self._t("啟用攝影機"),
                 self._t(
-                    "墨寒會在本機分析在場狀態、臉部與眼神特徵、手勢及"
-                    "場景線索；不保存原始影像、不傳送雲端，未登錄的人物"
-                    "不會建立身分。是否啟用？"
+                    '墨寒會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？'
                 ),
             )
             != QMessageBox.Yes
@@ -330,7 +327,7 @@ class FlagshipVisionMixin:
             self.camera_enabled.setChecked(False)
             return
         try:
-            # The presence/gesture pipeline must never be held hostage by
+            # The presence/gesture pipeline keeps its own progress independent of
             # face-recognition readiness (cv2 FaceDetectorYN/FaceRecognizerSF
             # plus three exactly-matched ONNX models).  A webcam that reports
             # video inputs is enough to start presence detection and gesture
@@ -348,7 +345,7 @@ class FlagshipVisionMixin:
             self.camera_enabled.setChecked(False)
             self.camera_status.setText(
                 self._t(
-                    "攝影機啟動失敗：{error}",
+                    '攝影機啟動需要處理：{error}',
                     error=safe_error_message(self.language, exc),
                 )
             )
@@ -378,7 +375,7 @@ class FlagshipVisionMixin:
         except RuntimeError as exc:
             self.camera_status.setText(
                 self._t(
-                    "攝影機啟動失敗：{error}",
+                    '攝影機啟動需要處理：{error}',
                     error=safe_error_message(self.language, exc),
                 )
             )
@@ -432,11 +429,11 @@ class FlagshipVisionMixin:
         ready = bool(getattr(health, "ready", False))
         status = str(getattr(getattr(health, "status", ""), "value", ""))
         message = {
-            "ready": "手勢辨識已就緒；不保存照片或影像。",
-            "camera-unavailable": "攝影機尚未就緒，手勢互動保持停用。",
+            "ready": '手勢辨識已就緒，保存內容僅限手部特徵資料。',
+            "camera-unavailable": '攝影機就緒後即可啟用手勢互動。',
             "model-missing": "手部模型缺失，手勢互動保持停用。",
-            "model-load-failed": "手部模型無法載入，手勢互動保持停用。",
-            "inference-failed": "手勢辨識連續失敗，已安全停用。",
+            "model-load-failed": '請檢查手部模型載入狀態；手勢互動保持暫停。',
+            "inference-failed": '手勢辨識連續出現錯誤，已安全暫停，請檢查模型後再試。',
         }.get(status, "手勢互動目前未啟用。")
         self.gesture_record_status.setText(self._t(message))
         selected = self._selected_gesture()
@@ -462,10 +459,10 @@ class FlagshipVisionMixin:
             self._t(
                 {
                     GestureDispatchDisposition.CONFIRMATION_REQUIRED: (
-                        "此手勢需要既有權限確認，尚未執行。"
+                        '完成既有權限確認後，才可執行此手勢。'
                     ),
                     GestureDispatchDisposition.DENIED: "此手勢已由安全權限阻擋。",
-                    GestureDispatchDisposition.FAILED: "手勢動作執行失敗，未變更其他功能。",
+                    GestureDispatchDisposition.FAILED: '手勢動作執行需要處理；其他功能維持運作。',
                 }.get(result.disposition, "手勢未觸發任何動作。")
             )
         )
@@ -487,13 +484,13 @@ class FlagshipVisionMixin:
             self.vision_controller.begin_enrollment(display_name)
         except (RuntimeError, ValueError) as exc:
             self.camera_status.setText(
-                self._t("無法開始臉部登錄：{error}", error=safe_error_message(self.language, exc))
+                self._t("臉部登錄需要注意：{error}，請檢查設定後重試", error=safe_error_message(self.language, exc))
             )
     def clear_face_identities(self) -> None:
         if QMessageBox.question(
             self,
             self._t("刪除全部臉部身分"),
-            self._t("這會刪除本機加密的臉部特徵，且無法復原。是否繼續？"),
+            self._t('這會永久刪除本機加密的臉部特徵。是否繼續？'),
         ) != QMessageBox.Yes:
             return
         self.face_identities.clear()
@@ -536,7 +533,7 @@ class FlagshipVisionMixin:
             self._t(
                 "本機臉部、虹膜與手勢模型已就緒"
                 if ready
-                else "本機細緻臉部與虹膜模型無法使用；其餘功能維持運作"
+                else '本機細緻臉部與虹膜模型需要處理；其餘功能維持運作'
             )
         )
     def _vision_scene_changed(self, scene) -> None:

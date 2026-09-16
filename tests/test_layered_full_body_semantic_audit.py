@@ -132,7 +132,7 @@ def test_all_empty_teeth_layers_are_the_valid_neutral_state(tmp_path: Path) -> N
 def test_empty_face_layers_block_on_visible_views(tmp_path: Path) -> None:
     # Ruling 2026-08-28: the empty-layer rule is BLOCKING.  A regression
     # that writes an all-transparent iris or jaw layer on a visible view
-    # must not ship.  teeth_tongue stays licensed empty everywhere.
+    # require correction before shipment. teeth_tongue stays licensed empty everywhere.
     _clean_set(tmp_path)
     for layer in ("iris_left", "jaw", "teeth_tongue"):
         _write(tmp_path / f"{VIEW}_{layer}.png", _blank())
@@ -149,7 +149,7 @@ def test_empty_face_layers_block_on_visible_views(tmp_path: Path) -> None:
 
 
 def test_back_views_license_every_empty_face_layer(tmp_path: Path) -> None:
-    # Ruling 2026-08-28: the face is not visible from behind, so EVERY face
+    # Ruling 2026-08-28: the face points away from rear cameras, so EVERY face
     # semantic layer is licensed empty on back views (|yaw| > 90) — exactly
     # the state of the owner-accepted shipped assets.
     back = "yaw+105-pitch+00"
@@ -184,7 +184,7 @@ def test_reports_insufficient_base_face_coverage(tmp_path: Path) -> None:
 def test_cli_is_a_fail_closed_single_preflight_command(tmp_path: Path, capsys) -> None:
     _clean_set(tmp_path)
     _write(tmp_path / f"{VIEW}_teeth_tongue.png", _blank())
-    # Use a back view so the CLI does not require a synthetic detector model.
+    # Use a back view to exercise the CLI independently of a detector model.
     back = "yaw-180-pitch+00"
     for layer in LAYER_NAMES:
         source = tmp_path / f"{VIEW}_{layer}.png"
@@ -196,7 +196,7 @@ def test_cli_is_a_fail_closed_single_preflight_command(tmp_path: Path, capsys) -
             "--detector-model", str(DEFAULT_DETECTOR_MODEL),
         )
     )
-    # Default CLI audits all 24 views, so missing files and empty teeth fail closed.
+    # Default CLI audits all 24 views and requires all files and valid teeth-layer states.
     assert exit_code == 1
     output = capsys.readouterr().out
     assert "LAYERED_FULL_BODY_SEMANTICS_FAIL" in output

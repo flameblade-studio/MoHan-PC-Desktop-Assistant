@@ -46,7 +46,7 @@ EXPECTED_STOP_CALLS = 2
 # a defective teardown from spinning forever.
 MAX_CLEANUP_ROUNDS = 25
 # Kept as a printed warning plus a generous ceiling instead of a strict zero
-# so one stubborn widget cannot re-introduce intermittent CI failures.
+# so teardown releases each widget reliably across CI runs.
 MAX_LEAKED_TOP_LEVEL_WIDGETS = 4
 
 
@@ -280,7 +280,7 @@ def application() -> QApplication:
     app = QApplication.instance() or QApplication([])
     yield app
     # Module finalizer: settle every deferred deletion queued by the per-test
-    # teardowns so no leaked top-level widget survives into the next module.
+    # teardowns so every top-level widget is released before the next module.
     leaked = _drain_deferred_deletions(app)
     leftovers = [
         f"{type(widget).__name__}(objectName={widget.objectName()!r})"
@@ -364,7 +364,7 @@ def context(tmp_path: Path) -> _OfflineContext:
     window.close()
     window.deleteLater()
     # The dashboard is a parentless top-level dialog: closing the companion
-    # window hides it but never deletes it, so release it explicitly.
+    # window only hides it; release the object explicitly.
     dashboard = getattr(window, "dashboard", None)
     if dashboard is not None:
         dashboard.close()
@@ -375,10 +375,9 @@ def context(tmp_path: Path) -> _OfflineContext:
         QApplication.processEvents()
         QApplication.sendPostedEvents(None, QEvent.DeferredDelete)
     QApplication.processEvents()
-    # Each test builds a full CompanionWindow; without clearing Qt's global
-    # pixmap cache and forcing a GC pass, the six windows in this module
-    # accumulate every loaded atlas layer and exhaust the 7 GB CI runner
-    # (repeated MemoryError in this module on GitHub-hosted Windows).
+    # Each test builds a full CompanionWindow. Clear the global pixmap cache
+    # and collect objects after each one so the six windows release atlas
+    # layers within the 7 GB CI memory budget.
     QPixmapCache.clear()
     gc.collect()
 
@@ -416,7 +415,7 @@ def _route_speech(context: _OfflineContext, provider_id: str) -> None:
 def test_application_mute_is_visible_and_does_not_bill_a_provider(
     context: _OfflineContext,
 ) -> None:
-    """A persisted app mute must not masquerade as a failed TTS engine."""
+    """A persisted app mute retains its own state, distinct from a TTS error."""
 
     window = context.window
     window.db.set_setting("voice_muted", True)
@@ -432,7 +431,7 @@ def test_application_mute_is_visible_and_does_not_bill_a_provider(
 def test_local_voice_failure_releases_mouth_and_speech_queue(
     context: _OfflineContext,
 ) -> None:
-    """A failed SAPI request must not strand the companion in speaking mode."""
+    """A SAPI error releases speaking mode and restores the companion state."""
 
     window = context.window
     window.db.set_setting("voice_muted", False)

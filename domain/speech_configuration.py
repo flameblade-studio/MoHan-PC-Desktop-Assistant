@@ -74,7 +74,7 @@ OPENAI_SECRET_POLICY = SecretInputPolicy(
     title_key="api_key",
     title_fallback="OpenAI API 金鑰",
     error_key="api_key_save_failed",
-    error_fallback="無法安全保存 OpenAI API 金鑰：{error}",
+    error_fallback="請檢查設定後安全保存 OpenAI API 金鑰：{error}",
 )
 AZURE_SECRET_POLICY = SecretInputPolicy(
     saved_key="azure_key_saved",
@@ -82,7 +82,7 @@ AZURE_SECRET_POLICY = SecretInputPolicy(
     title_key="azure_key",
     title_fallback="Azure Speech 金鑰",
     error_key="azure_key_save_failed",
-    error_fallback="無法安全保存 Azure Speech 金鑰：{error}",
+    error_fallback="請檢查設定後安全保存 Azure Speech 金鑰：{error}",
 )
 AZURE_HD_SECRET_POLICY = SecretInputPolicy(
     saved_key="azure_hd_key_saved",
@@ -90,7 +90,7 @@ AZURE_HD_SECRET_POLICY = SecretInputPolicy(
     title_key="azure_hd_key",
     title_fallback="Dragon HD S0 金鑰",
     error_key="azure_hd_key_save_failed",
-    error_fallback="無法安全保存 Dragon HD S0 金鑰：{error}",
+    error_fallback="請檢查設定後安全保存 Dragon HD S0 金鑰：{error}",
 )
 
 

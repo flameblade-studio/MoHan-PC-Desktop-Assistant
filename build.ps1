@@ -26,10 +26,16 @@ if (-not $Python) {
     throw "Python was not found. Activate a virtual environment or pass -Python."
 }
 
+# Retain the exact MPL-covered source and notices before packaging dependencies.
+$MplSitePackages = (& $Python -c "import sysconfig; print(sysconfig.get_paths()['purelib'])").Trim()
+if ($LASTEXITCODE -ne 0) { throw "Cannot locate packaging site-packages for MPL verification." }
+& $Python tools/mpl_compliance.py --require-allowlist --site-packages $MplSitePackages
+if ($LASTEXITCODE -ne 0) { throw "MPL license/source evidence is incomplete; packaging stopped." }
+
 # The studio-maintained PySide6 6.11.1 build is installed in a dedicated
 # Python 3.15 compatibility environment.  The packaging interpreter owns all
-# other dependencies; prepend only the rebuilt Qt site-packages when the
-# selected interpreter cannot import it directly.
+# other dependencies; prepend the rebuilt Qt site-packages when the selected
+# interpreter requires the compatibility import path.
 $QtCompatSitePackages = Join-Path $ProjectRoot ".qt315-compat-full\Lib\site-packages"
 & $Python -c "import PySide6" 2>$null
 if ($LASTEXITCODE -ne 0) {
@@ -43,9 +49,9 @@ if ($LASTEXITCODE -ne 0) {
     }
 }
 
-# CPython 3.15's JIT is selected before interpreter initialization.  After a
+# CPython 3.15's JIT is selected before interpreter initialization.  The
 # 0xC0000409 mid-session crash on a user machine (2026-08-29) joined the CI
-# JIT/Qt failure history, every build-time child and the frozen runtime now
+# JIT/Qt incident record, so every build-time child and the frozen runtime
 # run with the JIT off; MOHAN_ENABLE_JIT=1 on the launcher re-enables it as
 # an explicit experiment.
 $env:PYTHON_JIT = "0"
@@ -69,9 +75,9 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Exercise the provider-neutral local speech path before packaging: synthetic
-# non-empty TTS bytes must start the PCM sink, enter SPEAKING, and produce a
-# non-zero mouth parameter.  The same audit also fails closed when sounddevice
-# cannot resolve its bundled PortAudio binary.
+# TTS bytes with content start the PCM sink, enter SPEAKING, and produce a
+# non-zero mouth parameter.  The same audit keeps packaging fail-closed while
+# sounddevice resolves its bundled PortAudio binary.
 & $Python -m tools.audit_speech_runtime_chain
 if ($LASTEXITCODE -ne 0) {
     throw "MoHan $Version speech runtime chain or PortAudio dependency is incomplete."
@@ -79,9 +85,10 @@ if ($LASTEXITCODE -ne 0) {
 
 # The 600 registered PoseAtlas layers must be semantically correct before any
 # bootloader, native wheel, or PyInstaller work starts.  Geometry-only checks
-# cannot detect a complete face stored in `ornament`, duplicated lips, empty
-# teeth/tongue layers, or a detached mouth.  Preserve the deterministic JSON
-# evidence even on failure, then stop the package build fail-closed.
+# leave a complete face stored in `ornament`, duplicated lips, empty
+# teeth/tongue layers, or a detached mouth outside their coverage.  Preserve
+# deterministic JSON evidence for every run, then keep the package build
+# fail-closed when the contract requires attention.
 $LayeredSemanticEvidenceDir = Join-Path `
     $ProjectRoot "docs\release-evidence\layered-full-body-semantic-audit"
 $LayeredSemanticEvidence = Join-Path `
@@ -94,8 +101,8 @@ if ($LayeredSemanticAuditExitCode -ne 0) {
     throw "MoHan $Version layered full-body semantic audit blocked packaging with exit code $LayeredSemanticAuditExitCode. Evidence: $LayeredSemanticEvidence"
 }
 
-# Independently gate the 24 authoritative static views.  This catches identity
-# and raster defects that layer naming cannot reveal: profile-forehead spikes,
+# Independently gate the 24 authoritative static views.  This records identity
+# and raster defects beyond layer naming, including profile-forehead spikes,
 # mirror/aspect drift, adjacent-yaw registration jumps, and green/cyan mouth
 # pixels.  The report is retained for visual release evidence on every run.
 $StaticIdentityEvidenceDir = Join-Path `
@@ -112,8 +119,8 @@ if ($StaticIdentityAuditExitCode -ne 0) {
 
 # Paired face controls must preserve the small, deterministic differences in
 # the authored left/right eyelids, liners, irises, brows, mouth corners, and
-# blush. Exact copies or exact mirrors produce an uncanny mechanical face even
-# when every individual PNG is otherwise valid.
+# blush. The authored differences keep the face natural while each individual
+# PNG satisfies its raster contract.
 $FaceAsymmetryEvidenceDir = Join-Path `
     $ProjectRoot "docs\release-evidence\face-layer-asymmetry-audit"
 $FaceAsymmetryEvidence = Join-Path `
@@ -126,10 +133,10 @@ if ($FaceAsymmetryAuditExitCode -ne 0) {
 }
 
 # Python 3.15 uses PyInitConfig (PEP 741).  The stock PyInstaller bootloader
-# forces isolated mode and therefore discards PYTHON_JIT before CPython starts.
-# Rebuild the pinned bootloader with the narrowly scoped MoHan environment
-# contract; the public launcher removes every inherited PYTHON* variable and
-# then supplies PYTHON_JIT=1 as the only Python startup setting.
+# selects isolated mode and drops PYTHON_JIT before CPython starts.  Rebuild
+# the pinned bootloader with the narrowly scoped MoHan environment contract;
+# the public launcher removes inherited PYTHON* variables and supplies
+# PYTHON_JIT=1 as the only Python startup setting.
 & $Python tools/build_pyinstaller_jit_bootloader.py
 if ($LASTEXITCODE -ne 0) {
     throw "MoHan $Version could not build the Python 3.15 JIT-aware PyInstaller bootloader."
@@ -214,10 +221,10 @@ $PublicExecutable = Join-Path $PackageRoot "$AppName-$Version.exe"
 $RuntimeExecutable = Join-Path $PackageRoot "$AppName-$Version-runtime.exe"
 Move-Item -LiteralPath $PublicExecutable -Destination $RuntimeExecutable -Force
 
-# A separate non-JIT public launcher is required because the embedded runtime
-# must see PYTHON_JIT=1 before CPython initializes.  The child runtime owns Qt;
-# after Qt shutdown it terminates at finalize_process_exit(), avoiding the
-# Python 3.15rc1 JIT/Qt interpreter-finalization heap corruption.
+# A separate public launcher owns the JIT setting before CPython initializes.
+# The child runtime owns Qt; after Qt shutdown it terminates at
+# finalize_process_exit(), keeping Python 3.15rc1 JIT/Qt interpreter
+# finalization within the supported lifecycle.
 $LauncherBuild = Join-Path $ProjectRoot "build\jit-launcher-$Version"
 $LauncherDist = Join-Path $ProjectRoot "dist\jit-launcher-$Version"
 Remove-Item -LiteralPath $LauncherBuild, $LauncherDist -Recurse -Force -ErrorAction SilentlyContinue

@@ -1,21 +1,15 @@
-"""Integrity contract for the 21 ``v120_*`` physics cutouts.
+"""Integrity contract for the 21 v120_* physics cutouts.
 
-Two classes of cutout exist on the generation-2 bare base (2026-09-02):
+On the generation-2 bare base (2026-09-02), face/eyes (6 files) require
+more than MIN_VISIBLE_PIXELS visible pixels and MIN_FEATHER_PIXELS feathered
+pixels, exact authority RGB on visible pixels, and zero RGB on transparency.
 
-* ``face`` / ``eyes`` (6 files) keep the full contract: more than
-  ``MIN_VISIBLE_PIXELS`` visible pixels, more than ``MIN_FEATHER_PIXELS``
-  feathered pixels, every visible RGB identical to the authority portrait,
-  and every transparent pixel's RGB zeroed.
-* ``hair_left`` / ``hair_right`` / ``sleeve_left`` / ``sleeve_right`` /
-  ``ornament`` (15 files, ``LICENSED_EMPTY``) are supplied by runtime layers
-  on the generation-2 bare base: the hair is tied in a bun with no swinging
-  strands, the grey sleeveless top has no sleeves, and there is no hairpiece
-  (robe, hair, hairpiece and makeup are separate runtime layers by owner
-  decision).  These files must be FULLY TRANSPARENT: zero visible pixels and
-  all-zero RGB, so ``presentation/companion_visual_physics.py`` keeps
-  rotating an empty pixmap instead of inventing pixels.  A future non-empty
-  file in this tuple fails the test so the contract is changed deliberately
-  rather than by drift.
+The 15 LICENSED_EMPTY hair_left/hair_right/sleeve_left/sleeve_right/ornament
+files remain fully transparent with all-zero RGB. The base uses a bun and
+grey sleeveless top; separate runtime layers supply robe, hair, ornaments,
+and makeup under the owner's ruling. companion_visual_physics rotates the
+transparent pixmaps. Any visible content requires a deliberate contract
+change and therefore triggers this gate for review.
 """
 
 from __future__ import annotations

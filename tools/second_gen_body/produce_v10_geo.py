@@ -1,20 +1,15 @@
-"""v10：以幾何條件化量產 24 視角素體。擁有者 2026-08-31 核可 shaded s0.95。
+"""v10：以幾何條件化量產 24 視角素體。
 
-配方（全部經探針實測）：
-  初始圖  bundle 的 *_shaded-render.png 合成到淺灰底板（用同 bundle 的
-          silhouette 遮罩，不需去背模型）
-  strength 0.95   —— 0.70/0.80/0.88 殘留人偶體型，0.90 仍有色偏
-  LoRA     0.85   —— 1.0 壓不住髮型，0.70 正面臉型變窄
-  不用 normal map —— 0.90 與 0.95 兩檔皆造成系統性腳掌翹起
+擁有者於 2026-08-31 核可 shaded s0.95。配方依探針實測設定：
+初始圖使用 bundle 的 *_shaded-render.png 與同組 silhouette 合成至淺灰底板。
+strength 0.95；0.70/0.80/0.88 的體型及 0.90 的色調仍待校正。
+LoRA 0.85；1.0 的髮型受身份權重影響，0.70 的正面臉型較窄。
+採用 shaded 圖；normal map 在 0.90 與 0.95 皆出現腳掌翹起。
 
-負向詞務必含 multiple people：淺灰底板讀作「可填滿的攝影棚空間」，
-黑底讀作「虛空」。探針階段漏掉這一條，結果一張圖裡出現三個人。
-
-yaw 符號：稽核記載 source_renderer_yaw = -formal_yaw，故輸出檔名取 bundle 的
-負值，與既有 17 張 body2-yaw*.png 命名一致。
-
-自我閘門：第一張產完即以連通分量數檢查人數，不通過就停止並回報，
-不會讓 24 張帶著同一個缺陷跑完。
+negative_prompt 的 multiple people 為模型條件欄位，沿用經探針驗證的設定。
+此條件對應淺灰攝影棚構圖下的人數控制；先前樣本曾出現三人。
+稽核定義 source_renderer_yaw = -formal_yaw，輸出命名依此對應既有圖集。
+第一張以連通分量檢查人數，通過後繼續產製；需修正時即結束並回報。
 """
 import os
 import sys
@@ -79,12 +74,11 @@ def formal_yaw(bundle_name: str) -> int:
 
 
 def make_init(folder: Path) -> Image.Image:
-    """合成到淺灰底板，並裁到人物身上。
+    """合成淺灰底板，依人物剪影裁切後補至目標比例。
 
-    第一次嘗試不裁切，結果模型在左右的大片留白補上第二個人，自我閘門攔下。
-    網格人物在 1024x1536 裡只佔窄窄一條；淺灰底把留白讀成可填充的攝影棚空間，
-    黑底則讀作虛空，所以先前的黑底版本沒有這個問題。負向詞治不了構圖，
-    只能消除那片空白——依 silhouette 的外接矩形裁切，再補到目標長寬比。
+    初次完整畫布的左右留白讓模型補出第二個人，已由人數閘門攔下。
+    窄人物在 1024×1536 淺灰背景中容易形成可填充空間；黑底則被視為
+    虛空。此處依 silhouette 外接矩形裁切，明確提供單人構圖範圍。
     """
     stem = folder.name
     shaded = Image.open(folder / f"{stem}_shaded-render.png").convert("RGB")

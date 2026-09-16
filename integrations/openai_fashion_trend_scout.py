@@ -20,7 +20,7 @@ MAX_TRAITS_PER_SIGNAL = 4
 MAX_SOURCE_URL_LENGTH = 2048
 DEFAULT_TIMEOUT_SECONDS = 30.0
 INSPIRATION_LICENSE_NOTE = (
-    "Abstract trend inspiration only; no source image or design asset is copied."
+    "Use source material for abstract trend inspiration and create original design assets."
 )
 
 
@@ -36,11 +36,11 @@ class OpenAIFashionTrendOptions:
 
     def __post_init__(self) -> None:
         if not self.api_key.strip():
-            raise ValueError("Fashion trend search requires an API key.")
+            raise ValueError("Provide an API key for fashion trend search.")
         if not self.model.strip():
-            raise ValueError("Fashion trend search requires a model.")
+            raise ValueError("Provide a model for fashion trend search.")
         if self.timeout_seconds <= 0:
-            raise ValueError("Fashion trend search timeout must be positive.")
+            raise ValueError("Set the fashion trend search timeout above zero.")
 
 
 class OpenAIResponsesTrendTransport:
@@ -60,18 +60,19 @@ class OpenAIResponsesTrendTransport:
         with urlopen(request, timeout=self._options.timeout_seconds) as response:
             body = response.read(MAX_RESPONSE_BYTES + 1)
         if len(body) > MAX_RESPONSE_BYTES:
-            raise ValueError("Fashion trend response exceeded the size limit.")
+            raise ValueError("Fashion trend response is larger than the 1 MB limit.")
         document = json.loads(body.decode("utf-8"))
         if not isinstance(document, dict):
-            raise TypeError("Fashion trend response must be an object.")
+            raise TypeError("Fashion trend response needs object format.")
         return document
 
 
 class OpenAIFashionTrendScout:
     """Search only the five context fields explicitly approved by the user.
 
-    Failures deliberately degrade to no trend signals. Outfit generation remains
-    available from MoHan's own creative direction and never requires web search.
+    Search errors produce an empty signal set, after which the outfit flow
+    continues with MoHan's own creative direction. Web search remains optional
+    for outfit generation.
     """
 
     def __init__(
@@ -97,8 +98,9 @@ class OpenAIFashionTrendScout:
         return signals
 
     def _payload(self, request: OutfitCreationRequest) -> dict[str, object]:
-        # This is the complete external context boundary. Do not add camera,
-        # conversation, identity, location, memory, or arbitrary prompt data.
+        # This is the complete external context boundary. Keep camera,
+        # conversation, identity, location, memory, and arbitrary prompt data
+        # outside this payload.
         context = {
             "weather": request.weather,
             "temperature_c": round(float(request.temperature_c), 1),
@@ -145,8 +147,10 @@ class OpenAIFashionTrendScout:
                 "abstract inspiration for an original, non-infringing garment. "
                 "Use web search. Return concrete source URLs and short abstract "
                 "traits such as palette, silhouette, material mood or layering. "
-                "Do not copy a named product, artwork, character, textile pattern, "
-                "or protected design. Do not infer or request personal information."
+                "Treat named products, artwork, characters, textile patterns, and "
+                "protected designs as reference context only: extract abstract traits "
+                "and create an original garment. Keep personal information outside "
+                "the search context."
             ),
             "input": (
                 "Search fashion trends appropriate to this approved context only: "
@@ -174,14 +178,14 @@ def create_openai_fashion_trend_scout(
 
 def _response_output_text(document: object) -> str:
     if not isinstance(document, dict):
-        raise TypeError("Responses API document must be an object.")
+        raise TypeError("Responses API document needs object format.")
     direct = document.get("output_text")
     if isinstance(direct, str) and direct.strip():
         return direct
     chunks = []
     output = document.get("output", [])
     if not isinstance(output, list):
-        raise TypeError("Responses API output must be a list.")
+        raise TypeError("Responses API output needs list format.")
     for item in output:
         if not isinstance(item, dict):
             continue
@@ -195,14 +199,14 @@ def _response_output_text(document: object) -> str:
         )
     text = "".join(value for value in chunks if isinstance(value, str))
     if not text.strip():
-        raise ValueError("Responses API returned no trend text.")
+        raise ValueError("Responses API returned empty trend text.")
     return text
 
 
 def _parse_signals(text: str) -> tuple[FashionTrendSignal, ...]:
     value = json.loads(text)
     if not isinstance(value, dict) or not isinstance(value.get("signals"), list):
-        raise ValueError("Fashion trend output did not match the schema.")
+        raise ValueError("Fashion trend output needs the declared schema.")
     signals = []
     seen_urls: set[str] = set()
     for item in value["signals"][:MAX_TREND_SIGNALS]:

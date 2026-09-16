@@ -112,7 +112,7 @@ class AzureVoiceCatalogService:
     """Query Azure for female voices and retain only a short-lived cache.
 
     Subscription keys are passed directly to the SDK configuration and are
-    never stored, transformed, fingerprinted, logged, or placed in cache keys.
+    kept outside storage, transformation, fingerprints, logs, and cache keys.
     Each service instance is one credential domain. Call ``invalidate`` when
     that domain's credential or resource changes; MoHan's standard and Dragon
     HD engines intentionally own separate service instances.
@@ -172,7 +172,9 @@ class AzureVoiceCatalogService:
             ),
         )
         if not voices:
-            raise RuntimeError("Azure returned no matching female voices")
+            raise RuntimeError(
+                "Azure's catalog contains no matching female voices; choose another region or language"
+            )
         catalog = AzureVoiceCatalog(
             region=region,
             language=language,

@@ -75,7 +75,7 @@ def module_path(module: str) -> Path:
 
 def module_tree(module: str) -> ast.Module:
     path = module_path(module)
-    assert path.is_file(), f"missing animation module: {path.name}"
+    assert path.is_file(), f'provide the animation module: {path.name}'
     return ast.parse(
         path.read_text(encoding="utf-8-sig"),
         filename=str(path),
@@ -224,7 +224,7 @@ def test_module_import_does_not_load_app() -> None:
         )
 
         assert completed.returncode == 0, (
-            f"standalone import failed for {module}: {completed.stderr}"
+            f'standalone import requires attention for {module}: {completed.stderr}'
         )
 
 

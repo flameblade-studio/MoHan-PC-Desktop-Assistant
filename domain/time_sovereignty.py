@@ -1,23 +1,6 @@
 from __future__ import annotations
 
-"""Time sovereignty (時間主權), inspired by "A・I ga Tomaranai!".
-
-A real girl has her own rhythm.  When the user keeps coding deep into the
-night, MoHan does not simply stay alert — she grows drowsy, her blinks lengthen,
-and she quietly keeps the user company while fighting sleep.  This module
-encodes that late-night drowsiness as pure domain logic with no Qt dependency.
-
-The presentation layer samples it on its existing timer, so nothing here blocks
-the Qt main thread.  The drowsiness level eases smoothly so the blink interval
-lengthens gradually instead of snapping.
-
-Key tuning, per the user's direction:
-
-- The late-night window is 02:00–05:00 local time.
-- Drowsiness eases in and out smoothly (exponential approach), never snapping.
-- The blink interval lengthens within safe bounds so the companion looks sleepy,
-  not broken.
-"""
+"""Time sovereignty (時間主權), inspired by "A・I ga Tomaranai!".  A real girl has her own rhythm.  When the user keeps coding deep into the night, MoHan shifts from alertness toward drowsiness, her blinks lengthen, and she quietly keeps the user company while fighting sleep.  This module encodes that late-night drowsiness as pure domain logic with Qt outside the domain boundary.  The presentation layer samples it on its existing timer, so the Qt main thread stays responsive.  The drowsiness level eases smoothly so the blink interval lengthens gradually.  Key tuning, per the user's direction:  - The late-night window is 02:00–05:00 local time. - Drowsiness eases in and out smoothly (exponential approach). - The blink interval lengthens within safe bounds so the companion looks sleepy and natural. """
 
 lazy import math
 lazy import time

@@ -35,7 +35,7 @@ OUT = ROOT / "work/second-gen-body/limb-morph"
 TARGET_HEIGHT = 168.0
 VERTEX_COUNT, FACE_COUNT = 18_439, 36_874
 
-# 官方斷面（candidate3-report.json），本形變不得改變任何一個
+# 本形變完整保留官方斷面（candidate3-report.json）
 TORSO_SECTIONS = {
     "hip": (0.50, 90.06925217482814),
     "waist": (0.62, 62.21390939635582),
@@ -186,8 +186,8 @@ def scale_field(arc: np.ndarray, segment_scales: list[float],
     """沿弧長的連續縮放場：兩端收斂回 1.0，段間平滑過渡。
 
     節點取 [0, 0.5/n, 1.5/n, ..., 1]，值取 [1, s1, s2, ..., 1]，
-    再以 smoothstep 在節點間插值——比線性插值少一階不連續，
-    不會在肘、膝留下折線。
+    再以 smoothstep 在節點間插值，讓一階導數保持連續，
+    並在肘、膝維持平滑過渡。
     """
     count = len(segment_scales)
     knots = [0.0] + [(i + 0.5) / count for i in range(count)] + [1.0]
@@ -204,7 +204,7 @@ def scale_field(arc: np.ndarray, segment_scales: list[float],
     # 端點附近再乘一層收斂，確保與軀幹／手腳的接縫處完全不動。
     # taper_start 讓收斂的起點往後推：腿鏈的臀圍量測面落在弧長約 5% 處，
     # 若從 0 起算，收斂還沒完成就跨過量測面，臀圍會被改掉 0.15 cm——
-    # 而 90.07 是擁有者核可的數字，不可動。
+    # 而 90.07 是擁有者核可的數字，須完整保留。
     head = np.clip((arc - taper_start) / TAPER, 0.0, 1.0)
     tail = np.clip((1.0 - arc) / TAPER, 0.0, 1.0)
     edge = np.minimum(head, tail)

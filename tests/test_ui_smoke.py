@@ -157,9 +157,8 @@ def _assert_first_run_wizard(app: QApplication, tmp: str) -> None:
 
 
 def _create_window(app: QApplication) -> CompanionWindow:
-    # Keep voice-selection UI coverage deterministic.  Clean CI runners do
-    # not necessarily include Taiwan's optional Windows speech packs,
-    # while a developer workstation may have Yating and Hanhan installed.
+    # Use a fixed voice catalog for deterministic UI coverage. Optional
+    # Taiwan speech packs vary between clean CI and developer hosts.
     test_voices = [
         ("OneCore::Microsoft Yating", "zh-TW"),
         ("OneCore::Microsoft Hanhan", "zh-TW"),
@@ -1075,11 +1074,9 @@ def _assert_queued_speech_contract(app: QApplication, window: CompanionWindow) -
     window._blink()
     assert window.speech_blinking is True
     assert window.current_expression == window.speech_mid_expression
-    # Discrete-blink contract: the first HALF step substitutes nothing when
-    # no half-eye asset exists, so the frame legitimately only changes at
-    # the CLOSED step.  (The old assertion right after _blink() passed only
-    # because the pre-fix renderer recomposed a fresh QPixmap every call,
-    # jittering the cacheKey without any visual change.)
+    # The first HALF blink step preserves the open-eye source. CLOSED uses
+    # the authored closed-eye frame. The previous immediate assertion only
+    # observed a new cacheKey with identical visible pixels.
     window._advance_speaking_blink(window.blink_generation, 1.0)
     assert window.character.pixmap().cacheKey() != pre_blink_key
     # Blinking is an eye-only layer. Speech timing must keep advancing
@@ -1125,7 +1122,7 @@ def _assert_audio_viseme_contract(window: CompanionWindow) -> None:
     assert window.speech_blinking is True
     assert window.current_expression == viseme_before_blink
     # Same discrete-blink ruling as the queued-speech contract above: the
-    # visible change lands on the CLOSED step, not the assetless HALF step.
+    # visible change occurs at CLOSED; HALF retains the authored open-eye frame.
     window._advance_speaking_blink(window.blink_generation, 1.0)
     assert window.character.pixmap().cacheKey() != viseme_pixmap_key
     window._finish_speaking_blink(

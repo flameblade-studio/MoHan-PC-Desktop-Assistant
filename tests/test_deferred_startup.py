@@ -20,8 +20,8 @@ def run() -> None:
         os.environ["LOCALAPPDATA"] = temp
         app = QApplication.instance() or QApplication([])
 
-        # Closing during the short first-paint window must not access timers,
-        # animations, or tray objects that intentionally do not exist yet.
+        # Closing during the first-paint window accesses only initialized objects;
+        # timers, animations, and tray objects initialize in the later startup phase.
         early_window = CompanionWindow(
             startup_speech=False,
             defer_visual_startup=True,

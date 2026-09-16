@@ -15,6 +15,8 @@ lazy from PySide6.QtWidgets import QApplication
 
 lazy from domain.companion_animation_contract import (
     EXPRESSION_BLINK_FRAMES,
+    EXPRESSION_HALF_BLINK_FRAME_SOURCES,
+    EXPRESSION_NATIVE_CLOSED_BLINK_FRAME_SOURCES,
     EXPRESSION_FACE_OFFSETS,
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_EXPRESSIONS,
@@ -111,7 +113,7 @@ def rect_difference(
 
 
 def edge_energy(pixmap: QPixmap, region: QRect) -> int:
-    """Measure local detail so a blurred mouth cannot pass unnoticed."""
+    """Measure local detail to detect and report a blurred mouth."""
     image = pixmap.toImage().convertToFormat(QImage.Format_RGBA8888)
 
     def luminance(x: int, y: int) -> int:
@@ -361,6 +363,20 @@ def assert_expression_speech_variants(
         assert composed.size() == original.size()
 
 
+def _has_bound_blink_source(expression: str) -> bool:
+    """True only when a blink endpoint is actually authored for THIS expression.
+
+    A pose-silhouette match, a filename convention or mere set membership is not
+    authority over another expression's features, so those do not count.
+    """
+
+    return (
+        expression in EXPRESSION_BLINK_FRAMES
+        or EXPRESSION_HALF_BLINK_FRAME_SOURCES.get(expression) is not None
+        or EXPRESSION_NATIVE_CLOSED_BLINK_FRAME_SOURCES.get(expression) is not None
+    )
+
+
 def assert_expression_speech_blink(
     window: CompanionWindow,
     expression: str,
@@ -387,6 +403,13 @@ def assert_expression_speech_blink(
     if expression in EYES_CLOSED_EXPRESSIONS:
         assert blink_inside == 0
         assert blink_outside == 0
+    elif expression in EXPRESSION_POSES and not _has_bound_blink_source(expression):
+        # Contract B: a complete portrait with no blink source bound to THIS
+        # expression keeps the incoming frame in both eye states; sharing the
+        # pose silhouette is not authority, so the neutral donor is not used.
+        # The mouth still animates - only the eyelid replacement is declined.
+        assert blink_inside == 0, expression
+        assert blink_outside == 0, expression
     else:
         assert blink_inside > 0, expression
         assert blink_outside == 0, expression
@@ -457,9 +480,8 @@ def assert_gesture_speech_blink(
     show_expression_speech_frame(window, expression, gesture_frames)
     pre_gesture_blink = QPixmap(window.character.pixmap())
     window._blink()
-    # The discrete blink contract keeps HALF frames untouched when no
-    # registered half-eye source exists, so advance to the CLOSED authority
-    # frame before sampling the eye region.
+    # The discrete blink contract preserves HALF until a registered half-eye
+    # source exists. Advance to CLOSED before sampling the eye region.
     window._advance_speaking_blink(window.blink_generation, 1.0)
     gesture_blink = QPixmap(window.character.pixmap())
     offset_x, offset_y = window._expression_eye_offset(expression)
@@ -485,8 +507,7 @@ def assert_expression_speech_blink_restore(
     window._blink()
     assert window.speech_blinking
     assert window.current_expression == expression_frames["mid"]
-    # Discrete blink contract: HALF frames stay untouched without a half-eye
-    # source, so sample the CLOSED authority frame.
+    # HALF preserves the current eye source; sample the authored CLOSED frame.
     window._advance_speaking_blink(window.blink_generation, 1.0)
     during_blink = QPixmap(window.character.pixmap())
     inside, outside = changed_pixels(
@@ -494,7 +515,12 @@ def assert_expression_speech_blink_restore(
         during_blink,
         eye_rects["front"],
     )
-    assert inside > 0
+    if expression in EXPRESSION_POSES and not _has_bound_blink_source(expression):
+        # Contract B: no endpoint is bound to this portrait, so the speaking
+        # blink keeps the incoming frame instead of borrowing the pose donor.
+        assert inside == 0
+    else:
+        assert inside > 0
     assert outside == 0
     window._finish_speaking_blink(window.blink_generation)
     restored_inside, restored_outside = changed_pixels(
@@ -529,11 +555,9 @@ def assert_expression_generation_guards(window: CompanionWindow) -> None:
     assert window.expression_return_timer.isActive()
     window._release_scheduled_expression()
     assert window.state == "idle", (
-        "scheduled expression release did not restore idle: "
-        f"state={window.state!r}, "
-        f"generation={window.expression_generation}, "
-        f"speech_playing={window.speech_playing!r}, "
-        f"realtime_mouth_active={window.realtime_mouth_active!r}"
+        f'scheduled expression release must restore idle; observed state={window.state!r}, generation='
+        f'{window.expression_generation}, speech_playing={window.speech_playing!r}, realtime_mouth_active='
+        f'{window.realtime_mouth_active!r}'
     )
     assert not window.expression_return_timer.isActive()
 
@@ -559,27 +583,42 @@ def assert_ai_emotion_metadata(window: CompanionWindow) -> None:
     ]
 
 
+def release_window(window: CompanionWindow, app: QApplication) -> None:
+    """Tear the window and its profile database down before temp cleanup.
+
+    ``TemporaryDirectory`` removes the isolated profile root on exit; Windows
+    refuses to unlink a file whose handle is still open, so the SQLite
+    connection the window borrowed from the service container must be closed
+    here rather than left to garbage collection.
+    """
+
+    window.close()
+    app.processEvents()
+    window.db.close()
+
+
 def run() -> None:
     with TemporaryDirectory() as temp_dir:
         os.environ["LOCALAPPDATA"] = temp_dir
         app = QApplication([])
         window = CompanionWindow(startup_speech=False)
-        window.show()
-        app.processEvents()
-        stop_automatic_timers(window)
-        assert_asset_registry(window)
-        assert_anchor_profiles(window)
-        assert_reply_expression_policy(window)
-        assert_conservative_idle_policy(window)
-        eye_rects = assert_expression_pose_pipeline(window)
-        assert_expression_local_speech_assets(window)
-        assert_dedicated_blink_assets(window)
-        assert_gesture_speech_blink(window, eye_rects)
-        assert_expression_speech_blink_restore(window, eye_rects)
-        assert_expression_generation_guards(window)
-        assert_ai_emotion_metadata(window)
-        window.close()
-        app.processEvents()
+        try:
+            window.show()
+            app.processEvents()
+            stop_automatic_timers(window)
+            assert_asset_registry(window)
+            assert_anchor_profiles(window)
+            assert_reply_expression_policy(window)
+            assert_conservative_idle_policy(window)
+            eye_rects = assert_expression_pose_pipeline(window)
+            assert_expression_local_speech_assets(window)
+            assert_dedicated_blink_assets(window)
+            assert_gesture_speech_blink(window, eye_rects)
+            assert_expression_speech_blink_restore(window, eye_rects)
+            assert_expression_generation_guards(window)
+            assert_ai_emotion_metadata(window)
+        finally:
+            release_window(window, app)
     print("EXPRESSION_PIPELINE_OK")
 
 

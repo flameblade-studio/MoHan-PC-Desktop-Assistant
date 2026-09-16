@@ -71,11 +71,11 @@ class OccasionDefinition:
 
     def __post_init__(self) -> None:
         if not 1 <= self.month <= MAX_MONTH or not 1 <= self.day <= MAX_DAY:
-            raise ValueError("Occasion date is invalid.")
+            raise ValueError("Occasion date needs a supported value.")
         if not 0 <= self.hint_hour < self.grumble_hour <= MAX_HOUR:
             raise ValueError("Occasion hours must be ordered within one day.")
         if self.minimum_grumble_delay_seconds < 60.0 * 60.0:
-            raise ValueError("A restrained grumble must never follow immediately.")
+            raise ValueError("A restrained grumble follows the configured interval.")
 
 
 OCCASIONS = (
@@ -133,7 +133,7 @@ class OccasionContext:
             OccasionStage.RESTRAINED_GRUMBLE in self.delivered_stages
             and OccasionStage.SUBTLE_HINT not in self.delivered_stages
         ):
-            raise ValueError("An occasion cannot grumble before giving a subtle hint.")
+            raise ValueError("An occasion gives a subtle hint before a grumble.")
         if (
             OccasionStage.SUBTLE_HINT in self.delivered_stages
             and self.first_hint_at is None

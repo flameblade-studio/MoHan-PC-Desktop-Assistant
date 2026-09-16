@@ -113,7 +113,7 @@ class OfflinePlatformServices:
         return None
 
     def open_path(self, _path: Path) -> None:
-        raise AssertionError("Failure isolation must not invoke the operating system.")
+        raise AssertionError('Isolation tests require operating-system effects to remain idle.')
 
 
 class OfflineVoiceCatalog:
@@ -494,7 +494,7 @@ def test_failure_states_are_visible_in_four_languages_without_sensitive_paths(
                 GestureControllerStatus.CAMERA_UNAVAILABLE,
                 SENSITIVE_PATH,
             ),
-            "攝影機尚未就緒，手勢互動保持停用。",
+            '攝影機就緒後即可啟用手勢互動。',
         ),
         (
             GestureControllerHealth(
@@ -508,14 +508,14 @@ def test_failure_states_are_visible_in_four_languages_without_sensitive_paths(
                 GestureControllerStatus.MODEL_LOAD_FAILED,
                 SENSITIVE_PATH,
             ),
-            "手部模型無法載入，手勢互動保持停用。",
+            '請檢查手部模型載入狀態；手勢互動保持暫停。',
         ),
         (
             GestureControllerHealth(
                 GestureControllerStatus.INFERENCE_FAILED,
                 SENSITIVE_PATH,
             ),
-            "手勢辨識連續失敗，已安全停用。",
+            '手勢辨識連續出現錯誤，已安全暫停，請檢查模型後再試。',
         ),
     )
     for health, source in gesture_states:
@@ -532,7 +532,7 @@ def test_failure_states_are_visible_in_four_languages_without_sensitive_paths(
         )
     )
     dispatch_text = surface.gesture_record_status.text()
-    assert dispatch_text == translator.text("手勢動作執行失敗，未變更其他功能。")
+    assert dispatch_text == translator.text('手勢動作執行需要處理；其他功能維持運作。')
     assert SENSITIVE_PATH not in dispatch_text
 
     expected_vision_texts = {
@@ -540,82 +540,76 @@ def test_failure_states_are_visible_in_four_languages_without_sensitive_paths(
             VisionReadiness.READY: "靈視環境已就緒",
             VisionReadiness.DISABLED: "本機視覺感知已停用。",
             VisionReadiness.CAMERA_UNAVAILABLE: (
-                "攝影機尚未就緒，本機視覺感知保持停用。"
+                '攝影機就緒後即可啟用本機視覺感知。'
             ),
             VisionReadiness.ENGINE_UNAVAILABLE: (
-                "本機視覺引擎無法使用，視覺感知保持停用。"
+                '請檢查本機視覺引擎；視覺感知保持暫停。'
             ),
             VisionReadiness.MODEL_MISSING: (
-                "本機視覺模型缺失，視覺感知保持停用。"
+                '請安裝本機視覺模型後重試；視覺感知保持暫停。'
             ),
             VisionReadiness.MODEL_UNTRUSTED: (
-                "本機視覺模型未通過完整性驗證，視覺感知保持停用。"
+                '請修復本機視覺模型並通過完整性驗證；視覺感知保持暫停。'
             ),
             VisionReadiness.RUNTIME_ERROR: (
-                "本機視覺分析失敗，已安全停用；其他功能不受影響。"
+                '本機視覺分析需要處理，已安全暫停；其他功能維持運作。'
             ),
         },
         "zh-CN": {
             VisionReadiness.READY: "灵视环境已就绪",
             VisionReadiness.DISABLED: "本地视觉感知已停用。",
             VisionReadiness.CAMERA_UNAVAILABLE: (
-                "摄像头尚未就绪，本地视觉感知保持停用。"
+                '摄像头就绪后即可启用本机视觉感知。'
             ),
             VisionReadiness.ENGINE_UNAVAILABLE: (
-                "本地视觉引擎不可用，视觉感知保持停用。"
+                '请检查本机视觉引擎；视觉感知保持暂停。'
             ),
             VisionReadiness.MODEL_MISSING: (
-                "本地视觉模型缺失，视觉感知保持停用。"
+                '请安装本机视觉模型后重试；视觉感知保持暂停。'
             ),
             VisionReadiness.MODEL_UNTRUSTED: (
-                "本地视觉模型未通过完整性验证，视觉感知保持停用。"
+                '请修复本机视觉模型并通过完整性验证；视觉感知保持暂停。'
             ),
             VisionReadiness.RUNTIME_ERROR: (
-                "本地视觉分析失败，已安全停用；其他功能不受影响。"
+                '本机视觉分析需要处理，已安全暂停；其他功能保持运行。'
             ),
         },
         "en": {
             VisionReadiness.READY: "Vision is ready",
             VisionReadiness.DISABLED: "Local visual perception is disabled.",
             VisionReadiness.CAMERA_UNAVAILABLE: (
-                "The camera is not ready, so local visual perception remains disabled."
+                'Local visual perception can start once the camera is ready.'
             ),
             VisionReadiness.ENGINE_UNAVAILABLE: (
-                "The local vision engine is unavailable, so visual perception "
-                "remains disabled."
+                'Check the local vision engine; visual perception remains paused.'
             ),
             VisionReadiness.MODEL_MISSING: (
-                "Local vision models are missing, so visual perception remains "
-                "disabled."
+                'Install local vision models and retry; visual perception remains paused.'
             ),
             VisionReadiness.MODEL_UNTRUSTED: (
-                "Local vision models failed integrity verification, so visual "
-                "perception remains disabled."
+                'Repair local vision models and pass integrity verification; visual perception remains paused.'
             ),
             VisionReadiness.RUNTIME_ERROR: (
-                "Local vision analysis failed and was safely disabled; other "
-                "features are unaffected."
+                'Local vision analysis requires attention and remains safely paused; other features keep running.'
             ),
         },
         "ja-JP": {
             VisionReadiness.READY: "視覚認識の準備ができました",
             VisionReadiness.DISABLED: "ローカル視覚認識は無効です。",
             VisionReadiness.CAMERA_UNAVAILABLE: (
-                "カメラの準備ができていないため、ローカル視覚認識は無効のままです。"
+                'カメラの準備が整うとローカル視覚認識を開始できます。'
             ),
             VisionReadiness.ENGINE_UNAVAILABLE: (
-                "ローカル視覚エンジンを利用できないため、視覚認識は無効のままです。"
+                'ローカル視覚エンジンを確認してください。視覚認識を一時停止します。'
             ),
             VisionReadiness.MODEL_MISSING: (
-                "ローカル視覚モデルがないため、視覚認識は無効のままです。"
+                'ローカル視覚モデルをインストールして再試行してください。視覚認識を一時停止します。'
             ),
             VisionReadiness.MODEL_UNTRUSTED: (
-                "ローカル視覚モデルが整合性検証に合格しなかったため、"
-                "視覚認識は無効のままです。"
+                'ローカル視覚モデルを修復し、整合性検証に合格してください。視覚認識を一時停止します。'
             ),
             VisionReadiness.RUNTIME_ERROR: (
-                "ローカル視覚解析に失敗したため安全に無効化しました。"
-                "その他の機能には影響しません。"
+                'ローカル視覚解析への対応が必要です。安全に一時停止し、他の機能は動作を継続します。'
             ),
         },
     }[language]

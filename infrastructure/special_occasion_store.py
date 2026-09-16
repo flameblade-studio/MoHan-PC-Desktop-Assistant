@@ -16,7 +16,7 @@ _BOUNDARY_ERRORS: Final = (Exception,)
 
 
 class SpecialOccasionStoreError(RuntimeError):
-    """A fixed-detail persistence failure without backend information."""
+    """A fixed-detail persistence attention event with backend information kept private."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,7 +33,7 @@ class OccasionState:
             if moment is not None and moment.tzinfo is None:
                 raise ValueError("Special occasion timestamps must be timezone-aware.")
         if self.grumble_delivered_at is not None and self.hint_delivered_at is None:
-            raise ValueError("A special occasion cannot grumble before its hint.")
+            raise ValueError("A special occasion speaks its hint before its grumble.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -77,7 +77,7 @@ class SpecialOccasionStore[SnapshotT]:
 
     def save(self, state: SpecialOccasionState) -> None:
         if not isinstance(state, SpecialOccasionState):
-            raise SpecialOccasionStoreError("Special occasion state is invalid.")
+            raise SpecialOccasionStoreError("Special occasion state needs a supported value.")
         _atomic_write(
             self._settings, {SPECIAL_OCCASION_STATE_KEY: _encode_state(state)}
         )
@@ -94,7 +94,7 @@ class SpecialOccasionStore[SnapshotT]:
             return SpecialOccasionState(state.local_date, occasions)
         except KeyError, TypeError, ValueError:
             raise SpecialOccasionStoreError(
-                "Special occasion update is invalid."
+                "Special occasion update needs a supported value."
             ) from None
 
     def export_portable(self, now: datetime) -> dict[str, object]:
@@ -198,7 +198,7 @@ def _iso(value: datetime | None) -> str | None:
 
 def _require_aware(now: datetime) -> None:
     if not isinstance(now, datetime) or now.tzinfo is None:
-        raise SpecialOccasionStoreError("Current special occasion time is invalid.")
+        raise SpecialOccasionStoreError("Current special occasion time needs a supported value.")
 
 
 def _atomic_write[SnapshotT](
@@ -218,8 +218,8 @@ def _atomic_write[SnapshotT](
             settings.restore(before)
         except _BOUNDARY_ERRORS:
             raise SpecialOccasionStoreError(
-                "Special occasion persistence failed and rollback was incomplete."
+                "Special occasion persistence requires attention and rollback requires attention."
             ) from None
         raise SpecialOccasionStoreError(
-            "Special occasion persistence failed; previous values were restored."
+            "Special occasion persistence requires attention; previous values were restored."
         ) from None

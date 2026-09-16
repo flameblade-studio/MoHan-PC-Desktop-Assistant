@@ -12,6 +12,7 @@
     "test_gesture_authorization_contract.py",
     "test_gesture_controller_dispatch_boundary.py",
     "test_infrastructure_data_safety.py",
+    "test_integrate_detachable_halfbody.py",
     "test_input_validation_boundaries.py",
     "test_layered_architecture.py",
     "test_lazy_import_owner_contract.py",
@@ -88,6 +89,57 @@
   "rules": [
     {
       "paths": [
+        "presentation/dashboard_artwork.py",
+        "presentation/dashboard_theme_materials.py",
+        "presentation/flagship_theme.py",
+        "presentation/lingxiao_shell.py",
+        "presentation/dashboard_window.py",
+        "presentation/desktop_companion_status.py",
+        "assets/ui/mohan-celestial-palace-v1.png"
+      ],
+      "tests": [
+        "test_dashboard_artwork.py",
+        "test_dashboard_theme_materials.py",
+        "test_global_settings_actions.py",
+        "test_dashboard_resize_contract.py",
+        "test_ui_localization_completeness.py"
+      ]
+    },
+    {
+      "paths": [
+        "application/wardrobe_appearance_service.py",
+        "presentation/dashboard_wardrobe_categories.py",
+        "presentation/dashboard_shell.py",
+        "presentation/dashboard_wardrobe_preview.py",
+        "presentation/wardrobe_turntable.py",
+        "presentation/wardrobe_layout.py"
+      ],
+      "tests": [
+        "test_wardrobe_appearance_service.py",
+        "test_wardrobe_appearance_ui.py",
+        "test_wardrobe_ui.py",
+        "test_wardrobe_preview_composite.py",
+        "test_wardrobe_turntable.py",
+        "test_wardrobe_layout.py"
+      ]
+    },
+    {
+      "paths": [
+        "infrastructure/gesture_configuration_store.py",
+        "tools/migrate_python315_imports.py"
+      ],
+      "tests": [
+        "test_shared_hand_region_provider.py",
+        "test_layered_architecture.py",
+        "test_gesture_configuration.py",
+        "test_gesture_configuration_ui.py",
+        "test_lazy_import_owner_contract.py",
+        "test_python315_runtime.py",
+        "test_prune_unused_lazy_imports.py"
+      ]
+    },
+    {
+      "paths": [
         "tests/test_*.py"
       ],
       "tests": [
@@ -154,6 +206,21 @@
     },
     {
       "paths": [
+        "presentation/companion_core.py",
+        "presentation/companion_legacy_frame.py"
+      ],
+      "tests": [
+        "test_pose_atlas_startup_diagnostics.py",
+        "test_pose_atlas_startup_io.py",
+        "test_adaptive_character_app_wiring.py",
+        "test_presentation_owner_contract.py",
+        "test_layered_facade_cycles.py",
+        "test_app_composition_root.py",
+        "test_safe_error.py"
+      ]
+    },
+    {
+      "paths": [
         "application/adaptive_character_composition.py",
         "application/application_bootstrap.py",
         "application/app.py",
@@ -166,6 +233,23 @@
         "test_app_module_boundaries.py",
         "test_application_bootstrap_contract.py",
         "test_dependency_injection.py"
+      ]
+    },
+    {
+      "paths": [
+        "infrastructure/layered_full_body_assets.py",
+        "infrastructure/layered_full_body_renderer.py",
+        "presentation/pose_atlas_assets.py"
+      ],
+      "tests": [
+        "test_pose_atlas_runtime_inventory.py",
+        "test_pose_atlas_declared_digest.py",
+        "test_full_body_png_integrity.py",
+        "test_pose_atlas_assets.py",
+        "test_layered_full_body.py",
+        "test_full_body_authored_blink.py",
+        "test_full_body_authority_source.py",
+        "test_full_body_blink_source_binding.py"
       ]
     },
     {
@@ -365,6 +449,168 @@
       ],
       "tests": [
         "test_four_language_documentation.py"
+      ]
+    },
+    {
+      "paths": [
+        "tools/art_pipeline/reviewed_partitions.py",
+        "tools/art_pipeline/consolidate_partitions.py",
+        "tools/art_pipeline/partition_coverage.py",
+        "tools/art_pipeline/REVIEWED_PARTITIONS.md"
+      ],
+      "tests": [
+        "test_reviewed_partitions.py",
+        "test_consolidate_partitions.py",
+        "test_partition_coverage.py",
+        "test_partition_layers.py",
+        "test_consolidation_intake_integrity.py"
+      ]
+    },
+    {
+      "paths": [
+        "domain/outfit_pack.py",
+        "domain/outfit_pack_assets.py",
+        "application/outfit_pack_builder.py"
+      ],
+      "tests": [
+        "test_outfit_pack.py",
+        "test_outfit_pack_canvas_contract.py",
+        "test_installed_outfit_blink_roundtrip.py",
+        "test_installed_outfit_cache.py",
+        "test_outfit_pack_makeup.py",
+        "test_active_outfit_overlay.py",
+        "test_appearance_renderer.py"
+      ]
+    },
+    {
+      "paths": [
+        "presentation/companion_face_animation.py",
+        "tests/test_animation_races.py"
+      ],
+      "tests": [
+        "test_animation_races.py"
+      ]
+    },
+    {
+      "paths": [
+        "infrastructure/active_outfit_overlay.py",
+        "infrastructure/appearance_layer_stack.py",
+        "domain/outfit_pack_makeup.py"
+      ],
+      "tests": [
+        "test_rear_hair_composition.py",
+        "test_animated_makeup_depth.py",
+        "test_installed_outfit_blink_roundtrip.py",
+        "test_installed_outfit_cache.py"
+      ]
+    },
+    {
+      "paths": [
+        "presentation/dashboard_wardrobe_packages.py",
+        "presentation/dashboard_shell.py",
+        "presentation/dashboard_wardrobe_makeup.py"
+      ],
+      "tests": [
+        "test_wardrobe_corrupt_listing.py",
+        "test_wardrobe_body_profile_gate.py",
+        "test_ui_localization_completeness.py"
+      ]
+    },
+    {
+      "paths": [
+        "application/service_container.py",
+        "infrastructure/core_hand_regions.py",
+        "infrastructure/image_alpha_regions.py",
+        "infrastructure/active_outfit_overlay_layers.py",
+        "infrastructure/active_outfit_overlay.py"
+      ],
+      "tests": [
+        "test_shared_hand_region_provider.py",
+        "test_core_hand_regions.py",
+        "test_outfit_hand_occlusion.py",
+        "test_layered_architecture.py"
+      ]
+    },
+    {
+      "paths": [
+        "application/wardrobe_service.py"
+      ],
+      "tests": [
+        "test_wardrobe_builtin_recovery.py",
+        "test_wardrobe_corrupt_listing.py",
+        "test_wardrobe_body_profile_gate.py"
+      ]
+    },
+    {
+      "paths": [
+        "domain/outfit_pack_makeup.py",
+        "infrastructure/blink_makeup_composition.py",
+        "infrastructure/image_alpha_regions.py",
+        "infrastructure/active_outfit_overlay_layers.py",
+        "assets/makeup-safe-regions.json",
+        "assets/makeup-foundation-safe-regions/**",
+        "assets/makeup-eye-apertures/**"
+      ],
+      "tests": [
+        "test_makeup_safe_region_v2.py",
+        "test_makeup_blink_states.py",
+        "test_makeup_detail_controls.py",
+        "test_makeup_settings_consistency.py",
+        "test_half_body_blink_makeup_order.py",
+        "test_closed_eye_makeup_regression.py"
+      ]
+    },
+    {
+      "paths": [
+        "application/wardrobe_service.py",
+        "presentation/dashboard_wardrobe_makeup.py"
+      ],
+      "tests": [
+        "test_wardrobe_makeup_ui.py",
+        "test_makeup_settings_consistency.py"
+      ]
+    },
+    {
+      "paths": ["tools/build_makeup_safe_regions.py"],
+      "tests": ["test_build_makeup_safe_regions.py", "test_makeup_safe_region_v2.py"]
+    },
+    {
+      "paths": [
+        "domain/outfit_pack.py",
+        "domain/outfit_pack_assets.py",
+        "infrastructure/active_outfit_overlay.py",
+        "infrastructure/appearance_layer_stack.py"
+      ],
+      "tests": ["test_garment_makeup_occlusion.py"]
+    },
+    {
+      "paths": [
+        "infrastructure/exasperated_candidate_assets.py",
+        "infrastructure/exasperated_candidate_appearance.py",
+        "tests/test_exasperated_candidate_appearance.py"
+      ],
+      "tests": [
+        "test_exasperated_candidate_appearance.py",
+        "test_exasperated_candidate_runtime.py"
+      ]
+    },
+    {
+      "paths": [
+        "docs/detachable-halfbody-integration.md",
+        "changelog.d/detachable-halfbody-formal-runtime.md"
+      ],
+      "tests": ["test_four_language_documentation.py"]
+    },
+    {
+      "paths": [
+        "infrastructure/detachable_halfbody_assets.py",
+        "infrastructure/layered_face_renderer.py",
+        "tools/art_pipeline/integrate_detachable_halfbody.py"
+      ],
+      "tests": [
+        "test_integrate_detachable_halfbody.py",
+        "test_layered_architecture.py",
+        "test_layered_face_assets.py"
       ]
     }
   ]

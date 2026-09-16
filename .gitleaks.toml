@@ -1,0 +1,25 @@
+# gitleaks 設定／gitleaks 配置／gitleaks configuration／gitleaks 設定
+#
+# 繁體中文：沿用 gitleaks 預設規則。二代素體建置紀錄的 `model_sha256` 區段記錄
+# 視覺模型檔的 SHA-256 雜湊，會被 generic-api-key 規則誤判；只對該檔案的
+# 64 位十六進位雜湊放行，其他路徑與規則維持原樣。
+# 简体中文：沿用 gitleaks 默认规则。二代素体构建记录的 `model_sha256` 区段记录
+# 视觉模型文件的 SHA-256 哈希，会被 generic-api-key 规则误判；只对该文件的
+# 64 位十六进制哈希放行，其他路径与规则维持原样。
+# English: the default gitleaks rules stay in force. The `model_sha256` block of
+# the V5 body build metadata records SHA-256 digests of vision model files,
+# which the generic-api-key rule misreads; only 64-character hexadecimal
+# digests inside that one file are allowed, every other path and rule is unchanged.
+# 日本語：gitleaks の既定ルールを維持します。第二世代素体ビルド記録の
+# `model_sha256` 区画は視覚モデルファイルの SHA-256 ダイジェストであり、
+# generic-api-key ルールに誤検出されるため、このファイル内の 64 桁十六進
+# ダイジェストだけを許可し、他のパスとルールは変更しません。
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "SHA-256 digests of vision model files in the V5 body build metadata"
+paths = ['''^assets/pose-atlas/v5-base/BUILD-METADATA\.json$''']
+regexes = ['''^[0-9a-f]{64}$''']
+regexTarget = "secret"

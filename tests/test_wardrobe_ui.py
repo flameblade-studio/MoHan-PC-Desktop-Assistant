@@ -31,11 +31,12 @@ lazy from PySide6.QtWidgets import (
 lazy from test_global_settings_actions import close_dashboard, dependencies
 
 TAB_COUNT = 8
-POSE_BUTTON_COUNT = 4
+PREVIEW_VIEW_COUNT = 24
 TWO_HOURS_SECONDS = 2 * 60 * 60
 
 lazy from infrastructure.db import StudioDB
 lazy from presentation.dashboard_window import Dashboard
+lazy from presentation.wardrobe_turntable import TURN_TABLE_VIEWS
 
 LANGUAGE_CONTRACTS = {
     "zh-TW": {
@@ -79,7 +80,7 @@ LANGUAGE_CONTRACTS = {
         "makeup_intensity": ("メイクの濃さ",),
     },
 }
-MAKEUP_MENU_MINIMUM = 3  # bare face + the two built-in variants
+MAKEUP_MENU_MINIMUM = 3  # bare face + the two stable built-in variants
 MAKEUP_INTENSITY_MAXIMUM = 100
 
 FORBIDDEN_SUBPAGE_ACTIONS = frozenset({
@@ -143,6 +144,21 @@ def visible_texts(root: QWidget) -> tuple[str, ...]:
     return tuple(text.strip() for text in texts if text and text.strip())
 
 
+def _visible_category_tab_texts(
+    application: QApplication,
+    dashboard: Dashboard,
+    page: QWidget,
+) -> tuple[str, ...]:
+    """Collect controls visible on every actual Wardrobe category page."""
+    category_tabs = dashboard.wardrobe_category_tabs
+    category_texts: list[str] = []
+    for category_index in range(category_tabs.count()):
+        category_tabs.setCurrentIndex(category_index)
+        application.processEvents()
+        category_texts.extend(visible_texts(page))
+    return tuple(category_texts)
+
+
 def assert_any_text_contains(
     texts: tuple[str, ...],
     alternatives: tuple[str, ...],
@@ -152,7 +168,7 @@ def assert_any_text_contains(
         alternative.casefold() in text.casefold()
         for text in texts
         for alternative in alternatives
-    ), f"Wardrobe Pavilion is missing {capability}: {alternatives!r}"
+    ), f'Wardrobe Pavilion requires {capability}: {alternatives!r}'
 
 
 def assert_makeup_controls(dashboard: Dashboard) -> None:
@@ -191,7 +207,13 @@ def test_wardrobe_tab_and_controls_have_four_language_contract() -> None:
                     assert page is not None
                     tabs.setCurrentIndex(wardrobe_index)
                     application.processEvents()
-                    texts = visible_texts(page)
+                    # Every category is reachable through its actual tab. Inspect
+                    # only the visible controls on each page.
+                    texts = _visible_category_tab_texts(
+                        application,
+                        dashboard,
+                        page,
+                    )
                     for capability in (
                         "import",
                         "apply",
@@ -208,15 +230,15 @@ def test_wardrobe_tab_and_controls_have_four_language_contract() -> None:
                         )
                     assert_makeup_controls(dashboard)
                     pose_keys: list[int] = []
-                    assert len(dashboard.wardrobe_pose_buttons) == POSE_BUTTON_COUNT
-                    for button in dashboard.wardrobe_pose_buttons:
-                        button.click()
+                    assert len(TURN_TABLE_VIEWS) == PREVIEW_VIEW_COUNT
+                    for view_id in TURN_TABLE_VIEWS:
+                        dashboard.wardrobe_character_preview.set_view(view_id)
                         application.processEvents()
-                        assert button.isChecked()
+                        assert dashboard._wardrobe_pose_view == view_id
                         pixmap = dashboard.wardrobe_character_preview.pixmap()
                         assert pixmap is not None and not pixmap.isNull()
                         pose_keys.append(pixmap.cacheKey())
-                    assert len(set(pose_keys)) == POSE_BUTTON_COUNT
+                    assert len(set(pose_keys)) == PREVIEW_VIEW_COUNT
                     dashboard._restore_builtin_outfit()
                     lock_until = datetime.fromisoformat(
                         str(db.setting("wardrobe_manual_lock_until", ""))

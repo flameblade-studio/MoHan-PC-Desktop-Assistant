@@ -44,7 +44,7 @@ def cosine_similarity(left: tuple[float, ...], right: tuple[float, ...]) -> floa
     left_norm = math.sqrt(sum(value * value for value in left))
     right_norm = math.sqrt(sum(value * value for value in right))
     if left_norm < FLOAT_COMPARISON_EPSILON or right_norm < FLOAT_COMPARISON_EPSILON:
-        raise ValueError("Face embedding norm must not be zero.")
+        raise ValueError("Face embedding norm must be positive.")
     return dot / (left_norm * right_norm)
 
 
@@ -52,7 +52,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
             "Compare locally rendered MoHan face assets with bundled YuNet/SFace; "
-            "no embedding is persisted."
+            "embeddings remain transient in memory."
         )
     )
     parser.add_argument("reference", type=Path)

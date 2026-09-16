@@ -29,7 +29,7 @@ def test_awakening_is_monotonic() -> None:
     before = state.awakening
     state.update(days=90.0, commits=300)
     assert state.awakening >= before
-    # Updating with smaller values must not regress.
+    # Updating with smaller values preserves accumulated resonance.
     state.update(days=1.0, commits=1)
     assert state.awakening == 1.0
 

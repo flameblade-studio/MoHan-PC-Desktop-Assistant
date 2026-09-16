@@ -222,7 +222,7 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
     ) -> None:
         with self._audio_lock:
             if not self.running:
-                raise RuntimeError("Realtime 連線已停止")
+                raise RuntimeError("Realtime 連線目前處於停止狀態")
             self._audio_queue = audio.playback_queue
             self._input_queue = audio.input_queue
             self._output_stream = audio.output_stream
@@ -258,7 +258,7 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
                 self._output_stream = None
         for stream in (input_stream, output_stream):
             if stream:
-                # Preserve the original audio error; cleanup is best effort.
+                # Preserve the original audio error; cleanup completes on a best-effort basis.
                 with suppress(Exception):
                     stream.abort()
                     stream.close()
@@ -450,7 +450,7 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
                         pass
         for stream in (input_stream, output_stream):
             if stream:
-                # Streams can already be invalidated by their device callback.
+                # Device callbacks may already have released these streams.
                 with suppress(Exception):
                     stream.abort()
                     stream.close()
@@ -695,7 +695,7 @@ class RealtimeVoiceClient(RealtimeSessionMethods, RealtimeEventMethods, QObject)
         return True
 
     def _discard_conversation_item(self, item_id: str) -> bool:
-        """Remove noise-only turns so they cannot pollute later context."""
+        """Keep noise-only turns outside later conversation context."""
         if not item_id or not self.running:
             return False
         ws = self.ws

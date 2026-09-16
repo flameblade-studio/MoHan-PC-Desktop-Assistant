@@ -243,8 +243,7 @@ def _settle_ambient_motion(
         samples.append(_sample(window))
     _assert_smooth_upward_release(samples, f"{context}/ambient")
     assert samples[-1].y == window.character_base_y, (
-        f"{context}: ambient ownership did not settle at the base line; "
-        f"trace={samples!r}; ambient={window.ambient_motion_y}"
+        f'{context}: ambient ownership must settle at the baseline; trace={samples!r}; ambient={window.ambient_motion_y}'
     )
     settled = _sample(window)
     window._motion_tick()

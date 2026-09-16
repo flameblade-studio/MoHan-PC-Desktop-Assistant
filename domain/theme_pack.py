@@ -104,11 +104,11 @@ def _safe_member(info: zipfile.ZipInfo) -> None:
         or ".." in path.parts
         or "\\" in info.filename
     ):
-        raise ThemePackError("Unsafe archive path.")
+        raise ThemePackError("Provide a supported archive path.")
     if info.flag_bits & 1 or info.file_size > MAX_MEMBER_BYTES:
-        raise ThemePackError("Unsafe archive member.")
+        raise ThemePackError("Provide a supported archive member.")
     if (info.external_attr >> 16) & 0o170000 == SYMLINK_FILE_TYPE:
-        raise ThemePackError("Symbolic links are forbidden.")
+        raise ThemePackError("Symbolic links require a supported archive entry.")
     compressed = max(1, info.compress_size)
     if info.file_size / compressed > MAX_COMPRESSION_RATIO:
         raise ThemePackError("Suspicious compression ratio.")
@@ -116,18 +116,18 @@ def _safe_member(info: zipfile.ZipInfo) -> None:
 
 def _png_dimensions(data: bytes) -> tuple[int, int]:
     if len(data) < MIN_PNG_HEADER_LENGTH or data[:8] != b"\x89PNG\r\n\x1a\n" or data[12:16] != b"IHDR":
-        raise ThemePackError("Invalid PNG background.")
+        raise ThemePackError("Provide a supported PNG background.")
     return struct.unpack(">II", data[16:24])
 
 
 def _svg_dimensions(data: bytes) -> tuple[int, int]:
     lowered = data.lower()
     if b"<!doctype" in lowered or b"<!entity" in lowered:
-        raise ThemePackError("DTD is forbidden in SVG.")
+        raise ThemePackError("SVG DTD declarations require supported document content.")
     try:
         root = ElementTree.fromstring(data)
     except ElementTree.ParseError:
-        raise ThemePackError("Invalid SVG background.") from None
+        raise ThemePackError("Provide a supported SVG background.") from None
     _validate_svg_tree(root)
     return _declared_svg_dimensions(root)
 
@@ -136,18 +136,18 @@ def _validate_svg_tree(root: ElementTree.Element) -> None:
     for element in root.iter():
         tag = element.tag.rsplit("}", 1)[-1]
         if tag not in SVG_ELEMENTS:
-            raise ThemePackError("Forbidden SVG element.")
+            raise ThemePackError("Provide a supported SVG element.")
         for name, value in element.attrib.items():
             local = name.rsplit("}", 1)[-1].lower()
             lowered_value = value.lower()
             if local.startswith("on") or local in {"href", "src"}:
-                raise ThemePackError("SVG links and events are forbidden.")
+                raise ThemePackError("SVG links and events require supported document content.")
             if (
                 "url(" in lowered_value
                 or "javascript:" in lowered_value
                 or "data:" in lowered_value
             ):
-                raise ThemePackError("External SVG content is forbidden.")
+                raise ThemePackError("External SVG content requires supported document content.")
 
 
 def _declared_svg_dimensions(root: ElementTree.Element) -> tuple[int, int]:
@@ -162,7 +162,7 @@ def _declared_svg_dimensions(root: ElementTree.Element) -> tuple[int, int]:
         try:
             dimensions = int(float(viewbox[2])), int(float(viewbox[3]))
         except ValueError:
-            raise ThemePackError("Invalid SVG dimensions.") from None
+            raise ThemePackError("Provide a supported SVG dimensions.") from None
     return dimensions
 
 
@@ -176,7 +176,7 @@ def _text_map(value: object) -> frozendict[str, str]:
         raise ThemePackError("All four localized display names are required.")
     result = {str(key): str(text).strip() for key, text in value.items()}
     if any(not text or len(text) > MAX_NAME_LENGTH for text in result.values()):
-        raise ThemePackError("Invalid localized display name.")
+        raise ThemePackError("Provide a supported localized display name.")
     return frozendict(result)
 
 
@@ -193,20 +193,20 @@ def _validated_archive_names(infos: list[zipfile.ZipInfo]) -> set[str]:
 
 def _validated_manifest(value: object) -> dict[str, object]:
     if not isinstance(value, dict) or set(value) != MANIFEST_KEYS:
-        raise ThemePackError("Invalid theme manifest.")
+        raise ThemePackError("Provide a supported theme manifest.")
     if value["format"] != FORMAT or value["version"] != VERSION:
-        raise ThemePackError("Unsupported theme format.")
+        raise ThemePackError("Provide a supported theme format.")
     return value
 
 
 def _validated_colors(value: object) -> frozendict[str, str]:
     if not isinstance(value, dict):
-        raise ThemePackError("Invalid theme colors.")
+        raise ThemePackError("Provide a supported theme colors.")
     colors = {str(key): str(color) for key, color in value.items()}
     if any(not isinstance(raw, str) for raw in value.values()) or any(
         not COLOR.fullmatch(color) for color in colors.values()
     ):
-        raise ThemePackError("Invalid theme colors.")
+        raise ThemePackError("Provide a supported theme colors.")
     known = {key: color for key, color in colors.items() if key in DEFAULT_TOKENS}
     return frozendict({**DEFAULT_TOKENS, **known})
 
@@ -219,9 +219,9 @@ def _validated_background(
     if value is None:
         return None
     if value not in {"assets/background.svg", "assets/background.png"}:
-        raise ThemePackError("Invalid theme background path.")
+        raise ThemePackError("Provide a supported theme background path.")
     if value not in names:
-        raise ThemePackError("Theme background is missing.")
+        raise ThemePackError("Provide Theme background.")
     data = archive.read(value)
     dimensions = (
         _svg_dimensions(data) if value.endswith(".svg") else _png_dimensions(data)
@@ -232,19 +232,19 @@ def _validated_background(
 
 def _validated_source(value: object) -> tuple[str, str, str, str]:
     if not isinstance(value, dict) or set(value) != SOURCE_KEYS:
-        raise ThemePackError("Invalid theme source declaration.")
+        raise ThemePackError("Provide a supported theme source declaration.")
     channel = value["channel"]
     kind = value["kind"]
     author = value["author"]
     license_name = value["license"]
     if channel not in SOURCE_CHANNELS or kind not in SOURCE_KINDS:
-        raise ThemePackError("Invalid theme source declaration.")
+        raise ThemePackError("Provide a supported theme source declaration.")
     if value["reference_included"] is not False:
-        raise ThemePackError("Reference assets must not be included.")
+        raise ThemePackError("Reference assets stay outside the package.")
     if not isinstance(author, str) or not SOURCE_TEXT.fullmatch(author.strip()):
-        raise ThemePackError("Invalid theme source declaration.")
+        raise ThemePackError("Provide a supported theme source declaration.")
     if not isinstance(license_name, str) or not SOURCE_TEXT.fullmatch(license_name.strip()):
-        raise ThemePackError("Invalid theme source declaration.")
+        raise ThemePackError("Provide a supported theme source declaration.")
     return str(channel), str(kind), author.strip(), license_name.strip()
 
 
@@ -255,13 +255,13 @@ def _theme_from_manifest(
 ) -> ThemePack:
     theme_id = str(manifest["id"])
     if not IDENTIFIER.fullmatch(theme_id):
-        raise ThemePackError("Invalid theme identifier.")
+        raise ThemePackError("Provide a supported theme identifier.")
     font = str(manifest["font"])
     if not FONT.fullmatch(font):
-        raise ThemePackError("Invalid theme font.")
+        raise ThemePackError("Provide a supported theme font.")
     radius = manifest["radius"]
     if not isinstance(radius, int) or isinstance(radius, bool) or not 0 <= radius <= MAX_RADIUS:
-        raise ThemePackError("Invalid theme radius.")
+        raise ThemePackError("Provide a supported theme radius.")
     source_channel, source_kind, author, license_name = _validated_source(
         manifest["source"]
     )
@@ -282,7 +282,7 @@ def _theme_from_manifest(
 def inspect_theme_pack(source: Path) -> ThemePack:
     path = Path(source)
     if not path.is_file() or path.stat().st_size > MAX_ARCHIVE_BYTES:
-        raise ThemePackError("Theme archive size is invalid.")
+        raise ThemePackError("Theme archive size needs a supported value.")
     try:
         with zipfile.ZipFile(path) as archive:
             infos = archive.infolist()
@@ -304,7 +304,7 @@ def inspect_theme_pack(source: Path) -> ThemePack:
         KeyError,
         TypeError,
     ):
-        raise ThemePackError("Invalid theme archive.") from None
+        raise ThemePackError("Provide a supported theme archive.") from None
 
 
 def _atomic_json(path: Path, payload: object) -> None:
@@ -358,7 +358,7 @@ def apply_theme(theme_id: str, store: Path) -> ThemePack:
     """Persist one previously installed theme after an explicit Save action."""
 
     if not IDENTIFIER.fullmatch(theme_id):
-        raise ThemePackError("Invalid theme identifier.")
+        raise ThemePackError("Provide a supported theme identifier.")
     source = Path(store) / "packages" / f"{theme_id}.mohan-theme"
     theme = inspect_theme_pack(source)
     if theme.theme_id != theme_id:
@@ -368,7 +368,7 @@ def apply_theme(theme_id: str, store: Path) -> ThemePack:
 
 
 def selected_theme_id(store: Path) -> str:
-    """Return a valid active ID, safely falling back when a pack is missing."""
+    """Return a valid active ID, safely falling back when a pack."""
 
     active = Path(store) / "active.json"
     if not active.is_file():
@@ -391,14 +391,14 @@ def selected_theme_id(store: Path) -> str:
 
 
 def remove_theme_pack(theme_id: str, store: Path) -> None:
-    """Remove one inactive installed pack without touching any other data."""
+    """Remove one inactive installed pack while preserving any other data."""
 
     if theme_id == "builtin":
-        raise ThemePackError("The built-in theme cannot be removed.")
+        raise ThemePackError("The built-in theme stays available.")
     if not IDENTIFIER.fullmatch(theme_id):
-        raise ThemePackError("Invalid theme identifier.")
+        raise ThemePackError("Provide a supported theme identifier.")
     if selected_theme_id(store) == theme_id:
-        raise ThemePackError("An active theme cannot be removed.")
+        raise ThemePackError("Select an inactive theme before removal.")
     package = Path(store) / "packages" / f"{theme_id}.mohan-theme"
     theme = inspect_theme_pack(package)
     if theme.theme_id != theme_id:
@@ -406,7 +406,7 @@ def remove_theme_pack(theme_id: str, store: Path) -> None:
     try:
         package.unlink()
     except OSError:
-        raise ThemePackError("Unable to remove theme package.") from None
+        raise ThemePackError("Removing the theme package requires attention; retry the operation.") from None
 
 
 def restore_builtin_theme(store: Path) -> None:
@@ -419,7 +419,7 @@ def materialize_theme_background(theme_id: str, store: Path) -> Path | None:
     if theme_id == "builtin":
         return None
     if not IDENTIFIER.fullmatch(theme_id):
-        raise ThemePackError("Invalid theme identifier.")
+        raise ThemePackError("Provide a supported theme identifier.")
     source = Path(store) / "packages" / f"{theme_id}.mohan-theme"
     theme = inspect_theme_pack(source)
     if theme.theme_id != theme_id:
@@ -428,12 +428,12 @@ def materialize_theme_background(theme_id: str, store: Path) -> Path | None:
         return None
     suffix = Path(theme.background).suffix.casefold()
     if suffix not in {".png", ".svg"}:
-        raise ThemePackError("Invalid theme background path.")
+        raise ThemePackError("Provide a supported theme background path.")
     try:
         with zipfile.ZipFile(source) as archive:
             data = archive.read(theme.background)
     except (OSError, KeyError, zipfile.BadZipFile):
-        raise ThemePackError("Unable to read theme background.") from None
+        raise ThemePackError("Reading the theme background requires attention; retry the operation.") from None
     cache = Path(store) / "cache"
     cache.mkdir(parents=True, exist_ok=True)
     destination = cache / f"{theme_id}{suffix}"

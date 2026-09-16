@@ -85,7 +85,7 @@ def seed_demo_database(db: StudioDB) -> None:
 
 
 def seed_demo_memories(db: StudioDB) -> None:
-    """Insert the screenshot fixture without requiring the optional text normalizer."""
+    """Insert the screenshot fixture directly using its prepared text."""
 
     now = local_wall_time().isoformat(timespec="seconds")
     rows = (
@@ -126,7 +126,7 @@ def seed_demo_memories(db: StudioDB) -> None:
 def grab_widget_image(widget) -> QImage:
     image = widget.grab().toImage().convertToFormat(QImage.Format_ARGB32)
     if image.isNull():
-        raise RuntimeError("Could not grab widget image")
+        raise RuntimeError("Widget capture requires a valid rendered image")
     return image
 
 
@@ -459,7 +459,7 @@ def ffmpeg_binary(explicit: str = "") -> str:
     for candidate in candidates:
         if candidate and Path(candidate).exists():
             return str(Path(candidate))
-    raise RuntimeError("FFmpeg not found. Set FFMPEG_BINARY to ffmpeg.exe.")
+    raise RuntimeError("Set FFMPEG_BINARY to an available ffmpeg.exe.")
 
 
 def prepare_demo_profile(temp_dir: str) -> None:
@@ -497,7 +497,7 @@ def create_capture_dashboard(
     *,
     dependencies_factory=dependencies,
 ) -> tuple[StudioDB, Dashboard]:
-    """Build a dashboard over the prepared demo database without resetting it."""
+    """Build a dashboard using the prepared demo database in its current state."""
 
     set_motion_override(False)
     db = StudioDB(Path(temp_dir) / "mohan-zh-TW.db")
@@ -523,7 +523,7 @@ def capture_conversation_assets(
     )
     character = representative_character(overlay)
     if not character.save(str(output_dir / "desktop-character.png")):
-        raise RuntimeError("Could not save the desktop character preview")
+        raise RuntimeError("Saving the desktop character preview requires attention; check the output path and image encoder.")
     return conversation
 
 
@@ -700,7 +700,7 @@ def main() -> int:
     parser.add_argument(
         "--screenshots-only",
         action="store_true",
-        help="Capture current UI images without rebuilding the demo video.",
+        help="Capture current UI images and preserve the existing demo video.",
     )
     args = parser.parse_args()
     selected_tab = args.tab.strip().casefold()

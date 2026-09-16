@@ -82,7 +82,7 @@ class _ThemePackPanelOptions(TypedDict, total=False):
 
 
 class ThemePackPanel(QWidget):
-    """Dashboard-embeddable theme browser with no archive or DB knowledge."""
+    """Dashboard-embeddable theme browser with archive and DB details outside the UI boundary."""
 
     def __init__(
         self,
@@ -164,7 +164,7 @@ class ThemePackPanel(QWidget):
         return None if item is None else str(item.data(Qt.UserRole))
 
     def refresh(self) -> None:
-        """Reload display metadata without changing the current preview."""
+        """Reload display metadata while preserving the current preview."""
 
         selected_id = self._theme_id(self.theme_list.currentItem())
         self._refreshing = True
@@ -189,7 +189,7 @@ class ThemePackPanel(QWidget):
                 }:
                     label += " · " + self._t(
                         "wardrobe_installed_inactive",
-                        "已安裝，尚未套用",
+                        "已安裝；準備套用",
                     )
                 item = QListWidgetItem(label)
                 item.setData(Qt.UserRole, theme.theme_id)
@@ -306,6 +306,6 @@ class ThemePackPanel(QWidget):
             self._t("theme_preview", "主題預覽"),
             self._t(
                 "package_rejected_unsafe_or_missing",
-                "套件含危險內容或缺少檔案，已整包拒絕",
+                '請補齊套件的安全素材，通過完整視角與安全驗證後再安裝。',
             ),
         )

@@ -23,7 +23,7 @@ MAX_COOLDOWN_SECONDS: Final = 86400
 
 
 class WellbeingReminderStoreError(RuntimeError):
-    """A fixed-detail persistence failure without backend information."""
+    """A fixed-detail persistence attention event with backend information kept private."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,13 +42,13 @@ class WellbeingKindState:
         if type(self.enabled) is not bool:
             raise TypeError("Wellbeing enabled state must be boolean.")
         if not 0 <= self.daily_reinforcement_count <= MAX_DAILY_REINFORCEMENTS:
-            raise ValueError("Wellbeing daily count is invalid.")
+            raise ValueError("Wellbeing daily count needs a supported value.")
         if not 1 <= self.maximum_daily_reinforcements <= MAX_DAILY_REINFORCEMENTS:
-            raise ValueError("Wellbeing daily budget is invalid.")
+            raise ValueError("Wellbeing daily budget needs a supported value.")
         if self.daily_reinforcement_count > self.maximum_daily_reinforcements:
             raise ValueError("Wellbeing daily count exceeds its budget.")
         if not MIN_COOLDOWN_SECONDS <= self.same_kind_cooldown_seconds <= MAX_COOLDOWN_SECONDS:
-            raise ValueError("Wellbeing cooldown is invalid.")
+            raise ValueError("Wellbeing cooldown needs a supported value.")
         for moment in (
             self.snooze_until,
             self.initial_delivered_at,
@@ -132,7 +132,7 @@ class WellbeingReminderStore[SnapshotT]:
 
     def save(self, state: WellbeingReminderState) -> None:
         if not isinstance(state, WellbeingReminderState):
-            raise WellbeingReminderStoreError("Wellbeing reminder state is invalid.")
+            raise WellbeingReminderStoreError("Wellbeing reminder state needs a supported value.")
         _atomic_write(self._settings, {WELLBEING_STATE_KEY: _encode_state(state)})
 
     def update_kind(
@@ -148,7 +148,7 @@ class WellbeingReminderStore[SnapshotT]:
             return WellbeingReminderState(state.local_date, kinds)
         except KeyError, TypeError, ValueError:
             raise WellbeingReminderStoreError(
-                "Wellbeing reminder update is invalid."
+                "Wellbeing reminder update needs a supported value."
             ) from None
 
     def export_portable(self, now: datetime) -> dict[str, object]:
@@ -272,7 +272,7 @@ def _iso(value: datetime | None) -> str | None:
 
 def _require_aware(now: datetime) -> None:
     if not isinstance(now, datetime) or now.tzinfo is None:
-        raise WellbeingReminderStoreError("Current wellbeing time is invalid.")
+        raise WellbeingReminderStoreError("Current wellbeing time needs a supported value.")
 
 
 def _atomic_write[SnapshotT](
@@ -292,8 +292,8 @@ def _atomic_write[SnapshotT](
             settings.restore(before)
         except _BOUNDARY_ERRORS:
             raise WellbeingReminderStoreError(
-                "Wellbeing reminder persistence failed and rollback was incomplete."
+                "Wellbeing reminder persistence requires attention and rollback requires attention."
             ) from None
         raise WellbeingReminderStoreError(
-            "Wellbeing reminder persistence failed; previous values were restored."
+            "Wellbeing reminder persistence requires attention; previous values were restored."
         ) from None

@@ -180,7 +180,7 @@ class DashboardVoiceMixin:
         fallback = QCheckBox(
             self._t(
                 "openai_fallback",
-                "OpenAI 失敗時使用 Windows 離線辨識",
+                '以 Windows 離線辨識作為 OpenAI 的恢復路徑',
             )
         )
         available = capabilities.offline_speech_recognition
@@ -331,7 +331,7 @@ class DashboardVoiceMixin:
         if capabilities.system_local_speech:
             return self._t(
                 "no_female_voice",
-                "未偵測到已確認的女性 Windows 聲音",
+                '請安裝已驗證的 Windows 女性語音',
             )
         return self._t(
             "platform_local_voice_unavailable",
@@ -586,7 +586,7 @@ class DashboardVoiceMixin:
         return combo
 
     def _apply_realtime_output_mode_state(self, mode: str) -> None:
-        # The selected output route decides which provider speaks; it must not
+        # The selected output route decides which provider speaks; it keeps
         # prevent the user from preselecting the native Realtime voice that
         # will be used after switching back to OpenAI output.
         self.realtime_voice.setEnabled(True)
@@ -774,7 +774,7 @@ class DashboardVoiceMixin:
         )
         self.voice_preview_button.clicked.connect(self._preview_voice)
         self.realtime_status = QLabel(
-            self._t("realtime_disconnected", "Realtime：未連線")
+            self._t("realtime_disconnected", 'Realtime：等待連線')
         )
         self.realtime_btn = QPushButton(
             self._t("start_realtime", "啟動 Realtime 自然對話")
@@ -802,8 +802,7 @@ class DashboardVoiceMixin:
         else:
             text = self._t(
                 "recognition_note_no_offline",
-                "單次麥克風使用 OpenAI 高準確辨識；此平台的離線辨識尚未"
-                "完成實機驗證，因此不會顯示或假裝提供離線備援。",
+                '單次麥克風使用 OpenAI 高準確辨識；此平台的離線辨識等待實機驗證，完成驗證後才可提供離線備援。',
             )
         return self._voice_note(text)
 
@@ -833,17 +832,12 @@ class DashboardVoiceMixin:
         if capabilities.system_local_speech:
             text = self._t(
                 "azure_speech_note",
-                "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
-                "只列官方標示為女性的繁中、簡中或英文聲線；失敗時"
-                "立即回到 Windows 本機女聲。F0 免費額度及計費以"
-                " Microsoft 當期規則為準。",
+                '預覽功能；請自備 Azure Speech 資源金鑰與相符區域，聲線僅列出已驗證女性聲線。設定需要補齊或服務出現錯誤時，回退至 Windows 本機女性語音。用量與計費依 Microsoft 規則。',
             )
         else:
             text = self._t(
                 "azure_speech_note_no_local_fallback",
-                "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
-                "此平台尚無已驗證的本機語音，服務失敗時會安全停止播放，"
-                "不會假裝已切換到離線聲音。",
+                '預覽功能；請自備 Azure Speech 資源金鑰與相符區域。此平台的本機語音等待驗證；服務出現錯誤時，播放會安全停止。',
             )
         return self._voice_note(text)
 
@@ -851,11 +845,7 @@ class DashboardVoiceMixin:
         return self._voice_note(
             self._t(
                 "azure_hd_speech_note",
-                "可選預覽功能；請使用獨立的 S0 語音資源、金鑰與相符區域。"
-                "Dragon HD 不提供 viseme，因此墨寒會使用既有音訊分析維持"
-                "嘴型同步。發話前等待時間取決於網路與區域距離。若 HD 失敗，"
-                "依序退回一般 Azure，再退回 Windows "
-                "本機語音；每一層只嘗試一次，避免重複計費。",
+                '可選預覽功能；請使用獨立的 S0 語音資源、金鑰與相符區域。墨寒以音訊分析維持 Dragon HD 嘴型同步，發話等待時間取決於網路與區域距離。合成出現錯誤時，依序回退至一般 Azure 與 Windows 本機語音，每層各嘗試一次。',
             )
         )
 
@@ -873,9 +863,7 @@ class DashboardVoiceMixin:
         return self._voice_note(
             self._t(
                 "echo_guard_note",
-                "防回音開啟時，墨寒說話期間會停止上傳麥克風，並清除本機"
-                "與伺服器端殘留音訊；結束約一秒後才恢復。對話頁只顯示"
-                "高精度整句轉錄的最終結果，不顯示辨識中的暫定文字。",
+                '防回音開啟時，墨寒說話期間會暫停上傳麥克風，並清除本機與伺服器端殘留音訊，結束約一秒後恢復。對話頁僅顯示高精度整句轉錄的最終結果。',
             )
         )
 
@@ -883,13 +871,7 @@ class DashboardVoiceMixin:
         return self._voice_note(
             self._t(
                 "realtime_note",
-                "Realtime 會持續使用麥克風。預設以穩定切段保留句首 500 毫秒，"
-                "停止約 0.85 秒後才判定說完。高精度整句轉錄開啟時，"
-                "Realtime 原生模型負責理解聲音，螢幕文字則使用與單次"
-                "麥克風相同的 gpt-4o-mini-transcribe 與繁中詞庫；"
-                "不會同時收取 Realtime 內建字幕的第二筆轉錄費。"
-                "啟動時才會傳送聲音；關閉後立即停止。"
-                "mini 較省費用並已設為預設；完整版適合品質優先時使用。",
+                'Realtime 持續使用麥克風；穩定切段保留句首 500 毫秒，停頓約 0.85 秒後判定句子完成。啟用高精度整句轉錄時，原生模型負責理解聲音，螢幕文字僅由 gpt-4o-mini-transcribe 與繁中詞庫轉錄，字幕轉錄費僅計此一路。聲音僅在啟動期間傳送，關閉即停止。mini 為較省費用的預設，完整版適合品質優先時使用。',
             )
         )
 

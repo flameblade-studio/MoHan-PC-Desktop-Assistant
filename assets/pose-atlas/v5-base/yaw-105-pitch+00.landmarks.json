@@ -2,39 +2,58 @@
   "height": 1536,
   "landmarks": {
     "crown": [
-      557,
-      91
+      486,
+      102
     ],
     "left_ankle": [
-      450,
-      1406
+      486,
+      1346
     ],
     "left_heel": [
-      447,
-      1490
+      483,
+      1430
     ],
     "left_hip": [
-      596,
-      878
+      563,
+      849
     ],
     "left_knee": [
-      501,
-      1187
+      525,
+      1143
     ],
     "left_sole": [
-      450,
-      1496
+      486,
+      1436
     ],
     "left_toe": [
-      454,
-      1490
+      489,
+      1430
     ]
   },
   "measurement": {
     "method": "normalized-alpha-silhouette-registration",
     "occlusion_policy": "no_coordinates_are invented for an occluded side",
-    "source_sha256": "8f73e74ff048063a1f3b748339e3692b5fa85c1358a11989dce38cd4ace8c517",
-    "target_subject_height": 1406
+    "source_sha256": "0d1a56d029d4fbd084334a8d9b9ae58c9fbdb4c88ce3a074f344bd359c02fda0",
+    "target_subject_height": 1335
+  },
+  "native_face_landmarks": {
+    "artifact": {
+      "path": "assets/pose-atlas/v5-base/yaw-105-pitch+00.native-landmarks.json",
+      "sha256": "00ae77544892d82e2b2ca98ce11cd48047aeaee3f5321a66609b05ee881ea1a2"
+    },
+    "confidence": 0.8728934526443481,
+    "coordinates": "normalized_xy_plus_relative_z",
+    "existing_artifact": "assets/pose-atlas/v5-base/yaw-105-pitch+00.native-landmarks.json",
+    "landmark_count": 478,
+    "size": [
+      1024,
+      1536
+    ],
+    "source": {
+      "path": "assets/pose-atlas/v5-base/yaw-105-pitch+00.png",
+      "sha256": "0d1a56d029d4fbd084334a8d9b9ae58c9fbdb4c88ce3a074f344bd359c02fda0"
+    },
+    "status": "generated_same_source_native_478"
   },
   "occluded_landmarks": [
     {

@@ -23,7 +23,7 @@ class GazeHeadDirection(StrEnum):
 
 @dataclass(frozen=True, slots=True)
 class FacialCueMeasurements:
-    """Normalized, observable measurements; never a claim about emotion."""
+    """Normalized, observable measurements kept separate from emotion claims."""
 
     smile_like: float | None = None
     eyes_closed_like: float | None = None
@@ -67,7 +67,7 @@ def observe_social_cues(
     cue_threshold: float = 0.68,
     direction_threshold: float = 0.65,
 ) -> VisualSocialCueObservation:
-    """Describe visible candidates conservatively without inferring feelings."""
+    """Describe visible candidates conservatively while keeping feelings as an open interpretation."""
 
     _validate_threshold(cue_threshold, "cue_threshold")
     _validate_threshold(direction_threshold, "direction_threshold")

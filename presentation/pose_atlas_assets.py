@@ -19,22 +19,30 @@ lazy from application.full_body_render_adapter import (
 lazy from domain.character_body_profile import MOHAN_BODY_PROFILE
 lazy from domain.constants import POSE_ATLAS_GENERATION
 lazy from domain.character_full_body_rig import FULL_BODY_RIG_SCHEMA_VERSION
-lazy from domain.character_pose import normalize_view_id
+lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id, normalize_view_id
 lazy from domain.face_rig import FaceMotionFrame
-lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
+lazy from infrastructure.layered_full_body_renderer import (
+    FULL_BODY_AUTHORITY_DIR,
+    PROJECT_ROOT,
+    LayeredFullBodyRenderer,
+)
 
 VIEW_RING_COUNT = 24
+SHA256_HEX_LENGTH = 64
 
 
 class PoseAtlasAssets:
-    """Load locally audited authored views without pretending they are split layers."""
+    """Load locally audited authored views while preserving their authored view contract."""
 
     def __init__(self, root: Path, *, image_size: int, outfit_overlay=None) -> None:
         if image_size <= 0:
             raise ValueError("PoseAtlas image size must be positive.")
-        self._root = Path(root)
+        self._root = Path(root).resolve()
+        if self._root != (PROJECT_ROOT / FULL_BODY_AUTHORITY_DIR).resolve():
+            raise ValueError("PoseAtlas metadata root must match the current renderer authority root.")
         self._image_size = int(image_size)
         self._metadata = self._load_metadata()
+        self._verify_declared_view_digests()
         # The parametric 24-view × 25-layer renderer is the sole full-body
         # rendering path.  The legacy static photograph + procedural mouth have
         # been removed entirely.
@@ -74,7 +82,7 @@ class PoseAtlasAssets:
             canonical = normalize_view_id(view_id)
         except (TypeError, ValueError):
             return None
-        # The parametric layered renderer is the sole full-body path.  Without a
+        # The parametric layered renderer is the sole full-body path. With a
         # motion frame there is nothing to compose, so fail closed.
         if motion is None:
             return None
@@ -195,16 +203,51 @@ class PoseAtlasAssets:
     ) -> tuple[FullBodyRenderLayer, ...] | None:
         # The parametric layered renderer already deforms the mouth, lips, jaw
         # and oral cavity inside the composed full-body frame produced by
-        # ``resolve_static``.  There is no separate procedural mouth patch to
-        # overlay, so speech contributes no additional layer.
+        # ``resolve_static``. The renderer uses the authored mouth path to
+        # overlay, so speech keeps its contribution inside the authored layer set.
         return ()
+
+    def _verify_declared_view_digests(self) -> None:
+        """Bind declared provenance to the current PNGs before creating a renderer."""
+        for view in self._metadata["views"]:
+            if "normalized_sha256" not in view:
+                # Older metadata with its established contract retains that contract.
+                continue
+            expected = view["normalized_sha256"]
+            view_id = view["view_id"]
+            if (
+                not isinstance(expected, str)
+                or len(expected) != SHA256_HEX_LENGTH
+                or any(character not in "0123456789abcdefABCDEF" for character in expected)
+            ):
+                raise ValueError(f"Invalid PoseAtlas source digest for {view_id}.")
+            try:
+                with (self._root / f"{view_id}.png").open(mode="rb") as source:
+                    actual = hashlib.file_digest(source, "sha256").hexdigest()
+            except OSError as error:
+                raise ValueError(f"Cannot read PoseAtlas source for {view_id}.") from error
+            if actual != expected.lower():
+                raise ValueError(f"PoseAtlas source hash mismatch for {view_id}.")
 
     def _load_metadata(self) -> dict[str, object]:
         path = self._root / "BUILD-METADATA.json"
         value = json.loads(path.read_text(encoding="utf-8"))
-        if value.get("schema") != "mohan.pose-atlas.working-build.v1":
-            raise ValueError("Unsupported PoseAtlas build metadata.")
+        if not isinstance(value, dict) or value.get("schema") != "mohan.pose-atlas.working-build.v1":
+            raise ValueError("Provide a supported PoseAtlas build metadata.")
         views = value.get("views")
         if not isinstance(views, list) or len(views) != VIEW_RING_COUNT:
             raise ValueError("PoseAtlas must contain the complete 24-view ring.")
+        declared: set[str] = set()
+        for view in views:
+            if not isinstance(view, dict):
+                raise ValueError("Provide a supported PoseAtlas view record.")
+            yaw = view.get("yaw_degrees")
+            if isinstance(yaw, bool) or not isinstance(yaw, int) or yaw not in CANONICAL_YAWS:
+                raise ValueError("Provide a supported PoseAtlas canonical yaw.")
+            view_id = canonical_view_id(yaw)
+            if view.get("view_id") != view_id or view_id in declared:
+                raise ValueError("Duplicate or inconsistent PoseAtlas view identity.")
+            declared.add(view_id)
+        if declared != {canonical_view_id(yaw) for yaw in CANONICAL_YAWS}:
+            raise ValueError("PoseAtlas must contain the complete canonical view ring.")
         return value

@@ -49,7 +49,7 @@ def _wordpress_credentials(url: str) -> tuple[str, str]:
         configuration_failed = True
         same_host = False
     if configuration_failed:
-        raise RuntimeError("WordPress API configuration is invalid")
+        raise RuntimeError("WordPress API requires valid configuration")
     if parsed_base.scheme != "https" or parsed_url.scheme != "https" or not same_host:
         raise RuntimeError("WordPress API must use the configured HTTPS host")
     return username, password
@@ -83,7 +83,7 @@ def _wordpress_request(
     except (RecursionError, TypeError, ValueError, UnicodeError):
         request_failed = True
     if request_failed or request is None:
-        raise RuntimeError("WordPress API request could not be prepared")
+        raise RuntimeError("WordPress API request preparation requires attention")
     return request
 
 
@@ -106,7 +106,7 @@ def _read_wordpress_json(request: Request) -> object:
         TypeError,
         ValueError,
     ):
-        response_failure = "WordPress API returned invalid JSON"
+        response_failure = "WordPress API response requires valid JSON"
     if response_failure is not None:
         raise RuntimeError(response_failure)
     return result
@@ -128,7 +128,7 @@ def load_manifest(path: Path) -> dict:
     except (OSError, UnicodeError, json.JSONDecodeError, RecursionError):
         manifest_failed = True
     if manifest_failed or not isinstance(manifest, dict):
-        raise RuntimeError("Release manifest could not be loaded")
+        raise RuntimeError("Release manifest loading requires attention")
     return manifest
 
 

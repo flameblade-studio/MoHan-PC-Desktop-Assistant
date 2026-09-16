@@ -41,11 +41,11 @@ class ThemeCommitter(Protocol):
 
 
 class ThemeSession:
-    """Own one preview/save/cancel transaction without knowing Qt or storage.
+    """Own one preview/save/cancel transaction with Qt and storage details outside the domain boundary.
 
     Installation, archive validation, UI rendering and persistence remain in
     separate modules.  This state machine only coordinates their explicit
-    callbacks and guarantees that a failed preview attempts to restore the
+    callbacks and guarantees that a preview requiring attention restores the
     last known-good visual state.
     """
 
@@ -108,7 +108,7 @@ class ThemeSession:
         try:
             self._commit(next_id)
         except _BOUNDARY_ERRORS:
-            raise ThemeSessionError("Unable to save the selected theme.") from None
+            raise ThemeSessionError("Saving the selected theme requires attention; retry the operation.") from None
         self._persisted = self._current
         return ThemeCommit(previous_id=previous_id, theme_id=next_id)
 
@@ -125,11 +125,11 @@ class ThemeSession:
         try:
             result = self._resolve(str(theme_id).strip() or BUILTIN_THEME_ID)
         except _BOUNDARY_ERRORS:
-            raise ThemeSessionError("Unable to resolve the selected theme.") from None
+            raise ThemeSessionError("Resolving the selected theme requires attention; retry the operation.") from None
         if result.status not in {"ready", "missing"}:
-            raise ThemeSessionError("Theme resolver returned an invalid status.")
+            raise ThemeSessionError("Theme resolver returned a status outside the supported set.")
         if result.status == "missing" and result.resolved_id != BUILTIN_THEME_ID:
-            raise ThemeSessionError("A missing theme must use the built-in fallback.")
+            raise ThemeSessionError("A theme requiring recovery uses the built-in fallback.")
         return result
 
     def _apply_preview(
@@ -149,6 +149,6 @@ class ThemeSession:
             self._preview(rollback)
         except _BOUNDARY_ERRORS:
             raise ThemeSessionError(
-                "Theme preview failed and its visual rollback was incomplete."
+                "Theme preview and visual rollback require attention; retry the operation."
             ) from None
-        raise ThemeSessionError("Unable to preview the selected theme.")
+        raise ThemeSessionError("Previewing the selected theme requires attention; retry the operation.")

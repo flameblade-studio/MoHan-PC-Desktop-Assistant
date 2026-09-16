@@ -1,7 +1,7 @@
 """組裝 half-body 輸入，產生 assets/expressions 契約檔名。
 
-輸入目錄與輸出目錄都由參數指定；產線不會在輸入目錄旁偷偷建立 keyed
-副本，也不會從工作樹的 assets 讀取參考圖。
+輸入目錄與輸出目錄均由參數明確指定；所有產物皆寫入指定輸出，
+參考圖由明確指定的來源提供。
 """
 
 from __future__ import annotations

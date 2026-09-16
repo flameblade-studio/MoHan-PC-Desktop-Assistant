@@ -48,34 +48,34 @@ _VISION_HEALTH_TEXTS = frozendict({
         "ja-JP": "ローカル視覚認識は無効です。",
     }),
     VisionReadiness.CAMERA_UNAVAILABLE: frozendict({
-        "zh-TW": "攝影機尚未就緒，本機視覺感知保持停用。",
-        "zh-CN": "摄像头尚未就绪，本地视觉感知保持停用。",
-        "en": "The camera is not ready, so local visual perception remains disabled.",
-        "ja-JP": "カメラの準備ができていないため、ローカル視覚認識は無効のままです。",
+        "zh-TW": '攝影機就緒後即可啟用本機視覺感知。',
+        "zh-CN": '摄像头就绪后即可启用本机视觉感知。',
+        "en": 'Local visual perception can start once the camera is ready.',
+        "ja-JP": 'カメラの準備が整うとローカル視覚認識を開始できます。',
     }),
     VisionReadiness.ENGINE_UNAVAILABLE: frozendict({
-        "zh-TW": "本機視覺引擎無法使用，視覺感知保持停用。",
-        "zh-CN": "本地视觉引擎不可用，视觉感知保持停用。",
-        "en": "The local vision engine is unavailable, so visual perception remains disabled.",
-        "ja-JP": "ローカル視覚エンジンを利用できないため、視覚認識は無効のままです。",
+        "zh-TW": '請檢查本機視覺引擎；視覺感知保持暫停。',
+        "zh-CN": '请检查本机视觉引擎；视觉感知保持暂停。',
+        "en": 'Check the local vision engine; visual perception remains paused.',
+        "ja-JP": 'ローカル視覚エンジンを確認してください。視覚認識を一時停止します。',
     }),
     VisionReadiness.MODEL_MISSING: frozendict({
-        "zh-TW": "本機視覺模型缺失，視覺感知保持停用。",
-        "zh-CN": "本地视觉模型缺失，视觉感知保持停用。",
-        "en": "Local vision models are missing, so visual perception remains disabled.",
-        "ja-JP": "ローカル視覚モデルがないため、視覚認識は無効のままです。",
+        "zh-TW": '請安裝本機視覺模型後重試；視覺感知保持暫停。',
+        "zh-CN": '请安装本机视觉模型后重试；视觉感知保持暂停。',
+        "en": 'Install local vision models and retry; visual perception remains paused.',
+        "ja-JP": 'ローカル視覚モデルをインストールして再試行してください。視覚認識を一時停止します。',
     }),
     VisionReadiness.MODEL_UNTRUSTED: frozendict({
-        "zh-TW": "本機視覺模型未通過完整性驗證，視覺感知保持停用。",
-        "zh-CN": "本地视觉模型未通过完整性验证，视觉感知保持停用。",
-        "en": "Local vision models failed integrity verification, so visual perception remains disabled.",
-        "ja-JP": "ローカル視覚モデルが整合性検証に合格しなかったため、視覚認識は無効のままです。",
+        "zh-TW": '請修復本機視覺模型並通過完整性驗證；視覺感知保持暫停。',
+        "zh-CN": '请修复本机视觉模型并通过完整性验证；视觉感知保持暂停。',
+        "en": 'Repair local vision models and pass integrity verification; visual perception remains paused.',
+        "ja-JP": 'ローカル視覚モデルを修復し、整合性検証に合格してください。視覚認識を一時停止します。',
     }),
     VisionReadiness.RUNTIME_ERROR: frozendict({
-        "zh-TW": "本機視覺分析失敗，已安全停用；其他功能不受影響。",
-        "zh-CN": "本地视觉分析失败，已安全停用；其他功能不受影响。",
-        "en": "Local vision analysis failed and was safely disabled; other features are unaffected.",
-        "ja-JP": "ローカル視覚解析に失敗したため安全に無効化しました。その他の機能には影響しません。",
+        "zh-TW": '本機視覺分析需要處理，已安全暫停；其他功能維持運作。',
+        "zh-CN": '本机视觉分析需要处理，已安全暂停；其他功能保持运行。',
+        "en": 'Local vision analysis requires attention and remains safely paused; other features keep running.',
+        "ja-JP": 'ローカル視覚解析への対応が必要です。安全に一時停止し、他の機能は動作を継続します。',
     }),
 })
 
@@ -136,7 +136,7 @@ READ_INTENT_MARKERS = (
 
 
 class GestureRecorderPort(Protocol):
-    """Optional hand-landmark recorder; implementations never return images."""
+    """Optional hand-landmark recorder; implementations return landmark data while keeping images private."""
 
     def available(self) -> bool: ...
 
@@ -163,8 +163,8 @@ class FlagshipDraftValues:
     vision: OpenAIVisionPreferences
     performance: PerformancePreferences
     phrasebook: dict[str, object]
-    # ``None`` means the user never touched the control, so the persisted
-    # value must not be overwritten (another settings page may own it).
+    # The sentinel means the user left the control untouched, so the persisted
+    # value stays preserved (another settings page may own it).
     proactive_mode: str | None
     framing_style: str | None
     welcome_minimum_seconds: int | None

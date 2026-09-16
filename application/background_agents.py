@@ -46,7 +46,7 @@ def is_quiet_time(
 class ManagerWorkerScheduler:
     """Run bounded read-only workers and arbitrate their observations.
 
-    Workers never touch the UI, expression system, or action executor.  The
+    Workers keep the UI, expression system, and action executor under their owning boundaries.  The
     main thread drains observations and remains the only authority that may
     display a message or request an expression through the existing arbiter.
     """

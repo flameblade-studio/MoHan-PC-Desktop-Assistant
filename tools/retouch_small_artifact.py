@@ -48,7 +48,7 @@ def retouch(
 
     # Harmonic inpainting: masked pixels repeatedly converge to the colour
     # field at the untouched boundary. This removes a tiny isolated speck
-    # without borrowing a differently aligned face or changing the lip shape.
+    # while preserving this face alignment and the original lip shape.
     for _ in range(240):
         neighbors = (
             np.roll(working, 1, axis=0)

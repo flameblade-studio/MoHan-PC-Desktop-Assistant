@@ -39,12 +39,10 @@ HAIR_DARK = np.array([38.0, 32.0, 34.0])
 
 
 def _hair_hint(canvas: np.ndarray, inside: np.ndarray) -> np.ndarray:
-    """在頭頂補一塊低頻暗色髮團。
+    """在頭頂加入低頻暗色髮量先驗。
 
-    輸出一直是光頭，原因跟膚色一樣是低頻：網格沒有頭髮，低頻訊號就一路
-    堅持「頭上沒有東西」，這不是把 strength 調高能解的（0.65 到 0.75 都光頭）。
-    這裡只補「頭上有一團深色」這個低頻事實，形狀刻意做成粗糙的橢圓，
-    不試圖畫出髮髻造型——真正的髮型由 LoRA 與提示詞決定。
+    原網格為光頭，在 strength 0.65～0.75 仍輸出光頭。此處用粗糙橢圓
+    提供頭頂深色區塊，具體髮髻與髮型交由 LoRA 及提示詞決定。
     """
     rows = np.where(inside.any(axis=1))[0]
     if not rows.size:

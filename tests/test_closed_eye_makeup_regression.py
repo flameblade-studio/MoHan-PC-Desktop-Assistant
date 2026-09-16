@@ -19,15 +19,19 @@ CANVAS_SIZE = (1254, 1254)
 DARK_PIXEL_MAX = 140
 SMALL_COMPONENT_MAX_AREA = 25
 BRIGHT_RESIDUAL_MIN = 180
-# The repaired run leaves at most five antialiased edge pixels in the cheek
-# eye region; ten leaves a small deterministic margin without allowing a
-# visible background crescent.
+# The repaired run leaves at most five antialiased cheek-eye edge pixels.
+# A limit of ten preserves a small margin while keeping background
+# crescents below visible extent.
 MAX_BRIGHT_RESIDUAL_PIXELS = 10
 MAX_RESIDUAL_DARK_COMPONENTS = 3
-# Fixed from the repaired three-pose run: 19,451, 21,578 and 20,796 changed
-# pixels.  18,000 keeps a conservative margin while remaining well above the
-# 2,546-pixel failure signature that exposed the too-small eye replacement.
-MIN_CLOSED_DIFF_PIXELS = 18_000
+# Measured inside the authored eye region (iris, eyelid, eyeliner layers)
+# after outfit composition: 5,774 / 5,777, 5,534 / 5,535 and 5,172 / 5,173
+# changed pixels for the three poses.  Whole-canvas counts are no longer a
+# stable signal because detachable hair and garment layers cover the small
+# photo-to-photo differences outside the eyes in both eye states.  A 90%
+# floor keeps a wide margin above the undersized-eye regression signature
+# (2,546 whole-canvas pixels, well under half of any eye region).
+MIN_CLOSED_EYE_CHANGE_RATIO = 0.9
 EYE_LAYERS = (
     "iris_left",
     "iris_right",
@@ -59,12 +63,14 @@ def _region_points(region: QRegion):
                 yield x, y
 
 
-def _changed_pixels(first: QImage, second: QImage) -> int:
-    return sum(
-        first.pixel(x, y) != second.pixel(x, y)
-        for y in range(CANVAS_SIZE[1])
-        for x in range(CANVAS_SIZE[0])
-    )
+def _changed_eye_ratio(first: QImage, second: QImage, eye_region: QRegion) -> float:
+    total = 0
+    changed = 0
+    for x, y in _region_points(eye_region):
+        total += 1
+        if first.pixel(x, y) != second.pixel(x, y):
+            changed += 1
+    return changed / total if total else 0.0
 
 
 def _bright_residual_pixels(
@@ -98,7 +104,7 @@ def _small_dark_residual_components(
         ):
             points.add((x, y))
     # The contract counts only isolated dark components of at most 25 pixels;
-    # the continuous authored eyelash line is intentionally not a speckle.
+    # the continuous authored eyelash line remains a valid feature.
     small = 0
     while points:
         before = len(points)
@@ -138,8 +144,10 @@ def run() -> None:
                 str(ROOT / "assets" / "expressions" / f"{closed_name}.png")
             ).convertToFormat(QImage.Format_ARGB32)
             eye_region = _eye_region(pose)
-            assert _changed_pixels(open_image, closed_image) >= MIN_CLOSED_DIFF_PIXELS, (
-                f"{closed_name} changed too little from {open_name}"
+            assert _changed_eye_ratio(
+                open_image, closed_image, eye_region,
+            ) >= MIN_CLOSED_EYE_CHANGE_RATIO, (
+                f"{closed_name} changed too little of the eye region from {open_name}"
             )
             assert _bright_residual_pixels(
                 closed_image,

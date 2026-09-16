@@ -26,7 +26,7 @@ def register_bundled_fonts() -> tuple[Path, ...]:
 
     root = resource_path(_FONT_ROOT)
     if not root.is_dir():
-        _LOGGER.warning("Bundled font directory is missing: %s", root)
+        _LOGGER.warning("Bundled font directory requires attention: %s", root)
         _registered_paths = ()
         _registered = True
         return _registered_paths
@@ -36,10 +36,10 @@ def register_bundled_fonts() -> tuple[Path, ...]:
         try:
             font_id = QFontDatabase.addApplicationFont(str(path))
         except (OSError, RuntimeError) as error:
-            _LOGGER.warning("Bundled font registration failed for %s: %s", path, error)
+            _LOGGER.warning("Bundled font registration requires attention for %s: %s", path, error)
             continue
         if font_id < 0:
-            _LOGGER.warning("Bundled font registration failed for %s", path)
+            _LOGGER.warning("Bundled font registration requires attention for %s", path)
             continue
         registered_paths.append(path)
     _registered_paths = tuple(registered_paths)

@@ -74,8 +74,8 @@ def _audit_failures(audit_path: Path) -> list[str]:
             failures.append(f"audit_metric_nonzero:{key}={metrics.get(key)!r}")
     # The foreground must retain transparent clearance below the shoes.
     # A bottom-exclusive coordinate of 1536 means the authority itself
-    # touches the canvas edge and can no longer prove that the soles are
-    # complete. Missing, non-integral and out-of-range values fail closed.
+    # touches the canvas edge; sole completeness requires clearance evidence.
+    # Acceptance requires a present, integral, in-range value.
     bottom = metrics.get("foreground_bottom_exclusive")
     if not isinstance(bottom, int) or isinstance(bottom, bool) or not 0 < bottom < SIZE[1]:
         failures.append(f"shoe_bottom_clearance_invalid:{bottom!r}")
@@ -111,8 +111,8 @@ def build_manifest(repo: Path, registry_path: Path) -> dict:
             view_failures.extend(_validate_rgba(authority))
             expected_hash = entry.get("authority_sha256", "")
             if not expected_hash:
-                # Fail closed: an approved master without a pinned SHA-256
-                # cannot prove it is the bytes the owner actually approved.
+                # Establish the exact owner-approved bytes by requiring
+                # a pinned approval SHA-256 before acceptance.
                 view_failures.append("authority_sha256_missing")
             elif _sha256(authority) != expected_hash:
                 view_failures.append("authority_sha256_mismatch")

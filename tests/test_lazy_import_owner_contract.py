@@ -154,7 +154,7 @@ def find_lazy_owner_violations() -> tuple[LazyOwnerViolation, ...]:
             if alias_target is not None:
                 provider_path = local_module_path(alias_target)
                 assert provider_path is not None, (
-                    f"missing compatibility alias target: {alias_target}"
+                    f'provide the compatibility alias target: {alias_target}'
                 )
                 provider_tree = module_tree(provider_path)
             valid_names = valid_provider_names(provider_tree)

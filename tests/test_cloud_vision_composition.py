@@ -58,7 +58,7 @@ def assert_dashboard_receives_official_factory_without_request(root: Path) -> No
 
     def forbidden_provider_factory(*arguments: object) -> object:
         provider_calls.append(arguments)
-        raise AssertionError("provider must not build while disabled")
+        raise AssertionError('provider construction requires an enabled state')
 
     dependencies = DashboardDependencies(
         listener=FakeListener(),

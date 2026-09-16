@@ -148,7 +148,7 @@ def _assert_openai_transcription_http_error() -> None:
             except RuntimeError as exc:
                 reported = exc
             else:
-                raise AssertionError("the mocked HTTP failure must be reported")
+                raise AssertionError('the mocked HTTP error must be reported')
         assert reported is not None
         surface = _assert_sanitized(
             reported,

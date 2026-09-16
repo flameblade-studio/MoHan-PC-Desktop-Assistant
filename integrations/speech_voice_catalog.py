@@ -40,12 +40,11 @@ def _normalized_voice_gender(value: str, name: str) -> str:
 
 
 def _is_allowed_companion_voice(name: str, gender: str = "") -> bool:
-    """Allow only voices Windows identifies as female.
+    """Select voices Windows identifies as female.
 
     Yating and Hanhan remain compatibility fallbacks for older Windows voice
-    registrations that omit Gender. Unknown voices are deliberately excluded:
-    silently falling back to a possibly male system voice would violate the
-    character contract.
+    registrations that omit Gender. Voice entries with unknown gender remain
+    outside the selection so the character contract stays consistent.
     """
 
     lowered_name = name.lower()
@@ -93,7 +92,7 @@ def _registry_voice(
 
 
 class WindowsVoiceCatalogError(RuntimeError):
-    """Windows 語音登錄檔查詢失敗。與「沒有安裝語音」是兩回事。"""
+    """Windows 語音登錄檔需要重新查詢；它與已安裝語音數量分開表示。"""
 
 
 def _registry_voices(
@@ -112,22 +111,20 @@ def _registry_voices(
                 try:
                     voice = _registry_voice(root, token, prefix)
                 except OSError:
-                    # 單一項目讀不到就跳過是合理的；但要記下來，否則
-                    # 「部分語音讀不到」與「這些語音不存在」無法區分。
+                    # 單一項目讀取問題先保留計數，讓最後結果清楚區分
+                    # 部分項目需要查詢與系統確實沒有語音的狀態。
                     _registry_voices.last_skipped += 1
                     continue
                 if voice is not None:
                     voices.append(voice)
     except FileNotFoundError:
-        # 這個 key 本來就可能不存在——舊版 Windows 沒有 Speech_OneCore。
-        # 那是「這個位置沒有語音」，是正常狀況，不是查詢失敗。
+        # 舊版 Windows 可能沒有 Speech_OneCore 登錄檔；此位置的語音清單為空。
         return []
     except OSError as error:
-        # 其餘的 OSError（ACL 拒絕、登錄檔損毀、暫時性 I/O）代表**查詢本身
-        # 失敗**，與「系統沒有安裝任何語音」是兩件事。先前一律回傳空清單，
-        # 使用者只會看到「找不到相符語音」，無從得知查詢根本沒跑成功。
+        # 其餘的 OSError（ACL、登錄檔損毀、暫時性 I/O）代表查詢需要權限或重試；
+        # 與「系統沒有安裝任何語音」分開回報，讓使用者看見真正的狀態。
         raise WindowsVoiceCatalogError(
-            f"無法讀取 Windows 語音登錄檔：{registry_path}"
+            f"Windows 語音登錄檔讀取需要權限或重試：{registry_path}"
         ) from error
     return voices
 
@@ -150,10 +147,10 @@ def windows_voice_catalog() -> list[WindowsVoiceInfo]:
         voices.extend(_registry_voices(registry_path, prefix))
         skipped += int(getattr(_registry_voices, "last_skipped", 0))
     if not voices and skipped:
-        # last_skipped 原本只被寫入、從未被讀取：唯一的語音 token 因 ACL 讀不到
-        # 時，函式回傳 []，上層判成「未安裝語音」而不是「查詢部分失敗」。
+        # last_skipped 讓 ACL 讀取問題保留在結果中，避免上層將查詢狀態
+        # 與已安裝語音數量混為一談。
         raise WindowsVoiceCatalogError(
-            f"Windows 語音登錄檔有 {skipped} 個項目無法讀取，且沒有任何可用語音"
+            f"Windows 語音登錄檔有 {skipped} 個項目需要權限或重試，尚未取得可用語音"
         )
     return voices
 

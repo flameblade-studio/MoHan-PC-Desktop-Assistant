@@ -106,48 +106,48 @@ _AUDIO_QUEUE_POLL_SECONDS = 0.05
 _AUDIO_STREAM_TIMEOUT_SECONDS = 60.0
 _MESSAGES = deep_freeze({
     "zh-TW": {
-        "invalid_region": "Azure Speech 區域格式不正確。",
-        "unsupported_voice": "Azure Speech 只允許已確認的女性聲線。",
-        "missing_settings": "尚未設定 Azure Speech 金鑰與區域。",
-        "credentials": "Azure Speech 金鑰、區域或資源權限不正確。",
-        "quota": "Azure Speech 免費額度或速率限制已達上限。",
-        "service": "Azure Speech 服務暫時異常（HTTP {status}）。",
-        "request": "Azure Speech 失敗（HTTP {status}）。",
-        "network": "無法連線到 Azure Speech：{error}",
+        "invalid_region": "請輸入 2–32 個小寫英數或連字號組成的 Azure Speech 區域。",
+        "unsupported_voice": "請選擇已確認的 Azure Speech 女性聲線。",
+        "missing_settings": "請先設定 Azure Speech 金鑰與區域。",
+        "credentials": "Azure Speech 金鑰、區域或資源權限需要更新，請檢查設定。",
+        "quota": "Azure Speech 免費額度或速率限制已用盡，請稍後再試或調整方案。",
+        "service": "Azure Speech 服務回報暫時異常（HTTP {status}），請稍後再試。",
+        "request": "Azure Speech 回報請求未完成（HTTP {status}），請檢查設定後再試。",
+        "network": "Azure Speech 連線目前未建立：{error}。請檢查網路後再試。",
     },
     "zh-CN": {
-        "invalid_region": "Azure Speech 区域格式不正确。",
-        "unsupported_voice": "Azure Speech 只允许已确认的女性声线。",
-        "missing_settings": "尚未设置 Azure Speech 密钥与区域。",
-        "credentials": "Azure Speech 密钥、区域或资源权限不正确。",
-        "quota": "Azure Speech 免费额度或速率限制已达到上限。",
-        "service": "Azure Speech 服务暂时异常（HTTP {status}）。",
-        "request": "Azure Speech 失败（HTTP {status}）。",
-        "network": "无法连接 Azure Speech：{error}",
+        "invalid_region": "请输入由 2–32 个小写字母、数字或连字符组成的 Azure Speech 区域。",
+        "unsupported_voice": "请选择已确认的 Azure Speech 女性声线。",
+        "missing_settings": "请先设置 Azure Speech 密钥与区域。",
+        "credentials": "Azure Speech 密钥、区域或资源权限需要更新，请检查设置。",
+        "quota": "Azure Speech 免费额度或速率限制已用尽，请稍后再试或调整方案。",
+        "service": "Azure Speech 服务报告暂时异常（HTTP {status}），请稍后再试。",
+        "request": "Azure Speech 报告请求未完成（HTTP {status}），请检查设置后再试。",
+        "network": "Azure Speech 当前尚未建立连接：{error}。请检查网络后再试。",
     },
     "en-US": {
-        "invalid_region": "The Azure Speech region is invalid.",
-        "unsupported_voice": ("Azure Speech accepts only verified female voices."),
+        "invalid_region": "Enter an Azure Speech region using 2–32 lowercase letters, digits, or hyphens.",
+        "unsupported_voice": "Choose a verified Azure Speech female voice.",
         "missing_settings": (
-            "The Azure Speech key and region have not been configured."
+            "Configure the Azure Speech key and region to continue."
         ),
         "credentials": (
-            "The Azure Speech key, region, or resource permission is invalid."
+            "The Azure Speech key, region, or resource permission needs an update; check the settings."
         ),
-        "quota": "The Azure Speech quota or rate limit has been reached.",
-        "service": ("Azure Speech is temporarily unavailable (HTTP {status})."),
-        "request": "Azure Speech failed (HTTP {status}).",
-        "network": "Could not connect to Azure Speech: {error}",
+        "quota": "The Azure Speech quota or rate limit is used up; try again later or adjust the plan.",
+        "service": "Azure Speech reported a temporary service issue (HTTP {status}); try again later.",
+        "request": "Azure Speech reported an incomplete request (HTTP {status}); check the settings and try again.",
+        "network": "The Azure Speech connection is not established: {error}. Check the network and try again.",
     },
     "ja-JP": {
-        "invalid_region": "Azure Speech のリージョン形式が正しくありません。",
-        "unsupported_voice": "確認済みの女性音声だけを使用できます。",
-        "missing_settings": "Azure Speech のキーとリージョンが未設定です。",
-        "credentials": "Azure Speech のキー、リージョン、またはリソース権限が正しくありません。",
-        "quota": "Azure Speech の無料枠またはレート上限に達しました。",
-        "service": "Azure Speech は一時的に利用できません（HTTP {status}）。",
-        "request": "Azure Speech に失敗しました（HTTP {status}）。",
-        "network": "Azure Speech に接続できません：{error}",
+        "invalid_region": "小文字の英数字またはハイフン 2～32 個で Azure Speech のリージョンを入力してください。",
+        "unsupported_voice": "確認済みの Azure Speech 女性音声を選択してください。",
+        "missing_settings": "Azure Speech のキーとリージョンを設定すると続行できます。",
+        "credentials": "Azure Speech のキー、リージョン、またはリソース権限を更新してください。設定を確認してください。",
+        "quota": "Azure Speech の無料枠またはレート上限を使い切りました。時間を置くかプランを調整してください。",
+        "service": "Azure Speech が一時的なサービス状態を報告しました（HTTP {status}）。時間を置いて再試行してください。",
+        "request": "Azure Speech が未完了のリクエストを報告しました（HTTP {status}）。設定を確認して再試行してください。",
+        "network": "Azure Speech の接続を確立できていません：{error}。ネットワークを確認して再試行してください。",
     },
 })
 
@@ -285,11 +285,11 @@ def _streaming_synthesizer(
 
 def _completed_synthesis_result(outcome: _SynthesisOutcome) -> object:
     if not outcome.done.wait(timeout=60.0):
-        raise TimeoutError("Azure synthesis did not finish")
+        raise TimeoutError("Azure synthesis timed out before completion")
     if outcome.failure is not None:
         raise outcome.failure
     if outcome.result is None:
-        raise RuntimeError("Azure synthesis returned no result")
+        raise RuntimeError("Azure synthesis completed without a result")
     return outcome.result
 
 
@@ -384,7 +384,7 @@ def azure_speech_error_message(
     detail: str,
     locale: str = "zh-TW",
 ) -> str:
-    _ = detail  # Never echo a remote response that could contain user data.
+    _ = detail  # Keep remote responses out of messages because they may contain user data.
     if status in {401, 403}:
         return _message(locale, "credentials")
     if status == RATE_LIMIT_STATUS:
@@ -493,7 +493,7 @@ class AzureSpeechTTS(QObject):
         self._cancel_playback(reader, synthesizer)
 
     def close(self) -> None:
-        """End playback and reject every catalog result still in flight."""
+        """End playback and mark every in-flight catalog result as obsolete."""
         self.stop()
         self.invalidate_voice_catalog()
 

@@ -40,12 +40,12 @@ SnapshotT = TypeVar("SnapshotT")
 
 
 class PerformancePreferencesStoreError(RuntimeError):
-    """A fixed-detail persistence error without backend information."""
+    """A fixed-detail persistence boundary result with backend information kept private."""
 
 
 @dataclass(slots=True)
 class PerformancePreferencesDraft[SnapshotT]:
-    """In-memory edit session; cancellation never touches persistence."""
+    """In-memory edit session; cancellation leaves persistence under its owning boundary."""
 
     _store: PerformancePreferencesStore[SnapshotT]
     original: PerformancePreferences
@@ -58,7 +58,7 @@ class PerformancePreferencesDraft[SnapshotT]:
             self.value = replace(self.value, **changes)
         except (TypeError, ValueError):
             raise PerformancePreferencesStoreError(
-                "Performance preference draft is invalid."
+                "Performance preference draft needs a supported value."
             ) from None
         return self
 
@@ -101,12 +101,12 @@ class PerformancePreferencesStore[SnapshotT]:
     def save(self, preferences: PerformancePreferences) -> None:
         if not isinstance(preferences, PerformancePreferences):
             raise PerformancePreferencesStoreError(
-                "Performance preferences are invalid."
+                "Performance preferences need supported values."
             )
         self._atomic_write(_persisted_values(preferences))
 
     def migrate(self) -> PerformancePreferences:
-        """Write canonical keys and current schema without deleting old keys."""
+        """Write canonical keys and current schema while preserving old keys."""
 
         preferences = self.load()
         self.save(preferences)
@@ -161,10 +161,10 @@ class PerformancePreferencesStore[SnapshotT]:
                 self._settings.restore(before)
             except _BOUNDARY_ERRORS:
                 raise PerformancePreferencesStoreError(
-                    "Performance preference persistence failed and rollback was incomplete."
+                    "Performance preference persistence requires attention and rollback requires attention."
                 ) from None
             raise PerformancePreferencesStoreError(
-                "Performance preference persistence failed; previous values were restored."
+                "Performance preference persistence requires attention; previous values were restored."
             ) from None
 
 

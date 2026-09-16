@@ -67,7 +67,7 @@ class OpenAIVisionLimits:
             self.max_prompt_characters,
         )
         if any(value <= 0 for value in values) or self.min_interval_seconds < 0:
-            raise ValueError("Vision limits must be positive.")
+            raise ValueError("Set Vision limits above zero.")
 
 
 DEFAULT_VISION_LIMITS = OpenAIVisionLimits()
@@ -333,7 +333,7 @@ def create_openai_vision_provider(
     limits: OpenAIVisionLimits = DEFAULT_VISION_LIMITS,
     original_detail_policy: OriginalDetailPolicy | None = None,
 ) -> OpenAIVisionProvider:
-    """Create a Python 3.15-compatible Responses API adapter without a request."""
+    """Create a Python 3.15-compatible Responses API adapter for deferred requests."""
 
     key = api_key.strip()
     if not key:
@@ -391,7 +391,7 @@ class _HttpResponsesClient:
 
 def _response_output_text(document: object) -> str:
     if not isinstance(document, dict):
-        raise TypeError("Responses API document must be an object.")
+        raise TypeError("Responses API document needs object format.")
     direct = document.get("output_text")
     if isinstance(direct, str) and direct.strip():
         return direct
@@ -415,8 +415,9 @@ def _data_url(image_bytes: bytes, media_type: str) -> str:
 def _vision_prompt(user_prompt: str) -> str:
     return (
         "Analyze only what is visible in this single image. Separate direct visual "
-        "observations from inferences and uncertainty. Never identify a person, infer "
-        "sensitive traits, or present an inference as fact. "
+        "observations from inferences and uncertainty. Refer to people with generic "
+        "labels, keep sensitive traits outside the analysis, and label every inference "
+        "as an inference rather than a fact. "
         + user_prompt.strip()
     )
 
@@ -424,24 +425,24 @@ def _vision_prompt(user_prompt: str) -> str:
 def _parse_response(response: object) -> VisualUnderstanding:
     output_text = getattr(response, "output_text", None)
     if not isinstance(output_text, str) or not output_text.strip():
-        raise ValueError("Vision response has no structured output.")
+        raise ValueError("Vision response contains no structured output.")
     value = json.loads(output_text)
     if not isinstance(value, dict):
-        raise TypeError("Vision response must be an object.")
+        raise TypeError("Vision response needs object format.")
     summary = value.get("summary")
     claims = value.get("claims")
     uncertainties = value.get("uncertainties")
     if not isinstance(summary, str) or not isinstance(claims, list) or not isinstance(uncertainties, list):
-        raise TypeError("Vision response fields have invalid types.")
+        raise TypeError("Vision response fields need summary text, claims list, and uncertainties list.")
     parsed_claims = tuple(_parse_claim(claim) for claim in claims)
     if not all(isinstance(item, str) for item in uncertainties):
-        raise TypeError("Vision uncertainties must be strings.")
+        raise TypeError("Vision uncertainties need string entries.")
     return VisualUnderstanding(summary, parsed_claims, tuple(uncertainties))
 
 
 def _parse_claim(value: object) -> VisualClaim:
     if not isinstance(value, dict):
-        raise TypeError("Vision claim must be an object.")
+        raise TypeError("Vision claim needs object format.")
     text = value.get("text")
     status = value.get("status")
     confidence = value.get("confidence")
@@ -453,7 +454,7 @@ def _parse_claim(value: object) -> VisualClaim:
         or isinstance(confidence, bool)
         or not isinstance(evidence, str)
     ):
-        raise TypeError("Vision claim fields have invalid types.")
+        raise TypeError("Vision claim fields need text, status, confidence, and evidence types.")
     return VisualClaim(text, ClaimStatus(status), float(confidence), evidence)
 
 

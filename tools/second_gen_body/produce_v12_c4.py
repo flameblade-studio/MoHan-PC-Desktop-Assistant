@@ -56,7 +56,7 @@ ROOT = Path(os.environ.get(
     r"D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision",
 ))
 # candidate6 = candidate4 的四肢圍度 + DQS 放下的手臂（取代 candidate5 的 LBS 版）。
-# 不可退回 candidate4：出貨中的 assets/pose-atlas/v4 是實機全身展示資產，
+# 使用目前核可的姿態：出貨中的 assets/pose-atlas/v4 是實機全身展示資產，
 # A-pose 會直接出現在使用者眼前，且 DLC 服裝是疊在素體上，張臂對不上垂袖。
 CONTROLS = ROOT / "work/second-gen-body/candidate6-controls"
 OUT = ROOT / "work/second-gen-body/chroma-views-v12-c4"
@@ -158,14 +158,12 @@ def garment_fraction(path: Path, low: float, high: float) -> float:
 
 
 def angle_match(path: Path, yaw: int) -> tuple[int, float, bool]:
-    """這張圖最像哪一個角度的控制圖。
+    """比較候選與全部角度控制圖，找出 IoU 峰值位置。
 
-    固定門檻（例如「IoU 要 ≥0.50」）不能判角度：實測一張正確的 45 度圖只有
-    0.528，而斜角本來就比正面低。要判的是**峰值落在哪裡**——
-    量對全部 24 組控制圖的 IoU，最高的那個就是這張圖的角度。
-
-    front/back 的並列必須容忍：A-pose 的正反剪影完全相同，+045 與 +135
-    的 IoU 一模一樣，所以只要求「要求的角度落在前兩名」，正反由眼距比另外判。
+    角度判定使用 24 組 IoU 的排名。正確 45 度樣本的 IoU 為 0.528，
+    斜角分數通常較正面低，因此固定分數用於幾何作用檢查，角度使用峰值。
+    A-pose 的 +045 與 +135 剪影相同，排名容許目標位於前兩名，
+    正反方向再由眼距比獨立驗證。
     """
     band = lower_body(figure_mask(path))
     scores = {}
@@ -207,7 +205,7 @@ def check(path: Path, yaw: int, control: np.ndarray) -> tuple[str, bool]:
     # 90 度側面只有 0.064，被 0.20 的門檻誤殺。那個門檻是拿 v9 的「45/90 度」
     # 樣本（0.303/0.330）校準的，而 **v9 的角度是壓縮過的**，它的「90 度」
     # 根本不是真正的側面。用角度不準的樣本去校準角度相關的門檻，等於用壞尺
-    # 量長度——本輪已經因此犯錯兩次，v9 不可再當角度基準。
+    # 量長度；角度基準則採用已驗證的控制圖，依兩次量測經驗分開用途。
     #
     # 側面帶的方位正確性改由角度指標（下半身剪影峰值）負責，那個指標在
     # yaw+090 給出 0.721，是全部視角裡最高的幾個之一。
@@ -227,16 +225,12 @@ def check(path: Path, yaw: int, control: np.ndarray) -> tuple[str, bool]:
 
 
 class RunLock:
-    """拒絕第二個實例同時寫入同一個輸出目錄。
+    """以鎖檔維持每個輸出目錄的單一執行者。
 
-    2026-08-31 實際事故：修完閘門後直接啟動新的量產卻沒停掉前一個，兩個程序
-    交錯寫入同一目錄，新程序判定通過的 body2-yaw+120.png 被舊程序的重試邏輯
-    改名成 _rejected-try2——一個程序的重試摧毀了另一個程序的合格產出。
-    症狀只有時間戳錯序看得出來（被改名的檔案時間晚於後續視角的成品），
-    日誌照樣顯示「通過」，單看日誌抓不到。
-
-    這件事寫成紀律沒有用——「不要同時跑兩個」本來就是已知的坑，卻仍然發生。
-    所以改由程式擋：偵測到活著的另一個實例就直接退出。
+    2026-08-31 的兩個程序曾交錯寫入同一目錄；舊程序將新程序已通過的
+    body2-yaw+120.png 改名為 _rejected-try2，時間戳因此呈現先後順序差異。
+    此守衛在啟動前確認目錄的唯一寫入者。偵測到另一個執行中實例時，
+    當前程序即退出，保留既有產出與執行程序。
     """
 
     def __init__(self, directory: Path) -> None:
@@ -259,17 +253,13 @@ class RunLock:
 
     @staticmethod
     def _alive(pid_text: str) -> bool:
-        """程序是否仍在執行。
+        """以平台支援的唯讀方式確認程序是否仍在執行。
 
-        **不要用 os.kill(pid, 0)。** 第一版這樣寫，兩個缺陷同時存在：
-        在 Windows 上它對活著的程序拋出 OSError，於是守衛在唯一該生效的情境
-        （另一個實例正在跑）失效；更糟的是 Windows 的 os.kill 對非 CTRL 訊號
-        會呼叫 TerminateProcess——一支用來「偵測」的函式有可能直接殺掉
-        它想偵測的程序。實測時 PID 是正在跑的量產，僥倖只拋例外沒被終止。
-
-        改為：Windows 走 OpenProcess + GetExitCodeProcess，POSIX 才用
-        os.kill(pid, 0)（該平台上這是標準且無副作用的存在探測，
-        PermissionError 代表程序存在但無權限，仍算活著）。
+        Windows 使用 OpenProcess 與 GetExitCodeProcess。先前 os.kill(pid, 0)
+        在 Windows 對執行中程序回報 OSError，且其他訊號會呼叫 TerminateProcess；
+        因此此平台採用專用的唯讀程序查詢 API。
+        POSIX 使用標準存在探測 os.kill(pid, 0)。PermissionError 表示程序存在，
+        目前呼叫者的權限待調整，仍將該程序判為執行中。
         """
         try:
             pid = int(pid_text)
@@ -364,17 +354,17 @@ def _run() -> None:
 
         # 換種子重試：yaw+045 曾在髖部長出畸形的多餘肢體，負向詞的
         # extra limbs / deformed 沒擋住。這類是取樣的隨機缺陷，不是配方問題，
-        # 對策是換種子重抽，不是放寬門檻——第一次看到 IoU 0.498 時我以為是
-        # 門檻訂太嚴，開圖才發現是真的畸形。指標說有問題就先信它。
+        # 維持既定門檻並換種子重抽。IoU 0.498 的樣本經目視確認需修正，
+        # 指標指出的部位應先完成實圖核對。
         control = control_mask(yaw)
         ok, verdict = False, ""
         for attempt, (s1, s2, seed1, seed2) in enumerate(ATTEMPTS, start=1):
-            # 已經跑過且失敗的參數組合不要重跑。生成是確定性的，同參數同種子
-            # 必得同圖，重跑只是把已知的失敗再算一次。yaw+060 的三個階梯就
-            # 因為缺這道判斷而被重算了第二輪，白費半小時。
+            # 已評估的參數組合沿用既有結果。生成是確定性的，同參數同種子
+            # 會得到同圖。此處依既有歸檔判定續跑狀態，
+            # 保留 yaw+060 三個階梯的已完成計算與半小時結果。
             archived = OUT / f"_rejected-yaw{yaw:+04d}-try{attempt}.png"
             if archived.exists():
-                print(f"skip yaw{yaw:+04d} 第 {attempt} 次（已知失敗）", flush=True)
+                print(f"skip yaw{yaw:+04d} 第 {attempt} 次（沿用既有待修正紀錄）", flush=True)
                 continue
             first = run(init, s1, seed1)
             second = run(first, s2, seed2)
@@ -391,12 +381,12 @@ def _run() -> None:
 
         if not ok:
             failures.append(yaw)
-            print(f"REJECTED yaw{yaw:+04d}：{len(ATTEMPTS)} 次嘗試皆未通過"
+            print(f"REJECTED yaw{yaw:+04d}：{len(ATTEMPTS)} 次嘗試皆需修正"
                   f"（累計 {len(failures)}）", flush=True)
-            # 閘門只看第一張是不夠的：yaw+030 的轉背失敗出現在第三張。
-            # 每個視角都已重試過，仍失敗兩個視角代表是系統性問題，停下來。
+            # 每張圖均通過閘門後才繼續：yaw+030 的轉背情況出現在第三張。
+            # 兩個視角經重試仍待修正時，結束本輪並處理共同原因。
             if len(failures) >= MAX_FAILED_VIEWS:
-                print(f"GATE_FAILED 累計 {len(failures)} 個視角未通過：{failures}，停止量產",
+                print(f"GATE_FAILED 累計 {len(failures)} 個視角待修正：{failures}，停止量產",
                       flush=True)
                 return
         elif not gated:

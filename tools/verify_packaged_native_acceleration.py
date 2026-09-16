@@ -100,7 +100,7 @@ def load_build_evidence(path: Path) -> dict[str, object]:
     if document.get("schema") != "mohan.native-acceleration.v2":
         raise RuntimeError("Packaged native build-evidence schema is unsupported.")
     if document.get("status") != "pass":
-        raise RuntimeError("Packaged native build evidence did not pass.")
+        raise RuntimeError("Packaged native build evidence requires a passing validation result.")
     _digest(document.get("wheel_sha256"), "wheel_sha256")
     _digest(document.get("wheel_module_sha256"), "wheel_module_sha256")
     dll = _object(
@@ -168,7 +168,7 @@ def load_exact_extension(
     path: Path,
     dependency_directories: Sequence[Path] = (),
 ) -> ModuleType:
-    """Load the selected package file without consulting site-packages."""
+    """Load the selected package directly from its explicit file path."""
     previous = sys.modules.pop("_mohan_accel", None)
     dll_directories = []
     try:

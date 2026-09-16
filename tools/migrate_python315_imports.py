@@ -4,6 +4,11 @@ lazy import argparse
 lazy import ast
 lazy from pathlib import Path
 
+if __package__:
+    lazy from .local_artifact_roots import is_local_artifact_path
+else:
+    lazy from local_artifact_roots import is_local_artifact_path
+
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED_PARTS = frozenset({
     ".chroma-pipeline",
@@ -26,7 +31,7 @@ EXCLUDED_PARTS = frozenset({
     # 尚無 3.15 版），而 PEP 810 的 lazy import 在 3.12 是語法錯誤。遷移這些
     # 檔案會讓它們通過 CI 卻在產線上再也跑不起來，等於把可重生的工具降級成
     # 純文件。同一份名單裡的 .chroma-pipeline 就是同一個理由。
-    # 這些檔案仍受 ruff 完整檢查，只是不套一條執行環境無法滿足的規則。
+    # 這些檔案仍接受完整 Ruff 檢查；此規則依各執行環境的支援條件套用。
     "second_gen_body",
     "third_party",
     "tmp",
@@ -34,7 +39,7 @@ EXCLUDED_PARTS = frozenset({
 GENERATED_TREES = (("native", "mohan_accel", "target"),)
 
 # CPython 3.15rc1 exposes ``concurrent.futures.ThreadPoolExecutor`` through a
-# lazy module attribute that ``asyncio`` calls without resolving.  These exact
+# lazy module attribute that ``asyncio`` calls before resolution.  These exact
 # imports form the one documented compatibility boundary; every other
 # top-level import remains subject to PEP 810 migration.
 EAGER_IMPORT_EXCEPTIONS = frozendict({
@@ -57,6 +62,30 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
                 "OutfitPackError",
                 "_dimensions",
                 "_safe_member",
+            ),
+        ),
+    }),
+    # ``infrastructure.layered_full_body_renderer`` re-exports the speech
+    # aperture threshold that tests import lazily; a lazy re-export would hand
+    # them the unresolved proxy (``lazy_import + float`` fails).
+    "infrastructure/layered_full_body_renderer.py": frozenset({
+        (
+            "from",
+            "infrastructure.layered_full_body_complete_expression",
+            ("MOUTH_APERTURE_THRESHOLD", "CompleteExpressionRendering"),
+        ),
+    }),
+    # Public gesture-store re-exports otherwise expose nested lazy proxies
+    # after the presentation composition root imports them on Python 3.15rc1.
+    "infrastructure/gesture_configuration_store.py": frozenset({
+        (
+            "from",
+            "domain.gesture_configuration",
+            (
+                "GestureConfiguration",
+                "GestureDefinition",
+                "export_gesture_configuration",
+                "import_gesture_configuration",
             ),
         ),
     }),
@@ -162,6 +191,22 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
             "from",
             "presentation.ui_localization_ja",
             ("JAPANESE_UI",),
+        ),
+        # The label tables are re-exported through ``__all__``; an eager import
+        # keeps modules that import them lazily from receiving nested proxies.
+        (
+            "from",
+            "presentation.ui_localization_labels",
+            (
+                "MEMORY_CATEGORY_LABELS",
+                "MODE_LABELS",
+                "PLATFORM_STATUS_LABELS",
+                "SIMPLIFIED_MEMORY_CATEGORY_LABELS",
+                "SIMPLIFIED_MODE_LABELS",
+                "SIMPLIFIED_PLATFORM_STATUS_LABELS",
+                "SIMPLIFIED_WORK_TYPE_LABELS",
+                "WORK_TYPE_LABELS",
+            ),
         ),
     }),
     "tests/test_native_concurrency.py": frozenset({
@@ -378,6 +423,8 @@ def python_files(root: Path = ROOT) -> list[Path]:
 
 
 def _excluded(parts: tuple[str, ...]) -> bool:
+    if is_local_artifact_path(parts):
+        return True
     if any(part in EXCLUDED_PARTS for part in parts):
         return True
     return any(parts[: len(prefix)] == prefix for prefix in GENERATED_TREES)

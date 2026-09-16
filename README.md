@@ -49,7 +49,7 @@
 
 <table>
   <tr>
-    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="墨寒傲嬌"><br><strong>「妾才沒有等你的 Star，只是在確認軍心是否可用。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="墨寒傲嬌"><br><strong>「妾在等你的 Star，也順道確認軍心。」</strong></td>
     <td width="33%" align="center"><img src="docs/media/portraits/thinking_front.png" width="220" alt="墨寒思考"><br><strong>「這段邏輯尚可。若再補上測試，妾便勉強准它入主分支。」</strong></td>
     <td width="33%" align="center"><img src="docs/media/portraits/shy_cute_front.png" width="220" alt="墨寒嬌羞"><br><strong>「你願意送來 PR？妾、妾只是替主上記下功勞。」</strong></td>
   </tr>
@@ -72,15 +72,15 @@
 ### 安裝與更新
 
 1. 從 [GitHub Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 下載以 `Windows-x64-Setup.exe` 結尾的安裝程式；進階使用者也可選完整的 `Windows-x64.zip` 或 MSI。
-2. 安裝前核對 `SHA256SUMS` 與 GitHub Artifact Attestation。來源、檔名或雜湊不符就停止，不要關閉整體安全防護。
-3. 啟動安裝程式，或完整解壓 ZIP 並保持 EXE、內部資料夾與 assets 在同一目錄；更新不會刪除本機個人資料。
-4. 內建更新器先用內嵌公鑰驗證更新清單的 Ed25519 分離 `.sig` 簽章，再核對宣告大小與 SHA-256；簽章、大小或雜湊失敗即拒絕啟動下載檔。
+2. 安裝前核對 `SHA256SUMS` 與 GitHub Artifact Attestation。來源、檔名與雜湊一致時再繼續，並保持整體安全防護開啟。
+3. 啟動安裝程式，或完整解壓 ZIP 並保持 EXE、內部資料夾與 assets 在同一目錄；更新會完整保留本機個人資料。
+4. 內建更新器先用內嵌公鑰驗證更新清單的 Ed25519 分離 `.sig` 簽章，再核對宣告大小與 SHA-256；下載檔只在簽章、大小及雜湊全部驗證通過後啟動。
 
-macOS／Linux Preview 尚未等同 Windows 完整版，且可能沒有平台商店簽章或公證；只從本專案 Release 取得並完成上述來源驗證。詳見 [Preview 套件說明](docs/PREVIEW-PACKAGES.md)。
+macOS／Linux Preview 目前提供限定功能，平台商店簽章與公證狀態依各 Release 標示；只從本專案 Release 取得並完成上述來源驗證。詳見 [Preview 套件說明](docs/PREVIEW-PACKAGES.md)。
 
 ### 第一次使用要做的三件事
 
-1. 在首次設定精靈確認介面語言、助理名稱、主上稱呼、組織、工作類型與喚醒詞；既有設定不會被覆寫。
+1. 在首次設定精靈確認介面語言、助理名稱、主上稱呼、組織、工作類型與喚醒詞；既有設定會完整保留。
 2. 先試 Windows 本機女聲；需要雲端 AI 時，再到設定輸入自己持有的 OpenAI API 金鑰。ChatGPT 訂閱不包含 API 額度。
 3. 檢查麥克風、通知與工具權限，只開啟真正需要的連接器；先記住緊急停止鍵 Esc 與「墨寒，停手」。
 
@@ -115,16 +115,16 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - GitHub 預設 scopes：`read:user`、`repo`。
 - Home Assistant：先在自己的 Home Assistant 個人檔案建立 Long-Lived Access Token；在墨寒「設定」頁的「旗艦控制中心」→「智慧家庭」勾選「啟用 Home Assistant 整合」，填入「Home Assistant 位址」與「長期存取權杖」，確認「驗證 HTTPS 憑證」後按「保存設定」，再用「測試連線」或「讀取裝置」確認。
 
-這三項仍是尚未完成真實環境端到端驗證的實驗性 Preview 整合，請先使用可承受失敗的測試帳號與設備；不要將 Home Assistant 或墨寒遠端連線埠直接暴露於公網，請使用 Home Assistant Cloud、Tailscale 或其他具身分驗證的加密私人網路。
+這三項是架構與安全邊界已完成的 Preview 整合，下一驗證階段涵蓋真實環境端到端流程。初次使用請選擇測試帳號與低風險設備；遠端連線的支援範圍是 Home Assistant Cloud、Tailscale 或其他具身分驗證的加密私人網路。
 
 ### 隱私與本機優先
 
 - Windows 的對話、記憶、待辦、設定、工作紀錄、權限與稽核預設存於 `%LOCALAPPDATA%\YanJianStudio\MoHan`；備份位於其 backups 子目錄，可攜資料使用單一 `.mohan-profile`。
 - 只有使用者啟用相關功能時，完成該次要求所需的文字、音訊或工具規劃才會送往 OpenAI；OAuth 服務只收到使用者同意的 API 要求，Home Assistant 收到本機裝置要求。
-- API 金鑰與 OAuth／Home Assistant Token 以 Windows DPAPI 分離保存，不進 SQLite、原始碼、日誌或一般可攜檔；墨寒也不會自動取得 ChatGPT 帳號歷史。
-- 相機、遠端存取與雲端連接器預設關閉；原始相機影格不保存，權限或服務失敗只會停用受影響路徑。
+- API 金鑰與 OAuth／Home Assistant Token 以 Windows DPAPI 分離保存，只存於各自的 DPAPI 檔案；SQLite、原始碼、日誌、一般可攜檔與 ChatGPT 帳號歷史均在助理資料範圍之外。
+- 相機、遠端存取與雲端連接器由使用者主動啟用；原始相機影格保持即時暫存並於處理後釋放，權限與服務檢查通過的路徑才會啟動。
 
-多感官視覺預設關閉。使用者在控制中心明確啟用並保存全體設定後，該選擇構成持續授權，直到主動關閉；不會逐幀詢問。畫面持續顯示授權狀態，可立即撤銷，並可設成本上限與取消未完成分析。本機 OpenCV 負責持續偵測，只有低頻或事件觸發才將暫時影像送往 GPT-5.6；原圖不儲存、Base64 不進日誌，系統不自行開啟網路。缺少相機、模型、網路、額度或辨識時只停用該路徑，不影響其他功能。完整邊界見 [隱私說明](PRIVACY.md) 與 [安全政策](SECURITY.md)。
+多感官視覺由使用者主動啟用。使用者在控制中心明確啟用並保存全體設定後，該選擇構成持續授權，直到主動關閉；此授權持續適用於後續影格。畫面持續顯示授權狀態，可立即撤銷，並可設成本上限與終止進行中的分析。本機 OpenCV 負責持續偵測，只有低頻或事件觸發才將暫時影像送往 GPT-5.6；原圖保持即時暫存並於處理後釋放，日誌只記錄已移除 Base64 的內容，網路由使用者設定啟用。相機、模型、網路、額度及辨識皆可用時該路徑才啟動，其餘功能維持運作。完整邊界見 [隱私說明](PRIVACY.md) 與 [安全政策](SECURITY.md)。
 
 ### DLC 與外觀自訂
 
@@ -132,30 +132,30 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 #### 安裝、選用外觀與妝容
 
-1. 下載 `.mohan-outfit`，不要改副檔名或解壓縮。
+1. 下載 `.mohan-outfit`，並保持副檔名與封裝完整。
 2. 開啟控制中心「雲裳閣」，按「匯入服裝套件」並選檔；衣裝包與妝容包共用此入口、驗證、清單與移除流程。
 3. 從套件或完整造型清單選取後按「套用選取服裝」；妝容則在妝容選單挑選原妝、淡雅、素顏或已安裝款式，再用 0–100% 滑桿調整濃度。
-4. 要撤銷自訂外觀，按「還原內建服裝」；妝容改選內建原妝或素顏。內建藍白漢服與內建妝容不可移除或被同 id 套件覆蓋。
+4. 要撤銷自訂外觀，按「還原內建服裝」；妝容改選內建原妝或素顏。內建藍白漢服與內建妝容固定保留，且同 id 套件沿用內建版本。
 
 #### 安裝與還原主題
 
-1. 下載 `.mohan-theme`，不要解壓縮。
+1. 下載 `.mohan-theme`，並保持封裝完整。
 2. 在「設定」→「控制台佈景主題」按「上傳單一檔案」，選取主題後從清單預覽。
-3. 按右下「保存設定」才正式套用；取消會回到原主題。「還原主題」可預覽內建主題，再保存完成還原。
+3. 按右下「保存設定」正式套用；選擇「取消」即可回到原主題。「還原主題」可預覽內建主題，再保存完成還原。
 
 #### 容量、數量與相容性
 
 - 單一外觀包最多 1 GiB，解壓後總量最多 2 GiB、最多 2,048 個成員；每個成員最多 128 MiB，圖片任一邊最多 4,096 px。
 - 單一主題檔及解壓總量最多 16 MiB，每個成員最多 12 MiB，背景任一邊最多 4,096 px。
-- 雲端自創服裝預設保留 16 包、總容量 6 GiB、修復待審隔離 5 件；前兩項可各調為 1–64。到達上限即停止生成，不會自動刪除使用者匯入包。
-- 現行二代骨架只接受 `mohan-body-v2`。為 `mohan-body-v1` 三姿勢製作的一代包缺少二代 31 個輪廓、錨點與遮蔽契約，因此匯入與執行期都拒絕；請以 `tools/build_outfit_pack.py` 對二代範本重建，或用「一鍵製衣」重新生成。
-- 安裝採完整驗證後原子寫入；絕對路徑、跨目錄路徑、可執行程式、腳本、符號連結、加密成員、解壓炸彈與未宣告素材一律拒絕。
+- 雲端自創服裝預設保留 16 包、總容量 6 GiB、修復待審隔離 5 件；前兩項可各調為 1–64。生成量以此上限為界，使用者匯入包會完整保留。
+- 現行二代骨架只接受 `mohan-body-v2`。為 `mohan-body-v1` 三姿勢製作的一代包採用一代三姿勢契約；匯入與執行期只接受具備二代 31 個輪廓、錨點與遮蔽契約的套件；請以 `tools/build_outfit_pack.py` 對二代範本重建，或用「一鍵製衣」重新生成。
+- 安裝採完整驗證後原子寫入；絕對路徑、跨目錄路徑、可執行程式、腳本、符號連結、加密成員、解壓炸彈與未宣告素材均位於套件接受範圍之外。
 
 完整作者規格見 [外觀包文件](docs/OUTFIT-PACKS.md)。
 
 > #### ❤️⚔️ 支持墨寒：Ko-fi 贊助＆裝飾 DLC 下載
 >
-> 贊助者依 Ko-fi 謝禮指引取得外觀、妝容與主題等純裝飾 DLC；目前採單次贊助與每月贊助雙軌，沒有功能特權。下載位置與檔名以 Ko-fi 該項謝禮指引為準。
+> 贊助者依 Ko-fi 謝禮指引取得外觀、妝容與主題等純裝飾 DLC；目前採單次贊助與每月贊助雙軌，功能權限對所有使用者一致。下載位置與檔名以 Ko-fi 該項謝禮指引為準。
 
 ### 支持墨寒 / Support MoHan：贊助與授權
 
@@ -178,11 +178,11 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 ### 疑難排解
 
-- Windows SmartScreen 或平台警告：先確認 GitHub Release 來源、`SHA256SUMS` 與 Artifact Attestation；不要停用整體保護。
-- 無法對話：確認自己的 OpenAI API 金鑰、Project 權限、額度與網路；ChatGPT 訂閱不能代替 API 額度。
-- 沒有聲音：先切回 Windows 本機女聲；Azure Speech 需使用者自己的金鑰與相符區域。
-- DLC 被拒絕：確認檔案完整、大小、安全 manifest、四語名稱與 `mohan-body-v2` 相容性；一代包必須重建。
-- Preview 整合失敗：先用非重要帳號、測試儲存庫與低風險設備；Microsoft、GitHub、Home Assistant 尚未完成所有真實環境驗證。
+- Windows SmartScreen 或平台警告：先確認 GitHub Release 來源、`SHA256SUMS` 與 Artifact Attestation；並保持整體保護開啟。
+- 對話連線檢查：確認自己的 OpenAI API 金鑰、Project 權限、額度與網路；API 呼叫使用獨立的 API 額度。
+- 聲音輸出檢查：先切回 Windows 本機女聲；Azure Speech 需使用者自己的金鑰與相符區域。
+- DLC 接受條件：確認檔案完整、大小、安全 manifest、四語名稱與 `mohan-body-v2` 相容性；一代包必須重建。
+- Preview 整合檢查：先用非重要帳號、測試儲存庫與低風險設備；Microsoft、GitHub、Home Assistant 下一階段將完成各真實環境驗證。
 
 一般問題請到 [Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues)，使用討論請到 [Discussions](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions)，安全問題依 [SECURITY](SECURITY.md) 私下回報；規劃見 [ROADMAP](ROADMAP.md)。
 
@@ -198,7 +198,7 @@ $env:QT_QPA_PLATFORM = "offscreen"
 py -3.15 tests/run_all.py
 ```
 
-Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建置第一方原生模組；Rayon 1.12.0 只在至少 262,144 pixels 且有多執行緒時平行合成 RGBA。PyBackedBytes 避免額外輸入複製，但輸出仍建立新 bytes，不宣稱端到端零複製或未實作的 SIMD。OpenAI Responses API 直接使用標準函式庫 HTTPS；墨寒沒有 `openai` Python SDK 執行期相依。
+Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建置第一方原生模組；Rayon 1.12.0 只在至少 262,144 pixels 且有多執行緒時平行合成 RGBA。PyBackedBytes 避免額外輸入複製，但輸出仍建立新 bytes，效能聲明限於已量測的輸入零額外複製與既有純量／Rayon 路徑。SIMD 加速需先具備專用實作與量測證據。OpenAI Responses API 直接使用標準函式庫 HTTPS，執行期相依維持標準函式庫路徑。
 
 ## 简体中文
 
@@ -249,7 +249,7 @@ Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建�
 
 <table>
   <tr>
-    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="墨寒傲娇"><br><strong>“妾才没有等你的 Star，只是在确认军心是否可用。”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="墨寒傲娇"><br><strong>“妾才在等你的 Star，也顺道确认军心。”</strong></td>
     <td width="33%" align="center"><img src="docs/media/portraits/thinking_front.png" width="220" alt="墨寒思考"><br><strong>“这段逻辑尚可。若再补上测试，妾便勉强准它进入主分支。”</strong></td>
     <td width="33%" align="center"><img src="docs/media/portraits/shy_cute_front.png" width="220" alt="墨寒娇羞"><br><strong>“你愿意提交 PR？妾、妾只是替主上记下功劳。”</strong></td>
   </tr>
@@ -272,7 +272,7 @@ Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建�
 ### 安装与更新
 
 1. 从 [GitHub Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 下载以 `Windows-x64-Setup.exe` 结尾的安装程序；高级用户也可选择完整的 `Windows-x64.zip` 或 MSI。
-2. 安装前核对 `SHA256SUMS` 与 GitHub Artifact Attestation。来源、文件名或哈希不符就停止，不要关闭整体安全防护。
+2. 安装前核对 `SHA256SUMS` 与 GitHub Artifact Attestation。来源、文件名与哈希一致时再继续，并保持整体安全防护开启。
 3. 启动安装程序，或完整解压 ZIP 并保持 EXE、内部文件夹与 assets 在同一目录；更新不会删除本地个人数据。
 4. 内置更新器先用内嵌公钥验证更新清单的 Ed25519 分离 `.sig` 签名，再核对声明大小与 SHA-256；签名、大小或哈希失败即拒绝启动下载文件。
 
@@ -315,16 +315,16 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - GitHub 默认 scopes：`read:user`、`repo`。
 - Home Assistant：先在自己的 Home Assistant 个人资料中创建 Long-Lived Access Token；在墨寒“设置”页的“旗舰控制中心”→“智能家居”勾选“启用 Home Assistant 集成”，填写“Home Assistant 地址”和“长期访问令牌”，确认“验证 HTTPS 证书”后点击“保存设置”，再用“测试连接”或“读取设备”确认。
 
-这三项仍是尚未完成真实环境端到端验证的实验性 Preview 集成，请先使用可承受失败的测试账号与设备；不要将 Home Assistant 或墨寒远程端口直接暴露于公网，请使用 Home Assistant Cloud、Tailscale 或其他具有身份验证的加密私人网络。
+这三项是架构与安全边界已完成的 Preview 集成，下一验证阶段涵盖真实环境端到端流程。初次使用请选择测试账号与低风险设备；远程连接的支持范围是 Home Assistant Cloud、Tailscale 或其他具有身份验证的加密私人网络。
 
 ### 隐私与本地优先
 
 - Windows 的对话、记忆、待办事项、设置、工作记录、权限与审计默认存储在 `%LOCALAPPDATA%\YanJianStudio\MoHan`；备份位于其 backups 子目录，便携数据使用单一 `.mohan-profile`。
 - 只有用户启用相关功能时，完成该次请求所需的文本、音频或工具规划才会发送到 OpenAI；OAuth 服务只收到用户同意的 API 请求，Home Assistant 收到本地设备请求。
 - API 密钥与 OAuth／Home Assistant 令牌通过 Windows DPAPI 分开保存，不进入 SQLite、源代码、日志或普通便携文件；墨寒也不会自动获取 ChatGPT 账号历史。
-- 摄像头、远程访问与云端连接器默认关闭；原始摄像头帧不保存，权限或服务失败只会停用受影响的路径。
+- 摄像头、远程访问与云端连接器由用户主动启用；原始摄像头帧保持即时暂存并在处理后释放，权限与服务检查通过的路径才会启动。
 
-多感官视觉默认关闭。用户在控制中心明确启用并全局保存后，该选择构成持续授权，直到用户主动关闭；不会逐帧询问。界面持续显示授权状态，可立即撤销，并可设置成本上限与取消未完成的分析。本地 OpenCV 负责持续检测，只有低频或事件触发才将临时图像发送到 GPT-5.6；原图不保存、Base64 不进入日志，系统不会自行开启网络。缺少摄像头、模型、网络、配额或识别时只会停用该路径，不影响其他功能。完整边界见 [隐私说明](PRIVACY.md) 与 [安全政策](SECURITY.md)。
+多感官视觉由用户主动启用。用户在控制中心明确启用并全局保存后，该选择构成持续授权，直到用户主动关闭；此授权持续适用于后续帧。界面持续显示授权状态，可立即撤销，并可设置成本上限与终止进行中的分析。本地 OpenCV 负责持续检测，只有低频或事件触发才将临时图像发送到 GPT-5.6；原图保持即时暂存并在处理后释放，日志只记录已移除 Base64 的内容，网络由用户设置启用。摄像头、模型、网络、配额及识别均可用时该路径才启动，其余功能维持运行。完整边界见 [隐私说明](PRIVACY.md) 与 [安全政策](SECURITY.md)。
 
 ### DLC 与外观自定义
 
@@ -332,23 +332,23 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 #### 安装、选用外观与妆容
 
-1. 下载 `.mohan-outfit`，不要修改扩展名或解压。
+1. 下载 `.mohan-outfit`，并保持扩展名与封装完整。
 2. 打开控制中心“云裳阁”，点击“导入服装套件”并选择文件；服装包与妆容包共用该入口、验证、列表与删除流程。
 3. 从套件或完整造型列表选取后点击“应用所选服装”；妆容则在妆容菜单选择原妆、淡雅、素颜或已安装样式，再使用 0–100% 滑块调整浓度。
-4. 要撤销自定义外观，点击“恢复内置服装”；妆容改选内置原妆或素颜。内置蓝白汉服与内置妆容不可删除，也不可被同 id 套件覆盖。
+4. 要撤销自定义外观，点击“恢复内置服装”；妆容改选内置原妆或素颜。内置蓝白汉服与内置妆容固定保留，且同 id 套件沿用内置版本。
 
 #### 安装与恢复主题
 
-1. 下载 `.mohan-theme`，不要解压。
+1. 下载 `.mohan-theme`，并保持封装完整。
 2. 在“设置”→“控制台主题”点击“上传单个文件”，选取主题后从列表预览。
-3. 点击右下角“保存设置”才正式应用；取消会恢复原主题。“恢复主题”可预览内置主题，再保存以完成恢复。
+3. 点击右下角“保存设置”正式应用；选择“取消”即可恢复原主题。“恢复主题”可预览内置主题，再保存以完成恢复。
 
 #### 容量、数量与兼容性
 
 - 单个外观包最大 1 GiB，解压后总量最大 2 GiB、最多 2,048 个成员；每个成员最大 128 MiB，图片任一边最大 4,096 px。
 - 单个主题文件及解压总量最大 16 MiB，每个成员最大 12 MiB，背景任一边最大 4,096 px。
 - 云端自创服装默认保留 16 包、总容量 6 GiB、修复待审隔离 5 个；前两项可分别调整为 1–64。达到上限即停止生成，不会自动删除用户导入包。
-- 当前二代骨架只接受 `mohan-body-v2`。为 `mohan-body-v1` 三姿势制作的一代包缺少二代 31 个轮廓、锚点与遮挡契约，因此导入与运行时均会拒绝；请使用 `tools/build_outfit_pack.py` 按二代模板重建，或使用“一键制衣”重新生成。
+- 当前二代骨架只接受 `mohan-body-v2`。为 `mohan-body-v1` 三姿势制作的一代包采用一代三姿势契约；导入与运行时只接受具备二代 31 个轮廓、锚点与遮挡契约的套件；请使用 `tools/build_outfit_pack.py` 按二代模板重建，或使用“一键制衣”重新生成。
 - 安装在完整验证后进行原子写入；绝对路径、跨目录路径、可执行程序、脚本、符号链接、加密成员、解压炸弹与未声明素材一律拒绝。
 
 完整作者规范见 [外观包文档](docs/OUTFIT-PACKS.md)。
@@ -378,11 +378,11 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 ### 疑难解答
 
-- Windows SmartScreen 或平台警告：先确认 GitHub Release 来源、`SHA256SUMS` 与 Artifact Attestation；不要关闭整体保护。
-- 无法对话：确认自己的 OpenAI API 密钥、Project 权限、配额与网络；ChatGPT 订阅不能替代 API 配额。
+- Windows SmartScreen 或平台警告：先确认 GitHub Release 来源、`SHA256SUMS` 与 Artifact Attestation；并保持整体保护开启。
+- 对话连接检查：确认自己的 OpenAI API 密钥、Project 权限、配额与网络；API 调用使用独立的 API 配额。
 - 没有声音：先切回 Windows 本地女声；Azure Speech 需要用户自己的密钥与匹配区域。
 - DLC 被拒绝：确认文件完整、大小、安全 manifest、四语名称与 `mohan-body-v2` 兼容性；一代包必须重建。
-- Preview 集成失败：先使用非重要账号、测试仓库与低风险设备；Microsoft、GitHub、Home Assistant 尚未完成所有真实环境验证。
+- Preview 集成检查：先使用非重要账号、测试仓库与低风险设备；Microsoft、GitHub、Home Assistant 下一阶段将完成各真实环境验证。
 
 一般问题请到 [Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues)，使用讨论请到 [Discussions](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions)，安全问题按 [SECURITY](SECURITY.md) 私下报告；规划见 [ROADMAP](ROADMAP.md)。
 
@@ -398,7 +398,7 @@ $env:QT_QPA_PLATFORM = "offscreen"
 py -3.15 tests/run_all.py
 ```
 
-Windows 正式打包规范使用 Rust 1.97.1、Maturin 1.14.1 与 PyO3 0.29.2 构建第一方原生模块；Rayon 1.12.0 仅在至少 262,144 pixels 且有多线程时并行合成 RGBA。PyBackedBytes 避免额外输入复制，但输出仍创建新 bytes，不声称端到端零复制或尚未实现的 SIMD。OpenAI Responses API 直接使用标准库 HTTPS；墨寒没有 `openai` Python SDK 运行时依赖。
+Windows 正式打包规范使用 Rust 1.97.1、Maturin 1.14.1 与 PyO3 0.29.2 构建第一方原生模块；Rayon 1.12.0 仅在至少 262,144 pixels 且有多线程时并行合成 RGBA。PyBackedBytes 避免额外输入复制，但输出仍创建新 bytes，性能声明限于已测量的输入零额外复制与现有标量／Rayon 路径。SIMD 加速需先具备专用实现与测量证据。OpenAI Responses API 直接使用标准库 HTTPS，运行时依赖限于标准库路径。
 
 ## English
 
@@ -449,12 +449,12 @@ These six half-body expressions are fixed assets composed through the formal run
 
 <table>
   <tr>
-    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="Proud MoHan"><br><strong>“I was not waiting for your Star. I was merely checking morale.”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="Proud MoHan"><br><strong>“I was waiting for your Star and checking morale.”</strong></td>
     <td width="33%" align="center"><img src="docs/media/portraits/thinking_front.png" width="220" alt="Thinking MoHan"><br><strong>“The logic is acceptable. Add tests, and I may permit it onto main.”</strong></td>
     <td width="33%" align="center"><img src="docs/media/portraits/shy_cute_front.png" width="220" alt="Shy MoHan"><br><strong>“You brought a PR? I-I am only recording your contribution.”</strong></td>
   </tr>
   <tr>
-    <td width="33%" align="center"><img src="docs/media/portraits/mock_hit_front.png" width="220" alt="Mock-angry MoHan"><br><strong>“Merge without tests? Hold out your hand. One tap.”</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/mock_hit_front.png" width="220" alt="Mock-angry MoHan"><br><strong>“Bring me a tested merge. Then you earn a gentle tap.”</strong></td>
     <td width="33%" align="center"><img src="docs/media/portraits/gentle_smile_front.png" width="220" alt="Smiling MoHan"><br><strong>“All green... well done. I merely respect sound engineering.”</strong></td>
     <td width="33%" align="center"><img src="docs/media/portraits/worried_front.png" width="220" alt="Concerned MoHan"><br><strong>“The bug can wait until tomorrow. Who guards the sword if you collapse?”</strong></td>
   </tr>
@@ -472,16 +472,16 @@ These six half-body expressions are fixed assets composed through the formal run
 ### Install and update
 
 1. Download the installer ending in `Windows-x64-Setup.exe` from [GitHub Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases); advanced users may choose the complete `Windows-x64.zip` or MSI.
-2. Before installation, verify `SHA256SUMS` and the GitHub Artifact Attestation. Stop if the source, filename, or digest differs; do not disable system-wide protection.
-3. Start the installer, or fully extract the ZIP and keep the EXE, internal folders, and assets together. Updating does not delete local personal data.
-4. The built-in updater first verifies the update manifest's detached Ed25519 `.sig` signature with its pinned public key, then checks declared size and SHA-256. A signature, size, or digest failure prevents the downloaded file from starting.
+2. Before installation, verify `SHA256SUMS` and the GitHub Artifact Attestation. Stop if the source, filename, or digest differs; keep system-wide protection enabled.
+3. Start the installer, or fully extract the ZIP and keep the EXE, internal folders, and assets together. Updating preserves local personal data.
+4. The built-in updater first verifies the update manifest's detached Ed25519 `.sig` signature with its pinned public key, then checks declared size and SHA-256. The downloaded file starts only after its signature, size, and digest all validate.
 
-The macOS/Linux Preview is not equivalent to the complete Windows build and may lack platform-store signing or notarization. Obtain it only from this project's Release and complete the source checks above. See [Preview packages](docs/PREVIEW-PACKAGES.md).
+The macOS/Linux Preview currently offers a limited feature set; each Release states its platform-store signing and notarization status. Obtain it only from this project's Release and complete the source checks above. See [Preview packages](docs/PREVIEW-PACKAGES.md).
 
 ### Three things to do first
 
-1. In the first-run wizard, review interface language, assistant name, the user's title, organization, work type, and wake word; existing settings are not overwritten.
-2. Try a Windows local female voice first. When cloud AI is needed, enter a user-owned OpenAI API key in Settings. A ChatGPT subscription does not include API quota.
+1. In the first-run wizard, review interface language, assistant name, the user's title, organization, work type, and wake word; existing settings are preserved.
+2. Try a Windows local female voice first. When cloud AI is needed, enter a user-owned OpenAI API key in Settings. API usage has its own separately billed quota.
 3. Review microphone, notification, and tool permissions and enable only the connectors you need. First learn the Esc emergency stop and the phrase “mohan stop.”
 
 ### Cloud connector setup
@@ -515,31 +515,31 @@ A public OAuth application using sensitive scopes may require additional Google 
 - GitHub defaults: `read:user` and `repo`.
 - Home Assistant: first create a Long-Lived Access Token in the user's own Home Assistant profile; in MoHan Settings → Flagship control center → Smart Home, check Enable Home Assistant integration, enter the Home Assistant address and Long-lived access token, confirm Verify HTTPS certificate, press Save settings, then use Test connection or Load devices to confirm.
 
-These three remain experimental Preview integrations without completed real-environment end-to-end validation. Begin with failure-tolerant test accounts and devices; never expose the Home Assistant or MoHan remote port directly to the public internet, and use Home Assistant Cloud, Tailscale, or another authenticated encrypted private network.
+These three are Preview integrations with established architecture and safety boundaries; the next validation stage covers real-environment end-to-end flows. Begin with test accounts and low-risk devices; supported remote connectivity uses Home Assistant Cloud, Tailscale, or another authenticated encrypted private network.
 
 ### Privacy and local-first behavior
 
 - On Windows, conversations, memories, tasks, settings, work records, permissions, and audits stay by default in `%LOCALAPPDATA%\YanJianStudio\MoHan`; backups are in its backups subfolder, and portable data uses one `.mohan-profile`.
 - Only when the user enables a relevant feature does the text, audio, or tool-planning context needed for that request go to OpenAI. OAuth services receive only user-consented API requests; Home Assistant receives local device requests.
-- API keys and OAuth/Home Assistant tokens are stored separately with Windows DPAPI and never enter SQLite, source code, logs, or ordinary portable files. MoHan does not automatically gain access to ChatGPT account history.
-- Camera, remote access, and cloud connectors are off by default. Raw camera frames are not retained, and permission or service failure disables only the affected path.
+- API keys and OAuth/Home Assistant tokens are stored separately with Windows DPAPI and remain in their separate DPAPI files. SQLite, source code, logs, ordinary portable files, and ChatGPT account history are outside the assistant's data scope.
+- Camera, remote access, and cloud connectors are enabled explicitly by the user. Raw camera frames remain transient and are released after processing; each path activates only after permission and service checks pass.
 
-Multisensory vision is off by default. After the user explicitly enables it and confirms it by globally saving the settings, that choice is continuous authorization until the user turns it off; the app does not ask for consent frame by frame. The authorization status stays visible, with immediate revocation, cost limits, and a way to cancel unfinished analysis. Local OpenCV handles ongoing sensing; only at low frequency or on an event trigger is a temporary image sent to GPT-5.6. The app does not retain originals or log Base64, and it does not enable network access by itself. Missing camera, model, network, quota, or recognition disables only that path without harming other features. Read [Privacy](PRIVACY.md) and [Security](SECURITY.md) for the complete boundary.
+Multisensory vision is enabled explicitly by the user. After the user explicitly enables it and confirms it by globally saving the settings, that choice is continuous authorization until the user turns it off; the authorization continues across subsequent frames. The authorization status stays visible, with immediate revocation, cost limits, and a way to cancel unfinished analysis. Local OpenCV handles ongoing sensing; only at low frequency or on an event trigger is a temporary image sent to GPT-5.6. Originals remain transient and are released after processing, logs contain content from which Base64 has been removed, and network access follows the user's setting. The path activates when camera, model, network, quota, and recognition are available; other features remain operational. Read [Privacy](PRIVACY.md) and [Security](SECURITY.md) for the complete boundary.
 
 ### DLC and appearance customization
 
-`.mohan-outfit` is the character-appearance container and may include garments, hairstyles, headwear, makeup, and accessories; a makeup-only pack uses the same format. `.mohan-theme` changes only control-panel colors, font, corner radius, and an optional background, not the character's appearance. Both are single, self-contained files that need no unpacking, are fully validated before installation, and cannot execute packaged code.
+`.mohan-outfit` is the character-appearance container and may include garments, hairstyles, headwear, makeup, and accessories; a makeup-only pack uses the same format. `.mohan-theme` changes only control-panel colors, font, corner radius, and an optional background, while preserving the character's appearance. Both are single, self-contained files that remain packaged for direct import, are fully validated before installation, and contain declarative assets only.
 
 #### Install and select outfits or makeup
 
-1. Download the `.mohan-outfit`; do not rename or unpack it.
+1. Download the `.mohan-outfit`; keep its filename and package intact.
 2. Open the control center's Wardrobe Pavilion, press “Import outfit package,” and choose the file. Outfit and makeup packs share this entry point, validation, catalog, and removal flow.
 3. Choose a package or complete look and press “Apply selected outfit.” For makeup, select classic, light, bare face, or an installed style in the makeup menu, then adjust intensity with the 0–100% slider.
-4. To undo appearance customization, press “Restore built-in outfit”; choose built-in classic makeup or bare face for makeup. The built-in Blue-and-White Hanfu and makeup cannot be removed or shadowed by a package with the same id.
+4. To undo appearance customization, press “Restore built-in outfit”; choose built-in classic makeup or bare face for makeup. The built-in Blue-and-White Hanfu and makeup remain fixed and take precedence by a package with the same id.
 
 #### Install and restore themes
 
-1. Download the `.mohan-theme`; do not unpack it.
+1. Download the `.mohan-theme`; keep the package intact.
 2. In Settings → Dashboard theme, press “Upload one file,” choose the theme, and preview it from the list.
 3. It takes effect only after “Save settings” at the lower right; cancel restores the previous theme. “Restore theme” previews the built-in theme, which is restored after saving.
 
@@ -547,7 +547,7 @@ Multisensory vision is off by default. After the user explicitly enables it and 
 
 - One appearance pack is limited to 1 GiB, 2 GiB expanded, and 2,048 members; each member is limited to 128 MiB and each image edge to 4,096 px.
 - One theme and its expanded contents are limited to 16 MiB; each member is limited to 12 MiB and each background edge to 4,096 px.
-- Cloud-created outfits retain 16 packs, 6 GiB total, and 5 repair-review quarantine entries by default; the first two settings each allow 1–64. Generation stops at the limit and never auto-deletes user-imported packs.
+- Cloud-created outfits retain 16 packs, 6 GiB total, and 5 repair-review quarantine entries by default; the first two settings each allow 1–64. Generation stops at the limit and preserves every user-imported pack.
 - The current generation-2 rig accepts only `mohan-body-v2`. A generation-1 pack for the three-pose `mohan-body-v1` lacks the 31 silhouettes, anchors, and occlusion contract, so import and runtime both reject it. Rebuild against the generation-2 template with `tools/build_outfit_pack.py`, or regenerate it through one-click outfit creation.
 - Installation is atomic after full validation. Absolute or traversing paths, executables, scripts, symlinks, encrypted members, decompression bombs, and undeclared assets are rejected.
 
@@ -563,26 +563,26 @@ Use the Sponsor button displayed by GitHub above this repository, or visit [Ko-f
 
 <table>
   <tr>
-    <td align="center" valign="top" width="33%"><img src="docs/media/support-proud.png" width="220" height="220" alt="Proud MoHan"><br><strong>“I am not waiting for support... merely inspecting provisions.”</strong></td>
+    <td align="center" valign="top" width="33%"><img src="docs/media/support-proud.png" width="220" height="220" alt="Proud MoHan"><br><strong>“I welcome your support while inspecting provisions.”</strong></td>
     <td align="center" valign="top" width="33%"><img src="docs/media/support-shy-aligned.png" width="220" height="220" alt="Shy MoHan"><br><strong>“If you truly wish to help, I shall remember.”</strong></td>
-    <td align="center" valign="top" width="33%"><img src="docs/media/support-mock-hit.png" width="220" height="220" alt="MoHan says to give responsibly"><br><strong>“Do not overextend yourself. Care for your own purse first.”</strong></td>
+    <td align="center" valign="top" width="33%"><img src="docs/media/support-mock-hit.png" width="220" height="220" alt="MoHan says to give responsibly"><br><strong>“Care for your own purse first and support within your means.”</strong></td>
   </tr>
 </table>
 
 - Author: **CHOU MING HUA**.
 - Source code uses the [MIT License](LICENSE); the MoHan character artwork, persona, name, and likeness are All Rights Reserved and outside the MIT grant.
-- Asset-production tools and weights admit only the MIT, Apache 2.0, CC0, CC BY (and equivalent BSD-class) allowlist. Fonts are the sole exception: since 2026-09-02, SIL OFL 1.1 is allowed for fonts only and does not extend to other materials. Character art remains the rights holder's proprietary property; see the [License Purity Commitment](docs/LICENSE-PURITY.md).
+- Asset-production tools and weights admit only the MIT, Apache 2.0, CC0, CC BY (and equivalent BSD-class) allowlist. Fonts are the sole exception: since 2026-09-02, SIL OFL 1.1 is allowed for fonts only and applies exclusively to fonts. Character art remains the rights holder's proprietary property; see the [License Purity Commitment](docs/LICENSE-PURITY.md).
 - Asset and third-party terms are in [ASSETS-LICENSE](ASSETS-LICENSE.md) and [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md).
 
 This project follows the [Flameblade Open Source Software Family Quality Standard](PUBLISHING.md).
 
 ### Troubleshooting
 
-- Windows SmartScreen or a platform warning: verify the GitHub Release source, `SHA256SUMS`, and Artifact Attestation first; do not disable system-wide protection.
-- No conversation response: check your OpenAI API key, Project permission, quota, and network. A ChatGPT subscription cannot replace API quota.
+- Windows SmartScreen or a platform warning: verify the GitHub Release source, `SHA256SUMS`, and Artifact Attestation first; keep system-wide protection enabled.
+- Conversation connection check: check your OpenAI API key, Project permission, quota, and network. API calls use separate API quota.
 - No sound: switch to a Windows local female voice first. Azure Speech requires the user's own key and matching region.
 - DLC rejected: check file integrity, size, safe manifest, four-language names, and `mohan-body-v2` compatibility. A generation-1 pack must be rebuilt.
-- Preview integration failure: begin with a non-critical account, test repository, or low-risk device. Microsoft, GitHub, and Home Assistant have not completed validation in every real environment.
+- Preview integration check: begin with a non-critical account, test repository, or low-risk device. Microsoft, GitHub, and Home Assistant will complete each real-environment validation in the next stage.
 
 Use [Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) for ordinary problems, [Discussions](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions) for usage, and [SECURITY](SECURITY.md) for private security reports; plans are in the [ROADMAP](ROADMAP.md).
 
@@ -598,7 +598,7 @@ $env:QT_QPA_PLATFORM = "offscreen"
 py -3.15 tests/run_all.py
 ```
 
-The formal Windows packaging contract builds its first-party native module with Rust 1.97.1, Maturin 1.14.1, and PyO3 0.29.2. Rayon 1.12.0 parallelizes RGBA composition only at 262,144 pixels or above with multiple workers. PyBackedBytes avoids an extra input copy, but output still creates new bytes; no end-to-end zero-copy or unimplemented SIMD claim is made. The OpenAI Responses API uses standard-library HTTPS directly; MoHan has no `openai` Python SDK runtime dependency.
+The formal Windows packaging contract builds its first-party native module with Rust 1.97.1, Maturin 1.14.1, and PyO3 0.29.2. Rayon 1.12.0 parallelizes RGBA composition only at 262,144 pixels or above with multiple workers. PyBackedBytes avoids an extra input copy, while output creates new bytes; performance claims are limited to measured zero-extra-input-copy behavior and the implemented scalar/Rayon paths. SIMD acceleration requires a dedicated implementation and measurement evidence. The OpenAI Responses API uses standard-library HTTPS directly, keeping runtime dependencies on the standard-library path.
 
 ## 日本語
 
@@ -637,7 +637,7 @@ The formal Windows packaging contract builds its first-party native module with 
 - 会話、編集可能な記憶、タスク、アイデア、作業タイマー、リマインダー、可搬プロファイル。
 - ツール実行は権限、危険度、確認、監査、緊急停止を通過します。
 - Google は実接続検証済みです。Microsoft、GitHub、Home Assistant は実験的 Preview のままです。
-- マルチセンサー視覚、ジェスチャー、遠隔アクセス、クラウド連携は既定で無効で、個別に取り消せます。
+- マルチセンサー視覚、ジェスチャー、遠隔アクセス、クラウド連携はユーザーが個別に有効化し、いつでも管理できます。
 
 #### 日本語の対応範囲
 
@@ -649,8 +649,8 @@ The formal Windows packaging contract builds its first-party native module with 
 
 <table>
   <tr>
-    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="誇らしげな墨寒"><br><strong>「Star を待っていたのではありません。士気を確認していただけです。」</strong></td>
-    <td width="33%" align="center"><img src="docs/media/portraits/thinking_front.png" width="220" alt="考える墨寒"><br><strong>「このロジックは悪くありません。テストを足せば main 入りを許しましょう。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/proud_front.png" width="220" alt="誇らしげな墨寒"><br><strong>「Star を待ちながら、士気も確認していました。」</strong></td>
+    <td width="33%" align="center"><img src="docs/media/portraits/thinking_front.png" width="220" alt="考える墨寒"><br><strong>「このロジックは良いですね。テストを足せば main 入りを許しましょう。」</strong></td>
     <td width="33%" align="center"><img src="docs/media/portraits/shy_cute_front.png" width="220" alt="照れる墨寒"><br><strong>「PR を送るのですか？　功績を記録するだけです。」</strong></td>
   </tr>
   <tr>
@@ -663,7 +663,7 @@ The formal Windows packaging contract builds its first-party native module with 
 <table>
   <tr>
     <td align="center" valign="top" width="25%"><img src="docs/media/mohan-chibi-code-review.png" width="100%" alt="コードを審査するちび墨寒"><br><strong>策士の審査</strong><br>main に入れる品質か確認します。</td>
-    <td align="center" valign="top" width="25%"><img src="docs/media/mohan-chibi-praised.png" width="100%" alt="褒められたちび墨寒"><br><strong>褒められた時</strong><br>悪くありません。見つめないで。</td>
+    <td align="center" valign="top" width="25%"><img src="docs/media/mohan-chibi-praised.png" width="100%" alt="褒められたちび墨寒"><br><strong>褒められた時</strong><br>良い出来です。視線はほどほどに。</td>
     <td align="center" valign="top" width="25%"><img src="docs/media/mohan-chibi-dangerous-action.png" width="100%" alt="危険操作を止めるちび墨寒"><br><strong>危険操作</strong><br>未確認なら、この剣を越えてから。</td>
     <td align="center" valign="top" width="25%"><img src="docs/media/mohan-chibi-provisions.png" width="100%" alt="支援を受け取るちび墨寒"><br><strong>兵糧を受領</strong><br>この気持ちは覚えておきます。</td>
   </tr>
@@ -672,11 +672,11 @@ The formal Windows packaging contract builds its first-party native module with 
 ### インストールと更新
 
 1. [GitHub Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) から、末尾が `Windows-x64-Setup.exe` のインストーラーを取得します。上級者は完全な `Windows-x64.zip` または MSI も選べます。
-2. インストール前に `SHA256SUMS` と GitHub Artifact Attestation を検証します。配布元、ファイル名、ハッシュが異なる場合は停止し、システム全体の保護を無効にしないでください。
+2. インストール前に `SHA256SUMS` と GitHub Artifact Attestation を検証します。配布元、ファイル名、ハッシュが異なる場合は停止し、システム全体の保護を有効なまま維持してください。
 3. インストーラーを起動するか、ZIP を完全展開して EXE、内部フォルダー、assets を同じ場所に保ちます。更新でローカル個人データは削除されません。
-4. 内蔵アップデーターは、埋め込み公開鍵で更新マニフェストの Ed25519 分離 `.sig` 署名を検証し、次に宣言サイズと SHA-256 を照合します。署名、サイズ、ハッシュのいずれかが失敗すると、ダウンロードしたファイルを起動しません。
+4. 内蔵アップデーターは、埋め込み公開鍵で更新マニフェストの Ed25519 分離 `.sig` 署名を検証し、次に宣言サイズと SHA-256 を照合します。ダウンロードしたファイルは、署名、サイズ、ハッシュがすべて検証された後に起動します。
 
-macOS／Linux Preview は Windows 完全版と同等ではなく、プラットフォームストア署名や公証がない場合があります。本プロジェクトの Release だけから取得し、上記の配布元検証を完了してください。[Preview パッケージ説明](docs/PREVIEW-PACKAGES.md)も参照してください。
+macOS／Linux Preview は 現在は機能限定版で、プラットフォームストア署名と公証の状態は各 Release に明記します。本プロジェクトの Release だけから取得し、上記の配布元検証を完了してください。[Preview パッケージ説明](docs/PREVIEW-PACKAGES.md)も参照してください。
 
 ### 最初に行う三つのこと
 
@@ -715,20 +715,20 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - GitHub の既定 scopes：`read:user`、`repo`。
 - Home Assistant：まず自分の Home Assistant プロフィールで Long-Lived Access Token を作成します。墨寒の「設定」→「フラッグシップ操作センター」→「スマートホーム」で「Home Assistant 連携を有効化」をチェックし、「Home Assistant アドレス」と「長期アクセストークン」を入力します。「HTTPS 証明書を検証」を確認して「設定を保存」を押し、「接続をテスト」または「機器を読み取る」で確認します。
 
-この三つは実環境での完全なエンドツーエンド検証が未完了の実験的 Preview 連携です。失敗を許容できるテスト用アカウントと機器から始め、Home Assistant や墨寒のリモートポートを公衆インターネットへ直接公開しないでください。Home Assistant Cloud、Tailscale、または認証付き暗号化プライベートネットワークを利用してください。
+この三つはアーキテクチャと安全境界を実装済みの Preview 連携で、次の検証段階は実環境のエンドツーエンドフローです。テスト用アカウントと低リスク機器から始め、リモート接続はプライベートネットワークの範囲で使用してください。Home Assistant Cloud、Tailscale、または認証付き暗号化プライベートネットワークを利用してください。
 
 ### プライバシーとローカル優先
 
 - Windows では、会話、記憶、タスク、設定、作業記録、権限、監査を既定で `%LOCALAPPDATA%\YanJianStudio\MoHan` に保存します。バックアップは backups サブフォルダーにあり、可搬データには単一の `.mohan-profile` を使います。
 - 利用者が関連機能を有効にした場合だけ、その要求に必要なテキスト、音声、ツール計画を OpenAI へ送ります。OAuth サービスは利用者が同意した API 要求だけを受け取り、Home Assistant はローカル機器要求を受け取ります。
-- API キーと OAuth／Home Assistant トークンは Windows DPAPI で分離保存し、SQLite、ソースコード、ログ、通常の可搬ファイルには入りません。墨寒が ChatGPT アカウント履歴を自動取得することもありません。
-- カメラ、遠隔アクセス、クラウド連携は既定で無効です。元のカメラフレームは保存せず、権限やサービスの失敗は該当経路だけを停止します。
+- API キーと OAuth／Home Assistant トークンは Windows DPAPI で分離保存し、SQLite、ソースコード、ログ、通常の可搬ファイルは対象外で、機密は個別の DPAPI ファイルに限定されます。ChatGPT アカウント履歴もアシスタントのデータ範囲外です。
+- カメラ、遠隔アクセス、クラウド連携はユーザーが明示的に有効化します。元のカメラフレームは一時的に処理後解放し、各経路は権限とサービスの検査通過後に有効化します。
 
-マルチセンサー視覚は既定で無効です。利用者がコントロールセンターで明示的に有効化して全体設定を保存すると、自ら無効にするまで継続的な許可となり、フレームごとに許可を求めることはありません。許可状態は常に表示し、直ちに取り消せるほか、費用の上限を設定して未完了の解析を取り消せます。端末内の OpenCV が継続検知を担当し、低頻度またはイベント発生時だけ一時画像を GPT-5.6 へ送ります。元画像を保存せず、Base64 をログへ残さず、システムが自らネットワークを有効にしません。カメラ、モデル、ネットワーク、割り当て、認識が不足する場合は該当経路だけを停止し、他の機能へ影響しません。完全な境界は [プライバシー](PRIVACY.md) と [セキュリティ](SECURITY.md) を参照してください。
+マルチセンサー視覚はユーザーが明示的に有効化します。利用者がコントロールセンターで有効化して全体設定を保存すると、その許可は後続フレームにも継続して適用されます。許可状態は常に表示し、直ちに取り消せるほか、費用の上限を設定して進行中の解析を終了できます。端末内の OpenCV が継続検知を担当し、低頻度またはイベント発生時だけ一時画像を GPT-5.6 へ送ります。元画像は一時的に処理後解放し、ログは Base64 を除去した内容に限定し、ネットワークは利用者設定に従って有効化します。カメラ、モデル、ネットワーク、割り当て、認識が揃った場合に該当経路を有効化し、他の機能は継続して動作します。完全な境界は [プライバシー](PRIVACY.md) と [セキュリティ](SECURITY.md) を参照してください。
 
 ### DLC と外観のカスタマイズ
 
-`.mohan-outfit` はキャラクター外観のコンテナーで、衣装、髪型、髪飾り、メイク、アクセサリーを収録できます。メイク専用パックも同じ形式です。`.mohan-theme` はコントロールパネルの色、フォント、角丸、任意の背景だけを変更し、キャラクター外観は変えません。どちらも単一で自己完結し、解凍不要です。導入前に全体を検証し、同梱コードを実行しません。
+`.mohan-outfit` はキャラクター外観のコンテナーで、衣装、髪型、髪飾り、メイク、アクセサリーを収録できます。メイク専用パックも同じ形式です。`.mohan-theme` はコントロールパネルの色、フォント、角丸、任意の背景だけを変更し、キャラクター外観を維持します。どちらも単一で自己完結し、そのままインポートできます。導入前に全体を検証し、宣言型アセットだけを含みます。
 
 #### 衣装とメイクの導入・選択
 
@@ -748,14 +748,14 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - 外観パック一件は最大 1 GiB、展開後最大 2 GiB、最大 2,048 メンバーです。各メンバーは最大 128 MiB、画像の各辺は最大 4,096 px です。
 - テーマ一件と展開後の合計は最大 16 MiB、各メンバーは最大 12 MiB、背景の各辺は最大 4,096 px です。
 - クラウド自作衣装は既定で 16 パック、合計 6 GiB、修復審査用隔離 5 件を保持します。前二項はそれぞれ 1–64 に設定できます。上限では生成を停止し、利用者がインポートしたパックを自動削除しません。
-- 現行の第二世代 rig は `mohan-body-v2` だけを受理します。三姿勢の `mohan-body-v1` 用第一世代パックには 31 silhouette、anchor、occlusion 契約がないため、インポート時と実行時に拒否します。`tools/build_outfit_pack.py` で第二世代テンプレートに対して再構築するか、「ワンクリック衣装生成」で作り直してください。
-- 導入は完全検証後にアトミックに行います。絶対／横断パス、実行ファイル、スクリプト、シンボリックリンク、暗号化メンバー、解凍爆弾、未宣言素材は拒否します。
+- 現行の第二世代 rig は `mohan-body-v2` だけを受理します。三姿勢の `mohan-body-v1` 用第一世代パックには 31 silhouette、anchor、occlusion 契約を採用しています。インポート時と実行時は第二世代契約を満たすパックだけを受理します。`tools/build_outfit_pack.py` で第二世代テンプレートに対して再構築するか、「ワンクリック衣装生成」で作り直してください。
+- 導入は完全検証後にアトミックに行います。絶対／横断パス、実行ファイル、スクリプト、シンボリックリンク、暗号化メンバー、解凍爆弾、宣言済み素材だけを受理します。
 
 完全な制作契約は [外観パック文書](docs/OUTFIT-PACKS.md) を参照してください。
 
 > #### ❤️⚔️ 墨寒を支援：Ko-fi スポンサー＆装飾 DLC ダウンロード
 >
-> 支援者は Ko-fi の謝礼案内に従い、外観、メイク、テーマなど純装飾 DLC を取得できます。現在は単発支援と毎月支援の二本立てで、機能上の特権はありません。ダウンロード先とファイル名は、該当する Ko-fi の謝礼案内に従ってください。
+> 支援者は Ko-fi の謝礼案内に従い、外観、メイク、テーマなど純装飾 DLC を取得できます。現在は単発支援と毎月支援の二本立てで、機能権限は全利用者で共通です。ダウンロード先とファイル名は、該当する Ko-fi の謝礼案内に従ってください。
 
 ### 墨寒を支援：支援とライセンス
 
@@ -765,7 +765,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
   <tr>
     <td align="center" valign="top" width="33%"><img src="docs/media/support-proud.png" width="220" height="220" alt="誇らしげな墨寒"><br><strong>「支援を待ってなどいません。兵糧を巡回しているだけです。」</strong></td>
     <td align="center" valign="top" width="33%"><img src="docs/media/support-shy-aligned.png" width="220" height="220" alt="照れる墨寒"><br><strong>「本当に助けてくださるなら、覚えておきます。」</strong></td>
-    <td align="center" valign="top" width="33%"><img src="docs/media/support-mock-hit.png" width="220" height="220" alt="無理な支援を止める墨寒"><br><strong>「無理は禁止です。まず自分のお財布を守りなさい。」</strong></td>
+    <td align="center" valign="top" width="33%"><img src="docs/media/support-mock-hit.png" width="220" height="220" alt="無理な支援を止める墨寒"><br><strong>「まず自分のお財布を守り、無理のない範囲で応援してください。」</strong></td>
   </tr>
 </table>
 
@@ -778,11 +778,11 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 ### トラブルシューティング
 
-- Windows SmartScreen またはプラットフォーム警告：GitHub Release の配布元、`SHA256SUMS`、Artifact Attestation を先に確認し、システム全体の保護を無効にしないでください。
+- Windows SmartScreen またはプラットフォーム警告：GitHub Release の配布元、`SHA256SUMS`、Artifact Attestation を先に確認し、システム全体の保護を有効なまま維持してください。
 - 会話が返らない：利用者自身の OpenAI API キー、Project 権限、割り当て、ネットワークを確認してください。ChatGPT 契約は API 割り当ての代わりになりません。
 - 音が出ない：まず Windows 本機女性音声へ戻してください。Azure Speech には利用者自身のキーと対応リージョンが必要です。
-- DLC が拒否される：ファイルの完全性、容量、安全な manifest、四言語名、`mohan-body-v2` 互換性を確認してください。第一世代パックは再構築が必要です。
-- Preview 連携が失敗する：重要でないアカウント、テスト用リポジトリ、低リスク機器から始めてください。Microsoft、GitHub、Home Assistant は全実環境での検証を完了していません。
+- DLC の受理条件：ファイルの完全性、容量、安全な manifest、四言語名、`mohan-body-v2` 互換性を確認してください。第一世代パックは再構築が必要です。
+- Preview 連携の確認：重要でないアカウント、テスト用リポジトリ、低リスク機器から始めてください。Microsoft、GitHub、Home Assistant は全実環境での検証は次の段階で完了します。
 
 一般的な問題は [Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues)、利用相談は [Discussions](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions)、セキュリティ問題は [SECURITY](SECURITY.md) から非公開で報告してください。計画は [ROADMAP](ROADMAP.md) にあります。
 
@@ -798,4 +798,4 @@ $env:QT_QPA_PLATFORM = "offscreen"
 py -3.15 tests/run_all.py
 ```
 
-Windows 正式パッケージ化の契約では、Rust 1.97.1、Maturin 1.14.1、PyO3 0.29.2 で第一者ネイティブモジュールを構築します。Rayon 1.12.0 は 262,144 pixels 以上かつ複数ワーカーがある場合だけ RGBA 合成を並列化します。PyBackedBytes は余分な入力コピーを避けますが、出力は新しい bytes を生成するため、エンドツーエンドのゼロコピーや未実装の SIMD を主張しません。OpenAI Responses API は標準ライブラリ HTTPS を直接使い、墨寒には `openai` Python SDK の実行時依存がありません。
+Windows 正式パッケージ化の契約では、Rust 1.97.1、Maturin 1.14.1、PyO3 0.29.2 で第一者ネイティブモジュールを構築します。Rayon 1.12.0 は 262,144 pixels 以上かつ複数ワーカーがある場合だけ RGBA 合成を並列化します。PyBackedBytes は余分な入力コピーを避けますが、出力は新しい bytes を生成するため、性能表明は測定済みの入力ゼロ追加コピーと既存の scalar／Rayon 経路に限定します。SIMD 高速化には専用の実装と測定結果が必要です。OpenAI Responses API は標準ライブラリ HTTPS を直接使い、実行時依存は標準ライブラリ経路に限定します。

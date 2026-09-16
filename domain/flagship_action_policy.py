@@ -19,7 +19,7 @@ __all__ = ("PolicyEngine",)
 PERMISSION_MODES = frozenset({"允許", "每次詢問", "禁止"})
 
 class PolicyEngine:
-    """Evaluate local, cloud, and remote actions without performing I/O."""
+    """Evaluate local, cloud, and remote actions with I/O delegated to the caller."""
 
     def __init__(
         self,
@@ -44,7 +44,7 @@ class PolicyEngine:
             RiskLevel.RED: "禁止",
         }[risk]
         mode = str(self.permissions.get(capability, fallback))
-        # 未知字串必須 fail-closed，退回依風險等級決定的預設值。
+        # 未知字串必須 protective，退回依風險等級決定的預設值。
         # 先前直接原樣回傳，而 evaluate() 只封鎖精確字串「禁止」——於是
         # 任何損壞值（設定匯入、版本遷移、手動編輯、DB 損壞）都會得到
         # allowed=True 且 confirmations=0。GREEN 與 BLUE 能力因此免確認執行；

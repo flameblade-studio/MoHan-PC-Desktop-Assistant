@@ -166,7 +166,7 @@ _ZH_TW: Mapping[SettingsText, str] = frozendict({
     ),
     SettingsText.PHYSICS_EYE_TRACKING_NAME: "眼球追蹤滑鼠",
     SettingsText.PHYSICS_EYE_TRACKING_DESCRIPTION: (
-        "讓視線平滑追蹤滑鼠位置，不會影響實際游標操作。"
+        '讓視線平滑追蹤滑鼠位置，同時保留實際游標操作。'
     ),
     SettingsText.PHYSICS_FACE_PARALLAX_NAME: "臉部柔和視差",
     SettingsText.PHYSICS_FACE_PARALLAX_DESCRIPTION: (
@@ -189,9 +189,9 @@ _ZH_TW: Mapping[SettingsText, str] = frozendict({
     SettingsText.PERSONA_PLACEHOLDER: (
         "設定助理的角色背景、語氣、工作方式與界線。"
     ),
-    SettingsText.PROFILE_REQUIRED_TITLE: "尚缺必要資料",
+    SettingsText.PROFILE_REQUIRED_TITLE: '完成必要資料',
     SettingsText.PROFILE_REQUIRED_MESSAGE: (
-        "助理名稱與助理對你的稱呼不可留空。"
+        '請填寫助理名稱與助理對你的稱呼。'
     ),
 })
 
@@ -252,7 +252,7 @@ _ZH_CN: Mapping[SettingsText, str] = frozendict({
     ),
     SettingsText.PHYSICS_EYE_TRACKING_NAME: "眼球跟踪鼠标",
     SettingsText.PHYSICS_EYE_TRACKING_DESCRIPTION: (
-        "让视线平滑跟踪鼠标位置，不会影响实际指针操作。"
+        '让视线平滑跟踪鼠标位置，同时保留实际指针操作。'
     ),
     SettingsText.PHYSICS_FACE_PARALLAX_NAME: "脸部柔和视差",
     SettingsText.PHYSICS_FACE_PARALLAX_DESCRIPTION: (
@@ -275,9 +275,9 @@ _ZH_CN: Mapping[SettingsText, str] = frozendict({
     SettingsText.PERSONA_PLACEHOLDER: (
         "设置助手的角色背景、语气、工作方式与界限。"
     ),
-    SettingsText.PROFILE_REQUIRED_TITLE: "缺少必要信息",
+    SettingsText.PROFILE_REQUIRED_TITLE: '完成必要信息',
     SettingsText.PROFILE_REQUIRED_MESSAGE: (
-        "助手名称和助手对你的称呼不能为空。"
+        '请填写助手名称和助手对你的称呼。'
     ),
 })
 
@@ -345,7 +345,7 @@ _EN: Mapping[SettingsText, str] = frozendict({
     ),
     SettingsText.PHYSICS_EYE_TRACKING_NAME: "Mouse eye tracking",
     SettingsText.PHYSICS_EYE_TRACKING_DESCRIPTION: (
-        "Moves the gaze smoothly toward the pointer without affecting mouse input."
+        'Moves the gaze smoothly toward the pointer while preserving mouse input.'
     ),
     SettingsText.PHYSICS_FACE_PARALLAX_NAME: "Gentle facial parallax",
     SettingsText.PHYSICS_FACE_PARALLAX_DESCRIPTION: (
@@ -369,9 +369,9 @@ _EN: Mapping[SettingsText, str] = frozendict({
     SettingsText.PERSONA_PLACEHOLDER: (
         "Define the assistant's background, tone, working style, and boundaries."
     ),
-    SettingsText.PROFILE_REQUIRED_TITLE: "Required information missing",
+    SettingsText.PROFILE_REQUIRED_TITLE: 'Complete the required information',
     SettingsText.PROFILE_REQUIRED_MESSAGE: (
-        "Assistant name and how the assistant addresses you are required."
+        'Enter the assistant name and how the assistant addresses you.'
     ),
 })
 
@@ -437,7 +437,7 @@ _JA: Mapping[SettingsText, str] = frozendict({
     ),
     SettingsText.PHYSICS_EYE_TRACKING_NAME: "視線のマウス追従",
     SettingsText.PHYSICS_EYE_TRACKING_DESCRIPTION: (
-        "実際のマウス操作に影響を与えず、視線をポインターへ滑らかに追従させます。"
+        '実際のマウス操作を保ちながら、視線をポインターへ滑らかに追従させます。'
     ),
     SettingsText.PHYSICS_FACE_PARALLAX_NAME: "顔の穏やかな視差",
     SettingsText.PHYSICS_FACE_PARALLAX_DESCRIPTION: (
@@ -460,9 +460,9 @@ _JA: Mapping[SettingsText, str] = frozendict({
     SettingsText.PERSONA_PLACEHOLDER: (
         "アシスタントの背景、口調、仕事の進め方、守るべき境界を設定します。"
     ),
-    SettingsText.PROFILE_REQUIRED_TITLE: "必須情報が不足しています",
+    SettingsText.PROFILE_REQUIRED_TITLE: '必要な情報を入力',
     SettingsText.PROFILE_REQUIRED_MESSAGE: (
-        "アシスタント名と、アシスタントからの呼び名を入力してください。"
+        'アシスタント名と、あなたへの呼び方を入力してください。'
     ),
 })
 

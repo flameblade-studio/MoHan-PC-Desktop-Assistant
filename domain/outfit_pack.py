@@ -6,16 +6,29 @@ lazy import os
 lazy import re
 lazy import struct
 lazy import zipfile
-lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from tempfile import NamedTemporaryFile
-
+lazy from domain import _outfit_pack_models
+# Resolve the public facade now so ``from ... import`` callers receive dataclasses.
+AppearanceAsset = _outfit_pack_models.AppearanceAsset
+AppearanceEnsemble = _outfit_pack_models.AppearanceEnsemble
+AppearanceItem = _outfit_pack_models.AppearanceItem
+AppearanceVariant = _outfit_pack_models.AppearanceVariant
+AutonomousStyleProfile = _outfit_pack_models.AutonomousStyleProfile
+EnsembleSelection = _outfit_pack_models.EnsembleSelection
+InstalledEnsemble = _outfit_pack_models.InstalledEnsemble
+InstalledSelection = _outfit_pack_models.InstalledSelection
+OutfitPack = _outfit_pack_models.OutfitPack
+PoseAppearanceResolution = _outfit_pack_models.PoseAppearanceResolution
+RemovalResult = _outfit_pack_models.RemovalResult
+SelectionResolution = _outfit_pack_models.SelectionResolution
+lazy from domain.makeup_eye_states import parse_makeup_eye_states, validated_makeup_intensity
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain import outfit_pack_official
 lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel
 # Eager on purpose: these names are re-exported (``from domain.outfit_pack import
 # OutfitPackError`` is used across the layers) and a lazy import of a lazily
-# imported name hands the caller the unresolved proxy instead of the class.
+# imported name exposes the lazy module proxy to the caller; import the class directly for the class API.
 from domain.outfit_pack_assets import (
     ASSET_PATH,
     MANIFEST,
@@ -25,6 +38,8 @@ from domain.outfit_pack_assets import (
     _dimensions,
     _safe_member,
 )
+lazy from domain.outfit_pack_assets import MAX_AUTHOR_LENGTH as MAX_AUTHOR_LENGTH
+lazy from domain.outfit_pack_assets import validate_author as _author, validate_pose_assets
 
 FORMAT = "mohan-outfit-pack"
 VERSION = 2
@@ -37,9 +52,7 @@ GESTURE_SILHOUETTES = ("front-mock-scold", "front-mock-hit", "front-eureka", "fr
 POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)
 REQUIRED_SILHOUETTES = BASE_SILHOUETTES + GESTURE_SILHOUETTES + POSE_ATLAS_SILHOUETTES
 SUPPORTED_SILHOUETTES = REQUIRED_SILHOUETTES
-EXPRESSION_SILHOUETTE_ALIASES = frozendict({
-    "cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed", "protective_front": "front-crossed",
-})
+EXPRESSION_SILHOUETTE_ALIASES = frozendict({"cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed", "protective_front": "front-crossed"})
 OFFICIAL_BODY_SPEC = frozendict({
     "adult": True, "height_cm": 168, "weight_kg": 54, "bust_cm": 86, "underbust_cm": 71, "waist_cm": 62, "hips_cm": 90,
 })
@@ -50,6 +63,7 @@ GARMENT_SLOTS = frozenset({
     "bodice", "outerwear", "sleeve-left", "sleeve-right", "skirt", "trousers",
     "legwear-left", "legwear-right", "swimwear", "garment-occluder",
 })
+MAKEUP_OCCLUDER_SLOTS = GARMENT_SLOTS | {"headwear"}
 HAIR_SLOTS = frozenset({"back", "front", "side-left", "side-right", "bangs", "bun", "ponytail"})
 REQUIRED_HAIR_SLOTS = frozenset({"back", "front"})
 HEAD_ATTACHMENTS = frozenset({"crown", "temple-left", "temple-right", "ear-left", "ear-right", "back-head"})
@@ -58,16 +72,22 @@ ACCESSORY_ASSET_SLOTS = frozendict({
     "weapon": frozenset({"weapon", "sheath"}), "handheld": frozenset({"handheld"}),
     "jewelry": frozenset({"jewelry"}), "foreground-effect": frozenset({"foreground-effect"}),
 })
-# Makeup is the one category that legitimately paints the face: three full-canvas
-# RGBA layers per silhouette, composited above the bare skin and below hair,
-# headwear and garments, clipped to the per-silhouette safe region
-# (assets/makeup-safe-regions.json) and scaled by the user's intensity.
+# Makeup is the one category that legitimately paints the face: legacy packs
+# provide three full-canvas RGBA layers per silhouette.  The opt-in
+# ``foundation_silhouettes`` marker adds a fourth, independent full-canvas skin
+# layer for only the silhouettes listed by that marker.  Both generations are
+# composited above bare skin, clipped to their per-silhouette safe region and
+# scaled by the user's intensity.
 MAKEUP_SLOTS = frozenset({"eyes", "cheeks", "lips"})
+FOUNDATION_SLOT = "foundation"
+MAKEUP_SLOTS_V2 = frozenset((*MAKEUP_SLOTS, FOUNDATION_SLOT))
 MAKEUP_CANVASES = frozendict({"full-body": (1024, 1536), "half-body": (1254, 1254)})
 # Official pack identities live in domain.outfit_pack_official; re-bound here for the importers of this module.
 BUILTIN_MAKEUP_PACK_ID = outfit_pack_official.BUILTIN_MAKEUP_PACK_ID
 BUILTIN_MAKEUP_ITEM_ID = outfit_pack_official.BUILTIN_MAKEUP_ITEM_ID
 BUILTIN_MAKEUP_VARIANTS = outfit_pack_official.BUILTIN_MAKEUP_VARIANTS
+BUILTIN_MAKEUP_MENU_VARIANTS = outfit_pack_official.BUILTIN_MAKEUP_MENU_VARIANTS
+BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS = outfit_pack_official.BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS
 OFFICIAL_PACK_ROOT = Path(__file__).resolve().parents[1] / "assets" / "official-packs"
 OPTIONAL_ENSEMBLE_CATEGORIES = frozenset({"makeup"})
 OPTIONAL_MANIFEST_KEYS = frozenset({"makeup"})
@@ -92,7 +112,6 @@ MAX_ANCHOR_COORDINATE = 4096
 MIN_Z_ORDER = -100
 MAX_Z_ORDER = 100
 MAX_NAME_LENGTH = 80
-MAX_AUTHOR_LENGTH = 120
 ANCHOR_DIMENSIONS = 2
 IDENTIFIER = re.compile(r"[a-z0-9](?:[a-z0-9.-]{0,62}[a-z0-9])?\Z")
 SEMVER = re.compile(r"\d+\.\d+\.\d+\Z")
@@ -111,131 +130,6 @@ MANIFEST_KEYS = frozenset({
 })
 
 
-@dataclass(frozen=True, slots=True)
-class AppearanceAsset:
-    slot: str
-    path: str
-    sha256: str
-    width: int
-    height: int
-    anchor_x: int
-    anchor_y: int
-    z_order: int
-
-
-@dataclass(frozen=True, slots=True)
-class AppearanceVariant:
-    variant_id: str
-    display_names: frozendict[str, str]
-    poses: frozendict[str, tuple[AppearanceAsset, ...]]
-    fabric_behavior: str | None = None
-    body_visibility: frozendict[str, frozendict[str, str]] | None = None
-    face_masks: frozendict[str, str] | None = None
-    hand_rules: frozendict[str, str] | None = None
-    garment_rules: frozendict[str, str] | None = None
-    placements: frozendict[str, str] | None = None
-    hair_rules: frozendict[str, str] | None = None
-    attachment_contracts: frozendict[str, str] | None = None
-    intensity: float = 1.0
-
-
-@dataclass(frozen=True, slots=True)
-class AppearanceItem:
-    category: str
-    item_id: str
-    display_names: frozendict[str, str]
-    variants: tuple[AppearanceVariant, ...]
-    attachment_point: str | None = None
-    safe_mask: str | None = None
-
-
-@dataclass(frozen=True, slots=True)
-class OutfitPack:
-    pack_id: str
-    pack_version: str
-    app_range: str
-    display_names: frozendict[str, str]
-    source_kind: str
-    author: str
-    license_name: str
-    compatible_body_profile: str
-    items: tuple[AppearanceItem, ...]
-    ensembles: tuple[AppearanceEnsemble, ...]
-
-    @property
-    def looks(self) -> tuple[AppearanceItem, ...]:
-        return tuple(item for item in self.items if item.category == "garment")
-
-
-@dataclass(frozen=True, slots=True)
-class InstalledSelection:
-    category: str
-    pack_id: str
-    item_id: str
-    variant_id: str
-    pack_display_names: frozendict[str, str]
-    item_display_names: frozendict[str, str]
-    variant_display_names: frozendict[str, str]
-
-
-@dataclass(frozen=True, slots=True)
-class EnsembleSelection:
-    category: str
-    item_id: str | None
-    variant_id: str | None
-
-
-@dataclass(frozen=True, slots=True)
-class AutonomousStyleProfile:
-    thermal_bands: frozenset[str]
-    weather: frozenset[str]
-    moods: frozenset[str]
-    occasions: frozenset[str]
-    priority: int
-
-
-@dataclass(frozen=True, slots=True)
-class AppearanceEnsemble:
-    ensemble_id: str
-    display_names: frozendict[str, str]
-    selections: tuple[EnsembleSelection, ...]
-    autonomous_profile: AutonomousStyleProfile
-
-
-@dataclass(frozen=True, slots=True)
-class InstalledEnsemble:
-    pack_id: str
-    ensemble_id: str
-    pack_display_names: frozendict[str, str]
-    ensemble_display_names: frozendict[str, str]
-    selections: tuple[EnsembleSelection, ...]
-    autonomous_profile: AutonomousStyleProfile
-
-
-@dataclass(frozen=True, slots=True)
-class RemovalResult:
-    pack_id: str
-    removed_path: Path
-
-
-@dataclass(frozen=True, slots=True)
-class SelectionResolution:
-    category: str
-    status: str
-    requested_pack_id: str
-    requested_item_id: str
-    requested_variant_id: str
-    effective_pack_id: str
-    effective_item_id: str
-    effective_variant_id: str
-
-
-@dataclass(frozen=True, slots=True)
-class PoseAppearanceResolution:
-    requested_view_id: str
-    resolved_silhouette: str | None
-    assets: tuple[AppearanceAsset, ...]
-    exact_pose_atlas_match: bool
 
 
 def official_pose_template() -> frozendict[str, object]:
@@ -253,14 +147,14 @@ def resolve_variant_for_view(
     variant: AppearanceVariant,
     view_id: str,
 ) -> PoseAppearanceResolution:
-    """Resolve the exact authored view without changing the selected outfit."""
+    """Resolve the exact authored view while preserving the selected outfit."""
 
     if view_id not in REQUIRED_SILHOUETTES:
-        raise OutfitPackError("Unknown appearance view.")
+        raise OutfitPackError("Use a recognized appearance view.")
     try:
         assets = variant.poses[view_id]
     except KeyError:
-        raise OutfitPackError("The selected outfit is missing a required view.") from None
+        raise OutfitPackError("Provide the required view for the selected outfit.") from None
     return PoseAppearanceResolution(
         view_id,
         view_id,
@@ -274,7 +168,7 @@ def _names(value: object) -> frozendict[str, str]:
         raise OutfitPackError("All four localized names are required.")
     names = {language: text.strip() for language, text in value.items()}
     if any(not text or len(text) > MAX_NAME_LENGTH for text in names.values()):
-        raise OutfitPackError("Invalid localized name.")
+        raise OutfitPackError("Provide a supported localized name.")
     return frozendict(names)
 
 
@@ -284,35 +178,32 @@ def _identifier(value: object, label: str) -> str:
     return value
 
 
-def _author(value: object) -> str:
-    if not isinstance(value, str) or not value.strip() or len(value.strip()) > MAX_AUTHOR_LENGTH:
-        raise OutfitPackError("Invalid author declaration.")
-    return value.strip()
-
-
 def _asset(entry: object, allowed_slots: frozenset[str], archive: zipfile.ZipFile, names: set[str]) -> AppearanceAsset:
     required = {"slot", "path", "sha256", "width", "height", "anchor", "z_order"}
-    if not isinstance(entry, dict) or set(entry) != required:
-        raise OutfitPackError("Invalid asset declaration.")
+    if not isinstance(entry, dict) or not required <= set(entry) or set(entry) - required - {"occludes_makeup"}:
+        raise OutfitPackError("Provide a supported asset declaration.")
     slot, path = entry["slot"], entry["path"]
     if not isinstance(slot, str) or slot not in allowed_slots or not isinstance(path, str) or not ASSET_PATH.fullmatch(path) or path not in names:
-        raise OutfitPackError("Unknown slot or asset path.")
-    screened, terms = (path, MAKEUP_PATH_TERMS) if slot in MAKEUP_SLOTS else (f"{slot}/{path}", PROTECTED_TERMS)
+        raise OutfitPackError("Use a recognized slot or asset path.")
+    occludes_makeup = entry.get("occludes_makeup", False)
+    if not isinstance(occludes_makeup, bool) or ("occludes_makeup" in entry and slot not in MAKEUP_OCCLUDER_SLOTS):
+        raise OutfitPackError("Makeup occlusion must be a boolean on a garment asset or headwear asset.")
+    screened, terms = (path, MAKEUP_PATH_TERMS) if slot in MAKEUP_SLOTS_V2 else (f"{slot}/{path}", PROTECTED_TERMS)
     if any(term in screened.lower() for term in terms):
-        raise OutfitPackError("Core identity, skin and geometry cannot be replaced.")
+        raise OutfitPackError("Core identity, skin and geometry remain protected.")
     anchor = entry["anchor"]
     values = (entry["width"], entry["height"], entry["z_order"])
     if not isinstance(entry["sha256"], str) or not SHA256.fullmatch(entry["sha256"]) or not isinstance(anchor, list) or len(anchor) != ANCHOR_DIMENSIONS:
-        raise OutfitPackError("Invalid hash or anchor.")
+        raise OutfitPackError("Provide a supported hash or anchor.")
     if any(not isinstance(value, int) or isinstance(value, bool) for value in (*values, *anchor)):
-        raise OutfitPackError("Invalid asset geometry.")
+        raise OutfitPackError("Provide a supported asset geometry.")
     width, height, z_order = values
     if not (1 <= width <= MAX_IMAGE_DIMENSION and 1 <= height <= MAX_IMAGE_DIMENSION and MIN_ANCHOR_COORDINATE <= anchor[0] <= MAX_ANCHOR_COORDINATE and MIN_ANCHOR_COORDINATE <= anchor[1] <= MAX_ANCHOR_COORDINATE and MIN_Z_ORDER <= z_order <= MAX_Z_ORDER):
         raise OutfitPackError("Asset geometry is outside the allowed range.")
     data = archive.read(path)
     if hashlib.sha256(data).hexdigest() != entry["sha256"] or _dimensions(data, Path(path).suffix) != (width, height):
-        raise OutfitPackError("Asset integrity check failed.")
-    return AppearanceAsset(slot, path, entry["sha256"], width, height, anchor[0], anchor[1], z_order)
+        raise OutfitPackError("Asset integrity check requires attention; retry the operation.")
+    return AppearanceAsset(slot, path, entry["sha256"], width, height, anchor[0], anchor[1], z_order, occludes_makeup)
 
 
 def _pose_keys(poses: object) -> tuple[str, ...]:
@@ -336,7 +227,7 @@ def _pose_keys(poses: object) -> tuple[str, ...]:
     return SUPPORTED_SILHOUETTES
 
 
-def _pose_assets(poses: object, slots: frozenset[str], archive: zipfile.ZipFile, names: set[str]) -> frozendict[str, tuple[AppearanceAsset, ...]]:
+def _pose_assets(poses: object, slots: frozenset[str], archive: zipfile.ZipFile, names: set[str], *, full_canvas: bool = False) -> frozendict[str, tuple[AppearanceAsset, ...]]:
     silhouettes = _pose_keys(poses)
     assert isinstance(poses, dict)
     parsed = {}
@@ -345,6 +236,8 @@ def _pose_assets(poses: object, slots: frozenset[str], archive: zipfile.ZipFile,
         if not isinstance(entries, list) or not entries:
             raise OutfitPackError("Every silhouette requires assets.")
         assets = tuple(_asset(entry, slots, archive, names) for entry in entries)
+        canvas = MAKEUP_CANVASES["full-body" if silhouette in POSE_ATLAS_SILHOUETTES else "half-body"]
+        validate_pose_assets(assets, archive, canvas, require_visible=slots == GARMENT_SLOTS, full_canvas=full_canvas)
         if len({asset.slot for asset in assets}) != len(assets):
             raise OutfitPackError("Duplicate slot in silhouette.")
         parsed[silhouette] = assets
@@ -353,7 +246,7 @@ def _pose_assets(poses: object, slots: frozenset[str], archive: zipfile.ZipFile,
 
 def _variant_base(value: object, extra: set[str]) -> tuple[str, frozendict[str, str]]:
     if not isinstance(value, dict) or set(value) != {"id", "display_names", "poses", *extra}:
-        raise OutfitPackError("Invalid appearance variant.")
+        raise OutfitPackError("Provide a supported appearance variant.")
     return _identifier(value["id"], "variant"), _names(value["display_names"])
 
 
@@ -362,11 +255,11 @@ def _garment_variant(value: object, archive: zipfile.ZipFile, names: set[str]) -
     behavior, visibility = value["fabric_behavior"], value["body_visibility"]
     poses = _pose_assets(value["poses"], GARMENT_SLOTS, archive, names)
     if behavior not in FABRIC_BEHAVIORS or not isinstance(visibility, dict) or set(visibility) != set(poses):
-        raise OutfitPackError("Invalid garment behavior or visibility.")
+        raise OutfitPackError("Provide a supported garment behavior or visibility.")
     parsed_visibility = {}
     for silhouette, regions in visibility.items():
         if not isinstance(regions, dict) or set(regions) != set(BODY_REGIONS) or any(state not in VISIBILITY for state in regions.values()):
-            raise OutfitPackError("Invalid official body visibility.")
+            raise OutfitPackError("Provide a supported official body visibility.")
         parsed_visibility[silhouette] = frozendict(regions)
     return AppearanceVariant(variant_id, display, poses, behavior, frozendict(parsed_visibility))
 
@@ -381,7 +274,7 @@ def _hair_variant(value: object, archive: zipfile.ZipFile, names: set[str]) -> A
     for field, allowed in (("face_occlusion_masks", FACE_MASKS), ("hand_occlusion", HAND_RULES), ("garment_occlusion", GARMENT_RULES)):
         mapping = value[field]
         if not isinstance(mapping, dict) or set(mapping) != set(poses) or any(rule not in allowed for rule in mapping.values()):
-            raise OutfitPackError("Invalid hair occlusion contract.")
+            raise OutfitPackError("Provide a supported hair occlusion contract.")
         maps.append(frozendict(mapping))
     return AppearanceVariant(variant_id, display, poses, face_masks=maps[0], hand_rules=maps[1], garment_rules=maps[2])
 
@@ -444,19 +337,65 @@ def _handheld_variant(value: object, archive: zipfile.ZipFile, names: set[str]) 
 
 
 def _makeup_variant(value: object, archive: zipfile.ZipFile, names: set[str]) -> AppearanceVariant:
-    """Three full-canvas registered layers per silhouette plus an optional authored intensity."""
-    variant_id, display = _variant_base(value, {"intensity"} if "intensity" in value else set())
-    intensity = value.get("intensity", 1.0)
-    if isinstance(intensity, bool) or not isinstance(intensity, (int, float)) or not 0.0 <= intensity <= 1.0:
-        raise OutfitPackError("Makeup intensity must be a number between 0 and 1.")
-    poses = _pose_assets(value["poses"], MAKEUP_SLOTS, archive, names)
+    """Parse legacy three-slot makeup or an opt-in foundation-bearing variant."""
+    variant_id, display = _variant_base(
+        value,
+        {key for key in ("intensity", "eye_states", "foundation_silhouettes") if key in value},
+    )
+    intensity = validated_makeup_intensity(value.get("intensity", 1.0))
+    raw_foundation = value.get("foundation_silhouettes")
+    if raw_foundation is None:
+        foundation_silhouettes = frozenset()
+    elif (
+        not isinstance(raw_foundation, list)
+        or not raw_foundation
+        or any(not isinstance(silhouette, str) for silhouette in raw_foundation)
+        or len(set(raw_foundation)) != len(raw_foundation)
+        or not set(raw_foundation).issubset(REQUIRED_SILHOUETTES)
+    ):
+        raise OutfitPackError("Provide a supported foundation silhouettes.")
+    else:
+        foundation_silhouettes = frozenset(raw_foundation)
+    allowed_slots = MAKEUP_SLOTS_V2 if foundation_silhouettes else MAKEUP_SLOTS
+    poses = _pose_assets(value["poses"], allowed_slots, archive, names, full_canvas=True)
     for silhouette, assets in poses.items():
-        canvas = MAKEUP_CANVASES["full-body" if silhouette in POSE_ATLAS_SILHOUETTES else "half-body"]
-        if {asset.slot for asset in assets} != MAKEUP_SLOTS:
-            raise OutfitPackError(f"Makeup silhouette {silhouette!r} requires exactly the eyes, cheeks and lips layers.")
-        if any((asset.width, asset.height, asset.anchor_x, asset.anchor_y) != (*canvas, 0, 0) for asset in assets):
-            raise OutfitPackError(f"Makeup layers for {silhouette!r} must cover the full {canvas[0]}x{canvas[1]} canvas at anchor 0,0.")
-    return AppearanceVariant(variant_id, display, poses, intensity=float(intensity))
+        expected = MAKEUP_SLOTS_V2 if silhouette in foundation_silhouettes else MAKEUP_SLOTS
+        if {asset.slot for asset in assets} != expected:
+            if expected == MAKEUP_SLOTS:
+                # Keep the established import diagnostic for legacy packs so
+                # callers and saved audit evidence remain compatible.
+                raise OutfitPackError(
+                    f"Makeup silhouette {silhouette!r} requires exactly the eyes, cheeks and lips layers."
+                )
+            raise OutfitPackError(
+                f"Makeup silhouette {silhouette!r} requires exactly its declared makeup layers."
+            )
+    state_slots = MAKEUP_SLOTS_V2 if foundation_silhouettes else frozenset({"eyes"})
+    parsed_states = parse_makeup_eye_states(
+        value.get("eye_states", {}),
+        lambda entries: _pose_assets(entries, state_slots, archive, names, full_canvas=True),
+    )
+    for state, state_poses in parsed_states.items():
+        for silhouette, assets in state_poses.items():
+            expected = (
+                frozenset({"eyes", FOUNDATION_SLOT})
+                if silhouette in foundation_silhouettes
+                else frozenset({"eyes"})
+            )
+            if {asset.slot for asset in assets} != expected:
+                raise OutfitPackError(
+                    f"Makeup eye state {state!r} for {silhouette!r} must carry its eye and foundation layers together."
+                )
+    if foundation_silhouettes and set(parsed_states) != {"half", "closed"}:
+        raise OutfitPackError("Foundation makeup requires both half and closed eye states.")
+    return AppearanceVariant(
+        variant_id,
+        display,
+        poses,
+        intensity=float(intensity),
+        eye_states=frozendict(parsed_states),
+        foundation_silhouettes=foundation_silhouettes,
+    )
 
 
 def _item(value: object, category: str, archive: zipfile.ZipFile, names: set[str]) -> AppearanceItem:
@@ -464,10 +403,10 @@ def _item(value: object, category: str, archive: zipfile.ZipFile, names: set[str
     if category == "accessory":
         extras = {"accessory_kind"}
     if not isinstance(value, dict) or set(value) != {"id", "display_names", "variants", *extras}:
-        raise OutfitPackError("Invalid appearance item.")
+        raise OutfitPackError("Provide a supported appearance item.")
     actual_category = value["accessory_kind"] if category == "accessory" else category
     if actual_category not in SELECTION_CATEGORIES:
-        raise OutfitPackError("Invalid accessory kind.")
+        raise OutfitPackError("Provide a supported accessory kind.")
     variants = value["variants"]
     if not isinstance(variants, list) or not variants:
         raise OutfitPackError("Appearance item requires variants.")
@@ -487,7 +426,7 @@ def _item(value: object, category: str, archive: zipfile.ZipFile, names: set[str
     attachment = value.get("attachment_point")
     safe_mask = value.get("safe_mask")
     if category == "headwear" and (attachment not in HEAD_ATTACHMENTS or safe_mask not in HEADWEAR_MASKS):
-        raise OutfitPackError("Invalid headwear attachment or safe mask.")
+        raise OutfitPackError("Provide a supported headwear attachment or safe mask.")
     return AppearanceItem(actual_category, _identifier(value["id"], "item"), _names(value["display_names"]), parsed, attachment, safe_mask)
 
 
@@ -505,10 +444,10 @@ def _ensemble_selection(
 ) -> EnsembleSelection:
     if selection is None:
         if category not in {"headwear", "makeup", *ACCESSORY_KINDS}:
-            raise OutfitPackError("Garment and hairstyle cannot be none.")
+            raise OutfitPackError("Garment and hairstyle require a selected variant.")
         return EnsembleSelection(category, None, None)
     if not isinstance(selection, dict) or set(selection) != {"item_id", "variant_id"}:
-        raise OutfitPackError("Invalid ensemble selection.")
+        raise OutfitPackError("Provide a supported ensemble selection.")
     identity = (
         category,
         _identifier(selection["item_id"], "ensemble item"),
@@ -524,7 +463,7 @@ def _ensemble(
     available: set[tuple[str, str, str]],
 ) -> AppearanceEnsemble:
     if not isinstance(entry, dict) or set(entry) != {"id", "display_names", "selections", "autonomous_profile"}:
-        raise OutfitPackError("Invalid ensemble declaration.")
+        raise OutfitPackError("Provide a supported ensemble declaration.")
     selections = entry["selections"]
     required = set(SELECTION_CATEGORIES) - OPTIONAL_ENSEMBLE_CATEGORIES
     # An ensemble that stays silent about makeup leaves the user's makeup alone;
@@ -548,22 +487,22 @@ def _ensemble(
 def _autonomous_profile(value: object) -> AutonomousStyleProfile:
     keys = {"thermal_bands", "weather", "moods", "occasions", "priority"}
     if not isinstance(value, dict) or set(value) != keys:
-        raise OutfitPackError("Invalid autonomous outfit profile.")
+        raise OutfitPackError("Provide a supported autonomous outfit profile.")
 
     def tags(name: str, allowed: frozenset[str]) -> frozenset[str]:
         items = value[name]
         if not isinstance(items, list) or not items or any(
             not isinstance(item, str) for item in items
         ):
-            raise OutfitPackError("Invalid autonomous outfit tags.")
+            raise OutfitPackError("Provide a supported autonomous outfit tags.")
         result = frozenset(items)
         if len(result) != len(items) or not result.issubset(allowed):
-            raise OutfitPackError("Invalid autonomous outfit tags.")
+            raise OutfitPackError("Provide a supported autonomous outfit tags.")
         return result
 
     priority = value["priority"]
     if not isinstance(priority, int) or isinstance(priority, bool) or not MIN_Z_ORDER <= priority <= MAX_Z_ORDER:
-        raise OutfitPackError("Invalid autonomous outfit priority.")
+        raise OutfitPackError("Provide a supported autonomous outfit priority.")
     return AutonomousStyleProfile(
         tags("thermal_bands", THERMAL_BANDS),
         tags("weather", WEATHER_TAGS),
@@ -587,7 +526,7 @@ def _archive_member_names(archive: zipfile.ZipFile) -> set[str]:
     infos = archive.infolist()
     names = {info.filename for info in infos}
     if not infos or len(infos) > MAX_MEMBERS or len(names) != len(infos) or MANIFEST not in names:
-        raise OutfitPackError("Invalid archive members.")
+        raise OutfitPackError("Provide a supported archive members.")
     for info in infos:
         _safe_member(info)
     if sum(info.file_size for info in infos) > MAX_TOTAL_BYTES:
@@ -598,27 +537,27 @@ def _archive_member_names(archive: zipfile.ZipFile) -> set[str]:
 def _manifest_payload(archive: zipfile.ZipFile) -> dict:
     manifest = json.loads(archive.read(MANIFEST).decode("utf-8"))
     if not isinstance(manifest, dict) or not MANIFEST_KEYS <= set(manifest) <= MANIFEST_KEYS | OPTIONAL_MANIFEST_KEYS:
-        raise OutfitPackError("Unsupported appearance manifest.")
+        raise OutfitPackError("Provide a supported appearance manifest.")
     if manifest["format"] != FORMAT or manifest["version"] != VERSION:
-        raise OutfitPackError("Unsupported appearance manifest.")
+        raise OutfitPackError("Provide a supported appearance manifest.")
     expected_profile = {"id": BODY_PROFILE_ID, "version": BODY_PROFILE_VERSION}
     if manifest["compatible_body_profile"] != expected_profile:
         raise IncompatibleBodyProfileError(f"Pack body profile {manifest['compatible_body_profile']!r} is not the current {expected_profile!r}.")
     if manifest["authoring"] != {"template": AUTHORING_TEMPLATE, "version": AUTHORING_VERSION}:
-        raise OutfitPackError("Unsupported authoring template.")
+        raise OutfitPackError("Provide a supported authoring template.")
     return manifest
 
 
 def _source_declaration(manifest: dict) -> tuple[str, str, str]:
     source = manifest["source"]
     if not isinstance(source, dict) or set(source) != {"kind", "author", "license", "reference_included"}:
-        raise OutfitPackError("Invalid source declaration.")
+        raise OutfitPackError("Provide a supported source declaration.")
     if source["kind"] not in {"original", "concept", "reference-derived"}:
-        raise OutfitPackError("Invalid source declaration.")
+        raise OutfitPackError("Provide a supported source declaration.")
     if source["reference_included"] is not False:
-        raise OutfitPackError("Invalid source declaration.")
+        raise OutfitPackError("Provide a supported source declaration.")
     if not isinstance(source["license"], str) or not LICENSE.fullmatch(source["license"]):
-        raise OutfitPackError("Invalid source declaration.")
+        raise OutfitPackError("Provide a supported source declaration.")
     return source["kind"], _author(source["author"]), source["license"]
 
 
@@ -641,20 +580,19 @@ def _appearance_items(
             raise OutfitPackError("Duplicate item identifier in category.")
         items.extend(parsed)
     if not items:
-        raise OutfitPackError("An appearance pack cannot be empty.")
+        raise OutfitPackError("An appearance pack requires content.")
     return items
 
 
 def _declared_asset_paths(items: list[AppearanceItem]) -> list[str]:
-    return [
-        *(
-            asset.path
-            for item in items
-            for variant in item.variants
-            for assets in variant.poses.values()
-            for asset in assets
-        )
-    ]
+    return [*(
+        asset.path
+        for item in items
+        for variant in item.variants
+        for poses in (variant.poses, *variant.eye_states.values())
+        for assets in poses.values()
+        for asset in assets
+    )]
 
 
 def _validate_declared_assets(items: list[AppearanceItem], names: set[str]) -> None:
@@ -667,9 +605,9 @@ def _pack_version(manifest: dict) -> tuple[str, str]:
     pack_version = manifest["pack_version"]
     app_range = manifest["app_range"]
     if not isinstance(pack_version, str) or not SEMVER.fullmatch(pack_version):
-        raise OutfitPackError("Invalid version or app range.")
+        raise OutfitPackError("Provide a supported version or app range.")
     if not isinstance(app_range, str) or not APP_RANGE.fullmatch(app_range):
-        raise OutfitPackError("Invalid version or app range.")
+        raise OutfitPackError("Provide a supported version or app range.")
     return pack_version, app_range
 
 
@@ -693,13 +631,13 @@ def _parse_outfit_pack(
 def inspect_outfit_pack(source: Path) -> OutfitPack:
     path = Path(source)
     if not path.is_file() or path.stat().st_size > MAX_ARCHIVE_BYTES:
-        raise OutfitPackError("Archive size is invalid.")
+        raise OutfitPackError("Archive size needs a supported value.")
     try:
         with zipfile.ZipFile(path) as archive:
             names = _archive_member_names(archive)
             return _parse_outfit_pack(archive, names)
     except (OSError, zipfile.BadZipFile, UnicodeError, json.JSONDecodeError, KeyError, TypeError, ValueError, struct.error, IndexError):
-        raise OutfitPackError("Invalid appearance archive.") from None
+        raise OutfitPackError("Provide a supported appearance archive.") from None
 
 
 def _atomic_json(path: Path, payload: object) -> None:
@@ -715,16 +653,16 @@ def _atomic_json(path: Path, payload: object) -> None:
         temporary_path.unlink(missing_ok=True)
 
 
-# Parsed archives by path -> ((mtime_ns, size), pack); ``None`` marks another body-profile generation.
+# Parsed archives by path -> ((mtime_ns, size), pack); the sentinel marks another body-profile generation.
 _PARSED: dict[Path, tuple[tuple[int, int], OutfitPack | None]] = {}
 
 
-def _inspect_installed(path: Path) -> OutfitPack | None:
+def inspect_installed_outfit_pack(path: Path) -> OutfitPack | None:
     """Parse an installed archive once per (mtime, size); a rewritten or replaced file is read again."""
     try:
         stat = path.stat()
     except OSError:
-        raise OutfitPackError("Archive size is invalid.") from None
+        raise OutfitPackError("Archive size needs a supported value.") from None
     token = (stat.st_mtime_ns, stat.st_size)
     cached = _PARSED.get(path)
     if cached is None or cached[0] != token:
@@ -737,7 +675,7 @@ def _inspect_installed(path: Path) -> OutfitPack | None:
 
 
 def _installed_pack_paths(store: Path) -> tuple[Path, ...]:
-    """User-installed packs first, then the official packs shipped with the app (never removable)."""
+    """User-installed packs first, then the official packs shipped with the app (always restorable)."""
     paths = []
     for root in (Path(store) / "packages", OFFICIAL_PACK_ROOT):
         paths.extend(sorted(root.glob("*.mohan-outfit")) if root.is_dir() else ())
@@ -745,7 +683,7 @@ def _installed_pack_paths(store: Path) -> tuple[Path, ...]:
 
 
 def installed_pack_path(store: Path, pack_id: str) -> Path:
-    """Locate one installed or official pack archive by id; fails closed on an unknown id."""
+    """Locate one installed or official pack archive by id; fails closed on an Use a recognized id."""
     path = next((path for path in _installed_pack_paths(store) if path.stem == pack_id), None)
     if path is None:
         raise OutfitPackError("The selected appearance pack is not installed.")
@@ -753,17 +691,17 @@ def installed_pack_path(store: Path, pack_id: str) -> Path:
 
 
 def list_installed_outfits(store: Path) -> tuple[OutfitPack, ...]:
-    return tuple(pack for pack in map(_inspect_installed, _installed_pack_paths(store)) if pack is not None)
+    return tuple(pack for pack in map(inspect_installed_outfit_pack, _installed_pack_paths(store)) if pack is not None)
 
 
 def list_stale_body_profile_packs(store: Path) -> tuple[str, ...]:
-    """Ids of installed packs made for another body-profile generation; they are listed, never rendered."""
-    return tuple(path.stem for path in _installed_pack_paths(store) if _inspect_installed(path) is None)
+    """Ids of installed packs made for another body-profile generation; they are listed for reference and stay outside rendering."""
+    return tuple(path.stem for path in _installed_pack_paths(store) if inspect_installed_outfit_pack(path) is None)
 
 
 def list_installed_selections(store: Path, category: str | None = None) -> tuple[InstalledSelection, ...]:
     if category is not None and category not in SELECTION_CATEGORIES:
-        raise OutfitPackError("Unknown selection category.")
+        raise OutfitPackError("Use a recognized selection category.")
     return tuple(
         InstalledSelection(item.category, pack.pack_id, item.item_id, variant.variant_id, pack.display_names, item.display_names, variant.display_names)
         for pack in list_installed_outfits(store) for item in pack.items for variant in item.variants
@@ -815,7 +753,7 @@ def clear_appearance_selection(store: Path, category: str) -> None:
     active_path = Path(store) / "active.json"
     active = json.loads(active_path.read_text(encoding="utf-8")) if active_path.is_file() else {}
     if not isinstance(active, dict):
-        raise OutfitPackError("Invalid saved appearance state.")
+        raise OutfitPackError("Provide a supported saved appearance state.")
     active.pop("_ensemble", None)
     active[category] = {"pack_id": "builtin", "item_id": "none", "variant_id": "none"}
     _atomic_json(active_path, active)
@@ -853,9 +791,9 @@ def _state_references_pack(path: Path, pack_id: str) -> bool:
     try:
         state = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError):
-        raise OutfitPackError("Invalid saved appearance state.") from None
+        raise OutfitPackError("Provide a supported saved appearance state.") from None
     if not isinstance(state, dict):
-        raise OutfitPackError("Invalid saved appearance state.")
+        raise OutfitPackError("Provide a supported saved appearance state.")
     for value in state.values():
         if isinstance(value, dict) and value.get("pack_id") == pack_id:
             return True
@@ -865,12 +803,12 @@ def _state_references_pack(path: Path, pack_id: str) -> bool:
 def remove_outfit_pack(store: Path, pack_id: str) -> RemovalResult:
     validated_id = _identifier(pack_id, "pack")
     if validated_id == "builtin" or validated_id in OFFICIAL_PACK_IDS:
-        raise OutfitPackError("The built-in appearance cannot be removed.")
+        raise OutfitPackError("The built-in appearance stays available.")
     packages = Path(store) / "packages"
     target = packages / f"{validated_id}.mohan-outfit"
     if not target.is_file():
         raise OutfitPackError("The appearance pack is not installed.")
-    installed = _inspect_installed(target)
+    installed = inspect_installed_outfit_pack(target)
     if installed is not None and installed.pack_id != validated_id:
         raise OutfitPackError("Installed archive identity does not match its filename.")
     for state_name in ("active.json", "preview.json"):
@@ -884,13 +822,13 @@ def remove_outfit_pack(store: Path, pack_id: str) -> RemovalResult:
         tombstone.unlink()
     except OSError:
         os.replace(tombstone, target)
-        raise OutfitPackError("Appearance pack removal failed safely.") from None
+        raise OutfitPackError("Appearance pack removal requires attention; the package is restored.") from None
     return RemovalResult(validated_id, target)
 
 
 def resolve_active_selection(store: Path, category: str) -> SelectionResolution:
     if category not in SELECTION_CATEGORIES:
-        raise OutfitPackError("Unknown selection category.")
+        raise OutfitPackError("Use a recognized selection category.")
     active_path = Path(store) / "active.json"
     if not active_path.is_file():
         requested = ("builtin", "builtin", "builtin")
@@ -901,11 +839,11 @@ def resolve_active_selection(store: Path, category: str) -> SelectionResolution:
                 raise AttributeError
             value = active.get(category)
         except (OSError, UnicodeError, json.JSONDecodeError, AttributeError):
-            raise OutfitPackError("Invalid saved appearance state.") from None
+            raise OutfitPackError("Provide a supported saved appearance state.") from None
         if value is None:
             requested = ("builtin", "builtin", "builtin")
         elif not isinstance(value, dict) or set(value) != {"pack_id", "item_id", "variant_id"} or any(not isinstance(value[key], str) for key in value):
-            raise OutfitPackError("Invalid saved appearance selection.")
+            raise OutfitPackError("Provide a supported saved appearance selection.")
         else:
             requested = (value["pack_id"], value["item_id"], value["variant_id"])
     if requested[0] == "builtin":
@@ -924,7 +862,7 @@ def resolve_active_selection(store: Path, category: str) -> SelectionResolution:
             # the vanished identity so the wardrobe can show the notice once.
             status, effective = builtin_makeup_resolution(("builtin", "builtin", "builtin"), list_installed_selections(store, "makeup"))
         elif requested not in installed:
-            raise OutfitPackError("The selected appearance is unavailable; it was not replaced.")
+            raise OutfitPackError("The selected appearance requires a supported installed package; the current selection stays active.")
         else:
             status, effective = "installed", requested
     return SelectionResolution(category, status, *requested, *effective)

@@ -2,13 +2,14 @@ from __future__ import annotations
 
 lazy import sys
 lazy import time
+lazy import logging
 lazy from collections import deque
 lazy from collections.abc import Callable
 lazy from contextlib import suppress
 lazy from dataclasses import replace
 
-lazy from PySide6.QtCore import QPoint, Qt, QTimer
-lazy from PySide6.QtGui import QImage, QPainter, QPixmap
+lazy from PySide6.QtCore import QPoint, QTimer
+lazy from PySide6.QtGui import QImage, QPixmap
 
 lazy from application.adaptive_character_composition import (
     DEFAULT_CHARACTER_IMAGE_SIZE as CHARACTER_IMAGE_SIZE,
@@ -18,7 +19,6 @@ lazy from application.adaptive_character_composition import (
 )
 lazy from application.adaptive_character_runtime import AdaptiveCharacterRequest
 lazy from application.background_agents import ManagerWorkerScheduler
-lazy from application.body_pose_renderer import BodyPoseFrame
 lazy from application.character_framing_app_bridge import AppFramingState
 lazy from application.gesture_action_router import GestureActionDecision
 lazy from application.gesture_application_adapter import (
@@ -42,6 +42,7 @@ lazy from domain.emotional_resonance import EmotionalResonanceState
 lazy from domain.favor_exclusive import FavorExclusiveState
 lazy from domain.personality_state import PersonalityMirrorState
 lazy from domain.satiety import SatietyState
+lazy from domain.safe_error import SafeError, sanitize_error
 lazy from domain.sensory_synesthesia import WeatherMood
 lazy from domain.sword_soul_resonance import SwordSoulResonanceState
 
@@ -92,46 +93,17 @@ lazy from presentation.dashboard_window import Dashboard
 lazy from presentation.companion_vad_status import notify_vad_degradation
 lazy from presentation.first_run_wizard import FirstRunWizard
 lazy from presentation.performance_composition import create_performance_app_bridge
+lazy from presentation.companion_legacy_frame import current_legacy_character_frame
 lazy from presentation.pose_atlas_assets import PoseAtlasAssets
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = ("CompanionCoreMixin",)
+_LOGGER = logging.getLogger(__name__)
 
 # Framing modes that publish the v4 full-body photograph.  HALF/CLOSE keep the
 # legacy half-body poses (cheek-rest, left-neutral, front-crossed) instead.
 _FULL_BODY_MODES = PUBLISHABLE_BODY_MODES
 
-def _current_legacy_character_frame(window: object, generation: int) -> BodyPoseFrame:
-    """Snapshot the proven renderer for the adaptive fallback boundary."""
-
-    size = CHARACTER_IMAGE_SIZE
-    canvas = QImage(size, size, QImage.Format_RGBA8888)
-    canvas.fill(Qt.transparent)
-    pixmap = window.character.pixmap()
-    if pixmap is not None and not pixmap.isNull():
-        image = pixmap.toImage().convertToFormat(QImage.Format_RGBA8888)
-        image = image.scaled(
-            size,
-            size,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation,
-        )
-        painter = QPainter(canvas)
-        painter.drawImage(
-            (size - image.width()) // 2,
-            (size - image.height()) // 2,
-            image,
-        )
-        painter.end()
-    return BodyPoseFrame(
-        size,
-        size,
-        bytes(canvas.constBits()),
-        generation,
-        ("legacy-current",),
-        ("legacy-current",),
-        False,
-    )
 
 class CompanionCoreMixin:
     """Compose the companion's core services, state, and application bridges."""
@@ -140,9 +112,10 @@ class CompanionCoreMixin:
         factory: AdaptiveCharacterFactory | None,
         enabled: bool | None,
     ) -> None:
-        """Open the v4 composition gate without touching legacy rendering."""
+        """Open the v4 composition gate while preserving legacy rendering."""
 
         self._adaptive_character_composition: AdaptiveCharacterComposition | None = None
+        self._adaptive_character_startup_error: SafeError | None = None
         self._performance_app_bridge = None
         self._adaptive_character_generation = 0
         self._staged_adaptive_frame = None
@@ -168,13 +141,15 @@ class CompanionCoreMixin:
         try:
             composition = composition_factory(self._stage_adaptive_character_frame)
             generation = composition.runtime.begin_operation()
-        except ImportError, LookupError, RuntimeError, TypeError, ValueError:
+        except (ImportError, LookupError, OSError, RuntimeError, TypeError, ValueError) as error:
             self._adaptive_character_enabled = False
+            self._adaptive_character_startup_error = sanitize_error(error)
+            _LOGGER.warning("adaptive_character_startup_failed %s", self._adaptive_character_startup_error)
             return
         self._adaptive_character_composition = composition
         self._adaptive_character_generation = generation
         self._performance_app_bridge = create_performance_app_bridge(
-            lambda frame_generation: _current_legacy_character_frame(self, frame_generation),
+            lambda frame_generation: current_legacy_character_frame(self, frame_generation),
             self._dispatch_adaptive_character_frame,
         )
         self._publish_adaptive_idle_frame()
@@ -199,7 +174,7 @@ class CompanionCoreMixin:
             )
         except LookupError, RuntimeError, TypeError, ValueError:
             # The proven legacy surface remains available if an optional v4
-            # frame cannot be assembled during startup.
+            # frame requires supported startup assets.
             return
 
     def _stage_adaptive_character_frame(self, frame: object) -> None:
@@ -217,7 +192,7 @@ class CompanionCoreMixin:
         if not self._adaptive_character_enabled or composition is None or self._closing:
             return None
         # Remember the last atomic frame so the gaze timer can re-compose the
-        # full body when the pointer/saccade/shy-aversion moves the eyes without
+        # full body when the pointer/saccade/shy-aversion moves the eyes while preserving
         # a new speech or behavior event.
         self._last_atomic_frame = atomic_frame
         performance = atomic_frame.performance
@@ -362,7 +337,7 @@ class CompanionCoreMixin:
         )
 
     def _refresh_full_body(self) -> None:
-        """Re-compose the full body when live state moved without a new event.
+        """Re-compose the full body when live state moved between events.
 
         The full-body composition is event-driven, but the gaze, blink, breath
         and expression update on their own timers.  When the full body owns the
@@ -391,7 +366,7 @@ class CompanionCoreMixin:
         self._render_attention_layers(force=True)
 
     def _publish_adaptive_character_frame(self, frame: object) -> None:
-        """Publish approved RGBA without resizing the character widget."""
+        """Publish approved RGBA while preserving the character widget size."""
 
         if frame is not self._staged_adaptive_frame:
             return
@@ -433,7 +408,7 @@ class CompanionCoreMixin:
                 overlay.hide()
 
     def _cancel_adaptive_character_composition(self) -> None:
-        """Close the active v4 generation without disturbing legacy shutdown."""
+        """Close the active v4 generation while preserving legacy shutdown."""
 
         composition = getattr(self, "_adaptive_character_composition", None)
         generation = getattr(self, "_adaptive_character_generation", 0)
@@ -550,7 +525,7 @@ class CompanionCoreMixin:
     def _set_gesture_audio_muted(self, muted: bool) -> None:
         """Apply a camera gesture mute for this process only.
 
-        Visual recognition is probabilistic.  It must never rewrite the
+        Visual recognition is probabilistic.  It keeps the
         user's persisted global mute preference merely because one camera
         frame looked like the silence gesture.
         """
@@ -609,7 +584,7 @@ class CompanionCoreMixin:
         except AttributeError as exc:
             # A deferred visual startup deliberately does not allocate pose
             # assets. It can still acknowledge a gesture through the status
-            # card and voice path, but cannot animate until assets are ready.
+            # card and voice path, but animates once assets are ready.
             if "physics_expression_poses" not in str(exc):
                 raise
 
@@ -688,7 +663,7 @@ class CompanionCoreMixin:
         self.open_dashboard()
         self._acknowledge_wave()
         # The status card is informative only.  Its transient widget lifecycle
-        # must never prevent the real companion from opening the keyboard
+        # keeps the real companion's keyboard path available
         # conversation or answering a recognized wave.
         with suppress(Exception):
             self.dashboard.set_desktop_companion_gesture_status("wave")
@@ -781,7 +756,7 @@ class CompanionCoreMixin:
         """Feed the recent conversation window into the personality mirror.
 
         The mirror reads the full recent dialogue (up to the 1M-token context)
-        but reduces it to cheap scalar signals, so it never blocks the UI.
+        but reduces it to cheap scalar signals, so it keeps the UI responsive.
         """
         mirror = getattr(self, "personality_mirror_state", None)
         if mirror is None:
@@ -866,8 +841,8 @@ class CompanionCoreMixin:
             self._sensory_gaze_expires_at = now + 0.90
         # Shy gaze aversion: when the user stares at the companion for a
         # sustained stretch, she glances down and away for a few seconds.  The
-        # offset is small and downward so it reads as bashful, never an eye-roll.
-        # It is kept in a separate field so it never pollutes the raw sensory
+        # offset is small and downward so it reads as bashful, with a measured, bashful glance.
+        # It is kept in a separate field so it stays separate from the raw sensory
         # gaze target; the visual dynamics layer applies it on top.
         shy = getattr(self, "shy_gaze_state", None)
         if shy is not None and face is not None:
@@ -1115,7 +1090,7 @@ class CompanionCoreMixin:
         )
         # Typed preference stores are the single source of truth for the
         # performance and framing preferences (domain defaults apply when the
-        # user never saved them).  The caches refresh on every settings save.
+        # the user left them at their defaults).  The caches refresh on every settings save.
         settings_port = StudioDBSettingsPort(self.db)
         self._performance_preferences_store = PerformancePreferencesStore(
             settings_port

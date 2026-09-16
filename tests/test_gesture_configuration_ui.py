@@ -123,7 +123,7 @@ def select_gesture(center: FlagshipControlCenter, gesture_id: str) -> None:
         if item.data(0x0100) == gesture_id:
             center.gesture_list.setCurrentRow(row)
             return
-    raise AssertionError(f"gesture not found: {gesture_id}")
+    raise AssertionError(f'provide the gesture: {gesture_id}')
 
 
 def test_staged_edit_global_save_and_cancel(root: Path) -> None:
@@ -219,7 +219,7 @@ def test_unavailable_recorder_is_explicit_and_never_fakes_samples(root: Path) ->
         definition = center._selected_gesture()
         assert definition is not None
         assert center.gesture_record_button.isEnabled() is False
-        assert "無法安全錄製" in center.gesture_record_status.text()
+        assert "請先取得穩定的手部 landmark 訊號" in center.gesture_record_status.text()
         center.record_custom_gesture()
         assert center._selected_gesture().samples == ()
     finally:

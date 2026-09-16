@@ -65,7 +65,7 @@ _MOTION_OVERRIDE: list[bool | None] = [None]
 
 
 def set_motion_override(value: bool | None) -> None:
-    """測試與偏好頁用：True 強制開、False 強制關、None 回到系統設定。"""
+    """測試與偏好頁用：True 強制開、False 強制關、None 採用系統設定。"""
 
     _MOTION_OVERRIDE[0] = value
 
@@ -375,7 +375,7 @@ class PageTransition(QObject):
         self._animation.start()
 
     def _release_effect(self) -> None:
-        """卸下上一頁的透明效果。setGraphicsEffect(None) 會刪掉 C++ 物件，所以引用也要清。"""
+        """清理上一頁的透明效果。setGraphicsEffect(None) 會刪掉 C++ 物件，因此同步清理引用。"""
 
         effect, self._effect = self._effect, None
         if effect is None:

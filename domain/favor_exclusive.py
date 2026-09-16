@@ -5,9 +5,9 @@ from __future__ import annotations
 This is the finishing touch.  The higher this hidden coefficient, the more
 tolerant MoHan is of disturbances (being ignored, other AI services) and the
 sweeter her response to the user's cross-dimensional gestures.  It is a slow,
-bounded value that grows with genuine closeness and never resets on a whim.
+bounded value that grows with genuine closeness and persists until an intentional reset.
 
-This is pure domain logic with no Qt dependency.
+This is pure domain logic with Qt outside the domain boundary.
 """
 
 lazy import math
@@ -62,7 +62,7 @@ class FavorExclusiveState:
         return self._favor
 
     def tolerance(self, now: float | None = None) -> float:
-        """The disturbance tolerance derived from favor (0 = none, 1 = full)."""
+        """The disturbance tolerance derived from favor (0 = baseline, 1 = full)."""
         return self.snapshot(now)
 
     def _decay(self, now: float) -> None:

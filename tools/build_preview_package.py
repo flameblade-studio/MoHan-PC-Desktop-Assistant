@@ -10,6 +10,7 @@ lazy import shutil
 lazy import stat
 lazy import subprocess
 lazy import sys
+lazy import sysconfig
 lazy import tempfile
 lazy import time
 lazy from pathlib import Path
@@ -24,6 +25,7 @@ lazy from domain.constants import (
     POSE_ATLAS_RELATIVE_ROOT,
     POSE_ATLAS_ROOT_NAME,
 )
+lazy from tools.mpl_compliance import verify_environment, verify_policy
 
 VERSION_PATTERN = re.compile(
     r"^[0-9]+\.[0-9]+\.[0-9]+(?:-rc\.(?:0|[1-9][0-9]*))?$"
@@ -46,6 +48,7 @@ LAYERED_POSE_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_RO
 EXPRESSION_ROOT = ROOT / "assets" / "expressions"
 FONT_ROOT = ROOT / "assets" / "fonts"
 LAYERED_EXPRESSION_ROOT = EXPRESSION_ROOT / "layered"
+DASHBOARD_ARTWORK_RELATIVE = Path("assets/ui/mohan-celestial-palace-v1.png")
 VIEW_RING_COUNT = 24
 FULL_BODY_LAYER_COUNT = 25
 HALF_BODY_POSE_COUNT = 3
@@ -157,6 +160,9 @@ def _pyinstaller(
     temp_root: Path,
     pose_atlas_root: Path | None,
 ) -> Path:
+    errors = verify_policy(ROOT) + verify_environment(ROOT, Path(sysconfig.get_paths()["purelib"]))
+    if errors:
+        raise ValueError("MPL license/source evidence is incomplete: " + "; ".join(errors))
     build_info = temp_root / "build-info.json"
     _write_build_info(build_info, version, target)
     dist = temp_root / "dist"
@@ -189,14 +195,23 @@ def _pyinstaller(
         "--add-data",
         f"{ROOT / 'THIRD_PARTY_NOTICES.md'}{data_separator}.",
         "--add-data",
+        f"{ROOT / 'third_party_licenses'}{data_separator}third_party_licenses",
+        "--add-data",
         f"{build_info}{data_separator}.",
         "--add-data",
         f"{FONT_ROOT}{data_separator}assets/fonts",
+        # The Dashboard resolves this scenery by its stable packaged relative path.
+        "--add-data",
+        f"{ROOT / DASHBOARD_ARTWORK_RELATIVE}{data_separator}{DASHBOARD_ARTWORK_RELATIVE.parent.as_posix()}",
         # Makeup safe regions and the official pack root (the default outfit and
         # the built-in makeup, both sealed .mohan-outfit archives) travel with the
         # runtime, exactly like the layered rigs they were derived from.
         "--add-data",
         f"{ROOT / 'assets' / 'makeup-safe-regions.json'}{data_separator}assets",
+        "--add-data",
+        f"{ROOT / 'assets' / 'makeup-foundation-safe-regions'}{data_separator}assets/makeup-foundation-safe-regions",
+        "--add-data",
+        f"{ROOT / 'assets' / 'makeup-eye-apertures'}{data_separator}assets/makeup-eye-apertures",
         "--add-data",
         f"{ROOT / 'assets' / 'official-packs'}{data_separator}assets/official-packs",
     ]
@@ -211,6 +226,20 @@ def _pyinstaller(
                 f"{EXPRESSION_ROOT}{data_separator}assets/expressions",
             ]
         )
+        # These optional core layers refine the same native body at runtime.
+        # Keep their directory names so packaged composition finds the overrides.
+        for directory in (
+            "v5-body-overlays",
+            "v5-hand-overlays",
+            "v5-appearance-silhouettes",
+            "v5-appearance-replacement-masks",
+        ):
+            relative = Path("assets/pose-atlas") / directory
+            source = ROOT / relative
+            if source.is_dir():
+                command.extend(
+                    ["--add-data", f"{source}{data_separator}{relative.as_posix()}"]
+                )
     if target == "macos":
         command.extend(
             [
@@ -260,10 +289,10 @@ def _create_icns(temp_root: Path) -> Path:
 def _preview_notice() -> str:
     return """MoHan Desktop Assistant — macOS/Linux Limited Preview
 
-繁體中文：此預覽包只驗證啟動、四語介面、平台路徑與安全停用邊界；不是 Windows 完整版。
-简体中文：此预览包只验证启动、四语界面、平台路径与安全停用边界；不是 Windows 完整版。
-English: This limited Preview validates launch, four-language UI, platform paths, and fail-closed boundaries. It is not feature parity with Windows.
-日本語：この限定 Preview は起動、四言語画面、保存先、安全な無効化を確認するもので、Windows 完全版と同等ではありません。
+繁體中文：此預覽包的驗證範圍為啟動、四語介面、平台路徑與安全停用邊界；完整功能由 Windows 版本提供。
+简体中文：此预览包的验证范围为启动、四语界面、平台路径与安全停用边界；完整功能由 Windows 版本提供。
+English: This limited Preview validates launch, four-language UI, platform paths, and fail-closed boundaries. The Windows edition provides the full feature set.
+日本語：この限定 Preview は起動、四言語画面、保存先、安全な無効化を確認します。全機能は Windows 版で提供します。
 Voice, cloud connectors, system tools, autostart, and secret entry remain disabled until verified on real devices.
 """
 

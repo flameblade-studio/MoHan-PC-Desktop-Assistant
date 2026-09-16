@@ -142,7 +142,7 @@ def _assert_catalog_contract() -> None:
         ServiceStatus.CAMERA_ERROR,
         detail="供應器原始錯誤 42",
     )
-    assert camera_error.startswith("Camera error: type=unknown_error")
+    assert camera_error.startswith("Camera requires attention: type=unknown_error")
     assert "diagnostic=unknown_failure" in camera_error
     assert "供應器原始錯誤 42" not in camera_error
 
@@ -250,7 +250,7 @@ def _assert_camera_states() -> None:
             "Camera active: USB Camera (local presence detection only)",
         ]
         controller.camera.errorOccurred.emit(0, "Driver 42")
-        assert statuses[-1].startswith("Camera error: type=unknown_error")
+        assert statuses[-1].startswith("Camera requires attention: type=unknown_error")
         assert "diagnostic=unknown_failure" in statuses[-1]
         assert "Driver 42" not in statuses[-1]
         controller.stop()
@@ -264,7 +264,7 @@ def _assert_camera_states() -> None:
             assert str(exc).startswith("This package does not include")
             assert not HAN_TEXT.search(str(exc))
         else:
-            raise AssertionError("missing camera component must fail closed")
+            raise AssertionError('camera use requires the camera component')
 
 
 def _planner_response() -> io.BytesIO:
@@ -310,7 +310,7 @@ def _assert_ai_states() -> None:
     missing_key.signals.failed.connect(failures.append)
     with patch.dict(os.environ, {"OPENAI_API_KEY": ""}):
         missing_key.run()
-    assert failures[-1].startswith("The OpenAI API key is not configured")
+    assert failures[-1].startswith("Set the OpenAI API key to understand free-form tool requests")
     assert not HAN_TEXT.search(failures[-1])
 
 

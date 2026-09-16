@@ -89,197 +89,197 @@ USER_TRANSCRIPT_FAILED_EVENT = (
 _REALTIME_MESSAGES = deep_freeze({
     "zh-TW": {
         "missing_key": "請先儲存 OpenAI API 金鑰",
-        "missing_components": "Realtime 語音元件尚未安裝",
+        "missing_components": "請安裝 Realtime 語音元件",
         "connecting": "正在連線…",
-        "disconnected": "未連線",
+        "disconnected": "目前等待連線，請重新啟動 Realtime",
         "listening": "已連線，妾在聽",
-        "empty_transcript": "未取得有效轉錄，本輪不會自動回覆",
-        "transcription_failed": "轉錄失敗，本輪不會自動回覆：{error}",
-        "realtime_api_error": "Realtime API 發生錯誤",
-        "generic_error": "Realtime 發生錯誤：{error}",
+        "empty_transcript": "轉錄結果為空，本輪等待新的語音",
+        "transcription_failed": "轉錄結果需要重試，本輪等待新的語音：{error}",
+        "realtime_api_error": "Realtime API 回報錯誤，請檢查設定後再試",
+        "generic_error": "Realtime 回報錯誤：{error}",
         "microphone_status": "麥克風狀態：{status}",
-        "sender_lag": "麥克風處理一度落後，已捨棄最舊音訊以恢復即時性",
+        "sender_lag": "麥克風處理已恢復即時性，已捨棄較早音訊",
         "response_too_long": (
-            "Realtime 回應超過 32,768 字元安全上限，已停止本輪回應。"
+            "Realtime 回應達到 32,768 字元安全上限，本輪回應已停止。"
         ),
         "playback_buffer_full": (
-            "Realtime 播放緩衝已達 1.5 秒安全上限，已停止本輪語音，"
-            "避免延遲持續累積或跳字。"
+            "Realtime 播放緩衝達到 1.5 秒安全上限，本輪語音已停止，"
+            "以維持延遲與文字同步。"
         ),
-        "playback_failed": "播放語音失敗：{error}",
-        "clip_too_short": "語音片段太短，本輪不會自動回覆",
+        "playback_failed": "播放語音需要重試：{error}",
+        "clip_too_short": "語音片段長度需要增加，本輪等待新的語音",
         "transcribing": "高精度整句轉錄中…",
-        "hybrid_failed": "高精度轉錄失敗，本輪不會自動回覆：{error}",
-        "response_not_started": "文字已辨識，但無法觸發 Realtime 回覆",
-        "prompt_echo_skipped": "已略過疑似轉錄提示詞回灌",
+        "hybrid_failed": "高精度轉錄需要重試，本輪等待新的語音：{error}",
+        "response_not_started": "文字已辨識；Realtime 回覆尚待啟動，請檢查連線後再試",
+        "prompt_echo_skipped": "已過濾疑似轉錄提示詞回灌內容，等待實際語音輸入",
         "replying": "已辨識，墨寒正在回覆",
         "model_access": (
-            "OpenAI 回報目前儲存的 API 金鑰無法使用「{model}」。"
+            "OpenAI 回報目前儲存的 API 金鑰需要在同一 Project 啟用「{model}」使用權限。"
             "請確認 API 後台勾選模型的 Project，正是建立這支金鑰的同一個 "
             "Project；再於該 Project 建立具適當權限的 API Key，並到墨寒的"
             "「設定」頁重新儲存。"
         ),
         "quota": (
-            "OpenAI API 額度不足或專案預算已達上限。請檢查該 Project 的 "
+            "OpenAI API 額度需要補充，或專案預算已達上限。請檢查該 Project 的 "
             "Billing、Budget 與 Realtime 模型用量限制。"
         ),
         "invalid_key": (
-            "目前儲存的 OpenAI API 金鑰無效或已撤銷。"
-            "請到「設定」頁重新貼上同一 Project 新建立的 API Key。"
+            "目前儲存的 OpenAI API 金鑰需要更新。"
+            "請到「設定」頁貼上同一 Project 新建立的 API Key。"
         ),
-        "server_rejected": "Realtime 連線被伺服器拒絕。詳細資訊：{error}",
+        "server_rejected": "Realtime 伺服器回報連線狀態需要重新建立。詳細資訊：{error}",
         "microphone_failed": (
-            "Windows 無法開啟麥克風。請到「設定 → 隱私權與安全性 → 麥克風」，"
-            "開啟麥克風存取權及「讓桌面應用程式存取麥克風」，並確認沒有其他"
-            "程式獨占麥克風。詳細資訊：{error}"
+            "Windows 麥克風存取需要處理。請到「設定 → 隱私權與安全性 → 麥克風」，"
+            "開啟麥克風存取權及「讓桌面應用程式存取麥克風」，並釋放其他程式"
+            "持有的獨佔麥克風控制權，讓本程式取得使用權。詳細資訊：{error}"
         ),
-        "audio_failed": "音訊裝置無法啟動：{error}。請到「設定」頁重新選擇輸入／輸出裝置後再試。",
+        "audio_failed": "音訊裝置尚待啟動：{error}。請到「設定」頁重新選擇輸入／輸出裝置後再試。",
     },
     "zh-CN": {
         "missing_key": "请先保存 OpenAI API 密钥",
-        "missing_components": "Realtime 语音组件尚未安装",
+        "missing_components": "请安装 Realtime 语音组件",
         "connecting": "正在连接…",
-        "disconnected": "未连接",
+        "disconnected": "当前等待连接，请重新启动 Realtime",
         "listening": "已连接，妾在听",
-        "empty_transcript": "未取得有效转录，本轮不会自动回复",
-        "transcription_failed": "转录失败，本轮不会自动回复：{error}",
-        "realtime_api_error": "Realtime API 发生错误",
-        "generic_error": "Realtime 发生错误：{error}",
+        "empty_transcript": "转录结果为空，本轮等待新的语音",
+        "transcription_failed": "转录结果需要重试，本轮等待新的语音：{error}",
+        "realtime_api_error": "Realtime API 报告错误，请检查设置后再试",
+        "generic_error": "Realtime 报告错误：{error}",
         "microphone_status": "麦克风状态：{status}",
-        "sender_lag": "麦克风处理一度落后，已舍弃最旧音频以恢复实时性",
+        "sender_lag": "麦克风处理已恢复实时性，已舍弃较早音频",
         "response_too_long": (
-            "Realtime 回复超过 32,768 字符安全上限，已停止本轮回复。"
+            "Realtime 回复达到 32,768 字符安全上限，本轮回复已停止。"
         ),
         "playback_buffer_full": (
-            "Realtime 播放缓冲已达 1.5 秒安全上限，已停止本轮语音，"
-            "避免延迟持续累积或跳字。"
+            "Realtime 播放缓冲达到 1.5 秒安全上限，本轮语音已停止，"
+            "以维持延迟与文字同步。"
         ),
-        "playback_failed": "播放语音失败：{error}",
-        "clip_too_short": "语音片段太短，本轮不会自动回复",
+        "playback_failed": "播放语音需要重试：{error}",
+        "clip_too_short": "语音片段长度需要增加，本轮等待新的语音",
         "transcribing": "高精度整句转录中…",
-        "hybrid_failed": "高精度转录失败，本轮不会自动回复：{error}",
-        "response_not_started": "文字已识别，但无法触发 Realtime 回复",
-        "prompt_echo_skipped": "已略过疑似转录提示词回灌",
+        "hybrid_failed": "高精度转录需要重试，本轮等待新的语音：{error}",
+        "response_not_started": "文字已识别；Realtime 回复尚待启动，请检查连接后再试",
+        "prompt_echo_skipped": "已过滤疑似转录提示词回灌内容，等待实际语音输入",
         "replying": "已识别，墨寒正在回复",
         "model_access": (
-            "OpenAI 报告当前保存的 API 密钥无法使用“{model}”。"
+            "OpenAI 报告当前保存的 API 密钥需要在同一 Project 启用“{model}”使用权限。"
             "请确认 API 后台所选模型的 Project 与建立这支密钥的 Project 相同；"
             "再于该 Project 建立具备适当权限的 API Key，并到墨寒的“设置”页"
             "重新保存。"
         ),
         "quota": (
-            "OpenAI API 额度不足或项目预算已达上限。请检查该 Project 的 "
+            "OpenAI API 额度需要补充，或项目预算已达上限。请检查该 Project 的 "
             "Billing、Budget 与 Realtime 模型用量限制。"
         ),
         "invalid_key": (
-            "当前保存的 OpenAI API 密钥无效或已撤销。"
-            "请到“设置”页重新粘贴同一 Project 新建立的 API Key。"
+            "当前保存的 OpenAI API 密钥需要更新。"
+            "请到“设置”页粘贴同一 Project 新建立的 API Key。"
         ),
-        "server_rejected": "Realtime 连接被服务器拒绝。详细信息：{error}",
+        "server_rejected": "Realtime 服务器报告连接状态需要重新建立。详细信息：{error}",
         "microphone_failed": (
-            "Windows 无法打开麦克风。请到“设置 → 隐私和安全性 → 麦克风”，"
-            "开启麦克风访问权限及“允许桌面应用访问麦克风”，并确认没有其他"
-            "程序独占麦克风。详细信息：{error}"
+            "Windows 麦克风访问需要处理。请到“设置 → 隐私和安全性 → 麦克风”，"
+            "开启麦克风访问权限及“允许桌面应用访问麦克风”，并释放其他程序"
+            "持有的独占麦克风控制权，让本程序取得使用权。详细信息：{error}"
         ),
-        "audio_failed": "音频设备无法启动：{error}。请到「设置」页重新选择输入／输出设备后再试。",
+        "audio_failed": "音频设备尚待启动：{error}。请到「设置」页重新选择输入／输出设备后再试。",
     },
     "en": {
         "missing_key": "Save an OpenAI API key first",
-        "missing_components": "Realtime voice components are not installed",
+        "missing_components": "Install the Realtime voice components",
         "connecting": "Connecting…",
-        "disconnected": "Disconnected",
+        "disconnected": "Waiting for a connection; restart Realtime",
         "listening": "Connected and listening",
-        "empty_transcript": "No usable transcript was received; this turn will not reply",
-        "transcription_failed": "Transcription failed; this turn will not reply: {error}",
-        "realtime_api_error": "A Realtime API error occurred",
-        "generic_error": "Realtime error: {error}",
+        "empty_transcript": "The transcript is empty; this turn is waiting for new audio",
+        "transcription_failed": "The transcript needs a retry; this turn is waiting for new audio: {error}",
+        "realtime_api_error": "The Realtime API reported an error; check Settings and try again",
+        "generic_error": "Realtime reported an error: {error}",
         "microphone_status": "Microphone status: {status}",
-        "sender_lag": "Microphone processing fell behind; the oldest audio was dropped to restore real-time operation",
+        "sender_lag": "Microphone processing is real-time again; earlier audio was dropped",
         "response_too_long": (
-            "The Realtime response exceeded the 32,768-character safety limit; "
-            "this response was stopped."
+            "The Realtime response reached the 32,768-character safety limit; "
+            "this response is stopped."
         ),
         "playback_buffer_full": (
             "The Realtime playback buffer reached its 1.5-second safety limit; "
-            "this response was stopped to prevent growing delay or skipped words."
+            "this response is stopped to keep delay and text synchronized."
         ),
-        "playback_failed": "Speech playback failed: {error}",
-        "clip_too_short": "The speech clip was too short; this turn will not reply",
+        "playback_failed": "Speech playback needs a retry: {error}",
+        "clip_too_short": "The speech clip needs more audio; this turn is waiting for new audio",
         "transcribing": "Transcribing the complete utterance…",
-        "hybrid_failed": "High-accuracy transcription failed; this turn will not reply: {error}",
-        "response_not_started": "Text was recognized, but the Realtime response could not be started",
-        "prompt_echo_skipped": "A probable transcription-prompt echo was skipped",
+        "hybrid_failed": "High-accuracy transcription needs a retry; this turn is waiting for new audio: {error}",
+        "response_not_started": "Text was recognized; the Realtime response is waiting to start. Check the connection and try again",
+        "prompt_echo_skipped": "Filtered probable transcription-prompt echo content; waiting for actual voice input",
         "replying": "Recognized; MoHan is replying",
         "model_access": (
-            "The saved OpenAI API key cannot access “{model}”. Confirm that the "
+            "Enable “{model}” access for the saved OpenAI API key in the same Project. Confirm that the "
             "model and API key belong to the same Project, then save a suitably "
             "authorized key again in MoHan Settings."
         ),
         "quota": (
-            "The OpenAI API quota is insufficient or the project budget limit "
+            "The OpenAI API quota needs replenishment or the project budget limit "
             "was reached. Check Billing, Budget, and Realtime model usage limits."
         ),
         "invalid_key": (
-            "The saved OpenAI API key is invalid or revoked. Save a new key from "
-            "the same Project in Settings."
+            "The saved OpenAI API key needs an update. Save a new key from the same "
+            "Project in Settings."
         ),
-        "server_rejected": "The Realtime server rejected the connection. Details: {error}",
+        "server_rejected": "The Realtime server reported a connection state that needs to be re-established. Details: {error}",
         "microphone_failed": (
-            "Windows could not open the microphone. In Settings → Privacy & "
-            "security → Microphone, enable microphone access and desktop-app "
-            "access, and confirm that no other program has exclusive control. "
+            "Microphone access requires attention. In Settings → Privacy & security "
+            "→ Microphone, enable microphone access and desktop-app access, and "
+            "release exclusive microphone control held by other apps so this app can use it. "
             "Details: {error}"
         ),
-        "audio_failed": "The audio device could not start: {error}. Please reselect the input/output device on the Settings page and try again.",
+        "audio_failed": "The audio device is waiting to start: {error}. Please reselect the input/output device on the Settings page and try again.",
     },
     "ja-JP": {
         "missing_key": "先に OpenAI API キーを保存してください",
-        "missing_components": "Realtime 音声コンポーネントがインストールされていません",
+        "missing_components": "Realtime 音声コンポーネントをインストールしてください",
         "connecting": "接続中…",
-        "disconnected": "未接続",
+        "disconnected": "接続待機中です。Realtime を再起動してください",
         "listening": "接続済み、聞いています",
-        "empty_transcript": "有効な文字起こしを取得できなかったため、このターンには応答しません",
-        "transcription_failed": "文字起こしに失敗したため、このターンには応答しません：{error}",
-        "realtime_api_error": "Realtime API でエラーが発生しました",
-        "generic_error": "Realtime エラー：{error}",
+        "empty_transcript": "文字起こし結果が空のため、このターンは新しい音声を待機します",
+        "transcription_failed": "文字起こし結果の再試行が必要です。このターンは新しい音声を待機します：{error}",
+        "realtime_api_error": "Realtime API がエラーを報告しました。設定を確認して再試行してください",
+        "generic_error": "Realtime がエラーを報告しました：{error}",
         "microphone_status": "マイクの状態：{status}",
-        "sender_lag": "マイク処理が遅れたため、リアルタイム性を戻すために最も古い音声を破棄しました",
+        "sender_lag": "マイク処理がリアルタイムに戻りました。古い音声を整理しました",
         "response_too_long": (
-            "Realtime の応答が 32,768 文字の安全上限を超えたため、"
-            "この応答を停止しました。"
+            "Realtime の応答が 32,768 文字の安全上限に達したため、"
+            "この応答を停止します。"
         ),
         "playback_buffer_full": (
             "Realtime の再生バッファーが 1.5 秒の安全上限に達したため、"
-            "遅延の増加や語の欠落を防ぐためにこの応答を停止しました。"
+            "遅延と文字の同期を保つためにこの応答を停止します。"
         ),
-        "playback_failed": "音声の再生に失敗しました：{error}",
-        "clip_too_short": "音声区間が短すぎるため、このターンには応答しません",
+        "playback_failed": "音声の再生に再試行が必要です：{error}",
+        "clip_too_short": "音声区間に追加の音声が必要なため、このターンは新しい音声を待機します",
         "transcribing": "発話全体を高精度で文字起こししています…",
-        "hybrid_failed": "高精度文字起こしに失敗したため、このターンには応答しません：{error}",
-        "response_not_started": "文字は認識されましたが、Realtime の応答を開始できませんでした",
-        "prompt_echo_skipped": "文字起こしプロンプトの反響と思われる内容を除外しました",
+        "hybrid_failed": "高精度文字起こしの再試行が必要です。このターンは新しい音声を待機します：{error}",
+        "response_not_started": "文字を認識しました。Realtime の応答は開始待ちです。接続を確認して再試行してください",
+        "prompt_echo_skipped": "文字起こしプロンプトの反響と思われる内容を除外し、実際の音声入力を待機しています",
         "replying": "認識しました。墨寒が応答しています",
         "model_access": (
-            "保存された OpenAI API キーでは「{model}」を利用できません。"
+            "保存された OpenAI API キーで「{model}」を利用する権限を同じ Project に設定してください。"
             "モデルと API キーが同じ Project に属することを確認し、適切な権限を"
-            "持つキーを墨寒の設定で保存し直してください。"
+            "持つキーを墨寒の設定で保存してください。"
         ),
         "quota": (
-            "OpenAI API の利用枠が不足しているか、プロジェクトの予算上限に"
+            "OpenAI API の利用枠の補充が必要か、プロジェクトの予算上限に"
             "達しました。Billing、Budget、Realtime モデルの利用上限を確認してください。"
         ),
         "invalid_key": (
-            "保存された OpenAI API キーは無効か、取り消されています。"
-            "同じ Project で新しいキーを作成し、設定で保存し直してください。"
+            "保存された OpenAI API キーの更新が必要です。"
+            "同じ Project で新しいキーを作成し、設定で保存してください。"
         ),
-        "server_rejected": "Realtime サーバーが接続を拒否しました。詳細：{error}",
+        "server_rejected": "Realtime サーバーが接続状態の再確立を報告しました。詳細：{error}",
         "microphone_failed": (
-            "Windows でマイクを開けませんでした。「設定 → プライバシーと"
+            "Windows のマイクアクセスには対応が必要です。「設定 → プライバシーと"
             "セキュリティ → マイク」でマイクとデスクトップアプリのアクセスを"
-            "有効にし、他のプログラムがマイクを占有していないことを確認して"
-            "ください。詳細：{error}"
+            "有効にし、他のアプリが保持するマイクの排他的制御を解放して、この"
+            "アプリがマイクを利用できる状態にしてください。詳細：{error}"
         ),
-        "audio_failed": "音声デバイスを開始できませんでした：{error}。「設定」ページで入出力デバイスを選び直してから再試行してください。",
+        "audio_failed": "音声デバイスは開始待ちです：{error}。「設定」ページで入出力デバイスを選び直してから再試行してください。",
     },
 })
 

@@ -319,7 +319,7 @@ def assert_activation_failure_restores_previous() -> None:
     except RuntimeError as exc:
         assert str(exc) == "activation failed"
     else:
-        raise AssertionError("activation failure must remain visible")
+        raise AssertionError('activation errors must remain visible')
     assert engine.active_atlas.pack_id == "builtin-three-view"
     assert activator.calls[-1] == engine.active_atlas
 

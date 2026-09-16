@@ -143,7 +143,7 @@ class DashboardConversationMixin:
         self.chat_retention = QLabel(
             self._t(
                 "chat_retention",
-                "對話保存在本機，不會自動刪除",
+                '對話持續保留在本機，由您明確決定刪除',
             )
         )
         self.chat_retention.setStyleSheet("color: #356d88;")
@@ -367,7 +367,7 @@ class DashboardConversationMixin:
         if not normalized:
             return
         # The remote server has already authenticated and audited the device.
-        # It enters the same command path as local text so it cannot bypass
+        # It enters the same command path as local text so it stays within
         # command parsing, conversation history, or the flagship policy layer.
         bracket = normalized.find("] ")
         command = normalized[bracket + 2 :] if bracket >= 0 else normalized
@@ -417,7 +417,7 @@ class DashboardConversationMixin:
         )
         # Same guard pattern as presentation/flagship/planner.py: completion
         # callbacks carry the generation active at submission and are dropped
-        # once the dashboard closes, so a late worker can never touch the
+        # once the dashboard closes, so a late worker keeps the
         # closed database or deleted widgets.
         generation = self._ai_generation
         worker.signals.done.connect(
@@ -495,7 +495,7 @@ class DashboardConversationMixin:
 
 
     def cancel_ai_wait_expression(self) -> None:
-        """Invalidate pending visual reactions without cancelling the API."""
+        """Invalidate pending visual reactions while preserving the API session."""
         self._finish_ai_wait_expression()
 
 
@@ -815,8 +815,8 @@ class DashboardConversationMixin:
         self._finish_ai_wait_expression()
         if is_english(self.ui_language):
             message = (
-                "The cloud connection is temporarily unavailable. I remain "
-                "here, but cannot draw on external knowledge just now."
+                "The cloud connection requires attention. I remain "
+                "here, and external knowledge will return when the connection is ready."
             )
         elif is_simplified_chinese(self.ui_language):
             message = "云端连接暂时中断。妾仍在，只是此刻无法借用外部知识。"

@@ -153,6 +153,7 @@ class FaceRenderLayers:
     mouth_source: QPixmap
     mouth_mask: QPixmap
     mouth_rect: QRect
+    mouth_expression: str | None = None
     blink_source: QPixmap | None = None
     blink_mask: QPixmap | None = None
     blush_source: QPixmap | None = None

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 # Eager by design: asyncio.to_thread and its concurrent.futures lookup share
-# module state where PEP 810 proxies are not API-compatible.
+# module state requiring concrete objects under the PEP 810 API contract.
 import asyncio
 lazy import argparse
 lazy import ctypes
@@ -79,9 +79,9 @@ def _normalized_sha256(value: str) -> str:
     try:
         raw = bytes.fromhex(normalized)
     except ValueError as error:
-        raise RuntimeError("Expected validation wheel SHA-256 is invalid.") from error
+        raise RuntimeError("Expected validation wheel SHA-256 must contain 64 hexadecimal characters.") from error
     if len(normalized) != SHA256_HEX_LENGTH or len(raw) != SHA256_RAW_LENGTH:
-        raise RuntimeError("Expected validation wheel SHA-256 is invalid.")
+        raise RuntimeError("Expected validation wheel SHA-256 must contain 64 hexadecimal characters.")
     return normalized
 
 
@@ -93,14 +93,14 @@ def _loaded_native_binary(
     package_file = getattr(native, "__file__", None)
     extension_file = getattr(extension, "__file__", None)
     if not package_file or not extension_file:
-        raise RuntimeError("The loaded native package has no auditable file path.")
+        raise RuntimeError("The loaded native package requires an auditable file path.")
     try:
         package_path = Path(package_file).resolve(strict=True)
         extension_path = Path(extension_file).resolve(strict=True)
     except OSError as error:
-        raise RuntimeError("The loaded native package path is not readable.") from error
+        raise RuntimeError("Provide a readable path for the loaded native package.") from error
     if extension_path.suffix.casefold() != ".pyd":
-        raise RuntimeError("The loaded native implementation is not a Windows .pyd.")
+        raise RuntimeError("The loaded native implementation requires a Windows .pyd.")
     import_root = package_path.parent.parent
     try:
         portable_path = extension_path.relative_to(import_root).as_posix()
@@ -131,7 +131,7 @@ def _wheel_native_binary(wheel: Path) -> tuple[str, str, int]:
                 while chunk := stream.read(1024 * 1024):
                     digest.update(chunk)
     except (OSError, zipfile.BadZipFile) as error:
-        raise RuntimeError("Validation wheel is unreadable or invalid.") from error
+        raise RuntimeError("Validation wheel requires a readable, valid archive.") from error
     return member.filename, digest.hexdigest(), member.file_size
 
 
@@ -146,18 +146,18 @@ def _native_provenance(
     try:
         wheel = validation_wheel.resolve(strict=True)
     except OSError as error:
-        raise RuntimeError("Validation wheel does not exist.") from error
+        raise RuntimeError("Provide the validation wheel at the specified path.") from error
     if not wheel.is_file():
-        raise RuntimeError("Validation wheel is not a regular file.")
+        raise RuntimeError("Provide the validation wheel as a regular file.")
     native_version = str(native.__version__)
     expected_prefix = f"mohan_accel-{native_version}-"
     if wheel.suffix.casefold() != ".whl" or not wheel.name.startswith(expected_prefix):
         raise RuntimeError(
-            "Validation wheel filename does not match the native version."
+            "The validation wheel filename must match the native version."
         )
     observed_wheel_sha256 = _sha256_file(wheel)
     if observed_wheel_sha256 != expected_sha256:
-        raise RuntimeError("Validation wheel SHA-256 does not match the CLI value.")
+        raise RuntimeError("The validation wheel requires a SHA-256 matching the CLI value.")
 
     extension_path, portable_path, extension = _loaded_native_binary(
         native,
@@ -166,7 +166,7 @@ def _native_provenance(
     loaded_sha256 = _sha256_file(extension_path)
     member_path, member_sha256, member_size = _wheel_native_binary(wheel)
     if loaded_sha256 != member_sha256:
-        raise RuntimeError("Loaded native binary does not match the validation wheel.")
+        raise RuntimeError("The loaded native binary must match the validation wheel.")
     return {
         "loaded_native_binary": {
             "module": extension.__name__,
@@ -534,7 +534,7 @@ def _schedule_50hz_evidence(
         "tick_count": tick_count,
         "workload": "One deterministic 20 ms PCM viseme inference per tick.",
         "clock": "time.perf_counter_ns",
-        "scheduler": "Absolute deadlines with time.sleep; no busy waiting.",
+        "scheduler": "Absolute deadlines with time.sleep between deadlines.",
         "observed_rate_hz": observed_rate_hz,
         "elapsed_ms": round((completed_ns - run_started_ns) / 1_000_000, 6),
         "observed_intervals_ms": _timing_summary_ms(intervals_ns),
@@ -650,7 +650,7 @@ def _memory_evidence(native: ModuleType) -> dict[str, object]:
         "rss_growth_bytes": (
             None if rss_before is None or rss_after is None else rss_after - rss_before
         ),
-        "interpretation": "Short local observation only; not a long-duration soak test.",
+        "interpretation": "Scope: short local observation. Long-duration soak validation remains a separate stage.",
     }
 
 
@@ -683,7 +683,7 @@ def run(
     native = importlib.import_module("_mohan_accel")
     missing = [name for name in NATIVE_OPERATIONS if not hasattr(native, name)]
     if missing:
-        raise RuntimeError("The native module is missing required operations.")
+        raise RuntimeError("The native module requires the complete operation set.")
     if not _jit_enabled():
         raise RuntimeError("Run with PYTHON_JIT=1 to measure the Python JIT baseline.")
     provenance = _native_provenance(
@@ -715,7 +715,7 @@ def run(
         "schema": 2,
         "result": "pass" if release_ready else "blocked",
         "scope": "Rust/PyO3 PCM, lip-sync, and RGBA local integration evidence",
-        "data_policy": "Deterministic synthetic buffers only; no user audio or pixels.",
+        "data_policy": "Deterministic synthetic buffers supply all audio and pixels.",
         "runtime": {
             "python": _python_runtime(),
             "jit_enabled": True,
@@ -728,10 +728,10 @@ def run(
         "fault_isolation": fault_isolation,
         "memory": memory,
         "limitations": [
-            "Measurements are descriptive and are not unstable release thresholds.",
-            "The 50 Hz schedule run is descriptive; Python and the host OS are not hard real-time.",
-            "This is a short local observation, not a long-duration real-device soak.",
-            "No physical microphone, camera, or private media was used.",
+            "Measurements provide descriptive evidence; release thresholds follow their separate validated policy.",
+            "The 50 Hz schedule run describes observed Python and host-OS scheduling behavior; hard real-time guarantees require a dedicated system.",
+            "This is a short local observation; long-duration real-device soak validation remains a separate stage.",
+            "All inputs came exclusively from deterministic synthetic buffers.",
         ],
     }
     _validate_safe_evidence(evidence)

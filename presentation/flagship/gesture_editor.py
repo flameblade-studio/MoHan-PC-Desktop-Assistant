@@ -184,9 +184,9 @@ class FlagshipGestureEditorMixin:
         if not custom:
             status = self._t("內建手勢使用已稽核的偵測器，不需錄製。")
         elif recorder_available:
-            status = self._t("可錄製手部特徵；不保存照片或影像。")
+            status = self._t('錄製僅保存手部特徵資料。')
         else:
-            status = self._t("目前沒有可用的手部 landmark 訊號，無法安全錄製。")
+            status = self._t('請先取得穩定的手部 landmark 訊號，再開始安全錄製。')
         self.gesture_record_status.setText(status)
         self.gesture_action.setEnabled(available)
         self.gesture_definition_enabled.setEnabled(available)
@@ -250,12 +250,12 @@ class FlagshipGestureEditorMixin:
             return
         if not self._gesture_recorder.available():
             self.gesture_record_status.setText(
-                self._t("目前沒有可用的手部 landmark 訊號，無法安全錄製。")
+                self._t('請先取得穩定的手部 landmark 訊號，再開始安全錄製。')
             )
             return
         sample = self._gesture_recorder.record(definition.gesture_id)
         if sample is None:
-            self.gesture_record_status.setText(self._t("錄製已取消，沒有保存任何資料。"))
+            self.gesture_record_status.setText(self._t('錄製已取消，既有保存資料維持原樣。'))
             return
         self._gesture_draft.update_definition(
             replace(definition, samples=(*definition.samples, sample))

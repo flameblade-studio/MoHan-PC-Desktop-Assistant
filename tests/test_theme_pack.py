@@ -116,7 +116,7 @@ def run() -> None:
         except ThemePackError:
             pass
         else:
-            raise AssertionError("an active theme must not be removable")
+            raise AssertionError('an active theme must remain installed')
         restore_builtin_theme(root / "store")
         assert json.loads(
             (root / "store" / "active.json").read_text(encoding="utf-8")
@@ -128,7 +128,7 @@ def run() -> None:
         except ThemePackError:
             pass
         else:
-            raise AssertionError("the built-in theme must not be removable")
+            raise AssertionError('the built-in theme must remain installed')
 
         missing_store = root / "missing-store"
         missing_store.mkdir()

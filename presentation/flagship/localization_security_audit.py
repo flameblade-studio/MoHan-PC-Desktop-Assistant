@@ -43,14 +43,10 @@ SECURITY_AUDIT_TRANSLATIONS: TranslationCatalog = frozendict({
     "保存安全權限": translations(
         "保存安全权限", "Save security permissions", "セキュリティ権限を保存"
     ),
-    "付款、購買、密碼匯出、停用安全防護、任意 PowerShell／管理員命令"
-    "永遠禁止自動執行，無法由此頁解除。": translations(
-        "付款、购买、密码导出、停用安全防护、任意 PowerShell／管理员命令"
-        "始终禁止自动执行，无法在此页面解除。",
-        "Payments, purchases, password exports, disabling safeguards, arbitrary PowerShell, "
-        "and administrator commands can never run automatically and cannot be enabled here.",
-        "支払い、購入、パスワードの書き出し、安全保護の無効化、任意の PowerShell／管理者コマンドは"
-        "常に自動実行禁止で、この画面から解除できません。",
+    '付款、購買、密碼匯出、停用安全防護及任意 PowerShell／管理員命令，永久排除於自動執行範圍；本頁持續遵守此界線。': translations(
+        '付款、购买、密码导出、停用安全防护及任意 PowerShell／管理员命令，永久排除于自动执行范围；本页持续遵守此界限。',
+        'Payments, purchases, password export, security disabling, and arbitrary PowerShell or administrator commands remain permanently outside automatic execution. This page preserves that boundary.',
+        '支払い、購入、パスワード書き出し、安全保護の停止、任意の PowerShell・管理者コマンドは自動実行の対象から永久に除外します。このページもその境界を維持します。',
     ),
     "選擇允許墨寒操作的資料夾": translations(
         "选择允许墨寒操作的文件夹",
@@ -116,7 +112,7 @@ SECURITY_AUDIT_TRANSLATIONS: TranslationCatalog = frozendict({
     "重新整理": translations("刷新", "Refresh", "更新"),
     "<p>尚無工具操作紀錄。</p>": translations(
         "<p>尚无工具操作记录。</p>",
-        "<p>No tool activity has been recorded.</p>",
+        "<p>Tool activity is ready to be recorded.</p>",
         "<p>ツール操作の記録はまだありません。</p>",
     ),
     "高風險操作二次確認": translations(
@@ -161,7 +157,7 @@ SECURITY_AUDIT_TRANSLATIONS: TranslationCatalog = frozendict({
     ),
     "剪貼簿文字不可超過 100,000 字": translations(
         "剪贴板文本不可超过 100,000 字",
-        "Clipboard text cannot exceed 100,000 characters",
+        "Clipboard text supports up to 100,000 characters",
         "クリップボードのテキストは 100,000 文字を超えられません",
     ),
     "已讀取 {count} 封郵件摘要": translations(
@@ -238,15 +234,15 @@ SECURITY_AUDIT_TRANSLATIONS: TranslationCatalog = frozendict({
         "Execution was not authorized by the user",
         "ユーザーが実行を許可しませんでした",
     ),
-    "尚未安裝此工具的執行器": translations(
-        "尚未安装此工具的执行器",
-        "No executor is installed for this tool",
-        "このツールの実行機能はインストールされていません",
+    '請安裝此工具的執行器': translations(
+        '请安装此工具的执行器',
+        'Install the executor for this tool',
+        'このツールの実行器をインストールしてください',
     ),
-    "工具回報完成，但結果驗證未通過": translations(
-        "工具报告完成，但结果验证未通过",
-        "The tool reported completion, but result verification failed",
-        "ツールは完了を報告しましたが、結果検証に失敗しました",
+    '工具回報完成；結果驗證需要處理': translations(
+        '工具报告完成；结果验证需要处理',
+        'The tool reported completion; result verification requires attention',
+        'ツールは完了を報告しました。結果検証への対応が必要です',
     ),
     "已開啟網站": translations(
         "已打开网站", "Website opened", "Web サイトを開きました"
@@ -283,29 +279,29 @@ SECURITY_AUDIT_TRANSLATIONS: TranslationCatalog = frozendict({
     "已執行 {value}": translations(
         "已执行 {value}", "Executed {value}", "{value} を実行しました"
     ),
-    "工具執行失敗：{detail}": translations(
-        "工具执行失败：{detail}",
-        "Tool execution failed: {detail}",
-        "ツール実行に失敗しました：{detail}",
+    '工具執行需要處理：{detail}': translations(
+        '工具执行需要处理：{detail}',
+        'Tool execution requires attention: {detail}',
+        'ツール実行への対応が必要です：{detail}',
     ),
     # Policy reasons are internal canonical values translated only at display time.
-    "此能力永不允許自動執行": translations(
-        "此能力永不允许自动执行",
-        "This capability can never run automatically",
-        "この機能は自動実行できません",
+    '此能力永久排除於自動執行範圍': translations(
+        '此能力永久排除于自动执行范围',
+        'This capability stays permanently outside automatic execution',
+        'この機能は自動実行の対象から永久に除外します',
     ),
     "未知的指令來源": translations(
-        "未知的指令来源", "Unknown command source", "指示の送信元が不明です"
+        "未知的指令来源", "Use a recognized command source", "指示の送信元が不明です"
     ),
     "目標位於受保護路徑": translations(
         "目标位于受保护路径",
         "The target is in a protected path",
         "対象は保護されたパスにあります",
     ),
-    "權限設定為禁止": translations(
-        "权限设置为禁止",
-        "Permission is set to Blocked",
-        "権限が「禁止」に設定されています",
+    '權限維持封鎖': translations(
+        '权限保持封锁',
+        'Permission remains blocked',
+        '権限によるブロックを維持',
     ),
     "通過本機權限政策": translations(
         "通过本机权限策略",

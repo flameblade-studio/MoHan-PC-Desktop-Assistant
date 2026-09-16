@@ -16,11 +16,10 @@ class StudioDBAffectionMethods:
     """
 
     def affection_row(self) -> sqlite3.Row | None:
-        """Return the most recent companion-affection row, or None if unset.
+        """Return the most recent companion-affection row, or the sentinel if unset.
 
         Ruling 2026-08-27: the historical write path INSERTed a new row per
-        interaction while this read returned the OLDEST row, so persisted
-        affection never took effect.  Reading the newest row also repairs
+        interaction while this read returned the OLDEST row, so persisted affection stayed at its initial row.  Reading the newest row also repairs
         databases that already accumulated one row per interaction.
         """
         return self.conn.execute(
@@ -40,8 +39,7 @@ class StudioDBAffectionMethods:
         """Persist the companion's exclusive-favor coefficients atomically.
 
         A true upsert against the newest row: UPDATE it in place, INSERT only
-        when the table is empty.  The historical INSERT-per-call grew the
-        table without bound and (with the oldest-row read) froze the visible
+        when the table has zero rows.  The historical INSERT-per-call grew the table beyond its intended bound and (with the oldest-row read) froze the visible
         affection at its first-ever value.
         """
         updated_at = local_wall_time().isoformat(timespec="seconds")

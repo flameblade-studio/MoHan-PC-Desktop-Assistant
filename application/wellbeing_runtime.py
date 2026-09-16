@@ -58,7 +58,7 @@ class RuntimePolicies:
 
 
 # Expected failures from user-replaceable clocks and variation strategies.  A
-# programming error outside these boundary failures must remain visible.
+# programming issues outside these boundary results remain visible.
 _CALLBACK_ERRORS: Final = (
     LookupError,
     OSError,
@@ -103,13 +103,13 @@ class RuntimeCue:
 
     def __post_init__(self) -> None:
         if not self.stable_id or not self.line_key or not self.delivery_token:
-            raise ValueError("Runtime cue identifiers cannot be empty.")
+            raise ValueError("Runtime cue identifiers require content.")
         if self.variation_index < 0:
-            raise ValueError("Runtime cue variation cannot be negative.")
+            raise ValueError("Runtime cue variation accepts zero or greater.")
 
 
 class WellbeingRuntimeError(RuntimeError):
-    """A safe runtime-boundary error without backend or phrase content."""
+    """A safe runtime-boundary result while keeping backend and phrase content private."""
 
 
 class WellbeingRuntime:
@@ -125,7 +125,7 @@ class WellbeingRuntime:
     ) -> None:
         resolved_policies = policies or RuntimePolicies()
         if not isinstance(resolved_policies, RuntimePolicies):
-            raise TypeError("Runtime policies are invalid.")
+            raise TypeError("Runtime policies need supported values.")
         self._wellbeing_store = wellbeing_store
         self._occasion_store = occasion_store
         self._clock = clock
@@ -257,7 +257,7 @@ class WellbeingRuntime:
                 return self._record_wellbeing(runtime_cue, now)
             if runtime_cue.source is RuntimeSource.SPECIAL_OCCASION:
                 return self._record_occasion(runtime_cue, now)
-            raise WellbeingRuntimeError("Runtime cue source is invalid.")
+            raise WellbeingRuntimeError("Runtime cue source needs a supported value.")
 
     def acknowledge_wellbeing(self, kind: WellbeingKind) -> None:
         self._respond_wellbeing(kind, ReminderResponse.ACKNOWLEDGED)
@@ -304,16 +304,16 @@ class WellbeingRuntime:
         try:
             variation = self._variation(line_key, stable_id)
         except _CALLBACK_ERRORS:
-            raise WellbeingRuntimeError("Cue variation selection failed.") from None
+            raise WellbeingRuntimeError("Cue variation selection requires attention; retry the operation.") from None
         if type(variation) is not int or variation < 0:
-            raise WellbeingRuntimeError("Cue variation selection is invalid.")
+            raise WellbeingRuntimeError("Cue variation selection needs a supported value.")
         token = _delivery_token(source, stable_id, line_key, variation)
         return RuntimeCue(source, stable_id, line_key, variation, cue, token)
 
     def _record_wellbeing(self, runtime_cue: RuntimeCue, now: datetime) -> bool:
         cue = runtime_cue.cue
         if not isinstance(cue, WellbeingCue):
-            raise WellbeingRuntimeError("Wellbeing cue type is invalid.")
+            raise WellbeingRuntimeError("Wellbeing cue type needs a supported value.")
         if runtime_cue.stable_id != _wellbeing_event_id(now, cue.kind):
             return False
         state = self._wellbeing_store.load(now)
@@ -341,14 +341,14 @@ class WellbeingRuntime:
                 last_same_kind_reinforcement_at=now,
             )
         else:
-            raise WellbeingRuntimeError("Wellbeing cue stage is invalid.")
+            raise WellbeingRuntimeError("Wellbeing cue stage needs a supported value.")
         self._wellbeing_store.save(updated)
         return True
 
     def _record_occasion(self, runtime_cue: RuntimeCue, now: datetime) -> bool:
         cue = runtime_cue.cue
         if not isinstance(cue, OccasionCue):
-            raise WellbeingRuntimeError("Special occasion cue type is invalid.")
+            raise WellbeingRuntimeError("Special occasion cue type needs a supported value.")
         if runtime_cue.stable_id != _occasion_event_id(now, cue.kind):
             return False
         state = self._occasion_store.load(now)
@@ -368,7 +368,7 @@ class WellbeingRuntime:
                 state, cue.kind, grumble_delivered_at=now
             )
         else:
-            raise WellbeingRuntimeError("Special occasion cue stage is invalid.")
+            raise WellbeingRuntimeError("Special occasion cue stage needs a supported value.")
         self._occasion_store.save(updated)
         return True
 
@@ -394,21 +394,21 @@ class WellbeingRuntime:
 
     def _validate_runtime_cue(self, runtime_cue: RuntimeCue) -> None:
         if not isinstance(runtime_cue, RuntimeCue):
-            raise WellbeingRuntimeError("Runtime cue is invalid.")
+            raise WellbeingRuntimeError("Runtime cue needs a supported value.")
         if runtime_cue.source is RuntimeSource.WELLBEING:
             cue = runtime_cue.cue
             if not isinstance(cue, WellbeingCue) or runtime_cue.line_key != (
                 wellbeing_phrase_key(cue.kind, cue.stage)
             ):
-                raise WellbeingRuntimeError("Runtime cue integrity validation failed.")
+                raise WellbeingRuntimeError("Runtime cue integrity validation requires attention; retry the operation.")
         elif runtime_cue.source is RuntimeSource.SPECIAL_OCCASION:
             cue = runtime_cue.cue
             if not isinstance(cue, OccasionCue) or runtime_cue.line_key != (
                 occasion_phrase_key(cue.kind, cue.stage)
             ):
-                raise WellbeingRuntimeError("Runtime cue integrity validation failed.")
+                raise WellbeingRuntimeError("Runtime cue integrity validation requires attention; retry the operation.")
         else:
-            raise WellbeingRuntimeError("Runtime cue source is invalid.")
+            raise WellbeingRuntimeError("Runtime cue source needs a supported value.")
         expected = _delivery_token(
             runtime_cue.source,
             runtime_cue.stable_id,
@@ -416,13 +416,13 @@ class WellbeingRuntime:
             runtime_cue.variation_index,
         )
         if runtime_cue.delivery_token != expected:
-            raise WellbeingRuntimeError("Runtime cue integrity validation failed.")
+            raise WellbeingRuntimeError("Runtime cue integrity validation requires attention; retry the operation.")
 
     def _now(self) -> datetime:
         try:
             now = self._clock()
         except _CALLBACK_ERRORS:
-            raise WellbeingRuntimeError("Runtime clock failed.") from None
+            raise WellbeingRuntimeError("Runtime clock requires attention; retry the operation.") from None
         if not isinstance(now, datetime) or now.tzinfo is None:
             raise WellbeingRuntimeError("Runtime clock must be timezone-aware.")
         return now

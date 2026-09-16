@@ -45,8 +45,10 @@ def assert_tabs_and_defaults(center: FlagshipControlCenter) -> None:
     assert center.camera_enabled.isChecked() is False
     assert center.face_identity.isEnabled() is False
     assert center.ha_enabled.isChecked() is False
-    assert center._permission_controls["delete_file"].currentText() == "禁止"
-    assert center._permission_controls["home_lock"].currentText() == "禁止"
+    assert center._permission_controls["delete_file"].currentText() == "封鎖"
+    assert center._permission_controls["delete_file"].currentData() == "禁止"
+    assert center._permission_controls["home_lock"].currentText() == "封鎖"
+    assert center._permission_controls["home_lock"].currentData() == "禁止"
     assert center._permission_controls["email_send"].currentText() == "每次詢問"
 
 
@@ -264,7 +266,7 @@ def assert_service_shutdown(
     assert not center.workflow_timer.isActive()
     assert not center.planner_timeout.isActive()
     db.close()
-    center._refresh_screen_cache()  # must not touch the closed database
+    center._refresh_screen_cache()  # preserve the closed database lifecycle boundary
     center.deleteLater()
     app.processEvents()
 

@@ -203,7 +203,7 @@ def assert_publish_failure_restores_lkg() -> None:
     except RuntimeError as error:
         assert str(error) == "publish failed"
     else:
-        raise AssertionError("Publisher failure must remain visible.")
+        raise AssertionError('Publisher errors must remain visible.')
     assert adapter.current_frame == good
     assert publisher.frames[-1] == good
 

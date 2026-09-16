@@ -180,7 +180,7 @@ def _assert_platform_detection() -> None:
     except RuntimeError:
         pass
     else:
-        raise AssertionError("generic posix must not be misidentified as Linux")
+        raise AssertionError('generic posix must retain its own platform identity')
 
 
 def _assert_autostart_fails_closed(
@@ -353,7 +353,7 @@ def _assert_linux_dashboard_fails_closed(
         assert path.resolve() in protected
 
     center._cloud_connected("google", {"access_token": "test-value"})
-    assert "無法安全保存" in center.cloud_status.text()
+    assert "請檢查設定後安全保存 OAuth 權杖" in center.cloud_status.text()
     assert services.db.connector("google") is None
     center.ha_url.setText("http://homeassistant.local:8123")
     center.ha_token.setText("test-value")
@@ -424,7 +424,7 @@ def run() -> None:
     # Taiwan Windows defaults remain Yating first, then Hanhan.
     _assert_windows_voice_contract()
     _assert_autostart_delegation()
-    # Platform-only modules must never load eagerly from core modules.
+    # Core modules load platform-only modules lazily at their usage boundary.
     _assert_platform_modules_are_lazy()
     _assert_core_modules_import()
     # Non-Windows composition must fail closed for secrets and system speech.

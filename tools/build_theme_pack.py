@@ -16,7 +16,7 @@ COMPRESSION_LEVEL = 9
 
 
 class ThemePackBuildError(RuntimeError):
-    """A safe, user-facing build failure that never includes specification data."""
+    """A user-facing build error containing only a safe diagnostic, with specification data kept private."""
 
 
 def _load_spec(path: Path) -> dict[str, object]:
@@ -130,7 +130,7 @@ def build_theme_pack(
             )
             theme = inspect_theme_pack(temporary_path)
             # Windows requires a writable descriptor for ``os.fsync``.  Open
-            # the completed archive without truncating it so the same durable
+            # the completed archive while preserving its content so the same durable
             # atomic-publication path works on every supported platform.
             with temporary_path.open("rb+") as archive_file:
                 os.fsync(archive_file.fileno())

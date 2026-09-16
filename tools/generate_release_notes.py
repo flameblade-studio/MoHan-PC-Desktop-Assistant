@@ -8,8 +8,8 @@ This tool turns the section for one version into a
 four-section layout (``## 繁體中文``, ``## 简体中文``, ``## English``,
 ``## 日本語``) and satisfies ``tools/check_four_language_docs.py``.
 
-An existing notes file is never overwritten: human polish always wins, and the
-tool exits successfully so the release workflow can call it unconditionally.
+An existing notes file is preserved: human polish remains authoritative, and
+the tool exits successfully so the release workflow can call it unconditionally.
 
 A bullet is only distributed across the four language sections when it splits
 into exactly four non-empty parts whose inline-code tokens, link targets, and
@@ -80,7 +80,7 @@ DOWNLOAD_GUIDANCE = (
         "> **通常のご利用では、ファイル名が `Windows-x64-Setup.exe` で終わる"
         "インストーラのみで十分です。** 残りの資産はポータブル ZIP と MSI、"
         "macOS と Linux の Preview、そして SBOM・ハッシュ・性能証跡といった"
-        "サプライチェーン検証用のファイルであり、日常利用では不要です。"
+        "サプライチェーン検証を行う際に使用するファイルです。"
     ),
 )
 DRAFT_NOTES = (
@@ -97,13 +97,13 @@ DRAFT_NOTES = (
     ),
 )
 EMPTY_NOTES = (
-    "本版沒有可自動擷取的變更條目；詳細內容請參閱 CHANGELOG。",
-    "本版本没有可自动提取的变更条目；详细内容请参阅 CHANGELOG。",
+    "本版自動擷取的變更清單為空；詳細內容請參閱 CHANGELOG。",
+    "本版本自动提取的变更列表为空；详细内容请参阅 CHANGELOG。",
     (
-        "No changelog entries could be extracted automatically for this "
+        "The automatically extracted change list is empty for this "
         "version; see the CHANGELOG for details."
     ),
-    "本バージョンでは自動抽出できる変更項目がありません。詳細は CHANGELOG を参照してください。",
+    "本バージョンの自動抽出リストは空です。変更内容は CHANGELOG で確認できます。",
 )
 GENERIC_SECTION = ("其他變更", "其他变更", "Other changes", "その他の変更")
 # Release Please's default English changelog section names, mapped to the
@@ -242,7 +242,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
             "Generate a four-language docs/releases draft from CHANGELOG.md; "
-            "an existing notes file is never overwritten."
+            "existing notes files are preserved."
         )
     )
     parser.add_argument("--version", required=True, help="Release version, e.g. 4.5.0")

@@ -78,7 +78,7 @@ def test_provenance_contract_is_complete_immutable_and_four_language() -> None:
 
 @pytest.mark.parametrize("filename", tuple(EXPECTED))
 def test_actual_hand_model_asset_gate(filename: str) -> None:
-    """A skipped asset gate is explicitly incomplete, never a provenance pass."""
+    """A skipped asset gate retains an explicit incomplete provenance status."""
 
     path = ASSET_ROOT / filename
     if not path.is_file():

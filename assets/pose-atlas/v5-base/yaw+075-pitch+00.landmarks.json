@@ -2,63 +2,82 @@
   "height": 1536,
   "landmarks": {
     "crown": [
-      570,
-      91
+      518,
+      84
     ],
     "left_ankle": [
-      496,
-      1406
+      462,
+      1373
     ],
     "left_heel": [
-      489,
-      1490
+      460,
+      1457
     ],
     "left_hip": [
-      579,
-      878
+      543,
+      856
     ],
     "left_knee": [
-      531,
-      1188
+      503,
+      1160
     ],
     "left_sole": [
-      496,
-      1496
+      462,
+      1463
     ],
     "left_toe": [
-      503,
-      1490
+      465,
+      1457
     ],
     "right_ankle": [
-      476,
-      1406
+      443,
+      1373
     ],
     "right_heel": [
-      474,
-      1490
+      437,
+      1457
     ],
     "right_hip": [
-      444,
-      878
+      432,
+      856
     ],
     "right_knee": [
-      460,
-      1187
+      449,
+      1160
     ],
     "right_sole": [
-      476,
-      1496
+      443,
+      1463
     ],
     "right_toe": [
-      478,
-      1490
+      449,
+      1457
     ]
   },
   "measurement": {
     "method": "normalized-alpha-silhouette-registration",
     "occlusion_policy": "no_coordinates_are invented for an occluded side",
-    "source_sha256": "56ff7eef2f024157b88c40ee80707804648ea4b09e0cc9be4d6b5b97b397cda0",
-    "target_subject_height": 1406
+    "source_sha256": "5ce8a24a7105f968bbd3bc3116740f7604a6ce76f6592b572bdc3fc5a29d277b",
+    "target_subject_height": 1380
+  },
+  "native_face_landmarks": {
+    "artifact": {
+      "path": "assets/pose-atlas/v5-base/yaw+075-pitch+00.native-landmarks.json",
+      "sha256": "95e80912eff4cf280cc0e02c5fd5a059113ab9a612dd34e2f9b544695edc07fc"
+    },
+    "confidence": 0.9489820003509521,
+    "coordinates": "normalized_xy_plus_relative_z",
+    "existing_artifact": "assets/pose-atlas/v5-base/yaw+075-pitch+00.native-landmarks.json",
+    "landmark_count": 478,
+    "size": [
+      1024,
+      1536
+    ],
+    "source": {
+      "path": "assets/pose-atlas/v5-base/yaw+075-pitch+00.png",
+      "sha256": "5ce8a24a7105f968bbd3bc3116740f7604a6ce76f6592b572bdc3fc5a29d277b"
+    },
+    "status": "existing_native_verified_same_source_probe"
   },
   "occluded_landmarks": [],
   "schema_version": 2,

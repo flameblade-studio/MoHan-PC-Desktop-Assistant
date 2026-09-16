@@ -41,7 +41,7 @@ def _method_source(path: Path, class_name: str, method_name: str) -> str:
                     segment = ast.get_source_segment(_source(path), item)
                     assert segment is not None
                     return segment
-    raise AssertionError(f"{class_name}.{method_name} not found in {path.name}")
+    raise AssertionError(f'{class_name}.{method_name} requires a definition in {path.name}')
 
 
 def test_speech_runtime_reads_typed_performance_preferences() -> None:
@@ -51,7 +51,7 @@ def test_speech_runtime_reads_typed_performance_preferences() -> None:
         "_record_speech_performance",
     )
     assert "_current_performance_preferences" in source
-    # The retired ad-hoc reads must not come back with their all-True defaults.
+    # Readers use the typed preference stores and their current defaults.
     assert "performance_proactive_body_enabled" not in source
     assert "performance_360_view_enabled" not in source
 
@@ -80,7 +80,7 @@ def test_voice_volume_default_is_the_shared_constant() -> None:
     assert DEFAULT_VOICE_VOLUME_PERCENT == expected_volume_percent
     for path in (CORE_PATH, VOICE_PATH):
         source = _source(path)
-        # No reader may keep a private numeric default for the volume.
+        # Every volume reader uses the shared numeric default.
         assert '"voice_volume_percent", 100' not in source
         assert '"voice_volume_percent", 125' not in source
         assert (

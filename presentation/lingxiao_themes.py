@@ -197,7 +197,7 @@ def palette_for_theme(
 
 
 def theme_contrast_failures(theme: LingxiaoTheme) -> tuple[tuple[str, str, float], ...]:
-    """Return any failed token pairs so tests and diagnostics share one rule."""
+    """Return any requires attention token pairs so tests and diagnostics share one rule."""
 
     failures: list[tuple[str, str, float]] = []
     for palette in (theme.palette, theme.high_contrast_palette):

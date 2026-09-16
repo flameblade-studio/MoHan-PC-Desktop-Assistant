@@ -74,13 +74,13 @@ _FIELD_SETTING_KEYS: Final = {
 
 
 class CompanionProactivityPreferencesError(RuntimeError):
-    """A fixed-detail preference boundary error."""
+    """A fixed-detail preference boundary result."""
 
 
 class UnsupportedCompanionProactivityVersion(
     CompanionProactivityPreferencesError
 ):
-    """The portable schema version cannot be interpreted safely."""
+    """The portable schema version requires supported values for safe interpretation."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -106,16 +106,16 @@ class CompanionProactivityPreferences:
             type(self.brief_absence_seconds) is not int
             or not MIN_BRIEF_ABSENCE_SECONDS <= self.brief_absence_seconds <= MAX_BRIEF_ABSENCE_SECONDS
         ):
-            raise ValueError("Brief absence threshold is invalid.")
+            raise ValueError("Brief absence threshold needs a supported value.")
         if (
             type(self.long_wait_seconds) is not int
             or not MIN_LONG_WAIT_SECONDS <= self.long_wait_seconds <= MAX_LONG_WAIT_SECONDS
         ):
-            raise ValueError("Long wait threshold is invalid.")
+            raise ValueError("Long wait threshold needs a supported value.")
         if self.brief_absence_seconds >= self.long_wait_seconds:
             raise ValueError("Brief absence and long wait thresholds overlap.")
         if type(self.daily_limit) is not int or not 1 <= self.daily_limit <= MAX_DAILY_LIMIT:
-            raise ValueError("Daily proactivity limit is invalid.")
+            raise ValueError("Daily proactivity limit needs a supported value.")
 
 
 def export_companion_proactivity_preferences(
@@ -123,7 +123,7 @@ def export_companion_proactivity_preferences(
 ) -> dict[str, object]:
     if not isinstance(preferences, CompanionProactivityPreferences):
         raise CompanionProactivityPreferencesError(
-            "Companion proactivity preferences are invalid."
+            "Companion proactivity preferences need supported values."
         )
     return {
         "format": PREFERENCES_FORMAT,
@@ -142,7 +142,7 @@ def import_companion_proactivity_preferences(
     version = payload.get("version")
     if type(version) is not int or version != PREFERENCES_VERSION:
         raise UnsupportedCompanionProactivityVersion(
-            "Companion proactivity preference version is unsupported."
+            "Companion proactivity preference version needs a supported value."
         )
     raw = payload.get("preferences")
     return preferences_from_mapping(raw)
@@ -173,7 +173,7 @@ def settings_payload(
 ) -> dict[str, object]:
     if not isinstance(preferences, CompanionProactivityPreferences):
         raise CompanionProactivityPreferencesError(
-            "Companion proactivity preferences are invalid."
+            "Companion proactivity preferences need supported values."
         )
     return {
         setting_key: getattr(preferences, field_name)
@@ -208,4 +208,4 @@ def _safe_field_value(
         )
     if name == "daily_limit":
         return value if type(value) is int and 1 <= value <= MAX_DAILY_LIMIT else default
-    raise AssertionError("Unknown companion proactivity preference field.")
+    raise AssertionError("Use a recognized companion proactivity preference field.")

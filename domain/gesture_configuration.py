@@ -109,7 +109,7 @@ class GestureBinding:
 
 @dataclass(frozen=True, slots=True)
 class GestureLandmark:
-    """One normalized hand point; no image or identifying pixels are retained."""
+    """One normalized hand point; image and identifying pixels stay outside the value."""
 
     x: float
     y: float
@@ -117,7 +117,7 @@ class GestureLandmark:
 
     def __post_init__(self) -> None:
         if not all(math.isfinite(value) and MIN_COORDINATE <= value <= MAX_COORDINATE for value in (self.x, self.y, self.z)):
-            raise ValueError("Gesture landmark coordinates are invalid.")
+            raise ValueError("Gesture landmark coordinates need supported values.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -144,9 +144,9 @@ class GestureDefinition:
         if not identifier or len(identifier) > MAX_NAME_LENGTH or not name or len(name) > MAX_NAME_LENGTH:
             raise ValueError("Gesture identity and display name must be short and explicit.")
         if any(character.isspace() for character in identifier):
-            raise ValueError("Gesture identifiers cannot contain whitespace.")
+            raise ValueError("Gesture identifiers use compact text.")
         if not isinstance(self.source, GestureSource) or type(self.enabled) is not bool:
-            raise TypeError("Gesture source and enabled state are invalid.")
+            raise TypeError("Gesture source and enabled state need supported values.")
         if self.source is GestureSource.BUILTIN:
             if identifier not in BUILTIN_GESTURE_LABELS or self.samples:
                 raise ValueError("Built-in gestures use the audited detector catalog.")
@@ -242,7 +242,7 @@ class GestureConfiguration:
     def replace_definition(self, updated: GestureDefinition) -> Self:
         current = self.definition(updated.gesture_id)
         if current.source is not updated.source:
-            raise ValueError("Gesture source cannot change during an edit.")
+            raise ValueError("Gesture source stays fixed during an edit.")
         return replace(
             self,
             definitions=tuple(
@@ -275,7 +275,7 @@ class GestureConfiguration:
             None,
         )
         if match is None:
-            raise KeyError("Unknown gesture identifier.")
+            raise KeyError("Use a recognized gesture identifier.")
         return match
 
 
@@ -285,7 +285,7 @@ def export_gesture_configuration(
     include_samples: bool = False,
 ) -> dict[str, object]:
     if not isinstance(configuration, GestureConfiguration):
-        raise TypeError("Gesture configuration is invalid.")
+        raise TypeError("Gesture configuration needs a supported value.")
     if type(include_samples) is not bool:
         raise TypeError("Gesture sample export policy must be boolean.")
     return {
@@ -311,11 +311,11 @@ def import_gesture_configuration(
     if payload.get("format") != GESTURE_CONFIGURATION_FORMAT:
         return GestureConfiguration()
     if payload.get("version") != GESTURE_CONFIGURATION_VERSION:
-        raise ValueError("Gesture configuration version is unsupported.")
+        raise ValueError("Gesture configuration version needs a supported value.")
     try:
         enabled = payload.get("enabled", False)
         if type(enabled) is not bool:
-            raise TypeError("Gesture enabled state is invalid.")
+            raise TypeError("Gesture enabled state needs a supported value.")
         raw_definitions = payload.get("definitions", ())
         if not isinstance(raw_definitions, Sequence) or isinstance(raw_definitions, (str, bytes)):
             raise TypeError("Gesture definitions must be a sequence.")

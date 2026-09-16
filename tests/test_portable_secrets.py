@@ -107,7 +107,7 @@ def assert_collection_schema_and_empty_filter() -> None:
 def assert_gesture_templates_require_explicit_sensitive_collection() -> None:
     store = MemoryStore("synthetic-protected-gesture-templates")
     assert store.load() == "synthetic-protected-gesture-templates"
-    # General profile export never calls this collector. Once the user explicitly
+    # General profile export uses its own public-field path. Once the user explicitly
     # enables sensitive export, the typed collector includes this ninth store.
     collected = collect_sensitive_payload({"gesture_templates": store})
     assert collected["secrets"] == {
@@ -252,7 +252,7 @@ def assert_incomplete_rollback_is_explicit() -> None:
             {"openai": store},
         )
     )
-    assert "rollback was incomplete" in message
+    assert "rollback require attention" in message
 
 
 def run() -> None:

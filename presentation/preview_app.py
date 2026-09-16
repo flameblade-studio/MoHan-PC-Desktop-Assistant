@@ -122,7 +122,7 @@ _TEXT = deep_freeze({
             "✓ Native-format package and startup smoke test\n"
             "✓ Traditional Chinese, Simplified Chinese, English, and Japanese\n"
             "✓ Per-user paths and explicit platform capabilities\n"
-            "✓ Unsupported capabilities remain safely disabled"
+            "✓ Supported capabilities remain safely disabled"
         ),
         "limited_title": "Full capabilities not yet enabled",
         "limited": (
@@ -132,7 +132,7 @@ _TEXT = deep_freeze({
         ),
         "security_title": "Safety promise",
         "security": (
-            "This Preview exposes no API-key, OAuth, or Home Assistant token "
+            "This Preview does not provide API-key, OAuth, or Home Assistant token "
             "fields. Until native secure storage is verified, MoHan will not "
             "fall back to plaintext or pretend that protected features work."
         ),

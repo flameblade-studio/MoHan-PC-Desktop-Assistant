@@ -1,0 +1,42 @@
+{
+  "schema": "mohan.reviewed-native-garments.v1",
+  "poses": {
+    "cheek-rest": {
+      "native_source_file": "cheek_native_gray_20260914.png",
+      "native_source_sha256": "d73525ef11f63c89d68296666e99fc30814bf7a78600f6db3fa422d8519fed13",
+      "visibility": {
+        "path": "cheek-rest/source-bcc8/body-visibility.png",
+        "sha256": "4c91cae792638863b3f2c2f0119e3fa9e1e99c0ffd74d0ab96d6fc225b8be52d"
+      },
+      "ordered_layers": [
+        {
+          "path": "cheek-rest/source-bcc8/garment-source.rgba.png",
+          "sha256": "0b102914f558dc2c547e41183bc859188db6b340401c609145d902713ec6a8c8"
+        },
+        {
+          "path": "cheek-rest/source-bcc8/native-hands-foreground.rgba.png",
+          "sha256": "59f5fc7c7efc9ddb533aa660e2be016a71c7bedc699f56ffb7ceaf2e6e76f27a"
+        }
+      ],
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_appearance_selections": {
+        "hairstyle": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "loose-hair",
+          "variant_id": "ink-black"
+        },
+        "headwear": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "silver-hairpiece",
+          "variant_id": "silver"
+        }
+      },
+      "motion_required": true,
+      "approved_source_sha256": "1e6a1cfaaca55e37f602f4f1672adbe3dd71df06a42ea359ded40315d7cb6d50"
+    }
+  }
+}

@@ -170,7 +170,7 @@ def evaluate(root: Path, version: str) -> GateResult:
 
 def arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Fail closed when a v4 OpenAI Vision release is not reproducible."
+        description="Require reproducibility for a v4 OpenAI Vision release, retaining fail-closed validation."
     )
     parser.add_argument("--version", required=True)
     parser.add_argument("--root", type=Path, default=ROOT)

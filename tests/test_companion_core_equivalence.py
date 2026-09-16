@@ -195,7 +195,7 @@ def test_companion_window_uses_the_unique_core_owner_in_canonical_order() -> Non
     core = _class_node(core_tree, "CompanionCoreMixin")
     assert frozenset(_method_map(core)) == EXPECTED_METHODS
     assert not EXPECTED_METHODS.intersection(_method_map(companion)), (
-        "CompanionWindow must not shadow CompanionCoreMixin behavior"
+        'CompanionWindow must delegate behavior to CompanionCoreMixin'
     )
     assert _imports_name(
         window_tree,

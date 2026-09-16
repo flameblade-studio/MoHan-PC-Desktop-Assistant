@@ -22,6 +22,7 @@ class FaceRenderLayers:
     mouth_source: QPixmap
     mouth_mask: QPixmap
     mouth_rect: QRect
+    mouth_expression: str | None = None
     blink_source: QPixmap | None = None
     blink_mask: QPixmap | None = None
     blush_source: QPixmap | None = None
@@ -87,9 +88,11 @@ class ParametricFaceRenderer:
         *,
         mask: QPixmap | None = None,
         opacity: float = 1.0,
+        eye_state: str = "rest",
+        view_id: str | None = None,
     ) -> QPixmap:
-        """Compose one registered expression layer without owning its policy."""
-
+        """Compose one registered expression layer while policy stays with the caller."""
+        del eye_state, view_id  # This fallback renderer does not own an appearance stack.
         result = QPixmap(base)
         if mask is None:
             if not source.isNull():
@@ -165,7 +168,7 @@ class ParametricFaceRenderer:
         painter.drawPixmap(0, 0, patch)
         painter.end()
 
-        # Clip again after transformation so sub-pixel motion cannot leak a
+        # Clip again after transformation so sub-pixel motion keeps a
         # photographed rectangular edge onto the face.
         mask_painter = QPainter(transformed)
         mask_painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)

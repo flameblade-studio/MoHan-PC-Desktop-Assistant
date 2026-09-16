@@ -53,7 +53,7 @@ class GestureRuntimeResult:
 
 
 class GestureRuntime:
-    """Coordinate local hand recognition and intent routing without execution."""
+    """Coordinate local hand recognition and intent routing with execution delegated to the caller."""
 
     def __init__(self, *, air_interactions_enabled: bool = True) -> None:
         if type(air_interactions_enabled) is not bool:

@@ -1,16 +1,20 @@
-"""Derive the per-silhouette makeup safe regions from the layered rigs.
+"""Generate the legacy per-silhouette makeup safe regions from layered rigs.
 
-Each slot's region is the union, per side, of the alpha bounding boxes of the
+Each v1 slot region is the union, per side, of the alpha bounding boxes of the
 rig cut-outs that belong to it (``domain.outfit_pack_makeup.SLOT_RIG_LAYERS``),
 dilated by the slot margin and clamped to the canvas.  The four gesture
-silhouettes reuse the front half-body rig.  The result is written to
-``assets/makeup-safe-regions.json``; ``--check`` verifies the committed file.
+silhouettes reuse the front half-body rig.  The generated v1 document is
+written to ``assets/makeup-safe-regions.json``.  An existing v2 document
+contains authored state-specific masks that this legacy generator preserves:
+``--check`` validates those masks in place, while a v1 ``--check`` compares
+the generated text with the document.
 """
 
 from __future__ import annotations
 
 lazy import argparse
 lazy import json
+lazy import re
 lazy import sys
 lazy from pathlib import Path
 
@@ -27,8 +31,17 @@ lazy from domain.outfit_pack_makeup import (
     HALF_BODY_RIGS,
     SAFE_REGION_FILE,
     SAFE_REGION_SCHEMA,
+    SAFE_REGION_SCHEMA_V2,
     SLOT_MARGINS_PX,
     SLOT_RIG_LAYERS,
+    OutfitPackError,
+    load_makeup_safe_regions,
+)
+
+_SCHEMA_RE = re.compile(r'"schema"\s*:\s*"(?P<schema>[^"]+)"')
+_AUTHORED_V2_OVERWRITE_MESSAGE = (
+    "v2 authored masks must be updated through the approved asset workflow; "
+    "the legacy rig-v1 generator preserves them in place."
 )
 
 
@@ -112,13 +125,53 @@ def render(document: dict[str, object]) -> str:
     return json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
 
 
+def _existing_schema(output: Path) -> str | None:
+    """Read only the existing schema marker before any rig work starts."""
+    try:
+        source = output.read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        return None
+    try:
+        document = json.loads(source)
+    except json.JSONDecodeError:
+        document = None
+    if isinstance(document, dict) and isinstance(document.get("schema"), str):
+        return document["schema"]
+    match = _SCHEMA_RE.search(source)
+    return match.group("schema") if match is not None else None
+
+
+def _validate_authored_v2(output: Path) -> int:
+    """Strictly validate an authored v2 document through read-only inspection."""
+    try:
+        load_makeup_safe_regions(output)
+    except (OSError, UnicodeError, OutfitPackError) as error:
+        print(f"INVALID_AUTHORED_V2 {output}: {error}")
+        return 1
+    print(f"VALIDATED_AUTHORED_V2 {output}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--root", type=Path, default=ROOT, help="project root holding assets/")
     parser.add_argument("--output", type=Path, default=None, help=f"defaults to <root>/assets/{SAFE_REGION_FILE}")
-    parser.add_argument("--check", action="store_true", help="fail when the committed document is stale")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help=(
+            "validate existing output; v2 checks authored masks in place; "
+            "v1 compares generated text"
+        ),
+    )
     arguments = parser.parse_args(argv)
     output = arguments.output or arguments.root / "assets" / SAFE_REGION_FILE
+    existing_schema = _existing_schema(output)
+    if existing_schema == SAFE_REGION_SCHEMA_V2:
+        if arguments.check:
+            return _validate_authored_v2(output)
+        print(f"REFUSED_AUTHORED_V2_OVERWRITE {output}: {_AUTHORED_V2_OVERWRITE_MESSAGE}")
+        return 1
     text = render(build_makeup_safe_regions(arguments.root))
     if arguments.check:
         current = output.read_text(encoding="utf-8") if output.is_file() else ""

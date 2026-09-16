@@ -359,7 +359,7 @@ def _headwear_cleanup(mask: np.ndarray, cur: np.ndarray) -> np.ndarray:
 def _safe_prefix(prefix: str) -> Path:
     candidate = Path(prefix)
     if candidate.is_absolute() or ".." in candidate.parts:
-        raise ValueError("prefix 必須是相對且不可離開輸出目錄")
+        raise ValueError("prefix 請使用位於輸出目錄內的相對路徑")
     return candidate
 
 

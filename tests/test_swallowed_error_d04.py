@@ -50,7 +50,7 @@ def assert_bad_schedule_value_notifies() -> None:
         None,
         notify=notices.append,
     )
-    assert notices == ["排程設定無法讀取"]
+    assert notices == ['讀取排程設定需要處理']
 
 
 def assert_bad_version_value_is_unknown() -> None:

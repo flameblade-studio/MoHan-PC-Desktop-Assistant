@@ -120,7 +120,7 @@ def build_hand_asset_evidence(
     asset_root: Path,
     manifest: HandAssetManifestEvidence,
 ) -> HandAssetEvidenceResult:
-    """Audit one real RGBA view without retaining paths or landmarks."""
+    """Audit one real RGBA view while keeping paths and landmarks private."""
 
     identity_issue = _validate_manifest_identity(manifest)
     if identity_issue is not None:

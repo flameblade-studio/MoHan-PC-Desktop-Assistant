@@ -343,7 +343,7 @@ class MemorySettings:
 def test_continuous_authorization_is_saved_opt_in_and_revocable() -> None:
     signature = inspect.signature(OpenAIVisionPreferences.permits_cloud_frame)
     assert "explicit_consent" not in signature.parameters, (
-        "continuous authorization must not retain a per-frame consent parameter"
+        'continuous authorization must use its session-level consent boundary'
     )
 
     settings = MemorySettings()
@@ -420,9 +420,9 @@ def test_cloud_failures_never_block_the_local_path() -> None:
 
 def test_four_language_continuous_authorization_keys_are_complete() -> None:
     required_sources = (
-        "公開版預設關閉。明確啟用並全域保存後即持續授權，直到你主動關閉；系統不會逐幀詢問，狀態始終可見，並可設定配額與成本上限或立即撤銷。本機 OpenCV 不受此設定影響。",
+        '公開版預設關閉。明確啟用並全域保存後，系統沿用持續授權處理所選事件，直到你主動關閉；狀態始終可見，並可設定配額與成本上限或立即撤銷。本機 OpenCV 獨立運作。',
         "允許雲端視覺持續運作",
-        "明確啟用並全域保存後，雲端視覺會依所選事件與用量限制持續運作，直到你主動關閉；系統不會逐幀詢問，狀態始終可見，並可設定配額與成本上限或立即撤銷。原始影像不保存，也不會自動上網。",
+        '明確啟用並全域保存後，雲端視覺依所選事件與用量限制沿用持續授權，直到你主動關閉；狀態始終可見，並可設定配額與成本上限或立即撤銷。原始影像僅供即時處理，網路查詢由你明確決定。',
         "立即關閉雲端視覺",
         "● 雲端視覺持續授權中",
     )

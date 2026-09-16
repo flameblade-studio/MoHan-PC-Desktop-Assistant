@@ -16,7 +16,7 @@ lazy from domain.shy_gaze import (
 
 def test_no_aversion_before_threshold() -> None:
     state = ShyGazeState()
-    # The user looks for a moment, but not long enough to trigger shyness.
+    # The brief gaze stays below the shyness duration threshold.
     assert state.update(gaze_confidence=0.9, now=0.0) is None
     assert state.update(gaze_confidence=0.9, now=STARE_THRESHOLD_SECONDS - 0.5) is None
 
@@ -27,7 +27,7 @@ def test_aversion_triggers_after_sustained_stare() -> None:
     offset = state.update(gaze_confidence=0.9, now=STARE_THRESHOLD_SECONDS)
     assert offset is not None
     x, y = offset
-    # The offset is small and downward, never a large lateral eye-roll.
+    # The offset remains small and downward.
     assert abs(x) == AVERSION_OFFSET_X
     assert y == AVERSION_OFFSET_Y
 

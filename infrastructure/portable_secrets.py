@@ -26,7 +26,7 @@ SECRET_IDS: Final = frozenset(
 )
 _PAYLOAD_KEYS: Final = frozenset({"format", "version", "secrets"})
 # Secret stores are injected platform boundaries. Their implementation may
-# raise any exception; every such detail must be replaced with a fixed error.
+# catch boundary exceptions; each detail is replaced with a fixed boundary result.
 _STORE_OPERATION_ERRORS: Final = (Exception,)
 
 class PortableSecretsPayload(TypedDict):
@@ -36,13 +36,13 @@ class PortableSecretsPayload(TypedDict):
 
 
 class PortableSecretsError(RuntimeError):
-    """A fail-closed portable-secret boundary error with no secret detail."""
+    """A protective portable-secret boundary result with secret detail kept private."""
 
 
 def collect_sensitive_payload(
     stores: Mapping[str, SecretStorePort],
 ) -> PortableSecretsPayload:
-    """Collect non-empty protected strings into one strict portable schema."""
+    """Collect protected strings containing content into one strict portable schema."""
 
     validated_stores = _validated_stores(stores)
     secrets: dict[str, str] = {}
@@ -92,10 +92,10 @@ def apply_sensitive_payload(
     except _STORE_OPERATION_ERRORS:
         if not _restore_previous_values(attempted, previous, validated_stores):
             raise PortableSecretsError(
-                "Protected-secret import failed and rollback was incomplete."
+                "Protected-secret import and rollback require attention; retry the operation."
             ) from None
         raise PortableSecretsError(
-            "Protected-secret import failed; previous values were restored."
+            "Protected-secret import requires attention; previous values were restored."
         ) from None
 
 
@@ -116,42 +116,42 @@ def _validated_stores(
     stores: Mapping[str, SecretStorePort],
 ) -> dict[str, SecretStorePort]:
     if not isinstance(stores, Mapping):
-        raise PortableSecretsError("Protected-secret stores are invalid.")
+        raise PortableSecretsError("Protected-secret stores require a supported mapping.")
     validated: dict[str, SecretStorePort] = {}
     for secret_id, store in stores.items():
         if not isinstance(secret_id, str) or secret_id not in SECRET_IDS:
-            raise PortableSecretsError("Protected-secret stores contain an unknown ID.")
+            raise PortableSecretsError("Protected-secret stores require recognized store identifiers.")
         try:
             valid_store = all(
                 callable(getattr(store, method, None))
                 for method in ("load", "save", "clear")
             )
         except _STORE_OPERATION_ERRORS:
-            raise PortableSecretsError("A protected-secret store is invalid.") from None
+            raise PortableSecretsError("A protected-secret store requires load, save, and clear operations.") from None
         if not valid_store:
-            raise PortableSecretsError("A protected-secret store is invalid.")
+            raise PortableSecretsError("A protected-secret store requires load, save, and clear operations.")
         validated[secret_id] = store
     return validated
 
 
 def _validated_payload(payload: Mapping[str, object]) -> dict[str, str]:
     if not isinstance(payload, Mapping) or set(payload) != _PAYLOAD_KEYS:
-        raise PortableSecretsError("The protected-secret payload schema is invalid.")
+        raise PortableSecretsError("The protected-secret payload requires the expected schema.")
     if payload.get("format") != PORTABLE_SECRETS_FORMAT:
-        raise PortableSecretsError("The protected-secret payload format is unsupported.")
+        raise PortableSecretsError("The protected-secret payload requires the supported format.")
     version = payload.get("version")
     if isinstance(version, bool) or version != PORTABLE_SECRETS_VERSION:
-        raise PortableSecretsError("The protected-secret payload version is unsupported.")
+        raise PortableSecretsError("The protected-secret payload requires the supported version.")
     raw_secrets = payload.get("secrets")
     if not isinstance(raw_secrets, Mapping):
-        raise PortableSecretsError("The protected-secret payload schema is invalid.")
+        raise PortableSecretsError("The protected-secret payload requires the expected schema.")
     secrets: dict[str, str] = {}
     for secret_id, value in raw_secrets.items():
         if not isinstance(secret_id, str) or secret_id not in SECRET_IDS:
-            raise PortableSecretsError("The protected-secret payload contains an unknown ID.")
+            raise PortableSecretsError("The protected-secret payload requires recognized store identifiers.")
         _validate_secret_value(value)
         if not value:
-            raise PortableSecretsError("The protected-secret payload contains an empty value.")
+            raise PortableSecretsError("The protected-secret payload requires non-empty content.")
         secrets[secret_id] = value
     normalized: PortableSecretsPayload = {
         "format": PORTABLE_SECRETS_FORMAT,
@@ -164,11 +164,11 @@ def _validated_payload(payload: Mapping[str, object]) -> dict[str, str]:
 
 def _validate_secret_value(value: object) -> None:
     if not isinstance(value, str):
-        raise PortableSecretsError("A protected-secret value has an invalid type.")
+        raise PortableSecretsError("A protected-secret value requires a supported type.")
     try:
         size = len(value.encode("utf-8"))
     except UnicodeError:
-        raise PortableSecretsError("A protected-secret value is invalid.") from None
+        raise PortableSecretsError("A protected-secret value requires UTF-8 encodable content.") from None
     if size > MAX_SECRET_BYTES:
         raise PortableSecretsError("A protected-secret value is too large.")
 
@@ -182,7 +182,7 @@ def _validate_payload_size(payload: Mapping[str, object]) -> None:
             separators=(",", ":"),
         ).encode("utf-8")
     except (TypeError, ValueError, UnicodeError):
-        raise PortableSecretsError("The protected-secret payload is invalid.") from None
+        raise PortableSecretsError("The protected-secret payload requires serializable content.") from None
     if len(serialized) > MAX_PAYLOAD_BYTES:
         raise PortableSecretsError("The protected-secret payload is too large.")
 

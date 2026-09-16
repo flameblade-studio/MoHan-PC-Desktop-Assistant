@@ -71,11 +71,11 @@ class SettingsPort(Protocol[SnapshotT]):
 
 
 class PerformancePreferencesError(RuntimeError):
-    """Fixed-detail preference boundary failure."""
+    """Fixed-detail preference boundary attention event."""
 
 
 class UnsupportedPreferencesVersion(PerformancePreferencesError):
-    """The portable schema version cannot be interpreted safely."""
+    """The portable schema version requires supported values for safe interpretation."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -133,7 +133,7 @@ class PerformancePreferencesService[SnapshotT]:
     def save(self, preferences: PerformancePreferences) -> None:
         if not isinstance(preferences, PerformancePreferences):
             raise PerformancePreferencesError(
-                "Performance preferences are invalid."
+                "Performance preferences need supported values."
             )
         before = self.snapshot()
         try:
@@ -143,10 +143,10 @@ class PerformancePreferencesService[SnapshotT]:
                 self._settings.restore(before)
             except _SETTINGS_BOUNDARY_ERRORS:
                 raise PerformancePreferencesError(
-                    "Performance preference save failed and rollback was incomplete."
+                    "Performance preference save requires attention and rollback requires attention."
                 ) from None
             raise PerformancePreferencesError(
-                "Performance preference save failed; previous values were restored."
+                "Performance preference save requires attention; previous values were restored."
             ) from None
 
     def cancel(self, snapshot: SnapshotT) -> None:
@@ -168,7 +168,7 @@ class PerformancePreferencesService[SnapshotT]:
     ) -> dict[str, object]:
         if not isinstance(preferences, PerformancePreferences):
             raise PerformancePreferencesError(
-                "Performance preferences are invalid."
+                "Performance preferences need supported values."
             )
         return {
             "format": PREFERENCES_FORMAT,
@@ -185,7 +185,7 @@ class PerformancePreferencesService[SnapshotT]:
         version = payload.get("version")
         if type(version) is not int or version != PREFERENCES_VERSION:
             raise UnsupportedPreferencesVersion(
-                "Performance preference schema version is unsupported."
+                "Performance preference schema version needs a supported value."
             )
         raw = payload.get("preferences")
         if not isinstance(raw, Mapping):

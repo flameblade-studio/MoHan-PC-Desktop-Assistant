@@ -19,7 +19,7 @@ def _blob(data: bytes) -> tuple[DATA_BLOB, object]:
 
 
 class SecretDecryptError(OSError):
-    """The protected blob exists but cannot be decrypted in this context."""
+    """The protected blob exists and requires the matching decryption context."""
 
 
 class SecretStore:
@@ -129,7 +129,7 @@ class UnavailableSecretStore:
 class PlatformSecretStoreFactory:
     """Create only the secure store verified for the active platform.
 
-    Unsupported platforms receive a fail-closed store.  Keeping this choice in
+    Supported platforms receive a protective store.  Keeping this choice in
     one injectable factory prevents individual features from silently falling
     back to plaintext or constructing a Windows-only DPAPI store themselves.
     """

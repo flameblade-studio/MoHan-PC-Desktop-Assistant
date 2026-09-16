@@ -10,14 +10,26 @@ LANGUAGE_HEADINGS = (
     "## 日本語",
 )
 REQUIRED_SECTION_HEADINGS = (
-    ("### 完整回歸暫時狀態", "### 目前發布阻擋", "### 尚未封裝或發布"),
-    ("### 完整回归暂时状态", "### 当前发布阻挡", "### 尚未打包或发布"),
+    (
+        "### 完整回歸暫時狀態",
+        "### 目前待完成的發布先決條件",
+        "### 封裝與發布工作待完成",
+    ),
+    (
+        "### 完整回归暂时状态",
+        "### 当前待完成的发布先决条件",
+        "### 打包与发布工作待完成",
+    ),
     (
         "### Temporary complete-regression status",
-        "### Current release blockers",
-        "### Not yet packaged or released",
+        "### Current release prerequisites awaiting completion",
+        "### Packaging and release work awaiting completion",
     ),
-    ("### 完全回帰の暫定状況", "### 現在の公開阻害事項", "### 未パッケージ・未公開"),
+    (
+        "### 完全回帰の暫定状況",
+        "### 現在完了待ちの公開前提条件",
+        "### パッケージ化・公開作業の完了待ち",
+    ),
 )
 MOJIBAKE_MARKERS = ("\ufffd", "銝", "嚗", "ã€", "縺", "譁")
 SECTION_HEADING_COUNT = 6

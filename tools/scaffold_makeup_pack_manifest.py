@@ -1,10 +1,12 @@
-"""Scaffold an authoring manifest for a makeup-only ``.mohan-outfit`` pack.
+"""Scaffold a legacy three-slot makeup-only ``.mohan-outfit`` manifest.
 
-The scaffold declares one makeup item with any number of variants and the full
-31-silhouette × 3-slot layer set each variant needs.  ``sha256``, ``width`` and
-``height`` are left blank on purpose: ``tools/build_outfit_pack.py`` fills them
-from the PNG files the artist drops under ``<asset_root>/assets/`` and rejects
-the pack if a file is missing, off-canvas or paints outside the safe region.
+The generic scaffold declares one makeup item with any number of variants and
+the full 31-silhouette × 3-slot ``poses`` layer set each variant needs.
+``foundation`` and ``eye_states`` belong to the canonical four-look stage and
+are intentionally absent here. ``sha256``, ``width`` and ``height`` are left
+blank on purpose: ``tools/build_outfit_pack.py`` fills them from the PNG files
+the artist drops under ``<asset_root>/assets/``. Acceptance requires every
+file to exist, fit the canvas, and stay within its safe region.
 
 Example (the official built-in item)::
 

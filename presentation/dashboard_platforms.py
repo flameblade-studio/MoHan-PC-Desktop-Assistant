@@ -261,7 +261,7 @@ class DashboardPlatformMixin:
                 self._t("platform_url_card_placeholder", "https://…（可留空）")
             ),
             validation=QLabel(),
-            updated=QLabel(self._t("platform_not_saved", "尚未保存")),
+            updated=QLabel(self._t("platform_not_saved", '等待儲存')),
             save_button=QPushButton(self._t("save_platform", "保存此平台")),
             # 計時器的父物件必須是卡片本身：卡片 deleteLater 時一併回收，
             # 不會在重建清單後累積掛在 Dashboard 上的孤兒 QTimer。
@@ -451,7 +451,7 @@ class DashboardPlatformMixin:
             self._t("platform_delete_title", "刪除工作平台"),
             self._t(
                 "platform_delete_confirm",
-                "確定刪除「{platform}」及其工作進度嗎？此動作無法復原。",
+                '確定永久刪除「{platform}」及其工作進度嗎？',
                 platform=platform,
             ),
         )
@@ -464,7 +464,7 @@ class DashboardPlatformMixin:
             self.platform_feedback.setText(
                 self._t(
                     "platform_not_found",
-                    "找不到工作平台：{platform}",
+                    '請重新整理工作平台清單並檢查此項目：{platform}',
                     platform=platform,
                 )
             )
@@ -521,7 +521,7 @@ class DashboardPlatformMixin:
             self._t("save_changes", "保存變更")
         )
         controls.updated.setText(
-            self._t("platform_not_saved", "尚未保存")
+            self._t("platform_not_saved", '等待儲存')
         )
         controls.timer.start()
         self.platform_feedback.setText(

@@ -89,7 +89,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.AI_PLANNER_KEY_MISSING: _text(
         "尚未設定 OpenAI API 金鑰，無法理解自由語句工具任務",
         "尚未设置 OpenAI API 密钥，无法理解自由语句工具任务",
-        "The OpenAI API key is not configured, so free-form tool requests cannot be understood",
+        "Set the OpenAI API key to understand free-form tool requests",
         "OpenAI API キーが未設定のため、自由文によるツール操作を理解できません",
     ),
     ServiceStatus.AI_PLAN_RESPONSE_MISSING: _text(
@@ -101,13 +101,13 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.AI_PLAN_FORMAT_INVALID: _text(
         "任務計畫格式錯誤",
         "任务计划格式错误",
-        "The task plan format is invalid",
+        "The task plan format needs a supported value",
         "タスク計画の形式が正しくありません",
     ),
     ServiceStatus.AI_PLAN_STEP_INVALID: _text(
         "任務步驟格式錯誤",
         "任务步骤格式错误",
-        "A task step has an invalid format",
+        "A task step requires a format matching the supported contract",
         "タスク手順の形式が正しくありません",
     ),
     ServiceStatus.AI_PLAN_ARGUMENTS_INVALID: _text(
@@ -119,7 +119,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.AI_RESPONSE_EMPTY: _text(
         "API 沒有傳回文字",
         "API 没有返回文字",
-        "The API returned no text",
+        "The API returned zero text characters",
         "API からテキストが返されませんでした",
     ),
     ServiceStatus.CAMERA_COMPONENT_UNAVAILABLE: _text(
@@ -131,7 +131,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.CAMERA_NOT_FOUND: _text(
         "找不到可用攝影機",
         "找不到可用摄像头",
-        "No available camera was found",
+        "Camera availability requires attention",
         "利用可能なカメラが見つかりません",
     ),
     ServiceStatus.CAMERA_STARTING: _text(
@@ -143,7 +143,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.CAMERA_ERROR: _text(
         "攝影機錯誤：{detail}",
         "摄像头错误：{detail}",
-        "Camera error: {detail}",
+        "Camera requires attention: {detail}",
         "カメラエラー：{detail}",
     ),
     ServiceStatus.CAMERA_ACTIVE: _text(
@@ -161,19 +161,19 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.SPEECH_EMPTY_MANUAL_CAPTURE: _text(
         "尚未偵測到說話聲，沒有送出空白錄音。",
         "尚未检测到说话声，没有提交空白录音。",
-        "No speech was detected, so an empty recording was not submitted.",
+        "Speech capture detected zero spoken content; submission remains paused.",
         "発話を検出していないため、空の録音は送信しませんでした。",
     ),
     ServiceStatus.SPEECH_NOT_DETECTED: _text(
         "沒有偵測到說話聲，請靠近麥克風後再試一次。",
         "没有检测到说话声，请靠近麦克风后再试一次。",
-        "No speech was detected. Move closer to the microphone and try again.",
+        "Speech capture detected zero spoken content. Move closer to the microphone and try again.",
         "発話を検出できませんでした。マイクに近づいて、もう一度お試しください。",
     ),
     ServiceStatus.SPEECH_OPENAI_KEY_INVALID: _text(
         "OpenAI API 金鑰無效或已被撤銷（HTTP 401）。",
         "OpenAI API 密钥无效或已被撤销（HTTP 401）。",
-        "The OpenAI API key is invalid or has been revoked (HTTP 401).",
+        "The OpenAI API key requires a supported value or has been revoked (HTTP 401).",
         "OpenAI API キーが無効であるか、取り消されています（HTTP 401）。",
     ),
     ServiceStatus.SPEECH_OPENAI_NOT_AUTHORIZED: _text(
@@ -185,7 +185,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.SPEECH_OPENAI_MODEL_NOT_FOUND: _text(
         "OpenAI 找不到轉錄模型，或此 Project 無權使用（HTTP 404）。",
         "OpenAI 找不到转录模型，或此 Project 无权使用（HTTP 404）。",
-        "OpenAI could not find the transcription model, or this Project cannot use it (HTTP 404).",
+        "The transcription model requires availability in this Project (HTTP 404).",
         "OpenAI で文字起こしモデルが見つからないか、この Project に利用権限がありません（HTTP 404）。",
     ),
     ServiceStatus.SPEECH_OPENAI_QUOTA_EXHAUSTED: _text(
@@ -203,13 +203,13 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.SPEECH_OPENAI_SERVICE_ERROR: _text(
         "OpenAI 語音轉錄服務暫時異常（HTTP {status}）。",
         "OpenAI 语音转录服务暂时异常（HTTP {status}）。",
-        "The OpenAI speech transcription service is temporarily unavailable (HTTP {status}).",
+        "The OpenAI speech transcription service requires attention (HTTP {status}).",
         "OpenAI 音声文字起こしサービスで一時的な障害が発生しています（HTTP {status}）。",
     ),
     ServiceStatus.SPEECH_OPENAI_HTTP_ERROR: _text(
         "OpenAI 轉錄失敗（HTTP {status}）：{detail}",
         "OpenAI 转录失败（HTTP {status}）：{detail}",
-        "OpenAI transcription failed (HTTP {status}): {detail}",
+        "OpenAI transcription requires attention (HTTP {status}): {detail}",
         "OpenAI の文字起こしに失敗しました（HTTP {status}）：{detail}",
     ),
     ServiceStatus.SPEECH_OPENAI_CONNECTION_ERROR: _text(
@@ -227,7 +227,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.SPEECH_OPENAI_EMPTY_RESULT: _text(
         "OpenAI 已成功連線，但沒有從這段錄音辨識出文字。",
         "OpenAI 已成功连接，但没有从这段录音中识别出文字。",
-        "OpenAI connected successfully but recognized no text in this recording.",
+        "OpenAI connected successfully; this recording yielded zero text.",
         "OpenAI への接続には成功しましたが、この録音からテキストを認識できませんでした。",
     ),
     ServiceStatus.SPEECH_PLAYBACK_UNAVAILABLE: _text(
@@ -245,7 +245,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.SPEECH_WINDOWS_LEGACY_FAILED: _text(
         "Windows 傳統語音播放失敗。",
         "Windows 传统语音播放失败。",
-        "Windows legacy speech playback failed.",
+        "Windows legacy speech playback requires attention; retry the operation.",
         "Windows の従来音声の再生に失敗しました。",
     ),
     ServiceStatus.SPEECH_ONECORE_VOICE_MISSING: _text(
@@ -257,7 +257,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.SPEECH_ONECORE_FAILED: _text(
         "OneCore 語音合成失敗。",
         "OneCore 语音合成失败。",
-        "OneCore speech synthesis failed.",
+        "OneCore speech synthesis requires attention; retry the operation.",
         "OneCore 音声合成に失敗しました。",
     ),
     ServiceStatus.SPEECH_WINDOWS_SYNTHESIS_TIMEOUT: _text(
@@ -269,7 +269,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.SPEECH_WINDOWS_WAV_UNSUPPORTED: _text(
         "Windows 本機語音回傳了不支援的 WAV 格式。",
         "Windows 本地语音返回了不支持的 WAV 格式。",
-        "Windows local speech returned an unsupported WAV format.",
+        "Windows local speech requires a supported WAV format.",
         "Windows 本機音声から未対応の WAV 形式が返されました。",
     ),
     ServiceStatus.SPEECH_OPENAI_KEY_MISSING: _text(
@@ -323,7 +323,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.SPEECH_RECORDING_COMPONENT_MISSING: _text(
         "缺少麥克風錄音元件 sounddevice。",
         "缺少麦克风录音组件 sounddevice。",
-        "The sounddevice microphone recording component is missing.",
+        "Provide the sounddevice microphone recording component.",
         "マイク録音コンポーネント sounddevice がありません。",
     ),
     ServiceStatus.SPEECH_WINDOWS_MICROPHONE_ERROR: _text(
@@ -353,7 +353,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.SPEECH_WINDOWS_MICROPHONE_DENIED: _text(
         "Windows 拒絕墨寒使用麥克風。請到「設定 → 隱私權與安全性 → 麥克風」，開啟麥克風存取權、讓應用程式存取麥克風，以及讓桌面應用程式存取麥克風。",
         "Windows 拒绝墨寒使用麦克风。请前往“设置 → 隐私和安全性 → 麦克风”，开启麦克风访问权限、允许应用访问麦克风，以及允许桌面应用访问麦克风。",
-        "Windows denied MoHan access to the microphone. In Settings → Privacy & security → Microphone, enable Microphone access, Let apps access your microphone, and Let desktop apps access your microphone.",
+        "Windows requires microphone permission for MoHan. In Settings → Privacy & security → Microphone, enable Microphone access, Let apps access your microphone, and Let desktop apps access your microphone.",
         "Windows が墨寒のマイク使用を拒否しました。「設定 → プライバシーとセキュリティ → マイク」で、マイクへのアクセス、アプリのマイクアクセス、デスクトップアプリのマイクアクセスを有効にしてください。",
     ),
     ServiceStatus.SPEECH_WINDOWS_RECOGNITION_ERROR: _text(
@@ -365,7 +365,7 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
     ServiceStatus.SPEECH_WINDOWS_RECOGNITION_START_ERROR: _text(
         "Windows 語音辨識啟動失敗：{detail}",
         "Windows 语音识别启动失败：{detail}",
-        "Windows speech recognition failed to start: {detail}",
+        "Windows speech recognition requires attention to start: {detail}",
         "Windows 音声認識の起動に失敗しました：{detail}",
     ),
     ServiceStatus.SPEECH_NOT_UNDERSTOOD: _text(
@@ -445,7 +445,7 @@ def service_status(
     /,
     **values: object,
 ) -> str:
-    """Return localized service text without exposing provider diagnostics."""
+    """Return localized service text while keeping provider diagnostics private."""
 
     locale = canonical_ui_language(language)
     return _TEXT[key][locale].format(**_sanitized_values(key, values))
@@ -458,7 +458,7 @@ def append_service_status(
     *,
     separate: bool = False,
 ) -> str:
-    """Append fixed UI guidance without translating its dynamic detail."""
+    """Append fixed UI guidance while preserving its dynamic detail."""
 
     separator = " " if separate or canonical_ui_language(language) == "en" else ""
     return f"{detail}{separator}{service_status(language, key)}"

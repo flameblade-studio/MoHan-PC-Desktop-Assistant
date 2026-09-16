@@ -1,0 +1,23 @@
+{
+  "schema": "mohan.candidate-blink-binding.v2",
+  "version": 2,
+  "view_id": "yaw-060-pitch+00",
+  "canvas": {
+    "width": 1024,
+    "height": 1536
+  },
+  "source": {
+    "path": "v5-base/yaw-060-pitch+00.png",
+    "sha256": "2eb5f6e6b6bacfa606e4d37126f9b40c9ecf32397bd5a7caab91dd4e0276cf75"
+  },
+  "blink": {
+    "half": {
+      "path": "v5-base-layered/yaw-060-pitch+00_blink_half.png",
+      "sha256": "3de758d4a241297b8db87f32e658db29207aca8a0f0aafe28fa9d0bc941f4d4e"
+    },
+    "closed": {
+      "path": "v5-base-layered/yaw-060-pitch+00_blink_closed.png",
+      "sha256": "153939b325948fefa9f743b18fac13f7c3bf039cedf98b9e27996d86fc135f6c"
+    }
+  }
+}

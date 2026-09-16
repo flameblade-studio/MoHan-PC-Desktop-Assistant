@@ -23,7 +23,7 @@ FORBIDDEN_LAYER_IMPORTS: Final = {
     "infrastructure": frozenset({"presentation", "integrations"}),
 }
 # Explicit, audited composition boundaries.  Values are exact module targets,
-# never blanket layer exemptions, so an unrelated reverse dependency still
+# are scoped to specific edges, so an unrelated reverse dependency still
 # fails closed.
 FEATURE_COMPOSITION_IMPORTS: Final = {
     "presentation.autonomous_outfit_generation_controller": frozenset({
@@ -60,7 +60,10 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.active_outfit_overlay",
         "infrastructure.app_resources",
         "infrastructure.backup_manager",
+        "infrastructure.core_hand_regions",
         "infrastructure.db",
+        "infrastructure.exasperated_candidate_appearance",
+        "infrastructure.exasperated_candidate_assets",
         "infrastructure.face_assets",
         "infrastructure.face_renderer",
         "infrastructure.layered_face_renderer",
@@ -302,7 +305,7 @@ def discover_root_modules(
                 LayeredImportIssue(
                     "parse_error",
                     name,
-                    "cannot parse root module: "
+                    "root module requires valid Python syntax: "
                     + (
                         error.msg
                         if isinstance(error, SyntaxError)
@@ -336,7 +339,7 @@ def ownership_issues(
         LayeredImportIssue(
             "root_mapping_orphaned",
             module,
-            "root ownership names a module that does not exist",
+            "root ownership requires a module present in the repository",
         )
         for module in sorted(declared_set - actual - physical_modules)
     )
@@ -538,7 +541,7 @@ def reverse_app_issues(
             LayeredImportIssue(
                 "reverse_import_app" if direct else "transitive_reverse_import_app",
                 module,
-                "root product modules must not depend on the thin app entrypoint",
+                "dependency direction requires app to remain a one-way caller of root product modules",
                 direct_lines.get(module),
             )
         )

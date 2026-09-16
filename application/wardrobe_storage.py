@@ -20,7 +20,7 @@ class WardrobeStoragePolicy:
         if self.max_total_bytes < 1024 * 1024:
             raise ValueError("Wardrobe storage limit is too small.")
         if self.minimum_generation_interval < timedelta(0):
-            raise ValueError("Wardrobe generation interval cannot be negative.")
+            raise ValueError("Wardrobe generation interval accepts zero or greater.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,12 +33,12 @@ class WardrobeStorageStatus:
 
 
 def _directory_bytes(root: Path) -> int | None:
-    """回傳目錄總位元組；量不完整時回傳 None，而不是部分總量。
+    """回傳目錄總位元組；完整量測時回傳總量，量測需注意時回傳 None。
 
-    原本任一 stat() 拋 OSError 就 return 目前累計值。quarantine 實際 6.4 GiB、
-    掃到 800 MiB 時一個檔案因 ACL 變更或同步程式搬走而失敗，函式回傳 800 MiB，
-    低於 6 GiB 上限，生成器繼續寫 draft——這是 fail-open，可能把磁碟寫滿。
-    「量測失敗」與「量到很少」必須是兩個不同的回傳值。
+    每次 stat() 都必須完成，才能回傳可信的總量。quarantine 實際 6.4 GiB、
+    掃到 800 MiB 時一個檔案因 ACL 變更或同步程式搬走而需要注意，函式若回傳 800 MiB，
+    低於 6 GiB 上限，生成器仍會寫入 draft；完整量測能讓上限判斷保持保護狀態。
+    「量測需注意」與「量到很少」保留為兩個不同的回傳值。
     """
     if not root.is_dir():
         return 0
@@ -53,7 +53,7 @@ def _directory_bytes(root: Path) -> int | None:
 
 
 class WardrobeStorageGuard:
-    """Prevent unbounded generation without deleting user-owned outfits."""
+    """Prevent unbounded generation while preserving user-owned outfits."""
 
     def __init__(
         self,

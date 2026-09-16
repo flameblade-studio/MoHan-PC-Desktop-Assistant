@@ -116,12 +116,9 @@ def test_readme_advertises_the_synchronized_latest_release() -> None:
 
 
 def test_v4_release_document_keeps_four_language_structure() -> None:
-    # Audit ruling (2026-08-27): v4.0.0 has shipped, so this test no longer
-    # forces the historical draft to claim it is unreleased.  The draft file
-    # is kept as a historical artifact; only its existence and its ordered
-    # four-language structure remain under test.  The former assertions on
-    # "development draft" / "GitHub Releases remains authoritative" wording
-    # were fossils contradicting reality and were removed.
+    # Audit ruling (2026-08-27): v4.0.0 shipped. Its historical draft remains
+    # under existence and ordered four-language checks; release-state wording
+    # belongs to current release documentation.
     draft = read("docs/releases/v4.0.0-draft.md")
     assert draft.startswith(
         "# 墨寒桌面助理 v4.0.0 發布草稿／"

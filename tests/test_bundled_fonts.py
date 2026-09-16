@@ -70,7 +70,7 @@ def _documented_hash(family: str, filename: str) -> str:
             match = SHA_PATTERN.search(line)
             if match:
                 return match.group(0)
-    raise AssertionError(f"Missing documented SHA-256 for {family}/{filename}")
+    raise AssertionError(f'provide the documented SHA-256 for {family}/{filename}')
 
 
 def test_bundled_font_files_and_licenses_exist() -> None:
@@ -136,13 +136,13 @@ def test_post_package_font_verifier_checks_both_pyinstaller_layouts(
             verify_packaged_fonts(package_root)
         except RuntimeError as error:
             message = str(error).casefold()
-            assert "missing" in message
+            assert "requires this governed font file" in message
             assert (
                 (packaged_root / REQUIRED_FONT_FILES[0]).name.casefold()
                 in message
             )
         else:
-            raise AssertionError("packaged font verifier must reject a missing font")
+            raise AssertionError('packaged font verification requires every governed font')
 
 
 def test_qt_loads_bundled_fonts_and_exposes_families() -> None:

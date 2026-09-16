@@ -18,10 +18,9 @@ def inward_lerped_u_layer(
     """Move one semantic U lip/corner layer inward on x only.
 
     ``mouth_center_x`` must come from a trusted canonical authority manifest.
-    It is deliberately never inferred from this layer's alpha bounds: doing so
+    The pivot comes from the authority manifest rather than this layer's alpha bounds: doing so
     gives each lip/corner a different pivot and makes the mouth collapse or
-    drift.  Missing or non-finite authority data therefore fails closed by
-    returning an unchanged copy.
+    drift.  Missing or non-finite authority data returns an unchanged copy and keeps the transform inactive.
 
     The transform implements ``x' = center + scale * (x - center)`` while y
     remains unchanged.  Callers are responsible for restricting this helper to
@@ -64,8 +63,7 @@ def paint_inward_lerped_u_layer(
     rasterized once directly into the composition target instead of through an
     intermediate full-canvas pixmap.  The 50 Hz viseme path calls this per
     mouth layer per tick, so the extra allocation and clear were the dominant
-    frame cost.  Nearest-neighbour rasterization is preserved: no smoothing
-    hint is set, so no new alpha values are interpolated.
+    frame cost.  Nearest-neighbour rasterization is preserved: the smoothing hint stays off, so alpha values keep nearest-neighbour sampling.
     """
 
     scale = viseme_u_inward_scale(u_inward)

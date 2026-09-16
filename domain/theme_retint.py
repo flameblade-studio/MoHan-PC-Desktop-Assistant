@@ -10,7 +10,7 @@ crimson theme showed up as "a few orange frames").
 Instead of tokenizing every literal (a rewrite the line-count ratchet also
 forbids), this module retints the rendered stylesheet as a string transform:
 
-* Neutral colors (near-greyscale) keep their role and are never touched.
+* Neutral colors (near-greyscale) keep their role and retain their role.
 * Accent colors outside the blue-violet band — the gold focus ring and the
   danger reds — are semantic and stay put.
 * Colors inside the blue-violet band (hue 180°-360°) are compressed onto a
@@ -36,7 +36,7 @@ SOURCE_BAND_END = 360.0
 # Center of the flagship blue-violet band; offsets are measured from here.
 SOURCE_BAND_CENTER = 260.0
 # Relative hue offsets are compressed by this factor around the target hue,
-# keeping layered gradients distinguishable without scattering the palette.
+# keeping layered gradients distinguishable while keeping the palette centralized.
 HUE_COMPRESSION = 0.30
 
 MAX_CHANNEL_VALUE = 255
@@ -60,7 +60,7 @@ def _retint_channels(
     blue: int,
     target_hue: float,
 ) -> tuple[int, int, int] | None:
-    """Return retinted RGB, or None when the color must stay untouched."""
+    """Return retinted RGB, or the sentinel when the color keeps its original value."""
 
     hue, lightness, saturation = _hue_degrees(red, green, blue)
     if saturation < NEUTRAL_SATURATION_THRESHOLD:
@@ -89,7 +89,7 @@ def _primary_hue(tokens: object) -> float | None:
         return None
     hue, _, saturation = _hue_degrees(red, green, blue)
     if saturation < NEUTRAL_SATURATION_THRESHOLD:
-        # A neutral primary (grey/white theme) has no meaningful hue to
+        # A neutral primary (grey/white theme) has limited hue information to
         # steer toward; leave the flagship palette alone.
         return None
     return hue
@@ -99,7 +99,7 @@ def retint_stylesheet(stylesheet: str, tokens: object) -> str:
     """Steer the flagship stylesheet's color family toward the theme primary.
 
     ``tokens`` is a theme pack's token mapping; only ``primary`` is read.
-    The transform never changes stylesheet structure — only color literals.
+    The transform preserves stylesheet structure — only color literals.
     """
 
     target_hue = _primary_hue(tokens)

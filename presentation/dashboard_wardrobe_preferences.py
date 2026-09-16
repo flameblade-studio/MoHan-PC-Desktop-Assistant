@@ -88,7 +88,7 @@ class DashboardWardrobePreferencesMixin:
         self.manual_wardrobe_lock_hours.setWrapping(True)
         self.manual_wardrobe_lock_hours.setSuffix(" h")
         self.manual_wardrobe_lock_hours.setSpecialValueText(
-            self._t("wardrobe_manual_lock_off", "不鎖定")
+            self._t("wardrobe_manual_lock_off", "可自主選裝")
         )
         self.manual_wardrobe_lock_hours.setValue(
             int(self.db.setting("manual_wardrobe_lock_hours", 6))

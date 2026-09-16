@@ -300,7 +300,8 @@ class RealtimeEventMethods:
             and item_id in self._final_transcript_item_ids
         )
         # Only the documented completed event is committed to the chat.
-        # Delta and legacy done events stay provisional and never reach chat.
+        # Delta and legacy done events remain provisional; chat receives the
+        # completed event after the transcript contract is satisfied.
         if self._emit_completed_user_transcript(text, item_id):
             self._request_response()
             return

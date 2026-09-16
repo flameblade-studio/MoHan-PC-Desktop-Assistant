@@ -15,7 +15,7 @@ class FramingMode(IntEnum):
 
 # Framing modes that publish the composed v4 full-body photograph.  CLOSE and
 # HALF keep the legacy half-body poses, so the expensive full-body composition
-# must not run for them at all.
+# is reserved for the full-body modes.
 PUBLISHABLE_BODY_MODES = frozenset({FramingMode.THREE_QUARTER, FramingMode.FULL_BODY})
 
 
@@ -110,7 +110,7 @@ class FramingDecision:
 # Framing styles (owner ruling 2026-08-29, after the v4.5.1 "jumping between
 # full body and half body" report): "steady" keeps the whole conversation
 # session at the half-body shot and only relaxes after a quiet cooldown;
-# "lively" is the original event-driven behaviour; "half-only" never leaves
+# "lively" is the original event-driven behaviour; "half-only" stays within
 # the half-body shot except for the outfit preview, which needs the full
 # photograph to show the garment.
 FRAMING_STYLES = ("steady", "lively", "half-only")
@@ -169,13 +169,13 @@ class CharacterFramingDirector:
         if context.speech_active and not context.mouth_closed:
             # Speech is fixed at the half-body shot.  Jump straight to HALF
             # instead of stepping through THREE_QUARTER, so a lingering
-            # FULL_BODY (from an idle full-body view) or CLOSE never lingers
-            # across the start of speech.  The companion must not speak a few
+            # FULL_BODY (from an idle full-body view) or CLOSE clears
+            # across the start of speech.  The companion keeps speech inside a few
             # words in full-body before snapping back to half-body.
             # Remember the framing the policy actually wanted so the
             # mouth-closed branch below can restore it after speech; this
-            # was the missing producer of ``_pending`` (the consumer existed
-            # but nothing ever set it, so deferred restores never happened).
+            # was the producer that now supplies ``_pending`` (the consumer existed
+            # and deferred restores now run through the pending state).
             if requested is not FramingMode.HALF:
                 self._pending = (requested, reason)
             if self._mode is not FramingMode.HALF:

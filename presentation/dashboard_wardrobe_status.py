@@ -21,23 +21,23 @@ def wardrobe_generation_message(status: str, translate: Translate) -> str:
         ),
         "body-profile-outdated": translate(
             "wardrobe_body_profile_outdated",
-            "這套服裝是為一代素體製作的，穿在二代素體上會對不準；請用一鍵製衣重新生成",
+            "這套服裝需要二代素體素材；請用一鍵製衣重新生成",
         ),
         "activation-failed": translate(
             "wardrobe_generation_activation_failed",
-            "新衣已通過稽核並安裝，但未能安全套用；目前衣裝保持不變。",
+            '新衣已通過稽核並安裝；套用步驟需要處理，目前衣裝持續使用。',
         ),
         "not-enabled": translate("wardrobe_generation_not_enabled", "請先勾選允許雲端自創新衣。"),
-        "api-key-unavailable": translate("wardrobe_generation_no_key", "尚未設定可用的 OpenAI API Key。"),
+        "api-key-unavailable": translate("wardrobe_generation_no_key", '請在設定頁儲存可用的 OpenAI API Key。'),
         "already-generating": translate("wardrobe_generation_running", "正在生成、稽核並封裝新衣……"),
         "capacity-blocked": translate("wardrobe_generation_capacity", "已達自創服裝容量或冷卻限制。"),
         "cooldown-blocked": translate(
             "wardrobe_generation_cooldown",
-            "自動生成仍在失敗冷卻期；可按「立即生成新衣」手動重試。",
+            '自動生成正在錯誤後的冷卻期；可按「立即生成新衣」手動重試。',
         ),
-        "quarantined": translate("wardrobe_generation_quarantined", "新衣未通過稽核，已隔離且未套用。"),
-        "automatic-selection-disabled": translate("wardrobe_automatic_selection_disabled", "自主選裝目前已關閉。"),
-        "automatic-selection-failed": translate("wardrobe_automatic_selection_failed", "自主選裝評估失敗，已保留目前衣裝。"),
+        "quarantined": translate("wardrobe_generation_quarantined", '新衣的稽核結果需要修正，目前保持隔離；通過稽核後才可套用。'),
+        "automatic-selection-disabled": translate("wardrobe_automatic_selection_disabled", '請啟用自主選裝後使用此功能。'),
+        "automatic-selection-failed": translate("wardrobe_automatic_selection_failed", '自主選裝評估需要處理；目前衣裝持續使用。'),
         "outfit-selected": translate("wardrobe_automatic_outfit_selected", "墨寒已依情境自主換裝。"),
         "failed:rate-limited": translate(
             "wardrobe_generation_rate_limited",
@@ -45,33 +45,33 @@ def wardrobe_generation_message(status: str, translate: Translate) -> str:
         ),
         "failed:authentication-failed": translate(
             "wardrobe_generation_auth_failed",
-            "OpenAI API Key 驗證失敗，請在設定分頁重新儲存金鑰。",
+            'OpenAI API Key 驗證需要處理，請在設定分頁重新儲存金鑰。',
         ),
         "failed:model-access-denied": translate(
             "wardrobe_generation_access_denied",
-            "目前的 OpenAI 專案尚無 GPT Image 2 使用權限或尚未完成組織驗證。",
+            '請檢查目前 OpenAI 專案的 GPT Image 2 使用權限與組織驗證狀態，完成所需設定後再試。',
         ),
         "failed:moderation-blocked": translate(
             "wardrobe_generation_moderation_blocked",
-            "這次圖像請求未通過供應器內容檢查，未扣入服裝庫。",
+            '這次圖像請求需要調整以通過供應器內容檢查；服裝庫保留既有素材。',
         ),
         "failed:invalid-request": translate(
             "wardrobe_generation_invalid_request",
-            "圖片服務拒絕了生成規格；錯誤已保留供修復，未安裝不完整素材。",
+            '請修正圖片服務要求的生成規格；錯誤資訊已保留，既有安裝素材保持完整。',
         ),
         "failed:network-unavailable": translate(
             "wardrobe_generation_network_unavailable",
-            "目前無法連線至圖片服務，未安裝不完整素材。",
+            '連線至圖片服務需要處理；既有安裝素材保持完整。',
         ),
         "failed:provider-unavailable": translate(
             "wardrobe_generation_provider_unavailable",
-            "圖片服務暫時無法使用，未安裝不完整素材。",
+            '圖片服務恢復後即可繼續生成；既有安裝素材保持完整。',
         ),
     }
     return messages.get(
         status,
         translate(
             "wardrobe_generation_failed",
-            "新衣生成失敗；已保留安全化錯誤資訊，未安裝不完整素材。",
+            '新衣生成需要處理；安全化錯誤資訊已保留，既有安裝素材保持完整。',
         ),
     )

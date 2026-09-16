@@ -94,11 +94,11 @@ class NormalizedCompanionEnvironment:
         if self.now.tzinfo is None:
             raise ValueError("Companion environment time must be timezone-aware.")
         if self.absence_duration_seconds < 0.0:
-            raise ValueError("Absence duration must not be negative.")
+            raise ValueError("Absence duration accepts zero or greater.")
         if self.seconds_since_user_interaction < 0.0:
-            raise ValueError("User interaction age must not be negative.")
+            raise ValueError("User interaction age accepts zero or greater.")
         if not self.language.strip() or not self.user_title.strip():
-            raise ValueError("Companion language and user title must not be empty.")
+            raise ValueError("Companion language and user title require content.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -274,7 +274,7 @@ class ProactiveCompanionRuntime:
 
     def report_spoken(self, delivery_token: str, *, succeeded: bool) -> bool:
         if not delivery_token or type(succeeded) is not bool:
-            raise ValueError("Proactive delivery result is invalid.")
+            raise ValueError("Proactive delivery result needs a supported value.")
         pending = self._pending.pop(delivery_token, None)
         if pending is None:
             return False
@@ -457,7 +457,7 @@ class ProactiveCompanionRuntime:
         self,
         environment: NormalizedCompanionEnvironment,
     ) -> _Candidate | None:
-        """Warmly acknowledge visible activity without claiming identity."""
+        """Warmly acknowledge visible activity while treating identity as caller-owned."""
 
         if not environment.visual_activity:
             return None

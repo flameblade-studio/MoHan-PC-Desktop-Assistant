@@ -134,7 +134,7 @@ def shade(normal_image: Image.Image, silhouette: Image.Image):
 
 
 def validate() -> bool:
-    """先用官方 candidate3 驗證這支渲染器，不過就不准往下產。"""
+    """先用官方 candidate3 驗證渲染器，通過後接續產製。"""
     vertices, faces = load_obj(EXTRACT / "body-morph-candidate3/candidate3.obj")
     print("── 渲染器驗證（candidate3 對官方控制圖）──")
     ok = True

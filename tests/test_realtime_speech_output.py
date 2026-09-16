@@ -281,7 +281,7 @@ def _assert_oversized_response_stays_rejected_until_next_response() -> None:
     output.begin_response(1)
     output.add_text(1, "甲" * 32_769)
 
-    assert failures == ["Realtime 回應過長，已安全停止本輪語音。"]
+    assert failures == ['Realtime 回應達到長度上限，本輪語音已安全停止。']
     assert standard.stop_calls == 0
     assert standard.speak_calls == []
 
@@ -521,7 +521,7 @@ def _assert_hd_falls_back_to_standard_once() -> None:
     assert [call[0] for call in hd.speak_calls] == ["同一段只能各嘗試一次。"]
     assert [call[0] for call in standard.speak_calls] == ["同一段只能各嘗試一次。"]
     assert local.speak_calls == []
-    assert failures == ["Realtime 語音輸出失敗：standard unavailable"]
+    assert failures == ["Realtime 語音輸出需要重試：standard unavailable"]
 
 
 def _assert_partial_audio_failure_does_not_repeat_the_clause() -> None:
@@ -541,7 +541,7 @@ def _assert_partial_audio_failure_does_not_repeat_the_clause() -> None:
     assert hd.stop_calls == 1
     assert standard.speak_calls == []
     assert local.speak_calls == []
-    assert failures == ["Realtime 語音輸出失敗：stream interrupted"]
+    assert failures == ["Realtime 語音輸出需要重試：stream interrupted"]
 
     output.add_text(1, "同一輪遲到的片段不得重新啟動發聲。")
     output.finish_response(1)

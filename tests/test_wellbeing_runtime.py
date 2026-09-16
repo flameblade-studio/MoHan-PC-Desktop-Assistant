@@ -146,7 +146,7 @@ def assert_persistence_failure_does_not_consume_delivery_or_quota() -> None:
     except WellbeingReminderStoreError as exc:
         assert "PRIVATE" not in str(exc)
     else:
-        raise AssertionError("failed persistence unexpectedly succeeded")
+        raise AssertionError('persistence errors must be reported accurately')
     settings.fail_write = False
     item = runtime._wellbeing_store.load(clock.now).for_kind(WellbeingKind.HYDRATION)
     assert item.initial_delivered_at is None

@@ -2,6 +2,13 @@
 
 ## 繁體中文
 
+### `assets/ui/mohan-celestial-palace-v1.png`
+
+- 建立日期：2026-09-09；由 Flameblade Studio 透過 OpenAI 內建圖片生成功能創作。
+- 使用本專案的仙俠介面候選圖作為參考；第 8 版外觀方向已由擁有者同意落地。圖像只包含仙宮場景與金玉框飾，人物、文字和控制項由程式獨立繪製。
+- 生成來源：`exec-11e420b6-fba5-455d-86e8-49359f42302b.png`。SHA-256：`bbc90b85fac457e691431dc525f3f82906f11099a22b5c9ad241422b616190b3`。
+- 四角與中央玉飾保持比例，素面邊框依視窗尺寸延伸；舊佈景套件只重染裝飾，角色不受重染。外觀方向同意不等於商品或發布驗收，發行仍須檢查封裝後的實際介面並保留此來源紀錄。
+
 ### `assets/ui/mohan-strategist-lobby-v1.png`
 
 - 建立日期：2026-08-15
@@ -12,6 +19,13 @@
 - 發布要求：發行前必須目視檢查封裝後的資產，且每一份包含此資產的散布版本均須保留本來源紀錄。
 
 ## 简体中文
+
+### `assets/ui/mohan-celestial-palace-v1.png`
+
+- 创建日期：2026-09-09；由 Flameblade Studio 通过 OpenAI 内置图像生成功能创作。
+- 参考本项目的仙侠界面候选图；第 8 版外观方向已获所有者同意实施。图像仅包含仙宫场景和金玉边框，人物、文字与控件由程序独立绘制。
+- 生成来源：`exec-11e420b6-fba5-455d-86e8-49359f42302b.png`。SHA-256：`bbc90b85fac457e691431dc525f3f82906f11099a22b5c9ad241422b616190b3`。
+- 四角与中央玉饰保持比例，素面边框随窗口尺寸延伸；旧主题包仅对装饰调色，不影响人物。外观方向通过不等于商品或发布验收；发布前仍须检查打包后的实际界面并保留本记录。
 
 ### `assets/ui/mohan-strategist-lobby-v1.png`
 
@@ -24,6 +38,13 @@
 
 ## English
 
+### `assets/ui/mohan-celestial-palace-v1.png`
+
+- Created on 2026-09-09 for Flameblade Studio using OpenAI's built-in image-generation tool.
+- References were this project's xianxia interface candidates. The owner approved direction 8 for implementation. This asset contains scenery and gold/jade decoration only; the character, text, and controls are drawn separately at runtime.
+- Generated source: `exec-11e420b6-fba5-455d-86e8-49359f42302b.png`. SHA-256: `bbc90b85fac457e691431dc525f3f82906f11099a22b5c9ad241422b616190b3`.
+- Corners and the central jade clasp retain their proportions while plain rails resize. Legacy themes recolor decoration without recoloring the character. Art-direction approval is separate from product or release acceptance; inspect the packaged interface and retain this record in distributions.
+
 ### `assets/ui/mohan-strategist-lobby-v1.png`
 
 - Created: 2026-08-15
@@ -34,6 +55,13 @@
 - Release requirement: visually review the packaged asset before release and preserve this provenance record with every distribution that includes the asset.
 
 ## 日本語
+
+### `assets/ui/mohan-celestial-palace-v1.png`
+
+- 作成日：2026-09-09。Flameblade Studio が OpenAI の組み込み画像生成機能で制作しました。
+- 本プロジェクトの仙侠 UI 候補を参照し、第 8 案の実装方針を所有者が承認しました。画像には風景と金・翡翠の装飾のみを含み、人物・文字・操作部品は実行時に別々に描画します。
+- 生成元：`exec-11e420b6-fba5-455d-86e8-49359f42302b.png`。SHA-256：`bbc90b85fac457e691431dc525f3f82906f11099a22b5c9ad241422b616190b3`。
+- 四隅と中央の翡翠は比率を保ち、無地の枠線がウィンドウに合わせて伸縮します。既存テーマは装飾だけを着色し、人物には影響しません。美術方針の承認は商品・公開の受け入れとは別です。配布前に実際の同梱 UI を確認し、本記録を保持してください。
 
 ### `assets/ui/mohan-strategist-lobby-v1.png`
 

@@ -66,7 +66,7 @@ class OfflineSpeechEngine(QObject):
         return None
 
     def speak(self, *_args: object, **_kwargs: object) -> None:
-        raise AssertionError("Authorization tests must not produce speech.")
+        raise AssertionError('Authorization tests require speech to remain idle.')
 
     def stop(self) -> None:
         return None
@@ -90,7 +90,7 @@ class OfflineRealtime(QObject):
         return None
 
     def start(self, _request: object) -> None:
-        raise AssertionError("Authorization tests must not open a cloud session.")
+        raise AssertionError('Authorization tests require cloud sessions to remain closed.')
 
     def stop(self) -> int:
         self.running = False
@@ -109,7 +109,7 @@ class OfflineListener(QObject):
     diagnostic_changed = Signal(str)
 
     def toggle_listening(self) -> None:
-        raise AssertionError("Authorization tests must not open the microphone.")
+        raise AssertionError('Authorization tests require the microphone to remain closed.')
 
 
 class OfflinePlatformServices:
@@ -129,10 +129,10 @@ class OfflinePlatformServices:
         self.paths = PlatformPaths(root / "data", root / "config", root / "cache")
 
     def set_autostart(self, *_args: object, **_kwargs: object) -> None:
-        raise AssertionError("Authorization tests must not change device settings.")
+        raise AssertionError('Authorization tests must preserve device settings.')
 
     def open_path(self, _path: Path) -> None:
-        raise AssertionError("Gesture text must not invoke the OS directly.")
+        raise AssertionError('Gesture text must execute through its authorized boundary.')
 
 
 class OfflineVoiceCatalog:
@@ -265,7 +265,7 @@ def _running_window():
 
 def _persist_permission_mode(window: CompanionWindow, mode: str) -> None:
     if mode not in {"禁止", "每次詢問", "允許"}:
-        raise ValueError("Permission mode is not canonical.")
+        raise ValueError('Permission mode must use a canonical value.')
     capabilities = set(CORE_PERMISSION_LABELS)
     capabilities.update({
         "microphone_access",

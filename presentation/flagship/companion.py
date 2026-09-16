@@ -125,7 +125,7 @@ class FlagshipCompanionMixin:
         """Visible owners of the proactive-mode and welcome-timing settings.
 
         These three controls used to be constructed for the remote tab but were
-        never added to any layout, so every flagship save silently overwrote the
+        remained outside the layout, so every flagship save silently overwrote the
         user's values with the ones read at construction time.  They now live on
         the companion tab, and ``save_draft_settings`` persists each key only
         after the user actually changed its control (see
