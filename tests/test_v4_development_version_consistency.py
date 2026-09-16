@@ -7,7 +7,7 @@ lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 # x-release-please-start-version
-DEVELOPMENT_VERSION = "4.6.0"
+DEVELOPMENT_VERSION = "4.7.0"
 # x-release-please-end
 VERSION_AUTHORITY = "domain/version_info.py"
 LANGUAGE_HEADINGS = (

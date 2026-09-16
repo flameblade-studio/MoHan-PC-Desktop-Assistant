@@ -1,4 +1,0 @@
-### 半身眼皮與妝容合成順序／半身眼皮与妆容合成顺序／Half-body eyelid and makeup composition order／半身のまぶたとメイクの合成順序
-
-- 半閉眼及閉眼的原圖遮罩完成後，在同一遮罩範圍補上已驗證的對應眼妝；維持原尺寸校準、妝容濃度、嘴型及遮罩外的像素，舊套件省略狀態素材時，眼線沿用原始畫面。／半闭眼及闭眼的原图遮罩完成后，在同一遮罩范围补上已验证的对应眼妆；维持原尺寸校准、妆容浓度、嘴型及遮罩外的像素，旧套件省略状态素材时，眼线沿用原始画面。／After the authored half or closed eyelid patch, composite its validated eye-state pigment within the same alpha mask. Preserve native calibration, makeup intensity, speech and pixels outside the mask; legacy packs that omit state assets preserve the original eyeliner pixels.／半閉眼または閉眼の原画パッチの後に、検証済みの状態別アイメイクを同じアルファマスク内で合成します。原寸の位置合わせ、濃度、発話中の口とマスク外の画素を維持し、状態素材を省略した従来パックでは元のアイライン画素を保持します。
-- 將外觀介面及無外觀實作集中於獨立模組，眨眼執行期負責保留發話畫面，並下修原模組行數基準。／将外观接口及无外观实现集中于独立模块，眨眼运行时负责保留说话画面，并下调原模块行数基准。／Extract appearance contracts and the disabled adapter into a focused module, move archived speech-frame handling to the blink runtime, and lower the original module line baselines.／外観契約と無効時アダプターを専用モジュールに分離し、保存した発話フレームの処理をまばたき実行部へ移し、元のモジュールの行数上限を引き下げます。
