@@ -11,12 +11,12 @@ lazy import pytest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy import application.wardrobe_appearance_service as service_module
+lazy from application import wardrobe_appearance_service as service_module
 lazy from application.wardrobe_appearance_service import (
     AppearanceOption,
     WardrobeAppearanceService,
 )
-lazy import domain.outfit_pack as outfit_pack
+lazy from domain import outfit_pack
 lazy from domain.outfit_pack import InstalledSelection, OutfitPackError
 
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")

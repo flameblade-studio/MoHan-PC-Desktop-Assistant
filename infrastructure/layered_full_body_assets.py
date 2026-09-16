@@ -540,11 +540,7 @@ def snapshot_complete_expression_frames(
     if body_path is None:
         raise ValueError("Complete expression requires a body canvas")
     canvas = _png_dimensions(body_path)
-    paths = [
-        path
-        for viseme in SPOKEN_VISEMES
-        for path in group.frames[viseme].values()
-    ]
+    paths = [*group.frames[viseme].values() for viseme in SPOKEN_VISEMES]
     paths.extend(group.neutral_frames.values())
     if group.replacement_mask is not None:
         paths.append(group.replacement_mask)

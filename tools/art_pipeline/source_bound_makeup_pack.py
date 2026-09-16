@@ -32,6 +32,8 @@ remain unchanged. The output is an isolated candidate, never the official pack.
 
 from __future__ import annotations
 
+lazy from itertools import product
+
 lazy import argparse
 lazy import hashlib
 lazy import json
@@ -226,8 +228,7 @@ def _external_snapshot(variants: dict[str, dict], archive: zipfile.ZipFile) -> d
             (entry.copy(), digest(archive.read(entry["path"])))
             for entry in (variant["poses"] if state == "rest" else variant["eye_states"][state])[EXTERNAL_VIEW]
         ]
-        for variant_id, variant in variants.items()
-        for state in STATES
+        for (variant_id, variant), state in product(variants.items(), STATES)
     }
 
 

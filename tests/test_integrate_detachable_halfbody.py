@@ -77,7 +77,7 @@ def test_install_and_compose_all_seven_poses(tmp_path: Path) -> None:
     assert assets.compose("cheek-rest").toImage().pixelColor(0, 0) == QColor("red")
     with pytest.raises(ValueError, match="digest mismatch"):
         load_detachable_halfbody_assets(target)
-    assert json.loads(receipt.read_text())["release"] is False
+    assert json.loads(receipt.read_text(encoding="utf-8"))["release"] is False
 
 
 def test_runtime_selects_all_seven_detachable_poses(tmp_path: Path) -> None:

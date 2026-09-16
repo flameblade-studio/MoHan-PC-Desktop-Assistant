@@ -16,7 +16,7 @@ lazy import pytest
 lazy from PySide6.QtCore import QRect
 lazy from PySide6.QtWidgets import QApplication
 
-lazy import presentation.dashboard_wardrobe_categories as appearance_ui
+lazy from presentation import dashboard_wardrobe_categories as appearance_ui
 lazy from domain.outfit_pack import OutfitPackError, resolve_active_selection
 lazy from test_global_settings_actions import close_dashboard
 lazy from test_wardrobe_preview_composite import (

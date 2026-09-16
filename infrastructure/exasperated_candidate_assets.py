@@ -29,13 +29,13 @@ PART_ORDER = (
     "visible_left_hand",
 )
 MOUTH_VARIANTS = ("mid", "open", "round")
-EXPRESSION_VARIANTS = {
+EXPRESSION_VARIANTS = frozendict({
     "exasperated_front_speech_mid": "mid",
     "exasperated_front_speech_i": "mid",
     "exasperated_front_speech_open": "open",
     "exasperated_front_speech_round": "round",
     "exasperated_front_speech_u": "round",
-}
+})
 
 
 class ExasperatedAppearanceOverlay(Protocol):

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+
 lazy import copy
 lazy import hashlib
 lazy import json
@@ -504,7 +505,7 @@ def test_generic_scaffold_contract_seals_into_a_makeup_only_pack(tmp_path: Path)
     assert all("eye_states" not in variant for variant in variants)
     assert all("foundation_silhouettes" not in variant for variant in variants)
     assert all(
-        {entry["slot"] for entries in variant["poses"].values() for entry in entries}
+        {entry["slot"] for entry in [*entries for entries in variant["poses"].values()]}
         == set(SLOT_Z)
         for variant in variants
     )
@@ -526,12 +527,8 @@ def test_committed_authoring_rebuild_includes_all_declared_makeup_members(tmp_pa
     pack = inspect_outfit_pack(output)
     item = next(item for item in pack.items if item.category == "makeup")
     declared_paths = [entry["path"] for _silhouette, entry in _declared_makeup_assets(committed)]
-    parsed_paths = [
-        asset.path
-        for variant in item.variants
-        for assets in variant.poses.values()
-        for asset in assets
-    ]
+    pose_assets = [*variant.poses.values() for variant in item.variants]
+    parsed_paths = [asset.path for asset in [*assets for assets in pose_assets]]
     parsed_paths.extend(
         asset.path
         for variant in item.variants

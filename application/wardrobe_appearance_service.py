@@ -28,12 +28,12 @@ HAIRSTYLE_CATEGORY = "hairstyle"
 HEADWEAR_CATEGORY = "headwear"
 NONE_OPTION_ID = "none"
 SUPPORTED_CATEGORIES = frozenset({HAIRSTYLE_CATEGORY, HEADWEAR_CATEGORY})
-HEADWEAR_NONE_NAMES = {
+HEADWEAR_NONE_NAMES = frozendict({
     "zh-TW": "頭飾關閉",
     "zh-CN": "头饰关闭",
     "en": "Headwear off",
     "ja-JP": "髪飾りオフ",
-}
+})
 _STATE_ERRORS = (
     OSError,
     UnicodeError,

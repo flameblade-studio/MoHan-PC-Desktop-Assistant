@@ -4,6 +4,7 @@ from __future__ import annotations
 
 lazy import json
 lazy from dataclasses import dataclass, field
+lazy from itertools import product
 lazy from math import isfinite
 lazy from pathlib import Path
 
@@ -90,12 +91,10 @@ class ExasperatedCandidateAppearance:
         if schema == VARIANT_SCHEMA:
             required |= {
                 f"{variant}/{state}/{slot}"
-                for variant in declared_variants
-                for state in STATES
-                for slot in cosmetic_slots
+                for variant, state, slot in product(declared_variants, STATES, cosmetic_slots)
             }
         elif schema == FOUNDATION_SCHEMA or manifest.get("cosmetic_status") != "not_approved":
-            required |= {f"{state}/{slot}" for state in STATES for slot in cosmetic_slots}
+            required |= {f"{state}/{slot}" for state, slot in product(STATES, cosmetic_slots)}
         if not isinstance(records, dict) or set(records) != required:
             raise ValueError("Appearance requires clothing and all mouth-specific cosmetics.")
         layers = {

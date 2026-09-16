@@ -16,7 +16,7 @@ def prepare(root: Path):
     source.write_bytes(b"approved replacement")
     approval = root / "scratchpad/approval.json"
     approval.write_text(json.dumps({"schema": installer.APPROVAL_SCHEMA,
-                                    "owner_appearance_approved": True}))
+                                    "owner_appearance_approved": True}), encoding="utf-8")
     record = {"target": "assets/old.png", "source": "scratchpad/new.png",
               "before_sha256": installer.sha256(old), "sha256": installer.sha256(source)}
     plan = {"schema": installer.PLAN_SCHEMA, "status": "validated",
@@ -27,7 +27,7 @@ def prepare(root: Path):
 
 def save_plan(root, plan):
     path = root / "scratchpad/plan.json"
-    path.write_text(json.dumps(plan))
+    path.write_text(json.dumps(plan), encoding="utf-8")
     return path
 
 

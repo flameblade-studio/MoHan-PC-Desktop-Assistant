@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+lazy from enum import Enum, auto
+
 lazy import hashlib
 lazy import os
 lazy import sys
@@ -35,7 +37,11 @@ SLOTS = {
     "cheeks": [[30, 10, 10, 10]],
     "lips": [[50, 10, 10, 10]],
 }
-MISSING = object()
+class _Missing(Enum):
+    TOKEN = auto()
+
+
+MISSING = _Missing.TOKEN
 
 
 def _descriptor(path: str, digest: str, canvas: tuple[int, int]) -> dict:

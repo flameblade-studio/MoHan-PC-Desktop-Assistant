@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import math
+lazy from itertools import product
 
 lazy from PySide6.QtCore import QRect
 
@@ -137,24 +138,28 @@ EXPRESSION_HALF_BLINK_FRAMES = frozendict({
     "mock_hit_front": "mock_hit_front_half",
     "mock_scold": "mock_scold_half",
 })
-EXPRESSION_HALF_BLINK_FRAME_SOURCES = frozendict(
-    {
-        f"{prefix}{suffix}": EXPRESSION_HALF_BLINK_FRAMES[f"idle{suffix}"]
-        for prefix in HALF_BLINK_NEUTRAL_FRAME_PREFIXES
-        for suffix, _pose in PHYSICS_POSE_SUFFIXES
-        if f"idle{suffix}" in EXPRESSION_HALF_BLINK_FRAMES
-    }
-    | {
-        frame: EXPRESSION_HALF_BLINK_FRAMES[expression]
-        for expression in EXPRESSION_HALF_BLINK_FRAMES
-        if expression in EXPRESSION_SPEECH_FRAMES
+
+
+def _half_blink_frame_sources() -> dict[str, str]:
+    sources: dict[str, str] = {}
+    for prefix, (suffix, _pose) in product(
+        HALF_BLINK_NEUTRAL_FRAME_PREFIXES, PHYSICS_POSE_SUFFIXES
+    ):
+        if f"idle{suffix}" in EXPRESSION_HALF_BLINK_FRAMES:
+            sources[f"{prefix}{suffix}"] = EXPRESSION_HALF_BLINK_FRAMES[f"idle{suffix}"]
+    for expression, source in EXPRESSION_HALF_BLINK_FRAMES.items():
+        if expression not in EXPRESSION_SPEECH_FRAMES:
+            continue
         for frame in (
             expression,
             *EXPRESSION_SPEECH_FRAMES[expression].values(),
             *EXPRESSION_DERIVED_VISEME_FRAMES[expression].values(),
-        )
-    }
-)
+        ):
+            sources[frame] = source
+    return sources
+
+
+EXPRESSION_HALF_BLINK_FRAME_SOURCES = frozendict(_half_blink_frame_sources())
 EXPRESSION_HALF_BLINK_ASSETS = tuple(EXPRESSION_HALF_BLINK_FRAMES.values())
 EXPRESSION_NATIVE_CLOSED_BLINK_FRAME_SOURCES = frozendict({
     expression: source.removesuffix("_half") + "_closed"

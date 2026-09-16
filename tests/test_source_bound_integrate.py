@@ -11,7 +11,7 @@ lazy from pathlib import Path
 lazy import pytest
 lazy from PIL import Image
 
-lazy import tools.art_pipeline.source_bound_integrate as subject
+lazy from tools.art_pipeline import source_bound_integrate as subject
 lazy from tools.art_pipeline.source_bound_integrate import (
     APPROVAL_DECISION,
     APPROVAL_SCHEMA,
@@ -377,7 +377,7 @@ def _multi_fixture(tmp_path: Path) -> MultiFixture:
         "stage.json",
         {**shared, "status": "staged-awaiting-runtime-preview"},
     )
-    original_receipt = json.loads(single.candidate.joinpath("receipt.json").read_text())
+    original_receipt = json.loads(single.candidate.joinpath("receipt.json").read_text(encoding="utf-8"))
     face_frames = {
         state: {
             "compared_pixels": 3,
@@ -478,7 +478,7 @@ def test_success_writes_one_pack_and_receipt_last(tmp_path: Path) -> None:
     assert receipt["formal_integrated"] is True
     assert receipt["release"] is False
     assert receipt["postcheck"] == {"candidate_frames_equal": True}
-    assert json.loads((fixture.output / "receipt.json").read_text())["change"] == receipt["change"]
+    assert json.loads((fixture.output / "receipt.json").read_text(encoding="utf-8"))["change"] == receipt["change"]
 
 
 def test_failed_postcheck_rolls_back_only_written_pack(tmp_path: Path) -> None:
@@ -569,7 +569,7 @@ def test_candidate_receipt_drift_after_approval_is_rejected_before_output(
 
 def test_stage_clone_cannot_stand_in_for_preview_receipt(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
-    stage = json.loads(fixture.candidate.joinpath("stage.json").read_text())
+    stage = json.loads(fixture.candidate.joinpath("stage.json").read_text(encoding="utf-8"))
     _write_json(fixture.candidate, "receipt.json", stage)
 
     with pytest.raises(ValueError, match="unintegrated, native-identity-verified preview"):
@@ -619,7 +619,7 @@ def test_preview_frame_sha_mismatch_is_rejected_before_output(tmp_path: Path) ->
 def test_nonzero_face_core_change_is_rejected_before_output(tmp_path: Path) -> None:
     fixture = _fixture(tmp_path)
     receipt_path = fixture.candidate / "receipt.json"
-    receipt = json.loads(receipt_path.read_text())
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     receipt["composed_face_identity"]["frames"]["closed"]["changed_pixels"] = 1
     _write_json(fixture.candidate, "receipt.json", receipt)
 
@@ -796,7 +796,7 @@ def test_multi_pack_postcheck_failure_restores_both(tmp_path: Path) -> None:
     assert fixture.single.target.read_bytes() == fixture.single.baseline_pack
     assert fixture.makeup_target.read_bytes() == fixture.baseline_makeup_pack
     failure = json.loads(
-        fixture.single.output.joinpath("failed-transaction.json").read_text()
+        fixture.single.output.joinpath("failed-transaction.json").read_text(encoding="utf-8")
     )
     assert failure["status"] == "all_written_packs_restored"
     assert {outcome["status"] for outcome in failure["outcomes"]} == {"restored"}
@@ -834,7 +834,7 @@ def test_recovery_read_failure_does_not_skip_other_pack_rollback(
     assert fixture.single.target.read_bytes() == fixture.single.baseline_pack
     assert fixture.makeup_target.read_bytes() == fixture.candidate_makeup_pack
     failure = json.loads(
-        fixture.single.output.joinpath("failed-transaction.json").read_text()
+        fixture.single.output.joinpath("failed-transaction.json").read_text(encoding="utf-8")
     )
     assert failure["status"] == "rollback_incomplete"
     outcomes = {item["path"]: item["status"] for item in failure["outcomes"]}
@@ -901,7 +901,7 @@ def test_multi_pack_unapproved_or_source_drift_never_writes(
 ) -> None:
     fixture = _multi_fixture(tmp_path)
     if drift == "approval":
-        approval = json.loads(fixture.single.approval.read_text())
+        approval = json.loads(fixture.single.approval.read_text(encoding="utf-8"))
         approval["decision"] = "not-approved"
         fixture.single.approval.write_text(json.dumps(approval), encoding="utf-8")
         message = "does not authorize"
@@ -926,7 +926,7 @@ def test_multi_pack_unapproved_or_source_drift_never_writes(
 def test_multi_pack_requires_makeup_specific_face_evidence(tmp_path: Path) -> None:
     fixture = _multi_fixture(tmp_path)
     receipt_path = fixture.single.candidate / "receipt.json"
-    receipt = json.loads(receipt_path.read_text())
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     receipt["composed_face_identity"]["status"] = "same-state-face-core-identical"
     _write_json(fixture.single.candidate, "receipt.json", receipt)
 

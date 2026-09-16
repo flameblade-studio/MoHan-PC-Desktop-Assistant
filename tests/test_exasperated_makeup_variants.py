@@ -16,7 +16,7 @@ lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
-lazy import infrastructure.exasperated_candidate_appearance as appearance_module
+lazy from infrastructure import exasperated_candidate_appearance as appearance_module
 lazy from infrastructure.exasperated_candidate_appearance import (
     FOUNDATION_SCHEMA,
     LOOK_VARIANTS,

@@ -9,7 +9,7 @@ lazy import pytest
 
 lazy from domain.outfit_pack import REQUIRED_SILHOUETTES
 lazy from domain.outfit_pack_makeup import SAFE_REGION_SCHEMA_V2
-lazy import tools.build_makeup_safe_regions as builder
+lazy from tools import build_makeup_safe_regions as builder
 
 
 def _authored_v2_document() -> dict[str, object]:
