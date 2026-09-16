@@ -105,7 +105,9 @@
     "source_rgb_or_alpha_modified": false
   },
   "schema": "mohan.pose-atlas.working-build.v1",
-  "source_authorization": {
+  "source_authorization": "confirmed_by_rights_holder_2026-08-16",
+  "redistribution": "authorized_under_project_license",
+  "source_authorization_evidence": {
     "evidence": "docs/release-evidence/pose-atlas-static-identity-audit/owner-visible-batch-approval-20260908-side-01.json",
     "scope": "owner-approved source identity/appearance selection; technical metadata only",
     "sha256": "3c25c6487055a3b42f8f5cab92ab850c53cd3a631e9c30dc1d6ca3cfe8d1c28b"

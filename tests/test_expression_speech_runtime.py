@@ -18,6 +18,7 @@ lazy from domain.companion_animation_contract import (
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_FRAMES,
     EXPRESSION_VISEME_FRAMES,
+    outfit_silhouette,
 )
 lazy from presentation.companion_window import CompanionWindow
 
@@ -53,6 +54,17 @@ def mouth_region_unchanged(
             if abs(((old >> shift) & 0xFF) - ((new >> shift) & 0xFF)) > channel_tolerance:
                 return False
     return True
+
+
+def native_mouth_endpoints_active(window: CompanionWindow, expression: str) -> bool:
+    """Whether the reviewed native source owns every mouth of this expression's pose."""
+    renderer = getattr(window, "face_renderer", None)
+    overlay = getattr(renderer, "_outfit_overlay", None)
+    capability = getattr(overlay, "has_native_motion", None)
+    pose = window.physics_expression_poses.get(
+        expression, getattr(window, "idle_pose", "front"),
+    )
+    return callable(capability) and bool(capability(outfit_silhouette(expression, pose)))
 
 
 def stop_automatic_timers(window: CompanionWindow) -> None:
@@ -234,6 +246,7 @@ def assert_audio_advances_during_blink(
     window: CompanionWindow,
     mouth_rect: QRect,
 ) -> None:
+    native_endpoints = native_mouth_endpoints_active(window, "happy")
     before_blink_clean = QPixmap(window.speech_visual_pixmap)
     before_mouth = signature(before_blink_clean, mouth_rect)
     window._blink()
@@ -242,12 +255,21 @@ def assert_audio_advances_during_blink(
     # Audio keeps advancing under the eyelids and retains the current viseme.
     for _ in range(3):
         window._audio_viseme_cue(0.60, "O")
-    assert signature(window.mouth_transition_to, mouth_rect) != before_mouth
+    assert window.speech_current_expression == EXPRESSION_VISEME_FRAMES["happy"]["O"]
+    assert not window.mouth_transition_to.isNull()
+    if not native_endpoints:
+        assert signature(window.mouth_transition_to, mouth_rect) != before_mouth
     window.mouth_transition_started -= window.mouth_transition_duration + 0.01
     window._render_audio_mouth_transition()
     app.processEvents()
     during_blink_clean = QPixmap(window.speech_visual_pixmap)
-    assert signature(during_blink_clean, mouth_rect) != before_mouth
+    target_mouth = signature(window.mouth_transition_to, mouth_rect)
+    if native_endpoints:
+        # The reviewed cheek-rest source owns one open mouth for every vowel:
+        # audio advances as viseme state while the pixels hold that endpoint.
+        assert signature(during_blink_clean, mouth_rect) == target_mouth
+    else:
+        assert signature(during_blink_clean, mouth_rect) != before_mouth
 
     generation = window.blink_generation
     window._finish_speaking_blink(generation)
@@ -258,7 +280,12 @@ def assert_audio_advances_during_blink(
         signature(window.speech_visual_pixmap, mouth_rect),
         signature(window.character.pixmap(), mouth_rect),
     )
-    assert signature(window.character.pixmap(), mouth_rect) != before_mouth
+    if native_endpoints:
+        assert mouth_region_unchanged(
+            target_mouth, signature(window.character.pixmap(), mouth_rect),
+        )
+    else:
+        assert signature(window.character.pixmap(), mouth_rect) != before_mouth
     assert not window.hair_left_overlay.isHidden()
     assert not window.sleeve_left_overlay.isHidden()
 

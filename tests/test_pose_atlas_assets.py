@@ -33,33 +33,25 @@ VIEW_RING_COUNT = 24
 FULL_BODY_LAYER_COUNT = 25
 CONTROL_LAYERS_BY_VIEW = frozendict({
     "yaw+000-pitch+00": (
-        "blink_half", "blink_closed", "body_outline",
-        "visible_hand_left", "visible_hand_right",
+        "blink_half", "blink_closed", "visible_hand_left", "visible_hand_right",
     ),
-    "yaw+015-pitch+00": (
-        "blink_half", "blink_closed", "body_outline",
-    ),
+    "yaw+015-pitch+00": ("blink_half", "blink_closed"),
     "yaw+030-pitch+00": (
-        "blink_half", "blink_closed", "body_outline",
-        "visible_hand_left", "visible_hand_right",
+        "blink_half", "blink_closed", "visible_hand_left", "visible_hand_right",
     ),
     "yaw+045-pitch+00": (
-        "blink_half", "blink_closed", "body_outline",
-        "visible_hand_left", "visible_hand_right",
+        "blink_half", "blink_closed", "visible_hand_left", "visible_hand_right",
     ),
-    "yaw+060-pitch+00": ("blink_half", "blink_closed", "body_outline"),
-    "yaw+135-pitch+00": ("body_outline",),
-    "yaw+150-pitch+00": (
-        "body_outline", "visible_hand_left", "visible_hand_right",
-    ),
-    "yaw+165-pitch+00": ("body_outline",),
-    "yaw-090-pitch+00": ("body_outline",),
-    "yaw-105-pitch+00": ("body_outline",),
-    "yaw-120-pitch+00": ("body_outline",),
-    "yaw-135-pitch+00": ("body_outline",),
-    "yaw-150-pitch+00": ("body_outline",),
-    "yaw-165-pitch+00": ("body_outline",),
-    "yaw-180-pitch+00": ("body_outline",),
+    "yaw+060-pitch+00": ("blink_half", "blink_closed"),
+    "yaw+075-pitch+00": ("blink_half", "blink_closed"),
+    "yaw+090-pitch+00": ("blink_half", "blink_closed"),
+    "yaw+150-pitch+00": ("visible_hand_left", "visible_hand_right"),
+    "yaw-015-pitch+00": ("blink_half", "blink_closed"),
+    "yaw-030-pitch+00": ("blink_half", "blink_closed"),
+    "yaw-045-pitch+00": ("blink_half", "blink_closed"),
+    "yaw-060-pitch+00": ("blink_half", "blink_closed"),
+    "yaw-075-pitch+00": ("blink_half", "blink_closed"),
+    "yaw-090-pitch+00": ("blink_half", "blink_closed"),
 })
 
 
@@ -101,10 +93,34 @@ def run() -> None:
     assert actual_layers == expected_layers | expected_controls
     hand_overlays = repo / "assets/pose-atlas/v5-hand-overlays"
     assert {path.name for path in hand_overlays.glob("*.png")} == {
+        "yaw+000-pitch+00_left.png",
+        "yaw+000-pitch+00_right.png",
         "yaw+015-pitch+00_left.png",
         "yaw+015-pitch+00_right.png",
+        "yaw+030-pitch+00_left.png",
+        "yaw+030-pitch+00_right.png",
+        "yaw+045-pitch+00_left.png",
+        "yaw+045-pitch+00_right.png",
+        "yaw+060-pitch+00_left.png",
+        "yaw+060-pitch+00_right.png",
+        "yaw+090-pitch+00_left.png",
+        "yaw+090-pitch+00_right.png",
+        "yaw+105-pitch+00_left.png",
+        "yaw+105-pitch+00_right.png",
+        "yaw+120-pitch+00_left.png",
+        "yaw+120-pitch+00_right.png",
         "yaw+165-pitch+00_left.png",
         "yaw+165-pitch+00_right.png",
+        "yaw-015-pitch+00_left.png",
+        "yaw-015-pitch+00_right.png",
+        "yaw-030-pitch+00_left.png",
+        "yaw-030-pitch+00_right.png",
+        "yaw-045-pitch+00_left.png",
+        "yaw-045-pitch+00_right.png",
+        "yaw-060-pitch+00_left.png",
+        "yaw-060-pitch+00_right.png",
+        "yaw-075-pitch+00_left.png",
+        "yaw-075-pitch+00_right.png",
         "yaw-090-pitch+00_left.png",
         "yaw-090-pitch+00_right.png",
         "yaw-105-pitch+00_left.png",
@@ -122,7 +138,15 @@ def run() -> None:
     }
     body_overlays = repo / "assets/pose-atlas/v5-body-overlays"
     assert {path.name for path in body_overlays.glob("*.png")} == {
+        "yaw+000-pitch+00.png",
         "yaw+015-pitch+00.png",
+        "yaw+030-pitch+00.png",
+        "yaw+045-pitch+00.png",
+        "yaw+060-pitch+00.png",
+        "yaw-015-pitch+00.png",
+        "yaw-030-pitch+00.png",
+        "yaw-045-pitch+00.png",
+        "yaw-060-pitch+00.png",
         "yaw-090-pitch+00.png",
         "yaw-105-pitch+00.png",
         "yaw-120-pitch+00.png",
@@ -137,7 +161,19 @@ def run() -> None:
         / "mohan.official.blue-white-hanfu"
     )
     assert {path.name for path in official_silhouettes.glob("*.png")} == {
+        "yaw+000-pitch+00.png",
         "yaw+015-pitch+00.png",
+        "yaw+030-pitch+00.png",
+        "yaw+045-pitch+00.png",
+        "yaw+060-pitch+00.png",
+        "yaw+090-pitch+00.png",
+        "yaw+105-pitch+00.png",
+        "yaw+120-pitch+00.png",
+        "yaw-015-pitch+00.png",
+        "yaw-030-pitch+00.png",
+        "yaw-045-pitch+00.png",
+        "yaw-060-pitch+00.png",
+        "yaw-075-pitch+00.png",
         "yaw-090-pitch+00.png",
         "yaw-105-pitch+00.png",
         "yaw-120-pitch+00.png",
@@ -152,7 +188,20 @@ def run() -> None:
         / "mohan.official.blue-white-hanfu"
     )
     assert {path.name for path in official_replacement_masks.glob("*.png")} == {
+        "yaw+000-pitch+00.png",
         "yaw+015-pitch+00.png",
+        "yaw+030-pitch+00.png",
+        "yaw+045-pitch+00.png",
+        "yaw+060-pitch+00.png",
+        "yaw+090-pitch+00.png",
+        "yaw+105-pitch+00.png",
+        "yaw+120-pitch+00.png",
+        "yaw-015-pitch+00.png",
+        "yaw-030-pitch+00.png",
+        "yaw-045-pitch+00.png",
+        "yaw-060-pitch+00.png",
+        "yaw-075-pitch+00.png",
+        "yaw-090-pitch+00.png",
     }
     assets = PoseAtlasAssets(root, image_size=465)
     assert assets.enabled

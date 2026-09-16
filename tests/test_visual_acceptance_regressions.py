@@ -14,6 +14,7 @@ lazy from PySide6.QtWidgets import QApplication
 
 lazy from domain.companion_animation_contract import (
     CHEEK_SPEECH_CLOSED_EXPRESSION,
+    EXPRESSION_HALF_BLINK_FRAME_SOURCES,
     EXPRESSION_SPEECH_MOUTH_RECTS,
 )
 lazy from presentation.companion_window import CompanionWindow
@@ -87,25 +88,36 @@ def _assert_blink_uses_discrete_authority_frames(
         changed_pixel_count(base_image, closed, region)
         for region in eye_regions
     )
-    assert partial_change == 0
+    half_key = EXPRESSION_HALF_BLINK_FRAME_SOURCES.get(expression, "blink_half_front")
+    half_source = window.expression_pixmaps.get(half_key)
+    half_authority = half_source is not None and not half_source.isNull()
     assert closed_change > 0
-    assert all(
-        region_signature(partial, region)
-        == region_signature(base_image, region)
-        for region in eye_regions
-    ), 'an absent half authority must preserve the rest frame'
+    if half_authority:
+        # A registered HALF authority draws its own eyelids: distinct from the
+        # rest frame and from the CLOSED authority.
+        assert partial_change > 0
+        assert any(
+            region_signature(partial, region)
+            != region_signature(base_image, region)
+            for region in eye_regions
+        ), "a registered half authority must draw its eyelids"
+    else:
+        assert partial_change == 0
+        assert all(
+            region_signature(partial, region)
+            == region_signature(base_image, region)
+            for region in eye_regions
+        ), 'an absent half authority must preserve the rest frame'
     assert any(
         region_signature(partial, region)
         != region_signature(closed, region)
         for region in eye_regions
-    ), "closed authority must remain distinct from fail-closed HALF"
+    ), "closed authority must remain distinct from HALF"
 
     # The runtime consumes a distinct registered HALF authority when present;
     # inject the already registered closed pixmap under the HALF key only to
     # prove routing while leaving each authored appearance to visual review.
-    window.expression_pixmaps["blink_half_front"] = window.expression_pixmaps[
-        "blink_front"
-    ]
+    window.expression_pixmaps[half_key] = window.expression_pixmaps["blink_front"]
     try:
         authored_half = window._blink_composite(base, expression, 0.5).toImage()
         assert all(
@@ -114,7 +126,10 @@ def _assert_blink_uses_discrete_authority_frames(
             for region in eye_regions
         )
     finally:
-        window.expression_pixmaps.pop("blink_half_front", None)
+        if half_source is None:
+            window.expression_pixmaps.pop(half_key, None)
+        else:
+            window.expression_pixmaps[half_key] = half_source
 
 
 def _assert_chin_rest_smile_uses_neutral_speech_mouth(

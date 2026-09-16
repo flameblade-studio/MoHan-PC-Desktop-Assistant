@@ -186,6 +186,8 @@ class _BlinkAssets:
     cosmetic_slots = ("eyes", "cheeks", "lips")
     def __init__(self, closed_patch: QPixmap) -> None:
         self.closed_patch = closed_patch
+        # The retained endpoint set: only the authored CLOSED patch exists here.
+        self.patches = {"closed": closed_patch}
 
     def patch(self, state: str) -> QPixmap:
         assert state == "closed"
