@@ -119,7 +119,7 @@ def generate(output_dir: Path) -> None:
                 ),
             }
             # Qt's antialiased mask can touch one pixel beyond the nominal
-            # rectangle. Four pixels cover that feather without approaching
+            # rectangle. Four pixels cover that feather while retaining clearance from
             # the nose, eyes, jaw line, hands or costume.
             allowed = POSE_MOUTH_RECTS[pose].adjusted(-4, -4, 4, 4)
             base_image = base.toImage().convertToFormat(

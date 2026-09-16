@@ -25,7 +25,7 @@ __all__ = (
 # Emotional prosody: map an expressive speech state to a small rate nudge so a
 # shy or gentle line is spoken a touch slower and an excited or proud line a
 # touch faster.  The user's configured rate (-5..5) remains the baseline; this
-# only adds a bounded offset that never pushes the rate outside the valid band.
+# only adds a bounded offset that keeps the rate inside the valid band.
 _EMOTION_RATE_ADJUSTMENT = frozendict({
     "shy": -1,
     "shy_front": -1,
@@ -54,7 +54,7 @@ def _emotion_rate_adjustment(state: str) -> int:
 
 # Map an internal emotion name (from EXPRESSION_TO_EMOTION) to the semantic
 # emotion the behavior director understands.  This covers every expressive
-# state so attentive, gentle, and protective poses no longer collapse to
+# state so attentive, gentle, and protective poses stay distinct from
 # NEUTRAL during speech.
 _EMOTION_TO_SEMANTIC = frozendict({
     "attentive": SemanticEmotion.ATTENTIVE,

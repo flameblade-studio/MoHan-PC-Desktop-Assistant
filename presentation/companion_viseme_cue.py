@@ -63,7 +63,7 @@ def apply_audio_viseme_cue(window, level: float, vowel: str) -> None:
     # The adaptive full-body renderer is driven by the provider-neutral
     # speech-performance bridge, not by the legacy half-body pixmap path.
     # Publish every accepted audio cue before the ownership guard below;
-    # otherwise full-body speech keeps the canvas but never receives a
+    # otherwise full-body speech keeps the canvas but receives a
     # changing viseme, which presents as "text only, mouth not moving".
     window._record_speech_performance(
         window.speech_performance.viseme(level, frame.selected)
@@ -71,7 +71,7 @@ def apply_audio_viseme_cue(window, level: float, vowel: str) -> None:
     if getattr(window, "_adaptive_full_body_active", False):
         # The v4 full-body composition renders its own speech mouth from
         # the continuous ``face_motion_frame`` produced above.  The legacy
-        # half-body mouth patch and head-motion path must not run in
+        # half-body mouth patch and head-motion path stays outside
         # parallel: it would reset the ownership flag and let the
         # suppressed half-body overlays return, stacking a second body over
         # the full-body frame (the reported double image).

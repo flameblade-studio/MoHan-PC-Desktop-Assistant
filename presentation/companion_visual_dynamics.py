@@ -554,7 +554,7 @@ class CompanionVisualDynamicsMixin:
         self.idle_phase = (self.idle_phase + 1) % 720
         # Crimson Flame resonance: the breathing period shortens smoothly when
         # the user is agitated (furrowed brow), so the companion's body mirrors
-        # the user's tension.  The period is eased by the resonance state, never
+        # the user's tension.  The period is eased by the resonance state, while keeping
         # snapped, so the transition stays smooth frame to frame.
         breath_period = getattr(self, "_resonance_breath_period", 72.0)
         breath = (math.sin(self.idle_phase * math.tau / breath_period) + 1.0) / 2.0
@@ -697,7 +697,7 @@ class CompanionVisualDynamicsMixin:
         face_rendered.fill(Qt.transparent)
         face_painter = QPainter(face_rendered)
         face_painter.setRenderHint(QPainter.SmoothPixmapTransform)
-        # Never translate a photographed face patch over the base portrait.
+        # while keeping translate a photographed face patch over the base portrait.
         # Even a sub-pixel offset creates a visible duplicate lip/eyelid seam.
         # Face parallax is represented by a gaze-dependent, alpha-clipped
         # lighting shift instead; the facial geometry remains registered.
@@ -751,7 +751,7 @@ class CompanionVisualDynamicsMixin:
             # Shy gaze aversion: apply a small, downward offset on top of the
             # sensory gaze target so the companion glances away bashfully when
             # the user stares.  The offset is eased toward its target with a
-            # lerp so the look-away reads as a shy glance, never a sudden snap.
+            # lerp so the look-away reads as a shy glance, while keeping a sudden snap.
             shy_offset = getattr(self, "_shy_gaze_offset", None)
             if shy_offset is not None:
                 current = getattr(self, "_shy_gaze_offset_current", (0.0, 0.0))
@@ -811,7 +811,7 @@ class CompanionVisualDynamicsMixin:
             self.gaze_target_y = 0.0
         # Sword-soul awakening lets her gaze linger instead of snapping back
         # with the same mechanical timing forever.  The bounded reduction is
-        # subtle (0.15 -> 0.10) and therefore cannot stall pointer tracking.
+        # subtle (0.15 -> 0.10) and therefore keeps pointer tracking responsive.
         linger = max(0.0, min(1.0, float(
             getattr(self, "_sword_soul_gaze_linger", 0.0)
         )))
@@ -918,7 +918,7 @@ class CompanionVisualDynamicsMixin:
         return True
 
     def _finish_speech_motion_release(self) -> None:
-        """Transfer visual ownership without changing the composed pixel."""
+        """Transfer visual ownership while preserving the composed pixel."""
         if not self.speech_motion_y:
             return
         self.ambient_motion_y += self.speech_motion_y

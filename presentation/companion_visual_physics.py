@@ -19,7 +19,7 @@ lazy from presentation.presentation_resources import resource_path
 
 __all__ = ("CompanionVisualPhysicsMethods",)
 
-# Physics-layer redraw thresholds (radians) to avoid redundant repaints.
+# Physics-layer redraw thresholds (radians) for stable repaint cadence.
 SLEEVE_ANGLE_EPSILON = 0.012
 BREATH_LIFT_EPSILON = 0.08
 HAIR_ANGLE_EPSILON = 0.025
@@ -251,7 +251,7 @@ class CompanionVisualPhysicsMethods:
 
     @staticmethod
     def _sleeve_texture_only(source: QPixmap, side: str) -> QPixmap:
-        """Keep only outer blue fabric so hands and hair never ghost."""
+        """Keep outer blue fabric so hands and hair remain visually clear."""
         safe = QPixmap(source)
         mask = QPixmap(source.size())
         mask.fill(Qt.transparent)

@@ -1,0 +1,65 @@
+{
+  "identity": {
+    "schema": "mohan.owner-cheek-rest-source-approval.v2",
+    "pose_id": "cheek-rest",
+    "sourceapproved": true,
+    "source_approved": true,
+    "owner_statement": "左二一致，採用這個托腮來源",
+    "approval_scope": "同批 BCC8 source 的可見臉部五官與衣裝來源",
+    "bare_identity_consistency": "approved_for_bcc8_source_visible_face",
+    "hidden_native_bare_source_status": "notapproved",
+    "exact_source_sha256": "bcc8def1ed4dd4cad179951a3733b31addaca97f81bd5211bebce5ea6ca368fe",
+    "comparison_image_sha256": "d126a8604a9c783a33d33fa8c32ed6a477e35edda826dd257fa150f047794a18",
+    "exact_source": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\v4-identity-rebuild-20260905\\v4-hanfu-alignment-20260910\\source-bound-halfbody-sword-sync-20260911-01\\dressed-cheek-rest-01\\dressed-cheek-rest.png",
+      "extracted_copy": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\v4-identity-rebuild-20260905\\v4-hanfu-alignment-20260910\\source-bound-halfbody-sword-sync-20260911-01\\extracted-cheek-rest-01\\approved-source-rgb.png",
+      "copied_to": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-unified-bare-review-20260912-01\\original.png",
+      "sha256": "bcc8def1ed4dd4cad179951a3733b31addaca97f81bd5211bebce5ea6ca368fe"
+    },
+    "comparison_image": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-bare-consistency-20260912-01\\bare-faces-comparison.png",
+      "sha256": "d126a8604a9c783a33d33fa8c32ed6a477e35edda826dd257fa150f047794a18",
+      "size": [
+        2000,
+        456
+      ]
+    },
+    "native_bare_source_reference": {
+      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\v4-identity-rebuild-20260905\\halfbody-approved-identity-expansion\\native-alpha-01\\cheek-rest.birefnet-rgba.png",
+      "sha256": "488bc41a4759935cff850e5584db5cb7e2e8acd0d8f625c61cc102bda279bca0",
+      "source_owner_approved": false,
+      "approval_status": "notapproved",
+      "role": "hidden underlying native bare identity/pose/hands/canvas reference",
+      "runtime_use": "separate reference only; outside this BCC8 visible-face approval"
+    },
+    "formal_integrated": false
+  },
+  "extensions": {
+    "schema": "mohan.owner-source-extension-approval.v1",
+    "owner_statement": "三項都採用",
+    "approval_scope": [
+      "new closed eyelids",
+      "new gently parted speaking mouth",
+      "matching black tank underlying body"
+    ],
+    "native_identity_approval_retained": "bcc8def1ed4dd4cad179951a3733b31addaca97f81bd5211bebce5ea6ca368fe",
+    "sources": {
+      "closed": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-approved-source-motion-candidate-20260912-01\\generated-closed.png",
+        "sha256": "773076d21ed3e57f0d413a4f87bf95e46edf16ae690aae0ff0640e78a1e27ffc"
+      },
+      "speech": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-approved-source-motion-candidate-20260912-01\\generated-speech.png",
+        "sha256": "9fdd299cd8fb228213fd555bbacc44a9dfb3fec0faed1a97908e703ff38cbcd3"
+      },
+      "black_tank_body": {
+        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-approved-source-body-candidate-20260912-01\\generated-native-body.png",
+        "sha256": "3883d7974eed8f2299d667c6d98d15a52608df3eda8c4ea3e0234a5f1e4bb088"
+      }
+    },
+    "source_art_owner_approved": true,
+    "approval_does_not_claim_final_runtime_install": true
+  },
+  "color_palette": "owner adopted existing cross-angle palette",
+  "approval_scope": "source art and existing garment accepted; deterministic integration reviewed separately"
+}

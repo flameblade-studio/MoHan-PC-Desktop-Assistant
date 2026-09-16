@@ -6,6 +6,7 @@ lazy from dataclasses import replace
 lazy import random
 
 lazy from PySide6.QtCore import QTimer
+lazy from PySide6.QtGui import QPixmap
 
 lazy from domain.face_microtiming import (
     BLINK_CLOSED_TIMES_MS,
@@ -13,13 +14,42 @@ lazy from domain.face_microtiming import (
     BLINK_HALF_OPEN_TIMES_MS,
     BLINK_REST_AT_MS,
 )
-lazy from domain.face_rig import blink_for_eye_state, eye_state_for_blink
+lazy from domain.face_rig import EyeState, blink_for_eye_state, eye_state_for_blink
 
 BLINK_PROBABILITY = 0.16
 
 
 class CompanionBlinkRuntimeMixin:
-    """Drive discrete blink states without replacing the active character view."""
+    """Drive discrete blink states while preserving the active character view."""
+
+    def _render_masked_blink_frame(self, opacity: float) -> QPixmap:
+        """Stamp exactly one eyelid authority inside its identity mask."""
+
+        # While speaking, compose over the archived clean speech frame — the
+        # exact mouth currently on screen — not a recomposition at the
+        # target aperture.  The old recomposition made the mouth jump to
+        # its target the instant a blink stamped, then snap back on the
+        # next transition tick.
+        archived = (
+            getattr(self, "speech_visual_pixmap", None)
+            if self.state == "speaking"
+            else None
+        )
+        frame = (
+            QPixmap(archived)
+            if archived is not None and not archived.isNull()
+            else self._render_half_body_frame()
+        )
+        if eye_state_for_blink(opacity) is EyeState.REST:
+            return frame
+        expression = self.current_expression
+        if self.state == "speaking":
+            expression = (
+                self.speech_gesture_expression
+                or getattr(self, "speech_current_expression", None)
+                or expression
+            )
+        return self._blink_composite(frame, str(expression), opacity)
 
     def _full_body_blink(self) -> None:
         """Blink through discrete full-body eye states on the 50 Hz clock."""

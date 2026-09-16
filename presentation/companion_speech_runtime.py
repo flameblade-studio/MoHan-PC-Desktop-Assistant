@@ -196,7 +196,7 @@ class CompanionSpeechRuntimeMixin:
         self._start_next_speech()
 
     def _start_next_speech(self) -> None:
-        if self.speech_playing or not self.speech_queue:
+        if self._closing or self.speech_playing or not self.speech_queue:
             return
         self.speech_finish_timer.stop()
         queued = self.speech_queue.popleft()
@@ -457,7 +457,7 @@ class CompanionSpeechRuntimeMixin:
         if is_english(language):
             self.speak(
                 f"{profile_setting(self.db, 'user_title')}, I am here. "
-                "There is no need to look so surprised.",
+                "You may keep your calm; surprise can wait.",
                 "happy",
             )
             return
@@ -526,7 +526,7 @@ class CompanionSpeechRuntimeMixin:
                 ui_text(
                     profile_setting(self.db, "ui_language"),
                     "realtime_output_unavailable",
-                    "Realtime Azure 語音輸出服務尚未建立，未啟動即時對話。",
+                    'Realtime Azure 語音輸出需要處理，完成後即可啟動即時對話。',
                 )
             )
         credentials = self._speech_credentials()
@@ -564,7 +564,7 @@ class CompanionSpeechRuntimeMixin:
                 ui_text(
                     profile_setting(self.db, "ui_language"),
                     "realtime_disconnected_status",
-                    "未連線",
+                    '等待連線',
                 ),
                 False,
             )
@@ -775,7 +775,7 @@ class CompanionSpeechRuntimeMixin:
             self.dashboard.cancel_ai_wait_expression()
             self.speech_gesture_expression = None
             self.realtime_mouth_active = True
-            # Never carry an emotion selected for the preceding answer into a
+            # Keep each answer's emotion scoped to its own
             # new turn. The transcript may replace this with the new emotion.
             self.realtime_after_speech_state = "idle"
             self.realtime_after_speech_intensity = 0.5
@@ -1052,7 +1052,7 @@ class CompanionSpeechRuntimeMixin:
         release_failed_local_voice(self, message)
 
     def _speech_audio_finished(self) -> None:
-        if not self.speech_playing:
+        if self._closing or not self.speech_playing:
             return
         self._record_speech_performance(
             self.speech_performance.final_audio()
@@ -1081,7 +1081,7 @@ class CompanionSpeechRuntimeMixin:
         self._complete_speech_audio_finished()
 
     def _complete_speech_audio_finished(self) -> None:
-        if not self.speech_playing:
+        if self._closing or not self.speech_playing:
             return
         self.speech_finish_timer.stop()
         if self._wait_for_speech_motion_release(

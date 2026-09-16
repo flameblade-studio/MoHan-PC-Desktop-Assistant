@@ -51,8 +51,8 @@ class FakeInputStream:
 
 
 def run() -> None:
-    # The 0.7-second natural pause in the middle must not truncate the second
-    # phrase. The final 0.9-second silence should still end promptly.
+    # Retain both phrases across the 0.7 s pause, then end capture promptly
+    # at the final 0.9 s silence.
     FakeInputStream.levels = (
         [20] * 3
         + [900] * 5
@@ -75,8 +75,8 @@ def run() -> None:
         path.unlink(missing_ok=True)
         path = None
 
-        # A second click requests an immediate send without waiting for the
-        # automatic endpoint or the ten-second safety ceiling.
+        # A second click sends immediately, taking priority over automatic
+        # endpoint detection and the ten-second safety ceiling.
         listener._stop_recording.clear()
         FakeInputStream.levels = [20] * 3 + [900] * 30
         FakeInputStream.stop_after_reads = 10

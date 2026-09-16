@@ -341,7 +341,7 @@ class CompanionProactiveMixin:
             else "unknown",
             active=observation.activity is ActivityState.ACTIVE,
         )
-        # While the companion is speaking, visual presence/motion must not
+        # While the companion is speaking, visual presence/motion keeps
         # switch the expression state.  A visual-triggered set_state would
         # leave the speaking state, freezing the mouth animation, and the
         # arrival/turn framing would keep rotating the body toward the camera
@@ -406,7 +406,7 @@ class CompanionProactiveMixin:
 
     def _consider_desktop_presence(self) -> None:
         # Time sovereignty: sample the local hour on the existing presence timer
-        # so the companion grows drowsy deep into the night without any blocking
+        # so the companion grows drowsy deep into the night while keeping the UI responsive
         # work on the Qt main thread.
         sovereignty = getattr(self, "time_sovereignty_state", None)
         if sovereignty is not None:
@@ -448,7 +448,7 @@ class CompanionProactiveMixin:
         if sword is not None:
             sword.update(
                 days=float(elapsed_days),
-                # TODO(sword-soul): ``sword_soul_commit_count`` has no writer
+                # TODO(sword-soul): ``sword_soul_commit_count`` receives no persisted writer
                 # yet, so the resonance currently only grows with elapsed days.
                 # A future release-note importer should persist the real commit
                 # count; until then the conservative 0 default applies.

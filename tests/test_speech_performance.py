@@ -139,12 +139,11 @@ def assert_interrupt_and_failure_fail_closed() -> None:
 
 
 def assert_late_viseme_cannot_reopen_a_closed_mouth() -> None:
-    """Ruling 2026-08-27: after mouth_closed, same-generation cues are spent.
+    """Ruling 2026-08-27: mouth_closed consumes all same-generation cues.
 
-    Provider volume cues travel through queued signals and can land after
-    the close event.  Without this guard a late cue flipped the timeline
-    back to SPEAKING with the mouth open, and no second close ever came —
-    the mouth stayed open until the next utterance.
+    Queued provider volume cues can arrive after closure. This guard keeps
+    the mouth closed until a new utterance generation begins, including
+    when a late cue follows the prior close event.
     """
     clock = VirtualClock()
     timeline = SpeechPerformanceTimeline(clock)

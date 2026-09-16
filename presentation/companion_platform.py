@@ -412,6 +412,11 @@ class CompanionPlatformMixin:
 
     def closeEvent(self, event) -> None:
         self._closing = True
+        # Invalidate visual-only completion callbacks that were queued with
+        # the previous playback generation.  QTimer.singleShot callbacks do
+        # not appear in _stop_window_timers, so the generation is the only
+        # cancellation boundary available during shutdown.
+        self.speech_playback_generation += 1
         self._close_proactive_companion_app_bridge()
         self._cancel_adaptive_character_composition()
         self._close_runtime_services()
