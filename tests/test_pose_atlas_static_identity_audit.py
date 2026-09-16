@@ -22,7 +22,11 @@ lazy from tools.audit_pose_atlas_identity import (
 ROOT = Path(__file__).resolve().parents[1]
 SIZE = (128, 192)
 VIEW = "yaw+060-pitch+00"
-CURRENT_WAIVER_COUNT = 3
+CURRENT_WAIVER_COUNT = 4
+CURRENT_WAIVED_CODES = {
+    "forehead_outward_bulge": 3,
+    "forehead_curvature_discontinuity": 1,
+}
 FACE = FaceEvidence(
     box=(40.0, 20.0, 48.0, 70.0),
     landmarks=(
@@ -156,16 +160,14 @@ def test_current_evidence_passes_via_owner_accepted_baseline() -> None:
     assert evidence["passed"] is True
     assert evidence["issue_count"] == 0
     assert evidence["waived_issue_count"] == CURRENT_WAIVER_COUNT
-    # The current owner-accepted v5-base source has three pinned findings,
-    # all from the profile forehead rule. Every other identity rule remains
-    # active in the static gate.
-    assert evidence["waived_issues_by_code"] == {
-        "forehead_outward_bulge": CURRENT_WAIVER_COUNT
-    }
+    # The current owner-accepted v5-base source has four pinned findings,
+    # all from the two profile forehead rules. Every other identity rule
+    # remains active in the static gate.
+    assert evidence["waived_issues_by_code"] == CURRENT_WAIVED_CODES
     assert len(evidence["waived_issues"]) == CURRENT_WAIVER_COUNT
     assert {
         issue["code"] for issue in evidence["waived_issues"]
-    } == {"forehead_outward_bulge"}
+    } == set(CURRENT_WAIVED_CODES)
     assert not Path(evidence["atlas_root"]).is_absolute()
     assert all(
         not Path(issue["path"]).is_absolute()
@@ -183,8 +185,8 @@ def test_current_evidence_passes_via_owner_accepted_baseline() -> None:
             frozenset({"forehead_outward_bulge"}),
         ),
         "yaw-090-pitch+00": (
-            "5ba928de71133cadc45b59b2189f3b82b7da3522b350e1fef5ba2e2f7c135f54",
-            frozenset({"forehead_outward_bulge"}),
+            "59aafd7ee3164c011f2b94a0230ab937a5cc0cf0fbaa78bc37ed20b2d3b78a3d",
+            frozenset({"forehead_curvature_discontinuity", "forehead_outward_bulge"}),
         ),
     }
     baseline_codes: set[str] = set()

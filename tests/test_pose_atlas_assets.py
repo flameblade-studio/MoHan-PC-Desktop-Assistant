@@ -43,7 +43,6 @@ CONTROL_LAYERS_BY_VIEW = frozendict({
         "blink_half", "blink_closed", "visible_hand_left", "visible_hand_right",
     ),
     "yaw+060-pitch+00": ("blink_half", "blink_closed"),
-    "yaw+075-pitch+00": ("blink_half", "blink_closed"),
     "yaw+090-pitch+00": ("blink_half", "blink_closed"),
     "yaw+150-pitch+00": ("visible_hand_left", "visible_hand_right"),
     "yaw-015-pitch+00": ("blink_half", "blink_closed"),
@@ -51,7 +50,6 @@ CONTROL_LAYERS_BY_VIEW = frozendict({
     "yaw-045-pitch+00": ("blink_half", "blink_closed"),
     "yaw-060-pitch+00": ("blink_half", "blink_closed"),
     "yaw-075-pitch+00": ("blink_half", "blink_closed"),
-    "yaw-090-pitch+00": ("blink_half", "blink_closed"),
 })
 
 
@@ -121,8 +119,6 @@ def run() -> None:
         "yaw-060-pitch+00_right.png",
         "yaw-075-pitch+00_left.png",
         "yaw-075-pitch+00_right.png",
-        "yaw-090-pitch+00_left.png",
-        "yaw-090-pitch+00_right.png",
         "yaw-105-pitch+00_left.png",
         "yaw-105-pitch+00_right.png",
         "yaw-120-pitch+00_left.png",
@@ -147,7 +143,6 @@ def run() -> None:
         "yaw-030-pitch+00.png",
         "yaw-045-pitch+00.png",
         "yaw-060-pitch+00.png",
-        "yaw-090-pitch+00.png",
         "yaw-105-pitch+00.png",
         "yaw-120-pitch+00.png",
         "yaw-135-pitch+00.png",
@@ -174,7 +169,6 @@ def run() -> None:
         "yaw-045-pitch+00.png",
         "yaw-060-pitch+00.png",
         "yaw-075-pitch+00.png",
-        "yaw-090-pitch+00.png",
         "yaw-105-pitch+00.png",
         "yaw-120-pitch+00.png",
         "yaw-135-pitch+00.png",
@@ -201,7 +195,6 @@ def run() -> None:
         "yaw-045-pitch+00.png",
         "yaw-060-pitch+00.png",
         "yaw-075-pitch+00.png",
-        "yaw-090-pitch+00.png",
     }
     assets = PoseAtlasAssets(root, image_size=465)
     assert assets.enabled

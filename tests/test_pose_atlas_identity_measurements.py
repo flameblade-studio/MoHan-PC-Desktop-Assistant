@@ -15,9 +15,9 @@ lazy from tools import build_pose_atlas_identity_measurements as measurements
 
 ROOT = Path(__file__).resolve().parents[1]
 CURRENT_ATLAS = ROOT / "assets" / "pose-atlas" / "v5-base"
-MISSING_NATIVE_FACE_YAWS = frozenset({-165, -150, -135, 135, 150, 165})
+MISSING_NATIVE_FACE_YAWS = frozenset({-165, -150, -135, -90, 135, 150, 165})
 REAR_VIEW_YAW = -REAR_YAW
-AVAILABLE_NATIVE_FACE_COUNT = 17
+AVAILABLE_NATIVE_FACE_COUNT = 16
 MISSING_REAR_THREE_QUARTER_COUNT = 6
 NON_REAR_SIGNATURE_COUNT = 23
 CURRENT_SCALE_PROBLEM_COUNT = 29

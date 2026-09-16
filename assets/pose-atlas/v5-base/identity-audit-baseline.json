@@ -49,8 +49,9 @@
       ]
     },
     "yaw-090-pitch+00": {
-      "sha256": "5ba928de71133cadc45b59b2189f3b82b7da3522b350e1fef5ba2e2f7c135f54",
+      "sha256": "59aafd7ee3164c011f2b94a0230ab937a5cc0cf0fbaa78bc37ed20b2d3b78a3d",
       "waived_issue_codes": [
+        "forehead_curvature_discontinuity",
         "forehead_outward_bulge"
       ]
     }

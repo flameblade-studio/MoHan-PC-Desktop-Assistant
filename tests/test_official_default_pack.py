@@ -68,14 +68,14 @@ PROBES = {
         ),
         # Retain the original probe for exact reviewed material detail after registration.
         "garment_detail": ({"point": (600, 700), "expected": (17, 42, 70, 255)},),
-        "lips": {"point": (505, 315), "expected": (176, 1, 47, 78)},
+        "lips": {"point": (505, 315), "expected": (206, 126, 128, 255)},
         "hair": {"point": (440, 370), "expected": (48, 39, 38, 255)},
         "headwear": {"point": (520, 125), "expected": (208, 210, 219, 255)},
     },
     "front-crossed": {
         "base": "assets/expressions/idle_front.png",
         "garment": ({"point": (610, 853), "expected": (27, 76, 143, 255)},),
-        "lips": {"point": (588, 564), "expected": (234, 143, 140, 130)},
+        "lips": {"point": (588, 564), "expected": (235, 168, 172, 255)},
         "hair": {"point": (733, 291), "expected": (35, 36, 35, 255)},
         "headwear": {"point": (553, 194), "expected": (94, 98, 104, 255)},
     },

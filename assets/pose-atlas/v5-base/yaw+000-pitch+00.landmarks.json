@@ -62,12 +62,12 @@
   },
   "native_face_landmarks": {
     "artifact": {
-      "path": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/metadata-rebuild-01/native-face-probe/yaw+000-pitch+00.native-landmarks.json",
-      "sha256": "530740d76f6899d62b3ff32f49bbd991a69dea8e235f8f79b053a4464bbc671f"
+      "path": "assets/pose-atlas/v5-base/yaw+000-pitch+00.native-landmarks.json",
+      "sha256": "6f6835a8b3346db94d012fa2035e24264fe285c6c9e232ae82635fbf6cc1de94"
     },
     "confidence": 0.9498521685600281,
     "coordinates": "normalized_xy_plus_relative_z",
-    "existing_artifact": "scratchpad/v4-identity-rebuild-20260905/canonical-25-root-batch-03/yaw+000-pitch+00/native-landmarks.json",
+    "existing_artifact": "assets/pose-atlas/v5-base/yaw+000-pitch+00.native-landmarks.json",
     "landmark_count": 478,
     "size": [
       1024,
