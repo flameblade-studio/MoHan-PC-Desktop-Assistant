@@ -12,3 +12,9 @@
 # 使記錄在 audit.json / sha256-sums.txt 裡的雜湊失效。整棵樹一律停用文字轉換。
 artifacts/pose-atlas-rebuild/** -text
 *.mohan-outfit binary
+
+# 繁體中文：資產目錄的 JSON 會被執行期以位元組雜湊驗證，任何平台簽出時都不得轉換行尾。
+# 简体中文：资产目录的 JSON 会被运行期以字节哈希验证，任何平台检出时都不得转换行尾。
+# English: asset JSON files are verified by byte hash at runtime, so no platform may convert their line endings on checkout.
+# 日本語：アセットの JSON は実行時にバイト単位のハッシュで検証されるため、どのプラットフォームでもチェックアウト時に改行を変換してはいけません。
+assets/**/*.json -text

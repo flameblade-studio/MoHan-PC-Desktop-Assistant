@@ -9,7 +9,7 @@ lazy import subprocess
 lazy import sys
 lazy import tempfile
 lazy from pathlib import Path
-lazy import pytest
+lazy from typing import Any
 lazy from PIL import Image
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -363,9 +363,20 @@ def test_pose_atlas_smoke_accepts_complete_duplicate_bundle_roots(tmp_path: Path
 
     _require_pose_atlas(tmp_path)
 
-@pytest.mark.parametrize("include_atlas", [True, False])
-def test_packaged_native_overrides_remain_loadable(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, include_atlas: bool,
+def test_packaged_native_overrides_remain_loadable_with_atlas(
+    tmp_path: Path, monkeypatch: Any,
+) -> None:
+    _check_packaged_native_overrides_remain_loadable(tmp_path, monkeypatch, True)
+
+
+def test_packaged_native_overrides_remain_loadable_without_atlas(
+    tmp_path: Path, monkeypatch: Any,
+) -> None:
+    _check_packaged_native_overrides_remain_loadable(tmp_path, monkeypatch, False)
+
+
+def _check_packaged_native_overrides_remain_loadable(
+    tmp_path: Path, monkeypatch: Any, include_atlas: bool,
 ) -> None:
     from infrastructure.core_hand_regions import load_core_hand_regions
     from tools import build_preview_package as builder
@@ -421,7 +432,7 @@ def test_packaged_native_overrides_remain_loadable(
 
 
 def test_packaged_dashboard_artwork_is_loadable(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path, monkeypatch: Any,
 ) -> None:
     from tools import build_preview_package as builder
 
@@ -483,7 +494,7 @@ if __name__ == "__main__":
 
 
 def test_packaged_makeup_state_masks_remain_verifiable(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path, monkeypatch: Any,
 ) -> None:
     from domain.outfit_pack_makeup import load_makeup_safe_regions, verify_makeup_layers
     from tools import build_preview_package as builder

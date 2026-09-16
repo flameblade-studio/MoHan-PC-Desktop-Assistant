@@ -1,15 +1,5 @@
 # 墨寒多感官視覺專案代理鐵則／墨寒多感官视觉项目代理铁则／MoHan Multisensory Vision Agent Iron Rules／墨寒マルチセンサリービジョン エージェント鉄則
 
-## 跨模型交接入口（2026-09-15）／跨模型交接入口／Cross-model handoff／モデル間引き継ぎ
-
-繁體中文：擁有者已授權 Codex 與 DeepSeek Harness 輪流接續本工作樹。每次接手先讀 `D:/FlamebladeStudio/CodexProjects/shared/agent-handoff/START_HERE.md`，核對 checkpoint 與接手鎖，再沿用本檔其餘規則。Codex 專屬的模型、技能及助理設定只適用於 Codex；其他執行環境須如實登記可用能力，不得假稱具有相同工具。藝術批准、原圖來源、可拆圖層、測試與發布門檻不因模型切換而改變。
-
-简体中文：所有者已授权 Codex 与 DeepSeek Harness 轮流接续此工作树。接手先读上述共享入口，核对 checkpoint 和接手锁。Codex 专属工具设置仅用于 Codex；其他环境如实登记能力。艺术批准、来源、可拆图层、测试和发布门槛保持有效。
-
-English: The owner authorizes alternating Codex and DeepSeek Harness work in this checkout. Read the shared entry above and verify its checkpoint and ownership lock before taking over. Codex-specific model and tool settings apply to Codex only; other hosts must record actual capabilities. Art approval, provenance, detachable layers, testing, and release gates remain binding.
-
-日本語：所有者は Codex と DeepSeek Harness による交代作業を承認しています。上記の共有入口を読み、チェックポイントと担当ロックを確認してから引き継いでください。Codex 専用設定は Codex にのみ適用し、他環境は実際の機能を記録します。原画承認、出所、着脱レイヤー、検証・公開条件は引き続き適用されます。
-
 ## 繁體中文
 
 ### AI Development Playbook

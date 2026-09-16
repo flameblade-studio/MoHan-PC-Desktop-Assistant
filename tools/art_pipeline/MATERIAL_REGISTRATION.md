@@ -22,7 +22,7 @@
 
 `material_registration.control_map(source, target, shape, boundary_width=24)`
 returns inverse coordinate maps. `shape` is height and width; controls use XY coordinates.
-The default boundary width of zero preserves existing behavior. A positive value smoothly
+The default `boundary_width` of zero preserves existing behavior. A positive value smoothly
 reduces displacement to zero at every edge pixel. Moving controls must lie beyond this
 transition band, and the final map must pass the fold check. Resample appearance layers
 with premultiplied alpha, verify source RGBA at the boundary and outside the patch, then
@@ -33,7 +33,7 @@ any transparent padding. Keep the native body in its original coordinates.
 
 `material_registration.control_map(source, target, shape, boundary_width=24)`
 は逆座標マップを返します。`shape` は高さと幅、制御点は XY 座標です。
-境界幅の既定値 0 は既存の動作を維持します。正の値では指定幅で変位を滑らかに減らし、
+`boundary_width` の既定値 0 は既存の動作を維持します。正の値では指定幅で変位を滑らかに減らし、
 境界の全画素でゼロにします。移動する制御点は遷移帯より内側に配置し、最終マップの
 折り返し検証を通過させます。乗算済み Alpha で外観を再標本化し、境界と領域外の
 RGBA が元画像と一致することを確認してから目視確認します。元画像のハッシュ、制御点、

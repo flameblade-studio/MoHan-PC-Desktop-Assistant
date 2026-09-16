@@ -63,15 +63,15 @@
   ],
   "approved_generated_sources": {
     "closed": {
-      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-approved-source-motion-candidate-20260912-01\\generated-closed.png",
+      "path": "./scratchpad/cheek-approved-source-motion-candidate-20260912-01/generated-closed.png",
       "sha256": "773076d21ed3e57f0d413a4f87bf95e46edf16ae690aae0ff0640e78a1e27ffc"
     },
     "speech": {
-      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-approved-source-motion-candidate-20260912-01\\generated-speech.png",
+      "path": "./scratchpad/cheek-approved-source-motion-candidate-20260912-01/generated-speech.png",
       "sha256": "9fdd299cd8fb228213fd555bbacc44a9dfb3fec0faed1a97908e703ff38cbcd3"
     },
     "black_tank_body": {
-      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-approved-source-body-candidate-20260912-01\\generated-native-body.png",
+      "path": "./scratchpad/cheek-approved-source-body-candidate-20260912-01/generated-native-body.png",
       "sha256": "3883d7974eed8f2299d667c6d98d15a52608df3eda8c4ea3e0234a5f1e4bb088"
     }
   },

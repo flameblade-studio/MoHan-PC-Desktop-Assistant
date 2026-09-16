@@ -11,13 +11,13 @@
     "exact_source_sha256": "bcc8def1ed4dd4cad179951a3733b31addaca97f81bd5211bebce5ea6ca368fe",
     "comparison_image_sha256": "d126a8604a9c783a33d33fa8c32ed6a477e35edda826dd257fa150f047794a18",
     "exact_source": {
-      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\v4-identity-rebuild-20260905\\v4-hanfu-alignment-20260910\\source-bound-halfbody-sword-sync-20260911-01\\dressed-cheek-rest-01\\dressed-cheek-rest.png",
-      "extracted_copy": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\v4-identity-rebuild-20260905\\v4-hanfu-alignment-20260910\\source-bound-halfbody-sword-sync-20260911-01\\extracted-cheek-rest-01\\approved-source-rgb.png",
-      "copied_to": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-unified-bare-review-20260912-01\\original.png",
+      "path": "./scratchpad/v4-identity-rebuild-20260905/v4-hanfu-alignment-20260910/source-bound-halfbody-sword-sync-20260911-01/dressed-cheek-rest-01/dressed-cheek-rest.png",
+      "extracted_copy": "./scratchpad/v4-identity-rebuild-20260905/v4-hanfu-alignment-20260910/source-bound-halfbody-sword-sync-20260911-01/extracted-cheek-rest-01/approved-source-rgb.png",
+      "copied_to": "./scratchpad/cheek-unified-bare-review-20260912-01/original.png",
       "sha256": "bcc8def1ed4dd4cad179951a3733b31addaca97f81bd5211bebce5ea6ca368fe"
     },
     "comparison_image": {
-      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-bare-consistency-20260912-01\\bare-faces-comparison.png",
+      "path": "./scratchpad/cheek-bare-consistency-20260912-01/bare-faces-comparison.png",
       "sha256": "d126a8604a9c783a33d33fa8c32ed6a477e35edda826dd257fa150f047794a18",
       "size": [
         2000,
@@ -25,7 +25,7 @@
       ]
     },
     "native_bare_source_reference": {
-      "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\v4-identity-rebuild-20260905\\halfbody-approved-identity-expansion\\native-alpha-01\\cheek-rest.birefnet-rgba.png",
+      "path": "./scratchpad/v4-identity-rebuild-20260905/halfbody-approved-identity-expansion/native-alpha-01/cheek-rest.birefnet-rgba.png",
       "sha256": "488bc41a4759935cff850e5584db5cb7e2e8acd0d8f625c61cc102bda279bca0",
       "source_owner_approved": false,
       "approval_status": "notapproved",
@@ -45,15 +45,15 @@
     "native_identity_approval_retained": "bcc8def1ed4dd4cad179951a3733b31addaca97f81bd5211bebce5ea6ca368fe",
     "sources": {
       "closed": {
-        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-approved-source-motion-candidate-20260912-01\\generated-closed.png",
+        "path": "./scratchpad/cheek-approved-source-motion-candidate-20260912-01/generated-closed.png",
         "sha256": "773076d21ed3e57f0d413a4f87bf95e46edf16ae690aae0ff0640e78a1e27ffc"
       },
       "speech": {
-        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-approved-source-motion-candidate-20260912-01\\generated-speech.png",
+        "path": "./scratchpad/cheek-approved-source-motion-candidate-20260912-01/generated-speech.png",
         "sha256": "9fdd299cd8fb228213fd555bbacc44a9dfb3fec0faed1a97908e703ff38cbcd3"
       },
       "black_tank_body": {
-        "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\cheek-approved-source-body-candidate-20260912-01\\generated-native-body.png",
+        "path": "./scratchpad/cheek-approved-source-body-candidate-20260912-01/generated-native-body.png",
         "sha256": "3883d7974eed8f2299d667c6d98d15a52608df3eda8c4ea3e0234a5f1e4bb088"
       }
     },
