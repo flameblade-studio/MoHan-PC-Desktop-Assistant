@@ -33,110 +33,16 @@
     },
     "yaw-090-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 581.5398,
-      "method": "Root-verified alpha-weighted centroid of partitions-03 native lip_upper+lip_lower; source03 geometry-03 pixel authority; native-layer ownership and pixel reconstruction accepted in profile-native03-root-review-01",
+      "mouth_center_x": 568.2014,
+      "method": "alpha-weighted centroid x of the main-branch lip_upper+lip_lower restored on 2026-09-16 by owner decision (tools/recalibrate_mouth_authority.py)",
       "source_layers": {
         "lip_upper": {
           "path": "yaw-090-pitch+00_lip_upper.png",
-          "sha256": "3ad0ac2998c44b05c259346badecfc48184d926ceba0497814a6332ec6843ffb"
+          "sha256": "779aa39e361732deaf49bbf2feb622de10e1cca74016d3bc30bbc1b96c4d23ba"
         },
         "lip_lower": {
           "path": "yaw-090-pitch+00_lip_lower.png",
-          "sha256": "81bedade7c17a16f1846cd32e75e6cb0fabc452c027b07316e8ba74f1c50d70c"
-        }
-      },
-      "footprint": {
-        "canvas": [
-          1024,
-          1536
-        ],
-        "alpha_weight": 46243,
-        "centroid_x": 581.539801,
-        "centroid_y": 277.856627,
-        "layers": {
-          "lip_upper": {
-            "alpha_nonzero_pixels": 114,
-            "alpha_bbox_xyxy_exclusive": [
-              569,
-              271,
-              591,
-              280
-            ]
-          },
-          "lip_lower": {
-            "alpha_nonzero_pixels": 68,
-            "alpha_bbox_xyxy_exclusive": [
-              575,
-              279,
-              590,
-              286
-            ]
-          }
-        }
-      },
-      "source03_geometry": {
-        "path": "assets/pose-atlas/v5-base/yaw-090-pitch+00.native-source-geometry-03.json",
-        "sha256": "0380a7870ec0cdb13b1d1ad77514dde75cb780c78fd0ce1de408f46faee1b33a",
-        "schema": "mohan.source-native-profile-geometry.v1",
-        "upper_point_bounds_xyxy_inclusive": [
-          569,
-          271,
-          590,
-          279
-        ],
-        "lower_point_bounds_xyxy_inclusive": [
-          574,
-          278,
-          589,
-          285
-        ]
-      },
-      "status": "root_native_layers_verified_pending_owner_appearance_approval",
-      "superseded_formal": {
-        "trusted": true,
-        "mouth_center_x": 573.1304,
-        "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
-        "source_layers": {
-          "lip_upper": {
-            "path": "yaw-090-pitch+00_lip_upper.png",
-            "sha256": "6d69a4c23992a6281f3e4b1cde6b7009e2c29fcf0481489eaecd86053e5cc399"
-          },
-          "lip_lower": {
-            "path": "yaw-090-pitch+00_lip_lower.png",
-            "sha256": "06639bc324b178da71f496003d21a600c311e8eeff8c9d6987f1996bbebdb43d"
-          }
-        }
-      },
-      "source_partition": {
-        "manifest": {
-          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native-body-same-coordinate-03/partitions-03/partition-manifest.json",
-          "sha256": "113342db5a809b98d74de4cf460965e6183d7d03ba3d72811bf3d1c024225c83"
-        },
-        "receipt": {
-          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native-body-same-coordinate-03/partitions-03/receipt.json",
-          "sha256": "c947b50957ee85ac8cea435c9ee8746d81179a281995af5fb85e39517e252f3b"
-        },
-        "authority": {
-          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native-body-same-coordinate-03/partitions-03/yaw-090-pitch+00.png",
-          "sha256": "b5a6add49565aa7edef0b5c693f72c6a410f2e1ba9a07bdf35e3cc5544304634"
-        }
-      },
-      "root_review": {
-        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-root-review-01.json",
-        "sha256": "944ce3482ae6061aa6b4ec8db6d475dff7c2258c71d7e3c48b3be58102b6fd43",
-        "status": "accepted-for-authorized-correction",
-        "owner_appearance_approval": false
-      },
-      "speech_overlay": {
-        "source": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-speech-source-03/yaw-090-speech.portrait.png",
-        "source_sha256": "3bc67104db98979ad4a505da0c5db205f93529f43a1cd8c2d224306d0c98e25d",
-        "path": "yaw-090-pitch+00_oral_cavity.png",
-        "sha256": "be43cc05f8faeda3fada95fc641bc5b56df4064c0d7fe180f3fb6012f50d6a41",
-        "method": "Whole photographic mouth extracted from a regenerated complete head-and-shoulders portrait; registered by inverse native reference crop (350,65,670,415); uniform resampling only, no painted teeth or RGB patches; native-lip-bounded product speech deformation",
-        "source_partition_relationship": "Derived speech state, excluded from registered neutral reconstruction",
-        "root_review": {
-          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-speech-source-03/runtime-01/root-review.json",
-          "sha256": "06934351d519f83da83fefb16cd10992c6725e59d493be5a3b384acfb08c1fcf"
+          "sha256": "b1890c5c78587a225adb4467933183e05f3a4532f6032d7177249474f3b64e1c"
         }
       }
     },
