@@ -9,13 +9,16 @@ lazy from PySide6.QtGui import QPainter, QPixmap
 
 lazy from domain.outfit_pack import resolve_active_selection
 lazy from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
-lazy from domain.outfit_pack_official import BUILTIN_MAKEUP_PACK_ID
+lazy from domain import outfit_pack_official
 lazy from infrastructure.reviewed_garment_assets import (
     COMPLETE_EXPRESSION_DYNAMIC_SOURCE,
     ReviewedGarmentPose,
 )
 lazy from infrastructure.reviewed_pose_motion import ReviewedPoseMotion, load_reviewed_pose_motion
 
+
+# Resolve the official identity now so a lazily imported module object exposes the string.
+BUILTIN_MAKEUP_PACK_ID = outfit_pack_official.BUILTIN_MAKEUP_PACK_ID
 COSMETIC_SLOTS = frozenset({"eyes", "cheeks", "lips"})
 LIGHT_STRENGTH = 0.55
 # The installed complete half-body expression set, relative to the project root

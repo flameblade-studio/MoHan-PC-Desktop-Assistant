@@ -11,17 +11,19 @@ lazy from PySide6.QtGui import QPainter, QPixmap
 
 lazy from domain.outfit_pack import FOUNDATION_SLOT, resolve_active_selection
 lazy from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
-lazy from domain.outfit_pack_official import (
-    BUILTIN_MAKEUP_PACK_ID,
-    BUILTIN_MAKEUP_VARIANTS,
-    OFFICIAL_OUTFIT_PACK_ID,
-)
+lazy from domain import outfit_pack_official
 lazy from infrastructure.exasperated_candidate_assets import (
     APPROVED_SOURCE_SHA256,
     DIMENSION,
     EXPRESSION_VARIANTS,
     validate_candidate_png,
 )
+
+# Resolve the official identities now: tests reach them through a lazily imported
+# module object, and a lazily bound name there would surface as an unresolved proxy.
+BUILTIN_MAKEUP_PACK_ID = outfit_pack_official.BUILTIN_MAKEUP_PACK_ID
+BUILTIN_MAKEUP_VARIANTS = outfit_pack_official.BUILTIN_MAKEUP_VARIANTS
+OFFICIAL_OUTFIT_PACK_ID = outfit_pack_official.OFFICIAL_OUTFIT_PACK_ID
 
 SCHEMA = "mohan.exasperated-candidate-appearance.v1"
 FOUNDATION_SCHEMA = "mohan.exasperated-candidate-appearance.v2"
