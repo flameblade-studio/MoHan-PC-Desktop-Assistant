@@ -300,7 +300,8 @@ jobs:
             --output-dir $evidenceDir `
             --min-samples 100 `
             --max-sample-read-error-percent 15 `
-            --max-missed-samples-percent 10
+            --max-missed-samples-percent 10 `
+            --duration 40
           if ($LASTEXITCODE -ne 0) {
             throw "Tachyon release evidence failed with exit code $LASTEXITCODE"
           }

@@ -105,6 +105,7 @@ jobs:
           --min-samples 100
           --max-sample-read-error-percent 15
           --max-missed-samples-percent 10
+          --duration 40
 
       - name: Upload sanitized Tachyon evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
