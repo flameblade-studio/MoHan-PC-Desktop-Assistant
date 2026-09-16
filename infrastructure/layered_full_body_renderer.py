@@ -14,7 +14,7 @@ from __future__ import annotations
 lazy from collections import OrderedDict
 lazy from pathlib import Path
 
-lazy from PySide6.QtCore import QRectF, Qt
+lazy from PySide6.QtCore import QRect, QRectF, Qt
 lazy from PySide6.QtGui import QPainter, QPixmap, QRegion
 
 lazy from domain.constants import (
@@ -24,17 +24,24 @@ lazy from domain.constants import (
 )
 lazy from domain.face_rig import EyeState, FaceMotionFrame, Viseme, eye_state_for_blink
 lazy from infrastructure.layered_full_body_assets import (
+    CompleteExpressionFrameSet,
+    COMPLETE_EXPRESSION_PRESERVE_BODY_POLICY,
     LayeredFullBodyManifest,
     LayeredFullBodyView,
     VIEW_IDS,
     load_layered_full_body_assets,
+    snapshot_complete_expression_frames,
+    snapshot_speech_frames,
 )
 lazy from infrastructure.mouth_geometry import paint_inward_lerped_u_layer
+lazy from infrastructure.animated_appearance import AnimatedAppearance
+lazy from infrastructure.full_body_blink_binding import bind_blink_source, snapshot_view_authority
 
 MOUTH_APERTURE_THRESHOLD = 0.01
 BLINK_VISIBLE_EPSILON = 1e-6
+AUTHORED_SPEECH_VISIBLE_APERTURE = 0.16
 # Iris translation scale: gaze_x/gaze_y are normalized to [-1, 1]; this maps
-# them onto a small pixel offset so the eyes track the pointer without the iris
+# them onto a small pixel offset so the eyes track the pointer while preserving the iris
 # leaving the sclera.  The full-body layers are authored at 1024x1536, so a few
 # pixels of travel reads as a natural glance rather than an eye-roll.
 IRIS_GAZE_SCALE_X = 6.0
@@ -44,11 +51,12 @@ IRIS_GAZE_SCALE_Y = 4.0
 BREATH_LIFT_SCALE = 6.0
 # The authored body layer already contains the arms and hands, while each
 # sleeve is available as a separate transparent physical layer.  Keep sleeve
-# motion deliberately small so behavior reads without disconnecting the cuff
+# motion deliberately small so behavior reads while preserving the cuff connection
 # from the underlying hand.
 MAX_SLEEVE_LIFT = 4.0
 MAX_GESTURE_SWAY = 3.0
 GESTURE_ENERGY_THRESHOLD = 0.45
+COMPLETE_EXPRESSION_NEUTRAL_POSE_ID = "front-crossed"
 
 # The layered pack and the static authority it was cut from MUST move
 # together: the seam-heal and face-restore passes below repaint authority
@@ -66,7 +74,7 @@ SEAM_HEAL_RADIUS = 7
 REGISTERED_COMPOSITE_LAYERS = (
     # oral_cavity / teeth_tongue are clean speech overlays rebuilt by
     # tools/rebuild_pose_atlas_mouth_layers.py; unlike the legacy skin
-    # replacement cut-outs, their edges must not be healed back to neutral.
+    # replacement cut-outs, their authored edges remain visible.
     "body", "hair_back", "base", "jaw", "lip_lower", "lip_upper",
     "corner_left", "corner_right", "blush_left", "blush_right", "iris_left",
     "iris_right", "eyelid_left", "eyelid_right", "eyeliner_left",
@@ -88,9 +96,20 @@ class LayeredFullBodyRenderer:
         self,
         manifest: LayeredFullBodyManifest | None = None,
         outfit_overlay=None,
+        *,
+        authority_root: Path | None = None,
     ) -> None:
         self._manifest = manifest
         self._outfit_overlay = outfit_overlay
+        self._animated_appearance = AnimatedAppearance(outfit_overlay)
+        self._authority_root = (
+            Path(authority_root).resolve() if authority_root is not None
+            else PROJECT_ROOT / FULL_BODY_AUTHORITY_DIR
+        )
+        self._strict_authority = authority_root is not None
+        self._bound_png_bytes: dict[str, bytes] = {}
+        if manifest is not None:
+            self._bind_manifest_blinks(manifest)
         # Two adjacent 25-layer views are sufficient for one interpolated
         # frame. Keeping all 600 decoded 1024x1536 RGBA layers retained roughly
         # 3.5 GiB before Qt/GPU copies and triggered Windows RADAR pre-leak
@@ -117,23 +136,52 @@ class LayeredFullBodyRenderer:
             self._mask_region_cache[key] = region
         return region
 
+    def _bind_manifest_blinks(self, manifest: LayeredFullBodyManifest) -> None:
+        """Freeze candidate authority and authored motion before rendering."""
+        snapshots: dict[str, bytes] = {}
+        # Legacy view providers need only expose view(); explicit candidate
+        # manifests expose all views so their source bytes can be frozen eagerly.
+        views = manifest.views if self._strict_authority else getattr(manifest, "views", {})
+        for view in views.values():
+            if self._strict_authority:
+                if view.blink_frames:
+                    bound = bind_blink_source(self._authority_root, view.view_id, view.blink_frames)
+                else:
+                    bound = snapshot_view_authority(self._authority_root, view.view_id)
+                snapshots.update(bound)
+            snapshots.update(snapshot_speech_frames(view))
+            snapshots.update(snapshot_complete_expression_frames(view))
+        self._bound_png_bytes = snapshots
+
     def _manifest_or_load(self) -> LayeredFullBodyManifest:
         if self._manifest is None:
-            self._manifest = load_layered_full_body_assets(
+            manifest = load_layered_full_body_assets(
                 PROJECT_ROOT / FULL_BODY_ASSET_DIR
             )
+            self._bind_manifest_blinks(manifest)
+            self._manifest = manifest
         return self._manifest
 
-    def _cached_pixmap(self, path) -> QPixmap:
+    def _cached_pixmap(self, path, *, required: bool = True) -> QPixmap:
         """Return a decoded layer pixmap, caching it across frames."""
         if path is None:
             return QPixmap()
         key = str(path)
         cached = self._pixmap_cache.get(key)
         if cached is not None:
+            if cached.isNull() and (required or Path(key).exists()):
+                raise ValueError(f"Cannot decode full-body layer PNG: {key}")
             self._pixmap_cache.move_to_end(key)
             return cached
-        pixmap = QPixmap(key)
+        snapshot = self._bound_png_bytes.get(key)
+        if snapshot is None:
+            pixmap = QPixmap(key)
+        else:
+            pixmap = QPixmap()
+            if not pixmap.loadFromData(snapshot, "PNG"):
+                raise ValueError(f"Cannot decode bound blink PNG: {key}")
+        if pixmap.isNull() and (required or Path(key).exists()):
+            raise ValueError(f"Cannot decode full-body layer PNG: {key}")
         self._pixmap_cache[key] = pixmap
         self._pixmap_cache.move_to_end(key)
         while len(self._pixmap_cache) > MAX_CACHED_LAYER_PIXMAPS:
@@ -154,33 +202,105 @@ class LayeredFullBodyRenderer:
         """Render one complete full-body frame for the given view and motion."""
         view = self._manifest_or_load().view(view_id)
         bounded_energy = max(0.0, min(1.0, float(body_energy)))
-        static = self._static_base_composite(
-            view, pose_id, left_hand, right_hand, bounded_energy
+        complete_paths = self._complete_expression_paths(
+            view,
+            motion,
+            pose_id=pose_id,
+            left_hand=left_hand,
+            right_hand=right_hand,
+            body_energy=bounded_energy,
+            gesture_beat=gesture_beat,
         )
+        deferred_body = (
+            complete_paths is not None
+            and self._animated_appearance.supports_body_replacement
+        )
+        if complete_paths is None or deferred_body:
+            static = self._static_base_composite(
+                view, pose_id, left_hand, right_hand, bounded_energy
+            )
+        else:
+            static = self._complete_expression_base(
+                view,
+                complete_paths,
+                pose_id=pose_id,
+                left_hand=left_hand,
+                right_hand=right_hand,
+                body_energy=bounded_energy,
+            )
         if static.isNull():
             return QPixmap()
-        result = QPixmap(static)
-        # Authority restoration removes seam-healing artefacts, but also
-        # restores the neutral eye pixels. Re-apply only bounded eye motion
-        # afterwards so dynamic pixels cannot escape their authored masks.
-        self._paint_dynamic_eye_layers(result, view, motion)
-        self._paint_u_lip_layers(result, view, motion.mouth.u_inward)
-        if (
-            motion.viseme is not Viseme.CLOSED
-            or motion.mouth.aperture > MOUTH_APERTURE_THRESHOLD
-        ):
-            self._paint_visible_cavity(result, view, motion.mouth)
-        if self._outfit_overlay is not None:
-            eye_state = eye_state_for_blink(motion.expression_shape.blink)
-            if eye_state is not EyeState.REST:
-                result = self._outfit_overlay.apply(
-                    result, view_id, suppress_makeup_slots=(
-                        frozenset({"eyes"}) if eye_state is EyeState.CLOSED or eye_state in view.blink_frames else frozenset()
-                    ),
-                    eye_state="half" if eye_state is EyeState.HALF else "closed",
-                )
-            else:
-                result = self._outfit_overlay.apply(result, view_id)
+        oral_mask = self._authored_oral_mask(view, motion, complete_paths)
+        oral_bounds = (
+            self._mask_region(oral_mask).boundingRect().adjusted(-1, -1, 1, 1)
+            if oral_mask is not None else QRect()
+        )
+        protected_skin = (
+            static.copy(oral_bounds)
+            if complete_paths is not None and oral_mask is not None
+            else QPixmap()
+        )
+
+        def paint_motion(frame: QPixmap) -> None:
+            nonlocal protected_skin
+            if complete_paths is not None:
+                if oral_mask is not None:
+                    protected_skin = frame.copy(oral_bounds)
+                return
+            # Motion is replayable on the bare frame if either outfit phase fails.
+            self._paint_dynamic_eye_layers(frame, view, motion)
+            if getattr(view, "speech_frames", None):
+                self._paint_authored_speech(frame, view, motion)
+                if oral_mask is not None:
+                    protected_skin = frame.copy(oral_bounds)
+                return
+            self._paint_u_lip_layers(frame, view, motion.mouth.u_inward)
+            if (
+                motion.viseme is not Viseme.CLOSED
+                or motion.mouth.aperture > MOUTH_APERTURE_THRESHOLD
+            ):
+                self._paint_visible_cavity(frame, view, motion.mouth)
+
+        def restore_oral_skin(frame: QPixmap) -> None:
+            # Preserve the already blended skin-motion pixels, including partial
+            # apertures, while allowing lipstick outside the oral opening.
+            if oral_mask is None or protected_skin.isNull():
+                return
+            protected = QPixmap(protected_skin)
+            painter = QPainter(protected)
+            painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+            painter.drawPixmap(0, 0, oral_mask.copy(oral_bounds))
+            painter.end()
+            painter = QPainter(frame)
+            painter.setCompositionMode(QPainter.CompositionMode_SourceAtop)
+            painter.drawPixmap(oral_bounds.topLeft(), protected)
+            painter.end()
+
+        eye_state = eye_state_for_blink(motion.expression_shape.blink)
+        def replace_body(frame: QPixmap) -> QPixmap:
+            if complete_paths is None:
+                return frame
+            path, _oral, mask = complete_paths
+            if mask is None:
+                return QPixmap(self._cached_pixmap(path))
+            return self._replace_complete_expression_region(frame, path, mask)
+
+        # Preserve legacy half-blink makeup for a base-only authored contract.
+        suppressed = (
+            frozenset({"eyes"})
+            if (
+                eye_state is EyeState.CLOSED
+                or eye_state in view.blink_frames
+                or (complete_paths is not None and eye_state is EyeState.HALF)
+            )
+            else frozenset()
+        )
+        result = self._animated_appearance.compose(
+            static, view_id, paint_motion,
+            suppress_makeup_slots=suppressed, eye_state=eye_state.value,
+            paint_after_makeup=restore_oral_skin if oral_mask is not None else None,
+            replace_body=replace_body if deferred_body else None,
+        )
 
         # Breathing moves the atomically composed character. Moving only the
         # body below stationary hair and face layers creates visible seams.
@@ -193,6 +313,193 @@ class LayeredFullBodyRenderer:
             gesture_beat,
         )
         return self._translated_frame(result, breath_dy, gesture_dx)
+
+    def _authored_oral_mask(
+        self,
+        view: LayeredFullBodyView,
+        motion: FaceMotionFrame,
+        complete_paths: tuple[Path, Path | None, Path | None] | None = None,
+    ) -> QPixmap | None:
+        if complete_paths is not None:
+            path = complete_paths[1]
+            return self._cached_pixmap(path) if path is not None else None
+        masks = getattr(view, "speech_oral_masks", {})
+        if not masks or motion.mouth.aperture <= MOUTH_APERTURE_THRESHOLD:
+            return None
+        viseme = Viseme.CONSONANT if motion.viseme is Viseme.CLOSED else motion.viseme
+        path = masks.get(viseme)
+        if path is None:
+            raise ValueError(f"Missing native speech oral mask: {view.view_id}/{viseme.value}")
+        return self._cached_pixmap(path)
+
+    def _complete_expression_paths(
+        self,
+        view: LayeredFullBodyView,
+        motion: FaceMotionFrame,
+        *,
+        pose_id: str,
+        left_hand: str,
+        right_hand: str,
+        body_energy: float,
+        gesture_beat: bool,
+    ) -> tuple[Path, Path | None, Path | None] | None:
+        """Resolve one complete face/body frame before detachable appearance."""
+
+        group = getattr(view, "complete_expression_frames", None)
+        if group is None:
+            return None
+        if not isinstance(group, CompleteExpressionFrameSet):
+            raise ValueError("Complete expression frame group has an invalid type")
+        eye_state = eye_state_for_blink(motion.expression_shape.blink)
+        aperture = max(0.0, min(1.0, float(motion.mouth.aperture)))
+        selected: tuple[Path, Path | None] | None = None
+        if group.neutral_frames and aperture <= MOUTH_APERTURE_THRESHOLD:
+            try:
+                selected = group.neutral_frames[eye_state], None
+            except KeyError as error:
+                raise ValueError(
+                    "Missing complete expression neutral state: "
+                    f"{view.view_id}/{eye_state.value}"
+                ) from error
+        elif aperture <= MOUTH_APERTURE_THRESHOLD:
+            return None
+        else:
+            viseme = Viseme.CONSONANT if motion.viseme is Viseme.CLOSED else motion.viseme
+            try:
+                frame = group.frame(viseme, eye_state)
+                oral_mask = group.oral_mask(viseme, eye_state)
+            except KeyError as error:
+                raise ValueError(
+                    "Missing complete expression state: "
+                    f"{view.view_id}/{viseme.value}/{eye_state.value}"
+                ) from error
+            selected = frame, oral_mask
+        self._ensure_complete_expression_body_motion(
+            view,
+            motion_policy=group.motion_policy,
+            pose_id=pose_id,
+            left_hand=left_hand,
+            right_hand=right_hand,
+            body_energy=body_energy,
+            gesture_beat=gesture_beat,
+        )
+        frame, oral_mask = selected
+        replacement_mask = (
+            group.replacement_mask
+            if group.motion_policy == COMPLETE_EXPRESSION_PRESERVE_BODY_POLICY
+            else None
+        )
+        return frame, oral_mask, replacement_mask
+
+    def _complete_expression_base(
+        self,
+        view: LayeredFullBodyView,
+        selection: tuple[Path, Path | None, Path | None],
+        *,
+        pose_id: str,
+        left_hand: str,
+        right_hand: str,
+        body_energy: float,
+    ) -> QPixmap:
+        """Compose body motion, then replace only a source-bound head region."""
+
+        frame_path, _oral_mask, replacement_mask = selection
+        if replacement_mask is None:
+            return self._cached_pixmap(frame_path)
+        base = self._static_base_composite(
+            view, pose_id, left_hand, right_hand, body_energy
+        )
+        if base.isNull():
+            return QPixmap()
+        return self._replace_complete_expression_region(
+            base, frame_path, replacement_mask,
+        )
+
+    def _replace_complete_expression_region(
+        self,
+        base: QPixmap,
+        frame_path: Path,
+        mask_path: Path,
+    ) -> QPixmap:
+        """Replace a hashed head region while clearing its old silhouette first."""
+
+        source = self._cached_pixmap(frame_path)
+        mask = self._cached_pixmap(mask_path)
+        if source.isNull() or mask.isNull():
+            return QPixmap()
+        if source.size() != base.size() or mask.size() != base.size():
+            raise ValueError(
+                "Complete expression replacement requires same-canvas frame and mask"
+            )
+
+        masked_source = QPixmap(source.size())
+        masked_source.fill(Qt.transparent)
+        painter = QPainter(masked_source)
+        painter.drawPixmap(0, 0, source)
+        painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+        painter.drawPixmap(0, 0, mask)
+        painter.end()
+
+        # A fully opaque RGB body can decode as RGB32.  Copy it onto an alpha
+        # capable canvas before clearing the declared region; otherwise Qt
+        # cannot remove old hair pixels at the replacement boundary.
+        result = QPixmap(base.size())
+        result.fill(Qt.transparent)
+        painter = QPainter(result)
+        painter.drawPixmap(0, 0, base)
+        painter.end()
+        painter = QPainter(result)
+        painter.setCompositionMode(QPainter.CompositionMode_DestinationOut)
+        painter.drawPixmap(0, 0, mask)
+        # The cleared destination and the masked source are both premultiplied.
+        # Adding them implements base * (1 - mask) + source * mask while
+        # keeping alpha opaque when both inputs are opaque.  SourceOver here
+        # would multiply the destination alpha a second time at soft edges.
+        painter.setCompositionMode(QPainter.CompositionMode_Plus)
+        painter.drawPixmap(0, 0, masked_source)
+        painter.end()
+        return result
+
+    @staticmethod
+    def _ensure_complete_expression_body_motion(
+        view: LayeredFullBodyView,
+        *,
+        motion_policy: str,
+        pose_id: str,
+        left_hand: str,
+        right_hand: str,
+        body_energy: float,
+        gesture_beat: bool,
+    ) -> None:
+        """Reject motion only for the atomic neutral-body expression policy."""
+
+        if motion_policy == COMPLETE_EXPRESSION_PRESERVE_BODY_POLICY:
+            return
+
+        normalized_pose = str(pose_id).strip().lower()
+        neutral_hands = all(
+            LayeredFullBodyRenderer._is_neutral_hand(hand)
+            for hand in (left_hand, right_hand)
+        )
+        if (
+            normalized_pose == COMPLETE_EXPRESSION_NEUTRAL_POSE_ID
+            and neutral_hands
+            and body_energy <= FLOAT_COMPARISON_EPSILON
+            and not gesture_beat
+        ):
+            return
+        raise ValueError(
+            "Complete expression frames support only neutral_body_only motion; "
+            f"{view.view_id} requires pose/hand/energy-compatible frames for "
+            f"pose_id={pose_id!r}, left_hand={left_hand!r}, "
+            f"right_hand={right_hand!r}, body_energy={body_energy!r}, "
+            f"gesture_beat={gesture_beat!r}"
+        )
+
+    @staticmethod
+    def _is_neutral_hand(hand: str) -> bool:
+        normalized = str(hand).strip().lower()
+        return not normalized or normalized.startswith(("relaxed", "neutral"))
 
     @staticmethod
     def _sleeve_lift(
@@ -258,6 +565,8 @@ class LayeredFullBodyRenderer:
         body = self._cached_pixmap(view.path("body"))
         if body.isNull():
             return QPixmap()
+        if self._strict_authority:
+            self._view_authority(view, body)
         result = QPixmap(body)
         self._paint_opacity(result, view.path("hair_back"), 1.0)
         self._paint_opacity(result, view.path("base"), 1.0)
@@ -284,7 +593,7 @@ class LayeredFullBodyRenderer:
         result: QPixmap,
         view: LayeredFullBodyView,
     ) -> None:
-        """Paint the registered neutral facial cutouts (no parameter motion).
+        """Paint the registered neutral facial cutouts (with parameter motion applied later).
 
         The authored facial layers are neutral registered cutouts, not
         effect-only overlays: painting them fills the transparent holes in
@@ -336,9 +645,7 @@ class LayeredFullBodyRenderer:
             self._seam_region_cache[view.view_id] = region
         if region.isEmpty():
             return
-        authority = self._cached_pixmap(
-            PROJECT_ROOT / FULL_BODY_AUTHORITY_DIR / f"{view.view_id}.png"
-        )
+        authority = self._view_authority(view, target)
         if authority.isNull():
             return
         painter = QPainter(target)
@@ -352,7 +659,7 @@ class LayeredFullBodyRenderer:
         target: QPixmap,
         view: LayeredFullBodyView,
     ) -> None:
-        """Remove broad skin-cutout artefacts without replacing body layers."""
+        """Remove broad skin-cutout artefacts while preserving body layers."""
         region = self._face_region_cache.get(view.view_id)
         if region is None:
             region = QRegion()
@@ -366,9 +673,7 @@ class LayeredFullBodyRenderer:
             self._face_region_cache[view.view_id] = region
         if region.isEmpty():
             return
-        authority = self._cached_pixmap(
-            PROJECT_ROOT / FULL_BODY_AUTHORITY_DIR / f"{view.view_id}.png"
-        )
+        authority = self._view_authority(view, target)
         if authority.isNull():
             return
         painter = QPainter(target)
@@ -376,6 +681,17 @@ class LayeredFullBodyRenderer:
         painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Source)
         painter.drawPixmap(0, 0, authority)
         painter.end()
+
+    def _view_authority(self, view: LayeredFullBodyView, target: QPixmap) -> QPixmap:
+        """Bind seam/face restoration to this renderer's immutable source set."""
+        path = self._authority_root / f"{view.view_id}.png"
+        authority = self._cached_pixmap(path, required=self._strict_authority)
+        if self._strict_authority:
+            if authority.isNull():
+                raise ValueError(f"Missing or invalid view authority: {path}")
+            if authority.size() != target.size():
+                raise ValueError(f"View authority canvas mismatch: {path}")
+        return authority
 
     @staticmethod
     def _translated_frame(source: QPixmap, dy: float, dx: float = 0.0) -> QPixmap:
@@ -399,7 +715,7 @@ class LayeredFullBodyRenderer:
         *,
         blend: float = 0.0,
     ) -> QPixmap:
-        """Render a view blended toward its next neighbour by ``blend`` in [0, 1).
+        """Render a view blended toward its next neighbour by ``blend`` in [0, 1].
 
         ``blend == 0`` returns the exact view; ``blend`` approaching 1 blends
         toward the next view in the ring (wrapping from yaw+165 to yaw-180).
@@ -412,14 +728,29 @@ class LayeredFullBodyRenderer:
         following = self.render_view(next_view, motion)
         if current.isNull() or following.isNull():
             return current
-        # Paint the current view fully opaque, then blend the next view over
-        # it.  Painting BOTH at partial opacity onto a transparent ground
-        # composited to alpha (1-b) + b*(1-(1-b)) < 1 — at blend 0.5 the
-        # character became ~75% opaque and the desktop showed through her.
-        result = QPixmap(current)
+        if bounded == 1.0:
+            return following
+        # Add weighted premultiplied pixels instead of SourceOver. The old
+        # silhouette must fade where the next view is transparent, while
+        # overlapping opaque pixels retain total alpha (1-b) + b == 1.
+        result = QPixmap(current.size())
+        result.setDevicePixelRatio(current.devicePixelRatio())
+        result.fill(Qt.transparent)
         painter = QPainter(result)
-        painter.setOpacity(bounded)
-        painter.drawPixmap(0, 0, following)
+        painter.setOpacity(1.0 - bounded)
+        painter.drawPixmap(0, 0, current)
+        # Bake opacity before addition: Qt applies painter opacity to the
+        # saturated Plus result, which would fade the overlap a second time.
+        weighted_next = QPixmap(following.size())
+        weighted_next.setDevicePixelRatio(following.devicePixelRatio())
+        weighted_next.fill(Qt.transparent)
+        next_painter = QPainter(weighted_next)
+        next_painter.setOpacity(bounded)
+        next_painter.drawPixmap(0, 0, following)
+        next_painter.end()
+        painter.setOpacity(1.0)
+        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Plus)
+        painter.drawPixmap(0, 0, weighted_next)
         painter.end()
         return result
 
@@ -441,6 +772,7 @@ class LayeredFullBodyRenderer:
             if authored.isNull():
                 raise ValueError(f"Unreadable authored eyelid frame: {authored_path.name}")
             painter = QPainter(target)
+            painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceAtop)
             painter.drawPixmap(0, 0, authored)
             painter.end()
             return
@@ -514,13 +846,33 @@ class LayeredFullBodyRenderer:
         painter.drawPixmap(round(dx), round(dy), source)
         painter.end()
 
+    def _paint_authored_speech(
+        self, target: QPixmap, view: LayeredFullBodyView, motion: FaceMotionFrame,
+    ) -> None:
+        """Reveal a registered mouth frame without stretching its teeth or lips."""
+        aperture = max(0.0, min(1.0, float(motion.mouth.aperture)))
+        if aperture <= MOUTH_APERTURE_THRESHOLD:
+            return
+        viseme = Viseme.CONSONANT if motion.viseme is Viseme.CLOSED else motion.viseme
+        path = view.speech_frames.get(viseme)
+        if path is None:
+            raise ValueError(f"Missing native speech frame: {view.view_id}/{viseme.value}")
+        source = self._cached_pixmap(path)
+        if source.size() != target.size():
+            raise ValueError(f"Native speech canvas mismatch: {path.name}")
+        painter = QPainter(target)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceAtop)
+        painter.setOpacity(min(1.0, aperture / AUTHORED_SPEECH_VISIBLE_APERTURE))
+        painter.drawPixmap(0, 0, source)
+        painter.end()
+
     def _paint_visible_cavity(
         self,
         target: QPixmap,
         view: LayeredFullBodyView,
         mouth,
     ) -> None:
-        """Fade in the accepted registered speech mouth without skin motion."""
+        """Fade in the accepted registered speech mouth while preserving skin motion."""
         cavity_path = view.path("oral_cavity")
         if cavity_path is None:
             return
@@ -529,12 +881,12 @@ class LayeredFullBodyRenderer:
             return
         bounds = self._mask_region(cavity_source).boundingRect()
         if bounds.isEmpty():
-            # Back-side views intentionally contain no visible mouth.
+            # Back-side views intentionally use the body-only face authority.
             return
         aperture = max(0.0, min(1.0, float(mouth.aperture)))
         # This layer is a tightly cropped, softly feathered copy of the
         # matching yaw view's own authority mouth.  Some accepted packs keep
-        # identical RGB at rest, so opacity alone cannot create speech. Apply
+        # identical RGB at rest, so opacity alone leaves the authored speech state unchanged. Apply
         # a small, mouth-centred vertical aperture to this semantic cut-out;
         # the transparent full-canvas registration keeps the deformation away
         # from the chin and surrounding skin.
@@ -542,22 +894,23 @@ class LayeredFullBodyRenderer:
         target_height = float(bounds.height()) * aperture_scale
         target_rect = QRectF(
             float(bounds.x()),
-            float(bounds.center().y()) - target_height / 2.0,
+            float(bounds.y()) + (float(bounds.height()) - target_height) / 2.0,
             float(bounds.width()),
             target_height,
         )
         source_rect = QRectF(bounds)
-        base_source = self._cached_pixmap(view.path("base"))
-        face_bounds = self._mask_region(base_source).boundingRect()
-        protected_chin_y = round(
-            face_bounds.y() + face_bounds.height() * 0.76
-        )
-        mouth_clip = QRectF(
-            float(bounds.x()),
-            target_rect.y(),
-            float(bounds.width()),
-            max(0.0, float(protected_chin_y) - target_rect.y()),
-        )
+        # Native face cutouts can end at different neck heights. A percentage
+        # of that bounding box can cross the lips and erase the speech state.
+        # The authored lip footprint owns the permitted movement; a single
+        # pixel around it accommodates filtered edges without moving the chin.
+        lip_region = QRegion()
+        for name in ("lip_upper", "lip_lower", "corner_left", "corner_right"):
+            path = view.path(name)
+            if path is not None:
+                lip_region = lip_region.united(self._mask_region(self._cached_pixmap(path)))
+        if lip_region.isEmpty():
+            return
+        mouth_clip = QRectF(lip_region.boundingRect().adjusted(-1, -1, 1, 1))
         painter = QPainter(target)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
         painter.setClipRect(mouth_clip)

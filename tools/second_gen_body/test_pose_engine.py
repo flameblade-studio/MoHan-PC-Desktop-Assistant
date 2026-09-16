@@ -1,8 +1,7 @@
-"""姿勢引擎的驗收測試：從恆等一路壓到極端動作，看它在哪裡才壞。
+"""姿勢引擎驗收：先驗證恆等，再逐步量測動作極限。
 
-測試順序刻意由弱到強。先確認恆等姿勢逐位元還原——這一項不過，後面所有
-數字都沒有意義。再逐步加大幅度，找出這具綁定的實際極限在哪裡，
-而不是宣稱「可以做大動作」就算完成。
+恆等姿勢須逐位元還原，才能解讀後續量測。依序提高動作幅度，
+記錄這具綁定的實際可用範圍及觸及門檻的位置。
 """
 import sys
 from pathlib import Path
@@ -146,7 +145,7 @@ def main() -> None:
             print(f"  {label}: 幾何驗收未過，略過")
             continue
         hits = self_intersections(posed, faces)
-        verdict = "無法檢查（候選對數超過上限）" if hits < 0 else (
+        verdict = "檢查待執行（請先將候選對數調整至上限內）" if hits < 0 else (
             "無貫穿" if hits == 0 else f"{hits} 對三角形互相貫穿")
         print(f"  {label}: {verdict}")
 

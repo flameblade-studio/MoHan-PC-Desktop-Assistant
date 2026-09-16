@@ -2,63 +2,82 @@
   "height": 1536,
   "landmarks": {
     "crown": [
-      476,
-      91
+      478,
+      83
     ],
     "left_ankle": [
-      517,
-      1406
+      537,
+      1349
     ],
     "left_heel": [
-      514,
-      1490
+      536,
+      1432
     ],
     "left_hip": [
-      577,
-      878
+      557,
+      842
     ],
     "left_knee": [
-      547,
-      1187
+      539,
+      1140
     ],
     "left_sole": [
-      517,
-      1496
+      539,
+      1438
     ],
     "left_toe": [
-      520,
-      1490
+      542,
+      1432
     ],
     "right_ankle": [
-      478,
-      1420
+      523,
+      1348
     ],
     "right_heel": [
-      491,
-      1490
+      520,
+      1432
     ],
     "right_hip": [
-      445,
-      878
+      450,
+      842
     ],
     "right_knee": [
-      468,
-      1187
+      487,
+      1140
     ],
     "right_sole": [
-      492,
-      1496
+      523,
+      1438
     ],
     "right_toe": [
-      494,
-      1490
+      526,
+      1432
     ]
   },
   "measurement": {
     "method": "normalized-alpha-silhouette-registration",
     "occlusion_policy": "no_coordinates_are invented for an occluded side",
-    "source_sha256": "0a52f80d5b7acb77de75bc737d3d18249b598ec8616aece3ae9eb1e6efb5fb4a",
-    "target_subject_height": 1406
+    "source_sha256": "2eb5f6e6b6bacfa606e4d37126f9b40c9ecf32397bd5a7caab91dd4e0276cf75",
+    "target_subject_height": 1356
+  },
+  "native_face_landmarks": {
+    "artifact": {
+      "path": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/metadata-rebuild-01/native-face-probe/yaw-060-pitch+00.native-landmarks.json",
+      "sha256": "62f439c99438ed2d8aa6873c9b4f8d3d09de4a6ddab9a394ebbe6346a3aa1627"
+    },
+    "confidence": 0.9335103631019592,
+    "coordinates": "normalized_xy_plus_relative_z",
+    "existing_artifact": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/missing-angle-repair-01/native-canonical25-batch-01/yaw-060-pitch+00/native-landmarks.json",
+    "landmark_count": 478,
+    "size": [
+      1024,
+      1536
+    ],
+    "source": {
+      "path": "assets/pose-atlas/v5-base/yaw-060-pitch+00.png",
+      "sha256": "2eb5f6e6b6bacfa606e4d37126f9b40c9ecf32397bd5a7caab91dd4e0276cf75"
+    },
+    "status": "existing_native_verified_same_source_probe"
   },
   "occluded_landmarks": [],
   "schema_version": 2,

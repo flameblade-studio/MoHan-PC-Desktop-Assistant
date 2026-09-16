@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 lazy import json
+lazy import hashlib
 lazy from pathlib import Path
+lazy import pytest
 
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QColor, QImage, QPixmap
@@ -20,7 +22,9 @@ lazy from infrastructure.mouth_geometry import inward_lerped_u_layer
 # 2026-09-02: the runtime switched to the generation-2 pack
 # (v5-base-layered); its trusted yaw+000 centre, measured by the same
 # alpha-weighted lip centroid method, is 518.0557 (v4-layered was 516.8029).
-EXPECTED_YAW000_CENTER_X = 520.9536
+# 2026-09-10: measured current native lip layers after the 24-view replacement;
+# native/rest/A/U mouth crops were reviewed before restoring the manifest.
+EXPECTED_YAW000_CENTER_X = 509.6657
 OPAQUE_ALPHA = 255
 _APP = QApplication.instance() or QApplication([])
 
@@ -51,6 +55,32 @@ def test_authority_center_is_loaded_only_when_explicitly_trusted(tmp_path: Path)
     )
     centers = _load_authority_mouth_centers(tmp_path)
     assert centers == {"yaw+000-pitch+00": EXPECTED_YAW000_CENTER_X}
+
+
+@pytest.mark.parametrize("payload", [None, [], 7, {"schema_version": True},
+    {"schema_version": 1.0}, {"schema_version": 1, "views": None},
+    {"schema_version": 1, "views": []}])
+def test_malformed_authority_container_is_ignored(tmp_path: Path, payload: object) -> None:
+    (tmp_path / "mouth_authority_manifest.json").write_text(
+        json.dumps(payload), encoding="utf-8"
+    )
+    assert _load_authority_mouth_centers(tmp_path) == {}
+
+
+@pytest.mark.parametrize("value", [True, False, -1, 1024, float("nan"),
+    float("inf"), 10 ** 400], ids=["true", "false", "negative", "outside",
+    "nan", "infinite", "oversized_integer"])
+def test_invalid_center_does_not_discard_another_valid_view(tmp_path: Path, value: object) -> None:
+    payload = {"schema_version": 1, "views": {
+        "yaw+000-pitch+00": {"trusted": True, "mouth_center_x": EXPECTED_YAW000_CENTER_X},
+        "yaw+015-pitch+00": {"trusted": True, "mouth_center_x": value},
+    }}
+    (tmp_path / "mouth_authority_manifest.json").write_text(
+        json.dumps(payload), encoding="utf-8"
+    )
+    assert _load_authority_mouth_centers(tmp_path) == {
+        "yaw+000-pitch+00": EXPECTED_YAW000_CENTER_X,
+    }
 
 
 def test_u_layer_moves_x_only_toward_explicit_authority_center() -> None:
@@ -103,6 +133,13 @@ def test_dev_and_packaged_paths_include_trusted_authority_manifest() -> None:
         payload["views"]["yaw+000-pitch+00"]["mouth_center_x"]
         == EXPECTED_YAW000_CENTER_X
     )
+    for view_id, record in payload["views"].items():
+        if record["trusted"]:
+            assert set(record["source_layers"]) == {"lip_upper", "lip_lower"}
+            for layer, source in record["source_layers"].items():
+                assert source["path"] == f"{view_id}_{layer}.png"
+                path = manifest.parent / source["path"]
+                assert hashlib.sha256(path.read_bytes()).hexdigest() == source["sha256"]
     renderer = (
         root / "infrastructure" / "layered_full_body_renderer.py"
     ).read_text(encoding="utf-8")

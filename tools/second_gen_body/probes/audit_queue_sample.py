@@ -19,8 +19,8 @@ TSV = Path(__file__).with_name("decision-queue.tsv")
 VERDICT = re.compile(
     r"^(REJECTED|APPROVED|ACCEPTED|FAIL_CLOSED|PROMOTED|SUPERSEDED|DENIED)[A-Z0-9_]*$"
 )
-# 結尾不可用 \b：REJECTED_ANGLE_TOWARD_MINUS135_... 這類含數字的裁決，
-# [A-Z_]* 吃不下 135 而回溯，結尾 \b 又因下一字元是底線而失敗，整條漏抓。
+# 使用 [A-Z0-9_]* 完整擷取含數字與底線的裁決，例如
+# REJECTED_ANGLE_TOWARD_MINUS135_...，並讓詞尾依完整標記結束。
 VERDICT_IN_TEXT = re.compile(
     r"\b(REJECTED|APPROVED|ACCEPTED|FAIL_CLOSED|SUPERSEDED|DENIED)[A-Z0-9_]*"
 )

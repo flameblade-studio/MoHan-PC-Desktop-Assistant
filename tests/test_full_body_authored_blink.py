@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT))
 lazy import pytest
 lazy from PySide6.QtGui import QColor, QImage
 lazy from PySide6.QtWidgets import QApplication
-lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
+lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER, POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.face_rig import EyeState, ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
 lazy from infrastructure import layered_full_body_assets as assets
 lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
@@ -33,7 +33,7 @@ def _png(path: Path, size: tuple[int, int] = CANVAS, color: str = "transparent")
 
 def _minimal_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(assets, "VIEW_IDS", (VIEW,))
-    for layer in assets.REQUIRED_LAYERS:
+    for layer in FULL_BODY_LAYER_Z_ORDER:
         _png(tmp_path / f"{VIEW}_{layer}.png")
 
 
@@ -83,7 +83,17 @@ def test_authored_states_replace_legacy_motion_and_restore_neutral(tmp_path: Pat
             self.suppressed = []
             self.states = []
 
-        def apply(self, frame, view_id, *, suppress_makeup_slots=(), eye_state="rest"):
+        def apply_appearance(self, frame, view_id):
+            return frame
+
+        def apply_makeup(
+            self,
+            frame,
+            view_id,
+            *,
+            suppress_makeup_slots=(),
+            eye_state="rest",
+        ):
             self.suppressed.append(frozenset(suppress_makeup_slots))
             self.states.append(eye_state)
             return frame
@@ -94,6 +104,45 @@ def test_authored_states_replace_legacy_motion_and_restore_neutral(tmp_path: Pat
         dressed.render_view(VIEW, replace(motion, expression_shape=ExpressionShape(blink=blink)))
     assert overlay.states == ["rest", "half", "closed", "rest"]
     assert overlay.suppressed == [frozenset(), frozenset({'eyes'}), frozenset({'eyes'}), frozenset()]
+
+
+@pytest.mark.parametrize("image_format", [QImage.Format_RGB888, QImage.Format_RGBA8888])
+def test_rgb_or_opaque_blink_cannot_replace_the_whole_character(tmp_path: Path, image_format) -> None:
+    for state in (EyeState.HALF, EyeState.CLOSED):
+        image = QImage(*CANVAS, image_format)
+        image.fill(QColor("gray"))
+        assert image.save(str(tmp_path / f"{VIEW}_blink_{state.value}.png"))
+    with pytest.raises(ValueError, match="transparent RGBA"):
+        assets._load_blink_frames(tmp_path, VIEW)
+
+
+@pytest.mark.parametrize("legacy", [True, False])
+def test_missing_blink_pair_retains_legacy_eye_makeup(monkeypatch, legacy):
+    QApplication.instance() or QApplication([])
+    from PySide6.QtGui import QPixmap
+    from types import SimpleNamespace
+
+    calls = []
+
+    def makeup(frame, view_id, *, suppress_makeup_slots=(), eye_state="rest"):
+        calls.append((eye_state, frozenset(suppress_makeup_slots)))
+        return frame
+
+    overlay = (SimpleNamespace(apply=makeup) if legacy else SimpleNamespace(
+        apply_appearance=lambda frame, view_id: frame, apply_makeup=makeup,
+    ))
+    view = SimpleNamespace(blink_frames={})
+    renderer = LayeredFullBodyRenderer(SimpleNamespace(view=lambda view_id: view), overlay)
+    frame = QPixmap(2, 2)
+    frame.fill(QColor("blue"))
+    monkeypatch.setattr(renderer, "_static_base_composite", lambda *args: frame)
+    monkeypatch.setattr(renderer, "_paint_dynamic_eye_layers", lambda *args: None)
+    monkeypatch.setattr(renderer, "_paint_u_lip_layers", lambda *args: None)
+    motion = FaceMotionFrame(FacePose.FRONT, "idle_front", Viseme.CLOSED, MouthShape(), ExpressionShape(), breath=0.5)
+    for blink in (0., .5, 1., 0.):
+        assert not renderer.render_view(VIEW, replace(motion, expression_shape=ExpressionShape(blink=blink))).isNull()
+    assert calls == [("rest", frozenset()), ("half", frozenset()),
+                     ("closed", frozenset({"eyes"})), ("rest", frozenset())]
 
 
 def main() -> None:

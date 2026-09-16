@@ -2,39 +2,58 @@
   "height": 1536,
   "landmarks": {
     "crown": [
-      552,
-      91
+      557,
+      85
     ],
     "right_ankle": [
-      483,
-      1406
+      476,
+      1376
     ],
     "right_heel": [
-      481,
-      1490
+      470,
+      1460
     ],
     "right_hip": [
-      443,
-      878
+      433,
+      858
     ],
     "right_knee": [
-      463,
-      1187
+      455,
+      1162
     ],
     "right_sole": [
-      483,
-      1496
+      476,
+      1466
     ],
     "right_toe": [
-      485,
-      1490
+      482,
+      1460
     ]
   },
   "measurement": {
     "method": "normalized-alpha-silhouette-registration",
     "occlusion_policy": "no_coordinates_are invented for an occluded side",
-    "source_sha256": "b63047a761173da035116362e0bcf8bbcb1978e0595cd265fdb1edc241ab10f0",
-    "target_subject_height": 1406
+    "source_sha256": "e7530053c5d54a8a4babeafb24b02e4acb5f7949542d24f678e5d7359549255e",
+    "target_subject_height": 1382
+  },
+  "native_face_landmarks": {
+    "artifact": {
+      "path": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/metadata-rebuild-01/native-face-probe/yaw+045-pitch+00.native-landmarks.json",
+      "sha256": "a74e3c1b22584012c158b344108a11b01c2d84b8e96623042d2634bf2781feae"
+    },
+    "confidence": 0.9491409063339233,
+    "coordinates": "normalized_xy_plus_relative_z",
+    "existing_artifact": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-luna-b/canonical-next10-01/canonical25-output-02/yaw+045-pitch+00/native-landmarks.json",
+    "landmark_count": 478,
+    "size": [
+      1024,
+      1536
+    ],
+    "source": {
+      "path": "assets/pose-atlas/v5-base/yaw+045-pitch+00.png",
+      "sha256": "e7530053c5d54a8a4babeafb24b02e4acb5f7949542d24f678e5d7359549255e"
+    },
+    "status": "existing_native_verified_same_source_probe"
   },
   "occluded_landmarks": [
     {

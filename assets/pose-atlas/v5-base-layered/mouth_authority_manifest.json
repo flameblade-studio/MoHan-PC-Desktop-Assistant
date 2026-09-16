@@ -4,125 +4,349 @@
     "yaw-180-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
-      "reason": "rear view: lip layers are empty, no visible mouth"
+      "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface"
     },
     "yaw-165-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
-      "reason": "rear view: lip layers are empty, no visible mouth"
+      "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface"
     },
     "yaw-150-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
-      "reason": "rear view: lip layers are empty, no visible mouth"
+      "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface"
     },
     "yaw-135-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
-      "reason": "rear view: lip layers are empty, no visible mouth"
+      "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface"
     },
     "yaw-120-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
-      "reason": "rear view: lip layers are empty, no visible mouth"
+      "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface"
     },
     "yaw-105-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
-      "reason": "rear view: lip layers are empty, no visible mouth"
+      "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface"
     },
     "yaw-090-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 568.2014,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 581.5398,
+      "method": "Root-verified alpha-weighted centroid of partitions-03 native lip_upper+lip_lower; source03 geometry-03 pixel authority; native-layer ownership and pixel reconstruction accepted in profile-native03-root-review-01",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw-090-pitch+00_lip_upper.png",
+          "sha256": "3ad0ac2998c44b05c259346badecfc48184d926ceba0497814a6332ec6843ffb"
+        },
+        "lip_lower": {
+          "path": "yaw-090-pitch+00_lip_lower.png",
+          "sha256": "81bedade7c17a16f1846cd32e75e6cb0fabc452c027b07316e8ba74f1c50d70c"
+        }
+      },
+      "footprint": {
+        "canvas": [
+          1024,
+          1536
+        ],
+        "alpha_weight": 46243,
+        "centroid_x": 581.539801,
+        "centroid_y": 277.856627,
+        "layers": {
+          "lip_upper": {
+            "alpha_nonzero_pixels": 114,
+            "alpha_bbox_xyxy_exclusive": [
+              569,
+              271,
+              591,
+              280
+            ]
+          },
+          "lip_lower": {
+            "alpha_nonzero_pixels": 68,
+            "alpha_bbox_xyxy_exclusive": [
+              575,
+              279,
+              590,
+              286
+            ]
+          }
+        }
+      },
+      "source03_geometry": {
+        "path": "assets/pose-atlas/v5-base/yaw-090-pitch+00.native-source-geometry-03.json",
+        "sha256": "0380a7870ec0cdb13b1d1ad77514dde75cb780c78fd0ce1de408f46faee1b33a",
+        "schema": "mohan.source-native-profile-geometry.v1",
+        "upper_point_bounds_xyxy_inclusive": [
+          569,
+          271,
+          590,
+          279
+        ],
+        "lower_point_bounds_xyxy_inclusive": [
+          574,
+          278,
+          589,
+          285
+        ]
+      },
+      "status": "root_native_layers_verified_pending_owner_appearance_approval",
+      "superseded_formal": {
+        "trusted": true,
+        "mouth_center_x": 573.1304,
+        "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+        "source_layers": {
+          "lip_upper": {
+            "path": "yaw-090-pitch+00_lip_upper.png",
+            "sha256": "6d69a4c23992a6281f3e4b1cde6b7009e2c29fcf0481489eaecd86053e5cc399"
+          },
+          "lip_lower": {
+            "path": "yaw-090-pitch+00_lip_lower.png",
+            "sha256": "06639bc324b178da71f496003d21a600c311e8eeff8c9d6987f1996bbebdb43d"
+          }
+        }
+      },
+      "source_partition": {
+        "manifest": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native-body-same-coordinate-03/partitions-03/partition-manifest.json",
+          "sha256": "113342db5a809b98d74de4cf460965e6183d7d03ba3d72811bf3d1c024225c83"
+        },
+        "receipt": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native-body-same-coordinate-03/partitions-03/receipt.json",
+          "sha256": "c947b50957ee85ac8cea435c9ee8746d81179a281995af5fb85e39517e252f3b"
+        },
+        "authority": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native-body-same-coordinate-03/partitions-03/yaw-090-pitch+00.png",
+          "sha256": "b5a6add49565aa7edef0b5c693f72c6a410f2e1ba9a07bdf35e3cc5544304634"
+        }
+      },
+      "root_review": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-root-review-01.json",
+        "sha256": "944ce3482ae6061aa6b4ec8db6d475dff7c2258c71d7e3c48b3be58102b6fd43",
+        "status": "accepted-for-authorized-correction",
+        "owner_appearance_approval": false
+      },
+      "speech_overlay": {
+        "source": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-speech-source-03/yaw-090-speech.portrait.png",
+        "source_sha256": "3bc67104db98979ad4a505da0c5db205f93529f43a1cd8c2d224306d0c98e25d",
+        "path": "yaw-090-pitch+00_oral_cavity.png",
+        "sha256": "be43cc05f8faeda3fada95fc641bc5b56df4064c0d7fe180f3fb6012f50d6a41",
+        "method": "Whole photographic mouth extracted from a regenerated complete head-and-shoulders portrait; registered by inverse native reference crop (350,65,670,415); uniform resampling only, no painted teeth or RGB patches; native-lip-bounded product speech deformation",
+        "source_partition_relationship": "Derived speech state, excluded from registered neutral reconstruction",
+        "root_review": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-speech-source-03/runtime-01/root-review.json",
+          "sha256": "06934351d519f83da83fefb16cd10992c6725e59d493be5a3b384acfb08c1fcf"
+        }
+      }
     },
     "yaw-075-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 547.5912,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 556.9385,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw-075-pitch+00_lip_upper.png",
+          "sha256": "c7b4d92d3ec042e449a63de2441959fda80c870116161271a093b7f87aa85e34"
+        },
+        "lip_lower": {
+          "path": "yaw-075-pitch+00_lip_lower.png",
+          "sha256": "894e507ee516be90094f4eec2c218c8a30bd23742982ac91ecdd74f10e8e30c3"
+        }
+      }
     },
     "yaw-060-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 553.7909,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 562.7637,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw-060-pitch+00_lip_upper.png",
+          "sha256": "0b98aab8f1bcca15f2f1501cdd3ac4eed429ee7cece24a6161189700e2222100"
+        },
+        "lip_lower": {
+          "path": "yaw-060-pitch+00_lip_lower.png",
+          "sha256": "863675f0e9b56d926a2a29f82b97a07b66dd8744af3b403e81c3fbd40cfdbe00"
+        }
+      }
     },
     "yaw-045-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 504.2656,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 558.1693,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw-045-pitch+00_lip_upper.png",
+          "sha256": "94d1f5d78d9a33ab8abeb8b5959eeda1b4787e7aed33ca20081e3d300e39e71d"
+        },
+        "lip_lower": {
+          "path": "yaw-045-pitch+00_lip_lower.png",
+          "sha256": "f8556d87b5a71b34de6a6f981acbbe91e1a2f3b6f26be60d5d3769c07d444117"
+        }
+      }
     },
     "yaw-030-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 492.3796,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 552.802,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw-030-pitch+00_lip_upper.png",
+          "sha256": "71ee81e8586c119624470197da8d46dc3a700a939854a9cab660ae27b54ea5a0"
+        },
+        "lip_lower": {
+          "path": "yaw-030-pitch+00_lip_lower.png",
+          "sha256": "4de98137e8906093188cdca39fe1396f9bf8b9f0b912c59709384f176260ec97"
+        }
+      }
     },
     "yaw-015-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 486.4762,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 533.3467,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw-015-pitch+00_lip_upper.png",
+          "sha256": "49091b75f769cef907536e300a8c34560d4763d46c93ec260185fc1517120a5c"
+        },
+        "lip_lower": {
+          "path": "yaw-015-pitch+00_lip_lower.png",
+          "sha256": "cc5932af13ebe55fd16bd20ac05ac8a46f061c118e53c3d215ad81cd914d5543"
+        }
+      }
     },
     "yaw+000-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 520.9536,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 509.6657,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw+000-pitch+00_lip_upper.png",
+          "sha256": "6c31d25c1ae4ac7e4ccd08a9109af3ef6f838316635af6c7c9fb69fa7c90026e"
+        },
+        "lip_lower": {
+          "path": "yaw+000-pitch+00_lip_lower.png",
+          "sha256": "5dc172608dcc9f2d3d36e5a435bf8f22e39b457f1b3c646a24ffecc319369afa"
+        }
+      }
     },
     "yaw+015-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 491.211,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 479.0593,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw+015-pitch+00_lip_upper.png",
+          "sha256": "9ae2a9a3e16e3a7a5b96ddbc9f0201b3505da33d91f69a5a0bc5f850814f344e"
+        },
+        "lip_lower": {
+          "path": "yaw+015-pitch+00_lip_lower.png",
+          "sha256": "5ba133cd60ad18a19ce1583a9ea84cf13481ee096e7e5c4dcb03761ef1bb1aa5"
+        }
+      }
     },
     "yaw+030-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 476.8539,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 506.1485,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw+030-pitch+00_lip_upper.png",
+          "sha256": "bc9625b90a5cb64e9806303e518c07a6c0e503e34881ceace9ced2d8e6913133"
+        },
+        "lip_lower": {
+          "path": "yaw+030-pitch+00_lip_lower.png",
+          "sha256": "516a2e772588f1af0d1c62d271d61f4dddfdca9ecbb546f6e8b7a1a572f8f8e7"
+        }
+      }
     },
     "yaw+045-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 482.9779,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 491.7902,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw+045-pitch+00_lip_upper.png",
+          "sha256": "667edddd080ab33f4a991c9029b31268e41c4c6c392af72a3fac38b9417bfe6e"
+        },
+        "lip_lower": {
+          "path": "yaw+045-pitch+00_lip_lower.png",
+          "sha256": "9d1cfcac5f82930ce16900092933c95fe267dd39a8231e8924a19079609c88fa"
+        }
+      }
     },
     "yaw+060-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 490.3452,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 457.5103,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw+060-pitch+00_lip_upper.png",
+          "sha256": "db24d8e0419ec2a2d42d4d0e5bd64c5420fcc7e57148c2865e89750c12710c53"
+        },
+        "lip_lower": {
+          "path": "yaw+060-pitch+00_lip_lower.png",
+          "sha256": "dd1549e5a059b67141d2c714dc5d9b6265162bb47de3ead75d738fd3d545b112"
+        }
+      }
     },
     "yaw+075-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 474.0033,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 440.6243,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw+075-pitch+00_lip_upper.png",
+          "sha256": "2c063d231a1755fd8f2222a619d49e2144e1388ee4da566e9f6a43be2e88ea20"
+        },
+        "lip_lower": {
+          "path": "yaw+075-pitch+00_lip_lower.png",
+          "sha256": "7b3781e3fdc7d3add9823aa4b92d780f2963617f17f69c34b36a875fba034ffa"
+        }
+      }
     },
     "yaw+090-pitch+00": {
       "trusted": true,
-      "mouth_center_x": 462.5233,
-      "method": "alpha-weighted centroid x of golden lip_upper+lip_lower (landmark-affine rebuild, 2026-09-06)"
+      "mouth_center_x": 438.7475,
+      "method": "alpha-weighted centroid x of supplied lip_upper+lip_lower (measured 2026-09-10)",
+      "source_layers": {
+        "lip_upper": {
+          "path": "yaw+090-pitch+00_lip_upper.png",
+          "sha256": "4f79f3908cadd5a2bb4f133a19e9a05ac6ca0aa590168f994f2730e2694c559e"
+        },
+        "lip_lower": {
+          "path": "yaw+090-pitch+00_lip_lower.png",
+          "sha256": "b1e0b57bbd2df8267eecb8978117c27f7a872a1ce420de1be6ca8268709e4a09"
+        }
+      }
     },
     "yaw+105-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
-      "reason": "rear view: lip layers are empty, no visible mouth"
+      "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface"
     },
     "yaw+120-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
-      "reason": "rear view: lip layers are empty, no visible mouth"
+      "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface"
     },
     "yaw+135-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
-      "reason": "rear view: lip layers are empty, no visible mouth"
+      "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface"
     },
     "yaw+150-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
-      "reason": "rear view: lip layers are empty, no visible mouth"
+      "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface"
     },
     "yaw+165-pitch+00": {
       "trusted": false,
       "mouth_center_x": null,
-      "reason": "rear view: lip layers are empty, no visible mouth"
+      "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface"
     }
   },
   "notes": {
-    "recalibration_2026_08_28": "Face-detail layers rebuilt from the half-body front source via a five-point YuNet landmark affine; the previous calibration was measured from mirrored-defect lip layers and swept in the OPPOSITE direction to the photographs. All visible views recalibrated, including yaw+000 (its old contract value inherited the same offset defect)."
+    "calibration_inputs": "Centers are measured from the supplied layer files. Source layer hashes identify the exact inputs; their generation method and appearance acceptance have separate provenance."
   }
 }

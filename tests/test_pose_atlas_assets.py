@@ -36,6 +36,9 @@ CONTROL_LAYERS_BY_VIEW = frozendict({
         "blink_half", "blink_closed", "body_outline",
         "visible_hand_left", "visible_hand_right",
     ),
+    "yaw+015-pitch+00": (
+        "blink_half", "blink_closed", "body_outline",
+    ),
     "yaw+030-pitch+00": (
         "blink_half", "blink_closed", "body_outline",
         "visible_hand_left", "visible_hand_right",
@@ -85,7 +88,7 @@ def run() -> None:
     assert len(tuple(root.glob("yaw*-pitch+00.png"))) == VIEW_RING_COUNT
     layered = repo / POSE_ATLAS_LAYERED_RELATIVE_ROOT
     # Keep the complete 600-layer contract; separately enumerate every authored
-    # control sidecar so neither missing layers nor unexpected files can pass.
+    # control sidecar so acceptance requires the exact expected file set.
     expected_layers = {
         f"{path.stem}_{name}.png"
         for path, name in product(root.glob("yaw*-pitch+00.png"), FULL_BODY_LAYER_Z_ORDER)
@@ -98,6 +101,8 @@ def run() -> None:
     assert actual_layers == expected_layers | expected_controls
     hand_overlays = repo / "assets/pose-atlas/v5-hand-overlays"
     assert {path.name for path in hand_overlays.glob("*.png")} == {
+        "yaw+015-pitch+00_left.png",
+        "yaw+015-pitch+00_right.png",
         "yaw+165-pitch+00_left.png",
         "yaw+165-pitch+00_right.png",
         "yaw-090-pitch+00_left.png",
@@ -117,6 +122,7 @@ def run() -> None:
     }
     body_overlays = repo / "assets/pose-atlas/v5-body-overlays"
     assert {path.name for path in body_overlays.glob("*.png")} == {
+        "yaw+015-pitch+00.png",
         "yaw-090-pitch+00.png",
         "yaw-105-pitch+00.png",
         "yaw-120-pitch+00.png",
@@ -131,6 +137,7 @@ def run() -> None:
         / "mohan.official.blue-white-hanfu"
     )
     assert {path.name for path in official_silhouettes.glob("*.png")} == {
+        "yaw+015-pitch+00.png",
         "yaw-090-pitch+00.png",
         "yaw-105-pitch+00.png",
         "yaw-120-pitch+00.png",
@@ -138,6 +145,14 @@ def run() -> None:
         "yaw-150-pitch+00.png",
         "yaw-165-pitch+00.png",
         "yaw-180-pitch+00.png",
+    }
+    official_replacement_masks = (
+        repo
+        / "assets/pose-atlas/v5-appearance-replacement-masks"
+        / "mohan.official.blue-white-hanfu"
+    )
+    assert {path.name for path in official_replacement_masks.glob("*.png")} == {
+        "yaw+015-pitch+00.png",
     }
     assets = PoseAtlasAssets(root, image_size=465)
     assert assets.enabled
@@ -152,10 +167,10 @@ def run() -> None:
     assert len(front.static_layers[0].layer.rgba) == 465 * 465 * 4
     assert assets.resolve_speech("neutral", "CLOSED", True) == ()
     # The parametric layered renderer deforms the mouth inside the composed
-    # full-body frame, so speech contributes no separate procedural mouth layer.
+    # full-body frame, with speech rendered exclusively by that composition.
     spoken = assets.resolve_speech("neutral", "A", False)
     assert spoken == ()
-    # Without a motion frame the sole layered path fails closed.
+    # The sole layered path requires a motion frame before rendering.
     assert assets.resolve_static("front-crossed", "front-000") is None
     assert assets.resolve_static("front-crossed", "invalid-view", _neutral()) is None
     application.processEvents()

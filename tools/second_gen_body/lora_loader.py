@@ -1,9 +1,9 @@
-"""把 ai-toolkit 原生 Chroma LoRA 轉成 diffusers 命名並載入。
+"""將 ai-toolkit 原生 Chroma LoRA 轉成 diffusers 命名並載入。
 
-病史：ai-toolkit 輸出 `diffusion_model.double_blocks.N...` 原生命名，
-diffusers 期待 `transformer.transformer_blocks.N.attn.to_q...`。
-pipe.load_lora_weights() 對不上鍵時只印警告、靜默載入零個鍵——
-2026-08-30 發現 v2～v5 全部量產其實都沒有 identity LoRA。
+ai-toolkit 使用 diffusion_model.double_blocks.N...，diffusers 使用
+transformer.transformer_blocks.N.attn.to_q...。舊 load_lora_weights()
+在鍵名差異時只警告並載入零個鍵；2026-08-30 查明 v2～v5 的 identity
+LoRA 實際載入數為零。本入口明確轉換鍵名並驗證載入。
 """
 from pathlib import Path
 
@@ -36,7 +36,7 @@ def load_aitoolkit_chroma_lora(
     adapter_name: str = "mhn",
     weight: float = 1.0,
 ) -> None:
-    """Load an ai-toolkit Chroma LoRA and FAIL LOUDLY if it does not apply."""
+    """Load an ai-toolkit Chroma LoRA and report application errors explicitly."""
     state_dict = load_file(str(path))
     diffusers_sd = _convert_kohya_flux_lora_to_diffusers(
         _to_kohya_naming(state_dict)
@@ -46,7 +46,7 @@ def load_aitoolkit_chroma_lora(
     if adapter_name not in active:
         raise RuntimeError(
             f"LoRA {Path(path).name} did not attach (active={active}); "
-            "refusing to generate without identity."
+            "generation requires verified identity."
         )
     pipe.set_adapters([adapter_name], adapter_weights=[weight])
     print(f"LoRA attached: {adapter_name} @ {weight}", flush=True)

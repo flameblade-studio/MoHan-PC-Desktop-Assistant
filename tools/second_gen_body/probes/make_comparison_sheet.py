@@ -1,9 +1,10 @@
-"""把整晚的證據並成一張圖：初始圖種類 × 強度 → 幾何與風格各自守住了沒有。
+"""比較初始圖種類與強度，分別檢視幾何與風格量測。
 
-每格底下標的兩個數字都是可證偽的量測，不是觀感：
-  IoU  輸出剪影與 bundle silhouette 的重疊；純文生圖基準 0.396 是下界，
-       低於它就代表幾何沒進去
-  彩度 前景平均飽和度；灰模自身 0.120 是下界，貼著它就代表沒上色
+每格列出兩項指標：
+- IoU：輸出與 bundle silhouette 的重疊，純文生圖基準為 0.396。
+- 彩度：前景平均飽和度，灰模基準為 0.120。
+
+兩項共同呈現幾何條件化與上色程度。
 """
 import os
 import sys
@@ -13,7 +14,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 def cjk_font(size: int) -> ImageFont.FreeTypeFont:
-    """PIL 預設點陣字型沒有中日韓字，中文標籤會全部變成方框。"""
+    """選用支援中日韓文字的字型，讓中文標籤正確顯示。"""
     for name in ("msjh.ttc", "msyh.ttc", "simhei.ttf"):
         try:
             return ImageFont.truetype(rf"C:\Windows\Fonts\{name}", size)

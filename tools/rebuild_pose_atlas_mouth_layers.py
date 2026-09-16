@@ -2,8 +2,8 @@
 
 Only pixels from the matching PoseAtlas authority image are used. The original
 lip line is gently opened in place and its own crease pixels are extended into
-the tiny aperture. No cross-pose mouth, procedural black cavity, painted tooth,
-or foreign skin colour enters the result.
+the tiny aperture. Every mouth pixel and skin colour retains provenance
+from that view, including the source crease used for the opening.
 
 Extreme profile and rear views intentionally remain transparent because their
 projected mouth area is too small for an additional overlay to remain natural.
@@ -20,7 +20,7 @@ lazy import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 # Deliberately pinned to generation 1: MOUTH_BOUNDS below were measured on the
 # v4 authority portraits, so this rebuild is only valid against v4 / v4-layered.
-# The v5-base mouth layers come from the golden builder, not from this tool.
+# The golden builder exclusively authors the v5-base mouth layers.
 AUTHORITY_DIR = ROOT / "assets" / "pose-atlas" / "v4"
 LAYER_DIR = ROOT / "assets" / "pose-atlas" / "v4-layered"
 CANVAS_WIDTH = 1024
@@ -191,7 +191,7 @@ def _authority_mouth(view_id: str) -> np.ndarray:
     )
 
     # Feather only the outer registration edge. Interior lip pixels stay fully
-    # opaque so the original closed mouth cannot show through as a double mouth.
+    # opaque to preserve a single visible mouth state over the original closed mouth.
     _feather_registration(opened, center_x, center_y)
 
     surface = _surface()

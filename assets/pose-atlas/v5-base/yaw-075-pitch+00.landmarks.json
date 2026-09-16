@@ -2,65 +2,91 @@
   "height": 1536,
   "landmarks": {
     "crown": [
-      458,
-      91
+      467,
+      82
     ],
     "left_ankle": [
-      515,
-      1406
+      520,
+      1354
     ],
     "left_heel": [
-      514,
-      1490
+      531,
+      1426
     ],
     "left_hip": [
-      585,
-      878
+      538,
+      838
     ],
     "left_knee": [
-      550,
-      1187
+      492,
+      1095
     ],
     "left_sole": [
-      515,
-      1496
+      532,
+      1432
     ],
     "left_toe": [
-      516,
-      1490
-    ],
-    "right_ankle": [
-      508,
-      1406
-    ],
-    "right_heel": [
-      500,
-      1490
-    ],
-    "right_hip": [
-      438,
-      878
-    ],
-    "right_knee": [
-      470,
-      1187
-    ],
-    "right_sole": [
-      502,
-      1496
-    ],
-    "right_toe": [
-      504,
-      1490
+      533,
+      1426
     ]
   },
   "measurement": {
     "method": "normalized-alpha-silhouette-registration",
     "occlusion_policy": "no_coordinates_are invented for an occluded side",
-    "source_sha256": "785f20c05d84819841c3c89c3db34eeb37849bd485b5269fb84431934b40e474",
-    "target_subject_height": 1406
+    "source_sha256": "d60ea4a30af06140fdde2c572b30acbe41c8cbfec5fc49d798db3f9e5a280f8f",
+    "target_subject_height": 1351
   },
-  "occluded_landmarks": [],
+  "native_face_landmarks": {
+    "artifact": {
+      "path": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/metadata-rebuild-01/native-face-probe/yaw-075-pitch+00.native-landmarks.json",
+      "sha256": "af1a3bd261fc2d0c8ddb29f73d6e6dbbd7f6fbdd888c94865c46fd8babcdc9eb"
+    },
+    "confidence": 0.9206386804580688,
+    "coordinates": "normalized_xy_plus_relative_z",
+    "existing_artifact": "scratchpad/v4-identity-rebuild-20260905/canonical-25-root-batch-03/yaw-075-pitch+00/native-landmarks.json",
+    "landmark_count": 478,
+    "size": [
+      1024,
+      1536
+    ],
+    "source": {
+      "path": "assets/pose-atlas/v5-base/yaw-075-pitch+00.png",
+      "sha256": "d60ea4a30af06140fdde2c572b30acbe41c8cbfec5fc49d798db3f9e5a280f8f"
+    },
+    "status": "existing_native_verified_same_source_probe"
+  },
+  "occluded_landmarks": [
+    {
+      "name": "right_hip",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "right_knee",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "right_ankle",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "right_heel",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "right_toe",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "right_sole",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    }
+  ],
   "schema_version": 2,
   "view_id": "yaw-075-pitch+00",
   "width": 1024,

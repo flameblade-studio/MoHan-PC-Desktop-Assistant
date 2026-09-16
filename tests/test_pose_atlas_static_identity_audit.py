@@ -22,6 +22,7 @@ lazy from tools.audit_pose_atlas_identity import (
 ROOT = Path(__file__).resolve().parents[1]
 SIZE = (128, 192)
 VIEW = "yaw+060-pitch+00"
+CURRENT_WAIVER_COUNT = 3
 FACE = FaceEvidence(
     box=(40.0, 20.0, 48.0, 70.0),
     landmarks=(
@@ -154,16 +155,38 @@ def test_current_evidence_passes_via_owner_accepted_baseline() -> None:
     assert evidence["schema"] == AUDIT_SCHEMA
     assert evidence["passed"] is True
     assert evidence["issue_count"] == 0
-    assert evidence["waived_issue_count"] > 0
-    # Generation 2 (v5-base, owner-accepted 2026-09-02): the waived classes are
-    # the bare-forehead profile bulge and the non-monotonic head-turn pairs.
-    # v4's green/cyan mouth pixels do not exist in v5-base, so nothing waives
-    # them; every waived code must still be one the pinned baseline names.
-    assert evidence["waived_issues_by_code"]["forehead_outward_bulge"] > 0
-    assert evidence["waived_issues_by_code"]["adjacent_face_registration_jump"] > 0
+    assert evidence["waived_issue_count"] == CURRENT_WAIVER_COUNT
+    # The current owner-accepted v5-base source has three pinned findings,
+    # all from the profile forehead rule. Every other identity rule remains
+    # active in the static gate.
+    assert evidence["waived_issues_by_code"] == {
+        "forehead_outward_bulge": CURRENT_WAIVER_COUNT
+    }
+    assert len(evidence["waived_issues"]) == CURRENT_WAIVER_COUNT
+    assert {
+        issue["code"] for issue in evidence["waived_issues"]
+    } == {"forehead_outward_bulge"}
+    assert not Path(evidence["atlas_root"]).is_absolute()
+    assert all(
+        not Path(issue["path"]).is_absolute()
+        for issue in evidence["waived_issues"]
+    )
     atlas_root = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
     baseline = load_identity_baseline(atlas_root / "identity-audit-baseline.json")
-    assert baseline
+    assert baseline == {
+        "yaw+060-pitch+00": (
+            "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46",
+            frozenset({"forehead_outward_bulge"}),
+        ),
+        "yaw+090-pitch+00": (
+            "143627ddb7fff90958731fd16aab7c36d8ddc10312ac48a04ae65fbe8abc4d8f",
+            frozenset({"forehead_outward_bulge"}),
+        ),
+        "yaw-090-pitch+00": (
+            "5ba928de71133cadc45b59b2189f3b82b7da3522b350e1fef5ba2e2f7c135f54",
+            frozenset({"forehead_outward_bulge"}),
+        ),
+    }
     baseline_codes: set[str] = set()
     for view_id, (sha256, codes) in baseline.items():
         path = atlas_root / f"{view_id}.png"

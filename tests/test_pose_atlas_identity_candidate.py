@@ -122,7 +122,7 @@ def test_candidate_refuses_to_overwrite_inputs(
 ) -> None:
     authority_path, target_path = _write_rgba_inputs(tmp_path)
     output_path = authority_path if conflict == "authority" else target_path
-    with pytest.raises(ValueError, match="must not overwrite"):
+    with pytest.raises(ValueError, match="must use a path distinct from the authority and target"):
         candidate_builder.build_candidate(
             authority_path,
             target_path,

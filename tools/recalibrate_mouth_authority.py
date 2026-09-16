@@ -1,16 +1,14 @@
-"""Recalibrate mouth_authority_manifest.json from golden lip layers.
+"""Measure mouth centers from the supplied, visually reviewed native lip layers.
 
-Ruling 2026-08-28: the previous 13-view calibration was measured from the
-mirrored-defect lip layers, so its 474->553 sweep ran opposite to the real
-photographs (565->467).  After the face-detail layers are rebuilt from the
-half-body source via landmark affine, this tool re-measures every visible
-view's alpha-weighted lip centroid and rewrites the manifest.  Rear views
-stay untrusted with no visible mouth.
+Measure each visible view's alpha-weighted lip centroid. Source hashes record
+the exact calibration inputs; visual acceptance is a caller prerequisite.
+Rear views retain their untrusted status with the mouth outside the visible surface.
 """
 
 from __future__ import annotations
 
 lazy import argparse
+lazy import hashlib
 lazy import json
 lazy import sys
 lazy from datetime import date
@@ -55,7 +53,7 @@ def build_manifest(layer_dir: Path) -> dict:
             views[view_id] = {
                 "trusted": False,
                 "mouth_center_x": None,
-                "reason": "rear view: lip layers are empty, no visible mouth",
+                "reason": "rear view: lip layers are transparent; mouth lies outside the visible surface",
             }
             continue
         center = _lip_centroid_x(layer_dir, view_id)
@@ -70,21 +68,27 @@ def build_manifest(layer_dir: Path) -> dict:
             "trusted": True,
             "mouth_center_x": round(center, 4),
             "method": (
-                "alpha-weighted centroid x of golden lip_upper+lip_lower "
-                f"(landmark-affine rebuild, {today})"
+                "alpha-weighted centroid x of supplied lip_upper+lip_lower "
+                f"(measured {today})"
             ),
+            "source_layers": {
+                layer: {
+                    "path": f"{view_id}_{layer}.png",
+                    "sha256": hashlib.sha256(
+                        (layer_dir / f"{view_id}_{layer}.png").read_bytes()
+                    ).hexdigest(),
+                }
+                for layer in ("lip_upper", "lip_lower")
+            },
         }
     return {
         "schema_version": 1,
         "views": views,
         "notes": {
-            "recalibration_2026_08_28": (
-                "Face-detail layers rebuilt from the half-body front source "
-                "via a five-point YuNet landmark affine; the previous "
-                "calibration was measured from mirrored-defect lip layers "
-                "and swept in the OPPOSITE direction to the photographs. "
-                "All visible views recalibrated, including yaw+000 (its old "
-                "contract value inherited the same offset defect)."
+            "calibration_inputs": (
+                "Centers are measured from the supplied layer files. "
+                "Source layer hashes identify the exact inputs; their generation "
+                "method and appearance acceptance have separate provenance."
             ),
         },
     }

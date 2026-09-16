@@ -42,11 +42,11 @@ VIEWABLE = {".png", ".jpg", ".jpeg", ".webp"}
 
 
 class DecisionQueueError(RuntimeError):
-    """A decision-queue evidence file cannot be safely inspected."""
+    """A decision-queue evidence file requires attention before safe inspection."""
 
 
 def decided_in_folder(folder: Path) -> str:
-    """回傳該目錄已有的正式裁決字串；沒有則回空字串。"""
+    """回傳目錄的正式裁決字串；裁決待建立時回傳空字串。"""
     for report in list(folder.glob("REPORT.md")) + list(folder.glob("*.md")):
         text = report.read_text(encoding="utf-8", errors="replace")[:4000]
         match = DECIDED.search(text)

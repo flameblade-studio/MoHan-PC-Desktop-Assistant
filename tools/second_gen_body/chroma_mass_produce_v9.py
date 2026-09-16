@@ -1,13 +1,11 @@
-"""二代素體 v9：全 24 視角純 t2i，改用側臉補完後的 identity LoRA v2。
+"""二代素體 v9：全 24 視角純 t2i，採用側臉補完的 identity LoRA v2。
 
-與 v8 的三處差異：
-1. LoRA 換成 v2（以擁有者認證的六張側臉權威圖加權重訓，補正 v8 側面「像別人」）。
-2. 背面段（|yaw| >= 120）的視角語言改為正向描述「後腦勺與髮髻朝向鏡頭」。
-   v8 用負向禁令封鎖回眸，24 張中 7 張視角驗證 FAIL——負向詞擋不住模型
-   把「不要看鏡頭」讀成「看鏡頭」的注意力洩漏；正向描述才真正改變構圖。
-3. 背面段額外描述後頸與肩胛的可見輪廓，讓模型有正面素材可畫，
-   而非只被告知「不要畫臉」。措辭刻意避開「清楚可見」這類鏡頭指示語
-   （P2 教訓：該措辭會被當成鏡位命令，把正面翻成背面）。
+本版沿用三項實測調整：
+1. LoRA v2 以擁有者認證的六張側臉權威圖加權重訓，提升側面身份一致性。
+2. 背面段（|yaw| >= 120）明確描述「後腦勺與髮髻朝向鏡頭」。
+   v8 的 24 張中有 7 張視角驗證 FAIL；此版以正向可見部位提供構圖依據。
+3. 背面段描述後頸與肩胛輪廓，讓模型依指定方位繪製。
+   P2 實測顯示鏡頭指示語會改變鏡位，因此措辭聚焦在指定部位與方位。
 """
 import os
 import sys
@@ -58,7 +56,7 @@ TAIL = (
     "bare feet with five toes each, even fair skin tone, the whole body from the top "
     "of her head to her toes is inside the frame, photorealistic, sharp focus, plain "
     "neutral light-gray studio background, soft even studio lighting. Her lips are "
-    "gently closed together in a relaxed neutral expression, wearing no lipstick, "
+    "gently closed together in a relaxed neutral expression, with natural unpainted lips, "
     "her lips their own soft natural pink."
 )
 # 素體是換衣換表情的基底，嘴必須中性閉合、不上妝——否則每張都帶固定表情，
@@ -96,7 +94,7 @@ NEG_BASE = (
 # 背面段仍保留少量負向詞當第二道保險，但主要靠正向措辭治本
 NEG_BACK = "looking over shoulder, looking back, turning head, " + NEG_BASE
 
-# 背面段共用的正向構圖語：給模型「該畫什麼」而非「不要畫什麼」
+# 背面段共用的正向構圖語：明確提供模型應繪製的內容。
 BACK_FACING = (
     "The back of her head faces the camera, so the camera frames her hair bun, the "
     "silver hairpin, the nape of her neck and her shoulder blades; her head stays "

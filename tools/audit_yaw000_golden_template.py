@@ -114,8 +114,8 @@ def _mouth_and_ornament_checks(
     lip_mask = (_rgba(layer_dir / f"{view}_lip_upper.png")[:, :, 3] > 0) | (_rgba(layer_dir / f"{view}_lip_lower.png")[:, :, 3] > 0)
     oral_mask = _rgba(layer_dir / f"{view}_oral_cavity.png")[:, :, 3] > 0
     if not oral_mask.any():
-        # Profile views keep the mouth visible but deliberately own no oral
-        # cavity: the speech contract only paints an open mouth for views in
+        # Profile views keep the mouth visible and the oral cavity
+        # transparent: the speech contract only paints an open mouth for views in
         # the visible-speech-mouth set, so an empty cavity layer is valid.
         pass
     elif not _intersects(_bbox(lip_mask), _bbox(oral_mask)):

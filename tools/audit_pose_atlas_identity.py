@@ -35,8 +35,8 @@ BASELINE_SCHEMA = "mohan.pose-atlas-identity-baseline.v1"
 SHA256_HEX_LENGTH = 64
 EXIT_CODE_CONTRACT = {
     "0": "all static identity checks passed",
-    "1": "one or more visual identity checks failed",
-    "2": "audit configuration or execution failed closed",
+    "1": "one or more visual identity checks require correction",
+    "2": "audit stopped with the acceptance gate closed; review configuration and execution",
 }
 VISIBLE_MAX_ABS_YAW = 90
 PROFILE_YAWS = frozenset({-90, -75, -60, 60, 75, 90})
@@ -124,10 +124,10 @@ def _yaw(view_id: str) -> int:
 def _load_rgba(path: Path, expected_size: tuple[int, int]) -> np.ndarray:
     image = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
     if image is None:
-        raise ValueError("not a decodable PNG")
+        raise ValueError("provide a decodable PNG")
     width, height = expected_size
     if image.ndim != IMAGE_DIMENSIONS or image.shape[2] != RGBA_CHANNELS:
-        raise ValueError("not an RGBA PNG")
+        raise ValueError("provide an RGBA PNG")
     if image.shape[:2] != (height, width):
         raise ValueError(
             f"unexpected dimensions {image.shape[1]}x{image.shape[0]}; "
@@ -144,7 +144,7 @@ def _detect(image: np.ndarray, model: Path) -> FaceEvidence:
     _status, faces = detector.detect(image[:, :, :3])
     candidates = [] if faces is None else [face for face in faces if face[1] < height * 0.35]
     if not candidates:
-        raise ValueError("YuNet did not detect the visible face")
+        raise ValueError("visible face detection requires review")
     face = max(candidates, key=lambda item: float(item[14]))
     landmarks = tuple(
         (float(point[0]), float(point[1]))
@@ -249,7 +249,7 @@ def audit_pose_atlas_identity(  # noqa: PLR0912, PLR0914, PLR0915
         yaw = _yaw(view_id)
         path = atlas_root / f"{view_id}.png"
         if not path.is_file():
-            _issue(issues, "missing_view", path, view_id, "static PoseAtlas view is missing")
+            _issue(issues, "missing_view", path, view_id, "provide the static PoseAtlas view")
             continue
         files_checked += 1
         if baseline is not None and view_id in baseline:
@@ -286,7 +286,7 @@ def audit_pose_atlas_identity(  # noqa: PLR0912, PLR0914, PLR0915
         if coverage < FACE_ALPHA_COVERAGE_MIN:
             _issue(
                 issues, "face_roi_visibility_low", path, view_id,
-                "detected face ROI is not sufficiently registered to visible pixels",
+                "detected face ROI requires closer registration to visible pixels",
                 alpha_coverage=round(coverage, 6), minimum=FACE_ALPHA_COVERAGE_MIN,
             )
         chroma_count = _mouth_chroma_count(image, evidence)

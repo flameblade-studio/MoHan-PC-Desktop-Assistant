@@ -34,7 +34,7 @@ SUPERSEDED = [
      "去背模型評估；bundle 自帶 silhouette，不再需要去背模型"),
 ]
 
-# 判準仍然成立者。這些跟用哪個生圖模型無關，換產線也不會失效。
+# 判準仍然成立者。這些判準跨生圖模型與產線保持適用。
 LIVE = [
     (r"ornament-source|license|third-party|source-audit",
      "LIVE_LICENSING", "素材來源授權；與生圖產線無關，白名單永遠適用"),
@@ -53,7 +53,7 @@ def classify(folder: str) -> tuple[str, str]:
     for pattern, label, why in SUPERSEDED:
         if re.search(pattern, folder, re.I):
             return label, why
-    return "UNCLASSIFIED", "自動分流無法歸類，需人工看一眼"
+    return "UNCLASSIFIED", "此項目請交由人工確認分類"
 
 
 def main() -> None:
