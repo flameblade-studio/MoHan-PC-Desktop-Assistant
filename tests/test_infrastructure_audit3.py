@@ -116,24 +116,24 @@ class _FakeUser32:
         self.rect_fail_hwnd = rect_fail_hwnd
         self.enum_ok = enum_ok
 
-    def IsWindowVisible(self, hwnd):  # noqa: N802 - Win32 名稱
+    def IsWindowVisible(self, hwnd):
         return 1
 
-    def GetWindowTextLengthW(self, hwnd):  # noqa: N802
+    def GetWindowTextLengthW(self, hwnd):
         return 9
 
-    def GetWindowTextW(self, hwnd, buffer, size):  # noqa: N802
+    def GetWindowTextW(self, hwnd, buffer, size):
         buffer.value = f"window-{hwnd}"
         return len(buffer.value)
 
-    def GetWindowRect(self, hwnd, rect_ref):  # noqa: N802
+    def GetWindowRect(self, hwnd, rect_ref):
         if hwnd == self.rect_fail_hwnd:
             return 0
         rect = rect_ref._obj
         rect.left, rect.top, rect.right, rect.bottom = 1, 2, 3, 4
         return 1
 
-    def EnumWindows(self, callback, lparam):  # noqa: N802
+    def EnumWindows(self, callback, lparam):
         if not self.enum_ok:
             return 0
         for hwnd in (11, 22, 33):

@@ -16,7 +16,8 @@ lazy import struct
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath
 lazy from types import MappingProxyType
-lazy from typing import Mapping, overload
+lazy from typing import overload
+lazy from collections.abc import Mapping
 
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 

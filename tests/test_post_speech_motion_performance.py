@@ -211,7 +211,7 @@ def _release_cycle(
     window._begin_speech_motion_release()
     max_attempts = 0
     motion_ticks = 0
-    for calls in range(1, SPEECH_MOTION_RELEASE_LIMIT + 2):
+    for calls in range(1, SPEECH_MOTION_RELEASE_LIMIT + 2):  # ruff: ignore[unused-loop-control-variable] - asserted after the loop
         motion_before_wait = window.speech_motion_y
         ambient_before_wait = window.ambient_motion_y
         composed_before_wait = ambient_before_wait + motion_before_wait
@@ -264,7 +264,7 @@ def _assert_hard_release_limit(
     setattr(window, attempts_attribute, 0)
     motion_ticks = 0
     with patch.object(window, "_motion_tick", return_value=None) as motion_tick:
-        for calls in range(1, SPEECH_MOTION_RELEASE_LIMIT + 2):
+        for calls in range(1, SPEECH_MOTION_RELEASE_LIMIT + 2):  # ruff: ignore[unused-loop-control-variable] - asserted after the loop
             motion_before_wait = window.speech_motion_y
             ambient_before_wait = window.ambient_motion_y
             composed_before_wait = ambient_before_wait + motion_before_wait

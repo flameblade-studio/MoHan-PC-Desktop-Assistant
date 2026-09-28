@@ -6,11 +6,11 @@ __all__ = ("notify_vad_degradation",)
 def notify_vad_degradation(core: object, voice: object) -> None:
     degraded = bool(getattr(voice, "degraded", False))
     if not degraded:
-        setattr(core, "_vad_degradation_notified", False)
+        core._vad_degradation_notified = False
         return
     if getattr(core, "_vad_degradation_notified", False):
         return
-    setattr(core, "_vad_degradation_notified", True)
+    core._vad_degradation_notified = True
     dashboard = getattr(core, "dashboard", None)
     set_voice_phase = getattr(dashboard, "set_voice_phase", None)
     if not callable(set_voice_phase):

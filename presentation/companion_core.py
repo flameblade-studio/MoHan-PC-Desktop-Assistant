@@ -204,12 +204,12 @@ class CompanionCoreMixin:
         phase = getattr(performance, "phase", None)
         speech_active = (
             phase
-            in (
+            in {
                 SpeechPerformancePhase.PREPARING,
                 SpeechPerformancePhase.SPEAKING,
                 SpeechPerformancePhase.PAUSING,
                 SpeechPerformancePhase.SETTLING,
-            )
+            }
             if phase is not None
             else not performance.mouth_closed
         )

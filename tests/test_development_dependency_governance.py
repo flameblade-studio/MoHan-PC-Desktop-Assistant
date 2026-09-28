@@ -1,18 +1,23 @@
 from __future__ import annotations
 
 lazy import ast
+lazy import json
 lazy import re
 lazy import tomllib
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_DEVELOPMENT_DEPENDENCIES = {
-    "pillow": "12.3.0",
+    "deptry": "0.25.1",
+    "pip-audit": "2.10.1",
+    "pip-licenses": "5.5.5",
+    "pyright": "1.1.414",
     "pytest": "9.1.1",
     "ruff": "0.16.0",
+    "vulture": "2.16",
 }
-# Permissive licenses cleared by the project allow-list (MIT family only here).
-ALLOWED_DEVELOPMENT_LICENSES = frozenset({"MIT", "MIT-CMU"})
+# New gate tools must use the owner-approved permissive allow-list.
+ALLOWED_QUALITY_TOOL_LICENSES = frozenset({"Apache-2.0", "BSD-2-Clause", "MIT"})
 DEVELOPMENT_PROFILES = ["ci", "local"]
 
 
@@ -32,7 +37,7 @@ def _pinned_requirements(relative: str) -> dict[str, str]:
             continue
         match = re.fullmatch(
             r"(?P<name>[A-Za-z0-9][A-Za-z0-9._-]*)=="
-            r"(?P<version>[0-9]+(?:\.[0-9]+){2,})",
+            r"(?P<version>[0-9]+(?:\.[0-9]+)+)",
             line,
         )
         assert match is not None, (
@@ -55,6 +60,22 @@ def _project_dependency_names() -> set[str]:
         assert match is not None, f'project dependency requires correction: {requirement!r}'
         names.add(_normalized_name(match.group("name")))
     return names
+
+
+def _project_dependency_versions() -> dict[str, str]:
+    project = tomllib.loads(_read("pyproject.toml"))["project"]
+    dependencies: dict[str, str] = {}
+    for requirement in project["dependencies"]:
+        match = re.fullmatch(
+            r"(?P<name>[A-Za-z0-9][A-Za-z0-9._-]*)=="
+            r"(?P<version>[0-9]+(?:\.[0-9]+)+)",
+            requirement,
+        )
+        assert match is not None, f"project dependency is not exactly pinned: {requirement!r}"
+        name = _normalized_name(match.group("name"))
+        assert name not in dependencies, f"duplicate project dependency: {name}"
+        dependencies[name] = match.group("version")
+    return dependencies
 
 
 def _release_sbom_component_names() -> set[str]:
@@ -119,9 +140,83 @@ def test_development_requirements_and_sbom_are_exactly_synchronized() -> None:
     for name, version in requirements.items():
         component = components[name]
         assert component["version"] == version
-        assert component["license"] in ALLOWED_DEVELOPMENT_LICENSES
+        assert component["license"] in ALLOWED_QUALITY_TOOL_LICENSES
         assert component["scope"] == "development"
         assert component["profiles"] == DEVELOPMENT_PROFILES
+
+    policy = json.loads(_read("tools/quality_licenses.json"))
+    assert policy["quality_tools"] == {
+        "deptry": {"license": "MIT", "version": "0.25.1"},
+        "pip-audit": {"license": "Apache-2.0", "version": "2.10.1"},
+        "pip-licenses": {"license": "MIT", "version": "5.5.5"},
+        "pyright": {"license": "MIT", "version": "1.1.414"},
+        "vulture": {"license": "MIT", "version": "2.16"},
+    }
+    assert set(policy["allowed_licenses"]) == {
+        "Apache-2.0",
+        "BSD",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "ISC",
+        "MIT",
+        "MPL-2.0",
+        "PSF",
+    }
+
+
+def test_every_requirements_profile_and_project_dependency_is_exactly_pinned() -> None:
+    requirement_paths = (
+        "requirements.txt",
+        "requirements-runtime.txt",
+        "requirements-preview.txt",
+        "requirements-preview-runtime.txt",
+        "requirements-dev.txt",
+    )
+    version_by_name: dict[str, str] = {}
+    for relative in requirement_paths:
+        for name, version in _pinned_requirements(relative).items():
+            previous = version_by_name.setdefault(name, version)
+            assert previous == version, (
+                f"conflicting pins for {name}: {previous} and {version} in {relative}"
+            )
+
+    assert _project_dependency_versions() == _pinned_requirements(
+        "requirements-runtime.txt"
+    )
+    assert _pinned_requirements("requirements-runtime.txt")["pillow"] == "12.3.0"
+    assert "pillow" not in _pinned_requirements("requirements-dev.txt")
+
+    components = tomllib.loads(_read("sbom/components.toml"))["component"]
+    runtime_components = {
+        _normalized_name(component["name"]): component
+        for component in components
+        if component.get("scope") == "runtime"
+    }
+    assert runtime_components["pillow"]["version"] == "12.3.0"
+    assert runtime_components["pillow"]["license"] == "MIT-CMU"
+    assert "certifi" in runtime_components
+
+
+def test_deptry_covers_all_runtime_profiles_and_development_requirements() -> None:
+    configuration = tomllib.loads(_read("pyproject.toml"))["tool"]["deptry"]
+    assert configuration["requirements_files"] == [
+        "requirements.txt",
+        "requirements-runtime.txt",
+        "requirements-preview.txt",
+        "requirements-preview-runtime.txt",
+    ]
+    assert configuration["requirements_files_dev"] == ["requirements-dev.txt"]
+    assert configuration.get("ignore", []) == []
+    assert configuration["per_rule_ignores"] == {"DEP002": ["certifi"]}
+    assert "certifi is pinned for the Azure Speech TLS dependency chain" in _read(
+        "pyproject.toml"
+    )
+    assert configuration["package_module_name_map"] == {
+        "azure-cognitiveservices-speech": "azure",
+        "opencc-python-reimplemented": "opencc",
+        "opencv-python": "cv2",
+        "websocket-client": "websocket",
+    }
 
 
 def test_development_tools_do_not_enter_runtime_or_release_inventories() -> None:
@@ -149,18 +244,25 @@ def test_clean_ci_development_install_covers_hand_model_pytest_gate() -> None:
     assert 'str(test),\n                "-q",' in runner
     install = "python -m pip install --only-binary=:all: -r requirements-dev.txt"
     run_suite = "python tests/run_all.py"
-    for workflow_path in (
-        ".github/workflows/windows-ci.yml",
-        ".github/workflows/release.yml",
-    ):
-        workflow = _read(workflow_path)
-        assert install in workflow
-        assert run_suite in workflow
-        assert workflow.index(install) < workflow.index(run_suite)
+    windows_ci = _read(".github/workflows/windows-ci.yml")
+    assert install in windows_ci
+    assert "python tools/quality_gate.py" in windows_ci
+    assert windows_ci.index(install) < windows_ci.index("python tools/quality_gate.py")
+
+    quality_gate = _read("tools/quality_gate.py")
+    assert '"full regression suite (aggregate)"' in quality_gate
+    assert '(python, "tests/run_all.py", "--aggregate")' in quality_gate
+
+    release_workflow = _read(".github/workflows/release.yml")
+    assert install in release_workflow
+    assert run_suite in release_workflow
+    assert release_workflow.index(install) < release_workflow.index(run_suite)
 
 
 def main() -> None:
     test_development_requirements_and_sbom_are_exactly_synchronized()
+    test_every_requirements_profile_and_project_dependency_is_exactly_pinned()
+    test_deptry_covers_all_runtime_profiles_and_development_requirements()
     test_development_tools_do_not_enter_runtime_or_release_inventories()
     test_clean_ci_development_install_covers_hand_model_pytest_gate()
     print("DEVELOPMENT_DEPENDENCY_GOVERNANCE_OK")

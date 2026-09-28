@@ -40,7 +40,6 @@ def _realtime_message(
     return message.format(**values) if values else message
 
 
-
 lazy from integrations.realtime_contracts import (
     _REALTIME_MESSAGES,
     RealtimeSessionConfig,
@@ -64,11 +63,9 @@ class RealtimeSessionMethods:
         self._output_generation = 0
         self._active_output_generation = 0
 
-
     def set_volume(self, volume_percent: int, muted: bool = False) -> None:
         self.volume_percent = max(0, min(160, int(volume_percent)))
         self.muted = bool(muted)
-
 
     def set_external_playback_active(self, active: bool) -> None:
         """Pause echo-prone microphone upload during delegated playback."""
@@ -81,7 +78,6 @@ class RealtimeSessionMethods:
             self._input_resume_at = time.monotonic() + 0.9
             self._clear_server_input_buffer()
 
-
     @staticmethod
     def dependencies_available() -> bool:
         try:
@@ -91,7 +87,6 @@ class RealtimeSessionMethods:
         except (AttributeError, ImportError):
             return False
         return True
-
 
     @staticmethod
     def _normalized_request(
@@ -127,7 +122,6 @@ class RealtimeSessionMethods:
             session=normalized_session,
             echo_guard=bool(request.echo_guard),
         )
-
 
     def _reset_session_state(
         self,
@@ -176,7 +170,6 @@ class RealtimeSessionMethods:
             self._input_audio_timeline.clear()
             self._speech_start_ms.clear()
 
-
     def start(self, request: RealtimeVoiceRequest) -> None:
         if self.running:
             return
@@ -208,7 +201,6 @@ class RealtimeSessionMethods:
             daemon=True,
         ).start()
 
-
     def stop(self) -> int:
         self.running = False
         self._session_generation += 1
@@ -229,7 +221,6 @@ class RealtimeSessionMethods:
             _realtime_message(self._locale, "disconnected")
         )
         return barrier
-
 
     def _connect(
         self,
@@ -266,7 +257,6 @@ class RealtimeSessionMethods:
             return
         self.ws = websocket_app
         websocket_app.run_forever(ping_interval=20, ping_timeout=10)
-
 
     def _websocket_callbacks(
         self,
@@ -316,7 +306,6 @@ class RealtimeSessionMethods:
             "on_close": on_close,
         }
 
-
     def _open_realtime_session(
         self,
         ws: object,
@@ -349,7 +338,6 @@ class RealtimeSessionMethods:
             )
             self.stop()
 
-
     def _close_realtime_session(self) -> None:
         self.running = False
         self.ws = None
@@ -360,7 +348,6 @@ class RealtimeSessionMethods:
         self.status_changed.emit(
             _realtime_message(self._locale, "disconnected")
         )
-
 
     @staticmethod
     def _sanitize_realtime_transcription_prompt(prompt: str) -> str:
@@ -385,8 +372,8 @@ class RealtimeSessionMethods:
             maxsplit=1,
         )[0]
         terms = []
-        for value in re.split(r"[、,，。；;\n]+", term_source):
-            value = value.strip(" 「」『』：:")
+        for raw_value in re.split(r"[、,，。；;\n]+", term_source):
+            value = raw_value.strip(" 「」『』：:")
             if (
                 value
                 and len(value) <= MAX_TERM_LENGTH
@@ -405,11 +392,9 @@ class RealtimeSessionMethods:
             return ""
         return "可能出現的專有名詞：" + "、".join(terms) + "。"
 
-
     @staticmethod
     def _comparison_text(text: str) -> str:
         return re.sub(r"[\W_]+", "", (text or "").casefold())
-
 
     @classmethod
     def resembles_transcription_prompt(
@@ -440,7 +425,6 @@ class RealtimeSessionMethods:
                 return True
         return False
 
-
     @staticmethod
     def _compose_instructions(
         instructions: str,
@@ -461,7 +445,6 @@ class RealtimeSessionMethods:
             "才整理需求、安排或優先順序；其他情況維持自然對話。"
             "\n電腦操作依照程式的本機權限設定，執行前請主上確認授權。"
         )
-
 
     @staticmethod
     def _session_update_event(

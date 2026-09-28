@@ -15,7 +15,8 @@ lazy import sys
 lazy from collections import Counter
 lazy from dataclasses import asdict, dataclass
 lazy from pathlib import Path
-lazy from typing import Any, Iterable
+lazy from typing import Any
+lazy from collections.abc import Iterable
 
 lazy import cv2
 lazy import numpy as np
@@ -61,8 +62,7 @@ class Finding:
 
 
 def _read(path: Path) -> np.ndarray | None:
-    image = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
-    return image
+    return cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
 
 
 def _transparent_rgb_count(image: np.ndarray) -> int:
@@ -170,7 +170,7 @@ def audit_pack(asset_root: Path, semantic_report: Path) -> tuple[dict[str, Any],
     # where two independent rules intentionally name the same bad file.
     unique: dict[tuple[str, str, str, str], Finding] = {}
     for finding in findings:
-        unique[(finding.classification, finding.code, finding.view_id, finding.layer)] = finding
+        unique[finding.classification, finding.code, finding.view_id, finding.layer] = finding
     findings = sorted(unique.values(), key=lambda f: (f.classification, f.view_id, f.layer, f.code))
     counts = Counter(f.classification for f in findings)
     blockers = counts["A"] + counts["B"]

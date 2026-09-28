@@ -173,7 +173,7 @@ def main() -> None:
         high, low = array.max(axis=2), array.min(axis=2)
         sat = np.where(high > 0, (high - low) / np.maximum(high, 1.0), 0.0)
         body = np.abs(array - np.array(PLATE)).sum(axis=2) > BACKGROUND_DISTANCE
-        print(f"{target.name}  前景 {body.mean()*100:.1f}%  "
+        print(f"{target.name}  前景 {body.mean() * 100:.1f}%  "
               f"前景彩度 {sat[body].mean():.3f}")
 
 

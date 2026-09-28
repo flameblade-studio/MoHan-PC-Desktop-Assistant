@@ -70,7 +70,7 @@ def true_control() -> np.ndarray:
     可見門檻法把灰模的剪影侵蝕掉約 8%。silhouette 是渲染器直接輸出的，精確。
     """
     sys.path.insert(0, str(Path(__file__).parent))
-    from tinted_init import tinted_init  # noqa: F401  只為共用同一套裁切幾何
+    from tinted_init import tinted_init  # ruff: ignore[unused-import]  只為共用同一套裁切幾何
     from produce_v10_geo import BUNDLES
 
     folder = BUNDLES / "yaw+090-pitch+00"
@@ -103,10 +103,10 @@ def main() -> None:
         print("探針尚未產出初始圖")
         return
     control = true_control()
-    _threshold_mask, bg, frac = foreground(init)
+    _threshold_mask, _bg, frac = foreground(init)
     print("── 指標自我驗證 ──")
-    print(f"控制遮罩取自 bundle silhouette，佔畫面 {control.mean()*100:.1f}%")
-    print(f"（對照：門檻法從灰模推出來是 {frac*100:.1f}%，會侵蝕剪影）")
+    print(f"控制遮罩取自 bundle silhouette，佔畫面 {control.mean() * 100:.1f}%")
+    print(f"（對照：門檻法從灰模推出來是 {frac * 100:.1f}%，會侵蝕剪影）")
     frac = control.mean()
     print(f"控制遮罩對自己的 IoU = {iou(control, control):.3f}（必須是 1.000，否則切法有誤）")
     inverted = np.logical_not(control)
@@ -123,14 +123,14 @@ def main() -> None:
     for path in sorted(PROBE.glob("*.png")):
         if path.name == "_init.png":
             continue
-        mask, bg, frac = foreground(path)
+        mask, _bg, frac = foreground(path)
         label = "純 t2i 基準" if "baseline" in path.name else path.stem
         rows.append((label, iou(mask, control), chroma(path, mask), frac))
 
     base = next((v for lab, v, _, _ in rows if "基準" in lab), None)
     skin = next((c for lab, _, c, _ in rows if "基準" in lab), None)
     print(f"{'':14s} {'IoU':>6s} {'彩度':>7s}    判讀")
-    for label, value, colour, frac in sorted(rows, key=lambda r: r[0]):
+    for label, value, colour, _frac in sorted(rows, key=lambda r: r[0]):
         if colour <= mesh_chroma * 1.35:
             note = "仍是灰模，沒上色"
         elif base is not None and value - base < IOU_GAIN_MIN:

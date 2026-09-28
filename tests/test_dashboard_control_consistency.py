@@ -226,7 +226,7 @@ def test_four_language_dashboard_controls_are_interactive_and_readable() -> None
                 dashboard.self_outfit_generation_enabled.setChecked(True)
                 emitted: list[bool] = []
                 dashboard.outfit_generation_requested.connect(
-                    lambda: emitted.append(True)
+                    lambda emitted=emitted: emitted.append(True)
                 )
                 original_flags = dashboard.windowFlags()
                 dashboard.wardrobe_generate_button.click()

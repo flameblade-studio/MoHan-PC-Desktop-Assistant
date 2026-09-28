@@ -69,9 +69,7 @@ def _audit_failures(audit_path: Path) -> list[str]:
     if audit.get("passed") is not True:
         failures.append("audit_not_passed")
     metrics = audit.get("metrics", {})
-    for key in ("recompose_diff_pixels", "recompose_max_channel_error", "lip_green_cyan_pixels"):
-        if metrics.get(key) != 0:
-            failures.append(f"audit_metric_nonzero:{key}={metrics.get(key)!r}")
+    failures.extend(f"audit_metric_nonzero:{key}={metrics.get(key)!r}" for key in ("recompose_diff_pixels", "recompose_max_channel_error", "lip_green_cyan_pixels") if metrics.get(key) != 0)
     # The foreground must retain transparent clearance below the shoes.
     # A bottom-exclusive coordinate of 1536 means the authority itself
     # touches the canvas edge; sole completeness requires clearance evidence.
@@ -121,7 +119,7 @@ def build_manifest(repo: Path, registry_path: Path) -> dict:
         actual_names = {p.name for p in layer_dir.glob(f"{view}_*.png")} if layer_dir.is_dir() else set()
         if actual_names != expected_names:
             view_failures.append(
-                f"layer_set_mismatch:missing={sorted(expected_names-actual_names)}:extra={sorted(actual_names-expected_names)}"
+                f"layer_set_mismatch:missing={sorted(expected_names - actual_names)}:extra={sorted(actual_names - expected_names)}"
             )
         for name in sorted(expected_names & actual_names):
             view_failures.extend(_validate_rgba(layer_dir / name))

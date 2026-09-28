@@ -16,7 +16,7 @@ lazy import os
 lazy import subprocess
 lazy import sys
 lazy from collections.abc import Callable
-lazy from datetime import date, datetime, timedelta, timezone
+lazy from datetime import UTC, date, datetime, timedelta
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
@@ -320,7 +320,7 @@ def collect_snapshot(
     selected_month = _normalise_month(
         month or date.today().strftime("%Y-%m")
     )
-    captured_at = collected_at or datetime.now(timezone.utc).isoformat(
+    captured_at = collected_at or datetime.now(UTC).isoformat(
         timespec="seconds"
     )
     if not isinstance(captured_at, str) or not captured_at:
@@ -366,7 +366,7 @@ def collect_snapshot(
             ("ithome", "ironman", "鐵人", "铁人"),
         ),
     }
-    manual = {key: "" for key in MANUAL_KEYS}
+    manual = dict.fromkeys(MANUAL_KEYS, "")
     return {
         "schema_version": 1,
         "repository": repo,
@@ -566,11 +566,8 @@ def _render_language(
     )
     paths = _normalised_rows(current_metrics, "popular_paths", "metrics.popular_paths")
     if paths:
-        for row in paths:
-            lines.append(
-                f"| {row['name']} | {row['title'] or '—'} | "
-                f"{_number_cell(row['count'])} | {_number_cell(row['uniques'])} |"
-            )
+        lines.extend(f"| {row['name']} | {row['title'] or '—'} | "
+                f"{_number_cell(row['count'])} | {_number_cell(row['uniques'])} |" for row in paths)
     else:
         lines.append(f"| {text['no_data']} | {text['no_data']} | — | — |")
     lines.extend(
@@ -588,11 +585,8 @@ def _render_language(
         "metrics.popular_referrers",
     )
     if referrers:
-        for row in referrers:
-            lines.append(
-                f"| {row['name']} | {_number_cell(row['count'])} | "
-                f"{_number_cell(row['uniques'])} |"
-            )
+        lines.extend(f"| {row['name']} | {_number_cell(row['count'])} | "
+                f"{_number_cell(row['uniques'])} |" for row in referrers)
     else:
         lines.append(f"| {text['no_data']} | — | — |")
     lines.extend(

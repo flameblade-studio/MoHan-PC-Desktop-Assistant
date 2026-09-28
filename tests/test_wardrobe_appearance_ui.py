@@ -223,4 +223,3 @@ def test_headwear_none_and_official_round_trip_through_real_preview(
 
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-q"]))
-

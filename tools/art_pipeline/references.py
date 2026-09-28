@@ -7,7 +7,7 @@ lazy import tempfile
 lazy from contextlib import contextmanager
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath
-lazy from typing import Iterator
+lazy from collections.abc import Iterator
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,8 +37,7 @@ class GitReference:
             result = subprocess.run(
                 ["git", "-C", str(self.repository), "show", object_name],
                 check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                capture_output=True,
             )
         except subprocess.CalledProcessError as error:
             detail = error.stderr.decode("utf-8", errors="replace").strip()

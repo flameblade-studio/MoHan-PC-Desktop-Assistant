@@ -9,7 +9,7 @@ lazy import uuid
 lazy from collections.abc import Callable, Mapping
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
-lazy from typing import Any, TypeAlias
+lazy from typing import Any
 
 lazy from tools.art_pipeline.source_bound_makeup import BUILTIN_PACK_TARGET, apply_makeup_updates
 lazy from tools.art_pipeline.source_bound_reference import verify_reference_binding
@@ -50,7 +50,7 @@ class PostcheckContext:
     approval: Mapping[str, Any]
 
 
-Postcheck: TypeAlias = Callable[[PostcheckContext], Mapping[str, Any] | None]
+type Postcheck = Callable[[PostcheckContext], Mapping[str, Any] | None]
 
 
 @dataclass(frozen=True, slots=True)
@@ -68,7 +68,7 @@ class MultiPackPostcheckContext:
     approval: Mapping[str, Any]
 
 
-MultiPackPostcheck: TypeAlias = Callable[
+type MultiPackPostcheck = Callable[
     [MultiPackPostcheckContext], Mapping[str, Any] | None
 ]
 

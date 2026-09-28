@@ -141,7 +141,7 @@ def test_not_approved_manifest_loads_without_fake_cosmetic_layers(tmp_path: Path
     assert set(appearance.layers) == {"garment", "replace_mask"}
     assert appearance.cosmetics_available is False
     appearance.garment_enabled = False
-    appearance.set_makeup_intensities({slot: FULL_INTENSITY for slot in SLOTS})
+    appearance.set_makeup_intensities(dict.fromkeys(SLOTS, FULL_INTENSITY))
     frame = _frame()
 
     assert _rgba_bytes(appearance.apply(frame, "front-exasperated")) == _rgba_bytes(frame)
@@ -150,7 +150,7 @@ def test_not_approved_manifest_loads_without_fake_cosmetic_layers(tmp_path: Path
 def test_garment_off_and_makeup_zero_return_the_original_frame(tmp_path: Path) -> None:
     appearance = _appearance(tmp_path)
     appearance.garment_enabled = False
-    appearance.set_makeup_intensities({slot: ZERO_INTENSITY for slot in SLOTS})
+    appearance.set_makeup_intensities(dict.fromkeys(SLOTS, ZERO_INTENSITY))
     frame = _frame()
 
     result = appearance.apply(frame, "front-exasperated", mouth_expression="exasperated_front_speech_open")
@@ -160,7 +160,7 @@ def test_garment_off_and_makeup_zero_return_the_original_frame(tmp_path: Path) -
 
 def test_destination_out_replaces_old_body_and_keeps_new_sleeve_outside_body_alpha(tmp_path: Path) -> None:
     appearance = _appearance(tmp_path)
-    appearance.set_makeup_intensities({slot: ZERO_INTENSITY for slot in SLOTS})
+    appearance.set_makeup_intensities(dict.fromkeys(SLOTS, ZERO_INTENSITY))
     image = QImage(DIMENSION, DIMENSION, QImage.Format.Format_RGBA8888)
     image.fill(Qt.GlobalColor.transparent)
     painter = QPainter(image)
@@ -199,7 +199,7 @@ def test_mouth_state_selects_the_bound_lips_and_maps_i_u(
 def test_makeup_slots_apply_independent_intensities(tmp_path: Path, active_slot: str) -> None:
     appearance = _appearance(tmp_path)
     appearance.garment_enabled = False
-    values = {slot: ZERO_INTENSITY for slot in SLOTS}
+    values = dict.fromkeys(SLOTS, ZERO_INTENSITY)
     values[active_slot] = FULL_INTENSITY
     appearance.set_makeup_intensities(values)
 

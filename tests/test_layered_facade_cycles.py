@@ -48,7 +48,7 @@ MAX_NEW_LAYER_MODULE_LINES = 800
 # (utf-8-sig decode + str.splitlines()).
 LAYER_MODULE_LINE_BASELINE = {
     "application.presentation_ports": 1_034,
-    "domain.outfit_pack": 868,
+    "domain.outfit_pack": 865,
     "infrastructure.db": 1_195,
     "infrastructure.profile_transfer": 1_070,
     "integrations.azure_speech": 864,
@@ -58,10 +58,9 @@ LAYER_MODULE_LINE_BASELINE = {
     "presentation.companion_face_animation": 1_152,
     "presentation.companion_speech_runtime": 1_179,
     "presentation.companion_visual_dynamics": 969,
-    "presentation.dashboard_conversation": 915,
+    "presentation.dashboard_conversation": 882,
     "presentation.dashboard_settings": 911,
     "presentation.dashboard_shell": 893,
-    "presentation.dashboard_today_memory": 822,
     "presentation.dashboard_voice": 1_067,
 }
 MAX_ROOT_APP_LINES = 50
@@ -821,8 +820,8 @@ def test_five_layer_gate_scans_every_python_module_not_only_package_markers() ->
     assert scanned_paths == expected_paths, (
         f'Five-layer architecture scan requires full Python-module coverage: expected={len(expected_paths)}, scanned='
         f'{len(scanned_paths)}, per_layer={per_layer}, outstanding='
-        f'{tuple(sorted((str(path) for path in expected_paths - scanned_paths)))}, unexpected='
-        f'{tuple(sorted((str(path) for path in scanned_paths - expected_paths)))}'
+        f'{tuple(sorted(str(path) for path in expected_paths - scanned_paths))}, unexpected='
+        f'{tuple(sorted(str(path) for path in scanned_paths - expected_paths))}'
     )
     assert checker_paths == expected_paths, (
         f'The production five-layer checker requires full Python-module coverage: expected={len(expected_paths)}'

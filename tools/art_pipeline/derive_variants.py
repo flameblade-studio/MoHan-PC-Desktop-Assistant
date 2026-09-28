@@ -29,10 +29,10 @@ def rgba(path: Path) -> np.ndarray:
 def rect_1254(x: int, y: int, width: int, height: int) -> tuple[int, int, int, int]:
     """將 465 空間矩形換算為只在內側取樣的 1254 空間矩形。"""
 
-    x0 = int(round(x * (CANVAS_SIZE / RUNTIME_SIZE))) + RECT_INSET_PIXELS
-    y0 = int(round(y * (CANVAS_SIZE / RUNTIME_SIZE))) + RECT_INSET_PIXELS
-    x1 = int(round((x + width) * (CANVAS_SIZE / RUNTIME_SIZE))) - RECT_INSET_PIXELS
-    y1 = int(round((y + height) * (CANVAS_SIZE / RUNTIME_SIZE))) - RECT_INSET_PIXELS
+    x0 = round(x * (CANVAS_SIZE / RUNTIME_SIZE)) + RECT_INSET_PIXELS
+    y0 = round(y * (CANVAS_SIZE / RUNTIME_SIZE)) + RECT_INSET_PIXELS
+    x1 = round((x + width) * (CANVAS_SIZE / RUNTIME_SIZE)) - RECT_INSET_PIXELS
+    y1 = round((y + height) * (CANVAS_SIZE / RUNTIME_SIZE)) - RECT_INSET_PIXELS
     return x0, y0, x1, y1
 
 

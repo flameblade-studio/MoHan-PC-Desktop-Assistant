@@ -158,6 +158,8 @@ class BodyPoseRenderer:
             second_pose,
         ):
             return self._current_frame
+        if first_pose is None or second_pose is None:
+            return self._current_frame
         first_assets = self._source.resolve(blend.first.view_id)
         second_assets = self._source.resolve(blend.second.view_id)
         if first_assets is None or second_assets is None:

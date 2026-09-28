@@ -638,14 +638,14 @@ class DashboardPlatformMixin:
             has_missing = bool(controls.missing.text().strip())
             visible = (
                 selected == "all"
-                or selected == "active"
-                and status not in {"尚未開始", "已完成", "已上架"}
-                or selected == "blocked"
-                and has_missing
-                or selected == "finished"
-                and status in {"已完成", "已上架"}
-                or selected == "not_started"
-                and status == "尚未開始"
+                or (selected == "active"
+                and status not in {"尚未開始", "已完成", "已上架"})
+                or (selected == "blocked"
+                and has_missing)
+                or (selected == "finished"
+                and status in {"已完成", "已上架"})
+                or (selected == "not_started"
+                and status == "尚未開始")
             )
             controls.card.setVisible(visible)
 

@@ -77,7 +77,7 @@ def test_voice_volume_default_is_the_shared_constant() -> None:
     from domain.speech_configuration import DEFAULT_VOICE_VOLUME_PERCENT
 
     expected_volume_percent = 125
-    assert DEFAULT_VOICE_VOLUME_PERCENT == expected_volume_percent
+    assert expected_volume_percent == DEFAULT_VOICE_VOLUME_PERCENT
     for path in (CORE_PATH, VOICE_PATH):
         source = _source(path)
         # Every volume reader uses the shared numeric default.

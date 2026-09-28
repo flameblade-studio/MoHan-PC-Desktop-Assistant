@@ -63,7 +63,7 @@ def test_storage_guard_refuses_generation_when_usage_is_unmeasurable(
     quarantine = tmp_path / "quarantine"
     outfit_store.mkdir()
     quarantine.mkdir()
-    (quarantine / "job" ).mkdir()
+    (quarantine / "job").mkdir()
     (quarantine / "job" / "blob.bin").write_bytes(b"x" * 10)
     monkeypatch.setattr(wardrobe_storage, "_directory_bytes", lambda root: None)
 

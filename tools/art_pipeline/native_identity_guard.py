@@ -344,7 +344,8 @@ def _allowed_mask(
         not isinstance(mask, np.ndarray)
         or mask.ndim != MASK_DIMENSIONS
         or mask.shape != shape
-        or mask.dtype not in (np.bool_, np.uint8)
+        # NumPy dtype equality is not hash-set membership; keep semantic checks.
+        or (mask.dtype != np.bool_ and mask.dtype != np.uint8)  # ruff: ignore[repeated-equality-comparison]
     ):
         issues.append(_issue(
             IdentityIssueCode.INVALID_ALLOWED_MASK,

@@ -127,7 +127,7 @@ def coordinate(
     generation = int(options.get("generation", 1))
     behavior_generation = int(options.get("behavior_generation", 1))
     provider = str(options.get("provider", "provider"))
-    gesture = bool(options.get("gesture", False))
+    gesture = bool(options.get("gesture"))
     corrections = frozenset(options.get("corrections", ALL_CORRECTIONS))
     return coordinator.coordinate(
         event=event(kind, generation=generation, provider=provider),

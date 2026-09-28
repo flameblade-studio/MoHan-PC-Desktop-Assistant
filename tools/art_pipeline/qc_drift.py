@@ -58,10 +58,8 @@ def _face_box_coordinates(
     x1 = int(width * right_ratio)
     if y0 >= y1 or x0 >= x1:
         raise ValueError("face_box range must fit within the image dimensions")
-    if y1 > height:
-        y1 = height
-    if x1 > width:
-        x1 = width
+    y1 = min(y1, height)
+    x1 = min(x1, width)
     return y0, y1, x0, x1
 
 
@@ -70,7 +68,7 @@ def _render_base_path(pattern: Path, view: str) -> Path:
         return Path(str(pattern).format(view=view))
     except KeyError as error:
         raise ValueError(
-            "base template must include a {view} placeholder"
+            f"base template must include a {view} placeholder"
         ) from error
 
 

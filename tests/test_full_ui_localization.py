@@ -876,6 +876,7 @@ def validate_expected_ui(
                 phrase,
             )
 
+
 def validate_user_seeds(
     evidence: LanguageEvidence,
     issues: set[GateIssue],

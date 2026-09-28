@@ -158,7 +158,8 @@ def _rewrite_metadata(data: bytes) -> bytes:
     result: list[str] = []
     saw_version = False
     saw_requires_python = False
-    for line in lines:
+    for source_line in lines:
+        line = source_line
         if line.startswith("Version: "):
             result.append(f"Version: {COMPATIBILITY_VERSION}")
             saw_version = True

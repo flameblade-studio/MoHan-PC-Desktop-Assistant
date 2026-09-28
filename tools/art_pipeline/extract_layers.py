@@ -219,7 +219,7 @@ def register(
     height = prev.shape[0]
     if step == "L2_garment":
         rows = slice(0, int(height * REGISTER_HEAD_ROI_BOTTOM_RATIO))
-    elif step in ("L3_hair", "L4_headwear"):
+    elif step in {"L3_hair", "L4_headwear"}:
         rows = slice(int(height * REGISTER_LOWER_ROI_TOP_RATIO), height)
     else:
         rows = slice(0, height)
@@ -246,7 +246,7 @@ def silhouette_id(prefix: str) -> str | None:
     if prefix.startswith("full_"):
         return prefix[len("full_") :]
     for key, silhouette in HALF_SILHOUETTES.items():
-        if prefix.startswith(f"halfprod_{key}_") or prefix.startswith(f"half_{key}"):
+        if prefix.startswith((f"halfprod_{key}_", f"half_{key}")):
             return silhouette
     if prefix.startswith("yaw000"):
         return "yaw+000-pitch+00"
@@ -544,7 +544,7 @@ def _write_final_outputs(
     )
 
     def tile(image: np.ndarray) -> np.ndarray:
-        background = np.empty(image.shape[:2] + (3,), np.uint8)
+        background = np.empty((*image.shape[:2], 3), np.uint8)
         background[:, :] = SHEET_BACKGROUND_BGR
         alpha = image[:, :, 3:4].astype(np.float32) / 255.0
         composed = image[:, :, :3] * alpha + background * (1.0 - alpha)

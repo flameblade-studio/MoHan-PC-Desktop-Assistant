@@ -182,14 +182,14 @@ def test_source_smoke_rejects_wrong_embedded_version() -> None:
             f"--preview-smoke-output={marker}",
         ]
         valid = subprocess.run(
-            command + [f"--preview-expected-version={APP_VERSION}"],
+            [*command, f"--preview-expected-version={APP_VERSION}"],
             check=False,
             env={**os.environ, "QT_QPA_PLATFORM": "offscreen"},
         )
         assert valid.returncode == 0
         assert marker.read_text(encoding="utf-8") == "PREVIEW_PACKAGE_SMOKE_OK"
         invalid = subprocess.run(
-            command + ["--preview-expected-version=0.0.0-invalid"],
+            [*command, "--preview-expected-version=0.0.0-invalid"],
             check=False,
             env={**os.environ, "QT_QPA_PLATFORM": "offscreen"},
         )
@@ -292,7 +292,8 @@ def test_release_gate_is_pinned() -> None:
     assert "--expected-version 2.3.0-rc.0" in preview
     assert "--preview-expected-version" in read("application/preview_app.py")
     assert release.count("--require-pose-atlas") == POSE_ATLAS_FLAG_COUNT
-    assert "Preview package omitted PoseAtlas {POSE_ATLAS_ROOT_NAME} assets" in read(
+    # This asserts the source template, so braces must remain literal.
+    assert "Preview package omitted PoseAtlas {POSE_ATLAS_ROOT_NAME} assets" in read(  # ruff: ignore[missing-f-string-syntax]
         "tools/smoke_preview_package.py"
     )
 
@@ -350,7 +351,6 @@ def test_four_language_release_notes_and_boundaries() -> None:
         assert forbidden_claim not in guide
 
 
-
 def test_pose_atlas_smoke_accepts_complete_duplicate_bundle_roots(tmp_path: Path) -> None:
     for duplicate in ("Contents/Resources", "Contents/Frameworks"):
         atlas = tmp_path / duplicate / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
@@ -362,6 +362,7 @@ def test_pose_atlas_smoke_accepts_complete_duplicate_bundle_roots(tmp_path: Path
             (atlas / f"{stem}.hands.json").write_text("{}", encoding="utf-8")
 
     _require_pose_atlas(tmp_path)
+
 
 def test_packaged_native_overrides_remain_loadable_with_atlas(
     tmp_path: Path, monkeypatch: Any,

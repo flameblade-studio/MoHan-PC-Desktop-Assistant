@@ -20,7 +20,7 @@ lazy from application.self_generating_wardrobe import (
 lazy from application.wardrobe_storage import WardrobeStorageGuard
 lazy from domain.outfit_pack import REQUIRED_SILHOUETTES, OutfitPackError
 lazy from tests.test_outfit_pack import _manifest, _png
-lazy from typing import Callable
+lazy from collections.abc import Callable
 
 
 class Scout:

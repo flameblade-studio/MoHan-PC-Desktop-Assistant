@@ -21,6 +21,8 @@ lazy from test_wardrobe_ui import build_language_dashboard
 lazy from tools.capture_media_contract import preview_font_family, select_dashboard_tab
 
 DEFAULT_OUTPUT_NAME = "control-center-reference.png"
+
+
 def output_path(output: Path) -> Path:
     if output.suffix.casefold() == ".png":
         return output

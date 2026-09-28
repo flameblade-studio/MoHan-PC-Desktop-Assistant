@@ -38,7 +38,6 @@ from domain.outfit_pack_assets import (
     _dimensions,
     _safe_member,
 )
-lazy from domain.outfit_pack_assets import MAX_AUTHOR_LENGTH as MAX_AUTHOR_LENGTH
 lazy from domain.outfit_pack_assets import validate_author as _author, validate_pose_assets
 
 FORMAT = "mohan-outfit-pack"
@@ -128,8 +127,6 @@ MANIFEST_KEYS = frozenset({
     "format", "version", "id", "pack_version", "app_range", "display_names", "compatible_body_profile",
     "source", "authoring", "looks", "hairstyles", "headwear", "accessories", "ensembles",
 })
-
-
 
 
 def official_pose_template() -> frozendict[str, object]:

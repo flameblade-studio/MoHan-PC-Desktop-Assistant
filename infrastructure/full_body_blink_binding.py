@@ -79,7 +79,7 @@ def _validate_png(data: bytes, canvas: tuple[int, int] | None, *, overlay: bool)
         raise ValueError("Blink binding requires an 8-bit color PNG")
     if canvas is not None and (pixels.shape[1], pixels.shape[0]) != canvas:
         raise ValueError("Blink binding canvas mismatch")
-    if pixels.shape[2] not in (RGB_CHANNELS, RGBA_CHANNELS):
+    if pixels.shape[2] not in {RGB_CHANNELS, RGBA_CHANNELS}:
         raise ValueError("Blink binding requires RGB or RGBA")
     if overlay and (pixels.shape[2] != RGBA_CHANNELS or not np.any(pixels[:, :, 3] == 0)):
         raise ValueError("Blink binding requires transparent RGBA overlays")

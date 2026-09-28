@@ -58,6 +58,7 @@ class FlagshipRemoteMixin:
         port_line.addWidget(self.remote_port_up)
         port_line.addWidget(self.remote_port_down)
         return port_control
+
     def _initialize_remote_fields(self) -> None:
         self.remote_enabled = QCheckBox(self._t("啟用手機／私人網路遠端服務"))
         self.remote_host = QComboBox()
@@ -104,6 +105,7 @@ class FlagshipRemoteMixin:
         self.remote_status = QLabel(self._t("遠端功能預設關閉"))
         self.remote_status.setWordWrap(True)
         self.device_list = QListWidget()
+
     def _remote_action_controls(self) -> QWidget:
         controls = QWidget()
         line = QHBoxLayout(controls)
@@ -118,6 +120,7 @@ class FlagshipRemoteMixin:
         stop.clicked.connect(self.stop_remote)
         pair.clicked.connect(self.pair_device)
         return controls
+
     def _populate_remote_form(
         self,
         form: QFormLayout,
@@ -174,6 +177,7 @@ class FlagshipRemoteMixin:
         enroll_face.clicked.connect(self.enroll_face_identity)
         clear_faces.clicked.connect(self.clear_face_identities)
         delete_face.clicked.connect(self.delete_selected_face_identity)
+
     def _remote_tab(self) -> QWidget:
         scroll, form = self._scroll_form()
         self._initialize_remote_fields()
@@ -182,6 +186,7 @@ class FlagshipRemoteMixin:
         self._populate_remote_form(form, port_control, controls)
         self.refresh_devices()
         return scroll
+
     def start_remote(self) -> None:
         self.stop_remote(silent=True)
         if not self.remote_enabled.isChecked():
@@ -239,6 +244,7 @@ class FlagshipRemoteMixin:
             )
         )
         self.refresh_health()
+
     def stop_remote(self, _checked=False, *, silent: bool = False) -> None:
         if self.remote_server:
             self.remote_server.stop()
@@ -249,6 +255,7 @@ class FlagshipRemoteMixin:
             )
         if hasattr(self, "health_summary"):
             self.refresh_health()
+
     def pair_device(self) -> None:
         name, ok = self._simple_text_dialog(
             self._t("配對新裝置"),
@@ -273,6 +280,7 @@ class FlagshipRemoteMixin:
             ),
         )
         self.refresh_devices()
+
     def refresh_devices(self) -> None:
         self.device_list.clear()
         for row in self.db.paired_devices():
@@ -286,14 +294,17 @@ class FlagshipRemoteMixin:
             )
             item.setData(Qt.UserRole, int(row["id"]))
             self.device_list.addItem(item)
+
     def revoke_device(self) -> None:
         item = self.device_list.currentItem()
         if item is None:
             return
         self.db.revoke_paired_device(int(item.data(Qt.UserRole)))
         self.refresh_devices()
+
     def _remote_status_payload(self) -> dict[str, Any]:
         return dict(self._remote_status_cache)
+
     def _update_remote_status_cache(self) -> None:
         self._remote_status_cache = {
             "assistant": str(self.db.setting("assistant_name", "墨寒")),
@@ -305,6 +316,7 @@ class FlagshipRemoteMixin:
             ],
             "timestamp": local_wall_time().isoformat(timespec="seconds"),
         }
+
     def _queue_remote_command(self, text: str, device_name: str) -> dict[str, Any]:
         try:
             self._remote_commands.put_nowait((text, device_name))
@@ -317,6 +329,7 @@ class FlagshipRemoteMixin:
             "accepted": True,
             "message": self._t("已送交墨寒並等待本機權限判斷"),
         }
+
     def _drain_remote_commands(self) -> None:
         if self._closed:
             return
@@ -336,6 +349,7 @@ class FlagshipRemoteMixin:
                     text=text,
                 )
             )
+
     def _refresh_screen_cache(self) -> None:
         if self._closed:
             return
@@ -353,6 +367,7 @@ class FlagshipRemoteMixin:
         buffer.open(QIODevice.WriteOnly)
         pixmap.save(buffer, "PNG")
         self._screen_cache = bytes(data)
+
     def _screen_bytes(self) -> bytes:
         if not self._screen_cache:
             raise PermissionError(self._t("尚無可用的程式視窗畫面"))

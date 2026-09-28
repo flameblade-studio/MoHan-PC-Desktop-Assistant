@@ -52,7 +52,7 @@ class WardrobeTurntableLabel(QLabel):
         self.setGeometry(scene.rect())
 
     def eventFilter(self, watched, event: QEvent) -> bool:
-        if watched is self.parentWidget() and event.type() in (QEvent.Resize, QEvent.Show):
+        if watched is self.parentWidget() and event.type() in {QEvent.Resize, QEvent.Show}:
             self.setGeometry(watched.rect())
         return super().eventFilter(watched, event)
 
@@ -133,7 +133,7 @@ class WardrobeTurntableLabel(QLabel):
         super().mouseReleaseEvent(event)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
-        if event.key() in (Qt.Key_Left, Qt.Key_Right, Qt.Key_Home):
+        if event.key() in {Qt.Key_Left, Qt.Key_Right, Qt.Key_Home}:
             if event.key() == Qt.Key_Home:
                 self._select_index(FRONT_INDEX)
             else:

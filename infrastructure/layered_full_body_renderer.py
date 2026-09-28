@@ -278,6 +278,7 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
             painter.end()
 
         eye_state = eye_state_for_blink(motion.expression_shape.blink)
+
         def replace_body(frame: QPixmap) -> QPixmap:
             if complete_paths is None:
                 return frame

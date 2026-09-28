@@ -24,6 +24,7 @@ __all__ = ("RealtimeEventMethods",)
 
 MAX_TERMINAL_RESPONSES = 256
 
+
 class RealtimeEventMethods:
     def _handle_audio_delta(self, event: dict[str, Any]) -> None:
         if not self.native_audio_output:
@@ -33,8 +34,8 @@ class RealtimeEventMethods:
             if response_id:
                 if (
                     response_id in self._terminal_response_ids
-                    or self._native_response_id
-                    and self._native_response_id != response_id
+                    or (self._native_response_id
+                    and self._native_response_id != response_id)
                 ):
                     return
                 self._native_response_id = response_id
@@ -48,7 +49,6 @@ class RealtimeEventMethods:
         for chunk in chunks:
             if not self._queue_playback_chunk(chunk):
                 break
-
 
     def _handle_audio_done(
         self,
@@ -84,7 +84,6 @@ class RealtimeEventMethods:
         self._response_pending.clear()
         self._mark_assistant_audio_done()
 
-
     def _handle_assistant_transcript_delta(
         self,
         event: dict[str, Any],
@@ -103,7 +102,6 @@ class RealtimeEventMethods:
             return
         self._assistant_text += delta
 
-
     def _handle_assistant_transcript_done(
         self,
         event: dict[str, Any],
@@ -121,7 +119,6 @@ class RealtimeEventMethods:
             return
         if text:
             self.assistant_transcript.emit(text)
-
 
     def _handle_assistant_text_delta(self, event: dict[str, Any]) -> None:
         if self.native_audio_output:
@@ -153,7 +150,6 @@ class RealtimeEventMethods:
             self.output_text_started.emit(output_generation)
         self.output_text_delta.emit(output_generation, delta)
 
-
     def _handle_assistant_text_done(self, event: dict[str, Any]) -> None:
         if self.native_audio_output:
             return
@@ -182,7 +178,6 @@ class RealtimeEventMethods:
             self.output_text_started.emit(output_generation)
         if text_to_emit:
             self.output_text_delta.emit(output_generation, text_to_emit)
-
 
     def _handle_response_done(self, event: dict[str, Any]) -> None:
         response = event.get("response")
@@ -218,7 +213,6 @@ class RealtimeEventMethods:
         if output_generation:
             self.output_text_done.emit(output_generation)
 
-
     def _reject_oversized_response(self, response_id: str) -> None:
         self._cancel_server_response()
         self._cancel_external_output(response_id, force_signal=True)
@@ -227,14 +221,12 @@ class RealtimeEventMethods:
             trusted=True,
         )
 
-
     def _cancel_server_response(self) -> None:
         ws = self.ws
         if not ws or not ws.sock or not ws.sock.connected:
             return
         with suppress(Exception):
             ws.send(json.dumps({"type": "response.cancel"}))
-
 
     def _cancel_external_output(
         self,
@@ -286,7 +278,6 @@ class RealtimeEventMethods:
             self.output_interrupted.emit(barrier)
         return barrier
 
-
     def _handle_user_transcript_completed(
         self,
         event: dict[str, Any],
@@ -312,7 +303,6 @@ class RealtimeEventMethods:
                     _realtime_message(self._locale, "empty_transcript")
                 )
 
-
     def _handle_user_transcript_failed(
         self,
         event: dict[str, Any],
@@ -335,7 +325,6 @@ class RealtimeEventMethods:
         self._discard_conversation_item(
             str(event.get("item_id") or "")
         )
-
 
     def _handle_speech_started(
         self,
@@ -364,14 +353,12 @@ class RealtimeEventMethods:
             with self._input_timeline_lock:
                 self._speech_start_ms[item_id] = max(0.0, start_ms)
 
-
     def _handle_speech_stopped(
         self,
         event: dict[str, Any],
     ) -> None:
         if self.hybrid_transcription:
             self._start_hybrid_transcription(event)
-
 
     def _handle_realtime_error(
         self,
@@ -387,13 +374,11 @@ class RealtimeEventMethods:
         )
         self._emit_failure(detail)
 
-
     def _handle_server_event(self, event: dict[str, Any]) -> None:
         kind = str(event.get("type", ""))
         handler = self._server_event_handler(kind)
         if handler is not None:
             handler(event)
-
 
     def _server_event_handler(
         self,
@@ -425,13 +410,11 @@ class RealtimeEventMethods:
             return lambda event: self._handle_audio_done(kind, event)
         return None
 
-
     @staticmethod
     def _event_response_id(event: dict[str, Any]) -> str:
         response = event.get("response")
         nested_id = response.get("id") if isinstance(response, dict) else ""
         return str(event.get("response_id") or nested_id or "").strip()
-
 
     def _response_event_matches_locked(self, response_id: str) -> bool:
         if not response_id:
@@ -445,7 +428,6 @@ class RealtimeEventMethods:
         self._active_response_id = response_id
         return True
 
-
     def _remember_terminal_response_locked(self, response_id: str) -> None:
         if not response_id or response_id in self._terminal_response_ids:
             return
@@ -455,7 +437,6 @@ class RealtimeEventMethods:
         self._terminal_response_order.append(response_id)
         self._terminal_response_ids.add(response_id)
 
-
     def _prepare_external_response(self) -> None:
         with self._response_state_lock:
             self._assistant_output_text = ""
@@ -464,14 +445,12 @@ class RealtimeEventMethods:
             self._anonymous_response_blocked = False
             self._output_interruption_emitted = False
 
-
     def _begin_output_generation_locked(self) -> tuple[int, bool]:
         if self._active_output_generation:
             return self._active_output_generation, False
         self._output_generation += 1
         self._active_output_generation = self._output_generation
         return self._active_output_generation, True
-
 
     def _handle_response_created(self, event: dict[str, Any]) -> None:
         if self.native_audio_output:

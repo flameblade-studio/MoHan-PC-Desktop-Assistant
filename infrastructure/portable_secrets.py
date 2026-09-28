@@ -29,6 +29,7 @@ _PAYLOAD_KEYS: Final = frozenset({"format", "version", "secrets"})
 # catch boundary exceptions; each detail is replaced with a fixed boundary result.
 _STORE_OPERATION_ERRORS: Final = (Exception,)
 
+
 class PortableSecretsPayload(TypedDict):
     format: str
     version: int

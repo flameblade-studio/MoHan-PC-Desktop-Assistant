@@ -21,10 +21,10 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from repose_arms_candidate6_dqs import (  # noqa: E402
+from repose_arms_candidate6_dqs import (
     dual_quat, quat_multiply, skin,
 )
-from morph_limbs_candidate4 import TORSO_SECTIONS, plane_loop  # noqa: E402
+from morph_limbs_candidate4 import TORSO_SECTIONS, plane_loop
 
 ROOT = Path(r"D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision")
 EXTRACT = ROOT / "artifacts/pose-atlas-rebuild/2026-08-25/ufbx-lod1-extractor-agent-a"
@@ -101,7 +101,7 @@ class Rig:
                 bone = row["bone_name"]
                 if bone not in self.index:
                     raise SystemExit(f"權重表出現骨架沒有的骨骼 {bone}")
-                weights[(int(row["vertex_index"]), self.index[bone])] += float(row["weight"])
+                weights[int(row["vertex_index"]), self.index[bone]] += float(row["weight"])
         table = np.zeros((mesh_vertex_count, len(self.names)))
         for (vertex, bone), value in weights.items():
             table[vertex, bone] = value
@@ -260,7 +260,7 @@ def pose_skeleton(rig: Rig, spec: dict[str, tuple]) -> np.ndarray:
 
 
 def repose(rig: Rig, vertices: np.ndarray,
-           spec: dict[str, tuple]) -> tuple[np.ndarray, "Rig"]:
+           spec: dict[str, tuple]) -> tuple[np.ndarray, Rig]:
     """同時擺網格與骨架，回傳新網格與一具骨架已對齊的新 Rig。"""
     posed = apply_pose(rig, vertices, spec)
     moved = Rig(len(vertices), rest_override=pose_skeleton(rig, spec))
@@ -324,8 +324,8 @@ def validate(rest: np.ndarray, posed: np.ndarray, faces: np.ndarray,
     drift = abs(v_posed - v_rest) / v_rest
     good = drift <= MAX_VOLUME_DRIFT
     ok &= good
-    print(f"  體積        {v_rest:.1f} → {v_posed:.1f} cm³  漂移 {drift*100:+.2f}% "
-          f"(上限 {MAX_VOLUME_DRIFT*100:.0f}%)   {'OK' if good else '← 體積異常'}")
+    print(f"  體積        {v_rest:.1f} → {v_posed:.1f} cm³  漂移 {drift * 100:+.2f}% "
+          f"(上限 {MAX_VOLUME_DRIFT * 100:.0f}%)   {'OK' if good else '← 體積異常'}")
 
     if not check_sections:
         print(f"  → {'通過' if ok else '不通過'}（動作姿勢，斷面不設限）\n")

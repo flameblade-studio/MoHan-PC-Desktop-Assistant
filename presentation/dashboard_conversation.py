@@ -211,7 +211,6 @@ class DashboardConversationMixin:
         )
         self.chat.zoom_step_requested.connect(self.adjust_chat_zoom)
 
-
     def _chat_tab(self) -> QWidget:
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -246,7 +245,6 @@ class DashboardConversationMixin:
         self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
         return tab
 
-
     def append_chat(self, speaker: str, text: str) -> None:
         color = (
             "#2f6987"
@@ -259,7 +257,6 @@ class DashboardConversationMixin:
             f'<p><b style="color:{color}">{speaker}</b><br>{safe_text}</p>'
         )
         self.chat.verticalScrollBar().setValue(self.chat.verticalScrollBar().maximum())
-
 
     def refresh_chat(self) -> None:
         self.chat.clear()
@@ -286,11 +283,9 @@ class DashboardConversationMixin:
         # the displayed text agrees with the already-correct percentage label.
         self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
 
-
     def load_older_chat(self) -> None:
         self.chat_loaded_limit += 50
         self.refresh_chat()
-
 
     def manage_chat_history(self) -> None:
         manager = ChatHistoryDialog(
@@ -302,10 +297,8 @@ class DashboardConversationMixin:
         if manager.changed:
             self.refresh_chat()
 
-
     def adjust_chat_zoom(self, steps: int) -> None:
         self.apply_chat_zoom(self.chat_zoom_percent + (steps * 10))
-
 
     def apply_chat_zoom(self, percent: int, *, persist: bool = True) -> None:
         self.chat_zoom_percent = max(60, min(200, int(percent)))
@@ -320,7 +313,6 @@ class DashboardConversationMixin:
         self.chat_zoom_up.setEnabled(self.chat_zoom_percent < MAX_CHAT_ZOOM_PERCENT)
         if persist:
             self.db.set_setting("chat_zoom_percent", self.chat_zoom_percent)
-
 
     def send_chat(self) -> None:
         text = self.chat_input.text().strip()
@@ -361,7 +353,6 @@ class DashboardConversationMixin:
         )
         self._start_next_ai_request()
 
-
     def _receive_remote_command(self, text: str) -> None:
         normalized = text.strip()
         if not normalized:
@@ -374,7 +365,6 @@ class DashboardConversationMixin:
         self._input_source = "remote"
         self.chat_input.setText(command)
         self.send_chat()
-
 
     def _start_next_ai_request(self) -> None:
         if self.ai_busy or not self.ai_queue:
@@ -451,7 +441,6 @@ class DashboardConversationMixin:
         self.ai_busy = False
         self._finish_ai_wait_expression()
 
-
     def _schedule_ai_wait_expressions(self, text: str) -> None:
         """Schedule optional reactions; the status label is display-only."""
         self._finish_ai_wait_expression()
@@ -467,7 +456,6 @@ class DashboardConversationMixin:
                     cue.intensity,
                 ),
             )
-
 
     def _emit_ai_wait_expression(
         self,
@@ -485,7 +473,6 @@ class DashboardConversationMixin:
                 intensity,
             )
 
-
     def _finish_ai_wait_expression(self) -> None:
         generation = self.active_ai_wait_generation
         if not generation:
@@ -493,11 +480,9 @@ class DashboardConversationMixin:
         self.active_ai_wait_generation = 0
         self.ai_wait_expression_finished.emit(generation)
 
-
     def cancel_ai_wait_expression(self) -> None:
         """Invalidate pending visual reactions while preserving the API session."""
         self._finish_ai_wait_expression()
-
 
     def _capture_explicit_memory(self, text: str) -> None:
         if not bool(self.db.setting("auto_memory", True)):
@@ -521,7 +506,6 @@ class DashboardConversationMixin:
             category = classify_memory_text(text)
             self.db.add_memory(text, category, "conversation", 4)
             self.refresh_memories()
-
 
     def _handle_command(self, text: str, source: str = "local") -> bool:
         return (
@@ -553,7 +537,6 @@ class DashboardConversationMixin:
         self._reply(reply, "shy_cute_front", source="wardrobe-origin")
         return True
 
-
     def _handle_emergency_command(self, text: str) -> bool:
         comma_free = text.replace("，", "").replace(",", "").replace("、", "")
         normalized = " ".join(comma_free.split()).casefold()
@@ -561,7 +544,6 @@ class DashboardConversationMixin:
             return False
         self._emergency_stop()
         return True
-
 
     def _handle_teasing_command(self, text: str) -> bool:
         if not any(marker in text for marker in TEASING_COMMAND_MARKERS):
@@ -572,7 +554,6 @@ class DashboardConversationMixin:
             "caught",
         )
         return True
-
 
     def _handle_work_status_command(self, text: str) -> bool:
         if is_start_work_command(text):
@@ -591,7 +572,6 @@ class DashboardConversationMixin:
             return False
         return True
 
-
     def _handle_quick_capture_command(self, text: str) -> bool:
         marker = "幫我記一下"
         if marker not in text:
@@ -608,7 +588,6 @@ class DashboardConversationMixin:
             self.refresh_todos()
             self._reply("已加入今日待辦。", "happy")
         return True
-
 
     def _handle_tool_instruction(self, text: str, source: str) -> bool:
         flagship_center = getattr(self, "flagship_center", None)
@@ -627,7 +606,6 @@ class DashboardConversationMixin:
         )
         return True
 
-
     def _emergency_shortcut_activated(self) -> None:
         # 裁決：Esc 是全域緊急停止，但模態對話框開啟時，應用程式層級的
         # 捷徑會攔截 Esc、把使用者想關閉 QMessageBox 的按鍵變成全域停止，
@@ -638,11 +616,9 @@ class DashboardConversationMixin:
             return
         self._emergency_stop()
 
-
     def _emergency_stop(self) -> None:
         if hasattr(self, "flagship_center"):
             self.flagship_center.emergency_stop()
-
 
     def _reply(
         self,
@@ -662,7 +638,6 @@ class DashboardConversationMixin:
             source,
         )
         self.speak_requested.emit(text, state)
-
 
     def _ai_done(self, text: str) -> None:
         # finally 鐵閘：_reply（語音／表情／桌寵）拋例外會被 Qt 事件圈吞掉，
@@ -685,7 +660,6 @@ class DashboardConversationMixin:
         finally:
             self.ai_busy = False
             self._start_next_ai_request()
-
 
     @staticmethod
     def _reply_expression(text: str) -> str:
@@ -810,7 +784,6 @@ class DashboardConversationMixin:
                 return expression
         return "speaking"
 
-
     def _ai_failed(self, error: str) -> None:
         self._finish_ai_wait_expression()
         if is_english(self.ui_language):
@@ -841,7 +814,6 @@ class DashboardConversationMixin:
             self.ai_busy = False
             self._start_next_ai_request()
 
-
     def _voice_text(self, text: str) -> None:
         text = text.strip()
         self.set_voice_phase(
@@ -858,14 +830,12 @@ class DashboardConversationMixin:
         self._input_source = "voice"
         self.send_chat()
 
-
     def _voice_error(self, message: str) -> None:
         self.set_voice_phase(
             self._t("voice_ready_short", "準備就緒")
         )
         self.append_chat("寒", message)
         self.speak_requested.emit(message, "worried")
-
 
     def _listening_changed(self, listening: bool) -> None:
         if not listening:
@@ -884,7 +854,6 @@ class DashboardConversationMixin:
             )
             self.mic_btn.setEnabled(False)
 
-
     def _recording_changed(self, recording: bool) -> None:
         if recording:
             self.mic_btn.setText(
@@ -897,12 +866,10 @@ class DashboardConversationMixin:
             )
             self.mic_btn.setEnabled(False)
 
-
     def _transcription_diagnostic(self, message: str) -> None:
         self.db.set_setting("last_transcription_diagnostic", message)
         if hasattr(self, "transcription_diagnostic"):
             self.transcription_diagnostic.setText(message)
-
 
     def set_voice_phase(self, phase: str) -> None:
         self.set_desktop_companion_status("voice", phase)

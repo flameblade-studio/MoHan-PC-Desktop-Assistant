@@ -11,7 +11,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
-__all__ = ("detect_face_box", "detail_face")
+__all__ = ("detail_face", "detect_face_box")
 
 YUNET = Path(os.environ.get("MOHAN_VISION_ROOT",
     r"D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision")) / "assets/vision-models/face_detection_yunet_2023mar.onnx"

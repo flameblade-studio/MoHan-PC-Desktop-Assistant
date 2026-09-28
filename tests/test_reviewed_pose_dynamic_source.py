@@ -188,7 +188,7 @@ def test_declared_pose_returns_a_still_frame_instead_of_raising(tmp_path: Path) 
     overlay = _overlay(root)
     renderer = _renderer(root, overlay)
 
-    pose = overlay._reviewed_assets if False else None
+    pose = getattr(overlay, "_reviewed_assets", None)
     del pose
     assert overlay.native_neutral(VIEW) is not None
     assert overlay._native_motion(VIEW) is None

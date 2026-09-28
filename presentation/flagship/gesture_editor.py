@@ -59,6 +59,7 @@ class FlagshipGestureEditorMixin:
         self._loading_gesture_editor = False
         self._refresh_gesture_list()
         return card
+
     def _gesture_editor_layout(self) -> QHBoxLayout:
         editor = QHBoxLayout()
         self.gesture_list = QListWidget()
@@ -98,11 +99,13 @@ class FlagshipGestureEditorMixin:
         form.addRow(self.gesture_definition_enabled)
         editor.addLayout(form, 3)
         return editor
+
     def _gesture_recording_status(self) -> QLabel:
         self.gesture_record_status = QLabel()
         self.gesture_record_status.setWordWrap(True)
         self.gesture_record_status.setAccessibleName(self._t("錄製狀態"))
         return self.gesture_record_status
+
     def _gesture_action_buttons(self) -> QHBoxLayout:
         actions = QHBoxLayout()
         self.gesture_add_button = QPushButton(self._t("新增自訂手勢"))
@@ -126,6 +129,7 @@ class FlagshipGestureEditorMixin:
             actions.addWidget(button)
         actions.addStretch(1)
         return actions
+
     def _gesture_label(self, labels) -> str:
         return {
             "zh-TW": labels.traditional_chinese,
@@ -133,10 +137,12 @@ class FlagshipGestureEditorMixin:
             "en": labels.english,
             "ja-JP": labels.japanese,
         }[self.language]
+
     def _gesture_display_name(self, definition: GestureDefinition) -> str:
         if definition.source is GestureSource.BUILTIN:
             return self._gesture_label(BUILTIN_GESTURE_LABELS[definition.gesture_id])
         return definition.display_name
+
     def _refresh_gesture_list(self, selected_id: str | None = None) -> None:
         selected_id = selected_id or self._selected_gesture_id()
         self.gesture_list.clear()
@@ -155,14 +161,17 @@ class FlagshipGestureEditorMixin:
                 selected_row = row
         if self.gesture_list.count():
             self.gesture_list.setCurrentRow(selected_row)
+
     def _selected_gesture_id(self) -> str | None:
         item = self.gesture_list.currentItem() if hasattr(self, "gesture_list") else None
         return str(item.data(Qt.UserRole)) if item is not None else None
+
     def _selected_gesture(self) -> GestureDefinition | None:
         identifier = self._selected_gesture_id()
         if identifier is None:
             return None
         return self._gesture_draft.value.definition(identifier)
+
     def _load_gesture_editor(self, _row: int) -> None:
         definition = self._selected_gesture()
         available = definition is not None
@@ -192,12 +201,14 @@ class FlagshipGestureEditorMixin:
         self.gesture_definition_enabled.setEnabled(available)
         self._gesture_action_changed()
         self._loading_gesture_editor = False
+
     def _gesture_action_changed(self, _index: int = -1) -> None:
         custom = self.gesture_action.currentData() == GestureAction.CUSTOM_COMMAND.value
         self.gesture_command.setEnabled(custom)
         if custom and not self.gesture_command.text().strip():
             return
         self._stage_selected_gesture()
+
     def _stage_selected_gesture(self) -> None:
         if getattr(self, "_loading_gesture_editor", False):
             return
@@ -212,6 +223,7 @@ class FlagshipGestureEditorMixin:
             binding=GestureBinding(action, command),
         )
         self._gesture_draft.update_definition(updated)
+
     def add_custom_gesture(self) -> None:
         name, accepted = QInputDialog.getText(
             self, self._t("新增自訂手勢"), self._t("手勢名稱")
@@ -219,6 +231,7 @@ class FlagshipGestureEditorMixin:
         if accepted and name.strip():
             self._gesture_draft.value = self._gesture_draft.value.add_custom(name)
             self._refresh_gesture_list(self._gesture_draft.value.definitions[-1].gesture_id)
+
     def rename_custom_gesture(self) -> None:
         definition = self._selected_gesture()
         if definition is None or definition.source is GestureSource.BUILTIN:
@@ -232,18 +245,21 @@ class FlagshipGestureEditorMixin:
         if accepted and name.strip():
             self._gesture_draft.update_definition(replace(definition, display_name=name.strip()))
             self._refresh_gesture_list(definition.gesture_id)
+
     def delete_custom_gesture(self) -> None:
         definition = self._selected_gesture()
         if definition is None or definition.source is GestureSource.BUILTIN:
             return
         self._gesture_draft.value = self._gesture_draft.value.remove_custom(definition.gesture_id)
         self._refresh_gesture_list()
+
     def reset_builtin_gesture(self) -> None:
         definition = self._selected_gesture()
         if definition is None or definition.source is GestureSource.CUSTOM:
             return
         self._gesture_draft.value = self._gesture_draft.value.reset_builtin(definition.gesture_id)
         self._refresh_gesture_list(definition.gesture_id)
+
     def record_custom_gesture(self) -> None:
         definition = self._selected_gesture()
         if definition is None or definition.source is GestureSource.BUILTIN:

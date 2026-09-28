@@ -148,7 +148,7 @@ def _make_fixture(
         f"Name: {name}\n"
         f"Version: {version}\n"
         f"License-Expression: {expression}\n"
-    ).encode("utf-8")
+    ).encode()
     installed_payloads = installed_files or {
         f"{name}/native.pyd": b"native-binary-fixture",
         metadata_relative: metadata_payload,

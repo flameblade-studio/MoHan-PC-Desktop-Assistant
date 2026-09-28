@@ -47,14 +47,14 @@ lazy from presentation.dashboard_theme_materials import MaterialPalette, resolve
 lazy from presentation.lingxiao_fonts import register_bundled_fonts
 
 __all__ = (
+    "DRAFT_BAR_READ_ERROR",
     "REALMS",
     "build_draft_bar",
     "build_navigation",
     "build_ribbon",
     "install_lobby_motion",
-    "refresh_runtime_palette",
     "realm_layout_order",
-    "DRAFT_BAR_READ_ERROR",
+    "refresh_runtime_palette",
     "update_draft_bar",
 )
 
@@ -72,6 +72,7 @@ def _shell_palette(shell):
         theme_id,
         high_contrast=bool(high_contrast),
     )
+
 
 # (領域鍵, 繁中預設組名, 這一組收哪些功能 id)。功能 id 對應 DashboardFeatureRegistry。
 REALMS = (
@@ -330,16 +331,16 @@ class _ResponsiveNavigationButton(QPushButton):
         finally:
             self._refreshing_navigation_text = False
 
-    def changeEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def changeEvent(self, event) -> None:
         super().changeEvent(event)
-        if event.type() in (QEvent.FontChange, QEvent.StyleChange):
+        if event.type() in {QEvent.FontChange, QEvent.StyleChange}:
             self.refresh_navigation_text()
 
-    def resizeEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self.refresh_navigation_text()
 
-    def showEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def showEvent(self, event) -> None:
         super().showEvent(event)
         self.refresh_navigation_text()
 
@@ -374,16 +375,16 @@ class _ResponsiveNavigationLabel(QLabel):
         finally:
             self._refreshing_navigation_text = False
 
-    def changeEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def changeEvent(self, event) -> None:
         super().changeEvent(event)
-        if event.type() in (QEvent.FontChange, QEvent.StyleChange):
+        if event.type() in {QEvent.FontChange, QEvent.StyleChange}:
             self.refresh_navigation_text()
 
-    def resizeEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self.refresh_navigation_text()
 
-    def showEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def showEvent(self, event) -> None:
         super().showEvent(event)
         self.refresh_navigation_text()
 
@@ -396,15 +397,15 @@ class _ResponsiveStatusLabel(QLabel):
         super().__init__(parent)
         self.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
-    def setText(self, text: str) -> None:  # noqa: N802 - Qt API
+    def setText(self, text: str) -> None:
         self._source_text = str(text)
         self._refresh_text()
 
-    def resizeEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self._refresh_text()
 
-    def sizeHint(self) -> QSize:  # noqa: N802 - Qt API
+    def sizeHint(self) -> QSize:
         hint = super().sizeHint()
         if not self._source_text:
             return hint

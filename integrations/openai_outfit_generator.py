@@ -17,7 +17,8 @@ lazy from urllib import error as urllib_error
 lazy from urllib import request as urllib_request
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
-lazy from typing import Callable, Protocol
+lazy from typing import Protocol
+lazy from collections.abc import Callable
 
 lazy import cv2
 lazy import numpy as np
@@ -73,7 +74,7 @@ class OpenAIImageEditOptions:
     endpoint: str = OPENAI_IMAGE_EDITS_URL
 
 
-def _timeout_failure() -> "OutfitImageGenerationError":
+def _timeout_failure() -> OutfitImageGenerationError:
     return OutfitImageGenerationError(
         "GPT Image request timed out; billing status is ambiguous, so this "
         "request remains a single attempt.",
@@ -86,7 +87,7 @@ def _is_wrapped_timeout(error: BaseException) -> bool:
     return isinstance(getattr(error, "reason", None), (TimeoutError, socket.timeout))
 
 
-def _raise_if_cancelled(cancelled: "Callable[[], bool]") -> None:
+def _raise_if_cancelled(cancelled: Callable[[], bool]) -> None:
     if cancelled():
         raise OutfitGenerationCancelled(
             "使用者在生成途中要求停手；已完成的視角保留在暫存區。"
@@ -165,7 +166,7 @@ class OpenAIImageEditTransport:
                     return response.read(MAX_RESPONSE_BYTES + 1)
             except urllib_error.HTTPError as error:
                 failure = self._http_failure(error)
-            except (TimeoutError, socket.timeout):
+            except TimeoutError:
                 # 付費要求的處理結果與計費狀態可能仍在確認，維持單次要求。
                 failure = _timeout_failure()
             except (OSError, urllib_error.URLError) as error:
@@ -403,7 +404,7 @@ class OpenAIOutfitDraftGenerator:
                 ) from error
         return normalized
 
-    def create(  # noqa: PLR0914 - one atomic multi-view draft transaction
+    def create(  # ruff: ignore[too-many-locals] - one atomic multi-view draft transaction
         self,
         request: OutfitCreationRequest,
         trends: tuple[FashionTrendSignal, ...],
