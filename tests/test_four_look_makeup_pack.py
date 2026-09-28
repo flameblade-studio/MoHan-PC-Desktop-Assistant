@@ -34,6 +34,7 @@ EXPECTED_STAGE_RECORDS = 3 * 31 * 4 * 3
 EXPECTED_OUTPUT_DECLARATIONS = 744
 EXPECTED_ARCHIVE_MEMBERS = EXPECTED_OUTPUT_DECLARATIONS + 1
 EXPECTED_SOURCE_PINS = 2
+VISIBLE_FULL_BODY_VIEWS = tuple(f"yaw{angle:+04d}-pitch+00" for angle in range(-75, 90, 15))
 
 
 def _write_png(path: Path, size: tuple[int, int], *, visible: bool = False) -> bytes:
@@ -118,6 +119,20 @@ def _regions() -> dict[str, MakeupSafeRegion]:
             masks,
         )
     return regions
+
+
+def test_approved_glamorous_full_body_eye_and_lip_layers_are_distinct() -> None:
+    """Visible full-body Glamorous layers must not silently reuse Classic data."""
+    with zipfile.ZipFile(ROOT / SOURCE_RELATIVE) as archive:
+        manifest = json.loads(archive.read("manifest.json"))
+        variants = {entry["id"]: entry for entry in manifest["makeup"][0]["variants"]}
+        for view in VISIBLE_FULL_BODY_VIEWS:
+            classic = {entry["slot"]: entry for entry in variants["classic"]["poses"][view]}
+            glamorous = {entry["slot"]: entry for entry in variants["glamorous"]["poses"][view]}
+            for slot in ("eyes", "lips"):
+                assert archive.read(classic[slot]["path"]) != archive.read(
+                    glamorous[slot]["path"]
+                ), f"{view}/{slot} Glamorous silently duplicates Classic"
 
 
 def test_builds_three_looks_with_canonical_eye_state_slots(tmp_path: Path) -> None:

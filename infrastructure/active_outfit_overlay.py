@@ -13,6 +13,7 @@ lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
 
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
+    POSE_ATLAS_SILHOUETTES,
     SELECTION_CATEGORIES,
     IncompatibleBodyProfileError,
     OutfitPackError,
@@ -26,26 +27,34 @@ lazy from domain.outfit_pack_makeup import MAKEUP_STATE_FILE
 lazy from domain.outfit_pack_official import (
     OFFICIAL_OUTFIT_CATEGORIES,
     OFFICIAL_OUTFIT_PACK_ID,
+    native_overlay_is_redundant,
 )
 lazy from domain.version_info import APP_VERSION
-lazy from infrastructure.active_outfit_overlay_layers import ActiveOutfitLayerMixin
+lazy from infrastructure.active_outfit_overlay_layers import ActiveOutfitLayerMixin, FULL_BODY_CANVAS
 lazy from infrastructure.reviewed_garment_overlay import ReviewedGarmentOverlayMixin
+lazy from infrastructure.source_bound_garment_visibility import (
+    MANIFEST, GarmentBinding, compose_garment_base, load_garment_binding,
+    validate_garment_removal,
+)
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
 lazy from infrastructure.appearance_layer_stack import (
     AppearanceCallbacks, AppearanceLayerStack,
     CoreMotionError,
-    clear_appearance_base,
     paint_behind_body,
     split_hand_makeup_depth,
     split_makeup_depth,
 )
-
 lazy from infrastructure.outfit_core_composition import (
     _AppearanceCompositionError, _hand_region, _paint_foreground_layers,
-    _paint_overlay_layers, _paint_depth_tail, _prepare_core_hand_depth, replace_restored_body,
+    _paint_overlay_layers, _paint_depth_tail, _prepare_core_hand_depth,
 )
 
 SEMVER_COMPONENT_COUNT = 3
+# The V5 full-body face guard stops at the chin. Keep the adjacent native neck
+# through the garment collar while the legacy official replacement mask clears
+# the torso. The 24 authored views share the 1024x1536 canvas used here.
+V5_NECK_GUARD_SIDE_PX = 25
+V5_NECK_GUARD_HEIGHT_PX = 110
 _AUTO_HAND_REGIONS = sentinel("AUTO_HAND_REGIONS")
 _RANGE = re.compile(r">=(\d+)\.(\d+)\.(\d+),<(\d+)\.(\d+)\.(\d+)\Z")
 # One composited layer: pixmap, anchor x/y, the region it may paint, opacity.
@@ -101,6 +110,31 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         self._official_outfit_active_cache: bool | None = None
         self._safe_regions = None
         self._render_size_by_view: dict[str, tuple[int, int]] = {}
+        # The viseme currently being rendered (mouth_states substitution),
+        # set by the renderer via set_active_mouth_state() before each
+        # render. None means no substitution (including the CLOSED/rest
+        # mouth). Included in every layer cache key below so a stale entry
+        # computed under one viseme can never be reused under another; the
+        # oral mask (native-canvas QPixmap, already resolved by the renderer
+        # from the complete-expression manifest's own oral_masks field) is
+        # only used to build the mouth-state safe-region exclusion and is not
+        # itself part of any cache key.
+        self._active_viseme: str | None = None
+        self._active_oral_mask: QPixmap | None = None
+
+    def set_active_mouth_state(
+        self, viseme: str | None, oral_mask: QPixmap | None = None,
+    ) -> None:
+        """Tell the makeup layer resolver which viseme is being rendered.
+
+        Called by the full-body renderer immediately before each render.
+        `oral_mask` is the same native-canvas mask the renderer already
+        resolved for restoring skin under the mouth after makeup; when a
+        mouth_states substitution applies, it replaces the rest-rig oral
+        exclusion slit for lips/foundation/other makeup slots alike.
+        """
+        self._active_viseme = viseme
+        self._active_oral_mask = oral_mask if viseme is not None else None
 
     def _invalidate_view(self, view_id: str) -> None:
         """Discard both successful layers and size-dependent masks for a view."""
@@ -198,16 +232,15 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
             raise ValueError("Use a recognized makeup eye state")
         suppressed = frozenset(suppress_makeup_slots)
         self._bind_canvas(view_id, frame.size().toTuple())
-        cache = (
-            self._layers_by_view
-            if not suppressed and eye_state == "rest"
-            else self._layers_by_view_without_makeup_slots
-        )
-        cache_key = (
-            view_id
-            if not suppressed and eye_state == "rest"
-            else (view_id, suppressed, eye_state)
-        )
+        # A mouth_states viseme substitution forces the tuple-keyed cache path
+        # (with viseme in the key) even when suppressed/eye_state would
+        # otherwise qualify for the plain view_id key, so a cached entry from
+        # one viseme is never read back under another. When no substitution
+        # is active (viseme is None, including the CLOSED/rest path) this is
+        # byte-identical to the previous behavior.
+        simple = not suppressed and eye_state == "rest" and self._active_viseme is None
+        cache = self._layers_by_view if simple else self._layers_by_view_without_makeup_slots
+        cache_key = view_id if simple else (view_id, suppressed, eye_state, self._active_viseme)
         try:
             self._refresh_state()
             reviewed = self._reviewed_frame(frame, view_id, suppressed, eye_state)
@@ -322,7 +355,7 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
             return frame
         if eye_state not in {"rest", "half", "closed"}:
             raise ValueError("Use a recognized makeup eye state")
-        key = (view_id, phase, suppress_makeup_slots, eye_state)
+        key = (view_id, phase, suppress_makeup_slots, eye_state, self._active_viseme)
         include_core = phase == "appearance"
         before_front_hair, replace_body = callbacks.before_front_hair, callbacks.replace_body
         self._bind_canvas(view_id, frame.size().toTuple())
@@ -352,27 +385,18 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
                                 if include_core else frozenset({"makeup"})),
                 )
             garment_is_active = include_core and self._garment_is_active()
-            body_overlays = (
-                self._core_body_overlay_layers(view_id, frame.size().toTuple())
-                if garment_is_active
-                else ()
+            official_silhouette, replacement_mask, binding = self._base_clear_regions(
+                view_id, frame.size().toTuple(), garment_is_active, include_core,
             )
             hand_overlays = (
-                self._core_hand_overlay_layers(view_id, frame.size().toTuple())
-                if garment_is_active
-                else ()
+                binding.hand_overlays
+                if binding is not None and binding.hand_overlays is not None
+                else self._core_hand_overlay_layers(view_id, frame.size().toTuple())
+                if garment_is_active else ()
             )
-            official_silhouette = (
-                self._selected_silhouette_region(
-                    view_id, frame.size().toTuple(), garment_is_active,
-                )
-                if include_core
-                else None
-            )
-            replacement_mask = (
-                self._official_replacement_region(view_id, frame.size().toTuple())
-                if include_core and self._official_outfit_is_active()
-                else None
+            body_overlays = (
+                self._core_body_overlay_layers(view_id, frame.size().toTuple())
+                if garment_is_active and binding is None else ()
             )
         except IncompatibleBodyProfileError as error:
             self._invalidate_view(view_id)
@@ -389,8 +413,10 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
             self._phase_layers_by_view[key] = ()
             result = QPixmap(frame) if replace_body is None else replace_body(QPixmap(frame))
             return result if before_front_hair is None else before_front_hair(result)
-        result = clear_appearance_base(frame, official_silhouette, replacement_mask)
-        result, body_overlays = replace_restored_body(result, body_overlays, replace_body)
+        result, body_overlays = compose_garment_base(
+            frame, body_overlays, replace_body, official_silhouette, replacement_mask,
+            binding is not None,
+        )
         painter = QPainter(result)
         painter.setRenderHint(QPainter.SmoothPixmapTransform)
         foreground = paint_behind_body(painter, layers)
@@ -430,7 +456,52 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         self._phase_layers_by_view[key] = layers
         return result
 
-
+    def _base_clear_regions(
+        self, view_id: str, canvas_size: tuple[int, int],
+        garment_is_active: bool, include_core: bool,
+    ) -> tuple[QRegion | None, QRegion | None, GarmentBinding | None]:
+        """Prefer an exact source-bound removal; retain the legacy route otherwise."""
+        if garment_is_active and (self._asset_root / MANIFEST).exists():
+            selected = resolve_active_selection(self._store, "garment")
+            archive_path, _item, variant = self._selected_variant("garment", selected)
+            binding = load_garment_binding(
+                self._asset_root, view_id, selected, archive_path, variant,
+            )
+            if binding is not None:
+                visible_hands = (
+                    (lambda _view: binding.hand_region)
+                    if binding.hand_region is not None else self._visible_hand_region
+                )
+                validate_garment_removal(
+                    self._asset_root, view_id, canvas_size, binding.removal,
+                    self._protected_face_region(view_id, canvas_size),
+                    visible_hands,
+                )
+                return None, binding.removal, binding
+        silhouette = (
+            self._selected_silhouette_region(view_id, canvas_size, garment_is_active)
+            if include_core else None
+        )
+        replacement = (
+            self._official_replacement_region(view_id, canvas_size)
+            if include_core and self._official_outfit_is_active() else None
+        )
+        if (include_core and view_id in POSE_ATLAS_SILHOUETTES
+                and canvas_size == FULL_BODY_CANVAS):
+            head = self._protected_face_region(view_id, canvas_size).boundingRect()
+            if not head.isEmpty():
+                native_head = QRegion(QRect(0, 0, canvas_size[0], head.bottom() + 1))
+                native_head = native_head.united(QRegion(QRect(
+                    head.left() - V5_NECK_GUARD_SIDE_PX,
+                    head.bottom() + 1,
+                    head.width() + 2 * V5_NECK_GUARD_SIDE_PX,
+                    V5_NECK_GUARD_HEIGHT_PX,
+                )))
+                if silhouette is not None:
+                    silhouette = silhouette.united(native_head)
+                if replacement is not None:
+                    replacement = replacement.subtracted(native_head)
+        return silhouette, replacement, None
 
     def _selected_silhouette_region(
         self, view_id: str, canvas_size: tuple[int, int], garment_is_active: bool,
@@ -497,16 +568,17 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
             raise ValueError("Use a recognized makeup eye state")
         suppressed = frozenset(suppress_makeup_slots)
         reviewed_count = getattr(self, "_reviewed_layer_counts", {}).get(view_id, 0)
-        cache = (
-            self._layers_by_view
-            if not suppressed and eye_state == "rest"
-            else self._layers_by_view_without_makeup_slots
-        )
-        cache_key = view_id if not suppressed and eye_state == "rest" else (view_id, suppressed, eye_state)
+        simple = not suppressed and eye_state == "rest" and self._active_viseme is None
+        cache = self._layers_by_view if simple else self._layers_by_view_without_makeup_slots
+        cache_key = view_id if simple else (view_id, suppressed, eye_state, self._active_viseme)
         if cache_key in cache:
             return len(cache[cache_key]) + reviewed_count
-        appearance = self._phase_layers_by_view.get((view_id, "appearance", frozenset(), "rest"), ())
-        makeup = self._phase_layers_by_view.get((view_id, "makeup", suppressed, eye_state), ())
+        appearance = self._phase_layers_by_view.get(
+            (view_id, "appearance", frozenset(), "rest", self._active_viseme), (),
+        )
+        makeup = self._phase_layers_by_view.get(
+            (view_id, "makeup", suppressed, eye_state, self._active_viseme), (),
+        )
         return len(appearance) + len(makeup) + reviewed_count
 
     def _reject_stale_active_pack(self) -> None:
@@ -619,7 +691,19 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
             if selected.status == "builtin":
                 continue
             archive_path, item, variant = self._selected_variant(category, selected)
+            identity = (
+                selected.effective_pack_id,
+                selected.effective_item_id,
+                selected.effective_variant_id,
+            )
             resolution = resolve_variant_for_view(variant, view_id)
+            assets = resolution.assets
+            asset_sha256 = getattr(assets[0], "sha256", None) if len(assets) == 1 else None
+            if (view_id in POSE_ATLAS_SILHOUETTES and canvas_size == FULL_BODY_CANVAS
+                    and native_overlay_is_redundant(
+                        category, identity, view_id, asset_sha256=asset_sha256,
+                    )):
+                continue
             with zipfile.ZipFile(archive_path) as archive:
                 if category == "makeup":
                     layers = self._makeup_layers(

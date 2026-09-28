@@ -31,6 +31,11 @@ BUILTIN_MAKEUP_MENU_VARIANTS = ("light", "classic", "glamorous")
 BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS = ("light", "classic")
 OFFICIAL_OUTFIT_PACK_ID = "mohan.official.blue-white-hanfu"
 OFFICIAL_OUTFIT_ENSEMBLE_ID = "blue-white-hanfu"
+# These persisted ids predate the reviewed V5 sources.  On the V5 full-body
+# atlas, the named hair is already in the native layers; repainting the old
+# loose-hair asset would add a second hairstyle over the accepted bun.
+OFFICIAL_NATIVE_HAIR_ALIAS = (OFFICIAL_OUTFIT_PACK_ID, "loose-hair", "ink-black")
+OFFICIAL_NATIVE_HEADWEAR_ALIAS = (OFFICIAL_OUTFIT_PACK_ID, "silver-hairpiece", "silver")
 # The slots the official default ensemble fills; accessories stay bare by default.
 OFFICIAL_OUTFIT_CATEGORIES = frozenset({"garment", "hairstyle", "headwear"})
 # Ids reserved for archives under the official pack root; user imports remain separate from them.
@@ -39,6 +44,41 @@ BARE_SELECTION = ("builtin", "none", "none")
 
 Identity = tuple[str, str, str]
 Resolution = tuple[str, Identity]
+
+
+def is_official_native_alias(category: str, identity: Identity) -> bool:
+    """Recognize a legacy official id without changing saved selections."""
+    return (
+        (category == "hairstyle" and identity == OFFICIAL_NATIVE_HAIR_ALIAS)
+        or (category == "headwear" and identity == OFFICIAL_NATIVE_HEADWEAR_ALIAS)
+    )
+
+
+_PLUS090_FACE_SAFE_HEADWEAR_SHA256 = frozenset({
+    # Retain the previously verified member for existing installs and rollback.
+    "db3295c8e3138c4f4653a1470099834a48147fa82c6dc24b603dca2842fe3558",
+    # Exact mirror of the verified -090 ornament for owner-approved mirror 07.
+    "99adbdc74158e7e83311449fa2604b903b96e6e7784142bf74b05ec3e4fe8916",
+    # New +090 headwear approved with the round13-16d appearance batch
+    # (owner-final-approval-20260928.json, INSTALL-1 code_changes_authorized).
+    "43491aa8bdbc9da72af123193a0cea4431cd9e1b82a2ddbf088c1e762e6c44a4",
+})
+
+
+def native_overlay_is_redundant(
+    category: str, identity: Identity, view_id: str, *, asset_sha256: str | None = None,
+) -> bool:
+    """Suppress legacy V5 hair and unverified +090 headwear.
+
+    Other headwear views retain their existing visible on/off behavior until a
+    verified native ornament partition can replace that independent overlay.
+    Both exact verified +090 members still pass runtime hash and face-alpha checks.
+    """
+    return is_official_native_alias(category, identity) and (
+        category == "hairstyle"
+        or (category == "headwear" and view_id == "yaw+090-pitch+00"
+            and asset_sha256 not in _PLUS090_FACE_SAFE_HEADWEAR_SHA256)
+    )
 
 
 class SelectionLike(Protocol):

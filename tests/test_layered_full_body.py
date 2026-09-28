@@ -44,9 +44,9 @@ MAX_MEAN_CHANNEL_ERROR = 2.0
 MAX_TRANSPARENT_SAMPLE_RATIO = 0.015
 MIN_SPEAKING_MOUTH_CHANGED_PIXELS = 20
 VISIBLE_SPEECH_MOUTH_VIEWS = {
-    # The +90 native profile retains visible lips; the yaw-090 profile is the
-    # main-branch source again (2026-09-16) and paints no oral cavity.
-    # Source/rest/A/U comparisons cover all twelve calibrated mouth views.
+    # Both owner-approved +/-90 profile authorities are neutral-body sources
+    # and paint no oral cavity. Their registered complete-expression frames
+    # own speech instead of borrowing a procedural fallback mouth.
     "yaw-075-pitch+00",
     "yaw-060-pitch+00",
     "yaw-045-pitch+00",
@@ -58,7 +58,6 @@ VISIBLE_SPEECH_MOUTH_VIEWS = {
     "yaw+045-pitch+00",
     "yaw+060-pitch+00",
     "yaw+075-pitch+00",
-    "yaw+090-pitch+00",
 }
 
 

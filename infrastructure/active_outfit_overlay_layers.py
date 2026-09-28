@@ -29,6 +29,7 @@ lazy from domain.outfit_pack_makeup import (
     read_makeup_slot_intensities,
 )
 lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID
+lazy from domain.makeup_mouth_states import VISEME_TO_MOUTH_SHAPE
 lazy from infrastructure.image_alpha_regions import visible_alpha_region
 
 HALF_BODY_CANVAS = (1254, 1254)
@@ -357,6 +358,29 @@ class ActiveOutfitLayerMixin:
             declarations = tuple(
                 asset for asset in declarations if asset.slot not in state_slots
             ) + state_declarations
+        # A viseme in flight (mouth_states substitution) swaps in that shape's
+        # own lips (and, on a foundation silhouette, foundation) layers in
+        # place of the rest-shape declarations. None (including the
+        # CLOSED/rest render) never resolves a shape, so this is a no-op on
+        # that path (owner-approved 2026-09-28, INSTALL-1).
+        mouth_shape = (
+            VISEME_TO_MOUTH_SHAPE.get(self._active_viseme)
+            if self._active_viseme is not None else None
+        )
+        mouth_declarations = ()
+        mouth_slots = frozenset()
+        if mouth_shape is not None:
+            mouth_assets = variant.mouth_states.get(mouth_shape)
+            if mouth_assets is not None:
+                try:
+                    mouth_declarations = mouth_assets[view_id]
+                except KeyError:
+                    raise OutfitPackError("Provide the active silhouette for the mouth state.") from None
+                mouth_slots = frozenset(asset.slot for asset in mouth_declarations)
+                declarations = tuple(
+                    asset for asset in declarations if asset.slot not in mouth_slots
+                ) + mouth_declarations
+        mouth_foundation_active = FOUNDATION_SLOT in mouth_slots
         declared_slots = frozenset(asset.slot for asset in declarations)
         slot_intensities = read_makeup_slot_intensities(
             self._store,
@@ -366,9 +390,15 @@ class ActiveOutfitLayerMixin:
             encoded, image = self._decoded_layer(archive, declaration)
             if (image.width(), image.height()) != region.canvas or (declaration.anchor_x, declaration.anchor_y) != (0, 0):
                 raise OutfitPackError("Makeup layers must cover the silhouette canvas at anchor 0,0.")
+            # A mouth_states foundation override always checks against the
+            # rest mask, independent of the current blink eye_state (owner-
+            # approved 2026-09-28: "foundation 以 rest mask 檢查").
+            escape_state = (
+                "rest" if declaration.slot == FOUNDATION_SLOT and mouth_foundation_active else eye_state
+            )
             # Runtime is as strict as import: a layer that paints outside its slot's safe
             # region fails closed instead of reaching the face.
-            if makeup_layer_escapes(encoded, region, declaration.slot, state=eye_state):
+            if makeup_layer_escapes(encoded, region, declaration.slot, state=escape_state):
                 raise OutfitPackError("Makeup layer paints outside its safe region.")
             # A closed-eye authority must be able to cover open-eye makeup.
             # Validation above still runs for every declaration, so this is a
@@ -378,7 +408,7 @@ class ActiveOutfitLayerMixin:
             slot_opacity = opacity * slot_intensities[declaration.slot]
             if slot_opacity <= 0.0:
                 continue
-            clip = self._makeup_clip(view_id, region, declaration.slot, state=eye_state)
+            clip = self._makeup_clip(view_id, region, declaration.slot, state=escape_state)
             layers.append((
                 _MAKEUP_Z_BASE + declaration.z_order,
                 (QPixmap.fromImage(image), 0, 0, clip, min(1.0, slot_opacity)),
@@ -418,8 +448,14 @@ class ActiveOutfitLayerMixin:
 
 
     def _makeup_exclusion_region(self, view_id: str, region, *, state: str = "rest") -> QRegion:
-        """Keep visible eye apertures and the open oral cavity free of makeup."""
-        cache_key = (view_id, state)
+        """Keep visible eye apertures and the open oral cavity free of makeup.
+
+        A mouth_states viseme substitution is included in the cache key so a
+        region computed for one shape is never read back for another (or for
+        the CLOSED/rest path, which always resolves no shape and so keeps its
+        own, unaffected cache entries).
+        """
+        cache_key = (view_id, state, self._active_viseme)
         cached = self._makeup_exclusion_by_view.get(cache_key)
         if cached is not None:
             return cached
@@ -444,10 +480,24 @@ class ActiveOutfitLayerMixin:
             if image.isNull():
                 raise OutfitPackError("Eye aperture mask needs a supported value.")
             excluded = visible_alpha_region(image)
-        # Oral cavity remains rig-derived because it is not driven by eye state.
-        painted = self._rig_union(region.rig, EXCLUSION_RIG_LAYERS[1][0])
-        covering = self._rig_union(region.rig, EXCLUSION_RIG_LAYERS[1][1])
-        excluded = excluded.united(painted.subtracted(covering))
+        # Oral cavity: a mouth_states viseme substitution replaces the
+        # rest-rig closed-mouth slit with that shape's own, already-open oral
+        # mask (the same mask the renderer resolved from the complete-
+        # expression manifest to restore skin under the mouth), so makeup
+        # clips correctly to the actually-visible lip surface instead of a
+        # line authored for the closed mouth. Falls back to the rig-derived
+        # slit whenever no viseme is active, including the CLOSED/rest path.
+        mouth_shape = (
+            VISEME_TO_MOUTH_SHAPE.get(self._active_viseme)
+            if self._active_viseme is not None else None
+        )
+        if mouth_shape is not None and self._active_oral_mask is not None:
+            oral_region = visible_alpha_region(self._active_oral_mask.toImage())
+        else:
+            painted = self._rig_union(region.rig, EXCLUSION_RIG_LAYERS[1][0])
+            covering = self._rig_union(region.rig, EXCLUSION_RIG_LAYERS[1][1])
+            oral_region = painted.subtracted(covering)
+        excluded = excluded.united(oral_region)
         self._makeup_exclusion_by_view[cache_key] = excluded
         return excluded
 

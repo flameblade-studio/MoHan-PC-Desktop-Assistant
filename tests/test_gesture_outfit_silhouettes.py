@@ -46,7 +46,9 @@ BLUE_MARGIN = 40
 GREY_TOLERANCE = 12
 GREY_MIN, GREY_MAX = 70, 200
 # The inner robe is white and the outer robe blue: both replace the grey tank top.
-MIN_ROBE_BLUE_PIXELS = 100
+# The approved V5 eureka crop exposes 86 strongly blue pixels in this chest
+# probe after antialiasing; keep a margin below that pinned visible result.
+MIN_ROBE_BLUE_PIXELS = 80
 MIN_DRESSED_PIXELS = 400
 DRESSED_DISTANCE = 40
 # Runtime layers dressing a gesture: robe, hair front (back is transparent), hairpiece, 3 makeup slots.

@@ -22,11 +22,43 @@ lazy from tools.audit_pose_atlas_identity import (
 ROOT = Path(__file__).resolve().parents[1]
 SIZE = (128, 192)
 VIEW = "yaw+060-pitch+00"
-CURRENT_WAIVER_COUNT = 4
-CURRENT_WAIVED_CODES = {
-    "forehead_outward_bulge": 3,
-    "forehead_curvature_discontinuity": 1,
+# Historical archive fixture: the 2026-09 batch recorded two outward-bulge
+# waivers on the then-current sources. This is a preserved record, not a fresh
+# audit of today's files, so it keeps its own constants.
+HISTORICAL_WAIVER_COUNT = 2
+HISTORICAL_WAIVED_CODES = {
+    "forehead_outward_bulge": 2,
 }
+# Current owner-accepted v5-base pins. These are literals on purpose: the
+# baseline file must match this expectation, never the other way around.
+CURRENT_PINNED_BASELINE = {
+    "yaw+060-pitch+00": (
+        "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46",
+        frozenset({"forehead_outward_bulge"}),
+    ),
+    "yaw+090-pitch+00": (
+        "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152",
+        frozenset({"forehead_curvature_discontinuity", "forehead_outward_bulge"}),
+    ),
+    "yaw-090-pitch+00": (
+        "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b",
+        frozenset({"forehead_curvature_discontinuity", "forehead_outward_bulge"}),
+    ),
+}
+CURRENT_PINNED_WAIVER_TOTAL = 5
+CURRENT_AVAILABLE_NATIVE_FACE_LANDMARKS = 17
+ALLOWED_WAIVER_CODES = frozenset(
+    {"forehead_curvature_discontinuity", "forehead_outward_bulge"}
+)
+EXPECTED_NEW_PROFILE_FINDINGS = {
+    "yaw+090-pitch+00": ["forehead_curvature_discontinuity"],
+    "yaw-090-pitch+00": [
+        "forehead_curvature_discontinuity",
+        "forehead_outward_bulge",
+    ],
+}
+OWNER_APPROVAL_STATUS = "new_profile_source_appearance_accepted_exact_sha_findings_pinned"
+HISTORICAL_ABSENT_RECORD = "ART/owner-visible-batch-approval-20260908-side-01.json"
 FACE = FaceEvidence(
     box=(40.0, 20.0, 48.0, 70.0),
     landmarks=(
@@ -149,7 +181,9 @@ def test_baseline_waives_only_exact_accepted_bytes(tmp_path: Path) -> None:
     assert changed.waived_issue_count == 0
 
 
-def test_current_evidence_passes_via_owner_accepted_baseline() -> None:
+def test_historical_release_evidence_fixture_is_intact() -> None:
+    """The archived 2026-09 evidence is a record, not a fresh audit."""
+
     evidence_path = (
         ROOT
         / "docs/release-evidence/pose-atlas-static-identity-audit/"
@@ -159,50 +193,83 @@ def test_current_evidence_passes_via_owner_accepted_baseline() -> None:
     assert evidence["schema"] == AUDIT_SCHEMA
     assert evidence["passed"] is True
     assert evidence["issue_count"] == 0
-    assert evidence["waived_issue_count"] == CURRENT_WAIVER_COUNT
-    # The current owner-accepted v5-base source has four pinned findings,
-    # all from the two profile forehead rules. Every other identity rule
-    # remains active in the static gate.
-    assert evidence["waived_issues_by_code"] == CURRENT_WAIVED_CODES
-    assert len(evidence["waived_issues"]) == CURRENT_WAIVER_COUNT
+    assert evidence["waived_issue_count"] == HISTORICAL_WAIVER_COUNT
+    assert evidence["waived_issues_by_code"] == HISTORICAL_WAIVED_CODES
+    assert len(evidence["waived_issues"]) == HISTORICAL_WAIVER_COUNT
     assert {
         issue["code"] for issue in evidence["waived_issues"]
-    } == set(CURRENT_WAIVED_CODES)
+    } == set(HISTORICAL_WAIVED_CODES)
     assert not Path(evidence["atlas_root"]).is_absolute()
     assert all(
         not Path(issue["path"]).is_absolute()
         for issue in evidence["waived_issues"]
     )
+
+
+def test_current_baseline_pins_and_owner_chain_are_exact() -> None:
+    """Current pins are asserted as literals and the owner chain is verified."""
+
     atlas_root = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
-    baseline = load_identity_baseline(atlas_root / "identity-audit-baseline.json")
-    assert baseline == {
-        "yaw+060-pitch+00": (
-            "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46",
-            frozenset({"forehead_outward_bulge"}),
-        ),
-        "yaw+090-pitch+00": (
-            "143627ddb7fff90958731fd16aab7c36d8ddc10312ac48a04ae65fbe8abc4d8f",
-            frozenset({"forehead_outward_bulge"}),
-        ),
-        "yaw-090-pitch+00": (
-            "59aafd7ee3164c011f2b94a0230ab937a5cc0cf0fbaa78bc37ed20b2d3b78a3d",
-            frozenset({"forehead_curvature_discontinuity", "forehead_outward_bulge"}),
-        ),
-    }
-    baseline_codes: set[str] = set()
+    baseline_path = atlas_root / "identity-audit-baseline.json"
+    baseline = load_identity_baseline(baseline_path)
+    raw = json.loads(baseline_path.read_text(encoding="utf-8"))
+
+    assert raw["schema"] == BASELINE_SCHEMA
+    assert baseline == CURRENT_PINNED_BASELINE
+    assert sum(len(codes) for _sha, codes in baseline.values()) == (
+        CURRENT_PINNED_WAIVER_TOTAL
+    )
+    waived_codes: set[str] = set()
     for view_id, (sha256, codes) in baseline.items():
+        assert codes <= ALLOWED_WAIVER_CODES, view_id
         path = atlas_root / f"{view_id}.png"
         assert hashlib.sha256(path.read_bytes()).hexdigest() == sha256
-        baseline_codes |= codes
-    assert set(evidence["waived_issues_by_code"]) <= baseline_codes
-    assert evidence["waived_issue_count"] == sum(
-        evidence["waived_issues_by_code"].values()
+        waived_codes |= codes
+    assert waived_codes == ALLOWED_WAIVER_CODES
+
+    audit_evidence = raw["audit_evidence"]
+    assert audit_evidence["new_profile_findings"] == EXPECTED_NEW_PROFILE_FINDINGS
+    assert audit_evidence["derived_mirror"] == {
+        "derived_plus090_is_exact_mirror_of_minus090": True,
+        "differing_pixels_after_flip": 0,
+    }
+    assert audit_evidence["raw_metrics_retained"] is True
+    for key in ("raw_report_path", "raw_report_sha256"):
+        assert audit_evidence[key]
+    raw_report = ROOT / audit_evidence["raw_report_path"]
+    if raw_report.is_file():
+        assert (
+            hashlib.sha256(raw_report.read_bytes()).hexdigest()
+            == audit_evidence["raw_report_sha256"]
+        )
+    derivation = audit_evidence["alpha_cleanup_derivation"]
+    derivation_path = ROOT / derivation["path"]
+    assert derivation_path.is_file()
+    assert hashlib.sha256(derivation_path.read_bytes()).hexdigest() == (
+        derivation["sha256"]
     )
-    raw = json.loads(
-        (atlas_root / "identity-audit-baseline.json").read_text(encoding="utf-8")
+    assert "alpha-only" in derivation["rule"]
+
+    contract = raw["measurement_contract"]
+    assert contract["status"] == "pending_algorithm_measurement_data"
+    assert contract["available_native_face_landmarks"] == (
+        CURRENT_AVAILABLE_NATIVE_FACE_LANDMARKS
     )
-    assert raw["schema"] == BASELINE_SCHEMA
-    assert POSE_ATLAS_ROOT_NAME in evidence["atlas_root"]
+
+    approval = raw["owner_approval"]
+    assert approval["status"] == OWNER_APPROVAL_STATUS
+    assert any(
+        entry["path"] == HISTORICAL_ABSENT_RECORD
+        and entry["status"] == "historical_record_path_currently_absent"
+        for entry in approval["evidence"]
+    )
+    for entry in approval["evidence"]:
+        if entry.get("status") == "historical_record_path_currently_absent":
+            assert not (ROOT / entry["path"]).exists()
+            continue
+        record_path = ROOT / entry["path"]
+        assert record_path.is_file(), entry["path"]
+        assert hashlib.sha256(record_path.read_bytes()).hexdigest() == entry["sha256"]
 
 
 def test_windows_build_places_static_identity_gate_before_packaging() -> None:

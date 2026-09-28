@@ -22,8 +22,10 @@ SIZE = 1254
 MOUTH = (600, 600)
 EYE = (500, 400)
 CLOTH = (600, 900)
+OUTSIDE_EYE = (10, 10)
 COLORS = {"neutral": "gray", "small": "yellow", "a": "red", "o": "blue"}
 EYE_COLORS = {"rest": "white", "half": "cyan", "closed": "black"}
+OUTSIDE_COLORS = {"rest": "magenta", "half": "green", "closed": "blue"}
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -44,6 +46,7 @@ def sources(tmp_path):
             image.setPixelColor(0, 0, QColor(0, 0, 0, 0))
             image.setPixelColor(*MOUTH, QColor(color))
             image.setPixelColor(*EYE, QColor(eye_color))
+            image.setPixelColor(*OUTSIDE_EYE, QColor(OUTSIDE_COLORS[eye]))
             path = root / f"{family}-{eye}.png"
             assert image.save(str(path), "PNG")
             frames[family][eye] = {
@@ -107,6 +110,31 @@ def test_displayed_endpoint_owns_blink_even_after_next_mouth_is_rendered(sources
     assert archived.toImage().pixelColor(*EYE) == QColor("white")
     assert renderer.supports_discrete_speech("idle_front")
     assert not renderer.supports_discrete_speech("unapproved-expression")
+
+
+@pytest.mark.parametrize("eye", ("half", "closed"))
+def test_registered_eye_patch_preserves_current_frame_outside_eye(sources, eye):
+    root, _, _ = sources
+    renderer = _renderer(root)
+    displayed = renderer.render(
+        QPixmap(), _motion(), SimpleNamespace(mouth_expression="mouth_mid_front"),
+    )
+    eye_patch = QPixmap(SIZE, SIZE)
+    eye_patch.fill(Qt.transparent)
+    painter = QPainter(eye_patch)
+    painter.fillRect(*EYE, 1, 1, QColor("white"))
+    painter.end()
+
+    blink = renderer.render_overlay(
+        QPixmap(displayed),
+        eye_patch,
+        eye_state=eye,
+        view_id="front-crossed",
+    ).toImage()
+
+    assert blink.pixelColor(*EYE) == QColor(EYE_COLORS[eye])
+    assert blink.pixelColor(*OUTSIDE_EYE) == QColor(OUTSIDE_COLORS["rest"])
+    assert blink.pixelColor(*MOUTH) == QColor("yellow")
 
 
 def test_zero_aperture_returns_complete_neutral_and_stable_gray_body(sources):

@@ -39,6 +39,7 @@ from infrastructure.layered_full_body_complete_expression import (
 lazy from infrastructure.mouth_geometry import paint_inward_lerped_u_layer
 lazy from infrastructure.animated_appearance import AnimatedAppearance
 lazy from infrastructure.full_body_blink_binding import bind_blink_source, snapshot_view_authority
+lazy from infrastructure.full_body_display_placement import FullBodyDisplayPlacement
 
 BLINK_VISIBLE_EPSILON = 1e-6
 AUTHORED_SPEECH_VISIBLE_APERTURE = 0.16
@@ -99,9 +100,11 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         outfit_overlay=None,
         *,
         authority_root: Path | None = None,
+        display_placement: FullBodyDisplayPlacement | None = None,
     ) -> None:
         self._manifest = manifest
         self._outfit_overlay = outfit_overlay
+        self._display_placement = display_placement
         self._animated_appearance = AnimatedAppearance(outfit_overlay)
         self._authority_root = (
             Path(authority_root).resolve() if authority_root is not None
@@ -296,6 +299,24 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
             )
             else frozenset()
         )
+        # Tell the makeup resolver which viseme (if any) is being rendered, so
+        # a mouth_states substitution can swap in that shape's own lips/
+        # foundation and clip makeup to its actual open-mouth oral mask
+        # instead of the rest-rig closed-mouth slit. `oral_mask` is the same
+        # mask already resolved above for restoring skin under the mouth, so
+        # this reuses it rather than loading anything twice. None (including
+        # every CLOSED/rest render, where oral_mask is always None) leaves
+        # the makeup path byte-identical to before this feature existed.
+        active_viseme = None
+        if oral_mask is not None:
+            resolved_viseme = Viseme.CONSONANT if motion.viseme is Viseme.CLOSED else motion.viseme
+            active_viseme = resolved_viseme.value
+        # `_outfit_overlay` may be None (parametric-only rendering) or a test
+        # double without this method; only the real ActiveOutfitOverlay needs
+        # to know the active viseme, so this is a no-op for anything else.
+        set_active_mouth_state = getattr(self._outfit_overlay, "set_active_mouth_state", None)
+        if set_active_mouth_state is not None:
+            set_active_mouth_state(active_viseme, oral_mask)
         result = self._animated_appearance.compose(
             static, view_id, paint_motion,
             suppress_makeup_slots=suppressed, eye_state=eye_state.value,
@@ -313,7 +334,10 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
             bounded_energy,
             gesture_beat,
         )
-        return self._translated_frame(result, breath_dy, gesture_dx)
+        translated = self._translated_frame(result, breath_dy, gesture_dx)
+        if self._display_placement is None:
+            return translated
+        return self._display_placement.apply(translated, view_id)
 
     @staticmethod
     def _sleeve_lift(

@@ -2,6 +2,8 @@
 
 ## 繁體中文
 
+2026-09-21 現況見 [二代素體目前狀態](v5-body-current-status.md)。七姿勢 V7 表情及可拆漢服已正式接入；髮型／髮飾與全身衣裝聯合驗收仍有已重現問題。以下 2026-09-12 內容是保留的歷史階段，不能當作最新安裝清單。
+
 ### 2026-09-12 正式彩妝安裝完成範圍／正式彩妆安装范围／Formal makeup installation scope／正式な化粧配置の範囲
 
 * 使用者「採用這組配色」的批准已落實：30-view archive（24 yaw + 6 named pose）已正式安裝，新無奈的 12 個嘴型專屬彩妝另走 source-bound 分流。這是本輪可選彩妝安裝完成，原先 47 項指全庫 Ruff 診斷，已修正且全庫 Ruff 通過；本次不代表完整全身、31-view 逐張人工外觀驗收或發布完成；既有使用者 store 未修改。／用户批准的配色已落实：30-view archive 正式安装，新无奈 12 个嘴型专属彩妆独立分流；原先 47 项指全库 Ruff 诊断，已修正且全库 Ruff 通过；本次不代表完整全身、31-view 逐张人工验收或发布完成，既有用户 store 未修改。／The approved palette is installed in the 30-view archive, with 12 mouth-specific cosmetic layers for the new exasperated portrait routed separately. The earlier 47 refers to repository-wide Ruff findings, which were fixed and now pass. This optional-makeup installation does not certify a complete full body, individual human acceptance of all 31 views, or a release. Existing user stores were not modified.／承認済み配色を 30-view archive に正式配置し、新しい無奈の口形別化粧 12 レイヤーは独立した経路に配置しました。先の 47 件は全庫 Ruff の指摘で、修正済みかつ全庫 Ruff は成功しています。今回の任意化粧の配置は、全身全体、31 view の個別目視受入れ、公開の完了を意味しません。既存ユーザー store は変更していません。
@@ -74,6 +76,8 @@
 7 姿勢 × 7 圖層的 49 張 PNG 與 1 份 manifest（共 50 個檔案）尚未取得擁有者的外觀核准，已撤回並保留於 `B/rejected-formal-install-20260912-01/detachable`；正式資產路徑 `assets/expressions/detachable/` 目前不存在，預設執行期走 `legacy`，opt-in 候選產品路徑的姿勢另行整合。使用者已核准 source 原圖、三種新嘴型與這版衣裝，審批與 SHA 證據保留於 `B/exasperated-approved-integration-20260912-01/intake/`；`infrastructure/exasperated_candidate_appearance.py` 由 `application/service_container.py` 的單一 factory 組裝邊界選配，這是 opt-in 候選產品路徑，尚未成為正式資產。妝容候選未採用，執行期維持素顏；頭飾與其他角度仍未完成。這項整合仍在處理中，尚未代表完整正式外觀、目視驗收或發布。
 
 ## 简体中文
+
+2026-09-21 现况见[二代素体现况](v5-body-current-status.md)。七姿势 V7 表情与可拆汉服已正式安装；独立发型／头饰和全身外观联合验收仍有问题。以下 2026-09-12 内容保留历史安装状态。
 
 ### 2026-09-12 正式彩妝安裝完成範圍／正式彩妆安装范围／Formal makeup installation scope／正式な化粧配置の範囲
 
@@ -148,6 +152,8 @@
 
 ## English
 
+For the 2026-09-21 state, see [current V5 status](v5-body-current-status.md). Seven-pose V7 expressions and detachable Hanfu are installed; independent hair/headwear and combined full-body appearance still have reproduced defects. The 2026-09-12 sections below retain historical installation states.
+
 ### 2026-09-12 正式彩妝安裝完成範圍／正式彩妆安装范围／Formal makeup installation scope／正式な化粧配置の範囲
 
 * 使用者「採用這組配色」的批准已落實：30-view archive（24 yaw + 6 named pose）已正式安裝，新無奈的 12 個嘴型專屬彩妝另走 source-bound 分流。這是本輪可選彩妝安裝完成，原先 47 項指全庫 Ruff 診斷，已修正且全庫 Ruff 通過；本次不代表完整全身、31-view 逐張人工外觀驗收或發布完成；既有使用者 store 未修改。／用户批准的配色已落实：30-view archive 正式安装，新无奈 12 个嘴型专属彩妆独立分流；原先 47 项指全库 Ruff 诊断，已修正且全库 Ruff 通过；本次不代表完整全身、31-view 逐张人工验收或发布完成，既有用户 store 未修改。／The approved palette is installed in the 30-view archive, with 12 mouth-specific cosmetic layers for the new exasperated portrait routed separately. The earlier 47 refers to repository-wide Ruff findings, which were fixed and now pass. This optional-makeup installation does not certify a complete full body, individual human acceptance of all 31 views, or a release. Existing user stores were not modified.／承認済み配色を 30-view archive に正式配置し、新しい無奈の口形別化粧 12 レイヤーは独立した経路に配置しました。先の 47 件は全庫 Ruff の指摘で、修正済みかつ全庫 Ruff は成功しています。今回の任意化粧の配置は、全身全体、31 view の個別目視受入れ、公開の完了を意味しません。既存ユーザー store は変更していません。
@@ -220,6 +226,8 @@
 The seven poses × seven layers (49 PNG layers) and one manifest (50 files) have not received owner approval for appearance, so they were withdrawn and retained at `B/rejected-formal-install-20260912-01/detachable`; the formal asset path `assets/expressions/detachable/` is currently absent, the default runtime uses `legacy`, and the opt-in candidate product path integrates different poses separately. The owner approved the source portrait, three new mouth shapes, and this garment, with approval and SHA evidence retained at `B/exasperated-approved-integration-20260912-01/intake/`; `infrastructure/exasperated_candidate_appearance.py` is selected at the single factory composition boundary in `application/service_container.py`. This is an opt-in candidate product path and is not a formal asset. The makeup candidate was not adopted, so runtime remains bare; headwear and other angles remain incomplete. This integration remains in progress and does not certify a complete formal appearance, visual acceptance, or release.
 
 ## 日本語
+
+2026-09-21 時点の V5 状態は[現況](v5-body-current-status.md)を参照してください。七ポーズ V7 表情と分離漢服は配置済みですが、髪型・髪飾りと全身外観の複合検証には再現済みの問題があります。以下の 2026-09-12 の内容は履歴です。
 
 ### 2026-09-12 正式彩妝安裝完成範圍／正式彩妆安装范围／Formal makeup installation scope／正式な化粧配置の範囲
 

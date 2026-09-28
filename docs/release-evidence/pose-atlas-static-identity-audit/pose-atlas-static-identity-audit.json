@@ -12,10 +12,9 @@
   "issue_count": 0,
   "issues_by_code": {},
   "issues": [],
-  "waived_issue_count": 4,
+  "waived_issue_count": 2,
   "waived_issues_by_code": {
-    "forehead_curvature_discontinuity": 1,
-    "forehead_outward_bulge": 3
+    "forehead_outward_bulge": 2
   },
   "waived_issues": [
     {
@@ -35,27 +34,7 @@
       "message": "profile forehead protrudes beyond the permitted smooth chord",
       "metrics": {
         "maximum": 0.025,
-        "outward_ratio": 0.04467
-      }
-    },
-    {
-      "code": "forehead_curvature_discontinuity",
-      "path": "assets\\pose-atlas\\v5-base\\yaw-090-pitch+00.png",
-      "view_id": "yaw-090-pitch+00",
-      "message": "profile forehead contains an abrupt curvature step",
-      "metrics": {
-        "curvature_step_ratio": 0.060622,
-        "maximum": 0.04
-      }
-    },
-    {
-      "code": "forehead_outward_bulge",
-      "path": "assets\\pose-atlas\\v5-base\\yaw-090-pitch+00.png",
-      "view_id": "yaw-090-pitch+00",
-      "message": "profile forehead protrudes beyond the permitted smooth chord",
-      "metrics": {
-        "maximum": 0.025,
-        "outward_ratio": 0.06459
+        "outward_ratio": 0.049114
       }
     }
   ]

@@ -309,7 +309,10 @@ class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
     ) -> QPixmap:
         """Compose one registered expression layer without owning its policy."""
         if eye_state != "rest":
-            complete = self._complete_halfbody.blink(base, eye_state)
+            makeup_context = makeup_view_id if makeup_view_id is not None else view_id
+            complete = self._complete_halfbody.blink(
+                base, eye_state, source, makeup_context
+            )
             if complete is not None:
                 return complete
         native_blink = getattr(self._outfit_overlay, "render_native_blink", None)

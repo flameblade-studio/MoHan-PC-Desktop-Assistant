@@ -58,7 +58,7 @@ CLOSED_OPACITY = 1.0
 # The registered front eye mask used by the routing subject, and the margin the
 # native cheek endpoint's authored eyelid/brow patch extends past the registered
 # cheek eye regions (measured: the patch reaches 20px above and 7px outside).
-REGISTERED_MASK_REGIONS = (QRect(180, 153, 53, 34), QRect(220, 153, 56, 34))
+REGISTERED_MASK_REGIONS = (QRect(178, 146, 55, 41), QRect(220, 146, 56, 41))
 REGISTERED_MASK_UNION = REGISTERED_MASK_REGIONS[0].united(REGISTERED_MASK_REGIONS[1])
 ROUNDED_MASK_RADIUS = 10
 NATIVE_ENDPOINT_MARGIN = 24

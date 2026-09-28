@@ -33,6 +33,7 @@ class AppearanceVariant:
     intensity: float = 1.0
     eye_states: frozendict[str, frozendict[str, tuple[AppearanceAsset, ...]]] = frozendict()
     foundation_silhouettes: frozenset[str] = frozenset()
+    mouth_states: frozendict[str, frozendict[str, tuple[AppearanceAsset, ...]]] = frozendict()
 
 
 @dataclass(frozen=True, slots=True)

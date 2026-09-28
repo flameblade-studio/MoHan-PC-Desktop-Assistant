@@ -7,7 +7,7 @@ lazy import pytest
 lazy from tools.art_pipeline import approved_asset_install as installer
 
 
-def prepare(root: Path):
+def prepare(root: Path, *, generic: bool = False):
     (root / "assets").mkdir()
     (root / "scratchpad").mkdir()
     old = root / "assets/old.png"
@@ -15,8 +15,15 @@ def prepare(root: Path):
     source = root / "scratchpad/new.png"
     source.write_bytes(b"approved replacement")
     approval = root / "scratchpad/approval.json"
-    approval.write_text(json.dumps({"schema": installer.APPROVAL_SCHEMA,
-                                    "owner_appearance_approved": True}), encoding="utf-8")
+    approval_payload = {
+        "schema": (
+            installer.GENERIC_APPROVAL_SCHEMA if generic else installer.APPROVAL_SCHEMA
+        ),
+        "owner_appearance_approved": True,
+    }
+    if generic:
+        approval_payload["approved_targets"] = ["assets/old.png"]
+    approval.write_text(json.dumps(approval_payload), encoding="utf-8")
     record = {"target": "assets/old.png", "source": "scratchpad/new.png",
               "before_sha256": installer.sha256(old), "sha256": installer.sha256(source)}
     plan = {"schema": installer.PLAN_SCHEMA, "status": "validated",
@@ -69,3 +76,23 @@ def test_later_write_failure_rolls_back_previous_replacement(tmp_path, monkeypat
     assert not (tmp_path / "assets/new.png").exists()
     assert (output / "rollback.json").is_file()
     assert not (output / "receipt.json").exists()
+
+
+def test_generic_approval_accepts_only_explicit_targets(tmp_path):
+    old, source, plan = prepare(tmp_path, generic=True)
+    output = tmp_path / "scratchpad/install"
+    installer.install(tmp_path, save_plan(tmp_path, plan), output)
+    assert old.read_bytes() == source.read_bytes()
+
+
+def test_generic_approval_rejects_target_outside_approved_list(tmp_path):
+    old, _, plan = prepare(tmp_path, generic=True)
+    plan["files"][0]["target"] = "assets/not-approved.png"
+    plan["files"][0]["before_sha256"] = None
+    with pytest.raises(ValueError, match="outside owner approval"):
+        installer.install(
+            tmp_path,
+            save_plan(tmp_path, plan),
+            tmp_path / "scratchpad/install",
+        )
+    assert old.read_bytes() == b"existing uncommitted artwork"

@@ -27,7 +27,10 @@ def test_reviewed_neutral_bypasses_obsolete_rig_and_preserves_speech(monkeypatch
     monkeypatch.setattr(renderer, "_detachable_portrait", obsolete)
     monkeypatch.setattr(renderer, "render_pose", obsolete)
     motion = FaceMotionFrame(FacePose.CHEEK, "idle", Viseme.CLOSED, MouthShape(), ExpressionShape())
-    rest = renderer.render(stale, motion, None)
+    # ``idle`` and speaking visemes are now formal complete-expression
+    # bindings.  Exercise the reviewed-native fallback itself here.
+    fallback = "test-reviewed-neutral-fallback"
+    rest = renderer.render(stale, motion, SimpleNamespace(mouth_expression=fallback))
     assert rest.toImage().pixelColor(10, 10) == QColor("blue")
     mouth = QPixmap(20, 20)
     mouth.fill(QColor("red"))
@@ -36,7 +39,16 @@ def test_reviewed_neutral_bypasses_obsolete_rig_and_preserves_speech(monkeypatch
     image = mask.toImage()
     image.setPixelColor(10, 10, QColor("white"))
     mask = QPixmap.fromImage(image)
-    spoken = renderer.render(stale, motion, SimpleNamespace(mouth_source=mouth, mouth_mask=mask), aperture=1)
+    spoken = renderer.render(
+        stale,
+        motion,
+        SimpleNamespace(
+            mouth_expression=fallback,
+            mouth_source=mouth,
+            mouth_mask=mask,
+        ),
+        aperture=1,
+    )
     assert spoken.toImage().pixelColor(10, 10) == QColor("red")
     assert spoken.toImage().pixelColor(0, 0) == QColor("blue")
     assert native.toImage().pixelColor(10, 10) == QColor("blue")

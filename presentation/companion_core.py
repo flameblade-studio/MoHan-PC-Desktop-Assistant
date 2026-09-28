@@ -136,6 +136,7 @@ class CompanionCoreMixin:
                 assets=PoseAtlasAssets(
                     resource_path(POSE_ATLAS_RELATIVE_ROOT), image_size=CHARACTER_IMAGE_SIZE,
                     outfit_overlay=self.presentation_ports.outfit_overlay_factory(on_stale_body_profile=self._on_stale_outfit_pack),
+                    display_scale=True,
                 ),
             )
         try:

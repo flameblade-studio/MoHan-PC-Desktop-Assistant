@@ -1,0 +1,478 @@
+{
+  "schema": "mohan.source-bound-garment-visibility.v1",
+  "views": {
+    "yaw+090-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw+090-pitch+00.png",
+        "sha256": "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw+090-pitch+00-outerwear.png",
+        "sha256": "a07154a3fbc738be5e6a51374e0f6b6e0c4af97ffa305d66098db9a8e925a7f4"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw+090-pitch+00.png",
+        "sha256": "e46d798f87dfc7f0b4711109426b90db40268b395bc36af8a02365b7ff39a912"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+090-pitch+00-left-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+090-pitch+00-right-native-hand.png",
+          "sha256": "281bd3069e77bcc1779a464cc3dbacfe79179d2636bc23036b8323c96c0e83cf"
+        }
+      }
+    },
+    "yaw-180-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw-180-pitch+00.png",
+        "sha256": "7b596fa8e5a6b9eae620440db7b98e0db2d2182a110ad4fd748362aaaadb965d"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw-180-pitch+00-outerwear.png",
+        "sha256": "cde783107417fd07838435148c0909519711a9e03a780f379f3516c4176b5bed"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw-180-pitch+00.png",
+        "sha256": "de36f09fdfc01041258d8839559825efa528a373a8dee4b1f07cebeae851f034"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-180-pitch+00-left-native-hand.png",
+          "sha256": "10eaea04b6d250d6cde76bae90b670b10af674ccb0524b998c56c1829cb3d527"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-180-pitch+00-right-native-hand.png",
+          "sha256": "747c170ba80fda797a5dff6bb3523759bd435fcd03c9558ba9d0b573368c7781"
+        }
+      }
+    },
+    "yaw-075-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw-075-pitch+00.png",
+        "sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw-075-pitch+00-outerwear.png",
+        "sha256": "6e63d117e9032e4ef5f1fb8ae3af4994675963802da00a437f5b0f55d5b4ddbd"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw-075-pitch+00.png",
+        "sha256": "4a823b4a48aedcb6e1b1aad89d24ebd5c4a6945cbebb5347e4572ab8b0449e6f"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-075-pitch+00-left-native-hand.png",
+          "sha256": "55db225c3ce28326c3c8bb1275bde0956836a7015e2d0a85de805da2a9452132"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-075-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw-105-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw-105-pitch+00.png",
+        "sha256": "0d1a56d029d4fbd084334a8d9b9ae58c9fbdb4c88ce3a074f344bd359c02fda0"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw-105-pitch+00-outerwear.png",
+        "sha256": "962b8440d9ff06c991bd1dbd3bf03bec285d73648c4f4cf5f9c69aa48ac64df1"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw-105-pitch+00.png",
+        "sha256": "324b8194d1389acaeaeb36050de3fecb45e5f0f182b54ec16b83a110e5247f85"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-105-pitch+00-left-native-hand.png",
+          "sha256": "d2b551e2603c964f600a05324cd3b6b58a1f3e03bec96e1167d7f2fb58d92902"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-105-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw-120-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw-120-pitch+00.png",
+        "sha256": "ffa58ec7c568630aad453da86dc926c7956cab4e75faae96fdf3b1f8c77bf911"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw-120-pitch+00-outerwear.png",
+        "sha256": "847c22fd446a1d5d00912bc3bab727d81d7cff7ee2cd56e3958e552848bd592c"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw-120-pitch+00.png",
+        "sha256": "1f89e4623969060af5755c4603f176d3a3cf6243db178e8d4fb25f24a9aaaccc"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-120-pitch+00-left-native-hand.png",
+          "sha256": "e89787fe27b8cfef2d72cf9470405f4318a8d3086e4186b0e5c0edf3a8cd34eb"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-120-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw-135-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw-135-pitch+00.png",
+        "sha256": "1f74812bb5e2fc38f79de365ec67d8b0c79741c003e6a3021f7e0a50498138b3"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw-135-pitch+00-outerwear.png",
+        "sha256": "47899639efb4ae8bd6c0f8c4f2e6753bac194af96a40e04e6ab3bcf1087c8464"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw-135-pitch+00.png",
+        "sha256": "fd6170f6289db88ee60911fe26493409a284d385ed98c5c18d630f7996cf73ed"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-135-pitch+00-left-native-hand.png",
+          "sha256": "2334cc97461aacaa8536cdd8446f559b36acbe7bedb50f9a40437c8786ef0fd5"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-135-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw-150-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw-150-pitch+00.png",
+        "sha256": "1a948558ce165e7d505a260f6a199ff2b2e154f502a1dfbe5dbe28ced8c503cf"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw-150-pitch+00-outerwear.png",
+        "sha256": "53bcee99212f3d1ed4e5f506603c05320f3af7c9dcd1a42c94050472b1852848"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw-150-pitch+00.png",
+        "sha256": "cb37105a7ee58390740fd7700ff9438e4d41fa9e61a3239732cc1fbcc21a574e"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-150-pitch+00-left-native-hand.png",
+          "sha256": "9310d2d73647590d10feefcdbe0c74e992b95e08ab6627094fee3104eba95bdb"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-150-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw-165-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw-165-pitch+00.png",
+        "sha256": "b99f5d7be767a62527f1e7080965df6c38b58aeff4285edf69e44b4bd0d33a2f"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw-165-pitch+00-outerwear.png",
+        "sha256": "539967bfa2a25cfc86f1f9a4c43f2e08ce4cfc8cee7eb9ee331099c40f2a1fa5"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw-165-pitch+00.png",
+        "sha256": "4026cad90d92693d389a91aa8a82c4e4db525c3ed5932c65c4633aa214277626"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-165-pitch+00-left-native-hand.png",
+          "sha256": "b01e34469a01d8e898e514af57568b32a0f7e6ae7a847673f999d77558eeb85e"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-165-pitch+00-right-native-hand.png",
+          "sha256": "2b7ca7d635e54ec60209a15c3802e4a525b29e30c1aed30cd9bcf964811f1b94"
+        }
+      }
+    },
+    "yaw+075-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw+075-pitch+00.png",
+        "sha256": "78364a8e7d5ff032ab7420de18d0efe50203e4c3cdae4466b5d98112a09f93f2"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw+075-pitch+00-outerwear.png",
+        "sha256": "efdffdc567207678c0f8858c48ea54da9a87ec4532b2ae89980dd3039e278d58"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw+075-pitch+00.png",
+        "sha256": "c7259e51c1bbf19c77d2bb88a16acb0d85c13e4498cbfbdc07dd1b6cf43b0659"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+075-pitch+00-left-native-hand.png",
+          "sha256": "0290a7fe765f051b543ad62fd4dab74962f9d970fa8e171acce6c4a28f3ee2d2"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+075-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw+105-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw+105-pitch+00.png",
+        "sha256": "04704ab4dcdae52ab9b4702e4f2effedfd37f6b65e57ace59bdc1a76578f4d60"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw+105-pitch+00-outerwear.png",
+        "sha256": "e6784392dac6cd843b4dcb532f7e9948a2a90e2c49720351e8b1527fc32581d6"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw+105-pitch+00.png",
+        "sha256": "86a91473e5eea666676c6a8d3df87b503678b81fbbd9ae79446f0c2b7a54273a"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+105-pitch+00-left-native-hand.png",
+          "sha256": "4518351f970c224d0ce0e5f898dfb9f0364f460fd345c49e22e57c77024c19a8"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+105-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw+120-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw+120-pitch+00.png",
+        "sha256": "1c08fadc0db1eb59992cb2776442523a303de4e753eac4d7ff31981bf3647fff"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw+120-pitch+00-outerwear.png",
+        "sha256": "d0f411a897f20dd29eee9825e846b82847cada392e166e6ea57c96d37a395996"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw+120-pitch+00.png",
+        "sha256": "27e380730171493f7af8872901f4a732d498b3cb5c9363ee83f549821393e056"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+120-pitch+00-left-native-hand.png",
+          "sha256": "3d676664595c29dff2d7dcaec02b0d021cbadd3bdc047c12730db6627fa1145f"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+120-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw+135-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw+135-pitch+00.png",
+        "sha256": "5c4345d1a8987faeff2ea5f5a643c85c7953c732e3a5f093d8070cd5311ff458"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw+135-pitch+00-outerwear.png",
+        "sha256": "03e4218680f8a7d3be03bc84a21b6a02d2c001de0aa901835990b159a955c468"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw+135-pitch+00.png",
+        "sha256": "e65679157c2b29d472a115eded0144a125f1df85288b642783e067d26b576f66"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+135-pitch+00-left-native-hand.png",
+          "sha256": "bb794778c1989d5694d547af87419323abec64f471f676f890cbb45bd64935b4"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+135-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw+150-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw+150-pitch+00.png",
+        "sha256": "f4ece290818ea03a4b914e7f4becc896a2f3d2d632933b02b9b9d9c368de330c"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw+150-pitch+00-outerwear.png",
+        "sha256": "9d6ca986ea6a8a27b3a2a645fed7a44d961a8b9bd208327f4b7c9b1598b0f71d"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw+150-pitch+00.png",
+        "sha256": "ea96490a1b1af6d22a7503b6f104df52a61cfd532dc406bdac244b432d0481bd"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+150-pitch+00-left-native-hand.png",
+          "sha256": "645e4ee9aa306dd83e2b0b9f23425e1cf72ad5189f36a7df5e584488dbe86a34"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+150-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw+165-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw+165-pitch+00.png",
+        "sha256": "ae667a90e98c0742a5de68ee625f8ce05095f6fbf1d71c5bf21c31c298a1c1b1"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw+165-pitch+00-outerwear.png",
+        "sha256": "23a999af91cabb12695b14349388f2c53187a2099731eeb95576440a565798ab"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw+165-pitch+00.png",
+        "sha256": "8a25908ed34220c1bb6b11412197ea5d18d2c2639dfaf06d30d24ccb3a95c820"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+165-pitch+00-left-native-hand.png",
+          "sha256": "974ceba3ad6fbb64933918dce616633c852c601b24cd74bd69d7b400ac962c94"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw+165-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw-090-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw-090-pitch+00.png",
+        "sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw-090-pitch+00-outerwear.png",
+        "sha256": "530a42b586507abe0b0f7fb36f680fffaea5567c13c94681e1e1c52556534f87"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw-090-pitch+00.png",
+        "sha256": "b3d153a747eb2dc7f7138fbcf1951403ba954eebe6020d2af8c7571a71691f7b"
+      },
+      "native_hand_support": {
+        "left": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-090-pitch+00-left-native-hand.png",
+          "sha256": "8d8afb60146e2df61b213d59ee1fa350cdc92b1f9664820b5418770413254d1d"
+        },
+        "right": {
+          "path": "assets/pose-atlas/v5-garment-visibility/yaw-090-pitch+00-right-native-hand.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+        }
+      }
+    },
+    "yaw-060-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw-060-pitch+00.png",
+        "sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw-060-pitch+00-outerwear.png",
+        "sha256": "90ae0dd93d72e256b8d15a3ab22bc637ccfeef0b1d64d3ade025d001f8445af5"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw-060-pitch+00.png",
+        "sha256": "8a03f8f6279aba11a321b6c4cadd4fbb35047025f70100e017f7ed470f79a287"
+      }
+    },
+    "yaw+060-pitch+00": {
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_source": {
+        "path": "assets/pose-atlas/v5-base/yaw+060-pitch+00.png",
+        "sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e"
+      },
+      "garment_member": {
+        "path": "assets/hanfu-robe-blue-white-yaw+060-pitch+00-outerwear.png",
+        "sha256": "4fd0bbb933d725c3b95f42f69494d0e7b6ea21f22e86dbb62f01756a385a1007"
+      },
+      "visibility": {
+        "path": "assets/pose-atlas/v5-garment-visibility/yaw+060-pitch+00.png",
+        "sha256": "b69042d829684dc6adfb9d3c4642c18e603a2a823396890ed2c5e49552dfa35d"
+      }
+    }
+  }
+}

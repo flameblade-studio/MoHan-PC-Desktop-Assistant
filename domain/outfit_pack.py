@@ -23,6 +23,7 @@ PoseAppearanceResolution = _outfit_pack_models.PoseAppearanceResolution
 RemovalResult = _outfit_pack_models.RemovalResult
 SelectionResolution = _outfit_pack_models.SelectionResolution
 lazy from domain.makeup_eye_states import parse_makeup_eye_states, validated_makeup_intensity
+lazy from domain.makeup_mouth_states import parse_mouth_states
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain import outfit_pack_official
 lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel
@@ -244,6 +245,30 @@ def _pose_assets(poses: object, slots: frozenset[str], archive: zipfile.ZipFile,
     return frozendict(parsed)
 
 
+def _partial_pose_assets(
+    poses: object, slots: frozenset[str], archive: zipfile.ZipFile, names: set[str], *, full_canvas: bool = False,
+) -> frozendict[str, tuple[AppearanceAsset, ...]]:
+    """Like ``_pose_assets`` but for a declaration that legitimately covers only
+    SOME silhouettes (mouth_states: only the full-body views with an authored
+    speaking mouth, never the half-body gesture poses or the ±90-and-beyond
+    yaw views that have no viseme rendering at all)."""
+    if not isinstance(poses, dict):
+        raise OutfitPackError("Every declared mouth-state silhouette must use a supported view.")
+    if not set(poses).issubset(REQUIRED_SILHOUETTES):
+        raise OutfitPackError("Mouth state declares an unsupported silhouette.")
+    parsed = {}
+    for silhouette, entries in poses.items():
+        if not isinstance(entries, list) or not entries:
+            raise OutfitPackError("Every silhouette requires assets.")
+        assets = tuple(_asset(entry, slots, archive, names) for entry in entries)
+        canvas = MAKEUP_CANVASES["full-body" if silhouette in POSE_ATLAS_SILHOUETTES else "half-body"]
+        validate_pose_assets(assets, archive, canvas, require_visible=False, full_canvas=full_canvas)
+        if len({asset.slot for asset in assets}) != len(assets):
+            raise OutfitPackError("Duplicate slot in silhouette.")
+        parsed[silhouette] = assets
+    return frozendict(parsed)
+
+
 def _variant_base(value: object, extra: set[str]) -> tuple[str, frozendict[str, str]]:
     if not isinstance(value, dict) or set(value) != {"id", "display_names", "poses", *extra}:
         raise OutfitPackError("Provide a supported appearance variant.")
@@ -340,7 +365,7 @@ def _makeup_variant(value: object, archive: zipfile.ZipFile, names: set[str]) ->
     """Parse legacy three-slot makeup or an opt-in foundation-bearing variant."""
     variant_id, display = _variant_base(
         value,
-        {key for key in ("intensity", "eye_states", "foundation_silhouettes") if key in value},
+        {key for key in ("intensity", "eye_states", "foundation_silhouettes", "mouth_states") if key in value},
     )
     intensity = validated_makeup_intensity(value.get("intensity", 1.0))
     raw_foundation = value.get("foundation_silhouettes")
@@ -388,6 +413,12 @@ def _makeup_variant(value: object, archive: zipfile.ZipFile, names: set[str]) ->
                 )
     if foundation_silhouettes and set(parsed_states) != {"half", "closed"}:
         raise OutfitPackError("Foundation makeup requires both half and closed eye states.")
+    mouth_slots = frozenset({"lips", FOUNDATION_SLOT})
+    parsed_mouth_states = parse_mouth_states(
+        value.get("mouth_states", {}),
+        lambda entries: _partial_pose_assets(entries, mouth_slots, archive, names, full_canvas=True),
+        foundation_silhouettes,
+    )
     return AppearanceVariant(
         variant_id,
         display,
@@ -395,6 +426,7 @@ def _makeup_variant(value: object, archive: zipfile.ZipFile, names: set[str]) ->
         intensity=float(intensity),
         eye_states=frozendict(parsed_states),
         foundation_silhouettes=foundation_silhouettes,
+        mouth_states=frozendict(parsed_mouth_states),
     )
 
 
@@ -589,7 +621,7 @@ def _declared_asset_paths(items: list[AppearanceItem]) -> list[str]:
         asset.path
         for item in items
         for variant in item.variants
-        for poses in (variant.poses, *variant.eye_states.values())
+        for poses in (variant.poses, *variant.eye_states.values(), *variant.mouth_states.values())
         for assets in poses.values()
         for asset in assets
     )]

@@ -177,18 +177,20 @@ class CompanionFaceAssetMethods(CompanionBlinkCompositeMethods):
 
     @staticmethod
     def _blink_regions() -> frozendict[str, tuple[QRect, QRect]]:
+        # Owner-approved round14g redraw v4 (owner-final-approval-20260928.json,
+        # INSTALL-1 code_changes_authorized: "half-body blink regions").
         return frozendict({
             "cheek": (
-                QRect(160, 153, 55, 34),
-                QRect(198, 153, 61, 34),
+                QRect(160, 153, 55, 38),
+                QRect(198, 153, 70, 45),
             ),
             "lean": (
-                QRect(153, 153, 55, 34),
-                QRect(191, 153, 61, 34),
+                QRect(153, 153, 55, 35),
+                QRect(191, 153, 68, 40),
             ),
             "front": (
-                QRect(180, 153, 53, 34),
-                QRect(220, 153, 56, 34),
+                QRect(178, 146, 55, 41),
+                QRect(220, 146, 56, 41),
             ),
         })
 

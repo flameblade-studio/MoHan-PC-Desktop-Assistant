@@ -190,6 +190,7 @@ class CompanionBlinkCompositeMethods:
         if dedicated_blink is None and base_expression in GUARDED_EXPRESSIONS:
             blink_patch = preserve_gesture_brows(
                 base_pixmap, blink_patch, blink_patch, expression=base_expression,
+                eye_mask=blink_mask,
             )
         return self.face_renderer.render_overlay(
             base_pixmap,

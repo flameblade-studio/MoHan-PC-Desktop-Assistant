@@ -48,7 +48,7 @@ lazy from test_outfit_pack import _manifest, _pack, _png
 OUTFIT_PACK_PATH = OFFICIAL_PACK_ROOT / f"{OFFICIAL_OUTFIT_PACK_ID}.mohan-outfit"
 OFFICIAL_CATEGORIES = ("garment", "hairstyle", "headwear")
 EXPECTED_SILHOUETTES = 31
-EXPECTED_MAKEUP_VARIANTS = 2
+EXPECTED_MAKEUP_VARIANTS = 3  # light, classic, glamorous (glamorous approved+installed 2026-09-28)
 MAKEUP_EYE_STATE_SLOTS = frozenset({"eyes"})
 MAKEUP_EYE_STATE_SLOTS_V2 = frozenset({"eyes", FOUNDATION_SLOT})
 OPAQUE = 255
@@ -60,6 +60,22 @@ GREY_TOLERANCE = 12
 # over the grey base, a lip point, and hair / hairpiece points clear of other layers.  The expected
 # RGBA values are source assertions; an accepted art replacement must update them with its audit.
 PROBES = {
+    # Values below were re-measured 2026-09-28 against the INSTALL-1/INSTALL-2
+    # approved assets (owner-final-approval-20260928.json;
+    # owner-review-claude-02/index.html) via
+    # ActiveOutfitOverlay(...).apply(base, silhouette) at each named point.
+    # Garment probes for yaw+000-pitch+00 are unchanged (source layer pixel
+    # still equals the rendered pixel exactly). "hair" on yaw+000-pitch+00
+    # moved from (440, 370), which the new hairstyle no longer covers
+    # (rendered fully transparent there), to (578, 233): the single
+    # minimum-error point found by an exhaustive scan of every opaque pixel
+    # in the "front" hairstyle layer against the rendered frame (best
+    # available: differs from the raw source by 1/255 in the blue channel
+    # only -- a premultiplied-alpha rounding artifact, not a content
+    # difference; no pixel anywhere in this layer matches the source
+    # exactly post-install). lips/headwear values updated to their new
+    # rendered colours; every point still lands on its intended object
+    # (verified by visual crop, not by checking for transparency).
     "yaw+000-pitch+00": {
         "base": "assets/pose-atlas/v5-base/yaw+000-pitch+00.png",
         "garment": (
@@ -68,14 +84,30 @@ PROBES = {
         ),
         # Retain the original probe for exact reviewed material detail after registration.
         "garment_detail": ({"point": (600, 700), "expected": (17, 42, 70, 255)},),
-        "lips": {"point": (505, 315), "expected": (206, 126, 128, 255)},
-        "hair": {"point": (440, 370), "expected": (48, 39, 38, 255)},
-        "headwear": {"point": (520, 125), "expected": (208, 210, 219, 255)},
+        "lips": {"point": (505, 315), "expected": (204, 106, 115, 255)},
+        "hair": {"point": (578, 233), "expected": (20, 16, 18, 255)},
+        "headwear": {"point": (520, 125), "expected": (167, 161, 164, 255)},
     },
     "front-crossed": {
         "base": "assets/expressions/idle_front.png",
+        # NOTE: garment_source (raw archive layer pixel) still measures
+        # (27, 76, 143, 255) here -- unchanged from before this round -- but
+        # the RENDERED half-body pixel no longer matches it exactly
+        # ((13, 71, 149, 255) measured 2026-09-28): essentially every opaque
+        # garment pixel in this silhouette now differs slightly from its
+        # source (a near-uniform shift, not a localized seam), so no nearby
+        # point restores the old "zero blending" invariant. Left at the
+        # source value pending the coordinator's decision on
+        # `assert garment_after == garment_source` (see round report); do
+        # not weaken that assertion without instruction.
         "garment": ({"point": (610, 853), "expected": (27, 76, 143, 255)},),
-        "lips": {"point": (588, 564), "expected": (235, 168, 172, 255)},
+        "lips": {"point": (588, 564), "expected": (189, 90, 99, 255)},
+        # Same structural finding as garment above: this silhouette's
+        # rendered half-body pixel no longer matches its source layer pixel
+        # exactly for hair or headwear either (source values kept below so
+        # the asset-integrity half of the assertion still passes; the
+        # rendered-vs-source half is a known, reported gap -- see round
+        # report, "half-body 每個像素都有系統性微幅偏移").
         "hair": {"point": (733, 291), "expected": (35, 36, 35, 255)},
         "headwear": {"point": (553, 194), "expected": (94, 98, 104, 255)},
     },

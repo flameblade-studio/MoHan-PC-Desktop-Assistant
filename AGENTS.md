@@ -13,7 +13,7 @@ Playbook 基準參照（同英文宣告）：`d68d585c2fbdc1fbcaaf38a382fdaceba4
 - 技術事實來源：`ARCHITECTURE.md`、相關模組及測試；素材契約見 `tools/art_pipeline/REVIEWED_PARTITIONS.md`。
 - 目前工作入口：docs/ai-workflow.md
 - 必要驗證：既有 fast/gate 政策、相關 `python -m pytest`、全庫 `python -m ruff check .`，以及受影響的外觀、執行期與發布門檻；純文件變更執行相關文件檢查。
-- 專案限制：既有擁有者指示、原生身分與可拆圖層、當前外觀審閱授權、工具授權界線、四語規範及已安裝的 three-tier-agent-orchestrator 設定。
+- 專案限制：遵循既有擁有者指示、原生身分與可拆圖層、當前外觀審閱授權、工具授權界線、四語規範及發布門檻。派工依 2026-09-24 工作區政策：主代理預設使用 `gpt-6-sol`／max，子代理預設使用 `gpt-6-luna`／max；依獨立工作需要派 0–3 名子代理（上限不含主代理），不為填滿名額派工，子代理不得遞迴派工。`astra-flash-orchestrator` skill 與 DeepSeek 路由保留作參考，暫停使用，直到擁有者另行恢復。主代理規劃工作包、明確範圍及排除項、指定唯一檔案寫入者、保留 dirty worktree、執行必要檢查並批次驗收證據。此現行擁有者政策優先於 Playbook 的代理預設。
 
 #### 權威界線
 
@@ -61,7 +61,7 @@ Playbook 基准引用（同英文声明）：`d68d585c2fbdc1fbcaaf38a382fdaceba4
 - 技术事实来源：`ARCHITECTURE.md`、相关模块及测试；素材契约见 `tools/art_pipeline/REVIEWED_PARTITIONS.md`。
 - 当前工作入口：docs/ai-workflow.md
 - 必要验证：现有 fast/gate 政策、相关 `python -m pytest`、全库 `python -m ruff check .`，以及受影响的外观、运行时与发布门槛；纯文档变更执行相关文档检查。
-- 项目限制：现有所有者指示、原始身份与可拆图层、当前外观审阅授权、工具许可边界、四语规范及已安装的 three-tier-agent-orchestrator 设置。
+- 项目限制：遵循现有所有者指示、原始身份与可拆图层、当前外观审阅授权、工具许可边界、四语规范及发布门槛。分工采用 2026-09-24 工作区政策：主代理默认使用 `gpt-6-sol`／max，子代理默认使用 `gpt-6-luna`／max；按独立工作需要派 0–3 名子代理（上限不含主代理），不为填满名额派工，子代理不得递归派工。保留 `astra-flash-orchestrator` skill 和 DeepSeek 路由供参考，暂停使用，直到所有者另行恢复。主代理规划工作包、明确范围与排除项、指定唯一文件写入者、保留 dirty worktree、执行必要检查并批量验收证据。该现行所有者政策优先于 Playbook 的代理默认设置。
 
 #### 权威边界
 
@@ -109,7 +109,7 @@ Read project rules first, then [the pinned CHAT_INIT.md](https://github.com/masi
 - Canonical technical source(s): `ARCHITECTURE.md`, relevant modules and tests; asset contracts in `tools/art_pipeline/REVIEWED_PARTITIONS.md`.
 - Current coordination surface: docs/ai-workflow.md
 - Required validation: Existing fast/gate policy, relevant `python -m pytest`, full-repository `python -m ruff check .`, and affected visual/runtime/release gates; documentation-only work uses relevant document checks.
-- Project-specific exceptions or restrictions: Existing owner instructions, native identity and detachable layers, current visual-review authority, licensed-tool boundaries, four-language governance and installed three-tier-agent-orchestrator profiles.
+- Project-specific exceptions or restrictions: Follow existing owner instructions, native identity and detachable layers, owner-controlled appearance approval, licensed-tool boundaries, four-language governance, and publication gates. Use the 2026-09-24 workspace policy: default to `gpt-6-sol` / max for the main coordinator and `gpt-6-luna` / max for child agents; assign zero to three children according to independent work needs, with the limit excluding the main coordinator, and never fill slots for their own sake. Children cannot delegate recursively. Keep the `astra-flash-orchestrator` skill and DeepSeek route as references, with use paused until the owner restores them. The main coordinator plans work packages, states scope and exclusions, assigns one exclusive file writer, preserves dirty worktrees, runs necessary checks, and reviews evidence in a batch. This current owner policy takes priority over Playbook agent defaults.
 
 #### Authority boundary
 
@@ -157,7 +157,7 @@ Playbook 基準参照（英語の宣言と同一）：`d68d585c2fbdc1fbcaaf38a38
 - 技術的な事実の根拠：`ARCHITECTURE.md`、関連モジュールとテスト。素材の契約は `tools/art_pipeline/REVIEWED_PARTITIONS.md` を参照します。
 - 現在の作業入口：docs/ai-workflow.md
 - 必要な検証：既存の fast/gate 方針、関連する `python -m pytest`、全体の `python -m ruff check .`、影響する外観・実行時・公開の条件。文書のみの変更には関連する文書検査を実施します。
-- プロジェクトの制限：既存の所有者指示、元の身元と分離可能なレイヤー、現在の外観審査権限、ツールのライセンス境界、四言語規範、導入済み three-tier-agent-orchestrator の設定。
+- プロジェクトの制限：既存の所有者指示、元の身元と分離可能なレイヤー、所有者が判断する外観承認、ツールのライセンス境界、四言語規範、公開条件に従います。2026-09-24 のワークスペース方針を使用し、主担当は既定で `gpt-6-sol`／max、子代理は既定で `gpt-6-luna`／max とします。独立した作業の必要に応じて子代理を 0～3 名割り当てます（上限に主担当を含みません）。枠を埋めるために割り当てず、子代理は再帰的に委任しません。`astra-flash-orchestrator` skill と DeepSeek 経路は参照用に保持し、所有者が再開するまで使用を停止します。主担当は作業単位を計画し、範囲と除外事項を明示し、ファイルの書き込み担当を一名に限定し、dirty worktree を保持し、必要な確認を実行して証拠を一括で受け入れます。この現行所有者方針は Playbook の代理設定より優先します。
 
 #### 権限の境界
 

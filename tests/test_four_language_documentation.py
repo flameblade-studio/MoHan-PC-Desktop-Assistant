@@ -75,6 +75,28 @@ def test_repository_audit_ignores_deleted_tracked_documents() -> None:
         assert audit_repository(root) == {}
 
 
+def test_repository_audit_ignores_untracked_workspace_documents() -> None:
+    with tempfile.TemporaryDirectory(prefix="mohan-four-language-docs-") as raw:
+        root = Path(raw)
+        canonical = root / "README.md"
+        workspace_note = root / "handoff" / "owner-note.md"
+        canonical.write_text(DOCUMENT, encoding="utf-8")
+        workspace_note.parent.mkdir()
+        workspace_note.write_text("# 暫存筆記\n", encoding="utf-8")
+        subprocess.run(
+            ["git", "init", "--quiet"],
+            cwd=root,
+            check=True,
+        )
+        subprocess.run(
+            ["git", "add", "--", canonical.name],
+            cwd=root,
+            check=True,
+        )
+
+        assert audit_repository(root) == {}
+
+
 LANGUAGE_HEADINGS = (
     "繁體中文",
     "简体中文",
@@ -140,6 +162,7 @@ def main() -> None:
     test_document_rejects_untranslated_duplicate_section()
     test_document_rejects_wrapped_english_word_repetition()
     test_repository_audit_ignores_deleted_tracked_documents()
+    test_repository_audit_ignores_untracked_workspace_documents()
     test_current_release_four_language_bullet_parity()
     result = subprocess.run(
         [sys.executable, "tools/check_four_language_docs.py"],

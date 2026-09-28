@@ -16,7 +16,7 @@
   "schema": "mohan.candidate-blink-binding.v2",
   "source": {
     "path": "v5-base/yaw+000-pitch+00.png",
-    "sha256": "e11f388296af33a848d766f30dcb5ffa46a26a2bd6130ed5e8219049c3918428"
+    "sha256": "7c87bc8b51406b962454b5da79fb8a578bdd6000c8ab117ec6f50c0e328cc81f"
   },
   "version": 2,
   "view_id": "yaw+000-pitch+00"

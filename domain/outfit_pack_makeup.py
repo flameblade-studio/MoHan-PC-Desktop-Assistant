@@ -414,6 +414,21 @@ def verify_makeup_layers(archive_path: Path, regions: frozendict[str, MakeupSafe
                                     f"Makeup layer {asset.path} ({item.item_id}/{variant.variant_id}) paints outside "
                                     f"the {asset.slot} {state} safe region of {silhouette}."
                                 )
+                for shape, poses in variant.mouth_states.items():
+                    for silhouette, assets in poses.items():
+                        region = table[silhouette]
+                        for asset in assets:
+                            # Foundation always checks against the rest mask
+                            # (owner-approved 2026-09-28: "foundation 以 rest
+                            # mask 檢查"); lips uses the static safe-region
+                            # rects, which ignore `state` entirely.
+                            if makeup_layer_escapes(
+                                archive.read(asset.path), region, asset.slot, state="rest",
+                            ):
+                                raise OutfitPackError(
+                                    f"Makeup layer {asset.path} ({item.item_id}/{variant.variant_id}) paints outside "
+                                    f"the {asset.slot} mouth-state {shape!r} safe region of {silhouette}."
+                                )
 
 
 def clamp_makeup_intensity(value: object) -> float:

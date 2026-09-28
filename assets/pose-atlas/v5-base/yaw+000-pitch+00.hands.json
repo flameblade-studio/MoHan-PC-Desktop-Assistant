@@ -218,7 +218,7 @@
     "hand_confidence_threshold": 0.65,
     "palm_threshold": 0.45,
     "pipeline": "OpenCV Zoo MediaPipe PalmDet + HandPose FP32 ONNX",
-    "source_sha256": "e11f388296af33a848d766f30dcb5ffa46a26a2bd6130ed5e8219049c3918428"
+    "source_sha256": "7c87bc8b51406b962454b5da79fb8a578bdd6000c8ab117ec6f50c0e328cc81f"
   },
   "occluded_hands": [],
   "occluders": [],
