@@ -4,7 +4,7 @@
 
 ## 來源與比對
 
-先前只掃描擁有者 V5 素顏資料夾及一個生成批次，留下三個 Git blob 等級缺口。本輪另掃描擁有者桌面專案資料夾 2,258 張影像（其中 603 張同尺寸，0 筆精確命中，1 筆無關圖片解碼失敗），以及本機 `C:\Users\hitos\.codex\generated_images` 的 1,914 張影像（997 張同尺寸，三個缺口各有 1 筆精確命中，0 筆解碼失敗）。搜尋紀錄分別在 `scratchpad/mohan-v2-final-runtime-matrix-160/desktop-external-raw-search-22.json` 與 `generated-cache-external-raw-search-22.json`。兩次掃描的退出碼均為 0。
+先前只掃描擁有者 V5 素顏資料夾及一個生成批次，留下三個 Git blob 等級缺口。本輪另掃描擁有者桌面專案資料夾 2,258 張影像（其中 603 張同尺寸，0 筆精確命中，1 筆無關圖片解碼失敗），以及本機 `C:\Users\USERNAME\.codex\generated_images` 的 1,914 張影像（997 張同尺寸，三個缺口各有 1 筆精確命中，0 筆解碼失敗）。搜尋紀錄分別在 `scratchpad/mohan-v2-final-runtime-matrix-160/desktop-external-raw-search-22.json` 與 `generated-cache-external-raw-search-22.json`。兩次掃描的退出碼均為 0。
 
 三張原始 PNG 為 RGB、1024×1536，已逐位元組複製封存至 `scratchpad/mohan-v2-final-runtime-matrix-160/recovered-external-raw-22/`，複製前後 SHA-256 一致：
 

@@ -25,6 +25,6 @@
 ## 檢查與剩餘決策
 
 - `python -m ruff check .` 退出碼 0；顯式檢查兩個新 scratchpad 工作資料夾，退出碼 0。
-- 首次直接以預設使用者 Temp 執行相關 pytest 退出碼 1，25 passed／35 setup errors；錯誤均為 `C:/Users/hitos/AppData/Local/Temp/pytest-of-hitos` 的既有 `WinError 5`，不是程式斷言失敗。改用工作區獨立 `--basetemp D:/FlamebladeStudio/CodexProjects/.qa/mohan-v5-session27-pytest-01` 後，衣裝／衣櫃／架構 60 passed、退出碼 0；四語完整性 2 passed、退出碼 0。新隔離分層腳本與候選比對的退出碼亦為 0，但其接受範圍以表述限制為準。
+- 首次直接以預設使用者 Temp 執行相關 pytest 退出碼 1，25 passed／35 setup errors；錯誤均為 `C:/Users/USERNAME/AppData/Local/Temp/pytest-of-USERNAME` 的既有 `WinError 5`，不是程式斷言失敗。改用工作區獨立 `--basetemp D:/FlamebladeStudio/CodexProjects/.qa/mohan-v5-session27-pytest-01` 後，衣裝／衣櫃／架構 60 passed、退出碼 0；四語完整性 2 passed、退出碼 0。新隔離分層腳本與候選比對的退出碼亦為 0，但其接受範圍以表述限制為準。
 - 原有七半身 V7、七姿勢漢服、31 剪影妝容與 24 全身原圖血緣未變。這次正式衣裝 PNG、原生分層 PNG、官方 archive 安裝 0 件；沒有 commit、PR、merge、tag 或軟體發布。
 - 工作包一仍缺真正可見且安全的髮飾開／關及原生髮際灰邊處理。工作包二的 13 個角度需要新衣裝外觀供擁有者目視判斷；−090° 修正版 04 尚有接縫，未申請採用。正式 24 角度衣裝一致性仍不通過，不得宣告二代素體全案結案。

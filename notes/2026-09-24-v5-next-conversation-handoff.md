@@ -10,7 +10,7 @@
 - 當輪來源 S：`P\scratchpad\mohan-v5-visible-geometry-scale-166\session48`
 - 主控 `gpt-6-sol / max`，子代理 `gpt-6-luna / max`，依獨立工作需要派 0–3 名，最多同時 3 名，不含主控，禁止遞迴派工。主控負責規劃、原生繪圖、審查與整合。每包指定唯一寫入者及完成條件。
 - `astra-flash-orchestrator`、Flash 角色及 Router 保留但暫停，不因主控模型變更而恢復 Flash；不可靜默回退。
-- 本機 `C:\Users\hitos\.codex\config.toml` 已設上述預設；已開啟任務的主模型不能只憑預設宣稱已切換。變更前備份為同目錄 `config.toml.routing-20260924-sol-max-before.bak` 與 `AGENTS.md.routing-20260924-sol-max-before.bak`。不讀出或散布金鑰。
+- 本機 `C:\Users\USERNAME\.codex\config.toml` 已設上述預設；已開啟任務的主模型不能只憑預設宣稱已切換。變更前備份為同目錄 `config.toml.routing-20260924-sol-max-before.bak` 與 `AGENTS.md.routing-20260924-sol-max-before.bak`。不讀出或散布金鑰。
 - 原 GPT-5.6 子代理均已停止。新對話請建立符合新規則的子代理，不直接續用舊模型代理。
 
 開工依序讀取：
@@ -30,7 +30,7 @@
 
 ## 2. 素材與外觀權威
 
-V5 原生權威是 `C:\Users\hitos\Desktop\墨寒桌面語音互動虛擬女友2026.07.28開始開發\墨寒V5素顏` 的來源，不得用上一代臉或藍白漢服整圖充當 V5 素體。衣裝、妝、髮飾保持可拆且於 runtime 合成；生成候選只抽取被批准的部位。
+V5 原生權威是 `C:\Users\USERNAME\Desktop\墨寒桌面語音互動虛擬女友2026.07.28開始開發\墨寒V5素顏` 的來源，不得用上一代臉或藍白漢服整圖充當 V5 素體。衣裝、妝、髮飾保持可拆且於 runtime 合成；生成候選只抽取被批准的部位。
 
 七個半身姿勢與 V7 嘴型已採用及正式接入，保留既有成果：front-crossed、left-neutral、cheek-rest、front-eureka、front-mock-scold、front-mock-hit、front-exasperated。原生來源及 RGBA 在 `P\scratchpad\mohan-v2-v5-seven-pose-matting-146`。最早五姿勢漢服採用／未去背描述已過期，不要照舊清單重做。
 
