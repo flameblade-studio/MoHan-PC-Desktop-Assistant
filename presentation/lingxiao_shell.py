@@ -19,7 +19,7 @@ lazy import html
 lazy import math
 lazy from functools import partial
 
-lazy from PySide6.QtCore import QEvent, QSize, Qt
+lazy from PySide6.QtCore import QEvent, QMargins, QSize, Qt
 lazy from PySide6.QtGui import QFont, QFontMetrics, QPixmap
 lazy from PySide6.QtWidgets import (
     QFrame,
@@ -239,6 +239,13 @@ def _wrapped_text(
     )
 
 
+def _layout_margins(widget: QFrame) -> QMargins:
+    """Return the widget layout's margins, or zero margins before a layout exists."""
+
+    layout = widget.layout()
+    return layout.contentsMargins() if layout is not None else QMargins()
+
+
 def _navigation_text_width(navigation: QFrame, button: QPushButton, title: str) -> int:
     """Estimate the button's actual text area from its themed size hint."""
 
@@ -252,7 +259,7 @@ def _navigation_text_width(navigation: QFrame, button: QPushButton, title: str) 
         )
         if contents.width() > 0:
             return contents.width()
-    margins = navigation.layout().contentsMargins()
+    margins = _layout_margins(navigation)
     metrics = button.fontMetrics()
     decoration_width = max(
         0,
@@ -361,7 +368,7 @@ class _ResponsiveNavigationLabel(QLabel):
             return
         self._refreshing_navigation_text = True
         try:
-            margins = navigation.layout().contentsMargins()
+            margins = _layout_margins(navigation)
             width = self.width() or navigation.width() - margins.left() - margins.right()
             # navRealm has themed left padding; leave room before measuring text.
             width = max(1, width - max(6, self.fontMetrics().height() // 2))

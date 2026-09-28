@@ -434,8 +434,9 @@ class DashboardTodayMemoryMixin:
     def refresh_todos(self) -> None:
         while self.todo_list.count():
             item = self.todo_list.takeAt(0)
-            if item.widget():
-                item.widget().deleteLater()
+            widget = item.widget() if item is not None else None
+            if widget is not None:
+                widget.deleteLater()
         rows = self.db.list_todos()
         self.todo_count.setText(
             self._t("todo_count", "{count} 件未完成", count=len(rows))
