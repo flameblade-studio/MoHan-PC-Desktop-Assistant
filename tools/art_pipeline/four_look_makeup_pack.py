@@ -257,7 +257,7 @@ def _load_approval(root: Path, record: object) -> tuple[str, str]:
         or not isinstance(scope, list)
         or not APPROVED_SCOPE.issubset(scope)
         or not isinstance(looks, list)
-        or not set(("bare", *LOOKS)).issubset(looks)
+        or not {"bare", *LOOKS}.issubset(looks)
     ):
         raise FourLookStageError("Owner approval does not authorize the four-look replacement scope.")
     return relative, digest(payload)
@@ -400,7 +400,8 @@ def _validate_views(
                 valid_slots = (
                     provided_slots == set(SLOTS)
                     if state == "rest"
-                    else provided_slots in (set(SLOTS), set(COMPACT_EYE_STATE_SLOTS))
+                    else provided_slots == set(SLOTS)
+                    or provided_slots == set(COMPACT_EYE_STATE_SLOTS)
                 )
                 if not valid_slots:
                     required = (
@@ -414,7 +415,7 @@ def _validate_views(
                         continue
                     label = f"Layer {silhouette}/{look}/{state}/{slot}"
                     pin = _layer(root, state_layers[slot], canvas, label, cache)
-                    layers[(look, silhouette, state, slot)] = pin
+                    layers[look, silhouette, state, slot] = pin
                     source_pins[pin.relative] = pin.sha256
                     records += 1
     return layers, source_pins, records
@@ -550,7 +551,7 @@ def _authoring(
             canvas = MAKEUP_CANVASES["full-body" if silhouette.startswith("yaw") else "half-body"]
             entries = []
             for slot in REST_OUTPUT_SLOTS:
-                pin = layers[(look, silhouette, "rest", slot)]
+                pin = layers[look, silhouette, "rest", slot]
                 path = _output_path(look, silhouette, "rest", slot)
                 target = asset_root / Path(*PurePosixPath(path).parts)
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -561,7 +562,7 @@ def _authoring(
             for state in ("half", "closed"):
                 entries = []
                 for slot in EYE_STATE_OUTPUT_SLOTS:
-                    pin = layers[(look, silhouette, state, slot)]
+                    pin = layers[look, silhouette, state, slot]
                     path = _output_path(look, silhouette, state, slot)
                     target = asset_root / Path(*PurePosixPath(path).parts)
                     target.parent.mkdir(parents=True, exist_ok=True)

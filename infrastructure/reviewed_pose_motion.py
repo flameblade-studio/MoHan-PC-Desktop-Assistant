@@ -13,7 +13,7 @@ lazy import struct
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 lazy from types import MappingProxyType
-lazy from typing import Mapping
+lazy from collections.abc import Mapping
 
 lazy from PySide6.QtGui import QImage, QPixmap
 
@@ -252,9 +252,9 @@ def _manifest(root: Path) -> dict[str, object]:
         value = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError("Invalid reviewed pose motion manifest JSON.") from exc
-    if not isinstance(value, dict) or value.get("schema") not in (
+    if not isinstance(value, dict) or value.get("schema") not in {
         SCHEMA, FOUNDATION_SCHEMA, VARIANT_SCHEMA,
-    ):
+    }:
         raise ValueError("Invalid reviewed pose motion manifest schema.")
     return value
 
@@ -537,9 +537,9 @@ __all__ = (
     "FOUNDATION_COSMETIC_SLOTS",
     "FOUNDATION_SCHEMA",
     "PATCH_STATES",
-    "ReviewedPoseMotion",
-    "ReviewedPoseMotionPng",
     "SCHEMA",
     "VARIANT_SCHEMA",
+    "ReviewedPoseMotion",
+    "ReviewedPoseMotionPng",
     "load_reviewed_pose_motion",
 )

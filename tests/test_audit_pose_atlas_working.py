@@ -82,23 +82,23 @@ def _points(side: str) -> tuple[Point, ...]:
     for finger in ("thumb", "index", "middle", "ring", "pinky"):
         base = bases[finger]
         tip = tips[finger]
-        for step in range(4):
-            result.append(
-                Point(
+        result.extend(Point(
                     base.x + (tip.x - base.x) * step / 3,
                     base.y + (tip.y - base.y) * step / 3,
-                ),
-            )
+                ) for step in range(4))
     return tuple(result)
 
 
 def _disk(pixels: bytearray, center: Point, radius: int = 2) -> None:
     for y in range(round(center.y) - radius, round(center.y) + radius + 1):
         for x in range(round(center.x) - radius, round(center.x) + radius + 1):
-            if (x - center.x) ** 2 + (y - center.y) ** 2 <= radius**2:
-                if 0 <= x < WIDTH and 0 <= y < HEIGHT:
-                    offset = (y * WIDTH + x) * 4
-                    pixels[offset : offset + 4] = bytes(PNG_SKIN)
+            if (
+                (x - center.x) ** 2 + (y - center.y) ** 2 <= radius**2
+                and 0 <= x < WIDTH
+                and 0 <= y < HEIGHT
+            ):
+                offset = (y * WIDTH + x) * 4
+                pixels[offset : offset + 4] = bytes(PNG_SKIN)
 
 
 def _line(
@@ -119,7 +119,7 @@ def _draw_hands(pixels: bytearray) -> None:
     for side in ("left", "right"):
         hand = _points(side)
         _disk(pixels, hand[0], 3)
-        for finger, indices in FINGERS.items():
+        for indices in FINGERS.values():
             _line(pixels, hand[0], hand[indices[0]])
             for first, second in pairwise(indices):
                 _line(pixels, hand[first], hand[second])
@@ -205,7 +205,7 @@ def _run_audit(root: Path) -> subprocess.CompletedProcess[str]:
 
 
 def _load_payload(result: subprocess.CompletedProcess[str]) -> dict[str, object]:
-    assert result.returncode in (0, 1), result.stderr
+    assert result.returncode in {0, 1}, result.stderr
     return json.loads(result.stdout)
 
 

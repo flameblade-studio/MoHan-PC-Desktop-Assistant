@@ -36,10 +36,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from domain.character_identity_audit import (  # noqa: E402
+from domain.character_identity_audit import (
     expected_visibility,
 )
-from domain.visible_identity_audit import (  # noqa: E402
+from domain.visible_identity_audit import (
     BAND_FIELDS,
     SCHEMA as AUDIT_SCHEMA,
     FieldStatus,
@@ -47,7 +47,7 @@ from domain.visible_identity_audit import (  # noqa: E402
     VisibleViewRecord,
     audit_visible_identity,
 )
-from tools import identity_geometry as geometry  # noqa: E402
+from tools import identity_geometry as geometry
 
 SCHEMA = "mohan.pose-atlas-visible-identity-measurements.v1"
 ATLAS_RELATIVE = Path("assets/pose-atlas/v5-base")
@@ -246,7 +246,7 @@ def collect_view(
     )
     chin_row = (
         None if points is None
-        else int(round(float(points[geometry.CHIN_VERTEX_INDEX][1]) * canvas[1]))
+        else round(float(points[geometry.CHIN_VERTEX_INDEX][1]) * canvas[1])
     )
     evidence = geometry.ViewGeometryEvidence(
         view_id=name,

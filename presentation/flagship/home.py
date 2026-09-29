@@ -125,6 +125,7 @@ class FlagshipHomeMixin:
             self.ha_token.setPlaceholderText(unavailable)
             self.ha_status.setText(unavailable)
         return scroll
+
     def save_home_settings(self) -> None:
         url = self.ha_url.text().strip()
         token = self.ha_token.text().strip()
@@ -165,6 +166,7 @@ class FlagshipHomeMixin:
         self._register_home_tools()
         self.refresh_health()
         self.ha_status.setText(self._t("設定已保存"))
+
     def _home_client(self) -> HomeAssistantClient:
         row = self.db.connector("home_assistant")
         token = self.ha_secret.load()
@@ -180,6 +182,7 @@ class FlagshipHomeMixin:
                 verify_tls=bool(config.get("verify_tls", True)),
             )
         )
+
     def _register_home_tools(self) -> None:
         try:
             client = self._home_client()
@@ -204,6 +207,7 @@ class FlagshipHomeMixin:
                 client.action_control,
                 client.verify_control,
             )
+
     def _start_home_probe(self, operation: str) -> bool:
         """Launch health()/states() in a worker so the UI stays responsive during HTTP calls."""
 
@@ -253,9 +257,11 @@ class FlagshipHomeMixin:
     def test_home_connection(self) -> None:
         self.save_home_settings()
         self._start_home_probe("health")
+
     def load_home_entities(self) -> None:
         self.ha_entities.clear()
         self._start_home_probe("states")
+
     def _render_home_entities(self, states: list) -> None:
         for state in states:
             entity = str(state.get("entity_id", ""))
@@ -291,6 +297,7 @@ class FlagshipHomeMixin:
                 issues=issue_text,
             )
         )
+
     def _register_home_action_from_request(
         self,
         entity_id: str,

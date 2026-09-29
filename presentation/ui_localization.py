@@ -694,6 +694,7 @@ from presentation.ui_localization_labels import (
     WORK_TYPE_LABELS,
 )
 
+
 def ui_text(language: str, key: str, chinese: str, **values: object) -> str:
     if is_english(language):
         text = _ENGLISH.get(key, chinese)

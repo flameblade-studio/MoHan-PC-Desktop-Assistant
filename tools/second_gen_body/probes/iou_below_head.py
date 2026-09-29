@@ -13,7 +13,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
 from thresholds import GEOMETRY_IOU_MIN, LOWER_BODY_GOOD
-from recompute_iou import foreground, iou, true_control  # noqa: E402
+from recompute_iou import foreground, iou, true_control
 
 ROOT = Path(os.environ.get(
     "MOHAN_VISION_ROOT",

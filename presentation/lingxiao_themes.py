@@ -229,9 +229,9 @@ validate_theme_definitions()
 __all__ = (
     "DEFAULT_THEME_ID",
     "MINIMUM_CONTRAST_RATIO",
+    "THEMES",
     "THEME_IDS",
     "THEME_SETTING_KEY",
-    "THEMES",
     "LingxiaoTheme",
     "canonical_theme_id",
     "palette_for_theme",

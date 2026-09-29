@@ -89,7 +89,7 @@ def test_empty_layers_return_pixels_to_body_losslessly(builder, tmp_path: Path) 
     assert body_gain >= baseline_sleeves * 0.95, f"大部分袖像素應回到 body，實際只有 {body_gain}"
     untouched = [
         layer for layer in builder.LAYERS
-        if layer not in (*SLEEVES, "body", "hair_back") and gain(layer) != 0
+        if layer not in {*SLEEVES, "body", "hair_back"} and gain(layer) != 0
     ]
     assert not untouched, f"袖層歸零不該影響這些層：{untouched}"
 

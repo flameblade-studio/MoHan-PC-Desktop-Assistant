@@ -114,7 +114,7 @@ def _regions() -> dict[str, MakeupSafeRegion]:
             silhouette,
             canvas,
             "test",
-            {slot: () for slot in ("eyes", "cheeks", "lips")},
+            dict.fromkeys(("eyes", "cheeks", "lips"), ()),
             masks,
             masks,
         )

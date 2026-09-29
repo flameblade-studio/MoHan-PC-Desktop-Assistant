@@ -157,6 +157,8 @@ def _layered_half_body_checks() -> tuple[_SelfTestCheck, ...]:
             ),
         ),
     )
+
+
 def _visual_checks(app: QApplication, window) -> tuple[_SelfTestCheck, ...]:
     checks = (
         _SelfTestCheck("visual.character_pixmap", window.character.pixmap() is not None),

@@ -177,7 +177,10 @@ class FlagshipWorkflowMixin:
                 workflow_id = workflow.workflow_id
                 error_seen = False
 
-                def notify_schedule_error(message: str) -> None:
+                def notify_schedule_error(
+                    message: str,
+                    workflow_id: str = workflow_id,
+                ) -> None:
                     nonlocal error_seen
                     error_seen = True
                     if workflow_id in notified_schedule_errors:

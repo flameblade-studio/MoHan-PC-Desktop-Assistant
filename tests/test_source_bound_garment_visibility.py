@@ -28,8 +28,7 @@ PARTIAL_ALPHA = 128
 
 @pytest.fixture(scope="module", autouse=True)
 def _gui_application() -> QApplication:
-    app = QApplication.instance() or QApplication([])
-    return app
+    return QApplication.instance() or QApplication([])
 
 
 def _digest(payload: bytes) -> str:

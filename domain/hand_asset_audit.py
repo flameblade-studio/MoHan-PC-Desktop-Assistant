@@ -53,11 +53,7 @@ FINGERS = frozendict({
     "ring": (13, 14, 15, 16),
     "pinky": (17, 18, 19, 20),
 })
-BONES = ((0, 1), (0, 5), (0, 9), (0, 13), (0, 17)) + tuple(
-    (indices[position], indices[position + 1])
-    for indices in FINGERS.values()
-    for position in range(3)
-)
+BONES = ((0, 1), (0, 5), (0, 9), (0, 13), (0, 17), *tuple((indices[position], indices[position + 1]) for indices in FINGERS.values() for position in range(3)))
 
 
 class HandAuditError(RuntimeError):

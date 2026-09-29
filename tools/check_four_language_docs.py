@@ -38,6 +38,9 @@ NON_DOCUMENT_BASENAMES = frozenset({
     # Internal architecture report follows its operational format.
     "layered_face_renderer_integration_report.md",
     "option_c_full_refactor_plan.md",
+    # Task-scoped engineering evidence is explicitly removed by the controller
+    # before submission and follows the owner's single-language report format.
+    "QUALITY-GATES-REPORT.md",
     # Internal AI-to-AI asset-alignment report follows its operational format.
     "LAYERED_ASSET_ALIGNMENT_REPORT.md",
     # Internal AI-to-AI response brief follows its operational format.

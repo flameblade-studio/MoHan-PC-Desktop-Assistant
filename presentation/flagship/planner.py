@@ -96,9 +96,11 @@ class FlagshipPlannerMixin:
         worker.setAutoDelete(False)
         self._planner_worker = worker
         self.thread_pool.start(worker)
+
     def recognizes_safe_instruction(self, instruction: str) -> bool:
         """Return whether a chat command maps to a deterministic safe plan."""
         return self._known_safe_plan(instruction) is not None
+
     def _known_safe_plan(
         self,
         instruction: str,
@@ -106,6 +108,7 @@ class FlagshipPlannerMixin:
         """Return deterministic plans for simple read-only Google requests."""
         plan = self._safe_intents.known_safe_plan(instruction)
         return None if plan is None else plan.to_payload()
+
     def _planner_targets(self) -> str:
         lines = [
             (
@@ -120,6 +123,7 @@ class FlagshipPlannerMixin:
                 for index in range(min(200, self.ha_entities.count()))
             )
         return "\n".join(lines) or self._t('（請先加入白名單目標）')
+
     def _planner_done_if_current(
         self,
         payload: dict[str, Any],
@@ -129,6 +133,7 @@ class FlagshipPlannerMixin:
         if generation != self._planner_generation or not self.planner_busy:
             return
         self._planner_done(payload, source)
+
     def _planner_done(self, payload: dict[str, Any], source: str) -> None:
         self._planner_reset()
         try:
@@ -183,6 +188,7 @@ class FlagshipPlannerMixin:
             "\n".join(self._system_text(result.message) for result in results),
         )
         self.refresh_audit()
+
     def _planner_failed_if_current(
         self,
         error: str,
@@ -191,6 +197,7 @@ class FlagshipPlannerMixin:
         if generation != self._planner_generation or not self.planner_busy:
             return
         self._planner_failed(error)
+
     def _planner_failed(self, error: str) -> None:
         self._planner_reset()
         QMessageBox.warning(
@@ -201,6 +208,7 @@ class FlagshipPlannerMixin:
                 error=safe_error_message(self.language, error),
             ),
         )
+
     def _planner_timed_out(self) -> None:
         if self._closed or not self.planner_busy:
             return
@@ -221,6 +229,7 @@ class FlagshipPlannerMixin:
                 "請確認網路、API 金鑰與文字模型後再試一次。"
             ),
         )
+
     def _planner_reset(self) -> None:
         self.planner_timeout.stop()
         self.planner_busy = False

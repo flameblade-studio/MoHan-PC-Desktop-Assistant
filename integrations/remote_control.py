@@ -70,6 +70,7 @@ def remote_file_unavailable(language: str) -> str:
     key = "en-US" if normalized == "en" else normalized
     return REMOTE_FILE_UNAVAILABLE_MESSAGES[key]
 
+
 MOBILE_PAGE = """<!doctype html>
 <html lang="zh-Hant-TW"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">

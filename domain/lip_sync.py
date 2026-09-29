@@ -293,7 +293,7 @@ def infer_vowel_pcm16(
     if len(raw) < MIN_VOWEL_SAMPLES:
         return level, "E"
     mean = sum(raw) / len(raw)
-    scale = max(1.0, max(abs(sample - mean) for sample in raw))
+    scale = max(1.0, *(abs(sample - mean) for sample in raw))
     windowed = [
         ((sample - mean) / scale)
         * (

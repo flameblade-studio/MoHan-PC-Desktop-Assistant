@@ -19,7 +19,7 @@ lazy import html
 lazy import math
 lazy from functools import partial
 
-lazy from PySide6.QtCore import QEvent, QSize, Qt
+lazy from PySide6.QtCore import QEvent, QMargins, QSize, Qt
 lazy from PySide6.QtGui import QFont, QFontMetrics, QPixmap
 lazy from PySide6.QtWidgets import (
     QFrame,
@@ -47,14 +47,14 @@ lazy from presentation.dashboard_theme_materials import MaterialPalette, resolve
 lazy from presentation.lingxiao_fonts import register_bundled_fonts
 
 __all__ = (
+    "DRAFT_BAR_READ_ERROR",
     "REALMS",
     "build_draft_bar",
     "build_navigation",
     "build_ribbon",
     "install_lobby_motion",
-    "refresh_runtime_palette",
     "realm_layout_order",
-    "DRAFT_BAR_READ_ERROR",
+    "refresh_runtime_palette",
     "update_draft_bar",
 )
 
@@ -72,6 +72,7 @@ def _shell_palette(shell):
         theme_id,
         high_contrast=bool(high_contrast),
     )
+
 
 # (領域鍵, 繁中預設組名, 這一組收哪些功能 id)。功能 id 對應 DashboardFeatureRegistry。
 REALMS = (
@@ -238,6 +239,13 @@ def _wrapped_text(
     )
 
 
+def _layout_margins(widget: QFrame) -> QMargins:
+    """Return the widget layout's margins, or zero margins before a layout exists."""
+
+    layout = widget.layout()
+    return layout.contentsMargins() if layout is not None else QMargins()
+
+
 def _navigation_text_width(navigation: QFrame, button: QPushButton, title: str) -> int:
     """Estimate the button's actual text area from its themed size hint."""
 
@@ -251,7 +259,7 @@ def _navigation_text_width(navigation: QFrame, button: QPushButton, title: str) 
         )
         if contents.width() > 0:
             return contents.width()
-    margins = navigation.layout().contentsMargins()
+    margins = _layout_margins(navigation)
     metrics = button.fontMetrics()
     decoration_width = max(
         0,
@@ -330,16 +338,16 @@ class _ResponsiveNavigationButton(QPushButton):
         finally:
             self._refreshing_navigation_text = False
 
-    def changeEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def changeEvent(self, event) -> None:
         super().changeEvent(event)
-        if event.type() in (QEvent.FontChange, QEvent.StyleChange):
+        if event.type() in {QEvent.FontChange, QEvent.StyleChange}:
             self.refresh_navigation_text()
 
-    def resizeEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self.refresh_navigation_text()
 
-    def showEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def showEvent(self, event) -> None:
         super().showEvent(event)
         self.refresh_navigation_text()
 
@@ -360,7 +368,7 @@ class _ResponsiveNavigationLabel(QLabel):
             return
         self._refreshing_navigation_text = True
         try:
-            margins = navigation.layout().contentsMargins()
+            margins = _layout_margins(navigation)
             width = self.width() or navigation.width() - margins.left() - margins.right()
             # navRealm has themed left padding; leave room before measuring text.
             width = max(1, width - max(6, self.fontMetrics().height() // 2))
@@ -374,16 +382,16 @@ class _ResponsiveNavigationLabel(QLabel):
         finally:
             self._refreshing_navigation_text = False
 
-    def changeEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def changeEvent(self, event) -> None:
         super().changeEvent(event)
-        if event.type() in (QEvent.FontChange, QEvent.StyleChange):
+        if event.type() in {QEvent.FontChange, QEvent.StyleChange}:
             self.refresh_navigation_text()
 
-    def resizeEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self.refresh_navigation_text()
 
-    def showEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def showEvent(self, event) -> None:
         super().showEvent(event)
         self.refresh_navigation_text()
 
@@ -396,15 +404,15 @@ class _ResponsiveStatusLabel(QLabel):
         super().__init__(parent)
         self.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
-    def setText(self, text: str) -> None:  # noqa: N802 - Qt API
+    def setText(self, text: str) -> None:
         self._source_text = str(text)
         self._refresh_text()
 
-    def resizeEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def resizeEvent(self, event) -> None:
         super().resizeEvent(event)
         self._refresh_text()
 
-    def sizeHint(self) -> QSize:  # noqa: N802 - Qt API
+    def sizeHint(self) -> QSize:
         hint = super().sizeHint()
         if not self._source_text:
             return hint

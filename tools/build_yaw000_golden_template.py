@@ -55,7 +55,7 @@ def _partition_eye_layers(candidates: dict[str, np.ndarray]) -> None:
             continue
         x0, y0, x1, y1 = _bbox(support)
         width, height = x1 - x0, y1 - y0
-        liner_bottom = y0 + max(1, int(round(height * 0.20)))
+        liner_bottom = y0 + max(1, round(height * 0.20))
         eyeliner = support & (yy < liner_bottom)
         cx, cy = x0 + (width - 1) * 0.50, y0 + (height - 1) * 0.58
         rx, ry = max(2.0, width * 0.22), max(2.0, height * 0.30)
@@ -307,10 +307,10 @@ def _rebuild_mouth_partitions(
     # cavity.  This yields distinct upper/lower layers using only source pixels.
     mouth = (candidates["lip_upper"] | candidates["lip_lower"] |
              candidates["corner_left"] | candidates["corner_right"])
-    x0, y0, x1, y1 = _bbox(mouth)
+    x0, _y0, x1, _y1 = _bbox(mouth)
     yy, xx = np.indices((h, w))
-    y_mid = int(round(float(np.median(np.where(mouth)[0]))))
-    corner_width = max(2, int(round((x1 - x0) * 0.12)))
+    y_mid = round(float(np.median(np.where(mouth)[0])))
+    corner_width = max(2, round((x1 - x0) * 0.12))
     corner_left = mouth & (xx < x0 + corner_width)
     corner_right = mouth & (xx >= x1 - corner_width)
     inner = mouth & ~corner_left & ~corner_right
@@ -437,7 +437,7 @@ def build(
     authority = _rgba(authority_path)
     if authority.shape != (1536, 1024, 4):
         raise ValueError(f"authority shape must be 1536x1024 RGBA, got {authority.shape}")
-    h, w = authority.shape[:2]
+    _h, _w = authority.shape[:2]
     foreground = authority[:, :, 3] > 0
     matrix = _bbox_affine(canonical[:, :, 3], authority[:, :, 3])
 

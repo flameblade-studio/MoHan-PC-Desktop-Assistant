@@ -71,7 +71,9 @@ class CompanionPlatformMixin:
             self,
         )
         open_action.triggered.connect(self.open_dashboard)
-        quit_action.triggered.connect(QApplication.instance().quit)
+        application = QApplication.instance()
+        if application is not None:
+            quit_action.triggered.connect(application.quit)
         menu.addAction(open_action)
         menu.addSeparator()
         menu.addAction(quit_action)

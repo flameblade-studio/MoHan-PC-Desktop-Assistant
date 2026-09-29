@@ -65,7 +65,7 @@ def test_qixi_anchors_and_no_expiry() -> None:
         resolved = qixi_gregorian(year)
         assert resolved is not None
         assert resolved.year == year
-        assert resolved.month in (7, 8)
+        assert resolved.month in {7, 8}
     assert qixi_gregorian(LUNAR_YEAR_MIN - 1) is None
     assert qixi_gregorian(LUNAR_YEAR_MAX + 1) is None
 

@@ -240,6 +240,8 @@ def legacy_makeup_expression_view_ids() -> frozendict[str, tuple[str, ...]]:
         "cheek-rest-legacy": tuple(f"cheek-rest-legacy/{frame}" for frame in by_pose["cheek"]),
         "left-neutral-legacy": tuple(f"left-neutral-legacy/{frame}" for frame in by_pose["lean"]),
     })
+
+
 EXPRESSION_SPEECH_MOUTH_RECTS = frozendict({
     expression: (
         QRect(170, 194, 60, 42) if pose == "cheek"

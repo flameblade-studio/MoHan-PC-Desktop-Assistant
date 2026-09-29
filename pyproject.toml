@@ -13,6 +13,7 @@ dependencies = [
   "azure-cognitiveservices-speech==1.50.0",
   "certifi==2026.7.22",
   "cryptography==50.0.0",
+  "Pillow==12.3.0",
   "PySide6==6.11.1",
   "sounddevice==0.5.5",
   "websocket-client==1.9.0",
@@ -38,3 +39,32 @@ classifiers = [
 Homepage = "https://www.flamebladestudio.com.tw/mohan-desktop-assistant/"
 Repository = "https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant"
 Issues = "https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues"
+
+[tool.deptry]
+requirements_files = [
+  "requirements.txt",
+  "requirements-runtime.txt",
+  "requirements-preview.txt",
+  "requirements-preview-runtime.txt",
+]
+requirements_files_dev = ["requirements-dev.txt"]
+known_first_party = [
+  "application",
+  "domain",
+  "infrastructure",
+  "integrations",
+  "presentation",
+  "tools",
+]
+extend_exclude = ["\\.quality-tmp", "\\.venv315"]
+
+# certifi is pinned for the Azure Speech TLS dependency chain documented in
+# THIRD_PARTY_NOTICES.md and sbom/components.toml; its use is indirect.
+[tool.deptry.per_rule_ignores]
+DEP002 = ["certifi"]
+
+[tool.deptry.package_module_name_map]
+"azure-cognitiveservices-speech" = "azure"
+"opencc-python-reimplemented" = "opencc"
+"opencv-python" = "cv2"
+"websocket-client" = "websocket"

@@ -7,7 +7,7 @@ lazy from copy import deepcopy
 lazy import hashlib
 lazy import json
 lazy from pathlib import Path
-lazy from typing import Sequence
+lazy from collections.abc import Sequence
 
 lazy from tools.art_pipeline.reviewed_partitions import (
     ROLES, SCHEMA, integrate_batch, verify_completed_entry,
@@ -99,9 +99,7 @@ def _completed_entries(manifest: Path, batch: Path, snapshots: dict[Path, bytes]
         records = [entry["source"], *(part["mask"] for part in entry["parts"])]
         for part in entry["parts"]:
             review = part["review"]
-            for name in ("evidence", "trace"):
-                if f"{name}_sha256" in review:
-                    records.append({"path": review[name], "sha256": review[f"{name}_sha256"]})
+            records.extend({"path": review[name], "sha256": review[f"{name}_sha256"]} for name in ("evidence", "trace") if f"{name}_sha256" in review)
         for record in records:
             _read(Path(record["path"]), snapshots, record["sha256"])
     return normalized
@@ -137,8 +135,9 @@ def consolidate_batches(
     snapshots: dict[Path, bytes] = {}
     grouped: dict[str, dict] = {}
     provenance = []
-    for source_manifest, batch in batches:
-        source_manifest, batch = source_manifest.resolve(), batch.resolve()
+    for source_manifest_path, batch_path in batches:
+        source_manifest = source_manifest_path.resolve()
+        batch = batch_path.resolve()
         for entry in _completed_entries(source_manifest, batch, snapshots):
             identifier = entry["id"]
             if identifier not in grouped:

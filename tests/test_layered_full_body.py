@@ -396,7 +396,6 @@ def test_behavior_performance_changes_the_full_body_frame() -> None:
     assert neutral != active
 
 
-
 def test_authority_restoration_preserves_fractional_alpha() -> None:
     app = QApplication.instance() or QApplication([])
     authority = QPixmap(2, 1)
@@ -415,6 +414,7 @@ def test_authority_restoration_preserves_fractional_alpha() -> None:
     assert target.toImage() == expected
     assert target.toImage().pixelColor(0, 0).alpha() == edge_alpha
     app.processEvents()
+
 
 def run() -> None:
     test_authority_restoration_preserves_fractional_alpha()

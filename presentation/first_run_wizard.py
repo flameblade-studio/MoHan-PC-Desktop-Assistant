@@ -50,6 +50,7 @@ lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS
 
 __all__ = ("FirstRunWizard",)
 
+
 class FirstRunWizard(QDialog):
     """Collect identity and workflow choices while supporting every profession."""
 

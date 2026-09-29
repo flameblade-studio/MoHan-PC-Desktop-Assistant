@@ -21,6 +21,7 @@ lazy from infrastructure.hand_landmark_provider import (
     HandObservation,
     OpenCVZooHandRunner,
 )
+lazy import itertools
 
 CANVAS_WIDTH = 1024
 CANVAS_HEIGHT = 1536
@@ -576,7 +577,7 @@ def _map_hand(
         x = point.x * transformed_width
         y = point.y * transformed_height
         if augmentation.mode == "flip":
-            x, y = width - 1 - x, y
+            x = width - 1 - x
         elif augmentation.mode == "rotate-clockwise":
             x, y = y, height - 1 - x
         elif augmentation.mode == "rotate-counterclockwise":
@@ -703,7 +704,7 @@ def _hand_topology_penalty(points: tuple[tuple[int, int], ...]) -> float:
     for mcp, pip, dip, tip in ((5, 6, 7, 8), (9, 10, 11, 12), (13, 14, 15, 16), (17, 18, 19, 20)):
         distances = tuple(_pixel_distance(wrist, points[index]) for index in (mcp, pip, dip, tip))
         penalty += sum(
-            1.0 for inner, outer in zip(distances, distances[1:], strict=False) if outer + 2.0 < inner
+            1.0 for inner, outer in itertools.pairwise(distances) if outer + 2.0 < inner
         )
     palm_width = max(1.0, _pixel_distance(points[5], points[17]))
     finger_lengths = tuple(
@@ -730,9 +731,9 @@ def _refine_landmarks_to_skin(
     skin = _skin_mask(rgba)
     height, width = skin.shape
     refined = []
-    for x, y in points:
-        x = min(width - 1, max(0, x))
-        y = min(height - 1, max(0, y))
+    for raw_x, raw_y in points:
+        x = min(width - 1, max(0, raw_x))
+        y = min(height - 1, max(0, raw_y))
         x0 = max(0, x - radius)
         x1 = min(width - 1, x + radius)
         y0 = max(0, y - radius)
@@ -820,7 +821,7 @@ def _hand_roi(
 
 
 def _rgba_to_rgb(rgba: object) -> object:
-    background = numpy.full(rgba.shape[:2] + (3,), 245, dtype=numpy.uint8)
+    background = numpy.full((*rgba.shape[:2], 3), 245, dtype=numpy.uint8)
     alpha = rgba[:, :, 3:4].astype(numpy.float32) / 255.0
     bgr = (rgba[:, :, :3].astype(numpy.float32) * alpha + background * (1.0 - alpha)).astype(numpy.uint8)
     return bgr[:, :, ::-1]

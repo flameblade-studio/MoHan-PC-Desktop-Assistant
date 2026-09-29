@@ -62,6 +62,7 @@ def test_composition_root_loads_one_provider_and_keeps_regions_isolated(
     _write_front_hand_pair(tmp_path)
     _patch_composition_root(monkeypatch, tmp_path)
     calls: list[Path] = []
+
     def counted_loader(root: Path):
         calls.append(root)
         return hand_regions.load_core_hand_regions(root)

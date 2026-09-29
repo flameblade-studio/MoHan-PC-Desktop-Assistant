@@ -109,13 +109,9 @@ def _new_dark_eye_pixels(
     changed: list[tuple[int, int]] = []
     for region in regions:
         for y in range(region.top(), region.bottom() + 1):
-            for x in range(region.left(), region.right() + 1):
-                if (
-                    rendered.pixelColor(x, y).alpha() >= OPAQUE_ALPHA_THRESHOLD
+            changed.extend((x, y) for x in range(region.left(), region.right() + 1) if rendered.pixelColor(x, y).alpha() >= OPAQUE_ALPHA_THRESHOLD
                     and _max_rgb(rendered, x, y) <= DARK_EYE_MAX_RGB
-                    and _max_rgb(closed, x, y) > DARK_EYE_MAX_RGB
-                ):
-                    changed.append((x, y))
+                    and _max_rgb(closed, x, y) > DARK_EYE_MAX_RGB)
     return changed
 
 

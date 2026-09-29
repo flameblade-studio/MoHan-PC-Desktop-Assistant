@@ -28,8 +28,7 @@ def _rgba_alpha(path: Path) -> np.ndarray:
 def _expected_output_paths(output_dir: Path) -> list[Path]:
     paths: list[Path] = []
     for suffix, _ in POSES:
-        for layer in LAYERS:
-            paths.append(output_dir / f"v120_{layer}{suffix}.png")
+        paths.extend(output_dir / f"v120_{layer}{suffix}.png" for layer in LAYERS)
     return paths
 
 
@@ -103,9 +102,7 @@ def _read_report_files(path: Path) -> list[str] | None:
             for item in poses:
                 if not isinstance(item, dict):
                     continue
-                for name in item.get("files", {}):
-                    if isinstance(name, str):
-                        names.append(name)
+                names.extend(name for name in item.get("files", {}) if isinstance(name, str))
             if names:
                 return sorted(set(names))
     return None
@@ -140,7 +137,7 @@ def test_non_empty_layer_pixels_stay_in_source_bbox(tmp_path: Path) -> None:
 
 
 def test_missing_physics_layer_file_causes_failure_with_filename(tmp_path: Path) -> None:
-    _build_assets(tmp_path, {layer: KNOWN_RECT for layer in LAYERS})
+    _build_assets(tmp_path, dict.fromkeys(LAYERS, KNOWN_RECT))
     missing = tmp_path / "physics_hair_left.png"
     missing.unlink()
     completed = _run_builder(tmp_path)
@@ -150,7 +147,7 @@ def test_missing_physics_layer_file_causes_failure_with_filename(tmp_path: Path)
 
 
 def test_report_or_manifest_if_present_matches_outputs(tmp_path: Path) -> None:
-    _build_assets(tmp_path, {layer: KNOWN_RECT for layer in LAYERS})
+    _build_assets(tmp_path, dict.fromkeys(LAYERS, KNOWN_RECT))
     completed = _run_builder(tmp_path)
     assert completed.returncode == 0, completed.stderr or completed.stdout
     report_paths = sorted(

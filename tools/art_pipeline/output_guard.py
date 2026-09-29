@@ -44,7 +44,7 @@ lazy import json
 lazy import os
 lazy from contextlib import contextmanager
 lazy from pathlib import Path
-lazy from typing import Iterable, Iterator
+lazy from collections.abc import Iterable, Iterator
 
 HANDOFF_DIR_DEFAULT = Path(
     r"D:/FlamebladeStudio/CodexProjects/shared/agent-handoff/mohan"

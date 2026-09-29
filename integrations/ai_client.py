@@ -158,6 +158,7 @@ def offline_reply(text: str, mode: str, response_language: str = "zh-TW") -> str
         reply = _traditional_chinese_offline_reply(text, mode)
     return reply
 
+
 # Chat/planner read timeout. The 150s window covers slow reasoning turns while
 # the worker's failure path surfaces real errors (v4.5.1, 2026-08-29).
 REQUEST_TIMEOUT_SECONDS = 150

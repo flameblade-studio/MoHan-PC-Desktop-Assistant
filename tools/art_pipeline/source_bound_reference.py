@@ -16,7 +16,7 @@ def normalize_makeup_slot_intensities(manifest: dict) -> dict[str, float]:
     """Return the complete, finite per-slot preview setting."""
 
     raw = manifest.get("makeup_slot_intensities")
-    values = {slot: 1.0 for slot in sorted(MAKEUP_SLOTS_V2)}
+    values = dict.fromkeys(sorted(MAKEUP_SLOTS_V2), 1.0)
     if raw is None:
         return values
     if not isinstance(raw, dict) or not set(raw).issubset(MAKEUP_SLOTS_V2):

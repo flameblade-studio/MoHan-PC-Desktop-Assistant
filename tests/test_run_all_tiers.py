@@ -17,6 +17,8 @@ def _repository_tests() -> tuple[Path, ...]:
 
 def test_arguments_keep_gate_as_the_default_and_accept_both_tier_spellings() -> None:
     assert run_all._arguments(()).tier == run_all.DEFAULT_TIER
+    assert run_all._arguments(()).aggregate is False
+    assert run_all._arguments(("--aggregate",)).aggregate is True
     assert run_all._arguments(("fast", "--changed-from", "main")).tier == (
         run_all.FAST_TIER
     )

@@ -37,6 +37,8 @@ SLOTS = {
     "cheeks": [[30, 10, 10, 10]],
     "lips": [[50, 10, 10, 10]],
 }
+
+
 class _Missing(Enum):
     TOKEN = auto()
 
@@ -88,7 +90,7 @@ def _payload(
     for silhouette in REQUIRED_SILHOUETTES:
         canvas = canvas_for(silhouette)
 
-        def remap(value: dict) -> dict:
+        def remap(value: dict, *, canvas: tuple[int, int] = canvas) -> dict:
             result = deepcopy(value)
             for state, descriptor in result.items():
                 if descriptor.get("path") == "OPEN":

@@ -132,7 +132,7 @@ def _region_pixels(image: QImage, eye_region: QRegion) -> dict[tuple[int, int], 
     values = {}
     for x, y in _region_points(eye_region):
         color = image.pixelColor(x, y)
-        values[(x, y)] = (color.red(), color.green(), color.blue(), color.alpha())
+        values[x, y] = (color.red(), color.green(), color.blue(), color.alpha())
     return values
 
 

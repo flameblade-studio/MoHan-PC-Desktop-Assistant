@@ -79,7 +79,7 @@ def _configure_form(form: QFormLayout) -> None:
     form.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
     form.setRowWrapPolicy(QFormLayout.WrapLongRows)
 
-class DashboardSettingsMixin:
+class DashboardSettingsMixin:  # ruff: ignore[blank-lines-top-level]
     """General settings, permissions, profile, and save transactions."""
 
     save_permissions = DashboardSettingsPersistenceMixin.save_permissions

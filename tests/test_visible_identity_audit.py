@@ -71,9 +71,9 @@ def complete_series(value: float = 0.5) -> list[audit.VisibleViewRecord]:
 
 
 def test_band_fields_match_the_strict_contract_subsets() -> None:
-    assert audit.FRONTAL_FIELDS == tuple(strict_audit._FRONTAL_FIELDS)
-    assert audit.PROFILE_FIELDS == tuple(strict_audit._PROFILE_FIELDS)
-    assert audit.REAR_PROFILE_FIELDS == tuple(strict_audit._REAR_PROFILE_FIELDS)
+    assert tuple(strict_audit._FRONTAL_FIELDS) == audit.FRONTAL_FIELDS
+    assert tuple(strict_audit._PROFILE_FIELDS) == audit.PROFILE_FIELDS
+    assert tuple(strict_audit._REAR_PROFILE_FIELDS) == audit.REAR_PROFILE_FIELDS
     assert audit.BAND_FIELDS[FaceVisibility.REAR] == ()
 
 

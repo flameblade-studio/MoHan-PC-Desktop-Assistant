@@ -17,6 +17,7 @@ lazy from application.behavior_director import (
     SpeechLifecycle,
     TransitionStyle,
 )
+lazy import itertools
 
 PAIR_LENGTH = 2
 MIN_HOLD_MS = 2_200
@@ -230,7 +231,7 @@ def assert_speech_preempts_unsafe_back_without_twitch() -> None:
     depths.update({f"{s}-neutral": 1 for s in ("left", "right")})
     trail = [3, *(depths.get(pose, 0) for pose in poses)]
     assert all(
-        abs(a - b) <= 1 for a, b in zip(trail, trail[1:], strict=False)
+        abs(a - b) <= 1 for a, b in itertools.pairwise(trail)
     ), f"unsafe pose jump in recovery trail: {trail}"
 
 

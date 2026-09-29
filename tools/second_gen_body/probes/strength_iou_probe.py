@@ -63,7 +63,7 @@ def main() -> None:
     init = make_init(BUNDLE)
     init.save(OUT / "_init.png")
     control = foreground(init)
-    print(f"初始圖 {init.size}，控制剪影佔畫面 {control.mean()*100:.1f}%", flush=True)
+    print(f"初始圖 {init.size}，控制剪影佔畫面 {control.mean() * 100:.1f}%", flush=True)
 
     transformer = ChromaTransformer2DModel.from_single_file(
         str(GGUF),
@@ -85,7 +85,7 @@ def main() -> None:
     # 基準線：完全不給初始圖的純文生圖。任何強度的 IoU 必須顯著高過它，
     # 才算「幾何真的進去了」；否則只是「隨便畫個人剛好也會重疊」。
     from diffusers import ChromaPipeline
-    t2i = ChromaPipeline(**{k: v for k, v in pipe.components.items()})
+    t2i = ChromaPipeline(**dict(pipe.components.items()))
     t2i.set_progress_bar_config(disable=True)
     baseline_img = t2i(
         prompt=prompt, negative_prompt=NEG, height=HEIGHT, width=WIDTH,
@@ -98,7 +98,7 @@ def main() -> None:
 
     print("\nstrength   IoU     相對基準", flush=True)
     for strength in STRENGTHS:
-        target = OUT / f"s{int(strength*100):03d}.png"
+        target = OUT / f"s{int(strength * 100):03d}.png"
         image = pipe(
             prompt=prompt, negative_prompt=NEG, image=init, strength=strength,
             height=HEIGHT, width=WIDTH,          # 不傳就退回 1024x1024 方形

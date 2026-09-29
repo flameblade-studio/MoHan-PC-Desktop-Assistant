@@ -118,5 +118,5 @@ def test_weather_defaults_are_one_consistent_indoor_scene() -> None:
     expected_default_temperature_c = 24.0
     assert DEFAULT_WEATHER_CONDITION == "indoor"
     assert DEFAULT_WEATHER_CONDITION in WEATHER_TAGS
-    assert DEFAULT_WEATHER_TEMPERATURE_C == expected_default_temperature_c
+    assert expected_default_temperature_c == DEFAULT_WEATHER_TEMPERATURE_C
     assert thermal_band(DEFAULT_WEATHER_TEMPERATURE_C) == "warm"

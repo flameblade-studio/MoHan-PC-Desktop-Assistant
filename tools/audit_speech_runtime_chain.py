@@ -133,11 +133,8 @@ def _portaudio_binary_present() -> bool:
 def audit_event_trace(events: tuple[RuntimeEvent, ...]) -> tuple[str, ...]:
     """Prove audio, speaking phase, viseme and frame share one ordered chain."""
 
-    issues: list[str] = []
     kinds = tuple(event.kind for event in events)
-    for required in ("first-audio", "mouth-frame", "audio-write", "mouth-closed"):
-        if required not in kinds:
-            issues.append(f"missing-event:{required}")
+    issues: list[str] = [f"missing-event:{required}" for required in ("first-audio", "mouth-frame", "audio-write", "mouth-closed") if required not in kinds]
     first_audio = next((event for event in events if event.kind == "first-audio"), None)
     first_write = next((event for event in events if event.kind == "audio-write"), None)
     active_frames = tuple(
@@ -145,12 +142,18 @@ def audit_event_trace(events: tuple[RuntimeEvent, ...]) -> tuple[str, ...]:
         for event in events
         if event.kind == "mouth-frame" and event.cue_level > 0.0
     )
-    if first_audio is not None and active_frames:
-        if active_frames[0].ordinal <= first_audio.ordinal:
-            issues.append("mouth-frame-before-first-audio")
-    if first_audio is not None and first_write is not None:
-        if first_write.ordinal <= first_audio.ordinal:
-            issues.append("audio-write-before-first-audio")
+    if (
+        first_audio is not None
+        and active_frames
+        and active_frames[0].ordinal <= first_audio.ordinal
+    ):
+        issues.append("mouth-frame-before-first-audio")
+    if (
+        first_audio is not None
+        and first_write is not None
+        and first_write.ordinal <= first_audio.ordinal
+    ):
+        issues.append("audio-write-before-first-audio")
     writes = tuple(event for event in events if event.kind == "audio-write")
     for frame in active_frames:
         next_event = (

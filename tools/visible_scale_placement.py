@@ -342,8 +342,8 @@ def resize_premultiplied(image: np.ndarray, scale: float) -> np.ndarray:
     if scale <= 0.0 or not math.isfinite(scale):
         raise PlacementError(f"invalid_scale:{scale}")
     source = _premultiply(image)
-    height = max(1, int(round(image.shape[0] * scale)))
-    width = max(1, int(round(image.shape[1] * scale)))
+    height = max(1, round(image.shape[0] * scale))
+    width = max(1, round(image.shape[1] * scale))
     rows = np.clip((np.arange(height) + 0.5) / scale - 0.5, 0, image.shape[0] - 1)
     cols = np.clip((np.arange(width) + 0.5) / scale - 0.5, 0, image.shape[1] - 1)
     row_index = np.floor(rows).astype(int)
@@ -392,8 +392,8 @@ def place_image(image: np.ndarray, placement: UniformPlacement) -> np.ndarray:
     """Apply one uniform scale and translation onto the display canvas."""
 
     scaled = _premultiply(resize_premultiplied(image, placement.scale))
-    dy = int(round(placement.offset_y))
-    dx = int(round(placement.offset_x))
+    dy = round(placement.offset_y)
+    dx = round(placement.offset_x)
     placed = _shift(scaled, dy, dx, (placement.canvas[1], placement.canvas[0]))
     alpha = placed[..., 3:4]
     colour = np.divide(

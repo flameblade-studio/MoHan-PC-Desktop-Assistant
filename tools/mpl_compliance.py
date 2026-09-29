@@ -26,7 +26,7 @@ def _relative(value: object) -> str:
     if not isinstance(value, str) or not value or "\\" in value or ":" in value:
         raise ValueError("evidence path must be a portable relative path")
     path = PurePosixPath(value)
-    if path.is_absolute() or any(part in (".", "..", "") for part in value.split("/")):
+    if path.is_absolute() or any(part in {".", "..", ""} for part in value.split("/")):
         raise ValueError("evidence path escapes its root")
     return value
 

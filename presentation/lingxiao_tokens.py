@@ -16,12 +16,12 @@ lazy from dataclasses import dataclass
 lazy from typing import Final
 
 __all__ = (
-    "LingxiaoPalette",
     "MOTION",
     "PALETTE",
     "PALETTE_HIGH_CONTRAST",
     "TEXT_ON_SURFACE_PAIRS",
     "TYPE_SCALE",
+    "LingxiaoPalette",
     "contrast_ratio",
     "font_stack",
     "palette_for",

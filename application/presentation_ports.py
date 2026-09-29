@@ -15,7 +15,7 @@ lazy from dataclasses import dataclass, field
 lazy from difflib import SequenceMatcher
 lazy from pathlib import Path
 lazy from typing import Any, Protocol
-lazy from application.appearance_ports import OutfitOverlayFactory, OutfitOverlayPort as OutfitOverlayPort, no_outfit_overlay_factory
+lazy from application.appearance_ports import OutfitOverlayFactory, no_outfit_overlay_factory
 
 lazy from domain.contracts import (
     AzureSpeechEnginePort,
@@ -969,7 +969,7 @@ class DashboardServices:
     presentation_ports: PresentationPorts | None = None
     backup_manager: object | None = None
 
-def safe_error_from_exception(error: BaseException) -> SafeError | None:
+def safe_error_from_exception(error: BaseException) -> SafeError | None:  # ruff: ignore[blank-lines-top-level]
     value = getattr(error, "safe_error", None)
     return value if isinstance(value, SafeError) else None
 

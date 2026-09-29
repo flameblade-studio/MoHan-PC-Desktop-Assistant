@@ -19,7 +19,7 @@ lazy from presentation.dashboard_theme_materials import MaterialPalette, resolve
 lazy from presentation.lingxiao_tokens import PALETTE, LingxiaoPalette
 lazy from presentation.presentation_resources import resource_path
 
-__all__ = ("CelestialFrame", "SCENE_GROUND_RATIO", "apply_dashboard_artwork")
+__all__ = ("SCENE_GROUND_RATIO", "CelestialFrame", "apply_dashboard_artwork")
 SCENE_GROUND_RATIO = 0.835
 
 ArtworkKind = Literal["panel", "ribbon", "navigation", "scene"]
@@ -80,7 +80,7 @@ class _ArtworkCanvas(QWidget):
         self.lower()
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
-        if event.type() in (QEvent.Resize, QEvent.Show):
+        if event.type() in {QEvent.Resize, QEvent.Show}:
             parent = self.parentWidget()
             if parent is not None:
                 self.setGeometry(parent.rect())
@@ -119,13 +119,13 @@ class _ArtworkCanvas(QWidget):
         sx = _rail_positions(source.width(), corner, 88.0)
         dx = _rail_positions(self.width(), corner * self.scale, 88.0 * self.scale)
         sy = (0, top, source.height() - bottom, source.height())
-        dy = (0, min(top*self.scale, self.height()/2), max(self.height()/2, self.height()-bottom*self.scale), self.height())
+        dy = (0, min(top * self.scale, self.height() / 2), max(self.height() / 2, self.height() - bottom * self.scale), self.height())
         for row in range(3):
             for column in range(5):
-                if row == 1 and column in (1, 2, 3):
+                if row == 1 and column in {1, 2, 3}:
                     continue
-                target = QRectF(dx[column], dy[row], dx[column+1]-dx[column], dy[row+1]-dy[row])
-                sample = QRectF(source.x()+sx[column], source.y()+sy[row], sx[column+1]-sx[column], sy[row+1]-sy[row])
+                target = QRectF(dx[column], dy[row], dx[column + 1] - dx[column], dy[row + 1] - dy[row])
+                sample = QRectF(source.x() + sx[column], source.y() + sy[row], sx[column + 1] - sx[column], sy[row + 1] - sy[row])
                 if target.width() > 0 and target.height() > 0:
                     painter.drawPixmap(target, image, sample)
 

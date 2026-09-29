@@ -191,7 +191,7 @@ def scale_field(arc: np.ndarray, segment_scales: list[float],
     """
     count = len(segment_scales)
     knots = [0.0] + [(i + 0.5) / count for i in range(count)] + [1.0]
-    values = [1.0] + list(segment_scales) + [1.0]
+    values = [1.0, *list(segment_scales), 1.0]
     result = np.ones_like(arc)
     for index in range(len(knots) - 1):
         low, high = knots[index], knots[index + 1]
@@ -240,7 +240,7 @@ def main() -> None:
     print(f"目標百分位 P{args.percentile:g}")
     for name in ("uparm", "lowarm", "upleg", "lowleg"):
         print(f"  {name:7s} {CURRENT[name][0]:6.1f} → {goals[name]:6.1f} cm"
-              f"   縮放 {ratios[name]:.4f}（{ratios[name]-1:+.1%}）")
+              f"   縮放 {ratios[name]:.4f}（{ratios[name] - 1:+.1%}）")
 
     # 375 個關節模糊頂點（part 255）必須跟著最近的那條肢鏈一起動。
     # 第一版把它們排除在形變之外、卻納入量測，結果上臂只達成 -13.7%
@@ -264,7 +264,7 @@ def main() -> None:
     floor_probe = float(base[:, 1].min())
     height_probe = float(np.ptp(base[:, 1]))
     hip_plane_y = floor_probe + TORSO_SECTIONS["hip"][0] * height_probe
-    for chain, (part_sequence, bone_sequence, norm_sequence) in CHAINS.items():
+    for chain, (part_sequence, _bone_sequence, norm_sequence) in CHAINS.items():
         nodes = chain_nodes[chain]
         index = np.concatenate([
             np.flatnonzero(np.isin(part_ids, part_sequence)),
@@ -310,7 +310,9 @@ def main() -> None:
         if not chain.startswith("l_"):
             continue
         nodes = np.asarray([joints[name] for name in bone_sequence])
-        for position, (part_id, norm_name) in enumerate(zip(part_sequence, norm_sequence)):
+        for position, (part_id, norm_name) in enumerate(
+            zip(part_sequence, norm_sequence, strict=True)
+        ):
             a, b = nodes[position], nodes[position + 1]
             axis = (b - a) / np.linalg.norm(b - a)
             member = (part_ids == part_id) | (part_ids == AMBIGUOUS)
@@ -338,7 +340,7 @@ def main() -> None:
         for vertex in result:
             stream.write(f"v {vertex[0]:.10f} {vertex[1]:.10f} {vertex[2]:.10f}\n")
         for face in faces:
-            stream.write(f"f {face[0]+1} {face[1]+1} {face[2]+1}\n")
+            stream.write(f"f {face[0] + 1} {face[1] + 1} {face[2] + 1}\n")
     report = {
         "status": "CANDIDATE_4_LIMB_MORPH_PENDING_OWNER_REVIEW",
         "base": "candidate3.obj",
