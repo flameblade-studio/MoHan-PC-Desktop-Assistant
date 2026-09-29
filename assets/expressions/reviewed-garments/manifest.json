@@ -2,20 +2,20 @@
   "schema": "mohan.reviewed-native-garments.v1",
   "poses": {
     "cheek-rest": {
-      "native_source_file": "cheek-native-57.rgba.png",
-      "native_source_sha256": "0bb2ed44ae252d72e8df1da04b1b471d88b06daa71b5458c4590038110b725ae",
+      "native_source_file": "cheek_native_gray_20260914.png",
+      "native_source_sha256": "d73525ef11f63c89d68296666e99fc30814bf7a78600f6db3fa422d8519fed13",
       "visibility": {
         "path": "cheek-rest/source-bcc8/body-visibility.png",
-        "sha256": "fd0f5abc8b6767e73d9c39d48e2b01eec9845d5181d462699b78f93d3f768181"
+        "sha256": "4c91cae792638863b3f2c2f0119e3fa9e1e99c0ffd74d0ab96d6fc225b8be52d"
       },
       "ordered_layers": [
         {
           "path": "cheek-rest/source-bcc8/garment-source.rgba.png",
-          "sha256": "6d02ab77e4965bf55ecef429b41a436947aa55acfc9e99ca8de96e18daff367c"
+          "sha256": "0b102914f558dc2c547e41183bc859188db6b340401c609145d902713ec6a8c8"
         },
         {
           "path": "cheek-rest/source-bcc8/native-hands-foreground.rgba.png",
-          "sha256": "c14dca67b256b39a06dc84db1a07e59b3def7f671af94051ccda10a70d9feb27"
+          "sha256": "59f5fc7c7efc9ddb533aa660e2be016a71c7bedc699f56ffb7ceaf2e6e76f27a"
         }
       ],
       "selection_exact": {

@@ -75,11 +75,13 @@ def stop_automatic_timers(window: CompanionWindow) -> None:
 def assert_blink_mask_contract(window: CompanionWindow) -> None:
     # Idle, speech and expression blinks share the same wide eye mask.
     assert window.dedicated_blink_masks is window.blink_masks
-    # Owner-approved round14g redraw v4 (owner-final-approval-20260928.json).
+    # Owner-approved round14g redraw v4 (owner-final-approval-20260928.json) for
+    # lean/front; cheek-rest is not on the complete-expression route (owner ruling
+    # 2026-09-29), so cheek keeps the main formal region.
     assert window.dedicated_blink_regions == {
         "cheek": (
-            QRect(160, 153, 55, 38),
-            QRect(198, 153, 70, 45),
+            QRect(160, 153, 55, 34),
+            QRect(198, 153, 61, 34),
         ),
         "lean": (
             QRect(153, 153, 55, 35),

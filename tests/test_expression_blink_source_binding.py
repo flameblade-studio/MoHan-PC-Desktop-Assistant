@@ -176,14 +176,11 @@ def test_caught_has_no_matching_source_while_its_pose_endpoint_does(window) -> N
     assert (
         window.expression_pixmaps.get(f"{UNBOUND_EXPRESSION}_closed") is None
     )
-    # cheek-rest now carries an installed complete-expression set (half-body
-    # blink v4, INSTALL-2 2026-09-28): per has_native_motion()'s own
-    # documented contract (reviewed_pose_overlay.py), a pose whose declared
-    # dynamic source is the complete-expression set reports False -- its
-    # dynamics come from that set instead of the retained reviewed motion
-    # root. This used to be True back when cheek-rest had no
-    # complete-expression source and the retained root answered directly.
-    assert _outfit_overlay(window).has_native_motion(view_id) is False
+    # Owner ruling 2026-09-29: cheek-rest returns to the main formal picture and
+    # is no longer bound by the complete-expression manifest, so the retained
+    # reviewed motion root answers for it again (has_native_motion() is True, as
+    # on main).
+    assert _outfit_overlay(window).has_native_motion(view_id) is True
 
 
 def test_unbound_portrait_is_untouched_by_a_half_blink(window) -> None:
@@ -242,11 +239,10 @@ def test_pose_bound_native_endpoint_still_blinks_its_own_neutral_portrait(
     window,
 ) -> None:
     """The neutral cheek portrait must still blink correctly, whichever
-    source now answers for it. cheek-rest carries an installed
-    complete-expression set (half-body blink v4, INSTALL-2 2026-09-28), so
-    has_native_motion() now reports False here too (its own documented
-    contract: a complete-expression source takes over from the retained
-    reviewed motion root) -- this test's job is to prove the actual blink
+    source answers for it. Owner ruling 2026-09-29: cheek-rest is not bound by
+    the complete-expression manifest, so the retained reviewed motion root
+    answers (has_native_motion() is True, as on main) -- this test's job is to
+    prove the actual blink
     compositing still lands correctly regardless of which source answers.
     """
 
@@ -256,7 +252,7 @@ def test_pose_bound_native_endpoint_still_blinks_its_own_neutral_portrait(
         is None
     )
     view_id = outfit_silhouette(NATIVE_NEUTRAL_EXPRESSION, NATIVE_NEUTRAL_POSE)
-    assert _outfit_overlay(window).has_native_motion(view_id) is False
+    assert _outfit_overlay(window).has_native_motion(view_id) is True
     window.state = "idle"
     base = window.expression_pixmaps[NATIVE_NEUTRAL_EXPRESSION]
 
