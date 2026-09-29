@@ -325,12 +325,16 @@
       "paths": [
         "tools/build_python315_qt_compat.py",
         "tools/install_python315_dependencies.py",
+        "tools/qt315_wheel_lock.py",
+        "tools/qt315/wheel-hashes.json",
         "tools/build_python315_jit_runtime.py"
       ],
       "tests": [
         "test_cross_platform_core.py",
         "test_python315_qt_release.py",
-        "test_python315_runtime.py"
+        "test_python315_runtime.py",
+        "test_qt315_wheel_lock.py",
+        "test_quality_gate.py"
       ]
     },
     {

@@ -46,6 +46,7 @@ def run() -> None:
         assert set(window.expression_pixmaps) == {"idle"}
         assert not hasattr(window, "tray")
         assert not hasattr(window, "blink_timer")
+        assert window.dashboard.wardrobe_packages_loaded is False
         assert window.character.pixmap() is not None
         assert not window.character.pixmap().isNull()
 
@@ -69,6 +70,16 @@ def run() -> None:
         )
         assert window.blink_timer.isActive()
         assert window.tray is not None
+
+        wardrobe_index = next(
+            index
+            for index in range(window.dashboard.tabs.count())
+            if window.dashboard.tabs.widget(index).property("mohanFeatureId")
+            == "wardrobe"
+        )
+        window.dashboard.tabs.setCurrentIndex(wardrobe_index)
+        assert window.dashboard.wardrobe_packages_loaded is True
+        assert window.dashboard.wardrobe_packages.count() > 0
 
         window.close()
         app.processEvents()

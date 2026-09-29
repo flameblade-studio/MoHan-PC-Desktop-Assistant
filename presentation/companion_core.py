@@ -471,8 +471,7 @@ class CompanionCoreMixin:
             ).exec()
 
     def _create_dashboard(
-        self,
-        gesture_controller: GestureController | None = None,
+        self, gesture_controller: GestureController | None = None, *, defer_wardrobe_startup: bool = False,
     ) -> Dashboard:
         return Dashboard(
             self.db,
@@ -485,12 +484,13 @@ class CompanionCoreMixin:
                 azure_hd_speech=self.azure_hd_tts,
                 secret_store_factory=self.secret_store_factory,
                 platform_services=self.platform_services,
-                cloud_vision_service_factory=(self.cloud_vision_service_factory),
+                cloud_vision_service_factory=self.cloud_vision_service_factory,
                 dense_face_provider_factory=self.dense_face_provider_factory,
                 presentation_ports=self.presentation_ports,
                 backup_manager=self.backup_manager,
             ),
             gesture_controller=gesture_controller,
+            defer_wardrobe_startup=defer_wardrobe_startup,
         )
 
     def _create_gesture_application(self) -> GestureApplicationAdapter:
