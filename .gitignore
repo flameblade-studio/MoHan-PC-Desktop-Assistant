@@ -85,3 +85,6 @@ home-assistant*.dpapi
 Thumbs.db
 Desktop.ini
 .chroma-pipeline/
+
+# Task-scoped local reports requested by the owner are not submitted.
+/TICKET-*-REPORT.md

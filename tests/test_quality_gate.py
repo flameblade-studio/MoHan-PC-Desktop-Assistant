@@ -6,6 +6,7 @@ lazy from tools import quality_gate
 
 EXPECTED_FAILURE_EXIT = 9
 EXPECTED_STAGE_COUNT = 16
+STATIC_STAGE_COUNT = 15
 MISSING_COMMAND_EXIT = 127
 
 
@@ -42,6 +43,29 @@ def test_missing_cargo_audit_fails_with_pinned_install_command(
     assert (
         "cargo install cargo-audit --version 0.22.2 --locked"
         in capsys.readouterr().err
+    )
+
+
+def test_stage_selection_splits_static_work_from_sharded_tests() -> None:
+    static = quality_gate._selected_stages(
+        "static",
+        shard_index=0,
+        shard_count=1,
+    )
+    tests = quality_gate._selected_stages(
+        "tests",
+        shard_index=3,
+        shard_count=8,
+    )
+
+    assert len(static) == STATIC_STAGE_COUNT
+    assert all("tests/run_all.py" not in stage.command for stage in static)
+    assert len(tests) == 1
+    assert tests[0].command[-4:] == (
+        "--shard-index",
+        "3",
+        "--shard-count",
+        "8",
     )
 
 

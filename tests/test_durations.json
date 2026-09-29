@@ -1,0 +1,22 @@
+{
+  "schema": "mohan.test-durations.v1",
+  "default_seconds": 7.972,
+  "durations": {
+    "test_build_half_body_layered_rig.py": 28.466,
+    "test_expression_pipeline.py": 29.592,
+    "test_flagship_physics.py": 16.887,
+    "test_full_ui_localization.py": 25.603,
+    "test_layered_face_calibration.py": 59.653,
+    "test_layered_full_body.py": 25.335,
+    "test_multisensory_speech_regression.py": 129.103,
+    "test_post_speech_motion_performance.py": 19.897,
+    "test_realtime_mouth_completion.py": 18.162,
+    "test_state_fuzz.py": 60.032
+  },
+  "provenance": {
+    "measured_modules": "docs/release-evidence/test-tier-baseline-2026-09-03.md",
+    "suite_seconds": 4080,
+    "suite_seconds_source": "PR #201 Windows CI on 2026-09-28",
+    "unmeasured_modules": "default_seconds is the residual suite time divided across the other 460 modules"
+  }
+}
