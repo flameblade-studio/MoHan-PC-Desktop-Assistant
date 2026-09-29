@@ -8,12 +8,12 @@ lazy from tempfile import TemporaryDirectory
 lazy import pytest
 
 lazy from tests.run_all import (
+    ISOLATED_TEST_CHILD,
     TEST_TIMEOUT_SECONDS,
     _isolated_environment,
     _test_commands,
 )
 
-RUN_ITEM_CHILD = "MOHAN_PYTEST_RUN_ITEM_CHILD"
 _PYTEST_TEMPORARY_DIRECTORY: TemporaryDirectory[str] | None = None
 
 
@@ -39,7 +39,6 @@ class IsolatedModuleItem(pytest.Item):
                 environment = _isolated_environment(
                     temporary_root / f"command-{index:02d}"
                 )
-                environment[RUN_ITEM_CHILD] = "1"
                 try:
                     completed = subprocess.run(
                         command,
@@ -103,6 +102,6 @@ def pytest_pycollect_makemodule(
     node_selection_requested = any(
         "::" in str(argument) for argument in parent.config.args
     )
-    if os.environ.get(RUN_ITEM_CHILD) == "1" or node_selection_requested:
+    if os.environ.get(ISOLATED_TEST_CHILD) == "1" or node_selection_requested:
         return None
     return IsolatedModule.from_parent(parent, path=module_path)
