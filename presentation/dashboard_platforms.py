@@ -19,6 +19,7 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from application.presentation_ports import PlatformProgressUpdate
 lazy from domain.time_utils import local_wall_time
@@ -447,7 +448,7 @@ class DashboardPlatformMixin:
 
     def delete_custom_platform(self, platform: str) -> None:
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("platform_delete_title", "刪除工作平台"),
             self._t(
                 "platform_delete_confirm",
@@ -729,7 +730,7 @@ class DashboardPlatformMixin:
             url = self._normalize_platform_url(row["url"] if row else "")
         if not url:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t(
                     "platform_url_missing_title",
                     "尚未設定網址",
@@ -743,7 +744,7 @@ class DashboardPlatformMixin:
             return
         if not url.lower().startswith(("https://", "http://")):
             QMessageBox.warning(
-                self,
+                require_qwidget(self),
                 self._t(
                     "platform_url_unsupported_title",
                     "網址格式不支援",

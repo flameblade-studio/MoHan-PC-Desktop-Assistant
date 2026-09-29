@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import queue
 lazy from typing import Any
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice, Qt
 lazy from PySide6.QtWidgets import (
@@ -21,6 +22,7 @@ lazy from PySide6.QtWidgets import (
 
 lazy from domain.safe_error_localization import safe_error_message
 lazy from domain.time_utils import local_wall_time
+lazy from domain.qt_image_io import save_image_png
 lazy from integrations.remote_control import (
     RemoteControlServer,
     RemoteServerConfig,
@@ -272,7 +274,7 @@ class FlagshipRemoteMixin:
             permissions.append("files")
         token = TokenRegistry(self.db).pair(name, permissions)
         QMessageBox.information(
-            self,
+            require_qwidget(self),
             self._t("一次性配對權杖"),
             self._t(
                 '請只在可信任裝置輸入下列權杖；權杖僅在目前視窗顯示一次：\n\n{token}',
@@ -365,8 +367,8 @@ class FlagshipRemoteMixin:
         data = QByteArray()
         buffer = QBuffer(data)
         buffer.open(QIODevice.WriteOnly)
-        pixmap.save(buffer, "PNG")
-        self._screen_cache = bytes(data)
+        save_image_png(pixmap, buffer)
+        self._screen_cache = bytes(data.data())
 
     def _screen_bytes(self) -> bytes:
         if not self._screen_cache:

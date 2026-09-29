@@ -23,6 +23,7 @@ lazy from domain.constants import (
     POSE_ATLAS_ROOT_NAME,
 )
 lazy from domain.face_rig import EyeState, FaceMotionFrame, Viseme, eye_state_for_blink
+lazy from domain.qt_image_io import load_pixmap_png
 lazy from infrastructure.layered_full_body_assets import (
     LayeredFullBodyManifest,
     LayeredFullBodyView,
@@ -179,7 +180,7 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
             pixmap = QPixmap(key)
         else:
             pixmap = QPixmap()
-            if not pixmap.loadFromData(snapshot, "PNG"):
+            if not load_pixmap_png(pixmap, snapshot):
                 raise ValueError(f"Cannot decode bound blink PNG: {key}")
         if pixmap.isNull() and (required or Path(key).exists()):
             raise ValueError(f"Cannot decode full-body layer PNG: {key}")

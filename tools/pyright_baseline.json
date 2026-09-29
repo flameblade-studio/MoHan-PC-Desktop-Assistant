@@ -13,7 +13,6 @@
     "domain/pose_runtime_loader.py": 1,
     "infrastructure/appearance_layer_stack.py": 1,
     "infrastructure/full_body_blink_binding.py": 1,
-    "infrastructure/layered_face_renderer.py": 1,
     "infrastructure/profile_transfer.py": 1,
     "infrastructure/reviewed_garment_assets.py": 2,
     "infrastructure/reviewed_pose_overlay.py": 1,
@@ -27,5 +26,5 @@
     "presentation/profile_transfer_ui.py": 3,
     "presentation/updater_ui.py": 1
   },
-  "total_warnings": 50
+  "total_warnings": 49
 }

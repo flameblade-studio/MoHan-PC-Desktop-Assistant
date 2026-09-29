@@ -1,5 +1,4 @@
 """Cancellable execution and strict plan parsing for flagship actions."""
-
 from __future__ import annotations
 
 lazy import json
@@ -9,11 +8,7 @@ lazy from dataclasses import asdict
 lazy from typing import Any, overload
 
 lazy from domain.flagship_action_models import (
-    CAPABILITY_RISK,
-    ActionPlan,
-    ActionRequest,
-    ActionResult,
-    PolicyDecision,
+    CAPABILITY_RISK, ActionPlan, ActionRequest, ActionResult, PolicyDecision,
 )
 lazy from domain.flagship_action_policy import PolicyEngine
 lazy from domain.safe_error import sanitize_error
@@ -23,9 +18,7 @@ __all__ = (
     "CancellationRegistry",
     "parse_plan_json",
 )
-
 MAX_PLAN_STEPS = 25
-
 Handler = Callable[[ActionRequest], ActionResult]
 Verifier = Callable[[ActionRequest, ActionResult], bool]
 Confirm = Callable[[ActionRequest, PolicyDecision, int], bool]

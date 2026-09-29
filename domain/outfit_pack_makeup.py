@@ -25,6 +25,7 @@ lazy from threading import RLock
 lazy from PySide6.QtGui import QImage
 
 lazy from domain import outfit_pack
+lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_ITEM_ID,
     BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS,
@@ -183,7 +184,7 @@ def _foundation_mask_descriptor(
         raise OutfitPackError("Foundation safe-mask asset is unavailable.") from None
     if hashlib.sha256(data).hexdigest() != digest:
         raise OutfitPackError("Foundation safe-mask hash mismatch.")
-    image = QImage.fromData(data, "PNG")
+    image = image_from_png(data)
     if image.isNull() or not image.hasAlphaChannel() or image.size().toTuple() != canvas:
         raise OutfitPackError("Provide a supported foundation safe-mask PNG.")
     alpha = image.convertToFormat(QImage.Format_Alpha8)
@@ -330,7 +331,7 @@ def load_makeup_safe_regions(path: Path | None = None) -> frozendict[str, Makeup
 
 def alpha_plane(png: bytes) -> tuple[bytes, int, int]:
     """Decode one PNG into a tightly packed 8-bit alpha plane (row-major with contiguous rows)."""
-    image = QImage.fromData(png, "PNG")
+    image = image_from_png(png)
     if image.isNull():
         raise OutfitPackError("Makeup layer is not a decodable PNG.")
     if not image.hasAlphaChannel():

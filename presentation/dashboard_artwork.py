@@ -13,6 +13,7 @@ lazy from typing import Literal
 lazy from PySide6.QtCore import QEvent, QObject, QRectF, Qt
 lazy from PySide6.QtGui import QColor, QPainter, QPaintEvent, QPixmap
 lazy from PySide6.QtWidgets import QFrame, QGraphicsColorizeEffect, QWidget
+lazy from presentation.qt_parent import clear_graphics_effect
 
 lazy from domain.theme_pack import ThemePack
 lazy from presentation.dashboard_theme_materials import MaterialPalette, resolve_material_palette
@@ -89,7 +90,7 @@ class _ArtworkCanvas(QWidget):
 
     def set_tint(self, color: str | None) -> None:
         if color is None:
-            self.setGraphicsEffect(None)
+            clear_graphics_effect(self)
             return
         effect = self.graphicsEffect()
         if not isinstance(effect, QGraphicsColorizeEffect):

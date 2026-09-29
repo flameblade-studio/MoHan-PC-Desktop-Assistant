@@ -26,6 +26,7 @@ lazy from domain.outfit_pack import (
     restore_builtin_outfit,
 )
 lazy from domain.outfit_pack_makeup import MAKEUP_STATE_FILE
+lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack_official import (
     OFFICIAL_OUTFIT_CATEGORIES,
     OFFICIAL_OUTFIT_PACK_ID,
@@ -711,7 +712,7 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         encoded = archive.read(declaration.path)
         if hashlib.sha256(encoded).hexdigest() != declaration.sha256:
             raise OutfitPackError("Runtime appearance hash mismatch.")
-        image = QImage.fromData(encoded, "PNG")
+        image = image_from_png(encoded)
         if image.isNull() or image.hasAlphaChannel() is False:
             raise OutfitPackError("Runtime appearance must have alpha.")
         if (image.width(), image.height()) != (declaration.width, declaration.height):

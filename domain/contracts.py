@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 lazy import sqlite3
-lazy from collections.abc import Callable
 lazy from pathlib import Path
 lazy from typing import Any, Protocol
 
 
-class SignalPort(Protocol):
-    def connect(self, slot: Callable[..., Any]) -> Any: ...
+# PySide exposes class-level ``Signal`` descriptors and instance-level
+# ``SignalInstance`` objects.  Its generated stubs do not preserve that binding
+# during structural protocol comparison, so Qt signals stay opaque at this
+# framework-neutral domain boundary.
+SignalPort = object
 
 
 class SecretStorePort(Protocol):
@@ -38,9 +40,14 @@ class ProfileDatabasePort(Protocol):
 
 
 class LocalSpeechEnginePort(Protocol):
-    finished: SignalPort
-    failed: SignalPort
-    viseme_cue: SignalPort
+    @property
+    def finished(self) -> SignalPort: ...
+
+    @property
+    def failed(self) -> SignalPort: ...
+
+    @property
+    def viseme_cue(self) -> SignalPort: ...
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None: ...
 
@@ -55,9 +62,14 @@ class LocalSpeechEnginePort(Protocol):
 
 
 class CloudSpeechEnginePort(Protocol):
-    finished: SignalPort
-    failed: SignalPort
-    viseme_cue: SignalPort
+    @property
+    def finished(self) -> SignalPort: ...
+
+    @property
+    def failed(self) -> SignalPort: ...
+
+    @property
+    def viseme_cue(self) -> SignalPort: ...
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None: ...
 
@@ -73,10 +85,17 @@ class CloudSpeechEnginePort(Protocol):
 
 
 class AzureSpeechEnginePort(Protocol):
-    finished: SignalPort
-    failed: SignalPort
-    viseme_cue: SignalPort
-    voice_catalog_ready: SignalPort
+    @property
+    def finished(self) -> SignalPort: ...
+
+    @property
+    def failed(self) -> SignalPort: ...
+
+    @property
+    def viseme_cue(self) -> SignalPort: ...
+
+    @property
+    def voice_catalog_ready(self) -> SignalPort: ...
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None: ...
 
@@ -124,16 +143,35 @@ class SpeechProviderRegistryPort(Protocol):
 
 
 class RealtimeVoicePort(Protocol):
-    status_changed: SignalPort
-    user_transcript: SignalPort
-    assistant_transcript: SignalPort
-    speaking_changed: SignalPort
-    viseme_cue: SignalPort
-    failed: SignalPort
-    output_text_started: SignalPort
-    output_text_delta: SignalPort
-    output_text_done: SignalPort
-    output_interrupted: SignalPort
+    @property
+    def status_changed(self) -> SignalPort: ...
+
+    @property
+    def user_transcript(self) -> SignalPort: ...
+
+    @property
+    def assistant_transcript(self) -> SignalPort: ...
+
+    @property
+    def speaking_changed(self) -> SignalPort: ...
+
+    @property
+    def viseme_cue(self) -> SignalPort: ...
+
+    @property
+    def failed(self) -> SignalPort: ...
+
+    @property
+    def output_text_started(self) -> SignalPort: ...
+
+    @property
+    def output_text_delta(self) -> SignalPort: ...
+
+    @property
+    def output_text_done(self) -> SignalPort: ...
+
+    @property
+    def output_interrupted(self) -> SignalPort: ...
     running: bool
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None: ...
@@ -146,12 +184,24 @@ class RealtimeVoicePort(Protocol):
 
 
 class SpeechListenerPort(Protocol):
-    recognized: SignalPort
-    failed: SignalPort
-    listening_changed: SignalPort
-    recording_changed: SignalPort
-    status_changed: SignalPort
-    diagnostic_changed: SignalPort
-    is_recording: bool
+    @property
+    def recognized(self) -> SignalPort: ...
+
+    @property
+    def failed(self) -> SignalPort: ...
+
+    @property
+    def listening_changed(self) -> SignalPort: ...
+
+    @property
+    def recording_changed(self) -> SignalPort: ...
+
+    @property
+    def status_changed(self) -> SignalPort: ...
+
+    @property
+    def diagnostic_changed(self) -> SignalPort: ...
+    @property
+    def is_recording(self) -> bool: ...
 
     def toggle_listening(self) -> None: ...

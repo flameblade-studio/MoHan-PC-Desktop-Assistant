@@ -245,9 +245,7 @@ class AIWorkerRequest:
     user_title: str = "主上"
     response_language: str = "zh-TW"
     prompt_cache_telemetry: Callable[[PromptCacheTelemetry], None] | None = field(
-        default=None,
-        repr=False,
-        compare=False,
+        default=None, repr=False, compare=False,
     )
     prompt_cache_token_evidence: PromptCacheTokenEvidence | None = field(
         default=None,
@@ -257,13 +255,15 @@ class AIWorkerRequest:
 
 
 class AIWorkerSignalsPort(Protocol):
-    done: SignalPort
-    failed: SignalPort
+    @property
+    def done(self) -> SignalPort: ...
+    @property
+    def failed(self) -> SignalPort: ...
 
 
 class AIWorkerPort(Protocol):
-    signals: AIWorkerSignalsPort
-
+    @property
+    def signals(self) -> AIWorkerSignalsPort: ...
     def run(self) -> None: ...
 
 

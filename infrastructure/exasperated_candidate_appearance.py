@@ -13,6 +13,7 @@ lazy from PySide6.QtGui import QPainter, QPixmap
 lazy from domain.outfit_pack import FOUNDATION_SLOT, resolve_active_selection
 lazy from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
 lazy from domain import outfit_pack_official
+lazy from domain.qt_image_io import load_pixmap_png
 lazy from infrastructure.exasperated_candidate_assets import (
     APPROVED_SOURCE_SHA256,
     DIMENSION,
@@ -142,7 +143,7 @@ class ExasperatedCandidateAppearance:
         if name in self._pixmaps:
             return self._pixmaps[name]
         result = QPixmap()
-        if not result.loadFromData(self.layers[name], "PNG"):
+        if not load_pixmap_png(result, self.layers[name]):
             raise ValueError(f"Cannot decode candidate appearance: {name}")
         self._pixmaps[name] = result
         return result

@@ -11,8 +11,6 @@ from __future__ import annotations
 lazy from collections import OrderedDict
 lazy from dataclasses import replace
 lazy from pathlib import Path
-
-
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion, QTransform
 
@@ -22,6 +20,7 @@ lazy from domain.companion_animation_contract import (
     outfit_silhouette,
 )
 lazy from domain.face_rig import FaceMotionFrame, Viseme
+lazy from domain.qt_image_io import optional_pixmap, require_pixmap
 lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
 lazy from infrastructure.complete_halfbody_renderer import CompleteHalfbodyRenderer
 lazy from infrastructure.detachable_halfbody_assets import load_detachable_halfbody_assets
@@ -209,13 +208,22 @@ class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
         native_state = getattr(self._outfit_overlay, "render_native_state", None)
         if callable(native_state):
             amount = motion.mouth.aperture if aperture is None else float(aperture)
-            native = native_state(silhouette, speaking=amount > MOUTH_APERTURE_THRESHOLD)
+            native = optional_pixmap(
+                native_state(
+                    silhouette,
+                    speaking=amount > MOUTH_APERTURE_THRESHOLD,
+                )
+            )
             if native is not None:
                 return native if base.isNull() or native.size() == base.size() else native.scaled(
                     base.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation,
                 )
         native_neutral = getattr(self._outfit_overlay, "native_neutral", None)
-        composed = native_neutral(silhouette) if callable(native_neutral) else None
+        composed = (
+            optional_pixmap(native_neutral(silhouette))
+            if callable(native_neutral)
+            else None
+        )
         if composed is None:
             composed = self._detachable_portrait(silhouette)
         if composed.isNull() and gesture is not None:
@@ -238,7 +246,7 @@ class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
             # This frame still contains REST eyes. Select state pigment only
             # after a registered eyelid patch is available in render_overlay;
             # HALF source selection stays separate from makeup on the REST fallback.
-            composed = self._outfit_overlay.apply(composed, silhouette)
+            composed = require_pixmap(self._outfit_overlay.apply(composed, silhouette))
         result = (
             composed
             if composed.size() == base.size()
@@ -270,7 +278,7 @@ class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
             return True
         if expression == CHEEK_SPEECH_CLOSED_EXPRESSION:
             capability = getattr(self._outfit_overlay, "has_native_motion", None)
-            return callable(capability) and capability("cheek-rest")
+            return bool(callable(capability) and capability("cheek-rest"))
         return (
             self._exasperated_candidate_dir is not None
             and gesture_portrait_expression(expression) == "exasperated_front"
@@ -314,7 +322,9 @@ class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
                 return complete
         native_blink = getattr(self._outfit_overlay, "render_native_blink", None)
         if view_id is not None and eye_state != "rest" and callable(native_blink):
-            native = native_blink(base, view_id, eye_state=eye_state)
+            native = optional_pixmap(
+                native_blink(base, view_id, eye_state=eye_state)
+            )
             if native is not None:
                 return native
         result = QPixmap(base)
@@ -335,7 +345,6 @@ class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
             return result
         self._paint_masked(result, source, mask, opacity)
         return result
-
     # -- core layered composition -------------------------------------------
 
     def render_pose(

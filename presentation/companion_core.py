@@ -10,7 +10,7 @@ lazy from dataclasses import replace
 
 lazy from PySide6.QtCore import QPoint, QTimer
 lazy from PySide6.QtGui import QImage, QPixmap
-
+lazy from presentation.qt_parent import require_qobject
 lazy from application.adaptive_character_composition import (
     DEFAULT_CHARACTER_IMAGE_SIZE as CHARACTER_IMAGE_SIZE,
     AdaptiveCharacterComposition,
@@ -728,7 +728,7 @@ class CompanionCoreMixin:
         # the performance/framing preference caches must follow the stores.
         self.dashboard.settings_saved.connect(self._refresh_multisensory_config)
         self.dashboard.settings_saved.connect(self._reload_preference_caches)
-        self.proactive_presence_timer = QTimer(self)
+        self.proactive_presence_timer = QTimer(require_qobject(self))
         self.proactive_presence_timer.setInterval(60_000)
         self.proactive_presence_timer.timeout.connect(self._consider_desktop_presence)
         self.proactive_presence_timer.start()

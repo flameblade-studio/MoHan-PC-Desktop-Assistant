@@ -11,6 +11,7 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from domain.safe_error_localization import safe_error_message
 lazy from infrastructure.backup_manager import BackupManager
@@ -139,7 +140,7 @@ class FlagshipOverviewMixin:
             ).create("manual")
         except Exception as exc:
             QMessageBox.warning(
-                self,
+                require_qwidget(self),
                 self._t("資料備份"),
                 self._t(
                     '備份需要處理：{error}',
@@ -148,7 +149,7 @@ class FlagshipOverviewMixin:
             )
             return
         QMessageBox.information(
-            self,
+            require_qwidget(self),
             self._t("資料備份"),
             self._t(
                 "備份與完整性雜湊已建立：\n{target}",

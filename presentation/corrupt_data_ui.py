@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy from collections.abc import Callable
 lazy from PySide6.QtWidgets import QMessageBox
+lazy from presentation.qt_parent import require_qwidget
 
 __all__ = ("notify_pending_corrupt_data",)
 
@@ -21,7 +22,7 @@ def notify_pending_corrupt_data(
         return
     if messages:
         QMessageBox.warning(
-            parent,
+            require_qwidget(parent),
             translate("corrupt_data_title", "資料讀取警告"),
             "\n".join(
                 translate("corrupt_data_message", message)

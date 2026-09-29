@@ -68,7 +68,10 @@ class WardrobeTurntableLabel(QLabel):
     def _fit_scene_frame(self) -> None:
         if self.width() <= 0 or self.height() <= 0:
             return
-        ground = self.height() * self._scene_ground
+        scene_ground = self._scene_ground
+        if scene_ground is None:
+            return
+        ground = self.height() * scene_ground
         # Keep scale tied to the native canvas so taller hair or headwear stays within
         # shrink the body when appearance layers change.
         scale = min(

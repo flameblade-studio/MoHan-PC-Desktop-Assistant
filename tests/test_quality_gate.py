@@ -78,6 +78,25 @@ def test_pyright_copy_normalizes_only_lazy_import_syntax(tmp_path: Path) -> None
         quality_gate._remove_temporary_tree(temporary, copied, directories)
 
 
+def test_pyright_config_binds_current_type_environment(tmp_path: Path) -> None:
+    source = tmp_path / "source.json"
+    target = tmp_path / "target.json"
+    source.write_text(
+        json.dumps({"typeCheckingMode": "basic"}),
+        encoding="utf-8",
+    )
+
+    quality_gate._write_pyright_config(source, target)
+
+    payload = json.loads(target.read_text(encoding="utf-8"))
+    environment = Path(quality_gate.sys.prefix).resolve()
+    assert payload == {
+        "typeCheckingMode": "basic",
+        "venvPath": str(environment.parent),
+        "venv": environment.name,
+    }
+
+
 def test_pyright_baseline_detects_per_file_increases_and_decreases() -> None:
     increases, decreases = quality_gate._pyright_baseline_changes(
         {"application/a.py": 2, "domain/b.py": 3},

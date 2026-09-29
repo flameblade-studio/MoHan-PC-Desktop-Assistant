@@ -8,8 +8,9 @@ lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import Qt
-lazy from PySide6.QtGui import QImage, QPainter, QPixmap
+lazy from PySide6.QtGui import QPainter, QPixmap
 
+lazy from domain.qt_image_io import image_from_png, load_pixmap_png
 
 SCHEMA = "mohan.detachable-halfbody.v1"
 DIMENSION = 1254
@@ -40,7 +41,7 @@ class DetachableHalfbodyAssets:
                 if part in hidden:
                     continue
                 layer = QPixmap()
-                layer.loadFromData(self.payloads[pose][part], "PNG")
+                load_pixmap_png(layer, self.payloads[pose][part])
                 if layer.isNull() or layer.size() != result.size():
                     raise ValueError(f"Cannot decode detachable half-body part: {pose}/{part}")
                 painter.drawPixmap(0, 0, layer)
@@ -78,7 +79,7 @@ def load_detachable_halfbody_assets(root: Path) -> DetachableHalfbodyAssets | No
                 raise ValueError(f"Detachable half-body digest mismatch: {expected}")
             if payload[:8] != b"\x89PNG\r\n\x1a\n" or payload[24:26] != b"\x08\x06":
                 raise ValueError(f"Detachable half-body part must be 8-bit RGBA: {expected}")
-            image = QImage.fromData(payload, "PNG")
+            image = image_from_png(payload)
             if image.isNull() or image.width() != DIMENSION or image.height() != DIMENSION:
                 raise ValueError(f"Invalid detachable half-body PNG: {expected}")
             payloads[pose][part] = payload

@@ -47,6 +47,7 @@ lazy from presentation.lingxiao_tokens import (
     palette_for,
     reduced_motion_requested,
 )
+lazy from presentation.qt_parent import clear_graphics_effect
 
 __all__ = (
     "CornerOrnaments",
@@ -385,7 +386,7 @@ class PageTransition(QObject):
         except RuntimeError:  # 頁面已先一步銷毀，效果跟著沒了
             return
         if isinstance(owner, QWidget):
-            owner.setGraphicsEffect(None)
+            clear_graphics_effect(owner)
 
 
 # ---------------------------------------------------------------- 金塵粒子與背景

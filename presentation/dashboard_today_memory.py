@@ -19,6 +19,7 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from domain.text_normalizer import to_taiwan_traditional
 lazy from presentation.dashboard_dialogs import (
@@ -573,7 +574,7 @@ class DashboardTodayMemoryMixin:
         editor = IdeaEditorDialog(
             str(row["title"] or row["text"]),
             str(row["content"] or ""),
-            self,
+            require_qwidget(self),
             language=self.ui_language,
         )
         if editor.exec() != QDialog.Accepted:
@@ -609,7 +610,7 @@ class DashboardTodayMemoryMixin:
             )
             return
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("idea_delete_title", "刪除創作靈感"),
             self._t(
                 "idea_delete_confirm",
@@ -656,7 +657,7 @@ class DashboardTodayMemoryMixin:
         item = self.memory_list.currentItem()
         if item is None or item.data(Qt.UserRole) is None:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t("memory_select_edit_title", "尚未選取"),
                 self._t(
                     "memory_select_edit",
@@ -673,7 +674,7 @@ class DashboardTodayMemoryMixin:
         row = self.db.memory(int(memory_id))
         if row is None:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t("memory_not_found_title", '請重新整理記憶清單'),
                 self._t(
                     "memory_not_found",
@@ -694,7 +695,7 @@ class DashboardTodayMemoryMixin:
             int(memory_id), title, content, category, importance
         ):
             QMessageBox.warning(
-                self,
+                require_qwidget(self),
                 self._t(
                     "memory_save_failed_title",
                     '儲存記憶需要處理',
@@ -720,7 +721,7 @@ class DashboardTodayMemoryMixin:
         memory_ids = self.checked_memory_ids()
         if not memory_ids:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t(
                     "memory_select_delete_title",
                     "尚未勾選",
@@ -732,7 +733,7 @@ class DashboardTodayMemoryMixin:
             )
             return
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("memory_delete_title", "刪除長期記憶"),
             self._t(
                 "memory_delete_confirm",
@@ -756,7 +757,7 @@ class DashboardTodayMemoryMixin:
 
     def clear_memories(self) -> None:
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("memory_clear_title", "清除長期記憶"),
             self._t(
                 "memory_clear_confirm",
@@ -771,7 +772,7 @@ class DashboardTodayMemoryMixin:
         result = self.db.optimize_memories()
         self.refresh_memories()
         QMessageBox.information(
-            self,
+            require_qwidget(self),
             self._t("memory_optimize_title", "記憶整理完成"),
             self._t(
                 "memory_optimize_result",

@@ -477,6 +477,21 @@ def _write_pyright_baseline(path: Path, counts: dict[str, int]) -> None:
     )
 
 
+def _write_pyright_config(source: Path, target: Path) -> None:
+    """Bind Pyright's temporary project to this process's installed packages."""
+
+    payload = json.loads(source.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("pyrightconfig.json must contain a JSON object.")
+    environment = Path(sys.prefix).resolve()
+    payload["venvPath"] = str(environment.parent)
+    payload["venv"] = environment.name
+    target.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
 def _run_pyright(root: Path, *, update_baseline: bool = False) -> int:
     config = root / "pyrightconfig.json"
     if not config.is_file():
@@ -492,7 +507,7 @@ def _run_pyright(root: Path, *, update_baseline: bool = False) -> int:
             normalize_lazy_imports=True,
         )
         config_copy = temporary_root / "pyrightconfig.json"
-        config_copy.write_bytes(config.read_bytes())
+        _write_pyright_config(config, config_copy)
         copied_files.append(config_copy)
         command = (
             _cli("pyright"),
@@ -570,7 +585,7 @@ def _run_pyright(root: Path, *, update_baseline: bool = False) -> int:
         else:
             print("PYRIGHT_BASELINE_OK", flush=True)
         return 0
-    except OSError as error:
+    except (OSError, json.JSONDecodeError, ValueError) as error:
         print(f"Could not prepare temporary Pyright source tree: {error}", file=sys.stderr)
         return 1
     finally:

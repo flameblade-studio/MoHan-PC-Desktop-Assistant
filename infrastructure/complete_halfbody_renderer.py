@@ -8,6 +8,7 @@ lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPixmap
 
 lazy from domain.face_rig import FaceMotionFrame
+lazy from domain.qt_image_io import load_pixmap_png
 lazy from infrastructure.animated_appearance import AnimatedAppearance
 lazy from infrastructure.complete_halfbody_expressions import (
     EYES, FAMILIES, CompleteHalfbodyFrames, load_complete_halfbody_frames,
@@ -79,7 +80,7 @@ class CompleteHalfbodyRenderer:
             raise RuntimeError("Complete half-body sources have not been loaded")
         if key not in self._pixmaps:
             frame = QPixmap()
-            if not frame.loadFromData(self._assets.frames[pose][family][eye], "PNG"):
+            if not load_pixmap_png(frame, self._assets.frames[pose][family][eye]):
                 raise ValueError(f"Cannot decode complete half-body frame: {key}")
             self._pixmaps[key] = frame
         self._pixmaps.move_to_end(key)

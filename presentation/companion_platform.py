@@ -7,6 +7,7 @@ lazy from ctypes import wintypes
 lazy from PySide6.QtCore import QPoint, Qt, QTimer
 lazy from PySide6.QtGui import QAction, QMouseEvent
 lazy from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
+lazy from presentation.qt_parent import require_qobject, require_qwidget
 
 lazy from application.proactive_companion_app_bridge import ProactiveAppDisposition
 lazy from application.wellbeing_app_bridge import ReminderTrigger
@@ -46,11 +47,12 @@ class CompanionPlatformMixin:
     """Own the companion window's desktop shell and shutdown lifecycle."""
 
     def _setup_tray(self) -> None:
-        self.tray = QSystemTrayIcon(application_icon(), self)
+        parent = require_qobject(self)
+        self.tray = QSystemTrayIcon(application_icon(), parent)
         self.tray.setToolTip(profile_window_title(self.db))
         # Parent the menu to the window so it is destroyed with it instead of
         # surviving as a parentless top-level widget after shutdown.
-        menu = QMenu(self)
+        menu = QMenu(require_qwidget(self))
         # The tray menu is a system-level popup that does not inherit the
         # dashboard's flagship theme.  Apply the shared light palette so its
         # items stay readable instead of falling back to the OS dark theme
@@ -64,11 +66,11 @@ class CompanionPlatformMixin:
                 "tray_open_today",
                 "開啟今日卷冊",
             ),
-            self,
+            parent,
         )
         quit_action = QAction(
             ui_text(language, "tray_quit", "讓寒歸劍"),
-            self,
+            parent,
         )
         open_action.triggered.connect(self.open_dashboard)
         application = QApplication.instance()
