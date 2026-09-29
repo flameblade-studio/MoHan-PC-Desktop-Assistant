@@ -20,11 +20,11 @@
     "presentation/companion_core.py": 7,
     "presentation/companion_speech_runtime.py": 2,
     "presentation/companion_window.py": 1,
-    "presentation/dashboard_shell.py": 5,
+    "presentation/dashboard_shell.py": 6,
     "presentation/flagship/workflows.py": 2,
     "presentation/performance_composition.py": 1,
     "presentation/profile_transfer_ui.py": 3,
     "presentation/updater_ui.py": 1
   },
-  "total_warnings": 49
+  "total_warnings": 50
 }
