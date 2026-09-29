@@ -394,10 +394,10 @@ def _decode_probe() -> Iterator[DecodeProbe]:
             )
         return REAL_QIMAGE.fromData(*args, **kwargs)
 
-    setattr(pixmap_loader, "fromImage", pixmap_from_image)
+    pixmap_loader.fromImage = pixmap_from_image
     for name in IMAGE_FORMAT_NAMES:
         setattr(image_loader, name, getattr(REAL_QIMAGE, name))
-    setattr(image_loader, "fromData", image_from_data)
+    image_loader.fromData = image_from_data
 
     patched = (
         (full_module, "QPixmap", pixmap_loader),

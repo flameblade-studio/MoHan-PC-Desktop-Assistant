@@ -8,11 +8,12 @@ lazy import json
 lazy import os
 lazy from pathlib import Path
 lazy import sys
-lazy from typing import Iterable
+lazy from collections.abc import Iterable
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = PROJECT_ROOT / "THIRD_PARTY_DENYLIST.json"
+LOCAL_TOOL_SCAN_MAX_DEPTH = 4
 
 
 def load_policy(path: Path = POLICY_PATH) -> dict[str, object]:
@@ -35,6 +36,27 @@ def denied_aliases(policy: dict[str, object]) -> tuple[str, ...]:
 def find_denied_references(text: str, aliases: Iterable[str]) -> list[str]:
     folded = text.casefold()
     return sorted({alias for alias in aliases if alias in folded})
+
+
+def find_named_residue(
+    root: Path,
+    markers: tuple[str, ...],
+    *,
+    max_depth: int = LOCAL_TOOL_SCAN_MAX_DEPTH,
+) -> list[str]:
+    """Find denied tool names within the bounded shared-tool layout."""
+
+    matches: list[str] = []
+    for directory, directory_names, file_names in os.walk(root):
+        matches.extend(
+            str(Path(directory, name))
+            for name in (*directory_names, *file_names)
+            if any(marker in name.casefold() for marker in markers)
+        )
+        relative_depth = len(Path(directory).relative_to(root).parts)
+        if relative_depth >= max_depth:
+            directory_names.clear()
+    return matches
 
 
 def local_residue_paths() -> tuple[Path, ...]:
@@ -70,12 +92,7 @@ def find_local_residue() -> list[str]:
     tools_root = workspace_root / "_tools"
     if tools_root.exists():
         residue.extend(
-            str(candidate)
-            for candidate in tools_root.rglob("*")
-            if any(
-                marker in candidate.name.casefold()
-                for marker in ("krita", "minipaint", "alertify")
-            )
+            find_named_residue(tools_root, ("krita", "minipaint", "alertify"))
         )
     scratchpad = PROJECT_ROOT / "scratchpad"
     if scratchpad.exists():

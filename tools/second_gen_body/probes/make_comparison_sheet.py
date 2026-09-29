@@ -22,8 +22,9 @@ def cjk_font(size: int) -> ImageFont.FreeTypeFont:
             continue
     return ImageFont.load_default()
 
+
 sys.path.insert(0, str(Path(__file__).parent))
-from recompute_iou import chroma, foreground, iou, true_control  # noqa: E402
+from recompute_iou import chroma, foreground, iou, true_control
 
 ROOT = Path(os.environ.get(
     "MOHAN_VISION_ROOT",

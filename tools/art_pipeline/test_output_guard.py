@@ -30,7 +30,7 @@ lazy from pathlib import Path
 PROJECT_ROOT = Path(r"D:/FlamebladeStudio/CodexProjects/2026-09-02/mohan-front-layer-repair")
 sys.path.insert(0, str(PROJECT_ROOT))
 
-lazy from tools.art_pipeline.output_guard import (  # noqa: E402
+lazy from tools.art_pipeline.output_guard import (
     OutputGuard,
     PinRegistryError,
     WriteRefused,
@@ -188,7 +188,7 @@ def case_strict(tmp: Path) -> None:
             relaxed = OutputGuard(sub_root, stage_dir=sub_stage, handoff_dir=sub_handoff, strict_pins=False)
             check(f"nonstrict_constructs::{label}", relaxed.loaded_pin_count == 0,
                   f"pins={relaxed.loaded_pin_count}")
-        except Exception as error:  # noqa: BLE001
+        except Exception as error:
             check(f"nonstrict_constructs::{label}", False, str(error))
 
 

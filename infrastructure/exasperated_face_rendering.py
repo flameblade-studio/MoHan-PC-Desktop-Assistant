@@ -69,4 +69,3 @@ class ExasperatedFaceRenderingMixin:
         if base.isNull() or frame.size() == base.size():
             return frame
         return frame.scaled(base.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-

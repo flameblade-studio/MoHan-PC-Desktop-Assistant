@@ -95,8 +95,7 @@ def _decode_binary_mask_png(payload: bytes) -> np.ndarray:
         raise MaterialGuardError("Cannot decode allowed-change mask as PNG.") from error
     if not np.isin(pixels, (MASK_BACKGROUND, MASK_FOREGROUND)).all():
         raise MaterialGuardError("Allowed-change mask must contain only 0 and 255.")
-    mask = pixels == MASK_FOREGROUND
-    return mask
+    return pixels == MASK_FOREGROUND
 
 
 def _require_png_header(payload: bytes, label: str, color_type: int) -> None:

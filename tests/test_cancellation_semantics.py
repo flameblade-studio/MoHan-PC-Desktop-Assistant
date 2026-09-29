@@ -158,7 +158,7 @@ def test_registry_is_thread_safe_under_concurrent_begin_and_cancel() -> None:
                 registry.begin(name)
                 registry.cancel(name)
                 registry.finish(name)
-        except BaseException as error:  # noqa: BLE001 - 回報給主執行緒
+        except BaseException as error:
             errors.append(error)
 
     threads = [threading.Thread(target=churn, args=(i,)) for i in range(4)]

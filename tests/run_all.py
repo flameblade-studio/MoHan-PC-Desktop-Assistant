@@ -30,6 +30,7 @@ SENSITIVE_ENVIRONMENT_MARKERS = (
 MALFORMED_TEST_EXIT_CODE = 2
 COLLECTION_AUDIT_EXIT_CODE = 3
 TEST_TIMEOUT_EXIT_CODE = 124
+AGGREGATE_FAILURE_EXIT_CODE = 1
 # Supporting .py files in tests/ are intentionally outside collection.
 # Anything else that carries assert statements is an orphan checker (like the
 # former check_packaged_migration.py) and fails the collection audit.
@@ -81,6 +82,11 @@ def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
         type=int,
         default=0,
         help="Zero-based shard index to run.",
+    )
+    parser.add_argument(
+        "--aggregate",
+        action="store_true",
+        help="Run every selected test command and summarize all failures.",
     )
     arguments = parser.parse_args(tuple(argv or ()))
     if arguments.shard_count < 1:
@@ -433,7 +439,7 @@ def _pytest_node_names(tree: ast.Module) -> tuple[str, ...]:
             isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
             and node.name.startswith("test_")
         )
-        or isinstance(node, ast.ClassDef)
+        or (isinstance(node, ast.ClassDef)
         and (
             node.name.startswith("Test")
             or any(
@@ -443,11 +449,11 @@ def _pytest_node_names(tree: ast.Module) -> tuple[str, ...]:
                     and base.value.id == "unittest"
                     and base.attr == "TestCase"
                 )
-                or isinstance(base, ast.Name)
-                and base.id == "TestCase"
+                or (isinstance(base, ast.Name)
+                and base.id == "TestCase")
                 for base in node.bases
             )
-        )
+        ))
     )
 
 
@@ -786,7 +792,7 @@ def _announce_tier(
     tier_notice: str | None,
 ) -> None:
     """Say which tests a fast or nightly run selected, or why it fell back."""
-    if tier not in (FAST_TIER, NIGHTLY_TIER):
+    if tier not in {FAST_TIER, NIGHTLY_TIER}:
         return
     if tier == FAST_TIER:
         print(f"FAST_CHANGED_FROM={changed_from or 'working-tree'}", flush=True)
@@ -834,6 +840,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("Select at least one test for this shard.", file=sys.stderr)
         return 2
     retried_modules: list[str] = []
+    failures: list[str] = []
     with TemporaryDirectory(prefix="mohan-test-suite-") as suite_temp:
         suite_root = Path(suite_temp)
         for index, test in enumerate(tests, start=1):
@@ -841,12 +848,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             try:
                 commands = _test_commands(test)
             except OSError, SyntaxError, UnicodeError:
-                print(
-                    f"FAILED: {test.name} (exit {MALFORMED_TEST_EXIT_CODE})",
-                    file=sys.stderr,
+                failure = (
+                    f"FAILED: {test.name} (exit {MALFORMED_TEST_EXIT_CODE})"
                 )
-                _print_retried_modules(retried_modules)
-                return MALFORMED_TEST_EXIT_CODE
+                if not arguments.aggregate:
+                    print(failure, file=sys.stderr)
+                    _print_retried_modules(retried_modules)
+                    return MALFORMED_TEST_EXIT_CODE
+                failures.append(failure)
+                continue
             for command_index, command in enumerate(commands, start=1):
                 returncode = _run_with_retry(
                     command,
@@ -858,21 +868,28 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
                 if returncode:
                     if returncode == TEST_TIMEOUT_EXIT_CODE:
-                        print(
-                            f"FAILED: {test.name} "
-                            f"(timeout {TEST_TIMEOUT_SECONDS}s)",
-                            file=sys.stderr,
-                        )
+                        reason = f"timeout {TEST_TIMEOUT_SECONDS}s"
                     else:
-                        print(
-                            f"FAILED: {test.name} (exit {returncode})",
-                            file=sys.stderr,
-                        )
-                    _print_retried_modules(retried_modules)
-                    return returncode
+                        reason = f"exit {returncode}"
+                    command_label = (
+                        f" command {command_index}/{len(commands)}"
+                        if arguments.aggregate and len(commands) > 1
+                        else ""
+                    )
+                    failure = f"FAILED: {test.name}{command_label} ({reason})"
+                    if not arguments.aggregate:
+                        print(failure, file=sys.stderr)
+                        _print_retried_modules(retried_modules)
+                        return returncode
+                    failures.append(failure)
     # A module that only passed after a retry still exits 0, but the summary
     # must name it so every intermittent issue remains visible.
     _print_retried_modules(retried_modules)
+    if failures:
+        print(f"AGGREGATE_FAILURES={len(failures)}", file=sys.stderr)
+        for failure in failures:
+            print(failure, file=sys.stderr)
+        return AGGREGATE_FAILURE_EXIT_CODE
     print(f"ALL_{len(tests)}_TESTS_OK")
     return 0
 

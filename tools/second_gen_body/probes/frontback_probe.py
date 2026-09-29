@@ -77,7 +77,7 @@ def main() -> None:
             num_inference_steps=34, guidance_scale=5.0,
             generator=torch.Generator(device="cpu").manual_seed(seed),
         ).images[0]
-        target = OUT / f"{label.replace(' ', '')}-s{int(strength*100):03d}-{seed}.png"
+        target = OUT / f"{label.replace(' ', '')}-s{int(strength * 100):03d}-{seed}.png"
         image.save(target)
         _area, eye = face_metrics(target)
         geometry = below_head_iou(target, control)

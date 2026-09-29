@@ -114,10 +114,7 @@ def _payload(
             state: deepcopy(sources[canvas][aperture_kind])
             for state in FOUNDATION_STATES
         }
-        if silhouette == "front-exasperated":
-            aperture_visibility = True
-        else:
-            aperture_visibility = False
+        aperture_visibility = silhouette == "front-exasperated"
         entry: dict[str, object] = {
             "canvas": list(canvas),
             "rig": "assets/native-geometry/rig",
@@ -153,7 +150,7 @@ def test_real_loader_accepts_proven_zero_geometry(qapp: QApplication, tmp_path: 
     assert back_mask is not None and not any(back_mask.alpha)
     assert exasperated_aperture is not None and not any(exasperated_aperture.alpha)
     assert visible_mask is not None and any(visible_mask.alpha)
-    assert sources[(1024, 1536)][EMPTY]["sha256"] == back_mask.sha256
+    assert sources[1024, 1536][EMPTY]["sha256"] == back_mask.sha256
 
 
 @pytest.mark.parametrize(

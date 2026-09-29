@@ -21,12 +21,12 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from morph_limbs_candidate4 import TORSO_SECTIONS, load_joints, load_obj, plane_loop  # noqa: E402
+from morph_limbs_candidate4 import TORSO_SECTIONS, load_joints, load_obj, plane_loop
 # 權重歸一與反對蹠混合的數值容差。
 EPS_UNIT = 1e-9
 # 量鼓包時取距關節多近的頂點。
 JOINT_NEIGHBOURHOOD_CM = 6.0
-from repose_arms_candidate5 import (  # noqa: E402
+from repose_arms_candidate5 import (
     EPS_DEGENERATE, SECTION_TOLERANCE_CM,
     DOWN, EXTRACT, HIGH, LIMB, LOW, PARTS, TARGET_HEIGHT, TARGET_LOWER_DEG,
     TARGET_UPPER_DEG, VERTEX_COUNT, FACE_COUNT, aim, chain_weight, load_hierarchy,
@@ -234,7 +234,7 @@ def main() -> None:
         for vertex in result:
             stream.write(f"v {vertex[0]:.10f} {vertex[1]:.10f} {vertex[2]:.10f}\n")
         for face in faces:
-            stream.write(f"f {face[0]+1} {face[1]+1} {face[2]+1}\n")
+            stream.write(f"f {face[0] + 1} {face[1] + 1} {face[2] + 1}\n")
     report["status"] = "CANDIDATE_6_DQS"
     report["method"] = "dual quaternion linear blend skinning (Kavan et al. 2007)"
     report["source"] = args.source.name

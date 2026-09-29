@@ -214,16 +214,16 @@ def main() -> None:
             found = plane_perimeter(vertices, local, start + axis * (length * t), axis)
             row[f"t{int(t * 100)}"] = found[0] if found else None
             row[f"t{int(t * 100)}_closed"] = bool(found[1]) if found else False
-        closed_only = [row[f"t{int(t*100)}"] for t in (0.25, 0.50, 0.75)
-                       if row[f"t{int(t*100)}"] and row[f"t{int(t*100)}_closed"]]
+        closed_only = [row[f"t{int(t * 100)}"] for t in (0.25, 0.50, 0.75)
+                       if row[f"t{int(t * 100)}"] and row[f"t{int(t * 100)}_closed"]]
         row["max_closed"] = max(closed_only) if closed_only else None
         row["max"] = row["max_closed"]
         row["bone_length_cm"] = length
-        row["faces"] = int(len(local))
+        row["faces"] = len(local)
         results[name] = row
         cells = "".join(
-            (f"{row[f't{int(t*100)}']:7.1f}" + ("*" if not row[f"t{int(t*100)}_closed"] else " "))
-            if row[f"t{int(t*100)}"] else f"{'—':>8s}"
+            (f"{row[f't{int(t * 100)}']:7.1f}" + ("*" if not row[f"t{int(t * 100)}_closed"] else " "))
+            if row[f"t{int(t * 100)}"] else f"{'—':>8s}"
             for t in (0.25, 0.50, 0.75))
         print(f"  {name:8s}{length:7.1f}{cells}"
               + (f"{row['max']:8.1f}" if row["max"] else f"{'—':>8s}"))

@@ -179,7 +179,7 @@ def angle_match(path: Path, yaw: int) -> tuple[int, float, bool]:
 
 def check(path: Path, yaw: int, control: np.ndarray) -> tuple[str, bool]:
     people = figure_count(path)
-    area, eye = face_metrics(path)
+    _area, eye = face_metrics(path)
     geometry = below_head_iou(path, control)
     peak, peak_score, matched = angle_match(path, yaw)
     problems = []
@@ -236,7 +236,7 @@ class RunLock:
     def __init__(self, directory: Path) -> None:
         self.path = directory / ".produce.lock"
 
-    def __enter__(self) -> "RunLock":
+    def __enter__(self) -> RunLock:
         if self.path.exists():
             holder = self.path.read_text(encoding="utf-8").strip()
             if self._alive(holder):
@@ -344,7 +344,7 @@ def _run() -> None:
 
         negative = orientation_negative(yaw) + NEG_ARMS + NEG
 
-        def run(image, strength, seed):
+        def run(image, strength, seed, prompt=prompt, negative=negative):
             return pipe(
                 prompt=prompt, negative_prompt=negative, image=image,
                 strength=strength, height=HEIGHT, width=WIDTH,

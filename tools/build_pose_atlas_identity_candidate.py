@@ -135,12 +135,12 @@ def _face_mask(shape: tuple[int, int], face: np.ndarray) -> np.ndarray:
     x, y, box_width, box_height = face[:4]
     mask = np.zeros((height, width), dtype=np.uint8)
     center = (
-        int(round(x + box_width * 0.5)),
-        int(round(y + box_height * 0.54)),
+        round(x + box_width * 0.5),
+        round(y + box_height * 0.54),
     )
     axes = (
-        max(1, int(round(box_width * 0.43))),
-        max(1, int(round(box_height * 0.48))),
+        max(1, round(box_width * 0.43)),
+        max(1, round(box_height * 0.48)),
     )
     cv2.ellipse(mask, center, axes, 0, 0, 360, 255, -1, cv2.LINE_AA)
     # A soft edge prevents a sticker-like transition into the target hairline.

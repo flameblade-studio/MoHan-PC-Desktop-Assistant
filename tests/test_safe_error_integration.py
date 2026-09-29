@@ -522,6 +522,7 @@ def _assert_workflow_validation_boundaries() -> None:
         db=SimpleNamespace(set_setting=lambda *_args: None),
         _settings_text=lambda _key, **values: values.get("reason", "title"),
     )
+
     def failing_autostart(*_args: object) -> None:
         raise OSError(_bait_detail())
 

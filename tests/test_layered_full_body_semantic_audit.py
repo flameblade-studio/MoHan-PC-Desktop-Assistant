@@ -78,7 +78,7 @@ def _audit(root: Path, views: tuple[str, ...] = (VIEW,)):
         root / "unused.onnx",
         view_ids=views,
         expected_size=SIZE,
-        face_boxes={view: FACE_BOX for view in views},
+        face_boxes=dict.fromkeys(views, FACE_BOX),
     )
 
 
@@ -171,6 +171,7 @@ def test_back_views_license_every_empty_face_layer(tmp_path: Path) -> None:
         issue.code for issue in report.issues
     } | {advisory.code for advisory in report.advisories}
     assert "face_semantic_layer_fully_transparent" not in empty_codes
+
 
 def test_reports_insufficient_base_face_coverage(tmp_path: Path) -> None:
     _clean_set(tmp_path)

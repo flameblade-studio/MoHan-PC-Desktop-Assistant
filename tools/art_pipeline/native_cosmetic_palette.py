@@ -25,7 +25,7 @@ def native_pigment(
     *, excluded: np.ndarray | None = None,
 ) -> np.ndarray:
     """Return an RGBA pigment layer on the unchanged native source canvas."""
-    if source.dtype != np.uint8 or source.ndim != IMAGE_AXES or source.shape[2] not in (3, RGBA_CHANNELS):
+    if source.dtype != np.uint8 or source.ndim != IMAGE_AXES or source.shape[2] not in {3, RGBA_CHANNELS}:
         raise ValueError("A native RGB or RGBA uint8 source is required.")
     if support.dtype != np.uint8 or support.shape != source.shape[:2]:
         raise ValueError("Support must be a native uint8 alpha plane.")

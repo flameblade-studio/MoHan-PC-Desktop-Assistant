@@ -81,6 +81,7 @@ class MemorySecretStore:
     def clear(self) -> None:
         self.value = ""
 
+
 _PORTABLE_EXAMPLE_SETTINGS = frozendict(
     {
         "voice_engine": "azure-speech",

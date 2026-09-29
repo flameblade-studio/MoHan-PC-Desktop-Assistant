@@ -118,11 +118,12 @@ class _AnalysisTask(QRunnable):
         if not result.succeeded:
             self.signals.failed.emit(result.error_name, self._generation)
             return
+        dense_provider = self._dense_provider
         dense_result = (
             _BoundaryResult()
-            if self._dense_provider is None
+            if dense_provider is None
             else _call_external(
-                lambda: self._dense_provider.analyze_face(
+                lambda: dense_provider.analyze_face(
                     self._rgb_bytes,
                     self._width,
                     self._height,

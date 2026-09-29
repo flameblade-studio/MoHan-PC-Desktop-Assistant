@@ -49,7 +49,7 @@ def mouth_region_unchanged(
     """
     if len(before) != len(after):
         return False
-    for old, new in zip(before, after):
+    for old, new in zip(before, after, strict=True):
         for shift in (24, 16, 8, 0):
             if abs(((old >> shift) & 0xFF) - ((new >> shift) & 0xFF)) > channel_tolerance:
                 return False
@@ -235,7 +235,7 @@ def assert_five_vowel_states(
     # images. Each vowel frame must still produce a non-null composition at the
     # caller's canvas size.
     expression = "happy"
-    for _vowel, frame in EXPRESSION_VISEME_FRAMES[expression].items():
+    for frame in EXPRESSION_VISEME_FRAMES[expression].values():
         composed = window._mouth_aperture_pixmap(frame, 0.9)
         assert not composed.isNull()
         assert composed.size() == window.expression_pixmaps["happy"].size()

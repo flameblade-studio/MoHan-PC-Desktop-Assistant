@@ -367,7 +367,7 @@ def test_safe_region_document_matches_the_rigs() -> None:
         assert region.canvas == canvas_for(silhouette)
         for slot in ("eyes", "cheeks", "lips"):
             for x, y, width, height in region.rects(slot):
-                assert 0 <= x and 0 <= y and x + width <= region.canvas[0] and y + height <= region.canvas[1]
+                assert x >= 0 and y >= 0 and x + width <= region.canvas[0] and y + height <= region.canvas[1]
     front = regions["front-crossed"]
     assert all(front.rects(slot) for slot in ("eyes", "cheeks", "lips"))
     for gesture in ("front-mock-scold", "front-mock-hit", "front-eureka", "front-exasperated"):

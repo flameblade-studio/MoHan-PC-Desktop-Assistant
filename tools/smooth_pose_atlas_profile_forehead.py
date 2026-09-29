@@ -70,11 +70,11 @@ def smooth_forehead(
 
     # Limit the deformation to the upper forehead. The eyes, nose, mouth and
     # jaw are below this band and therefore remain byte-for-byte unchanged.
-    band_top = max(0, int(math.floor(y + height * 0.04)))
-    band_bottom = min(image.shape[0], int(math.ceil(y + height * 0.38)))
-    pad = int(math.ceil(width * 0.12))
-    left = max(0, int(math.floor(x)) - pad)
-    right = min(image.shape[1], int(math.ceil(x + width)) + pad)
+    band_top = max(0, math.floor(y + height * 0.04))
+    band_bottom = min(image.shape[0], math.ceil(y + height * 0.38))
+    pad = math.ceil(width * 0.12)
+    left = max(0, math.floor(x) - pad)
+    right = min(image.shape[1], math.ceil(x + width) + pad)
     anchor = float(left if facing_right else right - 1)
 
     map_x, map_y = _forehead_remap_grids(

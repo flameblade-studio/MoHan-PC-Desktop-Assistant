@@ -8,6 +8,8 @@ exclude = [
     "artifacts",
     ".venv",
     ".venv315",
+    ".quality-tmp",
+    ".quality-cache",
     "build",
     "build-temp",
     "dist",
@@ -23,7 +25,111 @@ exclude = [
 # literal must reference a named constant, so new magic numbers are rejected
 # at CI time instead of accumulating for a later cleanup pass.
 [lint]
-select = ["F", "PLR2004", "PLR0911", "PLR0912", "PLR0913", "PLR0914", "PLR0915"]
+# Keep the broad families visible here so newly added rules become reviewable
+# instead of silently falling outside the gate. TRY is intentionally narrower:
+# only rules with low false-positive risk for this callback- and adapter-heavy
+# desktop application are release blocking.
+select = [
+    "F",
+    "E",
+    "W",
+    "B",
+    "UP",
+    "SIM",
+    "PERF",
+    "RUF",
+    "PL",
+    "C4",
+    "PIE",
+    "RET",
+    "TRY300",
+    "TRY400",
+    "TRY401",
+]
+
+# Every excluded rule has a repository-specific reason. These are rule-level
+# exceptions only; whole-file lint suppression remains forbidden.
+ignore = [
+    # Four-language prose, URLs, command examples, and user-facing diagnostics
+    # are kept intact. Reflowing them would damage parallel translations or
+    # make exact commands harder to copy; formatting is enforced structurally.
+    "E501",
+    # Executable tools and Qt tests must establish sys.path, environment, or a
+    # headless Qt platform before importing the code under test.
+    "E402",
+    # Traditional/Simplified Chinese and Japanese deliberately contain the
+    # Unicode punctuation and glyphs that these three ambiguity checks flag.
+    "RUF001",
+    "RUF002",
+    "RUF003",
+    # Pixel, alpha, geometry, and benchmark contracts intentionally compare
+    # exact values after deterministic integer/float conversion.
+    "RUF069",
+    # Numeric rule identifiers are the stable, searchable contract used by CI
+    # output, upgrade notes, and this repository's documented exception list.
+    "RUF201",
+    # Qt callbacks, Protocol implementations, and replaceable strategy objects
+    # preserve instance-method signatures even when one implementation does
+    # not currently read instance state.
+    "PLR6301",
+    # Package-private helpers are intentional typed collaboration points inside
+    # a canonical owner package; public compatibility facades remain separate.
+    "PLC2701",
+    # Lazy imports are a Python 3.15 startup contract, while optional provider
+    # imports and cycle-breaking composition imports must stay at point of use.
+    "PLC0415",
+    # Cleanup and rollback blocks intentionally keep all fallible statements in
+    # one try so partial installer/profile transactions fail as a unit.
+    "PLW0717",
+    # Complex boolean validation is concentrated in fail-closed policy gates;
+    # splitting the expressions would obscure the invariant being enforced.
+    "PLR0916",
+    # A small set of parsers/render pipelines mirrors ordered domain stages;
+    # flattening their nesting would duplicate state or weaken fail-closed flow.
+    "PLR1702",
+    # Qt windows and compatibility facades expose framework- or contract-owned
+    # public methods; method count is not a meaningful cohesion signal there.
+    "PLR0904",
+    # Explicit try/except pass blocks mark optional platform capabilities and
+    # make their deliberately ignored exception boundary searchable.
+    "SIM105",
+    # CLI probes and runtime hooks use a few explicit module-level state slots;
+    # replacing global declarations would hide their process-wide ownership.
+    "PLW0603",
+    # Empty strings are typed persistence/UI sentinels in this project. Exact
+    # equality documents that contract and avoids accepting unrelated falsey
+    # values in tests and boundary code.
+    "PLC1901",
+    # Rebinding is intentionally distinct from in-place mutation for numpy,
+    # Qt, and user-defined values; an automatic augmented assignment can change
+    # alias-visible behavior.
+    "PLR6104",
+    # Small callback adapters and test probes use assigned lambdas to keep the
+    # callable adjacent to its injection site without inventing a public name.
+    "E731",
+    "PLW0108",
+    # Public viseme enum members I/O and conventional linear-algebra locals are
+    # stable domain notation rather than ambiguous prose variable names.
+    "E741",
+    # Generator context managers here intentionally propagate body exceptions;
+    # they guarantee cleanup/commit behavior without translating every error.
+    "RUF075",
+    # Returning directly from a successful try keeps the success path adjacent
+    # to the operation; the except clauses already isolate the intended errors.
+    "TRY300",
+    # Explicit self-alias imports are intentional re-exports from compatibility
+    # modules and make the public API visible to Ruff and type checkers.
+    "PLC0414",
+    # pytest match values deliberately use regular-expression alternation and
+    # wildcards; escaping them would change the asserted diagnostic contract.
+    "RUF043",
+    # Test doubles and audit recorders use class-level call registries so fresh
+    # instances contribute to one deliberately shared assertion surface.
+    "RUF012",
+    # This provenance-only value object uses explicit slots and construction to
+    # avoid dataclass-generated equality/repr becoming part of its contract.
+    "B903",
+]
 
 # These configured complexity thresholds accommodate existing 6-7 argument
 # constructors and explicit validation chains. The values below remain the
@@ -41,9 +147,9 @@ max-locals = 20
 # the argument-count rule rather than refactored into a parameter bundle that
 # would add per-frame allocation overhead on the 50 Hz render loop.
 [lint.per-file-ignores]
-"application/native_rgba_acceleration.py" = ["PLR0913"]
-"application/rgba_compositing.py" = ["PLR0913"]
-"tests/test_native_rgba_product_wiring.py" = ["PLR0913"]
+"application/native_rgba_acceleration.py" = ["PLR0913", "PLR0917"]
+"application/rgba_compositing.py" = ["PLR0913", "PLR0917"]
+"tests/test_native_rgba_product_wiring.py" = ["PLR0913", "PLR0917"]
 # The following existing function owners remain tracked refactor targets.
 # Their recorded per-file exceptions apply only to the listed rules; every
 # other selected check and the remaining module limits stay active.

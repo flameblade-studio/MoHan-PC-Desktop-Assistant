@@ -17,7 +17,7 @@ lazy import re
 lazy import zipfile
 lazy from dataclasses import dataclass
 lazy from collections.abc import Callable
-lazy from math import isfinite
+lazy from math import isfinite, isnan
 lazy from pathlib import Path
 lazy from tempfile import NamedTemporaryFile
 lazy from threading import RLock
@@ -421,7 +421,7 @@ def clamp_makeup_intensity(value: object) -> float:
         number = float(value)
     except (OverflowError, TypeError, ValueError):
         return DEFAULT_MAKEUP_INTENSITY
-    if number != number:  # NaN remains outside the alpha multiplier.
+    if isnan(number):  # NaN remains outside the alpha multiplier.
         return DEFAULT_MAKEUP_INTENSITY
     return round(min(1.0, max(0.0, number)), INTENSITY_DECIMALS)
 
@@ -430,8 +430,8 @@ _LAST_VALID_MAKEUP_INTENSITIES: dict[Path, float] = {}
 _MAKEUP_READ_WARNED: set[Path] = set()
 _LAST_VALID_SLOT_INTENSITIES: dict[Path, frozendict[str, float]] = {}
 _SLOT_READ_WARNED: set[Path] = set()
-DEFAULT_SLOT_INTENSITIES = frozendict({slot: 1.0 for slot in MAKEUP_SLOTS})
-DEFAULT_SLOT_INTENSITIES_V2 = frozendict({slot: 1.0 for slot in MAKEUP_SLOTS_V2})
+DEFAULT_SLOT_INTENSITIES = frozendict(dict.fromkeys(MAKEUP_SLOTS, 1.0))
+DEFAULT_SLOT_INTENSITIES_V2 = frozendict(dict.fromkeys(MAKEUP_SLOTS_V2, 1.0))
 # This process-local lock protects the read-modify-write pair; atomic replacement protects one write.
 _MAKEUP_STATE_LOCK = RLock()
 
@@ -518,7 +518,7 @@ def _slot_defaults(slots: frozenset[str]) -> frozendict[str, float]:
     if not slots or not slots.issubset(MAKEUP_SLOTS_V2):
         raise ValueError("Provide a supported makeup slots")
     return DEFAULT_SLOT_INTENSITIES_V2 if slots == MAKEUP_SLOTS_V2 else frozendict(
-        {slot: 1.0 for slot in slots}
+        dict.fromkeys(slots, 1.0)
     )
 
 

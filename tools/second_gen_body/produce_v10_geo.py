@@ -67,7 +67,7 @@ NEG = (
 
 
 def formal_yaw(bundle_name: str) -> int:
-    raw = int(bundle_name.split("yaw")[1].split("-pitch")[0])
+    raw = int(bundle_name.split("yaw")[1].split("-pitch", maxsplit=1)[0])
     value = -raw
     # 稽核的正規形式是 -180，但既有 v9 的 17 張用 +180；統一成 +180 免得兩套對不上
     return BACK_YAW if abs(value) == BACK_YAW else value

@@ -22,6 +22,7 @@ ISOLATED_PATH_VARIABLES = (
 )
 
 EXPECTED_EXIT_CODE = 23
+EXPECTED_AGGREGATE_COMMAND_RUNS = 4
 
 
 def _test_file(root: Path, name: str, source: str = "") -> None:
@@ -487,6 +488,104 @@ def test_timeout_fails_closed_with_stable_exit_code() -> None:
     ]
 
 
+def test_aggregate_mode_continues_after_malformed_and_timeout() -> None:
+    calls: list[str] = []
+
+    def fail_and_timeout(command, **_kwargs):
+        name = _command_test_name(command)
+        calls.append(name)
+        if name == "test_alpha.py":
+            return 17
+        if name == "test_slow.py":
+            raise __import__("subprocess").TimeoutExpired(command, 300)
+        return 0
+
+    with TemporaryDirectory() as directory:
+        tests_dir = Path(directory) / "tests"
+        tests_dir.mkdir()
+        _test_file(tests_dir, "test_alpha.py")
+        _test_file(tests_dir, "test_broken.py", "def broken(:\n")
+        _test_file(tests_dir, "test_slow.py")
+        _test_file(tests_dir, "test_zulu.py")
+        with (
+            patch.object(run_all, "TESTS_DIR", tests_dir),
+            patch.object(run_all, "_run_test_process", side_effect=fail_and_timeout),
+            redirect_stdout(stdout := StringIO()),
+            redirect_stderr(stderr := StringIO()),
+        ):
+            assert run_all.main(("--aggregate",)) == (
+                run_all.AGGREGATE_FAILURE_EXIT_CODE
+            )
+
+    assert calls == [
+        "test_alpha.py",
+        "test_alpha.py",
+        "test_slow.py",
+        "test_zulu.py",
+    ]
+    assert stdout.getvalue().splitlines() == [
+        "[1/4] test_alpha.py",
+        "[2/4] test_broken.py",
+        "[3/4] test_slow.py",
+        "[4/4] test_zulu.py",
+        "RETRIED_MODULES: test_alpha.py",
+    ]
+    assert stderr.getvalue().splitlines() == [
+        "RETRY: test_alpha.py (attempt 1 failed, retrying in a fresh environment)",
+        "AGGREGATE_FAILURES=3",
+        "FAILED: test_alpha.py (exit 17)",
+        "FAILED: test_broken.py (exit 2)",
+        f"FAILED: test_slow.py (timeout {run_all.TEST_TIMEOUT_SECONDS}s)",
+    ]
+
+
+def test_aggregate_mode_runs_follow_up_command_after_a_failure() -> None:
+    commands: list[tuple[str, ...]] = []
+    return_codes = iter((23, 23, 0, 0))
+
+    def fail_first_command(command, **_kwargs):
+        commands.append(tuple(command))
+        return next(return_codes)
+
+    with TemporaryDirectory() as directory:
+        tests_dir = Path(directory) / "tests"
+        tests_dir.mkdir()
+        _test_file(
+            tests_dir,
+            "test_mixed.py",
+            "def test_covered():\n"
+            "    assert True\n\n"
+            "def test_missing():\n"
+            "    assert True\n\n"
+            "if __name__ == '__main__':\n"
+            "    test_covered()\n",
+        )
+        _test_file(tests_dir, "test_zulu.py")
+        with (
+            patch.object(run_all, "TESTS_DIR", tests_dir),
+            patch.object(
+                run_all, "_run_test_process", side_effect=fail_first_command
+            ),
+            redirect_stdout(stdout := StringIO()),
+            redirect_stderr(stderr := StringIO()),
+        ):
+            assert run_all.main(("--aggregate",)) == (
+                run_all.AGGREGATE_FAILURE_EXIT_CODE
+            )
+
+    assert len(commands) == EXPECTED_AGGREGATE_COMMAND_RUNS
+    assert Path(commands[0][1]).name == "test_mixed.py"
+    assert Path(commands[1][1]).name == "test_mixed.py"
+    assert any(
+        argument.endswith("test_mixed.py::test_missing")
+        for argument in commands[2]
+    )
+    assert Path(commands[3][5]).name == "test_zulu.py"
+    assert "[1/2] test_mixed.py" in stdout.getvalue()
+    assert "AGGREGATE_FAILURES=1" in stderr.getvalue()
+    assert "FAILED: test_mixed.py command 1/2 (exit 23)" in stderr.getvalue()
+
+
 def test_github_governance_helpers_are_safe_for_pytest_collection() -> None:
     governance_path = Path(__file__).with_name("test_github_governance.py")
     tree = ast.parse(governance_path.read_text(encoding="utf-8"))
@@ -595,6 +694,8 @@ if __name__ == "__main__":
     test_shards_are_complete_disjoint_deterministic_and_balanced()
     test_main_runs_only_the_requested_shard()
     test_timeout_fails_closed_with_stable_exit_code()
+    test_aggregate_mode_continues_after_malformed_and_timeout()
+    test_aggregate_mode_runs_follow_up_command_after_a_failure()
     test_github_governance_helpers_are_safe_for_pytest_collection()
     test_repository_inventory_includes_native_vision_and_architecture_suites()
     test_repository_never_runs_the_same_whole_test_file_twice()

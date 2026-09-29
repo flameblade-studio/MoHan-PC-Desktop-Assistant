@@ -22,15 +22,15 @@ class AnimatedAppearance:
             parameters = signature(self._atomic).parameters
             self.supports_body_replacement = (
                 "replace_body" in parameters
-                and parameters["replace_body"].kind in (
+                and parameters["replace_body"].kind in {
                     Parameter.POSITIONAL_OR_KEYWORD, Parameter.KEYWORD_ONLY,
-                )
+                }
             )
             self._atomic_after_makeup = (
                 "paint_after_makeup" in parameters
-                and parameters["paint_after_makeup"].kind in (
+                and parameters["paint_after_makeup"].kind in {
                     Parameter.POSITIONAL_OR_KEYWORD, Parameter.KEYWORD_ONLY,
-                )
+                }
             )
         if callable(self._combined) and not callable(self._atomic):
             parameters = signature(self._combined).parameters
@@ -41,9 +41,9 @@ class AnimatedAppearance:
             self._combined_keywords = frozenset(
                 name for name in ("suppress_makeup_slots", "eye_state")
                 if accepts_any_keyword or (
-                    name in parameters and parameters[name].kind in (
+                    name in parameters and parameters[name].kind in {
                         Parameter.POSITIONAL_OR_KEYWORD, Parameter.KEYWORD_ONLY,
-                    )
+                    }
                 )
             )
 

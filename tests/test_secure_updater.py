@@ -120,7 +120,6 @@ def _response_opener(responses: dict[str, bytes]):
             raise URLError("unexpected URL")
         return FakeResponse(url, responses[url])
 
-
     return opener
 
 

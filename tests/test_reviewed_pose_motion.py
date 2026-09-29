@@ -74,7 +74,7 @@ def _write_fixture(root: Path, *, include_mouth_cavity: bool = True) -> tuple[di
         cosmetics[state] = {}
         for slot in ("eyes", "cheeks", "lips"):
             relative = f"cosmetics/{state}/{slot}.rgba.png"
-            payload = _png(SLOT_COLORS[(state, slot)], PROBE)
+            payload = _png(SLOT_COLORS[state, slot], PROBE)
             cosmetics[state][slot] = _record(root, relative, payload)
 
     manifest: dict = {
@@ -136,20 +136,20 @@ def test_patch_and_cosmetic_roles_include_speech_closed_selection(tmp_path: Path
     assert assets.patch("speech").toImage().pixelColor(*PROBE) == QColor("blue")
     assert (
         assets.cosmetic("speech-closed", "eyes").toImage().pixelColor(*PROBE)
-        == SLOT_COLORS[("closed", "eyes")]
+        == SLOT_COLORS["closed", "eyes"]
     )
     assert (
         assets.cosmetic("speech-closed", "cheeks").toImage().pixelColor(*PROBE)
-        == SLOT_COLORS[("rest", "cheeks")]
+        == SLOT_COLORS["rest", "cheeks"]
     )
     for slot in ("lips",):
         assert (
             assets.cosmetic("speech-closed", slot).toImage().pixelColor(*PROBE)
-            == SLOT_COLORS[("speech", slot)]
+            == SLOT_COLORS["speech", slot]
         )
     assert (
         assets.cosmetic("rest", "eyes").toImage().pixelColor(*PROBE)
-        == SLOT_COLORS[("rest", "eyes")]
+        == SLOT_COLORS["rest", "eyes"]
     )
     with pytest.raises(ValueError):
         assets.patch("rest")

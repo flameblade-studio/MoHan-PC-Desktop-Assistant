@@ -459,6 +459,7 @@ def test_preview_and_windows_workflows() -> None:
     pinned_quality_install = (
         "python -m pip install --only-binary=:all: -r requirements-dev.txt"
     )
+    repository_quality_gate = "python tools/quality_gate.py"
     for required in (
         'PYTHONUTF8: "1"',
         'PYTHON_JIT = "0"',
@@ -467,7 +468,7 @@ def test_preview_and_windows_workflows() -> None:
         "tools/build_python315_jit_runtime.py",
         "tools/profile_mohan_tachyon.py",
         pinned_quality_install,
-        "python -m ruff check .",
+        repository_quality_gate,
         "--target all",
         "--min-samples 100",
         "--max-sample-read-error-percent 15",
@@ -476,7 +477,7 @@ def test_preview_and_windows_workflows() -> None:
     ):
         assert required in windows_ci
     assert windows_ci.index(pinned_quality_install) < windows_ci.index(
-        "python -m ruff check ."
+        repository_quality_gate
     )
     release_workflow = read(".github/workflows/release.yml")
     assert_external_actions_pinned(release_workflow)

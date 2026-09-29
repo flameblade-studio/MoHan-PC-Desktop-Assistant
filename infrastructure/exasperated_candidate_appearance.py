@@ -65,7 +65,7 @@ class ExasperatedCandidateAppearance:
         if not isinstance(manifest, dict):
             raise ValueError("Appearance must bind the approved exasperated source.")
         schema = manifest.get("schema")
-        if schema not in (SCHEMA, FOUNDATION_SCHEMA, VARIANT_SCHEMA):
+        if schema not in {SCHEMA, FOUNDATION_SCHEMA, VARIANT_SCHEMA}:
             raise ValueError("Appearance must bind the approved exasperated source.")
         if manifest.get("source_sha256") != APPROVED_SOURCE_SHA256:
             raise ValueError("Appearance must bind the approved exasperated source.")
@@ -157,9 +157,9 @@ class ExasperatedCandidateAppearance:
             return
         garment = resolve_active_selection(self.store, "garment")
         makeup = resolve_active_selection(self.store, "makeup")
-        if garment.effective_pack_id not in ("builtin", OFFICIAL_OUTFIT_PACK_ID):
+        if garment.effective_pack_id not in {"builtin", OFFICIAL_OUTFIT_PACK_ID}:
             raise ValueError("Selected garment has no source-bound exasperated candidate.")
-        if makeup.effective_pack_id not in ("builtin", BUILTIN_MAKEUP_PACK_ID):
+        if makeup.effective_pack_id not in {"builtin", BUILTIN_MAKEUP_PACK_ID}:
             raise ValueError("Selected cosmetics have no source-bound exasperated candidate.")
         if self.schema == VARIANT_SCHEMA:
             if makeup.effective_pack_id == "builtin":
@@ -196,7 +196,7 @@ class ExasperatedCandidateAppearance:
         self._refresh_selection()
         if (frame.width(), frame.height()) != (DIMENSION, DIMENSION):
             raise ValueError("Candidate appearance requires its native canvas.")
-        if mouth_expression not in (None, "exasperated_front") and mouth_expression not in EXPRESSION_VARIANTS:
+        if mouth_expression not in {None, "exasperated_front"} and mouth_expression not in EXPRESSION_VARIANTS:
             raise ValueError("Unrecognized candidate cosmetic mouth state.")
         state = EXPRESSION_VARIANTS.get(mouth_expression, "rest")
         result = frame.copy()

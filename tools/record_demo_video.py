@@ -38,6 +38,8 @@ lazy from PySide6.QtGui import QColor, QFont, QImage, QLinearGradient, QPainter,
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from domain.constants import POSE_ATLAS_GENERATION
+
+DEFAULT_PANEL_BORDER = QColor("#b6c8d6")
 lazy from domain.lip_sync import (
     VISEME_CUES_PER_SECOND,
     VisemeDynamics,
@@ -355,7 +357,9 @@ def _assemble_narration(
         combined.setsampwidth(AUDIO_SAMPLE_WIDTH)
         combined.setframerate(AUDIO_SAMPLE_RATE)
         combined.writeframes(_silence(cursor))
-        for index, (text, source) in enumerate(zip(DEMO_NARRATION, normalized)):
+        for index, (text, source) in enumerate(
+            zip(DEMO_NARRATION, normalized, strict=True)
+        ):
             frames, frame_count = _read_normalized_wave(source)
             start_frame = cursor
             combined.writeframes(frames)
@@ -578,7 +582,7 @@ def _draw_panel(
     painter: QPainter,
     rect: QRect,
     fill: QColor,
-    border: QColor = QColor("#b6c8d6"),
+    border: QColor = DEFAULT_PANEL_BORDER,
 ) -> None:
     painter.setPen(QPen(border, 2))
     painter.setBrush(fill)

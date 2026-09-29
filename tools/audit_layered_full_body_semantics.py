@@ -174,7 +174,7 @@ def _detect_face(authority: np.ndarray, model: Path) -> FaceBox:
     if not candidates:
         raise ValueError("visible authority face detection requires review")
     face = max(candidates, key=lambda item: float(item[14]))
-    x, y, box_width, box_height = (int(round(float(value))) for value in face[:4])
+    x, y, box_width, box_height = (round(float(value)) for value in face[:4])
     x = max(0, x)
     y = max(0, y)
     box_width = min(width - x, box_width)
@@ -227,7 +227,7 @@ def _issue(
     )
 
 
-def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
+def audit_layered_full_body_semantics(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements]
     asset_root: Path,
     authority_root: Path,
     detector_model: Path,
@@ -294,7 +294,7 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
             if layer == "oral_cavity" and abs(yaw) >= NEAR_PROFILE_MIN_ABS_YAW:
                 continue
             if yaw != 0 and (
-                layer.endswith("_left") or layer.endswith("_right")
+                layer.endswith(("_left", "_right"))
             ):
                 continue
             image = view_images.get(layer)

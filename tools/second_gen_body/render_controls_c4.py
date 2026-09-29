@@ -80,8 +80,10 @@ def render(vertices: np.ndarray, faces: np.ndarray, native_yaw: float):
     mask = np.zeros((HEIGHT, WIDTH), bool)
 
     for index in range(len(faces)):
-        x0 = int(np.floor(px[index].min())); x1 = int(np.ceil(px[index].max()))
-        y0 = int(np.floor(py[index].min())); y1 = int(np.ceil(py[index].max()))
+        x0 = int(np.floor(px[index].min()))
+        x1 = int(np.ceil(px[index].max()))
+        y0 = int(np.floor(py[index].min()))
+        y1 = int(np.ceil(py[index].max()))
         if x1 < 0 or y1 < 0 or x0 >= WIDTH or y0 >= HEIGHT:
             continue
         x0, y0 = max(x0, 0), max(y0, 0)
@@ -195,7 +197,7 @@ def main() -> None:
         silhouette.save(OUT / f"{formal_name}_silhouette.png")
         normal_image.save(OUT / f"{formal_name}_normal.png")
         shaded.save(target)
-        print(f"  done {formal_name}  前景 {mask.mean()*100:5.2f}%", flush=True)
+        print(f"  done {formal_name}  前景 {mask.mean() * 100:5.2f}%", flush=True)
     print("C4_CONTROLS_DONE")
 
 

@@ -122,7 +122,7 @@ def test_lipstick_cannot_paint_authored_teeth_but_still_paints_lips(tmp_path: Pa
     before_makeup = renderer.render_view(VIEW, _motion(Viseme.A, aperture)).toImage()
     mask = tmp_path / "oral.png"
     _png(mask, tooth="white")
-    masks = frozendict({viseme: mask for viseme in view.speech_frames})
+    masks = frozendict(dict.fromkeys(view.speech_frames, mask))
     view = replace(view, speech_oral_masks=masks)
 
     class LipstickOverlay:
@@ -165,8 +165,7 @@ def test_transparent_speech_or_oral_mask_fails_before_rendering(tmp_path: Path, 
     _, view = _renderer(tmp_path)
     empty = tmp_path / "empty.png"
     _png(empty)
-    frames = frozendict({viseme: empty for viseme in view.speech_frames})
+    frames = frozendict(dict.fromkeys(view.speech_frames, empty))
     view = replace(view, **{"speech_oral_masks" if oral_mask else "speech_frames": frames})
     with pytest.raises(ValueError, match="nonempty"):
         LayeredFullBodyRenderer(assets.LayeredFullBodyManifest(frozendict({VIEW: view})))
-

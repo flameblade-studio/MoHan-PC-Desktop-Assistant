@@ -84,7 +84,6 @@ class ActiveOutfitLayerMixin:
         self._official_replacement_masks_by_view[view_id] = region
         return QRegion(region)
 
-
     def _core_body_overlay_layers(
         self,
         view_id: str,
@@ -112,7 +111,6 @@ class ActiveOutfitLayerMixin:
         result = ((pixmap, 0, 0, canvas, 1.0),)
         self._core_body_overlays_by_view[view_id] = result
         return result
-
 
     def _official_silhouette_region(
         self,
@@ -144,7 +142,6 @@ class ActiveOutfitLayerMixin:
             raise OutfitPackError(f"Empty official appearance silhouette: {path.name}")
         self._official_silhouettes_by_view[view_id] = region
         return QRegion(region)
-
 
     def _core_hand_overlay_layers(
         self,
@@ -191,7 +188,6 @@ class ActiveOutfitLayerMixin:
         self._core_hand_overlays_by_view[view_id] = result
         return result
 
-
     def _hand_allowed_region(self, canvas: QRegion, category: str, variant, view_id: str) -> QRegion:
         """Keep core-visible hands above cloth and declared behind-hand items."""
         if self._visible_hand_region is None:
@@ -211,7 +207,6 @@ class ActiveOutfitLayerMixin:
         if has_overlay is not None and has_overlay(view_id):
             return canvas
         return canvas.subtracted(hands)
-
 
     def _feathered_hair_layer(self, pixmap: QPixmap, anchor_x: int, anchor_y: int, view_id: str) -> QPixmap:
         """Multiply the hair alpha by the feathered feature-core mask (0 inside, 1 beyond the feather)."""
@@ -244,7 +239,6 @@ class ActiveOutfitLayerMixin:
         painter.end()
         return self._masked_hair(pixmap, anchor_x, anchor_y, alpha, bounds)
 
-
     def _body_outline_region(self, view_id: str) -> QRegion | None:
         base = self._protected_face_path(view_id)
         path = base.with_name(base.name.removesuffix("_base.png") + "_body_outline.png")
@@ -258,7 +252,6 @@ class ActiveOutfitLayerMixin:
             raise OutfitPackError("Core body outline requires visible content.")
         return region
 
-
     @staticmethod
     def _masked_hair(pixmap: QPixmap, anchor_x: int, anchor_y: int, alpha: QImage, bounds: QRect) -> QPixmap:
         image = pixmap.toImage().convertToFormat(QImage.Format_ARGB32_Premultiplied)
@@ -267,7 +260,6 @@ class ActiveOutfitLayerMixin:
         painter.drawImage(bounds.x() - anchor_x, bounds.y() - anchor_y, alpha)
         painter.end()
         return QPixmap.fromImage(image)
-
 
     def _hair_core_mask(self, view_id: str) -> tuple[QImage, QRect] | None:
         """Alpha multiplier around the feature core, cached per view.
@@ -314,7 +306,6 @@ class ActiveOutfitLayerMixin:
         self._hair_mask_by_view[view_id] = result
         return result
 
-
     @staticmethod
     def _dilated(binary: QImage) -> QImage:
         """Grow the white pixels of an opaque black/white image by one pixel (8-neighbour)."""
@@ -325,7 +316,6 @@ class ActiveOutfitLayerMixin:
             painter.drawImage(dx, dy, binary)
         painter.end()
         return grown
-
 
     def _makeup_layers(
         self,
@@ -385,12 +375,10 @@ class ActiveOutfitLayerMixin:
             ))
         return layers
 
-
     def _makeup_safe_regions(self):
         if self._safe_regions is None:
             self._safe_regions = load_makeup_safe_regions(self._asset_root / "assets" / SAFE_REGION_FILE)
         return self._safe_regions
-
 
     def _makeup_clip(self, view_id: str, region, slot: str, *, state: str = "rest") -> QRegion:
         clip = QRegion()
@@ -415,7 +403,6 @@ class ActiveOutfitLayerMixin:
         return clip.subtracted(
             self._makeup_exclusion_region(view_id, region, state=state)
         )
-
 
     def _makeup_exclusion_region(self, view_id: str, region, *, state: str = "rest") -> QRegion:
         """Keep visible eye apertures and the open oral cavity free of makeup."""
@@ -451,7 +438,6 @@ class ActiveOutfitLayerMixin:
         self._makeup_exclusion_by_view[cache_key] = excluded
         return excluded
 
-
     def _rig_union(self, rig: str, layers) -> QRegion:
         union = QRegion()
         for layer in layers:
@@ -459,7 +445,6 @@ class ActiveOutfitLayerMixin:
             if not source.isNull():
                 union = union.united(QRegion(source.mask()))
         return union
-
 
     def _validate_alpha(
         self,
@@ -481,7 +466,6 @@ class ActiveOutfitLayerMixin:
         if not overlap.isEmpty():
             raise OutfitPackError("Runtime garment overlaps protected identity.")
         return True
-
 
     def _forbidden_face_region(
         self,
@@ -510,7 +494,6 @@ class ActiveOutfitLayerMixin:
             forbidden = forbidden.united(self._feature_region(view_id))
         return forbidden
 
-
     def _feature_region(self, view_id: str) -> QRegion:
         """Union of the feature-core rig cut-outs (iris, eyelids, oral cavity, lips)."""
         cached = self._feature_by_view.get(view_id)
@@ -530,7 +513,6 @@ class ActiveOutfitLayerMixin:
         self._feature_by_view[view_id] = region
         return region
 
-
     def _protected_face_region(
         self,
         view_id: str,
@@ -547,16 +529,12 @@ class ActiveOutfitLayerMixin:
         self._protected_by_view[view_id] = region
         return region
 
-
     def _protected_face_path(self, view_id: str) -> Path:
         rig = HALF_BODY_RIGS.get(view_id)
         if rig is not None:
             return self._asset_root / "assets" / "expressions" / "layered" / f"{rig}_base.png"
         return self._asset_root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME / f"{view_id}_base.png"
 
-
     @staticmethod
     def _canvas_size(view_id: str) -> tuple[int, int]:
         return HALF_BODY_CANVAS if view_id in HALF_BODY_RIGS else FULL_BODY_CANVAS
-
-

@@ -9,8 +9,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from morph_limbs_candidate4 import load_obj  # noqa: E402
-from pose_engine import (  # noqa: E402
+from morph_limbs_candidate4 import load_obj
+from pose_engine import (
     Rig, apply_pose, distribute_twist, repose, section_heights,
     self_intersections, validate,
 )

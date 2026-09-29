@@ -250,7 +250,7 @@ def test_restore_builtin_returns_to_the_official_pack(tmp_path: Path) -> None:
 
 def test_official_packs_cannot_be_removed_or_shadowed(tmp_path: Path) -> None:
     store = tmp_path / "store"
-    assert OFFICIAL_PACK_IDS == {OFFICIAL_OUTFIT_PACK_ID, BUILTIN_MAKEUP_PACK_ID}
+    assert {OFFICIAL_OUTFIT_PACK_ID, BUILTIN_MAKEUP_PACK_ID} == OFFICIAL_PACK_IDS
     for pack_id in OFFICIAL_PACK_IDS:
         with pytest.raises(OutfitPackError, match="stays available"):
             remove_outfit_pack(store, pack_id)

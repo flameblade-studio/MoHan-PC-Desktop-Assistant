@@ -66,9 +66,7 @@ def test_flagship_products_do_not_route_through_root_facade() -> None:
 
 
 def test_flagship_core_owners_stay_bounded() -> None:
-    owners = tuple(
-        owner for owner in CANONICAL_OWNERS if owner != "domain.safe_error"
-    ) + (FACADE_OWNER,)
+    owners = (*tuple(owner for owner in CANONICAL_OWNERS if owner != "domain.safe_error"), FACADE_OWNER)
     oversized = {
         owner: len(
             Path(importlib.import_module(owner).__file__)

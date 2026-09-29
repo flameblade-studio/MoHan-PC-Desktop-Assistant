@@ -42,7 +42,6 @@ def test_mismatched_brow_guard_canvas_rejected():
         preserve_gesture_brows(base, QPixmap(21, 20), base)
 
 
-
 def test_mouth_changes_reuse_bounded_brow_guard_cache():
     app = QApplication.instance() or QApplication([])
     assert app is not None
@@ -62,4 +61,3 @@ def test_mouth_changes_reuse_bounded_brow_guard_cache():
     assert cache.hits == 1
     assert cache.currsize == 1
     assert cache.maxsize is not None
-

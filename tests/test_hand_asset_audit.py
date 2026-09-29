@@ -107,6 +107,7 @@ def _draw_fused_digits(pixels: bytearray, points: tuple[Point, ...]) -> None:
 
 def _png(pixels: bytes) -> bytes:
     raw = b"".join(b"\0" + pixels[y * WIDTH * 4 : (y + 1) * WIDTH * 4] for y in range(HEIGHT))
+
     def chunk(kind: bytes, payload: bytes) -> bytes:
         return struct.pack(">I", len(payload)) + kind + payload + struct.pack(">I", zlib.crc32(kind + payload) & 0xFFFFFFFF)
     ihdr = struct.pack(">IIBBBBB", WIDTH, HEIGHT, 8, 6, 0, 0, 0)

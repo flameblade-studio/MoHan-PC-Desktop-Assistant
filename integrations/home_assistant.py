@@ -86,8 +86,8 @@ class HomeAssistantClient:
         return (
             values[0] == PRIVATE_CLASS_A_FIRST_OCTET
             or values[:2] == [192, 168]
-            or values[0] == PRIVATE_CLASS_B_FIRST_OCTET
-            and PRIVATE_CLASS_B_SECOND_OCTET_MIN <= values[1] <= PRIVATE_CLASS_B_SECOND_OCTET_MAX
+            or (values[0] == PRIVATE_CLASS_B_FIRST_OCTET
+            and PRIVATE_CLASS_B_SECOND_OCTET_MIN <= values[1] <= PRIVATE_CLASS_B_SECOND_OCTET_MAX)
         )
 
     def _request(

@@ -46,7 +46,7 @@ class Chronicle:
         """Record a milestone, deduplicating by kind (first occurrence wins)."""
         if any(m.kind is kind for m in self._milestones):
             return self
-        return Chronicle(self._milestones + (Milestone(kind, day),))
+        return Chronicle((*self._milestones, Milestone(kind, day)))
 
     def recollection(self, language: str, day: int) -> str:
         """Return a four-language recollection for the most recent milestone."""

@@ -89,6 +89,7 @@ class FlagshipSettingsSecurityMixin:
         add_web.clicked.connect(self.add_allowed_web)
         remove_target.clicked.connect(self.remove_allowed_target)
         self.refresh_allowed_targets()
+
     def _security_permission_section(
         self,
         form: QFormLayout,
@@ -119,6 +120,7 @@ class FlagshipSettingsSecurityMixin:
                 ),
                 combo,
             )
+
     def _security_footer(self, form: QFormLayout) -> None:
         note = QLabel(
             self._t(
@@ -128,6 +130,7 @@ class FlagshipSettingsSecurityMixin:
         note.setWordWrap(True)
         note.setStyleSheet("color:#8a5a13;")
         form.addRow(note)
+
     def validate_draft_settings(self, *, show_error: bool = True) -> FlagshipDraftValues | None:
         """Build every typed value while preserving persistence or external services."""
 
@@ -177,6 +180,7 @@ class FlagshipSettingsSecurityMixin:
                     self._t("選擇自訂文字指令時，必須輸入一行指令後才能保存。"),
                 )
             return None
+
     def _staged_gesture_configuration(self) -> GestureConfiguration:
         definition = self._selected_gesture()
         value = self._gesture_draft.value
@@ -194,6 +198,7 @@ class FlagshipSettingsSecurityMixin:
             )
             value = value.replace_definition(updated)
         return replace(value, enabled=self.gesture_enabled.isChecked())
+
     def _staged_proactivity_preferences(self) -> CompanionProactivityPreferences:
         return CompanionProactivityPreferences(
             enabled=self.companion_enabled.isChecked(),
@@ -210,6 +215,7 @@ class FlagshipSettingsSecurityMixin:
             fullscreen_protection_enabled=self.companion_fullscreen_protection.isChecked(),
             daily_limit=self.companion_daily_limit.value(),
         )
+
     def save_draft_settings(self, values: FlagshipDraftValues | None = None) -> bool:
         """Persist all ordinary settings or restore their exact previous snapshot."""
 
@@ -274,6 +280,7 @@ class FlagshipSettingsSecurityMixin:
             )
             return False
         return True
+
     def _after_successful_settings_save(self, vision: OpenAIVisionPreferences) -> None:
         self._configure_executor()
         apply_flagship_theme(
@@ -293,10 +300,12 @@ class FlagshipSettingsSecurityMixin:
         )
         if self.camera_enabled.isChecked():
             self._configure_gesture_runtime()
+
     def cancel_draft_settings(self) -> None:
         """Close every old draft, rebuild from persistence, and refresh its UI."""
 
         self._rebuild_draft_settings()
+
     def _close_drafts(self) -> None:
         for draft in (
             self._gesture_draft,
@@ -311,10 +320,12 @@ class FlagshipSettingsSecurityMixin:
                 PerformancePreferencesStoreError,
             ):
                 draft.cancel()
+
     def reload_draft_settings(self) -> None:
         """Reload controls after an owning settings transaction restores the DB."""
 
         self._rebuild_draft_settings()
+
     def _rebuild_draft_settings(self) -> None:
         self._close_drafts()
         self._gesture_draft = self.gesture_store.begin_edit()
@@ -332,9 +343,11 @@ class FlagshipSettingsSecurityMixin:
         self._refresh_accessibility_controls()
         if getattr(self, "_control_center_ui_ready", False):
             self._notify_pending_proactivity_store_error()
+
     def _refresh_gesture_controls(self) -> None:
         self.gesture_enabled.setChecked(self._gesture_draft.value.enabled)
         self._refresh_gesture_list()
+
     def _refresh_proactivity_controls(self) -> None:
         preferences = self._proactivity_draft.value
         controls = (
@@ -354,6 +367,7 @@ class FlagshipSettingsSecurityMixin:
         self.companion_brief_minutes.setValue(preferences.brief_absence_seconds // 60)
         self.companion_long_wait_minutes.setValue(preferences.long_wait_seconds // 60)
         self.companion_daily_limit.setValue(preferences.daily_limit)
+
     def _refresh_openai_vision_controls(self) -> None:
         preferences = self._openai_vision_draft.value
         self.openai_vision_enabled.setChecked(preferences.enabled)
@@ -366,6 +380,7 @@ class FlagshipSettingsSecurityMixin:
         self.openai_vision_daily_limit.setValue(preferences.daily_limit)
         self.openai_vision_per_minute_limit.setValue(preferences.per_minute_limit)
         self._refresh_openai_vision_status(preferences)
+
     def _staged_openai_vision_preferences(self) -> OpenAIVisionPreferences:
         return OpenAIVisionPreferences(
             enabled=self.openai_vision_enabled.isChecked(),
@@ -385,6 +400,7 @@ class FlagshipSettingsSecurityMixin:
             ),
             raw_image_storage_enabled=False,
         )
+
     def _security_tab(self) -> QWidget:
         scroll, form = self._scroll_form()
         stored = self.db.setting("flagship_permissions", {})
@@ -392,6 +408,7 @@ class FlagshipSettingsSecurityMixin:
         self._security_permission_section(form, stored)
         self._security_footer(form)
         return scroll
+
     def refresh_allowed_targets(self) -> None:
         self.target_list.clear()
         for row in self.db.allowed_targets():
@@ -410,6 +427,7 @@ class FlagshipSettingsSecurityMixin:
             )
             item.setData(Qt.UserRole, int(row["id"]))
             self.target_list.addItem(item)
+
     def add_allowed_folder(self) -> None:
         path = QFileDialog.getExistingDirectory(
             self,
@@ -432,6 +450,7 @@ class FlagshipSettingsSecurityMixin:
         )
         self.refresh_allowed_targets()
         self._configure_executor()
+
     def add_allowed_app(self) -> None:
         path, _filter = QFileDialog.getOpenFileName(
             self,
@@ -459,6 +478,7 @@ class FlagshipSettingsSecurityMixin:
         )
         self.refresh_allowed_targets()
         self._configure_executor()
+
     def add_allowed_web(self) -> None:
         url, ok = self._simple_text_dialog(
             self._t("加入允許網站"),
@@ -482,6 +502,7 @@ class FlagshipSettingsSecurityMixin:
         )
         self.refresh_allowed_targets()
         self._configure_executor()
+
     def remove_allowed_target(self) -> None:
         item = self.target_list.currentItem()
         if item is None:
@@ -498,6 +519,7 @@ class FlagshipSettingsSecurityMixin:
         self.db.remove_allowed_target(int(item.data(Qt.UserRole)))
         self.refresh_allowed_targets()
         self._configure_executor()
+
     def save_security(self) -> None:
         values = {
             key: str(combo.currentData())
