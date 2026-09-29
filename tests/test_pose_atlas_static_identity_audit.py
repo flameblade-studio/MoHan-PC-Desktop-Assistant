@@ -34,10 +34,18 @@ HISTORICAL_WAIVED_CODES = {
 CURRENT_PINNED_BASELINE = {
     "yaw+060-pitch+00": (
         "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
-        frozenset({"forehead_outward_bulge"}),
+        frozenset({"forehead_curvature_discontinuity", "forehead_outward_bulge"}),
     ),
     "yaw+090-pitch+00": (
         "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152",
+        frozenset({"forehead_curvature_discontinuity", "forehead_outward_bulge"}),
+    ),
+    "yaw-060-pitch+00": (
+        "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
+        frozenset({"forehead_curvature_discontinuity"}),
+    ),
+    "yaw-075-pitch+00": (
+        "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
         frozenset({"forehead_curvature_discontinuity", "forehead_outward_bulge"}),
     ),
     "yaw-090-pitch+00": (
@@ -45,7 +53,7 @@ CURRENT_PINNED_BASELINE = {
         frozenset({"forehead_curvature_discontinuity", "forehead_outward_bulge"}),
     ),
 }
-CURRENT_PINNED_WAIVER_TOTAL = 5
+CURRENT_PINNED_WAIVER_TOTAL = 9
 CURRENT_AVAILABLE_NATIVE_FACE_LANDMARKS = 17
 ALLOWED_WAIVER_CODES = frozenset(
     {"forehead_curvature_discontinuity", "forehead_outward_bulge"}

@@ -2,7 +2,7 @@
   "audit_contract": {
     "identity_audit": {
       "baseline_path": "assets/pose-atlas/v5-base/identity-audit-baseline.json",
-      "baseline_sha256": "eccb9147787dab51417d609cd0c398613866116ffaba30bddc6828c944a98016",
+      "baseline_sha256": "19d48353b3b7ba1e017fdadc63f03bc5eb630b4b63f8494541d4b725b3862227",
       "issue_count": 0,
       "measurement_gap": {
         "available_native_face_landmarks": 17,
@@ -586,7 +586,7 @@
   "identity_audit_baseline": {
     "path": "assets/pose-atlas/v5-base/identity-audit-baseline.json",
     "schema": "mohan.pose-atlas-identity-baseline.v1",
-    "sha256": "eccb9147787dab51417d609cd0c398613866116ffaba30bddc6828c944a98016",
+    "sha256": "19d48353b3b7ba1e017fdadc63f03bc5eb630b4b63f8494541d4b725b3862227",
     "view_count": 3,
     "waived_issue_count": 5
   },

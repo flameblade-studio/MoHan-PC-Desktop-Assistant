@@ -63,6 +63,11 @@
         "path": "docs/release-evidence/pose-atlas-v5-owner-approvals/plus090-exact-mirror-07-owner-approval.json",
         "scope": "owner-adopted exact full-body plus090 mirror 07 of ad57",
         "sha256": "9c648a4f9c51c0ca4e8e1c7d115f1ca40d6bf892e530cdb7763dbf4850ef0e05"
+      },
+      {
+        "path": "docs/release-evidence/pose-atlas-v5-owner-approvals/new-angle-forehead-waiver-20260930.json",
+        "scope": "owner-accepted forehead findings on the approved yaw+060, yaw-060 and yaw-075 sources",
+        "sha256": "79fe99e1b512bd56f6de6313446e8dbf60ae0ae9c941e269909b2faf2033c81d"
       }
     ],
     "status": "new_profile_source_appearance_accepted_exact_sha_findings_pinned"
@@ -73,11 +78,25 @@
     "yaw+060-pitch+00": {
       "sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
       "waived_issue_codes": [
+        "forehead_curvature_discontinuity",
         "forehead_outward_bulge"
       ]
     },
     "yaw+090-pitch+00": {
       "sha256": "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152",
+      "waived_issue_codes": [
+        "forehead_curvature_discontinuity",
+        "forehead_outward_bulge"
+      ]
+    },
+    "yaw-060-pitch+00": {
+      "sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
+      "waived_issue_codes": [
+        "forehead_curvature_discontinuity"
+      ]
+    },
+    "yaw-075-pitch+00": {
+      "sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
       "waived_issue_codes": [
         "forehead_curvature_discontinuity",
         "forehead_outward_bulge"
