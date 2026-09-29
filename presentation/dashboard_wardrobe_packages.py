@@ -4,14 +4,16 @@ from __future__ import annotations
 
 lazy from typing import Protocol
 lazy from PySide6.QtCore import Qt
-lazy from PySide6.QtWidgets import QLabel, QListWidget, QListWidgetItem
+lazy from PySide6.QtWidgets import QLabel, QListWidget, QListWidgetItem, QTabWidget
 lazy from application.presentation_ports import PresentationDatabasePort
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
 lazy from domain.outfit_pack import OutfitPackError
 
 
 class WardrobePackagesView(Protocol):
+    tabs: QTabWidget
     wardrobe_packages: QListWidget
+    wardrobe_packages_loaded: bool
     wardrobe_status: QLabel
     wardrobe_service: WardrobeService
     db: PresentationDatabasePort
@@ -21,10 +23,23 @@ class WardrobePackagesView(Protocol):
 
     def _reload_wardrobe_makeup_options(self) -> None: ...
 
+    def _reload_wardrobe_packages(self) -> None: ...
+
+
+def ensure_wardrobe_packages(view: WardrobePackagesView, index: int) -> None:
+    page = view.tabs.widget(index)
+    if (
+        page is not None
+        and page.property("mohanFeatureId") == "wardrobe"
+        and not view.wardrobe_packages_loaded
+    ):
+        view._reload_wardrobe_packages()
+
 
 def reload_wardrobe_packages(view: WardrobePackagesView) -> None:
     if not hasattr(view, "wardrobe_packages"):
         return
+    view.wardrobe_packages_loaded = True
     view.wardrobe_packages.clear()
     selected_id = WardrobeService.selected_outfit(
         view.db.setting("active_outfit_id", BUILTIN_OUTFIT_ID)
