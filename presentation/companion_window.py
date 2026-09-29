@@ -74,7 +74,10 @@ class CompanionWindow(
         self._gesture_controller.recognition_changed.connect(
             self._on_gesture_recognition
         )
-        self.dashboard = self._create_dashboard(self._gesture_controller)
+        self.dashboard = self._create_dashboard(
+            self._gesture_controller,
+            defer_wardrobe_startup=defer_visual_startup,
+        )
         self._autonomous_outfit_generation = AutonomousOutfitGenerationController(
             db=self.db,
             secret_store=self.secret_store,

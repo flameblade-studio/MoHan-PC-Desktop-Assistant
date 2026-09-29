@@ -66,7 +66,9 @@ def _build_package_library(shell: _DashboardWardrobeHost) -> QFrame:
     )
     shell.wardrobe_status.setWordWrap(True)
     shell.wardrobe_status.setProperty("mohanRole", "statusPill")
-    shell._reload_wardrobe_packages()
+    shell.wardrobe_packages_loaded = False
+    if not shell._defer_wardrobe_startup:
+        shell._reload_wardrobe_packages()
     compatibility = QLabel(
         shell._t("wardrobe_compatibility_status", "相容狀態")
         + "："
@@ -141,7 +143,8 @@ def _build_category_panel(
         shell.wardrobe_category_tabs.addTab(scroll, title)
     controls.addWidget(shell.wardrobe_category_tabs)
     controls.addWidget(shell.wardrobe_status)
-    reload_appearance_controls(shell)
+    if not shell._defer_wardrobe_startup:
+        reload_appearance_controls(shell)
     return panel
 
 
