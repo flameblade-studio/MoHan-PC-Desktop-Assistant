@@ -5,6 +5,7 @@ lazy from pathlib import Path
 lazy from tools import quality_gate
 
 EXPECTED_FAILURE_EXIT = 9
+STATIC_STAGE_COUNT = 14
 
 
 def test_stage_order_ends_with_aggregate_regression_suite() -> None:
@@ -19,6 +20,29 @@ def test_stage_order_ends_with_aggregate_regression_suite() -> None:
         "pyright (lazy-import-normalized source copy)",
     )
     assert stages[-1].command[-2:] == ("tests/run_all.py", "--aggregate")
+
+
+def test_stage_selection_splits_static_work_from_sharded_tests() -> None:
+    static = quality_gate._selected_stages(
+        "static",
+        shard_index=0,
+        shard_count=1,
+    )
+    tests = quality_gate._selected_stages(
+        "tests",
+        shard_index=3,
+        shard_count=8,
+    )
+
+    assert len(static) == STATIC_STAGE_COUNT
+    assert all("tests/run_all.py" not in stage.command for stage in static)
+    assert len(tests) == 1
+    assert tests[0].command[-4:] == (
+        "--shard-index",
+        "3",
+        "--shard-count",
+        "8",
+    )
 
 
 def test_pin_check_rejects_unpinned_requirement(tmp_path: Path) -> None:
