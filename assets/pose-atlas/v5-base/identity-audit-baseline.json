@@ -55,12 +55,12 @@
         "status": "historical_record_path_currently_absent"
       },
       {
-        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/owner-approval.json",
+        "path": "docs/release-evidence/pose-atlas-v5-owner-approvals/identity-repair-30-owner-approval.json",
         "scope": "owner-adopted new minus090 facial identity f21; exact current ad57 source",
         "sha256": "dec265421e6c320def38a42bc2f46ac0c7b8977cb5334b50d91411c6e31781c7"
       },
       {
-        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/plus090-exact-mirror-07/owner-approval.json",
+        "path": "docs/release-evidence/pose-atlas-v5-owner-approvals/plus090-exact-mirror-07-owner-approval.json",
         "scope": "owner-adopted exact full-body plus090 mirror 07 of ad57",
         "sha256": "9c648a4f9c51c0ca4e8e1c7d115f1ca40d6bf892e530cdb7763dbf4850ef0e05"
       }
