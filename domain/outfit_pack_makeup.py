@@ -31,7 +31,7 @@ lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_PACK_ID,
     FOUNDATION_SLOT,
     BUILTIN_MAKEUP_VARIANTS,
-    LEGACY_MAKEUP_SILHOUETTES_ALL,
+    LEGACY_MAKEUP_SILHOUETTES,
     MAKEUP_SLOTS,
     MAKEUP_SLOTS_V2,
     REQUIRED_SILHOUETTES,
@@ -265,7 +265,7 @@ def parse_makeup_safe_regions(
     if (
         not isinstance(silhouettes, dict)
         or not set(REQUIRED_SILHOUETTES).issubset(silhouettes)
-        or not (set(silhouettes) - set(REQUIRED_SILHOUETTES)).issubset(LEGACY_MAKEUP_SILHOUETTES_ALL)
+        or not (set(silhouettes) - set(REQUIRED_SILHOUETTES)).issubset(LEGACY_MAKEUP_SILHOUETTES)
     ):
         raise OutfitPackError("Makeup safe regions must cover every required silhouette.")
     parsed = {}

@@ -1089,9 +1089,8 @@ class CompanionCoreMixin:
         self.multisensory_arbiter = self._new_multisensory_arbiter(
             self._multisensory_config
         )
-        # Typed preference stores are the single source of truth for the
-        # performance and framing preferences (domain defaults apply when the
-        # the user left them at their defaults).  The caches refresh on every settings save.
+        # Typed stores own performance and framing preferences; domain defaults
+        # apply when the user left them unchanged. Caches refresh on every settings save.
         settings_port = StudioDBSettingsPort(self.db)
         self._performance_preferences_store = PerformancePreferencesStore(
             settings_port

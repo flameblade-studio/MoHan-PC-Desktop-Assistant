@@ -24,18 +24,12 @@ lazy from domain.outfit_pack import (
     restore_builtin_outfit,
 )
 lazy from domain.outfit_pack_makeup import MAKEUP_STATE_FILE
-lazy from domain.outfit_pack_official import (
-    OFFICIAL_OUTFIT_CATEGORIES,
-    OFFICIAL_OUTFIT_PACK_ID,
-    native_overlay_is_redundant,
-)
+lazy from domain.outfit_pack_official import native_overlay_is_redundant
 lazy from domain.version_info import APP_VERSION
+lazy from infrastructure.active_outfit_base_clear import ActiveOutfitBaseClearMixin
 lazy from infrastructure.active_outfit_overlay_layers import ActiveOutfitLayerMixin, FULL_BODY_CANVAS
 lazy from infrastructure.reviewed_garment_overlay import ReviewedGarmentOverlayMixin
-lazy from infrastructure.source_bound_garment_visibility import (
-    MANIFEST, GarmentBinding, compose_garment_base, load_garment_binding,
-    validate_garment_removal,
-)
+lazy from infrastructure.source_bound_garment_visibility import compose_garment_base
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
 lazy from infrastructure.appearance_layer_stack import (
     AppearanceCallbacks, AppearanceLayerStack,
@@ -50,11 +44,6 @@ lazy from infrastructure.outfit_core_composition import (
 )
 
 SEMVER_COMPONENT_COUNT = 3
-# The V5 full-body face guard stops at the chin. Keep the adjacent native neck
-# through the garment collar while the legacy official replacement mask clears
-# the torso. The 24 authored views share the 1024x1536 canvas used here.
-V5_NECK_GUARD_SIDE_PX = 25
-V5_NECK_GUARD_HEIGHT_PX = 110
 _AUTO_HAND_REGIONS = sentinel("AUTO_HAND_REGIONS")
 _RANGE = re.compile(r">=(\d+)\.(\d+)\.(\d+),<(\d+)\.(\d+)\.(\d+)\Z")
 # One composited layer: pixmap, anchor x/y, the region it may paint, opacity.
@@ -62,7 +51,11 @@ Layer = tuple[QPixmap, int, int, QRegion, float]
 DEFAULT_APPEARANCE_CALLBACKS = AppearanceCallbacks()
 
 
-class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
+class ActiveOutfitOverlay(
+    ReviewedGarmentOverlayMixin,
+    ActiveOutfitLayerMixin,
+    ActiveOutfitBaseClearMixin,
+):
     """Resolve active.json through sealed packs and composite appearance assets.
 
     Official, user-imported, and cloud-generated packs share the exact same
@@ -154,6 +147,10 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
             for key in tuple(cache):
                 if key[0] == view_id:
                     del cache[key]
+
+    def _resolve_base_clear_selection(self, category: str):
+        """Keep base-clear selection reads on this module's patchable boundary."""
+        return resolve_active_selection(self._store, category)
 
     def _bind_canvas(self, view_id: str, size: tuple[int, int]) -> None:
         previous = self._render_size_by_view.get(view_id)
@@ -492,104 +489,6 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         painter.end()
         self._phase_layers_by_view[key] = layers
         return result
-
-    def _base_clear_regions(
-        self, view_id: str, canvas_size: tuple[int, int],
-        garment_is_active: bool, include_core: bool,
-    ) -> tuple[QRegion | None, QRegion | None, GarmentBinding | None]:
-        """Prefer an exact source-bound removal; retain the legacy route otherwise."""
-        if garment_is_active and (self._asset_root / MANIFEST).exists():
-            selected = resolve_active_selection(self._store, "garment")
-            archive_path, _item, variant = self._selected_variant("garment", selected)
-            binding = load_garment_binding(
-                self._asset_root, view_id, selected, archive_path, variant,
-            )
-            if binding is not None:
-                visible_hands = (
-                    (lambda _view: binding.hand_region)
-                    if binding.hand_region is not None else self._visible_hand_region
-                )
-                validate_garment_removal(
-                    self._asset_root, view_id, canvas_size, binding.removal,
-                    self._protected_face_region(view_id, canvas_size),
-                    visible_hands,
-                )
-                return None, binding.removal, binding
-        silhouette = (
-            self._selected_silhouette_region(view_id, canvas_size, garment_is_active)
-            if include_core else None
-        )
-        replacement = (
-            self._official_replacement_region(view_id, canvas_size)
-            if include_core and self._official_outfit_is_active() else None
-        )
-        if (include_core and view_id in POSE_ATLAS_SILHOUETTES
-                and canvas_size == FULL_BODY_CANVAS):
-            head = self._protected_face_region(view_id, canvas_size).boundingRect()
-            if not head.isEmpty():
-                native_head = QRegion(QRect(0, 0, canvas_size[0], head.bottom() + 1))
-                native_head = native_head.united(QRegion(QRect(
-                    head.left() - V5_NECK_GUARD_SIDE_PX,
-                    head.bottom() + 1,
-                    head.width() + 2 * V5_NECK_GUARD_SIDE_PX,
-                    V5_NECK_GUARD_HEIGHT_PX,
-                )))
-                if silhouette is not None:
-                    silhouette = silhouette.united(native_head)
-                if replacement is not None:
-                    replacement = replacement.subtracted(native_head)
-        return silhouette, replacement, None
-
-    def _selected_silhouette_region(
-        self, view_id: str, canvas_size: tuple[int, int], garment_is_active: bool,
-    ) -> QRegion | None:
-        """Keep garment occlusion when independently changing hair or headwear."""
-        if self._official_outfit_is_active():
-            return self._official_silhouette_region(view_id, canvas_size)
-        if not garment_is_active:
-            return None
-        garment = resolve_active_selection(self._store, "garment")
-        if garment.effective_pack_id != OFFICIAL_OUTFIT_PACK_ID:
-            return None
-        silhouette = self._official_silhouette_region(view_id, canvas_size)
-        if silhouette is None:
-            return None
-        # A clothing selection owns the body outline below the protected head.
-        # Keep the entire head band available for the independently chosen hair.
-        head = self._protected_face_region(view_id, canvas_size).boundingRect()
-        if head.isEmpty():
-            raise OutfitPackError("Protected head boundary is unavailable.")
-        head_band = QRegion(QRect(0, 0, canvas_size[0], head.bottom() + 1))
-        return silhouette.united(head_band)
-
-    def _official_outfit_is_active(self) -> bool:
-        """Keep the official base boundary when its headwear is explicitly removed."""
-        if self._official_outfit_active_cache is not None:
-            return self._official_outfit_active_cache
-        result = True
-        for category in OFFICIAL_OUTFIT_CATEGORIES:
-            selected = resolve_active_selection(self._store, category)
-            if getattr(selected, "effective_pack_id", None) == OFFICIAL_OUTFIT_PACK_ID:
-                continue
-            requested = tuple(getattr(selected, f"requested_{field}", None)
-                              for field in ("pack_id", "item_id", "variant_id"))
-            effective = tuple(getattr(selected, f"effective_{field}", None)
-                              for field in ("pack_id", "item_id", "variant_id"))
-            if (category == "headwear" and getattr(selected, "status", None) == "builtin"
-                    and requested == effective == ("builtin", "none", "none")):
-                continue
-            result = False
-            break
-        self._official_outfit_active_cache = result
-        return result
-
-    def _garment_is_active(self) -> bool:
-        """Resolve the active garment once per appearance-state token."""
-        if self._garment_active_cache is None:
-            self._garment_active_cache = (
-                resolve_active_selection(self._store, "garment").status != "builtin"
-            )
-        return self._garment_active_cache
 
     def layer_count(
         self,

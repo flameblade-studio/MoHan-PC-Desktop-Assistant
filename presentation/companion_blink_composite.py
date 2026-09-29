@@ -20,6 +20,7 @@ lazy from domain.companion_animation_contract import (
     outfit_silhouette,
 )
 lazy from domain.face_rig import EyeState, eye_state_for_blink
+lazy from domain.legacy_makeup import select_legacy_makeup_view_id
 lazy from presentation.companion_blink_brow_guard import GUARDED_EXPRESSIONS, preserve_gesture_brows
 
 __all__ = ("CompanionBlinkCompositeMethods",)
@@ -49,10 +50,8 @@ class CompanionBlinkCompositeMethods:
         """
         overlay = getattr(self.face_renderer, "_outfit_overlay", None)
         declares = getattr(overlay, "makeup_declares_view", None)
-        if not callable(declares):
-            return appearance_view_id
-        legacy_view_id = f"{appearance_view_id}-legacy"
-        return legacy_view_id if declares(legacy_view_id) else appearance_view_id
+        legacy_view_id = select_legacy_makeup_view_id(declares, appearance_view_id)
+        return legacy_view_id or appearance_view_id
 
     def _native_eye_composite(
         self,

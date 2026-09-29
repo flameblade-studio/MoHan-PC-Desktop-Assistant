@@ -14,7 +14,7 @@ lazy from pathlib import Path
 
 
 lazy from PySide6.QtCore import QRect, Qt
-lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion, QTransform
+lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion
 
 lazy from domain.companion_animation_contract import (
     CHEEK_SPEECH_CLOSED_EXPRESSION,
@@ -22,6 +22,8 @@ lazy from domain.companion_animation_contract import (
     outfit_silhouette,
 )
 lazy from domain.face_rig import FaceMotionFrame, Viseme
+# Eager because this function is re-exported for direct ``from ... import`` callers.
+from domain.legacy_makeup import select_legacy_makeup_view_id
 lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
 lazy from infrastructure.complete_halfbody_renderer import CompleteHalfbodyRenderer
 lazy from infrastructure.detachable_halfbody_assets import load_detachable_halfbody_assets
@@ -34,9 +36,9 @@ lazy from infrastructure.layered_face_assets import (
     LayeredFacePose,
     load_layered_face_assets,
 )
+lazy from infrastructure.layered_face_painting import LayeredFacePaintingMixin
 
 MOUTH_APERTURE_THRESHOLD = 0.01
-SCALE_EPSILON = 1e-4
 
 # The authored 54-layer asset set lives under the project root, mirroring the
 # ``RESOURCE_BASE`` resolution used by the presentation layer. The renderer
@@ -46,7 +48,6 @@ DETACHABLE_HALFBODY_ASSET_DIR = Path("assets") / "expressions" / "detachable"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 30
 MAX_CACHED_NEUTRAL_POSES = 3
-MAX_CACHED_MASK_BOUNDS = 64
 SEAM_HEAL_RADIUS = 7
 FACE_AUTHORITY_FILES = frozendict({
     "cheek": "idle.png",
@@ -72,39 +73,10 @@ FACE_AUTHORITY_REGION_LAYERS = (
 lazy from infrastructure.exasperated_face_rendering import ExasperatedFaceRenderingMixin
 
 
-def select_legacy_makeup_view_id(declares_view, silhouette: str, expression: str) -> str | None:
-    """Three-tier fallback for which legacy makeup view id to redirect to
-    (2026-09-29, coordinator ruling round 9), pulled out as a pure function
-    so each tier has its own direct test without a full renderer/Qt fixture:
-
-    1. a candidate warped for this EXACT legacy frame ("<silhouette>-legacy/
-       <expression>", e.g. "cheek-rest-legacy/glance_speech_mid") -- the
-       legacy face's own geometry differs frame to frame (open/closed mouth,
-       open/closed eyes), so this is the most accurate match when the active
-       makeup pack ships it;
-    2. the pose-shared key ("<silhouette>-legacy") -- the original,
-       coarser-but-still-legacy-geometry fallback, unchanged from before this
-       addition;
-    3. ``None`` -- the caller's pre-existing behaviour (makeup resolves
-       against the ordinary new-face ``silhouette``), when the pack declares
-       neither -- true for every pack shipped to date.
-
-    ``declares_view`` is a ``str -> bool`` callable (normally
-    ``ActiveOutfitOverlay.makeup_declares_view``); never called more than
-    once per tier, and not called at all past the first tier that matches.
-    """
-    if not callable(declares_view):
-        return None
-    expression_view_id = f"{silhouette}-legacy/{expression}"
-    if declares_view(expression_view_id):
-        return expression_view_id
-    pose_shared_view_id = f"{silhouette}-legacy"
-    if declares_view(pose_shared_view_id):
-        return pose_shared_view_id
-    return None
-
-
-class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
+class LayeredParametricFaceRenderer(
+    ExasperatedFaceRenderingMixin,
+    LayeredFacePaintingMixin,
+):
     """Select complete expressions or compose existing authored face layers.
 
     This renderer satisfies :class:`FaceRendererPort` so it can replace
@@ -289,19 +261,17 @@ class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
             # illustration, e.g. glance.png/caught.png) is geometrically a
             # different face from the new-face makeup layers authored for
             # `silhouette`; when the active makeup pack declares a matching
-            # legacy silhouette (see LEGACY_MAKEUP_SILHOUETTES_ALL,
+            # legacy silhouette (see LEGACY_MAKEUP_SILHOUETTES,
             # domain/outfit_pack.py), makeup resolves against that instead,
             # leaving garment/silhouette-clip on the unchanged `silhouette`.
             # Every other composed source (new-face native/detachable/render_pose)
             # is completely unaffected: makeup_view_id stays None for them,
             # byte-identical to before this addition.
             #
-            # Three-tier fallback: see select_legacy_makeup_view_id() above
-            # for the full rationale (2026-09-29, coordinator ruling round 9).
             makeup_view_id = None
             if may_need_legacy_makeup:
                 declares = getattr(self._outfit_overlay, "makeup_declares_view", None)
-                makeup_view_id = select_legacy_makeup_view_id(declares, silhouette, motion.expression)
+                makeup_view_id = select_legacy_makeup_view_id(declares, silhouette)
             composed = self._outfit_overlay.apply(composed, silhouette, makeup_view_id=makeup_view_id)
         result = (
             composed
@@ -698,158 +668,3 @@ class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
         painter = QPainter(target)
         painter.drawPixmap(0, 0, top)
         painter.end()
-
-    # -- painting helpers ---------------------------------------------------
-
-    def _paint_opacity(self, target: QPixmap, path, opacity: float) -> None:
-        source = self._cached_pixmap(path)
-        if source.isNull() or opacity <= 0.0:
-            return
-        painter = QPainter(target)
-        painter.setOpacity(max(0.0, min(1.0, float(opacity))))
-        painter.drawPixmap(0, 0, source)
-        painter.end()
-
-    def _paint_translated(self, target: QPixmap, path, *, dx: float = 0.0, dy: float = 0.0) -> None:
-        source = self._cached_pixmap(path)
-        if source.isNull():
-            return
-        painter = QPainter(target)
-        painter.setRenderHint(QPainter.SmoothPixmapTransform)
-        painter.drawPixmap(round(dx), round(dy), source)
-        painter.end()
-
-    def _paint_masked(
-        self,
-        target: QPixmap,
-        source: QPixmap | None,
-        mask: QPixmap | None,
-        opacity: float,
-    ) -> None:
-        if source is None or mask is None or source.isNull() or mask.isNull():
-            return
-        mask_key = int(mask.cacheKey())
-        bounds = self._mask_bounds_cache.get(mask_key)
-        if bounds is None:
-            bounds = QRegion(mask.mask()).boundingRect()
-            self._mask_bounds_cache[mask_key] = bounds
-            self._mask_bounds_cache.move_to_end(mask_key)
-            while len(self._mask_bounds_cache) > MAX_CACHED_MASK_BOUNDS:
-                self._mask_bounds_cache.popitem(last=False)
-        else:
-            self._mask_bounds_cache.move_to_end(mask_key)
-        if bounds.isEmpty():
-            return
-        # The speech mask occupies only a small mouth rectangle. Allocating and
-        # alpha-compositing a full 1254x1254 portrait for every 50 Hz viseme was
-        # the dominant Windows p95 cost. Preserve the same DestinationIn blend
-        # while restricting the temporary surface to the authored mask bounds.
-        layer = QPixmap(bounds.size())
-        layer.fill(Qt.transparent)
-        mask_painter = QPainter(layer)
-        mask_painter.drawPixmap(
-            0,
-            0,
-            source,
-            bounds.x(),
-            bounds.y(),
-            bounds.width(),
-            bounds.height(),
-        )
-        mask_painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
-        mask_painter.drawPixmap(
-            0,
-            0,
-            mask,
-            bounds.x(),
-            bounds.y(),
-            bounds.width(),
-            bounds.height(),
-        )
-        mask_painter.end()
-        painter = QPainter(target)
-        painter.setOpacity(max(0.0, min(1.0, float(opacity))))
-        painter.drawPixmap(bounds.topLeft(), layer)
-        painter.end()
-
-    def _paint_mouth_lips(self, target: QPixmap, pose: LayeredFacePose, mouth) -> None:
-        """Scale the upper/lower lips around the mouth center for articulation."""
-
-        width_scale = 1.0 + (mouth.width - 0.5) * 0.08 - mouth.rounding * 0.02
-        height_scale = 1.0 + mouth.aperture * 0.12
-        if (
-            abs(width_scale - 1.0) < SCALE_EPSILON
-            and abs(height_scale - 1.0) < SCALE_EPSILON
-        ):
-            return
-        for layer in ("lip_upper", "lip_lower"):
-            path = pose.path(layer)
-            dy = mouth.aperture * (-2.0 if layer == "lip_upper" else 8.0)
-            self._paint_transformed(
-                target,
-                path,
-                scale_x=width_scale,
-                scale_y=height_scale,
-                dy=dy,
-            )
-
-    def _paint_mouth_opening(
-        self,
-        target: QPixmap,
-        pose: LayeredFacePose,
-        mouth,
-    ) -> None:
-        """Open a visible cavity before placing the articulated lip layers."""
-        aperture = max(0.0, min(1.0, float(mouth.aperture)))
-        self._paint_transformed(
-            target,
-            pose.path("oral_cavity"),
-            scale_x=1.0 + mouth.rounding * 0.08,
-            scale_y=1.0 + aperture * 1.4,
-            dy=aperture * 3.0,
-        )
-        self._paint_transformed(
-            target,
-            pose.path("teeth_tongue"),
-            scale_y=1.0 + aperture * 0.45,
-            dy=aperture * 2.0,
-        )
-
-    def _paint_transformed(
-        self,
-        target: QPixmap,
-        path,
-        *,
-        scale_x: float = 1.0,
-        scale_y: float = 1.0,
-        dx: float = 0.0,
-        dy: float = 0.0,
-    ) -> None:
-        source = self._cached_pixmap(path)
-        if source.isNull():
-            return
-        center_x, center_y = self._layer_center(path, source)
-        transform = QTransform()
-        transform.translate(center_x + dx, center_y + dy)
-        transform.scale(scale_x, scale_y)
-        transform.translate(-center_x, -center_y)
-        # Paint the transformed layer directly into the destination. The old
-        # path allocated a full-canvas temporary for every lip/cavity layer on
-        # every viseme, then copied that canvas a second time. Direct painting
-        # is pixel-equivalent and removes four large allocations per frame.
-        painter = QPainter(target)
-        painter.setRenderHint(QPainter.SmoothPixmapTransform)
-        painter.setTransform(transform)
-        painter.drawPixmap(0, 0, source)
-        painter.end()
-
-    def _layer_center(self, path, source: QPixmap) -> tuple[float, float]:
-        """Return one alpha-bounds pivot using one construction-time scan."""
-        key = str(path)
-        cached = self._layer_center_cache.get(key)
-        if cached is not None:
-            return cached
-        bounds = QRegion(source.mask()).boundingRect()
-        center = (float(bounds.center().x()), float(bounds.center().y()))
-        self._layer_center_cache[key] = center
-        return center

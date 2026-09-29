@@ -142,21 +142,12 @@ def run() -> None:
         os.environ["LOCALAPPDATA"] = temp_dir
         overlay = ActiveOutfitOverlay(Path(temp_dir) / "store", ROOT)
         for pose, open_name, closed_name, silhouette in POSES:
-            # Call convention updated to match the runtime contract
-            # (infrastructure/layered_face_renderer.py's three-tier
-            # select_legacy_makeup_view_id, 2026-09-29 round 9): resolve a
-            # per-expression legacy makeup_view_id the same way render() now
-            # does, per own legacy expression (idle/blink, not one shared
-            # key for both). The shipped pack in ROOT declares neither the
-            # per-expression nor the pose-shared legacy key yet, so both
-            # resolve to None here -- byte-identical to the previous direct
-            # .apply(frame, silhouette) calls; thresholds below are
-            # unchanged.
+            # Resolve the pose-shared legacy makeup key exactly as the runtime does.
             open_makeup_view_id = select_legacy_makeup_view_id(
-                overlay.makeup_declares_view, silhouette, open_name,
+                overlay.makeup_declares_view, silhouette,
             )
             closed_makeup_view_id = select_legacy_makeup_view_id(
-                overlay.makeup_declares_view, silhouette, closed_name,
+                overlay.makeup_declares_view, silhouette,
             )
             open_image = overlay.apply(
                 QPixmap(str(ROOT / "assets" / "expressions" / f"{open_name}.png")),
