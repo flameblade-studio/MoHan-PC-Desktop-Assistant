@@ -11,8 +11,7 @@ lazy from unittest.mock import MagicMock, patch
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from PySide6.QtCore import QAbstractAnimation, QPoint, QTimer
-lazy from PySide6.QtTest import QTest
+lazy from PySide6.QtCore import QAbstractAnimation, QEventLoop, QPoint, QTimer
 lazy from PySide6.QtWidgets import QApplication, QLabel
 
 lazy from presentation.companion_window import CompanionWindow
@@ -319,11 +318,17 @@ def _assert_shutdown_callbacks_are_ignored(
         window.speech_playing = False
         invoke(window._start_next_speech)
 
-    QTimer.singleShot(20, lambda: invoke(window._speech_audio_finished))
-    QTimer.singleShot(30, lambda: invoke(window._complete_speech_audio_finished))
-    QTimer.singleShot(40, invoke_queued_next)
+    completion_loop = QEventLoop()
+
+    def invoke_shutdown_callbacks() -> None:
+        invoke(window._speech_audio_finished)
+        invoke(window._complete_speech_audio_finished)
+        invoke_queued_next()
+        completion_loop.quit()
+
+    QTimer.singleShot(0, invoke_shutdown_callbacks)
     window.close()
-    QTest.qWait(100)
+    completion_loop.exec()
     app.processEvents()
 
     assert errors == [], errors
