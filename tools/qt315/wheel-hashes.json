@@ -1,0 +1,35 @@
+{
+  "compatibility_version": "6.11.1+mohan.py315.1",
+  "platforms": {
+    "win_amd64": {
+      "build_entrypoint": "tools/install_python315_dependencies.py --like-ci",
+      "wheels": [
+        {
+          "filename": "pyside6-6.11.1+mohan.py315.1-cp310-abi3-win_amd64.whl",
+          "py_typed_count": 1,
+          "pyi_count": 60,
+          "sha256": "e80e39834d3b92e7c6351032162f134697d1488cfd91114799bd827154a59268"
+        },
+        {
+          "filename": "pyside6_addons-6.11.1+mohan.py315.1-cp310-abi3-win_amd64.whl",
+          "py_typed_count": 1,
+          "pyi_count": 60,
+          "sha256": "77c5e490350fe3fe09979dd278ea9efa99945450432143b1d897c4252ec50916"
+        },
+        {
+          "filename": "pyside6_essentials-6.11.1+mohan.py315.1-cp310-abi3-win_amd64.whl",
+          "py_typed_count": 1,
+          "pyi_count": 60,
+          "sha256": "2869620200e82520b8d0f89482d3c36240e59b15405d544a918e95cf387f52e7"
+        },
+        {
+          "filename": "shiboken6-6.11.1+mohan.py315.1-cp310-abi3-win_amd64.whl",
+          "py_typed_count": 1,
+          "pyi_count": 1,
+          "sha256": "4a353eebf47a406a2ea92118ad873c22a6eb55b335c7bc00cfac9a9cbc2e0996"
+        }
+      ]
+    }
+  },
+  "schema_version": 1
+}

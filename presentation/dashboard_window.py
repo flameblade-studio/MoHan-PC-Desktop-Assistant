@@ -82,9 +82,11 @@ class Dashboard(
         parent=None,
         *,
         gesture_controller: GestureController | None = None,
+        defer_wardrobe_startup: bool = False,
     ):
         super().__init__(parent)
         self.gesture_controller = gesture_controller
+        self._defer_wardrobe_startup = defer_wardrobe_startup
         self._initialize_dashboard_state(db, dependencies)
         self._initialize_theme_support()
         self._configured_lingxiao_theme_id = str(

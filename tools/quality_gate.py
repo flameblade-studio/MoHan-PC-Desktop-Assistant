@@ -47,6 +47,7 @@ VULTURE_EXCLUDE_PATTERN = (
 PINNED_REQUIREMENT = re.compile(
     r"^[A-Za-z0-9][A-Za-z0-9_.-]*==[^\s;]+(?:\s*;\s*[^\s].*)?$"
 )
+CARGO_AUDIT_VERSION = "0.22.2"
 
 
 @dataclass(frozen=True, slots=True)
@@ -175,6 +176,11 @@ def _stages() -> tuple[Stage, ...]:
                 "--file",
                 "native/mohan_accel/Cargo.lock",
             ),
+            "cargo-audit",
+        ),
+        Stage(
+            "Qt wheel parity",
+            (python, "tools/qt315_wheel_lock.py"),
         ),
         Stage(
             "full regression suite (aggregate)",
@@ -605,6 +611,10 @@ def _run_command(stage: Stage, root: Path) -> int:
     return completed.returncode
 
 
+def _cargo_audit_installed() -> bool:
+    return shutil.which("cargo-audit") is not None
+
+
 def _run_action(stage: Stage, root: Path) -> int:
     if stage.action == "pins":
         return _check_pins(root)
@@ -613,6 +623,13 @@ def _run_action(stage: Stage, root: Path) -> int:
         return _check_lazy_imports(root)
     if stage.action == "pyright":
         return _run_pyright(root)
+    if stage.action == "cargo-audit" and not _cargo_audit_installed():
+        print(
+            "cargo-audit is required. Install it with: "
+            f"cargo install cargo-audit --version {CARGO_AUDIT_VERSION} --locked",
+            file=sys.stderr,
+        )
+        return 127
     return _run_command(stage, root)
 
 

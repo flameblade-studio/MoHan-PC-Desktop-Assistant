@@ -26,7 +26,7 @@ lazy from domain.scalar_conversion import scalar_int
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_control_style import enforce_readable_combo_popups
-lazy from presentation.dashboard_wardrobe_packages import reload_wardrobe_packages
+lazy from presentation.dashboard_wardrobe_packages import ensure_wardrobe_packages, reload_wardrobe_packages
 lazy from presentation.dashboard_wardrobe_categories import reload_appearance_controls
 lazy from presentation.dashboard_artwork import CelestialFrame
 lazy from presentation.dashboard_wardrobe_status import wardrobe_generation_message
@@ -327,9 +327,9 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
 
     def _sync_game_lobby_navigation(self, index: int) -> None:
         """Keep keyboard, tests and the visible lobby selection in sync."""
-
         for button_index, button in enumerate(self.game_navigation_buttons):
             button.setChecked(button_index == index)
+        ensure_wardrobe_packages(self, index)
 
     def _themed_feature_page(self, factory, title: str) -> QWidget:
         """Place one feature panel beside a live status card for the desktop companion."""

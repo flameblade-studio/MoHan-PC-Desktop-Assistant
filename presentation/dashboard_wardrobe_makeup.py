@@ -96,7 +96,8 @@ class DashboardWardrobeMakeupMixin:
         view_changed = getattr(preview, "view_changed", None)
         if view_changed is not None:
             view_changed.connect(self._wardrobe_makeup_view_changed)
-        self._reload_wardrobe_makeup_options()
+        if not self._defer_wardrobe_startup:
+            self._reload_wardrobe_makeup_options()
         self.wardrobe_makeup_selector.currentIndexChanged.connect(
             self._wardrobe_makeup_selected
         )
