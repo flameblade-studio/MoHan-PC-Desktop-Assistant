@@ -10,6 +10,8 @@
 - 測試閘門分三層，仍由同一個 `tests/run_all.py` 執行：開發中每次改動用 `fast`（`python tests/run_all.py fast`），依 `tests/impact_map.json` 選取受影響測試並保留契約測試；提交前用 `gate`（`python tests/run_all.py gate`，也是預設完整套）；排程或隔夜，以及需要集中檢查封裝／跨平台／長時間資產、語音、UI 項目時用 `nightly`（`python tests/run_all.py nightly`）。
 - `fast --changed-from <git-ref>`（例如 `python tests/run_all.py fast --changed-from main`）會納入指定 ref 之後的提交及目前工作樹、暫存區、未追蹤檔案。
 - 若 `fast` 的檔案對照、Git ref 或 impact map 處於不可用狀態，會安全退回完整套並印出 `FAST_FALLBACK_TO_GATE`；`gate` 保留結尾 `ALL_..._TESTS_OK`，不帶參數仍等同 `gate`。
+- 完整套可用 `--shard-count N --shard-index I` 依 `tests/test_durations.json` 的歷史耗時平衡分片；`--list` 只列出分片模組。以 `python tests/run_all.py --aggregate --write-durations tests/test_durations.json` 完整實跑後更新耗時表。
+- `python tools/quality_gate.py --stages static` 只跑靜態階段 1 至 14；`--stages tests --shard-index I --shard-count N` 只跑指定完整測試分片。不帶參數仍執行全部 15 階段。
 
 ### 完整回歸暫時狀態
 
@@ -58,6 +60,8 @@
 - 测试关卡分三层，仍由同一个 `tests/run_all.py` 执行：开发中每次改动用 `fast`（`python tests/run_all.py fast`），依据 `tests/impact_map.json` 选择受影响测试并保留契约测试；提交前用 `gate`（`python tests/run_all.py gate`，也是默认完整套）；排程或隔夜，以及需要集中检查打包／跨平台／长时间资产、语音、UI 项目时用 `nightly`（`python tests/run_all.py nightly`）。
 - `fast --changed-from <git-ref>`（例如 `python tests/run_all.py fast --changed-from main`）会纳入指定 ref 之后的提交以及当前工作树、暂存区、未跟踪文件。
 - 如果 `fast` 的文件对应关系、Git ref 或 impact map 处于不可用状态，会安全退回完整套并打印 `FAST_FALLBACK_TO_GATE`；`gate` 保留结尾 `ALL_..._TESTS_OK`，不带参数仍等同 `gate`。
+- 完整套可用 `--shard-count N --shard-index I` 根据 `tests/test_durations.json` 的历史耗时进行均衡分片；`--list` 只列出分片模块。通过 `python tests/run_all.py --aggregate --write-durations tests/test_durations.json` 完整实跑后更新耗时表。
+- `python tools/quality_gate.py --stages static` 只运行静态阶段 1 至 14；`--stages tests --shard-index I --shard-count N` 只运行指定完整测试分片。不带参数时仍运行全部 15 个阶段。
 
 ### 完整回归暂时状态
 
@@ -106,6 +110,8 @@
 - The test runner has three tiers and remains the single `tests/run_all.py` entry point: use `fast` (`python tests/run_all.py fast`) for each development change, selecting affected tests through `tests/impact_map.json` while retaining contract tests; use `gate` (`python tests/run_all.py gate`, also the default) before submission for the complete suite; use `nightly` (`python tests/run_all.py nightly`) on a schedule or overnight for packaging smoke, cross-platform, and long-running asset/speech/UI checks.
 - `fast --changed-from <git-ref>` (for example, `python tests/run_all.py fast --changed-from main`) includes commits after the selected ref plus current worktree, index, and untracked files.
 - When the changed-file mapping, Git ref, or impact map is unavailable to `fast`, it safely falls back to the complete suite and prints `FAST_FALLBACK_TO_GATE`; `gate` retains the ending `ALL_..._TESTS_OK`, and an omitted argument still selects `gate`.
+- The complete suite accepts `--shard-count N --shard-index I` for duration-balanced partitioning from `tests/test_durations.json`; `--list` only prints the shard modules. Refresh the timing table after a complete measured run with `python tests/run_all.py --aggregate --write-durations tests/test_durations.json`.
+- `python tools/quality_gate.py --stages static` runs only static stages 1 through 14; `--stages tests --shard-index I --shard-count N` runs only the selected complete-test shard. Omitting arguments still runs all 15 stages.
 
 ### Temporary complete-regression status
 
@@ -154,6 +160,8 @@ The following lists the corresponding automated evidence already established; al
 - テストランナーには三つの階層があり、入口は引き続き単一の `tests/run_all.py` です。開発中の各変更には `fast`（`python tests/run_all.py fast`）を使い、`tests/impact_map.json` から影響テストを選び、契約テストを残します。提出前には `gate`（`python tests/run_all.py gate`、既定値でもあります）で完全スイートを実行し、スケジュールまたは夜間には `nightly`（`python tests/run_all.py nightly`）でパッケージ化スモーク、クロスプラットフォーム、長時間の資産／音声／UI テストを集約します。
 - `fast --changed-from <git-ref>`（例：`python tests/run_all.py fast --changed-from main`）は指定 ref より後のコミットと、現在のワークツリー、インデックス、未追跡ファイルを含めます。
 - 変更ファイルの対応付け、Git ref、または impact map が `fast` から利用できない場合は、安全に完全スイートへ戻り `FAST_FALLBACK_TO_GATE` を表示します。`gate` の末尾 `ALL_..._TESTS_OK` は維持され、引数を省略した場合も `gate` を選択します。
+- 完全スイートでは `--shard-count N --shard-index I` を指定し、`tests/test_durations.json` の履歴時間に基づいて均衡分割できます。`--list` は分片のモジュールだけを表示します。完全な計測実行後に `python tests/run_all.py --aggregate --write-durations tests/test_durations.json` で時間表を更新します。
+- `python tools/quality_gate.py --stages static` は静的段階 1 から 14 のみを実行します。`--stages tests --shard-index I --shard-count N` は指定した完全テスト分片のみを実行します。引数を省略した場合は従来どおり全 15 段階を実行します。
 
 ### 完全回帰の暫定状況
 
