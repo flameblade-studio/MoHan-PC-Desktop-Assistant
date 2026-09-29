@@ -6,7 +6,7 @@ lazy import json
 lazy import threading
 lazy from collections.abc import Callable
 lazy from dataclasses import asdict
-lazy from typing import Any
+lazy from typing import Any, overload
 
 lazy from domain.flagship_action_models import (
     CAPABILITY_RISK,
@@ -50,6 +50,18 @@ PII_AUDIT_KEYS = frozenset(
     }
 )
 AUDIT_PREVIEW_CHARS = 64
+
+
+@overload
+def redact_audit_payload(value: dict[str, object]) -> dict[str, object]: ...
+
+
+@overload
+def redact_audit_payload(value: list[object]) -> list[object]: ...
+
+
+@overload
+def redact_audit_payload(value: object) -> object: ...
 
 
 def redact_audit_payload(value: object) -> object:

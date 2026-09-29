@@ -333,8 +333,8 @@ def infer_vowel_pcm16(
     ]
     if not low_frequencies or not high_frequencies:
         return level, "E"
-    first_formant = max(low_frequencies, key=powers.get)
-    second_formant = max(high_frequencies, key=powers.get)
+    first_formant = max(low_frequencies, key=lambda frequency: powers[frequency])
+    second_formant = max(high_frequencies, key=lambda frequency: powers[frequency])
 
     def distance(formants: tuple[float, float]) -> float:
         first, second = formants

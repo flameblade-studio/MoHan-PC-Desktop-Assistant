@@ -15,6 +15,10 @@ def notify_pending_corrupt_data(
     if not callable(consume):
         return
     messages = consume()
+    if not isinstance(messages, tuple) or any(
+        not isinstance(message, str) for message in messages
+    ):
+        return
     if messages:
         QMessageBox.warning(
             parent,

@@ -13,6 +13,7 @@ lazy import struct
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 lazy from types import MappingProxyType
+lazy from typing import TypeIs
 lazy from collections.abc import Mapping
 
 lazy from PySide6.QtGui import QImage, QPixmap
@@ -166,7 +167,7 @@ class ReviewedPoseMotion:
         return self.half_inputs[name].pixmap()
 
 
-def _valid_sha256(value: object) -> bool:
+def _valid_sha256(value: object) -> TypeIs[str]:
     return (
         isinstance(value, str)
         and len(value) == SHA256_HEX_LENGTH

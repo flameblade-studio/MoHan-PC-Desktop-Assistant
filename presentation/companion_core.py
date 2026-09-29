@@ -42,6 +42,7 @@ lazy from domain.emotional_resonance import EmotionalResonanceState
 lazy from domain.favor_exclusive import FavorExclusiveState
 lazy from domain.personality_state import PersonalityMirrorState
 lazy from domain.satiety import SatietyState
+lazy from domain.scalar_conversion import scalar_float as _float_value, scalar_int as _integer_value
 lazy from domain.safe_error import SafeError, sanitize_error
 lazy from domain.sensory_synesthesia import WeatherMood
 lazy from domain.sword_soul_resonance import SwordSoulResonanceState
@@ -535,7 +536,7 @@ class CompanionCoreMixin:
             return
         self._gesture_audio_muted = bool(muted)
         self._apply_voice_volume(
-            int(
+            _integer_value(
                 self.db.setting(
                     "voice_volume_percent", DEFAULT_VOICE_VOLUME_PERCENT
                 )
@@ -709,7 +710,7 @@ class CompanionCoreMixin:
         )
         self.dashboard.human_interaction.connect(self._note_human_interaction)
         self._apply_voice_volume(
-            int(
+            _integer_value(
                 self.db.setting(
                     "voice_volume_percent", DEFAULT_VOICE_VOLUME_PERCENT
                 )
@@ -774,7 +775,7 @@ class CompanionCoreMixin:
         outfit-weight suggestion and comfort verdict, and refreshes the
         satiety-driven blink interval so a hungry companion blinks sluggishly.
         """
-        temperature_c = float(
+        temperature_c = _float_value(
             self.db.setting(
                 "weather_temperature_c", DEFAULT_WEATHER_TEMPERATURE_C
             )
@@ -1030,9 +1031,9 @@ class CompanionCoreMixin:
         )
         self.affective_state = AffectiveState()
         self.affinity_state = AffinityState(
-            affinity=float(self.db.setting("affinity_value", 0.0)),
-            jealousy=float(self.db.setting("jealousy_value", 0.0)),
-            interaction_count=int(self.db.setting("affinity_interaction_count", 0)),
+            affinity=_float_value(self.db.setting("affinity_value", 0.0)),
+            jealousy=_float_value(self.db.setting("jealousy_value", 0.0)),
+            interaction_count=_integer_value(self.db.setting("affinity_interaction_count", 0)),
         )
         self.shy_gaze_state = ShyGazeState()
         self._shy_gaze_offset: tuple[float, float] | None = None
@@ -1059,10 +1060,10 @@ class CompanionCoreMixin:
         self._wardrobe_complaint: str = ""
         self.personality_mirror_state = PersonalityMirrorState()
         self.satiety_state = SatietyState(
-            satiety=float(self.db.setting("satiety_value", 1.0)),
+            satiety=_float_value(self.db.setting("satiety_value", 1.0)),
         )
         self.favor_exclusive_state = FavorExclusiveState(
-            favor=float(self.db.setting("favor_value", 0.0)),
+            favor=_float_value(self.db.setting("favor_value", 0.0)),
         )
         self.active_ai_wait_generation = 0
         self.active_ai_wait_expression = ""
@@ -1100,6 +1101,4 @@ class CompanionCoreMixin:
         self._latest_visual_scene = None
         self._recognized_scene_streak = 0
         self._last_wave_acknowledged_at = float("-inf")
-        self._multisensory_variation_index = int(
-            self.db.setting("multisensory_variation_index", 0)
-        )
+        self._multisensory_variation_index = _integer_value(self.db.setting("multisensory_variation_index", 0))

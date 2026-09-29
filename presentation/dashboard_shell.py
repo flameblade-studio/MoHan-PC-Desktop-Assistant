@@ -25,6 +25,7 @@ lazy from domain.language_support import (
     is_english, is_japanese, is_simplified_chinese,
 )
 lazy from domain.outfit_pack import IncompatibleBodyProfileError, OutfitPackError
+lazy from domain.scalar_conversion import scalar_int
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_control_style import enforce_readable_combo_popups
@@ -170,9 +171,7 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
         self._ai_generation = 0
         self.next_expression_metadata: tuple[str, float, str] | None = None
         self.chat_loaded_limit = 50
-        self.chat_zoom_percent = int(
-            self.db.setting("chat_zoom_percent", 100)
-        )
+        self.chat_zoom_percent = scalar_int(self.db.setting("chat_zoom_percent", 100))
         self.mode = str(db.setting("mode", "工作"))
         self.ui_language = profile_setting(db, "ui_language")
         self.assistant_name = profile_setting(db, "assistant_name")

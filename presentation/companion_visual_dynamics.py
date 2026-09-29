@@ -746,7 +746,7 @@ class CompanionVisualDynamicsMixin:
             and time.monotonic()
             <= getattr(self, "_sensory_gaze_expires_at", 0.0)
         )
-        if sensory_active:
+        if sensory_active and sensory_target is not None:
             self.gaze_target_x, self.gaze_target_y = sensory_target
             # Shy gaze aversion: apply a small, downward offset on top of the
             # sensory gaze target so the companion glances away bashfully when

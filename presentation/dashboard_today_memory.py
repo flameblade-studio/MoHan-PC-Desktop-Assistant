@@ -356,7 +356,7 @@ class DashboardTodayMemoryMixin:
             category=selected_category or None,
         )
         all_rows = self.db.list_memories(limit=1000)
-        counts = dict.fromkeys(MEMORY_CATEGORIES, 0)
+        counts: dict[str, int] = dict.fromkeys(MEMORY_CATEGORIES, 0)
         for row in all_rows:
             category = to_taiwan_traditional(str(row["category"]))
             counts[category] = counts.get(category, 0) + 1

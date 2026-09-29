@@ -11,6 +11,7 @@ lazy from domain.language_support import (
     LEGACY_AUTHOR_ORGANIZATION, LEGACY_TRANSCRIPTION_PROMPT, canonical_ui_language, localized_transcription_prompt,
 )
 lazy from domain.time_utils import local_wall_time
+lazy from domain.scalar_conversion import require_value
 lazy from infrastructure.db_affection import StudioDBAffectionMethods
 lazy from infrastructure.db_corrupt_data import StudioDBCorruptDataMethods
 lazy from infrastructure.db_memory import StudioDBMemoryMethods
@@ -132,10 +133,7 @@ DURATION_FORMATS: Mapping[str, DurationFormat] = frozendict({
         with_hours="{hours} 小时 {minutes} 分",
         minutes_only="{minutes} 分钟",
     ),
-    "en": DurationFormat(
-        with_hours="{hours} h {minutes} min",
-        minutes_only="{minutes} min",
-    ),
+    "en": DurationFormat(with_hours="{hours} h {minutes} min", minutes_only="{minutes} min"),
     "ja-JP": DurationFormat(
         with_hours="{hours}時間{minutes}分",
         minutes_only="{minutes}分",
@@ -639,7 +637,7 @@ class StudioDB:
             ),
         )
         self.conn.commit()
-        return int(cur.lastrowid)
+        return require_value(cur.lastrowid, "SQLite insert did not return a row ID.")
 
     def list_todos(self, include_done: bool = False) -> list[sqlite3.Row]:
         where = "" if include_done else "WHERE status != '完成'"
@@ -688,7 +686,7 @@ class StudioDB:
             ),
         )
         self.conn.commit()
-        return int(cur.lastrowid)
+        return require_value(cur.lastrowid, "SQLite insert did not return a row ID.")
 
     def list_ideas(self, limit: int = 30) -> list[sqlite3.Row]:
         return list(
@@ -983,7 +981,7 @@ class StudioDB:
                     ") VALUES(?,?,?,?,?)",
                     (name, definition, int(enabled), now, now),
                 )
-                return int(cursor.lastrowid)
+                return require_value(cursor.lastrowid, "SQLite insert did not return a row ID.")
             self.conn.execute(
                 "UPDATE workflows SET name=?,definition=?,enabled=?,"
                 "updated_at=? WHERE id=?",
@@ -1149,7 +1147,7 @@ class StudioDB:
             ),
         )
         self.conn.commit()
-        return int(cursor.lastrowid)
+        return require_value(cursor.lastrowid, "SQLite insert did not return a row ID.")
 
     def paired_devices(self) -> list[sqlite3.Row]:
         return list(

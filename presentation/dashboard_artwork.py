@@ -68,7 +68,7 @@ def _cover_rect(source: QRectF, target: QRectF) -> QRectF:
 class _ArtworkCanvas(QWidget):
     def __init__(self, parent: QWidget, kind: ArtworkKind) -> None:
         super().__init__(parent)
-        self.kind = kind
+        self.kind: ArtworkKind = kind
         self.scale = 1.0
         self.background: QPixmap | None = None
         self.setAttribute(Qt.WA_TransparentForMouseEvents)

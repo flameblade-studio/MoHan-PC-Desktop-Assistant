@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import argparse
+lazy import json
 lazy import os
 lazy import re
 lazy import shutil
@@ -15,6 +16,8 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
 VULTURE_WHITELIST = TOOLS / "vulture_whitelist.py"
+PYRIGHT_BASELINE = TOOLS / "pyright_baseline.json"
+PYRIGHT_BASELINE_SCHEMA_VERSION = 1
 PYTHON_SOURCE_EXCLUSIONS = frozenset({
     ".git",
     ".mypy_cache",
@@ -383,7 +386,98 @@ def _check_lazy_imports(root: Path = ROOT) -> int:
     return 0
 
 
-def _run_pyright(root: Path) -> int:
+def _pyright_warning_counts(
+    diagnostics: list[object],
+    temporary_root: Path,
+) -> tuple[dict[str, int], list[str]]:
+    counts: dict[str, int] = {}
+    rendered: list[str] = []
+    for item in diagnostics:
+        if not isinstance(item, dict):
+            raise ValueError("Pyright returned a non-object diagnostic.")
+        severity = item.get("severity")
+        file_value = item.get("file")
+        message = item.get("message")
+        if not isinstance(file_value, str) or not isinstance(message, str):
+            raise ValueError("Pyright returned an incomplete diagnostic.")
+        path = Path(file_value).resolve()
+        try:
+            relative = path.relative_to(temporary_root.resolve()).as_posix()
+        except ValueError as error:
+            raise ValueError("Pyright reported a file outside its temporary tree.") from error
+        range_value = item.get("range")
+        line = 1
+        if isinstance(range_value, dict):
+            start = range_value.get("start")
+            if isinstance(start, dict) and isinstance(start.get("line"), int):
+                line = start["line"] + 1
+        rule = item.get("rule")
+        rule_suffix = f" [{rule}]" if isinstance(rule, str) else ""
+        rendered.append(f"{relative}:{line}: {severity}{rule_suffix}: {message}")
+        if severity == "warning":
+            counts[relative] = counts.get(relative, 0) + 1
+    return dict(sorted(counts.items())), rendered
+
+
+def _load_pyright_baseline(path: Path) -> dict[str, int]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"Could not read Pyright baseline: {error}") from error
+    if not isinstance(payload, dict):
+        raise ValueError("Pyright baseline must be a JSON object.")
+    if payload.get("schema_version") != PYRIGHT_BASELINE_SCHEMA_VERSION:
+        raise ValueError("Pyright baseline has an unsupported schema version.")
+    counts = payload.get("warning_counts")
+    if not isinstance(counts, dict):
+        raise ValueError("Pyright baseline warning_counts must be an object.")
+    normalized: dict[str, int] = {}
+    for file_name, count in counts.items():
+        if (
+            not isinstance(file_name, str)
+            or not file_name
+            or "\\" in file_name
+            or not isinstance(count, int)
+            or isinstance(count, bool)
+            or count < 1
+        ):
+            raise ValueError("Pyright baseline contains an invalid warning count.")
+        normalized[file_name] = count
+    if payload.get("total_warnings") != sum(normalized.values()):
+        raise ValueError("Pyright baseline total_warnings does not match warning_counts.")
+    return dict(sorted(normalized.items()))
+
+
+def _pyright_baseline_changes(
+    baseline: dict[str, int],
+    current: dict[str, int],
+) -> tuple[dict[str, tuple[int, int]], dict[str, tuple[int, int]]]:
+    increases: dict[str, tuple[int, int]] = {}
+    decreases: dict[str, tuple[int, int]] = {}
+    for file_name in sorted(set(baseline) | set(current)):
+        old = baseline.get(file_name, 0)
+        new = current.get(file_name, 0)
+        if new > old:
+            increases[file_name] = (old, new)
+        elif new < old:
+            decreases[file_name] = (old, new)
+    return increases, decreases
+
+
+def _write_pyright_baseline(path: Path, counts: dict[str, int]) -> None:
+    payload = {
+        "schema_version": PYRIGHT_BASELINE_SCHEMA_VERSION,
+        "type_checking_mode": "basic",
+        "warning_counts": dict(sorted(counts.items())),
+        "total_warnings": sum(counts.values()),
+    }
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _run_pyright(root: Path, *, update_baseline: bool = False) -> int:
     config = root / "pyrightconfig.json"
     if not config.is_file():
         print("pyrightconfig.json is required.", file=sys.stderr)
@@ -406,13 +500,76 @@ def _run_pyright(root: Path) -> int:
             str(config_copy),
             "--pythonpath",
             sys.executable,
+            "--outputjson",
         )
         print(
             f"Normalized Python files: {len(copied_files) - 1}; "
             "only temporary copies are passed to Pyright.",
             flush=True,
         )
-        return _run_command(Stage("pyright", command), temporary_root)
+        completed = subprocess.run(
+            command,
+            cwd=temporary_root,
+            check=False,
+            capture_output=True,
+            encoding="utf-8",
+            errors="replace",
+            text=True,
+        )
+        try:
+            payload = json.loads(completed.stdout)
+            diagnostics = payload["generalDiagnostics"]
+            summary = payload["summary"]
+            if not isinstance(diagnostics, list) or not isinstance(summary, dict):
+                raise ValueError("Pyright JSON output has an invalid structure.")
+            warning_counts, rendered = _pyright_warning_counts(
+                diagnostics,
+                temporary_root,
+            )
+        except (json.JSONDecodeError, KeyError, TypeError, ValueError) as error:
+            print(f"Could not interpret Pyright JSON output: {error}", file=sys.stderr)
+            if completed.stderr:
+                print(completed.stderr, file=sys.stderr)
+            return completed.returncode or 1
+        error_count = summary.get("errorCount")
+        warning_count = sum(warning_counts.values())
+        print(
+            f"PYRIGHT_RESULT errors={error_count} warnings={warning_count} "
+            f"files_with_warnings={len(warning_counts)}",
+            flush=True,
+        )
+        if completed.returncode or error_count != 0:
+            for diagnostic in rendered:
+                print(diagnostic, file=sys.stderr)
+            return completed.returncode or 1
+
+        baseline_path = root / PYRIGHT_BASELINE.relative_to(ROOT)
+        try:
+            baseline = _load_pyright_baseline(baseline_path)
+        except ValueError as error:
+            print(error, file=sys.stderr)
+            return 2
+        increases, decreases = _pyright_baseline_changes(baseline, warning_counts)
+        if increases:
+            print("Pyright warning baseline increased:", file=sys.stderr)
+            for file_name, (old, new) in increases.items():
+                print(f"  {file_name}: {old} -> {new}", file=sys.stderr)
+            return 1
+        if update_baseline:
+            _write_pyright_baseline(baseline_path, warning_counts)
+            print(
+                f"PYRIGHT_BASELINE_UPDATED files={len(warning_counts)} "
+                f"warnings={warning_count}",
+                flush=True,
+            )
+        elif decreases:
+            print("Pyright warnings decreased; lower the baseline with:", flush=True)
+            print(f"  {_python()} tools/quality_gate.py --update-baseline", flush=True)
+            for file_name, (old, new) in decreases.items():
+                print(f"  {file_name}: {old} -> {new}", flush=True)
+        else:
+            print("PYRIGHT_BASELINE_OK", flush=True)
+        return 0
     except OSError as error:
         print(f"Could not prepare temporary Pyright source tree: {error}", file=sys.stderr)
         return 1
@@ -501,6 +658,11 @@ def main(argv: tuple[str, ...] | None = None) -> int:
     )
     parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--shard-count", type=int, default=1)
+    parser.add_argument(
+        "--update-baseline",
+        action="store_true",
+        help="Lower the tracked per-file Pyright warning baseline.",
+    )
     parsed = parser.parse_args(arguments)
     if parsed.shard_count < 1:
         parser.error("--shard-count must be at least 1")
@@ -510,6 +672,10 @@ def main(argv: tuple[str, ...] | None = None) -> int:
         parsed.shard_index != 0 or parsed.shard_count != 1
     ):
         parser.error("shard options require --stages tests")
+    if parsed.update_baseline:
+        if parsed.stages != "all" or parsed.shard_index != 0 or parsed.shard_count != 1:
+            parser.error("--update-baseline cannot be combined with stage or shard options")
+        return _run_pyright(ROOT, update_baseline=True)
     return run_gate(
         selection=parsed.stages,
         shard_index=parsed.shard_index,

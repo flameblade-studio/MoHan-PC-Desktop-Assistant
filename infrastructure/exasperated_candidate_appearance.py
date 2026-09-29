@@ -71,13 +71,15 @@ class ExasperatedCandidateAppearance:
             raise ValueError("Appearance must bind the approved exasperated source.")
         if schema == VARIANT_SCHEMA:
             raw_variants = manifest.get("variants")
-            valid_variant_list = isinstance(raw_variants, list) and all(
-                isinstance(variant, str) for variant in raw_variants
+            if not isinstance(raw_variants, list) or any(
+                not isinstance(variant, str) for variant in raw_variants
+            ):
+                raise ValueError("Appearance requires the classic and light variants.")
+            declared_variants = tuple(
+                variant for variant in raw_variants if isinstance(variant, str)
             )
-            declared_variants = tuple(raw_variants) if valid_variant_list else ()
             if (
                 len(declared_variants) != len(set(declared_variants))
-                or not valid_variant_list
                 or not set(REQUIRED_LOOK_VARIANTS).issubset(declared_variants)
                 or not set(declared_variants).issubset(SUPPORTED_LOOK_VARIANTS)
             ):
@@ -198,7 +200,11 @@ class ExasperatedCandidateAppearance:
             raise ValueError("Candidate appearance requires its native canvas.")
         if mouth_expression not in {None, "exasperated_front"} and mouth_expression not in EXPRESSION_VARIANTS:
             raise ValueError("Unrecognized candidate cosmetic mouth state.")
-        state = EXPRESSION_VARIANTS.get(mouth_expression, "rest")
+        state = (
+            "rest"
+            if mouth_expression is None
+            else EXPRESSION_VARIANTS.get(mouth_expression, "rest")
+        )
         result = frame.copy()
         painter = QPainter(result)
         try:

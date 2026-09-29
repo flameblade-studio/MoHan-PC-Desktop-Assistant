@@ -10,7 +10,7 @@ lazy import os
 lazy import re
 lazy import sqlite3
 lazy import sys
-lazy from collections.abc import Callable, Mapping
+lazy from collections.abc import Callable, Mapping, Sequence
 lazy from dataclasses import dataclass, field
 lazy from difflib import SequenceMatcher
 lazy from pathlib import Path
@@ -610,7 +610,7 @@ def female_windows_voices_for_language(
 
 
 def preferred_windows_voice(
-    voices: list[tuple[str, str]],
+    voices: Sequence[tuple[str, str]],
     saved: str = "",
     target_language: str = "zh-TW",
 ) -> str:

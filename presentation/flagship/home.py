@@ -241,7 +241,9 @@ class FlagshipHomeMixin:
                 self._t("連線正常" if bool(result) else "API 回應不正確")
             )
             return
-        self._render_home_entities(list(result))
+        if not isinstance(result, list):
+            raise TypeError("Home entity probe must return a list.")
+        self._render_home_entities(result)
 
     def _home_probe_failed(self, operation: str, message: str) -> None:
         if self._closed:
