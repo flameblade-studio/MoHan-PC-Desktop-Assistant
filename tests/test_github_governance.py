@@ -459,7 +459,7 @@ def test_preview_and_windows_workflows() -> None:
     pinned_quality_install = (
         "python -m pip install --only-binary=:all: -r requirements-dev.txt"
     )
-    repository_quality_gate = "python tools/quality_gate.py"
+    repository_quality_gate = "python tools/quality_gate.py --stages static"
     for required in (
         'PYTHONUTF8: "1"',
         'PYTHON_JIT = "0"',
@@ -474,6 +474,17 @@ def test_preview_and_windows_workflows() -> None:
         "--max-sample-read-error-percent 15",
         "--max-missed-samples-percent 10",
         "windows-tachyon-evidence",
+        "name: test-shard (${{ matrix.shard-index }})",
+        "shard-index: [0, 1, 2, 3, 4, 5, 6, 7]",
+        "--stages tests",
+        "needs: [test-static, test-shard]",
+        "name: test",
+        "if: ${{ always() }}",
+        "name: installer",
+        "needs: test",
+        "actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+        "hashFiles('rust-toolchain.toml', 'native/mohan_accel/Cargo.lock')",
+        "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
     ):
         assert required in windows_ci
     assert windows_ci.index(pinned_quality_install) < windows_ci.index(

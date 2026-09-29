@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+lazy import argparse
 lazy import os
 lazy import re
 lazy import shutil
@@ -177,6 +178,33 @@ def _stages() -> tuple[Stage, ...]:
             (python, "tests/run_all.py", "--aggregate"),
         ),
     )
+
+
+def _selected_stages(
+    selection: str,
+    *,
+    shard_index: int,
+    shard_count: int,
+) -> tuple[Stage, ...]:
+    stages = _stages()
+    if selection == "static":
+        return stages[:-1]
+    if selection == "tests":
+        test_stage = stages[-1]
+        return (
+            Stage(
+                test_stage.name,
+                (
+                    *test_stage.command,
+                    "--shard-index",
+                    str(shard_index),
+                    "--shard-count",
+                    str(shard_count),
+                ),
+                test_stage.action,
+            ),
+        )
+    return stages
 
 
 def _check_pins(root: Path = ROOT) -> int:
@@ -416,8 +444,18 @@ def _run_action(stage: Stage, root: Path) -> int:
     return _run_command(stage, root)
 
 
-def run_gate(root: Path = ROOT) -> int:
-    stages = _stages()
+def run_gate(
+    root: Path = ROOT,
+    *,
+    selection: str = "all",
+    shard_index: int = 0,
+    shard_count: int = 1,
+) -> int:
+    stages = _selected_stages(
+        selection,
+        shard_index=shard_index,
+        shard_count=shard_count,
+    )
     print(f"QUALITY_GATE_START stages={len(stages)} root={root}", flush=True)
     for index, stage in enumerate(stages, 1):
         print(
@@ -454,10 +492,29 @@ def main(argv: tuple[str, ...] | None = None) -> int:
     if arguments == ("--check-lazy-imports",):
         (ROOT / ".quality-tmp").mkdir(parents=True, exist_ok=True)
         return _check_lazy_imports()
-    if arguments:
-        print("Usage: python tools/quality_gate.py", file=sys.stderr)
-        return 2
-    return run_gate()
+    parser = argparse.ArgumentParser(description="Run the MoHan repository quality gate.")
+    parser.add_argument(
+        "--stages",
+        choices=("all", "static", "tests"),
+        default="all",
+        help="Run every stage, static stages 1-14, or the regression stage.",
+    )
+    parser.add_argument("--shard-index", type=int, default=0)
+    parser.add_argument("--shard-count", type=int, default=1)
+    parsed = parser.parse_args(arguments)
+    if parsed.shard_count < 1:
+        parser.error("--shard-count must be at least 1")
+    if not 0 <= parsed.shard_index < parsed.shard_count:
+        parser.error("--shard-index must be within the configured shard count")
+    if parsed.stages != "tests" and (
+        parsed.shard_index != 0 or parsed.shard_count != 1
+    ):
+        parser.error("shard options require --stages tests")
+    return run_gate(
+        selection=parsed.stages,
+        shard_index=parsed.shard_index,
+        shard_count=parsed.shard_count,
+    )
 
 
 if __name__ == "__main__":
