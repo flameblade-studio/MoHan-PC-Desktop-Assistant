@@ -7,6 +7,7 @@ lazy import json
 lazy import os
 lazy import subprocess
 lazy import sys
+lazy import time
 lazy from collections.abc import Sequence
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
@@ -45,6 +46,8 @@ FAST_TIER = "fast"
 NIGHTLY_TIER = "nightly"
 TEST_TIERS = (FAST_TIER, DEFAULT_TIER, NIGHTLY_TIER)
 IMPACT_MAP_FILENAME = "impact_map.json"
+TEST_DURATIONS_FILENAME = "test_durations.json"
+DURATION_SCHEMA = "mohan.test-durations.v1"
 
 
 def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -88,6 +91,18 @@ def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Run every selected test command and summarize all failures.",
     )
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help="List the selected test modules without running them.",
+    )
+    parser.add_argument(
+        "--write-durations",
+        metavar="PATH",
+        type=Path,
+        default=None,
+        help="Write measured per-module seconds after this run.",
+    )
     arguments = parser.parse_args(tuple(argv or ()))
     if arguments.shard_count < 1:
         parser.error("--shard-count must be at least 1")
@@ -104,6 +119,10 @@ def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     if arguments.changed_from is not None and arguments.tier != FAST_TIER:
         parser.error("--changed-from is only valid with the fast tier")
+    if arguments.write_durations is not None and arguments.list:
+        parser.error("--write-durations cannot be combined with --list")
+    if arguments.write_durations is not None and arguments.shard_count != 1:
+        parser.error("--write-durations requires an unsharded run")
     return arguments
 
 
@@ -113,13 +132,98 @@ def _select_shard(
     shard_index: int,
     shard_count: int,
 ) -> tuple[Path, ...]:
-    """Select one stable, disjoint round-robin shard."""
+    """Select one stable, disjoint shard balanced by historical duration."""
 
-    return tuple(
-        test
-        for index, test in enumerate(tests)
-        if index % shard_count == shard_index
+    durations, default_seconds = _load_test_durations()
+    assignments = _assign_shards(
+        tests,
+        shard_count=shard_count,
+        durations=durations,
+        default_seconds=default_seconds,
     )
+    return assignments[shard_index]
+
+
+def _load_test_durations(
+    path: Path | None = None,
+) -> tuple[dict[str, float], float]:
+    duration_path = path or TESTS_DIR / TEST_DURATIONS_FILENAME
+    try:
+        document = json.loads(duration_path.read_text(encoding="utf-8"))
+        raw_durations = document["durations"]
+        default_seconds = float(document["default_seconds"])
+        if document["schema"] != DURATION_SCHEMA:
+            raise ValueError("unsupported schema")
+        if not isinstance(raw_durations, dict) or default_seconds <= 0:
+            raise ValueError("invalid duration data")
+        durations = {
+            str(name): float(seconds)
+            for name, seconds in raw_durations.items()
+            if float(seconds) > 0
+        }
+    except (KeyError, OSError, TypeError, ValueError, json.JSONDecodeError):
+        return {}, 1.0
+    return durations, default_seconds
+
+
+def _estimated_seconds(
+    test: Path,
+    durations: dict[str, float],
+    default_seconds: float,
+) -> float:
+    return durations.get(test.name, default_seconds)
+
+
+def _assign_shards(
+    tests: Sequence[Path],
+    *,
+    shard_count: int,
+    durations: dict[str, float],
+    default_seconds: float,
+) -> tuple[tuple[Path, ...], ...]:
+    """Apply deterministic longest-processing-time-first load balancing."""
+
+    shards: list[list[Path]] = [[] for _ in range(shard_count)]
+    loads = [0.0] * shard_count
+    ordered = sorted(
+        tests,
+        key=lambda test: (
+            -_estimated_seconds(test, durations, default_seconds),
+            test.name,
+        ),
+    )
+    for test in ordered:
+        target = min(range(shard_count), key=lambda index: (loads[index], index))
+        shards[target].append(test)
+        loads[target] += _estimated_seconds(test, durations, default_seconds)
+    return tuple(tuple(sorted(shard)) for shard in shards)
+
+
+def _write_test_durations(path: Path, durations: dict[str, float]) -> None:
+    values = tuple(durations.values())
+    default_seconds = sum(values) / len(values) if values else 1.0
+    document = {
+        "schema": DURATION_SCHEMA,
+        "default_seconds": round(default_seconds, 3),
+        "durations": {
+            name: round(seconds, 3)
+            for name, seconds in sorted(durations.items())
+        },
+        "provenance": {
+            "source": "isolated module wall-clock measurements",
+            "update_command": (
+                "python tests/run_all.py --aggregate "
+                "--write-durations tests/test_durations.json"
+            ),
+        },
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(f"{path.suffix}.tmp")
+    temporary.write_text(
+        json.dumps(document, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(path)
 
 
 def _normalise_repo_path(value: str) -> str:
@@ -839,12 +943,35 @@ def main(argv: Sequence[str] | None = None) -> int:
     if not tests:
         print("Select at least one test for this shard.", file=sys.stderr)
         return 2
+    durations, default_seconds = _load_test_durations()
+    estimated_seconds = sum(
+        _estimated_seconds(test, durations, default_seconds) for test in tests
+    )
+    if arguments.list:
+        print(
+            f"SHARD_SELECTION index={arguments.shard_index} "
+            f"count={arguments.shard_count} modules={len(tests)} "
+            f"estimated_seconds={estimated_seconds:.3f}",
+            flush=True,
+        )
+        for test in tests:
+            print(f"SHARD_TEST={test.name}")
+        return 0
+    return _run_selected_tests(arguments, tests)
+
+
+def _run_selected_tests(
+    arguments: argparse.Namespace,
+    tests: Sequence[Path],
+) -> int:
     retried_modules: list[str] = []
     failures: list[str] = []
+    measured_durations: dict[str, float] = {}
     with TemporaryDirectory(prefix="mohan-test-suite-") as suite_temp:
         suite_root = Path(suite_temp)
         for index, test in enumerate(tests, start=1):
             print(f"[{index}/{len(tests)}] {test.name}", flush=True)
+            module_started = time.perf_counter()
             try:
                 commands = _test_commands(test)
             except OSError, SyntaxError, UnicodeError:
@@ -856,6 +983,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     _print_retried_modules(retried_modules)
                     return MALFORMED_TEST_EXIT_CODE
                 failures.append(failure)
+                measured_durations[test.name] = time.perf_counter() - module_started
                 continue
             for command_index, command in enumerate(commands, start=1):
                 returncode = _run_with_retry(
@@ -882,6 +1010,14 @@ def main(argv: Sequence[str] | None = None) -> int:
                         _print_retried_modules(retried_modules)
                         return returncode
                     failures.append(failure)
+            measured_durations[test.name] = time.perf_counter() - module_started
+    if arguments.write_durations is not None:
+        _write_test_durations(arguments.write_durations, measured_durations)
+        print(
+            f"TEST_DURATIONS_WRITTEN={arguments.write_durations} "
+            f"modules={len(measured_durations)}",
+            flush=True,
+        )
     # A module that only passed after a retry still exits 0, but the summary
     # must name it so every intermittent issue remains visible.
     _print_retried_modules(retried_modules)
