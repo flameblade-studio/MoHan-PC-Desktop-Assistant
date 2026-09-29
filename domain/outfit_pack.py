@@ -44,9 +44,7 @@ lazy from domain.outfit_pack_archive import (
     AUTHORING_VERSION,
     BODY_PROFILE_ID,
     BODY_PROFILE_VERSION,
-    FORMAT as FORMAT,
     MAX_ARCHIVE_BYTES,
-    VERSION as VERSION,
     appearance_items,
     archive_member_names,
     manifest_payload,
@@ -54,6 +52,8 @@ lazy from domain.outfit_pack_archive import (
     source_declaration,
     validate_declared_assets,
 )
+# Public re-exports: tools import FORMAT and VERSION from this module.
+from domain.outfit_pack_archive import FORMAT as FORMAT, VERSION as VERSION
 from domain.outfit_pack_archive import declared_asset_paths as _archive_declared_asset_paths
 
 _declared_asset_paths = _archive_declared_asset_paths
