@@ -65,8 +65,30 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
                 "IncompatibleBodyProfileError",
                 "OutfitPackError",
                 "_dimensions",
-                "_safe_member",
             ),
+        ),
+        (
+            "from",
+            "domain.outfit_pack_archive",
+            (
+                "BODY_PROFILE_ID",
+                "BODY_PROFILE_VERSION",
+                "FORMAT",
+                "VERSION",
+                "declared_asset_paths",
+            ),
+        ),
+    }),
+    "infrastructure/layered_face_renderer.py": frozenset({
+        (
+            "from",
+            "infrastructure.layered_face_painting",
+            ("MAX_CACHED_MASK_BOUNDS",),
+        ),
+        (
+            "from",
+            "domain.legacy_makeup",
+            ("select_legacy_makeup_view_id",),
         ),
     }),
     # ``infrastructure.layered_full_body_renderer`` re-exports the speech

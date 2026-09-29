@@ -43,12 +43,6 @@ lazy from infrastructure.full_body_display_placement import FullBodyDisplayPlace
 
 BLINK_VISIBLE_EPSILON = 1e-6
 AUTHORED_SPEECH_VISIBLE_APERTURE = 0.16
-# Iris translation scale: gaze_x/gaze_y are normalized to [-1, 1]; this maps
-# them onto a small pixel offset so the eyes track the pointer while preserving the iris
-# leaving the sclera.  The full-body layers are authored at 1024x1536, so a few
-# pixels of travel reads as a natural glance rather than an eye-roll.
-IRIS_GAZE_SCALE_X = 6.0
-IRIS_GAZE_SCALE_Y = 4.0
 # Breath lift scale: breath is normalized to [0, 1]; this maps the midpoint
 # (0.5) to zero lift and the extremes to a small vertical body rise/fall.
 BREATH_LIFT_SCALE = 6.0
@@ -89,6 +83,8 @@ FACE_AUTHORITY_REGION_LAYERS = (
     "eyelid_right", "eyeliner_left", "eyeliner_right", "brow_left",
     "brow_right",
 )
+_DEFAULT_MANIFEST: LayeredFullBodyManifest | None = None
+_DEFAULT_BOUND_PNG_BYTES: dict[str, bytes] | None = None
 
 
 class LayeredFullBodyRenderer(CompleteExpressionRendering):
@@ -158,12 +154,24 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         self._bound_png_bytes = snapshots
 
     def _manifest_or_load(self) -> LayeredFullBodyManifest:
+        global _DEFAULT_BOUND_PNG_BYTES, _DEFAULT_MANIFEST
         if self._manifest is None:
-            manifest = load_layered_full_body_assets(
-                PROJECT_ROOT / FULL_BODY_ASSET_DIR
-            )
-            self._bind_manifest_blinks(manifest)
-            self._manifest = manifest
+            if not self._strict_authority and _DEFAULT_MANIFEST is not None:
+                self._manifest = _DEFAULT_MANIFEST
+                self._bound_png_bytes = _DEFAULT_BOUND_PNG_BYTES or {}
+            else:
+                manifest = load_layered_full_body_assets(
+                    PROJECT_ROOT / FULL_BODY_ASSET_DIR
+                )
+                self._bind_manifest_blinks(manifest)
+                self._manifest = manifest
+                if not self._strict_authority:
+                    # Formal packaged assets are immutable for the lifetime of
+                    # the process. Share their fail-closed validation and byte
+                    # snapshots across renderer instances; candidate roots
+                    # remain independently validated above.
+                    _DEFAULT_MANIFEST = manifest
+                    _DEFAULT_BOUND_PNG_BYTES = self._bound_png_bytes
         return self._manifest
 
     def _cached_pixmap(self, path, *, required: bool = True) -> QPixmap:
@@ -250,6 +258,10 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
             if complete_paths is not None:
                 if oral_mask is not None:
                     protected_skin = frame.copy(oral_bounds)
+                # Complete neutral frames own the face pixels, while gaze is
+                # still a live control. Authored half/closed eyes stay atomic.
+                if eye_state is EyeState.REST:
+                    self._paint_dynamic_gaze(frame, view, motion)
                 return
             # Motion is replayable on the bare frame if either outfit phase fails.
             self._paint_dynamic_eye_layers(frame, view, motion)
@@ -614,24 +626,12 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
             painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceAtop)
             painter.drawPixmap(0, 0, authored)
             painter.end()
-            return
-        gaze_dx = round(float(motion.gaze_x) * IRIS_GAZE_SCALE_X)
-        gaze_dy = round(float(motion.gaze_y) * IRIS_GAZE_SCALE_Y)
-        if gaze_dx or gaze_dy:
-            gaze_layers = ("iris_left", "iris_right")
-            gaze_region = QRegion()
-            for layer_name in gaze_layers:
-                source = self._cached_pixmap(view.path(layer_name))
-                if not source.isNull():
-                    gaze_region = gaze_region.united(self._mask_region(source))
-            if not gaze_region.isEmpty():
-                painter = QPainter(target)
-                painter.setClipRegion(gaze_region)
-                for layer_name in gaze_layers:
-                    source = self._cached_pixmap(view.path(layer_name))
-                    if not source.isNull():
-                        painter.drawPixmap(gaze_dx, gaze_dy, source)
-                painter.end()
+            # Authored non-rest eyelids own the complete eye state.  The rest
+            # authority is only the neutral base; gaze still has to move its
+            # irises inside the semantic eye region.
+            if eye_state is not EyeState.REST:
+                return
+        self._paint_dynamic_gaze(target, view, motion)
 
         blink = min(1.0, max(0.0, float(expression.blink)))
         if blink > BLINK_VISIBLE_EPSILON:

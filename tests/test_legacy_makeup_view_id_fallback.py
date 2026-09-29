@@ -1,15 +1,15 @@
 """Pose-shared legacy makeup-key selection."""
 from __future__ import annotations
 
-import os
-import sys
-from pathlib import Path
+lazy import os
+lazy import sys
+lazy from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from infrastructure.layered_face_renderer import select_legacy_makeup_view_id
+lazy from infrastructure.layered_face_renderer import select_legacy_makeup_view_id
 
 
 def test_declared_pose_shared_key_is_selected() -> None:

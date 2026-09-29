@@ -9,24 +9,24 @@ required-silhouette one already is.
 """
 from __future__ import annotations
 
-import hashlib
-import io
-import json
-import os
-import shutil
-import sys
-import zipfile
-from pathlib import Path
+lazy import hashlib
+lazy import io
+lazy import json
+lazy import os
+lazy import shutil
+lazy import sys
+lazy import zipfile
+lazy from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-import pytest
-from PIL import Image
+lazy import pytest
+lazy from PIL import Image
 
-from domain.outfit_pack import LEGACY_MAKEUP_SILHOUETTES, inspect_outfit_pack
-from domain.outfit_pack_makeup import (
+lazy from domain.outfit_pack import LEGACY_MAKEUP_SILHOUETTES, inspect_outfit_pack
+lazy from domain.outfit_pack_makeup import (
     SAFE_REGION_PATH,
     load_makeup_safe_regions,
     verify_makeup_layers,

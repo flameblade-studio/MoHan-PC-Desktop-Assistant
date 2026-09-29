@@ -26,10 +26,10 @@ semi-transparent garment edges do not bleed.
 
 from __future__ import annotations
 
-import math
-from dataclasses import dataclass
+lazy import math
+lazy from dataclasses import dataclass
 
-import numpy as np
+lazy import numpy as np
 
 SCHEMA = "mohan.pose-atlas-visible-scale-placement.v1"
 SOLE_ALIGNED = "sole_aligned"

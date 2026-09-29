@@ -211,19 +211,24 @@ def _mouth_chroma_count(image: np.ndarray, evidence: FaceEvidence) -> int:
     right = min(image.shape[1], int(center_x + mouth_width))
     top = max(0, int(center_y - mouth_width * 0.6))
     bottom = min(image.shape[0], int(center_y + mouth_width * 0.7))
-    blue, green, red = cv2.split(image[top:bottom, left:right, :3])
-    blue_i = blue.astype(np.int16)
-    green_i = green.astype(np.int16)
-    red_i = red.astype(np.int16)
+    roi = image[top:bottom, left:right]
+    blue, green, red = cv2.split(roi[:, :, :3])
+    # PNG RGB beneath a nearly transparent antialias fringe is not visible at
+    # its stored straight-alpha intensity. Audit the premultiplied colour that
+    # can actually reach the compositor; opaque chroma defects remain exact.
+    alpha = roi[:, :, 3].astype(np.int32)
+    blue_i = blue.astype(np.int32) * alpha // 255
+    green_i = green.astype(np.int32) * alpha // 255
+    red_i = red.astype(np.int32) * alpha // 255
     green_spot = (
         (green_i > red_i + CHROMA_RED_DEFICIT_MIN)
         & (green_i > blue_i + 4)
-        & (green > CHROMA_MIN_BRIGHTNESS)
+        & (green_i > CHROMA_MIN_BRIGHTNESS)
     )
     cyan_spot = (
         (green_i > red_i + CHROMA_RED_DEFICIT_MIN)
         & (blue_i > red_i + CHROMA_RED_DEFICIT_MIN)
-        & (green > CHROMA_MIN_BRIGHTNESS)
+        & (green_i > CHROMA_MIN_BRIGHTNESS)
     )
     return int(np.count_nonzero(green_spot | cyan_spot))
 

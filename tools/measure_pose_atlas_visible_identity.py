@@ -20,26 +20,26 @@ plus a declared-versus-measured height block, and it hands the field records to
 
 from __future__ import annotations
 
-import argparse
-import hashlib
-import json
-import math
-import struct
-import sys
-import zlib
-from pathlib import Path
+lazy import argparse
+lazy import hashlib
+lazy import json
+lazy import math
+lazy import struct
+lazy import sys
+lazy import zlib
+lazy from pathlib import Path
 
-import numpy as np
-from PIL import Image
+lazy import numpy as np
+lazy from PIL import Image
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from domain.character_identity_audit import (
+lazy from domain.character_identity_audit import (
     expected_visibility,
 )
-from domain.visible_identity_audit import (
+lazy from domain.visible_identity_audit import (
     BAND_FIELDS,
     SCHEMA as AUDIT_SCHEMA,
     FieldStatus,
@@ -47,7 +47,7 @@ from domain.visible_identity_audit import (
     VisibleViewRecord,
     audit_visible_identity,
 )
-from tools import identity_geometry as geometry
+lazy from tools import identity_geometry as geometry
 
 SCHEMA = "mohan.pose-atlas-visible-identity-measurements.v1"
 ATLAS_RELATIVE = Path("assets/pose-atlas/v5-base")

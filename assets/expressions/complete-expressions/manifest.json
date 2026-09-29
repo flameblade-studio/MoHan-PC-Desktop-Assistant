@@ -8,7 +8,7 @@
             "path": "frames/front-crossed-neutral-rest.rgba.png",
             "sha256": "01d7ab6c3a0b82a7b9a33e09b005c9f5bfac8340625bea43868597d73cab43ab",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-crossed.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-crossed.source.birefnet-rgba.png",
               "sha256": "4e51db274b85e94ae5346feec8ba5784cdfc3d3424480fc199691d3835555437"
             },
             "eye_patch": null
@@ -17,11 +17,11 @@
             "path": "frames/front-crossed-neutral-half.rgba.png",
             "sha256": "52c8c79b73247d65cb76ff7ea25da3516e62182bbfa130896d147584fcb24b07",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-crossed.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-crossed.source.birefnet-rgba.png",
               "sha256": "4e51db274b85e94ae5346feec8ba5784cdfc3d3424480fc199691d3835555437"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-crossed.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.half.rgba.png",
               "sha256": "fc22d7c088397aaae030c2369987c9b814d37ff62811a1625b242c5cecad2048"
             }
           },
@@ -29,11 +29,11 @@
             "path": "frames/front-crossed-neutral-closed.rgba.png",
             "sha256": "80701c5d6e2df685bd251ed09683837bbdc3ce42023362a272f1fee0be7ed1ae",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-crossed.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-crossed.source.birefnet-rgba.png",
               "sha256": "4e51db274b85e94ae5346feec8ba5784cdfc3d3424480fc199691d3835555437"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-crossed.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.closed.rgba.png",
               "sha256": "c642fb77c2d03bf19c5ec4effcddb339ce28837124b615e99cbc79fb0f9df2c8"
             }
           }
@@ -43,7 +43,7 @@
             "path": "frames/front-crossed-small-rest.rgba.png",
             "sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-crossed-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-small.candidate.v7.rgba.png",
               "sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a"
             },
             "eye_patch": null
@@ -52,11 +52,11 @@
             "path": "frames/front-crossed-small-half.rgba.png",
             "sha256": "79c14a180eba5411e9920af70531cfea668c4a73dcff3bf1df35bae60b9409f4",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-crossed-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-small.candidate.v7.rgba.png",
               "sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-crossed.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.half.rgba.png",
               "sha256": "fc22d7c088397aaae030c2369987c9b814d37ff62811a1625b242c5cecad2048"
             }
           },
@@ -64,11 +64,11 @@
             "path": "frames/front-crossed-small-closed.rgba.png",
             "sha256": "ee484bcff4c5127385faa8a1f1dcb72d191e99784589acf9c5b85eb59ee265a6",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-crossed-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-small.candidate.v7.rgba.png",
               "sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-crossed.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.closed.rgba.png",
               "sha256": "c642fb77c2d03bf19c5ec4effcddb339ce28837124b615e99cbc79fb0f9df2c8"
             }
           }
@@ -78,7 +78,7 @@
             "path": "frames/front-crossed-a-rest.rgba.png",
             "sha256": "8404e74ebfd1ebbbd3ccbc5f771d6b66cf1b10def5690b836580a421b14ee3e3",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-crossed-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-a.candidate.v7.rgba.png",
               "sha256": "8404e74ebfd1ebbbd3ccbc5f771d6b66cf1b10def5690b836580a421b14ee3e3"
             },
             "eye_patch": null
@@ -87,11 +87,11 @@
             "path": "frames/front-crossed-a-half.rgba.png",
             "sha256": "2cf16fd3d51874acfca65d5410b81b35cd887f120c1cab515c06deb770960f1f",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-crossed-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-a.candidate.v7.rgba.png",
               "sha256": "8404e74ebfd1ebbbd3ccbc5f771d6b66cf1b10def5690b836580a421b14ee3e3"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-crossed.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.half.rgba.png",
               "sha256": "fc22d7c088397aaae030c2369987c9b814d37ff62811a1625b242c5cecad2048"
             }
           },
@@ -99,11 +99,11 @@
             "path": "frames/front-crossed-a-closed.rgba.png",
             "sha256": "c0abcb3907049970a4e6ec6c0c0a68eb4cf3bea55d70acf6eaa82cd29e322ff6",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-crossed-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-a.candidate.v7.rgba.png",
               "sha256": "8404e74ebfd1ebbbd3ccbc5f771d6b66cf1b10def5690b836580a421b14ee3e3"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-crossed.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.closed.rgba.png",
               "sha256": "c642fb77c2d03bf19c5ec4effcddb339ce28837124b615e99cbc79fb0f9df2c8"
             }
           }
@@ -113,7 +113,7 @@
             "path": "frames/front-crossed-o-rest.rgba.png",
             "sha256": "6b3735a8f91d0d421d115d739d58451be79391edcd56f22f8b9817bfdc8ae625",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-crossed-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-o.candidate.v7.rgba.png",
               "sha256": "6b3735a8f91d0d421d115d739d58451be79391edcd56f22f8b9817bfdc8ae625"
             },
             "eye_patch": null
@@ -122,11 +122,11 @@
             "path": "frames/front-crossed-o-half.rgba.png",
             "sha256": "39b09238f0d66874f7ef7a43a7e50b794bae4fe90c8d497465b33483daff3db8",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-crossed-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-o.candidate.v7.rgba.png",
               "sha256": "6b3735a8f91d0d421d115d739d58451be79391edcd56f22f8b9817bfdc8ae625"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-crossed.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.half.rgba.png",
               "sha256": "fc22d7c088397aaae030c2369987c9b814d37ff62811a1625b242c5cecad2048"
             }
           },
@@ -134,11 +134,11 @@
             "path": "frames/front-crossed-o-closed.rgba.png",
             "sha256": "34d786ea9fd9bb1551d3ac8481602f5f93d42b54a227c5b9d432ae54d588487a",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-crossed-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-o.candidate.v7.rgba.png",
               "sha256": "6b3735a8f91d0d421d115d739d58451be79391edcd56f22f8b9817bfdc8ae625"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-crossed.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.closed.rgba.png",
               "sha256": "c642fb77c2d03bf19c5ec4effcddb339ce28837124b615e99cbc79fb0f9df2c8"
             }
           }
@@ -146,15 +146,15 @@
       },
       "source_lineage": {
         "approved_mouth_receipt": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\receipt-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/receipt-v7.json",
           "sha256": "e2dd95fa03ce1eb956227310f1ecc88a96ee29999655a8b63a0d2ad0ce925239"
         },
         "approved_mouth_review": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\owner-approval-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/owner-approval-v7.json",
           "sha256": "095cec1fe22be59d4919b6c16e946069c064a1201c282f3e7f3e45b0eaeb47e2"
         },
         "approved_eye_report": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\report.json",
+          "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/report.json",
           "sha256": "691aa3ac627926dd450193b88457606683b86f46a5a0442f8bc65432ca48ed0a"
         }
       }
@@ -166,7 +166,7 @@
             "path": "frames/left-neutral-neutral-rest.rgba.png",
             "sha256": "3ea5e06dbd56c13f752595baa18024a4e6fdbbce1749adc80dd5b226f17d86f5",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\left-neutral.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/left-neutral.source.birefnet-rgba.png",
               "sha256": "80b7a68a6062f047063537ba1f919b9806b99541bc30859003140cfb9a0a8406"
             },
             "eye_patch": null
@@ -175,11 +175,11 @@
             "path": "frames/left-neutral-neutral-half.rgba.png",
             "sha256": "2186709215326d29dc9899f55556dd08ea582976be1e41c88249e0e57e88722b",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\left-neutral.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/left-neutral.source.birefnet-rgba.png",
               "sha256": "80b7a68a6062f047063537ba1f919b9806b99541bc30859003140cfb9a0a8406"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\left-neutral.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/left-neutral.half.rgba.png",
               "sha256": "1d3cba9d3e050a174f9b729e5a43620e863d7f4841fe8f9159b7e60e5b483261"
             }
           },
@@ -187,11 +187,11 @@
             "path": "frames/left-neutral-neutral-closed.rgba.png",
             "sha256": "9cba25b6f082fab4edb1cbdc3faf8abce34a5fa0ea32a48fae5b44d50487a82a",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\left-neutral.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/left-neutral.source.birefnet-rgba.png",
               "sha256": "80b7a68a6062f047063537ba1f919b9806b99541bc30859003140cfb9a0a8406"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\left-neutral.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/left-neutral.closed.rgba.png",
               "sha256": "89b4526a0d6a26b2a3e5e3525fbc7f18a537836cd4780688325fcab9375af1a5"
             }
           }
@@ -201,7 +201,7 @@
             "path": "frames/left-neutral-small-rest.rgba.png",
             "sha256": "be11e922639e43e334bbe95fcc65adf107f2aa28573b2c0bb136d48c1e77885b",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\left-neutral-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/left-neutral-small.candidate.v7.rgba.png",
               "sha256": "be11e922639e43e334bbe95fcc65adf107f2aa28573b2c0bb136d48c1e77885b"
             },
             "eye_patch": null
@@ -210,11 +210,11 @@
             "path": "frames/left-neutral-small-half.rgba.png",
             "sha256": "4b1ff7d1c8d10292b2458bf5ea32051de232d7802dc066c2c2e22a4ca4c6b939",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\left-neutral-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/left-neutral-small.candidate.v7.rgba.png",
               "sha256": "be11e922639e43e334bbe95fcc65adf107f2aa28573b2c0bb136d48c1e77885b"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\left-neutral.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/left-neutral.half.rgba.png",
               "sha256": "1d3cba9d3e050a174f9b729e5a43620e863d7f4841fe8f9159b7e60e5b483261"
             }
           },
@@ -222,11 +222,11 @@
             "path": "frames/left-neutral-small-closed.rgba.png",
             "sha256": "9303bcc164c0d5d67a5abb55e66311050dddfaa40e0bdb459aad31054f6cb206",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\left-neutral-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/left-neutral-small.candidate.v7.rgba.png",
               "sha256": "be11e922639e43e334bbe95fcc65adf107f2aa28573b2c0bb136d48c1e77885b"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\left-neutral.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/left-neutral.closed.rgba.png",
               "sha256": "89b4526a0d6a26b2a3e5e3525fbc7f18a537836cd4780688325fcab9375af1a5"
             }
           }
@@ -236,7 +236,7 @@
             "path": "frames/left-neutral-a-rest.rgba.png",
             "sha256": "bcb408601a5d809f898ea745c858ea0a56b7d2b08431789c423f33ff92636d20",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\left-neutral-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/left-neutral-a.candidate.v7.rgba.png",
               "sha256": "bcb408601a5d809f898ea745c858ea0a56b7d2b08431789c423f33ff92636d20"
             },
             "eye_patch": null
@@ -245,11 +245,11 @@
             "path": "frames/left-neutral-a-half.rgba.png",
             "sha256": "3dc979d0f71c10325754c6c14acfeaab77ae5da2013fe8a3515d39a241875b1f",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\left-neutral-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/left-neutral-a.candidate.v7.rgba.png",
               "sha256": "bcb408601a5d809f898ea745c858ea0a56b7d2b08431789c423f33ff92636d20"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\left-neutral.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/left-neutral.half.rgba.png",
               "sha256": "1d3cba9d3e050a174f9b729e5a43620e863d7f4841fe8f9159b7e60e5b483261"
             }
           },
@@ -257,11 +257,11 @@
             "path": "frames/left-neutral-a-closed.rgba.png",
             "sha256": "a04a1475e19833b8644285f55e0979a29f4686e53f5b844a0c003d97cf66dbe2",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\left-neutral-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/left-neutral-a.candidate.v7.rgba.png",
               "sha256": "bcb408601a5d809f898ea745c858ea0a56b7d2b08431789c423f33ff92636d20"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\left-neutral.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/left-neutral.closed.rgba.png",
               "sha256": "89b4526a0d6a26b2a3e5e3525fbc7f18a537836cd4780688325fcab9375af1a5"
             }
           }
@@ -271,7 +271,7 @@
             "path": "frames/left-neutral-o-rest.rgba.png",
             "sha256": "8b6fab15a74c1d69c62e6e64c385881b44838d553199c806c66e69039e607063",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\left-neutral-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/left-neutral-o.candidate.v7.rgba.png",
               "sha256": "8b6fab15a74c1d69c62e6e64c385881b44838d553199c806c66e69039e607063"
             },
             "eye_patch": null
@@ -280,11 +280,11 @@
             "path": "frames/left-neutral-o-half.rgba.png",
             "sha256": "b855e7c83e4888770009a4193c093784e9421c3dadf160bc1b400d246234b200",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\left-neutral-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/left-neutral-o.candidate.v7.rgba.png",
               "sha256": "8b6fab15a74c1d69c62e6e64c385881b44838d553199c806c66e69039e607063"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\left-neutral.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/left-neutral.half.rgba.png",
               "sha256": "1d3cba9d3e050a174f9b729e5a43620e863d7f4841fe8f9159b7e60e5b483261"
             }
           },
@@ -292,11 +292,11 @@
             "path": "frames/left-neutral-o-closed.rgba.png",
             "sha256": "6a47eec479b0a12ec3d7611dc0d8ebfb0ded05e539f8a4c5bb81ce1aeb33cf35",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\left-neutral-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/left-neutral-o.candidate.v7.rgba.png",
               "sha256": "8b6fab15a74c1d69c62e6e64c385881b44838d553199c806c66e69039e607063"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\left-neutral.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/left-neutral.closed.rgba.png",
               "sha256": "89b4526a0d6a26b2a3e5e3525fbc7f18a537836cd4780688325fcab9375af1a5"
             }
           }
@@ -304,15 +304,15 @@
       },
       "source_lineage": {
         "approved_mouth_receipt": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\receipt-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/receipt-v7.json",
           "sha256": "e2dd95fa03ce1eb956227310f1ecc88a96ee29999655a8b63a0d2ad0ce925239"
         },
         "approved_mouth_review": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\owner-approval-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/owner-approval-v7.json",
           "sha256": "095cec1fe22be59d4919b6c16e946069c064a1201c282f3e7f3e45b0eaeb47e2"
         },
         "approved_eye_report": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\report.json",
+          "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/report.json",
           "sha256": "691aa3ac627926dd450193b88457606683b86f46a5a0442f8bc65432ca48ed0a"
         }
       }
@@ -324,7 +324,7 @@
             "path": "frames/front-eureka-neutral-rest.rgba.png",
             "sha256": "619cb0d3b747a336bf5d10f6a43d598ebbc0207ff8cab761fa54e5152f2e8431",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-eureka.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-eureka.source.birefnet-rgba.png",
               "sha256": "fb109b432237f3bcaa1a193b81b2aff0fc508f80466f20a719ad2b273d17c4fc"
             },
             "eye_patch": null
@@ -333,11 +333,11 @@
             "path": "frames/front-eureka-neutral-half.rgba.png",
             "sha256": "181b81d81af6b723da945c07e02db826a35eaf55aba4e82cc4c3b96eac7a3c94",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-eureka.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-eureka.source.birefnet-rgba.png",
               "sha256": "fb109b432237f3bcaa1a193b81b2aff0fc508f80466f20a719ad2b273d17c4fc"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-eureka.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-eureka.half.rgba.png",
               "sha256": "5fa7d04fbbb25b6a7548411ec380a08777f9210008eb139f9db009c2c82107e1"
             }
           },
@@ -345,11 +345,11 @@
             "path": "frames/front-eureka-neutral-closed.rgba.png",
             "sha256": "ad0ca75d290a66544e8532210c4cab33e65b0ef0bc299e69bc82b7a889d3f9c7",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-eureka.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-eureka.source.birefnet-rgba.png",
               "sha256": "fb109b432237f3bcaa1a193b81b2aff0fc508f80466f20a719ad2b273d17c4fc"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-eureka.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-eureka.closed.rgba.png",
               "sha256": "7553d49aa261a5357238d79f531dd87983dcb185a7010b35b9c3a373ca2469d7"
             }
           }
@@ -359,7 +359,7 @@
             "path": "frames/front-eureka-small-rest.rgba.png",
             "sha256": "ba1eae238567c03de23bf895a088f18635c04ccb1bac0cbbabff55e60f5e4c1e",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-eureka-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-eureka-small.candidate.v7.rgba.png",
               "sha256": "ba1eae238567c03de23bf895a088f18635c04ccb1bac0cbbabff55e60f5e4c1e"
             },
             "eye_patch": null
@@ -368,11 +368,11 @@
             "path": "frames/front-eureka-small-half.rgba.png",
             "sha256": "3938fa93ba0a424de98aa2294581e28844737918807363acc139332e2b000667",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-eureka-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-eureka-small.candidate.v7.rgba.png",
               "sha256": "ba1eae238567c03de23bf895a088f18635c04ccb1bac0cbbabff55e60f5e4c1e"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-eureka.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-eureka.half.rgba.png",
               "sha256": "5fa7d04fbbb25b6a7548411ec380a08777f9210008eb139f9db009c2c82107e1"
             }
           },
@@ -380,11 +380,11 @@
             "path": "frames/front-eureka-small-closed.rgba.png",
             "sha256": "433a7ac4a088c55cf16401560c022528c56008a52edc93dce09b3392b333a7a6",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-eureka-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-eureka-small.candidate.v7.rgba.png",
               "sha256": "ba1eae238567c03de23bf895a088f18635c04ccb1bac0cbbabff55e60f5e4c1e"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-eureka.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-eureka.closed.rgba.png",
               "sha256": "7553d49aa261a5357238d79f531dd87983dcb185a7010b35b9c3a373ca2469d7"
             }
           }
@@ -394,7 +394,7 @@
             "path": "frames/front-eureka-a-rest.rgba.png",
             "sha256": "bf44a2255b82658a66cba67211f9181ed7dfbac1240bec67b7d6d696dcb78bff",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-eureka-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-eureka-a.candidate.v7.rgba.png",
               "sha256": "bf44a2255b82658a66cba67211f9181ed7dfbac1240bec67b7d6d696dcb78bff"
             },
             "eye_patch": null
@@ -403,11 +403,11 @@
             "path": "frames/front-eureka-a-half.rgba.png",
             "sha256": "f531eda4b406ce7f75167b65211e8f4d960ab11c700009f412ce28d0ecd16e09",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-eureka-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-eureka-a.candidate.v7.rgba.png",
               "sha256": "bf44a2255b82658a66cba67211f9181ed7dfbac1240bec67b7d6d696dcb78bff"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-eureka.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-eureka.half.rgba.png",
               "sha256": "5fa7d04fbbb25b6a7548411ec380a08777f9210008eb139f9db009c2c82107e1"
             }
           },
@@ -415,11 +415,11 @@
             "path": "frames/front-eureka-a-closed.rgba.png",
             "sha256": "020bab2c60a21f7b905f9e6d6e855d5d50e9dc524f2f6bddddc31748a940aea9",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-eureka-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-eureka-a.candidate.v7.rgba.png",
               "sha256": "bf44a2255b82658a66cba67211f9181ed7dfbac1240bec67b7d6d696dcb78bff"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-eureka.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-eureka.closed.rgba.png",
               "sha256": "7553d49aa261a5357238d79f531dd87983dcb185a7010b35b9c3a373ca2469d7"
             }
           }
@@ -429,7 +429,7 @@
             "path": "frames/front-eureka-o-rest.rgba.png",
             "sha256": "90ef6935beb3354ca2b97f9da6c6dae4302b44cfe4732f766a81c33fec6d637c",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-eureka-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-eureka-o.candidate.v7.rgba.png",
               "sha256": "90ef6935beb3354ca2b97f9da6c6dae4302b44cfe4732f766a81c33fec6d637c"
             },
             "eye_patch": null
@@ -438,11 +438,11 @@
             "path": "frames/front-eureka-o-half.rgba.png",
             "sha256": "f35e24286b09d7a2b69ef4b6bf35963f8d458ccd691daff2629138f3ffae96bf",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-eureka-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-eureka-o.candidate.v7.rgba.png",
               "sha256": "90ef6935beb3354ca2b97f9da6c6dae4302b44cfe4732f766a81c33fec6d637c"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-eureka.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-eureka.half.rgba.png",
               "sha256": "5fa7d04fbbb25b6a7548411ec380a08777f9210008eb139f9db009c2c82107e1"
             }
           },
@@ -450,11 +450,11 @@
             "path": "frames/front-eureka-o-closed.rgba.png",
             "sha256": "26fdf3cd41b762e98f91322e56e5238b59ce4ce5f6690692d2ad454004cca7c4",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-eureka-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-eureka-o.candidate.v7.rgba.png",
               "sha256": "90ef6935beb3354ca2b97f9da6c6dae4302b44cfe4732f766a81c33fec6d637c"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-eureka.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-eureka.closed.rgba.png",
               "sha256": "7553d49aa261a5357238d79f531dd87983dcb185a7010b35b9c3a373ca2469d7"
             }
           }
@@ -462,15 +462,15 @@
       },
       "source_lineage": {
         "approved_mouth_receipt": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\receipt-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/receipt-v7.json",
           "sha256": "e2dd95fa03ce1eb956227310f1ecc88a96ee29999655a8b63a0d2ad0ce925239"
         },
         "approved_mouth_review": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\owner-approval-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/owner-approval-v7.json",
           "sha256": "095cec1fe22be59d4919b6c16e946069c064a1201c282f3e7f3e45b0eaeb47e2"
         },
         "approved_eye_report": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\report.json",
+          "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/report.json",
           "sha256": "691aa3ac627926dd450193b88457606683b86f46a5a0442f8bc65432ca48ed0a"
         }
       }
@@ -482,7 +482,7 @@
             "path": "frames/front-mock-scold-neutral-rest.rgba.png",
             "sha256": "f006b2a7e02618f89b5f74d84732336b29693219dfb7c22f8596756978643b57",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-mock-scold.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-mock-scold.source.birefnet-rgba.png",
               "sha256": "c0aed3f9eda95d58f22ab7fbf50e155dfc8fb5d798d51894052a985ce921d154"
             },
             "eye_patch": null
@@ -491,11 +491,11 @@
             "path": "frames/front-mock-scold-neutral-half.rgba.png",
             "sha256": "5ce21b57c5257375c47af6a0266fb976f15908b5e198c9bbda3287785a9979d8",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-mock-scold.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-mock-scold.source.birefnet-rgba.png",
               "sha256": "c0aed3f9eda95d58f22ab7fbf50e155dfc8fb5d798d51894052a985ce921d154"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-scold.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-scold.half.rgba.png",
               "sha256": "ee2feca003f5802063a0371f5af9ee5c0f183e7064a721a17a8c242b7967d09a"
             }
           },
@@ -503,11 +503,11 @@
             "path": "frames/front-mock-scold-neutral-closed.rgba.png",
             "sha256": "05fa347ae854ab5d191974c5ea1dbb18c9a6f6b9e0b1ba722141028bda919f51",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-mock-scold.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-mock-scold.source.birefnet-rgba.png",
               "sha256": "c0aed3f9eda95d58f22ab7fbf50e155dfc8fb5d798d51894052a985ce921d154"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-scold.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-scold.closed.rgba.png",
               "sha256": "e79fac8f6e2b18f12561fe593e6e7e4edfba83b71b064fbbc15229bad8057a7c"
             }
           }
@@ -517,7 +517,7 @@
             "path": "frames/front-mock-scold-small-rest.rgba.png",
             "sha256": "bf6bf4e7a0e514eec4433d23a36db7bfb20710392207047878be7a15dc4897e5",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-scold-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-scold-small.candidate.v7.rgba.png",
               "sha256": "bf6bf4e7a0e514eec4433d23a36db7bfb20710392207047878be7a15dc4897e5"
             },
             "eye_patch": null
@@ -526,11 +526,11 @@
             "path": "frames/front-mock-scold-small-half.rgba.png",
             "sha256": "85bc74400db24362a593df7f5e873cb6bd903be8755bd6c53d07965f2009f9b8",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-scold-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-scold-small.candidate.v7.rgba.png",
               "sha256": "bf6bf4e7a0e514eec4433d23a36db7bfb20710392207047878be7a15dc4897e5"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-scold.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-scold.half.rgba.png",
               "sha256": "ee2feca003f5802063a0371f5af9ee5c0f183e7064a721a17a8c242b7967d09a"
             }
           },
@@ -538,11 +538,11 @@
             "path": "frames/front-mock-scold-small-closed.rgba.png",
             "sha256": "41734eec667d17432d73184a999d83b4fdfbf93dcae4ad445d73eecc0317be54",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-scold-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-scold-small.candidate.v7.rgba.png",
               "sha256": "bf6bf4e7a0e514eec4433d23a36db7bfb20710392207047878be7a15dc4897e5"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-scold.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-scold.closed.rgba.png",
               "sha256": "e79fac8f6e2b18f12561fe593e6e7e4edfba83b71b064fbbc15229bad8057a7c"
             }
           }
@@ -552,7 +552,7 @@
             "path": "frames/front-mock-scold-a-rest.rgba.png",
             "sha256": "0d874f73add7c99943dba05aac6fc7aafdd1077dddf0e1c30b52bb62cf3867bb",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-scold-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-scold-a.candidate.v7.rgba.png",
               "sha256": "0d874f73add7c99943dba05aac6fc7aafdd1077dddf0e1c30b52bb62cf3867bb"
             },
             "eye_patch": null
@@ -561,11 +561,11 @@
             "path": "frames/front-mock-scold-a-half.rgba.png",
             "sha256": "f91b0c3145f8f619ccc6c8cc7bedddd04d5844ba39e3bd90da7106731cc031aa",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-scold-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-scold-a.candidate.v7.rgba.png",
               "sha256": "0d874f73add7c99943dba05aac6fc7aafdd1077dddf0e1c30b52bb62cf3867bb"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-scold.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-scold.half.rgba.png",
               "sha256": "ee2feca003f5802063a0371f5af9ee5c0f183e7064a721a17a8c242b7967d09a"
             }
           },
@@ -573,11 +573,11 @@
             "path": "frames/front-mock-scold-a-closed.rgba.png",
             "sha256": "2a56a9fe0dcefe13b4681a62735baea355f2f98f816eb3d7ca13a51cb13ad11c",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-scold-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-scold-a.candidate.v7.rgba.png",
               "sha256": "0d874f73add7c99943dba05aac6fc7aafdd1077dddf0e1c30b52bb62cf3867bb"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-scold.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-scold.closed.rgba.png",
               "sha256": "e79fac8f6e2b18f12561fe593e6e7e4edfba83b71b064fbbc15229bad8057a7c"
             }
           }
@@ -587,7 +587,7 @@
             "path": "frames/front-mock-scold-o-rest.rgba.png",
             "sha256": "0345e12189c47b4dfe8475769fc44e0a1763af70595302bb4d0f8b82dd717391",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-scold-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-scold-o.candidate.v7.rgba.png",
               "sha256": "0345e12189c47b4dfe8475769fc44e0a1763af70595302bb4d0f8b82dd717391"
             },
             "eye_patch": null
@@ -596,11 +596,11 @@
             "path": "frames/front-mock-scold-o-half.rgba.png",
             "sha256": "1a1604164f899df438778e402df25002e027f903244b74716f6097d07edb93e9",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-scold-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-scold-o.candidate.v7.rgba.png",
               "sha256": "0345e12189c47b4dfe8475769fc44e0a1763af70595302bb4d0f8b82dd717391"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-scold.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-scold.half.rgba.png",
               "sha256": "ee2feca003f5802063a0371f5af9ee5c0f183e7064a721a17a8c242b7967d09a"
             }
           },
@@ -608,11 +608,11 @@
             "path": "frames/front-mock-scold-o-closed.rgba.png",
             "sha256": "d30ec4f099c1a0fe3e6b85d8a53cad0ac0139d70b467c6fb75a94b71bcb6c975",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-scold-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-scold-o.candidate.v7.rgba.png",
               "sha256": "0345e12189c47b4dfe8475769fc44e0a1763af70595302bb4d0f8b82dd717391"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-scold.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-scold.closed.rgba.png",
               "sha256": "e79fac8f6e2b18f12561fe593e6e7e4edfba83b71b064fbbc15229bad8057a7c"
             }
           }
@@ -620,15 +620,15 @@
       },
       "source_lineage": {
         "approved_mouth_receipt": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\receipt-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/receipt-v7.json",
           "sha256": "e2dd95fa03ce1eb956227310f1ecc88a96ee29999655a8b63a0d2ad0ce925239"
         },
         "approved_mouth_review": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\owner-approval-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/owner-approval-v7.json",
           "sha256": "095cec1fe22be59d4919b6c16e946069c064a1201c282f3e7f3e45b0eaeb47e2"
         },
         "approved_eye_report": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\report.json",
+          "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/report.json",
           "sha256": "691aa3ac627926dd450193b88457606683b86f46a5a0442f8bc65432ca48ed0a"
         }
       }
@@ -640,7 +640,7 @@
             "path": "frames/front-mock-hit-neutral-rest.rgba.png",
             "sha256": "8ed50e3ff3da0697bcb7f9192f1a430dce7f606a04933a101ee612a15dbf592a",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-mock-hit.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-mock-hit.source.birefnet-rgba.png",
               "sha256": "67a43c713e9e7d95e03e9886149db3dc15c1e4b559f5940307e1bc1c90fa56f8"
             },
             "eye_patch": null
@@ -649,11 +649,11 @@
             "path": "frames/front-mock-hit-neutral-half.rgba.png",
             "sha256": "93aae09319cdd337128749c5de448b92588642953fe1180fac97381572cde0a9",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-mock-hit.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-mock-hit.source.birefnet-rgba.png",
               "sha256": "67a43c713e9e7d95e03e9886149db3dc15c1e4b559f5940307e1bc1c90fa56f8"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-hit.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-hit.half.rgba.png",
               "sha256": "cf1d248c03b6de0382b3ee3425ff6cd93ba1a634485b871e0e6987d55dffed34"
             }
           },
@@ -661,11 +661,11 @@
             "path": "frames/front-mock-hit-neutral-closed.rgba.png",
             "sha256": "6a8b56c7552fbd0b8368a3b08734d9b512560f25a2483a84ad54423b5d2278e8",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-mock-hit.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-mock-hit.source.birefnet-rgba.png",
               "sha256": "67a43c713e9e7d95e03e9886149db3dc15c1e4b559f5940307e1bc1c90fa56f8"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-hit.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-hit.closed.rgba.png",
               "sha256": "b465260d7bc45613655457c0d226e517c5f30afb6bf7e48dcdfe4d5437f18fcd"
             }
           }
@@ -675,7 +675,7 @@
             "path": "frames/front-mock-hit-small-rest.rgba.png",
             "sha256": "09ff725e9fb403a6e1ccadd64ae99dc5a3018bc46f0a3bb6382eccc58f6cc93f",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-hit-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-hit-small.candidate.v7.rgba.png",
               "sha256": "09ff725e9fb403a6e1ccadd64ae99dc5a3018bc46f0a3bb6382eccc58f6cc93f"
             },
             "eye_patch": null
@@ -684,11 +684,11 @@
             "path": "frames/front-mock-hit-small-half.rgba.png",
             "sha256": "58c2e6b9a790e672bbb091ff9c5b0c1fb683eab8f4e9b8ee86896c6b4f2e96f5",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-hit-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-hit-small.candidate.v7.rgba.png",
               "sha256": "09ff725e9fb403a6e1ccadd64ae99dc5a3018bc46f0a3bb6382eccc58f6cc93f"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-hit.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-hit.half.rgba.png",
               "sha256": "cf1d248c03b6de0382b3ee3425ff6cd93ba1a634485b871e0e6987d55dffed34"
             }
           },
@@ -696,11 +696,11 @@
             "path": "frames/front-mock-hit-small-closed.rgba.png",
             "sha256": "d47928415065fdc5b11be53eddc0584a252a81d66b9fb4451c64207ec6b000ff",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-hit-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-hit-small.candidate.v7.rgba.png",
               "sha256": "09ff725e9fb403a6e1ccadd64ae99dc5a3018bc46f0a3bb6382eccc58f6cc93f"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-hit.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-hit.closed.rgba.png",
               "sha256": "b465260d7bc45613655457c0d226e517c5f30afb6bf7e48dcdfe4d5437f18fcd"
             }
           }
@@ -710,7 +710,7 @@
             "path": "frames/front-mock-hit-a-rest.rgba.png",
             "sha256": "f4ba23aa48165c8ace6902784a2c7ce9691b5e810aa1bac66ca0b4fb71c9d425",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-hit-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-hit-a.candidate.v7.rgba.png",
               "sha256": "f4ba23aa48165c8ace6902784a2c7ce9691b5e810aa1bac66ca0b4fb71c9d425"
             },
             "eye_patch": null
@@ -719,11 +719,11 @@
             "path": "frames/front-mock-hit-a-half.rgba.png",
             "sha256": "f8b55b2cdab63a597129546f4258d16ebff679bbd7db8fb164fd98ff616439a2",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-hit-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-hit-a.candidate.v7.rgba.png",
               "sha256": "f4ba23aa48165c8ace6902784a2c7ce9691b5e810aa1bac66ca0b4fb71c9d425"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-hit.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-hit.half.rgba.png",
               "sha256": "cf1d248c03b6de0382b3ee3425ff6cd93ba1a634485b871e0e6987d55dffed34"
             }
           },
@@ -731,11 +731,11 @@
             "path": "frames/front-mock-hit-a-closed.rgba.png",
             "sha256": "a9692e5238201a391a5e989b8069e8a75f7397102733b8bdf384f2b1f4bf1bc4",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-hit-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-hit-a.candidate.v7.rgba.png",
               "sha256": "f4ba23aa48165c8ace6902784a2c7ce9691b5e810aa1bac66ca0b4fb71c9d425"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-hit.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-hit.closed.rgba.png",
               "sha256": "b465260d7bc45613655457c0d226e517c5f30afb6bf7e48dcdfe4d5437f18fcd"
             }
           }
@@ -745,7 +745,7 @@
             "path": "frames/front-mock-hit-o-rest.rgba.png",
             "sha256": "dcb75f779f7165309c8329eb5d2479b4527e2f2436357cab6fd7b11b43b053d4",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-hit-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-hit-o.candidate.v7.rgba.png",
               "sha256": "dcb75f779f7165309c8329eb5d2479b4527e2f2436357cab6fd7b11b43b053d4"
             },
             "eye_patch": null
@@ -754,11 +754,11 @@
             "path": "frames/front-mock-hit-o-half.rgba.png",
             "sha256": "11795f9175d7e013a00376dcc0a72afb3866a65532c971720605cba959ec8219",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-hit-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-hit-o.candidate.v7.rgba.png",
               "sha256": "dcb75f779f7165309c8329eb5d2479b4527e2f2436357cab6fd7b11b43b053d4"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-hit.half.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-hit.half.rgba.png",
               "sha256": "cf1d248c03b6de0382b3ee3425ff6cd93ba1a634485b871e0e6987d55dffed34"
             }
           },
@@ -766,11 +766,11 @@
             "path": "frames/front-mock-hit-o-closed.rgba.png",
             "sha256": "0dc64a452ee1f0ed06e477ab9dc0edc24552ccfbdd07f831b7f0e8bce611819c",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-mock-hit-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-mock-hit-o.candidate.v7.rgba.png",
               "sha256": "dcb75f779f7165309c8329eb5d2479b4527e2f2436357cab6fd7b11b43b053d4"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v5-visible-geometry-scale-166\\session48\\halfbody-blink-fix-claude-01\\patches\\front-mock-hit.closed.rgba.png",
+              "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-mock-hit.closed.rgba.png",
               "sha256": "b465260d7bc45613655457c0d226e517c5f30afb6bf7e48dcdfe4d5437f18fcd"
             }
           }
@@ -778,15 +778,15 @@
       },
       "source_lineage": {
         "approved_mouth_receipt": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\receipt-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/receipt-v7.json",
           "sha256": "e2dd95fa03ce1eb956227310f1ecc88a96ee29999655a8b63a0d2ad0ce925239"
         },
         "approved_mouth_review": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\owner-approval-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/owner-approval-v7.json",
           "sha256": "095cec1fe22be59d4919b6c16e946069c064a1201c282f3e7f3e45b0eaeb47e2"
         },
         "approved_eye_report": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\report.json",
+          "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/report.json",
           "sha256": "691aa3ac627926dd450193b88457606683b86f46a5a0442f8bc65432ca48ed0a"
         }
       }
@@ -798,7 +798,7 @@
             "path": "frames/front-exasperated-neutral-rest.rgba.png",
             "sha256": "a8d17565e2f4f767fc0e651e870ead9b65b26c405c474399f09783ee4f08a070",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-exasperated.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-exasperated.source.birefnet-rgba.png",
               "sha256": "1ce6cc9d4f1f7a55e8632ef26991990039c36edf9d3bb3a5476eb90551f4e528"
             },
             "eye_patch": null
@@ -807,11 +807,11 @@
             "path": "frames/front-exasperated-neutral-half.rgba.png",
             "sha256": "5bc86cc47c099beafffca6f1a3f98ee7a604b67913949527934f7ac2795a3c71",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-exasperated.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-exasperated.source.birefnet-rgba.png",
               "sha256": "1ce6cc9d4f1f7a55e8632ef26991990039c36edf9d3bb3a5476eb90551f4e528"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\eye-patches\\front-exasperated.half.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/eye-patches/front-exasperated.half.rgba.png",
               "sha256": "9b3be52e42f0cb86b0923dbaab7bfe092b7992d94ff2d213d02cea0c7e72a4b6"
             }
           },
@@ -819,11 +819,11 @@
             "path": "frames/front-exasperated-neutral-closed.rgba.png",
             "sha256": "f6af4285f6e7723344055ddb0b77394db326263d87900e37ff3f7f106de9db74",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-seven-pose-matting-146\\local-alpha-01\\front-exasperated.source.birefnet-rgba.png",
+              "path": "scratchpad/mohan-v2-v5-seven-pose-matting-146/local-alpha-01/front-exasperated.source.birefnet-rgba.png",
               "sha256": "1ce6cc9d4f1f7a55e8632ef26991990039c36edf9d3bb3a5476eb90551f4e528"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\eye-patches\\front-exasperated.closed.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/eye-patches/front-exasperated.closed.rgba.png",
               "sha256": "e8354560a373b416f29955666dc0227934b06285db22b72d00d48758d8923c89"
             }
           }
@@ -833,7 +833,7 @@
             "path": "frames/front-exasperated-small-rest.rgba.png",
             "sha256": "b17c3c6533ccc2385bb75131d7cc5a4d0d37ec8e041c2de346b9210e7bac9ac0",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-exasperated-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-exasperated-small.candidate.v7.rgba.png",
               "sha256": "b17c3c6533ccc2385bb75131d7cc5a4d0d37ec8e041c2de346b9210e7bac9ac0"
             },
             "eye_patch": null
@@ -842,11 +842,11 @@
             "path": "frames/front-exasperated-small-half.rgba.png",
             "sha256": "bd81bc8ccd954a414f3beff68fc796ecf4c5e1a28d6b1d755d9f43f8a8f8d4bd",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-exasperated-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-exasperated-small.candidate.v7.rgba.png",
               "sha256": "b17c3c6533ccc2385bb75131d7cc5a4d0d37ec8e041c2de346b9210e7bac9ac0"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\eye-patches\\front-exasperated.half.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/eye-patches/front-exasperated.half.rgba.png",
               "sha256": "9b3be52e42f0cb86b0923dbaab7bfe092b7992d94ff2d213d02cea0c7e72a4b6"
             }
           },
@@ -854,11 +854,11 @@
             "path": "frames/front-exasperated-small-closed.rgba.png",
             "sha256": "47c8354611d4a516c848d07b97cbca4e8eb6ecb40e48dbd20b3ed8289266dd92",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-exasperated-small.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-exasperated-small.candidate.v7.rgba.png",
               "sha256": "b17c3c6533ccc2385bb75131d7cc5a4d0d37ec8e041c2de346b9210e7bac9ac0"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\eye-patches\\front-exasperated.closed.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/eye-patches/front-exasperated.closed.rgba.png",
               "sha256": "e8354560a373b416f29955666dc0227934b06285db22b72d00d48758d8923c89"
             }
           }
@@ -868,7 +868,7 @@
             "path": "frames/front-exasperated-a-rest.rgba.png",
             "sha256": "4e2aae005aba069cb7d7fcb75057a56148dddf01a98e1021c8fefe19a781da77",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-exasperated-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-exasperated-a.candidate.v7.rgba.png",
               "sha256": "4e2aae005aba069cb7d7fcb75057a56148dddf01a98e1021c8fefe19a781da77"
             },
             "eye_patch": null
@@ -877,11 +877,11 @@
             "path": "frames/front-exasperated-a-half.rgba.png",
             "sha256": "4bc491945bb97c52eefc324bd5b2296fac86e55de827d3f8e853a66c28262010",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-exasperated-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-exasperated-a.candidate.v7.rgba.png",
               "sha256": "4e2aae005aba069cb7d7fcb75057a56148dddf01a98e1021c8fefe19a781da77"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\eye-patches\\front-exasperated.half.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/eye-patches/front-exasperated.half.rgba.png",
               "sha256": "9b3be52e42f0cb86b0923dbaab7bfe092b7992d94ff2d213d02cea0c7e72a4b6"
             }
           },
@@ -889,11 +889,11 @@
             "path": "frames/front-exasperated-a-closed.rgba.png",
             "sha256": "32a5002f14f916f870931d0ff4cee6417a57379171f252f03941aefb928c5c41",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-exasperated-a.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-exasperated-a.candidate.v7.rgba.png",
               "sha256": "4e2aae005aba069cb7d7fcb75057a56148dddf01a98e1021c8fefe19a781da77"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\eye-patches\\front-exasperated.closed.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/eye-patches/front-exasperated.closed.rgba.png",
               "sha256": "e8354560a373b416f29955666dc0227934b06285db22b72d00d48758d8923c89"
             }
           }
@@ -903,7 +903,7 @@
             "path": "frames/front-exasperated-o-rest.rgba.png",
             "sha256": "037f91f35d5a2fab44fe49b90df41ecab485aa0cd6f1cebfd4dd62f348f6503a",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-exasperated-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-exasperated-o.candidate.v7.rgba.png",
               "sha256": "037f91f35d5a2fab44fe49b90df41ecab485aa0cd6f1cebfd4dd62f348f6503a"
             },
             "eye_patch": null
@@ -912,11 +912,11 @@
             "path": "frames/front-exasperated-o-half.rgba.png",
             "sha256": "947326d3ee77fbf32f09d840364c7b15db8fb4b381ec74ac0077db6b452a9d73",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-exasperated-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-exasperated-o.candidate.v7.rgba.png",
               "sha256": "037f91f35d5a2fab44fe49b90df41ecab485aa0cd6f1cebfd4dd62f348f6503a"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\eye-patches\\front-exasperated.half.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/eye-patches/front-exasperated.half.rgba.png",
               "sha256": "9b3be52e42f0cb86b0923dbaab7bfe092b7992d94ff2d213d02cea0c7e72a4b6"
             }
           },
@@ -924,11 +924,11 @@
             "path": "frames/front-exasperated-o-closed.rgba.png",
             "sha256": "6e23c4b07f22ee90f65e0ab42c487ddda8de75b0a50eb82a245f0f58f4d221c2",
             "base": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\front-exasperated-o.candidate.v7.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-exasperated-o.candidate.v7.rgba.png",
               "sha256": "037f91f35d5a2fab44fe49b90df41ecab485aa0cd6f1cebfd4dd62f348f6503a"
             },
             "eye_patch": {
-              "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\eye-patches\\front-exasperated.closed.rgba.png",
+              "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/eye-patches/front-exasperated.closed.rgba.png",
               "sha256": "e8354560a373b416f29955666dc0227934b06285db22b72d00d48758d8923c89"
             }
           }
@@ -936,15 +936,15 @@
       },
       "source_lineage": {
         "approved_mouth_receipt": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\receipt-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/receipt-v7.json",
           "sha256": "e2dd95fa03ce1eb956227310f1ecc88a96ee29999655a8b63a0d2ad0ce925239"
         },
         "approved_mouth_review": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-mouth-rebuild-158\\owner-approval-v7.json",
+          "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/owner-approval-v7.json",
           "sha256": "095cec1fe22be59d4919b6c16e946069c064a1201c282f3e7f3e45b0eaeb47e2"
         },
         "approved_eye_report": {
-          "path": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-02\\mohan-front-layer-repair\\scratchpad\\mohan-v2-v5-eye-state-source-discovery-148\\isolated-bare-eye-patches\\report.json",
+          "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/report.json",
           "sha256": "691aa3ac627926dd450193b88457606683b86f46a5a0442f8bc65432ca48ed0a"
         }
       }

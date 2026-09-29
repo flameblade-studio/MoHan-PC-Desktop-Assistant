@@ -36,6 +36,8 @@ lazy from infrastructure.layered_face_assets import (
     LayeredFacePose,
     load_layered_face_assets,
 )
+# Public compatibility re-export retained after the painting helper split.
+from infrastructure.layered_face_painting import MAX_CACHED_MASK_BOUNDS as MAX_CACHED_MASK_BOUNDS
 lazy from infrastructure.layered_face_painting import LayeredFacePaintingMixin
 
 MOUTH_APERTURE_THRESHOLD = 0.01
@@ -118,9 +120,15 @@ class LayeredParametricFaceRenderer(
             else None
         )
         self._candidate_appearance_overlay = candidate_appearance_overlay
-        self._complete_halfbody = CompleteHalfbodyRenderer(
-            self._authority_dir / "complete-expressions", outfit_overlay,
+        # An explicitly injected detachable candidate must not be shadowed by
+        # the repository's installed complete-expression pack. Callers that
+        # want both sources can bind both directories explicitly.
+        complete_root = (
+            self._authority_dir / "complete-expressions"
+            if authority_dir is not None or detachable_dir is None
+            else self._detachable_dir / "complete-expressions"
         )
+        self._complete_halfbody = CompleteHalfbodyRenderer(complete_root, outfit_overlay)
         self._exasperated_candidate_assets: ExasperatedCandidateAssets | None = None
         self._exasperated_candidate_rest: QPixmap | None = None
         self._exasperated_candidate_patches: dict[str, QPixmap] = {}

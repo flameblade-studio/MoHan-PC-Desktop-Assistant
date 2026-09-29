@@ -12,7 +12,7 @@ lazy from PySide6.QtCore import QPoint, QRect
 lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from infrastructure import active_outfit_overlay as overlay_module
+lazy from infrastructure import active_outfit_base_clear as base_clear_module
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.appearance_layer_stack import AppearanceCallbacks, AppearanceLayerStack
 lazy from infrastructure.source_bound_garment_visibility import (
@@ -242,7 +242,7 @@ def test_bound_clear_runs_after_body_replacement(
     monkeypatch.setattr(overlay, "_protected_face_region", lambda *_args: QRegion())
     visible_hands: list[QRegion] = []
     monkeypatch.setattr(
-        overlay_module, "validate_garment_removal",
+        base_clear_module, "validate_garment_removal",
         lambda _root, _view, _size, _removal, _face, provider:
         visible_hands.append(provider(VIEW)),
     )
@@ -254,7 +254,7 @@ def test_bound_clear_runs_after_body_replacement(
     hand_region = QRegion(QRect(4, 4, 1, 1))
     hand_layers = ((hand, 0, 0, hand_region, 1.0),) if local_hands else None
     monkeypatch.setattr(
-        overlay_module, "load_garment_binding",
+        base_clear_module, "load_garment_binding",
         lambda *_args: GarmentBinding(
             QRegion(QRect(3, 3, 1, 1)), hand_layers,
             hand_region if local_hands else None,

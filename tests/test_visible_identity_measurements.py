@@ -2,21 +2,21 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
-import shutil
-import tempfile
-from collections.abc import Iterator
-from pathlib import Path
+lazy import hashlib
+lazy import json
+lazy import shutil
+lazy import tempfile
+lazy from collections.abc import Iterator
+lazy from pathlib import Path
 
-import numpy as np
-import pytest
-from PIL import Image
+lazy import numpy as np
+lazy import pytest
+lazy from PIL import Image
 
-from domain import visible_identity_audit as audit
-from tools import identity_geometry as geometry
-from tools import measure_pose_atlas_visible_identity as measure
-from tools import visible_scale_placement as placement
+lazy from domain import visible_identity_audit as audit
+lazy from tools import identity_geometry as geometry
+lazy from tools import measure_pose_atlas_visible_identity as measure
+lazy from tools import visible_scale_placement as placement
 
 CANVAS = (64, 96)
 WIDE_CANVAS = (128, 96)

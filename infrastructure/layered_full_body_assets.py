@@ -73,6 +73,7 @@ COMPLETE_EXPRESSION_STATES = (EyeState.REST, EyeState.HALF, EyeState.CLOSED)
 SPOKEN_VISEMES = tuple(
     viseme for viseme in Viseme if viseme is not Viseme.CLOSED
 )
+_VALIDATED_COMPLETE_PNG_DIGESTS: set[str] = set()
 
 
 @dataclass(frozen=True, slots=True)
@@ -448,6 +449,9 @@ def _validate_complete_expression_png(
     path: Path,
     canvas: tuple[int, int],
 ) -> None:
+    digest = hashlib.sha256(data).hexdigest()
+    if digest in _VALIDATED_COMPLETE_PNG_DIGESTS:
+        return
     if _png_dimensions(path, rgba_layer=True) != canvas:
         raise ValueError(f"Complete expression canvas mismatch: {path.name}")
     pixels = cv2.imdecode(np.frombuffer(data, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
@@ -463,6 +467,10 @@ def _validate_complete_expression_png(
         raise ValueError(
             f"Complete expression requires a nonempty transparent RGBA frame: {path.name}"
         )
+    # Manifest states intentionally reuse approved frame bytes across visemes
+    # and eye states. Content-addressed validation keeps the gate fail-closed
+    # without decoding identical PNG bytes hundreds of times.
+    _VALIDATED_COMPLETE_PNG_DIGESTS.add(digest)
 
 
 def _validate_complete_expression_group(

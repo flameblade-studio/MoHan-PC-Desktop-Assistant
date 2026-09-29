@@ -33,7 +33,7 @@ HISTORICAL_WAIVED_CODES = {
 # baseline file must match this expectation, never the other way around.
 CURRENT_PINNED_BASELINE = {
     "yaw+060-pitch+00": (
-        "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46",
+        "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
         frozenset({"forehead_outward_bulge"}),
     ),
     "yaw+090-pitch+00": (
@@ -99,6 +99,19 @@ def test_smooth_registered_profile_passes(tmp_path: Path) -> None:
     assert report.schema == AUDIT_SCHEMA
     assert report.passed
     assert preflight_exit_code(report) == 0
+
+
+def test_nearly_transparent_rgb_fringe_is_audited_at_composited_intensity(
+    tmp_path: Path,
+) -> None:
+    image = _image()
+    image[70, 62] = (100, 130, 80, 19)
+    _write(tmp_path, image)
+
+    report = _audit(tmp_path)
+
+    assert report.passed
+    assert "mouth_green_cyan_pixels" not in report.issues_by_code
 
 
 def test_forehead_spike_and_green_mouth_pixel_block_packaging(tmp_path: Path) -> None:

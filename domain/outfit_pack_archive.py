@@ -8,7 +8,7 @@ lazy import zipfile
 lazy from collections.abc import Callable
 
 lazy from domain._outfit_pack_models import AppearanceItem
-from domain.outfit_pack_assets import (
+lazy from domain.outfit_pack_assets import (
     MANIFEST,
     IncompatibleBodyProfileError,
     OutfitPackError,

@@ -1,8 +1,8 @@
 """Only the face-safe official profile ornament may replace legacy suppression."""
 
-import pytest
+lazy import pytest
 
-from domain.outfit_pack_official import (
+lazy from domain.outfit_pack_official import (
     OFFICIAL_NATIVE_HAIR_ALIAS,
     OFFICIAL_NATIVE_HEADWEAR_ALIAS,
     native_overlay_is_redundant,

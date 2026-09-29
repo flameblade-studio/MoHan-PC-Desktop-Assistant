@@ -2,7 +2,7 @@
   "audit_contract": {
     "identity_audit": {
       "baseline_path": "assets/pose-atlas/v5-base/identity-audit-baseline.json",
-      "baseline_sha256": "05984a2ddba5872161185f059a3cbbb4d1638c96d51e6a8ec8af58a9fd5ba80c",
+      "baseline_sha256": "6c9b4ac45642c1f3652ec6b75885b0e9d0ce82dc6831accbe7dfb536d8dcd256",
       "issue_count": 0,
       "measurement_gap": {
         "available_native_face_landmarks": 17,
@@ -557,7 +557,7 @@
       "external_raw_source_gaps": [],
       "path": "assets/pose-atlas/v5-base/SOURCE-PROVENANCE.json",
       "schema": "mohan.v5-fullbody-source-provenance.v1",
-      "sha256": "01e76e9cd8e76bc37ab095b978517901e9da60963ff027473fb0d2bc81b7ebdb",
+      "sha256": "44891e5e6db8da17a0b5943806cfbdaad6e8245046ac36b3956f4c8cf5abeceb",
       "status": "verified_22_exact_external_and_2_approved_composites_installed",
       "view_count": 24
     },
@@ -586,7 +586,7 @@
   "identity_audit_baseline": {
     "path": "assets/pose-atlas/v5-base/identity-audit-baseline.json",
     "schema": "mohan.pose-atlas-identity-baseline.v1",
-    "sha256": "05984a2ddba5872161185f059a3cbbb4d1638c96d51e6a8ec8af58a9fd5ba80c",
+    "sha256": "6c9b4ac45642c1f3652ec6b75885b0e9d0ce82dc6831accbe7dfb536d8dcd256",
     "view_count": 3,
     "waived_issue_count": 5
   },
@@ -919,7 +919,7 @@
     },
     {
       "body_sidecar": "assets/pose-atlas/v5-base/yaw-075-pitch+00.landmarks.json",
-      "body_sidecar_sha256": "451127c18d337e237d866f66a006e0fa85f75c79a3585b9eda19a318b7dab71e",
+      "body_sidecar_sha256": "75b21c1f761e9c7569ab890aef34025fb679fb5918acaf0380da9bd8b8c5672c",
       "hand_inference": {
         "augmentations_used": [
           "flip-horizontal"
@@ -949,13 +949,13 @@
           ],
           "reason": "first-pass highest-confidence selection failed hand_finger_proportion on the existing audit"
         },
-        "source_sha256": "d60ea4a30af06140fdde2c572b30acbe41c8cbfec5fc49d798db3f9e5a280f8f",
+        "source_sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
         "visible_sides": [
           "left"
         ]
       },
       "hands_sidecar": "assets/pose-atlas/v5-base/yaw-075-pitch+00.hands.json",
-      "hands_sidecar_sha256": "22a689a7f3b49316ee38f127ac42adba1987f09264bbdfeeea56aef6d7e9edf6",
+      "hands_sidecar_sha256": "75a4163631610a8657f7ac706c52a418566fce605f788d4312a2109991ffbe1d",
       "native_face": {
         "comparison": {
           "confidence_abs_difference": 0.0,
@@ -971,21 +971,21 @@
         "existing_artifact": "scratchpad/v4-identity-rebuild-20260905/canonical-25-root-batch-03/yaw-075-pitch+00/native-landmarks.json",
         "generated_probe": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/metadata-rebuild-01/native-face-probe/yaw-075-pitch+00.native-landmarks.json",
         "landmark_count": 478,
-        "source_sha256": "d60ea4a30af06140fdde2c572b30acbe41c8cbfec5fc49d798db3f9e5a280f8f",
+        "source_sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
         "status": "existing_native_verified_same_source_probe"
       },
-      "normalized_sha256": "d60ea4a30af06140fdde2c572b30acbe41c8cbfec5fc49d798db3f9e5a280f8f",
+      "normalized_sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
       "registration": "same_canvas_authority_copy",
       "source_path": "assets/pose-atlas/v5-base/yaw-075-pitch+00.png",
-      "source_sha256": "d60ea4a30af06140fdde2c572b30acbe41c8cbfec5fc49d798db3f9e5a280f8f",
+      "source_sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
       "staging_png": "assets/pose-atlas/v5-base/yaw-075-pitch+00.png",
-      "staging_png_sha256": "d60ea4a30af06140fdde2c572b30acbe41c8cbfec5fc49d798db3f9e5a280f8f",
+      "staging_png_sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
       "view_id": "yaw-075-pitch+00",
       "yaw_degrees": -75
     },
     {
       "body_sidecar": "assets/pose-atlas/v5-base/yaw-060-pitch+00.landmarks.json",
-      "body_sidecar_sha256": "3e765e191ec5be7cc730ee2248718998db8c3d49f2667135875ab3967efe91b9",
+      "body_sidecar_sha256": "736367c540c0e4299e51d86511623fede5d6c743c2e1f81a43d4cc69c15813e9",
       "hand_inference": {
         "augmentations_used": [
           "flip-horizontal"
@@ -998,13 +998,13 @@
           "right"
         ],
         "selection_correction": null,
-        "source_sha256": "2eb5f6e6b6bacfa606e4d37126f9b40c9ecf32397bd5a7caab91dd4e0276cf75",
+        "source_sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
         "visible_sides": [
           "left"
         ]
       },
       "hands_sidecar": "assets/pose-atlas/v5-base/yaw-060-pitch+00.hands.json",
-      "hands_sidecar_sha256": "f8b7c63a70576249a1927c42ee5e088eef4ea33de1f264670df7e14f16513580",
+      "hands_sidecar_sha256": "44cc1121f120a6fc0c46c2b122065aa43149b0f1803f837c49f12c9040aa7395",
       "native_face": {
         "comparison": {
           "confidence_abs_difference": 0.0,
@@ -1020,15 +1020,15 @@
         "existing_artifact": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/missing-angle-repair-01/native-canonical25-batch-01/yaw-060-pitch+00/native-landmarks.json",
         "generated_probe": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/metadata-rebuild-01/native-face-probe/yaw-060-pitch+00.native-landmarks.json",
         "landmark_count": 478,
-        "source_sha256": "2eb5f6e6b6bacfa606e4d37126f9b40c9ecf32397bd5a7caab91dd4e0276cf75",
+        "source_sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
         "status": "existing_native_verified_same_source_probe"
       },
-      "normalized_sha256": "2eb5f6e6b6bacfa606e4d37126f9b40c9ecf32397bd5a7caab91dd4e0276cf75",
+      "normalized_sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
       "registration": "same_canvas_authority_copy",
       "source_path": "assets/pose-atlas/v5-base/yaw-060-pitch+00.png",
-      "source_sha256": "2eb5f6e6b6bacfa606e4d37126f9b40c9ecf32397bd5a7caab91dd4e0276cf75",
+      "source_sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
       "staging_png": "assets/pose-atlas/v5-base/yaw-060-pitch+00.png",
-      "staging_png_sha256": "2eb5f6e6b6bacfa606e4d37126f9b40c9ecf32397bd5a7caab91dd4e0276cf75",
+      "staging_png_sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
       "view_id": "yaw-060-pitch+00",
       "yaw_degrees": -60
     },
@@ -1385,7 +1385,7 @@
     },
     {
       "body_sidecar": "assets/pose-atlas/v5-base/yaw+060-pitch+00.landmarks.json",
-      "body_sidecar_sha256": "1aebe44c71f8d30213909ca26a6314f2850dc9a0dddac04f76a763d7955ef00a",
+      "body_sidecar_sha256": "1aaebc17341a772f1eb5f15cad6f1ee9ac11bd7b3b428ff79cdd983a1a0704f7",
       "hand_inference": {
         "augmentations_used": [
           "rotate-clockwise"
@@ -1397,14 +1397,14 @@
         "observation_count": 2,
         "occluded_sides": [],
         "selection_correction": null,
-        "source_sha256": "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46",
+        "source_sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
         "visible_sides": [
           "left",
           "right"
         ]
       },
       "hands_sidecar": "assets/pose-atlas/v5-base/yaw+060-pitch+00.hands.json",
-      "hands_sidecar_sha256": "a2320499ecaf2a6f9ad8f2e8ac55e3c856089b966237f971e731874036725474",
+      "hands_sidecar_sha256": "0e63ad0338d92ba3584fd42db3c62056729a0932d20411d89760a8ce8eaf6e89",
       "native_face": {
         "comparison": {
           "confidence_abs_difference": 0.0,
@@ -1420,21 +1420,21 @@
         "existing_artifact": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/missing-angle-repair-01/native-canonical25-batch-01/yaw+060-pitch+00/native-landmarks.json",
         "generated_probe": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/metadata-rebuild-01/native-face-probe/yaw+060-pitch+00.native-landmarks.json",
         "landmark_count": 478,
-        "source_sha256": "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46",
+        "source_sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
         "status": "existing_native_verified_same_source_probe"
       },
-      "normalized_sha256": "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46",
+      "normalized_sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
       "registration": "same_canvas_authority_copy",
       "source_path": "assets/pose-atlas/v5-base/yaw+060-pitch+00.png",
-      "source_sha256": "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46",
+      "source_sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
       "staging_png": "assets/pose-atlas/v5-base/yaw+060-pitch+00.png",
-      "staging_png_sha256": "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46",
+      "staging_png_sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
       "view_id": "yaw+060-pitch+00",
       "yaw_degrees": 60
     },
     {
       "body_sidecar": "assets/pose-atlas/v5-base/yaw+075-pitch+00.landmarks.json",
-      "body_sidecar_sha256": "ad2e017326639d25186107b791504801e48eab71e7d6dc3d70c4cdbc6367771e",
+      "body_sidecar_sha256": "23e8947315620217cfc4a792f55d01d890c9d5b2ffe71f5a2eeafa33e10564d1",
       "hand_inference": {
         "augmentations_used": [
           "rotate-counterclockwise"
@@ -1447,13 +1447,13 @@
           "right"
         ],
         "selection_correction": null,
-        "source_sha256": "5ce8a24a7105f968bbd3bc3116740f7604a6ce76f6592b572bdc3fc5a29d277b",
+        "source_sha256": "78364a8e7d5ff032ab7420de18d0efe50203e4c3cdae4466b5d98112a09f93f2",
         "visible_sides": [
           "left"
         ]
       },
       "hands_sidecar": "assets/pose-atlas/v5-base/yaw+075-pitch+00.hands.json",
-      "hands_sidecar_sha256": "287a4a4d94c77954f246c0e7ccf7637c0c166e60e07d7cf4cca4b678a523eb1c",
+      "hands_sidecar_sha256": "fa50c3378861b3c047a4bc14c18b510921c8b4c86560868a01cdb23806beafec",
       "native_face": {
         "comparison": {
           "confidence_abs_difference": 0.0,
@@ -1469,15 +1469,15 @@
         "existing_artifact": "scratchpad/v4-identity-rebuild-20260905/angle-expansion-luna-b/canonical-next10-01/canonical25-output-02/yaw+075-pitch+00/native-landmarks.json",
         "generated_probe": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/metadata-rebuild-01/native-face-probe/yaw+075-pitch+00.native-landmarks.json",
         "landmark_count": 478,
-        "source_sha256": "5ce8a24a7105f968bbd3bc3116740f7604a6ce76f6592b572bdc3fc5a29d277b",
+        "source_sha256": "78364a8e7d5ff032ab7420de18d0efe50203e4c3cdae4466b5d98112a09f93f2",
         "status": "existing_native_verified_same_source_probe"
       },
-      "normalized_sha256": "5ce8a24a7105f968bbd3bc3116740f7604a6ce76f6592b572bdc3fc5a29d277b",
+      "normalized_sha256": "78364a8e7d5ff032ab7420de18d0efe50203e4c3cdae4466b5d98112a09f93f2",
       "registration": "same_canvas_authority_copy",
       "source_path": "assets/pose-atlas/v5-base/yaw+075-pitch+00.png",
-      "source_sha256": "5ce8a24a7105f968bbd3bc3116740f7604a6ce76f6592b572bdc3fc5a29d277b",
+      "source_sha256": "78364a8e7d5ff032ab7420de18d0efe50203e4c3cdae4466b5d98112a09f93f2",
       "staging_png": "assets/pose-atlas/v5-base/yaw+075-pitch+00.png",
-      "staging_png_sha256": "5ce8a24a7105f968bbd3bc3116740f7604a6ce76f6592b572bdc3fc5a29d277b",
+      "staging_png_sha256": "78364a8e7d5ff032ab7420de18d0efe50203e4c3cdae4466b5d98112a09f93f2",
       "view_id": "yaw+075-pitch+00",
       "yaw_degrees": 75
     },

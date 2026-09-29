@@ -42,8 +42,6 @@ lazy from domain.outfit_pack_assets import validate_pose_assets
 lazy from domain.outfit_pack_archive import (
     AUTHORING_TEMPLATE,
     AUTHORING_VERSION,
-    BODY_PROFILE_ID,
-    BODY_PROFILE_VERSION,
     MAX_ARCHIVE_BYTES,
     appearance_items,
     archive_member_names,
@@ -52,12 +50,14 @@ lazy from domain.outfit_pack_archive import (
     source_declaration,
     validate_declared_assets,
 )
-# Public re-exports: tools import FORMAT and VERSION from this module.
-from domain.outfit_pack_archive import FORMAT as FORMAT, VERSION as VERSION
-from domain.outfit_pack_archive import declared_asset_paths as _archive_declared_asset_paths
-
+from domain.outfit_pack_archive import (
+    BODY_PROFILE_ID,
+    BODY_PROFILE_VERSION,
+    FORMAT as FORMAT,
+    VERSION as VERSION,
+    declared_asset_paths as _archive_declared_asset_paths,
+)
 _declared_asset_paths = _archive_declared_asset_paths
-
 BASE_SILHOUETTES = ("cheek-rest", "left-neutral", "front-crossed")
 GESTURE_SILHOUETTES = ("front-mock-scold", "front-mock-hit", "front-eureka", "front-exasperated")
 POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)

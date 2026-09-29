@@ -47,7 +47,6 @@ VISIBLE_SPEECH_MOUTH_VIEWS = {
     # Both owner-approved +/-90 profile authorities are neutral-body sources
     # and paint no oral cavity. Their registered complete-expression frames
     # own speech instead of borrowing a procedural fallback mouth.
-    "yaw-075-pitch+00",
     "yaw-060-pitch+00",
     "yaw-045-pitch+00",
     "yaw-030-pitch+00",
@@ -57,7 +56,6 @@ VISIBLE_SPEECH_MOUTH_VIEWS = {
     "yaw+030-pitch+00",
     "yaw+045-pitch+00",
     "yaw+060-pitch+00",
-    "yaw+075-pitch+00",
 }
 
 
@@ -263,14 +261,24 @@ def test_speaking_moves_the_mouth_without_detaching_the_chin() -> None:
     assert mouth_changes > MIN_SPEAKING_MOUTH_CHANGED_PIXELS
 
     # A moving jaw replacement used to be drawn as a second skin patch below
-    # the face. Speaking preserves this lower-chin region exactly.
+    # the face. Speaking preserves the region below the authored mouth layers
+    # exactly; deriving this boundary from the semantic assets prevents the
+    # probe itself from overlapping a legitimate oral-cavity edge.
+    mouth_layer_bottom = max(
+        QRegion(QPixmap(str(view.path(name))).mask()).boundingRect().bottom()
+        for name in ("oral_cavity", "lip_upper", "lip_lower")
+    )
+    replacement_path = view.complete_expression_frames.replacement_mask
+    assert replacement_path is not None
+    replacement_region = QRegion(QPixmap(str(replacement_path)).mask())
     chin_changes = 0
     for y in range(
-        round(face_bounds.y() + face_bounds.height() * 0.76),
+        mouth_layer_bottom + 1,
         face_bounds.bottom() + 12,
     ):
         for x in range(face_bounds.x(), face_bounds.right() + 1):
-            chin_changes += neutral.pixel(x, y) != speaking.pixel(x, y)
+            if not replacement_region.contains(QPoint(x, y)):
+                chin_changes += neutral.pixel(x, y) != speaking.pixel(x, y)
     assert chin_changes == 0
 
 

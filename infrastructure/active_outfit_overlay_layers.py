@@ -226,6 +226,14 @@ class ActiveOutfitLayerMixin:
             for dx, dy in _DILATION_OFFSETS:
                 expanded = expanded.united(protected.translated(dx, dy))
             protected = expanded
+        visible_hair = visible_alpha_region(pixmap.toImage())
+        visible_hair.translate(anchor_x, anchor_y)
+        if visible_hair.intersected(protected).isEmpty():
+            # Sealed packs are already required to clear the complete dilated
+            # feature core. Applying the runtime ramp again would manufacture
+            # a second, straight alpha boundary through otherwise natural
+            # strands. Keep the validated authored edge byte-for-byte.
+            return pixmap
         silhouette = QRegion()
         # Rig cut-outs leave internal holes; those are not desktop background.
         for y in range(bounds.top(), bounds.bottom() + 1):
@@ -256,9 +264,15 @@ class ActiveOutfitLayerMixin:
     @staticmethod
     def _masked_hair(pixmap: QPixmap, anchor_x: int, anchor_y: int, alpha: QImage, bounds: QRect) -> QPixmap:
         image = pixmap.toImage().convertToFormat(QImage.Format_ARGB32_Premultiplied)
+        multiplier = QImage(image.size(), QImage.Format_ARGB32)
+        multiplier.fill(QColor(_OPAQUE, _OPAQUE, _OPAQUE, _OPAQUE))
+        multiplier_painter = QPainter(multiplier)
+        multiplier_painter.setCompositionMode(QPainter.CompositionMode_Source)
+        multiplier_painter.drawImage(bounds.x() - anchor_x, bounds.y() - anchor_y, alpha)
+        multiplier_painter.end()
         painter = QPainter(image)
         painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
-        painter.drawImage(bounds.x() - anchor_x, bounds.y() - anchor_y, alpha)
+        painter.drawImage(0, 0, multiplier)
         painter.end()
         return QPixmap.fromImage(image)
 

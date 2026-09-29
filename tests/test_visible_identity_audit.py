@@ -2,16 +2,16 @@
 
 from __future__ import annotations
 
-import pytest
+lazy import pytest
 
-from domain.character_identity_audit import (
+lazy from domain.character_identity_audit import (
     DEFAULT_IDENTITY_AUDIT_POLICY,
     FaceVisibility,
     expected_visibility,
 )
-from domain.character_pose import canonical_view_id
-from domain import character_identity_audit as strict_audit
-from domain import visible_identity_audit as audit
+lazy from domain.character_pose import canonical_view_id
+lazy from domain import character_identity_audit as strict_audit
+lazy from domain import visible_identity_audit as audit
 
 GOOD_SHA = "a" * 64
 MIRROR_PAIR = (15, -15)

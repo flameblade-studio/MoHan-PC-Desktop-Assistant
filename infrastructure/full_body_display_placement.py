@@ -2,16 +2,16 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
-import math
-from dataclasses import dataclass
-from pathlib import Path
+lazy import hashlib
+lazy import json
+lazy import math
+lazy from dataclasses import dataclass
+lazy from pathlib import Path
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPainter, QPixmap
+lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtGui import QPainter, QPixmap
 
-from domain.character_pose import CANONICAL_YAWS, canonical_view_id
+lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 
 
 SCHEMA = "mohan.v5-full-body-display-placement.v1"

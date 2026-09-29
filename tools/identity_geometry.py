@@ -12,12 +12,12 @@ model-derived diagnostics, not biometric certification or appearance approval.
 
 from __future__ import annotations
 
-import math
-from dataclasses import dataclass
-from typing import Any
-from collections.abc import Callable, Mapping
+lazy import math
+lazy from dataclasses import dataclass
+lazy from typing import Any
+lazy from collections.abc import Callable, Mapping
 
-import numpy as np
+lazy import numpy as np
 
 SCHEMA = "mohan.pose-atlas-visible-geometry.v1"
 

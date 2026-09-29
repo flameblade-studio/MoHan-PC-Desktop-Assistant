@@ -90,7 +90,7 @@ class ActiveOutfitOverlay(
             tuple[str, frozenset[str], str], Sequence[Layer]
         ] = {}
         self._phase_layers_by_view: dict[
-            tuple[str, str, frozenset[str], str], Sequence[Layer]
+            tuple[str, str, frozenset[str], str, str | None, str | None], Sequence[Layer]
         ] = {}
         self._protected_by_view: dict[str, QRegion] = {}
         self._feature_by_view: dict[str, QRegion] = {}

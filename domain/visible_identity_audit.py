@@ -21,19 +21,21 @@ never produce a pass. This module makes no biometric certification claim.
 
 from __future__ import annotations
 
-import math
-import re
-from dataclasses import dataclass
-from enum import StrEnum
+lazy import math
+lazy import re
+lazy from collections.abc import Mapping
+lazy from dataclasses import dataclass
+lazy from enum import StrEnum
+lazy from types import MappingProxyType
 
-from domain.character_identity_audit import (
+lazy from domain.character_identity_audit import (
     DEFAULT_IDENTITY_AUDIT_POLICY,
     SIGNATURE_FIELDS,
     FaceVisibility,
     IdentityAuditPolicy,
     expected_visibility,
 )
-from domain.character_pose import CANONICAL_YAWS, canonical_view_id
+lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 
 SCHEMA = "mohan.pose-atlas-visible-identity-audit.v1"
 CERTIFICATION_CLAIM = (
@@ -74,13 +76,13 @@ PROFILE_FIELDS = (
     "forehead_slope",
 )
 REAR_PROFILE_FIELDS = SIGNATURE_FIELDS[-4:]
-BAND_FIELDS: dict[FaceVisibility, tuple[str, ...]] = {
+BAND_FIELDS: Mapping[FaceVisibility, tuple[str, ...]] = MappingProxyType({
     FaceVisibility.FRONT: FRONTAL_FIELDS,
     FaceVisibility.THREE_QUARTER: FRONTAL_FIELDS,
     FaceVisibility.PROFILE: PROFILE_FIELDS,
     FaceVisibility.REAR_THREE_QUARTER: REAR_PROFILE_FIELDS,
     FaceVisibility.REAR: (),
-}
+})
 
 
 def _is_finite_number(value: object) -> bool:

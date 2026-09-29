@@ -90,10 +90,10 @@
         "opaque_exact_ratio": 1.0,
         "opaque_pixel_count": 219742,
         "source_locator": "owner-corpus/Codex 圖像 2026年9月11日 下午05_26_26.png",
-        "source_sha256": "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46"
+        "source_sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e"
       },
       "formal_path": "assets/pose-atlas/v5-base/yaw+060-pitch+00.png",
-      "formal_sha256": "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46",
+      "formal_sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
       "view_id": "yaw+060-pitch+00"
     },
     {
@@ -107,7 +107,7 @@
         "source_sha256": "cc938ba1b6e22a67e3d8027afc08239c6fee90ebfb5e75fd95df34ee6c17cb26"
       },
       "formal_path": "assets/pose-atlas/v5-base/yaw+075-pitch+00.png",
-      "formal_sha256": "5ce8a24a7105f968bbd3bc3116740f7604a6ce76f6592b572bdc3fc5a29d277b",
+      "formal_sha256": "78364a8e7d5ff032ab7420de18d0efe50203e4c3cdae4466b5d98112a09f93f2",
       "view_id": "yaw+075-pitch+00"
     },
     {
@@ -295,7 +295,7 @@
         "source_sha256": "4eb872e817ed1a88e9c87849619241516f86baee4e25d3c7735ee6970a6cdda8"
       },
       "formal_path": "assets/pose-atlas/v5-base/yaw-060-pitch+00.png",
-      "formal_sha256": "2eb5f6e6b6bacfa606e4d37126f9b40c9ecf32397bd5a7caab91dd4e0276cf75",
+      "formal_sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
       "view_id": "yaw-060-pitch+00"
     },
     {
@@ -306,10 +306,10 @@
         "opaque_exact_ratio": 1.0,
         "opaque_pixel_count": 157012,
         "source_locator": "owner-corpus/Codex 圖像 2026年9月10日 上午01_26_54.png",
-        "source_sha256": "d60ea4a30af06140fdde2c572b30acbe41c8cbfec5fc49d798db3f9e5a280f8f"
+        "source_sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52"
       },
       "formal_path": "assets/pose-atlas/v5-base/yaw-075-pitch+00.png",
-      "formal_sha256": "d60ea4a30af06140fdde2c572b30acbe41c8cbfec5fc49d798db3f9e5a280f8f",
+      "formal_sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
       "view_id": "yaw-075-pitch+00"
     },
     {
