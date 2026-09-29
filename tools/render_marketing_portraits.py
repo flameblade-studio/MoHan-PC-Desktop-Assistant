@@ -75,10 +75,24 @@ def render_portrait(overlay: ActiveOutfitOverlay, expression: str) -> QImage:
         if expression.startswith("blink") or expression.endswith("_speech_blink")
         else frozenset()
     )
+    # `sprite` is the legacy (pre-V5-rebind) authored portrait for every
+    # expression dressed by "cheek-rest"/"left-neutral" (idle/glance/caught/
+    # happy/worried/reminder, their _speech_* frames, and their lean/blink
+    # counterparts) -- geometrically a different face from those two
+    # silhouettes' regular (new-face) makeup layers.  When the active makeup
+    # pack declares a matching "<silhouette>-legacy" silhouette (see
+    # LEGACY_MAKEUP_SILHOUETTES, domain/outfit_pack.py), makeup resolves
+    # against that instead; otherwise this is unchanged from before.
+    makeup_view_id = None
+    legacy_view_id = f"{silhouette}-legacy"
+    declares = getattr(overlay, "makeup_declares_view", None)
+    if callable(declares) and declares(legacy_view_id):
+        makeup_view_id = legacy_view_id
     composed = overlay.apply(
         sprite,
         silhouette,
         suppress_makeup_slots=suppressed_makeup_slots,
+        makeup_view_id=makeup_view_id,
     )
     if overlay.layer_count(
         silhouette,

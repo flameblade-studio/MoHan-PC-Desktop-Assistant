@@ -212,6 +212,13 @@ def test_default_factory_loads_formal_layers_and_preserves_other_pose(
     renderer = create_presentation_ports().face_renderer_factory()
     assert renderer._exasperated_candidate_dir == formal
     assert renderer.supports_discrete_speech("exasperated_front")
+    # mock_scold now also has an installed complete-expression set (half-body
+    # blink v4, INSTALL-2 2026-09-28) and so genuinely supports_discrete_speech
+    # too -- via that mechanism, not the exasperated candidate. Stub out the
+    # complete-expression check here to isolate this test's actual subject:
+    # the exasperated-candidate path must not itself claim other gesture
+    # expressions.
+    monkeypatch.setattr(renderer._complete_halfbody, "supports", lambda expression: False)
     assert not renderer.supports_discrete_speech("mock_scold")
     base = QPixmap(PRODUCT_SIZE, PRODUCT_SIZE)
     base.fill(Qt.GlobalColor.transparent)
@@ -293,7 +300,9 @@ def test_first_speech_cue_rebinds_idle_front_motion_to_exasperated_candidate(tmp
     assert spoken.toImage().pixelColor(sample, sample).blue() > MIN_SKIN_RED
 
 
-def test_candidate_timer_switches_complete_endpoints_while_legacy_blends(tmp_path: Path) -> None:
+def test_candidate_timer_switches_complete_endpoints_while_legacy_blends(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
     _app()
     renderer = LayeredParametricFaceRenderer(exasperated_candidate_dir=tmp_path)
     before = QPixmap(20, 20)
@@ -312,6 +321,13 @@ def test_candidate_timer_switches_complete_endpoints_while_legacy_blends(tmp_pat
     window.mouth_transition_started = time.perf_counter() - 0.75
     late = CompanionFaceAnimationMixin._blended_mouth_transition_frame(window)
     assert late is not None and late[0].toImage() == after.toImage()
+    # mock_scold now also has an installed complete-expression set (half-body
+    # blink v4, INSTALL-2 2026-09-28) and so genuinely supports discrete
+    # endpoint switching too -- via that mechanism, not the exasperated
+    # candidate this test targets. Stub it out here to keep exercising the
+    # legacy blend path this specific assertion is about.
+    monkeypatch.setattr(renderer._complete_halfbody, "supports", lambda expression: False)
+    monkeypatch.setattr(renderer._complete_halfbody, "render", lambda *args, **kwargs: None)
     window.speech_gesture_expression = "mock_scold"
     window.mouth_transition_started = time.perf_counter() - 0.5
     legacy = CompanionFaceAnimationMixin._blended_mouth_transition_frame(window)

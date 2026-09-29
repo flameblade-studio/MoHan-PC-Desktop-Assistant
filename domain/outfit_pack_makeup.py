@@ -31,6 +31,7 @@ lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_PACK_ID,
     FOUNDATION_SLOT,
     BUILTIN_MAKEUP_VARIANTS,
+    LEGACY_MAKEUP_SILHOUETTES_ALL,
     MAKEUP_SLOTS,
     MAKEUP_SLOTS_V2,
     REQUIRED_SILHOUETTES,
@@ -257,7 +258,15 @@ def parse_makeup_safe_regions(
         raise OutfitPackError("Provide a supported makeup safe-region document.")
     schema = payload["schema"]
     silhouettes = payload.get("silhouettes")
-    if not isinstance(silhouettes, dict) or set(silhouettes) != set(REQUIRED_SILHOUETTES):
+    # The document must cover every required silhouette exactly as before;
+    # it may ALSO optionally include any subset of LEGACY_MAKEUP_SILHOUETTES
+    # (additive -- a document with none of them, i.e. every existing shipped
+    # document, is validated identically to before this change).
+    if (
+        not isinstance(silhouettes, dict)
+        or not set(REQUIRED_SILHOUETTES).issubset(silhouettes)
+        or not (set(silhouettes) - set(REQUIRED_SILHOUETTES)).issubset(LEGACY_MAKEUP_SILHOUETTES_ALL)
+    ):
         raise OutfitPackError("Makeup safe regions must cover every required silhouette.")
     parsed = {}
     for silhouette, entry in silhouettes.items():

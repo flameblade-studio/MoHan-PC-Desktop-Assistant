@@ -72,6 +72,38 @@ FACE_AUTHORITY_REGION_LAYERS = (
 lazy from infrastructure.exasperated_face_rendering import ExasperatedFaceRenderingMixin
 
 
+def select_legacy_makeup_view_id(declares_view, silhouette: str, expression: str) -> str | None:
+    """Three-tier fallback for which legacy makeup view id to redirect to
+    (2026-09-29, coordinator ruling round 9), pulled out as a pure function
+    so each tier has its own direct test without a full renderer/Qt fixture:
+
+    1. a candidate warped for this EXACT legacy frame ("<silhouette>-legacy/
+       <expression>", e.g. "cheek-rest-legacy/glance_speech_mid") -- the
+       legacy face's own geometry differs frame to frame (open/closed mouth,
+       open/closed eyes), so this is the most accurate match when the active
+       makeup pack ships it;
+    2. the pose-shared key ("<silhouette>-legacy") -- the original,
+       coarser-but-still-legacy-geometry fallback, unchanged from before this
+       addition;
+    3. ``None`` -- the caller's pre-existing behaviour (makeup resolves
+       against the ordinary new-face ``silhouette``), when the pack declares
+       neither -- true for every pack shipped to date.
+
+    ``declares_view`` is a ``str -> bool`` callable (normally
+    ``ActiveOutfitOverlay.makeup_declares_view``); never called more than
+    once per tier, and not called at all past the first tier that matches.
+    """
+    if not callable(declares_view):
+        return None
+    expression_view_id = f"{silhouette}-legacy/{expression}"
+    if declares_view(expression_view_id):
+        return expression_view_id
+    pose_shared_view_id = f"{silhouette}-legacy"
+    if declares_view(pose_shared_view_id):
+        return pose_shared_view_id
+    return None
+
+
 class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
     """Select complete expressions or compose existing authored face layers.
 
@@ -216,10 +248,25 @@ class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
                 )
         native_neutral = getattr(self._outfit_overlay, "native_neutral", None)
         composed = native_neutral(silhouette) if callable(native_neutral) else None
+        # Both sources below can supply a legacy (pre-V5-rebind) authored
+        # face that makeup_declares_view() may redirect makeup away from:
+        # native_neutral() returns the reviewed-garment "native identity"
+        # image pinned to this pose (assets/expressions/reviewed-garments/) --
+        # traced empirically (2026-09-29, trace_glance_branch.py) to be what
+        # actually supplies glance/caught/happy/worried/reminder (none of
+        # them reach _gesture_portrait: gesture_portrait_expression() only
+        # returns non-None for the 4 front-pose GESTURE_OUTFIT_SILHOUETTES,
+        # not these cheek/lean EXPRESSION_POSES entries) -- and
+        # _gesture_portrait() itself for the front gestures that DO have a
+        # dedicated legacy silhouette some day.  Every other source (
+        # complete_halfbody, render_native_state, _detachable_portrait,
+        # render_pose) is a new-face composite and never sets this flag.
+        may_need_legacy_makeup = composed is not None and not composed.isNull()
         if composed is None:
             composed = self._detachable_portrait(silhouette)
         if composed.isNull() and gesture is not None:
             composed = self._gesture_portrait(gesture)
+            may_need_legacy_makeup = not composed.isNull()
         if composed.isNull():
             composed = self.render_pose(
                 self._pose(motion),
@@ -238,7 +285,24 @@ class LayeredParametricFaceRenderer(ExasperatedFaceRenderingMixin):
             # This frame still contains REST eyes. Select state pigment only
             # after a registered eyelid patch is available in render_overlay;
             # HALF source selection stays separate from makeup on the REST fallback.
-            composed = self._outfit_overlay.apply(composed, silhouette)
+            # A legacy gesture portrait (the old, pre-V5-rebind authored
+            # illustration, e.g. glance.png/caught.png) is geometrically a
+            # different face from the new-face makeup layers authored for
+            # `silhouette`; when the active makeup pack declares a matching
+            # legacy silhouette (see LEGACY_MAKEUP_SILHOUETTES_ALL,
+            # domain/outfit_pack.py), makeup resolves against that instead,
+            # leaving garment/silhouette-clip on the unchanged `silhouette`.
+            # Every other composed source (new-face native/detachable/render_pose)
+            # is completely unaffected: makeup_view_id stays None for them,
+            # byte-identical to before this addition.
+            #
+            # Three-tier fallback: see select_legacy_makeup_view_id() above
+            # for the full rationale (2026-09-29, coordinator ruling round 9).
+            makeup_view_id = None
+            if may_need_legacy_makeup:
+                declares = getattr(self._outfit_overlay, "makeup_declares_view", None)
+                makeup_view_id = select_legacy_makeup_view_id(declares, silhouette, motion.expression)
+            composed = self._outfit_overlay.apply(composed, silhouette, makeup_view_id=makeup_view_id)
         result = (
             composed
             if composed.size() == base.size()

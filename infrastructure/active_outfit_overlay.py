@@ -192,7 +192,7 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
                 raise CoreMotionError(error) from error
             result = self._apply_phase(
                 target, view_id, phase="makeup",
-                raise_on_error=True,
+                callbacks=AppearanceCallbacks(raise_on_error=True),
                 suppress_makeup_slots=frozenset(suppress_makeup_slots), eye_state=eye_state,
             )
             if paint_after_makeup is not None:
@@ -205,9 +205,9 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         try:
             return self._apply_phase(
                 QPixmap(frame), view_id, phase="appearance",
-                raise_on_error=True,
                 callbacks=AppearanceCallbacks(
                     paint_skin, replace_core if replace_body is not None else None,
+                    raise_on_error=True,
                 ),
             )
         except CoreMotionError as error:
@@ -225,6 +225,7 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         *,
         suppress_makeup_slots: Iterable[str] = (),
         eye_state: str = "rest",
+        makeup_view_id: str | None = None,
     ) -> QPixmap:
         if frame.isNull():
             return frame
@@ -232,18 +233,26 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
             raise ValueError("Use a recognized makeup eye state")
         suppressed = frozenset(suppress_makeup_slots)
         self._bind_canvas(view_id, frame.size().toTuple())
+        # makeup_view_id lets the makeup category alone resolve against a
+        # different silhouette key than the garment/silhouette-clip/hand
+        # layers below (e.g. a legacy-face-aligned makeup set while the
+        # garment stays keyed to its usual silhouette). None (the default)
+        # is byte-identical to the previous behavior: every call site that
+        # does not pass it is unaffected, including the cache key below.
         # A mouth_states viseme substitution forces the tuple-keyed cache path
         # (with viseme in the key) even when suppressed/eye_state would
         # otherwise qualify for the plain view_id key, so a cached entry from
         # one viseme is never read back under another. When no substitution
         # is active (viseme is None, including the CLOSED/rest path) this is
         # byte-identical to the previous behavior.
-        simple = not suppressed and eye_state == "rest" and self._active_viseme is None
+        simple = not suppressed and eye_state == "rest" and self._active_viseme is None and makeup_view_id is None
         cache = self._layers_by_view if simple else self._layers_by_view_without_makeup_slots
-        cache_key = view_id if simple else (view_id, suppressed, eye_state, self._active_viseme)
+        cache_key = view_id if simple else (view_id, suppressed, eye_state, self._active_viseme, makeup_view_id)
         try:
             self._refresh_state()
-            reviewed = self._reviewed_frame(frame, view_id, suppressed, eye_state)
+            reviewed = self._reviewed_frame(
+                frame, view_id, suppressed, eye_state, makeup_view_id=makeup_view_id,
+            )
             if reviewed is not None:
                 return reviewed
             layers = cache.get(cache_key)
@@ -253,6 +262,7 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
                     frame.size().toTuple(),
                     suppress_makeup_slots=suppressed,
                     eye_state=eye_state,
+                    makeup_view_id=makeup_view_id,
                 )
             garment_is_active = self._garment_is_active()
             hand_overlays = (
@@ -311,6 +321,25 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         cache[cache_key] = layers
         return result
 
+    def makeup_declares_view(self, view_id: str) -> bool:
+        """Whether the *active makeup selection's* variant declares a rest
+        (poses) entry for view_id -- used by a caller (e.g. the legacy-face
+        render path) to decide whether it is safe to pass this view_id as
+        apply()'s makeup_view_id, falling back to the caller's regular
+        silhouette otherwise (owner-specified: "若包內無該 key 則 fallback 為
+        現行行為").  Any failure (builtin/no selection, incompatible pack,
+        missing item/variant) is treated as "no", never raised -- this is a
+        capability probe, not a rendering call.
+        """
+        try:
+            selected = resolve_active_selection(self._store, "makeup")
+            if selected.status == "builtin":
+                return False
+            _archive_path, _item, variant = self._selected_variant("makeup", selected)
+        except (IncompatibleBodyProfileError, OSError, ValueError, OutfitPackError, zipfile.BadZipFile):
+            return False
+        return view_id in variant.poses
+
     def apply_appearance(self, frame: QPixmap, view_id: str) -> QPixmap:
         """Composite detachable body, hair, clothing, and accessories.
 
@@ -330,14 +359,19 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         *,
         suppress_makeup_slots: Iterable[str] = (),
         eye_state: str = "rest",
+        makeup_view_id: str | None = None,
     ) -> QPixmap:
-        """Composite only state-aware makeup after dynamic facial motion."""
+        """Composite only state-aware makeup after dynamic facial motion.
+
+        makeup_view_id: see apply() -- same additive, default-None meaning.
+        """
         return self._apply_phase(
             frame,
             view_id,
             phase="makeup",
             suppress_makeup_slots=frozenset(suppress_makeup_slots),
             eye_state=eye_state,
+            makeup_view_id=makeup_view_id,
         )
 
     def _apply_phase(
@@ -348,14 +382,14 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         phase: str,
         suppress_makeup_slots: frozenset[str] = frozenset(),
         eye_state: str = "rest",
-        raise_on_error: bool = False,
         callbacks: AppearanceCallbacks = AppearanceCallbacks(),
+        makeup_view_id: str | None = None,
     ) -> QPixmap:
         if frame.isNull():
             return frame
         if eye_state not in {"rest", "half", "closed"}:
             raise ValueError("Use a recognized makeup eye state")
-        key = (view_id, phase, suppress_makeup_slots, eye_state, self._active_viseme)
+        key = (view_id, phase, suppress_makeup_slots, eye_state, self._active_viseme, makeup_view_id)
         include_core = phase == "appearance"
         before_front_hair, replace_body = callbacks.before_front_hair, callbacks.replace_body
         self._bind_canvas(view_id, frame.size().toTuple())
@@ -370,6 +404,7 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
             reviewed = self._reviewed_frame(
                 frame, view_id, suppress_makeup_slots, eye_state,
                 phase=phase, before_front_hair=before_front_hair,
+                makeup_view_id=makeup_view_id,
             )
             callbacks.validate_reviewed_frame(reviewed)
             if reviewed is not None:
@@ -383,6 +418,7 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
                     eye_state=eye_state,
                     categories=(frozenset(SELECTION_CATEGORIES) - {"makeup"}
                                 if include_core else frozenset({"makeup"})),
+                    makeup_view_id=makeup_view_id,
                 )
             garment_is_active = include_core and self._garment_is_active()
             official_silhouette, replacement_mask, binding = self._base_clear_regions(
@@ -401,12 +437,12 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         except IncompatibleBodyProfileError as error:
             self._invalidate_view(view_id)
             self._reject_stale_active_pack()
-            if raise_on_error:
+            if callbacks.raise_on_error:
                 raise _AppearanceCompositionError from error
             return frame
         except (OSError, ValueError, OutfitPackError, zipfile.BadZipFile) as error:
             self._invalidate_view(view_id)
-            if raise_on_error:
+            if callbacks.raise_on_error:
                 raise _AppearanceCompositionError from error
             return frame
         if not layers and not body_overlays and not hand_overlays:
@@ -574,10 +610,10 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         if cache_key in cache:
             return len(cache[cache_key]) + reviewed_count
         appearance = self._phase_layers_by_view.get(
-            (view_id, "appearance", frozenset(), "rest", self._active_viseme), (),
+            (view_id, "appearance", frozenset(), "rest", self._active_viseme, None), (),
         )
         makeup = self._phase_layers_by_view.get(
-            (view_id, "makeup", suppressed, eye_state, self._active_viseme), (),
+            (view_id, "makeup", suppressed, eye_state, self._active_viseme, None), (),
         )
         return len(appearance) + len(makeup) + reviewed_count
 
@@ -681,6 +717,7 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         suppress_makeup_slots: frozenset[str] = frozenset(),
         eye_state: str = "rest",
         categories: frozenset[str] | None = None,
+        makeup_view_id: str | None = None,
     ) -> AppearanceLayerStack:
         result: list[tuple[int, int, Layer, bool, bool]] = []
         rear: list[tuple[int, Layer]] = []
@@ -706,11 +743,15 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
                 continue
             with zipfile.ZipFile(archive_path) as archive:
                 if category == "makeup":
+                    makeup_resolution = (
+                        resolve_variant_for_view(variant, makeup_view_id)
+                        if makeup_view_id is not None else resolution
+                    )
                     layers = self._makeup_layers(
                         archive,
-                        resolution.assets,
+                        makeup_resolution.assets,
                         variant,
-                        view_id,
+                        makeup_view_id if makeup_view_id is not None else view_id,
                         suppress_makeup_slots=suppress_makeup_slots,
                         eye_state=eye_state,
                     )

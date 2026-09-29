@@ -20,7 +20,10 @@ def test_reviewed_neutral_bypasses_obsolete_rig_and_preserves_speech(monkeypatch
     native.fill(QColor("blue"))
     stale = QPixmap(20, 20)
     stale.fill(QColor("green"))
-    overlay = SimpleNamespace(native_neutral=lambda view: native.copy(), apply=lambda frame, view: frame)
+    overlay = SimpleNamespace(
+        native_neutral=lambda view: native.copy(),
+        apply=lambda frame, view, makeup_view_id=None: frame,
+    )
     renderer = LayeredParametricFaceRenderer(outfit_overlay=overlay)
     def obsolete(*args, **kwargs):
         pytest.fail("Reviewed neutral must not use the obsolete face rig")

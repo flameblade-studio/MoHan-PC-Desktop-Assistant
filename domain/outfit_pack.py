@@ -9,6 +9,7 @@ lazy import zipfile
 lazy from pathlib import Path
 lazy from tempfile import NamedTemporaryFile
 lazy from domain import _outfit_pack_models
+lazy from domain import companion_animation_contract
 # Resolve the public facade now so ``from ... import`` callers receive dataclasses.
 AppearanceAsset = _outfit_pack_models.AppearanceAsset
 AppearanceEnsemble = _outfit_pack_models.AppearanceEnsemble
@@ -53,6 +54,30 @@ GESTURE_SILHOUETTES = ("front-mock-scold", "front-mock-hit", "front-eureka", "fr
 POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)
 REQUIRED_SILHOUETTES = BASE_SILHOUETTES + GESTURE_SILHOUETTES + POSE_ATLAS_SILHOUETTES
 SUPPORTED_SILHOUETTES = REQUIRED_SILHOUETTES
+# Optional, additive makeup-only silhouettes: a legacy (pre-V5-rebind) face
+# geometry that shares its canvas and category slots with "cheek-rest" /
+# "left-neutral" but is not itself part of the required v2 view set.  A
+# makeup variant's poses/eye_states dict MAY declare any subset of these
+# (or none at all -- an existing pack with no legacy key is unaffected);
+# see _makeup_pose_assets.  Every other appearance category (garment, hair,
+# weapon, handheld) and every non-makeup pack keeps requiring exactly
+# REQUIRED_SILHOUETTES, unchanged.
+LEGACY_MAKEUP_SILHOUETTES = ("cheek-rest-legacy", "left-neutral-legacy")
+# Optional, additive, per-expression legacy makeup view ids on top of the two
+# pose-shared LEGACY_MAKEUP_SILHOUETTES above (e.g. "cheek-rest-legacy/glance"):
+# one legacy old-face frame's own makeup geometry, distinct from the
+# pose-shared idle/idle_lean geometry.  Derived from
+# companion_animation_contract.legacy_makeup_expression_view_ids() (the
+# single source of truth for legacy face-frame names) so this set can never
+# drift out of sync with the frame list it enumerates.  Additive only: a
+# pack declaring none of these (every existing shipped pack) is validated
+# identically to before this constant existed.
+LEGACY_MAKEUP_EXPRESSION_SILHOUETTES = frozenset(
+    view_id
+    for view_ids in companion_animation_contract.legacy_makeup_expression_view_ids().values()
+    for view_id in view_ids
+)
+LEGACY_MAKEUP_SILHOUETTES_ALL = frozenset(LEGACY_MAKEUP_SILHOUETTES) | LEGACY_MAKEUP_EXPRESSION_SILHOUETTES
 EXPRESSION_SILHOUETTE_ALIASES = frozendict({"cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed", "protective_front": "front-crossed"})
 OFFICIAL_BODY_SPEC = frozendict({
     "adult": True, "height_cm": 168, "weight_kg": 54, "bust_cm": 86, "underbust_cm": 71, "waist_cm": 62, "hips_cm": 90,
@@ -150,7 +175,7 @@ def resolve_variant_for_view(
 ) -> PoseAppearanceResolution:
     """Resolve the exact authored view while preserving the selected outfit."""
 
-    if view_id not in REQUIRED_SILHOUETTES:
+    if view_id not in REQUIRED_SILHOUETTES and view_id not in LEGACY_MAKEUP_SILHOUETTES_ALL:
         raise OutfitPackError("Use a recognized appearance view.")
     try:
         assets = variant.poses[view_id]
@@ -263,6 +288,36 @@ def _partial_pose_assets(
         assets = tuple(_asset(entry, slots, archive, names) for entry in entries)
         canvas = MAKEUP_CANVASES["full-body" if silhouette in POSE_ATLAS_SILHOUETTES else "half-body"]
         validate_pose_assets(assets, archive, canvas, require_visible=False, full_canvas=full_canvas)
+        if len({asset.slot for asset in assets}) != len(assets):
+            raise OutfitPackError("Duplicate slot in silhouette.")
+        parsed[silhouette] = assets
+    return frozendict(parsed)
+
+
+def _makeup_pose_assets(
+    poses: object, slots: frozenset[str], archive: zipfile.ZipFile, names: set[str], *, full_canvas: bool = False,
+) -> frozendict[str, tuple[AppearanceAsset, ...]]:
+    """Like ``_pose_assets`` (the complete, required v2 view set) but a makeup
+    variant's poses/eye_states dict may ALSO declare any subset of
+    LEGACY_MAKEUP_SILHOUETTES on top of that complete set (never in place of
+    it -- the required set is still validated exactly as before, unchanged).
+
+    Each declared legacy silhouette is validated the same way a required one
+    is (canvas, slot set, integrity), just not required to be present at all.
+    An existing pack with no legacy key parses identically to before this
+    function existed (only REQUIRED_SILHOUETTES keys reach _pose_assets).
+    """
+    if not isinstance(poses, dict):
+        raise OutfitPackError("Every required silhouette must be declared.")
+    legacy_keys = set(poses) & LEGACY_MAKEUP_SILHOUETTES_ALL
+    required_poses = {key: value for key, value in poses.items() if key not in legacy_keys}
+    parsed = dict(_pose_assets(required_poses, slots, archive, names, full_canvas=full_canvas))
+    for silhouette in legacy_keys:
+        entries = poses[silhouette]
+        if not isinstance(entries, list) or not entries:
+            raise OutfitPackError("Every silhouette requires assets.")
+        assets = tuple(_asset(entry, slots, archive, names) for entry in entries)
+        validate_pose_assets(assets, archive, MAKEUP_CANVASES["half-body"], require_visible=False, full_canvas=full_canvas)
         if len({asset.slot for asset in assets}) != len(assets):
             raise OutfitPackError("Duplicate slot in silhouette.")
         parsed[silhouette] = assets
@@ -382,7 +437,7 @@ def _makeup_variant(value: object, archive: zipfile.ZipFile, names: set[str]) ->
     else:
         foundation_silhouettes = frozenset(raw_foundation)
     allowed_slots = MAKEUP_SLOTS_V2 if foundation_silhouettes else MAKEUP_SLOTS
-    poses = _pose_assets(value["poses"], allowed_slots, archive, names, full_canvas=True)
+    poses = _makeup_pose_assets(value["poses"], allowed_slots, archive, names, full_canvas=True)
     for silhouette, assets in poses.items():
         expected = MAKEUP_SLOTS_V2 if silhouette in foundation_silhouettes else MAKEUP_SLOTS
         if {asset.slot for asset in assets} != expected:
@@ -398,7 +453,7 @@ def _makeup_variant(value: object, archive: zipfile.ZipFile, names: set[str]) ->
     state_slots = MAKEUP_SLOTS_V2 if foundation_silhouettes else frozenset({"eyes"})
     parsed_states = parse_makeup_eye_states(
         value.get("eye_states", {}),
-        lambda entries: _pose_assets(entries, state_slots, archive, names, full_canvas=True),
+        lambda entries: _makeup_pose_assets(entries, state_slots, archive, names, full_canvas=True),
     )
     for state, state_poses in parsed_states.items():
         for silhouette, assets in state_poses.items():

@@ -103,7 +103,8 @@ class _StubNativeOverlay:
         del view_id
         return None
 
-    def apply(self, frame: QPixmap, view_id: str) -> QPixmap:
+    def apply(self, frame: QPixmap, view_id: str, *, makeup_view_id: str | None = None) -> QPixmap:
+        del makeup_view_id
         self.apply_calls.append(view_id)
         return frame
 

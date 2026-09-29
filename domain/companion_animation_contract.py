@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import math
+lazy import re
 lazy from itertools import product
 
 lazy from PySide6.QtCore import QRect
@@ -187,6 +188,58 @@ GESTURE_SPEECH_ASSETS = tuple(
     for frames in GESTURE_SPEECH_FRAMES.values()
     for asset in frames.values()
 )
+
+# 2026-09-29: enumerable legacy-makeup view ids (owner ruling round 6). The
+# legacy front-layer-repair candidate warps the approved makeup onto each
+# individual legacy face frame (not just the pose-shared idle/idle_lean
+# geometry LEGACY_MAKEUP_SILHOUETTES already covers), so the schema needs one
+# recognized view id per legacy frame, e.g. "cheek-rest-legacy/glance". This
+# derives that set from EXPRESSION_IMAGE_ASSETS -- the single existing list
+# of every legacy face-image frame name -- instead of maintaining a second,
+# independently-typed list that could silently drift out of sync with it.
+_FRONT_SEGMENT = re.compile(r"(?:^|_)front(?:_|$)")
+_LEAN_SEGMENT = re.compile(r"(?:^|_)lean(?:_|$)")
+
+
+def _legacy_frame_pose(name: str) -> str:
+    """cheek/lean/front, matching the same naming convention the shipped
+    idle/idle_lean/idle_front (and blink/blink_lean/blink_front, etc.) asset
+    families already use throughout this module: an explicit "_front" or
+    "_lean" name segment overrides, otherwise the frame's own gesture (via
+    EXPRESSION_POSES, stripping any "_speech_..." suffix first) applies, and
+    a shared frame with no gesture entry (idle, blink, speaking, viseme_*) is
+    the default half-body pose, "cheek"."""
+    if _FRONT_SEGMENT.search(name):
+        return "front"
+    if _LEAN_SEGMENT.search(name):
+        return "lean"
+    base = name.split(SPEECH_FRAME_MARKER, 1)[0]
+    for eye_state_suffix in ("_half", "_closed"):
+        if base.endswith(eye_state_suffix):
+            base = base[: -len(eye_state_suffix)]
+            break
+    return EXPRESSION_POSES.get(base, "cheek")
+
+
+def legacy_makeup_expression_view_ids() -> frozendict[str, tuple[str, ...]]:
+    """{"cheek-rest-legacy": (per-expression view ids...), "left-neutral-legacy": (...)}
+    -- every legacy face frame whose pose resolves to "cheek" or "lean",
+    named "<pose-shared-legacy-key>/<frame-name>". Pose-family assignment is
+    derived, not hand-maintained; a frame added to EXPRESSION_IMAGE_ASSETS
+    under the existing naming convention is picked up automatically."""
+    by_pose: dict[str, list[str]] = {"cheek": [], "lean": []}
+    seen: set[str] = set()
+    for name in EXPRESSION_IMAGE_ASSETS:
+        if name in seen:
+            continue
+        seen.add(name)
+        pose = _legacy_frame_pose(name)
+        if pose in by_pose:
+            by_pose[pose].append(name)
+    return frozendict({
+        "cheek-rest-legacy": tuple(f"cheek-rest-legacy/{frame}" for frame in by_pose["cheek"]),
+        "left-neutral-legacy": tuple(f"left-neutral-legacy/{frame}" for frame in by_pose["lean"]),
+    })
 EXPRESSION_SPEECH_MOUTH_RECTS = frozendict({
     expression: (
         QRect(170, 194, 60, 42) if pose == "cheek"

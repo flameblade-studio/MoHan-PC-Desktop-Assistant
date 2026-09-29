@@ -37,6 +37,23 @@ class CompanionBlinkCompositeMethods:
             return False
         return bool(has_native_motion(view_id))
 
+    def _legacy_makeup_view_id(self, appearance_view_id: str) -> str:
+        """The silhouette blink makeup should resolve against for an
+        EXPRESSION_POSES base (glance/caught/happy/... and their speech
+        variants): the legacy, pre-V5-rebind authored face, geometrically a
+        different face from the new-face makeup layers authored for
+        `appearance_view_id`.  When the active makeup pack declares a
+        matching "<silhouette>-legacy" silhouette (see
+        LEGACY_MAKEUP_SILHOUETTES, domain/outfit_pack.py), this redirects to
+        it; otherwise it returns appearance_view_id unchanged.
+        """
+        overlay = getattr(self.face_renderer, "_outfit_overlay", None)
+        declares = getattr(overlay, "makeup_declares_view", None)
+        if not callable(declares):
+            return appearance_view_id
+        legacy_view_id = f"{appearance_view_id}-legacy"
+        return legacy_view_id if declares(legacy_view_id) else appearance_view_id
+
     def _native_eye_composite(
         self,
         base_pixmap: QPixmap,
@@ -111,6 +128,9 @@ class CompanionBlinkCompositeMethods:
             # Its own registered patch is the only eye authority it may stamp.
             # Only the native-eye gate is suppressed; the appearance context is
             # kept so blink makeup still composes (see makeup_view_id).
+            appearance_view_id = CompanionBlinkCompositeMethods._legacy_makeup_view_id(
+                self, appearance_view_id,
+            )
             view_id = None
             if not is_expression_speech:
                 return QPixmap(base_pixmap)
