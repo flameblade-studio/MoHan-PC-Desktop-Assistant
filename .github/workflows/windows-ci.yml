@@ -64,7 +64,13 @@ jobs:
         run: |
           rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          cargo install cargo-audit --version 0.22.2 --locked
+          # The Rust cache can restore ~/.cargo/bin; reinstall only when the pinned version is absent.
+          $auditVersion = (cargo audit --version 2>$null)
+          if (-not ($auditVersion -match '\b0\.22\.2\b')) {
+            cargo install cargo-audit --version 0.22.2 --locked --force
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+          cargo audit --version
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m pip install --only-binary=:all: maturin==1.14.1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
