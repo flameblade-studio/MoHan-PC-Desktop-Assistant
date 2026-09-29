@@ -14,7 +14,7 @@
     "raw_report_sha256": "aee10afcc351e2ceed3ee4173256662b18049790165088a15c87acb36bf2d165",
     "formal_baseline_before_sha256": "5d1b063c5d25d2467e574bbed922a66a7564f1c227621abe7e5c2a1ed10b9ab7",
     "alpha_cleanup_derivation": {
-      "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/provenance/final-alpha-provenance/alpha-derivation.json",
+      "path": "docs/release-evidence/pose-atlas-v5-alpha-derivation/alpha-derivation.json",
       "sha256": "c8a5b0f2ac5f3764886edcc1414152b6afdb010e949eaade82dac9649e562116",
       "rule": "conservative-032 alpha-only hair-fringe cleanup"
     },
