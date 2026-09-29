@@ -110,7 +110,13 @@ $StaticIdentityEvidenceDir = Join-Path `
 $StaticIdentityEvidence = Join-Path `
     $StaticIdentityEvidenceDir "pose-atlas-static-identity-audit.json"
 New-Item -ItemType Directory -Force $StaticIdentityEvidenceDir | Out-Null
+$StaticIdentityAtlasRoot = (& $Python -c "from domain.constants import POSE_ATLAS_ROOT_NAME; print('assets/pose-atlas/' + POSE_ATLAS_ROOT_NAME)").Trim()
+if ($LASTEXITCODE -ne 0) {
+    throw "Cannot resolve the current PoseAtlas generation for the static identity audit."
+}
 & $Python -m tools.audit_pose_atlas_identity `
+    --atlas-root $StaticIdentityAtlasRoot `
+    --baseline "$StaticIdentityAtlasRoot/identity-audit-baseline.json" `
     --json-output $StaticIdentityEvidence
 $StaticIdentityAuditExitCode = $LASTEXITCODE
 if ($StaticIdentityAuditExitCode -ne 0) {

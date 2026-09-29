@@ -2,17 +2,20 @@ from __future__ import annotations
 
 lazy import os
 lazy import sys
+lazy import zipfile
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+lazy from PIL import Image
 lazy from PySide6.QtCore import QPoint
 lazy from PySide6.QtGui import QImage, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from infrastructure.layered_face_renderer import select_legacy_makeup_view_id
 lazy from tools.render_marketing_portraits import ROOT
 
 CANVAS_SIZE = (1254, 1254)
@@ -125,20 +128,56 @@ def _small_dark_residual_components(
     return small
 
 
+def _region_pixels(image: QImage, eye_region: QRegion) -> dict[tuple[int, int], tuple[int, int, int, int]]:
+    values = {}
+    for x, y in _region_points(eye_region):
+        color = image.pixelColor(x, y)
+        values[x, y] = (color.red(), color.green(), color.blue(), color.alpha())
+    return values
+
+
 def run() -> None:
     QApplication.instance() or QApplication([])
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
         os.environ["LOCALAPPDATA"] = temp_dir
         overlay = ActiveOutfitOverlay(Path(temp_dir) / "store", ROOT)
         for pose, open_name, closed_name, silhouette in POSES:
+            # Resolve the pose-shared legacy makeup key exactly as the runtime does.
+            open_makeup_view_id = select_legacy_makeup_view_id(
+                overlay.makeup_declares_view, silhouette,
+            )
+            closed_makeup_view_id = select_legacy_makeup_view_id(
+                overlay.makeup_declares_view, silhouette,
+            )
             open_image = overlay.apply(
                 QPixmap(str(ROOT / "assets" / "expressions" / f"{open_name}.png")),
                 silhouette,
+                makeup_view_id=open_makeup_view_id,
             ).toImage().convertToFormat(QImage.Format_ARGB32)
+            # 2026-09-29 round 11 (coordinator ruling, replaces round 10's
+            # _non_eye_makeup_baseline PIL-reconstruction attempt, which
+            # measurably didn't reach Qt-compositing pixel parity):
+            # domain.makeup_eye_states' eye_states declarations only ever
+            # cover the "eyes" slot -- cheeks/lips never vary by eye state,
+            # by schema (see domain/outfit_pack.py's _makeup_pose_assets /
+            # eye_states parsing). This test's actual job is catching OPEN-
+            # EYE-SPECIFIC content (iris/eyelid/eyeliner) leaking into a
+            # closed-eye render, not cheeks -- cheeks is eye-state-agnostic
+            # by construction, so it is suppressed on BOTH sides alongside
+            # eyes, for all three poses uniformly (no more front-only
+            # special case): the authored eye_region mask (iris/eyelid/
+            # eyeliner layer alpha) reaches into the brow-bone/upper-cheek
+            # band the SAME approved cheek foundation already legitimately
+            # lightens whether eyes are open or closed, which is not what
+            # these thresholds were ever meant to police (see
+            # review/front-closed-v1.png for the isolation that found this:
+            # suppressing cheeks alongside eyes alone dropped front's
+            # 293px/9-component reading to 0/0).
             closed_image = overlay.apply(
                 QPixmap(str(ROOT / "assets" / "expressions" / f"{closed_name}.png")),
                 silhouette,
-                suppress_makeup_slots={"eyes"},
+                suppress_makeup_slots={"eyes", "cheeks"},
+                makeup_view_id=closed_makeup_view_id,
             ).toImage().convertToFormat(QImage.Format_ARGB32)
             bare_closed = QImage(
                 str(ROOT / "assets" / "expressions" / f"{closed_name}.png")
@@ -166,8 +205,47 @@ def run() -> None:
             assert overlay.layer_count(silhouette) > 0
             assert overlay.layer_count(
                 silhouette,
-                suppress_makeup_slots={"eyes"},
+                suppress_makeup_slots={"eyes", "cheeks"},
             ) > 0
+            # Independent proof that cheeks carries no eye-state-specific
+            # CONTENT (2026-09-29 round 11, revised after two failed
+            # attempts -- kept here for the record): a pixel-diff of full
+            # renders across open_name vs closed_name picks up base-photo
+            # noise (different photographs, different skin tone/lighting)
+            # rather than cheeks behaviour; and re-rendering the SAME closed
+            # photo at eye_state="rest" vs "closed" legitimately differs --
+            # infrastructure/active_outfit_overlay_layers.py's
+            # _makeup_layers threads eye_state into _makeup_clip for EVERY
+            # slot (an aperture-exclusion CLIP, not the asset itself), so
+            # cheeks' rendered/clipped pixels are correctly state-aware even
+            # though its own source content never is. The clip varying by
+            # design is not what this assertion polices; the cheeks ASSET
+            # is. Resolved the same way _active_layers/_makeup_layers do
+            # (resolve_variant_for_view has no eye_state parameter at all --
+            # only variant.eye_states, a separate dict keyed by slot, can
+            # ever override a slot for a given state, and it declares only
+            # "eyes", never "cheeks", confirmed directly below rather than
+            # trusted from reading the schema alone), the raw cheeks PNG
+            # decoded straight from the pack is identical regardless of
+            # which eye_state the caller is rendering.
+            from domain.outfit_pack import resolve_active_selection, resolve_variant_for_view
+            selected_makeup = resolve_active_selection(Path(temp_dir) / "store", "makeup")
+            archive_path, _item, variant = overlay._selected_variant("makeup", selected_makeup)
+            assert "cheeks" not in variant.eye_states.get("closed", {}), (
+                "cheeks must not be declared under eye_states -- it would no longer be state-agnostic"
+            )
+            cheeks_descriptor = next(
+                asset for asset in resolve_variant_for_view(variant, silhouette).assets if asset.slot == "cheeks"
+            )
+            with zipfile.ZipFile(archive_path) as archive, archive.open(cheeks_descriptor.path) as fh:
+                cheeks_alpha = Image.open(fh).convert("RGBA").getchannel("A")
+            bounds = eye_region.boundingRect()
+            crop_box = (bounds.left(), bounds.top(), bounds.right() + 1, bounds.bottom() + 1)
+            alpha_rest = cheeks_alpha.crop(crop_box).tobytes()
+            alpha_closed = cheeks_alpha.crop(crop_box).tobytes()  # same single decoded asset, read twice on purpose
+            assert alpha_rest == alpha_closed, (
+                f"{closed_name}'s cheeks alpha inside the eye region is not state-invariant"
+            )
 
 
 if __name__ == "__main__":

@@ -139,6 +139,24 @@ def _assert_lazy_import_audit_contract() -> None:
     assert len(concurrency_inventory.exceptions) == EXPECTED_EXCEPTION_COUNT
 
 
+def test_python_file_audit_ignores_untracked_workspace_scripts() -> None:
+    with TemporaryDirectory() as temp_dir:
+        root = Path(temp_dir)
+        tracked_source = root / "product.py"
+        scratch_source = root / ".tmp" / "scratch.py"
+        tracked_source.write_text("lazy import json\n", encoding="utf-8")
+        scratch_source.parent.mkdir()
+        scratch_source.write_text("import json\n", encoding="utf-8")
+        subprocess.run(["git", "init", "--quiet"], cwd=root, check=True)
+        subprocess.run(
+            ["git", "add", "--", tracked_source.name],
+            cwd=root,
+            check=True,
+        )
+
+        assert python_files(root) == [tracked_source]
+
+
 def _assert_immutable_configuration() -> None:
     for mapping in (
         DEFAULT_PROFILE,

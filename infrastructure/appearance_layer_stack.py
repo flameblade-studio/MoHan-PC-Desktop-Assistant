@@ -19,10 +19,13 @@ class CoreMotionError(Exception):
 
 @dataclass(frozen=True)
 class AppearanceCallbacks:
-    """Core-owned updates at the body and skin composition boundaries."""
+    """Core-owned updates at the body and skin composition boundaries, plus
+    the phase's error-handling mode (raise vs. fall back to the input frame).
+    """
 
     before_front_hair: Callable[[QPixmap], QPixmap] | None = None
     replace_body: Callable[[QPixmap], QPixmap] | None = None
+    raise_on_error: bool = False
 
     def validate_reviewed_frame(self, frame: QPixmap | None) -> None:
         if frame is not None and self.replace_body is not None:

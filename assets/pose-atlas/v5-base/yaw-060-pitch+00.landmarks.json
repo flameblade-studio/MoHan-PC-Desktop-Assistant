@@ -57,13 +57,13 @@
   "measurement": {
     "method": "normalized-alpha-silhouette-registration",
     "occlusion_policy": "no_coordinates_are invented for an occluded side",
-    "source_sha256": "2eb5f6e6b6bacfa606e4d37126f9b40c9ecf32397bd5a7caab91dd4e0276cf75",
+    "source_sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
     "target_subject_height": 1356
   },
   "native_face_landmarks": {
     "artifact": {
       "path": "assets/pose-atlas/v5-base/yaw-060-pitch+00.native-landmarks.json",
-      "sha256": "dcebdd72ebd1924c06c3472270b89a1895e849b72148b590780ea629d4ad8044"
+      "sha256": "8e47bd5e28569204041ddc222045e37c052b5f28153d8cbd75ec521c00285da4"
     },
     "confidence": 0.9335103631019592,
     "coordinates": "normalized_xy_plus_relative_z",
@@ -75,7 +75,7 @@
     ],
     "source": {
       "path": "assets/pose-atlas/v5-base/yaw-060-pitch+00.png",
-      "sha256": "2eb5f6e6b6bacfa606e4d37126f9b40c9ecf32397bd5a7caab91dd4e0276cf75"
+      "sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca"
     },
     "status": "existing_native_verified_same_source_probe"
   },

@@ -100,7 +100,7 @@ def _routing_subject() -> tuple[object, _Renderer, QPixmap, QPixmap, QPixmap]:
     base = _asset("mock_hit_front")
     native_half = _asset("mock_hit_front_half")
     mask = CompanionFaceAssetMethods._soft_rounded_mask(
-        (QRect(180, 153, 53, 34), QRect(220, 153, 56, 34)),
+        (QRect(178, 146, 55, 41), QRect(220, 146, 56, 41)),
         ((0, 255),),
         10,
     )
@@ -194,7 +194,7 @@ def test_missing_native_authority_keeps_the_legacy_blink_source(qapp: QApplicati
     base = _asset("idle_front")
     legacy_blink = _asset("blink_front")
     mask = CompanionFaceAssetMethods._soft_rounded_mask(
-        (QRect(180, 153, 53, 34), QRect(220, 153, 56, 34)),
+        (QRect(178, 146, 55, 41), QRect(220, 146, 56, 41)),
         ((0, 255),),
         10,
     )
@@ -229,7 +229,7 @@ def test_same_pose_speech_frames_use_native_half_eye_patch_only(qapp: QApplicati
     base = _asset("idle_front")
     native_half = _asset("idle_front_half")
     mask = CompanionFaceAssetMethods._soft_rounded_mask(
-        (QRect(180, 153, 53, 34), QRect(220, 153, 56, 34)),
+        (QRect(178, 146, 55, 41), QRect(220, 146, 56, 41)),
         ((0, 255),),
         10,
     )

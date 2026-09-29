@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import hashlib
+lazy import importlib
 lazy import json
 lazy import zipfile
 lazy from pathlib import Path
@@ -20,10 +21,15 @@ lazy from domain.outfit_pack import (
     AppearanceVariant,
     OutfitPack,
     SelectionResolution,
+    apply_ensemble,
     resolve_active_selection,
+    restore_builtin_outfit,
 )
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.appearance_layer_stack import AppearanceLayerStack
+lazy from infrastructure.layered_full_body_assets import load_layered_full_body_assets
+lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
+lazy from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
 
 CANVAS = 1254
 OUTFIT_BLUE = 180
@@ -154,7 +160,7 @@ def _transparent_runtime_stack() -> AppearanceLayerStack:
 def _official_base_selections(
     headwear: SelectionResolution,
 ) -> dict[str, SelectionResolution]:
-    official = adapter_module.OFFICIAL_OUTFIT_PACK_ID
+    official = importlib.import_module("domain.outfit_pack_official").OFFICIAL_OUTFIT_PACK_ID
     default_requested = ("builtin", "builtin", "builtin")
     return {
         "garment": _selection_resolution(
@@ -472,6 +478,109 @@ def test_compositor_uses_each_layers_own_face_clip(tmp_path: Path) -> None:
     assert result.pixelColor(600, 250) == QColor(240, 240, 240, 255)
     # The cheek remains outside the hair clip.
     assert result.pixelColor(600, 400) == QColor(40, 30, 20, 255)
+
+
+@pytest.mark.parametrize(
+    ("category", "identity", "view_id", "canvas", "expected_layers"),
+    (
+        ("hairstyle", ("mohan.official.blue-white-hanfu", "loose-hair", "ink-black"),
+         "yaw+000-pitch+00", (1024, 1536), 0),
+        ("hairstyle", ("mohan.official.blue-white-hanfu", "loose-hair", "ink-black"),
+         "yaw+090-pitch+00", (1024, 1536), 0),
+        ("headwear", ("mohan.official.blue-white-hanfu", "silver-hairpiece", "silver"),
+         "yaw+090-pitch+00", (1024, 1536), 0),
+        ("headwear", ("mohan.official.blue-white-hanfu", "silver-hairpiece", "silver"),
+         "yaw+000-pitch+00", (1024, 1536), 1),
+        ("hairstyle", ("user.pack", "loose-hair", "ink-black"),
+         "yaw+090-pitch+00", (1024, 1536), 1),
+        ("hairstyle", ("mohan.official.blue-white-hanfu", "loose-hair", "ink-black"),
+         "front-crossed", (1254, 1254), 1),
+    ),
+)
+def test_v5_native_alias_suppresses_only_old_full_body_overlays(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    category: str,
+    identity: tuple[str, str, str],
+    view_id: str,
+    canvas: tuple[int, int],
+    expected_layers: int,
+) -> None:
+    _app()
+    archive_path = tmp_path / "selection.mohan-outfit"
+    with zipfile.ZipFile(archive_path, "w"):
+        pass
+    selected = SelectionResolution(category, "installed", *identity, *identity)
+    monkeypatch.setattr(adapter_module, "resolve_active_selection", lambda *_args: selected)
+    monkeypatch.setattr(
+        adapter_module, "resolve_variant_for_view",
+        lambda *_args: SimpleNamespace(assets=(SimpleNamespace(
+            slot="front" if category == "hairstyle" else "headwear",
+            z_order=20,
+            occludes_makeup=False,
+        ),)),
+    )
+    adapter = ActiveOutfitOverlay(tmp_path / "store", tmp_path, visible_hand_region=None)
+    monkeypatch.setattr(
+        adapter, "_selected_variant",
+        lambda *_args: (archive_path, object(), SimpleNamespace(hand_rules=None)),
+    )
+    pixmap = QPixmap(1, 1)
+    pixmap.fill(QColor(20, 20, 20))
+    monkeypatch.setattr(
+        adapter, "_garment_layers",
+        lambda _archive, declarations, *_args: (
+            [(20, (pixmap, 0, 0, QRegion(), 1.0))] if declarations else []
+        ),
+    )
+
+    layers = adapter._active_layers(view_id, canvas, categories=frozenset({category}))
+
+    assert len(layers) == expected_layers
+
+
+def test_official_legacy_ensemble_and_restore_use_v5_native_hair(tmp_path: Path) -> None:
+    """Keep native V5 hair and the installed, independently switchable safe ornament."""
+    _app()
+    store = tmp_path / "outfits"
+    root = Path(__file__).resolve().parents[1]
+    overlay = ActiveOutfitOverlay(store, root, visible_hand_region=None)
+    hair = frozenset({"hairstyle"})
+    headwear = frozenset({"headwear"})
+
+    apply_ensemble(store, "mohan.official.blue-white-hanfu", "blue-white-hanfu")
+    assert resolve_active_selection(store, "hairstyle").effective_item_id == "loose-hair"
+    assert len(overlay._active_layers("yaw+000-pitch+00", (1024, 1536), categories=hair)) == 0
+    assert len(overlay._active_layers("yaw+090-pitch+00", (1024, 1536), categories=hair)) == 0
+    assert len(overlay._active_layers("yaw+090-pitch+00", (1024, 1536), categories=headwear)) == 1
+    assert len(overlay._active_layers("yaw+000-pitch+00", (1024, 1536), categories=headwear)) > 0
+
+    restore_builtin_outfit(store)
+    assert resolve_active_selection(store, "hairstyle").effective_item_id == "loose-hair"
+    assert len(overlay._active_layers("yaw+000-pitch+00", (1024, 1536), categories=hair)) == 0
+    assert len(overlay._active_layers("yaw+090-pitch+00", (1024, 1536), categories=headwear)) == 1
+
+
+def test_official_plus090_renders_after_legacy_alias_suppression(tmp_path: Path) -> None:
+    """The installed side outfit renders without the old hair/headwear collision."""
+    _app()
+    root = Path(__file__).resolve().parents[1]
+    store = tmp_path / "outfits"
+    apply_ensemble(store, "mohan.official.blue-white-hanfu", "blue-white-hanfu")
+    overlay = ActiveOutfitOverlay(store, root, visible_hand_region=None)
+    manifest = load_layered_full_body_assets(root / "assets/pose-atlas/v5-base-layered")
+    renderer = LayeredFullBodyRenderer(manifest, outfit_overlay=overlay)
+    motion = FaceMotionFrame(
+        FacePose.FRONT, "idle_front", Viseme.CLOSED, MouthShape(), ExpressionShape(),
+    )
+
+    dressed = renderer.render_view("yaw+090-pitch+00", motion)
+
+    assert not dressed.isNull()
+    assert overlay.layer_count("yaw+090-pitch+00") > 0
+    assert len(overlay._active_layers(
+        "yaw+090-pitch+00", (1024, 1536), categories=frozenset({"garment"}),
+    )) > 0
 
 
 def test_garment_and_accessory_coexist_in_global_z_order(

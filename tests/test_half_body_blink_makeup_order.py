@@ -62,8 +62,18 @@ def test_base_remains_rest_until_a_registered_eyelid_patch_exists(blink, monkeyp
     renderer = LayeredParametricFaceRenderer(outfit_overlay=BaseMakeup())
     monkeypatch.setattr(renderer, "_pose", lambda motion: None)
     monkeypatch.setattr(renderer, "render_pose", lambda *args, **kwargs: QPixmap(base))
+    # front-crossed (FacePose.FRONT/idle_front) now carries an installed
+    # complete-expression set (half-body blink v4, INSTALL-2 2026-09-28):
+    # LayeredParametricFaceRenderer.render() checks self._complete_halfbody
+    # .render(...) FIRST and returns immediately on a non-None result,
+    # bypassing _pose/render_pose (and this test's BaseMakeup.apply
+    # tracking) entirely. This test's actual subject is the legacy
+    # outfit-overlay eye-state ordering, so the complete-expression path is
+    # stubbed out here to keep exercising that legacy path specifically.
+    monkeypatch.setattr(renderer._complete_halfbody, "render", lambda *args, **kwargs: None)
     motion = FaceMotionFrame(
         FacePose.FRONT, "idle_front", Viseme.CLOSED, MouthShape(), ExpressionShape(blink=blink)
     )
-    assert renderer.render(base, motion, None).toImage() == base.toImage()
+    rendered = renderer.render(base, motion, None).toImage().convertToFormat(base.toImage().format())
+    assert rendered == base.toImage()
     assert states == ["rest"]

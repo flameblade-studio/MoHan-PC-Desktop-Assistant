@@ -103,7 +103,8 @@ class _StubNativeOverlay:
         del view_id
         return None
 
-    def apply(self, frame: QPixmap, view_id: str) -> QPixmap:
+    def apply(self, frame: QPixmap, view_id: str, *, makeup_view_id: str | None = None) -> QPixmap:
+        del makeup_view_id
         self.apply_calls.append(view_id)
         return frame
 
@@ -131,6 +132,10 @@ def test_native_speech_state_precedes_legacy_mouth_source(monkeypatch):
         _solid("green"),
         _motion(speaking=True, pose=FacePose.CHEEK),
         SimpleNamespace(
+            # ``speaking`` is now a formally installed complete-expression
+            # binding.  Keep this unit test on the unbound fallback route so
+            # it continues to exercise the native-state precedence contract.
+            mouth_expression="test-native-speech-fallback",
             mouth_source=stale_mouth,
             mouth_mask=_single_pixel_mask(),
         ),
@@ -165,8 +170,8 @@ def test_native_closed_blink_precedes_legacy_blink_source():
     assert _pixel_name(result, 0, 0) == QColor("blue").name()
 
 
-def test_discrete_speech_is_enabled_only_for_registered_native_cheek():
-    """The cheek endpoint uses discrete photographs while front and lean stay legacy."""
+def test_discrete_speech_uses_the_complete_expression_registry():
+    """Every formally registered V5 pose uses its approved discrete photographs."""
 
     _qt_app()
     overlay = _StubNativeOverlay(native_motion_views={"cheek-rest"})
@@ -176,8 +181,9 @@ def test_discrete_speech_is_enabled_only_for_registered_native_cheek():
     )
 
     assert renderer.supports_discrete_speech(CHEEK_SPEECH_CLOSED_EXPRESSION)
-    assert not renderer.supports_discrete_speech("idle_front")
-    assert not renderer.supports_discrete_speech("idle_lean")
+    assert renderer.supports_discrete_speech("idle_front")
+    assert renderer.supports_discrete_speech("idle_lean")
+    assert not renderer.supports_discrete_speech("unapproved-expression")
 
 
 def test_unregistered_native_state_keeps_legacy_mouth_path(monkeypatch):
@@ -197,6 +203,9 @@ def test_unregistered_native_state_keeps_legacy_mouth_path(monkeypatch):
         _solid("black"),
         _motion(speaking=True, pose=FacePose.FRONT),
         SimpleNamespace(
+            # Keep this fallback test independent from the installed complete
+            # expression route, whose ``speaking`` binding is intentional.
+            mouth_expression="test-unregistered-native-fallback",
             mouth_source=stale_mouth,
             mouth_mask=_single_pixel_mask(),
         ),

@@ -115,7 +115,7 @@ def _neutral_face_motion() -> FaceMotionFrame:
 def _pose_atlas_checks() -> tuple[_SelfTestCheck, ...]:
     root = resource_path(POSE_ATLAS_RELATIVE_ROOT)
     try:
-        assets = PoseAtlasAssets(root, image_size=465)
+        assets = PoseAtlasAssets(root, image_size=465, display_scale=True)
         view_ids = assets.view_ids
         # The parametric layered renderer is the sole full-body path; it needs a
         # neutral motion frame to compose each view.

@@ -10,6 +10,7 @@ lazy from application.presentation_ports import PresentationDatabasePort
 lazy from application.wardrobe_appearance_service import WardrobeAppearanceService
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID
 lazy from domain.outfit_pack import OutfitPackError
+lazy from domain.outfit_pack_official import OFFICIAL_NATIVE_HAIR_ALIAS
 lazy from presentation.flagship_theme import mark_flagship_card
 
 __all__ = ("build_appearance_card", "reload_appearance_controls")
@@ -40,7 +41,7 @@ def build_appearance_card(view: AppearanceView, category: str, title: str) -> QF
     heading = QLabel(title)
     heading.setProperty("mohanRole", "cardTitle")
     layout.addWidget(heading)
-    hint = QLabel(view._t("wardrobe_independent_appearance", "髮型與髮飾可獨立搭配；套用後立即更新人物預覽。"))
+    hint = QLabel(view._t("wardrobe_independent_appearance", "髮型與髮飾分別儲存；原生圖已含髮飾時，關閉附加層仍會保留原生髮飾。"))
     hint.setWordWrap(True)
     hint.setProperty("mohanRole", "muted")
     layout.addWidget(hint)
@@ -74,6 +75,8 @@ def reload_appearance_controls(view: AppearanceView) -> None:
         selector.clear()
         for option in options:
             title = view._t("wardrobe_headwear_none", "頭飾關閉") if option.option_id == "none" else option.display_name
+            if category == "hairstyle" and option.option_id == "/".join(OFFICIAL_NATIVE_HAIR_ALIAS):
+                title = view._t("wardrobe_native_bun", "V5 原生髮髻（沿用舊版代號）")
             selector.addItem(title, option.option_id)
         selector.setCurrentIndex(selector.findData(active))
         selector.blockSignals(previous)

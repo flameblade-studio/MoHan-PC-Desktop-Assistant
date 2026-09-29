@@ -2,7 +2,7 @@
 
 ## 繁體中文
 
-`complete_halfbody_expressions.py` 載入完整半身表情，`complete_halfbody_renderer.py` 保留目前畫面嘴型與眨眼的對應，`LayeredParametricFaceRenderer` 負責選擇新來源或既有路徑。衣裝、妝容與髮型仍由外觀合成器處理。此路徑正在 staging 驗證；目前沒有正式安裝的 manifest。原圖批准、接合批准、技術驗證及正式安裝必須分別記錄。
+`complete_halfbody_expressions.py` 載入完整半身表情，`complete_halfbody_renderer.py` 保留目前畫面嘴型與眨眼的對應，`LayeredParametricFaceRenderer` 負責選擇新來源或既有路徑。衣裝、妝容與髮型仍由外觀合成器處理。V7 七姿勢 × 四嘴型 × 三眼態的 84 個影格已正式安裝，正式 renderer 已核對 84/84；最新證據與未結事項見 [V5 現況](v5-body-current-status.md)。原圖批准、接合批准、技術驗證及正式安裝必須分別記錄。
 
 ### 安裝契約
 
@@ -30,7 +30,7 @@
 
 ## 简体中文
 
-`complete_halfbody_expressions.py` 加载完整半身表情，`complete_halfbody_renderer.py` 保留当前画面嘴型与眨眼的对应，`LayeredParametricFaceRenderer` 负责选择新来源或既有路径。衣装、妆容与发型仍由外观合成器处理。此路径正在 staging 验证；目前没有正式安装的 manifest。原图批准、接合批准、技术验证及正式安装必须分别记录。
+`complete_halfbody_expressions.py` 加载完整半身表情，`complete_halfbody_renderer.py` 保留当前画面嘴型与眨眼的对应，`LayeredParametricFaceRenderer` 负责选择新来源或既有路径。衣装、妆容与发型仍由外观合成器处理。V7 七姿势 × 四嘴型 × 三眼态的 84 帧已正式安装，正式 renderer 已验证 84/84；最新证据与待办见 [V5 现况](v5-body-current-status.md)。原图批准、接合批准、技术验证及正式安装必须分别记录。
 
 ### 安装契约
 
@@ -58,7 +58,7 @@
 
 ## English
 
-`complete_halfbody_expressions.py` loads complete half-body expressions, `complete_halfbody_renderer.py` preserves the mapping between the displayed mouth and its blink, and `LayeredParametricFaceRenderer` chooses between the new sources and the existing route. Garments, makeup and hair are still composed by the appearance compositor. This route is being validated in staging; no production manifest is installed. Original-source acceptance, fitted-frame acceptance, runtime verification and formal installation are separate evidence states.
+`complete_halfbody_expressions.py` loads complete half-body expressions, `complete_halfbody_renderer.py` preserves the mapping between the displayed mouth and its blink, and `LayeredParametricFaceRenderer` chooses between the new sources and the existing route. Garments, makeup and hair are still composed by the appearance compositor. All 84 V7 frames (seven poses, four mouth families, three eye states) are formally installed and verified through the formal renderer. See [current V5 status](v5-body-current-status.md) for evidence and remaining work. Original-source acceptance, fitted-frame acceptance, runtime verification and formal installation are separate evidence states.
 
 ### Installation contract
 
@@ -86,7 +86,7 @@ The current source family provides SMALL, A and O. I/E/U use existing aliases an
 
 ## 日本語
 
-`complete_halfbody_expressions.py` が完全な半身表情を読み込み、`complete_halfbody_renderer.py` が表示中の口形と瞬きの対応を保持し、`LayeredParametricFaceRenderer` が新ソースと既存経路を選択します。衣装・化粧・髪型は引き続き外観コンポジタが合成します。この経路は staging で検証中で、正式な manifest は未導入です。原画承認、接合承認、技術検証、正式導入は別々の証拠状態として記録します。
+`complete_halfbody_expressions.py` が完全な半身表情を読み込み、`complete_halfbody_renderer.py` が表示中の口形と瞬きの対応を保持し、`LayeredParametricFaceRenderer` が新ソースと既存経路を選択します。衣装・化粧・髪型は引き続き外観コンポジタが合成します。七ポーズ・四口形・三眼状態の V7 全 84 フレームは正式配置済みで、正式 renderer で 84/84 を確認しました。最新の証拠と未完了事項は [V5 現況](v5-body-current-status.md)を参照してください。原画承認、接合承認、技術検証、正式導入は別々の証拠状態として記録します。
 
 ### 導入契約
 

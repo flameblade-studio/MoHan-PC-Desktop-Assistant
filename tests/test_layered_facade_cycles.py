@@ -48,7 +48,7 @@ MAX_NEW_LAYER_MODULE_LINES = 800
 # (utf-8-sig decode + str.splitlines()).
 LAYER_MODULE_LINE_BASELINE = {
     "application.presentation_ports": 1_034,
-    "domain.outfit_pack": 865,
+    "domain.outfit_pack": 847,
     "infrastructure.db": 1_195,
     "infrastructure.profile_transfer": 1_070,
     "integrations.azure_speech": 864,
@@ -1127,15 +1127,15 @@ def test_local_artifact_roots_are_exact_and_unknown_roots_remain_classified(
         assert is_local_artifact_path((root, "probe.py"))
         local_file = tmp_path / root / "probe.py"
         local_file.parent.mkdir()
-        local_file.write_text("import json\n", encoding="utf-8")
+        local_file.write_text('"""Source discovery fixture."""\n', encoding="utf-8")
 
     assert not is_local_artifact_path(("nested", "scratchpad", "probe.py"))
     assert not is_local_artifact_path(("scratchpad-copy", "probe.py"))
     unknown = tmp_path / "unknown-artifact-root" / "probe.py"
     unknown.parent.mkdir()
-    unknown.write_text("import json\n", encoding="utf-8")
+    unknown.write_text('"""Source discovery fixture."""\n', encoding="utf-8")
     product = tmp_path / "product.py"
-    product.write_text("import json\n", encoding="utf-8")
+    product.write_text('"""Source discovery fixture."""\n', encoding="utf-8")
     assert unclassified_python_roots(tmp_path) == ("unknown-artifact-root",)
     assert python_files(tmp_path) == sorted((product, unknown))
 

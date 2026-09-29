@@ -41,6 +41,17 @@ def _is_recovery_source(closed_max: int, source: QColor) -> bool:
     )
 
 
+def _is_skin_source(source: QColor) -> bool:
+    return (
+        source.alpha() >= OPAQUE_ALPHA_THRESHOLD
+        and source.red() >= MIN_SKIN_RED
+        and source.green() >= MIN_SKIN_GREEN
+        and source.blue() >= MIN_SKIN_BLUE
+        and source.red() - source.green() >= MIN_RED_GREEN_DELTA
+        and source.green() - source.blue() >= MIN_GREEN_BLUE_DELTA
+    )
+
+
 def recover_speech_mask_edges(
     expression_pixmaps: Mapping[str, QPixmap],
     mask: QPixmap,
@@ -82,10 +93,16 @@ def recover_speech_mask_edges(
             if closed_color.alpha() < OPAQUE_ALPHA_THRESHOLD:
                 continue
             closed_max = _max_rgb(closed_color)
-            if closed_max > DARK_EDGE_MAX_RGB:
-                continue
             if any(
                 _is_recovery_source(closed_max, source_image.pixelColor(x, y))
+                for source_image in source_images
+            ) or any(
+                # The installed complete-expression closed frame can be
+                # darker than the legacy portrait used while masks are built.
+                # A fully opaque authored skin pixel is still authoritative at
+                # the narrow mouth-corner feather and must not be blended with
+                # that different closed authority.
+                _is_skin_source(source_image.pixelColor(x, y))
                 for source_image in source_images
             ):
                 mask_image.setPixelColor(x, y, QColor(255, 255, 255, 255))

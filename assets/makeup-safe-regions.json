@@ -1,5 +1,5 @@
 {
-  "generated_by": "tools/build_makeup_safe_regions.py",
+  "generated_by": "prepare_safe_region_union.py + prepare_eye_aperture_masks.py + prepare_half_aperture_masks.py",
   "margins_px": {
     "cheeks": 48,
     "eyes": 24,
@@ -70,6 +70,18 @@
             392,
             146,
             123
+          ],
+          [
+            507,
+            430,
+            87,
+            78
+          ],
+          [
+            616,
+            455,
+            99,
+            76
           ]
         ],
         "lips": [
@@ -78,6 +90,12 @@
             547,
             118,
             76
+          ],
+          [
+            525,
+            570,
+            113,
+            91
           ]
         ]
       },
@@ -117,6 +135,18 @@
             371,
             135,
             118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
           ]
         ],
         "lips": [
@@ -164,6 +194,18 @@
             371,
             135,
             118
+          ],
+          [
+            505,
+            396,
+            92,
+            76
+          ],
+          [
+            616,
+            398,
+            95,
+            77
           ]
         ],
         "lips": [
@@ -211,6 +253,18 @@
             371,
             135,
             118
+          ],
+          [
+            481,
+            486,
+            91,
+            73
+          ],
+          [
+            594,
+            457,
+            93,
+            76
           ]
         ],
         "lips": [
@@ -219,6 +273,12 @@
             524,
             125,
             72
+          ],
+          [
+            540,
+            580,
+            145,
+            100
           ]
         ]
       },
@@ -258,6 +318,18 @@
             371,
             135,
             118
+          ],
+          [
+            500,
+            397,
+            91,
+            74
+          ],
+          [
+            611,
+            398,
+            92,
+            74
           ]
         ],
         "lips": [
@@ -305,6 +377,18 @@
             371,
             135,
             118
+          ],
+          [
+            506,
+            397,
+            90,
+            75
+          ],
+          [
+            616,
+            398,
+            92,
+            76
           ]
         ],
         "lips": [
@@ -352,6 +436,18 @@
             394,
             145,
             117
+          ],
+          [
+            485,
+            425,
+            87,
+            76
+          ],
+          [
+            592,
+            442,
+            96,
+            75
           ]
         ],
         "lips": [
@@ -360,6 +456,12 @@
             544,
             121,
             73
+          ],
+          [
+            509,
+            560,
+            117,
+            91
           ]
         ]
       },
@@ -519,8 +621,102 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+015-pitch+00-rest.png",
+          "sha256": "c44d79d72cb070daf707f26e2d58d04e7801b1c7651c88d0434cf4db15e40333",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+015-pitch+00-half.png",
+          "sha256": "c44d79d72cb070daf707f26e2d58d04e7801b1c7651c88d0434cf4db15e40333",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+015-pitch+00-closed.png",
+          "sha256": "c44d79d72cb070daf707f26e2d58d04e7801b1c7651c88d0434cf4db15e40333",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw+015-pitch+00-rest.png",
+          "sha256": "1c515e2aa29cb76efb29712f1b6180dc1019b4bf4bae19f648a46922511abb75",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw+015-pitch+00-half.png",
+          "sha256": "2177078a21c2c507c2eaa7414ad7c64b244f75a6ffb3f556d310d00823594f97",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw+015-pitch+00-closed.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+015-pitch+00-rest-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+015-pitch+00-rest-eye_aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+015-pitch+00-half-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw+015-pitch+00-half-eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+015-pitch+00-closed-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+015-pitch+00-closed-eye_aperture"
+          }
+        }
+      }
     },
     "yaw+030-pitch+00": {
       "canvas": [
@@ -566,8 +762,102 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+030-pitch+00-rest.png",
+          "sha256": "e6032f69bedf04bbcf21ac3acd2d63a039e6d5c712dadaa84ed77cd218ac539f",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+030-pitch+00-half.png",
+          "sha256": "e6032f69bedf04bbcf21ac3acd2d63a039e6d5c712dadaa84ed77cd218ac539f",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+030-pitch+00-closed.png",
+          "sha256": "e6032f69bedf04bbcf21ac3acd2d63a039e6d5c712dadaa84ed77cd218ac539f",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw+030-pitch+00-rest.png",
+          "sha256": "bdd2996bef218737542342fba40d00568542436fab4eb3ee90d5ad09907302bf",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw+030-pitch+00-half.png",
+          "sha256": "5d9c4205d5199d3fdc9c1520f26be32fed4fb50f991a438ea4655bc92a9555a3",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw+030-pitch+00-closed.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+030-pitch+00-rest-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+030-pitch+00-rest-eye_aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+030-pitch+00-half-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw+030-pitch+00-half-eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+030-pitch+00-closed-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+030-pitch+00-closed-eye_aperture"
+          }
+        }
+      }
     },
     "yaw+045-pitch+00": {
       "canvas": [
@@ -613,8 +903,102 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+045-pitch+00-rest.png",
+          "sha256": "898cd2e1625c03394d2ac4f9e750dbee011a1a86854739a43634bec9d31181b3",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+045-pitch+00-half.png",
+          "sha256": "898cd2e1625c03394d2ac4f9e750dbee011a1a86854739a43634bec9d31181b3",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+045-pitch+00-closed.png",
+          "sha256": "898cd2e1625c03394d2ac4f9e750dbee011a1a86854739a43634bec9d31181b3",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw+045-pitch+00-rest.png",
+          "sha256": "ce98e502b65a38e73e20b845017d972786007913398fb2ff24cdd90075871260",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw+045-pitch+00-half.png",
+          "sha256": "22f02a76fff1c93c53d8bfc88e313f7c2aa04d60f905772ff3b10d8f3dc8f65e",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw+045-pitch+00-closed.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+045-pitch+00-rest-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+045-pitch+00-rest-eye_aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+045-pitch+00-half-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw+045-pitch+00-half-eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+045-pitch+00-closed-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+045-pitch+00-closed-eye_aperture"
+          }
+        }
+      }
     },
     "yaw+060-pitch+00": {
       "canvas": [
@@ -623,45 +1007,169 @@
       ],
       "rig": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00",
       "slots": {
-        "eyes": [
+        "cheeks": [
           [
-            414,
-            158,
-            60,
-            77
+            412,
+            172,
+            135,
+            120
           ],
           [
-            436,
-            157,
-            88,
-            79
+            425,
+            222,
+            76,
+            25
+          ],
+          [
+            469,
+            228,
+            2,
+            2
+          ]
+        ],
+        "eyes": [
+          [
+            422,
+            155,
+            92,
+            83
+          ],
+          [
+            428,
+            189,
+            61,
+            27
+          ],
+          [
+            456,
+            197,
+            23,
+            14
+          ],
+          [
+            456,
+            196,
+            23,
+            12
+          ],
+          [
+            426,
+            183,
+            63,
+            38
+          ],
+          [
+            427,
+            183,
+            62,
+            23
           ]
         ],
         "lips": [
           [
-            421,
-            232,
+            413,
+            233,
             79,
-            54
-          ]
-        ],
-        "cheeks": [
-          [
-            390,
-            177,
-            100,
-            108
-          ],
-          [
-            429,
-            176,
-            131,
-            117
+            57
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+060-pitch+00-rest.png",
+          "sha256": "e18e4ef18f215336b4c597e9f2794f10d6a23aa193e956651b619613034feeb9",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+060-pitch+00-half.png",
+          "sha256": "e18e4ef18f215336b4c597e9f2794f10d6a23aa193e956651b619613034feeb9",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+060-pitch+00-closed.png",
+          "sha256": "e18e4ef18f215336b4c597e9f2794f10d6a23aa193e956651b619613034feeb9",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw+060-pitch+00-rest.png",
+          "sha256": "97d72f2453757b45f9bc1c88850bccc20c0d323eb62d861a1e8d31c880834d9f",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw+060-pitch+00-half.png",
+          "sha256": "afa1e7c69038e4ba6f13782c01ec4ffc23e3cfc58f6a113b237d32ad2d25f6f8",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw+060-pitch+00-closed.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+060-pitch+00-rest-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+060-pitch+00-rest-eye_aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+060-pitch+00-half-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw+060-pitch+00-half-eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+060-pitch+00-closed-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+060-pitch+00-closed-eye_aperture"
+          }
+        }
+      }
     },
     "yaw+075-pitch+00": {
       "canvas": [
@@ -672,43 +1180,191 @@
       "slots": {
         "cheeks": [
           [
-            395,
-            193,
-            100,
-            108
+            351,
+            187,
+            99,
+            102
           ],
           [
-            437,
-            187,
-            135,
-            120
+            394,
+            179,
+            137,
+            122
+          ],
+          [
+            403,
+            227,
+            72,
+            23
           ]
         ],
         "eyes": [
           [
-            419,
-            174,
-            58,
-            76
+            378,
+            165,
+            54,
+            74
           ],
           [
-            447,
-            171,
-            92,
-            83
+            403,
+            160,
+            94,
+            85
+          ],
+          [
+            405,
+            192,
+            58,
+            28
+          ],
+          [
+            432,
+            202,
+            21,
+            12
+          ],
+          [
+            432,
+            201,
+            21,
+            11
+          ],
+          [
+            430,
+            200,
+            23,
+            14
+          ],
+          [
+            430,
+            199,
+            23,
+            13
+          ],
+          [
+            433,
+            204,
+            19,
+            10
+          ],
+          [
+            433,
+            203,
+            19,
+            9
+          ],
+          [
+            404,
+            185,
+            59,
+            24
           ]
         ],
         "lips": [
           [
-            433,
-            248,
+            391,
+            242,
             83,
-            56
+            58
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+075-pitch+00-rest.png",
+          "sha256": "129b1f7ec32cd8d3d72d570f1078793dcb251d78b721570dea950112eb674d97",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+075-pitch+00-half.png",
+          "sha256": "129b1f7ec32cd8d3d72d570f1078793dcb251d78b721570dea950112eb674d97",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+075-pitch+00-closed.png",
+          "sha256": "129b1f7ec32cd8d3d72d570f1078793dcb251d78b721570dea950112eb674d97",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw+075-pitch+00-rest.png",
+          "sha256": "23efd9f31e46bb81ff5984a98165c2f53e51c44c33766d51721182f694bfab53",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw+075-pitch+00-half.png",
+          "sha256": "dc321e6cc189bee1a125d61d1978e29785457663edd4955ae3ea7f8138d740d4",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw+075-pitch+00-closed.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+075-pitch+00-rest-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+075-pitch+00-rest-eye_aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+075-pitch+00-half-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw+075-pitch+00-half-eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+075-pitch+00-closed-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw+075-pitch+00-closed-eye_aperture"
+          }
+        }
+      }
     },
     "yaw+090-pitch+00": {
       "canvas": [
@@ -719,37 +1375,149 @@
       "slots": {
         "cheeks": [
           [
-            373,
-            220,
-            100,
-            106
-          ],
-          [
-            402,
-            214,
-            132,
-            119
+            439,
+            221,
+            61,
+            49
           ]
         ],
         "eyes": [
           [
-            406,
-            198,
-            89,
-            81
+            443,
+            201,
+            35,
+            19
+          ],
+          [
+            429,
+            196,
+            51,
+            24
+          ],
+          [
+            449,
+            201,
+            24,
+            14
+          ],
+          [
+            449,
+            200,
+            24,
+            15
           ]
         ],
         "lips": [
           [
-            400,
-            273,
-            80,
-            54
+            428,
+            253,
+            24,
+            21
+          ],
+          [
+            433,
+            257,
+            21,
+            20
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+090-pitch+00-rest.png",
+          "sha256": "552d61f61f942c217aa8002ae58797d6a2f7ed53abb157be7c5f201b4cd11277",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+090-pitch+00-half.png",
+          "sha256": "552d61f61f942c217aa8002ae58797d6a2f7ed53abb157be7c5f201b4cd11277",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw+090-pitch+00-closed.png",
+          "sha256": "552d61f61f942c217aa8002ae58797d6a2f7ed53abb157be7c5f201b4cd11277",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw+090-pitch+00-rest.png",
+          "sha256": "584bcb1dbe5d5e4810c42ef901a86515aebaf3dc85650d1b8413aa49da8ecc08",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw+090-pitch+00-half.png",
+          "sha256": "60f7d4f100adc4ce6cd12460717663bb8956d8ba32854e0970eae89d42eaf990",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw+090-pitch+00-closed.png",
+          "sha256": "31b12d3344eb0edd501ac359a5dd1bde1c2aeac96c754f8b2a91876fcc86782b",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "candidate-pair-11/receipt.json#mirror-rest-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "candidate-pair-11/receipt.json#mirror-rest-eye_aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "candidate-pair-11/receipt.json#mirror-half-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw+090-pitch+00-half-eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "candidate-pair-11/receipt.json#mirror-closed-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "candidate-pair-11/receipt.json#mirror-closed-eye_aperture"
+          }
+        }
+      }
     },
     "yaw+105-pitch+00": {
       "canvas": [
@@ -865,8 +1633,102 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-015-pitch+00-rest.png",
+          "sha256": "0aa009848a2fb5fb6f772f1263b26d474af4bd19bca920bc85bc0ce6b546fad4",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-015-pitch+00-half.png",
+          "sha256": "0aa009848a2fb5fb6f772f1263b26d474af4bd19bca920bc85bc0ce6b546fad4",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-015-pitch+00-closed.png",
+          "sha256": "0aa009848a2fb5fb6f772f1263b26d474af4bd19bca920bc85bc0ce6b546fad4",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw-015-pitch+00-rest.png",
+          "sha256": "353e0d1bf140859cbcb6008a1ca2cd8a7f65a3c86c3e9541b6d6fe4947b604ad",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw-015-pitch+00-half.png",
+          "sha256": "cf3814d454da772a3f0188f354f5e700a6599d4ba1c36fe7a4b9baada02d2fa9",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw-015-pitch+00-closed.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-015-pitch+00-rest-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-015-pitch+00-rest-eye_aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-015-pitch+00-half-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw-015-pitch+00-half-eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-015-pitch+00-closed-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-015-pitch+00-closed-eye_aperture"
+          }
+        }
+      }
     },
     "yaw-030-pitch+00": {
       "canvas": [
@@ -912,8 +1774,102 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-030-pitch+00-rest.png",
+          "sha256": "ea6574c79fc9e1346210578fe01f9fc3cc84fb87ffeaebe2a19d28850411f8ef",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-030-pitch+00-half.png",
+          "sha256": "ea6574c79fc9e1346210578fe01f9fc3cc84fb87ffeaebe2a19d28850411f8ef",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-030-pitch+00-closed.png",
+          "sha256": "ea6574c79fc9e1346210578fe01f9fc3cc84fb87ffeaebe2a19d28850411f8ef",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw-030-pitch+00-rest.png",
+          "sha256": "2135008495582ca0cf36da7596816ad4ec007f27ba18e76f243e3b354b1db9fe",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw-030-pitch+00-half.png",
+          "sha256": "7ad2448c7fe0e19774f03afa31f60d5ca980e06a9eeaead59b6259f22d06063c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw-030-pitch+00-closed.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-030-pitch+00-rest-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-030-pitch+00-rest-eye_aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-030-pitch+00-half-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw-030-pitch+00-half-eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-030-pitch+00-closed-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-030-pitch+00-closed-eye_aperture"
+          }
+        }
+      }
     },
     "yaw-045-pitch+00": {
       "canvas": [
@@ -959,151 +1915,10 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
-    },
-    "yaw-060-pitch+00": {
-      "canvas": [
-        1024,
-        1536
-      ],
-      "rig": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00",
-      "slots": {
-        "cheeks": [
-          [
-            473,
-            190,
-            115,
-            119
-          ],
-          [
-            524,
-            188,
-            112,
-            119
-          ]
-        ],
-        "eyes": [
-          [
-            508,
-            169,
-            71,
-            81
-          ],
-          [
-            539,
-            171,
-            73,
-            82
-          ]
-        ],
-        "lips": [
-          [
-            528,
-            244,
-            70,
-            56
-          ]
-        ]
-      },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
-    },
-    "yaw-075-pitch+00": {
-      "canvas": [
-        1024,
-        1536
-      ],
-      "rig": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00",
-      "slots": {
-        "cheeks": [
-          [
-            464,
-            192,
-            114,
-            117
-          ],
-          [
-            508,
-            192,
-            112,
-            117
-          ]
-        ],
-        "eyes": [
-          [
-            488,
-            180,
-            71,
-            79
-          ],
-          [
-            523,
-            180,
-            74,
-            79
-          ]
-        ],
-        "lips": [
-          [
-            513,
-            250,
-            70,
-            54
-          ]
-        ]
-      },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
-    },
-    "yaw-090-pitch+00": {
-      "canvas": [
-        1024,
-        1536
-      ],
-      "rig": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00",
-      "slots": {
-        "cheeks": [
-          [
-            475,
-            205,
-            121,
-            119
-          ],
-          [
-            537,
-            208,
-            105,
-            111
-          ]
-        ],
-        "eyes": [
-          [
-            499,
-            190,
-            79,
-            81
-          ],
-          [
-            547,
-            192,
-            63,
-            79
-          ]
-        ],
-        "lips": [
-          [
-            534,
-            265,
-            71,
-            55
-          ]
-        ]
-      },
       "foundation_masks": {
         "rest": {
-          "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-rest.png",
-          "sha256": "1af0f7e3ffc60bc3e339d72c5ea768a35c2cba586f971ca7c6c160fde914b72c",
+          "path": "assets/makeup-foundation-safe-regions/yaw-045-pitch+00-rest.png",
+          "sha256": "1f48bc4be74e093f5b7f241fa0966fc063f1c451d794c3ca4ab008ca7584a5b8",
           "width": 1024,
           "height": 1536,
           "anchor": [
@@ -1112,8 +1927,8 @@
           ]
         },
         "half": {
-          "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-half.png",
-          "sha256": "40fccc724a4fa79a78aceab2154093a6c97296500c85a7bcf9d134203fa0b720",
+          "path": "assets/makeup-foundation-safe-regions/yaw-045-pitch+00-half.png",
+          "sha256": "1f48bc4be74e093f5b7f241fa0966fc063f1c451d794c3ca4ab008ca7584a5b8",
           "width": 1024,
           "height": 1536,
           "anchor": [
@@ -1122,8 +1937,8 @@
           ]
         },
         "closed": {
-          "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-closed.png",
-          "sha256": "d23bb705e881c88dd0a9c296ac912c54728fbf21e606f4f3ab980627abf636eb",
+          "path": "assets/makeup-foundation-safe-regions/yaw-045-pitch+00-closed.png",
+          "sha256": "1f48bc4be74e093f5b7f241fa0966fc063f1c451d794c3ca4ab008ca7584a5b8",
           "width": 1024,
           "height": 1536,
           "anchor": [
@@ -1134,8 +1949,8 @@
       },
       "eye_aperture_masks": {
         "rest": {
-          "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-rest.png",
-          "sha256": "081a5c5549d8414d498e80bc95567bd988aac0654663e2531f711b9613798ab2",
+          "path": "assets/makeup-eye-apertures/yaw-045-pitch+00-rest.png",
+          "sha256": "d1082e9a0d692c45ae6b62b9e7fb2cf6fb7783bf09a44e2a717c8e74a74977d7",
           "width": 1024,
           "height": 1536,
           "anchor": [
@@ -1144,8 +1959,8 @@
           ]
         },
         "half": {
-          "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-half.png",
-          "sha256": "c96e5d71ad926e11817c607a6237253d0d582e946bf5a9742d5a37440dd329eb",
+          "path": "assets/makeup-eye-apertures/yaw-045-pitch+00-half.png",
+          "sha256": "12f2b2ed8a6b21f0c93087d237289050835d42f04b32985bab9820089cf27724",
           "width": 1024,
           "height": 1536,
           "anchor": [
@@ -1154,7 +1969,7 @@
           ]
         },
         "closed": {
-          "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-closed.png",
+          "path": "assets/makeup-eye-apertures/yaw-045-pitch+00-closed.png",
           "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c",
           "width": 1024,
           "height": 1536,
@@ -1168,31 +1983,556 @@
         "rest": {
           "foundation_coverage": {
             "nonvisible": false,
-            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/rest/foundation_coverage"
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-045-pitch+00-rest-foundation_coverage"
           },
           "eye_aperture": {
             "nonvisible": false,
-            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/rest/eye_aperture"
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-045-pitch+00-rest-eye_aperture"
           }
         },
         "half": {
           "foundation_coverage": {
             "nonvisible": false,
-            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/half/foundation_coverage"
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-045-pitch+00-half-foundation_coverage"
           },
           "eye_aperture": {
             "nonvisible": false,
-            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/half/eye_aperture"
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw-045-pitch+00-half-eye_aperture"
           }
         },
         "closed": {
           "foundation_coverage": {
             "nonvisible": false,
-            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/closed/foundation_coverage"
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-045-pitch+00-closed-foundation_coverage"
           },
           "eye_aperture": {
             "nonvisible": true,
-            "evidence": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/profile-native03-safe-stage-01/receipt.json#states/closed/eye_aperture"
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-045-pitch+00-closed-eye_aperture"
+          }
+        }
+      }
+    },
+    "yaw-060-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            485,
+            177,
+            114,
+            121
+          ],
+          [
+            530,
+            179,
+            109,
+            120
+          ],
+          [
+            514,
+            226,
+            38,
+            22
+          ],
+          [
+            532,
+            233,
+            11,
+            13
+          ]
+        ],
+        "eyes": [
+          [
+            509,
+            158,
+            72,
+            85
+          ],
+          [
+            545,
+            160,
+            69,
+            85
+          ],
+          [
+            524,
+            186,
+            66,
+            31
+          ],
+          [
+            536,
+            195,
+            25,
+            16
+          ],
+          [
+            536,
+            193,
+            25,
+            15
+          ],
+          [
+            523,
+            179,
+            66,
+            41
+          ],
+          [
+            523,
+            179,
+            64,
+            27
+          ],
+          [
+            523,
+            179,
+            65,
+            41
+          ]
+        ],
+        "lips": [
+          [
+            534,
+            242,
+            66,
+            58
+          ],
+          [
+            554,
+            251,
+            28,
+            21
+          ],
+          [
+            557,
+            252,
+            21,
+            17
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-060-pitch+00-rest.png",
+          "sha256": "7d2244f86054b853aa1556b5367ec53b14225ea73cdbc3350776103f36a5acfc",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-060-pitch+00-half.png",
+          "sha256": "7d2244f86054b853aa1556b5367ec53b14225ea73cdbc3350776103f36a5acfc",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-060-pitch+00-closed.png",
+          "sha256": "7d2244f86054b853aa1556b5367ec53b14225ea73cdbc3350776103f36a5acfc",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw-060-pitch+00-rest.png",
+          "sha256": "9aaa539e8af3f100fd2f509f7b7c81e9d3205acbc69d6bbc525c2ca79c656c0b",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw-060-pitch+00-half.png",
+          "sha256": "4b206fc31e1f246378feba629e08734809060743caa054866772e4bc35402ed6",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw-060-pitch+00-closed.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-060-pitch+00-rest-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-060-pitch+00-rest-eye_aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-060-pitch+00-half-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw-060-pitch+00-half-eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-060-pitch+00-closed-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-060-pitch+00-closed-eye_aperture"
+          }
+        }
+      }
+    },
+    "yaw-075-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            484,
+            179,
+            111,
+            120
+          ],
+          [
+            521,
+            182,
+            109,
+            118
+          ],
+          [
+            509,
+            230,
+            70,
+            22
+          ],
+          [
+            517,
+            242,
+            7,
+            10
+          ]
+        ],
+        "eyes": [
+          [
+            508,
+            163,
+            68,
+            83
+          ],
+          [
+            538,
+            165,
+            66,
+            83
+          ],
+          [
+            520,
+            191,
+            60,
+            32
+          ],
+          [
+            531,
+            201,
+            23,
+            15
+          ],
+          [
+            531,
+            199,
+            23,
+            13
+          ],
+          [
+            520,
+            186,
+            52,
+            39
+          ],
+          [
+            520,
+            186,
+            51,
+            25
+          ]
+        ],
+        "lips": [
+          [
+            530,
+            241,
+            61,
+            58
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-075-pitch+00-rest.png",
+          "sha256": "abf0e36d5e3a591db6869ede8da11b7c8dd46eb9a2e505a8fdb09001ab34604a",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-075-pitch+00-half.png",
+          "sha256": "abf0e36d5e3a591db6869ede8da11b7c8dd46eb9a2e505a8fdb09001ab34604a",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-075-pitch+00-closed.png",
+          "sha256": "abf0e36d5e3a591db6869ede8da11b7c8dd46eb9a2e505a8fdb09001ab34604a",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw-075-pitch+00-rest.png",
+          "sha256": "9d4c67ecf63cc24395f3d9814397fb00b681ff79ae71f3d1cf8ee05f7ca2c0a6",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw-075-pitch+00-half.png",
+          "sha256": "04c95008d0da724d2e7b91475a96336f3ae28a58040ac4ca857fe5a6377d24d0",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw-075-pitch+00-closed.png",
+          "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-075-pitch+00-rest-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-075-pitch+00-rest-eye_aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-075-pitch+00-half-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw-075-pitch+00-half-eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-075-pitch+00-closed-foundation_coverage"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/aperture-receipt.json#yaw-075-pitch+00-closed-eye_aperture"
+          }
+        }
+      }
+    },
+    "yaw-090-pitch+00": {
+      "canvas": [
+        1024,
+        1536
+      ],
+      "rig": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00",
+      "slots": {
+        "cheeks": [
+          [
+            524,
+            221,
+            61,
+            49
+          ]
+        ],
+        "eyes": [
+          [
+            546,
+            201,
+            35,
+            19
+          ],
+          [
+            546,
+            194,
+            49,
+            30
+          ]
+        ],
+        "lips": [
+          [
+            572,
+            253,
+            24,
+            21
+          ],
+          [
+            570,
+            257,
+            21,
+            20
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-rest.png",
+          "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-half.png",
+          "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-closed.png",
+          "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-rest.png",
+          "sha256": "fabca8dae35e67d364e32dc5d83b33ec949c74338dc1b75d4a195c975cf510ea",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-half.png",
+          "sha256": "c35a9d7d579f65429d49a6d00a7a0a6833b1074fec3c88b5945eb5ac85b38bc2",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-closed.png",
+          "sha256": "31b12d3344eb0edd501ac359a5dd1bde1c2aeac96c754f8b2a91876fcc86782b",
+          "width": 1024,
+          "height": 1536,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "candidate-minus-06/receipt.json#foundation"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "candidate-minus-06/receipt.json#eye-aperture"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "candidate-minus-06/receipt.json#foundation"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/safe-regions-claude-01/half-aperture-receipt.json#yaw-090-pitch+00-half-eye_aperture"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": false,
+            "evidence": "candidate-minus-06/receipt.json#foundation"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "candidate-minus-06/receipt.json#eye-aperture"
           }
         }
       }
@@ -1281,5 +2621,7 @@
       "foundation_masks": {},
       "eye_aperture_masks": {}
     }
-  }
+  },
+  "source_sha256": "4ca78a577d93ba65d5d6af0d9aaee6d999d59b9fa6f6222d953d91afa19b7552",
+  "policy": "Union the owner-approved V5 makeup rectangles with the owner-approved v7 mouth rectangles; the runtime remains fail-closed to these explicit rectangles."
 }

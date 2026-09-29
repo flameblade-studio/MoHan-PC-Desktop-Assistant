@@ -1,9 +1,28 @@
 {
   "audit_evidence": {
-    "audit_schema": "mohan.pose-atlas-static-identity-audit.v2",
-    "pre_baseline_path": "scratchpad/v4-identity-rebuild-20260905/luna-a-halfbody-next-01/metadata-formal-integration-01/identity-audit-current-01.json",
-    "pre_baseline_sha256": "222f417b480f3272f0d5708175a45a354a499714dfb55cdf70a6adf076098e05",
-    "pre_baseline_status": "three_exact_findings_pinned_below"
+    "new_profile_findings": {
+      "yaw+090-pitch+00": [
+        "forehead_curvature_discontinuity"
+      ],
+      "yaw-090-pitch+00": [
+        "forehead_curvature_discontinuity",
+        "forehead_outward_bulge"
+      ]
+    },
+    "raw_report_issue_count": 4,
+    "raw_report_path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/native-staging-14/raw-static-identity.json",
+    "raw_report_sha256": "aee10afcc351e2ceed3ee4173256662b18049790165088a15c87acb36bf2d165",
+    "formal_baseline_before_sha256": "5d1b063c5d25d2467e574bbed922a66a7564f1c227621abe7e5c2a1ed10b9ab7",
+    "alpha_cleanup_derivation": {
+      "path": "docs/release-evidence/pose-atlas-v5-alpha-derivation/alpha-derivation.json",
+      "sha256": "c8a5b0f2ac5f3764886edcc1414152b6afdb010e949eaade82dac9649e562116",
+      "rule": "conservative-032 alpha-only hair-fringe cleanup"
+    },
+    "derived_mirror": {
+      "derived_plus090_is_exact_mirror_of_minus090": true,
+      "differing_pixels_after_flip": 0
+    },
+    "raw_metrics_retained": true
   },
   "measurement_contract": {
     "available_native_face_landmarks": 17,
@@ -28,28 +47,63 @@
     ]
   },
   "owner_approval": {
-    "evidence": "ART/owner-visible-batch-approval-20260908-side-01.json",
-    "scope": "24 current v5 source identities and appearance selection",
-    "sha256": "2d70704e573a7eb78a6190c2bc88476553a4a13f6d099e4f384a5b5756f94c21",
-    "status": "root-recorded-owner-accepted-current-source-batch"
+    "evidence": [
+      {
+        "path": "ART/owner-visible-batch-approval-20260908-side-01.json",
+        "scope": "unchanged yaw+060 owner-accepted source",
+        "sha256": "2d70704e573a7eb78a6190c2bc88476553a4a13f6d099e4f384a5b5756f94c21",
+        "status": "historical_record_path_currently_absent"
+      },
+      {
+        "path": "docs/release-evidence/pose-atlas-v5-owner-approvals/identity-repair-30-owner-approval.json",
+        "scope": "owner-adopted new minus090 facial identity f21; exact current ad57 source",
+        "sha256": "dec265421e6c320def38a42bc2f46ac0c7b8977cb5334b50d91411c6e31781c7"
+      },
+      {
+        "path": "docs/release-evidence/pose-atlas-v5-owner-approvals/plus090-exact-mirror-07-owner-approval.json",
+        "scope": "owner-adopted exact full-body plus090 mirror 07 of ad57",
+        "sha256": "9c648a4f9c51c0ca4e8e1c7d115f1ca40d6bf892e530cdb7763dbf4850ef0e05"
+      },
+      {
+        "path": "docs/release-evidence/pose-atlas-v5-owner-approvals/new-angle-forehead-waiver-20260930.json",
+        "scope": "owner-accepted forehead findings on the approved yaw+060, yaw-060 and yaw-075 sources",
+        "sha256": "79fe99e1b512bd56f6de6313446e8dbf60ae0ae9c941e269909b2faf2033c81d"
+      }
+    ],
+    "status": "new_profile_source_appearance_accepted_exact_sha_findings_pinned"
   },
-  "ruling": "Owner-accepted current v5-base identity baseline, 2026-09-09. The 24 current source views were accepted in the owner-visible batch record. This baseline pins only the exact current PNG bytes and the three findings reported by the pre-baseline static audit; any byte change invalidates that view entry. No old baseline, old landmarks, or old coordinates were reused.",
+  "ruling": "Mechanical derivation inside an already adopted scope: the owner adopted the minus090 f21 facial identity and the exact whole-canvas plus090 mirror 07 of it; conservative-032 removes only hair-fringe alpha below 32 while RGB and every opaque pixel stay byte identical, and the derived plus090 frame is the exact mirror of the derived minus090 frame. The minus090 accepted forehead code set therefore transfers to both derived masters. No threshold, algorithm or general test changed, no new owner statement is claimed, and no other image is waived. Any byte change still invalidates the corresponding entry.",
   "schema": "mohan.pose-atlas-identity-baseline.v1",
   "views": {
     "yaw+060-pitch+00": {
-      "sha256": "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46",
+      "sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
       "waived_issue_codes": [
+        "forehead_curvature_discontinuity",
         "forehead_outward_bulge"
       ]
     },
     "yaw+090-pitch+00": {
-      "sha256": "143627ddb7fff90958731fd16aab7c36d8ddc10312ac48a04ae65fbe8abc4d8f",
+      "sha256": "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152",
       "waived_issue_codes": [
+        "forehead_curvature_discontinuity",
+        "forehead_outward_bulge"
+      ]
+    },
+    "yaw-060-pitch+00": {
+      "sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
+      "waived_issue_codes": [
+        "forehead_curvature_discontinuity"
+      ]
+    },
+    "yaw-075-pitch+00": {
+      "sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
+      "waived_issue_codes": [
+        "forehead_curvature_discontinuity",
         "forehead_outward_bulge"
       ]
     },
     "yaw-090-pitch+00": {
-      "sha256": "59aafd7ee3164c011f2b94a0230ab937a5cc0cf0fbaa78bc37ed20b2d3b78a3d",
+      "sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b",
       "waived_issue_codes": [
         "forehead_curvature_discontinuity",
         "forehead_outward_bulge"

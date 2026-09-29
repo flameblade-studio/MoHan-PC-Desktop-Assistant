@@ -5,10 +5,11 @@ lazy from collections import OrderedDict
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import Qt
-lazy from PySide6.QtGui import QPixmap
+lazy from PySide6.QtGui import QPainter, QPixmap
 
 lazy from domain.face_rig import FaceMotionFrame
 lazy from infrastructure.animated_appearance import AnimatedAppearance
+lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
 lazy from infrastructure.complete_halfbody_expressions import (
     EYES, FAMILIES, CompleteHalfbodyFrames, load_complete_halfbody_frames,
 )
@@ -33,6 +34,7 @@ class CompleteHalfbodyRenderer:
         self._loaded = False
         self._assets: CompleteHalfbodyFrames | None = None
         self._appearance = AnimatedAppearance(overlay)
+        self._overlay = overlay
         self._contexts: OrderedDict[int, tuple[str, str]] = OrderedDict()
         self._pixmaps: OrderedDict[tuple[str, str, str], QPixmap] = OrderedDict()
 
@@ -63,13 +65,49 @@ class CompleteHalfbodyRenderer:
         # separately. This also preserves the endpoint during mouth transitions.
         return self._compose(base, pose, family, "rest")
 
-    def blink(self, base: QPixmap, eye_state: str) -> QPixmap | None:
+    def blink(
+        self,
+        base: QPixmap,
+        eye_state: str,
+        eye_patch: QPixmap | None = None,
+        makeup_context: str | None = None,
+    ) -> QPixmap | None:
         if eye_state not in EYES:
             raise ValueError(f"Unsupported complete half-body eye state: {eye_state}")
         binding = self._contexts.get(base.cacheKey())
         if binding is None:
             return None
-        return self._compose(base, *binding, eye_state)
+        endpoint = self._compose(base, *binding, eye_state)
+        if eye_patch is None or eye_patch.isNull():
+            return endpoint
+        # Complete endpoints own the eyelid pixels, not the displayed mouth,
+        # gesture, hair or body.  The caller supplies the already registered
+        # eye patch, whose alpha is the exact authority boundary for this
+        # expression and eye state.
+        layer = QPixmap(endpoint.size())
+        layer.fill(Qt.transparent)
+        painter = QPainter(layer)
+        painter.drawPixmap(0, 0, endpoint)
+        painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+        painter.drawPixmap(0, 0, eye_patch)
+        painter.end()
+        result = QPixmap(base)
+        painter = QPainter(result)
+        painter.drawPixmap(0, 0, layer)
+        painter.end()
+        apply_makeup = getattr(self._overlay, "apply_makeup", None)
+        if makeup_context is not None and callable(apply_makeup):
+            paint_blink_makeup(
+                result, eye_patch, self._overlay, makeup_context, eye_state
+            )
+        self._remember_context(result, binding)
+        return result
+
+    def _remember_context(self, frame: QPixmap, binding: tuple[str, str]) -> None:
+        self._contexts[frame.cacheKey()] = binding
+        self._contexts.move_to_end(frame.cacheKey())
+        while len(self._contexts) > MAX_FRAME_CONTEXTS:
+            self._contexts.popitem(last=False)
 
     def _compose(
         self, base: QPixmap, pose: str, family: str, eye: str,
@@ -92,8 +130,5 @@ class CompleteHalfbodyRenderer:
         )
         if not base.isNull() and frame.size() != base.size():
             frame = frame.scaled(base.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self._contexts[frame.cacheKey()] = (pose, family)
-        self._contexts.move_to_end(frame.cacheKey())
-        while len(self._contexts) > MAX_FRAME_CONTEXTS:
-            self._contexts.popitem(last=False)
+        self._remember_context(frame, (pose, family))
         return frame

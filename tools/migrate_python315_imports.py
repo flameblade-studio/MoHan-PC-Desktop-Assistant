@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import argparse
 lazy import ast
+lazy import subprocess
 lazy from pathlib import Path
 
 if __package__:
@@ -64,8 +65,30 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
                 "IncompatibleBodyProfileError",
                 "OutfitPackError",
                 "_dimensions",
-                "_safe_member",
             ),
+        ),
+        (
+            "from",
+            "domain.outfit_pack_archive",
+            (
+                "BODY_PROFILE_ID",
+                "BODY_PROFILE_VERSION",
+                "FORMAT",
+                "VERSION",
+                "declared_asset_paths",
+            ),
+        ),
+    }),
+    "infrastructure/layered_face_renderer.py": frozenset({
+        (
+            "from",
+            "infrastructure.layered_face_painting",
+            ("MAX_CACHED_MASK_BOUNDS",),
+        ),
+        (
+            "from",
+            "domain.legacy_makeup",
+            ("select_legacy_makeup_view_id",),
         ),
     }),
     # ``infrastructure.layered_full_body_renderer`` re-exports the speech
@@ -417,10 +440,37 @@ class ImportInventory(ast.NodeVisitor):
         self._record(node)
 
 
+def _tracked_python_files(root: Path) -> list[Path] | None:
+    result = subprocess.run(
+        [
+            "git",
+            "-c",
+            f"safe.directory={root.as_posix()}",
+            "ls-files",
+            "--cached",
+            "-z",
+        ],
+        cwd=root,
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    if result.returncode:
+        return None
+    return [
+        root / relative_path
+        for relative_path in result.stdout.split("\0")
+        if relative_path.endswith(".py")
+    ]
+
+
 def python_files(root: Path = ROOT) -> list[Path]:
+    tracked_files = _tracked_python_files(root)
+    candidates = tracked_files if tracked_files is not None else root.rglob("*.py")
     return sorted(
         path
-        for path in root.rglob("*.py")
+        for path in candidates
         if not _excluded(path.relative_to(root).parts)
     )
 

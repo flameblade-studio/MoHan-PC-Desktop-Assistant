@@ -251,8 +251,10 @@ def test_dimension_mismatch_fails_closed() -> None:
 
 
 def _run_with_custom_count(root: Path, extra_yaw: int, extra_view_id: str) -> dict[str, object]:
-    original_yaws = audit_tool.CANONICAL_YAWS
-    original_view_id = audit_tool.canonical_view_id
+    # Iteration forces a PEP 810 lazy import before this test monkeypatches the
+    # module attribute. Direct tuple unpacking can otherwise see lazy_import.
+    original_yaws = tuple(yaw for yaw in CANONICAL_YAWS)
+    original_view_id = import_module("domain.character_pose").canonical_view_id
     try:
         audit_tool.CANONICAL_YAWS = (*original_yaws, extra_yaw)
 
