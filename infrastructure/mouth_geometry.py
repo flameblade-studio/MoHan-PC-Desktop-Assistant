@@ -51,6 +51,7 @@ def inward_lerped_u_layer(
     painter.end()
     return result
 
+
 def paint_inward_lerped_u_layer(
     target: QPixmap,
     source: QPixmap,

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-lazy import json, math, os, subprocess, tempfile, threading, wave
+lazy import json, math, os, subprocess, tempfile, threading, wave  # ruff: ignore[multiple-imports-on-one-line]
 lazy from array import array
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
@@ -63,7 +63,7 @@ def _emit_qt_callback_safely(callback: Callable[..., None], *args: object) -> No
     except RuntimeError:
         return
 
-__all__ = (
+__all__ = (  # ruff: ignore[blank-lines-after-function-or-class]
     "DEFAULT_TRANSCRIPTION_MODEL",
     "DEFAULT_TRANSCRIPTION_PROMPT",
     "OpenAITTS",

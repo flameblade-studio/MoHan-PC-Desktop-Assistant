@@ -22,6 +22,7 @@ def test_reviewed_neutral_bypasses_obsolete_rig_and_preserves_speech(monkeypatch
     stale.fill(QColor("green"))
     overlay = SimpleNamespace(native_neutral=lambda view: native.copy(), apply=lambda frame, view: frame)
     renderer = LayeredParametricFaceRenderer(outfit_overlay=overlay)
+
     def obsolete(*args, **kwargs):
         pytest.fail("Reviewed neutral must not use the obsolete face rig")
     monkeypatch.setattr(renderer, "_detachable_portrait", obsolete)

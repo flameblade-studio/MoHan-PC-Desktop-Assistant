@@ -19,8 +19,10 @@ def test_rear_hair_underpaints_native_head_and_preserves_front_hair(tmp_path, mo
     image.setPixelColor(0, 0, QColor(0, 255, 0, 255))
     image.setPixelColor(1, 0, QColor(0, 255, 0, 128))
     frame = QPixmap.fromImage(image)
-    rear = QPixmap(3, 2); rear.fill(QColor("red"))
-    front = QPixmap(3, 2); front.fill(QColor("blue"))
+    rear = QPixmap(3, 2)
+    rear.fill(QColor("red"))
+    front = QPixmap(3, 2)
+    front.fill(QColor("blue"))
     layers = AppearanceLayerStack(
         ((rear, 0, 0, QRegion(0, 0, 3, 2), 1.0),),
         ((front, 0, 0, QRegion(0, 1, 3, 1), 1.0),),

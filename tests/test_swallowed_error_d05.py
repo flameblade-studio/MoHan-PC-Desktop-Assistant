@@ -60,7 +60,7 @@ def assert_startup_backup_failure_retains_manager_and_retries() -> None:
         "BackupManager",
         _RetryingBackupManager,
     ):
-        initialize = getattr(service_container, "_initialize_backup_manager")
+        initialize = service_container._initialize_backup_manager
         manager = initialize(object(), Path(temporary))
         assert manager is _RetryingBackupManager.instances[0]
         assert manager.automatic_backup_failed is True

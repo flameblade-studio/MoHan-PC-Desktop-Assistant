@@ -124,6 +124,7 @@ def _configure(
         (item,),
         (),
     )
+
     def selection(_store: Path, category: str) -> SimpleNamespace:
         if category != "garment":
             return SimpleNamespace(status="builtin")

@@ -69,7 +69,7 @@ lazy from presentation.lingxiao_themes import (
 )
 lazy from presentation.flagship_ui_localization import FlagshipTranslator
 
-__all__ = ("FlagshipControlCenter", "ControlCenterDependencies")
+__all__ = ("ControlCenterDependencies", "FlagshipControlCenter")
 
 
 @dataclass(frozen=True, slots=True)

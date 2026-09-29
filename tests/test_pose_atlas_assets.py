@@ -68,10 +68,10 @@ def run() -> None:
     repo = Path(__file__).resolve().parents[1]
     # One source of truth for the current generation: the relative roots must
     # be spelled from the root names, and both directories must be complete.
-    assert POSE_ATLAS_RELATIVE_ROOT == f"assets/pose-atlas/{POSE_ATLAS_ROOT_NAME}"
-    assert POSE_ATLAS_LAYERED_RELATIVE_ROOT == (
+    assert f"assets/pose-atlas/{POSE_ATLAS_ROOT_NAME}" == POSE_ATLAS_RELATIVE_ROOT
+    assert (
         f"assets/pose-atlas/{POSE_ATLAS_LAYERED_ROOT_NAME}"
-    )
+    ) == POSE_ATLAS_LAYERED_RELATIVE_ROOT
     assert POSE_ATLAS_ROOT_NAME == "v5-base"
     assert POSE_ATLAS_GENERATION == EXPECTED_GENERATION
     root = repo / POSE_ATLAS_RELATIVE_ROOT

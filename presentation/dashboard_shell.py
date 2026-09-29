@@ -64,7 +64,7 @@ __all__ = ("DashboardShellMixin",)
 
 MIN_SPLITTER_HEIGHT = 20
 
-class DashboardShellMixin:
+class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
     """Dashboard window shell and cross-tab coordination behavior."""
 
     def _mount_global_settings_actions(self, root: QVBoxLayout) -> None:

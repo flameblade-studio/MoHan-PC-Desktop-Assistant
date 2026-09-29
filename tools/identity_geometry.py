@@ -14,7 +14,8 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Any, Callable, Mapping
+from typing import Any
+from collections.abc import Callable, Mapping
 
 import numpy as np
 
@@ -161,7 +162,7 @@ class ViewGeometryEvidence:
         """Nearest pixel used only for mask sampling."""
 
         x, y = self.pixel(index)
-        return int(round(x)), int(round(y))
+        return round(x), round(y)
 
     def pixel_distance(self, left: int, right: int) -> float:
         first, second = self.pixel(left), self.pixel(right)
@@ -456,9 +457,9 @@ def _head_silhouette(evidence: ViewGeometryEvidence) -> dict[str, int]:
     return {
         "top": top,
         "widest_row": top + int(np.argmax(widths[top : chin + 1])),
-        "head_width": int(round(head_width)),
+        "head_width": round(head_width),
         "neck_row": chin + int(np.argmin(ledge)),
-        "neck_width": int(round(neck_width)),
+        "neck_width": round(neck_width),
     }
 
 

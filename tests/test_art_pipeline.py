@@ -94,10 +94,10 @@ def test_rectangle_composite_has_zero_difference_outside_contract() -> None:
     assert np.any(result != base)
     allowed = np.zeros((CANVAS_SIZE, CANVAS_SIZE), dtype=bool)
     x0, y0, x1, y1 = (
-        int(round(rectangle[0] * CANVAS_SIZE / 465)) + 2,
-        int(round(rectangle[1] * CANVAS_SIZE / 465)) + 2,
-        int(round((rectangle[0] + rectangle[2]) * CANVAS_SIZE / 465)) - 2,
-        int(round((rectangle[1] + rectangle[3]) * CANVAS_SIZE / 465)) - 2,
+        round(rectangle[0] * CANVAS_SIZE / 465) + 2,
+        round(rectangle[1] * CANVAS_SIZE / 465) + 2,
+        round((rectangle[0] + rectangle[2]) * CANVAS_SIZE / 465) - 2,
+        round((rectangle[1] + rectangle[3]) * CANVAS_SIZE / 465) - 2,
     )
     allowed[y0:y1, x0:x1] = True
     assert np.all(np.any(result != base, axis=2) <= allowed)

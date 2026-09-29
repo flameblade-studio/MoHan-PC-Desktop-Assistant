@@ -81,7 +81,7 @@ def _scan_layers(
         alpha_sum += use.astype(np.uint16)
         layers[name] = {"alpha_pixels": count, "bbox": _bbox(use), "pixel_hash": _hash_pixels(arr)}
     for name in blank_pending:
-        if name in ("teeth_tongue", "oral_cavity"):
+        if name in {"teeth_tongue", "oral_cavity"}:
             # Speech-contract layers: closed-mouth neutrals keep teeth_tongue
             # empty everywhere, and profile views outside the visible
             # speech-mouth set keep the oral cavity empty as well.
@@ -90,7 +90,7 @@ def _scan_layers(
             continue
         base_name, _, side = name.rpartition("_")
         if (
-            side in ("left", "right")
+            side in {"left", "right"}
             and base_name in PAIRED_FACE_LAYERS
         ):
             # A profile view legitimately hides the far-side member of a

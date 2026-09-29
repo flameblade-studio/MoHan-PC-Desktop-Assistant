@@ -97,6 +97,16 @@ def test_repository_audit_ignores_untracked_workspace_documents() -> None:
         assert audit_repository(root) == {}
 
 
+def test_repository_audit_exempts_task_scoped_quality_report() -> None:
+    with tempfile.TemporaryDirectory(prefix="mohan-quality-report-") as raw:
+        root = Path(raw)
+        report = root / "QUALITY-GATES-REPORT.md"
+        report.write_text("# 單語暫存工程報告\n", encoding="utf-8")
+        subprocess.run(["git", "init", "--quiet"], cwd=root, check=True)
+
+        assert audit_repository(root) == {}
+
+
 LANGUAGE_HEADINGS = (
     "繁體中文",
     "简体中文",
@@ -156,6 +166,8 @@ def test_current_release_four_language_bullet_parity() -> None:
         assert "。、" not in text
         assert "。," not in text
         assert ".," not in text
+
+
 def main() -> None:
     test_document_contract()
     test_document_requires_h1_and_only_language_h2_headings()
@@ -163,6 +175,7 @@ def main() -> None:
     test_document_rejects_wrapped_english_word_repetition()
     test_repository_audit_ignores_deleted_tracked_documents()
     test_repository_audit_ignores_untracked_workspace_documents()
+    test_repository_audit_exempts_task_scoped_quality_report()
     test_current_release_four_language_bullet_parity()
     result = subprocess.run(
         [sys.executable, "tools/check_four_language_docs.py"],

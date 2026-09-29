@@ -9,15 +9,43 @@ scope = "development"
 profiles = ["ci", "local"]
 
 [[component]]
-name = "Pillow"
-version = "12.3.0"
-license = "MIT-CMU"
+name = "ruff"
+version = "0.16.0"
+license = "MIT"
 scope = "development"
 profiles = ["ci", "local"]
 
 [[component]]
-name = "ruff"
-version = "0.16.0"
+name = "deptry"
+version = "0.25.1"
+license = "MIT"
+scope = "development"
+profiles = ["ci", "local"]
+
+[[component]]
+name = "pyright"
+version = "1.1.414"
+license = "MIT"
+scope = "development"
+profiles = ["ci", "local"]
+
+[[component]]
+name = "pip-audit"
+version = "2.10.1"
+license = "Apache-2.0"
+scope = "development"
+profiles = ["ci", "local"]
+
+[[component]]
+name = "pip-licenses"
+version = "5.5.5"
+license = "MIT"
+scope = "development"
+profiles = ["ci", "local"]
+
+[[component]]
+name = "vulture"
+version = "2.16"
 license = "MIT"
 scope = "development"
 profiles = ["ci", "local"]

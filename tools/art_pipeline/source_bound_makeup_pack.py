@@ -195,13 +195,13 @@ def _validate_layers(
                 native_visible = bool(regions[view].rects(slot))
                 if record["nonvisible"] != (not native_visible) or visible_alpha != native_visible:
                     raise ValueError(f"Makeup pigment visibility disagrees with native feature: {view}/{state}/{slot}")
-                pigments[(view, state, slot)] = payload
+                pigments[view, state, slot] = payload
                 pins[path] = digest(payload)
         eye_motion = declaration.get("eye_motion", "animated")
         if eye_motion not in {"animated", "fixed_closed"}:
             raise ValueError(f"Unsupported eye motion: {view}")
         if eye_motion == "fixed_closed" and len({
-            pigments[(view, state, "eyes")] for state in STATES
+            pigments[view, state, "eyes"] for state in STATES
         }) != 1:
             raise ValueError(f"Fixed-closed eyes must reuse one native pigment: {view}")
     return pigments, pins

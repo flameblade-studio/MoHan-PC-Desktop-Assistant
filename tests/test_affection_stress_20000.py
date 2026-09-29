@@ -50,7 +50,7 @@ def _round(label: str) -> None:
         assert 0.0 <= favor.favor <= 1.0
         assert 0.0 <= satiety.satiety <= 1.0
         assert MIRROR_TEMP_MIN <= mirror.temperature <= MIRROR_TEMP_MAX
-    current, peak = tracemalloc.get_traced_memory()
+    _current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     gc.collect()
     print(

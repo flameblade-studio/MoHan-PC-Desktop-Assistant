@@ -60,7 +60,7 @@ def _source_bytes(root: Path, value: object, expected: str) -> bytes:
 
 def _removal_region(payload: bytes) -> QRegion:
     if (len(payload) < _PNG_HEADER_BYTES or payload[:8] != _PNG
-            or payload[24:26] not in (b"\x08\x00", b"\x08\x06")):
+            or payload[24:26] not in {b"\x08\x00", b"\x08\x06"}):
         raise OutfitPackError("Garment visibility must be an 8-bit L or RGBA PNG.")
     image = QImage.fromData(payload, "PNG")
     if image.isNull() or image.size().toTuple() != CANVAS:

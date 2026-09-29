@@ -47,6 +47,7 @@ lazy from presentation.presentation_resources import FaceRenderLayers
 
 __all__ = ("CompanionFaceAnimationMixin",)
 
+
 class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
     # ``_render_masked_blink_frame`` is owned by CompanionBlinkRuntimeMixin.
     _idle_expression = CompanionFaceAssetMethods._idle_expression
@@ -286,7 +287,6 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         QTimer.singleShot(165, lambda: render(0.45))
         QTimer.singleShot(235, finish)
         return True
-
 
     def _schedule_attention_glance(self) -> None:
         self.gaze_timer.start(random.randint(*ATTENTION_GLANCE_INTERVAL_MS))

@@ -21,6 +21,7 @@ lazy from domain.face_rig import (
     Viseme,
 )
 lazy from infrastructure.layered_full_body_assets import VIEW_IDS
+lazy import itertools
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,12 +48,12 @@ class AsymmetryIssue:
 def audit_motion_series(values: tuple[float, ...]) -> tuple[str, ...]:
     """Check normalized 50 Hz control samples for pops and derivative spikes."""
 
-    velocity = tuple(end - start for start, end in zip(values, values[1:]))
+    velocity = tuple(end - start for start, end in itertools.pairwise(values))
     acceleration = tuple(
-        end - start for start, end in zip(velocity, velocity[1:])
+        end - start for start, end in itertools.pairwise(velocity)
     )
     jerk = tuple(
-        end - start for start, end in zip(acceleration, acceleration[1:])
+        end - start for start, end in itertools.pairwise(acceleration)
     )
     issues = []
     if any(abs(value) > MAX_CONTROL_STEP for value in velocity):
@@ -108,27 +109,21 @@ def _runtime_motion_issues() -> tuple[AsymmetryIssue, ...]:
     }
     issues = []
     for feature, values in controls.items():
-        for code in audit_motion_series(values):
-            issues.append(
-                AsymmetryIssue(
+        issues.extend(AsymmetryIssue(
                     code,
                     "50hz-runtime",
                     feature,
                     "interpolate_frame:start",
                     "interpolate_frame:end",
-                )
-            )
+                ) for code in audit_motion_series(values))
     blink_series = tuple(frame.expression_shape.blink for frame in frames)
-    for code in audit_discrete_blink_series(blink_series):
-        issues.append(
-            AsymmetryIssue(
+    issues.extend(AsymmetryIssue(
                 code,
                 "50hz-runtime",
                 "blink",
                 "interpolate_frame:start",
                 "interpolate_frame:end",
-            )
-        )
+            ) for code in audit_discrete_blink_series(blink_series))
     return tuple(issues)
 
 

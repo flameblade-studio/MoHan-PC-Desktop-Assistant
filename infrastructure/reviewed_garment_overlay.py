@@ -132,9 +132,9 @@ class ReviewedGarmentOverlayMixin(ReviewedPoseOverlayMixin):
         result = _finish_appearance(result, layers, before_front_hair)
         counts[view_id] = len(pose.ordered_layers) if pose is not None else 0
         if appearance_only:
-            self._phase_layers_by_view[(view_id, "appearance", suppressed, eye_state)] = layers
+            self._phase_layers_by_view[view_id, "appearance", suppressed, eye_state] = layers
         elif not suppressed and eye_state == "rest":
             self._layers_by_view[view_id] = layers
         else:
-            self._layers_by_view_without_makeup_slots[(view_id, suppressed, eye_state)] = layers
+            self._layers_by_view_without_makeup_slots[view_id, suppressed, eye_state] = layers
         return result

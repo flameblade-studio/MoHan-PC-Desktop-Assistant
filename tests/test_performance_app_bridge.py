@@ -96,7 +96,7 @@ def pair(
     timestamp = float(options.get("timestamp", 1.0))
     viseme = str(options.get("viseme", "A"))
     level = float(options.get("level", 0.7))
-    gesture = bool(options.get("gesture", False))
+    gesture = bool(options.get("gesture"))
     return (
         SpeechEvent(generation, "shared", kind, timestamp, level, viseme, 1),
         SpeechPerformanceDirective(

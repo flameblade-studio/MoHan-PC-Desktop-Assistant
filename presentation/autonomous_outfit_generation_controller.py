@@ -258,10 +258,13 @@ class AutonomousOutfitGenerationController(QObject):
             return
         now = datetime.now(UTC)
         last_attempt = _optional_time(self._db.setting(LAST_ATTEMPT_KEY, ""))
-        if last_attempt is not None and now - last_attempt < FAILED_ATTEMPT_BACKOFF:
-            if not explicit:
-                self.status_changed.emit("cooldown-blocked")
-                return
+        if (
+            last_attempt is not None
+            and now - last_attempt < FAILED_ATTEMPT_BACKOFF
+            and not explicit
+        ):
+            self.status_changed.emit("cooldown-blocked")
+            return
             # A user clicking the charge-labelled button is an intentional
             # retry.  The backoff protects unattended generation only.
         pending_job = str(self._db.setting(PENDING_JOB_KEY, "") or "").strip()

@@ -340,9 +340,9 @@ def process_silhouette(
             allowed[y : y + height, x : x + width] = True
         layers[slot], result.cropped_pixels[slot] = crop(layers[slot], ~allowed)
         if write_makeup:
-            write_png(makeup_root / makeup_paths[(CLASSIC_VARIANT, silhouette, slot)], layers[slot])
+            write_png(makeup_root / makeup_paths[CLASSIC_VARIANT, silhouette, slot], layers[slot])
             write_png(
-                makeup_root / makeup_paths[(LIGHT_VARIANT, silhouette, slot)],
+                makeup_root / makeup_paths[LIGHT_VARIANT, silhouette, slot],
                 scale_alpha(layers[slot], LIGHT_ALPHA_FACTOR),
             )
     write_png(outfit_assets / f"{GARMENT_ITEM}-{GARMENT_VARIANT}-{silhouette}-outerwear.png", layers["garment"])
@@ -478,7 +478,7 @@ def makeup_layer_paths(template: Path) -> dict[tuple[str, str, str], str]:
         for variant in item["variants"]:
             for silhouette, entries in variant["poses"].items():
                 for entry in entries:
-                    paths[(variant["id"], silhouette, entry["slot"])] = entry["path"]
+                    paths[variant["id"], silhouette, entry["slot"]] = entry["path"]
     return paths
 
 

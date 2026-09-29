@@ -61,10 +61,13 @@ class FullBodyDisplayPlacement:
                 actual_sha = hashlib.file_digest(stream, "sha256").hexdigest()
             if actual_sha != expected_sha:
                 raise ValueError(f"V5 display placement source drift: {view_id}")
-            scale, offset_x, offset_y = (entry.get(key) for key in ("scale", "offset_x", "offset_y"))
-            if any(isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value)
-                   for value in (scale, offset_x, offset_y)):
-                raise ValueError(f"Invalid V5 display placement transform: {view_id}")
+            transform: list[float] = []
+            for key in ("scale", "offset_x", "offset_y"):
+                value = entry.get(key)
+                if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+                    raise ValueError(f"Invalid V5 display placement transform: {view_id}")
+                transform.append(float(value))
+            scale, offset_x, offset_y = transform
             if not MIN_APPROVED_SCALE <= scale <= MAX_APPROVED_SCALE or abs(offset_x) > EXPECTED_CANVAS[0] or abs(offset_y) > EXPECTED_CANVAS[1]:
                 raise ValueError(f"Out-of-range V5 display placement transform: {view_id}")
             placements[view_id] = ViewPlacement(view_id, float(scale), float(offset_x), float(offset_y))

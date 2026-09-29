@@ -18,6 +18,7 @@ __all__ = ("PolicyEngine",)
 # 合法的權限模式。不在此集合內的值一律視為損壞，退回風險預設。
 PERMISSION_MODES = frozenset({"允許", "每次詢問", "禁止"})
 
+
 class PolicyEngine:
     """Evaluate local, cloud, and remote actions with I/O delegated to the caller."""
 

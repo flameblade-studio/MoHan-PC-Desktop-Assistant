@@ -99,12 +99,12 @@ def _theme_stylesheet(
     font_family: str | None = None,
 ) -> str:
     p: LingxiaoPalette = palette_for_theme(theme, high_contrast=high_contrast)
-    s = lambda value: _scaled(value, scale)  # noqa: E731 - 樣式表裡到處要用
+    s = lambda value: _scaled(value, scale)
     fs = {name: s(size) for name, size in TYPE_SCALE.items()}
     display, caps, body = font_stack("display"), font_stack("caps"), font_stack("body")
     if font_family is not None:
         display = caps = body = f'"{font_family}"'
-    R = 'QWidget[mohanFlagshipTheme="true"]'  # noqa: N806 - 選擇器前綴
+    R = 'QWidget[mohanFlagshipTheme="true"]'
     glass = f"qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 {_rgba(p.lacquer_2, 214)}, stop:1 {_rgba(p.lacquer, 206)})"
     gold_fill = f"qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 {p.gold_2}, stop:1 {p.gold})"
     gold_fill_hover = f"qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #ffe9b8, stop:1 {p.gold_2})"

@@ -24,7 +24,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from morph_limbs_candidate4 import (  # noqa: E402
+from morph_limbs_candidate4 import (
     TORSO_SECTIONS, load_joints, load_obj, plane_loop,
 )
 
@@ -172,7 +172,7 @@ def main() -> None:
         report[f"{side}_lower_deg"] = float(np.degrees(np.arccos(np.clip(
             after_lower / np.linalg.norm(after_lower) @ DOWN, -1, 1))))
         report[f"{side}_moved_vertices"] = int(np.count_nonzero(w_shoulder > 0))
-        print(f"{side} 側：上臂 {np.degrees(np.arccos(np.clip(upper/np.linalg.norm(upper)@DOWN,-1,1))):.1f}"
+        print(f"{side} 側：上臂 {np.degrees(np.arccos(np.clip(upper / np.linalg.norm(upper) @ DOWN, -1, 1))):.1f}"
               f" → {report[f'{side}_upper_deg']:.1f} 度，"
               f"前臂 → {report[f'{side}_lower_deg']:.1f} 度，"
               f"受影響頂點 {report[f'{side}_moved_vertices']}", flush=True)
@@ -210,7 +210,7 @@ def main() -> None:
         for vertex in result:
             stream.write(f"v {vertex[0]:.10f} {vertex[1]:.10f} {vertex[2]:.10f}\n")
         for face in faces:
-            stream.write(f"f {face[0]+1} {face[1]+1} {face[2]+1}\n")
+            stream.write(f"f {face[0] + 1} {face[1] + 1} {face[2] + 1}\n")
     report["status"] = "CANDIDATE_5_ARMS_LOWERED_PENDING_GIRTH_CHECK"
     report["source"] = args.source.name
     report["target_upper_deg"] = TARGET_UPPER_DEG

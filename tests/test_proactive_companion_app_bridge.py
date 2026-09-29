@@ -248,14 +248,14 @@ def assert_disabled_and_close_are_complete_bypasses() -> None:
 
 
 def assert_stale_completion_cannot_commit() -> None:
-    app_bridge, runtime, *_rest = bridge()
+    app_bridge, runtime, *rest = bridge()
     first = app_bridge.dispatch(ProactiveAppEvent(state(generation=1)))
     assert first.request is not None
     second = app_bridge.dispatch(
         ProactiveAppEvent(state(generation=2, now=NOW.replace(minute=1)))
     )
     assert second.request is not None
-    speech = _rest[2]
+    speech = rest[2]
     speech.finish(0, True)
     assert runtime.reports[0] == (first.request.delivery_token, False)
     speech.finish(1, True)

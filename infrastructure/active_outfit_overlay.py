@@ -59,6 +59,7 @@ _AUTO_HAND_REGIONS = sentinel("AUTO_HAND_REGIONS")
 _RANGE = re.compile(r">=(\d+)\.(\d+)\.(\d+),<(\d+)\.(\d+)\.(\d+)\Z")
 # One composited layer: pixmap, anchor x/y, the region it may paint, opacity.
 Layer = tuple[QPixmap, int, int, QRegion, float]
+DEFAULT_APPEARANCE_CALLBACKS = AppearanceCallbacks()
 
 
 class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
@@ -74,7 +75,7 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         asset_root: Path,
         on_stale_body_profile: Callable[[], None] | None = None,
         *,
-        visible_hand_region: Callable[[str], QRegion] | None | sentinel = _AUTO_HAND_REGIONS,
+        visible_hand_region: Callable[[str], QRegion] | sentinel | None = _AUTO_HAND_REGIONS,
     ) -> None:
         self._store = Path(store)
         self._asset_root = Path(asset_root)
@@ -349,7 +350,7 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
         suppress_makeup_slots: frozenset[str] = frozenset(),
         eye_state: str = "rest",
         raise_on_error: bool = False,
-        callbacks: AppearanceCallbacks = AppearanceCallbacks(),
+        callbacks: AppearanceCallbacks = DEFAULT_APPEARANCE_CALLBACKS,
     ) -> QPixmap:
         if frame.isNull():
             return frame
@@ -553,8 +554,6 @@ class ActiveOutfitOverlay(ReviewedGarmentOverlayMixin, ActiveOutfitLayerMixin):
                 resolve_active_selection(self._store, "garment").status != "builtin"
             )
         return self._garment_active_cache
-
-
 
     def layer_count(
         self,

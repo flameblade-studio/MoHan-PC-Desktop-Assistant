@@ -42,6 +42,7 @@ EXPECTED_OBSERVED_AT = 123.5
 
 OWNER = IdentityObservation(IdentityState.RECOGNIZED, "owner", "Owner", 0.98)
 
+
 def local_result(
     *,
     observed_at: float = 123.5,

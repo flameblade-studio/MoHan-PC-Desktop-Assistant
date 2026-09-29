@@ -187,7 +187,6 @@ def _require_collection(
     return rows
 
 
-
 def _sanitized_external_error(
     error: BaseException | str,
     *,

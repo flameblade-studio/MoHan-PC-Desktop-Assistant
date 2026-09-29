@@ -126,7 +126,6 @@ def test_core_overlay_pair_is_the_full_body_authority(tmp_path):
     app.processEvents()
 
 
-
 def _half_body_pair(root: Path, prefix: str, point: QPoint | None) -> tuple[Path, Path]:
     directory = root / "assets/expressions/layered"
     directory.mkdir(parents=True, exist_ok=True)

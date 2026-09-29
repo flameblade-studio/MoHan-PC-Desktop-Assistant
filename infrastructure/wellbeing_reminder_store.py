@@ -120,9 +120,9 @@ class WellbeingReminderStore[SnapshotT]:
         try:
             raw = self._settings.read(PORTABLE_SETTING_KEYS)
         except _BOUNDARY_ERRORS:
-        # 後端讀不到不是「從未保存」：回預設值會讓排程端把已送達的提醒再送一次，
-        # 偏好編輯器也會拿預設值開啟、一存就覆蓋掉原有設定。寫入路徑早就拋
-        # 型別化錯誤，讀取路徑比照。
+            # 後端讀不到不是「從未保存」：回預設值會讓排程端把已送達的提醒再送一次，
+            # 偏好編輯器也會拿預設值開啟、一存就覆蓋掉原有設定。寫入路徑早就拋
+            # 型別化錯誤，讀取路徑比照。
             raise WellbeingReminderStoreError(
                 "Wellbeing reminder state could not be read."
             ) from None

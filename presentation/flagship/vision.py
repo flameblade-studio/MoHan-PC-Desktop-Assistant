@@ -180,6 +180,7 @@ class FlagshipVisionMixin:
         form.addRow(actions)
         self._refresh_openai_vision_status(preferences)
         return card
+
     def stop_openai_vision_immediately(self) -> None:
         """Persist revocation immediately and tell any runtime to stop."""
 
@@ -197,6 +198,7 @@ class FlagshipVisionMixin:
         if self.cloud_vision_service is not None:
             self.cloud_vision_service.cancel()
         self.openai_vision_stop_requested.emit()
+
     def _submit_cloud_vision_event_frame(
         self, rgb: bytes, width: int, height: int
     ) -> None:
@@ -204,6 +206,7 @@ class FlagshipVisionMixin:
         if service is None:
             return
         service.submit_event_rgb(rgb, width, height)
+
     def submit_cloud_vision_manual_frame(
         self, rgb: bytes, width: int, height: int
     ) -> bool:
@@ -212,6 +215,7 @@ class FlagshipVisionMixin:
             service is not None
             and service.submit_manual_rgb(rgb, width, height)
         )
+
     def _cloud_vision_busy_changed(self, busy: bool) -> None:
         if busy:
             self.openai_vision_status.setText(
@@ -219,6 +223,7 @@ class FlagshipVisionMixin:
             )
             return
         self._refresh_openai_vision_status(self.openai_vision_store.load())
+
     def _cloud_vision_result(self, result: object) -> None:
         if not isinstance(result, CloudVisionUIResult):
             self.openai_vision_status.setText(
@@ -251,6 +256,7 @@ class FlagshipVisionMixin:
             self.openai_vision_status.setText(
                 self._t("● 雲端視覺暫時未完成分析")
             )
+
     def _refresh_openai_vision_status(
         self, preferences: OpenAIVisionPreferences
     ) -> None:
@@ -263,6 +269,7 @@ class FlagshipVisionMixin:
             source = "○ 雲端視覺已關閉"
         self.openai_vision_status.setText(self._t(source))
         self.openai_vision_stop_button.setEnabled(active)
+
     def _openai_vision_has_key(self) -> bool:
         try:
             if self._openai_vision_key_probe is not None:
@@ -270,6 +277,7 @@ class FlagshipVisionMixin:
             return bool(self.openai_secret.load().strip())
         except Exception:
             return False
+
     @staticmethod
     def _vision_limit_control(
         accessible_name: str, minimum: int, maximum: int, value: int
@@ -279,6 +287,7 @@ class FlagshipVisionMixin:
         control.setValue(value)
         control.setAccessibleName(accessible_name)
         return control
+
     def apply_camera_settings(self) -> None:
         enabled = self.camera_enabled.isChecked()
         if not enabled:
@@ -356,6 +365,7 @@ class FlagshipVisionMixin:
             "face_identity_enabled",
             self.face_identity.isChecked(),
         )
+
     def _restore_camera_if_enabled(self) -> None:
         if self._closed:
             return
@@ -379,6 +389,7 @@ class FlagshipVisionMixin:
                     error=safe_error_message(self.language, exc),
                 )
             )
+
     def _configure_gesture_runtime(self) -> None:
         controller = self._gesture_controller
         if controller is None:
@@ -391,6 +402,7 @@ class FlagshipVisionMixin:
         )
         self.camera_presence.configure_gesture_sampling(health.ready)
         self._gesture_health_changed(health)
+
     def authorize_gesture_action(self, decision: GestureActionDecision) -> bool:
         """Apply the established persisted policy to permission-bound gestures."""
 
@@ -423,6 +435,7 @@ class FlagshipVisionMixin:
             },
         )
         return allowed
+
     def _gesture_health_changed(self, health: object) -> None:
         if not hasattr(self, "gesture_record_status"):
             return
@@ -442,6 +455,7 @@ class FlagshipVisionMixin:
             and selected is not None
             and selected.source is GestureSource.CUSTOM
         )
+
     def _gesture_dispatch_completed(self, result: object) -> None:
         if not isinstance(result, GestureDispatchResult):
             return
@@ -466,6 +480,7 @@ class FlagshipVisionMixin:
                 }.get(result.disposition, "手勢未觸發任何動作。")
             )
         )
+
     def enroll_face_identity(self) -> None:
         if not self.camera_enabled.isChecked() or not self.face_identity.isChecked():
             QMessageBox.information(
@@ -486,6 +501,7 @@ class FlagshipVisionMixin:
             self.camera_status.setText(
                 self._t("臉部登錄需要注意：{error}，請檢查設定後重試", error=safe_error_message(self.language, exc))
             )
+
     def clear_face_identities(self) -> None:
         if QMessageBox.question(
             self,
@@ -496,6 +512,7 @@ class FlagshipVisionMixin:
         self.face_identities.clear()
         self._refresh_face_profiles()
         self.camera_status.setText(self._t("已刪除全部臉部身分。"))
+
     def _refresh_face_profiles(self) -> None:
         self.face_profile_list.clear()
         try:
@@ -506,6 +523,7 @@ class FlagshipVisionMixin:
             item = QListWidgetItem(profile.display_name)
             item.setData(Qt.UserRole, profile.profile_id)
             self.face_profile_list.addItem(item)
+
     def delete_selected_face_identity(self) -> None:
         selected = self.face_profile_list.currentItem()
         if selected is None:
@@ -518,6 +536,7 @@ class FlagshipVisionMixin:
             return
         self.face_identities.delete(str(selected.data(Qt.UserRole)))
         self._refresh_face_profiles()
+
     def _vision_health_changed(self, health) -> None:
         if self._closed:
             return
@@ -536,6 +555,7 @@ class FlagshipVisionMixin:
                 else '本機細緻臉部與虹膜模型需要處理；其餘功能維持運作'
             )
         )
+
     def _vision_scene_changed(self, scene) -> None:
         if self._closed:
             return
@@ -543,26 +563,31 @@ class FlagshipVisionMixin:
             self._latest_local_scene = scene
             self._latest_local_scene_observed_at = time.monotonic()
         self.visual_scene_changed.emit(scene)
+
     def _enrollment_progress(self, current: int, total: int) -> None:
         if self._closed:
             return
         self.camera_status.setText(
             self._t("正在登錄臉部：{current}/{total}", current=current, total=total)
         )
+
     def _enrollment_completed(self, name: str) -> None:
         if self._closed:
             return
         self._refresh_face_profiles()
         self.camera_status.setText(self._t("已完成 {name} 的臉部登錄。", name=name))
+
     def _enrollment_failed(self, _reason: str) -> None:
         if self._closed:
             return
         self.camera_status.setText(self._t("請讓畫面中只出現一張清楚的正面臉孔。"))
+
     def _camera_status_changed(self, status: str) -> None:
         if self._closed:
             return
         if hasattr(self, "camera_status"):
             self.camera_status.setText(self._camera_status_text(status))
+
     def _camera_status_text(self, status: str) -> str:
         value = str(status)
         if value == "攝影機已關閉":
@@ -580,6 +605,7 @@ class FlagshipVisionMixin:
                 device=value[len(prefix) : -len(source_suffix)],
             )
         return value
+
     def _presence_changed(self, present: bool) -> None:
         if self._closed:
             return

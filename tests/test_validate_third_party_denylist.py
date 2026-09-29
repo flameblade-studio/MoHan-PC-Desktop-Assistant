@@ -230,6 +230,15 @@ def test_project_policy_denies_mit_shell_with_gpl_runtime_dependency() -> None:
     assert minipaint["exceptions"] == []
 
 
+def test_bounded_shared_tool_scan_finds_nested_denied_names() -> None:
+    with TemporaryDirectory(prefix="mohan-denylist-bounded-") as raw:
+        root = Path(raw)
+        denied = root / "vendor" / "packages" / "krita-portable"
+        denied.mkdir(parents=True)
+
+        assert DENYLIST_TOOL.find_named_residue(root, ("krita",)) == [str(denied)]
+
+
 def test_project_has_no_forbidden_local_tool_residue() -> None:
     assert DENYLIST_TOOL.find_local_residue() == []
 

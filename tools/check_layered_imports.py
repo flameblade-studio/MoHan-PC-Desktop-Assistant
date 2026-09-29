@@ -66,6 +66,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.exasperated_candidate_assets",
         "infrastructure.face_assets",
         "infrastructure.face_renderer",
+        "infrastructure.full_body_display_placement",
         "infrastructure.layered_face_renderer",
         "infrastructure.layered_full_body_renderer",
         "infrastructure.multimodal_model_provider",
@@ -149,6 +150,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.performance_preferences_store",
     }),
     "presentation.pose_atlas_assets": frozenset({
+        "infrastructure.full_body_display_placement",
         "infrastructure.layered_full_body_renderer",
     }),
 }

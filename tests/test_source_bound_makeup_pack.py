@@ -145,10 +145,10 @@ def test_sealing_guard_rejects_out_of_scope_member_drift(tmp_path: Path) -> None
             rest_path = f"assets/{variant_id}/{pose}/rest-eyes.png"
             members[rest_path] = png((11, 11), alpha=200)
             poses[pose] = [{"path": rest_path, "slot": "eyes"}]
-            for state in eye_states:
+            for state, state_poses in eye_states.items():
                 path = f"assets/{variant_id}/{pose}/{state}-eyes.png"
                 members[path] = png((11, 11), alpha=200)
-                eye_states[state][pose] = [{"path": path, "slot": "eyes"}]
+                state_poses[pose] = [{"path": path, "slot": "eyes"}]
         foundation_path = f"assets/{variant_id}/foundation.png"
         members[foundation_path] = b"independent foundation"
         poses[view].append({"path": foundation_path, "slot": "foundation"})

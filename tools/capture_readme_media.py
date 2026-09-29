@@ -44,6 +44,7 @@ lazy from tools.capture_media_contract import (
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from tools.render_marketing_portraits import render_all, render_portrait
 
+
 def seed_demo_database(db: StudioDB) -> None:
     settings = {
         "onboarding_complete": True,
@@ -677,8 +678,7 @@ def capture_media(
         finally:
             close_dashboard(dashboard, db)
             app.processEvents()
-        duration = maybe_write_demo_video(output_dir, ffmpeg)
-        return duration
+        return maybe_write_demo_video(output_dir, ffmpeg)
 
 
 def main() -> int:

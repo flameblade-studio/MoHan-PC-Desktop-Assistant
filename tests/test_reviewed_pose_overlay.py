@@ -113,6 +113,7 @@ def test_native_cosmetic_strengths_keep_bare_light_and_classic_levels(
 
 class _CosmeticAssets:
     cosmetic_slots = ("eyes", "cheeks", "lips")
+
     def __init__(self) -> None:
         self.calls: list[tuple[str, str]] = []
         self._slots = {
@@ -184,6 +185,7 @@ def test_refresh_state_clears_native_frame_and_eye_caches_for_selection_changes(
 
 class _BlinkAssets:
     cosmetic_slots = ("eyes", "cheeks", "lips")
+
     def __init__(self, closed_patch: QPixmap) -> None:
         self.closed_patch = closed_patch
         # The retained endpoint set: only the authored CLOSED patch exists here.

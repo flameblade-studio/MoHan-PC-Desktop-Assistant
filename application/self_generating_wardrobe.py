@@ -7,7 +7,8 @@ lazy import shutil
 lazy from dataclasses import dataclass, replace
 lazy from datetime import datetime
 lazy from pathlib import Path
-lazy from typing import Callable, Protocol
+lazy from typing import Protocol
+lazy from collections.abc import Callable
 
 lazy from application.outfit_pack_builder import build_outfit_pack
 lazy from application.wardrobe_storage import WardrobeStorageGuard

@@ -57,6 +57,8 @@ jobs:
         run: |
           rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cargo install cargo-audit --version 0.22.2 --locked
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m pip install --only-binary=:all: maturin==1.14.1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
@@ -86,16 +88,8 @@ jobs:
           python tools/benchmark_python315_hotpaths.py
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-      - name: Compile source
-        run: python -m compileall -q .
-      - name: Enforce Ruff static quality gate
-        run: python -m ruff check .
-
-      - name: Audit public release contents
-        run: python tools/audit_public_release.py
-
-      - name: Run full regression suite
-        run: python tests/run_all.py
+      - name: Run complete repository quality gate
+        run: python tools/quality_gate.py
 
       - name: Capture and gate Python 3.15 Tachyon evidence
         run: >-

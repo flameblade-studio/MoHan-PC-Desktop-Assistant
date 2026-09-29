@@ -146,6 +146,7 @@ class FlagshipCloudMixin:
         self._cloud_provider_changed()
         self.refresh_cloud_connections()
         return scroll
+
     def _cloud_provider_changed(self, _index: int = 0) -> None:
         provider_id = str(self.cloud_provider.currentData())
         provider = PROVIDERS[provider_id]
@@ -156,11 +157,13 @@ class FlagshipCloudMixin:
             "\n".join(config.get("scopes", provider.default_scopes))
         )
         self.cloud_client_secret.clear()
+
     def _oauth_store(self, provider_id: str) -> SecretStorePort:
         return self.secret_store_factory(
             self.data_path / f"oauth-{provider_id}.dpapi",
             f"MoHan {provider_id} OAuth token",
         )
+
     def connect_cloud(self) -> None:
         if not self.platform_services.capabilities.secure_secret_storage:
             self.cloud_status.setText(
@@ -209,6 +212,7 @@ class FlagshipCloudMixin:
         self._oauth_worker = worker
         self.cloud_connect_button.setEnabled(False)
         self.thread_pool.start(worker)
+
     def _finish_cloud_connect_attempt(self) -> None:
         self._cloud_connecting = False
         self._oauth_worker = None
@@ -216,6 +220,7 @@ class FlagshipCloudMixin:
             self.cloud_connect_button.setEnabled(
                 self.platform_services.capabilities.secure_secret_storage
             )
+
     def _cloud_connected(
         self,
         provider_id: str,
@@ -262,6 +267,7 @@ class FlagshipCloudMixin:
         )
         self._register_cloud_tools()
         self.refresh_cloud_connections()
+
     def _cloud_failed(self, provider_id: str, error: str) -> None:
         self._oauth_worker = None
         if self._closed:
@@ -274,6 +280,7 @@ class FlagshipCloudMixin:
                 error=safe_error_message(self.language, error),
             )
         )
+
     def _cloud_token(self, provider_id: str) -> str:
         raw = self._oauth_store(provider_id).load()
         if not raw:
@@ -298,6 +305,7 @@ class FlagshipCloudMixin:
         if not token:
             raise PermissionError(self._t("OAuth 權杖資料不完整"))
         return token
+
     def _register_cloud_tools(self) -> None:
         if any(
             self._oauth_store(provider_id).load()
@@ -318,6 +326,7 @@ class FlagshipCloudMixin:
                 "cloud_file_write",
                 self._action_cloud_file_write,
             )
+
     def _provider_from_request(self, request: ActionRequest) -> str:
         provider_value = (
             request.arguments.get("provider")
@@ -349,6 +358,7 @@ class FlagshipCloudMixin:
         if provider not in {"google", "microsoft"}:
             raise ValueError(self._t("此工具目前只支援 google 或 microsoft"))
         return provider
+
     @staticmethod
     def _calendar_read_bounds(
         arguments: dict[str, Any],
@@ -397,6 +407,7 @@ class FlagshipCloudMixin:
         }
         days = aliases.get(range_name, 7)
         return day_start.isoformat(), (day_start + timedelta(days=days)).isoformat()
+
     def _action_email_read(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         token = self._cloud_token(provider)
@@ -415,6 +426,7 @@ class FlagshipCloudMixin:
             self._t("已讀取 {count} 封郵件摘要", count=len(rows)),
             {"messages": rows},
         )
+
     def _action_email_send(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         recipient = str(request.arguments.get("to", "")).strip()
@@ -448,6 +460,7 @@ class FlagshipCloudMixin:
             self._t("郵件已寄給 {recipient}", recipient=recipient),
             {"message_id": message_id, "recipient": recipient},
         )
+
     def _action_calendar_read(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         start, end = self._calendar_read_bounds(request.arguments)
@@ -465,6 +478,7 @@ class FlagshipCloudMixin:
             self._t("已讀取 {count} 個行程", count=len(rows)),
             {"events": rows},
         )
+
     def _action_calendar_create(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         title = str(request.arguments.get("title", "")).strip()
@@ -501,6 +515,7 @@ class FlagshipCloudMixin:
             self._t("已建立行程：{title}", title=title),
             {"event": result},
         )
+
     def _action_cloud_file_read(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         name = str(
@@ -525,6 +540,7 @@ class FlagshipCloudMixin:
             self._t("找到 {count} 個符合的雲端檔案", count=len(rows)),
             {"files": rows},
         )
+
     def _action_cloud_file_write(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         raw_path = str(request.arguments.get("path", ""))
@@ -552,6 +568,7 @@ class FlagshipCloudMixin:
             self._t("已上傳：{name}", name=path.name),
             {"file": result, "source": str(path)},
         )
+
     def test_cloud(self) -> None:
         provider_id = str(self.cloud_provider.currentData())
         self._cloud_test_generation += 1
@@ -592,6 +609,7 @@ class FlagshipCloudMixin:
         )
         self.cloud_test_timeout.start()
         self.thread_pool.start(worker)
+
     def _cloud_test_failed(
         self,
         _provider_id: str,
@@ -607,6 +625,7 @@ class FlagshipCloudMixin:
         self.cloud_status.setText(
             self._t('測試需要處理：{error}', error=message)
         )
+
     def _cloud_test_done(
         self,
         provider_id: str,
@@ -676,6 +695,7 @@ class FlagshipCloudMixin:
                     "或網路連線有關；請檢查後重試。"
                 ),
             )
+
     def _cloud_test_timed_out(self) -> None:
         if self._closed:
             return
@@ -692,6 +712,7 @@ class FlagshipCloudMixin:
             "cloud_health_timeout",
             {"timeout_seconds": 35},
         )
+
     def revoke_cloud(self) -> None:
         provider_id = str(self.cloud_provider.currentData())
         if (
@@ -719,6 +740,7 @@ class FlagshipCloudMixin:
         self._configure_executor()
         self.refresh_cloud_connections()
         self.cloud_status.setText(self._t("本機權杖已移除"))
+
     def _health_summary(self, record: object) -> str:
         """Render one stored ``last_health`` value in the active UI language.
 
@@ -747,6 +769,7 @@ class FlagshipCloudMixin:
         ]
         prefix = self._t("全部正常" if payload.get("all_ok") else "部分功能異常")
         return prefix + "｜" + "；".join(lines)
+
     def refresh_cloud_connections(self) -> None:
         self.cloud_connections.clear()
         for provider_id, provider in PROVIDERS.items():

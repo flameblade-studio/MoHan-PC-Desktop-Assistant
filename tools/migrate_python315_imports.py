@@ -14,7 +14,10 @@ ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED_PARTS = frozenset({
     ".chroma-pipeline",
     ".git",
+    ".quality-cache",
+    ".quality-tmp",
     ".ruff_cache",
+    ".test-tmp",
     ".venv",
     ".venv315",
     "_python315",
@@ -454,6 +457,8 @@ def _excluded(parts: tuple[str, ...]) -> bool:
     if is_local_artifact_path(parts):
         return True
     if any(part in EXCLUDED_PARTS for part in parts):
+        return True
+    if any(part.startswith("pytest-cache-files-") for part in parts):
         return True
     return any(parts[: len(prefix)] == prefix for prefix in GENERATED_TREES)
 

@@ -130,9 +130,11 @@ def _scenario_missing_model(root: Path) -> None:
     _build_workspace(root, expected)
     missing = root / expected[1][0].path
     missing.unlink()
-    with _patched_expected_models(tuple(model for model, _ in expected)):
-        with pytest.raises(SystemExit) as failure:
-            verify(root)
+    with (
+        _patched_expected_models(tuple(model for model, _ in expected)),
+        pytest.raises(SystemExit) as failure,
+    ):
+        verify(root)
     assert expected[1][0].path in str(failure.value)
 
 
@@ -143,9 +145,11 @@ def _scenario_hash_mismatch(root: Path) -> None:
     payload = bytearray(target.read_bytes())
     payload[0] ^= 0xFF
     target.write_bytes(payload)
-    with _patched_expected_models(tuple(model for model, _ in expected)):
-        with pytest.raises(SystemExit) as failure:
-            verify(root)
+    with (
+        _patched_expected_models(tuple(model for model, _ in expected)),
+        pytest.raises(SystemExit) as failure,
+    ):
+        verify(root)
     assert f"SHA-256 mismatch for {expected[0][0].path}:" in str(failure.value)
 
 
@@ -156,9 +160,11 @@ def _scenario_corrupt_manifest(root: Path) -> None:
         'asset = "this is not a list"',
         encoding="utf-8",
     )
-    with _patched_expected_models(tuple(model for model, _ in expected)):
-        with pytest.raises(ValueError, match="asset records must be a list"):
-            verify(root)
+    with (
+        _patched_expected_models(tuple(model for model, _ in expected)),
+        pytest.raises(ValueError, match="asset records must be a list"),
+    ):
+        verify(root)
 
 
 def _run_with_temp_root(action: Callable[[Path], None], prefix: str) -> None:
