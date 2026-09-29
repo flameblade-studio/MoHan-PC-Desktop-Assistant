@@ -40,12 +40,10 @@ jobs:
           allow-prereleases: true
           cache: pip
 
-      - name: Build verified Qt 3.15 compatibility wheelhouse
-        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse
-
-      - name: Install dependencies
+      - name: Build and install hash-locked Qt 3.15 dependencies like local
         run: >-
           python tools/install_python315_dependencies.py
+          --like-ci
           --qt-compat-wheelhouse qt315-wheelhouse
 
       - name: Install pinned development quality tools
@@ -123,8 +121,12 @@ jobs:
           python-version: "3.15.0-rc.1"
           allow-prereleases: true
           cache: pip
-      - name: Build verified Qt 3.15 compatibility wheelhouse
-        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse
+      - name: Build hash-locked Qt 3.15 compatibility wheelhouse like local
+        run: >-
+          python tools/install_python315_dependencies.py
+          --like-ci
+          --prepare-only
+          --qt-compat-wheelhouse qt315-wheelhouse
       - name: Check out pinned CPython 3.15.0rc1 source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:

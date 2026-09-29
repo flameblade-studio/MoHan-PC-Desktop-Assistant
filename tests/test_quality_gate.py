@@ -5,6 +5,8 @@ lazy from pathlib import Path
 lazy from tools import quality_gate
 
 EXPECTED_FAILURE_EXIT = 9
+EXPECTED_STAGE_COUNT = 16
+MISSING_COMMAND_EXIT = 127
 
 
 def test_stage_order_ends_with_aggregate_regression_suite() -> None:
@@ -18,7 +20,29 @@ def test_stage_order_ends_with_aggregate_regression_suite() -> None:
         "requirements exact pins",
         "pyright (lazy-import-normalized source copy)",
     )
+    assert len(stages) == EXPECTED_STAGE_COUNT
+    assert stages[13].action == "cargo-audit"
+    assert stages[-2].name == "Qt wheel parity"
     assert stages[-1].command[-2:] == ("tests/run_all.py", "--aggregate")
+
+
+def test_missing_cargo_audit_fails_with_pinned_install_command(
+    tmp_path: Path,
+    monkeypatch,
+    capsys,
+) -> None:
+    stage = quality_gate.Stage(
+        "cargo audit",
+        ("cargo", "audit"),
+        "cargo-audit",
+    )
+    monkeypatch.setattr(quality_gate, "_cargo_audit_installed", lambda: False)
+
+    assert quality_gate._run_action(stage, tmp_path) == MISSING_COMMAND_EXIT
+    assert (
+        "cargo install cargo-audit --version 0.22.2 --locked"
+        in capsys.readouterr().err
+    )
 
 
 def test_pin_check_rejects_unpinned_requirement(tmp_path: Path) -> None:
