@@ -46,6 +46,11 @@
     "test_gesture_outfit_silhouettes.py",
     "test_golden_base_body_contracts.py",
     "test_golden_face_target_follows_authority.py",
+    "test_golden_render.py",
+    "test_golden_render_classic.py",
+    "test_golden_render_glamorous.py",
+    "test_golden_render_light.py",
+    "test_golden_render_none.py",
     "test_hairstyle_face_clip.py",
     "test_layered_face_assets.py",
     "test_layered_face_calibration.py",
@@ -87,6 +92,23 @@
     "test_yaw000_layer_runtime_audit.py"
   ],
   "rules": [
+    {
+      "paths": [
+        "tools/golden_render.py",
+        "tests/golden_render_support.py",
+        "tests/golden/**",
+        "docs/golden-render-baseline.md",
+        "docs/release-evidence/ticket-210-golden-baseline-approval.json",
+        "changelog.d/210-golden-render.md"
+      ],
+      "tests": [
+        "test_golden_render.py",
+        "test_golden_render_classic.py",
+        "test_golden_render_glamorous.py",
+        "test_golden_render_light.py",
+        "test_golden_render_none.py"
+      ]
+    },
     {
       "paths": [
         "presentation/dashboard_artwork.py",

@@ -152,7 +152,10 @@ class ReviewedGarmentPose:
 
         # ``copy`` detaches Qt's implicit storage before any painter operation;
         # the caller's source frame therefore remains byte-for-byte untouched.
-        result = source.convertToFormat(QImage.Format.Format_RGBA8888).copy()
+        # Compose in premultiplied alpha: leaving it goes through Qt's SIMD
+        # unpremultiply, whose approximate reciprocal rounds differently on
+        # Intel and AMD processors.
+        result = source.convertToFormat(QImage.Format.Format_ARGB32_Premultiplied).copy()
         # Qt treats a Grayscale8 source as opaque when used by a composition
         # mode.  Copy the gray bytes into Alpha8 so DestinationIn receives the
         # intended per-pixel visibility multiplier.
@@ -172,7 +175,7 @@ class ReviewedGarmentPose:
 
         if return_pixmap:
             return QPixmap.fromImage(result)
-        return result
+        return result.convertToFormat(QImage.Format.Format_RGBA8888)
 
 
 @dataclass(frozen=True, slots=True)

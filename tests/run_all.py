@@ -36,7 +36,12 @@ AGGREGATE_FAILURE_EXIT_CODE = 1
 # Supporting .py files in tests/ are intentionally outside collection.
 # Anything else that carries assert statements is an orphan checker (like the
 # former check_packaged_migration.py) and fails the collection audit.
-ORPHAN_EXEMPT_FILES = frozenset({"run_all.py", "__init__.py", "conftest.py"})
+ORPHAN_EXEMPT_FILES = frozenset({
+    "run_all.py",
+    "__init__.py",
+    "conftest.py",
+    "golden_render_support.py",
+})
 TEST_TIMEOUT_SECONDS = 600
 # A single retry absorbs the timing-sensitive Qt flakiness that surfaces on
 # slow CI runners (event-loop races, transient file locks) while surfacing a
