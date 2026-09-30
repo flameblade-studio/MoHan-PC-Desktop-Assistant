@@ -10,6 +10,7 @@ lazy import shutil
 lazy import subprocess
 lazy import uuid
 lazy import zipfile
+lazy from itertools import product
 lazy from pathlib import Path
 
 lazy import pytest
@@ -175,8 +176,7 @@ def _mutate_one_makeup_pixel(archive_path: Path) -> None:
     image = Image.open(io.BytesIO(members[member])).convert("RGBA")
     opaque = [
         (x, y)
-        for y in range(image.height)
-        for x in range(image.width)
+        for y, x in product(range(image.height), range(image.width))
         if image.getpixel((x, y))[3] == OPAQUE_ALPHA
     ]
     point = opaque[len(opaque) // 2]
