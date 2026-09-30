@@ -22,6 +22,7 @@ lazy from collections.abc import Mapping
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
 lazy from domain.qt_image_io import image_from_png
+lazy from domain.qt_image_pixels import rgba8888_image
 
 SCHEMA = "mohan.reviewed-native-garments.v1"
 DIMENSION = 1254
@@ -175,7 +176,7 @@ class ReviewedGarmentPose:
 
         if return_pixmap:
             return QPixmap.fromImage(result)
-        return result.convertToFormat(QImage.Format.Format_RGBA8888)
+        return rgba8888_image(result)
 
 
 @dataclass(frozen=True, slots=True)
