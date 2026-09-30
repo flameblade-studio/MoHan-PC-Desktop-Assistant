@@ -13,10 +13,12 @@ lazy import struct
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 lazy from types import MappingProxyType
+lazy from typing import TypeIs
 lazy from collections.abc import Mapping
 
 lazy from PySide6.QtGui import QImage, QPixmap
 
+lazy from domain.qt_image_io import image_from_png
 
 SCHEMA = "mohan.reviewed-pose-motion.v1"
 FOUNDATION_SCHEMA = "mohan.reviewed-pose-motion.v2"
@@ -166,7 +168,7 @@ class ReviewedPoseMotion:
         return self.half_inputs[name].pixmap()
 
 
-def _valid_sha256(value: object) -> bool:
+def _valid_sha256(value: object) -> TypeIs[str]:
     return (
         isinstance(value, str)
         and len(value) == SHA256_HEX_LENGTH
@@ -233,7 +235,7 @@ def _read_png(
     if color_type != expected_color_type:
         expected = "8-bit grayscale" if grayscale else "8-bit RGBA"
         raise ValueError(f"Reviewed pose motion asset must be {expected}: {relative}")
-    image = QImage.fromData(payload, "PNG")
+    image = image_from_png(payload)
     if image.isNull() or (width, height) != (DIMENSION, DIMENSION):
         raise ValueError(f"Invalid reviewed pose motion PNG dimensions: {relative}")
     decoded = image.convertToFormat(

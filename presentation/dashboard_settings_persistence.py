@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import html
 
 lazy from PySide6.QtWidgets import QMessageBox
+lazy from presentation.qt_parent import optional_qwidget
 
 lazy from domain.app_profile import (
     ProfileLocalizationContext,
@@ -59,7 +60,7 @@ class DashboardSettingsPersistenceMixin:
             return True
         if mode == "禁止":
             QMessageBox.information(
-                self,
+                optional_qwidget(self),
                 self._t("permission_blocked", "權限已阻擋"),
                 self._t(
                     "permission_blocked_message",
@@ -69,7 +70,7 @@ class DashboardSettingsPersistenceMixin:
             )
             return False
         answer = QMessageBox.question(
-            self,
+            optional_qwidget(self),
             self._t(
                 "permission_request",
                 "墨寒請求電腦權限",
@@ -98,7 +99,7 @@ class DashboardSettingsPersistenceMixin:
         user_title = self.profile_user_title.text().strip()
         if not assistant_name or not user_title:
             QMessageBox.information(
-                self,
+                optional_qwidget(self),
                 self._settings_text(SettingsText.PROFILE_REQUIRED_TITLE),
                 self._settings_text(SettingsText.PROFILE_REQUIRED_MESSAGE),
             )
@@ -315,7 +316,7 @@ class DashboardSettingsPersistenceMixin:
             self.autostart_configurator(enabled, self.platform_services)
         except OSError as exc:
             QMessageBox.warning(
-                self,
+                optional_qwidget(self),
                 self._settings_text(SettingsText.AUTOSTART_ERROR_TITLE),
                 self._settings_text(
                     SettingsText.AUTOSTART_ERROR,
@@ -376,7 +377,7 @@ class DashboardSettingsPersistenceMixin:
     def clear_api_key(self) -> None:
         platform = self.platform_services.capabilities
         answer = QMessageBox.question(
-            self,
+            optional_qwidget(self),
             self._t("remove_api_key", "移除已保存的 API 金鑰"),
             self._t(
                 "remove_api_key_confirm",

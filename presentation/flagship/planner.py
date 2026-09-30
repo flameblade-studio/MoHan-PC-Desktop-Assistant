@@ -5,6 +5,7 @@ lazy from typing import Any
 
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QMessageBox
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from application.flagship_action_runtime import parse_plan_json
 lazy from domain.safe_error_localization import safe_error_message
@@ -33,7 +34,7 @@ class FlagshipPlannerMixin:
             )
         ):
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t("工具任務"),
                 self._t('請明確指定要執行的操作，再建立工具計畫。'),
             )
@@ -143,7 +144,7 @@ class FlagshipPlannerMixin:
             )
         except (TypeError, ValueError, json.JSONDecodeError) as exc:
             QMessageBox.warning(
-                self,
+                require_qwidget(self),
                 self._t("工具計畫"),
                 self._t(
                     '計畫驗證需要處理：{error}',
@@ -160,7 +161,7 @@ class FlagshipPlannerMixin:
                 },
             )
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t("工具計畫"),
                 self._t('請補齊操作資訊並明確提出執行要求，再建立步驟。'),
             )
@@ -170,7 +171,7 @@ class FlagshipPlannerMixin:
         )
         if (
             QMessageBox.question(
-                self,
+                require_qwidget(self),
                 self._t("執行前計畫預覽"),
                 self._t(
                     "{title}\n\n{preview}\n\n每一步仍會依個別權限與風險再次判斷。是否繼續？",
@@ -183,7 +184,7 @@ class FlagshipPlannerMixin:
             return
         results = self.executor.execute(plan)
         QMessageBox.information(
-            self,
+            require_qwidget(self),
             self._t("任務結果"),
             "\n".join(self._system_text(result.message) for result in results),
         )
@@ -201,7 +202,7 @@ class FlagshipPlannerMixin:
     def _planner_failed(self, error: str) -> None:
         self._planner_reset()
         QMessageBox.warning(
-            self,
+            require_qwidget(self),
             self._t("工具計畫"),
             self._t(
                 '產生計畫需要處理：{error}',
@@ -222,7 +223,7 @@ class FlagshipPlannerMixin:
         self._planner_generation += 1
         self._planner_reset()
         QMessageBox.warning(
-            self,
+            require_qwidget(self),
             self._t("工具計畫逾時"),
             self._t(
                 "等待 OpenAI 安全計畫超過 50 秒，已自動停止等待。"

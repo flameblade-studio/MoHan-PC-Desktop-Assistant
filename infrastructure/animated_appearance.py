@@ -11,10 +11,18 @@ class AnimatedAppearance:
     """Keep old combined adapters usable alongside phased appearance adapters."""
 
     def __init__(self, overlay: Any) -> None:
-        self._atomic = getattr(overlay, "apply_animated", None)
-        self._appearance = getattr(overlay, "apply_appearance", None)
-        self._makeup = getattr(overlay, "apply_makeup", None)
-        self._combined = getattr(overlay, "apply", None)
+        self._atomic: Callable[..., object] | None = _optional_callable(
+            getattr(overlay, "apply_animated", None)
+        )
+        self._appearance: Callable[..., object] | None = _optional_callable(
+            getattr(overlay, "apply_appearance", None)
+        )
+        self._makeup: Callable[..., object] | None = _optional_callable(
+            getattr(overlay, "apply_makeup", None)
+        )
+        self._combined: Callable[..., object] | None = _optional_callable(
+            getattr(overlay, "apply", None)
+        )
         self._combined_keywords: frozenset[str] = frozenset()
         self._atomic_after_makeup = False
         self.supports_body_replacement = False
@@ -60,18 +68,22 @@ class AnimatedAppearance:
             if replace_body is not None and self.supports_body_replacement:
                 options["replace_body"] = replace_body
             if paint_after_makeup is not None and self._atomic_after_makeup:
-                return self._atomic(
-                    frame, view_id, paint_motion, **options,
-                    paint_after_makeup=paint_after_makeup,
+                return _require_pixmap(
+                    self._atomic(
+                        frame, view_id, paint_motion, **options,
+                        paint_after_makeup=paint_after_makeup,
+                    )
                 )
-            result = self._atomic(frame, view_id, paint_motion, **options)
+            result = _require_pixmap(
+                self._atomic(frame, view_id, paint_motion, **options)
+            )
             if paint_after_makeup is not None:
                 paint_after_makeup(result)
             return result
         if callable(self._appearance) and callable(self._makeup):
-            result = self._appearance(QPixmap(frame), view_id)
+            result = _require_pixmap(self._appearance(QPixmap(frame), view_id))
             paint_motion(result)
-            result = self._makeup(result, view_id, **options)
+            result = _require_pixmap(self._makeup(result, view_id, **options))
             if paint_after_makeup is not None:
                 paint_after_makeup(result)
             return result
@@ -82,7 +94,17 @@ class AnimatedAppearance:
             # possibly hiding an error raised inside an adapter.
             supported = ({name: options[name] for name in self._combined_keywords}
                          if eye_state != "rest" else {})
-            result = self._combined(result, view_id, **supported)
+            result = _require_pixmap(self._combined(result, view_id, **supported))
         if paint_after_makeup is not None:
             paint_after_makeup(result)
         return result
+
+
+def _optional_callable(value: object) -> Callable[..., object] | None:
+    return value if callable(value) else None
+
+
+def _require_pixmap(value: object) -> QPixmap:
+    if not isinstance(value, QPixmap):
+        raise TypeError("Appearance adapters must return QPixmap.")
+    return value

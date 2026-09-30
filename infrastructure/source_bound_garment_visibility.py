@@ -11,7 +11,13 @@ lazy from pathlib import Path
 
 lazy from PySide6.QtGui import QImage, QPixmap, QRegion
 
-lazy from domain.outfit_pack import OutfitPackError, resolve_variant_for_view
+lazy from domain.outfit_pack import (
+    AppearanceVariant,
+    OutfitPackError,
+    SelectionResolution,
+    resolve_variant_for_view,
+)
+lazy from domain.qt_image_io import image_from_png
 lazy from infrastructure.appearance_layer_stack import clear_appearance_base
 lazy from infrastructure.image_alpha_regions import visible_alpha_region
 lazy from infrastructure.outfit_core_composition import replace_restored_body
@@ -62,7 +68,7 @@ def _removal_region(payload: bytes) -> QRegion:
     if (len(payload) < _PNG_HEADER_BYTES or payload[:8] != _PNG
             or payload[24:26] not in {b"\x08\x00", b"\x08\x06"}):
         raise OutfitPackError("Garment visibility must be an 8-bit L or RGBA PNG.")
-    image = QImage.fromData(payload, "PNG")
+    image = image_from_png(payload)
     if image.isNull() or image.size().toTuple() != CANVAS:
         raise OutfitPackError("Garment visibility needs a 1024x1536 canvas.")
     channel = image.convertToFormat(
@@ -94,7 +100,7 @@ def _native_hand_support(
         if (len(payload) < _PNG_HEADER_BYTES or payload[:8] != _PNG
                 or payload[24:26] != b"\x08\x06"):
             raise OutfitPackError("Native hand support must be an 8-bit RGBA PNG.")
-        image = QImage.fromData(payload, "PNG")
+        image = image_from_png(payload)
         if image.isNull() or image.size().toTuple() != CANVAS:
             raise OutfitPackError("Native hand support needs a 1024x1536 canvas.")
         region = visible_alpha_region(image)
@@ -104,7 +110,11 @@ def _native_hand_support(
 
 
 def load_garment_binding(
-    root: Path, view_id: str, selection: object, archive_path: Path, variant: object,
+    root: Path,
+    view_id: str,
+    selection: SelectionResolution,
+    archive_path: Path,
+    variant: AppearanceVariant,
 ) -> GarmentBinding | None:
     """Return an exact source-pinned garment and its optional local hands."""
     manifest_path = root / MANIFEST
@@ -157,7 +167,11 @@ def load_garment_binding(
 
 
 def load_garment_removal(
-    root: Path, view_id: str, selection: object, archive_path: Path, variant: object,
+    root: Path,
+    view_id: str,
+    selection: SelectionResolution,
+    archive_path: Path,
+    variant: AppearanceVariant,
 ) -> QRegion | None:
     """Compatibility view of the source-bound visibility region."""
     binding = load_garment_binding(root, view_id, selection, archive_path, variant)
@@ -180,7 +194,8 @@ def compose_garment_base(
 
 def validate_garment_removal(
     root: Path, view_id: str, canvas_size: tuple[int, int], removal: QRegion,
-    protected_face: QRegion, visible_hands: Callable[[str], QRegion] | None,
+    protected_face: QRegion,
+    visible_hands: Callable[[str], QRegion | None] | None,
 ) -> None:
     """Never erase native face, hair, ornament, or visible hand ownership."""
     protected = QRegion(protected_face)

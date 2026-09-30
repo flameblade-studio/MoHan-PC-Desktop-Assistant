@@ -15,8 +15,11 @@ lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
     POSE_ATLAS_SILHOUETTES,
     SELECTION_CATEGORIES,
+    AppearanceItem,
+    AppearanceVariant,
     IncompatibleBodyProfileError,
     OutfitPackError,
+    SelectionResolution,
     inspect_installed_outfit_pack,
     installed_pack_path,
     resolve_active_selection,
@@ -24,10 +27,16 @@ lazy from domain.outfit_pack import (
     restore_builtin_outfit,
 )
 lazy from domain.outfit_pack_makeup import MAKEUP_STATE_FILE
+lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack_official import native_overlay_is_redundant
 lazy from domain.version_info import APP_VERSION
 lazy from infrastructure.active_outfit_base_clear import ActiveOutfitBaseClearMixin
-lazy from infrastructure.active_outfit_overlay_layers import ActiveOutfitLayerMixin, FULL_BODY_CANVAS
+lazy from infrastructure.active_outfit_overlay_layers import (
+    FULL_BODY_CANVAS,
+    ActiveOutfitLayerMixin,
+    cached_layers,
+    store_cached_layers,
+)
 lazy from infrastructure.reviewed_garment_overlay import ReviewedGarmentOverlayMixin
 lazy from infrastructure.source_bound_garment_visibility import compose_garment_base
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
@@ -44,7 +53,7 @@ lazy from infrastructure.outfit_core_composition import (
 )
 
 SEMVER_COMPONENT_COUNT = 3
-_AUTO_HAND_REGIONS = sentinel("AUTO_HAND_REGIONS")
+_AUTO_HAND_REGIONS = sentinel("_AUTO_HAND_REGIONS")
 _RANGE = re.compile(r">=(\d+)\.(\d+)\.(\d+),<(\d+)\.(\d+)\.(\d+)\Z")
 # One composited layer: pixmap, anchor x/y, the region it may paint, opacity.
 Layer = tuple[QPixmap, int, int, QRegion, float]
@@ -87,7 +96,7 @@ class ActiveOutfitOverlay(
         self._package_tokens: dict[Path, tuple[int, int]] = {}
         self._layers_by_view: dict[str, Sequence[Layer]] = {}
         self._layers_by_view_without_makeup_slots: dict[
-            tuple[str, frozenset[str], str], Sequence[Layer]
+            tuple[str, frozenset[str], str, str | None, str | None], Sequence[Layer]
         ] = {}
         self._phase_layers_by_view: dict[
             tuple[str, str, frozenset[str], str, str | None, str | None], Sequence[Layer]
@@ -104,15 +113,7 @@ class ActiveOutfitOverlay(
         self._official_outfit_active_cache: bool | None = None
         self._safe_regions = None
         self._render_size_by_view: dict[str, tuple[int, int]] = {}
-        # The viseme currently being rendered (mouth_states substitution),
-        # set by the renderer via set_active_mouth_state() before each
-        # render. None means no substitution (including the CLOSED/rest
-        # mouth). Included in every layer cache key below so a stale entry
-        # computed under one viseme can never be reused under another; the
-        # oral mask (native-canvas QPixmap, already resolved by the renderer
-        # from the complete-expression manifest's own oral_masks field) is
-        # only used to build the mouth-state safe-region exclusion and is not
-        # itself part of any cache key.
+        # Cache by active viseme; the oral mask only builds the safe-region exclusion.
         self._active_viseme: str | None = None
         self._active_oral_mask: QPixmap | None = None
 
@@ -143,10 +144,12 @@ class ActiveOutfitOverlay(
         for key in tuple(self._makeup_exclusion_by_view):
             if key[0] == view_id:
                 del self._makeup_exclusion_by_view[key]
-        for cache in (self._layers_by_view_without_makeup_slots, self._phase_layers_by_view):
-            for key in tuple(cache):
-                if key[0] == view_id:
-                    del cache[key]
+        for key in tuple(self._layers_by_view_without_makeup_slots):
+            if key[0] == view_id:
+                del self._layers_by_view_without_makeup_slots[key]
+        for key in tuple(self._phase_layers_by_view):
+            if key[0] == view_id:
+                del self._phase_layers_by_view[key]
 
     def _resolve_base_clear_selection(self, category: str):
         """Keep base-clear selection reads on this module's patchable boundary."""
@@ -231,21 +234,13 @@ class ActiveOutfitOverlay(
             raise ValueError("Use a recognized makeup eye state")
         suppressed = frozenset(suppress_makeup_slots)
         self._bind_canvas(view_id, frame.size().toTuple())
-        # makeup_view_id lets the makeup category alone resolve against a
-        # different silhouette key than the garment/silhouette-clip/hand
-        # layers below (e.g. a legacy-face-aligned makeup set while the
-        # garment stays keyed to its usual silhouette). None (the default)
-        # is byte-identical to the previous behavior: every call site that
-        # does not pass it is unaffected, including the cache key below.
+        # A makeup-only view override leaves garment and hand keys unchanged.
         # A mouth_states viseme substitution forces the tuple-keyed cache path
         # (with viseme in the key) even when suppressed/eye_state would
         # otherwise qualify for the plain view_id key, so a cached entry from
         # one viseme is never read back under another. When no substitution
         # is active (viseme is None, including the CLOSED/rest path) this is
         # byte-identical to the previous behavior.
-        simple = not suppressed and eye_state == "rest" and self._active_viseme is None and makeup_view_id is None
-        cache = self._layers_by_view if simple else self._layers_by_view_without_makeup_slots
-        cache_key = view_id if simple else (view_id, suppressed, eye_state, self._active_viseme, makeup_view_id)
         try:
             self._refresh_state()
             reviewed = self._reviewed_frame(
@@ -253,7 +248,9 @@ class ActiveOutfitOverlay(
             )
             if reviewed is not None:
                 return reviewed
-            layers = cache.get(cache_key)
+            layers = cached_layers(
+                self, view_id, suppressed, eye_state, self._active_viseme, makeup_view_id
+            )
             if layers is None:
                 layers = self._active_layers(
                     view_id,
@@ -284,7 +281,10 @@ class ActiveOutfitOverlay(
             self._invalidate_view(view_id)
             return frame
         if not layers:
-            cache[cache_key] = ()
+            store_cached_layers(
+                self, view_id, suppressed, eye_state,
+                self._active_viseme, makeup_view_id, (),
+            )
             return frame
         if official_silhouette is None:
             result = QPixmap(frame)
@@ -316,7 +316,10 @@ class ActiveOutfitOverlay(
         _paint_overlay_layers(painter, hand_overlays)
         _paint_depth_tail(painter, layers, above_hands)
         painter.end()
-        cache[cache_key] = layers
+        store_cached_layers(
+            self, view_id, suppressed, eye_state,
+            self._active_viseme, makeup_view_id, layers,
+        )
         return result
 
     def makeup_declares_view(self, view_id: str) -> bool:
@@ -502,11 +505,11 @@ class ActiveOutfitOverlay(
             raise ValueError("Use a recognized makeup eye state")
         suppressed = frozenset(suppress_makeup_slots)
         reviewed_count = getattr(self, "_reviewed_layer_counts", {}).get(view_id, 0)
-        simple = not suppressed and eye_state == "rest" and self._active_viseme is None
-        cache = self._layers_by_view if simple else self._layers_by_view_without_makeup_slots
-        cache_key = view_id if simple else (view_id, suppressed, eye_state, self._active_viseme)
-        if cache_key in cache:
-            return len(cache[cache_key]) + reviewed_count
+        cached = cached_layers(
+            self, view_id, suppressed, eye_state, self._active_viseme, None,
+        )
+        if cached is not None:
+            return len(cached) + reviewed_count
         appearance = self._phase_layers_by_view.get(
             (view_id, "appearance", frozenset(), "rest", self._active_viseme, None), (),
         )
@@ -571,7 +574,11 @@ class ActiveOutfitOverlay(
             self._garment_active_cache = None
             self._official_outfit_active_cache = None
 
-    def _selected_variant(self, category: str, selected) -> tuple[Path, object, object]:
+    def _selected_variant(
+        self,
+        category: str,
+        selected: SelectionResolution,
+    ) -> tuple[Path, AppearanceItem, AppearanceVariant]:
         """Locate and validate the active pack, item and variant for one category."""
         archive_path = installed_pack_path(self._store, selected.effective_pack_id)
         archive_stat = archive_path.stat()
@@ -710,7 +717,7 @@ class ActiveOutfitOverlay(
         encoded = archive.read(declaration.path)
         if hashlib.sha256(encoded).hexdigest() != declaration.sha256:
             raise OutfitPackError("Runtime appearance hash mismatch.")
-        image = QImage.fromData(encoded, "PNG")
+        image = image_from_png(encoded)
         if image.isNull() or image.hasAlphaChannel() is False:
             raise OutfitPackError("Runtime appearance must have alpha.")
         if (image.width(), image.height()) != (declaration.width, declaration.height):

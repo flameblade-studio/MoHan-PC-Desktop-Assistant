@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import html
 lazy import json
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtWidgets import (
     QHBoxLayout,
@@ -78,7 +79,7 @@ class FlagshipAuditMixin:
             default=str,
         )
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             title,
             self._t(
                 "風險：{risk}\n來源：{source}\n操作：{description}\n\n"
@@ -107,7 +108,7 @@ class FlagshipAuditMixin:
             "worried",
         )
         QMessageBox.information(
-            self,
+            require_qwidget(self),
             self._t("緊急停止"),
             self._t("所有進行中的工具任務與遠端服務均已停止。"),
         )

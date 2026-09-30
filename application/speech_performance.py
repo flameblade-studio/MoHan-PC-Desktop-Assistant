@@ -405,21 +405,44 @@ class SpeechPerformanceTimeline:
         self,
         kind: SpeechEventKind,
         timestamp: float,
-        **changes: object,
+        *,
+        level: float = 0.0,
+        viseme: str = "CLOSED",
+        segment_index: int = 0,
+        estimated: bool = False,
     ) -> SpeechEvent:
         return SpeechEvent(
             self._generation,
             self._snapshot.provider_id,
             kind,
             timestamp,
-            **changes,
+            level=level,
+            viseme=viseme,
+            segment_index=segment_index,
+            estimated=estimated,
         )
 
-    def _directive(self, **values: object) -> SpeechPerformanceDirective:
+    def _directive(
+        self,
+        *,
+        body_energy: float,
+        breath: float,
+        emphasis: float,
+        gesture_beat: bool,
+        allow_large_turn: bool,
+        hold_current_pose: bool,
+        reason: str,
+    ) -> SpeechPerformanceDirective:
         return SpeechPerformanceDirective(
             generation=self._generation,
             phase=self._snapshot.phase,
-            **values,
+            body_energy=body_energy,
+            breath=breath,
+            emphasis=emphasis,
+            gesture_beat=gesture_beat,
+            allow_large_turn=allow_large_turn,
+            hold_current_pose=hold_current_pose,
+            reason=reason,
         )
 
     def _now(self) -> float:

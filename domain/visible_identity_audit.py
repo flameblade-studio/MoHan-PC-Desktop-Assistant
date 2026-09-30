@@ -363,6 +363,8 @@ def _compare_view(
             continue
         target = view.fields[field]
         other = reference.fields[field]
+        if target.value is None or other.value is None:
+            raise ValueError("Measured visible-identity fields require numeric values.")
         delta = abs(float(target.value) - float(other.value))
         outcome = (
             VerdictOutcome.PASSED if delta <= limit else VerdictOutcome.OVER_THRESHOLD

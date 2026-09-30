@@ -131,7 +131,7 @@ def split_hand_makeup_depth(
     """Split hand underlays plus the callback's early/deferred foreground."""
     if not isinstance(layers, AppearanceLayerStack):
         early, deferred = split_makeup_depth(layers, foreground)
-        return (), early, deferred
+        return (), tuple(early), tuple(deferred)
     deferred_indices = layers.front_hair_indices | layers.makeup_occluder_indices
     under: list[Layer] = []
     early: list[Layer] = []

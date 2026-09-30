@@ -484,7 +484,9 @@ class ArchivedMemoryDialog(QDialog):
         consume = getattr(self.db, "consume_corrupt_data_notifications", None)
         if callable(consume):
             messages = consume()
-            if messages:
+            if isinstance(messages, tuple) and all(
+                isinstance(message, str) for message in messages
+            ) and messages:
                 QMessageBox.warning(
                     self,
                     ui_text(self.language, "corrupt_data_title", "資料讀取警告"),

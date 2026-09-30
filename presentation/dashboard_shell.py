@@ -1,10 +1,8 @@
 from __future__ import annotations
-
 lazy import html
 lazy from collections import deque
 lazy from functools import partial
 lazy from pathlib import Path
-
 lazy from PySide6.QtCore import QEvent, Qt, QThreadPool, QTimer
 lazy from PySide6.QtGui import QKeySequence, QMouseEvent, QShortcut
 lazy from PySide6.QtWidgets import (
@@ -12,7 +10,6 @@ lazy from PySide6.QtWidgets import (
     QLineEdit, QPushButton, QSizePolicy,
     QScrollArea, QSplitter, QTabWidget, QVBoxLayout, QWidget,
 )
-
 lazy from application.presentation_ports import (
     PlatformServicePort, PresentationDatabasePort, format_duration,
 )
@@ -25,6 +22,7 @@ lazy from domain.language_support import (
     is_english, is_japanese, is_simplified_chinese,
 )
 lazy from domain.outfit_pack import IncompatibleBodyProfileError, OutfitPackError
+lazy from domain.scalar_conversion import scalar_int
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_control_style import enforce_readable_combo_popups
@@ -49,6 +47,7 @@ lazy from presentation.lingxiao_shell import (
     set_ribbon_state,
     update_draft_bar,
 )
+lazy from presentation.qt_parent import require_qobject, require_qwidget
 lazy from presentation.flagship_theme import create_flagship_ornament
 lazy from presentation.presentation_resources import STYLE, application_icon
 lazy from presentation.settings_ui_localization import SettingsText, settings_text
@@ -170,9 +169,7 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
         self._ai_generation = 0
         self.next_expression_metadata: tuple[str, float, str] | None = None
         self.chat_loaded_limit = 50
-        self.chat_zoom_percent = int(
-            self.db.setting("chat_zoom_percent", 100)
-        )
+        self.chat_zoom_percent = scalar_int(self.db.setting("chat_zoom_percent", 100))
         self.mode = str(db.setting("mode", "工作"))
         self.ui_language = profile_setting(db, "ui_language")
         self.assistant_name = profile_setting(db, "assistant_name")
@@ -200,15 +197,17 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
         # Apply the icon after the native window flags are final. On Windows,
         # changing flags can recreate the native handle used by the taskbar.
         self.setWindowIcon(application_icon())
-        self.front_raise_timer = QTimer(self)
+        self.front_raise_timer = QTimer(require_qobject(self))
         self.front_raise_timer.setSingleShot(True)
         self.front_raise_timer.timeout.connect(self._bring_to_front)
-        self.emergency_shortcut = QShortcut(QKeySequence("Esc"), self)
+        self.emergency_shortcut = QShortcut(
+            QKeySequence("Esc"), require_qobject(self)
+        )
         self.emergency_shortcut.setContext(Qt.ApplicationShortcut)
         self.emergency_shortcut.activated.connect(self._emergency_shortcut_activated)
 
     def _enforce_readable_combo_popups(self) -> None:
-        enforce_readable_combo_popups(self)
+        enforce_readable_combo_popups(require_qwidget(self))
 
     def _build_mode_combo(self) -> QComboBox:
         combo = QComboBox()
@@ -386,7 +385,7 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
         if key not in self._desktop_companion_status_values:
             return
         self._desktop_companion_status_labels = update_desktop_companion_status(
-            self,
+            require_qwidget(self),
             self._desktop_companion_status_values,
             self._desktop_companion_status_labels,
             key,
@@ -465,7 +464,7 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
 
     def _import_outfit_package(self) -> None:
         source, _filter = QFileDialog.getOpenFileName(
-            self,
+            require_qwidget(self),
             self._t("wardrobe_import", "匯入服裝套件"),
             str(Path.home() / "Downloads"),
             "MoHan outfit package (*.mohan-outfit *.zip)",
@@ -556,7 +555,7 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
         self._request_azure_voice_catalog(hd_only=True)
 
     def _start_dashboard_timer(self) -> None:
-        self.timer = QTimer(self)
+        self.timer = QTimer(require_qobject(self))
         self.timer.timeout.connect(self.refresh_work_time)
         self.timer.timeout.connect(lambda: update_draft_bar(self))
         self.timer.start(1000)

@@ -26,7 +26,7 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-
+lazy from presentation.qt_parent import require_qwidget
 lazy from application.presentation_ports import (
     DEFAULT_TEXT_MODEL,
     TEXT_MODELS,
@@ -905,7 +905,7 @@ class DashboardSettingsMixin:  # ruff: ignore[blank-lines-top-level]
                 self.platform_services.open_path(Path(value))
         else:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._settings_text(SettingsText.WORK_FOLDER_INVALID_TITLE),
                 self._settings_text(SettingsText.WORK_FOLDER_INVALID_MESSAGE),
             )

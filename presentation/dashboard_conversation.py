@@ -9,7 +9,7 @@ lazy from PySide6.QtWidgets import (
     QApplication, QHBoxLayout, QLabel, QLineEdit,
     QMessageBox, QPushButton, QVBoxLayout, QWidget,
 )
-
+lazy from presentation.qt_parent import require_qwidget
 lazy from application.companion_phrasebook import (
     PHRASEBOOK_SETTING, CompanionPhrasebook,
 )
@@ -318,7 +318,7 @@ class DashboardConversationMixin:
         text = self.chat_input.text().strip()
         if not text:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t(
                     "send_chat_required_title",
                     "尚未輸入內容",

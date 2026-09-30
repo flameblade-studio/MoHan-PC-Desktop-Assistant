@@ -5,6 +5,7 @@ lazy from dataclasses import replace
 lazy from pathlib import Path
 lazy from typing import Any
 lazy from urllib.parse import urlparse
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import (
@@ -175,7 +176,7 @@ class FlagshipSettingsSecurityMixin:
             if show_error:
                 self.gesture_command.setFocus(Qt.OtherFocusReason)
                 QMessageBox.warning(
-                    self,
+                    require_qwidget(self),
                     self._t('請完成手勢設定'),
                     self._t("選擇自訂文字指令時，必須輸入一行指令後才能保存。"),
                 )
@@ -284,7 +285,7 @@ class FlagshipSettingsSecurityMixin:
     def _after_successful_settings_save(self, vision: OpenAIVisionPreferences) -> None:
         self._configure_executor()
         apply_flagship_theme(
-            self,
+            require_qwidget(self),
             high_contrast=bool(self.db.setting("flagship_high_contrast", False)),
             scale=float(self.db.setting("flagship_ui_scale", 1.0)),
             theme=str(self.db.setting(THEME_SETTING_KEY, DEFAULT_THEME_ID)),
@@ -430,7 +431,7 @@ class FlagshipSettingsSecurityMixin:
 
     def add_allowed_folder(self) -> None:
         path = QFileDialog.getExistingDirectory(
-            self,
+            require_qwidget(self),
             self._t("選擇允許墨寒操作的資料夾"),
         )
         if not path:
@@ -453,7 +454,7 @@ class FlagshipSettingsSecurityMixin:
 
     def add_allowed_app(self) -> None:
         path, _filter = QFileDialog.getOpenFileName(
-            self,
+            require_qwidget(self),
             self._t("選擇允許墨寒啟動的程式"),
             "",
             (
@@ -489,7 +490,7 @@ class FlagshipSettingsSecurityMixin:
         parsed = urlparse(url)
         if parsed.scheme != "https" or not parsed.netloc:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t("網站白名單"),
                 self._t("公開網站只接受完整 HTTPS 網址。"),
             )
@@ -509,7 +510,7 @@ class FlagshipSettingsSecurityMixin:
             return
         if (
             QMessageBox.question(
-                self,
+                require_qwidget(self),
                 self._t("移除允許項目"),
                 self._t("確定撤銷墨寒對此項目的存取權？"),
             )

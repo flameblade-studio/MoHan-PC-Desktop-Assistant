@@ -43,10 +43,10 @@ class ActiveOutfitBaseClearMixin:
                 self._asset_root, view_id, selected, archive_path, variant,
             )
             if binding is not None:
-                visible_hands = (
-                    (lambda _view: binding.hand_region)
-                    if binding.hand_region is not None else self._visible_hand_region
-                )
+                visible_hands = self._visible_hand_region
+                if binding.hand_region is not None:
+                    hand_region = binding.hand_region
+                    visible_hands = lambda _view: hand_region
                 validate_garment_removal(
                     self._asset_root, view_id, canvas_size, binding.removal,
                     self._protected_face_region(view_id, canvas_size),

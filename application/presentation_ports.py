@@ -10,7 +10,7 @@ lazy import os
 lazy import re
 lazy import sqlite3
 lazy import sys
-lazy from collections.abc import Callable, Mapping
+lazy from collections.abc import Callable, Mapping, Sequence
 lazy from dataclasses import dataclass, field
 lazy from difflib import SequenceMatcher
 lazy from pathlib import Path
@@ -245,9 +245,7 @@ class AIWorkerRequest:
     user_title: str = "主上"
     response_language: str = "zh-TW"
     prompt_cache_telemetry: Callable[[PromptCacheTelemetry], None] | None = field(
-        default=None,
-        repr=False,
-        compare=False,
+        default=None, repr=False, compare=False,
     )
     prompt_cache_token_evidence: PromptCacheTokenEvidence | None = field(
         default=None,
@@ -257,13 +255,15 @@ class AIWorkerRequest:
 
 
 class AIWorkerSignalsPort(Protocol):
-    done: SignalPort
-    failed: SignalPort
+    @property
+    def done(self) -> SignalPort: ...
+    @property
+    def failed(self) -> SignalPort: ...
 
 
 class AIWorkerPort(Protocol):
-    signals: AIWorkerSignalsPort
-
+    @property
+    def signals(self) -> AIWorkerSignalsPort: ...
     def run(self) -> None: ...
 
 
@@ -610,7 +610,7 @@ def female_windows_voices_for_language(
 
 
 def preferred_windows_voice(
-    voices: list[tuple[str, str]],
+    voices: Sequence[tuple[str, str]],
     saved: str = "",
     target_language: str = "zh-TW",
 ) -> str:

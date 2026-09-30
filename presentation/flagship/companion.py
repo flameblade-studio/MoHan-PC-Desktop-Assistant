@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy from dataclasses import replace
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import (
@@ -437,7 +438,7 @@ class FlagshipCompanionMixin:
 
     def edit_companion_phrasebook(self) -> None:
         phrasebook = self._phrasebook_draft
-        dialog = QDialog(self)
+        dialog = QDialog(require_qwidget(self))
         dialog.setWindowTitle(self._t("多情境陪伴詞庫"))
         root = QVBoxLayout(dialog)
         groups = QTabWidget()
