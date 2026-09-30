@@ -24,7 +24,7 @@ def _safe_asset_path(value: object) -> str | None:
         return None
     normalized = value.replace("\\", "/")
     path = PurePosixPath(normalized)
-    if path.is_absolute() or re.match(r"[A-Za-z]:", normalized):
+    if path.is_absolute() or re.prefixmatch(r"[A-Za-z]:", normalized):
         return None
     if ".." in path.parts:
         return f"../{path.name}" if re.fullmatch(r"[a-z0-9_.+-]+\.png", path.name) else None
