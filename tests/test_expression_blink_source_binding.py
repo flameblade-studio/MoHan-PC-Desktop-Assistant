@@ -58,7 +58,7 @@ CLOSED_OPACITY = 1.0
 # The registered front eye mask used by the routing subject, and the margin the
 # native cheek endpoint's authored eyelid/brow patch extends past the registered
 # cheek eye regions (measured: the patch reaches 20px above and 7px outside).
-REGISTERED_MASK_REGIONS = (QRect(180, 153, 53, 34), QRect(220, 153, 56, 34))
+REGISTERED_MASK_REGIONS = (QRect(178, 146, 55, 41), QRect(220, 146, 56, 41))
 REGISTERED_MASK_UNION = REGISTERED_MASK_REGIONS[0].united(REGISTERED_MASK_REGIONS[1])
 ROUNDED_MASK_RADIUS = 10
 NATIVE_ENDPOINT_MARGIN = 24
@@ -176,8 +176,10 @@ def test_caught_has_no_matching_source_while_its_pose_endpoint_does(window) -> N
     assert (
         window.expression_pixmaps.get(f"{UNBOUND_EXPRESSION}_closed") is None
     )
-    # Sharing the silhouette is exactly what made the portrait blink before:
-    # the retained reviewed motion root answers for this pose.
+    # Owner ruling 2026-09-29: cheek-rest returns to the main formal picture and
+    # is no longer bound by the complete-expression manifest, so the retained
+    # reviewed motion root answers for it again (has_native_motion() is True, as
+    # on main).
     assert _outfit_overlay(window).has_native_motion(view_id) is True
 
 
@@ -236,7 +238,13 @@ def test_registered_closed_endpoint_still_stamps_a_real_blink(qapp) -> None:
 def test_pose_bound_native_endpoint_still_blinks_its_own_neutral_portrait(
     window,
 ) -> None:
-    """The fix must not disable the native endpoint where it really is the source."""
+    """The neutral cheek portrait must still blink correctly, whichever
+    source answers for it. Owner ruling 2026-09-29: cheek-rest is not bound by
+    the complete-expression manifest, so the retained reviewed motion root
+    answers (has_native_motion() is True, as on main) -- this test's job is to
+    prove the actual blink
+    compositing still lands correctly regardless of which source answers.
+    """
 
     assert NATIVE_NEUTRAL_EXPRESSION not in EXPRESSION_POSES
     assert (

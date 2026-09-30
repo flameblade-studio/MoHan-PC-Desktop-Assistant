@@ -9,6 +9,7 @@ lazy from pathlib import Path
 
 PLAN_SCHEMA = "mohan.approved-asset-replacements.v1"
 APPROVAL_SCHEMA = "mohan.four-look-owner-approved-installation.v1"
+GENERIC_APPROVAL_SCHEMA = "mohan.owner-approved-asset-installation.v1"
 
 
 def sha256(path: Path) -> str:
@@ -46,8 +47,21 @@ def _preflight(root: Path, plan: dict) -> list[tuple[dict, Path, Path]]:
     if sha256(approval_path) != approval_pin["sha256"]:
         raise ValueError("Owner approval pin changed.")
     approval = json.loads(approval_path.read_text(encoding="utf-8"))
-    if approval.get("schema") != APPROVAL_SCHEMA or approval.get("owner_appearance_approved") is not True:
+    if approval.get("owner_appearance_approved") is not True:
         raise ValueError("The replacement set lacks owner appearance approval.")
+    approval_schema = approval.get("schema")
+    approved_targets: set[str] | None = None
+    if approval_schema == GENERIC_APPROVAL_SCHEMA:
+        targets = approval.get("approved_targets")
+        if not isinstance(targets, list) or not targets or not all(
+            isinstance(target, str) and target.startswith("assets/") for target in targets
+        ):
+            raise ValueError("Generic owner approval must list approved asset targets.")
+        approved_targets = set(targets)
+        if len(approved_targets) != len(targets):
+            raise ValueError("Generic owner approval repeats an approved target.")
+    elif approval_schema != APPROVAL_SCHEMA:
+        raise ValueError("The replacement set uses an unsupported approval schema.")
     for evidence in plan.get("validation", []):
         path = _path(root, evidence["path"], "scratchpad")
         if sha256(path) != evidence["sha256"]:
@@ -58,6 +72,8 @@ def _preflight(root: Path, plan: dict) -> list[tuple[dict, Path, Path]]:
     targets = set()
     resolved = []
     for record in records:
+        if approved_targets is not None and record["target"] not in approved_targets:
+            raise ValueError(f"Target is outside owner approval: {record['target']}")
         target = _path(root, record["target"], "assets")
         source = _path(root, record["source"], "scratchpad")
         if target in targets:

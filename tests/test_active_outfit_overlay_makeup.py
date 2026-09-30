@@ -61,11 +61,15 @@ FRONT_SLOTS = {
     "lips": [[560, 500, 120, 60]],
 }
 LIPS_PIXEL = (600, 520)
+# Inside cheek-rest's own *real* shipped lips safe-region rectangle
+# ([452, 547, 118, 76]) and outside the synthetic garment's footprint used by
+# test_makeup_view_id_redirects_makeup_lookup_only below.
+CHEEK_REST_LIPS_PIXEL = (480, 570)
 EYES_PIXEL = (600, 250)
 OUTSIDE_PIXEL = (600, 200)
 LAYERED_DIR = ROOT / "assets" / "expressions" / "layered"
 MOUTH_CLIP_FRONT = QRect(206, 199, 54, 35)
-BLINK_RECTS_FRONT = (QRect(180, 153, 53, 34), QRect(220, 153, 56, 34))
+BLINK_RECTS_FRONT = (QRect(178, 146, 55, 41), QRect(220, 146, 56, 41))
 EYE_PROBE = (200, 168)
 
 
@@ -129,6 +133,21 @@ def _authority(root: Path) -> None:
                 shutil.copyfile(source, target)
 
 
+def _isolated_makeup_authority(root: Path) -> None:
+    """Use real safe regions without unrelated reviewed garment registrations."""
+    document = json.loads(SAFE_REGION_PATH.read_text(encoding="utf-8"))
+    destination = root / "assets" / "makeup-safe-regions.json"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(json.dumps(document), encoding="utf-8")
+    for entry in document["silhouettes"].values():
+        for field in ("foundation_masks", "eye_aperture_masks"):
+            for descriptor in entry.get(field, {}).values():
+                relative = Path(*descriptor["path"].split("/"))
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(ROOT / relative, target)
+
+
 def _asset(path: str, payload: bytes, slot: str, z_order: int, size: int = CANVAS, anchor=(0, 0)) -> AppearanceAsset:
     return AppearanceAsset(slot, path, hashlib.sha256(payload).hexdigest(), size, size, anchor[0], anchor[1], z_order)
 
@@ -141,8 +160,15 @@ def _configure(
     garment: bytes | None = None,
     makeup_selected: bool = True,
     authored_intensity: float = 1.0,
+    mouth_states: dict[str, bytes] | None = None,
 ) -> Path:
-    """Install one synthetic pack: three makeup layers (``painted`` overrides per slot) and an optional garment."""
+    """Install one synthetic pack: three makeup layers (``painted`` overrides per slot) and an optional garment.
+
+    ``mouth_states`` maps a mouth shape ("a"/"o"/"small") to a lips-only
+    payload for the "front-crossed" silhouette, mirroring how INSTALL-1's
+    mouth_states pairs a viseme with its own lips layer (no foundation, since
+    this synthetic silhouette is never declared as a foundation silhouette).
+    """
     store = root / "store"
     packages = store / "packages"
     packages.mkdir(parents=True, exist_ok=True)
@@ -153,6 +179,16 @@ def _configure(
             archive.writestr(f"assets/{slot}.png", payload)
         if garment is not None:
             archive.writestr("assets/garment.png", garment)
+        for shape, payload in (mouth_states or {}).items():
+            archive.writestr(f"assets/mouth-{shape}-lips.png", payload)
+    parsed_mouth_states = frozendict({
+        shape: frozendict({
+            "front-crossed": (
+                _asset(f"assets/mouth-{shape}-lips.png", payload, "lips", 99),
+            )
+        })
+        for shape, payload in (mouth_states or {}).items()
+    })
     makeup_variant = AppearanceVariant(
         "classic",
         frozendict(),
@@ -163,6 +199,7 @@ def _configure(
             )
         }),
         intensity=authored_intensity,
+        mouth_states=parsed_mouth_states,
     )
     items = [AppearanceItem("makeup", "face", frozendict(), (makeup_variant,))]
     if garment is not None:
@@ -338,11 +375,13 @@ def test_half_body_makeup_stays_registered_across_mouth_and_blink_swaps(
     authority mouth and eye patches remain aligned.
     """
     _app()
+    _isolated_makeup_authority(tmp_path)
     cheek_center = _cheek_center()
     store = _configure(monkeypatch, tmp_path, {"cheeks": _cheek_layer(cheek_center)})
+    overlay = ActiveOutfitOverlay(store, tmp_path)
     manifest = load_layered_face_assets(LAYERED_DIR)
     closed, opened = _half_body_frames(
-        LayeredParametricFaceRenderer(manifest, outfit_overlay=ActiveOutfitOverlay(store, ROOT))
+        LayeredParametricFaceRenderer(manifest, outfit_overlay=overlay)
     )
     _plain_closed, plain_opened = _half_body_frames(LayeredParametricFaceRenderer(manifest))
     # Probe below the block centre: clear of the eye rectangles above and the mouth clip beside it.
@@ -358,3 +397,167 @@ def test_half_body_makeup_stays_registered_across_mouth_and_blink_swaps(
     ).toImage()
     assert blinked.pixelColor(*probe) == closed.pixelColor(*probe)
     assert blinked.pixelColor(*EYE_PROBE) == blink_patch.toImage().pixelColor(*EYE_PROBE)
+
+
+LIP_GREEN = QColor(0, 200, 0, 255)
+
+
+def _mouth_shape_block(color: QColor = LIP_GREEN) -> bytes:
+    return _layer(((LIPS_PIXEL[0] - 3, LIPS_PIXEL[1] - 3, 7, 7, color),))
+
+
+def test_mouth_states_substitutes_lips_for_the_active_viseme(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """INSTALL-1: a viseme in flight swaps in that shape's own lips layer."""
+    _app()
+    _authority(tmp_path)
+    store = _configure(
+        monkeypatch, tmp_path,
+        {"lips": _lips_block()},
+        mouth_states={"a": _mouth_shape_block()},
+    )
+    overlay = ActiveOutfitOverlay(store, tmp_path)
+    overlay.set_active_mouth_state("A")
+    dressed = overlay.apply(_frame(), "front-crossed").toImage()
+    assert dressed.pixelColor(*LIPS_PIXEL) == LIP_GREEN
+
+
+def test_mouth_states_closed_path_is_unaffected(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The CLOSED/rest path (no active viseme) must render the base declared lips, byte for byte."""
+    _app()
+    _authority(tmp_path)
+    store = _configure(
+        monkeypatch, tmp_path,
+        {"lips": _lips_block()},
+        mouth_states={"a": _mouth_shape_block()},
+    )
+    overlay = ActiveOutfitOverlay(store, tmp_path)
+    # No set_active_mouth_state call at all: matches every pre-existing caller.
+    dressed = overlay.apply(_frame(), "front-crossed").toImage()
+    assert dressed.pixelColor(*LIPS_PIXEL) == LIP_RED
+
+
+def test_mouth_states_cache_never_leaks_across_visemes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Regression for round16d: a viseme rendered first must never contaminate a later render at
+    the same (view_id, eye_state) key -- including the CLOSED/rest render that follows it."""
+    _app()
+    _authority(tmp_path)
+    store = _configure(
+        monkeypatch, tmp_path,
+        {"lips": _lips_block()},
+        mouth_states={"a": _mouth_shape_block(LIP_GREEN), "o": _mouth_shape_block(QColor(0, 0, 220, 255))},
+    )
+    overlay = ActiveOutfitOverlay(store, tmp_path)
+
+    overlay.set_active_mouth_state("A")
+    first = overlay.apply(_frame(), "front-crossed").toImage()
+    assert first.pixelColor(*LIPS_PIXEL) == LIP_GREEN
+
+    overlay.set_active_mouth_state("O")
+    second = overlay.apply(_frame(), "front-crossed").toImage()
+    assert second.pixelColor(*LIPS_PIXEL) == QColor(0, 0, 220, 255)
+
+    # The CLOSED render (no active viseme) after two different visemes at the
+    # exact same (view_id, eye_state="rest") key must show the base lips, not
+    # a leftover "o" (or "a") shape from either earlier call.
+    overlay.set_active_mouth_state(None)
+    closed = overlay.apply(_frame(), "front-crossed").toImage()
+    assert closed.pixelColor(*LIPS_PIXEL) == LIP_RED
+
+    # And a repeat "a" render after the CLOSED one must be correct too.
+    overlay.set_active_mouth_state("A")
+    third = overlay.apply(_frame(), "front-crossed").toImage()
+    assert third.pixelColor(*LIPS_PIXEL) == LIP_GREEN
+
+
+def _configure_two_silhouettes(
+    monkeypatch: pytest.MonkeyPatch, root: Path, *, garment: bytes,
+) -> Path:
+    """A pack with distinct lips makeup declared for two real silhouettes
+    ("front-crossed" and "cheek-rest"), plus a garment declared only for
+    "front-crossed" -- for proving makeup_view_id redirects only the makeup
+    category's silhouette lookup, leaving the garment/silhouette-clip on the
+    caller's original view_id untouched (2026-09-29 makeup_view_id addition).
+    """
+    store = root / "store"
+    packages = store / "packages"
+    packages.mkdir(parents=True, exist_ok=True)
+    archive_path = packages / "pack.mohan-outfit"
+    front_lips = _lips_block()
+    # cheek-rest keeps its own *real* shipped safe region (only front-crossed
+    # is overridden to FRONT_SLOTS by _authority), so this block must land
+    # inside cheek-rest's actual lips rectangles, not LIPS_PIXEL.
+    cheek_lips = _layer(((CHEEK_REST_LIPS_PIXEL[0] - 3, CHEEK_REST_LIPS_PIXEL[1] - 3, 7, 7, CHEEK_ROSE),))
+    with zipfile.ZipFile(archive_path, "w") as archive:
+        archive.writestr("assets/front-lips.png", front_lips)
+        archive.writestr("assets/cheek-lips.png", cheek_lips)
+        archive.writestr("assets/garment.png", garment)
+    makeup_variant = AppearanceVariant(
+        "classic",
+        frozendict(),
+        frozendict({
+            "front-crossed": (_asset("assets/front-lips.png", front_lips, "lips", 0),),
+            "cheek-rest": (_asset("assets/cheek-lips.png", cheek_lips, "lips", 0),),
+        }),
+    )
+    garment_variant = AppearanceVariant(
+        "navy",
+        frozendict(),
+        frozendict({
+            "front-crossed": (_asset("assets/garment.png", garment, "outerwear", 10, 96, (LIPS_PIXEL[0] - 40, LIPS_PIXEL[1] - 40)),)
+        }),
+    )
+    items = [
+        AppearanceItem("makeup", "face", frozendict(), (makeup_variant,)),
+        AppearanceItem("garment", "robe", frozendict(), (garment_variant,)),
+    ]
+    pack = OutfitPack(
+        "pack", "1.0.0", ">=4.0.0,<5.0.0", frozendict(), "original", "artist", "MIT",
+        BODY_PROFILE_ID, tuple(items), (),
+    )
+
+    def selection(_store: Path, category: str) -> SimpleNamespace:
+        if category == "makeup":
+            return SimpleNamespace(status="installed", effective_pack_id="pack", effective_item_id="face", effective_variant_id="classic")
+        if category == "garment":
+            return SimpleNamespace(status="installed", effective_pack_id="pack", effective_item_id="robe", effective_variant_id="navy")
+        return SimpleNamespace(status="builtin")
+
+    monkeypatch.setattr(adapter_module, "resolve_active_selection", selection)
+    monkeypatch.setattr(adapter_module, "inspect_installed_outfit_pack", lambda _: pack)
+    return store
+
+
+def test_makeup_view_id_none_is_byte_identical_to_default(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The additive makeup_view_id parameter must not change any existing call site
+    that omits it, nor one that passes its default (None) explicitly."""
+    _app()
+    _authority(tmp_path)
+    store = _configure(monkeypatch, tmp_path, {"lips": _lips_block()}, garment=_garment())
+    overlay = ActiveOutfitOverlay(store, tmp_path)
+    omitted = overlay.apply(_frame(), "front-crossed").toImage()
+    explicit_none = overlay.apply(_frame(), "front-crossed", makeup_view_id=None).toImage()
+    assert omitted == explicit_none
+    assert omitted.pixelColor(*LIPS_PIXEL) == GARMENT_BLUE
+
+
+def test_makeup_view_id_redirects_makeup_lookup_only(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """makeup_view_id="cheek-rest" while view_id stays "front-crossed": the
+    lips colour at cheek-rest's own (real, shipped) lips position must come
+    from the cheek-rest declaration only once redirected (proving makeup
+    resolves against the alternate silhouette on request and not otherwise),
+    while the garment -- keyed only to front-crossed and unaffected by
+    makeup_view_id -- still paints at front-crossed's own lips position
+    regardless, proving the garment/silhouette-clip machinery kept the
+    original view_id throughout."""
+    _app()
+    _authority(tmp_path)
+    store = _configure_two_silhouettes(monkeypatch, tmp_path, garment=_garment())
+    overlay = ActiveOutfitOverlay(store, tmp_path)
+
+    default_result = overlay.apply(_frame(), "front-crossed").toImage()
+    assert default_result.pixelColor(*LIPS_PIXEL) == GARMENT_BLUE  # garment occludes front-crossed's own lips
+    assert default_result.pixelColor(*CHEEK_REST_LIPS_PIXEL) == BASE_GRAY  # cheek-rest's lips not painted by default
+
+    redirected = overlay.apply(_frame(), "front-crossed", makeup_view_id="cheek-rest").toImage()
+    assert redirected.pixelColor(*LIPS_PIXEL) == GARMENT_BLUE  # the garment (front-crossed-keyed) is unaffected
+    assert redirected.pixelColor(*CHEEK_REST_LIPS_PIXEL) == CHEEK_ROSE  # makeup now resolves against cheek-rest

@@ -69,6 +69,7 @@ lazy from infrastructure.face_assets import validate_face_assets
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
 lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
 lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
+lazy from infrastructure.full_body_display_placement import load_full_body_display_placement
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.exasperated_candidate_appearance import ExasperatedCandidateAppearance
 lazy from infrastructure.exasperated_candidate_assets import (
@@ -281,7 +282,10 @@ def create_presentation_ports() -> PresentationPorts:
         visible_windows=visible_windows,
         outfit_overlay_factory=outfit_overlay_factory,
         full_body_renderer_factory=lambda outfit_overlay=None: LayeredFullBodyRenderer(
-            outfit_overlay=outfit_overlay
+            outfit_overlay=outfit_overlay,
+            display_placement=load_full_body_display_placement(
+                resource_path("assets/pose-atlas/v5-base")
+            ),
         ),
     )
 

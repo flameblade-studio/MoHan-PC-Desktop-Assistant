@@ -59,16 +59,36 @@ def _cached_guard(
 
 def preserve_gesture_brows(
     base: QPixmap, donor: QPixmap, mask: QPixmap, *, expression: str | None = None,
+    eye_mask: QPixmap | None = None,
 ) -> QPixmap:
-    """Remove source-shaped brow pigment from an otherwise unchanged eye mask."""
+    """Remove source-shaped brow pigment from an otherwise unchanged eye mask.
+
+    `eye_mask` is the authority blink eyelid mask for this pose
+    (`blink_masks[pose]`). Its alpha>0 footprint is excluded from the guard
+    before erasure, so the guard never removes pixels that legitimately
+    belong to the real eyelid opening -- only the gesture-brow pigment
+    outside it (round14e equivalent diff, owner-approved 2026-09-28).
+    """
     if base.size() != donor.size() or base.size() != mask.size():
         raise ValueError("Gesture brow protection requires matching native frame sizes.")
+    if eye_mask is not None and eye_mask.size() != mask.size():
+        raise ValueError("Gesture brow protection requires a matching eye mask size.")
     width, height = base.width(), base.height()
     left, top = round(490 * width / NATIVE_SIZE), round(370 * height / NATIVE_SIZE)
     right, bottom = round(725 * width / NATIVE_SIZE), round(434 * height / NATIVE_SIZE)
     source = _rgba(base.copy(left, top, right - left, bottom - top))
     replacement = _rgba(donor.copy(left, top, right - left, bottom - top))
     guard = _cached_guard(source.tobytes(), replacement.tobytes(), width, height, expression)
+    if eye_mask is not None:
+        # Copy before painting: `guard` is the lru_cache-owned QPixmap and
+        # must never be mutated in place.
+        guard = QPixmap(guard)
+        eye_painter = QPainter(guard)
+        try:
+            eye_painter.setCompositionMode(QPainter.CompositionMode_DestinationOut)
+            eye_painter.drawPixmap(0, 0, eye_mask)
+        finally:
+            eye_painter.end()
     result = QPixmap(mask.size())
     result.fill(Qt.transparent)
     painter = QPainter(result)

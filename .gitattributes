@@ -18,3 +18,6 @@ artifacts/pose-atlas-rebuild/** -text
 # English: asset JSON files are verified by byte hash at runtime, so no platform may convert their line endings on checkout.
 # 日本語：アセットの JSON は実行時にバイト単位のハッシュで検証されるため、どのプラットフォームでもチェックアウト時に改行を変換してはいけません。
 assets/**/*.json -text
+
+# Release evidence is pinned by SHA-256; keep the exact bytes.
+docs/release-evidence/pose-atlas-v5-*/** -text

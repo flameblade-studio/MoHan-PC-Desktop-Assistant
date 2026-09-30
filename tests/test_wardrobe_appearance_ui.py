@@ -204,6 +204,13 @@ def test_headwear_none_and_official_round_trip_through_real_preview(
     try:
         _open_wardrobe(dashboard)
         _wait_composited(dashboard)
+        hairstyle = dashboard.wardrobe_appearance_selectors["hairstyle"]
+        native_id = "mohan.official.blue-white-hanfu/loose-hair/ink-black"
+        native_index = hairstyle.findData(native_id)
+        assert native_index >= 0
+        assert hairstyle.itemText(native_index) == dashboard._t(
+            "wardrobe_native_bun", "V5 原生髮髻（沿用舊版代號）",
+        )
         official_id = _round_trip_headwear(
             application,
             dashboard,

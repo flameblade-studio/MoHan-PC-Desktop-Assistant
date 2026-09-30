@@ -66,11 +66,25 @@ def test_authored_states_replace_legacy_motion_and_restore_neutral(tmp_path: Pat
         path = tmp_path / f"{state.value}.png"
         _png(path, color=color.name())
         paths[state] = path
-    view = replace(manifest.view(VIEW), blink_frames=frozendict(paths))
+    # Every canonical yaw view now carries complete_expression_frames
+    # (INSTALL-1/INSTALL-2, 2026-09-28), which takes over rendering entirely
+    # and bypasses the legacy blink_frames path this test exercises. Clear it
+    # here so the test keeps covering the legacy authored-blink path
+    # specifically, independent of that unrelated feature.
+    baseline_view = replace(manifest.view(VIEW), complete_expression_frames=None)
+    view = replace(baseline_view, blink_frames=frozendict(paths))
     renderer = LayeredFullBodyRenderer(assets.LayeredFullBodyManifest(frozendict({VIEW: view})))
+    baseline_renderer = LayeredFullBodyRenderer(assets.LayeredFullBodyManifest(frozendict({VIEW: baseline_view})))
     motion = FaceMotionFrame(FacePose.FRONT, "idle_front", Viseme.CLOSED, MouthShape(), ExpressionShape(), breath=0.5)
     neutral = renderer.render_view(VIEW, motion).toImage()
-    assert neutral == LayeredFullBodyRenderer(manifest).render_view(VIEW, motion).toImage()
+    # Same view, same absence of complete_expression_frames, only blink_frames
+    # differs: proves adding the authored blink pair leaves neutral
+    # rendering untouched, without dragging in the unrelated
+    # complete-expression feature (compared against the real, unmodified
+    # manifest, this assertion would now legitimately fail: complete-
+    # expression's own authored "neutral" art is pixel-different from the
+    # legacy parametric composite, which is not what this test checks).
+    assert neutral == baseline_renderer.render_view(VIEW, motion).toImage()
     for blink, state in ((0.5, EyeState.HALF), (1., EyeState.CLOSED)):
         result = renderer.render_view(VIEW, replace(motion, expression_shape=ExpressionShape(blink=blink))).toImage()
         assert result.pixelColor(*EYE_POINT) == colors[state]

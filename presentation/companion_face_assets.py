@@ -73,6 +73,11 @@ class CompanionFaceAssetMethods(CompanionBlinkCompositeMethods):
         )
         self._normalize_base_speech_frames()
         self._build_pose_viseme_frames(mouth_clips)
+        # Normalization replaces the raw speech sources with their final
+        # closed-face composites. Re-evaluate the source-backed feather edge
+        # against those exact runtime pixels so a dark pre-normalization
+        # corner cannot survive beneath a lighter final viseme.
+        self._build_speech_mouth_masks(mouth_clips)
         self._build_happy_neutral_speech_frames()
         self._build_derived_expression_visemes()
         self._build_expression_anchor_profiles()
@@ -177,18 +182,22 @@ class CompanionFaceAssetMethods(CompanionBlinkCompositeMethods):
 
     @staticmethod
     def _blink_regions() -> frozendict[str, tuple[QRect, QRect]]:
+        # Owner-approved round14g redraw v4 (owner-final-approval-20260928.json,
+        # INSTALL-1 code_changes_authorized: "half-body blink regions") for lean/front.
+        # cheek-rest is not on the complete-expression route (owner ruling
+        # 2026-09-29) and keeps the main formal region.
         return frozendict({
             "cheek": (
                 QRect(160, 153, 55, 34),
                 QRect(198, 153, 61, 34),
             ),
             "lean": (
-                QRect(153, 153, 55, 34),
-                QRect(191, 153, 61, 34),
+                QRect(153, 153, 55, 35),
+                QRect(191, 153, 68, 40),
             ),
             "front": (
-                QRect(180, 153, 53, 34),
-                QRect(220, 153, 56, 34),
+                QRect(178, 146, 55, 41),
+                QRect(220, 146, 56, 41),
             ),
         })
 

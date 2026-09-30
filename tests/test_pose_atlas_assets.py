@@ -43,6 +43,7 @@ CONTROL_LAYERS_BY_VIEW = frozendict({
         "blink_half", "blink_closed", "visible_hand_left", "visible_hand_right",
     ),
     "yaw+060-pitch+00": ("blink_half", "blink_closed"),
+    "yaw+075-pitch+00": ("blink_half", "blink_closed"),
     "yaw+090-pitch+00": ("blink_half", "blink_closed"),
     "yaw+150-pitch+00": ("visible_hand_left", "visible_hand_right"),
     "yaw-015-pitch+00": ("blink_half", "blink_closed"),

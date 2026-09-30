@@ -39,7 +39,9 @@ def test_registered_blink_preserves_translucent_and_empty_native_pixels(state, f
         renderer = object.__new__(LayeredParametricFaceRenderer)
         renderer._outfit_overlay = None
         # The probe bypasses __init__; no complete half-body source claims this blink.
-        renderer._complete_halfbody = SimpleNamespace(blink=lambda _base, _eye_state: None)
+        renderer._complete_halfbody = SimpleNamespace(
+            blink=lambda _base, _eye_state, _eye_patch=None, _makeup_context=None: None
+        )
         result = renderer.render_overlay(
             QPixmap.fromImage(base), QPixmap.fromImage(source),
             eye_state=state, view_id="front-crossed",

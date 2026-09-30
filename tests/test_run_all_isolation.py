@@ -103,6 +103,7 @@ def test_each_child_receives_an_independent_sanitized_environment() -> None:
         assert environment["PYTHONPATH"] == str(tests_dir.parent)
         assert "PYTEST_ADDOPTS" not in environment
         assert environment["RUN_ALL_PRESERVE_ME"] == "preserved"
+        assert environment[run_all.ISOLATED_TEST_CHILD] == "1"
     for variable in ISOLATED_PATH_VARIABLES:
         paths = [Path(environment[variable]) for environment in environments]
         assert len(set(paths)) == len(paths)

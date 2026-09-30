@@ -370,15 +370,44 @@ def test_safe_region_document_matches_the_rigs() -> None:
                 assert x >= 0 and y >= 0 and x + width <= region.canvas[0] and y + height <= region.canvas[1]
     front = regions["front-crossed"]
     assert all(front.rects(slot) for slot in ("eyes", "cheeks", "lips"))
+    legacy_eye_rectangle_count = 2
+    approved_exasperated_lip_rectangle_count = 2
+    legacy_eye_rectangles = front.rects("eyes")[:legacy_eye_rectangle_count]
+    measured_eye_rectangles = {
+        "front-crossed": front.rects("eyes")[legacy_eye_rectangle_count:]
+    }
     for gesture in ("front-mock-scold", "front-mock-hit", "front-eureka", "front-exasperated"):
-        assert regions[gesture].slots == front.slots
+        region = regions[gesture]
+        assert region.rects("cheeks") == front.rects("cheeks")
+        assert region.rects("lips")[:1] == front.rects("lips")
+        assert region.rects("eyes")[:legacy_eye_rectangle_count] == legacy_eye_rectangles
+        measured_eye_rectangles[gesture] = region.rects("eyes")[legacy_eye_rectangle_count:]
+        assert len(measured_eye_rectangles[gesture]) == legacy_eye_rectangle_count
+    assert (
+        len(regions["front-exasperated"].rects("lips"))
+        == approved_exasperated_lip_rectangle_count
+    )
+    assert regions["front-exasperated"].rects("lips")[1] != front.rects("lips")[0]
+    # The V5 gestures share the legacy facial rig but carry their own measured
+    # eye rectangles.  In particular, exasperated is authored with lowered,
+    # closed eyes and must not be forced back onto the front-crossed geometry.
+    assert len(set(measured_eye_rectangles.values())) == len(measured_eye_rectangles)
+    assert min(
+        rectangle[1] for rectangle in measured_eye_rectangles["front-exasperated"]
+    ) > max(rectangle[1] for rectangle in measured_eye_rectangles["front-crossed"])
     assert all(not regions["yaw-180-pitch+00"].rects(slot) for slot in ("eyes", "cheeks", "lips"))
     for silhouette in ("front-crossed", "yaw+000-pitch+00"):
         # The rig generator owns geometry; load_makeup_safe_regions above also
         # validates authored v2 foundation/aperture declarations and their files.
         derived = silhouette_regions(ROOT, silhouette)
         authored = document["silhouettes"][silhouette]
-        assert derived == {key: authored[key] for key in derived}
+        expected = {key: authored[key] for key in derived}
+        if silhouette == "front-crossed":
+            expected["slots"] = {
+                **authored["slots"],
+                "eyes": authored["slots"]["eyes"][:legacy_eye_rectangle_count],
+            }
+        assert derived == expected
         assert set(authored) - set(derived) <= {"foundation_masks", "eye_aperture_masks"}
 
 
@@ -602,3 +631,22 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+def test_declared_asset_paths_includes_mouth_states() -> None:
+    """Regression: _declared_asset_paths() must count mouth_states assets too,
+    or a pack with mouth_states fails _validate_declared_assets() even when
+    every member is properly declared (found during INSTALL-1 Stage 2)."""
+    from domain.outfit_pack import AppearanceAsset, AppearanceItem, AppearanceVariant, _declared_asset_paths
+
+    lips = AppearanceAsset("lips", "assets/viseme-a.png", "0" * 64, 1024, 1536, 0, 0, 0)
+    base_lips = AppearanceAsset("lips", "assets/base-lips.png", "1" * 64, 1254, 1254, 0, 0, 0)
+    variant = AppearanceVariant(
+        "classic", frozendict(), frozendict({"front-crossed": (base_lips,)}),
+        mouth_states=frozendict({"a": frozendict({"yaw+000-pitch+00": (lips,)})}),
+    )
+    item = AppearanceItem("makeup", "face", frozendict(), (variant,))
+    paths = _declared_asset_paths([item])
+    assert lips.path in paths
+    assert base_lips.path in paths
+    assert sorted(paths) == sorted({lips.path, base_lips.path})

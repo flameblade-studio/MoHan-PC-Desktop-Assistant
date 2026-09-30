@@ -187,6 +187,7 @@ GESTURE_SPEECH_ASSETS = tuple(
     for frames in GESTURE_SPEECH_FRAMES.values()
     for asset in frames.values()
 )
+
 EXPRESSION_SPEECH_MOUTH_RECTS = frozendict({
     expression: (
         QRect(170, 194, 60, 42) if pose == "cheek"

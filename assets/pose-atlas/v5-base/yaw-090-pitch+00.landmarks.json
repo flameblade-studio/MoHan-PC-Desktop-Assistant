@@ -2,79 +2,88 @@
   "height": 1536,
   "landmarks": {
     "crown": [
-      451,
-      91
-    ],
-    "left_ankle": [
-      545,
-      1430
-    ],
-    "left_heel": [
-      564,
-      1490
-    ],
-    "left_hip": [
-      558,
-      878
-    ],
-    "left_sole": [
-      568,
-      1496
-    ],
-    "left_toe": [
-      573,
-      1490
+      469,
+      61
     ],
     "right_ankle": [
-      530,
-      1422
+      543,
+      1385
     ],
     "right_heel": [
-      540,
-      1490
+      561,
+      1449
     ],
     "right_hip": [
-      464,
-      878
+      459,
+      842
     ],
     "right_knee": [
-      505,
-      1187
+      509,
+      1148
     ],
     "right_sole": [
-      546,
-      1496
+      562,
+      1455
     ],
     "right_toe": [
-      552,
-      1490
+      564,
+      1449
     ]
   },
   "measurement": {
     "method": "normalized-alpha-silhouette-registration",
     "occlusion_policy": "no_coordinates_are invented for an occluded side",
-    "source_sha256": "59aafd7ee3164c011f2b94a0230ab937a5cc0cf0fbaa78bc37ed20b2d3b78a3d",
-    "target_subject_height": 1406
+    "source_sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b",
+    "target_subject_height": 1395
   },
   "native_face_landmarks": {
-    "coordinates": null,
-    "landmark_count": 0,
-    "reason": "The origin/main yaw-090 source was restored on 2026-09-16 by owner decision; the bundled native 478-point provider was not re-run for it. The reworked yaw-090 body returns in its own pull request.",
+    "artifact": {
+      "path": "assets/pose-atlas/v5-base/yaw-090-pitch+00.native-landmarks.json",
+      "sha256": "081a419e6fa2661488d1327cc45096979d0badcf34b58d952a1458d6ad1fe60b"
+    },
+    "confidence": 0.919061541557312,
+    "coordinates": "normalized_xy_plus_relative_z",
+    "landmark_count": 478,
     "size": [
       1024,
       1536
     ],
     "source": {
       "path": "assets/pose-atlas/v5-base/yaw-090-pitch+00.png",
-      "sha256": "59aafd7ee3164c011f2b94a0230ab937a5cc0cf0fbaa78bc37ed20b2d3b78a3d"
+      "sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b"
     },
-    "status": "missing_not_measured"
+    "status": "generated_same_source_native_478"
   },
   "occluded_landmarks": [
     {
+      "name": "left_hip",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
       "name": "left_knee",
-      "occluder_id": "knee-target-unreachable",
-      "reason": "No alpha within the search radius of either knee target (hip-to-foot midpoint, or directly above the foot run)."
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "left_ankle",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "left_heel",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "left_toe",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    },
+    {
+      "name": "left_sole",
+      "occluder_id": "lower-robe-and-sleeve",
+      "reason": "The lower robe and sleeve occlude this side in the authored view."
     }
   ],
   "schema_version": 2,

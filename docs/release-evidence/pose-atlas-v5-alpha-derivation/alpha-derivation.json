@@ -1,0 +1,52 @@
+{
+  "schema": "mohan.pose-atlas-alpha-cleanup-derivation.v1",
+  "status": "verified",
+  "rule": "conservative-032 alpha-only hair-fringe cleanup",
+  "derivation_receipt": {
+    "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/motion/matting-final/receipt.json",
+    "sha256": "8139289a98222357e70356c0f6ddc724942484546a62011799a81d57e1d8c7b6",
+    "scope": "hair-fringe alpha cleanup masters only",
+    "superseded_sections": [
+      "lip-repair"
+    ],
+    "evidence_note": "Only the hair-fringe alpha cleanup outputs of this receipt are used: the two +/-090 derived masters. Its lip-repair section was rejected on visual review and is not evidence for this derivation, and this pin is not whole-package acceptance."
+  },
+  "views": [
+    {
+      "view_id": "yaw+090-pitch+00",
+      "approved_original": {
+        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/native-staging-14/assets/pose-atlas/v5-base/yaw+090-pitch+00.png",
+        "sha256": "42d4c14a8fe8aaebf11c858b94db7b9f034643131d6aa6fd72808be3b1955161"
+      },
+      "derived": {
+        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/motion/matting-final/derived/v5-base/yaw+090-pitch+00.png",
+        "sha256": "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152"
+      },
+      "alpha_threshold": 32,
+      "alpha_changed_pixels": 2210,
+      "rgb_diff_pixels": 0,
+      "mirror_exact_of": "yaw-090-pitch+00"
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "approved_original": {
+        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/native-staging-14/assets/pose-atlas/v5-base/yaw-090-pitch+00.png",
+        "sha256": "ad57f0296df07a2f179da32ef39880d49214eed2cd2f8bc72e300b55d670c8a5"
+      },
+      "derived": {
+        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/motion/matting-final/derived/v5-base/yaw-090-pitch+00.png",
+        "sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b"
+      },
+      "alpha_threshold": 32,
+      "alpha_changed_pixels": 2210,
+      "rgb_diff_pixels": 0
+    }
+  ],
+  "limits": [
+    "Approved originals stay immutable sources; only hair-edge alpha < the threshold becomes 0.",
+    "The installed master SHA is the derived master, never the approved original and never an external exact source."
+  ],
+  "pending": [
+    "The final expression frames and their manifest come from the front worker; the two hair masters keep the SHAs declared here and are re-pinned to that final receipt once it lands."
+  ]
+}

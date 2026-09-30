@@ -8,16 +8,16 @@
   },
   "source": {
     "path": "v5-base/yaw+060-pitch+00.png",
-    "sha256": "59af36fdb7df288df80d605552e7263fde4aa98639f3a2eada259e9abbfa0b46"
+    "sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e"
   },
   "blink": {
     "half": {
       "path": "v5-base-layered/yaw+060-pitch+00_blink_half.png",
-      "sha256": "2ae59830e571b6fb29e7f272ddf4e5d4af59f594116326f16b1a8638f5106234"
+      "sha256": "36235bf443d2766cbba21dab585456ec50b8d25e8324996d3faf4e95fae6af0c"
     },
     "closed": {
       "path": "v5-base-layered/yaw+060-pitch+00_blink_closed.png",
-      "sha256": "5106fcec62668120570da4f046796a2e47b55f699a3818b256903fcfc5cfe897"
+      "sha256": "e83796b0cdc7b8c3fb21b60d0b8a46e1ec82f3ac96c913eaed93adfa7f231529"
     }
   }
 }

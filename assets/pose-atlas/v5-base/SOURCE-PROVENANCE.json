@@ -1,0 +1,497 @@
+{
+  "schema": "mohan.v5-fullbody-source-provenance.v1",
+  "status": "verified_22_exact_external_and_2_approved_composites_installed",
+  "view_count": 24,
+  "policy": "22 unchanged views retain exact external raw-source provenance. Two views are owner-approved originals carried through an alpha-only hair-edge cleanup: RGB is byte-identical, originally transparent and originally opaque alpha values are preserved, intermediate alpha is only reduced along the declared fringe rule, and the installed SHA is the derived master, never the approved original and never an external exact source.",
+  "privacy": "external corpus roots omitted; basenames and SHA-256 retained",
+  "authority_counts": {
+    "approved_alpha_cleanup_derivation": 2,
+    "external_exact": 22,
+    "git_history_authority": 0
+  },
+  "external_raw_source_gaps": [],
+  "install": {
+    "root_role": "formal",
+    "atlas_root": "assets/pose-atlas/v5-base",
+    "phase_one_receipt": {
+      "path": "scratchpad/mohan-v5-hanfu-unified-all-164/root-integration-31/joint-formal-install/phase-one/receipt.json",
+      "sha256": "65d4e4b1448cd5e2caa944cdabfe72c056c2ccb95199edf6a1c51ed2dd393101",
+      "replaced_files": 131
+    },
+    "phase_two_receipt": null,
+    "note": "This file is a phase-two install source and does not reference its own installation receipt; the phase-two plan, its validation evidence and its receipt record phase-two completion."
+  },
+  "views": [
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 260615,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月12日 下午03_21_28.png",
+        "source_sha256": "e11f388296af33a848d766f30dcb5ffa46a26a2bd6130ed5e8219049c3918428"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw+000-pitch+00.png",
+      "formal_sha256": "7c87bc8b51406b962454b5da79fb8a578bdd6000c8ab117ec6f50c0e328cc81f",
+      "view_id": "yaw+000-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 252171,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月7日 下午02_58_01.png",
+        "source_sha256": "9609e7a8011fa9a34c7ba4fa59fd38b78b24f57455ded55f54c381adee07fc5a"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw+015-pitch+00.png",
+      "formal_sha256": "6ecf5a4e3d6f5543291143fdb3fe048770863b202979395b1d0a9d99ae892e5c",
+      "view_id": "yaw+015-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 261312,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月12日 下午03_21_36.png",
+        "source_sha256": "1356d1cab3915f724372f0add1b5520ffd3d4fc9b13a7acb41ffff2adbf1d1b5"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw+030-pitch+00.png",
+      "formal_sha256": "1356d1cab3915f724372f0add1b5520ffd3d4fc9b13a7acb41ffff2adbf1d1b5",
+      "view_id": "yaw+030-pitch+00"
+    },
+    {
+      "authority": {
+        "archived_source_path": "scratchpad/mohan-v2-final-runtime-matrix-160/recovered-external-raw-22/yaw+045-pitch+00.original.png",
+        "archived_source_sha256": "71e05a50ec81b9f1c7d68ad6d86d23e20ac5523002f4f5c115ad8ae9e1c47c7e",
+        "corpus": "generated",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 222832,
+        "prior_git_blob": "7be732c578adfd4ed91846ece540fdb4b84d2937",
+        "prior_git_commit": "1c1f0c7fb008fcbd088e82fd98d6409ddc3f9ef9",
+        "source_locator": "generated-corpus/01a07973-407c-7851-89f9-06c6b27a786f/exec-d376b109-e447-40c5-9eaa-bcb91cbbb6a6.png",
+        "source_sha256": "71e05a50ec81b9f1c7d68ad6d86d23e20ac5523002f4f5c115ad8ae9e1c47c7e"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw+045-pitch+00.png",
+      "formal_sha256": "e7530053c5d54a8a4babeafb24b02e4acb5f7949542d24f678e5d7359549255e",
+      "view_id": "yaw+045-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 219742,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月11日 下午05_26_26.png",
+        "source_sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw+060-pitch+00.png",
+      "formal_sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
+      "view_id": "yaw+060-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "generated",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 200885,
+        "source_locator": "generated-corpus/exec-ca7ac209-1743-4631-aa95-49d372d868aa.png",
+        "source_sha256": "cc938ba1b6e22a67e3d8027afc08239c6fee90ebfb5e75fd95df34ee6c17cb26"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw+075-pitch+00.png",
+      "formal_sha256": "78364a8e7d5ff032ab7420de18d0efe50203e4c3cdae4466b5d98112a09f93f2",
+      "view_id": "yaw+075-pitch+00"
+    },
+    {
+      "view_id": "yaw+090-pitch+00",
+      "formal_path": "assets/pose-atlas/v5-base/yaw+090-pitch+00.png",
+      "formal_sha256": "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152",
+      "staged_sha256": "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152",
+      "staging_status": "installed_alpha_cleanup_derivation",
+      "install_receipt_sha256": "65d4e4b1448cd5e2caa944cdabfe72c056c2ccb95199edf6a1c51ed2dd393101",
+      "authority": {
+        "kind": "approved_alpha_cleanup_derivation",
+        "installed": true,
+        "install_receipt_sha256": "65d4e4b1448cd5e2caa944cdabfe72c056c2ccb95199edf6a1c51ed2dd393101",
+        "identity_authority": {
+          "kind": "approved_composite",
+          "installed": true,
+          "install_receipt_sha256": "65d4e4b1448cd5e2caa944cdabfe72c056c2ccb95199edf6a1c51ed2dd393101",
+          "derivation": "owner_approved_exact_whole_canvas_mirror",
+          "mirrored_from": "assets/pose-atlas/v5-base/yaw-090-pitch+00.png",
+          "mirrored_from_sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b",
+          "approval": {
+            "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/plus090-exact-mirror-07/owner-approval.json",
+            "sha256": "9c648a4f9c51c0ca4e8e1c7d115f1ca40d6bf892e530cdb7763dbf4850ef0e05"
+          },
+          "face_identity_approval": {
+            "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/owner-approval.json",
+            "sha256": "dec265421e6c320def38a42bc2f46ac0c7b8977cb5334b50d91411c6e31781c7"
+          }
+        },
+        "alpha_cleanup": {
+          "rule": "conservative-032 alpha-only hair-fringe cleanup",
+          "derivation_receipt": {
+            "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/motion/matting-final/receipt.json",
+            "sha256": "8139289a98222357e70356c0f6ddc724942484546a62011799a81d57e1d8c7b6"
+          },
+          "approved_original": {
+            "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/native-staging-14/assets/pose-atlas/v5-base/yaw+090-pitch+00.png",
+            "sha256": "42d4c14a8fe8aaebf11c858b94db7b9f034643131d6aa6fd72808be3b1955161",
+            "role": "owner-approved original, immutable source"
+          },
+          "derived": {
+            "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/motion/matting-final/derived/v5-base/yaw+090-pitch+00.png",
+            "sha256": "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152"
+          },
+          "alpha_threshold": 32,
+          "alpha_changed_pixels": 2210,
+          "rgb_diff_pixels": 0,
+          "mirror_exact_of": "yaw-090-pitch+00",
+          "approved_original_mirror": {
+            "view_id": "yaw-090-pitch+00",
+            "sha256": "ad57f0296df07a2f179da32ef39880d49214eed2cd2f8bc72e300b55d670c8a5",
+            "relation": "whole-canvas exact mirror between the approved originals"
+          }
+        }
+      }
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 182679,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月9日 上午05_44_25.png",
+        "source_sha256": "31cfc8e7bacf93e958f5042893311624f6f6cfe63263808280f14ce7f35e48b7"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw+105-pitch+00.png",
+      "formal_sha256": "04704ab4dcdae52ab9b4702e4f2effedfd37f6b65e57ace59bdc1a76578f4d60",
+      "view_id": "yaw+105-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 199257,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月7日 下午04_18_21.png",
+        "source_sha256": "79e3d101e1922d60208f71bfe51fdb35ce4966a2f1ce5c3e66780e07c17b3cfd"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw+120-pitch+00.png",
+      "formal_sha256": "1c08fadc0db1eb59992cb2776442523a303de4e753eac4d7ff31981bf3647fff",
+      "view_id": "yaw+120-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 253629,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月7日 下午02_16_13.png",
+        "source_sha256": "c08dc874589ab62db13eb5259f1e77ba74942d6c579808fd2a37cf3ca6e6896c"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw+135-pitch+00.png",
+      "formal_sha256": "5c4345d1a8987faeff2ea5f5a643c85c7953c732e3a5f093d8070cd5311ff458",
+      "view_id": "yaw+135-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 257502,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月7日 下午04_11_07.png",
+        "source_sha256": "72d374415a790fb9c2595e5ed3df4d389fbb5ee899b932db523228befd01eaac"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw+150-pitch+00.png",
+      "formal_sha256": "f4ece290818ea03a4b914e7f4becc896a2f3d2d632933b02b9b9d9c368de330c",
+      "view_id": "yaw+150-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 251724,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月7日 下午02_25_55.png",
+        "source_sha256": "2689fdbc4070b80edd7ab96f464259ad636c55b7319dcdedcb00ba99b2e7051c"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw+165-pitch+00.png",
+      "formal_sha256": "ae667a90e98c0742a5de68ee625f8ce05095f6fbf1d71c5bf21c31c298a1c1b1",
+      "view_id": "yaw+165-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 241782,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月7日 下午02_52_07.png",
+        "source_sha256": "9f6f84b23c4087555a35434dc0fd59a7f6ed578ea229f70f901046c574d792fc"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw-015-pitch+00.png",
+      "formal_sha256": "990606cb257e3d128c13be82d7d82dfc46ba8ca250f8274245332dd34fdf69f6",
+      "view_id": "yaw-015-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "generated",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 230870,
+        "source_locator": "generated-corpus/exec-7d15bea9-1c62-4ec0-850b-f40ba3336617.png",
+        "source_sha256": "0c1eb95426f055bb3b5e265de303ae7d1b3074234a4b1d2673a14d4bbb01543e"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw-030-pitch+00.png",
+      "formal_sha256": "8750d8629cb274d7db4034e1f02dcd2d3283c537ef92fc843769b0f937d68ac7",
+      "view_id": "yaw-030-pitch+00"
+    },
+    {
+      "authority": {
+        "archived_source_path": "scratchpad/mohan-v2-final-runtime-matrix-160/recovered-external-raw-22/yaw-045-pitch+00.original.png",
+        "archived_source_sha256": "3353338de591d913df4fdb5df236843b3367ec59251c28a23ef44157455cf787",
+        "corpus": "generated",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 228672,
+        "prior_git_blob": "43d0625adb2f50c5407b2c7f9f00356255c96373",
+        "prior_git_commit": "1c1f0c7fb008fcbd088e82fd98d6409ddc3f9ef9",
+        "source_locator": "generated-corpus/01a07975-de3d-7262-8a51-4053c0219eb0/exec-f32b1cab-b5c0-4c0e-bdcf-d7ab03febe4b.png",
+        "source_sha256": "3353338de591d913df4fdb5df236843b3367ec59251c28a23ef44157455cf787"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw-045-pitch+00.png",
+      "formal_sha256": "ebd245e49e3a31a3dc88442ce7fb108ebac66e80354000f6d02f69335e7e0d53",
+      "view_id": "yaw-045-pitch+00"
+    },
+    {
+      "authority": {
+        "archived_source_path": "scratchpad/mohan-v2-final-runtime-matrix-160/recovered-external-raw-22/yaw-060-pitch+00.original.png",
+        "archived_source_sha256": "4eb872e817ed1a88e9c87849619241516f86baee4e25d3c7735ee6970a6cdda8",
+        "corpus": "generated",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 197022,
+        "prior_git_blob": "631acb2d7ebd3c6d476df281cf009a8acf7308b2",
+        "prior_git_commit": "1c1f0c7fb008fcbd088e82fd98d6409ddc3f9ef9",
+        "source_locator": "generated-corpus/01a07b9e-e300-7833-b56d-223487390e04/exec-6849931d-06ad-423b-a62f-ec1bc26dcb30.png",
+        "source_sha256": "4eb872e817ed1a88e9c87849619241516f86baee4e25d3c7735ee6970a6cdda8"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw-060-pitch+00.png",
+      "formal_sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
+      "view_id": "yaw-060-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 157012,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月10日 上午01_26_54.png",
+        "source_sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw-075-pitch+00.png",
+      "formal_sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
+      "view_id": "yaw-075-pitch+00"
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "formal_path": "assets/pose-atlas/v5-base/yaw-090-pitch+00.png",
+      "formal_sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b",
+      "staged_sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b",
+      "staging_status": "installed_alpha_cleanup_derivation",
+      "install_receipt_sha256": "65d4e4b1448cd5e2caa944cdabfe72c056c2ccb95199edf6a1c51ed2dd393101",
+      "authority": {
+        "kind": "approved_alpha_cleanup_derivation",
+        "installed": true,
+        "install_receipt_sha256": "65d4e4b1448cd5e2caa944cdabfe72c056c2ccb95199edf6a1c51ed2dd393101",
+        "identity_authority": {
+          "kind": "approved_composite",
+          "installed": true,
+          "install_receipt_sha256": "65d4e4b1448cd5e2caa944cdabfe72c056c2ccb95199edf6a1c51ed2dd393101",
+          "derivation": "owner_adopted_profile_composite",
+          "approved_face": {
+            "mirror_for_positive_yaw": false,
+            "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/minus090-face-candidate-01.png",
+            "sha256": "f21dda5b84a1e387b820c54f6c7f3790c236abb8533732df2b54cb92560c33b5"
+          },
+          "owner_approvals": {
+            "minus090_new_face": {
+              "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/owner-approval.json",
+              "sha256": "dec265421e6c320def38a42bc2f46ac0c7b8977cb5334b50d91411c6e31781c7"
+            }
+          },
+          "native_lower_body_preserved_from_formal_y_ge": 350
+        },
+        "alpha_cleanup": {
+          "rule": "conservative-032 alpha-only hair-fringe cleanup",
+          "derivation_receipt": {
+            "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/motion/matting-final/receipt.json",
+            "sha256": "8139289a98222357e70356c0f6ddc724942484546a62011799a81d57e1d8c7b6"
+          },
+          "approved_original": {
+            "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/native-staging-14/assets/pose-atlas/v5-base/yaw-090-pitch+00.png",
+            "sha256": "ad57f0296df07a2f179da32ef39880d49214eed2cd2f8bc72e300b55d670c8a5",
+            "role": "owner-approved original, immutable source"
+          },
+          "derived": {
+            "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/motion/matting-final/derived/v5-base/yaw-090-pitch+00.png",
+            "sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b"
+          },
+          "alpha_threshold": 32,
+          "alpha_changed_pixels": 2210,
+          "rgb_diff_pixels": 0,
+          "mirror_exact_of": null
+        }
+      }
+    },
+    {
+      "authority": {
+        "corpus": "generated",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 161857,
+        "source_locator": "generated-corpus/exec-0695d2eb-03bf-4e7e-923b-9e5a62b50dc3.png",
+        "source_sha256": "39f7a80c7aa0ea29d3bc2542f9f3eaa1f2ae757812976a7966362ce8ffd146bc"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw-105-pitch+00.png",
+      "formal_sha256": "0d1a56d029d4fbd084334a8d9b9ae58c9fbdb4c88ce3a074f344bd359c02fda0",
+      "view_id": "yaw-105-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 194624,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月7日 下午04_28_16.png",
+        "source_sha256": "4d6604c153144114c8a2efa50beff16d38e8032ca3cc5b151f1efbb081e225ad"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw-120-pitch+00.png",
+      "formal_sha256": "ffa58ec7c568630aad453da86dc926c7956cab4e75faae96fdf3b1f8c77bf911",
+      "view_id": "yaw-120-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 245751,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月7日 下午03_41_28.png",
+        "source_sha256": "17aafd447d47763379b6a662030de37f8ccea3823b13a6eb95f8e0e11903541a"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw-135-pitch+00.png",
+      "formal_sha256": "1f74812bb5e2fc38f79de365ec67d8b0c79741c003e6a3021f7e0a50498138b3",
+      "view_id": "yaw-135-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 253993,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月7日 下午03_53_49.png",
+        "source_sha256": "d7668b4066d8c934f64aeb1d02f815a6a462b327714a81dfcfe05a473a13f878"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw-150-pitch+00.png",
+      "formal_sha256": "1a948558ce165e7d505a260f6a199ff2b2e154f502a1dfbe5dbe28ced8c503cf",
+      "view_id": "yaw-150-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 261206,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月7日 下午04_00_18.png",
+        "source_sha256": "f625148ce8a334a3b7e428e00b1d6d77da20684eb289577d57eed54627fc9faa"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw-165-pitch+00.png",
+      "formal_sha256": "b99f5d7be767a62527f1e7080965df6c38b58aeff4285edf69e44b4bd0d33a2f",
+      "view_id": "yaw-165-pitch+00"
+    },
+    {
+      "authority": {
+        "corpus": "owner",
+        "kind": "external_exact",
+        "opaque_changed_pixels": 0,
+        "opaque_exact_ratio": 1.0,
+        "opaque_pixel_count": 266917,
+        "source_locator": "owner-corpus/Codex 圖像 2026年9月7日 下午01_59_20.png",
+        "source_sha256": "e3c82d1b5c0040a093bbf2723220e8aeba8d9112784419023f560923e5f48e54"
+      },
+      "formal_path": "assets/pose-atlas/v5-base/yaw-180-pitch+00.png",
+      "formal_sha256": "7b596fa8e5a6b9eae620440db7b98e0db2d2182a110ad4fd748362aaaadb965d",
+      "view_id": "yaw-180-pitch+00"
+    }
+  ],
+  "derivations": [
+    {
+      "view_id": "yaw+090-pitch+00",
+      "approved_original": {
+        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/native-staging-14/assets/pose-atlas/v5-base/yaw+090-pitch+00.png",
+        "sha256": "42d4c14a8fe8aaebf11c858b94db7b9f034643131d6aa6fd72808be3b1955161",
+        "role": "owner-approved original, immutable source"
+      },
+      "derived": {
+        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/motion/matting-final/derived/v5-base/yaw+090-pitch+00.png",
+        "sha256": "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152"
+      },
+      "alpha_threshold": 32,
+      "alpha_changed_pixels": 2210,
+      "rgb_diff_pixels": 0,
+      "mirror_exact_of": "yaw-090-pitch+00",
+      "formal_sha256": "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152",
+      "rule": "conservative-032 alpha-only hair-fringe cleanup",
+      "derivation_receipt": {
+        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/motion/matting-final/receipt.json",
+        "sha256": "8139289a98222357e70356c0f6ddc724942484546a62011799a81d57e1d8c7b6"
+      }
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "approved_original": {
+        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/identity-repair-30/native-staging-14/assets/pose-atlas/v5-base/yaw-090-pitch+00.png",
+        "sha256": "ad57f0296df07a2f179da32ef39880d49214eed2cd2f8bc72e300b55d670c8a5",
+        "role": "owner-approved original, immutable source"
+      },
+      "derived": {
+        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/motion/matting-final/derived/v5-base/yaw-090-pitch+00.png",
+        "sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b"
+      },
+      "alpha_threshold": 32,
+      "alpha_changed_pixels": 2210,
+      "rgb_diff_pixels": 0,
+      "mirror_exact_of": null,
+      "formal_sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b",
+      "rule": "conservative-032 alpha-only hair-fringe cleanup",
+      "derivation_receipt": {
+        "path": "scratchpad/mohan-v5-hanfu-unified-all-164/parallel-31/motion/matting-final/receipt.json",
+        "sha256": "8139289a98222357e70356c0f6ddc724942484546a62011799a81d57e1d8c7b6"
+      }
+    }
+  ]
+}

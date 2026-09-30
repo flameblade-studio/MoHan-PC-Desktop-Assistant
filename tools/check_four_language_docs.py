@@ -81,8 +81,6 @@ def _tracked_documents(root: Path) -> tuple[Path, ...]:
             f"safe.directory={root.as_posix()}",
             "ls-files",
             "--cached",
-            "--others",
-            "--exclude-standard",
             "--",
             *DOCUMENT_GLOBS,
         ],

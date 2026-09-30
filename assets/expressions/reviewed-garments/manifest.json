@@ -37,6 +37,209 @@
       },
       "motion_required": true,
       "approved_source_sha256": "1e6a1cfaaca55e37f602f4f1672adbe3dd71df06a42ea359ded40315d7cb6d50"
+    },
+    "front-eureka": {
+      "native_source_file": "eureka-native-103.rgba.png",
+      "native_source_sha256": "9973de6e742e8f0b4f59ac2aabce6d31f09434fcf8b5f4c0e21ba246350e650e",
+      "visibility": {
+        "path": "front-eureka/body-visibility.png",
+        "sha256": "491368634b073480e2a45153a22814ff70de5ccb343c5f9ba4ee930abc66af11"
+      },
+      "ordered_layers": [
+        {
+          "path": "front-eureka/layer-00.rgba.png",
+          "sha256": "415042e9ceb64da4448569d2054b0c542513c7910100aeee95a029f0a5ba6537"
+        }
+      ],
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_appearance_selections": {
+        "hairstyle": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "loose-hair",
+          "variant_id": "ink-black"
+        },
+        "headwear": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "silver-hairpiece",
+          "variant_id": "silver"
+        }
+      },
+      "motion_required": true,
+      "approved_source_sha256": "dfb3fe60f1318bd888c59bbc9e0a221a60d3e30f4c1498b82d1fa87e7ff5fffe"
+    },
+    "front-crossed": {
+      "native_source_file": "v5-front-crossed-native-20260921.rgba.png",
+      "native_source_sha256": "4e51db274b85e94ae5346feec8ba5784cdfc3d3424480fc199691d3835555437",
+      "visibility": {
+        "path": "front-crossed/body-visibility.png",
+        "sha256": "9eee2e6d9f706875fcd5c12f7c5cda55c839d1890312abac4be4008a21506a88"
+      },
+      "ordered_layers": [
+        {
+          "role": "garment",
+          "path": "front-crossed/garment.rgba.png",
+          "sha256": "d3d7caaf893a4c3dab10f7277f0749679b4d614e56abde520c5c3a98a547c926"
+        }
+      ],
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_appearance_selections": {
+        "hairstyle": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "loose-hair",
+          "variant_id": "ink-black"
+        },
+        "headwear": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "silver-hairpiece",
+          "variant_id": "silver"
+        }
+      },
+      "motion_required": true,
+      "approved_source_sha256": "3c1309871a06e8321bb2b23f3003f50785029aa8b25174e3a33d29cf0534da70"
+    },
+    "left-neutral": {
+      "native_source_file": "v5-left-neutral-native-20260921.rgba.png",
+      "native_source_sha256": "80b7a68a6062f047063537ba1f919b9806b99541bc30859003140cfb9a0a8406",
+      "visibility": {
+        "path": "left-neutral/body-visibility.png",
+        "sha256": "9eee2e6d9f706875fcd5c12f7c5cda55c839d1890312abac4be4008a21506a88"
+      },
+      "ordered_layers": [
+        {
+          "role": "garment",
+          "path": "left-neutral/garment.rgba.png",
+          "sha256": "5cf12a44ae74de1733eca425e1b6bdb659c24603f4bcca28f798056ba9c11355"
+        }
+      ],
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_appearance_selections": {
+        "hairstyle": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "loose-hair",
+          "variant_id": "ink-black"
+        },
+        "headwear": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "silver-hairpiece",
+          "variant_id": "silver"
+        }
+      },
+      "motion_required": true,
+      "approved_source_sha256": "73a453d6aecea3d07db0ba864db9d2affc2b13e944aa18376d172a5244349361"
+    },
+    "front-mock-scold": {
+      "native_source_file": "v5-front-mock-scold-native-20260921.rgba.png",
+      "native_source_sha256": "c0aed3f9eda95d58f22ab7fbf50e155dfc8fb5d798d51894052a985ce921d154",
+      "visibility": {
+        "path": "front-mock-scold/body-visibility.png",
+        "sha256": "9eee2e6d9f706875fcd5c12f7c5cda55c839d1890312abac4be4008a21506a88"
+      },
+      "ordered_layers": [
+        {
+          "role": "garment",
+          "path": "front-mock-scold/garment.rgba.png",
+          "sha256": "498cf6e14dbc088580523b95ef4b0c34f2f41a800b4b7dac3a59428c7baad780"
+        }
+      ],
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_appearance_selections": {
+        "hairstyle": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "loose-hair",
+          "variant_id": "ink-black"
+        },
+        "headwear": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "silver-hairpiece",
+          "variant_id": "silver"
+        }
+      },
+      "motion_required": true,
+      "approved_source_sha256": "3412c3ed2a67b1add19fbcab0c79fefdb1af4eb0b4ce7ac8845f9f6fd7f01701"
+    },
+    "front-mock-hit": {
+      "native_source_file": "v5-front-mock-hit-native-20260921.rgba.png",
+      "native_source_sha256": "67a43c713e9e7d95e03e9886149db3dc15c1e4b559f5940307e1bc1c90fa56f8",
+      "visibility": {
+        "path": "front-mock-hit/body-visibility.png",
+        "sha256": "9eee2e6d9f706875fcd5c12f7c5cda55c839d1890312abac4be4008a21506a88"
+      },
+      "ordered_layers": [
+        {
+          "role": "garment",
+          "path": "front-mock-hit/garment.rgba.png",
+          "sha256": "f1271df91458beaa0314925c4ccde2e159259fc43edb6433f4756f65614b58d8"
+        }
+      ],
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_appearance_selections": {
+        "hairstyle": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "loose-hair",
+          "variant_id": "ink-black"
+        },
+        "headwear": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "silver-hairpiece",
+          "variant_id": "silver"
+        }
+      },
+      "motion_required": true,
+      "approved_source_sha256": "89518152a28e72735ff185701aca86fd5dea6b1f825fec8b29834578ee9f9495"
+    },
+    "front-exasperated": {
+      "native_source_file": "v5-front-exasperated-native-20260921.rgba.png",
+      "native_source_sha256": "1ce6cc9d4f1f7a55e8632ef26991990039c36edf9d3bb3a5476eb90551f4e528",
+      "visibility": {
+        "path": "front-exasperated/body-visibility.png",
+        "sha256": "9eee2e6d9f706875fcd5c12f7c5cda55c839d1890312abac4be4008a21506a88"
+      },
+      "ordered_layers": [
+        {
+          "role": "garment",
+          "path": "front-exasperated/garment.rgba.png",
+          "sha256": "332f7a477d3ecf3c8c7e12b5099d2660ebcbd68ca4f43eb378a24e3b8326ae2c"
+        }
+      ],
+      "selection_exact": {
+        "pack_id": "mohan.official.blue-white-hanfu",
+        "item_id": "hanfu-robe",
+        "variant_id": "blue-white"
+      },
+      "native_appearance_selections": {
+        "hairstyle": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "loose-hair",
+          "variant_id": "ink-black"
+        },
+        "headwear": {
+          "pack_id": "mohan.official.blue-white-hanfu",
+          "item_id": "silver-hairpiece",
+          "variant_id": "silver"
+        }
+      },
+      "motion_required": true,
+      "approved_source_sha256": "b980088efdc41b98a48a6eaf47cd42490731d4ebb9c306f691905726b9339dc5"
     }
   }
 }

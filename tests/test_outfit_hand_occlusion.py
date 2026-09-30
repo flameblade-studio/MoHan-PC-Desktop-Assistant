@@ -208,7 +208,9 @@ def test_fractional_core_hand_composites_over_garment_without_alpha_holes(
     garment = QPixmap(1024, 1536)
     garment.fill(QColor("blue"))
     canvas = QRegion(QRect(0, 0, 1024, 1536))
-    overlay._phase_layers_by_view[FULL_VIEW, "appearance", frozenset(), "rest"] = AppearanceLayerStack(
+    overlay._phase_layers_by_view[
+        FULL_VIEW, "appearance", frozenset(), "rest", None, None
+    ] = AppearanceLayerStack(
         (),
         ((garment, 0, 0, canvas, 1.0),),
         behind_hand_indices=frozenset({0}),
@@ -217,6 +219,7 @@ def test_fractional_core_hand_composites_over_garment_without_alpha_holes(
     monkeypatch.setattr(overlay, "_garment_is_active", lambda: True)
     monkeypatch.setattr(overlay, "_official_outfit_is_active", lambda: True)
     monkeypatch.setattr(overlay, "_selected_silhouette_region", lambda *_args: None)
+    monkeypatch.setattr(overlay, "_protected_face_region", lambda *_args: QRegion())
     body = QPixmap(1024, 1536)
     body.fill(QColor("red"))
     result = overlay.apply_appearance(body, FULL_VIEW).toImage()
@@ -254,12 +257,17 @@ def test_animated_makeup_garment_and_repaintable_hand_keep_partial_depth_order(
         makeup_occluder_indices=frozenset({0}),
         behind_hand_indices=frozenset({0}),
     )
-    overlay._phase_layers_by_view[FULL_VIEW, "appearance", frozenset(), "rest"] = appearance
-    overlay._phase_layers_by_view[FULL_VIEW, "makeup", frozenset(), "rest"] = AppearanceLayerStack((), ())
+    overlay._phase_layers_by_view[
+        FULL_VIEW, "appearance", frozenset(), "rest", None, None
+    ] = appearance
+    overlay._phase_layers_by_view[
+        FULL_VIEW, "makeup", frozenset(), "rest", None, None
+    ] = AppearanceLayerStack((), ())
     monkeypatch.setattr(overlay, "_refresh_state", lambda: None)
     monkeypatch.setattr(overlay, "_garment_is_active", lambda: True)
     monkeypatch.setattr(overlay, "_official_outfit_is_active", lambda: False)
     monkeypatch.setattr(overlay, "_selected_silhouette_region", lambda *_args: None)
+    monkeypatch.setattr(overlay, "_protected_face_region", lambda *_args: QRegion())
 
     def paint_skin_and_makeup(target: QPixmap) -> None:
         painter = QPainter(target)
@@ -346,7 +354,7 @@ def test_makeup_phase_accepts_empty_early_stage_and_keeps_source_atop(
 
     overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
     overlay._phase_layers_by_view[
-        FULL_VIEW, "makeup", frozenset(), "rest"
+        FULL_VIEW, "makeup", frozenset(), "rest", None, None
     ] = AppearanceLayerStack(
         (),
         ((QPixmap.fromImage(makeup_image), 0, 0, canvas, 1.0),),
@@ -462,7 +470,7 @@ def test_official_replacement_mask_clears_shared_base_before_appearance(
     garment_image.setPixelColor(5, 4, QColor("blue"))
     garment = QPixmap.fromImage(garment_image)
     overlay._phase_layers_by_view[
-        FULL_VIEW, "appearance", frozenset(), "rest"
+        FULL_VIEW, "appearance", frozenset(), "rest", None, None
     ] = ((garment, 0, 0, QRegion(QRect(0, 0, 10, 10)), 1.0),)
     monkeypatch.setattr(overlay, "_refresh_state", lambda: None)
     monkeypatch.setattr(overlay, "_garment_is_active", lambda: False)

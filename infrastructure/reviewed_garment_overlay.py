@@ -81,6 +81,7 @@ class ReviewedGarmentOverlayMixin(ReviewedPoseOverlayMixin):
         self, frame: QPixmap, view_id: str, suppressed: frozenset[str], eye_state: str,
         *, phase: str = "combined",
         before_front_hair: Callable[[QPixmap], QPixmap] | None = None,
+        makeup_view_id: str | None = None,
     ) -> QPixmap | None:
         if phase == "makeup":
             return None
@@ -122,6 +123,7 @@ class ReviewedGarmentOverlayMixin(ReviewedPoseOverlayMixin):
         layers = self._active_layers(
             view_id, frame.size().toTuple(), suppress_makeup_slots=suppressed,
             eye_state=eye_state, categories=frozenset(SELECTION_CATEGORIES) - excluded,
+            makeup_view_id=makeup_view_id,
         )
         native = frame if frame.size().toTuple() == (DIMENSION, DIMENSION) else frame.scaled(
             DIMENSION, DIMENSION, Qt.IgnoreAspectRatio, Qt.SmoothTransformation,
@@ -131,10 +133,20 @@ class ReviewedGarmentOverlayMixin(ReviewedPoseOverlayMixin):
             result = result.scaled(frame.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
         result = _finish_appearance(result, layers, before_front_hair)
         counts[view_id] = len(pose.ordered_layers) if pose is not None else 0
+        # Key shapes must match the writer each cache is shared with exactly
+        # (active_outfit_overlay.py's _apply_phase / apply): a shorter key
+        # here silently orphans this entry from a same-view lookup made
+        # through the other writer's key shape (found 2026-09-29 auditing
+        # layer_count() after the makeup_view_id addition -- the "appearance"
+        # phase entry was still keyed on the pre-makeup_view_id 4-tuple while
+        # "makeup" already used the current 6-tuple, undercounting any view
+        # whose appearance phase goes through a reviewed garment).
         if appearance_only:
-            self._phase_layers_by_view[view_id, "appearance", suppressed, eye_state] = layers
-        elif not suppressed and eye_state == "rest":
+            key = (view_id, "appearance", suppressed, eye_state, self._active_viseme, makeup_view_id)
+            self._phase_layers_by_view[key] = layers
+        elif not suppressed and eye_state == "rest" and self._active_viseme is None and makeup_view_id is None:
             self._layers_by_view[view_id] = layers
         else:
-            self._layers_by_view_without_makeup_slots[view_id, suppressed, eye_state] = layers
+            combined_key = (view_id, suppressed, eye_state, self._active_viseme, makeup_view_id)
+            self._layers_by_view_without_makeup_slots[combined_key] = layers
         return result

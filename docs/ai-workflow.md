@@ -10,11 +10,11 @@
 - 二代素體與外觀：讀 [分區產線契約](../tools/art_pipeline/REVIEWED_PARTITIONS.md) 與 [漢服原型設計依據](hanfu-design-authority.md)，再讀工作樹內 `scratchpad/v4-identity-rebuild-20260905/software-audit-20260907/body-v2-root-checkpoint.json` 的目前指派及相關工作欄位。該檔待補齊時，將狀態標為待確認，並以當前素材與證據建立進度依據。
 - 發行與跨專案規則：讀工作區根目錄的 AGENTS.md、CODEX_PROJECT_HANDOFF.md，以及 [PUBLISHING.md](../PUBLISHING.md) 的既存政策。專案內舊發行交接紀錄作為歷史參照，目前產品狀態以當次證據確認。
 
-派工與交接只保留：目標、必要輸入、已授權範圍、排除項目、唯一寫入負責者、完成條件、證據位置、待涵蓋項目、下一個已授權動作。複雜工作交 Sol Medium，明確可驗證工作交 Luna Max，主線統籌與驗收；實際模型與能力限制遵循已安裝的 three-tier-agent-orchestrator。
+派工與交接只保留：目標、必要輸入、已授權範圍、排除項目、唯一寫入負責者、完成條件、必要檢查、證據位置、待涵蓋項目、下一個已授權動作。依 2026-09-24 工作區政策，主代理預設使用 `gpt-6-sol`／max，子代理預設使用 `gpt-6-luna`／max；依獨立工作需要派 0–3 名子代理（上限不含主代理），不為填滿名額派工，子代理不得遞迴派工。保留 `astra-flash-orchestrator` skill 與 DeepSeek 路由作參考，暫停使用，直到擁有者另行恢復。主代理規劃工作包、明確範圍與排除項、指定唯一檔案寫入者、保留 dirty worktree、執行必要檢查並批次驗收。單純小修由主代理直接完成。
 
 候選產生、外觀檢查、技術驗證、正式接入與發布分別記錄。主線直接核對代理的檔案與測試證據；每個 PASS 只代表實際覆蓋的範圍。外觀判定依擁有者目前授權與實際視覺審閱作成。已核准的下一步沿用現有許可，持續完成。
 
-只選讀當前任務需要的 Playbook 章節：交接與閱讀成本看 AI_CONTEXT.md、SESSION_HANDOFF_TEMPLATE.md；驗收與重試看 DEBUG_VALIDATION.md；代理執行看 CODEX_EXECUTION.md。外部章節均使用 AGENTS.md 固定版本，已核對且維持原版的內容可在同一工作階段重用。這個入口沿用既有三層代理設定與產品品質門檻。
+只選讀當前任務需要的 Playbook 章節：交接與閱讀成本看 AI_CONTEXT.md、SESSION_HANDOFF_TEMPLATE.md；驗收與重試看 DEBUG_VALIDATION.md。外部章節均使用 AGENTS.md 固定版本，已核對且維持原版的內容可在同一工作階段重用。代理依目前擁有者派工政策執行；`astra-flash-orchestrator` skill 與 DeepSeek 路由暫停使用，產品品質門檻沿用專案規範。
 
 ## 简体中文
 
@@ -26,11 +26,11 @@
 - 二代素体与外观：读 [分区产线契约](../tools/art_pipeline/REVIEWED_PARTITIONS.md) 与 [汉服原型设计依据](hanfu-design-authority.md)，再读工作树内 `scratchpad/v4-identity-rebuild-20260905/software-audit-20260907/body-v2-root-checkpoint.json` 的当前分工及相关工作字段。该文件待补齐时，将状态标为待确认，并以当前素材与证据建立进度依据。
 - 发布与跨项目规则：读工作区根目录的 AGENTS.md、CODEX_PROJECT_HANDOFF.md，以及 [PUBLISHING.md](../PUBLISHING.md) 的现有政策。项目内旧发布交接记录作为历史参考，当前产品状态以本次证据确认。
 
-分工与交接只保留：目标、必要输入、已授权范围、排除项、唯一写入负责人、完成条件、证据位置、待覆盖项、下一个已授权动作。复杂工作交 Sol Medium，明确可验证工作交 Luna Max，主线统筹与验收；实际模型与能力限制遵循已安装的 three-tier-agent-orchestrator。
+分工与交接只保留：目标、必要输入、已授权范围、排除项、唯一写入负责人、完成条件、必要检查、证据位置、待覆盖项、下一个已授权动作。按 2026-09-24 工作区政策，主代理默认使用 `gpt-6-sol`／max，子代理默认使用 `gpt-6-luna`／max；按独立工作需要派 0–3 名子代理（上限不含主代理），不为填满名额派工，子代理不得递归分工。保留 `astra-flash-orchestrator` skill 和 DeepSeek 路由供参考，暂停使用，直到所有者另行恢复。主代理规划工作包、明确范围与排除项、指定唯一文件写入者、保留 dirty worktree、执行必要检查并批量验收。简单小修由主代理直接完成。
 
 候选生成、外观检查、技术验证、正式接入与发布分别记录。主线直接核对代理的文件与测试证据；每个 PASS 只代表实际覆盖的范围。外观判断依所有者当前授权与实际视觉审查作出。已批准的下一步沿用现有许可，持续完成。
 
-只选读当前任务需要的 Playbook 章节：交接与阅读成本看 AI_CONTEXT.md、SESSION_HANDOFF_TEMPLATE.md；验收与重试看 DEBUG_VALIDATION.md；代理执行看 CODEX_EXECUTION.md。外部章节均使用 AGENTS.md 固定版本，已核对且保持原版的内容可在同一工作阶段复用。这个入口沿用现有三层代理设置与产品质量门槛。
+只选读当前任务需要的 Playbook 章节：交接与阅读成本看 AI_CONTEXT.md、SESSION_HANDOFF_TEMPLATE.md；验收与重试看 DEBUG_VALIDATION.md。外部章节均使用 AGENTS.md 固定版本，已核对且保持原版的内容可在同一工作阶段复用。代理按当前所有者分工政策执行；`astra-flash-orchestrator` skill 与 DeepSeek 路由暂停使用，产品质量门槛沿用项目规范。
 
 ## English
 
@@ -42,11 +42,11 @@ This router points to existing rules and current work, with product status maint
 - Second-generation body and appearance: read the [partition pipeline contract](../tools/art_pipeline/REVIEWED_PARTITIONS.md) and [hanfu prototype design authority](hanfu-design-authority.md), then the current assignments and relevant work fields in the worktree's `scratchpad/v4-identity-rebuild-20260905/software-audit-20260907/body-v2-root-checkpoint.json`. While the file awaits restoration, mark status as awaiting confirmation and establish progress from current assets and evidence.
 - Release and cross-project rules: read the workspace-root AGENTS.md and CODEX_PROJECT_HANDOFF.md, plus the persisted policies in [PUBLISHING.md](../PUBLISHING.md). Use old repository release handoffs as historical references and establish current product status from present evidence.
 
-Delegation and handoff retain only the goal, necessary inputs, authorized scope, exclusions, exclusive writer, completion criteria, evidence pointers, areas awaiting coverage and next authorized action. Assign complex work to Sol Medium and explicit verifiable work to Luna Max; the root coordinates and accepts results. Actual profiles and capability limitations follow the installed three-tier-agent-orchestrator.
+Delegation and handoff retain the goal, necessary inputs, authorized scope, exclusions, exclusive file writer, completion criteria, necessary checks, evidence pointers, areas awaiting coverage, and next authorized action. Follow the 2026-09-24 workspace policy: default to `gpt-6-sol` / max for the main coordinator and `gpt-6-luna` / max for child agents; assign zero to three children according to independent work needs, with the limit excluding the main coordinator, and never fill slots for their own sake. Children cannot delegate recursively. Keep the `astra-flash-orchestrator` skill and DeepSeek route as references, with use paused until the owner restores them. The main coordinator plans bounded work packages, states scope and exclusions, assigns one exclusive file writer, preserves dirty worktrees, runs necessary checks, and reviews evidence in a batch. The root handles trivial fixes directly.
 
 Record candidate generation, visual review, technical validation, formal integration and release separately. The root checks agent files and test evidence directly; each PASS proves only its actual coverage. Visual decisions follow the owner's current authorization and actual visual review. Complete already approved next steps under the existing permission.
 
-Read only task-relevant Playbook sections: AI_CONTEXT.md and SESSION_HANDOFF_TEMPLATE.md for handoff and retrieval cost; DEBUG_VALIDATION.md for acceptance and retries; CODEX_EXECUTION.md for agent execution. All external sections use the revision pinned in AGENTS.md; verified content retained at the same revision can be reused within the session. This router follows the existing three-tier profiles and product quality gates.
+Read only task-relevant Playbook sections: AI_CONTEXT.md and SESSION_HANDOFF_TEMPLATE.md for handoff and retrieval cost; DEBUG_VALIDATION.md for acceptance and retries. All external sections use the revision pinned in AGENTS.md; verified content retained at the same revision can be reused within the session. Agent execution follows the current owner delegation policy; use of the `astra-flash-orchestrator` skill and DeepSeek route is paused. Product quality gates follow project rules.
 
 ## 日本語
 
@@ -58,8 +58,8 @@ Read only task-relevant Playbook sections: AI_CONTEXT.md and SESSION_HANDOFF_TEM
 - 二代目素体と外観：[領域分割の契約](../tools/art_pipeline/REVIEWED_PARTITIONS.md) と [漢服の原型デザイン基準](hanfu-design-authority.md)、作業ツリーの `scratchpad/v4-identity-rebuild-20260905/software-audit-20260907/body-v2-root-checkpoint.json` にある現在の担当と対象作業を読みます。ファイルの復元待ちでは状態を確認待ちとし、現在の素材と証拠から進捗の根拠を整えます。
 - リリースとプロジェクト横断規則：ワークスペース直下の AGENTS.md、CODEX_PROJECT_HANDOFF.md、および [PUBLISHING.md](../PUBLISHING.md) の既存方針を読みます。過去のリリース引き継ぎは履歴として参照し、現在の製品状態は今回の証拠で確認します。
 
-委任と引き継ぎには、目標、必要な入力、承認済み範囲、対象外、排他的な書き込み担当、完了条件、証拠の場所、検証待ちの範囲、次の承認済み操作だけを残します。複雑な作業は Sol Medium、明確で検証可能な作業は Luna Max が担当し、主担当が調整と受け入れを行います。実際のモデル設定と能力制限は、導入済みの three-tier-agent-orchestrator に従います。
+委任と引き継ぎには、目標、必要な入力、承認済み範囲、対象外、排他的なファイル書き込み担当、完了条件、必要な確認、証拠の場所、検証待ちの範囲、次の承認済み操作を記載します。2026-09-24 のワークスペース方針に従い、主担当は既定で `gpt-6-sol`／max、子代理は既定で `gpt-6-luna`／max とします。独立した作業の必要に応じて子代理を 0～3 名割り当てます（上限に主担当を含みません）。枠を埋めるために割り当てず、子代理は再帰的に委任しません。`astra-flash-orchestrator` skill と DeepSeek 経路は参照用に保持し、所有者が再開するまで使用を停止します。主担当は作業単位を計画し、範囲と除外事項を明示し、ファイル書き込み担当を一名に限定し、dirty worktree を保持し、必要な確認を実行して証拠を一括で受け入れます。単純な修正は主担当が直接行います。
 
 候補生成、外観確認、技術検証、正式統合、公開を分けて記録します。主担当は代理のファイルと試験証拠を直接確認し、各 PASS は実際の検証範囲だけを示します。外観の判断は所有者の現在の承認と実際の視覚確認に従います。承認済みの次の作業は既存の許可に基づいて完了します。
 
-必要な Playbook の章だけを読みます。引き継ぎと読み取りコストは AI_CONTEXT.md と SESSION_HANDOFF_TEMPLATE.md、受け入れと再試行は DEBUG_VALIDATION.md、代理の実行は CODEX_EXECUTION.md を参照します。外部の章には AGENTS.md の固定版を使用し、検証済みで同じ版を維持した内容は同じ作業段階で再利用できます。この入口は既存の三層代理の設定と製品品質の条件に従います。
+必要な Playbook の章だけを読みます。引き継ぎと読み取りコストは AI_CONTEXT.md と SESSION_HANDOFF_TEMPLATE.md、受け入れと再試行は DEBUG_VALIDATION.md を参照します。外部の章には AGENTS.md の固定版を使用し、検証済みで同じ版を維持した内容は同じ作業段階で再利用できます。代理の実行は現行の所有者方針に従い、`astra-flash-orchestrator` skill と DeepSeek 経路の使用は停止中です。製品品質の条件はプロジェクト規範に従います。

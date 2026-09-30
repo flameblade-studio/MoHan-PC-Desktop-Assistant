@@ -26,6 +26,7 @@ lazy from infrastructure.layered_full_body_renderer import (
     PROJECT_ROOT,
     LayeredFullBodyRenderer,
 )
+lazy from infrastructure.full_body_display_placement import load_full_body_display_placement
 
 VIEW_RING_COUNT = 24
 SHA256_HEX_LENGTH = 64
@@ -34,7 +35,7 @@ SHA256_HEX_LENGTH = 64
 class PoseAtlasAssets:
     """Load locally audited authored views while preserving their authored view contract."""
 
-    def __init__(self, root: Path, *, image_size: int, outfit_overlay=None) -> None:
+    def __init__(self, root: Path, *, image_size: int, outfit_overlay=None, display_scale: bool = False) -> None:
         if image_size <= 0:
             raise ValueError("PoseAtlas image size must be positive.")
         self._root = Path(root).resolve()
@@ -46,7 +47,11 @@ class PoseAtlasAssets:
         # The parametric 24-view × 25-layer renderer is the sole full-body
         # rendering path.  The legacy static photograph + procedural mouth have
         # been removed entirely.
-        self._layered_renderer = LayeredFullBodyRenderer(outfit_overlay=outfit_overlay)
+        display_placement = load_full_body_display_placement(self._root) if display_scale else None
+        self._layered_renderer = LayeredFullBodyRenderer(
+            outfit_overlay=outfit_overlay,
+            display_placement=display_placement,
+        )
 
     @property
     def generation(self) -> int:
