@@ -17,7 +17,6 @@
     "infrastructure/full_body_blink_binding.py": 1,
     "infrastructure/profile_transfer.py": 1,
     "infrastructure/reviewed_garment_assets.py": 2,
-    "infrastructure/reviewed_pose_overlay.py": 1,
     "presentation/_dashboard_wardrobe_tab.py": 3,
     "presentation/companion_core.py": 7,
     "presentation/companion_speech_runtime.py": 2,
@@ -28,5 +27,5 @@
     "presentation/profile_transfer_ui.py": 3,
     "presentation/updater_ui.py": 1
   },
-  "total_warnings": 52
+  "total_warnings": 51
 }

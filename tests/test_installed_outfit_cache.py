@@ -51,7 +51,7 @@ def _install_colored_pack(root: Path, store: Path, pack_id: str, color: QColor):
 
 
 def _assert_overlay_selection(overlay, store: Path, selection, expected_path: Path) -> None:
-    selected = resolve_active_selection(store, "garment")
+    selected = overlay._resolve_base_clear_selection("garment")
     path, item, variant = overlay._selected_variant("garment", selected)
     assert selected.effective_pack_id == selection.pack_id
     assert path == expected_path
@@ -60,7 +60,7 @@ def _assert_overlay_selection(overlay, store: Path, selection, expected_path: Pa
 
 
 def test_listing_and_independent_overlays_share_verified_pack(tmp_path, monkeypatch):
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
+    official_pack_root = tmp_path / "official"
     manifest, assets = _manifest(_png())
     archive = _pack(tmp_path / "source.mohan-outfit", manifest, assets)
     store = tmp_path / "store"
@@ -73,11 +73,26 @@ def test_listing_and_independent_overlays_share_verified_pack(tmp_path, monkeypa
         return original(path)
 
     monkeypatch.setattr(outfit_pack, "inspect_outfit_pack", counted)
-    selection = next(iter(list_installed_selections(store, "garment")))
-    apply_appearance_selection(store, selection)
-    selected = resolve_active_selection(store, "garment")
+    selection = next(
+        iter(
+            list_installed_selections(
+                store, "garment", official_pack_root=official_pack_root
+            )
+        )
+    )
+    apply_appearance_selection(
+        store, selection, official_pack_root=official_pack_root
+    )
+    selected = resolve_active_selection(
+        store, "garment", official_pack_root=official_pack_root
+    )
     for _ in range(2):
-        overlay = ActiveOutfitOverlay(store, tmp_path, visible_hand_region=lambda _: QRegion())
+        overlay = ActiveOutfitOverlay(
+            store,
+            tmp_path,
+            official_pack_root=official_pack_root,
+            visible_hand_region=lambda _: QRegion(),
+        )
         path, item, variant = overlay._selected_variant("garment", selected)
         assert path.name == f"{installed.pack_id}.mohan-outfit"
         assert item.item_id == selection.item_id
@@ -107,7 +122,7 @@ def test_replaced_corrupt_and_deleted_archive_never_returns_old_pack(tmp_path):
 
 
 def test_warm_overlay_switches_active_selection_between_installed_packs(tmp_path, monkeypatch):
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
+    official_pack_root = tmp_path / "official"
     QApplication.instance() or QApplication([])
     _authority(tmp_path)
 
@@ -125,14 +140,21 @@ def test_warm_overlay_switches_active_selection_between_installed_packs(tmp_path
     }
     selections = {
         selection.pack_id: selection
-        for selection in list_installed_selections(store, "garment")
+        for selection in list_installed_selections(
+            store, "garment", official_pack_root=official_pack_root
+        )
     }
     assert set(selections) == {first_pack.pack_id, second_pack.pack_id}
 
-    apply_appearance_selection(store, selections[first_pack.pack_id])
+    apply_appearance_selection(
+        store,
+        selections[first_pack.pack_id],
+        official_pack_root=official_pack_root,
+    )
     overlay = ActiveOutfitOverlay(
         store,
         tmp_path,
+        official_pack_root=official_pack_root,
         visible_hand_region=lambda _view_id: QRegion(),
     )
     frame = QPixmap(CANVAS, CANVAS)
@@ -141,7 +163,11 @@ def test_warm_overlay_switches_active_selection_between_installed_packs(tmp_path
     assert overlay.apply(frame, "front-crossed").toImage().pixelColor(0, 0).getRgb() == FIRST_COLOR.getRgb()
     _assert_overlay_selection(overlay, store, selections[first_pack.pack_id], installed_paths[first_pack.pack_id])
 
-    apply_appearance_selection(store, selections[second_pack.pack_id])
+    apply_appearance_selection(
+        store,
+        selections[second_pack.pack_id],
+        official_pack_root=official_pack_root,
+    )
     assert overlay.apply(frame, "front-crossed").toImage().pixelColor(0, 0).getRgb() == SECOND_COLOR.getRgb()
     assert overlay.apply(frame, "front-crossed").toImage().pixelColor(0, 0).getRgb() == SECOND_COLOR.getRgb()
     _assert_overlay_selection(overlay, store, selections[second_pack.pack_id], installed_paths[second_pack.pack_id])

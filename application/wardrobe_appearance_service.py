@@ -13,6 +13,7 @@ lazy from pathlib import Path
 lazy from domain.language_support import canonical_ui_language
 
 lazy from domain.outfit_pack import (
+    OFFICIAL_PACK_ROOT,
     InstalledSelection,
     OutfitPackError,
     SelectionResolution,
@@ -93,9 +94,14 @@ def _headwear_none_name(language: str) -> str:
 def _resolve_active(
     install_root: Path,
     category: str,
+    official_pack_root: Path,
 ) -> SelectionResolution:
     try:
-        return resolve_active_selection(install_root, category)
+        return resolve_active_selection(
+            install_root,
+            category,
+            official_pack_root=official_pack_root,
+        )
     except OutfitPackError:
         raise
     except _STATE_ERRORS:
@@ -114,8 +120,14 @@ def _run_state_mutation(action: Callable[[], None]) -> None:
 class WardrobeAppearanceService:
     """Select hairstyle and headwear while preserving other appearance slots."""
 
-    def __init__(self, install_root: Path) -> None:
+    def __init__(
+        self,
+        install_root: Path,
+        *,
+        official_pack_root: Path = OFFICIAL_PACK_ROOT,
+    ) -> None:
         self.install_root = Path(install_root)
+        self.official_pack_root = Path(official_pack_root)
 
     def options(
         self,
@@ -133,6 +145,7 @@ class WardrobeAppearanceService:
             for selection in list_installed_selections(
                 self.install_root,
                 category,
+                official_pack_root=self.official_pack_root,
             )
         )
         if category == HEADWEAR_CATEGORY:
@@ -148,7 +161,9 @@ class WardrobeAppearanceService:
     def active_id(self, category: str) -> str:
         """Return the effective option id currently resolved by the domain."""
         _validate_category(category)
-        resolution = _resolve_active(self.install_root, category)
+        resolution = _resolve_active(
+            self.install_root, category, self.official_pack_root,
+        )
         if (
             category == HEADWEAR_CATEGORY
             and resolution.effective_pack_id == BUILTIN_SELECTION_ID
@@ -173,7 +188,9 @@ class WardrobeAppearanceService:
         if option_id == NONE_OPTION_ID:
             if category != HEADWEAR_CATEGORY:
                 raise OutfitPackError("A hairstyle selection stays active; choose another style to change it.")
-            _resolve_active(self.install_root, category)
+            _resolve_active(
+                self.install_root, category, self.official_pack_root,
+            )
             _run_state_mutation(
                 lambda: clear_appearance_selection(
                     self.install_root,
@@ -188,6 +205,7 @@ class WardrobeAppearanceService:
                 for candidate in list_installed_selections(
                     self.install_root,
                     category,
+                    official_pack_root=self.official_pack_root,
                 )
                 if _selection_id(candidate) == option_id
             ),
@@ -198,9 +216,15 @@ class WardrobeAppearanceService:
                 "The selected appearance option is not installed."
             )
 
-        _resolve_active(self.install_root, category)
+        _resolve_active(
+            self.install_root, category, self.official_pack_root,
+        )
         _run_state_mutation(
-            lambda: apply_appearance_selection(self.install_root, selection)
+            lambda: apply_appearance_selection(
+                self.install_root,
+                selection,
+                official_pack_root=self.official_pack_root,
+            )
         )
 
 

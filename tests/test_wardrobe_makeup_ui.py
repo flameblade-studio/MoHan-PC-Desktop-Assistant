@@ -46,10 +46,12 @@ def test_legacy_makeup_keeps_the_foundation_control_hidden(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     application = QApplication.instance() or QApplication([])
-    official_builtin_pack(tmp_path, monkeypatch)
+    official_pack_root = official_builtin_pack(tmp_path)
     profile = tmp_path / "profile"
     profile.mkdir()
-    db, dashboard = build_language_dashboard(profile, "zh-TW")
+    db, dashboard = build_language_dashboard(
+        profile, "zh-TW", official_pack_root=official_pack_root
+    )
     try:
         with patch.object(
             dashboard.wardrobe_service,
@@ -74,10 +76,12 @@ def test_v2_foundation_control_is_independent_and_tracks_canonical_view_capabili
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     application = QApplication.instance() or QApplication([])
-    official_builtin_pack(tmp_path, monkeypatch)
+    official_pack_root = official_builtin_pack(tmp_path)
     profile = tmp_path / "profile"
     profile.mkdir()
-    db, dashboard = build_language_dashboard(profile, "zh-TW")
+    db, dashboard = build_language_dashboard(
+        profile, "zh-TW", official_pack_root=official_pack_root
+    )
     try:
         calls: list[tuple[str, float]] = []
         with (
@@ -147,11 +151,12 @@ def test_foundation_intensity_round_trips_through_the_real_v2_store(
     official_root = tmp_path / "official"
     official_root.mkdir()
     shutil.copy2(formal_archive, official_root / formal_archive.name)
-    monkeypatch.setattr("domain.outfit_pack.OFFICIAL_PACK_ROOT", official_root)
 
     profile = tmp_path / "profile"
     profile.mkdir()
-    db, dashboard = build_language_dashboard(profile, "zh-TW")
+    db, dashboard = build_language_dashboard(
+        profile, "zh-TW", official_pack_root=official_root
+    )
     try:
         assert dashboard._active_makeup_slots() == MAKEUP_SLOTS_V2
         assert not dashboard.wardrobe_makeup_foundation_row.isHidden()
@@ -173,7 +178,9 @@ def test_foundation_intensity_round_trips_through_the_real_v2_store(
     finally:
         close_dashboard(dashboard, db)
 
-    db, dashboard = build_language_dashboard(profile, "zh-TW")
+    db, dashboard = build_language_dashboard(
+        profile, "zh-TW", official_pack_root=official_root
+    )
     try:
         assert dashboard.wardrobe_makeup_foundation.value() == FOUNDATION_INITIAL_PERCENT
     finally:
@@ -197,13 +204,15 @@ def test_makeup_pack_imports_through_the_shared_button_persists_and_falls_back(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     application = QApplication.instance() or QApplication([])
-    official_builtin_pack(tmp_path, monkeypatch)
+    official_pack_root = official_builtin_pack(tmp_path)
     source = makeup_pack(tmp_path / "festival-makeup.mohan-outfit")
     profile = tmp_path / "profile"
     profile.mkdir()
     store = profile / "outfits"
 
-    db, dashboard = build_language_dashboard(profile, "zh-TW")
+    db, dashboard = build_language_dashboard(
+        profile, "zh-TW", official_pack_root=official_pack_root
+    )
     try:
         selector = dashboard.wardrobe_makeup_selector
         assert selector.currentData() == "builtin/classic"
@@ -228,7 +237,9 @@ def test_makeup_pack_imports_through_the_shared_button_persists_and_falls_back(
         close_dashboard(dashboard, db)
 
     # Restart: both the selection and the intensity come back from the store.
-    db, dashboard = build_language_dashboard(profile, "zh-TW")
+    db, dashboard = build_language_dashboard(
+        profile, "zh-TW", official_pack_root=official_pack_root
+    )
     try:
         assert dashboard.wardrobe_makeup_selector.currentData() == FESTIVAL_OPTION
         assert dashboard.wardrobe_makeup_intensity.value() == HALF_PERCENT
@@ -243,7 +254,9 @@ def test_makeup_pack_imports_through_the_shared_button_persists_and_falls_back(
 
     # The pack vanishes from disk: the wardrobe falls back to built-in classic and says so once.
     (store / "packages" / "festival-makeup.mohan-outfit").unlink()
-    db, dashboard = build_language_dashboard(profile, "zh-TW")
+    db, dashboard = build_language_dashboard(
+        profile, "zh-TW", official_pack_root=official_pack_root
+    )
     try:
         assert dashboard.wardrobe_makeup_selector.currentData() == "builtin/classic"
         assert dashboard.wardrobe_status.text() == "所選妝容的套件已不存在，已改回內建標準妝。"

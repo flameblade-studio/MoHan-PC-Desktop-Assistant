@@ -8,6 +8,7 @@ lazy from PySide6.QtWidgets import QComboBox, QFrame, QLabel, QPushButton, QVBox
 
 lazy from application.presentation_ports import PresentationDatabasePort
 lazy from application.wardrobe_appearance_service import WardrobeAppearanceService
+lazy from application.wardrobe_service import WardrobeService
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID
 lazy from domain.outfit_pack import OutfitPackError
 lazy from domain.outfit_pack_official import OFFICIAL_NATIVE_HAIR_ALIAS
@@ -17,6 +18,7 @@ __all__ = ("build_appearance_card", "reload_appearance_controls")
 
 
 class AppearanceView(Protocol):
+    wardrobe_service: WardrobeService
     db: PresentationDatabasePort
     ui_language: str
     wardrobe_appearance_selectors: dict[str, QComboBox]
@@ -29,7 +31,10 @@ class AppearanceView(Protocol):
 
 
 def _service(view: AppearanceView) -> WardrobeAppearanceService:
-    return WardrobeAppearanceService(view.db.path.parent / "outfits")
+    return WardrobeAppearanceService(
+        view.db.path.parent / "outfits",
+        official_pack_root=view.wardrobe_service.official_pack_root,
+    )
 
 
 def build_appearance_card(view: AppearanceView, category: str, title: str) -> QFrame:

@@ -216,7 +216,9 @@ def _configure(
         BODY_PROFILE_ID, tuple(items), (),
     )
 
-    def selection(_store: Path, category: str) -> SimpleNamespace:
+    def selection(
+        _store: Path, category: str, **_kwargs: object
+    ) -> SimpleNamespace:
         if category == "makeup" and makeup_selected:
             return SimpleNamespace(status="installed", effective_pack_id="pack", effective_item_id="face", effective_variant_id="classic")
         if category == "garment" and garment is not None:
@@ -515,7 +517,9 @@ def _configure_two_silhouettes(
         BODY_PROFILE_ID, tuple(items), (),
     )
 
-    def selection(_store: Path, category: str) -> SimpleNamespace:
+    def selection(
+        _store: Path, category: str, **_kwargs: object
+    ) -> SimpleNamespace:
         if category == "makeup":
             return SimpleNamespace(status="installed", effective_pack_id="pack", effective_item_id="face", effective_variant_id="classic")
         if category == "garment":

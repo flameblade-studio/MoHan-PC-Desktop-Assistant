@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import hashlib
 lazy import importlib
 lazy import json
+lazy import logging
 lazy import zipfile
 lazy from pathlib import Path
 lazy from types import SimpleNamespace
@@ -16,6 +17,7 @@ lazy from infrastructure import active_outfit_overlay as adapter_module
 lazy from domain import outfit_pack
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
+    OFFICIAL_PACK_ROOT,
     AppearanceAsset,
     AppearanceItem,
     AppearanceVariant,
@@ -29,6 +31,7 @@ lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.appearance_layer_stack import AppearanceLayerStack
 lazy from infrastructure.layered_full_body_assets import load_layered_full_body_assets
 lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
+lazy from infrastructure.outfit_layer_cache_key import OutfitLayerCacheKey
 lazy from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
 
 CANVAS = 1254
@@ -39,6 +42,13 @@ OPAQUE_ALPHA = 255
 
 def _app() -> object:
     return QApplication.instance() or QApplication([])
+
+
+def test_official_pack_root_defaults_to_public_domain_constant(
+    tmp_path: Path,
+) -> None:
+    overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
+    assert overlay._official_pack_root == OFFICIAL_PACK_ROOT
 
 
 def _encoded_layer(color: QColor | None = None) -> bytes:
@@ -125,7 +135,9 @@ def _configure(
         (),
     )
 
-    def selection(_store: Path, category: str) -> SimpleNamespace:
+    def selection(
+        _store: Path, category: str, **_kwargs: object
+    ) -> SimpleNamespace:
         if category != "garment":
             return SimpleNamespace(status="builtin")
         return SimpleNamespace(
@@ -187,7 +199,7 @@ def test_explicit_headwear_none_keeps_official_silhouette_base_clear(
     monkeypatch.setattr(
         adapter_module,
         "resolve_active_selection",
-        lambda _store, category: selections[category],
+        lambda _store, category, **_kwargs: selections[category],
     )
     overlay = ActiveOutfitOverlay(store, tmp_path, visible_hand_region=None)
     silhouette = QRegion(QRect(400, 400, 400, 400))
@@ -210,9 +222,13 @@ def test_bare_default_fallback_does_not_use_headwear_none_exception(
     _app()
     store = tmp_path / "store"
     store.mkdir()
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "missing-official")
     monkeypatch.setattr(adapter_module, "resolve_active_selection", outfit_pack.resolve_active_selection)
-    overlay = ActiveOutfitOverlay(store, tmp_path, visible_hand_region=None)
+    overlay = ActiveOutfitOverlay(
+        store,
+        tmp_path,
+        visible_hand_region=None,
+        official_pack_root=tmp_path / "missing-official",
+    )
     silhouette = QRegion(QRect(400, 400, 400, 400))
     monkeypatch.setattr(overlay, "_official_silhouette_region", lambda *_args: silhouette)
     monkeypatch.setattr(overlay, "_active_layers", lambda *_args, **_kwargs: _transparent_runtime_stack())
@@ -240,7 +256,7 @@ def test_custom_headwear_does_not_use_explicit_none_silhouette(
     monkeypatch.setattr(
         adapter_module,
         "resolve_active_selection",
-        lambda _store, category: selections[category],
+        lambda _store, category, **_kwargs: selections[category],
     )
     overlay = ActiveOutfitOverlay(store, tmp_path, visible_hand_region=None)
     silhouette = QRegion(QRect(400, 400, 400, 400))
@@ -324,6 +340,124 @@ def test_invalid_anchor_fails_closed_to_original_frame(
     assert result.toImage() == frame.toImage()
 
 
+def _fallback_records(caplog: pytest.LogCaptureFixture) -> list[logging.LogRecord]:
+    return [
+        record
+        for record in caplog.records
+        if record.name == "mohan.outfit_overlay"
+        and record.getMessage() == "outfit_overlay_fallback"
+    ]
+
+
+def _assert_single_fallback(
+    caplog: pytest.LogCaptureFixture,
+    *,
+    reason: str,
+    view_id: str,
+    pack_id: str,
+    asset_path: str,
+) -> None:
+    records = _fallback_records(caplog)
+    assert len(records) == 1
+    record = records[0]
+    assert record.outfit_reason == reason
+    assert record.outfit_view == view_id
+    assert record.outfit_pack_id == pack_id
+    assert record.outfit_asset_path == asset_path
+
+
+def test_duplicate_pack_id_fallback_is_logged_once_without_changing_frame(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    _app()
+    caplog.set_level(logging.WARNING, logger="mohan.outfit_overlay")
+    store = tmp_path / "store"
+    packages = store / "packages"
+    official = tmp_path / "official"
+    packages.mkdir(parents=True)
+    official.mkdir()
+    for root in (packages, official):
+        (root / "duplicate.mohan-outfit").write_bytes(b"duplicate")
+    frame = QPixmap(8, 8)
+    frame.fill(QColor("white"))
+    overlay = ActiveOutfitOverlay(
+        store, tmp_path, visible_hand_region=None, official_pack_root=official,
+    )
+
+    assert overlay.apply(frame, "front-crossed").toImage() == frame.toImage()
+    assert overlay.apply(frame, "front-crossed").toImage() == frame.toImage()
+
+    _assert_single_fallback(
+        caplog,
+        reason="duplicate_pack_id",
+        view_id="front-crossed",
+        pack_id="duplicate",
+        asset_path="duplicate.mohan-outfit",
+    )
+
+
+def test_path_traversal_fallback_is_logged_once_without_changing_frame(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    _app()
+    caplog.set_level(logging.WARNING, logger="mohan.outfit_overlay")
+    store = tmp_path / "store"
+    packages = store / "packages"
+    packages.mkdir(parents=True)
+    official = tmp_path / "official"
+    with zipfile.ZipFile(packages / "unsafe.mohan-outfit", "w") as archive:
+        archive.writestr("manifest.json", "{}")
+        archive.writestr("../escape.png", b"not-an-image")
+    frame = QPixmap(8, 8)
+    frame.fill(QColor("white"))
+    overlay = ActiveOutfitOverlay(
+        store, tmp_path, visible_hand_region=None, official_pack_root=official,
+    )
+
+    assert overlay.apply(frame, "front-crossed").toImage() == frame.toImage()
+    assert overlay.apply(frame, "front-crossed").toImage() == frame.toImage()
+
+    _assert_single_fallback(
+        caplog,
+        reason="asset_path_traversal",
+        view_id="front-crossed",
+        pack_id="unsafe",
+        asset_path="../escape.png",
+    )
+
+
+def test_manifest_hash_fallback_is_logged_once_without_changing_frame(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    _app()
+    caplog.set_level(logging.WARNING, logger="mohan.outfit_overlay")
+    _authority(tmp_path)
+    _configure(monkeypatch, tmp_path, _encoded_layer())
+    archive_path = tmp_path / "store" / "packages" / "pack.mohan-outfit"
+    with zipfile.ZipFile(archive_path, "w") as archive:
+        archive.writestr("assets/garment.png", _encoded_layer(QColor("red")))
+    frame = QPixmap(CANVAS, CANVAS)
+    frame.fill(QColor("white"))
+    overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path, visible_hand_region=None)
+
+    assert overlay.apply(frame, "front-crossed").toImage() == frame.toImage()
+    assert overlay.apply(frame, "front-crossed").toImage() == frame.toImage()
+
+    _assert_single_fallback(
+        caplog,
+        reason="manifest_asset_hash_mismatch",
+        view_id="front-crossed",
+        pack_id="pack",
+        asset_path="assets/garment.png",
+    )
+
+
 def test_incompatible_runtime_range_is_rejected() -> None:
     assert ActiveOutfitOverlay._compatible(">=4.0.0,<5.0.0")
     assert not ActiveOutfitOverlay._compatible(">=5.0.0,<6.0.0")
@@ -351,10 +485,8 @@ def test_dev_app_version_tolerates_range_comparison(
 
 def test_missing_optional_category_in_active_state_is_transparent_builtin(
     tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     # In a stripped build with the official packs absent, an unlisted slot uses the bare base.
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
     store = tmp_path / "store"
     store.mkdir()
     (store / "active.json").write_text(
@@ -369,8 +501,13 @@ def test_missing_optional_category_in_active_state_is_transparent_builtin(
         ),
         encoding="utf-8",
     )
-    assert resolve_active_selection(store, "headwear").status == "builtin"
-    assert resolve_active_selection(store, "jewelry").status == "builtin"
+    official = tmp_path / "official"
+    assert resolve_active_selection(
+        store, "headwear", official_pack_root=official,
+    ).status == "builtin"
+    assert resolve_active_selection(
+        store, "jewelry", official_pack_root=official,
+    ).status == "builtin"
 
 
 def test_hair_is_clipped_only_out_of_the_feature_core_not_the_face_box(
@@ -470,7 +607,9 @@ def test_compositor_uses_each_layers_own_face_clip(tmp_path: Path) -> None:
         "front-crossed",
     )
     allowed = QRegion(QRect(0, 0, CANVAS, CANVAS)).subtracted(forbidden)
-    adapter._layers_by_view["front-crossed"] = ((layer, 0, 0, allowed, 1.0),)
+    adapter._layers_by_view[OutfitLayerCacheKey.combined("front-crossed")] = (
+        (layer, 0, 0, allowed, 1.0),
+    )
     frame = QPixmap(CANVAS, CANVAS)
     frame.fill(QColor(240, 240, 240, 255))
     result = adapter.apply(frame, "front-crossed").toImage()
@@ -478,6 +617,34 @@ def test_compositor_uses_each_layers_own_face_clip(tmp_path: Path) -> None:
     assert result.pixelColor(600, 250) == QColor(240, 240, 240, 255)
     # The cheek remains outside the hair clip.
     assert result.pixelColor(600, 400) == QColor(40, 30, 20, 255)
+
+
+def test_every_layer_cache_writer_is_visible_to_layer_count(tmp_path: Path) -> None:
+    _app()
+    overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path, visible_hand_region=None)
+    layer = QPixmap(1, 1)
+    layer.fill(QColor("white"))
+    one_layer = ((layer, 0, 0, QRegion(), 1.0),)
+
+    overlay._layers_by_view[OutfitLayerCacheKey.combined("simple")] = one_layer
+    assert overlay.layer_count("simple") == 1
+
+    suppressed = frozenset({"eyes"})
+    overlay._layers_by_view_without_makeup_slots[
+        OutfitLayerCacheKey.combined("combined", suppressed, "closed")
+    ] = one_layer
+    assert overlay.layer_count(
+        "combined", suppress_makeup_slots=suppressed, eye_state="closed",
+    ) == 1
+
+    overlay._phase_layers_by_view[
+        OutfitLayerCacheKey.for_phase("split", "appearance")
+    ] = one_layer
+    overlay._phase_layers_by_view[
+        OutfitLayerCacheKey.for_phase("split", "makeup")
+    ] = one_layer
+    expected_count = len(one_layer) + len(one_layer)
+    assert overlay.layer_count("split") == expected_count
 
 
 @pytest.mark.parametrize(
@@ -511,7 +678,11 @@ def test_v5_native_alias_suppresses_only_old_full_body_overlays(
     with zipfile.ZipFile(archive_path, "w"):
         pass
     selected = SelectionResolution(category, "installed", *identity, *identity)
-    monkeypatch.setattr(adapter_module, "resolve_active_selection", lambda *_args: selected)
+    monkeypatch.setattr(
+        adapter_module,
+        "resolve_active_selection",
+        lambda *_args, **_kwargs: selected,
+    )
     monkeypatch.setattr(
         adapter_module, "resolve_variant_for_view",
         lambda *_args: SimpleNamespace(assets=(SimpleNamespace(
@@ -644,7 +815,9 @@ def test_garment_and_accessory_coexist_in_global_z_order(
         (),
     )
 
-    def selection(_store: Path, category: str) -> SimpleNamespace:
+    def selection(
+        _store: Path, category: str, **_kwargs: object
+    ) -> SimpleNamespace:
         identities = {
             "garment": ("robe", "navy"),
             "jewelry": ("jewel", "ruby"),
@@ -734,7 +907,9 @@ def test_transparent_compatibility_hair_does_not_hide_generated_garment(
         (),
     )
 
-    def selection(_store: Path, category: str) -> SimpleNamespace:
+    def selection(
+        _store: Path, category: str, **_kwargs: object
+    ) -> SimpleNamespace:
         if category == "garment":
             item_id, variant_id = "look", "generated"
         elif category == "hairstyle":
@@ -793,14 +968,13 @@ def test_empty_combined_cache_does_not_reuse_phase_layers(
     view = "yaw+000-pitch+00"
     overlay._active_viseme = viseme
     layer = (QPixmap(), 0, 0, QRegion(), 1.0)
-    phase_key = (view, "appearance", frozenset(), "rest", viseme, None)
+    phase_key = OutfitLayerCacheKey.for_phase(view, "appearance", active_viseme=viseme)
     overlay._phase_layers_by_view[phase_key] = (layer,)
     assert overlay.layer_count(view) == 1
+    combined_key = OutfitLayerCacheKey.combined(view, active_viseme=viseme)
     if viseme is None:
-        overlay._layers_by_view[view] = ()
+        overlay._layers_by_view[combined_key] = ()
     else:
-        overlay._layers_by_view_without_makeup_slots[
-            view, frozenset(), "rest", viseme, None
-        ] = ()
+        overlay._layers_by_view_without_makeup_slots[combined_key] = ()
     assert overlay.layer_count(view) == 0
     assert app is not None

@@ -16,6 +16,7 @@ lazy from domain.outfit_pack import (
     InstalledSelection,
     MAKEUP_SLOTS,
     MAKEUP_SLOTS_V2,
+    OFFICIAL_PACK_ROOT,
     OutfitPack,
     OutfitPackError,
     REQUIRED_SILHOUETTES,
@@ -146,8 +147,14 @@ def _makeup_option_id(pack_id: str, item_id: str, variant_id: str) -> str:
 class WardrobeService:
     """Validated v2 outfit installation and selection boundary."""
 
-    def __init__(self, install_root: Path) -> None:
+    def __init__(
+        self,
+        install_root: Path,
+        *,
+        official_pack_root: Path = OFFICIAL_PACK_ROOT,
+    ) -> None:
         self.install_root = Path(install_root)
+        self.official_pack_root = Path(official_pack_root)
         # An active archive requiring recovery keeps
         # the detail controls flicker back to a four-slot default.  Keep the
         # last validated answer per silhouette, with the legacy three-slot
@@ -158,7 +165,10 @@ class WardrobeService:
     def outfits(self, language: str = "zh-TW") -> tuple[InstalledOutfit, ...]:
         # The official default pack is the built-in entry itself; the listing contains it once as the restorable
         # listed a second time as a removable ensemble or loose variant.
-        every_ensemble = list_installed_ensembles(self.install_root)
+        every_ensemble = list_installed_ensembles(
+            self.install_root,
+            official_pack_root=self.official_pack_root,
+        )
         official = official_outfit_ensemble(every_ensemble)
         installed_ensembles = tuple(
             ensemble for ensemble in every_ensemble if ensemble.pack_id != OFFICIAL_OUTFIT_PACK_ID
@@ -199,6 +209,7 @@ class WardrobeService:
             for selection in list_installed_selections(
                 self.install_root,
                 "garment",
+                official_pack_root=self.official_pack_root,
             )
             if (
                 selection.pack_id,
@@ -210,7 +221,10 @@ class WardrobeService:
         # see the reason and remove them; rendering uses the supported generation-2 entries.
         stale = tuple(
             InstalledOutfit(pack_id, pack_id, False)
-            for pack_id in list_stale_body_profile_packs(self.install_root)
+            for pack_id in list_stale_body_profile_packs(
+                self.install_root,
+                official_pack_root=self.official_pack_root,
+            )
         )
         return (built_in, *ensembles, *separate_variants, *stale)
 
@@ -256,9 +270,14 @@ class WardrobeService:
                 self.install_root,
                 match.ensemble.pack_id,
                 match.ensemble.ensemble_id,
+                official_pack_root=self.official_pack_root,
             )
         elif match.selection is not None:
-            apply_appearance_selection(self.install_root, match.selection)
+            apply_appearance_selection(
+                self.install_root,
+                match.selection,
+                official_pack_root=self.official_pack_root,
+            )
         else:
             raise OutfitPackError(
                 "The selected complete outfit requires at least one applicable slot; choose a supported outfit."
@@ -269,7 +288,11 @@ class WardrobeService:
 
     def makeup_options(self, language: str = "zh-TW") -> tuple[MakeupOption, ...]:
         """Bare face, available built-in variants, then every installed makeup variant."""
-        installed = list_installed_selections(self.install_root, "makeup")
+        installed = list_installed_selections(
+            self.install_root,
+            "makeup",
+            official_pack_root=self.official_pack_root,
+        )
         official = {
             selection.variant_id: selection
             for selection in installed
@@ -305,7 +328,11 @@ class WardrobeService:
 
     def active_makeup(self) -> MakeupState:
         """The effective makeup option; ``fallback`` marks a vanished pack replaced by the built-in default."""
-        resolution = resolve_active_selection(self.install_root, "makeup")
+        resolution = resolve_active_selection(
+            self.install_root,
+            "makeup",
+            official_pack_root=self.official_pack_root,
+        )
         effective = _makeup_option_id(
             resolution.effective_pack_id,
             resolution.effective_item_id,
@@ -363,12 +390,17 @@ class WardrobeService:
         return slots
 
     def _resolve_active_makeup_slots(self, silhouette: str) -> frozenset[str]:
-        resolution = resolve_active_selection(self.install_root, "makeup")
+        resolution = resolve_active_selection(
+            self.install_root,
+            "makeup",
+            official_pack_root=self.official_pack_root,
+        )
         if resolution.status != "installed":
             return MAKEUP_SLOTS
         archive_path = installed_pack_path(
             self.install_root,
             resolution.effective_pack_id,
+            official_pack_root=self.official_pack_root,
         )
         pack = inspect_installed_outfit_pack(archive_path)
         if pack is None:
@@ -412,7 +444,11 @@ class WardrobeService:
             clear_appearance_selection(self.install_root, "makeup")
             return
         if option_id.startswith(BUILTIN_MAKEUP_PREFIX):
-            select_builtin_makeup(self.install_root, option_id[len(BUILTIN_MAKEUP_PREFIX):])
+            select_builtin_makeup(
+                self.install_root,
+                option_id[len(BUILTIN_MAKEUP_PREFIX):],
+                official_pack_root=self.official_pack_root,
+            )
             return
         parts = option_id.split("/")
         if len(parts) != SELECTION_ID_PARTS:
@@ -420,14 +456,22 @@ class WardrobeService:
         match = next(
             (
                 selection
-                for selection in list_installed_selections(self.install_root, "makeup")
+                for selection in list_installed_selections(
+                    self.install_root,
+                    "makeup",
+                    official_pack_root=self.official_pack_root,
+                )
                 if _selection_id(selection) == option_id
             ),
             None,
         )
         if match is None:
             raise OutfitPackError("The selected makeup is not installed.")
-        apply_appearance_selection(self.install_root, match)
+        apply_appearance_selection(
+            self.install_root,
+            match,
+            official_pack_root=self.official_pack_root,
+        )
 
     def makeup_intensity(
         self,
@@ -439,7 +483,11 @@ class WardrobeService:
         """True when any slot resolves to an installed pack, so the preview includes the active pack."""
         try:
             return any(
-                resolve_active_selection(self.install_root, category).status == "installed"
+                resolve_active_selection(
+                    self.install_root,
+                    category,
+                    official_pack_root=self.official_pack_root,
+                ).status == "installed"
                 for category in SELECTION_CATEGORIES
             )
         except (IncompatibleBodyProfileError, OutfitPackError, OSError, ValueError):
@@ -492,7 +540,10 @@ class WardrobeService:
                 _ensemble_id(ensemble),
                 ensemble.autonomous_profile,
             )
-            for ensemble in list_installed_ensembles(self.install_root)
+            for ensemble in list_installed_ensembles(
+                self.install_root,
+                official_pack_root=self.official_pack_root,
+            )
         )
 
     @staticmethod

@@ -76,17 +76,21 @@ def test_overlay_applies_per_slot_multiplier_and_invalidates_cache(tmp_path: Pat
 def test_detail_sliders_persist_after_dashboard_reopen(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     global_percent = 60
     _app()
-    official_builtin_pack(tmp_path, monkeypatch)
+    official_pack_root = official_builtin_pack(tmp_path)
     profile = tmp_path / "profile"
     profile.mkdir()
-    db, dashboard = build_language_dashboard(profile, "zh-TW")
+    db, dashboard = build_language_dashboard(
+        profile, "zh-TW", official_pack_root=official_pack_root
+    )
     try:
         dashboard.wardrobe_makeup_intensity.setValue(global_percent)
         dashboard.wardrobe_makeup_details["lips"].setValue(25)
         dashboard.wardrobe_makeup_details["eyes"].setValue(75)
     finally:
         close_dashboard(dashboard, db)
-    db, dashboard = build_language_dashboard(profile, "zh-TW")
+    db, dashboard = build_language_dashboard(
+        profile, "zh-TW", official_pack_root=official_pack_root
+    )
     try:
         assert dashboard.wardrobe_makeup_intensity.value() == global_percent
         assert {k: v.value() for k, v in dashboard.wardrobe_makeup_details.items()} == {"eyes": 75, "cheeks": 100, "lips": 25}

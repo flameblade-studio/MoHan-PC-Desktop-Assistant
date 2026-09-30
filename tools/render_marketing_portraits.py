@@ -180,7 +180,11 @@ def render_all(
     with TemporaryDirectory(prefix="mohan-marketing-portraits-") as temporary:
         # A fresh store with empty active.json / makeup.json selections resolves
         # to the official pack and the built-in classic makeup at intensity 1.
-        overlay = ActiveOutfitOverlay(Path(temporary) / "store", ROOT)
+        overlay = ActiveOutfitOverlay(
+            Path(temporary) / "store",
+            ROOT,
+            official_pack_root=ROOT / "assets" / "official-packs",
+        )
         for expression, name in zip(expressions, names, strict=True):
             if Path(name).name != name or not name.endswith(".png"):
                 raise ValueError(f"output name must be a PNG filename: {name}")

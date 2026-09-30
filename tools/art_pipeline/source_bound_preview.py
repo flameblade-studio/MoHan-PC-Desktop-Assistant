@@ -42,32 +42,37 @@ def _render_frames(manifest: dict, output: Path) -> tuple[dict, dict]:
     from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
     from tools.art_pipeline.source_bound_pack_scope import resolve_runtime_members
     application = QApplication.instance() or QApplication([])
-    previous_pack_root = outfit_pack.OFFICIAL_PACK_ROOT
-    outfit_pack.OFFICIAL_PACK_ROOT = output / "assets/official-packs"
-    try:
-        store = output / "store"
-        outfit_pack.apply_ensemble(store, manifest["pack_id"], manifest["ensemble_id"])
-        if manifest.get("makeup"):
-            select_builtin_makeup(store, manifest["makeup"])
-            (store / "makeup.json").write_text(
-                json.dumps(_makeup_state_payload(manifest)) + "\n", encoding="utf-8",
-            )
-        overlay = ActiveOutfitOverlay(store, output)
-        loaded = load_layered_full_body_assets(output / "assets/pose-atlas/v5-base-layered")
-        renderer = LayeredFullBodyRenderer(
-            LayeredFullBodyManifest({manifest["view_id"]: loaded.view(manifest["view_id"])}),
-            overlay, authority_root=output / "assets/pose-atlas/v5-base",
+    official_pack_root = output / "assets/official-packs"
+    store = output / "store"
+    outfit_pack.apply_ensemble(
+        store,
+        manifest["pack_id"],
+        manifest["ensemble_id"],
+        official_pack_root=official_pack_root,
+    )
+    if manifest.get("makeup"):
+        select_builtin_makeup(
+            store, manifest["makeup"], official_pack_root=official_pack_root,
         )
-        frames = _save_frames(renderer, overlay, manifest["view_id"], output)
-        members = resolve_runtime_members(store, manifest, output)
-        if manifest.get("makeup_updates"):
-            from tools.art_pipeline.source_bound_makeup import resolve_runtime_makeup_members
+        (store / "makeup.json").write_text(
+            json.dumps(_makeup_state_payload(manifest)) + "\n", encoding="utf-8",
+        )
+    overlay = ActiveOutfitOverlay(
+        store, output, official_pack_root=official_pack_root,
+    )
+    loaded = load_layered_full_body_assets(output / "assets/pose-atlas/v5-base-layered")
+    renderer = LayeredFullBodyRenderer(
+        LayeredFullBodyManifest({manifest["view_id"]: loaded.view(manifest["view_id"])}),
+        overlay, authority_root=output / "assets/pose-atlas/v5-base",
+    )
+    frames = _save_frames(renderer, overlay, manifest["view_id"], output)
+    members = resolve_runtime_members(store, manifest, output)
+    if manifest.get("makeup_updates"):
+        from tools.art_pipeline.source_bound_makeup import resolve_runtime_makeup_members
 
-            members.update(resolve_runtime_makeup_members(store, manifest, output))
-        application.processEvents()
-        return frames, members
-    finally:
-        outfit_pack.OFFICIAL_PACK_ROOT = previous_pack_root
+        members.update(resolve_runtime_makeup_members(store, manifest, output))
+    application.processEvents()
+    return frames, members
 
 
 def _save_frames(renderer, overlay, view: str, output: Path) -> dict:
