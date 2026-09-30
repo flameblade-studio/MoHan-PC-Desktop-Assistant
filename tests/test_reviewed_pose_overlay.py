@@ -63,6 +63,10 @@ class _StrengthProbe(ReviewedPoseOverlayMixin):
     def _selected_variant(self, category: str, selection: object) -> None:
         self.selected_variant_calls.append((category, selection))
 
+    def _resolve_base_clear_selection(self, category: str) -> SimpleNamespace:
+        assert category == "makeup"
+        return self._selection
+
 
 @pytest.mark.parametrize(
     ("pack_id", "variant_id", "intensity", "expected_factor"),
@@ -91,7 +95,6 @@ def test_native_cosmetic_strengths_keep_bare_light_and_classic_levels(
         effective_variant_id=variant_id,
     )
     probe = _StrengthProbe(tmp_path, selection)
-    monkeypatch.setattr(overlay_module, "resolve_active_selection", lambda *_: selection)
     monkeypatch.setattr(overlay_module, "read_makeup_intensity", lambda *_: intensity)
     monkeypatch.setattr(
         overlay_module,

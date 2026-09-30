@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 lazy import zipfile
-lazy from collections.abc import Sequence
 lazy from pathlib import Path
-lazy from typing import Protocol
 
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QBitmap, QColor, QImage, QPainter, QPixmap, QRegion
@@ -46,47 +44,6 @@ _OPAQUE = 255
 _MAKEUP_Z_BASE = MIN_Z_ORDER * 3
 
 Layer = tuple[QPixmap, int, int, QRegion, float]
-LayerCacheKey = tuple[str, frozenset[str], str, str | None, str | None]
-
-
-class LayerCacheOwner(Protocol):
-    _layers_by_view: dict[str, Sequence[Layer]]
-    _layers_by_view_without_makeup_slots: dict[
-        LayerCacheKey, Sequence[Layer]
-    ]
-    _active_viseme: str | None
-
-
-def cached_layers(
-    owner: LayerCacheOwner,
-    view_id: str,
-    suppressed: frozenset[str],
-    eye_state: str,
-    viseme: str | None,
-    makeup_view_id: str | None,
-) -> Sequence[Layer] | None:
-    if not suppressed and eye_state == "rest" and viseme is None and makeup_view_id is None:
-        return owner._layers_by_view.get(view_id)
-    return owner._layers_by_view_without_makeup_slots.get(
-        (view_id, suppressed, eye_state, viseme, makeup_view_id)
-    )
-
-
-def store_cached_layers(
-    owner: LayerCacheOwner,
-    view_id: str,
-    suppressed: frozenset[str],
-    eye_state: str,
-    viseme: str | None,
-    makeup_view_id: str | None,
-    layers: Sequence[Layer],
-) -> None:
-    if not suppressed and eye_state == "rest" and viseme is None and makeup_view_id is None:
-        owner._layers_by_view[view_id] = layers
-        return
-    owner._layers_by_view_without_makeup_slots[
-        view_id, suppressed, eye_state, viseme, makeup_view_id
-    ] = layers
 
 
 class ActiveOutfitLayerMixin:

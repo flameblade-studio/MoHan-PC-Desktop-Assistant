@@ -43,7 +43,7 @@ def _state_pack():
 def test_installed_states_and_slider_cache(tmp_path, monkeypatch):
     _app()
     _authority(tmp_path)
-    monkeypatch.setattr("domain.outfit_pack.OFFICIAL_PACK_ROOT", tmp_path / "official")
+    official_pack_root = tmp_path / "official"
     manifest, assets = _state_pack()
     archive = _pack(tmp_path / "states.mohan-outfit", manifest, assets)
     regions = load_makeup_safe_regions(tmp_path / "assets/makeup-safe-regions.json")
@@ -52,9 +52,19 @@ def test_installed_states_and_slider_cache(tmp_path, monkeypatch):
     # Import uses the same authored calibration as the runtime root.
     monkeypatch.setattr("domain.outfit_pack_makeup.SAFE_REGION_PATH", tmp_path / "assets/makeup-safe-regions.json")
     install_outfit_pack(archive, store)
-    selection = next(item for item in list_installed_selections(store, "makeup") if item.pack_id == "festival-makeup")
-    apply_appearance_selection(store, selection)
-    overlay = ActiveOutfitOverlay(store, tmp_path)
+    selection = next(
+        item
+        for item in list_installed_selections(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+        if item.pack_id == "festival-makeup"
+    )
+    apply_appearance_selection(
+        store, selection, official_pack_root=official_pack_root
+    )
+    overlay = ActiveOutfitOverlay(
+        store, tmp_path, official_pack_root=official_pack_root
+    )
     assert overlay._active_layers(VIEW, (1254, 1254), suppress_makeup_slots=frozenset({"eyes"}), eye_state="half")
     for state in ("half", "closed", "half"):
         image = overlay.apply(_frame(), VIEW, suppress_makeup_slots={"eyes"}, eye_state=state).toImage()

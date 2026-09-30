@@ -25,7 +25,6 @@ lazy from PySide6.QtGui import QColor, QImage
 
 lazy from application.outfit_pack_builder import build_outfit_pack
 lazy from application.wardrobe_service import WardrobeService
-lazy from domain import outfit_pack
 lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_ITEM_ID,
     BUILTIN_MAKEUP_PACK_ID,
@@ -76,10 +75,10 @@ BUILTIN_SCAFFOLD_ARGS = (
 Block = tuple[int, int, int, int]
 
 
-@pytest.fixture(autouse=True)
-def _pending_official_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Start every test before the official packs ship; ``official_builtin_pack`` opts back in."""
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
+@pytest.fixture
+def official_pack_root(tmp_path: Path) -> Path:
+    """Provide an isolated official root without mutating domain module state."""
+    return tmp_path / "official"
 
 
 def canvas_for(silhouette: str) -> tuple[int, int]:
@@ -188,7 +187,7 @@ def makeup_pack(path: Path, **options) -> Path:
     return _pack(path, manifest, assets)
 
 
-def official_builtin_pack(root: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+def official_builtin_pack(root: Path) -> Path:
     """Stand in for the studio-authored built-in pack at the official (non-removable) root."""
     official = root / "official"
     makeup_pack(
@@ -197,7 +196,6 @@ def official_builtin_pack(root: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         item_id=BUILTIN_MAKEUP_ITEM_ID,
         variants=BUILTIN_VARIANTS,
     )
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", official)
     return official
 
 
@@ -205,7 +203,9 @@ def _identity(resolution) -> tuple[str, str, str]:
     return (resolution.effective_pack_id, resolution.effective_item_id, resolution.effective_variant_id)
 
 
-def test_makeup_pack_parses_two_variants_and_lists_them(tmp_path: Path) -> None:
+def test_makeup_pack_parses_two_variants_and_lists_them(
+    tmp_path: Path, official_pack_root: Path
+) -> None:
     assert "makeup" in SELECTION_CATEGORIES
     pack_path = makeup_pack(
         tmp_path / "festival-makeup.mohan-outfit",
@@ -223,11 +223,15 @@ def test_makeup_pack_parses_two_variants_and_lists_them(tmp_path: Path) -> None:
     assert {asset.slot for asset in variants["classic"].poses["front-crossed"]} == {"eyes", "cheeks", "lips"}
     store = tmp_path / "store"
     install_outfit_pack(pack_path, store)
-    installed = list_installed_selections(store, "makeup")
+    installed = list_installed_selections(
+        store, "makeup", official_pack_root=official_pack_root
+    )
     assert {(item.item_id, item.variant_id) for item in installed} == {("festival", "classic"), ("festival", "light")}
 
 
-def test_candidate_makeup_pack_accepts_glamorous_variant(tmp_path: Path) -> None:
+def test_candidate_makeup_pack_accepts_glamorous_variant(
+    tmp_path: Path, official_pack_root: Path
+) -> None:
     """A candidate archive may carry the fourth look without formal built-in art."""
     pack_path = makeup_pack(
         tmp_path / "four-look-candidate.mohan-outfit",
@@ -242,11 +246,13 @@ def test_candidate_makeup_pack_accepts_glamorous_variant(tmp_path: Path) -> None
     ]
 
     store = tmp_path / "store"
-    service = WardrobeService(store)
+    service = WardrobeService(store, official_pack_root=official_pack_root)
     service.install(pack_path)
     assert {
         (selection.item_id, selection.variant_id)
-        for selection in list_installed_selections(store, "makeup")
+        for selection in list_installed_selections(
+            store, "makeup", official_pack_root=official_pack_root
+        )
     } == {
         ("mohan-look", "classic"),
         ("mohan-look", "light"),
@@ -412,42 +418,76 @@ def test_safe_region_document_matches_the_rigs() -> None:
 
 
 def test_fresh_profile_defaults_to_builtin_classic_and_bare_is_selectable(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, official_pack_root: Path
 ) -> None:
     store = tmp_path / "store"
-    bare = resolve_active_selection(store, "makeup")
+    bare = resolve_active_selection(
+        store, "makeup", official_pack_root=official_pack_root
+    )
     assert bare.status == "builtin"  # official art absent: the default renders a bare face
-    official_builtin_pack(tmp_path, monkeypatch)
-    resolution = resolve_active_selection(store, "makeup")
+    official_builtin_pack(tmp_path)
+    resolution = resolve_active_selection(
+        store, "makeup", official_pack_root=official_pack_root
+    )
     assert resolution.status == "installed"
     assert _identity(resolution) == (BUILTIN_MAKEUP_PACK_ID, BUILTIN_MAKEUP_ITEM_ID, "classic")
     assert (resolution.requested_pack_id, resolution.requested_item_id) == ("builtin", "builtin")
-    select_builtin_makeup(store, "light")
-    assert _identity(resolve_active_selection(store, "makeup"))[2] == "light"
+    select_builtin_makeup(
+        store, "light", official_pack_root=official_pack_root
+    )
+    assert _identity(
+        resolve_active_selection(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+    )[2] == "light"
     with pytest.raises(OutfitPackError):
-        select_builtin_makeup(store, "glitter")
+        select_builtin_makeup(
+            store, "glitter", official_pack_root=official_pack_root
+        )
     clear_appearance_selection(store, "makeup")
-    cleared = resolve_active_selection(store, "makeup")
+    cleared = resolve_active_selection(
+        store, "makeup", official_pack_root=official_pack_root
+    )
     assert cleared.status == "builtin"
     assert _identity(cleared) == ("builtin", "none", "none")
     restore_builtin_outfit(store)
-    assert _identity(resolve_active_selection(store, "makeup"))[2] == "classic"
+    assert _identity(
+        resolve_active_selection(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+    )[2] == "classic"
     with pytest.raises(OutfitPackError):
         install_outfit_pack(tmp_path / "official" / f"{BUILTIN_MAKEUP_PACK_ID}.mohan-outfit", store)
 
 
-def test_removed_makeup_pack_falls_back_to_builtin_classic(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    official_builtin_pack(tmp_path, monkeypatch)
+def test_removed_makeup_pack_falls_back_to_builtin_classic(
+    tmp_path: Path, official_pack_root: Path
+) -> None:
+    official_builtin_pack(tmp_path)
     store = tmp_path / "store"
-    service = WardrobeService(store)
+    service = WardrobeService(store, official_pack_root=official_pack_root)
     service.install(makeup_pack(tmp_path / "festival-makeup.mohan-outfit"))
-    festival = next(item for item in list_installed_selections(store, "makeup") if item.pack_id == "festival-makeup")
-    apply_appearance_selection(store, festival)
-    assert _identity(resolve_active_selection(store, "makeup")) == ("festival-makeup", "festival", "classic")
+    festival = next(
+        item
+        for item in list_installed_selections(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+        if item.pack_id == "festival-makeup"
+    )
+    apply_appearance_selection(
+        store, festival, official_pack_root=official_pack_root
+    )
+    assert _identity(
+        resolve_active_selection(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+    ) == ("festival-makeup", "festival", "classic")
     with pytest.raises(OutfitPackError, match="switched"):
         remove_outfit_pack(store, "festival-makeup")
     (store / "packages" / "festival-makeup.mohan-outfit").unlink()
-    fallback = resolve_active_selection(store, "makeup")
+    fallback = resolve_active_selection(
+        store, "makeup", official_pack_root=official_pack_root
+    )
     assert _identity(fallback) == (BUILTIN_MAKEUP_PACK_ID, BUILTIN_MAKEUP_ITEM_ID, "classic")
     assert fallback.requested_pack_id == "festival-makeup"
     state = service.active_makeup()
@@ -472,9 +512,11 @@ def test_makeup_intensity_state_round_trips(tmp_path: Path) -> None:
     assert read_makeup_intensity(store) == 1.0
 
 
-def test_wardrobe_service_menu_lists_bare_builtin_and_installed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wardrobe_service_menu_lists_bare_builtin_and_installed(
+    tmp_path: Path, official_pack_root: Path
+) -> None:
     store = tmp_path / "store"
-    service = WardrobeService(store)
+    service = WardrobeService(store, official_pack_root=official_pack_root)
     pending = service.makeup_options("en")
     assert [option.option_id for option in pending] == [
         "none", "builtin/light", "builtin/classic",
@@ -483,7 +525,7 @@ def test_wardrobe_service_menu_lists_bare_builtin_and_installed(tmp_path: Path, 
     with pytest.raises(OutfitPackError):
         service.apply_makeup("builtin/glamorous")
     assert service.active_makeup().option_id == "builtin/classic"
-    official_builtin_pack(tmp_path, monkeypatch)
+    official_builtin_pack(tmp_path)
     service.install(makeup_pack(tmp_path / "festival-makeup.mohan-outfit"))
     options = service.makeup_options("en")
     assert [option.option_id for option in options] == [
@@ -496,7 +538,11 @@ def test_wardrobe_service_menu_lists_bare_builtin_and_installed(tmp_path: Path, 
     service.apply_makeup("festival-makeup/festival/classic")
     assert service.active_makeup().option_id == "festival-makeup/festival/classic"
     service.apply_makeup("builtin/light")
-    assert _identity(resolve_active_selection(store, "makeup"))[2] == "light"
+    assert _identity(
+        resolve_active_selection(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+    )[2] == "light"
     service.apply_makeup("none")
     assert service.active_makeup().option_id == "none"
     with pytest.raises(OutfitPackError):
@@ -506,18 +552,18 @@ def test_wardrobe_service_menu_lists_bare_builtin_and_installed(tmp_path: Path, 
 
 
 def test_official_glamorous_variant_adds_the_fourth_builtin_look(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, official_pack_root: Path
 ) -> None:
-    official = tmp_path / "official"
+    official = official_pack_root
     makeup_pack(
         official / f"{BUILTIN_MAKEUP_PACK_ID}.mohan-outfit",
         pack_id=BUILTIN_MAKEUP_PACK_ID,
         item_id=BUILTIN_MAKEUP_ITEM_ID,
         variants=("classic", "light", "glamorous"),
     )
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", official)
-
-    options = WardrobeService(tmp_path / "store").makeup_options("en")
+    options = WardrobeService(
+        tmp_path / "store", official_pack_root=official
+    ).makeup_options("en")
     assert [option.option_id for option in options] == [
         "none", "builtin/light", "builtin/classic", "builtin/glamorous",
     ]

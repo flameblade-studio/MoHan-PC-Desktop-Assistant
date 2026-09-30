@@ -296,7 +296,7 @@ def test_light_selection_preserves_slot_ratios_and_can_be_removed(
     selection = SimpleNamespace(
         effective_pack_id=module.BUILTIN_MAKEUP_PACK_ID, effective_variant_id="light",
     )
-    monkeypatch.setattr(module, "resolve_active_selection", lambda _store, category: (
+    monkeypatch.setattr(module, "resolve_active_selection", lambda _store, category, **_kwargs: (
         selection if category == "makeup" else SimpleNamespace(effective_pack_id="builtin")
     ))
     monkeypatch.setattr(module, "read_makeup_intensity", lambda _store: FULL_INTENSITY)

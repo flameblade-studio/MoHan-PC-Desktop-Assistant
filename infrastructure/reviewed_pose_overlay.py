@@ -7,7 +7,6 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap
 
-lazy from domain.outfit_pack import resolve_active_selection
 lazy from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
 lazy from domain import outfit_pack_official
 lazy from infrastructure.reviewed_garment_assets import (
@@ -111,7 +110,7 @@ class ReviewedPoseOverlayMixin:
         self, *, slots: frozenset[str] = COSMETIC_SLOTS,
         variant: str | None = None,
     ) -> dict[str, float] | None:
-        selected = resolve_active_selection(self._store, "makeup")
+        selected = self._resolve_base_clear_selection("makeup")
         if selected.effective_pack_id == "builtin":
             return dict.fromkeys(slots, 0.0)
         if selected.effective_pack_id != BUILTIN_MAKEUP_PACK_ID:
@@ -136,7 +135,7 @@ class ReviewedPoseOverlayMixin:
         """Resolve the selected v3 material, or keep legacy assets unchanged."""
         if getattr(assets, "variants", None) is None:
             return None
-        selected = resolve_active_selection(self._store, "makeup")
+        selected = self._resolve_base_clear_selection("makeup")
         if selected.effective_pack_id == "builtin":
             return None
         if selected.effective_pack_id != BUILTIN_MAKEUP_PACK_ID:

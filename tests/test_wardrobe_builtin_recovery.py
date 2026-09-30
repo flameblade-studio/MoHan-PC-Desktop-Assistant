@@ -21,10 +21,12 @@ lazy from test_global_settings_actions import build_dashboard, close_dashboard
 lazy from test_outfit_pack import _manifest, _pack, _png, pending_official_root
 
 
-def _install_valid_pack(root: Path, store: Path) -> WardrobeService:
+def _install_valid_pack(
+    root: Path, store: Path, official_pack_root: Path
+) -> WardrobeService:
     manifest, assets = _manifest(_png())
     archive = _pack(root / "modern.mohan-outfit", manifest, assets)
-    service = WardrobeService(store)
+    service = WardrobeService(store, official_pack_root=official_pack_root)
     service.install(archive)
     return service
 
@@ -46,9 +48,9 @@ def _assert_builtin_state(store: Path) -> None:
 
 
 def test_builtin_recovery_returns_fallback_after_corrupt_archive(tmp_path: Path) -> None:
-    with pending_official_root(tmp_path):
+    with pending_official_root(tmp_path) as official_pack_root:
         store = tmp_path / "store"
-        service = _install_valid_pack(tmp_path, store)
+        service = _install_valid_pack(tmp_path, store, official_pack_root)
         selected = next(item for item in service.outfits() if not item.built_in)
         assert service.apply(selected.outfit_id).outfit_id == selected.outfit_id
         corrupt, contents = _write_corrupt_archive(store)
@@ -69,11 +71,11 @@ def test_dashboard_builtin_recovery_syncs_db_and_reports_read_error(
     tmp_path: Path,
 ) -> None:
     QApplication.instance() or QApplication([])
-    with pending_official_root(tmp_path):
+    with pending_official_root(tmp_path) as official_pack_root:
         db, dashboard = build_dashboard(tmp_path)
         try:
             store = tmp_path / "outfits"
-            service = _install_valid_pack(tmp_path, store)
+            service = _install_valid_pack(tmp_path, store, official_pack_root)
             dashboard.wardrobe_service = service
             selected = next(item for item in service.outfits() if not item.built_in)
             service.apply(selected.outfit_id)

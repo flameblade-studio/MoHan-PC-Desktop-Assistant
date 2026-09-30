@@ -126,7 +126,9 @@ def _half_body_motions() -> tuple[FaceMotionFrame, FaceMotionFrame]:
 def _new_overlay(store: Path) -> ActiveOutfitOverlay:
     """Use a fresh overlay to give each cold sample an independent runtime state."""
 
-    return ActiveOutfitOverlay(store, ROOT)
+    return ActiveOutfitOverlay(
+        store, ROOT, official_pack_root=ROOT / "assets" / "official-packs"
+    )
 
 
 def _require_frame(frame) -> object:

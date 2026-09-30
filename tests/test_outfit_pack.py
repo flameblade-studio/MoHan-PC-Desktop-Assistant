@@ -15,7 +15,6 @@ lazy from tempfile import TemporaryDirectory
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from application.outfit_pack_builder import build_outfit_pack
-lazy from domain import outfit_pack
 lazy from domain.outfit_pack import (
     EXPRESSION_SILHOUETTE_ALIASES,
     GESTURE_SILHOUETTES,
@@ -41,13 +40,8 @@ EXPECTED_INSTALLED_SELECTIONS = 7
 
 @contextmanager
 def pending_official_root(root: Path):
-    """Point OFFICIAL_PACK_ROOT at an empty directory: these contracts describe one store on its own."""
-    previous = outfit_pack.OFFICIAL_PACK_ROOT
-    outfit_pack.OFFICIAL_PACK_ROOT = root / "official"
-    try:
-        yield
-    finally:
-        outfit_pack.OFFICIAL_PACK_ROOT = previous
+    """Yield an empty official root for contracts that describe one store on its own."""
+    yield root / "official"
 
 
 def _png() -> bytes:
@@ -305,18 +299,31 @@ def _assert_pack_contract(valid: Path) -> None:
     assert exact.exact_pose_atlas_match
 
 
-def _prepare_store(root: Path, valid: Path) -> Path:
+def _prepare_store(root: Path, valid: Path, official_pack_root: Path) -> Path:
     store = root / "store"
     install_outfit_pack(valid, store)
     assert not (store / "active.json").exists()
-    assert len(list_installed_selections(store)) == EXPECTED_INSTALLED_SELECTIONS
-    assert len(list_installed_selections(store, "hairstyle")) == 1
-    assert len(list_installed_ensembles(store)) == 1
+    assert len(
+        list_installed_selections(store, official_pack_root=official_pack_root)
+    ) == EXPECTED_INSTALLED_SELECTIONS
+    assert len(
+        list_installed_selections(
+            store, "hairstyle", official_pack_root=official_pack_root
+        )
+    ) == 1
+    assert len(
+        list_installed_ensembles(store, official_pack_root=official_pack_root)
+    ) == 1
     return store
 
 
-def _assert_ensemble_contract(store: Path) -> None:
-    apply_ensemble(store, "modern-collection", "city-day")
+def _assert_ensemble_contract(store: Path, official_pack_root: Path) -> None:
+    apply_ensemble(
+        store,
+        "modern-collection",
+        "city-day",
+        official_pack_root=official_pack_root,
+    )
     active = json.loads((store / "active.json").read_text(encoding="utf-8"))
     assert active["headwear"]["item_id"] == "none"
     assert active["weapon"]["item_id"] == "short-sword"
@@ -337,8 +344,12 @@ def _assert_ensemble_contract(store: Path) -> None:
         "modern-collection",
         "an active ensemble must block removal",
     )
-    headwear = list_installed_selections(store, "headwear")[0]
-    apply_appearance_selection(store, headwear)
+    headwear = list_installed_selections(
+        store, "headwear", official_pack_root=official_pack_root
+    )[0]
+    apply_appearance_selection(
+        store, headwear, official_pack_root=official_pack_root
+    )
     saved = json.loads((store / "active.json").read_text(encoding="utf-8"))
     assert saved["headwear"]["item_id"] == "silver-pin"
     assert "_ensemble" not in saved
@@ -399,12 +410,16 @@ def _assert_removal_guards(
     mismatch.unlink()
 
 
-def _assert_removal_fails_closed(store: Path, valid: Path) -> None:
+def _assert_removal_fails_closed(
+    store: Path, valid: Path, official_pack_root: Path
+) -> None:
     removed = remove_outfit_pack(store, "modern-collection")
     assert removed.pack_id == "modern-collection"
     assert all(
         pack.pack_id != "modern-collection"
-        for pack in list_installed_outfits(store)
+        for pack in list_installed_outfits(
+            store, official_pack_root=official_pack_root
+        )
     )
     missing_state = {
         "garment": {
@@ -415,7 +430,9 @@ def _assert_removal_fails_closed(store: Path, valid: Path) -> None:
     }
     (store / "active.json").write_text(json.dumps(missing_state), encoding="utf-8")
     try:
-        resolve_active_selection(store, "garment")
+        resolve_active_selection(
+            store, "garment", official_pack_root=official_pack_root
+        )
     except OutfitPackError:
         pass
     else:
@@ -560,15 +577,15 @@ def _assert_invalid_update_is_atomic(
 def run() -> None:
     with TemporaryDirectory() as temporary:
         root, data = Path(temporary), _png()
-        with pending_official_root(root):
+        with pending_official_root(root) as official_pack_root:
             manifest, assets = _manifest(data)
             _assert_authoring_builder(root, manifest, assets)
             valid = _pack(root / "valid.mohan-appearance", manifest, assets)
             _assert_pack_contract(valid)
-            store = _prepare_store(root, valid)
-            _assert_ensemble_contract(store)
+            store = _prepare_store(root, valid, official_pack_root)
+            _assert_ensemble_contract(store, official_pack_root)
             _assert_removal_guards(root, store, manifest, assets)
-            _assert_removal_fails_closed(store, valid)
+            _assert_removal_fails_closed(store, valid, official_pack_root)
             _assert_single_category_packs(root, manifest, assets)
             _assert_pose_rejections(root, manifest, assets)
             _assert_visual_contract_rejections(root, manifest, assets)

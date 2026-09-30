@@ -20,7 +20,7 @@ lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice
 lazy from PySide6.QtGui import QColor, QImage, QPixmap
 
 lazy from application.outfit_pack_builder import build_outfit_pack
-lazy from domain import outfit_pack, outfit_pack_makeup
+lazy from domain import outfit_pack_makeup
 lazy from domain.outfit_pack import (
     apply_appearance_selection,
     install_outfit_pack,
@@ -175,7 +175,7 @@ def test_installed_outfit_blink_roundtrip_preserves_garment_and_coordinates(
     """Install one pack and preserve its garment while eye states swap and reopen."""
     _app()
     _authority(tmp_path)
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
+    official_pack_root = tmp_path / "official"
     monkeypatch.setattr(outfit_pack_makeup, "SAFE_REGION_PATH", tmp_path / "assets" / "makeup-safe-regions.json")
 
     manifest, assets = _roundtrip_authoring()
@@ -188,11 +188,25 @@ def test_installed_outfit_blink_roundtrip_preserves_garment_and_coordinates(
     archive_digest = hashlib.sha256(archive.read_bytes()).hexdigest()
     assert hashlib.sha256(installed_archive.read_bytes()).hexdigest() == archive_digest
 
-    garment_selection = next(item for item in list_installed_selections(store, "garment"))
-    makeup_selection = next(item for item in list_installed_selections(store, "makeup"))
+    garment_selection = next(
+        item
+        for item in list_installed_selections(
+            store, "garment", official_pack_root=official_pack_root
+        )
+    )
+    makeup_selection = next(
+        item
+        for item in list_installed_selections(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+    )
     assert garment_selection.pack_id == makeup_selection.pack_id == installed.pack_id
-    apply_appearance_selection(store, garment_selection)
-    apply_appearance_selection(store, makeup_selection)
+    apply_appearance_selection(
+        store, garment_selection, official_pack_root=official_pack_root
+    )
+    apply_appearance_selection(
+        store, makeup_selection, official_pack_root=official_pack_root
+    )
 
     parsed = inspect_outfit_pack(archive)
     garment_item = next(item for item in parsed.items if item.category == "garment")
@@ -208,7 +222,9 @@ def test_installed_outfit_blink_roundtrip_preserves_garment_and_coordinates(
         assert state_asset.slot == "eyes"
         assert (state_asset.width, state_asset.height, state_asset.anchor_x, state_asset.anchor_y) == (*CANVAS, 0, 0)
 
-    overlay = ActiveOutfitOverlay(store, tmp_path)
+    overlay = ActiveOutfitOverlay(
+        store, tmp_path, official_pack_root=official_pack_root
+    )
     rendered = {
         "rest": overlay.apply(_frame(), VIEW).toImage(),
         "half": overlay.apply(_frame(), VIEW, suppress_makeup_slots={"eyes"}, eye_state="half").toImage(),

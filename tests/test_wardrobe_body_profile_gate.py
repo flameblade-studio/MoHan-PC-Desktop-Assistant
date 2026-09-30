@@ -55,12 +55,6 @@ NOTICE_KEY = "wardrobe_body_profile_outdated"
 NOTICE_ZH_TW = '這套服裝需要二代素體素材；請用一鍵製衣重新生成'
 
 
-@pytest.fixture(autouse=True)
-def _pending_official_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """These contracts describe a store on its own; the shipped official packs are covered elsewhere."""
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
-
-
 def _generation_one_pack(root: Path) -> Path:
     manifest, assets = _manifest(_png())
     stale = copy.deepcopy(manifest)
@@ -122,12 +116,22 @@ def test_previously_installed_generation_one_pack_is_listed_incompatible_and_nev
     with TemporaryDirectory(ignore_cleanup_errors=True) as temporary:
         root = Path(temporary)
         store = root / "store"
+        official_pack_root = root / "official"
         install_outfit_pack(_current_pack(root), store)
         packages = store / "packages"
         shutil.copyfile(_generation_one_pack(root), packages / "stale-v1.mohan-outfit")
-        assert [pack.pack_id for pack in list_installed_outfits(store)] == ["modern-collection"]
-        assert list_stale_body_profile_packs(store) == ("stale-v1",)
-        service = WardrobeService(store)
+        assert [
+            pack.pack_id
+            for pack in list_installed_outfits(
+                store, official_pack_root=official_pack_root
+            )
+        ] == ["modern-collection"]
+        assert list_stale_body_profile_packs(
+            store, official_pack_root=official_pack_root
+        ) == ("stale-v1",)
+        service = WardrobeService(
+            store, official_pack_root=official_pack_root
+        )
         by_id = {outfit.outfit_id: outfit for outfit in service.outfits()}
         assert by_id["stale-v1"].compatible is False
         assert all(outfit.compatible for key, outfit in by_id.items() if key != "stale-v1")
@@ -139,12 +143,20 @@ def test_previously_installed_generation_one_pack_is_listed_incompatible_and_nev
             encoding="utf-8",
         )
         with pytest.raises(IncompatibleBodyProfileError):
-            resolve_active_selection(store, "garment")
-        assert resolve_active_selection(store, "hairstyle").status == "builtin"
+            resolve_active_selection(
+                store, "garment", official_pack_root=official_pack_root
+            )
+        assert resolve_active_selection(
+            store, "hairstyle", official_pack_root=official_pack_root
+        ).status == "builtin"
         service.apply(BUILTIN_OUTFIT_ID)
-        assert resolve_active_selection(store, "garment").status == "builtin"
+        assert resolve_active_selection(
+            store, "garment", official_pack_root=official_pack_root
+        ).status == "builtin"
         assert remove_outfit_pack(store, "stale-v1").pack_id == "stale-v1"
-        assert list_stale_body_profile_packs(store) == ()
+        assert list_stale_body_profile_packs(
+            store, official_pack_root=official_pack_root
+        ) == ()
 
 
 def test_runtime_notice_uses_the_localized_key() -> None:
@@ -166,10 +178,13 @@ def test_dashboard_import_and_apply_show_the_body_profile_notice() -> None:
     QApplication.instance() or QApplication([])
     with TemporaryDirectory(ignore_cleanup_errors=True) as temporary:
         root = Path(temporary)
+        official_pack_root = root / "official"
         db, dashboard = build_dashboard(root)
         try:
             store = root / "outfits"
-            dashboard.wardrobe_service = WardrobeService(store)
+            dashboard.wardrobe_service = WardrobeService(
+                store, official_pack_root=official_pack_root
+            )
             stale = _generation_one_pack(root)
             with patch.object(QFileDialog, "getOpenFileName", return_value=(str(stale), "")):
                 dashboard._import_outfit_package()
