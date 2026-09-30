@@ -42,7 +42,7 @@ def _cached_guard(
             x0, x1 = round(left * width / NATIVE_SIZE), round(right * width / NATIVE_SIZE)
             y0, y1 = round(top * height / NATIVE_SIZE), round(bottom * height / NATIVE_SIZE)
             sample = dark[y0 - crop_top:y1 - crop_top, x0 - crop_left:x1 - crop_left].astype(np.uint8)
-            count, labels, stats, _ = cv2.connectedComponentsWithStats(sample, 8)
+            count, labels, stats, _ = cv2.connectedComponentsWithStats(sample, connectivity=8)
             if count > 1:
                 largest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
                 guard[y0:y1, x0:x1][labels == largest] = 255

@@ -6,11 +6,13 @@
     "application/flagship_workflows.py": 1,
     "application/multimodal_fusion_hub.py": 1,
     "application/multisensory_interaction.py": 1,
+    "application/packaged_self_test.py": 1,
     "application/service_container.py": 8,
     "application/vision_controller.py": 2,
     "domain/outfit_pack_makeup.py": 2,
     "domain/pose_atlas_manifest_builder.py": 1,
     "domain/pose_runtime_loader.py": 1,
+    "domain/text_normalizer.py": 1,
     "infrastructure/appearance_layer_stack.py": 1,
     "infrastructure/full_body_blink_binding.py": 1,
     "infrastructure/profile_transfer.py": 1,
@@ -26,5 +28,5 @@
     "presentation/profile_transfer_ui.py": 3,
     "presentation/updater_ui.py": 1
   },
-  "total_warnings": 50
+  "total_warnings": 52
 }
