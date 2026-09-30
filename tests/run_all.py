@@ -13,6 +13,7 @@ lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
 TESTS_DIR = Path(__file__).resolve().parent
+ISOLATED_TEST_CHILD = "MOHAN_ISOLATED_TEST_CHILD"
 SENSITIVE_ENVIRONMENT_VARIABLES = (
     "OPENAI_API_KEY",
     "WORDPRESS_APP_PASSWORD",
@@ -837,6 +838,10 @@ def _isolated_environment(test_root: Path) -> dict[str, str]:
     environment["PYTHONPATH"] = os.pathsep.join(import_roots)
     environment.pop("PYTEST_ADDOPTS", None)
     environment.update(dict.fromkeys(SENSITIVE_ENVIRONMENT_VARIABLES, ""))
+    # run_all already owns process and filesystem isolation.  Tell the pytest
+    # collection bridge to use native collection inside this child instead of
+    # adding a redundant isolated subprocess and another temporary-path layer.
+    environment[ISOLATED_TEST_CHILD] = "1"
     return environment
 
 

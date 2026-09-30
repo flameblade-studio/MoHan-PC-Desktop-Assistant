@@ -413,7 +413,7 @@ def _run_mode(mode: str) -> dict[str, object]:
     return json.loads(completed.stdout.strip().splitlines()[-1])
 
 
-def main() -> None:
+def run() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--worker", action="store_true")
     parser.add_argument("--expected-jit", choices=("0", "1"))
@@ -450,4 +450,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run()

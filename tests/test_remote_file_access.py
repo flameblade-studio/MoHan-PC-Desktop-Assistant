@@ -134,7 +134,7 @@ def _assert_remote_file_policy(base: Path) -> None:
         db.close()
 
 
-def main() -> None:
+def run() -> None:
     with TemporaryDirectory(dir=Path.cwd()) as tmp:
         _assert_remote_file_policy(Path(tmp))
 
@@ -142,4 +142,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run()
