@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+lazy import numpy as np
 lazy from PIL import Image, ImageChops
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QImage, QPixmap, QPixmapCache
@@ -132,14 +133,37 @@ def matrix_cells() -> tuple[GoldenCell, ...]:
 
 
 def _rgba_bytes(image: QImage) -> bytes:
-    rgba = image.convertToFormat(QImage.Format_RGBA8888)
-    raw = bytes(rgba.constBits())
-    stride = rgba.bytesPerLine()
-    width_bytes = rgba.width() * 4
-    return b"".join(
-        raw[row * stride : row * stride + width_bytes]
-        for row in range(rgba.height())
-    )
+    """Return straight RGBA8888 bytes with an exact, CPU-independent conversion.
+
+    Qt's SIMD unpremultiply uses the approximate reciprocal instruction, whose
+    result differs between Intel and AMD processors, so the golden contract
+    never asks Qt to leave premultiplied alpha.  Rounding is exact integer
+    arithmetic: channel = round(premultiplied * 255 / alpha).
+    """
+    source_format = image.format()
+    if source_format not in {
+        QImage.Format_ARGB32,
+        QImage.Format_ARGB32_Premultiplied,
+        QImage.Format_RGB32,
+    }:
+        image = image.convertToFormat(QImage.Format_ARGB32_Premultiplied)
+        source_format = QImage.Format_ARGB32_Premultiplied
+    width, height = image.width(), image.height()
+    rows = np.frombuffer(bytes(image.constBits()), dtype=np.uint8)
+    bgra = rows.reshape(height, image.bytesPerLine())[:, : width * 4].reshape(height, width, 4)
+    alpha = bgra[:, :, 3].astype(np.uint32)
+    color = bgra[:, :, 2::-1].astype(np.uint32)
+    if source_format == QImage.Format_RGB32:
+        alpha = np.full_like(alpha, 255)
+    elif source_format == QImage.Format_ARGB32_Premultiplied:
+        safe_alpha = np.maximum(alpha, 1)[:, :, None]
+        color = np.where(
+            alpha[:, :, None] > 0,
+            (color * 255 + safe_alpha // 2) // safe_alpha,
+            0,
+        )
+    rgba = np.dstack((np.minimum(color, 255), alpha)).astype(np.uint8)
+    return rgba.tobytes()
 
 
 def pixel_sha256(image: QImage) -> str:
@@ -148,14 +172,12 @@ def pixel_sha256(image: QImage) -> str:
 
 
 def _save_pixmap(pixmap: QPixmap, path: Path) -> dict[str, object]:
-    image = pixmap.toImage().convertToFormat(QImage.Format_RGBA8888)
+    image = pixmap.toImage()
     path.parent.mkdir(parents=True, exist_ok=True)
-    if not image.save(str(path), "PNG"):
-        raise RuntimeError(f"無法寫入 golden PNG：{path}")
-    # Reload the persisted PNG before hashing.  Qt may retain irrelevant RGB
-    # values beneath alpha=0 in its paint buffer; PNG encoders are allowed to
-    # normalize those bytes.  The golden contract follows decoded RGBA pixels.
-    decoded = QImage(str(path)).convertToFormat(QImage.Format_RGBA8888)
+    Image.frombytes("RGBA", (image.width(), image.height()), _rgba_bytes(image)).save(path, "PNG")
+    # Reload the persisted PNG before hashing so the manifest describes the
+    # decoded RGBA pixels a reviewer sees, not an in-memory paint buffer.
+    decoded = QImage(str(path))
     return {
         "width": decoded.width(),
         "height": decoded.height(),
