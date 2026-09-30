@@ -23,6 +23,12 @@ MEMORY_AGE_DAYS = 90
 RETENTION_DAYS = 90
 
 
+def _stored_integer(value: object) -> int:
+    if isinstance(value, int | float | str | bytes | bytearray):
+        return int(value)
+    raise TypeError("Stored memory integer requires a scalar value.")
+
+
 class StudioDBMemoryMethods:
     def add_memory(
         self,
@@ -248,7 +254,7 @@ class StudioDBMemoryMethods:
                 "title": str(snapshot.get("title") or "未命名記憶"),
                 "content": str(snapshot.get("content") or ""),
                 "source": str(snapshot.get("source") or "conversation"),
-                "importance": int(snapshot.get("importance") or 1),
+                "importance": _stored_integer(snapshot.get("importance") or 1),
             })
         return archived
 

@@ -70,7 +70,7 @@ class PoseAtlasAssets:
 
     @property
     def view_ids(self) -> tuple[str, ...]:
-        return tuple(str(item["view_id"]) for item in self._metadata["views"])
+        return tuple(str(item["view_id"]) for item in self._metadata_views())
 
     def resolve_static(
         self,
@@ -214,7 +214,7 @@ class PoseAtlasAssets:
 
     def _verify_declared_view_digests(self) -> None:
         """Bind declared provenance to the current PNGs before creating a renderer."""
-        for view in self._metadata["views"]:
+        for view in self._metadata_views():
             if "normalized_sha256" not in view:
                 # Older metadata with its established contract retains that contract.
                 continue
@@ -233,6 +233,17 @@ class PoseAtlasAssets:
                 raise ValueError(f"Cannot read PoseAtlas source for {view_id}.") from error
             if actual != expected.lower():
                 raise ValueError(f"PoseAtlas source hash mismatch for {view_id}.")
+
+    def _metadata_views(self) -> list[dict[str, object]]:
+        raw_views = self._metadata.get("views")
+        if not isinstance(raw_views, list):
+            raise ValueError("PoseAtlas metadata requires view records.")
+        views: list[dict[str, object]] = []
+        for view in raw_views:
+            if not isinstance(view, dict):
+                raise ValueError("PoseAtlas metadata requires object view records.")
+            views.append(view)
+        return views
 
     def _load_metadata(self) -> dict[str, object]:
         path = self._root / "BUILD-METADATA.json"

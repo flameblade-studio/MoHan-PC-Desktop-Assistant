@@ -270,7 +270,7 @@ def rate_convert_pcm16(
     )
     samples = _decode_pcm16(data)
     if input_rate == output_rate:
-        return data, None
+        return bytes(data), None
     if not samples:
         return b"", state
 

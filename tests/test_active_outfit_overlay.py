@@ -782,3 +782,25 @@ def test_stale_active_pack_restores_builtin_and_notifies_once(
     assert notices == ["body-profile-outdated"]
     active = json.loads((tmp_path / "store" / "active.json").read_text(encoding="utf-8"))
     assert {value["pack_id"] for value in active.values()} == {"builtin"}
+
+
+@pytest.mark.parametrize("viseme", [None, "A"])
+def test_empty_combined_cache_does_not_reuse_phase_layers(
+    tmp_path: Path, viseme: str | None,
+) -> None:
+    app = _app()
+    overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path, visible_hand_region=None)
+    view = "yaw+000-pitch+00"
+    overlay._active_viseme = viseme
+    layer = (QPixmap(), 0, 0, QRegion(), 1.0)
+    phase_key = (view, "appearance", frozenset(), "rest", viseme, None)
+    overlay._phase_layers_by_view[phase_key] = (layer,)
+    assert overlay.layer_count(view) == 1
+    if viseme is None:
+        overlay._layers_by_view[view] = ()
+    else:
+        overlay._layers_by_view_without_makeup_slots[
+            view, frozenset(), "rest", viseme, None
+        ] = ()
+    assert overlay.layer_count(view) == 0
+    assert app is not None

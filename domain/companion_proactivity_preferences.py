@@ -44,7 +44,7 @@ SETTING_KEYS: Final = (
     DAILY_LIMIT_KEY,
 )
 
-_BOOLEAN_FIELDS: Final = (
+_BOOLEAN_FIELDS: Final = frozenset({
     "enabled",
     "meal_enabled",
     "hydration_enabled",
@@ -55,7 +55,8 @@ _BOOLEAN_FIELDS: Final = (
     "focus_protection_enabled",
     "meeting_protection_enabled",
     "fullscreen_protection_enabled",
-)
+})
+
 _FIELD_SETTING_KEYS: Final = {
     "enabled": MASTER_ENABLED_KEY,
     "meal_enabled": MEAL_ENABLED_KEY,
@@ -154,16 +155,53 @@ def preferences_from_mapping(
     defaults = CompanionProactivityPreferences()
     if not isinstance(raw, Mapping):
         return defaults
-    values = {
-        field.name: _safe_field_value(
-            field.name,
-            raw.get(field.name, getattr(defaults, field.name)),
-            defaults,
-        )
-        for field in fields(defaults)
-    }
     try:
-        return CompanionProactivityPreferences(**values)
+        return CompanionProactivityPreferences(
+            enabled=_safe_bool(raw.get("enabled"), defaults.enabled),
+            meal_enabled=_safe_bool(raw.get("meal_enabled"), defaults.meal_enabled),
+            hydration_enabled=_safe_bool(
+                raw.get("hydration_enabled"), defaults.hydration_enabled
+            ),
+            rest_enabled=_safe_bool(raw.get("rest_enabled"), defaults.rest_enabled),
+            prolonged_sitting_enabled=_safe_bool(
+                raw.get("prolonged_sitting_enabled"),
+                defaults.prolonged_sitting_enabled,
+            ),
+            special_occasions_enabled=_safe_bool(
+                raw.get("special_occasions_enabled"),
+                defaults.special_occasions_enabled,
+            ),
+            birthday_enabled=_safe_bool(
+                raw.get("birthday_enabled"), defaults.birthday_enabled
+            ),
+            brief_absence_seconds=_safe_bounded_int(
+                raw.get("brief_absence_seconds"),
+                defaults.brief_absence_seconds,
+                MIN_BRIEF_ABSENCE_SECONDS,
+                MAX_BRIEF_ABSENCE_SECONDS,
+            ),
+            long_wait_seconds=_safe_bounded_int(
+                raw.get("long_wait_seconds"),
+                defaults.long_wait_seconds,
+                MIN_LONG_WAIT_SECONDS,
+                MAX_LONG_WAIT_SECONDS,
+            ),
+            focus_protection_enabled=_safe_bool(
+                raw.get("focus_protection_enabled"),
+                defaults.focus_protection_enabled,
+            ),
+            meeting_protection_enabled=_safe_bool(
+                raw.get("meeting_protection_enabled"),
+                defaults.meeting_protection_enabled,
+            ),
+            fullscreen_protection_enabled=_safe_bool(
+                raw.get("fullscreen_protection_enabled"),
+                defaults.fullscreen_protection_enabled,
+            ),
+            daily_limit=_safe_bounded_int(
+                raw.get("daily_limit"), defaults.daily_limit, 1, MAX_DAILY_LIMIT
+            ),
+        )
     except (TypeError, ValueError):
         return defaults
 
@@ -190,22 +228,9 @@ def _field_values(
     }
 
 
-def _safe_field_value(
-    name: str,
-    value: object,
-    defaults: CompanionProactivityPreferences,
-) -> bool | int:
-    default = getattr(defaults, name)
-    if name in _BOOLEAN_FIELDS:
-        return value if type(value) is bool else default
-    if name == "brief_absence_seconds":
-        return value if type(value) is int and MIN_BRIEF_ABSENCE_SECONDS <= value <= MAX_BRIEF_ABSENCE_SECONDS else default
-    if name == "long_wait_seconds":
-        return (
-            value
-            if type(value) is int and MIN_LONG_WAIT_SECONDS <= value <= MAX_LONG_WAIT_SECONDS
-            else default
-        )
-    if name == "daily_limit":
-        return value if type(value) is int and 1 <= value <= MAX_DAILY_LIMIT else default
-    raise AssertionError("Use a recognized companion proactivity preference field.")
+def _safe_bool(value: object, default: bool) -> bool:
+    return value if type(value) is bool else default
+
+
+def _safe_bounded_int(value: object, default: int, minimum: int, maximum: int) -> int:
+    return value if type(value) is int and minimum <= value <= maximum else default

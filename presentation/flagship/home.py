@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import json
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import QObject, QRunnable, Signal
 lazy from PySide6.QtWidgets import (
@@ -131,7 +132,7 @@ class FlagshipHomeMixin:
         token = self.ha_token.text().strip()
         if self.ha_enabled.isChecked() and not url:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 "Home Assistant",
                 self._t("請先填入連線位址。"),
             )
@@ -145,7 +146,7 @@ class FlagshipHomeMixin:
                     self._t("請檢查設定後安全保存權杖：{error}", error=safe_message)
                 )
                 QMessageBox.warning(
-                    self,
+                    require_qwidget(self),
                     "Home Assistant",
                     self._t("請檢查設定後安全保存權杖：{error}", error=safe_message),
                 )
@@ -241,7 +242,9 @@ class FlagshipHomeMixin:
                 self._t("連線正常" if bool(result) else "API 回應不正確")
             )
             return
-        self._render_home_entities(list(result))
+        if not isinstance(result, list):
+            raise TypeError("Home entity probe must return a list.")
+        self._render_home_entities(result)
 
     def _home_probe_failed(self, operation: str, message: str) -> None:
         if self._closed:

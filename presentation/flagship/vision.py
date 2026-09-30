@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import time
 lazy from dataclasses import replace
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import (
@@ -315,7 +316,7 @@ class FlagshipVisionMixin:
         if not decision.allowed:
             self.camera_enabled.setChecked(False)
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t("攝影機權限"),
                 self._t(
                     "安全政策已阻擋：{reason}",
@@ -325,7 +326,7 @@ class FlagshipVisionMixin:
             return
         if (
             QMessageBox.question(
-                self,
+                require_qwidget(self),
                 self._t("啟用攝影機"),
                 self._t(
                     '墨寒會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？'
@@ -484,7 +485,7 @@ class FlagshipVisionMixin:
     def enroll_face_identity(self) -> None:
         if not self.camera_enabled.isChecked() or not self.face_identity.isChecked():
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t("臉部身分登錄"),
                 self._t("請先啟用靈視與臉部身分辨識。"),
             )
@@ -504,7 +505,7 @@ class FlagshipVisionMixin:
 
     def clear_face_identities(self) -> None:
         if QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("刪除全部臉部身分"),
             self._t('這會永久刪除本機加密的臉部特徵。是否繼續？'),
         ) != QMessageBox.Yes:
@@ -529,7 +530,7 @@ class FlagshipVisionMixin:
         if selected is None:
             return
         if QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("刪除選取的臉部身分"),
             self._t("這會刪除選取的本機加密臉部特徵。是否繼續？"),
         ) != QMessageBox.Yes:

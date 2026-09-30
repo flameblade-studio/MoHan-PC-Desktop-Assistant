@@ -3,13 +3,12 @@ from __future__ import annotations
 lazy import math
 lazy import random
 lazy import time
-
 lazy from PySide6.QtCore import (
     QEasingCurve, QParallelAnimationGroup, QPoint,
     QPropertyAnimation, QTimer, QVariantAnimation,
 )
 lazy from PySide6.QtGui import QPainter, QPixmap
-
+lazy from presentation.qt_parent import require_qobject
 lazy from domain.companion_animation_contract import (
     CHEEK_SPEECH_CLOSED_EXPRESSION, EXPRESSION_SPEECH_MOUTH_RECTS,
     NEW_EXPRESSION_ASSETS,
@@ -444,8 +443,9 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         self.bubble.raise_()
         self.overlay_opacity.setOpacity(0.0)
         self.character_opacity.setOpacity(1.0)
-        fade_in = QPropertyAnimation(self.overlay_opacity, b"opacity", self)
-        fade_out = QPropertyAnimation(self.character_opacity, b"opacity", self)
+        parent = require_qobject(self)
+        fade_in = QPropertyAnimation(self.overlay_opacity, b"opacity", parent)
+        fade_out = QPropertyAnimation(self.character_opacity, b"opacity", parent)
         for animation, start, end in (
             (fade_in, 0.0, 1.0),
             (fade_out, 1.0, 0.0),
@@ -454,7 +454,7 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             animation.setStartValue(start)
             animation.setEndValue(end)
             animation.setEasingCurve(QEasingCurve.InOutSine)
-        group = QParallelAnimationGroup(self)
+        group = QParallelAnimationGroup(parent)
         group.addAnimation(fade_in)
         group.addAnimation(fade_out)
         group.finished.connect(lambda: self._finish_expression_change(expression))
@@ -525,7 +525,7 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         fade_out = QPropertyAnimation(
             self.character_opacity,
             b"opacity",
-            self,
+            require_qobject(self),
         )
         fade_out.setDuration(75)
         fade_out.setStartValue(self.character_opacity.opacity())
@@ -569,7 +569,7 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         fade_in = QPropertyAnimation(
             self.character_opacity,
             b"opacity",
-            self,
+            require_qobject(self),
         )
         fade_in.setDuration(105)
         fade_in.setStartValue(0.0)
@@ -1092,7 +1092,7 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
                 previous_animation.deleteLater()
                 self.state_animation = None
             motion_scale = 3.0 if getattr(self, "_adaptive_full_body_active", False) else 1.0
-            animation = QVariantAnimation(self)
+            animation = QVariantAnimation(require_qobject(self))
             animation.setDuration(
                 720
                 if state in {"mock_scold", "mock_hit_front"}

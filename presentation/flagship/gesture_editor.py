@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy from dataclasses import replace
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import (
@@ -226,7 +227,7 @@ class FlagshipGestureEditorMixin:
 
     def add_custom_gesture(self) -> None:
         name, accepted = QInputDialog.getText(
-            self, self._t("新增自訂手勢"), self._t("手勢名稱")
+            require_qwidget(self), self._t("新增自訂手勢"), self._t("手勢名稱")
         )
         if accepted and name.strip():
             self._gesture_draft.value = self._gesture_draft.value.add_custom(name)
@@ -237,7 +238,7 @@ class FlagshipGestureEditorMixin:
         if definition is None or definition.source is GestureSource.BUILTIN:
             return
         name, accepted = QInputDialog.getText(
-            self,
+            require_qwidget(self),
             self._t("重新命名"),
             self._t("手勢名稱"),
             text=definition.display_name,

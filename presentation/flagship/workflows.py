@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import json
+lazy from presentation.qt_parent import optional_qwidget
 
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import (
@@ -78,7 +79,7 @@ class FlagshipWorkflowMixin:
             )
         except (ValueError, json.JSONDecodeError) as exc:
             QMessageBox.warning(
-                self,
+                optional_qwidget(self),
                 self._t("工作流程"),
                 safe_error_message(self.language, exc),
             )
@@ -96,7 +97,7 @@ class FlagshipWorkflowMixin:
         workflow = self._selected_workflow()
         if workflow is None:
             QMessageBox.information(
-                self,
+                optional_qwidget(self),
                 self._t("工作流程"),
                 self._t("請先選取一個流程。"),
             )
@@ -108,7 +109,7 @@ class FlagshipWorkflowMixin:
             plan = workflow.to_plan()
         except ValueError as exc:
             QMessageBox.warning(
-                self,
+                optional_qwidget(self),
                 self._t("工作流程"),
                 safe_error_message(self.language, exc),
             )
@@ -120,7 +121,7 @@ class FlagshipWorkflowMixin:
             )
             if (
                 QMessageBox.question(
-                    self,
+                    optional_qwidget(self),
                     self._t("預覽工作流程"),
                     self._t(
                         "{title}\n\n{preview}\n\n是否執行？",
@@ -136,7 +137,7 @@ class FlagshipWorkflowMixin:
             self.db.mark_workflow_run(workflow.workflow_id)
         message = "\n".join(self._system_text(result.message) for result in results)
         QMessageBox.information(
-            self,
+            optional_qwidget(self),
             self._t("任務結果"),
             message or self._t('請建立可執行步驟'),
         )
@@ -148,7 +149,7 @@ class FlagshipWorkflowMixin:
             return
         if (
             QMessageBox.question(
-                self,
+                optional_qwidget(self),
                 self._t("刪除工作流程"),
                 self._t("確定刪除「{name}」？", name=workflow.name),
             )
@@ -187,7 +188,7 @@ class FlagshipWorkflowMixin:
                         return
                     notified_schedule_errors.add(workflow_id)
                     QMessageBox.warning(
-                        self,
+                        optional_qwidget(self),
                         self._t("工作流程"),
                         self._t(message),
                     )

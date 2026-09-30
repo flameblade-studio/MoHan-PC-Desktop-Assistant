@@ -3,12 +3,12 @@ from __future__ import annotations
 
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap
-lazy from application.appearance_ports import OutfitOverlayPort
+lazy from application.appearance_ports import MakeupOverlayPort
 lazy from domain.outfit_pack import MAKEUP_CANVASES, MAKEUP_SLOTS
 
 
 def paint_blink_makeup(
-    result: QPixmap, patch: QPixmap, overlay: OutfitOverlayPort,
+    result: QPixmap, patch: QPixmap, overlay: MakeupOverlayPort,
     view_id: str, eye_state: str,
 ) -> None:
     """Keep native pigment coordinates, then scale once to the display canvas."""

@@ -1,12 +1,9 @@
 from __future__ import annotations
-
 """Visual composition and motion behavior for the companion window."""
-
 lazy import contextlib
 lazy import math
 lazy import time
 lazy from pathlib import Path
-
 lazy from PySide6.QtCore import QPoint, QRect, Qt, QTimer
 lazy from PySide6.QtGui import QColor, QCursor, QLinearGradient, QPainter, QPixmap
 lazy from PySide6.QtWidgets import (
@@ -17,7 +14,7 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-
+lazy from presentation.qt_parent import require_qobject
 lazy from application.background_agents import (
     DiagnosticReportWorker,
     ManagerWorkerScheduler,
@@ -48,7 +45,6 @@ lazy from presentation.presentation_resources import application_icon, resource_
 lazy from presentation.ui_localization import ui_text
 
 __all__ = ("CompanionVisualDynamicsMixin",)
-
 MAX_BUBBLE_LENGTH = 230
 GAZE_DISTANCE_THRESHOLD = 1050
 MOTION_ZERO_THRESHOLD = 0.015
@@ -423,25 +419,26 @@ class CompanionVisualDynamicsMixin:
         self._initialize_service_timers()
 
     def _initialize_idle_animation(self) -> None:
+        parent = require_qobject(self)
         self.idle_phase = 0
         self.idle_pose = "front"
         self._set_expression(self._idle_expression(), fade=False)
-        self.idle_timer = QTimer(self)
+        self.idle_timer = QTimer(parent)
         self.idle_timer.timeout.connect(self._idle_tick)
         self.idle_timer.start(IDLE_FRAME_INTERVAL_MS)
-        self.pose_timer = QTimer(self)
+        self.pose_timer = QTimer(parent)
         self.pose_timer.setSingleShot(True)
         self.pose_timer.timeout.connect(self._rotate_idle_pose)
         self._schedule_pose_change()
-        self.blink_timer = QTimer(self)
+        self.blink_timer = QTimer(parent)
         self.blink_timer.setSingleShot(True)
         self.blink_timer.timeout.connect(self._blink)
         self._schedule_blink()
-        self.gaze_timer = QTimer(self)
+        self.gaze_timer = QTimer(parent)
         self.gaze_timer.setSingleShot(True)
         self.gaze_timer.timeout.connect(self._start_attention_glance)
         self._schedule_attention_glance()
-        self.ambient_timer = QTimer(self)
+        self.ambient_timer = QTimer(parent)
         self.ambient_timer.setSingleShot(True)
         self.ambient_timer.timeout.connect(self._show_ambient_expression)
         self._schedule_ambient_expression()
@@ -484,27 +481,29 @@ class CompanionVisualDynamicsMixin:
         self.realtime_after_speech_state = "idle"
 
     def _initialize_mouth_timers(self) -> None:
-        self.mouth_timer = QTimer(self)
+        parent = require_qobject(self)
+        self.mouth_timer = QTimer(parent)
         self.mouth_timer.setSingleShot(True)
         self.mouth_timer.timeout.connect(self._mouth_tick)
-        self.mouth_visual_timer = QTimer(self)
+        self.mouth_visual_timer = QTimer(parent)
         self.mouth_visual_timer.setInterval(MOTION_FRAME_INTERVAL_MS)
         self.mouth_visual_timer.timeout.connect(self._render_audio_mouth_transition)
-        self.speech_finish_timer = QTimer(self)
+        self.speech_finish_timer = QTimer(parent)
         self.speech_finish_timer.setSingleShot(True)
         self.speech_finish_timer.timeout.connect(self._complete_speech_audio_finished)
-        self.realtime_finish_timer = QTimer(self)
+        self.realtime_finish_timer = QTimer(parent)
         self.realtime_finish_timer.setSingleShot(True)
         self.realtime_finish_timer.timeout.connect(
             self._complete_realtime_speaking_stop
         )
-        self.expression_return_timer = QTimer(self)
+        self.expression_return_timer = QTimer(parent)
         self.expression_return_timer.setSingleShot(True)
         self.expression_return_timer.timeout.connect(self._release_scheduled_expression)
         self.scheduled_expression_state = ""
         self.scheduled_expression_generation = 0
 
     def _initialize_motion_attention(self) -> None:
+        parent = require_qobject(self)
         self.gaze_x = 0.0
         self.gaze_y = 0.0
         self.gaze_target_x = 0.0
@@ -518,31 +517,32 @@ class CompanionVisualDynamicsMixin:
         self._saccade_target_x = 0.0
         self._saccade_target_y = 0.0
         self._saccade_expires_at = 0.0
-        self.saccade_timer = QTimer(self)
+        self.saccade_timer = QTimer(parent)
         self.saccade_timer.setSingleShot(True)
         self.saccade_timer.timeout.connect(self._start_saccade)
         self._schedule_saccade()
-        self.motion_timer = QTimer(self)
+        self.motion_timer = QTimer(parent)
         self.motion_timer.setInterval(MOTION_FRAME_INTERVAL_MS)
         self.motion_timer.timeout.connect(self._motion_tick)
         self.motion_timer.start()
         self.attention_pose = ""
-        self.attention_timer = QTimer(self)
+        self.attention_timer = QTimer(parent)
         self.attention_timer.timeout.connect(self._attention_tick)
         self.attention_timer.start(ATTENTION_FRAME_INTERVAL_MS)
 
     def _initialize_service_timers(self) -> None:
-        self.reminder_timer = QTimer(self)
+        parent = require_qobject(self)
+        self.reminder_timer = QTimer(parent)
         self.reminder_timer.timeout.connect(self.check_reminders)
         self.reminder_timer.start(20_000)
-        self.clock_timer = QTimer(self)
+        self.clock_timer = QTimer(parent)
         self.clock_timer.timeout.connect(self.dashboard.refresh_work_time)
         self.clock_timer.start(1_000)
-        self.topmost_timer = QTimer(self)
+        self.topmost_timer = QTimer(parent)
         self.topmost_timer.setInterval(100)
         self.topmost_timer.timeout.connect(self._topmost_policy_tick)
         self.topmost_timer.start()
-        self.background_agent_timer = QTimer(self)
+        self.background_agent_timer = QTimer(parent)
         self.background_agent_timer.setInterval(1_000)
         self.background_agent_timer.timeout.connect(self._background_agent_tick)
         self.background_agent_timer.start()
@@ -746,7 +746,7 @@ class CompanionVisualDynamicsMixin:
             and time.monotonic()
             <= getattr(self, "_sensory_gaze_expires_at", 0.0)
         )
-        if sensory_active:
+        if sensory_active and sensory_target is not None:
             self.gaze_target_x, self.gaze_target_y = sensory_target
             # Shy gaze aversion: apply a small, downward offset on top of the
             # sensory gaze target so the companion glances away bashfully when

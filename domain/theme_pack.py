@@ -218,6 +218,8 @@ def _validated_background(
 ) -> str | None:
     if value is None:
         return None
+    if not isinstance(value, str):
+        raise ThemePackError("Provide a supported theme background path.")
     if value not in {"assets/background.svg", "assets/background.png"}:
         raise ThemePackError("Provide a supported theme background path.")
     if value not in names:
