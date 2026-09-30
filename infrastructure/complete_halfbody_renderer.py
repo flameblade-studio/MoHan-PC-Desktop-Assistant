@@ -7,7 +7,9 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap
 
+lazy from application.appearance_ports import MakeupOverlayPort
 lazy from domain.face_rig import FaceMotionFrame
+lazy from domain.qt_image_io import load_pixmap_png
 lazy from infrastructure.animated_appearance import AnimatedAppearance
 lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
 lazy from infrastructure.complete_halfbody_expressions import (
@@ -95,8 +97,11 @@ class CompleteHalfbodyRenderer:
         painter = QPainter(result)
         painter.drawPixmap(0, 0, layer)
         painter.end()
-        apply_makeup = getattr(self._overlay, "apply_makeup", None)
-        if makeup_context is not None and callable(apply_makeup):
+        if (
+            makeup_context is not None
+            and isinstance(self._overlay, MakeupOverlayPort)
+            and callable(self._overlay.apply_makeup)
+        ):
             paint_blink_makeup(
                 result, eye_patch, self._overlay, makeup_context, eye_state
             )
@@ -117,7 +122,7 @@ class CompleteHalfbodyRenderer:
             raise RuntimeError("Complete half-body sources have not been loaded")
         if key not in self._pixmaps:
             frame = QPixmap()
-            if not frame.loadFromData(self._assets.frames[pose][family][eye], "PNG"):
+            if not load_pixmap_png(frame, self._assets.frames[pose][family][eye]):
                 raise ValueError(f"Cannot decode complete half-body frame: {key}")
             self._pixmaps[key] = frame
         self._pixmaps.move_to_end(key)

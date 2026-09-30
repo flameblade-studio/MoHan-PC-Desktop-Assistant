@@ -8,6 +8,7 @@ lazy from email.message import EmailMessage
 lazy from typing import Any
 
 lazy from collections.abc import Callable
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import QObject, QRunnable, Signal
 lazy from PySide6.QtWidgets import (
@@ -180,7 +181,7 @@ class FlagshipCloudMixin:
         client_id = self.cloud_client_id.text().strip()
         if not client_id:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t("雲端連接器"),
                 self._t("請先填入服務商後台建立的 OAuth Client ID。"),
             )
@@ -683,10 +684,10 @@ class FlagshipCloudMixin:
             "Google 三項服務測試" if provider_id == "google" else "雲端服務測試"
         )
         if all_ok:
-            QMessageBox.information(self, title, "\n".join(lines))
+            QMessageBox.information(require_qwidget(self), title, "\n".join(lines))
         else:
             QMessageBox.warning(
-                self,
+                require_qwidget(self),
                 title,
                 "\n".join(lines)
                 + "\n\n"
@@ -717,7 +718,7 @@ class FlagshipCloudMixin:
         provider_id = str(self.cloud_provider.currentData())
         if (
             QMessageBox.question(
-                self,
+                require_qwidget(self),
                 self._t("撤銷雲端服務"),
                 self._t(
                     "確定移除 {provider} 的本機權杖？",

@@ -31,7 +31,7 @@ def viseme_expression(window, viseme: str) -> str:
             if stem is None
             else f"{stem}{window._active_speech_pose_suffix()}"
         )
-    return expression
+    return expression if isinstance(expression, str) else ""
 
 
 def apply_audio_viseme_cue(window, level: float, vowel: str) -> None:

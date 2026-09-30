@@ -171,8 +171,11 @@ def _decode_occasion(raw: object, default: OccasionState) -> OccasionState:
     if not isinstance(raw, Mapping):
         return default
     try:
+        enabled = raw.get("enabled")
+        if type(enabled) is not bool:
+            return default
         return OccasionState(
-            enabled=raw.get("enabled"),
+            enabled=enabled,
             hint_delivered_at=_datetime(raw.get("hint_delivered_at")),
             grumble_delivered_at=_datetime(raw.get("grumble_delivered_at")),
             response=OccasionResponse(raw.get("response", OccasionResponse.NONE)),

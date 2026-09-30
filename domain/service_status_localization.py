@@ -419,18 +419,20 @@ def _sanitized_values(
     values: Mapping[str, object],
 ) -> dict[str, object]:
     unsafe_fields = _UNTRUSTED_DYNAMIC_FIELDS.get(key, frozenset())
+    status = values.get("status")
+    http_status = (
+        status
+        if key is ServiceStatus.SPEECH_OPENAI_HTTP_ERROR
+        and isinstance(status, int)
+        else None
+    )
     return {
         name: (
             value
             if isinstance(value, SafeError)
             else sanitize_error(
                 value if isinstance(value, BaseException | str) else str(value),
-                http_status=(
-                    int(values["status"])
-                    if key is ServiceStatus.SPEECH_OPENAI_HTTP_ERROR
-                    and isinstance(values.get("status"), int)
-                    else None
-                ),
+                http_status=http_status,
             )
         )
         if name in unsafe_fields

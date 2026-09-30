@@ -36,6 +36,12 @@ lazy from presentation.lingxiao_themes import (
 __all__ = ("Dashboard",)
 
 
+def _float_setting(value: object) -> float:
+    if isinstance(value, int | float | str | bytes | bytearray):
+        return float(value)
+    raise TypeError("Dashboard scale requires a scalar value.")
+
+
 class Dashboard(
     DashboardWardrobePreferencesMixin,
     DashboardWardrobeMakeupMixin,
@@ -108,7 +114,7 @@ class Dashboard(
         apply_flagship_theme(
             self,
             high_contrast=self._runtime_lingxiao_high_contrast,
-            scale=float(self.db.setting("flagship_ui_scale", 1.0)),
+            scale=_float_setting(self.db.setting("flagship_ui_scale", 1.0)),
             theme=self._runtime_lingxiao_theme_id,
         )
         self._apply_theme_resolution(self.theme_session.last_resolution)
@@ -163,7 +169,7 @@ class Dashboard(
         apply_flagship_theme(
             self,
             high_contrast=self._runtime_lingxiao_high_contrast,
-            scale=float(self.db.setting("flagship_ui_scale", 1.0)),
+            scale=_float_setting(self.db.setting("flagship_ui_scale", 1.0)),
             theme=self._runtime_lingxiao_theme_id,
             font_family=payload.font_family if isinstance(payload, ThemePack) else None,
         )
@@ -177,6 +183,8 @@ class Dashboard(
             if hasattr(self, "chat"):
                 self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
             return
+        if not isinstance(payload, ThemePack):
+            raise TypeError("Resolved theme payload must be a theme pack.")
         theme = payload
         # Retint the flagship stylesheet toward the pack's primary hue first:
         # appended low-specificity selectors alone lose every cascade fight

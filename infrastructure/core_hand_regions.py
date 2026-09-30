@@ -41,7 +41,9 @@ class CoreHandSnapshot:
         if view_id not in REQUIRED_SILHOUETTES:
             raise OutfitPackError("Use a recognized core visible-hand view.")
         images = self._overlay_images.get(view_id)
-        return None if images is None else tuple(image.copy() for image in images)
+        if images is None:
+            return None
+        return images[0].copy(), images[1].copy()
 
 
 def load_core_hand_regions(asset_root: Path) -> CoreHandSnapshot | None:

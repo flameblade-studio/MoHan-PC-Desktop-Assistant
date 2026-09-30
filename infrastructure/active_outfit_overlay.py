@@ -16,8 +16,11 @@ lazy from domain.outfit_pack import (
     OFFICIAL_PACK_ROOT,
     POSE_ATLAS_SILHOUETTES,
     SELECTION_CATEGORIES,
+    AppearanceItem,
+    AppearanceVariant,
     IncompatibleBodyProfileError,
     OutfitPackError,
+    SelectionResolution,
     inspect_installed_outfit_pack,
     installed_pack_path,
     resolve_active_selection,
@@ -25,6 +28,7 @@ lazy from domain.outfit_pack import (
     restore_builtin_outfit,
 )
 lazy from domain.outfit_pack_makeup import MAKEUP_STATE_FILE
+lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack_official import native_overlay_is_redundant
 lazy from domain.version_info import APP_VERSION
 lazy from infrastructure.active_outfit_base_clear import ActiveOutfitBaseClearMixin
@@ -48,7 +52,7 @@ lazy from infrastructure.outfit_layer_cache_key import OutfitLayerCacheKey
 lazy from infrastructure.outfit_layer_cache import OutfitLayerCacheMixin
 
 SEMVER_COMPONENT_COUNT = 3
-_AUTO_HAND_REGIONS = sentinel("AUTO_HAND_REGIONS")
+_AUTO_HAND_REGIONS = sentinel("_AUTO_HAND_REGIONS")
 _RANGE = re.compile(r">=(\d+)\.(\d+)\.(\d+),<(\d+)\.(\d+)\.(\d+)\Z")
 # One composited layer: pixmap, anchor x/y, the region it may paint, opacity.
 Layer = tuple[QPixmap, int, int, QRegion, float]
@@ -547,7 +551,11 @@ class ActiveOutfitOverlay(
             self._garment_active_cache = None
             self._official_outfit_active_cache = None
 
-    def _selected_variant(self, category: str, selected) -> tuple[Path, object, object]:
+    def _selected_variant(
+        self,
+        category: str,
+        selected: SelectionResolution,
+    ) -> tuple[Path, AppearanceItem, AppearanceVariant]:
         """Locate and validate the active pack, item and variant for one category."""
         archive_path = installed_pack_path(
             self._store,
@@ -696,7 +704,7 @@ class ActiveOutfitOverlay(
                 pack_id=self._diagnostic_pack_id,
                 asset_path=declaration.path,
             )
-        image = QImage.fromData(encoded, "PNG")
+        image = image_from_png(encoded)
         if image.isNull() or image.hasAlphaChannel() is False:
             raise OutfitPackError("Runtime appearance must have alpha.")
         if (image.width(), image.height()) != (declaration.width, declaration.height):

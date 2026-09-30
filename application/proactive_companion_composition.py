@@ -82,7 +82,7 @@ def create_proactive_companion_bridge(
     phrasebook = _DatabasePhrasebook(db)
 
     def runtime_factory(
-        current_phrasebook: CompanionPhrasebook,
+        phrasebook: CompanionPhrasebook,
     ) -> ProactiveCompanionRuntime:
         wellbeing_runtime = WellbeingRuntime(
             WellbeingReminderStore(settings),
@@ -97,7 +97,7 @@ def create_proactive_companion_bridge(
             wellbeing,
             wellbeing,
             wellbeing_runtime,
-            phrasebook=current_phrasebook,
+            phrasebook=phrasebook,
             outfit_reveals=OutfitRevealStateStore(settings),
         )
 

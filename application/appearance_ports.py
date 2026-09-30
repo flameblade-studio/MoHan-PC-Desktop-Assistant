@@ -2,21 +2,25 @@
 from __future__ import annotations
 
 lazy from collections.abc import Callable, Iterable
-lazy from typing import Any, Protocol
+lazy from typing import Any, Protocol, runtime_checkable
 
 
-class OutfitOverlayPort(Protocol):
-    def apply(
-        self, frame: Any, view_id: str, *,
-        suppress_makeup_slots: Iterable[str] = (), eye_state: str = "rest",
-    ) -> Any: ...
-
-    def apply_appearance(self, frame: Any, view_id: str) -> Any: ...
-
+@runtime_checkable
+class MakeupOverlayPort(Protocol):
     def apply_makeup(
         self, frame: Any, view_id: str, *,
         suppress_makeup_slots: Iterable[str] = (), eye_state: str = "rest",
     ) -> Any: ...
+
+
+class OutfitOverlayPort(MakeupOverlayPort, Protocol):
+    def apply(
+        self, frame: Any, view_id: str, *,
+        suppress_makeup_slots: Iterable[str] = (), eye_state: str = "rest",
+        makeup_view_id: str | None = None,
+    ) -> Any: ...
+
+    def apply_appearance(self, frame: Any, view_id: str) -> Any: ...
 
     def layer_count(self, view_id: str) -> int: ...
 
@@ -26,8 +30,9 @@ class _NoOutfitOverlay:
     def apply(
         frame: Any, view_id: str, *,
         suppress_makeup_slots: Iterable[str] = (), eye_state: str = "rest",
+        makeup_view_id: str | None = None,
     ) -> Any:
-        del view_id, suppress_makeup_slots, eye_state
+        del view_id, suppress_makeup_slots, eye_state, makeup_view_id
         return frame
 
     apply_appearance = apply

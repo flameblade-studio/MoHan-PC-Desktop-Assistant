@@ -5,7 +5,6 @@ lazy import json
 lazy import logging
 lazy import math
 lazy import threading
-lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
 lazy from typing import Protocol
 
@@ -34,6 +33,7 @@ lazy from domain.cloud_scene_interpreter import (
     MergedSceneUnderstanding,
     SceneFactKind,
 )
+lazy from domain.qt_image_io import save_image_png
 lazy from domain.contracts import SecretStorePort
 lazy from domain.openai_vision_preferences import PREFERENCES_VERSION, VisionDetail
 lazy from domain.vision_domain import SceneUnderstanding
@@ -106,13 +106,15 @@ class CloudLocalSceneIntegrator:
         self._last_operation_id = -1
 
 
-class SignalPort(Protocol):
-    def connect(self, slot: Callable[..., object]) -> object: ...
+SignalPort = object
 
 
 class CloudVisionServicePort(Protocol):
-    result_ready: SignalPort
-    busy_changed: SignalPort
+    @property
+    def result_ready(self) -> SignalPort: ...
+
+    @property
+    def busy_changed(self) -> SignalPort: ...
 
     def refresh_authorization(self) -> SavedVisionAuthorization: ...
 
@@ -303,9 +305,9 @@ def _encode_rgb_png(rgb: bytes, width: int, height: int) -> bytes | None:
     image = QImage(rgb, width, height, width * 3, QImage.Format_RGB888).copy()
     data = QByteArray()
     buffer = QBuffer(data)
-    if not buffer.open(QIODevice.WriteOnly) or not image.save(buffer, "PNG"):
+    if not buffer.open(QIODevice.WriteOnly) or not save_image_png(image, buffer):
         return None
-    return bytes(data)
+    return bytes(data.data())
 
 
 def _safe_ui_result(result: object) -> CloudVisionUIResult:

@@ -194,7 +194,7 @@ class FlagshipControlCenter(
         if not callable(consume):
             return
         message = consume()
-        if message:
+        if isinstance(message, str) and message:
             QMessageBox.warning(
                 self,
                 self._t("設定讀取"),

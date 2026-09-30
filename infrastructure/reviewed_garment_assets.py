@@ -21,6 +21,7 @@ lazy from collections.abc import Mapping
 
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
+lazy from domain.qt_image_io import image_from_png
 
 SCHEMA = "mohan.reviewed-native-garments.v1"
 DIMENSION = 1254
@@ -73,7 +74,10 @@ def _grayscale_as_alpha(image: QImage) -> QImage:
     gray = image.convertToFormat(QImage.Format.Format_Grayscale8)
     alpha = QImage(gray.size(), QImage.Format.Format_Alpha8)
     source = bytes(gray.constBits())
-    target = alpha.bits()
+    target_buffer = alpha.bits()
+    if isinstance(target_buffer, bytes):
+        raise TypeError("QImage.bits() must expose writable storage.")
+    target = memoryview(target_buffer)
     for row in range(gray.height()):
         source_start = row * gray.bytesPerLine()
         target_start = row * alpha.bytesPerLine()
@@ -260,7 +264,7 @@ def _read_png(
     if depth != _EIGHT_BIT_DEPTH or color_type != expected_color_type:
         expected = "8-bit grayscale" if grayscale else "8-bit RGBA"
         raise ValueError(f"Reviewed garment asset must be {expected}: {relative}")
-    image = QImage.fromData(payload, "PNG")
+    image = image_from_png(payload)
     if image.isNull() or (width, height) != (DIMENSION, DIMENSION):
         raise ValueError(f"Invalid reviewed garment dimensions: {relative}")
     if (image.width(), image.height()) != (DIMENSION, DIMENSION):

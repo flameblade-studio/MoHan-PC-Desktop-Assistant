@@ -200,7 +200,9 @@ class ThemePackPanel(QWidget):
                     selected_item = item
                 if theme.theme_id == self.session.preview_theme_id:
                     preview_item = item
-            self.theme_list.setCurrentItem(selected_item or preview_item)
+            current_item = selected_item or preview_item
+            if current_item is not None:
+                self.theme_list.setCurrentItem(current_item)
         finally:
             self._refreshing = False
         self._update_remove_state()

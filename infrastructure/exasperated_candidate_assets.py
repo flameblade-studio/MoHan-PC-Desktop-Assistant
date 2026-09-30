@@ -11,6 +11,7 @@ lazy from typing import Protocol
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
+lazy from domain.qt_image_io import image_from_png, load_pixmap_png
 
 SCHEMA = "mohan.exasperated-runtime-candidate.v1"
 FORMAL_INSTALL_SCHEMA = "mohan.source-bound-exasperated-default-install.v1"
@@ -68,7 +69,7 @@ class ExasperatedCandidateAssets:
                 if role in hidden:
                     continue
                 part = QPixmap()
-                if not part.loadFromData(self.parts[role], "PNG"):
+                if not load_pixmap_png(part, self.parts[role]):
                     raise ValueError(f"Cannot decode exasperated part: {role}")
                 painter.drawPixmap(0, 0, part)
         finally:
@@ -82,7 +83,7 @@ class ExasperatedCandidateAssets:
                 return None
             raise ValueError(f"Unsupported exasperated mouth expression: {expression}")
         patch = QPixmap()
-        if not patch.loadFromData(self.mouths[variant], "PNG"):
+        if not load_pixmap_png(patch, self.mouths[variant]):
             raise ValueError(f"Cannot decode exasperated mouth: {variant}")
         return patch
 
@@ -101,7 +102,7 @@ def validate_candidate_png(root: Path, record: object, expected_path: str, *, mo
         raise ValueError(f"Exasperated candidate digest mismatch: {expected_path}")
     if payload[:8] != b"\x89PNG\r\n\x1a\n" or payload[24:26] != b"\x08\x06":
         raise ValueError(f"Exasperated candidate must be 8-bit RGBA PNG: {expected_path}")
-    image = QImage.fromData(payload, "PNG")
+    image = image_from_png(payload)
     if image.isNull() or (image.width(), image.height()) != (DIMENSION, DIMENSION):
         raise ValueError(f"Invalid exasperated candidate dimensions: {expected_path}")
     if mouth:

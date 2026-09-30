@@ -8,6 +8,7 @@ lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 
 lazy from PySide6.QtGui import QImage
 
+lazy from domain.qt_image_io import image_from_png
 lazy from infrastructure.detachable_halfbody_assets import DIMENSION, POSES
 
 SCHEMA = "mohan.complete-halfbody-expressions.v1"
@@ -44,7 +45,7 @@ def _read_frame(root: Path, record: object) -> bytes:
         raise ValueError(f"Complete half-body frame digest mismatch: {value}")
     if len(data) < PNG_HEADER_LENGTH or data[:8] != b"\x89PNG\r\n\x1a\n" or data[24:26] != b"\x08\x06":
         raise ValueError(f"Complete half-body frame must be 8-bit RGBA PNG: {value}")
-    image = QImage.fromData(data, "PNG")
+    image = image_from_png(data)
     if image.isNull() or image.size().toTuple() != (DIMENSION, DIMENSION):
         raise ValueError(f"Complete half-body frame canvas must be 1254x1254: {value}")
     rgba = image.convertToFormat(QImage.Format_RGBA8888)

@@ -11,17 +11,17 @@ from __future__ import annotations
 lazy from collections import OrderedDict
 lazy from dataclasses import replace
 lazy from pathlib import Path
-
-
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion
 
+lazy from application.appearance_ports import OutfitOverlayPort
 lazy from domain.companion_animation_contract import (
     CHEEK_SPEECH_CLOSED_EXPRESSION,
     gesture_portrait_expression,
     outfit_silhouette,
 )
 lazy from domain.face_rig import FaceMotionFrame, Viseme
+lazy from domain.qt_image_io import optional_pixmap, require_pixmap
 # Eager because this function is re-exported for direct ``from ... import`` callers.
 from domain.legacy_makeup import select_legacy_makeup_view_id
 lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
@@ -90,7 +90,7 @@ class LayeredParametricFaceRenderer(
     def __init__(
         self,
         manifest: LayeredFaceManifest | None = None,
-        outfit_overlay=None,
+        outfit_overlay: OutfitOverlayPort | None = None,
         authority_dir: Path | None = None,
         detachable_dir: Path | None = None,
         use_detachable: bool = True,
@@ -221,13 +221,22 @@ class LayeredParametricFaceRenderer(
         native_state = getattr(self._outfit_overlay, "render_native_state", None)
         if callable(native_state):
             amount = motion.mouth.aperture if aperture is None else float(aperture)
-            native = native_state(silhouette, speaking=amount > MOUTH_APERTURE_THRESHOLD)
+            native = optional_pixmap(
+                native_state(
+                    silhouette,
+                    speaking=amount > MOUTH_APERTURE_THRESHOLD,
+                )
+            )
             if native is not None:
                 return native if base.isNull() or native.size() == base.size() else native.scaled(
                     base.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation,
                 )
         native_neutral = getattr(self._outfit_overlay, "native_neutral", None)
-        composed = native_neutral(silhouette) if callable(native_neutral) else None
+        composed = (
+            optional_pixmap(native_neutral(silhouette))
+            if callable(native_neutral)
+            else None
+        )
         # Both sources below can supply a legacy (pre-V5-rebind) authored
         # face that makeup_declares_view() may redirect makeup away from:
         # native_neutral() returns the reviewed-garment "native identity"
@@ -280,7 +289,13 @@ class LayeredParametricFaceRenderer(
             if may_need_legacy_makeup:
                 declares = getattr(self._outfit_overlay, "makeup_declares_view", None)
                 makeup_view_id = select_legacy_makeup_view_id(declares, silhouette)
-            composed = self._outfit_overlay.apply(composed, silhouette, makeup_view_id=makeup_view_id)
+            composed = require_pixmap(
+                self._outfit_overlay.apply(
+                    composed,
+                    silhouette,
+                    makeup_view_id=makeup_view_id,
+                )
+            )
         result = (
             composed
             if composed.size() == base.size()
@@ -312,7 +327,7 @@ class LayeredParametricFaceRenderer(
             return True
         if expression == CHEEK_SPEECH_CLOSED_EXPRESSION:
             capability = getattr(self._outfit_overlay, "has_native_motion", None)
-            return callable(capability) and capability("cheek-rest")
+            return bool(callable(capability) and capability("cheek-rest"))
         return (
             self._exasperated_candidate_dir is not None
             and gesture_portrait_expression(expression) == "exasperated_front"
@@ -359,7 +374,9 @@ class LayeredParametricFaceRenderer(
                 return complete
         native_blink = getattr(self._outfit_overlay, "render_native_blink", None)
         if view_id is not None and eye_state != "rest" and callable(native_blink):
-            native = native_blink(base, view_id, eye_state=eye_state)
+            native = optional_pixmap(
+                native_blink(base, view_id, eye_state=eye_state)
+            )
             if native is not None:
                 return native
         result = QPixmap(base)
@@ -380,7 +397,6 @@ class LayeredParametricFaceRenderer(
             return result
         self._paint_masked(result, source, mask, opacity)
         return result
-
     # -- core layered composition -------------------------------------------
 
     def render_pose(

@@ -237,15 +237,26 @@ def _decode_kind(raw: object, default: WellbeingKindState) -> WellbeingKindState
         return default
     try:
         response = ReminderResponse(raw.get("response", ReminderResponse.NONE))
+        enabled = raw.get("enabled")
+        daily_count = raw.get("daily_reinforcement_count")
+        daily_maximum = raw.get("maximum_daily_reinforcements")
+        cooldown = raw.get("same_kind_cooldown_seconds")
+        if (
+            type(enabled) is not bool
+            or type(daily_count) is not int
+            or type(daily_maximum) is not int
+            or type(cooldown) is not int
+        ):
+            return default
         candidate = WellbeingKindState(
-            enabled=raw.get("enabled"),
+            enabled=enabled,
             snooze_until=_datetime(raw.get("snooze_until")),
             response=response,
             initial_delivered_at=_datetime(raw.get("initial_delivered_at")),
             reinforcement_delivered_at=_datetime(raw.get("reinforcement_delivered_at")),
-            daily_reinforcement_count=raw.get("daily_reinforcement_count"),
-            maximum_daily_reinforcements=raw.get("maximum_daily_reinforcements"),
-            same_kind_cooldown_seconds=raw.get("same_kind_cooldown_seconds"),
+            daily_reinforcement_count=daily_count,
+            maximum_daily_reinforcements=daily_maximum,
+            same_kind_cooldown_seconds=cooldown,
             last_same_kind_reinforcement_at=_datetime(
                 raw.get("last_same_kind_reinforcement_at")
             ),

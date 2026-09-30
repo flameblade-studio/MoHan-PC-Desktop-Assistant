@@ -15,6 +15,8 @@ lazy from typing import Protocol
 lazy from PySide6.QtGui import QImage
 lazy from xml.etree import ElementTree
 
+lazy from domain.qt_image_io import image_from_png
+
 MANIFEST = "manifest.json"
 MAX_MEMBER_BYTES = 128 * 1024 * 1024
 MAX_COMPRESSION_RATIO = 100
@@ -104,7 +106,7 @@ def validate_author(value: object) -> str:
 def validate_png_appearance(data: bytes, *, require_visible: bool) -> None:
     """Validate alpha semantics shared by the sealed pack and runtime paths."""
 
-    image = QImage.fromData(data, "PNG")
+    image = image_from_png(data)
     if image.isNull():
         raise OutfitPackError("Provide a supported PNG appearance asset.")
     if image.hasAlphaChannel() is False:

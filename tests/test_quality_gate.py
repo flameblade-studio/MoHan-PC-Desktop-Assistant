@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy from pathlib import Path
+lazy import json
 
 lazy from tools import quality_gate
 
@@ -99,6 +100,63 @@ def test_pyright_copy_normalizes_only_lazy_import_syntax(tmp_path: Path) -> None
         )
     finally:
         quality_gate._remove_temporary_tree(temporary, copied, directories)
+
+
+def test_pyright_config_binds_current_type_environment(tmp_path: Path) -> None:
+    source = tmp_path / "source.json"
+    target = tmp_path / "target.json"
+    source.write_text(
+        json.dumps({"typeCheckingMode": "basic"}),
+        encoding="utf-8",
+    )
+
+    quality_gate._write_pyright_config(source, target)
+
+    payload = json.loads(target.read_text(encoding="utf-8"))
+    environment = Path(quality_gate.sys.prefix).resolve()
+    assert payload == {
+        "typeCheckingMode": "basic",
+        "venvPath": str(environment.parent),
+        "venv": environment.name,
+    }
+
+
+def test_pyright_baseline_detects_per_file_increases_and_decreases() -> None:
+    increases, decreases = quality_gate._pyright_baseline_changes(
+        {"application/a.py": 2, "domain/b.py": 3},
+        {"application/a.py": 1, "domain/b.py": 4, "presentation/c.py": 1},
+    )
+
+    assert increases == {
+        "domain/b.py": (3, 4),
+        "presentation/c.py": (0, 1),
+    }
+    assert decreases == {"application/a.py": (2, 1)}
+
+
+def test_pyright_baseline_round_trip_and_rejects_inconsistent_total(
+    tmp_path: Path,
+) -> None:
+    baseline = tmp_path / "pyright_baseline.json"
+    quality_gate._write_pyright_baseline(
+        baseline,
+        {"domain/b.py": 2, "application/a.py": 1},
+    )
+
+    assert quality_gate._load_pyright_baseline(baseline) == {
+        "application/a.py": 1,
+        "domain/b.py": 2,
+    }
+    payload = json.loads(baseline.read_text(encoding="utf-8"))
+    payload["total_warnings"] = 4
+    baseline.write_text(json.dumps(payload), encoding="utf-8")
+
+    try:
+        quality_gate._load_pyright_baseline(baseline)
+    except ValueError as error:
+        assert "total_warnings" in str(error)
+    else:
+        raise AssertionError("An inconsistent Pyright baseline must be rejected.")
 
 
 def test_gate_stops_after_first_failed_stage(
