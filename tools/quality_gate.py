@@ -498,6 +498,18 @@ def _write_pyright_config(source: Path, target: Path) -> None:
     )
 
 
+def _report_pyright_increases(
+    increases: dict[str, tuple[int, int]],
+    rendered: list[str],
+) -> None:
+    print("Pyright warning baseline increased:", file=sys.stderr)
+    for file_name, (old, new) in increases.items():
+        print(f"  {file_name}: {old} -> {new}", file=sys.stderr)
+    for diagnostic in rendered:
+        if diagnostic.split(":", 1)[0] in increases and ": warning" in diagnostic:
+            print(f"    {diagnostic}", file=sys.stderr)
+
+
 def _run_pyright(root: Path, *, update_baseline: bool = False) -> int:
     config = root / "pyrightconfig.json"
     if not config.is_file():
@@ -572,9 +584,7 @@ def _run_pyright(root: Path, *, update_baseline: bool = False) -> int:
             return 2
         increases, decreases = _pyright_baseline_changes(baseline, warning_counts)
         if increases:
-            print("Pyright warning baseline increased:", file=sys.stderr)
-            for file_name, (old, new) in increases.items():
-                print(f"  {file_name}: {old} -> {new}", file=sys.stderr)
+            _report_pyright_increases(increases, rendered)
             return 1
         if update_baseline:
             _write_pyright_baseline(baseline_path, warning_counts)
