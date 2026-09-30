@@ -130,7 +130,10 @@ class AutonomousOutfitGenerationController(QObject):
         self._cancel = threading.Event()
         self._running = False
         self._shutdown = False
-        self._wardrobe_service = WardrobeService(self._data_root / "outfits")
+        self._wardrobe_service = WardrobeService(
+            self._data_root / "outfits",
+            official_pack_root=self._project_root / "assets" / "official-packs",
+        )
         self._wardrobe_runtime = AutonomousWardrobeRuntime(
             self._wardrobe_service,
             self._settings,

@@ -174,7 +174,7 @@ def test_v2_light_variant_scales_all_slots_once_and_removal_clears_foundation(
     monkeypatch.setattr(
         appearance_module,
         "resolve_active_selection",
-        lambda _store, category: (
+        lambda _store, category, **_kwargs: (
             selection
             if category == "makeup"
             else SimpleNamespace(effective_pack_id="builtin")

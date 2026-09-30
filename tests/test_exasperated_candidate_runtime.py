@@ -190,13 +190,20 @@ def test_product_factory_requires_explicit_absolute_candidate_path(
     assert not renderer.render(base, _motion(Viseme.CLOSED, 0.0), None).isNull()
     (tmp_path / "appearance").mkdir()
     appearance = SimpleNamespace(store=None)
+
+    def load_appearance(root: Path, *, official_pack_root: Path):
+        assert root == tmp_path / "appearance"
+        appearance.official_pack_root = official_pack_root
+        return appearance
+
     monkeypatch.setattr(
         service_container,
         "ExasperatedCandidateAppearance",
-        SimpleNamespace(load=lambda root: appearance),
+        SimpleNamespace(load=load_appearance),
     )
     create_presentation_ports().face_renderer_factory()
     assert appearance.store == service_container.presentation_contracts.default_data_dir() / "outfits"
+    assert appearance.official_pack_root == service_container.resource_path(".") / "assets/official-packs"
     monkeypatch.setenv("MOHAN_EXASPERATED_CANDIDATE_DIR", "relative/candidate")
     with pytest.raises(ValueError, match="must be absolute"):
         create_presentation_ports().face_renderer_factory()

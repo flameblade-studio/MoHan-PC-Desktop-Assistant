@@ -14,7 +14,6 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from domain.outfit_pack import OutfitPackError
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.appearance_layer_stack import AppearanceLayerStack
-lazy from infrastructure import reviewed_garment_overlay as module
 lazy from infrastructure.reviewed_garment_assets import (
     DIMENSION, ReviewedGarmentAssets, ReviewedGarmentPose, ReviewedPng, ReviewedSelection,
 )
@@ -57,8 +56,12 @@ def reviewed(tmp_path, monkeypatch):
             status="builtin" if pack == "builtin" else "installed",
         )
 
-    monkeypatch.setattr(module, "resolve_active_selection", resolve)
     overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path, visible_hand_region=None)
+    monkeypatch.setattr(
+        overlay,
+        "_resolve_base_clear_selection",
+        lambda category: resolve(overlay._store, category),
+    )
     overlay._reviewed_assets_loaded = True
     overlay._reviewed_assets = ReviewedGarmentAssets(tmp_path, {VIEW: pose})
     validated = []

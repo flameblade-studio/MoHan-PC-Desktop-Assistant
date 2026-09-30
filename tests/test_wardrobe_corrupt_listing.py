@@ -17,14 +17,16 @@ lazy from test_outfit_pack import _manifest, _pack, _png
 
 def test_corrupt_package_notice_preserves_selection_and_recovers(tmp_path, monkeypatch):
     QApplication.instance() or QApplication([])
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
+    official_pack_root = tmp_path / "official"
     db, dashboard = build_dashboard(tmp_path)
     try:
         store = tmp_path / "outfits"
         manifest, assets = _manifest(_png())
         archive = _pack(tmp_path / "valid.mohan-outfit", manifest, assets)
         outfit_pack.install_outfit_pack(archive, store)
-        service = WardrobeService(store)
+        service = WardrobeService(
+            store, official_pack_root=official_pack_root
+        )
         dashboard.wardrobe_service = service
         chosen = next(item for item in service.outfits() if not item.built_in)
         service.apply(chosen.outfit_id)

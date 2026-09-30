@@ -229,6 +229,7 @@ def create_presentation_ports() -> PresentationPorts:
     """Build every presentation adapter once at the composition boundary."""
 
     asset_root = resource_path(".")
+    official_pack_root = asset_root / "assets" / "official-packs"
     shared_hand_region_provider: Callable[[str], QRegion] | None = None
     hand_region_loaded = False
 
@@ -245,6 +246,7 @@ def create_presentation_ports() -> PresentationPorts:
             asset_root,
             on_stale_body_profile=on_stale_body_profile,
             visible_hand_region=shared_hand_regions(),
+            official_pack_root=official_pack_root,
         )
 
     def face_renderer_factory() -> LayeredParametricFaceRenderer:
@@ -260,7 +262,9 @@ def create_presentation_ports() -> PresentationPorts:
         appearance_dir = candidate_dir / "appearance"
         candidate_appearance = None
         if appearance_dir.exists():
-            candidate_appearance = ExasperatedCandidateAppearance.load(appearance_dir)
+            candidate_appearance = ExasperatedCandidateAppearance.load(
+                appearance_dir, official_pack_root=official_pack_root,
+            )
             candidate_appearance.store = presentation_contracts.default_data_dir() / "outfits"
         elif configured is None:
             raise FileNotFoundError(f"Default exasperated appearance is missing: {appearance_dir}")

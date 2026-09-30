@@ -477,6 +477,7 @@ def _demo_dependencies(root: Path):
         return ActiveOutfitOverlay(
             root / "outfits",
             ROOT,
+            official_pack_root=ROOT / "assets" / "official-packs",
             on_stale_body_profile=on_stale_body_profile,
         )
 
@@ -556,7 +557,11 @@ def _capture_scene_widgets(temp_dir: Path) -> SceneCaptures:
 
 
 def _render_character_assets(temp_dir: Path) -> dict[str, QImage]:
-    overlay = ActiveOutfitOverlay(temp_dir / "marketing-store", ROOT)
+    overlay = ActiveOutfitOverlay(
+        temp_dir / "marketing-store",
+        ROOT,
+        official_pack_root=ROOT / "assets" / "official-packs",
+    )
     names = {
         "attentive_front.png",
         "attentive_front_speech_mid.png",

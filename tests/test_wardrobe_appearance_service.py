@@ -48,8 +48,15 @@ def _selection(
 def _patch_catalog(
     monkeypatch,
     selections: tuple[InstalledSelection, ...],
+    *,
+    official_pack_root: Path = outfit_pack.OFFICIAL_PACK_ROOT,
 ) -> None:
-    def by_category(_root: Path, category: str | None = None):
+    expected_root = official_pack_root
+
+    def by_category(
+        _root: Path, category: str | None = None, *, official_pack_root: Path,
+    ):
+        assert official_pack_root == expected_root
         if category is None:
             return selections
         return tuple(
@@ -68,6 +75,14 @@ def _patch_catalog(
         "list_installed_selections",
         by_category,
     )
+
+
+def test_options_use_the_injected_official_root(tmp_path: Path, monkeypatch) -> None:
+    root = tmp_path / "official"
+    hairstyle = _selection(HAIRSTYLE, "silk-pack", "long-hair", "ink")
+    _patch_catalog(monkeypatch, (hairstyle,), official_pack_root=root)
+    service = WardrobeAppearanceService(tmp_path / "store", official_pack_root=root)
+    assert len(service.options(HAIRSTYLE)) == 1
 
 
 def _write_active(store: Path, state: dict[str, object]) -> bytes:

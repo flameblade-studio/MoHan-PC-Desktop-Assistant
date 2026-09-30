@@ -659,7 +659,11 @@ def capture_media(
         os.environ["MOHAN_DATA_DIR"] = temp_dir
         prepare_demo_profile(temp_dir)
         app = create_capture_app()
-        overlay = ActiveOutfitOverlay(Path(temp_dir) / "marketing-store", ROOT)
+        overlay = ActiveOutfitOverlay(
+            Path(temp_dir) / "marketing-store",
+            ROOT,
+            official_pack_root=ROOT / "assets" / "official-packs",
+        )
         if selected_tab == "first-run":
             capture_first_run_wizard(app, temp_dir, output_dir, overlay)
             app.processEvents()
