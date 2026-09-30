@@ -498,7 +498,7 @@ def assert_app_is_thin_entrypoint() -> None:
     assert returned_calls == {"run_application"}
 
 
-def main() -> None:
+def run() -> None:
     translations = {
         "en": _ENGLISH,
         "zh-CN": _SIMPLIFIED_CHINESE,
@@ -571,4 +571,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run()
