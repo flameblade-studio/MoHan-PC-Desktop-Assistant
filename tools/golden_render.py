@@ -464,11 +464,23 @@ def _recover_originals(expected: dict[str, object], cells: list[dict], baseline_
         cwd=reference_root, env=environment, check=True,
     )
     baseline_dir.mkdir(parents=True, exist_ok=True)
+    # Keep every unmatched rebuild so CI can upload it for a pixel-level review.
+    unrecoverable = ROOT / ".quality-tmp" / "golden-diff" / "unrecoverable"
+    mismatched: list[str] = []
     for cell in cells:
         original = output / str(cell["file"])
-        if pixel_sha256(QImage(str(original))) != cell["pixel_sha256"]:
-            raise ValueError(f"歷史重建像素與核准雜湊不同：{cell['id']}；需取回核准原圖。")
+        actual = pixel_sha256(QImage(str(original)))
+        if actual != cell["pixel_sha256"]:
+            unrecoverable.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(original, unrecoverable / str(cell["file"]))
+            mismatched.append(f"{cell['id']}={actual}")
+            continue
         shutil.copy2(original, baseline_dir / str(cell["file"]))
+    if mismatched:
+        raise ValueError(
+            f"歷史重建像素與核准雜湊不同（{len(mismatched)} 格）：{', '.join(mismatched)}；"
+            f"重建影像保存在 {unrecoverable.relative_to(ROOT).as_posix()}。"
+        )
 
 
 def _write_diff(expected: Path | None, actual: Path, target: Path) -> None:
