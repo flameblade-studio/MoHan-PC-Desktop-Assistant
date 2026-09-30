@@ -31,7 +31,20 @@ SVG_ELEMENTS = frozenset({
 
 
 class OutfitPackError(RuntimeError):
-    pass
+    """A fail-closed pack error with optional privacy-safe diagnostics."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        reason: str | None = None,
+        pack_id: str | None = None,
+        asset_path: str | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.reason = reason
+        self.pack_id = pack_id
+        self.asset_path = asset_path
 
 
 class IncompatibleBodyProfileError(OutfitPackError):
@@ -41,7 +54,11 @@ class IncompatibleBodyProfileError(OutfitPackError):
 def _safe_member(info: zipfile.ZipInfo) -> None:
     path = PurePosixPath(info.filename)
     if info.is_dir() or path.is_absolute() or ".." in path.parts or "\\" in info.filename:
-        raise OutfitPackError("Provide a supported archive path.")
+        raise OutfitPackError(
+            "Provide a supported archive path.",
+            reason="asset_path_traversal",
+            asset_path=info.filename,
+        )
     if info.flag_bits & 1 or info.file_size > MAX_MEMBER_BYTES:
         raise OutfitPackError("Provide a supported archive member.")
     if (info.external_attr >> 16) & 0o170000 == SYMLINK_FILE_TYPE:

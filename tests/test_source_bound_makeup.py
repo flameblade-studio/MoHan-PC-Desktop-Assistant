@@ -287,8 +287,16 @@ def test_product_resolver_binds_rest_and_eye_state_member_hashes(
         effective_item_id="mohan-signature",
         effective_variant_id="classic",
     )
-    monkeypatch.setattr(outfit_pack, "resolve_active_selection", lambda *_: selection)
-    monkeypatch.setattr(outfit_pack, "installed_pack_path", lambda *_: expected_pack)
+    monkeypatch.setattr(
+        outfit_pack,
+        "resolve_active_selection",
+        lambda *_, **_kwargs: selection,
+    )
+    monkeypatch.setattr(
+        outfit_pack,
+        "installed_pack_path",
+        lambda *_, **_kwargs: expected_pack,
+    )
     monkeypatch.setattr(outfit_pack, "inspect_outfit_pack", lambda *_: SimpleNamespace(items=(item,)))
     monkeypatch.setattr(
         outfit_pack,

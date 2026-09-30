@@ -151,7 +151,7 @@ def _stub_selection(
     monkeypatch.setattr(
         appearance_module,
         "resolve_active_selection",
-        lambda _store, category: (
+        lambda _store, category, **_kwargs: (
             selection
             if category == "makeup"
             else SimpleNamespace(effective_pack_id="builtin")

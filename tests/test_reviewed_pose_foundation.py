@@ -246,6 +246,10 @@ class _StrengthProbe(ReviewedPoseOverlayMixin):
     def _selected_variant(self, category: str, selection: object) -> None:
         del category, selection
 
+    def _resolve_base_clear_selection(self, category: str) -> SimpleNamespace:
+        assert category == "makeup"
+        return self.selection
+
 
 ALL_SLOTS = frozenset(FOUNDATION_COSMETIC_SLOTS)
 ALL_FULL = dict.fromkeys(FOUNDATION_COSMETIC_SLOTS, FULL_INTENSITY)
@@ -288,7 +292,6 @@ def test_native_foundation_strengths_cover_bare_removal_slot_and_light_semantics
         effective_variant_id=variant_id,
     )
     probe = _StrengthProbe(selection)
-    monkeypatch.setattr(overlay_module, "resolve_active_selection", lambda *_: selection)
     monkeypatch.setattr(overlay_module, "read_makeup_intensity", lambda *_: intensity)
     monkeypatch.setattr(
         overlay_module,

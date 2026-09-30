@@ -97,7 +97,11 @@ def run(output: Path) -> Path:
     if assets is None or set(assets.payloads) != POSES:
         raise ValueError("Formal seven-pose detachable rig is missing.")
     output.mkdir(parents=True, exist_ok=False)
-    overlay = ActiveOutfitOverlay(output / "store", ROOT)
+    overlay = ActiveOutfitOverlay(
+        output / "store",
+        ROOT,
+        official_pack_root=ROOT / "assets" / "official-packs",
+    )
     renderer = LayeredParametricFaceRenderer(outfit_overlay=overlay)
     base = QPixmap(PREVIEW_SIZE, PREVIEW_SIZE)
     base.fill(Qt.transparent)

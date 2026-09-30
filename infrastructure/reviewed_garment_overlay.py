@@ -4,10 +4,11 @@ from __future__ import annotations
 lazy from collections.abc import Callable, Sequence
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap
-lazy from domain.outfit_pack import SELECTION_CATEGORIES, resolve_active_selection
+lazy from domain.outfit_pack import SELECTION_CATEGORIES
 lazy from infrastructure.appearance_layer_stack import (
     AppearanceLayerStack, Layer, paint_behind_body, split_makeup_depth,
 )
+lazy from infrastructure.outfit_layer_cache_key import OutfitLayerCacheKey
 lazy from infrastructure.reviewed_garment_assets import DIMENSION, load_reviewed_garment_assets
 lazy from infrastructure.reviewed_pose_overlay import ReviewedPoseOverlayMixin
 
@@ -96,7 +97,7 @@ class ReviewedGarmentOverlayMixin(ReviewedPoseOverlayMixin):
         counts[view_id] = 0
         if self._reviewed_assets is None or view_id not in self._reviewed_assets.poses:
             return None
-        selected = resolve_active_selection(self._store, "garment")
+        selected = self._resolve_base_clear_selection("garment")
         pose = self._reviewed_assets.match(
             view_id, selected.effective_pack_id, selected.effective_item_id,
             selected.effective_variant_id,
@@ -111,7 +112,7 @@ class ReviewedGarmentOverlayMixin(ReviewedPoseOverlayMixin):
             self._selected_variant("garment", selected)
             excluded.add("garment")
         for category, native_selection in registered_pose.native_appearance_selections.items():
-            selection = resolve_active_selection(self._store, category)
+            selection = self._resolve_base_clear_selection(category)
             if native_selection.matches(
                 selection.effective_pack_id, selection.effective_item_id,
                 selection.effective_variant_id,
@@ -142,11 +143,16 @@ class ReviewedGarmentOverlayMixin(ReviewedPoseOverlayMixin):
         # "makeup" already used the current 6-tuple, undercounting any view
         # whose appearance phase goes through a reviewed garment).
         if appearance_only:
-            key = (view_id, "appearance", suppressed, eye_state, self._active_viseme, makeup_view_id)
+            key = OutfitLayerCacheKey.for_phase(
+                view_id, "appearance", suppressed, eye_state,
+                self._active_viseme, makeup_view_id,
+            )
             self._phase_layers_by_view[key] = layers
         elif not suppressed and eye_state == "rest" and self._active_viseme is None and makeup_view_id is None:
-            self._layers_by_view[view_id] = layers
+            self._layers_by_view[OutfitLayerCacheKey.combined(view_id)] = layers
         else:
-            combined_key = (view_id, suppressed, eye_state, self._active_viseme, makeup_view_id)
+            combined_key = OutfitLayerCacheKey.combined(
+                view_id, suppressed, eye_state, self._active_viseme, makeup_view_id,
+            )
             self._layers_by_view_without_makeup_slots[combined_key] = layers
         return result

@@ -35,6 +35,7 @@ PREVIEW_VIEW_COUNT = 24
 TWO_HOURS_SECONDS = 2 * 60 * 60
 
 lazy from infrastructure.db import StudioDB
+lazy from application.wardrobe_service import WardrobeService
 lazy from presentation.dashboard_window import Dashboard
 lazy from presentation.wardrobe_turntable import TURN_TABLE_VIEWS
 
@@ -106,6 +107,8 @@ FORBIDDEN_SUBPAGE_ACTIONS = frozenset({
 def build_language_dashboard(
     root: Path,
     language: str,
+    *,
+    official_pack_root: Path | None = None,
 ) -> tuple[StudioDB, Dashboard]:
     db = StudioDB(root / f"mohan-{language}.db")
     for key, value in (
@@ -121,6 +124,11 @@ def build_language_dashboard(
         db.set_setting(key, value)
     with patch.object(QTimer, "start", return_value=None):
         dashboard = Dashboard(db, dependencies(root))
+    if official_pack_root is not None:
+        dashboard.wardrobe_service = WardrobeService(
+            root / "outfits", official_pack_root=official_pack_root
+        )
+        dashboard._reload_wardrobe_packages()
     dashboard.show()
     QApplication.processEvents()
     return db, dashboard

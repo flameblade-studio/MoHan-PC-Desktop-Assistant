@@ -57,7 +57,7 @@ def test_removing_headwear_keeps_shoe_occlusion_and_native_head(tmp_path, monkey
     monkeypatch.setattr(overlay, "_official_silhouette_region", lambda *args: QRegion(1, 0, 1, 4))
     monkeypatch.setattr(overlay, "_protected_face_region", lambda *args: QRegion(1, 0, 1, 2))
     monkeypatch.setattr("infrastructure.active_outfit_overlay.resolve_active_selection",
-                        lambda *args: SimpleNamespace(effective_pack_id=OFFICIAL_OUTFIT_PACK_ID))
+                        lambda *args, **kwargs: SimpleNamespace(effective_pack_id=OFFICIAL_OUTFIT_PACK_ID))
     result = getattr(overlay, method)(frame, "yaw+000-pitch+00").toImage()
     assert result.pixelColor(0, 0) == QColor("green")
     assert result.pixelColor(2, 1) == QColor("green")

@@ -228,6 +228,10 @@ class _StrengthProbe(ReviewedPoseOverlayMixin):
         self._store = Path(".")
         self.selection = selection
 
+    def _resolve_base_clear_selection(self, category: str) -> SimpleNamespace:
+        assert category == "makeup"
+        return self.selection
+
     def _selected_variant(self, category: str, selection: object) -> None:
         del category, selection
 
@@ -239,9 +243,6 @@ def test_explicit_v3_variant_strength_does_not_apply_legacy_light_factor(
         effective_pack_id=BUILTIN_MAKEUP_PACK_ID,
         effective_item_id="face",
         effective_variant_id="light",
-    )
-    monkeypatch.setattr(
-        overlay_module, "resolve_active_selection", lambda *_: selection
     )
     monkeypatch.setattr(overlay_module, "read_makeup_intensity", lambda *_: 1.0)
     monkeypatch.setattr(
@@ -332,7 +333,6 @@ def test_glamorous_native_render_keeps_its_selection_through_speech(tmp_path: Pa
     _, body_sha = _write_v3_fixture(root)
     assets = load_reviewed_pose_motion(root, expected_native_body_sha256=body_sha)
     selection = SimpleNamespace(effective_pack_id=BUILTIN_MAKEUP_PACK_ID, effective_variant_id="glamorous")
-    monkeypatch.setattr(overlay_module, "resolve_active_selection", lambda *_: selection)
     monkeypatch.setattr(overlay_module, "read_makeup_intensity", lambda *_: 1.0)
     monkeypatch.setattr(overlay_module, "read_makeup_slot_intensities", lambda *_, **kw: dict.fromkeys(kw["slots"], 1.0))
 

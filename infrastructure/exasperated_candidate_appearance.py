@@ -10,7 +10,7 @@ lazy from pathlib import Path
 
 lazy from PySide6.QtGui import QPainter, QPixmap
 
-lazy from domain.outfit_pack import FOUNDATION_SLOT, resolve_active_selection
+lazy from domain.outfit_pack import OFFICIAL_PACK_ROOT, FOUNDATION_SLOT, resolve_active_selection
 lazy from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
 lazy from domain import outfit_pack_official
 lazy from infrastructure.exasperated_candidate_assets import (
@@ -46,6 +46,7 @@ class ExasperatedCandidateAppearance:
     garment_enabled: bool = True
     makeup_intensities: dict[str, float] = field(default_factory=dict)
     store: Path | None = None
+    official_pack_root: Path = OFFICIAL_PACK_ROOT
     schema: str = SCHEMA
     cosmetic_slots: tuple[str, ...] = SLOTS
     look_variants: tuple[str, ...] = LOOK_VARIANTS
@@ -59,7 +60,9 @@ class ExasperatedCandidateAppearance:
             self._selected_variant = self.look_variants[0]
 
     @classmethod
-    def load(cls, root: Path) -> ExasperatedCandidateAppearance:
+    def load(
+        cls, root: Path, *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
+    ) -> ExasperatedCandidateAppearance:
         root = Path(root)
         manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
         if not isinstance(manifest, dict):
@@ -103,6 +106,7 @@ class ExasperatedCandidateAppearance:
         }
         return cls(
             layers,
+            official_pack_root=official_pack_root,
             schema=schema,
             cosmetic_slots=cosmetic_slots,
             look_variants=declared_variants,
@@ -155,8 +159,12 @@ class ExasperatedCandidateAppearance:
     def _refresh_selection(self) -> None:
         if self.store is None:
             return
-        garment = resolve_active_selection(self.store, "garment")
-        makeup = resolve_active_selection(self.store, "makeup")
+        garment = resolve_active_selection(
+            self.store, "garment", official_pack_root=self.official_pack_root,
+        )
+        makeup = resolve_active_selection(
+            self.store, "makeup", official_pack_root=self.official_pack_root,
+        )
         if garment.effective_pack_id not in {"builtin", OFFICIAL_OUTFIT_PACK_ID}:
             raise ValueError("Selected garment has no source-bound exasperated candidate.")
         if makeup.effective_pack_id not in {"builtin", BUILTIN_MAKEUP_PACK_ID}:

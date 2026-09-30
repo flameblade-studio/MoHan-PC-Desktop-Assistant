@@ -18,6 +18,7 @@ lazy from domain.outfit_pack import AppearanceAsset, AppearanceItem, AppearanceV
 lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.appearance_layer_stack import AppearanceLayerStack
+lazy from infrastructure.outfit_layer_cache_key import OutfitLayerCacheKey
 
 VIEW = "front-crossed"
 FULL_VIEW = "yaw+165-pitch+00"
@@ -76,7 +77,7 @@ def test_runtime_obeys_core_hand_ownership(tmp_path, monkeypatch, category, rule
     overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path,
                                   visible_hand_region=lambda view: QRegion(20, 500, 10, 10))
     monkeypatch.setattr(overlay, "_forbidden_face_region", lambda *args: QRegion())
-    overlay._layers_by_view[VIEW] = _layer(tmp_path, overlay, category, rule)
+    overlay._layers_by_view[OutfitLayerCacheKey.combined(VIEW)] = _layer(tmp_path, overlay, category, rule)
     body = QPixmap(1254, 1254)
     body.fill(QColor("red"))
     result = overlay.apply(body, VIEW).toImage()
@@ -95,7 +96,7 @@ def test_invalid_core_mask_rejected_and_legacy_preserved(tmp_path, monkeypatch):
         _layer(tmp_path, overlay, "garment", None)
     legacy = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
     monkeypatch.setattr(legacy, "_forbidden_face_region", lambda *args: QRegion())
-    legacy._layers_by_view[VIEW] = _layer(tmp_path, legacy, "garment", None)
+    legacy._layers_by_view[OutfitLayerCacheKey.combined(VIEW)] = _layer(tmp_path, legacy, "garment", None)
     body = QPixmap(1254, 1254)
     body.fill(QColor("red"))
     assert legacy.apply(body, VIEW).toImage().pixelColor(*HAND) == QColor("blue")
@@ -209,7 +210,7 @@ def test_fractional_core_hand_composites_over_garment_without_alpha_holes(
     garment.fill(QColor("blue"))
     canvas = QRegion(QRect(0, 0, 1024, 1536))
     overlay._phase_layers_by_view[
-        FULL_VIEW, "appearance", frozenset(), "rest", None, None
+        OutfitLayerCacheKey.for_phase(FULL_VIEW, "appearance")
     ] = AppearanceLayerStack(
         (),
         ((garment, 0, 0, canvas, 1.0),),
@@ -258,10 +259,10 @@ def test_animated_makeup_garment_and_repaintable_hand_keep_partial_depth_order(
         behind_hand_indices=frozenset({0}),
     )
     overlay._phase_layers_by_view[
-        FULL_VIEW, "appearance", frozenset(), "rest", None, None
+        OutfitLayerCacheKey.for_phase(FULL_VIEW, "appearance")
     ] = appearance
     overlay._phase_layers_by_view[
-        FULL_VIEW, "makeup", frozenset(), "rest", None, None
+        OutfitLayerCacheKey.for_phase(FULL_VIEW, "makeup")
     ] = AppearanceLayerStack((), ())
     monkeypatch.setattr(overlay, "_refresh_state", lambda: None)
     monkeypatch.setattr(overlay, "_garment_is_active", lambda: True)
@@ -313,7 +314,7 @@ def test_combined_repaintable_hand_keeps_makeup_source_atop_and_native_alpha(
     canvas = QRegion(QRect(0, 0, 1024, 1536))
 
     overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
-    overlay._layers_by_view[FULL_VIEW] = AppearanceLayerStack(
+    overlay._layers_by_view[OutfitLayerCacheKey.combined(FULL_VIEW)] = AppearanceLayerStack(
         (),
         (
             (QPixmap.fromImage(makeup_image), 0, 0, canvas, 1.0),
@@ -354,7 +355,7 @@ def test_makeup_phase_accepts_empty_early_stage_and_keeps_source_atop(
 
     overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
     overlay._phase_layers_by_view[
-        FULL_VIEW, "makeup", frozenset(), "rest", None, None
+        OutfitLayerCacheKey.for_phase(FULL_VIEW, "makeup")
     ] = AppearanceLayerStack(
         (),
         ((QPixmap.fromImage(makeup_image), 0, 0, canvas, 1.0),),
@@ -392,13 +393,13 @@ def test_core_body_overlay_restores_visible_skin_before_appearance(tmp_path, mon
     garment = QPixmap(1024, 1536)
     garment.fill(QColor("blue"))
     canvas = QRegion(QRect(0, 0, 1024, 1536))
-    overlay._layers_by_view[FULL_VIEW] = (
+    overlay._layers_by_view[OutfitLayerCacheKey.combined(FULL_VIEW)] = (
         (garment, 0, 0, canvas.subtracted(QRegion(600, 250, 1, 1)), 1.0),
     )
     monkeypatch.setattr(
         active_outfit_overlay_module,
         "resolve_active_selection",
-        lambda _store, _category: SimpleNamespace(
+        lambda _store, _category, **_kwargs: SimpleNamespace(
             status="active",
             effective_pack_id="custom.pack",
         ),
@@ -428,13 +429,13 @@ def test_official_appearance_silhouette_clears_protruding_body(tmp_path, monkeyp
     garment = QPixmap(1024, 1536)
     garment.fill(QColor(0, 0, 0, 0))
     garment.fill(QColor("blue"))
-    overlay._layers_by_view[FULL_VIEW] = (
+    overlay._layers_by_view[OutfitLayerCacheKey.combined(FULL_VIEW)] = (
         (garment, 0, 0, QRegion(300, 800, 1, 1), 1.0),
     )
     monkeypatch.setattr(
         active_outfit_overlay_module,
         "resolve_active_selection",
-        lambda _store, _category: SimpleNamespace(
+        lambda _store, _category, **_kwargs: SimpleNamespace(
             status="active",
             effective_pack_id=OFFICIAL_OUTFIT_PACK_ID,
         ),
@@ -470,7 +471,7 @@ def test_official_replacement_mask_clears_shared_base_before_appearance(
     garment_image.setPixelColor(5, 4, QColor("blue"))
     garment = QPixmap.fromImage(garment_image)
     overlay._phase_layers_by_view[
-        FULL_VIEW, "appearance", frozenset(), "rest", None, None
+        OutfitLayerCacheKey.for_phase(FULL_VIEW, "appearance")
     ] = ((garment, 0, 0, QRegion(QRect(0, 0, 10, 10)), 1.0),)
     monkeypatch.setattr(overlay, "_refresh_state", lambda: None)
     monkeypatch.setattr(overlay, "_garment_is_active", lambda: False)

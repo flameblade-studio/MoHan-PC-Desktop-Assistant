@@ -659,12 +659,19 @@ def write_makeup_intensity(store: Path, value: object) -> float:
         return intensity
 
 
-def select_builtin_makeup(store: Path, variant_id: str) -> None:
+def select_builtin_makeup(
+    store: Path,
+    variant_id: str,
+    *,
+    official_pack_root: Path = outfit_pack.OFFICIAL_PACK_ROOT,
+) -> None:
     """Choose a built-in variant, requiring optional material before persisting it."""
     if variant_id not in BUILTIN_MAKEUP_VARIANTS:
         raise OutfitPackError("Use a recognized built-in makeup variant.")
     if variant_id not in BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS:
-        installed = outfit_pack.list_installed_selections(Path(store), "makeup")
+        installed = outfit_pack.list_installed_selections(
+            Path(store), "makeup", official_pack_root=official_pack_root,
+        )
         if not any(
             selection.pack_id == BUILTIN_MAKEUP_PACK_ID
             and selection.item_id == BUILTIN_MAKEUP_ITEM_ID
@@ -684,9 +691,11 @@ def select_builtin_makeup(store: Path, variant_id: str) -> None:
     _atomic_json(active_path, active)
 
 
-def builtin_makeup_pack_path() -> Path:
+def builtin_makeup_pack_path(
+    official_pack_root: Path = outfit_pack.OFFICIAL_PACK_ROOT,
+) -> Path:
     """The official built-in makeup pack and its classic, light, and glamorous variants."""
-    return outfit_pack.OFFICIAL_PACK_ROOT / f"{BUILTIN_MAKEUP_PACK_ID}.mohan-outfit"
+    return Path(official_pack_root) / f"{BUILTIN_MAKEUP_PACK_ID}.mohan-outfit"
 
 
 def builtin_makeup_identity(variant_id: str) -> tuple[str, str, str]:

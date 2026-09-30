@@ -13,6 +13,7 @@ lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
 
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
+    OFFICIAL_PACK_ROOT,
     POSE_ATLAS_SILHOUETTES,
     SELECTION_CATEGORIES,
     IncompatibleBodyProfileError,
@@ -42,6 +43,9 @@ lazy from infrastructure.outfit_core_composition import (
     _AppearanceCompositionError, _hand_region, _paint_foreground_layers,
     _paint_overlay_layers, _paint_depth_tail, _prepare_core_hand_depth,
 )
+lazy from infrastructure.outfit_overlay_diagnostics import record_outfit_fallback
+lazy from infrastructure.outfit_layer_cache_key import OutfitLayerCacheKey
+lazy from infrastructure.outfit_layer_cache import OutfitLayerCacheMixin
 
 SEMVER_COMPONENT_COUNT = 3
 _AUTO_HAND_REGIONS = sentinel("AUTO_HAND_REGIONS")
@@ -52,6 +56,7 @@ DEFAULT_APPEARANCE_CALLBACKS = AppearanceCallbacks()
 
 
 class ActiveOutfitOverlay(
+    OutfitLayerCacheMixin,
     ReviewedGarmentOverlayMixin,
     ActiveOutfitLayerMixin,
     ActiveOutfitBaseClearMixin,
@@ -69,10 +74,12 @@ class ActiveOutfitOverlay(
         on_stale_body_profile: Callable[[], None] | None = None,
         *,
         visible_hand_region: Callable[[str], QRegion] | sentinel | None = _AUTO_HAND_REGIONS,
+        official_pack_root: Path = OFFICIAL_PACK_ROOT,
     ) -> None:
         self._store = Path(store)
         self._asset_root = Path(asset_root)
         self._on_stale_body_profile = on_stale_body_profile
+        self._official_pack_root = Path(official_pack_root)
         # Core-owned, pose-specific visible skin only; supplied by the core authority.
         # The provider remains immutable for this overlay's lifetime, like rig assets.
         # The sentinel is the composition root's frozen mask result.
@@ -85,13 +92,9 @@ class ActiveOutfitOverlay(
         # fresh store matches this initial value and keeps pre-seeded layers.
         self._state_token: tuple[tuple[int, int] | None, ...] = (None, None)
         self._package_tokens: dict[Path, tuple[int, int]] = {}
-        self._layers_by_view: dict[str, Sequence[Layer]] = {}
-        self._layers_by_view_without_makeup_slots: dict[
-            tuple[str, frozenset[str], str], Sequence[Layer]
-        ] = {}
-        self._phase_layers_by_view: dict[
-            tuple[str, str, frozenset[str], str, str | None, str | None], Sequence[Layer]
-        ] = {}
+        self._layers_by_view: dict[OutfitLayerCacheKey, Sequence[Layer]] = {}
+        self._layers_by_view_without_makeup_slots: dict[OutfitLayerCacheKey, Sequence[Layer]] = {}
+        self._phase_layers_by_view: dict[OutfitLayerCacheKey, Sequence[Layer]] = {}
         self._protected_by_view: dict[str, QRegion] = {}
         self._feature_by_view: dict[str, QRegion] = {}
         self._hair_mask_by_view: dict[str, tuple[QImage, QRect] | None] = {}
@@ -115,6 +118,8 @@ class ActiveOutfitOverlay(
         # itself part of any cache key.
         self._active_viseme: str | None = None
         self._active_oral_mask: QPixmap | None = None
+        self._logged_fallbacks: set[tuple[str, str]] = set()
+        self._diagnostic_pack_id: str | None = None
 
     def set_active_mouth_state(
         self, viseme: str | None, oral_mask: QPixmap | None = None,
@@ -130,27 +135,13 @@ class ActiveOutfitOverlay(
         self._active_viseme = viseme
         self._active_oral_mask = oral_mask if viseme is not None else None
 
-    def _invalidate_view(self, view_id: str) -> None:
-        """Discard both successful layers and size-dependent masks for a view."""
-        getattr(self, "_reviewed_layer_counts", {}).pop(view_id, None)
-        for cache in (
-            self._layers_by_view, self._protected_by_view, self._feature_by_view,
-            self._hair_mask_by_view,
-            self._core_hand_overlays_by_view, self._core_body_overlays_by_view,
-            self._official_silhouettes_by_view, self._official_replacement_masks_by_view,
-        ):
-            cache.pop(view_id, None)
-        for key in tuple(self._makeup_exclusion_by_view):
-            if key[0] == view_id:
-                del self._makeup_exclusion_by_view[key]
-        for cache in (self._layers_by_view_without_makeup_slots, self._phase_layers_by_view):
-            for key in tuple(cache):
-                if key[0] == view_id:
-                    del cache[key]
-
     def _resolve_base_clear_selection(self, category: str):
         """Keep base-clear selection reads on this module's patchable boundary."""
-        return resolve_active_selection(self._store, category)
+        return resolve_active_selection(
+            self._store,
+            category,
+            official_pack_root=self._official_pack_root,
+        )
 
     def _bind_canvas(self, view_id: str, size: tuple[int, int]) -> None:
         previous = self._render_size_by_view.get(view_id)
@@ -210,8 +201,9 @@ class ActiveOutfitOverlay(
             )
         except CoreMotionError as error:
             raise error.original from error
-        except _AppearanceCompositionError:
+        except _AppearanceCompositionError as error:
             self._invalidate_view(view_id)
+            record_outfit_fallback(error, view_id=view_id, seen=self._logged_fallbacks)
             result = QPixmap(frame) if replace_body is None else replace_body(QPixmap(frame))
             paint_motion(result)
             return result
@@ -245,7 +237,9 @@ class ActiveOutfitOverlay(
         # byte-identical to the previous behavior.
         simple = not suppressed and eye_state == "rest" and self._active_viseme is None and makeup_view_id is None
         cache = self._layers_by_view if simple else self._layers_by_view_without_makeup_slots
-        cache_key = view_id if simple else (view_id, suppressed, eye_state, self._active_viseme, makeup_view_id)
+        cache_key = OutfitLayerCacheKey.combined(
+            view_id, suppressed, eye_state, self._active_viseme, makeup_view_id,
+        )
         try:
             self._refresh_state()
             reviewed = self._reviewed_frame(
@@ -276,12 +270,14 @@ class ActiveOutfitOverlay(
             official_silhouette = self._selected_silhouette_region(
                 view_id, frame.size().toTuple(), garment_is_active,
             )
-        except IncompatibleBodyProfileError:
+        except IncompatibleBodyProfileError as error:
             self._invalidate_view(view_id)
             self._reject_stale_active_pack()
+            record_outfit_fallback(error, view_id=view_id, seen=self._logged_fallbacks)
             return frame
-        except (OSError, ValueError, OutfitPackError, zipfile.BadZipFile):
+        except (OSError, ValueError, OutfitPackError, zipfile.BadZipFile) as error:
             self._invalidate_view(view_id)
+            record_outfit_fallback(error, view_id=view_id, seen=self._logged_fallbacks)
             return frame
         if not layers:
             cache[cache_key] = ()
@@ -330,7 +326,7 @@ class ActiveOutfitOverlay(
         capability probe, not a rendering call.
         """
         try:
-            selected = resolve_active_selection(self._store, "makeup")
+            selected = self._resolve_base_clear_selection("makeup")
             if selected.status == "builtin":
                 return False
             _archive_path, _item, variant = self._selected_variant("makeup", selected)
@@ -387,15 +383,18 @@ class ActiveOutfitOverlay(
             return frame
         if eye_state not in {"rest", "half", "closed"}:
             raise ValueError("Use a recognized makeup eye state")
-        key = (view_id, phase, suppress_makeup_slots, eye_state, self._active_viseme, makeup_view_id)
+        key = OutfitLayerCacheKey.for_phase(
+            view_id, phase, suppress_makeup_slots, eye_state,
+            self._active_viseme, makeup_view_id,
+        )
         include_core = phase == "appearance"
         before_front_hair, replace_body = callbacks.before_front_hair, callbacks.replace_body
         self._bind_canvas(view_id, frame.size().toTuple())
         # Readiness must describe the current split frame, not an older
         # successful combined preview of this same view.
-        self._layers_by_view.pop(view_id, None)
+        self._layers_by_view.pop(OutfitLayerCacheKey.combined(view_id), None)
         for combined_key in tuple(self._layers_by_view_without_makeup_slots):
-            if combined_key[0] == view_id:
+            if combined_key.view_id == view_id:
                 del self._layers_by_view_without_makeup_slots[combined_key]
         try:
             self._refresh_state()
@@ -435,11 +434,13 @@ class ActiveOutfitOverlay(
         except IncompatibleBodyProfileError as error:
             self._invalidate_view(view_id)
             self._reject_stale_active_pack()
+            record_outfit_fallback(error, view_id=view_id, seen=self._logged_fallbacks)
             if callbacks.raise_on_error:
                 raise _AppearanceCompositionError from error
             return frame
         except (OSError, ValueError, OutfitPackError, zipfile.BadZipFile) as error:
             self._invalidate_view(view_id)
+            record_outfit_fallback(error, view_id=view_id, seen=self._logged_fallbacks)
             if callbacks.raise_on_error:
                 raise _AppearanceCompositionError from error
             return frame
@@ -489,31 +490,6 @@ class ActiveOutfitOverlay(
         painter.end()
         self._phase_layers_by_view[key] = layers
         return result
-
-    def layer_count(
-        self,
-        view_id: str,
-        *,
-        suppress_makeup_slots: Iterable[str] = (),
-        eye_state: str = "rest",
-    ) -> int:
-        """Successfully composed layers from either combined or split phases."""
-        if eye_state not in {"rest", "half", "closed"}:
-            raise ValueError("Use a recognized makeup eye state")
-        suppressed = frozenset(suppress_makeup_slots)
-        reviewed_count = getattr(self, "_reviewed_layer_counts", {}).get(view_id, 0)
-        simple = not suppressed and eye_state == "rest" and self._active_viseme is None
-        cache = self._layers_by_view if simple else self._layers_by_view_without_makeup_slots
-        cache_key = view_id if simple else (view_id, suppressed, eye_state, self._active_viseme)
-        if cache_key in cache:
-            return len(cache[cache_key]) + reviewed_count
-        appearance = self._phase_layers_by_view.get(
-            (view_id, "appearance", frozenset(), "rest", self._active_viseme, None), (),
-        )
-        makeup = self._phase_layers_by_view.get(
-            (view_id, "makeup", suppressed, eye_state, self._active_viseme, None), (),
-        )
-        return len(appearance) + len(makeup) + reviewed_count
 
     def _reject_stale_active_pack(self) -> None:
         """Issue #140, option 3: a generation-1 pack stays outside the generation-2 body renderer.
@@ -573,7 +549,11 @@ class ActiveOutfitOverlay(
 
     def _selected_variant(self, category: str, selected) -> tuple[Path, object, object]:
         """Locate and validate the active pack, item and variant for one category."""
-        archive_path = installed_pack_path(self._store, selected.effective_pack_id)
+        archive_path = installed_pack_path(
+            self._store,
+            selected.effective_pack_id,
+            official_pack_root=self._official_pack_root,
+        )
         archive_stat = archive_path.stat()
         token = (archive_stat.st_mtime_ns, archive_stat.st_size)
         self._package_tokens[archive_path] = token
@@ -622,9 +602,10 @@ class ActiveOutfitOverlay(
         for category_index, category in enumerate(SELECTION_CATEGORIES):
             if categories is not None and category not in categories:
                 continue
-            selected = resolve_active_selection(self._store, category)
+            selected = self._resolve_base_clear_selection(category)
             if selected.status == "builtin":
                 continue
+            self._diagnostic_pack_id = selected.effective_pack_id
             archive_path, item, variant = self._selected_variant(category, selected)
             identity = (
                 selected.effective_pack_id,
@@ -709,7 +690,12 @@ class ActiveOutfitOverlay(
             raise OutfitPackError("Runtime appearance layers must be RGBA PNG.")
         encoded = archive.read(declaration.path)
         if hashlib.sha256(encoded).hexdigest() != declaration.sha256:
-            raise OutfitPackError("Runtime appearance hash mismatch.")
+            raise OutfitPackError(
+                "Runtime appearance hash mismatch.",
+                reason="manifest_asset_hash_mismatch",
+                pack_id=self._diagnostic_pack_id,
+                asset_path=declaration.path,
+            )
         image = QImage.fromData(encoded, "PNG")
         if image.isNull() or image.hasAlphaChannel() is False:
             raise OutfitPackError("Runtime appearance must have alpha.")
