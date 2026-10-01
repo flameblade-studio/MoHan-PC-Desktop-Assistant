@@ -4,6 +4,7 @@ lazy from collections.abc import Mapping
 
 lazy from PySide6.QtCore import QRect
 lazy from PySide6.QtGui import QColor, QImage, QPixmap
+lazy from domain.qt_image_pixels import rgba8888_image
 
 FULL_ALPHA = 255
 OPAQUE_ALPHA_THRESHOLD = 250
@@ -73,10 +74,12 @@ def recover_speech_mask_edges(
     )
     if not sources:
         return mask
-    mask_image = mask.toImage().convertToFormat(QImage.Format_ARGB32)
-    closed_image = closed.toImage().convertToFormat(QImage.Format_ARGB32)
+    # Keep the mask premultiplied; its predicates read alpha only. Skin-color
+    # thresholds need straight RGB, so use exact integer boundary pixels.
+    mask_image = mask.toImage().convertToFormat(QImage.Format_ARGB32_Premultiplied)
+    closed_image = rgba8888_image(closed.toImage())
     source_images = tuple(
-        pixmap.toImage().convertToFormat(QImage.Format_ARGB32)
+        rgba8888_image(pixmap.toImage())
         for pixmap in sources
     )
     for y in range(mouth_clip.top(), mouth_clip.bottom() + 1):

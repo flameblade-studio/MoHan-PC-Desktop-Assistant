@@ -21,6 +21,7 @@ lazy from domain.constants import POSE_ATLAS_GENERATION
 lazy from domain.character_full_body_rig import FULL_BODY_RIG_SCHEMA_VERSION
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id, normalize_view_id
 lazy from domain.face_rig import FaceMotionFrame
+lazy from domain.qt_image_pixels import rgba8888_image
 lazy from infrastructure.layered_full_body_renderer import (
     FULL_BODY_AUTHORITY_DIR,
     PROJECT_ROOT,
@@ -175,7 +176,7 @@ class PoseAtlasAssets:
 
     def _pixmap_rgba(self, pixmap) -> bytes | None:
         """Convert a composed QPixmap to the square RGBA canvas bytes."""
-        image = pixmap.toImage().convertToFormat(QImage.Format_RGBA8888)
+        image = pixmap.toImage().convertToFormat(QImage.Format_ARGB32_Premultiplied)
         if image.isNull():
             return None
         scaled = image.scaled(
@@ -187,7 +188,7 @@ class PoseAtlasAssets:
         canvas = QImage(
             self._image_size,
             self._image_size,
-            QImage.Format_RGBA8888,
+            QImage.Format_ARGB32_Premultiplied,
         )
         canvas.fill(Qt.transparent)
         painter = QPainter(canvas)
@@ -197,7 +198,8 @@ class PoseAtlasAssets:
             scaled,
         )
         painter.end()
-        return bytes(canvas.constBits())
+        rgba = rgba8888_image(canvas)
+        return bytes(rgba.constBits())
 
     def resolve_speech(
         self,

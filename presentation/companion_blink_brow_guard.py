@@ -7,6 +7,7 @@ lazy import cv2
 lazy import numpy as np
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
+lazy from domain.qt_image_pixels import rgba8888_image
 
 NATIVE_SIZE = 1254
 BROW_REGIONS = ((490, 370, 605, 434), (605, 370, 725, 434))
@@ -20,7 +21,7 @@ GUARDED_EXPRESSIONS = frozenset({"eureka_front", "mock_hit_front", "mock_scold"}
 
 
 def _rgba(pixmap: QPixmap) -> np.ndarray:
-    image = pixmap.toImage().convertToFormat(QImage.Format_RGBA8888)
+    image = rgba8888_image(pixmap.toImage())
     rows = np.frombuffer(image.constBits(), dtype=np.uint8).reshape(
         image.height(), image.bytesPerLine(),
     )
