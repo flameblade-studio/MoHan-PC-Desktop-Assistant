@@ -31,6 +31,13 @@ def test_offline_startup_medians_stay_within_measured_limits() -> None:
     summary = report["summary"]
     first_paint = summary["first_paint_ms"]["median_ms"]
     deferred = summary["deferred_complete_ms"]["median_ms"]
+    # Always report the measured medians so limits can be calibrated against
+    # the CI runners that enforce them, not only the developer workstation.
+    print(
+        f"STARTUP_MEDIANS first_paint_ms={first_paint:.3f} "
+        f"deferred_complete_ms={deferred:.3f}",
+        flush=True,
+    )
 
     assert first_paint <= FIRST_PAINT_LIMIT_MS, (
         f"first-paint median {first_paint:.3f} ms exceeds "
