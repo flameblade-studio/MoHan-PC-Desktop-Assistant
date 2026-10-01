@@ -199,6 +199,67 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+  # TEMPORARY diagnostic for python/cpython#158552 (remove before merge):
+  # runs the maintainer's diagnose.py on several runners and records the CPU.
+  cpython-158552-probe:
+    name: cpython-158552-probe (${{ matrix.probe }})
+    needs: test-static
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        probe: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
+          cache: pip
+
+      - name: Download prepared Windows test runtime
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: windows-test-runtime
+          path: .
+
+      - name: Install dependencies
+        run: >-
+          python tools/install_python315_dependencies.py
+          --qt-compat-wheelhouse qt315-wheelhouse
+
+      - name: Run diagnose.py
+        shell: pwsh
+        env:
+          QT_QPA_PLATFORM: offscreen
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          New-Item -ItemType Directory -Force cpython-158552 | Out-Null
+          Copy-Item .github/diagnostics/diagnose_158552.py.txt cpython-158552/diagnose.py
+          $cpu = (Get-CimInstance Win32_Processor | Select-Object -First 1).Name.Trim()
+          $log = "cpython-158552/output.txt"
+          "CPU: $cpu" | Tee-Object -FilePath $log
+          python -c "import sys; print('BUILD:', sys.version, sys._git)" | Tee-Object -FilePath $log -Append
+          foreach ($extra in @(@(), @('--no-cache'))) {
+            "=== builtin target $extra" | Tee-Object -FilePath $log -Append
+            python cpython-158552/diagnose.py @extra 2>&1 | Tee-Object -FilePath $log -Append
+            "=== target tests/test_expression_arbiter.py $extra" | Tee-Object -FilePath $log -Append
+            python cpython-158552/diagnose.py --target tests/test_expression_arbiter.py @extra 2>&1 | Tee-Object -FilePath $log -Append
+          }
+          exit 0
+
+      - name: Upload diagnose output
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: cpython-158552-${{ matrix.probe }}
+          path: cpython-158552/output.txt
+          retention-days: 14
+
   test:
     name: test
     needs: [test-static, test-shard]
