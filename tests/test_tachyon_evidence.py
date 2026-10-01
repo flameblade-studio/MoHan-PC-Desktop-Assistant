@@ -17,12 +17,14 @@ lazy from tools.profile_mohan_tachyon import (
     _artifact_paths,
     _capture_retry_exhausted_message,
     _capture_with_retries,
+    _capture_command,
     _capture_statistics,
     _frame_statistics,
     _quality_violations,
     _sanitize_profile_outputs,
     _sanitize_profile_path,
     _top_frames,
+    _targets,
 )
 
 EXPECTED_MISSED_SAMPLES = 25.0
@@ -31,6 +33,31 @@ EXPECTED_TOTAL_SAMPLES = 100
 EXPECTED_FRAME_COUNT = 2
 EXPECTED_FAILURE_COUNT = 6
 EXPECTED_RETRY_SAMPLE_READ_ERROR = 0.25
+
+
+def test_expression_capture_requires_consistent_stack_snapshots() -> None:
+    arguments = argparse.Namespace(
+        mode="wall", rate="1khz", duration=40, full_session=False,
+    )
+    artifacts = _artifact_paths("expression", ROOT / "reports", None)
+    runner = ROOT / "tachyon_target.py"
+    command = _capture_command(arguments, "expression", artifacts, runner)
+
+    # The accelerated CPU-bound soak changes frames throughout the capture.
+    # Suspending the target for each snapshot prevents concurrent frame reads.
+    assert command.count("--blocking") == 1
+    assert command.index("--blocking") < command.index(str(runner))
+    assert command[command.index("--duration") + 1] == "40"
+    assert command[command.index("--sampling-rate") + 1] == "1khz"
+    assert "--native" in command
+    assert "--opcodes" in command
+    assert command[-1] == str(runner)
+    assert _targets("all") == ("startup", "lipsync", "expression")
+
+    for target in ("startup", "lipsync"):
+        other = _capture_command(arguments, target, artifacts, runner)
+        assert "--all-threads" in other
+        assert "--blocking" not in other
 
 
 def test_capture_statistics_support_current_and_legacy_output() -> None:
@@ -288,6 +315,7 @@ def test_capture_retry_limit_reports_every_sample_read_error() -> None:
 
 
 def main() -> None:
+    test_expression_capture_requires_consistent_stack_snapshots()
     test_capture_statistics_support_current_and_legacy_output()
     test_chunked_tachyon_tables_and_aggregates()
     test_profile_paths_are_private_and_binary_is_temporary()
