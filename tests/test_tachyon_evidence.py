@@ -6,6 +6,8 @@ lazy from io import StringIO
 lazy import os
 lazy import sys
 lazy import tempfile
+lazy import json
+lazy from unittest.mock import patch
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +27,9 @@ lazy from tools.profile_mohan_tachyon import (
     _sanitize_profile_path,
     _top_frames,
     _targets,
+    _target_spec,
+    _runner_source,
+    TargetSpec,
 )
 
 EXPECTED_MISSED_SAMPLES = 25.0
@@ -33,6 +38,11 @@ EXPECTED_TOTAL_SAMPLES = 100
 EXPECTED_FRAME_COUNT = 2
 EXPECTED_FAILURE_COUNT = 6
 EXPECTED_RETRY_SAMPLE_READ_ERROR = 0.25
+EXPECTED_EXPRESSION_SECONDS = 36.0
+EXPECTED_MINIMUM_SOAKS = 16
+EXPECTED_FAST_SOAKS = 4
+EXPECTED_SLOW_SOAKS = 2
+EXPECTED_FAST_SECONDS = 0.5
 
 
 def test_expression_capture_requires_consistent_stack_snapshots() -> None:
@@ -58,6 +68,73 @@ def test_expression_capture_requires_consistent_stack_snapshots() -> None:
         other = _capture_command(arguments, target, artifacts, runner)
         assert "--all-threads" in other
         assert "--blocking" not in other
+
+
+def test_expression_workload_runs_complete_soaks_for_wall_budget() -> None:
+    with tempfile.TemporaryDirectory(prefix="mohan-tachyon-budget-", dir=ROOT) as raw:
+        directory = Path(raw)
+        runtime = directory / "runtime.json"
+        spec = _target_spec("expression", directory, False, 40)
+        assert spec.minimum_seconds == EXPECTED_EXPRESSION_SECONDS
+        assert spec.repetitions == EXPECTED_MINIMUM_SOAKS
+        for target in ("startup", "lipsync"):
+            other = _target_spec(target, directory, False, 40)
+            assert other.minimum_seconds == 0.0
+            assert other.repetitions == 1
+
+        elapsed = [0.0]
+        completed: list[str] = []
+
+        def complete_soak(target: str, *, run_name: str) -> None:
+            assert run_name == "__main__"
+            completed.append(target)
+            elapsed[0] += 0.125
+
+        # A fast CPU completes more whole soaks; no sleep pads the sample stream.
+        quick = TargetSpec(spec.script, (), 2, 0.5)
+        with (
+            patch("runpy.run_path", side_effect=complete_soak),
+            patch("time.perf_counter", side_effect=lambda: elapsed[0]),
+            patch.object(sys, "argv", []),
+        ):
+            exec(_runner_source(quick, runtime), {"__name__": "__main__"})
+        evidence = json.loads(runtime.read_text(encoding="utf-8"))
+        assert len(completed) == EXPECTED_FAST_SOAKS
+        assert evidence["completed_repetitions"] == EXPECTED_FAST_SOAKS
+        assert evidence["wall_seconds"] == EXPECTED_FAST_SECONDS
+        assert evidence["exit_code"] == 0
+
+        # A slow CPU still completes the original minimum repetitions.
+        elapsed[0] = 0.0
+        completed.clear()
+        slow = TargetSpec(spec.script, (), 2, 0.1)
+        with (
+            patch("runpy.run_path", side_effect=complete_soak),
+            patch("time.perf_counter", side_effect=lambda: elapsed[0]),
+            patch.object(sys, "argv", []),
+        ):
+            exec(_runner_source(slow, runtime), {"__name__": "__main__"})
+        assert len(completed) == EXPECTED_SLOW_SOAKS
+
+
+def test_timed_expression_workload_preserves_assertion_failures() -> None:
+    with tempfile.TemporaryDirectory(prefix="mohan-tachyon-failure-", dir=ROOT) as raw:
+        runtime = Path(raw) / "runtime.json"
+        spec = TargetSpec(ROOT / "tests/test_expression_arbiter.py", (), 16, 36.0)
+        with (
+            patch("runpy.run_path", side_effect=AssertionError("soak failed")),
+            patch.object(sys, "argv", []),
+        ):
+            try:
+                exec(_runner_source(spec, runtime), {"__name__": "__main__"})
+            except AssertionError as error:
+                assert str(error) == "soak failed"
+            else:
+                raise AssertionError("The original soak assertion must propagate.")
+        evidence = json.loads(runtime.read_text(encoding="utf-8"))
+        assert evidence["exit_code"] == 1
+        assert evidence["error_type"] == "AssertionError"
+        assert evidence["completed_repetitions"] == 0
 
 
 def test_capture_statistics_support_current_and_legacy_output() -> None:
@@ -316,6 +393,8 @@ def test_capture_retry_limit_reports_every_sample_read_error() -> None:
 
 def main() -> None:
     test_expression_capture_requires_consistent_stack_snapshots()
+    test_expression_workload_runs_complete_soaks_for_wall_budget()
+    test_timed_expression_workload_preserves_assertion_failures()
     test_capture_statistics_support_current_and_legacy_output()
     test_chunked_tachyon_tables_and_aggregates()
     test_profile_paths_are_private_and_binary_is_temporary()

@@ -19,6 +19,8 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_TARGETS = ("startup", "lipsync", "expression")
 MAX_PERCENT = 100.0
+# Leave room for the final complete soak and runtime evidence before timeout.
+EXPRESSION_WORKLOAD_DURATION_FRACTION = 0.9
 # Performance evidence requires valid stack reads. Keep
 # the quality threshold strict, but allow two fresh captures to outlast a
 # transient runner or unwinder interruption.
@@ -129,6 +131,7 @@ class TargetSpec:
     script: Path
     arguments: tuple[str, ...]
     repetitions: int
+    minimum_seconds: float = 0.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -304,12 +307,19 @@ def _target_spec(
     target: str,
     temp_dir: Path,
     full_session: bool,
+    duration_seconds: int = 12,
 ) -> TargetSpec:
     if target != "startup":
         return TargetSpec(
             TARGET_SCRIPTS[target],
             (),
             TARGET_REPETITIONS[target],
+            # Finish complete eight-hour soaks until the wall-time budget is
+            # covered. Reserve 10% for the last soak and runtime evidence.
+            (
+                duration_seconds * EXPRESSION_WORKLOAD_DURATION_FRACTION
+                if target == "expression" else 0.0
+            ),
         )
     if full_session:
         return TargetSpec(TARGET_SCRIPTS[target], (), 1)
@@ -350,9 +360,16 @@ gc_before = gc.get_stats()
 exit_code = 0
 error_type = ""
 pending_error = None
+completed_repetitions = 0
+minimum_seconds = {spec.minimum_seconds!r}
+minimum_repetitions = {repetitions}
 try:
-    for _iteration in range({repetitions}):
+    while (
+        completed_repetitions < minimum_repetitions
+        or time.perf_counter() - started_wall < minimum_seconds
+    ):
         runpy.run_path(target, run_name="__main__")
+        completed_repetitions += 1
 except SystemExit as exc:
     exit_code = exc.code if isinstance(exc.code, int) else int(exc.code is not None)
 except BaseException as exc:
@@ -371,6 +388,8 @@ finally:
         "allocated_blocks_before": allocated_before,
         "allocated_blocks_after": sys.getallocatedblocks(),
         "active_threads_at_end": threading.active_count(),
+        "completed_repetitions": completed_repetitions,
+        "minimum_workload_seconds": minimum_seconds,
         "gc_before": gc_before,
         "gc_after": gc.get_stats(),
         "exit_code": exit_code,
@@ -1184,6 +1203,7 @@ def _build_summary(
             "workload_repetitions": (
                 1 if args.full_session else TARGET_REPETITIONS[target]
             ),
+            "minimum_workload_seconds": runtime.get("minimum_workload_seconds", 0.0),
             "isolated_user_profile": not args.use_user_profile,
         },
         "host": _host_evidence(),
@@ -1278,7 +1298,9 @@ def _profile_target(
             attempt_dir = temp_dir / f"attempt-{attempt_number}"
             attempt_dir.mkdir(parents=True, exist_ok=True)
             attempt_artifacts = artifacts.in_attempt_directory(attempt_dir)
-            spec = _target_spec(target, attempt_dir, args.full_session)
+            spec = _target_spec(
+                target, attempt_dir, args.full_session, args.duration,
+            )
             runner = _write_runner(
                 spec,
                 attempt_artifacts.runtime,
