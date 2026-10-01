@@ -25,3 +25,4 @@ docs/release-evidence/pose-atlas-v5-*/** -text
 # Golden render baseline and its approval record are pinned by SHA-256; keep the exact bytes.
 tests/golden/*.json -text
 docs/release-evidence/ticket-210-*.json -text
+docs/release-evidence/ticket-212-*.json -text
