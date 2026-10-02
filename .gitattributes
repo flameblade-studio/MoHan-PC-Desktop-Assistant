@@ -26,3 +26,4 @@ docs/release-evidence/pose-atlas-v5-*/** -text
 tests/golden/*.json -text
 docs/release-evidence/ticket-210-*.json -text
 docs/release-evidence/ticket-212-*.json -text
+docs/release-evidence/ticket-211-*.json -text
