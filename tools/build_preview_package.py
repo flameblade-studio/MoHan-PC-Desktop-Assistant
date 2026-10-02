@@ -213,6 +213,8 @@ def _pyinstaller(
         "--add-data",
         f"{ROOT / 'assets' / 'makeup-eye-apertures'}{data_separator}assets/makeup-eye-apertures",
         "--add-data",
+        f"{ROOT / 'assets' / 'makeup-safe-regions'}{data_separator}assets/makeup-safe-regions",
+        "--add-data",
         f"{ROOT / 'assets' / 'official-packs'}{data_separator}assets/official-packs",
     ]
     if pose_atlas_root is not None:

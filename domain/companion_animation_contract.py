@@ -127,7 +127,7 @@ EXPRESSION_SPEECH_ASSETS = tuple(
 )
 EXPRESSION_BLINK_FRAMES = frozendict({
     "thinking_front": "thinking_front_speech_blink",
-    "glance": "glance_speech_blink", "happy": "happy_speech_blink",
+    "happy": "happy_speech_blink",
     "worried": "worried_speech_blink", "reminder": "reminder_speech_blink",
 })
 EXPRESSION_BLINK_ASSETS = tuple(EXPRESSION_BLINK_FRAMES.values())
@@ -208,7 +208,9 @@ GESTURE_SPEECH_MOUTH_RECTS = frozendict({
 CHEEK_SPEECH_CLOSED_EXPRESSION = "idle_speech_neutral"
 HAPPY_SPEECH_CLOSED_EXPRESSION = "happy_speech_neutral"
 EXPRESSION_FACE_OFFSETS = frozendict({
-    "glance": (0, 0), "caught": (0, 0), "happy": (0, 0),
+    # Measured against the installed owner-approved cheek-glance v5 face at
+    # the 465px companion viewport; offsets move tracking masks only.
+    "glance": (6, -6), "caught": (0, 0), "happy": (0, 0),
     "worried": (0, 0), "reminder": (0, 0), "thinking_front": (0, 0),
     "gentle_smile_front": (0, 0), "worried_front": (0, 0), "shy_front": (0, 0),
     "mock_scold": (0, 0), "surprised_front": (0, 0), "relieved_front": (0, 0),

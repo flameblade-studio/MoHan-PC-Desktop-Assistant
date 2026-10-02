@@ -7,6 +7,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 lazy import pytest
 lazy from PySide6.QtGui import QColor, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
+lazy from application.appearance_ports import AppearanceRenderOptions
 lazy from infrastructure.animated_appearance import AnimatedAppearance
 
 VIEW = "yaw+000-pitch+00"
@@ -42,8 +43,7 @@ def test_strict_legacy_apply_receives_no_blink_keywords() -> None:
         source,
         VIEW,
         _paint_motion,
-        suppress_makeup_slots=frozenset({"eyes"}),
-        eye_state="closed",
+        AppearanceRenderOptions(suppress_makeup_slots=frozenset({"eyes"}), eye_state="closed"),
     )
 
     assert result.toImage().pixelColor(0, 0) == QColor("green")
@@ -70,8 +70,7 @@ def test_apply_with_blink_keywords_receives_both_options() -> None:
         _frame(),
         VIEW,
         _paint_motion,
-        suppress_makeup_slots=frozenset({"eyes"}),
-        eye_state="closed",
+        AppearanceRenderOptions(suppress_makeup_slots=frozenset({"eyes"}), eye_state="closed"),
     )
 
     assert calls == [(frozenset({"eyes"}), "closed")]
@@ -110,8 +109,7 @@ def test_partial_blink_keyword_support_is_respected(adapter_type: str, expected:
         _frame(),
         VIEW,
         _paint_motion,
-        suppress_makeup_slots=frozenset({"eyes"}),
-        eye_state="half",
+        AppearanceRenderOptions(suppress_makeup_slots=frozenset({"eyes"}), eye_state="half"),
     )
 
     assert calls == [expected]
@@ -139,8 +137,7 @@ def test_adapter_internal_type_error_is_not_retried_or_swallowed() -> None:
             _frame(),
             VIEW,
             _paint_motion,
-            suppress_makeup_slots=frozenset({"eyes"}),
-            eye_state="closed",
+            AppearanceRenderOptions(suppress_makeup_slots=frozenset({"eyes"}), eye_state="closed"),
         )
 
     assert calls == 1
@@ -174,12 +171,34 @@ def test_atomic_adapter_wins_over_split_and_combined_methods() -> None:
         _frame(),
         VIEW,
         _paint_motion,
-        suppress_makeup_slots=frozenset(),
-        eye_state="rest",
+        AppearanceRenderOptions(),
     )
 
     assert not result.isNull()
     assert calls == ["atomic"]
+
+
+def test_atomic_render_options_forward_new_makeup_view_and_callbacks() -> None:
+    calls = []
+
+    class ContextAdapter:
+        def apply_animated(self, frame, view_id, paint_motion, *, appearance_options):
+            calls.append((view_id, appearance_options))
+            paint_motion(frame)
+            if appearance_options.paint_after_makeup is not None:
+                appearance_options.paint_after_makeup(frame)
+            return frame
+
+    options = AppearanceRenderOptions(
+        suppress_makeup_slots=frozenset({"eyes"}),
+        eye_state="half",
+        makeup_view_id="cheek-glance-half",
+        paint_after_makeup=_paint_motion,
+    )
+    result = AnimatedAppearance(ContextAdapter()).compose(_frame(), VIEW, _paint_motion, options)
+
+    assert calls == [(VIEW, options)]
+    assert result.toImage().pixelColor(0, 0) == QColor("green")
 
 
 def test_none_overlay_is_a_noop_while_motion_still_paints() -> None:
@@ -188,8 +207,7 @@ def test_none_overlay_is_a_noop_while_motion_still_paints() -> None:
         source,
         VIEW,
         _paint_motion,
-        suppress_makeup_slots=frozenset(),
-        eye_state="rest",
+        AppearanceRenderOptions(),
     )
 
     assert result is not source
@@ -207,9 +225,10 @@ def test_legacy_atomic_adapter_can_restore_core_pixels_after_makeup() -> None:
 
     source = _frame()
     result = AnimatedAppearance(LegacyAtomic()).compose(
-        source, VIEW, _paint_motion,
-        suppress_makeup_slots=frozenset(), eye_state="rest",
-        paint_after_makeup=_paint_motion,
+        source,
+        VIEW,
+        _paint_motion,
+        AppearanceRenderOptions(paint_after_makeup=_paint_motion),
     )
     assert result.toImage().pixelColor(0, 0) == QColor("green")
     assert result.toImage().pixelColor(1, 1) == QColor("red")
@@ -228,9 +247,10 @@ def test_legacy_atomic_kwargs_do_not_claim_the_after_makeup_phase() -> None:
     source = _frame()
     adapter = AnimatedAppearance(LegacyAtomic())
     result = adapter.compose(
-        source, VIEW, _paint_motion,
-        suppress_makeup_slots=frozenset(), eye_state="rest",
-        paint_after_makeup=_paint_motion,
+        source,
+        VIEW,
+        _paint_motion,
+        AppearanceRenderOptions(paint_after_makeup=_paint_motion),
     )
     assert result.toImage().pixelColor(0, 0) == QColor("green")
     assert result.toImage().pixelColor(1, 1) == QColor("red")
@@ -242,7 +262,8 @@ def test_legacy_atomic_kwargs_do_not_claim_the_after_makeup_phase() -> None:
 
     with pytest.raises(ValueError, match="oral protection failed"):
         adapter.compose(
-            source, VIEW, _paint_motion,
-            suppress_makeup_slots=frozenset(), eye_state="rest",
-            paint_after_makeup=fail_after_makeup,
+            source,
+            VIEW,
+            _paint_motion,
+            AppearanceRenderOptions(paint_after_makeup=fail_after_makeup),
         )

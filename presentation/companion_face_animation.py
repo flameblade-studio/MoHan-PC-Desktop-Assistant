@@ -29,9 +29,7 @@ lazy from domain.face_rig import (
     eye_state_for_blink,
 )
 lazy from presentation.companion_blink_runtime import CompanionBlinkRuntimeMixin
-lazy from presentation.companion_viseme_cue import (
-    apply_audio_viseme_cue, viseme_expression,
-)
+lazy from presentation.companion_viseme_cue import apply_audio_viseme_cue, viseme_expression
 lazy from presentation.companion_face_assets import CompanionFaceAssetMethods
 lazy from presentation.companion_face_animation_logic import (
     align_speech_motion,
@@ -105,6 +103,7 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
     _speaking_blink_expression = CompanionFaceAssetMethods._speaking_blink_expression
     _pose_suffix = staticmethod(CompanionFaceAssetMethods._pose_suffix)
     _blink_composite = CompanionFaceAssetMethods._blink_composite
+    _legacy_blink_composite = CompanionFaceAssetMethods._legacy_blink_composite
     _wink_composite = CompanionFaceAssetMethods._wink_composite
     _masked_eye_patch = CompanionFaceAssetMethods._masked_eye_patch
     _active_speech_pose_suffix = CompanionFaceAssetMethods._active_speech_pose_suffix

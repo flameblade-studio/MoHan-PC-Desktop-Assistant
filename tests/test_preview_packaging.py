@@ -512,7 +512,7 @@ def test_packaged_makeup_state_masks_remain_verifiable(
                 continue
             if source.name not in {
                 "makeup-safe-regions.json", "makeup-foundation-safe-regions",
-                "makeup-eye-apertures", "official-packs",
+                "makeup-eye-apertures", "makeup-safe-regions", "official-packs",
             }:
                 continue
             target = bundle / destination

@@ -10,6 +10,7 @@ lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
+lazy from application.appearance_ports import AppearanceRenderOptions
 
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
@@ -155,7 +156,7 @@ class ActiveOutfitOverlay(
 
     def apply_animated(
         self, frame: QPixmap, view_id: str, paint_motion: Callable[[QPixmap], None], *,
-        suppress_makeup_slots: Iterable[str] = (), eye_state: str = "rest",
+        appearance_options: AppearanceRenderOptions | None = None,
         paint_after_makeup: Callable[[QPixmap], None] | None = None,
         replace_body: Callable[[QPixmap], QPixmap] | None = None,
     ) -> QPixmap:
@@ -167,14 +168,17 @@ class ActiveOutfitOverlay(
         """
         if frame.isNull():
             return frame
-        if eye_state not in {"rest", "half", "closed"}:
+        options = AppearanceRenderOptions() if appearance_options is None else appearance_options
+        body_replacement = replace_body or options.replace_body
+        after_makeup = paint_after_makeup or options.paint_after_makeup
+        if options.eye_state not in {"rest", "half", "closed"}:
             raise ValueError("Use a recognized makeup eye state")
 
         def replace_core(target: QPixmap) -> QPixmap:
-            if replace_body is None:
+            if body_replacement is None:
                 return target
             try:
-                return replace_body(target)
+                return body_replacement(target)
             except Exception as error:
                 raise CoreMotionError(error) from error
 
@@ -186,11 +190,13 @@ class ActiveOutfitOverlay(
             result = self._apply_phase(
                 target, view_id, phase="makeup",
                 callbacks=AppearanceCallbacks(raise_on_error=True),
-                suppress_makeup_slots=frozenset(suppress_makeup_slots), eye_state=eye_state,
+                suppress_makeup_slots=options.suppress_makeup_slots,
+                eye_state=options.eye_state,
+                makeup_view_id=options.makeup_view_id,
             )
-            if paint_after_makeup is not None:
+            if after_makeup is not None:
                 try:
-                    paint_after_makeup(result)
+                    after_makeup(result)
                 except Exception as error:
                     raise CoreMotionError(error) from error
             return result
@@ -199,7 +205,8 @@ class ActiveOutfitOverlay(
             return self._apply_phase(
                 QPixmap(frame), view_id, phase="appearance",
                 callbacks=AppearanceCallbacks(
-                    paint_skin, replace_core if replace_body is not None else None,
+                    paint_skin,
+                    replace_core if body_replacement is not None else None,
                     raise_on_error=True,
                 ),
             )
@@ -208,7 +215,11 @@ class ActiveOutfitOverlay(
         except _AppearanceCompositionError as error:
             self._invalidate_view(view_id)
             record_outfit_fallback(error, view_id=view_id, seen=self._logged_fallbacks)
-            result = QPixmap(frame) if replace_body is None else replace_body(QPixmap(frame))
+            result = (
+                QPixmap(frame)
+                if body_replacement is None
+                else body_replacement(QPixmap(frame))
+            )
             paint_motion(result)
             return result
 
