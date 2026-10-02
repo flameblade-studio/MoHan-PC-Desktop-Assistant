@@ -1,5 +1,0 @@
-### 全身原生說話幀／全身原生说话帧／Native full-body speech frames／全身の原生発話フレーム
-
-* 新增可選的原生全身嘴型幀，依發音選取已對齊原圖，保留牙齒比例；沒有該組素材時維持既有說話路徑。／新增可选的原生全身嘴型帧，依发音选取已对齐原图，保留牙齿比例；没有该组素材时维持原有说话路径。／Add optional registered full-body speech frames that preserve tooth proportions while retaining the existing speech path for views without them.／歯の比率を保つ位置合わせ済み全身発話フレームを追加し、未導入の視点では従来の発話経路を維持します。
-* 載入時檢查完整嘴型組、透明度與原生尺寸，並固定實際繪製的來源位元組；素材外觀驗收與正式替換仍各自記錄。／载入时检查完整嘴型组、透明度与原生尺寸，并固定实际绘制的来源字节；素材外观验收与正式替换仍分别记录。／Validate complete speech sets, transparency and native canvas size; freeze the bytes drawn and retain separate records for visual acceptance and installation.／口形セットの完全性、透明度と原生サイズを検証し、描画するデータを固定します。外観確認と正式導入は別途記録します。
-* 新增口腔遮罩，在唇妝之後保護齒列，並保留前髮遮擋順序；隔離外觀介面對靜態快取的修改，拒絕空透明說話素材。／新增口腔遮罩，在唇妆之后保护牙齿，并保留前发遮挡顺序；隔离外观接口对静态缓存的修改，拒绝空透明说话素材。／Add oral masks that protect teeth after lipstick while retaining foreground-hair occlusion; isolate adapter mutations from static caches and reject empty speech assets.／口紅の後に歯を保護する口腔マスクを追加し、前髪の遮蔽順序を維持します。アダプターによる静的キャッシュの変更を防ぎ、空の発話素材を拒否します。
