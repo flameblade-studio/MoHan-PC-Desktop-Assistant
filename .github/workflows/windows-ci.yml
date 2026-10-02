@@ -104,6 +104,12 @@ jobs:
       - name: Run repository static quality gate
         run: python tools/quality_gate.py --stages static
 
+      - name: Record runner processor for Tachyon evidence
+        shell: pwsh
+        run: |
+          $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
+          "MOHAN_RUNNER_CPU name=$($cpu.Name.Trim()) cores=$($cpu.NumberOfCores) logical=$($cpu.NumberOfLogicalProcessors)"
+
       - name: Capture and gate Python 3.15 Tachyon evidence
         run: >-
           python tools/profile_mohan_tachyon.py
