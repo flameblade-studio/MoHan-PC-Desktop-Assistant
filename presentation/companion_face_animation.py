@@ -29,9 +29,7 @@ lazy from domain.face_rig import (
     eye_state_for_blink,
 )
 lazy from presentation.companion_blink_runtime import CompanionBlinkRuntimeMixin
-lazy from presentation.companion_viseme_cue import (
-    apply_audio_viseme_cue, viseme_expression,
-)
+lazy from presentation.companion_viseme_cue import apply_audio_viseme_cue, viseme_expression
 lazy from presentation.companion_face_assets import CompanionFaceAssetMethods
 lazy from presentation.companion_face_animation_logic import (
     align_speech_motion,

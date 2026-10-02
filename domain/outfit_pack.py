@@ -73,9 +73,7 @@ SUPPORTED_SILHOUETTES = REQUIRED_SILHOUETTES
 GLANCE_MAKEUP_SILHOUETTES = (
     "cheek-glance", "cheek-glance-half", "cheek-glance-closed",
 )
-LEGACY_MAKEUP_SILHOUETTES = (
-    "cheek-rest-legacy", "left-neutral-legacy",
-)
+LEGACY_MAKEUP_SILHOUETTES = ("cheek-rest-legacy", "left-neutral-legacy")
 OPTIONAL_MAKEUP_SILHOUETTES = LEGACY_MAKEUP_SILHOUETTES + GLANCE_MAKEUP_SILHOUETTES
 EXPRESSION_SILHOUETTE_ALIASES = frozendict({"cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed", "protective_front": "front-crossed"})
 OFFICIAL_BODY_SPEC = frozendict({
