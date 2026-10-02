@@ -4,6 +4,7 @@ lazy from collections.abc import Mapping
 
 lazy from PySide6.QtCore import QRect
 lazy from PySide6.QtGui import QColor, QImage, QPixmap
+lazy from domain.qt_image_pixels import rgba8888_image
 
 FULL_ALPHA = 255
 OPAQUE_ALPHA_THRESHOLD = 250
@@ -73,10 +74,15 @@ def recover_speech_mask_edges(
     )
     if not sources:
         return mask
-    mask_image = mask.toImage().convertToFormat(QImage.Format_ARGB32)
-    closed_image = closed.toImage().convertToFormat(QImage.Format_ARGB32)
+    # Keep the mask premultiplied; its predicates read alpha only. Skin-color
+    # thresholds need straight RGB, so use exact integer boundary pixels.
+    mask_image = mask.toImage().convertToFormat(QImage.Format_ARGB32_Premultiplied)
+    # Exact unpremultiplication is pixel-local. Convert only the mouth ROI
+    # consumed below, including both passes over raw and normalized sources.
+    # Keep the mask on its full canvas so every other pixel stays unchanged.
+    closed_image = rgba8888_image(closed.toImage().copy(mouth_clip))
     source_images = tuple(
-        pixmap.toImage().convertToFormat(QImage.Format_ARGB32)
+        rgba8888_image(pixmap.toImage().copy(mouth_clip))
         for pixmap in sources
     )
     for y in range(mouth_clip.top(), mouth_clip.bottom() + 1):
@@ -89,12 +95,14 @@ def recover_speech_mask_edges(
             mask_color = mask_image.pixelColor(x, y)
             if not 0 < mask_color.alpha() < FULL_ALPHA:
                 continue
-            closed_color = closed_image.pixelColor(x, y)
+            local_x = x - mouth_clip.left()
+            local_y = y - mouth_clip.top()
+            closed_color = closed_image.pixelColor(local_x, local_y)
             if closed_color.alpha() < OPAQUE_ALPHA_THRESHOLD:
                 continue
             closed_max = _max_rgb(closed_color)
             if any(
-                _is_recovery_source(closed_max, source_image.pixelColor(x, y))
+                _is_recovery_source(closed_max, source_image.pixelColor(local_x, local_y))
                 for source_image in source_images
             ) or any(
                 # The installed complete-expression closed frame can be
@@ -102,7 +110,7 @@ def recover_speech_mask_edges(
                 # A fully opaque authored skin pixel is still authoritative at
                 # the narrow mouth-corner feather and must not be blended with
                 # that different closed authority.
-                _is_skin_source(source_image.pixelColor(x, y))
+                _is_skin_source(source_image.pixelColor(local_x, local_y))
                 for source_image in source_images
             ):
                 mask_image.setPixelColor(x, y, QColor(255, 255, 255, 255))

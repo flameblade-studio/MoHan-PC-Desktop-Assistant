@@ -9,17 +9,18 @@ lazy from application.adaptive_character_composition import (
     DEFAULT_CHARACTER_IMAGE_SIZE as CHARACTER_IMAGE_SIZE,
 )
 lazy from application.body_pose_renderer import BodyPoseFrame
+lazy from domain.qt_image_pixels import rgba8888_image
 
 
 def current_legacy_character_frame(window: object, generation: int) -> BodyPoseFrame:
     """Snapshot the proven renderer for the adaptive fallback boundary."""
 
     size = CHARACTER_IMAGE_SIZE
-    canvas = QImage(size, size, QImage.Format_RGBA8888)
+    canvas = QImage(size, size, QImage.Format_ARGB32_Premultiplied)
     canvas.fill(Qt.transparent)
     pixmap = window.character.pixmap()
     if pixmap is not None and not pixmap.isNull():
-        image = pixmap.toImage().convertToFormat(QImage.Format_RGBA8888)
+        image = pixmap.toImage().convertToFormat(QImage.Format_ARGB32_Premultiplied)
         image = image.scaled(
             size,
             size,
@@ -33,10 +34,11 @@ def current_legacy_character_frame(window: object, generation: int) -> BodyPoseF
             image,
         )
         painter.end()
+    rgba = rgba8888_image(canvas)
     return BodyPoseFrame(
         size,
         size,
-        bytes(canvas.constBits()),
+        bytes(rgba.constBits()),
         generation,
         ("legacy-current",),
         ("legacy-current",),
