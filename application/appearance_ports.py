@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 lazy from collections.abc import Callable, Iterable
+lazy from dataclasses import dataclass
 lazy from typing import Any, Protocol, runtime_checkable
 
 
@@ -45,6 +46,17 @@ class _NoOutfitOverlay:
 
 
 OutfitOverlayFactory = Callable[..., OutfitOverlayPort]
+
+
+@dataclass(frozen=True)
+class AppearanceRenderOptions:
+    """State and callbacks for one animated appearance composition."""
+
+    suppress_makeup_slots: frozenset[str] = frozenset()
+    eye_state: str = "rest"
+    makeup_view_id: str | None = None
+    paint_after_makeup: Callable[[Any], None] | None = None
+    replace_body: Callable[[Any], Any] | None = None
 
 
 def no_outfit_overlay_factory(**_options: object) -> OutfitOverlayPort:

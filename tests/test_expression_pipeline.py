@@ -26,7 +26,10 @@ lazy from domain.companion_animation_contract import (
     GESTURE_SPEECH_FRAMES,
     NEW_EXPRESSION_ASSETS,
 )
+lazy from infrastructure.complete_halfbody_expressions import load_complete_halfbody_frames
 lazy from presentation.companion_window import CompanionWindow
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 ANCHOR_OFFSET_BOUND = 6
 ANCHOR_CONFIDENCE_THRESHOLD = 0.15
@@ -338,7 +341,11 @@ def assert_expression_speech_variants(
     frames: dict[str, str],
 ) -> None:
     original = window.expression_pixmaps[expression]
-    mouth_rect = EXPRESSION_SPEECH_MOUTH_RECTS[expression]
+    mouth_rect = (
+        QRect(181, 177, 68, 50)
+        if expression == "glance"
+        else EXPRESSION_SPEECH_MOUTH_RECTS[expression]
+    )
     for speech_expression, aperture in (
         (frames["mid"], 0.48),
         (frames["open"], 0.90),
@@ -370,6 +377,15 @@ def _has_bound_blink_source(expression: str) -> bool:
     authority over another expression's features, so those do not count.
     """
 
+    if expression == "glance":
+        complete = load_complete_halfbody_frames(
+            PROJECT_ROOT / "assets" / "expressions" / "complete-expressions"
+        )
+        return (
+            complete is not None
+            and "glance" in complete.expressions
+            and "cheek-glance" in complete.whole_frame_blinks
+        )
     return (
         expression in EXPRESSION_BLINK_FRAMES
         or EXPRESSION_HALF_BLINK_FRAME_SOURCES.get(expression) is not None
@@ -386,15 +402,18 @@ def assert_expression_speech_blink(
     blinked = window._blink_composite(opened, expression)
     eye_offset_x, eye_offset_y = window._expression_eye_offset(expression)
     pose = EXPRESSION_POSES[expression]
-    blink_mask = (
-        window.dedicated_blink_masks[pose]
-        if expression in EXPRESSION_BLINK_FRAMES
-        else window.blink_masks[pose]
-    )
-    expression_eye_rect = alpha_bounds(blink_mask).translated(
-        eye_offset_x,
-        eye_offset_y,
-    )
+    if expression == "glance":
+        # The owner-authorized new-face blink source is registered to this
+        # non-overlapping eye ROI; the closed aperture mask itself is empty.
+        expression_eye_rect = QRect(175, 115, 101, 71)
+    else:
+        blink_mask = (
+            window.dedicated_blink_masks[pose]
+            if expression in EXPRESSION_BLINK_FRAMES
+            else window.blink_masks[pose]
+        )
+        expression_eye_rect = alpha_bounds(blink_mask)
+    expression_eye_rect = expression_eye_rect.translated(eye_offset_x, eye_offset_y)
     blink_inside, blink_outside = changed_pixels(
         opened,
         blinked,
@@ -427,10 +446,9 @@ def assert_expression_local_speech_assets(window: CompanionWindow) -> None:
 
 
 def assert_dedicated_blink_assets(window: CompanionWindow) -> None:
-    # Identity-locked eyelids may alter only the eye mask.
+    # Legacy portrait blink assets remain limited to expressions that use them.
     assert set(EXPRESSION_BLINK_FRAMES) == {
         "thinking_front",
-        "glance",
         "happy",
         "worried",
         "reminder",

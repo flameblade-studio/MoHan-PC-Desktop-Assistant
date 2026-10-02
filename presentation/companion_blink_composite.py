@@ -40,11 +40,10 @@ class CompanionBlinkCompositeMethods:
 
     def _legacy_makeup_view_id(self, appearance_view_id: str) -> str:
         """The silhouette blink makeup should resolve against for an
-        EXPRESSION_POSES base (glance/caught/happy/... and their speech
-        variants): the legacy, pre-V5-rebind authored face, geometrically a
-        different face from the new-face makeup layers authored for
-        `appearance_view_id`.  When the active makeup pack declares a
-        matching "<silhouette>-legacy" silhouette (see
+        EXPRESSION_POSES legacy portrait fallback and speech variants: the
+        pre-V5-rebind authored face, geometrically different from the
+        new-face makeup layers authored for `appearance_view_id`. When the
+        active makeup pack declares a matching "<silhouette>-legacy" view (see
         LEGACY_MAKEUP_SILHOUETTES, domain/outfit_pack.py), this redirects to
         it; otherwise it returns appearance_view_id unchanged.
         """
@@ -98,6 +97,19 @@ class CompanionBlinkCompositeMethods:
         eye_state = eye_state_for_blink(opacity)
         if eye_state is EyeState.REST:
             return QPixmap(base_pixmap)
+        complete_blink = getattr(self.face_renderer, "render_complete_blink", None)
+        if callable(complete_blink):
+            complete = complete_blink(base_pixmap, eye_state.value)
+            if isinstance(complete, QPixmap):
+                return complete
+        return self._legacy_blink_composite(base_pixmap, base_expression, eye_state)
+
+    def _legacy_blink_composite(
+        self,
+        base_pixmap: QPixmap,
+        base_expression: str,
+        eye_state: EyeState,
+    ) -> QPixmap:
         # Emotional portraits are complete, identity-locked illustrations.
         # A neutral eye patch changes their eyelids, brows and face contour,
         # so they stay intact until a dedicated matching blink asset exists.

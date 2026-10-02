@@ -105,6 +105,7 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
     _speaking_blink_expression = CompanionFaceAssetMethods._speaking_blink_expression
     _pose_suffix = staticmethod(CompanionFaceAssetMethods._pose_suffix)
     _blink_composite = CompanionFaceAssetMethods._blink_composite
+    _legacy_blink_composite = CompanionFaceAssetMethods._legacy_blink_composite
     _wink_composite = CompanionFaceAssetMethods._wink_composite
     _masked_eye_patch = CompanionFaceAssetMethods._masked_eye_patch
     _active_speech_pose_suffix = CompanionFaceAssetMethods._active_speech_pose_suffix

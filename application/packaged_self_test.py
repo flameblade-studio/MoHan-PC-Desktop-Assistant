@@ -142,7 +142,16 @@ def _pose_atlas_checks() -> tuple[_SelfTestCheck, ...]:
 def _layered_half_body_checks() -> tuple[_SelfTestCheck, ...]:
     """Verify the packaged three-pose, 25-layer portrait asset contract."""
     root = resource_path("assets/expressions/layered")
-    layers = tuple(root.glob("*.png")) if root.is_dir() else ()
+    # Expression-specific dynamic assets (for example cheek-glance oral masks)
+    # share this directory; the contract counts only the three pose rigs.
+    layers = (
+        tuple(
+            path for path in root.glob("*.png")
+            if path.name.startswith(("front_", "lean_", "cheek_"))
+        )
+        if root.is_dir()
+        else ()
+    )
     return (
         _SelfTestCheck(
             "layered_half_body.layer_count",

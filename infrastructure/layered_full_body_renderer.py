@@ -17,6 +17,7 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import QRect, QRectF, Qt
 lazy from PySide6.QtGui import QPainter, QPixmap, QRegion
 
+lazy from application.appearance_ports import AppearanceRenderOptions
 lazy from domain.constants import (
     FLOAT_COMPARISON_EPSILON,
     POSE_ATLAS_LAYERED_ROOT_NAME,
@@ -333,9 +334,12 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
             set_active_mouth_state(active_viseme, oral_mask)
         result = self._animated_appearance.compose(
             static, view_id, paint_motion,
-            suppress_makeup_slots=suppressed, eye_state=eye_state.value,
-            paint_after_makeup=restore_oral_skin if oral_mask is not None else None,
-            replace_body=replace_body if deferred_body else None,
+            AppearanceRenderOptions(
+                suppress_makeup_slots=suppressed,
+                eye_state=eye_state.value,
+                paint_after_makeup=restore_oral_skin if oral_mask is not None else None,
+                replace_body=replace_body if deferred_body else None,
+            ),
         )
 
         # Breathing moves the atomically composed character. Moving only the

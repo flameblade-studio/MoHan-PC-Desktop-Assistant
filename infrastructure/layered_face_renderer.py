@@ -238,18 +238,15 @@ class LayeredParametricFaceRenderer(
             else None
         )
         # Both sources below can supply a legacy (pre-V5-rebind) authored
-        # face that makeup_declares_view() may redirect makeup away from:
+        # face that makeup_declares_view() may redirect makeup away from.
         # native_neutral() returns the reviewed-garment "native identity"
-        # image pinned to this pose (assets/expressions/reviewed-garments/) --
-        # traced empirically (2026-09-29, trace_glance_branch.py) to be what
-        # actually supplies glance/caught/happy/worried/reminder (none of
-        # them reach _gesture_portrait: gesture_portrait_expression() only
-        # returns non-None for the 4 front-pose GESTURE_OUTFIT_SILHOUETTES,
-        # not these cheek/lean EXPRESSION_POSES entries) -- and
-        # _gesture_portrait() itself for the front gestures that DO have a
-        # dedicated legacy silhouette some day.  Every other source (
-        # complete_halfbody, render_native_state, _detachable_portrait,
-        # render_pose) is a new-face composite and never sets this flag.
+        # image pinned to this pose (assets/expressions/reviewed-garments/),
+        # which supplies the legacy cheek portraits. The installed glance
+        # complete-expression branch returns before reaching this fallback.
+        # _gesture_portrait() supplies the front-pose gesture portraits.
+        # Other sources (complete_halfbody, render_native_state,
+        # _detachable_portrait, render_pose) are new-face composites and
+        # never set this flag.
         may_need_legacy_makeup = composed is not None and not composed.isNull()
         if composed is None:
             composed = self._detachable_portrait(silhouette)
@@ -274,13 +271,13 @@ class LayeredParametricFaceRenderer(
             # This frame still contains REST eyes. Select state pigment only
             # after a registered eyelid patch is available in render_overlay;
             # HALF source selection stays separate from makeup on the REST fallback.
-            # A legacy gesture portrait (the old, pre-V5-rebind authored
-            # illustration, e.g. glance.png/caught.png) is geometrically a
-            # different face from the new-face makeup layers authored for
-            # `silhouette`; when the active makeup pack declares a matching
-            # legacy silhouette (see LEGACY_MAKEUP_SILHOUETTES,
-            # domain/outfit_pack.py), makeup resolves against that instead,
-            # leaving garment/silhouette-clip on the unchanged `silhouette`.
+            # A legacy portrait can differ geometrically from the new-face
+            # makeup layers authored for `silhouette`; when the active makeup
+            # pack declares a matching legacy silhouette (see
+            # LEGACY_MAKEUP_SILHOUETTES, domain/outfit_pack.py), makeup
+            # resolves against that view while garments keep `silhouette`.
+            # The installed glance complete-expression branch uses its own
+            # complete-frame path before reaching this fallback.
             # Every other composed source (new-face native/detachable/render_pose)
             # is completely unaffected: makeup_view_id stays None for them,
             # byte-identical to before this addition.
@@ -397,6 +394,13 @@ class LayeredParametricFaceRenderer(
             return result
         self._paint_masked(result, source, mask, opacity)
         return result
+
+    def render_complete_blink(self, base: QPixmap, eye_state: str) -> QPixmap | None:
+        """Render an owned whole-frame blink before legacy eye-patch routing."""
+
+        if not self._complete_halfbody.has_whole_frame_blink(base):
+            return None
+        return self._complete_halfbody.blink(base, eye_state)
     # -- core layered composition -------------------------------------------
 
     def render_pose(

@@ -66,15 +66,17 @@ GESTURE_SILHOUETTES = ("front-mock-scold", "front-mock-hit", "front-eureka", "fr
 POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)
 REQUIRED_SILHOUETTES = BASE_SILHOUETTES + GESTURE_SILHOUETTES + POSE_ATLAS_SILHOUETTES
 SUPPORTED_SILHOUETTES = REQUIRED_SILHOUETTES
-# Optional, additive makeup-only silhouettes: a legacy (pre-V5-rebind) face
-# geometry that shares its canvas and category slots with "cheek-rest" /
-# "left-neutral" but is not itself part of the required v2 view set.  A
-# makeup variant's poses/eye_states dict MAY declare any subset of these
-# (or none at all -- an existing pack with no legacy key is unaffected);
-# see _makeup_pose_assets.  Every other appearance category (garment, hair,
-# weapon, handheld) and every non-makeup pack keeps requiring exactly
-# REQUIRED_SILHOUETTES, unchanged.
-LEGACY_MAKEUP_SILHOUETTES = ("cheek-rest-legacy", "left-neutral-legacy")
+# Optional, additive makeup-only silhouettes. Legacy face keys and the
+# glance complete-expression state keys share the 1254px cheek canvas but
+# never become required garment/body views. Makeup variants may declare any
+# subset; every other appearance category keeps REQUIRED_SILHOUETTES intact.
+GLANCE_MAKEUP_SILHOUETTES = (
+    "cheek-glance", "cheek-glance-half", "cheek-glance-closed",
+)
+LEGACY_MAKEUP_SILHOUETTES = (
+    "cheek-rest-legacy", "left-neutral-legacy",
+)
+OPTIONAL_MAKEUP_SILHOUETTES = LEGACY_MAKEUP_SILHOUETTES + GLANCE_MAKEUP_SILHOUETTES
 EXPRESSION_SILHOUETTE_ALIASES = frozendict({"cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed", "protective_front": "front-crossed"})
 OFFICIAL_BODY_SPEC = frozendict({
     "adult": True, "height_cm": 168, "weight_kg": 54, "bust_cm": 86, "underbust_cm": 71, "waist_cm": 62, "hips_cm": 90,
@@ -159,7 +161,7 @@ def resolve_variant_for_view(
 ) -> PoseAppearanceResolution:
     """Resolve the exact authored view while preserving the selected outfit."""
 
-    if view_id not in REQUIRED_SILHOUETTES and view_id not in LEGACY_MAKEUP_SILHOUETTES:
+    if view_id not in REQUIRED_SILHOUETTES and view_id not in OPTIONAL_MAKEUP_SILHOUETTES:
         raise OutfitPackError("Use a recognized appearance view.")
     try:
         assets = variant.poses[view_id]
@@ -267,7 +269,7 @@ def _partial_pose_assets(
     yaw views that have no viseme rendering at all)."""
     if not isinstance(poses, dict):
         raise OutfitPackError("Every declared mouth-state silhouette must use a supported view.")
-    if not set(poses).issubset(REQUIRED_SILHOUETTES):
+    if not set(poses).issubset(REQUIRED_SILHOUETTES + OPTIONAL_MAKEUP_SILHOUETTES):
         raise OutfitPackError("Mouth state declares an unsupported silhouette.")
     parsed = {}
     for silhouette, entries in poses.items():
@@ -287,20 +289,20 @@ def _makeup_pose_assets(
 ) -> frozendict[str, tuple[AppearanceAsset, ...]]:
     """Like ``_pose_assets`` (the complete, required v2 view set) but a makeup
     variant's poses/eye_states dict may ALSO declare any subset of
-    LEGACY_MAKEUP_SILHOUETTES on top of that complete set (never in place of
+    OPTIONAL_MAKEUP_SILHOUETTES on top of that complete set (never in place of
     it -- the required set is still validated exactly as before, unchanged).
 
-    Each declared legacy silhouette is validated the same way a required one
+    Each declared optional silhouette is validated the same way a required one
     is (canvas, slot set, integrity), just not required to be present at all.
     An existing pack with no legacy key parses identically to before this
     function existed (only REQUIRED_SILHOUETTES keys reach _pose_assets).
     """
     if not isinstance(poses, dict):
         raise OutfitPackError("Every required silhouette must be declared.")
-    legacy_keys = set(poses) & set(LEGACY_MAKEUP_SILHOUETTES)
-    required_poses = {key: value for key, value in poses.items() if key not in legacy_keys}
+    optional_keys = set(poses) & set(OPTIONAL_MAKEUP_SILHOUETTES)
+    required_poses = {key: value for key, value in poses.items() if key not in optional_keys}
     parsed = dict(_pose_assets(required_poses, slots, archive, names, full_canvas=full_canvas))
-    for silhouette in legacy_keys:
+    for silhouette in optional_keys:
         entries = poses[silhouette]
         if not isinstance(entries, list) or not entries:
             raise OutfitPackError("Every silhouette requires assets.")
@@ -419,7 +421,7 @@ def _makeup_variant(value: object, archive: zipfile.ZipFile, names: set[str]) ->
         or not raw_foundation
         or any(not isinstance(silhouette, str) for silhouette in raw_foundation)
         or len(set(raw_foundation)) != len(raw_foundation)
-        or not set(raw_foundation).issubset(REQUIRED_SILHOUETTES)
+        or not set(raw_foundation).issubset(REQUIRED_SILHOUETTES + OPTIONAL_MAKEUP_SILHOUETTES)
     ):
         raise OutfitPackError("Provide a supported foundation silhouettes.")
     else:

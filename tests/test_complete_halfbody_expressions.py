@@ -5,6 +5,7 @@ lazy import hashlib
 lazy import json
 lazy import os
 lazy from dataclasses import replace
+lazy from pathlib import Path
 lazy from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -236,3 +237,42 @@ def test_partial_speech_bindings_do_not_advertise_complete_speech(sources):
     path.write_text(json.dumps(document), encoding="utf-8")
     with pytest.raises(ValueError, match="bindings for every mouth family"):
         _renderer(root).supports_discrete_speech("idle_front")
+
+
+def test_glance_uses_complete_expression_frames_for_speech_and_whole_frame_blink():
+    root = Path(__file__).resolve().parents[1] / "assets" / "expressions" / "complete-expressions"
+    renderer = LayeredParametricFaceRenderer(authority_dir=root.parent, use_detachable=False)
+    pose = "cheek-glance"
+    families = {
+        "glance": "neutral",
+        "glance_speech_mid": "small",
+        "glance_speech_i": "small",
+        "glance_speech_open": "a",
+        "glance_speech_round": "o",
+        "glance_speech_u": "o",
+    }
+
+    def rgba_bytes(image):
+        converted = image.convertToFormat(QImage.Format_RGBA8888)
+        return bytes(converted.constBits())[:converted.sizeInBytes()]
+
+    for expression, family in families.items():
+        assert renderer.supports_discrete_speech(expression)
+        motion = FaceMotionFrame(
+            pose=FacePose.CHEEK,
+            expression="glance",
+            viseme=Viseme.I,
+            mouth=MouthShape(aperture=0.18),
+            expression_shape=ExpressionShape(),
+        )
+        frame = renderer.render(
+            QPixmap(), motion, SimpleNamespace(mouth_expression=expression),
+        )
+        rest = QPixmap(str(root / "frames" / f"{pose}-{family}-rest.rgba.png"))
+        assert rgba_bytes(frame.toImage()) == rgba_bytes(rest.toImage())
+        for eye in ("half", "closed"):
+            blink = renderer.render_overlay(
+                QPixmap(frame), QPixmap(), eye_state=eye, view_id="cheek-rest",
+            )
+            expected = QPixmap(str(root / "frames" / f"{pose}-{family}-{eye}.rgba.png"))
+            assert rgba_bytes(blink.toImage()) == rgba_bytes(expected.toImage())
